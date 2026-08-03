@@ -13,11 +13,19 @@ extern "C" {
 // Memory
 // ============================================================================
 #include <stdlib.h>
+#ifdef __APPLE__
+#include <malloc/malloc.h>
+#else
 #include <malloc.h>
+#endif
 
 #define XMemAlloc(size, align) malloc(size)
 #define XMemFree(ptr, align) free(ptr)
+#ifdef __APPLE__
+#define XMemSize(ptr, align) malloc_size(ptr)
+#else
 #define XMemSize(ptr, align) _msize(ptr)
+#endif
 
 // ============================================================================
 // Threading / Synchronization
