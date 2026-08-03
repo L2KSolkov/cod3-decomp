@@ -1,0 +1,35 @@
+# Build outputs
+build/
+out/
+*.exe
+*.dll
+*.lib
+*.obj
+*.o
+*.pdb
+
+# IDE
+.idea/
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln
+*.vcxproj*
+
+# Generated analysis (regeneratable)
+analysis/*.tsv
+analysis/*.json
+analysis/*.md
+
+# Keep the plan
+!analysis/FOLDER_TREE.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+venv/
