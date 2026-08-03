@@ -37,6 +37,7 @@ add_library(cod3_render STATIC
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
+    src/animation/nal.cpp
     src/animation/stubs.cpp
 )
 add_library(cod3_sound STATIC

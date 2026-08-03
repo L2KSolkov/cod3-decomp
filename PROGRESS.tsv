@@ -31,7 +31,7 @@ peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	
 bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	TODO	
 mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 render_xboxr:ngl_aux.o	render_xboxr	ngl_aux.o	engine	40	TODO	
-nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	TODO	
+nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 aeps_xboxr:apsEffect.o	aeps_xboxr	apsEffect.o	engine	37	TODO	
 ngl_xboxr:ngl_debug.o	ngl_xboxr	ngl_debug.o	engine	36	TODO	
 bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine	36	TODO	
@@ -42,10 +42,10 @@ bdCore:bdString.obj	bdCore	bdString.obj	engine	28	PORTED	Phase 2: ported from De
 aeps_xboxr:apsSuppliedDomains.o	aeps_xboxr	apsSuppliedDomains.o	engine	26	TODO	
 ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	TODO	
 bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	TODO	
+nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF loader)
-nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	TODO	
+nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	TODO	
 aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	TODO	
@@ -99,7 +99,7 @@ nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (file st
 jobqueue_xboxr:jobqueue_legacy.o	jobqueue_xboxr	jobqueue_legacy.o	engine	11	PORTED	Phase 2: jobqueue.cpp (batch job system)
 ngl_xboxr:ngl_dx_tex_create.o	ngl_xboxr	ngl_dx_tex_create.o	engine	11	TODO	
 ngl_xboxr:ngl_debugdraw.o	ngl_xboxr	ngl_debugdraw.o	engine	11	TODO	
-nal_xboxr:nal_init.o	nal_xboxr	nal_init.o	engine	11	TODO	
+nal_xboxr:nal_init.o	nal_xboxr	nal_init.o	engine	11	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdSocket:bdQoSProbe-xbox.obj	bdSocket	bdQoSProbe-xbox.obj	engine	11	TODO	
 render_xboxr:cdRiverShader.o	render_xboxr	cdRiverShader.o	engine	10	TODO	
 ngl_xboxr:ngl_dx_texture.o	ngl_xboxr	ngl_dx_texture.o	engine	10	TODO	
@@ -120,7 +120,7 @@ tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system
 ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	TODO	
 ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	TODO	
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	TODO	
-nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	TODO	
+nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	TODO	
 bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	TODO	
@@ -152,7 +152,7 @@ nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	TODO
 nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	TODO	
 ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	TODO	
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	TODO	
-nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	TODO	
+nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	TODO	
 bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdStopwatch.obj	bdCore	bdStopwatch.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
@@ -200,8 +200,8 @@ nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	TODO
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	TODO	
 nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	TODO	
-nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	TODO	
-nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	TODO	
+nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	TODO	
 bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	TODO	
@@ -267,7 +267,7 @@ nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	TODO
 nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	PORTED	Phase 2: nvl.cpp (video codec stubs)
 ngl_xboxr:ngl_dx_quad.o	ngl_xboxr	ngl_dx_quad.o	engine	2	TODO	
 ngl_xboxr:ngl_gpu_debug.o	ngl_xboxr	ngl_gpu_debug.o	engine	2	TODO	
-nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	TODO	
+nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:phys_collision.o	phys_xboxr	phys_collision.o	engine	2	TODO	
 phys_xboxr:rbc_def_custom.o	phys_xboxr	rbc_def_custom.o	engine	2	TODO	
 bdPeer:bdSessionInterceptor.obj	bdPeer	bdSessionInterceptor.obj	engine	2	TODO	
@@ -300,7 +300,7 @@ ngl_xboxr:ngl_dx_fsaa.o	ngl_xboxr	ngl_dx_fsaa.o	engine	1	TODO
 ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	TODO	
 ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	TODO	
 ngl_xboxr:ngl_xb_internal.o	ngl_xboxr	ngl_xb_internal.o	engine	1	TODO	
-nal_xboxr:nal_initlist.o	nal_xboxr	nal_initlist.o	engine	1	TODO	
+nal_xboxr:nal_initlist.o	nal_xboxr	nal_initlist.o	engine	1	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdReferencable.obj	bdCore	bdReferencable.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdHMac.obj	bdCore	bdHMac.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdPlatform:bdPlatformTrulyRandom-xbox.obj	bdPlatform	bdPlatformTrulyRandom-xbox.obj	engine	1	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
