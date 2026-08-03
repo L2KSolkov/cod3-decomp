@@ -21,12 +21,12 @@ sv.o		sv.o	game	118	TODO
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	TODO	
 aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	TODO	
 phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	TODO	
-nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	TODO	
+nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	TODO	
 mp_xbox.o		mp_xbox.o	game	61	TODO	
 nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	TODO	
-nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	TODO	
+nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	TODO	
 bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	TODO	
 mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
@@ -51,7 +51,7 @@ aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	TODO
 aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	TODO	
 ngl_xboxr:ngl_lighting.o	ngl_xboxr	ngl_lighting.o	engine	22	TODO	
 render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	TODO	
-nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	TODO	
+nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	PORTED	Phase 2: nvl.cpp (video codec stubs)
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
 ngl_xboxr:ngl_font.o	ngl_xboxr	ngl_font.o	engine	19	TODO	
@@ -66,11 +66,11 @@ core_xboxr:PoolAllocator.o	core_xboxr	PoolAllocator.o	engine	17	PORTED	Phase 2: 
 ngl_xboxr:ngl_quad.o	ngl_xboxr	ngl_quad.o	engine	17	TODO	
 ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	TODO	
 ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	TODO	
-nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	TODO	
+nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	TODO	
 bdConnection:bdConnectionStatistics.obj	bdConnection	bdConnectionStatistics.obj	engine	16	TODO	
 mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
-nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	TODO	
+nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	PORTED	Phase 2: nvl.cpp (video codec stubs)
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	TODO	
@@ -81,7 +81,7 @@ phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	TODO
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	TODO	
 bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	TODO	
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	TODO	
+nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	TODO	
 bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	TODO	
 bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	TODO	
@@ -113,7 +113,7 @@ bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO
 bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
-nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	TODO	
+nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
@@ -128,7 +128,7 @@ bdConnection:bdPacket.obj	bdConnection	bdPacket.obj	engine	9	TODO
 bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	TODO	
 nextgen.o		nextgen.o	game	8	TODO	
 aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	8	TODO	
-nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	TODO	
+nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	TODO	
 phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	TODO	
@@ -147,9 +147,9 @@ render_xboxr:cdFlagShader.o	render_xboxr	cdFlagShader.o	engine	7	TODO
 render_xboxr:cdSimpleSpecularShader.o	render_xboxr	cdSimpleSpecularShader.o	engine	7	TODO	
 aeps_xboxr:apsGroupMgr.o	aeps_xboxr	apsGroupMgr.o	engine	7	TODO	
 aeps_xboxr:apsActionList.o	aeps_xboxr	apsActionList.o	engine	7	TODO	
-nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	TODO	
-nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	TODO	
-nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	TODO	
+nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	TODO	
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	TODO	
 nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
@@ -196,8 +196,8 @@ zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	TODO
 zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO	
 aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	TODO	
 cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
-nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	TODO	
-nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	TODO	
+nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	TODO	
 nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
@@ -245,7 +245,7 @@ aeps_xboxr:apsColorUVARenderer.o	aeps_xboxr	apsColorUVARenderer.o	engine	3	TODO
 aeps_xboxr:apsColorBillboardRenderer.o	aeps_xboxr	apsColorBillboardRenderer.o	engine	3	TODO	
 aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	TODO	
 aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	TODO	
-nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	TODO	
+nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	Phase 2: nvl.cpp (video codec stubs)
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	TODO	
 bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
@@ -262,8 +262,8 @@ render_xboxr:cdDynamicDecalVertexDef.o	render_xboxr	cdDynamicDecalVertexDef.o	en
 zlib_xboxr:adler32.o	zlib_xboxr	adler32.o	engine	2	TODO	
 aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	TODO	
 cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
-nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	TODO	
-nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	TODO	
+nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	PORTED	Phase 2: nvl.cpp (video codec stubs)
 ngl_xboxr:ngl_dx_quad.o	ngl_xboxr	ngl_dx_quad.o	engine	2	TODO	
 ngl_xboxr:ngl_gpu_debug.o	ngl_xboxr	ngl_gpu_debug.o	engine	2	TODO	
@@ -291,7 +291,7 @@ aeps_xboxr:apsUVARectangleNode.o	aeps_xboxr	apsUVARectangleNode.o	engine	1	TODO
 aeps_xboxr:apsRectangleNode.o	aeps_xboxr	apsRectangleNode.o	engine	1	TODO	
 aeps_xboxr:apsColorUVANode.o	aeps_xboxr	apsColorUVANode.o	engine	1	TODO	
 aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	TODO	
-nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	TODO	
+nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 ngl_xboxr:ngl_xb_tex_load.o	ngl_xboxr	ngl_xb_tex_load.o	engine	1	TODO	
