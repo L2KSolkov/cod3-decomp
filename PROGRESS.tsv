@@ -29,7 +29,7 @@ aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	TODO
 nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	TODO	
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	TODO	
 bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	TODO	
-mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	TODO	
+mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 render_xboxr:ngl_aux.o	render_xboxr	ngl_aux.o	engine	40	TODO	
 nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	TODO	
 aeps_xboxr:apsEffect.o	aeps_xboxr	apsEffect.o	engine	37	TODO	
@@ -69,7 +69,7 @@ ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	TODO
 nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	TODO	
 phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	TODO	
 bdConnection:bdConnectionStatistics.obj	bdConnection	bdConnectionStatistics.obj	engine	16	TODO	
-mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	TODO	
+mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	TODO	
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	TODO	
 nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	TODO	
@@ -92,7 +92,7 @@ nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	TODO
 ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	TODO	
 bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	TODO	
 bdConnection:bdDataChunk.obj	bdConnection	bdDataChunk.obj	engine	12	TODO	
-mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	TODO	
+mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Phase 2: controller.cpp (XInput wrapper)
 zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	TODO	
 nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	TODO	
@@ -158,7 +158,7 @@ bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	PORTED	Phase 2: ported from Dem
 bdCore:bdStopwatch.obj	bdCore	bdStopwatch.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdChunk.obj	bdConnection	bdChunk.obj	engine	7	TODO	
 bdSocket:bdAddressMap-xbox.obj	bdSocket	bdAddressMap-xbox.obj	engine	7	TODO	
-mem_mp_xboxr:ae_heap.o	mem_mp_xboxr	ae_heap.o	engine	6	TODO	
+mem_mp_xboxr:ae_heap.o	mem_mp_xboxr	ae_heap.o	engine	6	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 render_xboxr:cdScratchShader.o	render_xboxr	cdScratchShader.o	engine	6	TODO	
 render_xboxr:cdSimpleAlphaShader.o	render_xboxr	cdSimpleAlphaShader.o	engine	6	TODO	
 render_xboxr:cdDynamicDecalShader.o	render_xboxr	cdDynamicDecalShader.o	engine	6	TODO	

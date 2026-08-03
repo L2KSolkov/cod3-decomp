@@ -70,6 +70,7 @@ add_library(cod3_core STATIC
     src/core/cdl_base.cpp
     src/core/tl_system.cpp
     src/core/tl_instbank.cpp
+    src/core/memory/mem_heap.cpp
     src/core/memory/stubs.cpp
 )
 add_library(cod3_input STATIC
