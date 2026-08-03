@@ -24,6 +24,7 @@ include_directories(${CMAKE_SOURCE_DIR}/platform/xbox_shim)
 # Engine libraries (Treyarch)
 # ============================================================================
 add_library(cod3_broc STATIC
+    src/broc/mp_level.cpp
     src/broc/stubs.cpp
 )
 add_library(cod3_physics STATIC
