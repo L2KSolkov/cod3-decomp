@@ -41,6 +41,7 @@ add_library(cod3_sound STATIC
     src/sound/stubs.cpp
 )
 add_library(cod3_filesystem STATIC
+    src/filesystem/apk.cpp
     src/filesystem/stubs.cpp
 )
 add_library(cod3_nvl STATIC

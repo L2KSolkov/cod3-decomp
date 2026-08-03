@@ -44,7 +44,7 @@ ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	TODO
 bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	TODO	
 nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	TODO	
 tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	TODO	
-apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	TODO	
+apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF loader)
 nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	TODO	
 bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	TODO	
 aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	TODO	
