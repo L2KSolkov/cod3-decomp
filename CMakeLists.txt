@@ -71,6 +71,7 @@ add_library(cod3_input STATIC
     src/input/stubs.cpp
 )
 add_library(cod3_threading STATIC
+    src/threading/jobqueue.cpp
     src/threading/stubs.cpp
 )
 
