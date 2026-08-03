@@ -12,7 +12,9 @@ Call of Duty 3 multiplayer for the original Xbox (Treyarch, October 2006). We ha
 
 | Asset | Path | Use |
 |---|---|---|
-| Release XBE | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxr.xbe` | loaded in IDA |
+| Release XBE | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxr.xbe` | loaded in IDA (port 13340) |
+| Debug XBE | `/Users/jordandare/Dev/cod3/codmp_xboxd.xbe` | loaded in IDA (port 13341) — **clean decompilation source** |
+| Debug map | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxd.map` (7.7 MB) | same format as release map, 37,295 functions |
 | IDA database | IDA instance, MCP port **13340** | decompilation source of truth |
 | Linker map | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxr.map` (7.2 MB, 68,753 lines) | **symbol → Lib:Object attribution** |
 | PDB | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxr.pdb` (4.6 MB) | function names, types, RTTI, source-file paths |
@@ -23,7 +25,7 @@ Derived analysis (to be generated with `tools/*.py` in Phase 0):
 |---|---|
 | `analysis/MANIFEST.tsv` | **THE work list.** Every function: `ea, size, name, lib, obj, class, source_cpp, static, inline` |
 | `analysis/WORKLIST.tsv` | Per-source-cpp rollup: function counts + code bytes |
-| `analysis/FOLDER_TREE.md` | Reconstructed original source tree |
+| `analysis/CROSSREF.tsv` | Symbol-name cross-reference: release ea ↔ debug ea (36,304 entries, 99.4% overlap) |
 | `analysis/class_hierarchy.tsv` | C++ class → parent → vtable → member functions |
 | `analysis/shim_needs.tsv` | Xbox API callees → caller → proposed Win32 replacement |
 | `analysis/ida_types.json` | IDA local-type export (structs, enums, typedefs) |
@@ -295,6 +297,7 @@ The unit of work is **one target cpp file** (one row of WORKLIST.tsv). Never wor
       - Re-derive loop structures, if/else chains, and switch statements from the control flow
    d. Demangle the name for the C++ signature. Statics (`static` column) are file-local — declare `static` in the cpp.
    e. `$E`-named statics (compiler-generated dynamic-initializer/atexit fragments): do NOT port as functions. Reconstruct the file-scope global object + its constructor instead.
+4.b. If release decompilation is too optimized (SSE intrinsics, heavy inlining, register reuse), **switch to the debug build**: look up the function in `analysis/CROSSREF.tsv` to get the debug address, then `select_instance(13341)` and decompile there. The debug build has clean, unoptimized C++ with separate locals and clear control flow. Switch back to `select_instance(13340)` for type/PDB data.
 5. **Types**: pull struct/class layouts from IDA local types (the PDB populated them). Define each type once in the correct header. **Never guess a field** — if IDA's type information is incomplete, use `char pad_XX[N]` with a TODO comment.
 6. **Templates/COMDATs** (`inline=i` rows / `f i` flag):
    - `std::` instantiations (Dinkumware VC7) → use modern `std::` equivalents. Never transcribe Dinkumware internals. **Exception**: if a struct embeds a `std::` type by value, modern `std::` won't match the old layout — assert only offsets of members *before* the std member, add `// LAYOUT-DIVERGES(std)` comment, never hand-pad.
