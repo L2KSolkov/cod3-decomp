@@ -8,7 +8,9 @@
 #pragma once
 
 #include "ae_array.h"
+#include "ae_fixed_string.h"
 #include <stdint.h>
+#include <new>
 
 // Forward
 struct mem_heap;

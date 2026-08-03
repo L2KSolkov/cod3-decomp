@@ -8,6 +8,14 @@
 #include "ae_fixed_string.h"
 #include <cstdio>     // snprintf
 #include <cstring>    // memset
+#include <new>        // placement new
+
+// Portable debug break
+#ifdef _MSC_VER
+#define COD3_BREAK() COD3_BREAK()
+#else
+#define COD3_BREAK() __builtin_debugtrap()
+#endif
 
 // External dependencies (stubbed until mem_heap ported)
 extern void* mem_heap_malloc(unsigned int size);
@@ -55,7 +63,7 @@ PoolAllocator::BlockPool::BlockPool(
         AeAssert::gCurrentLine = 33;
         AeAssert::gCurrentExpr = 0;
         if (AeAssert::Error("cannot align %d to %d bytes", entrySize, mAlignment)) {
-            __debugbreak();
+            COD3_BREAK();
         }
     }
 
@@ -125,7 +133,7 @@ PoolAllocator::BlockPool::Block* PoolAllocator::BlockPool::Pop() {
         AeAssert::gCurrentLine = 137;
         AeAssert::gCurrentExpr = "mNumRemaining <= mCapacity";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Please add a descriptive string")) {
-            __debugbreak();
+            COD3_BREAK();
         }
     }
 
@@ -150,7 +158,7 @@ void PoolAllocator::BlockPool::Push(Block* ptr) {
         AeAssert::gCurrentExpr =
             "(ptr >= mBlockPtr) && ptr <= mBlockPtr + mCapacity * ( mEntrySize + tl_align(sizeof(BlockPool::Header),mAlignment) )";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("Block does not belong to this pool")) {
-            __debugbreak();
+            COD3_BREAK();
         }
     }
 
@@ -166,7 +174,7 @@ void PoolAllocator::BlockPool::Push(Block* ptr) {
         AeAssert::gCurrentLine = 183;
         AeAssert::gCurrentExpr = "mNumRemaining <= mCapacity";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("internal count mismatch")) {
-            __debugbreak();
+            COD3_BREAK();
         }
     }
 
@@ -200,7 +208,7 @@ PoolAllocator::PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList, unsi
             AeAssert::gCurrentExpr = "cfg.blockSize > size_last_pool";
             if (!AeAssert::IsIgnored() &&
                 AeAssert::Assert("pool config list must be sorted by entry size, smallest to largest")) {
-                __debugbreak();
+                COD3_BREAK();
             }
         }
         sizeLastPool = cfg.blockSize;
@@ -221,7 +229,7 @@ PoolAllocator::PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList, unsi
             AeAssert::gCurrentLine = 174;
             AeAssert::gCurrentExpr = "m_size < _CAPACITY";
             if (!AeAssert::IsIgnored() && AeAssert::Assert("no room left in array")) {
-                __debugbreak();
+                COD3_BREAK();
             }
         }
 
@@ -235,7 +243,7 @@ PoolAllocator::PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList, unsi
             AeAssert::gCurrentLine = 174;
             AeAssert::gCurrentExpr = "m_size < _CAPACITY";
             if (!AeAssert::IsIgnored() && AeAssert::Assert("no room left in array")) {
-                __debugbreak();
+                COD3_BREAK();
             }
         }
 

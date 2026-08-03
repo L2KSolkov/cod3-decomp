@@ -7,7 +7,13 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
+
+#ifdef _WIN32
 #include <windows.h>
+#define COD3_DEBUG_OUT(s) OutputDebugStringA(s)
+#else
+#define COD3_DEBUG_OUT(s) fprintf(stderr, "%s", s)
+#endif
 
 namespace AeAssert {
 
@@ -70,7 +76,7 @@ static bool OnScreenMessageHandler(ONSCREEN_MESSAGE_TYPE type, const char* text)
                  prefix, gCurrentFile, gCurrentLine, text);
     }
 
-    OutputDebugStringA(buf);
+    COD3_DEBUG_OUT(buf);
 
     // In debug: break. In release: may log and continue.
 #ifdef _DEBUG

@@ -7,6 +7,13 @@
 #include <stdint.h>
 #include <cstring>
 
+// Portable debug break
+#ifdef _MSC_VER
+#define COD3_BREAK() COD3_BREAK()
+#else
+#define COD3_BREAK() __builtin_debugtrap()
+#endif
+
 // Forward
 namespace AeAssert {
     extern int   gCurrentAuthor;
@@ -50,7 +57,7 @@ bool StrStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff, int rhsLen)
         AeAssert::gCurrentLine = 57;
         AeAssert::gCurrentExpr = "!((size_t)lhsBuff & 0x3)";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("string must be 4 byte aligned"))
-            __debugbreak();
+            COD3_BREAK();
     }
     if (((uintptr_t)rhsBuff & 3) != 0) {
         AeAssert::gCurrentAuthor = 0;
@@ -58,7 +65,7 @@ bool StrStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff, int rhsLen)
         AeAssert::gCurrentLine = 58;
         AeAssert::gCurrentExpr = "!((size_t)rhsBuff & 0x3)";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("string must be 4 byte aligned"))
-            __debugbreak();
+            COD3_BREAK();
     }
 
     if (lhsLen != rhsLen && rhsLen >= 0)

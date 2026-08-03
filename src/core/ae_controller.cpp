@@ -3,8 +3,6 @@
 // ea: 0x7BF240 (InitController), 0x7BF250 (PollController)
 // ============================================================================
 
-#include <windows.h>
-
 // Global — handle for assertion UI controller input
 static void* s_handleForAssert = nullptr;
 
