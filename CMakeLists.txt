@@ -58,6 +58,9 @@ add_library(cod3_core STATIC
     src/core/ae_assert.cpp
     src/core/ae_hash.cpp
     src/core/ae_controller.cpp
+    src/core/cdl_common.cpp
+    src/core/cdl_gjk.cpp
+    src/core/cdl_base.cpp
     src/core/memory/stubs.cpp
 )
 add_library(cod3_input STATIC

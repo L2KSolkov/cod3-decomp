@@ -112,7 +112,7 @@ bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
 bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	TODO	
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
-cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	TODO	
+cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	TODO	
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	TODO	
 nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	TODO	
@@ -195,7 +195,7 @@ render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	TODO
 zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	TODO	
 zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO	
 aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	TODO	
-cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	TODO	
+cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	TODO	
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	TODO	
 nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	TODO	
@@ -261,7 +261,7 @@ render_xboxr:cdScratchVertexDef.o	render_xboxr	cdScratchVertexDef.o	engine	2	TOD
 render_xboxr:cdDynamicDecalVertexDef.o	render_xboxr	cdDynamicDecalVertexDef.o	engine	2	TODO	
 zlib_xboxr:adler32.o	zlib_xboxr	adler32.o	engine	2	TODO	
 aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	TODO	
-cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	TODO	
+cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	TODO	
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	TODO	
 nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	TODO	

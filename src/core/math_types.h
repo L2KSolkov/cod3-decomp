@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <xmmintrin.h>  // __m128
+#include "core/sse_portable.h"
 
 namespace math {
 
