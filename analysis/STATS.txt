@@ -1,0 +1,88 @@
+=== COD3 MANIFEST STATISTICS ===
+
+-- By classification --
+  game      :  15873 ( 43.5%)
+  engine    :  10782 ( 29.5%)
+  xdk       :   9338 ( 25.6%)
+  crt       :    517 (  1.4%)
+  TOTAL     :  36510
+
+-- Non-inline functions --
+  Total: 19979
+    game      :   8695 ( 43.5%)
+    engine    :   3854 ( 19.3%)
+    xdk       :   6923 ( 34.7%)
+    crt       :    507 (  2.5%)
+
+-- Game objects (non-inline) --
+  shell.o                  :  1175
+  scr.o                    :   846
+  mp.o                     :   770
+  g.o                      :   732
+  mp_shell.o               :   680
+  game.o                   :   663
+  core.o                   :   541
+  game2.o                  :   521
+  render.o                 :   426
+  anim.o                   :   408
+  mp_actors.o              :   380
+  cg.o                     :   350
+  cl.o                     :   313
+  streamer.o               :   268
+  physics.o                :   224
+  game_xbox.o              :   210
+  sv.o                     :   118
+  mp_xbox.o                :    61
+  nextgen.o                :     8
+  CallFunctor.o            :     1
+  Total game                    :  8695
+
+-- Engine libraries (non-inline) --
+  MPBrocCore_xboxd:   967 funcs across 3 files
+  ngl_xboxr:   392 funcs across 34 files
+  aeps_xboxr:   382 funcs across 39 files
+  render_xboxr:   290 funcs across 41 files
+  bdConnection:   245 funcs across 26 files
+  nsl_xboxr:   237 funcs across 17 files
+  bdCore:   236 funcs across 26 files
+  phys_xboxr:   228 funcs across 14 files
+  nfl_xboxr:   126 funcs across 10 files
+  nal_xboxr:   125 funcs across 10 files
+  peripherals_xboxr:    81 funcs across 2 files
+  mem_mp_xboxr:    75 funcs across 4 files
+  zlib_xboxr:    62 funcs across 11 files
+  bdPeer:    62 funcs across 5 files
+  bdNet:    60 funcs across 8 files
+  nvl_xboxr:    47 funcs across 5 files
+  core_xboxr:    36 funcs across 5 files
+  tl_xboxr:    33 funcs across 3 files
+  bdSocket:    30 funcs across 4 files
+  bdPlatform:    28 funcs across 6 files
+  controller_xboxr:    25 funcs across 2 files
+  jobqueue_xboxr:    25 funcs across 2 files
+  apk_xboxr:    23 funcs across 1 files
+  mp_level.xboxd:    20 funcs across 1 files
+  cdl_xboxr:    16 funcs across 3 files
+  inplace_xboxr:     3 funcs across 3 files
+  Total engine                  :  3854
+
+-- XDK libraries (non-inline) --
+  xonlinesd           :  1914
+  xvoiced             :  1138
+  xgraphicsd          :   982
+  d3d8d               :   654
+  dsoundd             :   651
+  xapilibd            :   589
+  d3dx8d              :   429
+  uixd                :   398
+  xboxkrnl            :   167
+  xbdm                :     1
+  Total XDK (to shim)           :  6923
+
+-- RECONSTRUCTION TARGET --
+  Game code:      8695 functions
+  Engine code:    3854 functions
+  To reconstruct: 12549 functions
+  To shim (XDK):   6923 functions
+  CRT (modern):     507 functions
+  Inline/COMDAT:  16531 functions (into headers)
