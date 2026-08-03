@@ -43,7 +43,7 @@ aeps_xboxr:apsSuppliedDomains.o	aeps_xboxr	apsSuppliedDomains.o	engine	26	TODO
 ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	TODO	
 bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	TODO	
 nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	TODO	
-tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	TODO	
+tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF loader)
 nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	TODO	
 bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	TODO	
@@ -116,7 +116,7 @@ cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_commo
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	TODO	
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	TODO	
 nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	TODO	
-tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	TODO	
+tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	TODO	
 ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	TODO	
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	TODO	
@@ -293,7 +293,7 @@ aeps_xboxr:apsColorUVANode.o	aeps_xboxr	apsColorUVANode.o	engine	1	TODO
 aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	TODO	
 nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	TODO	
 nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	TODO	
-tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	TODO	
+tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 ngl_xboxr:ngl_xb_tex_load.o	ngl_xboxr	ngl_xb_tex_load.o	engine	1	TODO	
 ngl_xboxr:ngl_gpu_texture.o	ngl_xboxr	ngl_gpu_texture.o	engine	1	TODO	
 ngl_xboxr:ngl_dx_fsaa.o	ngl_xboxr	ngl_dx_fsaa.o	engine	1	TODO	
