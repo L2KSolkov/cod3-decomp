@@ -392,3 +392,78 @@ void ae_heap_base::MemFree(void* ptr, mem_heap* heap) {
 bool ae_heap_base::MemCheckFree(void* ptr, mem_heap* heap) {
     return ptr != nullptr;
 }
+
+// ============================================================================
+// Missing internal wrappers (from mem_lib.o, ea: 0x7BADD0-0x7BDA0)
+// ============================================================================
+
+// InitQuickPool — initialize the quick-fit pool (Xbox-only small-block cache)
+// ea: 0x7BADD0
+void InitQuickPool() {
+    // Xbox: configures dlmalloc's fastbins. No-op with system malloc.
+}
+
+// mem_alt_sbrk — alternative sbrk for Xbox memory layout
+// ea: 0x7BB1D0
+void* mem_alt_sbrk(long increment) {
+    // Xbox: uses MmAllocateContiguousMemory. No-op with system malloc.
+    return nullptr;
+}
+
+// mem_get_current_av — get the current dlmalloc state
+// ea: 0x7BB200
+malloc_state* mem_get_current_av() {
+    return &s_current_heap->av;
+}
+
+// Validate chunk list integrity (debug only)
+// ea: 0x7BB210
+void validate_chunk_list(malloc_chunk* start, bool fullCheck) {
+    // No-op: system malloc handles integrity internally
+}
+
+// mem_heap_malloc_private — internal alloc bypassing sentinel checks
+// ea: 0x7BB5A0
+void* mem_heap_malloc_private(mem_heap* heap, unsigned size) {
+    return mem_heap_malloc(heap, size, 0);
+}
+
+// mem_heap_realloc_private — internal realloc
+// ea: 0x7BB510
+void* mem_heap_realloc_private(void* ptr, unsigned newSize) {
+    return mem_heap_realloc(ptr, newSize);
+}
+
+// mem_heap_free_private — internal free
+// ea: 0x7BB8B0
+void mem_heap_free_private(mem_heap* heap, void* ptr) {
+    mem_heap_free(heap, ptr);
+}
+
+void mem_heap_free_private(void* ptr) {
+    mem_heap_free(ptr);
+}
+
+// mem_heap_malloc_ctx — allocate with context tracking
+// ea: 0x7BB990
+void* mem_heap_malloc_ctx(unsigned size, int flags, const char* file, const char* func, int line) {
+    return mem_heap_malloc(size, flags);
+}
+
+// mem_heap_free_check_reserve — check if freeing from reserve heap
+// ea: 0x7BBB00
+bool mem_heap_free_check_reserve(mem_heap* heap, void* ptr) {
+    return false; // No reserve heap with system malloc
+}
+
+// debug_malloc / debug_free — debug alloc/free with sentinel guards
+// ea: 0x7BBAC0, 0x7BBDB0
+void* debug_malloc(unsigned size) {
+    void* raw = malloc(size + 16);
+    return mem_sentinel_init(raw, size, 0);
+}
+
+void debug_free(void* ptr) {
+    void* raw = mem_sentinel_mem_heap_free(ptr);
+    free(raw);
+}
