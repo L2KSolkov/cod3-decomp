@@ -75,7 +75,7 @@ nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	TODO
 nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	TODO	
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	TODO	
 render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	TODO	
-controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	TODO	
+controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	PORTED	Phase 2: controller.cpp (XInput wrapper)
 jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jobqueue.cpp (batch job system)
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	TODO	
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	TODO	
@@ -93,7 +93,7 @@ ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	TODO
 bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	TODO	
 bdConnection:bdDataChunk.obj	bdConnection	bdDataChunk.obj	engine	12	TODO	
 mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	TODO	
-controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	TODO	
+controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Phase 2: controller.cpp (XInput wrapper)
 zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	TODO	
 nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	TODO	
 jobqueue_xboxr:jobqueue_legacy.o	jobqueue_xboxr	jobqueue_legacy.o	engine	11	PORTED	Phase 2: jobqueue.cpp (batch job system)

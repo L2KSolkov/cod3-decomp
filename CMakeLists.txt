@@ -72,6 +72,7 @@ add_library(cod3_core STATIC
     src/core/memory/stubs.cpp
 )
 add_library(cod3_input STATIC
+    src/input/controller.cpp
     src/input/stubs.cpp
 )
 add_library(cod3_threading STATIC
