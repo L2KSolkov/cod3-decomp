@@ -1,37 +1,35 @@
 // ============================================================================
-// bdReferencable — reference-counted base class (Demonware 2.0, ported from 2.3.4)
-// Verified against COD3 ea: 0x89EB80 (virtual destructor)
+// bdReferencable — reference-counted base class (COD3 release)
+// ea: 0x89EB80 (virtual destructor sets vtable)
+// Ref counting (addRef/releaseRef) is INLINE — emitted as COMDAT in each caller.
 // ============================================================================
 
 #pragma once
 
 #ifdef _WIN32
   #include <windows.h>
+  #define BD_INTERLOCKED_INC(p) InterlockedIncrement((volatile LONG*)(p))
+  #define BD_INTERLOCKED_DEC(p) InterlockedDecrement((volatile LONG*)(p))
 #else
-  #define InterlockedIncrement(p) __sync_add_and_fetch(p, 1)
-  #define InterlockedDecrement(p) __sync_sub_and_fetch(p, 1)
+  #define BD_INTERLOCKED_INC(p) __sync_add_and_fetch((int*)(p), 1)
+  #define BD_INTERLOCKED_DEC(p) __sync_sub_and_fetch((int*)(p), 1)
 #endif
 
 typedef int bdInt;
 
-/// Base class for reference-counted objects used with bdReference<T>.
-class bdReferencable
-{
+class bdReferencable {
 public:
     bdReferencable() : m_refCount(0) {}
-
     virtual ~bdReferencable() {}
 
     bdInt addRef() {
-        InterlockedIncrement((volatile long*)&m_refCount);
+        BD_INTERLOCKED_INC(&m_refCount);
         return m_refCount;
     }
-
     bdInt releaseRef() {
-        InterlockedDecrement((volatile long*)&m_refCount);
+        BD_INTERLOCKED_DEC(&m_refCount);
         return m_refCount;
     }
-
     bdInt getRefCount() const { return m_refCount; }
 
 protected:

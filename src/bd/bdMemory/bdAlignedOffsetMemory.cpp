@@ -1,45 +1,51 @@
 // ============================================================================
-// bdAlignedOffsetMemory — aligned allocator with offset (Demonware 2.0)
-// Verified against COD3 ea: 0x8A03D0 (malloc), 0x8A04A0 (free), 0x8A04B0 (realloc)
+// bdAlignedOffsetMemory — aligned allocator with configurable offset
+// Reconstructed from COD3 release decompilation.
+// ea: 0x8A03D0 (bdAlignedOffsetMalloc), 0x8A04A0 (bdAlignedOffsetFree), 0x8A04B0 (bdAlignedOffsetRealloc)
 // ============================================================================
 
-#include "bdUtilities/bdBitOperations.h"
 #include <cstdlib>
 #include <cstring>
-#include <cstdint>
-
-#define BD_CALL
-#define BD_NULL nullptr
 
 typedef unsigned int bdUWord;
 
-void* BD_CALL bdAlignedOffsetMalloc(bdUWord size, bdUWord align, bdUWord offset) {
-    if (!BD_IS_POWER_OF_2(align)) return BD_NULL;
+// COD3: alignment must be power of 2 (enforced at ea:0x8A03D0)
+// Layout: [blockPtr][padding...][offset][userData] where blockPtr is stored before userData
 
-    bdUWord padding = align + sizeof(void*) + offset;
-    bdUWord blockPtr = (bdUWord)(uintptr_t)malloc(padding + size);
-    if (!blockPtr) return BD_NULL;
+void* bdAlignedOffsetMalloc(bdUWord size, bdUWord align, bdUWord offset) {
+    // Check alignment is power of 2
+    if ((align - 1) & align)
+        return nullptr;
 
-    bdUWord alignedPtr = BD_PREVIOUS_MULTIPLE_OF_M(blockPtr + padding, align);
-    bdUWord dataPtr = alignedPtr - offset;
+    bdUWord total = size + align + offset + sizeof(void*);
+    void* raw = malloc(total);
+    if (!raw)
+        return nullptr;
 
-    *((bdUWord*)(dataPtr - sizeof(void*))) = blockPtr;
-    return (void*)dataPtr;
+    // Align (raw + sizeof(void*) + offset) up to 'align' boundary
+    bdUWord aligned = (~(align - 1)) & ((bdUWord)(uintptr_t)raw + sizeof(void*) + align + offset - 1);
+    bdUWord userPtr = aligned - offset;
+
+    // Store original block pointer behind user data (at userPtr - sizeof(void*))
+    *((void**)(userPtr - sizeof(void*))) = raw;
+
+    return (void*)userPtr;
 }
 
-void BD_CALL bdAlignedOffsetFree(void* p) {
-    if (!p) return;
-    bdUWord dataPtr = (bdUWord)(uintptr_t)p;
-    bdUWord* headerPtr = (bdUWord*)(dataPtr - sizeof(void*));
-    free((void*)(uintptr_t)*headerPtr);
+// ea: 0x8A04A0 — free: retrieves stored block pointer at (ptr - sizeof(void*)), calls free()
+void bdAlignedOffsetFree(void* ptr) {
+    if (!ptr) return;
+    void* raw = *((void**)((uintptr_t)ptr - sizeof(void*)));
+    free(raw);
 }
 
-void* BD_CALL bdAlignedOffsetRealloc(void* p, bdUWord size, bdUWord align, bdUWord offset, bdUWord oldSize) {
-    void* dataPtr = bdAlignedOffsetMalloc(size, align, offset);
-    if (dataPtr && p) {
-        bdUWord copy = size < oldSize ? size : oldSize;
-        memcpy(dataPtr, p, copy);
-        bdAlignedOffsetFree(p);
+// ea: 0x8A04B0 — realloc: allocate new, copy min(oldSize, newSize), free old
+void* bdAlignedOffsetRealloc(void* ptr, bdUWord oldSize, bdUWord newSize, bdUWord align, bdUWord offset) {
+    void* newPtr = bdAlignedOffsetMalloc(newSize, align, offset);
+    if (newPtr && ptr) {
+        bdUWord copy = (newSize < oldSize) ? newSize : oldSize;
+        memcpy(newPtr, ptr, copy);
+        bdAlignedOffsetFree(ptr);
     }
-    return dataPtr;
+    return newPtr;
 }

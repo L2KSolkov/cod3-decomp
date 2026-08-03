@@ -1,50 +1,37 @@
 // ============================================================================
-// bdTimer — platform-independent high-resolution timer (Demonware 2.0)
-// Verified against COD3 ea: 0x9EC3C0 (getElapsedTimeInSeconds), 0x9EC390 (start)
+// bdShortTimer — short-duration stopwatch (COD3 release)
+// ea: 0x9EC390 (start), 0x9EC3B0 (reset), 0x9EC3C0 (getElapsedTimeInSeconds)
 // ============================================================================
 
 #pragma once
 
-#ifdef _WIN32
-  #include <windows.h>
-#else
-  #include <sys/time.h>
-#endif
+#include <math.h>
 
-typedef unsigned long long bdUInt64;
-typedef float bdFloat32;
+// Forward — defined in bdPlatform.cpp
+struct bdPlatformTiming {
+    static unsigned __int64 getHiResTimeStamp();
+    static double getElapsedTime(unsigned __int64 t1, unsigned __int64 t2);
+};
 
-class bdShortTimer {
-    bdUInt64 m_start;
-public:
-    bdShortTimer() { reset(); }
+// COD3: m_start stores getHiResTimeStamp() / 100 (ea: 0x9EC3A3)
+// getElapsedTimeInSeconds: fabs(getElapsedTime(m_start, getHiResTimeStamp()/100) * 100.0)
+struct bdShortTimer {
+    unsigned __int64 m_start;
+
+    bdShortTimer() : m_start(0) {}
 
     void start() {
-#ifdef _WIN32
-        LARGE_INTEGER t;
-        QueryPerformanceCounter(&t);
-        m_start = t.QuadPart;
-#else
-        struct timeval tv;
-        gettimeofday(&tv, nullptr);
-        m_start = (bdUInt64)tv.tv_sec * 1000000ULL + tv.tv_usec;
-#endif
+        m_start = bdPlatformTiming::getHiResTimeStamp() / 100;  // ea: 0x9EC390
     }
 
-    void reset() { m_start = 0; }
+    void reset() {
+        m_start = 0;
+    }
 
-    bdFloat32 getElapsedTimeInSeconds() const {
-        if (m_start == 0) return 0.f;
-#ifdef _WIN32
-        LARGE_INTEGER now, freq;
-        QueryPerformanceCounter(&now);
-        QueryPerformanceFrequency(&freq);
-        return (bdFloat32)((double)(now.QuadPart - m_start) / (double)freq.QuadPart);
-#else
-        struct timeval tv;
-        gettimeofday(&tv, nullptr);
-        bdUInt64 now = (bdUInt64)tv.tv_sec * 1000000ULL + tv.tv_usec;
-        return (bdFloat32)((now - m_start) / 1000000.0);
-#endif
+    float getElapsedTimeInSeconds() const {
+        // ea: 0x9EC3C0 — divides TS by 100, gets elapsed, multiplies by 100
+        unsigned __int64 now100 = bdPlatformTiming::getHiResTimeStamp() / 100;
+        double elapsed = bdPlatformTiming::getElapsedTime(m_start, now100) * 100.0;
+        return (float)fabs(elapsed);
     }
 };
