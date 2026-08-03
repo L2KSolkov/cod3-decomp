@@ -1,0 +1,140 @@
+// ============================================================================
+// COD3 Player Types — PlayerState, usercmd_s, gclient_s
+// Reconstructed from IDA local types (PDB symbol data).
+// All sizes and offsets verified against IDA.
+// ============================================================================
+
+#pragma once
+
+#include "game/game_types.h"
+#include "core/math_types.h"
+
+// Forward
+struct PlayerStateEvents;
+
+// ============================================================================
+// PlayerStateEvents — event queue (60 bytes)
+// Size: 0x3C (60 bytes) — verified against IDA
+// ============================================================================
+struct PlayerStateEvents {
+    int32_t eventSequence;         // +0x00
+    int32_t events[4];            // +0x04
+    int32_t eventParms[4];        // +0x14
+    int32_t oldEventSequence;     // +0x24
+    int32_t damageEvent;          // +0x28
+    int32_t damageYaw;            // +0x2C
+    int32_t damagePitch;          // +0x30
+    int32_t damageCount;          // +0x34
+    int32_t entityEventSequence;  // +0x38
+};
+static_assert(sizeof(PlayerStateEvents) == 0x3C, "PlayerStateEvents size mismatch");
+
+// ============================================================================
+// PlayerState — per-client player state (1488 bytes)
+// Size: 0x5D0 (1488 bytes) — verified against IDA (112+ members, truncated)
+// Key members reconstructed. Full structure will be refined during porting.
+// ============================================================================
+struct PlayerState {
+    math::Position3 origin;                // +0x000
+    math::Dir3      velocity;              // +0x010
+    int32_t  commandTime;                  // +0x020
+    int32_t  pm_type;                      // +0x024
+    int32_t  bobCycle;                     // +0x028
+    int32_t  pm_flags;                     // +0x02C
+    int32_t  pm_time;                      // +0x030
+    int32_t  weaponTime;                   // +0x034
+    int32_t  weaponDelay;                  // +0x038
+    int32_t  grenadeTimeLeft;              // +0x03C
+    int32_t  iFoliageSoundTime;            // +0x040
+    int32_t  iFatigueSoundTime;            // +0x044
+    int32_t  gravity;                      // +0x048
+    float    leanf;                        // +0x04C
+    int32_t  speed;                        // +0x050
+    int32_t  delta_angles[3];              // +0x054
+    DbLinkedHandle<void, Entity> mGroundEntity;  // +0x060
+    float    vLadderVec[3];               // +0x064
+    int32_t  jumpTime;                     // +0x070
+    float    fJumpOriginZ;                 // +0x074
+    int32_t  legsAnim;                     // +0x078
+    float    legsYaw;                      // +0x07C
+    int32_t  torsoAnim;                    // +0x080
+    int32_t  spotTime;                     // +0x084
+    int32_t  respawnUntilTime;             // +0x088
+    DbLinkedHandle<void, Entity> mLastSpotter;     // +0x08C
+    DbLinkedHandle<void, Entity> mKiller;          // +0x090
+    DbLinkedHandle<void, Entity> mTarget;          // +0x094
+    int32_t  mTargetTime;                  // +0x098
+    int32_t  movementDir;                  // +0x09C
+    DbLinkedHandle<void, Entity> mClient;          // +0x0A0
+    int32_t  weapon;                       // +0x0A4
+    int32_t  weaponstate;                  // +0x0A8
+    float    fWeaponPosFrac;               // +0x0AC
+    bool     reloadFromEmpty;              // +0x0B0
+    // pad 3
+    uint8_t  _padB1[3];                    // +0x0B1
+    Handle   queuedReloadSound;            // +0x0B4
+    bool     queuedReloadSoundPlayStarted; // +0x0B8
+    // pad 3
+    uint8_t  _padB9[3];                    // +0x0B9
+    int32_t  queuedReloadTimer;            // +0x0BC
+    bool     reloadSoundPrequeueAttempted; // +0x0C0
+    // pad 3
+    uint8_t  _padC1[3];                    // +0x0C1
+    int32_t  lastWeapon;                   // +0x0C4
+    IVPointer<XModel> viewmodel;          // +0x0C8
+    float    viewangles[3];               // +0x0D0
+    int32_t  viewHeightTarget;             // +0x0DC
+    float    viewHeightCurrent;            // +0x0E0
+    int32_t  viewHeightLerpTime;           // +0x0E4
+    int32_t  viewHeightLerpTarget;         // +0x0E8
+    int32_t  viewHeightLerpDown;           // +0x0EC
+    float    viewHeightLerpPosAdj;         // +0x0F0
+    int32_t  eFlags;                       // +0x0F4
+    PlayerStateEvents event;               // +0x0F8
+    int32_t  stats[4];                     // +0x134
+    int32_t  ammo[92];                     // +0x144
+    int32_t  ammoclip[92];                 // +0x2B4
+    int32_t  weapons[2];                   // +0x424
+    char     weaponslots[10];              // +0x42C
+    // pad 2
+    uint8_t  _pad436[2];                   // +0x436
+    int32_t  weaponrechamber[2];           // +0x438
+    float    mins[3];                      // +0x440
+    float    maxs[3];                      // +0x44C
+    int32_t  proneViewHeight;              // +0x458
+    int32_t  crouchViewHeight;             // +0x45C
+    int32_t  standViewHeight;              // +0x460
+    int32_t  deadViewHeight;               // +0x464
+    float    walkSpeedScale;               // +0x468
+    float    runSpeedScale;                // +0x46C
+    // Remaining members (to +0x5D0) will be filled during porting
+    uint8_t  _pad_remaining[0x160];        // +0x470 ... +0x5D0
+};
+static_assert(sizeof(PlayerState) == 0x5D0, "PlayerState size mismatch");
+static_assert(offsetof(PlayerState, origin) == 0x000, "PlayerState::origin offset mismatch");
+static_assert(offsetof(PlayerState, weapon) == 0x0A4, "PlayerState::weapon offset mismatch");
+static_assert(offsetof(PlayerState, eFlags) == 0x0F4, "PlayerState::eFlags offset mismatch");
+static_assert(offsetof(PlayerState, event) == 0x0F8, "PlayerStateEvents offset mismatch");
+
+// ============================================================================
+// usercmd_s — user input command (48 bytes)
+// Size: 0x30 (48 bytes) — verified against IDA
+// ============================================================================
+struct usercmd_s {
+    int32_t serverTime;      // +0x00
+    int32_t buttons;         // +0x04
+    int32_t weapon;          // +0x08
+    int32_t angles[3];       // +0x0C
+    char    forwardmove;     // +0x18
+    char    rightmove;       // +0x19
+    char    upmove;          // +0x1A
+    // pad 1
+    uint8_t _pad1B;          // +0x1B
+    float   gunPitch;        // +0x1C
+    float   gunYaw;          // +0x20
+    float   gunXOfs;         // +0x24
+    float   gunYOfs;         // +0x28
+    float   gunZOfs;         // +0x2C
+};
+static_assert(sizeof(usercmd_s) == 0x30, "usercmd_s size mismatch");
+static_assert(offsetof(usercmd_s, serverTime) == 0x00, "usercmd_s::serverTime offset mismatch");
