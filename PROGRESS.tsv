@@ -275,9 +275,9 @@ bdSocket:bdQoSProbeListener.obj	bdSocket	bdQoSProbeListener.obj	engine	2	TODO
 bdNet:bdDispatchInterceptor.obj	bdNet	bdDispatchInterceptor.obj	engine	2	TODO	
 CallFunctor.o		CallFunctor.o	game	1	TODO	
 core_xboxr:AeHash.o	core_xboxr	AeHash.o	engine	1	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
-inplace_xboxr:InplaceTree.o	inplace_xboxr	InplaceTree.o	engine	1	TODO	
-inplace_xboxr:PtrFixupTable.o	inplace_xboxr	PtrFixupTable.o	engine	1	TODO	
-inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	TODO	
+inplace_xboxr:InplaceTree.o	inplace_xboxr	InplaceTree.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
+inplace_xboxr:PtrFixupTable.o	inplace_xboxr	PtrFixupTable.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
+inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
 zlib_xboxr:uncompr.o	zlib_xboxr	uncompr.o	engine	1	TODO	
 zlib_xboxr:inffast.o	zlib_xboxr	inffast.o	engine	1	TODO	
 zlib_xboxr:inftrees.o	zlib_xboxr	inftrees.o	engine	1	TODO	
