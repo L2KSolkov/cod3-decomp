@@ -24,7 +24,7 @@ phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	TODO
 nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	TODO	
 ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	TODO	
 mp_xbox.o		mp_xbox.o	game	61	TODO	
-nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	TODO	
+nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	TODO	
 nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	TODO	
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	TODO	
@@ -71,7 +71,7 @@ phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	TODO
 bdConnection:bdConnectionStatistics.obj	bdConnection	bdConnectionStatistics.obj	engine	16	TODO	
 mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	TODO	
-nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	TODO	
+nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	TODO	
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	TODO	
 render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	TODO	
@@ -88,14 +88,14 @@ bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	TODO
 render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	TODO	
 zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO	
 aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	TODO	
-nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	TODO	
+nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	TODO	
 bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	TODO	
 bdConnection:bdDataChunk.obj	bdConnection	bdDataChunk.obj	engine	12	TODO	
 mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Phase 2: controller.cpp (XInput wrapper)
 zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	TODO	
-nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	TODO	
+nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 jobqueue_xboxr:jobqueue_legacy.o	jobqueue_xboxr	jobqueue_legacy.o	engine	11	PORTED	Phase 2: jobqueue.cpp (batch job system)
 ngl_xboxr:ngl_dx_tex_create.o	ngl_xboxr	ngl_dx_tex_create.o	engine	11	TODO	
 ngl_xboxr:ngl_debugdraw.o	ngl_xboxr	ngl_debugdraw.o	engine	11	TODO	
@@ -114,8 +114,8 @@ bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	Phase 2: ported from De
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	TODO	
-nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	TODO	
-nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	TODO	
+nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	TODO	
 ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	TODO	
@@ -129,7 +129,7 @@ bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	TODO
 nextgen.o		nextgen.o	game	8	TODO	
 aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	8	TODO	
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	TODO	
-nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	TODO	
+nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	TODO	
 phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	TODO	
 bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
@@ -198,7 +198,7 @@ aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	TODO
 cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	TODO	
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	TODO	
-nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	TODO	
+nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	TODO	
 nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	TODO	
 nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	TODO	
@@ -220,7 +220,7 @@ render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	TODO
 aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	TODO	
 aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	TODO	
 aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	TODO	
-nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	TODO	
+nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	4	TODO	
 ngl_xboxr:ngl_dx_buf.o	ngl_xboxr	ngl_dx_buf.o	engine	4	TODO	
 ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	TODO	
@@ -292,7 +292,7 @@ aeps_xboxr:apsRectangleNode.o	aeps_xboxr	apsRectangleNode.o	engine	1	TODO
 aeps_xboxr:apsColorUVANode.o	aeps_xboxr	apsColorUVANode.o	engine	1	TODO	
 aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	TODO	
 nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	TODO	
-nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	TODO	
+nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 ngl_xboxr:ngl_xb_tex_load.o	ngl_xboxr	ngl_xb_tex_load.o	engine	1	TODO	
 ngl_xboxr:ngl_gpu_texture.o	ngl_xboxr	ngl_gpu_texture.o	engine	1	TODO	
