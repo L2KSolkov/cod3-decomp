@@ -52,7 +52,7 @@ aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	TODO
 ngl_xboxr:ngl_lighting.o	ngl_xboxr	ngl_lighting.o	engine	22	TODO	
 render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	TODO	
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	TODO	
-nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	TODO	
+nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	PORTED	Phase 2: nvl.cpp (video codec stubs)
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
 ngl_xboxr:ngl_font.o	ngl_xboxr	ngl_font.o	engine	19	TODO	
 bdCore:bdCommonAddr-xbox.obj	bdCore	bdCommonAddr-xbox.obj	engine	19	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
@@ -72,7 +72,7 @@ bdConnection:bdConnectionStatistics.obj	bdConnection	bdConnectionStatistics.obj	
 mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	TODO	
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (file streaming stubs)
-nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	TODO	
+nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	PORTED	Phase 2: nvl.cpp (video codec stubs)
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	TODO	
 render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	TODO	
 controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	PORTED	Phase 2: controller.cpp (XInput wrapper)
@@ -174,7 +174,7 @@ render_xboxr:cdWorldVertexLitShader.o	render_xboxr	cdWorldVertexLitShader.o	engi
 render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	TODO	
 aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	TODO	
 aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	TODO	
-nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	TODO	
+nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	PORTED	Phase 2: nvl.cpp (video codec stubs)
 bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdLogChannel.obj	bdCore	bdLogChannel.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdReliableReceiveWindow.obj	bdConnection	bdReliableReceiveWindow.obj	engine	6	TODO	
@@ -246,7 +246,7 @@ aeps_xboxr:apsColorBillboardRenderer.o	aeps_xboxr	apsColorBillboardRenderer.o	en
 aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	TODO	
 aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	TODO	
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	TODO	
-nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	TODO	
+nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	Phase 2: nvl.cpp (video codec stubs)
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	TODO	
 bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
@@ -264,7 +264,7 @@ aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	TODO
 cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	TODO	
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	TODO	
-nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	TODO	
+nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	PORTED	Phase 2: nvl.cpp (video codec stubs)
 ngl_xboxr:ngl_dx_quad.o	ngl_xboxr	ngl_dx_quad.o	engine	2	TODO	
 ngl_xboxr:ngl_gpu_debug.o	ngl_xboxr	ngl_gpu_debug.o	engine	2	TODO	
 nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	TODO	

@@ -49,6 +49,7 @@ add_library(cod3_filesystem STATIC
     src/filesystem/stubs.cpp
 )
 add_library(cod3_nvl STATIC
+    src/nvl/nvl.cpp
     src/nvl/stubs.cpp
 )
 add_library(cod3_aeps STATIC
