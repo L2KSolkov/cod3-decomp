@@ -62,7 +62,7 @@ ngl_xboxr:ngl_dx_filters.o	ngl_xboxr	ngl_dx_filters.o	engine	18	TODO
 phys_xboxr:phys_constraint_solver_multithreaded.o	phys_xboxr	phys_constraint_solver_multithreaded.o	engine	18	TODO	
 bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	TODO	
 bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	TODO	
-core_xboxr:PoolAllocator.o	core_xboxr	PoolAllocator.o	engine	17	TODO	
+core_xboxr:PoolAllocator.o	core_xboxr	PoolAllocator.o	engine	17	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 ngl_xboxr:ngl_quad.o	ngl_xboxr	ngl_quad.o	engine	17	TODO	
 ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	TODO	
 ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	TODO	
@@ -111,7 +111,7 @@ bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	TODO
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO	
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
 bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	TODO	
-core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	TODO	
+core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	TODO	
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	TODO	
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	TODO	
@@ -137,7 +137,7 @@ bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engi
 bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	TODO	
 bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	TODO	
 bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engine	8	TODO	
-core_xboxr:AeAssert.o	core_xboxr	AeAssert.o	engine	7	TODO	
+core_xboxr:AeAssert.o	core_xboxr	AeAssert.o	engine	7	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 render_xboxr:cdGlowShader.o	render_xboxr	cdGlowShader.o	engine	7	TODO	
 render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	TODO	
 render_xboxr:cdDebugShader.o	render_xboxr	cdDebugShader.o	engine	7	TODO	
@@ -255,7 +255,7 @@ bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	TODO
 bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	TODO	
 bdPeer:bdSessionHandler.obj	bdPeer	bdSessionHandler.obj	engine	3	TODO	
 bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	TODO	
-core_xboxr:ae_controller.o	core_xboxr	ae_controller.o	engine	2	TODO	
+core_xboxr:ae_controller.o	core_xboxr	ae_controller.o	engine	2	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 render_xboxr:cdDebugVertexDef.o	render_xboxr	cdDebugVertexDef.o	engine	2	TODO	
 render_xboxr:cdScratchVertexDef.o	render_xboxr	cdScratchVertexDef.o	engine	2	TODO	
 render_xboxr:cdDynamicDecalVertexDef.o	render_xboxr	cdDynamicDecalVertexDef.o	engine	2	TODO	
@@ -274,7 +274,7 @@ bdPeer:bdSessionInterceptor.obj	bdPeer	bdSessionInterceptor.obj	engine	2	TODO
 bdSocket:bdQoSProbeListener.obj	bdSocket	bdQoSProbeListener.obj	engine	2	TODO	
 bdNet:bdDispatchInterceptor.obj	bdNet	bdDispatchInterceptor.obj	engine	2	TODO	
 CallFunctor.o		CallFunctor.o	game	1	TODO	
-core_xboxr:AeHash.o	core_xboxr	AeHash.o	engine	1	TODO	
+core_xboxr:AeHash.o	core_xboxr	AeHash.o	engine	1	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 inplace_xboxr:InplaceTree.o	inplace_xboxr	InplaceTree.o	engine	1	TODO	
 inplace_xboxr:PtrFixupTable.o	inplace_xboxr	PtrFixupTable.o	engine	1	TODO	
 inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	TODO	

@@ -53,7 +53,11 @@ add_library(cod3_bd STATIC
     src/bd/stubs.cpp
 )
 add_library(cod3_core STATIC
-    src/core/stubs.cpp
+    src/core/PoolAllocator.cpp
+    src/core/ae_string_support.cpp
+    src/core/ae_assert.cpp
+    src/core/ae_hash.cpp
+    src/core/ae_controller.cpp
     src/core/memory/stubs.cpp
 )
 add_library(cod3_input STATIC
