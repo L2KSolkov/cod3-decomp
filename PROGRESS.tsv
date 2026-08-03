@@ -38,15 +38,15 @@ bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine
 peripherals_xboxr:MemoryUnit.o	peripherals_xboxr	MemoryUnit.o	engine	35	TODO	
 aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	TODO	
 phys_xboxr:rb_ragdoll_model.o	phys_xboxr	rb_ragdoll_model.o	engine	31	TODO	
-bdCore:bdString.obj	bdCore	bdString.obj	engine	28	TODO	
+bdCore:bdString.obj	bdCore	bdString.obj	engine	28	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 aeps_xboxr:apsSuppliedDomains.o	aeps_xboxr	apsSuppliedDomains.o	engine	26	TODO	
 ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	TODO	
-bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	TODO	
+bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	TODO	
 tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF loader)
 nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	TODO	
-bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	TODO	
+bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	TODO	
 aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	TODO	
 ngl_xboxr:ngl_lighting.o	ngl_xboxr	ngl_lighting.o	engine	22	TODO	
@@ -55,13 +55,13 @@ nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	TODO
 nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	TODO	
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	TODO	
 ngl_xboxr:ngl_font.o	ngl_xboxr	ngl_font.o	engine	19	TODO	
-bdCore:bdCommonAddr-xbox.obj	bdCore	bdCommonAddr-xbox.obj	engine	19	TODO	
+bdCore:bdCommonAddr-xbox.obj	bdCore	bdCommonAddr-xbox.obj	engine	19	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 zlib_xboxr:unzip.o	zlib_xboxr	unzip.o	engine	18	TODO	
 ngl_xboxr:ngl_internal.o	ngl_xboxr	ngl_internal.o	engine	18	TODO	
 ngl_xboxr:ngl_dx_filters.o	ngl_xboxr	ngl_dx_filters.o	engine	18	TODO	
 phys_xboxr:phys_constraint_solver_multithreaded.o	phys_xboxr	phys_constraint_solver_multithreaded.o	engine	18	TODO	
-bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	TODO	
-bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	TODO	
+bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 core_xboxr:PoolAllocator.o	core_xboxr	PoolAllocator.o	engine	17	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 ngl_xboxr:ngl_quad.o	ngl_xboxr	ngl_quad.o	engine	17	TODO	
 ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	TODO	
@@ -80,7 +80,7 @@ jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jo
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	TODO	
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	TODO	
 bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	TODO	
-bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	TODO	
+bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	TODO	
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	TODO	
 bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	TODO	
@@ -110,7 +110,7 @@ bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	TODO
 bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	TODO	
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO	
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
-bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	TODO	
+bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	TODO	
@@ -121,7 +121,7 @@ ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	TODO
 ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	TODO	
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	TODO	
 nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	TODO	
-bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	TODO	
+bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	TODO	
 bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	TODO	
 bdConnection:bdPacket.obj	bdConnection	bdPacket.obj	engine	9	TODO	
@@ -132,7 +132,7 @@ nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	TODO
 nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	TODO	
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	TODO	
 phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	TODO	
-bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	TODO	
+bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	TODO	
 bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	TODO	
 bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	TODO	
@@ -154,8 +154,8 @@ ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	TODO
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	TODO	
 nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	TODO	
 phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	TODO	
-bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	TODO	
-bdCore:bdStopwatch.obj	bdCore	bdStopwatch.obj	engine	7	TODO	
+bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdStopwatch.obj	bdCore	bdStopwatch.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdChunk.obj	bdConnection	bdChunk.obj	engine	7	TODO	
 bdSocket:bdAddressMap-xbox.obj	bdSocket	bdAddressMap-xbox.obj	engine	7	TODO	
 mem_mp_xboxr:ae_heap.o	mem_mp_xboxr	ae_heap.o	engine	6	TODO	
@@ -175,8 +175,8 @@ render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	TOD
 aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	TODO	
 aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	TODO	
 nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	TODO	
-bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	TODO	
-bdCore:bdLogChannel.obj	bdCore	bdLogChannel.obj	engine	6	TODO	
+bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdLogChannel.obj	bdCore	bdLogChannel.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdReliableReceiveWindow.obj	bdConnection	bdReliableReceiveWindow.obj	engine	6	TODO	
 bdConnection:bdCookieAckChunk.obj	bdConnection	bdCookieAckChunk.obj	engine	6	TODO	
 bdConnection:bdHeartbeatChunk.obj	bdConnection	bdHeartbeatChunk.obj	engine	6	TODO	
@@ -203,7 +203,7 @@ ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	TODO
 nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	TODO	
 nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	TODO	
 phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	TODO	
-bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	TODO	
+bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	TODO	
 bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	TODO	
 bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	TODO	
@@ -225,13 +225,13 @@ ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	4	TODO
 ngl_xboxr:ngl_dx_buf.o	ngl_xboxr	ngl_dx_buf.o	engine	4	TODO	
 ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	TODO	
 phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	TODO	
-bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	TODO	
-bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	TODO	
+bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdReceivedMessage.obj	bdConnection	bdReceivedMessage.obj	engine	4	TODO	
 bdNet:bdDispatcher.obj	bdNet	bdDispatcher.obj	engine	4	TODO	
 bdPlatform:bdPlatformMutex-xbox.obj	bdPlatform	bdPlatformMutex-xbox.obj	engine	4	TODO	
-bdCore:bdShortTimer.obj	bdCore	bdShortTimer.obj	engine	4	TODO	
-bdCore:bdHMacSHA1.obj	bdCore	bdHMacSHA1.obj	engine	4	TODO	
+bdCore:bdShortTimer.obj	bdCore	bdShortTimer.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdHMacSHA1.obj	bdCore	bdHMacSHA1.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 zlib_xboxr:compress.o	zlib_xboxr	compress.o	engine	3	TODO	
 zlib_xboxr:crc32.o	zlib_xboxr	crc32.o	engine	3	TODO	
 aeps_xboxr:apsVFC.o	aeps_xboxr	apsVFC.o	engine	3	TODO	
@@ -248,13 +248,13 @@ aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	TODO
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	TODO	
 nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	TODO	
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	TODO	
-bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	TODO	
-bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	TODO	
-bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	TODO	
-bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	TODO	
+bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	TODO	
 bdPeer:bdSessionHandler.obj	bdPeer	bdSessionHandler.obj	engine	3	TODO	
-bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	TODO	
+bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 core_xboxr:ae_controller.o	core_xboxr	ae_controller.o	engine	2	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 render_xboxr:cdDebugVertexDef.o	render_xboxr	cdDebugVertexDef.o	engine	2	TODO	
 render_xboxr:cdScratchVertexDef.o	render_xboxr	cdScratchVertexDef.o	engine	2	TODO	
@@ -301,6 +301,6 @@ ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	TODO
 ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	TODO	
 ngl_xboxr:ngl_xb_internal.o	ngl_xboxr	ngl_xb_internal.o	engine	1	TODO	
 nal_xboxr:nal_initlist.o	nal_xboxr	nal_initlist.o	engine	1	TODO	
-bdCore:bdReferencable.obj	bdCore	bdReferencable.obj	engine	1	TODO	
-bdCore:bdHMac.obj	bdCore	bdHMac.obj	engine	1	TODO	
+bdCore:bdReferencable.obj	bdCore	bdReferencable.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdHMac.obj	bdCore	bdHMac.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdPlatform:bdPlatformTrulyRandom-xbox.obj	bdPlatform	bdPlatformTrulyRandom-xbox.obj	engine	1	TODO	

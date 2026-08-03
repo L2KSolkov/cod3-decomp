@@ -52,6 +52,10 @@ add_library(cod3_aeps STATIC
     src/aeps/stubs.cpp
 )
 add_library(cod3_bd STATIC
+    src/bd/bdReference/bdReferencable.h
+    src/bd/bdUtilities/bdBitOperations.h
+    src/bd/bdMemory/bdAlignedOffsetMemory.cpp
+    src/bd/bdTiming/bdShortTimer.h
     src/bd/stubs.cpp
 )
 add_library(cod3_core STATIC
