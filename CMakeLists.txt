@@ -16,6 +16,7 @@ endif()
 
 # Include directories
 include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/bd)
 include_directories(${CMAKE_SOURCE_DIR}/platform/win32)
 include_directories(${CMAKE_SOURCE_DIR}/platform/xbox_shim)
 
