@@ -45,6 +45,8 @@ struct pulse_sum_cache {
 };
 static_assert(sizeof(pulse_sum_cache) == 8, "pulse_sum_cache size mismatch");
 
+class pulse_sum_constraint_solver;  // defined in pulse_sum.h
+
 // ============================================================================
 // pulse_sum_node — solver node attached to a rigid_body (64 bytes)
 // Size: 0x40 (64 bytes) — verified against IDA
@@ -88,6 +90,10 @@ struct pulse_sum_normal {
     struct pulse_sum_node*   m_b2;                 // +0x8C
     pulse_sum_cache*         m_pulse_sum_cache;    // +0x90
     uint8_t      _pad94[12];                       // +0x94
+
+    float get_pos() const { return m_pulse_sum; }
+    void  set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2, const math::Dir3* b2_r,
+              const math::Dir3* ud, pulse_sum_cache* ps_cache, const math::Dir3* b1_r_displace);
 };
 static_assert(sizeof(pulse_sum_normal) == 0xA0, "pulse_sum_normal size mismatch");
 static_assert(offsetof(pulse_sum_normal, m_ud) == 0x10, "pulse_sum_normal::m_ud offset mismatch");
@@ -343,6 +349,8 @@ struct rigid_body_constraint_custom_orientation : rigid_body_constraint {
     uint8_t         _pad2E[2];             // +0x2E
     float           m_torque_resistance;   // +0x30
     float           m_upright_strength;    // +0x34
+
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_custom_orientation) == 0x38, "rigid_body_constraint_custom_orientation size mismatch");
 static_assert(offsetof(rigid_body_constraint_custom_orientation, m_active) == 0x2C, "custom_orientation::m_active offset mismatch");
@@ -362,6 +370,8 @@ struct rigid_body_constraint_custom_path : rigid_body_constraint {
     user_rigid_body* m_urb;            // +0x60
     pulse_sum_cache m_list_psc[3];     // +0x64
     uint8_t         _pad7C[4];         // +0x7C
+
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_custom_path) == 0x80, "rigid_body_constraint_custom_path size mismatch");
 

@@ -29,6 +29,7 @@ add_library(cod3_broc STATIC
     src/broc/stubs.cpp
 )
 add_library(cod3_physics STATIC
+    src/physics/rbc_def_custom.cpp
     src/physics/stubs.cpp
 )
 add_library(cod3_ngl STATIC
