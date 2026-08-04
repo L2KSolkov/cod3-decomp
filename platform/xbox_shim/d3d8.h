@@ -28,6 +28,44 @@ struct D3DCubeTexture : D3DBaseTexture {};
 struct D3DVolumeTexture : D3DBaseTexture {};
 struct D3DSurface {};
 
+// ---- Vertex/index buffer objects (12 bytes each, verified against IDA) ----
+struct D3DVertexBuffer {
+    unsigned int Common;  // +0x00
+    unsigned int Data;    // +0x04
+    unsigned int Lock;    // +0x08
+};
+static_assert(sizeof(D3DVertexBuffer) == 0x0C, "D3DVertexBuffer size mismatch");
+
+struct D3DIndexBuffer {
+    unsigned int Common;  // +0x00
+    unsigned int Data;    // +0x04
+    unsigned int Lock;    // +0x08
+};
+static_assert(sizeof(D3DIndexBuffer) == 0x0C, "D3DIndexBuffer size mismatch");
+
+// ---- Primitive type selector (D3DPT_*) -----------------------------------
+enum _D3DPRIMITIVETYPE {
+    D3DPT_POINTLIST = 1,
+    D3DPT_LINELIST = 2,
+    D3DPT_LINELOOP = 3,
+    D3DPT_LINESTRIP = 4,
+    D3DPT_TRIANGLELIST = 5,
+    D3DPT_TRIANGLESTRIP = 6,
+    D3DPT_TRIANGLEFAN = 7,
+    D3DPT_QUADLIST = 8,
+    D3DPT_QUADSTRIP = 9,
+    D3DPT_POLYGON = 10,
+    D3DPT_MAX = 11,
+};
+
+// ---- Vertex shader stream input (12 bytes, verified against IDA) ---------
+struct _D3DSTREAM_INPUT {
+    D3DVertexBuffer* VertexBuffer;  // +0x00
+    unsigned int     Stride;        // +0x04
+    unsigned int     Offset;        // +0x08
+};
+static_assert(sizeof(_D3DSTREAM_INPUT) == 0x0C, "_D3DSTREAM_INPUT size mismatch");
+
 // ---- Cube-map face selector (D3DCUBEMAP_FACES) ---------------------------
 enum _D3DCUBEMAP_FACES {
     D3DCUBEMAP_FACE_POSITIVE_X = 0,
@@ -102,6 +140,14 @@ void*          __stdcall D3DDevice_CreateTexture2(unsigned int Width, unsigned i
                                                   unsigned int Type);
 D3DSurface*  __stdcall D3DDevice_CreateSurface2(unsigned int Width, unsigned int Height,
                                                 unsigned int Usage, unsigned int Format);
+D3DVertexBuffer* __stdcall D3DDevice_CreateVertexBuffer2(unsigned int uBytes);
+D3DIndexBuffer*  __stdcall D3DDevice_CreateIndexBuffer2(unsigned int Length);
+void*        __stdcall D3DVertexBuffer_Lock2(D3DVertexBuffer* pBuffer, unsigned int Flags);
+void         __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE PrimitiveType,
+                                                     unsigned int VertexCount,
+                                                     const unsigned short* pIndexData);
+void         __stdcall D3DDevice_SetVertexShaderInputDirect(void* pVAF, unsigned int StreamCount,
+                                                            const _D3DSTREAM_INPUT* pStreamInputs);
 }
 
 // ---- XGRPH entry points (xgraphicsd) --------------------------------------

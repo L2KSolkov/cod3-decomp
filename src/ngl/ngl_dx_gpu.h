@@ -19,6 +19,57 @@ extern bool  _tlAssert(const char* file, int line, const char* expr, const char*
 extern void  tlFatal(const char* fmt, ...);
 
 // ============================================================================
+// gpuVertexFormat — GPU vertex format descriptor (12 bytes, verified against IDA)
+// ============================================================================
+struct gpuVertexFormat {
+    int                          VertexSize;         // +0x00
+    const _D3DVERTEXSHADERINPUT* Elements;           // +0x04
+    _D3DVERTEXATTRIBUTEFORMAT*   VertexDeclaration;  // +0x08
+};
+static_assert(sizeof(gpuVertexFormat) == 0x0C, "gpuVertexFormat size mismatch");
+
+// ============================================================================
+// gpuCreateVertexFormat — build a gpuVertexFormat from a D3D8 vertex element
+// list (terminated by Format == D3DVSDT_END). Inline COMDAT in cdGlowShader.o.
+// ea: 0x7C2670
+// ============================================================================
+inline gpuVertexFormat* gpuCreateVertexFormat(gpuVertexFormat* result, unsigned int size,
+                                              const _D3DVERTEXSHADERINPUT* elements) {
+    _D3DVERTEXATTRIBUTEFORMAT* decl = (_D3DVERTEXATTRIBUTEFORMAT*)tlMemAlloc(0x100, 8, 0);
+    const _D3DVERTEXSHADERINPUT* src = elements;
+
+    unsigned int n = 0;
+    if (elements->Format != 2) {
+        do {
+            if (n >= 0x10 && _tlAssert("c:\\cod\\code\\tl\\ngl\\include\\dx/ngl_dx_gpu.h", 211,
+                                       "n < 16", "Too many vertex elements."))
+                __debugbreak();
+            decl->Input[n].StreamIndex = src->StreamIndex;
+            decl->Input[n].Offset = src->Offset;
+            decl->Input[n].Format = src->Format;
+            decl->Input[n].TessType = src->TessType;
+            ++src;
+            ++n;
+        } while (src->Format != 2);
+    }
+
+    if (n < 0x10) {
+        for (unsigned int i = n; i < 0x10; ++i) {
+            decl->Input[i].StreamIndex = 0;
+            decl->Input[i].Offset = 0;
+            decl->Input[i].Format = 2;
+            decl->Input[i].TessType = 0;
+            decl->Input[i].TessSource = 0;
+        }
+    }
+
+    result->VertexSize = size;
+    result->Elements = elements;
+    result->VertexDeclaration = decl;
+    return result;
+}
+
+// ============================================================================
 // gpuTextureFormat — Xbox GPU texture format enum (values from IDA)
 // ============================================================================
 enum gpuTextureFormat {
@@ -258,6 +309,76 @@ inline D3DSurface* gpuCreateDepthStencilSurface(unsigned int w, unsigned int h,
 // ============================================================================
 inline int XGIsTiledFormat(_D3DFORMAT Format) {
     return XGIsSwizzledFormat(Format);
+}
+
+// ============================================================================
+// gpuHash* — D3D resource caching hashes (data, owned by ngl_xboxr:ngl_gpu.o)
+// ============================================================================
+extern unsigned int gpuHashVertexBuffer;
+extern unsigned int gpuHashVertexFormat;
+extern unsigned int gpuHashIndexBuffer;
+
+// ============================================================================
+// gpuSetVertexBuffer — bind a vertex buffer + format (inline COMDAT).
+// ea: 0x7C9890
+// ============================================================================
+inline void gpuSetVertexBuffer(D3DVertexBuffer* vtx, gpuVertexFormat* vertexformat,
+                               unsigned int vtxoffset, unsigned int streamidx) {
+    unsigned int v4 = vtxoffset + (streamidx << 16) + vtx->Data;
+    _D3DVERTEXATTRIBUTEFORMAT* VertexDeclaration = vertexformat->VertexDeclaration;
+    if (v4 != gpuHashVertexBuffer || VertexDeclaration != (_D3DVERTEXATTRIBUTEFORMAT*)gpuHashVertexFormat) {
+        _D3DSTREAM_INPUT stream;
+        stream.VertexBuffer = vtx;
+        stream.Offset = vtxoffset;
+        stream.Stride = vertexformat->VertexSize;
+        D3DDevice_SetVertexShaderInputDirect(VertexDeclaration, 1, &stream);
+        gpuHashVertexBuffer = v4;
+        gpuHashVertexFormat = (unsigned int)VertexDeclaration;
+    }
+}
+
+// ============================================================================
+// gpuIndexType — index buffer element type enum (values from IDA)
+// ============================================================================
+enum gpuIndexType {
+    GPU_INDEX_16 = 101,
+    GPU_INDEX_32 = 101,
+};
+
+// ============================================================================
+// gpu buffer helpers (inline COMDATs, apsVertexBuffer.o)
+// ============================================================================
+inline D3DIndexBuffer* gpuCreateIndexBuffer(unsigned int nindices, gpuIndexType indextype) {
+    return D3DDevice_CreateIndexBuffer2(nindices * (2 * (indextype == GPU_INDEX_16) + 2));
+}
+
+inline void* gpuMapIndexBuffer(D3DIndexBuffer* buf, unsigned int offset) {
+    return (void*)(offset + buf->Data);
+}
+
+inline void gpuUnmapIndexBuffer(D3DIndexBuffer* buf) {
+}
+
+// ============================================================================
+// gpuPrimType — primitive type selector (values from IDA)
+// ============================================================================
+enum gpuPrimType {
+    GPU_PRIM_POINTLIST = 1,
+    GPU_PRIM_LINELIST = 2,
+    GPU_PRIM_LINESTRIP = 4,
+    GPU_PRIM_TRIANGLELIST = 5,
+    GPU_PRIM_TRIANGLESTRIP = 6,
+    GPU_PRIM_TRIANGLEFAN = 7,
+    GPU_PRIM_QUADLIST = 8,
+};
+
+inline void gpuDrawIndexedPrimitive(gpuPrimType prim, unsigned int nindices, unsigned int idxoffset,
+                                    D3DIndexBuffer* idx, gpuIndexType indexformat,
+                                    unsigned int nverts, unsigned int vtxoffset,
+                                    D3DVertexBuffer* vtx, gpuVertexFormat* vertexformat) {
+    gpuSetVertexBuffer(vtx, vertexformat, vtxoffset, 0);
+    D3DDevice_DrawIndexedVertices((_D3DPRIMITIVETYPE)prim, nindices,
+                                  (const unsigned short*)(idxoffset + idx->Data));
 }
 
 #endif // COD3_NGL_NGL_DX_GPU_H

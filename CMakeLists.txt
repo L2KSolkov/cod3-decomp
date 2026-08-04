@@ -70,6 +70,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsError.cpp
     src/aeps/apsRenderer.cpp
     src/aeps/apsDebug.cpp
+    src/aeps/apsVertexBuffer.cpp
     src/aeps/stubs.cpp
 )
 add_library(cod3_bd STATIC
