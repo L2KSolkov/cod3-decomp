@@ -35,6 +35,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_dx_draw.cpp
     src/ngl/ngl_dx_fsaa.cpp
     src/ngl/ngl_xb_tex_load.cpp
+    src/ngl/ngl_xb_internal.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC

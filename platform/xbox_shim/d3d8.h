@@ -42,6 +42,23 @@ enum _D3DRENDERSTATETYPE {
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
 };
 
+// ---- Vertex shader input element (16 bytes, verified against IDA) --------
+struct _D3DVERTEXSHADERINPUT {
+    unsigned int StreamIndex;  // +0x00
+    unsigned int Offset;       // +0x04
+    unsigned int Format;       // +0x08
+    unsigned char TessType;    // +0x0C
+    unsigned char TessSource;  // +0x0D
+    // +0x0E..+0x0F padding
+};
+static_assert(sizeof(_D3DVERTEXSHADERINPUT) == 0x10, "_D3DVERTEXSHADERINPUT size mismatch");
+
+// ---- Vertex attribute format table (256 bytes, verified against IDA) -----
+struct _D3DVERTEXATTRIBUTEFORMAT {
+    _D3DVERTEXSHADERINPUT Input[16];  // +0x00
+};
+static_assert(sizeof(_D3DVERTEXATTRIBUTEFORMAT) == 0x100, "_D3DVERTEXATTRIBUTEFORMAT size mismatch");
+
 // ---- Present parameters (Xbox D3D8, 68 bytes, verified against IDA) ------
 struct _D3DPRESENT_PARAMETERS_ {
     unsigned int BackBufferWidth;                 // +0x00

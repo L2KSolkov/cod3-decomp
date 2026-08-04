@@ -299,7 +299,7 @@ ngl_xboxr:ngl_gpu_texture.o	ngl_xboxr	ngl_gpu_texture.o	engine	1	TODO
 ngl_xboxr:ngl_dx_fsaa.o	ngl_xboxr	ngl_dx_fsaa.o	engine	1	PORTED	Phase 6: ngl_dx_fsaa.cpp/.h (FSAA mode select + nglFSAAScaleX/Y/nglFSAA/nglFSAAParams data)
 ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	PORTED	Phase 6: ngl_dx_draw.cpp (render-target switch + nglCurSurface/nglCurDepthBuffer data)
 ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	TODO	
-ngl_xboxr:ngl_xb_internal.o	ngl_xboxr	ngl_xb_internal.o	engine	1	TODO	
+ngl_xboxr:ngl_xb_internal.o	ngl_xboxr	ngl_xb_internal.o	engine	1	PORTED	ngl_xb_internal.cpp/.h (CreateVertexDeclaration + nglXbPushQuad data)
 nal_xboxr:nal_initlist.o	nal_xboxr	nal_initlist.o	engine	1	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdReferencable.obj	bdCore	bdReferencable.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdHMac.obj	bdCore	bdHMac.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
