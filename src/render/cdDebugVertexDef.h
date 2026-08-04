@@ -14,6 +14,11 @@
 #include "d3d8.h"
 #include "ngl/ngl_dx_gpu.h"
 
+// Forward declarations for tlInitList friends (defined in aeps headers)
+class apsSimpleMeshShader;
+class apsSimpleMeshRenderer;
+class nglShader;
+
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
 // class keyword => 'V' mangling; head is private static (mangled @@0PAV1@A),
@@ -30,6 +35,9 @@ private:
     static tlInitList* head;  // ?head@tlInitList@@0PAV1@A (tl_initlist.o)
 
     friend class tlInitListFunction;
+    friend class apsSimpleMeshShader;
+    friend class apsSimpleMeshRenderer;
+    friend class nglShader;
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 

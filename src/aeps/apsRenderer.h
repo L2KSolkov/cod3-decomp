@@ -14,15 +14,11 @@
 #include "core/math_types.h"
 
 #include "apsPFD.h"
+#include "apsRenderNode.h"
 
 struct nglScene;
 struct nglLightContext;
 namespace apsLight { struct LightInfo; }
-
-// 16 bytes: center (xyz) + radius (w).
-struct apsSphere {
-    math::Vector4 mSphere;
-};
 
 struct apsRendererRenderInfo {
     unsigned char*             particles;          // +0x00
@@ -43,23 +39,6 @@ struct apsRendererRenderInfo {
         lightContext = 0;
         lightInfo = 0;
     }
-};
-
-// nglRenderNode — base render-list node (12 bytes, from IDA local type):
-//   __vftable @0x00, Next @0x04, SortDist/SortHash union @0x08
-struct nglRenderNode {
-    void* __vftable;
-    nglRenderNode* Next;
-    union {
-        float SortDist;
-        int   SortHash;
-    };
-};
-
-// apsRenderNode — aps render node; AddNode only touches the nglRenderNode base.
-// Full class (176 bytes) lives with the renderers; extended when ported.
-// Declared `class` to match the original mangling (PAVapsRenderNode).
-class apsRenderNode : public nglRenderNode {
 };
 
 struct apsFixupParams {

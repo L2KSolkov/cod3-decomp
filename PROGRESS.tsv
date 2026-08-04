@@ -217,7 +217,7 @@ render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	TODO
 render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	TODO	
 render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	TODO	
 render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	TODO	
-aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	TODO	
+aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs)
 aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVertexBuffer.h/.cpp (double-buffered sprite vertex/index pool + 12 data globals)
 aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	TODO	
 nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (file streaming stubs)
