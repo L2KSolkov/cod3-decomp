@@ -23,8 +23,8 @@ struct apkFileSection {
 };
 
 // Forward
-struct apkFile;
-struct apkFileEntry;
+class apkFile;
+class apkFileEntry;
 
 // ============================================================================
 // apkFileTypeEntry — registered file type within the APK
@@ -41,7 +41,8 @@ struct apkFileTypeEntry {
 // ============================================================================
 // apkFileEntry — individual file entry (variable size)
 // ============================================================================
-struct apkFileEntry {
+class apkFileEntry {
+public:
     const char* Name;    // +0x00 — fixed-up name
     uint8_t     Sections[1]; // variable — per-section byte offsets (NSections bytes)
 
@@ -52,7 +53,8 @@ struct apkFileEntry {
 // ============================================================================
 // apkFile — loaded APK file object (in-place loaded)
 // ============================================================================
-struct apkFile {
+class apkFile {
+public:
     uint32_t        Magic;      // +0x00 — "APKF"
     uint32_t        Version;    // +0x04 — 260
     uint32_t        Flags;      // +0x08 — bit 0=in-place, bit 1=owned

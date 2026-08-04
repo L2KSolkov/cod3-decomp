@@ -13,12 +13,19 @@
 #ifdef __cplusplus
 
 // ---- Opaque D3D8 objects ------------------------------------------------
-// D3DBaseTexture is the common base; the engine stores these in nglTexture.
-struct D3DBaseTexture {};
+// D3DResource is the common base (12 bytes, verified against IDA); the engine
+// stores D3D8 textures in nglTexture and casts them to D3DResource*.
+struct D3DResource {
+    unsigned int Common;  // +0x00
+    unsigned int Data;    // +0x04
+    unsigned int Lock;    // +0x08
+};
+static_assert(sizeof(D3DResource) == 0x0C, "D3DResource size mismatch");
+
+struct D3DBaseTexture : D3DResource {};
 struct D3DTexture : D3DBaseTexture {};
 struct D3DCubeTexture : D3DBaseTexture {};
 struct D3DSurface {};
-struct D3DResource {};
 
 // ---- Cube-map face selector (D3DCUBEMAP_FACES) ---------------------------
 enum _D3DCUBEMAP_FACES {
@@ -65,6 +72,7 @@ D3DSurface*  __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* pTexture, uns
 unsigned int __stdcall D3DResource_Release(D3DResource* pResource);
 int          __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int Value);
+void         __stdcall D3DResource_Register(D3DResource* pResource, void* pBase);
 }
 
 #endif // __cplusplus
