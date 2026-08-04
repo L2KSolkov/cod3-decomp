@@ -75,6 +75,12 @@ add_library(cod3_aeps STATIC
     src/aeps/apsShrimpRenderer.cpp
     src/aeps/apsBillboardRenderer.cpp
     src/aeps/apsColorBillboardRenderer.cpp
+    src/aeps/apsUVARenderer.cpp
+    src/aeps/apsRectangleRenderer.cpp
+    src/aeps/apsColorRectangleRenderer.cpp
+    src/aeps/apsUVARectangleRenderer.cpp
+    src/aeps/apsColorUVARenderer.cpp
+    src/aeps/apsColorUVARectangleRenderer.cpp
     src/aeps/stubs.cpp
 )
 add_library(cod3_bd STATIC
