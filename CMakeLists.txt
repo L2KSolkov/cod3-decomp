@@ -72,6 +72,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsDebug.cpp
     src/aeps/apsVertexBuffer.cpp
     src/aeps/apsSimpleMeshRenderer.cpp
+    src/aeps/apsShrimpRenderer.cpp
     src/aeps/stubs.cpp
 )
 add_library(cod3_bd STATIC
