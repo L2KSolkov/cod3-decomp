@@ -90,7 +90,8 @@ static_assert(sizeof(bdArray<char>) == 0x0C, "bdArray size mismatch");
 // bdByteBuffer — byte buffer (24 bytes)
 // Size: 0x18 (24 bytes) — verified against IDA
 // ============================================================================
-struct bdByteBuffer : bdReferencable {
+class bdByteBuffer : public bdReferencable {
+public:
     unsigned int m_size;      // +0x08
     uint8_t*     m_data;      // +0x0C
     uint8_t*     m_readPtr;   // +0x10
@@ -104,7 +105,8 @@ static_assert(offsetof(bdByteBuffer, m_data) == 0x0C, "bdByteBuffer::m_data offs
 // bdBitBuffer — bit-level serialization buffer (36 bytes)
 // Size: 0x24 (36 bytes) — verified against IDA
 // ============================================================================
-struct bdBitBuffer : bdReferencable {
+class bdBitBuffer : public bdReferencable {
+public:
     bdFastArray<uint8_t> m_data;           // +0x08
     unsigned int  m_writePosition;         // +0x14
     unsigned int  m_maxWritePosition;      // +0x18
@@ -122,7 +124,8 @@ static_assert(offsetof(bdBitBuffer, m_readPosition) == 0x1C, "bdBitBuffer::m_rea
 // bdMessage — network message (24 bytes)
 // Size: 0x18 (24 bytes) — verified against IDA
 // ============================================================================
-struct bdMessage : bdReferencable {
+class bdMessage : public bdReferencable {
+public:
     uint8_t        m_type;                // +0x08
     uint8_t        _pad09[3];             // +0x09
     bdReference<bdBitBuffer> m_payload;   // +0x0C
@@ -157,7 +160,8 @@ typedef uint32_t bdNATType;
 // bdCommonAddr — common network address (64 bytes)
 // Size: 0x40 (64 bytes) — verified against IDA
 // ============================================================================
-struct bdCommonAddr : bdReferencable {
+class bdCommonAddr : public bdReferencable {
+public:
     XNADDR     m_addr;      // +0x08 (36 bytes)
     uint16_t   m_port;      // +0x2C
     uint32_t   m_titleId;   // +0x30
@@ -176,7 +180,8 @@ static_assert(offsetof(bdCommonAddr, m_natType) == 0x3C, "bdCommonAddr::m_natTyp
 // bdAddrHandle — address handle (16 bytes)
 // Size: 0x10 (16 bytes) — verified against IDA
 // ============================================================================
-struct bdAddrHandle : bdReferencable {
+class bdAddrHandle : public bdReferencable {
+public:
     bdInAddr   m_addr;  // +0x08 (4 bytes)
     uint16_t   m_port;  // +0x0C
     uint8_t    _pad0E[2];  // +0x0E
@@ -221,7 +226,8 @@ static_assert(offsetof(bdConnectionStatistics, m_avgRTT) == 0x3C, "bdConnectionS
 // ============================================================================
 struct bdConnectionListener;
 
-struct bdConnection : bdReferencable {
+class bdConnection : public bdReferencable {
+public:
     enum Status {
         BD_NOT_CONNECTED = 0,
         BD_CONNECTING = 1,
