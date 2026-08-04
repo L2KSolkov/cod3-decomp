@@ -235,7 +235,7 @@ bdCore:bdHMacSHA1.obj	bdCore	bdHMacSHA1.obj	engine	4	PORTED	Phase 2: ported from
 zlib_xboxr:compress.o	zlib_xboxr	compress.o	engine	3	TODO	
 zlib_xboxr:crc32.o	zlib_xboxr	crc32.o	engine	3	TODO	
 aeps_xboxr:apsVFC.o	aeps_xboxr	apsVFC.o	engine	3	PORTED	Phase 3: apsVFC.cpp (frustum culling, all 3 funcs)
-aeps_xboxr:apsError.o	aeps_xboxr	apsError.o	engine	3	TODO	
+aeps_xboxr:apsError.o	aeps_xboxr	apsError.o	engine	3	PORTED	Phase 3: apsError.cpp/.h (error singleton + allocator, 3 funcs)
 aeps_xboxr:apsShrimpRenderer.o	aeps_xboxr	apsShrimpRenderer.o	engine	3	TODO	
 aeps_xboxr:apsColorRectangleRenderer.o	aeps_xboxr	apsColorRectangleRenderer.o	engine	3	TODO	
 aeps_xboxr:apsColorUVARectangleRenderer.o	aeps_xboxr	apsColorUVARectangleRenderer.o	engine	3	TODO	

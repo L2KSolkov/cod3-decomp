@@ -59,6 +59,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsSuppliedActions.cpp
     src/aeps/apsGroup.cpp
     src/aeps/apsVFC.cpp
+    src/aeps/apsError.cpp
     src/aeps/stubs.cpp
 )
 add_library(cod3_bd STATIC

@@ -13,33 +13,12 @@
 #include "apsGroup.h"
 #include "apsMath.h"
 #include "apsCommon.h"
+#include "apsError.h"
 
 #include <intrin.h>
 #include <string.h>
 
 #include <cfloat>
-
-extern bool _tlAssert(const char* file, int line, const char* expr, const char* msg);
-
-// ============================================================================
-// apsError (apsError.o) — minimal decls for the alloc-failure path
-// ============================================================================
-class apsError {
-public:
-    enum eErrorType {
-        ERROR_TYPE_INVALID = 0,
-        ERROR_TYPE_WARNING = 1,
-        ERROR_TYPE_FATAL = 2,
-    };
-    void AddError(eErrorType iType, const char* iFormat, ...);
-};
-
-template <class T>
-struct apsSingleton {
-    static T* sInstancePtr;
-};
-
-extern template class apsSingleton<apsError>;
 
 namespace apsMemory {
     void SetBlockAllocator();
@@ -156,11 +135,9 @@ unsigned int apsGroup::Init(int iMaxNumParticles, apsRenderer* iRenderer,
         return 1;
     }
 
-    if (apsSingleton<apsError>::sInstancePtr == 0 &&
-        _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 109,
-                  "sInstancePtr", "singleton not initialised"))
-        __debugbreak();
-    apsSingleton<apsError>::sInstancePtr->AddError(
+    // Inlined apsError::Instance() — asserts sInstancePtr (apsUtil.h:109),
+    // then calls AddError on the singleton.
+    apsError::Instance().AddError(
         apsError::ERROR_TYPE_WARNING, "apsGroup : alloc failed for %d bytes", bufferBytes);
     return 0;
 }
