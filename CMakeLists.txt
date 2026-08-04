@@ -39,6 +39,7 @@ add_library(cod3_ngl STATIC
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC
+    src/render/cdDebugVertexDef.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC

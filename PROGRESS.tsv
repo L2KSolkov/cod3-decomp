@@ -256,7 +256,7 @@ bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	TODO
 bdPeer:bdSessionHandler.obj	bdPeer	bdSessionHandler.obj	engine	3	TODO	
 bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 core_xboxr:ae_controller.o	core_xboxr	ae_controller.o	engine	2	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
-render_xboxr:cdDebugVertexDef.o	render_xboxr	cdDebugVertexDef.o	engine	2	TODO	
+render_xboxr:cdDebugVertexDef.o	render_xboxr	cdDebugVertexDef.o	engine	2	PORTED	cdDebugVertexDef.cpp/.h (debug vertex format + tlInitListFunction inline class)
 render_xboxr:cdScratchVertexDef.o	render_xboxr	cdScratchVertexDef.o	engine	2	TODO	
 render_xboxr:cdDynamicDecalVertexDef.o	render_xboxr	cdDynamicDecalVertexDef.o	engine	2	TODO	
 zlib_xboxr:adler32.o	zlib_xboxr	adler32.o	engine	2	TODO	
