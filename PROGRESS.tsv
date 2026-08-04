@@ -171,7 +171,7 @@ render_xboxr:cdSimplePrelitShader.o	render_xboxr	cdSimplePrelitShader.o	engine	6
 render_xboxr:cdSimpleShader.o	render_xboxr	cdSimpleShader.o	engine	6	PORTED	cdSimpleShader.h/.cpp (simple shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdWaterShader.o	render_xboxr	cdWaterShader.o	engine	6	TODO	
 render_xboxr:cdWorldVertexLitShader.o	render_xboxr	cdWorldVertexLitShader.o	engine	6	TODO	
-render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	TODO	
+render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	PORTED	cdBackgroundShader.h/.cpp (background shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	TODO	
 aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	PORTED	apsBillboardRenderer.h/.cpp (billboard renderer + node + DefaultRender template + apsLight::LightInfo)
 nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	PORTED	Phase 2: nvl.cpp (video codec stubs)

@@ -42,6 +42,8 @@ class cdSimpleSpecularShader;
 cdSimpleSpecularShader* InitCDSimpleSpecularShader();
 class cdSimpleUVAnimShader;
 cdSimpleUVAnimShader* InitCDSimpleUVAnimShader();
+class cdBackgroundShader;
+cdBackgroundShader* InitCDBackgroundShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -86,6 +88,8 @@ private:
     friend cdSimpleSpecularShader* InitCDSimpleSpecularShader();
     friend class cdSimpleUVAnimShader;
     friend cdSimpleUVAnimShader* InitCDSimpleUVAnimShader();
+    friend class cdBackgroundShader;
+    friend cdBackgroundShader* InitCDBackgroundShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 
