@@ -56,6 +56,8 @@ class cdPropellerShader;
 void InitCDPropellerShader();
 class cdGunSightShader;
 void InitCDGunSightShader();
+class cdGunSightSpecularShader;
+void InitCDGunSightSpecularShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -114,6 +116,8 @@ private:
     friend void InitCDPropellerShader();
     friend class cdGunSightShader;
     friend void InitCDGunSightShader();
+    friend class cdGunSightSpecularShader;
+    friend void InitCDGunSightSpecularShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 
