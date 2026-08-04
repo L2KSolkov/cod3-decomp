@@ -215,7 +215,7 @@ bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engi
 render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	TODO	
 render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	TODO	
 render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	PORTED	cdSimpleColorShader.h/.cpp (solid-color shader + node)
-render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	TODO	
+render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	PORTED	cdWorldColorShader.h/.cpp (world color shader + node + clip)
 render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	TODO	
 aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs)
 aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVertexBuffer.h/.cpp (double-buffered sprite vertex/index pool + 12 data globals)

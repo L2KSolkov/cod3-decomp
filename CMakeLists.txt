@@ -48,6 +48,7 @@ add_library(cod3_render STATIC
     src/render/cdScratchVertexDef.cpp
     src/render/cdDynamicDecalVertexDef.cpp
     src/render/cdSimpleColorShader.cpp
+    src/render/cdWorldColorShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
