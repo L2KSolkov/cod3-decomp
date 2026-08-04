@@ -74,7 +74,7 @@ void PtrFixupTable::Fixup(const void* basePtr) {
         AeAssert::gCurrentLine = 36;
         AeAssert::gCurrentExpr = "mSize < 10000000";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("sanity check"))
-            __builtin_debugtrap();
+            __debugbreak();
     }
 
     int nextBits = (int)*mList;
@@ -84,7 +84,7 @@ void PtrFixupTable::Fixup(const void* basePtr) {
         AeAssert::gCurrentLine = 48;
         AeAssert::gCurrentExpr = "nNextBits < 20";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("possible data corruption"))
-            __builtin_debugtrap();
+            __debugbreak();
     }
 
     for (uint32_t i = 1; i < mSize; ++i) {
@@ -95,7 +95,7 @@ void PtrFixupTable::Fixup(const void* basePtr) {
             AeAssert::gCurrentLine = 53;
             AeAssert::gCurrentExpr = "val < 0x5000000";
             if (!AeAssert::IsIgnored() && AeAssert::Assert("safety check"))
-                __builtin_debugtrap();
+                __debugbreak();
         }
         FixupPointerChain((uint32_t)nextBits, (uint32_t*)((uint8_t*)basePtr + val));
     }
@@ -115,7 +115,7 @@ char* GetNullBuffer(int size) {
         AeAssert::gCurrentLine = 14;
         AeAssert::gCurrentExpr = nullptr;
         if (AeAssert::Error("You need to increase the MIN_NULL_BUFFER_SIZE (currently '%s')", 0x20))
-            __builtin_debugtrap();
+            __debugbreak();
     }
     if (!isInit_0) {
         memset(sNullBuffer, 0, sizeof(sNullBuffer));

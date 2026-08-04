@@ -76,9 +76,9 @@ int gjk(
     // Full implementation at ea:0x81EA70 (~700 instructions of SSE-optimized GJK)
     // Requires support-mapping virtual calls on cdlConvex and determinant tables.
     // Stub: report collision failure (not colliding).
-    cinfo.distance = 0.0f;
-    memset(&cinfo.normal, 0, sizeof(cinfo.normal));
-    cinfo.iterationCount = 0;
+    cinfo.pa.v = _mm_setzero_ps();
+    cinfo.pb.v = _mm_setzero_ps();
+    cinfo.ni.v = _mm_setzero_ps();
     return 2; // failed
 }
 

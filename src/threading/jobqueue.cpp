@@ -171,7 +171,7 @@ void jqUnlockBatchPool() {
 void jqSetBatchPoolSize(int size) {
     if (size <= 0) {
         _tlAssert("source/jobqueue.cpp", 0x60, "", "");
-        __builtin_debugtrap();
+        __debugbreak();
     }
 
     // Flush existing
@@ -227,7 +227,7 @@ int jqAddBatch(const jqBatch* data) {
     int idx = jqPool.BatchPoolHead;
     if (idx == -1) {
         _tlAssert("source/jobqueue.cpp", 0x8D, "", "");
-        __builtin_debugtrap();
+        __debugbreak();
     }
 
     // Pop from free list
@@ -243,7 +243,7 @@ int jqAddBatch(const jqBatch* data) {
 
     if (priority > 2) {
         _tlAssert("source/jobqueue.cpp", 0x98, "", "");
-        __builtin_debugtrap();
+        __debugbreak();
     }
 
     // Add to priority queue
@@ -344,7 +344,7 @@ int jqCreateBatchGroup() {  // ea: 0x835320
     int idx = jqPool.BatchGroupPool.Head;
     if (idx == -1) {
         _tlAssert("source/jobqueue.cpp", 0xE9, "", "");
-        __builtin_debugtrap();
+        __debugbreak();
     }
 
     jqBatchGroup* g = &jqPool.BatchGroupPool.Value[idx];

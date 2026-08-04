@@ -5,7 +5,10 @@
 
 #pragma once
 
-#ifdef __x86_64__
+#ifdef _MSC_VER
+    #include <xmmintrin.h>
+    #include <stdint.h>
+#elif defined(__x86_64__)
     #include <xmmintrin.h>
 #elif defined(__i386__)
     #include <xmmintrin.h>
@@ -13,6 +16,7 @@
     // ARM / other: define __m128 as a plain struct
     #include <math.h>
     #include <string.h>
+    #include <stdint.h>
 
     struct __m128 {
         float m128_f32[4];

@@ -24,27 +24,25 @@ float intersect(
     const math::Position3& po,
     const math::Dir3&      pn,
     const math::Position3& ro,
-    const math::Dir3&      rd,
-    const math::Position3& plane_point,
-    const math::Dir3&      plane_normal)
+    const math::Dir3&      rd)
 {
-    // Validate plane normal is unit length
-    __m128 n2 = _mm_mul_ps(plane_normal.v, plane_normal.v);
+    // Validate ray dir is unit length
+    __m128 n2 = _mm_mul_ps(rd.v, rd.v);
     float len2 = DOT3(n2);
     if (fabsf(len2 - 1.0f) >= 0.0001f) {
         _tlAssert("source/cdl_common.cpp", 9, "", "");
-        __builtin_debugtrap();
+        __debugbreak();
     }
 
     // Project ray dir onto plane normal
-    __m128 denom_vec = _mm_mul_ps(rd.v, plane_normal.v);
+    __m128 denom_vec = _mm_mul_ps(rd.v, pn.v);
     float denom = DOT3(denom_vec);
     if (fabsf(denom) < 0.0001f)
         return 1.0e20f;  // parallel
 
     // Project pos delta onto plane normal
-    __m128 delta = _mm_sub_ps(ro.v, plane_point.v);
-    __m128 numer_vec = _mm_mul_ps(delta, plane_normal.v);
+    __m128 delta = _mm_sub_ps(po.v, ro.v);
+    __m128 numer_vec = _mm_mul_ps(delta, pn.v);
     float numer = DOT3(numer_vec);
 
     return numer / denom;
@@ -56,8 +54,8 @@ float intersect(
 // ============================================================================
 float dist2(const math::Position3& point, const cdlAABB& aabb) {
     // Clamp point to AABB
-    __m128 min = _mm_sub_ps(aabb.center.v, aabb.halfExtents.v);
-    __m128 max = _mm_add_ps(aabb.center.v, aabb.halfExtents.v);
+    __m128 min = _mm_sub_ps(aabb.m_sphere.v, aabb.m_dims.v);
+    __m128 max = _mm_add_ps(aabb.m_sphere.v, aabb.m_dims.v);
     __m128 clamped = _mm_max_ps(_mm_min_ps(point.v, max), min);
     __m128 diff = _mm_sub_ps(clamped, point.v);
     __m128 sq = _mm_mul_ps(diff, diff);

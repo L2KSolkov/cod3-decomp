@@ -125,7 +125,7 @@ void* apkFileEntry::GetData(apkFile* file, int section, bool assertIfNoData) {
             if (secOffset == 255) {
                 if (assertIfNoData) {
                     _tlAssert("source/apk.cpp", 0x7B, "", "");
-                    __builtin_debugtrap();
+                    __debugbreak();
                 }
                 return nullptr;
             }
@@ -165,7 +165,7 @@ uint32_t apkFileEntry::GetDataSize(apkFile* file, int section, bool assertIfNoDa
                 if (secOffset == 255) {
                     if (assertIfNoData) {
                         _tlAssert("source/apk.cpp", 0xAA, "", "");
-                        __builtin_debugtrap();
+                        __debugbreak();
                     }
                     if (dataPtr) *dataPtr = nullptr;
                     return 0;
@@ -235,7 +235,7 @@ apkFileEntry* apkFile::GetFile(uint32_t idx) {
         te = (apkFileTypeEntry*)((uint8_t*)te + 4 * NSections + 20);
     }
     _tlAssert("source/apk.cpp", 0x109, "", "");
-    __builtin_debugtrap();
+    __debugbreak();
     return nullptr;
 }
 

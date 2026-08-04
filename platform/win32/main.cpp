@@ -6,10 +6,8 @@
 #include <windows.h>
 #include <cstdio>
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
+int main()
 {
-    (void)hInstance; (void)hPrevInstance; (void)lpCmdLine; (void)nShowCmd;
-
     OutputDebugStringA("========================================\n");
     OutputDebugStringA("  Call of Duty 3 MP — Decompilation\n");
     OutputDebugStringA("  Phase 0: Stub build (green-link)\n");

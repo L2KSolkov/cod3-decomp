@@ -181,7 +181,7 @@ bool tlReadFile(const char* filename, tlFileBuf* out, unsigned align, unsigned f
     out->Buf = tlMemAlloc(size, align, flags);
 
     unsigned read;
-    ReadFile(h, out->Buf, size, &read, nullptr);
+    ReadFile(h, out->Buf, size, (LPDWORD)&read, nullptr);
     CloseHandle(h);
     return true;
 #else

@@ -9,7 +9,7 @@
 
 // Portable debug break
 #ifdef _MSC_VER
-#define COD3_BREAK() COD3_BREAK()
+#define COD3_BREAK() __debugbreak()
 #else
 #define COD3_BREAK() __builtin_debugtrap()
 #endif

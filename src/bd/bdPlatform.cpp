@@ -8,6 +8,8 @@
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
   #include <winsock2.h>
+  #include <cstdio>
+  #include <cstdlib>
   #pragma comment(lib, "ws2_32.lib")
   typedef unsigned long long bdUInt64;
   typedef unsigned int       bdUInt32;
@@ -153,7 +155,7 @@ struct bdPlatformSocket {
     }
     static int receiveFrom(int& h, bdInAddr& addr, unsigned short& port, void* buf, bdUInt bufSize) {
         sockaddr_in sa = {};
-        socklen_t saLen = sizeof(sa);
+        int saLen = sizeof(sa);
         int r = recvfrom(h, (char*)buf, bufSize, 0, (sockaddr*)&sa, &saLen);
         if (r > 0) {
             addr.inUn.m_iaddr = sa.sin_addr.s_addr;
