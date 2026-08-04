@@ -48,6 +48,8 @@ class cdDebugShader;
 void InitCDDebugShader();
 class cdWheelMarkShader;
 void InitCDWheelMarkShader();
+class cdFlagShader;
+void InitCDFlagShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -98,6 +100,8 @@ private:
     friend void InitCDDebugShader();
     friend class cdWheelMarkShader;
     friend void InitCDWheelMarkShader();
+    friend class cdFlagShader;
+    friend void InitCDFlagShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 
