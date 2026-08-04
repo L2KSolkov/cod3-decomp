@@ -214,7 +214,7 @@ bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	Phase 2: bdPlatf
 bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	TODO	
 render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	TODO	
 render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	TODO	
-render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	TODO	
+render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	PORTED	cdSimpleColorShader.h/.cpp (solid-color shader + node)
 render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	TODO	
 render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	TODO	
 aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs)

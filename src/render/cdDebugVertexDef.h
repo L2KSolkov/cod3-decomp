@@ -18,6 +18,8 @@
 class apsSimpleMeshShader;
 class apsSimpleMeshRenderer;
 class nglShader;
+class cdSimpleColorShader;
+cdSimpleColorShader* InitCDSimpleColorShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -38,6 +40,8 @@ private:
     friend class apsSimpleMeshShader;
     friend class apsSimpleMeshRenderer;
     friend class nglShader;
+    friend class cdSimpleColorShader;
+    friend cdSimpleColorShader* InitCDSimpleColorShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 
