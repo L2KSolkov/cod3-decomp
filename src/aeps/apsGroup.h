@@ -16,47 +16,12 @@
 #include "apsCommon.h"
 #include "apsPFD.h"
 #include "apsVFC.h"
+#include "apsRenderer.h"
 
 struct nglScene;
 struct nglLightContext;
 namespace apsLight { struct LightInfo; }
 namespace nano { struct Dynamic_System; }
-
-struct apsRendererRenderInfo;
-
-// Minimal apsRenderer (full class in apsRenderer.h once that object is
-// ported). The virtual layout is preserved so calls through a real engine
-// renderer resolve to the right vtable slot (verified against the vftable):
-//   slot 0  ~apsRenderer
-//   slot 1  Render(apsRendererRenderInfo const&)   (call [vtable+4] in apsGroup.o)
-//   slot 2  GetId
-//   slot 3  GetVersion
-//   slot 4  IsCameraFacing
-//   slot 5  SetScreenFacingNormal
-//   slot 6  GetChanceToRemove                       (call [vtable+0x18])
-//   slot 7  GetMeshRadius
-class apsRenderer {
-public:
-    enum eRenderResult {
-        RENDERRESULT_NOT_VISIBLE = 0,
-        RENDERRESULT_VISIBLE = 1,
-        RENDERRESULT_NO_PARTICLES = 2,
-        RENDERRESULT_NO_RENDERER = 3,
-    };
-
-    virtual ~apsRenderer();                                        // slot 0
-    virtual eRenderResult Render(const apsRendererRenderInfo& iInfo) = 0;  // slot 1
-    virtual unsigned int GetId() const = 0;                        // slot 2
-    virtual float GetVersion() const = 0;                          // slot 3
-    virtual int IsCameraFacing() const = 0;                        // slot 4
-    virtual void SetScreenFacingNormal(const math::Dir3& iNormal) = 0;  // slot 5
-    virtual float GetChanceToRemove() const = 0;                   // slot 6
-    virtual bool GetMeshRadius(float& oRadius) const = 0;          // slot 7
-};
-
-struct apsSphere {
-    math::Vector4 mSphere;
-};
 
 struct apsBounds {
     math::Dir3 mMin;
@@ -87,27 +52,6 @@ struct apsBounds {
 
     // game2.o (non-inline): bounding-sphere (center + radius). Unresolved here.
     apsSphere Sphere() const;
-};
-
-struct apsRendererRenderInfo {
-    unsigned char*             particles;          // +0x00
-    int                        numParticles;       // +0x04
-    const apsPFD*              pfd;                // +0x08
-    apsSphere                  sphere;             // +0x10
-    const math::Mat43*         localToWorld;       // +0x20
-    nglLightContext*           lightContext;       // +0x24
-    float                      groupDist2Camera;   // +0x28
-    const apsLight::LightInfo* lightInfo;          // +0x2C
-    float                      maxParticleRadius;  // +0x30
-
-    apsRendererRenderInfo() {
-        particles = 0;
-        numParticles = 0;
-        pfd = 0;
-        localToWorld = 0;
-        lightContext = 0;
-        lightInfo = 0;
-    }
 };
 
 class apsGroup {

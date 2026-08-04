@@ -244,7 +244,7 @@ aeps_xboxr:apsRectangleRenderer.o	aeps_xboxr	apsRectangleRenderer.o	engine	3	TOD
 aeps_xboxr:apsColorUVARenderer.o	aeps_xboxr	apsColorUVARenderer.o	engine	3	TODO	
 aeps_xboxr:apsColorBillboardRenderer.o	aeps_xboxr	apsColorBillboardRenderer.o	engine	3	TODO	
 aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	TODO	
-aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	TODO	
+aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRenderer.cpp/.h (renderer base + fixup, 3 funcs)
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	Phase 2: nvl.cpp (video codec stubs)
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	TODO	
