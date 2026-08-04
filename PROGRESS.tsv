@@ -191,7 +191,7 @@ render_xboxr:cdAirplaneMetalShader.o	render_xboxr	cdAirplaneMetalShader.o	engine
 render_xboxr:cdWorldBlendPointLitShader.o	render_xboxr	cdWorldBlendPointLitShader.o	engine	5	TODO	
 render_xboxr:cdWorldPointLitShader.o	render_xboxr	cdWorldPointLitShader.o	engine	5	TODO	
 render_xboxr:cdWorldBlendShader.o	render_xboxr	cdWorldBlendShader.o	engine	5	TODO	
-render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	TODO	
+render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	PORTED	cdWorldShader.h/.cpp (world shader: Init/Toggle/Register/AddNode; Render deferred)
 zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	TODO	
 zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO	
 aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	TODO	
