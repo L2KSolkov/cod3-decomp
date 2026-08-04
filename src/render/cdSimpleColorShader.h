@@ -62,6 +62,8 @@ struct cdSimpleShaderNode : nglShaderNode {
 struct nglShader : tlInitList {
     bool Disabled;  // +0x08
     int  ID;        // +0x0C
+
+    virtual void Register();  // base Register @0x6E7D80 (inline COMDAT, render.o)
 };
 
 // ============================================================================

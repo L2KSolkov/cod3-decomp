@@ -53,7 +53,7 @@ cdSimpleShader* InitCDSimpleShader() {
 // ============================================================================
 char ToggleCDSimpleShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[1];
-    byte = (unsigned char)((byte ^ ((~(byte >> 2) << 2) & 4)) ^ byte);
+    byte = (unsigned char)(((byte ^ (4 * ~(byte >> 2))) & 4) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[1] = byte;
     return (char)byte;
 }

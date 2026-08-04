@@ -43,7 +43,7 @@ cdWorldColorShader* InitCDWorldColorShader() {
 // ============================================================================
 char ToggleCDWorldColorShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[0];
-    byte = (unsigned char)((byte ^ ((~(byte >> 6) << 6) & 0x40)) ^ byte);
+    byte = (unsigned char)(((byte ^ (~(byte >> 6) << 6)) & 0x40) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[0] = byte;
     return (char)byte;
 }
