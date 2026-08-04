@@ -74,6 +74,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsSimpleMeshRenderer.cpp
     src/aeps/apsShrimpRenderer.cpp
     src/aeps/apsBillboardRenderer.cpp
+    src/aeps/apsColorBillboardRenderer.cpp
     src/aeps/stubs.cpp
 )
 add_library(cod3_bd STATIC

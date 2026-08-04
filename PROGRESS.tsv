@@ -242,7 +242,7 @@ aeps_xboxr:apsColorUVARectangleRenderer.o	aeps_xboxr	apsColorUVARectangleRendere
 aeps_xboxr:apsUVARectangleRenderer.o	aeps_xboxr	apsUVARectangleRenderer.o	engine	3	TODO	
 aeps_xboxr:apsRectangleRenderer.o	aeps_xboxr	apsRectangleRenderer.o	engine	3	TODO	
 aeps_xboxr:apsColorUVARenderer.o	aeps_xboxr	apsColorUVARenderer.o	engine	3	TODO	
-aeps_xboxr:apsColorBillboardRenderer.o	aeps_xboxr	apsColorBillboardRenderer.o	engine	3	TODO	
+aeps_xboxr:apsColorBillboardRenderer.o	aeps_xboxr	apsColorBillboardRenderer.o	engine	3	PORTED	apsColorBillboardRenderer.h/.cpp (color billboard renderer + node)
 aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	TODO	
 aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRenderer.cpp/.h (renderer base + fixup, 3 funcs)
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
