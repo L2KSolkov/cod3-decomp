@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstddef>
+#include <stdint.h>
 
 #ifdef __cplusplus
 
@@ -78,12 +79,19 @@ enum _D3DCUBEMAP_FACES {
 
 // ---- Render-state selector (D3DRS_*, Xbox D3D8) --------------------------
 enum _D3DRENDERSTATETYPE {
+    D3DRS_ALPHABLENDENABLE = 59,   // 0x3B
+    D3DRS_CULLMODE = 147,          // 0x93
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
 };
 
 // ---- Pixel format selector (D3DFMT_*) ------------------------------------
 enum _D3DFORMAT {
     D3DFMT_YUY2 = 36,
+};
+
+// ---- Pixel shader definition (opaque, 240 bytes) -------------------------
+struct _D3DPixelShaderDef {
+    uint8_t data[240];
 };
 
 // ---- Vertex shader input element (16 bytes, verified against IDA) --------
@@ -148,6 +156,20 @@ void         __stdcall D3DDevice_DrawIndexedVertices(_D3DPRIMITIVETYPE Primitive
                                                      const unsigned short* pIndexData);
 void         __stdcall D3DDevice_SetVertexShaderInputDirect(void* pVAF, unsigned int StreamCount,
                                                             const _D3DSTREAM_INPUT* pStreamInputs);
+void         __stdcall D3DDevice_DrawVerticesUP(_D3DPRIMITIVETYPE PrimitiveType,
+                                                unsigned int VertexCount,
+                                                const void* pVertexStreamZeroData,
+                                                unsigned int VertexStreamZeroStride);
+void         __stdcall D3DDevice_LoadVertexShaderProgram(const unsigned int* pFunction,
+                                                         unsigned int Address);
+void         __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFORMAT* pVAF,
+                                                          unsigned int Address);
+void         __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* pPSDef);
+void         __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value);
+void         __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned int Value);
+void         __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
+                                                                       const void* pConstantData,
+                                                                       unsigned int DwordCount);
 }
 
 // ---- XGRPH entry points (xgraphicsd) --------------------------------------
