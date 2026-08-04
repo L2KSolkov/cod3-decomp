@@ -32,6 +32,7 @@ add_library(cod3_physics STATIC
     src/physics/stubs.cpp
 )
 add_library(cod3_ngl STATIC
+    src/ngl/ngl_dx_draw.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC

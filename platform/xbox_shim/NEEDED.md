@@ -80,6 +80,10 @@ Format: `XboxAPI | caller_count | Win32_replacement`
 | Xbox API | Win32 Replacement |
 |---|---|
 | D3DDevice_* | D3D11 equivalent via NGL backend |
+| D3DDevice_SetRenderTarget | D3D11 OMSetRenderTargets (called from ngl_dx_draw.o) |
+| D3DTexture_GetSurfaceLevel2 | D3D11 texture-to-RTV/SRV surface (ngl_dx_draw.o) |
+| D3DCubeTexture_GetCubeMapSurface2 | D3D11 cube face subresource (ngl_dx_draw.o) |
+| D3DResource_Release | Release (ngl_dx_draw.o) |
 | XGRPH swizzled textures | D3D11 texture creation |
 | D3DX math (Vec3, Matrix, Quat) | DirectXMath library |
 | Xbox push buffers | NOP (D3D11 manages GPU ring buffer) |

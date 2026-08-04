@@ -1,4 +1,4 @@
-source_cpp	lib	obj	class	funcs	status	notes
+﻿source_cpp	lib	obj	class	funcs	status	notes
 shell.o		shell.o	game	1175	TODO	
 scr.o		scr.o	game	846	TODO	
 mp.o		mp.o	game	770	TODO	
@@ -297,7 +297,7 @@ tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system
 ngl_xboxr:ngl_xb_tex_load.o	ngl_xboxr	ngl_xb_tex_load.o	engine	1	TODO	
 ngl_xboxr:ngl_gpu_texture.o	ngl_xboxr	ngl_gpu_texture.o	engine	1	TODO	
 ngl_xboxr:ngl_dx_fsaa.o	ngl_xboxr	ngl_dx_fsaa.o	engine	1	TODO	
-ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	TODO	
+ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	PORTED	Phase 6: ngl_dx_draw.cpp (render-target switch + nglCurSurface/nglCurDepthBuffer data)
 ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	TODO	
 ngl_xboxr:ngl_xb_internal.o	ngl_xboxr	ngl_xb_internal.o	engine	1	TODO	
 nal_xboxr:nal_initlist.o	nal_xboxr	nal_initlist.o	engine	1	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
