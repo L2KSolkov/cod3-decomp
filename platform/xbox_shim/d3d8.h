@@ -82,6 +82,8 @@ enum _D3DRENDERSTATETYPE {
     D3DRS_ALPHABLENDENABLE = 59,   // 0x3B
     D3DRS_CULLMODE = 147,          // 0x93
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
+    D3DRS_SIMPLE_MAX = 92,         // 0x5C
+    D3DRS_YUVENABLE = 160,         // 0xA0
 };
 
 // ---- Pixel format selector (D3DFMT_*) ------------------------------------
@@ -131,6 +133,12 @@ struct _D3DPRESENT_PARAMETERS_ {
 };
 static_assert(sizeof(_D3DPRESENT_PARAMETERS_) == 0x44, "_D3DPRESENT_PARAMETERS_ size mismatch");
 
+// ---- Texture-stage selector (D3DTSS_*) -----------------------------------
+enum _D3DTEXTURESTAGESTATETYPE {
+    D3DTSS_ADDRESSU = 6,
+    D3DTSS_ADDRESSV = 7,
+};
+
 // ---- D3D8 entry points (stdcall, @N-decorated like the XDK exports) ------
 extern "C" {
 void         __stdcall D3DDevice_SetRenderTarget(D3DSurface* pRenderTarget, D3DSurface* pZBuffer);
@@ -170,6 +178,14 @@ void         __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, uns
 void         __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
                                                                        const void* pConstantData,
                                                                        unsigned int DwordCount);
+int          __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Stage,
+                                                                _D3DTEXTURESTAGESTATETYPE Type,
+                                                                unsigned int Value);
+void         __stdcall D3DDevice_SetRenderState_YuvEnable(unsigned int Value);
+void         __stdcall D3DDevice_SetIndices(D3DIndexBuffer* pIndexBuffer,
+                                            unsigned int BaseVertexIndex);
+unsigned int* __stdcall D3DDevice_BeginPush(unsigned int Count);
+void         __stdcall D3DDevice_EndPush(unsigned int* p);
 }
 
 // ---- XGRPH entry points (xgraphicsd) --------------------------------------

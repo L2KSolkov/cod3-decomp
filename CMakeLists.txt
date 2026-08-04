@@ -40,6 +40,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_xb_internal.cpp
     src/ngl/ngl_gpu_texture.cpp
     src/ngl/ngl_gpu_debug.cpp
+    src/ngl/ngl_dx_quad.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC
