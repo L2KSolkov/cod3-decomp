@@ -30,6 +30,8 @@ struct cdSimpleShaderMat;
 struct nglShaderNode : nglRenderNode {
     nglMeshNode*     MeshNode;  // +0x0C
     nglMeshSection*  Section;   // +0x10
+
+    float GetDist(const math::Mat43& WorldToView);  // ?GetDist@nglShaderNode@@QAEMABVMat43@math@@@Z (inline COMDAT, cdScratchShader.o)
 };
 static_assert(sizeof(nglShaderNode) == 0x14, "nglShaderNode size mismatch");
 
