@@ -258,7 +258,7 @@ bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: p
 bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	PORTED	
+bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	PORTED	bdSessionInfo.h/.cpp (session info formatters; bdSession/bdAddressMapImpl opaque)
 bdPeer:bdSessionHandler.obj	bdPeer	bdSessionHandler.obj	engine	3	PORTED	
 bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 core_xboxr:ae_controller.o	core_xboxr	ae_controller.o	engine	2	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller

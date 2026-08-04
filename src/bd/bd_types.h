@@ -206,6 +206,9 @@ struct bdConnectionStatistics {
     float        m_maxRTT;               // +0x34
     float        m_minRTT;               // +0x38
     float        m_avgRTT;               // +0x3C
+
+    // bdConnectionStatistics.obj (method)
+    float getAvgRTT() const { return m_avgRTT; }
 };
 static_assert(sizeof(bdConnectionStatistics) == 0x40, "bdConnectionStatistics size mismatch");
 static_assert(offsetof(bdConnectionStatistics, m_bytesSent) == 0x00, "bdConnectionStatistics::m_bytesSent offset mismatch");
@@ -233,6 +236,11 @@ struct bdConnection : bdReferencable {
     bdFastArray<bdConnectionListener*> m_listeners;  // +0x50
     unsigned int                m_maxTransmissionRate;  // +0x5C
     Status                      m_status;          // +0x60
+
+    // bdConnection.obj (methods; declared for bdSessionInfo)
+    Status getStatus() const { return m_status; }
+    const bdReference<bdAddrHandle>& getAddressHandle() const { return m_addrHandle; }
+    bdConnectionStatistics* getStats() { return &m_stats; }
 };
 static_assert(sizeof(bdConnection) == 0x64, "bdConnection size mismatch");
 static_assert(offsetof(bdConnection, m_addr) == 0x08, "bdConnection::m_addr offset mismatch");
