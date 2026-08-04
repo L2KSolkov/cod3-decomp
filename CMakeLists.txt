@@ -30,6 +30,7 @@ add_library(cod3_broc STATIC
 )
 add_library(cod3_physics STATIC
     src/physics/rbc_def_custom.cpp
+    src/physics/phys_collision.cpp
     src/physics/stubs.cpp
 )
 add_library(cod3_ngl STATIC
