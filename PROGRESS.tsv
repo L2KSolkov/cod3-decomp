@@ -142,7 +142,7 @@ render_xboxr:cdGlowShader.o	render_xboxr	cdGlowShader.o	engine	7	TODO
 render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	TODO	
 render_xboxr:cdDebugShader.o	render_xboxr	cdDebugShader.o	engine	7	PORTED	cdDebugShader.h/.cpp (debug shader: mat ctor/Init/Toggle/Register/AddNode; GetSortInfo+Render deferred)
 render_xboxr:cdSimpleUVAnimShader.o	render_xboxr	cdSimpleUVAnimShader.o	engine	7	PORTED	cdSimpleUVAnimShader.h/.cpp (UV anim shader: mat ctor/Init/Toggle/Register/AddNode; SetTextureMatrix+Render deferred)
-render_xboxr:cdWheelMarkShader.o	render_xboxr	cdWheelMarkShader.o	engine	7	TODO	
+render_xboxr:cdWheelMarkShader.o	render_xboxr	cdWheelMarkShader.o	engine	7	PORTED	cdWheelMarkShader.h/.cpp (wheel mark shader: mat ctor/Init/Toggle(empty)/VertexDefBuilder/Register/AddNode; Render deferred)
 render_xboxr:cdFlagShader.o	render_xboxr	cdFlagShader.o	engine	7	TODO	
 render_xboxr:cdSimpleSpecularShader.o	render_xboxr	cdSimpleSpecularShader.o	engine	7	PORTED	cdSimpleSpecularShader.h/.cpp (specular shader: mat ctor/Init/Toggle/Register/AddNode; GetEyePos+Render deferred)
 aeps_xboxr:apsGroupMgr.o	aeps_xboxr	apsGroupMgr.o	engine	7	TODO	

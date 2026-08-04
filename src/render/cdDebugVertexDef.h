@@ -46,6 +46,8 @@ class cdBackgroundShader;
 cdBackgroundShader* InitCDBackgroundShader();
 class cdDebugShader;
 cdDebugShader* InitCDDebugShader();
+class cdWheelMarkShader;
+cdWheelMarkShader* InitCDWheelMarkShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -94,6 +96,8 @@ private:
     friend cdBackgroundShader* InitCDBackgroundShader();
     friend class cdDebugShader;
     friend cdDebugShader* InitCDDebugShader();
+    friend class cdWheelMarkShader;
+    friend cdWheelMarkShader* InitCDWheelMarkShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 

@@ -1,0 +1,125 @@
+// ============================================================================
+// cdWheelMarkShader.cpp — wheel mark shader (7 non-inline funcs).
+// Source: source/cdWheelMarkShader.cpp (render_xboxr)
+// Verified against IDA (render_xboxr:cdWheelMarkShader.o):
+//   cdWheelMarkShaderMat::ctor @0x7C92B0
+//   InitCDWheelMarkShader  @0x7C9330
+//   ToggleCDWheelMarkShader @0x7C9380 (empty)
+//   InitCDWheelMarkVertexDefBuilder @0x7C9390
+//   cdWheelMarkShader::Register @0x7C93D0
+//   cdWheelMarkShader::AddNode @0x7C9410
+// ============================================================================
+#include "cdWheelMarkShader.h"
+
+#include <intrin.h>
+
+namespace AeAssert {
+    extern int   gCurrentAuthor;
+    extern const char* gCurrentFile;
+    extern int   gCurrentLine;
+    extern const char* gCurrentExpr;
+    bool IsIgnored();
+    bool Assert(const char* msg, ...);
+}
+
+// ============================================================================
+// cdWheelMarkShaderMat::cdWheelMarkShaderMat — default material, bind shader.
+// ea: 0x7C92B0
+// ============================================================================
+cdWheelMarkShaderMat::cdWheelMarkShaderMat() {
+    this->mTexture = NULL;
+    cdWheelMarkShader* v2 = gCDWheelMarkShader;
+    if (gCDWheelMarkShader != NULL) {
+        this->Shader = v2;
+        return;
+    }
+    AeAssert::gCurrentAuthor = 0;
+    AeAssert::gCurrentFile = "cdWheelMarkShader.cpp";
+    AeAssert::gCurrentLine = 20;
+    AeAssert::gCurrentExpr = "gCDWheelMarkShader";
+    if (AeAssert::IsIgnored()) {
+        this->Shader = gCDWheelMarkShader;
+        return;
+    }
+    if (AeAssert::Assert("Material is being created before the shader; the pointers won't be set up properly")) {
+        __debugbreak();
+        this->Shader = gCDWheelMarkShader;
+        return;
+    }
+    this->Shader = gCDWheelMarkShader;
+}
+
+// ============================================================================
+// InitCDWheelMarkShader — allocate the shader and link into the init list.
+// ea: 0x7C9330
+// ============================================================================
+cdWheelMarkShader* InitCDWheelMarkShader() {
+    cdWheelMarkShader* result = (cdWheelMarkShader*)mem_heap_malloc(0x10);
+    if (result != NULL) {
+        result->next = tlInitList::head;
+        tlInitList::head = result;
+        result->Disabled = false;
+        // vftable = cdWheelMarkShader
+        ShaderCommon::ShaderSwitching.__s0[0] &= ~2;
+        gCDWheelMarkShader = result;
+    } else {
+        gCDWheelMarkShader = NULL;
+        return NULL;
+    }
+    return result;
+}
+
+// ============================================================================
+// ToggleCDWheelMarkShader — no-op toggle.
+// ea: 0x7C9380
+// ============================================================================
+char ToggleCDWheelMarkShader() {
+    return 0;
+}
+
+// ============================================================================
+// InitCDWheelMarkVertexDefBuilder — build the wheel-mark vertex format.
+// ea: 0x7C9390
+// ============================================================================
+_D3DVERTEXATTRIBUTEFORMAT* InitCDWheelMarkVertexDefBuilder() {
+    gpuVertexFormat v2;
+    gpuVertexFormat* v0 = gpuCreateVertexFormat(&v2, 0x10, cdWheelMarkVertexElements);
+    cdWheelMarkVertexFormat.VertexSize = v0->VertexSize;
+    cdWheelMarkVertexFormat.Elements = v0->Elements;
+    _D3DVERTEXATTRIBUTEFORMAT* result = v0->VertexDeclaration;
+    cdWheelMarkVertexFormat.VertexDeclaration = result;
+    return result;
+}
+
+// ============================================================================
+// cdWheelMarkShader::Register — register the wheel-mark vertex/pixel shaders.
+// ea: 0x7C93D0
+// ============================================================================
+void cdWheelMarkShader::Register() {
+    nglShader::Register();
+    nglDxRegisterVShader(cdWheelMarkShaderVertex::VS, cdWheelMarkShaderVertex::VShaderTable[0]);
+    cdWheelMarkShaderVertex::Shader = cdWheelMarkShaderVertex::VS[0];
+    nglDxRegisterPShader(cdWheelMarkShaderPixel::PS, cdWheelMarkShaderPixel::PShaderTable[0]);
+    cdWheelMarkShaderPixel::Shader = cdWheelMarkShaderPixel::PS[0];
+}
+
+// ============================================================================
+// cdWheelMarkShader::AddNode — add a wheel-mark node to the opaque list.
+// ea: 0x7C9410
+// ============================================================================
+void cdWheelMarkShader::AddNode(nglMeshNode* iMeshNode, nglMeshSection* iSection,
+                                nglMaterial* iMat) {
+    cdWheelMarkShaderNode* node = (cdWheelMarkShaderNode*)nglListAlloc(0x1C, 0x10);
+    if (node != NULL) {
+        node->MeshNode = iMeshNode;
+        node->Section = iSection;
+        // vftable = cdWheelMarkShaderNode
+        node->mMaterial = (cdWheelMarkShaderMat*)iMat;
+    } else {
+        node = NULL;
+    }
+    node->SortHash = gCDWheelMarkShader->ID | 0x80000000;
+    node->Next = nglBuildScene->OpaqueRenderList;
+    nglBuildScene->OpaqueRenderList = node;
+    ++nglBuildScene->OpaqueListCount;
+}
