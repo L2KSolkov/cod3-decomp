@@ -67,6 +67,7 @@ add_library(cod3_render STATIC
     src/render/cdPropellerShader.cpp
     src/render/cdGunSightShader.cpp
     src/render/cdGunSightSpecularShader.cpp
+    src/render/cdCharSpecularShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
