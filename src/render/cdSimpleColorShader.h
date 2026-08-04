@@ -34,6 +34,17 @@ struct nglShaderNode : nglRenderNode {
 static_assert(sizeof(nglShaderNode) == 0x14, "nglShaderNode size mismatch");
 
 // ============================================================================
+// nglMaterial — material base (16 bytes, verified against IDA)
+// ============================================================================
+struct nglMaterial {
+    tlFixedString* Name;          // +0x00
+    nglShader*     Shader;        // +0x04
+    int            BinaryVersion; // +0x08
+    void*          RuntimeData;   // +0x0C
+};
+static_assert(sizeof(nglMaterial) == 0x10, "nglMaterial size mismatch");
+
+// ============================================================================
 // cdSimpleShaderNode — simple shader render node (28 bytes)
 // ============================================================================
 struct cdSimpleShaderNode : nglShaderNode {

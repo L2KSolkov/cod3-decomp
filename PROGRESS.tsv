@@ -168,7 +168,7 @@ render_xboxr:cdGunShader.o	render_xboxr	cdGunShader.o	engine	6	TODO
 render_xboxr:cdPropellerShader.o	render_xboxr	cdPropellerShader.o	engine	6	TODO	
 render_xboxr:cdDecalShader.o	render_xboxr	cdDecalShader.o	engine	6	TODO	
 render_xboxr:cdSimplePrelitShader.o	render_xboxr	cdSimplePrelitShader.o	engine	6	TODO	
-render_xboxr:cdSimpleShader.o	render_xboxr	cdSimpleShader.o	engine	6	TODO	
+render_xboxr:cdSimpleShader.o	render_xboxr	cdSimpleShader.o	engine	6	PORTED	cdSimpleShader.h/.cpp (simple shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdWaterShader.o	render_xboxr	cdWaterShader.o	engine	6	TODO	
 render_xboxr:cdWorldVertexLitShader.o	render_xboxr	cdWorldVertexLitShader.o	engine	6	TODO	
 render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	TODO	
