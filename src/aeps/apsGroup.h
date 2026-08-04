@@ -15,19 +15,11 @@
 
 #include "apsCommon.h"
 #include "apsPFD.h"
+#include "apsVFC.h"
 
 struct nglScene;
 struct nglLightContext;
 namespace apsLight { struct LightInfo; }
-namespace VFC {
-    struct FrustumInfo;
-    // 24 bytes: min/max corner floats. Layout verified against IDA.
-    struct AABB {
-        float bounds[2][3];
-    };
-    // VFC.o (non-inline): true if the box is fully outside the frustum.
-    bool AABBOutsideFrustum(const AABB& iAABB, const FrustumInfo& iFrustumInfo);
-}
 namespace nano { struct Dynamic_System; }
 
 struct apsRendererRenderInfo;
