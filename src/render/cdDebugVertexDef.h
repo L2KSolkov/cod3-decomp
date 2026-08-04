@@ -54,6 +54,8 @@ class cdDynamicDecalShader;
 void InitCDDynamicDecalShader();
 class cdPropellerShader;
 void InitCDPropellerShader();
+class cdGunSightShader;
+void InitCDGunSightShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -110,6 +112,8 @@ private:
     friend void InitCDDynamicDecalShader();
     friend class cdPropellerShader;
     friend void InitCDPropellerShader();
+    friend class cdGunSightShader;
+    friend void InitCDGunSightShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 

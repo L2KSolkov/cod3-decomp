@@ -163,7 +163,7 @@ render_xboxr:cdScratchShader.o	render_xboxr	cdScratchShader.o	engine	6	TODO
 render_xboxr:cdSimpleAlphaShader.o	render_xboxr	cdSimpleAlphaShader.o	engine	6	PORTED	cdSimpleAlphaShader.h/.cpp (simple alpha shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdDynamicDecalShader.o	render_xboxr	cdDynamicDecalShader.o	engine	6	PORTED	cdDynamicDecalShader.h/.cpp (dynamic decal shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdGunSightSpecularShader.o	render_xboxr	cdGunSightSpecularShader.o	engine	6	TODO	
-render_xboxr:cdGunSightShader.o	render_xboxr	cdGunSightShader.o	engine	6	TODO	
+render_xboxr:cdGunSightShader.o	render_xboxr	cdGunSightShader.o	engine	6	PORTED	cdGunSightShader.h/.cpp (gun sight shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdGunShader.o	render_xboxr	cdGunShader.o	engine	6	PORTED	cdGunShader.h/.cpp (gun shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdPropellerShader.o	render_xboxr	cdPropellerShader.o	engine	6	PORTED	cdPropellerShader.h/.cpp (propeller shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdDecalShader.o	render_xboxr	cdDecalShader.o	engine	6	PORTED	cdDecalShader.h/.cpp (decal shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred) + fix Toggle bit-preserve expr in 3 prior shaders
