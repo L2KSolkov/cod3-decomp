@@ -295,7 +295,7 @@ nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	PORTED	Phase 
 nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 ngl_xboxr:ngl_xb_tex_load.o	ngl_xboxr	ngl_xb_tex_load.o	engine	1	PORTED	ngl_xb_tex_load.cpp (image/physical section fixup + D3DResource_Register); apk.h class mangling fix
-ngl_xboxr:ngl_gpu_texture.o	ngl_xboxr	ngl_gpu_texture.o	engine	1	TODO	
+ngl_xboxr:ngl_gpu_texture.o	ngl_xboxr	ngl_gpu_texture.o	engine	1	PORTED	ngl_gpu_texture.cpp + ngl_dx_gpu.h (nglCreateTexture + gpu/D3DDevice inline wrappers)
 ngl_xboxr:ngl_dx_fsaa.o	ngl_xboxr	ngl_dx_fsaa.o	engine	1	PORTED	Phase 6: ngl_dx_fsaa.cpp/.h (FSAA mode select + nglFSAAScaleX/Y/nglFSAA/nglFSAAParams data)
 ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	PORTED	Phase 6: ngl_dx_draw.cpp (render-target switch + nglCurSurface/nglCurDepthBuffer data)
 ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	TODO	

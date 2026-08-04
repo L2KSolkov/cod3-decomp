@@ -25,6 +25,7 @@ static_assert(sizeof(D3DResource) == 0x0C, "D3DResource size mismatch");
 struct D3DBaseTexture : D3DResource {};
 struct D3DTexture : D3DBaseTexture {};
 struct D3DCubeTexture : D3DBaseTexture {};
+struct D3DVolumeTexture : D3DBaseTexture {};
 struct D3DSurface {};
 
 // ---- Cube-map face selector (D3DCUBEMAP_FACES) ---------------------------
@@ -40,6 +41,11 @@ enum _D3DCUBEMAP_FACES {
 // ---- Render-state selector (D3DRS_*, Xbox D3D8) --------------------------
 enum _D3DRENDERSTATETYPE {
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
+};
+
+// ---- Pixel format selector (D3DFMT_*) ------------------------------------
+enum _D3DFORMAT {
+    D3DFMT_YUY2 = 36,
 };
 
 // ---- Vertex shader input element (16 bytes, verified against IDA) --------
@@ -90,6 +96,17 @@ unsigned int __stdcall D3DResource_Release(D3DResource* pResource);
 int          __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int Value);
 void         __stdcall D3DResource_Register(D3DResource* pResource, void* pBase);
+void*          __stdcall D3DDevice_CreateTexture2(unsigned int Width, unsigned int Height,
+                                                  unsigned int Depth, unsigned int Levels,
+                                                  unsigned int Usage, unsigned int Format,
+                                                  unsigned int Type);
+D3DSurface*  __stdcall D3DDevice_CreateSurface2(unsigned int Width, unsigned int Height,
+                                                unsigned int Usage, unsigned int Format);
+}
+
+// ---- XGRPH entry points (xgraphicsd) --------------------------------------
+extern "C" {
+int __stdcall XGIsSwizzledFormat(unsigned int Format);
 }
 
 #endif // __cplusplus
