@@ -260,7 +260,7 @@ render_xboxr:cdDebugVertexDef.o	render_xboxr	cdDebugVertexDef.o	engine	2	TODO
 render_xboxr:cdScratchVertexDef.o	render_xboxr	cdScratchVertexDef.o	engine	2	TODO	
 render_xboxr:cdDynamicDecalVertexDef.o	render_xboxr	cdDynamicDecalVertexDef.o	engine	2	TODO	
 zlib_xboxr:adler32.o	zlib_xboxr	adler32.o	engine	2	TODO	
-aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	TODO	
+aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	PORTED	apsDebug.h/.cpp (PrintWarning/Print + mbEnabled data, Enabled/SetEnabled inline)
 cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
