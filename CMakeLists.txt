@@ -85,6 +85,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsUVARectangleRenderer.cpp
     src/aeps/apsColorUVARenderer.cpp
     src/aeps/apsColorUVARectangleRenderer.cpp
+    src/aeps/apsPFD.cpp
     src/aeps/stubs.cpp
 )
 add_library(cod3_bd STATIC

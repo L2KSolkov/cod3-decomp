@@ -58,8 +58,13 @@ public:
 
     apsPFD();  // defined in apsPFD.o (apsPFD ctor @0x8120A0)
 
-    // apsPFD.o (non-inline): byte size of the given field. Unresolved here.
+    void AddFields(unsigned int iFields);      // @0x8120C0
+    void RecomputeOffsets();                   // @0x812020
+
+    // apsPFD.o (non-inline): byte size of the given field.
     static unsigned char GetFieldByteSize(apsEPFDField iField);
+
+    static unsigned char sElementSizes[32];    // @0x1239190
 
     unsigned int HasField(apsEPFDField iField) const {
         return mFields & (1 << iField);
