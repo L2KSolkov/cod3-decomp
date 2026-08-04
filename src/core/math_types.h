@@ -11,16 +11,19 @@
 namespace math {
 
 // Forward declarations
-struct Dir3;
-struct Position3;
-struct Mat43;
+class Dir3;
+class Position3;
+class Mat43;
 struct TranMat43;
 
 // ============================================================================
 // Dir3 — normalized direction vector (3 float + pad w, total 16 bytes)
 // Size: 0x10 (16 bytes) — verified against IDA
+// Note: declared `class` (not struct) to match the original binary's MSVC
+// mangling (`?AVDir3` / `ABV...Dir3...`), which uses V for class types.
 // ============================================================================
-struct Dir3 {
+class Dir3 {
+public:
     __m128 v;  // SSE-packed: x, y, z, w
 
     // Constant layout (for compile-time initialization)
@@ -41,7 +44,8 @@ static_assert(sizeof(Dir3::Packed) == 0x0C, "Dir3::Packed size mismatch");
 // Position3 — point/translation vector (3 float + pad w, total 16 bytes)
 // Size: 0x10 (16 bytes) — verified against IDA
 // ============================================================================
-struct Position3 {
+class Position3 {
+public:
     __m128 v;  // SSE-packed: x, y, z, w
 
     struct Constant {
@@ -60,7 +64,8 @@ static_assert(sizeof(Position3::Packed) == 0x0C, "Position3::Packed size mismatc
 // Vector4 — 4-component float vector (16 bytes)
 // Size: 0x10 (16 bytes)
 // ============================================================================
-struct Vector4 {
+class Vector4 {
+public:
     __m128 v;
 };
 static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
@@ -70,7 +75,8 @@ static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
 //   3 rotation axes (Dir3 each, 16 bytes) + 1 translation (Position3, 16 bytes)
 // Size: 0x40 (64 bytes) — verified against IDA
 // ============================================================================
-struct Mat43 {
+class Mat43 {
+public:
     Dir3      x;  // +0x00 — right axis
     Dir3      y;  // +0x10 — forward axis
     Dir3      z;  // +0x20 — up axis

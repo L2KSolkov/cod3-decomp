@@ -48,7 +48,7 @@ apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF 
 nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	TODO	
-aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	TODO	
+aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	PORTED	Phase 3: apsGroup.cpp (particle group, all 22 funcs)
 ngl_xboxr:ngl_lighting.o	ngl_xboxr	ngl_lighting.o	engine	22	TODO	
 render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	TODO	
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
