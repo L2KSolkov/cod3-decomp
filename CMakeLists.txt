@@ -64,6 +64,7 @@ add_library(cod3_render STATIC
     src/render/cdWheelMarkShader.cpp
     src/render/cdFlagShader.cpp
     src/render/cdDynamicDecalShader.cpp
+    src/render/cdPropellerShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
