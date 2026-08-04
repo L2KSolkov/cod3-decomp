@@ -31,7 +31,7 @@ void cdSimpleShader::Register() {
 // InitCDSimpleShader — allocate the shader and link into the init list.
 // ea: 0x7D6420
 // ============================================================================
-cdSimpleShader* InitCDSimpleShader() {
+void InitCDSimpleShader() {
     cdSimpleShader* result = (cdSimpleShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -42,20 +42,20 @@ cdSimpleShader* InitCDSimpleShader() {
         gCDSimpleShader = result;
     } else {
         gCDSimpleShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDSimpleShader — toggle the simple-shader enable bit (bit 2).
 // ea: 0x7D6470
 // ============================================================================
-char ToggleCDSimpleShader() {
+void ToggleCDSimpleShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[1];
     byte = (unsigned char)(((byte ^ (4 * ~(byte >> 2))) & 4) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[1] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

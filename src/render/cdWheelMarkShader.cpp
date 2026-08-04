@@ -53,7 +53,7 @@ cdWheelMarkShaderMat::cdWheelMarkShaderMat() {
 // InitCDWheelMarkShader — allocate the shader and link into the init list.
 // ea: 0x7C9330
 // ============================================================================
-cdWheelMarkShader* InitCDWheelMarkShader() {
+void InitCDWheelMarkShader() {
     cdWheelMarkShader* result = (cdWheelMarkShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -64,31 +64,29 @@ cdWheelMarkShader* InitCDWheelMarkShader() {
         gCDWheelMarkShader = result;
     } else {
         gCDWheelMarkShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDWheelMarkShader — no-op toggle.
 // ea: 0x7C9380
 // ============================================================================
-char ToggleCDWheelMarkShader() {
-    return 0;
+void ToggleCDWheelMarkShader() {
+
 }
 
 // ============================================================================
 // InitCDWheelMarkVertexDefBuilder — build the wheel-mark vertex format.
 // ea: 0x7C9390
 // ============================================================================
-_D3DVERTEXATTRIBUTEFORMAT* InitCDWheelMarkVertexDefBuilder() {
+void InitCDWheelMarkVertexDefBuilder() {
     gpuVertexFormat v2;
     gpuVertexFormat* v0 = gpuCreateVertexFormat(&v2, 0x10, cdWheelMarkVertexElements);
     cdWheelMarkVertexFormat.VertexSize = v0->VertexSize;
     cdWheelMarkVertexFormat.Elements = v0->Elements;
-    _D3DVERTEXATTRIBUTEFORMAT* result = v0->VertexDeclaration;
-    cdWheelMarkVertexFormat.VertexDeclaration = result;
-    return result;
+    cdWheelMarkVertexFormat.VertexDeclaration = v0->VertexDeclaration;
 }
 
 // ============================================================================

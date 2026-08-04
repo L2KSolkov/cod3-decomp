@@ -54,7 +54,7 @@ cdSimpleSpecularShaderMat::cdSimpleSpecularShaderMat(nglTexture* iDiffuseTexture
 // InitCDSimpleSpecularShader — allocate the shader and link into the init list.
 // ea: 0x7D4E60
 // ============================================================================
-cdSimpleSpecularShader* InitCDSimpleSpecularShader() {
+void InitCDSimpleSpecularShader() {
     cdSimpleSpecularShader* result = (cdSimpleSpecularShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -65,20 +65,20 @@ cdSimpleSpecularShader* InitCDSimpleSpecularShader() {
         gCDSimpleSpecularShader = result;
     } else {
         gCDSimpleSpecularShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDSimpleSpecularShader — toggle specular-shader enable bit (bit 0).
 // ea: 0x7D4EB0
 // ============================================================================
-char ToggleCDSimpleSpecularShader() {
+void ToggleCDSimpleSpecularShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[2];
     byte = (unsigned char)(((byte ^ ~byte) & 1) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

@@ -71,7 +71,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 extern cdDecalShader* gCDDecalShader;   // @0x14CDA4C
 extern cdDecalShader* g_cdDecalShader;  // @0x14CDA48
 
-cdDecalShader* InitCDDecalShader();  // @0x7D17B0
-char ToggleCDDecalShader();          // @0x7D1800
+void InitCDDecalShader();  // @0x7D17B0
+void ToggleCDDecalShader();          // @0x7D1800
 
 #endif // COD3_RENDER_CDDECALSHADER_H

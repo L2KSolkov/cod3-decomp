@@ -100,7 +100,7 @@ extern void* nglListAlloc(unsigned Bytes, unsigned Alignment);
 extern nglScene* nglBuildScene;
 extern cdSimpleColorShader* gCDSimpleColorShader;
 
-cdSimpleColorShader* InitCDSimpleColorShader();  // @0x7D5F10
-char ToggleCDSimpleColorShader();                // @0x7D5F60
+void InitCDSimpleColorShader();  // @0x7D5F10
+void ToggleCDSimpleColorShader();                // @0x7D5F60
 
 #endif // COD3_RENDER_CDSIMPLECOLORSHADER_H

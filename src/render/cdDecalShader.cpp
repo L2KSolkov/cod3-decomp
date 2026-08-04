@@ -49,7 +49,7 @@ cdDecalShaderMat::cdDecalShaderMat(nglTexture* iTexture) {
 // InitCDDecalShader — allocate the shader and link into the init list.
 // ea: 0x7D17B0
 // ============================================================================
-cdDecalShader* InitCDDecalShader() {
+void InitCDDecalShader() {
     cdDecalShader* result = (cdDecalShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -60,20 +60,20 @@ cdDecalShader* InitCDDecalShader() {
         gCDDecalShader = result;
     } else {
         gCDDecalShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDDecalShader — toggle the decal-shader enable bit (bit 5).
 // ea: 0x7D1800
 // ============================================================================
-char ToggleCDDecalShader() {
+void ToggleCDDecalShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[2];
     byte = (unsigned char)(((byte ^ (32 * ~(byte >> 5))) & 0x20) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

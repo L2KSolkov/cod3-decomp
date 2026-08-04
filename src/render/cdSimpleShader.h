@@ -46,7 +46,7 @@ static_assert(sizeof(cdSimpleShader) == 0x10, "cdSimpleShader size mismatch");
 // ============================================================================
 extern cdSimpleShader* gCDSimpleShader;
 
-cdSimpleShader* InitCDSimpleShader();  // @0x7D6420
-char ToggleCDSimpleShader();           // @0x7D6470
+void InitCDSimpleShader();  // @0x7D6420
+void ToggleCDSimpleShader();           // @0x7D6470
 
 #endif // COD3_RENDER_CDSIMPLESHADER_H

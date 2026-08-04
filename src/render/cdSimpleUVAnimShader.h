@@ -77,7 +77,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 
 extern cdSimpleUVAnimShader* gCDSimpleUVAnimShader;  // @0x10DE044
 
-cdSimpleUVAnimShader* InitCDSimpleUVAnimShader();  // @0x7C6E00
-char ToggleCDSimpleUVAnimShader();                 // @0x7C6E50
+void InitCDSimpleUVAnimShader();  // @0x7C6E00
+void ToggleCDSimpleUVAnimShader();                 // @0x7C6E50
 
 #endif // COD3_RENDER_CDSIMPLEUVANIMSHADER_H

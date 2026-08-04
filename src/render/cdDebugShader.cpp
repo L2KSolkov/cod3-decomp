@@ -46,7 +46,7 @@ cdDebugShaderMat::cdDebugShaderMat() {
 // InitCDDebugShader — allocate the shader and link into the init list.
 // ea: 0x7C63D0
 // ============================================================================
-cdDebugShader* InitCDDebugShader() {
+void InitCDDebugShader() {
     cdDebugShader* result = (cdDebugShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -57,20 +57,20 @@ cdDebugShader* InitCDDebugShader() {
         gCDDebugShader = result;
     } else {
         gCDDebugShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDDebugShader — toggle debug-shader enable bit (bit 3).
 // ea: 0x7C6420
 // ============================================================================
-char ToggleCDDebugShader() {
+void ToggleCDDebugShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[2];
     byte = (unsigned char)(((byte ^ (8 * ~(byte >> 3))) & 8) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

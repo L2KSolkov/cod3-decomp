@@ -15,7 +15,7 @@
 // InitCDCharShader — allocate the shader and link into the init list.
 // ea: 0x7D2B70
 // ============================================================================
-cdCharShader* InitCDCharShader() {
+void InitCDCharShader() {
     cdCharShader* result = (cdCharShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -26,20 +26,20 @@ cdCharShader* InitCDCharShader() {
         gCDCharShader = result;
     } else {
         gCDCharShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDCharShader — toggle the character-shader enable bit (bit 1).
 // ea: 0x7D2BC0
 // ============================================================================
-char ToggleCDCharShader() {
+void ToggleCDCharShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[2];
     byte = (unsigned char)(((byte ^ (2 * ~(byte >> 1))) & 2) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

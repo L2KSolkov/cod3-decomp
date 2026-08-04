@@ -21,7 +21,7 @@ void cdSimpleColorShader::Register() {
 // InitCDSimpleColorShader — allocate the shader and link into the init list.
 // ea: 0x7D5F10
 // ============================================================================
-cdSimpleColorShader* InitCDSimpleColorShader() {
+void InitCDSimpleColorShader() {
     cdSimpleColorShader* result = (cdSimpleColorShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         // vftable = tlInitList, link into init list
@@ -33,20 +33,20 @@ cdSimpleColorShader* InitCDSimpleColorShader() {
         gCDSimpleColorShader = result;
     } else {
         gCDSimpleColorShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDSimpleColorShader — toggle the color-shader enable bit (bit 3).
 // ea: 0x7D5F60
 // ============================================================================
-char ToggleCDSimpleColorShader() {
+void ToggleCDSimpleColorShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[1];
     byte = (unsigned char)(((byte ^ (8 * ~(byte >> 3))) & 8) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[1] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

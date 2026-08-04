@@ -55,7 +55,7 @@ inline void cdWorldProjectedPixel_RegisterShader() {
 // InitCDWorldShader — allocate the shader and link into the init list.
 // ea: 0x7DF0D0
 // ============================================================================
-cdWorldShader* InitCDWorldShader() {
+void InitCDWorldShader() {
     cdWorldShader* result = (cdWorldShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -66,20 +66,20 @@ cdWorldShader* InitCDWorldShader() {
         gCDWorldShader = result;
     } else {
         gCDWorldShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDWorldShader — toggle the world-shader enable bit (bit 1).
 // ea: 0x7DF120
 // ============================================================================
-char ToggleCDWorldShader() {
+void ToggleCDWorldShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[0];
     byte = (unsigned char)(((byte ^ (2 * ~(byte >> 1))) & 2) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[0] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

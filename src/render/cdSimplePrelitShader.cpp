@@ -49,7 +49,7 @@ cdSimplePrelitShaderMat::cdSimplePrelitShaderMat(nglTexture* iTexture) {
 // InitCDSimplePrelitShader — allocate the shader and link into the init list.
 // ea: 0x7D5970
 // ============================================================================
-cdSimplePrelitShader* InitCDSimplePrelitShader() {
+void InitCDSimplePrelitShader() {
     cdSimplePrelitShader* result = (cdSimplePrelitShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -60,20 +60,20 @@ cdSimplePrelitShader* InitCDSimplePrelitShader() {
         gCDSimplePrelitShader = result;
     } else {
         gCDSimplePrelitShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDSimplePrelitShader — toggle prelit-shader enable bit (bit 5).
 // ea: 0x7D59C0
 // ============================================================================
-char ToggleCDSimplePrelitShader() {
+void ToggleCDSimplePrelitShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[1];
     byte = (unsigned char)(((byte ^ (32 * ~(byte >> 5))) & 0x20) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[1] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

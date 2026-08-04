@@ -79,7 +79,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 
 extern cdSimpleAlphaShader* gCDSimpleAlphaShader;  // @0x10DE058
 
-cdSimpleAlphaShader* InitCDSimpleAlphaShader();  // @0x7C7EA0
-char ToggleCDSimpleAlphaShader();                // @0x7C7EF0
+void InitCDSimpleAlphaShader();  // @0x7C7EA0
+void ToggleCDSimpleAlphaShader();                // @0x7C7EF0
 
 #endif // COD3_RENDER_CDSIMPLEALPHASHADER_H

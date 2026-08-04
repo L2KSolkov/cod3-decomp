@@ -72,7 +72,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 
 extern cdGunShader* gCDGunShader;  // @0x10DE4D8
 
-cdGunShader* InitCDGunShader();  // @0x7CEB00
-char ToggleCDGunShader();        // @0x7CEB50
+void InitCDGunShader();  // @0x7CEB00
+void ToggleCDGunShader();        // @0x7CEB50
 
 #endif // COD3_RENDER_CDGUNSHADER_H

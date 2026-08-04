@@ -65,7 +65,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 
 extern cdSimplePrelitShader* gCDSimplePrelitShader;  // @0x10DE57C
 
-cdSimplePrelitShader* InitCDSimplePrelitShader();  // @0x7D5970
-char ToggleCDSimplePrelitShader();                 // @0x7D59C0
+void InitCDSimplePrelitShader();  // @0x7D5970
+void ToggleCDSimplePrelitShader();                 // @0x7D59C0
 
 #endif // COD3_RENDER_CDSIMPLEPRELITSHADER_H

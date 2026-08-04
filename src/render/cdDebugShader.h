@@ -65,7 +65,7 @@ extern void nglListAddNode(nglRenderNode* Node);  // ?nglListAddNode@@YAXPAVnglR
 
 extern cdDebugShader* gCDDebugShader;  // @0x10DE034
 
-cdDebugShader* InitCDDebugShader();  // @0x7C63D0
-char ToggleCDDebugShader();          // @0x7C6420
+void InitCDDebugShader();  // @0x7C63D0
+void ToggleCDDebugShader();          // @0x7C6420
 
 #endif // COD3_RENDER_CDDEBUGSHADER_H

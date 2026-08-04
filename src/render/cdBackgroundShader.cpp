@@ -49,7 +49,7 @@ cdBackgroundShaderMat::cdBackgroundShaderMat(nglTexture* iTexture) {
 // InitCDBackgroundShader — allocate the shader and link into the init list.
 // ea: 0x7E05B0
 // ============================================================================
-cdBackgroundShader* InitCDBackgroundShader() {
+void InitCDBackgroundShader() {
     cdBackgroundShader* result = (cdBackgroundShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -60,20 +60,20 @@ cdBackgroundShader* InitCDBackgroundShader() {
         gCDBackgroundShader = result;
     } else {
         gCDBackgroundShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDBackgroundShader — toggle background-shader enable bit (bit 6).
 // ea: 0x7E0600
 // ============================================================================
-char ToggleCDBackgroundShader() {
+void ToggleCDBackgroundShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[2];
     byte = (unsigned char)(((byte ^ (~(byte >> 6) << 6)) & 0x40) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[2] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

@@ -75,8 +75,8 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 extern gpuVertexFormat cdWheelMarkVertexFormat;  // ?cdWheelMarkVertexFormat@@3UgpuVertexFormat@@A @0x14CD564
 extern cdWheelMarkShader* gCDWheelMarkShader;    // @0x10DE074
 
-cdWheelMarkShader* InitCDWheelMarkShader();        // @0x7C9330
-char ToggleCDWheelMarkShader();                    // @0x7C9380 (empty)
-_D3DVERTEXATTRIBUTEFORMAT* InitCDWheelMarkVertexDefBuilder();  // @0x7C9390
+void InitCDWheelMarkShader();        // @0x7C9330
+void ToggleCDWheelMarkShader();                    // @0x7C9380 (empty)
+void InitCDWheelMarkVertexDefBuilder();            // @0x7C9390
 
 #endif // COD3_RENDER_CDWHEELMARKSHADER_H

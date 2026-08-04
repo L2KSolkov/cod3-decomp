@@ -49,7 +49,7 @@ cdSimpleAlphaShaderMat::cdSimpleAlphaShaderMat(nglTexture* iTexture) {
 // InitCDSimpleAlphaShader — allocate the shader and link into the init list.
 // ea: 0x7C7EA0
 // ============================================================================
-cdSimpleAlphaShader* InitCDSimpleAlphaShader() {
+void InitCDSimpleAlphaShader() {
     cdSimpleAlphaShader* result = (cdSimpleAlphaShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -60,21 +60,18 @@ cdSimpleAlphaShader* InitCDSimpleAlphaShader() {
         gCDSimpleAlphaShader = result;
     } else {
         gCDSimpleAlphaShader = NULL;
-        return NULL;
     }
-    return result;
 }
 
 // ============================================================================
 // ToggleCDSimpleAlphaShader — toggle the alpha-shader enable (high bit).
 // ea: 0x7C7EF0
 // ============================================================================
-char ToggleCDSimpleAlphaShader() {
+void ToggleCDSimpleAlphaShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[1];
     char result = (char)~byte;
     ShaderCommon::ShaderSwitching.__s0[1] =
         (unsigned char)(~byte ^ ((byte ^ ~byte) & 0x7F));
-    return result;
 }
 
 // ============================================================================

@@ -15,7 +15,7 @@
 // InitCDPrelitShader — allocate the shader and link into the init list.
 // ea: 0x7D3590
 // ============================================================================
-cdPrelitShader* InitCDPrelitShader() {
+void InitCDPrelitShader() {
     cdPrelitShader* result = (cdPrelitShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -26,20 +26,20 @@ cdPrelitShader* InitCDPrelitShader() {
         gCDPrelitShader = result;
     } else {
         gCDPrelitShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDPrelitShader — toggle the prelit-shader enable bit (bit 2).
 // ea: 0x7D35E0
 // ============================================================================
-char ToggleCDPrelitShader() {
+void ToggleCDPrelitShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[3];
     byte = (unsigned char)(((byte ^ (4 * ~(byte >> 2))) & 4) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

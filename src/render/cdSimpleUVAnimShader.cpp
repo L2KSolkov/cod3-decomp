@@ -49,7 +49,7 @@ cdSimpleUVAnimShaderMat::cdSimpleUVAnimShaderMat(nglTexture* iTexture) {
 // InitCDSimpleUVAnimShader — allocate the shader and link into the init list.
 // ea: 0x7C6E00
 // ============================================================================
-cdSimpleUVAnimShader* InitCDSimpleUVAnimShader() {
+void InitCDSimpleUVAnimShader() {
     cdSimpleUVAnimShader* result = (cdSimpleUVAnimShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -60,20 +60,20 @@ cdSimpleUVAnimShader* InitCDSimpleUVAnimShader() {
         gCDSimpleUVAnimShader = result;
     } else {
         gCDSimpleUVAnimShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDSimpleUVAnimShader — toggle UV-anim enable bit (bit 6).
 // ea: 0x7C6E50
 // ============================================================================
-char ToggleCDSimpleUVAnimShader() {
+void ToggleCDSimpleUVAnimShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[1];
     byte = (unsigned char)(((byte ^ (~(byte >> 6) << 6)) & 0x40) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[1] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================

@@ -72,7 +72,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 extern cdBackgroundShader* gCDBackgroundShader;    // @0x10DE5F4
 extern cdBackgroundShader* g_cdBackgroundShader;   // @0x10DE5F0
 
-cdBackgroundShader* InitCDBackgroundShader();  // @0x7E05B0
-char ToggleCDBackgroundShader();               // @0x7E0600
+void InitCDBackgroundShader();  // @0x7E05B0
+void ToggleCDBackgroundShader();               // @0x7E0600
 
 #endif // COD3_RENDER_CDBACKGROUNDSHADER_H

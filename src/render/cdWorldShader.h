@@ -58,7 +58,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 
 extern cdWorldShader* gCDWorldShader;  // @0x10DE5E4
 
-cdWorldShader* InitCDWorldShader();  // @0x7DF0D0
-char ToggleCDWorldShader();          // @0x7DF120
+void InitCDWorldShader();  // @0x7DF0D0
+void ToggleCDWorldShader();          // @0x7DF120
 
 #endif // COD3_RENDER_CDWORLDSHADER_H

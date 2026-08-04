@@ -73,7 +73,7 @@ extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microco
 
 extern cdSimpleSpecularShader* gCDSimpleSpecularShader;  // @0x10DE574
 
-cdSimpleSpecularShader* InitCDSimpleSpecularShader();  // @0x7D4E60
-char ToggleCDSimpleSpecularShader();                   // @0x7D4EB0
+void InitCDSimpleSpecularShader();  // @0x7D4E60
+void ToggleCDSimpleSpecularShader();                   // @0x7D4EB0
 
 #endif // COD3_RENDER_CDSIMPLESPECULARSHADER_H

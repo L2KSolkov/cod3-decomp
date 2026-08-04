@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // cdDebugVertexDef.h — debug vertex format builder + tl init-list function.
 // Source: source/cdDebugVertexDef.cpp (render_xboxr)
 //
@@ -19,35 +19,35 @@ class apsSimpleMeshShader;
 class apsSimpleMeshRenderer;
 class nglShader;
 class cdSimpleColorShader;
-cdSimpleColorShader* InitCDSimpleColorShader();
+void InitCDSimpleColorShader();
 class cdWorldColorShader;
-cdWorldColorShader* InitCDWorldColorShader();
+void InitCDWorldColorShader();
 class cdSimpleShader;
-cdSimpleShader* InitCDSimpleShader();
+void InitCDSimpleShader();
 class cdDecalShader;
-cdDecalShader* InitCDDecalShader();
+void InitCDDecalShader();
 class cdGunShader;
-cdGunShader* InitCDGunShader();
+void InitCDGunShader();
 class cdCharShader;
-cdCharShader* InitCDCharShader();
+void InitCDCharShader();
 class cdPrelitShader;
-cdPrelitShader* InitCDPrelitShader();
+void InitCDPrelitShader();
 class cdWorldShader;
-cdWorldShader* InitCDWorldShader();
+void InitCDWorldShader();
 class cdSimpleAlphaShader;
-cdSimpleAlphaShader* InitCDSimpleAlphaShader();
+void InitCDSimpleAlphaShader();
 class cdSimplePrelitShader;
-cdSimplePrelitShader* InitCDSimplePrelitShader();
+void InitCDSimplePrelitShader();
 class cdSimpleSpecularShader;
-cdSimpleSpecularShader* InitCDSimpleSpecularShader();
+void InitCDSimpleSpecularShader();
 class cdSimpleUVAnimShader;
-cdSimpleUVAnimShader* InitCDSimpleUVAnimShader();
+void InitCDSimpleUVAnimShader();
 class cdBackgroundShader;
-cdBackgroundShader* InitCDBackgroundShader();
+void InitCDBackgroundShader();
 class cdDebugShader;
-cdDebugShader* InitCDDebugShader();
+void InitCDDebugShader();
 class cdWheelMarkShader;
-cdWheelMarkShader* InitCDWheelMarkShader();
+void InitCDWheelMarkShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -69,35 +69,35 @@ private:
     friend class apsSimpleMeshRenderer;
     friend class nglShader;
     friend class cdSimpleColorShader;
-    friend cdSimpleColorShader* InitCDSimpleColorShader();
+    friend void InitCDSimpleColorShader();
     friend class cdWorldColorShader;
-    friend cdWorldColorShader* InitCDWorldColorShader();
+    friend void InitCDWorldColorShader();
     friend class cdSimpleShader;
-    friend cdSimpleShader* InitCDSimpleShader();
+    friend void InitCDSimpleShader();
     friend class cdDecalShader;
-    friend cdDecalShader* InitCDDecalShader();
+    friend void InitCDDecalShader();
     friend class cdGunShader;
-    friend cdGunShader* InitCDGunShader();
+    friend void InitCDGunShader();
     friend class cdCharShader;
-    friend cdCharShader* InitCDCharShader();
+    friend void InitCDCharShader();
     friend class cdPrelitShader;
-    friend cdPrelitShader* InitCDPrelitShader();
+    friend void InitCDPrelitShader();
     friend class cdWorldShader;
-    friend cdWorldShader* InitCDWorldShader();
+    friend void InitCDWorldShader();
     friend class cdSimpleAlphaShader;
-    friend cdSimpleAlphaShader* InitCDSimpleAlphaShader();
+    friend void InitCDSimpleAlphaShader();
     friend class cdSimplePrelitShader;
-    friend cdSimplePrelitShader* InitCDSimplePrelitShader();
+    friend void InitCDSimplePrelitShader();
     friend class cdSimpleSpecularShader;
-    friend cdSimpleSpecularShader* InitCDSimpleSpecularShader();
+    friend void InitCDSimpleSpecularShader();
     friend class cdSimpleUVAnimShader;
-    friend cdSimpleUVAnimShader* InitCDSimpleUVAnimShader();
+    friend void InitCDSimpleUVAnimShader();
     friend class cdBackgroundShader;
-    friend cdBackgroundShader* InitCDBackgroundShader();
+    friend void InitCDBackgroundShader();
     friend class cdDebugShader;
-    friend cdDebugShader* InitCDDebugShader();
+    friend void InitCDDebugShader();
     friend class cdWheelMarkShader;
-    friend cdWheelMarkShader* InitCDWheelMarkShader();
+    friend void InitCDWheelMarkShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 

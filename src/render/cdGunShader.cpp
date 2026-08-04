@@ -49,7 +49,7 @@ cdGunShaderMat::cdGunShaderMat(nglTexture* iTexture) {
 // InitCDGunShader — allocate the shader and link into the init list.
 // ea: 0x7CEB00
 // ============================================================================
-cdGunShader* InitCDGunShader() {
+void InitCDGunShader() {
     cdGunShader* result = (cdGunShader*)mem_heap_malloc(0x10);
     if (result != NULL) {
         result->next = tlInitList::head;
@@ -60,20 +60,20 @@ cdGunShader* InitCDGunShader() {
         gCDGunShader = result;
     } else {
         gCDGunShader = NULL;
-        return NULL;
+
     }
-    return result;
+
 }
 
 // ============================================================================
 // ToggleCDGunShader — toggle the gun-shader enable bit (bit 3).
 // ea: 0x7CEB50
 // ============================================================================
-char ToggleCDGunShader() {
+void ToggleCDGunShader() {
     unsigned char byte = ShaderCommon::ShaderSwitching.__s0[3];
     byte = (unsigned char)(((byte ^ (8 * ~(byte >> 3))) & 8) ^ byte);
     ShaderCommon::ShaderSwitching.__s0[3] = byte;
-    return (char)byte;
+
 }
 
 // ============================================================================
