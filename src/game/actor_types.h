@@ -12,7 +12,6 @@
 
 // Forward
 struct sentient_s;
-struct PathNodes;
 
 // ============================================================================
 // team_t — team enumeration

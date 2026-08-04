@@ -8,6 +8,7 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#include <stddef.h>
 #include <stdint.h>
 
 // Forward declarations
@@ -33,13 +34,21 @@ struct sentient_s;
 struct DCGSet;
 struct WorldSector;
 
+// ============================================================================
+// Handle — generic object handle (4 bytes) — verified against IDA
+// ============================================================================
+struct Handle {
+    unsigned int mVal;  // +0x00
+};
+static_assert(sizeof(Handle) == 4, "Handle size mismatch");
+
 // Handle type — wraps a DbLinkedHandle
 template <typename HandleDb, typename T>
 struct DbLinkedHandle {
-    uint16_t index;  // handle index
+    Handle mHandle;  // +0x00 — wrapped handle
 
-    DbLinkedHandle() : index(0) {}
-    bool IsValid() const { return index != 0; }
+    DbLinkedHandle() { mHandle.mVal = 0; }
+    bool IsValid() const { return mHandle.mVal != 0; }
 };
 static_assert(sizeof(DbLinkedHandle<void, void>) == 4, "DbLinkedHandle size mismatch");
 
@@ -52,11 +61,47 @@ struct InplaceVector {
 static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");
 
 // IVPointer — intrusive counted pointer (8 bytes)
+// Layout: { T* mValue; TPakId mPakId; } — verified against IDA
 template <typename T>
 struct IVPointer {
-    void* ptr;    // +0x00 — actual pointer data
+    T*           mValue;   // +0x00 — actual pointer data
+    unsigned int mPakId;   // +0x04 — pak id (TPakId)
 };
 static_assert(sizeof(IVPointer<char>) == 8, "IVPointer size mismatch");
+
+// ============================================================================
+// trType_t — trajectory type enumeration (from IDA, all values verified)
+// ============================================================================
+enum trType_t {
+    TR_STATIONARY = 0,
+    TR_INTERPOLATE = 1,
+    TR_LINEAR = 2,
+    TR_LINEAR_STOP = 3,
+    TR_SINE = 4,
+    TR_GRAVITY = 5,
+    TR_GRAVITY_LOW = 6,
+    TR_GRAVITY_FLOAT = 7,
+    TR_GRAVITY_PAUSED = 8,
+    TR_ACCELERATE = 9,
+    TR_DECCELERATE = 10,
+};
+
+// ============================================================================
+// trajectory_t — entity position/angle interpolation (40 bytes)
+// Size: 0x28 (40 bytes) — verified against IDA
+// Note: trBase/trDelta are float[3] (12 bytes), NOT math::Position3.
+// ============================================================================
+struct trajectory_t {
+    trType_t trType;             // +0x00
+    int32_t  trTime;             // +0x04
+    int32_t  trDuration;         // +0x08
+    float    trBase[3];          // +0x0C
+    float    trDelta[3];         // +0x18
+    int32_t  trGravityOverride;  // +0x24
+};
+static_assert(sizeof(trajectory_t) == 0x28, "trajectory_t size mismatch");
+static_assert(offsetof(trajectory_t, trBase) == 0x0C, "trajectory_t::trBase offset mismatch");
+static_assert(offsetof(trajectory_t, trDelta) == 0x18, "trajectory_t::trDelta offset mismatch");
 
 // ============================================================================
 // EntityState — network-replicated entity state (224 bytes)
@@ -73,9 +118,8 @@ struct EntityState {
     DbLinkedHandle<void, Entity> mOtherEntity;    // +0x08
     DbLinkedHandle<void, Entity> mGroundEntity;   // +0x0C
     int32_t  eFlags;                              // +0x10
-    // trajectory_t pos — embedded 40 bytes
-    // trajectory_t apos — embedded 40 bytes
-    uint8_t  _pad_traj[80];                       // +0x14 (2x trajectory_t)
+    trajectory_t pos;                             // +0x14
+    trajectory_t apos;                            // +0x3C
     math::Position3 lerpOrigin;                   // +0x70
     math::Position3 lerpAngles;                   // +0x80
     math::Position3 origin2;                      // +0x90
@@ -133,8 +177,19 @@ struct EntityShared {
 static_assert(sizeof(EntityShared) == 0x150, "EntityShared size mismatch");
 
 // ============================================================================
+// AttachModelInfo — attached model + tag (12 bytes)
+// ============================================================================
+struct AttachModelInfo {
+    IVPointer<XModel> mModel;  // +0x00 (8 bytes)
+    Broc::string      mTag;    // +0x08
+};
+static_assert(sizeof(AttachModelInfo) == 0x0C, "AttachModelInfo size mismatch");
+
+struct EntityAnimationDebug;  // opaque — Entity::AnimationDebug
+
+// ============================================================================
 // Entity — main game entity (1136 bytes)
-// Size: 0x470 (1136 bytes) — verified against IDA
+// Size: 0x470 (1136 bytes) — verified against IDA (107 members)
 // ============================================================================
 struct Entity {
     EntityState  s;                               // +0x000 (224 bytes)
@@ -142,11 +197,11 @@ struct Entity {
     int32_t  mPakId;                              // +0x230
     DbLinkedHandle<void, Entity> mHandle;         // +0x234
     int16_t  mEntityArrayIndex;                   // +0x238
-    // pad
-    uint8_t  _pad1[2];                            // +0x23A
+    // pad 2
+    uint8_t  _pad23A[2];                          // +0x23A
     DObj*    mDObj;                               // +0x23C
-    EntityNotifySet* mNotifySet;                   // +0x240
-    ScriptEventHandler* mScriptEventHandler;       // +0x244
+    EntityNotifySet* mNotifySet;                  // +0x240
+    ScriptEventHandler* mScriptEventHandler;      // +0x244
     biped_phys_info* mBPInfo;                     // +0x248
     IVPointer<Destructible> mDestructible;        // +0x24C (8 bytes)
     Client*  client;                              // +0x254
@@ -158,13 +213,121 @@ struct Entity {
     XAnimTree* pAnimTree;                         // +0x26C
     IVPointer<XModel> mModel;                     // +0x270 (8 bytes)
     float    modelscale;                          // +0x278
-    // Broc::string and Hashed names
-    uint8_t  _pad_broc_strings[0x30];             // +0x27C (broc strings/hashes region)
-    float    pos1_v[4];                           // +0x2E0 (math::Position3 pos1)
+    Broc::string   mClassName;                    // +0x27C
+    HashString     mClassNameHash;                // +0x280
+    Broc::string   targetname;                    // +0x284
+    unsigned int   targetnameHash;                // +0x288
+    Broc::string   mTarget;                       // +0x28C
+    unsigned int   mTargetHash;                   // +0x290
+    Broc::string   mGroupName;                    // +0x294
+    unsigned int   mGroupNameHash;                // +0x298
+    Broc::string   mScriptNoteworthy;             // +0x29C
+    unsigned int   mScriptNoteworthyHash;         // +0x2A0
+    Broc::string   mAnimName;                     // +0x2A4
+    unsigned int   mAnimNameHash;                 // +0x2A8
+    unsigned int   mHintString;                   // +0x2AC
+    uint8_t  physicsObject;                       // +0x2B0
+    uint8_t  noise_index;                         // +0x2B1
+    uint8_t  ctf_has_flag;                        // +0x2B2
+    uint8_t  active;                              // +0x2B3
+    uint8_t  moverState;                          // +0x2B4
+    uint8_t  attachIgnoreCollision;               // +0x2B5
+    // pad 2
+    uint8_t  _pad2B6[2];                          // +0x2B6
+    int32_t  takedamage;                          // +0x2B8
+    unsigned int invulnerability_timeout;         // +0x2BC
+    int32_t  spawnflags;                          // +0x2C0
+    int32_t  flags;                               // +0x2C4
+    unsigned int mFlags;                          // +0x2C8 (Bitmask<unsigned int>)
+    int32_t  clipmask;                            // +0x2CC
+    int32_t  processedFrame;                      // +0x2D0
+    DbLinkedHandle<void, Entity> parentHandle;    // +0x2D4
+    // pad 4 (align to 0x2E0)
+    uint8_t  _pad2D8[4];                          // +0x2D8
+    math::Position3 pos1;                         // +0x2E0
+    math::Position3 pos2;                         // +0x2F0
+    math::Position3 pos3;                         // +0x300
+    int32_t  timestamp;                           // +0x310
+    float    angle;                               // +0x314
+    Broc::string team;                            // +0x318
+    float    speed;                               // +0x31C
+    float    closespeed;                          // +0x320
+    // pad 12 (align to 0x330)
+    uint8_t  _pad324[12];                         // +0x324
+    math::Position3 movedir;                      // +0x330
+    int32_t  gDuration;                           // +0x340
+    int32_t  gDurationBack;                       // +0x344
+    int32_t  nextthink;                           // +0x348
+    int32_t  think;                               // +0x34C (fn_think_e)
+    uint8_t  reached;                             // +0x350
+    uint8_t  blocked;                             // +0x351
+    uint8_t  touch;                               // +0x352
+    uint8_t  use;                                 // +0x353
+    uint8_t  pain;                                // +0x354
+    uint8_t  die;                                 // +0x355
+    uint8_t  entinfo;                             // +0x356
+    uint8_t  controller;                          // +0x357
+    int32_t  health;                              // +0x358
+    int32_t  maxHealth;                           // +0x35C
+    int32_t  damage;                              // +0x360
+    int32_t  methodOfDeath;                       // +0x364
+    int32_t  splashMethodOfDeath;                 // +0x368
+    int32_t  count;                               // +0x36C
+    Entity*  enemy;                               // +0x370
+    Entity*  activator;                           // +0x374
+    Entity*  teamchain;                           // +0x378
+    Entity*  teammaster;                          // +0x37C
+    float    wait;                                // +0x380
+    float    random;                              // +0x384
+    float    delay;                               // +0x388
+    // pad 4 (align to 0x390)
+    uint8_t  _pad38C[4];                          // +0x38C
+    math::Position3 rotate;                       // +0x390
+    math::Position3 TargetAngles;                 // +0x3A0
+    const gitem_s* item;                          // +0x3B0
+    int32_t  key;                                 // +0x3B4
+    Broc::string mSpawnItem;                      // +0x3B8
+    int16_t  cell_index;                          // +0x3BC
+    int16_t  mPersistentIndex;                    // +0x3BE
+    int32_t  count2;                              // +0x3C0
+    int32_t  grenadeExplodeTime;                  // +0x3C4
+    uint8_t  snd_wait[8];                         // +0x3C8 (opaque 8 bytes)
+    Curve*   curve;                               // +0x3D0
+    tagInfo_t* tagInfo;                           // +0x3D4
+    Entity*  tagChildren;                         // +0x3D8
+    animscripted_t* scripted;                     // +0x3DC
+    AttachModelInfo mAttachModels[7];             // +0x3E0 (84 bytes)
+    uint16_t disconnectedLinks;                   // +0x434
+    int32_t  iDisconnectTime;                     // +0x438
+    int32_t  currentValid;                        // +0x43C
+    int32_t  fireSndDelay;                        // +0x440
+    int32_t  isFiring;                            // +0x444
+    Handle   effectLoopingFire;                   // +0x448
+    int32_t  previousEventSequence;               // +0x44C
+    int32_t  previousPreEventSequence;            // +0x450
+    struct EntityAnimationDebug* mAnimDebug;       // +0x454
+    void*    mBrocExtendedEntity;                 // +0x458
+    proximity_data_t* proximity_data;             // +0x45C
+    int32_t  uniqueIndex;                         // +0x460
+    // pad to 0x470
+    uint8_t  _pad464[12];                         // +0x464
 };
 static_assert(sizeof(Entity) == 0x470, "Entity size mismatch");
 static_assert(offsetof(Entity, s) == 0x000, "Entity::s offset mismatch");
 static_assert(offsetof(Entity, r) == 0x0E0, "Entity::r offset mismatch");
+static_assert(offsetof(Entity, mPakId) == 0x230, "Entity::mPakId offset mismatch");
+static_assert(offsetof(Entity, mHandle) == 0x234, "Entity::mHandle offset mismatch");
+static_assert(offsetof(Entity, mDObj) == 0x23C, "Entity::mDObj offset mismatch");
+static_assert(offsetof(Entity, mDestructible) == 0x24C, "Entity::mDestructible offset mismatch");
 static_assert(offsetof(Entity, client) == 0x254, "Entity::client offset mismatch");
 static_assert(offsetof(Entity, actor) == 0x258, "Entity::actor offset mismatch");
 static_assert(offsetof(Entity, sentient) == 0x25C, "Entity::sentient offset mismatch");
+static_assert(offsetof(Entity, mModel) == 0x270, "Entity::mModel offset mismatch");
+static_assert(offsetof(Entity, mClassName) == 0x27C, "Entity::mClassName offset mismatch");
+static_assert(offsetof(Entity, mClassNameHash) == 0x280, "Entity::mClassNameHash offset mismatch");
+static_assert(offsetof(Entity, pos1) == 0x2E0, "Entity::pos1 offset mismatch");
+static_assert(offsetof(Entity, movedir) == 0x330, "Entity::movedir offset mismatch");
+static_assert(offsetof(Entity, health) == 0x358, "Entity::health offset mismatch");
+static_assert(offsetof(Entity, enemy) == 0x370, "Entity::enemy offset mismatch");
+static_assert(offsetof(Entity, mAttachModels) == 0x3E0, "Entity::mAttachModels offset mismatch");
+static_assert(offsetof(Entity, uniqueIndex) == 0x460, "Entity::uniqueIndex offset mismatch");

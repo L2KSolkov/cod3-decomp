@@ -26,6 +26,14 @@ struct HashStr {
 COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
 
 // ============================================================================
+// HashString — global hashed string (4 bytes) — verified against IDA
+// ============================================================================
+struct HashString {
+    unsigned int mHash;  // +0x00
+};
+COD3_STATIC_ASSERT_32BIT(sizeof(HashString) == 4, "HashString size mismatch");
+
+// ============================================================================
 // Broc namespace
 // ============================================================================
 namespace Broc {
@@ -232,6 +240,11 @@ namespace EEDefault {
 }
 
 // ============================================================================
+// PathNodes namespace — AI path node handles
+// (moved to global scope below namespace Broc)
+// ============================================================================
+
+// ============================================================================
 // Broc wait / thread functions
 // ============================================================================
 void ThreadExecute(void* functor);
@@ -285,6 +298,16 @@ struct bbool {
 COD3_STATIC_ASSERT_32BIT(sizeof(bbool) == 1, "bbool size mismatch");
 
 } // namespace Broc
+
+// ============================================================================
+// PathNodes namespace — AI path node handles (global scope, verified against IDA)
+// ============================================================================
+namespace PathNodes {
+struct NodeHandle {
+    uint16_t mValue;  // +0x00
+};
+} // namespace PathNodes
+COD3_STATIC_ASSERT_32BIT(sizeof(PathNodes::NodeHandle) == 2, "PathNodes::NodeHandle size mismatch");
 
 // ============================================================================
 // InplaceString — in-place char* (4 bytes)

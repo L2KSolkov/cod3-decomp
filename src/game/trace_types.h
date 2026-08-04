@@ -40,26 +40,11 @@ static_assert(offsetof(trace_t, endpos) == 0x00, "trace_t::endpos offset mismatc
 static_assert(offsetof(trace_t, fraction) == 0x20, "trace_t::fraction offset mismatch");
 
 // ============================================================================
-// hitLocation_t — body part / hit location enumeration
-// ============================================================================
-typedef uint32_t hitLocation_t;
-
-// ============================================================================
-// trajectory_t — entity position/angle interpolation (40 bytes)
-// ============================================================================
-struct trajectory_t {
-    int32_t         trType;       // +0x00
-    int32_t         trTime;       // +0x04
-    int32_t         trDuration;   // +0x08
-    math::Position3 trBase;       // +0x10
-    math::Position3 trDelta;      // +0x20
-};
-static_assert(sizeof(trajectory_t) == 0x28, "trajectory_t size mismatch? check IDA");
-
-// ============================================================================
 // collision_context_t — collision filtering context
-// Size and layout TBD — reconstruct from usage patterns
+// Size: 0x18 (24 bytes) — verified against IDA (vtbl + derived data)
 // ============================================================================
 struct collision_context_t {
-    uint8_t data[0x40];  // placeholder — actual size TBD during porting
+    struct collision_context_t_vtbl* __vftable;  // +0x00
+    uint8_t _pad4[20];                            // +0x04 (derived-specific data)
 };
+static_assert(sizeof(collision_context_t) == 0x18, "collision_context_t size mismatch");

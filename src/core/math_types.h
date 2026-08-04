@@ -105,6 +105,18 @@ struct Mat33 {
 static_assert(sizeof(Mat33) == 0x30, "Mat33 size mismatch");
 
 // ============================================================================
+// Mat44 — 4x4 matrix (64 bytes = 4 * Vector4)
+// Size: 0x40 (64 bytes) — verified against IDA
+// ============================================================================
+struct Mat44 {
+    Vector4 x;  // +0x00
+    Vector4 y;  // +0x10
+    Vector4 z;  // +0x20
+    Vector4 w;  // +0x30
+};
+static_assert(sizeof(Mat44) == 0x40, "Mat44 size mismatch");
+
+// ============================================================================
 // TranMat43 — translation-only matrix (16 bytes, single Position3)
 // Size: 0x10 (16 bytes) — verified against IDA
 // ============================================================================

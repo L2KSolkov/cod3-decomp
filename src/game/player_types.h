@@ -138,3 +138,47 @@ struct usercmd_s {
 };
 static_assert(sizeof(usercmd_s) == 0x30, "usercmd_s size mismatch");
 static_assert(offsetof(usercmd_s, serverTime) == 0x00, "usercmd_s::serverTime offset mismatch");
+
+// ============================================================================
+// pmove_t — player movement context (336 bytes)
+// Size: 0x150 (336 bytes) — verified against IDA
+// ============================================================================
+struct pmove_t {
+    PlayerState* ps;                          // +0x00
+    usercmd_s    cmd;                         // +0x04 (48 bytes)
+    usercmd_s    oldcmd;                      // +0x34 (48 bytes)
+    int          tracemask;                   // +0x64
+    int          debugLevel;                  // +0x68
+    float        vehicleAngles[3];            // +0x6C
+    float        vehicleViewClamp[3];         // +0x78
+    int          numtouch;                    // +0x84
+    uint8_t      touchents[128];              // +0x88 (32x DbLinkedHandle, 4 bytes each)
+    math::Position3 mins;                     // +0x110
+    math::Position3 maxs;                     // +0x120
+    uint8_t      watertype;                   // +0x130
+    uint8_t      waterlevel;                  // +0x131
+    // pad 2
+    uint8_t      _pad132[2];                  // +0x132
+    float        xyspeed;                     // +0x134
+    int          pmove_fixed;                 // +0x138
+    int          pmove_msec;                  // +0x13C
+    // function pointers
+    void (__cdecl* trace)(struct trace_t*, const math::Position3*, const math::Position3*,
+                          const math::Position3*, const math::Position3*, const struct collision_context_t*);  // +0x140
+    void (__cdecl* boxtrace)(struct trace_t*, const math::Position3*, const math::Position3*,
+                             const math::Position3*, const math::Position3*, const struct collision_context_t*);  // +0x144
+    void (__cdecl* capsuletrace)(struct trace_t*, const math::Position3*, const math::Position3*,
+                                 const math::Position3*, const math::Position3*, const struct collision_context_t*);  // +0x148
+    int (__cdecl* pointcontents)(const math::Position3*, const struct collision_context_t*);  // +0x14C
+};
+static_assert(sizeof(pmove_t) == 0x150, "pmove_t size mismatch");
+static_assert(offsetof(pmove_t, ps) == 0x00, "pmove_t::ps offset mismatch");
+static_assert(offsetof(pmove_t, cmd) == 0x04, "pmove_t::cmd offset mismatch");
+static_assert(offsetof(pmove_t, oldcmd) == 0x34, "pmove_t::oldcmd offset mismatch");
+static_assert(offsetof(pmove_t, tracemask) == 0x64, "pmove_t::tracemask offset mismatch");
+static_assert(offsetof(pmove_t, numtouch) == 0x84, "pmove_t::numtouch offset mismatch");
+static_assert(offsetof(pmove_t, touchents) == 0x88, "pmove_t::touchents offset mismatch");
+static_assert(offsetof(pmove_t, mins) == 0x110, "pmove_t::mins offset mismatch");
+static_assert(offsetof(pmove_t, xyspeed) == 0x134, "pmove_t::xyspeed offset mismatch");
+static_assert(offsetof(pmove_t, trace) == 0x140, "pmove_t::trace offset mismatch");
+static_assert(offsetof(pmove_t, pointcontents) == 0x14C, "pmove_t::pointcontents offset mismatch");
