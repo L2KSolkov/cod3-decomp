@@ -30,6 +30,8 @@ class cdGunShader;
 cdGunShader* InitCDGunShader();
 class cdCharShader;
 cdCharShader* InitCDCharShader();
+class cdPrelitShader;
+cdPrelitShader* InitCDPrelitShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -62,6 +64,8 @@ private:
     friend cdGunShader* InitCDGunShader();
     friend class cdCharShader;
     friend cdCharShader* InitCDCharShader();
+    friend class cdPrelitShader;
+    friend cdPrelitShader* InitCDPrelitShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 
