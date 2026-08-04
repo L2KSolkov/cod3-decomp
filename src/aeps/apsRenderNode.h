@@ -42,7 +42,9 @@ struct apsSphere {
 // ============================================================================
 namespace apsLight {
 struct LightInfo {
-    uint8_t data[48];  // exact layout TBD during lighting porting
+    math::Vector4 m_dirToLight;   // +0x00
+    math::Vector4 m_lightColor;   // +0x10
+    math::Vector4 m_ambientColor; // +0x20
 };
 }
 

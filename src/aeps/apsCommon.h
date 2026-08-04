@@ -43,6 +43,7 @@ public:
     static PlayerViewPort* GetPlayerViewPort(unsigned int playerId);
 
     static nglScene* mBuildScene;
+    static nglScene* mShimmerScene;  // ?mShimmerScene@apsCommon@@0PAUnglScene@@A
 };
 
 #endif // COD3_AEPS_APSCOMMON_H
