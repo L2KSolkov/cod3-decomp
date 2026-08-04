@@ -161,7 +161,7 @@ bdSocket:bdAddressMap-xbox.obj	bdSocket	bdAddressMap-xbox.obj	engine	7	TODO
 mem_mp_xboxr:ae_heap.o	mem_mp_xboxr	ae_heap.o	engine	6	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 render_xboxr:cdScratchShader.o	render_xboxr	cdScratchShader.o	engine	6	TODO	
 render_xboxr:cdSimpleAlphaShader.o	render_xboxr	cdSimpleAlphaShader.o	engine	6	PORTED	cdSimpleAlphaShader.h/.cpp (simple alpha shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
-render_xboxr:cdDynamicDecalShader.o	render_xboxr	cdDynamicDecalShader.o	engine	6	TODO	
+render_xboxr:cdDynamicDecalShader.o	render_xboxr	cdDynamicDecalShader.o	engine	6	PORTED	cdDynamicDecalShader.h/.cpp (dynamic decal shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdGunSightSpecularShader.o	render_xboxr	cdGunSightSpecularShader.o	engine	6	TODO	
 render_xboxr:cdGunSightShader.o	render_xboxr	cdGunSightShader.o	engine	6	TODO	
 render_xboxr:cdGunShader.o	render_xboxr	cdGunShader.o	engine	6	PORTED	cdGunShader.h/.cpp (gun shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
