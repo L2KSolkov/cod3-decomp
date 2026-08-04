@@ -19,7 +19,7 @@ physics.o		physics.o	game	224	TODO
 game_xbox.o		game_xbox.o	game	210	TODO	
 sv.o		sv.o	game	118	TODO	
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	PORTED	
-aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	TODO	
+aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	IN_PROGRESS	
 phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	TODO	
 nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	TODO	
