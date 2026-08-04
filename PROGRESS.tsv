@@ -277,8 +277,8 @@ nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	PORTED	Phase 2/3: nal.cpp (animat
 phys_xboxr:phys_collision.o	phys_xboxr	phys_collision.o	engine	2	PORTED	
 phys_xboxr:rbc_def_custom.o	phys_xboxr	rbc_def_custom.o	engine	2	PORTED	
 bdPeer:bdSessionInterceptor.obj	bdPeer	bdSessionInterceptor.obj	engine	2	PORTED	bdSessionInterceptor.cpp (abstract connect-intercept interface)
-bdSocket:bdQoSProbeListener.obj	bdSocket	bdQoSProbeListener.obj	engine	2	PORTED	
-bdNet:bdDispatchInterceptor.obj	bdNet	bdDispatchInterceptor.obj	engine	2	PORTED	
+bdSocket:bdQoSProbeListener.obj	bdSocket	bdQoSProbeListener.obj	engine	2	PORTED	bdQoSProbeListener.h/.cpp (abstract QoS probe listener)
+bdNet:bdDispatchInterceptor.obj	bdNet	bdDispatchInterceptor.obj	engine	2	PORTED	bdDispatchInterceptor.h/.cpp (abstract dispatch interface)
 CallFunctor.o		CallFunctor.o	game	1	PORTED	AeThreadFunctor.h + CallFunctor.cpp (virtual CallFunction dispatch)
 core_xboxr:AeHash.o	core_xboxr	AeHash.o	engine	1	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 inplace_xboxr:InplaceTree.o	inplace_xboxr	InplaceTree.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
