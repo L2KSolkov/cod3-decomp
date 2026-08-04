@@ -8,6 +8,8 @@
 // ============================================================================
 #pragma once
 
+#include <cstddef>
+
 #ifdef __cplusplus
 
 // ---- Opaque D3D8 objects ------------------------------------------------
@@ -28,6 +30,31 @@ enum _D3DCUBEMAP_FACES {
     D3DCUBEMAP_FACE_NEGATIVE_Z = 5,
 };
 
+// ---- Render-state selector (D3DRS_*, Xbox D3D8) --------------------------
+enum _D3DRENDERSTATETYPE {
+    D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
+};
+
+// ---- Present parameters (Xbox D3D8, 68 bytes, verified against IDA) ------
+struct _D3DPRESENT_PARAMETERS_ {
+    unsigned int BackBufferWidth;                 // +0x00
+    unsigned int BackBufferHeight;                // +0x04
+    unsigned int BackBufferFormat;                // +0x08 (_D3DFORMAT)
+    unsigned int BackBufferCount;                 // +0x0C
+    unsigned int MultiSampleType;                 // +0x10
+    unsigned int SwapEffect;                      // +0x14 (_D3DSWAPEFFECT)
+    void*        hDeviceWindow;                   // +0x18
+    int          Windowed;                        // +0x1C
+    int          EnableAutoDepthStencil;          // +0x20
+    unsigned int AutoDepthStencilFormat;          // +0x24
+    unsigned int Flags;                           // +0x28
+    unsigned int FullScreen_RefreshRateInHz;      // +0x2C
+    unsigned int FullScreen_PresentationInterval; // +0x30
+    D3DSurface*  BufferSurfaces[3];               // +0x34
+    D3DSurface*  DepthStencilSurface;             // +0x40
+};
+static_assert(sizeof(_D3DPRESENT_PARAMETERS_) == 0x44, "_D3DPRESENT_PARAMETERS_ size mismatch");
+
 // ---- D3D8 entry points (stdcall, @N-decorated like the XDK exports) ------
 extern "C" {
 void         __stdcall D3DDevice_SetRenderTarget(D3DSurface* pRenderTarget, D3DSurface* pZBuffer);
@@ -36,6 +63,8 @@ D3DSurface*  __stdcall D3DCubeTexture_GetCubeMapSurface2(D3DBaseTexture* pTextur
                                                         unsigned int Level);
 D3DSurface*  __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* pTexture, unsigned int Level);
 unsigned int __stdcall D3DResource_Release(D3DResource* pResource);
+int          __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value);
+void         __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int Value);
 }
 
 #endif // __cplusplus
