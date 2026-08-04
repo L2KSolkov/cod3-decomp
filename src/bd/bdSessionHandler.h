@@ -16,7 +16,8 @@
 // ============================================================================
 class bdSessionInterceptor {
 public:
-    virtual ~bdSessionInterceptor() {}
+    bdSessionInterceptor();                                    // @0x8B5C60
+    virtual ~bdSessionInterceptor();                           // @0x8B5C70
     virtual bool onSessionConnectRequest(bdReference<bdBitBuffer> buffer, bdBitBuffer* const result) = 0;
 };
 

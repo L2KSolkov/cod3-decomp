@@ -91,6 +91,7 @@ add_library(cod3_bd STATIC
     src/bd/bdPlatform.cpp
     src/bd/bdSessionInfo.cpp
     src/bd/bdSessionHandler.cpp
+    src/bd/bdSessionInterceptor.cpp
     src/bd/stubs.cpp
 )
 add_library(cod3_core STATIC

@@ -276,7 +276,7 @@ ngl_xboxr:ngl_gpu_debug.o	ngl_xboxr	ngl_gpu_debug.o	engine	2	PORTED
 nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:phys_collision.o	phys_xboxr	phys_collision.o	engine	2	PORTED	
 phys_xboxr:rbc_def_custom.o	phys_xboxr	rbc_def_custom.o	engine	2	PORTED	
-bdPeer:bdSessionInterceptor.obj	bdPeer	bdSessionInterceptor.obj	engine	2	PORTED	
+bdPeer:bdSessionInterceptor.obj	bdPeer	bdSessionInterceptor.obj	engine	2	PORTED	bdSessionInterceptor.cpp (abstract connect-intercept interface)
 bdSocket:bdQoSProbeListener.obj	bdSocket	bdQoSProbeListener.obj	engine	2	PORTED	
 bdNet:bdDispatchInterceptor.obj	bdNet	bdDispatchInterceptor.obj	engine	2	PORTED	
 CallFunctor.o		CallFunctor.o	game	1	PORTED	AeThreadFunctor.h + CallFunctor.cpp (virtual CallFunction dispatch)
