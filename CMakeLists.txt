@@ -52,6 +52,7 @@ add_library(cod3_render STATIC
     src/render/cdSimpleShader.cpp
     src/render/cdDecalShader.cpp
     src/render/cdGunShader.cpp
+    src/render/cdCharShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
