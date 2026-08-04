@@ -19,7 +19,7 @@
 // ============================================================================
 // Forward declarations
 // ============================================================================
-struct nglMeshNode;
+class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
 struct cdSimpleShaderMat;

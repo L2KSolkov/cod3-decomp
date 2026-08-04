@@ -18,7 +18,7 @@
 
 struct nglMesh;
 struct nglLightContext;
-struct nglMeshNode;
+class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
 

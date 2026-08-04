@@ -14,13 +14,15 @@
 
 #include <intrin.h>
 
-struct nglRenderNode;
+class nglRenderNode;
+class apsRenderNode;
 
 // ============================================================================
 // nglRenderNode — base render-list node (12 bytes, from IDA local type):
 //   vtable @0x00 (implicit), Next @0x04, SortDist/SortHash union @0x08
 // ============================================================================
-struct nglRenderNode {
+class nglRenderNode {
+public:
     virtual ~nglRenderNode() {}
     nglRenderNode* Next;
     union {

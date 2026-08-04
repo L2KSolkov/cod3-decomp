@@ -7,7 +7,7 @@
 
 #include "core/math_types.h"
 
-struct nglRenderNode;
+class nglRenderNode;
 struct nglTexture;
 
 struct nglScene {

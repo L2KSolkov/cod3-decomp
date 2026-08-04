@@ -60,6 +60,7 @@ add_library(cod3_render STATIC
     src/render/cdSimpleSpecularShader.cpp
     src/render/cdSimpleUVAnimShader.cpp
     src/render/cdBackgroundShader.cpp
+    src/render/cdDebugShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
