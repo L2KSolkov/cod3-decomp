@@ -72,6 +72,7 @@ add_library(cod3_render STATIC
     src/render/cdScratchShader.cpp
     src/render/cdWorldVertexLitShader.cpp
     src/render/cdWorldPointLitShader.cpp
+    src/render/cdWorldBlendShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
