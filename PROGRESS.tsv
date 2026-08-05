@@ -85,7 +85,7 @@ nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	TODO	
 bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	TODO	
 bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	TODO	
-render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	TODO	
+render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	PORTED	cdOceanShader.h/.cpp (ocean shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; SetContext+Render deferred)
 zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO	
 aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	TODO	
 nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (file streaming stubs)
