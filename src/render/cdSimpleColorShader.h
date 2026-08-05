@@ -76,6 +76,7 @@ union ShaderSwitching_t {
     struct {
         unsigned char __s0[4];
     };
+    unsigned int as_u32;  // +0x00
 };
 extern ShaderSwitching_t ShaderSwitching;  // @0x10DDB10
 }
