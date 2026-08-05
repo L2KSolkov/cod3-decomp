@@ -70,6 +70,7 @@ add_library(cod3_render STATIC
     src/render/cdCharSpecularShader.cpp
     src/render/cdAirplaneMetalShader.cpp
     src/render/cdScratchShader.cpp
+    src/render/cdWorldVertexLitShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
