@@ -80,6 +80,7 @@ add_library(cod3_render STATIC
     src/render/cdGlassShader.cpp
     src/render/cdHeatHazeShader.cpp
     src/render/cdSimpleInstance.cpp
+    src/render/cdGlowShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
