@@ -77,6 +77,7 @@ add_library(cod3_render STATIC
     src/render/cdWaterShader.cpp
     src/render/cdOceanShader.cpp
     src/render/cdRiverShader.cpp
+    src/render/cdGlassShader.cpp
     src/render/stubs.cpp
 )
 add_library(cod3_animation STATIC
