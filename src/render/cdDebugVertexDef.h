@@ -72,6 +72,8 @@ class cdWorldBlendShader;
 void InitCDWorldBlendShader();
 class cdWorldBlendPointLitShader;
 void InitCDWorldBlendPointLitShader();
+class cdWaterShader;
+void InitCDWaterShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -146,6 +148,8 @@ private:
     friend void InitCDWorldBlendShader();
     friend class cdWorldBlendPointLitShader;
     friend void InitCDWorldBlendPointLitShader();
+    friend class cdWaterShader;
+    friend void InitCDWaterShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 
