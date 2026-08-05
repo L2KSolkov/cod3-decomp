@@ -74,7 +74,7 @@ nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	PORTED	Phase 3: nsl.cpp (audio
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	PORTED	Phase 2: nvl.cpp (video codec stubs)
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	TODO	
-render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	TODO	
+render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	PORTED	cdOceanGlobals.h/.cpp (ocean globals: sBanks data + SetSeaLevel/Init/SetDefaults/6xSetWave; SetLayer*+SetWaveOrigin+DumpSettings+GetHeight deferred)
 controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	PORTED	Phase 2: controller.cpp (XInput wrapper)
 jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jobqueue.cpp (batch job system)
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	TODO	
