@@ -139,7 +139,7 @@ bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	TODO
 bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engine	8	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 core_xboxr:AeAssert.o	core_xboxr	AeAssert.o	engine	7	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 render_xboxr:cdGlowShader.o	render_xboxr	cdGlowShader.o	engine	7	TODO	
-render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	TODO	
+render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	PORTED	cdSimpleInstance.h/.cpp (simple instance: Init/Toggle/Create/Destroy; Add/Finalize/Render deferred)
 render_xboxr:cdDebugShader.o	render_xboxr	cdDebugShader.o	engine	7	PORTED	cdDebugShader.h/.cpp (debug shader: mat ctor/Init/Toggle/Register/AddNode; GetSortInfo+Render deferred)
 render_xboxr:cdSimpleUVAnimShader.o	render_xboxr	cdSimpleUVAnimShader.o	engine	7	PORTED	cdSimpleUVAnimShader.h/.cpp (UV anim shader: mat ctor/Init/Toggle/Register/AddNode; SetTextureMatrix+Render deferred)
 render_xboxr:cdWheelMarkShader.o	render_xboxr	cdWheelMarkShader.o	engine	7	PORTED	cdWheelMarkShader.h/.cpp (wheel mark shader: mat ctor/Init/Toggle(empty)/VertexDefBuilder/Register/AddNode; Render deferred)

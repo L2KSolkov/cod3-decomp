@@ -80,6 +80,8 @@ class cdRiverShader;
 void InitCDRiverShader();
 class cdGlassShader;
 void InitCDGlassShader();
+class cdSimpleInstanceShader;
+void InitCDSimpleInstanceShader();
 
 // ============================================================================
 // tlInitList — base of the init-list chain (8 bytes, verified against IDA).
@@ -162,6 +164,8 @@ private:
     friend void InitCDRiverShader();
     friend class cdGlassShader;
     friend void InitCDGlassShader();
+    friend class cdSimpleInstanceShader;
+    friend void InitCDSimpleInstanceShader();
 };
 static_assert(sizeof(tlInitList) == 8, "tlInitList size mismatch");
 
