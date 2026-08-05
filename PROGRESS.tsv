@@ -212,7 +212,7 @@ bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	
 bdPlatform:bdPlatformTiming-xbox.obj	bdPlatform	bdPlatformTiming-xbox.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	TODO	
-render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	TODO	
+render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	PORTED	cdHeatHazeShader.h/.cpp (heat haze: Toggle/Init; Setup+Render deferred)
 render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	PORTED	cdGlassShader.h/.cpp (glass shader: Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	PORTED	cdSimpleColorShader.h/.cpp (solid-color shader + node)
 render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	PORTED	cdWorldColorShader.h/.cpp (world color shader + node + clip)
