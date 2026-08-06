@@ -25,6 +25,7 @@
 #include "apsCommon.h"          // apsCommon, apsClient (fwd)
 #include "apsRenderNode.h"      // apsSphere
 #include "apsShrimpRenderer.h"  // apsEBlendMode, nglLightContext (partial)
+#include "apsEffect.h"          // apsEffect, apsEffectTemplate (minimal views)
 
 #include <cstddef>
 #include <cstring>
@@ -32,8 +33,6 @@
 
 struct nglLightContext;
 struct nglTexture;
-class apsEffect;
-class apsEffectTemplate;
 
 // Minimal apsClient view (full interface in render.o, unported). Only the
 // virtual used by SpawnedEffectQueue::Submit is declared here.
@@ -44,19 +43,6 @@ public:
     virtual apsEffect* CreateSpawnedEffectImmediate(int pakId,
         const apsEffectTemplate* effectTemplate, float startTime) = 0;  // render.o
 };
-
-// Minimal apsEffect view for apsInternal (full class in apsEffect.o, unported).
-// Layout verified against IDA (128 bytes): mParentAgePercent @0x74.
-class apsEffect {
-public:
-    void SetLocalToWorldTransform(const math::Mat43& iMatrix);  // apsEffect.o (non-inline)
-    void SetParentAgePercent(float age) { mParentAgePercent = age; }  // inline COMDAT (apsInternal.o)
-    static void ReportEffects();                              // ?ReportEffects@apsEffect@@SAXXZ (apsEffect.o)
-
-    char  _pad[0x74];           // +0x00 (up to mParentAgePercent)
-    float mParentAgePercent;    // +0x74
-};
-static_assert(offsetof(apsEffect, mParentAgePercent) == 0x74, "apsEffect::mParentAgePercent offset mismatch");
 
 namespace apsInternal {
 

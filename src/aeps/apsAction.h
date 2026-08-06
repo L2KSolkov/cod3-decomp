@@ -113,6 +113,76 @@ struct apsArray {
         return mElements[iIndex];
     }
 
+    // push_back — append at end, growing by +1 (≤3) or +4. ?push_back@...QAEIABQAT@@@Z
+    int push_back(const T& iElement) {
+        if (mSize < mCapacity) {
+            mElements[mSize] = iElement;
+            ++mSize;
+            return 1;
+        }
+        int oldSize = mSize;
+        int newCapacity = (mSize <= 3) ? (mSize + 1) : (mSize + 4);
+        int old = apsCommon::SetPakAllocs(0);
+        T* buf = (T*)apsCommon::GetAllocator()->MemAlign(4 * newCapacity, 4);
+        apsCommon::SetPakAllocs(old);
+        int result = 0;
+        if (buf != 0) {
+            for (int i = 0; i < oldSize; ++i)
+                buf[i] = mElements[i];
+            if (mElements != 0) {
+                int old2 = apsCommon::SetPakAllocs(0);
+                apsCommon::GetAllocator()->MemFree(mElements);
+                apsCommon::SetPakAllocs(old2);
+                mElements = 0;
+                mCapacity = 0;
+                mSize = 0;
+            }
+            mCapacity = (short)newCapacity;
+            mSize = (short)oldSize;
+            mElements = buf;
+            buf[oldSize] = iElement;
+            ++mSize;
+            return 1;
+        }
+        return result;
+    }
+
+    // push_front — prepend, shifting existing elements. ?push_front@...QAEIABQAT@@@Z
+    int push_front(const T& iElement) {
+        int oldSize = mSize;
+        if (mSize >= mCapacity) {
+            int v6 = oldSize + 1;
+            int old = apsCommon::SetPakAllocs(0);
+            T* buf = (T*)apsCommon::GetAllocator()->MemAlign(4 * v6, 4);
+            apsCommon::SetPakAllocs(old);
+            int result = 0;
+            if (buf != 0) {
+                for (int i = 0; i < oldSize; ++i)
+                    buf[i + 1] = mElements[i];
+                if (mElements != 0) {
+                    int old2 = apsCommon::SetPakAllocs(0);
+                    apsCommon::GetAllocator()->MemFree(mElements);
+                    apsCommon::SetPakAllocs(old2);
+                    mElements = 0;
+                    mCapacity = 0;
+                    mSize = 0;
+                }
+                mCapacity = (short)(oldSize + 1);
+                mSize = (short)oldSize;
+                mElements = buf;
+                buf[0] = iElement;
+                ++mSize;
+                return 1;
+            }
+            return result;
+        }
+        for (int i = mSize; i > 0; --i)
+            mElements[i] = mElements[i - 1];
+        mElements[0] = iElement;
+        ++mSize;
+        return 1;
+    }
+
 protected:
     T* construct_array(int iNumber) {     // ?construct_array@?$apsArray@T@@AAEPATH@Z
         int old = apsCommon::SetPakAllocs(0);
