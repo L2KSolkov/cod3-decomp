@@ -25,7 +25,7 @@ nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	PORTED	Phase 3: nsl.cpp (a
 ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	TODO	
 mp_xbox.o		mp_xbox.o	game	61	TODO	
 nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (file streaming stubs)
-aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	TODO	
+aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	PORTED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr)
 nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	TODO	
 bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	TODO	

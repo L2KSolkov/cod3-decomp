@@ -97,6 +97,63 @@ struct apsArray {
     T*   begin() { return mElements; }    // ?begin@?$apsArray@T@@QAEPATXZ
     T*   end() { return &mElements[mSize]; }  // ?end@?$apsArray@T@@QAEPATXZ
 
+    // reserve — grow capacity (keeps elements). ?reserve@...QAEIH@Z
+    int reserve(int iCapacity) {
+        if (iCapacity <= mCapacity)
+            return 1;
+        int oldSize = mSize;
+        int old = apsCommon::SetPakAllocs(0);
+        T* buf = (T*)apsCommon::GetAllocator()->MemAlign(4 * iCapacity, 4);
+        apsCommon::SetPakAllocs(old);
+        int result = 0;
+        if (buf != 0) {
+            for (int i = 0; i < oldSize; ++i)
+                buf[i] = mElements[i];
+            if (mElements != 0) {
+                int old2 = apsCommon::SetPakAllocs(0);
+                apsCommon::GetAllocator()->MemFree(mElements);
+                apsCommon::SetPakAllocs(old2);
+                mElements = 0;
+                mCapacity = 0;
+                mSize = 0;
+            }
+            mCapacity = (short)iCapacity;
+            mElements = buf;
+            mSize = (short)oldSize;
+            return 1;
+        }
+        return result;
+    }
+
+    // resize — set size, growing capacity if needed. ?resize@...QAEIH@Z
+    int resize(int iNewSize) {
+        if (iNewSize > mCapacity) {
+            int old = apsCommon::SetPakAllocs(0);
+            T* buf = (T*)apsCommon::GetAllocator()->MemAlign(4 * iNewSize, 4);
+            apsCommon::SetPakAllocs(old);
+            int result = 0;
+            if (buf != 0) {
+                for (int i = 0; i < mSize; ++i)
+                    buf[i] = mElements[i];
+                if (mElements != 0) {
+                    int old2 = apsCommon::SetPakAllocs(0);
+                    apsCommon::GetAllocator()->MemFree(mElements);
+                    apsCommon::SetPakAllocs(old2);
+                    mElements = 0;
+                    mCapacity = 0;
+                    mSize = 0;
+                }
+                mSize = (short)iNewSize;
+                mCapacity = (short)iNewSize;
+                mElements = buf;
+                return 1;
+            }
+            return result;
+        }
+        mSize = (short)iNewSize;
+        return 1;
+    }
+
     T& operator[](int iIndex) {           // ??A?$apsArray@T@@QAEAATH@Z (ea: 0x808040)
         if ((iIndex < 0 || iIndex >= mSize) &&
             _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 151,

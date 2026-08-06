@@ -134,6 +134,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsInternal.cpp
     src/aeps/apsAction.cpp
     src/aeps/apsActionList.cpp
+    src/aeps/apsMemory.cpp
     src/aeps/apsPFD.cpp
     src/aeps/stubs.cpp
 )
