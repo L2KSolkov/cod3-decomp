@@ -27,9 +27,9 @@ void apsSimpleMeshRenderer::Init() {
 // it into the init list.
 // ea: 0x802950
 // ============================================================================
-int apsSimpleMeshRenderer::InitShader() {
+void apsSimpleMeshRenderer::InitShader() {
     apsAllocator* Allocator = apsCommon::GetAllocator();
-    int result = (int)Allocator->MemAlign(16, 4);
+    void* result = Allocator->MemAlign(16, 4);
     if (result != 0) {
         // vftable slot 0 = tlInitList vftable
         apsSimpleMeshShader* shader = (apsSimpleMeshShader*)result;
@@ -37,7 +37,6 @@ int apsSimpleMeshRenderer::InitShader() {
         tlInitList::head = shader;
         shader->Disabled = false;
     }
-    return result;
 }
 
 // ============================================================================

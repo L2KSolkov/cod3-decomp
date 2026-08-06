@@ -76,7 +76,7 @@ public:
     virtual ~apsSimpleMeshRenderer();                  // @0x8029A0 (vtable)
 
     static void Init();                                // @0x802920
-    static int  InitShader();                          // @0x802950
+    static void InitShader();                          // @0x802950 (?InitShader@apsSimpleMeshRenderer@@SAXXZ)
     virtual eRenderResult Render(const apsRendererRenderInfo& iInfo);  // @0x8029C0
     virtual unsigned int GetId() const;
     virtual float GetVersion() const;

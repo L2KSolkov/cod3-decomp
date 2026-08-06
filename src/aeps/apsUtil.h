@@ -52,4 +52,9 @@ protected:
     static T* sInstancePtr;
 };
 
+// Out-of-class definition (C++14): required so explicit instantiation in
+// apsCommon.cpp emits ?sInstancePtr@?$apsSingleton@VapsError@@@@1PAVapsError@@A.
+template <class T>
+T* apsSingleton<T>::sInstancePtr = 0;
+
 #endif // COD3_AEPS_APSUTIL_H
