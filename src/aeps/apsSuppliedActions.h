@@ -17,10 +17,9 @@
 
 #include <cstdint>
 
+#include "apsMath.h"
+
 namespace math {
-    class Dir3;
-    class Mat43;
-    class Vector4;
     struct Dir3_Packed { float x, y, z; };
 }
 
@@ -68,18 +67,11 @@ struct apsAction : apsVirtualBase {
 };
 
 // ============================================================================
-// apsQuaternion — 4-float quaternion used by Orient helpers
-// ea: 0x004FD400 ctor / 0x004FD480 Set / 0x004FD4B0 operator*=
+// apsQuaternion (defined in apsMath.h). apsSuppliedActions.o owns:
+//   ctor(const Dir3&)  ea: 0x00809400
+//   Set                 ea: 0x00809480
+//   operator+=          ea: 0x008094B0
 // ============================================================================
-class apsQuaternion {
-public:
-    float x, y, z, w;
-
-    apsQuaternion() : x(0.f), y(0.f), z(0.f), w(1.f) {}
-    apsQuaternion(const math::Dir3& axisAngle);
-    void Set(float ix, float iy, float iz, float iw);
-    apsQuaternion& operator*=(const apsQuaternion& rhs);
-};
 
 // ============================================================================
 // Source actions — spawn new particles from configured domains

@@ -13,6 +13,7 @@ namespace math {
 // Forward declarations
 class Dir3;
 class Position3;
+class Mat33;
 class Mat43;
 struct TranMat43;
 
@@ -25,6 +26,9 @@ struct TranMat43;
 class Dir3 {
 public:
     __m128 v;  // SSE-packed: x, y, z, w
+
+    // apsMath.o (non-inline): row-vector * 3x3 matrix. Unresolved here.
+    const math::Dir3& operator*=(const math::Mat33& m);
 
     // Constant layout (for compile-time initialization)
     struct Constant {
@@ -96,11 +100,15 @@ static_assert(sizeof(Mat43::Packed) == 0x30, "Mat43::Packed size mismatch");
 // ============================================================================
 // Mat33 — 3x3 rotation matrix (48 bytes = 3 * Dir3)
 // Size: 0x30 (48 bytes)
+// Note: declared `class` (not struct) to match the original binary's MSVC
+// mangling (`ABVMat33` / `?AVMat33`), which uses V for class types.
+// Members are x/y/z (Dir3 rows) per the original source.
 // ============================================================================
-struct Mat33 {
-    Dir3 row0;  // +0x00
-    Dir3 row1;  // +0x10
-    Dir3 row2;  // +0x20
+class Mat33 {
+public:
+    Dir3 x;  // +0x00
+    Dir3 y;  // +0x10
+    Dir3 z;  // +0x20
 };
 static_assert(sizeof(Mat33) == 0x30, "Mat33 size mismatch");
 

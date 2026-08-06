@@ -32,13 +32,25 @@ void*      apsAction::GetParamAddr(int) const { return 0; }
 apsDomain* apsAction::GetDomain(int)         { return 0; }
 
 // ============================================================================
-// apsQuaternion
+// apsQuaternion — apsSuppliedActions.o owns ctor(Dir3) / Set / operator+=.
+// ea: 0x00809400 ctor / 0x00809480 Set / 0x008094B0 operator+=
 // ============================================================================
-apsQuaternion::apsQuaternion(const math::Dir3&) : x(0.f), y(0.f), z(0.f), w(1.f) {}
+apsQuaternion::apsQuaternion(const math::Dir3& iVector) {
+    x = iVector.v.m128_f32[0];
+    y = iVector.v.m128_f32[1];
+    z = iVector.v.m128_f32[2];
+    w = 0.0f;
+}
 void apsQuaternion::Set(float ix, float iy, float iz, float iw) {
     x = ix; y = iy; z = iz; w = iw;
 }
-apsQuaternion& apsQuaternion::operator*=(const apsQuaternion&) { return *this; }
+apsQuaternion& apsQuaternion::operator+=(const apsQuaternion& iRHS) {
+    x += iRHS.x;
+    y += iRHS.y;
+    z += iRHS.z;
+    w += iRHS.w;
+    return *this;
+}
 
 // ============================================================================
 // Source actions

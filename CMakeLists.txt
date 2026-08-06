@@ -129,6 +129,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsUVARectangleNode.cpp
     src/aeps/apsColorUVANode.cpp
     src/aeps/apsColorUVARectangleNode.cpp
+    src/aeps/apsMath.cpp
     src/aeps/apsPFD.cpp
     src/aeps/stubs.cpp
 )

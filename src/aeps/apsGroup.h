@@ -50,6 +50,9 @@ struct apsBounds {
     // Unresolved here; apsGroup.o calls it (via 0x41F650).
     float Radius() const;
 
+    // apsMath.o (non-inline): bounding-box extent = max - min.
+    math::Dir3 Size() const;
+
     // game2.o (non-inline): bounding-sphere (center + radius). Unresolved here.
     apsSphere Sphere() const;
 };
