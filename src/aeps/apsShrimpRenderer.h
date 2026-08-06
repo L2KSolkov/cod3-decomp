@@ -124,13 +124,9 @@ struct apsShrimpRenderPixel {
 };
 
 // ============================================================================
-// apsInternal::GetBlendColor — ambient blend color helper (inline COMDAT,
-// apsInternal.o). ea: 0x804400
+// apsInternal::GetBlendColor — declared in apsInternal.h (inline COMDAT,
+// apsShrimpRenderer.o). ea: 0x804400
 // ============================================================================
-inline math::Vector4* apsInternal_GetBlendColor(math::Vector4* result, nglLightContext* iLightContext) {
-    __m128 v3 = _mm_mul_ps(iLightContext->Ambient.v, _mm_set1_ps(1.5f));
-    result->v = _mm_shuffle_ps(v3, _mm_shuffle_ps(_mm_set1_ps(1.0f), v3, 160), 52);
-    return result;
-}
+
 
 #endif // COD3_AEPS_APSSHRIMPRENDERER_H

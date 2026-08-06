@@ -7,6 +7,7 @@
 //   Render          @0x8045E0 (?Render@apsShrimpRenderer@@UAE?AW4eRenderResult@apsRenderer@@ABUapsRendererRenderInfo@@@Z)
 // ============================================================================
 #include "apsShrimpRenderer.h"
+#include "apsInternal.h"
 
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
@@ -85,7 +86,7 @@ apsRenderer::eRenderResult apsShrimpRenderer::Render(const apsRendererRenderInfo
 
     if (rinfo.lightContext != NULL && this->mBlendMode == apsEBlendMode_BlendWithLighting) {
         math::Vector4 BlendColor;
-        apsInternal_GetBlendColor(&BlendColor, rinfo.lightContext);
+        BlendColor = apsInternal::GetBlendColor(rinfo.lightContext);
         BlendColor.v = _mm_mul_ps(BlendColor.v, this->mTintColor.v);
         node->mBlendColor = BlendColor;
     } else {

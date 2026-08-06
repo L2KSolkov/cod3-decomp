@@ -166,11 +166,7 @@ extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode
 extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);
 extern void nglDxInitPShader(const unsigned int* Microcode);
 
-// apsInternal::GetBlendColor (inline, apsShrimpRenderer.h)
-inline math::Vector4* apsInternal_GetBlendColor2(math::Vector4* result, nglLightContext* iLightContext) {
-    __m128 v3 = _mm_mul_ps(iLightContext->Ambient.v, _mm_set1_ps(1.5f));
-    result->v = _mm_shuffle_ps(v3, _mm_shuffle_ps(_mm_set1_ps(1.0f), v3, 160), 52);
-    return result;
-}
+// apsInternal::GetBlendColor (inline, apsInternal.h)
+#include "apsInternal.h"
 
 #endif // COD3_AEPS_APSBILLBOARDRENDERER_H

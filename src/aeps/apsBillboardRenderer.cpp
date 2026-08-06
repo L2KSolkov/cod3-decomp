@@ -67,7 +67,8 @@ bool apsBillboardRenderer::SetNodeParams(apsRenderNode* node, const apsRendererR
 
     math::Vector4 v20;
     if (rinfo.lightContext != NULL && this->mBlendMode == apsEBlendMode_BlendWithLighting) {
-        v20.v = _mm_mul_ps(apsInternal_GetBlendColor2(&v20, rinfo.lightContext)->v, this->mTintColor.v);
+        v20 = apsInternal::GetBlendColor(rinfo.lightContext);
+        v20.v = _mm_mul_ps(v20.v, this->mTintColor.v);
     } else {
         v20 = this->mTintColor;
     }

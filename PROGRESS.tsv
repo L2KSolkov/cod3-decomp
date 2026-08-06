@@ -87,7 +87,7 @@ bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	TODO
 bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	TODO	
 render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	PORTED	cdOceanShader.h/.cpp (ocean shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; SetContext+Render deferred)
 zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO	
-aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	TODO	
+aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
 nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	TODO	
 bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	TODO	
