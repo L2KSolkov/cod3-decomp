@@ -289,14 +289,14 @@ zlib_xboxr:inffast.o	zlib_xboxr	inffast.o	engine	1	TODO
 zlib_xboxr:inftrees.o	zlib_xboxr	inftrees.o	engine	1	TODO	
 aeps_xboxr:apsSimpleMeshNode.o	aeps_xboxr	apsSimpleMeshNode.o	engine	1	TODO	
 aeps_xboxr:apsShrimpNode.o	aeps_xboxr	apsShrimpNode.o	engine	1	TODO	
-aeps_xboxr:apsBillboardNode.o	aeps_xboxr	apsBillboardNode.o	engine	1	TODO	
-aeps_xboxr:apsColorRectangleNode.o	aeps_xboxr	apsColorRectangleNode.o	engine	1	TODO	
-aeps_xboxr:apsUVANode.o	aeps_xboxr	apsUVANode.o	engine	1	TODO	
-aeps_xboxr:apsColorUVARectangleNode.o	aeps_xboxr	apsColorUVARectangleNode.o	engine	1	TODO	
-aeps_xboxr:apsUVARectangleNode.o	aeps_xboxr	apsUVARectangleNode.o	engine	1	TODO	
-aeps_xboxr:apsRectangleNode.o	aeps_xboxr	apsRectangleNode.o	engine	1	TODO	
-aeps_xboxr:apsColorUVANode.o	aeps_xboxr	apsColorUVANode.o	engine	1	TODO	
-aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	TODO	
+aeps_xboxr:apsBillboardNode.o	aeps_xboxr	apsBillboardNode.o	engine	1	PORTED	apsBillboardNode.cpp (Render forwarder to cNodeRenderer<,apsBillboardNode>::Render)
+aeps_xboxr:apsColorRectangleNode.o	aeps_xboxr	apsColorRectangleNode.o	engine	1	PORTED	apsColorRectangleNode.cpp (Render forwarder to cNodeRenderer<,apsColorRectangleNode>::Render)
+aeps_xboxr:apsUVANode.o	aeps_xboxr	apsUVANode.o	engine	1	PORTED	apsUVANode.cpp (Render forwarder to cNodeRenderer<,apsUVANode>::Render)
+aeps_xboxr:apsColorUVARectangleNode.o	aeps_xboxr	apsColorUVARectangleNode.o	engine	1	PORTED	apsColorUVARectangleNode.cpp (Render forwarder to cNodeRenderer<,apsColorUVARectangleNode>::Render)
+aeps_xboxr:apsUVARectangleNode.o	aeps_xboxr	apsUVARectangleNode.o	engine	1	PORTED	apsUVARectangleNode.cpp (Render forwarder to cNodeRenderer<,apsUVARectangleNode>::Render)
+aeps_xboxr:apsRectangleNode.o	aeps_xboxr	apsRectangleNode.o	engine	1	PORTED	apsRectangleNode.cpp (Render forwarder to cNodeRenderer<,apsRectangleNode>::Render)
+aeps_xboxr:apsColorUVANode.o	aeps_xboxr	apsColorUVANode.o	engine	1	PORTED	apsColorUVANode.cpp (Render forwarder to cNodeRenderer<,apsColorUVANode>::Render)
+aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	PORTED	apsColorBillboardNode.cpp (Render forwarder to cNodeRenderer<,apsColorBillboardNode>::Render)
 nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp

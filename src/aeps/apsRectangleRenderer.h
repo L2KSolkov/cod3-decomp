@@ -17,7 +17,8 @@
 // ============================================================================
 class apsRectangleNode : public apsBillboardNode {
 public:
-    virtual void GetDesc(char* buf);  // ea: 0x804EA0
+    virtual void GetDesc(char* buf);
+    virtual void Render() override;  // ea: 0x804EA0
 };
 static_assert(sizeof(apsRectangleNode) == 0xC0, "apsRectangleNode size mismatch");
 

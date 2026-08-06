@@ -121,6 +121,14 @@ add_library(cod3_aeps STATIC
     src/aeps/apsUVARectangleRenderer.cpp
     src/aeps/apsColorUVARenderer.cpp
     src/aeps/apsColorUVARectangleRenderer.cpp
+    src/aeps/apsBillboardNode.cpp
+    src/aeps/apsRectangleNode.cpp
+    src/aeps/apsColorBillboardNode.cpp
+    src/aeps/apsColorRectangleNode.cpp
+    src/aeps/apsUVANode.cpp
+    src/aeps/apsUVARectangleNode.cpp
+    src/aeps/apsColorUVANode.cpp
+    src/aeps/apsColorUVARectangleNode.cpp
     src/aeps/apsPFD.cpp
     src/aeps/stubs.cpp
 )

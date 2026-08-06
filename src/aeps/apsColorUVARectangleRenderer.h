@@ -17,7 +17,8 @@
 // ============================================================================
 class apsColorUVARectangleNode : public apsUVANode {
 public:
-    virtual void GetDesc(char* buf);  // ea: 0x804C30
+    virtual void GetDesc(char* buf);
+    virtual void Render() override;  // ea: 0x804C30
 };
 static_assert(sizeof(apsColorUVARectangleNode) == 0xC0, "apsColorUVARectangleNode size mismatch");
 

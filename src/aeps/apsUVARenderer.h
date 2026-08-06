@@ -17,7 +17,8 @@
 // ============================================================================
 class apsUVANode : public apsBillboardNode {
 public:
-    virtual void GetDesc(char* buf);  // ea: 0x804290
+    virtual void GetDesc(char* buf);
+    virtual void Render() override;  // ea: 0x804290
 };
 static_assert(sizeof(apsUVANode) == 0xC0, "apsUVANode size mismatch");
 

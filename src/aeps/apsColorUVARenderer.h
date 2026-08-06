@@ -17,7 +17,8 @@
 // ============================================================================
 class apsColorUVANode : public apsUVANode {
 public:
-    virtual void GetDesc(char* buf);  // ea: 0x8053F0
+    virtual void GetDesc(char* buf);
+    virtual void Render() override;  // ea: 0x8053F0
 };
 static_assert(sizeof(apsColorUVANode) == 0xC0, "apsColorUVANode size mismatch");
 
