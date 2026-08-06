@@ -19,6 +19,7 @@
 
 #include "apsCommon.h"   // apsAllocator, apsCommon
 #include "apsUtil.h"     // apsSingleton, _tlAssert
+#include "apsError.h"    // AEPS_VECTOR_NEW
 #include "apsAction.h"   // apsArray<T>
 
 #include <cstring>
@@ -184,6 +185,54 @@ public:
     }
 };
 static_assert(sizeof(BlockManager) == 0x1C, "BlockManager size mismatch");
+
+// ============================================================================
+// PoolAllocator<T> — typed wrapper over a single Pool (44 bytes).
+//   apsSingleton<PoolAllocator<T>> @0x00, mPoolData @0x00, mPoolSize @0x04,
+//   mPool @0x08 (Pool, 36 bytes). Inline COMDATs emitted in apsGroupMgr.o.
+// ============================================================================
+template <typename T>
+class PoolAllocator : public apsSingleton<PoolAllocator<T> > {
+public:
+    T*    mPoolData;  // +0x00
+    int   mPoolSize;  // +0x04
+    Pool  mPool;      // +0x08
+
+    PoolAllocator(int poolSize) : mPool(0) {  // ??0?$PoolAllocator@T@@@apsMemory@@QAE@H@Z
+        if (apsSingleton<PoolAllocator<T> >::sInstancePtr != 0 &&
+            _tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 86,
+                      "0 == sInstancePtr", "singleton already initialised"))
+            __debugbreak();
+        apsSingleton<PoolAllocator<T> >::sInstancePtr = this;
+        mPoolSize = poolSize;
+        mPoolData = AEPS_VECTOR_NEW<T>(poolSize, 16);
+        mPool.Init(poolSize, sizeof(T), (unsigned char*)mPoolData);
+    }
+    ~PoolAllocator() {                    // ??1?$PoolAllocator@T@@@apsMemory@@QAE@XZ
+        mPool.Term();
+        if (mPoolSize > 0) {
+            for (int i = 0; i < mPoolSize; ++i) {
+                // destroy each pooled element (nullsub in the original)
+                (&mPoolData[i])->~T();
+            }
+        }
+        apsCommon::GetAllocator()->MemFree(mPoolData);
+        mPool.Term();
+        if (apsSingleton<PoolAllocator<T> >::sInstancePtr != 0) {
+            apsSingleton<PoolAllocator<T> >::sInstancePtr = 0;
+        } else {
+            if (_tlAssert("c:/cod/code/tl/aeps/include\\apsUtil.h", 104,
+                          "sInstancePtr", "singleton not initialised"))
+                __debugbreak();
+            apsSingleton<PoolAllocator<T> >::sInstancePtr = 0;
+        }
+    }
+
+    T* Alloc() { return (T*)mPool.Alloc(sizeof(T)); }  // ?Alloc@?$PoolAllocator@T@@@apsMemory@@QAEPAVT@@XZ
+    void Free(const T* p) { mPool.Free((void*)p); }    // ?Free@?$PoolAllocator@T@@@apsMemory@@QAEXPBVT@@@Z
+    Pool& GetPool() { return mPool; }                  // ?GetPool@?$PoolAllocator@T@@@apsMemory@@QAEAAVPool@2@XZ
+};
+static_assert(sizeof(PoolAllocator<int>) == 0x2C, "PoolAllocator size mismatch");
 
 // ============================================================================
 // Global API (apsMemory.o)
