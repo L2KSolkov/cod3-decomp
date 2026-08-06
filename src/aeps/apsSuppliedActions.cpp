@@ -16,20 +16,8 @@
 #include "apsSuppliedActions.h"
 
 // ============================================================================
-// apsAction base — trivial stubs (real impl lives in aeps core once ported)
+// apsAction base — real implementation now lives in apsAction.cpp (apsAction.o).
 // ============================================================================
-apsAction::apsAction()
-    : mIterationStyle(eAsync), mRequiredParticleFields(0) {
-    mParams.mElements = 0;  mParams.mCapacity = 0;  mParams.mSize = 0;
-    mDomains.mElements = 0; mDomains.mCapacity = 0; mDomains.mSize = 0;
-}
-apsAction::apsAction(int, int, IterationStyle iStyle, unsigned int iRequired)
-    : mIterationStyle(iStyle), mRequiredParticleFields(iRequired) {
-    mParams.mElements = 0;  mParams.mCapacity = 0;  mParams.mSize = 0;
-    mDomains.mElements = 0; mDomains.mCapacity = 0; mDomains.mSize = 0;
-}
-void*      apsAction::GetParamAddr(int) const { return 0; }
-apsDomain* apsAction::GetDomain(int)         { return 0; }
 
 // ============================================================================
 // apsQuaternion — apsSuppliedActions.o owns ctor(Dir3) / Set / operator+=.

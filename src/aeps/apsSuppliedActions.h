@@ -18,6 +18,7 @@
 #include <cstdint>
 
 #include "apsMath.h"
+#include "apsAction.h"  // apsVirtualBase, apsArray<T>, apsAction (real definitions)
 
 namespace math {
     struct Dir3_Packed { float x, y, z; };
@@ -28,43 +29,6 @@ struct apsGroup;
 struct apsEffect;
 struct apsDomain;
 struct apsPFD;
-
-// ============================================================================
-// apsVirtualBase / apsAction — from aeps core
-// (declared here compact; full definitions belong in apsAction.h once ported)
-// ============================================================================
-struct apsVirtualBase {
-    void* __vftable;
-};
-
-template <typename T>
-struct apsArray {
-    T*        mElements;
-    short     mCapacity;
-    short     mSize;
-};
-
-struct apsAction : apsVirtualBase {
-    enum IterationStyle { eSource = 0, eAsync = 1, eSync = 2 };
-
-    apsArray<float>      mParams;
-    apsArray<apsDomain*> mDomains;
-    IterationStyle       mIterationStyle;
-    unsigned int         mRequiredParticleFields;
-
-    apsAction();
-    apsAction(int iNumParams, int iNumDomains, IterationStyle iIterationStyle,
-              unsigned int iRequiredParticleFields);
-    virtual ~apsAction() {}
-    virtual void Act(unsigned char* iBegin, unsigned char* iEnd,
-                     apsGroup* ioGroup, apsEffect* iEffect,
-                     float iElapsedTime, float iTimeDelta) {}
-    virtual unsigned int GetId() const { return 0; }
-    virtual float GetVersion() const { return 0.0f; }
-
-    void* GetParamAddr(int iIndex) const;
-    apsDomain* GetDomain(int iIndex);
-};
 
 // ============================================================================
 // apsQuaternion (defined in apsMath.h). apsSuppliedActions.o owns:

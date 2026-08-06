@@ -194,7 +194,7 @@ render_xboxr:cdWorldBlendShader.o	render_xboxr	cdWorldBlendShader.o	engine	5	POR
 render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	PORTED	cdWorldShader.h/.cpp (world shader: Init/Toggle/Register/AddNode; Render deferred)
 zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	TODO	
 zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO	
-aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	TODO	
+aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	PORTED	apsAction.cpp (apsAction base: ctor/dtor/SetParam/SetDomain/Fixup; apsArray<T>+apsVirtualBase+apsDestroy/apsFixUp in apsAction.h; removed stale apsSuppliedActions stubs
 cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
