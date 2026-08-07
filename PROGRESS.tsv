@@ -77,7 +77,7 @@ bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	TODO
 render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	PORTED	cdOceanGlobals.h/.cpp (ocean globals: sBanks data + SetSeaLevel/Init/SetDefaults/6xSetWave; SetLayer*+SetWaveOrigin+DumpSettings+GetHeight deferred)
 controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	PORTED	Phase 2: controller.cpp (XInput wrapper)
 jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jobqueue.cpp (batch job system)
-phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	TODO	
+phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	PORTED	[phys_xboxr] rbc_def_ragdoll.cpp: ragdoll constraint (14 funcs)
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	TODO	
 bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	TODO	
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation

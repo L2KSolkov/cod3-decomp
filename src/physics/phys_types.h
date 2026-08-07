@@ -244,6 +244,10 @@ struct ragdoll_joint_limit_info {
     float      m_b1_ud_limit_si_;       // +0x14
     float      m_b1_ud_active_limit_co_;// +0x18
     uint8_t    _pad1C[4];               // +0x1C
+
+    void set(const math::Dir3& b1_ud_loc, float theta_limit);
+    void set_b1_ud_loc(const math::Dir3& b1_ud_loc);
+    void set_theta_limit(float theta_limit);
 };
 static_assert(sizeof(ragdoll_joint_limit_info) == 0x20, "ragdoll_joint_limit_info size mismatch");
 
@@ -268,6 +272,24 @@ struct rigid_body_constraint_ragdoll : rigid_body_constraint {
     int             m_joint_limits_count;  // +0x140
     float           m_damp_k;         // +0x144
     uint8_t         _pad148[8];       // +0x148
+
+    void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc);
+    void set_damp_k(float damp_k);
+    void set_snider_style(const math::Dir3& b1_axis_loc, const math::Dir3& b1_ref_loc);
+    void set_theta_min_max(const math::Dir3& b2_ref_loc, float theta_min, float theta_max);
+    void set_hinge(const math::Dir3& b1_axis_loc, const math::Dir3& b2_axis_loc,
+                   const math::Dir3& b1_ref_loc, const math::Dir3& b2_ref_loc,
+                   float theta_min, float theta_max);
+    void set_swivel(const math::Dir3& b1_axis_loc, const math::Dir3& b2_axis_loc,
+                    const math::Dir3& b1_ref_loc, const math::Dir3& b2_ref_loc,
+                    float theta_min, float theta_max);
+    void add_joint_limit(const math::Dir3& b1_ud_loc, float theta_limit);
+    const float& pull_together();
+    void do_collision(float delta_t);
+    void setup_hinge(pulse_sum_constraint_solver* psys, const math::Dir3& b1_ref,
+                     const math::Dir3& b2_axis, float delta_t);
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
+    void set_joint_limit_active(unsigned int f, bool b);
 };
 static_assert(sizeof(rigid_body_constraint_ragdoll) == 0x150, "rigid_body_constraint_ragdoll size mismatch");
 static_assert(offsetof(rigid_body_constraint_ragdoll, m_b1_axis_loc) == 0x90, "ragdoll::m_b1_axis_loc offset mismatch");

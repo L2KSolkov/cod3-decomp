@@ -156,5 +156,10 @@ void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1, float del
 
 extern const math::Dir3& Float4_Zero_213;
 extern const math::Dir3& Float4_SignMask_213;
+extern const math::Dir3& Float4_Zero_210;
+extern const math::Dir3& Float4_SignMask_210;
+
+extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
+extern void make_rotate(math::Mat43* mat, const math::Dir3* v1, const math::Dir3* v2);
 
 #endif // COD3_PHYSICS_PULSE_SUM_H
