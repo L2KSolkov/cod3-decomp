@@ -10,6 +10,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "engine/broc_types.h"
+#include "game/game_types.h"
+
+// ============================================================================
+// TPakId — pak archive id enum
+// ============================================================================
+enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 
 // ============================================================================
 // StubData — per-controller MP save/profile data (1216 bytes) — verified IDA
@@ -209,6 +215,36 @@ struct PakManager {
     void FillBanks();
 };
 static_assert(sizeof(PakManager) == 4, "PakManager size mismatch (opaque)");
+
+// ============================================================================
+// EntityHandleDb — entity handle database (opaque; only element lookup used)
+// HandleDb<Entity,1344,SizedHandle<12,20>>::DbElement = { int mKey; Entity* mObject; }
+// ============================================================================
+struct EntityHandleDbDbElement {
+    unsigned short mKey;    // +0x00
+    Entity*        mObject; // +0x04
+};
+class EntityHandleDb {
+public:
+    uint8_t  _pad[0x2AAC];                 // HandleDb storage (10924 bytes)
+    EntityHandleDbDbElement mElements[0x540];  // +0x2AAC (1344 * 8 = 10752)
+    uint8_t  _rest[27312 - 0x2AAC - 10752];
+    static EntityHandleDb sInst;           // ?sInst@EntityHandleDb@@0V1@A
+};
+static_assert(sizeof(EntityHandleDb) == 27312, "EntityHandleDb size mismatch");
+static_assert(offsetof(EntityHandleDb, mElements) == 0x2AAC, "EntityHandleDb::mElements offset mismatch");
+
+// ============================================================================
+// XModelManager — model manager (opaque)
+// ============================================================================
+struct XModel;
+class XModelManager {
+public:
+    uint8_t _pad[4];
+    static XModelManager* sInst;           // ?sInst@XModelManager@@2PAV1@A
+    IVPointer<XModel> GetXModel(TPakId pak_id, const char* name);
+};
+static_assert(sizeof(XModelManager) == 4, "XModelManager size mismatch (opaque)");
 
 // ============================================================================
 // EntityManager — entity factory (opaque; only sv.o fields used)

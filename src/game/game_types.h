@@ -12,18 +12,18 @@
 #include <stdint.h>
 
 // Forward declarations
-struct Entity;
-struct DObj;
+class Entity;
+class DObj;
 struct EntityNotifySet;
 struct ScriptEventHandler;
 struct biped_phys_info;
-struct Destructible;
+class Destructible;
 struct Client;
 struct scr_vehicle_t;
 struct turretInfo_t;
 struct trRefEntity;
-struct XAnimTree;
-struct XModel;
+class XAnimTree;
+class XModel;
 struct gitem_s;
 struct Curve;
 struct tagInfo_t;
@@ -44,7 +44,8 @@ static_assert(sizeof(Handle) == 4, "Handle size mismatch");
 
 // Handle type — wraps a DbLinkedHandle
 template <typename HandleDb, typename T>
-struct DbLinkedHandle {
+class DbLinkedHandle {
+public:
     Handle mHandle;  // +0x00 — wrapped handle
 
     DbLinkedHandle() { mHandle.mVal = 0; }
@@ -63,7 +64,8 @@ static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");
 // IVPointer — intrusive counted pointer (8 bytes)
 // Layout: { T* mValue; TPakId mPakId; } — verified against IDA
 template <typename T>
-struct IVPointer {
+class IVPointer {
+public:
     T*           mValue;   // +0x00 — actual pointer data
     unsigned int mPakId;   // +0x04 — pak id (TPakId)
 };
@@ -191,7 +193,8 @@ struct EntityAnimationDebug;  // opaque — Entity::AnimationDebug
 // Entity — main game entity (1136 bytes)
 // Size: 0x470 (1136 bytes) — verified against IDA (107 members)
 // ============================================================================
-struct Entity {
+class Entity {
+public:
     EntityState  s;                               // +0x000 (224 bytes)
     EntityShared r;                               // +0x0E0 (336 bytes)
     int32_t  mPakId;                              // +0x230

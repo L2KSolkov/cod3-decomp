@@ -34,7 +34,8 @@ static_assert(sizeof(PlayerStateEvents) == 0x3C, "PlayerStateEvents size mismatc
 // Size: 0x5D0 (1488 bytes) — verified against IDA (112+ members, truncated)
 // Key members reconstructed. Full structure will be refined during porting.
 // ============================================================================
-struct PlayerState {
+class PlayerState {
+public:
     math::Position3 origin;                // +0x000
     math::Dir3      velocity;              // +0x010
     int32_t  commandTime;                  // +0x020
