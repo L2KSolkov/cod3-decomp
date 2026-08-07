@@ -6,6 +6,7 @@
 #include "game/sv/sv_stubs.h"
 
 #include <string.h>
+#include <stdlib.h>
 #include <intrin.h>
 
 // ============================================================================
@@ -22,6 +23,25 @@ extern void  TraceXFormed(trace_t* results, const math::Position3* start, const 
 extern void  SCR_UpdateScreen(void);
 extern void  j_nullsub_35(void);
 static int   SV_InitGameVM(int restart, int savegame);   // ea: 0x520110
+extern void  CL_FlushDebugData(int fromServer);
+extern char* Cvar_InfoString(int bit);
+extern char* Cvar_InfoString_Big(int bit);
+extern int   cvar_modifiedFlags;
+extern void  SV_SetConfigstring(int index, const char* val);
+extern void  CL_ShutdownAll(void);
+extern void  CL_StartHunkUsers(void);
+extern void  FS_Shutdown(int closemfp);
+extern void  FS_Restart(int checksumFeed);
+extern void  FS_ClearMemory(void);
+extern int   Sys_Milliseconds(void);
+extern void  j_nullsub_86(int phase);
+extern void  SV_Shutdown(void);
+extern void  LocalClient_SetNumLocalClients(int num);
+extern void  CGBankManager_UnloadAll(void);
+extern void  AnimBankManager_UnloadAll(void);
+extern void  LiveWrapper_ClearRemotePlayers(void* handle);
+extern void* MPLiveEngine_GetHandle(void);
+extern bool  MPUIInterface_IsOnlineGame(void);
 extern const math::Position3& Float4_Zero_2;
 extern unsigned __int64 sLastTime_0;     // ?sLastTime_0  (sv_game.cpp static)
 extern unsigned int _S8_40;              // ?$S8_40 (sv_game.cpp static)
@@ -188,6 +208,106 @@ void MatrixTransposeTransformVector43(const math::Position3& in1, const float (*
     out.v.m128_f32[0] = ((*in2)[2] * v4) + ((*in2)[1] * v3) + ((*in2)[0] * v5);
     out.v.m128_f32[1] = ((*in2)[5] * v4) + ((*in2)[4] * v3) + ((*in2)[3] * v5);
     out.v.m128_f32[2] = ((*in2)[8] * v4) + ((*in2)[7] * v3) + ((*in2)[6] * v5);
+}
+
+// ============================================================================
+// SV_ExpandNewlines — ea: 0x51F720
+// ============================================================================
+static char string[1024];   // ?string  (sv_game.cpp static)
+char* SV_ExpandNewlines(char* in) {
+    char* v1 = in;
+    char v2 = *in;
+    unsigned int i = 0;
+    for (; v2 != 0; v2 = *++v1) {
+        if (i >= 0x3FD)
+            break;
+        if (v2 == 10) {
+            string[i++] = 92;
+            string[i] = 110;
+        } else {
+            if (v2 == 20 || v2 == 21)
+                continue;
+            string[i] = v2;
+        }
+        ++i;
+    }
+    string[i] = 0;
+    return string;
+}
+
+// ============================================================================
+// SV_PreFrame — ea: 0x520BA0
+// ============================================================================
+void SV_PreFrame(int msec) {
+    CL_FlushDebugData(1);
+    if ((cvar_modifiedFlags & 4) != 0) {
+        char* v1 = Cvar_InfoString(4);
+        SV_SetConfigstring(0, v1);
+        cvar_modifiedFlags &= ~4u;
+    }
+    if ((cvar_modifiedFlags & 8) != 0) {
+        char* v2 = Cvar_InfoString_Big(8);
+        SV_SetConfigstring(1, v2);
+        cvar_modifiedFlags &= ~8u;
+    }
+    VM_Call(gvm, 11, msec);
+}
+
+// ============================================================================
+// SV_SwapClients — ea: 0x521190
+// ============================================================================
+void SV_SwapClients(int client1, int client2) {
+    client_s tmp;
+    int port1 = 4976 * client1;
+    int port2 = 4976 * client2;
+    // Swap netchan outgoing sequence slots [26..30] (2 ints) around
+    unsigned int seq1 = *(unsigned int*)&svs.clients[client1].netchan[26];
+    unsigned int seq2 = *(unsigned int*)&svs.clients[client2].netchan[26];
+    memcpy(&tmp, &svs.clients[client1], sizeof(client_s));
+    memcpy(&svs.clients[client1], &svs.clients[client2], sizeof(client_s));
+    memcpy(&svs.clients[client2], &tmp, sizeof(client_s));
+    *(unsigned int*)&svs.clients[client1].netchan[26] = seq1;
+    *(unsigned int*)&svs.clients[client2].netchan[26] = seq2;
+}
+
+// ============================================================================
+// SV_ReallyExitGame_f — ea: 0x5208F0
+// ============================================================================
+void SV_ReallyExitGame_f() {
+    if (MPUIInterface_IsOnlineGame()) {
+        void* Handle = MPLiveEngine_GetHandle();
+        LiveWrapper_ClearRemotePlayers(Handle);
+    }
+    j_nullsub_86(GAME_PHASE_LOADING);
+    PakManager::sInst->FillBanks();
+    if (g_femanager.mIGMS[0] != NULL)
+        g_femanager.mIGMS[0]->SetActiveMenu(-1);
+    g_femanager.inGame = false;
+    g_femanager.IGO_active = false;
+    MultiplayerMgr::sInst->ExitLevel();
+    if (unk_F6A290 == 2) {
+        currCl = NS_CLIENT;
+        SCR_UpdateScreen();
+    }
+    currCl = NS_CLIENT;
+    sv_save_filename[0] = 0;
+    sv_map_restart = 0;
+    CL_ShutdownAll();
+    LocalClient_SetNumLocalClients(1);
+    SV_Shutdown();
+    PakManager::sInst->UnloadAll();
+    CGBankManager_UnloadAll();
+    AnimBankManager_UnloadAll();
+    CL_StartHunkUsers();
+    FS_Shutdown(1);
+    unsigned int v1 = (unsigned int)Sys_Milliseconds();
+    srand(v1);
+    FS_Restart(0);
+    FS_ClearMemory();
+    InGameMenuSystem* v2 = g_femanager.mIGMS[currCl];
+    if (v2 != NULL)
+        v2->is_active = false;
+    j_nullsub_86(GAME_PHASE_FRONTEND);
 }
 
 // ============================================================================

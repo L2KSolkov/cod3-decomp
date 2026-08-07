@@ -214,9 +214,23 @@ static_assert(sizeof(CheckpointMgr) == 8, "CheckpointMgr size mismatch (fields u
 struct PakManager {
     uint8_t _pad[4];
     static PakManager* sInst;            // ?sInst@PakManager@@2PAV1@A
-    void FillBanks();
+    void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
+    void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
 };
 static_assert(sizeof(PakManager) == 4, "PakManager size mismatch (opaque)");
+
+// ============================================================================
+// InGameMenuSystem — in-game menu system (56 bytes; opaque, only is_active)
+// ============================================================================
+struct InGameMenuSystem {
+    uint8_t _pad[0x34];
+    bool    is_active;                   // +0x34 (FEMenuSystem field, opaque)
+    uint8_t _pad2[3];                    // +0x35
+    void SetActiveMenu(int a2);          // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z
+};
+static_assert(sizeof(InGameMenuSystem) == 56, "InGameMenuSystem size mismatch (fields used)");
+
+
 
 // ============================================================================
 // EntityHandleDb — entity handle database (opaque; only element lookup used)
@@ -301,6 +315,7 @@ enum EThreadOwner {
 enum EGamePhase {
     GAME_PHASE_LOADING = 0,
     GAME_PHASE_INGAME = 1,
+    GAME_PHASE_FRONTEND = 2,
 };
 
 struct PathNodeMgr {
