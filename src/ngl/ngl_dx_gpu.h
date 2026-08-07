@@ -9,6 +9,7 @@
 #define COD3_NGL_NGL_DX_GPU_H
 
 #include "d3d8.h"
+#include "ngl/nglScene.h"
 
 #include <cstddef>
 #include <intrin.h>
@@ -87,6 +88,15 @@ extern nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVert
                                                gpuVertexFormat* VertexFormat);
 extern void  nglCopySection(nglMeshSection* Dst, nglMeshSection* Src);
 extern nglMeshSection* nglCreateSectionCopy(nglMeshSection* Section);
+
+extern void tlFatal(const char* Format, ...);
+extern void nglSceneDumpEnd(void);
+extern void nglRenderDebug(void);
+extern void nglListSendBatch(void* pBatch);
+extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);
+extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);
+extern nglScene* nglRootBuildScene;
+extern int nglSceneRecursion;
 
 // ============================================================================
 // nglMesh â€” mesh container (minimal view for nglCopySection overload)
@@ -452,5 +462,24 @@ inline void gpuDrawIndexedPrimitive(gpuPrimType prim, unsigned int nindices, uns
     D3DDevice_DrawIndexedVertices((_D3DPRIMITIVETYPE)prim, nindices,
                                   (const unsigned short*)(idxoffset + idx->Data));
 }
+
+// ============================================================================
+// GPU index/section helpers (ngl_gpu.o)
+// ============================================================================
+extern unsigned int _nglGpuUnpackTriangleList(D3DIndexBuffer* idx, unsigned short* buf,
+                                              unsigned int nindices);
+extern void _nglGpuPackTriangleList(D3DIndexBuffer* idx, unsigned short* buf,
+                                    unsigned int nindices);
+extern void nglGpuPackIndexBuffer(D3DIndexBuffer* idx, gpuPrimType primtype,
+                                  gpuIndexType idxformat, unsigned short* buf,
+                                  unsigned int nindices);
+extern unsigned int nglGpuUnpackIndexBuffer(D3DIndexBuffer* idx, gpuPrimType primtype,
+                                            gpuIndexType idxformat, unsigned short* buf,
+                                            unsigned int nindices);
+extern void nglGpuDrawSection(nglMeshSection* Section);
+extern void ngliListSend(void);
+extern void nglGpuAcquireDevice(void);
+extern void nglGpuReleaseDevice(void);
+extern void nglGpuInitShaders(void);
 
 #endif // COD3_NGL_NGL_DX_GPU_H

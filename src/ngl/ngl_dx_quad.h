@@ -69,6 +69,8 @@ extern nglDxTexCacheClass nglDxTexCache;
 struct nglSyncDebugStruct {
     int DisableQuads;  // +0x00
     int DumpSceneFile; // +0x04
+    int DumpFrameLog;  // +0x08
+    int DumpTextures;  // +0x0C
 };
 extern nglSyncDebugStruct nglSyncDebug;
 
@@ -123,16 +125,60 @@ struct nglPerfInfoStruct {
 // ============================================================================
 struct nglGpuQuadPCUVVertexShader {
     static unsigned int Shader;   // ?Shader@nglGpuQuadPCUVVertexShader@@3KA
+    static unsigned int* VS;
+    static const unsigned int** VShaderTable;
 };
 struct nglGpuTexColPixelShader {
     static unsigned int* Shader;  // ?Shader@nglGpuTexColPixelShader@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
 };
 struct nglGpuQuadPCVertexShader {
     static unsigned int Shader;   // ?Shader@nglGpuQuadPCVertexShader@@3KA
+    static unsigned int* VS;
+    static const unsigned int** VShaderTable;
 };
 struct nglGpuColPixelShader {
     static unsigned int* Shader;  // ?Shader@nglGpuColPixelShader@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
 };
+struct nglGpuTexPixelShader {
+    static unsigned int*  Shader;     // ?Shader@nglGpuTexPixelShader@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
+};
+struct nglGpuFilterPixelShader {
+    static unsigned int*  Shader;     // ?Shader@nglGpuFilterPixelShader@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
+};
+struct nglGpuZFogPixelShader {
+    static unsigned int*  Shader;     // ?Shader@nglGpuZFogPixelShader@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
+};
+struct nglGpuQuadPUVVertexShader {
+    static unsigned int  Shader;      // ?Shader@nglGpuQuadPUVVertexShader@@3KA
+    static unsigned int* VS;
+    static const unsigned int** VShaderTable;
+};
+struct nglGpuQuadPUV4VertexShader {
+    static unsigned int  Shader;      // ?Shader@nglGpuQuadPUV4VertexShader@@3KA
+    static unsigned int* VS;
+    static const unsigned int** VShaderTable;
+};
+struct nglGpuQuadPUVMatColVertexShader {
+    static unsigned int  Shader;      // ?Shader@nglGpuQuadPUVMatColVertexShader@@3KA
+    static unsigned int* VS;
+    static const unsigned int** VShaderTable;
+};
+
+extern const _D3DVERTEXSHADERINPUT* nglGpuPCVertexElements;
+extern const _D3DVERTEXSHADERINPUT* nglGpuPUVVertexElements;
+extern const _D3DVERTEXSHADERINPUT* nglGpuPCUVVertexElements;
+extern const _D3DVERTEXSHADERINPUT* nglGpuPUV4VertexElements;
+extern gpuVertexFormat nglGpuPUV4VertexFmt;
 
 // ============================================================================
 // Externs
@@ -144,6 +190,7 @@ extern int nglTextureAnimFrame;
 extern nglPerfInfoStruct nglPerfInfo;
 extern gpuVertexFormat nglGpuPCUVVertexFmt;
 extern gpuVertexFormat nglGpuPCVertexFmt;
+extern gpuVertexFormat nglGpuPUVVertexFmt;
 extern unsigned int gpuHashVertexShader;
 extern unsigned int gpuHashPixelShader;
 extern unsigned int gpuHashVertexBuffer;

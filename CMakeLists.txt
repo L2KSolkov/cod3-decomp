@@ -51,6 +51,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_dx_quad.cpp
     src/ngl/ngl_quad.cpp
     src/ngl/ngl_gpu_meshedit.cpp
+    src/ngl/ngl_gpu.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC

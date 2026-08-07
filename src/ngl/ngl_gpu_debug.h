@@ -54,11 +54,13 @@ static_assert(sizeof(nglDebugTriNode) == 0x14, "nglDebugTriNode size mismatch");
 struct nglGpuDebugVertexShader {
     static unsigned int Shader;                 // ?Shader@nglGpuDebugVertexShader@@3KA
     static const unsigned int** VShaderTable;   // ?VShaderTable@nglGpuDebugVertexShader@@3PAPBIA
+    static unsigned int* VS;                    // ?VS@nglGpuDebugVertexShader@@3PAKA
 };
 
 struct nglGpuDebugPixelShader {
     static unsigned int* Shader;                // ?Shader@nglGpuDebugPixelShader@@3PAKA
     static const unsigned int** PShaderTable;   // ?PShaderTable@nglGpuDebugPixelShader@@3PAPBIA
+    static unsigned int** PS;                   // ?PS@nglGpuDebugPixelShader@@3PAPAKA
 };
 
 // nglGpuPCVertexFmt (data, owned by ngl_xboxr:ngl_gpu.o)
