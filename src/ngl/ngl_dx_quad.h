@@ -68,6 +68,7 @@ extern nglDxTexCacheClass nglDxTexCache;
 // nglSyncDebug (data, owned by ngl_xboxr)
 struct nglSyncDebugStruct {
     int DisableQuads;  // +0x00
+    int DumpSceneFile; // +0x04
 };
 extern nglSyncDebugStruct nglSyncDebug;
 
@@ -156,6 +157,33 @@ extern void nglDxSetTexture(unsigned int Stage, nglTexture* Tex, unsigned int Fi
 extern void nglDxSetTextureU(unsigned int Stage, unsigned int Mode);
 extern void nglDxSetTextureV(unsigned int Stage, unsigned int Mode);
 extern void nglDxResetDevice();
+
+// ============================================================================
+// Quad helper API (ngl_quad.o)
+// ============================================================================
+extern void nglInitQuad(nglQuad* Quad);
+extern void nglSetQuadTex(nglQuad* Quad, nglTexture* Tex);
+extern void nglSetQuadMapFlags(nglQuad* Quad, unsigned int MapFlags);
+extern void nglSetQuadBlend(nglQuad* Quad, unsigned int Blend);
+extern void nglSetQuadUV(nglQuad* Quad, float u1, float v1, float u2, float v2);
+extern void nglSetQuadColor(nglQuad* Quad, unsigned int c);
+extern void nglSetQuadRect(nglQuad* Quad, float x1, float y1, float x2, float y2);
+extern void nglSetQuadZ(nglQuad* Quad, float z);
+extern void nglSetQuadVPos(nglQuad* Quad, int VertIdx, float x, float y);
+extern void nglSetQuadVUV(nglQuad* Quad, int VertIdx, float u, float v);
+extern void nglSetQuadVColor(nglQuad* Quad, int VertIdx, unsigned int Color);
+extern void nglRotateQuad(nglQuad* Quad, float cx, float cy, float theta);
+extern void nglScaleQuad(nglQuad* Quad, float cx, float cy, float sx, float sy);
+extern void nglRotateQuadUV(nglQuad* Quad, float cx, float cy, float theta);
+extern void nglScaleQuadUV(nglQuad* Quad, float cx, float cy, float sx, float sy);
+extern void nglSetQuadPos(nglQuad* Quad, float x, float y);
+extern void nglListAddQuad(nglQuad* Quad);
+
+extern void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);
+extern void  nglValidateMatrices(nglScene* Scene);
+extern void  nglListAddNode_Opaque(nglRenderNode* Node, unsigned int Hash);
+extern void  nglSceneDumpQuad(nglQuad* Quad);
+extern void  tlWarning(const char* Format, ...);
 
 // ============================================================================
 // nglDxViewToScreenZ — project a view-space Z to screen Z (inline COMDAT)
