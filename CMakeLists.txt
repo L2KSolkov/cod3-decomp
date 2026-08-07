@@ -32,6 +32,7 @@ add_library(cod3_physics STATIC
     src/physics/rbc_def_custom.cpp
     src/physics/rbc_def_vehicle.cpp
     src/physics/rbc_def_contact.cpp
+    src/physics/phys_util.cpp
     src/physics/phys_collision.cpp
     src/physics/stubs.cpp
 )

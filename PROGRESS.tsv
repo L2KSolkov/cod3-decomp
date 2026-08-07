@@ -131,7 +131,7 @@ aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math hel
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	TODO	
-phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	TODO	
+phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	PORTED	[phys_xboxr] phys_util.cpp: nuge aggregate utils (8 funcs)
 bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	TODO	
 bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	TODO	

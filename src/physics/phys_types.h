@@ -155,6 +155,8 @@ struct rigid_body {
     float        m_stable_energy_time;        // +0x160
     float        m_stable_te;                 // +0x164
     rb_inplace_partition_node m_partition_node;  // +0x168 (64 bytes)
+
+    void add_force(const math::Dir3& force);
 };
 static_assert(sizeof(rigid_body) == 0x1B0, "rigid_body size mismatch");
 static_assert(offsetof(rigid_body, m_mat) == 0x000, "rigid_body::m_mat offset mismatch");
