@@ -29,16 +29,16 @@ extern const char* nullStr;
 // ============================================================================
 // SV_GetConfigstring (string& overload) — ea: 0x51F310
 // ============================================================================
-void SV_GetConfigstring(unsigned int index, Broc::string* str) {
+void SV_GetConfigstring(int index, Broc::string& str) {
     if (index >= 0x400)
         Com_Error(2, "\x15SV_GetConfigstring: bad index %i\n", index);
-    *str = sv.configstrings[index];
+    str = sv.configstrings[index];
 }
 
 // ============================================================================
 // SV_GetConfigstring (char* overload) — ea: 0x520220
 // ============================================================================
-void SV_GetConfigstring(unsigned int index, char* buffer, int bufferSize) {
+void SV_GetConfigstring(int index, char* buffer, int bufferSize) {
     if (bufferSize < 1)
         Com_Error(2, "\x15SV_GetConfigstring: bufferSize == %i", bufferSize);
     if (index >= 0x400)
@@ -61,7 +61,7 @@ void SV_GetConfigstring(unsigned int index, char* buffer, int bufferSize) {
 // ============================================================================
 // SV_GetConfigstringConst — ea: 0x5202D0
 // ============================================================================
-const char* SV_GetConfigstringConst(unsigned int index) {
+const char* SV_GetConfigstringConst(int index) {
     if (index >= 0x400) {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_init.cpp";
@@ -80,7 +80,7 @@ const char* SV_GetConfigstringConst(unsigned int index) {
 // ============================================================================
 // SV_SetConfigstring — ea: 0x5209E0
 // ============================================================================
-void SV_SetConfigstring(unsigned int index, const char* val) {
+void SV_SetConfigstring(int index, const char* val) {
     char buf[256];
     int v11;
     client_s* client;
