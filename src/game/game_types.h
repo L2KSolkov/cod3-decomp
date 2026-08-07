@@ -31,7 +31,7 @@ struct animscripted_t;
 struct proximity_data_t;
 struct actor_s;
 struct sentient_s;
-struct DCGSet;
+class DCGSet;
 struct WorldSector;
 
 // ============================================================================

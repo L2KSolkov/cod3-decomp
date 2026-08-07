@@ -162,11 +162,12 @@ public:
     char    loadLevel[128];             // +0x3D
     float   saveTime;                   // +0xC0
     DialogMenuSystem* mDMS[1];          // +0xC4
-    InGameMenuSystem* mIGMS[1];         // +0xC8
+    InGameMenuSystem* mIGMS[1];          // +0xC8
     AARMenuSystem* mAARS;               // +0xCC
     uint8_t mPanelArray[800];           // +0xD0 (100 x sPanelPakData, opaque)
     int     mNumPanels;                 // +0x3F0
     // +0x3F4 .. 0x3F4 remaining pad
+    void UpdateLoadingMenu(float percentDone);  // ?UpdateLoadingMenu@FEManager@@QAEXM@Z
 };
 static_assert(sizeof(FEManager) == 0x3F4, "FEManager size mismatch");
 
