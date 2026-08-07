@@ -23,8 +23,12 @@ extern void  SV_SendClientMessages(void);
 extern void  MSG_WriteByte(msg_t* msg, int c);
 extern void  MSG_WriteLong(msg_t* msg, int c);
 extern void  MSG_WriteString(msg_t* msg, const char* s);
+extern void  MSG_BeginReading(msg_t* msg);
+extern short MSG_ReadShort(msg_t* msg);
 extern void  Netchan_Transmit(netchan_t* chan, int length, const unsigned char* data);
 extern int   Netchan_Process(netchan_t* chan, msg_t* msg);
+extern void  NET_OutOfBandPrint(netsrc_t sock, netadr_t adr, const char* format, ...);
+extern void  SV_ExecuteClientMessage(client_s* cl, msg_t* msg);
 extern const char* nullStr;
 extern int   com_frameNumber;
 
@@ -157,6 +161,49 @@ void SV_Vid_Restart() {
 // ============================================================================
 void SV_Snd_Restart() {
     Cbuf_ExecuteText(2, "savegame internal\\snd_restart\n");
+}
+
+// ============================================================================
+// SV_PacketEvent — ea: 0x520790
+// ============================================================================
+void SV_PacketEvent(netadr_t from, msg_t* msg) {
+    if (++com_skelTimeStamp == 0)
+        com_skelTimeStamp = 1;
+    if (bSV_AllowedAllocSkel != 0) {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_main.cpp";
+        AeAssert::gCurrentLine = 244;
+        AeAssert::gCurrentExpr = "!bSV_AllowedAllocSkel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    bSV_AllowedAllocSkel = 1;
+    MSG_BeginReading(msg);
+    MSG_ReadLong(msg);
+    int Short = MSG_ReadShort(msg);
+    int v3 = 0;
+    client_s* clients = svs.clients;
+    while (clients->state == 0 || Short != v3) {
+        ++v3;
+        ++clients;
+        if (v3 >= 16) {
+            NET_OutOfBandPrint(NS_SERVER, from, "disconnect");
+            goto done;
+        }
+    }
+    client_s* v5 = &svs.clients[Short];
+    if (Netchan_Process((netchan_t*)v5->netchan, msg) != 0)
+        SV_ExecuteClientMessage(v5, msg);
+done:
+    if (bSV_AllowedAllocSkel == 0) {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_main.cpp";
+        AeAssert::gCurrentLine = 276;
+        AeAssert::gCurrentExpr = "bSV_AllowedAllocSkel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    bSV_AllowedAllocSkel = 0;
 }
 
 // ============================================================================
