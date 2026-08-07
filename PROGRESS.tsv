@@ -122,7 +122,7 @@ ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	TODO
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	TODO	
 nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	TODO	
+bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	PORTED	[bdConnection] bdMessage.cpp: network message (9 funcs)
 bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	TODO	
 bdConnection:bdPacket.obj	bdConnection	bdPacket.obj	engine	9	TODO	
 bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	TODO	

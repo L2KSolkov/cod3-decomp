@@ -97,6 +97,8 @@ public:
     uint8_t*     m_data;      // +0x0C
     uint8_t*     m_readPtr;   // +0x10
     uint8_t*     m_writePtr;  // +0x14
+
+    bdByteBuffer(unsigned int size);
 };
 static_assert(sizeof(bdByteBuffer) == 0x18, "bdByteBuffer size mismatch");
 static_assert(offsetof(bdByteBuffer, m_size) == 0x08, "bdByteBuffer::m_size offset mismatch");
@@ -125,6 +127,9 @@ public:
     void writeBits(const void* data, unsigned int bitCount);
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);
+    bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);
+    bdBitBuffer(unsigned int bitCount, bool typeChecked);
+    bool getTypeCheck() const;
 };
 static_assert(sizeof(bdBitBuffer) == 0x24, "bdBitBuffer size mismatch");
 static_assert(offsetof(bdBitBuffer, m_data) == 0x08, "bdBitBuffer::m_data offset mismatch");
@@ -143,6 +148,17 @@ public:
     bool           m_payloadTypeChecked;  // +0x10
     uint8_t        _pad11[3];             // +0x11
     bdReference<bdByteBuffer> m_unencPayload;  // +0x14
+
+    bdMessage(unsigned char type, bool payloadTypeChecked);
+    bdMessage(unsigned char type, const unsigned char* data, unsigned int dataSize,
+              bool typeChecked, const unsigned char* unencData, unsigned int unencSize);
+    virtual ~bdMessage();
+    unsigned char getType() const;
+    bdReference<bdBitBuffer> getPayload();
+    bool hasPayload() const;
+    bdByteBuffer* createUnencryptedPayload(unsigned int size);
+    bdReference<bdByteBuffer> getUnencryptedPayload() const;
+    bool hasUnencryptedPayload() const;
 };
 static_assert(sizeof(bdMessage) == 0x18, "bdMessage size mismatch");
 static_assert(offsetof(bdMessage, m_type) == 0x08, "bdMessage::m_type offset mismatch");
