@@ -45,6 +45,10 @@ static_assert(offsetof(trace_t, fraction) == 0x20, "trace_t::fraction offset mis
 // ============================================================================
 struct collision_context_t {
     struct collision_context_t_vtbl* __vftable;  // +0x00
-    uint8_t _pad4[20];                            // +0x04 (derived-specific data)
+    DbLinkedHandle<void, Entity> pass_entity1;    // +0x04
+    DbLinkedHandle<void, Entity> pass_entity2;    // +0x08
+    int   contentmask;                            // +0x0C
+    // +0x10 .. 0x18 derived-specific data
+    uint8_t _pad10[8];                            // +0x10
 };
 static_assert(sizeof(collision_context_t) == 0x18, "collision_context_t size mismatch");

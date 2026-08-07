@@ -209,6 +209,7 @@ add_library(cod3_game_sv STATIC
     src/game/sv/sv_client.cpp
     src/game/sv/sv_snapshot.cpp
     src/game/sv/sv_misc.cpp
+    src/game/sv/sv_world.cpp
 )
 add_library(cod3_game_platform_xbox STATIC src/game/platform_xbox/stubs_game.cpp)
 add_library(cod3_game_nextgen STATIC src/game/nextgen/stubs_game.cpp)

@@ -16,6 +16,36 @@
 // TPakId — pak archive id enum
 // ============================================================================
 enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
+#define PAK_ID_INVALID ((TPakId)-1)
+
+// ============================================================================
+// DCGSet â€” collision model (opaque; only fields SV_SetBrushModel touches)
+// The release decompile views the entity as a DCGSet*; fields below mirror the
+// offsets the disassembly reads (ent[2] = +0x20, ent[5] = +0x50, ent[6] = +0x60).
+// Full definition arrives when the collision object is ported.
+// ============================================================================
+struct DCGSet {
+    // +0x00
+    uint8_t _pad0[0x08];
+    int     objects_m_count;          // +0x08 (objects.m_count high word used)
+    uint8_t _pad0C[0x20 - 0x0C];
+    // +0x20 (ent[2])
+    int     brushes_m_count;          // +0x20
+    int     brushes_m_elements;       // +0x24
+    int     gjk_brushes_m_count;      // +0x28
+    int     gjk_brushes_m_elements;   // +0x2C
+    int     brush_sides_m_count;      // +0x30
+    int     brush_sides_m_elements;   // +0x34
+    int     brush_verts_m_count;      // +0x38
+    int     brush_verts_m_elements;   // +0x3C
+    float   radius2;                  // +0x40
+    uint8_t _pad44[0x50 - 0x44];
+    // +0x50 (ent[5])
+    math::Position3 max;              // +0x50
+    math::Position3 center;           // +0x60
+    math::Position3 min;              // +0x70
+    int     nboxes;                   // +0x80
+};
 
 // ============================================================================
 // StubData — per-controller MP save/profile data (1216 bytes) — verified IDA
@@ -279,10 +309,14 @@ struct EntityManager {
     uint8_t _pad[4];
     static EntityManager* sInst;            // ?sInst@EntityManager@@2PAV1@A
     Entity* GetPlayer(int idx);             // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    Entity* mPlayers[16];                   // +0x04 (player entity handles)
+    Entity* mWorld;                         // +0x44
+    void SwapPlayers(int eA, int eB);       // ?SwapPlayers@EntityManager@@QAEXHH@Z
     void CreatePlayers();                   // ?CreatePlayers@EntityManager@@QAEXXZ
     void CreateWorld();                     // ?CreateWorld@EntityManager@@QAEXXZ
 };
-static_assert(sizeof(EntityManager) == 4, "EntityManager size mismatch (opaque)");
+static_assert(offsetof(EntityManager, mPlayers) == 0x04, "EntityManager::mPlayers offset mismatch");
+static_assert(offsetof(EntityManager, mWorld) == 0x44, "EntityManager::mWorld offset mismatch");
 
 // ============================================================================
 // AeAssert — assertion system (namespace-style free functions + globals)
@@ -397,3 +431,60 @@ extern void   CG_RegisterWeapon(int weaponNum);
 extern void   j_nullsub_86(int phase);
 extern void   movie_manager_load_and_play_movie(const char* movie_name, const char* sound_name);
 extern   void   FEManager_PlayFadeInOranScreen(void);
+
+// ============================================================================
+// MP player / entity manager minimal views (fields used by SV_PostConnect)
+// ============================================================================
+struct MPPlayer {
+    uint8_t _pad[4];
+    int     mClientIndex;   // +0x04
+};
+
+struct MPPlayerManager {
+    MPPlayer* GetPlayer(int id);
+};
+
+struct MPPeer {
+    MPPlayerManager* GetPlayerManager();
+};
+
+struct MultiplayerMgr2 {
+    MPPeer* mPeer;
+};
+
+extern MultiplayerMgr2* MultiplayerMgr2_sInst(void);
+extern EntityManager*   EntityManager_sInst(void);
+extern int              currCl;      // ?currCl@@3HA
+extern bool             gExitGame;   // ?gExitGame@@3_NA
+extern int              unk_F6A290;  // Xbox dev/retail flag
+extern int              dword_F641E0[];
+
+// ============================================================================
+// XModel â€” minimal view for SV_PointTraceToEntity model scan
+// ============================================================================
+struct XModel {
+    int  collLod;  // +0x00
+    static int GetNumBones(XModel* model, int lodIndex);
+};
+
+// IVPointer operator bool / operator-> (reconstructed from IDA)
+template <typename T>
+inline bool IVPointer_IsValid(const IVPointer<T>& p) { return p.mValue != NULL; }
+template <typename T>
+inline T* IVPointer_Deref(const IVPointer<T>& p) { return p.mValue; }
+
+// ============================================================================
+// Client static state (cls) â€” opaque
+// ============================================================================
+enum clientStateCA_t {
+    CA_DISCONNECTED = 0,
+    CA_ACTIVE = 1,
+};
+
+struct clientStatic_t {
+    int state;  // +0x00 (clientStateCA_t)
+};
+
+extern clientStatic_t cls;  // ?cls@@3UclientStatic_t@@A
+extern int   EntityManager_GetNumPlayers(void);
+extern Entity* EntityManager_GetPlayerEntity(int idx);

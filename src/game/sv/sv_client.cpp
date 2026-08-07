@@ -27,9 +27,73 @@ extern void  SV_PreFrame(int msec);
 extern void  SV_RunFrame(int msec);
 extern void  CL_ParseGamestate(Broc::string* configstrings);
 extern void  CL_ConnectResponse(netadr_t from);
+extern void  SV_DirectConnect(netadr_t from);
+extern void  SV_SwapClients(int client1, int client2);
 
 // static helper
 static int SV_ClientCommand(client_s* cl, msg_t* msg);   // ea: 0x51E970
+
+// ============================================================================
+// SV_PostConnect â€” ea: 0x5257E0
+// ============================================================================
+void SV_PostConnect() {
+    if (svs.clients[currCl].state != CS_FREE) {
+        int v1 = 0;
+        client_s* clients = svs.clients;
+        while (clients->state != CS_FREE) {
+            if (clients[1].state == CS_FREE) {
+                v1 += 1;
+                break;
+            }
+            if (clients[2].state == CS_FREE) {
+                v1 += 2;
+                break;
+            }
+            if (clients[3].state == CS_FREE) {
+                v1 += 3;
+                break;
+            }
+            v1 += 4;
+            clients += 4;
+            if (v1 >= 16)
+                break;
+        }
+        EntityManager::sInst->SwapPlayers(v1, currCl);
+        SV_SwapClients(v1, currCl);
+        for (int i = 0; i < 16; ++i) {
+            MPPlayerManager* PlayerManager = MultiplayerMgr2_sInst()->mPeer->GetPlayerManager();
+            MPPlayer* player = PlayerManager->GetPlayer(i);
+            if (player != NULL && player->mClientIndex == currCl)
+                player->mClientIndex = v1;
+        }
+    }
+    netadr_t v12;
+    v12.type = NA_BOT;
+    memset(v12.ipx, 0, sizeof(v12.ipx));
+    SV_DirectConnect(v12);
+    v12.type = NA_BOT;
+    memset(v12.ipx, 0, sizeof(v12.ipx));
+    CL_ConnectResponse(v12);
+    cls.state = CA_ACTIVE;
+    int v6 = currCl;
+    unk_F6A290 = 2;
+    dword_F641E0[1580 * v6] = -1;
+    if (v6 >= 16) {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EntityManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "idx<16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+        v6 = currCl;
+    }
+    Entity* playerEnt = EntityManager_GetPlayerEntity(v6);
+    DbLinkedHandle<void, Entity>* v9 = (DbLinkedHandle<void, Entity>*)((char*)playerEnt + 0x234);
+    client_s* v10 = &svs.clients[v6];
+    v10->mEntityHandle = v9[141];
+    v10->deltaMessage = -1;
+    ClientConnect(v9[141]);
+}
 
 // ============================================================================
 // SV_SendClientGameState — ea: 0x51E910
