@@ -231,6 +231,7 @@ public:
     EntityHandleDbDbElement mElements[0x540];  // +0x2AAC (1344 * 8 = 10752)
     uint8_t  _rest[27312 - 0x2AAC - 10752];
     static EntityHandleDb sInst;           // ?sInst@EntityHandleDb@@0V1@A
+    void AssignHandle(Entity& e);          // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
 };
 static_assert(sizeof(EntityHandleDb) == 27312, "EntityHandleDb size mismatch");
 static_assert(offsetof(EntityHandleDb, mElements) == 0x2AAC, "EntityHandleDb::mElements offset mismatch");
@@ -254,6 +255,8 @@ struct EntityManager {
     uint8_t _pad[4];
     static EntityManager* sInst;            // ?sInst@EntityManager@@2PAV1@A
     Entity* GetPlayer(int idx);             // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    void CreatePlayers();                   // ?CreatePlayers@EntityManager@@QAEXXZ
+    void CreateWorld();                     // ?CreateWorld@EntityManager@@QAEXXZ
 };
 static_assert(sizeof(EntityManager) == 4, "EntityManager size mismatch (opaque)");
 
