@@ -141,9 +141,7 @@ struct apsArray {
     // resize — set size, growing capacity if needed. ?resize@...QAEIH@Z
     int resize(int iNewSize) {
         if (iNewSize > mCapacity) {
-            int old = apsCommon::SetPakAllocs(0);
-            T* buf = (T*)apsCommon::GetAllocator()->MemAlign(4 * iNewSize, 4);
-            apsCommon::SetPakAllocs(old);
+            T* buf = construct_array(iNewSize);
             int result = 0;
             if (buf != 0) {
                 for (int i = 0; i < mSize; ++i)
@@ -163,6 +161,8 @@ struct apsArray {
             }
             return result;
         }
+        for (int i = mSize; i < iNewSize; ++i)
+            new (&mElements[i]) T();
         mSize = (short)iNewSize;
         return 1;
     }
@@ -253,14 +253,57 @@ struct apsArray {
         return 1;
     }
 
+    void erase(T* iToErase);   // defined out-of-line below
+
 protected:
     T* construct_array(int iNumber) {     // ?construct_array@?$apsArray@T@@AAEPATH@Z
         int old = apsCommon::SetPakAllocs(0);
         T* buf = (T*)apsCommon::GetAllocator()->MemAlign(4 * iNumber, 4);
         apsCommon::SetPakAllocs(old);
+        if (buf != 0) {
+            for (int i = 0; i < iNumber; ++i)
+                new (&buf[i]) T();
+        }
         return buf;
     }
+
+    // destroy_all — free the element buffer (no per-element destruction).
+    // ?destroy_all@?$apsArray@T@@QAEXXZ (inline COMDATs)
+    void destroy_all() {
+        if (mElements != 0) {
+            int old = apsCommon::SetPakAllocs(0);
+            apsCommon::GetAllocator()->MemFree(mElements);
+            apsCommon::SetPakAllocs(old);
+            mElements = 0;
+            mCapacity = 0;
+            mSize = 0;
+        }
+    }
 };
+
+// ============================================================================
+// apsArray<T>::erase — remove element at iToErase, shifting the tail down.
+// ?erase@?$apsArray@T@@QAEXPAT@Z (inline COMDATs). Declared out-of-line so the
+// generic template compiles for the pointer/struct instantiations used here.
+// ============================================================================
+template <typename T>
+void apsArray<T>::erase(T* iToErase) {
+    if (mSize <= 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 245,
+                  "mSize > 0", "can't erase in empty vector"))
+        __debugbreak();
+    T* last = &mElements[mSize];
+    if (iToErase != last) {
+        if (iToErase != &last[-1]) {
+            T* p = iToErase;
+            do {
+                *p = p[1];
+                ++p;
+            } while (p != &last[-1]);
+        }
+        --mSize;
+    }
+}
 
 // ============================================================================
 // apsDestroy<T> — virtual-destructor helper. ea: 0x808180.

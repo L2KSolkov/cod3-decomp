@@ -82,6 +82,8 @@ public:
     unsigned int mFields;            // +0x04
     int          mPriority;          // +0x08
     unsigned int mIsDynamicallyLit;  // +0x0C
+
+    unsigned int GetRequiredParticleFields() const { return mFields; }  // ?GetRequiredParticleFields@apsRenderer@@QBEIXZ (inline COMDAT)
 };
 
 #endif // COD3_AEPS_APSRENDERER_H

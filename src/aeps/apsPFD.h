@@ -61,8 +61,8 @@ public:
     void AddFields(unsigned int iFields);      // @0x8120C0
     void RecomputeOffsets();                   // @0x812020
 
-    // apsPFD.o (non-inline): byte size of the given field.
-    static unsigned char GetFieldByteSize(apsEPFDField iField);
+// apsPFD.o (non-inline): byte size of the given field.
+static unsigned char GetFieldByteSize(apsEPFDField iField);
 
     static unsigned char sElementSizes[32];    // @0x1239190
 
@@ -78,5 +78,13 @@ public:
         return mOffsets[iField];
     }
 };
+
+// apsEffectTemplate.o / apsSuppliedActions.o inline COMDATs:
+inline unsigned int apsGetFields(apsEPFDField iVal1) { return 1 << iVal1; }        // ?apsGetFields@@YAIW4apsEPFDField@@@Z
+inline unsigned int apsGetFields(apsEPFDField iVal1, apsEPFDField iVal2) { return (1 << iVal2) | (1 << iVal1); }  // ?apsGetFields@@YAIW4apsEPFDField@@0@Z
+inline unsigned int apsGetFields(apsEPFDField iVal1, apsEPFDField iVal2, apsEPFDField iVal3) { return (1 << iVal3) | (1 << iVal2) | (1 << iVal1); }  // ?apsGetFields@@YAIW4apsEPFDField@@000@Z
+inline unsigned int apsGetFields(apsEPFDField iVal1, apsEPFDField iVal2, apsEPFDField iVal3, apsEPFDField iVal4) { return (1 << iVal4) | (1 << iVal3) | (1 << iVal2) | (1 << iVal1); }  // ?apsGetFields@@YAIW4apsEPFDField@@0000@Z
+inline unsigned int apsGetFields(apsEPFDField iVal1, apsEPFDField iVal2, apsEPFDField iVal3, apsEPFDField iVal4, apsEPFDField iVal5) { return (1 << iVal5) | (1 << iVal4) | (1 << iVal3) | (1 << iVal2) | (1 << iVal1); }  // ?apsGetFields@@YAIW4apsEPFDField@@00000@Z
+inline unsigned int apsGetFields(apsEPFDField iVal1, apsEPFDField iVal2, apsEPFDField iVal3, apsEPFDField iVal4, apsEPFDField iVal5, apsEPFDField iVal6) { return (1 << iVal6) | (1 << iVal5) | (1 << iVal4) | (1 << iVal3) | (1 << iVal2) | (1 << iVal1); }  // ?apsGetFields@@YAIW4apsEPFDField@@000000@Z
 
 #endif // COD3_AEPS_APSPFD_H

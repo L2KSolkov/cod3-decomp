@@ -8,7 +8,10 @@
 
 #include <stdint.h>
 
-struct tlFixedString {
+// Declared `class` (not struct) to match the original binary's MSVC mangling
+// (`ABVtlFixedString` etc. use V for class types).
+class tlFixedString {
+public:
     uint32_t hash;          // +0x00 — DJB2 hash
     char     str[28];       // +0x04 — inline string (28 bytes = 32 total)
 

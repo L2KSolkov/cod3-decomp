@@ -36,7 +36,7 @@ aeps_xboxr:apsEffect.o	aeps_xboxr	apsEffect.o	engine	37	TODO
 ngl_xboxr:ngl_debug.o	ngl_xboxr	ngl_debug.o	engine	36	TODO	
 bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine	36	TODO	
 peripherals_xboxr:MemoryUnit.o	peripherals_xboxr	MemoryUnit.o	engine	35	TODO	
-aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	TODO	
+aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	PORTED	apsEffectTemplate.cpp (full apsEffectTemplate class 208B: Element/Modifier/Stats, ctor/dtor, per-element setters, RebuildPFD, Fixup, CalcMemoryNeeded/TestAlloc/MemoryMatch, SetElementData, modifiers; sMaxElements/sMaxModifiers/kDefaultTimeScale; apsArray erase/destroy_all)
 phys_xboxr:rb_ragdoll_model.o	phys_xboxr	rb_ragdoll_model.o	engine	31	TODO	
 bdCore:bdString.obj	bdCore	bdString.obj	engine	28	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 aeps_xboxr:apsSuppliedDomains.o	aeps_xboxr	apsSuppliedDomains.o	engine	26	PORTED	apsSuppliedDomains.cpp (apsDomain::Fixup + Sphere/Y/ZHemisphere/SphereSurface/Line/Disc/Circle domain GetValue/TestValue/ctors, 26 funcs; gHiHat_* globals; GetId FourCCs inline)
