@@ -10,16 +10,19 @@
 
 #include "core/math_types.h"
 
-#include "apsAction.h"      // apsArray<T>, apsFixUp, apsDestroy
+#include "apsAction.h"      // apsArray<T>, apsFixUp, apsDestroy, apsAction
 #include "apsPFD.h"         // apsPFD
-#include "apsRenderNode.h"  // apsSphere
+#include "apsError.h"       // AEPS_VECTOR_NEW
+#include "apsRenderNode.h"  // apsSphere, apsLight::LightInfo
+#include "apsVFC.h"         // VFC::FrustumInfo
+#include "apsGroup.h"       // apsGroup, apsBounds (full defs)
 #include "core/tlFixedString.h"
 
 #include <cstddef>
 
 class apsRenderer;
 class apsActionList;
-struct apsBounds;
+struct nglLightContext;
 
 // ============================================================================
 // apsEffectTemplate — particle-effect template (208 bytes).
@@ -227,19 +230,197 @@ inline void apsEffectTemplate::SetName(const char* name) {  // ?SetName@apsEffec
 // ============================================================================
 // apsEffect — runtime particle effect (128 bytes, apsEffect.o).
 // ============================================================================
+// apsClient is declared in apsInternal.h (minimal view); its
+// GetLightInfoAtPosition virtual (render.o) is used by apsEffect.
+
+// render.o externs
+extern void* apsMemAlloc(unsigned int size, unsigned int align, unsigned int flags);  // ?apsMemAlloc@@YAPAXIII@Z
+extern void  apsMemFree(void* ptr);                                                    // ?apsMemFree@@YAXPAX@Z
+
+// ============================================================================
+// apsBlockArray<T> — block array (8 bytes, same layout as apsArray but uses
+// SetCurrentPakId(-1)/SetPakAllocs(1) around allocations). Inline COMDATs in
+// apsEffect.o (ctor/reserve/push_back/construct_array/resize_array/destroy_all).
+// ============================================================================
+template <typename T>
+class apsBlockArray {
+public:
+    T*    mElements;   // +0x00
+    short mCapacity;   // +0x04
+    short mSize;       // +0x06
+
+    apsBlockArray() : mElements(0), mCapacity(0), mSize(0) {}          // ??0?$apsBlockArray@T@@QAE@XZ
+    apsBlockArray(int iSize, const T& iFillValue);                     // ??0?$apsBlockArray@T@@QAE@HABT@@@Z
+    ~apsBlockArray() { destroy_all(); }                                // ??1?$apsBlockArray@T@@QAE@XZ
+
+    int size() const { return mSize; }                                 // ?size@...QBEHXZ
+    T& operator[](int iIndex) {                                        // ??A@...QAEAAATH@Z
+        if ((iIndex < 0 || iIndex >= mSize) &&
+            _tlAssert("c:\\cod\\code\\tl\\aeps\\include\\apsArray.h", 505,
+                      "iIndex >= 0 && iIndex < mSize", "out of bounds"))
+            __debugbreak();
+        return mElements[iIndex];
+    }
+    T* begin() { return mElements; }                                   // ?begin@...QAEPATXZ
+    T* end() { return &mElements[mSize]; }                             // ?end@...QAEPATXZ
+
+    int reserve(int iCapacity);                                        // ?reserve@...QAEIH@Z
+    int push_back(const T& iElement);                                  // ?push_back@...QAEIABT@@@Z
+
+protected:
+    T* construct_array(int iNumber);           // ?construct_array@...AAEPATH@Z
+    T* construct_array(int iNumber, int iSize);  // ?construct_array@...AAEPATHH@Z
+    T* resize_array(int iCapacity, int iSize);   // ?resize_array@...AAEPATHH@Z
+    void destroy_all();                         // ?destroy_all@...QAEXXZ
+};
+
+// ============================================================================
+// apsEffect — runtime particle effect (128 bytes).
+//   mLToW@0x00, mStartTime@0x40, mLastTime@0x44, mTemplate@0x48,
+//   mStopEmitting@0x4C, mNumCreated@0x50, mFlags@0x54, mSortKey@0x58,
+//   mGroups@0x5C, mModifiers@0x64, mCollisionData@0x6C, mRaycastCountdown@0x70,
+//   mParentAgePercent@0x74, mTimeToNextRemoveCheck@0x78, mId@0x7C.
+// ============================================================================
 class apsEffect {
 public:
-    void SetLocalToWorldTransform(const math::Mat43& iMatrix);  // apsEffect.o (non-inline)
-    void SetParentAgePercent(float age) { mParentAgePercent = age; }  // inline COMDAT (apsInternal.o)
-    static void ReportEffects();                              // ?ReportEffects@apsEffect@@SAXXZ (apsEffect.o)
-    void AccumulateCollisionBounds(const apsBounds& iBounds); // apsEffect.o (non-inline)
+    struct Modifier {
+        apsAction* mAction;   // +0x00
+        int        mParamNum; // +0x04
+        float      mVal;      // +0x08
+    };
 
-    char  _pad0[0x48];               // +0x00
-    const apsEffectTemplate* mTemplate;  // +0x48
-    char  _pad4C[0x74 - 0x4C];       // +0x4C
-    float mParentAgePercent;         // +0x74
+    struct SortKey {
+        union {
+            struct {
+                unsigned int sortkey0 : 24;
+                unsigned int flags : 1;
+                unsigned int priority : 7;
+            } fields;
+            unsigned int _32;
+        };
+    };
+
+    struct RaycastRequest {
+        math::Dir3   start;     // +0x00
+        math::Dir3   end;       // +0x10
+        unsigned int resultID;  // +0x20
+    };
+
+    struct RaycastResult {
+        math::Dir3 normal;    // +0x00
+        math::Dir3 position;  // +0x10
+        float      t;         // +0x20
+    };
+
+    struct CollisionData {
+        apsBounds       mBounds;              // +0x00 (32 bytes)
+        RaycastRequest  mRaycastRequests[32]; // +0x20 (1536)
+        RaycastResult   mRaycastResults[32];  // +0x620 (1536)
+        unsigned int    mNumRaycastRequests;  // +0xC20
+    };
+    static_assert(sizeof(CollisionData) == 0xC30, "apsEffect::CollisionData size mismatch");
+
+    static const int MAX_RAYCAST_LIST_SIZE = 16;
+    static const int MAX_COLLISION_RAYCAST_REQUESTS = 32;
+
+    // ---- data ----
+    math::Mat43             mLToW;            // +0x00
+    float                   mStartTime;       // +0x40
+    float                   mLastTime;        // +0x44
+    const apsEffectTemplate* mTemplate;       // +0x48
+    int                     mStopEmitting;    // +0x4C
+    int                     mNumCreated;      // +0x50
+    int                     mFlags;           // +0x54
+    SortKey                 mSortKey;         // +0x58
+    apsBlockArray<apsGroup*> mGroups;         // +0x5C
+    apsBlockArray<Modifier>  mModifiers;      // +0x64
+    CollisionData*          mCollisionData;   // +0x6C
+    unsigned int            mRaycastCountdown;// +0x70
+    float                   mParentAgePercent;// +0x74
+    float                   mTimeToNextRemoveCheck;  // +0x78
+    int                     mId;              // +0x7C
+
+    // ---- apsEffect.o (non-inline) ----
+    apsEffect(const apsEffectTemplate* iTemplate, float iStartTime);  // ??0apsEffect@@QAE@PBVapsEffectTemplate@@M@Z
+    ~apsEffect();                                                     // ??1apsEffect@@QAE@XZ
+protected:
+    void TheRealInitializeLOL();    // ?TheRealInitializeLOL@apsEffect@@IAEXXZ
+protected:
+private:
+    void swap_modifiers();               // ?swap_modifiers@apsEffect@@AAEXXZ
+protected:
+    unsigned int Destruct(unsigned int bKillQuickly);  // ?Destruct@apsEffect@@IAEII@Z
+    unsigned int Construct(const apsEffectTemplate* iTemplate, float iStartTime);  // ?Construct@apsEffect@@IAEIPBVapsEffectTemplate@@M@Z
+public:
+    void StopEmitting();            // ?StopEmitting@apsEffect@@QAEXXZ
+    int  GetModifierId(const char* name);  // ?GetModifierId@apsEffect@@QAEHPBD@Z
+    const RaycastResult& GetRaycastResult(unsigned int id) const;  // ?GetRaycastResult@apsEffect@@QBEABURaycastResult@1@I@Z
+    void AccumulateCollisionBounds(const apsBounds& bounds);  // ?AccumulateCollisionBounds@apsEffect@@QAEXABUapsBounds@@@Z
+    void IncrementRaycastCountdown();    // ?IncrementRaycastCountdown@apsEffect@@QAEXXZ
+    static unsigned int GetRaycastCountdownMaxValue();  // ?GetRaycastCountdownMaxValue@apsEffect@@SAIXZ
+    static unsigned int IsPoolEmpty();   // ?IsPoolEmpty@apsEffect@@SAIXZ
+    static unsigned int TestAlloc(apsEffectTemplate* tmpl);  // ?TestAlloc@apsEffect@@SAIPAVapsEffectTemplate@@@Z
+    static int GetNumActiveEffects();    // ?GetNumActiveEffects@apsEffect@@SAHXZ
+    void ReportTemplate();               // ?ReportTemplate@apsEffect@@QAEXXZ
+    void SetLocalToWorldTransform(const math::Mat43& iMatrix);  // ?SetLocalToWorldTransform@apsEffect@@QAEXABVMat43@math@@@Z
+    int  CountParticles();               // ?CountParticles@apsEffect@@QAEHXZ
+    void SetModifierValue(int iNum, float iVal);  // ?SetModifierValue@apsEffect@@QAEXHM@Z
+    float GetModifierValue(int iNum);    // ?GetModifierValue@apsEffect@@QAEMH@Z
+    float GetModifierTemplateValue(int iNum);  // ?GetModifierTemplateValue@apsEffect@@QAEMH@Z
+    void Render(nglLightContext* iLightContext, const VFC::FrustumInfo& frustumInfo);  // ?Render@apsEffect@@QAEXPAUnglLightContext@@ABUFrustumInfo@VFC@@@Z
+    void GetBounds(apsBounds& iBounds);  // ?GetBounds@apsEffect@@QAEXAAUapsBounds@@@Z
+    void SetPosition(const math::Dir3& pos);  // ?SetPosition@apsEffect@@QAEXABVDir3@math@@@Z
+    void SetCulled(unsigned int bCulled); // ?SetCulled@apsEffect@@QAEXI@Z
+    void Report(int index);              // ?Report@apsEffect@@QAEXH@Z
+    void Update(float iCurTime);         // ?Update@apsEffect@@QAEXM@Z
+    unsigned int IsDone();               // ?IsDone@apsEffect@@QAEIXZ
+    void FastForward(float deltaT, int numIncr);  // ?FastForward@apsEffect@@QAEXMH@Z
+    void CalcSortKey();                  // ?CalcSortKey@apsEffect@@QAEXXZ
+    unsigned int RequestRaycast(const math::Dir3& start, const math::Dir3& end);  // ?RequestRaycast@apsEffect@@QAEIABVDir3@math@@0@Z
+    static void ReportEffects();         // ?ReportEffects@apsEffect@@SAXXZ
+    static void InitPool(int maxEffects); // ?InitPool@apsEffect@@SAXH@Z
+    static apsEffect* New(const apsEffectTemplate* iTemplate, float iStartTime);  // ?New@apsEffect@@SAPAV1@PBVapsEffectTemplate@@M@Z
+    static void Delete(apsEffect* pEffect, unsigned int bKillQuickly);  // ?Delete@apsEffect@@SAXPAV1@I@Z
+    static void TermPool();              // ?TermPool@apsEffect@@SAXXZ
+
+    // ---- inline COMDATs (apsEffect.o) ----
+    int IsStopping() const { return mStopEmitting; }                     // ?IsStopping@apsEffect@@QAEHXZ
+    const apsEffectTemplate& Template() const { return *mTemplate; }     // ?Template@apsEffect@@QBEABVapsEffectTemplate@@XZ
+    void SetParentAgePercent(float age) { mParentAgePercent = age; }     // ?SetParentAgePercent@apsEffect@@QAEXM@Z (inline COMDAT, apsInternal.o)
 };
-static_assert(offsetof(apsEffect, mTemplate) == 0x48, "apsEffect::mTemplate offset mismatch");
-static_assert(offsetof(apsEffect, mParentAgePercent) == 0x74, "apsEffect::mParentAgePercent offset mismatch");
+static_assert(sizeof(apsEffect) == 0x80, "apsEffect size mismatch");
+
+// g_effectTime — global current effect time (?g_effectTime@@3MA @0x14CE2E0).
+extern float g_effectTime;
+
+// AEPS_VECTOR_NEW<apsEffect> specialization — zeroes the pool blocks directly
+// (mParentAgePercent = -1, arrays empty), matching IDA 0x7F06F0. Used by
+// apsMemory::PoolAllocator<apsEffect> in apsEffect::InitPool.
+template <>
+inline apsEffect* AEPS_VECTOR_NEW<apsEffect>(int iNum, int iAlignment) {
+    apsEffect* result = (apsEffect*)apsCommon::GetAllocator()->MemAlign(iNum * sizeof(apsEffect), iAlignment);
+    if (iNum > 0) {
+        apsEffect* p = result;
+        do {
+            p->mTemplate = 0;
+            p->mStopEmitting = 0;
+            p->mNumCreated = 0;
+            p->mFlags = 0;
+            p->mGroups.mElements = 0;
+            p->mGroups.mCapacity = 0;
+            p->mGroups.mSize = 0;
+            p->mModifiers.mElements = 0;
+            p->mModifiers.mCapacity = 0;
+            p->mModifiers.mSize = 0;
+            p->mParentAgePercent = -1.0f;
+            ++p;
+            --iNum;
+        } while (iNum != 0);
+    }
+    return result;
+}
+
+// `anonymous namespace'::GetLightInfo — effect->light info helper.
+void GetLightInfo(const apsEffect* effect, apsLight::LightInfo* outInfo);
 
 #endif // COD3_AEPS_APSEFFECT_H

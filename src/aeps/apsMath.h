@@ -150,6 +150,31 @@ inline void SetIdentityMatrix(math::Mat43& mat) {
     mat.w.v = _mm_setzero_ps();
 }
 
+// Multiply43 — oDest = iLeft * iRight (row-vector convention). ?Multiply43@apsMath@@YAXAAVMat43@math@@ABV23@1@Z
+// (inline COMDAT, emitted in apsEffect.o). Verified against IDA 0x7EF780.
+inline void Multiply43(math::Mat43& oDest, const math::Mat43& iLeft, const math::Mat43& iRight) {
+    oDest.x.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(iLeft.x.v, _mm_shuffle_ps(iRight.x.v, iRight.x.v, 0x00)),
+                   _mm_mul_ps(iLeft.y.v, _mm_shuffle_ps(iRight.x.v, iRight.x.v, 0x55))),
+        _mm_add_ps(_mm_mul_ps(iLeft.z.v, _mm_shuffle_ps(iRight.x.v, iRight.x.v, 0xAA)),
+                   _mm_mul_ps(iLeft.w.v, _mm_shuffle_ps(iRight.x.v, iRight.x.v, 0xFF))));
+    oDest.y.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(iLeft.x.v, _mm_shuffle_ps(iRight.y.v, iRight.y.v, 0x00)),
+                   _mm_mul_ps(iLeft.y.v, _mm_shuffle_ps(iRight.y.v, iRight.y.v, 0x55))),
+        _mm_add_ps(_mm_mul_ps(iLeft.z.v, _mm_shuffle_ps(iRight.y.v, iRight.y.v, 0xAA)),
+                   _mm_mul_ps(iLeft.w.v, _mm_shuffle_ps(iRight.y.v, iRight.y.v, 0xFF))));
+    oDest.z.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(iLeft.x.v, _mm_shuffle_ps(iRight.z.v, iRight.z.v, 0x00)),
+                   _mm_mul_ps(iLeft.y.v, _mm_shuffle_ps(iRight.z.v, iRight.z.v, 0x55))),
+        _mm_add_ps(_mm_mul_ps(iLeft.z.v, _mm_shuffle_ps(iRight.z.v, iRight.z.v, 0xAA)),
+                   _mm_mul_ps(iLeft.w.v, _mm_shuffle_ps(iRight.z.v, iRight.z.v, 0xFF))));
+    oDest.w.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(iLeft.x.v, _mm_shuffle_ps(iRight.w.v, iRight.w.v, 0x00)),
+                   _mm_mul_ps(iLeft.y.v, _mm_shuffle_ps(iRight.w.v, iRight.w.v, 0x55))),
+        _mm_add_ps(_mm_mul_ps(iLeft.z.v, _mm_shuffle_ps(iRight.w.v, iRight.w.v, 0xAA)),
+                   _mm_mul_ps(iLeft.w.v, _mm_shuffle_ps(iRight.w.v, iRight.w.v, 0xFF))));
+}
+
 } // namespace apsMath
 
 namespace math {

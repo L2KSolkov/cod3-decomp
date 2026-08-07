@@ -42,6 +42,7 @@ public:
     virtual ~apsClient() = 0;   // ??1apsClient@@UAE@XZ (render.o)
     virtual apsEffect* CreateSpawnedEffectImmediate(int pakId,
         const apsEffectTemplate* effectTemplate, float startTime) = 0;  // render.o
+    virtual bool GetLightInfoAtPosition(const math::Dir3& iPosition, apsLight::LightInfo& oInfo);  // ?GetLightInfoAtPosition@ApsGameClient@@UAE_NABVDir3@math@@AAULightInfo@apsLight@@@Z (render.o)
 };
 
 namespace apsInternal {

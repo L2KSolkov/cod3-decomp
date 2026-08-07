@@ -41,6 +41,10 @@ struct apsBounds {
         mMin.v = _mm_min_ps(mMin.v, iParticle.v);
         mMax.v = _mm_max_ps(mMax.v, iParticle.v);
     }
+    void Accumulate(const apsBounds& iBounds) {   // ?Accumulate@apsBounds@@QAEXABU1@@Z (apsEffect.o COMDAT)
+        mMin.v = _mm_min_ps(mMin.v, iBounds.mMin.v);
+        mMax.v = _mm_max_ps(mMax.v, iBounds.mMax.v);
+    }
     void Grow(float iRadius) {
         __m128 splat = _mm_set1_ps(iRadius);
         mMin.v = _mm_sub_ps(mMin.v, splat);
