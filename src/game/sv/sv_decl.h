@@ -111,3 +111,18 @@ int    Q_isforfilename(int c);
 void   Q_strncpyz(char* dest, const char* src, int destsize);
 void   XModelEnforceExist(int bEnforce);
 void   ClientConnect(DbLinkedHandle<void, Entity> entity);
+
+// fs.cpp
+int    FS_FOpenFileByMode(const char* qpath, int* f, int mode);
+int    FS_Read(void* buffer, int len, int f);
+void   FS_FCloseFile(int f);
+
+// common/parse helpers
+const char* Com_Parse(const char** data_p);
+int    Q_strcasecmp(const char* s1, const char* s2);
+char   Q_CleanCharacter(char c);
+
+// entity/player managers
+struct LocalClient {
+    static int FirstLocalClientIndex(void);
+};

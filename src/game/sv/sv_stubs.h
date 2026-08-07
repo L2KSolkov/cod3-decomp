@@ -211,6 +211,16 @@ struct PakManager {
 static_assert(sizeof(PakManager) == 4, "PakManager size mismatch (opaque)");
 
 // ============================================================================
+// EntityManager — entity factory (opaque; only sv.o fields used)
+// ============================================================================
+struct EntityManager {
+    uint8_t _pad[4];
+    static EntityManager* sInst;            // ?sInst@EntityManager@@2PAV1@A
+    Entity* GetPlayer(int idx);             // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+};
+static_assert(sizeof(EntityManager) == 4, "EntityManager size mismatch (opaque)");
+
+// ============================================================================
 // AeAssert — assertion system (namespace-style free functions + globals)
 // ============================================================================
 namespace AeAssert {
@@ -279,10 +289,12 @@ struct IGOFrontEnd {
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
 
 // ============================================================================
-// Memory helpers (Z_MallocInternal / Z_FreeInternal)
+// Memory helpers (Z_MallocInternal / Z_FreeInternal / heap)
 // ============================================================================
 extern void* _Z_MallocInternal(unsigned int size);
 extern void  _Z_FreeInternal(void* ptr);
+extern void* mem_heap_malloc(int alignment, unsigned int size);
+extern void  mem_heap_free(void* ptr);
 
 // ============================================================================
 // Cross-object globals used by sv.o
