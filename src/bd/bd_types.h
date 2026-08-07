@@ -279,6 +279,32 @@ enum bdChunkTypes {
 };
 
 // ============================================================================
+// bdLinkedList<T> â€” intrusive doubly-linked list (12 bytes)
+// ============================================================================
+template <typename T>
+struct bdLinkedList {
+    T*           m_head;      // +0x00
+    T*           m_tail;      // +0x04
+    unsigned int m_size;      // +0x08
+
+    T* getHead() { return m_head; }
+    void insertAfter(void* pos, const T& value);
+    void removeAt(void** pos);
+    void clear();
+};
+static_assert(sizeof(bdLinkedList<char>) == 0x0C, "bdLinkedList size mismatch");
+
+// ============================================================================
+// bdGapAckBlock â€” SACK gap block (16 bytes with link)
+// ============================================================================
+struct bdGapAckBlock {
+    unsigned short m_start;   // +0x00
+    unsigned short m_end;     // +0x02
+    bdGapAckBlock* m_next;    // +0x04
+};
+static_assert(sizeof(bdGapAckBlock) == 0x08, "bdGapAckBlock size mismatch");
+
+// ============================================================================
 // bdChunk â€” packet chunk base (12 bytes)
 // Size: 0x0C (12 bytes) â€” verified against IDA
 // ============================================================================
@@ -298,16 +324,49 @@ public:
 static_assert(sizeof(bdChunk) == 0x0C, "bdChunk size mismatch");
 
 // ============================================================================
+// bdSAckChunk â€” selective-ack chunk (48 bytes)
+// Size: 0x30 (48 bytes) â€” verified against IDA
+// ============================================================================
+class bdSAckChunk : public bdChunk {
+public:
+    enum bdSAckFlags {
+        BD_SACK_ACK = 0,
+        BD_SACK_NACK = 1,
+    };
+
+    bdSAckFlags    m_flags;       // +0x0C
+    unsigned short m_cumulativeAck;  // +0x10
+    int            m_windowCredit;   // +0x14
+    bdLinkedList<bdGapAckBlock> m_gapList;  // +0x18
+
+    bdSAckChunk();
+    bdSAckChunk(int windowCredit, bdSAckFlags flags);
+    virtual ~bdSAckChunk();
+    unsigned short getCumulativeAck() const;
+    void setCumulativeAck(unsigned short ack);
+    bdLinkedList<bdGapAckBlock>& getGapList();
+    void setWindowCredit(int credit);
+    int getWindowCredit() const;
+    bdSAckFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    void addGap(const bdGapAckBlock& block);
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdSAckChunk) == 0x24, "bdSAckChunk size mismatch");
+
+// ============================================================================
 // bdBytePacker â€” little-endian byte packing helpers
 // ============================================================================
 namespace bdBytePacker {
 bool appendBuffer(void* dest, unsigned int destSize, unsigned int offset,
                   unsigned int* newOffset, const unsigned char* src, unsigned int size);
 bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
-                     unsigned int* newOffset, const unsigned char* value,
+                     unsigned int* newOffset, const void* value,
                      unsigned int valueSize);
 bool removeBasicType(const unsigned char* src, unsigned int srcSize, unsigned int offset,
-                     unsigned int* newOffset, unsigned char* value, unsigned int valueSize);
+                     unsigned int* newOffset, void* value, unsigned int valueSize);
 bool appendEncodedUInt16(void* dest, unsigned int destSize, unsigned int offset,
                          unsigned int* newOffset, unsigned short value);
 bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize, unsigned int offset,

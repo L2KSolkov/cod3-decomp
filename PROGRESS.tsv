@@ -83,7 +83,7 @@ bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	TODO
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	TODO	
-bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	TODO	
+bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	PORTED	[bdConnection] bdSAckChunk.cpp: selective-ack chunk (13 funcs)
 bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	PORTED	[bdNet] bdGameInfo.cpp: discovery game info + factory (18 funcs)
 render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	PORTED	cdOceanShader.h/.cpp (ocean shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; SetContext+Render deferred)
 zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO	

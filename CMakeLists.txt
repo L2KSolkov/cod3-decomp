@@ -164,6 +164,7 @@ add_library(cod3_bd STATIC
     src/bd/bdConnection.cpp
     src/bd/bdChunk.cpp
     src/bd/bdMessage.cpp
+    src/bd/bdSAckChunk.cpp
     src/bd/bdSessionInfo.cpp
     src/bd/bdSessionHandler.cpp
     src/bd/bdSessionInterceptor.cpp
