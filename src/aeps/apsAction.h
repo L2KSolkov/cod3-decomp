@@ -42,12 +42,25 @@ static_assert(sizeof(apsVirtualBase) == 4, "apsVirtualBase size mismatch");
 
 // ============================================================================
 // apsDomain — abstract domain base (4 bytes, apsVirtualBase-derived).
-// Owned by apsRegister.o (unported): ctor/dtor/Fixup are inline COMDATs there.
+// vtable (5 slots): [0]=~dtor, [1]=GetValue, [2]=TestValue,
+//                    [3]=GetId,    [4]=GetVersion.  Base slots [1..4] pure.
+// dtor/ctor/GetId/GetVersion are inline COMDATs (apsRegister.o in the map;
+// emitted per-TU here). Fixup is non-inline (apsSuppliedDomains.o).
 // ============================================================================
 class apsDomain : public apsVirtualBase {
 public:
-    virtual ~apsDomain() {}                     // ??1apsDomain@@UAE@XZ (apsRegister.o)
-    void Fixup(const apsFixupParams& iFixupParams);   // ?Fixup@apsDomain@@QAEXABUapsFixupParams@@@Z
+    virtual ~apsDomain() {}                            // ??1apsDomain@@UAE@XZ
+
+    virtual void GetValue(int iNumDimensions, float* oOutput) const = 0;   // ??...UBEXHPAM@Z
+    virtual unsigned int TestValue(int iNumDimensions, float* iValue) const = 0;  // ??...UBEIHPAM@Z
+    virtual unsigned int GetId() const = 0;            // ??...UBEIXZ
+    virtual float GetVersion() const = 0;              // ??...UBEMXZ
+
+    void Fixup(const apsFixupParams& iFixupParams);    // ?Fixup@apsDomain@@QAEXABUapsFixupParams@@@Z
+
+    // apsSuppliedActions.o inline COMDATs:
+    void GetVector3(math::Dir3& oOutput) const { GetValue(3, (float*)&oOutput); }  // ?GetVector3@apsDomain@@QBEXAAVDir3@math@@@Z
+    float GetValue() const { float v = 0; GetValue(1, &v); return v; }             // ?GetValue@apsDomain@@QBEMXZ
 };
 static_assert(sizeof(apsDomain) == 4, "apsDomain size mismatch");
 
