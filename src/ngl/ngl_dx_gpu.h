@@ -29,6 +29,78 @@ struct gpuVertexFormat {
 static_assert(sizeof(gpuVertexFormat) == 0x0C, "gpuVertexFormat size mismatch");
 
 // ============================================================================
+// nglMeshSection â€” GPU mesh section (112 bytes, verified against IDA)
+// ============================================================================
+struct nglMeshSection {
+    uint8_t        _pad0[0x10];             // +0x00 (link prefix)
+    int            _pad10;                  // +0x10
+    int            _pad14;                  // +0x14
+    int            _pad18;                  // +0x18
+    int            _pad1C;                  // +0x1C
+    int            _pad20;                  // +0x20
+    int            _pad24;                  // +0x24
+    int            _pad28;                  // +0x28
+    int            _pad2C;                  // +0x2C
+    int            _pad30;                  // +0x30
+    int            _pad34;                  // +0x34
+    int            _pad38;                  // +0x38
+    int            _pad3C;                  // +0x3C
+    void*          VertexBuffer;            // +0x40
+    int            VertexOffset;            // +0x44
+    int            VertexSize;              // +0x48
+    int            NVertices;               // +0x4C
+    void*          IndexBuffer;             // +0x50
+    int            IndexOffset;             // +0x54
+    int            NIndices;                // +0x58
+    int            IndexSize;               // +0x5C
+    gpuVertexFormat* VertexFormat;          // +0x60
+    int            PrimitiveType;           // +0x64
+    int            LOD;                     // +0x68
+    void*          Sphere;                  // +0x6C
+    void*          BoxMin;                  // +0x70
+    void*          BoxMax;                  // +0x74
+    float          SqrtAreaEstimate;        // +0x78
+    void*          Material;                // +0x7C
+};
+static_assert(sizeof(nglMeshSection) == 0x80, "nglMeshSection size mismatch");
+
+// ============================================================================
+// Scratch buffer state (ngl_gpu_meshedit.o)
+// ============================================================================
+extern int             nglScratchIndexBufferSize;
+extern int             nglScratchVertexBufferSize;
+extern int             nglScratchIndexOffset;
+extern int             nglScratchVertexOffset;
+extern D3DIndexBuffer* nglScratchIndexBufferA;
+extern D3DVertexBuffer* nglScratchVertexBufferA;
+
+extern int   nglScratchIndexAlloc(int Size);
+extern int   nglScratchVertexAlloc(int Size, int Align);
+extern nglMeshSection* nglCreateSection(int Prim, int NIndices, int NVertices,
+                                        gpuVertexFormat* VertexFormat);
+extern void  nglDestroySection(nglMeshSection* Section);
+extern void* nglLockSectionIndices(nglMeshSection* Section);
+extern void  nglUnlockSectionIndices(void);
+extern unsigned char* nglLockSectionVertices(nglMeshSection* Section);
+extern void  nglUnlockSectionVertices(void);
+extern nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
+                                               gpuVertexFormat* VertexFormat);
+extern void  nglCopySection(nglMeshSection* Dst, nglMeshSection* Src);
+extern nglMeshSection* nglCreateSectionCopy(nglMeshSection* Section);
+
+// ============================================================================
+// nglMesh â€” mesh container (minimal view for nglCopySection overload)
+// ============================================================================
+struct nglMeshSections {
+    nglMeshSection* Section;  // +0x00
+};
+
+struct nglMesh {
+    uint8_t _pad0[0x10];              // +0x00
+    nglMeshSections* Sections;        // +0x10
+};
+
+// ============================================================================
 // gpuCreateVertexFormat — build a gpuVertexFormat from a D3D8 vertex element
 // list (terminated by Format == D3DVSDT_END). Inline COMDAT in cdGlowShader.o.
 // ea: 0x7C2670
