@@ -227,8 +227,22 @@ struct bdConnectionStatistics {
     float        m_minRTT;               // +0x38
     float        m_avgRTT;               // +0x3C
 
-    // bdConnectionStatistics.obj (method)
-    float getAvgRTT() const { return m_avgRTT; }
+    bdConnectionStatistics();
+    unsigned int reset();
+    unsigned int addBytesSent(unsigned int bytes);
+    unsigned int addBytesRecv(unsigned int bytes);
+    unsigned int addPacketSizeSent(unsigned int size);
+    unsigned int addPacketSizeRecv(unsigned int size);
+    unsigned int addPacketsSent(unsigned int packets);
+    unsigned int addPacketsRecv(unsigned int packets);
+    void setLastRTT(float rtt);
+    unsigned int getBytesSent() const;
+    unsigned int getBytesSentPerSecond() const;
+    unsigned int getBytesRecv() const;
+    unsigned int getPacketsSent() const;
+    unsigned int getPacketsRecv() const;
+    float getAvgRTT() const;
+    void update(float dt);
 };
 static_assert(sizeof(bdConnectionStatistics) == 0x40, "bdConnectionStatistics size mismatch");
 static_assert(offsetof(bdConnectionStatistics, m_bytesSent) == 0x00, "bdConnectionStatistics::m_bytesSent offset mismatch");
