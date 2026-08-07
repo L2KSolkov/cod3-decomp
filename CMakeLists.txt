@@ -36,6 +36,7 @@ add_library(cod3_physics STATIC
     src/physics/rigid_body.cpp
     src/physics/rbc_def_generic.cpp
     src/physics/rbc_def_ragdoll.cpp
+    src/physics/phys_contact_manifold.cpp
     src/physics/phys_collision.cpp
     src/physics/stubs.cpp
 )

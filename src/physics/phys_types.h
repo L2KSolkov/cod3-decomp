@@ -113,6 +113,8 @@ struct phys_memory_heap {
     char* m_buffer_end;    // +0x04
     char* m_buffer_cur;    // +0x08
     char* m_user_start;    // +0x0C
+
+    void* fast_align_start(int alignment, const char* error_msg);
 };
 static_assert(sizeof(phys_memory_heap) == 0x10, "phys_memory_heap size mismatch");
 
@@ -543,9 +545,69 @@ struct phys_contact_manifold {
     contact_manifold_mesh_point** m_list_sorted_mesh_point;  // +0x34
     contact_manifold_mesh_point** m_list_contact_point;      // +0x38
     int         m_list_contact_point_count; // +0x3C
+
+    const float& compute_convex_poly_area();
+    const float& compute_convex_poly_perimeter();
+    void qsort(contact_manifold_mesh_point** i0_mp, contact_manifold_mesh_point** i1_mp);
+    void setup_list_sorted_mesh_point();
+    void generate_convex_poly_internal();
+    const math::Dir3* comp_feature_normal(math::Dir3* result, const math::Mat43* contact_mat);
+    void generate_convex_poly(const math::Mat43* contact_mat);
+
+    static bool rht(const math::Dir3* e1, const math::Dir3* e2,
+                    float min_length2, float min_sin_sq);
 };
 static_assert(sizeof(phys_contact_manifold) == 0x40, "phys_contact_manifold size mismatch");
 static_assert(offsetof(phys_contact_manifold, m_feature_hitp) == 0x00, "manifold::m_feature_hitp offset mismatch");
+
+// ============================================================================
+// phys_contact_manifold_process â€” convex polygon intersection processor
+// Size: 0x1140 (4416 bytes) â€” verified against IDA
+// ============================================================================
+struct phys_contact_manifold_process {
+    struct bridge {
+        math::Dir3 m_intersection_p;                    // +0x00
+        contact_manifold_mesh_point** m_left_i;         // +0x10
+        contact_manifold_mesh_point** m_right_i;        // +0x14
+        uint8_t    _pad18[8];                           // +0x18
+    };
+    static_assert(sizeof(bridge) == 0x20, "bridge size mismatch");
+
+    struct isect_info {
+        phys_contact_manifold* m_cman;                  // +0x00
+        contact_manifold_mesh_point** m_i;              // +0x04
+        contact_manifold_mesh_point** m_next_i;         // +0x08
+        contact_manifold_mesh_point** m_last_i;         // +0x0C
+        math::Dir3 m_edge;                              // +0x10
+
+        void init(phys_contact_manifold* cman);
+        void update();
+    };
+    static_assert(sizeof(isect_info) == 0x20, "isect_info size mismatch");
+
+    math::Mat43   contact_mat;                          // +0x000
+    math::Mat43   cg1_to_rb2_xform;                     // +0x200
+    phys_memory_heap* m_cpi_allocater;                  // +0x400
+    uint8_t       m_list_cpi[8];                        // +0x84 (opaque)
+    contact_point_info* m_cpi;                          // +0x8C
+    math::Dir3*   m_list_isect_point;                   // +0x90
+    uint8_t       _pad094[0xA0 - 0x94];                 // +0x94
+    phys_contact_manifold cman1;                        // +0xA0
+    phys_contact_manifold cman2;                        // +0xE0
+    int           m_contact_point_count;                // +0x120
+    phys_memory_heap m_allocater;                       // +0x124
+    char          m_allocater_memory[4096];             // +0x134
+
+    bool find_bottom(bridge* b, isect_info* left_cman, isect_info* right_cman);
+    void intersect_poly_segment(phys_contact_manifold* cman, const math::Dir3* p0,
+                                const math::Dir3* p1);
+    void intersect_poly_poly();
+    void copy_poly(phys_contact_manifold* cman);
+};
+static_assert(offsetof(phys_contact_manifold_process, contact_mat) == 0x000, "process::contact_mat offset mismatch");
+static_assert(offsetof(phys_contact_manifold_process, cman1) == 0xA0, "process::cman1 offset mismatch");
+static_assert(offsetof(phys_contact_manifold_process, m_allocater) == 0x124, "process::m_allocater offset mismatch");
+static_assert(sizeof(phys_contact_manifold_process) == 0x1140, "phys_contact_manifold_process size mismatch");
 
 // ============================================================================
 // phys_gjk_collision_info — GJK collision result (48 bytes)

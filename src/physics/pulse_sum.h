@@ -162,4 +162,16 @@ extern const math::Dir3& Float4_SignMask_210;
 extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
 extern void make_rotate(math::Mat43* mat, const math::Dir3* v1, const math::Dir3* v2);
 
+// ============================================================================
+// Contact-manifold helpers (phys_contact_manifold.o / phys_util.o)
+// ============================================================================
+extern bool phys_v2_le(const math::Dir3& v1, const math::Dir3& v2);
+extern const float& phys_v2_cross(const math::Dir3& v1, const math::Dir3& v2);
+extern const math::Dir3* phys_v2_rotr(const math::Dir3& result, const math::Dir3& v);
+extern const math::Dir3* phys_v3_to_v2_inv_multiply(const math::Dir3* result,
+                                                    const math::Mat43* m, const math::Dir3* v);
+extern void displace_contact_p(contact_manifold_mesh_point** mp, const math::Dir3& d,
+                               const math::Mat43* contact_mat);
+extern const char* g_contact_manifold_error_msg;
+
 #endif // COD3_PHYSICS_PULSE_SUM_H
