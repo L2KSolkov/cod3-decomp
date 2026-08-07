@@ -199,7 +199,11 @@ add_library(cod3_game_cg STATIC src/game/cg/stubs_game.cpp)
 add_library(cod3_game_cl STATIC src/game/cl/stubs_game.cpp)
 add_library(cod3_game_streamer STATIC src/game/streamer/stubs_game.cpp)
 add_library(cod3_game_physics STATIC src/game/physics/stubs_game.cpp)
-add_library(cod3_game_sv STATIC src/game/sv/stubs_game.cpp)
+add_library(cod3_game_sv STATIC
+    src/game/sv/stubs_game.cpp
+    src/game/sv/sv_globals.cpp
+    src/game/sv/sv_ccmds.cpp
+)
 add_library(cod3_game_platform_xbox STATIC src/game/platform_xbox/stubs_game.cpp)
 add_library(cod3_game_nextgen STATIC src/game/nextgen/stubs_game.cpp)
 

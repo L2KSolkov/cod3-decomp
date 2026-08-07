@@ -17,7 +17,7 @@ cl.o		cl.o	game	313	TODO
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
 game_xbox.o		game_xbox.o	game	210	TODO	
-sv.o		sv.o	game	118	TODO	
+sv.o		sv.o	game	118	IN_PROGRESS	
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	PORTED	
 aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED	Phase 4: apsSuppliedActions.h/.cpp (particle action stubs, ABI-correct ctors from IDA)
 phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	TODO	
