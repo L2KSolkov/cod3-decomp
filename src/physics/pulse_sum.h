@@ -33,6 +33,7 @@ struct pulse_sum_angular {
     pulse_sum_cache* m_pulse_sum_cache;             // +0x88
 
     float get_pos() const { return m_pulse_sum; }
+    void  setup_vel_uni_standard(float delta_t, float max_penalty_restitution_vel);
 };
 static_assert(sizeof(pulse_sum_angular) == 0x90, "pulse_sum_angular size mismatch");
 
@@ -87,6 +88,11 @@ public:
     pulse_sum_normal*  create_pulse_sum_wheel_fwd(pulse_sum_wheel* psw);
     pulse_sum_contact* create_pulse_sum_contact(rigid_body* b1, rigid_body* b2,
                                                 contact_point_info* cpi, float delta_t);
+    void create_point(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
+                      const math::Dir3* b2_r, pulse_sum_cache* ps_cache, float delta_t);
+    void create_hinge(rigid_body* b1, const math::Dir3* b1_axis, rigid_body* b2,
+                      const math::Dir3* b2_axis, const math::Dir3* a1, const math::Dir3* a2,
+                      pulse_sum_cache* ps_cache, float delta_t);
 };
 static_assert(sizeof(pulse_sum_constraint_solver) == 0x70, "pulse_sum_constraint_solver size mismatch");
 
@@ -130,6 +136,25 @@ const math::Dir3* multiply(const math::Dir3* result, rigid_body* b, const math::
 const math::Dir3* collide_multiply(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
 const math::Dir3* add_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
 const math::Dir3* collide_add_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
+const math::Dir3* sub_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* p);
 }
+
+// ============================================================================
+// rbcint â€” constraint base helpers (get_time_scale in rbc_def_generic.o)
+// ============================================================================
+namespace rbcint {
+const outer_time* get_time_scale(rigid_body_constraint* rbc);
+}
+
+// ============================================================================
+// nuge â€” rigid-body aggregate utilities (phys_util.o)
+// ============================================================================
+namespace nuge {
+void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1, float delta_t,
+                     math::Dir3* t_vel, math::Dir3* a_vel);
+}
+
+extern const math::Dir3& Float4_Zero_213;
+extern const math::Dir3& Float4_SignMask_213;
 
 #endif // COD3_PHYSICS_PULSE_SUM_H

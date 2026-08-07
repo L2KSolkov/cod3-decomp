@@ -95,6 +95,7 @@ struct pulse_sum_normal {
     void  set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2, const math::Dir3* b2_r,
               const math::Dir3* ud, pulse_sum_cache* ps_cache, const math::Dir3* b1_r_displace);
     void  setup_vel_uni_standard(float delta_t, float max_penalty_restitution_vel);
+    void  setup_vel_uni_standard_pos_adjust(float delta_t, float pos, float max_penalty_restitution_vel);
     const float& get_unclamped_pulse_sum() const { return m_pulse_sum; }
     const math::Dir3* get_relative_velocity(const math::Dir3* result);
     const math::Dir3* get_relative_velocity_change_dir(const math::Dir3* result);
@@ -201,6 +202,10 @@ struct rigid_body_constraint_point : rigid_body_constraint {
     math::Dir3      m_b2_r_loc;       // +0x20
     pulse_sum_cache m_ps_cache_list[3]; // +0x30
     float           m_stress;         // +0x48
+
+    void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc);
+    void epilog_vel_constraint(float delta_t);
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_point) == 0x50, "rigid_body_constraint_point size mismatch");
 static_assert(offsetof(rigid_body_constraint_point, m_b1_r_loc) == 0x10, "point::m_b1_r_loc offset mismatch");
@@ -219,6 +224,13 @@ struct rigid_body_constraint_distance : rigid_body_constraint {
     float           m_damp_coef;      // +0x40
     unsigned int    m_flags;          // +0x44
     pulse_sum_cache m_ps_cache_list[3]; // +0x48
+
+    void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc,
+             float min_distance, float max_distance);
+    void outer_prolog_update(const outer_time* outside_delta_t);
+    void inner_update(float delta_t);
+    void outer_epilog_update(const outer_time* outside_delta_t);
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_distance) == 0x60, "rigid_body_constraint_distance size mismatch");
 
@@ -277,6 +289,13 @@ struct rigid_body_constraint_hinge : rigid_body_constraint {
     float           m_damp_k;         // +0xA0
     unsigned int    m_flags;          // +0xA4
     pulse_sum_cache m_ps_cache[8];    // +0xA8
+
+    void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc,
+             const math::Dir3& b1_axis_loc, const math::Dir3& b2_axis_loc,
+             const math::Dir3& b1_ref_loc, const math::Dir3& b2_ref_loc,
+             float theta_min, float theta_max, float damp_k);
+    void do_collision(float delta_t);
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_hinge) == 0xF0, "rigid_body_constraint_hinge size mismatch");
 static_assert(offsetof(rigid_body_constraint_hinge, m_b1_axis_loc) == 0x30, "hinge::m_b1_axis_loc offset mismatch");
@@ -295,6 +314,12 @@ struct rigid_body_constraint_angular_actuator : rigid_body_constraint {
     uint8_t         _padA9[3];            // +0xA9
     pulse_sum_cache m_ps_cache_list[3];   // +0xAC
     uint8_t         _padC4[12];           // +0xC4
+
+    void set(float power, const math::Mat43& target_mat);
+    void outer_prolog_update(const outer_time* outside_delta_t);
+    void inner_update(float delta_t);
+    void outer_epilog_update(const outer_time* outside_delta_t);
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_angular_actuator) == 0xD0, "rigid_body_constraint_angular_actuator size mismatch");
 static_assert(offsetof(rigid_body_constraint_angular_actuator, m_target_mat) == 0x10, "angular_actuator::m_target_mat offset mismatch");
