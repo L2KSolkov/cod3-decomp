@@ -255,6 +255,49 @@ static_assert(offsetof(bdConnectionStatistics, m_avgRTT) == 0x3C, "bdConnectionS
 // ============================================================================
 struct bdConnectionListener;
 
+// ============================================================================
+// bdChunkTypes â€” chunk type enum
+// ============================================================================
+enum bdChunkTypes {
+    BD_CHUNK_DATA = 2,
+};
+
+// ============================================================================
+// bdChunk â€” packet chunk base (12 bytes)
+// Size: 0x0C (12 bytes) â€” verified against IDA
+// ============================================================================
+class bdChunk : public bdReferencable {
+public:
+    bdChunkTypes m_type;  // +0x08
+
+    bdChunk(bdChunkTypes type);
+    virtual ~bdChunk();
+    virtual bdChunkTypes getType() const;
+    bool isControl() const;
+    static bdChunkTypes getType(const void* data, unsigned int size);
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdChunk) == 0x0C, "bdChunk size mismatch");
+
+// ============================================================================
+// bdBytePacker â€” little-endian byte packing helpers
+// ============================================================================
+namespace bdBytePacker {
+bool appendBuffer(void* dest, unsigned int destSize, unsigned int offset,
+                  unsigned int* newOffset, const unsigned char* src, unsigned int size);
+bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
+                     unsigned int* newOffset, const unsigned char* value,
+                     unsigned int valueSize);
+bool removeBasicType(const unsigned char* src, unsigned int srcSize, unsigned int offset,
+                     unsigned int* newOffset, unsigned char* value, unsigned int valueSize);
+bool appendEncodedUInt16(void* dest, unsigned int destSize, unsigned int offset,
+                         unsigned int* newOffset, unsigned short value);
+bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize, unsigned int offset,
+                         unsigned int* newOffset, unsigned short* value);
+}
+
 class bdConnection : public bdReferencable {
 public:
     enum Status {
