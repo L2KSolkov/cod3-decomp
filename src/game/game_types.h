@@ -196,6 +196,7 @@ struct EntityAnimationDebug;  // opaque — Entity::AnimationDebug
 class Entity {
 public:
     EntityState  s;                               // +0x000 (224 bytes)
+    void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
     EntityShared r;                               // +0x0E0 (336 bytes)
     int32_t  mPakId;                              // +0x230
     DbLinkedHandle<void, Entity> mHandle;         // +0x234

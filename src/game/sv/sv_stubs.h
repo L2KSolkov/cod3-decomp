@@ -222,19 +222,28 @@ static_assert(sizeof(PakManager) == 4, "PakManager size mismatch (opaque)");
 // HandleDb<Entity,1344,SizedHandle<12,20>>::DbElement = { int mKey; Entity* mObject; }
 // ============================================================================
 struct EntityHandleDbDbElement {
-    unsigned short mKey;    // +0x00
-    Entity*        mObject; // +0x04
+    Entity*        mObject; // +0x00
+    int            mKey;    // +0x04
 };
+// ae_sized_array<Entity*, 4096> — fixed-capacity array (16388 bytes)
+struct AeSizedEntityArray {
+    Entity*     m_elements[4096];   // +0x00
+    int         m_size;             // +0x4000
+};
+static_assert(sizeof(AeSizedEntityArray) == 16388, "AeSizedEntityArray size mismatch");
+
 class EntityHandleDb {
 public:
-    uint8_t  _pad[0x2AAC];                 // HandleDb storage (10924 bytes)
-    EntityHandleDbDbElement mElements[0x540];  // +0x2AAC (1344 * 8 = 10752)
-    uint8_t  _rest[27312 - 0x2AAC - 10752];
-    static EntityHandleDb sInst;           // ?sInst@EntityHandleDb@@0V1@A
-    void AssignHandle(Entity& e);          // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
+    uint8_t  _pad[0xA8];                 // HandleDb BitSet<1344> (168 bytes)
+    EntityHandleDbDbElement mElements[0x540];  // +0xA8 (1344 * 8 = 10752)
+    uint8_t  mDebugCallback[4];          // +0x2AA8
+    AeSizedEntityArray mActiveList;      // +0x2AAC (16388 bytes)
+    static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
+    void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
 };
+static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
+static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::mActiveList offset mismatch");
 static_assert(sizeof(EntityHandleDb) == 27312, "EntityHandleDb size mismatch");
-static_assert(offsetof(EntityHandleDb, mElements) == 0x2AAC, "EntityHandleDb::mElements offset mismatch");
 
 // ============================================================================
 // XModelManager — model manager (opaque)
