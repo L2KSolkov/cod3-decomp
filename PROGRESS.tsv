@@ -126,7 +126,7 @@ bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	TODO
 bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	TODO	
 bdConnection:bdPacket.obj	bdConnection	bdPacket.obj	engine	9	TODO	
 bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	TODO	
-nextgen.o		nextgen.o	game	8	TODO	
+nextgen.o		nextgen.o	game	8	PORTED	[game:nextgen.o] nextgen.cpp: CG_MotionBlur + CG_SceneBlur post callbacks (8 funcs)
 aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math helpers: quaternion ops, ortho basis, AABB, Shepperd, fast SinCos; apsQuaternion fixed to struct/operator+=
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file streaming stubs)
