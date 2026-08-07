@@ -202,7 +202,7 @@ nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (file streaming s
 ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	TODO	
 nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
-phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	TODO	
+phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	PORTED	[phys_xboxr] phys_gjk.cpp: GJK simplex core (5 funcs)
 bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	TODO	
 bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	TODO	

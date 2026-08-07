@@ -530,6 +530,9 @@ struct contact_manifold_mesh_point {
 };
 static_assert(sizeof(contact_manifold_mesh_point) == 0x20, "contact_manifold_mesh_point size mismatch");
 
+struct phys_collide_data;
+struct phys_gjk_geom;
+
 // ============================================================================
 // phys_contact_manifold — collision manifold (64 bytes)
 // Size: 0x40 (64 bytes) — verified against IDA
@@ -673,10 +676,85 @@ struct phys_gjk_info {
     float        m_dot_ij[4][4];       // +0x1AC
     phys_gjk_set_info m_set_list[16];  // +0x1EC
     uint8_t      _pad32C[4];           // +0x32C
+
+    enum gjk_retval_e {
+        GJK_INVALID = 0,
+        GJK_SEPARATED = 1,
+        GJK_VALID = 2,
+        GJK_PENETRATING = 3,
+    };
+
+    int  gjk_subalgorithm(int w_set, int new_index);
+    int  seed_simplex(int cached_vert_count);
+    gjk_retval_e gjk(phys_collide_data* d, const math::Dir3* initial_support_dir,
+                     bool in_separation_loop);
+    gjk_retval_e collide(phys_collide_data* d);
+    bool phys_collide_do_gjk_collide(phys_collide_data* d, float sep_thresh);
+
+    // helpers (phys_gjk.cpp, inline/non-inline)
+    int  init_gjk(phys_collide_data* d, const math::Dir3* initial_support_dir,
+                  bool in_separation_loop);
+    void comp_lambda_2(int index_0, int index_1);
+    void comp_lambda_3(int index_0, int index_1, int index_2);
+    void comp_lambda_4();
+    bool comp_v(int w_set, math::Dir3* v);
+    void comp_closest_points(int w_set, math::Dir3* a, math::Dir3* b);
+    const math::Dir3& get_initial_support_dir(const math::Dir3* result,
+                                              phys_collide_data* d);
+    void gjk_cache_update_separated(phys_collide_data* d);
+    void gjk_cache_update_colliding(phys_collide_data* d);
 };
 static_assert(sizeof(phys_gjk_info) == 0x330, "phys_gjk_info size mismatch");
 static_assert(offsetof(phys_gjk_info, cg2_to_cg1_xform) == 0x000, "gjk_info::cg2_to_cg1_xform offset mismatch");
 static_assert(offsetof(phys_gjk_info, m_set_list) == 0x1EC, "gjk_info::m_set_list offset mismatch");
+
+// ============================================================================
+// phys_gjk_geom â€” GJK geometry interface (4 bytes)
+// ============================================================================
+struct phys_gjk_geom {
+    struct phys_gjk_geom_vtbl* __vftable;  // +0x00
+
+    const math::Dir3* support(const math::Dir3* result, const math::Mat43* xform,
+                              const math::Dir3* v) const;
+    float get_geom_radius() const;
+};
+static_assert(sizeof(phys_gjk_geom) == 0x4, "phys_gjk_geom size mismatch");
+
+// ============================================================================
+// phys_collide_data â€” GJK collision request (84 bytes)
+// ============================================================================
+struct phys_collide_data {
+    const phys_gjk_geom* gjk_cg1;          // +0x00
+    const phys_gjk_geom* gjk_cg2;          // +0x04
+    const math::Mat43*   cg1_to_world_xform; // +0x08
+    const math::Mat43*   cg2_to_world_xform; // +0x0C
+    const math::Mat43*   cg1_to_rb1_xform; // +0x10
+    const math::Mat43*   rb2_to_world_xform; // +0x14
+    rigid_body*          rb1;              // +0x18
+    rigid_body*          rb2;              // +0x1C
+    unsigned int         id1;              // +0x20
+    unsigned int         id2;              // +0x24
+    phys_gjk_cache_info* gjk_ci;           // +0x28
+    float                fric_coef;        // +0x2C
+    float                bounce_coef;      // +0x30
+    const math::Mat43*   cg2_to_cg1_xform; // +0x34
+    phys_gjk_collision_info* cg1_cinfo_loc; // +0x38
+    void*                pcd_callback;     // +0x3C
+    phys_gjk_info*       gjk_info;         // +0x40
+    phys_contact_manifold_process* cman_process; // +0x44
+    bool                 no_overflow_error; // +0x48
+    int                  solver_priority;  // +0x4C
+    phys_collide_data*   m_next;           // +0x50
+};
+static_assert(sizeof(phys_collide_data) == 0x54, "phys_collide_data size mismatch");
+
+// ============================================================================
+// gjk_sep_dir â€” GJK separation-direction computation
+// ============================================================================
+namespace gjk_sep_dir {
+const math::Dir3& comp_sep_dir(const math::Dir3* result, phys_collide_data* m_pcd,
+                               phys_gjk_info* m_gjk_info);
+}
 
 // ============================================================================
 // phys_vec3 — physics 3D vector (aligned, similar to Dir3)

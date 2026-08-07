@@ -174,4 +174,14 @@ extern void displace_contact_p(contact_manifold_mesh_point** mp, const math::Dir
                                const math::Mat43* contact_mat);
 extern const char* g_contact_manifold_error_msg;
 
+// ============================================================================
+// GJK constants and helpers
+// ============================================================================
+extern float PEN_THRESH;     // 0xE53EE0
+extern float CONV_THRESH;    // 0xE53EE4
+extern float SEP_CONV_THRESH; // 0xE53EE8
+extern const math::Dir3& Float4_SignMask_203;
+extern void phys_full_inv_multiply_mat(math::Mat43& dest_m, const math::Mat43& left_m,
+                                       const math::Mat43& right_m);
+
 #endif // COD3_PHYSICS_PULSE_SUM_H
