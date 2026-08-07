@@ -106,7 +106,7 @@ ngl_xboxr:ngl_dx_texture.o	ngl_xboxr	ngl_dx_texture.o	engine	10	TODO
 phys_xboxr:rbc_def_vehicle.o	phys_xboxr	rbc_def_vehicle.o	engine	10	PORTED	[phys_xboxr] rbc_def_vehicle.cpp: wheel constraint (10 funcs)
 phys_xboxr:phys_contact_manifold.o	phys_xboxr	phys_contact_manifold.o	engine	10	PORTED	[phys_xboxr] phys_contact_manifold.cpp: manifold convex-poly (10 funcs)
 bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engine	10	TODO	
-bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	TODO	
+bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
 bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO	
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
@@ -123,7 +123,7 @@ ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	TODO
 nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	PORTED	[bdConnection] bdMessage.cpp: network message (9 funcs)
-bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	TODO	
+bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
 bdConnection:bdPacket.obj	bdConnection	bdPacket.obj	engine	9	TODO	
 bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	TODO	
 nextgen.o		nextgen.o	game	8	PORTED	[game:nextgen.o] nextgen.cpp: CG_MotionBlur + CG_SceneBlur post callbacks (8 funcs)

@@ -503,6 +503,64 @@ public:
 static_assert(sizeof(bdCookieAckChunk) == 0x10, "bdCookieAckChunk size mismatch");
 
 // ============================================================================
+// bdInitChunk â€” connection init chunk (40 bytes)
+// ============================================================================
+class bdInitChunk : public bdChunk {
+public:
+    enum bdInitChunkFlags {
+        BD_INIT_NONE = 0,
+    };
+
+    unsigned int m_initTag;       // +0x0C
+    bdInitChunkFlags m_flags;     // +0x10
+    bdReference<bdCookie> m_cookie;  // +0x14
+    int            m_windowCredit;   // +0x18
+
+    bdInitChunk();
+    bdInitChunk(unsigned int initTag, int windowCredit);
+    virtual ~bdInitChunk();
+    unsigned int getInitTag() const;
+    bdInitChunkFlags getFlags() const;
+    int getWindowCredit() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdInitChunk) == 0x1C, "bdInitChunk size mismatch");
+
+// ============================================================================
+// bdInitAckChunk â€” connection init-ack chunk (40 bytes)
+// ============================================================================
+class bdInitAckChunk : public bdChunk {
+public:
+    enum bdInitAckFlags {
+        BD_INIT_ACK_NONE = 0,
+    };
+
+    unsigned int m_initTag;       // +0x0C
+    bdInitAckFlags m_flags;       // +0x10
+    bdReference<bdByteBuffer> m_rawCookie;  // +0x14
+    bdReference<bdCookie> m_cookie;  // +0x18
+    int            m_windowCredit;   // +0x1C
+    unsigned int   m_peerTag;        // +0x20
+
+    bdInitAckChunk();
+    bdInitAckChunk(unsigned int initTag, const bdReference<bdCookie>& cookie,
+                   int windowCredit, unsigned int peerTag);
+    virtual ~bdInitAckChunk();
+    unsigned int getInitTag() const;
+    int getWindowCredit() const;
+    unsigned int getPeerTag() const;
+    bool getCookie(bdReference<bdByteBuffer>& cookie) const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdInitAckChunk) == 0x24, "bdInitAckChunk size mismatch");
+
+// ============================================================================
 // bdSAckChunk â€” selective-ack chunk (48 bytes)
 // Size: 0x30 (48 bytes) â€” verified against IDA
 // ============================================================================

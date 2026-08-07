@@ -168,6 +168,7 @@ add_library(cod3_bd STATIC
     src/bd/bdHeartbeatChunk.cpp
     src/bd/bdShutdownChunk.cpp
     src/bd/bdCookie.cpp
+    src/bd/bdInitChunk.cpp
     src/bd/bdSessionInfo.cpp
     src/bd/bdSessionHandler.cpp
     src/bd/bdSessionInterceptor.cpp
