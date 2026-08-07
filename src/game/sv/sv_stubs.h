@@ -177,6 +177,7 @@ struct AeThreadManager {
     uint8_t _pad[2148];
     static AeThreadManager sInst;   // ?sInst@AeThreadManager@@0V1@A
     void KillAllThreads();
+    void Execute(float deltaT);     // ?Execute@AeThreadManager@@QAEXM@Z
 };
 static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
@@ -267,6 +268,7 @@ namespace AeAssert {
     extern const char* gCurrentExpr;  // ?gCurrentExpr@AeAssert@@3PBDB
     bool IsIgnored(void);
     bool Assert(const char* fmtstring, ...);
+    bool Warning(const char* fmtstring, ...);
 }
 
 // ============================================================================
@@ -306,6 +308,7 @@ static_assert(sizeof(FEMenuSystem) == 4, "FEMenuSystem size mismatch (opaque)");
 struct GamePause {
     static void SetAllPaused(bool paused);      // ?SetAllPaused@GamePause@@SAX_N@Z
     static void SetGamePaused(int client, bool paused);  // ?SetGamePaused@GamePause@@SAXH_N@Z
+    static bool IsGamePaused(int client);       // ?IsGamePaused@GamePause@@SA_NH@Z
 };
 
 // ============================================================================
@@ -339,6 +342,7 @@ extern SaveGameData* gSaveGameData;   // ?gSaveGameData@@3PAUSaveGameData@@A
 extern FEManager     g_femanager;     // ?g_femanager@@3VFEManager@@A
 extern bool          gQuickStart;     // ?gQuickStart@@3_NA
 extern bool          gReturnToMenu;   // ?gReturnToMenu@@3_NA
+extern cvar_t*       com_sv_running;  // ?com_sv_running@@3PAUcvar_t@@A
 extern bool          gGodModeEnabled; // ?gGodModeEnabled@@3_NA
 extern bool          gNoClipEnabled;  // ?gNoClipEnabled@@3_NA
 extern bool          gIsWorkspaceMap; // ?gIsWorkspaceMap@@3_NA
