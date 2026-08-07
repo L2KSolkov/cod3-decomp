@@ -53,6 +53,12 @@ static_assert(sizeof(pulse_sum_wheel) == 0xC0, "pulse_sum_wheel size mismatch");
 static_assert(offsetof(pulse_sum_wheel, m_suspension) == 0x10, "pulse_sum_wheel::m_suspension offset mismatch");
 
 // ============================================================================
+// pulse_sum_contact â€” contact constraint row (implemented in
+// phys_constraint_solver_multithreaded.o)
+// ============================================================================
+struct pulse_sum_contact;
+
+// ============================================================================
 // pulse_sum_constraint_solver — the solver (112 bytes; methods in
 // phys_constraint_solver_multithreaded.o, unresolved here).
 // ============================================================================
@@ -79,8 +85,33 @@ public:
     pulse_sum_wheel*   create_pulse_sum_wheel();
     pulse_sum_normal*  create_pulse_sum_wheel_side(pulse_sum_wheel* psw);
     pulse_sum_normal*  create_pulse_sum_wheel_fwd(pulse_sum_wheel* psw);
+    pulse_sum_contact* create_pulse_sum_contact(rigid_body* b1, rigid_body* b2,
+                                                contact_point_info* cpi, float delta_t);
 };
 static_assert(sizeof(pulse_sum_constraint_solver) == 0x70, "pulse_sum_constraint_solver size mismatch");
+
+// ============================================================================
+// phys_inplace_avl_tree â€” AVL tree used by contact constraints (4 bytes)
+// ============================================================================
+template <typename Key, typename T>
+struct phys_inplace_avl_tree {
+    T* m_tree_root;  // +0x00
+
+    void remove(const Key* key);
+};
+
+struct physics_system {
+    uint8_t _pad[0xF20];                                  // +0x00
+    phys_inplace_avl_tree<rigid_body_pair_key, rigid_body_constraint_contact>
+        m_search_tree_rbc_contact;                        // +0xF20
+    uint8_t _padF44[0x1120 - 0xF44];                      // +0xF44
+    phys_memory_heap m_contact_point_buffer_1;            // +0x1120
+    phys_memory_heap m_contact_point_buffer_2;            // +0x11A0
+};
+
+extern physics_system* g_physics_system;  // ?g_physics_system@@3PAVphysics_system@@A
+extern void verify_is_in_physics_system(rigid_body_constraint_contact* rbc,
+                                        rigid_body* b1_, rigid_body* b2_);
 
 // ============================================================================
 // rbint — rigid-body intrinsic math (methods in phys_util.o, unresolved)

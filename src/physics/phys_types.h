@@ -415,6 +415,8 @@ struct contact_point_info {
     pulse_sum_cache_info* m_list_pulse_sum_cache_info;  // +0x3C
     contact_point_info*   m_next_link;    // +0x40
     uint8_t     _pad44[12];               // +0x44
+
+    static phys_memory_heap* get_cpi_allocater();
 };
 static_assert(sizeof(contact_point_info) == 0x50, "contact_point_info size mismatch");
 static_assert(offsetof(contact_point_info, m_normal) == 0x00, "contact_point_info::m_normal offset mismatch");
@@ -436,6 +438,10 @@ struct rigid_body_constraint_contact : rigid_body_constraint {
     unsigned int        m_solver_priority;   // +0x14
     avl_tree_node       m_avl_tree_node;     // +0x18
     rigid_body_pair_key m_avl_key;           // +0x24
+
+    void verify_constraint(rigid_body* b1_, rigid_body* b2_);
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
+    ~rigid_body_constraint_contact();
 };
 static_assert(sizeof(rigid_body_constraint_contact) == 0x2C, "rigid_body_constraint_contact size mismatch");
 static_assert(offsetof(rigid_body_constraint_contact, m_avl_tree_node) == 0x18, "contact::m_avl_tree_node offset mismatch");
