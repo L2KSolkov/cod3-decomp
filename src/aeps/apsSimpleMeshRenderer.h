@@ -50,6 +50,7 @@ public:
     void SetRenderer(apsSimpleMeshRenderer* r) { mRenderer = r; }       // ea: 0x8028C0
     void SetLightContext(nglLightContext* lc) { mLightContext = lc; }   // ea: 0x8028D0
     virtual void GetDesc(char* buf);                                    // ea: 0x8028E0
+    virtual void Render() override;                                     // ea: 0x812530 (apsSimpleMeshNode.o)
 };
 static_assert(sizeof(apsSimpleMeshNode) == 0xC0, "apsSimpleMeshNode size mismatch");
 // ============================================================================

@@ -48,6 +48,7 @@ public:
 
     void SetRenderer(class apsShrimpRenderer* r) { mRenderer = r; }   // ea: 0x802F90
     virtual void GetDesc(char* buf);                                  // ea: 0x802FA0
+    virtual void Render() override;                                   // ea: 0x812D90 (apsShrimpNode.o)
 };
 static_assert(sizeof(apsShrimpNode) == 0xC0, "apsShrimpNode size mismatch");
 

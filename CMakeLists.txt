@@ -140,6 +140,8 @@ add_library(cod3_aeps STATIC
     src/aeps/apsEffectTemplate.cpp
     src/aeps/apsRegister.cpp
     src/aeps/apsEffect.cpp
+    src/aeps/apsSimpleMeshNode.cpp
+    src/aeps/apsShrimpNode.cpp
     src/aeps/apsPFD.cpp
     src/aeps/stubs.cpp
 )

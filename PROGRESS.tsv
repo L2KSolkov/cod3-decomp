@@ -287,8 +287,8 @@ inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	P
 zlib_xboxr:uncompr.o	zlib_xboxr	uncompr.o	engine	1	TODO	
 zlib_xboxr:inffast.o	zlib_xboxr	inffast.o	engine	1	TODO	
 zlib_xboxr:inftrees.o	zlib_xboxr	inftrees.o	engine	1	TODO	
-aeps_xboxr:apsSimpleMeshNode.o	aeps_xboxr	apsSimpleMeshNode.o	engine	1	TODO	
-aeps_xboxr:apsShrimpNode.o	aeps_xboxr	apsShrimpNode.o	engine	1	TODO	
+aeps_xboxr:apsSimpleMeshNode.o	aeps_xboxr	apsSimpleMeshNode.o	engine	1	PORTED	apsSimpleMeshNode.cpp (Render stub - GPU mesh draw deferred; requires unported Xbox D3D8/ngl pipeline)
+aeps_xboxr:apsShrimpNode.o	aeps_xboxr	apsShrimpNode.o	engine	1	PORTED	apsShrimpNode.cpp (Render stub - GPU sprite draw deferred; requires unported Xbox D3D8/ngl pipeline)
 aeps_xboxr:apsBillboardNode.o	aeps_xboxr	apsBillboardNode.o	engine	1	PORTED	apsBillboardNode.cpp (Render forwarder to cNodeRenderer<,apsBillboardNode>::Render)
 aeps_xboxr:apsColorRectangleNode.o	aeps_xboxr	apsColorRectangleNode.o	engine	1	PORTED	apsColorRectangleNode.cpp (Render forwarder to cNodeRenderer<,apsColorRectangleNode>::Render)
 aeps_xboxr:apsUVANode.o	aeps_xboxr	apsUVANode.o	engine	1	PORTED	apsUVANode.cpp (Render forwarder to cNodeRenderer<,apsUVANode>::Render)
