@@ -317,6 +317,7 @@ public:
     virtual bdChunkTypes getType() const;
     bool isControl() const;
     static bdChunkTypes getType(const void* data, unsigned int size);
+    virtual unsigned int getSerializedSize();
     virtual unsigned int serialize(unsigned char* data, unsigned int size);
     virtual bool deserialize(const unsigned char* data, unsigned int size,
                              unsigned int* offset);
@@ -559,6 +560,47 @@ public:
                              unsigned int* offset);
 };
 static_assert(sizeof(bdInitAckChunk) == 0x24, "bdInitAckChunk size mismatch");
+
+// ============================================================================
+// bdPacket â€” packet container (32 bytes)
+// ============================================================================
+class bdPacket : public bdReferencable {
+public:
+    struct bdChunkNode {
+        bdReference<bdChunk> m_chunk;   // +0x00
+        bdChunkNode* m_next;            // +0x04
+    };
+
+    bdChunkNode* m_head;          // +0x08
+    bdChunkNode* m_tail;          // +0x0C
+    unsigned int m_size;          // +0x10
+    bdReference<bdChunk> m_nextChunk;  // +0x14
+    unsigned int m_verificationTag;    // +0x18
+    unsigned int m_maxSize;       // +0x1C
+    unsigned int m_curSize;       // +0x20
+
+    bdPacket();
+    bdPacket(unsigned int verificationTag, unsigned int maxSize);
+    virtual ~bdPacket();
+    unsigned int getVerificationTag() const;
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    bool isEmpty() const;
+    bool deserialize(const unsigned char* data, unsigned int size);
+    bool addChunk(const bdReference<bdChunk>& chunk);
+    bool getNextChunk(bdReference<bdChunk>& chunk);
+};
+static_assert(sizeof(bdPacket) == 0x24, "bdPacket size mismatch");
+
+// ============================================================================
+// bdDataChunk â€” data chunk (forward decl; methods in bdDataChunk.obj)
+// ============================================================================
+class bdDataChunk : public bdChunk {
+public:
+    bdDataChunk();
+    unsigned int serializeUnencrypted(unsigned char* data, unsigned int size);
+    bool deserialize(const unsigned char* data, unsigned int size,
+                     unsigned int* offset);
+};
 
 // ============================================================================
 // bdSAckChunk â€” selective-ack chunk (48 bytes)

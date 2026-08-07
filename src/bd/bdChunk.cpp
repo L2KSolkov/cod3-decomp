@@ -34,6 +34,13 @@ bool bdChunk::isControl() const {
 }
 
 // ============================================================================
+// bdChunk::getSerializedSize â€” default 0 (overridden by derived chunks)
+// ============================================================================
+unsigned int bdChunk::getSerializedSize() {
+    return 0;
+}
+
+// ============================================================================
 // bdChunk::getType (static) â€” ea: 0x8AD580
 // ============================================================================
 bdChunkTypes bdChunk::getType(const void* data, unsigned int size) {
