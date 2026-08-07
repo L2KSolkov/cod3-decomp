@@ -324,6 +324,48 @@ public:
 static_assert(sizeof(bdChunk) == 0x0C, "bdChunk size mismatch");
 
 // ============================================================================
+// bdHeartbeatChunk â€” heartbeat control chunk (16 bytes)
+// ============================================================================
+class bdHeartbeatChunk : public bdChunk {
+public:
+    enum bdHeartbeatFlags {
+        BD_HEARTBEAT_NONE = 0,
+    };
+
+    bdHeartbeatFlags m_flags;  // +0x0C
+
+    bdHeartbeatChunk();
+    virtual ~bdHeartbeatChunk();
+    bdHeartbeatFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdHeartbeatChunk) == 0x10, "bdHeartbeatChunk size mismatch");
+
+// ============================================================================
+// bdHeartbeatAckChunk â€” heartbeat-ack control chunk (16 bytes)
+// ============================================================================
+class bdHeartbeatAckChunk : public bdChunk {
+public:
+    enum bdHeartbeatAckFlags {
+        BD_HEARTBEAT_ACK_NONE = 0,
+    };
+
+    bdHeartbeatAckFlags m_flags;  // +0x0C
+
+    bdHeartbeatAckChunk();
+    virtual ~bdHeartbeatAckChunk();
+    bdHeartbeatAckFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdHeartbeatAckChunk) == 0x10, "bdHeartbeatAckChunk size mismatch");
+
+// ============================================================================
 // bdSAckChunk â€” selective-ack chunk (48 bytes)
 // Size: 0x30 (48 bytes) â€” verified against IDA
 // ============================================================================
