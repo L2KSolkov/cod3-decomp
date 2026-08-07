@@ -161,6 +161,7 @@ add_library(cod3_bd STATIC
     src/bd/bdPlatform.cpp
     src/bd/bdGameInfo.cpp
     src/bd/bdConnectionStatistics.cpp
+    src/bd/bdConnection.cpp
     src/bd/bdSessionInfo.cpp
     src/bd/bdSessionHandler.cpp
     src/bd/bdSessionInterceptor.cpp

@@ -276,6 +276,19 @@ public:
     Status getStatus() const { return m_status; }
     const bdReference<bdAddrHandle>& getAddressHandle() const { return m_addrHandle; }
     bdConnectionStatistics* getStats() { return &m_stats; }
+
+    bdConnection();
+    bdConnection(const bdReference<bdCommonAddr>& addr);
+    virtual ~bdConnection();
+    virtual bool connect();
+    virtual void disconnect();
+    virtual void close();
+    unsigned int setTransmissionRate(unsigned int rate);
+    unsigned int getTransmissionRate() const;
+    bdReference<bdCommonAddr> getAddress() const;
+    void setAddressHandle(const bdReference<bdAddrHandle>& addrHandle);
+    bdConnectionListener* registerListener(bdConnectionListener* listener);
+    int unregisterListener(bdConnectionListener* listener);
 };
 static_assert(sizeof(bdConnection) == 0x64, "bdConnection size mismatch");
 static_assert(offsetof(bdConnection, m_addr) == 0x08, "bdConnection::m_addr offset mismatch");
