@@ -25,6 +25,8 @@
 #include "apsAction.h"      // apsDomain, apsVirtualBase
 #include "apsMath.h"        // apsMath::gDefaultRandomNumberGenerator
 
+#include "apsRetrieveVtable.h"
+
 // apsSuppliedDomains.o data (global namespace per map mangling @@3HA):
 extern int gHiHat_SphereDomain;         // ?gHiHat_SphereDomain@@3HA
 extern int gHiHat_YHemisphereDomain;    // ?gHiHat_YHemisphereDomain@@3HA
@@ -44,7 +46,8 @@ public:
     unsigned int GetId() const { return 0x53706865; }            // 'Sphe'
     float GetVersion() const { return 1.0f; }
     apsSphere mSphere;   // +0x10 (center.xyz + radius in w)
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsSphereDomain)};
 static_assert(sizeof(apsSphereDomain) == 0x20, "apsSphereDomain size mismatch");
 
 // ============================================================================
@@ -59,7 +62,8 @@ public:
     unsigned int GetId() const { return 0x59485370; }                // 'YHSp'
     float GetVersion() const { return 1.0f; }
     apsSphere mSphere;   // +0x10
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsYHemisphereDomain)};
 static_assert(sizeof(apsYHemisphereDomain) == 0x20, "apsYHemisphereDomain size mismatch");
 
 // ============================================================================
@@ -74,7 +78,8 @@ public:
     unsigned int GetId() const { return 0x5A485370; }                // 'ZHSp'
     float GetVersion() const { return 1.0f; }
     apsSphere mSphere;   // +0x10
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsZHemisphereDomain)};
 static_assert(sizeof(apsZHemisphereDomain) == 0x20, "apsZHemisphereDomain size mismatch");
 
 // ============================================================================
@@ -89,7 +94,8 @@ public:
     unsigned int GetId() const { return 0x53705375; }                  // 'SpSu'
     float GetVersion() const { return 1.0f; }
     apsSphere mSphere;   // +0x10
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsSphereSurfaceDomain)};
 static_assert(sizeof(apsSphereSurfaceDomain) == 0x20, "apsSphereSurfaceDomain size mismatch");
 
 // ============================================================================
@@ -106,7 +112,8 @@ public:
     float GetVersion() const { return 1.0f; }
     math::Dir3 mMin;    // +0x10
     math::Dir3 mDelta;  // +0x20
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsLineDomain)};
 static_assert(sizeof(apsLineDomain) == 0x30, "apsLineDomain size mismatch");
 
 // ============================================================================
@@ -124,7 +131,8 @@ public:
     apsSphere  mCenter;   // +0x10 (center.xyz + radius in w)
     math::Dir3 mXOff;     // +0x20 (in-plane basis)
     math::Dir3 mYOff;     // +0x30
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsDiscDomain)};
 static_assert(sizeof(apsDiscDomain) == 0x40, "apsDiscDomain size mismatch");
 
 // ============================================================================
@@ -141,7 +149,8 @@ public:
     apsSphere  mCenter;   // +0x10
     math::Dir3 mXOff;     // +0x20
     math::Dir3 mYOff;     // +0x30
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsCircleDomain)};
 static_assert(sizeof(apsCircleDomain) == 0x40, "apsCircleDomain size mismatch");
 
 #endif // COD3_AEPS_APSSUPPLIEDDOMAINS_H

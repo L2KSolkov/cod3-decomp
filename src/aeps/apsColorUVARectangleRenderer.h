@@ -9,9 +9,7 @@
 // ============================================================================
 #ifndef COD3_AEPS_APSCOLORUVARECTANGLERENDERER_H
 #define COD3_AEPS_APSCOLORUVARECTANGLERENDERER_H
-
 #include "apsUVARenderer.h"
-
 // ============================================================================
 // apsColorUVARectangleNode — color UVA rectangle render node (192 bytes).
 // ============================================================================
@@ -21,17 +19,16 @@ public:
     virtual void Render() override;  // ea: 0x804C30
 };
 static_assert(sizeof(apsColorUVARectangleNode) == 0xC0, "apsColorUVARectangleNode size mismatch");
-
 // ============================================================================
 // apsColorUVARectangleRenderer — color UVA rectangle particle renderer (144 bytes).
 // ============================================================================
 class apsColorUVARectangleRenderer : public apsUVARenderer {
 public:
-    struct cArgs : public apsUVARenderer::cArgs {};
+    struct cArgs : public apsUVARenderer::cArgs {
+    };
 
     apsColorUVARectangleRenderer(const cArgs* args);          // @0x804C90
     virtual ~apsColorUVARectangleRenderer();                  // @0x804C60 (vtable)
-
     static void Init();                                    // @0x804CD0
     virtual eRenderResult Render(const apsRendererRenderInfo& iInfo);  // @0x804D00
     virtual unsigned int GetId() const;
@@ -40,25 +37,20 @@ public:
     virtual void SetScreenFacingNormal(const math::Dir3& iNormal);
     virtual float GetChanceToRemove() const;
     virtual bool GetMeshRadius(float& oRadius) const;
-};
+    APS_DECLARE_RETRIEVE(apsColorUVARectangleRenderer, apsUVARenderer((APS_VTABLE_RETRIEVING_CTOR)0))};
 static_assert(sizeof(apsColorUVARectangleRenderer) == 0x90, "apsColorUVARectangleRenderer size mismatch");
-
 // ============================================================================
 // Shader microcode registration structs (data in apsColorUVARectangleRendererVertex.o)
 // ============================================================================
 struct apsColorUVARectangleRender {
     static unsigned int* VS;                  // ?VS@apsColorUVARectangleRender@@3PAKA
     static const unsigned int** VShaderTable; // ?VShaderTable@apsColorUVARectangleRender@@3PAPBIA
-
     static void RegisterVShader() { nglDxRegisterVShader(VS, VShaderTable[0]); }   // ea: 0x804CA0
 };
-
 struct apsColorUVARectangleRenderPixel {
     static unsigned int** PS;                 // ?PS@apsColorUVARectangleRenderPixel@@3PAPAKA
     static const unsigned int** PShaderTable; // ?PShaderTable@apsColorUVARectangleRenderPixel@@3PAPBIA
-
     static void RegisterPShader() { nglDxRegisterPShader(PS, PShaderTable[0]); }   // ea: 0x804C80
     static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x804C10
 };
-
 #endif // COD3_AEPS_APSCOLORUVARECTANGLERENDERER_H

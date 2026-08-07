@@ -138,6 +138,7 @@ add_library(cod3_aeps STATIC
     src/aeps/apsGroupMgr.cpp
     src/aeps/apsSuppliedDomains.cpp
     src/aeps/apsEffectTemplate.cpp
+    src/aeps/apsRegister.cpp
     src/aeps/apsPFD.cpp
     src/aeps/stubs.cpp
 )

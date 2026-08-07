@@ -70,7 +70,8 @@ static_assert(sizeof(apsDomain) == 4, "apsDomain size mismatch");
 // All methods are inline COMDATs (emitted in apsAction.o / callers).
 // ============================================================================
 template <typename T>
-struct apsArray {
+class apsArray {
+public:
     T*      mElements;   // +0x00
     short   mCapacity;   // +0x04
     short   mSize;       // +0x06
@@ -355,6 +356,12 @@ protected:
     // protected ctor (map: ??0apsAction@@IAE@HHW4IterationStyle@0@I@Z)
     apsAction(int iNumParams, int iNumDomains, IterationStyle iIterationStyle,
               unsigned int iRequiredParticleFields);  // ??0apsAction@@IAE@HHW4IterationStyle@0@I@Z
+
+    // protected default ctor (inline COMDAT in apsRegister.o, ??0apsAction@@IAE@XZ):
+    apsAction() : mIterationStyle(eSource), mRequiredParticleFields(0) {
+        mParams.mElements = 0; mParams.mCapacity = 0; mParams.mSize = 0;
+        mDomains.mElements = 0; mDomains.mCapacity = 0; mDomains.mSize = 0;
+    }
 
 public:
     // ---- params / domains (apsAction.o) ----

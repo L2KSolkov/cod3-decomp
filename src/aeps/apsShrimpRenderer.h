@@ -10,10 +10,11 @@
 #define COD3_AEPS_APSSHRIMPRENDERER_H
 
 #include "apsRenderer.h"
+#include "apsRetrieveVtable.h"
+#include "apsParam.h"
 #include "apsRenderNode.h"
 #include "apsCommon.h"
 #include "ngl/nglScene.h"
-
 #include <intrin.h>
 
 struct nglLightContext;
@@ -68,6 +69,18 @@ public:
         int                   mTextureWidth;  // +0x1C
         int                   mTextureHeight; // +0x20
         PackedColor           mTintColor;     // +0x24 (16 bytes)
+
+        // cArgs setters (inline COMDATs in apsRegister.o)
+        void SetTexture(apsParam param);         // ?SetTexture@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetBlendMode(apsParam param);       // ?SetBlendMode@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetNumFrames(apsParam param);       // ?SetNumFrames@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetNumRows(apsParam param);         // ?SetNumRows@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetNumRotations(apsParam param);    // ?SetNumRotations@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetSpriteWidth(apsParam param);     // ?SetSpriteWidth@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetSpriteHeight(apsParam param);    // ?SetSpriteHeight@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetTextureWidth(apsParam param);    // ?SetTextureWidth@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetTextureHeight(apsParam param);   // ?SetTextureHeight@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
+        void SetTintColor(apsParam param);       // ?SetTintColor@cArgs@apsShrimpRenderer@@QAEXVapsParam@@@Z
     };
 
     math::Vector4 mTintColor;      // +0x10
@@ -92,7 +105,8 @@ public:
     virtual void SetScreenFacingNormal(const math::Dir3& iNormal);
     virtual float GetChanceToRemove() const;
     virtual bool GetMeshRadius(float& oRadius) const;
-};
+
+    APS_DECLARE_RETRIEVE_LEAF(apsShrimpRenderer)};
 static_assert(sizeof(apsShrimpRenderer) == 0x40, "apsShrimpRenderer size mismatch");
 
 // ============================================================================

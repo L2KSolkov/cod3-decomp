@@ -9,22 +9,19 @@
 // ============================================================================
 #ifndef COD3_AEPS_APSSIMPLEMESHRENDERER_H
 #define COD3_AEPS_APSSIMPLEMESHRENDERER_H
-
 #include "apsRenderer.h"
+#include "apsRetrieveVtable.h"
+#include "apsParam.h"
 #include "apsCommon.h"
 #include "ngl/nglScene.h"
-
 #include <intrin.h>
-
 struct nglMesh;
 struct nglLightContext;
 class nglMeshNode;
 struct nglMeshSection;
 struct nglMaterial;
-
 // Forward declaration (apsSimpleMeshNode references the renderer)
 class apsSimpleMeshRenderer;
-
 // ============================================================================
 // nglShader — base shader (16 bytes, verified against IDA: tlInitList + fields)
 // ============================================================================
@@ -32,7 +29,6 @@ struct nglShader : tlInitList {
     bool Disabled;  // +0x08
     int  ID;        // +0x0C
 };
-
 // ============================================================================
 // apsSimpleMeshShader — simple-mesh shader (16 bytes, nglShader-derived)
 // ============================================================================
@@ -43,7 +39,6 @@ public:
     virtual void AddNode(nglMeshNode* node, nglMeshSection* section, nglMaterial* material);  // ea: 0x8028B0
 };
 static_assert(sizeof(apsSimpleMeshShader) == 0x10, "apsSimpleMeshShader size mismatch");
-
 // ============================================================================
 // apsSimpleMeshNode — mesh render node (192 bytes).
 // ============================================================================
@@ -52,13 +47,11 @@ public:
     apsSimpleMeshRenderer* mRenderer;      // +0xB0
     nglLightContext*       mLightContext;  // +0xB4
     int                    mZBuffer;       // +0xB8
-
     void SetRenderer(apsSimpleMeshRenderer* r) { mRenderer = r; }       // ea: 0x8028C0
     void SetLightContext(nglLightContext* lc) { mLightContext = lc; }   // ea: 0x8028D0
     virtual void GetDesc(char* buf);                                    // ea: 0x8028E0
 };
 static_assert(sizeof(apsSimpleMeshNode) == 0xC0, "apsSimpleMeshNode size mismatch");
-
 // ============================================================================
 // apsSimpleMeshRenderer — mesh particle renderer (24 bytes).
 // ============================================================================
@@ -67,14 +60,14 @@ public:
     struct cArgs {
         nglMesh*    mMesh;
         nglTexture* mTexture;
+        void SetTexture(apsParam param);   // ?SetTexture@cArgs@apsSimpleMeshRenderer@@QAEXVapsParam@@@Z
+        void SetMesh(apsParam param);      // ?SetMesh@cArgs@apsSimpleMeshRenderer@@QAEXVapsParam@@@Z
     };
 
     nglMesh*    mMesh;      // +0x10
     nglTexture* mTexture;   // +0x14
-
     apsSimpleMeshRenderer(const cArgs* args);          // @0x802990
     virtual ~apsSimpleMeshRenderer();                  // @0x8029A0 (vtable)
-
     static void Init();                                // @0x802920
     static void InitShader();                          // @0x802950 (?InitShader@apsSimpleMeshRenderer@@SAXXZ)
     virtual eRenderResult Render(const apsRendererRenderInfo& iInfo);  // @0x8029C0
@@ -84,9 +77,8 @@ public:
     virtual void SetScreenFacingNormal(const math::Dir3& iNormal);
     virtual float GetChanceToRemove() const;
     virtual bool GetMeshRadius(float& oRadius) const;
-};
+    APS_DECLARE_RETRIEVE_LEAF(apsSimpleMeshRenderer)};
 static_assert(sizeof(apsSimpleMeshRenderer) == 0x18, "apsSimpleMeshRenderer size mismatch");
-
 
 // ============================================================================
 // ngl mesh/shader externs
@@ -97,7 +89,6 @@ extern nglLightContext* nglDefaultLightContext;
 extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);
 extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);
 extern void nglDxInitPShader(const unsigned int* Microcode);
-
 // ============================================================================
 // Shader microcode registration structs (inline COMDATs + data in
 // apsSimpleMeshRendererVertex.o)
@@ -105,17 +96,13 @@ extern void nglDxInitPShader(const unsigned int* Microcode);
 struct apsSimpleMeshRender {
     static unsigned int* VS;                  // ?VS@apsSimpleMeshRender@@3PAKA
     static const unsigned int** VShaderTable; // ?VShaderTable@apsSimpleMeshRender@@3PAPBIA
-
     static void RegisterVShader() { nglDxRegisterVShader(VS, VShaderTable[0]); }   // ea: 0x8028F0
 };
-
 struct apsSimpleMeshRenderPixel {
     static unsigned int** PS;                 // ?PS@apsSimpleMeshRenderPixel@@3PAPAKA
     static const unsigned int** PShaderTable; // ?PShaderTable@apsSimpleMeshRenderPixel@@3PAPBIA
-
     static void RegisterPShader() { nglDxRegisterPShader(PS, PShaderTable[0]); }   // ea: 0x802910
     static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x8029A0
 };
-
 
 #endif // COD3_AEPS_APSSIMPLEMESHRENDERER_H

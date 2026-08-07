@@ -71,6 +71,10 @@ static_assert(sizeof(Position3::Packed) == 0x0C, "Position3::Packed size mismatc
 class Vector4 {
 public:
     __m128 v;
+
+    struct Packed {
+        float x, y, z, w;
+    };
 };
 static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
 
