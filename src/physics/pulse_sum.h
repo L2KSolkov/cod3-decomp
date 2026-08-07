@@ -37,6 +37,22 @@ struct pulse_sum_angular {
 static_assert(sizeof(pulse_sum_angular) == 0x90, "pulse_sum_angular size mismatch");
 
 // ============================================================================
+// pulse_sum_wheel â€” wheel constraint pulse-sum bundle (used by
+// rigid_body_constraint_wheel). Layout verified against IDA local type.
+// ============================================================================
+struct pulse_sum_wheel {
+    phys_link_list_base<pulse_sum_wheel> m_link;  // +0x00
+    uint8_t          _pad4[12];                   // +0x04 (align to 16)
+    pulse_sum_normal m_suspension;                // +0x10 (160 bytes)
+    pulse_sum_normal* m_side;                     // +0xB0
+    pulse_sum_normal* m_fwd;                      // +0xB4
+
+    void set_side_fwd_ratios(float side_ratio, float fwd_ratio);
+};
+static_assert(sizeof(pulse_sum_wheel) == 0xC0, "pulse_sum_wheel size mismatch");
+static_assert(offsetof(pulse_sum_wheel, m_suspension) == 0x10, "pulse_sum_wheel::m_suspension offset mismatch");
+
+// ============================================================================
 // pulse_sum_constraint_solver — the solver (112 bytes; methods in
 // phys_constraint_solver_multithreaded.o, unresolved here).
 // ============================================================================
@@ -60,6 +76,9 @@ public:
                                                 const math::Dir3* ud,
                                                 pulse_sum_cache* ps_cache);
     pulse_sum_normal*  create_pulse_sum_normal();
+    pulse_sum_wheel*   create_pulse_sum_wheel();
+    pulse_sum_normal*  create_pulse_sum_wheel_side(pulse_sum_wheel* psw);
+    pulse_sum_normal*  create_pulse_sum_wheel_fwd(pulse_sum_wheel* psw);
 };
 static_assert(sizeof(pulse_sum_constraint_solver) == 0x70, "pulse_sum_constraint_solver size mismatch");
 
@@ -68,6 +87,9 @@ static_assert(sizeof(pulse_sum_constraint_solver) == 0x70, "pulse_sum_constraint
 // ============================================================================
 namespace rbint {
 const math::Dir3* multiply(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
+const math::Dir3* collide_multiply(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
+const math::Dir3* add_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
+const math::Dir3* collide_add_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
 }
 
 #endif // COD3_PHYSICS_PULSE_SUM_H

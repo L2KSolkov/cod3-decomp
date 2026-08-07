@@ -94,6 +94,11 @@ struct pulse_sum_normal {
     float get_pos() const { return m_pulse_sum; }
     void  set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2, const math::Dir3* b2_r,
               const math::Dir3* ud, pulse_sum_cache* ps_cache, const math::Dir3* b1_r_displace);
+    void  setup_vel_uni_standard(float delta_t, float max_penalty_restitution_vel);
+    const float& get_unclamped_pulse_sum() const { return m_pulse_sum; }
+    const math::Dir3* get_relative_velocity(const math::Dir3* result);
+    const math::Dir3* get_relative_velocity_change_dir(const math::Dir3* result);
+    void  set_pulse_sum_limits_parent_ratio(float limit_ratio, pulse_sum_normal* parent);
 };
 static_assert(sizeof(pulse_sum_normal) == 0xA0, "pulse_sum_normal size mismatch");
 static_assert(offsetof(pulse_sum_normal, m_ud) == 0x10, "pulse_sum_normal::m_ud offset mismatch");
@@ -318,6 +323,19 @@ struct rigid_body_constraint_wheel : rigid_body_constraint {
     struct pulse_sum_normal* m_ps_suspension;  // +0xCC
     struct pulse_sum_normal* m_ps_side_fric;   // +0xD0
     struct pulse_sum_normal* m_ps_fwd_fric;    // +0xD4
+
+    void set_wheel_state_accelerating(float desired_speed_k, float acceleration_factor_k);
+    void set_wheel_state_braking(float braking_factor_k);
+    void set_no_collision();
+    void set_collision(rigid_body* rb, const math::Dir3* hitp_loc, const math::Dir3* hitn_loc);
+    void set(const math::Dir3* wheel_center_loc, const math::Dir3* suspension_dir_loc,
+             const math::Dir3* wheel_axis_loc, float wheel_radius, float fwd_fric_k,
+             float side_fric_k, float suspension_stiffness_k, float suspension_damp_k,
+             float hard_limit_dist, float roll_stability_factor);
+    void get_wheel_collide_segment(const math::Mat43* b1_mat, math::Dir3* p0, math::Dir3* p1);
+    void do_collision(float delta_t);
+    void epilog_vel_constraint(float delta_t);
+    void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_wheel) == 0xE0, "rigid_body_constraint_wheel size mismatch");
 static_assert(offsetof(rigid_body_constraint_wheel, m_b2_hitp_loc) == 0x10, "wheel::m_b2_hitp_loc offset mismatch");
