@@ -107,7 +107,7 @@ phys_xboxr:rbc_def_vehicle.o	phys_xboxr	rbc_def_vehicle.o	engine	10	PORTED	[phys
 phys_xboxr:phys_contact_manifold.o	phys_xboxr	phys_contact_manifold.o	engine	10	PORTED	[phys_xboxr] phys_contact_manifold.cpp: manifold convex-poly (10 funcs)
 bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engine	10	TODO	
 bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	TODO	
-bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	TODO	
+bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO	
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
 bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
@@ -134,7 +134,7 @@ ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	TODO
 phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	PORTED	[phys_xboxr] phys_util.cpp: nuge aggregate utils (8 funcs)
 bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	TODO	
-bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	TODO	
+bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	TODO	
 bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engine	8	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 core_xboxr:AeAssert.o	core_xboxr	AeAssert.o	engine	7	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
@@ -178,7 +178,7 @@ nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	PORTED	Phase 2: nvl.cpp (vide
 bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdLogChannel.obj	bdCore	bdLogChannel.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdReliableReceiveWindow.obj	bdConnection	bdReliableReceiveWindow.obj	engine	6	TODO	
-bdConnection:bdCookieAckChunk.obj	bdConnection	bdCookieAckChunk.obj	engine	6	TODO	
+bdConnection:bdCookieAckChunk.obj	bdConnection	bdCookieAckChunk.obj	engine	6	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdConnection:bdHeartbeatChunk.obj	bdConnection	bdHeartbeatChunk.obj	engine	6	PORTED	[bdConnection] bdHeartbeatChunk.cpp: heartbeat control chunks (12 funcs)
 bdConnection:bdHeartbeatAckChunk.obj	bdConnection	bdHeartbeatAckChunk.obj	engine	6	PORTED	[bdConnection] bdHeartbeatChunk.cpp: heartbeat control chunks (12 funcs)
 bdConnection:bdShutdownChunk.obj	bdConnection	bdShutdownChunk.obj	engine	6	PORTED	[bdConnection] bdShutdownChunk.cpp: shutdown control chunks (18 funcs)

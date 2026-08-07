@@ -429,6 +429,80 @@ public:
 static_assert(sizeof(bdShutdownCompleteChunk) == 0x10, "bdShutdownCompleteChunk size mismatch");
 
 // ============================================================================
+// bdCookie â€” cookie with HMAC tag (24 bytes)
+// ============================================================================
+class bdCookie : public bdReferencable {
+public:
+    unsigned int m_localTag;      // +0x08
+    unsigned int m_peerTag;       // +0x0C
+    unsigned int m_localTieTag;   // +0x10
+    unsigned int m_peerTieTag;    // +0x14
+
+    bdCookie();
+    bdCookie(unsigned int localTag, unsigned int peerTag,
+             unsigned int localTieTag, unsigned int peerTieTag);
+    virtual ~bdCookie();
+    unsigned int getLocalTag() const;
+    unsigned int getPeerTag() const;
+    unsigned int getLocalTieTag() const;
+    unsigned int getPeerTieTag() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+
+    static unsigned char m_secret[20];
+    static bool          m_secretInitialized;
+};
+static_assert(sizeof(bdCookie) == 0x18, "bdCookie size mismatch");
+
+// ============================================================================
+// bdCookieEchoChunk â€” cookie echo chunk (32 bytes)
+// ============================================================================
+class bdCookieEchoChunk : public bdChunk {
+public:
+    enum bdCookieEchoFlags {
+        BD_COOKIE_ECHO_NONE = 0,
+    };
+
+    bdCookieEchoFlags m_flags;                  // +0x0C
+    bdReference<bdCookie> m_cookie;             // +0x10
+    bdReference<bdByteBuffer> m_rawCookie;      // +0x14
+
+    bdCookieEchoChunk();
+    bdCookieEchoChunk(const bdReference<bdByteBuffer>& rawCookie);
+    virtual ~bdCookieEchoChunk();
+    bdCookieEchoFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    bool getCookie(bdReference<bdCookie>& cookie) const;
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdCookieEchoChunk) == 0x18, "bdCookieEchoChunk size mismatch");
+
+// ============================================================================
+// bdCookieAckChunk â€” cookie-ack control chunk (16 bytes)
+// ============================================================================
+class bdCookieAckChunk : public bdChunk {
+public:
+    enum bdCookieAckFlags {
+        BD_COOKIE_ACK_NONE = 0,
+    };
+
+    bdCookieAckFlags m_flags;  // +0x0C
+
+    bdCookieAckChunk();
+    virtual ~bdCookieAckChunk();
+    bdCookieAckFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdCookieAckChunk) == 0x10, "bdCookieAckChunk size mismatch");
+
+// ============================================================================
 // bdSAckChunk â€” selective-ack chunk (48 bytes)
 // Size: 0x30 (48 bytes) â€” verified against IDA
 // ============================================================================
