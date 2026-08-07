@@ -153,7 +153,7 @@ nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	PORTED	Phase 3: nsl.cpp
 ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	TODO	
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	TODO	
 nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
-phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	TODO	
+phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	PORTED	[phys_xboxr] rigid_body.cpp: body setup + forces (7 funcs)
 bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdStopwatch.obj	bdCore	bdStopwatch.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdChunk.obj	bdConnection	bdChunk.obj	engine	7	TODO	

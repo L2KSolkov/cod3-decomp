@@ -157,6 +157,13 @@ struct rigid_body {
     rb_inplace_partition_node m_partition_node;  // +0x168 (64 bytes)
 
     void add_force(const math::Dir3& force);
+    void add_force(const math::Dir3& force, const math::Dir3& point, float torque_mult);
+    void set_mass(float mass);
+    void set_inertia(const math::Dir3& inertia);
+    void set(float mass, const math::Dir3& inertia, const math::Mat43& mat,
+             const math::Dir3& t_vel, const math::Dir3& a_vel, float fric_coef,
+             int stable_min_contact_count);
+    void update_col_mat();
 };
 static_assert(sizeof(rigid_body) == 0x1B0, "rigid_body size mismatch");
 static_assert(offsetof(rigid_body, m_mat) == 0x000, "rigid_body::m_mat offset mismatch");
@@ -376,9 +383,25 @@ static_assert(sizeof(rigid_body_constraint_custom_orientation) == 0x38, "rigid_b
 static_assert(offsetof(rigid_body_constraint_custom_orientation, m_active) == 0x2C, "custom_orientation::m_active offset mismatch");
 
 // ============================================================================
-// user_rigid_body — external body reference (opaque)
+// user_rigid_body — external body reference (448 bytes)
+// Size: 0x1C0 (448 bytes) — verified against IDA
 // ============================================================================
-struct user_rigid_body;
+struct user_rigid_body : rigid_body {
+    const math::Mat43* m_dictator;  // +0x1B0
+
+    void set(const math::Mat43* dictator);
+};
+static_assert(sizeof(user_rigid_body) == 0x1C0, "user_rigid_body size mismatch");
+static_assert(offsetof(user_rigid_body, m_dictator) == 0x1B0, "user_rigid_body::m_dictator offset mismatch");
+
+// ============================================================================
+// environment_rigid_body — static world body (432 bytes)
+// Size: 0x1B0 (432 bytes) — verified against IDA
+// ============================================================================
+struct environment_rigid_body : rigid_body {
+    void set();
+};
+static_assert(sizeof(environment_rigid_body) == 0x1B0, "environment_rigid_body size mismatch");
 
 // ============================================================================
 // rigid_body_constraint_custom_path — custom path constraint (128 bytes)

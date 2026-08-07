@@ -101,7 +101,10 @@ struct phys_inplace_avl_tree {
 };
 
 struct physics_system {
-    uint8_t _pad[0xF20];                                  // +0x00
+    int      m_flags;                                     // +0x00
+    uint8_t  _pad4[0x20 - 0x04];                          // +0x04
+    float    m_outside_sub_delta_t;                       // +0x20
+    uint8_t  _pad24[0xF20 - 0x24];                        // +0x24
     phys_inplace_avl_tree<rigid_body_pair_key, rigid_body_constraint_contact>
         m_search_tree_rbc_contact;                        // +0xF20
     uint8_t _padF44[0x1120 - 0xF44];                      // +0xF44
@@ -112,6 +115,12 @@ struct physics_system {
 extern physics_system* g_physics_system;  // ?g_physics_system@@3PAVphysics_system@@A
 extern void verify_is_in_physics_system(rigid_body_constraint_contact* rbc,
                                         rigid_body* b1_, rigid_body* b2_);
+extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
+extern void SetIdentity(math::Mat43& m);
+
+namespace rbint {
+void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
+}
 
 // ============================================================================
 // rbint — rigid-body intrinsic math (methods in phys_util.o, unresolved)
