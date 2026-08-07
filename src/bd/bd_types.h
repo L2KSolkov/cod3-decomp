@@ -19,6 +19,7 @@ struct bdReference {
     T* m_ptr;  // +0x00
 
     bdReference() : m_ptr(NULL) {}
+    bdReference(T* ptr) : m_ptr(ptr) {}
 };
 static_assert(sizeof(bdReference<bdReferencable>) == 4, "bdReference size mismatch");
 
@@ -114,6 +115,16 @@ public:
     bool          m_failedRead;            // +0x20
     bool          m_typeChecked;           // +0x21
     uint8_t       _pad22[2];               // +0x22
+
+    enum bdBitBufferDataType {
+        BD_BB_UNSIGNED_INTEGER32_TYPE = 0,
+        BD_BB_FULL_TYPE = 1,
+    };
+
+    void writeDataType(bdBitBufferDataType type);
+    void writeBits(const void* data, unsigned int bitCount);
+    bool readDataType(bdBitBufferDataType type);
+    bool readBits(void* data, unsigned int bitCount);
 };
 static_assert(sizeof(bdBitBuffer) == 0x24, "bdBitBuffer size mismatch");
 static_assert(offsetof(bdBitBuffer, m_data) == 0x08, "bdBitBuffer::m_data offset mismatch");
@@ -169,6 +180,10 @@ public:
     bool       m_isLoopback;// +0x38
     uint8_t    _pad39[3];   // +0x39
     bdNATType  m_natType;   // +0x3C
+
+    bdCommonAddr();
+    void serialize(uint8_t* buffer) const;
+    bool deserialize(const bdReference<bdCommonAddr>& ref, const uint8_t* buffer);
 };
 static_assert(sizeof(bdCommonAddr) == 0x40, "bdCommonAddr size mismatch");
 static_assert(offsetof(bdCommonAddr, m_addr) == 0x08, "bdCommonAddr::m_addr offset mismatch");

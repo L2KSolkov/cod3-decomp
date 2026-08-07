@@ -159,6 +159,7 @@ add_library(cod3_bd STATIC
     src/bd/bdMemory/bdAlignedOffsetMemory.cpp
     src/bd/bdTiming/bdShortTimer.h
     src/bd/bdPlatform.cpp
+    src/bd/bdGameInfo.cpp
     src/bd/bdSessionInfo.cpp
     src/bd/bdSessionHandler.cpp
     src/bd/bdSessionInterceptor.cpp

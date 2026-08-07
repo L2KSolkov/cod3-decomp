@@ -84,7 +84,7 @@ bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	Phase 2
 nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	TODO	
 bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	TODO	
-bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	TODO	
+bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	PORTED	[bdNet] bdGameInfo.cpp: discovery game info + factory (18 funcs)
 render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	PORTED	cdOceanShader.h/.cpp (ocean shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; SetContext+Render deferred)
 zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO	
 aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
@@ -206,7 +206,7 @@ phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	PORTED	[phys_xboxr] phys_gj
 bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	TODO	
 bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	TODO	
-bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	TODO	
+bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	PORTED	[bdNet] bdGameInfo.cpp: game info factory (5 funcs)
 bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	TODO	
 bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdPlatform:bdPlatformTiming-xbox.obj	bdPlatform	bdPlatformTiming-xbox.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
