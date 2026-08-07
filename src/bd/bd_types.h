@@ -366,6 +366,69 @@ public:
 static_assert(sizeof(bdHeartbeatAckChunk) == 0x10, "bdHeartbeatAckChunk size mismatch");
 
 // ============================================================================
+// bdShutdownChunk â€” shutdown control chunk (16 bytes)
+// ============================================================================
+class bdShutdownChunk : public bdChunk {
+public:
+    enum bdShutdownFlags {
+        BD_SHUTDOWN_NONE = 0,
+    };
+
+    bdShutdownFlags m_flags;  // +0x0C
+
+    bdShutdownChunk();
+    virtual ~bdShutdownChunk();
+    bdShutdownFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdShutdownChunk) == 0x10, "bdShutdownChunk size mismatch");
+
+// ============================================================================
+// bdShutdownAckChunk â€” shutdown-ack control chunk (16 bytes)
+// ============================================================================
+class bdShutdownAckChunk : public bdChunk {
+public:
+    enum bdShutdownAckFlags {
+        BD_SHUTDOWN_ACK_NONE = 0,
+    };
+
+    bdShutdownAckFlags m_flags;  // +0x0C
+
+    bdShutdownAckChunk();
+    virtual ~bdShutdownAckChunk();
+    bdShutdownAckFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdShutdownAckChunk) == 0x10, "bdShutdownAckChunk size mismatch");
+
+// ============================================================================
+// bdShutdownCompleteChunk â€” shutdown-complete control chunk (16 bytes)
+// ============================================================================
+class bdShutdownCompleteChunk : public bdChunk {
+public:
+    enum bdShutdownCompleteFlags {
+        BD_SHUTDOWN_COMPLETE_NONE = 0,
+    };
+
+    bdShutdownCompleteFlags m_flags;  // +0x0C
+
+    bdShutdownCompleteChunk();
+    virtual ~bdShutdownCompleteChunk();
+    bdShutdownCompleteFlags getFlags() const;
+    virtual unsigned int getSerializedSize();
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+};
+static_assert(sizeof(bdShutdownCompleteChunk) == 0x10, "bdShutdownCompleteChunk size mismatch");
+
+// ============================================================================
 // bdSAckChunk â€” selective-ack chunk (48 bytes)
 // Size: 0x30 (48 bytes) â€” verified against IDA
 // ============================================================================
