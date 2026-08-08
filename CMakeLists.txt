@@ -161,6 +161,7 @@ add_library(cod3_bd STATIC
     src/bd/bdUtilities/bdBitOperations.h
     src/bd/bdMemory/bdAlignedOffsetMemory.cpp
     src/bd/bdTiming/bdShortTimer.h
+    src/bd/bdSequenceNumber.cpp
     src/bd/bdPlatform.cpp
     src/bd/bdGameInfo.cpp
     src/bd/bdConnectionStatistics.cpp
@@ -174,6 +175,10 @@ add_library(cod3_bd STATIC
     src/bd/bdInitChunk.cpp
     src/bd/bdDataChunk.cpp
     src/bd/bdPacket.cpp
+    src/bd/bdReliableSendWindow.cpp
+    src/bd/bdReliableReceiveWindow.cpp
+    src/bd/bdUnreliableSendWindow.cpp
+    src/bd/bdUnreliableReceiveWindow.cpp
     src/bd/bdSessionInfo.cpp
     src/bd/bdSessionHandler.cpp
     src/bd/bdSessionInterceptor.cpp

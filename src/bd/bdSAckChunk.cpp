@@ -7,16 +7,6 @@
 #include "bd/bd_types.h"
 
 // ============================================================================
-// Cross-object externs
-// ============================================================================
-struct bdMessageProxy {
-    bdMessageProxy(const char* file, const char* func, unsigned int line, const char* flags);
-    void log(const char* channel, const char* format, ...) const;
-};
-
-extern bool g_assertFalse;
-
-// ============================================================================
 // getCumulativeAck â€” ea: 0x8AD670
 // ============================================================================
 unsigned short bdSAckChunk::getCumulativeAck() const {
@@ -80,20 +70,22 @@ unsigned int bdSAckChunk::serialize(unsigned char* data, unsigned int size) {
         if (bdBytePacker::appendBasicType(v4, v3, offset, &offset, &ack, 2u)) {
             int credit = this->m_windowCredit;
             if (bdBytePacker::appendBasicType(v4, v3, offset, &offset, &credit, 4u)) {
-                unsigned short flags2 = (unsigned short)this->m_flags;
-                if (bdBytePacker::appendBasicType(v4, v3, offset, &offset, &flags2, 2u)) {
-                    unsigned short gapCount = 0;
-                    if (bdBytePacker::appendBasicType(v4, v3, offset, &offset, &gapCount, 2u))
+                unsigned short gapCount = (unsigned short)this->m_gapList.m_size;
+                if (bdBytePacker::appendBasicType(v4, v3, offset, &offset, &gapCount, 2u)) {
+                    unsigned short duplicateTsnCount = 0;
+                    if (bdBytePacker::appendBasicType(v4, v3, offset, &offset, &duplicateTsnCount, 2u))
                         ok2 = true;
                 }
             }
         }
     }
-    for (bdGapAckBlock* i = this->m_gapList.m_head; i != NULL; i = i->m_next) {
-        unsigned short start = i->m_start;
+    for (bdLinkedList<bdGapAckBlock>::Node* node = this->m_gapList.m_head;
+         node != NULL; node = node->m_next) {
+        unsigned short start = (unsigned short)node->m_value.m_start;
         ok2 = ok2
               && bdBytePacker::appendBasicType(v4, v3, offset, &offset, &start, 2u)
-              && bdBytePacker::appendBasicType(v4, v3, offset, &offset, &i->m_end, 2u);
+              && bdBytePacker::appendBasicType(v4, v3, offset, &offset,
+                                               &node->m_value.m_end, 2u);
     }
     return ok2 ? offset : 0;
 }

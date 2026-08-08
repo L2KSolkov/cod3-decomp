@@ -1,4 +1,4 @@
-﻿source_cpp	lib	obj	class	funcs	status	notes
+source_cpp	lib	obj	class	funcs	status	notes
 shell.o		shell.o	game	1175	TODO	
 scr.o		scr.o	game	846	TODO	
 mp.o		mp.o	game	770	TODO	
@@ -80,7 +80,7 @@ jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jo
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	PORTED	[phys_xboxr] rbc_def_ragdoll.cpp: ragdoll constraint (14 funcs)
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	TODO	
 bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	TODO	
-bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
 nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	IN_PROGRESS	[ngl_xboxr] ngl_gpu.cpp: 9/13 funcs (index/section/shader init); vertex pack/unpack + bone setters deferred to mesh unit
 bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	PORTED	[bdConnection] bdSAckChunk.cpp: selective-ack chunk (13 funcs)
@@ -91,7 +91,7 @@ aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.c
 nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	PORTED	[ngl_xboxr] ngl_gpu_meshedit.cpp: GPU mesh sections (12 funcs)
 bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	TODO	
-bdConnection:bdDataChunk.obj	bdConnection	bdDataChunk.obj	engine	12	TODO	
+bdConnection:bdDataChunk.obj	bdConnection	bdDataChunk.obj	engine	12	PORTED	[bdConnection] bdDataChunk.cpp: data chunk (12 funcs) from Demonware 2.0 + IDA
 mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Phase 2: controller.cpp (XInput wrapper)
 zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	TODO	
@@ -105,7 +105,7 @@ render_xboxr:cdRiverShader.o	render_xboxr	cdRiverShader.o	engine	10	PORTED	cdRiv
 ngl_xboxr:ngl_dx_texture.o	ngl_xboxr	ngl_dx_texture.o	engine	10	TODO	
 phys_xboxr:rbc_def_vehicle.o	phys_xboxr	rbc_def_vehicle.o	engine	10	PORTED	[phys_xboxr] rbc_def_vehicle.cpp: wheel constraint (10 funcs)
 phys_xboxr:phys_contact_manifold.o	phys_xboxr	phys_contact_manifold.o	engine	10	PORTED	[phys_xboxr] phys_contact_manifold.cpp: manifold convex-poly (10 funcs)
-bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engine	10	TODO	
+bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engine	10	PORTED	[bdConnection] bdReliableSendWindow.cpp: reliable send window (10 funcs) from Demonware 2.0 + IDA
 bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
 bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO	
@@ -177,7 +177,7 @@ aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	POR
 nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	PORTED	Phase 2: nvl.cpp (video codec stubs)
 bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdLogChannel.obj	bdCore	bdLogChannel.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-bdConnection:bdReliableReceiveWindow.obj	bdConnection	bdReliableReceiveWindow.obj	engine	6	TODO	
+bdConnection:bdReliableReceiveWindow.obj	bdConnection	bdReliableReceiveWindow.obj	engine	6	PORTED	[bdConnection] bdReliableReceiveWindow.cpp: reliable recv window (6 funcs) from Demonware 2.0 + IDA
 bdConnection:bdCookieAckChunk.obj	bdConnection	bdCookieAckChunk.obj	engine	6	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdConnection:bdHeartbeatChunk.obj	bdConnection	bdHeartbeatChunk.obj	engine	6	PORTED	[bdConnection] bdHeartbeatChunk.cpp: heartbeat control chunks (12 funcs)
 bdConnection:bdHeartbeatAckChunk.obj	bdConnection	bdHeartbeatAckChunk.obj	engine	6	PORTED	[bdConnection] bdHeartbeatChunk.cpp: heartbeat control chunks (12 funcs)
@@ -204,8 +204,8 @@ nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	PORTED	Phase 2/3: nal.cpp
 nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	PORTED	[phys_xboxr] phys_gjk.cpp: GJK simplex core (5 funcs)
 bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	TODO	
-bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	TODO	
+bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableSendWindow.cpp: unreliable send window (5 funcs) from Demonware 2.0 + IDA
+bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableReceiveWindow.cpp: unreliable recv window (5 funcs) from Demonware 2.0 + IDA
 bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	PORTED	[bdNet] bdGameInfo.cpp: game info factory (5 funcs)
 bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	TODO	
 bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)

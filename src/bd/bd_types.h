@@ -8,8 +8,25 @@
 #pragma once
 
 #include "bd/bdReference/bdReferencable.h"
+#include "bd/bdTiming/bdShortTimer.h"
 #include <stddef.h>
 #include <stdint.h>
+
+// ============================================================================
+// Logging shim (bdLog's bdMessageProxy) + assert flag - unresolved externs,
+// tolerated by /FORCE:UNRESOLVED until bdLog is ported.
+// ============================================================================
+struct bdMessageProxy {
+    bdMessageProxy(const char* file, const char* func, unsigned int line, const char* flags);
+    void log(const char* channel, const char* format, ...) const;
+};
+
+extern bool g_assertFalse;
+
+namespace bdMemory {
+void* allocate(unsigned int size);
+void  deallocate(void* p);
+}
 
 // ============================================================================
 // bdReference<T> — intrusive reference wrapper (4 bytes) — verified against IDA
@@ -20,6 +37,12 @@ struct bdReference {
 
     bdReference() : m_ptr(NULL) {}
     bdReference(T* ptr) : m_ptr(ptr) {}
+    template <typename U>
+    bdReference(const bdReference<U>& other) : m_ptr(other.m_ptr) {
+        // Converting ref (ea: 0x8A8B60) addRefs in the binary, but our bare
+        // bdReference has no dtor to balance it, so the net effect of a
+        // temporary here is zero refs (matching the binary's +1/-1 pair).
+    }
 };
 static_assert(sizeof(bdReference<bdReferencable>) == 4, "bdReference size mismatch");
 
@@ -99,6 +122,8 @@ public:
     uint8_t*     m_writePtr;  // +0x14
 
     bdByteBuffer(unsigned int size);
+    unsigned int getMaxReadSize() const { return m_size + (unsigned int)(m_data - m_readPtr); }
+    const unsigned char* getData() const { return m_data; }
 };
 static_assert(sizeof(bdByteBuffer) == 0x18, "bdByteBuffer size mismatch");
 static_assert(offsetof(bdByteBuffer, m_size) == 0x08, "bdByteBuffer::m_size offset mismatch");
@@ -130,6 +155,9 @@ public:
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);
     bdBitBuffer(unsigned int bitCount, bool typeChecked);
     bool getTypeCheck() const;
+    unsigned int getNumBitsWritten() const { return m_writePosition; }
+    unsigned int getDataSize() const { return m_data.m_size; }
+    const unsigned char* getData() const { return m_data.m_data; }
 };
 static_assert(sizeof(bdBitBuffer) == 0x24, "bdBitBuffer size mismatch");
 static_assert(offsetof(bdBitBuffer, m_data) == 0x08, "bdBitBuffer::m_data offset mismatch");
@@ -282,25 +310,168 @@ enum bdChunkTypes {
 // bdLinkedList<T> â€” intrusive doubly-linked list (12 bytes)
 // ============================================================================
 template <typename T>
-struct bdLinkedList {
-    T*           m_head;      // +0x00
-    T*           m_tail;      // +0x04
-    unsigned int m_size;      // +0x08
+inline void bdListAddRef(const T&) {}
 
-    T* getHead() { return m_head; }
-    void insertAfter(void* pos, const T& value);
-    void removeAt(void** pos);
-    void clear();
+template <typename T>
+inline void bdListAddRef(const bdReference<T>& value) {
+    if (value.m_ptr != NULL)
+        value.m_ptr->addRef();
+}
+
+template <typename T>
+inline void bdListRelease(T&) {}
+
+template <typename T>
+inline void bdListRelease(bdReference<T>& value) {
+    if (value.m_ptr != NULL && value.m_ptr->releaseRef() == 0)
+        delete value.m_ptr;
+    value.m_ptr = NULL;
+}
+
+template <typename T>
+struct bdLinkedList {
+    struct Node {
+        T      m_value;   // +0x00
+        Node*  m_next;    // +sizeof(T)
+        Node*  m_prev;    // +sizeof(T) + 4
+    };
+
+    Node*        m_head;   // +0x00
+    Node*        m_tail;   // +0x04
+    unsigned int m_size;   // +0x08
+
+    bdLinkedList() : m_head(NULL), m_tail(NULL), m_size(0) {}
+    ~bdLinkedList() { clear(); }
+
+    bool isEmpty() const { return m_size == 0; }
+    unsigned int getSize() const { return m_size; }
+    void* getHeadPosition() const { return m_head; }
+    void* getTailPosition() const { return m_tail; }
+    T& getHead() { return m_head->m_value; }
+    T& getAt(void* pos) { return ((Node*)pos)->m_value; }
+    T& forward(void*& pos) {
+        Node* cur = (Node*)pos;
+        pos = cur->m_next;
+        return cur->m_value;
+    }
+    void addTail(const T& value) { insertAfter(m_tail, value); }
+    void removeHead() { void* pos = m_head; removeAt(pos); }
+
+    void insertAfter(void* pos, const T& value) {
+        Node* node = (Node*)bdMemory::allocate(sizeof(Node));
+        if (node != NULL) {
+            node->m_value = value;
+            node->m_next = NULL;
+            node->m_prev = NULL;
+            bdListAddRef(value);
+        }
+        if (pos != NULL) {
+            Node* at = (Node*)pos;
+            node->m_next = at->m_next;
+            node->m_prev = at;
+            if (at->m_next != NULL) {
+                at->m_next->m_prev = node;
+                at->m_next = node;
+                ++m_size;
+            } else {
+                if (at != m_tail) {
+                    bdMessageProxy proxy("..\\bdCore/bdContainers/bdLinkedList.inl",
+                                         "void __thiscall bdLinkedList::insertAfter(void *const ,const class bdReference &)",
+                                         0x16Bu, "dw/err");
+                    proxy.log("defaultFileName",
+                              "bdLinkedList::insertAfter, node has no next entry, but is not the tail.");
+                }
+                m_tail = node;
+                at->m_next = node;
+                ++m_size;
+            }
+        } else {
+            node->m_next = NULL;
+            node->m_prev = m_tail;
+            if (m_tail != NULL) {
+                m_tail->m_next = node;
+            } else {
+                m_head = node;
+            }
+            m_tail = node;
+            ++m_size;
+        }
+    }
+
+    void removeAt(void*& pos) {
+        Node* node = (Node*)pos;
+        if (node != NULL) {
+            pos = node->m_next;
+            if (node == m_head)
+                m_head = m_head->m_next;
+            else
+                node->m_prev->m_next = node->m_next;
+            if (node == m_tail)
+                m_tail = node->m_prev;
+            else
+                node->m_next->m_prev = node->m_prev;
+            bdListRelease(node->m_value);
+            bdMemory::deallocate(node);
+            --m_size;
+        }
+    }
+
+    void clear() {
+        Node* node = m_head;
+        while (node != NULL) {
+            Node* next = node->m_next;
+            bdListRelease(node->m_value);
+            bdMemory::deallocate(node);
+            node = next;
+        }
+        m_head = NULL;
+        m_tail = NULL;
+        m_size = 0;
+    }
 };
 static_assert(sizeof(bdLinkedList<char>) == 0x0C, "bdLinkedList size mismatch");
 
 // ============================================================================
-// bdGapAckBlock â€” SACK gap block (16 bytes with link)
+// bdQueue<T> - thin FIFO wrapper over bdLinkedList (12 bytes)
+// ============================================================================
+template <typename T>
+struct bdQueue {
+    bdLinkedList<T> m_list;   // +0x00
+
+    bool isEmpty() const { return m_list.m_size == 0; }
+    unsigned int getSize() const { return m_list.m_size; }
+    T& peek() {
+        if (m_list.m_size == 0) {
+            bdMessageProxy proxy("..\\bdCore/bdContainers/bdQueue.inl",
+                                 "class bdReference &__thiscall bdQueue::peek(void)",
+                                 0x1Bu, "dw/err");
+            proxy.log("defaultFileName", "bdQueue::dequeue, queue empty, can't peek.");
+        }
+        return m_list.getHead();
+    }
+    void enqueue(const T& value) { m_list.addTail(value); }
+    void dequeue() {
+        if (m_list.m_size == 0) {
+            bdMessageProxy proxy("..\\bdCore/bdContainers/bdQueue.inl",
+                                 "void __thiscall bdQueue::dequeue(void)",
+                                 0x14u, "dw/err");
+            proxy.log("defaultFileName", "bdQueue::dequeue, queue empty, can't dequeue.");
+        }
+        void* pos = m_list.m_head;
+        m_list.removeAt(pos);
+    }
+};
+static_assert(sizeof(bdQueue<char>) == 0x0C, "bdQueue size mismatch");
+
+// ============================================================================
+// bdGapAckBlock - SACK gap block value (8 bytes; list Node adds links at +8)
 // ============================================================================
 struct bdGapAckBlock {
-    unsigned short m_start;   // +0x00
-    unsigned short m_end;     // +0x02
-    bdGapAckBlock* m_next;    // +0x04
+    unsigned int m_start;   // +0x00 (16-bit value on the wire)
+    unsigned int m_end;     // +0x04
+
+    bdGapAckBlock() : m_start(0), m_end(0) {}
+    bdGapAckBlock(unsigned int start, unsigned int end) : m_start(start), m_end(end) {}
 };
 static_assert(sizeof(bdGapAckBlock) == 0x08, "bdGapAckBlock size mismatch");
 
@@ -591,20 +762,51 @@ public:
 };
 static_assert(sizeof(bdPacket) == 0x24, "bdPacket size mismatch");
 
-// ============================================================================
-// bdDataChunk â€” data chunk (forward decl; methods in bdDataChunk.obj)
-// ============================================================================
-class bdDataChunk : public bdChunk {
-public:
-    bdDataChunk();
-    unsigned int serializeUnencrypted(unsigned char* data, unsigned int size);
-    bool deserialize(const unsigned char* data, unsigned int size,
-                     unsigned int* offset);
-};
+static_assert(sizeof(bdPacket) == 0x24, "bdPacket size mismatch");
 
 // ============================================================================
-// bdSAckChunk â€” selective-ack chunk (48 bytes)
-// Size: 0x30 (48 bytes) â€” verified against IDA
+// bdDataChunk - data chunk (24 bytes). Layout verified against IDA
+// (bdDataChunk.obj): m_message +0x10, m_flags +0x14, m_sequenceNumber +0x16.
+// ============================================================================
+enum bdDataFlags {
+    BD_DC_NONE = 0,
+    BD_DC_UNRELIABLE = 1,
+    BD_DC_ENC_DATA = 2,
+    BD_DC_UNENC_DATA = 4,
+};
+
+class bdDataChunk : public bdChunk {
+public:
+    uint8_t _pad0C[4];                 // +0x0C (never written)
+    bdReference<bdMessage> m_message;  // +0x10
+    uint8_t  m_flags;                  // +0x14
+    uint8_t  _pad15[1];                // +0x15
+    uint16_t m_sequenceNumber;         // +0x16
+
+    bdDataChunk();
+    bdDataChunk(const bdReference<bdMessage>& message, bdDataFlags flags);
+    virtual ~bdDataChunk();
+    void setSequenceNumber(unsigned short sequenceNumber);
+    unsigned short getSequenceNumber() const;
+    uint8_t getFlags() const;
+    bdReference<bdMessage> getMessage() const;
+    virtual unsigned int getSerializedSize();
+    unsigned int serializeUnencrypted(unsigned char* data, unsigned int size);
+    virtual unsigned int serialize(unsigned char* data, unsigned int size);
+    virtual bool deserialize(const unsigned char* data, unsigned int size,
+                             unsigned int* offset);
+    bool deserialize(const unsigned char* data, unsigned int size,
+                     unsigned int* offset, const unsigned char* unencData,
+                     unsigned int unencSize, unsigned int* unencReadOffset);
+};
+static_assert(sizeof(bdDataChunk) == 0x18, "bdDataChunk size mismatch");
+static_assert(offsetof(bdDataChunk, m_message) == 0x10, "bdDataChunk::m_message offset mismatch");
+static_assert(offsetof(bdDataChunk, m_flags) == 0x14, "bdDataChunk::m_flags offset mismatch");
+static_assert(offsetof(bdDataChunk, m_sequenceNumber) == 0x16, "bdDataChunk::m_sequenceNumber offset mismatch");
+
+// ============================================================================
+// bdSAckChunk - selective-ack chunk (40 bytes). Layout verified against IDA:
+// m_flags +0x10, m_cumulativeAck +0x14, m_gapList +0x18, m_windowCredit +0x24.
 // ============================================================================
 class bdSAckChunk : public bdChunk {
 public:
@@ -613,13 +815,15 @@ public:
         BD_SACK_NACK = 1,
     };
 
-    bdSAckFlags    m_flags;       // +0x0C
-    unsigned short m_cumulativeAck;  // +0x10
-    int            m_windowCredit;   // +0x14
+    uint8_t _pad0C[4];                 // +0x0C (never written)
+    bdSAckFlags m_flags;               // +0x10 (byte used on the wire)
+    uint16_t m_cumulativeAck;          // +0x14
+    uint8_t  _pad16[2];                // +0x16
     bdLinkedList<bdGapAckBlock> m_gapList;  // +0x18
+    int m_windowCredit;                // +0x24
 
     bdSAckChunk();
-    bdSAckChunk(int windowCredit, bdSAckFlags flags);
+    bdSAckChunk(int windowCredit, bdSAckFlags flags = BD_SACK_ACK);
     virtual ~bdSAckChunk();
     unsigned short getCumulativeAck() const;
     void setCumulativeAck(unsigned short ack);
@@ -633,9 +837,180 @@ public:
     virtual bool deserialize(const unsigned char* data, unsigned int size,
                              unsigned int* offset);
 };
-static_assert(sizeof(bdSAckChunk) == 0x24, "bdSAckChunk size mismatch");
+static_assert(sizeof(bdSAckChunk) == 0x28, "bdSAckChunk size mismatch");
+static_assert(offsetof(bdSAckChunk, m_flags) == 0x10, "bdSAckChunk::m_flags offset mismatch");
+static_assert(offsetof(bdSAckChunk, m_cumulativeAck) == 0x14, "bdSAckChunk::m_cumulativeAck offset mismatch");
+static_assert(offsetof(bdSAckChunk, m_gapList) == 0x18, "bdSAckChunk::m_gapList offset mismatch");
+static_assert(offsetof(bdSAckChunk, m_windowCredit) == 0x24, "bdSAckChunk::m_windowCredit offset mismatch");
 
 // ============================================================================
+// bdSequenceNumber - RFC1982 serial-number arithmetic (4 bytes)
+// ============================================================================
+class bdSequenceNumber {
+public:
+    bdSequenceNumber(int seqNum = -1) : m_seqNum(seqNum) {}
+    bdSequenceNumber(const bdSequenceNumber& last, unsigned int seqNumber,
+                     unsigned int bits);
+    void set(const bdSequenceNumber& last, unsigned int seqNumber,
+             unsigned int bits);
+    int getValue() const { return m_seqNum; }
+
+    bdSequenceNumber operator+(const bdSequenceNumber& other) const;
+    bdSequenceNumber& operator+=(const bdSequenceNumber& other);
+    bdSequenceNumber& operator++();
+    bdSequenceNumber operator++(int);
+    bdSequenceNumber operator-(const bdSequenceNumber& other) const;
+    bool operator>(const bdSequenceNumber& other) const;
+    bool operator<(const bdSequenceNumber& other) const;
+    bool operator<=(const bdSequenceNumber& other) const;
+    bool operator>=(const bdSequenceNumber& other) const;
+    bool operator==(const bdSequenceNumber& other) const;
+    bool operator!=(const bdSequenceNumber& other) const;
+
+protected:
+    int m_seqNum;
+};
+static_assert(sizeof(bdSequenceNumber) == 4, "bdSequenceNumber size mismatch");
+
+// ============================================================================
+// bd connection window constants (bdConnectionConfig)
+// ============================================================================
+enum {
+    BD_MAX_WINDOW_SIZE = 128,
+    BD_MAX_DATAGRAM_SIZE = 1328,             // 0x530
+    BD_DEFAULT_RECEIVE_WINDOW_CREDIT = 1500, // 0x5DC
+    BD_FAST_RETRANSMIT_THRESH = 3,
+};
+static const float BD_RTT_START_VALUE = 0.3f;
+static const float BD_UC_RTO_MAX = 2.0f;
+
+// ============================================================================
+// bdReliableSendWindow - outgoing reliable-message window (~1576 bytes).
+// Layout verified against IDA (bdReliableSendWindow.obj ctor @0x8A8CB0):
+// m_frame[128] at +0x10, credit +0x610, flight +0x614, partial +0x618,
+// ssthresh +0x61C, cwnd +0x620, m_lastSent +0x624.
+// ============================================================================
+class bdReliableSendWindow {
+public:
+    class bdMessageFrame {
+    public:
+        bdMessageFrame()
+            : m_chunk(), m_timer(), m_sendCount(0), m_missingCount(0),
+              m_gapAcked(false) {}
+        bdMessageFrame(const bdReference<bdDataChunk>& chunk);
+        ~bdMessageFrame();
+        bdMessageFrame& operator=(const bdMessageFrame& other);
+
+        bdReference<bdDataChunk> m_chunk;   // +0x00
+        bdShortTimer m_timer;               // +0x04
+        uint8_t m_sendCount;                // +0x08
+        uint8_t m_missingCount;             // +0x09
+        bool m_gapAcked;                    // +0x0A
+        uint8_t _pad0B;                     // +0x0B
+    };
+    static_assert(sizeof(bdMessageFrame) == 0x0C, "bdMessageFrame size mismatch");
+
+    enum bdCongestionWindowDecreaseReason {
+        BD_CWDR_PACKET_LOSS_DETECTED = 0,
+        BD_CWDR_RESEND_TIMER_EXPIRED = 1,
+        BD_CWDR_INACTIVE = 2,
+    };
+
+    bdReliableSendWindow();
+    ~bdReliableSendWindow();
+    void setTimeoutPeriod(float secs);
+    float getTimeoutPeriod() const;
+    bool add(const bdReference<bdDataChunk>& chunk);
+    void getDataToSend(bdPacket& packet);
+    bool handleAck(const bdReference<bdSAckChunk>& chunk, float& rtt);
+    bool isEmpty() const;
+
+protected:
+    void increaseCongestionWindow(const bdReference<bdSAckChunk>& chunk,
+                                  unsigned int bytesAcked);
+    void decreaseCongestionWindow(bdCongestionWindowDecreaseReason reason);
+
+protected:
+    bdSequenceNumber m_lastAcked;              // +0x00
+    bdSequenceNumber m_nextFree;               // +0x04
+    float m_timeoutPeriod;                     // +0x08
+    uint8_t m_retransmitCountThreshold;        // +0x0C
+    uint8_t _pad0D[3];                         // +0x0D
+    bdMessageFrame m_frame[BD_MAX_WINDOW_SIZE];     // +0x10
+    unsigned int m_remoteReceiveWindowCredit;  // +0x610
+    unsigned int m_flightSize;                 // +0x614
+    unsigned int m_partialBytesAcked;          // +0x618
+    unsigned int m_slowStartThresh;            // +0x61C
+    unsigned int m_congestionWindow;           // +0x620
+    bdShortTimer m_lastSent;                   // +0x624
+};
+static_assert(sizeof(bdReliableSendWindow) == 0x628, "bdReliableSendWindow size mismatch");
+
+// ============================================================================
+// bdReliableReceiveWindow - incoming reliable-message window (540 bytes).
+// Layout verified against IDA (ctor @0x8A8230): m_frame[128] at +0x0C,
+// m_shouldAck +0x20C, credit +0x210, used +0x214, m_sack +0x218.
+// ============================================================================
+class bdReliableReceiveWindow {
+public:
+    bdReliableReceiveWindow();
+    ~bdReliableReceiveWindow();
+    bool add(const bdReference<bdDataChunk>& chunk);
+    void getDataToSend(bdPacket& packet);
+    bdReference<bdDataChunk> getNextToRead();
+
+protected:
+    void calculateAck();
+
+protected:
+    bdSequenceNumber m_newest;                 // +0x00
+    bdSequenceNumber m_lastCumulative;         // +0x04
+    bdSequenceNumber m_lastDispatched;         // +0x08
+    bdReference<bdDataChunk> m_frame[BD_MAX_WINDOW_SIZE];  // +0x0C
+    bool m_shouldAck;                          // +0x20C
+    uint8_t _pad20D[3];                        // +0x20D
+    unsigned int m_recvWindowCredit;           // +0x210
+    unsigned int m_recvWindowUsedCredit;       // +0x214
+    bdReference<bdSAckChunk> m_sack;           // +0x218
+};
+static_assert(sizeof(bdReliableReceiveWindow) == 0x21C, "bdReliableReceiveWindow size mismatch");
+
+// ============================================================================
+// bdUnreliableSendWindow - outgoing unreliable queue (20 bytes).
+// vtable +0, m_seqNumber +0x04 (16-bit), m_sendQueue +0x08. (ctor @0x8AA0A0)
+// ============================================================================
+class bdUnreliableSendWindow {
+public:
+    bdUnreliableSendWindow();
+    virtual ~bdUnreliableSendWindow();
+    void add(const bdReference<bdDataChunk>& chunk);
+    void getDataToSend(bdPacket& packet);
+    void reset();
+
+protected:
+    uint16_t m_seqNumber;                      // +0x04
+    uint8_t _pad06[2];                         // +0x06
+    bdQueue<bdReference<bdDataChunk> > m_sendQueue;  // +0x08
+};
+static_assert(sizeof(bdUnreliableSendWindow) == 0x14, "bdUnreliableSendWindow size mismatch");
+
+// ============================================================================
+// bdUnreliableReceiveWindow - incoming unreliable queue (20 bytes).
+// vtable +0, m_seqNumber +0x04, m_recvQueue +0x08. (ctor @0x8AAD30)
+// ============================================================================
+class bdUnreliableReceiveWindow {
+public:
+    bdUnreliableReceiveWindow();
+    virtual ~bdUnreliableReceiveWindow();
+    bool add(const bdReference<bdDataChunk>& chunk);
+    bdReference<bdDataChunk> getNextToRead();
+    void reset();
+
+protected:
+    bdSequenceNumber m_seqNumber;              // +0x04
+    bdQueue<bdReference<bdDataChunk> > m_recvQueue;  // +0x08
+};
+static_assert(sizeof(bdUnreliableReceiveWindow) == 0x14, "bdUnreliableReceiveWindow size mismatch");
 // bdBytePacker â€” little-endian byte packing helpers
 // ============================================================================
 namespace bdBytePacker {

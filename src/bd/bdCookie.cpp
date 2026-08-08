@@ -29,11 +29,6 @@ struct bdTrulyRandomImpl {
     void getRandomUByte8(unsigned char* out, int count);
 };
 
-struct bdMessageProxy {
-    bdMessageProxy(const char* file, const char* func, unsigned int line, const char* flags);
-    void log(const char* channel, const char* format, ...) const;
-};
-
 template <typename T>
 struct bdSingleton {
     static T* getInstance();

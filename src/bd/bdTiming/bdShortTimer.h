@@ -1,27 +1,29 @@
 // ============================================================================
-// bdShortTimer — short-duration stopwatch (COD3 release)
+// bdShortTimer - short-duration stopwatch (COD3 release)
 // ea: 0x9EC390 (start), 0x9EC3B0 (reset), 0x9EC3C0 (getElapsedTimeInSeconds)
 // ============================================================================
 
 #pragma once
 
 #include <math.h>
+#include <stddef.h>
 
-// Forward — defined in bdPlatform.cpp
+// COD3 bdShortTimer is a 4-byte timer: m_start stores only the low dword of
+// getHiResTimeStamp() / 100 (start writes [esi], reset clears a dword, and
+// getElapsedTimeInSeconds zero-extends m_start before the 64-bit compare).
+// bdPlatformTiming::getElapsedTime returns float (SAM) in this binary.
 struct bdPlatformTiming {
     static unsigned __int64 getHiResTimeStamp();
-    static double getElapsedTime(unsigned __int64 t1, unsigned __int64 t2);
+    static float getElapsedTime(unsigned __int64 t1, unsigned __int64 t2);
 };
 
-// COD3: m_start stores getHiResTimeStamp() / 100 (ea: 0x9EC3A3)
-// getElapsedTimeInSeconds: fabs(getElapsedTime(m_start, getHiResTimeStamp()/100) * 100.0)
 struct bdShortTimer {
-    unsigned __int64 m_start;
+    unsigned int m_start;   // +0x00
 
     bdShortTimer() : m_start(0) {}
 
     void start() {
-        m_start = bdPlatformTiming::getHiResTimeStamp() / 100;  // ea: 0x9EC390
+        m_start = (unsigned int)(bdPlatformTiming::getHiResTimeStamp() / 100);
     }
 
     void reset() {
@@ -29,9 +31,9 @@ struct bdShortTimer {
     }
 
     float getElapsedTimeInSeconds() const {
-        // ea: 0x9EC3C0 — divides TS by 100, gets elapsed, multiplies by 100
         unsigned __int64 now100 = bdPlatformTiming::getHiResTimeStamp() / 100;
-        double elapsed = bdPlatformTiming::getElapsedTime(m_start, now100) * 100.0;
+        float elapsed = bdPlatformTiming::getElapsedTime(m_start, now100) * 100.0f;
         return (float)fabs(elapsed);
     }
 };
+static_assert(sizeof(bdShortTimer) == 4, "bdShortTimer size mismatch");

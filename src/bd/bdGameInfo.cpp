@@ -16,13 +16,6 @@ namespace bdMemory {
 void* allocate(unsigned int size);
 }
 
-struct bdMessageProxy {
-    bdMessageProxy(const char* file, const char* func, unsigned int line, const char* flags);
-    void log(const char* channel, const char* format, ...) const;
-};
-
-extern bool g_assertFalse;
-
 // ============================================================================
 // bdGameInfo::getTitleID â€” ea: 0x8AE8D0
 // ============================================================================
