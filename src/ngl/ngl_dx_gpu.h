@@ -132,6 +132,21 @@ struct nglMesh {
 };
 static_assert(sizeof(nglMesh) == 0x40, "nglMesh size mismatch");
 
+// ============================================================================
+// nglMeshParams - per-instance mesh render parameters (32 bytes, IDA type).
+// ============================================================================
+class nglMeshParams {
+public:
+    unsigned int  Flags;    // +0x00
+    unsigned int  NBones;   // +0x04
+    math::Mat43*  Bones;    // +0x08
+    unsigned int  LOD;      // +0x0C
+    union {
+        __m128 v;           // +0x10
+    } Scale;                // +0x10 (Dir3-ish scale vector)
+};
+static_assert(sizeof(nglMeshParams) == 0x20, "nglMeshParams size mismatch");
+
 // Mesh flag bits (from nglCreateMesh / nglCreateScratchMesh disassembly).
 enum {
     NGL_MESH_SCRATCH = 0x40000,      // create from the scratch list

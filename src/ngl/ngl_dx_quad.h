@@ -65,14 +65,8 @@ struct nglDxTexCacheClass {
 };
 extern nglDxTexCacheClass nglDxTexCache;
 
-// nglSyncDebug (data, owned by ngl_xboxr)
-struct nglSyncDebugStruct {
-    int DisableQuads;  // +0x00
-    int DumpSceneFile; // +0x04
-    int DumpFrameLog;  // +0x08
-    int DumpTextures;  // +0x0C
-};
-extern nglSyncDebugStruct nglSyncDebug;
+// nglSyncDebug (data, owned by ngl_debug.o; layout in nglDebug.h)
+#include "ngl/nglDebug.h"
 
 // ============================================================================
 // Supporting types

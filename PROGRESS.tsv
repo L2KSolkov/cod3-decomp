@@ -149,7 +149,7 @@ aeps_xboxr:apsActionList.o	aeps_xboxr	apsActionList.o	engine	7	PORTED	apsActionL
 nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
-ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	TODO	
+ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	PORTED	ngl_scenedump.cpp: scene dump helpers; nglDebug.h (17-byte nglDebugStruct); nglMeshParams type added to ngl_dx_gpu.h
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	PORTED	ngl_morph.cpp: morph dir + blend/unique/process; nglMorph.h (morph types); directory moved from ngl_internal.cpp
 nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	PORTED	[phys_xboxr] rigid_body.cpp: body setup + forces (7 funcs)
@@ -250,7 +250,7 @@ aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	PORTED
 aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRenderer.cpp/.h (renderer base + fixup, 3 funcs)
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	Phase 2: nvl.cpp (video codec stubs)
-ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	PORTED	
+ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	PORTED	ngl_dx_scenedump.cpp: nglHostOpen/Printf/Close (host file I/O)
 bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation

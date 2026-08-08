@@ -7,6 +7,7 @@
 #include "ngl_dx_gpu.h"
 #include "ngl_dx_quad.h"
 #include "ngl_gpu_debug.h"
+#include "nglDebug.h"
 
 #include <string.h>
 
@@ -19,12 +20,7 @@ extern void nglRenderDebug(void);
 extern void nglListSendBatch(void* pBatch);
 extern void tlFatal(const char* Format, ...);
 
-struct nglDebugStruct {
-    int DumpFrameLog;
-    int DumpSceneFile;
-    int DumpTextures;
-};
-extern nglDebugStruct nglDebug;
+extern nglDebugStruct nglDebug;   // ngl_debug.o (data)
 
 extern nglScene* nglRootBuildScene;
 int nglSceneRecursion = 0;
