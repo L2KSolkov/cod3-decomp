@@ -2803,6 +2803,15 @@ void entity_set_origin(Broc::entity ent, const Broc::vector& v) {
 Broc::string* entity_get_targetname(Broc::string* result, Broc::entity ent) {
     return Broc::gBrocAPI.m_entity_get_targetname(result, ent.___u0);
 }
+Broc::string* entity_get_model(Broc::string* result, Broc::entity ent) {
+    return Broc::gBrocAPI.m_entity_get_model(result, ent.___u0);
+}
+Broc::vector* entity_get_rotate(Broc::vector* result, Broc::entity ent) {
+    return Broc::gBrocAPI.m_entity_get_rotate(result, ent.___u0);
+}
+int entity_get_takedamage(Broc::entity ent) {
+    return Broc::gBrocAPI.m_entity_get_takedamage(ent.___u0);
+}
 
 // line_sound_emitters hash_map helpers (opaque until the runtime is ported).
 void line_sound_set(HashStr key, Broc::entity e) {
@@ -2863,6 +2872,31 @@ void main(Broc::entity self) {
 // Definitions (stubs until those scripts are ported) live at the bottom.
 // ============================================================================
 namespace _mp_tankdrive { void main(); }
+namespace _mp_tankdrive {
+void init_all_tanks();
+void init_tank(Broc::entity self);
+void fire(Broc::entity self);
+void BlowUpIfUnderWorld(Broc::entity self);
+void BlowUpIfFlipped(Broc::entity self);
+Broc::bint* VehicleRespawnClear(Broc::bint* result, Broc::entity self,
+                                Broc::vector selfPos);
+void HostSafeVehicleRespawn(Broc::entity self);
+void death(Broc::entity self, Broc::entity attacker);
+void damage(Broc::entity self, Broc::bint damage, Broc::entity attacker,
+            Broc::bint mod);
+void VehicleDamagedEffects(Broc::entity self);
+void inactivity_blowup(Broc::entity self);
+void local_player_hit_effects(Broc::entity self, Broc::bint damage,
+                              Broc::bint mod);
+void bigsplash(Broc::entity self);
+void fireydeath(Broc::entity self, Broc::entity tank);
+void deleteonextinguish(Broc::entity self);
+void setup_effects(Broc::entity self);
+void* BlowUpIfUnderWorld__functor(Broc::entity self);
+void* BlowUpIfFlipped__functor(Broc::entity self);
+void* VehicleDamagedEffects__functor(Broc::entity self);
+void* deleteonextinguish__functor(Broc::entity self);
+}
 namespace _mp_nano { void main(); }
 namespace _mp_nano {
 void WindBlowing(Broc::entity self);
@@ -5601,7 +5635,565 @@ void StopFollowing(Broc::entity self, Broc::bbool blackNow) {
 // ============================================================================
 // Sibling gametype stubs (real implementations arrive with each script port).
 // ============================================================================
-namespace _mp_tankdrive { void main() {} }
+// ============================================================================
+// _mp_tankdrive - vehicle/tank behavior.
+// ============================================================================
+namespace _mp_tankdrive {
+
+// main - ea: 0x970140
+void main() {
+    init_all_tanks();
+}
+
+// init_all_tanks - ea: 0x970160
+void init_all_tanks() {
+    Broc::dyn_array<Broc::entity> vehicles;
+    Broc::string val("script_vehicle");
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&val, key.mVal, &vehicles, 0);
+    val.~string();
+    Broc::SetMaxVehicles(Broc::size(vehicles));
+    Broc::bint i(0);
+    while ((int)i < Broc::size(vehicles)) {
+        init_tank(vehicles[(unsigned int)(int)i]);
+        i = (int)i + 1;
+    }
+    vehicles.~dyn_array();
+}
+
+// init_tank - ea: 0x9702F0
+void init_tank(Broc::entity self) {
+    Broc::string model;
+    mp_util_wad::entity_get_model(&model, self);
+    *mp_util_wad::GetEE_respawnmodel(self) = model;
+    model.~string();
+    Broc::string deathmodel;
+    mp_util_wad::entity_get_model(&deathmodel, self);
+    Broc::bint length(deathmodel.length());
+    if ((int)length > 3) {
+        Broc::string lastthree =
+            deathmodel.substr((unsigned int)((int)length - 3), 3);
+        if (lastthree == "_mp") {
+            Broc::string trimmed =
+                deathmodel.substr(0, (unsigned int)((int)length - 3));
+            deathmodel = trimmed;
+            trimmed.~string();
+        }
+        lastthree.~string();
+    }
+    Broc::string dm = deathmodel + "_d1";
+    *mp_util_wad::GetEE_deathmodel(self) = dm;
+    dm.~string();
+    deathmodel.~string();
+    *mp_util_wad::GetEE_inDeath(self) = 0;
+    Broc::bbool hasDmg;
+    mp_util_wad::IsEEDefined_damage_effect(&hasDmg, self);
+    if ((bool)hasDmg) {
+        Broc::EffectEventStopEmitting(
+            (int)*mp_util_wad::GetEE_damage_effect(self));
+        *mp_util_wad::GetEE_damage_effect(self) = 0;
+    }
+    void* underworld = BlowUpIfUnderWorld__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tankdrive.bro",
+                        __LINE__, "BlowUpIfUnderWorld", underworld);
+    void* flipped = BlowUpIfFlipped__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tankdrive.bro",
+                        __LINE__, "BlowUpIfFlipped", flipped);
+    void* dmgFx = VehicleDamagedEffects__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tankdrive.bro",
+                        __LINE__, "VehicleDamagedEffects", dmgFx);
+    HashStr fireHash;
+    Broc::string_hash(&fireHash, "_mp_tankdrive::fire");
+    HashStr fireLabel;
+    fireLabel.mVal = 0xCFD2C98B;
+    Broc::AddEventHandler(&self, fireLabel.mVal, fireHash.mVal);
+    HashStr deathHash;
+    Broc::string_hash(&deathHash, "_mp_tankdrive::death");
+    HashStr deathLabel;
+    deathLabel.mVal = 0x74AA0A6u;
+    Broc::AddEventHandler(&self, deathLabel.mVal, deathHash.mVal);
+    HashStr damageHash;
+    Broc::string_hash(&damageHash, "_mp_tankdrive::damage");
+    HashStr damageLabel;
+    damageLabel.mVal = 0xF05C975F;
+    Broc::AddEventHandler(&self, damageLabel.mVal, damageHash.mVal);
+    HashStr inactHash;
+    Broc::string_hash(&inactHash, "_mp_tankdrive::inactivity_blowup");
+    HashStr inactLabel;
+    inactLabel.mVal = 0x92219DE6;
+    Broc::AddEventHandler(&self, inactLabel.mVal, inactHash.mVal);
+    setup_effects(self);
+}
+
+// fire - ea: 0x970A90
+void fire(Broc::entity self) {
+    Broc::bint health;
+    mp_util_wad::entity_get_health(&health, self);
+    if ((int)health > 0)
+        Broc::FireTurret(&self);
+}
+
+// BlowUpIfUnderWorld - ea: 0x970B10
+void BlowUpIfUnderWorld(Broc::entity self) {
+    Broc::vector selfPos;
+    for (;;) {
+        Broc::wait(1.0f);
+        if (Broc::IsLocalHost() && (bool)mp_util_wad::pLevel->roundStarted) {
+            Broc::bint health;
+            mp_util_wad::entity_get_health(&health, self);
+            if ((int)health > 0) {
+                Broc::vector pos;
+                Broc::GetOrigin(&pos, &self);
+                selfPos = pos;
+                if (selfPos.z < -1000.0f) {
+                    Broc::entity lvl;
+                    lvl.___u0 = mp_util_wad::pLevel != NULL;
+                    Broc::DoDamage(&lvl, 10000.0f, &selfPos, HITLOC_NONE);
+                }
+            }
+        }
+    }
+}
+
+// BlowUpIfFlipped - ea: 0x970CC0
+void BlowUpIfFlipped(Broc::entity self) {
+    Broc::vector selfPos;
+    for (;;) {
+        do {
+            HashStr label;
+            label.mVal = 0xAF4CBA04;
+            Broc::waittill(self, label);
+        } while (!(bool)mp_util_wad::pLevel->roundStarted);
+        Broc::bint health;
+        mp_util_wad::entity_get_health(&health, self);
+        if ((int)health > 0) {
+            if (Broc::IsVehicleFlipped(&self)) {
+                Broc::string deathfire = *mp_util_wad::GetEE_deathfire(self);
+                Broc::bint firefxid((int)Broc::EffectEventPlay(&self, &deathfire));
+                deathfire.~string();
+                Broc::wait(10.0f);
+                Broc::EffectEventStopEmitting((int)firefxid);
+                if (Broc::IsLocalHost()) {
+                    Broc::vector pos;
+                    Broc::GetOrigin(&pos, &self);
+                    selfPos = pos;
+                    Broc::bint health2;
+                    mp_util_wad::entity_get_health(&health2, self);
+                    Broc::DoDamage(&self, (float)((int)health2 + 100),
+                                   &selfPos, HITLOC_NONE);
+                }
+            }
+        }
+    }
+}
+
+// VehicleRespawnClear - ea: 0x970EB0
+Broc::bint* VehicleRespawnClear(Broc::bint* result, Broc::entity self,
+                                Broc::vector selfPos) {
+    Broc::dyn_array<Broc::entity> vehicles;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::vector pos;
+    Broc::string val("script_vehicle");
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&val, key.mVal, &vehicles, 0);
+    val.~string();
+    Broc::bint i(0);
+    while ((int)i < Broc::size(vehicles)) {
+        Broc::entity v = vehicles[(unsigned int)(int)i];
+        if (!(v == self) &&
+            mp_util_wad::entity_get_takedamage(v) != 0) {
+            Broc::vector origin;
+            Broc::GetOrigin(&origin, &v);
+            pos.x = origin.x;
+            pos.y = origin.y;
+            pos.z = selfPos.z;
+            if (Broc::Distance(&pos, &selfPos) < 280.0f) {
+                result->mVal = 0;
+                players.~dyn_array();
+                vehicles.~dyn_array();
+                return result;
+            }
+        }
+        i = (int)i + 1;
+    }
+    Broc::string val2("player");
+    HashStr key2;
+    key2.mVal = 0xF756C677;
+    Broc::GetEntArray(&val2, key2.mVal, &players, 0);
+    val2.~string();
+    i = 0;
+    while ((int)i < Broc::size(players)) {
+        Broc::vector origin;
+        Broc::GetOrigin(&origin, &players[(unsigned int)(int)i]);
+        pos.x = origin.x;
+        pos.y = origin.y;
+        pos.z = selfPos.z;
+        if (Broc::Distance(&pos, &selfPos) < 210.0f) {
+            result->mVal = 0;
+            players.~dyn_array();
+            vehicles.~dyn_array();
+            return result;
+        }
+        i = (int)i + 1;
+    }
+    result->mVal = 1;
+    players.~dyn_array();
+    vehicles.~dyn_array();
+    return result;
+}
+
+// HostSafeVehicleRespawn - ea: 0x9712E0
+void HostSafeVehicleRespawn(Broc::entity self) {
+    Broc::vector respawn_origin;
+    for (;;) {
+        Broc::vector rotate;
+        mp_util_wad::entity_get_rotate(&rotate, self);
+        Broc::bint clear;
+        VehicleRespawnClear(&clear, self, rotate);
+        if ((int)clear != 0)
+            break;
+        Broc::wait(2.0f);
+    }
+    Broc::Code_RespawnVehicle(&self);
+    Broc::SetTakeDamage(&self, 1);
+    Broc::Code_BroadcastVehicleRespawn(self);
+}
+
+// death - ea: 0x971450
+void death(Broc::entity self, Broc::entity attacker) {
+    if ((int)*mp_util_wad::GetEE_inDeath(self) == 0) {
+        *mp_util_wad::GetEE_inDeath(self) = 1;
+        Broc::bbool hasDmg;
+        mp_util_wad::IsEEDefined_damage_effect(&hasDmg, self);
+        if ((bool)hasDmg) {
+            Broc::EffectEventStopEmitting(
+                (int)*mp_util_wad::GetEE_damage_effect(self));
+            *mp_util_wad::GetEE_damage_effect(self) = 0;
+        }
+        Broc::string deathmodel = *mp_util_wad::GetEE_deathmodel(self);
+        Broc::SetModel(&self, &deathmodel, 0);
+        deathmodel.~string();
+        Broc::string deathfx = *mp_util_wad::GetEE_deathfx(self);
+        Broc::bint deathfxid((int)Broc::EffectEventPlay(&self, &deathfx));
+        deathfx.~string();
+        Broc::string deathfire = *mp_util_wad::GetEE_deathfire(self);
+        Broc::bint firefxid((int)Broc::EffectEventPlay(&self, &deathfire));
+        deathfire.~string();
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin, self);
+        Broc::RadiusDamageFromEnt(&attacker, &origin, 512.0f, 100.0f, 1.0f,
+                                  27);
+        Broc::wait(10.0f);
+        Broc::EffectEventStopEmitting((int)firefxid);
+        Broc::string deathfx2 = *mp_util_wad::GetEE_deathfx(self);
+        Broc::EffectEventPlay(&self, &deathfx2);
+        deathfx2.~string();
+        Broc::vector origin2;
+        mp_util_wad::entity_get_origin(&origin2, self);
+        Broc::RadiusDamage(&origin2, 512.0f, 100.0f, 1.0f, 27);
+        Broc::wait(0.2f);
+        Broc::SetTakeDamage(&self, 0);
+        Broc::wait(1.0f);
+        Broc::string respawnmodel = *mp_util_wad::GetEE_respawnmodel(self);
+        Broc::SetModel(&self, &respawnmodel, 0);
+        respawnmodel.~string();
+        Broc::wait(20.0f);
+        if (Broc::IsLocalHost()) {
+            HostSafeVehicleRespawn(self);
+        } else {
+            for (;;) {
+                Broc::bint health;
+                mp_util_wad::entity_get_health(&health, self);
+                if ((int)health > 0)
+                    break;
+                if (Broc::IsLocalHost()) {
+                    HostSafeVehicleRespawn(self);
+                    break;
+                }
+                Broc::wait(1.0f);
+            }
+        }
+        *mp_util_wad::GetEE_inDeath(self) = 0;
+    }
+}
+
+// damage - ea: 0x971800
+void damage(Broc::entity self, Broc::bint damage, Broc::entity attacker,
+            Broc::bint mod) {
+    Broc::bint health;
+    mp_util_wad::entity_get_health(&health, self);
+    if ((int)health + (int)damage > 0) {
+        local_player_hit_effects(self, damage, mod);
+    }
+    (void)attacker;
+}
+
+// VehicleDamagedEffects - ea: 0x971890
+void VehicleDamagedEffects(Broc::entity self) {
+    Broc::bint maxh;
+    mp_util_wad::entity_get_maxhealth(&maxh, self);
+    Broc::bfloat health_50((int)maxh * 0.5f);
+    Broc::bint maxh2;
+    mp_util_wad::entity_get_maxhealth(&maxh2, self);
+    Broc::bfloat health_25((int)maxh2 * 0.25f);
+    Broc::bint maxh3;
+    mp_util_wad::entity_get_maxhealth(&maxh3, self);
+    Broc::bfloat health_10((int)maxh3 * 0.1f);
+    Broc::bfloat health_inactivity(1.1f);
+    Broc::bint old_health;
+    mp_util_wad::entity_get_health(&old_health, self);
+    Broc::bint damage(0);
+    for (;;) {
+        while (1) {
+            Broc::bint health;
+            mp_util_wad::entity_get_health(&health, self);
+            if ((int)health >= 0)
+                break;
+            Broc::wait(1.0f);
+        }
+        _mp_common::waitframe();
+        Broc::bint health;
+        mp_util_wad::entity_get_health(&health, self);
+        if ((float)(int)health >= (float)health_50) {
+            Broc::bbool hasDmg;
+            mp_util_wad::IsEEDefined_damage_effect(&hasDmg, self);
+            if ((bool)hasDmg) {
+                Broc::EffectEventStopEmitting(
+                    (int)*mp_util_wad::GetEE_damage_effect(self));
+                *mp_util_wad::GetEE_damage_effect(self) = 0;
+            }
+        }
+        if ((int)health >= (int)old_health)
+            continue;
+        damage = (int)old_health - (int)health;
+        if ((int)health <= 0)
+            break;
+        Broc::bbool need_to_change(false);
+        Broc::string effect;
+        effect = "";
+        bool crossed = false;
+        if ((float)health < (float)health_inactivity &&
+            (float)(int)old_health >= (float)health_inactivity) {
+            need_to_change = true;
+            effect = *mp_util_wad::GetEE_deathfire(self);
+        } else if ((float)health < (float)health_10 &&
+                   (float)(int)old_health >= (float)health_10) {
+            need_to_change = true;
+            effect = *mp_util_wad::GetEE_damagecritical(self);
+        } else if ((float)health < (float)health_25 &&
+                   (float)(int)old_health >= (float)health_25) {
+            need_to_change = true;
+            effect = *mp_util_wad::GetEE_damageheavy(self);
+        } else if ((float)health < (float)health_50 &&
+                   (float)(int)old_health >= (float)health_50) {
+            need_to_change = true;
+            effect = *mp_util_wad::GetEE_damagelight(self);
+        }
+        (void)crossed;
+        if ((bool)need_to_change) {
+            Broc::bbool hasDmg;
+            mp_util_wad::IsEEDefined_damage_effect(&hasDmg, self);
+            if ((bool)hasDmg) {
+                Broc::EffectEventStopEmitting(
+                    (int)*mp_util_wad::GetEE_damage_effect(self));
+                *mp_util_wad::GetEE_damage_effect(self) = 0;
+            }
+            *mp_util_wad::GetEE_damage_effect(self) =
+                Broc::EffectEventPlay(&self, &effect);
+        }
+        old_health = (int)health;
+        effect.~string();
+    }
+    (void)damage;
+}
+
+// inactivity_blowup - ea: 0x972020
+void inactivity_blowup(Broc::entity self) {
+    Broc::wait(10.0f);
+    Broc::vector origin;
+    mp_util_wad::entity_get_origin(&origin, self);
+    Broc::bint health;
+    mp_util_wad::entity_get_health(&health, self);
+    Broc::DoDamage(&self, (float)((int)health + 100), &origin, HITLOC_NONE);
+}
+
+// local_player_hit_effects - ea: 0x9720A0
+void local_player_hit_effects(Broc::entity self, Broc::bint damage,
+                              Broc::bint mod) {
+    Broc::bfloat local_damage_scalar((float)(int)damage / 500.0f);
+    if ((float)local_damage_scalar > 1.0f)
+        local_damage_scalar = 1.0f;
+    static Broc::bfloat sTankDamageMin(0.85f);
+    static Broc::bfloat sTankDamageMax(1.25f);
+    static Broc::bfloat sTankDamageLength(0.7f);
+    static Broc::bfloat sTankDamageLowRumbleLength(1.0f);
+    static Broc::bfloat sTankDamageHighRumbleLength(0.5f);
+    Broc::bint i(0);
+    while ((int)i < 3) {
+        Broc::entity occupant;
+        Broc::Code_GetPlayerInSeat(&occupant, self, (int)i);
+        if (Broc::IsDefined(occupant)) {
+            if (Broc::Code_IsLocalPlayer(occupant)) {
+                int player_index = Broc::GetPlayerIndex(occupant);
+                Broc::string name("IMPACT_PLAYER_TANK_HIT");
+                Broc::SoundPlay(name, 1.0f);
+                name.~string();
+                int m = (int)mod;
+                if (m == 3 || m == 4 || m == 7 || m == 8 || m == 9 ||
+                    m == 10 || m == 5 || m == 6 || m == 17 || m == 18 ||
+                    m == 27) {
+                    Broc::vector source;
+                    mp_util_wad::entity_get_origin(&source, occupant);
+                    float fMax = Broc::RandomFloatRange(
+                        (float)sTankDamageMin, (float)sTankDamageMax);
+                    Broc::Earthquake(fMax, (float)sTankDamageLength, &source,
+                                     1050.0f, player_index);
+                }
+                Broc::string low_rumble("zzzzzzzkkkbb");
+                Broc::string high_rumble("zzzzzzzzzzzz");
+                Broc::Rumble(&low_rumble, (float)sTankDamageLowRumbleLength,
+                             high_rumble, (float)sTankDamageHighRumbleLength,
+                             player_index);
+                high_rumble.~string();
+                low_rumble.~string();
+            }
+        }
+        i = (int)i + 1;
+    }
+}
+
+// bigsplash - ea: 0x9726C0
+void bigsplash(Broc::entity self) {
+    HashStr e1;
+    e1.mVal = 0x74AA0A6u;
+    Broc::endon(self, e1);
+    *mp_util_wad::GetEE_bigsplashed(self) = 1;
+    HashStr w;
+    w.mVal = 0x12305F9Cu;
+    Broc::waittill(self, w);
+    *mp_util_wad::GetEE_bigsplashed(self) = 0;
+}
+
+// fireydeath - ea: 0x972780
+void fireydeath(Broc::entity self, Broc::entity tank) {
+    HashStr start;
+    start.mVal = 0x92082334;
+    Broc::waittill(tank, start);
+    HashStr ext;
+    ext.mVal = 0x6E9DD6CEu;
+    Broc::endon(tank, ext);
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::endon(lvl, ext);
+    Broc::string fireextinguish("fireextinguish");
+    Broc::string target;
+    mp_util_wad::entity_get_targetname(&target, tank);
+    Broc::string combined = fireextinguish + target;
+    Broc::endon(lvl, Broc::string_hash(combined.c_str()));
+    combined.~string();
+    target.~string();
+    fireextinguish.~string();
+    Broc::string inClassname("script_origin");
+    Broc::vector origin;
+    mp_util_wad::entity_get_origin(&origin, tank);
+    Broc::vector up(0.0f, 0.0f, 32.0f);
+    Broc::vector spawnPos = origin + up;
+    Broc::entity flameemitter;
+    Broc::Spawn(&flameemitter, &inClassname, &spawnPos, 0);
+    inClassname.~string();
+    void* ftor = deleteonextinguish__functor(flameemitter);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tankdrive.bro",
+                        __LINE__, "deleteonextinguish", ftor);
+    for (;;)
+        Broc::wait(Broc::RandomFloat(0.15f) + 0.1f);
+    (void)self;
+}
+
+// deleteonextinguish - ea: 0x972B90
+void deleteonextinguish(Broc::entity self) {
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr ext;
+    ext.mVal = 0x6E9DD6CEu;
+    Broc::waittill(lvl, ext);
+    Broc::wait(0.05f);
+    Broc::Delete(&self);
+}
+
+// setup_effects - ea: 0x972C20
+void setup_effects(Broc::entity self) {
+    Broc::string vt = *mp_util_wad::GetEE_vehicletype(self);
+    const char* deathfx = NULL;
+    const char* deathfire = NULL;
+    const char* damagelight = NULL;
+    const char* damageheavy = NULL;
+    const char* damagecritical = NULL;
+    if (stricmp(vt.c_str(), "mp_shermantank") == 0) {
+        deathfx = "vexplode_sherman";
+        deathfire = "vfire_sherman";
+        damagelight = "vdamage_sherman_50";
+        damageheavy = "vdamage_sherman_25";
+        damagecritical = "vdamage_sherman_10";
+    } else if (stricmp(vt.c_str(), "mp_panzeriv") == 0) {
+        deathfx = "vexplode_panzeriv";
+        deathfire = "vfire_panzeriv";
+        damagelight = "vdamage_panzeriv_50";
+        damageheavy = "vdamage_panzeriv_25";
+        damagecritical = "vdamage_panzeriv_10";
+    } else if (stricmp(vt.c_str(), "mp_wc51") == 0) {
+        deathfx = "vexplode_wc51";
+        deathfire = "vfire_wc51";
+        damagelight = "vdamage_wc51_50";
+        damageheavy = "vdamage_wc51_25";
+        damagecritical = "vdamage_wc51_10";
+    } else if (stricmp(vt.c_str(), "mp_horch") == 0) {
+        deathfx = "vexplode_horsch";
+        deathfire = "vfire_horsch";
+        damagelight = "vdamage_horsch_50";
+        damageheavy = "vdamage_horsch_25";
+        damagecritical = "vdamage_horsch_10";
+    } else if (stricmp(vt.c_str(), "mp_motorcycle_bmw") == 0) {
+        deathfx = "vexplode_motorcycle";
+        deathfire = "vfire_motorcycle";
+        damagelight = "vdamage_bmw_50";
+        damageheavy = "vdamage_bmw_25";
+        damagecritical = "vdamage_bmw_10";
+    } else if (stricmp(vt.c_str(), "mp_motorcycle_harley") == 0) {
+        deathfx = "vexplode_motorcycle";
+        deathfire = "vfire_motorcycle";
+        damagelight = "vdamage_harley_50";
+        damageheavy = "vdamage_harley_25";
+        damagecritical = "vdamage_harley_10";
+    }
+    if (deathfx != NULL) {
+        *mp_util_wad::GetEE_deathfx(self) = deathfx;
+        *mp_util_wad::GetEE_deathfire(self) = deathfire;
+        *mp_util_wad::GetEE_damagelight(self) = damagelight;
+        *mp_util_wad::GetEE_damageheavy(self) = damageheavy;
+        *mp_util_wad::GetEE_damagecritical(self) = damagecritical;
+    }
+    vt.~string();
+}
+
+void* BlowUpIfUnderWorld__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+void* BlowUpIfFlipped__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+void* VehicleDamagedEffects__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+void* deleteonextinguish__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+}
 namespace _mp_nano {
 void main() {
     Broc::EnableNanoForces(true);

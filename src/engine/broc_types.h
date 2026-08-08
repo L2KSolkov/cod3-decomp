@@ -599,7 +599,9 @@ struct BrocAPI {
     char _padBrocExports[0xF1C - (0xBE8 + 0x1C8)];        // +0xDB0
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
     void (*m_entity_set_origin)(unsigned int, Broc::vector);  // +0xF20
-    char _padF24[0xF4C - 0xF24];                          // +0xF24
+    Broc::string* (*m_entity_get_model)(Broc::string*, unsigned int);  // +0xF24
+    void (*m_entity_set_model)(unsigned int, Broc::string);  // +0xF28
+    char _padF2C[0xF4C - 0xF2C];                          // +0xF2C
     Broc::string* (*m_entity_get_target)(Broc::string*, unsigned int);  // +0xF4C
     void (*m_entity_set_target)(unsigned int, Broc::string);  // +0xF50
     Broc::string* (*m_entity_get_targetname)(Broc::string*, unsigned int);  // +0xF54
@@ -610,10 +612,16 @@ struct BrocAPI {
     char _padF9C[0xFA4 - 0xF9C];                          // +0xF9C
     Broc::vector* (*m_entity_get_angles)(Broc::vector*, unsigned int);  // +0xFA4
     void (*m_entity_set_angles)(unsigned int, Broc::vector);  // +0xFA8
-    char _padFAC[0x1034 - 0xFAC];                         // +0xFAC
+    char _padFAC[0xFB4 - 0xFAC];                          // +0xFAC
+    Broc::vector* (*m_entity_get_rotate)(Broc::vector*, unsigned int);  // +0xFB4
+    void (*m_entity_set_rotate)(unsigned int, Broc::vector);  // +0xFB8
+    char _padFBC[0x1034 - 0xFBC];                         // +0xFBC
     int (*m_entity_get_maxhealth)(unsigned int);          // +0x1034
     void (*m_entity_set_maxhealth)(unsigned int, int);    // +0x1038
-    char _pad103C[0x1224 - 0x103C];                       // +0x103C
+    char _pad103C[0x1054 - 0x103C];                       // +0x103C
+    int (*m_entity_get_takedamage)(unsigned int);         // +0x1054
+    void (*m_entity_set_takedamage)(unsigned int, int);   // +0x1058
+    char _pad105C[0x1224 - 0x105C];                       // +0x105C
     Broc::string* (*m_entity_get_sentient_team)(Broc::string*, unsigned int);  // +0x1224
     void (*m_entity_set_sentient_team)(unsigned int, Broc::string);  // +0x1228
     char _pad122C[0x12CC - 0x122C];                       // +0x122C
@@ -703,6 +711,8 @@ int IsAlive(const Broc::entity* e);              // ea: 0x92F320
 int IsVehicle(const Broc::entity* e);            // ea: 0x92F350
 int IsSentient(const Broc::entity* e);           // ea: 0x92F380
 int IsTouching(const Broc::entity* e, const Broc::entity* other);
+bool IsLocalHost();                              // ea: 0x92F6B0
+bool IsVehicleFlipped(const Broc::entity* e);
 int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
 bint* GetTime(bint* result);                     // gBrocAPI.mGetTime
 void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92F440
@@ -723,6 +733,17 @@ void ShellShock(Broc::entity* e, const Broc::string* shock, float fVal);
 void EnableNanoForces(bool onOff);
 void RadiusDamage(const Broc::vector* origin, float range, float max_damage,
                   float min_damage, int damageType);
+void RadiusDamageFromEnt(Broc::entity* which, const Broc::vector* origin,
+                         float range, float max_damage, float min_damage,
+                         int damageType);
+void SetMaxVehicles(int vehicles);
+void FireTurret(Broc::entity* e);
+Broc::vector* GetOrigin(Broc::vector* result, Broc::entity* e);
+void Earthquake(float scale, float duration, const Broc::vector* source,
+                float radius, int player_index);
+void Rumble(const Broc::string* lowFreqNotes, float lowFreqDuraton,
+            const Broc::string& highFreqNotes, float highFreqDuration,
+            int player_index);
 void SwitchToWeapon(Broc::entity* e, const Broc::string* weapon);
 void TakeAllWeapons(Broc::entity* e);
 void DoDamage(Broc::entity* e, float damage, const Broc::vector* vecIn, int hitLoc);
@@ -757,6 +778,9 @@ void Code_ScreenFadeToBlack(unsigned int time, int viewport);
 void Code_ScreenFadeUp(unsigned int time, int viewport);
 void Code_QuitGame();
 void Code_EnterGame();
+void Code_RespawnVehicle(Broc::entity* e);
+void Code_BroadcastVehicleRespawn(Broc::entity vehicle);
+void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle, int seat);
 void Code_PlayerSpawn(Broc::entity player, const Broc::vector* origin,
                       const Broc::vector* angles, int stopPhysics);
 void Code_PlayerRespawn(Broc::entity player, const Broc::vector* origin,
