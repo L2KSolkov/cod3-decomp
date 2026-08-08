@@ -96,6 +96,9 @@ struct bdFastArray {
     T*           m_data;     // +0x00
     unsigned int m_capacity; // +0x04
     unsigned int m_size;     // +0x08
+
+    T& operator[](unsigned int index) { return m_data[index]; }
+    const T& operator[](unsigned int index) const { return m_data[index]; }
 };
 static_assert(sizeof(bdFastArray<char>) == 0x0C, "bdFastArray size mismatch");
 
@@ -158,6 +161,7 @@ public:
     unsigned int getNumBitsWritten() const { return m_writePosition; }
     unsigned int getDataSize() const { return m_data.m_size; }
     const unsigned char* getData() const { return m_data.m_data; }
+    void resetReadPosition() { m_readPosition = 1; }  // COD3: header is 1 bit (ea: 0x8A410A writes 1)
 };
 static_assert(sizeof(bdBitBuffer) == 0x24, "bdBitBuffer size mismatch");
 static_assert(offsetof(bdBitBuffer, m_data) == 0x08, "bdBitBuffer::m_data offset mismatch");
@@ -297,7 +301,8 @@ static_assert(offsetof(bdConnectionStatistics, m_avgRTT) == 0x3C, "bdConnectionS
 // bdConnection — connection base (100 bytes)
 // Size: 0x64 (100 bytes) — verified against IDA
 // ============================================================================
-struct bdConnectionListener;
+class bdConnection;
+class bdConnectionListener;
 
 // ============================================================================
 // bdChunkTypes â€” chunk type enum
@@ -1027,6 +1032,16 @@ bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize, unsigne
                          unsigned int* newOffset, unsigned short* value);
 }
 
+class bdConnectionListener {
+public:
+    bdConnectionListener();
+    virtual ~bdConnectionListener();
+    virtual void onConnect(const bdReference<bdConnection>& connection);
+    virtual void onConnectFailed(const bdReference<bdConnection>& connection);
+    virtual void onDisconnect(const bdReference<bdConnection>& connection);
+    virtual void onReconnect(const bdReference<bdConnection>& connection);
+};
+
 class bdConnection : public bdReferencable {
 public:
     enum Status {
@@ -1044,14 +1059,20 @@ public:
     unsigned int                m_maxTransmissionRate;  // +0x5C
     Status                      m_status;          // +0x60
 
-    // bdConnection.obj (methods; declared for bdSessionInfo)
-    Status getStatus() const { return m_status; }
+    // bdConnection.obj (methods; declared for bdSessionInfo). Virtual order
+    // matches the COD3 vtable (loopback vtable @0xD52864):
+    // dtor, receive, send, getMessageToDispatch, getStatus, connect,
+    // disconnect, close, getDataToSend.
     const bdReference<bdAddrHandle>& getAddressHandle() const { return m_addrHandle; }
     bdConnectionStatistics* getStats() { return &m_stats; }
 
     bdConnection();
     bdConnection(const bdReference<bdCommonAddr>& addr);
     virtual ~bdConnection();
+    virtual bool receive(const unsigned char* buffer, unsigned int bufferSize) = 0;
+    virtual bool send(const bdReference<bdMessage>& message, bool reliable = false) = 0;
+    virtual bool getMessageToDispatch(bdReference<bdMessage>& message) = 0;
+    virtual Status getStatus() const;
     virtual bool connect();
     virtual void disconnect();
     virtual void close();
@@ -1061,6 +1082,9 @@ public:
     void setAddressHandle(const bdReference<bdAddrHandle>& addrHandle);
     bdConnectionListener* registerListener(bdConnectionListener* listener);
     int unregisterListener(bdConnectionListener* listener);
+
+protected:
+    virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize) = 0;
 };
 static_assert(sizeof(bdConnection) == 0x64, "bdConnection size mismatch");
 static_assert(offsetof(bdConnection, m_addr) == 0x08, "bdConnection::m_addr offset mismatch");
@@ -1068,3 +1092,46 @@ static_assert(offsetof(bdConnection, m_stats) == 0x10, "bdConnection::m_stats of
 static_assert(offsetof(bdConnection, m_listeners) == 0x50, "bdConnection::m_listeners offset mismatch");
 static_assert(offsetof(bdConnection, m_maxTransmissionRate) == 0x5C, "bdConnection::m_maxTransmissionRate offset mismatch");
 static_assert(offsetof(bdConnection, m_status) == 0x60, "bdConnection::m_status offset mismatch");
+
+// ============================================================================
+// bdLoopbackConnection - loopback connection (116 bytes).
+// Layout verified against IDA (ctor @0x8A4180): m_messages queue at +0x64,
+// a byte flag at +0x70 (set to 1 on send, ea 0x8A414D).
+// ============================================================================
+class bdLoopbackConnection : public bdConnection {
+public:
+    virtual ~bdLoopbackConnection();
+    virtual bool receive(const unsigned char* buffer, unsigned int bufferSize);
+    virtual bool send(const bdReference<bdMessage>& message, bool reliable = false);
+    virtual bool getMessageToDispatch(bdReference<bdMessage>& message);
+
+protected:
+    friend class bdConnectionStore;
+    bdLoopbackConnection(const bdReference<bdCommonAddr>& addr);
+    virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize);
+    void updateStatus();
+
+protected:
+    bdQueue<bdReference<bdMessage> > m_messages;   // +0x64
+    uint8_t m_flag70;                              // +0x70 (set 1 on send)
+    uint8_t _pad71[3];                             // +0x71
+};
+static_assert(sizeof(bdLoopbackConnection) == 0x74, "bdLoopbackConnection size mismatch");
+
+// ============================================================================
+// bdReceivedMessage - message + originating connection (8 bytes).
+// Layout verified against IDA (ctor @0x8A10C0): m_message +0, m_connection +4.
+// ============================================================================
+class bdReceivedMessage {
+public:
+    bdReceivedMessage(const bdReference<bdMessage>& message,
+                      const bdReference<bdConnection>& connection);
+    ~bdReceivedMessage();
+    bdReference<bdMessage> getMessage() const;
+    bdReference<bdConnection> getConnection() const;
+
+protected:
+    bdReference<bdMessage> m_message;       // +0x00
+    bdReference<bdConnection> m_connection; // +0x04
+};
+static_assert(sizeof(bdReceivedMessage) == 0x08, "bdReceivedMessage size mismatch");

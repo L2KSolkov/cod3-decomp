@@ -82,6 +82,12 @@ unsigned int bdConnection::setTransmissionRate(unsigned int rate) {
 unsigned int bdConnection::getTransmissionRate() const {
     return this->m_maxTransmissionRate;
 }
+// ============================================================================
+// getStatus (vtable slot 4)
+// ============================================================================
+bdConnection::Status bdConnection::getStatus() const {
+    return this->m_status;
+}
 
 // ============================================================================
 // connect â€” ea: 0x8A0AF0

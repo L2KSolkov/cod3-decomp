@@ -133,7 +133,7 @@ nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file strea
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	TODO	
 phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	PORTED	[phys_xboxr] phys_util.cpp: nuge aggregate utils (8 funcs)
 bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	TODO	
+bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	PORTED	[bdConnection] bdLoopbackConnection.cpp: loopback connection (8 funcs) from Demonware 2.0 + IDA
 bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	TODO	
 bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engine	8	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
@@ -211,7 +211,7 @@ bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	TODO
 bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdPlatform:bdPlatformTiming-xbox.obj	bdPlatform	bdPlatformTiming-xbox.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
-bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	TODO	
+bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	PORTED	[bdConnection] bdConnectionListener.cpp: connection listener (5 funcs) from Demonware 2.0 + IDA
 render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	PORTED	cdHeatHazeShader.h/.cpp (heat haze: Toggle/Init; Setup+Render deferred)
 render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	PORTED	cdGlassShader.h/.cpp (glass shader: Init/Toggle/Register/AddNode; Render deferred)
 render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	PORTED	cdSimpleColorShader.h/.cpp (solid-color shader + node)
@@ -227,7 +227,7 @@ ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	TODO
 phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_xboxr] rbc_def_contact.cpp: contact constraint (4 funcs)
 bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-bdConnection:bdReceivedMessage.obj	bdConnection	bdReceivedMessage.obj	engine	4	TODO	
+bdConnection:bdReceivedMessage.obj	bdConnection	bdReceivedMessage.obj	engine	4	PORTED	[bdConnection] bdReceivedMessage.cpp: received message (4 funcs) from Demonware 2.0 + IDA
 bdNet:bdDispatcher.obj	bdNet	bdDispatcher.obj	engine	4	TODO	
 bdPlatform:bdPlatformMutex-xbox.obj	bdPlatform	bdPlatformMutex-xbox.obj	engine	4	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdCore:bdShortTimer.obj	bdCore	bdShortTimer.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
