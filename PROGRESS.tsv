@@ -12,7 +12,7 @@ render.o		render.o	game	426	TODO
 anim.o		anim.o	game	408	TODO	
 mp_actors.o		mp_actors.o	game	380	TODO	
 cg.o		cg.o	game	350	TODO	
-cl.o		cl.o	game	313	IN_PROGRESS	cl_input.cpp IN_* handlers (99) + cl_console.cpp core (14: ToggleConsole/Dump/RunConsole/PageUp/Down/Top/Bottom/ClearNotify/CheckResize/Linefeed/Clear_f/Close/Init/UpdateNotifyLine; console_t+field_t+msgwnd_t types) = 113/313; render-heavy Draw* + print-queue helpers extern
+cl.o		cl.o	game	313	IN_PROGRESS	cl_input.cpp IN_* (99) + cl_console.cpp core (14) + cl_usercmd.cpp (24: GetUserCmd/KeyMove/CmdButtons/FinishMove/AdjustAngles/StanceButtonUpdate/MouseEvent/JoystickMove/GetAverageDelta + view-angle & usercmd-value setters) = 137/313; render-heavy Draw* + print-queue helpers + snapshot/CL_* plumbing remain
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
 game_xbox.o		game_xbox.o	game	210	PORTED	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26) + MPPlayerSet header (2) + XboxLiveMenus.cpp (46: XboxLiveOptionsMenu + InGameLiveOptionsMenu classes, ShowNotificationIcon, Xbox_LaunchInfo, RenderUIX) = 210/210; FEMenu/UIListBox/PanelFile/DialogMenu bases extern (shell.o/core.o provide); HandleError Com_Printf fix; XLive APIs stubbed via /FORCE

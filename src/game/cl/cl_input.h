@@ -20,6 +20,83 @@ struct kbutton_t {
 static_assert(sizeof(kbutton_t) == 0x18, "kbutton_t size mismatch");
 
 // ============================================================================
+// usercmd_s - 0x30 (verified against IDA)
+// ============================================================================
+struct usercmd_s {
+    int serverTime;      // +0x00
+    int buttons;         // +0x04
+    int weapon;          // +0x08
+    int angles[3];       // +0x0C
+    char forwardmove;    // +0x18
+    char rightmove;      // +0x19
+    char upmove;         // +0x1A
+    float gunPitch;      // +0x1C
+    float gunYaw;        // +0x20
+    float gunXOfs;       // +0x24
+    float gunYOfs;       // +0x28
+    float gunZOfs;       // +0x2C
+};
+static_assert(sizeof(usercmd_s) == 0x30, "usercmd_s size mismatch");
+
+// ============================================================================
+// cl[] client snapshot + usercmd state (cl.o data; fields used by input/cmd)
+// ============================================================================
+struct clPlayerState {
+    int eFlags;
+    int pm_flags;
+    int pm_type;
+    int weapon;
+    int weaponslots[16];
+    int serverCursorHint;
+    float delta_angles[3];
+    float fWeaponPosFrac;
+    int vehType;
+    int vehPos;
+    unsigned int mFlags_mask;
+};
+struct clSnapshot {
+    clPlayerState ps;
+};
+struct clSnap_t {
+    clSnapshot snap;
+    float viewangles[3];
+    bool stanceHeld;
+    int stancePosition;
+    int stanceTime;
+    int joystickAxis[8];
+    int cmdNumber;
+    usercmd_s cmds[64];
+    int serverTime;
+    int cgameUserCmdValue;
+    int cgameUserHoldableValue;
+    float cgameSensitivity;
+    float cgameGunPitch;
+    float cgameGunYaw;
+    float cgameGunXOfs;
+    float cgameGunYOfs;
+    float cgameGunZOfs;
+    float cgameMaxPitchSpeed;
+    float cgameMaxYawSpeed;
+    int mouseIndex;
+    int mouseDx[4];
+    int mouseDy[4];
+    int bCmdForceValues;
+    int iForceButtons;
+    int iForceWeapon;
+    int cgameInShellshock;
+};
+extern clSnap_t cl[2];
+
+// cl[] snapshot/entity externs used by input + usercmd code
+extern int anykeydown;
+extern int dword_106000;
+struct cvar_t;
+extern cvar_t* com_cl_running;
+extern char ClampChar(int i);
+extern bool CL_IsADS(int client);
+extern int CL_StanceButtonUpdate();
+
+// ============================================================================
 // Button indices into the kb[] array (offsets derived from IDA addresses:
 // kb base 0xF11E60; each button is 0x18 bytes)
 // ============================================================================
