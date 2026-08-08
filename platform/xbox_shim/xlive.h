@@ -33,8 +33,68 @@ typedef struct _XUID {
 } XUID;
 
 // ============================================================================
-// XONLINE_ATTRIBUTE - session/search attribute (16 bytes, verified)
+// XONLINE_FRIEND - 0x56 bytes (verified against IDA)
 // ============================================================================
+typedef struct _XONLINE_FRIEND {
+    XUID xuid;                 // +0x00
+    char szGamertag[16];       // +0x0C
+    DWORD dwFriendState;       // +0x1C
+    FILETIME gameinviteTime;   // +0x20
+    XNKID sessionID;           // +0x28
+    DWORD dwTitleID;           // +0x30
+    unsigned char StateDataSize;  // +0x34
+    unsigned char StateData[32];  // +0x35
+    unsigned char bReserved;      // +0x55
+} XONLINE_FRIEND;
+
+// ============================================================================
+// sServerCreateParams - 0x69 bytes (verified against IDA)
+// ============================================================================
+typedef struct sServerCreateParams {
+    char mRandomMapList[64];   // +0x00
+    char mName[24];            // +0x40
+    unsigned char mMapID;      // +0x58
+    unsigned char mGameType;   // +0x59
+    unsigned char mGameSubType;// +0x5A
+    unsigned char mMaxPlayers; // +0x5B
+    unsigned char mTeamBalancing; // +0x5C
+    unsigned char mFriendlyFire;  // +0x5D
+    unsigned char mPrivateSlots;  // +0x5E
+    unsigned char mTimeLimit;     // +0x5F
+    unsigned char mScoreLimit;    // +0x60
+    unsigned char mRoundLimit;    // +0x61
+    unsigned char mSwapEnds;      // +0x62
+    unsigned char mRespawnTime;   // +0x63
+    bool mDontRotate;             // +0x64
+    bool mDoChangeMap;            // +0x65
+    unsigned char mEnableAARVote; // +0x66
+    unsigned char mEnablePenaltyVote; // +0x67
+    unsigned char mMapRotation;       // +0x68
+} sServerCreateParams;
+
+// ============================================================================
+// XINPUT_STATE - controller state (0x10, matches the XDK layout)
+// ============================================================================
+typedef struct _XINPUT_GAMEPAD {
+    unsigned short wButtons;
+    unsigned char bLeftTrigger;
+    unsigned char bRightTrigger;
+    short sThumbLX;
+    short sThumbLY;
+    short sThumbRX;
+    short sThumbRY;
+} XINPUT_GAMEPAD;
+
+typedef struct _XINPUT_STATE {
+    unsigned long dwPacketNumber;
+    XINPUT_GAMEPAD Gamepad;
+} XINPUT_STATE;
+
+// ============================================================================
+// XONLINE_ATTRIBUTE - session/search attribute (16 bytes, verified)
+// The info union carries an __int64 so the XDK header is 8-byte aligned.
+// ============================================================================
+#pragma pack(push, 8)
 typedef union _XONLINE_ATTRIBUTE_INFO {
     struct {
         ULONGLONG qwValue;         // +0x00
@@ -53,6 +113,7 @@ typedef struct _XONLINE_ATTRIBUTE {
     int fChanged;                  // +0x04
     XONLINE_ATTRIBUTE_INFO info;   // +0x08
 } XONLINE_ATTRIBUTE;
+#pragma pack(pop)
 
 // ============================================================================
 // XONLINE_MUTELISTUSER - 16 bytes (verified)
@@ -151,6 +212,8 @@ HRESULT __stdcall XHVEngine_RegisterLocalTalker(XHVEngine* pThis,
                                                 DWORD dwLocalPort);
 void __stdcall XHVEngine_UnregisterRemoteTalker(XHVEngine* pThis,
                                                 XUID xuidRemoteTalker);
+void __stdcall XHVEngine_SubmitIncomingVoicePacket(
+    XHVEngine* pThis, XUID xuidRemoteTalker, void* pvData, DWORD dwSize);
 void __stdcall XHVEngine_Release(XHVEngine* pThis);
 void __stdcall XHVEngine_SetCallbackInterface(XHVEngine* pThis,
                                               void* pITitleXHV);
@@ -224,6 +287,7 @@ HRESULT __stdcall LiveEngine_Reboot(LiveEngine* pThis, DWORD Context);
 HRESULT __stdcall LiveEngine_LogOff(LiveEngine* pThis);
 HRESULT __stdcall LiveEngine_UseVoiceMail(LiveEngine* pThis,
                                           LiveFeature* VoiceMailEntryPoint);
+HRESULT __stdcall LiveEngine_EndFeature(LiveEngine* pThis);
 HRESULT __stdcall LiveEngine_EnableFeature(LiveEngine* pThis,
                                            LiveFeature* FeatureID);
 HRESULT __stdcall LiveEngine_GetFeatureInterface(

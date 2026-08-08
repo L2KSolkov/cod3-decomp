@@ -96,6 +96,8 @@ enum ELiveMode {
 };
 enum ESessionState {
     kNotInSession = 0,
+    kEnteringSession = 1,
+    kInSession = 2,
 };
 enum ELiveNotification {
     kLiveOk = 0,
@@ -190,6 +192,7 @@ public:
     void RefreshMuteList(unsigned int controllerIndex);
 
     // LiveWrapper batch 2
+    bool HandleInput(unsigned int port, const XINPUT_STATE* controllerInput);
     void DoWork();
     void LogOut();
     void HandleFeatureExit();
@@ -238,6 +241,8 @@ static_assert(sizeof(LiveWrapper) == 0x44CC, "LiveWrapper size mismatch");
 // ============================================================================
 class CSession {
 public:
+    friend class MPLiveEngine;
+
     enum STATE {
         STATE_IDLE = 0,
         STATE_CREATING = 1,

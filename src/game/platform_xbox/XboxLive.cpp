@@ -67,6 +67,8 @@ static void Print(const wchar_t* strFormat, ...)
     OutputDebugStringW(L"\n\n");
 }
 
+extern void Com_Printf(const char* fmt, ...);
+
 // ============================================================================
 // LivePlayer / LiveRemote / LiveLocal
 // ============================================================================
@@ -1042,7 +1044,7 @@ HRESULT LiveWrapper::HandleError(HRESULT errorCode)
         }
         if (errorCode == 1)
         {
-            Print(L"A UIX feature has encountered an error. This is probably minor and to be ignored.");
+            Com_Printf("A UIX feature has encountered an error. This is probably minor and to be ignored.");
             return errorCode;
         }
         if (errorCode == 1168)
@@ -1122,8 +1124,8 @@ LABEL_28:
            "c:\\cod\\code\\game\\LiveWrapper.cpp", 1192);
     return errorCode;
 LABEL_59:
-    Print(L"\n!!!!! Unrecognized error code %d encountered in Live wrapper. Handle this error properly in LiveWrapper::HandleError !!!!!\n",
-          errorCode);
+    Com_Printf("\n!!!!! Unrecognized error code %d encountered in Live wrapper. Handle this error properly in LiveWrapper::HandleError !!!!!\n",
+               errorCode);
     return errorCode;
 }
 
