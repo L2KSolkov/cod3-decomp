@@ -1231,3 +1231,79 @@ Broc::bbool* IsEEDefined_audio_ambmin(Broc::bbool* result, Broc::entity ent) {
 }
 
 } // namespace mp_util_wad
+
+// ============================================================================
+// Broc free helpers + gBrocAPI-backed wrappers (mp_util_wad.o COMDATs).
+// ============================================================================
+namespace Broc {
+
+// IsDefined overloads - ea: 0x92F130 / 0x92F150 / 0x92F6F0
+bool IsDefined(const Broc::entity& e) {
+    return e.___u0 != 0;
+}
+
+bool IsDefined(const Broc::vector& v) {
+    return v.x != 0.0f || v.y != 0.0f || v.z != 0.0f;
+}
+
+bool IsDefined(const Broc::string& s) {
+    return s.c_str() != NULL;
+}
+
+template <typename T> bool IsDefined(const T& t) {
+    return t.mVal != 0;
+}
+
+// Distance - ea: 0x934A50
+float Distance(const Broc::vector* v0, const Broc::vector* v1) {
+    return gBrocAPI.mVecDistance(v0, v1);
+}
+
+// VectorToAngles - ea: 0x934A80
+Broc::vector* VectorToAngles(Broc::vector* result, const Broc::vector* vecIn) {
+    Broc::vector vecOut;
+    gBrocAPI.mVecToAngles(&vecOut, vecIn);
+    *result = vecOut;
+    return result;
+}
+
+// GetEnt - ea: 0x9349D0
+Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
+                     unsigned int flags) {
+    unsigned int v4 = gBrocAPI.mGetEnt(val, key.mVal, NULL, 0, flags);
+    result->___u0 = v4;
+    return result;
+}
+
+// Delete - ea: 0x934A20
+void Delete(Broc::entity* e) {
+    gBrocAPI.mDelete(e->GetHandle());
+}
+
+// operator+(string, float) - ea: 0x934830
+Broc::string operator+(const Broc::string& lhs, float rhs) {
+    Broc::string r(lhs);
+    r += rhs;
+    return r;
+}
+
+} // namespace Broc
+
+// ============================================================================
+// Boxed-type operators (mp_util_wad.o inline COMDATs)
+// ============================================================================
+bool operator<(Broc::bint lhs, Broc::bint rhs) {
+    return lhs.mVal < rhs.mVal;
+}
+
+bool operator>(Broc::bint lhs, Broc::bint rhs) {
+    return lhs.mVal > rhs.mVal;
+}
+
+bool operator==(Broc::bint lhs, Broc::bint rhs) {
+    return lhs.mVal == rhs.mVal;
+}
+
+bool operator!=(Broc::bint lhs, Broc::bint rhs) {
+    return lhs.mVal != rhs.mVal;
+}

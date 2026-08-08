@@ -61,6 +61,7 @@ struct entity {
 
     void UndefineEEField(unsigned int key);
     unsigned int GetHandle() const { return ___u0; }  // ea: 0x92F170
+    bool IsDefined() const { return ___u0 != 0; }     // ea: 0x92F170
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(entity) == 4, "Broc::entity size mismatch");
 
@@ -167,6 +168,7 @@ bool   operator!=(HashStr lhs, const string& rhs);
 bool   operator!=(const string& lhs, HashStr rhs);
 string operator+(const string& lhs, const string& rhs);
 string operator+(const string& lhs, const char* rhs);
+string operator+(const string& lhs, float rhs);  // ea: 0x934830
 
 // ============================================================================
 // Broc::ExtendedEntity — variable storage for script entities (12 bytes)
@@ -292,11 +294,23 @@ void GetAllVehicleNodes(void* result);
 // ============================================================================
 struct bint {
     int mVal;
+
+    bint() : mVal(0) {}
+    bint(int v) : mVal(v) {}
+    bint& operator=(int v) { mVal = v; return *this; }
+    operator int() const { AssertDefined(); return mVal; }
+    int operator++(int) { AssertDefined(); return ++mVal; }
+    void AssertDefined() const {}  // ea: 0x934790
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bint) == 4, "bint size mismatch");
 
 struct bfloat {
     float mVal;
+
+    bfloat() : mVal(0.0f) {}
+    bfloat(float v) : mVal(v) {}
+    bfloat& operator=(float v) { mVal = v; return *this; }
+    operator float() const { return mVal; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bfloat) == 4, "bfloat size mismatch");
 
@@ -307,8 +321,18 @@ COD3_STATIC_ASSERT_32BIT(sizeof(bunsigned) == 4, "bunsigned size mismatch");
 
 struct bbool {
     bool mVal;
+
+    bbool() : mVal(false) {}
+    bbool(bool v) : mVal(v) {}
+    operator bool() const { return mVal; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bbool) == 1, "bbool size mismatch");
+
+// Boxed-type comparison operators (mp_util_wad.o inline COMDATs).
+bool operator<(bint lhs, bint rhs);
+bool operator>(bint lhs, bint rhs);
+bool operator==(bint lhs, bint rhs);
+bool operator!=(bint lhs, bint rhs);
 
 } // namespace Broc
 
@@ -320,6 +344,38 @@ bool IsDefined(const Broc::entity& e);              // ea: 0x92F130
 bool IsDefined(const Broc::vector& v);              // ea: 0x92F150
 bool IsDefined(const Broc::string& s);              // ea: 0x92F6F0
 template <typename T> bool IsDefined(const T& t);   // boxed-type IsDefined
+
+// ============================================================================
+// BrocAPI - the Broc scripting runtime interface (4924 bytes, 1118 members).
+// Only the members used by ported code are declared; the rest is padding.
+// ============================================================================
+struct BrocAPI {
+    void (*mPrint)(const char*);                          // +0x000
+    void (*mPrintLn)(const char*);                        // +0x004
+    char _pad08[0x94 - 0x08];                             // +0x008
+    unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int, int);  // +0x094
+    unsigned int (*mGetEntByNum)(int);                    // +0x098
+    char _pad9C[0x184 - 0x9C];                            // +0x09C
+    float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
+    char _pad188[0x1A0 - 0x188];                          // +0x188
+    void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
+    char _pad1A4[0x6D8 - 0x1A4];                          // +0x1A4
+    void (*mDelete)(unsigned int);                        // +0x6D8
+    char _pad6DC[0xF1C - 0x6DC];                          // +0x6DC
+    Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
+    char _padF20[0x133C - 0xF20];                         // +0xF20 (total 0x133C = 4924)
+};
+static_assert(sizeof(BrocAPI) == 0x133C, "BrocAPI size mismatch");
+
+extern BrocAPI gBrocAPI;  // ?gBrocAPI@@3UBrocAPI@@A @0x10F0568
+
+// Broc runtime entry points used by ported script functions.
+void wait(float seconds);
+void wait_accurate(float seconds);
+unsigned int thread_create(bool createHandle, const char* file, int line,
+                           const char* func, void* functor);
+float RandomFloatRange(float fMin, float fMax);
+int RandomInt(int iMax);
 }
 
 // ============================================================================
