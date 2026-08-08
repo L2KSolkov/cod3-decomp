@@ -234,6 +234,10 @@ Broc::entity* line_sound_get(Broc::entity* result, HashStr key);
 void line_sound_erase(HashStr key);
 void line_sound_delete_all();
 
+// mp_util_wad::Level._effect hash_map helpers.
+void level_effect_set(HashStr key, const Broc::string& val);
+Broc::string* level_effect_get(Broc::string* result, HashStr key);
+
 } // namespace mp_util_wad
 
 #endif // COD3_BROC_MP_UTIL_WAD_H

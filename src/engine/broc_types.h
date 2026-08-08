@@ -347,6 +347,7 @@ void wait_accurate(float seconds);
 void wait(float seconds);
 void wait_frame(int frames);
 void waittill(entity ent, HashStr signal);
+void waittill(entity ent, HashStr signal, entity* output);
 void waittill_timeout(entity ent, HashStr signal, float timeout);
 void waittillmatch(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
 void waittillor(entity ent, HashStr s1, HashStr s2, HashStr s3, HashStr s4);
@@ -642,6 +643,7 @@ unsigned int thread_create(bool createHandle, const char* file, int line,
                            const char* func, void* functor);
 float RandomFloatRange(float fMin, float fMax);
 int RandomInt(int iMax);
+int RandomIntRange(int iMin, int iMax);
 void wait(float seconds);
 void wait_accurate(float seconds);
 void GetEntArray(const Broc::string* name, unsigned int key,
@@ -699,6 +701,8 @@ int VecCloser(const Broc::vector* a, const Broc::vector* b, const Broc::vector* 
 bool IsPlayer(const Broc::entity* e);            // ea: 0x92F2F0
 int IsAlive(const Broc::entity* e);              // ea: 0x92F320
 int IsVehicle(const Broc::entity* e);            // ea: 0x92F350
+int IsSentient(const Broc::entity* e);           // ea: 0x92F380
+int IsTouching(const Broc::entity* e, const Broc::entity* other);
 int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
 bint* GetTime(bint* result);                     // gBrocAPI.mGetTime
 void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92F440
@@ -715,6 +719,10 @@ void SetSpectateMedic(int medic, int viewport);
 void SetSpectateSeconds(int seconds, int viewport);
 void SetTakeDamage(Broc::entity* e, int damage);
 void RotateTo(Broc::entity* e, const Broc::vector* angles, float time);
+void ShellShock(Broc::entity* e, const Broc::string* shock, float fVal);
+void EnableNanoForces(bool onOff);
+void RadiusDamage(const Broc::vector* origin, float range, float max_damage,
+                  float min_damage, int damageType);
 void SwitchToWeapon(Broc::entity* e, const Broc::string* weapon);
 void TakeAllWeapons(Broc::entity* e);
 void DoDamage(Broc::entity* e, float damage, const Broc::vector* vecIn, int hitLoc);
@@ -748,6 +756,7 @@ bool Code_IsRankedGame();
 void Code_ScreenFadeToBlack(unsigned int time, int viewport);
 void Code_ScreenFadeUp(unsigned int time, int viewport);
 void Code_QuitGame();
+void Code_EnterGame();
 void Code_PlayerSpawn(Broc::entity player, const Broc::vector* origin,
                       const Broc::vector* angles, int stopPhysics);
 void Code_PlayerRespawn(Broc::entity player, const Broc::vector* origin,

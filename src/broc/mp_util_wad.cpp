@@ -57,7 +57,9 @@ void UpdatePlayerModelForRank(Broc::entity player);
 void DisplayYouWillSpawnWithMessage(Broc::entity self);
 }
 namespace _mp_shellshock {
+void main();
 void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage);
+void blur_view(Broc::entity self, Broc::bfloat blur_time);
 }
 namespace _mp_spawnlogic {
 Broc::entity* GetSpawnpointRandom(Broc::entity* result,
@@ -116,6 +118,7 @@ void* finish_starting_round__functor(Broc::entity self, bool firstTime);
 void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position);
 void* NewHost__functor(Broc::entity self);
 void* LocalPlayerIntermission__functor(Broc::entity player);
+void* RunFrame__functor(Broc::entity selfLevel);
 }
 
 namespace mp_util_wad {
@@ -2816,6 +2819,17 @@ void line_sound_erase(HashStr key) {
 }
 void line_sound_delete_all() {
 }
+
+// _effect hash_map helpers (opaque until the runtime is ported).
+void level_effect_set(HashStr key, const Broc::string& val) {
+    (void)key;
+    (void)val;
+}
+Broc::string* level_effect_get(Broc::string* result, HashStr key) {
+    (void)key;
+    result->mBlock = NULL;
+    return result;
+}
 }
 
 // ============================================================================
@@ -2850,9 +2864,29 @@ void main(Broc::entity self) {
 // ============================================================================
 namespace _mp_tankdrive { void main(); }
 namespace _mp_nano { void main(); }
+namespace _mp_nano {
+void WindBlowing(Broc::entity self);
+void* WindBlowing__functor(Broc::entity self);
+unsigned int CreateGlobalWind(Broc::vector direction, Broc::bfloat speed);
+}
 namespace _mp_audio { void main(); }
-namespace _mp_minefield { void* main__functor(Broc::entity self); }
-namespace _mp_tdm { void* main__functor(Broc::entity self); }
+namespace _mp_minefield {
+void main(Broc::entity self);
+void minefield_think(Broc::entity self);
+void minefield_kill(Broc::entity self, Broc::entity trigger);
+void* main__functor(Broc::entity self);
+void* minefield_think__functor(Broc::entity self);
+void* minefield_kill__functor(Broc::entity self, Broc::entity trigger);
+}
+namespace _mp_tdm {
+void main(Broc::entity self);
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health);
+void StartGame(Broc::entity self);
+void* main__functor(Broc::entity self);
+void* StartGame__functor(Broc::entity self);
+}
 namespace _mp_ctf { void* main__functor(Broc::entity self); }
 namespace _mp_scf { void* main__functor(Broc::entity self); }
 namespace _mp_war { void* main__functor(Broc::entity self); }
@@ -5568,7 +5602,47 @@ void StopFollowing(Broc::entity self, Broc::bbool blackNow) {
 // Sibling gametype stubs (real implementations arrive with each script port).
 // ============================================================================
 namespace _mp_tankdrive { void main() {} }
-namespace _mp_nano { void main() {} }
+namespace _mp_nano {
+void main() {
+    Broc::EnableNanoForces(true);
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = WindBlowing__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_nano.bro",
+                        __LINE__, "WindBlowing", ftor);
+}
+
+// WindBlowing - ea: 0x964750
+void WindBlowing(Broc::entity self) {
+    (void)self;
+    Broc::bint angle_360(0);
+    for (;;) {
+        angle_360 += Broc::RandomIntRange(-5, 5);
+        angle_360 += 360;
+        angle_360 = (int)angle_360 % 360;
+        Broc::vector ang(Broc::RandomFloatRange(0.0f, 10.0f),
+                         (float)(int)angle_360, 0.0f);
+        Broc::vector dir;
+        Broc::AnglesToForward(&dir, &ang);
+        Broc::bint speed(Broc::RandomIntRange(0, 3));
+        Broc::bfloat sp((float)(int)speed);
+        CreateGlobalWind(dir, sp);
+        Broc::wait((float)Broc::RandomInt(1));
+    }
+}
+
+void* WindBlowing__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+
+// CreateGlobalWind - ea: 0x9648C0 (stub: nano physics integration deferred)
+unsigned int CreateGlobalWind(Broc::vector direction, Broc::bfloat speed) {
+    (void)direction;
+    (void)speed;
+    return 0;
+}
+}
 namespace _mp_audio {
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage) {
     (void)guy;
@@ -5624,8 +5698,44 @@ void UpdatePlayerModelForRank(Broc::entity player) { (void)player; }
 void DisplayYouWillSpawnWithMessage(Broc::entity self) { (void)self; }
 }
 namespace _mp_shellshock {
+void main() {
+}
+
+// ShellshockOnDamage - ea: 0x96C9C0
 void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage) {
-    (void)self; (void)cause; (void)damage;
+    if ((int)cause == 27 || (int)cause == 3 || (int)cause == 4 ||
+        (int)cause == 5 || (int)cause == 6 || (int)cause == 17 ||
+        (int)cause == 18 || (int)cause == 9 || (int)cause == 10) {
+        Broc::bint time(0);
+        if ((int)damage < 90) {
+            if ((int)damage < 50) {
+                if ((int)damage < 25) {
+                    if ((int)damage > 10)
+                        time = 1;
+                } else {
+                    blur_view(self, Broc::bfloat(0.25f));
+                    time = 2;
+                }
+            } else {
+                blur_view(self, Broc::bfloat(1.0f));
+                time = 3;
+            }
+        } else {
+            blur_view(self, Broc::bfloat(2.0f));
+            time = 4;
+        }
+        if ((int)time != 0) {
+            Broc::string shock("default");
+            Broc::ShellShock(&self, &shock, (float)(int)time);
+            shock.~string();
+        }
+    }
+}
+
+// blur_view - ea: 0x96CCA0
+void blur_view(Broc::entity self, Broc::bfloat blur_time) {
+    (void)self;
+    (void)blur_time;
 }
 }
 // ============================================================================
@@ -6315,12 +6425,172 @@ void* NewHost__functor(Broc::entity self) {
 void* LocalPlayerIntermission__functor(Broc::entity player) {
     (void)player; return NULL;
 }
+void* RunFrame__functor(Broc::entity selfLevel) {
+    (void)selfLevel; return NULL;
 }
+}
+
+// ============================================================================
+// _mp_minefield.
+// ============================================================================
 namespace _mp_minefield {
 void* main__functor(Broc::entity self) { (void)self; return NULL; }
+
+// main - ea: 0x963EE0
+void main(Broc::entity self) {
+    (void)self;
+    Broc::dyn_array<Broc::entity> minefields;
+    Broc::string val("minefield");
+    HashStr key;
+    key.mVal = 0x19F9F0E8u;
+    Broc::GetEntArray(&val, key.mVal, &minefields, 0);
+    val.~string();
+    if (Broc::size(minefields) <= 0) {
+        minefields.~dyn_array();
+        return;
+    }
+    HashStr effectKey;
+    effectKey.mVal = 0x53DA8129u;
+    mp_util_wad::level_effect_set(effectKey, "artillery_generic");
+    Broc::bint i(0);
+    while ((int)i < Broc::size(minefields)) {
+        void* ftor = minefield_think__functor(minefields[(unsigned int)(int)i]);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_minefield.bro",
+                            __LINE__, "minefield_think", ftor);
+        i = (int)i + 1;
+    }
+    minefields.~dyn_array();
 }
+
+void* minefield_think__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+
+// minefield_think - ea: 0x964150
+void minefield_think(Broc::entity self) {
+    Broc::entity target;
+    target.___u0 = 0;
+    for (;;) {
+        do {
+            HashStr label;
+            label.mVal = 0xF2F5EAB4;
+            Broc::waittill(self, label, &target);
+        } while (Broc::IsSentient(&target) == 0 &&
+                 Broc::IsVehicle(&target) == 0);
+        if (!(bool)*mp_util_wad::GetEE_flag_in_minefield(target)) {
+            void* ftor = minefield_kill__functor(self, target);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_minefield.bro",
+                                __LINE__, "minefield_kill", ftor);
+        }
+    }
+}
+
+void* minefield_kill__functor(Broc::entity self, Broc::entity trigger) {
+    (void)self;
+    (void)trigger;
+    return NULL;
+}
+
+// minefield_kill - ea: 0x964330
+void minefield_kill(Broc::entity self, Broc::entity trigger) {
+    *mp_util_wad::GetEE_flag_in_minefield(self) = true;
+    Broc::string script("minefield_click");
+    Broc::EffectEventPlay(&self, &script);
+    script.~string();
+    float delay = Broc::RandomFloat(0.5f) + 0.5f;
+    Broc::wait(delay);
+    if (Broc::IsTouching(&self, &trigger)) {
+        float zero = 0.0f;
+        Broc::bint health;
+        mp_util_wad::entity_get_health(&health, self);
+        if ((int)health > 0) {
+            Broc::vector origin;
+            mp_util_wad::entity_get_origin(&origin, self);
+            origin.z += 10.0f;
+            Broc::bfloat range(300.0f);
+            Broc::bfloat maxdamage(2500.0f);
+            Broc::bfloat mindamage(50.0f);
+            HashStr effectKey;
+            effectKey.mVal = 0x53DA8129u;
+            Broc::string effect;
+            mp_util_wad::level_effect_get(&effect, effectKey);
+            Broc::EffectEventPlay(&self, &effect);
+            effect.~string();
+            Broc::bint h2;
+            mp_util_wad::entity_get_health(&h2, self);
+            float max_damage = (float)((int)h2 + 100);
+            Broc::RadiusDamage(&origin, (float)range, max_damage,
+                               (float)mindamage, 27);
+        }
+        (void)zero;
+    }
+    *mp_util_wad::GetEE_flag_in_minefield(self) = false;
+}
+}
+
+// ============================================================================
+// _mp_tdm.
+// ============================================================================
 namespace _mp_tdm {
 void* main__functor(Broc::entity self) { (void)self; return NULL; }
+
+// main - ea: 0x973280
+void main(Broc::entity self) {
+    Broc::bbool team_game(true);
+    Broc::Code_SetTeamGame((bool)team_game);
+    mp_util_wad::pLevel->spawnTypeAllies = "spawn_teamdeathmatch";
+    mp_util_wad::pLevel->spawnTypeAxis = "spawn_teamdeathmatch";
+    _mp_common::SetupCallbacks(team_game);
+    Broc::gBrocAPI.mBrocExports.mCallbackPlayerKilled =
+        (void (*)(const Broc::entity, const Broc::entity, const Broc::entity,
+                  int, int, int))CallbackPlayerKilled;
+    void* started = StartGame__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tdm.bro",
+                        __LINE__, "StartGame", started);
+}
+
+void* StartGame__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+
+// CallbackPlayerKilled - ea: 0x9733F0
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health) {
+    _mp_common::CallbackPlayerKilled(player, inflictor, attacker, weapon,
+                                     mod, health);
+    bool enemyKill = false;
+    if (Broc::IsDefined(attacker) && attacker != player) {
+        Broc::string pteam;
+        Broc::string ateam;
+        mp_util_wad::entity_get_team(&pteam, player);
+        mp_util_wad::entity_get_team(&ateam, attacker);
+        enemyKill = ateam != pteam;
+        pteam.~string();
+        ateam.~string();
+    }
+    if (enemyKill) {
+        Broc::string ateam;
+        mp_util_wad::entity_get_team(&ateam, attacker);
+        Broc::Code_IncTeamScore(&ateam, 1);
+        ateam.~string();
+    }
+}
+
+// StartGame - ea: 0x9735E0
+void StartGame(Broc::entity self) {
+    (void)self;
+    Broc::wait(0.5f);
+    _mp_common::StartRound(Broc::bbool(true));
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = _mp_common::RunFrame__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_tdm.bro",
+                        __LINE__, "_mp_common::RunFrame", ftor);
+    Broc::Code_EnterGame();
+}
 }
 namespace _mp_ctf {
 void* main__functor(Broc::entity self) { (void)self; return NULL; }
