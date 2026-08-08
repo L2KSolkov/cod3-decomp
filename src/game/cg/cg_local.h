@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+struct Entity;
+
 // Renderer export table (refexport_t; matches the layout used by core.o
 // common.cpp's re_export_view and cl_parse.cpp's refexport_t2)
 struct re_export_view {
@@ -64,3 +66,42 @@ extern re_export_view re;
 
 extern void* _Z_MallocInternal(unsigned int size);
 extern void  _Z_FreeInternal(void* ptr);
+
+// EntityHandleDb - entity handle database (elements at +0xA8)
+class EntityHandleDb {
+public:
+    struct DbElement {
+        Entity* mObject;  // +0x00
+        int     mKey;     // +0x04
+    };
+    unsigned char _pad[0xA8];
+    DbElement     mElements[0x540];
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
+};
+
+struct weaponFileInfo_t {
+    char  szKillIcon[64];      // +0x00
+    char  szInternalName[64];  // +0x40
+    unsigned char bWideKillIcon;  // +0x80
+};
+
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
+#define CG_ASSERT(expr, file, line)                                       \
+    do {                                                                  \
+        AeAssert::gCurrentAuthor = AeAssert::COD3;                        \
+        AeAssert::gCurrentFile = (file);                                  \
+        AeAssert::gCurrentLine = (line);                                  \
+        AeAssert::gCurrentExpr = (expr);                                  \
+        if (!AeAssert::IsIgnored()                                        \
+            && AeAssert::Assert("old cod assert"))                        \
+            __debugbreak();                                               \
+    } while (0)
