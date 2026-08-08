@@ -4,6 +4,7 @@
 
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
+#include "game/core/core_types.h"
 
 #include <math.h>
 
@@ -27,11 +28,6 @@ extern int gTurretSoundEffectHandle;
 extern int dword_DF91F4;
 
 EntityHandleDb EntityHandleDb::sInst;
-
-struct DObjSkelMat {
-    float axis[3][3];   // +0x00
-    float origin[4];    // +0x24
-};
 
 struct cgs_t {
     int state;       // +0x00 (kLocalPlayerStateUnused = 0)
