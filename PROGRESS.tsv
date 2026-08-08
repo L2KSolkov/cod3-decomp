@@ -34,7 +34,7 @@ render_xboxr:ngl_aux.o	render_xboxr	ngl_aux.o	engine	40	TODO
 nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 aeps_xboxr:apsEffect.o	aeps_xboxr	apsEffect.o	engine	37	PORTED	apsEffect.cpp (full apsEffect 128B class: ctor/Construct/dtor/Destruct, Update, Render, pool InitPool/New/Delete/TermPool/TestAlloc/IsPoolEmpty/GetNumActiveEffects, modifiers, raycast, Report/ReportTemplate/ReportEffects; apsBlockArray<T>; AEPS_VECTOR_NEW<apsEffect>; g_effectTime)
 ngl_xboxr:ngl_debug.o	ngl_xboxr	ngl_debug.o	engine	36	TODO	
-bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine	36	TODO	
+bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine	36	PORTED	[bdConnection] bdUnicastConnection.cpp: reliable unicast state machine (36 funcs) from Demonware 2.0 + IDA
 peripherals_xboxr:MemoryUnit.o	peripherals_xboxr	MemoryUnit.o	engine	35	TODO	
 aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	PORTED	apsEffectTemplate.cpp (full apsEffectTemplate class 208B: Element/Modifier/Stats, ctor/dtor, per-element setters, RebuildPFD, Fixup, CalcMemoryNeeded/TestAlloc/MemoryMatch, SetElementData, modifiers; sMaxElements/sMaxModifiers/kDefaultTimeScale; apsArray erase/destroy_all)
 phys_xboxr:rb_ragdoll_model.o	phys_xboxr	rb_ragdoll_model.o	engine	31	TODO	

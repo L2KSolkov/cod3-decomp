@@ -174,6 +174,7 @@ add_library(cod3_bd STATIC
     src/bd/bdQoSProbe.cpp
     src/bd/bdSecurityKeyMap.cpp
     src/bd/bdSocketRouter.cpp
+    src/bd/bdUnicastConnection.cpp
     src/bd/bdGameInfo.cpp
     src/bd/bdAddressMap.cpp
     src/bd/bdDiscoveryListener.cpp
