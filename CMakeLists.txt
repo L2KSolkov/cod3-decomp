@@ -195,6 +195,7 @@ add_library(cod3_bd STATIC
     src/bd/bdUnreliableSendWindow.cpp
     src/bd/bdUnreliableReceiveWindow.cpp
     src/bd/bdSessionInfo.cpp
+    src/bd/bdSessionListener.cpp
     src/bd/bdSessionHandler.cpp
     src/bd/bdSessionInterceptor.cpp
     src/bd/bdDispatchInterceptor.cpp

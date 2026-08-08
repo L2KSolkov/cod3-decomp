@@ -108,7 +108,7 @@ phys_xboxr:phys_contact_manifold.o	phys_xboxr	phys_contact_manifold.o	engine	10	
 bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engine	10	PORTED	[bdConnection] bdReliableSendWindow.cpp: reliable send window (10 funcs) from Demonware 2.0 + IDA
 bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
 bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
-bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO	
+bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	PORTED	[bdPeer] bdSessionListener.cpp: session listener callbacks (10 funcs) from Demonware 2.0 + IDA
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
 bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	bdSocket.cpp: UDP socket wrapper (10 funcs) from IDA + Demonware 2.0
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
