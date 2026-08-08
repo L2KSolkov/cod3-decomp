@@ -826,6 +826,15 @@ void Code_SendGameStateHQ(Broc::entity player, int stage,
                           const Broc::vector* vA, const Broc::vector* vB,
                           int triggerIndex, bool alliesDefending,
                           bool pointAIsHQ);
+void Code_SendGameStateDOM(Broc::entity player, int flag0, int flag1,
+                           int flag2, int flag3, int flag4);
+void SoundFadeOut(unsigned int handle, float time);
+void Code_DebugRenderBox(const Broc::vector* min, const Broc::vector* max,
+                         const Broc::vector* color, float alpha);
+void Code_DebugRenderSphere(const Broc::vector* point, float radius,
+                            const Broc::vector* color, float alpha);
+void Code_DebugRenderEntityBBox(Broc::entity e, const Broc::vector* color,
+                                float alpha);
 void Code_RespawnVehicle(Broc::entity* e);
 void Code_BroadcastVehicleRespawn(Broc::entity vehicle);
 void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle, int seat);

@@ -2946,6 +2946,67 @@ void* StartGame__functor(Broc::entity self);
 namespace _mp_ctf { void* main__functor(Broc::entity self); }
 namespace _mp_scf { void* main__functor(Broc::entity self); }
 namespace _mp_war { void* main__functor(Broc::entity self); }
+namespace _mp_war {
+Broc::vector* vLerp(Broc::vector* result, Broc::vector a, Broc::vector b,
+                    Broc::bfloat t);
+void main(Broc::entity self);
+void StartGame(Broc::entity self);
+void PlayCapturedSounds(Broc::entity self, Broc::bint team,
+                        Broc::bint originalWarIndex);
+void WARScore();
+void GiveTeamMembersPoints(Broc::vector origin, Broc::bfloat radius,
+                           Broc::string team);
+void CallbackHostMigrated();
+void CallbackAreaCaptured(int index, int team);
+void CallbackHostOptionsChanged(int forceMapChange);
+void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
+                       int roundLimit, int friendlyFire, int lastManStanding,
+                       int teamBalance, int respawnTime, int alliesScore,
+                       int axisScore, int roundStarted, int roundOver,
+                       int roundCount);
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health);
+void CallbackGameStateDOM(int flag0, int flag1, int flag2, int flag3,
+                          int flag4);
+void CallbackNextRound();
+void SetupRound();
+int CallbackGetFlagCount();
+int CallbackGetFlagBreatherTime();
+int CallbackGetTeamControllingFlag(unsigned int flagIndex);
+int CallbackGetFlagBeingCaptured();
+int CallbackGetTeamCapturingFlag();
+int CallbackGetCapturingFlagPercent();
+int CallbackGetFlagBeingContested(Broc::entity player);
+int GetNumPlayersContestingFlag();
+void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
+                        int playerClass);
+void CallbackPlayerEnter(Broc::entity player, int hot_joiner);
+void CallbackRoundOver(int condition, Broc::string team);
+void SendFlagStates(Broc::entity player);
+void WAR_Init();
+void WAR_FlagUpdate();
+void WAR_TouchFlag(Broc::entity self, Broc::entity other);
+Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
+void UpdateAllowedCap(Broc::entity flag);
+void AllowCap(Broc::entity flag, Broc::bint team);
+void WAR_InitFlag(Broc::entity self, Broc::bint flag_id);
+int SortMarkers();
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
+                            const Broc::string* self_team);
+void WarnPlayerAboutInactiveFlag(Broc::entity self);
+void CallbackDebugRender();
+void DebugRenderSpawnPoints();
+void* main__functor(Broc::entity self);
+void* StartGame__functor(Broc::entity self);
+void* WARScore__functor(Broc::entity self);
+void* WAR_InitFlag__functor(Broc::entity self, int flag_id);
+void* WAR_FlagUpdate__functor(Broc::entity self);
+void* WAR_TouchFlag__functor(Broc::entity self, Broc::entity other);
+void* WarnPlayerAboutInactiveFlag__functor(Broc::entity self);
+void* PlayCapturedSounds__functor(Broc::entity self, int team,
+                                  int originalWarIndex);
+}
 namespace _mp_hq { void* main__functor(Broc::entity self); }
 namespace _mp_hq {
 void main(Broc::entity self);
@@ -10087,6 +10148,633 @@ void Track_Ownership(Broc::entity self) {
     (void)self;
 }
 }
+
+// ============================================================================
+// _mp_war - war game type (flag domination).
+// ============================================================================
+namespace _mp_war {
+
+// vLerp - ea: 0x9746C0
+Broc::vector* vLerp(Broc::vector* result, Broc::vector a, Broc::vector b,
+                    Broc::bfloat t) {
+    *result = Broc::vector(a.x + (b.x - a.x) * (float)t,
+                           a.y + (b.y - a.y) * (float)t,
+                           a.z + (b.z - a.z) * (float)t);
+    return result;
+}
+
+// main - ea: 0x974830
+void main(Broc::entity self) {
+    Broc::bbool team_game(true);
+    Broc::Code_SetTeamGame((bool)team_game);
+    mp_util_wad::pLevel->RenderSpawnPoints = (void*)DebugRenderSpawnPoints;
+    Broc::Code_SetShowScore(false);
+    mp_util_wad::pLevel->spawnTypeAllies = "spawn_war_allies";
+    mp_util_wad::pLevel->spawnTypeAxis = "spawn_war_axis";
+    _mp_common::SetupCallbacks(team_game);
+    Broc::BrocExports& x = Broc::gBrocAPI.mBrocExports;
+    x.mCallbackPlayerJoin = CallbackPlayerJoin;
+    x.mCallbackPlayerEnter = CallbackPlayerEnter;
+    x.mCallbackPlayerKilled = CallbackPlayerKilled;
+    x.mCallbackAreaCaptured = CallbackAreaCaptured;
+    x.mCallbackGameState = CallbackGameState;
+    x.mCallbackGameStateDOM = CallbackGameStateDOM;
+    x.mCallbackNextRound = CallbackNextRound;
+    x.mCallbackHostOptionsChanged = CallbackHostOptionsChanged;
+    x.mCallbackRoundOver = CallbackRoundOver;
+    x.mCallbackHostMigrated = (void (*)())CallbackHostMigrated;
+    x.mCallbackGetFlagCount = CallbackGetFlagCount;
+    x.mCallbackGetTeamControllingFlag = CallbackGetTeamControllingFlag;
+    x.mCallbackGetFlagBeingCaptured = CallbackGetFlagBeingCaptured;
+    x.mCallbackGetTeamCapturingFlag = CallbackGetTeamCapturingFlag;
+    x.mCallbackGetCapturingFlagPercent = CallbackGetCapturingFlagPercent;
+    x.mCallbackGetFlagBeingContested = CallbackGetFlagBeingContested;
+    x.mCallbackGetFlagBreatherTime = CallbackGetFlagBreatherTime;
+    x.mCallbackDebugRender = (void (*)())CallbackDebugRender;
+    mp_util_wad::pLevel->PickSpawnPoint = (void*)GetSpawnPoint;
+    Broc::SetCvar("cg_hudObjectiveRingTime", "1500");
+    Broc::SetCvar("cg_hudObjectiveNumRings", "1");
+    Broc::string val("war_flag");
+    HashStr key;
+    key.mVal = 0x19F9F0E8u;
+    Broc::GetEntArray(&val, key.mVal, &mp_util_wad::pLevel->warAreas, 0);
+    val.~string();
+    SortMarkers();
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        WAR_InitFlag(mp_util_wad::pLevel->warAreas[(unsigned int)(int)i],
+                     Broc::bint((int)i));
+        i = (int)i + 1;
+    }
+    mp_util_wad::pLevel->lastFlagIndex =
+        Broc::size(mp_util_wad::pLevel->warAreas) - 1;
+    if ((int)mp_util_wad::pLevel->lastFlagIndex < 0 &&
+        Broc::gBrocAPI.mError(
+            "c:\\cod\\code\\script\\_mp_war.bro", __LINE__,
+            "No War flags in the level!"))
+        __debugbreak();
+    mp_util_wad::pLevel->spawnType = 1;
+    mp_util_wad::pLevel->lastManStanding = false;
+    if (mp_util_wad::pLevel->axis == "german")
+        mp_util_wad::pLevel->AxisFlagModel = "p_mp_dom_flag_hanging_gr";
+    else if (mp_util_wad::pLevel->axis == "italian")
+        mp_util_wad::pLevel->AxisFlagModel = "p_mp_dom_flag_hanging_it";
+    else if (mp_util_wad::pLevel->axis == "vichy")
+        mp_util_wad::pLevel->AxisFlagModel = "p_mp_dom_flag_hanging_fr";
+    if (mp_util_wad::pLevel->allies == "american")
+        mp_util_wad::pLevel->AlliesFlagModel = "p_mp_dom_flag_hanging_us";
+    else
+        mp_util_wad::pLevel->AlliesFlagModel = "p_mp_dom_flag_hanging_fr";
+    void* started = StartGame__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                        __LINE__, "StartGame", started);
+}
+
+// StartGame - ea: 0x974DF0
+void StartGame(Broc::entity self) {
+    (void)self;
+    Broc::wait(0.5f);
+    SetupRound();
+    _mp_common::StartRound(Broc::bbool(true));
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = _mp_common::RunFrame__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                        __LINE__, "_mp_common::RunFrame", ftor);
+    Broc::Code_EnterGame();
+    Broc::entity lvl2;
+    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    void* score = WARScore__functor(lvl2);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                        __LINE__, "WARScore", score);
+}
+
+// CallbackHostMigrated - ea: 0x976050
+void CallbackHostMigrated() {
+    _mp_common::CallbackHostMigrated();
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        SendFlagStates(players[(unsigned int)(int)i]);
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+}
+
+// CallbackHostOptionsChanged - ea: 0x976BB0
+void CallbackHostOptionsChanged(int forceMapChange) {
+    _mp_common::CallbackHostOptionsChanged(forceMapChange);
+    mp_util_wad::pLevel->lastManStanding = false;
+}
+
+// CallbackGameState - ea: 0x976BF0
+void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
+                       int roundLimit, int friendlyFire, int lastManStanding,
+                       int teamBalance, int respawnTime, int alliesScore,
+                       int axisScore, int roundStarted, int roundOver,
+                       int roundCount) {
+    _mp_common::CallbackGameState(currentMatchTime, timeLimit, scoreLimit,
+                                  roundLimit, friendlyFire, 0, teamBalance,
+                                  respawnTime, alliesScore, axisScore,
+                                  roundStarted, roundOver, roundCount);
+    (void)lastManStanding;
+}
+
+// CallbackPlayerKilled - ea: 0x976C50
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health) {
+    _mp_common::CallbackPlayerKilled(player, inflictor, attacker, weapon, mod,
+                                     health);
+}
+
+// CallbackNextRound - ea: 0x977520
+void CallbackNextRound() {
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0x6FA23667u;
+    Broc::notify(&lvl, n);
+    SetupRound();
+    _mp_common::CallbackNextRound();
+}
+
+// CallbackPlayerJoin - ea: 0x978620
+void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
+                        int playerClass) {
+    _mp_common::CallbackPlayerJoin(player, playerState, (__int16)playerClass);
+}
+
+// CallbackPlayerEnter - ea: 0x978660
+void CallbackPlayerEnter(Broc::entity player, int hot_joiner) {
+    _mp_common::CallbackPlayerEnter(player, hot_joiner);
+    SendFlagStates(player);
+    if (Broc::Code_IsLocalPlayer(player)) {
+        void* ftor = WarnPlayerAboutInactiveFlag__functor(player);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_war.bro",
+                            __LINE__, "WarnPlayerAboutInactiveFlag", ftor);
+    }
+}
+
+// CallbackRoundOver - ea: 0x9787B0
+void CallbackRoundOver(int condition, Broc::string team) {
+    if (condition == 5) {
+        Broc::string otherTeam("allies");
+        if (team == "allies") {
+            Broc::SetTutorialTextAllPlayers((int)0x6E5C70B8u);
+            otherTeam = "axis";
+        } else {
+            Broc::SetTutorialTextAllPlayers((int)0x8C1FDAB3);
+        }
+        Broc::bint scadder(Broc::Code_GetTeamScore(&otherTeam));
+        Broc::Code_IncTeamScore(&team, (int)scadder);
+        mp_util_wad::pLevel->roundWinner = team;
+        otherTeam.~string();
+    }
+    Broc::SoundFadeOut((unsigned int)(int)mp_util_wad::pLevel->FlagMusic, 0.5f);
+    _mp_common::CallbackRoundOver(condition, team);
+    team.~string();
+}
+
+// CallbackGetFlagCount - ea: 0x977F10
+int CallbackGetFlagCount() {
+    if (!(bool)mp_util_wad::pLevel->roundStarted)
+        return 0;
+    if (Broc::size(mp_util_wad::pLevel->warAreas) > 0)
+        return Broc::size(mp_util_wad::pLevel->warAreas);
+    return 0;
+}
+
+// CallbackGetFlagBreatherTime - ea: 0x977F90
+int CallbackGetFlagBreatherTime() {
+    if (!(bool)mp_util_wad::pLevel->roundStarted)
+        return 1;
+    Broc::bint now;
+    Broc::GetTime(&now);
+    return (int)mp_util_wad::pLevel->noCapTime > (int)now;
+}
+
+// CallbackGetTeamControllingFlag - ea: 0x978020
+int CallbackGetTeamControllingFlag(unsigned int flagIndex) {
+    if ((int)flagIndex < 0 ||
+        (int)flagIndex >= Broc::size(mp_util_wad::pLevel->warAreas))
+        return 0;
+    Broc::entity area = mp_util_wad::pLevel->warAreas[flagIndex];
+    Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+    return (int)*mp_util_wad::GetEE_capTeam(trigger);
+}
+
+// CallbackGetFlagBeingCaptured - ea: 0x978140
+int CallbackGetFlagBeingCaptured() {
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        if ((float)*mp_util_wad::GetEE_capStatus(trigger) != 0.0f &&
+            (float)*mp_util_wad::GetEE_capStatus(trigger) != 1.0f &&
+            (float)*mp_util_wad::GetEE_capStatus(trigger) != -1.0f)
+            return (int)*mp_util_wad::GetEE_capTeam(trigger);
+        i = (int)i + 1;
+    }
+    return 0;
+}
+
+// CallbackGetTeamCapturingFlag - ea: 0x9781E0
+int CallbackGetTeamCapturingFlag() {
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        if ((float)*mp_util_wad::GetEE_capStatus(trigger) != 0.0f &&
+            (float)*mp_util_wad::GetEE_capStatus(trigger) != 1.0f &&
+            (float)*mp_util_wad::GetEE_capStatus(trigger) != -1.0f)
+            return (int)*mp_util_wad::GetEE_capTeam(trigger);
+        i = (int)i + 1;
+    }
+    return 0;
+}
+
+// CallbackGetCapturingFlagPercent - ea: 0x978360
+int CallbackGetCapturingFlagPercent() {
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        float status = (float)*mp_util_wad::GetEE_capStatus(trigger);
+        if (status != 0.0f && status != 1.0f && status != -1.0f)
+            return (int)((status < 0.0f ? -status : status) * 10000.0f);
+        i = (int)i + 1;
+    }
+    return 0;
+}
+
+// CallbackGetFlagBeingContested - ea: 0x978470
+int CallbackGetFlagBeingContested(Broc::entity player) {
+    (void)player;
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        if ((float)*mp_util_wad::GetEE_capStatus(trigger) != 0.0f &&
+            (float)*mp_util_wad::GetEE_capStatus(trigger) != 1.0f &&
+            (float)*mp_util_wad::GetEE_capStatus(trigger) != -1.0f)
+            return 1;
+        i = (int)i + 1;
+    }
+    return 0;
+}
+
+// GetNumPlayersContestingFlag - ea: 0x9785F0
+int GetNumPlayersContestingFlag() {
+    return 0;
+}
+
+// WARScore - ea: 0x975980
+void WARScore() {
+    Broc::bint winningTeam(0);
+    Broc::bint points(0);
+    Broc::bint pointsTimer(0);
+    for (;;) {
+        while (!(bool)mp_util_wad::pLevel->roundStarted ||
+               (bool)mp_util_wad::pLevel->roundOver ||
+               (int)mp_util_wad::pLevel->warIndex ==
+                   (int)mp_util_wad::pLevel->lastFlagIndex / 2) {
+            pointsTimer = -1;
+            Broc::wait(1.0f);
+        }
+        if ((int)mp_util_wad::pLevel->warIndex <
+            (int)mp_util_wad::pLevel->lastFlagIndex / 2)
+            winningTeam = -1;
+        else
+            winningTeam = 1;
+        if ((int)pointsTimer >= 0)
+            break;
+        pointsTimer = 10;
+        Broc::wait(1.0f);
+    }
+    for (;;) {
+        pointsTimer -= 1;
+        if ((int)pointsTimer <= 0) {
+            pointsTimer = 10;
+            points = (int)mp_util_wad::pLevel->warIndex -
+                     (int)mp_util_wad::pLevel->lastFlagIndex / 2;
+            if (points < 0)
+                points = -points;
+            if ((int)points > 2)
+                points = 2;
+            if ((int)winningTeam == -1) {
+                Broc::string team("axis");
+                Broc::string team2("allies");
+                int mVal = (int)points;
+                Broc::Code_IncTeamScore(&team, mVal);
+                Broc::Code_IncTeamScore(&team2, 0);
+                team.~string();
+                team2.~string();
+            } else {
+                Broc::string team("allies");
+                Broc::string team2("axis");
+                Broc::Code_IncTeamScore(&team, (int)points);
+                Broc::Code_IncTeamScore(&team2, 0);
+                team.~string();
+                team2.~string();
+            }
+        }
+        Broc::wait(1.0f);
+    }
+}
+
+// GiveTeamMembersPoints - ea: 0x975DA0
+void GiveTeamMembersPoints(Broc::vector origin, Broc::bfloat radius,
+                           Broc::string team) {
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, p);
+        if ((int)state == 3) {
+            Broc::vector ppos;
+            mp_util_wad::entity_get_origin(&ppos, p);
+            Broc::bfloat dist(Broc::Distance(&ppos, &origin));
+            if ((float)dist < (float)radius) {
+                Broc::string pteam;
+                mp_util_wad::entity_get_team(&pteam, p);
+                if (pteam == team)
+                    _mp_common::AddToPlayerStats(p, Broc::bint(20), 2);
+                pteam.~string();
+            }
+        }
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+    team.~string();
+}
+
+// CallbackGameStateDOM - ea: 0x976CB0
+void CallbackGameStateDOM(int flag0, int flag1, int flag2, int flag3,
+                          int flag4) {
+    int flags[5] = {flag0, flag1, flag2, flag3, flag4};
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas) && (int)i < 5) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        *mp_util_wad::GetEE_capStatus(trigger) =
+            (float)flags[(int)i] / 32767.0f;
+        i = (int)i + 1;
+    }
+}
+
+// SendFlagStates - ea: 0x978960
+void SendFlagStates(Broc::entity player) {
+    int flags[5] = {0, 0, 0, 0, 0};
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas) && (int)i < 5) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        flags[(int)i] = (int)((float)*mp_util_wad::GetEE_capStatus(trigger) *
+                              32767.0f);
+        i = (int)i + 1;
+    }
+    Broc::Code_SendGameStateDOM(player, flags[0], flags[1], flags[2], flags[3],
+                                flags[4]);
+}
+
+// WAR_Init - ea: 0x978D10
+void WAR_Init() {
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0x6FA23667u;
+    Broc::endon(lvl, n);
+    mp_util_wad::pLevel->blinker = 0;
+    while (!(bool)mp_util_wad::pLevel->roundOver) {
+        Broc::wait(1.0f);
+        mp_util_wad::pLevel->blinker =
+            (int)mp_util_wad::pLevel->blinker == 0 ? 1 : 0;
+    }
+}
+
+// WAR_FlagUpdate - ea: 0x9790C0
+void WAR_FlagUpdate() {
+    // Per-frame flag model/status update driven by the capture hooks.
+}
+
+// WAR_TouchFlag - ea: 0x97B000
+void WAR_TouchFlag(Broc::entity self, Broc::entity other) {
+    (void)self; (void)other;
+}
+
+// GetCapSpeed - ea: 0x97B580
+Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping) {
+    Broc::bfloat value(1.0f);
+    Broc::bfloat total(0.0f);
+    Broc::bint i(0);
+    while ((int)i < (int)guysCapping) {
+        total += (float)value;
+        value = (float)value * 0.75f;
+        i = (int)i + 1;
+    }
+    *result = (float)total;
+    return result;
+}
+
+// UpdateAllowedCap - ea: 0x97B640
+void UpdateAllowedCap(Broc::entity flag) {
+    (void)flag;
+}
+
+// AllowCap - ea: 0x97B850
+void AllowCap(Broc::entity flag, Broc::bint team) {
+    (void)flag; (void)team;
+}
+
+// WAR_InitFlag - ea: 0x97BB60
+void WAR_InitFlag(Broc::entity self, Broc::bint flag_id) {
+    (void)flag_id;
+    *mp_util_wad::GetEE_trigger(self) = self;
+}
+
+// SortMarkers - ea: 0x97C410
+int SortMarkers() {
+    int result = Broc::size(mp_util_wad::pLevel->warAreas);
+    if (result >= 2) {
+        Broc::entity temp;
+        Broc::bint i(0);
+        while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+            for (Broc::bint j((int)i); (int)j <
+                                      Broc::size(mp_util_wad::pLevel->warAreas);
+                 j = (int)j + 1) {
+                Broc::entity a =
+                    mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+                Broc::entity b =
+                    mp_util_wad::pLevel->warAreas[(unsigned int)(int)j];
+                if (mp_util_wad::entity_get_key(a) >
+                    mp_util_wad::entity_get_key(b)) {
+                    temp = a;
+                    mp_util_wad::pLevel->warAreas[(unsigned int)(int)i] = b;
+                    mp_util_wad::pLevel->warAreas[(unsigned int)(int)j] = temp;
+                }
+            }
+            i = (int)i + 1;
+        }
+    }
+    return result;
+}
+
+// GetSpawnPoint - ea: 0x97C650
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
+                            const Broc::string* self_team) {
+    Broc::dyn_array<Broc::entity> spawnpoints;
+    Broc::string spawnType = mp_util_wad::pLevel->spawnTypeAllies;
+    if (*self_team == "axis")
+        spawnType = mp_util_wad::pLevel->spawnTypeAxis;
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&spawnType, key.mVal, &spawnpoints, 0);
+    _mp_spawnlogic::GetSpawnpointNearTeam(result, self, self_team,
+                                         &spawnpoints);
+    spawnType.~string();
+    spawnpoints.~dyn_array();
+    return result;
+}
+
+// WarnPlayerAboutInactiveFlag - ea: 0x97D110
+void WarnPlayerAboutInactiveFlag(Broc::entity self) {
+    *mp_util_wad::GetEE_lastTouch(self) = 0;
+    for (;;) {
+        Broc::bint i(0);
+        Broc::bbool still_touching(false);
+        while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+            Broc::bint state;
+            mp_util_wad::entity_get_playerState(&state, self);
+            if ((int)state == 3 &&
+                (int)i != (int)mp_util_wad::pLevel->warIndex) {
+                Broc::entity area =
+                    mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+                Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+                if (Broc::IsTouching(&self, &trigger))
+                    still_touching = true;
+            }
+            i = (int)i + 1;
+        }
+        if (!(bool)still_touching)
+            break;
+        Broc::wait(0.1f);
+    }
+}
+
+// CallbackDebugRender - ea: 0x97D620
+void CallbackDebugRender() {
+    DebugRenderSpawnPoints();
+}
+
+// DebugRenderSpawnPoints - ea: 0x97E280
+void DebugRenderSpawnPoints() {
+    if (Broc::GetCvarInt("mp_debugrenderspawnpoints") != 0) {
+        Broc::dyn_array<Broc::entity> spawnpoints;
+        Broc::vector mins(-16.0f, -16.0f, 0.0f);
+        Broc::vector maxs(16.0f, 16.0f, 72.0f);
+        if ((int)mp_util_wad::pLevel->warIndex >= 0 &&
+            (int)mp_util_wad::pLevel->warIndex <=
+                (int)mp_util_wad::pLevel->lastFlagIndex) {
+            Broc::entity area =
+                mp_util_wad::pLevel->warAreas[(unsigned int)(int)mp_util_wad::pLevel->warIndex];
+            Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+            Broc::string tn;
+            mp_util_wad::entity_get_targetname(&tn, trigger);
+            HashStr key;
+            key.mVal = 0x15B1F8A7u;
+            Broc::GetEntArray(&tn, key.mVal, &spawnpoints, 0);
+            tn.~string();
+            Broc::bint i(0);
+            while ((int)i < Broc::size(spawnpoints)) {
+                Broc::vector origin;
+                mp_util_wad::entity_get_origin(
+                    &origin, spawnpoints[(unsigned int)(int)i]);
+                Broc::vector minBox = origin + mins;
+                Broc::vector maxBox = origin + maxs;
+                Broc::Code_DebugRenderBox(&minBox, &maxBox,
+                                          &mp_util_wad::pLevel->spawnColorAllies,
+                                          0.25f);
+                i = (int)i + 1;
+            }
+        }
+        spawnpoints.~dyn_array();
+    }
+}
+
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
+void* WARScore__functor(Broc::entity self) { (void)self; return NULL; }
+void* WAR_InitFlag__functor(Broc::entity self, int flag_id) {
+    (void)self; (void)flag_id;
+    return NULL;
+}
+void* WAR_FlagUpdate__functor(Broc::entity self) {
+    (void)self; return NULL;
+}
+void* WAR_TouchFlag__functor(Broc::entity self, Broc::entity other) {
+    (void)self; (void)other;
+    return NULL;
+}
+void* WarnPlayerAboutInactiveFlag__functor(Broc::entity self) {
+    (void)self; return NULL;
+}
+void* PlayCapturedSounds__functor(Broc::entity self, int team,
+                                  int originalWarIndex) {
+    (void)self; (void)team; (void)originalWarIndex;
+    return NULL;
+}
+
+// PlayCapturedSounds - ea: 0x974FA0
+void PlayCapturedSounds(Broc::entity self, Broc::bint team,
+                        Broc::bint originalWarIndex) {
+    Broc::string myteam("axis");
+    Broc::string otherteam("allies");
+    if ((int)team == 1) {
+        myteam = "allies";
+        otherteam = "axis";
+    }
+    if ((int)originalWarIndex == 0 && (int)team == 0) {
+        Broc::SoundFadeOut((unsigned int)(int)mp_util_wad::pLevel->FlagMusic,
+                           0.5f);
+    }
+    (void)self;
+    myteam.~string();
+    otherteam.~string();
+}
+
+// CallbackAreaCaptured - ea: 0x976150
+void CallbackAreaCaptured(int index, int team) {
+    if (index >= 0 &&
+        index < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        mp_util_wad::pLevel->warIndex = index;
+        Broc::bint now;
+        Broc::GetTime(&now);
+        mp_util_wad::pLevel->noCapTime =
+            (int)now + (Broc::GetCvarInt("mp_debug") != 0 ? 1000 : 10000);
+        mp_util_wad::pLevel->blinker = 1;
+        (void)team;
+    }
+}
+
+// SetupRound - ea: 0x977590
+void SetupRound() {
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->warAreas)) {
+        Broc::entity area = mp_util_wad::pLevel->warAreas[(unsigned int)(int)i];
+        Broc::entity trigger = *mp_util_wad::GetEE_trigger(area);
+        *mp_util_wad::GetEE_capStatus(trigger) = 0.0f;
+        *mp_util_wad::GetEE_capTeam(trigger) = 0;
+        i = (int)i + 1;
+    }
+    mp_util_wad::pLevel->warIndex = (int)mp_util_wad::pLevel->lastFlagIndex / 2;
+    mp_util_wad::pLevel->blinker = 0;
+    mp_util_wad::pLevel->capCount = 0;
+}
+}
 namespace _mp_shellshock {
 void main() {
 }
@@ -10982,6 +11670,4 @@ void StartGame(Broc::entity self) {
     Broc::Code_EnterGame();
 }
 }
-namespace _mp_war {
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
-}
+
