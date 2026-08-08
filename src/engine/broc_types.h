@@ -391,7 +391,9 @@ struct BrocAPI {
     float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
     char _pad188[0x1A0 - 0x188];                          // +0x188
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
-    char _pad1A4[0x6D8 - 0x1A4];                          // +0x1A4
+    char _pad1A4[0x2A0 - 0x1A4];                          // +0x1A4
+    int (*mWarning)(const char* file, int line, const char* msg);  // +0x2A0
+    char _pad2A4[0x6D8 - 0x2A4];                          // +0x2A4
     void (*mDelete)(unsigned int);                        // +0x6D8
     char _pad6DC[0xF1C - 0x6DC];                          // +0x6DC
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
@@ -440,6 +442,8 @@ template <typename T> int size(const Broc::dyn_array<T>& ar);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T& elt);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
 }
+
+bool IS_NAN(float x);  // global (defined in Broc.cpp)
 
 // ============================================================================
 // PathNodes namespace — AI path node handles (global scope, verified against IDA)

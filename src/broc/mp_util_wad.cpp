@@ -1520,4 +1520,42 @@ void audio_spawner(Broc::entity self, Broc::string sound) {
         sound.~string();
     }
 }
+
+// ambient_system - ea: 0x9372E0
+void ambient_system(Broc::entity lvl, Broc::string spawn_package) {
+    (void)lvl;
+    extern void* audio_spawner__functor(Broc::entity, Broc::string);
+    bool bad_min = IS_NAN((float)mp_util_wad::pLevel->audio_current_ambient_min) ||
+                   !Broc::IsDefined(mp_util_wad::pLevel->audio_ambient_min) ||
+                   (float)mp_util_wad::pLevel->audio_current_ambient_min < 0.09f ||
+                   (float)mp_util_wad::pLevel->audio_current_ambient_min > 100000.0f;
+    if (bad_min) {
+        if (Broc::gBrocAPI.mWarning("c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                              "_mp_audio.bro Missing amb_min value, or the value is out of range, Setting Value to 1."))
+            __debugbreak();
+        mp_util_wad::pLevel->audio_current_ambient_min = 1.0f;
+    } else {
+        bool bad_max = IS_NAN((float)mp_util_wad::pLevel->audio_current_ambient_wait) ||
+                       !Broc::IsDefined(mp_util_wad::pLevel->audio_current_ambient_wait) ||
+                       (float)mp_util_wad::pLevel->audio_current_ambient_wait < 0.3f ||
+                       (float)mp_util_wad::pLevel->audio_current_ambient_wait > 100000.0f;
+        if (!bad_max) {
+            while (1) {
+                Broc::entity fMin;
+                Broc::string fMax = mp_util_wad::pLevel->audio_current_ambpack;
+                void* ftor = audio_spawner__functor(fMin, fMax);
+                Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
+                                    __LINE__, "audio_spawner", ftor);
+                float fMinV = (float)mp_util_wad::pLevel->audio_current_ambient_min;
+                float fMaxV = (float)mp_util_wad::pLevel->audio_current_ambient_wait;
+                Broc::wait(RandomFloatRange(fMinV, fMaxV));
+            }
+        }
+        if (Broc::gBrocAPI.mWarning("c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                              "_mp_audio.bro Missing amb_max value, or the value is out of range. Setting Value to 5."))
+            __debugbreak();
+        mp_util_wad::pLevel->audio_current_ambient_wait = 5.0f;
+    }
+    spawn_package.~string();
+}
 }
