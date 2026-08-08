@@ -15,11 +15,15 @@
 // Only the StubData fields used by game_xbox.o are declared; size 0x1BF4.
 // ============================================================================
 struct SaveGameData {
-    unsigned char _pad0[0x3B4];
-    bool savedStateIsValid;         // +0x3B4 (StubData.savedStateIsValid)
-    unsigned char _pad1[0x3BD - 0x3B5];
-    bool appearOnline;              // +0x3BD (StubData.appearOnline)
-    unsigned char _pad2[0x1BF4 - 0x3BE];
+    unsigned char _pad0[0x310];
+    int liveState;                  // +0x310 (StubData.liveState)
+    unsigned char _pad1[0x3B4 - 0x314];
+    bool savedStateIsValid;         // +0x3B4
+    unsigned char _pad2[0x3BD - 0x3B5];
+    bool appearOnline;              // +0x3BD
+    unsigned char _pad3[0x3BF - 0x3BE];
+    bool mDisableSave;              // +0x3BF
+    unsigned char _pad4[0x1BF4 - 0x3C0];
 };
 static_assert(sizeof(SaveGameData) == 0x1BF4, "SaveGameData size mismatch");
 extern SaveGameData gSaveGameData[4];

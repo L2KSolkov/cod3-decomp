@@ -190,6 +190,12 @@ public:
                                          unsigned int dwSize);
     HRESULT __stdcall VoiceMailStopped(unsigned int dwLocalPort);
     void RefreshMuteList(unsigned int controllerIndex);
+    void ShowFriendsList(unsigned int portNumber);
+    void ShowPlayersList(unsigned int portNumber, unsigned int bitFlagMask);
+    void ShowLoginScreen(unsigned int serviceBitfield);
+    void ToggleOfflineAppearance(unsigned int portNumber);
+    void Render();
+    char* GetIcon(unsigned int portNumber);
 
     // LiveWrapper batch 2
     bool HandleInput(unsigned int port, const XINPUT_STATE* controllerInput);

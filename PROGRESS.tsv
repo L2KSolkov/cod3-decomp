@@ -15,7 +15,7 @@ cg.o		cg.o	game	350	TODO
 cl.o		cl.o	game	313	TODO	
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
-game_xbox.o		game_xbox.o	game	210	IN_PROGRESS	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26: ctor/dtor, StartLiveSession, Occupy/FreeSlot, RegisterKey/ClearKeys, GetPortToLock, DoWork/HandleSessionCreation, Logon/LogoffCallBack, LeaveLiveSession, RunQuery, voice comm/mute/data bd sends) + MPPlayerSet header (2) = 142/210; XLive APIs stubbed via /FORCE; FEMenu classes (XboxLiveOptionsMenu/InGameLiveOptionsMenu ~50) remain; HandleError case-1 + LABEL_59 use Com_Printf (was Print)
+game_xbox.o		game_xbox.o	game	210	PORTED	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26) + MPPlayerSet header (2) + XboxLiveMenus.cpp (46: XboxLiveOptionsMenu + InGameLiveOptionsMenu classes, ShowNotificationIcon, Xbox_LaunchInfo, RenderUIX) = 210/210; FEMenu/UIListBox/PanelFile/DialogMenu bases extern (shell.o/core.o provide); HandleError Com_Printf fix; XLive APIs stubbed via /FORCE
 sv.o		sv.o	game	118	PORTED	[game:sv.o] sv_world collision suite + SV_PostConnect (10 funcs)
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	PORTED	
 aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED	Phase 4: apsSuppliedActions.h/.cpp (particle action stubs, ABI-correct ctors from IDA)
