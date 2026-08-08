@@ -18,7 +18,7 @@ struct SaveGameData {
     unsigned char _pad0[0x310];
     int liveState;                  // +0x310 (StubData.liveState)
     unsigned char savedInvite[0x9C];  // +0x314 (XONLINE_ACCEPTED_GAMEINVITE)
-    unsigned char _pad1[0x3B4 - 0x3B0];
+    int mControllerPort;            // +0x3B0 (StubData.mControllerPort)
     bool savedStateIsValid;         // +0x3B4
     unsigned char _pad2[0x3BD - 0x3B5];
     bool appearOnline;              // +0x3BD

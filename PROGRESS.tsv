@@ -16,7 +16,7 @@ cl.o		cl.o	game	313	TODO
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
 game_xbox.o		game_xbox.o	game	210	PORTED	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26) + MPPlayerSet header (2) + XboxLiveMenus.cpp (46: XboxLiveOptionsMenu + InGameLiveOptionsMenu classes, ShowNotificationIcon, Xbox_LaunchInfo, RenderUIX) = 210/210; FEMenu/UIListBox/PanelFile/DialogMenu bases extern (shell.o/core.o provide); HandleError Com_Printf fix; XLive APIs stubbed via /FORCE
-sv.o		sv.o	game	118	PORTED	[game:sv.o] sv_world collision suite + SV_PostConnect (10 funcs)
+sv.o		sv.o	game	118	PORTED	[game:sv.o] COMPLETE 118/118: sv_world collision suite, SV_PostConnect, sv_init/configstrings/reliable cmds, sv_game DObj/XModel, sv_misc helpers, SV_SpawnServer server boot sequence
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	PORTED	
 aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED	Phase 4: apsSuppliedActions.h/.cpp (particle action stubs, ABI-correct ctors from IDA)
 phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	PORTED	physics_system.cpp/h: phys_sys API (create/destroy/slots/init/frame/update_constraint_infos/get_user_rigid_body); phys_heap_memory_pool<T> + phys_inplace_avl_tree templates (add/find/remove/rotate/avl_max) in pulse_sum.h; real 0x360 physics_system layout; constraint ctors; rbint/rbcint + list functors; create<T> free template incl. contact tree-insert
