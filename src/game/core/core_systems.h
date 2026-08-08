@@ -43,6 +43,7 @@ struct CameraShakeInstance;
 struct EndOnScriptNode;
 struct DbStringHashTable;
 struct DbTable;
+struct DbQuery;
 
 // ============================================================================
 // Bitmask<T> - typed flag word (sizeof(T) bytes)
@@ -179,6 +180,9 @@ struct AbstractEffectSound : AbstractEffect {
     DbLinkedHandle<void, void> mSound;  // +0x98 (SoundDevice::Sound handle)
     nslWaveID       mWaveHdl;      // +0x9C
 
+    AbstractEffectSound(TPakId pakId, DbLinkedHandle<void, void> ent,
+                        int flags, float delayTrigger,
+                        SoundParams* soundParams);  // ea: 0x004CF3E0
     void StartFadeOut(float seconds);  // ea: 0x004C12A0
     void SetPoPtr(math::Mat43* po);        // ea: 0x004CD050
     bool IsQueued() const;                // ea: 0x004CD0C0
@@ -201,6 +205,7 @@ static_assert(sizeof(AbstractEffectSound) == 0xA0,
 struct AbstractEffectParticle : AbstractEffect {
     ParticleEffect* mParticle;  // +0x34
 
+    AbstractEffectParticle();   // ea: 0x004CF600
     void SetPoPtr(math::Mat43* po);               // ea: 0x004BD200
     bool IsLooping() const;                       // ea: 0x004BD220
     void AdjustEffect_Scale(const char* param,
@@ -247,6 +252,7 @@ struct AbstractEffectLight : AbstractEffect {
     LightEffect*  mVertLight; // +0x3C
     float         mTime;      // +0x40
 
+    AbstractEffectLight(Params& params);  // ea: 0x004CDD20
     Broc::string GetDebugString() const;  // ea: 0x004BD300
     math::Position3 GetPositionOnEntity(Entity* e) const;  // ea: 0x004CDEF0
     void FrameAdvance(float delta_t);     // ea: 0x004CDF50
@@ -285,6 +291,7 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
     RumbleEffectInstanceHandle mRumbleHandle[1];  // +0x68
     CameraShakeInstance* mShake[1];               // +0x6C
 
+    AbstractEffectShakeAndRumble(Params& params);  // ea: 0x004CF6F0
     Broc::string GetDebugString() const;          // ea: 0x004BD370
     math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
     float GetDistanceScale(int client);           // ea: 0x004CE110
@@ -366,6 +373,8 @@ struct EffectEventSys {
         char          mSCRIPT_ID[128];   // +0x130 (DbQueryString)
         int           mCONTEXT;          // +0x1B0
         int           mMATERIAL;         // +0x1B4
+
+        void ConstructQuery(DbQuery* query);  // ea: 0x004E8390
     };
     static_assert(sizeof(CachedQuery) == 0x1B8, "CachedQuery size mismatch");
 

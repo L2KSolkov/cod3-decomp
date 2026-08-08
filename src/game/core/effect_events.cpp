@@ -17,6 +17,7 @@ extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 bool Warning(const char* fmt, ...);
+bool Error(const char* fmt, ...);
 }
 
 #define ASSERT_IDX(idx, cap, line)                                         \
@@ -135,6 +136,27 @@ extern Entity* GetPlayer(int idx);
 extern int currCl;
 extern float clamp_0_to_1(float f);
 extern void Entity_Notify(Entity* ent, unsigned int h);
+extern void* DbTablesetMgr_sInst;  // 0x00F00E70
+extern void* DbTablesetMgr_Find(void* mgr, TPakId pakId, const char* key,
+                                TPakId* foundPakId);
+extern DbTable* DbTableSet_GetTable(void* set, const char* name);
+extern void ValidatePakId(TPakId pakId);
+extern TPakId PakManager_GetGlobalPakId(void* mgr);
+extern const char* PakManager_GetPakLongName(void* mgr, TPakId pakId);
+extern const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row,
+                                                         int id);
+extern const float* DbRow_GetFieldValuePtrFloat(const DbRow* row, int id);
+extern const char* DialogueManager_GetDialogue(void* mgr, unsigned int hash);
+extern void* GdbFileManager_sInst;  // 0x00F4F434
+extern void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId,
+                                       const char* name, const char* type);
+extern void* GdbVector_At(void* vec, unsigned int index);
+extern unsigned int SoundDevice_FindWave(void* sInst, const char* name);
+extern void* AddLight(TPakId pakId, int type, math::Position3* pos, int time);
+extern void LightEffect_SetColor(void* light, float r, float g, float b,
+                                 float a);
+extern bool g_indoor;  // 0x00F00E7D
+extern const char* s_RifleIndoorSound;  // 0x00DD8A38
 extern unsigned int SoundDevice_PlaySound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,
     const math::Position3* pos, const math::Position3* dir, float volume,
@@ -230,6 +252,33 @@ static unsigned int RandNext()
     holdrand = holdrand * 214013 + 2531011;
     return (holdrand >> 16) & 0x7FFF;
 }
+
+// ============================================================================
+// GDB event + particle params surfaces (name-accessed fields)
+// ============================================================================
+struct gdEvent {
+    InplaceString sound;              // +0x00
+    InplaceString particle1;          // +0x04
+    InplaceString particle2;          // +0x08
+    InplaceString particle3;          // +0x0C
+    InplaceString particle4;          // +0x10
+    InplaceString particle5;          // +0x14
+    InplaceString particle_bone;      // +0x18
+    InplaceString rumble;             // +0x1C
+    InplaceString light;              // +0x20
+    InplaceString delayed_event;      // +0x24
+    int  update_position_only;        // +0x28
+    int  use_world_orient;            // +0x2C
+    int  fade_out;                    // +0x30
+    float delay;                      // +0x34
+};
+
+extern ParticleParams gParticleParams;  // 0x00F00F58
+ParticleParams gParticleParams;
+
+struct GdbFile {
+    void* mValues;  // InplaceVector<GdbFileSet::Value>* (name-accessed)
+};
 
 extern SoundOptions gSoundOptions;  // 0x00F00EF0
 
@@ -3359,4 +3408,830 @@ void EffectEventSys::GetDebugFxList(Entity* ent,
         for (size_t k = 0; k < s.size(); ++k)
             fx->push_back(s[k]);
     }
+}
+
+// ============================================================================
+// Effect event table queries
+// ============================================================================
+
+// ea: 0x004CAD20
+void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
+                                     DbTable* type,
+                                     ae_sized_array<const DbTable*, 16>* tables)
+{
+    TPakId mGlobalPakId = PakManager_GetGlobalPakId(PakManager_sInst);
+    TPakId foundPakId = mGlobalPakId;
+    void* triggers = DbTablesetMgr_Find(DbTablesetMgr_sInst, mGlobalPakId,
+                                        type->mName, &foundPakId);
+    ValidatePakId(foundPakId);
+    if (triggers != nullptr)
+    {
+        ValidatePakId(foundPakId);
+        DbTable* t = DbTableSet_GetTable(triggers, "TRIGGERS");
+        if (t != nullptr)
+            tables->push_back(t);
+    }
+    TPakId v9 = CurPakId();
+    foundPakId = v9;
+    void* v11 = DbTablesetMgr_Find(DbTablesetMgr_sInst, v9, type->mName,
+                                   &foundPakId);
+    ValidatePakId(foundPakId);
+    if (v11 != nullptr && v11 != triggers)
+    {
+        ValidatePakId(foundPakId);
+        DbTable* t = DbTableSet_GetTable(v11, "TRIGGERS");
+        if (t != nullptr)
+            tables->push_back(t);
+    }
+    if (ts_name != nullptr)
+    {
+        ae_formatted_string<32, unsigned char> v12("%s-%s", ts_name,
+                                                   type->mName);
+        foundPakId = pak;
+        void* v14 = DbTablesetMgr_Find(DbTablesetMgr_sInst, pak,
+                                       (const char*)v12.mBuff, &foundPakId);
+        ValidatePakId(foundPakId);
+        if (v14 != nullptr)
+        {
+            ValidatePakId(foundPakId);
+            DbTable* t = DbTableSet_GetTable(v14, "TRIGGERS");
+            if (t != nullptr)
+                tables->push_back(t);
+        }
+    }
+}
+
+// ea: 0x004CAE70
+void EffectEventSys::GetEffectTables(TPakId pak, DbTable* ts_name,
+                                     const char* ts_global, const char* type,
+                                     ae_sized_array<const DbTable*, 16>* tables)
+{
+    TPakId v6 = CurPakId();
+    TPakId foundPakId = v6;
+    void* levelts = DbTablesetMgr_Find(DbTablesetMgr_sInst, v6, ts_name->mName,
+                                       &foundPakId);
+    ValidatePakId(foundPakId);
+    if (levelts != nullptr)
+    {
+        ValidatePakId(foundPakId);
+        DbTable* t = DbTableSet_GetTable(levelts, "TRIGGERS");
+        if (t != nullptr)
+            tables->push_back(t);
+    }
+}
+
+// DbQuery::Where — append a constraint (DbField + value) to the buffer
+static void DbQueryWhere(DbQuery* query, int colId, const void* value,
+                         size_t size, bool weak)
+{
+    const DbSchema* schema = query->mDb->mSchema;
+    DbFieldSet& cs = query->mConstraints;
+    unsigned int pos = query->mConstraintPos;
+    DbField* f = (DbField*)&query->mConstraintBuffer[pos];
+    f->m_column_type = schema->mColumnTypes[colId];
+    f->m_match_type = schema->mMatchTypes[colId];
+    f->mId = (uint16_t)colId;
+    memcpy(&query->mConstraintBuffer[pos + 4], value, size);
+    query->mConstraintPos = pos + 4 + (unsigned int)((size + 3) & ~3u);
+    cs.mIdToIdxMap[colId] = (unsigned char)cs.mNumParams;
+    cs.mFields[cs.mNumParams] = f;
+    ++cs.mNumParams;
+    cs.mSpecifiedById.mBits[colId >> 3] |=
+        (unsigned char)(1u << (colId & 7));
+    if (weak)
+        cs.mWeakById.mBits[colId >> 3] |= (unsigned char)(1u << (colId & 7));
+}
+
+// ea: 0x004E8390
+void EffectEventSys::CachedQuery::ConstructQuery(DbQuery* query)
+{
+    if ((mSpecifiedFields.mBits[0] & 0x100) != 0)
+    {
+        bool weak = (mWeakFields.mBits[8 >> 3] >> (8 & 7)) & 1;
+        DbQueryWhere(query, 8, &mWEAPON_ID, sizeof(mWEAPON_ID), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x10) != 0)
+    {
+        bool weak = (mWeakFields.mBits[4 >> 3] >> (4 & 7)) & 1;
+        DbQueryWhere(query, 4, &mMYMATERIAL, sizeof(mMYMATERIAL), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x20) != 0)
+    {
+        bool weak = (mWeakFields.mBits[5 >> 3] >> (5 & 7)) & 1;
+        DbQueryWhere(query, 5, &mMIN_DIST, sizeof(mMIN_DIST), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x40) != 0)
+    {
+        bool weak = (mWeakFields.mBits[6 >> 3] >> (6 & 7)) & 1;
+        DbQueryWhere(query, 6, &mMAX_DIST, sizeof(mMAX_DIST), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x1000) != 0)
+    {
+        bool weak = (mWeakFields.mBits[12 >> 3] >> (12 & 7)) & 1;
+        DbQueryWhere(query, 12, &mBARREL, sizeof(mBARREL), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 4) != 0)
+    {
+        bool weak = (mWeakFields.mBits[2 >> 3] >> (2 & 7)) & 1;
+        DbQueryWhere(query, 2, &mSTANCE, sizeof(mSTANCE), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x200) != 0)
+    {
+        bool weak = (mWeakFields.mBits[9 >> 3] >> (9 & 7)) & 1;
+        DbQueryWhere(query, 9, &mVEHICLE_ID, sizeof(mVEHICLE_ID), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x400) != 0)
+    {
+        bool weak = (mWeakFields.mBits[10 >> 3] >> (10 & 7)) & 1;
+        DbQueryWhere(query, 10, &mACTION, sizeof(mACTION), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x800) != 0)
+    {
+        bool weak = (mWeakFields.mBits[11 >> 3] >> (11 & 7)) & 1;
+        DbQueryWhere(query, 11, &mWEAPON_CLASS, sizeof(mWEAPON_CLASS), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 2) != 0)
+    {
+        bool weak = (mWeakFields.mBits[1 >> 3] >> (1 & 7)) & 1;
+        DbQueryWhere(query, 1, &mFOOTSTEP, sizeof(mFOOTSTEP), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 0x80) != 0)
+    {
+        bool weak = (mWeakFields.mBits[7 >> 3] >> (7 & 7)) & 1;
+        DbQueryWhere(query, 7, &mSCRIPT_ID, sizeof(mSCRIPT_ID), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 1) != 0)
+    {
+        bool weak = (mWeakFields.mBits[0 >> 3] >> (0 & 7)) & 1;
+        DbQueryWhere(query, 0, &mCONTEXT, sizeof(mCONTEXT), weak);
+    }
+    if ((mSpecifiedFields.mBits[0] & 8) != 0)
+    {
+        bool weak = (mWeakFields.mBits[3 >> 3] >> (3 & 7)) & 1;
+        DbQueryWhere(query, 3, &mMATERIAL, sizeof(mMATERIAL), weak);
+    }
+}
+
+// ea: 0x004CAEE0
+static DbRow* SelectGroupItem(const ae_sized_array<DbRow*, 64>* group)
+{
+    ae_sized_array<float, 32> weights;
+    weights.m_size = 0;
+    float total_weight = 0.0f;
+    if (group->m_size >= 100)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 740;
+        AeAssert::gCurrentExpr = "group.size() < 100";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("absurdly large group"))
+            __debugbreak();
+    }
+    unsigned int v2 = 0;
+    float v5 = 0.0f;
+    while (v2 < (unsigned int)group->m_size)
+    {
+        ASSERT_IDX(v2, 64, 148);
+        const float* FieldValue = DbRow_GetFieldValuePtrFloat(group->m_elements[v2], 0x24);
+        float weight;
+        if (FieldValue != nullptr)
+        {
+            weight = *FieldValue;
+            if (weight <= 0.0f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\EffectEventSys.cpp";
+                AeAssert::gCurrentLine = 745;
+                AeAssert::gCurrentExpr = "weight > 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "effect weights must be greater than zero"))
+                    __debugbreak();
+            }
+        }
+        else
+        {
+            weight = 1.0f;
+        }
+        weights.push_back(weight);
+        v5 = weight + total_weight;
+        ++v2;
+        total_weight = weight + total_weight;
+    }
+    if (v5 <= 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 751;
+        AeAssert::gCurrentExpr = "total_weight > 0.0f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("total group weight must be positive"))
+            __debugbreak();
+    }
+    holdrand = holdrand * 214013 + 2531011;
+    float v12 = (float)((holdrand >> 17) & 0x7FFF);
+    unsigned int v6 = 0;
+    int v7 = group->m_size - 1;
+    float weight = 0.0f;
+    total_weight = total_weight * v12 / 32768.0f;
+    if (v7 == 0)
+    {
+        v6 = group->m_size - 1;
+        ASSERT_IDX(v6, 64, 148);
+        return group->m_elements[v6];
+    }
+    while (true)
+    {
+        if (total_weight >= weight)
+        {
+            ASSERT_IDX(v6, 32, 154);
+            if ((weights.m_elements[v6] + weight) > total_weight)
+                break;
+        }
+        ASSERT_IDX(v6, 32, 154);
+        float v8 = weights.m_elements[v6++] + weight;
+        weight = v8;
+        if (v6 >= (unsigned int)v7)
+        {
+            v6 = group->m_size - 1;
+            ASSERT_IDX(v6, 64, 148);
+            return group->m_elements[v6];
+        }
+    }
+    ASSERT_IDX(v6, 64, 148);
+    return group->m_elements[v6];
+}
+
+// ea: 0x004CB280
+void ReduceGroups(ae_sized_array<DbRow*, 64>* matches)
+{
+    if (matches->m_size == 0)
+        return;
+    unsigned int v1 = 0;
+    while (true)
+    {
+        ASSERT_IDX(v1, 64, 154);
+        const InplaceString* FieldValue =
+            DbRow_GetFieldValuePtrString(matches->m_elements[v1], 0x25);
+        const char* v3 = FieldValue != nullptr ? FieldValue->mStr : nullptr;
+        if (v3 != nullptr && *v3 != 0)
+            break;
+        if (++v1 >= (unsigned int)matches->m_size)
+            return;
+    }
+    ae_sized_array<DbRow*, 64> results = *matches;
+    int m_size = results.m_size;
+    unsigned int seen_results[2] = {0, 0};
+    matches->m_size = 0;
+    for (int v5 = 0; v5 < m_size; ++v5)
+    {
+        ASSERT_IDX(v5, 64, 154);
+        const InplaceString* v7 =
+            DbRow_GetFieldValuePtrString(results.m_elements[v5], 0x25);
+        const char* mStr = v7 != nullptr ? v7->mStr : nullptr;
+        if (mStr == nullptr || *mStr == 0)
+        {
+            seen_results[v5 >> 5] |= 1u << (v5 & 0x1F);
+            ASSERT_IDX(v5, 64, 154);
+            matches->push_back(results.m_elements[v5]);
+        }
+    }
+    unsigned int i = 0;
+    while (i < (unsigned int)results.m_size)
+    {
+        unsigned int v9 = i;
+        if ((seen_results[i >> 5] & (1u << (i & 0x1F))) == 0)
+        {
+            ASSERT_IDX(i, 64, 154);
+            const InplaceString* v14 =
+                DbRow_GetFieldValuePtrString(results.m_elements[i], 0x25);
+            const char* src = v14 != nullptr ? v14->mStr : nullptr;
+            if (src == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\EffectEventSys.cpp";
+                AeAssert::gCurrentLine = 821;
+                AeAssert::gCurrentExpr = "group";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "everything unseen must have a group!"))
+                    __debugbreak();
+            }
+            ae_sized_array<DbRow*, 64> grouped_results;
+            grouped_results.m_size = 0;
+            for (unsigned int v13 = 0; v13 < (unsigned int)results.m_size;
+                 ++v13)
+            {
+                if ((seen_results[v13 >> 5] & (1u << (v13 & 0x1F))) == 0)
+                {
+                    ASSERT_IDX(v13, 64, 154);
+                    const InplaceString* v18 =
+                        DbRow_GetFieldValuePtrString(results.m_elements[v13],
+                                                     0x25);
+                    const char* v19 = v18 != nullptr ? v18->mStr : nullptr;
+                    if (v19 != nullptr && _stricmp(v19, src) == 0)
+                    {
+                        seen_results[v13 >> 5] |= 1u << (v13 & 0x1F);
+                        ASSERT_IDX(v13, 64, 154);
+                        if (grouped_results.m_size < 64)
+                            grouped_results.m_elements[grouped_results.m_size++] =
+                                results.m_elements[v13];
+                    }
+                }
+            }
+            DbRow* v20 = SelectGroupItem(&grouped_results);
+            matches->push_back(v20);
+        }
+        ++i;
+    }
+}
+
+// ============================================================================
+// Effect subclass ctors (ctor_dtor family)
+// ============================================================================
+
+// ea: 0x004CF3E0
+AbstractEffectSound::AbstractEffectSound(TPakId pakId,
+                                         DbLinkedHandle<void, void> ent,
+                                         int flags, float delayTrigger,
+                                         SoundParams* soundParams)
+{
+    mEffectName = Broc::string((Broc::string::Block*)nullptr);
+    mEntity.mHandle.mVal = 0;
+    mCodeFlags.mVal = 0;
+    mDelayTrigger = delayTrigger;
+    mPakId = pakId;
+    mEntity = ent;
+    mFlags = flags;
+    mPoPtr = nullptr;
+    mDelayCount = 0.0f;
+    mCountSinceStarted = 0;
+    mEffectNameHashStr = 0;
+    mCodeFlags.mVal = 0;
+    mSoundParams.mEnt.mHandle.mVal = 0;
+    mSound.mHandle.mVal = 0;
+    mType = AeHash("AbstractEffectSound");
+    mSoundParams = *soundParams;
+    mSubtitle = mSoundParams.mSubtitle;
+    mRetryCount = 0;
+    mFlags = 0;
+    if (mSoundParams.mCd != nullptr)
+    {
+        mCodeFlags.mVal |= 0x40u;
+        CollisionDesc* v8 = mSoundParams.mCd;
+        mCdPos.v.m128_f32[0] = v8->simple.coord.v.m128_f32[0];
+        mCdPos.v.m128_f32[1] = v8->simple.coord.v.m128_f32[1];
+        mCdPos.v.m128_f32[2] = v8->simple.coord.v.m128_f32[2];
+        mCdPos.v.m128_f32[3] = v8->simple.coord.v.m128_f32[3];
+    }
+    if (mSoundParams.mQueue != 0)
+        mCodeFlags.mVal |= 0x10u;
+    mCodeFlags.mVal |= 4u;
+    mEffectName = mSoundParams.mNameRef;
+    mEffectNameHashStr = mSoundParams.mHashStr;
+    if (mEffectNameHashStr == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+        AeAssert::gCurrentLine = 149;
+        AeAssert::gCurrentExpr = "mEffectNameHashStr";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "Could not set up hash string for sound name %s",
+                mSoundParams.mNameRef))
+            __debugbreak();
+    }
+    mWaveHdl = SoundDevice_FindWave(SoundDevice_sInst, mSoundParams.mNameRef);
+    unsigned int mVal = mSoundParams.mEnt.mHandle.mVal;
+    unsigned int v11 = mVal & 0xFFF;
+    if (v11 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v11].mKey
+        && EntityHandleDb::sInst.mElements[v11].mObject != nullptr)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v11].mObject;
+        SndWait* sndWait = (SndWait*)&mObject->snd_wait;
+        if (sndWait->notifyHash.mHash != 0 && sndWait->soundName.mHash == 0)
+            sndWait->soundName.mHash = mEffectNameHashStr;
+    }
+    FrameAdvance(0.0f);
+}
+
+// ea: 0x004CF600
+AbstractEffectParticle::AbstractEffectParticle()
+{
+    unsigned int mVal = gParticleParams.mEnt.mHandle.mVal;
+    float mDelayTrigger = gParticleParams.mDelayTrigger;
+    int mFlags = gParticleParams.mFlags;
+    TPakId mPakId = gParticleParams.mPakId;
+    mEffectName = Broc::string((Broc::string::Block*)nullptr);
+    mEntity.mHandle.mVal = 0;
+    mCodeFlags.mVal = 0;
+    mDelayTrigger = mDelayTrigger;
+    mPakId = mPakId;
+    mEntity.mHandle.mVal = mVal;
+    mFlags = mFlags;
+    mPoPtr = nullptr;
+    mDelayCount = 0.0f;
+    mCountSinceStarted = 0;
+    mEffectNameHashStr = 0;
+    mCodeFlags.mVal = 0;
+    mEffectName = gParticleParams.mNameRef;
+    mType = AeHash("AbstractEffectParticle");
+    mEffectNameHashStr = AeHash(gParticleParams.mNameRef);
+    mParticle = nullptr;
+    FrameAdvance(0.0f);
+}
+
+// ea: 0x004CF6F0
+AbstractEffectShakeAndRumble::AbstractEffectShakeAndRumble(Params& params)
+{
+    unsigned int mVal = params.ent.mHandle.mVal;
+    float delayTrigger = params.delayTrigger;
+    int flags = params.flags;
+    mEffectName = Broc::string((Broc::string::Block*)nullptr);
+    mEntity.mHandle.mVal = 0;
+    mCodeFlags.mVal = 0;
+    mDelayTrigger = delayTrigger;
+    mPakId = params.pakId;
+    mEntity.mHandle.mVal = mVal;
+    mFlags = flags;
+    mPoPtr = nullptr;
+    mDelayCount = 0.0f;
+    mCountSinceStarted = 0;
+    mEffectNameHashStr = 0;
+    mCodeFlags.mVal = 0;
+    gdShakeRumble* sr = params.shakeRumble;
+    mTime = sr->time;
+    mFreq = sr->freq;
+    mMovement = sr->movement;
+    mNextDelay = sr->nextDelay;
+    mRumble = sr->rumble;
+    mBlur = sr->blur;
+    mMinDist2 = sr->minDist * sr->minDist;
+    mMaxDist2 = sr->maxDist * sr->maxDist;
+    mSteadyDuration = sr->steadyDuration;
+    mRampUpTime = sr->rampUpTime;
+    mRampDownTime = sr->rampDownTime;
+    mUseHighFreqVibrator = sr->useHighFreqVib != 0;
+    mRumbleEnabled = sr->rumbleEnabled != 0;
+    unsigned int v5 = params.ent.mHandle.mVal;
+    unsigned int v6 = v5 & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v6 < 0x540 && v5 >> 12 == EntityHandleDb::sInst.mElements[v6].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+    mBone = FX_GetBoneIndex(mObject->mDObj, AeHash(sr->bone.mStr));
+    mRumbleHandle[0].mVal = 0;
+    mType = AeHash("AbstractEffectShakeAndRumble");
+    mShake[0] = nullptr;
+    FrameAdvance(0.0f);
+}
+
+// ea: 0x004CDD20
+AbstractEffectLight::AbstractEffectLight(Params& params)
+{
+    mEffectName = Broc::string((Broc::string::Block*)nullptr);
+    mEntity.mHandle.mVal = 0;
+    mCodeFlags.mVal = 0;
+    mPakId = params.pakId;
+    mDelayTrigger = params.delayTrigger;
+    mEntity.mHandle.mVal = params.ent.mHandle.mVal;
+    mFlags = params.flags;
+    mPoPtr = nullptr;
+    mDelayCount = 0.0f;
+    mCountSinceStarted = 0;
+    mEffectNameHashStr = 0;
+    mCodeFlags.mVal = 0;
+    mLight = params.light;
+    mProjLight = nullptr;
+    mVertLight = nullptr;
+    mTime = 0.0f;
+    if (mLight->projlight != 0)
+    {
+        unsigned int v14 = params.ent.mHandle.mVal & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v14 < 0x540
+            && params.ent.mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v14].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v14].mObject;
+        math::Position3 v20 = GetTagFlashPos(mObject);
+        LightEffect* v15 = (LightEffect*)AddLight(params.pakId, 0, &v20, 0);
+        LightEffect_SetColor(v15, mLight->color_r, mLight->color_g,
+                             mLight->color_b, 1.0f);
+    }
+    if (mLight->vertlight != 0)
+    {
+        unsigned int v16 = params.ent.mHandle.mVal & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v16 < 0x540
+            && params.ent.mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v16].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v16].mObject;
+        math::Position3 v20 = GetTagFlashPos(mObject);
+        LightEffect* v17 = (LightEffect*)AddLight(params.pakId, 1, &v20, 1);
+        mVertLight = v17;
+        LightEffect_SetColor(v17, mLight->color_r, mLight->color_g,
+                             mLight->color_b, 1.0f);
+        mVertLight->mFlicker = mLight->flicker != 0;
+        mVertLight->mInnerRadius = mLight->inner_rad;
+        mVertLight->mOuterRadius = mLight->outer_rad;
+        mTime = 0.0f;
+    }
+}
+
+// ============================================================================
+// QueryEventTable / QueryGDEvents
+// ============================================================================
+
+// ea: 0x004D11B0
+int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
+                                    float distSq)
+{
+    int count = -1;
+    char buf[256];
+    const char* longName =
+        PakManager_GetPakLongName(PakManager_sInst, CurPakId());
+    strcpy(buf, longName);
+    strcat(buf, ".fx");
+    ae_sized_array<const DbTable*, 16> event_tables;
+    event_tables.m_size = 0;
+    GetEffectTables(q.mEffectsPak, (DbTable*)buf, nullptr, "EVENT.FX",
+                    &event_tables);
+    for (int ti = 0; ti < event_tables.m_size; ++ti)
+    {
+        DbQuery query;
+        memset(&query, 0, sizeof(query));
+        query.mDb = event_tables[ti];
+        query.mAutomaticFail = false;
+        query.mConstraintPos = 0;
+        q.mCachedQuery.ConstructQuery(&query);
+        DbQueryResults results;
+        memset(&results, 0, sizeof(results));
+        query.FindMatches(&results);
+        ReduceGroups(&results.mMatches);
+        for (unsigned int i = 0; i < (unsigned int)results.mMatches.m_size; ++i)
+        {
+            ASSERT_IDX(i, 64, 154);
+            const InplaceString* FieldValue =
+                DbRow_GetFieldValuePtrString(results.mMatches.m_elements[i],
+                                             0x13);
+            const char* mStr = FieldValue != nullptr ? FieldValue->mStr
+                                                     : nullptr;
+            count = QueryGDEvents(mStr, q, fx, 0.0f);
+        }
+    }
+    return count;
+}
+
+// ea: 0x004D0330
+int EffectEventSys::QueryGDEvents(const char* event, PendingQuery& q,
+                                  ActiveEffectSet* fx, float delay)
+{
+    void* v5 = GdbFileManager_sInst;
+    int totalCount = 0;
+    TPakId v8 = CurPakId();
+    void* gfile = GdbFileManager_GetGdbFile(v5, v8, event, event);
+    void* v59 = gfile;
+    if (v59 == nullptr)
+        return 0;
+    gdEvent* gdevent = (gdEvent*)GdbVector_At(v59, 0);
+    SoundParams soundParams;
+    memset(&soundParams, 0, sizeof(soundParams));
+    SetSoundParams(soundParams, q, -1.0f);
+    soundParams.mDelayTrigger = delay;
+    soundParams.mNameRef = nullptr;
+    const char* Dialogue = DialogueManager_GetDialogue(
+        DialogueManagerStatics::sInst, AeHash(event));
+    const char* mStr;
+    if (Dialogue != nullptr)
+    {
+        mStr = Dialogue;
+        soundParams.mDelayTrigger = delay;
+    }
+    else
+    {
+        mStr = gdevent->sound.mStr;
+        if (mStr != nullptr)
+        {
+            soundParams.mNameRef = gdevent->sound.mStr;
+            if (g_indoor || _stricmp(mStr, "Rifle_Ringoff") != 0)
+            {
+            LABEL_10:
+                if (mStr != nullptr)
+                {
+                    soundParams.mHashStr = AeHash(mStr);
+                    int flags = (q.mFlags.mVal & 4) != 0 ? 1 : 0;
+                    void* v18 = ActiveEffectSet_sAllocator->Allocate(0xA0,
+                                                                    false);
+                    AbstractEffectSound* v19 = nullptr;
+                    if (v18 != nullptr)
+                        v19 = new (v18) AbstractEffectSound(
+                            q.mEffectsPak, q.mQueryEnt, flags,
+                            delay, &soundParams);
+                    if (v19 != nullptr)
+                    {
+                        if (q.mQueryType == 1)
+                            v19->mFlags |= 1u;
+                        if (fx->mPoPtr != nullptr)
+                            v19->SetPoPtr(fx->mPoPtr);
+                        fx->mEffects.push_back(v19);
+                        totalCount = 1;
+                    }
+                }
+                goto LABEL_22;
+            }
+            mStr = s_RifleIndoorSound;
+            soundParams.mNameRef = mStr;
+            goto LABEL_10;
+        }
+    }
+LABEL_22:
+    const char* v22 = gdevent->particle1.mStr;
+    soundParams.mQueue = (int)gdevent->particle2.mStr;
+    soundParams.mHashStr = (int)gdevent->particle3.mStr;
+    const char* v23 = gdevent->particle4.mStr;
+    const char* v24 = gdevent->particle5.mStr;
+    soundParams.mMaxVoices = (int)v22;
+    soundParams.mDialogNotify = (int)v23;
+    soundParams.mSubtitle = v24;
+    if (v22 != nullptr)
+    {
+        int v25 = 0;
+        const char* parts[5];
+        parts[0] = gdevent->particle1.mStr;
+        parts[1] = gdevent->particle2.mStr;
+        parts[2] = gdevent->particle3.mStr;
+        parts[3] = gdevent->particle4.mStr;
+        parts[4] = gdevent->particle5.mStr;
+        while (v25 < 5 && parts[v25] != nullptr)
+            ++v25;
+        if (v25 != 0)
+        {
+            int v27 = (int)RandNext();
+            char path[127];
+            strncpy(path, parts[v27 % v25], 126);
+            path[126] = 0;
+            char dstBuff[127];
+            const char* v28 = gdevent->particle_bone.mStr;
+            bool v29 = gdevent->update_position_only == 0;
+            // GetFileName-style truncation (strip extension)
+            strcpy(dstBuff, path);
+            char* dot = strrchr(dstBuff, '.');
+            if (dot != nullptr)
+                *dot = 0;
+            char oBuff[128];
+            strcpy(oBuff, dstBuff);
+            gParticleParams.mPakId = q.mEffectsPak;
+            gParticleParams.mEnt.mHandle.mVal = q.mQueryEnt.mHandle.mVal;
+            gParticleParams.mParticleId = FX_RegisterEffect(oBuff);
+            if ((q.mFlags.mVal & 4) != 0 || (q.mFlags.mVal & 1) != 0)
+                gParticleParams.mCd = &q.mCollisionInfo;
+            else
+                gParticleParams.mCd = nullptr;
+            gParticleParams.mDelayTrigger = delay;
+            gParticleParams.mHasDirection = q.mFlags.mVal & 1;
+            tlFixedString boneName(v28);
+            gParticleParams.mBoneName = boneName;
+            gParticleParams.mBoneIndex = q.mBoneIndex;
+            gParticleParams.mQueue = (q.mFlags.mVal & 2) != 0;
+            gParticleParams.mUpdatePosOnly = v29;
+            gParticleParams.mFlags = 0;
+            gParticleParams.mNameRef = oBuff;
+            if (gdevent->use_world_orient != 0)
+                gParticleParams.mFlags = 4;
+            if (gdevent->fade_out != 0)
+                gParticleParams.mFlags |= 8u;
+            if (q.mCachedQuery.mCONTEXT == 7)
+                gParticleParams.mFlags |= 0x20u;
+            AbstractEffectParticle* v31 =
+                (AbstractEffectParticle*)ActiveEffectSet_sAllocator->Allocate(
+                    0x38, false);
+            AbstractEffectParticle* particle = nullptr;
+            if (v31 != nullptr)
+                particle = new (v31) AbstractEffectParticle();
+            if (particle != nullptr)
+            {
+                if (fx->mPoPtr != nullptr)
+                    particle->SetPoPtr(fx->mPoPtr);
+                fx->mEffects.push_back(particle);
+                ++totalCount;
+            }
+        }
+    }
+    if (gdevent->rumble.mStr != nullptr)
+    {
+        char path[127];
+        strncpy(path, gdevent->rumble.mStr, 126);
+        path[126] = 0;
+        char dstBuff[127];
+        strcpy(dstBuff, path);
+        char* dot = strrchr(dstBuff, '.');
+        if (dot != nullptr)
+            *dot = 0;
+        char oBuff[128];
+        strcpy(oBuff, dstBuff);
+        void* lfile = GdbFileManager_GetGdbFile(
+            GdbFileManager_sInst, CurPakId(), oBuff, oBuff);
+        if (lfile != nullptr)
+        {
+            gdEvent* v36 = (gdEvent*)GdbVector_At(lfile, 0);
+            soundParams.mMaxVoices = q.mEffectsPak;
+            soundParams.mQueue = q.mQueryEnt.mHandle.mVal;
+            soundParams.mHashStr = 0;
+            soundParams.mDialogNotify = 0;
+            soundParams.mSubtitle = (const char*)v36;
+            AbstractEffectShakeAndRumble* v39 = nullptr;
+            void* v38 = ActiveEffectSet_sAllocator->Allocate(0x70, false);
+            if (v38 != nullptr)
+            {
+                AbstractEffectShakeAndRumble::Params p;
+                p.pakId = q.mEffectsPak;
+                p.ent.mHandle.mVal = q.mQueryEnt.mHandle.mVal;
+                p.delayTrigger = 0.0f;
+                p.flags = 0;
+                p.shakeRumble = (gdShakeRumble*)v36;
+                v39 = new (v38) AbstractEffectShakeAndRumble(p);
+            }
+            if (fx->mPoPtr != nullptr && v39 != nullptr)
+                v39->SetPoPtr(fx->mPoPtr);
+            fx->mEffects.push_back(v39);
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+            AeAssert::gCurrentLine = 1276;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                    "Couldn't find %s.gdshakerumble (used by %s.gdevent)",
+                    oBuff, event))
+                __debugbreak();
+        }
+    }
+    if (gdevent->light.mStr != nullptr)
+    {
+        void* pakId = GdbFileManager_GetGdbFile(GdbFileManager_sInst,
+                                                CurPakId(),
+                                                gdevent->light.mStr,
+                                                gdevent->light.mStr);
+        if (pakId != nullptr)
+        {
+            gdEvent* v45 = (gdEvent*)GdbVector_At(pakId, 0);
+            soundParams.mMaxVoices = q.mEffectsPak;
+            soundParams.mDialogNotify = 0;
+            soundParams.mQueue = q.mQueryEnt.mHandle.mVal;
+            soundParams.mSubtitle = (const char*)v45;
+            AbstractEffectLight* v48 = nullptr;
+            void* v47 = ActiveEffectSet_sAllocator->Allocate(0x44, false);
+            if (v47 != nullptr)
+            {
+                AbstractEffectLight::Params p;
+                p.pakId = q.mEffectsPak;
+                p.ent.mHandle.mVal = q.mQueryEnt.mHandle.mVal;
+                p.delayTrigger = 0.0f;
+                p.flags = 0;
+                p.light = (gdLight*)v45;
+                v48 = new (v47) AbstractEffectLight(p);
+            }
+            if (v48 != nullptr)
+            {
+                if (fx->mPoPtr != nullptr)
+                    v48->SetPoPtr(fx->mPoPtr);
+                fx->mEffects.push_back(v48);
+                ++totalCount;
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+            AeAssert::gCurrentLine = 1312;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                    "Couldn't find %s.gdlight (used by %s.gdevent)",
+                    gdevent->light.mStr, event))
+                __debugbreak();
+        }
+    }
+    const char* v52 = gdevent->delayed_event.mStr;
+    if (v52 != nullptr && gdevent->delay >= 0.0f)
+    {
+        if (_stricmp(v52, event) == 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+            AeAssert::gCurrentLine = 1347;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error("Event %s is chaining to itself!", event))
+                __debugbreak();
+        }
+        else
+        {
+            QueryGDEvents(v52, q, fx, gdevent->delay);
+        }
+    }
+    return totalCount;
 }
