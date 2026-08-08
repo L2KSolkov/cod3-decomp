@@ -339,6 +339,19 @@ struct RumbleManager {
     int mClient;                  // +0x24
     int mLastTimeNotRumbling;     // +0x28
     int mDontRumbleAgainUntil;    // +0x2C
+    RumbleEffectInstanceHandle BumpHandle();
+    void StopMotors();
+    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
+    RumbleEffectInstanceHandle Play(const RumbleEffect* effect,
+                                    float min_distance, float max_distance,
+                                    float distance);
+    char IsPlaying(RumbleEffectInstanceHandle handle);
+    float TimeLeft(RumbleEffectInstanceHandle handle);
+    void SetIntensity(RumbleEffectInstanceHandle handle, float intensity);
+    void SetDistance(RumbleEffectInstanceHandle handle, float min_distance,
+                     float max_distance, float distance);
+    void FrameAdvance(float delta_time);
+    void Reset();
 };
 static_assert(sizeof(RumbleManager) == 0x30, "RumbleManager size mismatch");
 
@@ -379,6 +392,8 @@ struct DbSchema {
 };
 static_assert(sizeof(DbSchema) == 0x30, "DbSchema size mismatch");
 
+struct DbQueryResults;
+
 struct DbTable {
     char   mName[30];        // +0x00
     uint16_t mNumColumns;    // +0x1E
@@ -415,6 +430,8 @@ struct DbQuery {
     bool           mAutomaticFail; // +0x258
     char           mConstraintBuffer[512];  // +0x259
     unsigned int   mConstraintPos; // +0x45C
+    void ResetConstraints();
+    void AcceptMatchingLeaf(DbGraphNode* node, DbQueryResults* results);
 };
 static_assert(sizeof(DbQuery) == 0x460, "DbQuery size mismatch");
 
@@ -422,6 +439,9 @@ struct DbQueryResults {
     ae_sized_array<DbRow*, 64> mMatches;      // +0x000
     ae_sized_array<DbRow*, 64> mMatchesSpec;  // +0x104
     int  mMaxNumFields;            // +0x208
+    DbRow* GetRandomResult();
+    DbRow* GetRandomResultSpecific();
+    DbRow* GetResult(unsigned int idx);
 };
 static_assert(sizeof(DbQueryResults) == 0x20C, "DbQueryResults size mismatch");
 
@@ -612,6 +632,9 @@ static_assert(sizeof(nalHeap) == 0x4, "nalHeap size mismatch");
 struct AnimHeap : nalHeap {
     void*       mBlock;  // +0x04
     unsigned char mHeap[0x49C];  // +0x08 mem_heap
+    void* Allocate(unsigned int size);
+    void Free(void* ptr, int size);
+    static void LinkAnimHeap();
 };
 static_assert(sizeof(AnimHeap) == 0x4A4, "AnimHeap size mismatch");
 
