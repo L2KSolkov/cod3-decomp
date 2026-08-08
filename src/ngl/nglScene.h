@@ -39,7 +39,9 @@ struct nglScene {
     nglRenderNode*    TransRenderList;    // +0x318
     unsigned int      OpaqueListCount;    // +0x31C
     unsigned int      TransListCount;     // +0x320
-    uint8_t           _pad324[0x3A8 - 0x324];  // +0x324
+    uint8_t           _pad324[0x33C - 0x324];  // +0x324
+    struct nglLightContext* LightContext;      // +0x33C
+    uint8_t           _pad340[0x3A8 - 0x340];  // +0x340
     float             FogNear;            // +0x3A8
     float             FogFar;             // +0x3AC
     float             FogMin;             // +0x3B0
