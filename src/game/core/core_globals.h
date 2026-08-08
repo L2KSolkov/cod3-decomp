@@ -105,6 +105,11 @@ extern int     cvar_modifiedFlags;  // 0x012E7694
 extern int     cvar_numIndexes;     // 0x012EFF10
 extern PoolAllocator* gCommonPoolAllocator;  // 0x012EFF18
 extern cvar_t* com_cl_running;      // 0x012EFF1C
+extern cvar_t* cvar_cheats;
+extern cvar_t cvar_indexes[630];
+extern cvar_t* hashTable[256];
+extern char sCvarBuff1[1024];
+extern char sCvarBuff2[4096];
 
 // ============================================================================
 // Effect / dialogue / STB singletons + state
