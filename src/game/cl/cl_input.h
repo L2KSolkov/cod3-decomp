@@ -50,6 +50,7 @@ struct clPlayerState {
     int serverCursorHint;
     float delta_angles[3];
     float fWeaponPosFrac;
+    int prevTargetPointValid;
     int vehType;
     int vehPos;
     unsigned int mFlags_mask;
@@ -79,6 +80,7 @@ struct clSnap_t {
     float cgameGunZOfs;
     float cgameMaxPitchSpeed;
     float cgameMaxYawSpeed;
+    float cgameCurrentAimAccel;
     int mouseIndex;
     int mouseDx[4];
     int mouseDy[4];
