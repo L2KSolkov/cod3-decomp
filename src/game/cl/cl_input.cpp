@@ -39,34 +39,6 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
-// ============================================================================
-// cl[] client snapshot view (cl.o data; only the fields input uses)
-// ============================================================================
-struct clPlayerState {
-    int eFlags;
-    int pm_flags;
-    int weapon;
-    int weaponslots[16];
-    int serverCursorHint;
-    float delta_angles[3];
-    float fWeaponPosFrac;
-    int vehType;
-    int vehPos;
-    unsigned int mFlags_mask;
-};
-struct clSnapshot {
-    clPlayerState ps;
-};
-struct clSnap_t {
-    clSnapshot snap;
-    float viewangles[3];
-    bool stanceHeld;
-    int stancePosition;
-    int stanceTime;
-    int joystickAxis[8];
-};
-extern clSnap_t cl[2];
-
 struct weaponFileInfo_t {
     int weapClass;
     int type;
