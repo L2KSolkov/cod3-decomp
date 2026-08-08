@@ -156,7 +156,7 @@ phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	PORTED	[phys_xboxr] rig
 bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdStopwatch.obj	bdCore	bdStopwatch.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdChunk.obj	bdConnection	bdChunk.obj	engine	7	PORTED	[bdConnection] bdChunk.cpp: packet chunk base (7 funcs)
-bdSocket:bdAddressMap-xbox.obj	bdSocket	bdAddressMap-xbox.obj	engine	7	TODO	
+bdSocket:bdAddressMap-xbox.obj	bdSocket	bdAddressMap-xbox.obj	engine	7	PORTED	[bdSocket] bdAddressMap.cpp: address handle <-> common addr map (7 funcs) from Demonware 2.0 + IDA
 mem_mp_xboxr:ae_heap.o	mem_mp_xboxr	ae_heap.o	engine	6	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 render_xboxr:cdScratchShader.o	render_xboxr	cdScratchShader.o	engine	6	PORTED	cdScratchShader.h/.cpp (scratch shader: material ctor/Toggle/Register/Init/AddNode; Render deferred) + add as_u32 to ShaderSwitching_t
 render_xboxr:cdSimpleAlphaShader.o	render_xboxr	cdSimpleAlphaShader.o	engine	6	PORTED	cdSimpleAlphaShader.h/.cpp (simple alpha shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)

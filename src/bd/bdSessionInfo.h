@@ -10,6 +10,7 @@
 #define COD3_BD_BDSSESSIONINFO_H
 
 #include "bd/bd_types.h"
+#include "bd/bdAddressMap.h"
 
 // ============================================================================
 // bdSession — peer-to-peer session (opaque here; methods are in bdSession.obj)
@@ -37,16 +38,6 @@ struct bdSession {
     bdReference<bdConnection> getHost() const;
     bdReference<bdConnection> getConnection(unsigned int index) const;
     unsigned int    getPeerHash(unsigned int index) const;
-};
-
-// ============================================================================
-// bdAddressMapImpl — address-to-string mapping (opaque; bdAddressMap-xbox.obj)
-// ============================================================================
-class bdAddressMapImpl {
-public:
-    static bdAddressMapImpl* getInstance();
-    unsigned int addrToString(const bdReference<bdAddrHandle>& addrHandle,
-                              char* pchBuf, unsigned int cchBuf) const;
 };
 
 // ============================================================================

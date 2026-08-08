@@ -449,8 +449,14 @@ public:
     bdNATType  m_natType;   // +0x3C
 
     bdCommonAddr();
+    bdCommonAddr(const bdReference<bdCommonAddr>& hostAddr, const XNADDR& addr,
+                 uint16_t port);
     void serialize(uint8_t* buffer) const;
     bool deserialize(const bdReference<bdCommonAddr>& ref, const uint8_t* buffer);
+
+    unsigned int getTitleId() const { return m_titleId; }
+    uint16_t getPort() const { return m_port; }
+    const XNADDR* getXNAddr() const { return &m_addr; }
 };
 static_assert(sizeof(bdCommonAddr) == 0x40, "bdCommonAddr size mismatch");
 static_assert(offsetof(bdCommonAddr, m_addr) == 0x08, "bdCommonAddr::m_addr offset mismatch");
@@ -467,6 +473,9 @@ public:
     bdInAddr   m_addr;  // +0x08 (4 bytes)
     uint16_t   m_port;  // +0x0C
     uint8_t    _pad0E[2];  // +0x0E
+
+    bdAddrHandle();
+    virtual ~bdAddrHandle();
 };
 static_assert(sizeof(bdAddrHandle) == 0x10, "bdAddrHandle size mismatch");
 static_assert(offsetof(bdAddrHandle, m_addr) == 0x08, "bdAddrHandle::m_addr offset mismatch");
