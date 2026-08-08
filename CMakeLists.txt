@@ -161,6 +161,8 @@ add_library(cod3_bd STATIC
     src/bd/bdUtilities/bdBitOperations.h
     src/bd/bdMemory/bdAlignedOffsetMemory.cpp
     src/bd/bdTiming/bdShortTimer.h
+    src/bd/bdStopwatch.h
+    src/bd/bdStopwatch.cpp
     src/bd/bdSequenceNumber.cpp
     src/bd/bdInAddr.cpp
     src/bd/bdInetAddr.cpp
@@ -170,6 +172,9 @@ add_library(cod3_bd STATIC
     src/bd/bdPlatformSocket-win32.cpp
     src/bd/bdSocket.cpp
     src/bd/bdGameInfo.cpp
+    src/bd/bdDiscoveryListener.cpp
+    src/bd/bdDiscoveryServer.cpp
+    src/bd/bdDiscoveryClient.cpp
     src/bd/bdConnectionStatistics.cpp
     src/bd/bdConnection.cpp
     src/bd/bdConnectionListener.cpp

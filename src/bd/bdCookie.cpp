@@ -29,10 +29,6 @@ struct bdTrulyRandomImpl {
     void getRandomUByte8(unsigned char* out, int count);
 };
 
-template <typename T>
-struct bdSingleton {
-    static T* getInstance();
-};
 
 extern bool g_assertFalse;
 

@@ -125,7 +125,7 @@ bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	Phase 2: ported from Demonware
 bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	PORTED	[bdConnection] bdMessage.cpp: network message (9 funcs)
 bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
 bdConnection:bdPacket.obj	bdConnection	bdPacket.obj	engine	9	PORTED	[bdConnection] bdPacket.cpp: packet container (9 funcs)
-bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	TODO	
+bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	PORTED	[bdNet] bdDiscoveryServer.cpp: LAN discovery server (9 funcs) from Demonware 2.0 + IDA
 nextgen.o		nextgen.o	game	8	PORTED	[game:nextgen.o] nextgen.cpp: CG_MotionBlur + CG_SceneBlur post callbacks (8 funcs)
 aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math helpers: quaternion ops, ortho basis, AABB, Shepperd, fast SinCos; apsQuaternion fixed to struct/operator+=
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
@@ -135,7 +135,7 @@ phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	PORTED	[phys_xboxr] phys_
 bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	PORTED	[bdConnection] bdLoopbackConnection.cpp: loopback connection (8 funcs) from Demonware 2.0 + IDA
 bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
-bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	TODO	
+bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	PORTED	[bdNet] bdDiscoveryClient.cpp: LAN discovery client (8 funcs) from Demonware 2.0 + IDA
 core_xboxr:AeAssert.o	core_xboxr	AeAssert.o	engine	7	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 render_xboxr:cdGlowShader.o	render_xboxr	cdGlowShader.o	engine	7	PORTED	cdGlowShader.h/.cpp (glow shader: Toggle/Init/Setup/GlowSetTaps/LerpTaps; GlowFilter+GlowCallback deferred)
 render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	PORTED	cdSimpleInstance.h/.cpp (simple instance: Init/Toggle/Create/Destroy; Add/Finalize/Render deferred)
@@ -206,7 +206,7 @@ bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: por
 bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableSendWindow.cpp: unreliable send window (5 funcs) from Demonware 2.0 + IDA
 bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableReceiveWindow.cpp: unreliable recv window (5 funcs) from Demonware 2.0 + IDA
 bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	PORTED	[bdNet] bdGameInfo.cpp: game info factory (5 funcs)
-bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	TODO	
+bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	PORTED	[bdNet] bdDiscoveryListener.cpp: discovery listener (5 funcs) from Demonware 2.0 + IDA
 bdPlatform:bdPlatformTiming-xbox.obj	bdPlatform	bdPlatformTiming-xbox.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	PORTED	[bdConnection] bdConnectionListener.cpp: connection listener (5 funcs) from Demonware 2.0 + IDA
 render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	PORTED	cdHeatHazeShader.h/.cpp (heat haze: Toggle/Init; Setup+Render deferred)
