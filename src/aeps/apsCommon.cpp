@@ -63,11 +63,6 @@ namespace apsMemory {
     void Report();                                  // ?Report@apsMemory@@YAXXZ (apsMemory.o)
 }
 
-class apsEffect {
-public:
-    static void ReportEffects();                    // ?ReportEffects@apsEffect@@SAXXZ (apsEffect.o)
-};
-
 namespace apsInternal {
     void Init(int iMeshLightCat);                   // ?Init@apsInternal@@YAXH@Z
     void SubmitSpawnedEffectQueue();                // ?SubmitSpawnedEffectQueue@apsInternal@@YAXXZ

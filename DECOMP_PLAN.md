@@ -12,20 +12,18 @@ Call of Duty 3 multiplayer for the original Xbox (Treyarch, October 2006). We ha
 
 | Asset | Path | Use |
 |---|---|---|
-| Release XBE | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxr.xbe` | loaded in IDA (port 13340) |
-| Debug XBE | `/Users/jordandare/Dev/cod3/codmp_xboxd.xbe` | loaded in IDA (port 13341) — **clean decompilation source** |
-| Debug map | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxd.map` (7.7 MB) | same format as release map, 37,295 functions |
-| IDA database | IDA instance, MCP port **13340** | decompilation source of truth |
-| Linker map | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxr.map` (7.2 MB, 68,753 lines) | **symbol → Lib:Object attribution** |
-| PDB | `/Users/jordandare/Desktop/cod3_decomp/codmp_xboxr.pdb` (4.6 MB) | function names, types, RTTI, source-file paths |
-
+| Release XBE | `C:\cod\c3_bin\codmp_xboxr.xbe` | loaded in IDA (the single connected instance — no debug build) |
+| IDA database | The one IDA instance running `codmp_xboxr.xbe` | decompilation source of truth |
+| Linker map | `C:\cod\c3_bin\codmp_xboxr.map` (7.2 MB, 68,753 lines) | **symbol → Lib:Object attribution** |
+| PDB | `C:\cod\c3_bin\codmp_xboxr.xbe.pdb` | function names, types, RTTI, source-file paths |
+|Demonware Source| `D:\cod_code\Demonware` | Demonware source code. Use for reference to decompile game functions only. 
+|NGL Source Code| 'c:\cod_3p' | NGL/NVL/NAL Source Code. Should only be used as a reference to verify against diassembly. 
 Derived analysis (to be generated with `tools/*.py` in Phase 0):
 
 | File | Contents |
 |---|---|
 | `analysis/MANIFEST.tsv` | **THE work list.** Every function: `ea, size, name, lib, obj, class, source_cpp, static, inline` |
 | `analysis/WORKLIST.tsv` | Per-source-cpp rollup: function counts + code bytes |
-| `analysis/CROSSREF.tsv` | Symbol-name cross-reference: release ea ↔ debug ea (36,304 entries, 99.4% overlap) |
 | `analysis/class_hierarchy.tsv` | C++ class → parent → vtable → member functions |
 | `analysis/shim_needs.tsv` | Xbox API callees → caller → proposed Win32 replacement |
 | `analysis/ida_types.json` | IDA local-type export (structs, enums, typedefs) |
@@ -280,7 +278,7 @@ As functions are ported, they move from the stub cpp to their real cpp. **The li
 The unit of work is **one target cpp file** (one row of WORKLIST.tsv). Never work on scattered individual functions.
 
 1. **Select** the next file per the phase order (§11) from `PROGRESS.tsv` with status `TODO`. Set it `IN_PROGRESS`.
-2. **Confirm IDA routing**: call `list_instances`, verify port **13340** is `active:true`. If not, `select_instance(13340)`. Re-verify after any long gap — routing flips back silently.
+2. **Confirm IDA routing**: the project uses a **single** IDA instance running the release `codmp_xboxr.xbe`. Re-verify the connection periodically (routing can flip back silently) before batch decompilation. There is no debug build.
 3. **List the file's functions**: filter MANIFEST rows by `source_cpp`. Sort by `ea`. This ordering approximates original source order — keep it in the cpp.
 4. **For each function** (skip `j_` thunks entirely; inline/COMDAT rows `f i` are ported into *headers* per §7.6, not one-by-one into the cpp):
    a. `decompile(ea)`. Evaluate the output for optimization artifacts:
@@ -297,7 +295,6 @@ The unit of work is **one target cpp file** (one row of WORKLIST.tsv). Never wor
       - Re-derive loop structures, if/else chains, and switch statements from the control flow
    d. Demangle the name for the C++ signature. Statics (`static` column) are file-local — declare `static` in the cpp.
    e. `$E`-named statics (compiler-generated dynamic-initializer/atexit fragments): do NOT port as functions. Reconstruct the file-scope global object + its constructor instead.
-4.b. If release decompilation is too optimized (SSE intrinsics, heavy inlining, register reuse), **switch to the debug build**: look up the function in `analysis/CROSSREF.tsv` to get the debug address, then `select_instance(13341)` and decompile there. The debug build has clean, unoptimized C++ with separate locals and clear control flow. Switch back to `select_instance(13340)` for type/PDB data.
 5. **Types**: pull struct/class layouts from IDA local types (the PDB populated them). Define each type once in the correct header. **Never guess a field** — if IDA's type information is incomplete, use `char pad_XX[N]` with a TODO comment.
 6. **Templates/COMDATs** (`inline=i` rows / `f i` flag):
    - `std::` instantiations (Dinkumware VC7) → use modern `std::` equivalents. Never transcribe Dinkumware internals. **Exception**: if a struct embeds a `std::` type by value, modern `std::` won't match the old layout — assert only offsets of members *before* the std member, add `// LAYOUT-DIVERGES(std)` comment, never hand-pad.
@@ -555,4 +552,7 @@ tools/
 
 ## 15. Session bootstrap for the gruntwork AI (paste-ready)
 
-> You are reconstructing Call of Duty 3 (Xbox release build) to Win32 C++. Read `cod3_decomp/DECOMP_PLAN.md` fully and follow §7 exactly. Your work unit: the next `TODO` file in `PROGRESS.tsv` for the current phase. IDA MCP port 13340 — verify routing per §7 step 2. Reconstruct from Hex-Rays + disassembly; this is a release build — interpret, don't just transcribe. See §7.4 for optimization-artifact handling. Compile-gate, update PROGRESS.tsv, commit, repeat. Escalate per §7.2.
+> You are reconstructing Call of Duty 3 (Xbox release build) to Win32 C++. Read `cod3_decomp/DECOMP_PLAN.md` fully and follow §7 exactly. Your work unit: the next `TODO` file in `PROGRESS.tsv` for the current phase. The project has a single IDA instance (release `codmp_xboxr.xbe`) — verify routing per §7 step 2. Reconstruct from Hex-Rays + disassembly; this is a release build — interpret, don't just transcribe. See §7.4 for optimization-artifact handling. Compile-gate, update PROGRESS.tsv, commit, repeat. Escalate per §7.2.
+
+
+When you context window starts to get full, you MUST automatically compact yourself.
