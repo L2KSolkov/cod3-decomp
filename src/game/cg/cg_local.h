@@ -193,6 +193,9 @@ struct PlayerState {
     int pm_type;                       // +0x24
     int weaponTime;                    // +0x34
     int weapAnim;                      // +0x530
+    float leanf;                       // +0x4C
+    float viewHeightCurrent;           // +0xE0
+    float viewangles[3];               // +0xD0
     int ammoclip[92];                  // +0x2B4
     int weapons[2];                    // +0x424
     unsigned char weaponslots[10];     // +0x42C

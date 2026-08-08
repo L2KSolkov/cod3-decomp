@@ -171,6 +171,9 @@ struct tagInfo_t {
 extern struct ServerTime_t { float mTickDelta; } ServerTime_sInst;
 extern float tr_viewModelInfo_mWeaponScale[4];
 extern int tr_viewModelInfo_mWeaponOrigin_used;
+extern void* tr_viewModelInfo_mWeaponOrigin;
+extern unsigned int tagHashInit;
+extern void InteractionController_PostPhysicsUpdate(void* self, float deltaT);
 
 extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern void* EntityManager_sInst;
@@ -1662,6 +1665,158 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
         LABEL_88:
             dword_F6A2A8[802 * currCl] = ps->weapAnim;
             break;
+        }
+    }
+}
+
+// ea: 0x006AA920
+void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
+                        int bDrawGun)
+{
+    int weapon = ps->weapon;
+    bool bViewModel = ps != nullptr;
+    if (ps == nullptr || dword_F640A4[1580 * currCl] == 0)
+    {
+        CG_RegisterWeapon(weapon);
+        BG_GetInfoForWeapon(weapon);
+        CG_WeaponUpdateLoopingSound(entity);
+        refEntity_t* RefEntity = (refEntity_t*)Entity_GetRefEntity(entity);
+        RefEntity->lightingOrigin[0] = parent->lightingOrigin[0];
+        RefEntity->lightingOrigin[1] = parent->lightingOrigin[1];
+        RefEntity->lightingOrigin[2] = parent->lightingOrigin[2];
+        RefEntity->renderfx = parent->renderfx;
+        if (bViewModel && dword_F6A2A0[802 * currCl] != 0)
+        {
+            RefEntity->reType = 1;
+            RefEntity->obj = (void*)dword_F6A2A0[802 * currCl];
+            RefEntity->renderfx = 140;
+            RefEntity->entity = entity;
+            RefEntity->lightingOrigin[0] = ps->origin.v.m128_f32[0];
+            RefEntity->lightingOrigin[1] = ps->origin.v.m128_f32[1];
+            float v10 = ps->origin.v.m128_f32[2];
+            RefEntity->lightingOrigin[2] =
+                ps->viewHeightCurrent + v10;
+            AddLeanToPosition(RefEntity->lightingOrigin, ps->viewangles[1],
+                              ps->leanf, 16.0f, 20.0f);
+            DObjAdvanceAnimationPlayer((void*)dword_F6A2A0[802 * currCl],
+                                       cgGlobal_frametime * 0.001f);
+            DObjInitServerTime((void*)dword_F6A2A0[802 * currCl],
+                               cgGlobal_frametime * 0.001f);
+            int deltaT;
+            switch (dword_F6A2A8[802 * currCl])
+            {
+            case 0: deltaT = 1; break;
+            case 4: deltaT = 7; break;
+            case 8: deltaT = 8; break;
+            case 9: deltaT = 14; break;
+            case 0xA: deltaT = 13; break;
+            case 0xB: deltaT = 9; break;
+            case 0xC: deltaT = 10; break;
+            case 0x17: deltaT = 3; break;
+            default: deltaT = 0; break;
+            }
+            DObjUpdateServerInfo((void*)dword_F6A2A0[802 * currCl],
+                                 cgGlobal_frametime * 0.001f, true, deltaT);
+            int partBits[4];
+            memset(partBits, 255, sizeof(partBits));
+            DObjCalcAnim((void*)dword_F6A2A0[802 * currCl], -1);
+            j_nullsub_82((void*)dword_F6A2A0[802 * currCl], partBits);
+            if (!GamePause_IsGamePaused(currCl))
+            {
+                float deltaTa = ServerTime_sInst.mTickDelta;
+                void* v12 = InteractionController_Inst(currCl);
+                InteractionController_PostPhysicsUpdate(v12, deltaTa);
+            }
+            CG_UpdateViewModelPosAndOrientation(parent);
+            RefEntity->origin[0] = parent->origin[0];
+            RefEntity->origin[1] = parent->origin[1];
+            RefEntity->origin[2] = parent->origin[2];
+            AxisCopy(parent->axis, RefEntity->axis);
+            float v13 = ((0 + cg_gun_x) * dword_F63C80[1580 * currCl])
+                        + RefEntity->origin[0];
+            RefEntity->origin[0] = v13;
+            float v14 = (dword_F63C8C[1580 * currCl] * cg_gun_y) + v13;
+            RefEntity->origin[0] = v14;
+            RefEntity->origin[0] =
+                (dword_F63C98[1580 * currCl] * cg_gun_z) + v14;
+            float v15 = ((0 + cg_gun_x) * dword_F63C84[1580 * currCl])
+                        + RefEntity->origin[1];
+            RefEntity->origin[1] = v15;
+            float v16 = (dword_F63C90[1580 * currCl] * cg_gun_y) + v15;
+            RefEntity->origin[1] = v16;
+            RefEntity->origin[1] =
+                (dword_F63C9C[1580 * currCl] * cg_gun_z) + v16;
+            float v17 = ((0 + cg_gun_x) * dword_F63C88[1580 * currCl])
+                        + RefEntity->origin[2];
+            RefEntity->origin[2] = v17;
+            float v18 = (dword_F63C94[1580 * currCl] * cg_gun_y) + v17;
+            RefEntity->origin[2] = v18;
+            RefEntity->origin[2] =
+                (dword_F63CA0[1580 * currCl] * cg_gun_z) + v18;
+            if (bDrawGun != 0)
+            {
+                if (tr_viewModelInfo_mWeaponScale[currCl] != 1.0f)
+                {
+                    DObj* v19 = (DObj*)dword_F6A2A0[802 * currCl];
+                    if (v19 != nullptr)
+                    {
+                        if ((tagHashInit & 1) == 0)
+                        {
+                            tagHashInit |= 1u;
+                            tagHash = HashString_CalcHash("tag_weapon");
+                        }
+                        int BoneIndex = DObjGetBoneIndex(v19, tagHash);
+                        if (BoneIndex != -1)
+                            tr_viewModelInfo_mWeaponOrigin = DObj_GetMat(v19, BoneIndex);
+                    }
+                }
+                RE_AddViewModelToScene(RefEntity);
+                RE_SetViewModelInfoIndex(currCl);
+            }
+            int v21 = 1580 * currCl;
+            dword_F64074[v21] = *(int*)&RefEntity->origin[0];
+            dword_F64078[v21] = *(int*)&RefEntity->origin[1];
+            dword_F6407C[v21] = *(int*)&RefEntity->origin[2];
+            AxisCopy(RefEntity->axis, (float (*)[3])&unk_F64080[6320 * currCl]);
+            if ((tagHashInit & 2) == 0)
+            {
+                tagHashInit |= 2u;
+                tag_brass_hash = HashString_CalcHash("tag_brass");
+            }
+            int v22 = DObjGetBoneIndex((DObj*)dword_F6A2A0[802 * currCl],
+                                       tag_brass_hash);
+            if (v22 > -1)
+            {
+                DObjSkelMat* MatrixArray =
+                    DObjGetMatrixArray((DObj*)dword_F6A2A0[802 * currCl], 0);
+                if (MatrixArray == nullptr)
+                    CG_ASSERT("pMtxArray",
+                              "c:\\cod\\code\\game\\cg_weapons.cpp", 3042);
+                DObjSkelMat* v24 = &MatrixArray[v22];
+                if (v24 == nullptr)
+                    CG_ASSERT("pMtxArray",
+                              "c:\\cod\\code\\game\\cg_weapons.cpp", 3045);
+                float mtxBrass[28];
+                mtxBrass[16] = RefEntity->axis[0][0];
+                mtxBrass[17] = RefEntity->axis[0][1];
+                mtxBrass[18] = RefEntity->axis[0][2];
+                mtxBrass[19] = RefEntity->axis[1][0];
+                mtxBrass[20] = RefEntity->axis[1][1];
+                mtxBrass[21] = RefEntity->axis[1][2];
+                mtxBrass[22] = RefEntity->axis[2][0];
+                mtxBrass[23] = RefEntity->axis[2][1];
+                mtxBrass[24] = RefEntity->axis[2][2];
+                mtxBrass[25] = RefEntity->origin[0];
+                mtxBrass[26] = RefEntity->origin[1];
+                mtxBrass[27] = RefEntity->origin[2];
+                DObjSkel2MatrixMultiply43(v24,
+                                          (const float (*)[3])&mtxBrass[16],
+                                          (DObjSkelMat*)mtxBrass);
+                ejectBrassCasingOrigin[0] = mtxBrass[12];
+                dword_F5E6BC = *(int*)&mtxBrass[13];
+                dword_F5E6C0 = *(int*)&mtxBrass[14];
+            }
+            CG_HoldBreathUpdate();
         }
     }
 }
