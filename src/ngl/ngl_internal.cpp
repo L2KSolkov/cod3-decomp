@@ -51,29 +51,17 @@ unsigned int nglDisplayMode_Set = 0;
 
 char nglVersionString[4] = { 0, 0, 0, 0 };
 
-// Skip-list resource directories (nglMesh/nglMaterial).
-// nglTextureDirectory + nglDefaultTex/nglWhiteTex live in ngl_texture.cpp;
-// nglFontDirectory lives in ngl_font.cpp; nglMeshDirectory/nglMaterialDirectory
-// belong to ngl_mesh.o (move there when that unit ports).
-tlSkipList<nglMesh, tlFixedString> nglMeshDirectory;
-tlSkipList<nglMaterial, tlFixedString> nglMaterialDirectory;
-
 // ngl_texture.o / ngl_font.o / ngl_morph.o (defined in their cpp files)
 extern nglTexture* nglDefaultTex;
 extern nglTexture* nglWhiteTex;
 extern tlSkipList<nglTexture, tlFixedString> nglTextureDirectory;
 extern tlSkipList<nglFont, tlFixedString> nglFontDirectory;
 extern tlSkipList<nglMorphSet, tlFixedString> nglMorphDirectory;
+extern tlSkipList<nglMesh, tlFixedString> nglMeshDirectory;        // ngl_mesh.o
+extern tlSkipList<nglMaterial, tlFixedString> nglMaterialDirectory; // ngl_mesh.o
 
 // GetKey accessors for the skip list template.
 const tlFixedString* GetKey(const nglTexture* t) { return t->FileName; }
-const tlFixedString* GetKey(const nglMesh* m) { return m->Name; }
-// nglMaterial/nglFont/nglMorphSet are forward-declared only; the directory
-// globals are declared but the GetKey accessors need the full types, so the
-// template instantiations for those three are provided via explicit special
-// methods below (defined when those units port).
-template <>
-const tlFixedString* tlSkipList<nglMaterial, tlFixedString>::GetKeyOf(const nglMaterial*) { return NULL; }
 
 const tlFixedString* GetKey(const nglTexture* t);
 const tlFixedString* GetKey(const nglMesh* m);

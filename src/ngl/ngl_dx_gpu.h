@@ -41,37 +41,25 @@ static_assert(sizeof(gpuVertexFormat) == 0x0C, "gpuVertexFormat size mismatch");
 // nglMeshSection â€” GPU mesh section (112 bytes, verified against IDA)
 // ============================================================================
 struct nglMeshSection {
-    uint8_t        _pad0[0x10];             // +0x00 (link prefix)
-    int            _pad10;                  // +0x10
-    int            _pad14;                  // +0x14
-    int            _pad18;                  // +0x18
-    int            _pad1C;                  // +0x1C
-    int            _pad20;                  // +0x20
-    int            _pad24;                  // +0x24
-    int            _pad28;                  // +0x28
-    int            _pad2C;                  // +0x2C
-    int            _pad30;                  // +0x30
-    int            _pad34;                  // +0x34
-    int            _pad38;                  // +0x38
-    int            _pad3C;                  // +0x3C
-    void*          VertexBuffer;            // +0x40
+    math::Vector4  Sphere;                  // +0x00
+    math::Vector4  BoxMin;                  // +0x10
+    math::Vector4  BoxMax;                  // +0x20
+    float          SqrtAreaEstimate;        // +0x30
+    nglMaterial*   Material;                // +0x34
+    unsigned short* BoneIndices;            // +0x38
+    int            NBones;                  // +0x3C
+    D3DVertexBuffer* VertexBuffer;          // +0x40
     int            VertexOffset;            // +0x44
-    int            VertexSize;              // +0x48
-    int            NVertices;               // +0x4C
-    void*          IndexBuffer;             // +0x50
+    int            NVertices;               // +0x48
+    int            VertexSize;              // +0x4C
+    D3DIndexBuffer* IndexBuffer;            // +0x50
     int            IndexOffset;             // +0x54
     int            NIndices;                // +0x58
     int            IndexSize;               // +0x5C
     gpuVertexFormat* VertexFormat;          // +0x60
     int            PrimitiveType;           // +0x64
-    int            LOD;                     // +0x68
-    void*          Sphere;                  // +0x6C
-    void*          BoxMin;                  // +0x70
-    void*          BoxMax;                  // +0x74
-    float          SqrtAreaEstimate;        // +0x78
-    void*          Material;                // +0x7C
-};
-static_assert(sizeof(nglMeshSection) == 0x80, "nglMeshSection size mismatch");
+    int            BinaryVersion;           // +0x68
+};static_assert(sizeof(nglMeshSection) == 0x70, "nglMeshSection size mismatch");
 
 // ============================================================================
 // Scratch buffer state (ngl_gpu_meshedit.o)
@@ -109,9 +97,12 @@ extern int nglSceneRecursion;
 // ============================================================================
 // nglMesh - mesh container (0x40 bytes, verified against IDA @0x844AC0).
 // ============================================================================
+struct nglMesh;
 struct nglMeshLOD {
-    uint8_t data[8];   // opaque 8-byte LOD entry
+    float    Range;   // +0x00
+    nglMesh* Mesh;    // +0x04
 };
+static_assert(sizeof(nglMeshLOD) == 8, "nglMeshLOD size mismatch");
 
 struct nglMeshSectionTableEntry {
     nglMeshSection* Section;   // +0x00
@@ -127,10 +118,50 @@ struct nglMesh {
     unsigned int   NLODs;                    // +0x14
     nglMeshLOD*    LODs;                     // +0x18
     unsigned int   NPolys;                   // +0x1C
-    float          Sphere[4];                // +0x20
-    uint8_t        _pad30[0x10];             // +0x30 (zeroed, unused by create)
+    math::Vector4  Sphere;                   // +0x20
+    void*          File;                     // +0x30 (apk::apkFile*)
+    int            LastFrameRef;             // +0x34
+    unsigned int   Pad0;                     // +0x38
+    unsigned int   Pad1;                     // +0x3C
 };
 static_assert(sizeof(nglMesh) == 0x40, "nglMesh size mismatch");
+
+// ============================================================================
+// Shader/scene parameter sets (4 bytes each, verified against IDA).
+// ============================================================================
+class nglParamSet {
+public:
+    unsigned int* Array;  // +0x00
+};
+static_assert(sizeof(nglParamSet) == 4, "nglParamSet size mismatch");
+
+class nglShaderParamSet : public nglParamSet {
+public:
+    static unsigned int NumParams;  // ngl_params.o (0x14D2AA4)
+    nglShaderParamSet();            // inline COMDAT (game.o)
+    unsigned int GetSize();         // inline COMDAT (game.o)
+    void Copy(const nglShaderParamSet& other);  // inline COMDAT (render.o)
+};
+static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch");
+
+class nglSceneParamSet : public nglParamSet {
+public:
+    static unsigned int NumParams;  // ngl_params.o (0x14D2AA0)
+};
+static_assert(sizeof(nglSceneParamSet) == 4, "nglSceneParamSet size mismatch");
+
+// ============================================================================
+// nglMeshNode - per-instance mesh render data (144 bytes, verified against IDA).
+// ============================================================================
+struct nglMeshNode {
+    math::Mat43       LocalToWorld;   // +0x00
+    math::Mat44       LocalToScreen;  // +0x40
+    nglMesh*          Mesh;           // +0x80
+    nglShaderParamSet ShaderParams;   // +0x84
+    nglMeshParams*    MeshParams;     // +0x88
+    float             MaxScale;       // +0x8C
+};
+static_assert(sizeof(nglMeshNode) == 0x90, "nglMeshNode size mismatch");
 
 // ============================================================================
 // nglMeshParams - per-instance mesh render parameters (32 bytes, IDA type).

@@ -63,12 +63,13 @@ int nglScratchVertexAlloc(int Size, int Align) {
 nglMeshSection* nglCreateSection(int Prim, int NIndices, int NVertices,
                                  gpuVertexFormat* VertexFormat) {
     nglMeshSection* v4 = (nglMeshSection*)tlMemAlloc(0x70u, 0x10u, 0);
-    v4->VertexFormat = VertexFormat;
-    memset(&v4->_pad0, 0, 0x0C);
-    *(unsigned long long*)&v4->_pad0[4] = 0x749DC5AE00000000LL;
+    v4->VertexFormat = VertexFormat;   // +0x60
+    unsigned long long SphereInit[2] = { 0, 0x749DC5AE00000000LL };
+    memcpy(&v4->Sphere, SphereInit, 16);
+    v4->Material = NULL;               // +0x34
+    v4->PrimitiveType = Prim;          // +0x64
+    v4->NIndices = NIndices;           // +0x58
     v4->IndexSize = 2 * (NVertices >= 0xFFFF) + 2;
-    v4->PrimitiveType = Prim;
-    v4->NIndices = NIndices;
     if (NIndices != 0)
         v4->IndexBuffer = D3DDevice_CreateIndexBuffer2(4 * NIndices);
     else
@@ -77,7 +78,7 @@ nglMeshSection* nglCreateSection(int Prim, int NIndices, int NVertices,
     v4->NVertices = NVertices;
     v4->VertexBuffer = D3DDevice_CreateVertexBuffer2(NVertices * VertexFormat->VertexSize);
     v4->VertexOffset = 0;
-    v4->LOD = -1;
+    v4->BinaryVersion = -1;
     return v4;
 }
 
@@ -94,7 +95,7 @@ void nglDestroySection(nglMeshSection* Section) {
 // nglLockSectionIndices â€” ea: 0x8432E0
 // ============================================================================
 void* nglLockSectionIndices(nglMeshSection* Section) {
-    return (unsigned char*)Section->IndexBuffer + Section->IndexOffset;
+    return (unsigned char*)(Section->IndexOffset + Section->IndexBuffer->Data);
 }
 
 // ============================================================================
@@ -123,8 +124,9 @@ void nglUnlockSectionVertices() {
 nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
                                         gpuVertexFormat* VertexFormat) {
     nglMeshSection* v4 = (nglMeshSection*)nglListAlloc(0x70u, 0x10u);
-    memset(&v4->_pad0, 0, 0x0C);
-    *(unsigned long long*)&v4->_pad0[4] = 0x749DC5AE00000000LL;
+    unsigned long long SphereInit[2] = { 0, 0x749DC5AE00000000LL };
+    memcpy(&v4->Sphere, SphereInit, 16);
+    v4->Material = NULL;
     v4->PrimitiveType = Prim;
     v4->IndexSize = 2;
     v4->VertexFormat = VertexFormat;
@@ -136,7 +138,7 @@ nglMeshSection* nglCreateScratchSection(int Prim, int NIndices, int NVertices,
     v4->VertexOffset = nglScratchVertexAlloc(NVertices * VertexFormat->VertexSize,
                                              VertexFormat->VertexSize);
     v4->VertexSize = VertexFormat->VertexSize;
-    v4->LOD = -1;
+    v4->BinaryVersion = -1;
     return v4;
 }
 
@@ -149,8 +151,8 @@ void nglCopySection(nglMeshSection* Dst, nglMeshSection* Src) {
                   "Dst->NIndices == Src->NIndices && Dst->IndexSize == Src->IndexSize",
                   "Index buffer sizes do not match."))
         __debugbreak();
-    memcpy((unsigned char*)Dst->IndexBuffer + Dst->IndexOffset,
-           (unsigned char*)Src->IndexBuffer + Src->IndexOffset,
+    memcpy((unsigned char*)(Dst->IndexOffset + Dst->IndexBuffer->Data),
+           (unsigned char*)(Src->IndexOffset + Src->IndexBuffer->Data),
            Dst->NIndices * Dst->IndexSize);
     if ((Dst->NVertices != Src->NVertices ||
          Dst->VertexFormat->VertexSize != Src->VertexFormat->VertexSize) &&

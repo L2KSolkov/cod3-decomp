@@ -2,9 +2,9 @@
 // TL Instance Bank — skip-list-based named instance registry
 // Source: tl_instbank.cpp (9 funcs)
 // ea: 0x833B90-0x833FC0
-// ============================================================================
 
-#include "core/tlFixedString.h"
+#include "core/tlInstanceBank.h"
+
 #include <cstdlib>
 #include <cstring>
 
@@ -12,42 +12,6 @@
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
 
-// ============================================================================
-// tlInstanceBank — randomized skip-list container
-// ============================================================================
-class tlInstanceBank {
-public:
-    struct Instance {
-        tlFixedString Key;       // +0x00 (32 bytes: hash + str[28])
-        void*         Value;     // +0x20
-        unsigned      RefCount;  // +0x24
-        // Variable: Forward[] array at +0x28 (4 bytes per level)
-        // Forward[0] at +0x28, Forward[N] at +0x28 + 4*N
-    };
-
-    static const int MAX_LEVEL = 15;
-
-    Instance* NIL;       // sentinel node
-    Instance* Head;      // head of skip list
-    unsigned   Level;    // current max level
-    unsigned   RandomBits;
-    int        RandomsLeft;
-
-    tlInstanceBank();
-    ~tlInstanceBank();
-
-    void     Init();
-    void     Destroy();
-    Instance* Insert(const tlFixedString& key, void* value);
-    int      Delete(const tlFixedString& key);
-    Instance* Search(const tlFixedString& key);
-
-private:
-    int      RandomLevel();
-    Instance* NewNodeOfLevel(int level);
-};
-
-// ============================================================================
 // tlInstanceBank::tlInstanceBank
 // ea: 0x833B90
 // ============================================================================

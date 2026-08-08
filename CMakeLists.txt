@@ -68,6 +68,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_debug.cpp
     src/ngl/ngl_dx_buf.cpp
     src/ngl/ngl_dx_filters.cpp
+    src/ngl/ngl_mesh.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC
