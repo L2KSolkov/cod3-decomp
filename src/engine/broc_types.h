@@ -48,6 +48,10 @@ enum EHitLocation {
     HITLOC_NONE = 0,
 };
 
+enum {
+    INVALID_PAK_INFO = 0,
+};
+
 // ============================================================================
 // Broc namespace
 // ============================================================================
@@ -211,6 +215,8 @@ bool   operator==(const string& lhs, const char* rhs);
 bool   operator==(const string& lhs, const string& rhs);
 bool   operator==(HashStr lhs, const string& rhs);
 bool   operator==(const string& lhs, HashStr rhs);
+bool   operator!=(const string& lhs, const char* rhs);
+bool   operator!=(const string& lhs, const string& rhs);
 bool   operator!=(HashStr lhs, const string& rhs);
 bool   operator!=(const string& lhs, HashStr rhs);
 string operator+(const string& lhs, const string& rhs);
@@ -430,6 +436,8 @@ bool IsDefined(const Broc::string& s);              // ea: 0x92F6F0
 inline bool IsDefined(const Broc::hudelem& h) { return h.___u0 != 0; }
 template <typename T> bool IsDefined(const T& t);   // boxed-type IsDefined
 
+extern Broc::entity gEntityUndef;
+
 // ============================================================================
 // BrocExports - the Broc script runtime export table (456 bytes, 114 members).
 // Verified against IDA struct BrocExports (size 0x1C8).
@@ -580,7 +588,9 @@ struct BrocAPI {
     char _padF24[0xF4C - 0xF24];                          // +0xF24
     Broc::string* (*m_entity_get_target)(Broc::string*, unsigned int);  // +0xF4C
     void (*m_entity_set_target)(unsigned int, Broc::string);  // +0xF50
-    char _padF54[0xF94 - 0xF54];                          // +0xF54
+    Broc::string* (*m_entity_get_targetname)(Broc::string*, unsigned int);  // +0xF54
+    void (*m_entity_set_targetname)(unsigned int, Broc::string);  // +0xF58
+    char _padF5C[0xF94 - 0xF5C];                          // +0xF5C
     int (*m_entity_get_health)(unsigned int);             // +0xF94
     void (*m_entity_set_health)(unsigned int, int);       // +0xF98
     char _padF9C[0xFA4 - 0xF9C];                          // +0xF9C
@@ -632,12 +642,16 @@ void SetModel(Broc::entity* e, const Broc::string* model, int whichPak);
 void MoveTo(Broc::entity* e, const Broc::vector* vPos, float time,
             float accTime, float decTime);
 int EffectEventPlay(Broc::entity* e, const Broc::string* script);
+int EffectEventPlay(Broc::entity* e, const Broc::string* script,
+                    HashStr notifyHash, bool stoppable);
 int EffectEventPlay(const Broc::string* script, const Broc::vector* pos,
                     const Broc::vector* facing);
+void SoundCrossFade(unsigned int handle1, unsigned int handle2, float time);
 void GetLocalPlayerArray(Broc::dyn_array<Broc::entity>* out);
 void AnglesToForward(Broc::vector* result, const Broc::vector* angles);
 void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
 HashStr string_hash(const char* str);
+HashStr* string_hash(HashStr* result, const Broc::string* str);
 unsigned int SoundPlay(const Broc::string& name, float volume);
 void ReverbSetParams(const Broc::string& name, bool immediate);
 int GetCvarInt(const char* cvar);
@@ -669,6 +683,7 @@ float VectorDot(const Broc::vector* a, const Broc::vector* b);
 void VectorNormalize(Broc::vector* result, const Broc::vector* v);
 int VecCloser(const Broc::vector* a, const Broc::vector* b, const Broc::vector* c);
 bool IsPlayer(const Broc::entity* e);            // ea: 0x92F2F0
+int IsAlive(const Broc::entity* e);              // ea: 0x92F320
 int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
 bint* GetTime(bint* result);                     // gBrocAPI.mGetTime
 void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92F440

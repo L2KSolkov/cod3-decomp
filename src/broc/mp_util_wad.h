@@ -196,6 +196,8 @@ MP_UTIL_WAD_ACCESSOR(returnedSinceLastDeath, Broc::bint)
 MP_UTIL_WAD_ACCESSOR(lastMedicCall, Broc::bint)
 MP_UTIL_WAD_ACCESSOR(bigsplashed, Broc::bint)
 MP_UTIL_WAD_ACCESSOR(audio_ambmin, Broc::bfloat)
+MP_UTIL_WAD_ACCESSOR(script_sound, Broc::string)
+MP_UTIL_WAD_ACCESSOR(teamSound, Broc::bint)
 
 #undef MP_UTIL_WAD_ACCESSOR
 
@@ -223,6 +225,13 @@ Broc::string* entity_get_target(Broc::string* result, Broc::entity ent);  // ea:
 void entity_set_spectatorClient(Broc::entity ent, int client);  // ea: 0x93E390
 Broc::vector* entity_get_origin(Broc::vector* result, Broc::entity ent);
 void entity_set_origin(Broc::entity ent, const Broc::vector& v);  // ea: 0x938A10
+Broc::string* entity_get_targetname(Broc::string* result, Broc::entity ent);
+
+// mp_util_wad::Level.line_sound_emitters hash_map helpers.
+void line_sound_set(HashStr key, Broc::entity e);
+Broc::entity* line_sound_get(Broc::entity* result, HashStr key);
+void line_sound_erase(HashStr key);
+void line_sound_delete_all();
 
 } // namespace mp_util_wad
 

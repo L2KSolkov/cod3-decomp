@@ -38,8 +38,15 @@ void* PlaySound__functor(Broc::entity self, Broc::string sound, float delay);
 void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
                                    Broc::vector position);
 void* player_dying_sounds__functor(Broc::entity player);
+void* audio_crossfade_wait__functor(Broc::entity self);
+void* ThreadStaticSoundPlay__functor(Broc::entity self, Broc::string name);
+void* ThreadStaticSoundRandomPlay__functor(Broc::entity self,
+                                           Broc::string name);
+void* MoveSoundAlongLine__functor(Broc::entity toMove, Broc::vector start,
+                                  Broc::vector end);
 void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
-                    Broc::entity attacker, int weapon, int means_of_damage);
+                    Broc::entity attacker, Broc::bint weapon,
+                    Broc::bint means_of_damage);
 }
 namespace _mp_loadout {
 void local_player_joined(Broc::entity player);
@@ -1293,6 +1300,30 @@ Broc::bfloat* GetEE_audio_ambmin(Broc::entity ent) {
     return &ee->GetRef<Broc::bfloat>(0xC6588AA5);
 }
 
+// GetEE_script_sound / IsEEDefined_script_sound (key 0x4816A2BD)
+Broc::string* GetEE_script_sound(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0x4816A2BD);
+}
+
+Broc::bbool* IsEEDefined_script_sound(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v; const Broc::string* val = ee->GetVal<Broc::string>(&v, 0x4816A2BD);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
 Broc::bbool* IsEEDefined_audio_ambmin(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
@@ -1515,7 +1546,8 @@ void CallbackSetLevelAudio(const char* background_track, const char* reverb,
 }
 
 // audio_crossfade_wait - ea: 0x937020
-void audio_crossfade_wait() {
+void audio_crossfade_wait(Broc::entity self) {
+    (void)self;
     mp_util_wad::pLevel->crossfade_done = 0;
     Broc::wait(2.1f);
     mp_util_wad::pLevel->crossfade_done = 1;
@@ -1626,6 +1658,694 @@ void ambient_system(Broc::entity lvl, Broc::string spawn_package) {
     }
     spawn_package.~string();
 }
+
+// ambient_chatter_system - ea: 0x936390
+void ambient_chatter_system(Broc::entity self) {
+    (void)self;
+    for (;;) {
+        extern void* audio_spawner__functor(Broc::entity, Broc::string);
+        Broc::entity lvl;
+        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::string sound("dist_chatter");
+        void* ftor = audio_spawner__functor(lvl, sound);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
+                            __LINE__, "_mp_audio::audio_spawner", ftor);
+        Broc::wait(Broc::RandomFloatRange(1.0f, 5.0f));
+    }
+}
+
+// interior_triggering_device - ea: 0x936570
+void interior_triggering_device(Broc::entity trigger, Broc::entity other) {
+    if (Broc::Code_IsLocalPlayer(other)) {
+        if ((int)*mp_util_wad::GetEE_audio_track_p(trigger) >
+            (int)mp_util_wad::pLevel->audio_change_priority) {
+            mp_util_wad::pLevel->audio_change_priority =
+                (int)*mp_util_wad::GetEE_audio_track_p(trigger);
+            mp_util_wad::pLevel->audio_change_track =
+                *mp_util_wad::GetEE_audio_track(trigger);
+            mp_util_wad::pLevel->audio_change_reverb =
+                *mp_util_wad::GetEE_reverb(trigger);
+            mp_util_wad::pLevel->audio_change_ambpack =
+                *mp_util_wad::GetEE_audio_ambp(trigger);
+            mp_util_wad::pLevel->audio_change_ambient_wait =
+                (float)*mp_util_wad::GetEE_audio_ambmax(trigger);
+            mp_util_wad::pLevel->audio_change_ambient_min =
+                (float)*mp_util_wad::GetEE_audio_ambmin(trigger);
+            mp_util_wad::pLevel->audio_indoor_switch =
+                (int)*mp_util_wad::GetEE_audio_indoor(trigger);
+        }
+    }
+}
+
+// PlayerLocation - ea: 0x936770
+void PlayerLocation(Broc::entity self) {
+    (void)self;
+    for (;;) {
+        mp_util_wad::pLevel->audio_change_priority = 0;
+        Broc::wait(0.09f);
+        if ((int)mp_util_wad::pLevel->audio_change_priority == 0) {
+            mp_util_wad::pLevel->audio_change_track =
+                mp_util_wad::pLevel->background_track;
+            mp_util_wad::pLevel->audio_change_reverb =
+                mp_util_wad::pLevel->reverb_setting;
+            mp_util_wad::pLevel->audio_change_ambpack =
+                mp_util_wad::pLevel->ambient_setting;
+            mp_util_wad::pLevel->audio_change_ambient_wait =
+                (float)mp_util_wad::pLevel->audio_ambient_max;
+            mp_util_wad::pLevel->audio_change_ambient_min =
+                (float)mp_util_wad::pLevel->audio_ambient_min;
+            mp_util_wad::pLevel->audio_indoor_switch = 0;
+        }
+        if ((int)mp_util_wad::pLevel->audio_current_priority !=
+            (int)mp_util_wad::pLevel->audio_change_priority) {
+            if (mp_util_wad::pLevel->audio_current_track !=
+                    mp_util_wad::pLevel->audio_change_track &&
+                mp_util_wad::pLevel->audio_change_track != "none") {
+                if (Broc::IsDefined(mp_util_wad::pLevel->audio_change_track)) {
+                    if ((int)mp_util_wad::pLevel->crossfade_done == 1) {
+                        Broc::bint snd1((int)Broc::SoundPlay(
+                            mp_util_wad::pLevel->audio_change_track, 1.0f));
+                        Broc::SoundCrossFade(
+                            (unsigned int)(int)mp_util_wad::pLevel
+                                ->audio_current_track_handle,
+                            (unsigned int)(int)snd1, 2.0f);
+                        Broc::entity lvl;
+                        lvl.___u0 = mp_util_wad::pLevel != NULL;
+                        void* ftor = audio_crossfade_wait__functor(lvl);
+                        Broc::thread_create(false,
+                                            "c:\\cod\\code\\script\\_mp_audio.bro",
+                                            __LINE__, "audio_crossfade_wait",
+                                            ftor);
+                        Broc::wait(0.1f);
+                        mp_util_wad::pLevel->audio_current_track_handle =
+                            (int)snd1;
+                        Broc::string s =
+                            mp_util_wad::pLevel->audio_change_track;
+                        AudioPrint(s);
+                        mp_util_wad::pLevel->audio_current_track =
+                            mp_util_wad::pLevel->audio_change_track;
+                    }
+                } else {
+                    if (Broc::gBrocAPI.mWarning(
+                            "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                            "_mp_audio.bro Missing audio_track in trigger. setting to none."))
+                        __debugbreak();
+                    mp_util_wad::pLevel->audio_change_track = "none";
+                }
+            }
+            if (mp_util_wad::pLevel->audio_current_reverb !=
+                    mp_util_wad::pLevel->audio_change_reverb &&
+                mp_util_wad::pLevel->audio_change_reverb != "none") {
+                if (Broc::IsDefined(mp_util_wad::pLevel->audio_change_reverb)) {
+                    Broc::ReverbSetParams(mp_util_wad::pLevel->audio_change_reverb,
+                                          false);
+                    Broc::wait(0.1f);
+                    mp_util_wad::pLevel->audio_current_reverb =
+                        mp_util_wad::pLevel->audio_change_reverb;
+                    Broc::string s =
+                        mp_util_wad::pLevel->audio_change_reverb;
+                    AudioPrint(s);
+                } else {
+                    Broc::string name("Preset_Noreverb");
+                    Broc::ReverbSetParams(name, false);
+                    name.~string();
+                    if (Broc::gBrocAPI.mWarning(
+                            "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                            "_mp_audio.bro Missing reverb in trigger. setting to Preset_Noreverb."))
+                        __debugbreak();
+                    mp_util_wad::pLevel->audio_change_reverb =
+                        "Preset_Noreverb";
+                }
+            }
+            if (mp_util_wad::pLevel->audio_current_ambpack !=
+                    mp_util_wad::pLevel->audio_change_ambpack &&
+                mp_util_wad::pLevel->audio_change_ambpack != "none") {
+                if (!Broc::IsDefined(mp_util_wad::pLevel->audio_change_ambpack) ||
+                    IS_NAN((float)mp_util_wad::pLevel->audio_change_ambient_min) ||
+                    IS_NAN((float)mp_util_wad::pLevel->audio_change_ambient_wait)) {
+                    if (Broc::gBrocAPI.mWarning(
+                            "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                            "_mp_audio.bro Missing audio_ambp, amb_min, amb_max in the trigger. setting to defaults."))
+                        __debugbreak();
+                    mp_util_wad::pLevel->audio_change_ambpack = "NoAmbFX";
+                    mp_util_wad::pLevel->audio_change_ambient_min = 1.0f;
+                    mp_util_wad::pLevel->audio_change_ambient_wait = 5.0f;
+                } else {
+                    mp_util_wad::pLevel->audio_current_ambient_wait =
+                        (float)mp_util_wad::pLevel->audio_change_ambient_wait;
+                    mp_util_wad::pLevel->audio_current_ambient_min =
+                        (float)mp_util_wad::pLevel->audio_change_ambient_min;
+                    mp_util_wad::pLevel->audio_indoor_switch = 1;
+                    mp_util_wad::pLevel->audio_current_ambpack =
+                        mp_util_wad::pLevel->audio_change_ambpack;
+                    Broc::wait(0.1f);
+                    Broc::string s =
+                        mp_util_wad::pLevel->audio_current_ambpack;
+                    AudioPrint(s);
+                    Broc::string s2 =
+                        Broc::string(mp_util_wad::pLevel->audio_current_ambient_min);
+                    AudioPrint(s2);
+                }
+            }
+            mp_util_wad::pLevel->audio_current_priority =
+                (int)mp_util_wad::pLevel->audio_change_priority;
+        }
+    }
+}
+
+// closest_point_on_line_to_point - ea: 0x937B20
+Broc::bfloat closest_point_on_line_to_point(
+    Broc::vector Point, Broc::vector LineStart, Broc::vector LineEnd,
+    Broc::vector& out_PointOnLine) {
+    Broc::vector line = LineEnd - LineStart;
+    float LineMagSqrd = line.x * line.x + line.y * line.y + line.z * line.z;
+    float t = ((Point.x - LineStart.x) * (LineEnd.x - LineStart.x) +
+               (Point.y - LineStart.y) * (LineEnd.y - LineStart.y) +
+               (Point.z - LineStart.z) * (LineEnd.z - LineStart.z)) /
+              LineMagSqrd;
+    if (t < 0.0f) {
+        out_PointOnLine = LineStart;
+    } else if (t > 1.0f) {
+        out_PointOnLine = LineEnd;
+    } else {
+        out_PointOnLine = Broc::vector(
+            LineStart.x + t * (LineEnd.x - LineStart.x),
+            LineStart.y + t * (LineEnd.y - LineStart.y),
+            LineStart.z + t * (LineEnd.z - LineStart.z));
+    }
+    return Broc::bfloat(t);
+}
+
+// StopLineSound - ea: 0x937EB0
+void StopLineSound(Broc::string startOfLineEntity) {
+    if (Broc::IsDefined(startOfLineEntity)) {
+        HashStr key;
+        Broc::string_hash(&key, &startOfLineEntity);
+        Broc::entity soundMover;
+        mp_util_wad::line_sound_get(&soundMover, key);
+        if (Broc::IsDefined(soundMover)) {
+            Broc::Delete(&soundMover);
+            HashStr key2;
+            Broc::string_hash(&key2, &startOfLineEntity);
+            mp_util_wad::line_sound_erase(key2);
+        } else {
+            if (Broc::gBrocAPI.mWarning(
+                    "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                    "_mp_audio::StopLineSound(): could not find line entity to stop! Aborting..."))
+                __debugbreak();
+        }
+    } else {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio::StopLineSound(): startOfLineEntity is UNDEFINED! Aborting..."))
+            __debugbreak();
+    }
+    startOfLineEntity.~string();
+}
+
+// StopAllLineSounds - ea: 0x938030
+void StopAllLineSounds() {
+    mp_util_wad::line_sound_delete_all();
+}
+
+Broc::entity* SpawnLineSound(Broc::entity* result, Broc::entity startOfLine,
+                             Broc::string sound);
+void StopTeamSound();
+
+// SpawnLineSound (string start) - ea: 0x9380F0
+Broc::entity* SpawnLineSound(Broc::entity* result, Broc::string startOfLineEntity,
+                             Broc::string sound) {
+    if (Broc::IsDefined(startOfLineEntity)) {
+        HashStr key;
+        key.mVal = 0x19F9F0E8u;
+        Broc::entity startOfLine;
+        Broc::GetEnt(&startOfLine, &startOfLineEntity, key, 0);
+        if (Broc::IsDefined(startOfLine)) {
+            Broc::entity soundMover;
+            soundMover.___u0 = 0;
+            SpawnLineSound(&soundMover, startOfLine, sound);
+            HashStr mapKey;
+            Broc::string_hash(&mapKey, &startOfLineEntity);
+            mp_util_wad::line_sound_set(mapKey, soundMover);
+            *result = soundMover;
+        } else {
+            if (Broc::gBrocAPI.mWarning(
+                    "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                    "_mp_audio::SpawnLineSound(): Could not find start of line entity! Aborting..."))
+                __debugbreak();
+            *result = Broc::gEntityUndef;
+        }
+    } else {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio::SpawnLineSound(): startOfLineEntity is UNDEFINED! Aborting..."))
+            __debugbreak();
+        *result = Broc::gEntityUndef;
+    }
+    startOfLineEntity.~string();
+    sound.~string();
+    return result;
+}
+
+// SpawnLineSound (entity start) - ea: 0x938320
+Broc::entity* SpawnLineSound(Broc::entity* result, Broc::entity startOfLine,
+                             Broc::string sound) {
+    Broc::string target;
+    mp_util_wad::entity_get_target(&target, startOfLine);
+    if (!Broc::IsDefined(target)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio::SpawnLineSound(): startOfLineEntity.target is UNDEFINED! Aborting..."))
+            __debugbreak();
+        target.~string();
+        sound.~string();
+        *result = Broc::gEntityUndef;
+        return result;
+    }
+    if (!Broc::IsDefined(sound)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio::SpawnLineSound(): sound is UNDEFINED! Aborting..."))
+            __debugbreak();
+        target.~string();
+        sound.~string();
+        *result = Broc::gEntityUndef;
+        return result;
+    }
+    Broc::string target2;
+    mp_util_wad::entity_get_target(&target2, startOfLine);
+    Broc::entity endOfLineEntity;
+    HashStr key;
+    key.mVal = 0x19F9F0E8u;
+    Broc::GetEnt(&endOfLineEntity, &target2, key, 0);
+    target2.~string();
+    target.~string();
+    if (Broc::IsAlive(&endOfLineEntity) != 0) {
+        Broc::vector start;
+        Broc::vector end;
+        mp_util_wad::entity_get_origin(&start, startOfLine);
+        mp_util_wad::entity_get_origin(&end, endOfLineEntity);
+        Broc::string inClassname("script_origin");
+        Broc::entity soundMover;
+        Broc::Spawn(&soundMover, &inClassname, &start, INVALID_PAK_INFO);
+        inClassname.~string();
+        Broc::EffectEventPlay(&soundMover, &sound);
+        void* ftor = MoveSoundAlongLine__functor(soundMover, start, end);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
+                            __LINE__, "MoveSoundAlongLine", ftor);
+        *result = soundMover;
+    }
+    sound.~string();
+    return result;
+}
+
+// MoveSoundAlongLine - ea: 0x938720
+void MoveSoundAlongLine(Broc::entity toMove, Broc::vector start,
+                        Broc::vector end) {
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetLocalPlayerArray(&players);
+    Broc::entity player;
+    player.___u0 = 0;
+    if (Broc::size(players) > 0)
+        player = players[0];
+    Broc::vector pos;
+    Broc::bfloat closest_dist;
+    for (;;) {
+        if (!Broc::IsDefined(player)) {
+            Broc::dyn_array<Broc::entity> entarr;
+            Broc::GetPlayerArray(&entarr);
+            if (Broc::size(entarr) > 0)
+                player = entarr[0];
+            entarr.~dyn_array();
+        }
+        Broc::vector porg;
+        mp_util_wad::entity_get_origin(&porg, player);
+        closest_point_on_line_to_point(porg, start, end, pos);
+        mp_util_wad::entity_set_origin(toMove, pos);
+        if (Broc::IsDefined(pos)) {
+            float dist = Broc::DistanceSquared(&porg, &pos);
+            closest_dist = dist;
+            if ((float)closest_dist > 65536.0f) {
+                Broc::wait(2.0f);
+            } else if ((float)closest_dist > 262144.0f) {
+                Broc::wait(0.2f);
+            } else {
+                Broc::wait(0.01f);
+            }
+        }
+    }
+}
+
+// PlayLocalDialog - ea: 0x938B20
+void PlayLocalDialog(Broc::entity self, Broc::string sound, Broc::string team) {
+    (void)sound;
+    Broc::DialogPlay(self, &team);
+    sound.~string();
+    team.~string();
+}
+
+// PlayTeamDialog (3-string) - ea: 0x938BE0
+void PlayTeamDialog(Broc::entity self, Broc::string team, Broc::string sound,
+                    Broc::bfloat delay) {
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetLocalPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::string pteam;
+        mp_util_wad::entity_get_team(&pteam, players[(unsigned int)(int)i]);
+        if (pteam == team) {
+            pteam.~string();
+            players.~dyn_array();
+            Broc::wait((float)delay);
+            Broc::DialogPlay(self, &sound);
+            team.~string();
+            sound.~string();
+            return;
+        }
+        pteam.~string();
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+    team.~string();
+    sound.~string();
+}
+
+// PlayTeamDialog (4-string) - ea: 0x938E90
+void PlayTeamDialog(Broc::entity self, Broc::string primaryteam,
+                    Broc::string primaryteamsound,
+                    Broc::string secondaryteamsound, Broc::bfloat delay) {
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetLocalPlayerArray(&players);
+    if (Broc::size(players) == 1) {
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, players[0]);
+        Broc::wait((float)delay);
+        if (team == primaryteam)
+            Broc::DialogPlay(self, &primaryteamsound);
+        else
+            Broc::DialogPlay(self, &secondaryteamsound);
+        team.~string();
+    } else {
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            Broc::string team;
+            mp_util_wad::entity_get_team(&team, players[(unsigned int)(int)i]);
+            if (team == primaryteam) {
+                team.~string();
+                Broc::wait((float)delay);
+                Broc::DialogPlay(self, &primaryteamsound);
+                players.~dyn_array();
+                primaryteam.~string();
+                primaryteamsound.~string();
+                secondaryteamsound.~string();
+                return;
+            }
+            team.~string();
+            i = (int)i + 1;
+        }
+        Broc::wait((float)delay);
+        Broc::DialogPlay(self, &secondaryteamsound);
+    }
+    players.~dyn_array();
+    primaryteam.~string();
+    primaryteamsound.~string();
+    secondaryteamsound.~string();
+}
+
+// PlayTeamSoundStoppable (2-string) - ea: 0x9391B0
+void PlayTeamSoundStoppable(Broc::entity self, Broc::string sound,
+                            Broc::string team) {
+    Broc::entity temp;
+    temp.___u0 = mp_util_wad::pLevel->hack_sound_entity.___u0;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetLocalPlayerArray(&players);
+    if (!Broc::IsDefined(mp_util_wad::pLevel->hack_sound_entity)) {
+        Broc::string inClassname("script_origin");
+        Broc::entity spawnResult;
+        Broc::vector origin;
+        if (Broc::size(players) > 0)
+            mp_util_wad::entity_get_origin(&origin, players[0]);
+        mp_util_wad::pLevel->hack_sound_entity =
+            *Broc::Spawn(&spawnResult, &inClassname, &origin, INVALID_PAK_INFO);
+        inClassname.~string();
+    }
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::string pteam;
+        mp_util_wad::entity_get_team(&pteam, players[(unsigned int)(int)i]);
+        if (pteam == team) {
+            pteam.~string();
+            StopTeamSound();
+            HashStr stopLabel;
+            stopLabel.mVal = 0x5DA1DA2Du;
+            Broc::endon(temp, stopLabel);
+            Broc::vector origin;
+            mp_util_wad::entity_get_origin(&origin, players[(unsigned int)(int)i]);
+            mp_util_wad::entity_set_origin(mp_util_wad::pLevel->hack_sound_entity,
+                                           origin);
+            HashStr soundHash;
+            Broc::string_hash(&soundHash, &sound);
+            int handle = Broc::EffectEventPlay(&temp, &sound, soundHash, true);
+            *mp_util_wad::GetEE_teamSound(temp) = handle;
+            HashStr waitHash;
+            Broc::string_hash(&waitHash, &sound);
+            Broc::waittill(temp, waitHash);
+            *mp_util_wad::GetEE_teamSound(temp) = 0;
+            players.~dyn_array();
+            sound.~string();
+            team.~string();
+            return;
+        }
+        pteam.~string();
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+    sound.~string();
+    team.~string();
+    (void)self;
+}
+
+// PlayTeamSoundStoppable (3-string) - ea: 0x939590
+void PlayTeamSoundStoppable(Broc::entity self, Broc::string primaryteam,
+                            Broc::string primaryteamsound,
+                            Broc::string secondaryteamsound) {
+    (void)self;
+    Broc::entity temp;
+    temp.___u0 = mp_util_wad::pLevel->hack_sound_entity.___u0;
+    Broc::string sound;
+    sound = "";
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetLocalPlayerArray(&players);
+    Broc::vector origin;
+    if (Broc::size(players) > 0)
+        mp_util_wad::entity_get_origin(&origin, players[0]);
+    if (!Broc::IsDefined(mp_util_wad::pLevel->hack_sound_entity)) {
+        Broc::string inClassname("script_origin");
+        Broc::entity spawnResult;
+        mp_util_wad::pLevel->hack_sound_entity =
+            *Broc::Spawn(&spawnResult, &inClassname, &origin, INVALID_PAK_INFO);
+        inClassname.~string();
+    }
+    if (Broc::size(players) == 1) {
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, players[0]);
+        if (team == primaryteam)
+            sound = primaryteamsound;
+        else
+            sound = secondaryteamsound;
+        team.~string();
+    } else {
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            Broc::string team;
+            mp_util_wad::entity_get_team(&team, players[(unsigned int)(int)i]);
+            if (team == primaryteam) {
+                team.~string();
+                mp_util_wad::entity_get_origin(&origin,
+                                               players[(unsigned int)(int)i]);
+                sound = primaryteamsound;
+                break;
+            }
+            team.~string();
+            i = (int)i + 1;
+        }
+        if (sound == "")
+            sound = secondaryteamsound;
+    }
+    mp_util_wad::entity_set_origin(mp_util_wad::pLevel->hack_sound_entity,
+                                   origin);
+    StopTeamSound();
+    HashStr stopLabel;
+    stopLabel.mVal = 0x5DA1DA2Du;
+    Broc::endon(temp, stopLabel);
+    HashStr soundHash;
+    Broc::string_hash(&soundHash, &sound);
+    int handle = Broc::EffectEventPlay(&temp, &sound, soundHash, true);
+    *mp_util_wad::GetEE_teamSound(temp) = handle;
+    HashStr waitHash;
+    Broc::string_hash(&waitHash, &sound);
+    Broc::waittill(temp, waitHash);
+    *mp_util_wad::GetEE_teamSound(temp) = 0;
+    players.~dyn_array();
+    sound.~string();
+    primaryteam.~string();
+    primaryteamsound.~string();
+    secondaryteamsound.~string();
+}
+
+// StopTeamSound - ea: 0x939A50
+void StopTeamSound() {
+    if (Broc::IsDefined(mp_util_wad::pLevel->hack_sound_entity)) {
+        Broc::bbool defined;
+        mp_util_wad::IsEEDefined_teamSound(&defined,
+                                           mp_util_wad::pLevel->hack_sound_entity);
+        if ((bool)defined) {
+            HashStr label;
+            label.mVal = 0x5DA1DA2Du;
+            Broc::notify(&mp_util_wad::pLevel->hack_sound_entity, label);
+            int handle =
+                (int)*mp_util_wad::GetEE_teamSound(
+                    mp_util_wad::pLevel->hack_sound_entity);
+            Broc::EffectEventStopEmitting(handle);
+            *mp_util_wad::GetEE_teamSound(mp_util_wad::pLevel->hack_sound_entity) =
+                0;
+            Broc::wait(0.05f);
+        }
+    }
+}
+
+// PlayTeamSound - ea: 0x939BE0
+void PlayTeamSound(Broc::entity self, Broc::string team, Broc::string teamsound,
+                   Broc::string otherteamsound) {
+    (void)self;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetLocalPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::string pteam;
+        mp_util_wad::entity_get_team(&pteam, players[(unsigned int)(int)i]);
+        if (pteam == team) {
+            pteam.~string();
+            Broc::SoundPlay(teamsound, 1.0f);
+            players.~dyn_array();
+            team.~string();
+            teamsound.~string();
+            otherteamsound.~string();
+            return;
+        }
+        pteam.~string();
+        i = (int)i + 1;
+    }
+    Broc::SoundPlay(otherteamsound, 1.0f);
+    players.~dyn_array();
+    team.~string();
+    teamsound.~string();
+    otherteamsound.~string();
+}
+
+// PlaySoundAtLocation - ea: 0x939DC0
+void PlaySoundAtLocation(Broc::entity self, Broc::string sound,
+                         Broc::vector position) {
+    (void)self;
+    Broc::wait(2.5f);
+    Broc::string inClassname("script_origin");
+    Broc::entity temp_entity;
+    Broc::Spawn(&temp_entity, &inClassname, &position, INVALID_PAK_INFO);
+    inClassname.~string();
+    HashStr notifyHash;
+    Broc::string_hash(&notifyHash, &sound);
+    Broc::EffectEventPlay(&temp_entity, &sound, notifyHash, true);
+    HashStr waitHash;
+    Broc::string_hash(&waitHash, &sound);
+    Broc::waittill(temp_entity, waitHash);
+    Broc::Delete(&temp_entity);
+    sound.~string();
+}
+
+// ThreadLineSound - ea: 0x939EE0
+void ThreadLineSound(Broc::entity self) {
+    Broc::string startOfLineEntity;
+    mp_util_wad::entity_get_targetname(&startOfLineEntity, self);
+    if (!Broc::IsDefined(startOfLineEntity)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio::ThreadLineSound(): targetname is UNDEFINED! Aborting..."))
+            __debugbreak();
+    } else {
+        Broc::bbool defined;
+        mp_util_wad::IsEEDefined_script_sound(&defined, self);
+        if ((bool)defined) {
+            Broc::string sound = *mp_util_wad::GetEE_script_sound(self);
+            Broc::string target;
+            mp_util_wad::entity_get_targetname(&target, self);
+            Broc::entity mover;
+            mover.___u0 = 0;
+            SpawnLineSound(&mover, target, sound);
+            target.~string();
+        } else {
+            if (Broc::gBrocAPI.mWarning(
+                    "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                    "_mp_audio::ThreadLineSound(): script_sound is UNDEFINED! Aborting..."))
+                __debugbreak();
+        }
+    }
+    startOfLineEntity.~string();
+}
+
+// ThreadStaticSound - ea: 0x93A130
+void ThreadStaticSound(Broc::entity self) {
+    Broc::bbool defined;
+    mp_util_wad::IsEEDefined_script_sound(&defined, self);
+    if ((bool)defined) {
+        Broc::string sound = *mp_util_wad::GetEE_script_sound(self);
+        void* ftor = ThreadStaticSoundPlay__functor(self, sound);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
+                            __LINE__, "_mp_audio::ThreadStaticSoundPlay",
+                            ftor);
+    } else if (Broc::gBrocAPI.mWarning(
+                   "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                   "_mp_audio::ThreadLineSound(): script_sound is UNDEFINED! Aborting..."))
+        __debugbreak();
+}
+
+// ThreadStaticSoundPlay - ea: 0x93A330
+void ThreadStaticSoundPlay(Broc::entity self, Broc::string NameOfSoundToPlay) {
+    (void)self;
+    Broc::EffectEventPlay(&self, &NameOfSoundToPlay);
+    NameOfSoundToPlay.~string();
+}
+
+// sound_repeat - ea: 0x93A3A0
+void sound_repeat(Broc::entity self) {
+    Broc::bbool defined;
+    mp_util_wad::IsEEDefined_script_sound(&defined, self);
+    if ((bool)defined) {
+        Broc::string sound = *mp_util_wad::GetEE_script_sound(self);
+        void* ftor = ThreadStaticSoundRandomPlay__functor(self, sound);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
+                            __LINE__,
+                            "_mp_audio::ThreadStaticSoundRandomPlay", ftor);
+    } else if (Broc::gBrocAPI.mWarning(
+                   "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                   "__mp_audio::ThreadLineSound(): script_sound is UNDEFINED! Aborting..."))
+        __debugbreak();
+}
+
+// ThreadStaticSoundRandomPlay - ea: 0x93A5A0
+void ThreadStaticSoundRandomPlay(Broc::entity self,
+                                 Broc::string NameOfSoundToPlay) {
+    for (;;) {
+        Broc::wait(Broc::RandomFloatRange(0.9f, 1.75f));
+        Broc::EffectEventPlay(&self, &NameOfSoundToPlay);
+    }
+}
+
+// player_dying_sounds - ea: 0x93C240
+void player_dying_sounds(Broc::entity player) {
+    Broc::string script("PLAYER_DYING");
+    Broc::EffectEventPlay(&player, &script);
+    script.~string();
+}
 }
 
 // ============================================================================
@@ -1694,6 +2414,25 @@ Broc::vector* entity_get_origin(Broc::vector* result, Broc::entity ent) {
 }
 void entity_set_origin(Broc::entity ent, const Broc::vector& v) {
     Broc::gBrocAPI.m_entity_set_origin(ent.___u0, v);
+}
+Broc::string* entity_get_targetname(Broc::string* result, Broc::entity ent) {
+    return Broc::gBrocAPI.m_entity_get_targetname(result, ent.___u0);
+}
+
+// line_sound_emitters hash_map helpers (opaque until the runtime is ported).
+void line_sound_set(HashStr key, Broc::entity e) {
+    (void)key;
+    (void)e;
+}
+Broc::entity* line_sound_get(Broc::entity* result, HashStr key) {
+    (void)key;
+    result->___u0 = 0;
+    return result;
+}
+void line_sound_erase(HashStr key) {
+    (void)key;
+}
+void line_sound_delete_all() {
 }
 }
 
@@ -4455,6 +5194,26 @@ void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage) {
     (void)damage;
     return NULL;
 }
+void* audio_crossfade_wait__functor(Broc::entity self) {
+    (void)self;
+    return NULL;
+}
+void* ThreadStaticSoundPlay__functor(Broc::entity self, Broc::string name) {
+    (void)self;
+    name.~string();
+    return NULL;
+}
+void* ThreadStaticSoundRandomPlay__functor(Broc::entity self,
+                                           Broc::string name) {
+    (void)self;
+    name.~string();
+    return NULL;
+}
+void* MoveSoundAlongLine__functor(Broc::entity toMove, Broc::vector start,
+                                  Broc::vector end) {
+    (void)toMove; (void)start; (void)end;
+    return NULL;
+}
 void* PlaySound__functor(Broc::entity self, Broc::string sound, float delay) {
     (void)self;
     (void)delay;
@@ -4473,7 +5232,8 @@ void* player_dying_sounds__functor(Broc::entity player) {
     return NULL;
 }
 void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
-                    Broc::entity attacker, int weapon, int means_of_damage) {
+                    Broc::entity attacker, Broc::bint weapon,
+                    Broc::bint means_of_damage) {
     (void)guy; (void)inflictor; (void)attacker; (void)weapon;
     (void)means_of_damage;
 }

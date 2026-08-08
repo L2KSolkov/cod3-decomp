@@ -728,6 +728,8 @@ ExtendedEntity::DestructFunc* ExtendedEntity::GetDestructor(unsigned int) { retu
 // Stubs — wait / thread
 // ============================================================================
 
+Broc::entity Broc::gEntityUndef;
+
 void ThreadExecute(void*) {}
 void wait_accurate(float) {}
 void wait(float) {}
