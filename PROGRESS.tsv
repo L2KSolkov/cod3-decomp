@@ -79,7 +79,7 @@ controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	
 jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jobqueue.cpp (batch job system)
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	PORTED	[phys_xboxr] rbc_def_ragdoll.cpp: ragdoll constraint (14 funcs)
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	TODO	
-bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	TODO	
+bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: network singleton (14 funcs) from Demonware 2.0 + IDA
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
 nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	IN_PROGRESS	[ngl_xboxr] ngl_gpu.cpp: 9/13 funcs (index/section/shader init); vertex pack/unpack + bone setters deferred to mesh unit
@@ -90,7 +90,7 @@ zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO
 aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
 nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	PORTED	[ngl_xboxr] ngl_gpu_meshedit.cpp: GPU mesh sections (12 funcs)
-bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	TODO	
+bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	PORTED	[bdConnection] bdConnectionStore.cpp: connection store + bdHashMap template (12 funcs) from Demonware 2.0 + IDA
 bdConnection:bdDataChunk.obj	bdConnection	bdDataChunk.obj	engine	12	PORTED	[bdConnection] bdDataChunk.cpp: data chunk (12 funcs) from Demonware 2.0 + IDA
 mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Phase 2: controller.cpp (XInput wrapper)

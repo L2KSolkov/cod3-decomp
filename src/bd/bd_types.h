@@ -466,6 +466,7 @@ public:
     bdNATType  m_natType;   // +0x3C
 
     bdCommonAddr();
+    bdCommonAddr(const XNADDR& addr, uint16_t port);
     bdCommonAddr(const bdReference<bdCommonAddr>& hostAddr, const XNADDR& addr,
                  uint16_t port);
     void serialize(uint8_t* buffer) const;
@@ -1334,6 +1335,8 @@ public:
 
 protected:
     virtual unsigned int getDataToSend(unsigned char* buffer, unsigned int bufferSize) = 0;
+
+    friend class bdConnectionStore;
 };
 static_assert(sizeof(bdConnection) == 0x64, "bdConnection size mismatch");
 static_assert(offsetof(bdConnection, m_addr) == 0x08, "bdConnection::m_addr offset mismatch");

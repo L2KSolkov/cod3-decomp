@@ -15,6 +15,7 @@
 struct bdPlatformTiming {
     static unsigned __int64 getHiResTimeStamp();
     static float getElapsedTime(unsigned __int64 t1, unsigned __int64 t2);
+    static void sleep(unsigned int ms);
 };
 
 struct bdShortTimer {
