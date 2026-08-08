@@ -1117,3 +1117,213 @@ void CG_DamageFeedback(int yawByte, int pitchByte, float damage)
         RumbleManager_Play(v25, &result, &rumbleEffect, 1.0f);
     }
 }
+
+extern int dword_F641D8[4 * 1580];
+extern int dword_F641DC[4 * 1580];
+extern float dword_F64068[4 * 1580];
+extern float dword_F6406C[4 * 1580];
+extern float dword_F64070[4 * 1580];
+extern float dword_F63B70[4 * 1580];
+extern float dword_F63CC0[4 * 1580];
+extern float dword_F63CC4[4 * 1580];
+extern float dword_F63CC8[4 * 1580];
+extern float dword_F63CD0[4 * 1580];
+extern float dword_F63CD4[4 * 1580];
+extern float dword_F63CE4[4 * 1580];
+extern float dword_F63CE8[4 * 1580];
+extern float dword_F63CC[4 * 1580];
+extern float dword_F64164[4 * 1580];
+extern float dword_F64168[4 * 1580];
+extern float dword_F6416C[4 * 1580];
+extern int cg_bobWeaponLag;
+extern int cg_bobWeaponAmplitude;
+extern int cg_bobWeaponMax;
+extern int cg_bobWeaponRollAmplitude;
+extern int cg_bobAmplitudeProne;
+extern int cg_bobAmplitudeDucked;
+extern int cg_bobAmplitudeStanding;
+extern int cgGlobal_frametime;
+extern float CG_GetVerticalBobFactor(float a1, float a2, float a3);
+extern float CG_GetHorizontalBobFactor(float a1, float a2, float a3);
+extern void AngleVectors(const float* angles, float* forward, float* right,
+                         float* up);
+extern void AnglesSubtract(const math::Position3* v1,
+                           const math::Position3* v2, math::Position3* v3);
+extern float ServerTime_mTickDelta;
+extern int BG_IsAimDownSightWeapon(int iWeapon);
+extern float AngleSubtract(float a1, float a2);
+
+static float AngleSubtract2(float a, float b)
+{
+    return AngleSubtract(a, b);
+}
+
+// ea: 0x0068FA50
+void CG_CalculateWeaponPosition_BobAngles(float* angles)
+{
+    angles[0] = dword_F64068[1580 * currCl] + angles[0];
+    angles[1] = dword_F6406C[1580 * currCl] + angles[1];
+    angles[2] = dword_F64070[1580 * currCl] + angles[2];
+}
+
+// ea: 0x0068F970
+void CG_CalculateWeaponPosition_BobMovement(float* origin)
+{
+    float vOffset = origin[0];
+    float v11 = origin[1];
+    float v12 = origin[2];
+    float vAxis[3], right[3], up[3];
+    AngleVectors((float*)&dword_F64068[1580 * currCl], vAxis, right, up);
+    origin[0] = ((0.0f - v11) * right[0]) + (up[0] * v12)
+                + (vAxis[0] * vOffset);
+    origin[1] = ((0.0f - v11) * right[1]) + (up[1] * v12)
+                + (vAxis[1] * vOffset);
+    origin[2] = ((0.0f - v11) * right[2]) + (up[2] * v12)
+                + (vAxis[2] * vOffset);
+}
+
+// ea: 0x0068F710
+void CG_CalculateWeaponPosition_BobOffset()
+{
+    float fCycle =
+        *(float*)&cg_bobWeaponLag * 3.1415927f
+        + *(float*)&dword_F641D8[1580 * currCl] + 6.2831855f;
+    float fSpeed = *(float*)&cg_bobWeaponAmplitude
+                   * *(float*)&dword_F641DC[1580 * currCl];
+    CG_GetVerticalBobFactor(fCycle, fSpeed, *(float*)&cg_bobWeaponMax);
+    float value = *(float*)&cg_bobWeaponMax;
+    dword_F64068[1580 * currCl] = fSpeed * -1.0f;
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    int viewHeightTarget = client->ps.viewHeightTarget;
+    float v4;
+    if (viewHeightTarget == client->ps.proneViewHeight)
+        v4 = *(float*)&cg_bobAmplitudeProne;
+    else
+    {
+        v4 = *(float*)&cg_bobAmplitudeDucked;
+        if (viewHeightTarget != client->ps.crouchViewHeight)
+            v4 = *(float*)&cg_bobAmplitudeStanding;
+    }
+    float v28 = v4 * fSpeed;
+    if (v28 > value)
+        v28 = value;
+    float v5 = sinf(fCycle);
+    float fCyclea = fCycle - 0.47123894f;
+    float fSpeeda = *(float*)&cg_bobWeaponRollAmplitude * fSpeed;
+    float v26 = *(float*)&cg_bobWeaponMax;
+    dword_F6406C[1580 * currCl] = v5 * v28 * -1.0f;
+    Client* v7 =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    int v8 = v7->ps.viewHeightTarget;
+    float v9;
+    if (v8 == v7->ps.proneViewHeight)
+        v9 = *(float*)&cg_bobAmplitudeProne;
+    else
+    {
+        v9 = *(float*)&cg_bobAmplitudeDucked;
+        if (v8 != v7->ps.crouchViewHeight)
+            v9 = *(float*)&cg_bobAmplitudeStanding;
+    }
+    float v29 = v9 * fSpeeda;
+    if (v29 > v26)
+        v29 = v26;
+    float v10 = sinf(fCyclea) * v29;
+    int v11;
+    if (v10 >= 0.0f)
+        v11 = 0;
+    else
+    {
+        CG_GetHorizontalBobFactor(fCyclea, fSpeeda, *(float*)&cg_bobWeaponMax);
+        v11 = *(int*)&v10;
+    }
+    dword_F64070[1580 * currCl] = v11;
+    Client* v20 =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    float fWeaponPosFrac = v20->ps.fWeaponPosFrac;
+    if (fWeaponPosFrac != 0.0f)
+    {
+        float v21 = 1.0f
+                    - ((1.0f - dword_F63B8C[1580 * currCl][1632])
+                       * fWeaponPosFrac);
+        dword_F64068[1580 * currCl] = dword_F64068[1580 * currCl] * v21;
+        dword_F6406C[1580 * currCl] = v21 * dword_F6406C[1580 * currCl];
+        dword_F64070[1580 * currCl] = v21 * dword_F64070[1580 * currCl];
+    }
+}
+
+// ea: 0x006900F0
+void CG_CalculateWeaponPosition_SwayMovement(float* origin)
+{
+    origin[1] = origin[1] - dword_F63CE4[1580 * currCl];
+    origin[2] = dword_F63CE8[1580 * currCl] + origin[2];
+}
+
+// ea: 0x00690140
+void CG_CalculateWeaponPosition_SwayAngles(float a1, float* angles)
+{
+    float v2 = angles[1];
+    angles[0] = AngleSubtract2(angles[0], dword_F63CD0[1580 * currCl]);
+    angles[1] = AngleSubtract2(v2, dword_F63CD4[1580 * currCl]);
+}
+
+// ea: 0x00690190
+void CG_CalculateWeaponPosition_IdleAngles(float* angles)
+{
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    int IsAimDownSightWeapon =
+        BG_IsAimDownSightWeapon(Player->client->ps.weapon);
+    int v4 = 1580 * currCl;
+    float v5;
+    if (IsAimDownSightWeapon != 0)
+    {
+        v5 = ((dword_F63B8C[1580 * currCl][1692]
+               - dword_F63B8C[1580 * currCl][1696])
+              * client->ps.fWeaponPosFrac)
+             + dword_F63B8C[1580 * currCl][1696];
+    }
+    else
+    {
+        v5 = dword_F63B8C[1580 * currCl][1696];
+        if (v5 == 0.0f)
+            v5 = 80.0f;
+    }
+    int pm_flags = client->ps.pm_flags;
+    float fTargScale = v5;
+    float v7;
+    if ((pm_flags & 1) != 0)
+        v7 = dword_F63B8C[1580 * currCl][1704];
+    else if ((pm_flags & 2) != 0)
+        v7 = dword_F63B8C[1580 * currCl][1700];
+    else
+        v7 = 1.0f;
+    if (v7 != dword_F63B70[1580 * currCl])
+    {
+        float v8;
+        bool v9;
+        if (v7 <= dword_F63B70[1580 * currCl])
+        {
+            v8 = dword_F63B70[1580 * currCl]
+                 - (cgGlobal_frametime * 0.050000001f);
+            v9 = v7 <= v8;
+        }
+        else
+        {
+            v8 = (cgGlobal_frametime * 0.050000001f)
+                 + dword_F63B70[1580 * currCl];
+            v9 = v8 <= v7;
+        }
+        dword_F63B70[1580 * currCl] = v8;
+        if (!v9)
+            dword_F63B70[v4] = v7;
+    }
+    float v10 = fTargScale * dword_F63B70[v4] * client->ps.mHoldBreathScale;
+    angles[2] = sinf(cgGlobal_time * 0.00050000002f) * v10 * 0.039999999f
+                + angles[2];
+    angles[1] = sinf(cgGlobal_time * 0.00069999998f) * v10 * 0.0099999998f
+                + angles[1];
+    angles[0] = sinf(cgGlobal_time * 0.001f) * v10 * 0.0099999998f
+                + angles[0];
+}

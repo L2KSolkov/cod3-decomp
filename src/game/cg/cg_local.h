@@ -194,7 +194,12 @@ struct PlayerState {
     int weaponTime;                    // +0x34
     int weapAnim;                      // +0x530
     float leanf;                       // +0x4C
+    int proneViewHeight;               // +0x458
+    int crouchViewHeight;              // +0x45C
+    int standViewHeight;               // +0x460
     float viewHeightCurrent;           // +0xE0
+    int viewHeightTarget;              // +0xDC
+    float mHoldBreathScale;            // +0x5C0
     float viewangles[3];               // +0xD0
     int ammoclip[92];                  // +0x2B4
     int weapons[2];                    // +0x424
