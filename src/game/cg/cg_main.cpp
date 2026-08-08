@@ -36,7 +36,7 @@ extern void Cvar_Register(void* vmCvar, const char* varName,
 extern void Cvar_Update(void* vmCvar);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern void Cvar_VMSet(void* vmCvar, const char* value);
-extern void CG_Error(const char* msg, ...);
+extern void Com_Error(int code, const char* fmt, ...);
 extern void CG_Init();
 extern void CG_InitServerCommandHashVals();
 extern void CG_InitLocalEntities();
@@ -182,6 +182,17 @@ void CG_Printf(const char* msg, ...)
     vsprintf(text, msg, ap);
     va_end(ap);
     Com_Printf(text);
+}
+
+// ea: 0x0068B4B0
+void CG_Error(const char* msg, ...)
+{
+    char text[1024];
+    va_list ap;
+    va_start(ap, msg);
+    vsprintf(text, msg, ap);
+    va_end(ap);
+    Com_Error(2 /* ERR_DROP */, text);
 }
 
 // ea: 0x0068B580
