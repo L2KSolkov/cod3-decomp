@@ -58,20 +58,19 @@ nglPerfInfoStruct nglPerfInfo = { 0.0f };
 
 char nglVersionString[4] = { 0, 0, 0, 0 };
 
-// Skip-list resource directories (nglMesh/nglMaterial/nglMorphSet).
+// Skip-list resource directories (nglMesh/nglMaterial).
 // nglTextureDirectory + nglDefaultTex/nglWhiteTex live in ngl_texture.cpp;
 // nglFontDirectory lives in ngl_font.cpp; nglMeshDirectory/nglMaterialDirectory
-// belong to ngl_mesh.o and nglMorphDirectory to ngl_morph.o (move there when
-// those units port).
+// belong to ngl_mesh.o (move there when that unit ports).
 tlSkipList<nglMesh, tlFixedString> nglMeshDirectory;
 tlSkipList<nglMaterial, tlFixedString> nglMaterialDirectory;
-tlSkipList<nglMorphSet, tlFixedString> nglMorphDirectory;
 
-// ngl_texture.o / ngl_font.o (defined in their cpp files)
+// ngl_texture.o / ngl_font.o / ngl_morph.o (defined in their cpp files)
 extern nglTexture* nglDefaultTex;
 extern nglTexture* nglWhiteTex;
 extern tlSkipList<nglTexture, tlFixedString> nglTextureDirectory;
 extern tlSkipList<nglFont, tlFixedString> nglFontDirectory;
+extern tlSkipList<nglMorphSet, tlFixedString> nglMorphDirectory;
 
 // GetKey accessors for the skip list template.
 const tlFixedString* GetKey(const nglTexture* t) { return t->FileName; }
@@ -82,8 +81,6 @@ const tlFixedString* GetKey(const nglMesh* m) { return m->Name; }
 // methods below (defined when those units port).
 template <>
 const tlFixedString* tlSkipList<nglMaterial, tlFixedString>::GetKeyOf(const nglMaterial*) { return NULL; }
-template <>
-const tlFixedString* tlSkipList<nglMorphSet, tlFixedString>::GetKeyOf(const nglMorphSet*) { return NULL; }
 
 const tlFixedString* GetKey(const nglTexture* t);
 const tlFixedString* GetKey(const nglMesh* m);
