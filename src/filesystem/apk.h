@@ -59,7 +59,8 @@ public:
     uint32_t        Version;    // +0x04 — 260
     uint32_t        Flags;      // +0x08 — bit 0=in-place, bit 1=owned
     uint32_t        NSections;  // +0x0C
-    apkFileSection* Sections;   // +0x10 — section array
+    apkFileSection* Sections;   // +0x10
+    int             LastFrameRef;  // +0x14 (nglCanReleaseFile)
     apkFileTypeEntry* FileTypes;// +0x14 — first file type entry
 
     apkFileTypeEntry* GetFileTypeEntry(uint32_t type);

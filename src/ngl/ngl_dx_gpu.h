@@ -16,6 +16,11 @@
 #include <intrin.h>
 
 struct nglMaterial;
+struct nglFont;
+struct nglMorphSet;
+class nglMeshParams;
+class nglShaderParamSet;
+class nglMeshNode;
 
 // tl_system.o (tl_xboxr, ported)
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
