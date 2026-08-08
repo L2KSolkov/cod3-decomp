@@ -29,6 +29,7 @@ add_library(cod3_broc STATIC
     src/broc/stubs.cpp
 )
 add_library(cod3_physics STATIC
+    src/physics/physics_system.cpp
     src/physics/rbc_def_custom.cpp
     src/physics/rbc_def_vehicle.cpp
     src/physics/rbc_def_contact.cpp

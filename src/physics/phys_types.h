@@ -10,14 +10,40 @@
 #include <stddef.h>
 #include <stdint.h>
 
+extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
+extern void tlFatal(const char* Format, ...);
+
 // ============================================================================
 // outer_time — time wrapper used in rigid_body (4 bytes)
 // Size: 0x04 (4 bytes) — verified against IDA
 // ============================================================================
 struct outer_time {
     float m_time;  // +0x00
+
+    outer_time() {}  // ea: 0x87E8C0
 };
 static_assert(sizeof(outer_time) == 4, "outer_time size mismatch");
+
+// ============================================================================
+// phys_mem_info - engine memory budget (48 bytes, verified against IDA).
+// ============================================================================
+struct phys_mem_info {
+    int m_num_rigid_body;                  // +0x00
+    int m_num_user_rigid_body;             // +0x04
+    int m_contact_point_buffer_size;       // +0x08
+    int m_num_rbc_point;                   // +0x0C
+    int m_num_rbc_hinge;                   // +0x10
+    int m_num_rbc_dist;                    // +0x14
+    int m_num_rbc_ragdoll;                 // +0x18
+    int m_num_rbc_wheel;                   // +0x1C
+    int m_num_rbc_angular_actuator;        // +0x20
+    int m_num_rbc_custom_orientation;      // +0x24
+    int m_num_rbc_custom_path;             // +0x28
+    int m_num_rbc_contact;                 // +0x2C
+
+    phys_mem_info();
+};
+static_assert(sizeof(phys_mem_info) == 0x30, "phys_mem_info size mismatch");
 
 // ============================================================================
 // phys_link_list_base<T> — intrusive singly-linked list head (4 bytes)
@@ -115,6 +141,34 @@ struct phys_memory_heap {
     char* m_user_start;    // +0x0C
 
     void* fast_align_start(int alignment, const char* error_msg);
+
+    // set_buffer - ea: 0x601DE0 (inline COMDAT, game.o)
+    void set_buffer(char* start, int size, unsigned int alignment) {
+        if (this->m_buffer_start != NULL &&
+            _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 32,
+                      "m_buffer_start == NULL", ""))
+            __debugbreak();
+        if (this->m_buffer_end != NULL &&
+            _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 33,
+                      "m_buffer_end == NULL", ""))
+            __debugbreak();
+        if (this->m_buffer_cur != NULL &&
+            _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 34,
+                      "m_buffer_cur == NULL", ""))
+            __debugbreak();
+        if (size <= 0 &&
+            _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 35,
+                      "size > 0", ""))
+            __debugbreak();
+        if (((size_t)start) % alignment != 0 &&
+            _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 36,
+                      "((size_t)start) % alignment == 0", ""))
+            __debugbreak();
+        this->m_buffer_start = start;
+        this->m_buffer_cur = start;
+        this->m_user_start = start;
+        this->m_buffer_end = &start[size];
+    }
 };
 static_assert(sizeof(phys_memory_heap) == 0x10, "phys_memory_heap size mismatch");
 
@@ -167,6 +221,8 @@ struct rigid_body {
              const math::Dir3& t_vel, const math::Dir3& a_vel, float fric_coef,
              int stable_min_contact_count);
     void update_col_mat();
+
+    rigid_body() {}  // ea: 0x880C60
 };
 static_assert(sizeof(rigid_body) == 0x1B0, "rigid_body size mismatch");
 static_assert(offsetof(rigid_body, m_mat) == 0x000, "rigid_body::m_mat offset mismatch");
@@ -181,6 +237,9 @@ static_assert(offsetof(rigid_body, m_partition_node) == 0x168, "rigid_body::m_pa
 struct rigid_body_pair_key {
     rigid_body* m_b1;  // +0x00
     rigid_body* m_b2;  // +0x04
+
+    rigid_body_pair_key() {}
+    rigid_body_pair_key(rigid_body* b1, rigid_body* b2) : m_b1(b1), m_b2(b2) {}
 };
 static_assert(sizeof(rigid_body_pair_key) == 8, "rigid_body_pair_key size mismatch");
 
@@ -205,6 +264,12 @@ struct rigid_body_constraint_point : rigid_body_constraint {
     pulse_sum_cache m_ps_cache_list[3]; // +0x30
     float           m_stress;         // +0x48
 
+    rigid_body_constraint_point() {  // ea: 0x87E910
+        m_ps_cache_list[0].m_visit_key = -1;
+        m_ps_cache_list[1].m_visit_key = -1;
+        m_ps_cache_list[2].m_visit_key = -1;
+        m_stress = 0.0f;
+    }
     void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc);
     void epilog_vel_constraint(float delta_t);
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
@@ -227,6 +292,11 @@ struct rigid_body_constraint_distance : rigid_body_constraint {
     unsigned int    m_flags;          // +0x44
     pulse_sum_cache m_ps_cache_list[3]; // +0x48
 
+    rigid_body_constraint_distance() {  // ea: 0x881270
+        m_ps_cache_list[0].m_visit_key = -1;
+        m_ps_cache_list[1].m_visit_key = -1;
+        m_ps_cache_list[2].m_visit_key = -1;
+    }
     void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc,
              float min_distance, float max_distance);
     void outer_prolog_update(const outer_time* outside_delta_t);
@@ -247,6 +317,7 @@ struct ragdoll_joint_limit_info {
     float      m_b1_ud_active_limit_co_;// +0x18
     uint8_t    _pad1C[4];               // +0x1C
 
+    ragdoll_joint_limit_info() {}  // ea: 0x87E940
     void set(const math::Dir3& b1_ud_loc, float theta_limit);
     void set_b1_ud_loc(const math::Dir3& b1_ud_loc);
     void set_theta_limit(float theta_limit);
@@ -275,6 +346,12 @@ struct rigid_body_constraint_ragdoll : rigid_body_constraint {
     float           m_damp_k;         // +0x144
     uint8_t         _pad148[8];       // +0x148
 
+    rigid_body_constraint_ragdoll() {  // ea: 0x881310
+        for (int i = 0; i < 10; ++i)
+            m_ps_cache_list[i].m_visit_key = -1;
+        m_flags = 0;
+        m_joint_limits_count = 0;
+    }
     void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc);
     void set_damp_k(float damp_k);
     void set_snider_style(const math::Dir3& b1_axis_loc, const math::Dir3& b1_ref_loc);
@@ -314,6 +391,10 @@ struct rigid_body_constraint_hinge : rigid_body_constraint {
     unsigned int    m_flags;          // +0xA4
     pulse_sum_cache m_ps_cache[8];    // +0xA8
 
+    rigid_body_constraint_hinge() {  // ea: 0x881210
+        for (int i = 0; i < 8; ++i)
+            m_ps_cache[i].m_visit_key = -1;
+    }
     void set(const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc,
              const math::Dir3& b1_axis_loc, const math::Dir3& b2_axis_loc,
              const math::Dir3& b1_ref_loc, const math::Dir3& b2_ref_loc,
@@ -339,6 +420,11 @@ struct rigid_body_constraint_angular_actuator : rigid_body_constraint {
     pulse_sum_cache m_ps_cache_list[3];   // +0xAC
     uint8_t         _padC4[12];           // +0xC4
 
+    rigid_body_constraint_angular_actuator() {  // ea: 0x8812E0
+        m_ps_cache_list[0].m_visit_key = -1;
+        m_ps_cache_list[1].m_visit_key = -1;
+        m_ps_cache_list[2].m_visit_key = -1;
+    }
     void set(float power, const math::Mat43& target_mat);
     void outer_prolog_update(const outer_time* outside_delta_t);
     void inner_update(float delta_t);
@@ -382,6 +468,12 @@ struct rigid_body_constraint_wheel : rigid_body_constraint {
     struct pulse_sum_normal* m_ps_side_fric;   // +0xD0
     struct pulse_sum_normal* m_ps_fwd_fric;    // +0xD4
 
+    rigid_body_constraint_wheel() {  // ea: 0x8812B0
+        m_ps_cache_list[0].m_visit_key = -1;
+        m_ps_cache_list[1].m_visit_key = -1;
+        m_ps_cache_list[2].m_visit_key = -1;
+        m_ps_cache_list[3].m_visit_key = -1;
+    }
     void set_wheel_state_accelerating(float desired_speed_k, float acceleration_factor_k);
     void set_wheel_state_braking(float braking_factor_k);
     void set_no_collision();
@@ -426,6 +518,16 @@ struct rigid_body_constraint_custom_orientation : rigid_body_constraint {
     float           m_torque_resistance;   // +0x30
     float           m_upright_strength;    // +0x34
 
+    rigid_body_constraint_custom_orientation() {  // ea: 0x87E950
+        m_ps_cache_list[0].m_visit_key = -1;
+        m_ps_cache_list[1].m_visit_key = -1;
+        m_ps_cache_list[2].m_visit_key = -1;
+        m_ps_cache_list[3].m_visit_key = -1;
+        m_active = false;
+        m_no_orientation_correction = false;
+        m_torque_resistance = 100.0f;
+        m_upright_strength = 100.0f;
+    }
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_custom_orientation) == 0x38, "rigid_body_constraint_custom_orientation size mismatch");
@@ -439,6 +541,7 @@ struct user_rigid_body : rigid_body {
     const math::Mat43* m_dictator;  // +0x1B0
 
     void set(const math::Mat43* dictator);
+    user_rigid_body() {}  // ea: 0x881720
 };
 static_assert(sizeof(user_rigid_body) == 0x1C0, "user_rigid_body size mismatch");
 static_assert(offsetof(user_rigid_body, m_dictator) == 0x1B0, "user_rigid_body::m_dictator offset mismatch");
@@ -463,6 +566,11 @@ struct rigid_body_constraint_custom_path : rigid_body_constraint {
     pulse_sum_cache m_list_psc[3];     // +0x64
     uint8_t         _pad7C[4];         // +0x7C
 
+    rigid_body_constraint_custom_path() {  // ea: 0x881290
+        m_list_psc[0].m_visit_key = -1;
+        m_list_psc[1].m_visit_key = -1;
+        m_list_psc[2].m_visit_key = -1;
+    }
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
 };
 static_assert(sizeof(rigid_body_constraint_custom_path) == 0x80, "rigid_body_constraint_custom_path size mismatch");
