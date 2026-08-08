@@ -13,17 +13,6 @@
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 extern void tlFatal(const char* Format, ...);
 
-// physics_system_internal.o (create_inst/destroy_inst/frame_advance stubs until
-// physics_system_internal.o is ported).
-extern void physics_system_create_inst(phys_mem_info* pmi);
-extern void physics_system_destroy_inst();
-extern void physics_system_frame_advance(physics_system* psys, float delta_t);
-
-// ============================================================================
-// Data
-// ============================================================================
-phys_proftimer_callbacks g_phys_proftimer_callbacks = { { NULL, NULL } };
-
 namespace phys_sys {
 
 // ============================================================================
@@ -69,15 +58,15 @@ void set_collision_callback(void (*collision_callback)()) {
 }
 
 void phys_frame_advance(float delta_t) {
-    physics_system_frame_advance(g_physics_system, delta_t);
+    g_physics_system->frame_advance(delta_t);
 }
 
 void phys_init(phys_mem_info* pmi) {
-    physics_system_create_inst(pmi);
+    physics_system::create_inst(pmi);
 }
 
 void phys_shutdown() {
-    physics_system_destroy_inst();
+    physics_system::destroy_inst();
 }
 
 void solver_memory_buffer_set(void* buffer, int buffer_size) {

@@ -8,6 +8,16 @@
 
 #include "physics/phys_types.h"
 #include <intrin.h>
+#include <math.h>
+
+extern const math::Dir3& Float4_Zero_212;
+extern const math::Dir3& Float4_Two_212;
+extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
+
+namespace nuge {
+void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1, float delta_t,
+                     math::Dir3* t_vel, math::Dir3* a_vel);
+}
 
 // ============================================================================
 // pulse_sum_angular — angular constraint row (144 bytes, verified against IDA)
@@ -37,6 +47,31 @@ struct pulse_sum_angular {
 };
 static_assert(sizeof(pulse_sum_angular) == 0x90, "pulse_sum_angular size mismatch");
 
+// pulse_sum_point - point constraint row (272 bytes, IDA ordinal 5466).
+struct pulse_sum_point {
+    phys_link_list_base<pulse_sum_point> m_link;  // +0x00
+    uint8_t      _pad4[0x10 - 0x04];              // +0x04
+    math::Dir3   m_b1_r;                          // +0x10
+    math::Dir3   m_b2_r;                          // +0x20
+    math::Dir3   m_b1_apx;                        // +0x30
+    math::Dir3   m_b2_apx;                        // +0x40
+    math::Dir3   m_b1_apy;                        // +0x50
+    math::Dir3   m_b2_apy;                        // +0x60
+    math::Dir3   m_b1_apz;                        // +0x70
+    math::Dir3   m_b2_apz;                        // +0x80
+    math::Dir3   m_pulse_sum;                     // +0x90
+    math::Dir3   m_right_side;                    // +0xA0
+    math::Dir3   m_big_dirt;                      // +0xB0
+    math::Dir3   m_cr23;                          // +0xC0
+    math::Dir3   m_cr31;                          // +0xD0
+    math::Dir3   m_cr12;                          // +0xE0
+    math::Dir3   m_denom;                         // +0xF0
+    pulse_sum_node* m_b1;                         // +0x100
+    pulse_sum_node* m_b2;                         // +0x104
+    pulse_sum_cache* m_pulse_sum_cache;           // +0x108
+};
+static_assert(sizeof(pulse_sum_point) == 0x110, "pulse_sum_point size mismatch");
+
 // ============================================================================
 // pulse_sum_wheel â€” wheel constraint pulse-sum bundle (used by
 // rigid_body_constraint_wheel). Layout verified against IDA local type.
@@ -60,13 +95,31 @@ static_assert(offsetof(pulse_sum_wheel, m_suspension) == 0x10, "pulse_sum_wheel:
 struct pulse_sum_contact;
 
 // ============================================================================
+// phys_link_list<T> - doubly-linked list head (8 bytes, IDA ordinal 5861).
+// ============================================================================
+template <typename T>
+struct phys_link_list {
+    T* m_first;  // +0x00
+    T* m_last;   // +0x04
+
+    phys_link_list() : m_first(NULL), m_last(NULL) {}  // ea: 0x88E240
+};
+static_assert(sizeof(phys_link_list<int>) == 8, "phys_link_list size mismatch");
+
+// ============================================================================
 // pulse_sum_constraint_solver — the solver (112 bytes; methods in
 // phys_constraint_solver_multithreaded.o, unresolved here).
 // ============================================================================
 class pulse_sum_constraint_solver {
 public:
     struct solver_info {
-        uint8_t data[28];  // opaque
+        int   m_psc_visit_counter;      // +0x00
+        int   m_next_psc_visit_counter; // +0x04
+        int   m_max_vel_iters;          // +0x08
+        int   m_max_vel_pos_iters;      // +0x0C
+        float m_max_vel_error_sq;       // +0x10
+        float m_max_vel_pos_error_sq;   // +0x14
+        float m_delta_t;                // +0x18
     };
 
     int                m_psys_psc_visit_counter;      // +0x00
@@ -76,7 +129,42 @@ public:
     rigid_body*        m_first_partition_head;        // +0x10
     solver_info        m_si;                          // +0x14
     phys_memory_heap   m_solver_memory_allocater;     // +0x30
-    uint8_t            _pad40[0x30];                  // +0x40 (pulse sum lists)
+    phys_link_list<pulse_sum_node>    m_list_pulse_sum_node;    // +0x40
+    phys_link_list<pulse_sum_normal>  m_list_pulse_sum_normal;  // +0x48
+    phys_link_list<pulse_sum_point>   m_list_pulse_sum_point;   // +0x50
+    phys_link_list<pulse_sum_angular> m_list_pulse_sum_angular; // +0x58
+    phys_link_list<pulse_sum_wheel>   m_list_pulse_sum_wheel;   // +0x60
+    phys_link_list<pulse_sum_contact> m_list_pulse_sum_contact; // +0x68
+
+    pulse_sum_constraint_solver() {  // ea: 0x88EE00
+        m_psys_psc_visit_counter = 0;
+        m_psys_next_psc_visit_counter = 0;
+        m_psys_max_vel_iters = 0;
+        m_psys_max_vel_pos_iters = 0;
+        m_first_partition_head = NULL;
+        m_solver_memory_allocater.m_buffer_start = NULL;
+        m_solver_memory_allocater.m_buffer_end = NULL;
+        m_solver_memory_allocater.m_buffer_cur = NULL;
+        m_solver_memory_allocater.m_user_start = NULL;
+        m_list_pulse_sum_node.m_first = NULL;
+        m_list_pulse_sum_node.m_last = NULL;
+        m_list_pulse_sum_normal.m_first = NULL;
+        m_list_pulse_sum_normal.m_last = NULL;
+        m_list_pulse_sum_point.m_first = NULL;
+        m_list_pulse_sum_point.m_last = NULL;
+        m_list_pulse_sum_angular.m_first = NULL;
+        m_list_pulse_sum_angular.m_last = NULL;
+        m_list_pulse_sum_wheel.m_first = NULL;
+        m_list_pulse_sum_wheel.m_last = NULL;
+        m_list_pulse_sum_contact.m_first = NULL;
+        m_list_pulse_sum_contact.m_last = NULL;
+    }
+
+    void list_partition_head_reset() { m_first_partition_head = NULL; }  // ea: 0x88B0D0
+    void list_partition_head_add(rigid_body* rb) {  // ea: 0x88B0E0
+        rb->m_partition_node.m_next_partition_head = m_first_partition_head;
+        m_first_partition_head = rb;
+    }
 
     pulse_sum_angular* create_pulse_sum_angular(rigid_body* b1, const math::Dir3* b1_r,
                                                 rigid_body* b2, const math::Dir3* b2_r,
@@ -443,29 +531,43 @@ struct phys_heap_memory_pool {
     int  m_slot_array_size; // +0x0C
     int  m_alloc_count;     // +0x10
 
+    struct iterator {
+        T** m_ptr;  // +0x00
+
+        iterator(T** ptr) : m_ptr(ptr) {}
+        iterator() : m_ptr(NULL) {}
+        T& operator*() const { return **m_ptr; }
+        T* operator->() const { return *m_ptr; }
+        iterator& operator++() { ++m_ptr; return *this; }
+        iterator& operator--() { --m_ptr; return *this; }
+        bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }
+        iterator next_after_remove() const { return iterator(m_ptr); }
+        iterator next() const { return iterator(m_ptr + 1); }  // ea: 0x88EF20
+        iterator prev() const { return iterator(m_ptr - 1); }  // ea: 0x88EF40
+    };
+
     bool is_member(const T* data) const;
     int  get_max_slots() const { return m_slot_array_size; }
     int  get_available_slots() const { return m_slot_array_size - m_alloc_count; }
     int  get_used_slots() const { return m_alloc_count; }
+    int  get_count() const { return m_alloc_count; }
     T*   add(bool no_error, const char* error_msg);
     void remove(T* data);
     void remove_all() { reset_buffer(); }
     void reset_buffer();
     void call_destructors() {}
+    void destroy();                     // destroy + free arrays
+    void calc_index_array();            // ea: 0x88E320
+    void swap_adjacent_fast(iterator* i, iterator* i_next);  // ea: 0x88E370
 
-    struct iterator {
-        T** m_ptr;  // +0x00
-
-        iterator(T** ptr) : m_ptr(ptr) {}
-        T& operator*() const { return **m_ptr; }
-        T* operator->() const { return *m_ptr; }
-        iterator& operator++() { ++m_ptr; return *this; }
-        bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }
-        iterator next_after_remove() const { return iterator(m_ptr); }
-    };
+    static int get_alignment() { return 16; }  // ea: 0x88EE50
+    static int get_buffer_size(int size);      // ea: 0x88E2B0
+    void allocate_buffer(int size, phys_memory_heap* allocater);  // ea: 0x88F740
+    ~phys_heap_memory_pool() { destroy(); }
 
     iterator begin() { return iterator(m_alloc_list); }
     iterator end() { return iterator(&m_alloc_list[m_alloc_count]); }
+    iterator before_begin() { return iterator(m_alloc_list - 1); }  // ea: 0x88EE80
 };
 static_assert(sizeof(phys_heap_memory_pool<int>) == 0x14, "phys_heap_memory_pool size mismatch");
 
@@ -473,6 +575,22 @@ static_assert(sizeof(phys_heap_memory_pool<int>) == 0x14, "phys_heap_memory_pool
 // physics_system - the physics engine singleton (864 bytes).
 // Layout verified against IDA local types (ordinal 7028).
 // ============================================================================
+// list_constraint_solver - partition list fed to the multithreaded solver.
+struct phys_constraint_solver_multithreaded_list_constraint_solver {
+    pulse_sum_constraint_solver* m_constraint_solver;  // +0x00
+
+    void reset(pulse_sum_constraint_solver* constraint_solver) {  // ea: 0x88B3F0
+        m_constraint_solver = constraint_solver;
+        constraint_solver->m_first_partition_head = NULL;
+    }
+
+    void add(rigid_body* cg) {  // ea: 0x88B410
+        cg->m_partition_node.m_next_partition_head =
+            m_constraint_solver->m_first_partition_head;
+        m_constraint_solver->m_first_partition_head = cg;
+    }
+};
+
 struct physics_system {
     int      m_flags;                                     // +0x00
     float    m_outside_sub_delta_t;                       // +0x04
@@ -510,6 +628,26 @@ struct physics_system {
     bool is_member(const rigid_body* rb) const;
     void solver_memory_buffer_set(void* buffer, int buffer_size);
     void solver_memory_buffer_nullify();
+
+    physics_system();  // ea: 0x88DA40
+    ~physics_system();  // ea: 0x890130
+
+    static int get_alignment();               // ea: 0x88D550
+    static unsigned int get_buffer_size(const phys_mem_info* pmi);  // ea: 0x88D560
+    static physics_system* allocate_buffer(const phys_mem_info* pmi,
+                                           phys_memory_heap* allocater);  // ea: 0x88DC70
+    static void create_inst(phys_mem_info* pmi);    // ea: 0x88DE20
+    static void destroy_inst();                     // ea: 0x88E140
+    static void free_buffer(physics_system* psys);  // ea: 0x88E130
+
+    void frame_advance(float delta_t);              // ea: 0x88DEC0
+    void time_step(float outside_delta_t, bool last_step);  // ea: 0x88D620
+    void solver_priority_sort();                    // ea: 0x88F550
+    void set_flag(unsigned int f, int b);           // ea: 0x88B430
+    void set_outside_sub_delta_t(float outside_sub_delta_t);  // ea: 0x88B460
+    void generate_partitions_and_stuff(
+        phys_constraint_solver_multithreaded_list_constraint_solver* list_cs,
+        int* next_psc_visit_counter, float delta_t);  // ea: 0x88C830
 };
 static_assert(sizeof(physics_system) == 0x360, "physics_system size mismatch");
 
@@ -536,6 +674,19 @@ inline void physics_system::solver_memory_buffer_nullify() {
     m_constraint_solver.m_solver_memory_allocater.m_buffer_end = NULL;
     m_constraint_solver.m_solver_memory_allocater.m_buffer_cur = NULL;
     m_constraint_solver.m_solver_memory_allocater.m_user_start = NULL;
+}
+
+// physics_system::set_flag - ea: 0x88B430
+inline void physics_system::set_flag(unsigned int f, int b) {
+    if (b != 0)
+        m_flags |= f;
+    else
+        m_flags &= ~f;
+}
+
+// physics_system::set_outside_sub_delta_t - ea: 0x88B460
+inline void physics_system::set_outside_sub_delta_t(float outside_sub_delta_t) {
+    m_outside_sub_delta_t = outside_sub_delta_t;
 }
 
 // ============================================================================
@@ -628,6 +779,89 @@ void phys_heap_memory_pool<T>::reset_buffer() {
     m_alloc_count = 0;
 }
 
+template <typename T>
+int phys_heap_memory_pool<T>::get_buffer_size(int size) {
+    return (int)(sizeof(T) * size + 4 * size + 4 * size);  // slots + alloc list + index
+}
+
+template <typename T>
+void phys_heap_memory_pool<T>::allocate_buffer(int size, phys_memory_heap* allocater) {
+    if (m_index_array != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 260,
+                  "!m_index_array", ""))
+        __debugbreak();
+    if (m_slot_array != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 261,
+                  "!m_slot_array", ""))
+        __debugbreak();
+    if (m_alloc_list != NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 262,
+                  "!m_alloc_list", ""))
+        __debugbreak();
+    if (size > 0) {
+        m_slot_array_size = size;
+        T* slot = (T*)allocater->allocate_no_error((int)sizeof(T) * size, 16);
+        if (slot == NULL &&
+            _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 89,
+                      "addr", "phys_memory_heap overflow."))
+            __debugbreak();
+        T** alloc = (T**)&slot[size];
+        m_slot_array = slot;
+        m_alloc_list = alloc;
+        m_index_array = (int*)&alloc[size];
+        reset_buffer();
+    }
+}
+
+template <typename T>
+void phys_heap_memory_pool<T>::calc_index_array() {
+    for (int i = 0; i < m_alloc_count; ++i)
+        m_index_array[m_alloc_list[i] - m_slot_array] = i;
+}
+
+template <typename T>
+void phys_heap_memory_pool<T>::swap_adjacent_fast(iterator* i, iterator* i_next) {
+    if ((i == NULL || i_next == NULL) &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc", 224,
+                  "i && i_next", ""))
+        __debugbreak();
+    T** m_alloc_list = this->m_alloc_list;
+    if ((i->m_ptr < m_alloc_list || i->m_ptr >= &m_alloc_list[m_alloc_count]) &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc", 225,
+                  "i->m_ptr >= m_alloc_list && i->m_ptr < m_alloc_list + m_alloc_count", ""))
+        __debugbreak();
+    T** v5 = this->m_alloc_list;
+    if ((i_next->m_ptr < v5 || i_next->m_ptr >= &v5[m_alloc_count]) &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc", 226,
+                  "i_next->m_ptr >= m_alloc_list && i_next->m_ptr < m_alloc_list + m_alloc_count", ""))
+        __debugbreak();
+    T* v6 = *i->m_ptr;
+    *i->m_ptr = *i_next->m_ptr;
+    *i_next->m_ptr = v6;
+}
+
+template <typename T>
+void phys_heap_memory_pool<T>::destroy() {
+    // ea: 0x88F060 (per-instantiation COMDAT)
+    for (int i = 0; i < m_alloc_count; ++i)
+        m_alloc_list[i]->~T();
+    if (m_slot_array != NULL) {
+        if (m_alloc_list != (T**)&m_slot_array[m_slot_array_size] &&
+            _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 236,
+                      "m_alloc_list == (T**)(m_slot_array + m_slot_array_size)", ""))
+            __debugbreak();
+        if (m_index_array != (int*)&m_alloc_list[m_slot_array_size] &&
+            _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 237,
+                      "m_index_array == (int*)(m_alloc_list + m_slot_array_size)", ""))
+            __debugbreak();
+    }
+    m_index_array = NULL;
+    m_slot_array = NULL;
+    m_slot_array_size = 0;
+    m_alloc_list = NULL;
+    m_alloc_count = 0;
+}
+
 extern physics_system* g_physics_system;  // ?g_physics_system@@3PAVphysics_system@@A
 extern void verify_is_in_physics_system(rigid_body_constraint_contact* rbc,
                                         rigid_body* b1_, rigid_body* b2_);
@@ -636,6 +870,116 @@ extern void SetIdentity(math::Mat43& m);
 
 namespace rbint {
 void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
+math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb, const math::Dir3* t);
+
+// prolog_frame_advance (rigid_body) - ea: 0x88EBC0
+inline void prolog_frame_advance(rigid_body* rb, const outer_time* outside_delta_t) {
+    float m_time = rb->m_time_scale.m_time * outside_delta_t->m_time;
+    float avel_sq = rb->m_a_vel.v.m128_f32[0] * rb->m_a_vel.v.m128_f32[0] +
+                    rb->m_a_vel.v.m128_f32[1] * rb->m_a_vel.v.m128_f32[1] +
+                    rb->m_a_vel.v.m128_f32[2] * rb->m_a_vel.v.m128_f32[2];
+    float max_avel_sq = rb->m_max_avel * rb->m_max_avel;
+    if (avel_sq > max_avel_sq) {
+        float scale = rb->m_max_avel / sqrtf(avel_sq) - 1.0f;
+        math::Dir3 v10;
+        v10.v = _mm_mul_ps(rb->m_a_vel.v, _mm_shuffle_ps(_mm_set_ss(scale), _mm_set_ss(scale), 0));
+        math::Dir3 v9;
+        rb->m_torque_sum.v = _mm_add_ps(rb->m_torque_sum.v, mul_L(&v9, rb, &v10)->v);
+    }
+    __m128 m_time_low = _mm_shuffle_ps(_mm_set_ss(m_time), _mm_set_ss(m_time), 0);
+    rb->m_force_sum.v = _mm_div_ps(rb->m_force_sum.v, m_time_low);
+    rb->m_torque_sum.v = _mm_div_ps(rb->m_torque_sum.v, m_time_low);
+    if (rb->m_inv_mass <= 0.0001f &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 167,
+                  "rb->get_inv_mass() > .0001f", ""))
+        __debugbreak();
+    float grav = (rb->m_gravity_multiplier / rb->m_inv_mass) * 9.8000002f;
+    rb->m_force_sum.v = _mm_add_ps(
+        rb->m_force_sum.v,
+        _mm_mul_ps(rb->m_gravity_dir.v, _mm_shuffle_ps(_mm_set_ss(grav), _mm_set_ss(grav), 0)));
+}
+
+// prolog_frame_advance (user_rigid_body) - ea: 0x88B130
+inline void prolog_frame_advance(user_rigid_body* rb, const outer_time* outside_delta_t) {
+    if ((rb->m_flags & 0x20) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 120,
+                  "rb->is_user_rigid_body()", ""))
+        __debugbreak();
+    if (rb->m_dictator == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 121,
+                  "rb->m_dictator", ""))
+        __debugbreak();
+    nuge::calc_velocities(&rb->m_mat, rb->m_dictator,
+                          rb->m_time_scale.m_time * outside_delta_t->m_time,
+                          &rb->m_t_vel, &rb->m_a_vel);
+}
+
+// take_next_step - ea: 0x88B1C0
+inline void take_next_step(user_rigid_body* rb, const outer_time*) {
+    if ((rb->m_flags & 0x20) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 147,
+                  "rb->is_user_rigid_body()", ""))
+        __debugbreak();
+    if (rb->m_dictator == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 148,
+                  "rb->m_dictator", ""))
+        __debugbreak();
+    rb->m_mat = rb->m_col_mat;
+}
+
+// take_last_step - ea: 0x88B2A0
+inline void take_last_step(user_rigid_body* rb, const outer_time*) {
+    if ((rb->m_flags & 0x20) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 154,
+                  "rb->is_user_rigid_body()", ""))
+        __debugbreak();
+    if (rb->m_dictator == NULL &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 155,
+                  "rb->m_dictator", ""))
+        __debugbreak();
+    rb->m_mat = *rb->m_dictator;
+}
+
+// epilog_frame_advance - ea: 0x88B380
+inline void epilog_frame_advance(rigid_body* const rb) {
+    rb->m_force_sum.v = Float4_Zero_212.v;
+    rb->m_torque_sum.v = Float4_Zero_212.v;
+}
+
+// mul_L - ea: 0x88E8F0
+inline math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb,
+                         const math::Dir3* t) {
+    if ((~(rb->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 76,
+                  "rb->debug_flag_is_not_in_collision()", ""))
+        __debugbreak();
+    math::Dir3 v3;
+    v3.v = rb->m_inv_inertia.v;
+    math::Dir3 v4;
+    v4.v = rb->m_mat.y.v;
+    __m128 v5 = _mm_rcp_ps(v3.v);
+    math::Dir3 v6;
+    v6.v = rb->m_mat.z.v;
+    __m128 v7 = _mm_mul_ps(_mm_sub_ps(Float4_Two_212.v, _mm_mul_ps(v5, v3.v)), v5);
+    __m128 v9 = _mm_shuffle_ps(rb->m_mat.x.v, v4.v, 68);
+    __m128 v10 = _mm_mul_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 0), _mm_shuffle_ps(v9, v6.v, 136)),
+                _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 85), _mm_shuffle_ps(v9, v6.v, 221))),
+            _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 170),
+                       _mm_shuffle_ps(_mm_shuffle_ps(rb->m_mat.x.v, v4.v, 238), v6.v, 168))),
+        v7);
+    result->v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v10, v10, 0), rb->m_mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(v10, v10, 85), v4.v)),
+        _mm_mul_ps(_mm_shuffle_ps(v10, v10, 170), v6.v));
+    return result;
+}
+
+// calc_col_mat (user_rigid_body) - ea: 0x88E9F0
+inline void calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t);
 
 // get_dictator - ea: 0x87E9A0
 inline const math::Mat43* get_dictator(const user_rigid_body* rb) {
@@ -713,6 +1057,11 @@ inline void set(rigid_body_constraint* rbc, rigid_body* const b1, rigid_body* co
     rbc->b1 = b1;
     rbc->b2 = b2;
 }
+
+// set_next - ea: 0x88B480
+inline void set_next(rigid_body_constraint* rbc, rigid_body_constraint* next) {
+    rbc->m_next = next;
+}
 }
 
 // ============================================================================
@@ -727,6 +1076,9 @@ extern const math::Dir3& Float4_Zero_213;
 extern const math::Dir3& Float4_SignMask_213;
 extern const math::Dir3& Float4_Zero_210;
 extern const math::Dir3& Float4_SignMask_210;
+extern const math::Dir3& Float4_Zero_212;
+extern const math::Dir3& Float4_Two_212;
+extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
 
 // ============================================================================
 // phys_list_condition functors (inline COMDATs, physics_system.o).

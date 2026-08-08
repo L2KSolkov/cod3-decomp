@@ -78,7 +78,7 @@ render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	PORTED	cdO
 controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	PORTED	Phase 2: controller.cpp (XInput wrapper)
 jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jobqueue.cpp (batch job system)
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	PORTED	[phys_xboxr] rbc_def_ragdoll.cpp: ragdoll constraint (14 funcs)
-phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	TODO	
+phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	PORTED	physics_system_internal.cpp: ctor/dtor/allocate_buffer/create_inst/destroy_inst/free_buffer/get_alignment/get_buffer_size/frame_advance/time_step/solver_priority_sort/verify_time_scale/IPN_merge/IPN_verify_time_scale; pool/heap/solver inline templates (allocate_buffer/destroy/calc_index/swap_adjacent/iterators, phys_link_list, pulse_sum_point, solver_info, list_constraint_solver); rbint prolog/take_step/mul_L/calc_col_mat(urb); 2 heavy funcs (IPN_verify_rigid_bodies, generate_partitions_and_stuff) TODO-stubbed
 bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: network singleton (14 funcs) from Demonware 2.0 + IDA
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
 nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)

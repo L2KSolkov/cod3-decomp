@@ -11,10 +11,22 @@ struct physics_system;
 
 extern physics_system* g_physics_system;  // ?g_physics_system@@3PAVphysics_system@@A
 
+enum phys_proftimer_e {
+    phys_proftimer_phys_col_detect = 0,
+    phys_proftimer_phys_misc = 1,
+    phys_proftimer_phys_solver = 2,
+};
+
 struct phys_proftimer_callbacks {
-    void* callbacks[2];
+    void (*proftimer_start)(phys_proftimer_e);  // +0x00
+    void (*proftimer_stop)(phys_proftimer_e);   // +0x04
+
+    phys_proftimer_callbacks();  // ea: 0x88B050
 };
 extern phys_proftimer_callbacks g_phys_proftimer_callbacks;
+
+extern int g_physics_system_size;
+extern int g_physics_system_alignment;
 
 namespace phys_sys {
 

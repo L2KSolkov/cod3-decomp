@@ -24,6 +24,11 @@ struct outer_time {
 };
 static_assert(sizeof(outer_time) == 4, "outer_time size mismatch");
 
+// time_sub - ea: 0x88B0A0 (inline COMDAT)
+inline float time_sub(const outer_time* t1, const outer_time* t2) {
+    return t1->m_time - t2->m_time;
+}
+
 // ============================================================================
 // phys_mem_info - engine memory budget (48 bytes, verified against IDA).
 // ============================================================================
@@ -142,6 +147,29 @@ struct phys_memory_heap {
 
     void* fast_align_start(int alignment, const char* error_msg);
 
+    // allocate_no_error - ea: 0x65FC20 (inline COMDAT, game.o)
+    char* allocate_no_error(int size, int alignment) {
+        if (size <= 0 &&
+            _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 59,
+                      "size > 0", ""))
+            __debugbreak();
+        char* result = (char*)((~(alignment - 1)) & (intptr_t)&m_buffer_cur[alignment - 1]);
+        if (&result[size] > m_buffer_end)
+            return NULL;
+        m_buffer_cur = &result[size];
+        return result;
+    }
+
+    // allocate_buffer - ea: 0x88F500 (inline COMDAT)
+    void allocate_buffer(int size, int alignment, phys_memory_heap* allocater) {
+        char* no_error = allocater->allocate_no_error(size, alignment);
+        if (no_error == NULL &&
+            _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_mem.h", 89,
+                      "addr", "phys_memory_heap overflow."))
+            __debugbreak();
+        set_buffer(no_error, size, alignment);
+    }
+
     // set_buffer - ea: 0x601DE0 (inline COMDAT, game.o)
     void set_buffer(char* start, int size, unsigned int alignment) {
         if (this->m_buffer_start != NULL &&
@@ -173,11 +201,35 @@ struct phys_memory_heap {
 static_assert(sizeof(phys_memory_heap) == 0x10, "phys_memory_heap size mismatch");
 
 // ============================================================================
-// rb_inplace_partition_node — spatial partition node (64 bytes)
-// Exact layout TBD during physics porting.
+// rb_inplace_partition_node — spatial partition node (64 bytes, IDA ordinal 4806).
 // ============================================================================
+struct rigid_body_constraint_point;
+struct rigid_body_constraint_hinge;
+struct rigid_body_constraint_distance;
+struct rigid_body_constraint_ragdoll;
+struct rigid_body_constraint_wheel;
+struct rigid_body_constraint_angular_actuator;
+struct rigid_body_constraint_custom_orientation;
+struct rigid_body_constraint_custom_path;
+struct rigid_body_constraint_contact;
+
 struct rb_inplace_partition_node {
-    uint8_t data[64];
+    rigid_body_constraint_point*   m_rbc_point_first;          // +0x00
+    rigid_body_constraint_hinge*   m_rbc_hinge_first;          // +0x04
+    rigid_body_constraint_distance* m_rbc_dist_first;          // +0x08
+    rigid_body_constraint_ragdoll* m_rbc_ragdoll_first;        // +0x0C
+    rigid_body_constraint_wheel*   m_rbc_wheel_first;          // +0x10
+    rigid_body_constraint_angular_actuator* m_rbc_angular_actuator_first;  // +0x14
+    rigid_body_constraint_custom_orientation* m_rbc_custom_orientation_first; // +0x18
+    rigid_body_constraint_custom_path* m_rbc_custom_path_first; // +0x1C
+    rigid_body_constraint_contact* m_rbc_contact_first;        // +0x20
+    rigid_body*  m_partition_head;                             // +0x24
+    rigid_body*  m_partition_tail;                             // +0x28
+    rigid_body*  m_next_node;                                  // +0x2C
+    int          m_partition_size;                             // +0x30
+    int          m_sub_steps;                                  // +0x34
+    float        m_group_delta_t;                              // +0x38
+    rigid_body*  m_next_partition_head;                        // +0x3C
 };
 static_assert(sizeof(rb_inplace_partition_node) == 0x40, "rb_inplace_partition_node size mismatch");
 
@@ -223,6 +275,10 @@ struct rigid_body {
     void update_col_mat();
 
     rigid_body() {}  // ea: 0x880C60
+
+    // get_time_scale / get_max_delta_t - ea: 0x88B0B0 / 0x88B0C0
+    const outer_time* get_time_scale() const { return &m_time_scale; }
+    float get_max_delta_t() const { return m_max_delta_t; }
 };
 static_assert(sizeof(rigid_body) == 0x1B0, "rigid_body size mismatch");
 static_assert(offsetof(rigid_body, m_mat) == 0x000, "rigid_body::m_mat offset mismatch");
@@ -251,6 +307,10 @@ struct rigid_body_constraint {
     rigid_body* b1;                        // +0x00
     rigid_body* b2;                        // +0x04
     rigid_body_constraint* m_next;         // +0x08
+
+    // outer_prolog_update / outer_epilog_update - ea: 0x88B100 / 0x88B110
+    void outer_prolog_update(const outer_time*) {}
+    void outer_epilog_update(const outer_time*) {}
 };
 static_assert(sizeof(rigid_body_constraint) == 0x0C, "rigid_body_constraint size mismatch");
 
@@ -620,6 +680,26 @@ struct rigid_body_constraint_contact : rigid_body_constraint {
     unsigned int        m_solver_priority;   // +0x14
     avl_tree_node       m_avl_tree_node;     // +0x18
     rigid_body_pair_key m_avl_key;           // +0x24
+
+    // get_solver_priority - ea: 0x88B120
+    unsigned int get_solver_priority() const { return m_solver_priority; }
+    // get_cached_point_count / get_point_count - ea: 0x881DE0 / 0x881E00
+    int get_cached_point_count() const {
+        int n = 0;
+        for (const contact_point_info* c = m_list_contact_point_info_buffer_1.m_first;
+             c != NULL; c = c->m_next_link)
+            n += c->m_point_pair_count;
+        return n;
+    }
+    int get_point_count() const {
+        int n = 0;
+        for (const contact_point_info* c = m_list_contact_point_info_buffer_2.m_first;
+             c != NULL; c = c->m_next_link)
+            n += c->m_point_pair_count;
+        return n;
+    }
+    // epilog_cache - ea: 0x88E8E0
+    void epilog_cache() {}
 
     void verify_constraint(rigid_body* b1_, rigid_body* b2_);
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
