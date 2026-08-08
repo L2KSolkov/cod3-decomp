@@ -100,7 +100,8 @@ struct PlayerState {
     int weapon;                        // +0xA4
     int vehPos;                        // +0x524
     int vehType;                       // +0x528
-    unsigned char _pad[0x5D0 - 0x52C];
+    unsigned int mFlags;               // +0x5C8
+    unsigned char _pad[0x5D0 - 0x5CC];
 };
 
 struct AnimIKFireEvent {

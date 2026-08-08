@@ -20,11 +20,6 @@ extern int dword_F64028[4 * 1580];
 extern int dword_F6402C[4 * 1580];
 extern int dword_F6405C[4 * 1580];
 extern int dword_F64060[4 * 1580];
-extern int dword_F641E0[2];
-extern int dword_F641E4;
-extern int dword_F641E8;
-extern int dword_F641EC;
-extern int dword_F6A2A0;
 extern void* sADSMetaAnimPlayer;
 extern int dword_F69BF4;
 extern float FOCUS_DISTANCE;
@@ -61,6 +56,27 @@ extern void CG_CycleWeap(int bNext, int bIgnoreEmpty);
 extern void CG_Error(const char* msg, ...);
 extern char* CG_Argv(int arg);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
+extern int CG_DObjGetViewModelTagMatrix(void* obj, unsigned int tag_name_hash,
+                                        void* tagMat);
+extern int CG_DObjGetWorldTagMatrix(Entity* entity, void* obj,
+                                    unsigned int tag_name_hash,
+                                    void* tagMat);
+extern void BG_EvaluateTrajectory(const void* tr, int atTime,
+                                  math::Position3* result);
+extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
+extern void PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
+                                      bool queue, int pakid, bool important);
+extern float player_breath_hold_time;
+extern float player_breath_snd_delay;
+extern float player_breath_snd_lerp;
+extern int cgGlobal_time;
+extern int dword_F641E8[4 * 1580];
+extern int dword_F641E0[4 * 1580];
+extern int dword_F641E4[4 * 1580];
+extern int dword_F641EC[4 * 1580];
+extern int dword_F6A2A0[4 * 802];
+extern unsigned int tag_flash_hash;
+extern unsigned int HashString_CalcHash(const char* str);
 extern void DObjFree(void* obj, int bClearTree);
 extern void mem_heap_free(void* ptr);
 extern void DObj_Dtor(void* obj);
@@ -138,15 +154,15 @@ void CG_LoadWeaponInfo()
 // ea: 0x0068F560
 void CG_FreeWeapons()
 {
-    if (dword_F6A2A0 != 0)
+    if (dword_F6A2A0[0] != 0)
     {
-        DObjFree((void*)dword_F6A2A0, 1);
-        if (dword_F6A2A0 != 0)
+        DObjFree((void*)dword_F6A2A0[0], 1);
+        if (dword_F6A2A0[0] != 0)
         {
-            DObj_Dtor((void*)dword_F6A2A0);
-            DObj_OpDelete((void*)dword_F6A2A0);
+            DObj_Dtor((void*)dword_F6A2A0[0]);
+            DObj_OpDelete((void*)dword_F6A2A0[0]);
         }
-        dword_F6A2A0 = 0;
+        dword_F6A2A0[0] = 0;
         if (sADSMetaAnimPlayer != nullptr)
         {
             delete (void*)sADSMetaAnimPlayer;
@@ -435,9 +451,9 @@ void CG_WeaponIKAddToFireQueue(Entity* attacker, int weapon)
 int CG_HoldBreathInit()
 {
     dword_F641E0[0] = -1;
-    dword_F641E4 = 0;
-    dword_F641E8 = 0;
-    dword_F641EC = 0;
+    dword_F641E4[0] = 0;
+    dword_F641E8[0] = 0;
+    dword_F641EC[0] = 0;
     return 0;
 }
 
@@ -480,4 +496,337 @@ Client* CG_WeaponSlot_f()
         }
     }
     return nullptr;
+}
+
+// ea: 0x00692D50
+bool CG_WeaponSlot_f(int iSlot)
+{
+    if (dword_F62960[1580 * currCl] == 0
+        || (EntityManager_GetPlayer(EntityManager_sInst, currCl)->client->ps
+                .pm_flags
+            & 0x4000) != 0)
+    {
+        return false;
+    }
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Entity* p = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    bool result = BG_AllowPlayerWeaponAtVehiclePos(p->client->ps.vehType,
+                                                   client->ps.vehPos);
+    if ((client->ps.eFlags & 0x106000) == 0 || result)
+    {
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        weaponFileInfoFull* InfoForWeapon = (weaponFileInfoFull*)BG_GetInfoForWeapon(
+            Player->client->ps.weapon);
+        weaponFileInfoFull* v6 = InfoForWeapon;
+        weaponFileInfoFull* pWeap = InfoForWeapon;
+        if (InfoForWeapon != nullptr
+            && ((InfoForWeapon->weapClass == 10 /* WEAPCLASS_LMG */
+                 && (GetPlayerState(currCl)->pm_flags & 0x20) != 0)
+                || v6->weapClass == 16))
+        {
+            return false;
+        }
+        if (cgGlobal_time - cg_aWeaponSelectTime[currCl]
+            < cg_weaponCycleDelay)
+            return false;
+        cg_aWeaponSelectTime[currCl] = cgGlobal_time;
+        if (iSlot <= 0 || iSlot >= 10)
+            return false;
+        PlayerState* ps = GetPlayerState(currCl);
+        int v9 = ps->weaponslots[iSlot];
+        if (ps->weaponslots[iSlot] == 0
+            || (ps->pm_flags & 0x10000) != 0)
+            return false;
+        weaponFileInfoFull* v10 =
+            (weaponFileInfoFull*)BG_GetInfoForWeapon(v9);
+        if (v10 != nullptr && v10->bOffHand != 0)
+        {
+            int v11 = BG_ClipForWeapon(v9);
+            if (GetPlayerState(currCl)->ammoclip[v11] <= 0)
+                return false;
+            v6 = pWeap;
+        }
+        if (iSlot == 9)
+        {
+            if (GetPlayerState(currCl)->weapon == v9)
+            {
+                PlayerState* v12 = GetPlayerState(currCl);
+                return BG_SelectWeaponIndex(v12->lastWeapon, currCl) != 0;
+            }
+            Entity* v13 = GetPlayer(currCl);
+            if (!TestSpecialWeapon(v13, v9))
+                return false;
+        }
+        else if (iSlot == 7 && v6 != nullptr
+                 && v6->slot == 13 /* WEAPSLOT_BINOCS */)
+        {
+            PlayerState* v12 = GetPlayerState(currCl);
+            return BG_SelectWeaponIndex(v12->lastWeapon, currCl) != 0;
+        }
+        if (CG_WeaponSelectable(v9) != 0)
+            return BG_SelectWeaponIndex(v9, currCl) != 0;
+        return false;
+    }
+    return result;
+}
+
+// ea: 0x0069A660
+void CG_OutOfAmmoChange()
+{
+    if (dword_F62960[1580 * currCl] != 0)
+    {
+        float* info = dword_F63B8C[1580 * currCl];
+        if (info[184] != 0.0f && BG_GetNumWeapons() >= 1)
+        {
+            int v0 = 1;
+            while (true)
+            {
+                Entity* Player =
+                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                if (Com_BitCheck(Player->client->ps.weapons, v0) != 0)
+                {
+                    weaponFileInfoFull* w =
+                        (weaponFileInfoFull*)BG_GetInfoForWeapon(v0);
+                    if (w->bSlotStackable != 0
+                        && w->weapClass != 11 /* WEAPCLASS_GRENADE */
+                        && w->slot == (int)info[180])
+                    {
+                        Entity* v2 =
+                            EntityManager_GetPlayer(EntityManager_sInst,
+                                                    currCl);
+                        if (BG_WeaponAmmo(&v2->client->ps, v0) != 0)
+                            break;
+                    }
+                }
+                if (++v0 > BG_GetNumWeapons())
+                    goto LABEL_10;
+            }
+            BG_SelectWeaponIndex(v0, currCl);
+            return;
+        }
+    LABEL_10:
+        {
+            Entity* v3 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            if (BG_IsPlayerWeaponInSlot(&v3->client->ps,
+                                        (int)*dword_F63B8C[1580 * currCl],
+                                        1) != 0)
+            {
+                int iSlotPreferenceOrder[4] = {1, 2, 3, 4};
+                int iNewSlot = 0;
+                int v6 = 0;
+                while (true)
+                {
+                    v6 = iSlotPreferenceOrder[iNewSlot];
+                    if (EntityManager_mPlayers[currCl] != nullptr
+                        && ((Entity*)EntityManager_mPlayers[currCl])
+                                   ->client->ps.weaponslots[v6]
+                               != 0
+                        && (v6 == 1 || v6 == 2))
+                    {
+                        Client* client =
+                            EntityManager_GetPlayer(EntityManager_sInst,
+                                                    currCl)->client;
+                        Entity* v9 =
+                            EntityManager_GetPlayer(EntityManager_sInst,
+                                                    currCl);
+                        if (BG_WeaponAmmo(&v9->client->ps,
+                                          client->ps.weaponslots[v6]) != 0)
+                            break;
+                    }
+                    if (++iNewSlot >= 4)
+                        goto LABEL_21;
+                }
+                Entity* v23 =
+                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                BG_SelectWeaponIndex(v23->client->ps.weaponslots[v6], currCl);
+            }
+            else
+            {
+            LABEL_21:
+                {
+                    Entity* v12 = (Entity*)EntityManager_mPlayers[currCl];
+                    Client* v14 = v12->client;
+                    if (BG_IsPlayerWeaponInSlot(
+                            &((Entity*)EntityManager_mPlayers[currCl])
+                                 ->client->ps,
+                            v14->ps.lastWeapon, 1) != 0)
+                    {
+                        Client* v19 =
+                            ((Entity*)EntityManager_mPlayers[currCl])->client;
+                        if (BG_WeaponAmmo(
+                                &((Entity*)EntityManager_mPlayers[currCl])
+                                     ->client->ps,
+                                v19->ps.lastWeapon) != 0)
+                        {
+                            Entity* v22 = EntityManager_GetPlayer(
+                                EntityManager_sInst, currCl);
+                            BG_SelectWeaponIndex(
+                                v22->client->ps.lastWeapon, currCl);
+                        }
+                        else
+                        {
+                            CG_CycleWeap(1, 1);
+                        }
+                    }
+                    else
+                    {
+                        CG_CycleWeap(1, 1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0069AE40
+int CG_HoldBreathUpdate()
+{
+    int v2 = currCl;
+    if (dword_F641E8[1580 * currCl] > 0)
+        dword_F641E8[1580 * currCl] -= cgGlobal_frametime;
+    Entity* player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    bool holding = (player->client->ps.mFlags & 2) != 0;
+    int result;
+    if (!holding)
+    {
+        int v3 = 1580 * currCl;
+        float cur = *(float*)&dword_F641EC[1580 * currCl];
+        float tracked = DiffTrack(1.0f, cur, player_breath_snd_lerp,
+                                  cgGlobal_frametime * 0.001f);
+        memcpy(&dword_F641EC[1580 * currCl], &tracked, 4);
+        int v4 = dword_F641E0[v3];
+        if (v4 >= 0)
+        {
+            if (v4 > dword_F641E4[v3])
+            {
+                Entity* v8 =
+                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                PostEffectEventScriptCall(v8, "BREATH_HOLD_HEART_BEAT", false,
+                                          -1, false);
+            }
+        }
+        else
+        {
+            dword_F641E0[v3] = 0;
+            if (dword_F641E8[v3] > 0)
+            {
+                dword_F641E4[v3] = 0;
+            }
+            else
+            {
+                Entity* v5 =
+                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                PostEffectEventScriptCall(v5, "BREATH_HOLD_BREATH_IN", false,
+                                          -1, false);
+                float v6 = player_breath_snd_delay * 1000.0f;
+                int v7 = 1580 * currCl;
+                dword_F641E4[v7] = 2;
+                dword_F641E8[v7] = (int)v6;
+            }
+        }
+        result = dword_F641E0[1580 * currCl];
+        result += cgGlobal_frametime;
+        dword_F641E0[1580 * currCl] = result;
+    }
+    else
+    {
+        if (dword_F641E0[1580 * currCl] >= 0)
+        {
+            float v10 = player_breath_hold_time * 1000.0f;
+            int v11 = cgGlobal_frametime + dword_F641E0[1580 * currCl];
+            dword_F641E0[1580 * currCl] = v11;
+            if (v11 <= (int)v10)
+            {
+                if (dword_F641E8[1580 * v2] <= 0)
+                {
+                    Entity* Player =
+                        EntityManager_GetPlayer(EntityManager_sInst, v2);
+                    PostEffectEventScriptCall(Player,
+                                              "BREATH_HOLD_BREATH_OUT", false,
+                                              -1, false);
+                    v2 = currCl;
+                    dword_F641E8[1580 * currCl] =
+                        (int)(player_breath_snd_delay * 1000.0f);
+                }
+            }
+            else
+            {
+                Entity* v12 =
+                    EntityManager_GetPlayer(EntityManager_sInst, v2);
+                PostEffectEventScriptCall(v12, "BREATH_HOLD_GASP", false, -1,
+                                          false);
+                v2 = currCl;
+            }
+        }
+        result = 6320 * v2;
+        dword_F641E0[result] = -1;
+        dword_F641E4[result] = 0;
+        dword_F641EC[result] = 0;
+    }
+    return result;
+}
+
+static unsigned int sTagFlashInit = 0;
+
+// ea: 0x0069ACD0
+void CG_WeaponUpdateLoopingSound(Entity* entity)
+{
+    if ((sTagFlashInit & 1) == 0)
+    {
+        sTagFlashInit |= 1u;
+        tag_flash_hash = HashString_CalcHash("tag_flash");
+    }
+    int fireSndDelay = entity->fireSndDelay;
+    if (fireSndDelay > 0)
+    {
+        entity->fireSndDelay = fireSndDelay - cgGlobal_frametime;
+        DObjSkelMat tagMtx;
+        math::Position3 origin;
+        int ViewModelTagMatrix;
+        if (entity
+            == EntityManager_GetPlayer(EntityManager_sInst, currCl))
+        {
+            void* v4 = (void*)dword_F6A2A0[802 * currCl];
+            if (v4 == nullptr)
+                goto LABEL_11;
+            ViewModelTagMatrix =
+                CG_DObjGetViewModelTagMatrix(v4, tag_flash_hash, &tagMtx);
+        }
+        else
+        {
+            void* mDObj = entity->mDObj;
+            if (mDObj == nullptr)
+                goto LABEL_11;
+            ViewModelTagMatrix =
+                CG_DObjGetWorldTagMatrix(entity, mDObj, tag_flash_hash,
+                                         &tagMtx);
+        }
+        if (ViewModelTagMatrix != 0)
+        {
+            tagMtx.origin[1] = tagMtx.axis[2][1];
+            tagMtx.origin[3] = tagMtx.axis[2][3];
+            goto LABEL_12;
+        }
+    LABEL_11:
+        BG_EvaluateTrajectory(&entity->s.pos, cgGlobal_time,
+                              (math::Position3*)&tagMtx.origin[1]);
+    LABEL_12:
+        int weapon = entity->s.weapon;
+        if (entity->fireSndDelay <= 0)
+        {
+            weaponFileInfo_t* InfoForWeapon =
+                (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
+            PostEffectEventWeapon(entity, InfoForWeapon->szInternalName,
+                                  5 /* kActionWEAPON_STOP_FIRE */);
+        }
+        else
+        {
+            weaponFileInfo_t* v8 =
+                (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
+            PostEffectEventWeapon(entity, v8->szInternalName,
+                                  6 /* kActionWEAPON_LOOP_FIRE */);
+        }
+    }
 }
