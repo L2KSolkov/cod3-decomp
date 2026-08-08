@@ -1324,6 +1324,30 @@ Broc::bbool* IsEEDefined_script_sound(Broc::bbool* result, Broc::entity ent) {
     return result;
 }
 
+// GetEE_vehicletype / IsEEDefined_vehicletype (key 0x128D7CA2)
+Broc::string* GetEE_vehicletype(Broc::entity ent) {
+    unsigned int Handle = ent.GetHandle();
+    Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+    return &ee->GetRef<Broc::string>(0x128D7CA2);
+}
+
+Broc::bbool* IsEEDefined_vehicletype(Broc::bbool* result, Broc::entity ent) {
+    if (Broc::IsDefined(ent)) {
+        unsigned int Handle = ent.GetHandle();
+        Broc::ExtendedEntity* ee = Broc::ExtendedEntity::GetExtendedEntity(Handle);
+        if (ee != NULL) {
+            Broc::string v; const Broc::string* val = ee->GetVal<Broc::string>(&v, 0x128D7CA2);
+            bool IsDefined = Broc::IsDefined(*val);
+            result->mVal = IsDefined;
+        } else {
+            result->mVal = false;
+        }
+    } else {
+        result->mVal = false;
+    }
+    return result;
+}
+
 Broc::bbool* IsEEDefined_audio_ambmin(Broc::bbool* result, Broc::entity ent) {
     if (Broc::IsDefined(ent)) {
         unsigned int Handle = ent.GetHandle();
@@ -1871,6 +1895,11 @@ void StopAllLineSounds() {
 Broc::entity* SpawnLineSound(Broc::entity* result, Broc::entity startOfLine,
                              Broc::string sound);
 void StopTeamSound();
+void* PlayerLocation__functor(Broc::entity self);
+void* ambient_system__functor(Broc::entity lvl, Broc::string spawn_package);
+void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
+                       Broc::entity attacker, Broc::bint weapon,
+                       Broc::bint means_of_damage);
 
 // SpawnLineSound (string start) - ea: 0x9380F0
 Broc::entity* SpawnLineSound(Broc::entity* result, Broc::string startOfLineEntity,
@@ -2345,6 +2374,344 @@ void player_dying_sounds(Broc::entity player) {
     Broc::string script("PLAYER_DYING");
     Broc::EffectEventPlay(&player, &script);
     script.~string();
+}
+
+// main - ea: 0x9359A0
+void main() {
+    Broc::string LevelBG;
+    LevelBG = "";
+    Broc::gBrocAPI.mBrocExports.mCallbackSetLevelAudio = CallbackSetLevelAudio;
+    Broc::string name("Preset_Noreverb");
+    Broc::ReverbSetParams(name, false);
+    name.~string();
+    if (!Broc::IsDefined(mp_util_wad::pLevel->background_track)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio.bro level.background_track is not defined. Setting to none"))
+            __debugbreak();
+        mp_util_wad::pLevel->background_track = "none";
+    }
+    if (!Broc::IsDefined(mp_util_wad::pLevel->reverb_setting)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio.bro level.reverb_setting is not defined. Setting to Preset_Noreverb"))
+            __debugbreak();
+        mp_util_wad::pLevel->reverb_setting = "Preset_Noreverb";
+    }
+    if (!Broc::IsDefined(mp_util_wad::pLevel->ambient_setting)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio.bro level.ambient_setting is not defined. Setting to NoAmbFX"))
+            __debugbreak();
+        mp_util_wad::pLevel->ambient_setting = "NoAmbFX";
+    }
+    if (!Broc::IsDefined(mp_util_wad::pLevel->audio_ambient_max) ||
+        IS_NAN((float)mp_util_wad::pLevel->audio_ambient_max)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio.bro level.audio_ambient_max is not defined. Setting to 0.5"))
+            __debugbreak();
+        mp_util_wad::pLevel->audio_ambient_max = 0.5f;
+    }
+    if (!Broc::IsDefined(mp_util_wad::pLevel->audio_ambient_min) ||
+        IS_NAN((float)mp_util_wad::pLevel->audio_ambient_min)) {
+        if (Broc::gBrocAPI.mWarning(
+                "c:\\cod\\code\\script\\_mp_audio.bro", __LINE__,
+                "_mp_audio.bro level.audio_ambmin is not defined. Setting to 5.0"))
+            __debugbreak();
+        mp_util_wad::pLevel->audio_ambient_min = 5.0f;
+    }
+    mp_util_wad::pLevel->audio_current_track_handle =
+        (int)Broc::SoundPlay(mp_util_wad::pLevel->background_track, 1.0f);
+    Broc::ReverbSetParams(mp_util_wad::pLevel->reverb_setting, false);
+    mp_util_wad::pLevel->audio_current_ambpack =
+        mp_util_wad::pLevel->ambient_setting;
+    mp_util_wad::pLevel->audio_current_ambient_min =
+        (float)mp_util_wad::pLevel->audio_ambient_min;
+    mp_util_wad::pLevel->audio_current_ambient_wait =
+        (float)mp_util_wad::pLevel->audio_ambient_max;
+    mp_util_wad::pLevel->audio_indoor_switch = 0;
+    mp_util_wad::pLevel->audio_change_priority = 0;
+    mp_util_wad::pLevel->crossfade_done = 1;
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* playerLoc = PlayerLocation__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
+                        __LINE__, "PlayerLocation", playerLoc);
+    Broc::entity lvl2;
+    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::string ambient = mp_util_wad::pLevel->ambient_setting;
+    void* ambSys = ambient_system__functor(lvl2, ambient);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_audio.bro",
+                        __LINE__, "ambient_system", ambSys);
+    Broc::dyn_array<Broc::entity> BG_Triggers;
+    Broc::string val("BG_Trigger");
+    HashStr key;
+    key.mVal = 0x19F9F0E8u;
+    Broc::GetEntArray(&val, key.mVal, &BG_Triggers, 0);
+    val.~string();
+    Broc::bint i(0);
+    while ((int)i < Broc::size(BG_Triggers)) {
+        Broc::entity t = BG_Triggers[(unsigned int)(int)i];
+        if (Broc::IsDefined(t)) {
+            HashStr funcHash;
+            Broc::string_hash(&funcHash, "_mp_audio::interior_triggering_device");
+            HashStr label;
+            label.mVal = 0xF2F5EAB4;
+            Broc::AddEventHandler(&t, label.mVal, funcHash.mVal);
+        }
+        i = (int)i + 1;
+    }
+    BG_Triggers.~dyn_array();
+    LevelBG.~string();
+}
+
+// PlayPainSound - ea: 0x93A640
+void PlayPainSound(Broc::entity guy, Broc::bint damage) {
+    if ((int)damage > 100)
+        return;
+    static Broc::bfloat block_sounds_for_several_seconds(0.5f);
+    Broc::bbool hasLast;
+    mp_util_wad::IsEEDefined_lastPainSoundTime(&hasLast, guy);
+    if ((bool)hasLast) {
+        Broc::bint last_sound((int)*mp_util_wad::GetEE_lastPainSoundTime(guy));
+        last_sound += (int)((float)block_sounds_for_several_seconds * 1000.0f);
+        Broc::bint now;
+        Broc::GetTime(&now);
+        if ((int)last_sound > (int)now)
+            return;
+    }
+    Broc::bfloat chance(0.2f);
+    Broc::bfloat additional_play_sound_chance(0.0f);
+    Broc::bbool team_damage(false);
+    Broc::bint mh;
+    mp_util_wad::entity_get_maxhealth(&mh, guy);
+    Broc::bfloat max_health((float)(int)mh);
+    Broc::bfloat percent_of_total_health_damaged =
+        max_health > 0.0001f ? (float)(int)damage / (float)max_health : 0.5f;
+    if ((float)percent_of_total_health_damaged < 0.25f)
+        chance = 0.1f;
+    else if ((float)percent_of_total_health_damaged < 0.5f)
+        chance = 0.2f;
+    else if ((float)percent_of_total_health_damaged < 0.75f)
+        chance = 0.3f;
+    else
+        chance = 0.4f;
+    chance = 1.0f;  // binary force: chance always 1.0
+    if (Broc::RandomInt(100) < (int)(100.0f * (float)chance)) {
+        Broc::string sound_to_play;
+        sound_to_play = "";
+        Broc::bbool allies(false);
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, guy);
+        if (team == "allies")
+            allies = true;
+        team.~string();
+        if ((float)percent_of_total_health_damaged < 0.25f) {
+            sound_to_play = (bool)allies ? "AMERICAN_LIGHT_PAIN_SOUND"
+                                        : "GERMAN_LIGHT_PAIN_SOUND";
+        } else if ((float)percent_of_total_health_damaged < 0.5f) {
+            sound_to_play = (bool)allies ? "AMERICAN_MEDIUM_PAIN_SOUND"
+                                        : "GERMAN_MEDIUM_PAIN_SOUND";
+        } else if ((float)percent_of_total_health_damaged < 0.75f) {
+            sound_to_play = (bool)allies ? "AMERICAN_HEAVY_PAIN_SOUND"
+                                        : "GERMAN_HEAVY_PAIN_SOUND";
+        } else {
+            sound_to_play = (bool)allies ? "AMERICAN_CRITICAL_PAIN_SOUND"
+                                        : "GERMAN_CRITICAL_PAIN_SOUND";
+        }
+        Broc::EffectEventPlay(&guy, &sound_to_play);
+        Broc::bint now;
+        Broc::GetTime(&now);
+        *mp_util_wad::GetEE_lastPainSoundTime(guy) = (int)now;
+        sound_to_play.~string();
+    }
+}
+
+// PlayKillerCredit - ea: 0x93BEE0
+void PlayKillerCredit(Broc::entity killer) {
+    if (Broc::IsPlayer(&killer) == 0)
+        return;
+    Broc::bint state;
+    mp_util_wad::entity_get_playerState(&state, killer);
+    if ((int)state != 3)
+        return;
+    Broc::string sound_to_play;
+    sound_to_play = "";
+    Broc::bint have_sound(0);
+    Broc::string team;
+    if ((int)*mp_util_wad::GetEE_killsSinceLastDeath(killer) == 5) {
+        mp_util_wad::entity_get_team(&team, killer);
+        sound_to_play = team == "allies" ? "american_five_kills"
+                                        : "german_five_kills";
+        have_sound = 1;
+    } else if ((int)*mp_util_wad::GetEE_killsSinceLastDeath(killer) == 10) {
+        mp_util_wad::entity_get_team(&team, killer);
+        sound_to_play = team == "allies" ? "american_ten_kills"
+                                        : "german_ten_kills";
+        have_sound = 1;
+    }
+    if ((int)*mp_util_wad::GetEE_killsSinceLastDeath(killer) == 20) {
+        mp_util_wad::entity_get_team(&team, killer);
+        sound_to_play = team == "allies" ? "american_twenty_kills"
+                                        : "german_twenty_kills";
+        have_sound = 1;
+    } else if ((int)have_sound == 0) {
+        sound_to_play.~string();
+        return;
+    }
+    team.~string();
+    Broc::EffectEventPlay(&killer, &sound_to_play);
+    sound_to_play.~string();
+}
+
+// PlayDeathSound - ea: 0x93AE80
+void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
+                    Broc::entity attacker, Broc::bint weapon,
+                    Broc::bint means_of_damage) {
+    PlayKillerWarning(guy, inflictor, attacker, weapon, means_of_damage);
+    PlayKillerCredit(attacker);
+    Broc::bfloat chance(1.0f);
+    Broc::bfloat additional_play_sound_chance(0.0f);
+    Broc::bbool team_damage(false);
+    bool attackerDefined = Broc::IsDefined(attacker);
+    if (attackerDefined && Broc::Code_IsLocalPlayer(attacker)) {
+        Broc::string at;
+        Broc::string gt;
+        mp_util_wad::entity_get_team(&at, attacker);
+        mp_util_wad::entity_get_team(&gt, guy);
+        if (at == gt)
+            team_damage = true;
+        at.~string();
+        gt.~string();
+        additional_play_sound_chance = 0.1f;
+    }
+    if (Broc::Code_IsLocalPlayer(guy)) {
+        if ((int)means_of_damage == 25)
+            return;
+        additional_play_sound_chance = 0.1f;
+    }
+    chance = (float)chance + (float)additional_play_sound_chance;
+    if (Broc::RandomInt(100) < (int)(100.0f * (float)chance)) {
+        Broc::string sound_to_play;
+        sound_to_play = "";
+        (void)team_damage;
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, guy);
+        sound_to_play = team == "allies" ? "american_scream"
+                                        : "german_scream";
+        team.~string();
+        Broc::EffectEventPlay(&guy, &sound_to_play);
+        sound_to_play.~string();
+    }
+}
+
+// PlayKillerWarning - ea: 0x93B270
+void PlayKillerWarning(Broc::entity guy, Broc::entity inflictor,
+                       Broc::entity attacker, Broc::bint weapon,
+                       Broc::bint means_of_damage) {
+    Broc::bfloat chance(0.25f);
+    if ((int)weapon == 0 || (int)means_of_damage == 11 ||
+        !Broc::Code_GetTeamGame() || Broc::IsPlayer(&attacker) == 0)
+        return;
+    Broc::string gt;
+    Broc::string at;
+    mp_util_wad::entity_get_team(&gt, guy);
+    mp_util_wad::entity_get_team(&at, attacker);
+    bool teamKill = at == gt;
+    gt.~string();
+    at.~string();
+    if (teamKill)
+        return;
+    if (Broc::RandomInt(100) >= (int)(100.0f * (float)chance))
+        return;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::entity talker;
+    talker.___u0 = 0;
+    Broc::bfloat distance(800.0f);
+    Broc::bfloat distance_sqr((float)distance * (float)distance);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, p);
+        if ((int)state == 3) {
+            Broc::string pteam;
+            Broc::string gteam;
+            mp_util_wad::entity_get_team(&pteam, p);
+            mp_util_wad::entity_get_team(&gteam, guy);
+            bool diffTeam = pteam != gteam;
+            pteam.~string();
+            gteam.~string();
+            if (!diffTeam) {
+                Broc::vector porg;
+                Broc::vector gorg;
+                mp_util_wad::entity_get_origin(&porg, p);
+                mp_util_wad::entity_get_origin(&gorg, guy);
+                float dsq = Broc::DistanceSquared(&porg, &gorg);
+                if (dsq < (float)distance_sqr) {
+                    talker = p;
+                    break;
+                }
+            }
+        }
+        i = (int)i + 1;
+    }
+    if (!Broc::IsDefined(talker)) {
+        players.~dyn_array();
+        return;
+    }
+    Broc::string sound_to_play;
+    sound_to_play = "";
+    if (Broc::IsVehicle(&inflictor) != 0) {
+        if ((int)means_of_damage == 20 || (int)means_of_damage == 21 ||
+            (int)means_of_damage == 22 || (int)means_of_damage == 31) {
+            sound_to_play.~string();
+            players.~dyn_array();
+            return;
+        }
+        Broc::string vt = *mp_util_wad::GetEE_vehicletype(inflictor);
+        if (stricmp(vt.c_str(), "mp_shermantank") == 0 ||
+            stricmp(vt.c_str(), "mp_panzeriv") == 0) {
+            Broc::string ateam;
+            mp_util_wad::entity_get_team(&ateam, attacker);
+            sound_to_play = ateam == "allies" ? "american_tank"
+                                             : "german_tank";
+            ateam.~string();
+        } else if (stricmp(vt.c_str(), "mp_wc51") == 0 ||
+                   stricmp(vt.c_str(), "mp_horch") == 0) {
+            sound_to_play.~string();
+            vt.~string();
+            players.~dyn_array();
+            return;
+        }
+        vt.~string();
+    } else {
+        Broc::string weaponName;
+        weaponName = "";
+        Broc::Code_GetWeaponName((int)weapon, &weaponName);
+        Broc::string ateam;
+        mp_util_wad::entity_get_team(&ateam, attacker);
+        if (weaponName == "kar98_sniper" || weaponName == "springfield") {
+            sound_to_play = ateam == "allies" ? "american_sniper"
+                                             : "german_sniper";
+        } else if (weaponName == "mg34" || weaponName == "mg30cal") {
+            sound_to_play = ateam == "allies" ? "american_lmg"
+                                             : "german_lmg";
+        } else if (weaponName == "panzerschreck" || weaponName == "bazooka") {
+            sound_to_play = ateam == "allies" ? "american_bazooka"
+                                             : "german_bazooka";
+        } else {
+            sound_to_play = ateam == "allies" ? "american_warning"
+                                             : "german_warning";
+        }
+        ateam.~string();
+        weaponName.~string();
+    }
+    Broc::EffectEventPlay(&talker, &sound_to_play);
+    sound_to_play.~string();
+    players.~dyn_array();
 }
 }
 
@@ -5187,7 +5554,6 @@ void StopFollowing(Broc::entity self, Broc::bbool blackNow) {
 // ============================================================================
 namespace _mp_tankdrive { void main() {} }
 namespace _mp_nano { void main() {} }
-namespace _mp_audio { void main() {} }
 namespace _mp_audio {
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage) {
     (void)guy;
@@ -5230,12 +5596,6 @@ void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
 void* player_dying_sounds__functor(Broc::entity player) {
     (void)player;
     return NULL;
-}
-void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
-                    Broc::entity attacker, Broc::bint weapon,
-                    Broc::bint means_of_damage) {
-    (void)guy; (void)inflictor; (void)attacker; (void)weapon;
-    (void)means_of_damage;
 }
 }
 namespace _mp_loadout {

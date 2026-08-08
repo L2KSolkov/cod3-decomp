@@ -651,6 +651,7 @@ void GetLocalPlayerArray(Broc::dyn_array<Broc::entity>* out);
 void AnglesToForward(Broc::vector* result, const Broc::vector* angles);
 void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
 HashStr string_hash(const char* str);
+HashStr* string_hash(HashStr* result, const char* str);
 HashStr* string_hash(HashStr* result, const Broc::string* str);
 unsigned int SoundPlay(const Broc::string& name, float volume);
 void ReverbSetParams(const Broc::string& name, bool immediate);
@@ -684,6 +685,7 @@ void VectorNormalize(Broc::vector* result, const Broc::vector* v);
 int VecCloser(const Broc::vector* a, const Broc::vector* b, const Broc::vector* c);
 bool IsPlayer(const Broc::entity* e);            // ea: 0x92F2F0
 int IsAlive(const Broc::entity* e);              // ea: 0x92F320
+int IsVehicle(const Broc::entity* e);            // ea: 0x92F350
 int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
 bint* GetTime(bint* result);                     // gBrocAPI.mGetTime
 void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92F440

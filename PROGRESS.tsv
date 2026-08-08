@@ -6,7 +6,7 @@ g.o		g.o	game	732	TODO
 mp_shell.o		mp_shell.o	game	680	TODO	
 game.o		game.o	game	663	TODO	
 core.o		core.o	game	541	TODO	
-MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	IN_PROGRESS	mp_util_wad.cpp/h: accessors + wrappers + dyn_array + Level struct (560B) + pLevel; _mp_airplanes flyby thread/flyby/roll; _mp_audio AudioPrint/Callback/PlaySound/audio_spawner/ambient_system/crossfade/changers; _mp_dm main; _mp_common COMPLETE (96/96); _mp_audio 28/37 (chatter/interior/PlayerLocation/line sounds/team sounds/static sounds + PlaySoundAtLocation etc; PlayPainSound/PlayDeathSound/PlayKillerWarning/PlayKillerCredit/main deferred); next: _mp_ctf/_mp_war/_mp_tankdrive/_mp_nano/_mp_tdm/_mp_scf/_mp_hq/_mp_minefield/_mp_loadout/_mp_spawnlogic/_mp_teambalance/_mp_shellshock + audio mains
+MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	IN_PROGRESS	mp_util_wad.cpp/h: accessors + wrappers + dyn_array + Level struct (560B) + pLevel; _mp_airplanes flyby thread/flyby/roll; _mp_audio AudioPrint/Callback/PlaySound/audio_spawner/ambient_system/crossfade/changers; _mp_dm main; _mp_common COMPLETE (96/96); _mp_audio COMPLETE (37/37: main, PlayerLocation, line/team/static sounds, PlayPainSound/PlayDeathSound/PlayKillerWarning/PlayKillerCredit); next: _mp_ctf/_mp_war/_mp_tankdrive/_mp_nano/_mp_tdm/_mp_scf/_mp_hq/_mp_minefield/_mp_loadout/_mp_spawnlogic/_mp_teambalance/_mp_shellshock
 game2.o		game2.o	game	521	TODO	
 render.o		render.o	game	426	TODO	
 anim.o		anim.o	game	408	TODO	

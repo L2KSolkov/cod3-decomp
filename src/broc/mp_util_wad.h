@@ -198,6 +198,7 @@ MP_UTIL_WAD_ACCESSOR(bigsplashed, Broc::bint)
 MP_UTIL_WAD_ACCESSOR(audio_ambmin, Broc::bfloat)
 MP_UTIL_WAD_ACCESSOR(script_sound, Broc::string)
 MP_UTIL_WAD_ACCESSOR(teamSound, Broc::bint)
+MP_UTIL_WAD_ACCESSOR(vehicletype, Broc::string)
 
 #undef MP_UTIL_WAD_ACCESSOR
 
