@@ -60,6 +60,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_xb_palette.cpp
     src/ngl/ngl_scenedump.cpp
     src/ngl/ngl_dx_scenedump.cpp
+    src/ngl/ngl_dx_debug.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC

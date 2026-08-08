@@ -198,7 +198,7 @@ cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	Phase 2: cdl_common, cdl
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (file streaming stubs)
-ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	TODO	
+ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	PORTED	ngl_dx_debug.cpp: shader profile print/record/compare + ngliShaderProfile.h; verified vs cod_3p reference (older NGL) + IDA
 nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	PORTED	[phys_xboxr] phys_gjk.cpp: GJK simplex core (5 funcs)
