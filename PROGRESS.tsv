@@ -98,7 +98,7 @@ zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	TODO
 nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 jobqueue_xboxr:jobqueue_legacy.o	jobqueue_xboxr	jobqueue_legacy.o	engine	11	PORTED	Phase 2: jobqueue.cpp (batch job system)
 ngl_xboxr:ngl_dx_tex_create.o	ngl_xboxr	ngl_dx_tex_create.o	engine	11	PORTED	ngl_dx_tex_create.cpp: save/create-from-file/destroy + framebuffer/cube textures; homes nglFront/Back/DepthBufferTex + normal cube map; D3DFMT/_D3DSURFACE_DESC shims
-ngl_xboxr:ngl_debugdraw.o	ngl_xboxr	ngl_debugdraw.o	engine	11	TODO	
+ngl_xboxr:ngl_debugdraw.o	ngl_xboxr	ngl_debugdraw.o	engine	11	PORTED	ngl_debugdraw.cpp: front-buffer CPU raster (begin/end, width/height, plot 565+8888, hline/vline/rect/fill), 8x8 bitmap font text (internal + text)
 nal_xboxr:nal_init.o	nal_xboxr	nal_init.o	engine	11	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdSocket:bdQoSProbe-xbox.obj	bdSocket	bdQoSProbe-xbox.obj	engine	11	PORTED	[bdSocket] bdQoSProbe.cpp: XNet QoS probe (11 funcs) from Demonware 2.0 + IDA; listener callbacks fixed
 render_xboxr:cdRiverShader.o	render_xboxr	cdRiverShader.o	engine	10	PORTED	cdRiverShader.h/.cpp (river shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; Render deferred)
