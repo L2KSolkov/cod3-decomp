@@ -299,6 +299,7 @@ add_library(cod3_game_platform_xbox STATIC
     src/game/platform_xbox/MemoryUnit.cpp
     src/game/platform_xbox/XBoxStorage.cpp
     src/game/platform_xbox/GameXbox.cpp
+    src/game/platform_xbox/XboxLive.cpp
 )
 add_library(cod3_game_nextgen STATIC
     src/game/nextgen/stubs_game.cpp

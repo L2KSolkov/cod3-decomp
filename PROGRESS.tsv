@@ -15,7 +15,7 @@ cg.o		cg.o	game	350	TODO
 cl.o		cl.o	game	313	TODO	
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
-game_xbox.o		game_xbox.o	game	210	IN_PROGRESS	GameXbox.cpp: Sys_* platform layer ported (31/210) - paths, file lists, event queue, stream/console stubs; time() override left to CRT; Live/CSession UI remains
+game_xbox.o		game_xbox.o	game	210	IN_PROGRESS	GameXbox.cpp Sys_* layer (31) + XboxLive.cpp CSession/QosQ (40) + LivePlayer/LiveRemote/LiveLocal (8) + LiveWrapper core (11) = 90/210; XLive APIs stubbed via /FORCE, NEEDED.md; LiveWrapper::HandleError/CalcVoicePriorities + MPLiveEngine + menus remain
 sv.o		sv.o	game	118	PORTED	[game:sv.o] sv_world collision suite + SV_PostConnect (10 funcs)
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	PORTED	
 aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED	Phase 4: apsSuppliedActions.h/.cpp (particle action stubs, ABI-correct ctors from IDA)

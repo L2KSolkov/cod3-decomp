@@ -142,3 +142,20 @@ implemented in `platform/xbox_shim/xbox_shim.cpp`:
 | XGetDisplayBlocks | total file bytes / 16384 rounded up |
 | XGetDiskSectorSizeA / XGetDiskClusterSizeA | 512 / 16384 |
 | XCalculateSignatureBegin/Update/End | deterministic 20-byte CRC digest |
+
+## Xbox Live / matchmaking (game_xbox.o LiveWrapper.cpp + xboxMatch.cpp)
+
+`CSession` / `LiveWrapper` / live-player classes are ported (XboxLive.cpp);
+they call the Xbox Live surface verbatim. Declarations in
+`platform/xbox_shim/xlive.h`; implementations pending (link via /FORCE).
+
+| Xbox API | Win32 Replacement |
+|---|---|
+| XOnlineMatchSessionCreate / Update / Delete | stub (offline; create returns failure) |
+| XOnlineMatchSessionGetInfo | stub |
+| XOnlineTaskContinue / XOnlineTaskClose | stub (task completes immediately) |
+| XOnlineMutelistGet | stub (empty mute list) |
+| XNetQosListen / XNetRegisterKey / XNetUnregisterKey | stub (return 0) |
+| LiveEngine_NotificationSetState / SetProperty / Release | stub (no-op) |
+| XHVEngine_IsTalking / XHVEngine_SetPlaybackPriority | stub (return 0) |
+| ITitleFontRenderer/ITitleUIPlugin/ITitleAudioPlugin::Release | stub (no-op) |
