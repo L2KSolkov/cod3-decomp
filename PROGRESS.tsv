@@ -109,7 +109,7 @@ bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engi
 bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
 bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	PORTED	[bdPeer] bdSessionListener.cpp: session listener callbacks (10 funcs) from Demonware 2.0 + IDA
-bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
+bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	PORTED	[bdSocket] bdSocketRouter.cpp: socket routing layer (10 funcs) from Demonware 2.0 + IDA
 bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	bdSocket.cpp: UDP socket wrapper (10 funcs) from IDA + Demonware 2.0
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
@@ -174,7 +174,7 @@ render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	POR
 aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	PORTED	apsRegister.cpp (registry: GetNewSimpleMesh/ShrimpRenderer, apsGetRenderer/apsGetDomain/apsGetAction dispatch + fixup-table build, apsLoadEffectInplace; apsParam ops, GetEnum, Create*Domain, GetNew*Renderer, template domains, RetrieveVtable COMDATs)
 aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	PORTED	apsBillboardRenderer.h/.cpp (billboard renderer + node + DefaultRender template + apsLight::LightInfo)
 nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	PORTED	Phase 2: nvl.cpp (video codec stubs)
-bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	bdSecurityKeyMap.cpp: XNet key registry (6 funcs) from IDAverified against COD3 decompilation
 bdCore:bdLogChannel.obj	bdCore	bdLogChannel.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdReliableReceiveWindow.obj	bdConnection	bdReliableReceiveWindow.obj	engine	6	PORTED	[bdConnection] bdReliableReceiveWindow.cpp: reliable recv window (6 funcs) from Demonware 2.0 + IDA
 bdConnection:bdCookieAckChunk.obj	bdConnection	bdCookieAckChunk.obj	engine	6	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
