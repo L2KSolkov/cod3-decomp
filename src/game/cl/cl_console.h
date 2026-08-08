@@ -86,6 +86,8 @@ extern int g_console_char_height;
 extern struct cls_t {
     int keyCatchers;
     int state;
+    int endgamemenu;
+    int cddialog;
 } cls;
 extern int dword_F170FC;   // frametime (ms)
 extern int dword_F1719C;   // screen width
