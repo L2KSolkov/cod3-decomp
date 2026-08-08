@@ -381,6 +381,11 @@ template <typename T> bool IsDefined(const T& t);   // boxed-type IsDefined
 // BrocAPI - the Broc scripting runtime interface (4924 bytes, 1118 members).
 // Only the members used by ported code are declared; the rest is padding.
 // ============================================================================
+struct BrocExports {
+    char _pad0[8];
+    void (*mCallbackSetLevelAudio)(const char*, const char*, const char*, int, int);
+};
+
 struct BrocAPI {
     void (*mPrint)(const char*);                          // +0x000
     void (*mPrintLn)(const char*);                        // +0x004
@@ -391,11 +396,13 @@ struct BrocAPI {
     float (*mVecDistance)(const Broc::vector*, const Broc::vector*);  // +0x184
     char _pad188[0x1A0 - 0x188];                          // +0x188
     void (*mVecToAngles)(Broc::vector*, const Broc::vector*);  // +0x1A0
-    char _pad1A4[0x2A0 - 0x1A4];                          // +0x1A4
-    int (*mWarning)(const char* file, int line, const char* msg);  // +0x2A0
-    char _pad2A4[0x6D8 - 0x2A4];                          // +0x2A4
+    char _pad1A4[0x6D8 - 0x1A4];                          // +0x1A4
     void (*mDelete)(unsigned int);                        // +0x6D8
-    char _pad6DC[0xF1C - 0x6DC];                          // +0x6DC
+    char _pad6DC[0xBE0 - 0x6DC];                          // +0x6DC
+    int (*mWarning)(const char* file, int line, const char* msg);  // +0xBE0
+    int (*mError)(const char* file, int line, const char* msg);  // +0xBE4
+    struct BrocExports mBrocExports;                      // +0xBE8
+    char _padBrocExports[0xF1C - 0xBF4];                  // +0xBF4
     Broc::vector* (*m_entity_get_origin)(Broc::vector*, unsigned int);  // +0xF1C
     char _padF20[0x133C - 0xF20];                         // +0xF20 (total 0x133C = 4924)
 };
@@ -435,6 +442,12 @@ int GetCvarInt(const char* cvar);
 void iprintlnbold(const Broc::string& s);
 void Code_SetTeamGame(bool teamGame);
 void Code_SetShowScore(bool showScore);
+void Code_DisplayScoreBoard(bool show, int time);
+void Code_ClearPlayerStats();
+void Code_ClearTeamScores();
+void Code_SetupLevelSpecificVariables();
+Broc::string* GetCvar(Broc::string* result, const char* cvar);
+void SetCvar(const char* cvar, const char* value);
 Broc::vector* entity_origin(Broc::entity* e, Broc::vector* result);
 Broc::vector* vector_scale(Broc::vector* result, const Broc::vector* a, float s);
 Broc::vector* vector_add(Broc::vector* result, const Broc::vector* a, const Broc::vector* b);

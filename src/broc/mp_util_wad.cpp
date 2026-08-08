@@ -1568,6 +1568,7 @@ namespace _mp_common {
 void SetupCallbacks(Broc::bbool teamGameType);
 }
 extern void* StartGame__functor(Broc::entity self);
+extern void* main__functor(Broc::entity self);
 extern Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
                                    const Broc::string* spawnpoint);
 
@@ -1583,4 +1584,149 @@ void main(Broc::entity self) {
     Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_dm.bro",
                         __LINE__, "StartGame", started);
 }
+}
+
+// ============================================================================
+// Sibling gametype namespaces - declarations used by _mp_common::LaunchGametype.
+// Definitions (stubs until those scripts are ported) live at the bottom.
+// ============================================================================
+namespace _mp_tankdrive { void main(); }
+namespace _mp_nano { void main(); }
+namespace _mp_audio { void main(); }
+namespace _mp_minefield { void* main__functor(Broc::entity self); }
+namespace _mp_tdm { void* main__functor(Broc::entity self); }
+namespace _mp_ctf { void* main__functor(Broc::entity self); }
+namespace _mp_scf { void* main__functor(Broc::entity self); }
+namespace _mp_war { void* main__functor(Broc::entity self); }
+namespace _mp_hq { void* main__functor(Broc::entity self); }
+
+// ============================================================================
+// _mp_common - shared multiplayer logic.
+// ============================================================================
+namespace _mp_common {
+extern void* main__functor(Broc::entity self);  // dispatch stub
+
+void DebugRenderSpawnPoints();
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
+                            const Broc::string* spawnpoint);
+void launch_gametype_thread(Broc::string& gametype, const char* func,
+                            void* (*functor)(Broc::entity));
+
+// SetupGameVariables - ea: 0x93D030
+int SetupGameVariables() {
+    mp_util_wad::pLevel->timeLimit = Broc::GetCvarInt("mp_timelimit");
+    mp_util_wad::pLevel->scoreLimit = Broc::GetCvarInt("mp_scorelimit");
+    mp_util_wad::pLevel->roundLimit = Broc::GetCvarInt("mp_roundlimit");
+    mp_util_wad::pLevel->friendlyFire = Broc::GetCvarInt("mp_friendlyfire") != 0;
+    mp_util_wad::pLevel->lastManStanding = Broc::GetCvarInt("mp_lastmanstanding") != 0;
+    if (!Broc::GetCvarInt("mp_teambalance") || Broc::GetCvarInt("mp_debug"))
+        mp_util_wad::pLevel->teamBalance = false;
+    else
+        mp_util_wad::pLevel->teamBalance = true;
+    mp_util_wad::pLevel->respawnTime = Broc::GetCvarInt("mp_respawntime");
+    return 0;
+}
+
+// LaunchGametype - ea: 0x93C2C0
+void LaunchGametype() {
+    mp_util_wad::pLevel->RenderSpawnPoints = (void*)DebugRenderSpawnPoints;
+    mp_util_wad::pLevel->PickSpawnPoint = (void*)GetSpawnPoint;
+    mp_util_wad::pLevel->roundStarted = false;
+    mp_util_wad::pLevel->roundCount = 0;
+    mp_util_wad::pLevel->roundOver = false;
+    mp_util_wad::pLevel->spawnType = 0;
+    mp_util_wad::pLevel->rankOn = true;
+    mp_util_wad::pLevel->forceMapChange = false;
+    mp_util_wad::pLevel->lastManStandingIgnore = "none";
+    mp_util_wad::pLevel->startTime = 0;
+    mp_util_wad::pLevel->lastSpawnPointIndex = 0;
+    mp_util_wad::pLevel->roundEndMusic = -1;
+    mp_util_wad::pLevel->onlyDisplayScoreOnFinalRound = false;
+    mp_util_wad::pLevel->teamCantRespawn = "";
+    mp_util_wad::pLevel->ArtilleryObjectiveIndex = 0;
+    mp_util_wad::pLevel->nextRoundStartTime = 0;
+    mp_util_wad::pLevel->playerCountAtStartOfRound = 0;
+    mp_util_wad::pLevel->playersLeavingDuringRound = 0;
+    mp_util_wad::pLevel->spawnColorAllies = Broc::vector(0.0f, 1.0f, 0.0f);
+    mp_util_wad::pLevel->spawnColorAxis = Broc::vector(1.0f, 0.0f, 0.0f);
+    Broc::Code_SetShowScore(true);
+    Broc::Code_DisplayScoreBoard(false, 20);
+    SetupGameVariables();
+    Broc::string gametype;
+    Broc::GetCvar(&gametype, "mp_gametype");
+    Broc::Code_ClearPlayerStats();
+    Broc::Code_ClearTeamScores();
+    mp_util_wad::pLevel->roundWinner = "";
+    Broc::SetCvar("cg_night", "0");
+    Broc::SetCvar("cg_hudObjectiveRingTime", "10000");
+    Broc::SetCvar("cg_hudObjectiveNumRings", "10");
+    mp_util_wad::pLevel->mustHaveBothTeamsToStart = false;
+    Broc::gBrocAPI.mBrocExports.mCallbackSetLevelAudio = _mp_audio::CallbackSetLevelAudio;
+    Broc::Code_SetupLevelSpecificVariables();
+    _mp_tankdrive::main();
+    _mp_nano::main();
+    _mp_audio::main();
+    Broc::entity lvl = Broc::entity();
+    void* minefield = _mp_minefield::main__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, "_mp_minefield::main", minefield);
+    if (gametype == "dm")
+        launch_gametype_thread(gametype, "_mp_dm::main", _mp_dm::main__functor);
+    else if (gametype == "tdm")
+        launch_gametype_thread(gametype, "_mp_tdm::main", _mp_tdm::main__functor);
+    else if (gametype == "ctf")
+        launch_gametype_thread(gametype, "_mp_ctf::main", _mp_ctf::main__functor);
+    else if (gametype == "scf")
+        launch_gametype_thread(gametype, "_mp_scf::main", _mp_scf::main__functor);
+    else if (gametype == "war")
+        launch_gametype_thread(gametype, "_mp_war::main", _mp_war::main__functor);
+    else if (gametype == "hq")
+        launch_gametype_thread(gametype, "_mp_hq::main", _mp_hq::main__functor);
+    else if (Broc::gBrocAPI.mError)
+        Broc::gBrocAPI.mError("c:\\cod\\code\\script\\_mp_common.bro", __LINE__, "Unknown gametype");
+    gametype.~string();
+}
+
+void launch_gametype_thread(Broc::string& gametype, const char* func,
+                            void* (*functor)(Broc::entity)) {
+    (void)gametype;
+    Broc::entity lvl = Broc::entity();
+    void* ftor = functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, func, ftor);
+}
+
+void DebugRenderSpawnPoints() {}
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
+                            const Broc::string* spawnpoint) {
+    (void)ent;
+    (void)spawnpoint;
+    result->___u0 = 0;
+    return result;
+}
+}
+
+// ============================================================================
+// Sibling gametype stubs (real implementations arrive with each script port).
+// ============================================================================
+namespace _mp_tankdrive { void main() {} }
+namespace _mp_nano { void main() {} }
+namespace _mp_audio { void main() {} }
+namespace _mp_minefield {
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+}
+namespace _mp_tdm {
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+}
+namespace _mp_ctf {
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+}
+namespace _mp_scf {
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+}
+namespace _mp_war {
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+}
+namespace _mp_hq {
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
 }
