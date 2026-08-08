@@ -72,6 +72,40 @@ EntityManager* EntityManager::sInst = nullptr;
 static const char defaultFileName[] = "";
 
 // ============================================================================
+// Camera shake support types (layout from IDA)
+// ============================================================================
+struct CameraShakeInstance {
+    int   m_type;          // +0x00
+    float m_magnitude;     // +0x04
+    float m_magnitudeInc;  // +0x08
+    float m_noiseFloats[8];// +0x0C
+    float m_invDistance;   // +0x2C
+    float m_time;          // +0x30
+    float m_frequency;     // +0x34
+    float m_movement;      // +0x38
+    int   m_active;        // +0x3C
+};
+static_assert(sizeof(CameraShakeInstance) == 0x40,
+              "CameraShakeInstance size mismatch");
+
+struct CameraShake {
+    float m_scale3D;          // +0x00
+    float m_scaleCOD;         // +0x04
+    int   m_scaleCOD_onlyADS; // +0x08
+    CameraShakeInstance m_instanceData[5];  // +0x0C
+
+    void StopCameraShake(CameraShakeInstance* pShake);
+};
+static_assert(sizeof(CameraShake) == 0x14C, "CameraShake size mismatch");
+
+extern math::Position3 GetTagFlashPos(Entity* cent);
+extern CameraShake* g_cameraShake;  // 0x00F056E8
+extern int dword_F6A290[4 * 0x322];  // per-client table, 0xC88-byte stride
+
+CameraShake* g_cameraShake = nullptr;
+int dword_F6A290[4 * 0x322];
+
+// ============================================================================
 // EffectEventSys - query param setters
 // ============================================================================
 
@@ -594,4 +628,169 @@ void AbstractEffectSound::StartFadeOut(float seconds)
     mCodeFlags.mVal |= 3u;
     mFadeStart = seconds;
     mFadeTime = seconds;
+}
+
+// ============================================================================
+// AbstractEffectLight virtuals
+// ============================================================================
+
+// ea: 0x004CDEF0
+math::Position3 AbstractEffectLight::GetPositionOnEntity(Entity* e) const
+{
+    math::Position3 result;
+    unsigned int mVal = mEntity.mHandle.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v4 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+    result.v = mObject->r.currentOrigin.v;
+    return result;
+}
+
+// ea: 0x004CDF50
+void AbstractEffectLight::FrameAdvance(float delta_t)
+{
+    LightEffect* mVertLight = this->mVertLight;
+    if (mVertLight != nullptr)
+    {
+        gdLight* mLight = this->mLight;
+        mTime = delta_t + mTime;
+        if (mTime <= ((mLight->rampdown + mLight->rampup) + mLight->duration))
+        {
+            if (mTime < (mLight->rampup + mLight->duration))
+            {
+                if (mTime < mLight->rampup)
+                    mVertLight->SetScale(mTime / mLight->rampup);
+                else
+                    mVertLight->SetScale(1.0f);
+            }
+            else
+            {
+                mVertLight->SetScale(
+                    1.0f - ((mTime - mLight->duration) - mLight->rampup)
+                               / mLight->rampdown);
+            }
+        }
+        else
+        {
+            mVertLight->mActive = false;
+            this->mVertLight = nullptr;
+        }
+        if (this->mVertLight != nullptr)
+        {
+            unsigned int v7 = mEntity.mHandle.mVal & 0xFFF;
+            if (v7 < 0x540
+                && mEntity.mHandle.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v7].mKey)
+            {
+                Entity* mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+                if (mObject != nullptr)
+                    this->mVertLight->mLightPos.v =
+                        GetTagFlashPos(mObject).v;
+            }
+        }
+    }
+}
+
+// ea: 0x004CE060
+bool AbstractEffectLight::IsFinished()
+{
+    if (mLight->projlight != 0)
+        return true;
+    LightEffect* pProj = mProjLight;
+    if (pProj == nullptr || pProj->IsLightFinished())
+    {
+        LightEffect* pVert = mVertLight;
+        if (pVert == nullptr || pVert->IsLightFinished())
+            return true;
+    }
+    if ((mCodeFlags.mVal & 2) != 0)
+        return AbstractEffect::IsFinished();
+    return false;
+}
+
+// ============================================================================
+// AbstractEffectShakeAndRumble virtuals
+// ============================================================================
+
+// ea: 0x004CE720
+bool AbstractEffectShakeAndRumble::IsFinished()
+{
+    if ((mCodeFlags.mVal & 2) == 0)
+        return true;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (dword_F6A290[i * 0x322] == 2 && mShake[i] != nullptr
+            && mShake[i]->m_active != 0)
+        {
+            RumbleManager* v4 = RumbleManager::Inst(i);
+            if (v4->IsPlaying(mRumbleHandle[i]))
+                return false;
+        }
+    }
+    return true;
+}
+
+// ea: 0x004CE780
+void AbstractEffectShakeAndRumble::AdjustEffect_Scale(const char* param,
+                                                      float scale)
+{
+    if (dword_F6A290[0] == 2 && mRumbleHandle[0].mVal != 0)
+    {
+        RumbleManager* v3 = RumbleManager::Inst(0);
+        v3->SetIntensity(mRumbleHandle[0], scale);
+    }
+}
+
+// ea: 0x004CE7B0
+void AbstractEffectShakeAndRumble::StopEffect()
+{
+    if (dword_F6A290[0] == 2)
+    {
+        if (mRumbleHandle[0].mVal != 0)
+        {
+            RumbleManager* v2 = RumbleManager::Inst(0);
+            v2->Remove(mRumbleHandle[0]);
+            mRumbleHandle[0].mVal = 0;
+        }
+        if (mShake[0] != nullptr)
+        {
+            g_cameraShake->StopCameraShake(mShake[0]);
+            mShake[0] = nullptr;
+        }
+    }
+}
+
+// ============================================================================
+// AbstractEffect fades + particle IsFinished
+// ============================================================================
+
+// ea: 0x004E2D40
+bool AbstractEffect::IsFinishedFading()
+{
+    return (mCodeFlags.mVal & 1) != 0 && mFadeTime < 0.001f;
+}
+
+// ea: 0x004CDC90
+bool AbstractEffectParticle::IsFinished()
+{
+    if ((mCodeFlags.mVal & 2) == 0)
+        return false;
+    unsigned int v2 = mEntity.mHandle.mVal & 0xFFF;
+    if ((v2 >= 0x540
+         || mEntity.mHandle.mVal >> 12
+                != EntityHandleDb::sInst.mElements[v2].mKey
+         || EntityHandleDb::sInst.mElements[v2].mObject == nullptr)
+        && (mFlags & 1) == 0)
+    {
+        return true;
+    }
+    if ((mCodeFlags.mVal & 1) != 0 && mFadeTime <= 0.0f)
+        return true;
+    ParticleEffect* mParticle = this->mParticle;
+    if (mParticle == nullptr || mParticle->mEffect == nullptr)
+        return true;
+    if ((mCodeFlags.mVal & 1) != 0 && !IsFinishedFading())
+        return false;
+    return mParticle->mEffect->IsDone() != 0;
 }

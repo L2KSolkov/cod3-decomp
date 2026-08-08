@@ -77,6 +77,17 @@ RumbleEffectInstanceHandle RumbleManager::BumpHandle()
     return result;
 }
 
+// ea: 0x004A9DA0
+RumbleManager* RumbleManager::Inst(int instance)
+{
+    if (instance != 0)
+    {
+        ASSERT("instance >= 0 && instance < 1",
+               "c:\\cod\\code\\game\\RumbleManager.h", 24);
+    }
+    return RumbleManagerStatics::sInstHolder.sInst[instance];
+}
+
 // ea: 0x004BD130
 void RumbleManager::StopMotors()
 {

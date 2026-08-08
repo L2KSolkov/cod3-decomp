@@ -141,6 +141,7 @@ struct AbstractEffect {
     virtual Broc::string GetDebugString() const;
     math::Position3 GetPosition() const;        // ea: 0x004CC230
     Broc::string GetEntityDebugString() const;  // ea: 0x004CC330
+    bool IsFinishedFading();                    // ea: 0x004E2D40
     Broc::string                 mEffectName;        // +0x04
     unsigned int                 mEffectNameHashStr; // +0x08
     TPakId                       mPakId;             // +0x0C
@@ -194,6 +195,7 @@ struct AbstractEffectParticle : AbstractEffect {
     void FastForward(float deltaT);               // ea: 0x004BD280
     void StartFadeOut(float seconds);             // ea: 0x004C1350
     Broc::string GetDebugString() const;          // ea: 0x004C59C0
+    bool IsFinished();                            // ea: 0x004CDC90
 };
 static_assert(sizeof(AbstractEffectParticle) == 0x38,
               "AbstractEffectParticle size mismatch");
@@ -233,13 +235,17 @@ struct AbstractEffectLight : AbstractEffect {
     float         mTime;      // +0x40
 
     Broc::string GetDebugString() const;  // ea: 0x004BD300
+    math::Position3 GetPositionOnEntity(Entity* e) const;  // ea: 0x004CDEF0
+    void FrameAdvance(float delta_t);     // ea: 0x004CDF50
+    bool IsFinished();                    // ea: 0x004CE060
 };
 static_assert(sizeof(AbstractEffectLight) == 0x44,
               "AbstractEffectLight size mismatch");
 
 // ============================================================================
-// AbstractEffectShakeAndRumble - camera shake + rumble effect (112 bytes)
-// Size: 0x70 (112 bytes) - verified against IDA
+// AbstractEffectShakeAndRumble - camera shake + rumble effect (136 bytes)
+// Size: 0x88 - per-client handle/shake arrays (4 entries; IDA type was
+// incomplete at 0x70, the frame code indexes 0..3)
 // ============================================================================
 struct RumbleEffectInstanceHandle {
     int mVal;  // +0x00
@@ -264,14 +270,18 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
     bool  mRumbleEnabled;     // +0x61
     unsigned char _pad[0x64 - 0x62];
     EUserBoneId mBone;        // +0x64
-    RumbleEffectInstanceHandle mRumbleHandle[1];  // +0x68
-    CameraShakeInstance* mShake[1];               // +0x6C
+    RumbleEffectInstanceHandle mRumbleHandle[4];  // +0x68
+    CameraShakeInstance* mShake[4];               // +0x78
 
     Broc::string GetDebugString() const;          // ea: 0x004BD370
     math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
     float GetDistanceScale(int client);           // ea: 0x004CE110
+    bool IsFinished();                            // ea: 0x004CE720
+    void AdjustEffect_Scale(const char* param,
+                            float scale);         // ea: 0x004CE780
+    void StopEffect();                            // ea: 0x004CE7B0
 };
-static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x70,
+static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x88,
               "AbstractEffectShakeAndRumble size mismatch");
 
 // ============================================================================
@@ -425,6 +435,7 @@ static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 
 struct RumbleManager {
     struct InstanceHolder;
+    static RumbleManager* Inst(int instance);  // ea: 0x004A9DA0
     RumbleEffectInstanceHandle mNextHandle;            // +0x00
     reserved_dlist<RumbleEffectInstance> mRumbleLists[2];  // +0x04
     int mClient;                  // +0x24
@@ -662,6 +673,9 @@ struct LightEffect {
     float         mOuterRadius;   // +0x58
     float         mScale;         // +0x5C
     bool          mFade;          // +0x60
+
+    void SetScale(float s);       // ?SetScale@LightEffect@@QAEXM@Z
+    bool IsLightFinished();       // ?IsLightFinished@LightEffect@@QAE_NXZ
 };
 static_assert(sizeof(LightEffect) == 0x70, "LightEffect size mismatch");
 
