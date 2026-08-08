@@ -1408,3 +1408,41 @@ void plane_roll(Broc::entity self) {
     (void)self;
 }
 }
+
+// ============================================================================
+// _mp_audio - small audio helpers (AudioPrint, CallbackSetLevelAudio).
+// ============================================================================
+namespace _mp_audio {
+extern int GetCvarInt(const char* cvar);
+extern void iprintlnbold(const Broc::string& s);
+extern void ReverbSetParams(const Broc::string& name, bool immediate);
+extern unsigned int SoundPlay(const Broc::string& name, float volume);
+
+// Level struct forward (full 560-byte definition deferred; only touched fields).
+struct LevelAudioFields {
+    Broc::string background_track;
+    Broc::string reverb_setting;
+    Broc::string ambient_setting;
+    Broc::bfloat audio_ambient_max;
+    Broc::bfloat audio_ambient_min;
+};
+extern LevelAudioFields* pLevelAudio;
+
+void AudioPrint(Broc::string s) {
+    if (GetCvarInt("sound_debug") != 0)
+        iprintlnbold(s);
+    s.~string();
+}
+
+void CallbackSetLevelAudio(const char* background_track, const char* reverb,
+                           const char* ambient, int ambient_min, int ambient_max) {
+    if (background_track != NULL && *background_track != 0)
+        pLevelAudio->background_track = background_track;
+    if (reverb != NULL && *reverb != 0)
+        pLevelAudio->reverb_setting = reverb;
+    if (ambient != NULL && *ambient != 0)
+        pLevelAudio->ambient_setting = ambient;
+    pLevelAudio->audio_ambient_max = (float)ambient_max;
+    pLevelAudio->audio_ambient_min = (float)ambient_min;
+}
+}
