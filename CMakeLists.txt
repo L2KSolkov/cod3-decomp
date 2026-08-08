@@ -296,6 +296,7 @@ add_library(cod3_game_core STATIC
     src/game/core/stb.cpp
     src/game/core/effect_events.cpp
     src/game/core/ctor_dtor.cpp
+    src/game/core/spinner_lens.cpp
 )
 add_library(cod3_game_game2 STATIC src/game/game2/stubs_game.cpp)
 add_library(cod3_game_render STATIC src/game/render/stubs_game.cpp)
