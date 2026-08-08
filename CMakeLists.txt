@@ -25,6 +25,7 @@ include_directories(${CMAKE_SOURCE_DIR}/platform/xbox_shim)
 # ============================================================================
 add_library(cod3_broc STATIC
     src/broc/Broc.cpp
+    src/broc/mp_anim_wad.cpp
     src/broc/mp_level.cpp
     src/broc/mp_util_wad.cpp
     src/broc/stubs.cpp
