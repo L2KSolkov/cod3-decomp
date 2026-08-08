@@ -16,6 +16,8 @@
 
 #include <intrin.h>
 
+class nglSortInfo;
+
 // ============================================================================
 // nglDebugLineVertex — debug line vertex (16 bytes, verified against IDA)
 // ============================================================================
@@ -35,7 +37,11 @@ public:
     int                  NVerts;  // +0x0C
     nglDebugLineVertex*  Verts;   // +0x10
 
+    nglDebugLineNode();                 // @0x836180 (ngl_debug.o)
+    virtual ~nglDebugLineNode();        // @0x8391E0 (ngl_debug.o)
     virtual void Render();        // @0x851460
+    virtual void GetDesc(char* Desc);   // @0x836150 (ngl_debug.o)
+    virtual void GetSortInfo(class nglSortInfo& Info);  // (ngl_debug.o)
 };
 static_assert(sizeof(nglDebugLineNode) == 0x14, "nglDebugLineNode size mismatch");
 
@@ -44,6 +50,7 @@ static_assert(sizeof(nglDebugLineNode) == 0x14, "nglDebugLineNode size mismatch"
 // ============================================================================
 class nglDebugTriNode : public nglDebugLineNode {
 public:
+    nglDebugTriNode();                  // @0x8393C0 (inline, ngl_debug.o)
     virtual void Render();        // @0x851620
 };
 static_assert(sizeof(nglDebugTriNode) == 0x14, "nglDebugTriNode size mismatch");

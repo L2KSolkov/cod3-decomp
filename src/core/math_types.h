@@ -16,6 +16,17 @@ class Position3;
 class Mat33;
 class Mat43;
 struct TranMat43;
+class DiagMat33;
+
+// ============================================================================
+// DiagMat33 - diagonal 3x3 scale (16 bytes: packed x/y/z scale + pad w).
+// Size: 0x10 - verified against IDA (math::DiagMat33).
+// ============================================================================
+class DiagMat33 {
+public:
+    __m128 v;  // SSE-packed: x, y, z, w
+};
+static_assert(sizeof(DiagMat33) == 0x10, "DiagMat33 size mismatch");
 
 // ============================================================================
 // Dir3 — normalized direction vector (3 float + pad w, total 16 bytes)
