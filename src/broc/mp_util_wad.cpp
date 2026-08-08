@@ -2938,6 +2938,72 @@ namespace _mp_ctf { void* main__functor(Broc::entity self); }
 namespace _mp_scf { void* main__functor(Broc::entity self); }
 namespace _mp_war { void* main__functor(Broc::entity self); }
 namespace _mp_hq { void* main__functor(Broc::entity self); }
+namespace _mp_scf {
+void main(Broc::entity self);
+void StartGame(Broc::entity self);
+void SetupRound();
+int IsFlagAlive(Broc::entity flag);
+void ObjectiveUpdater(Broc::entity guy);
+void CallbackAreaCaptured(int index, int team);
+void SubRoundEnd();
+void CallbackPlayerSpawn(Broc::entity player, int team_changed);
+void CallbackHostMigrated();
+void CallbackNextRound();
+void CallbackHostOptionsChanged(int forceMapChange);
+void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
+                       int roundLimit, int friendlyFire, int lastManStanding,
+                       int teamBalance, int respawnTime, int alliesScore,
+                       int axisScore, int roundStarted, int roundOver,
+                       int roundCount);
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health);
+void CallbackPlayerLeave(Broc::entity player);
+void CallbackGameStateSCF(int currentFlagIndex, Broc::vector FlagOrigin,
+                          Broc::vector FlagAngles, Broc::entity FlagHolder);
+int CallbackShowFlagHint();
+void UpdateFlagAndTrigger(Broc::entity self, Broc::vector origin,
+                          Broc::vector angles, Broc::vector velocity);
+void LaunchFlagAndTrigger(Broc::entity self, Broc::vector origin,
+                          Broc::vector angles, Broc::vector velocity);
+void EntityOff(Broc::entity self);
+void CompassUnderlay(Broc::entity p);
+Broc::bbool* IsFlagAtBase(Broc::bbool* result, Broc::entity flag);
+void HandlePickupFlag(int flag, Broc::entity pickerupper, int request,
+                      int playSounds);
+void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex);
+void CallbackDropItem(int netID, int entity, Broc::vector position,
+                      Broc::vector angles, Broc::vector velocity);
+void CallbackDropFlag(Broc::entity player);
+void HandleDropFlag(Broc::entity player);
+void WaitForFlagTimeOut(Broc::entity flag);
+void PickupFlag(Broc::entity self);
+void Goal(Broc::entity self);
+void WaitThenPickFlagToLaunch(Broc::entity self, Broc::bfloat wait_time,
+                              const char* message);
+void PickFlagToLaunch();
+void LaunchFlag(Broc::bint flag, Broc::vector position, Broc::vector angles,
+                Broc::vector velocity);
+void InitializeFlags();
+int ResetFlags();
+void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
+                        int playerClass);
+void CallbackPlayerEnter(Broc::entity player, int hot_joiner);
+void UnlinkFlag(Broc::entity flag);
+void DestroyIcon(Broc::entity toucher);
+void WaitForNoTouchFlag(Broc::entity toucher);
+void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y);
+void CallbackDebugRender();
+void* main__functor(Broc::entity self);
+void* StartGame__functor(Broc::entity self);
+void* ObjectiveUpdater__functor(Broc::entity guy);
+void* WaitThenPickFlagToLaunch__functor(Broc::entity self, float wait_time,
+                                        const char* message);
+void* WaitForFlagTimeOut__functor(Broc::entity flag);
+void* WaitForNoTouchFlag__functor(Broc::entity toucher);
+void* PickupFlag__functor(Broc::entity self);
+void* Goal__functor(Broc::entity self);
+}
 namespace _mp_ctf {
 void main(Broc::entity self);
 void StartGame(Broc::entity self);
@@ -8430,6 +8496,707 @@ void CallbackDropItem(int netID, int entity, Broc::vector position,
     (void)netID; (void)entity; (void)position; (void)angles; (void)velocity;
 }
 }
+
+// ============================================================================
+// _mp_scf - single capture the flag.
+// ============================================================================
+namespace _mp_scf {
+
+static Broc::bfloat lSCFObjectiveDontShow(-1.0f);
+
+// main - ea: 0x9649A0
+void main(Broc::entity self) {
+    Broc::Code_DebugOut("*SCF* main\n");
+    Broc::bbool team_game(true);
+    Broc::Code_SetTeamGame((bool)team_game);
+    mp_util_wad::pLevel->spawnTypeAllies = "spawn_single_ctf_allies";
+    mp_util_wad::pLevel->spawnTypeAxis = "spawn_single_ctf_axis";
+    mp_util_wad::pLevel->mustHaveBothTeamsToStart = false;
+    mp_util_wad::pLevel->showFlagHint = 0;
+    mp_util_wad::pLevel->lastManStanding = false;
+    mp_util_wad::pLevel->roundLimit = 1;
+    mp_util_wad::pLevel->current_flag = 0;
+    _mp_common::SetupCallbacks(team_game);
+    Broc::BrocExports& x = Broc::gBrocAPI.mBrocExports;
+    x.mCallbackPlayerJoin = CallbackPlayerJoin;
+    x.mCallbackPlayerEnter = CallbackPlayerEnter;
+    x.mCallbackPlayerSpawn = CallbackPlayerSpawn;
+    x.mCallbackGameState = CallbackGameState;
+    x.mCallbackGameStateSCF = CallbackGameStateSCF;
+    x.mCallbackDropItem = CallbackDropItem;
+    x.mCallbackDropFlag = CallbackDropFlag;
+    x.mCallbackPickupScriptItem = CallbackPickupScriptItem;
+    x.mCallbackPlayerKilled = CallbackPlayerKilled;
+    x.mCallbackPlayerLeave = CallbackPlayerLeave;
+    x.mCallbackNextRound = CallbackNextRound;
+    x.mCallbackHostOptionsChanged = CallbackHostOptionsChanged;
+    x.mCallbackAreaCaptured = CallbackAreaCaptured;
+    x.mCallbackHostMigrated = (void (*)())CallbackHostMigrated;
+    x.mCallbackShowFlagHint = CallbackShowFlagHint;
+    x.mCallbackDebugRender = (void (*)())CallbackDebugRender;
+    Broc::dyn_array<Broc::entity> tempFlags;
+    Broc::string val("scf_flag_point");
+    HashStr key;
+    key.mVal = 0x19F9F0E8u;
+    Broc::GetEntArray(&val, key.mVal, &tempFlags, 0);
+    val.~string();
+    Broc::bint i(0);
+    while ((int)i < Broc::size(tempFlags)) {
+        Broc::entity f = tempFlags[(unsigned int)(int)i];
+        mp_util_wad::pLevel->scfFlags[(unsigned int)(int)i] = f;
+        i = (int)i + 1;
+    }
+    if (Broc::size(mp_util_wad::pLevel->scfFlags) == 0 &&
+        Broc::gBrocAPI.mError(
+            "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__,
+            "No scf_flag_point entities in the level."))
+        __debugbreak();
+    Broc::string baseAllies("scf_base_allies");
+    HashStr key2;
+    key2.mVal = 0x19F9F0E8u;
+    Broc::entity e;
+    mp_util_wad::pLevel->base_allies = *Broc::GetEnt(&e, &baseAllies, key2, 0);
+    baseAllies.~string();
+    Broc::string baseAxis("scf_base_axis");
+    HashStr key3;
+    key3.mVal = 0x19F9F0E8u;
+    Broc::entity e2;
+    mp_util_wad::pLevel->base_axis = *Broc::GetEnt(&e2, &baseAxis, key3, 0);
+    baseAxis.~string();
+    if (!Broc::IsDefined(mp_util_wad::pLevel->base_allies) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__,
+            "No scf_base_allies entity in the level."))
+        __debugbreak();
+    if (!Broc::IsDefined(mp_util_wad::pLevel->base_axis) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__,
+            "No scf_base_axis entity in the level."))
+        __debugbreak();
+    InitializeFlags();
+    Broc::wait(1.0f);
+    void* started = StartGame__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_scf.bro",
+                        __LINE__, "StartGame", started);
+    tempFlags.~dyn_array();
+}
+
+// StartGame - ea: 0x965AA0
+void StartGame(Broc::entity self) {
+    (void)self;
+    Broc::Code_DebugOut("*SCF* StartGame\n");
+    Broc::wait(0.5f);
+    SetupRound();
+    _mp_common::StartRound(Broc::bbool(true));
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = _mp_common::RunFrame__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_scf.bro",
+                        __LINE__, "_mp_common::RunFrame", ftor);
+    Broc::Code_EnterGame();
+}
+
+// SetupRound - ea: 0x965B60
+void SetupRound() {
+    Broc::Code_DebugOut("*SCF* SetupRound\n");
+    ResetFlags();
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        *mp_util_wad::GetEE_holder(p) = Broc::gEntityUndef;
+        mp_util_wad::entity_set_ctf_has_flag(p, 0);
+        *mp_util_wad::GetEE_last_dropped_time(p) = -1;
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+    HashStr goalHash;
+    Broc::string_hash(&goalHash, "_mp_scf::Goal");
+    HashStr label;
+    label.mVal = 0xF2F5EAB4;
+    Broc::RemoveEventHandler(&mp_util_wad::pLevel->base_allies, label.mVal,
+                             goalHash.mVal);
+    Broc::RemoveEventHandler(&mp_util_wad::pLevel->base_axis, label.mVal,
+                             goalHash.mVal);
+    Broc::AddEventHandler(&mp_util_wad::pLevel->base_allies, label.mVal,
+                          goalHash.mVal);
+    Broc::AddEventHandler(&mp_util_wad::pLevel->base_axis, label.mVal,
+                          goalHash.mVal);
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = WaitThenPickFlagToLaunch__functor(lvl, 5.0f,
+                                                   "MPSCF_FLAG_SPAWNED");
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_scf.bro",
+                        __LINE__, "WaitThenPickFlagToLaunch", ftor);
+}
+
+// IsFlagAlive - ea: 0x965F50
+int IsFlagAlive(Broc::entity flag) {
+    Broc::vector origin;
+    mp_util_wad::entity_get_origin(&origin, flag);
+    return origin.z > -5000.0f;
+}
+
+// CallbackNextRound - ea: 0x968070
+void CallbackNextRound() {
+    Broc::Code_DebugOut("*SCF* CallbackNextRound\n");
+    mp_util_wad::pLevel->roundOver = true;
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0x6FA23667u;
+    Broc::notify(&lvl, n);
+    SetupRound();
+    _mp_common::CallbackNextRound();
+}
+
+// CallbackHostOptionsChanged - ea: 0x968110
+void CallbackHostOptionsChanged(int forceMapChange) {
+    Broc::Code_DebugOut("*SCF* CallbackHostOptionsChanged\n");
+    _mp_common::CallbackHostOptionsChanged(forceMapChange);
+    mp_util_wad::pLevel->lastManStanding = false;
+}
+
+// CallbackGameState - ea: 0x968160
+void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
+                       int roundLimit, int friendlyFire, int lastManStanding,
+                       int teamBalance, int respawnTime, int alliesScore,
+                       int axisScore, int roundStarted, int roundOver,
+                       int roundCount) {
+    Broc::Code_DebugOut("*SCF* CallbackGameState\n");
+    _mp_common::CallbackGameState(currentMatchTime, timeLimit, scoreLimit,
+                                  roundLimit, friendlyFire, 0, teamBalance,
+                                  respawnTime, alliesScore, axisScore,
+                                  roundStarted, roundOver, roundCount);
+    (void)lastManStanding;
+}
+
+// CallbackPlayerKilled - ea: 0x9681D0
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health) {
+    Broc::Code_DebugOut("*SCF* CallbackPlayerKilled\n");
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, player);
+    if ((bool)hasHolder)
+        HandleDropFlag(player);
+    _mp_common::CallbackPlayerKilled(player, inflictor, attacker, weapon, mod,
+                                     health);
+}
+
+// CallbackPlayerLeave - ea: 0x968290
+void CallbackPlayerLeave(Broc::entity player) {
+    Broc::Code_DebugOut("*SCF* CallbackPlayerLeave\n");
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, player);
+    if ((bool)hasHolder)
+        HandleDropFlag(player);
+    _mp_common::CallbackPlayerLeave(player);
+}
+
+// CallbackGameStateSCF - ea: 0x968320
+void CallbackGameStateSCF(int currentFlagIndex, Broc::vector FlagOrigin,
+                          Broc::vector FlagAngles, Broc::entity FlagHolder) {
+    Broc::Code_DebugOut("*SCF* CallbackGameStateSCF\n");
+    ResetFlags();
+    if (Broc::IsDefined(FlagHolder)) {
+        if (currentFlagIndex < 0 ||
+            currentFlagIndex >= Broc::size(mp_util_wad::pLevel->scfFlags)) {
+            if (Broc::gBrocAPI.mAssert(
+                    "c:\\cod\\code\\script\\_mp_scf.bro", __LINE__,
+                    "CallbackGameStateSCF:Invalid flag index"))
+                __debugbreak();
+        }
+        Broc::entity flag =
+            mp_util_wad::pLevel->scfFlags[(unsigned int)(int)mp_util_wad::pLevel->current_flag];
+        HandlePickupFlag((int)mp_util_wad::pLevel->current_flag, FlagHolder, 1,
+                         0);
+        mp_util_wad::pLevel->current_flag = currentFlagIndex;
+    } else {
+        Broc::vector velocity(0.0f, 0.0f, 50.0f);
+        LaunchFlag(Broc::bint(currentFlagIndex), FlagOrigin, FlagAngles,
+                   velocity);
+    }
+}
+
+// CallbackShowFlagHint - ea: 0x9684B0
+int CallbackShowFlagHint() {
+    return (int)mp_util_wad::pLevel->showFlagHint;
+}
+
+// UpdateFlagAndTrigger - ea: 0x9684E0
+void UpdateFlagAndTrigger(Broc::entity self, Broc::vector origin,
+                          Broc::vector angles, Broc::vector velocity) {
+    (void)velocity;
+    Broc::Code_DebugOut("*SCF* UpdateFlagAndTrigger\n");
+    mp_util_wad::entity_set_origin(self, origin);
+    mp_util_wad::entity_set_angles(self, angles);
+}
+
+// LaunchFlagAndTrigger - ea: 0x968530
+void LaunchFlagAndTrigger(Broc::entity self, Broc::vector origin,
+                          Broc::vector angles, Broc::vector velocity) {
+    Broc::Code_DebugOut("*SCF* LaunchFlagAndTrigger\n");
+    mp_util_wad::entity_set_origin(self, origin);
+    mp_util_wad::entity_set_angles(self, angles);
+    Broc::Launch(&self, &velocity);
+}
+
+// EntityOff - ea: 0x968590
+void EntityOff(Broc::entity self) {
+    Broc::vector origin;
+    mp_util_wad::entity_get_origin(&origin, self);
+    if (origin.z > -5000.0f) {
+        Broc::vector off(0.0f, 0.0f, -10000.0f);
+        mp_util_wad::entity_set_origin(self, origin + off);
+    }
+}
+
+// IsFlagAtBase - ea: 0x968870
+Broc::bbool* IsFlagAtBase(Broc::bbool* result, Broc::entity flag) {
+    Broc::vector home = *mp_util_wad::GetEE_home_position(flag);
+    Broc::vector f;
+    mp_util_wad::entity_get_origin(&f, flag);
+    Broc::vector baseOfs = f - home;
+    baseOfs.z = 0.0f;
+    *result = Broc::bbool(Broc::Length(&baseOfs) < 0.1f);
+    return result;
+}
+
+// SubRoundEnd - ea: 0x967A20
+void SubRoundEnd() {
+    Broc::Code_DebugOut("*SCF* RoundEndMessage\n");
+    mp_util_wad::pLevel->roundStarted = false;
+    Broc::wait(4.0f);
+    Broc::Code_NextRound(false);
+}
+
+// CallbackPlayerSpawn - ea: 0x967A80
+void CallbackPlayerSpawn(Broc::entity player, int team_changed) {
+    Broc::Code_DebugOut("*SCF* CallbackPlayerSpawn\n");
+    _mp_common::CallbackPlayerSpawn(player, team_changed);
+    *mp_util_wad::GetEE_holder(player) = Broc::gEntityUndef;
+    mp_util_wad::entity_set_ctf_has_flag(player, 0);
+    if (Broc::Code_IsLocalPlayer(player)) {
+        Broc::entity flag =
+            mp_util_wad::pLevel->scfFlags[(unsigned int)(int)mp_util_wad::pLevel->current_flag];
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        if (Broc::IsDefined(holder)) {
+            Broc::string hteam;
+            Broc::string pteam;
+            mp_util_wad::entity_get_team(&hteam, holder);
+            mp_util_wad::entity_get_team(&pteam, player);
+            if (hteam == pteam)
+                mp_util_wad::pLevel->showFlagHint = 1;
+            hteam.~string();
+            pteam.~string();
+        }
+    }
+}
+
+// CallbackHostMigrated - ea: 0x967DC0
+void CallbackHostMigrated() {
+    Broc::Code_DebugOut("*SCF* CallbackHostMigrated\n");
+    _mp_common::CallbackHostMigrated();
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity flag =
+            mp_util_wad::pLevel->scfFlags[(unsigned int)(int)mp_util_wad::pLevel->current_flag];
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        Broc::vector origin;
+        Broc::vector angles;
+        mp_util_wad::entity_get_origin(&origin, flag);
+        mp_util_wad::entity_get_angles(&angles, flag);
+        Broc::Code_SendGameStateSCF(
+            players[(unsigned int)(int)i],
+            (int)mp_util_wad::pLevel->current_flag, &origin, &angles, holder);
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+}
+
+// CallbackPlayerJoin - ea: 0x96B5A0
+void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
+                        int playerClass) {
+    _mp_common::CallbackPlayerJoin(player, playerState, (__int16)playerClass);
+    mp_util_wad::entity_set_ctf_has_flag(player, 0);
+    *mp_util_wad::GetEE_holder(player) = Broc::gEntityUndef;
+    if (Broc::Code_IsLocalPlayer(player)) {
+        void* ftor = ObjectiveUpdater__functor(player);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_scf.bro",
+                            __LINE__, "ObjectiveUpdater", ftor);
+    }
+}
+
+// CallbackPlayerEnter - ea: 0x96B720
+void CallbackPlayerEnter(Broc::entity player, int hot_joiner) {
+    _mp_common::CallbackPlayerEnter(player, hot_joiner);
+    Broc::entity flag =
+        mp_util_wad::pLevel->scfFlags[(unsigned int)(int)mp_util_wad::pLevel->current_flag];
+    Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+    Broc::vector origin;
+    Broc::vector angles;
+    mp_util_wad::entity_get_origin(&origin, flag);
+    mp_util_wad::entity_get_angles(&angles, flag);
+    Broc::Code_SendGameStateSCF(player, (int)mp_util_wad::pLevel->current_flag,
+                                &origin, &angles, holder);
+}
+
+// CompassUnderlay - ea: 0x968610
+void CompassUnderlay(Broc::entity p) {
+    Broc::bint flagid(0);
+    Broc::bint alliesid(0);
+    Broc::bint axisid(2);
+    if (mp_util_wad::pLevel->axis == "german")
+        axisid = 3;
+    else if (mp_util_wad::pLevel->axis == "italian")
+        axisid = 2;
+    else if (mp_util_wad::pLevel->axis == "vichy")
+        axisid = 4;
+    if (mp_util_wad::pLevel->allies == "american")
+        alliesid = 0;
+    else
+        alliesid = 1;
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, p);
+    if (team == "axis")
+        flagid = (int)alliesid;
+    else
+        flagid = (int)axisid;
+    team.~string();
+    for (;;) {
+        Broc::bbool hasHolder;
+        mp_util_wad::IsEEDefined_holder(&hasHolder, p);
+        if (!(bool)hasHolder || (bool)mp_util_wad::pLevel->roundOver)
+            break;
+        Broc::Code_SetCompassVisibilty((int)flagid, true);
+        Broc::wait(0.05f);
+    }
+    Broc::Code_SetCompassVisibilty((int)flagid, false);
+    mp_util_wad::entity_set_ctf_has_flag(p, 0);
+}
+
+// WaitThenPickFlagToLaunch - ea: 0x96AC60
+void WaitThenPickFlagToLaunch(Broc::entity self, Broc::bfloat wait_time,
+                              const char* message) {
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0xEEBE2988;
+    Broc::notify(&lvl, n);
+    Broc::wait(0.1f);
+    Broc::endon(lvl, n);
+    Broc::wait((float)wait_time);
+    Broc::iprintln(message);
+    PickFlagToLaunch();
+    (void)self;
+}
+
+// PickFlagToLaunch - ea: 0x96AD50
+void PickFlagToLaunch() {
+    Broc::bint index(Broc::RandomIntRange(0, Broc::size(mp_util_wad::pLevel->scfFlags)));
+    Broc::vector vel(0.0f, 0.0f, 0.0f);
+    Broc::entity flag =
+        mp_util_wad::pLevel->scfFlags[(unsigned int)(int)index];
+    Broc::vector home = *mp_util_wad::GetEE_home_position(flag);
+    Broc::vector homeAngles = *mp_util_wad::GetEE_home_angles(flag);
+    Broc::Code_HostDropItem(4, (int)index, &home, &homeAngles, &vel);
+}
+
+// LaunchFlag - ea: 0x96AEB0
+void LaunchFlag(Broc::bint flag, Broc::vector position, Broc::vector angles,
+                Broc::vector velocity) {
+    ResetFlags();
+    mp_util_wad::pLevel->current_flag = (int)flag;
+    Broc::ObjectiveRing(2, -1);
+    Broc::entity f = mp_util_wad::pLevel->scfFlags[(unsigned int)(int)flag];
+    if (Broc::Length(&velocity) >= 0.1f)
+        LaunchFlagAndTrigger(f, position, angles, velocity);
+    else
+        UpdateFlagAndTrigger(f, position, angles, velocity);
+}
+
+// InitializeFlags - ea: 0x96B020
+void InitializeFlags() {
+    Broc::Code_DebugOut("*SCF* InitializeFlags\n");
+    Broc::vector mins(-20.0f, -20.0f, 0.0f);
+    Broc::vector maxs(20.0f, 20.0f, 50.0f);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(mp_util_wad::pLevel->scfFlags)) {
+        Broc::entity flag = mp_util_wad::pLevel->scfFlags[(unsigned int)(int)i];
+        Broc::vector origin;
+        Broc::vector angles;
+        mp_util_wad::entity_get_origin(&origin, flag);
+        mp_util_wad::entity_get_angles(&angles, flag);
+        *mp_util_wad::GetEE_home_position(flag) = origin;
+        *mp_util_wad::GetEE_home_angles(flag) = angles;
+        *mp_util_wad::GetEE_holder(flag) = Broc::gEntityUndef;
+        Broc::string inClassname("trigger_multiple");
+        Broc::entity trig;
+        Broc::Spawn(&trig, &inClassname, &origin, &mins, &maxs, 2, 0);
+        inClassname.~string();
+        *mp_util_wad::GetEE_trigger(flag) = trig;
+        Broc::LinkTo(mp_util_wad::GetEE_trigger(flag), &flag);
+        Broc::string script("FLAG_FLAPPING");
+        Broc::EffectEventPlay(&flag, &script);
+        script.~string();
+        HashStr pickHash;
+        Broc::string_hash(&pickHash, "_mp_scf::PickupFlag");
+        HashStr label;
+        label.mVal = 0xF2F5EAB4;
+        Broc::AddEventHandler(mp_util_wad::GetEE_trigger(flag), label.mVal,
+                              pickHash.mVal);
+        i = (int)i + 1;
+    }
+    ResetFlags();
+}
+
+// ResetFlags - ea: 0x96B3C0
+int ResetFlags() {
+    Broc::Code_DebugOut("*SCF* ResetFlags\n");
+    Broc::bint i(0);
+    int result = false;
+    while ((int)i < Broc::size(mp_util_wad::pLevel->scfFlags)) {
+        Broc::entity flag = mp_util_wad::pLevel->scfFlags[(unsigned int)(int)i];
+        Broc::bbool hasHolder;
+        mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
+        if ((bool)hasHolder) {
+            Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+            Broc::bbool hasSound;
+            mp_util_wad::IsEEDefined_sound_handle(&hasSound, holder);
+            if ((bool)hasSound) {
+                Broc::EffectEventStopEmitting(
+                    (int)*mp_util_wad::GetEE_sound_handle(holder));
+                *mp_util_wad::GetEE_sound_handle(holder) = 0;
+            }
+        }
+        UnlinkFlag(flag);
+        EntityOff(flag);
+        i = (int)i + 1;
+    }
+    return result;
+}
+
+// UnlinkFlag - ea: 0x96B850
+void UnlinkFlag(Broc::entity flag) {
+    Broc::bbool hasHolder;
+    mp_util_wad::IsEEDefined_holder(&hasHolder, flag);
+    if ((bool)hasHolder) {
+        Broc::entity holder = *mp_util_wad::GetEE_holder(flag);
+        Broc::bbool hasSound;
+        mp_util_wad::IsEEDefined_sound_handle(&hasSound, holder);
+        if ((bool)hasSound) {
+            Broc::EffectEventStopEmitting(
+                (int)*mp_util_wad::GetEE_sound_handle(holder));
+            *mp_util_wad::GetEE_sound_handle(holder) = 0;
+        }
+        Broc::string w1("mp_flag_axis");
+        Broc::TakeWeapon(&holder, &w1);
+        w1.~string();
+        Broc::string w2("mp_flag_allies");
+        Broc::TakeWeapon(&holder, &w2);
+        w2.~string();
+        _mp_common::SelectFirstAvailableWeapon(holder);
+        mp_util_wad::entity_set_ctf_has_flag(holder, 0);
+        *mp_util_wad::GetEE_holder(holder) = Broc::gEntityUndef;
+    }
+    *mp_util_wad::GetEE_holder(flag) = Broc::gEntityUndef;
+}
+
+// DestroyIcon - ea: 0x96BB30
+void DestroyIcon(Broc::entity toucher) {
+    HashStr n;
+    n.mVal = 0xA738D71C;
+    Broc::notify(&toucher, n);
+    mp_util_wad::pLevel->showFlagHint = 0;
+}
+
+// WaitForNoTouchFlag - ea: 0x96BB80
+void WaitForNoTouchFlag(Broc::entity toucher) {
+    HashStr n;
+    n.mVal = 0xA738D71C;
+    Broc::notify(&toucher, n);
+    Broc::wait(0.5f);
+    Broc::endon(toucher, n);
+    for (;;) {
+        Broc::bint now;
+        Broc::GetTime(&now);
+        if ((int)*mp_util_wad::GetEE_last_touch_time(toucher) + 300 <
+            (int)now)
+            break;
+        Broc::wait(0.5f);
+    }
+    Broc::SetTutorialText(-1, Broc::GetPlayerIndex(toucher));
+    DestroyIcon(toucher);
+}
+
+// WaitForFlagTimeOut - ea: 0x96A270
+void WaitForFlagTimeOut(Broc::entity flag) {
+    HashStr n;
+    n.mVal = 0x4F2B87DFu;
+    Broc::notify(&flag, n);
+    Broc::wait(0.1f);
+    Broc::endon(flag, n);
+    HashStr e1;
+    e1.mVal = 0xFA57E7C7;
+    Broc::endon(flag, e1);
+    HashStr e2;
+    e2.mVal = 0x87404C8E;
+    Broc::endon(flag, e2);
+    Broc::wait(25.0f);
+    Broc::string tn;
+    mp_util_wad::entity_get_targetname(&tn, flag);
+    bool axis = tn == "axis" || tn == "ctf_axis";
+    tn.~string();
+    if (axis)
+        Broc::Code_PickupItem(1, Broc::gEntityUndef);
+    else
+        Broc::Code_PickupItem(2, Broc::gEntityUndef);
+}
+
+// PickupFlag - ea: 0x96A390
+void PickupFlag(Broc::entity self) {
+    Broc::bint now;
+    Broc::GetTime(&now);
+    if ((int)*mp_util_wad::GetEE_last_touch_time(self) + 100 > (int)now ||
+        (int)*mp_util_wad::GetEE_last_touch_time(self) > (int)now) {
+        Broc::bint t;
+        Broc::GetTime(&t);
+        *mp_util_wad::GetEE_last_touch_time(self) = (int)t;
+        if ((bool)mp_util_wad::pLevel->roundStarted) {
+            Broc::dyn_array<Broc::entity> players;
+            Broc::GetPlayerArray(&players);
+            Broc::bint i(0);
+            while ((int)i < Broc::size(players)) {
+                Broc::entity p = players[(unsigned int)(int)i];
+                Broc::bint state;
+                mp_util_wad::entity_get_playerState(&state, p);
+                if ((int)state == 3 && Broc::Code_IsLocalPlayer(p) &&
+                    !Broc::Code_IsInVehicle(p)) {
+                    Broc::vector selfPos;
+                    Broc::vector ppos;
+                    mp_util_wad::entity_get_origin(&selfPos, self);
+                    mp_util_wad::entity_get_origin(&ppos, p);
+                    if (Broc::Distance(&ppos, &selfPos) < 60.0f) {
+                        if (Broc::UseButtonPressed(p) != 0) {
+                            Broc::Code_PickupItem(
+                                (int)mp_util_wad::pLevel->current_flag + 1, p);
+                            break;
+                        }
+                        Broc::bint t2;
+                        Broc::GetTime(&t2);
+                        *mp_util_wad::GetEE_last_touch_time(p) = (int)t2;
+                        mp_util_wad::pLevel->showFlagHint = 1;
+                        void* ftor = WaitForNoTouchFlag__functor(p);
+                        Broc::thread_create(false,
+                                            "c:\\cod\\code\\script\\_mp_scf.bro",
+                                            __LINE__, "WaitForNoTouchFlag",
+                                            ftor);
+                    }
+                }
+                i = (int)i + 1;
+            }
+            players.~dyn_array();
+        }
+    }
+}
+
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
+void* ObjectiveUpdater__functor(Broc::entity guy) { (void)guy; return NULL; }
+void* WaitThenPickFlagToLaunch__functor(Broc::entity self, float wait_time,
+                                        const char* message) {
+    (void)self; (void)wait_time; (void)message;
+    return NULL;
+}
+void* WaitForFlagTimeOut__functor(Broc::entity flag) {
+    (void)flag; return NULL;
+}
+void* WaitForNoTouchFlag__functor(Broc::entity toucher) {
+    (void)toucher; return NULL;
+}
+void* PickupFlag__functor(Broc::entity self) { (void)self; return NULL; }
+void* Goal__functor(Broc::entity self) { (void)self; return NULL; }
+
+// CallbackAreaCaptured - ea: 0x9670F0
+void CallbackAreaCaptured(int index, int team) {
+    (void)index; (void)team;
+}
+
+// CallbackDropFlag - ea: 0x969EE0
+void CallbackDropFlag(Broc::entity player) {
+    HandleDropFlag(player);
+}
+
+// HandleDropFlag - ea: 0x969F10
+void HandleDropFlag(Broc::entity player) {
+    (void)player;
+}
+
+// HandlePickupFlag - ea: 0x968920
+void HandlePickupFlag(int flag, Broc::entity pickerupper, int request,
+                      int playSounds) {
+    (void)flag; (void)pickerupper; (void)request; (void)playSounds;
+}
+
+// CallbackPickupScriptItem - ea: 0x969830
+void CallbackPickupScriptItem(int netID, Broc::entity guy, int itemIndex) {
+    (void)netID; (void)guy; (void)itemIndex;
+}
+
+// CallbackDropItem - ea: 0x969B30
+void CallbackDropItem(int netID, int entity, Broc::vector position,
+                      Broc::vector angles, Broc::vector velocity) {
+    (void)netID; (void)entity; (void)position; (void)angles; (void)velocity;
+}
+
+// Goal - ea: 0x96A6E0
+void Goal(Broc::entity self) {
+    (void)self;
+}
+
+// RenderFlagInfo - ea: 0x96BCD0
+void RenderFlagInfo(Broc::entity flag, Broc::bint x, Broc::bint y) {
+    (void)flag; (void)x; (void)y;
+}
+
+// CallbackDebugRender - ea: 0x96C140
+void CallbackDebugRender() {
+    (void)0;
+}
+
+// ObjectiveUpdater - ea: 0x965F90
+void ObjectiveUpdater(Broc::entity guy) {
+    Broc::bbool firstLoop(true);
+    for (;;) {
+        if (!(bool)firstLoop)
+            Broc::wait(0.1f);
+        firstLoop = false;
+        Broc::string pszString("flag");
+        Broc::string state("i_flag_axis_c");
+        Broc::vector pos;
+        mp_util_wad::entity_get_origin(&pos, mp_util_wad::pLevel->base_axis);
+        Broc::ObjectiveAdd(1, &state, &pszString, pos,
+                           (float)lSCFObjectiveDontShow,
+                           Broc::GetPlayerIndex(guy));
+        state.~string();
+        pszString.~string();
+        Broc::string pszString2("flag");
+        Broc::string state2("i_flag_allied_c");
+        Broc::vector pos2;
+        mp_util_wad::entity_get_origin(&pos2, mp_util_wad::pLevel->base_allies);
+        Broc::ObjectiveAdd(0, &state2, &pszString2, pos2,
+                           (float)lSCFObjectiveDontShow,
+                           Broc::GetPlayerIndex(guy));
+        state2.~string();
+        pszString2.~string();
+        Broc::ObjectiveDelete(2, Broc::GetPlayerIndex(guy));
+    }
+}
+}
 namespace _mp_shellshock {
 void main() {
 }
@@ -9324,9 +10091,6 @@ void StartGame(Broc::entity self) {
                         __LINE__, "_mp_common::RunFrame", ftor);
     Broc::Code_EnterGame();
 }
-}
-namespace _mp_scf {
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
 }
 namespace _mp_war {
 void* main__functor(Broc::entity self) { (void)self; return NULL; }

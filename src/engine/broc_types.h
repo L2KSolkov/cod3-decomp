@@ -662,6 +662,10 @@ Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
 void Delete(Broc::entity* e);
 Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,
                     const Broc::vector* origin, int pakInfo);
+Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,
+                    const Broc::vector* origin, const Broc::vector* mins,
+                    const Broc::vector* maxs, int iSpawnFlags, int pakInfo);
+void LinkTo(Broc::entity* e, Broc::entity* pe);
 void SetModel(Broc::entity* e, const Broc::string* model, int whichPak);
 void MoveTo(Broc::entity* e, const Broc::vector* vPos, float time,
             float accTime, float decTime);
@@ -674,6 +678,7 @@ void SoundCrossFade(unsigned int handle1, unsigned int handle2, float time);
 void GetLocalPlayerArray(Broc::dyn_array<Broc::entity>* out);
 void AnglesToForward(Broc::vector* result, const Broc::vector* angles);
 void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
+void RemoveEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
 HashStr string_hash(const char* str);
 HashStr* string_hash(HashStr* result, const char* str);
 HashStr* string_hash(HashStr* result, const Broc::string* str);
@@ -772,7 +777,9 @@ void ObjectiveAdd(int iObjective, const Broc::string* state,
                   const Broc::string* pszString, const Broc::vector vPos,
                   float height, int clientIndex);
 void ObjectiveDelete(int iObjective, int clientIndex);
+void ObjectiveRing(int iObjective, int clientIndex);
 void Launch(Broc::entity* e, const Broc::vector* velocity);
+void Code_DebugRenderText(const char* text, int x, int y);
 void Code_FinishDamage(Broc::entity player, Broc::entity inflictor,
                        Broc::entity attacker, const Broc::vector* dir,
                        const Broc::vector* position, int damage, int mod,
@@ -806,6 +813,12 @@ void Code_SendGameStateCTF(Broc::entity player, const Broc::vector* allied_flag,
 void Code_SetCompassVisibilty(int teamid, bool visible);
 void Code_PickupItem(int netID, Broc::entity player);
 void Code_AreaCaptured(int netID, int team, int hostOnly);
+void Code_HostDropItem(int itemType, int netID, const Broc::vector* position,
+                       const Broc::vector* angles, const Broc::vector* velocity);
+void Code_SendGameStateSCF(Broc::entity player, int defendingTeam,
+                           const Broc::vector* flag,
+                           const Broc::vector* flagAngles,
+                           Broc::entity flag_holder);
 void Code_RespawnVehicle(Broc::entity* e);
 void Code_BroadcastVehicleRespawn(Broc::entity vehicle);
 void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle, int seat);
