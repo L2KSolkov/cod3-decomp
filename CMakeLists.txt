@@ -32,6 +32,7 @@ add_library(cod3_physics STATIC
     src/physics/phys_constraint_solver_multithreaded.cpp
     src/physics/physics_system.cpp
     src/physics/physics_system_internal.cpp
+    src/physics/rb_ragdoll_model.cpp
     src/physics/rbc_def_custom.cpp
     src/physics/rbc_def_vehicle.cpp
     src/physics/rbc_def_contact.cpp

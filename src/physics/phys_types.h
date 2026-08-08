@@ -285,6 +285,7 @@ struct rigid_body {
 
     void add_force(const math::Dir3& force);
     void add_force(const math::Dir3& force, const math::Dir3& point, float torque_mult);
+    void add_torque(const math::Dir3& torque);  // inline COMDAT (rb_ragdoll_model.o)
     void set_mass(float mass);
     void set_inertia(const math::Dir3& inertia);
     void set(float mass, const math::Dir3& inertia, const math::Mat43& mat,
