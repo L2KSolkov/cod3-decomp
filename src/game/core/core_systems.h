@@ -8,6 +8,8 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <string>
+#include <vector>
 
 #include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
@@ -40,6 +42,7 @@ struct LightEffect;
 struct CameraShakeInstance;
 struct EndOnScriptNode;
 struct DbStringHashTable;
+struct DbTable;
 
 // ============================================================================
 // Bitmask<T> - typed flag word (sizeof(T) bytes)
@@ -177,6 +180,15 @@ struct AbstractEffectSound : AbstractEffect {
     nslWaveID       mWaveHdl;      // +0x9C
 
     void StartFadeOut(float seconds);  // ea: 0x004C12A0
+    void SetPoPtr(math::Mat43* po);        // ea: 0x004CD050
+    bool IsQueued() const;                // ea: 0x004CD0C0
+    bool IsFinished();                    // ea: 0x004CD120
+    bool IsLooping() const;               // ea: 0x004CD1B0
+    void AdjustEffect_Scale(const char* param,
+                            float scale); // ea: 0x004CD230
+    void PlayQueuedEffect();              // ea: 0x004CD350
+    void StopEffect();                    // ea: 0x004CD4C0
+    Broc::string GetDebugString() const;  // ea: 0x004CD580
 };
 static_assert(sizeof(AbstractEffectSound) == 0xA0,
               "AbstractEffectSound size mismatch");
@@ -295,6 +307,7 @@ struct ActiveEffectSet {
     Handle                             mId;       // +0x24
     Bitmask<unsigned int>              mFlags;    // +0x28
 
+    ActiveEffectSet(TPakId pak_id);                 // ea: 0x004D00E0
     ~ActiveEffectSet();
     void AddEffect(AbstractEffect* effect);             // ea: 0x004C0C00
     bool IsFinished() const;                            // ea: 0x004C0C30
@@ -307,6 +320,8 @@ struct ActiveEffectSet {
     void SetPoPtr(math::Mat43* po);                     // ea: 0x004C0E40
     void StopLoopingEffects();                          // ea: 0x004C0EC0
     void DoStopLoopingEffects();                        // ea: 0x004C0ED0
+    void GetDebugFxList(Entity* ent,
+                        std::vector<std::string>* fx);  // ea: 0x004D3AD0
 };
 static_assert(sizeof(ActiveEffectSet) == 0x2C, "ActiveEffectSet size mismatch");
 static_assert(offsetof(ActiveEffectSet, mPakId) == 0x1C,
@@ -423,6 +438,30 @@ struct EffectEventSys {
     void CollisionInfo(const CollisionDesc* col_desc,
                        bool set_mat);            // ea: 0x004CF1D0
     Handle AssignHandle(ActiveEffectSet* t);     // ea: 0x004CF290
+    void ExecPendingQuery(PendingQuery& q);      // ea: 0x004D13C0
+    void ExecutePendingQueries();                // ea: 0x004D1680
+    void BeginEffectQuery(const Entity* ent,
+                          TPakId override_pak);  // ea: 0x004D1720
+    Handle ExecEffectQuery();                    // ea: 0x004D1A60
+    Handle TriggerNamedEffect(const Entity* ent, const char* name,
+                              TPakId override_pak);  // ea: 0x004D1CB0
+    void FrameAdvance(float delta);              // ea: 0x004D3930
+    void GetDebugFxList(Entity* ent,
+                        std::vector<std::string>* fx);  // ea: 0x004D3C70
+
+private:
+    void GetEffectTables(TPakId pak, const char* ts_name, DbTable* type,
+                         ae_sized_array<const DbTable*, 16>* tables);
+                                                       // ea: 0x004CAD20
+    void GetEffectTables(TPakId pak, DbTable* ts_name, const char* ts_global,
+                         const char* type,
+                         ae_sized_array<const DbTable*, 16>* tables);
+                                                       // ea: 0x004CAE70
+    int QueryGDEvents(const char* event, PendingQuery& q,
+                      ActiveEffectSet* fx, float delay);
+                                                       // ea: 0x004D0330
+    int QueryEventTable(PendingQuery& q, ActiveEffectSet* fx, float distSq);
+                                                       // ea: 0x004D11B0
 };
 static_assert(sizeof(EffectEventSys) == 0xA380, "EffectEventSys size mismatch");
 

@@ -105,15 +105,79 @@ extern int dword_F6A290[4 * 0x322];  // per-client table, 0xC88-byte stride
 extern void FX_ClearFX();
 extern void Scr_Notify(Entity* ent, HashString hashValue,
                        unsigned int paramcount);
+extern int g_debug_sync_queries;  // 0x00F00E78
+extern TPakId CurPakId();
+extern void* PakManager_sInst;
+extern int PAK_ID_INVALID;
+extern unsigned int AeHash(const char* str);
+extern int FX_RegisterEffect(const char* name);
 
 CameraShake* g_cameraShake = nullptr;
 int dword_F6A290[4 * 0x322];
+int g_debug_sync_queries = 0;
 
 // snd_wait (Entity +0x3C8): two HashStrings
 struct SndWait {
     HashString notifyHash;  // +0x00
     HashString soundName;   // +0x04
 };
+
+// ============================================================================
+// SoundDevice surface (sound.o; opaque, only the fields the effects touch)
+// ============================================================================
+namespace SoundDevice {
+struct Sound {
+    int          mSource;  // +0x00 nslSourceID (-1 = invalid)
+    unsigned int mWave;    // +0x04 nslWaveID
+};
+struct SoundHandleDb {
+    struct DbElement {
+        Sound*       mObject;  // +0x00
+        unsigned int mKey;     // +0x04
+    };
+    DbElement mElements[512];
+    static SoundHandleDb sInst;  // ?sInst@SoundHandleDb@SoundDevice@@0V12@A
+};
+SoundHandleDb SoundHandleDb::sInst;
+
+extern void Sound_Stop(Sound* s);
+extern void Sound_PlayQueued(Sound* s);
+extern bool Sound_IsQueued(const Sound* s);
+extern bool Sound_IsLooped(const Sound* s);
+extern bool Sound_IsFinished(const Sound* s);
+extern const char* Sound_GetSourceName(const Sound* s);
+extern float Sound_GetVolume(const Sound* s);
+extern float Sound_GetLength(const Sound* s);
+extern void Sound_SetPoPtr(Sound* s, const math::Mat43* po);
+extern void Sound_SetPitch(Sound* s, float pitch);
+extern void Sound_SetVolume(Sound* s, float vol);
+extern float nslGetWaveParam(unsigned int wave, int b, float c);
+extern bool subtitle_manager_play_subtitle(const char* tag,
+                                           const char* prefix);
+
+static Sound* SoundFromHandle(unsigned int handleVal)
+{
+    unsigned int v = handleVal & 0xFFF;
+    if (v < 0x200
+        && handleVal >> 12 == SoundHandleDb::sInst.mElements[v].mKey)
+        return SoundHandleDb::sInst.mElements[v].mObject;
+    return nullptr;
+}
+}  // namespace SoundDevice
+
+// Effect context / query type constants (placeholder values from disasm)
+enum {
+    EEffectContextInvalid = 0,
+    kEffectContextFootstep = 1,
+    kEffectContextScriptCall = 3,
+};
+
+static unsigned int holdrand = 1;
+static unsigned int RandNext()
+{
+    holdrand = holdrand * 214013 + 2531011;
+    return (holdrand >> 16) & 0x7FFF;
+}
 
 // ============================================================================
 // EffectEventSys - query param setters
@@ -1298,4 +1362,619 @@ bool AbstractEffectParticle::IsFinished()
     if ((mCodeFlags.mVal & 1) != 0 && !IsFinishedFading())
         return false;
     return mParticle->mEffect->IsDone() != 0;
+}
+
+// ============================================================================
+// ActiveEffectSet ctor
+// ============================================================================
+
+// ea: 0x004D00E0
+ActiveEffectSet::ActiveEffectSet(TPakId pak_id)
+{
+    mEffects.m_size = 0;
+    mPakId = pak_id;
+    mPoPtr = nullptr;
+    mId.mVal = 0;
+    mFlags.mVal = 0;
+    mFlags.mVal = 2;
+    HandleDb* p_mHandleDb = &EffectEventSysStatics::sInst->mHandleDb;
+    Handle v5 = p_mHandleDb->AllocateHandle();
+    p_mHandleDb->BindObjectToHandle(v5, this);
+    mId = v5;
+}
+
+// ============================================================================
+// AbstractEffectSound virtuals
+// ============================================================================
+
+// ea: 0x004CD050
+void AbstractEffectSound::SetPoPtr(math::Mat43* po)
+{
+    mPoPtr = po;
+    SoundDevice::Sound* mObject =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (mObject != nullptr)
+        SoundDevice::Sound_SetPoPtr(mObject, po);
+}
+
+// ea: 0x004CD0C0
+bool AbstractEffectSound::IsQueued() const
+{
+    SoundDevice::Sound* mObject =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (mObject == nullptr)
+        return true;
+    return SoundDevice::Sound_IsQueued(mObject);
+}
+
+// ea: 0x004CD120
+bool AbstractEffectSound::IsFinished()
+{
+    unsigned int mMask = mCodeFlags.mVal;
+    if ((mMask & 2) == 0)
+        return false;
+    unsigned int v3 = mEntity.mHandle.mVal & 0xFFF;
+    bool entInvalid = (v3 >= 0x540
+                       || mEntity.mHandle.mVal >> 12
+                              != EntityHandleDb::sInst.mElements[v3].mKey
+                       || EntityHandleDb::sInst.mElements[v3].mObject == nullptr);
+    if ((entInvalid && (mFlags & 1) == 0)
+        || ((mMask & 1) != 0 && mFadeTime <= 0.0f))
+    {
+        return true;
+    }
+    if ((mMask & 0x20) != 0)
+        return false;
+    SoundDevice::Sound* mSound =
+        SoundDevice::SoundFromHandle(this->mSound.mHandle.mVal);
+    if (mSound == nullptr)
+        return true;
+    return SoundDevice::Sound_IsFinished(mSound);
+}
+
+// ea: 0x004CD1B0
+bool AbstractEffectSound::IsLooping() const
+{
+    if ((mCodeFlags.mVal & 2) == 0)
+        return false;
+    SoundDevice::Sound* mObject =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (mObject == nullptr)
+        return false;
+    return SoundDevice::Sound_IsLooped(mObject);
+}
+
+// ea: 0x004CD230
+void AbstractEffectSound::AdjustEffect_Scale(const char* param, float scale)
+{
+    SoundDevice::Sound* mObject =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (mObject != nullptr && mObject->mSource != -1)
+    {
+        if (strcmp(param, "SOUND_PITCH") == 0)
+        {
+            SoundDevice::Sound* v8 =
+                SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+            float pitch = SoundDevice::nslGetWaveParam(v8->mWave, 1, 1.0f);
+            pitch = pitch * scale;
+            SoundDevice::Sound_SetPitch(
+                SoundDevice::SoundFromHandle(mSound.mHandle.mVal), pitch);
+        }
+        else if (strcmp(param, "SOUND_VOLUME") == 0)
+        {
+            SoundDevice::Sound* v9 =
+                SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+            float volume = SoundDevice::nslGetWaveParam(v9->mWave, 0, 1.0f);
+            volume = volume * scale;
+            SoundDevice::Sound_SetVolume(
+                SoundDevice::SoundFromHandle(mSound.mHandle.mVal), volume);
+        }
+    }
+}
+
+// ea: 0x004CD350
+void AbstractEffectSound::PlayQueuedEffect()
+{
+    SoundDevice::Sound* mObject =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (mObject != nullptr)
+    {
+        if (mObject == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+            AeAssert::gCurrentLine = 496;
+            AeAssert::gCurrentExpr = "*mSound";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("The sound has not been queued!!!!!"))
+                __debugbreak();
+        }
+        if (SoundDevice::Sound_IsQueued(mObject))
+        {
+            SoundDevice::Sound_PlayQueued(
+                SoundDevice::SoundFromHandle(mSound.mHandle.mVal));
+            const char* mSubtitle = this->mSubtitle;
+            if (mSubtitle != nullptr)
+                SoundDevice::subtitle_manager_play_subtitle(mSubtitle, nullptr);
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+            AeAssert::gCurrentLine = 501;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("The sound is not ready yet!!!!!"))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x004CD4C0
+void AbstractEffectSound::StopEffect()
+{
+    SoundDevice::Sound* mObject =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (mObject != nullptr)
+    {
+        SoundDevice::Sound_Stop(mObject);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+        AeAssert::gCurrentLine = 517;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            Broc::string::Block* mBlock = mEffectName.mBlock;
+            const char* v7 =
+                mBlock ? (const char*)(mBlock + 1) : defaultFileName;
+            if (AeAssert::Warning("The sound %s has not been queued!!!", v7))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x004CD580
+Broc::string AbstractEffectSound::GetDebugString() const
+{
+    Broc::string r((Broc::string::Block*)nullptr);
+    if ((mCodeFlags.mVal & 2) == 0)
+    {
+        ae_formatted_string<128, unsigned char> v17(
+            "SFX: %d DELAYED %f/%f", mEffectNameHashStr, mDelayCount,
+            mDelayTrigger);
+        r = (const char*)v17.mBuff;
+    }
+    else
+    {
+        const char* SourceName;
+        float vol;
+        float len;
+        int mSource;
+        unsigned int v6 = mSound.mHandle.mVal & 0xFFF;
+        SoundDevice::Sound* mObject = nullptr;
+        if (v6 < 0x200
+            && mSound.mHandle.mVal >> 12
+                   == SoundDevice::SoundHandleDb::sInst.mElements[v6].mKey)
+            mObject = SoundDevice::SoundHandleDb::sInst.mElements[v6].mObject;
+        if (mObject != nullptr)
+        {
+            SourceName = SoundDevice::Sound_GetSourceName(mObject);
+            vol = SoundDevice::Sound_GetVolume(mObject);
+            len = SoundDevice::Sound_GetLength(mObject);
+            mSource = mObject->mSource;
+        }
+        else
+        {
+            SourceName = "<no sound>";
+            vol = -1.0f;
+            len = -1.0f;
+            mSource = -1;
+        }
+        SoundDevice::Sound* v13 =
+            SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+        char v14 = (v13 != nullptr && !SoundDevice::Sound_IsLooped(v13))
+                       ? 'L'
+                       : ' ';
+        ae_formatted_string<128, unsigned char> v17(
+            "SFX: %d [0x%08x] %.2f %.2f %c", SourceName, mSource, vol, len,
+            v14);
+        r = (const char*)v17.mBuff;
+    }
+    return r;
+}
+
+// ============================================================================
+// EffectEventSys query pipeline
+// ============================================================================
+
+// ea: 0x004D1720
+void EffectEventSys::BeginEffectQuery(const Entity* ent, TPakId override_pak)
+{
+    if (mCurrentQuery != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 548;
+        AeAssert::gCurrentExpr = "mCurrentQuery == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("effect query still open"))
+            __debugbreak();
+    }
+    int m_size = mPendingQueries.m_size;
+    mCurrentQuery = nullptr;
+    if (m_size >= 64)
+    {
+        int i = 0;
+        while (mPendingQueries[i].mCachedQuery.mCONTEXT != 0)
+        {
+            if (++i >= mPendingQueries.m_size)
+                goto LABEL_15;
+        }
+        if (mPendingQueries.m_size > 1 && i < mPendingQueries.m_size)
+        {
+            mPendingQueries[i] = mPendingQueries[mPendingQueries.m_size - 1];
+        }
+        if (mPendingQueries.m_size != 0)
+            --mPendingQueries.m_size;
+    }
+LABEL_15:
+    if (mPendingQueries.m_size >= 64)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 567;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "max pending queries reached; executing queries now!"))
+            __debugbreak();
+        ExecutePendingQueries();
+        if (mPendingQueries.m_size != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+            AeAssert::gCurrentLine = 569;
+            AeAssert::gCurrentExpr = "mPendingQueries.size() == 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "effect query buffer should be clear now"))
+                __debugbreak();
+        }
+    }
+    if (mPendingQueries.m_size >= 64)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 572;
+        AeAssert::gCurrentExpr = "mPendingQueries.size() < 64";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("too many effect queries this frame"))
+            __debugbreak();
+    }
+    unsigned int v7 = mPendingQueries.m_size;
+    ASSERT_IDX(v7, 64, 154);
+    PendingQuery* v8 = &mPendingQueries.m_elements[v7];
+    v8->mType = EEffectContextInvalid;
+    v8->mCachedQuery.mSpecifiedFields.mBits[0] = 0;
+    v8->mCachedQuery.mSpecifiedFields.mBits[1] = 0;
+    v8->mCachedQuery.mWeakFields.mBits[0] = 0;
+    v8->mCachedQuery.mWeakFields.mBits[1] = 0;
+    v8->mQueryEnt.mHandle.mVal = 0;
+    v8->mEffect.mVal = 0;
+    v8->mBoneIndex = -1;
+    v8->mCacheSoundType = -1;
+    v8->mQueryType = -1;
+    v8->mFlags.mVal = 0;
+    v8->mDialogNotify = 0;
+    v8->mMatrix = nullptr;
+    ++mPendingQueries.m_size;
+    mCurrentQuery = v8;
+    v8->mQueryEnt.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    unsigned int v10 = mCurrentQuery->mQueryEnt.mHandle.mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v10 < 0x540
+        && mCurrentQuery->mQueryEnt.mHandle.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v10].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v10].mObject;
+    if (mObject != ent)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 586;
+        AeAssert::gCurrentExpr = "*(mCurrentQuery->mQueryEnt) == ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Entity returned incorrect Handle"))
+            __debugbreak();
+    }
+    TPakId mPakId = override_pak;
+    if (override_pak == PAK_ID_INVALID)
+    {
+        mPakId = (TPakId)ent->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+    }
+    mCurrentQuery->mEffectsPak = mPakId;
+    mCurrentQuery->mFlags.mVal &= ~4u;
+    mCurrentQuery->mEffect.mVal = 0;
+}
+
+// ea: 0x004D1A60
+Handle EffectEventSys::ExecEffectQuery()
+{
+    Handle result;
+    if (mCurrentQuery == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 874;
+        AeAssert::gCurrentExpr = "mCurrentQuery";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no active effect query"))
+            __debugbreak();
+    }
+    if (mCurrentQuery == nullptr)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    unsigned int mVal = mCurrentQuery->mQueryEnt.mHandle.mVal;
+    unsigned int v5 = mVal & 0xFFF;
+    if (v5 >= 0x540 || mVal >> 12 != EntityHandleDb::sInst.mElements[v5].mKey
+        || EntityHandleDb::sInst.mElements[v5].mObject == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 877;
+        AeAssert::gCurrentExpr = "*mCurrentQuery->mQueryEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no Entity associated with this query"))
+            __debugbreak();
+    }
+    unsigned int v6 = mCurrentQuery->mQueryEnt.mHandle.mVal & 0xFFF;
+    if (v6 >= 0x540
+        || mCurrentQuery->mQueryEnt.mHandle.mVal >> 12
+               != EntityHandleDb::sInst.mElements[v6].mKey
+        || EntityHandleDb::sInst.mElements[v6].mObject == nullptr)
+    {
+        if (mPendingQueries.m_size != 0)
+            --mPendingQueries.m_size;
+        mCurrentQuery = nullptr;
+        result.mVal = 0;
+        return result;
+    }
+    if (mEffectSets.m_size == 512)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    ActiveEffectSet* v9 = (ActiveEffectSet*)ActiveEffectSet_sAllocator->Allocate(
+        0x2C, false);
+    ActiveEffectSet* v10;
+    if (v9 != nullptr)
+        v10 = new (v9) ActiveEffectSet(mCurrentQuery->mEffectsPak);
+    else
+        v10 = nullptr;
+    if (v10 != nullptr)
+    {
+        mCurrentQuery->mEffect.mVal = v10->mId.mVal;
+        if (mCurrentQuery->mMatrix != nullptr)
+        {
+            v10->SetPoPtr(mCurrentQuery->mMatrix);
+            v10->mFlags.mVal |= 4u;
+        }
+        mEffectSets.push_back(v10);
+        mCurrentQuery = nullptr;
+        if (g_debug_sync_queries != 0)
+        {
+            ExecPendingQuery(mPendingQueries[mPendingQueries.m_size - 1]);
+            --mPendingQueries.m_size;
+        }
+        result.mVal = v10->mId.mVal;
+        return result;
+    }
+    result.mVal = 0;
+    return result;
+}
+
+// ea: 0x004D1CB0
+Handle EffectEventSys::TriggerNamedEffect(const Entity* ent, const char* name,
+                                          TPakId override_pak)
+{
+    Handle result;
+    if (ent != nullptr)
+    {
+        BeginEffectQuery(ent, override_pak);
+        mCurrentQuery->mType = kEffectContextScriptCall;
+        CachedQuery* p_mCachedQuery = &mCurrentQuery->mCachedQuery;
+        p_mCachedQuery->mSpecifiedFields.mBits[0] |= 1u;
+        p_mCachedQuery->mWeakFields.mBits[0] &= ~1u;
+        char Destination[128];
+        strncpy(Destination, name, 0x7F);
+        p_mCachedQuery->mCONTEXT = 3;
+        Destination[127] = 0;
+        CachedQuery* v8 = &mCurrentQuery->mCachedQuery;
+        v8->mSpecifiedFields.mBits[7 >> 3] |= (unsigned char)(1u << (7 & 7));
+        v8->mWeakFields.mBits[7 >> 3] &= (unsigned char)~(1u << (7 & 7));
+        memcpy(&v8->mSCRIPT_ID, Destination, sizeof(v8->mSCRIPT_ID));
+        result = ExecEffectQuery();
+        return result;
+    }
+    result.mVal = 0;
+    return result;
+}
+
+// ea: 0x004D13C0
+void EffectEventSys::ExecPendingQuery(PendingQuery& q)
+{
+    unsigned int v4 = q.mEffect.mVal & 0x1FF;
+    if (v4 < 0x200 && q.mEffect.mVal >> 9 == mHandleDb.mElements[v4].mKey)
+    {
+        ActiveEffectSet* mObject = mHandleDb.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            unsigned int v6 = q.mQueryEnt.mHandle.mVal & 0xFFF;
+            Entity* v7 = nullptr;
+            if (v6 < 0x540
+                && q.mQueryEnt.mHandle.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v6].mKey)
+                v7 = EntityHandleDb::sInst.mElements[v6].mObject;
+            if (v7 == nullptr)
+            {
+                mObject->mFlags.mVal &= ~2u;
+                return;
+            }
+            float distSq = 99999.898f;
+            if (dword_F6A290[0] == 2)
+            {
+                Entity* Player = EntityManager::sInst->GetPlayer(0);
+                float v = v7->r.currentOrigin.v.m128_f32[0]
+                          - Player->r.currentOrigin.v.m128_f32[0];
+                float v14 = v7->r.currentOrigin.v.m128_f32[1]
+                            - Player->r.currentOrigin.v.m128_f32[1];
+                float dz = v7->r.currentOrigin.v.m128_f32[2]
+                           - Player->r.currentOrigin.v.m128_f32[2];
+                float d = (dz * dz) + (v14 * v14) + (v * v);
+                if (d < 99999.898f)
+                    distSq = d;
+            }
+            int GDEvents;
+            if (q.mQueryType == 8)
+            {
+                Broc::string::Block* mBlock = q.mScriptId.mBlock;
+                const char* v11 =
+                    mBlock ? (const char*)(mBlock + 1) : defaultFileName;
+                GDEvents = QueryGDEvents(v11, q, mObject, 0.0f);
+            }
+            else
+            {
+                GDEvents = QueryEventTable(q, mObject, distSq);
+                if (GDEvents < 0)
+                {
+                    HashString v12;
+                    v12.mHash = ((SndWait*)&v7->snd_wait)->notifyHash.mHash;
+                    if (v12.mHash != 0)
+                    {
+                        Scr_Notify(v7, v12, 0);
+                        ((SndWait*)&v7->snd_wait)->notifyHash.mHash = 0;
+                        ((SndWait*)&v7->snd_wait)->soundName.mHash = 0;
+                    }
+                    mObject->mFlags.mVal &= ~2u;
+                    return;
+                }
+            }
+            if (GDEvents != 0)
+            {
+                mObject->mFlags.mVal &= ~2u;
+                return;
+            }
+            HashString v12;
+            v12.mHash = ((SndWait*)&v7->snd_wait)->notifyHash.mHash;
+            if (v12.mHash != 0)
+            {
+                Scr_Notify(v7, v12, 0);
+                ((SndWait*)&v7->snd_wait)->notifyHash.mHash = 0;
+                ((SndWait*)&v7->snd_wait)->soundName.mHash = 0;
+            }
+            mObject->mFlags.mVal &= ~2u;
+        }
+    }
+}
+
+// ea: 0x004D1680
+void EffectEventSys::ExecutePendingQueries()
+{
+    unsigned int v3 = 0;
+    unsigned int v2 = 0;
+    while (v3 < (unsigned int)mPendingQueries.m_size)
+    {
+        ASSERT_IDX(v2, 64, 154);
+        ExecPendingQuery(mPendingQueries.m_elements[v2]);
+        ++v3;
+        ++v2;
+    }
+    mPendingQueries.m_size = 0;
+}
+
+// ea: 0x004D3930
+void EffectEventSys::FrameAdvance(float delta)
+{
+    if (mCurrentQuery != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 443;
+        AeAssert::gCurrentExpr = "mCurrentQuery == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("effect query still open"))
+            __debugbreak();
+    }
+    AdvanceFades(delta);
+    for (unsigned int i = 0; i < (unsigned int)mEffectSets.m_size; ++i)
+    {
+        ASSERT_IDX(i, 512, 154);
+        mEffectSets[i]->FrameAdvance(delta);
+        ASSERT_IDX(i, 512, 154);
+        ActiveEffectSet* v4 = mEffectSets[i];
+        if ((v4->mFlags.mVal & 2) == 0 && v4->mEffects.m_size == 0)
+        {
+            ActiveEffectSet* v6 = mEffectSets[i];
+            if (v6 != nullptr)
+            {
+                v6->~ActiveEffectSet();
+                ActiveEffectSet_sAllocator->Release(v6);
+            }
+            mEffectSets[i] = mEffectSets[mEffectSets.m_size - 1];
+            if (mEffectSets.m_size != 0)
+                --mEffectSets.m_size;
+            --i;
+        }
+    }
+    ExecutePendingQueries();
+}
+
+// ============================================================================
+// Debug fx lists
+// ============================================================================
+
+// ea: 0x004D3AD0
+void ActiveEffectSet::GetDebugFxList(Entity* ent,
+                                     std::vector<std::string>* fx)
+{
+    for (unsigned int v5 = 0; v5 < (unsigned int)mEffects.m_size; ++v5)
+    {
+        if (ent == nullptr)
+            goto LABEL_23;
+        ASSERT_IDX(v5, 6, 148);
+        unsigned int v6 = mEffects[v5]->mEntity.mHandle.mVal & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v6 < 0x540
+            && mEffects[v5]->mEntity.mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v6].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+        if (mObject != ent)
+            continue;
+    LABEL_23:
+        ASSERT_IDX(v5, 6, 148);
+        Broc::string v12 = mEffects[v5]->GetDebugString();
+        Broc::string::Block* mBlock = v12.mBlock;
+        const char* v9 = mBlock ? (const char*)(mBlock + 1) : defaultFileName;
+        fx->push_back(std::string(v9));
+    }
+}
+
+// ea: 0x004D3C70
+void EffectEventSys::GetDebugFxList(Entity* ent,
+                                    std::vector<std::string>* fx)
+{
+    for (unsigned int i = 0; i < (unsigned int)mEffectSets.m_size; ++i)
+    {
+        ASSERT_IDX(i, 512, 148);
+        std::vector<std::string> s;
+        mEffectSets[i]->GetDebugFxList(ent, &s);
+        for (size_t k = 0; k < s.size(); ++k)
+            fx->push_back(s[k]);
+    }
 }
