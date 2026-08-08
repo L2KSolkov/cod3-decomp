@@ -12,7 +12,7 @@
 #define COD3_BD_BDSESSIONLISTENER_H
 
 #include "bd/bd_types.h"
-#include "bdSessionInfo.h"
+#include "bd/bdSession.h"
 
 class bdSessionListener {
 public:

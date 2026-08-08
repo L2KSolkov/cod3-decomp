@@ -13,32 +13,9 @@
 #include "bd/bdAddressMap.h"
 
 // ============================================================================
-// bdSession — peer-to-peer session (opaque here; methods are in bdSession.obj)
+// bdSession - defined in bd/bdSession.h
 // ============================================================================
-struct bdSession {
-    enum bdSessionRole {
-        BD_SESSION_HOST = 0,
-        BD_SESSION_PEER = 1,
-    };
-
-    enum bdSessionStatus {
-        BD_SESSION_NOT_CONNECTED = 0,
-        BD_SESSION_CONNECTING_TO_HOST = 1,
-        BD_SESSION_CONNECTED_TO_HOST = 2,
-        BD_SESSION_CONNECTING_TO_PEERS = 3,
-        BD_SESSION_NOT_READY = 4,
-        BD_SESSION_READY = 5,
-        BD_SESSION_CONNECTING_TO_HOST_FAILED = 6,
-        BD_SESSION_CONNECTING_TO_PEERS_FAILED = 7,
-    };
-
-    bdSessionRole   getRole() const;
-    bdSessionStatus getStatus() const;
-    unsigned int    getNumPeers() const;
-    bdReference<bdConnection> getHost() const;
-    bdReference<bdConnection> getConnection(unsigned int index) const;
-    unsigned int    getPeerHash(unsigned int index) const;
-};
+#include "bd/bdSession.h"
 
 // ============================================================================
 // bdSessionInfo — static info formatters.

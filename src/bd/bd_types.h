@@ -375,12 +375,29 @@ public:
     bool readDataType(bdBitBufferDataType type);
     bool readBits(void* data, unsigned int bitCount);
     bdBitBuffer(const unsigned char* data, unsigned int bitCount, bool typeChecked);
-    bdBitBuffer(unsigned int bitCount, bool typeChecked);
+    bdBitBuffer(unsigned int bitCount = 0, bool typeChecked = false);
     bool getTypeCheck() const;
     unsigned int getNumBitsWritten() const { return m_writePosition; }
     unsigned int getDataSize() const { return m_data.m_size; }
     const unsigned char* getData() const { return m_data.m_data; }
     void resetReadPosition() { m_readPosition = 1; }  // COD3: header is 1 bit (ea: 0x8A410A writes 1)
+    void writeBool(bool value) {
+        writeDataType(BD_BB_BOOL_TYPE);
+        unsigned char byte = value ? 0xFF : 0x00;
+        writeBits(&byte, 1);
+    }
+    bool readBool(bool& value) {
+        bool ok = readDataType(BD_BB_BOOL_TYPE);
+        unsigned char byte = 0;
+        ok = ok && readBits(&byte, 1);
+        if (ok)
+            value = byte != 0;
+        return ok;
+    }
+    bool append(const bdBitBuffer& other) {
+        writeBits(other.getData(), other.getNumBitsWritten());
+        return true;
+    }
 };
 static_assert(sizeof(bdBitBuffer) == 0x24, "bdBitBuffer size mismatch");
 static_assert(offsetof(bdBitBuffer, m_data) == 0x08, "bdBitBuffer::m_data offset mismatch");
@@ -457,6 +474,8 @@ public:
     unsigned int getTitleId() const { return m_titleId; }
     uint16_t getPort() const { return m_port; }
     const XNADDR* getXNAddr() const { return &m_addr; }
+    unsigned int getHash() const { return m_hash; }
+    bool isLoopback() const { return m_isLoopback; }
 };
 static_assert(sizeof(bdCommonAddr) == 0x40, "bdCommonAddr size mismatch");
 static_assert(offsetof(bdCommonAddr, m_addr) == 0x08, "bdCommonAddr::m_addr offset mismatch");

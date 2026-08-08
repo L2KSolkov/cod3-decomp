@@ -28,7 +28,7 @@ nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp 
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	PORTED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr)
 nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	TODO	
-bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	TODO	
+bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	PORTED	[bdPeer] bdSession.cpp: peer-to-peer session state machine (44 funcs) from Demonware 2.0 + IDA
 mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 render_xboxr:ngl_aux.o	render_xboxr	ngl_aux.o	engine	40	TODO	
 nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
