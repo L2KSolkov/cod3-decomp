@@ -256,9 +256,8 @@ static_assert(sizeof(AbstractEffectLight) == 0x44,
               "AbstractEffectLight size mismatch");
 
 // ============================================================================
-// AbstractEffectShakeAndRumble - camera shake + rumble effect (136 bytes)
-// Size: 0x88 - per-client handle/shake arrays (4 entries; IDA type was
-// incomplete at 0x70, the frame code indexes 0..3)
+// AbstractEffectShakeAndRumble - camera shake + rumble effect (112 bytes)
+// Size: 0x70 (112 bytes) - verified against IDA
 // ============================================================================
 struct RumbleEffectInstanceHandle {
     int mVal;  // +0x00
@@ -283,8 +282,8 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
     bool  mRumbleEnabled;     // +0x61
     unsigned char _pad[0x64 - 0x62];
     EUserBoneId mBone;        // +0x64
-    RumbleEffectInstanceHandle mRumbleHandle[4];  // +0x68
-    CameraShakeInstance* mShake[4];               // +0x78
+    RumbleEffectInstanceHandle mRumbleHandle[1];  // +0x68
+    CameraShakeInstance* mShake[1];               // +0x6C
 
     Broc::string GetDebugString() const;          // ea: 0x004BD370
     math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
@@ -293,8 +292,9 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
     void AdjustEffect_Scale(const char* param,
                             float scale);         // ea: 0x004CE780
     void StopEffect();                            // ea: 0x004CE7B0
+    void FrameAdvance(float delta_t);             // ea: 0x004CE230
 };
-static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x88,
+static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x70,
               "AbstractEffectShakeAndRumble size mismatch");
 
 // ============================================================================
@@ -496,9 +496,16 @@ struct RumbleEffect {
         float ramp_down_duration;  // +0x14
         Broc::string rumble_notes; // +0x18
         Bitmask<unsigned int> m_flags;  // +0x1C
+
+        RumbleData() : enabled(false), delay(0.0f), intensity(0.0f),
+                       ramp_up_duration(0.0f), steady_duration(0.0f),
+                       ramp_down_duration(0.0f), rumble_notes(),
+                       m_flags(0) {}
     };
     static_assert(sizeof(RumbleData) == 0x20, "RumbleData size mismatch");
     RumbleData mRumbleDataArray[2];  // +0x00
+
+    RumbleEffect() {}
 };
 static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 

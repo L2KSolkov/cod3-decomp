@@ -96,10 +96,18 @@ struct CameraShake {
     float m_scaleCOD;         // +0x04
     int   m_scaleCOD_onlyADS; // +0x08
     CameraShakeInstance m_instanceData[5];  // +0x0C
-
-    void StopCameraShake(CameraShakeInstance* pShake);
 };
 static_assert(sizeof(CameraShake) == 0x14C, "CameraShake size mismatch");
+
+extern CameraShakeInstance* CameraShake_StartCameraShake(
+    CameraShake* self, int type, math::Position3* worldPos, float size,
+    float timeOverride, float nextDelay);
+extern void CameraShake_StopCameraShake(CameraShake* self,
+                                        CameraShakeInstance* pShake);
+extern void CameraShakeInstance_OverrideSettings(CameraShakeInstance* self,
+                                                 float frequency,
+                                                 float movement);
+static Entity* AbstractEffectGetOwner(const AbstractEffect* effect);
 
 extern math::Position3 GetTagFlashPos(Entity* cent);
 extern CameraShake* g_cameraShake;  // 0x00F056E8
@@ -228,6 +236,8 @@ extern SoundOptions gSoundOptions;  // 0x00F00EF0
 struct Client {
     unsigned char _pad[0x7F0];
     int bFrozen;  // +0x7F0
+    unsigned char _pad2[0xAE4 - 0x7F4];
+    int mServerClientIndex;  // +0xAE4
 };
 
 struct rb_vehicle {
@@ -2179,9 +2189,153 @@ void AbstractEffectShakeAndRumble::StopEffect()
         }
         if (mShake[0] != nullptr)
         {
-            g_cameraShake->StopCameraShake(mShake[0]);
+            CameraShake_StopCameraShake(g_cameraShake, mShake[0]);
             mShake[0] = nullptr;
         }
+    }
+}
+
+// ea: 0x004CE230
+void AbstractEffectShakeAndRumble::FrameAdvance(float delta_t)
+{
+    mDelayCount = delta_t + mDelayCount;
+    if (mDelayTrigger > mDelayCount)
+        return;
+    unsigned int mVal = mEntity.mHandle.mVal;
+    Client* ownerClient = nullptr;
+    Client* v6 = nullptr;
+    unsigned int v7 = mVal & 0xFFF;
+    if (v7 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey
+        && EntityHandleDb::sInst.mElements[v7].mObject != nullptr)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+        if (mObject->client != nullptr)
+        {
+            ownerClient = AbstractEffectGetOwner(this)->client;
+            v6 = ownerClient;
+        }
+    }
+    if ((mCodeFlags.mVal & 2) == 0)
+    {
+        mCodeFlags.mVal |= 2u;
+        int instance = 0;
+        CameraShake* v32 = g_cameraShake;
+        for (int v10 = 0; v10 < 1; ++v10)
+        {
+            if (dword_F6A290[v10 * 0x322] == 2
+                && (v6 == nullptr
+                    || v6->mServerClientIndex == v10))
+            {
+                float distanceScale = GetDistanceScale(v10);
+                if (mFreq > 0.0f && mMovement > 0.0f && distanceScale > 0.0f)
+                {
+                    CameraShakeInstance* started =
+                        CameraShake_StartCameraShake(
+                            v32, 1, nullptr, 1.0f, mTime, mNextDelay);
+                    mShake[0] = started;
+                    if (started != nullptr)
+                        CameraShakeInstance_OverrideSettings(
+                            started, mFreq * distanceScale,
+                            mMovement * distanceScale);
+                }
+                if (!mRumbleEnabled)
+                    return;
+                RumbleEffect rumbleEffect;
+                for (int i = 0; i < 2; ++i)
+                {
+                    rumbleEffect.mRumbleDataArray[i].enabled = true;
+                    rumbleEffect.mRumbleDataArray[i].delay = 0.0f;
+                    rumbleEffect.mRumbleDataArray[i].intensity = 1.0f;
+                    rumbleEffect.mRumbleDataArray[i].ramp_up_duration = 0.0f;
+                    rumbleEffect.mRumbleDataArray[i].steady_duration = 1.0f;
+                    rumbleEffect.mRumbleDataArray[i].ramp_down_duration = 0.0f;
+                }
+                rumbleEffect.mRumbleDataArray[0].intensity =
+                    mUseHighFreqVibrator ? 1.0f : 0.0f;
+                if (mSteadyDuration < 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\RumbleEffect.h";
+                    AeAssert::gCurrentLine = 124;
+                    AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Please add a descriptive string"))
+                        __debugbreak();
+                }
+                rumbleEffect.mRumbleDataArray[0].steady_duration =
+                    mSteadyDuration;
+                float rumbleIntensity = mRumble;
+                if (mRumble >= 0.0f)
+                {
+                    if (mRumble > 1.0f)
+                        rumbleIntensity = 1.0f;
+                }
+                else
+                {
+                    rumbleIntensity = 0.0f;
+                }
+                rumbleEffect.mRumbleDataArray[1].intensity = rumbleIntensity;
+                if (mSteadyDuration < 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\RumbleEffect.h";
+                    AeAssert::gCurrentLine = 124;
+                    AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Please add a descriptive string"))
+                        __debugbreak();
+                }
+                rumbleEffect.mRumbleDataArray[1].steady_duration =
+                    mSteadyDuration;
+                if (mRampUpTime < 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\RumbleEffect.h";
+                    AeAssert::gCurrentLine = 117;
+                    AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Please add a descriptive string"))
+                        __debugbreak();
+                }
+                rumbleEffect.mRumbleDataArray[1].ramp_up_duration = mRampUpTime;
+                if (mRampDownTime < 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\RumbleEffect.h";
+                    AeAssert::gCurrentLine = 110;
+                    AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Please add a descriptive string"))
+                        __debugbreak();
+                }
+                rumbleEffect.mRumbleDataArray[1].ramp_down_duration =
+                    mRampDownTime;
+                RumbleManager* mgr = RumbleManager::Inst(instance);
+                if (mgr != nullptr)
+                {
+                    RumbleEffectInstanceHandle h =
+                        mgr->Play(&rumbleEffect, distanceScale);
+                    mRumbleHandle[0].mVal = h.mVal;
+                }
+            }
+            ++instance;
+        }
+    }
+    if (dword_F6A290[0] == 2
+        && (ownerClient == nullptr || ownerClient->mServerClientIndex == 0))
+    {
+        float rumbleIntensitya = GetDistanceScale(0);
+        if (mShake[0] != nullptr)
+            CameraShakeInstance_OverrideSettings(
+                mShake[0], mFreq * rumbleIntensitya,
+                mMovement * rumbleIntensitya);
+        RumbleManager* v22 = RumbleManager::Inst(0);
+        if (v22 != nullptr)
+            v22->SetIntensity(mRumbleHandle[0], rumbleIntensitya);
     }
 }
 
