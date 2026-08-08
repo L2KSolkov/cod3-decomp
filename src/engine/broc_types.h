@@ -25,11 +25,17 @@ struct HashStr {
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
 
+namespace Broc {
+struct string;
+}
+
 // ============================================================================
 // HashString — global hashed string (4 bytes) — verified against IDA
 // ============================================================================
 struct HashString {
     unsigned int mHash;  // +0x00
+    HashString() : mHash(0) {}
+    HashString(Broc::string& str);  // ea: 0x004C1450
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashString) == 4, "HashString size mismatch");
 

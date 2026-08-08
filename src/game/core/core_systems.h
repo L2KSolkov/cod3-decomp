@@ -132,6 +132,9 @@ static_assert(offsetof(SoundParams, mDuration) == 0x18,
 // ============================================================================
 struct AbstractEffect {
     virtual ~AbstractEffect();
+    AbstractEffect() { memset(this, 0, sizeof(AbstractEffect)); }
+    AbstractEffect(TPakId pak_id, DbLinkedHandle<void, void> ent, int flags,
+                   float delay_trigger);  // ea: 0x004C1240
     virtual void SetPoPtr(math::Mat43* po);
     virtual bool IsQueued() const;
     virtual bool IsLooping() const;
@@ -183,6 +186,7 @@ struct AbstractEffectSound : AbstractEffect {
     AbstractEffectSound(TPakId pakId, DbLinkedHandle<void, void> ent,
                         int flags, float delayTrigger,
                         SoundParams* soundParams);  // ea: 0x004CF3E0
+    ~AbstractEffectSound();  // ea: 0x004CC3F0
     void StartFadeOut(float seconds);  // ea: 0x004C12A0
     void SetPoPtr(math::Mat43* po);        // ea: 0x004CD050
     bool IsQueued() const;                // ea: 0x004CD0C0
@@ -206,6 +210,7 @@ struct AbstractEffectParticle : AbstractEffect {
     ParticleEffect* mParticle;  // +0x34
 
     AbstractEffectParticle();   // ea: 0x004CF600
+    ~AbstractEffectParticle();  // ea: 0x004C12C0
     void SetPoPtr(math::Mat43* po);               // ea: 0x004BD200
     bool IsLooping() const;                       // ea: 0x004BD220
     void AdjustEffect_Scale(const char* param,
@@ -254,6 +259,7 @@ struct AbstractEffectLight : AbstractEffect {
     float         mTime;      // +0x40
 
     AbstractEffectLight(Params& params);  // ea: 0x004CDD20
+    ~AbstractEffectLight();               // ea: 0x004BD2A0
     Broc::string GetDebugString() const;  // ea: 0x004BD300
     math::Position3 GetPositionOnEntity(Entity* e) const;  // ea: 0x004CDEF0
     void FrameAdvance(float delta_t);     // ea: 0x004CDF50
@@ -293,6 +299,14 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
     CameraShakeInstance* mShake[1];               // +0x6C
 
     AbstractEffectShakeAndRumble(Params& params);  // ea: 0x004CF6F0
+    AbstractEffectShakeAndRumble(
+        TPakId pak_id, DbLinkedHandle<void, void> ent, float delay_trigger,
+        int flags, float time, float freq, float movement, float nextDelay,
+        float rumble, float blur, float minDist, float maxDist,
+        float steadyDuration, float rampUpTime, float rampDownTime,
+        bool useHighFreqVib, bool rumbleEnabled,
+        EUserBoneId bone);  // ea: 0x004CF890
+    ~AbstractEffectShakeAndRumble();  // ea: 0x004CF9D0
     Broc::string GetDebugString() const;          // ea: 0x004BD370
     math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
     float GetDistanceScale(int client);           // ea: 0x004CE110
@@ -414,6 +428,8 @@ struct EffectEventSys {
     HandleDb            mHandleDb;          // +0x9330
     unsigned char       _tail[0xC];         // TODO verify (to 0xA380)
 
+    EffectEventSys();                       // ea: 0x004D0130
+    ~EffectEventSys();                      // ea: 0x004D01E0
     int NumberOfVoicesUsed();                    // ea: 0x004BCE20
     void TagNameIndexInfo(int index);            // ea: 0x004BCE60
     void SetEffectMatrix(math::Mat43* pMat);     // ea: 0x004BCE80
@@ -527,6 +543,8 @@ struct RumbleManager {
     int mClient;                  // +0x24
     int mLastTimeNotRumbling;     // +0x28
     int mDontRumbleAgainUntil;    // +0x2C
+    RumbleManager(int client);    // ea: 0x004C56F0
+    ~RumbleManager();             // ea: 0x004CF310
     RumbleEffectInstanceHandle BumpHandle();
     void StopMotors();
     RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
@@ -668,6 +686,8 @@ struct ConfigStringManager {
                                     const char* type);
     void CallbackSearch(TPakId pakId, const char* type,
                         void (*callback)(const char*, const ConfigString*));
+    ConfigStringManager();  // ea: 0x004C5C60
+    ~ConfigStringManager(); // ea: 0x004C1440
 };
 static_assert(sizeof(ConfigStringManager) == 0x190,
               "ConfigStringManager size mismatch");
@@ -687,6 +707,10 @@ struct EntityNotify {
     unsigned int mStr;        // +0x08
     DbLinkedHandle<void, void> mOwner;  // +0x0C
     WaitTilOutput* mParam;    // +0x10
+
+    EntityNotify(unsigned int hashStr, DbLinkedHandle<void, void> ent,
+                 WaitTilOutput* param);  // ea: 0x004BDAA0
+    ~EntityNotify();                     // ea: 0x004B5650
 };
 static_assert(sizeof(EntityNotify) == 0x14, "EntityNotify size mismatch");
 
@@ -695,6 +719,9 @@ struct EntityNotifySet {
     DbLinkedHandle<void, void> mEnt;      // +0x08
     reserved_dlist<EntityNotify> mStrings;  // +0x0C
     reserved_dlist<EndOnScriptNode> mEndOnList;  // +0x1C
+
+    EntityNotifySet(Entity* e);  // ea: 0x004C1D80
+    ~EntityNotifySet();          // ea: 0x004CEAE0
     void AddNotify(const HashString* h, DbLinkedHandle<void, void> owner);
     EntityNotify* GetNotify(const HashString* chk);
     char AssignScriptVariable(const HashString* chk, WaitTilOutput* scriptVariable);
@@ -903,6 +930,9 @@ static_assert(sizeof(nalHeap) == 0x4, "nalHeap size mismatch");
 struct AnimHeap : nalHeap {
     void*       mBlock;  // +0x04
     unsigned char mHeap[0x49C];  // +0x08 mem_heap
+
+    AnimHeap();   // ea: 0x004C1380
+    ~AnimHeap();  // ea: 0x004BD610
     void* Allocate(unsigned int size);
     void Free(void* ptr, int size);
     static void LinkAnimHeap();
@@ -920,6 +950,8 @@ struct CtrlIcon {
     CtrlIcon* TranslateIconTag(const char* text);
     char ExtractIconTag(const char* text, char* preTagString,
                         char** postTagString, char** tagString);
+    CtrlIcon();   // ea: 0x004BD6E0
+    ~CtrlIcon();  // ea: 0x004BD6F0
 };
 static_assert(sizeof(CtrlIcon) == 0x800, "CtrlIcon size mismatch");
 
@@ -934,6 +966,8 @@ struct DialogueManager : AssetBankSet {
     void DecodeDialogueBank(const char* name, DialogueBank* data, int size,
                             TPakId pakId);
     char* GetDialogue(unsigned int hash);
+    DialogueManager();   // ea: 0x004C0B40
+    ~DialogueManager();  // ea: 0x004BCD80
 };
 static_assert(sizeof(DialogueManager) == 0x190, "DialogueManager size mismatch");
 
@@ -1088,6 +1122,7 @@ static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
 
 struct RumbleManager::InstanceHolder {
     RumbleManager* sInst[1];  // +0x00
+    InstanceHolder();  // ea: 0x004BCF60
 };
 static_assert(sizeof(RumbleManager::InstanceHolder) == 0x4,
               "RumbleManager::InstanceHolder size mismatch");
