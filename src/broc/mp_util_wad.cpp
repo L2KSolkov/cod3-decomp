@@ -1559,3 +1559,28 @@ void ambient_system(Broc::entity lvl, Broc::string spawn_package) {
     spawn_package.~string();
 }
 }
+
+// ============================================================================
+// _mp_dm - deathmatch script.
+// ============================================================================
+namespace _mp_dm {
+namespace _mp_common {
+void SetupCallbacks(Broc::bbool teamGameType);
+}
+extern void* StartGame__functor(Broc::entity self);
+extern Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
+                                   const Broc::string* spawnpoint);
+
+void main(Broc::entity self) {
+    Broc::bbool team_game(false);
+    Broc::Code_SetTeamGame((bool)team_game);
+    mp_util_wad::pLevel->spawnTypeAllies = "spawn_deathmatch";
+    mp_util_wad::pLevel->spawnTypeAxis = "spawn_deathmatch";
+    mp_util_wad::pLevel->PickSpawnPoint = (void*)GetSpawnPoint;
+    Broc::Code_SetShowScore(false);
+    _mp_common::SetupCallbacks(team_game);
+    void* started = StartGame__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_dm.bro",
+                        __LINE__, "StartGame", started);
+}
+}

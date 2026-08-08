@@ -433,6 +433,8 @@ unsigned int SoundPlay(const Broc::string& name, float volume);
 void ReverbSetParams(const Broc::string& name, bool immediate);
 int GetCvarInt(const char* cvar);
 void iprintlnbold(const Broc::string& s);
+void Code_SetTeamGame(bool teamGame);
+void Code_SetShowScore(bool showScore);
 Broc::vector* entity_origin(Broc::entity* e, Broc::vector* result);
 Broc::vector* vector_scale(Broc::vector* result, const Broc::vector* a, float s);
 Broc::vector* vector_add(Broc::vector* result, const Broc::vector* a, const Broc::vector* b);
