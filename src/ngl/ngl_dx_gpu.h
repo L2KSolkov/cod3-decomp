@@ -149,12 +149,6 @@ static_assert(sizeof(nglSkeleton) == 0x0C, "nglSkeleton size mismatch");
 // ============================================================================
 // Shader/scene parameter sets (4 bytes each, verified against IDA).
 // ============================================================================
-class nglParamSet {
-public:
-    unsigned int* Array;  // +0x00
-};
-static_assert(sizeof(nglParamSet) == 4, "nglParamSet size mismatch");
-
 class nglShaderParamSet : public nglParamSet {
 public:
     static unsigned int NumParams;  // ngl_params.o (0x14D2AA4)
@@ -163,12 +157,6 @@ public:
     void Copy(const nglShaderParamSet& other);  // inline COMDAT (render.o)
 };
 static_assert(sizeof(nglShaderParamSet) == 4, "nglShaderParamSet size mismatch");
-
-class nglSceneParamSet : public nglParamSet {
-public:
-    static unsigned int NumParams;  // ngl_params.o (0x14D2AA0)
-};
-static_assert(sizeof(nglSceneParamSet) == 4, "nglSceneParamSet size mismatch");
 
 // ============================================================================
 // nglMeshNode - per-instance mesh render data (144 bytes, verified against IDA).

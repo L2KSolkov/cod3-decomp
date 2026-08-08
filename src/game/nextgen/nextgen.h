@@ -18,16 +18,6 @@ struct nglTexture;
 struct nglQuad;
 
 // ============================================================================
-// nglSceneCallbackType â€” scene post-process callback type (ngl_xboxr)
-// Verified against IDA local type.
-// ============================================================================
-enum nglSceneCallbackType {
-    NGLSCENE_PRE = 0,
-    NGLSCENE_MID = 1,
-    NGLSCENE_POST = 2,
-};
-
-// ============================================================================
 // CG_MotionBlur â€” screen-space motion-blur overlay
 // ============================================================================
 class CG_MotionBlur {

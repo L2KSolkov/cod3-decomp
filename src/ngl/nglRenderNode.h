@@ -31,22 +31,6 @@ extern int nglFrame;
 extern void tlFatal(const char* fmt, ...);
 
 // ============================================================================
-// nglSortInfo - 8 bytes
-// ============================================================================
-struct nglSortInfo {
-    enum Type : int {
-        NGLSORT_OPAQUE = 0x0,
-        NGLSORT_TRANSLUCENT = 0x1,
-    };
-    Type           Type;    // +0x00
-    union {
-        float        Dist;   // +0x04
-        unsigned int Hash;   // +0x04
-    };
-};
-static_assert(sizeof(nglSortInfo) == 8, "nglSortInfo size mismatch");
-
-// ============================================================================
 // nglRenderNode_Vtbl - vtable holder (4 bytes)
 // ============================================================================
 class nglRenderNode_Vtbl {
