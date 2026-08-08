@@ -5,7 +5,7 @@ mp.o		mp.o	game	770	TODO
 g.o		g.o	game	732	TODO	
 mp_shell.o		mp_shell.o	game	680	TODO	
 game.o		game.o	game	663	TODO	
-core.o		core.o	game	541	IN_PROGRESS	Types staged (3 headers, all sizes+offsets verified vs IDA, 25+ checks pass): core_types.h (FS/time/math incl idVec3/mat3_t/quat_t) + core_systems.h (EffectEventSys/AbstractEffect*/Params/Collision/SoundParams/Rumble/Db*/ConfigString*/EntityNotify/gdLight/gdShakeRumble/LightEffect/PakFile/tlFileBuf/StringTableEntry/DialogueManager); inventory+plan (core_o_inventory.tsv, core_o_plan.tsv/md); bodies blocked until decompiles fetched via ida MCP
+core.o		core.o	game	541	IN_PROGRESS	Types+globals staged: core_types.h + core_systems.h + core_globals.h (35+ size/offset checks pass vs IDA); 147 core.o data symbols w/ exact VAs extracted from linker map (analysis/core_o_data.tsv); inventory+plan in analysis/; bodies blocked until decompiles fetched via ida MCP
 MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	PORTED	mp_util_wad.cpp/h COMPLETE (403/403): accessors + wrappers + dyn_array + Level (560B) + pLevel; _mp_common/_mp_audio/_mp_loadout/_mp_ctf/_mp_scf/_mp_hq/_mp_war/_mp_tankdrive/_mp_spawnlogic/_mp_teambalance/_mp_shellshock/_mp_minefield/_mp_tdm/_mp_nano/_mp_dm/_mp_airplanes ALL DONE; capture threads stubbed pending runtime hook layer
 MPBrocCore_xboxd:mp_anim_wad.o	MPBrocCore_xboxd	mp_anim_wad.o	engine	332	PORTED	mp_anim_wad.cpp/h: RegisterHashStrings (238) + 94 GetEE_/IsEEDefined_ pairs + ResolveAnim/ResolveAnimName/ValidateAnimationIndices/GetBroAnim + _mp_setup main/hack_function; generic_human AnimRef layer extern (data, /FORCE)
 game2.o		game2.o	game	521	TODO	

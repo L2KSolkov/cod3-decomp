@@ -11,8 +11,10 @@
 
 #include "core/ae_array.h"
 #include "core/math_types.h"
+#include "core/tlFixedString.h"
 #include "engine/broc_types.h"
 #include "game/game_types.h"
+#include "game/core/core_types.h"
 
 // TPakId is defined fully in game/sv/sv_stubs.h; forward-declare the enum so
 // this header stays standalone (C++11 allows enum : int forward decls).
@@ -331,6 +333,7 @@ struct RumbleEffect {
 static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 
 struct RumbleManager {
+    struct InstanceHolder;
     RumbleEffectInstanceHandle mNextHandle;            // +0x00
     reserved_dlist<RumbleEffectInstance> mRumbleLists[2];  // +0x04
     int mClient;                  // +0x24
@@ -670,3 +673,114 @@ struct PakFile {
     LoadStats*    mLoadStats;         // +0x110
 };
 static_assert(sizeof(PakFile) == 0x114, "PakFile size mismatch");
+
+// ============================================================================
+// File-system handle/list types (core.o files.cpp)
+// ============================================================================
+struct qfile_gus {
+    void* file;       // +0x00 (opaque FILE*)
+};
+static_assert(sizeof(qfile_gus) == 0x4, "qfile_gus size mismatch");
+
+struct qfile_us {
+    qfile_gus file;    // +0x00
+    int       unique;  // +0x04
+};
+static_assert(sizeof(qfile_us) == 0x8, "qfile_us size mismatch");
+
+struct fileHandleData_t {
+    qfile_us handleFiles;   // +0x00
+    int      handleSync;    // +0x08
+    int      baseOffset;    // +0x0C
+    int      fileSize;      // +0x10
+    int      zipFilePos;    // +0x14
+    pack_t*  zipFile;       // +0x18
+    int      streamed;      // +0x1C
+    char     name[256];     // +0x20
+};
+static_assert(sizeof(fileHandleData_t) == 0x120,
+              "fileHandleData_t size mismatch");
+static_assert(offsetof(fileHandleData_t, name) == 0x20,
+              "fileHandleData_t::name offset mismatch");
+
+struct fileInList_s {
+    fileData_s     data;  // +0x00
+    fileInList_s*  next;  // +0x0C
+};
+static_assert(sizeof(fileInList_s) == 0x10, "fileInList_s size mismatch");
+
+struct filelist_s {
+    char           dir[128];     // +0x00
+    int            numfiles;     // +0x80
+    int            hashSize;     // +0x84
+    fileInList_s** hashTable;    // +0x88
+    fileInList_s*  buildBuffer;  // +0x8C
+    filelist_s*    next;         // +0x90
+};
+static_assert(sizeof(filelist_s) == 0x94, "filelist_s size mismatch");
+static_assert(offsetof(filelist_s, numfiles) == 0x80,
+              "filelist_s::numfiles offset mismatch");
+
+// ============================================================================
+// SoundOptions - effect sound toggles (56 bytes)
+// Size: 0x38 (56 bytes) - verified against IDA
+// ============================================================================
+struct SoundOptions {
+    int mFxDontPlayFootSteps;     // +0x00
+    int mFxDontPlayGearRattle;    // +0x04
+    int mFxDontPlayLanding;       // +0x08
+    int mFxDontPlayScriptCall;    // +0x0C
+    int mFxDontPlayScriptCall_Dir;// +0x10
+    int mFxDontPlayWeapon;        // +0x14
+    int mFxDontPlayBulletHit;     // +0x18
+    int mFxDontPlayGrenadeBounce; // +0x1C
+    int mFxDontPlayProjExplode;   // +0x20
+    int mFxDontPlayVehicle;       // +0x24
+    int mFxDontPlayTurret;        // +0x28
+    int mFxDontPlayVehicleWheel;  // +0x2C
+    int mFxDontPlayLightFlash;    // +0x30
+    int mFxDontPlayMusic;         // +0x34
+};
+static_assert(sizeof(SoundOptions) == 0x38, "SoundOptions size mismatch");
+
+// ============================================================================
+// ParticleParams - particle effect spawn params (76 bytes)
+// Size: 0x4C (76 bytes) - verified against IDA
+// ============================================================================
+struct ParticleParams {
+    TPakId                       mPakId;       // +0x00
+    DbLinkedHandle<void, void>   mEnt;         // +0x04
+    int                          mFlags;       // +0x08
+    float                        mDelayTrigger;// +0x0C
+    char*                        mNameRef;     // +0x10
+    CollisionDesc*               mCd;          // +0x14
+    tlFixedString                mBoneName;    // +0x18
+    int                          mBoneIndex;   // +0x38
+    bool                         mHasDirection;// +0x3C
+    unsigned char                _pad[0x40 - 0x3D];
+    int                          mParticleId;  // +0x40
+    int                          mQueue;       // +0x44
+    bool                         mUpdatePosOnly;  // +0x48
+};
+static_assert(sizeof(ParticleParams) == 0x4C, "ParticleParams size mismatch");
+static_assert(offsetof(ParticleParams, mBoneName) == 0x18,
+              "ParticleParams::mBoneName offset mismatch");
+
+// ============================================================================
+// ServerTime - server tick/time state (20 bytes)
+// Size: 0x14 (20 bytes) - verified against IDA
+// ============================================================================
+struct ServerTime {
+    unsigned int mNumTicksElapsed;  // +0x00
+    int          mTickMSec;         // +0x04
+    float        mTickDelta;        // +0x08
+    float        mTickDeltaInv;     // +0x0C
+    float        mElapsedTime;      // +0x10
+};
+static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
+
+struct RumbleManager::InstanceHolder {
+    RumbleManager* sInst[1];  // +0x00
+};
+static_assert(sizeof(RumbleManager::InstanceHolder) == 0x4,
+              "RumbleManager::InstanceHolder size mismatch");
