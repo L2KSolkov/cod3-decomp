@@ -10,6 +10,13 @@
 class nglRenderNode;
 struct nglTexture;
 
+// nglSceneParamType - scene parameter source (NGLSCENE_DEFAULTS verified
+// against ngliListInit disasm 0x8406C1; remaining values are used by
+// ngl_scene.o and will be added when that unit ports).
+enum nglSceneParamType {
+    NGLSCENE_DEFAULTS = 0,
+};
+
 struct nglScene {
     uint8_t           _pad0[0x10];        // +0x00 (ngliScene base)
     math::Mat44       Projection;         // +0x10

@@ -40,7 +40,7 @@ aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	PORTED	a
 phys_xboxr:rb_ragdoll_model.o	phys_xboxr	rb_ragdoll_model.o	engine	31	TODO	
 bdCore:bdString.obj	bdCore	bdString.obj	engine	28	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 aeps_xboxr:apsSuppliedDomains.o	aeps_xboxr	apsSuppliedDomains.o	engine	26	PORTED	apsSuppliedDomains.cpp (apsDomain::Fixup + Sphere/Y/ZHemisphere/SphereSurface/Line/Disc/Circle domain GetValue/TestValue/ctors, 26 funcs; gHiHat_* globals; GetId FourCCs inline)
-ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	TODO	
+ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	PORTED	ngl_dx_core.cpp: D3D device init/present/frame-lock/render frame; ngl_dx_core.h (nglFrameLockType); d3d8.h gamma/vblank/callback/device shims; nglDisplayMode fixed to 16B type; nglSysFont/nglFrameVBlankCount added to owners
 bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	PORTED	bdInetAddr.cpp: internet address (25 funcs) from IDA + Demonware 2.0
 nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp

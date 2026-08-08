@@ -7,6 +7,8 @@
 #include "core/tlSkipList.h"
 #include "core/tlFixedString.h"
 #include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_dx_quad.h"
+#include "ngl/nglDebug.h"
 #include "ngl/nglTexture.h"
 #include "filesystem/apk.h"
 
@@ -40,21 +42,12 @@ extern void nglDxResetDevice(void);
 // ============================================================================
 bool nglInitialized = false;
 unsigned int nglVBlankCount = 0;
+unsigned int nglFrameVBlankCount = 0;
 int nglFrame = 0;
 void* (*nglResourceCallbackFunction)(const tlFixedString&, unsigned int) = NULL;
 
-struct nglDisplayModeInfo {
-    bool PAL;
-    bool Widescreen;
-    unsigned int Mode;
-};
-nglDisplayModeInfo nglDisplayMode = { false, false, 0 };
+nglDisplayModeType nglDisplayMode = { 0 };
 unsigned int nglDisplayMode_Set = 0;
-
-struct nglPerfInfoStruct {
-    float FPS;
-};
-nglPerfInfoStruct nglPerfInfo = { 0.0f };
 
 char nglVersionString[4] = { 0, 0, 0, 0 };
 

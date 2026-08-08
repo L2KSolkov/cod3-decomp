@@ -289,13 +289,48 @@ enum _D3DRENDERSTATETYPE {
     D3DRS_CULLMODE = 147,          // 0x93
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
     D3DRS_SIMPLE_MAX = 92,         // 0x5C
+    D3DRS_PRESENTATIONINTERVAL = 127,  // 0x7F
     D3DRS_YUVENABLE = 160,         // 0xA0
 };
+
+// ---- Device type (D3DDEVTYPE) -------------------------------------------
+enum _D3DDEVTYPE {
+    D3DDEVTYPE_HAL = 1,
+};
+
+// ---- Swap effect (D3DSWAPEFFECT) ----------------------------------------
+enum _D3DSWAPEFFECT {
+    D3DSWAPEFFECT_DISCARD = 1,
+};
+
+// ---- GPU callback type (D3DCALLBACKTYPE) --------------------------------
+enum _D3DCALLBACKTYPE {
+    D3DCALLBACK_WRITE = 1,
+};
+
+// ---- Vertical-blank data (12 bytes, verified against IDA) ---------------
+struct _D3DVBLANKDATA {
+    unsigned int VBlank;  // +0x00
+    unsigned int Swap;    // +0x04
+    unsigned int Flags;   // +0x08
+};
+static_assert(sizeof(_D3DVBLANKDATA) == 0x0C, "_D3DVBLANKDATA size mismatch");
+
+// ---- Gamma ramp (768 bytes, verified against IDA) -----------------------
+struct _D3DGAMMARAMP {
+    unsigned char red[256];    // +0x000
+    unsigned char green[256];  // +0x100
+    unsigned char blue[256];   // +0x200
+};
+static_assert(sizeof(_D3DGAMMARAMP) == 0x300, "_D3DGAMMARAMP size mismatch");
 
 // ---- Pixel shader definition (opaque, 240 bytes) -------------------------
 struct _D3DPixelShaderDef {
     uint8_t data[240];
 };
+
+// ---- Direct3D object (opaque; created by Direct3DCreate8) ---------------
+struct Direct3D;
 
 // ---- Vertex shader input element (16 bytes, verified against IDA) --------
 struct _D3DVERTEXSHADERINPUT {
@@ -452,6 +487,30 @@ int          __stdcall D3DDevice_SetTextureState_ParameterCheck(unsigned int Sta
                                                                 _D3DTEXTURESTAGESTATETYPE Type,
                                                                 unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_YuvEnable(unsigned int Value);
+void         __stdcall D3DDevice_Swap(unsigned int Flags);
+void         __stdcall D3DDevice_BlockUntilIdle(void);
+unsigned int __stdcall D3DDevice_InsertFence(void);
+void         __stdcall D3DDevice_BlockOnFence(unsigned int Time);
+void         __stdcall D3DDevice_InsertCallback(_D3DCALLBACKTYPE Type,
+                                                void (*pCallback)(unsigned int),
+                                                unsigned int Context);
+void         __stdcall D3DDevice_SetVerticalBlankCallback(void (*pCallback)(_D3DVBLANKDATA*));
+void         __stdcall D3DDevice_PersistDisplay(void);
+int          __stdcall D3DDevice_Reset(_D3DPRESENT_PARAMETERS_* pPresentationParameters);
+int          __stdcall D3DDevice_GetDeviceCaps(_D3DCAPS8* pCaps);
+void         __stdcall D3DDevice_SetGammaRamp(unsigned int Flags, const _D3DGAMMARAMP* pRamp);
+void         __stdcall D3DDevice_SetVertexShader(unsigned int Handle);
+void         __fastcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int Register,
+                                                               const void* pConstantData);
+Direct3D*    __stdcall Direct3DCreate8(unsigned int SDKVersion);
+unsigned int __stdcall Direct3D_CreateDevice(unsigned int Adapter, _D3DDEVTYPE DeviceType,
+                                             void* pUnused, unsigned int Flags,
+                                             _D3DPRESENT_PARAMETERS_* pPresentationParameters,
+                                             void** ppNewInterface);
+void         __stdcall Direct3D_SetPushBufferSize(unsigned int PushBufferSize,
+                                                  unsigned int KickOffSize);
+int          __stdcall D3DXGetErrorStringA(unsigned int hr, char* pBuffer,
+                                           unsigned int cchBuffer);
 void         __stdcall D3DDevice_SetIndices(D3DIndexBuffer* pIndexBuffer,
                                             unsigned int BaseVertexIndex);
 unsigned int* __stdcall D3DDevice_BeginPush(unsigned int Count);
@@ -463,6 +522,7 @@ void         __stdcall D3DDevice_EndPush(unsigned int* p);
 extern unsigned int D3D__DirtyFlags;               // 0xBC2A08
 extern unsigned int D3D__TextureState[4][32];      // 0xBC2A10 (base)
 extern unsigned int DTE[4];                        // 0xCD6DE4 (pushbuffer encodes)
+extern unsigned int dword_BC2E0C;                  // 0xBC2E0C (presentation-interval cache)
 
 // ---- XGRPH entry points (xgraphicsd) --------------------------------------
 extern "C" {

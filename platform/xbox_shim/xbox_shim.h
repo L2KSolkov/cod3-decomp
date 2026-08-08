@@ -72,6 +72,8 @@ void* MmAllocateContiguousMemoryEx(unsigned int size, unsigned int align_physica
 void  MmPersistContiguousMemory(void* base, unsigned int size, int persist);
 void  MmGetPhysicalAddress(void* ptr, unsigned int* out);
 unsigned int XGetTickCount(void);
+unsigned int XGetVideoFlags(void);
+unsigned int XGetVideoStandard(void);
 
 // ============================================================================
 // Event / Semaphore / Mutex (stubbed to Win32 equivalents)

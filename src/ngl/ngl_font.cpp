@@ -32,6 +32,7 @@ extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flag
 // ============================================================================
 tlSkipList<nglFont, tlFixedString> nglFontDirectory;
 char nglFontBuffer[0x400];
+nglFont* nglSysFont = NULL;
 
 // ngl_scene.o data (TODO: move to ngl_scene.cpp when that unit ports)
 nglScene* nglBuildScene = NULL;

@@ -88,6 +88,7 @@ const tlFixedString* GetKey(const nglFont* f);
 // ngl_font.o (data, defined in ngl_font.cpp)
 extern tlSkipList<nglFont, tlFixedString> nglFontDirectory;
 extern char nglFontBuffer[0x400];
+extern nglFont* nglSysFont;
 
 // Forward decl (full definition below)
 struct nglStringSection;
