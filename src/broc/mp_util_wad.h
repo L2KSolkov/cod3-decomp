@@ -199,6 +199,31 @@ MP_UTIL_WAD_ACCESSOR(audio_ambmin, Broc::bfloat)
 
 #undef MP_UTIL_WAD_ACCESSOR
 
+// ============================================================================
+// Entity property helpers (player.rank / player.team / ... — inline wrappers
+// around gBrocAPI m_entity_* members; mp_util_wad.o inline COMDATs).
+// ============================================================================
+__int16 entity_get_rank(Broc::entity ent);               // ea: 0x940820
+void entity_set_rank(Broc::entity ent, __int16 rank);    // ea: 0x9489F0
+Broc::string* entity_get_team(Broc::string* result, Broc::entity ent);  // ea: 0x938DE0
+void entity_set_team(Broc::entity ent, const Broc::string& team);
+Broc::bint* entity_get_playerState(Broc::bint* result, Broc::entity ent);  // ea: 0x93BDF0
+void entity_set_playerState(Broc::entity ent, int state);  // ea: 0x93E450
+__int16 entity_get_nextPlayerClass(Broc::entity ent);   // ea: 0x945FB0
+void entity_set_nextPlayerClass(Broc::entity ent, __int16 cls);  // ea: 0x93E410
+Broc::bint* entity_get_maxhealth(Broc::bint* result, Broc::entity ent);  // ea: 0x93ADE0
+Broc::bint* entity_get_health(Broc::bint* result, Broc::entity ent);  // ea: 0x940E10
+void entity_set_health(Broc::entity ent, int health);   // ea: 0x940250
+__int16 entity_get_playerClass(Broc::entity ent);       // ea: 0x940850
+void entity_set_playerClass(Broc::entity ent, __int16 cls);  // ea: 0x93E3D0
+Broc::vector* entity_get_angles(Broc::vector* result, Broc::entity ent);  // ea: 0x93E340
+void entity_set_angles(Broc::entity ent, const Broc::vector& v);  // ea: 0x939430
+Broc::vector* entity_get_viewangles(Broc::vector* result, Broc::entity ent);  // ea: 0x9491B0
+Broc::string* entity_get_target(Broc::string* result, Broc::entity ent);  // ea: 0x9388C0
+void entity_set_spectatorClient(Broc::entity ent, int client);  // ea: 0x93E390
+Broc::vector* entity_get_origin(Broc::vector* result, Broc::entity ent);
+void entity_set_origin(Broc::entity ent, const Broc::vector& v);  // ea: 0x938A10
+
 } // namespace mp_util_wad
 
 #endif // COD3_BROC_MP_UTIL_WAD_H
