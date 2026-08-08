@@ -7,6 +7,7 @@
 #include "game/core/core_types.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -1819,4 +1820,138 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
             CG_HoldBreathUpdate();
         }
     }
+}
+
+extern void FixupGunModelParts(void* xmp);
+extern void* XModelParts_GetAnimDef(void* parts);
+extern int XAnimEntry_Create(XAnimEntry* self);
+
+// ea: 0x006A92E0
+bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
+{
+    CurPakId();
+    if (weaponNum == 0)
+        return false;
+    if (weaponNum < 1)
+        CG_ASSERT("weaponNum >= 1", "c:\\cod\\code\\game\\cg_weapons.cpp",
+                  919);
+    if (weaponNum > BG_GetNumWeapons())
+        CG_ASSERT("weaponNum <= BG_GetNumWeapons()",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 920);
+    weaponInfo_s* weaponInfo = &((weaponInfo_s*)cg_weapons)[weaponNum];
+    weaponFileInfo_t* InfoForWeapon =
+        (weaponFileInfo_t*)BG_GetInfoForWeapon(weaponNum);
+    DObjModel dobjModels[7];
+    memset(dobjModels, 0, sizeof(dobjModels));
+    if (InfoForWeapon == nullptr
+        || (((const char*)&((char*)InfoForWeapon)[0x140])[0] == 0))
+        goto LABEL_90;
+    const char* szHandXModel = (const char*)&((char*)InfoForWeapon)[0x100];
+    const char* szGunXModel = (const char*)&((char*)InfoForWeapon)[0x140];
+    const char* szInternalName = (const char*)&((char*)InfoForWeapon)[0x40];
+    if (szHandXModel == nullptr || szHandXModel[0] == 0)
+    {
+        CG_ASSERT("0", "c:\\cod\\code\\game\\cg_weapons.cpp", 935);
+        goto LABEL_90;
+    }
+    if (szInternalName[0] == 0)
+    {
+        CG_ASSERT("0", "c:\\cod\\code\\game\\cg_weapons.cpp", 941);
+        goto LABEL_90;
+    }
+    int v7 = CurPakId();
+    void* v55;
+    dobjModels[0].model.mValue =
+        RE_RegisterModel(&v55, szHandXModel, v7, 6);
+    dobjModels[0].model.mPakId = *(int*)((char*)&v55 + 4);
+    dobjModels[0].boneName = Broc::string();
+    dobjModels[0].ignoreCollision = 0;
+    if (!dobjModels[0].model.mValue)
+        CG_ASSERT("dobjModels[0].model",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 952);
+    int v8 = 1;
+    bool v57 = false;
+    if (szGunXModel[0] != 0)
+    {
+        v8 = 2;
+        int v9 = CurPakId();
+        void* v47;
+        void* model = RE_RegisterModel(&v47, szGunXModel, v9, 6);
+        dobjModels[1].model.mValue = *(void**)model;
+        dobjModels[1].model.mPakId = *(int*)((char*)model + 4);
+        dobjModels[1].boneName = Broc::string("tag_weapon");
+        dobjModels[1].ignoreCollision = 0;
+        if (dobjModels[1].model.mValue)
+        {
+            ValidatePakId(dobjModels[1].model.mPakId);
+            void* parts = *(void**)((char*)dobjModels[1].model.mValue + 0x14);
+            if (parts && XModelParts_GetAnimDef(parts))
+            {
+                ValidatePakId(dobjModels[1].model.mPakId);
+                FixupGunModelParts(parts);
+                v57 = true;
+            }
+        }
+    }
+    void* Bank = AnimBankManager_GetBank(AnimBankManager_sInst, PAK_ID_MIN);
+    void* AnimTree = AnimBank_GetAnimTree(Bank, szInternalName);
+    void* pAnims = AnimTree;
+    if (AnimTree == nullptr)
+    {
+        CG_ASSERT("pAnims", "c:\\cod\\code\\game\\cg_weapons.cpp", 1010);
+        goto LABEL_90;
+    }
+    XAnimEntry* entries = (XAnimEntry*)((char*)AnimTree + 4);
+    int mSize = *(int*)((char*)AnimTree + 0x38);
+    for (int i = 0; i < mSize; ++i)
+    {
+        XAnimEntry* v28 = &entries[i];
+        v28->lastAttempt = 0;
+        if (v28->hash == entries[1].hash && (i == 17 || i == 18 || i == 19))
+            v28->hash = entries[3].hash;
+        v28->anim = cdGetAnim(v28->hash);
+    }
+    void* Tree = nullptr;
+    if (v57)
+    {
+        char treename[256];
+        sprintf(treename, "%s%s", szInternalName, "_arms");
+        void* v34 = AnimBankManager_GetBank(AnimBankManager_sInst,
+                                            PAK_ID_MIN);
+        void* v35 = AnimBank_GetAnimTree(v34, treename);
+        void* pAnimsWeapon = v35;
+        if (v35 == nullptr)
+            CG_ASSERT("pAnimsWeapon",
+                      "c:\\cod\\code\\game\\cg_weapons.cpp", 1038);
+        XAnimEntry* entriesW = (XAnimEntry*)((char*)v35 + 4);
+        int v36 = *(int*)((char*)v35 + 0x38);
+        for (int i = 0; i < v36; ++i)
+        {
+            XAnimEntry* v37 = &entriesW[i];
+            unsigned int hash = v37->hash;
+            v37->lastAttempt = 0;
+            v37->anim = cdGetAnim(hash);
+        }
+        Tree = XAnimCreateTree(nullptr, v35);
+        if (Tree == nullptr)
+            CG_ASSERT("pAnimTreeWeapon",
+                      "c:\\cod\\code\\game\\cg_weapons.cpp", 1055);
+    }
+    void* mainTree = XAnimCreateTree(nullptr, pAnims);
+    if (mainTree == nullptr)
+        CG_ASSERT("pAnimTree", "c:\\cod\\code\\game\\cg_weapons.cpp", 1050);
+    dobjModels[0].animTree = mainTree;
+    XAnimIsLooped(pAnims, 0x17);
+    XAnimIsLooped(pAnims, 0x18);
+    DObjCreate(dobjModels, v8, mainTree, dobj, 0);
+    dword_F6A2A0[802 * currCl] = (int)dobj;
+    if (strlen(szHandXModel) >= 0x18)
+        CG_ASSERT("strlen(pWeap->szHandXModel) < ( 24 )",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 1080);
+    Q_strncpyz(weaponInfo->handModel, szHandXModel, 24);
+    for (int i = 0; i < v8; ++i)
+        DObjCreateAnimationPlayer(dobj, i);
+    return true;
+LABEL_90:
+    return false;
 }
