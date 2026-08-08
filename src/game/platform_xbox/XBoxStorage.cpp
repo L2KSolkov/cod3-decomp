@@ -14,8 +14,8 @@
 #include <string.h>
 #include <wchar.h>
 
-// rdata 0xCD67AE - default game name (see MemoryUnit.cpp).
-static const char defaultFileName[] = "Default";
+// rdata 0xCD67AE - shared empty default file name (defined in GameXbox.cpp).
+extern const char defaultFileName[];
 
 // rdata 0xD50340 - default display strings for every device slot.
 static const char DefaultDisplayStrings[9][64] = { "F:\\" };

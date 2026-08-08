@@ -12,9 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 
-// rdata 0xCD67AE - default game name used to reset the in-progress container.
-// Content reconstructed ("Default" is the value the game displays/falls back to).
-static const char defaultFileName[] = "Default";
+// rdata 0xCD67AE - shared empty default file name (defined in GameXbox.cpp).
+extern const char defaultFileName[];
 
 static void DbgPrintf(const char* format, ...)
 {
