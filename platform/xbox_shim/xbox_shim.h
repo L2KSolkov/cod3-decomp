@@ -95,6 +95,41 @@ HANDLE PsCreateSystemThreadEx(void* func, void* arg);
 // ============================================================================
 void RtlInitAnsiString(void* dst, const char* src);
 
+// ============================================================================
+// Memory Unit / save games (peripherals_xboxr -> Win32 file system)
+// The logical MU root (e.g. "U") maps onto %USERPROFILE%\.cod3\MemoryUnit\.
+// ============================================================================
+typedef struct _XGAME_FIND_DATA {
+    WIN32_FIND_DATAA wfd;               // +0x000
+    char szSaveGameDirectory[260];      // +0x140
+    unsigned short szSaveGameName[128]; // +0x244
+} XGAME_FIND_DATA;
+
+// Device-type cookie passed to XGetDevices/XGetDeviceChanges (value ignored
+// on Win32; the Xbox SDK kept the actual table in xapilibd:mu.obj).
+extern const DWORD XDEVICE_TYPE_MEMORY_UNIT_TABLE;
+
+DWORD XGetDevices(DWORD DeviceType);
+DWORD XGetDeviceChanges(DWORD DeviceType, DWORD* pInsertions, DWORD* pRemovals);
+int XMountMUA(DWORD dwPort, DWORD dwSlot, char* pchDrive);
+int XUnmountMU(DWORD dwPort, DWORD dwSlot);
+int XCreateSaveGame(const char* lpRootPathName, const wchar_t* lpSaveGameName,
+                    DWORD dwNumberOfBytesWritten, DWORD dwCreationDisposition,
+                    char* lpString1, int iMaxLength);
+int XDeleteSaveGame(const char* lpRootPathName, const wchar_t* lpSaveGameName);
+int XGetDiskSectorSizeA(const char* lpRootPathName);
+int XGetDiskClusterSizeA(const char* lpRootPathName);
+HANDLE XFindFirstSaveGame(const char* lpRootPathName, XGAME_FIND_DATA* pFindGameData);
+int XFindNextSaveGame(HANDLE hFindGame, XGAME_FIND_DATA* pFindGameData);
+int XFindClose(HANDLE hMem);
+DWORD XGetDisplayBlocks(const char* lpSaveGameDirectory);
+void* XCalculateSignatureBegin(DWORD dwFlags);
+int XCalculateSignatureUpdate(void* hCalcSig, const void* pbData, DWORD cbData);
+int XCalculateSignatureEnd(void* hMem, void* pbSignature);
+
+// Real directory behind the logical MU root (for GetDiskFreeSpaceExA etc.).
+const char* XGetMemoryUnitRootPath(void);
+
 #ifdef __cplusplus
 }
 #endif

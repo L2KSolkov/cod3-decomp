@@ -125,3 +125,20 @@ Format: `XboxAPI | caller_count | Win32_replacement`
 | XMountUtilityDrive | return 0 |
 | XeImageFileName | GetModuleFileName |
 | XCalculateSignature* | return 0 (load-time signing not needed) |
+
+## Memory unit / save games (peripherals_xboxr) - IMPLEMENTED in xbox_shim.cpp
+
+`peripherals_xboxr` was ported (81/81) onto the Win32 file system. The logical
+MU root (`U`/`F`) maps onto `%USERPROFILE%\.cod3\MemoryUnit\`; all of these are
+implemented in `platform/xbox_shim/xbox_shim.cpp`:
+
+| Xbox API | Win32 Replacement |
+|---|---|
+| XGetDevices / XGetDeviceChanges | return 0 (only device 8 / hard drive exists) |
+| XMountMUA / XUnmountMU | set drive 'U', no-op |
+| XCreateSaveGame | CreateDirectoryA under the save root |
+| XDeleteSaveGame | delete save directory + contents |
+| XFindFirstSaveGame / XFindNextSaveGame / XFindClose | FindFirstFileA dir enumeration |
+| XGetDisplayBlocks | total file bytes / 16384 rounded up |
+| XGetDiskSectorSizeA / XGetDiskClusterSizeA | 512 / 16384 |
+| XCalculateSignatureBegin/Update/End | deterministic 20-byte CRC digest |

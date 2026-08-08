@@ -26,7 +26,7 @@ mp_xbox.o		mp_xbox.o	game	61	TODO
 nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	PORTED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr)
 nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
-peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	TODO	
+peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	PORTED	XBoxStorage filesystem-backed save/load; async Service loop; CRC trailer
 bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	PORTED	[bdPeer] bdSession.cpp: peer-to-peer session state machine (44 funcs) from Demonware 2.0 + IDA
 mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
 render_xboxr:ngl_aux.o	render_xboxr	ngl_aux.o	engine	40	PORTED	ngl_aux.cpp/h + tlResourceDirectory.h: 40 non-inline (sphere helpers, cdGetClipResult, dir add/del/get/set, auxMeshIterator, static init) + 124 inline (tlResourceDirectory/delegate_directory templates over tlSkipList, GetKeyPtr)
@@ -34,7 +34,7 @@ nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	PORTED	Phase 2/3: nal.
 aeps_xboxr:apsEffect.o	aeps_xboxr	apsEffect.o	engine	37	PORTED	apsEffect.cpp (full apsEffect 128B class: ctor/Construct/dtor/Destruct, Update, Render, pool InitPool/New/Delete/TermPool/TestAlloc/IsPoolEmpty/GetNumActiveEffects, modifiers, raycast, Report/ReportTemplate/ReportEffects; apsBlockArray<T>; AEPS_VECTOR_NEW<apsEffect>; g_effectTime)
 ngl_xboxr:ngl_debug.o	ngl_xboxr	ngl_debug.o	engine	36	PORTED	ngl_debug.cpp: debug flags, perf averaging, shader profiler (inline COMDATs), line/tri batch adders, shape drawing (box/ellipse/cylinder/sphere/pyramid/solid variants); owns nglDebug/nglPerfInfo/nglAvgPerfInfo/nglSyncDebug/nglSyncPerfInfo + node cur pointers; DiagMat33 added to math_types.h; fast-sin polynomial from math::Sin
 bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine	36	PORTED	[bdConnection] bdUnicastConnection.cpp: reliable unicast state machine (36 funcs) from Demonware 2.0 + IDA
-peripherals_xboxr:MemoryUnit.o	peripherals_xboxr	MemoryUnit.o	engine	35	TODO	
+peripherals_xboxr:MemoryUnit.o	peripherals_xboxr	MemoryUnit.o	engine	35	PORTED	MemoryUnitManager state machine + Container/SavedGame types
 aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	PORTED	apsEffectTemplate.cpp (full apsEffectTemplate class 208B: Element/Modifier/Stats, ctor/dtor, per-element setters, RebuildPFD, Fixup, CalcMemoryNeeded/TestAlloc/MemoryMatch, SetElementData, modifiers; sMaxElements/sMaxModifiers/kDefaultTimeScale; apsArray erase/destroy_all)
 phys_xboxr:rb_ragdoll_model.o	phys_xboxr	rb_ragdoll_model.o	engine	31	PORTED	rb_ragdoll_model.cpp/h: ragdoll model (add/remove body/joint/actuator, ballistic target, stability, impulses/damping, velocity field, forces on/off, time scale); phys_static_array<T,10> template (48B) with iterator/add/push_back/find_by_val
 bdCore:bdString.obj	bdCore	bdString.obj	engine	28	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
