@@ -29,6 +29,80 @@ struct D3DCubeTexture : D3DBaseTexture {};
 struct D3DVolumeTexture : D3DBaseTexture {};
 struct D3DSurface {};
 
+// ---- Palette (Xbox D3D8, 12 bytes, verified against IDA) -----------------
+struct D3DPalette {
+    unsigned int Common;   // +0x00
+    unsigned int Data;     // +0x04
+    unsigned int Lock;     // +0x08
+};
+static_assert(sizeof(D3DPalette) == 0xC, "D3DPalette size mismatch");
+
+enum _D3DPALETTESIZE {
+    D3DPALETTE_256 = 0x0,
+    D3DPALETTE_128 = 0x1,
+    D3DPALETTE_64  = 0x2,
+    D3DPALETTE_32  = 0x3,
+    D3DPALETTE_MAX = 0x4,
+};
+
+// ---- Device caps (Xbox D3D8, 212 bytes, verified against IDA) ------------
+struct _D3DCAPS8 {
+    unsigned int DeviceType;
+    unsigned int AdapterOrdinal;
+    unsigned int Caps;
+    unsigned int Caps2;
+    unsigned int Caps3;
+    unsigned int PresentationIntervals;
+    unsigned int CursorCaps;
+    unsigned int DevCaps;
+    unsigned int PrimitiveMiscCaps;
+    unsigned int RasterCaps;
+    unsigned int ZCmpCaps;
+    unsigned int SrcBlendCaps;
+    unsigned int DestBlendCaps;
+    unsigned int AlphaCmpCaps;
+    unsigned int ShadeCaps;
+    unsigned int TextureCaps;
+    unsigned int TextureFilterCaps;
+    unsigned int CubeTextureFilterCaps;
+    unsigned int VolumeTextureFilterCaps;
+    unsigned int TextureAddressCaps;
+    unsigned int VolumeTextureAddressCaps;
+    unsigned int LineCaps;
+    unsigned int MaxTextureWidth;
+    unsigned int MaxTextureHeight;
+    unsigned int MaxVolumeExtent;
+    unsigned int MaxTextureRepeat;
+    unsigned int MaxTextureAspectRatio;
+    unsigned int MaxAnisotropy;
+    float MaxVertexW;
+    float GuardBandLeft;
+    float GuardBandTop;
+    float GuardBandRight;
+    float GuardBandBottom;
+    float ExtentsAdjust;
+    unsigned int StencilCaps;
+    unsigned int FVFCaps;
+    unsigned int TextureOpCaps;
+    unsigned int MaxTextureBlendStages;
+    unsigned int MaxSimultaneousTextures;
+    unsigned int VertexProcessingCaps;
+    unsigned int MaxActiveLights;
+    unsigned int MaxUserClipPlanes;
+    unsigned int MaxVertexBlendMatrices;
+    unsigned int MaxVertexBlendMatrixIndex;
+    float MaxPointSize;
+    unsigned int MaxPrimitiveCount;
+    unsigned int MaxVertexIndex;
+    unsigned int MaxStreams;
+    unsigned int MaxStreamStride;
+    unsigned int VertexShaderVersion;
+    unsigned int MaxVertexShaderConst;
+    unsigned int PixelShaderVersion;
+    float MaxPixelShaderValue;
+};
+static_assert(sizeof(_D3DCAPS8) == 0xD4, "_D3DCAPS8 size mismatch");
+
 // ---- Vertex/index buffer objects (12 bytes each, verified against IDA) ----
 struct D3DVertexBuffer {
     unsigned int Common;  // +0x00
@@ -150,6 +224,10 @@ unsigned int __stdcall D3DResource_Release(D3DResource* pResource);
 int          __stdcall D3DDevice_SetRenderState_ParameterCheck(unsigned int State, unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_MultiSampleAntiAlias(unsigned int Value);
 void         __stdcall D3DResource_Register(D3DResource* pResource, void* pBase);
+void         __stdcall D3DResource_BlockUntilNotBusy(D3DResource* pResource);
+void         __stdcall D3DDevice_SetPalette(unsigned int Stage, D3DPalette* pPalette);
+unsigned int __stdcall D3DPalette_Lock2(D3DPalette* pPalette, unsigned int Flags);
+void         __stdcall XGSetPaletteHeader(_D3DPALETTESIZE Size, D3DPalette* pPalette, void* Data);
 void*          __stdcall D3DDevice_CreateTexture2(unsigned int Width, unsigned int Height,
                                                   unsigned int Depth, unsigned int Levels,
                                                   unsigned int Usage, unsigned int Format,
