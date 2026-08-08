@@ -12,7 +12,7 @@ render.o		render.o	game	426	TODO
 anim.o		anim.o	game	408	TODO	
 mp_actors.o		mp_actors.o	game	380	TODO	
 cg.o		cg.o	game	350	TODO	
-cl.o		cl.o	game	313	TODO	
+cl.o		cl.o	game	313	IN_PROGRESS	cl_input.cpp: kbutton_t kb/kbss button state + IN_* input handlers (99/313) incl. KeyDown/KeyUp/KeyState, stance/crouch/prone toggles, weapon switch, ADS/binoculars/breath, grenade/smoke; cl[] snapshot + Entity externs; console block remains
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
 game_xbox.o		game_xbox.o	game	210	PORTED	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26) + MPPlayerSet header (2) + XboxLiveMenus.cpp (46: XboxLiveOptionsMenu + InGameLiveOptionsMenu classes, ShowNotificationIcon, Xbox_LaunchInfo, RenderUIX) = 210/210; FEMenu/UIListBox/PanelFile/DialogMenu bases extern (shell.o/core.o provide); HandleError Com_Printf fix; XLive APIs stubbed via /FORCE
