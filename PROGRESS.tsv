@@ -50,7 +50,7 @@ bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	PORTED	Phase 2: ported from De
 aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	PORTED	apsCommon.cpp (apsAllocator virtuals + camera/roll + LOD table + statics; apsSingleton<apsError>::sInstancePtr emitted here; InitShaders now calls void InitShader
 aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	PORTED	Phase 3: apsGroup.cpp (particle group, all 22 funcs)
 ngl_xboxr:ngl_lighting.o	ngl_xboxr	ngl_lighting.o	engine	22	PORTED	ngl_lighting.cpp: light contexts, dir/point/proj light list-add, determine gun/lights/proj-lights, get-single-light helpers, dir-light matrix; owns nglDefault/Build/SendLightContext + nglLightContextParam(ID); nglLightType enum + light info structs; nglScene.LightContext@0x33C added
-render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	TODO	
+render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	PORTED	ShaderCommon.h/cpp: toggles (Particles/Fog/ToggleShader + gShaderSwitches table of 36), Init/Register/SetupFrame, texture lookups, Glow/HeatHaze thunks, ShotPerfTest + ShaderInfo; ae_fixed_string operator+=/ae_formatted_string format ctor added
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	PORTED	Phase 2: nvl.cpp (video codec stubs)
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
