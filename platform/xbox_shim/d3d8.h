@@ -293,12 +293,17 @@ enum _D3DRENDERSTATETYPE {
     D3DRS_PSCONSTANT1_1 = 19,      // 0x13
     D3DRS_PSRGBINPUTS0 = 34,       // 0x22
     D3DRS_PSRGBINPUTS1 = 35,       // 0x23
+    D3DRS_PS_MAX = 57,             // 0x39
     D3DRS_ZWRITEENABLE = 64,       // 0x40
+    D3DRS_STENCILPASS = 69,        // 0x45
+    D3DRS_STENCILFUNC = 70,        // 0x46
+    D3DRS_STENCILMASK = 72,        // 0x48
     D3DRS_COLORWRITEENABLE = 67,   // 0x43
     D3DRS_SPECULARENABLE = 103,    // 0x67
     D3DRS_CULLMODE = 147,          // 0x93
     D3DRS_ZENABLE = 143,           // 0x8F
     D3DRS_STENCILENABLE = 144,     // 0x90
+    D3DRS_ROPZCMPALWAYSREAD = 163, // 0xA3
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
     D3DRS_SIMPLE_MAX = 92,         // 0x5C
     D3DRS_PRESENTATIONINTERVAL = 127,  // 0x7F
@@ -493,6 +498,11 @@ void         __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef*
 void         __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int Value);
 void         __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int Value);
+void         __stdcall D3DDevice_SetRenderState_RopZCmpAlwaysRead(unsigned int Value);
+void         __stdcall D3DDevice_SetViewport(const void* pViewport);
+void         __stdcall D3DDevice_Clear(unsigned int a1, unsigned int a2,
+                                       unsigned int Flags, unsigned int Color,
+                                       float Z, unsigned int Stencil);
 void         __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned int Value);
 void         __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
                                                                        const void* pConstantData,

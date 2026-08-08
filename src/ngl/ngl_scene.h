@@ -99,7 +99,9 @@ public:
 };
 static_assert(sizeof(nglSceneParamSet) == 4, "nglSceneParamSet size mismatch");
 struct nglScene {
-    uint8_t           _pad0[0x10];        // +0x000 (ngliScene base)
+    unsigned int      ClearStencil;       // +0x000 (ngliScene base)
+    int               CubeMapFace;        // +0x004
+    uint8_t           _pad8[8];           // +0x008
     math::Mat44       Projection;         // +0x010
     math::Mat44       View;               // +0x050
     math::Mat44       Device;             // +0x090
