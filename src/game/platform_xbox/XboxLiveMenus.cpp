@@ -18,6 +18,13 @@ extern void UIListBoxCtorThunk(UIListBox* self, int visibleRows,
                                int visibleColumns, int maxDataRows,
                                bool bIsWrapping);
 
+void UIListBox::UIListBoxCtor(int visibleRows, int visibleColumns,
+                              int maxDataRows, bool bIsWrapping)
+{
+    UIListBoxCtorThunk(this, visibleRows, visibleColumns, maxDataRows,
+                       bIsWrapping);
+}
+
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)
 // ============================================================================

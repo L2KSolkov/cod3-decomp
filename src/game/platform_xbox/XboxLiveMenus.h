@@ -55,6 +55,7 @@ struct UIListBox {
     void SetText(int row, int column, const char* text);
     void SetAllColumnsSelectable(bool selectable);
     void Refresh();
+    void RemoveAllItems();
 };
 static_assert(sizeof(UIListBox) == 0xAC, "UIListBox size mismatch");
 
@@ -167,6 +168,7 @@ struct STBManager {
 struct OverlayMenu {
     static OverlayMenu* Me(int version);
     void SetState(int state);
+    void Update(int v);
     int mAcceptMenu;
     int mBackMenu;
     int mGameListingNum;
@@ -189,6 +191,7 @@ struct InGameMenuSystem {
 };
 struct FEManager {
     FEMenuSystem* fems;
+    struct AARMenuSystemView { FEMenu** menus; }* mAARS;
     InGameMenuSystem* GetIGMS(int client);
     DialogMenuSystem* GetDMS(int client);
 };

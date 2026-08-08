@@ -194,6 +194,7 @@ public:
     void ShowPlayersList(unsigned int portNumber, unsigned int bitFlagMask);
     void ShowLoginScreen(unsigned int serviceBitfield);
     void ToggleOfflineAppearance(unsigned int portNumber);
+    void SignInFromInvite(void* acceptedInvite, unsigned int serviceBitfield);
     void Render();
     char* GetIcon(unsigned int portNumber);
 

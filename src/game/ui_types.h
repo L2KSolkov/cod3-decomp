@@ -8,6 +8,9 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 #include <stddef.h>
 #include <stdint.h>
 
@@ -344,6 +347,9 @@ struct FEMenu {
     void SetHigh(int a2, int a3, bool a4);
     void ReturnToPreviousMenu(int a2);
     void AddOverlay(int a2);
+    void MakeActiveAndReturn(int a2);
+    void UpdateWidescreen(BOOL widescreen);
+    void SetItem(int row, FEText* text, int state);
 };
 static_assert(sizeof(FEMenu) == 0x4C, "FEMenu size mismatch");
 static_assert(offsetof(FEMenu, entries) == 0x04, "FEMenu::entries offset mismatch");

@@ -17,7 +17,8 @@
 struct SaveGameData {
     unsigned char _pad0[0x310];
     int liveState;                  // +0x310 (StubData.liveState)
-    unsigned char _pad1[0x3B4 - 0x314];
+    unsigned char savedInvite[0x9C];  // +0x314 (XONLINE_ACCEPTED_GAMEINVITE)
+    unsigned char _pad1[0x3B4 - 0x3B0];
     bool savedStateIsValid;         // +0x3B4
     unsigned char _pad2[0x3BD - 0x3B5];
     bool appearOnline;              // +0x3BD
@@ -79,7 +80,16 @@ struct MPPeer {
 
 struct MultiplayerMgr {
     MPPeer* mPeer;                 // +0x00
+    bool mRankedGame;              // +0x35
+    bool mLinkCheckEnabled;        // +0x40
     static MultiplayerMgr* sInst;  // mp.o data
+    static void Step(MultiplayerMgr* self, int earlyOutInterval,
+                     bool fromThread, bool a_bFromGame);
+    static struct kuju_sTime* getLocalTime(MultiplayerMgr* self);
+};
+
+struct kuju_sTime {
+    int mTime;
 };
 
 struct MPPlayerManager {
