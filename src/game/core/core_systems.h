@@ -299,6 +299,7 @@ struct ActiveEffectSet {
     void AddEffect(AbstractEffect* effect);             // ea: 0x004C0C00
     bool IsFinished() const;                            // ea: 0x004C0C30
     bool IsQueued() const;                              // ea: 0x004C0C50
+    void FrameAdvance(float delta);                     // ea: 0x004CA660
     void AdjustEffect_Scale(const char* param,
                             float scale);               // ea: 0x004C0CD0
     void FastForward(float deltaT);                     // ea: 0x004C0D50
@@ -317,9 +318,14 @@ struct HandleDb {
         ActiveEffectSet* mObject;  // +0x00
         unsigned int     mKey;     // +0x04
     };
-    unsigned char _header[0x40];   // +0x00
+    unsigned char mFreeBits[0x40]; // +0x00 BitSet<512> free-index bitmap
     Element       mElements[512];  // +0x40
     unsigned int  _tail;           // +0x1040
+
+    Handle AllocateHandle();                       // ea: 0x004E8D50
+    void BindObjectToHandle(Handle handle,
+                            ActiveEffectSet* obj); // ea: 0x004E3DB0
+    void ReleaseHandle(Handle h);                  // ea: 0x004E6430
 };
 static_assert(sizeof(HandleDb) == 0x1044, "HandleDb size mismatch");
 
@@ -392,8 +398,21 @@ struct EffectEventSys {
     void IsSoundToBeQueued(bool val);            // ea: 0x004C11A0
     void SetQueryImportance(bool val);           // ea: 0x004C11C0
     void DirectionInfo(const float* dir);        // ea: 0x004C11F0
+    ActiveEffectSet* GetActiveEffectSet(Handle handle);  // ea: 0x004C56B0
     bool IsEffectActive(Handle handle);          // ea: 0x004CACD0
+    void AdjustEffect_Scale(Handle handle, const char* param,
+                            float scale);        // ea: 0x004CABD0
+    void FastForward(Handle handle, float deltaT);  // ea: 0x004CAC10
+    void PlayQueuedEffect(Handle handle);        // ea: 0x004CAC50
+    void StopLoopingEffects(Handle handle);      // ea: 0x004CAC90
+    void ReleaseHandle(ActiveEffectSet* t);      // ea: 0x004CB840
+    void ReleaseHandle(Handle h);                // ea: 0x004CB870
+    void StopAll();                              // ea: 0x004CEDC0
     void StopEffect(Handle handle, bool kill);   // ea: 0x004CEF20
+    void KillEffectsWithPakId(TPakId pak_id);    // ea: 0x004CF020
+    void CollisionInfo(const CollisionDesc* col_desc,
+                       bool set_mat);            // ea: 0x004CF1D0
+    Handle AssignHandle(ActiveEffectSet* t);     // ea: 0x004CF290
 };
 static_assert(sizeof(EffectEventSys) == 0xA380, "EffectEventSys size mismatch");
 

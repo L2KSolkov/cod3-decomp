@@ -16,6 +16,7 @@ extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
 }
 
 #define ASSERT_IDX(idx, cap, line)                                         \
@@ -101,9 +102,18 @@ static_assert(sizeof(CameraShake) == 0x14C, "CameraShake size mismatch");
 extern math::Position3 GetTagFlashPos(Entity* cent);
 extern CameraShake* g_cameraShake;  // 0x00F056E8
 extern int dword_F6A290[4 * 0x322];  // per-client table, 0xC88-byte stride
+extern void FX_ClearFX();
+extern void Scr_Notify(Entity* ent, HashString hashValue,
+                       unsigned int paramcount);
 
 CameraShake* g_cameraShake = nullptr;
 int dword_F6A290[4 * 0x322];
+
+// snd_wait (Entity +0x3C8): two HashStrings
+struct SndWait {
+    HashString notifyHash;  // +0x00
+    HashString soundName;   // +0x04
+};
 
 // ============================================================================
 // EffectEventSys - query param setters
@@ -309,6 +319,262 @@ void EffectEventSys::StopEffect(Handle handle, bool kill)
 }
 
 // ============================================================================
+// HandleDb
+// ============================================================================
+
+// ea: 0x004E8D50
+Handle HandleDb::AllocateHandle()
+{
+    int m_cur_val = -1;
+    for (int i = 0; i < 512; ++i)
+    {
+        if ((mFreeBits[i >> 3] >> (i & 7)) & 1)
+        {
+            m_cur_val = i;
+            break;
+        }
+    }
+    if (m_cur_val >= 0x200)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+        AeAssert::gCurrentLine = 98;
+        AeAssert::gCurrentExpr = "nextIndex >= 0 && nextIndex < _MaxEltements";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "index out of bounds!!! ILLEGAL array access!"))
+            __debugbreak();
+    }
+    mFreeBits[m_cur_val >> 3] &= (unsigned char)~(1u << (m_cur_val & 7));
+    Handle result;
+    result.mVal = (mElements[m_cur_val].mKey << 9) | m_cur_val;
+    return result;
+}
+
+// ea: 0x004E3DB0
+void HandleDb::BindObjectToHandle(Handle handle, ActiveEffectSet* obj)
+{
+    int v3 = handle.mVal & 0x1FF;
+    if (mElements[v3].mKey != (unsigned int)(handle.mVal >> 9))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+        AeAssert::gCurrentLine = 123;
+        AeAssert::gCurrentExpr = "element.GetKey() == h.GetKey()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("handle was not allocated for this object"))
+            __debugbreak();
+    }
+    mElements[v3].mObject = obj;
+}
+
+// ea: 0x004E6430
+void HandleDb::ReleaseHandle(Handle h)
+{
+    if (h.mVal != 0)
+    {
+        int v3 = h.mVal & 0x1FF;
+        if (mElements[v3].mKey == (unsigned int)(h.mVal >> 9))
+        {
+            mFreeBits[v3 >> 3] |= (unsigned char)(1u << (v3 & 7));
+            mElements[v3].mObject = nullptr;
+            mElements[v3].mKey = mElements[v3].mKey + 1;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+            AeAssert::gCurrentLine = 170;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("freeing invalid handle"))
+                __debugbreak();
+        }
+    }
+}
+
+// ============================================================================
+// EffectEventSys - handle plumbing + lifecycle
+// ============================================================================
+
+// ea: 0x004C56B0
+ActiveEffectSet* EffectEventSys::GetActiveEffectSet(Handle handle)
+{
+    int v2 = handle.mVal & 0x1FF;
+    if (v2 < 0x200
+        && handle.mVal >> 9 == mHandleDb.mElements[v2].mKey)
+        return mHandleDb.mElements[v2].mObject;
+    return nullptr;
+}
+
+// ea: 0x004CABD0
+void EffectEventSys::AdjustEffect_Scale(Handle handle, const char* param,
+                                        float scale)
+{
+    int v4 = handle.mVal & 0x1FF;
+    if (v4 < 0x200 && handle.mVal >> 9 == mHandleDb.mElements[v4].mKey)
+    {
+        ActiveEffectSet* mObject = mHandleDb.mElements[v4].mObject;
+        if (mObject != nullptr)
+            mObject->AdjustEffect_Scale(param, scale);
+    }
+}
+
+// ea: 0x004CAC10
+void EffectEventSys::FastForward(Handle handle, float deltaT)
+{
+    int v3 = handle.mVal & 0x1FF;
+    if (v3 < 0x200 && handle.mVal >> 9 == mHandleDb.mElements[v3].mKey)
+    {
+        ActiveEffectSet* mObject = mHandleDb.mElements[v3].mObject;
+        if (mObject != nullptr)
+            mObject->FastForward(deltaT);
+    }
+}
+
+// ea: 0x004CAC50
+void EffectEventSys::PlayQueuedEffect(Handle handle)
+{
+    int v2 = handle.mVal & 0x1FF;
+    if (v2 < 0x200 && handle.mVal >> 9 == mHandleDb.mElements[v2].mKey)
+    {
+        ActiveEffectSet* mObject = mHandleDb.mElements[v2].mObject;
+        if (mObject != nullptr)
+            mObject->PlayQueuedEffect();
+    }
+}
+
+// ea: 0x004CAC90
+void EffectEventSys::StopLoopingEffects(Handle handle)
+{
+    int v2 = handle.mVal & 0x1FF;
+    if (v2 < 0x200 && handle.mVal >> 9 == mHandleDb.mElements[v2].mKey)
+    {
+        ActiveEffectSet* mObject = mHandleDb.mElements[v2].mObject;
+        if (mObject != nullptr)
+            mObject->mFlags.mVal |= 1u;
+    }
+}
+
+// ea: 0x004CB840
+void EffectEventSys::ReleaseHandle(ActiveEffectSet* t)
+{
+    if (t->mId.mVal != 0)
+    {
+        mHandleDb.ReleaseHandle(t->mId);
+        t->mId.mVal = 0;
+    }
+}
+
+// ea: 0x004CB870
+void EffectEventSys::ReleaseHandle(Handle h)
+{
+    if (h.mVal != 0)
+        mHandleDb.ReleaseHandle(h);
+}
+
+// ea: 0x004CEDC0
+void EffectEventSys::StopAll()
+{
+    mStoppingAll = true;
+    while (mEffectSets.m_size != 0)
+    {
+        ActiveEffectSet* v3 = mEffectSets[0];
+        if (v3 != nullptr)
+        {
+            v3->~ActiveEffectSet();
+            ActiveEffectSet_sAllocator->Release(v3);
+        }
+        unsigned int v4 = mEffectSets.m_size - 1;
+        ASSERT_IDX(v4, 512, 154);
+        mEffectSets[0] = mEffectSets[v4];
+        if (mEffectSets.m_size != 0)
+            --mEffectSets.m_size;
+    }
+    while (mFadingEffects.m_size != 0)
+    {
+        AbstractEffect* v6 = mFadingEffects[0];
+        if (v6 != nullptr)
+            delete v6;
+        unsigned int v7 = mFadingEffects.m_size - 1;
+        ASSERT_IDX(v7, 128, 154);
+        mFadingEffects[0] = mFadingEffects[v7];
+        if (mFadingEffects.m_size != 0)
+            --mFadingEffects.m_size;
+    }
+    FX_ClearFX();
+    mStoppingAll = false;
+}
+
+// ea: 0x004CF020
+void EffectEventSys::KillEffectsWithPakId(TPakId pak_id)
+{
+    for (unsigned int v3 = 0; v3 < (unsigned int)mEffectSets.m_size;)
+    {
+        ASSERT_IDX(v3, 512, 154);
+        if (mEffectSets[v3]->mPakId == pak_id)
+        {
+            ASSERT_IDX(v3, 512, 154);
+            ActiveEffectSet* v4 = mEffectSets[v3];
+            if (v4 != nullptr)
+            {
+                v4->~ActiveEffectSet();
+                ActiveEffectSet_sAllocator->Release(v4);
+            }
+            unsigned int v5 = mEffectSets.m_size - 1;
+            ASSERT_IDX(v5, 512, 154);
+            ASSERT_IDX(v3, 512, 154);
+            mEffectSets[v3] = mEffectSets[v5];
+            if (mEffectSets.m_size != 0)
+                --mEffectSets.m_size;
+        }
+        else
+        {
+            ++v3;
+        }
+    }
+}
+
+// ea: 0x004CF1D0
+void EffectEventSys::CollisionInfo(const CollisionDesc* col_desc, bool set_mat)
+{
+    mCurrentQuery->mFlags.mVal |= 4u;
+    memcpy(&mCurrentQuery->mCollisionInfo, col_desc,
+           sizeof(mCurrentQuery->mCollisionInfo));
+    if (set_mat)
+    {
+        int material = col_desc->material;
+        if (material > 0)  // kCollisionMaterialASPHALT
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+            AeAssert::gCurrentLine = 1558;
+            AeAssert::gCurrentExpr =
+                "( mat_type >= kCollisionMaterialMin && mat_type <= "
+                "kCollisionMaterialMax )";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("value not in enum range"))
+                __debugbreak();
+        }
+        CachedQuery* p_mCachedQuery = &mCurrentQuery->mCachedQuery;
+        p_mCachedQuery->mSpecifiedFields.mBits[3 >> 3] |=
+            (unsigned char)(1u << (3 & 7));
+        p_mCachedQuery->mWeakFields.mBits[3 >> 3] |=
+            (unsigned char)(1u << (3 & 7));
+        p_mCachedQuery->mMATERIAL = material;
+    }
+}
+
+// ea: 0x004CF290
+Handle EffectEventSys::AssignHandle(ActiveEffectSet* t)
+{
+    Handle v4 = mHandleDb.AllocateHandle();
+    mHandleDb.BindObjectToHandle(v4, t);
+    t->mId = v4;
+    return v4;
+}
+
+// ============================================================================
 // ActiveEffectSet
 // ============================================================================
 
@@ -342,6 +608,75 @@ bool ActiveEffectSet::IsQueued() const
             return true;
     }
     return false;
+}
+
+// ea: 0x004CA660
+void ActiveEffectSet::FrameAdvance(float delta)
+{
+    if ((mFlags.mVal & 2) != 0 && mEffects.m_size != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+        AeAssert::gCurrentLine = 169;
+        AeAssert::gCurrentExpr =
+            "!mFlags.Test( kActiveEffectFlag_Pending ) || "
+            "mEffects.size() == 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("effect should be ready"))
+            __debugbreak();
+    }
+    if ((mFlags.mVal & 2) == 0)
+    {
+        if ((mFlags.mVal & 1) != 0)
+            DoStopLoopingEffects();
+        int m_size = mEffects.m_size;
+        int size = m_size;
+        for (unsigned int v4 = 0; v4 < (unsigned int)m_size; ++v4)
+        {
+            ASSERT_IDX(v4, 6, 154);
+            mEffects.m_elements[v4]->FrameAdvance(delta);
+            if (m_size <= mEffects.m_size)
+            {
+                ASSERT_IDX(v4, 6, 154);
+                AbstractEffect* effect = mEffects[v4];
+                if (effect->IsFinished())
+                {
+                    unsigned int mVal =
+                        mEffects[v4]->mEntity.mHandle.mVal;
+                    unsigned int v7 = mVal & 0xFFF;
+                    if (v7 < 0x540
+                        && mVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey)
+                    {
+                        Entity* mObject =
+                            EntityHandleDb::sInst.mElements[v7].mObject;
+                        if (mObject != nullptr)
+                        {
+                            SndWait* sndWait = (SndWait*)&mObject->snd_wait;
+                            if (sndWait->notifyHash.mHash != 0)
+                            {
+                                Scr_Notify(mObject, sndWait->notifyHash, 0);
+                                sndWait->notifyHash.mHash = 0;
+                                sndWait->soundName.mHash = 0;
+                            }
+                        }
+                    }
+                    ASSERT_IDX(v4, 6, 154);
+                    AbstractEffect* p = mEffects[v4];
+                    if (p != nullptr)
+                        delete p;
+                    mEffects[v4] = mEffects[mEffects.m_size - 1];
+                    if (mEffects.m_size != 0)
+                        --mEffects.m_size;
+                    --v4;
+                    m_size = --size;
+                }
+            }
+            else
+            {
+                --v4;
+                size = --m_size;
+            }
+        }
+    }
 }
 
 // ea: 0x004C0CD0
