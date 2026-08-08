@@ -432,6 +432,10 @@ struct DbQuery {
     unsigned int   mConstraintPos; // +0x45C
     void ResetConstraints();
     void AcceptMatchingLeaf(DbGraphNode* node, DbQueryResults* results);
+    void Reset();
+    int CompareField(int colId, const char** db_value);
+    bool TestField(int colId, const char** db_value);
+    void FindMatches(DbQueryResults* results);
 };
 static_assert(sizeof(DbQuery) == 0x460, "DbQuery size mismatch");
 
@@ -455,6 +459,12 @@ struct ConfigString {
 };
 static_assert(sizeof(ConfigString) == 0x10, "ConfigString size mismatch");
 
+struct ConfigStringPtr {
+    ConfigString* mValue;  // +0x00
+    TPakId        mPakId;  // +0x04
+};
+static_assert(sizeof(ConfigStringPtr) == 0x8, "ConfigStringPtr size mismatch");
+
 struct ConfigStringBank {
     unsigned char mData[0x1C];  // InplaceAssetBank<ConfigString,InplaceTree<...>>
 };
@@ -462,6 +472,12 @@ static_assert(sizeof(ConfigStringBank) == 0x1C, "ConfigStringBank size mismatch"
 
 struct ConfigStringManager {
     unsigned char mData[0x190];  // InplaceAssetBankSet<ConfigStringBank>
+    void DecodeBank(const char* name, ConfigStringBank* data, int size,
+                    TPakId pakId);
+    ConfigStringPtr GetConfigString(TPakId pakId, const char* name,
+                                    const char* type);
+    void CallbackSearch(TPakId pakId, const char* type,
+                        void (*callback)(const char*, const ConfigString*));
 };
 static_assert(sizeof(ConfigStringManager) == 0x190,
               "ConfigStringManager size mismatch");
@@ -489,6 +505,12 @@ struct EntityNotifySet {
     DbLinkedHandle<void, void> mEnt;      // +0x08
     reserved_dlist<EntityNotify> mStrings;  // +0x0C
     reserved_dlist<EndOnScriptNode> mEndOnList;  // +0x1C
+    void AddNotify(const HashString* h, DbLinkedHandle<void, void> owner);
+    EntityNotify* GetNotify(const HashString* chk);
+    char AssignScriptVariable(const HashString* chk, WaitTilOutput* scriptVariable);
+    int IsFinished();
+    void KillEndOnThreads();
+    static void UpdateList();
 };
 static_assert(sizeof(EntityNotifySet) == 0x2C, "EntityNotifySet size mismatch");
 
@@ -580,12 +602,6 @@ struct DbStringHashTable {
 static_assert(sizeof(DbStringHashTable) == 0x1100,
               "DbStringHashTable size mismatch");
 
-struct ConfigStringPtr {
-    ConfigString* mValue;  // +0x00
-    TPakId        mPakId;  // +0x04
-};
-static_assert(sizeof(ConfigStringPtr) == 0x8, "ConfigStringPtr size mismatch");
-
 struct DbTableSet {
     char         mName[32];     // +0x00
     DbTable*     mTables;       // +0x20
@@ -659,13 +675,26 @@ struct AssetBankSet {
 };
 static_assert(sizeof(AssetBankSet) == 0x4, "AssetBankSet size mismatch");
 
+struct CtrlIcon {
+    char mScratchBuffer[2048];  // +0x00
+    bool ContainsIconTag(const char* text);
+    CtrlIcon* TranslateIconTag(const char* text);
+    char ExtractIconTag(const char* text, char* preTagString,
+                        char** postTagString, char** tagString);
+};
+static_assert(sizeof(CtrlIcon) == 0x800, "CtrlIcon size mismatch");
+
 struct DialogueBank {
     unsigned char mData[0x1C];  // InplaceAssetBank<DialogueInstance,InplaceTree<unsigned int,unsigned int>>
 };
 static_assert(sizeof(DialogueBank) == 0x1C, "DialogueBank size mismatch");
 
 struct DialogueManager : AssetBankSet {
-    unsigned char mBanks[0x18C];  // +0x04 ae_array<DialogueBank*,99>
+    DialogueBank* mBanks[99];  // +0x04 ae_array<DialogueBank*,99>
+    void UnloadBank(TPakId pakId);
+    void DecodeDialogueBank(const char* name, DialogueBank* data, int size,
+                            TPakId pakId);
+    char* GetDialogue(unsigned int hash);
 };
 static_assert(sizeof(DialogueManager) == 0x190, "DialogueManager size mismatch");
 

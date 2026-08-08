@@ -289,6 +289,10 @@ add_library(cod3_game_core STATIC
     src/game/core/db.cpp
     src/game/core/rumble.cpp
     src/game/core/sys.cpp
+    src/game/core/ctrl_icon.cpp
+    src/game/core/dialogue.cpp
+    src/game/core/configstring.cpp
+    src/game/core/entity_notify.cpp
 )
 add_library(cod3_game_game2 STATIC src/game/game2/stubs_game.cpp)
 add_library(cod3_game_render STATIC src/game/render/stubs_game.cpp)
