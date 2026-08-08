@@ -74,6 +74,9 @@ Broc::entity* GetSpawnpointRandom(Broc::entity* result,
 Broc::entity* get_spawnpoint_near_team_away_from_radios(
     Broc::entity* result, Broc::entity* self, const Broc::string* team,
     Broc::dyn_array<Broc::entity>* points);
+Broc::entity* get_spawnpoint_middle_third(
+    Broc::entity* result, Broc::entity* self, const Broc::string* team,
+    Broc::dyn_array<Broc::entity>* points);
 Broc::entity* GetSpawnpointRandom(Broc::entity* result,
                                   Broc::dyn_array<Broc::entity>* points,
                                   Broc::bbool ignoreTeleFrag);
@@ -11257,6 +11260,224 @@ Broc::entity* GetSpawnpointDM(Broc::entity* result, Broc::entity* self,
 }
 }
 
+// get_spawnpoint_near_team_away_from_radios - ea: 0x96E9C0
+namespace _mp_spawnlogic {
+Broc::entity* get_spawnpoint_near_team_away_from_radios(
+    Broc::entity* result, Broc::entity* self, const Broc::string* team,
+    Broc::dyn_array<Broc::entity>* spawnpoints) {
+    if (Broc::size(*spawnpoints) == 0) {
+        result->___u0 = 0;
+        return result;
+    }
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::dyn_array<Broc::entity> aliveplayers;
+    Broc::bint i(0);
+    Broc::entity player;
+    player.___u0 = 0;
+    while ((int)i < Broc::size(players)) {
+        player = players[(unsigned int)(int)i];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, player);
+        if ((int)state == 3 && !(player == *self))
+            aliveplayers.push_back(player);
+        i = (int)i + 1;
+    }
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    if (Broc::size(aliveplayers) <= 0) {
+        get_spawnpoint_middle_third(&spawnpoint, self, team, spawnpoints);
+    } else {
+        i = 0;
+        while ((int)i < Broc::size(*spawnpoints)) {
+            Broc::entity sp = (*spawnpoints)[(unsigned int)(int)i];
+            Broc::vector spPos;
+            mp_util_wad::entity_get_origin(&spPos, sp);
+            if (Broc::Code_PositionWouldTelefrag(&spPos)) {
+                *mp_util_wad::GetEE_spawnscore(sp) = -37483274;
+            } else {
+                *mp_util_wad::GetEE_spawnscore(sp) = 0;
+                Broc::bint j(0);
+                while ((int)j < Broc::size(aliveplayers)) {
+                    Broc::entity ap = aliveplayers[(unsigned int)(int)j];
+                    Broc::vector apPos;
+                    mp_util_wad::entity_get_origin(&apPos, ap);
+                    Broc::bfloat dist(Broc::Distance(&spPos, &apPos));
+                    Broc::string ateam;
+                    mp_util_wad::entity_get_team(&ateam, ap);
+                    if (ateam == *team) {
+                        Broc::bfloat bias(1.6f);
+                        if ((int)mp_util_wad::pLevel->hq_stage == 3) {
+                            bool defender =
+                                (ateam == "allies" &&
+                                 (bool)mp_util_wad::pLevel->allies_defending) ||
+                                (ateam == "axis" &&
+                                 !(bool)mp_util_wad::pLevel->allies_defending);
+                            if (defender)
+                                bias = 0.5f;
+                        }
+                        *mp_util_wad::GetEE_spawnscore(sp) -=
+                            (int)((float)dist * (float)bias);
+                    } else if ((float)dist > 850.0f) {
+                        *mp_util_wad::GetEE_spawnscore(sp) +=
+                            (int)((float)dist * 0.8f);
+                    } else {
+                        *mp_util_wad::GetEE_spawnscore(sp) = -37483274;
+                    }
+                    ateam.~string();
+                    j = (int)j + 1;
+                }
+                if ((int)mp_util_wad::pLevel->hq_stage == 3 &&
+                    ((*team == "allies" &&
+                      !(bool)mp_util_wad::pLevel->allies_defending) ||
+                     (*team == "axis" &&
+                      (bool)mp_util_wad::pLevel->allies_defending))) {
+                    Broc::vector hq = (bool)mp_util_wad::pLevel->pointA_isHQ
+                                          ? mp_util_wad::pLevel->pointA
+                                          : mp_util_wad::pLevel->pointB;
+                    Broc::bfloat dist(Broc::Distance(&spPos, &hq));
+                    if ((float)dist <= 700.0f)
+                        *mp_util_wad::GetEE_spawnscore(sp) = -37483274;
+                }
+            }
+            i = (int)i + 1;
+        }
+        // Selection-sort spawnpoints by ascending score.
+        Broc::entity temp;
+        i = 0;
+        while ((int)i < Broc::size(*spawnpoints)) {
+            for (Broc::bint j((int)i); (int)j < Broc::size(*spawnpoints);
+                 j = (int)j + 1) {
+                Broc::entity a = (*spawnpoints)[(unsigned int)(int)i];
+                Broc::entity b = (*spawnpoints)[(unsigned int)(int)j];
+                if ((int)*mp_util_wad::GetEE_spawnscore(b) <
+                    (int)*mp_util_wad::GetEE_spawnscore(a)) {
+                    temp = a;
+                    (*spawnpoints)[(unsigned int)(int)i] = b;
+                    (*spawnpoints)[(unsigned int)(int)j] = temp;
+                }
+            }
+            i = (int)i + 1;
+        }
+        i = 0;
+        while ((int)i < Broc::size(*spawnpoints)) {
+            Broc::entity sp = (*spawnpoints)[(unsigned int)(int)i];
+            Broc::vector spPos;
+            mp_util_wad::entity_get_origin(&spPos, sp);
+            if (!Broc::Code_PositionWouldTelefrag(&spPos) &&
+                (int)*mp_util_wad::GetEE_spawnscore(sp) != -37483274) {
+                *result = sp;
+                aliveplayers.~dyn_array();
+                players.~dyn_array();
+                return result;
+            }
+            i = (int)i + 1;
+        }
+        get_spawnpoint_middle_third(&spawnpoint, self, team, spawnpoints);
+    }
+    *result = spawnpoint;
+    aliveplayers.~dyn_array();
+    players.~dyn_array();
+    return result;
+}
+
+// get_spawnpoint_middle_third - ea: 0x96F6C0
+Broc::entity* get_spawnpoint_middle_third(
+    Broc::entity* result, Broc::entity* self, const Broc::string* team,
+    Broc::dyn_array<Broc::entity>* spawnpoints) {
+    if (Broc::size(*spawnpoints) == 0) {
+        result->___u0 = 0;
+        return result;
+    }
+    Broc::dyn_array<Broc::vector> badspot;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint axiscount(-1);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, p);
+        if ((int)state != 1 && (int)state != 4 && (int)state != 5 &&
+            !(p == *self)) {
+            Broc::string pteam;
+            mp_util_wad::entity_get_team(&pteam, p);
+            if (pteam != *team) {
+                axiscount = (int)axiscount + 1;
+                Broc::vector pos;
+                mp_util_wad::entity_get_origin(&pos, p);
+                badspot.push_back(pos);
+            }
+            pteam.~string();
+        }
+        i = (int)i + 1;
+    }
+    if (Broc::size(badspot) <= 0) {
+        GetSpawnpointRandom(result, spawnpoints);
+        players.~dyn_array();
+        badspot.~dyn_array();
+        return result;
+    }
+    i = 0;
+    while ((int)i < Broc::size(*spawnpoints)) {
+        Broc::entity sp = (*spawnpoints)[(unsigned int)(int)i];
+        Broc::vector spPos;
+        mp_util_wad::entity_get_origin(&spPos, sp);
+        Broc::bint closest(1000000);
+        if (Broc::Code_PositionWouldTelefrag(&spPos)) {
+            *mp_util_wad::GetEE_spawnscore(sp) = -1;
+        } else {
+            *mp_util_wad::GetEE_spawnscore(sp) = 0;
+            Broc::bint j(0);
+            while ((int)j < Broc::size(badspot)) {
+                Broc::vector b = badspot[(unsigned int)(int)j];
+                Broc::vector scaled(b.x, b.y, b.z * 5.0f);
+                Broc::vector spScaled(spPos.x, spPos.y, spPos.z * 5.0f);
+                Broc::bfloat distancescore(Broc::Distance(&spScaled, &scaled));
+                if ((int)j > (int)axiscount)
+                    distancescore = (float)distancescore * 4.0f;
+                if ((float)distancescore < (float)closest)
+                    closest = (int)(float)distancescore;
+                j = (int)j + 1;
+            }
+            *mp_util_wad::GetEE_spawnscore(sp) = (int)closest;
+        }
+        i = (int)i + 1;
+    }
+    // Sort ascending by score.
+    Broc::entity temp;
+    i = 0;
+    while ((int)i < Broc::size(*spawnpoints)) {
+        for (Broc::bint j((int)i); (int)j < Broc::size(*spawnpoints);
+             j = (int)j + 1) {
+            Broc::entity a = (*spawnpoints)[(unsigned int)(int)i];
+            Broc::entity b = (*spawnpoints)[(unsigned int)(int)j];
+            if ((int)*mp_util_wad::GetEE_spawnscore(b) <
+                (int)*mp_util_wad::GetEE_spawnscore(a)) {
+                temp = a;
+                (*spawnpoints)[(unsigned int)(int)i] = b;
+                (*spawnpoints)[(unsigned int)(int)j] = temp;
+            }
+        }
+        i = (int)i + 1;
+    }
+    Broc::bint firsthalf(Broc::size(*spawnpoints) / 2);
+    Broc::bint lastsixth(Broc::size(*spawnpoints) -
+                         Broc::size(*spawnpoints) / 6);
+    Broc::dyn_array<Broc::entity> GoodSpawnPoints;
+    for (i = (int)firsthalf; (int)i < (int)lastsixth; i = (int)i + 1)
+        GoodSpawnPoints.push_back((*spawnpoints)[(unsigned int)(int)i]);
+    if (Broc::size(GoodSpawnPoints) >= 1)
+        GetSpawnpointRandom(result, &GoodSpawnPoints);
+    else
+        GetSpawnpointRandom(result, spawnpoints);
+    GoodSpawnPoints.~dyn_array();
+    players.~dyn_array();
+    badspot.~dyn_array();
+    return result;
+}
+}
+
 // ============================================================================
 // _mp_teambalance - team balancing.
 // ============================================================================
@@ -11670,4 +11891,3 @@ void StartGame(Broc::entity self) {
     Broc::Code_EnterGame();
 }
 }
-
