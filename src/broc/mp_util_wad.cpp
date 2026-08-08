@@ -6511,11 +6511,13 @@ void* WindBlowing__functor(Broc::entity self) {
     return NULL;
 }
 
-// CreateGlobalWind - ea: 0x9648C0 (stub: nano physics integration deferred)
+// CreateGlobalWind - ea: 0x9648C0
 unsigned int CreateGlobalWind(Broc::vector direction, Broc::bfloat speed) {
-    (void)direction;
-    (void)speed;
-    return 0;
+    Broc::vector param2((float)speed, 0.0f, 0.0f);
+    Broc::string id("global_wind");
+    unsigned int v4 = Broc::CreateNanoForce(&id, &direction, &param2);
+    id.~string();
+    return v4;
 }
 }
 namespace _mp_audio {

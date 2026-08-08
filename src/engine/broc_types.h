@@ -754,6 +754,9 @@ void Code_SetSpecialRecharge(int start, int length, int playerClass,
                              int playerIndex);
 void ShellShock(Broc::entity* e, const Broc::string* shock, float fVal);
 void EnableNanoForces(bool onOff);
+unsigned int CreateNanoForce(const Broc::string* id,
+                             const Broc::vector* direction,
+                             const Broc::vector* param2);
 void RadiusDamage(const Broc::vector* origin, float range, float max_damage,
                   float min_damage, int damageType);
 void RadiusDamageFromEnt(Broc::entity* which, const Broc::vector* origin,
