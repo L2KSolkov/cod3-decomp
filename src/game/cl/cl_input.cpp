@@ -39,13 +39,6 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
-struct weaponFileInfo_t {
-    int weapClass;
-    int type;
-    int slot;
-    int iMeleeDamage;
-};
-extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);
 extern void CG_WeaponSlot_f(int iSlot);
 extern void CG_NextWeapon_f();
 extern void CG_PrevWeapon_f();

@@ -96,6 +96,15 @@ extern char ClampChar(int i);
 extern bool CL_IsADS(int client);
 extern int CL_StanceButtonUpdate();
 
+struct weaponFileInfo_t {
+    int weapClass;
+    int type;
+    int slot;
+    int iMeleeDamage;
+    int bADSOnly;
+};
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);
+
 // ============================================================================
 // Button indices into the kb[] array (offsets derived from IDA addresses:
 // kb base 0xF11E60; each button is 0x18 bytes)
