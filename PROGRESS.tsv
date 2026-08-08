@@ -5,14 +5,13 @@ mp.o		mp.o	game	770	TODO
 g.o		g.o	game	732	TODO	
 mp_shell.o		mp_shell.o	game	680	TODO	
 game.o		game.o	game	663	TODO	
-core.o		core.o	game	541	TODO	
-MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	IN_PROGRESS	mp_util_wad.cpp/h: accessors + wrappers + dyn_array + Level struct (560B) + pLevel; _mp_airplanes flyby thread/flyby/roll; _mp_audio AudioPrint/Callback/PlaySound/audio_spawner/ambient_system/crossfade/changers; _mp_dm main; _mp_common COMPLETE (96/96); _mp_audio COMPLETE (37/37); _mp_teambalance COMPLETE (4/4); _mp_spawnlogic 8/10 (radios+middle_third deferred); _mp_shellshock COMPLETE (3/3); _mp_minefield COMPLETE (3/3); _mp_tdm COMPLETE (3/3); _mp_nano 2/3 (CreateGlobalWind deferred); _mp_tankdrive COMPLETE (17/17); _mp_loadout COMPLETE (50/50); _mp_ctf 39/39; _mp_scf 41/41; _mp_hq 47/47; _mp_war 38/38 (flag capture/score/DOM callbacks/spawnpoints; capture threads stubbed pending runtime hooks); ALL GAMETYPE NAMESPACES DONE; _mp_spawnlogic COMPLETE (10/10); _mp_nano COMPLETE (3/3: + CreateGlobalWind); mp_util_wad.o FULLY PORTED (403/403)
+MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	PORTED	mp_util_wad.cpp/h COMPLETE (403/403): accessors + wrappers + dyn_array + Level (560B) + pLevel; _mp_common/_mp_audio/_mp_loadout/_mp_ctf/_mp_scf/_mp_hq/_mp_war/_mp_tankdrive/_mp_spawnlogic/_mp_teambalance/_mp_shellshock/_mp_minefield/_mp_tdm/_mp_nano/_mp_dm/_mp_airplanes ALL DONE; capture threads stubbed pending runtime hook layer
+MPBrocCore_xboxd:mp_anim_wad.o	MPBrocCore_xboxd	mp_anim_wad.o	engine	332	PORTED	mp_anim_wad.cpp/h: RegisterHashStrings (238) + 94 GetEE_/IsEEDefined_ pairs + ResolveAnim/ResolveAnimName/ValidateAnimationIndices/GetBroAnim + _mp_setup main/hack_function; generic_human AnimRef layer extern (data, /FORCE)
 game2.o		game2.o	game	521	TODO	
 render.o		render.o	game	426	TODO	
 anim.o		anim.o	game	408	TODO	
 mp_actors.o		mp_actors.o	game	380	TODO	
 cg.o		cg.o	game	350	TODO	
-MPBrocCore_xboxd:mp_anim_wad.o	MPBrocCore_xboxd	mp_anim_wad.o	engine	332	IN_PROGRESS	mp_anim_wad.cpp/h: RegisterHashStrings (238 string hashes) + 94 GetEE_/IsEEDefined_ accessor pairs + ResolveAnim/ResolveAnimName/ValidateAnimationIndices/GetBroAnim wrappers + _mp_setup main/hack_function; generic_human anim-ref layer deferred
 cl.o		cl.o	game	313	TODO	
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
