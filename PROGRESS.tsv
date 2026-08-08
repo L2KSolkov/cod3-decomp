@@ -6,7 +6,7 @@ g.o		g.o	game	732	TODO
 mp_shell.o		mp_shell.o	game	680	TODO	
 game.o		game.o	game	663	TODO	
 core.o		core.o	game	541	TODO	
-MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	TODO	
+MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	IN_PROGRESS	mp_util_wad.cpp/h: RegisterHashStrings (129 string hashes) + 44 GetEE_/IsEEDefined_ accessor pairs + 4 anim wrappers; Broc::ExtendedEntity GetRef/GetVal templates + entity GetHandle in broc_types.h; _mp_airplanes/_mp_audio thread functions + plane_flyby_setup deferred (41KB+)
 game2.o		game2.o	game	521	TODO	
 render.o		render.o	game	426	TODO	
 anim.o		anim.o	game	408	TODO	

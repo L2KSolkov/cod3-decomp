@@ -60,6 +60,7 @@ struct entity {
     unsigned int ___u0;  // +0x00
 
     void UndefineEEField(unsigned int key);
+    unsigned int GetHandle() const { return ___u0; }  // ea: 0x92F170
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(entity) == 4, "Broc::entity size mismatch");
 
@@ -206,6 +207,18 @@ struct ExtendedEntity {
     static CopyFunc*     GetCopier(unsigned int typeId);
     static EqualsFunc*   GetEquals(unsigned int typeId);
     static DestructFunc* GetDestructor(unsigned int typeId);
+
+    // GetRef<T> / GetVal<T> - typed accessors (mp_util_wad.o COMDATs).
+    template <typename T> T& GetRef(unsigned int key) {
+        return *(T*)InternalGet(key);
+    }
+    template <typename T> const T* GetVal(void* result, unsigned int key) const {
+        const unsigned int* p = InternalGet(key);
+        if (p == NULL)
+            return NULL;
+        *(T*)result = *(const T*)p;
+        return (const T*)result;
+    }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity) == 12, "Broc::ExtendedEntity size mismatch");
 COD3_STATIC_ASSERT_32BIT(sizeof(ExtendedEntity::KVPair) == 8, "Broc::ExtendedEntity::KVPair size mismatch");
@@ -298,6 +311,16 @@ struct bbool {
 COD3_STATIC_ASSERT_32BIT(sizeof(bbool) == 1, "bbool size mismatch");
 
 } // namespace Broc
+
+// ============================================================================
+// Broc free helpers used by the mp_util_wad accessor layer.
+// ============================================================================
+namespace Broc {
+bool IsDefined(const Broc::entity& e);              // ea: 0x92F130
+bool IsDefined(const Broc::vector& v);              // ea: 0x92F150
+bool IsDefined(const Broc::string& s);              // ea: 0x92F6F0
+template <typename T> bool IsDefined(const T& t);   // boxed-type IsDefined
+}
 
 // ============================================================================
 // PathNodes namespace — AI path node handles (global scope, verified against IDA)
