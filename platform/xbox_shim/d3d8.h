@@ -285,8 +285,20 @@ enum _D3DRENDERSTATETYPE {
     D3DRS_DESTBLEND = 63,          // 0x3F
     D3DRS_BLENDOP = 74,            // 0x4A
     D3DRS_BLENDCOLOR = 75,         // 0x4B
+    D3DRS_PSALPHAINPUTS1 = 1,      // 0x01
+    D3DRS_PS_MIN = 0,              // 0x00
+    D3DRS_PSCONSTANT0_0 = 10,      // 0x0A
+    D3DRS_PSCONSTANT0_1 = 11,      // 0x0B
+    D3DRS_PSCONSTANT1_0 = 18,      // 0x12
+    D3DRS_PSCONSTANT1_1 = 19,      // 0x13
+    D3DRS_PSRGBINPUTS0 = 34,       // 0x22
+    D3DRS_PSRGBINPUTS1 = 35,       // 0x23
+    D3DRS_ZWRITEENABLE = 64,       // 0x40
+    D3DRS_COLORWRITEENABLE = 67,   // 0x43
     D3DRS_SPECULARENABLE = 103,    // 0x67
     D3DRS_CULLMODE = 147,          // 0x93
+    D3DRS_ZENABLE = 143,           // 0x8F
+    D3DRS_STENCILENABLE = 144,     // 0x90
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
     D3DRS_SIMPLE_MAX = 92,         // 0x5C
     D3DRS_PRESENTATIONINTERVAL = 127,  // 0x7F
@@ -479,6 +491,8 @@ void         __stdcall D3DDevice_SelectVertexShaderDirect(_D3DVERTEXATTRIBUTEFOR
                                                           unsigned int Address);
 void         __stdcall D3DDevice_SetPixelShaderProgram(const _D3DPixelShaderDef* pPSDef);
 void         __stdcall D3DDevice_SetRenderState_CullMode(unsigned int Value);
+void         __stdcall D3DDevice_SetRenderState_ZEnable(unsigned int Value);
+void         __stdcall D3DDevice_SetRenderState_StencilEnable(unsigned int Value);
 void         __fastcall D3DDevice_SetRenderState_Simple(unsigned int Method, unsigned int Value);
 void         __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(int Register,
                                                                        const void* pConstantData,
@@ -521,12 +535,26 @@ void         __stdcall D3DDevice_EndPush(unsigned int* p);
 // Referenced directly by ngl_dx_texture.o's state-cache bypass.
 extern unsigned int D3D__DirtyFlags;               // 0xBC2A08
 extern unsigned int D3D__TextureState[4][32];      // 0xBC2A10 (base)
+extern unsigned int D3D__RenderState[4];           // 0xBC2C10 (render-state cache)
 extern unsigned int DTE[4];                        // 0xCD6DE4 (pushbuffer encodes)
 extern unsigned int dword_BC2E0C;                  // 0xBC2E0C (presentation-interval cache)
+extern unsigned int dword_BC2D10;                  // 0xBC2D10 (ZWRITEENABLE cache)
+extern unsigned int dword_BC2D1C;                  // 0xBC2D1C (COLORWRITEENABLE cache)
+extern unsigned int dword_BC2C38;                  // 0xBC2C38 (PSCONSTANT0_0 cache)
+extern unsigned int dword_BC2C3C;                  // 0xBC2C3C (PSCONSTANT0_1 cache)
+extern unsigned int dword_BC2C58;                  // 0xBC2C58 (PSCONSTANT1_0 cache)
+extern unsigned int dword_BC2C5C;                  // 0xBC2C5C (PSCONSTANT1_1 cache)
+extern unsigned int dword_BC2C98;                  // 0xBC2C98 (PSRGBINPUTS0 cache)
+extern unsigned int dword_BC2C9C;                  // 0xBC2C9C (PSRGBINPUTS1 cache)
+extern unsigned int dword_BC2C14;                  // 0xBC2C14 (PSALPHAINPUTS1 cache)
 
 // ---- XGRPH entry points (xgraphicsd) --------------------------------------
 extern "C" {
 int __stdcall XGIsSwizzledFormat(unsigned int Format);
+void __stdcall XGSetTextureHeader(unsigned int Width, unsigned int Height,
+                                  unsigned int Levels, unsigned int Usage,
+                                  unsigned int Format, unsigned int Pool,
+                                  D3DBaseTexture* pTexture, void* Data, unsigned int Pitch);
 }
 
 #endif // __cplusplus

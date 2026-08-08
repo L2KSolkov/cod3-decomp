@@ -141,6 +141,26 @@ struct nglGpuQuadPUV4VertexShader {
     static unsigned int* VS;
     static const unsigned int** VShaderTable;
 };
+struct nglDOFPixelShader {
+    static unsigned int*  Shader;     // ?Shader@nglDOFPixelShader@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
+};
+struct nglGlowShaderPixelPreFX {
+    static unsigned int*  Shader;     // ?Shader@nglGlowShaderPixelPreFX@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
+};
+struct nglGlowShaderPixelFX {
+    static unsigned int*  Shader;     // ?Shader@nglGlowShaderPixelFX@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
+};
+struct nglGlowShaderPixelPostFX {
+    static unsigned int*  Shader;     // ?Shader@nglGlowShaderPixelPostFX@@3PAKA
+    static unsigned int** PS;
+    static const unsigned int** PShaderTable;
+};
 struct nglGpuQuadPUVMatColVertexShader {
     static unsigned int  Shader;      // ?Shader@nglGpuQuadPUVMatColVertexShader@@3KA
     static unsigned int* VS;

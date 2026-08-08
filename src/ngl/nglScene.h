@@ -44,7 +44,9 @@ struct nglScene {
     float             FogFar;             // +0x3AC
     float             FogMin;             // +0x3B0
     float             FogMax;             // +0x3B4
-    uint8_t           _pad3B8[0x3DC - 0x3B8];  // +0x3B8
+    uint8_t           _pad3B8[0x3D4 - 0x3B8];  // +0x3B8
+    float             FocusDepth;         // +0x3D4
+    uint8_t           _pad3D8[0x3DC - 0x3D8];  // +0x3D8
     float             AspectRatio;        // +0x3DC
     float             FOV;                // +0x3E0
     float             NearZ;              // +0x3E4
