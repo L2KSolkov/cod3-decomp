@@ -74,6 +74,19 @@ struct dyn_array {
     dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}  // ea: 0x93305B
     ~dyn_array();  // ea: 0x933129
 
+    void push_back(const T& elt) {
+        if (mSize >= mCapacity) {
+            unsigned int newCap = mCapacity ? mCapacity * 2 : 4;
+            T* ne = new T[newCap];
+            for (unsigned int k = 0; k < mSize; k++)
+                ne[k] = mElements[k];
+            delete[] mElements;
+            mElements = ne;
+            mCapacity = newCap;
+        }
+        mElements[mSize++] = elt;
+    }
+
     T& operator[](unsigned int idx) { return mElements[idx]; }
     const T& operator[](unsigned int idx) const { return mElements[idx]; }
 };
@@ -721,6 +734,9 @@ int Code_GetPlayerStat(Broc::entity player, int index);
 void Code_IncPlayerStat(Broc::entity player, int index, int value);
 int Code_GetTeamScore(const Broc::string* team);
 void Code_IncTeamScore(const Broc::string* team, int ammount);
+bool Code_PositionWouldTelefrag(const Broc::vector* position);
+void Code_ChangePlayerTeam(Broc::entity player, const Broc::string* team,
+                           bool autoBalance);
 bool Code_IsLocalPlayer(Broc::entity player);
 char* Code_GetPlayerName(Broc::entity player);
 void Code_DebugOut(const char* strOut);

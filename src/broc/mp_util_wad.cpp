@@ -60,6 +60,13 @@ namespace _mp_shellshock {
 void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage);
 }
 namespace _mp_spawnlogic {
+Broc::entity* GetSpawnpointRandom(Broc::entity* result,
+                                  Broc::dyn_array<Broc::entity>* points);
+Broc::entity* GetSpawnpointRandom(Broc::entity* result,
+                                  Broc::dyn_array<Broc::entity>* points,
+                                  Broc::bbool ignoreTeleFrag);
+Broc::entity* GetSpawnpointInOrder(Broc::entity* result,
+                                   Broc::dyn_array<Broc::entity>* points);
 Broc::entity* GetSpawnpointNearTeamAntiCamp(Broc::entity* result,
                                             Broc::entity* self,
                                             const Broc::string* team,
@@ -67,14 +74,22 @@ Broc::entity* GetSpawnpointNearTeamAntiCamp(Broc::entity* result,
 Broc::entity* GetSpawnpointNearest(Broc::entity* result,
                                    Broc::dyn_array<Broc::entity>* points,
                                    Broc::vector position, bool ignoreTeleFrag);
-Broc::entity* GetSpawnpointRandom(Broc::entity* result,
-                                  Broc::dyn_array<Broc::entity>* points,
-                                  bool ignoreTeleFrag);
+Broc::entity* GetSpawnpointSemiRandom(Broc::entity* result,
+                                      Broc::entity* self,
+                                      const Broc::string* team,
+                                      Broc::dyn_array<Broc::entity>* points);
+Broc::entity* GetSpawnpointNearTeam(Broc::entity* result,
+                                    Broc::entity* self,
+                                    const Broc::string* team,
+                                    Broc::dyn_array<Broc::entity>* points);
+Broc::entity* GetSpawnpointDM(Broc::entity* result, Broc::entity* self,
+                              Broc::dyn_array<Broc::entity>* points);
 }
 namespace _mp_teambalance {
+Broc::string* PickTeam(Broc::string* result, Broc::entity player);
 Broc::string* team_balance(Broc::string* result, Broc::entity guy,
                            Broc::string team);
-void team_balance(bool always);
+void team_balance(Broc::bbool always);
 }
 namespace _mp_common {
 void* StopFollowing__functor(Broc::entity self, bool blackNow);
@@ -5613,39 +5628,618 @@ void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage) 
     (void)self; (void)cause; (void)damage;
 }
 }
+// ============================================================================
+// _mp_spawnlogic - spawn-point selection.
+// ============================================================================
 namespace _mp_spawnlogic {
+
+// GetSpawnpointRandom (no ignoreTeleFrag) - ea: 0x96CCC0
+Broc::entity* GetSpawnpointRandom(Broc::entity* result,
+                                  Broc::dyn_array<Broc::entity>* spawnpoints) {
+    if (Broc::GetCvarInt("cg_debugSpawnPoints") <= 0)
+        GetSpawnpointRandom(result, spawnpoints, Broc::bbool(false));
+    else
+        GetSpawnpointInOrder(result, spawnpoints);
+    return result;
+}
+
+// GetSpawnpointRandom - ea: 0x96CD30
+Broc::entity* GetSpawnpointRandom(Broc::entity* result,
+                                  Broc::dyn_array<Broc::entity>* spawnpoints,
+                                  Broc::bbool ignoreTeleFrag) {
+    if (Broc::size(*spawnpoints) == 0) {
+        result->___u0 = 0;
+        return result;
+    }
+    Broc::bint i(0);
+    Broc::bint j(0);
+    Broc::bint count(Broc::size(*spawnpoints));
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    i = 0;
+    while ((int)i < (int)count) {
+        j = Broc::RandomInt((int)count);
+        Broc::entity tmp = (*spawnpoints)[(unsigned int)(int)i];
+        (*spawnpoints)[(unsigned int)(int)i] =
+            (*spawnpoints)[(unsigned int)(int)j];
+        (*spawnpoints)[(unsigned int)(int)j] = tmp;
+        i = (int)i + 1;
+    }
+    i = 0;
+    while ((int)i < Broc::size(*spawnpoints)) {
+        spawnpoint = (*spawnpoints)[(unsigned int)(int)i];
+        if (!(bool)ignoreTeleFrag) {
+            Broc::vector origin;
+            mp_util_wad::entity_get_origin(&origin, spawnpoint);
+            if (!Broc::Code_PositionWouldTelefrag(&origin))
+                break;
+        }
+        i = (int)i + 1;
+    }
+    *result = spawnpoint;
+    return result;
+}
+
+// GetSpawnpointInOrder - ea: 0x96D180
+Broc::entity* GetSpawnpointInOrder(Broc::entity* result,
+                                   Broc::dyn_array<Broc::entity>* spawnpoints) {
+    Broc::bint maxCount(Broc::size(*spawnpoints));
+    Broc::bint currentIndex((int)mp_util_wad::pLevel->lastSpawnPointIndex);
+    if ((int)currentIndex >= (int)maxCount) {
+        mp_util_wad::pLevel->lastSpawnPointIndex = 0;
+        Broc::iprintlnbold(Broc::string("Starting over at first spawn point."));
+    }
+    Broc::iprintlnbold(Broc::string("Moving to next spawn point."));
+    if ((int)currentIndex < 0 || (int)currentIndex >= (int)maxCount) {
+        if (Broc::gBrocAPI.mAssert("c:\\cod\\code\\script\\_mp_spawnlogic.bro",
+                                   __LINE__, "invalid spawn point"))
+            __debugbreak();
+    }
+    unsigned int idx =
+        (unsigned int)(int)mp_util_wad::pLevel->lastSpawnPointIndex;
+    mp_util_wad::pLevel->lastSpawnPointIndex =
+        (int)mp_util_wad::pLevel->lastSpawnPointIndex + 1;
+    *result = (*spawnpoints)[idx];
+    return result;
+}
+
+// GetSpawnpointNearest - ea: 0x96CF80
+Broc::entity* GetSpawnpointNearest(Broc::entity* result,
+                                   Broc::dyn_array<Broc::entity>* spawnpoints,
+                                   Broc::vector position,
+                                   Broc::bbool ignoreTeleFrag) {
+    if (Broc::size(*spawnpoints) == 0) {
+        result->___u0 = 0;
+        return result;
+    }
+    Broc::bint i(0);
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    Broc::bint dist(100000);
+    Broc::bint tempDist(0);
+    i = 0;
+    while ((int)i < Broc::size(*spawnpoints)) {
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin, (*spawnpoints)[(unsigned int)(int)i]);
+        tempDist = (int)Broc::Distance(&origin, &position);
+        if ((int)tempDist < (int)dist) {
+            if ((bool)ignoreTeleFrag ||
+                !Broc::Code_PositionWouldTelefrag(&origin)) {
+                dist = (int)tempDist;
+                spawnpoint = (*spawnpoints)[(unsigned int)(int)i];
+            }
+        }
+        i = (int)i + 1;
+    }
+    if (Broc::IsDefined(spawnpoint))
+        *result = spawnpoint;
+    else
+        GetSpawnpointRandom(result, spawnpoints, ignoreTeleFrag);
+    return result;
+}
+
+// GetSpawnpointNearTeamAntiCamp - ea: 0x96DD50
 Broc::entity* GetSpawnpointNearTeamAntiCamp(Broc::entity* result,
                                             Broc::entity* self,
                                             const Broc::string* team,
-                                            Broc::dyn_array<Broc::entity>* points) {
-    (void)self; (void)team; (void)points;
-    result->___u0 = 0;
+                                            Broc::dyn_array<Broc::entity>* spawnpoints) {
+    Broc::bint spawn_camp_time(12000);
+    Broc::bint now;
+    Broc::GetTime(&now);
+    Broc::bint lastSpawn((int)*mp_util_wad::GetEE_spawnTime(*self));
+    if ((int)lastSpawn + (int)spawn_camp_time > (int)now) {
+        Broc::bfloat anti_camp_pick_chance(0.5f);
+        if (Broc::RandomInt(100) <
+            (int)(100.0f * (float)anti_camp_pick_chance)) {
+            GetSpawnpointSemiRandom(result, self, team, spawnpoints);
+            return result;
+        }
+    }
+    GetSpawnpointNearTeam(result, self, team, spawnpoints);
     return result;
 }
-Broc::entity* GetSpawnpointNearest(Broc::entity* result,
-                                   Broc::dyn_array<Broc::entity>* points,
-                                   Broc::vector position, bool ignoreTeleFrag) {
-    (void)points; (void)position; (void)ignoreTeleFrag;
-    result->___u0 = 0;
+
+// GetSpawnpointSemiRandom - ea: 0x96E570
+Broc::entity* GetSpawnpointSemiRandom(Broc::entity* result, Broc::entity* self,
+                                      const Broc::string* team,
+                                      Broc::dyn_array<Broc::entity>* spawnpoints) {
+    (void)team;
+    if (Broc::GetCvarInt("cg_debugSpawnPoints") > 0) {
+        GetSpawnpointInOrder(result, spawnpoints);
+        return result;
+    }
+    if (Broc::size(*spawnpoints) == 0) {
+        result->___u0 = 0;
+        return result;
+    }
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    Broc::entity player;
+    player.___u0 = 0;
+    Broc::dyn_array<Broc::entity> aliveplayers;
+    i = 0;
+    while ((int)i < Broc::size(players)) {
+        player = players[(unsigned int)(int)i];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, player);
+        if ((int)state == 3 && !(player == *self))
+            aliveplayers.push_back(player);
+        i = (int)i + 1;
+    }
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    if (Broc::size(aliveplayers) <= 0) {
+        GetSpawnpointRandom(&spawnpoint, spawnpoints);
+    } else {
+        Broc::bint j(0);
+        Broc::dyn_array<Broc::entity> semirandomspawns;
+        i = 0;
+        while ((int)i < Broc::size(*spawnpoints)) {
+            Broc::vector sp;
+            mp_util_wad::entity_get_origin(&sp, (*spawnpoints)[(unsigned int)(int)i]);
+            if (!Broc::Code_PositionWouldTelefrag(&sp)) {
+                j = 0;
+                while ((int)j < Broc::size(aliveplayers)) {
+                    Broc::vector ap;
+                    mp_util_wad::entity_get_origin(&ap,
+                                                   aliveplayers[(unsigned int)(int)j]);
+                    Broc::vector sp2;
+                    mp_util_wad::entity_get_origin(
+                        &sp2, (*spawnpoints)[(unsigned int)(int)i]);
+                    if (Broc::DistanceSquared(&sp2, &ap) > 4000000.0f) {
+                        semirandomspawns.push_back(
+                            (*spawnpoints)[(unsigned int)(int)i]);
+                        break;
+                    }
+                    j = (int)j + 1;
+                }
+            }
+            i = (int)i + 1;
+        }
+        if (Broc::size(semirandomspawns) <= 0)
+            GetSpawnpointRandom(&spawnpoint, spawnpoints);
+        else
+            GetSpawnpointRandom(&spawnpoint, &semirandomspawns);
+        semirandomspawns.~dyn_array();
+    }
+    *result = spawnpoint;
+    aliveplayers.~dyn_array();
+    players.~dyn_array();
     return result;
 }
-Broc::entity* GetSpawnpointRandom(Broc::entity* result,
-                                  Broc::dyn_array<Broc::entity>* points,
-                                  bool ignoreTeleFrag) {
-    (void)points; (void)ignoreTeleFrag;
-    result->___u0 = 0;
+
+// GetSpawnpointNearTeam - ea: 0x96DE80
+Broc::entity* GetSpawnpointNearTeam(Broc::entity* result, Broc::entity* self,
+                                    const Broc::string* team,
+                                    Broc::dyn_array<Broc::entity>* spawnpoints) {
+    Broc::bbool player_on_my_team(false);
+    if (Broc::GetCvarInt("cg_debugSpawnPoints") > 0) {
+        GetSpawnpointInOrder(result, spawnpoints);
+        return result;
+    }
+    if (Broc::size(*spawnpoints) == 0) {
+        result->___u0 = 0;
+        return result;
+    }
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    Broc::entity player;
+    player.___u0 = 0;
+    Broc::dyn_array<Broc::entity> aliveplayers;
+    i = 0;
+    while ((int)i < Broc::size(players)) {
+        player = players[(unsigned int)(int)i];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, player);
+        if ((int)state == 3 && !(player == *self)) {
+            aliveplayers.push_back(player);
+            Broc::string pteam;
+            mp_util_wad::entity_get_team(&pteam, player);
+            if (pteam == *team)
+                player_on_my_team = true;
+            pteam.~string();
+        }
+        i = (int)i + 1;
+    }
+    if (!(bool)player_on_my_team) {
+        GetSpawnpointSemiRandom(result, self, team, spawnpoints);
+        aliveplayers.~dyn_array();
+        players.~dyn_array();
+        return result;
+    }
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    if (Broc::size(aliveplayers) <= 0) {
+        GetSpawnpointRandom(&spawnpoint, spawnpoints);
+    } else {
+        Broc::bint distlargest(-33554432);
+        Broc::bint dist(0);
+        Broc::bfloat weight(0.0f);
+        Broc::bint j(0);
+        Broc::entity bestposition;
+        bestposition.___u0 = 0;
+        i = 0;
+        while ((int)i < Broc::size(*spawnpoints)) {
+            Broc::vector sp;
+            mp_util_wad::entity_get_origin(&sp, (*spawnpoints)[(unsigned int)(int)i]);
+            if (!Broc::Code_PositionWouldTelefrag(&sp)) {
+                dist = 0;
+                if (Broc::size(aliveplayers) > 0) {
+                    j = 0;
+                    while ((int)j < Broc::size(aliveplayers)) {
+                        weight = 1.0f;
+                        Broc::string pteam;
+                        mp_util_wad::entity_get_team(
+                            &pteam, aliveplayers[(unsigned int)(int)j]);
+                        if (pteam == *team) {
+                            player_on_my_team = true;
+                            weight = (float)weight * -2.0f;
+                        } else {
+                            weight = (float)weight * 1.0f;
+                        }
+                        pteam.~string();
+                        weight = (float)weight *
+                                 (Broc::RandomFloat(0.4f) + 0.8f);
+                        Broc::vector ap;
+                        Broc::vector sp2;
+                        mp_util_wad::entity_get_origin(
+                            &ap, aliveplayers[(unsigned int)(int)j]);
+                        mp_util_wad::entity_get_origin(
+                            &sp2, (*spawnpoints)[(unsigned int)(int)i]);
+                        float d = Broc::Distance(&sp2, &ap);
+                        dist = (int)dist + (int)(d * (float)weight);
+                        j = (int)j + 1;
+                    }
+                }
+                if ((int)dist > (int)distlargest) {
+                    distlargest = (int)dist;
+                    bestposition = (*spawnpoints)[(unsigned int)(int)i];
+                }
+            }
+            i = (int)i + 1;
+        }
+        spawnpoint = bestposition;
+    }
+    if (!Broc::IsDefined(spawnpoint))
+        GetSpawnpointRandom(&spawnpoint, spawnpoints);
+    *result = spawnpoint;
+    aliveplayers.~dyn_array();
+    players.~dyn_array();
+    return result;
+}
+
+// GetSpawnpointDM - ea: 0x96D2C0
+Broc::entity* GetSpawnpointDM(Broc::entity* result, Broc::entity* self,
+                              Broc::dyn_array<Broc::entity>* spawnpoints) {
+    if (Broc::GetCvarInt("cg_debugSpawnPoints") > 0) {
+        GetSpawnpointInOrder(result, spawnpoints);
+        return result;
+    }
+    if (Broc::size(*spawnpoints) == 0) {
+        result->___u0 = 0;
+        return result;
+    }
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    Broc::entity player;
+    player.___u0 = 0;
+    Broc::dyn_array<Broc::entity> aliveplayers;
+    i = 0;
+    while ((int)i < Broc::size(players)) {
+        player = players[(unsigned int)(int)i];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, player);
+        if ((int)state == 3 && !(player == *self))
+            aliveplayers.push_back(player);
+        i = (int)i + 1;
+    }
+    if (Broc::size(aliveplayers) <= 0) {
+        GetSpawnpointRandom(result, spawnpoints);
+        aliveplayers.~dyn_array();
+        players.~dyn_array();
+        return result;
+    }
+    Broc::dyn_array<Broc::entity> filteredspawnpoints;
+    Broc::dyn_array<int> filteredspawnpointsscore;
+    i = 0;
+    while ((int)i < Broc::size(*spawnpoints)) {
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin,
+                                       (*spawnpoints)[(unsigned int)(int)i]);
+        if (!Broc::Code_PositionWouldTelefrag(&origin)) {
+            Broc::bbool hasLast;
+            mp_util_wad::IsEEDefined_lastspawnpoint(&hasLast, *self);
+            if (!(bool)hasLast ||
+                !(*mp_util_wad::GetEE_lastspawnpoint(*self) ==
+                  (*spawnpoints)[(unsigned int)(int)i])) {
+                filteredspawnpoints.push_back(
+                    (*spawnpoints)[(unsigned int)(int)i]);
+                filteredspawnpointsscore.push_back(0);
+            }
+        }
+        i = (int)i + 1;
+    }
+    if (Broc::size(filteredspawnpoints) == 0) {
+        GetSpawnpointRandom(result, spawnpoints);
+        filteredspawnpointsscore.~dyn_array();
+        filteredspawnpoints.~dyn_array();
+        aliveplayers.~dyn_array();
+        players.~dyn_array();
+        return result;
+    }
+    Broc::bint shortest(100000);
+    Broc::bint current(0);
+    Broc::bint j(0);
+    i = 0;
+    while ((int)i < Broc::size(filteredspawnpoints)) {
+        shortest = 1000000;
+        j = 0;
+        while ((int)j < Broc::size(aliveplayers)) {
+            Broc::vector ap;
+            Broc::vector sp;
+            mp_util_wad::entity_get_origin(
+                &ap, aliveplayers[(unsigned int)(int)j]);
+            mp_util_wad::entity_get_origin(
+                &sp, filteredspawnpoints[(unsigned int)(int)i]);
+            current = (int)Broc::Distance(&sp, &ap);
+            if ((int)current < (int)shortest)
+                shortest = (int)current;
+            j = (int)j + 1;
+        }
+        filteredspawnpointsscore[(unsigned int)(int)i] = (int)shortest + 1;
+        i = (int)i + 1;
+    }
+    Broc::bint newsize(Broc::size(filteredspawnpoints) / 3);
+    if ((int)newsize < 1)
+        newsize = 1;
+    Broc::bint total(0);
+    Broc::bint bestscore(0);
+    Broc::dyn_array<Broc::entity> newspawnpoints;
+    Broc::dyn_array<int> newspawnpointsscore;
+    i = 0;
+    while ((int)i < (int)newsize) {
+        j = 0;
+        while ((int)j < Broc::size(filteredspawnpoints)) {
+            current = filteredspawnpointsscore[(unsigned int)(int)j];
+            if ((int)current > (int)bestscore)
+                bestscore = (int)current;
+            j = (int)j + 1;
+        }
+        j = 0;
+        while ((int)j < Broc::size(filteredspawnpoints)) {
+            if (filteredspawnpointsscore[(unsigned int)(int)j] ==
+                (int)bestscore) {
+                newspawnpoints.push_back(
+                    filteredspawnpoints[(unsigned int)(int)j]);
+                newspawnpointsscore.push_back(
+                    filteredspawnpointsscore[(unsigned int)(int)j]);
+                total = (int)total +
+                        filteredspawnpointsscore[(unsigned int)(int)j];
+                filteredspawnpointsscore[(unsigned int)(int)j] = 0;
+                bestscore = 0;
+                break;
+            }
+            j = (int)j + 1;
+        }
+        i = (int)i + 1;
+    }
+    Broc::bint randnum(Broc::RandomInt((int)total));
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    i = 0;
+    while ((int)i < Broc::size(newspawnpoints)) {
+        randnum = (int)randnum - newspawnpointsscore[(unsigned int)(int)i];
+        spawnpoint = newspawnpoints[(unsigned int)(int)i];
+        if ((int)randnum < 0)
+            break;
+        i = (int)i + 1;
+    }
+    mp_util_wad::GetEE_lastspawnpoint(*self)->___u0 = spawnpoint.___u0;
+    *result = spawnpoint;
+    newspawnpointsscore.~dyn_array();
+    newspawnpoints.~dyn_array();
+    filteredspawnpointsscore.~dyn_array();
+    filteredspawnpoints.~dyn_array();
+    aliveplayers.~dyn_array();
+    players.~dyn_array();
     return result;
 }
 }
+
+// ============================================================================
+// _mp_teambalance - team balancing.
+// ============================================================================
 namespace _mp_teambalance {
+
+// main - ea: 0x973690
+void main() {
+}
+
+// PickTeam - ea: 0x9736B0
+Broc::string* PickTeam(Broc::string* result, Broc::entity player) {
+    Broc::bint allies(0);
+    Broc::bint axis(0);
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        if (!(p == player)) {
+            Broc::bint state;
+            mp_util_wad::entity_get_playerState(&state, p);
+            if ((int)state != 0) {
+                Broc::string team;
+                mp_util_wad::entity_get_team(&team, p);
+                if (team == "allies")
+                    allies = (int)allies + 1;
+                else if (team == "axis")
+                    axis = (int)axis + 1;
+                team.~string();
+            }
+        }
+        i = (int)i + 1;
+    }
+    if ((int)allies < (int)axis)
+        *result = "allies";
+    else if ((int)allies > (int)axis)
+        *result = "axis";
+    else {
+        Broc::string team("allies");
+        allies = Broc::Code_GetTeamScore(&team);
+        team.~string();
+        Broc::string team2("axis");
+        axis = Broc::Code_GetTeamScore(&team2);
+        team2.~string();
+        if ((int)allies < (int)axis)
+            *result = "allies";
+        else if ((int)allies > (int)axis)
+            *result = "axis";
+        else
+            *result = Broc::RandomFloat(1.0f) >= 0.5f ? "allies" : "axis";
+    }
+    players.~dyn_array();
+    return result;
+}
+
+// team_balance - ea: 0x973BA0
 Broc::string* team_balance(Broc::string* result, Broc::entity guy,
                            Broc::string team) {
-    (void)guy;
+    Broc::bint allies(0);
+    Broc::bint axis(0);
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        if (p == guy) {
+            if (team == "allies")
+                allies = (int)allies + 1;
+            if (team == "axis")
+                axis = (int)axis + 1;
+        } else {
+            Broc::string pteam;
+            mp_util_wad::entity_get_team(&pteam, p);
+            if (pteam == "allies")
+                allies = (int)allies + 1;
+            else if (pteam == "axis")
+                axis = (int)axis + 1;
+            pteam.~string();
+        }
+        i = (int)i + 1;
+    }
+    Broc::bint balance_allowance(2);
+    if ((int)allies < (int)axis + (int)balance_allowance) {
+        if ((int)axis >= (int)allies + (int)balance_allowance &&
+            team == "axis") {
+            *result = "allies";
+            players.~dyn_array();
+            team.~string();
+            return result;
+        }
+    } else if (team == "allies") {
+        *result = "axis";
+        players.~dyn_array();
+        team.~string();
+        return result;
+    }
     *result = team;
+    players.~dyn_array();
     team.~string();
     return result;
 }
-void team_balance(bool always) { (void)always; }
+
+// team_balance (always) - ea: 0x973FA0
+void team_balance(Broc::bbool always) {
+    if ((bool)mp_util_wad::pLevel->teamBalance || (bool)always) {
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetPlayerArray(&players);
+        Broc::dyn_array<Broc::entity> allies;
+        Broc::dyn_array<Broc::entity> axis;
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            Broc::entity p = players[(unsigned int)(int)i];
+            Broc::string team;
+            mp_util_wad::entity_get_team(&team, p);
+            if (team == "allies")
+                allies.push_back(p);
+            else if (team == "axis")
+                axis.push_back(p);
+            team.~string();
+            i = (int)i + 1;
+        }
+        Broc::bint size_allies(Broc::size(allies));
+        Broc::bint size_axis(Broc::size(axis));
+        Broc::bint total((int)size_allies - (int)size_axis);
+        Broc::bint half_total((int)total / 2);
+        if ((int)size_allies < (int)size_axis + 2) {
+            if ((int)size_axis >= (int)size_allies + 2) {
+                Broc::bint rhs((int)size_axis - (int)half_total);
+                Broc::dyn_array<Broc::entity> ar;
+                Broc::bint k(0);
+                while ((int)k < (int)rhs) {
+                    Broc::entity pick = axis[(unsigned int)Broc::RandomInt(
+                        Broc::size(axis))];
+                    ar.push_back(pick);
+                    k = (int)k + 1;
+                }
+                Broc::bint m(0);
+                while ((int)m < Broc::size(ar)) {
+                    Broc::string team("allies");
+                    Broc::Code_ChangePlayerTeam(ar[(unsigned int)(int)m],
+                                                &team, false);
+                    team.~string();
+                    m = (int)m + 1;
+                }
+                ar.~dyn_array();
+            }
+        } else {
+            Broc::bint over_count((int)size_allies - (int)half_total);
+            Broc::dyn_array<Broc::entity> balanced;
+            Broc::bint k(0);
+            while ((int)k < (int)over_count) {
+                Broc::entity pick = allies[(unsigned int)Broc::RandomInt(
+                    Broc::size(allies))];
+                balanced.push_back(pick);
+                k = (int)k + 1;
+            }
+            Broc::bint m(0);
+            while ((int)m < Broc::size(balanced)) {
+                Broc::string team("axis");
+                Broc::Code_ChangePlayerTeam(balanced[(unsigned int)(int)m],
+                                            &team, false);
+                team.~string();
+                m = (int)m + 1;
+            }
+            balanced.~dyn_array();
+        }
+        axis.~dyn_array();
+        allies.~dyn_array();
+        players.~dyn_array();
+    }
+}
 }
 namespace _mp_common {
 void* StopFollowing__functor(Broc::entity self, bool blackNow) {
