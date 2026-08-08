@@ -196,6 +196,176 @@ void EffectEventSys::DirectionInfo(const float* dir)
 }
 
 // ============================================================================
+// EffectEventSys - sound notify + fades
+// ============================================================================
+
+// ea: 0x004BCD90
+void EffectEventSys::SendSpecificSoundNotify(Entity* pEnt,
+                                             HashString soundName)
+{
+    if (pEnt != nullptr)
+    {
+        SndWait* sndWait = (SndWait*)&pEnt->snd_wait;
+        if (sndWait->notifyHash.mHash != 0
+            && sndWait->soundName.mHash == soundName.mHash)
+        {
+            Scr_Notify(pEnt, sndWait->notifyHash, 0);
+            sndWait->notifyHash.mHash = 0;
+            sndWait->soundName.mHash = 0;
+        }
+    }
+}
+
+// ea: 0x004BCDE0
+void EffectEventSys::SendSoundNotify(Entity* pEnt)
+{
+    if (pEnt != nullptr)
+    {
+        SndWait* sndWait = (SndWait*)&pEnt->snd_wait;
+        if (sndWait->notifyHash.mHash != 0)
+        {
+            Scr_Notify(pEnt, sndWait->notifyHash, 0);
+            sndWait->notifyHash.mHash = 0;
+            sndWait->soundName.mHash = 0;
+        }
+    }
+}
+
+// ea: 0x004C0FE0
+void EffectEventSys::FadeOutEffect(AbstractEffect* effect, float seconds)
+{
+    effect->StartFadeOut(seconds);
+    mFadingEffects.push_back(effect);
+}
+
+// ea: 0x004C1010
+void EffectEventSys::AdvanceFades(float delta)
+{
+    for (unsigned int v3 = 0; v3 < (unsigned int)mFadingEffects.m_size; ++v3)
+    {
+        ASSERT_IDX(v3, 128, 154);
+        if ((mFadingEffects[v3]->mCodeFlags.mVal & 1) != 0)
+        {
+            ASSERT_IDX(v3, 128, 154);
+            AbstractEffect* effect = mFadingEffects[v3];
+            effect->FrameAdvance(delta);
+            ASSERT_IDX(v3, 128, 154);
+            if ((effect->mCodeFlags.mVal & 1) != 0
+                && effect->mFadeTime < 0.001f)
+            {
+                ASSERT_IDX(v3, 128, 154);
+                AbstractEffect* p = mFadingEffects[v3];
+                if (p != nullptr)
+                    delete p;
+                mFadingEffects[v3] = mFadingEffects[mFadingEffects.m_size - 1];
+                if (mFadingEffects.m_size != 0)
+                    --mFadingEffects.m_size;
+                --v3;
+            }
+        }
+    }
+}
+
+// ea: 0x004C1120
+void EffectEventSys::SetSoundParams(SoundParams& soundParams, PendingQuery& q,
+                                    float useNslDefault)
+{
+    soundParams.mNameRef = nullptr;
+    soundParams.mHashStr = 0;
+    soundParams.mVolume = useNslDefault;
+    soundParams.mPakId = q.mEffectsPak;
+    soundParams.mEnt.mHandle.mVal = q.mQueryEnt.mHandle.mVal;
+    soundParams.mQueue = (q.mFlags.mVal & 2) != 0;
+    soundParams.mCd = (q.mFlags.mVal & 4) != 0 ? &q.mCollisionInfo : nullptr;
+    soundParams.mFlags = 0;
+    soundParams.mMaxVoices = 2;
+    soundParams.mPitch = useNslDefault;
+    soundParams.mDuration = useNslDefault;
+    soundParams.mSubtitle = nullptr;
+    soundParams.mDialogNotify = q.mDialogNotify;
+}
+
+// ea: 0x004CA820
+int EffectEventSys::IsSoundAlreadyPlaying(unsigned int mSoundNameHashStr,
+                                          Entity* pEnt, int maxEffects)
+{
+    int playCount = 0;
+    AbstractEffect* oldestEffect = nullptr;
+    int oldestEffectIndex = 0;
+    unsigned int oldestAbstractEffectIndex = 0;
+    int highestDelayCountSoFar = 0;
+    bool stopSound = false;
+    if (mEffectSets.m_size == 0)
+        return 0;
+    for (unsigned int v6 = 0; v6 < (unsigned int)mEffectSets.m_size; ++v6)
+    {
+        ASSERT_IDX(v6, 512, 154);
+        ActiveEffectSet* v8 = mEffectSets[v6];
+        for (unsigned int v7 = 0;
+             v7 < (unsigned int)v8->mEffects.m_size; ++v7)
+        {
+            ASSERT_IDX(v6, 512, 154);
+            ASSERT_IDX(v7, 6, 148);
+            AbstractEffect* v9 = v8->mEffects.m_elements[v7];
+            if (v9 == nullptr || (v9->mCodeFlags.mVal & 4) == 0)
+                continue;
+            unsigned int v10 = v9->mEntity.mHandle.mVal & 0xFFF;
+            Entity* mObject = nullptr;
+            if (v10 < 0x540
+                && v9->mEntity.mHandle.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v10].mKey)
+                mObject = EntityHandleDb::sInst.mElements[v10].mObject;
+            if (pEnt == mObject
+                && mSoundNameHashStr == v9->mEffectNameHashStr)
+            {
+                if (++playCount >= maxEffects)
+                    stopSound = true;
+                if (oldestEffect != nullptr)
+                {
+                    if (v9->mCountSinceStarted > highestDelayCountSoFar)
+                    {
+                        oldestEffect = v9;
+                        highestDelayCountSoFar = v9->mCountSinceStarted;
+                        oldestEffectIndex = (int)v6;
+                        oldestAbstractEffectIndex = v7;
+                    }
+                    continue;
+                }
+                oldestEffect = v9;
+                oldestAbstractEffectIndex = v7;
+                highestDelayCountSoFar = v9->mCountSinceStarted;
+                oldestEffectIndex = (int)v6;
+            }
+        }
+    }
+    if (stopSound)
+    {
+        if (oldestEffect == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEventSys.cpp";
+            AeAssert::gCurrentLine = 403;
+            AeAssert::gCurrentExpr = "oldestEffect";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Oldest effect not setup"))
+                __debugbreak();
+        }
+        oldestEffect->StopEffect();
+        ActiveEffectSet* set = mEffectSets[oldestEffectIndex];
+        ASSERT_IDX(oldestAbstractEffectIndex, 6, 154);
+        AbstractEffect* p = set->mEffects[oldestAbstractEffectIndex];
+        if (p != nullptr)
+            delete p;
+        unsigned int v14 = set->mEffects.m_size - 1;
+        ASSERT_IDX(v14, 6, 154);
+        set->mEffects[oldestAbstractEffectIndex] = set->mEffects[v14];
+        if (set->mEffects.m_size != 0)
+            --set->mEffects.m_size;
+    }
+    return playCount;
+}
+
+// ============================================================================
 // HandleDb lookups
 // ============================================================================
 

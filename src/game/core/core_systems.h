@@ -398,7 +398,17 @@ struct EffectEventSys {
     void IsSoundToBeQueued(bool val);            // ea: 0x004C11A0
     void SetQueryImportance(bool val);           // ea: 0x004C11C0
     void DirectionInfo(const float* dir);        // ea: 0x004C11F0
+    void FadeOutEffect(AbstractEffect* effect,
+                       float seconds);           // ea: 0x004C0FE0
+    void AdvanceFades(float delta);              // ea: 0x004C1010
+    void SetSoundParams(SoundParams& soundParams, PendingQuery& q,
+                        float useNslDefault);    // ea: 0x004C1120
+    void SendSpecificSoundNotify(Entity* pEnt,
+                                 HashString soundName);  // ea: 0x004BCD90
+    void SendSoundNotify(Entity* pEnt);          // ea: 0x004BCDE0
     ActiveEffectSet* GetActiveEffectSet(Handle handle);  // ea: 0x004C56B0
+    int IsSoundAlreadyPlaying(unsigned int mSoundNameHashStr, Entity* pEnt,
+                              int maxEffects);   // ea: 0x004CA820
     bool IsEffectActive(Handle handle);          // ea: 0x004CACD0
     void AdjustEffect_Scale(Handle handle, const char* param,
                             float scale);        // ea: 0x004CABD0
