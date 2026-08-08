@@ -189,6 +189,7 @@ struct AbstractEffectSound : AbstractEffect {
     void PlayQueuedEffect();              // ea: 0x004CD350
     void StopEffect();                    // ea: 0x004CD4C0
     Broc::string GetDebugString() const;  // ea: 0x004CD580
+    void FrameAdvance(float delta_t);     // ea: 0x004CC4B0
 };
 static_assert(sizeof(AbstractEffectSound) == 0xA0,
               "AbstractEffectSound size mismatch");

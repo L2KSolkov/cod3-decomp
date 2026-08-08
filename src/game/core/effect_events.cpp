@@ -123,6 +123,23 @@ extern void CurveManager_PostEvent(void* self, unsigned int entityHandle,
                                    unsigned int hash, float value);
 extern void AnglesToAxis(const math::Position3* angles,
                          const math::Position3* origin, math::Mat43* mat);
+extern Entity* GetPlayer(int idx);
+extern int currCl;
+extern float clamp_0_to_1(float f);
+extern void Entity_Notify(Entity* ent, unsigned int h);
+extern unsigned int SoundDevice_PlaySound(
+    unsigned int wave, unsigned int entHandle, bool important, int a5,
+    const math::Position3* pos, const math::Position3* dir, float volume,
+    float pitch, float minRange, float maxRange);
+extern unsigned int SoundDevice_QueueSound(
+    unsigned int wave, unsigned int entHandle, bool important, int a5,
+    const math::Position3* pos, const math::Position3* dir, float volume,
+    float pitch, float minRange, float maxRange);
+extern float Sound_GetStartingVolume(void* sound);
+struct SoundDeviceInst {
+    float mVolScale;  // +0x00 (name-accessed)
+};
+extern SoundDeviceInst* SoundDevice_sInst;
 
 CameraShake* g_cameraShake = nullptr;
 int dword_F6A290[4 * 0x322];
@@ -143,8 +160,9 @@ struct SndWait {
 // ============================================================================
 namespace SoundDevice {
 struct Sound {
-    int          mSource;  // +0x00 nslSourceID (-1 = invalid)
-    unsigned int mWave;    // +0x04 nslWaveID
+    int          mSource;        // +0x00 nslSourceID (-1 = invalid)
+    unsigned int mWave;          // +0x04 nslWaveID
+    HashString   mDialogNotify;  // +0x08
 };
 struct SoundHandleDb {
     struct DbElement {
@@ -2421,6 +2439,379 @@ Broc::string AbstractEffectSound::GetDebugString() const
         r = (const char*)v17.mBuff;
     }
     return r;
+}
+
+// ============================================================================
+// AbstractEffectSound::FrameAdvance
+// ============================================================================
+
+static Entity* AbstractEffectGetOwner(const AbstractEffect* effect)
+{
+    unsigned int v = effect->mEntity.mHandle.mVal & 0xFFF;
+    if (v < 0x540
+        && effect->mEntity.mHandle.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v].mKey)
+        return EntityHandleDb::sInst.mElements[v].mObject;
+    return nullptr;
+}
+
+// ea: 0x004CC4B0
+void AbstractEffectSound::FrameAdvance(float delta_t)
+{
+    math::Position3 v79;
+    v79.v.m128_f32[0] = v79.v.m128_f32[1] = v79.v.m128_f32[2] =
+        v79.v.m128_f32[3] = 0.0f;
+    math::Position3 v79b;
+    v79b.v.m128_f32[0] = v79b.v.m128_f32[1] = v79b.v.m128_f32[2] =
+        v79b.v.m128_f32[3] = 0.0f;
+    float minRange = -1.0f;
+    float maxRange = -1.0f;
+    SoundDevice::Sound* mObject =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (mObject != nullptr)
+    {
+        maxRange = SoundDevice::nslGetWaveParam(mObject->mWave, 26, 1.0f);
+        minRange = SoundDevice::nslGetWaveParam(mObject->mWave, 25, 1.0f);
+    }
+    mDelayCount = mDelayCount + delta_t;
+    ++mCountSinceStarted;
+    if (mDelayTrigger > mDelayCount)
+        return;
+    unsigned int v15 = mEntity.mHandle.mVal & 0xFFF;
+    if (v15 >= 0x540
+        || mEntity.mHandle.mVal >> 12 != EntityHandleDb::sInst.mElements[v15].mKey
+        || EntityHandleDb::sInst.mElements[v15].mObject == nullptr)
+    {
+        return;
+    }
+    unsigned int mMask = mCodeFlags.mVal;
+    if ((mMask & 0x20) != 0 && (mMask & 2) != 0
+        && SoundDevice::SoundFromHandle(mSound.mHandle.mVal) == nullptr)
+    {
+        Entity* Player = GetPlayer(currCl);
+        Entity* Owner = AbstractEffectGetOwner(this);
+        float v81 = Owner->r.currentOrigin.v.m128_f32[0]
+                    - Player->r.currentOrigin.v.m128_f32[0];
+        Player = GetPlayer(currCl);
+        float v82 = Owner->r.currentOrigin.v.m128_f32[1]
+                    - Player->r.currentOrigin.v.m128_f32[1];
+        Player = GetPlayer(currCl);
+        Owner = AbstractEffectGetOwner(this);
+        float dz = Owner->r.currentOrigin.v.m128_f32[2]
+                   - Player->r.currentOrigin.v.m128_f32[2];
+        if ((maxRange * maxRange) > ((dz * dz) + (v82 * v82) + (v81 * v81)))
+        {
+            math::Position3* p_mCdPos;
+            if ((mMask & 0x40) != 0)
+                p_mCdPos = &mCdPos;
+            else
+            {
+                v79b = GetPosition();
+                p_mCdPos = &v79b;
+            }
+            float v80 = p_mCdPos->v.m128_f32[0];
+            v81 = p_mCdPos->v.m128_f32[1];
+            v82 = p_mCdPos->v.m128_f32[2];
+            float v83 = p_mCdPos->v.m128_f32[3];
+            unsigned int v20;
+            if ((mFlags & 1) != 0 || (mMask & 0x40) == 0)
+                v20 = mEntity.mHandle.mVal;
+            else
+                v20 = 0;
+            bool important = (mMask & 8) != 0;
+            math::Position3 pos;
+            pos.v.m128_f32[0] = v80;
+            pos.v.m128_f32[1] = v81;
+            pos.v.m128_f32[2] = v82;
+            pos.v.m128_f32[3] = v83;
+            mSound.mHandle.mVal = SoundDevice_PlaySound(
+                mWaveHdl, v20, important, 0, &pos, &v79, mSoundParams.mVolume,
+                mFinalPitch, minRange, maxRange);
+        }
+    }
+    if ((mCodeFlags.mVal & 2) != 0)
+        goto LABEL_124;
+    float v21 = mSoundParams.mVolume;
+    if (v21 != -1.0f && (v21 < -0.000001f || mSoundParams.mVolume > 2.0f))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+        AeAssert::gCurrentLine = 236;
+        AeAssert::gCurrentExpr = "mSoundParams.mVolume == useNslDefault || "
+                                 "(mSoundParams.mVolume >= -0.000001f && "
+                                 "mSoundParams.mVolume <= 2.0f)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("unlikely volume"))
+            __debugbreak();
+    }
+    float mPitch = mSoundParams.mPitch;
+    if (mPitch != -1.0f && (mPitch < 0.1f || mSoundParams.mPitch >= 4.0f))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+        AeAssert::gCurrentLine = 237;
+        AeAssert::gCurrentExpr = "mSoundParams.mPitch == useNslDefault || "
+                                 "(mSoundParams.mPitch >= 0.1f && "
+                                 "mSoundParams.mPitch < 4.0f)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("unlikely pitch"))
+            __debugbreak();
+    }
+    if (minRange != -1.0f && (minRange < 0.0f || maxRange < minRange))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+        AeAssert::gCurrentLine = 239;
+        AeAssert::gCurrentExpr = "minRange == useNslDefault || (minRange >= "
+                                 "0.0f && minRange <= maxRange)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("strange min/max ranges"))
+            __debugbreak();
+    }
+    if (AbstractEffectGetOwner(this) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+        AeAssert::gCurrentLine = 240;
+        AeAssert::gCurrentExpr = "GetOwner() != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("all sounds must have an owner"))
+            __debugbreak();
+    }
+    mFinalPitch = mSoundParams.mPitch;
+    if (mWaveHdl == (unsigned int)-1
+        || SoundDevice::nslGetWaveParam(mWaveHdl, 0, 1.0f) == 0.0f)
+        goto LABEL_69;
+    if ((mCodeFlags.mVal & 0x10) != 0)
+    {
+        math::Position3* p_currentOrigin;
+        Entity* Owner = AbstractEffectGetOwner(this);
+        if ((mFlags & 1) != 0)
+        {
+            p_currentOrigin = Owner != nullptr ? &Owner->r.currentOrigin : &v79;
+        }
+        else
+        {
+            if ((mCodeFlags.mVal & 0x40) != 0)
+                p_currentOrigin = &mCdPos;
+            else
+                p_currentOrigin =
+                    Owner != nullptr ? &Owner->r.currentOrigin : &v79;
+        }
+        math::Position3 pos;
+        pos.v.m128_f32[0] = p_currentOrigin->v.m128_f32[0];
+        pos.v.m128_f32[1] = p_currentOrigin->v.m128_f32[1];
+        pos.v.m128_f32[2] = p_currentOrigin->v.m128_f32[2];
+        pos.v.m128_f32[3] = p_currentOrigin->v.m128_f32[3];
+        bool important = (mCodeFlags.mVal & 8) != 0;
+        mSound.mHandle.mVal = SoundDevice_QueueSound(
+            mWaveHdl, mEntity.mHandle.mVal, important, 0, &pos, &v79,
+            mSoundParams.mVolume, mFinalPitch, minRange, maxRange);
+        if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal) == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+            AeAssert::gCurrentLine = 269;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Sound '%s' queue failed",
+                                    mSoundParams.mNameRef))
+                __debugbreak();
+        LABEL_69:
+            mCodeFlags.mVal |= 2u;
+        LABEL_70:
+            EffectEventSysStatics::sInst->SendSoundNotify(
+                AbstractEffectGetOwner(this));
+            if (mSoundParams.mDialogNotify != 0)
+                Entity_Notify(AbstractEffectGetOwner(this),
+                              mSoundParams.mDialogNotify);
+            return;
+        }
+        SoundDevice::Sound* sound =
+            SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+        if (sound->mSource != -1 || (mCodeFlags.mVal & 8) == 0)
+            goto LABEL_117;
+        mSound.mHandle.mVal = SoundDevice_QueueSound(
+            mWaveHdl, mEntity.mHandle.mVal, false, 0, &pos, &v79,
+            mSoundParams.mVolume, mFinalPitch, minRange, maxRange);
+        if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal)->mSource == -1)
+        {
+            EffectEventSysStatics::sInst->SendSoundNotify(
+                AbstractEffectGetOwner(this));
+            if (mSoundParams.mDialogNotify != 0)
+                Entity_Notify(AbstractEffectGetOwner(this),
+                              mSoundParams.mDialogNotify);
+        }
+        if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal)->mSource == -1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+            AeAssert::gCurrentLine = 286;
+            AeAssert::gCurrentExpr = "mSound->IsSourceValid()";
+            if (!AeAssert::IsIgnored())
+            {
+                Broc::string::Block* mBlock = mEffectName.mBlock;
+                const char* v33 =
+                    mBlock ? (const char*)(mBlock + 1) : defaultFileName;
+                if (AeAssert::Assert(
+                        "Sound '%s' queue failed (important)", v33))
+                    __debugbreak();
+            }
+        }
+    }
+    else
+    {
+        EffectEventSysStatics::sInst->IsSoundAlreadyPlaying(
+            mEffectNameHashStr,
+            EntityHandleDb::sInst
+                .mElements[mEntity.mHandle.mVal & 0xFFF]
+                .mObject,
+            mSoundParams.mMaxVoices);
+        math::Position3* v41;
+        Entity* Owner = AbstractEffectGetOwner(this);
+        bool useCd = (mCodeFlags.mVal & 0x40) != 0;
+        if ((mFlags & 1) != 0)
+            v41 = Owner != nullptr ? &Owner->r.currentOrigin : &v79;
+        else
+            v41 = useCd ? &mCdPos
+                        : (Owner != nullptr ? &Owner->r.currentOrigin : &v79);
+        math::Position3 pos;
+        pos.v.m128_f32[0] = v41->v.m128_f32[0];
+        pos.v.m128_f32[1] = v41->v.m128_f32[1];
+        pos.v.m128_f32[2] = v41->v.m128_f32[2];
+        pos.v.m128_f32[3] = v41->v.m128_f32[3];
+        unsigned int entVal;
+        if ((mFlags & 1) != 0 || !useCd)
+            entVal = mEntity.mHandle.mVal;
+        else
+            entVal = 0;
+        bool important = (mCodeFlags.mVal & 8) != 0;
+        mSound.mHandle.mVal = SoundDevice_PlaySound(
+            mWaveHdl, entVal, important, 0, &pos, &v79, mSoundParams.mVolume,
+            mFinalPitch, minRange, maxRange);
+        SoundDevice::Sound* sound =
+            SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+        if (sound != nullptr)
+        {
+            if (sound->mSource != -1 || (mCodeFlags.mVal & 8) == 0)
+                goto LABEL_117;
+            mSound.mHandle.mVal = SoundDevice_PlaySound(
+                mWaveHdl, entVal, false, 0, &pos, &v79, mSoundParams.mVolume,
+                mFinalPitch, minRange, maxRange);
+            if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal)->mSource
+                    == -1
+                && AbstractEffectGetOwner(this) != nullptr)
+            {
+                EffectEventSysStatics::sInst->SendSoundNotify(
+                    AbstractEffectGetOwner(this));
+                if (mSoundParams.mDialogNotify != 0)
+                    Entity_Notify(AbstractEffectGetOwner(this),
+                                  mSoundParams.mDialogNotify);
+            }
+            if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal)->mSource
+                != -1)
+                goto LABEL_117;
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+            AeAssert::gCurrentLine = 342;
+            AeAssert::gCurrentExpr = "mSound->IsSourceValid()";
+            if (!AeAssert::IsIgnored())
+            {
+                Broc::string::Block* v44 = mEffectName.mBlock;
+                const char* v45 =
+                    v44 ? (const char*)(v44 + 1) : defaultFileName;
+                if (AeAssert::Assert("Sound '%s' play failed (important)",
+                                     v45))
+                    __debugbreak();
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AbstractEffect.cpp";
+            AeAssert::gCurrentLine = 318;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Sound '%s' play failed",
+                                    mSoundParams.mNameRef))
+                __debugbreak();
+            mCodeFlags.mVal |= 2u;
+            if (AbstractEffectGetOwner(this) != nullptr)
+                goto LABEL_70;
+            return;
+        }
+    }
+LABEL_117:
+    if (mSoundParams.mDialogNotify != 0)
+    {
+        SoundDevice::Sound* s =
+            SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+        if (s != nullptr)
+            s->mDialogNotify.mHash = mSoundParams.mDialogNotify;
+    }
+    SoundDevice::Sound* v46 =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (v46 != nullptr && SoundDevice::Sound_IsLooped(v46))
+        mCodeFlags.mVal |= 0x20u;
+    if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal) != nullptr)
+    {
+        float mVolScale = SoundDevice_sInst != nullptr
+                              ? SoundDevice_sInst->mVolScale
+                              : 1.0f;
+        float StartingVolume =
+            Sound_GetStartingVolume(
+                SoundDevice::SoundFromHandle(mSound.mHandle.mVal));
+        mVolScale = StartingVolume * mVolScale;
+        SoundDevice::Sound_SetVolume(
+            SoundDevice::SoundFromHandle(mSound.mHandle.mVal), mVolScale);
+    }
+    mCodeFlags.mVal |= 2u;
+LABEL_124:
+    if (mSoundParams.mDuration >= 0.0f)
+    {
+        float v50 = mSoundParams.mDuration - delta_t;
+        mSoundParams.mDuration = v50;
+        if (v50 < 0.0f)
+        {
+            mSoundParams.mDuration = -1.0f;
+            StartFadeOut(2.0f);
+        }
+    }
+    SoundDevice::Sound* v52 =
+        SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+    if (v52 != nullptr && !SoundDevice::Sound_IsFinished(v52))
+    {
+        SoundDevice::Sound* v53 =
+            SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
+        if (SoundDevice::Sound_IsQueued(v53)
+            && AbstractEffectGetOwner(this) != nullptr)
+        {
+            EffectEventSysStatics::sInst->SendSoundNotify(
+                AbstractEffectGetOwner(this));
+            if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal)
+                    ->mDialogNotify.mHash != 0)
+            {
+                Entity_Notify(
+                    AbstractEffectGetOwner(this),
+                    SoundDevice::SoundFromHandle(mSound.mHandle.mVal)
+                        ->mDialogNotify.mHash);
+            }
+        }
+        if ((mCodeFlags.mVal & 1) != 0)
+        {
+            mFadeTime = mFadeTime - delta_t;
+            if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal) != nullptr)
+            {
+                float vol = clamp_0_to_1(mFadeTime / mFadeStart)
+                            * mSoundParams.mVolume;
+                SoundDevice::Sound_SetVolume(
+                    SoundDevice::SoundFromHandle(mSound.mHandle.mVal), vol);
+            }
+        }
+        if (mPoPtr != nullptr
+            && SoundDevice::SoundFromHandle(mSound.mHandle.mVal) != nullptr)
+        {
+            SoundDevice::Sound_SetPoPtr(
+                SoundDevice::SoundFromHandle(mSound.mHandle.mVal), mPoPtr);
+        }
+    }
 }
 
 // ============================================================================
