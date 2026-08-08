@@ -127,6 +127,16 @@ static_assert(offsetof(SoundParams, mDuration) == 0x18,
 // ============================================================================
 struct AbstractEffect {
     virtual ~AbstractEffect();
+    virtual void SetPoPtr(math::Mat43* po);
+    virtual bool IsQueued() const;
+    virtual bool IsLooping() const;
+    virtual void AdjustEffect_Scale(const char* param, float scale);
+    virtual void FastForward(float deltaT);
+    virtual void PlayQueuedEffect();
+    virtual void StartFadeOut(float time);
+    virtual void FrameAdvance(float deltaT);
+    virtual bool IsFinished();
+    virtual void StopEffect();
     Broc::string                 mEffectName;        // +0x04
     unsigned int                 mEffectNameHashStr; // +0x08
     TPakId                       mPakId;             // +0x0C
@@ -231,10 +241,34 @@ struct ActiveEffectSet {
     math::Mat43*                       mPoPtr;    // +0x20
     Handle                             mId;       // +0x24
     Bitmask<unsigned int>              mFlags;    // +0x28
+
+    ~ActiveEffectSet();
+    void AddEffect(AbstractEffect* effect);             // ea: 0x004C0C00
+    bool IsFinished() const;                            // ea: 0x004C0C30
+    bool IsQueued() const;                              // ea: 0x004C0C50
+    void AdjustEffect_Scale(const char* param,
+                            float scale);               // ea: 0x004C0CD0
+    void FastForward(float deltaT);                     // ea: 0x004C0D50
+    void PlayQueuedEffect();                            // ea: 0x004C0DD0
+    void SetPoPtr(math::Mat43* po);                     // ea: 0x004C0E40
+    void StopLoopingEffects();                          // ea: 0x004C0EC0
+    void DoStopLoopingEffects();                        // ea: 0x004C0ED0
 };
 static_assert(sizeof(ActiveEffectSet) == 0x2C, "ActiveEffectSet size mismatch");
 static_assert(offsetof(ActiveEffectSet, mPakId) == 0x1C,
               "ActiveEffectSet::mPakId offset mismatch");
+
+// HandleDb<ActiveEffectSet,512,SizedHandle<9,23>> (elements at +0x40)
+struct HandleDb {
+    struct Element {
+        ActiveEffectSet* mObject;  // +0x00
+        unsigned int     mKey;     // +0x04
+    };
+    unsigned char _header[0x40];   // +0x00
+    Element       mElements[512];  // +0x40
+    unsigned int  _tail;           // +0x1040
+};
+static_assert(sizeof(HandleDb) == 0x1044, "HandleDb size mismatch");
 
 // ============================================================================
 // EffectEventSys - effect event system singleton (41856 bytes)
@@ -292,8 +326,21 @@ struct EffectEventSys {
     bool                mStoppingAll;    // +0x9224
     int                 mDebuggingLevel; // +0x9228
     ae_sized_array<EffectRef, 32> mEffectRefs;  // +0x922C (0x104)
-    unsigned char       mHandleDb[0x1044];  // +0x9330 HandleDb<ActiveEffectSet,512,SizedHandle<9,23>>
+    HandleDb            mHandleDb;          // +0x9330
     unsigned char       _tail[0xC];         // TODO verify (to 0xA380)
+
+    int NumberOfVoicesUsed();                    // ea: 0x004BCE20
+    void TagNameIndexInfo(int index);            // ea: 0x004BCE60
+    void SetEffectMatrix(math::Mat43* pMat);     // ea: 0x004BCE80
+    void SetScriptId(Broc::string val);          // ea: 0x004BCEA0
+    void SetDialogNotify(int notify);            // ea: 0x004BCF00
+    void SetQueryType(unsigned int val);         // ea: 0x004BCF20
+    void SoundCacheType(int val);                // ea: 0x004BCF40
+    void IsSoundToBeQueued(bool val);            // ea: 0x004C11A0
+    void SetQueryImportance(bool val);           // ea: 0x004C11C0
+    void DirectionInfo(const float* dir);        // ea: 0x004C11F0
+    bool IsEffectActive(Handle handle);          // ea: 0x004CACD0
+    void StopEffect(Handle handle, bool kill);   // ea: 0x004CEF20
 };
 static_assert(sizeof(EffectEventSys) == 0xA380, "EffectEventSys size mismatch");
 

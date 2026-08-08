@@ -27,6 +27,7 @@ typedef unsigned nslVoiceID;
 enum nslSpeakerMode        { NSL_SPEAKER_STEREO=0, NSL_SPEAKER_5_1=1, NSL_SPEAKER_MONO=2 };
 enum nslWaveBankLoaderState{ NSL_WB_LOADING=0, NSL_WB_READY=1, NSL_WB_FAILED=2 };
 enum nslVoiceState         { NSL_VOICE_FREE=0, NSL_VOICE_PLAYING=1, NSL_VOICE_PAUSED=2 };
+enum nslSourceState        { NSL_SOURCE_STATE_INVALID=0, NSL_SOURCE_STATE_PLAYING=1 };
 
 // ============================================================================
 // Forward types
@@ -78,6 +79,13 @@ void          nslSourceSetConeAngles(nslSourceID, float, float) {}
 void          nslSourceSetConeOutsideVolume(nslSourceID, float) {}
 void          nslSourceSetMinDistance(nslSourceID, float) {}
 void          nslSourceSetMaxDistance(nslSourceID, float) {}
+
+// Voice enumeration (used by EffectEventSys::NumberOfVoicesUsed)
+unsigned      nslGetNumVoices() { return 0; }
+nslVoice*     nslGetVoice(unsigned) { return nullptr; }
+nslSourceState nslGetSourceState(nslSourceID) {
+    return NSL_SOURCE_STATE_INVALID;
+}
 void          nslSourceSetMode(nslSourceID, unsigned) {}
 void          nslSourceSetLooping(nslSourceID, bool) {}
 void          nslSourceSetPriority(nslSourceID, unsigned) {}
