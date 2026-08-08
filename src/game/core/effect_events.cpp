@@ -157,6 +157,26 @@ extern void LightEffect_SetColor(void* light, float r, float g, float b,
                                  float a);
 extern bool g_indoor;  // 0x00F00E7D
 extern const char* s_RifleIndoorSound;  // 0x00DD8A38
+extern int dword_F6355C[4 * 1580];  // per-client table (stride 1580 dwords)
+extern void* Entity_GetViewModelDObj(Entity* ent);
+extern void* FX_PlayEffect(TPakId pakId, int id, math::Mat43* mat,
+                           void* boltObjHandle, unsigned int boltEntHandle,
+                           int boltBoneIndex, bool boltAttchedToEnt);
+extern void* FX_PlayEffectID(TPakId pakId, int id, math::Position3* org,
+                             const float* fwd);
+extern void* FX_PlaySimpleEffectID(TPakId pakId, int id,
+                                   math::Position3* org);
+extern void* FX_PlayEntityEffectID(TPakId pakId, int id,
+                                   math::Position3* org, void* axis,
+                                   void* boltObjHandle,
+                                   unsigned int boltEntHandle,
+                                   int boltBoneIndex, bool boltAttchedToEnt);
+extern void nglMatrixCreateXYZ(math::Mat43* mat, math::Dir3* rot,
+                               math::Position3* trans);
+extern void SmokeGrenadeMgr_AddSmokeGrenade(void* mgr, void* info);
+extern void* SmokeGrenadeMgr_sInst;
+extern void* BG_GetInfoForWeapon(int weapon);
+extern int g_scr_data_debris_bro_func;
 extern unsigned int SoundDevice_PlaySound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,
     const math::Position3* pos, const math::Position3* dir, float volume,
@@ -2420,6 +2440,201 @@ bool AbstractEffectParticle::IsFinished()
     if ((mCodeFlags.mVal & 1) != 0 && !IsFinishedFading())
         return false;
     return mParticle->mEffect->IsDone() != 0;
+}
+
+// ea: 0x004CD740
+void AbstractEffectParticle::FrameAdvance(float delta_t)
+{
+    float v4 = delta_t + mDelayCount;
+    float mDelayTrigger = this->mDelayTrigger;
+    mDelayCount = v4;
+    if (mDelayTrigger > v4)
+        return;
+    if ((mCodeFlags.mVal & 2) != 0)
+    {
+        if ((mCodeFlags.mVal & 1) != 0)
+            mFadeTime = mFadeTime - delta_t;
+        return;
+    }
+    if (gParticleParams.mCd != nullptr)
+        mCodeFlags.mVal |= 0x40u;
+    else
+        mCodeFlags.mVal |= 0x80u;
+    if (gParticleParams.mHasDirection)
+    {
+        mCodeFlags.mVal = (mCodeFlags.mVal & 0x3F) | 0x100;
+    }
+    if (gParticleParams.mUpdatePosOnly)
+        mCodeFlags.mVal |= 0x200u;
+    unsigned int mVal = mEntity.mHandle.mVal;
+    unsigned int v7 = mEntity.mHandle.mVal & 0xFFF;
+    Entity* owner = nullptr;
+    if (v7 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey)
+        owner = EntityHandleDb::sInst.mElements[v7].mObject;
+    int mBoneIndex = gParticleParams.mBoneIndex;
+    DbLinkedHandle<void, void> boltEntHandle;
+    boltEntHandle.mHandle.mVal = mVal;
+    DbLinkedHandle<void, void> boltObjHandle;
+    boltObjHandle.mHandle.mVal = 0;
+    if (owner != nullptr && owner->mDObj != nullptr)
+        boltObjHandle.mHandle.mVal =
+            *(unsigned int*)((char*)owner->mDObj + 212);
+    unsigned int bone_name_hash = 0;
+    if (gParticleParams.mBoneIndex == -1)
+    {
+        bone_name_hash = AeHash(gParticleParams.mBoneName.str);
+        void* dobj = owner != nullptr ? owner->mDObj : nullptr;
+        mBoneIndex = FX_GetBoneIndex(dobj, bone_name_hash);
+        if (mBoneIndex == -1)
+        {
+            Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+            if (owner == Player && dword_F6355C[1580 * currCl] != 0)
+            {
+                if (owner->s.weapon != 0)
+                {
+                    void* vmDobj = Entity_GetViewModelDObj(owner);
+                    int BoneIndex = FX_GetBoneIndex(vmDobj, bone_name_hash);
+                    if (BoneIndex > 0)
+                    {
+                        boltObjHandle.mHandle.mVal =
+                            *(unsigned int*)((char*)vmDobj + 212);
+                        mBoneIndex = BoneIndex;
+                    }
+                }
+            }
+        }
+    }
+    ParticleEffect* v15 = nullptr;
+    if (mBoneIndex != -1)
+    {
+        Entity* v14 = AbstractEffectGetOwner(this);
+        v15 = (ParticleEffect*)FX_PlayEntityEffectID(
+            gParticleParams.mPakId, gParticleParams.mParticleId,
+            &v14->r.currentOrigin, nullptr, boltObjHandle.mHandle.mVal
+                                               ? (void*)boltObjHandle.mHandle.mVal
+                                               : nullptr,
+            boltEntHandle.mHandle.mVal, mBoneIndex, mBoneIndex != 0);
+    }
+    else if (mPoPtr != nullptr)
+    {
+        v15 = (ParticleEffect*)FX_PlayEffect(
+            gParticleParams.mPakId, gParticleParams.mParticleId,
+            const_cast<math::Mat43*>(mPoPtr),
+            boltObjHandle.mHandle.mVal ? (void*)boltObjHandle.mHandle.mVal
+                                       : nullptr,
+            boltEntHandle.mHandle.mVal, -1, true);
+    }
+    else
+    {
+        unsigned int mMask = mCodeFlags.mVal;
+        if ((mMask & 0x80) != 0)
+        {
+            math::Mat43 mat;
+            memset(&mat, 0, sizeof(mat));
+            if ((mMask & 0x200) != 0)
+            {
+                Entity* e = EntityManager::sInst->GetPlayer(currCl);
+                if (e == nullptr)
+                    e = AbstractEffectGetOwner(this);
+                mat.x.v.m128_f32[0] = 1.0f;
+                mat.y.v.m128_f32[1] = 1.0f;
+                mat.z.v.m128_f32[2] = 1.0f;
+                mat.w.v = e->r.currentOrigin.v;
+            }
+            else
+            {
+                Entity* e = AbstractEffectGetOwner(this);
+                float yaw = e->r.currentAngles.v.m128_f32[1] * 3.1415927f
+                            / 180.0f;
+                float pitch = e->r.currentAngles.v.m128_f32[0] * 3.1415927f
+                              / 180.0f;
+                float roll = e->r.currentAngles.v.m128_f32[2] * 3.1415927f
+                             / 180.0f;
+                math::Dir3 rot;
+                rot.v.m128_f32[0] = pitch;
+                rot.v.m128_f32[1] = yaw;
+                rot.v.m128_f32[2] = roll;
+                nglMatrixCreateXYZ(&mat, &rot, &e->r.currentOrigin);
+            }
+            v15 = (ParticleEffect*)FX_PlayEffect(
+                gParticleParams.mPakId, gParticleParams.mParticleId, &mat,
+                boltObjHandle.mHandle.mVal ? (void*)boltObjHandle.mHandle.mVal
+                                           : nullptr,
+                boltEntHandle.mHandle.mVal, -1, true);
+            mParticle = v15;
+            if (v15 != nullptr)
+                v15->mFlags.mVal |= 4u;
+            goto LABEL_42;
+        }
+        if ((mMask & 0x40) != 0)
+        {
+            math::Position3 org;
+            org.v.m128_f32[0] = gParticleParams.mCd->simple.coord.v.m128_f32[0];
+            org.v.m128_f32[1] = gParticleParams.mCd->simple.coord.v.m128_f32[1];
+            org.v.m128_f32[2] = gParticleParams.mCd->simple.coord.v.m128_f32[2];
+            org.v.m128_f32[3] = 0.0f;
+            float fwd[3] = {gParticleParams.mCd->simple.normal.v.m128_f32[0],
+                            gParticleParams.mCd->simple.normal.v.m128_f32[1],
+                            gParticleParams.mCd->simple.normal.v.m128_f32[2]};
+            v15 = (ParticleEffect*)FX_PlayEffectID(
+                gParticleParams.mPakId, gParticleParams.mParticleId, &org,
+                fwd);
+            mParticle = v15;
+            if (v15 != nullptr)
+                v15->mEffect->mFlags |= 1u;
+            goto LABEL_42;
+        }
+        Entity* Owner = AbstractEffectGetOwner(this);
+        if ((mMask & 0x100) != 0)
+        {
+            math::Position3 org;
+            org.v = Owner->r.currentOrigin.v;
+            float fwd[3] = {gParticleParams.mCd->simple.normal.v.m128_f32[0],
+                            gParticleParams.mCd->simple.normal.v.m128_f32[1],
+                            gParticleParams.mCd->simple.normal.v.m128_f32[2]};
+            v15 = (ParticleEffect*)FX_PlayEffectID(
+                gParticleParams.mPakId, gParticleParams.mParticleId, &org,
+                fwd);
+        }
+        else
+        {
+            v15 = (ParticleEffect*)FX_PlaySimpleEffectID(
+                gParticleParams.mPakId, gParticleParams.mParticleId,
+                &Owner->r.currentOrigin);
+        }
+    }
+    mParticle = v15;
+LABEL_42:
+    mCodeFlags.mVal |= 2u;
+    ParticleEffect* mParticle = this->mParticle;
+    if (mParticle != nullptr)
+    {
+        mParticle->mAbstractEffectParticle = this;
+        if (gParticleParams.mQueue)
+            mParticle->mFlags.mVal |= 2u;
+        if (mParticle->mEffect != nullptr && (mFlags & 0x20) != 0)
+        {
+            Entity* v28 = AbstractEffectGetOwner(this);
+            if (v28 != nullptr && v28->s.weapon != 0)
+            {
+                void* InfoForWeapon = BG_GetInfoForWeapon(v28->s.weapon);
+                int slot = *(int*)((char*)InfoForWeapon + 4);
+                if (slot == 12 || (slot == 11 && *(int*)((char*)InfoForWeapon + 8) != 0))
+                {
+                    void* info[3];
+                    info[0] = mParticle->mEffect;
+                    SmokeGrenadeMgr_AddSmokeGrenade(SmokeGrenadeMgr_sInst,
+                                                    info);
+                }
+                else if (g_scr_data_debris_bro_func != 0)
+                {
+                    mParticle->mFlags.mVal |= 8u;
+                }
+            }
+        }
+    }
+    if ((mCodeFlags.mVal & 1) != 0)
+        mFadeTime = mFadeTime - delta_t;
 }
 
 // ============================================================================

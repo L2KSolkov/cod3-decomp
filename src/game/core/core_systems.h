@@ -214,6 +214,7 @@ struct AbstractEffectParticle : AbstractEffect {
     void StartFadeOut(float seconds);             // ea: 0x004C1350
     Broc::string GetDebugString() const;          // ea: 0x004C59C0
     bool IsFinished();                            // ea: 0x004CDC90
+    void FrameAdvance(float delta_t);             // ea: 0x004CD740
 };
 static_assert(sizeof(AbstractEffectParticle) == 0x38,
               "AbstractEffectParticle size mismatch");
