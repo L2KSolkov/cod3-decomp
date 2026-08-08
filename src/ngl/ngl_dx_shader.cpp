@@ -99,14 +99,14 @@ void nglDxSetBonesWorld(int p, nglMeshNode* MeshNode, nglMeshSection* Section) {
             for (int i = 0; i < NBones; ++i, dst += 3) {
                 const math::Mat43* Rel = &MeshBones[Section->BoneIndices[i]];
                 const nglSkeletonBone* Bone = &Skeleton->Bones[Section->BoneIndices[i]];
-                math::Mat43 M = MulMat43(*Rel, Bone->InvRest);
+                math::Mat43 M = MulMat43World(Bone->InvRest, *Rel);
                 Mat43ToConstants(M, dst);
             }
         } else if ((Flags & 8) != 0) {
             for (int i = 0; i < NBones; ++i, dst += 3) {
                 const math::Mat43* Rel = &MeshBones[Section->BoneIndices[i]];
                 const nglSkeletonBone* Bone = &Skeleton->Bones[Section->BoneIndices[i]];
-                math::Mat43 M = MulMat43World(MulMat43(*Rel, Bone->InvRest),
+                math::Mat43 M = MulMat43World(MulMat43World(Bone->InvRest, *Rel),
                                               MeshNode->LocalToWorld);
                 Mat43ToConstants(M, dst);
             }
@@ -280,14 +280,15 @@ void nglDxSetupVShaderBones(int VSReg, nglMeshNode* MeshNode, nglMeshSection* Se
         for (int i = 0; i < NBones; ++i, dst += 3) {
             const math::Mat43* Rel = &Bones[Section->BoneIndices[i]];
             const nglSkeletonBone* Bone = &Skeleton->Bones[Section->BoneIndices[i]];
-            math::Mat43 M = MulMat43World(MulMat43(*Rel, Bone->InvRest), WToLNoScale);
+            math::Mat43 M = MulMat43World(MulMat43World(Bone->InvRest, *Rel),
+                                          WToLNoScale);
             Mat43ToConstants(M, dst);
         }
     } else if ((Flags & 8) != 0) {
         for (int i = 0; i < NBones; ++i, dst += 3) {
             const math::Mat43* Rel = &Bones[Section->BoneIndices[i]];
             const nglSkeletonBone* Bone = &Skeleton->Bones[Section->BoneIndices[i]];
-            math::Mat43 M = MulMat43(*Rel, Bone->InvRest);
+            math::Mat43 M = MulMat43World(Bone->InvRest, *Rel);
             Mat43ToConstants(M, dst);
         }
     } else if ((Flags & 0x10) != 0) {
@@ -328,14 +329,15 @@ void nglDxSetBonesLocal(int p, nglMeshNode* MeshNode, nglMeshSection* Section) {
             for (int i = 0; i < NBones; ++i, dst += 3) {
                 const math::Mat43* Rel = &Bones[Section->BoneIndices[i]];
                 const nglSkeletonBone* Bone = &Skeleton->Bones[Section->BoneIndices[i]];
-                math::Mat43 M = MulMat43World(MulMat43(*Rel, Bone->InvRest), WToLNoScale);
+                math::Mat43 M = MulMat43World(MulMat43World(Bone->InvRest, *Rel),
+                                              WToLNoScale);
                 Mat43ToConstants(M, dst);
             }
         } else if ((Flags & 8) != 0) {
             for (int i = 0; i < NBones; ++i, dst += 3) {
                 const math::Mat43* Rel = &Bones[Section->BoneIndices[i]];
                 const nglSkeletonBone* Bone = &Skeleton->Bones[Section->BoneIndices[i]];
-                math::Mat43 M = MulMat43(*Rel, Bone->InvRest);
+                math::Mat43 M = MulMat43World(Bone->InvRest, *Rel);
                 Mat43ToConstants(M, dst);
             }
         } else if ((Flags & 0x10) != 0) {
@@ -351,6 +353,8 @@ void nglDxSetBonesLocal(int p, nglMeshNode* MeshNode, nglMeshSection* Section) {
     } else {
         NBones = 1;
         BonesArray_3[0] = kIdentityX;
+        BonesArray_3[1] = kIdentityY;
+        BonesArray_3[2] = kIdentityZ;
     }
     int v93 = 3 * NBones;
     if (v93 == 1)

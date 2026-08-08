@@ -37,6 +37,20 @@ struct gpuVertexFormat {
 };
 static_assert(sizeof(gpuVertexFormat) == 0x0C, "gpuVertexFormat size mismatch");
 
+// gpuVertexElementUsage - element slot selector (index into gpuVertexFormat::Elements).
+// IDA's PDB enum carries no member names; values are the 0-based element positions
+// (nglGpuFindVertexElement returns &fmt->Elements[usage]).
+enum gpuVertexElementUsage {
+    GPU_VERTEX_ELEMENT_POSITION = 0,
+    GPU_VERTEX_ELEMENT_NORMAL = 1,
+    GPU_VERTEX_ELEMENT_COLOR = 2,
+    GPU_VERTEX_ELEMENT_TEXCOORD0 = 3,
+    GPU_VERTEX_ELEMENT_TEXCOORD1 = 4,
+    GPU_VERTEX_ELEMENT_TEXCOORD2 = 5,
+    GPU_VERTEX_ELEMENT_TEXCOORD3 = 6,
+};
+static_assert(sizeof(gpuVertexElementUsage) == 4, "gpuVertexElementUsage size mismatch");
+
 // ============================================================================
 // nglMeshSection â€” GPU mesh section (112 bytes, verified against IDA)
 // ============================================================================
