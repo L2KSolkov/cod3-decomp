@@ -34,6 +34,143 @@ extern int cg_aWeaponSelectTime[4];
 extern int cg_weaponCycleDelay;
 extern int cgGlobal_frametime;
 extern struct level_locals_t { int time; } level;
+struct sentient_s {
+    int lastShotTime;  // +0x00
+};
+extern Entity* Entity_GetOwner(Entity* ent);
+extern void AnimationPlayer_Play(void* player, void* anim, bool forceRestart,
+                                 float fade_in, float callback_time,
+                                 void* callback, float speed,
+                                 float time_in_seconds_to_start);
+extern void sWeaponAnimCallback();
+extern void* cg_weapons;          // weaponInfo_s[]
+extern int dword_F6A2A0[4 * 802];
+extern int dword_F6A2A4[4 * 802];
+extern int dword_F6A2A8[4 * 802];
+extern void* EntityManager_mPlayers[16];
+extern void* sADSMetaAnimPlayer;
+extern void DObjFree(void* obj, int bClearTree);
+extern void* DObj_GetTree(void* obj);
+extern void* DObj_New(unsigned int size);
+extern void DObj_Ctor(void* obj, int pakId);
+extern void DObj_Dtor(void* obj);
+extern void DObj_OpDelete(void* obj);
+extern void DObjCreate(DObjModel* models, int numModels, void* tree,
+                       void* dobj, int gameId);
+extern void DObjCreateAnimationPlayer(void* obj, int modelIndex);
+extern void Q_strncpyz(char* dest, const char* src, int destsize);
+extern void* RE_RegisterModel(void* result, const char* name, int pakId,
+                              int imagetype);
+extern void ValidatePakId(int pakId);
+extern int CurPakId();
+extern int PAK_ID_MIN;
+extern void* AnimBankManager_GetBank(void* mgr, int pakId);
+extern void* AnimBankManager_sInst;
+extern void* AnimBank_GetAnimTree(void* bank, const char* name);
+extern void* cdGetAnim(unsigned int hash);
+extern void* XAnimCreateTree(void* ent, void* anims);
+extern void* XAnimIsLooped(void* anims, unsigned int animIndex);
+extern void* XAnimGetLength(void* anims, unsigned int animIndex);
+extern void Com_Error(int code, const char* fmt, ...);
+extern void Com_Printf(const char* fmt, ...);
+extern void* GetTextureData(const char* name, int image_type,
+                            const char* fromPak);
+extern void* va(const char* fmt, ...);
+extern const char* SEH_StringEd_GetString(const char* pszReference);
+extern void* bg_itemlist;
+extern void CG_RegisterItemVisuals(int itemNum);
+extern bool CG_SetupViewModelDObj(void* dobj, int weaponNum);
+extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
+extern bool CG_GetWeapReticleZoom(float* pfZoom);
+extern int InteractionController_CanRunWeaponAnims(void* self);
+extern void* InteractionController_Inst(int instance);
+extern void* PlayerAnimMgr_sInst;
+extern void* Entity_GetRefEntity(Entity* ent);
+extern void CG_AddPlayerWeapon(void* parent, PlayerState* ps, Entity* entity,
+                               int bDrawGun);
+extern void AddLeanToPosition(float* vPosition, float fViewYaw,
+                              float fLeanFrac, float fViewRoll,
+                              float fLeanDist);
+extern void DObjAdvanceAnimationPlayer(void* d, float deltaT);
+extern void DObjInitServerTime(void* d, float dtime);
+extern bool DObjUpdateServerInfo(void* obj, float dtime, bool bNotify,
+                                 int animindex);
+extern void DObjCalcAnim(void* obj, int iPhase);
+extern void j_nullsub_82(void* obj, int* partBits);
+extern void CG_UpdateViewModelPosAndOrientation(void* hand);
+extern void RE_AddViewModelToScene(void* ent);
+extern void RE_SetViewModelInfoIndex(int index);
+extern void AxisCopy(const float (*in)[3], float (*out)[3]);
+extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
+                                      const float (*in2)[3],
+                                      DObjSkelMat* out);
+extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
+extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
+extern void* DObj_GetMat(void* obj, int boneIndex);
+extern int GamePause_IsGamePaused(int client);
+extern int CG_HoldBreathUpdate();
+extern void CG_WeaponUpdateLoopingSound(Entity* entity);
+extern void CG_WeaponIKAddToFireQueue(Entity* attacker, int weapon);
+extern int CG_WeaponFireRecoil();
+extern void CG_WeaponFlash(Entity* entity, int weaponNum,
+                           const math::Position3* origin, int bViewFlash);
+extern void CG_EjectWeaponBrass(Entity* entity, int event);
+extern void PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                                  int weaponAction);
+extern void PostEffectEventPointLightFlash(const Entity* ent,
+                                           const char* weaponType,
+                                           int weaponAction);
+extern void PostEffectEventWeaponFire1st(const Entity* ent,
+                                         const char* weaponType,
+                                         int weaponAction, int cacheSound,
+                                         int barrel);
+extern void PostEffectEventWeaponFire3rd(const Entity* ent,
+                                         const char* weaponType,
+                                         int weaponAction, int cacheSound);
+extern int MultiplayerMgr_IsLocalPlayer(void* mgr, const Entity* player);
+extern void* MultiplayerMgr_sInst;
+extern int dword_F62960[4 * 1580];
+extern int dword_F6403C[4 * 1580];
+extern int dword_F64040[4 * 1580];
+extern int dword_F64044[4 * 1580];
+extern int dword_F64048[4 * 1580];
+extern int dword_F6404C[4 * 1580];
+extern int dword_F6355C[4 * 1580];
+extern int dword_F640A4[4 * 1580];
+extern int cg_drawGun;
+extern float cg_gun_x;
+extern float cg_gun_y;
+extern float cg_gun_z;
+extern float angle[4 * 395];
+extern float dword_F63CB4[4 * 1580];
+extern float dword_F63C80[4 * 1580];
+extern float dword_F63C84[4 * 1580];
+extern float dword_F63C88[4 * 1580];
+extern float dword_F63C8C[4 * 1580];
+extern float dword_F63C90[4 * 1580];
+extern float dword_F63C94[4 * 1580];
+extern float dword_F63C98[4 * 1580];
+extern float dword_F63C9C[4 * 1580];
+extern float dword_F63CA0[4 * 1580];
+extern float dword_F64074[4 * 1580];
+extern float dword_F64078[4 * 1580];
+extern float dword_F6407C[4 * 1580];
+extern float unk_F64080[4 * 6320];
+extern int s_barrelTags[4];
+extern float* ejectBrassCasingOrigin;
+extern int dword_F5E6BC;
+extern int dword_F5E6C0;
+extern unsigned int tagHash;
+extern unsigned int tag_brass_hash;
+extern unsigned int HashString_CalcHash(const char* str);
+extern void CG_ChangeViewmodelDobj(int client, const char* handModel);
+extern void CG_RegisterWeapon(int weaponNum);
+struct tagInfo_t {
+    void* parent;  // +0x00
+};
+extern struct ServerTime_t { float mTickDelta; } ServerTime_sInst;
+extern float tr_viewModelInfo_mWeaponScale[4];
+extern int tr_viewModelInfo_mWeaponOrigin_used;
 
 extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern void* EntityManager_sInst;
@@ -97,6 +234,9 @@ struct weaponFileInfoFull : weaponFileInfo_t {
     int  slot;        // +0x88
     int  bOffHand;    // +0x8C
     int  bSlotStackable;  // +0x90
+    int  bBoltAction;     // +0x94
+    int  bADSPositionInfo; // +0x98
+    float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
 };
 
 static char buffer_0[256];
@@ -828,5 +968,315 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
             PostEffectEventWeapon(entity, v8->szInternalName,
                                   6 /* kActionWEAPON_LOOP_FIRE */);
         }
+    }
+}
+
+// ea: 0x00699380
+void CG_StartWeaponAnim(int weaponNum, DObj* dobj, int animIndex,
+                        float fadeInTime, float startTimeInSec,
+                        int forceRestart)
+{
+    weaponInfo_s* weaponInfo = &((weaponInfo_s*)cg_weapons)[weaponNum];
+    if (animIndex <= 0 || animIndex >= 25)
+    {
+        CG_ASSERT(
+            "( animIndex > WEAP_ANIM_VIEWMODEL_START ) && ( animIndex < "
+            "WEAP_ANIM_VIEWMODEL_END )",
+            "c:\\cod\\code\\game\\cg_weapons.cpp", 348);
+    }
+    int j = 0;
+    if (dobj->numModels != 0)
+    {
+        do
+        {
+            int v7 = (int)dobj->tree[j];
+            void** animPlayers = dobj->animPlayers;
+            if (v7 != 0 && animPlayers[j] != nullptr)
+            {
+                XAnimEntry* entries = (XAnimEntry*)(*(int*)(v7 + 8) + 4);
+                XAnimEntry* v8 = &entries[animIndex];
+                if (v8->anim == nullptr)
+                    v8->anim = cdGetAnim(v8->hash);
+                void* anim = v8->anim;
+                if (anim != nullptr)
+                {
+                    AnimationPlayer_Play(
+                        animPlayers[j], anim, forceRestart != 0, fadeInTime,
+                        0.0f, j != 0 ? nullptr : &sWeaponAnimCallback,
+                        weaponInfo->viewModelAnimRates[animIndex],
+                        startTimeInSec);
+                }
+            }
+            ++j;
+        } while (j < dobj->numModels);
+    }
+}
+
+// ea: 0x006A9BE0
+void CG_CreateWeaponDObjsForClient(int client, int weapon)
+{
+    void* v2 = (void*)dword_F6A2A0[802 * client];
+    if (v2 != nullptr)
+    {
+        if (weapon == dword_F6A2A4[802 * client])
+            return;
+        DObjFree(v2, 1);
+        void* v3 = (void*)dword_F6A2A0[802 * client];
+        if (v3 != nullptr)
+        {
+            DObj_Dtor(v3);
+            DObj_OpDelete(v3);
+        }
+        dword_F6A2A0[802 * client] = 0;
+    }
+    int v4 = CurPakId();
+    void* v5 = DObj_New(0xE8);
+    void* v6;
+    if (v5 != nullptr)
+    {
+        DObj_Ctor(v5, v4);
+        v6 = v5;
+    }
+    else
+    {
+        v6 = nullptr;
+    }
+    dword_F6A2A0[802 * client] = (int)v6;
+    if (CG_SetupViewModelDObj(v6, weapon))
+        dword_F6A2A4[802 * client] = weapon;
+}
+
+// ea: 0x006AA8A0
+void CG_UpdateHandViewmodels(const char* handModel)
+{
+    Entity* player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    int weapon = player->client->ps.weapon;
+    if (strcmp(((weaponInfo_s*)cg_weapons)[weapon].handModel, handModel) != 0)
+        CG_ChangeViewmodelDobj(currCl, handModel);
+}
+
+// ea: 0x006AA5B0
+void CG_ChangeViewmodelDobj(int client, const char* handModel)
+{
+    Entity* player = EntityManager_GetPlayer(EntityManager_sInst, client);
+    int weapon = player->client->ps.weapon;
+    if (weapon != 0)
+    {
+        if (weapon < 1)
+            CG_ASSERT("weaponNum >= 1", "c:\\cod\\code\\game\\cg_weapons.cpp",
+                      1514);
+        if (weapon > BG_GetNumWeapons())
+            CG_ASSERT("weaponNum <= BG_GetNumWeapons()",
+                      "c:\\cod\\code\\game\\cg_weapons.cpp", 1515);
+        weaponInfo_s* v3 = &((weaponInfo_s*)cg_weapons)[weapon];
+        int* v4 = &dword_F6A2A0[802 * client];
+        weaponFileInfo_t* InfoForWeapon =
+            (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
+        const char* szGunXModel = (const char*)&((char*)InfoForWeapon)[0x140];
+        const char* szHandXModel = (const char*)&((char*)InfoForWeapon)[0x100];
+        if (*v4 != 0 && szGunXModel[0] != 0)
+        {
+            void* pAnimTree = DObj_GetTree((void*)*v4);
+            if (pAnimTree == nullptr)
+                CG_ASSERT("pAnimTree", "c:\\cod\\code\\game\\cg_weapons.cpp",
+                          1527);
+            DObjFree((void*)*v4, 0);
+            DObjModel dobjModels[2];
+            memset(dobjModels, 0, sizeof(dobjModels));
+            int v6 = CurPakId();
+            void* result;
+            dobjModels[0].model.mValue =
+                RE_RegisterModel(&result, szHandXModel, v6, 6);
+            dobjModels[0].model.mPakId = *(int*)((char*)&result + 4);
+            dobjModels[0].boneName = Broc::string();
+            dobjModels[0].ignoreCollision = 0;
+            ValidatePakId(dobjModels[0].model.mPakId);
+            if (dobjModels[0].model.mValue == nullptr)
+                CG_ASSERT("dobjModels[0].model",
+                          "c:\\cod\\code\\game\\cg_weapons.cpp", 1536);
+            int v7 = CurPakId();
+            void* result2;
+            void* v8 = RE_RegisterModel(&result2, szGunXModel,
+                                        v7, 6);
+            dobjModels[1].model.mValue = *(void**)v8;
+            dobjModels[1].model.mPakId = *(int*)((char*)v8 + 4);
+            dobjModels[1].boneName = Broc::string("tag_weapon");
+            dobjModels[1].ignoreCollision = 0;
+            ValidatePakId(dobjModels[1].model.mPakId);
+            if (dobjModels[1].model.mValue == nullptr)
+                CG_ASSERT("dobjModels[1].model",
+                          "c:\\cod\\code\\game\\cg_weapons.cpp", 1543);
+            DObjCreate(dobjModels, 2, pAnimTree, (void*)*v4, 0);
+            Q_strncpyz(v3->handModel, handModel, 24);
+        }
+    }
+}
+
+// ea: 0x006AB0B0
+void CG_AddViewWeapon(PlayerState* ps)
+{
+    int v2 = 1;
+    if (ps != nullptr
+        && ((ps->pm_flags & 0x100000) != 0 || ps->pm_type < 4)
+        && dword_F6355C[1580 * currCl] == 0)
+    {
+        float zoom = 0.0f;
+        if (cg_drawGun != 2
+            && (cg_drawGun == 0 || CG_GetWeapReticleZoom(&zoom) != 0))
+            v2 = 0;
+        if ((ps->eFlags & 0x6000) == 0)
+        {
+            int weapon = ps->weapon;
+            if (weapon <= 0)
+            {
+                int v8 = 1580 * currCl;
+                dword_F6403C[v8] = *(int*)&angle[1580 * currCl];
+                dword_F64040[v8] = *(int*)&dword_F63CB4[v8];
+                dword_F64044[v8] = 0;
+                dword_F64048[v8] = 0;
+                dword_F6404C[v8] = 0;
+            }
+            else
+            {
+                CG_RegisterWeapon(weapon);
+                CG_CreateWeaponDObjsForClient(currCl, ps->weapon);
+                weaponInfo_s* v4 = &((weaponInfo_s*)cg_weapons)[ps->weapon];
+                void* v5 = InteractionController_Inst(currCl);
+                if (InteractionController_CanRunWeaponAnims(v5) == 0
+                    || PlayerAnimMgr_sInst != nullptr)
+                    dword_F6A2A8[802 * currCl] = -1;
+                else
+                    CG_WeaponRunXModelAnims(ps, v4);
+                Entity* Player = GetPlayer(currCl);
+                refEntity_t* RefEntity =
+                    (refEntity_t*)Entity_GetRefEntity(Player);
+                RefEntity->renderfx = 12;
+                CG_AddPlayerWeapon(RefEntity, ps, Player, v2);
+            }
+        }
+    }
+}
+
+// ea: 0x006AB230
+void CG_FireWeapon(Entity* attacker, EntityState* attackerState, int event,
+                   unsigned int barrel)
+{
+    if (barrel >= 4)
+    {
+        CG_ASSERT("( barrel >= 0 ) && ( barrel < 4 )",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 4251);
+    }
+    if (!dword_F62960[1580 * currCl])
+        return;
+    Client* client = attacker->client;
+    const char* weapInfo = (const char*)s_barrelTags[barrel];
+    Entity* v6 = attacker;
+    EntityState* ent;
+    if (client && (client->ps.eFlags & 0x100000) != 0
+        && client->ps.vehPos <= 1)
+    {
+        v6 = Entity_GetOwner(attacker);
+        if (client->ps.vehPos)
+        {
+            ent = (EntityState*)(v6->scr_vehicle ? v6->scr_vehicle->gunnerWeapon : 0);
+            weapInfo = "tag_gunner_flash";
+        }
+        else
+        {
+            if (event != 187)
+            {
+                ent = (EntityState*)attacker->s.weapon;
+                goto LABEL_18;
+            }
+            ent = (EntityState*)(v6->scr_vehicle ? v6->scr_vehicle->altWeapon : 0);
+            weapInfo = "tag_guncoax";
+        }
+    }
+    else
+    {
+        ent = (EntityState*)attacker->s.weapon;
+        if (attacker->scr_vehicle && attacker->scr_vehicle->shooter == 1)
+        {
+            ent = (EntityState*)(attacker->scr_vehicle ? attacker->scr_vehicle->gunnerWeapon : 0);
+        }
+    }
+LABEL_18:
+    if ((int)ent > 0)
+    {
+        if ((int)ent > BG_GetNumWeapons())
+        {
+            CG_Error("CG_FireWeapon: weapon > BG_GetNumWeapons()");
+            return;
+        }
+        int weapon = (int)ent;
+        weaponFileInfo_t* InfoForWeapon =
+            (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
+        if (attacker->client)
+        {
+            if (attacker->sentient)
+                attacker->sentient->lastShotTime = level.time;
+            CG_WeaponIKAddToFireQueue(attacker, weapon);
+        }
+        int lc = 0;
+        if (v6 == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            && (GetPlayerState(currCl)->pm_flags & 0x180000) != 0)
+        {
+            CG_WeaponFireRecoil();
+        }
+        Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        if (v6 == Player
+            || (Player->tagInfo != nullptr && Player->tagInfo->parent == v6))
+            lc = 1;
+        if (level.time < v6->invulnerability_timeout)
+        {
+            v6->invulnerability_timeout = 0;
+            MultiplayerMgr_IsLocalPlayer(MultiplayerMgr_sInst, v6);
+        }
+        if ((int)attackerState < 0x12)
+        {
+            if (v6->s.eType == 14)
+            {
+                PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
+                                      2 /* kActionWEAPON_WORLD_FLASH */);
+                weaponFileInfo_t* v18 =
+                    (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
+                PostEffectEventPointLightFlash(v6, v18->szInternalName, 2);
+            }
+            else
+            {
+                math::Position3 origin;
+                CG_WeaponFlash(v6, weapon, &origin, lc);
+            }
+            if (lc)
+            {
+                PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
+                                      7 /* kActionEI_MELEE_ENEMY_WINNING */);
+            }
+            if (event == 189)
+            {
+                if (lc)
+                    PostEffectEventWeaponFire1st(
+                        v6, InfoForWeapon->szInternalName,
+                        8 /* kActionWEAPON_LAST_SHOT_1ST */, -1, (int)barrel);
+                else
+                    PostEffectEventWeaponFire3rd(
+                        v6, InfoForWeapon->szInternalName,
+                        9 /* kActionWEAPON_LAST_SHOT_3RD */, -1);
+            }
+            else if (lc)
+            {
+                PostEffectEventWeaponFire1st(
+                    v6, InfoForWeapon->szInternalName,
+                    10 /* kActionWEAPON_FIRE_1ST */, 0, (int)barrel);
+            }
+            else
+            {
+                PostEffectEventWeaponFire3rd(
+                    v6, InfoForWeapon->szInternalName,
+                    11 /* kActionWEAPON_FIRE_3RD */, 1);
+            }
+        }
+        if (!((weaponFileInfoFull*)InfoForWeapon)->bBoltAction)
+            CG_EjectWeaponBrass(v6, event);
     }
 }

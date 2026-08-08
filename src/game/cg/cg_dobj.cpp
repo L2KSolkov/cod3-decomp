@@ -8,10 +8,6 @@
 
 #include <string.h>
 
-struct DObj {
-    Entity* mEntity;  // +0x00
-};
-
 extern int currCl;
 extern int dword_F63554[4 * 1580];
 extern float dword_F64074[4 * 1580];

@@ -7,8 +7,10 @@
 #include <stdint.h>
 
 #include "core/math_types.h"
+#include "engine/broc_types.h"
 
 struct Entity;
+struct DObj;
 
 // Renderer export table (refexport_t; matches the layout used by core.o
 // common.cpp's re_export_view and cl_parse.cpp's refexport_t2)
@@ -87,6 +89,98 @@ struct weaponFileInfo_t {
     unsigned char bWideKillIcon;  // +0x80
 };
 
+struct IVPointerRaw {
+    void* mValue;  // +0x00
+    int   mPakId;  // +0x04
+};
+
+struct DObjModel {
+    IVPointerRaw model;          // +0x00
+    Broc::string boneName;       // +0x08
+    int          ignoreCollision; // +0x0C
+    void*        animTree;       // +0x10 XAnimTree*
+};
+
+struct DObj {
+    void* tree[8];        // +0x00 XAnimTree*[8]
+    void* animPlayers[8]; // +0x20 AnimationPlayer*[8]
+    void* mPose[8];       // +0x40
+    unsigned char modelParents[8];  // +0x60
+    unsigned char matOffset[8];     // +0x68
+    void* skel;           // +0x70
+    void* animToModel;    // +0x74
+    unsigned int gameId;  // +0x78
+    int ignoreCollision;  // +0x7C
+    IVPointerRaw models[8];  // +0x80
+    int  mPakId;          // +0xC0
+    IVPointerRaw mPhysData;  // +0xC4
+    unsigned short duplicateParts;  // +0xCC
+    unsigned char numModels;        // +0xCE
+    unsigned char numBones;         // +0xCF
+    Entity* mEntity;      // +0xD0
+    unsigned int mHandle; // +0xD4
+    int mLOD;             // +0xD8
+    int mLODOverride;     // +0xDC
+    int mLODAnim;         // +0xE0
+    unsigned int mFlags;  // +0xE4
+};
+
+struct XAnimEntry {
+    unsigned int hash;        // +0x00
+    unsigned short numAnims;  // +0x04
+    unsigned short parent;    // +0x06
+    void* anim;               // +0x08 nalGeneric::nalGenericAnim*
+    void* notify;             // +0x0C
+    int   lastAttempt;        // +0x10
+    unsigned char ucLastChosenChild;  // +0x14
+};
+
+struct AnimTree {
+    void* name;               // +0x00 InplaceString
+    XAnimEntry entries[2];    // +0x04 InplaceVector<XAnimEntry>
+    int entriesSize;          // +0x38
+};
+
+struct weaponInfo_s {
+    float viewModelAnimRates[25];  // +0x00
+    char  handModel[24];           // +0x64
+    unsigned char registered;      // +0x7C
+    const void* item;              // +0x80
+    const char* pszTranslatedDisplayName;  // +0x84
+    const char* pszTranslatedModename;     // +0x88
+    const char* pszTranslatedAIOverlayDescription;  // +0x8C
+    IVPointerRaw iWorldSurfIndex;   // +0x90
+    IVPointerRaw iPickupSurfIndex;  // +0x98
+    void* weaponIcon[2];         // +0xA0
+    void* ammoIcon;              // +0xA8
+    void* hHudIcon;              // +0xAC
+    void* hAmmoIcon;             // +0xB0
+    int   missileRenderfx;       // +0xB4
+    void* hReticleCenter;        // +0xB8
+    void* hReticleSide;          // +0xBC
+    void* hADSOverlay;           // +0xC0
+    IVPointerRaw iMissileSurfIndex; // +0xC4
+};
+
+struct refEntity_t {
+    int   reType;          // +0x00
+    int   renderfx;        // +0x04
+    float lightingOrigin[3]; // +0x08
+    float axis[3][3];      // +0x14
+    float scale;           // +0x38
+    float origin[3];       // +0x3C
+    float oldorigin[3];    // +0x48
+    void* obj;             // +0x54
+    Entity* entity;        // +0x58
+    void* pStaticModel;    // +0x5C
+};
+
+struct scr_vehicle_t {
+    void* gunnerWeapon;  // +0x00
+    void* altWeapon;     // +0x04
+    int   shooter;       // +0x08
+};
+
 // PlayerState - subset of the fields cg.o touches (full size 0x5D0)
 struct PlayerState {
     math::Position3 origin;            // +0x00
@@ -94,6 +188,7 @@ struct PlayerState {
     float fWeaponPosFrac;              // +0xAC
     int lastWeapon;                    // +0xC4
     int eFlags;                        // +0xF4
+    int pm_type;                       // +0x24
     int ammoclip[92];                  // +0x2B4
     int weapons[2];                    // +0x424
     unsigned char weaponslots[10];     // +0x42C

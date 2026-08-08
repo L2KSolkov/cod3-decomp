@@ -91,18 +91,6 @@ struct cgGlobal_t {
 };
 extern cgGlobal_t cgGlobal;  // 0x00F5FE30
 
-struct refEntity_t {
-    int   reType;          // +0x00
-    int   renderfx;        // +0x04
-    float lightingOrigin[3]; // +0x08
-    float axis[3][3];      // +0x14
-    float scale;           // +0x38
-    float origin[3];       // +0x3C
-    float oldorigin[3];    // +0x48
-    void* obj;             // +0x54
-    Entity* entity;        // +0x58
-    void* pStaticModel;    // +0x5C
-};
 
 struct consoleCommand_t {
     const char* cmd;
