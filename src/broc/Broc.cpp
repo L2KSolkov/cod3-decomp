@@ -286,6 +286,12 @@ const char* string::c_str() const {
     return mBlock->mBuff;
 }
 
+int string::length() const {
+    if (!mBlock)
+        return 0;
+    return mBlock->mLength;
+}
+
 char* string::GetBuff() {
     if (!mBlock)
         return NULL;

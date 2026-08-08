@@ -6,6 +6,7 @@
 
 #include "mp_util_wad.h"
 #include "engine/broc_types.h"
+#include <string.h>
 
 using Broc::RandomFloatRange;
 using Broc::RandomInt;
@@ -34,7 +35,11 @@ void RegisterHashStrings();
 namespace _mp_audio {
 void* PlayPainSound__functor(Broc::entity guy, Broc::bint damage);
 void* PlaySound__functor(Broc::entity self, Broc::string sound, float delay);
+void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
+                                   Broc::vector position);
 void* player_dying_sounds__functor(Broc::entity player);
+void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
+                    Broc::entity attacker, int weapon, int means_of_damage);
 }
 namespace _mp_loadout {
 void local_player_joined(Broc::entity player);
@@ -46,6 +51,23 @@ void DisplayYouWillSpawnWithMessage(Broc::entity self);
 }
 namespace _mp_shellshock {
 void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage);
+}
+namespace _mp_spawnlogic {
+Broc::entity* GetSpawnpointNearTeamAntiCamp(Broc::entity* result,
+                                            Broc::entity* self,
+                                            const Broc::string* team,
+                                            Broc::dyn_array<Broc::entity>* points);
+Broc::entity* GetSpawnpointNearest(Broc::entity* result,
+                                   Broc::dyn_array<Broc::entity>* points,
+                                   Broc::vector position, bool ignoreTeleFrag);
+Broc::entity* GetSpawnpointRandom(Broc::entity* result,
+                                  Broc::dyn_array<Broc::entity>* points,
+                                  bool ignoreTeleFrag);
+}
+namespace _mp_teambalance {
+Broc::string* team_balance(Broc::string* result, Broc::entity guy,
+                           Broc::string team);
+void team_balance(bool always);
 }
 namespace _mp_common {
 void* StopFollowing__functor(Broc::entity self, bool blackNow);
@@ -60,6 +82,18 @@ void* HandleJoinAfterRoundOver__functor(Broc::entity self, int timeleft);
 void* TeamChangeKillPlayer__functor(Broc::entity player);
 void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player);
 void* HealthRegenPlayerBreathing__functor(Broc::entity self, int healthCap);
+void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
+                          int delay, bool reviveable, bool fade);
+void* UpdateSpectateCritical__functor(Broc::entity guy);
+void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy);
+void* UpdateSpectateDead__functor(Broc::entity guy, bool canspawn);
+void* UpdateSpectateSpawn__functor(Broc::entity localPlayer);
+void* SpawnLocalSpectator__functor(Broc::entity guy);
+void* restart_round__functor(Broc::entity selfLevel, int waitTime);
+void* finish_starting_round__functor(Broc::entity self, bool firstTime);
+void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position);
+void* NewHost__functor(Broc::entity self);
+void* LocalPlayerIntermission__functor(Broc::entity player);
 }
 
 namespace mp_util_wad {
@@ -1813,7 +1847,7 @@ void ProgressBarDelete();                                // ea: 0x94AE00
 void EndRound(EEndRoundCondition condition, Broc::string winner);  // ea: 0x94AE30
 Broc::bbool* HasBothTeams(Broc::bbool* result);          // ea: 0x94AEC0
 void WaitForTeams();                                     // ea: 0x94B210
-void GetBestSpectateSpawn(Broc::entity* result, Broc::entity* self);  // ea: 0x94B4A0
+Broc::entity* GetBestSpectateSpawn(Broc::entity* result, Broc::entity* self);  // ea: 0x94B4A0
 void AudioOnPlayerDeath(Broc::entity entself, Broc::bint weapon);  // ea: 0x94B650
 void HealthRegenPlayerBreathing(Broc::entity ent, Broc::bint healthCap);  // ea: 0x94B6F0
 void AddArtilleryObjective(Broc::entity ent, Broc::vector position);  // ea: 0x94B900
@@ -3098,6 +3132,1299 @@ void AddToPlayerStats(Broc::entity player, Broc::bint stat, __int16 amount) {
     }
 }
 
+// CallbackPlayerKilled - ea: 0x93EC10
+void CallbackPlayerKilled(Broc::entity killedPlayer, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health) {
+    Broc::string weaponName((const char*)NULL);
+    Broc::Code_GetWeaponName(weapon, &weaponName);
+    Broc::entity team_killer;
+    team_killer.___u0 = 0;
+    if (attacker.IsDefined() && Broc::IsPlayer(&attacker) != 0) {
+        if (attacker != killedPlayer) {
+            bool teamKill = false;
+            if (Broc::Code_GetTeamGame()) {
+                Broc::string kt;
+                Broc::string at;
+                mp_util_wad::entity_get_team(&kt, killedPlayer);
+                mp_util_wad::entity_get_team(&at, attacker);
+                teamKill = kt == at;
+                kt.~string();
+                at.~string();
+            }
+            if (teamKill) {
+                if (mod != 17 && mod != 18 && mod != 5 && mod != 6) {
+                    if (Broc::Code_IsLocalPlayer(attacker))
+                        Broc::SetActionHint((int)0x69F4FD86u,
+                                            Broc::GetPlayerIndex(attacker));
+                    if (Broc::Code_IsLocalPlayer(killedPlayer))
+                        team_killer = attacker;
+                    AddToPlayerStats(attacker, Broc::bint(8), 1);
+                    *mp_util_wad::GetEE_killsSinceLastDeath(attacker) = 0;
+                }
+            } else {
+                AddToPlayerStats(attacker, Broc::bint(3), 1);
+                switch (mod) {
+                case 17:
+                case 18:
+                    AddToPlayerStats(attacker, Broc::bint(13), 1);
+                    break;
+                case 3:
+                case 4:
+                    if (stricmp(weaponName.c_str(), "m1garand_rg") == 0 ||
+                        stricmp(weaponName.c_str(), "k98_rg") == 0)
+                        AddToPlayerStats(attacker, Broc::bint(15), 1);
+                    else
+                        AddToPlayerStats(attacker, Broc::bint(10), 1);
+                    break;
+                case 5:
+                case 6:
+                    AddToPlayerStats(attacker, Broc::bint(14), 1);
+                    break;
+                default:
+                    break;
+                }
+                Broc::entity spotter;
+                Broc::Code_GetSpotterEntity(&spotter, killedPlayer);
+                if (Broc::IsDefined(spotter))
+                    AddToPlayerStats(attacker, Broc::bint(23), 1);
+            }
+        }
+    } else {
+        if (!(bool)*mp_util_wad::GetEE_autobalance(killedPlayer))
+            AddToPlayerStats(attacker, Broc::bint(7), 1);
+    }
+    if (Broc::IsDefined(attacker))
+        *mp_util_wad::GetEE_killsSinceLastDeath(attacker) =
+            (int)*mp_util_wad::GetEE_killsSinceLastDeath(attacker) + 1;
+    *mp_util_wad::GetEE_killsSinceLastDeath(killedPlayer) = 0;
+    *mp_util_wad::GetEE_autobalance(killedPlayer) = false;
+    Broc::Code_SetRespawnMaxTime(killedPlayer, 0);
+    if (mod == 25 || health <= -250) {
+        AddToPlayerStats(killedPlayer, Broc::bint(4), 1);
+        mp_util_wad::entity_set_playerState(killedPlayer, 5);
+    } else {
+        mp_util_wad::entity_set_playerState(killedPlayer, 4);
+    }
+    Broc::bint now;
+    Broc::GetTime(&now);
+    Broc::bint timeAlive =
+        (int)now - (int)*mp_util_wad::GetEE_spawnTime(killedPlayer);
+    if ((int)timeAlive > 1000)
+        AddToPlayerStats(killedPlayer, Broc::bint(0), (__int16)((int)timeAlive / 1000));
+    Broc::Code_Obituary(killedPlayer, attacker, &weaponName, mod, 0);
+    _mp_audio::PlayDeathSound(killedPlayer, inflictor, attacker, weapon, mod);
+    AudioOnPlayerDeath(killedPlayer, Broc::bint(mod));
+    Broc::bint state;
+    mp_util_wad::entity_get_playerState(&state, killedPlayer);
+    if ((int)state != 2) {
+        void* ftor = DeathState__functor(killedPlayer, team_killer, 3,
+                                         (int)state == 4, true);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                            __LINE__, "DeathState", ftor);
+    }
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, killedPlayer);
+    CheckLastManStanding(team);
+}
+
+// CallbackRoundOver - ea: 0x941480
+void CallbackRoundOver(int condition, Broc::string team) {
+    Broc::Code_DebugOut("*COMMON* CallbackRoundOver\n");
+    mp_util_wad::pLevel->roundOver = true;
+    mp_util_wad::pLevel->roundStarted = false;
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr label;
+    label.mVal = 0x863B4D44;
+    Broc::notify(&lvl, label);
+    Broc::dyn_array<Broc::entity> local_players;
+    Broc::GetLocalPlayerArray(&local_players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(local_players)) {
+        Broc::entity p = local_players[(unsigned int)(int)i];
+        int idx = Broc::GetPlayerIndex(p);
+        Broc::string menu("side_select");
+        Broc::CloseMenu(&menu, idx);
+        menu.~string();
+        Broc::string menu2("weapon");
+        Broc::CloseMenu(&menu2, idx);
+        menu2.~string();
+        i = (int)i + 1;
+    }
+    local_players.~dyn_array();
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint j(0);
+    while ((int)j < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)j];
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, p);
+        if ((int)state != 3) {
+            Broc::bint now;
+            Broc::GetTime(&now);
+            Broc::bint timeAlive =
+                (int)now - (int)*mp_util_wad::GetEE_spawnTime(p);
+            if ((int)timeAlive > 1000)
+                AddToPlayerStats(p, Broc::bint(0),
+                                 (__int16)((int)timeAlive / 1000));
+        }
+        j = (int)j + 1;
+    }
+    PutAllPlayersIntoIntermission();
+    Broc::bint waitTime(0);
+    switch (condition) {
+    case kEndRoundNone:
+        mp_util_wad::pLevel->roundWinner = "none";
+        break;
+    case kEndRoundTimeLimit:
+        if (team == "allies")
+            Broc::SetTutorialTextAllPlayers((int)0x6E5C70B8u);
+        else if (team == "axis")
+            Broc::SetTutorialTextAllPlayers((int)0x8C1FDAB3);
+        waitTime = 5;
+        mp_util_wad::pLevel->roundWinner = team;
+        break;
+    case kEndRoundLastManStanding:
+        if (team == "axis") {
+            Broc::string t("axis");
+            Broc::Code_IncTeamScore(&t, 1);
+            t.~string();
+        } else if (team == "allies") {
+            Broc::string t("allies");
+            Broc::Code_IncTeamScore(&t, 1);
+            t.~string();
+        }
+        mp_util_wad::pLevel->roundWinner = team;
+        break;
+    case kEndRoundNoPlayers:
+        if (Broc::Code_GetTeamGame())
+            Broc::SetTutorialTextAllPlayers(team == "axis" ? (int)0xCEB8A0BD
+                                                          : (int)0xF4472EC7);
+        else
+            Broc::SetTutorialTextAllPlayers((int)0x9F9E5421);
+        mp_util_wad::pLevel->roundWinner = "none";
+        mp_util_wad::pLevel->roundCount =
+            (int)mp_util_wad::pLevel->roundCount - 1;
+        if ((int)mp_util_wad::pLevel->roundCount < 0)
+            mp_util_wad::pLevel->roundCount = 0;
+        waitTime = 4;
+        break;
+    case kEndRoundScoreLimit:
+        if (team == "allies")
+            Broc::SetTutorialTextAllPlayers((int)0x6E5C70B8u);
+        else if (team == "axis")
+            Broc::SetTutorialTextAllPlayers((int)0x8C1FDAB3);
+        mp_util_wad::pLevel->roundWinner = team;
+        waitTime = 5;
+        break;
+    default:
+        break;
+    }
+    if (mp_util_wad::pLevel->roundWinner == "allies" ||
+        mp_util_wad::pLevel->roundWinner == "axis") {
+        Broc::GetPlayerArray(&players);
+        Broc::bint k(0);
+        while ((int)k < Broc::size(players)) {
+            Broc::entity p = players[(unsigned int)(int)k];
+            Broc::string pteam;
+            mp_util_wad::entity_get_team(&pteam, p);
+            if (pteam == mp_util_wad::pLevel->roundWinner)
+                Broc::Code_IncPlayerStat(p, 1, 1);
+            else
+                Broc::Code_IncPlayerStat(p, 2, 1);
+            pteam.~string();
+            k = (int)k + 1;
+        }
+    }
+    players.~dyn_array();
+    Broc::entity lvl2;
+    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = restart_round__functor(lvl2, (int)waitTime);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, "restart_round", ftor);
+    team.~string();
+}
+
+// CallbackFireArtillery - ea: 0x942200
+void CallbackFireArtillery(Broc::entity firer, Broc::vector position) {
+    if (Broc::Code_IsLocalPlayer(firer)) {
+        Broc::SetActionHint((int)0xB1F2B60E, Broc::GetPlayerIndex(firer));
+        __int16 rank = mp_util_wad::entity_get_rank(firer);
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, firer);
+        const char* soundA = NULL;
+        const char* soundB = NULL;
+        if (rank == 0) {
+            soundA = team == "axis" ? "Scout_SpecialFire_Axis"
+                                    : "Scout_SpecialFire_Allies";
+            soundB = team == "axis" ? "Scout_SpecialFire_Pvt_Axis"
+                                    : "Scout_SpecialFire_Pvt_Allies";
+        } else if (rank == 1) {
+            soundA = team == "axis" ? "Scout_SpecialFire_Axis"
+                                    : "Scout_SpecialFire_Allies";
+            soundB = team == "axis" ? "Scout_SpecialFire_Crp_Axis"
+                                    : "Scout_SpecialFire_Crp_Allies";
+        } else if (rank == 2) {
+            soundA = team == "axis" ? "Scout_SpecialFire_Axis"
+                                    : "Scout_SpecialFire_Allies";
+            soundB = team == "axis" ? "Scout_SpecialFire_Sgt_Axis"
+                                    : "Scout_SpecialFire_Sgt_Allies";
+        }
+        if (soundA != NULL) {
+            Broc::string s1(soundA);
+            void* ftor1 = _mp_audio::PlaySound__functor(firer, s1, 0.0f);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "_mp_audio::PlaySound", ftor1);
+            Broc::string s2(soundB);
+            void* ftor2 = _mp_audio::PlaySound__functor(firer, s2, 1.5f);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "_mp_audio::PlaySound", ftor2);
+        }
+        team.~string();
+    }
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetLocalPlayerArray(&players);
+    Broc::bbool played_incoming_sound(false);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        Broc::string fteam;
+        Broc::string pteam;
+        mp_util_wad::entity_get_team(&fteam, firer);
+        mp_util_wad::entity_get_team(&pteam, p);
+        Broc::bint state;
+        mp_util_wad::entity_get_playerState(&state, p);
+        if (pteam == fteam && (int)state == 3) {
+            if (!(bool)played_incoming_sound) {
+                Broc::entity lvl;
+                lvl.___u0 = mp_util_wad::pLevel != NULL;
+                Broc::string sound("incoming");
+                void* ftor =
+                    _mp_audio::PlaySoundAtLocation__functor(lvl, sound, position);
+                Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                    __LINE__, "_mp_audio::PlaySoundAtLocation",
+                                    ftor);
+                played_incoming_sound = true;
+            }
+            Broc::entity lvl;
+            lvl.___u0 = mp_util_wad::pLevel != NULL;
+            void* ftor = AddArtilleryObjective__functor(lvl, position);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "AddArtilleryObjective", ftor);
+        }
+        fteam.~string();
+        pteam.~string();
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+}
+
+// StartRound - ea: 0x946110
+void StartRound(Broc::bbool firstTime) {
+    Broc::Code_DebugOut("*COMMON* StartRound\n");
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr label;
+    label.mVal = 0xAFE7EFF4;
+    Broc::notify(&lvl, label);
+    Broc::Code_ForceControllerErrorMessageDown();
+    mp_util_wad::pLevel->roundOver = false;
+    mp_util_wad::pLevel->roundWinner = "";
+    mp_util_wad::pLevel->forceMapChange = false;
+    if ((bool)firstTime) {
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetLocalPlayerArray(&players);
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            Broc::entity p = players[(unsigned int)(int)i];
+            Broc::string menu("spectate");
+            Broc::OpenMenu(&menu, Broc::GetPlayerIndex(p));
+            menu.~string();
+            Broc::SetSpectateState(0, Broc::GetPlayerIndex(p));
+            i = (int)i + 1;
+        }
+        players.~dyn_array();
+    }
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint j(0);
+    while ((int)j < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)j];
+        *mp_util_wad::GetEE_spawnCount(p) = 0;
+        *mp_util_wad::GetEE_punishedTeamKills(p) = 0;
+        *mp_util_wad::GetEE_killsSinceLastDeath(p) = 0;
+        put_player_into_spectate_mode(p);
+        j = (int)j + 1;
+    }
+    players.~dyn_array();
+    Broc::Code_ClearPlayerStats();
+    Broc::Code_ClearTeamScores();
+    Broc::entity lvl2;
+    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = finish_starting_round__functor(lvl2, (bool)firstTime);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, "finish_starting_round", ftor);
+}
+
+// finish_starting_round - ea: 0x946630
+void finish_starting_round(Broc::entity self, Broc::bbool firstTime) {
+    (void)self;
+    Broc::Code_DebugOut("*COMMON* finish_starting_round\n");
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr e1;
+    e1.mVal = 0x863B4D44;
+    Broc::endon(lvl, e1);
+    HashStr e2;
+    e2.mVal = 0x531AD8D9u;
+    Broc::endon(lvl, e2);
+    if (Broc::GetCvarInt("mp_debug") == 0 &&
+        ((bool)mp_util_wad::pLevel->lastManStanding ||
+         (bool)mp_util_wad::pLevel->mustHaveBothTeamsToStart)) {
+        Broc::bbool both;
+        HasBothTeams(&both);
+        if (!(bool)both)
+            WaitForTeams();
+    }
+    Broc::entity lvl2;
+    lvl2.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0x4DEC2E76u;
+    Broc::notify(&lvl2, n);
+    Broc::wait(0.1f);
+    Broc::entity lvl3;
+    lvl3.___u0 = mp_util_wad::pLevel != NULL;
+    Broc::endon(lvl3, n);
+    Broc::bint t;
+    Broc::GetTime(&t);
+    mp_util_wad::pLevel->startTime = (int)t;
+    if ((int)mp_util_wad::pLevel->roundCount >=
+        (int)mp_util_wad::pLevel->roundLimit)
+        mp_util_wad::pLevel->roundCount = 0;
+    mp_util_wad::pLevel->roundCount =
+        (int)mp_util_wad::pLevel->roundCount + 1;
+    mp_util_wad::pLevel->roundStarted = true;
+    CreateClock(Broc::bint((int)mp_util_wad::pLevel->timeLimit * 60));
+    Broc::Code_DebugOut("*COMMON* Sending gamestate to make sure everyone is on the same page about the start round\n");
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    mp_util_wad::pLevel->playerCountAtStartOfRound = Broc::size(players);
+    mp_util_wad::pLevel->playersLeavingDuringRound = 0;
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::string team("axis");
+        Broc::string team2("allies");
+        int axisScore = Broc::Code_GetTeamScore(&team);
+        int alliesScore = Broc::Code_GetTeamScore(&team2);
+        Broc::Code_SendGameState(
+            players[(unsigned int)(int)i], 0.0f,
+            (int)mp_util_wad::pLevel->timeLimit,
+            (int)mp_util_wad::pLevel->scoreLimit,
+            (int)mp_util_wad::pLevel->roundLimit,
+            (bool)mp_util_wad::pLevel->friendlyFire,
+            (bool)mp_util_wad::pLevel->lastManStanding,
+            (bool)mp_util_wad::pLevel->teamBalance,
+            (int)mp_util_wad::pLevel->respawnTime, alliesScore, axisScore,
+            (bool)mp_util_wad::pLevel->roundStarted, 0,
+            (int)mp_util_wad::pLevel->roundCount);
+        team2.~string();
+        team.~string();
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+    (void)firstTime;
+}
+
+// restart_round - ea: 0x946C00
+void restart_round(Broc::entity selfLevel, Broc::bint waitTime) {
+    (void)selfLevel;
+    Broc::Code_ForceControllerErrorMessageDown();
+    if ((int)waitTime < 1)
+        waitTime = 1;
+    Broc::wait((float)(int)waitTime);
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr fade;
+    fade.mVal = 0x2A9ACF98u;
+    Broc::waittill(lvl, fade);
+    if (Broc::Code_GetTeamGame()) {
+        Broc::MusicStop();
+        Broc::wait(1.0f);
+        if (mp_util_wad::pLevel->roundWinner.length() == 0) {
+            Broc::string winner;
+            GetWinningTeam(&winner);
+            mp_util_wad::pLevel->roundWinner = winner;
+            winner.~string();
+        }
+        Broc::string gametype;
+        Broc::GetCvar(&gametype, "mp_gametype");
+        bool isWar = gametype == "war";
+        gametype.~string();
+        if (isWar)
+            Broc::wait(2.0f);
+        if (mp_util_wad::pLevel->roundWinner == "allies") {
+            Broc::string script("MX_MPVictory_Allies");
+            Broc::entity lvl2;
+            lvl2.___u0 = mp_util_wad::pLevel != NULL;
+            mp_util_wad::pLevel->roundEndMusic =
+                Broc::EffectEventPlay(&lvl2, &script);
+            script.~string();
+            Broc::string dialog("MP_GEN_AlliesWin");
+            Broc::entity lvl3;
+            lvl3.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::DialogPlay(lvl3, &dialog);
+            dialog.~string();
+        } else if (mp_util_wad::pLevel->roundWinner == "axis") {
+            Broc::string script("MX_MPVictory_Axis");
+            Broc::entity lvl2;
+            lvl2.___u0 = mp_util_wad::pLevel != NULL;
+            mp_util_wad::pLevel->roundEndMusic =
+                Broc::EffectEventPlay(&lvl2, &script);
+            script.~string();
+            Broc::string dialog("MP_GEN_AxisWin");
+            Broc::entity lvl3;
+            lvl3.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::DialogPlay(lvl3, &dialog);
+            dialog.~string();
+        } else {
+            // roundWinner == "none"
+        }
+    }
+    Broc::bint now;
+    Broc::GetTime(&now);
+    mp_util_wad::pLevel->nextRoundStartTime = (int)now + 20000;
+    if ((bool)mp_util_wad::pLevel->forceMapChange ||
+        (int)mp_util_wad::pLevel->roundCount >=
+            (int)mp_util_wad::pLevel->roundLimit) {
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetLocalPlayerArray(&players);
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            mp_util_wad::entity_set_nextPlayerClass(
+                players[(unsigned int)(int)i], -1);
+            i = (int)i + 1;
+        }
+        players.~dyn_array();
+        Broc::Code_DisplayScoreBoard(true, 20);
+        Broc::string name("aar_music");
+        Broc::bint musicHandle((int)Broc::SoundPlay(name, 1.0f));
+        name.~string();
+        Broc::wait_accurate(20.0f);
+        Broc::SoundStop((unsigned int)(int)musicHandle);
+        Broc::Code_SettleMapVote();
+        Broc::Code_SettleGameModeVote();
+        Broc::Code_DisplayScoreBoard(false, 20);
+        Broc::wait(0.1f);
+        if (Broc::Code_NextRoundMapChanges()) {
+            if (Broc::Code_GetTeamGame())
+                _mp_teambalance::team_balance(true);
+        } else {
+            if (Broc::Code_GetTeamGame())
+                _mp_teambalance::team_balance(false);
+            Broc::SetTutorialTextAllPlayers((int)0x6422EAEDu);
+        }
+        Broc::Code_NextRound(true);
+    } else {
+        if (!(bool)mp_util_wad::pLevel->onlyDisplayScoreOnFinalRound) {
+            Broc::Code_DisplayScoreBoard(true, 20);
+            Broc::wait_accurate(20.0f);
+            Broc::Code_SettleMapVote();
+            Broc::Code_SettleGameModeVote();
+            Broc::Code_DisplayScoreBoard(false, 20);
+            Broc::wait(0.1f);
+        }
+        Broc::SetTutorialTextAllPlayers((int)0x6422EAEDu);
+        Broc::Code_NextRound(false);
+    }
+}
+
+// CheckLastManStanding - ea: 0x947AA0
+void CheckLastManStanding(Broc::string team) {
+    if ((bool)mp_util_wad::pLevel->lastManStanding &&
+        !(bool)mp_util_wad::pLevel->roundOver &&
+        (bool)mp_util_wad::pLevel->roundStarted &&
+        !(mp_util_wad::pLevel->lastManStandingIgnore == team)) {
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetPlayerArray(&players);
+        if (Broc::Code_GetTeamGame()) {
+            Broc::bbool anyoneLeftTeam(false);
+            Broc::bbool anyoneLeftOther(false);
+            Broc::bint i(0);
+            while ((int)i < Broc::size(players)) {
+                Broc::entity p = players[(unsigned int)(int)i];
+                Broc::bint state;
+                mp_util_wad::entity_get_playerState(&state, p);
+                if ((int)state == 3) {
+                    Broc::string pteam;
+                    mp_util_wad::entity_get_team(&pteam, p);
+                    if (pteam == team)
+                        anyoneLeftTeam = true;
+                    else
+                        anyoneLeftOther = true;
+                    pteam.~string();
+                }
+                i = (int)i + 1;
+            }
+            Broc::string winner((const char*)NULL);
+            if (!(bool)anyoneLeftTeam && (bool)anyoneLeftOther)
+                winner = team == "allies" ? "axis" : "allies";
+            if (!(bool)anyoneLeftOther || !(bool)anyoneLeftTeam)
+                EndRound(kEndRoundLastManStanding, winner);
+            winner.~string();
+        } else {
+            Broc::bint aliveCount(0);
+            Broc::bint k(0);
+            while ((int)k < Broc::size(players)) {
+                Broc::entity p = players[(unsigned int)(int)k];
+                Broc::bint state;
+                mp_util_wad::entity_get_playerState(&state, p);
+                if ((int)state == 3)
+                    aliveCount = (int)aliveCount + 1;
+                k = (int)k + 1;
+            }
+            if ((int)aliveCount <= 1) {
+                Broc::string winner("none");
+                EndRound(kEndRoundLastManStanding, winner);
+            }
+        }
+        players.~dyn_array();
+    }
+    team.~string();
+}
+
+// CheckLastManStandingEnoughPlayers - ea: 0x947F40
+void CheckLastManStandingEnoughPlayers(Broc::entity guy) {
+    (void)guy;
+    if ((bool)mp_util_wad::pLevel->lastManStanding &&
+        !(bool)mp_util_wad::pLevel->roundOver &&
+        (bool)mp_util_wad::pLevel->roundStarted) {
+        Broc::entity lvl;
+        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        HashStr n1;
+        n1.mVal = 0xA8743279;
+        Broc::notify(&lvl, n1);
+        Broc::wait(0.1f);
+        Broc::entity lvl2;
+        lvl2.___u0 = mp_util_wad::pLevel != NULL;
+        HashStr n2;
+        n2.mVal = 0x4DEC2E76u;
+        Broc::endon(lvl2, n2);
+        Broc::entity lvl3;
+        lvl3.___u0 = mp_util_wad::pLevel != NULL;
+        Broc::endon(lvl3, n1);
+        Broc::wait(30.0f);
+        Broc::bint anyoneLeftAxis(0);
+        Broc::bint anyoneLeftAllies(0);
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetPlayerArray(&players);
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            Broc::entity p = players[(unsigned int)(int)i];
+            Broc::bint state;
+            mp_util_wad::entity_get_playerState(&state, p);
+            if ((int)state == 3) {
+                Broc::string team;
+                mp_util_wad::entity_get_team(&team, p);
+                if (team == "axis")
+                    anyoneLeftAxis = (int)anyoneLeftAxis + 1;
+                else
+                    anyoneLeftAllies = (int)anyoneLeftAllies + 1;
+                team.~string();
+            }
+            i = (int)i + 1;
+        }
+        if (Broc::Code_GetTeamGame() &&
+            ((int)anyoneLeftAxis == 0 || (int)anyoneLeftAllies == 0)) {
+            Broc::string winner((int)anyoneLeftAxis != 0 ? "axis" : "allies");
+            EndRound(kEndRoundNoPlayers, winner);
+        } else if (!Broc::Code_GetTeamGame() &&
+                   (int)anyoneLeftAllies + (int)anyoneLeftAxis <= 1) {
+            Broc::string winner("none");
+            EndRound(kEndRoundNoPlayers, winner);
+        }
+        players.~dyn_array();
+    }
+}
+
+// PutAllPlayersIntoIntermission - ea: 0x94BBD0
+void PutAllPlayersIntoIntermission() {
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        if (Broc::Code_IsLocalPlayer(p)) {
+            Broc::Code_ScreenFadeToBlack(0xFAu, -1);
+            void* ftor = LocalPlayerIntermission__functor(p);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "LocalPlayerIntermission", ftor);
+        } else {
+            SpawnIntermission(p);
+        }
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+}
+
+// LocalPlayerIntermission - ea: 0x945BC0
+void LocalPlayerIntermission(Broc::entity player) {
+    HashStr e1;
+    e1.mVal = 0xC1E6FED9;
+    Broc::endon(player, e1);
+    HashStr e2;
+    e2.mVal = 0x86018C9u;
+    Broc::endon(player, e2);
+    HashStr n;
+    n.mVal = 0x24B5BA64u;
+    Broc::notify(&player, n);
+    *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
+    Broc::wait(0.25f);
+    SpawnIntermission(player);
+    Broc::wait(0.1f);
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = FadeUpWhenLoaded__functor(lvl, player);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, "FadeUpWhenLoaded", ftor);
+}
+
+// LocalPlayerRespawn - ea: 0x945D30
+void LocalPlayerRespawn(Broc::entity player) {
+    Broc::string menu("spectate");
+    Broc::CloseMenu(&menu, Broc::GetPlayerIndex(player));
+    menu.~string();
+    if (mp_util_wad::entity_get_nextPlayerClass(player) == -1) {
+        Broc::TakeAllWeapons(&player);
+        Broc::string side("side_select");
+        Broc::OpenMenu(&side, Broc::GetPlayerIndex(player));
+        side.~string();
+        HashStr w1;
+        w1.mVal = 0xE7D05EDA;
+        Broc::waittill(player, w1);
+        Broc::string weapon("weapon");
+        Broc::OpenMenu(&weapon, Broc::GetPlayerIndex(player));
+        weapon.~string();
+        HashStr w2;
+        w2.mVal = 0x70FACFE9u;
+        Broc::waittill(player, w2);
+        mp_util_wad::entity_set_playerClass(
+            player, mp_util_wad::entity_get_nextPlayerClass(player));
+        *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
+    }
+    Broc::Code_ScreenFadeToBlack(0xFAu, Broc::GetPlayerIndex(player));
+    Broc::wait(0.25f);
+    Broc::Code_RequestRespawn(Broc::GetPlayerIndex(player));
+}
+
+// FollowClient - ea: 0x9459F0
+void FollowClient(Broc::entity player, Broc::bint newClient) {
+    Broc::bbool defined;
+    mp_util_wad::IsEEDefined_isInsideFollowClient(&defined, player);
+    if (!(bool)defined) {
+        *mp_util_wad::GetEE_isInsideFollowClient(player) = 1;
+        if (Broc::Code_IsLocalPlayer(player)) {
+            Broc::bint state;
+            mp_util_wad::entity_get_playerState(&state, player);
+            if ((int)state == 1) {
+                Broc::Code_ScreenFadeToBlack(0xFAu, Broc::GetPlayerIndex(player));
+                Broc::wait(1.0f);
+                mp_util_wad::entity_set_spectatorClient(player, (int)newClient);
+                Broc::wait(1.0f);
+                Broc::entity lvl;
+                lvl.___u0 = mp_util_wad::pLevel != NULL;
+                FadeUpWhenLoaded(lvl, player);
+            }
+        }
+        *mp_util_wad::GetEE_isInsideFollowClient(player) = 0;
+    }
+}
+
+// GetRespawnTime - ea: 0x949620
+Broc::bint* GetRespawnTime(Broc::bint* result, Broc::entity localPlayer) {
+    Broc::bint respawnTime;
+    Broc::GetTime(&respawnTime);
+    if (Broc::GetCvarInt("mp_debug") != 0) {
+        result->mVal = (int)respawnTime + 2000;
+        return result;
+    }
+    if (mp_util_wad::pLevel->teamCantRespawn.length() != 0) {
+        Broc::bint deathPenalty(0);
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, localPlayer);
+        if (team == mp_util_wad::pLevel->teamCantRespawn) {
+            deathPenalty = 5000 * (int)*mp_util_wad::GetEE_numDeaths(localPlayer);
+            if ((int)deathPenalty >
+                20000 - (int)mp_util_wad::pLevel->respawnTime * 1000)
+                deathPenalty =
+                    20000 - (int)mp_util_wad::pLevel->respawnTime * 1000;
+        }
+        team.~string();
+        respawnTime = (int)respawnTime +
+                      (int)mp_util_wad::pLevel->respawnTime * 1000 +
+                      (int)deathPenalty;
+        if (mp_util_wad::pLevel->teamCantRespawn == "reset")
+            mp_util_wad::pLevel->teamCantRespawn = "";
+    } else if ((int)mp_util_wad::pLevel->spawnType == 1 &&
+               (int)mp_util_wad::pLevel->respawnTime > 0) {
+        Broc::bint graceTime =
+            (int)mp_util_wad::pLevel->startTime + 5000;
+        Broc::bint now;
+        Broc::GetTime(&now);
+        if ((int)graceTime < (int)now) {
+            Broc::bint t;
+            Broc::GetTime(&t);
+            Broc::bint waveNumber =
+                (int)t / (1000 * (int)mp_util_wad::pLevel->respawnTime);
+            respawnTime = ((int)waveNumber + 1) * 1000 *
+                          (int)mp_util_wad::pLevel->respawnTime;
+        }
+    } else {
+        if ((int)*mp_util_wad::GetEE_spawnCount(localPlayer) != 0)
+            respawnTime =
+                (int)respawnTime + (int)mp_util_wad::pLevel->respawnTime * 1000;
+    }
+    result->mVal = (int)respawnTime;
+    return result;
+}
+
+// UpdateSpectateCritical - ea: 0x949BB0
+void UpdateSpectateCritical(Broc::entity guy) {
+    Broc::Code_DebugOut("*COMMON* UpdateSpectateCritical\n");
+    Broc::wait(0.1f);
+    static const unsigned int labels[] = {
+        0x4C745BCAu, 0xC1E6FED9, 0x24B5BA64u, 0x86018C9u, 0x11524591u,
+        0xC39A4465
+    };
+    for (int i = 0; i < 6; i++) {
+        HashStr label;
+        label.mVal = labels[i];
+        Broc::endon(guy, label);
+    }
+    bool is_local_player = Broc::Code_IsLocalPlayer(guy);
+    int playerIndex = Broc::GetPlayerIndex(guy);
+    if (is_local_player)
+        Broc::SetSpectateState(2, playerIndex);
+    Broc::bint respawnTime;
+    GetRespawnTime(&respawnTime, guy);
+    for (;;) {
+        Broc::bint now;
+        Broc::GetTime(&now);
+        if ((int)respawnTime < (int)now)
+            break;
+        if (is_local_player) {
+            Broc::bint t;
+            Broc::GetTime(&t);
+            int seconds = ((int)respawnTime - (int)t + 999) / 1000;
+            Broc::SetSpectateSeconds(seconds, playerIndex);
+        }
+        waitframe();
+    }
+    void* ftor = UpdateSpectateCriticalGoingToDie__functor(guy);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, "UpdateSpectateCriticalGoingToDie", ftor);
+}
+
+// UpdateSpectateCriticalGoingToDie - ea: 0x949F80
+void UpdateSpectateCriticalGoingToDie(Broc::entity guy) {
+    Broc::wait(0.1f);
+    static const unsigned int labels[] = {
+        0x4C745BCAu, 0xC1E6FED9, 0x24B5BA64u, 0x86018C9u, 0x11524591u,
+        0xC39A4465
+    };
+    for (int i = 0; i < 6; i++) {
+        HashStr label;
+        label.mVal = labels[i];
+        Broc::endon(guy, label);
+    }
+    bool is_local_player = Broc::Code_IsLocalPlayer(guy);
+    int playerIndex = Broc::GetPlayerIndex(guy);
+    if (is_local_player)
+        Broc::SetSpectateState(3, playerIndex);
+    Broc::bint respawnTime;
+    GetGoingToDieTime(&respawnTime);
+    Broc::bint maxTime((int)respawnTime - 1000);
+    if ((int)maxTime <= 0)
+        maxTime = (int)respawnTime;
+    Broc::Code_SetRespawnMaxTime(guy, (int)maxTime);
+    for (;;) {
+        Broc::bint now;
+        Broc::GetTime(&now);
+        if ((int)respawnTime < (int)now)
+            break;
+        if (is_local_player) {
+            Broc::bint t;
+            Broc::GetTime(&t);
+            int seconds = ((int)respawnTime - (int)t + 999) / 1000;
+            Broc::SetSpectateSeconds(seconds, playerIndex);
+        }
+        waitframe();
+    }
+    void* ftor = UpdateSpectateDead__functor(guy, true);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                        __LINE__, "UpdateSpectateDead", ftor);
+}
+
+// UpdateSpectateDead - ea: 0x94A2D0
+void UpdateSpectateDead(Broc::entity guy, Broc::bbool canspawn) {
+    HashStr n;
+    n.mVal = 0x6A7DEF26u;
+    Broc::notify(&guy, n);
+    Broc::wait(0.1f);
+    static const unsigned int labels[] = {
+        0x4C745BCAu, 0xC1E6FED9, 0x24B5BA64u, 0x86018C9u, 0x11524591u,
+        0xC39A4465
+    };
+    for (int i = 0; i < 6; i++) {
+        HashStr label;
+        label.mVal = labels[i];
+        Broc::endon(guy, label);
+    }
+    Broc::bint state;
+    mp_util_wad::entity_get_playerState(&state, guy);
+    if ((int)state != 5) {
+        AddToPlayerStats(guy, Broc::bint(4), 1);
+        void* ftor = _mp_audio::player_dying_sounds__functor(guy);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                            __LINE__, "_mp_audio::player_dying_sounds", ftor);
+    }
+    mp_util_wad::entity_set_playerState(guy, 5);
+    if (Broc::Code_IsLocalPlayer(guy)) {
+        int playerIndex = Broc::GetPlayerIndex(guy);
+        Broc::SetSpectateState(((bool)canspawn ? 1 : 0) + 4, playerIndex);
+        Broc::bint respawnTime;
+        GetRespawnTime(&respawnTime, guy);
+        for (;;) {
+            Broc::bint now;
+            Broc::GetTime(&now);
+            Broc::string menu("spectate");
+            bool done = (int)respawnTime < (int)now &&
+                        Broc::Code_IsMenuOpen(&menu, playerIndex) != 0;
+            menu.~string();
+            if (done)
+                break;
+            Broc::bint t;
+            Broc::GetTime(&t);
+            int seconds = ((int)respawnTime - (int)t + 999) / 1000;
+            Broc::SetSpectateSeconds(seconds, playerIndex);
+            Broc::string empty("");
+            if (Broc::Code_IsMenuOpen(&empty, playerIndex) != 0) {
+                Broc::string spec("spectate");
+                Broc::OpenMenu(&spec, playerIndex);
+                spec.~string();
+            }
+            empty.~string();
+            waitframe();
+        }
+        if ((bool)canspawn) {
+            void* ftor = LocalPlayerRespawn__functor(guy);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "LocalPlayerRespawn", ftor);
+        } else {
+            UpdateSpectateDead(guy, Broc::bbool(true));
+        }
+    }
+}
+
+// UpdateSpectateSpawn - ea: 0x94A8D0
+void UpdateSpectateSpawn(Broc::entity localPlayer) {
+    Broc::Code_DebugOut("*COMMON* UpdateSpectateSpawn\n");
+    Broc::wait(0.1f);
+    static const unsigned int labels[] = {
+        0x4C745BCAu, 0xC1E6FED9, 0x24B5BA64u, 0x86018C9u, 0x11524591u,
+        0xC39A4465
+    };
+    for (int i = 0; i < 6; i++) {
+        HashStr label;
+        label.mVal = labels[i];
+        Broc::endon(localPlayer, label);
+    }
+    if (Broc::Code_IsLocalPlayer(localPlayer))
+        Broc::SetSpectateState(1, Broc::GetPlayerIndex(localPlayer));
+}
+
+// DeathState - ea: 0x945420
+void DeathState(Broc::entity player, Broc::entity team_killer, Broc::bint delay,
+                Broc::bbool reviveable, Broc::bbool fade) {
+    (void)fade;
+    static const unsigned int labels[] = {
+        0x24B5BA64u, 0x4C745BCAu, 0x11524591u, 0x86018C9u
+    };
+    for (int i = 0; i < 4; i++) {
+        HashStr label;
+        label.mVal = labels[i];
+        Broc::endon(player, label);
+    }
+    bool is_local_player = Broc::Code_IsLocalPlayer(player);
+    if (is_local_player) {
+        Broc::string menu("spectate");
+        Broc::OpenMenu(&menu, Broc::GetPlayerIndex(player));
+        menu.~string();
+        Broc::SetSpectateState(0, Broc::GetPlayerIndex(player));
+    }
+    Broc::wait((float)(int)delay);
+    Broc::bint state;
+    mp_util_wad::entity_get_playerState(&state, player);
+    if ((int)state != 2) {
+        HashStr n;
+        n.mVal = 0xC1E6FED9;
+        Broc::notify(&player, n);
+        mp_util_wad::entity_set_spectatorClient(player, -1);
+        mp_util_wad::entity_set_health(player, 0);
+        if (Broc::IsDefined(team_killer))
+            Broc::SetSpectateTeamKill(1, &team_killer,
+                                      Broc::GetPlayerIndex(player));
+        if ((bool)reviveable) {
+            if (is_local_player)
+                Broc::SetSpectateMedic(1, Broc::GetPlayerIndex(player));
+            void* ftor = UpdateSpectateCritical__functor(player);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "UpdateSpectateCritical", ftor);
+        } else {
+            if (is_local_player)
+                Broc::SetSpectateMedic(0, Broc::GetPlayerIndex(player));
+            void* ftor = UpdateSpectateDead__functor(player, false);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "UpdateSpectateDead", ftor);
+        }
+    }
+}
+
+// Spectate - ea: 0x945350
+void Spectate(Broc::entity player, Broc::bint target, Broc::bbool isIntermission) {
+    (void)isIntermission;
+    HashStr e1;
+    e1.mVal = 0x24B5BA64u;
+    Broc::endon(player, e1);
+    HashStr e2;
+    e2.mVal = 0x4C745BCAu;
+    Broc::endon(player, e2);
+    Broc::wait((float)(int)target);
+    Broc::bint state;
+    mp_util_wad::entity_get_playerState(&state, player);
+    if ((int)state != 2)
+        put_player_into_spectate_mode(player);
+}
+
+// RespawnPlayer - ea: 0x9450D0
+void RespawnPlayer(Broc::entity guy, Broc::string team) {
+    HashStr e1;
+    e1.mVal = 0x4C745BCAu;
+    Broc::endon(guy, e1);
+    Broc::string new_team = team;
+    if ((bool)mp_util_wad::pLevel->teamBalance && !Broc::Code_GetTeamGame()) {
+        Broc::string result;
+        new_team = *_mp_teambalance::team_balance(&result, guy, team);
+        result.~string();
+    }
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    ((Broc::entity* (*)(Broc::entity*, Broc::entity*, Broc::string*))
+         mp_util_wad::pLevel->PickSpawnPoint)(&spawnpoint, &guy, &new_team);
+    if (!Broc::IsDefined(spawnpoint) &&
+        Broc::gBrocAPI.mAssert("c:\\cod\\code\\script\\_mp_common.bro",
+                               __LINE__, "No spawn points in the level"))
+        __debugbreak();
+    Broc::vector origin;
+    Broc::vector angles;
+    mp_util_wad::entity_get_angles(&angles, spawnpoint);
+    mp_util_wad::entity_get_origin(&origin, spawnpoint);
+    Broc::Code_PlayerRespawn(guy, &origin, &angles, &new_team);
+    new_team.~string();
+    team.~string();
+}
+
+// put_player_into_spectate_mode - ea: 0x948A30
+void put_player_into_spectate_mode(Broc::entity guy) {
+    if (Broc::Code_IsLocalPlayer(guy)) {
+        void* ftor = SpawnLocalSpectator__functor(guy);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                            __LINE__, "SpawnLocalSpectator", ftor);
+    } else {
+        SpawnSpectator(guy);
+    }
+}
+
+// SpawnLocalSpectator - ea: 0x948B70
+void SpawnLocalSpectator(Broc::entity guy) {
+    Broc::Code_DebugOut("*COMMON* SpawnLocalSpectator\n");
+    if (Broc::Code_IsLocalPlayer(guy)) {
+        int local_player_index = Broc::GetPlayerIndex(guy);
+        static const unsigned int labels[] = {
+            0x86018C9u, 0x4C745BCAu, 0x24B5BA64u, 0x863B4D44
+        };
+        for (int i = 0; i < 4; i++) {
+            HashStr label;
+            label.mVal = labels[i];
+            Broc::endon(guy, label);
+        }
+        HashStr n;
+        n.mVal = 0xC1E6FED9;
+        Broc::notify(&guy, n);
+        bool firstSpectate = (bool)*mp_util_wad::GetEE_firstSpectate(guy);
+        if (!firstSpectate) {
+            Broc::Code_ScreenFadeToBlack(0xFAu, local_player_index);
+            Broc::wait(0.25f);
+        }
+        SpawnSpectator(guy);
+        if (Broc::Code_IsLocalPlayer(guy)) {
+            Broc::wait(0.1f);
+            if (!firstSpectate) {
+                Broc::entity lvl;
+                lvl.___u0 = mp_util_wad::pLevel != NULL;
+                HashStr fade;
+                fade.mVal = 0x2A9ACF98u;
+                Broc::waittill(lvl, fade);
+                Broc::Code_ScreenFadeUp(0xFAu, local_player_index);
+            }
+            Broc::string menu("spectate");
+            Broc::OpenMenu(&menu, local_player_index);
+            menu.~string();
+            void* ftor = UpdateSpectateSpawn__functor(guy);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                                __LINE__, "UpdateSpectateSpawn", ftor);
+        }
+    }
+}
+
+// SpawnSpectator - ea: 0x948FC0
+void SpawnSpectator(Broc::entity guy) {
+    Broc::Code_DebugOut("*COMMON* SpawnSpectator\n");
+    mp_util_wad::entity_set_playerState(guy, 1);
+    mp_util_wad::entity_set_spectatorClient(guy, -1);
+    mp_util_wad::entity_set_health(guy, 0);
+    Broc::vector origin;
+    Broc::vector angles;
+    if ((bool)*mp_util_wad::GetEE_firstSpectate(guy)) {
+        mp_util_wad::entity_get_origin(&origin, guy);
+        mp_util_wad::entity_get_viewangles(&angles, guy);
+        *mp_util_wad::GetEE_firstSpectate(guy) = false;
+    } else {
+        Broc::entity spawnpoint;
+        GetBestSpectateSpawn(&spawnpoint, &guy);
+        if (Broc::IsDefined(spawnpoint)) {
+            mp_util_wad::entity_get_origin(&origin, spawnpoint);
+            mp_util_wad::entity_get_angles(&angles, spawnpoint);
+        }
+    }
+    Broc::Code_PlayerSpawn(guy, &origin, &angles, 0);
+}
+
+// SpawnIntermission - ea: 0x949200
+void SpawnIntermission(Broc::entity player) {
+    Broc::Code_DebugOut("*COMMON* SpawnIntermission\n");
+    HashStr n;
+    n.mVal = 0x24B5BA64u;
+    Broc::notify(&player, n);
+    mp_util_wad::entity_set_playerState(player, 2);
+    mp_util_wad::entity_set_spectatorClient(player, -1);
+    mp_util_wad::entity_set_health(player, 0);
+    Broc::dyn_array<Broc::entity> spawnpoints;
+    Broc::string val("spawn_intermission");
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&val, key.mVal, &spawnpoints, 0);
+    val.~string();
+    Broc::entity spawnpoint;
+    spawnpoint.___u0 = 0;
+    _mp_spawnlogic::GetSpawnpointRandom(&spawnpoint, &spawnpoints, true);
+    Broc::vector origin;
+    Broc::vector angles;
+    int stopPhysics = 0;
+    if (Broc::IsDefined(spawnpoint)) {
+        mp_util_wad::entity_get_angles(&angles, spawnpoint);
+        mp_util_wad::entity_get_origin(&origin, spawnpoint);
+        stopPhysics = 0;
+    } else {
+        origin = Broc::vector(0.0f, 0.0f, 0.0f);
+        angles = Broc::vector(0.0f, 0.0f, 0.0f);
+        stopPhysics = 0;
+    }
+    Broc::Code_PlayerSpawn(player, &origin, &angles, stopPhysics);
+    if (Broc::Code_IsLocalPlayer(player)) {
+        Broc::entity lvl;
+        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        void* ftor = FadeUpWhenLoaded__functor(lvl, player);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                            __LINE__, "FadeUpWhenLoaded", ftor);
+        Broc::string menu("spectate");
+        Broc::OpenMenu(&menu, Broc::GetPlayerIndex(player));
+        menu.~string();
+        Broc::SetSpectateState(0, Broc::GetPlayerIndex(player));
+    }
+    spawnpoints.~dyn_array();
+}
+
+// GetBestSpectateSpawn - ea: 0x94B4A0
+Broc::entity* GetBestSpectateSpawn(Broc::entity* result, Broc::entity* self) {
+    Broc::dyn_array<Broc::entity> spawnpoints;
+    Broc::string val("spawn_intermission");
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&val, key.mVal, &spawnpoints, 0);
+    val.~string();
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, *self);
+    Broc::entity whereYouWouldSpawn;
+    whereYouWouldSpawn.___u0 = 0;
+    GetSpawnPoint(&whereYouWouldSpawn, self, &team);
+    team.~string();
+    if (Broc::IsDefined(whereYouWouldSpawn)) {
+        Broc::vector origin;
+        mp_util_wad::entity_get_origin(&origin, whereYouWouldSpawn);
+        _mp_spawnlogic::GetSpawnpointNearest(result, &spawnpoints, origin,
+                                             true);
+    } else {
+        _mp_spawnlogic::GetSpawnpointRandom(result, &spawnpoints, true);
+    }
+    spawnpoints.~dyn_array();
+    return result;
+}
+
+// HealthRegenPlayerBreathing - ea: 0x94B6F0
+void HealthRegenPlayerBreathing(Broc::entity ent, Broc::bint healthCap) {
+    Broc::endon(ent, "death");
+    Broc::notify(&ent, "end_HealthRegenPlayerBreathing");
+    Broc::wait(2.0f);
+    Broc::endon(ent, "end_HealthRegenPlayerBreathing");
+    for (;;) {
+        Broc::wait(0.2f);
+        Broc::bint health;
+        mp_util_wad::entity_get_health(&health, ent);
+        if ((int)health <= 0)
+            break;
+        if ((int)health < (int)healthCap) {
+            Broc::string script("breathing_hurt");
+            Broc::EffectEventPlay(&ent, &script);
+            script.~string();
+            Broc::wait(0.784f);
+            Broc::wait(Broc::RandomFloat(0.8f) + 0.1f);
+        }
+    }
+}
+
+// AddArtilleryObjective - ea: 0x94B900
+void AddArtilleryObjective(Broc::entity self, Broc::vector position) {
+    (void)self;
+    Broc::bint index(10 + (int)mp_util_wad::pLevel->ArtilleryObjectiveIndex);
+    mp_util_wad::pLevel->ArtilleryObjectiveIndex =
+        ((int)mp_util_wad::pLevel->ArtilleryObjectiveIndex + 1) % 4;
+    Broc::string pszString("artillery");
+    Broc::string state("i_incoming_artillery_c");
+    Broc::ObjectiveAdd((int)index, &state, &pszString, position, "1");
+    state.~string();
+    pszString.~string();
+    Broc::wait(15.0f);
+    Broc::ObjectiveDelete((int)index, -1);
+}
+
+// HasValidWeaponInSlot - ea: 0x94BE20
+Broc::bbool* HasValidWeaponInSlot(Broc::bbool* result, Broc::entity player,
+                                  Broc::string slot) {
+    int ammo = Broc::GetWeaponSlotAmmo(player, &slot);
+    int clip = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    *result = Broc::bbool(ammo != 0 || clip != 0);
+    slot.~string();
+    return result;
+}
+
+// SelectFirstAvailableWeapon - ea: 0x94BF80
+void SelectFirstAvailableWeapon(Broc::entity player) {
+    Broc::string weapon((const char*)NULL);
+    if (Broc::Code_IsLocalPlayer(player)) {
+        Broc::string slot_primary("primary");
+        Broc::string slot_primaryb("primaryb");
+        Broc::string* slots[2];
+        slots[0] = &slot_primary;
+        slots[1] = &slot_primaryb;
+        for (int i = 0; i < 2; i++) {
+            Broc::bbool valid;
+            HasValidWeaponInSlot(&valid, player, *slots[i]);
+            if ((bool)valid) {
+                Broc::GetWeaponSlotWeapon(player, slots[i], &weapon);
+                Broc::SwitchToWeapon(&player, &weapon);
+                weapon.~string();
+                return;
+            }
+        }
+    }
+    weapon.~string();
+}
+
+// HostHasMigrated - ea: 0x944A00
+void HostHasMigrated(Broc::entity self) {
+    Broc::SetTutorialTextAllPlayers((int)0x35E035D8u);
+    Broc::wait(4.0f);
+    if (Broc::Code_IsHost()) {
+        void* ftor = NewHost__functor(self);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_common.bro",
+                            __LINE__, "NewHost", ftor);
+    }
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint now;
+    Broc::GetTime(&now);
+    Broc::bfloat timePassed =
+        ((int)now - (int)mp_util_wad::pLevel->startTime) * 0.001f;
+    Broc::bint timeTillNextRound;
+    GetTimeTillNextRound(&timeTillNextRound);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::string team("axis");
+        Broc::string team2("allies");
+        int axisScore = Broc::Code_GetTeamScore(&team);
+        int alliesScore = Broc::Code_GetTeamScore(&team2);
+        Broc::Code_SendGameState(
+            players[(unsigned int)(int)i], (float)timePassed,
+            (int)mp_util_wad::pLevel->timeLimit,
+            (int)mp_util_wad::pLevel->scoreLimit,
+            (int)mp_util_wad::pLevel->roundLimit,
+            (bool)mp_util_wad::pLevel->friendlyFire,
+            (bool)mp_util_wad::pLevel->lastManStanding,
+            (bool)mp_util_wad::pLevel->teamBalance,
+            (int)mp_util_wad::pLevel->respawnTime, alliesScore, axisScore,
+            (bool)mp_util_wad::pLevel->roundStarted, (int)timeTillNextRound,
+            (int)mp_util_wad::pLevel->roundCount);
+        team2.~string();
+        team.~string();
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+    if ((bool)mp_util_wad::pLevel->roundOver) {
+        Broc::string winner;
+        GetWinningTeam(&winner);
+        Broc::Code_RoundOver(0, &winner);
+        winner.~string();
+    } else {
+        if ((float)timePassed >=
+            (int)mp_util_wad::pLevel->timeLimit * 60) {
+            Broc::string winner;
+            GetWinningTeam(&winner);
+            EndRound(kEndRoundTimeLimit, winner);
+        }
+    }
+}
+
+// GetSpawnPoint - ea: 0x94B370
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
+                            const Broc::string* spawnpoint) {
+    Broc::dyn_array<Broc::entity> spawnpoints;
+    Broc::string spawnType = mp_util_wad::pLevel->spawnTypeAllies;
+    if (*spawnpoint == "axis")
+        spawnType = mp_util_wad::pLevel->spawnTypeAxis;
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&spawnType, key.mVal, &spawnpoints, 0);
+    Broc::entity sp;
+    sp.___u0 = 0;
+    _mp_spawnlogic::GetSpawnpointNearTeamAntiCamp(&sp, ent, spawnpoint,
+                                                  &spawnpoints);
+    *result = sp;
+    spawnType.~string();
+    spawnpoints.~dyn_array();
+    return result;
+}
+
 void launch_gametype_thread(Broc::string& gametype, const char* func,
                             void* (*functor)(Broc::entity)) {
     (void)gametype;
@@ -3108,12 +4435,11 @@ void launch_gametype_thread(Broc::string& gametype, const char* func,
 }
 
 void DebugRenderSpawnPoints() {}
-Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* ent,
-                            const Broc::string* spawnpoint) {
-    (void)ent;
-    (void)spawnpoint;
-    result->___u0 = 0;
-    return result;
+
+// StopFollowing - ea: 0x94AA60 (no-op body in the release binary)
+void StopFollowing(Broc::entity self, Broc::bbool blackNow) {
+    (void)self;
+    (void)blackNow;
 }
 }
 
@@ -3135,9 +4461,21 @@ void* PlaySound__functor(Broc::entity self, Broc::string sound, float delay) {
     sound.~string();
     return NULL;
 }
+void* PlaySoundAtLocation__functor(Broc::entity self, Broc::string sound,
+                                   Broc::vector position) {
+    (void)self;
+    (void)position;
+    sound.~string();
+    return NULL;
+}
 void* player_dying_sounds__functor(Broc::entity player) {
     (void)player;
     return NULL;
+}
+void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
+                    Broc::entity attacker, int weapon, int means_of_damage) {
+    (void)guy; (void)inflictor; (void)attacker; (void)weapon;
+    (void)means_of_damage;
 }
 }
 namespace _mp_loadout {
@@ -3154,6 +4492,40 @@ namespace _mp_shellshock {
 void ShellshockOnDamage(Broc::entity self, Broc::bint cause, Broc::bint damage) {
     (void)self; (void)cause; (void)damage;
 }
+}
+namespace _mp_spawnlogic {
+Broc::entity* GetSpawnpointNearTeamAntiCamp(Broc::entity* result,
+                                            Broc::entity* self,
+                                            const Broc::string* team,
+                                            Broc::dyn_array<Broc::entity>* points) {
+    (void)self; (void)team; (void)points;
+    result->___u0 = 0;
+    return result;
+}
+Broc::entity* GetSpawnpointNearest(Broc::entity* result,
+                                   Broc::dyn_array<Broc::entity>* points,
+                                   Broc::vector position, bool ignoreTeleFrag) {
+    (void)points; (void)position; (void)ignoreTeleFrag;
+    result->___u0 = 0;
+    return result;
+}
+Broc::entity* GetSpawnpointRandom(Broc::entity* result,
+                                  Broc::dyn_array<Broc::entity>* points,
+                                  bool ignoreTeleFrag) {
+    (void)points; (void)ignoreTeleFrag;
+    result->___u0 = 0;
+    return result;
+}
+}
+namespace _mp_teambalance {
+Broc::string* team_balance(Broc::string* result, Broc::entity guy,
+                           Broc::string team) {
+    (void)guy;
+    *result = team;
+    team.~string();
+    return result;
+}
+void team_balance(bool always) { (void)always; }
 }
 namespace _mp_common {
 void* StopFollowing__functor(Broc::entity self, bool blackNow) {
@@ -3193,6 +4565,41 @@ void* FadeUpWhenLoaded__functor(Broc::entity self, Broc::entity player) {
 }
 void* HealthRegenPlayerBreathing__functor(Broc::entity self, int healthCap) {
     (void)self; (void)healthCap; return NULL;
+}
+void* DeathState__functor(Broc::entity player, Broc::entity team_killer,
+                          int delay, bool reviveable, bool fade) {
+    (void)player; (void)team_killer; (void)delay; (void)reviveable; (void)fade;
+    return NULL;
+}
+void* UpdateSpectateCritical__functor(Broc::entity guy) {
+    (void)guy; return NULL;
+}
+void* UpdateSpectateCriticalGoingToDie__functor(Broc::entity guy) {
+    (void)guy; return NULL;
+}
+void* UpdateSpectateDead__functor(Broc::entity guy, bool canspawn) {
+    (void)guy; (void)canspawn; return NULL;
+}
+void* UpdateSpectateSpawn__functor(Broc::entity localPlayer) {
+    (void)localPlayer; return NULL;
+}
+void* SpawnLocalSpectator__functor(Broc::entity guy) {
+    (void)guy; return NULL;
+}
+void* restart_round__functor(Broc::entity selfLevel, int waitTime) {
+    (void)selfLevel; (void)waitTime; return NULL;
+}
+void* finish_starting_round__functor(Broc::entity self, bool firstTime) {
+    (void)self; (void)firstTime; return NULL;
+}
+void* AddArtilleryObjective__functor(Broc::entity self, Broc::vector position) {
+    (void)self; (void)position; return NULL;
+}
+void* NewHost__functor(Broc::entity self) {
+    (void)self; return NULL;
+}
+void* LocalPlayerIntermission__functor(Broc::entity player) {
+    (void)player; return NULL;
 }
 }
 namespace _mp_minefield {
