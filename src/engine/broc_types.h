@@ -627,7 +627,8 @@ struct BrocAPI {
     char _pad122C[0x12CC - 0x122C];                       // +0x122C
     int (*m_entity_get_player_spectatorClient)(unsigned int);  // +0x12CC
     void (*m_entity_set_player_spectatorClient)(unsigned int, int);  // +0x12D0
-    char _pad12D4[0x12DC - 0x12D4];                       // +0x12D4
+    __int16 (*m_entity_get_player_ctf_has_flag)(unsigned int);  // +0x12D4
+    void (*m_entity_set_player_ctf_has_flag)(unsigned int, __int16);  // +0x12D8
     Broc::vector* (*m_entity_get_player_viewangles)(Broc::vector*, unsigned int);  // +0x12DC
     void (*m_entity_set_player_viewangles)(unsigned int, Broc::vector);  // +0x12E0
     __int16 (*m_entity_get_persistent_player_rank)(unsigned int);  // +0x12E4
@@ -714,6 +715,8 @@ int IsTouching(const Broc::entity* e, const Broc::entity* other);
 bool IsLocalHost();                              // ea: 0x92F6B0
 bool IsVehicleFlipped(const Broc::entity* e);
 int GetPlayerIndex(Broc::entity ent);            // ea: 0x92F4A0
+int UseButtonPressed(Broc::entity e);            // ea: 0x92F4D0
+float Length(const Broc::vector* v);
 bint* GetTime(bint* result);                     // gBrocAPI.mGetTime
 void GetPlayerArray(dyn_array<entity>* entarr);  // ea: 0x92F440
 void notify(const entity* ent, HashStr label);   // ea: 0x92F500
@@ -765,7 +768,11 @@ void SoundStop(unsigned int handle);
 void ObjectiveAdd(int iObjective, const Broc::string* state,
                   const Broc::string* pszString, const Broc::vector vPos,
                   const char* display);
+void ObjectiveAdd(int iObjective, const Broc::string* state,
+                  const Broc::string* pszString, const Broc::vector vPos,
+                  float height, int clientIndex);
 void ObjectiveDelete(int iObjective, int clientIndex);
+void Launch(Broc::entity* e, const Broc::vector* velocity);
 void Code_FinishDamage(Broc::entity player, Broc::entity inflictor,
                        Broc::entity attacker, const Broc::vector* dir,
                        const Broc::vector* position, int damage, int mod,
@@ -790,6 +797,15 @@ void Code_ScreenFadeToBlack(unsigned int time, int viewport);
 void Code_ScreenFadeUp(unsigned int time, int viewport);
 void Code_QuitGame();
 void Code_EnterGame();
+void Code_SendGameStateCTF(Broc::entity player, const Broc::vector* allied_flag,
+                           const Broc::vector* allied_angles,
+                           Broc::entity allied_flag_holder,
+                           const Broc::vector* axis_flag,
+                           const Broc::vector* axis_angles,
+                           Broc::entity axis_flag_holder);
+void Code_SetCompassVisibilty(int teamid, bool visible);
+void Code_PickupItem(int netID, Broc::entity player);
+void Code_AreaCaptured(int netID, int team, int hostOnly);
 void Code_RespawnVehicle(Broc::entity* e);
 void Code_BroadcastVehicleRespawn(Broc::entity vehicle);
 void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle, int seat);
