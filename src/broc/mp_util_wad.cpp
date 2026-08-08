@@ -51,10 +51,17 @@ void PlayDeathSound(Broc::entity guy, Broc::entity inflictor,
 namespace _mp_loadout {
 void local_player_joined(Broc::entity player);
 void GiveLoadout(Broc::entity player);
-void GiveSpecialWeapon(Broc::entity player, int playerClass, int rank,
-                       bool isRespawn);
+void GiveSpecialWeapon(Broc::entity player, Broc::bint playerClass,
+                       __int16 rank, bool isRespawn);
 void UpdatePlayerModelForRank(Broc::entity player);
 void DisplayYouWillSpawnWithMessage(Broc::entity self);
+void* SpecialClassAudio__functor(Broc::entity player);
+void* ArtilleryDispenser__functor(Broc::entity player);
+void* HealthAmmoDispenser__functor(Broc::entity player, Broc::string weapon,
+                                   bool health, int rank0Time, int rank1Time,
+                                   int rank2Time);
+void* NotifyWhenTimerExpires__functor(Broc::entity player, int time,
+                                      HashStr notifyString);
 }
 namespace _mp_shellshock {
 void main();
@@ -6279,15 +6286,1267 @@ void* player_dying_sounds__functor(Broc::entity player) {
     return NULL;
 }
 }
+// ============================================================================
+// _mp_loadout - class loadouts, weapons, ammo, specials.
+// ============================================================================
 namespace _mp_loadout {
-void local_player_joined(Broc::entity player) { (void)player; }
-void GiveLoadout(Broc::entity player) { (void)player; }
-void GiveSpecialWeapon(Broc::entity player, int playerClass, int rank,
-                       bool isRespawn) {
-    (void)player; (void)playerClass; (void)rank; (void)isRespawn;
+
+void SetTeams(Broc::string allies, Broc::string axis);
+void SetAlliesModels(Broc::bint playerClass, Broc::string model);
+void SetAxisModels(Broc::bint playerClass, Broc::string model);
+void SetPlayerModel(Broc::entity player);
+void GiveWeapons(Broc::entity player, Broc::bint playerClass, Broc::bint rank);
+void GiveAmmo(Broc::entity playerEnt, Broc::bint playerClass, Broc::bint rank,
+              Broc::bbool fillClip);
+void GiveAmmoPack(Broc::entity playerEnt, Broc::bint playerClass,
+                  Broc::bint rank);
+const char* GetGrenadeWeapon(Broc::string team, Broc::bint playerClass);
+void GiveSpecialWeapon(Broc::entity player, Broc::bint playerClass,
+                       __int16 rank, bool isRespawn);
+void GiveMine(Broc::entity player, __int16 rank);
+void GiveRifleGrenades(Broc::entity player, __int16 rank);
+void GiveHealth(Broc::entity player);
+void GiveAmmoWeapon(Broc::entity player);
+void GiveArtillery(Broc::entity player);
+void GiveSmokeGrenadeSpecial(Broc::entity player, __int16 rank);
+void GiveWeaponAmmo(Broc::entity player, Broc::string slot,
+                    Broc::bint playerClass, __int16 rank,
+                    Broc::bbool fillClips, bool onlyOneExtra);
+void GiveWeaponAmmoPack(Broc::entity player, Broc::string slot,
+                        Broc::bint playerClass, __int16 rank,
+                        __int16 packRank, bool bIsSmokeGrenade);
+void GiveWeaponAmmoScale(Broc::entity player, Broc::string slot,
+                         Broc::bint playerClass, __int16 rank,
+                         Broc::bbool fillClips, float scale);
+Broc::bint* GetWeaponClipCount(Broc::bint* result, Broc::string slot,
+                               Broc::bint playerClass, __int16 rank,
+                               Broc::string team);
+Broc::bint* GetGrenadeCount(Broc::bint* result, Broc::bint playerClass,
+                            __int16 rank);
+Broc::bint* GetPrimaryClipCount(Broc::bint* result, Broc::bint playerClass,
+                                __int16 rank, Broc::string team);
+Broc::bint* GetPistolClipCount(Broc::bint* result, Broc::bint playerClass,
+                               __int16 rank);
+int CallbackCanPickupAmmoPack(Broc::entity playerEnt);
+void CallbackGiveAmmoPack(Broc::entity playerEnt, unsigned int rank);
+void CallbackPickupKit(Broc::entity playerEnt, __int16 newClass);
+int CallbackGetTeamWeapon(const char* team, unsigned int playerClass);
+int CallbackGetGrenadeCount(unsigned int playerClass, __int16 rank);
+int CallbackGetClipCount(unsigned int playerClass, __int16 rank,
+                         int allied_team);
+int CallbackGetSlotClipCount(const char* slotName, unsigned int playerClass,
+                             __int16 rank, int allied_team);
+Broc::bfloat* GetStartingWeaponAmmoScale(Broc::bfloat* result,
+                                         Broc::entity player,
+                                         Broc::string slot,
+                                         Broc::bint playerClass,
+                                         __int16 rank);
+Broc::bbool* IsFullWeaponAmmo(Broc::bbool* result, Broc::entity player,
+                              Broc::string slot);
+Broc::bint* GetRankCount(Broc::bint* result, Broc::bint rank,
+                         Broc::bint rank0Value, Broc::bint rank1Value,
+                         Broc::bint rank2Value);
+Broc::bbool* GetsDualPistols(Broc::bbool* result, Broc::bint playerClass);
+const char* GetAlliesWeapon(Broc::string team, Broc::bint playerClass);
+const char* GetAxisWeapon(Broc::string team, Broc::bint playerClass);
+const char* GetAmericanWeapon(Broc::bint playerClass);
+const char* GetGermanWeapon(Broc::bint playerClass);
+void GiveDualPistols(Broc::entity player, __int16 rank);
+void GiveBazooka(Broc::entity player, __int16 rank);
+void GiveSatchel(Broc::entity player, __int16 rank);
+void NotifyWhenTimerExpires(Broc::entity player, Broc::bint time,
+                            HashStr notifyString);
+void SpecialClassAudio(Broc::entity player);
+void HealthAmmoDispenser(Broc::entity player, Broc::string weapon,
+                         Broc::bbool health, Broc::bint rank0Time,
+                         Broc::bint rank1Time, Broc::bint rank2Time);
+void ArtilleryDispenser(Broc::entity player);
+
+// main - ea: 0x95D6B0
+void main() {
+    Broc::string gametype;
+    Broc::GetCvar(&gametype, "mp_gametype");
+    mp_util_wad::pLevel->gametype = gametype;
+    gametype.~string();
+    Broc::string axis("german");
+    Broc::string allies("american");
+    SetTeams(allies, axis);
 }
-void UpdatePlayerModelForRank(Broc::entity player) { (void)player; }
-void DisplayYouWillSpawnWithMessage(Broc::entity self) { (void)self; }
+
+// SetTeams - ea: 0x95D7A0
+void SetTeams(Broc::string allies, Broc::string axis) {
+    mp_util_wad::pLevel->allies = allies;
+    mp_util_wad::pLevel->axis = axis;
+    SetAlliesModels(Broc::bint(0), "mp_US_ass");
+    SetAlliesModels(Broc::bint(1), "mp_US_inf");
+    SetAlliesModels(Broc::bint(3), "mp_US_medic");
+    SetAlliesModels(Broc::bint(2), "mp_US_rifle");
+    SetAlliesModels(Broc::bint(6), "mp_US_scout");
+    SetAlliesModels(Broc::bint(4), "mp_US_supp");
+    SetAlliesModels(Broc::bint(5), "mp_US_tank");
+    SetAxisModels(Broc::bint(0), "mp_GE_ass");
+    SetAxisModels(Broc::bint(1), "mp_GE_inf");
+    SetAxisModels(Broc::bint(3), "mp_GE_medic");
+    SetAxisModels(Broc::bint(2), "mp_GE_rifle");
+    SetAxisModels(Broc::bint(6), "mp_GE_scout");
+    SetAxisModels(Broc::bint(4), "mp_GE_supp");
+    SetAxisModels(Broc::bint(5), "mp_GE_tank");
+    mp_util_wad::pLevel->alliesViewModel = "xmodel/viewmodel_hands_us";
+    mp_util_wad::pLevel->axisViewModel = "xmodel/viewmodel_hands_us";
+    Broc::BrocExports& x = Broc::gBrocAPI.mBrocExports;
+    x.mCallbackCanPickupAmmoPack =
+        (int (*)(const Broc::entity))CallbackCanPickupAmmoPack;
+    x.mCallbackGiveAmmoPack =
+        (void (*)(const Broc::entity, const unsigned int))CallbackGiveAmmoPack;
+    x.mCallbackPickupKit =
+        (void (*)(const Broc::entity, const unsigned int))CallbackPickupKit;
+    x.mCallbackGetTeamWeapon =
+        (int (*)(const char*, const unsigned int))CallbackGetTeamWeapon;
+    x.mCallbackGetGrenadeCount =
+        (int (*)(const unsigned int, const unsigned int))CallbackGetGrenadeCount;
+    x.mCallbackGetClipCount =
+        (int (*)(const unsigned int, const unsigned int,
+                 const int))CallbackGetClipCount;
+    x.mCallbackGetSlotClipCount =
+        (int (*)(const char*, const unsigned int, const unsigned int,
+                 const int))CallbackGetSlotClipCount;
+    allies.~string();
+    axis.~string();
+}
+
+// SetAlliesModels - ea: 0x95DD60
+void SetAlliesModels(Broc::bint playerClass, Broc::string model) {
+    mp_util_wad::pLevel->models[(unsigned int)(int)playerClass] = model;
+    model.~string();
+}
+
+// SetAxisModels - ea: 0x95DDF0
+void SetAxisModels(Broc::bint playerClass, Broc::string model) {
+    mp_util_wad::pLevel->models[(unsigned int)((int)playerClass + 7)] = model;
+    model.~string();
+}
+
+// GiveLoadout - ea: 0x95DE90
+void GiveLoadout(Broc::entity player) {
+    GiveWeapons(player, Broc::bint((int)mp_util_wad::entity_get_playerClass(player)),
+                Broc::bint((int)mp_util_wad::entity_get_rank(player)));
+    SetPlayerModel(player);
+}
+
+// UpdatePlayerModelForRank - ea: 0x95DF10
+void UpdatePlayerModelForRank(Broc::entity player) {
+    Broc::bint rank((int)mp_util_wad::entity_get_rank(player));
+    Broc::bint playerClass((int)mp_util_wad::entity_get_playerClass(player));
+    if ((int)playerClass == -1)
+        playerClass = 2;
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    unsigned int idx;
+    if (team == "allies")
+        idx = (unsigned int)(int)playerClass;
+    else
+        idx = (unsigned int)((int)playerClass + 7);
+    team.~string();
+    Broc::SetAiType(&player, &mp_util_wad::pLevel->models[idx], 0);
+    (void)rank;
+}
+
+// SetPlayerModel - ea: 0x95E0C0
+void SetPlayerModel(Broc::entity player) {
+    bool local = Broc::Code_IsLocalPlayer(player);
+    if (local) {
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, player);
+        if (team == "allies")
+            Broc::SetViewModel(&player, &mp_util_wad::pLevel->alliesViewModel);
+        else
+            Broc::SetViewModel(&player, &mp_util_wad::pLevel->axisViewModel);
+        team.~string();
+    }
+    UpdatePlayerModelForRank(player);
+}
+
+// DisplayYouWillSpawnWithMessage - ea: 0x95E210
+void DisplayYouWillSpawnWithMessage(Broc::entity self) {
+    Broc::SetActionHint((int)0xFCC9BF53, Broc::GetPlayerIndex(self));
+}
+
+// PlayerKill - ea: 0x961150
+void PlayerKill() {
+}
+
+// GetsDualPistols - ea: 0x963E20
+Broc::bbool* GetsDualPistols(Broc::bbool* result, Broc::bint playerClass) {
+    (void)playerClass;
+    *result = Broc::bbool(false);
+    return result;
+}
+
+// GetRankCount - ea: 0x963E70
+Broc::bint* GetRankCount(Broc::bint* result, Broc::bint rank,
+                         Broc::bint rank0Value, Broc::bint rank1Value,
+                         Broc::bint rank2Value) {
+    if ((int)rank == 1)
+        result->mVal = (int)rank1Value;
+    else if ((int)rank == 2)
+        result->mVal = (int)rank2Value;
+    else
+        result->mVal = (int)rank0Value;
+    return result;
+}
+
+// GetAmericanWeapon - ea: 0x95F050
+const char* GetAmericanWeapon(Broc::bint playerClass) {
+    switch ((int)playerClass) {
+    case 0: return "bar";
+    case 1: return "thompson";
+    case 2: return "m1garand";
+    case 3: return "shotgun";
+    case 4: return "mg30cal";
+    case 5: return "bazooka";
+    case 6: return "springfield";
+    default: return "m1garand";
+    }
+}
+
+// GetGermanWeapon - ea: 0x95F0F0
+const char* GetGermanWeapon(Broc::bint playerClass) {
+    switch ((int)playerClass) {
+    case 0: return "mp44";
+    case 1: return "mp40";
+    case 2: return "kar98";
+    case 3: return "shotgun";
+    case 4: return "mg34";
+    case 5: return "panzerschreck";
+    case 6: return "kar98_sniper";
+    default: return "kar98";
+    }
+}
+
+// GetAlliesWeapon - ea: 0x95EE70
+const char* GetAlliesWeapon(Broc::string team, Broc::bint playerClass) {
+    if (team == "american") {
+        team.~string();
+        return GetAmericanWeapon(playerClass);
+    }
+    if (Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_loadout.bro", __LINE__,
+            "The allies team is invalid.  Must be 'american'"))
+        __debugbreak();
+    team.~string();
+    return "";
+}
+
+// GetAxisWeapon - ea: 0x95EF60
+const char* GetAxisWeapon(Broc::string team, Broc::bint playerClass) {
+    if (team == "german") {
+        team.~string();
+        return GetGermanWeapon(playerClass);
+    }
+    if (Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_loadout.bro", __LINE__,
+            "The axis team is invalid.  Must be 'german'"))
+        __debugbreak();
+    team.~string();
+    return "";
+}
+
+// GiveWeapons - ea: 0x95E270
+void GiveWeapons(Broc::entity player, Broc::bint playerClass, Broc::bint rank) {
+    Broc::TakeAllWeapons(&player);
+    if ((int)playerClass > 6)
+        playerClass = 2;
+    Broc::string weapon;
+    weapon = "";
+    Broc::string pistol;
+    pistol = "";
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    if (team == "allies") {
+        Broc::string allies = mp_util_wad::pLevel->allies;
+        weapon = GetAlliesWeapon(allies, playerClass);
+        pistol = "colt";
+    } else {
+        Broc::string axis = mp_util_wad::pLevel->axis;
+        weapon = GetAxisWeapon(axis, playerClass);
+        pistol = "p38";
+    }
+    team.~string();
+    Broc::GiveWeapon(&player, &weapon);
+    Broc::bbool dual;
+    GetsDualPistols(&dual, playerClass);
+    if (!(bool)dual || (int)rank == 0)
+        Broc::GiveWeapon(&player, &pistol);
+    if (Broc::Code_GetTeamGame()) {
+        GiveSpecialWeapon(player, playerClass, (int)rank, false);
+    } else {
+        if (Broc::Code_IsLocalPlayer(player)) {
+            Broc::Code_SetSpecialRecharge(0, 0, (int)playerClass,
+                                          Broc::GetPlayerIndex(player));
+            GiveSmokeGrenadeSpecial(player, (__int16)(int)rank);
+        }
+    }
+    GiveAmmo(player, playerClass, rank, Broc::bbool(true));
+    Broc::SwitchToWeapon(&player, &weapon);
+    pistol.~string();
+    weapon.~string();
+}
+
+// GiveAmmo - ea: 0x95E640
+void GiveAmmo(Broc::entity playerEnt, Broc::bint playerClass, Broc::bint rank,
+              Broc::bbool fillClip) {
+    Broc::string slot("primary");
+    GiveWeaponAmmo(playerEnt, slot, playerClass, (__int16)(int)rank,
+                   fillClip, false);
+    slot.~string();
+    Broc::string slotb("primaryb");
+    GiveWeaponAmmo(playerEnt, slotb, playerClass, (__int16)(int)rank,
+                   fillClip, false);
+    slotb.~string();
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, playerEnt);
+    Broc::string grenade(GetGrenadeWeapon(team, playerClass));
+    Broc::GiveWeapon(&playerEnt, &grenade);
+    Broc::string gslot("grenade");
+    GiveWeaponAmmo(playerEnt, gslot, playerClass, (__int16)(int)rank,
+                   fillClip, false);
+    gslot.~string();
+    grenade.~string();
+}
+
+// GiveAmmoPack - ea: 0x95E840
+void GiveAmmoPack(Broc::entity playerEnt, Broc::bint playerClass,
+                  Broc::bint rank) {
+    Broc::bint playerRank((int)mp_util_wad::entity_get_rank(playerEnt));
+    if ((int)playerClass == 5) {
+        if ((int)playerRank >= 0) {
+            Broc::string slot("primary");
+            GiveWeaponAmmoPack(playerEnt, slot, playerClass,
+                               (__int16)(int)playerRank, (__int16)(int)rank,
+                               false);
+            slot.~string();
+        }
+    } else {
+        Broc::string slot("primary");
+        GiveWeaponAmmoPack(playerEnt, slot, playerClass,
+                           (__int16)(int)playerRank, (__int16)(int)rank,
+                           false);
+        slot.~string();
+    }
+    Broc::string slotb("primaryb");
+    GiveWeaponAmmoPack(playerEnt, slotb, playerClass, (__int16)(int)playerRank,
+                       (__int16)(int)rank, false);
+    slotb.~string();
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, playerEnt);
+    Broc::string grenade(GetGrenadeWeapon(team, playerClass));
+    if (grenade == "smokegrenade" || grenade == "smokegrenade_axis") {
+        Broc::GiveWeapon(&playerEnt, &grenade);
+        Broc::string gslot("grenade");
+        GiveWeaponAmmoPack(playerEnt, gslot, playerClass,
+                           (__int16)(int)playerRank, (__int16)(int)rank, true);
+        gslot.~string();
+    } else if ((int)playerClass != 5 && (int)rank >= 2) {
+        Broc::GiveWeapon(&playerEnt, &grenade);
+        Broc::string gslot("grenade");
+        GiveWeaponAmmoPack(playerEnt, gslot, playerClass,
+                           (__int16)(int)playerRank, (__int16)(int)rank,
+                           false);
+        gslot.~string();
+    }
+    grenade.~string();
+}
+
+// GetGrenadeWeapon - ea: 0x95F190
+const char* GetGrenadeWeapon(Broc::string team, Broc::bint playerClass) {
+    if (mp_util_wad::pLevel->gametype == "dm") {
+        bool axis = team == "axis";
+        team.~string();
+        return axis ? "stielhandgranate" : "fraggrenade";
+    }
+    switch ((int)playerClass) {
+    case 1:
+    case 5:
+        team.~string();
+        return "stickygrenade";
+    case 2:
+    case 3:
+    {
+        bool axis = team == "axis";
+        team.~string();
+        return axis ? "smokegrenade_axis" : "smokegrenade";
+    }
+    default:
+    {
+        bool axis = team == "axis";
+        team.~string();
+        return axis ? "stielhandgranate" : "fraggrenade";
+    }
+    }
+}
+
+// GiveSpecialWeapon - ea: 0x95F430
+void GiveSpecialWeapon(Broc::entity player, Broc::bint playerClass,
+                       __int16 rank, bool isRespawn) {
+    if (Broc::Code_IsLocalPlayer(player)) {
+        Broc::Code_SetSpecialRecharge(0, 0, (int)playerClass,
+                                      Broc::GetPlayerIndex(player));
+        if ((int)playerClass != 6 ||
+            (bool)*mp_util_wad::GetEE_specialWeaponChangeClassFlag(player)) {
+            *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
+            *mp_util_wad::GetEE_specialWeaponChangeClassFlag(player) = false;
+        }
+        HashStr n;
+        n.mVal = 0xC9444C8D;
+        Broc::notify(&player, n);
+        switch ((int)playerClass) {
+        case 0:
+            if (!isRespawn)
+                GiveMine(player, rank);
+            break;
+        case 1:
+            if (!isRespawn)
+                GiveMine(player, rank);
+            break;
+        case 2:
+            if (!isRespawn)
+                GiveRifleGrenades(player, rank);
+            break;
+        case 3:
+            GiveHealth(player);
+            break;
+        case 4:
+        case 5:
+            GiveAmmoWeapon(player);
+            break;
+        case 6:
+            if (!isRespawn)
+                GiveArtillery(player);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+// GiveDualPistols - ea: 0x95F6B0
+void GiveDualPistols(Broc::entity player, __int16 rank) {
+    if (rank != 0) {
+        Broc::string weapon("coltdual");
+        Broc::string team;
+        mp_util_wad::entity_get_team(&team, player);
+        if (team == "axis")
+            weapon = "p38dual";
+        team.~string();
+        Broc::GiveWeapon(&player, &weapon);
+        Broc::string sSlot("pistol");
+        Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+        sSlot.~string();
+        Broc::string s2("pistol");
+        Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+        s2.~string();
+        Broc::bint clipCount;
+        GetRankCount(&clipCount, Broc::bint(rank), Broc::bint(2),
+                     Broc::bint(2), Broc::bint(4));
+        Broc::string slot("pistol");
+        Broc::bint clipSize(Broc::GetFullClipAmmoCount(&player, &slot));
+        slot.~string();
+        Broc::bint amount((int)clipSize * (int)clipCount);
+        Broc::string s3("pistol");
+        Broc::SetWeaponSlotClipAmmo(&player, &s3, (int)amount);
+        s3.~string();
+        if ((int)amount > (int)clipSize) {
+            Broc::string s4("pistol");
+            Broc::SetWeaponSlotAmmo(&player, &s4, (int)amount - (int)clipSize);
+            s4.~string();
+        }
+        weapon.~string();
+    }
+}
+
+// GiveBazooka - ea: 0x95FA20
+void GiveBazooka(Broc::entity player, __int16 rank) {
+    Broc::string weapon("bazooka");
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    if (team == "axis")
+        weapon = "panzerschreck";
+    team.~string();
+    Broc::GiveWeapon(&player, &weapon);
+    Broc::string sSlot("primaryb");
+    Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+    sSlot.~string();
+    Broc::string s2("primaryb");
+    Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+    s2.~string();
+    Broc::bint ammo;
+    GetRankCount(&ammo, Broc::bint(rank), Broc::bint(4), Broc::bint(4),
+                 Broc::bint(4));
+    Broc::string s3("primaryb");
+    Broc::SetWeaponSlotClipAmmo(&player, &s3, 1);
+    s3.~string();
+    Broc::string s4("primaryb");
+    Broc::SetWeaponSlotAmmo(&player, &s4, (int)ammo - 1);
+    s4.~string();
+    weapon.~string();
+}
+
+// GiveSatchel - ea: 0x95FC50
+void GiveSatchel(Broc::entity player, __int16 rank) {
+    Broc::string pszWeaponName("mp_satchel");
+    Broc::GiveWeapon(&player, &pszWeaponName);
+    pszWeaponName.~string();
+    Broc::string sSlot("special");
+    Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+    sSlot.~string();
+    Broc::string s2("special");
+    Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+    s2.~string();
+    Broc::bint count;
+    GetRankCount(&count, Broc::bint(rank), Broc::bint(1), Broc::bint(2),
+                 Broc::bint(3));
+    Broc::string s3("special");
+    Broc::SetWeaponSlotClipAmmo(&player, &s3, (int)count);
+    s3.~string();
+}
+
+// GiveMine - ea: 0x95FDF0
+void GiveMine(Broc::entity player, __int16 rank) {
+    Broc::string pszWeaponName("mp_mine");
+    Broc::GiveWeapon(&player, &pszWeaponName);
+    pszWeaponName.~string();
+    Broc::string sSlot("special");
+    Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+    sSlot.~string();
+    Broc::string s2("special");
+    Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+    s2.~string();
+    Broc::bint count;
+    GetRankCount(&count, Broc::bint(rank), Broc::bint(1), Broc::bint(2),
+                 Broc::bint(3));
+    Broc::string s3("special");
+    Broc::SetWeaponSlotClipAmmo(&player, &s3, (int)count);
+    s3.~string();
+}
+
+// GiveRifleGrenades - ea: 0x95FF90
+void GiveRifleGrenades(Broc::entity player, __int16 rank) {
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    Broc::string pszWeaponName(team == "allies" ? "m1garand_rg" : "k98_rg");
+    Broc::GiveWeapon(&player, &pszWeaponName);
+    pszWeaponName.~string();
+    Broc::string sSlot("special");
+    Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+    sSlot.~string();
+    Broc::string s2("special");
+    Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+    s2.~string();
+    Broc::bint count;
+    GetRankCount(&count, Broc::bint(rank), Broc::bint(1), Broc::bint(2),
+                 Broc::bint(3));
+    Broc::string s3("special");
+    Broc::SetWeaponSlotClipAmmo(&player, &s3, (int)count);
+    s3.~string();
+    team.~string();
+}
+
+// GiveArtillery - ea: 0x9601D0
+void GiveArtillery(Broc::entity player) {
+    __int16 rank = mp_util_wad::entity_get_rank(player);
+    Broc::string weapon;
+    if (rank == 1)
+        weapon = "mp_binoculars_nospot_rank2";
+    else if (rank == 2)
+        weapon = "mp_binoculars_nospot_rank3";
+    else
+        weapon = "mp_binoculars_nospot";
+    Broc::GiveWeapon(&player, &weapon);
+    weapon.~string();
+    Broc::string sSlot("special");
+    Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+    sSlot.~string();
+    Broc::string s2("special");
+    Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+    s2.~string();
+    void* ftor = ArtilleryDispenser__functor(player);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_loadout.bro",
+                        __LINE__, "ArtilleryDispenser", ftor);
+}
+
+// GiveSmokeGrenadeSpecial - ea: 0x960460
+void GiveSmokeGrenadeSpecial(Broc::entity player, __int16 rank) {
+    Broc::bint count;
+    GetRankCount(&count, Broc::bint(rank), Broc::bint(0), Broc::bint(1),
+                 Broc::bint(1));
+    if ((int)count > 0) {
+        Broc::string pszWeaponName("mp_smokegrenade_special");
+        Broc::GiveWeapon(&player, &pszWeaponName);
+        pszWeaponName.~string();
+        Broc::string sSlot("special");
+        Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+        sSlot.~string();
+        Broc::string s2("special");
+        Broc::SetWeaponSlotClipAmmo(&player, &s2, (int)count);
+        s2.~string();
+    }
+}
+
+// GiveHealth - ea: 0x961170
+void GiveHealth(Broc::entity player) {
+    Broc::string weapon("mp_revive");
+    void* ftor = HealthAmmoDispenser__functor(
+        player, weapon, true, Broc::bint(3), Broc::bint(2), Broc::bint(1));
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_loadout.bro",
+                        __LINE__, "HealthAmmoDispenser", ftor);
+}
+
+// GiveAmmoWeapon - ea: 0x961340
+void GiveAmmoWeapon(Broc::entity player) {
+    Broc::string ammo_name("mp_ammo");
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    if (team == "axis")
+        ammo_name = "mp_ammo_axis";
+    team.~string();
+    void* ftor = HealthAmmoDispenser__functor(
+        player, ammo_name, false, Broc::bint(5), Broc::bint(4),
+        Broc::bint(3));
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_loadout.bro",
+                        __LINE__, "HealthAmmoDispenser", ftor);
+    ammo_name.~string();
+}
+
+// NotifyWhenTimerExpires - ea: 0x961080
+void NotifyWhenTimerExpires(Broc::entity player, Broc::bint time,
+                            HashStr notifyString) {
+    HashStr e1;
+    e1.mVal = 0xC9444C8D;
+    Broc::endon(player, e1);
+    HashStr e2;
+    e2.mVal = 0x5FB9FAE1u;
+    Broc::endon(player, e2);
+    HashStr e3;
+    e3.mVal = 0x74AA0A6u;
+    Broc::endon(player, e3);
+    Broc::wait((float)(int)time);
+    Broc::notify(&player, notifyString);
+}
+
+// local_player_joined - ea: 0x960E10
+void local_player_joined(Broc::entity player) {
+    void* ftor = SpecialClassAudio__functor(player);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_loadout.bro",
+                        __LINE__, "SpecialClassAudio", ftor);
+}
+
+// SpecialClassAudio - ea: 0x960E70
+void SpecialClassAudio(Broc::entity player) {
+    for (;;) {
+        HashStr trigger;
+        trigger.mVal = 0x433F9306u;
+        Broc::waittill(player, trigger);
+        if (mp_util_wad::entity_get_playerClass(player) == 6) {
+            Broc::bint PickALine(Broc::RandomInt(5));
+            if ((int)PickALine < 4) {
+                Broc::string script("Scout_SpecialFire");
+                Broc::EffectEventPlay(&player, &script);
+                script.~string();
+            } else {
+                Broc::string script("Scout_SpecialFire_B");
+                Broc::EffectEventPlay(&player, &script);
+                script.~string();
+            }
+            Broc::wait(2.0f);
+            Broc::bint PickASound(Broc::RandomInt(5));
+            if ((int)PickASound < 4) {
+                Broc::string script("MP_GS_MortarFireB");
+                Broc::EffectEventPlay(&player, &script);
+                script.~string();
+            } else {
+                Broc::string script("MP_GS_MortarFire");
+                Broc::EffectEventPlay(&player, &script);
+                script.~string();
+            }
+        }
+        Broc::wait(1.0f);
+    }
+}
+
+// IsFullWeaponAmmo - ea: 0x961AB0
+Broc::bbool* IsFullWeaponAmmo(Broc::bbool* result, Broc::entity player,
+                              Broc::string slot) {
+    int slotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
+    int maxSlotAmmo = Broc::GetMaxAmmo(&player, &slot);
+    *result = Broc::bbool(slotAmmo >= maxSlotAmmo);
+    slot.~string();
+    return result;
+}
+
+// GetStartingWeaponAmmoScale - ea: 0x961BD0
+Broc::bfloat* GetStartingWeaponAmmoScale(Broc::bfloat* result,
+                                         Broc::entity player,
+                                         Broc::string slot,
+                                         Broc::bint playerClass,
+                                         __int16 rank) {
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    Broc::bint clipCount;
+    GetWeaponClipCount(&clipCount, slot, playerClass, rank, team);
+    team.~string();
+    Broc::bint clipSize(Broc::GetFullClipAmmoCount(&player, &slot));
+    if (slot == "grenade" || slot == "smokegrenade") {
+        clipSize = (int)clipCount;
+        clipCount = 1;
+    }
+    Broc::bint amount((int)clipSize * (int)clipCount);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    float scale = (float)(originalSlotAmmo + originalSlotClipAmmo) /
+                  (float)(int)amount;
+    *result = Broc::bfloat(scale);
+    slot.~string();
+    return result;
+}
+
+// GiveWeaponAmmo - ea: 0x962060
+void GiveWeaponAmmo(Broc::entity player, Broc::string slot,
+                    Broc::bint playerClass, __int16 rank,
+                    Broc::bbool fillClips, bool onlyOneExtra) {
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    Broc::bint clipCount;
+    GetWeaponClipCount(&clipCount, slot, playerClass, rank, team);
+    team.~string();
+    Broc::bint clipSize(Broc::GetFullClipAmmoCount(&player, &slot));
+    if (slot == "grenade" || slot == "smokegrenade") {
+        clipSize = (int)clipCount;
+        clipCount = 1;
+    }
+    Broc::bint amount((int)clipSize * (int)clipCount);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    if (originalSlotAmmo + originalSlotClipAmmo > (int)amount) {
+        amount = originalSlotAmmo + originalSlotClipAmmo;
+    } else if (onlyOneExtra) {
+        if ((int)amount > originalSlotAmmo + originalSlotClipAmmo)
+            amount = originalSlotAmmo + originalSlotClipAmmo + 1;
+    }
+    Broc::SetWeaponSlotAmmo(&player, &slot, 0);
+    if ((bool)fillClips) {
+        Broc::SetWeaponSlotClipAmmo(&player, &slot, 0);
+        Broc::SetWeaponSlotClipAmmo(&player, &slot, (int)amount);
+        if ((int)amount > (int)clipSize)
+            Broc::SetWeaponSlotAmmo(&player, &slot, (int)amount - (int)clipSize);
+    } else {
+        Broc::SetWeaponSlotAmmo(&player, &slot, (int)amount - originalSlotClipAmmo);
+    }
+    slot.~string();
+}
+
+// GiveWeaponAmmoScale - ea: 0x9623D0
+void GiveWeaponAmmoScale(Broc::entity player, Broc::string slot,
+                         Broc::bint playerClass, __int16 rank,
+                         Broc::bbool fillClips, float scale) {
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    Broc::bint clipCount;
+    GetWeaponClipCount(&clipCount, slot, playerClass, rank, team);
+    team.~string();
+    Broc::bint clipSize(Broc::GetFullClipAmmoCount(&player, &slot));
+    if (slot == "grenade" || slot == "smokegrenade") {
+        clipSize = (int)clipCount;
+        clipCount = 1;
+    }
+    Broc::bint amount((int)(scale * (float)(int)clipSize) * (int)clipCount);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    Broc::SetWeaponSlotAmmo(&player, &slot, 0);
+    if ((bool)fillClips) {
+        Broc::SetWeaponSlotClipAmmo(&player, &slot, 0);
+        Broc::SetWeaponSlotClipAmmo(&player, &slot, (int)amount);
+        if ((int)amount > (int)clipSize)
+            Broc::SetWeaponSlotAmmo(&player, &slot, (int)amount - (int)clipSize);
+    } else {
+        Broc::SetWeaponSlotAmmo(&player, &slot, (int)amount - originalSlotClipAmmo);
+    }
+    (void)originalSlotAmmo;
+    slot.~string();
+}
+
+// GiveWeaponAmmoPack - ea: 0x961DB0
+void GiveWeaponAmmoPack(Broc::entity player, Broc::string slot,
+                        Broc::bint playerClass, __int16 rank,
+                        __int16 packRank, bool bIsSmokeGrenade) {
+    (void)playerClass;
+    (void)rank;
+    Broc::bint clipCount(0);
+    Broc::bint clipSize(Broc::GetFullClipAmmoCount(&player, &slot));
+    if (packRank > 0)
+        clipCount = 4;
+    else
+        clipCount = 2;
+    if (bIsSmokeGrenade) {
+        clipSize = 1;
+        clipCount = 1;
+    } else if (slot == "grenade") {
+        clipSize = 1;
+        clipCount = 0;
+        if (packRank >= 2)
+            clipCount = 1;
+    }
+    Broc::bint amount((int)clipSize * (int)clipCount);
+    int originalSlotAmmo = Broc::GetWeaponSlotAmmo(player, &slot);
+    int originalSlotClipAmmo = Broc::GetWeaponSlotClipAmmo(player, &slot);
+    Broc::bint currentAmmo(originalSlotAmmo + originalSlotClipAmmo);
+    Broc::bint maxAmmo((int)clipSize * (int)clipCount);
+    if ((int)currentAmmo > (int)maxAmmo)
+        amount = (int)currentAmmo;
+    Broc::SetWeaponSlotAmmo(&player, &slot, 0);
+    Broc::SetWeaponSlotClipAmmo(&player, &slot, 0);
+    Broc::SetWeaponSlotClipAmmo(&player, &slot, (int)amount);
+    if ((int)amount > (int)clipSize)
+        Broc::SetWeaponSlotAmmo(&player, &slot, (int)amount - (int)clipSize);
+    slot.~string();
+}
+
+// GetWeaponClipCount - ea: 0x9626B0
+Broc::bint* GetWeaponClipCount(Broc::bint* result, Broc::string slot,
+                               Broc::bint playerClass, __int16 rank,
+                               Broc::string team) {
+    if (slot == "primary") {
+        GetPrimaryClipCount(result, playerClass, rank, team);
+    } else if (slot == "primaryb") {
+        GetPistolClipCount(result, playerClass, rank);
+        team.~string();
+    } else if (slot == "grenade" || slot == "smokegrenade") {
+        GetGrenadeCount(result, playerClass, rank);
+        team.~string();
+    } else {
+        if (slot == "special")
+            result->mVal = 1;
+        else
+            result->mVal = 0;
+        team.~string();
+    }
+    slot.~string();
+    return result;
+}
+
+// GetGrenadeCount - ea: 0x963AE0
+Broc::bint* GetGrenadeCount(Broc::bint* result, Broc::bint playerClass,
+                            __int16 rank) {
+    switch ((int)playerClass) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        if (rank == 0)
+            result->mVal = 1;
+        else if (rank == 1)
+            result->mVal = 2;
+        else if (rank == 2)
+            result->mVal = 3;
+        else
+            result->mVal = 0;
+        break;
+    default:
+        result->mVal = 0;
+        break;
+    }
+    return result;
+}
+
+// GetPrimaryClipCount - ea: 0x9633D0
+Broc::bint* GetPrimaryClipCount(Broc::bint* result, Broc::bint playerClass,
+                                __int16 rank, Broc::string team) {
+    switch ((int)playerClass) {
+    case 0:
+        if (rank == 0 || rank == 1 || rank == 2) {
+            if (team == "allies")
+                result->mVal = 5;
+            else
+                result->mVal = 4;
+        } else {
+            result->mVal = 0;
+        }
+        break;
+    case 1:
+    case 5:
+        if (rank == 0 || rank == 1 || rank == 2)
+            result->mVal = 4;
+        else
+            result->mVal = 0;
+        break;
+    case 2:
+        if (rank == 0 || rank == 1 || rank == 2)
+            result->mVal = 5;
+        else
+            result->mVal = 0;
+        break;
+    case 3:
+        if (rank == 0 || rank == 1 || rank == 2)
+            result->mVal = 5;
+        else
+            result->mVal = 0;
+        break;
+    case 4:
+        if (rank == 0 || rank == 1 || rank == 2)
+            result->mVal = 3;
+        else
+            result->mVal = 0;
+        break;
+    case 6:
+        if (rank == 0 || rank == 1 || rank == 2)
+            result->mVal = 5;
+        else
+            result->mVal = 0;
+        break;
+    default:
+        result->mVal = 0;
+        break;
+    }
+    team.~string();
+    return result;
+}
+
+// GetPistolClipCount - ea: 0x9639B0
+Broc::bint* GetPistolClipCount(Broc::bint* result, Broc::bint playerClass,
+                               __int16 rank) {
+    rank = (__int16)(rank & 3);
+    Broc::bbool dual;
+    GetsDualPistols(&dual, playerClass);
+    if ((bool)dual && rank != 0) {
+        result->mVal = 0;
+        return result;
+    }
+    if (rank == 0 || rank == 1)
+        result->mVal = 4;
+    else if (rank == 2)
+        result->mVal = 4;
+    else
+        result->mVal = 0;
+    return result;
+}
+
+// CallbackGetGrenadeCount - ea: 0x963A90
+int CallbackGetGrenadeCount(unsigned int playerClass, __int16 rank) {
+    Broc::bint count;
+    GetGrenadeCount(&count, Broc::bint((int)playerClass), rank);
+    return (int)count;
+}
+
+// CallbackGetTeamWeapon - ea: 0x95EC60
+int CallbackGetTeamWeapon(const char* team, unsigned int playerClass) {
+    Broc::string strTeam(team);
+    Broc::string weapon;
+    int index = 0;
+    if (strTeam == "allies") {
+        Broc::string allies = mp_util_wad::pLevel->allies;
+        weapon = GetAlliesWeapon(allies, Broc::bint((int)playerClass));
+        index = Broc::GetWeaponIndex(&weapon);
+    } else if (strTeam == "axis") {
+        Broc::string axis = mp_util_wad::pLevel->axis;
+        weapon = GetAxisWeapon(axis, Broc::bint((int)playerClass));
+        index = Broc::GetWeaponIndex(&weapon);
+    }
+    weapon.~string();
+    strTeam.~string();
+    return index;
+}
+
+// CallbackGetClipCount - ea: 0x962920
+int CallbackGetClipCount(unsigned int playerClass, __int16 rank,
+                         int allied_team) {
+    Broc::string team(allied_team != 0 ? "allies" : "axis");
+    Broc::bint count;
+    GetPrimaryClipCount(&count, Broc::bint((int)playerClass), rank, team);
+    return (int)count;
+}
+
+// CallbackGetSlotClipCount - ea: 0x9629E0
+int CallbackGetSlotClipCount(const char* slotName, unsigned int playerClass,
+                             __int16 rank, int allied_team) {
+    Broc::string strSlot(slotName);
+    Broc::string team(allied_team != 0 ? "allies" : "axis");
+    Broc::bint count;
+    GetWeaponClipCount(&count, strSlot, Broc::bint((int)playerClass), rank,
+                       team);
+    return (int)count;
+}
+
+// CallbackGiveAmmoPack - ea: 0x962AE0
+void CallbackGiveAmmoPack(Broc::entity playerEnt, unsigned int rank) {
+    if (Broc::IsPlayer(&playerEnt) != 0) {
+        GiveAmmoPack(playerEnt, Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
+                     Broc::bint((int)rank));
+    }
+}
+
+// CallbackCanPickupAmmoPack - ea: 0x963240
+int CallbackCanPickupAmmoPack(Broc::entity playerEnt) {
+    if (Broc::IsPlayer(&playerEnt) == 0)
+        return 0;
+    Broc::string slot("primary");
+    Broc::bbool full;
+    IsFullWeaponAmmo(&full, playerEnt, slot);
+    if (!(bool)full)
+        return 1;
+    Broc::string slotb("primaryb");
+    IsFullWeaponAmmo(&full, playerEnt, slotb);
+    return !(bool)full;
+}
+
+// CallbackPickupKit - ea: 0x962B60
+void CallbackPickupKit(Broc::entity playerEnt, __int16 newClass) {
+    if (Broc::IsPlayer(&playerEnt) != 0) {
+        Broc::string slot("primary");
+        Broc::bfloat primaryScale;
+        GetStartingWeaponAmmoScale(&primaryScale, playerEnt, slot,
+                                   Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
+                                   mp_util_wad::entity_get_rank(playerEnt));
+        Broc::string slotb("primaryb");
+        Broc::bfloat primaryBScale;
+        GetStartingWeaponAmmoScale(&primaryBScale, playerEnt, slotb,
+                                   Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
+                                   mp_util_wad::entity_get_rank(playerEnt));
+        Broc::string gslot("grenade");
+        Broc::bfloat grenadeScale;
+        GetStartingWeaponAmmoScale(&grenadeScale, playerEnt, gslot,
+                                   Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
+                                   mp_util_wad::entity_get_rank(playerEnt));
+        if ((float)primaryScale > 1.0f)
+            primaryScale = 1.0f;
+        if ((float)primaryBScale > 1.0f)
+            primaryBScale = 1.0f;
+        if ((float)grenadeScale > 1.0f)
+            grenadeScale = 1.0f;
+        Broc::string s1("primary");
+        Broc::SetWeaponSlotAmmo(&playerEnt, &s1, 0);
+        s1.~string();
+        Broc::string s2("primary");
+        Broc::SetWeaponSlotClipAmmo(&playerEnt, &s2, 0);
+        s2.~string();
+        Broc::string s3("primaryb");
+        Broc::SetWeaponSlotAmmo(&playerEnt, &s3, 0);
+        s3.~string();
+        Broc::string s4("primaryb");
+        Broc::SetWeaponSlotClipAmmo(&playerEnt, &s4, 0);
+        s4.~string();
+        Broc::string s5("grenade");
+        Broc::SetWeaponSlotAmmo(&playerEnt, &s5, 0);
+        s5.~string();
+        Broc::string s6("grenade");
+        Broc::SetWeaponSlotClipAmmo(&playerEnt, &s6, 0);
+        s6.~string();
+        mp_util_wad::entity_set_playerClass(playerEnt, newClass);
+        mp_util_wad::entity_set_nextPlayerClass(playerEnt, newClass);
+        GiveLoadout(playerEnt);
+        Broc::string p("primary");
+        GiveWeaponAmmoScale(playerEnt, p,
+                            Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
+                            mp_util_wad::entity_get_rank(playerEnt),
+                            Broc::bbool(true), (float)primaryScale);
+        p.~string();
+        Broc::string pb("primaryb");
+        GiveWeaponAmmoScale(playerEnt, pb,
+                            Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
+                            mp_util_wad::entity_get_rank(playerEnt),
+                            Broc::bbool(true), (float)primaryBScale);
+        pb.~string();
+        Broc::string g("grenade");
+        GiveWeaponAmmoScale(playerEnt, g,
+                            Broc::bint((int)mp_util_wad::entity_get_playerClass(playerEnt)),
+                            mp_util_wad::entity_get_rank(playerEnt),
+                            Broc::bbool(true), (float)grenadeScale);
+        g.~string();
+        slot.~string();
+        slotb.~string();
+        gslot.~string();
+    }
+}
+
+// ArtilleryDispenser - ea: 0x9605D0
+void ArtilleryDispenser(Broc::entity player) {
+    HashStr e1;
+    e1.mVal = 0xC9444C8D;
+    Broc::endon(player, e1);
+    HashStr e2;
+    e2.mVal = 0x74AA0A6u;
+    Broc::endon(player, e2);
+    HashStr e3;
+    e3.mVal = 0xC1E6FED9;
+    Broc::endon(player, e3);
+    HashStr e4;
+    e4.mVal = 0x24B5BA64u;
+    Broc::endon(player, e4);
+    Broc::bint timerOrig;
+    GetRankCount(&timerOrig, Broc::bint((int)mp_util_wad::entity_get_rank(player)),
+                 Broc::bint(180), Broc::bint(180), Broc::bint(180));
+    timerOrig = 180;
+    Broc::bint timer((int)timerOrig);
+    if ((int)timer != 0) {
+        Broc::bint playerClass((int)mp_util_wad::entity_get_playerClass(player));
+        Broc::bbool first_time(true);
+        static Broc::bint additional_progress_bar_time(6000);
+        for (;;) {
+            if (!(bool)first_time) {
+                HashStr trigger;
+                trigger.mVal = 0x433F9306u;
+                Broc::waittill(player, trigger);
+                *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
+            }
+            first_time = false;
+            Broc::bint now;
+            Broc::GetTime(&now);
+            if ((int)*mp_util_wad::GetEE_specialWeaponTime(player) == 0) {
+                *mp_util_wad::GetEE_specialWeaponTime(player) =
+                    (int)now + (int)timer * 1000;
+            } else {
+                timer = ((int)*mp_util_wad::GetEE_specialWeaponTime(player) -
+                         (int)now) / 1000;
+            }
+            if ((int)timer < 0)
+                timer = 0;
+            Broc::Code_SetSpecialRecharge(
+                (int)*mp_util_wad::GetEE_specialWeaponTime(player) -
+                    (int)timerOrig * 1000,
+                (int)timerOrig * 1000 + (int)additional_progress_bar_time,
+                (int)playerClass, Broc::GetPlayerIndex(player));
+            HashStr notify;
+            notify.mVal = 0x617A8CF6u;
+            void* ntf = NotifyWhenTimerExpires__functor(player, (int)timer,
+                                                        notify);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_loadout.bro",
+                                __LINE__, "NotifyWhenTimerExpires", ntf);
+            HashStr wait;
+            wait.mVal = 0x617A8CF6u;
+            Broc::waittill(player, wait);
+            Broc::string sSlot("special");
+    Broc::bint ammo(Broc::GetWeaponSlotAmmo(player, &sSlot));
+            sSlot.~string();
+            if ((int)ammo == 0) {
+                Broc::string script("Scout_Artillery_Ready");
+                Broc::EffectEventPlay(&player, &script);
+                script.~string();
+                Broc::string s1("special");
+                Broc::SetWeaponSlotAmmo(&player, &s1, 0);
+                s1.~string();
+                Broc::string s2("special");
+                Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+                s2.~string();
+                Broc::string s3("special");
+                Broc::SetWeaponSlotClipAmmo(&player, &s3, 1);
+                s3.~string();
+            }
+            timer = (int)timerOrig;
+            Broc::Code_SetSpecialRecharge(0, 0, (int)playerClass,
+                                          Broc::GetPlayerIndex(player));
+        }
+    }
+}
+
+// HealthAmmoDispenser - ea: 0x9614C0
+void HealthAmmoDispenser(Broc::entity player, Broc::string weapon,
+                         Broc::bbool health, Broc::bint rank0Time,
+                         Broc::bint rank1Time, Broc::bint rank2Time) {
+    HashStr e1;
+    e1.mVal = 0xC9444C8D;
+    Broc::endon(player, e1);
+    HashStr e2;
+    e2.mVal = 0x74AA0A6u;
+    Broc::endon(player, e2);
+    Broc::bint timer((int)rank0Time);
+    __int16 rank = mp_util_wad::entity_get_rank(player);
+    if (rank <= 1) {
+        if (rank > 0)
+            timer = (int)rank1Time;
+    } else {
+        timer = (int)rank2Time;
+    }
+    Broc::bint playerClass((int)mp_util_wad::entity_get_playerClass(player));
+    Broc::bbool first_time(true);
+    static Broc::bint additional_progress_bar_time(1000);
+    for (;;) {
+        *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
+        if (!(bool)first_time) {
+            HashStr trigger;
+            trigger.mVal = 0x433F9306u;
+            Broc::waittill(player, trigger);
+        }
+        first_time = false;
+        Broc::bint now;
+        Broc::GetTime(&now);
+        *mp_util_wad::GetEE_specialWeaponTime(player) =
+            (int)now + (int)timer * 1000;
+        Broc::Code_SetSpecialRecharge(
+            (int)now, (int)timer * 1000 + (int)additional_progress_bar_time,
+            (int)playerClass, Broc::GetPlayerIndex(player));
+        Broc::string sSlot("special");
+        Broc::SetWeaponSlotAmmo(&player, &sSlot, 0);
+        sSlot.~string();
+        Broc::string s2("special");
+        Broc::SetWeaponSlotClipAmmo(&player, &s2, 0);
+        s2.~string();
+        HashStr notify;
+        notify.mVal = 0x617A8CF6u;
+        void* ntf = NotifyWhenTimerExpires__functor(player, (int)timer,
+                                                    notify);
+        Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_loadout.bro",
+                            __LINE__, "NotifyWhenTimerExpires", ntf);
+        HashStr wait;
+        wait.mVal = 0x617A8CF6u;
+        Broc::waittill(player, wait);
+        if ((bool)health) {
+            Broc::string script("Medic_Healthpack_Ready");
+            Broc::EffectEventPlay(&player, &script);
+            script.~string();
+        } else {
+            Broc::string script("Support_Ammopack_Ready");
+            Broc::EffectEventPlay(&player, &script);
+            script.~string();
+        }
+        Broc::TakeWeapon(&player, &weapon);
+        Broc::GiveWeapon(&player, &weapon);
+        Broc::string s3("special");
+        Broc::SetWeaponSlotAmmo(&player, &s3, 0);
+        s3.~string();
+        Broc::string s4("special");
+        Broc::SetWeaponSlotClipAmmo(&player, &s4, 0);
+        s4.~string();
+        Broc::string s5("special");
+        Broc::SetWeaponSlotClipAmmo(&player, &s5, 1);
+        s5.~string();
+        *mp_util_wad::GetEE_specialWeaponTime(player) = 0;
+        Broc::Code_SetSpecialRecharge(0, 0, (int)playerClass,
+                                      Broc::GetPlayerIndex(player));
+    }
+}
+
+void* SpecialClassAudio__functor(Broc::entity player) {
+    (void)player;
+    return NULL;
+}
+void* ArtilleryDispenser__functor(Broc::entity player) {
+    (void)player;
+    return NULL;
+}
+void* HealthAmmoDispenser__functor(Broc::entity player, Broc::string weapon,
+                                   bool health, int rank0Time, int rank1Time,
+                                   int rank2Time) {
+    (void)player; (void)health; (void)rank0Time; (void)rank1Time;
+    (void)rank2Time;
+    weapon.~string();
+    return NULL;
+}
+void* NotifyWhenTimerExpires__functor(Broc::entity player, int time,
+                                      HashStr notifyString) {
+    (void)player; (void)time; (void)notifyString;
+    return NULL;
+}
 }
 namespace _mp_shellshock {
 void main() {

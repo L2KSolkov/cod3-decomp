@@ -729,6 +729,18 @@ void SetSpectateMedic(int medic, int viewport);
 void SetSpectateSeconds(int seconds, int viewport);
 void SetTakeDamage(Broc::entity* e, int damage);
 void RotateTo(Broc::entity* e, const Broc::vector* angles, float time);
+void GiveWeapon(Broc::entity* e, const Broc::string* pszWeaponName);
+void TakeWeapon(Broc::entity* e, const Broc::string* pszWeaponName);
+void SetWeaponSlotAmmo(Broc::entity* e, const Broc::string* sSlot, int iSetAmmo);
+void SetWeaponSlotClipAmmo(Broc::entity* e, const Broc::string* sSlot,
+                           int iSetClipAmmo);
+int GetWeaponIndex(const Broc::string* team);
+int GetFullClipAmmoCount(Broc::entity* e, const Broc::string* slot);
+int GetMaxAmmo(Broc::entity* e, const Broc::string* slot);
+void SetAiType(Broc::entity* e, const Broc::string* modelName, int whichPak);
+void SetViewModel(Broc::entity* e, const Broc::string* modelName);
+void Code_SetSpecialRecharge(int start, int length, int playerClass,
+                             int playerIndex);
 void ShellShock(Broc::entity* e, const Broc::string* shock, float fVal);
 void EnableNanoForces(bool onOff);
 void RadiusDamage(const Broc::vector* origin, float range, float max_damage,
