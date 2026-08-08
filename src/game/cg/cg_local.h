@@ -89,6 +89,19 @@ struct weaponFileInfo_t {
     unsigned char bWideKillIcon;  // +0x80
 };
 
+struct weaponFileInfoFull : weaponFileInfo_t {
+    int  weapClass;       // +0x84
+    int  slot;            // +0x88
+    int  bOffHand;        // +0x8C
+    int  bSlotStackable;  // +0x90
+    int  bBoltAction;     // +0x94
+    int  bADSPositionInfo; // +0x98
+    int  bAnimateCamReload;  // +0x9C
+    int  bAnimateCamMelee;   // +0xA0
+    int  bAnimateCamFire;    // +0xA4
+    float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
+};
+
 struct IVPointerRaw {
     void* mValue;  // +0x00
     int   mPakId;  // +0x04

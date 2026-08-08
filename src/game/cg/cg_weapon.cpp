@@ -233,19 +233,6 @@ extern void AngleVectors(const math::Position3* angles, float* forward,
 struct weaponInfo_s;
 struct DObj;
 
-struct weaponFileInfoFull : weaponFileInfo_t {
-    int  weapClass;   // +0x84
-    int  slot;        // +0x88
-    int  bOffHand;    // +0x8C
-    int  bSlotStackable;  // +0x90
-    int  bBoltAction;     // +0x94
-    int  bADSPositionInfo; // +0x98
-    int  bAnimateCamReload;  // +0x9C
-    int  bAnimateCamMelee;   // +0xA0
-    int  bAnimateCamFire;    // +0xA4
-    float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
-};
-
 static char buffer_0[256];
 
 // ea: 0x00687F40
