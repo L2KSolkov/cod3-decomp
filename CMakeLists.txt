@@ -167,6 +167,7 @@ add_library(cod3_bd STATIC
     src/bd/bdConnectionStatistics.cpp
     src/bd/bdConnection.cpp
     src/bd/bdConnectionListener.cpp
+    src/bd/bdDispatcher.cpp
     src/bd/bdLoopbackConnection.cpp
     src/bd/bdChunk.cpp
     src/bd/bdMessage.cpp

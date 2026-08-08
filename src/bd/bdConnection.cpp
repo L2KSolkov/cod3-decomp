@@ -16,11 +16,6 @@ void* allocate(unsigned int size);
 void  deallocate(void* p);
 }
 
-template <typename T>
-struct bdFastArray_helpers {
-    static void increaseCapacity(bdFastArray<T>* arr, unsigned int count);
-    static void removeAllKeepOrder(bdFastArray<T>* arr, T item);
-};
 
 // ============================================================================
 // bdConnection::bdConnection (default) â€” ea: 0x8A0F10
@@ -140,7 +135,7 @@ void bdConnection::setAddressHandle(const bdReference<bdAddrHandle>& addrHandle)
 // ============================================================================
 bdConnectionListener* bdConnection::registerListener(bdConnectionListener* listener) {
     if (this->m_listeners.m_size == this->m_listeners.m_capacity)
-        bdFastArray_helpers<bdConnectionListener*>::increaseCapacity(&this->m_listeners, 1);
+        this->m_listeners.increaseCapacity(1);
     this->m_listeners.m_data[this->m_listeners.m_size++] = listener;
     return listener;
 }
@@ -149,6 +144,6 @@ bdConnectionListener* bdConnection::registerListener(bdConnectionListener* liste
 // unregisterListener â€” ea: 0x8A10B0
 // ============================================================================
 int bdConnection::unregisterListener(bdConnectionListener* listener) {
-    bdFastArray_helpers<bdConnectionListener*>::removeAllKeepOrder(&this->m_listeners, listener);
+    this->m_listeners.removeAllKeepOrder(listener);
     return 0;
 }

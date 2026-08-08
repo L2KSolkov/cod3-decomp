@@ -228,7 +228,7 @@ phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_
 bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdReceivedMessage.obj	bdConnection	bdReceivedMessage.obj	engine	4	PORTED	[bdConnection] bdReceivedMessage.cpp: received message (4 funcs) from Demonware 2.0 + IDA
-bdNet:bdDispatcher.obj	bdNet	bdDispatcher.obj	engine	4	TODO	
+bdNet:bdDispatcher.obj	bdNet	bdDispatcher.obj	engine	4	PORTED	[bdNet] bdDispatcher.cpp: message dispatcher (4 funcs) from Demonware 2.0 + IDA; bdFastArray helpers now real
 bdPlatform:bdPlatformMutex-xbox.obj	bdPlatform	bdPlatformMutex-xbox.obj	engine	4	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdCore:bdShortTimer.obj	bdCore	bdShortTimer.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdHMacSHA1.obj	bdCore	bdHMacSHA1.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation

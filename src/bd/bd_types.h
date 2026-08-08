@@ -11,6 +11,7 @@
 #include "bd/bdTiming/bdShortTimer.h"
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 // ============================================================================
 // Logging shim (bdLog's bdMessageProxy) + assert flag - unresolved externs,
@@ -26,6 +27,7 @@ extern bool g_assertFalse;
 namespace bdMemory {
 void* allocate(unsigned int size);
 void  deallocate(void* p);
+void* reallocate(void* p, unsigned int size);
 }
 
 // ============================================================================
@@ -97,8 +99,70 @@ struct bdFastArray {
     unsigned int m_capacity; // +0x04
     unsigned int m_size;     // +0x08
 
+    bdFastArray() : m_data(NULL), m_capacity(0), m_size(0) {}
+    ~bdFastArray() {
+        bdMemory::deallocate(m_data);
+        m_data = NULL;
+        m_capacity = 0;
+        m_size = 0;
+    }
+
+    unsigned int getSize() const { return m_size; }
     T& operator[](unsigned int index) { return m_data[index]; }
     const T& operator[](unsigned int index) const { return m_data[index]; }
+
+    void increaseCapacity(unsigned int count) {
+        unsigned int extra = (count <= m_capacity) ? m_capacity : count;
+        unsigned int newCapacity = extra + m_capacity;
+        T* newData = (T*)bdMemory::allocate(4 * newCapacity);
+        if (m_size != 0)
+            memcpy(newData, m_data, 4 * m_size);
+        bdMemory::deallocate(m_data);
+        m_capacity = newCapacity;
+        m_data = newData;
+    }
+
+    void pushBack(const T& value) {
+        if (m_size == m_capacity)
+            increaseCapacity(1);
+        m_data[m_size++] = value;
+    }
+
+    void clear() {
+        bdMemory::deallocate(m_data);
+        m_data = NULL;
+        m_capacity = 0;
+        m_size = 0;
+    }
+
+    // Removes every element equal to item, preserving the order of the rest.
+    void removeAllKeepOrder(const T& item) {
+        unsigned int i = 0;
+        unsigned int j = 1;
+        if (m_size != 0) {
+            do {
+                if (item == m_data[i]) {
+                    unsigned int size = m_size;
+                    if (i < size && j <= size && i < j)
+                        memmove(m_data + i, m_data + i + 1, 4 * (size - j));
+                    unsigned int cap = m_capacity;
+                    unsigned int newSize = i - j + m_size;
+                    m_size = newSize;
+                    if (cap > 4 * newSize) {
+                        unsigned int newCap = m_capacity - (m_capacity >> 1);
+                        m_capacity = newCap;
+                        m_data = (T*)bdMemory::reallocate(m_data, 4 * newCap);
+                    }
+                    --i;
+                    --j;
+                }
+                ++i;
+                ++j;
+            } while (i < m_size);
+        }
+    }
+
+    void removeAll(const T& item) { removeAllKeepOrder(item); }
 };
 static_assert(sizeof(bdFastArray<char>) == 0x0C, "bdFastArray size mismatch");
 
@@ -1135,3 +1199,20 @@ protected:
     bdReference<bdConnection> m_connection; // +0x04
 };
 static_assert(sizeof(bdReceivedMessage) == 0x08, "bdReceivedMessage size mismatch");
+// ============================================================================
+// bdDispatcher - dispatches incoming messages to registered interceptors.
+// Layout: single bdFastArray<bdDispatchInterceptor*> m_interceptors (12 bytes).
+// ============================================================================
+class bdDispatchInterceptor;
+
+class bdDispatcher {
+public:
+    bdDispatcher();
+    void process(const bdReference<bdConnection>& connection);
+    void registerInterceptor(bdDispatchInterceptor* const interceptor);
+    void unregisterInterceptor(bdDispatchInterceptor* const interceptor);
+
+protected:
+    bdFastArray<bdDispatchInterceptor*> m_interceptors;   // +0x00
+};
+static_assert(sizeof(bdDispatcher) == 0x0C, "bdDispatcher size mismatch");
