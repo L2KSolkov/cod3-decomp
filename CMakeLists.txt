@@ -279,6 +279,7 @@ add_library(cod3_game_core STATIC
     src/game/core/q_math.cpp
     src/game/core/files.cpp
     src/game/core/cvar.cpp
+    src/game/core/common.cpp
 )
 add_library(cod3_game_game2 STATIC src/game/game2/stubs_game.cpp)
 add_library(cod3_game_render STATIC src/game/render/stubs_game.cpp)
