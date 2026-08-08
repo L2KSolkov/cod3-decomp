@@ -18,7 +18,8 @@ extern const char defaultFileName[] = "";
 // Assertion system externs (core_xboxr:AeAssert.o)
 // ============================================================================
 namespace AeAssert {
-extern int gCurrentAuthor;
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
 extern const char* gCurrentExpr;
@@ -436,7 +437,7 @@ void Sys_QueEvent(int time, sysEventType_t type, int value, int value2,
     sysEvent_t* v6 = &eventQue[eventHead & 0x3F];
     if (eventHead - eventTail >= 64)
     {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\ps2_shared.cpp";
         AeAssert::gCurrentLine = 54;
         AeAssert::gCurrentExpr = "0";

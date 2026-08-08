@@ -19,7 +19,8 @@
 // Assertion system externs (core_xboxr:AeAssert.o)
 // ============================================================================
 namespace AeAssert {
-extern int gCurrentAuthor;
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
 extern const char* gCurrentExpr;
@@ -29,7 +30,7 @@ bool Assert(const char* fmt, ...);
 
 #define ASSERT(expr, file, line)                                          \
     do {                                                                  \
-        AeAssert::gCurrentAuthor = 0;                                     \
+        AeAssert::gCurrentAuthor = AeAssert::COD3;                        \
         AeAssert::gCurrentFile = (file);                                  \
         AeAssert::gCurrentLine = (line);                                  \
         AeAssert::gCurrentExpr = (expr);                                  \
@@ -37,6 +38,14 @@ bool Assert(const char* fmt, ...);
             && AeAssert::Assert("old cod assert"))                        \
             __debugbreak();                                               \
     } while (0)
+
+// Minimal FEManager view (shell.o owns the real class; only DrawDiscError
+// is referenced here). shell.o:0x96CDA0 ?DrawDiscError@FEManager@@QAEXXZ.
+class FEManager {
+public:
+    void DrawDiscError();
+};
+extern FEManager g_femanager;
 
 // ============================================================================
 // Print - debug output for the matchmaking code (game_xbox.o local helper)
@@ -100,6 +109,18 @@ void LiveRemote::Reset()
     memset(mutedBy, 0, sizeof(mutedBy));
 }
 
+// ea: inline (livePlayer.h)
+void LiveRemote::SetMuted(unsigned int portNum, bool shouldMute)
+{
+    mutedBy[portNum] = shouldMute;
+}
+
+// ea: inline (livePlayer.h)
+void LiveRemote::Mute(unsigned int portNum, bool shouldMute)
+{
+    muting[portNum] = shouldMute;
+}
+
 // ea: 0x729F00 (inline, livePlayer.h:66)
 inline bool LiveRemote::IsMuting(unsigned int portNum)
 {
@@ -153,9 +174,22 @@ void LiveLocal::Reset()
 
 LiveWrapper* LiveWrapper::theWrapper;
 
+// LiveWrapper vtable (slots 0..19; matches the binary's ??_7LiveWrapper@@6B@
+// at rdata 0xD173BC). Pure-virtual/placeholder slots are nullsub or purecall.
+static void* LiveWrapperVftable[20];
+struct LiveWrapperVftableInit {
+    LiveWrapperVftableInit() {
+        for (int i = 0; i < 20; ++i)
+            LiveWrapperVftable[i] = nullptr;
+        // slots 18/19 are the nullsub_302/303 callbacks in the binary
+    }
+};
+static LiveWrapperVftableInit s_liveWrapperVftableInit;
+
 // ea: 0x71F7A0
 LiveWrapper::~LiveWrapper()
 {
+    *(void***)this = LiveWrapperVftable;
     if (uixFont)
     {
         void** vt = *(void***)uixFont;
@@ -352,6 +386,965 @@ void LiveWrapper::RefreshMuteList(unsigned int controllerIndex)
                        localPlayers[v3].muteList,
                        (DWORD*)&localPlayers[v3].muteListSize);
     muteListTask[v3].needsWork = true;
+}
+
+// ============================================================================
+// LiveWrapper batch 2 - voice / logon / session lifecycle
+// ============================================================================
+
+// Feature descriptors (LiveEngine feature ids; game_xbox.o rdata)
+LiveFeature g_LogonFeature;
+LiveFeature g_FriendsFeature;
+LiveFeature g_PlayersFeature;
+LiveFeature g_VoiceMailPseudoFeature;
+void* nsl_fxDesc;
+void* g_voicemailMode;
+void* g_voicechatMode;
+
+// ea: 0x722530
+LiveWrapper::LiveWrapper()
+{
+    *(void***)this = LiveWrapperVftable;
+    internalState = 0;        // kNotSignedIn
+    internalMode = 0;         // kNotSetup
+    sessionState = 0;         // kNotInSession
+    lastNotification = 0;     // kLiveOk
+    uixEngine = nullptr;
+    uiPlugin = nullptr;
+    audioPlugin = nullptr;
+    uixFont = nullptr;
+    for (int i = 0; i < 4; ++i)
+        localPlayers[i].Reset();
+    for (int j = 0; j < 15; ++j)
+        remotePlayers[j].Reset();
+    numRemotePlayers = 0;
+    playersListActive = false;
+    uixFlags = 0;
+    voiceEngine = nullptr;
+    anyoneBanned = false;
+    for (int k = 0; k < 4; ++k)
+    {
+        muteListTask[k].needsWork = false;
+        muteListTask[k].taskHandle = nullptr;
+    }
+    lastLoginCode = 0;
+    logonMethod = UIX_LOGON_FORCE_DWORD;
+    needConfirmation = false;
+    renderingEnabled = true;
+    if (theWrapper != nullptr)
+    {
+        ASSERT("(!theWrapper) && \"If this pops, the singleton wrapper already exists.\"",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 19);
+    }
+    theWrapper = this;
+    memset(sessionID.ab, 0, sizeof(sessionID.ab));
+    memset(commKey.ab, 0, sizeof(commKey.ab));
+}
+
+// ea: 0x7226A0
+void LiveWrapper::SetupAsAware(void* renderDevice, const char* skinPath,
+                               void* font)
+{
+    HRESULT v5 = XOnlineStartup(nullptr);
+    HandleError(v5);
+    unsigned int v6 = XGetLanguage();
+    if (v6 == 5)
+        v6 = 4;
+    if (UIXCreateLiveEngine(skinPath, v6, &uixEngine) != 0)
+        g_femanager.DrawDiscError();
+    HRESULT v8 = UIXCreateUIPlugin(font, &uiPlugin);
+    HandleError(v8);
+    uixFont = font;
+    screen = renderDevice;
+    backBuffer = (void*)D3DDevice_GetBackBuffer2(0);
+    void* uiPlugin = this->uiPlugin;
+    audioPlugin = nullptr;
+    HRESULT v11 = LiveEngine_SetUIPlugin(uixEngine, uiPlugin);
+    HandleError(v11);
+    HRESULT v12 = LiveEngine_EnableFeature(uixEngine, &g_LogonFeature);
+    HandleError(v12);
+    HRESULT v13 = LiveEngine_EnableFeature(uixEngine, &g_FriendsFeature);
+    HandleError(v13);
+    HRESULT v14 = LiveEngine_SetProperty(uixEngine,
+                                         UIX_PROPERTY_ALLOW_GAME_INVITES, 0);
+    HandleError(v14);
+    internalMode = kAware;
+}
+
+// ea: 0x722780
+void LiveWrapper::SetupAsSession(void* renderDevice, const char* skinPath,
+                                 void* font)
+{
+    HRESULT v5 = XOnlineStartup(nullptr);
+    HandleError(v5);
+    unsigned int v6 = XGetLanguage();
+    if (v6 == 5)
+        v6 = 4;
+    HRESULT v7 = UIXCreateLiveEngine(skinPath, v6, &uixEngine);
+    HandleError(v7);
+    HRESULT v8 = UIXCreateUIPlugin(font, &uiPlugin);
+    HandleError(v8);
+    uixFont = font;
+    screen = renderDevice;
+    backBuffer = (void*)D3DDevice_GetBackBuffer2(0);
+    void* uiPlugin = this->uiPlugin;
+    audioPlugin = nullptr;
+    HRESULT v11 = LiveEngine_SetUIPlugin(uixEngine, uiPlugin);
+    HandleError(v11);
+    HRESULT v12 = LiveEngine_EnableFeature(uixEngine, &g_LogonFeature);
+    HandleError(v12);
+    HRESULT v13 = LiveEngine_EnableFeature(uixEngine, &g_FriendsFeature);
+    HandleError(v13);
+    HRESULT v14 = LiveEngine_EnableFeature(uixEngine, &g_PlayersFeature);
+    HandleError(v14);
+    HRESULT v15 = LiveEngine_SetProperty(uixEngine,
+                                         UIX_PROPERTY_ALLOW_GAME_INVITES, 0);
+    HandleError(v15);
+    internalMode = kSession;
+}
+
+// ea: 0x722B10
+void LiveWrapper::SignInSilently(unsigned int serviceBitfield)
+{
+    DWORD params[21];
+    params[1] = 1;
+    params[2] = 1;
+    params[0] = 84;
+    params[20] = 0;
+    params[19] = 0;
+    int v2 = 0;
+    for (unsigned int i = 0; i < 0x10; ++i)
+    {
+        if (((1 << i) & serviceBitfield) != 0)
+            params[v2++ + 3] = i;
+    }
+    params[v2 + 3] = 0;
+    HRESULT v5 = LiveEngine_SetProperty(uixEngine,
+                                        UIX_PROPERTY_DISPLAY_CONNECTION_ERRORS,
+                                        0);
+    HandleError(v5);
+    HRESULT started = LiveEngine_StartFeature(uixEngine, &g_LogonFeature,
+                                              params);
+    HandleError(started);
+    internalState = kSigningIn;
+}
+
+// ea: 0x722F80
+void LiveWrapper::RemoteMute(unsigned int talkerPort, const XUID* listenerID,
+                             bool shouldMute)
+{
+    unsigned int v5;
+    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+        v5 = 0;
+    else
+        v5 = talkerPort;
+    int v6 = 0;
+    XUID* i;
+    for (i = &remotePlayers[0].xuid;
+         (unsigned int)listenerID->qwValue != (unsigned int)i->qwValue
+             || (unsigned int)(listenerID->qwValue >> 32)
+                    != (unsigned int)(i->qwValue >> 32);
+         i += 6)
+    {
+        if (++v6 >= 15)
+            return;
+    }
+    remotePlayers[v6].Mute(v5, shouldMute);
+    CalcVoicePriorities();
+}
+
+// ea: 0x722FF0
+void LiveWrapper::SetRemoteVoiceComm(const XUID* remoteID,
+                                     UIX_VOICE_STATUS_TYPE commStatus)
+{
+    int v4 = 0;
+    XUID* i;
+    for (i = &remotePlayers[0].xuid;
+         (unsigned int)remoteID->qwValue != (unsigned int)i->qwValue
+             || (unsigned int)(remoteID->qwValue >> 32)
+                    != (unsigned int)(i->qwValue >> 32);
+         i += 6)
+    {
+        if (++v4 >= 15)
+            return;
+    }
+    remotePlayers[v4].voiceStatus = commStatus;
+    CalcVoicePriorities();
+    if (playersListActive)
+    {
+        HRESULT v6 = uixPlayersList->Refresh(uixPlayersList);
+        HandleError(v6);
+    }
+}
+
+// ea: 0x723320
+void LiveWrapper::RemoveRemotePlayer(const XUID* remotePlayer)
+{
+    int v3 = 0;
+    XUID* i;
+    for (i = &remotePlayers[0].xuid;
+         (unsigned int)i->qwValue != (unsigned int)remotePlayer->qwValue
+             || (unsigned int)(i->qwValue >> 32)
+                    != (unsigned int)(remotePlayer->qwValue >> 32);
+         i += 6)
+    {
+        if (++v3 >= 15)
+            return;
+    }
+    --numRemotePlayers;
+    if ((remotePlayer->dwUserFlags & 0x10003) == 0)
+    {
+        XHVEngine* voiceEngine = this->voiceEngine;
+        if (voiceEngine != nullptr)
+            XHVEngine_UnregisterRemoteTalker(voiceEngine, *remotePlayer);
+    }
+    LiveRemote* v6 = &remotePlayers[v3];
+    uixPlayersList->UnregisterPlayer(uixPlayersList, v6);
+    v6->Reset();
+    if (playersListActive)
+    {
+        HRESULT v7 = uixPlayersList->Refresh(uixPlayersList);
+        HandleError(v7);
+    }
+}
+
+// ea: 0x7233D0
+void LiveWrapper::ClearRemotePlayers()
+{
+    for (int i = 0; i < 15; ++i)
+    {
+        if (remotePlayers[i].xuid.qwValue != 0)
+            RemoveRemotePlayer(&remotePlayers[i].xuid);
+    }
+}
+
+// ea: 0x723400
+void LiveWrapper::SetVTS(unsigned int controllerIndex, bool vtsOn)
+{
+    unsigned int v4;
+    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+        v4 = 0;
+    else
+        v4 = controllerIndex;
+    unsigned int dwUserFlags = localPlayers[v4].xuid.dwUserFlags;
+    LiveLocal* v7 = &localPlayers[v4];
+    if ((dwUserFlags & 0x10003) == 0)
+    {
+        UIX_VOICE_STATUS_TYPE voiceStatus = v7->voiceStatus;
+        if (vtsOn != (voiceStatus == UIX_VOICE_STATUS_SPEAKERS))
+        {
+            if (voiceStatus == UIX_VOICE_STATUS_SPEAKERS)
+                v7->voiceStatus = v7->hasHeadset
+                    ? UIX_VOICE_STATUS_COMMUNICATOR
+                    : UIX_VOICE_STATUS_NONE;
+            else
+                v7->voiceStatus = UIX_VOICE_STATUS_SPEAKERS;
+            SendCommunicatorStatus(v7->voiceStatus);
+        }
+    }
+    CalcVoicePriorities();
+}
+
+// ea: 0x723480
+void LiveWrapper::ToggleVTS(unsigned int controllerIndex)
+{
+    int v2 = 1;
+    unsigned int v3;
+    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+        v3 = 0;
+    else
+        v3 = controllerIndex;
+    LiveLocal* v4 = &localPlayers[v3];
+    if ((v4->xuid.dwUserFlags & 0x10003) == 0)
+    {
+        if (v4->voiceStatus == UIX_VOICE_STATUS_SPEAKERS)
+            v2 = v4->hasHeadset ? 0 : 2;
+        v4->voiceStatus = (UIX_VOICE_STATUS_TYPE)v2;
+    }
+    CalcVoicePriorities();
+}
+
+// ea: 0x7234D0
+bool LiveWrapper::SaveLogonState(void* savedState)
+{
+    memset(savedState, 0, 0x204);  // sizeof(_XONLINE_LOGON_STATE)
+    bool result = false;
+    if (internalState == kSignedIn)
+    {
+        HRESULT v3 = XOnlineSaveLogonState((XONLINE_LOGON_STATE*)savedState);
+        if (HandleError(v3) == 0)
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x723510
+void LiveWrapper::RetrieveLogonState(void* state, unsigned int serviceBitfield)
+{
+    UIX_LOGON_TYPE logonMethod = this->logonMethod;
+    this->lastLoginCode = 0;
+    if (logonMethod == UIX_LOGON_FORCE_DWORD)
+    {
+        ASSERT("logonMethod != UIX_LOGON_FORCE_DWORD",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 722);
+    }
+    if (this->logonMethod == UIX_LOGON_TYPE_SILENT)
+    {
+        SignInSilently(serviceBitfield);
+        return;
+    }
+    DWORD params[21];
+    params[19] = (DWORD)state;
+    params[1] = 2;
+    params[2] = 4;
+    params[0] = 84;
+    params[20] = 0;
+    int v5 = 0;
+    for (unsigned int i = 0; i < 0x10; ++i)
+    {
+        if (((1 << i) & serviceBitfield) != 0)
+            params[v5++ + 3] = i;
+    }
+    params[v5 + 3] = 0;
+    HRESULT started = LiveEngine_StartFeature(uixEngine, &g_LogonFeature,
+                                              params);
+    HandleError(started);
+    internalState = kSigningIn;
+}
+
+// ea: 0x723600
+HRESULT __stdcall LiveWrapper::CommunicatorStatusUpdate(
+    unsigned int dwLocalPort, int communicatorStatus)
+{
+    unsigned int v3;
+    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+        v3 = 0;
+    else
+        v3 = dwLocalPort;
+    LiveLocal* v4 = &localPlayers[v3];
+    if ((v4->xuid.dwUserFlags & 0x10003) == 0)
+    {
+        if (communicatorStatus != XHV_VOICE_COMMUNICATOR_STATUS_INSERTED)
+        {
+            v4->voiceStatus = anyoneBanned
+                ? (UIX_VOICE_STATUS_TYPE)2
+                : (UIX_VOICE_STATUS_TYPE)1;
+            v4->muteListSize = 0;
+            if (logonMethod == UIX_LOGON_TYPE_SILENT)
+                v3 = 0;
+            unsigned int notificationFlags = localPlayers[v3].notificationFlags;
+            if ((notificationFlags & 8) != 0)
+            {
+                unsigned int v8 = notificationFlags & 0xFFFFFFF7;
+                localPlayers[v3].notificationFlags = v8;
+                LiveEngine_NotificationSetState(uixEngine, v3, v8,
+                                                sessionID, 0, nullptr);
+            }
+            LiveEngine_SetProperty(uixEngine,
+                                   UIX_PROPERTY_VOICE_MAIL_TO_SPEAKERS, 1);
+        }
+        else
+        {
+            v4->voiceStatus = (UIX_VOICE_STATUS_TYPE)0;
+            if (logonMethod == UIX_LOGON_TYPE_SILENT)
+                v3 = 0;
+            unsigned int* p_notificationFlags =
+                &localPlayers[v3].notificationFlags;
+            if ((*p_notificationFlags & 8) == 0)
+            {
+                unsigned int v6 = *p_notificationFlags | 8;
+                *p_notificationFlags = v6;
+                LiveEngine_NotificationSetState(uixEngine, v3, v6,
+                                                sessionID, 0, nullptr);
+            }
+            v4->muteListSize = 1;
+            LiveEngine_SetProperty(uixEngine,
+                                   UIX_PROPERTY_VOICE_MAIL_TO_SPEAKERS, 0);
+        }
+        SendCommunicatorStatus(v4->voiceStatus);
+        CalcVoicePriorities();
+    }
+    return 0;
+}
+
+// ea: 0x723710
+void LiveWrapper::UpdateLocalPlayers()
+{
+    const XONLINE_USER* LogonUsers = XOnlineGetLogonUsers();
+    loggedInUsers = (XONLINE_USER*)LogonUsers;
+    if (LogonUsers != nullptr)
+    {
+        unsigned int playerIndex = 0;
+        for (int v3 = 0; v3 < 4; ++v3)
+        {
+            if (voiceEngine != nullptr)
+            {
+                HRESULT v6 = XHVEngine_RegisterLocalTalker(voiceEngine,
+                                                           playerIndex);
+                HandleError(v6);
+            }
+            const XONLINE_USER* loggedInUsers = this->loggedInUsers;
+            if ((unsigned int)loggedInUsers[v3].xuid.qwValue
+                    != (unsigned int)localPlayers[v3].xuid.qwValue
+                || (unsigned int)(loggedInUsers[v3].xuid.qwValue >> 32)
+                    != (unsigned int)(localPlayers[v3].xuid.qwValue >> 32))
+            {
+                if (internalMode == kSession
+                    && (unsigned int)(localPlayers[v3].xuid.qwValue >> 32) != 0)
+                {
+                    uixPlayersList->UnregisterPlayer(uixPlayersList,
+                                                     &localPlayers[v3]);
+                }
+                localPlayers[v3].Reset();
+                const XONLINE_USER* v8 = this->loggedInUsers;
+                unsigned __int64 qw = v8[v3].xuid.qwValue;
+                if (qw != 0)
+                {
+                    localPlayers[v3].xuid.qwValue = qw;
+                    localPlayers[v3].xuid.dwUserFlags = v8[v3].xuid.dwUserFlags;
+                    unsigned int v12 = v8[v3].xuid.dwUserFlags;
+                    if ((v12 & 3) != 0)
+                    {
+                        localPlayers[v3].voiceStatus =
+                            (UIX_VOICE_STATUS_TYPE)2;
+                    }
+                    else if ((v12 & 0x10000) != 0)
+                    {
+                        localPlayers[v3].voiceStatus =
+                            (UIX_VOICE_STATUS_TYPE)2;
+                        anyoneBanned = true;
+                    }
+                    else
+                    {
+                        localPlayers[v3].voiceStatus =
+                            (UIX_VOICE_STATUS_TYPE)1;
+                    }
+                    swprintf((wchar_t*)localPlayers[v3].gamertag, L"%S",
+                             loggedInUsers[v3].szGamertag);
+                    unsigned int v13 = playerIndex;
+                    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+                        v13 = 0;
+                    unsigned int* p_notificationFlags =
+                        &localPlayers[v13].notificationFlags;
+                    if ((*p_notificationFlags & 1) == 0)
+                    {
+                        unsigned int v15 = *p_notificationFlags | 1;
+                        *p_notificationFlags = v15;
+                        LiveEngine_NotificationSetState(uixEngine, v13, v15,
+                                                        sessionID, 0, nullptr);
+                    }
+                    if (internalMode == kSession)
+                    {
+                        ILivePlayersList* uixPlayersList =
+                            this->uixPlayersList;
+                        if (uixPlayersList != nullptr)
+                        {
+                            HRESULT v17 = uixPlayersList->RegisterPlayer(
+                                uixPlayersList, &localPlayers[v3]);
+                            HandleError(v17);
+                        }
+                    }
+                    RefreshMuteList(playerIndex);
+                }
+            }
+            ++playerIndex;
+        }
+    }
+    else
+    {
+        internalState = kNotSignedIn;
+        for (int i = 0; i < 4; ++i)
+            localPlayers[i].Reset();
+    }
+}
+
+// ea: 0x7238C0
+void LiveWrapper::PostLogon()
+{
+    XHV_RUNTIME_PARAMS xhvParams;
+    memset(&xhvParams, 0, sizeof(xhvParams));
+    xhvParams.bCustomVADProvided = 0;
+    xhvParams.bHeadphoneAlwaysOn = 0;
+    xhvParams.dwMaxLocalTalkers = 4;
+    xhvParams.dwMaxRemoteTalkers = 15;
+    xhvParams.dwFlags = 0;
+    xhvParams.pEffectImageDesc = nsl_fxDesc;
+    xhvParams.dwEffectsStartIndex = 9;
+    xhvParams.dwMaxCompressedBuffers = 4;
+    xhvParams.dwOutOfSyncThreshold = 10;
+    XHVEngineCreate(&xhvParams, &voiceEngine);
+    if (voiceEngine == nullptr)
+    {
+        ASSERT("voiceEngine", "c:\\cod\\code\\game\\LiveWrapper.cpp", 1063);
+    }
+    if (voiceEngine != nullptr)
+    {
+        XHVEngine_SetCallbackInterface(voiceEngine, this);
+        XHVEngine_EnableProcessingMode(voiceEngine, g_voicemailMode);
+        XHVEngine_EnableProcessingMode(voiceEngine, g_voicechatMode);
+    }
+    anyoneBanned = false;
+    if (voiceEngine != nullptr)
+    {
+        HRESULT v4 = LiveEngine_UseVoiceMail(uixEngine,
+                                             &g_VoiceMailPseudoFeature);
+        HandleError(v4);
+        HRESULT v5 = LiveEngine_SetProperty(uixEngine,
+                                            UIX_PROPERTY_VOICE_MAIL_ENGINE,
+                                            (DWORD)voiceEngine);
+        HandleError(v5);
+        HRESULT v6 = LiveEngine_SetProperty(
+            uixEngine, UIX_PROPERTY_VOICE_MAIL_TO_SPEAKERS, 1);
+        HandleError(v6);
+    }
+    HRESULT FeatureInterface = LiveEngine_GetFeatureInterface(
+        uixEngine, &g_PlayersFeature, nullptr, (void**)&uixPlayersList);
+    HandleError(FeatureInterface);
+    UpdateLocalPlayers();
+    UIX_LOGON_TYPE logonMethod = this->logonMethod;
+    internalState = kSignedIn;
+    if (logonMethod == UIX_LOGON_TYPE_NORMAL
+        || logonMethod == UIX_LOGON_TYPE_RETRIEVED_STATE
+        || logonMethod == UIX_LOGON_TYPE_RETRIEVED_GAME_INVITE)
+    {
+        LiveEngine_SetProperty(uixEngine,
+                               UIX_PROPERTY_DISPLAY_CONNECTION_ERRORS, 1);
+        LogonCallBack();
+    }
+    else if (logonMethod == UIX_LOGON_TYPE_SILENT)
+    {
+        LiveEngine_SetProperty(uixEngine,
+                               UIX_PROPERTY_DISPLAY_CONNECTION_ERRORS, 0);
+        LogonCallBack();
+    }
+    else
+    {
+        LogonCallBack();
+    }
+}
+
+// ea: 0x723A70
+void LiveWrapper::PreLogoff()
+{
+    for (int i = 15; i != 0; --i)
+    {
+        if (remotePlayers[15 - i].xuid.qwValue != 0)
+            RemoveRemotePlayer(&remotePlayers[15 - i].xuid);
+    }
+    if (voiceEngine != nullptr)
+    {
+        XHVEngine_Release(voiceEngine);
+        voiceEngine = nullptr;
+        LiveEngine_SetProperty(uixEngine, UIX_PROPERTY_VOICE_MAIL_ENGINE, 0);
+    }
+    for (int v4 = 0; v4 < 4; ++v4)
+    {
+        if (localPlayers[v4].xuid.qwValue != 0)
+        {
+            unsigned int v6;
+            if (logonMethod == UIX_LOGON_TYPE_SILENT)
+                v6 = 0;
+            else
+                v6 = v4;
+            unsigned int* p_notificationFlags =
+                &localPlayers[v6].notificationFlags;
+            if ((*p_notificationFlags & 1) != 0)
+            {
+                unsigned int v8 = *p_notificationFlags & 0xFFFFFFFE;
+                *p_notificationFlags = v8;
+                LiveEngine_NotificationSetState(uixEngine, v6, v8,
+                                                sessionID, 0, nullptr);
+            }
+        }
+    }
+    memset(sessionID.ab, 0, sizeof(sessionID.ab));
+    memset(commKey.ab, 0, sizeof(commKey.ab));
+}
+
+// ea: 0x723B40
+void LiveWrapper::PostLogoff()
+{
+    internalState = kNotSignedIn;
+    LiveEngine_LogOff(uixEngine);
+    UpdateLocalPlayers();
+    LogoffCallBack();
+    sessionState = kNotInSession;
+}
+
+// ea: 0x723B70
+void LiveWrapper::CheckMutingChanges(unsigned int controllerIndex)
+{
+    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+        controllerIndex = 0;
+    bool mutingChanged = false;
+    for (int v11 = 0; v11 < 15; ++v11)
+    {
+        XUID* p_xuid = &remotePlayers[v11].xuid;
+        if (p_xuid->qwValue != 0)
+        {
+            unsigned int muteListSize =
+                localPlayers[controllerIndex].muteListSize;
+            char currMuteState = 0;
+            for (unsigned int v6 = 0; v6 < muteListSize; ++v6)
+            {
+                if (localPlayers[controllerIndex].muteList[v6].xuid.qwValue
+                    == p_xuid->qwValue)
+                {
+                    currMuteState = 1;
+                    break;
+                }
+            }
+            if (remotePlayers[v11].mutedBy[controllerIndex] != currMuteState)
+            {
+                remotePlayers[v11].SetMuted(controllerIndex, currMuteState);
+                SendMuteUpdate(&localPlayers[controllerIndex].xuid,
+                               p_xuid, currMuteState);
+                mutingChanged = true;
+            }
+        }
+    }
+    if (mutingChanged)
+        CalcVoicePriorities();
+}
+
+// ea: 0x71FE20
+HRESULT LiveWrapper::HandleError(HRESULT errorCode)
+{
+    if (errorCode > -2146086650)
+    {
+        if (errorCode <= 0)
+        {
+            if (errorCode != 0)
+            {
+                switch (errorCode)
+                {
+                case -2146086649:
+                    ASSERT("!\"TThe attribute type for the create, update, or search operation is something other than player or session.\"",
+                           "c:\\cod\\code\\game\\LiveWrapper.cpp", 1216);
+                    return errorCode;
+                case -2146086644:
+                    ASSERT("!\"The attribute string for the create, update, or search operation is longer than 400 characters.\"",
+                           "c:\\cod\\code\\game\\LiveWrapper.cpp", 1210);
+                    return errorCode;
+                case -2146086643:
+                    ASSERT("!\"The BLOB for the create, update, or search operation is longer then 800 bytes.\"",
+                           "c:\\cod\\code\\game\\LiveWrapper.cpp", 1213);
+                    return errorCode;
+                case -2146086631:
+                    ASSERT("!\"The data type that was passed to the stored procedure is not valid.\"",
+                           "c:\\cod\\code\\game\\LiveWrapper.cpp", 1225);
+                    return errorCode;
+                default:
+                    goto LABEL_59;
+                }
+            }
+            return errorCode;
+        }
+        if (errorCode == 1)
+        {
+            Print(L"A UIX feature has encountered an error. This is probably minor and to be ignored.");
+            return errorCode;
+        }
+        if (errorCode == 1168)
+        {
+            ASSERT("!\"unrecognized UIX feature\\n\"",
+                   "c:\\cod\\code\\game\\LiveWrapper.cpp", 1189);
+            return errorCode;
+        }
+        if (errorCode - 1168 == (int)0x14FC60)
+            return errorCode;
+        goto LABEL_59;
+    }
+    if (errorCode == -2146086650)
+    {
+        ASSERT("!\"The attribute ID was OR'd with an invalid data type.\"",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 1222);
+        return errorCode;
+    }
+    if (errorCode > -2146107387)
+    {
+        if (errorCode > -2146086655)
+        {
+            if (errorCode == -2146086651)
+            {
+                ASSERT("!\"The wrong number of attributes was passed.\"",
+                       "c:\\cod\\code\\game\\LiveWrapper.cpp", 1207);
+                return errorCode;
+            }
+        }
+        else
+        {
+            switch (errorCode)
+            {
+            case -2146086655:
+                ASSERT("!\"The title is not properly registered on the Matchmaking server. Make sure Matchsim or partnernet is properly configured\"",
+                       "c:\\cod\\code\\game\\LiveWrapper.cpp", 1228);
+                return errorCode;
+            case -2146107384:
+                goto LABEL_28;
+            case -2146086656:
+                ASSERT("!\"The specified session ID is not a valid session ID returned by XOnlineMatchSessionGetInfo or XOnlineMatchSessionFindFromID.\"",
+                       "c:\\cod\\code\\game\\LiveWrapper.cpp", 1219);
+                return errorCode;
+            default:
+                break;
+            }
+        }
+        goto LABEL_59;
+    }
+    if (errorCode == -2146107387)
+    {
+        ASSERT("!\"XOnlineStartup has not been called yet. Call XOnlineStartup first.\"",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 1204);
+        return errorCode;
+    }
+    if (errorCode > -2146107389)
+    {
+        ASSERT("!\"This function cannot be used with guests.\"",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 1201);
+        return errorCode;
+    }
+    if (errorCode == -2146107389)
+    {
+        ASSERT("!\"This function requires a logged on user. Verify logon status before calling.\"",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 1198);
+        return errorCode;
+    }
+    if (errorCode == -2147024882)
+        goto LABEL_28;
+    if (errorCode != -2146107390)
+        goto LABEL_59;
+    ASSERT("!\"This function requires an online session. Call logon or monitor session state prior to this.\"",
+           "c:\\cod\\code\\game\\LiveWrapper.cpp", 1195);
+    return errorCode;
+LABEL_28:
+    ASSERT("!\"Xbox live does not have enough memory to complete its internal operations\"",
+           "c:\\cod\\code\\game\\LiveWrapper.cpp", 1192);
+    return errorCode;
+LABEL_59:
+    Print(L"\n!!!!! Unrecognized error code %d encountered in Live wrapper. Handle this error properly in LiveWrapper::HandleError !!!!!\n",
+          errorCode);
+    return errorCode;
+}
+
+// ea: 0x71FB30
+void LiveWrapper::CalcVoicePriorities()
+{
+    for (int v14 = 15; v14 != 0; --v14)
+    {
+        XUID* p_xuid = &remotePlayers[15 - v14].xuid;
+        if (p_xuid->qwValue != 0)
+        {
+            unsigned int speakerPriority = 0xFFFFFFFF;
+            if (logonMethod == UIX_LOGON_TYPE_SILENT)
+            {
+                UIX_VOICE_STATUS_TYPE voiceStatus =
+                    localPlayers[0].voiceStatus;
+                if (voiceStatus != UIX_VOICE_STATUS_COMMUNICATOR)
+                {
+                    if (voiceStatus == UIX_VOICE_STATUS_SPEAKERS)
+                    {
+                        for (int i = 0; i < 4; ++i)
+                        {
+                            XHVEngine* voiceEngine = this->voiceEngine;
+                            if (voiceEngine != nullptr)
+                            {
+                                XHVEngine_SetPlaybackPriority(
+                                    voiceEngine, *p_xuid, i, 0xFFFFFFFF);
+                            }
+                        }
+                        if (!anyoneBanned
+                            && (unsigned int)(p_xuid->qwValue >> 32) == 0
+                            && (unsigned char)p_xuid->dwUserFlags == 0)
+                        {
+                            speakerPriority = 0;
+                        }
+                    }
+                }
+                else if ((unsigned int)(p_xuid->qwValue >> 32) != 0
+                         || (unsigned char)p_xuid->dwUserFlags != 0)
+                {
+                    for (int j = 0; j < 4; ++j)
+                    {
+                        XHVEngine* v7 = this->voiceEngine;
+                        if (v7 != nullptr)
+                        {
+                            XHVEngine_SetPlaybackPriority(v7, *p_xuid, j,
+                                                          0xFFFFFFFF);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int k = 0; k < 4; ++k)
+                    {
+                        XHVEngine* v5 = this->voiceEngine;
+                        if (v5 != nullptr)
+                        {
+                            XHVEngine_SetPlaybackPriority(v5, *p_xuid, k, 0);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int v10 = 0; v10 < 4; ++v10)
+                {
+                    UIX_VOICE_STATUS_TYPE* p_voiceStatus =
+                        &localPlayers[v10].voiceStatus;
+                    if (*p_voiceStatus != UIX_VOICE_STATUS_COMMUNICATOR)
+                    {
+                        if (*p_voiceStatus == UIX_VOICE_STATUS_SPEAKERS)
+                        {
+                            XHVEngine* v11 = this->voiceEngine;
+                            if (v11 != nullptr)
+                            {
+                                XHVEngine_SetPlaybackPriority(
+                                    v11, *p_xuid, v10, 0xFFFFFFFF);
+                            }
+                            if (!anyoneBanned
+                                && !remotePlayers[15 - v14].IsMutedBy(v10)
+                                && !remotePlayers[15 - v14].IsMuting(v10))
+                            {
+                                speakerPriority = 0;
+                            }
+                        }
+                    }
+                    else if (this->voiceEngine != nullptr)
+                    {
+                        if (remotePlayers[15 - v14].IsMutedBy(v10)
+                            || remotePlayers[15 - v14].IsMuting(v10))
+                        {
+                            XHVEngine_SetPlaybackPriority(
+                                this->voiceEngine, *p_xuid, v10, 0xFFFFFFFF);
+                        }
+                        else
+                        {
+                            XHVEngine_SetPlaybackPriority(
+                                this->voiceEngine, *p_xuid, v10, 0);
+                        }
+                    }
+                }
+            }
+            XHVEngine* v12 = this->voiceEngine;
+            if (v12 != nullptr)
+            {
+                XHVEngine_SetPlaybackPriority(v12, *p_xuid, 4,
+                                              speakerPriority);
+            }
+        }
+    }
+}
+
+// ea: 0x726490
+void LiveWrapper::DoWork()
+{
+    if (internalMode == kNotSetup)
+    {
+        ASSERT("internalMode != kNotSetup",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 216);
+    }
+    HRESULT v2 = LiveEngine_DoWork(uixEngine, (DWORD*)&uixFlags);
+    HandleError(v2);
+    if ((uixFlags & 8) != 0)
+        HandleFeatureExit();
+    if ((uixFlags & 4) != 0)
+    {
+        if (needConfirmation)
+        {
+            lastNotification = kConfirmReboot;
+        }
+        else
+        {
+            HRESULT v3 = LiveEngine_Reboot(uixEngine, 0);
+            HandleError(v3);
+        }
+    }
+    if (voiceEngine != nullptr)
+    {
+        HRESULT v4 = XHVEngine_DoWork(voiceEngine);
+        HandleError(v4);
+    }
+    if (internalMode == kSession && internalState == kSignedIn)
+    {
+        for (int v5 = 0; v5 < 4; ++v5)
+        {
+            if (muteListTask[v5].needsWork)
+            {
+                HRESULT v7 = XOnlineTaskContinue(
+                    muteListTask[v5].taskHandle);
+                muteListTask[v5].lastResult = v7;
+                if (HandleError(v7) != 0)
+                {
+                    if (muteListTask[v5].lastResult == 0x1500F0)
+                        CheckMutingChanges(v5);
+                    XOnlineTaskClose(muteListTask[v5].taskHandle);
+                    muteListTask[v5].taskHandle = nullptr;
+                    muteListTask[v5].needsWork = false;
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x725C90
+void LiveWrapper::LogOut()
+{
+    PreLogoff();
+    LiveEngine_LogOff(uixEngine);
+    internalState = kNotSignedIn;
+    LiveEngine_LogOff(uixEngine);
+    UpdateLocalPlayers();
+    LogoffCallBack();
+    sessionState = kNotInSession;
+}
+
+// ea: 0x725CD0
+void LiveWrapper::HandleFeatureExit()
+{
+    UIX_EXIT_INFO exitInfo;
+    LiveEngine_GetExitInfo(uixEngine, &exitInfo);
+    switch (exitInfo.ExitCode)
+    {
+    case 1:
+        PostLogon();
+        break;
+    case 2:
+        PreLogoff();
+        PostLogoff();
+        lastLoginCode = exitInfo.hr;
+        if (exitInfo.hr == -2146103291 && internalMode == kSession)
+            lastNotification = kNeedToExitSession;
+        break;
+    case 3:
+        if (internalState == kSigningIn)
+            internalState = kNotSignedIn;
+        break;
+    case 5:
+        if (internalState == kSigningIn)
+            PostLogon();
+        if (needConfirmation)
+        {
+            memcpy(&friendToJoin, exitInfo.pExitData, 0x54);
+            lastNotification = kConfirmFriendJoin;
+        }
+        else
+        {
+            JoinGame(exitInfo.pExitData);
+        }
+        break;
+    case 7:
+        PreLogoff();
+        PostLogoff();
+        break;
+    default:
+        break;
+    }
+    if (playersListActive)
+    {
+        RefreshMuteList(activeController);
+        playersListActive = false;
+    }
 }
 
 // ============================================================================

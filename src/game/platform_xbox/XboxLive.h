@@ -53,6 +53,8 @@ struct LiveRemote : LivePlayer {
 
     void CopyLivePlayer(const LivePlayer* toCopy);
     void Reset();
+    void SetMuted(unsigned int portNum, bool shouldMute);
+    void Mute(unsigned int portNum, bool shouldMute);
     inline bool IsMuting(unsigned int portNum);
     inline bool IsMutedBy(unsigned int portNum);
 };
@@ -81,6 +83,54 @@ struct LiveTask {
 };
 static_assert(sizeof(LiveTask) == 0xC, "LiveTask size mismatch");
 
+// LiveWrapper state/mode/notification enums (values verified against IDA)
+enum ELiveState {
+    kNotSignedIn = 0,
+    kSigningIn = 1,
+    kSignedIn = 2,
+};
+enum ELiveMode {
+    kNotSetup = 0,
+    kAware = 1,
+    kSession = 2,
+};
+enum ESessionState {
+    kNotInSession = 0,
+};
+enum ELiveNotification {
+    kLiveOk = 0,
+    kConfirmReboot = 1,
+    kConfirmFriendJoin = 2,
+    kNeedToExitSession = 3,
+};
+
+// _XHV_VOICE_COMMUNICATOR_STATUS (values verified)
+enum {
+    XHV_VOICE_COMMUNICATOR_STATUS_INSERTED = 0,
+    XHV_VOICE_COMMUNICATOR_STATUS_REMOVED = 1,
+};
+
+// ============================================================================
+// UIX feature descriptors / exit info (referenced by LiveWrapper)
+// ============================================================================
+struct UIX_EXIT_INFO {
+    void* FeatureID;       // +0x00
+    unsigned int ExitCode; // +0x04
+    HRESULT hr;            // +0x08
+    void* pExitData;       // +0x0C
+};
+static_assert(sizeof(UIX_EXIT_INFO) == 0x10, "UIX_EXIT_INFO size mismatch");
+
+// Feature id globals (defined in XboxLive.cpp; LiveEngine feature pointers)
+struct LiveFeature;
+extern LiveFeature g_LogonFeature;
+extern LiveFeature g_FriendsFeature;
+extern LiveFeature g_PlayersFeature;
+extern LiveFeature g_VoiceMailPseudoFeature;
+extern void* nsl_fxDesc;          // _DSEFFECTIMAGEDESC* (sound lib)
+extern void* g_voicemailMode;     // _XHV_PROCESSING_MODE*
+extern void* g_voicechatMode;     // _XHV_PROCESSING_MODE*
+
 // ============================================================================
 // LiveWrapper - Xbox Live wrapper, 0x44CC (verified)
 // ============================================================================
@@ -88,12 +138,10 @@ struct ITitleXHV {
     void** vftable;  // +0x00 (interface base, vtable only)
 };
 
-enum ELiveState {
-    ELIVE_STATE_UNINITIALIZED = 0,
-};
-
 class LiveWrapper : public ITitleXHV {
 public:
+    LiveWrapper();
+
     int internalState;              // +0x04
     int internalMode;               // +0x08
     int sessionState;               // +0x0C
@@ -102,13 +150,13 @@ public:
     void* uiPlugin;                 // +0x18 (ITitleUIPlugin*)
     void* audioPlugin;              // +0x1C (ITitleAudioPlugin*)
     void* uixFont;                  // +0x20 (ITitleFontRenderer*)
-    void* uixPlayersList;           // +0x24 (ILivePlayersList*)
+    ILivePlayersList* uixPlayersList;  // +0x24 (ILivePlayersList*)
     void* backBuffer;               // +0x28 (D3DSurface*)
     void* screen;                   // +0x2C (D3DDevice*)
     LiveLocal localPlayers[4];      // +0x30
     LiveRemote remotePlayers[15];   // +0x3FD0
     short numRemotePlayers;         // +0x4408
-    void* loggedInUsers;            // +0x440C (XONLINE_USER*)
+    XONLINE_USER* loggedInUsers;    // +0x440C (XONLINE_USER*)
     XNKID sessionID;                // +0x4410
     XNKEY commKey;                  // +0x4418
     bool playersListActive;         // +0x4428
@@ -140,6 +188,46 @@ public:
                                          unsigned int dwSize);
     HRESULT __stdcall VoiceMailStopped(unsigned int dwLocalPort);
     void RefreshMuteList(unsigned int controllerIndex);
+
+    // LiveWrapper batch 2
+    void DoWork();
+    void LogOut();
+    void HandleFeatureExit();
+    void SignInSilently(unsigned int serviceBitfield);
+    void SetupAsAware(void* renderDevice, const char* skinPath, void* font);
+    void SetupAsSession(void* renderDevice, const char* skinPath, void* font);
+    bool SaveLogonState(void* savedState);
+    void RetrieveLogonState(void* state, unsigned int serviceBitfield);
+    void RemoteMute(unsigned int talkerPort, const XUID* listenerID,
+                    bool shouldMute);
+    void SetRemoteVoiceComm(const XUID* remoteID,
+                            UIX_VOICE_STATUS_TYPE commStatus);
+    void RemoveRemotePlayer(const XUID* remotePlayer);
+    void ClearRemotePlayers();
+    void SetVTS(unsigned int controllerIndex, bool vtsOn);
+    void ToggleVTS(unsigned int controllerIndex);
+    HRESULT __stdcall CommunicatorStatusUpdate(
+        unsigned int dwLocalPort, int communicatorStatus);
+    void UpdateLocalPlayers();
+    void PostLogon();
+    void PreLogoff();
+    void PostLogoff();
+    void CheckMutingChanges(unsigned int controllerIndex);
+    HRESULT HandleError(HRESULT errorCode);
+    void CalcVoicePriorities();
+
+    // Virtual callbacks (dispatched through the ITitleXHV-derived vtable)
+    typedef void (__thiscall* LogonCallBackFn)(LiveWrapper*);
+    typedef void (__thiscall* LogoffCallBackFn)(LiveWrapper*);
+    typedef void (__thiscall* JoinGameFn)(LiveWrapper*, void*);
+    typedef void (__thiscall* SendCommunicatorStatusFn)(LiveWrapper*, int);
+    typedef void (__thiscall* SendMuteUpdateFn)(LiveWrapper*, XUID*, XUID*, bool);
+
+    void LogonCallBack() { ((LogonCallBackFn)(*((void***)this))[0x48 / 4])(this); }
+    void LogoffCallBack() { ((LogoffCallBackFn)(*((void***)this))[0x4C / 4])(this); }
+    void JoinGame(void* pExitData) { ((JoinGameFn)(*((void***)this))[0x38 / 4])(this, pExitData); }
+    void SendCommunicatorStatus(int status) { ((SendCommunicatorStatusFn)(*((void***)this))[0x40 / 4])(this, status); }
+    void SendMuteUpdate(XUID* local, XUID* remote, bool muted) { ((SendMuteUpdateFn)(*((void***)this))[0x44 / 4])(this, local, remote, muted); }
 };
 static_assert(sizeof(LiveWrapper) == 0x44CC, "LiveWrapper size mismatch");
 
