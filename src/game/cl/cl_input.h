@@ -56,6 +56,8 @@ struct clPlayerState {
 };
 struct clSnapshot {
     clPlayerState ps;
+    int messageNum;
+    int serverTime;
 };
 struct clSnap_t {
     clSnapshot snap;
@@ -84,6 +86,7 @@ struct clSnap_t {
     int iForceButtons;
     int iForceWeapon;
     int cgameInShellshock;
+    int oldServerTime;
 };
 extern clSnap_t cl[2];
 
