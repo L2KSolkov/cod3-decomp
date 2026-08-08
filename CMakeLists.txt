@@ -288,6 +288,7 @@ add_library(cod3_game_core STATIC
     src/game/core/anim_heap.cpp
     src/game/core/db.cpp
     src/game/core/rumble.cpp
+    src/game/core/sys.cpp
 )
 add_library(cod3_game_game2 STATIC src/game/game2/stubs_game.cpp)
 add_library(cod3_game_render STATIC src/game/render/stubs_game.cpp)

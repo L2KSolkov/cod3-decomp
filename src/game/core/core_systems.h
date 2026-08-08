@@ -617,6 +617,22 @@ struct tlFileBuf {
 };
 static_assert(sizeof(tlFileBuf) == 0xC, "tlFileBuf size mismatch");
 
+struct TlSystemCallbacks {
+    static bool sWarningsEnabled;
+    static bool sLockAllocsToPakHeap;
+    static bool sLockAllocsToPakHeapOnce;
+    static bool LockTlAllocsToPakHeap(bool s, bool once);
+    static bool ReadFile();
+    static void ReleaseFile(tlFileBuf* fileBuf);
+    static void* MemRealloc(void* Ptr, unsigned int Size);
+    static void* MemAlloc(unsigned int size, unsigned int align,
+                          unsigned int flags);
+    static void MemFree(void* ptr);
+    static int LinkFrame();
+    static bool LinkConnected();
+    static void DebugPrint(char* txt);
+};
+
 struct StringTableEntry {
     unsigned int mHash;   // +0x00
     unsigned int mFlags;  // +0x04
