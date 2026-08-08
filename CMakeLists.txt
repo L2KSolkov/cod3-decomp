@@ -55,6 +55,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_meshedit.cpp
     src/ngl/ngl_internal.cpp
     src/ngl/ngl_texture.cpp
+    src/ngl/ngl_font.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC
