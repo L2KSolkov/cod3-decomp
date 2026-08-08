@@ -174,8 +174,73 @@ enum _D3DRENDERSTATETYPE {
 
 // ---- Pixel format selector (D3DFMT_*) ------------------------------------
 enum _D3DFORMAT {
-    D3DFMT_YUY2 = 36,
+    D3DFMT_L8 = 0x0,
+    D3DFMT_AL8 = 0x1,
+    D3DFMT_A1R5G5B5 = 0x2,
+    D3DFMT_X1R5G5B5 = 0x3,
+    D3DFMT_A4R4G4B4 = 0x4,
+    D3DFMT_R5G6B5 = 0x5,
+    D3DFMT_A8R8G8B8 = 0x6,
+    D3DFMT_X8R8G8B8 = 0x7,
+    D3DFMT_P8 = 0xB,
+    D3DFMT_DXT1 = 0xC,
+    D3DFMT_DXT3 = 0xE,
+    D3DFMT_DXT5 = 0xF,
+    D3DFMT_LIN_A1R5G5B5 = 0x10,
+    D3DFMT_LIN_R5G6B5 = 0x11,
+    D3DFMT_LIN_A8R8G8B8 = 0x12,
+    D3DFMT_LIN_L8 = 0x13,
+    D3DFMT_LIN_R8B8 = 0x16,
+    D3DFMT_LIN_G8B8 = 0x17,
+    D3DFMT_LIN_A4R4G4B4 = 0x1D,
+    D3DFMT_LIN_X1R5G5B5 = 0x1C,
+    D3DFMT_LIN_X8R8G8B8 = 0x1E,
+    D3DFMT_LIN_A8 = 0x1F,
+    D3DFMT_LIN_A8L8 = 0x20,
+    D3DFMT_A8 = 0x19,
+    D3DFMT_A8L8 = 0x1A,
+    D3DFMT_LIN_AL8 = 0x1B,
+    D3DFMT_YUY2 = 0x24,
+    D3DFMT_UYVY = 0x25,
+    D3DFMT_V8U8 = 0x28,
+    D3DFMT_L6V5U5 = 0x27,
+    D3DFMT_D24S8 = 0x2A,
+    D3DFMT_F24S8 = 0x2B,
+    D3DFMT_D16 = 0x2C,
+    D3DFMT_F16 = 0x2D,
+    D3DFMT_LIN_D24S8 = 0x2E,
+    D3DFMT_LIN_F24S8 = 0x2F,
+    D3DFMT_LIN_D16 = 0x30,
+    D3DFMT_LIN_F16 = 0x31,
+    D3DFMT_L16 = 0x32,
+    D3DFMT_V16U16 = 0x33,
+    D3DFMT_LIN_L16 = 0x35,
+    D3DFMT_LIN_V16U16 = 0x36,
+    D3DFMT_LIN_R6G5B5 = 0x37,
+    D3DFMT_R6G5B5 = 0x27,
+    D3DFMT_R4G4B4A4 = 0x39,
+    D3DFMT_A8B8G8R8 = 0x3A,
+    D3DFMT_B8G8R8A8 = 0x3B,
+    D3DFMT_R8G8B8A8 = 0x3C,
+    D3DFMT_R5G5B5A1 = 0x38,
+    D3DFMT_LIN_R4G4B4A4 = 0x3E,
+    D3DFMT_LIN_A8B8G8R8 = 0x3F,
+    D3DFMT_LIN_B8G8R8A8 = 0x40,
+    D3DFMT_LIN_R8G8B8A8 = 0x41,
+    D3DFMT_UNKNOWN = 0xFFFFFFFF,
 };
+
+// ---- Surface description (Xbox D3D8, 28 bytes, verified against IDA) ------
+struct _D3DSURFACE_DESC {
+    _D3DFORMAT Format;          // +0x00
+    unsigned int Type;          // +0x04
+    unsigned int Usage;         // +0x08
+    unsigned int Size;          // +0x0C
+    unsigned int MultiSampleType;// +0x10
+    unsigned int Width;         // +0x14
+    unsigned int Height;        // +0x18
+};
+static_assert(sizeof(_D3DSURFACE_DESC) == 0x1C, "_D3DSURFACE_DESC size mismatch");
 
 // ---- Pixel shader definition (opaque, 240 bytes) -------------------------
 struct _D3DPixelShaderDef {
@@ -279,6 +344,31 @@ void*        __stdcall D3DTexture_LockRect(D3DTexture* pTexture, unsigned int Le
                                            D3DLOCKED_RECT* pLockedRect, const void* pRect,
                                            unsigned int Flags);
 D3DBaseTexture* __stdcall D3DDevice_GetBackBuffer2(int BackBuffer);
+D3DSurface*     __stdcall D3DDevice_GetDepthStencilSurface2(void);
+D3DSurface*     __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* pTexture, unsigned int Level);
+int             __stdcall D3DSurface_GetDesc(D3DSurface* pSurface, _D3DSURFACE_DESC* pDesc);
+int             __stdcall D3DTexture_GetLevelDesc(D3DBaseTexture* pTexture, unsigned int Level,
+                                                  _D3DSURFACE_DESC* pDesc);
+void*           __stdcall D3DSurface_LockRect(D3DSurface* pSurface, D3DLOCKED_RECT* pLockedRect,
+                                              const void* pRect, unsigned int Flags);
+int             __stdcall D3DXCreateTextureFromFileInMemoryEx(void* pDevice, const void* pvSrcData,
+                                                               unsigned int cbSrcData,
+                                                               unsigned int cpWidth,
+                                                               unsigned int cpHeight,
+                                                               unsigned int cMipLevels,
+                                                               unsigned int Usage,
+                                                               _D3DFORMAT Format,
+                                                               unsigned int Pool,
+                                                               unsigned int dwFilter,
+                                                               unsigned int dwMipFilter,
+                                                               unsigned int ColorKey,
+                                                               void* pSrcInfo,
+                                                               void* pPalette,
+                                                               D3DTexture** ppTexture);
+void            __stdcall XGWriteSurfaceToFile(D3DSurface* pSurf, const char* cPath);
+void            __stdcall XGSwizzleRect(const void* pSource, unsigned int Pitch, const void* pRect,
+                                        void* pDest, unsigned int Width, unsigned int Height,
+                                        const void* pPoint, unsigned int BytesPerPixel);
 void*          __stdcall D3DDevice_CreateTexture2(unsigned int Width, unsigned int Height,
                                                   unsigned int Depth, unsigned int Levels,
                                                   unsigned int Usage, unsigned int Format,
