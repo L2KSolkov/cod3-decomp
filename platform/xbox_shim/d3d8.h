@@ -23,11 +23,23 @@ struct D3DResource {
 };
 static_assert(sizeof(D3DResource) == 0x0C, "D3DResource size mismatch");
 
-struct D3DBaseTexture : D3DResource {};
+struct D3DBaseTexture : D3DResource {
+    unsigned int Format;  // +0x0C
+    unsigned int Size;    // +0x10
+};
+static_assert(sizeof(D3DBaseTexture) == 0x14, "D3DBaseTexture size mismatch");
 struct D3DTexture : D3DBaseTexture {};
 struct D3DCubeTexture : D3DBaseTexture {};
 struct D3DVolumeTexture : D3DBaseTexture {};
 struct D3DSurface {};
+
+// ---- Locked rect (Xbox D3D8, 8 bytes, verified against IDA) ---------------
+struct _D3DLOCKED_RECT {
+    int  Pitch;   // +0x00
+    void* pBits;  // +0x04
+};
+static_assert(sizeof(_D3DLOCKED_RECT) == 8, "_D3DLOCKED_RECT size mismatch");
+typedef _D3DLOCKED_RECT D3DLOCKED_RECT;
 
 // ---- Palette (Xbox D3D8, 12 bytes, verified against IDA) -----------------
 struct D3DPalette {
@@ -208,9 +220,40 @@ struct _D3DPRESENT_PARAMETERS_ {
 static_assert(sizeof(_D3DPRESENT_PARAMETERS_) == 0x44, "_D3DPRESENT_PARAMETERS_ size mismatch");
 
 // ---- Texture-stage selector (D3DTSS_*) -----------------------------------
+// Xbox D3D8 uses a compacted state enum starting at 0 (verified against IDA).
 enum _D3DTEXTURESTAGESTATETYPE {
-    D3DTSS_ADDRESSU = 6,
-    D3DTSS_ADDRESSV = 7,
+    D3DTSS_ADDRESSU = 0x0,
+    D3DTSS_ADDRESSV = 0x1,
+    D3DTSS_ADDRESSW = 0x2,
+    D3DTSS_MAGFILTER = 0x3,
+    D3DTSS_MINFILTER = 0x4,
+    D3DTSS_MIPFILTER = 0x5,
+    D3DTSS_MIPMAPLODBIAS = 0x6,
+    D3DTSS_MAXMIPLEVEL = 0x7,
+    D3DTSS_MAXANISOTROPY = 0x8,
+    D3DTSS_COLORKEYOP = 0x9,
+    D3DTSS_COLORSIGN = 0xA,
+    D3DTSS_ALPHAKILL = 0xB,
+    D3DTSS_COLOROP = 0xC,
+    D3DTSS_COLORARG0 = 0xD,
+    D3DTSS_COLORARG1 = 0xE,
+    D3DTSS_COLORARG2 = 0xF,
+    D3DTSS_ALPHAOP = 0x10,
+    D3DTSS_ALPHAARG0 = 0x11,
+    D3DTSS_ALPHAARG1 = 0x12,
+    D3DTSS_ALPHAARG2 = 0x13,
+    D3DTSS_RESULTARG = 0x14,
+    D3DTSS_TEXTURETRANSFORMFLAGS = 0x15,
+    D3DTSS_BUMPENVMAT00 = 0x16,
+    D3DTSS_BUMPENVMAT01 = 0x17,
+    D3DTSS_BUMPENVMAT11 = 0x18,
+    D3DTSS_BUMPENVMAT10 = 0x19,
+    D3DTSS_BUMPENVLSCALE = 0x1A,
+    D3DTSS_BUMPENVLOFFSET = 0x1B,
+    D3DTSS_TEXCOORDINDEX = 0x1C,
+    D3DTSS_BORDERCOLOR = 0x1D,
+    D3DTSS_COLORKEYCOLOR = 0x1E,
+    D3DTSS_MAX = 0x20,
 };
 
 // ---- D3D8 entry points (stdcall, @N-decorated like the XDK exports) ------
@@ -228,6 +271,14 @@ void         __stdcall D3DResource_BlockUntilNotBusy(D3DResource* pResource);
 void         __stdcall D3DDevice_SetPalette(unsigned int Stage, D3DPalette* pPalette);
 unsigned int __stdcall D3DPalette_Lock2(D3DPalette* pPalette, unsigned int Flags);
 void         __stdcall XGSetPaletteHeader(_D3DPALETTESIZE Size, D3DPalette* pPalette, void* Data);
+void         __stdcall D3DDevice_SetTexture(unsigned int Stage, D3DBaseTexture* pTexture);
+void         __stdcall D3DDevice_SwitchTexture(unsigned int Method, unsigned int Data,
+                                               unsigned int Format);
+unsigned int __stdcall D3DBaseTexture_GetLevelCount(D3DBaseTexture* pTexture);
+void*        __stdcall D3DTexture_LockRect(D3DTexture* pTexture, unsigned int Level,
+                                           D3DLOCKED_RECT* pLockedRect, const void* pRect,
+                                           unsigned int Flags);
+D3DBaseTexture* __stdcall D3DDevice_GetBackBuffer2(int BackBuffer);
 void*          __stdcall D3DDevice_CreateTexture2(unsigned int Width, unsigned int Height,
                                                   unsigned int Depth, unsigned int Levels,
                                                   unsigned int Usage, unsigned int Format,
@@ -265,6 +316,12 @@ void         __stdcall D3DDevice_SetIndices(D3DIndexBuffer* pIndexBuffer,
 unsigned int* __stdcall D3DDevice_BeginPush(unsigned int Count);
 void         __stdcall D3DDevice_EndPush(unsigned int* p);
 }
+
+// ---- D3D8 internal state (XDK segment globals - declared, never implemented).
+// Referenced directly by ngl_dx_texture.o's state-cache bypass.
+extern unsigned int D3D__DirtyFlags;               // 0xBC2A08
+extern unsigned int D3D__TextureState[4][32];      // 0xBC2A10 (base)
+extern unsigned int DTE[4];                        // 0xCD6DE4 (pushbuffer encodes)
 
 // ---- XGRPH entry points (xgraphicsd) --------------------------------------
 extern "C" {

@@ -30,6 +30,43 @@ struct nglDebugStruct : ngliDebugStruct {
 };
 static_assert(sizeof(nglDebugStruct) == 0x11, "nglDebugStruct size mismatch");
 
+// ============================================================================
+// Perf info structs (ngl_debug.o data; layout from IDA, 128 bytes total).
+// ============================================================================
+struct ngliPerfInfoStruct {
+    unsigned int ListWorkUsage;     // +0x00
+    unsigned int ScratchWorkUsage;  // +0x04
+    unsigned int PhysListWorkUsage; // +0x08
+    float        QuadMS;            // +0x0C
+    float        FontMS;            // +0x10
+    unsigned char _pad14[4];        // +0x14
+    unsigned __int64 CPUStart;              // +0x18
+    volatile unsigned __int64 RenderStart;  // +0x20
+    volatile unsigned __int64 RenderFinish; // +0x28
+    unsigned __int64 ListSubmitCycles;      // +0x30
+    unsigned __int64 ListSendCycles;        // +0x38
+    unsigned __int64 QuadCycles;            // +0x40
+    unsigned __int64 FontCycles;            // +0x48
+};
+
+struct nglPerfInfoStruct : ngliPerfInfoStruct {
+    float        FPS;           // +0x50
+    float        TotalMS;       // +0x54
+    float        TotalSeconds;  // +0x58
+    float        RenderMS;      // +0x5C
+    float        CPUMS;         // +0x60
+    float        FrameMS;       // +0x64
+    float        ListSendMS;    // +0x68
+    float        ListSubmitMS;  // +0x6C
+    unsigned int TotalPolys;    // +0x70
+    unsigned int TotalVerts;    // +0x74
+    unsigned int NodeCount;     // +0x78
+};
+static_assert(sizeof(nglPerfInfoStruct) == 0x80, "nglPerfInfoStruct size mismatch");
+
+extern nglPerfInfoStruct nglPerfInfo;      // ngl_debug.o
+extern nglPerfInfoStruct nglSyncPerfInfo;  // ngl_debug.o
+
 // ngl_debug.o (data, not yet ported - extern until ngl_debug ports)
 extern nglDebugStruct nglSyncDebug;
 

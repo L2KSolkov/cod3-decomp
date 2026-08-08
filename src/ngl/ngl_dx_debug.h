@@ -9,32 +9,7 @@
 #define COD3_NGL_NGL_DX_DEBUG_H
 
 #include "core/tlFixedString.h"
-
-// ngl_debug.o (data, not yet ported)
-struct ngliPerfInfoStruct {
-    unsigned int ListWorkUsage;     // +0x00
-    unsigned int ScratchWorkUsage;  // +0x04
-    unsigned int PhysListWorkUsage; // +0x08
-    float        QuadMS;            // +0x0C
-    float        FontMS;            // +0x10
-};
-
-struct nglPerfInfoStruct : ngliPerfInfoStruct {
-    float        FPS;               // +0x14
-    float        TotalMS;           // +0x18
-    float        TotalSeconds;      // +0x1C
-    float        RenderMS;          // +0x20
-    float        CPUMS;             // +0x24
-    float        FrameMS;           // +0x28
-    float        ListSendMS;        // +0x2C
-    float        ListSubmitMS;      // +0x30
-    unsigned int TotalPolys;        // +0x34
-    unsigned int TotalVerts;        // +0x38
-    unsigned int NodeCount;         // +0x3C
-};
-
-extern nglPerfInfoStruct nglPerfInfo;      // ngl_debug.o
-extern nglPerfInfoStruct nglSyncPerfInfo;  // ngl_debug.o
+#include "ngl/nglDebug.h"
 
 // ============================================================================
 // ngliShaderProfile - 52 bytes

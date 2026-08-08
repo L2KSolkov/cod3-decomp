@@ -102,7 +102,7 @@ ngl_xboxr:ngl_debugdraw.o	ngl_xboxr	ngl_debugdraw.o	engine	11	TODO
 nal_xboxr:nal_init.o	nal_xboxr	nal_init.o	engine	11	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdSocket:bdQoSProbe-xbox.obj	bdSocket	bdQoSProbe-xbox.obj	engine	11	PORTED	[bdSocket] bdQoSProbe.cpp: XNet QoS probe (11 funcs) from Demonware 2.0 + IDA; listener callbacks fixed
 render_xboxr:cdRiverShader.o	render_xboxr	cdRiverShader.o	engine	10	PORTED	cdRiverShader.h/.cpp (river shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; Render deferred)
-ngl_xboxr:ngl_dx_texture.o	ngl_xboxr	ngl_dx_texture.o	engine	10	TODO	
+ngl_xboxr:ngl_dx_texture.o	ngl_xboxr	ngl_dx_texture.o	engine	10	PORTED	ngl_dx_texture.cpp: tex stage cache + front/back buffer + genmipmaps; D3D__TextureState/DTE shim decls; StageCache layout fixed (32B)
 phys_xboxr:rbc_def_vehicle.o	phys_xboxr	rbc_def_vehicle.o	engine	10	PORTED	[phys_xboxr] rbc_def_vehicle.cpp: wheel constraint (10 funcs)
 phys_xboxr:phys_contact_manifold.o	phys_xboxr	phys_contact_manifold.o	engine	10	PORTED	[phys_xboxr] phys_contact_manifold.cpp: manifold convex-poly (10 funcs)
 bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engine	10	PORTED	[bdConnection] bdReliableSendWindow.cpp: reliable send window (10 funcs) from Demonware 2.0 + IDA

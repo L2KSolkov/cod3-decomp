@@ -58,11 +58,22 @@ static_assert(sizeof(nglQuadNode) == 0x6C, "nglQuadNode size mismatch");
 // ============================================================================
 struct nglDxTexCacheClass {
     struct StageCache {
-        unsigned int WrapU;  // +0x00
-        unsigned int WrapV;  // +0x04
+        nglTexture*  Tex;            // +0x00
+        unsigned int TexHash;        // +0x04
+        unsigned int WrapU;          // +0x08
+        unsigned int WrapV;          // +0x0C
+        unsigned int WrapW;          // +0x10
+        unsigned int FilterFlags;    // +0x14
+        unsigned int MaxAnisotropy;  // +0x18
+        unsigned int _pad;           // +0x1C
     };
+    static_assert(sizeof(StageCache) == 0x20, "StageCache size mismatch");
     StageCache Prev[4];  // +0x00
+
+    nglDxTexCacheClass() {}
+    void SetFilter(unsigned int Stage, unsigned int FilterFlags, unsigned int MaxAnisotropy);
 };
+static_assert(sizeof(nglDxTexCacheClass) == 0x80, "nglDxTexCacheClass size mismatch");
 extern nglDxTexCacheClass nglDxTexCache;
 
 // nglSyncDebug (data, owned by ngl_debug.o; layout in nglDebug.h)
@@ -85,36 +96,9 @@ struct nglDxRenderState {
     unsigned int PrevBM;  // +0x00
 
     void SetBlendMode(unsigned int BM);  // ngl_dx_state.o
+    void SetMaxAnisotropy(int stage, int v);  // ngl_dx_state.o
 };
 
-struct nglPerfInfoStruct {
-    unsigned int ListWorkUsage;       // +0x00
-    unsigned int ScratchWorkUsage;    // +0x04
-    unsigned int PhysListWorkUsage;   // +0x08
-    float        QuadMS;              // +0x0C
-    float        FontMS;              // +0x10
-    unsigned char _pad14[4];          // +0x14
-    unsigned __int64 CPUStart;        // +0x18
-    volatile unsigned __int64 RenderStart;   // +0x20
-    volatile unsigned __int64 RenderFinish;  // +0x28
-    unsigned __int64 ListSubmitCycles;       // +0x30
-    unsigned __int64 ListSendCycles;         // +0x38
-    unsigned __int64 QuadCycles;             // +0x40
-    unsigned __int64 FontCycles;             // +0x48
-    float        FPS;                // +0x50
-    float        TotalMS;            // +0x54
-    float        TotalSeconds;       // +0x58
-    float        RenderMS;           // +0x5C
-    float        CPUMS;              // +0x60
-    float        FrameMS;            // +0x64
-    float        ListSendMS;         // +0x68
-    float        ListSubmitMS;       // +0x6C
-    unsigned int TotalPolys;         // +0x70
-    unsigned int TotalVerts;         // +0x74
-    unsigned int NodeCount;          // +0x78
-};
-
-// ============================================================================
 // Shader handles (data owned by ngl_xboxr:ngl_gpu_common.o)
 // ============================================================================
 struct nglGpuQuadPCUVVertexShader {

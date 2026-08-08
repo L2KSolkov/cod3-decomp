@@ -338,6 +338,17 @@ public:
         *ppSurface = Surface2;
         return Surface2 != NULL ? 0 : 0x8007000E;
     }
+
+    // ngl_dx_texture.o inline COMDATs (ea: 0x841E10 / 0x841E30)
+    static int __stdcall SetTexture(unsigned int Stage, D3DBaseTexture* pTexture) {
+        D3DDevice_SetTexture(Stage, pTexture);
+        return 0;
+    }
+
+    static int __stdcall SwitchTexture(unsigned int Stage, D3DBaseTexture* pTexture) {
+        D3DDevice_SwitchTexture(DTE[Stage], pTexture->Data, pTexture->Format);
+        return 0;
+    }
 };
 
 // ============================================================================

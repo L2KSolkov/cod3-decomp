@@ -56,6 +56,7 @@ extern void ngliWaitForResource(void);
 
 // ngl_dx_tex_create.o (data, not yet ported)
 extern nglTexture nglBackBufferTex;
+extern nglTexture nglFrontBufferTex;
 
 // ngl_dx_draw.o (data, defined in ngl_dx_draw.cpp)
 extern D3DSurface* nglCurSurface;
