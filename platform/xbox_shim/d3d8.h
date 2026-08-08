@@ -23,16 +23,6 @@ struct D3DResource {
 };
 static_assert(sizeof(D3DResource) == 0x0C, "D3DResource size mismatch");
 
-struct D3DBaseTexture : D3DResource {
-    unsigned int Format;  // +0x0C
-    unsigned int Size;    // +0x10
-};
-static_assert(sizeof(D3DBaseTexture) == 0x14, "D3DBaseTexture size mismatch");
-struct D3DTexture : D3DBaseTexture {};
-struct D3DCubeTexture : D3DBaseTexture {};
-struct D3DVolumeTexture : D3DBaseTexture {};
-struct D3DSurface {};
-
 // ---- Locked rect (Xbox D3D8, 8 bytes, verified against IDA) ---------------
 struct _D3DLOCKED_RECT {
     int  Pitch;   // +0x00
@@ -40,6 +30,138 @@ struct _D3DLOCKED_RECT {
 };
 static_assert(sizeof(_D3DLOCKED_RECT) == 8, "_D3DLOCKED_RECT size mismatch");
 typedef _D3DLOCKED_RECT D3DLOCKED_RECT;
+
+// ---- Cube-map face selector (D3DCUBEMAP_FACES) ---------------------------
+enum _D3DCUBEMAP_FACES {
+    D3DCUBEMAP_FACE_POSITIVE_X = 0,
+    D3DCUBEMAP_FACE_NEGATIVE_X = 1,
+    D3DCUBEMAP_FACE_POSITIVE_Y = 2,
+    D3DCUBEMAP_FACE_NEGATIVE_Y = 3,
+    D3DCUBEMAP_FACE_POSITIVE_Z = 4,
+    D3DCUBEMAP_FACE_NEGATIVE_Z = 5,
+};
+
+// ---- Pixel format selector (D3DFMT_*, Xbox D3D8) -------------------------
+enum _D3DFORMAT {
+    D3DFMT_L8 = 0x0,
+    D3DFMT_AL8 = 0x1,
+    D3DFMT_A1R5G5B5 = 0x2,
+    D3DFMT_X1R5G5B5 = 0x3,
+    D3DFMT_A4R4G4B4 = 0x4,
+    D3DFMT_R5G6B5 = 0x5,
+    D3DFMT_A8R8G8B8 = 0x6,
+    D3DFMT_X8R8G8B8 = 0x7,
+    D3DFMT_P8 = 0xB,
+    D3DFMT_DXT1 = 0xC,
+    D3DFMT_DXT3 = 0xE,
+    D3DFMT_DXT5 = 0xF,
+    D3DFMT_LIN_A1R5G5B5 = 0x10,
+    D3DFMT_LIN_R5G6B5 = 0x11,
+    D3DFMT_LIN_A8R8G8B8 = 0x12,
+    D3DFMT_LIN_L8 = 0x13,
+    D3DFMT_LIN_R8B8 = 0x16,
+    D3DFMT_LIN_G8B8 = 0x17,
+    D3DFMT_LIN_A4R4G4B4 = 0x1D,
+    D3DFMT_LIN_X1R5G5B5 = 0x1C,
+    D3DFMT_LIN_X8R8G8B8 = 0x1E,
+    D3DFMT_LIN_A8 = 0x1F,
+    D3DFMT_LIN_A8L8 = 0x20,
+    D3DFMT_A8 = 0x19,
+    D3DFMT_A8L8 = 0x1A,
+    D3DFMT_LIN_AL8 = 0x1B,
+    D3DFMT_YUY2 = 0x24,
+    D3DFMT_UYVY = 0x25,
+    D3DFMT_V8U8 = 0x28,
+    D3DFMT_L6V5U5 = 0x27,
+    D3DFMT_D24S8 = 0x2A,
+    D3DFMT_F24S8 = 0x2B,
+    D3DFMT_D16 = 0x2C,
+    D3DFMT_F16 = 0x2D,
+    D3DFMT_LIN_D24S8 = 0x2E,
+    D3DFMT_LIN_F24S8 = 0x2F,
+    D3DFMT_LIN_D16 = 0x30,
+    D3DFMT_LIN_F16 = 0x31,
+    D3DFMT_L16 = 0x32,
+    D3DFMT_V16U16 = 0x33,
+    D3DFMT_LIN_L16 = 0x35,
+    D3DFMT_LIN_V16U16 = 0x36,
+    D3DFMT_LIN_R6G5B5 = 0x37,
+    D3DFMT_R6G5B5 = 0x27,
+    D3DFMT_R4G4B4A4 = 0x39,
+    D3DFMT_A8B8G8R8 = 0x3A,
+    D3DFMT_B8G8R8A8 = 0x3B,
+    D3DFMT_R8G8B8A8 = 0x3C,
+    D3DFMT_R5G5B5A1 = 0x38,
+    D3DFMT_LIN_R4G4B4A4 = 0x3E,
+    D3DFMT_LIN_A8B8G8R8 = 0x3F,
+    D3DFMT_LIN_B8G8R8A8 = 0x40,
+    D3DFMT_LIN_R8G8B8A8 = 0x41,
+    D3DFMT_UNKNOWN = 0xFFFFFFFF,
+};
+
+
+// ---- Surface description (Xbox D3D8, 28 bytes, verified against IDA) ------
+struct _D3DSURFACE_DESC {
+    _D3DFORMAT Format;          // +0x00
+    unsigned int Type;          // +0x04
+    unsigned int Usage;         // +0x08
+    unsigned int Size;          // +0x0C
+    unsigned int MultiSampleType;// +0x10
+    unsigned int Width;         // +0x14
+    unsigned int Height;        // +0x18
+};
+static_assert(sizeof(_D3DSURFACE_DESC) == 0x1C, "_D3DSURFACE_DESC size mismatch");
+
+// Forward decls so the entry-point block below can use these as pointers.
+struct D3DBaseTexture;
+struct D3DTexture;
+struct D3DCubeTexture;
+struct D3DSurface;
+
+// Forward decls used by the inline wrapper methods below.
+extern "C" {
+D3DSurface* __stdcall D3DTexture_GetSurfaceLevel2(D3DBaseTexture* pTexture, unsigned int Level);
+D3DSurface* __stdcall D3DCubeTexture_GetCubeMapSurface2(D3DBaseTexture* pTexture,
+                                                        _D3DCUBEMAP_FACES FaceType,
+                                                        unsigned int Level);
+int         __stdcall D3DSurface_GetDesc(D3DSurface* pSurface, _D3DSURFACE_DESC* pDesc);
+void*       __stdcall D3DSurface_LockRect(D3DSurface* pSurface, D3DLOCKED_RECT* pLockedRect,
+                                          const void* pRect, unsigned int Flags);
+}
+
+struct D3DBaseTexture : D3DResource {
+    unsigned int Format;  // +0x0C
+    unsigned int Size;    // +0x10
+};
+static_assert(sizeof(D3DBaseTexture) == 0x14, "D3DBaseTexture size mismatch");
+struct D3DTexture : D3DBaseTexture {
+    unsigned int GetSurfaceLevel(unsigned int Level, D3DSurface** ppSurfaceLevel) {
+        D3DSurface* SurfaceLevel2 = D3DTexture_GetSurfaceLevel2(this, Level);
+        *ppSurfaceLevel = SurfaceLevel2;
+        return SurfaceLevel2 != NULL ? 0 : 0x8007000E;
+    }
+};
+struct D3DCubeTexture : D3DBaseTexture {
+    unsigned int GetCubeMapSurface(_D3DCUBEMAP_FACES FaceType, unsigned int Level,
+                                   D3DSurface** ppCubeMapSurface) {
+        D3DSurface* CubeMapSurface2 = D3DCubeTexture_GetCubeMapSurface2(this, FaceType, Level);
+        *ppCubeMapSurface = CubeMapSurface2;
+        return CubeMapSurface2 != NULL ? 0 : 0x8007000E;
+    }
+};
+struct D3DVolumeTexture : D3DBaseTexture {};
+struct D3DSurface {
+    int GetDesc(_D3DSURFACE_DESC* pDesc) {
+        D3DSurface_GetDesc(this, pDesc);
+        return 0;
+    }
+    void* LockRect(D3DLOCKED_RECT* pLockedRect, const void* pRect, unsigned int Flags) {
+        return D3DSurface_LockRect(this, pLockedRect, pRect, Flags);
+    }
+    int UnlockRect() {
+        return 0;
+    }
+};
 
 // ---- Palette (Xbox D3D8, 12 bytes, verified against IDA) -----------------
 struct D3DPalette {
@@ -153,94 +275,22 @@ struct _D3DSTREAM_INPUT {
 };
 static_assert(sizeof(_D3DSTREAM_INPUT) == 0x0C, "_D3DSTREAM_INPUT size mismatch");
 
-// ---- Cube-map face selector (D3DCUBEMAP_FACES) ---------------------------
-enum _D3DCUBEMAP_FACES {
-    D3DCUBEMAP_FACE_POSITIVE_X = 0,
-    D3DCUBEMAP_FACE_NEGATIVE_X = 1,
-    D3DCUBEMAP_FACE_POSITIVE_Y = 2,
-    D3DCUBEMAP_FACE_NEGATIVE_Y = 3,
-    D3DCUBEMAP_FACE_POSITIVE_Z = 4,
-    D3DCUBEMAP_FACE_NEGATIVE_Z = 5,
-};
-
 // ---- Render-state selector (D3DRS_*, Xbox D3D8) --------------------------
 enum _D3DRENDERSTATETYPE {
+    D3DRS_ALPHAFUNC = 58,          // 0x3A
     D3DRS_ALPHABLENDENABLE = 59,   // 0x3B
+    D3DRS_ALPHATESTENABLE = 60,    // 0x3C
+    D3DRS_ALPHAREF = 61,           // 0x3D
+    D3DRS_SRCBLEND = 62,           // 0x3E
+    D3DRS_DESTBLEND = 63,          // 0x3F
+    D3DRS_BLENDOP = 74,            // 0x4A
+    D3DRS_BLENDCOLOR = 75,         // 0x4B
+    D3DRS_SPECULARENABLE = 103,    // 0x67
     D3DRS_CULLMODE = 147,          // 0x93
     D3DRS_MULTISAMPLEANTIALIAS = 152,  // 0x98
     D3DRS_SIMPLE_MAX = 92,         // 0x5C
     D3DRS_YUVENABLE = 160,         // 0xA0
 };
-
-// ---- Pixel format selector (D3DFMT_*) ------------------------------------
-enum _D3DFORMAT {
-    D3DFMT_L8 = 0x0,
-    D3DFMT_AL8 = 0x1,
-    D3DFMT_A1R5G5B5 = 0x2,
-    D3DFMT_X1R5G5B5 = 0x3,
-    D3DFMT_A4R4G4B4 = 0x4,
-    D3DFMT_R5G6B5 = 0x5,
-    D3DFMT_A8R8G8B8 = 0x6,
-    D3DFMT_X8R8G8B8 = 0x7,
-    D3DFMT_P8 = 0xB,
-    D3DFMT_DXT1 = 0xC,
-    D3DFMT_DXT3 = 0xE,
-    D3DFMT_DXT5 = 0xF,
-    D3DFMT_LIN_A1R5G5B5 = 0x10,
-    D3DFMT_LIN_R5G6B5 = 0x11,
-    D3DFMT_LIN_A8R8G8B8 = 0x12,
-    D3DFMT_LIN_L8 = 0x13,
-    D3DFMT_LIN_R8B8 = 0x16,
-    D3DFMT_LIN_G8B8 = 0x17,
-    D3DFMT_LIN_A4R4G4B4 = 0x1D,
-    D3DFMT_LIN_X1R5G5B5 = 0x1C,
-    D3DFMT_LIN_X8R8G8B8 = 0x1E,
-    D3DFMT_LIN_A8 = 0x1F,
-    D3DFMT_LIN_A8L8 = 0x20,
-    D3DFMT_A8 = 0x19,
-    D3DFMT_A8L8 = 0x1A,
-    D3DFMT_LIN_AL8 = 0x1B,
-    D3DFMT_YUY2 = 0x24,
-    D3DFMT_UYVY = 0x25,
-    D3DFMT_V8U8 = 0x28,
-    D3DFMT_L6V5U5 = 0x27,
-    D3DFMT_D24S8 = 0x2A,
-    D3DFMT_F24S8 = 0x2B,
-    D3DFMT_D16 = 0x2C,
-    D3DFMT_F16 = 0x2D,
-    D3DFMT_LIN_D24S8 = 0x2E,
-    D3DFMT_LIN_F24S8 = 0x2F,
-    D3DFMT_LIN_D16 = 0x30,
-    D3DFMT_LIN_F16 = 0x31,
-    D3DFMT_L16 = 0x32,
-    D3DFMT_V16U16 = 0x33,
-    D3DFMT_LIN_L16 = 0x35,
-    D3DFMT_LIN_V16U16 = 0x36,
-    D3DFMT_LIN_R6G5B5 = 0x37,
-    D3DFMT_R6G5B5 = 0x27,
-    D3DFMT_R4G4B4A4 = 0x39,
-    D3DFMT_A8B8G8R8 = 0x3A,
-    D3DFMT_B8G8R8A8 = 0x3B,
-    D3DFMT_R8G8B8A8 = 0x3C,
-    D3DFMT_R5G5B5A1 = 0x38,
-    D3DFMT_LIN_R4G4B4A4 = 0x3E,
-    D3DFMT_LIN_A8B8G8R8 = 0x3F,
-    D3DFMT_LIN_B8G8R8A8 = 0x40,
-    D3DFMT_LIN_R8G8B8A8 = 0x41,
-    D3DFMT_UNKNOWN = 0xFFFFFFFF,
-};
-
-// ---- Surface description (Xbox D3D8, 28 bytes, verified against IDA) ------
-struct _D3DSURFACE_DESC {
-    _D3DFORMAT Format;          // +0x00
-    unsigned int Type;          // +0x04
-    unsigned int Usage;         // +0x08
-    unsigned int Size;          // +0x0C
-    unsigned int MultiSampleType;// +0x10
-    unsigned int Width;         // +0x14
-    unsigned int Height;        // +0x18
-};
-static_assert(sizeof(_D3DSURFACE_DESC) == 0x1C, "_D3DSURFACE_DESC size mismatch");
 
 // ---- Pixel shader definition (opaque, 240 bytes) -------------------------
 struct _D3DPixelShaderDef {
@@ -319,6 +369,7 @@ enum _D3DTEXTURESTAGESTATETYPE {
     D3DTSS_BORDERCOLOR = 0x1D,
     D3DTSS_COLORKEYCOLOR = 0x1E,
     D3DTSS_MAX = 0x20,
+    D3DTSS_DEFERRED_TEXTURE_STATE_MAX = 0xB,
 };
 
 // ---- D3D8 entry points (stdcall, @N-decorated like the XDK exports) ------

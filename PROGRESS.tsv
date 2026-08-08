@@ -218,7 +218,7 @@ aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	P
 aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVertexBuffer.h/.cpp (double-buffered sprite vertex/index pool + 12 data globals)
 aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	PORTED	apsPFD.cpp (field descriptor: sizes/offsets/stride + sElementSizes data)
 nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (file streaming stubs)
-ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	4	TODO	
+ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	6	PORTED	ngl_dx_state.cpp: nglDxRenderState Reset/SetBlendMode/FSAAFixup/Init/SetBlendColor/SetMaxAnisotropy (4 non-inline + 2 inline-ish); verbatim BM bitfield; XDK state-cache externs in d3d8.h
 ngl_xboxr:ngl_dx_buf.o	ngl_xboxr	ngl_dx_buf.o	engine	4	TODO	
 ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	TODO	
 phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_xboxr] rbc_def_contact.cpp: contact constraint (4 funcs)

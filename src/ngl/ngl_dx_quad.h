@@ -92,12 +92,7 @@ struct nglDisplayModeType {
 };
 static_assert(sizeof(nglDisplayModeType) == 0x10, "nglDisplayModeType size mismatch");
 
-struct nglDxRenderState {
-    unsigned int PrevBM;  // +0x00
-
-    void SetBlendMode(unsigned int BM);  // ngl_dx_state.o
-    void SetMaxAnisotropy(int stage, int v);  // ngl_dx_state.o
-};
+#include "ngl/ngl_dx_state.h"
 
 // Shader handles (data owned by ngl_xboxr:ngl_gpu_common.o)
 // ============================================================================
