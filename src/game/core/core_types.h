@@ -193,6 +193,8 @@ static_assert(offsetof(idVec3, z) == 0x08, "idVec3::z offset mismatch");
 // ============================================================================
 struct mat3_t {
     idVec3 mat[3];  // +0x00
+    void Transpose(mat3_t& matrix);
+    void Transpose();
 };
 static_assert(sizeof(mat3_t) == 0x24, "mat3_t size mismatch");
 static_assert(offsetof(mat3_t, mat) == 0x00, "mat3_t::mat offset mismatch");
