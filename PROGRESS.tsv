@@ -41,7 +41,7 @@ phys_xboxr:rb_ragdoll_model.o	phys_xboxr	rb_ragdoll_model.o	engine	31	TODO
 bdCore:bdString.obj	bdCore	bdString.obj	engine	28	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 aeps_xboxr:apsSuppliedDomains.o	aeps_xboxr	apsSuppliedDomains.o	engine	26	PORTED	apsSuppliedDomains.cpp (apsDomain::Fixup + Sphere/Y/ZHemisphere/SphereSurface/Line/Disc/Circle domain GetValue/TestValue/ctors, 26 funcs; gHiHat_* globals; GetId FourCCs inline)
 ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	TODO	
-bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	PORTED	bdInetAddr.cpp: internet address (25 funcs) from IDA + Demonware 2.0
 nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF loader)
@@ -61,7 +61,7 @@ ngl_xboxr:ngl_internal.o	ngl_xboxr	ngl_internal.o	engine	18	TODO
 ngl_xboxr:ngl_dx_filters.o	ngl_xboxr	ngl_dx_filters.o	engine	18	TODO	
 phys_xboxr:phys_constraint_solver_multithreaded.o	phys_xboxr	phys_constraint_solver_multithreaded.o	engine	18	TODO	
 bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
-bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	PORTED	bdAddr.cpp: address+port (18 funcs) from IDA + Demonware 2.0
 core_xboxr:PoolAllocator.o	core_xboxr	PoolAllocator.o	engine	17	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 ngl_xboxr:ngl_quad.o	ngl_xboxr	ngl_quad.o	engine	17	PORTED	[ngl_xboxr] ngl_quad.cpp: quad helpers (17 funcs)
 ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	TODO	
@@ -110,7 +110,7 @@ bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	PORTED
 bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	TODO	
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	TODO	
-bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	bdSocket.cpp: UDP socket wrapper (10 funcs) from IDA + Demonware 2.0
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
@@ -136,7 +136,6 @@ bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported 
 bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	PORTED	[bdConnection] bdLoopbackConnection.cpp: loopback connection (8 funcs) from Demonware 2.0 + IDA
 bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
 bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	TODO	
-bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engine	8	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 core_xboxr:AeAssert.o	core_xboxr	AeAssert.o	engine	7	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 render_xboxr:cdGlowShader.o	render_xboxr	cdGlowShader.o	engine	7	PORTED	cdGlowShader.h/.cpp (glow shader: Toggle/Init/Setup/GlowSetTaps/LerpTaps; GlowFilter+GlowCallback deferred)
 render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	PORTED	cdSimpleInstance.h/.cpp (simple instance: Init/Toggle/Create/Destroy; Add/Finalize/Render deferred)
@@ -208,9 +207,7 @@ bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	
 bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableReceiveWindow.cpp: unreliable recv window (5 funcs) from Demonware 2.0 + IDA
 bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	PORTED	[bdNet] bdGameInfo.cpp: game info factory (5 funcs)
 bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	TODO	
-bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdPlatform:bdPlatformTiming-xbox.obj	bdPlatform	bdPlatformTiming-xbox.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
-bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
 bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	PORTED	[bdConnection] bdConnectionListener.cpp: connection listener (5 funcs) from Demonware 2.0 + IDA
 render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	PORTED	cdHeatHazeShader.h/.cpp (heat haze: Toggle/Init; Setup+Render deferred)
 render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	PORTED	cdGlassShader.h/.cpp (glass shader: Init/Toggle/Register/AddNode; Render deferred)
@@ -310,3 +307,6 @@ nal_xboxr:nal_initlist.o	nal_xboxr	nal_initlist.o	engine	1	PORTED	Phase 2/3: nal
 bdCore:bdReferencable.obj	bdCore	bdReferencable.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdHMac.obj	bdCore	bdHMac.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdPlatform:bdPlatformTrulyRandom-xbox.obj	bdPlatform	bdPlatformTrulyRandom-xbox.obj	engine	1	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
+bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engine	8	PORTED	bdPlatformSocket-win32.cpp: WinSock impl (8 funcs) from IDA
+bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	bdPlatformSocket.cpp: socket stats + ctor (5 funcs) from IDA
+bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	bdInAddr.cpp: IPv4 address (5 funcs) from IDA

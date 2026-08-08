@@ -51,33 +51,164 @@ static_assert(sizeof(bdReference<bdReferencable>) == 4, "bdReference size mismat
 // ============================================================================
 // bdInAddr — IPv4 address (4 bytes)
 // ============================================================================
+int bdSnprintf(char* buf, unsigned int maxlen, const char* format, ...);
+
+// ============================================================================
+// bdInAddr - IPv4 address (4 bytes). Default ctor leaves the COD3 invalid
+// marker 0xFF00FF00 (ea: 0x8B5E40).
+// ============================================================================
 struct bdInAddr {
     union {
         uint8_t  m_byte[4];
         uint32_t m_s_addr;
+        struct {
+            uint32_t m_iaddr;
+        } inUn;
     };
+
+    bdInAddr() { inUn.m_iaddr = 0xFF00FF00; }
+    bdInAddr(unsigned int addr) { inUn.m_iaddr = addr; }
+    bdInAddr(const char* str) { inUn.m_iaddr = 0; fromString(str); }
+    unsigned int fromString(const char* cp);
+    unsigned int toString(char* const pchBuf, int cchBuf) const;
 };
 static_assert(sizeof(bdInAddr) == 4, "bdInAddr size mismatch");
 
 // ============================================================================
-// bdInetAddr — internet address (4 bytes)
-// Size: 0x04 (4 bytes) — verified against IDA
+// bdInetAddr - internet address (4 bytes). Verified against IDA (bdInetAddr.obj).
 // ============================================================================
 struct bdInetAddr {
     bdInAddr m_addr;  // +0x00
+
+    bdInetAddr() {}
+    bdInetAddr(const bdInetAddr& other) { m_addr = other.m_addr; }
+    bdInetAddr(const bdInAddr* addr) { m_addr = *addr; }
+    bdInetAddr(const char* str);
+    bdInetAddr(unsigned int addr) { m_addr.inUn.m_iaddr = addr; }
+    ~bdInetAddr() { m_addr.inUn.m_iaddr = 0xDEADBEEF; }
+
+    const bdInetAddr& set(const bdInetAddr& other) { m_addr = other.m_addr; return other; }
+    void set(const char* str) { m_addr.fromString(str); }
+    unsigned int set(unsigned int addr) { m_addr.inUn.m_iaddr = addr; return addr; }
+    void set(const bdInAddr* addr) { m_addr = *addr; }
+    bool operator==(const bdInetAddr& other) const { return m_addr.inUn.m_iaddr == other.m_addr.inUn.m_iaddr; }
+    bool operator!=(const bdInetAddr& other) const { return m_addr.inUn.m_iaddr != other.m_addr.inUn.m_iaddr; }
+    bool isValid() const;
+    unsigned int toUInt32() const { return m_addr.inUn.m_iaddr; }
+    unsigned int toString(char* const pchBuf, unsigned int cchBuf) const;
+    bdInAddr* getInAddr() { return &m_addr; }
+    const bdInAddr* getInAddr() const { return &m_addr; }
+    bool serialize(void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset) const;
+    bool deserialize(const void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset);
+    static bdInetAddr Loopback();
+    static bdInetAddr Broadcast();
+    static bdInetAddr Any();
+    bool operator<(const bdInetAddr& other) const { return m_addr.inUn.m_iaddr < other.m_addr.inUn.m_iaddr; }
+    bool isLoopback() const;
+    bool isBroadcast() const;
 };
 static_assert(sizeof(bdInetAddr) == 4, "bdInetAddr size mismatch");
 
 // ============================================================================
-// bdAddr — address + port (8 bytes)
-// Size: 0x08 (8 bytes) — verified against IDA
+// bdAddr - address + port (8 bytes). Verified against IDA (bdAddr.obj).
 // ============================================================================
 struct bdAddr {
     bdInetAddr      m_address;  // +0x00
     uint16_t        m_port;     // +0x04
+
+    bdAddr() : m_port(0) {}
+    bdAddr(const bdAddr& other) : m_address(other.m_address), m_port(other.m_port) {}
+    bdAddr(const bdInetAddr& address, unsigned short port);
+    bdAddr(const char* str);
+    const bdInetAddr& set(const bdInetAddr& address, unsigned short port);
+    void set(const char* cp);
+    bool operator==(const bdAddr& other) const;
+    bool operator!=(const bdAddr& other) const;
+    const bdInetAddr& getAddress() const { return m_address; }
+    bdInetAddr& getAddress() { return m_address; }
+    unsigned short setPort(unsigned short port) { m_port = port; return port; }
+    unsigned short getPort() const { return m_port; }
+    unsigned int toString(char* const buf, unsigned int bufSize) const;
+    bool serialize(void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset) const;
+    bool deserialize(const void* buffer, unsigned int bufferSize, unsigned int offset, unsigned int* newOffset);
+    unsigned int getSerializedSize() const;
+    unsigned int getHash() const;
+    bool operator<(const bdAddr& other) const;
+
+    static unsigned int serializedSize;
 };
 static_assert(sizeof(bdAddr) == 8, "bdAddr size mismatch");
 static_assert(offsetof(bdAddr, m_port) == 0x04, "bdAddr::m_port offset mismatch");
+
+// ============================================================================
+// bdSocketStatusCode + bdPlatformSocket - OS-independent socket wrappers.
+// ============================================================================
+enum bdSocketStatusCode {
+    BD_NET_SUCCESS = 1,
+    BD_NET_CONNECTION_CLOSED = 0,
+    BD_NET_ERROR = -1,
+    BD_NET_WOULD_BLOCK = -2,
+    BD_NET_SUBSYTEM_ERROR = -3,
+    BD_NET_ADDRESS_IN_USE = -4,
+    BD_NET_CONNECTION_RESET = -5,
+    BD_NET_MSG_SIZE = -6,
+    BD_NET_ADDRESS_INVALID = -7,
+    BD_NET_BLOCKING_CALL_CANCELED = -8,
+    BD_NET_NOT_BOUND = -9,
+    BD_NET_INVALID_HANDLE = -10,
+    BD_NET_NOT_CONNECTED = -11,
+};
+static const int BD_INVALID_SOCKET_HANDLE = -1;
+
+class bdPlatformSocket {
+public:
+    bdPlatformSocket();
+
+    static int create(bool blocking);
+    static bdSocketStatusCode bind(int& handle, const bdInAddr* addr, unsigned short port);
+    static int sendTo(int handle, const bdInAddr* addr, unsigned short port,
+                      const void* data, unsigned int length);
+    static int receiveFrom(int& handle, bdInAddr& addr, unsigned short& port,
+                           void* data, unsigned int size);
+    static bool close(int& handle);
+    static void unregisterThread();
+    static bool setBlocking(int& handle, bool blocking);
+    static unsigned int getHostByName(const char* name, bdInAddr* addresses,
+                                      unsigned int numAddresses, int dnsHandle);
+
+    static unsigned __int64 getBytesSent();
+    static unsigned __int64 getBytesReceived();
+    static unsigned __int64 getPacketsSent();
+    static unsigned __int64 getPacketsRecvd();
+
+    static unsigned __int64 m_totalBytesSent;
+    static unsigned __int64 m_totalPacketsSent;
+    static unsigned __int64 m_totalBytesRecvd;
+    static unsigned __int64 m_totalPacketsRecvd;
+};
+
+// ============================================================================
+// bdSocket - UDP socket wrapper (8 bytes: vtable + m_handle).
+// Vtable (verified @0xD98DD0): dtor, create, bind(bdAddr), bind(port),
+// sendTo, receiveFrom, close, setBlocking.
+// ============================================================================
+class bdSocket {
+public:
+    bdSocket();
+    virtual ~bdSocket();
+    virtual bool create(bool blocking);
+    virtual bdSocketStatusCode bind(const bdAddr& addr);
+    virtual bdSocketStatusCode bind(unsigned short port);
+    virtual int sendTo(const bdAddr& addr, const void* data, unsigned int length);
+    virtual int receiveFrom(bdAddr& addr, void* data, unsigned int size);
+    virtual bool close();
+    virtual bool setBlocking(bool blocking);
+    int getHandle() const;
+
+protected:
+    int m_handle;   // +0x04
+};
+static_assert(sizeof(bdSocket) == 0x08, "bdSocket size mismatch");
 
 // ============================================================================
 // bdBuffer — raw byte range (12 bytes)
@@ -1090,6 +1221,8 @@ bool appendBasicType(void* dest, unsigned int destSize, unsigned int offset,
                      unsigned int valueSize);
 bool removeBasicType(const unsigned char* src, unsigned int srcSize, unsigned int offset,
                      unsigned int* newOffset, void* value, unsigned int valueSize);
+bool removeBuffer(const unsigned char* src, unsigned int srcSize, unsigned int offset,
+                  unsigned int* newOffset, void* dest, unsigned int size);
 bool appendEncodedUInt16(void* dest, unsigned int destSize, unsigned int offset,
                          unsigned int* newOffset, unsigned short value);
 bool removeEncodedUInt16(const unsigned char* src, unsigned int srcSize, unsigned int offset,

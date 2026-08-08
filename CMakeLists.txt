@@ -162,7 +162,13 @@ add_library(cod3_bd STATIC
     src/bd/bdMemory/bdAlignedOffsetMemory.cpp
     src/bd/bdTiming/bdShortTimer.h
     src/bd/bdSequenceNumber.cpp
+    src/bd/bdInAddr.cpp
+    src/bd/bdInetAddr.cpp
+    src/bd/bdAddr.cpp
     src/bd/bdPlatform.cpp
+    src/bd/bdPlatformSocket.cpp
+    src/bd/bdPlatformSocket-win32.cpp
+    src/bd/bdSocket.cpp
     src/bd/bdGameInfo.cpp
     src/bd/bdConnectionStatistics.cpp
     src/bd/bdConnection.cpp
