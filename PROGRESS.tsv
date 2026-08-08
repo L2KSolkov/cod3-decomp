@@ -220,7 +220,7 @@ aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	PORTED	apsPFD.cpp (field descri
 nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	6	PORTED	ngl_dx_state.cpp: nglDxRenderState Reset/SetBlendMode/FSAAFixup/Init/SetBlendColor/SetMaxAnisotropy (4 non-inline + 2 inline-ish); verbatim BM bitfield; XDK state-cache externs in d3d8.h
 ngl_xboxr:ngl_dx_buf.o	ngl_xboxr	ngl_dx_buf.o	engine	4	PORTED	ngl_dx_buf.cpp: work buffer get/alloc + push buffer sizes + init; owns nglPushBufferSize(0x100000)/Kickoff(0x10000) + nglWorkBuffer*; nglBufferType enum; scratch buffers externed to ngl_gpu_meshedit.o
-ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	TODO	
+ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	PORTED	ngl_dx_mesh.cpp: vertex-decl bank dedup + section D3D pointer fixups + clip-result; owns nglVertexDeclarationBank; ngliReleaseSection empty
 phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_xboxr] rbc_def_contact.cpp: contact constraint (4 funcs)
 bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
