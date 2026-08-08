@@ -12,7 +12,7 @@ render.o		render.o	game	426	TODO
 anim.o		anim.o	game	408	TODO	
 mp_actors.o		mp_actors.o	game	380	TODO	
 cg.o		cg.o	game	350	TODO	
-cl.o		cl.o	game	313	IN_PROGRESS	cl_input.cpp IN_* (99) + cl_console.cpp core (14) + cl_usercmd.cpp (24) + cl_keys.cpp (26) + cl_snapshot.cpp (8) + cl_debug.cpp (18) + cl_dobj.cpp (12) + cl_localclient.cpp (24) + cl_scr.cpp (21) + cl_field.cpp (17: Field_Draw/AdjustScroll/KeyDownEvent/CharEvent, KeyInfo SetBinding/GetKey/ClearAllBindings + Key_* bind cmds, swirl speed/control + CL_GamepadMove aim-accel) = 263/313; render-heavy Con_Draw* + print-queue helpers + remaining CL_* parse/init remain
+cl.o		cl.o	game	313	IN_PROGRESS	cl_input.cpp IN_* (99) + cl_console.cpp core (14) + cl_usercmd.cpp (24) + cl_keys.cpp (26) + cl_snapshot.cpp (8) + cl_debug.cpp (18) + cl_dobj.cpp (12) + cl_localclient.cpp (24) + cl_scr.cpp (21) + cl_field.cpp (17) + cl_lifecycle.cpp (15: CL_Init/Shutdown/ShutdownAll/StartHunkUsers/ClearState/Disconnect/Restart, configstring get/modify, GetServerCommand, RestoreMessages, ConsoleFixPosition, CharEvent, InitKeyCommands/InitGamepadCommands) = 278/313; render-heavy Con_Draw* + print-queue + CL_InitCGame/ParseGamestate/Frame remain
 streamer.o		streamer.o	game	268	TODO	
 physics.o		physics.o	game	224	TODO	
 game_xbox.o		game_xbox.o	game	210	PORTED	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26) + MPPlayerSet header (2) + XboxLiveMenus.cpp (46: XboxLiveOptionsMenu + InGameLiveOptionsMenu classes, ShowNotificationIcon, Xbox_LaunchInfo, RenderUIX) = 210/210; FEMenu/UIListBox/PanelFile/DialogMenu bases extern (shell.o/core.o provide); HandleError Com_Printf fix; XLive APIs stubbed via /FORCE

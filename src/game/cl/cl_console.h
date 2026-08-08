@@ -108,6 +108,15 @@ extern cvar_t* cl_noprint;
 extern cvar_t* cl_languagewarnings;
 extern cvar_t* cl_languagewarningsaserrors;
 extern cvar_t* com_cl_running;
+extern cvar_t* cl_shownet;
+extern cvar_t* cl_yawspeed;
+extern cvar_t* cl_pitchspeed;
+extern cvar_t* cl_anglespeedkey;
+extern cvar_t* cl_mouseAccel;
+extern cvar_t* cl_freelook;
+extern cvar_t* cl_showMouseRate;
+extern cvar_t* cl_stanceHoldTime;
+extern cvar_t* cl_disable_ads;
 
 // ============================================================================
 // Functions
