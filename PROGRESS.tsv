@@ -5,6 +5,7 @@ mp.o		mp.o	game	770	TODO
 g.o		g.o	game	732	TODO	
 mp_shell.o		mp_shell.o	game	680	TODO	
 game.o		game.o	game	663	TODO	
+core.o		core.o	game	541	IN_PROGRESS	Inventory + plan + types staged: core_o_inventory.tsv (541 demangled), core_o_plan.tsv/md, core_types.h (searchpath/pack/fileData/cplane/qtime/sysEvent/angles/DObjSkelMat verified via MCP); decompiles NOT cached yet - fetch core/ via ida MCP then port q_math(149) + files(53) + cvar(34) + common(61) first
 MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	PORTED	mp_util_wad.cpp/h COMPLETE (403/403): accessors + wrappers + dyn_array + Level (560B) + pLevel; _mp_common/_mp_audio/_mp_loadout/_mp_ctf/_mp_scf/_mp_hq/_mp_war/_mp_tankdrive/_mp_spawnlogic/_mp_teambalance/_mp_shellshock/_mp_minefield/_mp_tdm/_mp_nano/_mp_dm/_mp_airplanes ALL DONE; capture threads stubbed pending runtime hook layer
 MPBrocCore_xboxd:mp_anim_wad.o	MPBrocCore_xboxd	mp_anim_wad.o	engine	332	PORTED	mp_anim_wad.cpp/h: RegisterHashStrings (238) + 94 GetEE_/IsEEDefined_ pairs + ResolveAnim/ResolveAnimName/ValidateAnimationIndices/GetBroAnim + _mp_setup main/hack_function; generic_human AnimRef layer extern (data, /FORCE)
 game2.o		game2.o	game	521	TODO	
