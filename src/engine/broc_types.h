@@ -258,6 +258,14 @@ struct vehiclenode {
 COD3_STATIC_ASSERT_32BIT(sizeof(vehiclenode) == 4, "Broc::vehiclenode size mismatch");
 
 // ============================================================================
+// Broc::hudelem - HUD element handle (4 bytes).
+// ============================================================================
+struct hudelem {
+    unsigned int ___u0;
+};
+COD3_STATIC_ASSERT_32BIT(sizeof(hudelem) == 4, "Broc::hudelem size mismatch");
+
+// ============================================================================
 // EEHelper / EEDefault — template helpers for ExtendedEntity field types
 // ============================================================================
 namespace EEHelper {

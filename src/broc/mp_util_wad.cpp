@@ -1445,4 +1445,37 @@ void CallbackSetLevelAudio(const char* background_track, const char* reverb,
     pLevelAudio->audio_ambient_max = (float)ambient_max;
     pLevelAudio->audio_ambient_min = (float)ambient_min;
 }
+
+// audio_crossfade_wait - ea: 0x937020
+void audio_crossfade_wait() {
+    mp_util_wad::pLevel->crossfade_done = 0;
+    Broc::wait(2.1f);
+    mp_util_wad::pLevel->crossfade_done = 1;
+    mp_util_wad::pLevel->audio_current_priority =
+        mp_util_wad::pLevel->audio_change_priority.mVal + 1;
+}
+
+// track_changer - ea: 0x9370E0
+void track_changer(Broc::string new_track) {
+    mp_util_wad::pLevel->audio_current_priority =
+        mp_util_wad::pLevel->audio_change_priority.mVal + 1;
+    mp_util_wad::pLevel->background_track = new_track;
+    new_track.~string();
+}
+
+// reverb_changer - ea: 0x937190
+void reverb_changer(Broc::string new_reverb) {
+    mp_util_wad::pLevel->audio_current_priority =
+        mp_util_wad::pLevel->audio_change_priority.mVal + 1;
+    mp_util_wad::pLevel->reverb_setting = new_reverb;
+    new_reverb.~string();
+}
+
+// ambient_changer - ea: 0x937240
+void ambient_changer(Broc::string new_ambient_setting) {
+    mp_util_wad::pLevel->audio_current_priority =
+        mp_util_wad::pLevel->audio_change_priority.mVal + 1;
+    mp_util_wad::pLevel->ambient_setting = new_ambient_setting;
+    new_ambient_setting.~string();
+}
 }
