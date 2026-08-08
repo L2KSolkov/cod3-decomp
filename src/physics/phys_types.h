@@ -90,6 +90,8 @@ struct pulse_sum_node {
     float        m_inv_mass;                      // +0x30
     struct rigid_body* m_rb;                      // +0x34
     uint8_t      _pad38[8];                       // +0x38
+
+    pulse_sum_node() {}  // ea: 0x892480
 };
 static_assert(sizeof(pulse_sum_node) == 0x40, "pulse_sum_node size mismatch");
 static_assert(offsetof(pulse_sum_node, t_vel) == 0x10, "pulse_sum_node::t_vel offset mismatch");
@@ -129,8 +131,24 @@ struct pulse_sum_normal {
     void  setup_vel_uni_standard_pos_adjust(float delta_t, float pos, float max_penalty_restitution_vel);
     const float& get_unclamped_pulse_sum() const { return m_pulse_sum; }
     const math::Dir3* get_relative_velocity(const math::Dir3* result);
-    const math::Dir3* get_relative_velocity_change_dir(const math::Dir3* result);
+    const math::Dir3* get_relative_velocity_change_dir(math::Dir3* result);
     void  set_pulse_sum_limits_parent_ratio(float limit_ratio, pulse_sum_normal* parent);
+
+    // solver methods (phys_constraint_solver_multithreaded.o)
+    float get_vel();
+    float get_last_vel();
+    float get_pos();
+    float get_objective();
+    float clamp_pulse_sum(float ps);
+    void  apply(const float* s_);
+    void  calc_abs(const math::Dir3* b1_r_displace);
+    float get_unclamped_pulse_sum();
+    void  set_object_vel(const math::Dir3* object_vel);
+    void  set_object_col_pt(const math::Dir3* object_col_pt);
+    void  SOLVER_apply_relaxation(float* error_sq, bool add_error);
+    void  SOLVER_solver_intermediate(int iter, float delta_t);
+    void  SOLVER_solver_prolog(int iter, float delta_t);
+    void  project();
 };
 static_assert(sizeof(pulse_sum_normal) == 0xA0, "pulse_sum_normal size mismatch");
 static_assert(offsetof(pulse_sum_normal, m_ud) == 0x10, "pulse_sum_normal::m_ud offset mismatch");
@@ -275,6 +293,7 @@ struct rigid_body {
     void update_col_mat();
 
     rigid_body() {}  // ea: 0x880C60
+    rigid_body& operator=(const rigid_body& other);  // ea: 0x892160
 
     // get_time_scale / get_max_delta_t - ea: 0x88B0B0 / 0x88B0C0
     const outer_time* get_time_scale() const { return &m_time_scale; }
@@ -311,6 +330,11 @@ struct rigid_body_constraint {
     // outer_prolog_update / outer_epilog_update - ea: 0x88B100 / 0x88B110
     void outer_prolog_update(const outer_time*) {}
     void outer_epilog_update(const outer_time*) {}
+
+    // solver callbacks (overridden by derived constraint types).
+    void do_collision(float delta_t) {}
+    void inner_update(float delta_t) {}
+    void epilog_vel_constraint(float delta_t) {}
 };
 static_assert(sizeof(rigid_body_constraint) == 0x0C, "rigid_body_constraint size mismatch");
 

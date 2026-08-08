@@ -12,7 +12,12 @@
 
 extern const math::Dir3& Float4_Zero_212;
 extern const math::Dir3& Float4_Two_212;
+extern const math::Dir3& Float4_XAxis_214;
+extern const math::Dir3& Float4_YAxis_214;
+extern const math::Dir3& Float4_ZAxis_214;
 extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
+extern void orthonormalize(math::Mat43* mat);
+extern const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG;
 
 namespace nuge {
 void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1, float delta_t,
@@ -44,6 +49,21 @@ struct pulse_sum_angular {
 
     float get_pos() const { return m_pulse_sum; }
     void  setup_vel_uni_standard(float delta_t, float max_penalty_restitution_vel);
+
+    void set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
+             const math::Dir3* b2_r, const math::Dir3* ud, pulse_sum_cache* ps_cache);
+    float get_vel();
+    float get_pos();
+    float get_objective();
+    float clamp_pulse_sum(float ps);
+    void  apply(const float* s_);
+    void  calc_abs();
+    void  project();
+    void  SOLVER_apply_relaxation(float* error_sq);
+    void  SOLVER_solver_prolog(int iter, float delta_t);
+    void  SOLVER_solver_intermediate(int iter, float delta_t);
+    void  set_object_vel(const math::Dir3* object_vel);
+    void  set_object_col_pt(const math::Dir3* object_col_pt);
 };
 static_assert(sizeof(pulse_sum_angular) == 0x90, "pulse_sum_angular size mismatch");
 
@@ -69,6 +89,23 @@ struct pulse_sum_point {
     pulse_sum_node* m_b1;                         // +0x100
     pulse_sum_node* m_b2;                         // +0x104
     pulse_sum_cache* m_pulse_sum_cache;           // +0x108
+
+    void set(rigid_body* b1, const math::Dir3* b1_r, rigid_body* b2,
+             const math::Dir3* b2_r, pulse_sum_cache* ps_cache);
+    const math::Dir3* get_vel(const math::Dir3* result);
+    const math::Dir3* get_pos(const math::Dir3* result);
+    const math::Dir3* get_objective(const math::Dir3* result);
+    const math::Dir3* phys_diag_multiply_and_square(const math::Dir3* result,
+                                                    const math::Dir3* v1,
+                                                    const math::Dir3* v2);
+    void  apply(const math::Dir3* s_);
+    void  calc_abs();
+    void  project();
+    void  SOLVER_apply_relaxation(float* error_sq);
+    void  SOLVER_solver_prolog(int iter, float delta_t);
+    void  SOLVER_solver_intermediate(int iter, float delta_t);
+    void  set_object_vel(const math::Dir3* object_vel);
+    void  set_object_col_pt(const math::Dir3* object_col_pt);
 };
 static_assert(sizeof(pulse_sum_point) == 0x110, "pulse_sum_point size mismatch");
 
@@ -84,15 +121,102 @@ struct pulse_sum_wheel {
     pulse_sum_normal* m_fwd;                      // +0xB4
 
     void set_side_fwd_ratios(float side_ratio, float fwd_ratio);
+
+    bool clamp_pulse_sum_pulse_chain(float* ps1_, float* ps2_);
+    bool pulse_chain_within_limits();
+    void addp_pulse_chain();
+    void SOLVER_apply_relaxation(float* error_sq);
+    void SOLVER_solver_prolog(int iter, float delta_t);
+    void SOLVER_solver_intermediate(int iter, float delta_t);
 };
 static_assert(sizeof(pulse_sum_wheel) == 0xC0, "pulse_sum_wheel size mismatch");
 static_assert(offsetof(pulse_sum_wheel, m_suspension) == 0x10, "pulse_sum_wheel::m_suspension offset mismatch");
 
 // ============================================================================
-// pulse_sum_contact â€” contact constraint row (implemented in
-// phys_constraint_solver_multithreaded.o)
+// pulse_sum_contact â€” contact constraint row (64 bytes, IDA ordinal 5475).
 // ============================================================================
-struct pulse_sum_contact;
+struct pulse_sum_contact {
+    struct vec2 {  // 8 bytes
+        float x;  // +0x00
+        float y;  // +0x04
+
+        vec2() : x(0.0f), y(0.0f) {}           // ea: 0x891FB0
+        vec2(float x_, float y_) : x(x_), y(y_) {}  // ea: 0x891FC0
+        vec2 operator-(const vec2& other) const { return vec2(x - other.x, y - other.y); }
+        void operator-=(const vec2& other) { x -= other.x; y -= other.y; }
+    };
+    static_assert(sizeof(vec2) == 8, "vec2 size mismatch");
+
+    struct psc_cpi;  // defined below
+
+    phys_link_list_base<pulse_sum_contact> m_link;  // +0x00
+    uint8_t    _pad4[0x10 - 0x04];                 // +0x04
+    math::Dir3 m_ud_n;                             // +0x10
+    float      m_fric_coef;                        // +0x20
+    pulse_sum_node* m_b1;                          // +0x24
+    pulse_sum_node* m_b2;                          // +0x28
+    psc_cpi*   m_list_cpi;                         // +0x2C
+    int        m_list_cpi_count;                   // +0x30
+
+    void set(rigid_body* b1, rigid_body* b2, contact_point_info* cpi, float delta_t);
+};
+static_assert(sizeof(pulse_sum_contact) == 0x40, "pulse_sum_contact size mismatch");
+
+// ============================================================================
+// pulse_sum_contact::psc_cpi - per-contact-point pulse-sum row (160 bytes).
+// ============================================================================
+struct pulse_sum_contact::psc_cpi {
+    math::Dir3 m_b1_r;                            // +0x00
+    math::Dir3 m_b2_r;                            // +0x10
+    math::Dir3 m_ud_f1;                           // +0x20
+    math::Dir3 m_b1_ap_n;                         // +0x30
+    math::Dir3 m_b2_ap_n;                         // +0x40
+    math::Dir3 m_b1_ap_f1;                        // +0x50
+    math::Dir3 m_b2_ap_f1;                        // +0x60
+    vec2       m_pulse_sum;                       // +0x70
+    vec2       m_right_side;                      // +0x78
+    float      m_big_dirt;                        // +0x80
+    float      m_denom_xx;                        // +0x84
+    float      m_denom_yy;                        // +0x88
+    float      m_denom_xy;                        // +0x8C
+    pulse_sum_cache* m_pulse_sum_cache;           // +0x90
+
+    psc_cpi() {  // ea: 0x893250
+        m_pulse_sum.x = 0.0f;
+        m_pulse_sum.y = 0.0f;
+        m_right_side.x = 0.0f;
+        m_right_side.y = 0.0f;
+        m_big_dirt = 0.0f;
+        m_denom_xx = 0.0f;
+        m_denom_yy = 0.0f;
+        m_denom_xy = 0.0f;
+        m_pulse_sum_cache = NULL;
+    }
+
+    void set_object_vel(psc_cpi* self, const math::Dir3* object_vel);
+    void set_object_col_pt(psc_cpi* self, const math::Dir3* object_col_pt);
+    const math::Dir3* get_relative_velocity_change_dir(psc_cpi* self);
+    const math::Dir3* get_relative_velocity(psc_cpi* self, math::Dir3* result);
+    const math::Dir3* get_last_relative_velocity(psc_cpi* self, math::Dir3* result);
+    float get_impact_vel(psc_cpi* self, const math::Dir3* normal);
+    float get_impact_dist(psc_cpi* self);
+    void  setup_vel_uni_restitution(psc_cpi* self, const math::Dir3* relative_velocity,
+                                    float restitution_k, float max_restitution_v,
+                                    float delta_t, float max_penalty_restitution_vel);
+    void  calc_fric_dir(psc_cpi* self, const math::Dir3* relative_velocity);
+    void  calc_abs_and_fric_dir(psc_cpi* self, const math::Dir3* relative_velocity);
+    void  apply(psc_cpi* self, const vec2* s_);
+    void  clamp_n(psc_cpi* self);
+    void  clamp_f(psc_cpi* self);
+    void  project(psc_cpi* self);
+    void  SOLVER_solver_intermediate(psc_cpi* self, int iter, float delta_t);
+    void  SOLVER_solver_prolog(psc_cpi* self, int iter, float delta_t);
+    void  SOLVER_apply_relaxation(psc_cpi* self, float* error_sq);
+    void  set_pulse_sum_cache(psc_cpi* self, pulse_sum_cache* cache);
+    const vec2* get_vel(psc_cpi* self, vec2* result);
+    const vec2* get_objective(psc_cpi* self, vec2* result);
+};
+static_assert(sizeof(pulse_sum_contact::psc_cpi) == 0xA0, "psc_cpi size mismatch");
 
 // ============================================================================
 // phys_link_list<T> - doubly-linked list head (8 bytes, IDA ordinal 5861).
@@ -103,6 +227,32 @@ struct phys_link_list {
     T* m_last;   // +0x04
 
     phys_link_list() : m_first(NULL), m_last(NULL) {}  // ea: 0x88E240
+
+    struct iterator {
+        T* m_ptr;  // +0x00
+
+        iterator(T* ptr) : m_ptr(ptr) {}  // ea: 0x894C90
+        T& operator*() const { return *m_ptr; }       // ea: 0x894B20
+        bool operator!=(const iterator& other) const { return m_ptr != other.m_ptr; }  // ea: 0x894B00
+        iterator& operator++() { m_ptr = m_ptr->m_next_link; return *this; }  // ea: 0x8979F0
+    };
+
+    iterator begin() { return iterator(m_first); }  // ea: 0x897930
+    iterator end() { return iterator(NULL); }       // ea: 0x897940
+
+    void add(T* node) {  // ea: 0x897900
+        node->m_next_link = NULL;
+        if (m_last != NULL)
+            m_last->m_next_link = node;
+        else
+            m_first = node;
+        m_last = node;
+    }
+
+    void remove_all() {  // ea: 0x894AA0
+        m_first = NULL;
+        m_last = NULL;
+    }
 };
 static_assert(sizeof(phys_link_list<int>) == 8, "phys_link_list size mismatch");
 
@@ -165,6 +315,42 @@ public:
         rb->m_partition_node.m_next_partition_head = m_first_partition_head;
         m_first_partition_head = rb;
     }
+
+    // pulse_sum_constraint_solver inline methods (this unit).
+    struct temp_user_rigid_body;
+    struct user_rigid_body_restore_info;
+
+    pulse_sum_node* create_pulse_sum_node();          // ea: 0x897A90
+    void solve_constraints();                         // ea: 0x897B10
+    void execute_constraint_solver(rigid_body* head); // ea: 0x898250
+    void add_urb(temp_user_rigid_body** list_turb,
+                 user_rigid_body_restore_info** list_urbri,
+                 rigid_body_constraint* rbc);         // ea: 0x8980E0
+    void list_urbri_restore(user_rigid_body_restore_info* list_urbri);  // ea: 0x893260
+    void set_solver_params(int psys_psc_visit_counter, int psys_next_psc_visit_counter,
+                           int psys_max_vel_iters, int psys_max_vel_pos_iters);  // ea: 0x893290
+    static bool psc_is_persistant(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x892140
+    static void set_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter, float pulse_sum);  // ea: 0x8926A0
+    static float get_pulse_sum(pulse_sum_cache* ps_cache, int visit_counter);  // ea: 0x8926C0
+    void solve_iterative(int max_iters, float max_error_sq);  // ea: 0x8945B0
+
+    struct temp_user_rigid_body : public user_rigid_body {
+        user_rigid_body* m_original_urb;   // +0x1C0
+        temp_user_rigid_body* m_next_link; // +0x1C4
+
+        temp_user_rigid_body();  // ea: 0x8980D0
+        void set(temp_user_rigid_body* next_link, user_rigid_body* original_urb);  // ea: 0x897A50
+    };
+
+    struct user_rigid_body_restore_info {
+        user_rigid_body_restore_info* m_next_link;   // +0x00
+        user_rigid_body** m_rbc_urb;                 // +0x04
+        user_rigid_body* m_original_urb;             // +0x08
+
+        void set(user_rigid_body_restore_info* next_link, user_rigid_body** rbc_urb,
+                 temp_user_rigid_body* original_urb);  // ea: 0x891110
+        void restore();  // ea: 0x891130
+    };
 
     pulse_sum_angular* create_pulse_sum_angular(rigid_body* b1, const math::Dir3* b1_r,
                                                 rigid_body* b2, const math::Dir3* b2_r,
@@ -576,6 +762,8 @@ static_assert(sizeof(phys_heap_memory_pool<int>) == 0x14, "phys_heap_memory_pool
 // Layout verified against IDA local types (ordinal 7028).
 // ============================================================================
 // list_constraint_solver - partition list fed to the multithreaded solver.
+struct physics_system;
+
 struct phys_constraint_solver_multithreaded_list_constraint_solver {
     pulse_sum_constraint_solver* m_constraint_solver;  // +0x00
 
@@ -589,6 +777,8 @@ struct phys_constraint_solver_multithreaded_list_constraint_solver {
             m_constraint_solver->m_first_partition_head;
         m_constraint_solver->m_first_partition_head = cg;
     }
+
+    void process(const physics_system* psys, int psys_next_psc_visit_counter);  // ea: 0x894A50
 };
 
 struct physics_system {
@@ -871,6 +1061,145 @@ extern void SetIdentity(math::Mat43& m);
 namespace rbint {
 void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
 math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb, const math::Dir3* t);
+
+// get_pulse_sum_node - ea: 0x8924A0
+inline pulse_sum_node* get_pulse_sum_node(const rigid_body* rb) {
+    return rb->m_node;
+}
+
+// verify_pulse_sum_node - ea: 0x8925F0
+inline unsigned int verify_pulse_sum_node(rigid_body* const rb) {
+    if (rb->m_node != NULL)
+        return (rb->m_flags & 0x30) == 0;
+    return rb->m_flags & 0x30;
+}
+
+// add_vel - ea: 0x8924B0
+inline void add_vel(rigid_body* rb, const math::Dir3* t, const math::Dir3* a) {
+    rb->m_t_vel.v = _mm_add_ps(rb->m_t_vel.v, t->v);
+    rb->m_a_vel.v = _mm_add_ps(rb->m_a_vel.v, a->v);
+}
+
+// get_last_t_vel / get_last_a_vel - ea: 0x892620 / 0x892630
+inline const math::Dir3* get_last_t_vel(rigid_body* rb) { return &rb->m_last_t_vel; }
+inline const math::Dir3* get_last_a_vel(rigid_body* rb) { return &rb->m_last_a_vel; }
+
+// gtv - ea: 0x8955A0
+inline const math::Dir3* gtv(const math::Dir3* result, rigid_body* const b,
+                             const math::Dir3* r) {
+    ((math::Dir3*)result)->v = _mm_add_ps(
+        b->m_t_vel.v,
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(b->m_a_vel.v, b->m_a_vel.v, 9), _mm_shuffle_ps(r->v, r->v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(b->m_a_vel.v, b->m_a_vel.v, 18), _mm_shuffle_ps(r->v, r->v, 9))));
+    return result;
+}
+
+// inv_L (3-arg) - ea: 0x894FE0
+inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
+                               const math::Dir3* t) {
+    if ((~(rb->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 19,
+                  "rb->debug_flag_is_not_in_collision()", ""))
+        __debugbreak();
+    ((math::Dir3*)result)->v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 0), rb->m_world_inv_inertia.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 85), rb->m_world_inv_inertia.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 170), rb->m_world_inv_inertia.z.v));
+    return result;
+}
+
+// inv_L (4-arg) - ea: 0x895080
+inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
+                               const math::Dir3* t, float delta_t) {
+    if ((~(rb->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 30,
+                  "rb->debug_flag_is_not_in_collision()", ""))
+        __debugbreak();
+    ((math::Dir3*)result)->v = _mm_mul_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 0), rb->m_world_inv_inertia.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 85), rb->m_world_inv_inertia.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 170), rb->m_world_inv_inertia.z.v)),
+        _mm_shuffle_ps(_mm_set_ss(delta_t), _mm_set_ss(delta_t), 0));
+    return result;
+}
+
+// mul_inv_L - ea: 0x895130
+inline const math::Dir3* mul_inv_L(const math::Dir3* result, const rigid_body* rb,
+                                   const math::Dir3* t) {
+    if ((~(rb->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 41,
+                  "rb->debug_flag_is_not_in_collision()", ""))
+        __debugbreak();
+    math::Dir3 v3;
+    v3.v = rb->m_mat.y.v;
+    math::Dir3 v4;
+    v4.v = rb->m_mat.z.v;
+    __m128 v6 = _mm_shuffle_ps(rb->m_mat.x.v, v3.v, 68);
+    __m128 v7 = _mm_mul_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 0), _mm_shuffle_ps(v6, v4.v, 136)),
+                _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 85), _mm_shuffle_ps(v6, v4.v, 221))),
+            _mm_mul_ps(_mm_shuffle_ps(t->v, t->v, 170),
+                       _mm_shuffle_ps(_mm_shuffle_ps(rb->m_mat.x.v, v3.v, 238), v4.v, 168))),
+        rb->m_inv_inertia.v);
+    ((math::Dir3*)result)->v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v7, v7, 0), rb->m_mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(v7, v7, 85), v3.v)),
+        _mm_mul_ps(_mm_shuffle_ps(v7, v7, 170), v4.v));
+    return result;
+}
+
+// euler_integrate_velocity - ea: 0x895350
+inline void euler_integrate_velocity(rigid_body* const rb, float delta_t) {
+    float inv_mass_dt = rb->m_inv_mass * delta_t;
+    math::Dir3 v4;
+    v4.v = rb->m_force_sum.v;
+    rb->m_last_t_vel.v = rb->m_t_vel.v;
+    rb->m_last_a_vel.v = rb->m_a_vel.v;
+    rb->m_t_vel.v = _mm_add_ps(
+        rb->m_t_vel.v,
+        _mm_mul_ps(v4.v, _mm_shuffle_ps(_mm_set_ss(inv_mass_dt), _mm_set_ss(inv_mass_dt), 0)));
+    math::Dir3 v8;
+    rb->m_a_vel.v = _mm_add_ps(rb->m_a_vel.v, inv_L(&v8, rb, &rb->m_torque_sum, delta_t)->v);
+}
+
+// euler_integrate_pos - ea: 0x895410
+inline void euler_integrate_pos(rigid_body* const rb, float delta_t);
+
+// update_stability - ea: 0x892500
+inline void update_stability(rigid_body* const rb, float delta_t) {
+    __m128 v3 = _mm_mul_ps(rb->m_t_vel.v, rb->m_t_vel.v);
+    float v8 = v3.m128_f32[0] + _mm_shuffle_ps(v3, v3, 85).m128_f32[0] +
+               _mm_shuffle_ps(v3, v3, 170).m128_f32[0];
+    __m128 v4 = _mm_mul_ps(rb->m_a_vel.v, rb->m_a_vel.v);
+    v4.m128_f32[0] = v4.m128_f32[0] + _mm_shuffle_ps(v4, v4, 85).m128_f32[0] +
+                     _mm_shuffle_ps(v4, v4, 170).m128_f32[0] + v8;
+    rb->m_stable_te = v4.m128_f32[0];
+    if (v4.m128_f32[0] <= 141.61f) {
+        unsigned int m_flags = rb->m_flags;
+        if ((m_flags & 4) == 0) {
+            float v7 = rb->m_stable_energy_time + delta_t;
+            rb->m_stable_energy_time = v7;
+            if (v7 >= 0.5f && rb->m_contact_count >= rb->m_stable_min_contact_count)
+                rb->m_flags = m_flags | 4;
+        }
+    } else {
+        rb->m_flags &= 0xFFFFFFFB;
+        rb->m_stable_energy_time = 0.0f;
+    }
+}
+
+// setup_constraint - ea: 0x897870
+inline void setup_constraint(rigid_body* rb, pulse_sum_node* psn);
+
+// substep - ea: 0x895210
+inline void substep(user_rigid_body* rb, float delta_t);
 
 // prolog_frame_advance (rigid_body) - ea: 0x88EBC0
 inline void prolog_frame_advance(rigid_body* rb, const outer_time* outside_delta_t) {

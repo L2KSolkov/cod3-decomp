@@ -29,6 +29,7 @@ add_library(cod3_broc STATIC
     src/broc/stubs.cpp
 )
 add_library(cod3_physics STATIC
+    src/physics/phys_constraint_solver_multithreaded.cpp
     src/physics/physics_system.cpp
     src/physics/physics_system_internal.cpp
     src/physics/rbc_def_custom.cpp
