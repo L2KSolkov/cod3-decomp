@@ -514,6 +514,7 @@ int          __stdcall D3DDevice_Reset(_D3DPRESENT_PARAMETERS_* pPresentationPar
 int          __stdcall D3DDevice_GetDeviceCaps(_D3DCAPS8* pCaps);
 void         __stdcall D3DDevice_SetGammaRamp(unsigned int Flags, const _D3DGAMMARAMP* pRamp);
 void         __stdcall D3DDevice_SetVertexShader(unsigned int Handle);
+void         __stdcall D3DDevice_SetShaderConstantMode(unsigned int Mode);
 void         __fastcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int Register,
                                                                const void* pConstantData);
 Direct3D*    __stdcall Direct3DCreate8(unsigned int SDKVersion);

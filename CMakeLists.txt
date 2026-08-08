@@ -70,6 +70,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_dx_filters.cpp
     src/ngl/ngl_mesh.cpp
     src/ngl/ngl_lighting.cpp
+    src/ngl/ngl_dx_shader.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC

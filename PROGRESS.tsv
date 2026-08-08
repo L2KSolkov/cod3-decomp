@@ -118,7 +118,7 @@ nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	PORTED	Phase 2: nfl.cpp (
 nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
 ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	PORTED	[ngl_xboxr] ngl_meshedit.cpp: mesh container management (9 funcs) from IDA
-ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	TODO	
+ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	PORTED	ngl_dx_shader.cpp: vshader/pshader registration, bones world/local, fog/light constant setup, internal shader register + init; nglSkeleton/nglSkeletonBone added; SetShaderConstantMode shim
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	PORTED	ngl_xb_palette.cpp: palette create/destroy/bind + nglPalette.h; D3DPalette/_D3DCAPS8/palette shims in d3d8.h
 nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation

@@ -127,6 +127,26 @@ struct nglMesh {
 static_assert(sizeof(nglMesh) == 0x40, "nglMesh size mismatch");
 
 // ============================================================================
+// nglSkeletonBone / nglSkeleton (verified against IDA).
+// ============================================================================
+struct nglSkeletonBone {
+    math::Mat43     Relative;  // +0x00
+    math::Mat43     InvRest;   // +0x40
+    tlFixedString*  Name;      // +0x80
+    int             Parent;    // +0x84
+    unsigned int    Pad0;      // +0x88
+    unsigned int    Pad1;      // +0x8C
+};
+static_assert(sizeof(nglSkeletonBone) == 0x90, "nglSkeletonBone size mismatch");
+
+struct nglSkeleton {
+    tlFixedString*     Name;    // +0x00
+    int                NBones;  // +0x04
+    nglSkeletonBone*   Bones;   // +0x08
+};
+static_assert(sizeof(nglSkeleton) == 0x0C, "nglSkeleton size mismatch");
+
+// ============================================================================
 // Shader/scene parameter sets (4 bytes each, verified against IDA).
 // ============================================================================
 class nglParamSet {
