@@ -236,6 +236,9 @@ struct weaponFileInfoFull : weaponFileInfo_t {
     int  bSlotStackable;  // +0x90
     int  bBoltAction;     // +0x94
     int  bADSPositionInfo; // +0x98
+    int  bAnimateCamReload;  // +0x9C
+    int  bAnimateCamMelee;   // +0xA0
+    int  bAnimateCamFire;    // +0xA4
     float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
 };
 
@@ -1435,4 +1438,230 @@ void CG_RegisterWeapon(int weaponNum)
     }
 LABEL_25:
     return;
+}
+
+extern void* DObjGetTree(void* obj);
+extern int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
+                                    weaponInfo_s* weaponInfo);
+extern void Camera_StartAnimating(void* cam, float minTweenTime);
+extern void Camera_StopAnimating(void* cam, float minTweenTime);
+extern void* gCamera;
+extern int CanInterrupt(void* pAnimTree, void* client_cgs);
+extern void* cgs;
+extern int fireSide;
+extern void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* info);
+extern int CG_StartAnimBlend(int weaponNum, DObj* dobj, int toAnimIndex,
+                             int fromAnimIndex, float blendTime);
+extern void PM_KillQueuedReloadSound(PlayerState* ps);
+
+// ea: 0x0069ED70
+void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
+{
+    void* v3 = (void*)dword_F6A2A0[802 * currCl];
+    if (v3 == nullptr)
+    {
+        CG_ASSERT("0", "c:\\cod\\code\\game\\cg_weapons.cpp", 456);
+        return;
+    }
+    void* Tree = DObjGetTree(v3);
+    DObj* v5 = (DObj*)dword_F6A2A0[802 * currCl];
+    weaponFileInfo_t* InfoForWeapon =
+        (weaponFileInfo_t*)BG_GetInfoForWeapon(ps->weapon);
+    weaponFileInfoFull* pWeap = (weaponFileInfoFull*)InfoForWeapon;
+    int weaponstate = ps->weaponstate;
+    int bInAds = 0;
+    float a1 = 0.1f;
+    if (weaponstate == 5
+            && ps->weaponTime - *(int*)((char*)InfoForWeapon + 0x3C4) > 0
+        || weaponstate == 14
+        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                   ->client->ps.fWeaponPosFrac
+               < 0.1f)
+    {
+        bInAds = 0;
+    }
+    else if ((ps->pm_flags & 0x20) != 0)
+    {
+        bInAds = 1;
+    }
+    int playingADSAnim = 0;
+    if (((weaponFileInfoFull*)InfoForWeapon)->weapClass != 10 /* WEAPCLASS_LMG */)
+        playingADSAnim = ADSMetaAnimPlayer_Update(
+            (char*)sADSMetaAnimPlayer + 8 * currCl, Tree, weapon);
+    weaponFileInfoFull* v8 = (weaponFileInfoFull*)InfoForWeapon;
+    unsigned int v9 = ps->weapAnim & 0xFFFFFDFF;
+    if ((pWeap->bAnimateCamReload != 0
+         && (v9 == 11 || v9 == 12 || v9 == 13 || v9 == 14))
+        || (pWeap->bAnimateCamMelee != 0 && v9 == 8)
+        || (pWeap->bAnimateCamFire != 0 && (v9 == 2 || v9 == 3)))
+    {
+        void* cam = (char*)gCamera + 0x1F0 * currCl;
+        if ((*(unsigned short*)((char*)cam + 0x140) & 1) == 0)
+            Camera_StartAnimating(cam, 0.1f);
+    }
+    else
+    {
+        void* cam = (char*)gCamera + 0x1F0 * currCl;
+        if ((*(unsigned short*)((char*)cam + 0x140) & 1) != 0)
+            Camera_StopAnimating(cam, 0.0f);
+    }
+    v8 = (weaponFileInfoFull*)InfoForWeapon;
+    int v10 = dword_F6A2A8[802 * currCl];
+    if (ps->weapAnim != v10)
+    {
+        switch (v9)
+        {
+        case 0u:
+        case 0x17u:
+            if (CanInterrupt(Tree, (char*)cgs + currCl) && playingADSAnim == 0)
+            {
+                unsigned int v11 = dword_F6A2A8[802 * currCl] & 0xFFFFFDFF;
+                float fadeInTimea = 0.0f;
+                if (v11 == 4 || v11 == 7)
+                    fadeInTimea = 0.1f;
+                int weapClass = ((weaponFileInfoFull*)InfoForWeapon)->weapClass;
+                if ((weapClass == 10 /* LMG */
+                     || weapClass == 17 /* SPOTTER */)
+                    && (ps->pm_flags & 0x20) != 0)
+                {
+                    CG_StartWeaponAnim(ps->weapon, v5, 20, 0.0f, 0.0f, 1);
+                }
+                else if (bInAds != 0)
+                {
+                    CG_StartWeaponAnim(ps->weapon, v5, 3, fadeInTimea, 0.0f,
+                                       1);
+                }
+                else if (ps->ammoclip[BG_ClipForWeapon(ps->weapon)] != 0)
+                {
+                    if (v11 == 2)
+                        fadeInTimea = 0.1f;
+                    CG_StartWeaponAnim(ps->weapon, v5, 1, fadeInTimea, 0.0f,
+                                       1);
+                }
+                else
+                {
+                    CG_StartWeaponAnim(ps->weapon, v5, 2, fadeInTimea, 0.0f,
+                                       1);
+                }
+                goto L177920;
+            }
+            return;
+        case 2u:
+            if (v8->bADSPositionInfo != 0 || v8->slot != 8 /* WEAPSLOT_PISTOL */)
+            {
+                CG_StartWeaponAnim(ps->weapon, v5, 4, 0.1f, 0.0f, 1);
+            }
+            else
+            {
+                if (fireSide)
+                    CG_StartWeaponAnim(ps->weapon, v5, 17, 0.1f, 0.0f, 1);
+                else
+                    CG_StartWeaponAnim(ps->weapon, v5, 4, 0.1f, 0.0f, 1);
+                fireSide = !fireSide;
+            }
+            goto L177920;
+        case 3u:
+            CG_StartWeaponAnim(ps->weapon, v5, 6, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 4u:
+            if ((v10 & 0xFFFFFDFF) != 7
+                || (GetADSLerpTimeRemaining(ps, InfoForWeapon),
+                    CG_StartAnimBlend(ps->weapon, v5, 7, 19,
+                                      a1 - 0.050000001f)) == 0)
+            {
+                CG_StartWeaponAnim(ps->weapon, v5, 7, ps->fWeaponPosFrac * 0.5f,
+                                   0.0f, 1);
+            }
+            goto L177920;
+        case 5u:
+            CG_StartWeaponAnim(ps->weapon, v5, 17, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 6u:
+            CG_StartWeaponAnim(ps->weapon, v5, 18, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 7u:
+            if ((v10 & 0xFFFFFDFF) != 4
+                || (GetADSLerpTimeRemaining(ps, InfoForWeapon),
+                    CG_StartAnimBlend(ps->weapon, v5, 19, 7,
+                                      a1 - 0.050000001f)) == 0)
+            {
+                CG_StartWeaponAnim(ps->weapon, v5, 19,
+                                   (1.0f - ps->fWeaponPosFrac) * 0.5f, 0.0f,
+                                   1);
+            }
+            goto L177920;
+        case 8u:
+            CG_StartWeaponAnim(ps->weapon, v5, 8, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 9u:
+        {
+            float v13 = 0.30000001f;
+            if (ps->fWeaponPosFrac <= 0.0f)
+                v13 = 0.1f;
+            CG_StartWeaponAnim(ps->weapon, v5, 14, v13, 0.0f, 1);
+            goto L177920;
+        }
+        case 0xAu:
+            CG_StartWeaponAnim(ps->weapon, v5, 13, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 0xBu:
+        {
+            float v14 = 0.30000001f;
+            if (ps->fWeaponPosFrac <= 0.0f)
+                v14 = 0.1f;
+            CG_StartWeaponAnim(ps->weapon, v5, 9, v14, 0.0f, 1);
+            goto LABEL_88;
+        }
+        case 0xCu:
+        {
+            float v15 = 0.30000001f;
+            if (ps->fWeaponPosFrac <= 0.0f)
+                v15 = 0.1f;
+            CG_StartWeaponAnim(ps->weapon, v5, 10, v15, 0.0f, 1);
+            goto LABEL_88;
+        }
+        case 0xDu:
+        {
+            float v16 = 0.30000001f;
+            if (ps->fWeaponPosFrac <= 0.0f)
+                v16 = 0.1f;
+            CG_StartWeaponAnim(ps->weapon, v5, 11, v16, 0.0f, 1);
+            goto LABEL_88;
+        }
+        case 0xEu:
+            CG_StartWeaponAnim(ps->weapon, v5, 12, 0.0f, 0.0f, 1);
+            goto LABEL_88;
+        case 0xFu:
+            CG_StartWeaponAnim(ps->weapon, v5, 16, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 0x10u:
+            CG_StartWeaponAnim(ps->weapon, v5, 15, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 0x11u:
+            CG_StartWeaponAnim(ps->weapon, v5, 5, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 0x13u:
+            CG_StartWeaponAnim(ps->weapon, v5, 21, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 0x14u:
+            CG_StartWeaponAnim(ps->weapon, v5, 22, 0.0f, 0.0f, 1);
+            goto L177920;
+        case 0x15u:
+        case 0x16u:
+            goto L177920;
+        default:
+            CG_StartWeaponAnim(ps->weapon, v5, 1, 0.0f, 0.0f, 1);
+            Com_Printf("CG_WeaponRunXModelAnims: Unknown weapon animation %i\n",
+                       ps->weapAnim & 0xFFFFFDFF);
+        L177920:
+            if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                    ->client->ps.queuedReloadSoundPlayStarted)
+            {
+                PM_KillQueuedReloadSound(GetPlayerState(currCl));
+            }
+        LABEL_88:
+            dword_F6A2A8[802 * currCl] = ps->weapAnim;
+            break;
+        }
+    }
 }

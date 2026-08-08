@@ -185,10 +185,14 @@ struct scr_vehicle_t {
 struct PlayerState {
     math::Position3 origin;            // +0x00
     int pm_flags;                      // +0x2C
+    int weaponstate;                   // +0xA8
     float fWeaponPosFrac;              // +0xAC
+    unsigned char queuedReloadSoundPlayStarted;  // +0xB8
     int lastWeapon;                    // +0xC4
     int eFlags;                        // +0xF4
     int pm_type;                       // +0x24
+    int weaponTime;                    // +0x34
+    int weapAnim;                      // +0x530
     int ammoclip[92];                  // +0x2B4
     int weapons[2];                    // +0x424
     unsigned char weaponslots[10];     // +0x42C
