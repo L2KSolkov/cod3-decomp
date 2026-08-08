@@ -302,7 +302,11 @@ add_library(cod3_game_game2 STATIC src/game/game2/stubs_game.cpp)
 add_library(cod3_game_render STATIC src/game/render/stubs_game.cpp)
 add_library(cod3_game_anim STATIC src/game/anim/stubs_game.cpp)
 add_library(cod3_game_mpactors STATIC src/game/mpactors/stubs_game.cpp)
-add_library(cod3_game_cg STATIC src/game/cg/stubs_game.cpp)
+add_library(cod3_game_cg STATIC
+    src/game/cg/stubs_game.cpp
+    src/game/cg/cg_trap.cpp
+    src/game/cg/cg_zone.cpp
+)
 add_library(cod3_game_cl STATIC
     src/game/cl/stubs_game.cpp
     src/game/cl/cl_input.cpp
