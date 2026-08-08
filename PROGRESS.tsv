@@ -33,7 +33,7 @@ mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap
 render_xboxr:ngl_aux.o	render_xboxr	ngl_aux.o	engine	40	TODO	
 nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 aeps_xboxr:apsEffect.o	aeps_xboxr	apsEffect.o	engine	37	PORTED	apsEffect.cpp (full apsEffect 128B class: ctor/Construct/dtor/Destruct, Update, Render, pool InitPool/New/Delete/TermPool/TestAlloc/IsPoolEmpty/GetNumActiveEffects, modifiers, raycast, Report/ReportTemplate/ReportEffects; apsBlockArray<T>; AEPS_VECTOR_NEW<apsEffect>; g_effectTime)
-ngl_xboxr:ngl_debug.o	ngl_xboxr	ngl_debug.o	engine	36	TODO	
+ngl_xboxr:ngl_debug.o	ngl_xboxr	ngl_debug.o	engine	36	TODO	 NOTE: owns nglPerfInfo (currently in ngl_internal.cpp - move on port)
 bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine	36	PORTED	[bdConnection] bdUnicastConnection.cpp: reliable unicast state machine (36 funcs) from Demonware 2.0 + IDA
 peripherals_xboxr:MemoryUnit.o	peripherals_xboxr	MemoryUnit.o	engine	35	TODO	
 aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	PORTED	apsEffectTemplate.cpp (full apsEffectTemplate class 208B: Element/Modifier/Stats, ctor/dtor, per-element setters, RebuildPFD, Fixup, CalcMemoryNeeded/TestAlloc/MemoryMatch, SetElementData, modifiers; sMaxElements/sMaxModifiers/kDefaultTimeScale; apsArray erase/destroy_all)
@@ -54,7 +54,7 @@ render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	TODO
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	PORTED	Phase 2: nvl.cpp (video codec stubs)
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
-ngl_xboxr:ngl_font.o	ngl_xboxr	ngl_font.o	engine	19	TODO	
+ngl_xboxr:ngl_font.o	ngl_xboxr	ngl_font.o	engine	19	TODO	 NOTE: owns nglFontDirectory (currently in ngl_internal.cpp - move on port)
 bdCore:bdCommonAddr-xbox.obj	bdCore	bdCommonAddr-xbox.obj	engine	19	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 zlib_xboxr:unzip.o	zlib_xboxr	unzip.o	engine	18	TODO	
 ngl_xboxr:ngl_internal.o	ngl_xboxr	ngl_internal.o	engine	18	PORTED	ngl_internal.cpp: skip-list resource dirs (tlSkipList.h), init/exit, globals
@@ -64,7 +64,7 @@ bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	PORTED	Phase 2: ported f
 bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	PORTED	bdAddr.cpp: address+port (18 funcs) from IDA + Demonware 2.0
 core_xboxr:PoolAllocator.o	core_xboxr	PoolAllocator.o	engine	17	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
 ngl_xboxr:ngl_quad.o	ngl_xboxr	ngl_quad.o	engine	17	PORTED	[ngl_xboxr] ngl_quad.cpp: quad helpers (17 funcs)
-ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	TODO	
+ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	TODO	 NOTE: owns nglMeshDirectory/nglMaterialDirectory (currently in ngl_internal.cpp - move on port)
 ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	TODO	
 nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	PORTED	[phys_xboxr] rbc_def_generic.cpp: generic constraints (16 funcs)
@@ -130,7 +130,7 @@ nextgen.o		nextgen.o	game	8	PORTED	[game:nextgen.o] nextgen.cpp: CG_MotionBlur +
 aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math helpers: quaternion ops, ortho basis, AABB, Shepperd, fast SinCos; apsQuaternion fixed to struct/operator+=
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file streaming stubs)
-ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	TODO	
+ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	PORTED	ngl_texture.cpp: texture dir globals + apk callbacks; tlSkipList.h/tlFixedString.h rewritten binary-exact; apk.h/cpp field layouts fixed (apkFile at +8)
 phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	PORTED	[phys_xboxr] phys_util.cpp: nuge aggregate utils (8 funcs)
 bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
 bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	PORTED	[bdConnection] bdLoopbackConnection.cpp: loopback connection (8 funcs) from Demonware 2.0 + IDA
@@ -150,7 +150,7 @@ nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	PORTED	Phase 3: nsl.cpp
 nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
 ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	TODO	
-ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	TODO	
+ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	TODO	 NOTE: owns nglMorphDirectory (currently in ngl_internal.cpp - move on port)
 nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
 phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	PORTED	[phys_xboxr] rigid_body.cpp: body setup + forces (7 funcs)
 bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation

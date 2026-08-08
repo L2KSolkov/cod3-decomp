@@ -1,5 +1,5 @@
 // ============================================================================
-// APK — Asset Package (APKF format) file loader
+// APK - Asset Package (APKF format) file loader
 // Source: source/apk.cpp (line refs: 0x7B, 0xAA, 0x109)
 // ea: 0x834050-0x834D70 (23 functions)
 // ============================================================================
@@ -12,56 +12,67 @@
 namespace apk {
 
 // ============================================================================
-// apkFileSection — a data section within the APK file (24 bytes)
+// apkFileSection - a data section within the APK file (24 bytes)
+// Verified against apk.o: Name fixed up at +0x00; Size + Data read at +0x10 /
+// +0x14 (GetDataSize ea 0x8342B0, apkLoadFileInPlace ea 0x834B40).
 // ============================================================================
 struct apkFileSection {
     const char* Name;   // +0x00
-    void*       Data;   // +0x04
-    uint32_t    Size;   // +0x08
-    uint32_t    Flags;  // +0x0C
-    uint32_t    pad[3]; // +0x10
+    uint32_t    pad0;   // +0x04 (TODO: unknown section fields)
+    uint32_t    pad1;   // +0x08
+    uint32_t    pad2;   // +0x0C
+    uint32_t    Size;   // +0x10
+    void*       Data;   // +0x14
 };
+static_assert(sizeof(apkFileSection) == 0x18, "apkFileSection size mismatch");
 
 // Forward
 class apkFile;
 class apkFileEntry;
 
 // ============================================================================
-// apkFileTypeEntry — registered file type within the APK
+// apkFileTypeEntry - registered file type within the APK.
+// 20-byte header + NSections dword section table (entry stride 4*NSections+20).
+// Verified against apk.o (GetFileTypeEntry ea 0x8343C0, InvokeLoadCallbacks
+// ea 0x8346B0).
 // ============================================================================
 struct apkFileTypeEntry {
-    uint32_t Type;       // +0x00
-    uint32_t Version;    // +0x04 — actually shares space with NSections
-    uint32_t NSections;  // (derived from apkFile context)
-    uint32_t EntryStride;// +0x08
-    uint32_t NEntries;   // +0x0C
-    uint8_t* FirstEntry; // +0x10 — first entry pointer (fixed-up at load)
+    uint32_t Type;              // +0x00
+    uint32_t Version;           // +0x04
+    uint32_t NSections;         // +0x08
+    apkFileEntry* FirstEntry;   // +0x0C - relative until fixed up at load
+    uint32_t NEntries;          // +0x10
+    // +0x14: uint32_t SectionData[NSections] - (sectionIndex<<24)|offset
 };
+static_assert(sizeof(apkFileTypeEntry) == 0x14, "apkFileTypeEntry size mismatch");
 
 // ============================================================================
-// apkFileEntry — individual file entry (variable size)
+// apkFileEntry - individual file entry (variable size: 4 + 4*NSections)
 // ============================================================================
 class apkFileEntry {
 public:
-    const char* Name;    // +0x00 — fixed-up name
-    uint8_t     Sections[1]; // variable — per-section byte offsets (NSections bytes)
+    const char* Name;       // +0x00 - fixed-up name
+    uint32_t    Sections[1];// +0x04 - per-section data pointers (NSections dwords)
 
     void* GetData(apkFile* file, int section, bool assertIfNoData);
     uint32_t GetDataSize(apkFile* file, int section, bool assertIfNoData, void** dataPtr);
 };
 
 // ============================================================================
-// apkFile — loaded APK file object (in-place loaded)
+// apkFile - loaded APK file object (in-place loaded).
+// The in-memory object starts at file offset 8 (the Flags field); Magic and
+// Version live at file offsets 0 and 4, before the struct. Verified against
+// apk.o: FileTypes at +0x10, NSections at +0x08, Sections at +0x0C
+// (GetFileTypeEntry / GetSectionIndex disasm), LastFrameRef at +0x04
+// (nglCanReleaseFile ea 0x840FF0 reads [File+4]).
 // ============================================================================
 class apkFile {
 public:
-    uint32_t        Magic;      // +0x00 — "APKF"
-    uint32_t        Version;    // +0x04 — 260
-    uint32_t        Flags;      // +0x08 — bit 0=in-place, bit 1=owned
-    uint32_t        NSections;  // +0x0C
-    apkFileSection* Sections;   // +0x10
-    int             LastFrameRef;  // +0x14 (nglCanReleaseFile)
-    apkFileTypeEntry* FileTypes;// +0x14 — first file type entry
+    uint32_t        Flags;      // +0x00 - bit 0=in-place, bit 1=owned
+    int             LastFrameRef; // +0x04
+    uint32_t        NSections;  // +0x08
+    apkFileSection* Sections;   // +0x0C
+    apkFileTypeEntry* FileTypes;// +0x10 - first file type entry
 
     apkFileTypeEntry* GetFileTypeEntry(uint32_t type);
     apkFileEntry* GetFirstFile(uint32_t type);

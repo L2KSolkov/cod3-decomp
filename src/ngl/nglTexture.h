@@ -13,9 +13,11 @@
 #include <cstddef>
 
 #include "d3d8.h"
+#include "core/tlSkipList.h"
 
 namespace apk {
 class apkFile;
+class apkFileEntry;
 }
 class tlFixedString;
 
@@ -33,6 +35,24 @@ struct nglTexture {
     nglTexture**    Frames;         // +0x28
 };
 static_assert(sizeof(nglTexture) == 0x2C, "nglTexture size mismatch");
+
+// Skip-list key accessor (free function, defined in ngl_internal.cpp).
+const tlFixedString* GetKey(const nglTexture* t);
+
+// ngl_texture.o (data, defined in ngl_texture.cpp)
+extern nglTexture* nglDefaultTex;
+extern nglTexture* nglWhiteTex;
+extern int nglTextureAnimFrame;
+extern float nglIFLSpeed;
+extern tlSkipList<nglTexture, tlFixedString> nglTextureDirectory;
+
+// ngl_dx_texture.o (functions, not yet ported)
+extern nglTexture* nglGetFrontBufferTex(void);
+extern void nglSaveTexture(nglTexture* Tex, const char* FileName);
+extern void ngliUnloadTexture(apk::apkFile* File, apk::apkFileEntry* Entry);
+
+// ngl_dx_core.o (function, not yet ported)
+extern void ngliWaitForResource(void);
 
 // ngl_dx_tex_create.o (data, not yet ported)
 extern nglTexture nglBackBufferTex;

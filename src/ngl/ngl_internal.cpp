@@ -41,8 +41,6 @@ extern void nglDxResetDevice(void);
 bool nglInitialized = false;
 unsigned int nglVBlankCount = 0;
 int nglFrame = 0;
-nglTexture* nglDefaultTex = NULL;
-nglTexture* nglWhiteTex = NULL;
 void* (*nglResourceCallbackFunction)(const tlFixedString&, unsigned int) = NULL;
 
 struct nglDisplayModeInfo {
@@ -60,12 +58,20 @@ nglPerfInfoStruct nglPerfInfo = { 0.0f };
 
 char nglVersionString[4] = { 0, 0, 0, 0 };
 
-// Skip-list resource directories (nglTexture/nglFont/nglMesh/nglMaterial/nglMorphSet).
-tlSkipList<nglTexture, tlFixedString> nglTextureDirectory;
+// Skip-list resource directories (nglFont/nglMesh/nglMaterial/nglMorphSet).
+// nglTextureDirectory + nglDefaultTex/nglWhiteTex live in ngl_texture.cpp
+// (map-attributed to ngl_texture.o); nglFontDirectory/nglMeshDirectory/
+// nglMaterialDirectory/nglMorphDirectory belong to ngl_font.o/ngl_mesh.o/
+// ngl_morph.o and will move there when those units port.
 tlSkipList<nglFont, tlFixedString> nglFontDirectory;
 tlSkipList<nglMesh, tlFixedString> nglMeshDirectory;
 tlSkipList<nglMaterial, tlFixedString> nglMaterialDirectory;
 tlSkipList<nglMorphSet, tlFixedString> nglMorphDirectory;
+
+// ngl_texture.o (defined in ngl_texture.cpp)
+extern nglTexture* nglDefaultTex;
+extern nglTexture* nglWhiteTex;
+extern tlSkipList<nglTexture, tlFixedString> nglTextureDirectory;
 
 // GetKey accessors for the skip list template.
 const tlFixedString* GetKey(const nglTexture* t) { return t->FileName; }
@@ -172,7 +178,7 @@ void nglSetResourceCallback(void* (*Callback)(const tlFixedString&, unsigned int
 // nglCanReleaseFile - ea: 0x840FF0
 // ============================================================================
 bool nglCanReleaseFile(apk::apkFile* File) {
-    return File->LastFrameRef + 1 < (unsigned int)nglFrame;
+    return File->LastFrameRef + 1 < nglFrame;
 }
 
 // ============================================================================
