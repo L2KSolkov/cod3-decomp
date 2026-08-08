@@ -310,6 +310,7 @@ add_library(cod3_game_cg STATIC
     src/game/cg/cg_controllers.cpp
     src/game/cg/cg_dobj.cpp
     src/game/cg/cg_main.cpp
+    src/game/cg/cg_weapon.cpp
 )
 add_library(cod3_game_cl STATIC
     src/game/cl/stubs_game.cpp

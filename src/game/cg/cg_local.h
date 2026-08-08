@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+#include "core/math_types.h"
+
 struct Entity;
 
 // Renderer export table (refexport_t; matches the layout used by core.o
@@ -83,6 +85,32 @@ struct weaponFileInfo_t {
     char  szKillIcon[64];      // +0x00
     char  szInternalName[64];  // +0x40
     unsigned char bWideKillIcon;  // +0x80
+};
+
+// PlayerState - subset of the fields cg.o touches (full size 0x5D0)
+struct PlayerState {
+    math::Position3 origin;            // +0x00
+    int pm_flags;                      // +0x2C
+    float fWeaponPosFrac;              // +0xAC
+    int lastWeapon;                    // +0xC4
+    int eFlags;                        // +0xF4
+    int ammoclip[92];                  // +0x2B4
+    int weapons[2];                    // +0x424
+    unsigned char weaponslots[10];     // +0x42C
+    int weapon;                        // +0xA4
+    int vehPos;                        // +0x524
+    int vehType;                       // +0x528
+    unsigned char _pad[0x5D0 - 0x52C];
+};
+
+struct AnimIKFireEvent {
+    int fireTime;    // +0x00
+    int fireWeapon;  // +0x04
+};
+
+struct Client {
+    PlayerState ps;  // +0x00
+    AnimIKFireEvent AnimIKFireEvents[15];  // +0x5D0
 };
 
 namespace AeAssert {
