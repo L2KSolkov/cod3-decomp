@@ -44,6 +44,25 @@ namespace Broc {
 enum EUndefined { UNDEFINED };
 
 // ============================================================================
+// Broc::dyn_array<T> - dynamic array (12 bytes: mElements/mCapacity/mSize).
+// ============================================================================
+template <typename T>
+struct dyn_array {
+    T*           mElements;   // +0x00
+    unsigned int mCapacity;   // +0x04
+    unsigned int mSize;       // +0x08
+
+    dyn_array() : mElements(NULL), mCapacity(0), mSize(0) {}  // ea: 0x93305B
+    ~dyn_array();  // ea: 0x933129
+
+    T& operator[](unsigned int idx) { return mElements[idx]; }
+    const T& operator[](unsigned int idx) const { return mElements[idx]; }
+};
+
+template <typename T> int size(const dyn_array<T>& ar) { return (int)ar.mSize; }
+template <typename T> void push(dyn_array<T>& ar, const T& elt);
+
+// ============================================================================
 // Broc::vector — 3D vector (12 bytes)
 // ============================================================================
 struct vector {
@@ -300,6 +319,7 @@ struct bint {
     bint& operator=(int v) { mVal = v; return *this; }
     operator int() const { AssertDefined(); return mVal; }
     int operator++(int) { AssertDefined(); return ++mVal; }
+    int operator++() { AssertDefined(); return ++mVal; }
     void AssertDefined() const {}  // ea: 0x934790
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(bint) == 4, "bint size mismatch");
@@ -376,6 +396,23 @@ unsigned int thread_create(bool createHandle, const char* file, int line,
                            const char* func, void* functor);
 float RandomFloatRange(float fMin, float fMax);
 int RandomInt(int iMax);
+void wait(float seconds);
+void wait_accurate(float seconds);
+void GetEntArray(const Broc::string* name, unsigned int key,
+                 Broc::dyn_array<Broc::entity>* out, unsigned int flags);
+Broc::entity* GetEnt(Broc::entity* result, const Broc::string* val, HashStr key,
+                     unsigned int flags);
+void Delete(Broc::entity* e);
+Broc::entity* Spawn(Broc::entity* result, const Broc::string* classname,
+                    const Broc::vector* origin, int pakInfo);
+void SetModel(Broc::entity* e, const Broc::string* model, int whichPak);
+void MoveTo(Broc::entity* e, const Broc::vector* vPos, float time,
+            float accTime, float decTime);
+int EffectEventPlay(Broc::entity* e, const Broc::string* script);
+template <typename... Args> void println(const char* fmt, const Args&... args);
+template <typename T> int size(const Broc::dyn_array<T>& ar);
+template <typename T> void push(Broc::dyn_array<T>& ar, const T& elt);
+template <typename T> void push(Broc::dyn_array<T>& ar, const T* elt);
 }
 
 // ============================================================================

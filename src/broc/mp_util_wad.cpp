@@ -7,6 +7,18 @@
 #include "mp_util_wad.h"
 #include "engine/broc_types.h"
 
+using Broc::RandomFloatRange;
+using Broc::RandomInt;
+using Broc::wait;
+using Broc::wait_accurate;
+using Broc::thread_create;
+using Broc::GetEnt;
+using Broc::Delete;
+using Broc::Spawn;
+using Broc::SetModel;
+using Broc::MoveTo;
+using Broc::EffectEventPlay;
+
 namespace mp_anim_wad {
 int ResolveAnim(unsigned int treename, unsigned int animname,
                 unsigned int* getVal, unsigned int setVal);
@@ -1233,6 +1245,35 @@ Broc::bbool* IsEEDefined_audio_ambmin(Broc::bbool* result, Broc::entity ent) {
 } // namespace mp_util_wad
 
 // ============================================================================
+// _mp_airplanes - airplane flyby script (72-byte mp_plane).
+// ============================================================================
+namespace _mp_airplanes {
+struct mp_plane {
+    Broc::string plane_model;       // +0x00
+    Broc::string plane_sound;       // +0x04
+    Broc::bint   plane_speed;       // +0x08
+    Broc::bfloat plane_min_delay;   // +0x0C
+    Broc::bfloat plane_max_delay;   // +0x10
+    Broc::bfloat plane_sound_delay; // +0x14
+    Broc::dyn_array<Broc::vector> plane_start_orgs;  // +0x18
+    Broc::dyn_array<Broc::vector> plane_end_orgs;    // +0x24
+    Broc::dyn_array<float>        plane_dists;       // +0x30
+    Broc::dyn_array<Broc::vector> plane_angles;      // +0x3C
+};
+
+extern void* plane_flyby__functor(Broc::entity self, mp_plane plane_struct, Broc::bint num);
+extern void* plane_roll__functor(Broc::entity self);
+extern void* plane_flyby_thread__functor(Broc::entity self, mp_plane plane_struct);
+
+void plane_flyby_setup(Broc::string t_name, Broc::string model, Broc::string sound,
+                       Broc::bint speed, Broc::bfloat min_delay, Broc::bfloat max_delay,
+                       Broc::bfloat sound_delay);
+void plane_flyby_thread(Broc::entity self, mp_plane plane_struct);
+void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num);
+void plane_roll(Broc::entity self);
+}
+
+// ============================================================================
 // Broc free helpers + gBrocAPI-backed wrappers (mp_util_wad.o COMDATs).
 // ============================================================================
 namespace Broc {
@@ -1306,4 +1347,64 @@ bool operator==(Broc::bint lhs, Broc::bint rhs) {
 
 bool operator!=(Broc::bint lhs, Broc::bint rhs) {
     return lhs.mVal != rhs.mVal;
+}
+
+// ============================================================================
+// _mp_airplanes::plane_flyby_thread - ea: 0x934E80
+// ============================================================================
+namespace _mp_airplanes {
+void plane_flyby_thread(Broc::entity self, mp_plane plane_struct) {
+    (void)self;
+    Broc::bint count;
+    while (1) {
+        float fMax = (float)plane_struct.plane_max_delay;
+        float fMin = (float)plane_struct.plane_min_delay;
+        fMax = RandomFloatRange(fMin, fMax);
+        Broc::wait(fMax);
+        int v2 = Broc::size(plane_struct.plane_start_orgs);
+        int v3 = RandomInt(v2);
+        count = v3 + 1;
+        for (Broc::bint i = 0; i.mVal < count.mVal; ++i) {
+            void* ftor = plane_flyby__functor(Broc::entity(), plane_struct, i);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_airplanes.bro",
+                                __LINE__, "plane_flyby", ftor);
+        }
+    }
+}
+
+// ============================================================================
+// _mp_airplanes::plane_flyby - ea: 0x9351C0
+// ============================================================================
+void plane_flyby(Broc::entity self, mp_plane plane_struct, Broc::bint num) {
+    Broc::string inClassname("script_model");
+    Broc::entity plane;
+    Broc::vector* startOrg = &plane_struct.plane_start_orgs[(unsigned int)num];
+    Broc::Spawn(&plane, &inClassname, startOrg, 0);
+    inClassname.~string();
+    Broc::SetModel(&plane, &plane_struct.plane_model, 0);
+    Broc::vector* angles = &plane_struct.plane_angles[(unsigned int)num];
+    // plane.angles = *angles (entity angles assignment)
+    float* dist = &plane_struct.plane_dists[(unsigned int)num];
+    float time = *dist / (float)plane_struct.plane_speed;
+    float randTime = RandomFloatRange(time, time * 1.05f);
+    void* rollFtor = plane_roll__functor(plane);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_airplanes.bro",
+                        __LINE__, "plane_roll", rollFtor);
+    Broc::vector* endOrg = &plane_struct.plane_end_orgs[(unsigned int)num];
+    Broc::MoveTo(&plane, endOrg, randTime, 0.0f, 0.0f);
+    float soundDelay = (float)plane_struct.plane_sound_delay;
+    Broc::wait_accurate(soundDelay);
+    Broc::EffectEventPlay(&plane, &plane_struct.plane_sound);
+    Broc::wait_accurate(randTime - soundDelay);
+    Broc::Delete(&plane);
+    plane_struct.plane_model.~string();
+    plane_struct.plane_sound.~string();
+}
+
+// ============================================================================
+// _mp_airplanes::plane_roll - ea: 0x935680
+// ============================================================================
+void plane_roll(Broc::entity self) {
+    (void)self;
+}
 }
