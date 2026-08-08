@@ -280,6 +280,10 @@ add_library(cod3_game_core STATIC
     src/game/core/files.cpp
     src/game/core/cvar.cpp
     src/game/core/common.cpp
+    src/game/core/hunk_mem.cpp
+    src/game/core/field.cpp
+    src/game/core/info.cpp
+    src/game/core/hash_string.cpp
 )
 add_library(cod3_game_game2 STATIC src/game/game2/stubs_game.cpp)
 add_library(cod3_game_render STATIC src/game/render/stubs_game.cpp)
