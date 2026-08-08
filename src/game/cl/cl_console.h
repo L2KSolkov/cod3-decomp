@@ -88,6 +88,7 @@ extern struct cls_t {
     int state;
     int endgamemenu;
     int cddialog;
+    int servername[1024 + 32];
 } cls;
 extern int dword_F170FC;   // frametime (ms)
 extern int dword_F1719C;   // screen width

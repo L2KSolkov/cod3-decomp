@@ -289,6 +289,7 @@ add_library(cod3_game_cl STATIC
     src/game/cl/cl_snapshot.cpp
     src/game/cl/cl_debug.cpp
     src/game/cl/cl_dobj.cpp
+    src/game/cl/cl_localclient.cpp
 )
 add_library(cod3_game_streamer STATIC src/game/streamer/stubs_game.cpp)
 add_library(cod3_game_physics STATIC src/game/physics/stubs_game.cpp)
