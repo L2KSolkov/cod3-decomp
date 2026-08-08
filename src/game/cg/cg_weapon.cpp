@@ -75,7 +75,7 @@ extern void Com_Error(int code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void* GetTextureData(const char* name, int image_type,
                             const char* fromPak);
-extern void* va(const char* fmt, ...);
+extern char* va(const char* fmt, ...);
 extern const char* SEH_StringEd_GetString(const char* pszReference);
 extern void* bg_itemlist;
 extern void CG_RegisterItemVisuals(int itemNum);
@@ -1279,4 +1279,160 @@ LABEL_18:
         if (!((weaponFileInfoFull*)InfoForWeapon)->bBoltAction)
             CG_EjectWeaponBrass(v6, event);
     }
+}
+
+// ea: 0x006A9CC0
+void CG_RegisterWeapon(int weaponNum)
+{
+    CurPakId();
+    if (!weaponNum)
+        return;
+    if (weaponNum < 1)
+        CG_ASSERT("weaponNum >= 1", "c:\\cod\\code\\game\\cg_weapons.cpp",
+                  1163);
+    if (weaponNum > BG_GetNumWeapons())
+        CG_ASSERT("weaponNum <= BG_GetNumWeapons()",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 1164);
+    weaponInfo_s* v1 = &((weaponInfo_s*)cg_weapons)[weaponNum];
+    weaponFileInfo_t* InfoForWeapon =
+        (weaponFileInfo_t*)BG_GetInfoForWeapon(weaponNum);
+    if (!v1->registered && InfoForWeapon)
+    {
+        memset(v1, 0, sizeof(weaponInfo_s));
+        v1->registered = 1;
+        v1->item = &((char*)bg_itemlist)[52 * weaponNum];
+        CG_RegisterItemVisuals(weaponNum);
+        const char* szGunXModel = (const char*)&((char*)InfoForWeapon)[0x140];
+        const char* szHandXModel = (const char*)&((char*)InfoForWeapon)[0x100];
+        const char* szInternalName = (const char*)&((char*)InfoForWeapon)[0x40];
+        const char* szDisplayName = (const char*)&((char*)InfoForWeapon)[0xC0];
+        const char* szWorldModel = (const char*)&((char*)InfoForWeapon)[0x180];
+        const char* szPickupModel = (const char*)&((char*)InfoForWeapon)[0x1C0];
+        if (szGunXModel[0] != 0)
+        {
+            if (!szHandXModel[0])
+                Com_Error(2 /* ERR_DROP */, "%s", szDisplayName);
+            if (!szInternalName[0])
+                Com_Error(2, "%s", szDisplayName);
+            void* Bank = AnimBankManager_GetBank(AnimBankManager_sInst,
+                                                 PAK_ID_MIN);
+            void* AnimTree =
+                AnimBank_GetAnimTree(Bank, szInternalName);
+            if (!AnimTree)
+            {
+                CG_ASSERT("pAnims",
+                          "c:\\cod\\code\\game\\cg_weapons.cpp", 1266);
+                goto LABEL_25;
+            }
+            XAnimEntry* entries = (XAnimEntry*)((char*)AnimTree + 4);
+            int entryCount = *(int*)((char*)AnimTree + 0x38);
+            for (int ai = 0; ai < entryCount; ++ai)
+            {
+                XAnimEntry* v7 = &entries[ai];
+                unsigned int hash = v7->hash;
+                v7->lastAttempt = 0;
+                void* Anim = cdGetAnim(hash);
+                v7->anim = Anim;
+            }
+            for (int i = 0; i < 25; ++i)
+                v1->viewModelAnimRates[i] = 1.0f;
+            v1->viewModelAnimRates[5] = 0.0f;
+            v1->viewModelAnimRates[8] = 0.0f;
+            v1->viewModelAnimRates[9] = 0.0f;
+            v1->viewModelAnimRates[10] = 0.0f;
+            v1->viewModelAnimRates[11] = 0.0f;
+            v1->viewModelAnimRates[12] = 0.0f;
+            v1->viewModelAnimRates[13] = 0.0f;
+            v1->viewModelAnimRates[14] = 0.0f;
+            v1->viewModelAnimRates[15] = 0.0f;
+            v1->viewModelAnimRates[16] = 0.0f;
+            XAnimIsLooped(AnimTree, 0x17);
+            XAnimIsLooped(AnimTree, 0x18);
+        }
+        if (szWorldModel[0])
+        {
+            int v20 = CurPakId();
+            void* result;
+            v1->iWorldSurfIndex.mValue =
+                RE_RegisterModel(&result, szWorldModel, v20, 7);
+            v1->iWorldSurfIndex.mPakId = *(int*)((char*)&result + 4);
+            ValidatePakId(v1->iWorldSurfIndex.mPakId);
+            if (!v1->iWorldSurfIndex.mValue)
+                Com_Printf("WARNING: Weapon %s could not load world model\n",
+                           szWorldModel);
+        }
+        if (szPickupModel[0])
+        {
+            int v21 = CurPakId();
+            void* result;
+            v1->iPickupSurfIndex.mValue =
+                RE_RegisterModel(&result, szPickupModel, v21, 7);
+            v1->iPickupSurfIndex.mPakId = *(int*)((char*)&result + 4);
+        }
+        else
+        {
+            v1->iPickupSurfIndex = v1->iWorldSurfIndex;
+        }
+        v1->weaponIcon[0] = GetTextureData(
+            *(const char**)((char*)bg_itemlist + 52 * weaponNum + 20), 0,
+            "mp_frontEnd");
+        v1->weaponIcon[1] = GetTextureData(
+            va("%s_select",
+               *(const char**)((char*)bg_itemlist + 52 * weaponNum + 20)),
+            0, "mp_frontEnd");
+        v1->ammoIcon = GetTextureData(
+            *(const char**)((char*)bg_itemlist + 52 * weaponNum + 24), 0,
+            "mp_frontEnd");
+        const char* szReticleCenter =
+            (const char*)&((char*)InfoForWeapon)[0x2A0];
+        if (szReticleCenter[0])
+            v1->hReticleCenter = GetTextureData(szReticleCenter, 0,
+                                                "mp_frontEnd");
+        const char* szReticleSide =
+            (const char*)&((char*)InfoForWeapon)[0x2E0];
+        if (szReticleSide[0])
+            v1->hReticleSide = GetTextureData(szReticleSide, 0, "mp_frontEnd");
+        const char* szOverlayShader =
+            (const char*)&((char*)InfoForWeapon)[0x320];
+        if (szOverlayShader[0])
+            v1->hADSOverlay = GetTextureData(szOverlayShader, 0,
+                                             "mp_frontEnd");
+        const char* szProjectileModel =
+            (const char*)&((char*)InfoForWeapon)[0x200];
+        if (szProjectileModel[0])
+        {
+            int v28 = CurPakId();
+            void* v39;
+            void* v29 = RE_RegisterModel(&v39, szProjectileModel, v28, 7);
+            v1->iMissileSurfIndex.mValue = *(void**)v29;
+            v1->iMissileSurfIndex.mPakId = *(int*)((char*)v29 + 4);
+            ValidatePakId(v1->iMissileSurfIndex.mPakId);
+            if (!v1->iMissileSurfIndex.mValue)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\cg_weapons.cpp";
+                AeAssert::gCurrentLine = 1434;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning(
+                        "Weapon %s does not specify a valid projectile "
+                        "model (%s)\n",
+                        szInternalName, szWorldModel))
+                    __debugbreak();
+            }
+        }
+        const char* szHudIcon = (const char*)&((char*)InfoForWeapon)[0x3A0];
+        if (szHudIcon[0])
+            v1->hHudIcon = GetTextureData(szHudIcon, 0, "mp_frontEnd");
+        const char* szAmmoIcon = (const char*)&((char*)InfoForWeapon)[0x3E0];
+        if (szAmmoIcon[0])
+            v1->hAmmoIcon = GetTextureData(szAmmoIcon, 0, "mp_frontEnd");
+        v1->pszTranslatedDisplayName =
+            SEH_StringEd_GetString(szDisplayName);
+        if (!v1->pszTranslatedDisplayName)
+            v1->pszTranslatedDisplayName = szDisplayName;
+    }
+LABEL_25:
+    return;
 }

@@ -217,6 +217,7 @@ extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
 }
 
 #define CG_ASSERT(expr, file, line)                                       \
