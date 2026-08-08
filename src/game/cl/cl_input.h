@@ -60,6 +60,12 @@ struct clSnapshot {
     int messageNum;
     int serverTime;
 };
+struct outPacket_t {
+    int p_cmdNumber;   // +0x00
+    int p_serverTime;  // +0x04
+    int p_realtime;    // +0x08
+};
+static_assert(sizeof(outPacket_t) == 0x0C, "outPacket_t size mismatch");
 struct clSnap_t {
     clSnapshot snap;
     float viewangles[3];
@@ -69,6 +75,8 @@ struct clSnap_t {
     int joystickAxis[8];
     int cmdNumber;
     usercmd_s cmds[64];
+    int serverId;
+    outPacket_t outPackets[1];
     int serverTime;
     int cgameUserCmdValue;
     int cgameUserHoldableValue;
@@ -252,8 +260,8 @@ void IN_SprintDown(int key, int time);
 void IN_SprintUp(int key, int time);
 void IN_SprintBreathDown(int key, int time);
 void IN_SprintBreathUp(int key, int time);
-void IN_HoldBreathDown();
-void IN_HoldBreathUp();
+void IN_HoldBreathDown(int key, int time);
+void IN_HoldBreathUp(int key, int time);
 void IN_BinocularsDown(int key, int time);
 void IN_BinocularsUp(int key, int time);
 void IN_ActivateMoveUpDown(int key, int time);

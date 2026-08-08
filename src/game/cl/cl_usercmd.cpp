@@ -32,7 +32,7 @@ extern struct cvar_t* cl_anglespeedkey;
 extern struct cvar_t* cl_yawspeed;
 extern struct cvar_t* cl_pitchspeed;
 extern struct cvar_t* cl_stanceHoldTime;
-extern usercmd_s* CL_CreateCmd(usercmd_s* result);
+extern usercmd_s CL_CreateCmd();
 
 // Client entity view for view-angle setters
 struct ClientEntityView {
@@ -278,8 +278,7 @@ void CL_SetViewAnglesAxis(int axis, float angle)
         EntityManager_GetPlayer2(EntityManager_sInst2, currCl)->client;
     cl[currCl].viewangles[axis] = angle - (client->ps.delta_angles[axis] * 0.0054931641f);
     client->ps.viewangles[axis] = angle;
-    usercmd_s result;
-    cl[currCl].cmds[cl[currCl].cmdNumber & 0x3F] = *CL_CreateCmd(&result);
+    cl[currCl].cmds[cl[currCl].cmdNumber & 0x3F] = CL_CreateCmd();
 }
 
 // ea: 0x5287F0

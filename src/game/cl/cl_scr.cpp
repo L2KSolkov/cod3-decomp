@@ -8,6 +8,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 // ============================================================================
@@ -26,6 +27,73 @@ extern int dword_F171B8;
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern void CL_CubemapShotUsage();
+extern int com_skelTimeStamp;
+extern int bCL_AllowedAllocSkel;
+extern int lFirstLocalClientIndex;
+extern int lLastLocalClientIndex;
+extern int currCl;
+extern int dword_F170F8;
+extern int dword_F170F0;
+extern int dword_F170FC;
+extern int dword_F170EC;
+extern int time_frontend;
+extern int time_backend;
+extern bool gDisableRendering;
+extern float Com_GetScreenTimeDelta();
+extern void nullsub_35();
+extern int scr_initialized;
+extern int unk_F6A290;
+extern void Cmd_ExecuteServerString(const char* text);
+extern void CL_CGameRendering();
+extern void Con_DrawConsole();
+extern void SoundDevice_UndampenAllSounds(void* self);
+extern void* SoundDevice_sInst;
+extern void Cvar_Set(const char* var_name, const char* value);
+extern void CL_GetGlconfig(void* glconfig);
+
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
+#define ASSERT(expr, file, line)                                          \
+    do {                                                                  \
+        AeAssert::gCurrentAuthor = AeAssert::COD3;                        \
+        AeAssert::gCurrentFile = (file);                                  \
+        AeAssert::gCurrentLine = (line);                                  \
+        AeAssert::gCurrentExpr = (expr);                                  \
+        if (!AeAssert::IsIgnored()                                        \
+            && AeAssert::Assert("old cod assert"))                        \
+            __debugbreak();                                               \
+    } while (0)
+
+// FEManager front-end view (shell.o owns the real class)
+struct fe_menusys_view {
+    bool IsSystemActive();
+};
+struct fe_manager_view {
+    void* IGO;
+    fe_menusys_view* fems;
+    char loadLevel[128];
+    bool IGO_active;
+    fe_menusys_view** mIGMS;
+    fe_menusys_view* mAARS;
+};
+extern fe_manager_view g_femanager_fe;
+extern void FEManager_DrawInGameMenus(fe_manager_view* self);
+extern void FEManager_DrawFrontEnd(fe_manager_view* self);
+extern void FEManager_DrawAARMenus(fe_manager_view* self);
+extern void FEManager_UpdateFrontEnd(fe_manager_view* self, float time_inc);
+extern void FEManager_UpdateAARMenus(fe_manager_view* self, float time_inc);
+extern void FEManager_UpdateInGameMenus(fe_manager_view* self, float time_inc);
+extern void* InteractionController_Inst(int instance);
+extern int InteractionController_DoRenderText(void* self, int index);
+extern void InteractionController_RenderText(void* self);
 
 // re renderer externs
 struct re_api2 {
@@ -121,6 +189,160 @@ void SCR_DrawSmallChar(int x, int y, int ch)
     const char* v5 = va("%c", ch);
     re.Text_Paint(fX, (float)(y + 12) * v4, 5, v4 * 0.5f, setColor, v5,
                   v3 * 8.0f, 0, 0);
+}
+
+// ea: 0x533D60
+void SCR_DrawScreenField()
+{
+    if (cls.state != 5)  // CA_MAP_RESTART
+    {
+        int v0 = currCl;
+        if (currCl != lFirstLocalClientIndex)
+        {
+            if (g_femanager_fe.mAARS != nullptr
+                && g_femanager_fe.mAARS->IsSystemActive())
+                return;
+            v0 = currCl;
+        }
+        if (cls.state != 0)  // CA_DISCONNECTED
+        {
+            if (cls.state == 1)  // CA_LOADING
+            {
+                if (g_femanager_fe.mIGMS != nullptr
+                    && g_femanager_fe.mIGMS[v0] != nullptr
+                    && g_femanager_fe.mIGMS[v0]->IsSystemActive())
+                {
+                    FEManager_DrawInGameMenus(&g_femanager_fe);
+                }
+                if (g_femanager_fe.fems != nullptr
+                    && g_femanager_fe.fems->IsSystemActive())
+                {
+                    FEManager_DrawFrontEnd(&g_femanager_fe);
+                }
+            }
+            else if (cls.state == 2)  // CA_ACTIVE
+            {
+                if (*(&unk_F6A290 + 802 * v0) == 2)
+                {
+                    if (cgvm == nullptr)
+                    {
+                        ASSERT("cgvm", "c:\\cod\\code\\game\\cl_scrn.cpp", 378);
+                    }
+                    CL_CGameRendering();
+                    void* v1 = InteractionController_Inst(currCl);
+                    if (InteractionController_DoRenderText(v1, 0) != 0)
+                    {
+                        void* v2 = InteractionController_Inst(currCl);
+                        InteractionController_RenderText(v2);
+                    }
+                }
+            }
+            else
+            {
+                Com_Error(0, "SCR_DrawScreenField: bad cls.state");
+            }
+        }
+        else
+        {
+            cls.keyCatchers = 2;
+            SoundDevice_UndampenAllSounds(SoundDevice_sInst);
+            Cvar_Set("g_reloading", "0");
+        }
+        if (g_femanager_fe.mAARS != nullptr
+            && g_femanager_fe.mAARS->IsSystemActive())
+        {
+            FEManager_DrawAARMenus(&g_femanager_fe);
+        }
+        else
+        {
+            if (g_femanager_fe.mIGMS != nullptr
+                && g_femanager_fe.mIGMS[currCl] != nullptr
+                && g_femanager_fe.mIGMS[currCl]->IsSystemActive())
+            {
+                FEManager_DrawInGameMenus(&g_femanager_fe);
+            }
+        }
+        if (g_femanager_fe.fems != nullptr
+            && g_femanager_fe.fems->IsSystemActive())
+        {
+            FEManager_DrawFrontEnd(&g_femanager_fe);
+        }
+        Con_DrawConsole();
+    }
+}
+
+// ea: 0x533F20
+void SCR_UpdateScreen(float screen_time_inc)
+{
+    if (cls.state == 1)  // CA_LOADING
+        nullsub_35();
+    if (scr_initialized != 0)
+    {
+        if (cls.state == 2)  // CA_ACTIVE
+        {
+            if (currCl == lFirstLocalClientIndex && ++com_skelTimeStamp == 0)
+                com_skelTimeStamp = 1;
+            if (bCL_AllowedAllocSkel != 0)
+            {
+                ASSERT("!bCL_AllowedAllocSkel",
+                       "c:\\cod\\code\\game\\cl_scrn.cpp", 480);
+            }
+            bCL_AllowedAllocSkel = 1;
+        }
+        if (!gDisableRendering)
+        {
+            if (currCl == lFirstLocalClientIndex || cls.state != 2)
+                re.BeginFrame();
+            SCR_DrawScreenField();
+            if (currCl == lLastLocalClientIndex || cls.state != 2)
+                re.EndFrame(&time_frontend, &time_backend);
+        }
+        if (g_femanager_fe.loadLevel[0] != 0)
+        {
+            char tmpstr[128];
+            sprintf(tmpstr, "spmap %s", g_femanager_fe.loadLevel);
+            g_femanager_fe.loadLevel[0] = 0;
+            Cmd_ExecuteServerString(tmpstr);
+        }
+        if (g_femanager_fe.fems != nullptr
+            && g_femanager_fe.fems->IsSystemActive())
+        {
+            if (lLastLocalClientIndex == currCl)
+                FEManager_UpdateFrontEnd(&g_femanager_fe, screen_time_inc);
+            return;
+        }
+        if (g_femanager_fe.mAARS != nullptr
+            && g_femanager_fe.mAARS->IsSystemActive())
+        {
+            FEManager_UpdateAARMenus(&g_femanager_fe, screen_time_inc);
+        }
+        else
+        {
+            if (g_femanager_fe.mIGMS != nullptr
+                && g_femanager_fe.mIGMS[currCl] != nullptr
+                && g_femanager_fe.mIGMS[currCl]->IsSystemActive())
+            {
+                FEManager_UpdateInGameMenus(&g_femanager_fe, screen_time_inc);
+            }
+            else
+            {
+                if (g_femanager_fe.IGO_active && g_femanager_fe.IGO != nullptr)
+                {
+                    extern void IGO_Update(void* self, float time_inc);
+                    IGO_Update(g_femanager_fe.IGO, screen_time_inc);
+                }
+            }
+        }
+        if (cls.state == 2)  // CA_ACTIVE
+            bCL_AllowedAllocSkel = 0;
+    }
+}
+
+// ea: 0x534C20
+void SCR_UpdateScreen()
+{
+    float screen_time_inc = Com_GetScreenTimeDelta();
+    SCR_UpdateScreen(screen_time_inc);
 }
 
 // ea: 0x52DDB0

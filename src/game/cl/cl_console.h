@@ -117,6 +117,9 @@ extern cvar_t* cl_freelook;
 extern cvar_t* cl_showMouseRate;
 extern cvar_t* cl_stanceHoldTime;
 extern cvar_t* cl_disable_ads;
+extern cvar_t* cl_freeze;
+extern cvar_t* cl_viewPitchCompensate;
+extern cvar_t* cl_viewYawCompensate;
 
 // ============================================================================
 // Functions

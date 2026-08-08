@@ -957,15 +957,19 @@ void IN_SprintBreathUp(int key, int time)
 }
 
 // ea: 0x5306C0
-void IN_HoldBreathDown()
+void IN_HoldBreathDown(int key, int time)
 {
+    (void)key;
+    (void)time;
     if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr)
         cl[currCl].snap.ps.mFlags_mask |= 1u;
 }
 
 // ea: 0x530720
-void IN_HoldBreathUp()
+void IN_HoldBreathUp(int key, int time)
 {
+    (void)key;
+    (void)time;
     if (EntityManager_GetPlayer(EntityManager_sInst, currCl) != nullptr)
         cl[currCl].snap.ps.mFlags_mask &= ~1u;
 }
@@ -986,7 +990,7 @@ void IN_BinocularsDown(int key, int time)
             }
             else if (CL_IsADS(currCl))
             {
-                IN_HoldBreathDown();
+                IN_HoldBreathDown(key, time);
             }
             else
             {
@@ -999,7 +1003,7 @@ void IN_BinocularsDown(int key, int time)
 // ea: 0x533A80
 void IN_BinocularsUp(int key, int time)
 {
-    IN_HoldBreathUp();
+    IN_HoldBreathUp(key, time);
     IN_KeyUp(&kb[KB_BUTTON0], (unsigned int)key, time);
 }
 
