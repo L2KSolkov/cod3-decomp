@@ -276,3 +276,9 @@ void DbQuery::FindMatches(DbQueryResults* results)
             AcceptMatchingLeaf(child, results);
     }
 }
+
+// ea: 0x004BCD70
+void DbQuery::Execute(DbQueryResults* results)
+{
+    FindMatches(results);
+}

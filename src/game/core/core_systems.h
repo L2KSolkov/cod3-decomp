@@ -10,6 +10,7 @@
 #include <stdint.h>
 
 #include "core/ae_array.h"
+#include "core/ae_fixed_string.h"
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 #include "engine/broc_types.h"
@@ -352,6 +353,7 @@ struct RumbleManager {
                      float max_distance, float distance);
     void FrameAdvance(float delta_time);
     void Reset();
+    void Remove(RumbleEffectInstanceHandle handle);
 };
 static_assert(sizeof(RumbleManager) == 0x30, "RumbleManager size mismatch");
 
@@ -436,6 +438,7 @@ struct DbQuery {
     int CompareField(int colId, const char** db_value);
     bool TestField(int colId, const char** db_value);
     void FindMatches(DbQueryResults* results);
+    void Execute(DbQueryResults* results);
 };
 static_assert(sizeof(DbQuery) == 0x460, "DbQuery size mismatch");
 
@@ -637,6 +640,34 @@ struct TlSystemCallbacks {
     static bool sWarningsEnabled;
     static bool sLockAllocsToPakHeap;
     static bool sLockAllocsToPakHeapOnce;
+
+    // tl callback table (10 slots; copied verbatim by tlSetSystemCallbacks)
+    struct CallbackTable {
+        bool (*ReadFile)(const char* filename, tlFileBuf* fileBuf,
+                         unsigned int align, unsigned int flags);   // +0x00
+        void (*ReleaseFile)(tlFileBuf* fileBuf);                     // +0x04
+        void (*CriticalError)(const char* txt);                      // +0x08
+        void (*Warning)(const char* txt);                            // +0x0C
+        void (*DebugPrint)(const char* txt);                         // +0x10
+        void (*FinalPrint)(const char* txt);                         // +0x14
+        bool (*LinkConnected)();                                     // +0x18
+        void* (*MemAlloc)(unsigned int size, unsigned int align,
+                          unsigned int flags);                       // +0x1C
+        void* (*MemRealloc)(void* ptr, unsigned int size,
+                            unsigned int align,
+                            unsigned int flags);                     // +0x20
+        void (*MemFree)(void* ptr);                                  // +0x24
+    } mTlCallbacks;  // +0x00
+
+    typedef void* (__cdecl* TlMemAllocCbfn)(unsigned int size,
+                                            unsigned int align,
+                                            unsigned int flags);
+    typedef void (__cdecl* TlMemFreeCbfn)(void* ptr);
+
+    TlSystemCallbacks();  // ea: 0x004D0A20
+    TlMemAllocCbfn SetMemAllocCbfn(TlMemAllocCbfn cbfn);  // ea: 0x004BD400
+    TlMemFreeCbfn SetMemFreeCbfn(TlMemFreeCbfn cbfn);     // ea: 0x004BD420
+
     static bool LockTlAllocsToPakHeap(bool s, bool once);
     static bool ReadFile();
     static void ReleaseFile(tlFileBuf* fileBuf);
@@ -647,7 +678,25 @@ struct TlSystemCallbacks {
     static int LinkFrame();
     static bool LinkConnected();
     static void DebugPrint(char* txt);
+    static void CriticalError(const char* txt);  // ea: 0x004CFA60
+    static void Warning(const char* txt);        // ea: 0x004CFAF0
+
+private:
+    static bool IgnoreAssertion(
+        const char* tlAssertText,
+        ae_fixed_string<256, unsigned short>* assertText,
+        ae_fixed_string<256, unsigned short>* assertExp,
+        ae_fixed_string<256, unsigned short>* assertFile,
+        int* assertLine);  // ea: 0x004CE800
+    static bool ParseTlAssertString(
+        const char* tlAssertText,
+        ae_fixed_string<256, unsigned short>* assertMessage,
+        ae_fixed_string<256, unsigned short>* assertExpression,
+        ae_fixed_string<256, unsigned short>* fileName,
+        int* line);  // ea: 0x004C5AA0
 };
+static_assert(sizeof(TlSystemCallbacks) == 0x28,
+              "TlSystemCallbacks size mismatch");
 
 struct StringTableEntry {
     unsigned int mHash;   // +0x00

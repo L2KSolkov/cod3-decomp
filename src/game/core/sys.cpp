@@ -26,7 +26,8 @@ extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
 extern void* mem_heap_malloc_align_heap(void* heap, unsigned int alignment,
                                        unsigned int size);
 extern void* mem_heap_get(int heap_name);
-extern void tlSetSystemCallbacks(void* callbacks);
+struct tlSystemCallbacks;
+extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);
 extern void nglInitQuad(void* quad);
 extern void nglSetClearFlags(unsigned int clearFlags);
 extern void nglPresent();
@@ -68,6 +69,13 @@ extern bool gInAssert;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 bool Warning(const char* fmt, ...);
+}
+
+namespace AeStringSupport {
+extern void CStrToAeStr(char* oBuff, int* oLen, int capacity,
+                        const char* src);
+extern void SubStr(char* oBuff, int* oLen, const char* src, int begin,
+                   int len, int srcCapacity);
 }
 
 // ============================================================================
@@ -286,4 +294,180 @@ void GlobalPakLoadCallback()
         PrintPakNames();
         SpinnerDrawFrameWithLoading(true);
     }
+}
+
+// ============================================================================
+// TlSystemCallbacks callback installers + tl assert routing
+// ============================================================================
+
+static int hackLine;
+static const char defaultFileName[] = "";
+
+// ea: 0x004BD400
+TlSystemCallbacks::TlMemAllocCbfn TlSystemCallbacks::SetMemAllocCbfn(
+    TlSystemCallbacks::TlMemAllocCbfn cbfn)
+{
+    TlMemAllocCbfn old = mTlCallbacks.MemAlloc;
+    mTlCallbacks.MemAlloc = cbfn;
+    tlSetSystemCallbacks(reinterpret_cast<const tlSystemCallbacks*>(this));
+    return old;
+}
+
+// ea: 0x004BD420
+TlSystemCallbacks::TlMemFreeCbfn TlSystemCallbacks::SetMemFreeCbfn(
+    TlSystemCallbacks::TlMemFreeCbfn cbfn)
+{
+    TlMemFreeCbfn old = mTlCallbacks.MemFree;
+    mTlCallbacks.MemFree = cbfn;
+    tlSetSystemCallbacks(reinterpret_cast<const tlSystemCallbacks*>(this));
+    return old;
+}
+
+// ea: 0x004CFA60
+void TlSystemCallbacks::CriticalError(const char* txt)
+{
+    const char* v1 = txt;
+    if (txt == nullptr || strncmp("NSL:", txt, 4) != 0)
+    {
+        ae_fixed_string<256, unsigned short> aeAssertText;
+        ae_fixed_string<256, unsigned short> aeAssertExp;
+        ae_fixed_string<256, unsigned short> aeAssertFile;
+        int assertLine = 0;
+        if (!IgnoreAssertion(v1, &aeAssertText, &aeAssertExp, &aeAssertFile,
+                             &assertLine)
+            && AeAssert::Assert((const char*)aeAssertText.mBuff))
+        {
+            __debugbreak();
+        }
+    }
+}
+
+// ea: 0x004CFAF0
+void TlSystemCallbacks::Warning(const char* txt)
+{
+    const char* v1 = txt;
+    if (txt == nullptr || strncmp("NSL:", txt, 4) != 0)
+    {
+        if (sWarningsEnabled
+            && strstr(v1, "Invalid scale detected in local to world transform")
+                   == nullptr)
+        {
+            ae_fixed_string<256, unsigned short> aeAssertText;
+            ae_fixed_string<256, unsigned short> aeAssertExp;
+            ae_fixed_string<256, unsigned short> aeAssertFile;
+            int assertLine = 0;
+            if (!IgnoreAssertion(v1, &aeAssertText, &aeAssertExp,
+                                 &aeAssertFile, &assertLine)
+                && AeAssert::Warning((const char*)aeAssertText.mBuff))
+            {
+                __debugbreak();
+            }
+        }
+    }
+}
+
+// ea: 0x004CE800
+bool TlSystemCallbacks::IgnoreAssertion(
+    const char* tlAssertText,
+    ae_fixed_string<256, unsigned short>* assertText,
+    ae_fixed_string<256, unsigned short>* assertExp,
+    ae_fixed_string<256, unsigned short>* assertFile,
+    int* assertLine)
+{
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    if (tlAssertText != nullptr && *tlAssertText != 0)
+    {
+        if (ParseTlAssertString(tlAssertText, assertText, assertExp, assertFile,
+                                assertLine))
+        {
+            AeAssert::gCurrentFile = (const char*)assertFile->mBuff;
+            AeAssert::gCurrentLine = *assertLine;
+            AeAssert::gCurrentExpr = (const char*)assertExp->mBuff;
+            return AeAssert::IsIgnored();
+        }
+        else
+        {
+            ae_fixed_string<256, unsigned short> v7(tlAssertText);
+            *assertText = v7;
+            AeAssert::gCurrentLine = hackLine;
+            hackLine = hackLine + 1;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TlSysCallbacks.cpp";
+            AeAssert::gCurrentExpr = defaultFileName;
+            return false;
+        }
+    }
+    else
+    {
+        tlPrintf("Assertion text is invalid");
+        __debugbreak();
+        return true;
+    }
+}
+
+// ea: 0x004C5AA0
+bool TlSystemCallbacks::ParseTlAssertString(
+    const char* tlAssertText,
+    ae_fixed_string<256, unsigned short>* assertMessage,
+    ae_fixed_string<256, unsigned short>* assertExpression,
+    ae_fixed_string<256, unsigned short>* fileName,
+    int* line)
+{
+    ae_fixed_string<256, unsigned short> tlAssertStr;
+    int oLen;
+    AeStringSupport::CStrToAeStr((char*)tlAssertStr.mBuff, &oLen, 254,
+                                 tlAssertText);
+    tlAssertStr.mLength = (unsigned char)oLen;
+    if (oLen == 0)
+        return false;
+
+    const char* tlAssertStrBuf = (const char*)tlAssertStr.mBuff;
+    int v5 = 0;
+    while (tlAssertStrBuf[v5] != '(')
+    {
+        if (++v5 >= oLen)
+            return false;
+    }
+
+    AeStringSupport::SubStr((char*)fileName->mBuff, &oLen, tlAssertStrBuf, 10,
+                            v5 - 10, 254);
+    fileName->mLength = (unsigned char)oLen;
+    if (oLen == 0)
+        return false;
+
+    int v8 = 0;
+    while (tlAssertStrBuf[v8] != ')')
+    {
+        if (++v8 >= tlAssertStr.mLength)
+            return false;
+    }
+
+    ae_fixed_string<256, unsigned short> lineStr;
+    tlAssertStr.substr(lineStr, v5 + 1, v8 - v5 - 1);
+    if (lineStr.mLength == 0)
+        return false;
+
+    sscanf((const char*)lineStr.mBuff, "%d", line);
+
+    int v9 = tlAssertStr.find('"', v8);
+    if (v9 < 0)
+        return false;
+    int v10 = v9;
+    int v11 = v9 + 1;
+    int v12 = tlAssertStr.find('"', v9 + 1);
+    if (v12 < 0)
+        return false;
+    int v13 = v12;
+
+    tlAssertStr.substr(*assertExpression, v11, v12 - v10 - 1);
+    if (assertExpression->mLength == 0)
+        return false;
+
+    tlAssertStr.substr(*assertMessage, v13 + 4,
+                       tlAssertStr.mLength - v13 - 4);
+    if (assertMessage->mLength == 0)
+    {
+        ae_fixed_string<256, unsigned short> v14(" ");
+        *assertMessage = v14;
+    }
+    return true;
 }

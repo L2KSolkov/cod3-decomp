@@ -2,6 +2,8 @@
 // AE Fixed String — fixed-capacity string with inline buffer
 // Source: c:/cod/code/ae/core/ (used by PoolAllocator::ReportTotals)
 // Size: CAPACITY bytes (buffer + length byte)
+// Layout verified from IDA: mBuff holds CAPACITY-1 bytes, mLength (word-accessed
+// for wide instantiations) sits at byte CAPACITY-2; sizeof == CAPACITY.
 // ============================================================================
 
 #pragma once
@@ -12,23 +14,76 @@
 
 template <int CAPACITY, typename CHAR = char>
 struct ae_fixed_string {
-    CHAR            mBuff[CAPACITY - 1];  // +0x00
-    unsigned char   mLength;              // +CAPACITY - 1
+    CHAR            mBuff[(CAPACITY - 1) / sizeof(CHAR)];  // +0x00
+    unsigned char   mLength;                               // +sizeof(mBuff)
 
     ae_fixed_string() : mLength(0) {
         mBuff[0] = 0;
     }
 
+    // ea: 0x4E4890 — CStrToAeStr + length store
+    ae_fixed_string(const char* txt) {
+        char* d = (char*)mBuff;
+        int cap = capacity();
+        int i = 0;
+        if (txt != nullptr && *txt != 0) {
+            while (txt[i] != 0 && i < cap) {
+                d[i] = txt[i];
+                ++i;
+            }
+        } else {
+            d[0] = 0;
+        }
+        d[i] = 0;
+        mLength = (unsigned char)i;
+    }
+
     const CHAR* c_str() const { return mBuff; }
     int length() const { return mLength; }
-    static int capacity() { return CAPACITY - 1; }
+    static int capacity() {
+        return (CAPACITY - 1) / sizeof(CHAR) * sizeof(CHAR);
+    }
+
+    // ea: 0x4E0AC0 — byte search, returns index or -1
+    int find(char c, int start_pos) const {
+        const char* buf = (const char*)mBuff;
+        int len = mLength;
+        for (int i = start_pos; i < len; ++i) {
+            if (buf[i] == c)
+                return i;
+        }
+        return -1;
+    }
+
+    // ea: 0x4E48D0 — SubStr into dst, then store output length
+    ae_fixed_string& substr(ae_fixed_string& dst, int begin, int len) const {
+        int cap = capacity();
+        int out = len;
+        if (begin < cap) {
+            int end = cap - 1;
+            if (end >= begin + len)
+                end = begin + len;
+            const char* src = (const char*)mBuff;
+            char* d = (char*)dst.mBuff;
+            out = 0;
+            for (int i = begin; i < end; ++i) {
+                char c = src[i];
+                if (c == 0)
+                    break;
+                d[out++] = c;
+            }
+            d[out] = 0;
+        }
+        dst.mLength = (unsigned char)out;
+        return dst;
+    }
 
     // Append a C string (ae_fixed_string::operator+=, COMDAT).
     ae_fixed_string& operator+=(const CHAR* rhs) {
         const char* src = (const char*)rhs;
         int l = (int)mLength;
         int r = 0;
-        while (src[r] != 0 && l < CAPACITY - 1) {
+        while (src[r] != 0 && l < (CAPACITY - 1) / sizeof(CHAR)) {
             mBuff[l++] = (CHAR)src[r++];
         }
         mLength = (unsigned char)l;
@@ -39,7 +94,7 @@ struct ae_fixed_string {
     ae_fixed_string& operator+=(const char* rhs) {
         int l = (int)mLength;
         int r = 0;
-        while (rhs[r] != 0 && l < CAPACITY - 1) {
+        while (rhs[r] != 0 && l < (CAPACITY - 1) / sizeof(CHAR)) {
             mBuff[l++] = (CHAR)rhs[r++];
         }
         mLength = (unsigned char)l;
@@ -57,15 +112,18 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
         va_start(args, fmt);
         int l;
         if (sizeof(CHAR) == 2) {
-            l = _vsnwprintf((wchar_t*)this->mBuff, CAPACITY - 1, (const wchar_t*)fmt, args);
+            l = _vsnwprintf((wchar_t*)this->mBuff,
+                            (CAPACITY - 1) / sizeof(CHAR),
+                            (const wchar_t*)fmt, args);
         } else {
-            l = vsnprintf((char*)this->mBuff, CAPACITY - 1, (const char*)fmt, args);
+            l = vsnprintf((char*)this->mBuff, this->capacity(),
+                          (const char*)fmt, args);
         }
         va_end(args);
         if (l < 0)
             l = 0;
-        if (l > CAPACITY - 1)
-            l = CAPACITY - 1;
+        if (l > (CAPACITY - 1) / sizeof(CHAR))
+            l = (CAPACITY - 1) / sizeof(CHAR);
         this->mLength = (unsigned char)l;
     }
 
@@ -78,8 +136,8 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
         va_end(args);
         if (l < 0)
             l = 0;
-        if (l > CAPACITY - 1)
-            l = CAPACITY - 1;
+        if (l > (CAPACITY - 1) / sizeof(CHAR))
+            l = (CAPACITY - 1) / sizeof(CHAR);
         for (int i = 0; i < l; ++i)
             this->mBuff[i] = (CHAR)(unsigned char)tmp[i];
         this->mBuff[l] = 0;

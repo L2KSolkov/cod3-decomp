@@ -68,7 +68,7 @@ char sCvarBuff1[1024];
 char sCvarBuff2[4096];
 
 // ea: 0x004C37A0
-static int generateHashValue(const char* fname)
+int generateHashValue(const char* fname)
 {
     const char* v1 = fname;
     if (fname == nullptr)

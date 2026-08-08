@@ -240,6 +240,31 @@ void RumbleManager::Reset()
     controller_stop_all_rumble(controller_inst());
 }
 
+// ea: 0x004CB9C0
+void RumbleManager::Remove(RumbleEffectInstanceHandle handle)
+{
+    if (handle.mVal == 0)
+    {
+        ASSERT("!handle.IsNull()", "c:\\cod\\code\\game\\RumbleManager.cpp",
+               135);
+    }
+    for (int list = 0; list < 2; ++list)
+    {
+        RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].mRoot.mNext;
+        while (n != nullptr)
+        {
+            RumbleEffectInstance* next = (RumbleEffectInstance*)n->m_dlist_node.mNext;
+            if (n->m_handle.mVal == handle.mVal)
+            {
+                RumbleEffectInstance_Dtor(n);
+                PoolAllocator_Release(RumbleEffectInstance_sAllocator, n);
+                break;
+            }
+            n = next;
+        }
+    }
+}
+
 // ea: 0x004CBDE0
 void RumbleManager::FrameAdvance(float delta_time)
 {
