@@ -232,6 +232,8 @@ Broc::vector* entity_get_rotate(Broc::vector* result, Broc::entity ent);
 int entity_get_takedamage(Broc::entity ent);
 __int16 entity_get_ctf_has_flag(Broc::entity ent);   // ea: 0x93DC00
 void entity_set_ctf_has_flag(Broc::entity ent, __int16 v);
+int entity_get_key(Broc::entity ent);                // ea: 0x940D80
+void entity_set_key(Broc::entity ent, int key);
 
 // mp_util_wad::Level.line_sound_emitters hash_map helpers.
 void line_sound_set(HashStr key, Broc::entity e);

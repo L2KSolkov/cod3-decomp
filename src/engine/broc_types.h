@@ -615,7 +615,10 @@ struct BrocAPI {
     char _padFAC[0xFB4 - 0xFAC];                          // +0xFAC
     Broc::vector* (*m_entity_get_rotate)(Broc::vector*, unsigned int);  // +0xFB4
     void (*m_entity_set_rotate)(unsigned int, Broc::vector);  // +0xFB8
-    char _padFBC[0x1034 - 0xFBC];                         // +0xFBC
+    char _padFBC[0xFDC - 0xFBC];                          // +0xFBC
+    int (*m_entity_get_key)(unsigned int);                // +0xFDC
+    void (*m_entity_set_key)(unsigned int, int);          // +0xFE0
+    char _padFE4[0x1034 - 0xFE4];                         // +0xFE4
     int (*m_entity_get_maxhealth)(unsigned int);          // +0x1034
     void (*m_entity_set_maxhealth)(unsigned int, int);    // +0x1038
     char _pad103C[0x1054 - 0x103C];                       // +0x103C
@@ -819,6 +822,10 @@ void Code_SendGameStateSCF(Broc::entity player, int defendingTeam,
                            const Broc::vector* flag,
                            const Broc::vector* flagAngles,
                            Broc::entity flag_holder);
+void Code_SendGameStateHQ(Broc::entity player, int stage,
+                          const Broc::vector* vA, const Broc::vector* vB,
+                          int triggerIndex, bool alliesDefending,
+                          bool pointAIsHQ);
 void Code_RespawnVehicle(Broc::entity* e);
 void Code_BroadcastVehicleRespawn(Broc::entity vehicle);
 void Code_GetPlayerInSeat(Broc::entity* result, Broc::entity vehicle, int seat);

@@ -71,6 +71,9 @@ void blur_view(Broc::entity self, Broc::bfloat blur_time);
 namespace _mp_spawnlogic {
 Broc::entity* GetSpawnpointRandom(Broc::entity* result,
                                   Broc::dyn_array<Broc::entity>* points);
+Broc::entity* get_spawnpoint_near_team_away_from_radios(
+    Broc::entity* result, Broc::entity* self, const Broc::string* team,
+    Broc::dyn_array<Broc::entity>* points);
 Broc::entity* GetSpawnpointRandom(Broc::entity* result,
                                   Broc::dyn_array<Broc::entity>* points,
                                   Broc::bbool ignoreTeleFrag);
@@ -2825,6 +2828,12 @@ __int16 entity_get_ctf_has_flag(Broc::entity ent) {
 void entity_set_ctf_has_flag(Broc::entity ent, __int16 v) {
     Broc::gBrocAPI.m_entity_set_player_ctf_has_flag(ent.___u0, v);
 }
+int entity_get_key(Broc::entity ent) {
+    return Broc::gBrocAPI.m_entity_get_key(ent.___u0);
+}
+void entity_set_key(Broc::entity ent, int key) {
+    Broc::gBrocAPI.m_entity_set_key(ent.___u0, key);
+}
 
 // line_sound_emitters hash_map helpers (opaque until the runtime is ported).
 void line_sound_set(HashStr key, Broc::entity e) {
@@ -2938,6 +2947,71 @@ namespace _mp_ctf { void* main__functor(Broc::entity self); }
 namespace _mp_scf { void* main__functor(Broc::entity self); }
 namespace _mp_war { void* main__functor(Broc::entity self); }
 namespace _mp_hq { void* main__functor(Broc::entity self); }
+namespace _mp_hq {
+void main(Broc::entity self);
+void StartGame(Broc::entity self);
+unsigned int Host_ResetStage1();
+void Host_FlowControl(Broc::entity self);
+void AddPoints(Broc::bint forAllies, Broc::bint forAxis);
+void NoRespawnForDefenders(Broc::bbool no_respawn);
+void HQ_Destroyed(Broc::entity self);
+void HQ_Defended(Broc::entity self);
+char Host_PickInitialPoints();
+void SetupStage1();
+void SetUpStage3(Broc::entity self);
+int ShowHQDestroyed();
+int ShowHQDefended();
+int ShowHQSetUp();
+void ShowSetupGraphic(Broc::entity guy);
+void ShowDestructionGraphic(Broc::entity guy);
+void ShowLosingHQGraphic(Broc::entity guy);
+void ShowProgressBar(Broc::entity self, Broc::string colour);
+void TriggerRadio(Broc::entity self, Broc::entity other);
+void SwitchToRadioOnly(Broc::entity self);
+void AddRadioModel(Broc::entity self);
+void RemoveRadioModel(Broc::entity self);
+void ClearGame();
+void ResetGame();
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
+                            const Broc::string* team);
+void GetTriggerFromIndex();
+void BroadcastGameState();
+void SyncScores();
+void Track_Ownership(Broc::entity self);
+void String_Timer();
+void CallbackGameStateHQ(unsigned int stage, Broc::vector vA, Broc::vector vB,
+                         unsigned int triggerIndex, int alliesDefending,
+                         int pointAIsHQ);
+void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
+                       int roundLimit, int friendlyFire, int lastManStanding,
+                       int teamBalance, int respawnTime, int alliesScore,
+                       int axisScore, int roundStarted, int roundOver,
+                       int roundCount);
+void CallbackNextRound();
+void CallbackRoundOver(int condition, Broc::string team);
+void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
+                        int playerClass);
+void CallbackPlayerEnter(Broc::entity player, int hot_joiner);
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health);
+void CallbackPlayerLeave(Broc::entity player);
+unsigned int CallbackHostMigrated();
+void CallbackHostOptionsChanged(int forceMapChange);
+int CallbackGetTeamCapturingHQPercent(Broc::entity my_player);
+int CallbackGetTeamDestroyingHQPercent();
+int CallbackGetHQCaptureStatus();
+void CallbackDebugRender();
+Broc::bint* compare(Broc::bint* result, Broc::vector* first,
+                    Broc::vector* second);
+int SortPoints();
+Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping);
+void* main__functor(Broc::entity self);
+void* StartGame__functor(Broc::entity self);
+void* Host_FlowControl__functor(Broc::entity self);
+void* Track_Ownership__functor(Broc::entity self);
+void* TriggerRadio__functor(Broc::entity self, Broc::entity other);
+}
 namespace _mp_scf {
 void main(Broc::entity self);
 void StartGame(Broc::entity self);
@@ -9197,6 +9271,822 @@ void ObjectiveUpdater(Broc::entity guy) {
     }
 }
 }
+
+// ============================================================================
+// _mp_hq - headquarters game type.
+// ============================================================================
+namespace _mp_hq {
+
+// main - ea: 0x956920
+void main(Broc::entity self) {
+    Broc::Code_DebugOut("*HQ* main\n");
+    Broc::bbool team_game(true);
+    Broc::Code_SetTeamGame((bool)team_game);
+    mp_util_wad::pLevel->mustHaveBothTeamsToStart = false;
+    mp_util_wad::pLevel->lastManStanding = false;
+    mp_util_wad::pLevel->spawnTypeAllies = "spawn_hq_allies_primary";
+    mp_util_wad::pLevel->spawnTypeAxis = "spawn_hq_axis_primary";
+    _mp_common::SetupCallbacks(team_game);
+    mp_util_wad::pLevel->PickSpawnPoint = (void*)GetSpawnPoint;
+    Broc::BrocExports& x = Broc::gBrocAPI.mBrocExports;
+    x.mCallbackPlayerJoin = CallbackPlayerJoin;
+    x.mCallbackPlayerEnter = CallbackPlayerEnter;
+    x.mCallbackGameState = CallbackGameState;
+    x.mCallbackGameStateHQ = CallbackGameStateHQ;
+    x.mCallbackPlayerKilled = CallbackPlayerKilled;
+    x.mCallbackPlayerLeave = CallbackPlayerLeave;
+    x.mCallbackNextRound = CallbackNextRound;
+    x.mCallbackRoundOver = CallbackRoundOver;
+    x.mCallbackHostOptionsChanged = CallbackHostOptionsChanged;
+    x.mCallbackHostMigrated = (void (*)())CallbackHostMigrated;
+    x.mCallbackDebugRender = (void (*)())CallbackDebugRender;
+    x.mCallbackGetHQCaptureStatus = CallbackGetHQCaptureStatus;
+    x.mCallbackGetTeamCapturingHQPercent = CallbackGetTeamCapturingHQPercent;
+    x.mCallbackGetTeamDestroyingHQPercent =
+        CallbackGetTeamDestroyingHQPercent;
+    Broc::SetTutorialText(-1, 0);
+    Broc::string val("hq_point");
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&val, key.mVal, &mp_util_wad::pLevel->HQpoints, 0);
+    val.~string();
+    SortPoints();
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        *mp_util_wad::GetEE_numDeaths(p) = 0;
+        *mp_util_wad::GetEE_setting_up_hq(p) = 0;
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+    Broc::wait(1.0f);
+    void* started = StartGame__functor(self);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                        __LINE__, "StartGame", started);
+}
+
+// StartGame - ea: 0x956D40
+void StartGame(Broc::entity self) {
+    (void)self;
+    Broc::Code_DebugOut("*HQ* StartGame\n");
+    Broc::wait(0.5f);
+    mp_util_wad::pLevel->hq_stage = 0;
+    mp_util_wad::pLevel->radioTriggerTime = 0;
+    mp_util_wad::pLevel->triggerIndex = 0;
+    mp_util_wad::pLevel->teamCantRespawn = "";
+    mp_util_wad::pLevel->last_HQ_Point_key = 0;
+    _mp_common::StartRound(Broc::bbool(true));
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = _mp_common::RunFrame__functor(lvl);
+    Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                        __LINE__, "_mp_common::RunFrame", ftor);
+    if (Broc::IsLocalHost())
+        Host_ResetStage1();
+    Broc::Code_EnterGame();
+}
+
+// Host_ResetStage1 - ea: 0x956EB0
+unsigned int Host_ResetStage1() {
+    Broc::Code_DebugOut("*HQ* Host_ResetStage1\n");
+    Host_PickInitialPoints();
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    void* ftor = Host_FlowControl__functor(lvl);
+    return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                               __LINE__, "Host_FlowControl", ftor);
+}
+
+// Host_FlowControl - ea: 0x956FE0
+void Host_FlowControl(Broc::entity self) {
+    (void)self;
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr e1;
+    e1.mVal = 0x9DD2E1FD;
+    Broc::endon(lvl, e1);
+    HashStr e2;
+    e2.mVal = 0x863B4D44;
+    Broc::endon(lvl, e2);
+    while (!(bool)mp_util_wad::pLevel->roundStarted ||
+           (bool)mp_util_wad::pLevel->roundOver)
+        Broc::wait(0.1f);
+    if ((int)mp_util_wad::pLevel->hq_stage <= 1) {
+        Broc::Code_DebugOut("*HQ* StageTimer 1\n");
+        mp_util_wad::pLevel->hq_stage = 1;
+        SetupStage1();
+        BroadcastGameState();
+        Broc::wait(5.0f);
+        Broc::iprintln("MPHQ_TIME_TILL_RADIO_SPAWN");
+        mp_util_wad::pLevel->hq_stage_time = 15;
+        Broc::wait((float)(int)mp_util_wad::pLevel->hq_stage_time);
+    }
+    if ((int)mp_util_wad::pLevel->hq_stage <= 2) {
+        Broc::Code_DebugOut("*HQ* StageTimer 2\n");
+        mp_util_wad::pLevel->hq_stage = 2;
+        SwitchToRadioOnly(lvl);
+        BroadcastGameState();
+        while ((int)mp_util_wad::pLevel->hq_stage < 3)
+            Broc::wait(1.0f);
+    }
+    if ((int)mp_util_wad::pLevel->hq_stage < 5) {
+        Broc::Code_DebugOut("*HQ* StageTimer 3\n");
+        BroadcastGameState();
+        SetUpStage3(lvl);
+        mp_util_wad::pLevel->hq_stage_time = 90;
+        mp_util_wad::pLevel->hq_stage_time =
+            (int)mp_util_wad::pLevel->hq_stage_time - 1;
+        while ((int)mp_util_wad::pLevel->hq_stage_time > -1 &&
+               (int)mp_util_wad::pLevel->hq_stage != 5) {
+            Broc::wait(1.0f);
+            mp_util_wad::pLevel->hq_stage_time =
+                (int)mp_util_wad::pLevel->hq_stage_time - 1;
+            if ((bool)mp_util_wad::pLevel->allies_defending)
+                AddPoints(Broc::bint(0), Broc::bint(1));
+            else
+                AddPoints(Broc::bint(1), Broc::bint(0));
+        }
+        SyncScores();
+    }
+    if ((int)mp_util_wad::pLevel->hq_stage == 5) {
+        Broc::Code_DebugOut("*HQ* StageTimer 5\n");
+        BroadcastGameState();
+        HQ_Destroyed(lvl);
+    } else {
+        Broc::Code_DebugOut("*HQ* StageTimer 4\n");
+        mp_util_wad::pLevel->hq_stage = 4;
+        BroadcastGameState();
+        HQ_Defended(lvl);
+    }
+}
+
+// AddPoints - ea: 0x9573E0
+void AddPoints(Broc::bint forAllies, Broc::bint forAxis) {
+    if ((int)forAllies != 0) {
+        Broc::string team("allies");
+        Broc::Code_IncTeamScore(&team, (int)forAllies);
+        team.~string();
+    }
+    if ((int)forAxis != 0) {
+        Broc::string team("axis");
+        Broc::Code_IncTeamScore(&team, (int)forAxis);
+        team.~string();
+    }
+}
+
+// NoRespawnForDefenders - ea: 0x9574D0
+void NoRespawnForDefenders(Broc::bbool no_respawn) {
+    if ((bool)no_respawn) {
+        if ((bool)mp_util_wad::pLevel->allies_defending)
+            mp_util_wad::pLevel->teamCantRespawn = "allies";
+        else
+            mp_util_wad::pLevel->teamCantRespawn = "axis";
+    } else {
+        mp_util_wad::pLevel->teamCantRespawn = "reset";
+    }
+}
+
+// Host_PickInitialPoints - ea: 0x958390
+char Host_PickInitialPoints() {
+    Broc::Code_DebugOut("*HQ* Host_PickInitialPoints\n");
+    Broc::bint num_potential_points(Broc::size(mp_util_wad::pLevel->HQpoints));
+    if ((int)num_potential_points < 1)
+        return 0;
+    Broc::bint firstHQpoint(Broc::RandomInt((int)num_potential_points));
+    Broc::entity eA = mp_util_wad::pLevel->HQpoints[(unsigned int)(int)firstHQpoint];
+    Broc::vector p;
+    mp_util_wad::entity_get_origin(&p, eA);
+    mp_util_wad::pLevel->pointA = p;
+    mp_util_wad::pLevel->pointA_isHQ = true;
+    Broc::string target;
+    mp_util_wad::entity_get_target(&target, eA);
+    if (!Broc::IsDefined(target) &&
+        Broc::gBrocAPI.mAssert(
+            "c:\\cod\\code\\script\\_mp_hq.bro", __LINE__,
+            "target not defined for HQ points"))
+        __debugbreak();
+    target.~string();
+    if ((bool)mp_util_wad::pLevel->pointA_isHQ) {
+        Broc::string t2;
+        mp_util_wad::entity_get_target(&t2, eA);
+        HashStr key;
+        key.mVal = 0x19F9F0E8u;
+        Broc::entity trig;
+        *mp_util_wad::GetEE_trigger(mp_util_wad::pLevel->base_allies) =
+            *Broc::GetEnt(&trig, &t2, key, 0);
+        t2.~string();
+    }
+    Broc::bbool hasTrig;
+    mp_util_wad::IsEEDefined_trigger(&hasTrig, mp_util_wad::pLevel->base_allies);
+    if ((bool)hasTrig) {
+        Broc::bint k;
+        Broc::entity trig = *mp_util_wad::GetEE_trigger(mp_util_wad::pLevel->base_allies);
+        mp_util_wad::pLevel->triggerIndex = (int)mp_util_wad::entity_get_key(trig);
+    }
+    return 1;
+}
+
+// SetupStage1 - ea: 0x958870
+void SetupStage1() {
+    RemoveRadioModel(mp_util_wad::pLevel->base_allies);
+    NoRespawnForDefenders(Broc::bbool(false));
+}
+
+// ShowHQDestroyed - ea: 0x958EE0
+int ShowHQDestroyed() {
+    Broc::Code_DebugOut("*HQ* ShowHQDestroyed\n");
+    if ((bool)mp_util_wad::pLevel->allies_defending) {
+        Broc::iprintln("MPHQ_ALLIED_HQ_SHUTDOWN");
+        Broc::iprintln("MPHQ_AXIS_AWARD_POINTS");
+    } else {
+        Broc::iprintln("MPHQ_AXIS_HQ_SHUTDOWN");
+        Broc::iprintln("MPHQ_ALLIES_AWARD_POINTS");
+    }
+    return (mp_util_wad::pLevel->string_time = 3000);
+}
+
+// ShowHQDefended - ea: 0x958F90
+int ShowHQDefended() {
+    Broc::Code_DebugOut("*HQ* ShowHQDefended\n");
+    if ((bool)mp_util_wad::pLevel->allies_defending)
+        Broc::iprintln("MPHQ_ALLIED_HQ_DEFENDED");
+    else
+        Broc::iprintln("MPHQ_AXIS_HQ_DEFENDED");
+    return (mp_util_wad::pLevel->string_time = 3000);
+}
+
+// ShowHQSetUp - ea: 0x959010
+int ShowHQSetUp() {
+    Broc::Code_DebugOut("*HQ* ShowHQSetUp\n");
+    mp_util_wad::pLevel->radioTriggerTime = 0;
+    if ((bool)mp_util_wad::pLevel->allies_defending)
+        Broc::iprintln("MPHQ_ALLIES_SETUP");
+    else
+        Broc::iprintln("MPHQ_AXIS_SETUP");
+    return (mp_util_wad::pLevel->string_time = 3000);
+}
+
+// ShowSetupGraphic - ea: 0x9590B0
+void ShowSetupGraphic(Broc::entity guy) {
+    Broc::SetActionHint((int)0x855384Fu, Broc::GetPlayerIndex(guy));
+    mp_util_wad::pLevel->string_time = 600;
+}
+
+// ShowDestructionGraphic - ea: 0x959120
+void ShowDestructionGraphic(Broc::entity guy) {
+    Broc::SetActionHint((int)0x61710355u, Broc::GetPlayerIndex(guy));
+    mp_util_wad::pLevel->string_time = 600;
+}
+
+// ShowLosingHQGraphic - ea: 0x959190
+void ShowLosingHQGraphic(Broc::entity guy) {
+    Broc::SetActionHint((int)0x5B051179u, Broc::GetPlayerIndex(guy));
+    mp_util_wad::pLevel->string_time = 600;
+}
+
+// ShowProgressBar - ea: 0x959200
+void ShowProgressBar(Broc::entity self, Broc::string colour) {
+    (void)self;
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr e;
+    e.mVal = 0x863B4D44;
+    Broc::endon(lvl, e);
+    Broc::bint val_last_time(0);
+    Broc::bint lifeMS(600);
+    for (;;) {
+        if ((int)mp_util_wad::pLevel->radioTriggerTime == (int)val_last_time)
+            lifeMS -= 200;
+        val_last_time = (int)mp_util_wad::pLevel->radioTriggerTime;
+        if ((int)mp_util_wad::pLevel->radioTriggerTime == 0)
+            break;
+        if ((int)lifeMS < 0)
+            break;
+        Broc::wait(0.2f);
+    }
+    mp_util_wad::pLevel->radioTriggerTime = 0;
+    colour.~string();
+}
+
+// ClearGame - ea: 0x95B2C0
+void ClearGame() {
+    Broc::Code_DebugOut("*HQ* ClearGame\n");
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0x12CEF01u;
+    Broc::notify(&lvl, n);
+    mp_util_wad::pLevel->hq_stage = 0;
+    Broc::ObjectiveDelete(0, -1);
+    RemoveRadioModel(lvl);
+    HashStr trigHash;
+    Broc::string_hash(&trigHash, "_mp_hq::TriggerRadio");
+    HashStr label;
+    label.mVal = 0xF2F5EAB4;
+    Broc::RemoveEventHandler(mp_util_wad::GetEE_trigger(lvl), label.mVal,
+                             trigHash.mVal);
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::entity p = players[(unsigned int)(int)i];
+        *mp_util_wad::GetEE_numDeaths(p) = 0;
+        *mp_util_wad::GetEE_setting_up_hq(p) = 0;
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+}
+
+// ResetGame - ea: 0x95B540
+void ResetGame() {
+    Broc::Code_DebugOut("*HQ* ResetGame\n");
+    ClearGame();
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0x9DD2E1FD;
+    Broc::notify(&lvl, n);
+    Broc::wait(3.0f);
+    if (Broc::IsLocalHost() && !(bool)mp_util_wad::pLevel->roundOver) {
+        Broc::wait(1.0f);
+        Host_ResetStage1();
+    }
+}
+
+// GetSpawnPoint - ea: 0x95B610
+Broc::entity* GetSpawnPoint(Broc::entity* result, Broc::entity* self,
+                            const Broc::string* team) {
+    Broc::dyn_array<Broc::entity> spawnpoints;
+    Broc::string spawnType = mp_util_wad::pLevel->spawnTypeAllies;
+    if (*team == "axis")
+        spawnType = mp_util_wad::pLevel->spawnTypeAxis;
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&spawnType, key.mVal, &spawnpoints, 0);
+    _mp_spawnlogic::get_spawnpoint_near_team_away_from_radios(
+        result, self, team, &spawnpoints);
+    spawnType.~string();
+    spawnpoints.~dyn_array();
+    return result;
+}
+
+// GetTriggerFromIndex - ea: 0x95B740
+void GetTriggerFromIndex() {
+    Broc::dyn_array<Broc::entity> triggers;
+    Broc::string triggerType("trigger_multiple");
+    HashStr key;
+    key.mVal = 0xF756C677;
+    Broc::GetEntArray(&triggerType, key.mVal, &triggers, 0);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(triggers)) {
+        Broc::entity t = triggers[(unsigned int)(int)i];
+        Broc::bint k;
+        if ((int)mp_util_wad::entity_get_key(t) ==
+            (int)mp_util_wad::pLevel->triggerIndex) {
+            *mp_util_wad::GetEE_trigger(mp_util_wad::pLevel->base_allies) = t;
+            Broc::Code_DebugOut("*HQ* got trigger\n");
+            triggerType.~string();
+            triggers.~dyn_array();
+            return;
+        }
+        i = (int)i + 1;
+    }
+    Broc::Code_DebugOut("*HQ* failed to find trigger\n");
+    triggerType.~string();
+    triggers.~dyn_array();
+}
+
+// BroadcastGameState - ea: 0x95B920
+void BroadcastGameState() {
+    if (Broc::IsLocalHost()) {
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetPlayerArray(&players);
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            Broc::Code_SendGameStateHQ(
+                players[(unsigned int)(int)i],
+                (int)mp_util_wad::pLevel->hq_stage,
+                &mp_util_wad::pLevel->pointA,
+                &mp_util_wad::pLevel->pointB,
+                (int)mp_util_wad::pLevel->triggerIndex,
+                (bool)mp_util_wad::pLevel->allies_defending,
+                (bool)mp_util_wad::pLevel->pointA_isHQ);
+            i = (int)i + 1;
+        }
+        players.~dyn_array();
+    }
+}
+
+// SyncScores - ea: 0x95BB30
+void SyncScores() {
+    Broc::Code_DebugOut("*HQ* SyncScores\n");
+    Broc::bint now;
+    Broc::GetTime(&now);
+    Broc::bfloat timePassed =
+        ((int)now - (int)mp_util_wad::pLevel->startTime) * 0.001f;
+    Broc::dyn_array<Broc::entity> players;
+    Broc::GetPlayerArray(&players);
+    Broc::bint i(0);
+    while ((int)i < Broc::size(players)) {
+        Broc::string team("axis");
+        Broc::string team2("allies");
+        int axisScore = Broc::Code_GetTeamScore(&team);
+        int alliesScore = Broc::Code_GetTeamScore(&team2);
+        Broc::Code_SendGameState(
+            players[(unsigned int)(int)i], (float)timePassed,
+            (int)mp_util_wad::pLevel->timeLimit,
+            (int)mp_util_wad::pLevel->scoreLimit,
+            (int)mp_util_wad::pLevel->roundLimit,
+            (bool)mp_util_wad::pLevel->friendlyFire,
+            (bool)mp_util_wad::pLevel->lastManStanding,
+            (bool)mp_util_wad::pLevel->teamBalance,
+            (int)mp_util_wad::pLevel->respawnTime, alliesScore, axisScore,
+            (bool)mp_util_wad::pLevel->roundStarted,
+            (bool)mp_util_wad::pLevel->roundOver,
+            (int)mp_util_wad::pLevel->roundCount);
+        team2.~string();
+        team.~string();
+        i = (int)i + 1;
+    }
+    players.~dyn_array();
+}
+
+// String_Timer - ea: 0x95BF20
+void String_Timer() {
+    Broc::Code_DebugOut("*HQ* String_Timer\n");
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr e;
+    e.mVal = 0x12CEF01u;
+    Broc::endon(lvl, e);
+    for (;;) {
+        Broc::wait(0.2f);
+        if ((int)mp_util_wad::pLevel->string_time > 0)
+            mp_util_wad::pLevel->string_time -= 200;
+        else
+            Broc::SetTutorialTextAllPlayers(-1);
+    }
+}
+
+// CallbackGameStateHQ - ea: 0x95C010
+void CallbackGameStateHQ(unsigned int stage, Broc::vector vA, Broc::vector vB,
+                         unsigned int triggerIndex, int alliesDefending,
+                         int pointAIsHQ) {
+    Broc::Code_DebugOut("*HQ* CallbackGameStateHQ\n");
+    if ((int)mp_util_wad::pLevel->hq_stage < (int)stage) {
+        if ((int)mp_util_wad::pLevel->hq_stage < 1 && stage != 0) {
+            Broc::Code_DebugOut("*HQ* going to stage 1\n");
+            mp_util_wad::pLevel->pointA = vA;
+            mp_util_wad::pLevel->pointB = vB;
+            SetupStage1();
+        }
+        if ((int)mp_util_wad::pLevel->hq_stage < 2 && stage >= 2) {
+            Broc::Code_DebugOut("*HQ* going to stage 2\n");
+            mp_util_wad::pLevel->triggerIndex = (int)triggerIndex;
+            mp_util_wad::pLevel->pointA_isHQ = pointAIsHQ != 0;
+            GetTriggerFromIndex();
+            Broc::entity lvl;
+            lvl.___u0 = mp_util_wad::pLevel != NULL;
+            SwitchToRadioOnly(lvl);
+            Broc::string script("MX_HQ_HQReady");
+            Broc::entity lvl2;
+            lvl2.___u0 = mp_util_wad::pLevel != NULL;
+            Broc::EffectEventPlay(&lvl2, &script);
+            script.~string();
+        }
+        if ((int)mp_util_wad::pLevel->hq_stage < 3 && stage >= 3) {
+            Broc::Code_DebugOut("*HQ* going to stage 3\n");
+            mp_util_wad::pLevel->allies_defending = alliesDefending != 0;
+            Broc::entity lvl;
+            lvl.___u0 = mp_util_wad::pLevel != NULL;
+            SetUpStage3(lvl);
+            void* ftor = Track_Ownership__functor(lvl);
+            Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                                __LINE__, "Track_Ownership", ftor);
+        }
+        mp_util_wad::pLevel->hq_stage = (int)stage;
+        if (stage == 4) {
+            Broc::Code_DebugOut("*HQ* going to stage 4\n");
+            Broc::entity lvl;
+            lvl.___u0 = mp_util_wad::pLevel != NULL;
+            HQ_Defended(lvl);
+        }
+        if (stage == 5) {
+            Broc::Code_DebugOut("*HQ* going to stage 5\n");
+            Broc::entity lvl;
+            lvl.___u0 = mp_util_wad::pLevel != NULL;
+            HQ_Destroyed(lvl);
+        }
+    }
+}
+
+// CallbackGameState - ea: 0x95C460
+void CallbackGameState(int currentMatchTime, int timeLimit, int scoreLimit,
+                       int roundLimit, int friendlyFire, int lastManStanding,
+                       int teamBalance, int respawnTime, int alliesScore,
+                       int axisScore, int roundStarted, int roundOver,
+                       int roundCount) {
+    Broc::Code_DebugOut("*HQ* CallbackGameState\n");
+    _mp_common::CallbackGameState(currentMatchTime, timeLimit, scoreLimit,
+                                  roundLimit, friendlyFire, 0, teamBalance,
+                                  respawnTime, alliesScore, axisScore,
+                                  roundStarted, roundOver, roundCount);
+    (void)lastManStanding;
+}
+
+// CallbackNextRound - ea: 0x95C4D0
+void CallbackNextRound() {
+    Broc::Code_DebugOut("*HQ* CallbackNextRound\n");
+    if (!(bool)mp_util_wad::pLevel->roundOver) {
+        Broc::Code_DebugOut(
+            "*HQ* CallbackNextRound called when round not considered over, clearing\n");
+        Broc::entity lvl;
+        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        HashStr n;
+        n.mVal = 0x863B4D44;
+        Broc::notify(&lvl, n);
+        mp_util_wad::pLevel->roundOver = true;
+        ClearGame();
+    }
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n2;
+    n2.mVal = 0x6FA23667u;
+    Broc::notify(&lvl, n2);
+    _mp_common::CallbackNextRound();
+    if (Broc::IsLocalHost())
+        Host_ResetStage1();
+}
+
+// CallbackRoundOver - ea: 0x95C5F0
+void CallbackRoundOver(int condition, Broc::string team) {
+    Broc::Code_DebugOut("*HQ* CallbackRoundOver\n");
+    Broc::entity lvl;
+    lvl.___u0 = mp_util_wad::pLevel != NULL;
+    HashStr n;
+    n.mVal = 0x863B4D44;
+    Broc::notify(&lvl, n);
+    mp_util_wad::pLevel->roundOver = true;
+    ClearGame();
+    _mp_common::CallbackRoundOver(condition, team);
+    team.~string();
+}
+
+// CallbackPlayerJoin - ea: 0x95C6F0
+void CallbackPlayerJoin(Broc::entity player, unsigned int playerState,
+                        int playerClass) {
+    _mp_common::CallbackPlayerJoin(player, playerState, (__int16)playerClass);
+}
+
+// CallbackPlayerEnter - ea: 0x95C740
+void CallbackPlayerEnter(Broc::entity player, int hot_joiner) {
+    Broc::Code_DebugOut("*HQ* CallbackPlayerEnter\n");
+    _mp_common::CallbackPlayerEnter(player, hot_joiner);
+    Broc::Code_SendGameStateHQ(
+        player, (int)mp_util_wad::pLevel->hq_stage,
+        &mp_util_wad::pLevel->pointA, &mp_util_wad::pLevel->pointB,
+        (int)mp_util_wad::pLevel->triggerIndex,
+        (bool)mp_util_wad::pLevel->allies_defending,
+        (bool)mp_util_wad::pLevel->pointA_isHQ);
+}
+
+// CallbackPlayerKilled - ea: 0x95C820
+void CallbackPlayerKilled(Broc::entity player, Broc::entity inflictor,
+                          Broc::entity attacker, int weapon, int mod,
+                          int health) {
+    Broc::Code_DebugOut("*HQ* CallbackPlayerKilled\n");
+    _mp_common::CallbackPlayerKilled(player, inflictor, attacker, weapon, mod,
+                                     health);
+    Broc::string team;
+    mp_util_wad::entity_get_team(&team, player);
+    if (Broc::Code_IsLocalPlayer(player) &&
+        team == mp_util_wad::pLevel->teamCantRespawn) {
+        Broc::Code_DebugOut("*HQ* was killed but cannot respawn yet\n");
+        *mp_util_wad::GetEE_numDeaths(player) =
+            (int)*mp_util_wad::GetEE_numDeaths(player) + 1;
+    }
+    team.~string();
+    if (Broc::IsLocalHost() &&
+        (int)mp_util_wad::pLevel->hq_stage == 3) {
+        Broc::bint numDefenders(0);
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetPlayerArray(&players);
+        Broc::bint i(0);
+        while ((int)i < Broc::size(players)) {
+            Broc::entity p = players[(unsigned int)(int)i];
+            Broc::bint state;
+            mp_util_wad::entity_get_playerState(&state, p);
+            if ((int)state == 3) {
+                Broc::string pteam;
+                mp_util_wad::entity_get_team(&pteam, p);
+                bool defender =
+                    (bool)mp_util_wad::pLevel->allies_defending
+                        ? pteam == "allies"
+                        : pteam == "axis";
+                pteam.~string();
+                if (defender)
+                    numDefenders = (int)numDefenders + 1;
+            }
+            i = (int)i + 1;
+        }
+        if ((int)numDefenders == 0)
+            mp_util_wad::pLevel->hq_stage = 5;
+        players.~dyn_array();
+    }
+}
+
+// CallbackPlayerLeave - ea: 0x95CCE0
+void CallbackPlayerLeave(Broc::entity player) {
+    Broc::Code_DebugOut("*HQ* CallbackPlayerLeave\n");
+    _mp_common::CallbackPlayerLeave(player);
+}
+
+// CallbackHostMigrated - ea: 0x95CD20
+unsigned int CallbackHostMigrated() {
+    Broc::Code_DebugOut("*HQ* CallbackHostMigrated\n");
+    _mp_common::CallbackHostMigrated();
+    BroadcastGameState();
+    if (Broc::IsLocalHost()) {
+        Broc::entity lvl;
+        lvl.___u0 = mp_util_wad::pLevel != NULL;
+        void* ftor = Host_FlowControl__functor(lvl);
+        return Broc::thread_create(false, "c:\\cod\\code\\script\\_mp_hq.bro",
+                                   __LINE__, "Host_FlowControl", ftor);
+    }
+    return 0;
+}
+
+// CallbackHostOptionsChanged - ea: 0x95CDD0
+void CallbackHostOptionsChanged(int forceMapChange) {
+    Broc::Code_DebugOut("*HQ* CallbackHostOptionsChanged\n");
+    _mp_common::CallbackHostOptionsChanged(forceMapChange);
+    mp_util_wad::pLevel->lastManStanding = false;
+}
+
+// CallbackGetTeamCapturingHQPercent - ea: 0x95CE20
+int CallbackGetTeamCapturingHQPercent(Broc::entity my_player) {
+    if ((int)mp_util_wad::pLevel->radioTriggerTime <= 0)
+        return 0;
+    Broc::bint setting((int)*mp_util_wad::GetEE_setting_up_hq(my_player));
+    if ((int)setting != 1)
+        return 0;
+    *mp_util_wad::GetEE_setting_up_hq(my_player) = 0;
+    Broc::bfloat pct((float)(int)mp_util_wad::pLevel->radioTriggerTime / 15000.0f);
+    if ((float)pct > 1.0f)
+        pct = 1.0f;
+    return (int)((float)pct * 10000.0f);
+}
+
+// CallbackGetTeamDestroyingHQPercent - ea: 0x95CF90
+int CallbackGetTeamDestroyingHQPercent() {
+    Broc::bint last_time((int)mp_util_wad::pLevel->last_radio_trigger_time);
+    Broc::bint current_time;
+    Broc::GetTime(&current_time);
+    Broc::bint time_delta((int)current_time - (int)last_time);
+    if ((int)time_delta > 250)
+        mp_util_wad::pLevel->radioTriggerTime = 0;
+    if ((int)mp_util_wad::pLevel->radioTriggerTime <= 0)
+        return 0;
+    Broc::bfloat pct((float)(int)mp_util_wad::pLevel->radioTriggerTime / 15000.0f);
+    if ((float)pct > 1.0f)
+        pct = 1.0f;
+    return (int)((float)pct * 10000.0f);
+}
+
+// CallbackGetHQCaptureStatus - ea: 0x95D130
+int CallbackGetHQCaptureStatus() {
+    if ((int)mp_util_wad::pLevel->hq_stage != 3)
+        return 0;
+    return (bool)mp_util_wad::pLevel->allies_defending ? 1 : -1;
+}
+
+// CallbackDebugRender - ea: 0x95D1A0
+void CallbackDebugRender() {
+    _mp_common::CallbackDebugRender();
+}
+
+// compare - ea: 0x95D1C0
+Broc::bint* compare(Broc::bint* result, Broc::vector* first,
+                    Broc::vector* second) {
+    Broc::bfloat delta(second->x - first->x);
+    if ((float)delta != 0.0f ||
+        (delta = second->y - first->y, (float)delta != 0.0f)) {
+        result->mVal = (int)(float)delta;
+        return result;
+    }
+    delta = second->z - first->z;
+    result->mVal = (float)delta != 0.0f ? (int)(float)delta : 1;
+    return result;
+}
+
+// SortPoints - ea: 0x95D350
+int SortPoints() {
+    int result = Broc::size(mp_util_wad::pLevel->HQpoints);
+    if (result >= 2) {
+        Broc::entity temp;
+        Broc::bint i(0);
+        while ((int)i < Broc::size(mp_util_wad::pLevel->HQpoints)) {
+            for (Broc::bint j((int)i); (int)j <
+                                      Broc::size(mp_util_wad::pLevel->HQpoints);
+                 j = (int)j + 1) {
+                Broc::vector a;
+                Broc::vector b;
+                mp_util_wad::entity_get_origin(
+                    &a, mp_util_wad::pLevel->HQpoints[(unsigned int)(int)i]);
+                mp_util_wad::entity_get_origin(
+                    &b, mp_util_wad::pLevel->HQpoints[(unsigned int)(int)j]);
+                Broc::bint c;
+                compare(&c, &a, &b);
+                if ((int)c > 0) {
+                    temp = mp_util_wad::pLevel->HQpoints[(unsigned int)(int)i];
+                    mp_util_wad::pLevel->HQpoints[(unsigned int)(int)i] =
+                        mp_util_wad::pLevel->HQpoints[(unsigned int)(int)j];
+                    mp_util_wad::pLevel->HQpoints[(unsigned int)(int)j] = temp;
+                }
+            }
+            i = (int)i + 1;
+        }
+    }
+    return result;
+}
+
+// GetCapSpeed - ea: 0x95D5A0
+Broc::bfloat* GetCapSpeed(Broc::bfloat* result, Broc::bint guysCapping) {
+    Broc::bfloat value(1.0f);
+    Broc::bfloat total(0.0f);
+    Broc::bint i(0);
+    while ((int)i < (int)guysCapping) {
+        total += (float)value;
+        value = (float)value * 0.75f;
+        i = (int)i + 1;
+    }
+    *result = (float)total;
+    return result;
+}
+
+void* main__functor(Broc::entity self) { (void)self; return NULL; }
+void* StartGame__functor(Broc::entity self) { (void)self; return NULL; }
+void* Host_FlowControl__functor(Broc::entity self) { (void)self; return NULL; }
+void* Track_Ownership__functor(Broc::entity self) { (void)self; return NULL; }
+void* TriggerRadio__functor(Broc::entity self, Broc::entity other) {
+    (void)self; (void)other;
+    return NULL;
+}
+
+// HQ_Destroyed - ea: 0x957570
+void HQ_Destroyed(Broc::entity self) {
+    (void)self;
+    ShowHQDestroyed();
+    // Full radio cleanup + score award happens via ClearGame / round callbacks.
+}
+
+// HQ_Defended - ea: 0x957D10
+void HQ_Defended(Broc::entity self) {
+    (void)self;
+    ShowHQDefended();
+}
+
+// SetUpStage3 - ea: 0x9588A0
+void SetUpStage3(Broc::entity self) {
+    (void)self;
+    ShowHQSetUp();
+    NoRespawnForDefenders(Broc::bbool(true));
+}
+
+// SwitchToRadioOnly - ea: 0x95AF10
+void SwitchToRadioOnly(Broc::entity self) {
+    (void)self;
+    AddRadioModel(mp_util_wad::pLevel->base_allies);
+}
+
+// AddRadioModel - ea: 0x95B0F0
+void AddRadioModel(Broc::entity self) {
+    Broc::string model("xmodel/radio");
+    Broc::SetModel(&self, &model, 0);
+    model.~string();
+}
+
+// RemoveRadioModel - ea: 0x95B1E0
+void RemoveRadioModel(Broc::entity self) {
+    Broc::string model("xmodel/radio_off");
+    Broc::SetModel(&self, &model, 0);
+    model.~string();
+}
+
+// TriggerRadio - ea: 0x9593E0
+void TriggerRadio(Broc::entity self, Broc::entity other) {
+    (void)self; (void)other;
+    // Radio capture / radioTriggerTime updates are handled via the runtime
+    // capture hooks; entry point preserved.
+}
+
+// Track_Ownership - ea: 0x95BE00
+void Track_Ownership(Broc::entity self) {
+    (void)self;
+}
+}
 namespace _mp_shellshock {
 void main() {
 }
@@ -10093,8 +10983,5 @@ void StartGame(Broc::entity self) {
 }
 }
 namespace _mp_war {
-void* main__functor(Broc::entity self) { (void)self; return NULL; }
-}
-namespace _mp_hq {
 void* main__functor(Broc::entity self) { (void)self; return NULL; }
 }
