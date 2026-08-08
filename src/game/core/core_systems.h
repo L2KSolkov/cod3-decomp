@@ -34,6 +34,7 @@ typedef int EUserBoneId;         // TODO: enum values from IDA
 typedef int nslWaveID;           // TODO: enum values from IDA
 
 struct ParticleEffect;
+struct apsEffect;
 struct gdLight;
 struct LightEffect;
 struct CameraShakeInstance;
@@ -137,6 +138,9 @@ struct AbstractEffect {
     virtual void FrameAdvance(float deltaT);
     virtual bool IsFinished();
     virtual void StopEffect();
+    virtual Broc::string GetDebugString() const;
+    math::Position3 GetPosition() const;        // ea: 0x004CC230
+    Broc::string GetEntityDebugString() const;  // ea: 0x004CC330
     Broc::string                 mEffectName;        // +0x04
     unsigned int                 mEffectNameHashStr; // +0x08
     TPakId                       mPakId;             // +0x0C
@@ -170,6 +174,8 @@ struct AbstractEffectSound : AbstractEffect {
     const char*     mSubtitle;     // +0x94
     DbLinkedHandle<void, void> mSound;  // +0x98 (SoundDevice::Sound handle)
     nslWaveID       mWaveHdl;      // +0x9C
+
+    void StartFadeOut(float seconds);  // ea: 0x004C12A0
 };
 static_assert(sizeof(AbstractEffectSound) == 0xA0,
               "AbstractEffectSound size mismatch");
@@ -180,9 +186,40 @@ static_assert(sizeof(AbstractEffectSound) == 0xA0,
 // ============================================================================
 struct AbstractEffectParticle : AbstractEffect {
     ParticleEffect* mParticle;  // +0x34
+
+    void SetPoPtr(math::Mat43* po);               // ea: 0x004BD200
+    bool IsLooping() const;                       // ea: 0x004BD220
+    void AdjustEffect_Scale(const char* param,
+                            float scale);         // ea: 0x004BD230
+    void FastForward(float deltaT);               // ea: 0x004BD280
+    void StartFadeOut(float seconds);             // ea: 0x004C1350
+    Broc::string GetDebugString() const;          // ea: 0x004C59C0
 };
 static_assert(sizeof(AbstractEffectParticle) == 0x38,
               "AbstractEffectParticle size mismatch");
+
+// ============================================================================
+// ParticleEffect - active particle system instance (60 bytes)
+// Size: 0x3C - verified against IDA
+// ============================================================================
+struct ParticleEffect {
+    float      cached_pos[4];       // +0x00
+    int        cached_cell_index;   // +0x10
+    int        culled;              // +0x14
+    unsigned int mIndex;            // +0x18 (ae_pair<short,short>)
+    apsEffect* mEffect;             // +0x1C
+    AbstractEffectParticle* mAbstractEffectParticle;  // +0x20
+    math::Mat43* mPoPtr;            // +0x24
+    DbLinkedHandle<void, void> mDObjHandle;  // +0x28
+    DbLinkedHandle<void, void> mEntHandle;   // +0x2C
+    int16_t    mBoneIndex;          // +0x30
+    Bitmask<unsigned short> mFlags; // +0x32
+    TPakId     mPakId;              // +0x34
+    void*      mRaycastData;        // +0x38
+};
+static_assert(sizeof(ParticleEffect) == 0x3C, "ParticleEffect size mismatch");
+static_assert(offsetof(ParticleEffect, mEffect) == 0x1C,
+              "ParticleEffect::mEffect offset mismatch");
 
 // ============================================================================
 // AbstractEffectLight - dynamic light effect (68 bytes)
@@ -194,6 +231,8 @@ struct AbstractEffectLight : AbstractEffect {
     LightEffect*  mProjLight; // +0x38
     LightEffect*  mVertLight; // +0x3C
     float         mTime;      // +0x40
+
+    Broc::string GetDebugString() const;  // ea: 0x004BD300
 };
 static_assert(sizeof(AbstractEffectLight) == 0x44,
               "AbstractEffectLight size mismatch");
@@ -227,6 +266,10 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
     EUserBoneId mBone;        // +0x64
     RumbleEffectInstanceHandle mRumbleHandle[1];  // +0x68
     CameraShakeInstance* mShake[1];               // +0x6C
+
+    Broc::string GetDebugString() const;          // ea: 0x004BD370
+    math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
+    float GetDistanceScale(int client);           // ea: 0x004CE110
 };
 static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x70,
               "AbstractEffectShakeAndRumble size mismatch");

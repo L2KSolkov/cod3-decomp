@@ -6,6 +6,7 @@
 #include "game/core/core_systems.h"
 #include "game/core/core_globals.h"
 #include "core/PoolAllocator.h"
+#include "aeps/apsEffect.h"
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -45,6 +46,30 @@ EffectEventSys* sInst = nullptr;  // 0x012F0380
 }
 
 PoolAllocator* ActiveEffectSet_sAllocator = nullptr;
+
+// ============================================================================
+// Entity lookup (HandleDb<Entity,1344,SizedHandle<12,20>>; elements at +0xA8)
+// ============================================================================
+class EntityHandleDb {
+public:
+    struct DbElement {
+        Entity* mObject;  // +0x00
+        int     mKey;     // +0x04
+    };
+    unsigned char _pad[0xA8];
+    DbElement     mElements[0x540];
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
+};
+EntityHandleDb EntityHandleDb::sInst;
+
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A
+    Entity* GetPlayer(int idx);
+};
+EntityManager* EntityManager::sInst = nullptr;
+
+static const char defaultFileName[] = "";
 
 // ============================================================================
 // EffectEventSys - query param setters
@@ -360,4 +385,213 @@ void ActiveEffectSet::DoStopLoopingEffects()
             }
         }
     }
+}
+
+// ============================================================================
+// AbstractEffect virtuals / getters
+// ============================================================================
+
+// ea: 0x004CC230
+math::Position3 AbstractEffect::GetPosition() const
+{
+    math::Position3 result;
+    const math::Mat43* mPoPtr = this->mPoPtr;
+    if (mPoPtr != nullptr)
+    {
+        result.v.m128_f32[0] = mPoPtr->w.v.m128_f32[0];
+        result.v.m128_f32[1] = mPoPtr->w.v.m128_f32[1];
+        result.v.m128_f32[2] = mPoPtr->w.v.m128_f32[2];
+        result.v.m128_f32[3] = mPoPtr->w.v.m128_f32[3];
+        return result;
+    }
+    unsigned int mVal = mEntity.mHandle.mVal;
+    unsigned int v7 = mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v7 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v7].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+    result.v = mObject->r.currentOrigin.v;
+    return result;
+}
+
+// ea: 0x004CC2F0
+bool AbstractEffect::IsFinished()
+{
+    unsigned int v1 = mEntity.mHandle.mVal & 0xFFF;
+    if (v1 < 0x540
+        && mEntity.mHandle.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v1].mKey
+        && EntityHandleDb::sInst.mElements[v1].mObject != nullptr)
+    {
+        return false;
+    }
+    return (mFlags & 1) == 0;
+}
+
+// ea: 0x004CC330
+Broc::string AbstractEffect::GetEntityDebugString() const
+{
+    Broc::string r((Broc::string::Block*)nullptr);
+    unsigned int mVal = mEntity.mHandle.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            r += " ENT:";
+            Broc::string::Block* mBlock = mObject->mClassName.mBlock;
+            const char* v7 = mBlock ? (const char*)(mBlock + 1)
+                                    : defaultFileName;
+            r += v7;
+        }
+    }
+    return r;
+}
+
+// ea: 0x004BD300
+Broc::string AbstractEffectLight::GetDebugString() const
+{
+    return Broc::string((Broc::string::Block*)nullptr);
+}
+
+// ea: 0x004BD370
+Broc::string AbstractEffectShakeAndRumble::GetDebugString() const
+{
+    return Broc::string((Broc::string::Block*)nullptr);
+}
+
+// ea: 0x004CE0B0
+math::Position3 AbstractEffectShakeAndRumble::GetPositionOnEntity() const
+{
+    math::Position3 result;
+    unsigned int mVal = mEntity.mHandle.mVal;
+    unsigned int v3 = mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    result.v = mObject->r.currentOrigin.v;
+    return result;
+}
+
+// ea: 0x004CE110
+float AbstractEffectShakeAndRumble::GetDistanceScale(int client)
+{
+    unsigned int mVal = mEntity.mHandle.mVal;
+    unsigned int v5 = mVal & 0xFFF;
+    if (v5 >= 0x540 || mVal >> 12 != EntityHandleDb::sInst.mElements[v5].mKey
+        || EntityHandleDb::sInst.mElements[v5].mObject == nullptr)
+        return 1.0f;
+    if (mMinDist2 <= 0.0f || mMaxDist2 <= mMinDist2)
+        return 1.0f;
+    Entity* Player = EntityManager::sInst->GetPlayer(client);
+    math::Position3 v11 = GetPositionOnEntity();
+    __m128 v7 = _mm_sub_ps(Player->r.currentOrigin.v, v11.v);
+    __m128 v8 = _mm_mul_ps(v7, v7);
+    float v12 = v8.m128_f32[0]
+                + (_mm_shuffle_ps(v8, v8, 0x55).m128_f32[0]
+                   + _mm_shuffle_ps(v8, v8, 0xAA).m128_f32[0]);
+    if (mMinDist2 > v12)
+        return 1.0f;
+    if (mMaxDist2 <= v12)
+        return 0.0f;
+    return 1.0f - (v12 - mMinDist2) / (mMaxDist2 - mMinDist2);
+}
+
+// ============================================================================
+// AbstractEffectParticle virtuals
+// ============================================================================
+
+// ea: 0x004BD200
+void AbstractEffectParticle::SetPoPtr(math::Mat43* po)
+{
+    mPoPtr = po;
+    ParticleEffect* mParticle = this->mParticle;
+    if (mParticle != nullptr)
+        mParticle->mPoPtr = po;
+}
+
+// ea: 0x004BD220
+bool AbstractEffectParticle::IsLooping() const
+{
+    return false;
+}
+
+// ea: 0x004BD230
+void AbstractEffectParticle::AdjustEffect_Scale(const char* param, float scale)
+{
+    ParticleEffect* mParticle = this->mParticle;
+    if (mParticle != nullptr)
+    {
+        apsEffect* mEffect = mParticle->mEffect;
+        if (mEffect != nullptr)
+        {
+            int ModifierId = mEffect->GetModifierId(param);
+            if (ModifierId >= 0)
+            {
+                float value =
+                    this->mParticle->mEffect->GetModifierTemplateValue(
+                        ModifierId);
+                float iVal = value * scale;
+                this->mParticle->mEffect->SetModifierValue(ModifierId, iVal);
+            }
+        }
+    }
+}
+
+// ea: 0x004BD280
+void AbstractEffectParticle::FastForward(float deltaT)
+{
+    apsEffect* mEffect = mParticle->mEffect;
+    if (mEffect != nullptr)
+        mEffect->FastForward(deltaT, 100);
+}
+
+// ea: 0x004C1350
+void AbstractEffectParticle::StartFadeOut(float seconds)
+{
+    mCodeFlags.mVal |= 3u;
+    mFadeStart = seconds;
+    mFadeTime = seconds;
+    ParticleEffect* mParticle = this->mParticle;
+    if (mParticle != nullptr)
+    {
+        apsEffect* mEffect = mParticle->mEffect;
+        if (mEffect != nullptr)
+            mEffect->StopEmitting();
+    }
+}
+
+// ea: 0x004C59C0
+Broc::string AbstractEffectParticle::GetDebugString() const
+{
+    Broc::string r((Broc::string::Block*)nullptr);
+    if (mDelayTrigger <= mDelayCount)
+    {
+        Broc::string::Block* mBlock = mEffectName.mBlock;
+        const char* v8 = mBlock ? (const char*)(mBlock + 1)
+                                : defaultFileName;
+        ae_formatted_string<1024, unsigned short> v10("PFX: %s", v8);
+        r = (const char*)v10.mBuff;
+    }
+    else
+    {
+        Broc::string::Block* v4 = mEffectName.mBlock;
+        const char* v5 = v4 ? (const char*)(v4 + 1) : defaultFileName;
+        ae_formatted_string<1024, unsigned short> v10(
+            "PFX: %s DELAYED %f/%f", v5, mDelayCount, mDelayTrigger);
+        r = (const char*)v10.mBuff;
+    }
+    return r;
+}
+
+// ============================================================================
+// AbstractEffectSound virtuals
+// ============================================================================
+
+// ea: 0x004C12A0
+void AbstractEffectSound::StartFadeOut(float seconds)
+{
+    mCodeFlags.mVal |= 3u;
+    mFadeStart = seconds;
+    mFadeTime = seconds;
 }
