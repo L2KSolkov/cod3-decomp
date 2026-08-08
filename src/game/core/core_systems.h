@@ -176,6 +176,7 @@ static_assert(sizeof(AbstractEffectParticle) == 0x38,
 // Size: 0x44 (68 bytes) - verified against IDA
 // ============================================================================
 struct AbstractEffectLight : AbstractEffect {
+    struct Params;
     gdLight*      mLight;     // +0x34
     LightEffect*  mProjLight; // +0x38
     LightEffect*  mVertLight; // +0x3C
@@ -195,6 +196,7 @@ static_assert(sizeof(RumbleEffectInstanceHandle) == 0x4,
               "RumbleEffectInstanceHandle size mismatch");
 
 struct AbstractEffectShakeAndRumble : AbstractEffect {
+    struct Params;
     float mTime;              // +0x34
     float mFreq;              // +0x38
     float mMovement;          // +0x3C
@@ -466,3 +468,205 @@ struct EntityNotifySet {
     reserved_dlist<EndOnScriptNode> mEndOnList;  // +0x1C
 };
 static_assert(sizeof(EntityNotifySet) == 0x2C, "EntityNotifySet size mismatch");
+
+// ============================================================================
+// Effect params + light/rumble support types (verified against IDA)
+// ============================================================================
+struct gdLight {
+    int   vertlight;  // +0x00
+    float color_r;    // +0x04
+    float color_g;    // +0x08
+    float color_b;    // +0x0C
+    int   flicker;    // +0x10
+    float inner_rad;  // +0x14
+    float outer_rad;  // +0x18
+    float rampup;     // +0x1C
+    float duration;   // +0x20
+    float rampdown;   // +0x24
+    int   projlight;  // +0x28
+};
+static_assert(sizeof(gdLight) == 0x2C, "gdLight size mismatch");
+
+struct gdShakeRumble {
+    float time;             // +0x00
+    float freq;             // +0x04
+    float movement;         // +0x08
+    float nextDelay;        // +0x0C
+    float rumble;           // +0x10
+    float blur;             // +0x14
+    float minDist;          // +0x18
+    float maxDist;          // +0x1C
+    float steadyDuration;   // +0x20
+    float rampUpTime;       // +0x24
+    float rampDownTime;     // +0x28
+    int   useHighFreqVib;   // +0x2C
+    int   rumbleEnabled;    // +0x30
+    InplaceString bone;     // +0x34
+};
+static_assert(sizeof(gdShakeRumble) == 0x38, "gdShakeRumble size mismatch");
+
+struct LightEffect {
+    int           mType;          // +0x00 (LightEffect::eType)
+    TPakId        mPakId;         // +0x04
+    unsigned char _pad[0x10 - 0x08];
+    math::Position3 mLightPos;    // +0x10
+    float         mColor[4];      // +0x20
+    bool          mActive;        // +0x30
+    unsigned char _pad2[0x34 - 0x31];
+    float         mMSecLifetime;  // +0x34
+    float         mMSecLifeOrig;  // +0x38
+    bool          mFlicker;       // +0x3C
+    bool          mKill;          // +0x3D
+    unsigned char _pad3[0x40 - 0x3E];
+    float         mColorOriginal[4];  // +0x40
+    float         mFlickerRatio;  // +0x50
+    float         mInnerRadius;   // +0x54
+    float         mOuterRadius;   // +0x58
+    float         mScale;         // +0x5C
+    bool          mFade;          // +0x60
+};
+static_assert(sizeof(LightEffect) == 0x70, "LightEffect size mismatch");
+
+struct AbstractEffectLight::Params {
+    TPakId     pakId;        // +0x00
+    DbLinkedHandle<void, void> ent;  // +0x04
+    float      delayTrigger; // +0x08
+    int        flags;        // +0x0C
+    gdLight*   light;        // +0x10
+};
+static_assert(sizeof(AbstractEffectLight::Params) == 0x14,
+              "AbstractEffectLight::Params size mismatch");
+
+struct AbstractEffectShakeAndRumble::Params {
+    TPakId     pakId;        // +0x00
+    DbLinkedHandle<void, void> ent;  // +0x04
+    float      delayTrigger; // +0x08
+    int        flags;        // +0x0C
+    gdShakeRumble* shakeRumble;  // +0x10
+};
+static_assert(sizeof(AbstractEffectShakeAndRumble::Params) == 0x14,
+              "AbstractEffectShakeAndRumble::Params size mismatch");
+
+// ============================================================================
+// DB support types (verified against IDA)
+// ============================================================================
+struct DbStringHashTable {
+    unsigned int  mBucketVals[1024];  // +0x000
+    unsigned char mBucketAmts[256];   // +0x1000
+};
+static_assert(sizeof(DbStringHashTable) == 0x1100,
+              "DbStringHashTable size mismatch");
+
+struct ConfigStringPtr {
+    ConfigString* mValue;  // +0x00
+    TPakId        mPakId;  // +0x04
+};
+static_assert(sizeof(ConfigStringPtr) == 0x8, "ConfigStringPtr size mismatch");
+
+struct DbTableSet {
+    char         mName[32];     // +0x00
+    DbTable*     mTables;       // +0x20
+    unsigned int mNumTables;    // +0x24
+};
+static_assert(sizeof(DbTableSet) == 0x28, "DbTableSet size mismatch");
+
+// ============================================================================
+// Pak/dialogue/file-support types (verified against IDA)
+// ============================================================================
+struct TBankAlloc {
+    BitSet<64> mram_alloc1;  // +0x00
+    BitSet<64> mram_alloc2;  // +0x08
+};
+static_assert(sizeof(TBankAlloc) == 0x10, "TBankAlloc size mismatch");
+
+struct LoadStats {
+    uint64_t totalStart;   // +0x00
+    float    total;        // +0x08
+    uint64_t readStart;    // +0x10
+    float    readTotal;    // +0x18
+};
+static_assert(sizeof(LoadStats) == 0x20, "LoadStats size mismatch");
+
+struct tlFileBuf {
+    unsigned char* Buf;       // +0x00
+    unsigned int   Size;      // +0x04
+    unsigned int   UserData;  // +0x08
+};
+static_assert(sizeof(tlFileBuf) == 0xC, "tlFileBuf size mismatch");
+
+struct StringTableEntry {
+    unsigned int mHash;   // +0x00
+    unsigned int mFlags;  // +0x04
+    InplaceString mLoc;   // +0x08
+};
+static_assert(sizeof(StringTableEntry) == 0xC, "StringTableEntry size mismatch");
+
+struct nalHeap {
+    virtual ~nalHeap();  // __vftable at +0x00
+};
+static_assert(sizeof(nalHeap) == 0x4, "nalHeap size mismatch");
+
+struct AnimHeap : nalHeap {
+    void*       mBlock;  // +0x04
+    unsigned char mHeap[0x49C];  // +0x08 mem_heap
+};
+static_assert(sizeof(AnimHeap) == 0x4A4, "AnimHeap size mismatch");
+
+struct AssetBankSet {
+    virtual ~AssetBankSet();  // __vftable at +0x00
+};
+static_assert(sizeof(AssetBankSet) == 0x4, "AssetBankSet size mismatch");
+
+struct DialogueBank {
+    unsigned char mData[0x1C];  // InplaceAssetBank<DialogueInstance,InplaceTree<unsigned int,unsigned int>>
+};
+static_assert(sizeof(DialogueBank) == 0x1C, "DialogueBank size mismatch");
+
+struct DialogueManager : AssetBankSet {
+    unsigned char mBanks[0x18C];  // +0x04 ae_array<DialogueBank*,99>
+};
+static_assert(sizeof(DialogueManager) == 0x190, "DialogueManager size mismatch");
+
+// ============================================================================
+// PakFile - pak archive handle (276 bytes)
+// Size: 0x114 (276 bytes) - verified against IDA. Nested apk/nfl/pak types are
+// forward-declared; members touching them stay opaque until those objects port.
+// ============================================================================
+typedef int EPakType;     // TODO: enum values from IDA
+typedef int nflFileID;    // TODO: enum/type from IDA
+typedef int TRequestId;   // TODO: type from IDA
+struct PakInfoNode;
+struct PakHeader;
+
+struct PakFile {
+    reserved_dlist<PakFile>::dlist_node m_dlist_node;  // +0x00
+    const char* mCurrDecodeFile;      // +0x08
+    unsigned char mPath[0x40];        // +0x0C ae_fixed_string<64,unsigned char>
+    EPakType      mPakType;           // +0x4C
+    unsigned int  mFilesize;          // +0x50
+    nflFileID     mFileId;            // +0x54
+    TBankAlloc    mBankAlloc;         // +0x58
+    TBankAlloc    mSerializedAlloc;   // +0x68
+    TPakId        mPakId;             // +0x78
+    const PakInfoNode* mPakInfo;      // +0x7C
+    PakHeader*    mHeader;            // +0x80
+    int           mDefaultSectionIdx; // +0x84
+    unsigned char* mHeaderBuffer;     // +0x88
+    TRequestId    mHeaderRequestId;   // +0x8C
+    unsigned char mApkFiles[0xC];     // +0x90 ae_vector<apk::apkFile*>
+    bool          mCloseHandle;       // +0x9C
+    bool          mOnlyLoadHeader;    // +0x9D
+    unsigned char _pad[0xA0 - 0x9E];
+    unsigned char mHeapList[0x34];    // +0xA0 ae_sized_array<mem_heap*,12>
+    unsigned char mPrereqHeaps[0x14]; // +0xD4 ae_sized_array<PakFile*,4>
+    unsigned int  mCurrentFile;       // +0xE8
+    unsigned char* mCurrentFilePtr;   // +0xEC
+    void*         mCurrentApk;        // +0xF0 apk::apkFile*
+    void*         mCurrentApkFileEntry;   // +0xF4 apk::apkFileEntry*
+    void*         mCurrentApkFileTypeEntry;  // +0xF8 apk::apkFileTypeEntry*
+    int           mState;             // +0xFC PakFile::EState
+    int           mLoadingState;      // +0x100 PakFile::ELoadingState
+    unsigned char mLooseFiles[0xC];   // +0x104 ae_vector<void*>
+    LoadStats*    mLoadStats;         // +0x110
+};
+static_assert(sizeof(PakFile) == 0x114, "PakFile size mismatch");

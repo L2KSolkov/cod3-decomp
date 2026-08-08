@@ -174,3 +174,38 @@ struct DObjSkelMat {
 static_assert(sizeof(DObjSkelMat) == 0x40, "DObjSkelMat size mismatch");
 static_assert(offsetof(DObjSkelMat, origin) == 0x30,
               "DObjSkelMat::origin offset mismatch");
+
+// ============================================================================
+// idVec3 - id-style 3-vector (12 bytes)
+// Size: 0x0C (12 bytes) - verified against IDA
+// ============================================================================
+struct idVec3 {
+    float x;  // +0x00
+    float y;  // +0x04
+    float z;  // +0x08
+};
+static_assert(sizeof(idVec3) == 0x0C, "idVec3 size mismatch");
+static_assert(offsetof(idVec3, z) == 0x08, "idVec3::z offset mismatch");
+
+// ============================================================================
+// mat3_t - id-style 3x3 matrix (36 bytes)
+// Size: 0x24 (36 bytes) - verified against IDA
+// ============================================================================
+struct mat3_t {
+    idVec3 mat[3];  // +0x00
+};
+static_assert(sizeof(mat3_t) == 0x24, "mat3_t size mismatch");
+static_assert(offsetof(mat3_t, mat) == 0x00, "mat3_t::mat offset mismatch");
+
+// ============================================================================
+// quat_t - quaternion (16 bytes)
+// Size: 0x10 (16 bytes) - verified against IDA
+// ============================================================================
+struct quat_t {
+    float x;  // +0x00
+    float y;  // +0x04
+    float z;  // +0x08
+    float w;  // +0x0C
+};
+static_assert(sizeof(quat_t) == 0x10, "quat_t size mismatch");
+static_assert(offsetof(quat_t, w) == 0x0C, "quat_t::w offset mismatch");
