@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // effect_events.cpp - EffectEventSys / ActiveEffectSet + effect free functions
 // (core.o EffectEvents.cpp family)
 // ============================================================================
@@ -67,6 +67,8 @@ class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A
     Entity* GetPlayer(int idx);
+    bool IsLocalPlayer(Entity* entity);
+    int GetPlayerIndex(Entity* entity);
 };
 EntityManager* EntityManager::sInst = nullptr;
 
@@ -108,13 +110,27 @@ extern void Scr_Notify(Entity* ent, HashString hashValue,
 extern int g_debug_sync_queries;  // 0x00F00E78
 extern TPakId CurPakId();
 extern void* PakManager_sInst;
-extern int PAK_ID_INVALID;
 extern unsigned int AeHash(const char* str);
 extern int FX_RegisterEffect(const char* name);
+extern bool IsInSceneAnim();
+extern int FX_GetBoneIndex(void* dobj, unsigned int bone_name_hash);
+extern PoolAllocator* gCommonPoolAllocator;  // 0x00F00A18
+extern float sNaN;  // 0x10F19D0
+extern Broc::string gNULLString;  // 0x00F00EEC
+extern unsigned int s_ImpactMessage;  // 0x00F00F30
+extern void* CurveManager_sInst;  // 0x00F4F430
+extern void CurveManager_PostEvent(void* self, unsigned int entityHandle,
+                                   unsigned int hash, float value);
+extern void AnglesToAxis(const math::Position3* angles,
+                         const math::Position3* origin, math::Mat43* mat);
 
 CameraShake* g_cameraShake = nullptr;
 int dword_F6A290[4 * 0x322];
 int g_debug_sync_queries = 0;
+PoolAllocator* gCommonPoolAllocator = nullptr;
+float sNaN = 0.0f;
+Broc::string gNULLString("");
+unsigned int s_ImpactMessage = 0;
 
 // snd_wait (Entity +0x3C8): two HashStrings
 struct SndWait {
@@ -169,7 +185,17 @@ static Sound* SoundFromHandle(unsigned int handleVal)
 enum {
     EEffectContextInvalid = 0,
     kEffectContextFootstep = 1,
-    kEffectContextScriptCall = 3,
+    kEffectContextGearRattle = 2,
+    kEffectContextLanding = 3,
+    kEffectContextScriptCall = 4,
+    kEffectContextWeapon = 5,
+    kEffectContextBulletHit = 6,
+    kEffectContextGrenadeBounce = 7,
+    kEffectContextProjExplode = 8,
+    kEffectContextVehicle = 9,
+    kEffectContextLight = 10,
+    kEffectContextEIMelee = 11,
+    EEffectContextCount = 12,
 };
 
 static unsigned int holdrand = 1;
@@ -177,6 +203,817 @@ static unsigned int RandNext()
 {
     holdrand = holdrand * 214013 + 2531011;
     return (holdrand >> 16) & 0x7FFF;
+}
+
+extern SoundOptions gSoundOptions;  // 0x00F00EF0
+
+struct Client {
+    unsigned char _pad[0x7F0];
+    int bFrozen;  // +0x7F0
+};
+
+struct rb_vehicle {
+    unsigned int m_flags;  // +0x00
+};
+struct VehicleSeat {
+    DbLinkedHandle<void, void> occupant;  // +0x00
+};
+struct scr_vehicle_t {
+    rb_vehicle* mRBVeh;        // +0x00
+    VehicleSeat seats[11];     // +0x04
+};
+
+static void BitSetAdd(BitSet<49>& bs, int v)
+{
+    bs.mBits[v >> 3] |= (unsigned char)(1u << (v & 7));
+}
+static void BitSetRmv(BitSet<49>& bs, int v)
+{
+    bs.mBits[v >> 3] &= (unsigned char)~(1u << (v & 7));
+}
+
+static void SetScriptIdField(EffectEventSys::CachedQuery& cq,
+                             const char* scriptId)
+{
+    strncpy(cq.mSCRIPT_ID, scriptId, 127);
+    cq.mSCRIPT_ID[127] = 0;
+    BitSetAdd(cq.mSpecifiedFields, 7);
+    BitSetRmv(cq.mWeakFields, 7);
+}
+
+static void SetWeaponIdField(EffectEventSys::CachedQuery& cq,
+                             const char* weaponType)
+{
+    strncpy(cq.mWEAPON_ID, weaponType, 127);
+    cq.mWEAPON_ID[127] = 0;
+    BitSetAdd(cq.mSpecifiedFields, 8);
+    BitSetRmv(cq.mWeakFields, 8);
+}
+
+static void SetVehicleIdField(EffectEventSys::CachedQuery& cq,
+                              const char* vehicleType)
+{
+    strncpy(cq.mVEHICLE_ID, vehicleType, 127);
+    cq.mVEHICLE_ID[127] = 0;
+    BitSetAdd(cq.mSpecifiedFields, 9);
+    BitSetRmv(cq.mWeakFields, 9);
+}
+
+static void BeginScriptCallQuery(EffectEventSys* sys, const Entity* ent,
+                                 int context, const char* scriptId,
+                                 TPakId pakid)
+{
+    sys->BeginEffectQuery(ent, pakid);
+    sys->mCurrentQuery->mType = kEffectContextScriptCall;
+    EffectEventSys::CachedQuery& cq = sys->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = context;
+    if (scriptId != nullptr)
+        SetScriptIdField(cq, scriptId);
+}
+
+// ea: 0x004D1D80
+Handle PostEffectEventFootstep(const Entity* ent, int stanceType,
+                               const CollisionDesc* col_desc)
+{
+    Handle result;
+    if (IsInSceneAnim() || gSoundOptions.mFxDontPlayFootSteps != 0
+        || (ent->client != nullptr && ent->client->bFrozen != 0))
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc->material > 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 105;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    v6->BeginEffectQuery(ent, (TPakId)-1);
+    v6->mCurrentQuery->mType = kEffectContextFootstep;
+    EffectEventSys::CachedQuery& cq = v6->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 0;
+    BitSetAdd(cq.mSpecifiedFields, 2);
+    BitSetRmv(cq.mWeakFields, 2);
+    v6->SetScriptId(Broc::string(gNULLString));
+    v6->CollisionInfo(col_desc, true);
+    v6->mCurrentQuery->mQueryType = 1;
+    result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D1EC0
+Handle PostEffectEventGearRattle(const Entity* ent, int stanceType,
+                                 const CollisionDesc* col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayGearRattle != 0 || IsInSceneAnim()
+        || (ent->client != nullptr && ent->client->bFrozen != 0))
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    v6->BeginEffectQuery(ent, (TPakId)-1);
+    v6->mCurrentQuery->mType = kEffectContextGearRattle;
+    EffectEventSys::CachedQuery& cq = v6->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 1;
+    BitSetAdd(cq.mSpecifiedFields, 2);
+    BitSetRmv(cq.mWeakFields, 2);
+    v6->SetScriptId(Broc::string(gNULLString));
+    v6->mCurrentQuery->mFlags.mVal |= 4u;
+    memcpy(&v6->mCurrentQuery->mCollisionInfo, col_desc,
+           sizeof(v6->mCurrentQuery->mCollisionInfo));
+    v6->mCurrentQuery->mQueryType = 2;
+    result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D1FD0
+Handle PostEffectEventLanding(const Entity* ent,
+                              const CollisionDesc* col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayLanding != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v4 = EffectEventSysStatics::sInst;
+    v4->BeginEffectQuery(ent, (TPakId)-1);
+    v4->mCurrentQuery->mType = kEffectContextLanding;
+    EffectEventSys::CachedQuery& cq = v4->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 2;
+    v4->SetScriptId(Broc::string(gNULLString));
+    v4->CollisionInfo(col_desc, true);
+    v4->mCurrentQuery->mQueryType = 3;
+    result = v4->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2080
+Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
+                                 const Broc::vector* pos,
+                                 const Broc::vector* facing, bool queue,
+                                 TPakId pakid, bool important)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayScriptCall != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (scriptId == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 177;
+        AeAssert::gCurrentExpr = "scriptId";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Empty script id passed in"))
+        {
+            __debugbreak();
+            result.mVal = 0;
+            return result;
+        }
+        result.mVal = 0;
+        return result;
+    }
+    if (pos->x != sNaN && pos->y != sNaN && pos->z != sNaN
+        && facing->x != sNaN && facing->y != sNaN && facing->z != sNaN)
+    {
+        math::Mat43* v24 = (math::Mat43*)gCommonPoolAllocator->Allocate(
+            0x40, false);
+        math::Position3 v25;
+        v25.v.m128_f32[0] = facing->x;
+        v25.v.m128_f32[1] = facing->y;
+        v25.v.m128_f32[2] = facing->z;
+        v25.v.m128_f32[3] = 0.0f;
+        math::Position3 angles;
+        angles.v.m128_f32[0] = pos->x;
+        angles.v.m128_f32[1] = pos->y;
+        angles.v.m128_f32[2] = pos->z;
+        angles.v.m128_f32[3] = 0.0f;
+        AnglesToAxis(&angles, &v25, v24);
+        EffectEventSys* v16 = EffectEventSysStatics::sInst;
+        BeginScriptCallQuery(v16, ent, 3, scriptId, pakid);
+        v16->SetScriptId(Broc::string(scriptId));
+        v16->mCurrentQuery->mMatrix = v24;
+        v16->mCurrentQuery->mQueryType = 8;
+        v16->SetQueryImportance(important);
+        result = v16->ExecEffectQuery();
+        return result;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+    AeAssert::gCurrentLine = 183;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning(
+            "Undefined position or angles passed to PostEffectEventScriptCall"))
+        __debugbreak();
+    result.mVal = 0;
+    return result;
+}
+
+// ea: 0x004D2340
+Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
+                                 bool queue, TPakId pakid, bool important)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayScriptCall != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (scriptId == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 227;
+        AeAssert::gCurrentExpr = "scriptId";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Empty script id passed in"))
+            __debugbreak();
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v7 = EffectEventSysStatics::sInst;
+    BeginScriptCallQuery(v7, ent, 3, scriptId, pakid);
+    if (queue)
+        v7->mCurrentQuery->mFlags.mVal |= 2u;
+    v7->SetScriptId(Broc::string(scriptId));
+    v7->mCurrentQuery->mQueryType = 8;
+    v7->SetQueryImportance(important);
+    result = v7->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D24C0
+Handle PostEffectEventQueueDialog(const Entity* ent, const char* scriptId,
+                                  int notifyHash)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayScriptCall != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (scriptId == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 268;
+        AeAssert::gCurrentExpr = "scriptId";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Empty script id passed in"))
+            __debugbreak();
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    BeginScriptCallQuery(v5, ent, 3, scriptId, (TPakId)-1);
+    v5->mCurrentQuery->mFlags.mVal |= 2u;
+    v5->SetScriptId(Broc::string(scriptId));
+    v5->mCurrentQuery->mDialogNotify = notifyHash;
+    v5->mCurrentQuery->mQueryType = 7;
+    v5->mCurrentQuery->mFlags.mVal |= 8u;
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2630
+Handle PostEffectEventScriptCall_Dir(const Entity* ent, const char* scriptId,
+                                     const float* dir, bool queue)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayScriptCall_Dir != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (scriptId == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 295;
+        AeAssert::gCurrentExpr = "scriptId";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Empty script id passed in"))
+            __debugbreak();
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    BeginScriptCallQuery(v6, ent, 3, scriptId, (TPakId)-1);
+    if (queue)
+        v6->mCurrentQuery->mFlags.mVal |= 2u;
+    v6->DirectionInfo(dir);
+    v6->SetScriptId(Broc::string(scriptId));
+    v6->mCurrentQuery->mQueryType = 8;
+    result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2780
+Handle PostEffectEventWeaponFire1st(const Entity* ent, const char* weaponType,
+                                    int weaponAction, int16_t cacheSound,
+                                    int barrel)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayWeapon != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v7 = EffectEventSysStatics::sInst;
+    v7->BeginEffectQuery(ent, (TPakId)-1);
+    v7->mCurrentQuery->mType = kEffectContextWeapon;
+    EffectEventSys::CachedQuery& cq = v7->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 4;
+    SetWeaponIdField(cq, weaponType);
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = weaponAction;
+    BitSetAdd(cq.mSpecifiedFields, 12);
+    BitSetAdd(cq.mWeakFields, 12);
+    cq.mBARREL = barrel;
+    v7->SetScriptId(Broc::string(gNULLString));
+    v7->mCurrentQuery->mCacheSoundType =
+        ent->scr_vehicle != nullptr ? -1 : cacheSound;
+    v7->mCurrentQuery->mQueryType = 4;
+    result = v7->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D28F0
+Handle PostEffectEventWeaponFire3rd(const Entity* ent, const char* weaponType,
+                                    int weaponAction, int16_t cacheSound)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayWeapon != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    v6->BeginEffectQuery(ent, (TPakId)-1);
+    v6->mCurrentQuery->mType = kEffectContextWeapon;
+    EffectEventSys::CachedQuery& cq = v6->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 4;
+    SetWeaponIdField(cq, weaponType);
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = weaponAction;
+    v6->SetScriptId(Broc::string(gNULLString));
+    v6->mCurrentQuery->mCacheSoundType =
+        ent->scr_vehicle != nullptr ? -1 : cacheSound;
+    v6->mCurrentQuery->mQueryType = 5;
+    result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2A30
+Handle PostEffectEventWeaponReload(const Entity* ent, const char* weaponType,
+                                   int weaponAction, bool queue)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayWeapon != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    v6->BeginEffectQuery(ent, (TPakId)-1);
+    v6->mCurrentQuery->mType = kEffectContextWeapon;
+    EffectEventSys::CachedQuery& cq = v6->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 4;
+    SetWeaponIdField(cq, weaponType);
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = weaponAction;
+    v6->SetScriptId(Broc::string(gNULLString));
+    if (queue)
+        v6->mCurrentQuery->mFlags.mVal |= 2u;
+    v6->mCurrentQuery->mCacheSoundType = -1;
+    v6->mCurrentQuery->mQueryType = 6;
+    result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2B70
+Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                             int weaponAction)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayWeapon != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextWeapon;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 4;
+    SetWeaponIdField(cq, weaponType);
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = weaponAction;
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->mCurrentQuery->mCacheSoundType = -1;
+    v5->mCurrentQuery->mQueryType = -1;
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2C90
+Handle PostEffectEventBulletHit(const Entity* ent, int weaponClass,
+                                CollisionDesc* col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayBulletHit != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc->material > 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 406;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    if ((ent->flags & 0x2000000) != 0)
+        col_desc->material = 7;  // kCollisionMaterialFLESH
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextBulletHit;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 5;
+    BitSetAdd(cq.mSpecifiedFields, 11);
+    BitSetRmv(cq.mWeakFields, 11);
+    cq.mWEAPON_CLASS = weaponClass;
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->mCurrentQuery->mQueryType = 0;
+    v5->CollisionInfo(col_desc, true);
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2DD0
+Handle PostEffectEventGrenadeBounce(const Entity* ent, const char* weaponType,
+                                    const CollisionDesc* col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayGrenadeBounce != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc->material > 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 434;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextGrenadeBounce;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 6;
+    SetWeaponIdField(cq, weaponType);
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->CollisionInfo(col_desc, true);
+    v5->mCurrentQuery->mQueryType = -1;
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2F20
+Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
+                                  const CollisionDesc* col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayProjExplode != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc->material > 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 459;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextProjExplode;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 7;
+    SetWeaponIdField(cq, weaponType);
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->CollisionInfo(col_desc, true);
+    v5->mCurrentQuery->mQueryType = -1;
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D3070
+Handle PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
+                              int action)
+{
+    Handle result;
+    int mFxDontPlayTurret;
+    if (action == 45 || action == 46)
+        mFxDontPlayTurret = gSoundOptions.mFxDontPlayTurret;
+    else
+        mFxDontPlayTurret = gSoundOptions.mFxDontPlayVehicle;
+    if (mFxDontPlayTurret != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    v6->BeginEffectQuery(ent, (TPakId)-1);
+    v6->mCurrentQuery->mType = kEffectContextVehicle;
+    EffectEventSys::CachedQuery& cq = v6->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 8;
+    SetVehicleIdField(cq, vehicleType);
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = action;
+    v6->SetScriptId(Broc::string(gNULLString));
+    v6->mCurrentQuery->mQueryType = -1;
+    result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D3190
+Handle PostEffectEventVehicleExplosion(const Entity* ent,
+                                       const char* vehicleType, int action,
+                                       const CollisionDesc* col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayVehicle != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    v6->BeginEffectQuery(ent, (TPakId)-1);
+    v6->mCurrentQuery->mType = kEffectContextVehicle;
+    EffectEventSys::CachedQuery& cq = v6->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 8;
+    SetVehicleIdField(cq, vehicleType);
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = action;
+    v6->SetScriptId(Broc::string(gNULLString));
+    v6->mCurrentQuery->mFlags.mVal |= 4u;
+    memcpy(&v6->mCurrentQuery->mCollisionInfo, col_desc,
+           sizeof(v6->mCurrentQuery->mCollisionInfo));
+    v6->mCurrentQuery->mQueryType = -1;
+    result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D32D0
+Handle PostEffectEventVehicleWheel(const Entity* ent, const char* vehicleType,
+                                   int action, int mat_type,
+                                   unsigned int wheel_tag_hash)
+{
+    Handle result;
+    int boneID = -1;
+    if (gSoundOptions.mFxDontPlayVehicleWheel != 0
+        || (wheel_tag_hash != 0
+            && (boneID = FX_GetBoneIndex(ent->mDObj, wheel_tag_hash)) == -1))
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v7 = EffectEventSysStatics::sInst;
+    v7->BeginEffectQuery(ent, (TPakId)-1);
+    v7->mCurrentQuery->mType = kEffectContextVehicle;
+    EffectEventSys::CachedQuery& cq = v7->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 8;
+    SetVehicleIdField(cq, vehicleType);
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = action;
+    if (mat_type > 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 545;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    BitSetAdd(cq.mSpecifiedFields, 3);
+    BitSetAdd(cq.mWeakFields, 3);
+    cq.mMATERIAL = mat_type;
+    v7->SetScriptId(Broc::string(gNULLString));
+    v7->mCurrentQuery->mBoneIndex = boneID;
+    v7->mCurrentQuery->mQueryType = -1;
+    result = v7->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D3490
+Handle PostEffectEventPointLightFlash(const Entity* ent,
+                                      const char* weaponType, int weaponAction)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayLightFlash != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextLight;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 9;
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = weaponAction;
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->mCurrentQuery->mQueryType = -1;
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D3560
+Handle PostEffectEventEIMelee(const Entity* ent, int action)
+{
+    Handle result;
+    EffectEventSys* v3 = EffectEventSysStatics::sInst;
+    v3->BeginEffectQuery(ent, (TPakId)-1);
+    v3->mCurrentQuery->mType = kEffectContextEIMelee;
+    EffectEventSys::CachedQuery& cq = v3->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 10;
+    BitSetAdd(cq.mSpecifiedFields, 10);
+    BitSetRmv(cq.mWeakFields, 10);
+    cq.mACTION = action;
+    v3->SetScriptId(Broc::string(gNULLString));
+    v3->mCurrentQuery->mCacheSoundType = -1;
+    v3->mCurrentQuery->mQueryType = -1;
+    result = v3->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D3620
+Handle PostEffectEventPhysicsImpact(const Entity* ent, int myColMat,
+                                    const CollisionDesc* col_desc,
+                                    float intensity)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayBulletHit != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc->material > 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 595;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    EffectEventSys* v6 = EffectEventSysStatics::sInst;
+    v6->BeginEffectQuery(ent, (TPakId)-1);
+    v6->mCurrentQuery->mType = EEffectContextCount;
+    EffectEventSys::CachedQuery& cq = v6->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 11;
+    BitSetAdd(cq.mSpecifiedFields, 4);
+    BitSetRmv(cq.mWeakFields, 4);
+    cq.mMYMATERIAL = myColMat;
+    v6->SetScriptId(Broc::string(gNULLString));
+    v6->mCurrentQuery->mQueryType = -1;
+    v6->CollisionInfo(col_desc, true);
+    result = v6->ExecEffectQuery();
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    if (scr_vehicle != nullptr)
+    {
+        if (scr_vehicle->mRBVeh == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+            AeAssert::gCurrentLine = 608;
+            AeAssert::gCurrentExpr = "ent->scr_vehicle->mRBVeh";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Bad vehicle in "
+                                    "PostEffectEventPhysicsImpact"))
+                __debugbreak();
+        }
+        if ((scr_vehicle->mRBVeh->m_flags & 0x80) != 0)
+        {
+            for (int i = 0; i < 11; ++i)
+            {
+                unsigned int v15 =
+                    scr_vehicle->seats[i].occupant.mHandle.mVal & 0xFFF;
+                if (v15 < 0x540
+                    && scr_vehicle->seats[i].occupant.mHandle.mVal >> 12
+                           == EntityHandleDb::sInst.mElements[v15].mKey)
+                {
+                    Entity* mObject =
+                        EntityHandleDb::sInst.mElements[v15].mObject;
+                    if (mObject != nullptr
+                        && EntityManager::sInst->IsLocalPlayer(mObject))
+                    {
+                        int PlayerIndex =
+                            EntityManager::sInst->GetPlayerIndex(mObject);
+                        if (RumbleManager::Inst(PlayerIndex) != nullptr)
+                        {
+                            RumbleEffect rumbleEffect;
+                            memset(&rumbleEffect, 0, sizeof(rumbleEffect));
+                            rumbleEffect.mRumbleDataArray[0].enabled = true;
+                            rumbleEffect.mRumbleDataArray[1].enabled = true;
+                            rumbleEffect.mRumbleDataArray[0].intensity = 1.0f;
+                            rumbleEffect.mRumbleDataArray[0].steady_duration =
+                                0.2f;
+                            rumbleEffect.mRumbleDataArray[0].delay = 0.0f;
+                            rumbleEffect.mRumbleDataArray[1].intensity = 1.0f;
+                            rumbleEffect.mRumbleDataArray[1].delay = 0.0f;
+                            rumbleEffect.mRumbleDataArray[1].steady_duration =
+                                0.2f;
+                            rumbleEffect.mRumbleDataArray[1].ramp_up_duration =
+                                0.0f;
+                            rumbleEffect.mRumbleDataArray[1]
+                                .ramp_down_duration = 0.0f;
+                            RumbleManager* v18 =
+                                RumbleManager::Inst(PlayerIndex);
+                            v18->Play(&rumbleEffect, intensity);
+                        }
+                    }
+                }
+            }
+            CurveManager_PostEvent(CurveManager_sInst,
+                                   ent->mHandle.mHandle.mVal, s_ImpactMessage,
+                                   intensity);
+        }
+    }
+    return result;
 }
 
 // ============================================================================
@@ -1690,10 +2527,10 @@ LABEL_15:
             __debugbreak();
     }
     TPakId mPakId = override_pak;
-    if (override_pak == PAK_ID_INVALID)
+    if (override_pak == (TPakId)-1)
     {
         mPakId = (TPakId)ent->mPakId;
-        if (mPakId == PAK_ID_INVALID)
+        if (mPakId == (TPakId)-1)
             mPakId = CurPakId();
     }
     mCurrentQuery->mEffectsPak = mPakId;
