@@ -117,7 +117,7 @@ nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio 
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
 tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
-ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	TODO	
+ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	PORTED	[ngl_xboxr] ngl_meshedit.cpp: mesh container management (9 funcs) from IDA
 ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	TODO	
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	TODO	
 nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)

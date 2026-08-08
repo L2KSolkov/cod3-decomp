@@ -10,9 +10,12 @@
 
 #include "d3d8.h"
 #include "ngl/nglScene.h"
+#include "core/tlFixedString.h"
 
 #include <cstddef>
 #include <intrin.h>
+
+struct nglMaterial;
 
 // tl_system.o (tl_xboxr, ported)
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
@@ -99,16 +102,41 @@ extern nglScene* nglRootBuildScene;
 extern int nglSceneRecursion;
 
 // ============================================================================
-// nglMesh â€” mesh container (minimal view for nglCopySection overload)
+// nglMesh - mesh container (0x40 bytes, verified against IDA @0x844AC0).
 // ============================================================================
-struct nglMeshSections {
-    nglMeshSection* Section;  // +0x00
+struct nglMeshLOD {
+    uint8_t data[8];   // opaque 8-byte LOD entry
+};
+
+struct nglMeshSectionTableEntry {
+    nglMeshSection* Section;   // +0x00
+    unsigned int    Flags;     // +0x04
 };
 
 struct nglMesh {
-    uint8_t _pad0[0x10];              // +0x00
-    nglMeshSections* Sections;        // +0x10
+    tlFixedString* Name;                     // +0x00
+    unsigned int   Flags;                    // +0x04
+    unsigned int   NSections;                // +0x08
+    nglMeshSectionTableEntry* Sections;      // +0x0C
+    void*          Skeleton;                 // +0x10
+    unsigned int   NLODs;                    // +0x14
+    nglMeshLOD*    LODs;                     // +0x18
+    unsigned int   NPolys;                   // +0x1C
+    float          Sphere[4];                // +0x20
+    uint8_t        _pad30[0x10];             // +0x30 (zeroed, unused by create)
 };
+static_assert(sizeof(nglMesh) == 0x40, "nglMesh size mismatch");
+
+// Mesh flag bits (from nglCreateMesh / nglCreateScratchMesh disassembly).
+enum {
+    NGL_MESH_SCRATCH = 0x40000,      // create from the scratch list
+    NGL_MESH_SCRATCH_ALLOC = 0x20000,  // OR'd into scratch mesh Flags
+};
+
+extern bool nglCanReleaseMesh(nglMesh* Mesh);
+extern void ngliWaitForResource(void);
+extern tlFixedString nglMeshCreatedName;
+extern void nglCopySection(nglMesh* Mesh, int SectionIdx, nglMesh* SrcMesh, int SrcSectionIdx);
 
 // ============================================================================
 // gpuCreateVertexFormat — build a gpuVertexFormat from a D3D8 vertex element
