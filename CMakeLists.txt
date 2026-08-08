@@ -171,6 +171,7 @@ add_library(cod3_bd STATIC
     src/bd/bdPlatformSocket.cpp
     src/bd/bdPlatformSocket-win32.cpp
     src/bd/bdSocket.cpp
+    src/bd/bdQoSProbe.cpp
     src/bd/bdGameInfo.cpp
     src/bd/bdAddressMap.cpp
     src/bd/bdDiscoveryListener.cpp

@@ -1,19 +1,21 @@
 // ============================================================================
-// bdQoSProbeListener — QoS probe notification interface (3-slot vtable).
+// bdQoSProbeListener - QoS probe notification interface (3-slot vtable).
 // Source: bdSocket:bdQoSProbeListener.obj
+// vtable: [dtor, onQoSProbeSuccess(+4), onQoSProbeFail(+8)] (verified @0x8B7400)
 // ============================================================================
 #ifndef COD3_BD_BDQOSPROBELISTENER_H
 #define COD3_BD_BDQOSPROBELISTENER_H
 
-// ============================================================================
-// bdQoSProbeListener — abstract; subclasses receive QoS probe callbacks.
-// ============================================================================
+#include "bd/bd_types.h"
+
+class bdQoSProbeInfo;
+
 class bdQoSProbeListener {
 public:
-    bdQoSProbeListener();                                        // @0x8B7400
-    virtual ~bdQoSProbeListener();                               // @0x8B7410
-    virtual void probeResultA(unsigned int result) = 0;          // purecall slot 1
-    virtual void probeResultB(unsigned int result) = 0;          // purecall slot 2
+    bdQoSProbeListener();                                             // @0x8B7400
+    virtual ~bdQoSProbeListener();                                    // @0x8B7410
+    virtual void onQoSProbeSuccess(bdQoSProbeInfo& info) = 0;         // slot +4
+    virtual void onQoSProbeFail(const bdReference<bdCommonAddr>& addr) = 0;  // slot +8
 };
 
 #endif // COD3_BD_BDQOSPROBELISTENER_H
