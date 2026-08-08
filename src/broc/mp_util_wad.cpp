@@ -1430,7 +1430,7 @@ extern LevelAudioFields* pLevelAudio;
 
 void AudioPrint(Broc::string s) {
     if (GetCvarInt("sound_debug") != 0)
-        iprintlnbold(s);
+        Broc::iprintlnbold(s);
     s.~string();
 }
 
@@ -1477,5 +1477,47 @@ void ambient_changer(Broc::string new_ambient_setting) {
         mp_util_wad::pLevel->audio_change_priority.mVal + 1;
     mp_util_wad::pLevel->ambient_setting = new_ambient_setting;
     new_ambient_setting.~string();
+}
+
+// PlaySound - ea: 0x938A90
+void PlaySound(Broc::entity self, Broc::string sound, Broc::bfloat delay) {
+    (void)self;
+    Broc::wait((float)delay);
+    Broc::SoundPlay(sound, 1.0f);
+    sound.~string();
+}
+
+// audio_spawner - ea: 0x937760
+void audio_spawner(Broc::entity self, Broc::string sound) {
+    (void)self;
+    if (Broc::IsDefined(sound)) {
+        Broc::dyn_array<Broc::entity> players;
+        Broc::GetLocalPlayerArray(&players);
+        Broc::bint min_range(300);
+        Broc::bint range(300);
+        Broc::bint height(200);
+        int v2 = RandomInt(360);
+        Broc::vector angle(0.0f, (float)v2, 0.0f);
+        Broc::vector dir;
+        Broc::AnglesToForward(&dir, &angle);
+        int v4 = RandomInt((int)range);
+        Broc::vector v20;
+        Broc::vector pos;
+        Broc::vector v21;
+        Broc::vector v23;
+        Broc::vector v22;
+        Broc::vector v24;
+        Broc::vector* origin = Broc::entity_origin(&players[0], &v21);
+        Broc::vector* scaled = Broc::vector_scale(&v20, &dir, (float)(v4 + min_range.mVal));
+        Broc::vector* sum = Broc::vector_add(&pos, origin, scaled);
+        (void)sum;
+        float z = Broc::vector_get(&v23, 2) + (float)RandomInt((int)height);
+        Broc::vector facing(0.0f, 0.0f, 0.0f);
+        Broc::EffectEventPlay(&sound, &pos, &facing);
+        players.~dyn_array();
+        sound.~string();
+    } else {
+        sound.~string();
+    }
 }
 }

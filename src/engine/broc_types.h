@@ -69,6 +69,10 @@ struct vector {
     float x;  // +0x00
     float y;  // +0x04
     float z;  // +0x08
+
+    vector() : x(0.0f), y(0.0f), z(0.0f) {}
+    vector(float ix, float iy, float iz) : x(ix), y(iy), z(iz) {}
+    float operator[](int i) const { return (&x)[i]; }
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(vector) == 12, "Broc::vector size mismatch");
 
@@ -417,6 +421,20 @@ void SetModel(Broc::entity* e, const Broc::string* model, int whichPak);
 void MoveTo(Broc::entity* e, const Broc::vector* vPos, float time,
             float accTime, float decTime);
 int EffectEventPlay(Broc::entity* e, const Broc::string* script);
+int EffectEventPlay(const Broc::string* script, const Broc::vector* pos,
+                    const Broc::vector* facing);
+void GetLocalPlayerArray(Broc::dyn_array<Broc::entity>* out);
+void AnglesToForward(Broc::vector* result, const Broc::vector* angles);
+void AddEventHandler(Broc::entity* e, unsigned int label, unsigned int func);
+HashStr string_hash(const char* str);
+unsigned int SoundPlay(const Broc::string& name, float volume);
+void ReverbSetParams(const Broc::string& name, bool immediate);
+int GetCvarInt(const char* cvar);
+void iprintlnbold(const Broc::string& s);
+Broc::vector* entity_origin(Broc::entity* e, Broc::vector* result);
+Broc::vector* vector_scale(Broc::vector* result, const Broc::vector* a, float s);
+Broc::vector* vector_add(Broc::vector* result, const Broc::vector* a, const Broc::vector* b);
+float vector_get(const Broc::vector* v, int i);
 template <typename... Args> void println(const char* fmt, const Args&... args);
 template <typename T> int size(const Broc::dyn_array<T>& ar);
 template <typename T> void push(Broc::dyn_array<T>& ar, const T& elt);
