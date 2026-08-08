@@ -74,6 +74,7 @@ add_library(cod3_ngl STATIC
     src/ngl/ngl_scene.cpp
     src/ngl/ngl_dx_scene.cpp
     src/ngl/ngl_dx_mesh.cpp
+    src/ngl/ngl_dx_font.cpp
     src/ngl/stubs.cpp
 )
 add_library(cod3_render STATIC

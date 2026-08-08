@@ -18,7 +18,7 @@
 
 #include "core/tlFixedString.h"
 #include "ngl/nglTexture.h"
-#include "ngl/nglRenderNode.h"
+#include "aeps/apsRenderNode.h"
 
 // ============================================================================
 // nglFontHeader - 20 bytes
@@ -78,6 +78,30 @@ struct nglFont {
         if ((int)(Character - FirstGlyph) <= v3)
             v3 = Character - FirstGlyph;
         return GlyphInfo[v3].CellWidth;
+    }
+
+    // ea: 0x853E80 (inline COMDAT, ngl_dx_font.o)
+    void SetMeasures(unsigned char c, float* offs, float* size, float* uvpos,
+                     float* uvsize, float ScaleX, float ScaleY) {
+        int FirstGlyph = Header.FirstGlyph;
+        int v10 = Header.NumGlyphs - 1;
+        int v11 = (int)c - FirstGlyph;
+        if (v11 >= 0) {
+            if (v11 > v10)
+                v11 = v10;
+        } else {
+            v11 = 0;
+        }
+        nglGlyphInfo ginfo = GlyphInfo[v11];
+        offs[0] = (float)ginfo.GlyphOrigin[0] * ScaleX;
+        offs[1] = (float)ginfo.GlyphOrigin[1] * ScaleY;
+        size[0] = (float)ginfo.GlyphSize[0] * ScaleX;
+        size[1] = (float)ginfo.GlyphSize[1] * ScaleY;
+        int v14 = 4 * ((int)c - Header.FirstGlyph);
+        uvpos[0] = TexCoords[v14];
+        uvpos[1] = TexCoords[v14 + 1];
+        uvsize[0] = TexCoords[v14 + 2] - TexCoords[v14];
+        uvsize[1] = TexCoords[v14 + 3] - TexCoords[v14 + 1];
     }
 };
 static_assert(sizeof(nglFont) == 0x38, "nglFont size mismatch");

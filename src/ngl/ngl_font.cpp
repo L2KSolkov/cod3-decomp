@@ -24,6 +24,8 @@
 // ============================================================================
 extern void* nglGetResource(const tlFixedString& FileName, unsigned int FourCC);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
+extern void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);
+extern void nglListAddNode_Translucent(class nglRenderNode* Node);
 extern void tlMemFree(void* Ptr);
 extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flags);
 

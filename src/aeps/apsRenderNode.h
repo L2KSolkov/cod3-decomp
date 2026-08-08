@@ -24,6 +24,7 @@ class apsRenderNode;
 class nglRenderNode {
 public:
     virtual ~nglRenderNode() {}
+    virtual void Render() = 0;
     nglRenderNode* Next;
     union {
         float SortDist;
