@@ -100,6 +100,7 @@ struct weaponFileInfoFull : weaponFileInfo_t {
     int  bAnimateCamMelee;   // +0xA0
     int  bAnimateCamFire;    // +0xA4
     int  ammoType;           // +0xA8
+    int  iReticleCenterSize; // +0xAC
     float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
 };
 
@@ -207,6 +208,7 @@ struct PlayerState {
     int pm_type;                       // +0x24
     int weaponTime;                    // +0x34
     int weapAnim;                      // +0x530
+    unsigned int mViewLockedEntity;    // +0x4A0
     float leanf;                       // +0x4C
     int proneViewHeight;               // +0x458
     int crouchViewHeight;              // +0x45C

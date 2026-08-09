@@ -606,3 +606,140 @@ void CG_DrawInformation()
         }
     }
 }
+
+extern int dword_F63584[4 * 1580];
+extern int dword_F64180[4 * 1580];
+extern int dword_F6A2AC[4 * 3208];
+extern int dword_F6A28C[4 * 802];
+extern int dword_F6355C[4 * 1580];
+extern float dword_F63C50[4 * 1580];
+extern float dword_F63C54[4 * 1580];
+extern float dword_F63C58[4 * 1580];
+extern float dword_F63C5C[4 * 1580];
+extern int cg_shellshockblur;
+extern int gSaveGameData_mCrosshair;
+extern int cg_drawpaused;
+extern int cg_drawGun;
+extern void* cg_weapons;
+extern re_export_view re;
+extern void* BG_GetInfoForWeapon(int weapon);
+extern PlayerState* GetPlayerState(int idx);
+extern float* CG_FadeColor(int startMsec, int totalMsec, int fadeMsec);
+extern void CG_FillRect(float x, float y, float width, float height,
+                        float* color, float z);
+extern void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
+extern void trap_R_SetColor(const float* rgba);
+extern void CG_GetCenterOfScreen(float* x, float* y);
+class EntityHandleDbLocal2;
+class EntityHandleDbLocal2 {
+public:
+    struct DbElement {
+        Entity* mObject;
+        int mKey;
+    };
+    DbElement mElements[0x540];
+};
+extern EntityHandleDbLocal2 EntityHandleDb_sInst2;
+static Entity* EntityHandleDb_Get2(unsigned int handleVal)
+{
+    unsigned int v = handleVal & 0xFFF;
+    if (v < 0x540
+        && handleVal >> 12
+               == EntityHandleDb_sInst2.mElements[v].mKey)
+        return EntityHandleDb_sInst2.mElements[v].mObject;
+    return nullptr;
+}
+
+// ea: 0x0068BA90
+void CG_DrawObjectives()
+{
+}
+
+// ea: 0x0068BAA0
+int CG_DrawScoreboard()
+{
+    if ((GamePause_IsGamePaused(currCl) && cg_drawpaused != 0)
+        || dword_F63584[1580 * currCl] >= 6
+        || dword_F641D0[1580 * currCl] == 0)
+    {
+        return 0;
+    }
+    float* v1 = CG_FadeColor(dword_F641D4[1580 * currCl], 100, 100);
+    if (v1 != nullptr)
+        v1[3] = 1.0f - v1[3];
+    return 1;
+}
+
+// ea: 0x006983C0
+int CG_DrawShellShockSavedScreenBlend(const void* parms, int start,
+                                      int duration)
+{
+    if (cg_shellshockblur == 0)
+        return 1;
+    if (start != 0 && duration > 0 && duration + start - cgGlobal_time > 0)
+    {
+        re.SaveScreen();
+        dword_F64180[1580 * currCl] = 1;
+        return 1;
+    }
+    dword_F64180[1580 * currCl] = 0;
+    return 0;
+}
+
+// ea: 0x006A0030
+void CG_DrawTurretCrossHair()
+{
+    int hcolor[3] = {1065353216, 1065353216, 1065353216};
+    float value = 0.0f;
+    char v0 = *(char*)&dword_F6A2AC[3208 * currCl];
+    if (v0 != 0
+        && (!GamePause_IsGamePaused(currCl) || cg_drawpaused == 0)
+        && dword_F6355C[1580 * currCl] == 0
+        && dword_F6A28C[802 * currCl] == 0
+        && gSaveGameData_mCrosshair)
+    {
+        PlayerState* ps = GetPlayerState(currCl);
+        Entity* v2 = EntityHandleDb_Get2(ps->mViewLockedEntity);
+        if (v2 != nullptr && v2->s.eType == 10)
+        {
+            int weapon = v2->s.weapon;
+            if (weapon != 0)
+            {
+                weaponFileInfoFull* InfoForWeapon =
+                    (weaponFileInfoFull*)BG_GetInfoForWeapon(weapon);
+                weaponInfo_s* v5 = &((weaponInfo_s*)cg_weapons)[weapon];
+                char v6 = ((char*)InfoForWeapon)[0x280];
+                if (v6 != 0)
+                {
+                    if (v6 == 84)
+                    {
+                        float col[4] = {0.0f, 0.0f, 0.0f, 0.6f};
+                        CG_FillRect(310.0f, 240.0f, 20.0f, 2.0f, col, 0.0f);
+                        CG_FillRect(319.0f, 242.0f, 2.0f, 8.0f, col, 0.0f);
+                    }
+                    else
+                    {
+                        value = *(float*)&cg_crosshairAlpha;
+                        if (value >= 0.0099999998f)
+                        {
+                            trap_R_SetColor((const float*)hcolor);
+                            float x = 0.0f, y = 0.0f;
+                            float w = (float)InfoForWeapon->iReticleCenterSize;
+                            float h = w;
+                            CG_AdjustFrom640(&x, &y, &w, &h);
+                            trap_R_DrawStretchPic(
+                                (((dword_F63C58[1580 * currCl] - w) * 0.5f)
+                                 + dword_F63C50[1580 * currCl])
+                                    + x,
+                                (((dword_F63C5C[1580 * currCl] - h) * 0.5f)
+                                 + dword_F63C54[1580 * currCl])
+                                    + y,
+                                w, h, 0.0f, 0.0f, 1.0f, 1.0f,
+                                v5->hReticleCenter, 0.0f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
