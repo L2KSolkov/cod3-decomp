@@ -986,6 +986,7 @@ static_assert(offsetof(scr_data_t, actorCorpseInfo) == 0x60C,
               "scr_data_t::actorCorpseInfo offset mismatch");
 extern scr_data_t g_scr_data;  // 0xEE58D0
 extern const math::Position3 actorMaxs;  // 0xF99330
+extern const math::Position3 actorMins;  // 0xF99330-relative (mp_actors.o)
 int  G_GetActorCorpseIndex(Entity* ent);
 int  BG_ActorIsProne(actor_prone_info_t* pInfo, int iCurrentTime);
 float BG_GetActorProneFraction(actor_prone_info_t* pInfo, int iCurrentTime);
@@ -1852,6 +1853,9 @@ void  MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
                        float (*out)[3]);
 void  MatrixTranspose(const float (*in)[3], float (*out)[3]);
 void  Axis4ToAngles(const float (*axis)[4], float* angles);  // core.o
+float vectosignedyaw(float* vec);                 // core.o
+void  YawToAxis(float yaw, float (*axis)[3]);     // core.o
+XAnimTree* GScr_GetEntAnimTree(Entity* ent);      // g_scr.cpp
 void  RotatePointAroundVector(float* result, const float* axis,
                               const float* src, float angle);  // core.o
 void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
@@ -2078,6 +2082,10 @@ void CG_EventSpawnTracer(const math::Position3* pstart,
 void* controller_inst();                                   // controller_xboxr
 int  controller_button_pressed(void* self, int i_controller_num,
                                int i_button);              // controller_xboxr
+math::Quaternion nalQuaternionFromMatrix(const math::Mat44& m);  // nal_xboxr
+void j_nullsub_117(unsigned int entity, int iClipMask, const float* vOrigin,
+                   float fYaw, float* pfCorpsePitch, float* pfCorpseRoll,
+                   float* pfCorpseHeight);  // g.o (null)
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o

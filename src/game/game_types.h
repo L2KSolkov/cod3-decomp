@@ -35,8 +35,12 @@ struct gitem_s;
 struct Curve;
 struct tagInfo_t;
 struct animscripted_t {
-    math::Position3 origin;     // +0x00
-    math::Position3 offset;     // +0x20
+    struct NalPositionOrientation {
+        math::Quaternion quat;  // +0x00
+        math::Position3  pos;   // +0x10
+    };
+    NalPositionOrientation origin;  // +0x00 (32 bytes)
+    NalPositionOrientation offset;  // +0x20 (32 bytes)
     unsigned int    anim;       // +0x40 (scr_anim_s mHandle)
     void*           root;       // +0x44
     int             bStarted;   // +0x48

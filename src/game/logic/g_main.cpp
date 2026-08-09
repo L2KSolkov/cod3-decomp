@@ -4,6 +4,7 @@
 
 #include "game/logic/g_local.h"
 
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -12,6 +13,7 @@
 #include "core/PoolAllocator.h"
 
 extern PoolAllocator* gCommonPoolAllocator;  // core.o 0x012EFF18
+extern "C" int __fpclass(float);
 
 extern nglDebugStruct nglDebug;  // ngl_debug.o
 extern int gRenderCG_2D;         // cg.o 0x011E86E4
@@ -3686,6 +3688,190 @@ void G_Animscripted_Think(Entity* ent)
         mem_heap_free(v2);
         ent->scripted = nullptr;
     }
+}
+
+// ea: 0x004610F0
+void G_Animscripted(Entity* ent, const float* origin, const float* angles,
+                    scr_anim_s anim, scr_anim_s root, unsigned int notifyName,
+                    int animMode, float fBlendInTime, float fBlendOutTime)
+{
+    trace_t trace;
+    memset(&trace, 0, sizeof(trace));
+    XAnimTree* pAnimTree = GScr_GetEntAnimTree(ent);
+    if (pAnimTree == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_animscripted.cpp";
+        AeAssert::gCurrentLine = 52;
+        AeAssert::gCurrentExpr = "pAnimTree";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    animscripted_t* scripted = ent->scripted;
+    if (scripted == nullptr)
+    {
+        scripted = (animscripted_t*)mem_heap_malloc(16, 0x70);
+        ent->scripted = scripted;
+    }
+    scripted->bStarted = 0;
+    if (((anim.mHandle >> 16) & 0xFFFF) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_animscripted.cpp";
+        AeAssert::gCurrentLine = 66;
+        AeAssert::gCurrentExpr = "anim.tree != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad anim passed to anim scripted"))
+            __debugbreak();
+    }
+    memcpy(&scripted->anim, &anim, sizeof(scr_anim_s));
+    memcpy(&scripted->root, &root, sizeof(scr_anim_s));
+    scripted->mode = animMode;
+    scripted->notifyName = notifyName;
+    bool has_zone_collision = Entity_has_zone_collision(ent);
+    float axis[3][3];
+    float baseOrigin[3];
+    if (animMode == 1 /* ASM_DEATHPLANT */)
+    {
+        float v16 = origin[2] + 36.0f;
+        float v18 = origin[2] - 18.0f;
+        if (has_zone_collision)
+        {
+            collision_context_t ctx;
+            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+            ctx.pass_entity1 = ent->mHandle;
+            ctx.pass_entity2.mHandle.mVal = 0;
+            ctx.pass_owner1.mHandle.mVal = 0;
+            ctx.pass_owner2.mHandle.mVal = 0;
+            ctx.contentmask = 0x820011;
+            math::Position3 start;
+            start.v.m128_f32[0] = origin[0];
+            start.v.m128_f32[1] = origin[1];
+            start.v.m128_f32[2] = v16;
+            start.v.m128_f32[3] = 0.0f;
+            math::Position3 end;
+            end.v.m128_f32[0] = origin[0];
+            end.v.m128_f32[1] = origin[1];
+            end.v.m128_f32[2] = v18;
+            end.v.m128_f32[3] = 0.0f;
+            SV_Trace(&trace, &start, &actorMins, &actorMaxs, &end, &ctx, 1,
+                     0, nullptr, 0, 0.0f);
+        }
+        if (trace.normal.v.m128_f32[1] < 1.0f && has_zone_collision)
+        {
+            baseOrigin[0] = trace.endpos.v.m128_f32[0];
+            baseOrigin[1] = trace.endpos.v.m128_f32[1];
+            baseOrigin[2] = trace.endpos.v.m128_f32[2];
+        }
+        else
+        {
+            baseOrigin[0] = origin[0];
+            baseOrigin[1] = origin[1];
+            baseOrigin[2] = origin[2];
+        }
+        scripted->fHeightOfs = 0.0f;
+        float axisAngles[3] = { 0.0f, angles[1], angles[2] };
+        AnglesToAxis(axisAngles, axis);
+        G_SetOrigin(ent, baseOrigin);
+        G_SetAngle(ent, axisAngles);
+        float rot[3];
+        float trans[3];
+        AnimTree* anims = Scr_GetAnims((anim.mHandle >> 16) & 0xFFFF);
+        XAnimGetAbsDelta(anims, anim.mHandle & 0xFFFF, rot, trans, 1.0f);
+        float fDelta = sqrtf(trans[0] * trans[0] + trans[1] * trans[1]
+                             + trans[2] * trans[2]);
+        float transOut[3];
+        MatrixTransformVector43(trans, axis, transOut);
+        float yaw = vectosignedyaw(rot);
+        float yawAxis[3][3];
+        YawToAxis(yaw, yawAxis);
+        float resultAxis[3][3];
+        MatrixMultiply(yawAxis, axis, resultAxis);
+        float scriptedAngles[3];
+        AxisToAngles(resultAxis, scriptedAngles);
+        if (has_zone_collision)
+        {
+            collision_context_t ctx;
+            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+            ctx.pass_entity1 = ent->mHandle;
+            ctx.pass_entity2.mHandle.mVal = 0;
+            ctx.pass_owner1.mHandle.mVal = 0;
+            ctx.pass_owner2.mHandle.mVal = 0;
+            ctx.contentmask = 0x820011;
+            math::Position3 start;
+            start.v.m128_f32[0] = transOut[0];
+            start.v.m128_f32[1] = transOut[1];
+            start.v.m128_f32[2] = transOut[2] - fDelta - 128.0f;
+            start.v.m128_f32[3] = 0.0f;
+            math::Position3 end;
+            end.v.m128_f32[0] = transOut[0];
+            end.v.m128_f32[1] = transOut[1];
+            end.v.m128_f32[2] = transOut[2] + fDelta + 128.0f;
+            end.v.m128_f32[3] = 0.0f;
+            SV_Trace(&trace, &start, &actorMins, &actorMaxs, &end, &ctx, 1,
+                     0, nullptr, 0, 0.0f);
+        }
+        if (trace.normal.v.m128_f32[1] < 1.0f && has_zone_collision)
+        {
+            j_nullsub_117(ent->mHandle.mHandle.mVal, 0x820011,
+                          &trace.endpos.v.m128_f32[0], angles[1],
+                          &scripted->fEndPitch, &scripted->fEndRoll, nullptr);
+        }
+        else
+        {
+            scripted->fEndPitch = 0.0f;
+            scripted->fEndRoll = 0.0f;
+        }
+        AnimTree* anims2 = Scr_GetAnims((anim.mHandle >> 16) & 0xFFFF);
+        if (XAnimGetLength(anims2, anim.mHandle & 0xFFFF) >= 1.0f)
+            scripted->fOrientLerp = 0.0f;
+        else
+            scripted->fOrientLerp = -1.0f;
+    }
+    else
+    {
+        AnglesToAxis(angles, axis);
+        baseOrigin[0] = origin[0];
+        baseOrigin[1] = origin[1];
+        baseOrigin[2] = origin[2];
+    }
+    math::Mat44 m;
+    m.x.v = _mm_setr_ps(axis[0][0], axis[0][1], axis[0][2], 0.0f);
+    m.y.v = _mm_setr_ps(axis[1][0], axis[1][1], axis[1][2], 0.0f);
+    m.z.v = _mm_setr_ps(axis[2][0], axis[2][1], axis[2][2], 0.0f);
+    m.w.v = _mm_setr_ps(baseOrigin[0], baseOrigin[1], baseOrigin[2], 0.0f);
+    math::Quaternion quat = nalQuaternionFromMatrix(m);
+    scripted->origin.quat = quat;
+    scripted->origin.pos.v = m.w.v;
+    if ((__fpclass(scripted->origin.pos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(scripted->origin.pos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(scripted->origin.pos.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_animscripted.cpp";
+        AeAssert::gCurrentLine = 153;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((scripted->origin.p)[0]) && "
+            "!IS_NAN((scripted->origin.p)[1]) && "
+            "!IS_NAN((scripted->origin.p)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    scripted->offset.quat.x = 0.0f;
+    scripted->offset.quat.y = 0.0f;
+    scripted->offset.quat.z = 0.0f;
+    scripted->offset.quat.w = 1.0f;
+    scripted->offset.pos.v = _mm_setzero_ps();
+    XAnimClearTreeGoalWeightsStrict(pAnimTree, root.mHandle & 0xFFFF,
+                                    fBlendInTime);
+    AnimTree* anims = Scr_GetAnims((anim.mHandle >> 16) & 0xFFFF);
+    int isLooped = XAnimIsLooped(anims, anim.mHandle & 0xFFFF);
+    XAnimSetCompleteGoalWeight(pAnimTree, anim.mHandle & 0xFFFF, 1.0f,
+                               fBlendInTime,
+                               1.0f, notifyName, 0,
+                               (void*)(intptr_t)(isLooped == 0));
+    scripted->fBlendOutTime = fBlendOutTime;
+    ent->flags |= 0x1000000;
 }
 
 // ea: 0x004505A0

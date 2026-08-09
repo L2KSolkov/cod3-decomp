@@ -148,4 +148,13 @@ struct TranMat43 {
 };
 static_assert(sizeof(TranMat43) == 0x10, "TranMat43 size mismatch");
 
+// Quaternion â€” 4-float quaternion (16 bytes)
+struct Quaternion {
+    float x;  // +0x00
+    float y;  // +0x04
+    float z;  // +0x08
+    float w;  // +0x0C
+};
+static_assert(sizeof(Quaternion) == 0x10, "Quaternion size mismatch");
+
 } // namespace math
