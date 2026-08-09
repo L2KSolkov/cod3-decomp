@@ -314,6 +314,7 @@ add_library(cod3_game_cg STATIC
     src/game/cg/cg_view.cpp
     src/game/cg/cg_ents.cpp
     src/game/cg/cg_draw.cpp
+    src/game/cg/cg_misc.cpp
 )
 add_library(cod3_game_cl STATIC
     src/game/cl/stubs_game.cpp
