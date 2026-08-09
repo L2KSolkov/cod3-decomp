@@ -2763,6 +2763,7 @@ struct LocalCamera {
     math::Position3 mPrevAngles;   // +0x40
     uint8_t _pad50[0x194 - 0x50];
     int     mVehicleCamMode;       // +0x194
+    bool IsTweening() { return false; }
 };
 static LocalCamera* CameraAt(int idx)
 {
@@ -3823,6 +3824,268 @@ void G_DrawVehiclePaths()
     }
 done:
     ;
+}
+
+static float VEH_LerpAngle(float rate)
+{
+    return 0.0f;
+}
+
+// ea: 0x0047E030
+void VEH_UpdateGunnerAim(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info =
+        scr_vehicle != nullptr ? s_vehicleInfos[scr_vehicle->infoIdx] : nullptr;
+    Entity* mObject = HandleDbToEnt(scr_vehicle->seats[1].occupant);
+    if (mObject == nullptr)
+    {
+        Entity* v6 = HandleDbToEnt(scr_vehicle->seats[6].occupant);
+        if (v6 == nullptr)
+        {
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[1] =
+                VEH_LerpAngle(120.0f);
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
+                VEH_LerpAngle(90.0f);
+            scr_vehicle->next.mGunnerAngles.v =
+                scr_vehicle->current.mGunnerAngles.v;
+        }
+        return;
+    }
+    if (ent->health <= 0)
+        goto no_target;
+    Client* client = mObject->client;
+    if (client != nullptr)
+    {
+        if (client->mVehicleAnimMoving || client->mVehicleAnimPauseRemoteAngles)
+        {
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
+                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+            return;
+        }
+        if (EntityManager::sInst->IsLocalPlayer(mObject)
+            && CameraAt(EntityManager::sInst->GetPlayerIndex(mObject))
+                   ->IsTweening())
+        {
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
+                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+            return;
+        }
+    }
+no_target:
+    Entity* tgtEnt = HandleDbToEnt(scr_vehicle->mGunnerTargetEnt);
+    float tgtDir[3];
+    if (tgtEnt != nullptr)
+    {
+        tgtDir[0] = tgtEnt->r.currentOrigin.v.m128_f32[0]
+                    + scr_vehicle->gunnerTargetOffset[0];
+        tgtDir[1] = tgtEnt->r.currentOrigin.v.m128_f32[1]
+                    + scr_vehicle->gunnerTargetOffset[1];
+        tgtDir[2] = tgtEnt->r.currentOrigin.v.m128_f32[2]
+                    + scr_vehicle->gunnerTargetOffset[2];
+    }
+    else
+    {
+        tgtDir[0] = scr_vehicle->gunnerTargetOrigin[0];
+        tgtDir[1] = scr_vehicle->gunnerTargetOrigin[1];
+        tgtDir[2] = scr_vehicle->gunnerTargetOrigin[2];
+        tgtEnt = nullptr;
+    }
+    if (scr_vehicle->boneIndex.gunner_barrel >= 0)
+    {
+        DObjSkelMat barrelMtx;
+        G_DObjGetWorldBoneIndexMatrix(ent, scr_vehicle->boneIndex.gunner_barrel,
+                                      &barrelMtx);
+        float tgtPos[3];
+        tgtPos[0] = ent->r.currentAngles.v.m128_f32[0];
+        tgtPos[1] = ent->r.currentAngles.v.m128_f32[1];
+        tgtPos[2] = AngleNormalize360(
+            scr_vehicle->current.mTurretAngles.v.m128_f32[1]
+            + ent->r.currentAngles.v.m128_f32[1]);
+        float angles[3];
+        Entity* v22 = HandleDbToEnt(scr_vehicle->seats[1].occupant);
+        if (v22 != nullptr && v22->client != nullptr)
+        {
+            float ps[3];
+            float spanDownScale[3];
+            ps[0] = v22->client->ps.viewangles[0];
+            ps[1] = v22->client->ps.viewangles[1];
+            float tgtAxis[3][3];
+            AnglesToAxis(tgtPos, tgtAxis);
+            float viewAxis[3][3];
+            AnglesToAxis(ps, viewAxis);
+            float invTgt[3][3];
+            MatrixTranspose(tgtAxis, invTgt);
+            float rel[3][3];
+            MatrixMultiply(viewAxis, invTgt, rel);
+            AxisToAngles(rel, angles);
+            float deltaAngles[3];
+            AnglesSubtract((const math::Position3*)angles,
+                           &scr_vehicle->current.mGunnerAngles,
+                           (math::Position3*)deltaAngles);
+            float absPitch = fabs(deltaAngles[0]);
+            float absYaw = fabs(deltaAngles[1]);
+            float deltaYAW = AngleNormalize180(
+                AngleNormalize360(v22->client->ps.viewangles[1])
+                - tgtPos[2]);
+            float pitchScale = 1.0f;
+            if (info->type == 2)
+            {
+                if (deltaYAW >= deltaYAWmins && deltaYAWmaxs >= deltaYAW)
+                {
+                    float psin, pcos;
+                    FastSinCos(((deltaYAW - deltaYAWmins)
+                                / (deltaYAWmaxs - deltaYAWmins))
+                                   * 3.1415927f,
+                               &psin, &pcos);
+                    float v34 = minPitch / info->turretGunnerVertSpanUp;
+                    pitchScale = ((1.0f - v34) * (1.0f - psin)) + v34;
+                }
+            }
+            if (v22 == HandleDbToEnt(scr_vehicle->seats[1].occupant))
+            {
+                scr_vehicle->next.mGunnerAngles.v.m128_f32[0] =
+                    AngleNormalize180(angles[0]);
+                scr_vehicle->next.mGunnerAngles.v.m128_f32[1] =
+                    AngleNormalize180(angles[1]);
+                float pitch = -info->turretGunnerVertSpanDown;
+                if (pitch <= scr_vehicle->next.mGunnerAngles.v.m128_f32[0])
+                {
+                    pitch = info->turretGunnerVertSpanUp * pitchScale;
+                    if (scr_vehicle->next.mGunnerAngles.v.m128_f32[0] <= pitch)
+                        pitch = scr_vehicle->next.mGunnerAngles.v.m128_f32[0];
+                }
+                scr_vehicle->next.mGunnerAngles.v.m128_f32[0] = pitch;
+                scr_vehicle->current.mGunnerAngles.v.m128_f32[0] = pitch;
+                scr_vehicle->current.mGunnerAngles.v.m128_f32[1] =
+                    scr_vehicle->next.mGunnerAngles.v.m128_f32[1];
+            }
+            if (v22->client != nullptr)
+            {
+                float* viewYaw = &v22->client->ps.viewangles[1];
+                float minYaw = -info->turretGunnerVertSpanDown;
+                if (minYaw <= *viewYaw)
+                {
+                    float maxYaw = info->turretGunnerVertSpanUp * pitchScale;
+                    if (*viewYaw <= maxYaw)
+                        minYaw = *viewYaw;
+                }
+                *viewYaw = minYaw;
+                float viewAngles[3] = {
+                    v22->client->ps.viewangles[0],
+                    *viewYaw,
+                    v22->client->ps.viewangles[2],
+                };
+                SetClientViewAngle(v22, viewAngles);
+                if (fabs(deltaYAW) > 140.0f /* turretGunnerVertSpanUp */)
+                {
+                    float newYaw = deltaYAW <= 0.0f
+                                       ? AngleNormalize360(tgtPos[2] - 140.0f)
+                                       : AngleNormalize360(tgtPos[2] + 140.0f);
+                    v22->client->ps.viewangles[1] = newYaw;
+                    float newAngles[3] = {
+                        v22->client->ps.viewangles[0], newYaw,
+                        v22->client->ps.viewangles[2],
+                    };
+                    SetClientViewAngle(v22, newAngles);
+                }
+            }
+        }
+        else if (scr_vehicle->hasGunnerTarget != 0)
+        {
+            float rel[3];
+            rel[0] = tgtDir[0] - barrelMtx.origin[0];
+            rel[1] = tgtDir[1] - barrelMtx.origin[1];
+            rel[2] = tgtDir[2] - barrelMtx.origin[2];
+            VectorNormalize(rel);
+            float angles[3];
+            vectoangles(rel, angles);
+            float tgtAxis[3][3];
+            AnglesToAxis(tgtPos, tgtAxis);
+            float viewAxis[3][3];
+            AnglesToAxis(angles, viewAxis);
+            float invTgt[3][3];
+            MatrixTranspose(tgtAxis, invTgt);
+            float relMtx[3][3];
+            MatrixMultiply(viewAxis, invTgt, relMtx);
+            AxisToAngles(relMtx, angles);
+            scr_vehicle->next.mGunnerAngles.v.m128_f32[0] =
+                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+            scr_vehicle->next.mGunnerAngles.v.m128_f32[1] =
+                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+            float pitch = -info->turretGunnerVertSpanDown;
+            if (pitch <= scr_vehicle->next.mGunnerAngles.v.m128_f32[0])
+            {
+                if (scr_vehicle->next.mGunnerAngles.v.m128_f32[0]
+                    <= info->turretGunnerVertSpanUp)
+                    pitch = scr_vehicle->next.mGunnerAngles.v.m128_f32[0];
+                else
+                    pitch = info->turretGunnerVertSpanUp;
+            }
+            scr_vehicle->next.mGunnerAngles.v.m128_f32[0] = pitch;
+            float yaw = -info->turretGunnerVertSpanDown;
+            if (yaw <= scr_vehicle->next.mGunnerAngles.v.m128_f32[1])
+            {
+                if (scr_vehicle->next.mGunnerAngles.v.m128_f32[1]
+                    <= info->turretGunnerVertSpanUp)
+                    yaw = scr_vehicle->next.mGunnerAngles.v.m128_f32[1];
+                else
+                    yaw = info->turretGunnerVertSpanUp;
+            }
+            scr_vehicle->next.mGunnerAngles.v.m128_f32[1] = yaw;
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
+                scr_vehicle->next.mGunnerAngles.v.m128_f32[0];
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[1] =
+                scr_vehicle->next.mGunnerAngles.v.m128_f32[1];
+            float deltaAngles[3];
+            AnglesSubtract((const math::Position3*)angles,
+                           &scr_vehicle->current.mGunnerAngles,
+                           (math::Position3*)deltaAngles);
+            float absPitch = fabs(deltaAngles[0]);
+            float absYaw = fabs(deltaAngles[1]);
+            if (scr_vehicle->hasGunnerTarget != 0
+                && absPitch < 1.0f && absYaw < 1.0f)
+            {
+                Scr_Notify(ent, hash_const.turret_on_target, 0);
+                if (tgtEnt != nullptr
+                    && ((com_frameNumber + ((int)ent >> 5)) & 3) != 0)
+                {
+                    int hitNum = 0;
+                    collision_context_t ctx(1);
+                    ctx.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
+                    ctx.pass_entity2.mHandle.mVal =
+                        tgtEnt->mHandle.mHandle.mVal;
+                    math::Position3 zeroA;
+                    math::Position3 zeroB;
+                    zeroA.v = _mm_setzero_ps();
+                    zeroB.v = _mm_setzero_ps();
+                    math::Position3 start;
+                    start.v.m128_f32[0] = barrelMtx.origin[0];
+                    start.v.m128_f32[1] = barrelMtx.origin[1];
+                    start.v.m128_f32[2] = barrelMtx.origin[2];
+                    math::Position3 end;
+                    end.v.m128_f32[0] = tgtDir[0];
+                    end.v.m128_f32[1] = tgtDir[1];
+                    end.v.m128_f32[2] = tgtDir[2];
+                    g_SightTrace(&scr_vehicle->turretHitNum, &start, &zeroA,
+                                 &zeroB, &end, &ctx);
+                    if (scr_vehicle->turretHitNum == 0)
+                        Scr_Notify(ent, hash_const.turret_on_vistarget, 0);
+                }
+            }
+        }
+        else
+        {
+            scr_vehicle->next.mGunnerAngles.v.m128_f32[0] =
+                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[0] =
+                scr_vehicle->next.mGunnerAngles.v.m128_f32[0];
+            scr_vehicle->next.mGunnerAngles.v.m128_f32[1] =
+                VEH_LerpAngle(info->turretGunnerVertSpanUp);
+            scr_vehicle->current.mGunnerAngles.v.m128_f32[1] =
+                scr_vehicle->next.mGunnerAngles.v.m128_f32[1];
+        }
+    }
 }
 
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)

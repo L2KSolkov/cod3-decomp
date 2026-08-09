@@ -17,6 +17,9 @@ float radius = 30.0f;          // @ 0xDD8208 (Weapon_Revive_Test revive radius)
 const float s_invalidAngles[3] = { 3.1415927f, 3.1415927f, 3.1415927f };  // @ 0xDD7414
 float dword_DD7418 = 3.1415927f;  // @ 0xDD7418
 float dword_DD741C = 3.1415927f;  // @ 0xDD741C
+float minPitch = 16.0f;      // @ 0xDD822C (tank gunner min pitch)
+float deltaYAWmaxs = 140.0f; // @ 0xDD8238
+float deltaYAWmins = -140.0f;// @ 0xDD8244
 
 // tag hash arrays (g_scr_vehicle.cpp data, filled by static init) @ .data 0xEE62CC
 static unsigned int TagHash(const char* s) { return HashString::CalcHash(s); }

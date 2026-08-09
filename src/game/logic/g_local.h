@@ -161,7 +161,12 @@ struct scr_vehicle_t {
     float   wheelPitch;     // +0x330
     int     hasTarget;      // +0x334
     DbLinkedHandle<EntityHandleDb, Entity> mTargetEnt;  // +0x338
-    uint8_t _pad33C[0x374 - 0x33C];
+    float   targetOrigin[3];    // +0x33C
+    float   targetOffset[3];    // +0x348
+    int     hasGunnerTarget;    // +0x354
+    DbLinkedHandle<EntityHandleDb, Entity> mGunnerTargetEnt;  // +0x358
+    float   gunnerTargetOrigin[3];  // +0x35C
+    float   gunnerTargetOffset[3];  // +0x368
     float   joltDir[2];     // +0x374
     float   joltTime;       // +0x37C
     float   joltWave;       // +0x380
@@ -206,7 +211,8 @@ struct scr_vehicle_t {
         int hatchRight;       // +0x70
         int leader;           // +0x74
     } boneIndex;              // +0x460 (120 bytes)
-    uint8_t _pad4D8[0x518 - 0x4D8];
+    int     turretHitNum;     // +0x4D8
+    uint8_t _pad4DC[0x518 - 0x4DC];
     void*   mRBVeh;           // +0x518 rb_vehicle*
     uint8_t _pad51C[0x554 - 0x51C];
     float   mUseRadius;       // +0x554
@@ -636,7 +642,9 @@ struct hash_const_t {
     HashString turret_on_target;   // +0x224 (137)
     HashString player_on_vehicle;  // +0x228 (138)
     HashString player_off_vehicle; // +0x22C (139)
-    uint8_t    _pad230[0x250 - 0x230];
+    uint8_t    _pad230[0x248 - 0x230];
+    HashString turret_on_vistarget; // +0x248 (146)
+    uint8_t    _pad24C[0x250 - 0x24C];
     HashString turretstatechange;  // +0x250 (148)
     HashString turretownerchange;  // +0x254 (149)
     uint8_t    _pad258[0x284 - 0x258];
@@ -691,6 +699,7 @@ extern const float colorMagenta[4];    // @ 0xD015CC
 extern vmCvar_t g_vehicleDrawPath;     // ?g_vehicleDrawPath@@3UvmCvar_t@@A @ 0xEA66F8
 extern vmCvar_t g_drawEntBBoxes;       // g.o
 extern int s_newDebugLine;             // g.o
+extern int com_frameNumber;              // 0x012F0324
 extern vmCvar_t g_gravity;             // g_gravity
 extern vmCvar_t g_reloading;           // g_reloading
 extern void    Scr_Error(const char* error);  // scr.o
@@ -1078,7 +1087,9 @@ struct vehicle_info_t {
     float   boundsHeight;           // +0x78
     float   boundsLength;           // +0x7C
     int     health;                 // +0x80
-    uint8_t _pad84[0x188 - 0x84];
+    uint8_t _pad84[0x180 - 0x84];
+    float   turretGunnerVertSpanUp; // +0x180
+    float   turretGunnerVertSpanDown; // +0x184
     float   engineSndSpeed;         // +0x188
     uint8_t _pad18C[0x190 - 0x18C];
     math::Position3 mins;           // +0x190
@@ -1381,6 +1392,9 @@ extern float emissionRate_0;         // 0xDD8254 (vehicle gunner overheat emissi
 extern float max_intensity;          // 0xDD7FD4 (120.0 - explosion impulse cap)
 extern float max_dist2;              // 0xDD7FD8 (176400.0 - explosion falloff distance sq)
 extern float radius;                 // 0xDD8208 (30.0 - revive trace radius)
+extern float minPitch;               // 0xDD822C (16.0 - tank gunner min pitch)
+extern float deltaYAWmaxs;           // 0xDD8238 (140.0)
+extern float deltaYAWmins;           // 0xDD8244 (-140.0)
 extern float gFireHeatBlur;          // 0xF616EC (cg.o global, blurred by turret fire)
 extern float vec3_origin[3];         // core.o q_math.cpp
 
