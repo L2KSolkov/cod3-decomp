@@ -133,7 +133,7 @@ void Cmd_SolidColor_f(void)
         ShaderCommon::SetDebugRenderMode(ShaderCommon::kDebugRenderModeSolidColor);
 }
 
-// ea: 0x0044AC40
+// ea: 0x0044AC30
 void Cmd_ToggleShader_f(void)
 {
     if (Cmd_Argc() == 2)
@@ -177,7 +177,7 @@ void Cmd_Thread_Debug_f(void)
     ;
 }
 
-// ea: 0x0044AE60
+// ea: 0x0044AE40
 int Cmd_EntityStats_f(void)
 {
     int result = Cmd_Argc();
@@ -734,4 +734,60 @@ void Cmd_ClientCommandCompletion(void (*callback)(const char*))
         callback(sClientCommand0List[i].first);
     for (unsigned int j = 0; j < 15; ++j)
         callback(sClientCommand1List[j].first);
+}
+
+// ea: 0x0044BA30
+void UpdateCVars(void)
+{
+    cdl_proftimer_cvar.start();
+    for (int v0 = 0; v0 < gameCvarTableSize; ++v0)
+    {
+        CVarTable* i = &gameCvarTable[v0];
+        if (i->vmCvar != nullptr)
+        {
+            Cvar_Update(i->vmCvar);
+            int modificationCount = i->vmCvar->modificationCount;
+            if (i->modificationCount != modificationCount)
+                i->modificationCount = modificationCount;
+        }
+    }
+    cdl_proftimer_cvar.stop();
+}
+
+// ea: 0x004493B0
+void SP_info_player_start(Entity* ent)
+{
+    ent->mClassName = str_const.info_player_deathmatch;
+    ent->mClassNameHash.mHash = HashString::CalcHash(ent->mClassName.c_str());
+    ent->nextthink = level.time + 200;
+    ent->think = THINK__G_FinishSetupSpawnPoint;
+    UpdateEntityHash(ent);
+}
+
+// ea: 0x00448F50
+void IntermissionClientEndFrame(Entity* ent)
+{
+    Client* client = ent->client;
+    ent->r.svFlags = (ent->r.svFlags & 0xFFFFFFF6) | 1;
+    ent->takedamage = 0;
+    ent->r.contents = 0;
+    client->ps.pm_flags &= ~0x80000u;
+    client->ps.pm_type = 5;
+    client->ps.eFlags &= 0xFFFFFDFF;
+    ent->s.eType = 6;
+}
+
+// ea: 0x00450A50
+void g_LinkEntity(Entity* ent)
+{
+    if (ent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_syscalls.cpp";
+        AeAssert::gCurrentLine = 220;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    SV_LinkEntity(ent);
 }

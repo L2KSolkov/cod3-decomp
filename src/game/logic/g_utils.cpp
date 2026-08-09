@@ -104,6 +104,46 @@ Entity* EntityHandleDb::Find(int fieldofs, unsigned short match)
     return *result;
 }
 
+// ea: 0x00460DD0
+Entity* EntityHandleDb::Find(int fieldofs, HashString match)
+{
+    Entity** begin = mActiveList.m_elements;
+    Entity** end = begin + mActiveList.m_size;
+    Entity** i = begin;
+    for (; i != end; ++i)
+    {
+        if (*i != nullptr)
+        {
+            int v6 = *(int*)((char*)&(*i)->s.eType + fieldofs);
+            if (v6 != 0 && v6 == (int)match.mHash)
+                break;
+        }
+    }
+    if (i == end)
+        return nullptr;
+    return *i;
+}
+
+// ea: 0x00460E30
+Entity* EntityHandleDb::Find(int fieldofs, const Broc::string& match)
+{
+    Entity** begin = mActiveList.m_elements;
+    Entity** end = begin + mActiveList.m_size;
+    Entity** i = begin;
+    for (; i != end; ++i)
+    {
+        if (*i != nullptr)
+        {
+            int v6 = *(int*)((char*)&(*i)->s.eType + fieldofs);
+            if (v6 != 0 && v6 == (int)HashString::CalcHash(match.c_str()))
+                break;
+        }
+    }
+    if (i == end)
+        return nullptr;
+    return *i;
+}
+
 // ea: 0x0044A240
 int CheatsOk(Entity* ent)
 {

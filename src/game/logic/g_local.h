@@ -63,7 +63,8 @@ struct vehicleAnimMap_t {
 static_assert(sizeof(vehicleAnimMap_t) == 0x1C, "vehicleAnimMap_t size mismatch");
 
 struct scr_vehicle_t {
-    uint8_t _pad0[0x174];
+    uint8_t _pad0[0x170];
+    DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x170
     DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner;  // +0x174
     int16_t infoIdx;      // +0x178
     uint8_t _pad17A[0x318 - 0x17A];
@@ -104,6 +105,8 @@ struct scr_vehicle_t {
     int   GetStageAnim(Client* client);       // ?GetStageAnim@scr_vehicle_t@@QAEHPAUClient@@@Z
     int   GetSwitchPosRoute(int seatIdx, int fromPos, bool hasFlag);  // ?GetSwitchPosRoute@scr_vehicle_t@@QAEHHH_N@Z
     bool  IsPhysicsPaused();                  // ?IsPhysicsPaused@scr_vehicle_t@@QAE_NXZ
+    bool  IsPhysicsStable();                  // ?IsPhysicsStable@scr_vehicle_t@@QAE_NXZ
+    int   GetMantleHintStringIndex();         // ?GetMantleHintStringIndex@scr_vehicle_t@@QAEHXZ
     void  CollisionDamage(Entity* ent, const math::Position3* pos,
                           const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
@@ -271,6 +274,15 @@ extern math::Position3 playerMins;            // 0xEC9620
 extern vmCvar_t g_bounds_width;               // 0xEA6CA8
 extern vmCvar_t g_bounds_height_standing;     // 0xEA7368
 
+// cdl_proftimer - profile timing accumulator (game.o)
+struct cdl_proftimer {
+    float    value;      // +0x00
+    uint32_t _pad[3];    // +0x04
+    uint64_t stamp;      // +0x10
+    void start() { stamp = __rdtsc(); }           // ea: 0x004A91A0 (inline)
+    void stop() { value += (float)(__rdtsc() - stamp); }  // ea: 0x004A91E0 (inline)
+};
+
 // ============================================================================
 // vehicle / scratch / debug globals
 // ============================================================================
@@ -403,7 +415,9 @@ void EntityHandleDb_Find(unsigned int fieldOfs, T match, ae_sized_array<Entity*,
 // ============================================================================
 struct str_const_t {
     Broc::string active;              // +0x000
-    uint8_t    _pad[0x148 - 0x4];     // +0x004
+    uint8_t    _pad[0xBC - 0x4];      // +0x004
+    Broc::string info_player_deathmatch;  // +0xBC
+    uint8_t    _padC0[0x148 - 0xC0];  // +0xC0
     Broc::string sound_blend;         // +0x148
     uint8_t    _pad14C[0x168 - 0x14C];
     Broc::string spawn_intermission;  // +0x168
@@ -441,6 +455,8 @@ static_assert(offsetof(str_const_t, spawn_hq_allies_primary) == 0x18C,
               "str_const_t::spawn_hq_allies_primary offset mismatch");
 static_assert(offsetof(str_const_t, hq_point) == 0x1B4,
               "str_const_t::hq_point offset mismatch");
+static_assert(offsetof(str_const_t, info_player_deathmatch) == 0xBC,
+              "str_const_t::info_player_deathmatch offset mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
 // ============================================================================
@@ -868,7 +884,8 @@ extern unsigned char bulletPriorityMap[];  // 0xDD55D0
 // g_combat.cpp types/globals
 // ============================================================================
 struct vehicle_info_t {
-    uint8_t _pad0[0x20];            // +0x00
+    Broc::string name;              // +0x00
+    uint8_t _pad4[0x20 - 0x4];
     int16_t type;                   // +0x20
     int16_t subtype;                // +0x22
     uint8_t _pad24[0x30 - 0x24];
@@ -878,10 +895,14 @@ struct vehicle_info_t {
     float   projectileDamage;       // +0x3C
     uint8_t _pad40[0x50 - 0x40];
     float   maxSpeed;               // +0x50
-    uint8_t _pad54[0x310 - 0x54];
+    uint8_t _pad54[0x27C - 0x54];
+    int16_t mMantleHintStringIndex; // +0x27C
+    uint8_t _pad27E[0x310 - 0x27E];
 };
 static_assert(sizeof(vehicle_info_t) == 0x310, "vehicle_info_t size mismatch");
 static_assert(offsetof(vehicle_info_t, maxSpeed) == 0x50, "vehicle_info_t::maxSpeed offset mismatch");
+static_assert(offsetof(vehicle_info_t, mMantleHintStringIndex) == 0x27C,
+              "vehicle_info_t::mMantleHintStringIndex offset mismatch");
 extern vehicle_info_t* s_vehicleInfos[];  // ?s_vehicleInfos@@3PAPAUvehicle_info_t@@A
 
 struct hitLoc {
@@ -1421,6 +1442,13 @@ void  CL_AddDebugString(float* xyz, float* color, float scale, const char* pszTe
                         int fromServer);                // cl.o
 void  G_FreeEntity(Entity* e, int msec);                // g.o (g_active.cpp)
 cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);  // core.o
+void    Cvar_Update(vmCvar_t* vmCvar);   // core.o
+extern CVarTable gameCvarTable[];  // g.o 0x011C4CF8
+extern int gameCvarTableSize;      // g.o
+extern cdl_proftimer cdl_proftimer_cvar;  // game.o 0x0133E0C8
+Entity* VEH_GetEntity(unsigned int entityHandleVal);  // g.o 0x...
+void    FastSinCos(float radians, float* psin, float* pcos);  // core.o
+int     VEH_GetVehicleInfo(const char* name);  // g.o 0x44D480 (returns index, -1 if not found)
 void  BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
                                           PlayerState* ps);  // game.o 0x9F3A40
 void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
@@ -1504,6 +1532,10 @@ struct rb_vehicle {
     float   m_throttle;  // +0x254
 };
 
+struct rb_extra_info {
+    void* m_rb;  // +0x00 rb_vehicle*
+};
+
 // Task - task system base (28 bytes) - verified against IDA
 struct Task {
     void*       __vftable;         // +0x00
@@ -1572,14 +1604,6 @@ struct DObj {
     unsigned int mFlags;           // +0xE4
 };
 
-// cdl_proftimer - profile timing accumulator (game.o)
-struct cdl_proftimer {
-    float    value;      // +0x00
-    uint32_t _pad[3];    // +0x04
-    uint64_t stamp;      // +0x10
-    void start() { stamp = __rdtsc(); }           // ea: 0x004A91A0 (inline)
-    void stop() { value += (float)(__rdtsc() - stamp); }  // ea: 0x004A91E0 (inline)
-};
 extern cdl_proftimer cdl_proftimer_dobj_anim;    // game.o 0x0132C318
 
 // g.o DObj tracking vectors (g_utils.cpp)

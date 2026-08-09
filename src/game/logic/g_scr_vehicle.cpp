@@ -4,6 +4,8 @@
 
 #include "game/logic/g_local.h"
 
+#include <string.h>
+
 // ea: 0x00452BC0
 void VehicleNodeAllocator::Initialize()
 {
@@ -195,6 +197,100 @@ int scr_vehicle_t::GetSwitchPosRoute(int seatIdx, int fromPos, bool hasFlag)
             return -1;
     }
     return result;
+}
+
+// ea: 0x0044D480
+int VEH_GetVehicleInfo(const char* name)
+{
+    if (name == nullptr || *name == 0)
+        return -1;
+    int v1 = 0;
+    if (s_numVehicleInfos <= 0)
+        return -1;
+    while (_stricmp(name, s_vehicleInfos[v1]->name.c_str()) != 0)
+    {
+        if (++v1 >= s_numVehicleInfos)
+            return -1;
+    }
+    return v1;
+}
+
+// ea: 0x00446DBF0
+void G_SetupScrVehicles(void)
+{
+    int v0 = 0;
+    if (level.MaxVehicles != 0)
+    {
+        int v1 = 0;
+        do
+        {
+            unsigned int mVal = s_vehicles[v1].mEntity.mHandle.mVal;
+            if (mVal != 0)
+            {
+                Entity* Entity = VEH_GetEntity(mVal);
+                Entity->s.brushmodel = 0;
+                SV_SetBrushModel(Entity);
+                Entity->r.contents = 0xA00000;
+            }
+            v1 = ++v0;
+        } while (v0 < level.MaxVehicles);
+    }
+}
+
+// ea: 0x0045F350
+void shotgunrandom(float* x, float* y, float randomA, float randomB)
+{
+    float sinT;
+    FastSinCos(((randomA * 360.0f) * 3.1415927f) * 0.0055555557f, &sinT, &randomA);
+    *x = randomA * randomB;
+    *y = sinT * randomB;
+}
+
+// ea: 0x0046F2A0
+bool scr_vehicle_t::IsPhysicsStable()
+{
+    rb_vehicle* mRBVeh = (rb_vehicle*)this->mRBVeh;
+    if (mRBVeh != nullptr)
+    {
+        rb_extra_info* m_chassis_rbinf = *(rb_extra_info**)((char*)mRBVeh + 0x274);  // m_chassis_rbinf
+        if (m_chassis_rbinf != nullptr)
+            return (*(unsigned int*)((char*)m_chassis_rbinf->m_rb + 0x280) & 4) != 0;
+    }
+    Entity* mObject = HandleDbToEnt(
+        *(DbLinkedHandle<EntityHandleDb, Entity>*)((char*)this + 0x1E0));  // seats[0].occupant
+    return mObject == nullptr;
+}
+
+// ea: 0x0044F330
+bool IsVehFlipped(Entity* ent)
+{
+    bool result = false;
+    if (ent != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+        if (scr_vehicle != nullptr
+            && scr_vehicle->mRBVeh != nullptr
+            && ent->r.currentMat.z.v.m128_f32[2] < 0.2f)
+        {
+            return true;
+        }
+    }
+    return result;
+}
+
+// ea: 0x0044F720
+int scr_vehicle_t::GetMantleHintStringIndex()
+{
+    if (s_vehicleInfos[infoIdx] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10113;
+        AeAssert::gCurrentExpr = "s_vehicleInfos[ infoIdx ]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid info pointer in vehicle"))
+            __debugbreak();
+    }
+    return s_vehicleInfos[infoIdx]->mMantleHintStringIndex;
 }
 
 // ea: 0x004639D0
