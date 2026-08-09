@@ -295,6 +295,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_weaponfuncs.cpp
     src/game/logic/g_vehiclefuncs.cpp
     src/game/logic/g_inspector_fns.cpp
+    src/game/logic/g_camerashake.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)
