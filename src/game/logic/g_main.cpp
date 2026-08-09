@@ -822,3 +822,60 @@ int Cmd_PFXStats_f(void)
     g_renderPFXStats = 0;
     return result;
 }
+
+// ea: 0x00448FE0
+int GetFollowPlayerState(int clientNum, PlayerState* ps)
+{
+    Client* client = EntityManager::sInst->GetPlayer(clientNum)->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+        AeAssert::gCurrentLine = 1691;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((client->ps.pm_flags & 0x80000) == 0)
+        return 0;
+    *ps = client->ps;
+    return 1;
+}
+
+// ea: 0x0044B8C0
+void G_RegisterCvars(void)
+{
+    for (int v0 = 0; v0 < gameCvarTableSize; ++v0)
+    {
+        CVarTable* i = &gameCvarTable[v0];
+        Cvar_Register(i->vmCvar, i->cvarName, i->defaultString, i->cvarFlags);
+        if (i->vmCvar != nullptr)
+            i->modificationCount = i->vmCvar->modificationCount;
+    }
+    Cvar_VMSet((vmCvar_t*)&cg_deadscreen_backdrop, defaultFileName);
+    Cvar_VMSet((vmCvar_t*)&cg_deadscreen_levelname, defaultFileName);
+    Cvar_VMSet((vmCvar_t*)&cg_victoryscreen_backdrop, defaultFileName);
+    Cvar_VMSet((vmCvar_t*)&cg_victoryscreen_levelname, defaultFileName);
+}
+
+// ea: 0x00467040
+Entity* SelectSpawnPoint(const float* avoidPoint, float* origin, float* angles)
+{
+    Entity* v3 = SelectNearestDeathmatchSpawnPoint(avoidPoint);
+    Entity* v4 = SelectRandomDeathmatchSpawnPoint();
+    if (v4 == v3)
+    {
+        v4 = SelectRandomDeathmatchSpawnPoint();
+        if (v4 == v3)
+            v4 = SelectRandomDeathmatchSpawnPoint();
+    }
+    if (v4 == nullptr)
+        G_Error("Couldn't find a spawn point");
+    origin[0] = v4->r.currentOrigin.v.m128_f32[0];
+    origin[1] = v4->r.currentOrigin.v.m128_f32[1];
+    origin[2] = v4->r.currentOrigin.v.m128_f32[2] + 9.0f;
+    angles[0] = v4->r.currentAngles.v.m128_f32[0];
+    angles[1] = v4->r.currentAngles.v.m128_f32[1];
+    angles[2] = v4->r.currentAngles.v.m128_f32[2];
+    return v4;
+}

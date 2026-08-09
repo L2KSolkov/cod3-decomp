@@ -211,6 +211,7 @@ struct AeThreadManager {
 static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
 struct MultiplayerMgr {
+    struct MPEntityHandle { int mVal; };  // +0x00 opaque
     uint8_t _pad[0x40];
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad2[0x50 - 0x41];
@@ -232,6 +233,9 @@ struct MultiplayerMgr {
                     int damage, int mod, int weapon, const float* position,
                     const float* dir, int hitLoc);   // ?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z
     void AttemptToRevivePlayer(Entity* player, Entity* medic);  // ?AttemptToRevivePlayer@MultiplayerMgr@@QAEXPAVEntity@@0@Z
+    void RegisterDroppedItem(int itemType, Entity* item, Entity* owner, int a4);  // ?RegisterDroppedItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@PAVEntity@@1H@Z
+    void FireMissile(int weapon, const math::Position3& position, const math::Dir3& dir,
+                     MultiplayerMgr::MPEntityHandle handle);  // ?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 

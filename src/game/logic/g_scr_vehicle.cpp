@@ -293,7 +293,7 @@ int scr_vehicle_t::GetMantleHintStringIndex()
     return s_vehicleInfos[infoIdx]->mMantleHintStringIndex;
 }
 
-// ea: 0x00446F350
+// ea: 0x0046F350
 bool scr_vehicle_t::IsOppositeTeamInVehicle(int team)
 {
     for (int v2 = 0; v2 < 11; ++v2)
@@ -325,7 +325,7 @@ void scr_vehicle_t::Mantled(Entity* player)
     mMantleEntity.mHandle.mVal = player->mHandle.mHandle.mVal;
 }
 
-// ea: 0x00445E1D0
+// ea: 0x0045E1D0
 int G_InitScrVehicles(void)
 {
     int result = 0;
@@ -426,6 +426,102 @@ vehicle_info_t* VEH_GetPlayerVehicleInfo(void)
     if (result == nullptr)
         return nullptr;
     return result;
+}
+
+// ea: 0x00446F460
+bool scr_vehicle_t::LetHatchClose()
+{
+    if (s_vehicleInfos[infoIdx]->type != 2)
+        return true;
+    int v2 = 0;
+    for (int v4 = 0; v4 < 11; ++v4)
+    {
+        Entity* mObject = HandleDbToEnt(seats[v4].occupant);
+        if (mObject == nullptr)
+            continue;
+        if (v4 != 0)
+        {
+            if (v4 == 7 && mObject->client->mVehicleAnimStage < 2)
+                continue;
+            return false;
+        }
+        if (!IsPlayerFullySeatedInVehicle(mObject))
+            return false;
+        v2 = 1;
+    }
+    return v2 != 0;
+}
+
+// ea: 0x0044F2A0
+int G_GetVehicleOccupantCount(Entity* ent)
+{
+    if (ent->scr_vehicle != nullptr)
+        return ent->scr_vehicle->playersAttached;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+    AeAssert::gCurrentLine = 7731;
+    AeAssert::gCurrentExpr = "ent->scr_vehicle";
+    if (AeAssert::IsIgnored() || AeAssert::Assert("G_GetVehicleSeatCount: Entity not a vehicle"))
+        __debugbreak();
+    return ent->scr_vehicle->playersAttached;
+}
+
+// ea: 0x0045E930
+int G_GetVehicleSeatCount(Entity* ent)
+{
+    if (ent->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7725;
+        AeAssert::gCurrentExpr = "ent->scr_vehicle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("G_GetVehicleSeatCount: Entity not a vehicle"))
+            __debugbreak();
+    }
+    if (ent->scr_vehicle != nullptr)
+        return s_vehicleInfos[ent->scr_vehicle->infoIdx]->numSeats;
+    return 0;
+}
+
+// ea: 0x004811F0
+void Scr_Vehicle_GetOut(Entity* vehicle, Entity* occupant, int health)
+{
+    Entity* v3 = occupant;
+    if (occupant != nullptr && occupant->IsLocalPlayer())
+    {
+        int PlayerIndex = occupant->GetPlayerIndex();
+        if (InteractionController_Inst(PlayerIndex) != nullptr
+            && *(void**)InteractionController_Inst(PlayerIndex) != nullptr)
+        {
+            InteractionController_EndInteraction(InteractionController_Inst(occupant->GetPlayerIndex()), 1);
+        }
+    }
+    VEH_UnlinkPlayer(v3, true);
+    vehicle->health = health;
+    if (EntityManager::sInst->IsLocalPlayer(v3))
+    {
+        unsigned int occupantHandle = v3->mHandle.mHandle.mVal;
+        vehicle->Notify(hash_const.deactivate, &occupantHandle);
+    }
+}
+
+// ea: 0x004807D0
+void VEH_UnlinkPlayerDropped(Entity* ent)
+{
+    if (ent->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6449;
+        AeAssert::gCurrentExpr = "ent->scr_vehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    ent->s.eFlags &= 0xFFEFFFFF;
+    ent->active = 0;
+    ent->r.mOwner.mHandle.mVal = 0;
+    Scr_Notify(ent, hash_const.player_off_vehicle, 0);
 }
 
 // ea: 0x004639D0

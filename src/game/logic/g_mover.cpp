@@ -4,6 +4,28 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x0048CB90
+void G_Activate(Entity* ent, Entity* activator)
+{
+    if (ent->s.apos.trType == TR_STATIONARY
+        && ent->s.pos.trType == TR_STATIONARY
+        && ent->active == 0
+        && ent->key == 0)
+    {
+        Entity* teammaster = ent->teammaster;
+        if (teammaster == nullptr || ent->team.is_empty() || ent == teammaster)
+        {
+            ent->active = 1;
+            Use_BinaryMover(ent, activator, activator);
+        }
+        else
+        {
+            teammaster->active = 1;
+            Use_BinaryMover(ent->teammaster, activator, activator);
+        }
+    }
+}
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>

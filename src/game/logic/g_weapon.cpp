@@ -4,6 +4,9 @@
 
 #include "game/logic/g_local.h"
 
+int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
+                     math::Dir3* normal);
+
 #include <stdlib.h>
 
 // ea: 0x0044B130
@@ -50,6 +53,23 @@ void Weapon_Revive(Entity* ent, int /*grenType*/, weaponParms* wp)
     if (Weapon_Revive_Test(ent, wp, &traceEnt))
         MultiplayerMgr::sInst->AttemptToRevivePlayer(traceEnt, ent);
     Scr_Notify(ent, hash_const.fireSpecial, 0);
+}
+
+// ea: 0x004818A0
+Entity* weapon_mine_fire(Entity* ent, int weapon, weaponParms* wp)
+{
+    Entity* v4 = nullptr;
+    float v6[3];
+    math::Position3 position;
+    if (Weapon_Mine_Test(ent, wp, (math::Position3*)v6, (math::Dir3*)&position.v.m128_f32[1]))
+    {
+        v4 = fire_mine(ent, v6, &position.v.m128_f32[1], weapon);
+        MultiplayerMgr::MPEntityHandle v8;
+        MultiplayerMgr::sInst->RegisterDroppedItem(kItemTypeMines, v4, ent, 0);
+        MultiplayerMgr::sInst->FireMissile(weapon, *(math::Position3*)v6,
+                                           *(math::Dir3*)&position.v.m128_f32[1], v8);
+    }
+    return v4;
 }
 
 // ea: 0x0044C6B0

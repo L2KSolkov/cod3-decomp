@@ -152,6 +152,7 @@ struct scr_vehicle_t {
     int   GetMantleHintStringIndex();         // ?GetMantleHintStringIndex@scr_vehicle_t@@QAEHXZ
     bool  IsOppositeTeamInVehicle(int team);  // ?IsOppositeTeamInVehicle@scr_vehicle_t@@QAE_NH@Z
     void  Mantled(Entity* player);            // ?Mantled@scr_vehicle_t@@QAEXPAVEntity@@@Z
+    bool  LetHatchClose();                    // ?LetHatchClose@scr_vehicle_t@@QAE_NXZ
     void  CollisionDamage(Entity* ent, const math::Position3* pos,
                           const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
@@ -512,7 +513,9 @@ struct hash_const_t {
     HashString func_door_rotating; // +0x9C
     HashString func_rotating;      // +0xA0
     HashString func_tramcar;       // +0xA4
-    uint8_t    _padA8[0xEC - 0xA8];
+    uint8_t    _padA8[0xC4 - 0xA8];
+    HashString player_off_vehicle;      // +0xC4 (49)
+    uint8_t    _padC8[0xEC - 0xC8];
     HashString movedone;           // +0xEC
     uint8_t    _padF0[0x11C - 0xF0];
     HashString pickup;             // +0x11C
@@ -920,7 +923,9 @@ struct vehicle_info_t {
     float   grenadeDamage;          // +0x34
     float   mineDamage;             // +0x38
     float   projectileDamage;       // +0x3C
-    uint8_t _pad40[0x50 - 0x40];
+    int     spClientSeat;           // +0x40
+    int     numSeats;               // +0x44
+    uint8_t _pad48[0x50 - 0x48];
     float   maxSpeed;               // +0x50
     uint8_t _pad54[0x27C - 0x54];
     int16_t mMantleHintStringIndex; // +0x27C
@@ -1490,6 +1495,30 @@ extern int g_renderPFXStats;                        // game2.o
 extern int sEntryPointSeatAssociation[4];           // g.o
 extern cvar_t* cg_drawPosition;                     // cg.o
 extern char* va(const char* fmt, ...);              // core.o
+void  Use_BinaryMover(Entity* ent, Entity* other, Entity* activator);  // g.o (g_mover.cpp)
+void  G_Activate(Entity* ent, Entity* activator);   // g.o 0x48CB90
+int   GetFollowPlayerState(int clientNum, PlayerState* ps);  // g.o 0x448FE0
+int   G_GetVehicleSeatCount(Entity* ent);           // g.o 0x45E930
+int   G_GetVehicleOccupantCount(Entity* ent);       // g.o 0x44F2A0
+void  Scr_Vehicle_GetOut(Entity* vehicle, Entity* occupant, int health);  // g.o 0x4811F0
+void  G_RegisterCvars(void);                        // g.o 0x44B8C0
+Entity* SelectNearestDeathmatchSpawnPoint(const float* from);  // g.o 0x850D30
+Entity* SelectRandomDeathmatchSpawnPoint(void);     // g.o 0x856440
+Entity* SelectSpawnPoint(const float* avoidPoint, float* origin, float* angles);  // g.o 0x467040
+void  VEH_UnlinkPlayerDropped(Entity* ent);         // g.o 0x4807D0
+Entity* fire_mine(Entity* self, const float* position, const float* dir, int weapon);  // g.o 0x86A5E0
+Entity* weapon_mine_fire(Entity* ent, int weapon, weaponParms* wp);  // g.o 0x4818A0
+extern int cg_deadscreen_backdrop;    // cg.o vmCvar_t
+extern int cg_deadscreen_levelname;   // cg.o
+extern int cg_victoryscreen_backdrop; // cg.o
+extern int cg_victoryscreen_levelname;// cg.o
+void  Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultValue,
+                    int flags);                      // core.o
+void  Cvar_VMSet(vmCvar_t* vmCvar, const char* value);  // core.o
+bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
+enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
+void* InteractionController_Inst(int instance);      // cl.o
+void  InteractionController_EndInteraction(void* self, int wasInteracting);  // cl.o
 void  BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
                                           PlayerState* ps);  // game.o 0x9F3A40
 void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
