@@ -1098,7 +1098,7 @@ int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,
 // missile/explosion helpers
 // ============================================================================
 unsigned char DirToByte(const float* dir);
-void  G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
+int   G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
 int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
 void  j_nullsub_120(Entity* pGrenade);
 Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);

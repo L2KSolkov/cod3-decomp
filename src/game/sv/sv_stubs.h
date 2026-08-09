@@ -335,7 +335,7 @@ static_assert(offsetof(EntityManager, mWorld) == 0x44, "EntityManager::mWorld of
 // AeAssert — assertion system (namespace-style free functions + globals)
 // ============================================================================
 namespace AeAssert {
-    enum ECoderId { COD3 = 0 };
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3 };
     extern ECoderId gCurrentAuthor;  // ?gCurrentAuthor@AeAssert@@3W4ECoderId@1@A
     extern const char* gCurrentFile;  // ?gCurrentFile@AeAssert@@3PBDB
     extern int  gCurrentLine;         // ?gCurrentLine@AeAssert@@3HA
@@ -489,10 +489,34 @@ extern int              dword_F641E0[];
 // ============================================================================
 // XModel â€” minimal view for SV_PointTraceToEntity model scan
 // ============================================================================
+struct XModelLod;
+struct nglMesh;
+
+// XModelParts - model geometry/anim data (0x40 bytes) - verified against IDA
+struct XModelParts {
+    InplaceVector<math::Mat43::Packed> mTransforms;  // +0x00
+    void*            mBoneInfos;                     // +0x08 InplaceVector<XBoneInfo>
+    InplaceVector<int> mHierarchy;                   // +0x10 InplaceVector<XBoneHierarchy>
+    void*            mPartClassifications;           // +0x18
+    void*            mMeshNames;                     // +0x20
+    InplaceVector<nglMesh*> mMeshPtrs;               // +0x28
+    int              mNumRootBones;                  // +0x30
+    InplaceString    mAnimDefName;                   // +0x34
+    void*            mAnimDef;                       // +0x38 nalBaseSkeleton*
+    InplaceString    mName;                          // +0x3C
+};
+
 struct XModel {
-    uint8_t _pad0[0x48];  // +0x00
-    InplaceString name;   // +0x48
-    int  collLod;         // +0x4C
+    uint8_t      _pad0[0x20];  // +0x00
+    XModelParts* parts;        // +0x20
+    XModelLod**  lod;          // +0x24
+    uint8_t      _pad28[0x38 - 0x28];
+    void*        collSurfs;    // +0x38 InplaceVector<XModelCollSurf const *>
+    uint8_t      _pad3C[0x44 - 0x3C];
+    uint16_t     numLods;      // +0x44
+    uint16_t     collLod;      // +0x46
+    InplaceString name;        // +0x48
+    unsigned int iflFrames;    // +0x4C (Bitmask<unsigned int>)
     static int GetNumBones(XModel* model, int lodIndex);
 };
 

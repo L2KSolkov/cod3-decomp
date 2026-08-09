@@ -5,9 +5,13 @@
 
 #include "game/logic/g_local.h"
 
+#include <stdlib.h>
 #include <string.h>
 
+#include "core/tlFixedString.h"
+
 extern void G_RmvInvalidatedNode(Entity* pEnt, int iRmv);
+extern void G_DObjSetLocalTagInternal(int bone);  // file-local g_utils.cpp helper
 
 // ea: 0x0044A190
 int G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode)
@@ -691,4 +695,197 @@ void G_FreeEntityRefs(Entity* ed)
             v8->pLookatEnt = nullptr;
     }
     G_FreeVehicleRefs(ed);
+}
+
+// ea: 0x00472AE0
+int G_EntDetach(Entity* ent, const char* modelName, const char* tagName)
+{
+    if (tagName == nullptr || *tagName == 0)
+        return 0;
+    if (_strnicmp(modelName, "xmodel/", 7) == 0)
+        modelName += 7;
+    int v3 = 0;
+    Broc::string* i = &ent->mAttachModels[0].mTag;
+    for (;; i += 3)
+    {
+        if (i->mBlock != nullptr
+            && i->mBlock != (Broc::string::Block*)-12
+            && *(const char*)&i->mBlock[1] != 0)
+        {
+            ValidatePakId((TPakId)(uintptr_t)i[-1].mBlock);
+            if (i[-2].mBlock != nullptr)
+            {
+                const char* v5 = i->mBlock != nullptr ? (const char*)&i->mBlock[1]
+                                                      : defaultFileName;
+                if (_stricmp(v5, tagName) == 0)
+                {
+                    ValidatePakId((TPakId)(uintptr_t)i[-1].mBlock);
+                    XModel* xm = (XModel*)i[-2].mBlock;
+                    if (_stricmp(xm->name.mStr, modelName) == 0)
+                        break;
+                }
+            }
+        }
+        if (++v3 >= 7)
+            return 0;
+    }
+    Broc::string* v8 = (Broc::string*)&ent->mAttachModels[v3];
+    v8[0].mBlock = nullptr;
+    v8[1].mBlock = (Broc::string::Block*)-1;
+    v8[2].clear();
+    if (v3 < 6)
+    {
+        int tagNamea = v3 + 1;
+        do
+        {
+            Broc::string::Block* mBlock = v8[4].mBlock;
+            v8[0].mBlock = v8[3].mBlock;
+            v8[1].mBlock = mBlock;
+            v8[2] = v8[5];
+            if (((1 << tagNamea) & ent->attachIgnoreCollision) != 0)
+                ent->attachIgnoreCollision |= (1u << v3);
+            else
+                ent->attachIgnoreCollision &= ~(1u << v3);
+            ++v3;
+            v8 += 3;
+            ++tagNamea;
+        } while ((tagNamea + 1) < 7);
+    }
+    Broc::string* v13 = (Broc::string*)&ent->mAttachModels[v3];
+    v13[0].mBlock = nullptr;
+    v13[1].mBlock = (Broc::string::Block*)-1;
+    v13[2].clear();
+    ent->attachIgnoreCollision &= ~(1u << v3);
+    G_DObjUpdate(ent, false);
+    return 1;
+}
+
+// ============================================================================
+// Local-bone / tag setters (helpers live in g_utils.cpp; setter wrappers)
+// ============================================================================
+
+// ea: 0x004735E0
+int G_DObjSetLocalBoneIndex(Entity* /*ent*/, int* /*partBits*/, int boneIndex,
+                            const float* trans, const float* angles, bool /*bSomething*/)
+{
+    G_DObjSetLocalTagInternal_0(trans, angles, boneIndex);
+    return 1;
+}
+
+// ea: 0x00473610
+int G_DObjSetLocalBoneIndex(Entity* /*ent*/, int* /*partBits*/, int boneIndex,
+                            const math::Position3& /*trans*/, const math::Mat33& /*angles*/,
+                            bool /*bSomething*/)
+{
+    G_DObjSetLocalTagInternal(boneIndex);
+    return 1;
+}
+
+// ea: 0x00473640
+int G_DObjSetLocalTag(Entity* ent, int* /*partBits*/, unsigned int tag_name_hash,
+                      const float* trans, const float* angles, bool /*bSomething*/)
+{
+    int BoneIndex = SV_DObjGetBoneIndex(ent, tag_name_hash);
+    if (BoneIndex < 0)
+        return 0;
+    G_DObjSetLocalTagInternal_0(trans, angles, BoneIndex);
+    return 1;
+}
+
+// ea: 0x00473680
+int G_DObjSetControlTagAngles(Entity* ent, int* /*partBits*/, unsigned int tag_name_hash,
+                              float* angles)
+{
+    int BoneIndex = SV_DObjGetBoneIndex(ent, tag_name_hash);
+    if (BoneIndex < 0)
+        return 0;
+    G_DObjSetLocalTagInternal_0(vec3_origin, angles, BoneIndex);
+    return 1;
+}
+
+// ea: 0x004728B0
+void G_SetModel(Entity* ent, const char* modelName, TPakId pakId, int ngIndex)
+{
+    static tlFixedString charHash;  // $S148 one-time init
+    static unsigned char s_init = 0;
+    if (!(s_init & 1))
+    {
+        s_init |= 1;
+        charHash = tlFixedString("cdChar");
+    }
+    if (modelName != nullptr)
+    {
+        TPakId mPakId = pakId;
+        if (mPakId == PAK_ID_INVALID)
+        {
+            mPakId = (TPakId)ent->mPakId;
+            if (mPakId == PAK_ID_INVALID)
+                mPakId = CurPakId();
+        }
+        IVPointer<XModel> xmp = XModelManager::sInst->GetXModel(mPakId, modelName);
+        if (ngIndex == 0)
+        {
+            ValidatePakId((TPakId)xmp.mPakId);
+            if (xmp.mValue == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+                AeAssert::gCurrentLine = 509;
+                AeAssert::gCurrentExpr = "xmp";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Unable to get entity's model '%s'", modelName))
+                {
+                    __debugbreak();
+                }
+            }
+        }
+        ValidatePakId((TPakId)xmp.mPakId);
+        if (xmp.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)xmp.mPakId);
+            if (xmp.mValue->parts != nullptr)
+            {
+                ent->mModel.mValue = xmp.mValue;
+                ent->mModel.mPakId = xmp.mPakId;
+                ValidatePakId((TPakId)xmp.mPakId);
+                XModelParts* parts = (XModelParts*)xmp.mValue->parts;
+                if (parts->mMeshPtrs.mList != nullptr && parts->mMeshPtrs.mList[0] != nullptr)
+                {
+                    ValidatePakId((TPakId)xmp.mPakId);
+                    unsigned int iflMask = xmp.mValue->iflFrames;
+                    if (iflMask != 0)
+                    {
+                        int v6 = rand() % 32 + 1;
+                        int v7 = 31;
+                        while (v6 != 0)
+                        {
+                            if (++v7 >= 32)
+                                v7 -= 32;
+                            if ((iflMask >> v7) & 1)
+                                --v6;
+                        }
+                        if (!((iflMask >> v7) & 1))
+                        {
+                            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+                            AeAssert::gCurrentLine = 564;
+                            AeAssert::gCurrentExpr = "iflFrames.Test(t)";
+                            if (!AeAssert::IsIgnored() && AeAssert::Assert("sanity check"))
+                                __debugbreak();
+                        }
+                        ent->GetRenderEntity().iflIndex = (uint8_t)v7;
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 500;
+        AeAssert::gCurrentExpr = "modelName";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("G_SetModel: bad model name"))
+            __debugbreak();
+    }
 }
