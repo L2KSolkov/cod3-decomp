@@ -1656,3 +1656,274 @@ void CG_CheckPlayerstateEvents(unsigned int* ps, unsigned int* ops,
         } while (v8 != ps[0]);
     }
 }
+
+extern int dword_F62954[4 * 1580];
+extern int* dword_F62958;
+extern void* CG_ReadNextSnapshot();
+extern void CG_SetNextSnap(void* snap);
+extern void CG_SetInitialSnapshot(void* snap);
+extern void CG_TransitionSnapshot();
+extern void CL_GetCurrentSnapshotNumber(int* snapshotNumber,
+                                        int* serverTime);
+extern void Cvar_VMSet(void* vmCvar, const char* value);
+extern int G_GetServerSnapTime();
+extern void CG_SetFrameInterpolation();
+
+struct vmCvar_t {
+    int   integer;  // +0x00
+    float value;    // +0x04
+};
+extern vmCvar_t fs_debug_vm;
+
+// ea: 0x006A1730
+void CG_AdjustPositionForMover(const math::Position3* in, unsigned int mover,
+                               int fromTime, int toTime, math::Position3* out,
+                               float* outDeltaAngles)
+{
+    if (outDeltaAngles != nullptr)
+    {
+        outDeltaAngles[1] = 0.0f;
+        outDeltaAngles[0] = 0.0f;
+    }
+    unsigned int v7 = mover & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v7 < 0x540
+        && (mover >> 12) == EntityHandleDb::sInst.mElements[v7].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+    if (mObject == nullptr
+        || (mObject->s.eType != 4 && mObject->s.eType != 7))
+    {
+        out->v.m128_f32[0] = in->v.m128_f32[0];
+        out->v.m128_f32[1] = in->v.m128_f32[1];
+        out->v.m128_f32[2] = in->v.m128_f32[2];
+        return;
+    }
+    math::Position3 fromPos, fromAngles, toPos, toAngles;
+    BG_EvaluateTrajectory(&mObject->s.pos, fromTime, &fromPos);
+    BG_EvaluateTrajectory(&mObject->s.apos, fromTime, &fromAngles);
+    BG_EvaluateTrajectory(&mObject->s.pos, toTime, &toPos);
+    BG_EvaluateTrajectory(&mObject->s.apos, toTime, &toAngles);
+    out->v.m128_f32[0] = in->v.m128_f32[0]
+                         + (toPos.v.m128_f32[0] - fromPos.v.m128_f32[0]);
+    out->v.m128_f32[1] = in->v.m128_f32[1]
+                         + (toPos.v.m128_f32[1] - fromPos.v.m128_f32[1]);
+    out->v.m128_f32[2] = in->v.m128_f32[2]
+                         + (toPos.v.m128_f32[2] - fromPos.v.m128_f32[2]);
+    if (outDeltaAngles != nullptr)
+    {
+        outDeltaAngles[0] = toAngles.v.m128_f32[0]
+                            - fromAngles.v.m128_f32[0];
+        outDeltaAngles[1] = toAngles.v.m128_f32[1]
+                            - fromAngles.v.m128_f32[1];
+        outDeltaAngles[2] = toAngles.v.m128_f32[2]
+                            - fromAngles.v.m128_f32[2];
+    }
+}
+
+// ea: 0x006AD370
+void CG_EntityPreEvent(Entity* entity, int event)
+{
+    if (event <= 0)
+        CG_ASSERT("event > 0", "c:\\cod\\code\\game\\cg_event.cpp", 753);
+    if (event >= 223)
+        CG_ASSERT("event < EV_MAX_EVENTS",
+                  "c:\\cod\\code\\game\\cg_event.cpp", 754);
+    if (cg_debugEvents != 0)
+    {
+        CG_Printf("ent:0x%08x  preevent:%3i CG_EntityPreEvent:%s\n",
+                  entity->mHandle.mHandle.mVal, event,
+                  pEventNamesList[event]);
+    }
+    switch (event)
+    {
+    case 186:
+    case 187:
+    case 189:
+        if (EntityManager_IsLocalPlayer(EntityManager_sInst, entity))
+            goto fire_weapon;
+        if (entity->s.eType == 14)
+        {
+            Entity* v4 =
+                EntityHandleDb_Get(entity->r.mOwner.mHandle.mVal);
+            if (v4 != nullptr && IsLocalPlayer(v4))
+                goto fire_weapon;
+        }
+        break;
+    case 190:
+        {
+            void* InfoForWeapon =
+                (void*)BG_GetInfoForWeapon(entity->s.weapon);
+            PostEffectEventWeapon(
+                entity, *(const char**)((char*)InfoForWeapon + 8),
+                13 /* kActionWEAPON_RECHAMBER */);
+        }
+        break;
+    case 191:
+        CG_EjectWeaponBrass(entity, event);
+        break;
+    case 197:
+    fire_weapon:
+        CG_FireWeapon(entity, &entity->s, event, 0);
+        break;
+    case 198:
+        CG_FireWeapon(entity, &entity->s, event, 0);
+        CG_FireWeapon(entity, &entity->s, event, 1);
+        break;
+    case 199:
+        CG_FireWeapon(entity, &entity->s, event, 2);
+        CG_FireWeapon(entity, &entity->s, event, 3);
+        break;
+    case 203:
+        {
+            float reflect[3];
+            ByteToDir(entity->s.eventParm, reflect);
+            float dir2[3];
+            ByteToDir(*(unsigned char*)((char*)&entity->s + 5), dir2);
+            Entity* v6 =
+                EntityHandleDb_Get(entity->s.mOtherEntity.mHandle.mVal);
+            CG_BulletHitEvent(entity, &entity->r.currentOrigin, reflect,
+                              entity->s.weapon, entity->s.surfType, v6);
+        }
+        break;
+    case 204:
+    case 205:
+        {
+            int weapon = entity->s.weapon;
+            int surfType = entity->s.surfType;
+            float reflect_unused[3] = {0.0f, 0.0f, 0.0f};
+            CG_BulletHitClientEvent(
+                entity->s.mOtherEntity.mHandle.mVal, &entity->s.lerpOrigin,
+                reflect_unused, surfType, weapon);
+        }
+        break;
+    case 220:
+        CG_StartShakeCamera(entity->s.angles2.v.m128_f32[0], 1000,
+                            entity->r.currentOrigin.v.m128_f32,
+                            entity->s.angles2.v.m128_f32[1], currCl);
+        break;
+    default:
+        break;
+    }
+}
+
+// ea: 0x006AE040
+int CG_ProcessSnapshots()
+{
+    int n = 0;
+    CL_GetCurrentSnapshotNumber(&n, &dword_F62958[1580 * currCl]);
+    int v1 = n;
+    int v2 = 1580 * currCl;
+    int v3 = dword_F62954[1580 * currCl];
+    if (n != v3)
+    {
+        if (n < v3)
+        {
+            CG_Error("CG_ProcessSnapshots: n < cg[currCl].latestSnapshotNum");
+            v1 = n;
+        }
+        v2 = 1580 * currCl;
+        dword_F62954[1580 * currCl] = v1;
+    }
+    int ServerSnapTime = 0;
+    if (dword_F62960[v2] != 0)
+    {
+        CG_SetFrameInterpolation();
+        while (1)
+        {
+            CG_ASSERT("cg[currCl].snap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 412);
+            CG_ASSERT("cg[currCl].nextSnap",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 413);
+            if (dword_F62964[1580 * currCl] == dword_F62960[1580 * currCl])
+            {
+                void* NextSnapshot = CG_ReadNextSnapshot();
+                if (NextSnapshot == nullptr)
+                    break;
+                CG_ASSERT("cg[currCl].snap",
+                          "c:\\cod\\code\\game\\cg_snapshot.cpp", 422);
+                if (*(int*)((char*)NextSnapshot + 4)
+                        - *(int*)(dword_F62960[1580 * currCl] + 4)
+                    < 0)
+                {
+                    CG_Error("CG_ProcessSnapshots: Server time went "
+                             "backwards\n");
+                }
+                CG_SetNextSnap(NextSnapshot);
+            }
+            if (cgGlobal_time - *(int*)(dword_F62960[1580 * currCl] + 4) >= 0
+                && cgGlobal_time - *(int*)(dword_F62964[1580 * currCl] + 4)
+                       < 0)
+                break;
+            CG_TransitionSnapshot();
+        }
+        CG_ASSERT("cg[currCl].snap",
+                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 438);
+        CG_ASSERT("cg[currCl].nextSnap",
+                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 439);
+        int v10 = dword_F62964[1580 * currCl];
+        if (v10 != dword_F62960[1580 * currCl]
+            && *(int*)(v10 + 4) - cgGlobal_time <= 0)
+        {
+            CG_ASSERT("cg[currCl].nextSnap == cg[currCl].snap || "
+                      "cg[currCl].nextSnap->serverTime - cgGlobal.time > 0",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 440);
+        }
+        if (cgGlobal_time - *(int*)(dword_F62960[1580 * currCl] + 4) < 0)
+        {
+            CG_ASSERT("cgGlobal.time - cg[currCl].snap->serverTime >= 0",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 441);
+        }
+        ServerSnapTime = G_GetServerSnapTime();
+        if (*(int*)(dword_F62964[1580 * currCl] + 4) != ServerSnapTime)
+        {
+            CG_ASSERT("cg[currCl].nextSnap->serverTime == "
+                      "G_GetServerSnapTime()",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 442);
+        }
+    }
+    else
+    {
+        void* v4 = CG_ReadNextSnapshot();
+        CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_snapshot.cpp", 378);
+        CG_SetInitialSnapshot(v4);
+        CG_SetNextSnap(v4);
+        CG_ASSERT("cg[currCl].snap",
+                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 385);
+        CG_ASSERT("cg[currCl].nextSnap",
+                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 386);
+        if (*(int*)(dword_F62964[1580 * currCl] + 4) != G_GetServerSnapTime())
+        {
+            CG_ASSERT("cg[currCl].nextSnap->serverTime == "
+                      "G_GetServerSnapTime()",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 387);
+        }
+        CG_TransitionSnapshot();
+        if (fs_debug_vm.integer == 0)
+            Cvar_VMSet(&fs_debug_vm, "2");
+        CG_ASSERT("cg[currCl].snap",
+                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 397);
+        CG_ASSERT("cg[currCl].nextSnap",
+                  "c:\\cod\\code\\game\\cg_snapshot.cpp", 398);
+        int v6 = dword_F62964[1580 * currCl];
+        if (v6 != dword_F62960[1580 * currCl]
+            && *(int*)(v6 + 4) - cgGlobal_time <= 0)
+        {
+            CG_ASSERT("cg[currCl].nextSnap == cg[currCl].snap || "
+                      "cg[currCl].nextSnap->serverTime - cgGlobal.time > 0",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 399);
+        }
+        if (cgGlobal_time - *(int*)(dword_F62960[1580 * currCl] + 4) < 0)
+        {
+            CG_ASSERT("cgGlobal.time - cg[currCl].snap->serverTime >= 0",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 400);
+        }
+        ServerSnapTime = G_GetServerSnapTime();
+        if (*(int*)(dword_F62964[1580 * currCl] + 4) != ServerSnapTime)
+        {
+            CG_ASSERT("cg[currCl].nextSnap->serverTime == "
+                      "G_GetServerSnapTime()",
+                      "c:\\cod\\code\\game\\cg_snapshot.cpp", 401);
+        }
+    }
+    return ServerSnapTime;
+}
