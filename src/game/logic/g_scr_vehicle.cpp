@@ -4416,6 +4416,150 @@ void VEH_FireGunnerWeapon(Entity* ent, int msec)
     Weapon_RocketLauncher_Fire(ent, 0.0f, &wp, 10.0f, true);
 }
 
+// ea: 0x0047E990
+void VEH_UpdateControllers(Entity* entity, int msec)
+{
+    scr_vehicle_t* veh = entity->scr_vehicle;
+    vehicle_info_t* info = veh != nullptr ? s_vehicleInfos[veh->infoIdx]
+                                          : nullptr;
+    if (entity->mDObj == nullptr || entity->mDObj->skel == nullptr)
+        return;
+    float turretShake[3] = { 0.0f, 0.0f, 0.0f };
+    float turretAngles[3] = { 0.0f, 0.0f, 0.0f };
+    float barrelAngles[3] = { 0.0f, 0.0f, 0.0f };
+    float gunnerAngles[3] = { 0.0f, 0.0f, 0.0f };
+    float gunnerBarrelAngles[3] = { 0.0f, 0.0f, 0.0f };
+    float steerAngles[3] = { 0.0f, 0.0f, 0.0f };
+    float hatchRightAngles[2] = { 0.0f, 0.0f };
+    float hatchLeftAngles[2] = { 0.0f, 0.0f };
+    float offset = 0.0f;
+    float rotation = 0.0f;
+    if (veh != nullptr)
+    {
+        barrelAngles[0] = veh->current.mTurretAngles.v.m128_f32[0];
+        gunnerBarrelAngles[0] = veh->current.mGunnerAngles.v.m128_f32[0];
+        rotation = veh->current.mSteeringAngle;
+    }
+    static unsigned int sS124 = 0;
+    static unsigned int tag_body_hash_0 = 0;
+    static unsigned int tag_turret_hash_0 = 0;
+    static unsigned int tag_barrel_hash_0 = 0;
+    static unsigned int tag_gunner_turret_hash = 0;
+    static unsigned int tag_gunner_barrel_hash_0 = 0;
+    static unsigned int tag_hatch_right_hash = 0;
+    static unsigned int tag_hatch_left_hash = 0;
+    static unsigned int tag_recoil = 0;
+    if ((sS124 & 1) == 0)
+    {
+        sS124 |= 1u;
+        tag_body_hash_0 = HashString::CalcHash("tag_body");
+    }
+    if ((sS124 & 2) == 0)
+    {
+        sS124 |= 2u;
+        tag_turret_hash_0 = HashString::CalcHash("tag_turret");
+    }
+    if ((sS124 & 4) == 0)
+    {
+        sS124 |= 4u;
+        tag_barrel_hash_0 = HashString::CalcHash("tag_barrel");
+    }
+    if ((sS124 & 8) == 0)
+    {
+        sS124 |= 8u;
+        tag_gunner_turret_hash = HashString::CalcHash("tag_gunner_turret");
+    }
+    if ((sS124 & 0x10) == 0)
+    {
+        sS124 |= 0x10u;
+        tag_gunner_barrel_hash_0 =
+            HashString::CalcHash("tag_gunner_barrel");
+    }
+    if ((sS124 & 0x20) == 0)
+    {
+        sS124 |= 0x20u;
+        tag_hatch_right_hash = HashString::CalcHash("tag_hatch_right");
+    }
+    if ((sS124 & 0x40) == 0)
+    {
+        sS124 |= 0x40u;
+        tag_hatch_left_hash = HashString::CalcHash("tag_hatch_left");
+    }
+    if ((sS124 & 0x80) == 0)
+    {
+        sS124 |= 0x80u;
+        tag_recoil = HashString::CalcHash("tag_recoil");
+    }
+    if (info != nullptr && info->type != 2 && info->type != 5)
+    {
+        if (veh->fireTime > 0)
+            turretShake[0] = flrand(-0.5f, 0.5f);
+        if (veh->gunnerFireTime > 0)
+            offset = flrand(-0.5f, 0.5f);
+    }
+    if (entity->s.weapon != 0)
+    {
+        int bone = SV_DObjGetBoneIndex(entity, tag_turret_hash_0);
+        if (bone >= 0)
+            G_DObjSetLocalTagInternal_0(nullptr, turretAngles, bone,
+                                        entity, 0);
+        bone = SV_DObjGetBoneIndex(entity, tag_barrel_hash_0);
+        if (bone >= 0)
+            G_DObjSetLocalTagInternal_0(turretShake, barrelAngles, bone,
+                                        entity, 0);
+    }
+    if (veh != nullptr && veh->gunnerWeapon != 0)
+    {
+        int bone = SV_DObjGetBoneIndex(entity, tag_gunner_turret_hash);
+        if (bone >= 0)
+            G_DObjSetLocalTagInternal_0(nullptr, gunnerAngles, bone,
+                                        entity, 0);
+        bone = SV_DObjGetBoneIndex(entity, tag_gunner_barrel_hash_0);
+        if (bone >= 0)
+            G_DObjSetLocalTagInternal_0(&offset, gunnerBarrelAngles, bone,
+                                        entity, 0);
+    }
+    if (veh != nullptr && veh->joltTime > 0.0f)
+    {
+        float scale;
+        if (veh->joltTime < 0.65f)
+            scale = veh->joltTime * 1.5384616f;
+        else
+            scale = 1.0f - ((veh->joltTime - 0.65f) * 6.6666651f);
+        offset = scale * -24.0f;
+        int bone = SV_DObjGetBoneIndex(entity, tag_recoil);
+        if (bone >= 0)
+            G_DObjSetLocalTagInternal_0(&offset, nullptr, bone, entity, 1);
+    }
+    int steerBone = veh != nullptr ? veh->boneIndex.steering_wheel : -1;
+    if (steerBone > 0)
+    {
+        Entity* owner = HandleDbToEnt(entity->r.mOwner);
+        if (owner != nullptr && owner->IsLocalPlayer())
+        {
+            int playerIndex = owner->GetPlayerIndex();
+            void* ic = InteractionController_Inst(playerIndex);
+            if (ic != nullptr && (*(unsigned char*)ic & 0x20) != 0
+                && *(int*)((char*)gCamera + playerIndex * 0x1F0 + 0x190)
+                       == 2 /* CAM_VEHICLE_FIRST */)
+            {
+                rotation = InteractionController_GetRotation(
+                    InteractionController_Inst(playerIndex));
+            }
+        }
+        G_DObjSetLocalTagInternal_0(vec3_origin, steerAngles, steerBone,
+                                    entity, 0);
+    }
+    int bone = SV_DObjGetBoneIndex(entity, tag_hatch_right_hash);
+    if (bone >= 0)
+        G_DObjSetLocalTagInternal_0(nullptr, hatchRightAngles, bone,
+                                    entity, 0);
+    bone = SV_DObjGetBoneIndex(entity, tag_hatch_left_hash);
+    if (bone >= 0)
+        G_DObjSetLocalTagInternal_0(nullptr, hatchLeftAngles, bone,
+                                    entity, 0);
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)

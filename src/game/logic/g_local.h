@@ -2445,6 +2445,7 @@ void  G_FreeInteractionInfo(void);                 // g.o
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o
+float InteractionController_GetRotation(void* self); // cl.o
 void  InteractionController_EndInteraction(void* self, int wasInteracting);  // cl.o
 void  InitCvars(int restart);                        // g.o 0x44B950
 void  Cmd_UFO_f(Entity* ent);                        // g.o 0x44A9C0
@@ -2721,7 +2722,8 @@ extern void (*controllertable[4])(Entity* ent, int* partBits);
 
 // DObj - server-side dynamic object (minimal view; full layout in cg_local.h)
 struct DObj {
-    uint8_t      _pad0[0x80];      // +0x00
+    uint8_t      _pad0[0x70];      // +0x00
+    void*        skel;             // +0x70
     IVPointer<XModel> models[8];   // +0x80
     uint8_t      _padC0[0xC4 - 0xC0];
     IVPointerRaw mPhysData;        // +0xC4
