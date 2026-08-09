@@ -385,6 +385,8 @@ struct level_locals_t {
     XAnimTree* delayFreeAnimTree[512];             // +0x1C84 (0x800 bytes)
     int      delayClearAnimTreeCount;              // +0x2484
     XAnimTree* delayClearAnimTree[128];            // +0x2488 (0x200 bytes)
+
+    static void Clear(level_locals_t* self);       // ?Clear@level_locals_t@@QAEXXZ
 };
 static_assert(sizeof(level_locals_t) == 0x2688, "level_locals_t size mismatch");
 static_assert(offsetof(level_locals_t, time) == 0x09C, "level_locals_t::time offset mismatch");
@@ -543,6 +545,9 @@ public:
     int mFree;   // +0x00
     int mUsed;   // +0x04
     T*  mpFree;  // +0x08
+
+    void Init(int num);     // ?Init@?$cFreeList@...@@QAEXH@Z core.o
+    void Shutdown();        // ?Shutdown@?$cFreeList@...@@QAEXXZ core.o
 };
 extern cFreeList<Entity> gEntFreeList;        // 0xF50D04
 
@@ -1031,6 +1036,8 @@ namespace BrocSys {
 const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
 void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
 int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHPBD@Z
+void UnloadScript(void* self);              // ?UnloadScript@BrocSys@@QAEXPAV1@@Z
+void LoadScript(void* self);                // ?LoadScript@BrocSys@@QAEXPAV1@@Z
 }
 
 // ============================================================================
@@ -1912,6 +1919,32 @@ int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o
 vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
 int16_t VEH_GetPlayerVehicleInfo(const char* name); // g.o 0x44D4E0
 int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
+int     G_InitialParseInteractionInfo(void);         // g.o
+void    G_InitSentients(void);                       // g.o
+void    GScr_LoadScriptsAndAnimsForEntities(void);   // g.o
+unsigned char GScr_LoadConsts(void);                 // g.o
+void    Scr_PrecacheAnimTrees(void* (*alloc)(void*, unsigned int), int restart);  // g.o
+AnimTree* Scr_GetAnimTreeByName(const char* treename);  // g.o
+void*   Hunk_AllocXAnimCreate(void* self, unsigned int size);  // g.o
+void    BG_SetupWeaponInfo(void);                    // game.o
+void    ParseHitLocDmgTableEntry(const char* name, const ConfigString* cfg);  // g.o
+void    Path_Init(void);                             // g.o
+void    G_SetupScrVehicles(void);                    // g.o
+void    MP_ResolveAnims(void);                       // mp.o
+void    LensFlareInit(void);                         // render.o
+void    Swap_Init(void);                             // game.o
+void    Rand_Init(unsigned int seed);                // core.o
+void    HudElem_Free(game_hudelem_s* hud);           // g.o
+void    CG_ClearHudElems(void);                      // cg.o
+void    WheelMarkMgr_Reset(void);                    // render.o
+void    FX_InitFX(void);                             // fx.o
+void    GlobalPakLoadCallback(int progress);         // g.o
+int     R_CellForPoint(const float* pos);            // render.o
+extern int g_gameIsStartingUp;                       // g.o
+extern int g_freeze_movement;                        // g.o
+extern Broc::string gFootSplashEffect;               // g.o
+extern int g_xanim_num;                              // g.o
+extern int s_numNodes;                               // g.o 0xEA5DD0
 void    VEH_StopWheelEffects(Entity* ent);          // g.o 0x44DBD0
 void    VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex);  // g.o 0x45C7F0
 void    VEH_UpdateSounds(Entity* ent, int msec);   // g.o 0x46D560
@@ -2067,6 +2100,15 @@ extern float fudge_0;                            // g.o @ 0xDD812C
 extern float radius_0;                           // g.o @ 0xDD8264
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
+extern vmCvar_t com_timescale;                   // core.o
+extern int Sys_Milliseconds(void);               // core.o
+extern void level_locals_t_Clear(level_locals_t* self);  // g.o
+extern void IGOCompassWidget_SetHideCompassStar(int viewport, int active,
+                                                int index);  // shell.o
+extern void Client_Clear(void* self, bool clearPersistentAlso,
+                          bool clearWeapons);  // g.o
+extern Client g_clients[16];                   // g.o
+extern sentient_s g_sentients[16];             // g.o
 
 // ============================================================================
 // gdDecal / DynamicDecalMgr (render.o) - used by Bullet_Fire_Fake_Extended
@@ -2184,6 +2226,17 @@ void  AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac,
 void  MemPrint(const char* fmt, ...);              // core.o
 void  DynamicDecalMgr_DestroyAllDecals(void);      // render.o
 void  SmokeGrenadeMgr_ReInitialize(void);          // game.o
+void  RumbleManager_StopMotors(void* self);        // core.o
+void  controller_stop_all_rumble(void* self);      // controller_xboxr
+void  EffectEventSys_StopAll(void* self);          // core.o
+void  nglWaitForRendering(void);                   // ngl.o
+void  nglSetClearFlags(unsigned int flags);        // ngl.o
+void  nglInitQuad(void* quad);                     // ngl.o
+void  nglSetQuadColor(void* quad, unsigned int color);  // ngl.o
+void  nglListAddQuad(void* quad);                  // ngl.o
+void  nglPresent(void);                            // ngl.o
+void  SpinnerDrawFrame(bool bEndFrame);            // cg.o
+void  SpinnerReset(void);                          // cg.o
 void  CG_FreeWeapons(void);                        // cg.o
 void  BG_FreeWeaponInfo(void);                     // game.o
 void  G_FreeInteractionInfo(void);                 // g.o

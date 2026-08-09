@@ -276,6 +276,7 @@ struct MultiplayerMgr {
     void SwapWeapon(int weapon, int netIndex, int clipCount, int ammoCount);  // ?SwapWeapon@MultiplayerMgr@@QAEXHHHH@Z
     void SwapKit(int playerClass, int netIndex);  // ?SwapKit@MultiplayerMgr@@QAEXHH@Z
     void SetPlayerPos(const Entity* player, float* pos);  // ?SetPlayerPos@MultiplayerMgr@@QAEXPBVEntity@@QAM@Z
+    void LevelLoaded();  // ?LevelLoaded@MultiplayerMgr@@QAEXXZ
     void BulletHit(const math::Position3& position, const math::Dir3& normal,
                    unsigned char surfaceType, unsigned char weapon,
                    Entity* hitEntity);  // ?BulletHit@MultiplayerMgr@@QAEXABVPosition3@math@@ABVDir3@3@EEPAVEntity@@@Z
@@ -314,22 +315,31 @@ struct CheckpointMgr {
     bool         mUsingCheckpoints;       // +0x00 (bool)
     bool         mCheckpointSaveExists;   // +0x01 (bool)
     Broc::string mCurrentMapName;         // +0x04 (Broc::string, 4 bytes)
+    uint8_t      _pad08[0x14 - 0x08];
+    math::Position3 mOrigin;              // +0x14 (checkpoint player origin)
     static CheckpointMgr* sInst;          // ?sInst@CheckpointMgr@@2PAV1@A
     void ClearSavedCheckpointData();
     void SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // ?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z
+    void SetCheckpointCvar();             // ?SetCheckpointCvar@CheckpointMgr@@QAEXXZ
+    void RestoreExplodedExploders();      // ?RestoreExplodedExploders@CheckpointMgr@@QAEXXZ
+    void Restart();                       // ?Restart@CheckpointMgr@@QAEXXZ
 };
-static_assert(sizeof(CheckpointMgr) == 8, "CheckpointMgr size mismatch (fields used)");
+// size not asserted (opaque; G_InitGame touches mOrigin at +0x14)
 
 struct PakManager {
     uint8_t _pad[0x28];
     unsigned int mEnabled;             // +0x28
     static PakManager* sInst;            // ?sInst@PakManager@@2PAV1@A
+    void* mProgressCallback;             // +0x2C
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
+    void ResetPriorities(bool user_distances_also);  // ?ResetPriorities@PakManager@@QAEX_N@Z
+    void SetUserDistance(const void* cpak, float dist);  // ?SetUserDistance@PakManager@@QAEXPBUPakInfoNode@@M@Z
+    const void* GetPakInfo(TPakId pakId);  // ?GetPakInfo@PakManager@@QAEPBUPakInfoNode@@W4TPakId@@@Z
     bool IsUnloading(TPakId id) const;   // ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z
     void MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
 };
-static_assert(sizeof(PakManager) == 0x2C, "PakManager size mismatch (opaque)");
+static_assert(sizeof(PakManager) == 0x30, "PakManager size mismatch (opaque)");
 
 // ============================================================================
 // InGameMenuSystem — in-game menu system (56 bytes; opaque, only is_active)
@@ -460,8 +470,21 @@ struct PathNodeMgr {
     void ConnectPathsForEntity(Entity* ent);     // ?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void DisconnectPathsForEntity(Entity* ent);  // ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void NodeList();                     // ?NodeList@PathNodeMgr@@QAEXXZ
+    void CheckpointResetNodes();         // ?CheckpointResetNodes@PathNodeMgr@@QAEXXZ
 };
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
+
+// StreamZoneManager - streaming level cell manager (opaque)
+struct StreamZoneManager {
+    uint8_t _pad[0x8];
+    int          mLastCellNum;      // +0x08
+    math::Position3 mInitialPosition;  // +0x0C
+    int          mInitialCell;      // +0x1C
+    static StreamZoneManager* sInst;  // ?sInst@StreamZoneManager@@2PAV1@A
+    void Update(int cellNum, const math::Position3* pos, bool forceReset);  // ?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z
+    void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
+    const void* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
+};
 
 // ============================================================================
 // SceneManager â€” scene/static-model manager (opaque)
@@ -471,6 +494,8 @@ struct SceneManager {
     static SceneManager* sInst;          // ?sInst@SceneManager@@2PAV1@A
     InplaceVector<unsigned char>* mPersistantStorage;
     void ResetAllStaticModels();         // ?ResetAllStaticModels@SceneManager@@QAEXXZ
+    void RestartPersistentArray();       // ?RestartPersistentArray@SceneManager@@QAEXXZ
+    void InstanceEntities();             // ?InstanceEntities@SceneManager@@QAEXXZ
 };
 
 struct FEMenuSystem {
@@ -511,6 +536,7 @@ struct IGOFrontEnd {
     void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
     void AddActiveGrenade(const Entity* grenade);  // ?AddActiveGrenade@IGOFrontEnd@@QAEXPBVEntity@@@Z
     void SetHUDType(int ht, int viewport);  // ?SetHUDType@IGOFrontEnd@@QAEXW4hud_type@@H@Z
+    void UpdateAfterWeaponsLoaded();  // ?UpdateAfterWeaponsLoaded@IGOFrontEnd@@QAEXXZ
 };
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
 
@@ -659,6 +685,7 @@ inline T* IVPointer_Deref(const IVPointer<T>& p) { return p.mValue; }
 enum clientStateCA_t {
     CA_DISCONNECTED = 0,
     CA_ACTIVE = 1,
+    CA_LOADING = 2,
 };
 
 struct clientStatic_t {

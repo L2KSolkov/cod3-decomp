@@ -92,6 +92,7 @@ static_assert(offsetof(clientPersistent_t, maxHealth) == 0x214, "clientPersisten
 struct Client {
     PlayerState        ps;                            // +0x000 (1488 bytes)
     clientPersistent_t pers;                          // +0x5D0 (536 bytes)
+    void Clear(bool clearPersistentAlso, bool clearWeapons);  // ?Clear@Client@@QAEX_N0@Z
     int                noclip;                        // +0x7E8
     int                ufo;                           // +0x7EC
     int                bFrozen;                       // +0x7F0
@@ -173,7 +174,6 @@ struct Client {
     bool               mFootStepsFootGrounded[2];     // +0xB94
     uint8_t            _padB96[2];                    // +0xB96
     int                mFootStepsSurface[2];          // +0xB98
-    uint8_t            _padBA0[0];                    // end of struct
 };
 static_assert(sizeof(Client) == 0xBA0, "Client size mismatch");
 static_assert(offsetof(Client, ps) == 0x000, "Client::ps offset mismatch");

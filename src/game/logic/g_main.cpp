@@ -3874,6 +3874,261 @@ void G_Animscripted(Entity* ent, const float* origin, const float* angles,
     ent->flags |= 0x1000000;
 }
 
+// ea: 0x00476AE0
+int G_InitGame(int brocSys, unsigned int randomSeed, int restart,
+               int savegame, int a5)
+{
+    g_gameIsStartingUp = 1;
+    if (restart != 0)
+    {
+        g_doShellShock[0] = 0;
+        if (currCl != NS_CLIENT)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleManager.h";
+            AeAssert::gCurrentLine = 24;
+            AeAssert::gCurrentExpr = "instance >= 0 && instance < 1";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid index in multiton"))
+                __debugbreak();
+        }
+        RumbleManager_StopMotors(RumbleManager_Inst(currCl));
+        Cvar_Set("timescale", "1");
+        com_timescale.value = 1.0f;
+        SmokeGrenadeMgr_ReInitialize();
+        PathNodeMgr::sInst->ValidateAllNodes();
+        EntityManager::sInst->DeleteAllEntities();
+        SceneManager::sInst->ResetAllStaticModels();
+        Entity::FreeAllDObjs(true);
+        G_CleanupAnimTrees();
+        for (int i = 0; i < 16; ++i)
+        {
+            if (g_hudelems[i].elem.type != HE_TYPE_FREE)
+                HudElem_Free(&g_hudelems[i]);
+        }
+        memset(g_hudelems, 0, sizeof(g_hudelems));
+        gRefEntFreeList.Shutdown();
+        gDObjFreeList.Shutdown();
+        gDSkelFreeList.Shutdown();
+        gDSkelMaxFreeList.Shutdown();
+        gDSkel4FreeList.Shutdown();
+        gEntFreeList.Shutdown();
+        gEntFreeList.Init(350);
+        gDSkelFreeList.Init(96);
+        gDSkelMaxFreeList.Init(26);
+        gDSkel4FreeList.Init(20);
+        gDObjFreeList.Init(300);
+        gRefEntFreeList.Init(300);
+        SceneManager::sInst->ResetAllStaticModels();
+        EntityManager::sInst->CreateWorld();
+        EntityManager::sInst->CreatePlayers();
+        BrocSys::UnloadScript((void*)brocSys);
+        PakManager::sInst->ResetPriorities(true);
+        SceneManager::sInst->RestartPersistentArray();
+        StreamZoneManager::sInst->CheckpointRestart();
+        const void* pakInfo =
+            PakManager::sInst->GetPakInfo(CurPakId());
+        PakManager::sInst->SetUserDistance(pakInfo, 0.0f);
+        gCamera[0].Restart();
+    }
+    CheckpointMgr* cpMgr = CheckpointMgr::sInst;
+    if (cpMgr->mCheckpointSaveExists && cpMgr->mUsingCheckpoints)
+    {
+        int cell = R_CellForPoint(&cpMgr->mOrigin.v.m128_f32[0]);
+        StreamZoneManager::sInst->Update(cell, &cpMgr->mOrigin, true);
+    }
+    else
+    {
+        StreamZoneManager::sInst->Update(
+            StreamZoneManager::sInst->mInitialCell,
+            &StreamZoneManager::sInst->mInitialPosition, true);
+    }
+    for (int i = 0; i < 2; ++i)
+    {
+        nglWaitForRendering();
+        nglSetClearFlags(0xF3);
+        char quad[0x80];
+        nglInitQuad(quad);
+        nglSetQuadColor(quad, 0xFFFFFFFF);
+        nglListAddQuad(quad);
+        SpinnerDrawFrame(false);
+        nglPresent();
+    }
+    if (restart == 0 && (!cpMgr->mCheckpointSaveExists
+                         || !cpMgr->mUsingCheckpoints))
+    {
+        SpinnerReset();
+        goto skip_fill;
+    }
+    {
+        int oldState = cls.state;
+        cls.state = CA_LOADING;
+        PakManager::sInst->mProgressCallback = (void*)GlobalPakLoadCallback;
+        PakManager::sInst->FillBanks();
+        PakManager::sInst->mProgressCallback = nullptr;
+        cls.state = oldState;
+        PathNodeMgr::sInst->CheckpointResetNodes();
+        if (restart != 0)
+        {
+            IGOCompassWidget_SetHideCompassStar(currCl, 0, 0);
+            EffectEventSys_StopAll(EffectEventSys::sInst);
+            controller_stop_all_rumble(controller_inst());
+            CG_ClearHudElems();
+            DynamicDecalMgr_DestroyAllDecals();
+            WheelMarkMgr_Reset();
+            FX_InitFX();
+        }
+    }
+skip_fill:
+    DynamicDecalMgr_DestroyAllDecals();
+    WheelMarkMgr_Reset();
+    Cvar_SetValue("aiIgnoreDbg", 1.0f);
+    Cvar_SetValue("aiCanAtkDbg", 0.0f);
+    Cvar_SetValue("aiDrawState", 0.0f);
+    Cvar_SetValue("aiDrawEnemyLine", 0.0f);
+    Cvar_SetValue("aiDrawSight", 0.0f);
+    Cvar_SetValue("aiDrawClaimed", 0.0f);
+    Cvar_SetValue("aiDrawGrenade", 0.0f);
+    Cvar_SetValue("aiPacifistDbg", 0.0f);
+    int loadScripts;
+    if (restart == 0)
+    {
+        BrocSys::LoadScript((void*)brocSys);
+        Cvar_Set("cl_restartdeath", "0");
+        loadScripts = 0;
+    }
+    else if (savegame == 0)
+    {
+        loadScripts = 0;
+    }
+    else
+    {
+        loadScripts = 1;
+    }
+    Swap_Init();
+    bool pathsInited = level.pathsInited;
+    bool pathsInvalid = level.pathsInvalid;
+    bool pathsConnected = level.pathsConnected;
+    level_locals_t::Clear(&level);
+    level.pathsConnected = pathsConnected;
+    level.initializing = 1;
+    level.pathsInited = pathsInited;
+    level.pathsInvalid = pathsInvalid;
+    if (savegame != 0)
+        loadScripts = 0;
+    if (restart == 0)
+        memset(&g_scr_data, 0, sizeof(g_scr_data));
+    srand(randomSeed);
+    Rand_Init(Sys_Milliseconds());
+    InitCvars(restart);
+    g_freeze_movement = 0;
+    gFootSplashEffect = defaultFileName;
+    playerMaxs.v.m128_f32[0] = g_bounds_width.value * 0.5f;
+    playerMaxs.v.m128_f32[1] = g_bounds_width.value * 0.5f;
+    playerMins.v.m128_f32[0] = g_bounds_width.value * -0.5f;
+    playerMins.v.m128_f32[1] = g_bounds_width.value * -0.5f;
+    playerMaxs.v.m128_f32[2] = g_bounds_height_standing.value;
+    if (level.time != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
+        AeAssert::gCurrentLine = 1516;
+        AeAssert::gCurrentExpr = "!level.time";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (level.iNextObjectiveTime != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
+        AeAssert::gCurrentLine = 1517;
+        AeAssert::gCurrentExpr = "!level.iNextObjectiveTime";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    BG_SetupWeaponInfo();
+    g_femanager.IGO->UpdateAfterWeaponsLoaded();
+    s_numVehicleInfos = 0;
+    ConfigStringManager::sInst->CallbackSearch(CurPakId(), "VEHICLEFILE",
+                                               ParseVehicleConfigString);
+    ConfigStringManager::sInst->CallbackSearch(
+        CurPakId(), "VEHICLEPHYSICSFILE", ParseVehiclePhysicsConfigString);
+    sEntryPointHintIndicies[0] = -1;
+    dword_DD67B8 = -1;
+    dword_DD67BC = -1;
+    dword_DD67C0 = -1;
+    dword_DD67C4 = -1;
+    dword_DD67C8 = -1;
+    G_InitialParseInteractionInfo();
+    level.numActorCorpses = 0;
+    if (loadScripts == 0)
+    {
+        gpBrocAPI->mBrocExports.mAnimInitialize();
+        extern void* AnimBankManager_sInst;  // ?sInst@AnimBankManager@@2PAV1@A
+        extern void* AnimBankManager_GetBank(void* self, TPakId pakId);
+        extern int AnimBank_anims_mSize(void* bank);
+        g_xanim_num =
+            AnimBank_anims_mSize(AnimBankManager_GetBank(
+                AnimBankManager_sInst, (TPakId)kPakTypeLevel));
+        GScr_LoadScriptsAndAnimsForEntities();
+        Scr_PrecacheAnimTrees(Hunk_AllocXAnimCreate, restart != 0);
+        AnimTree* generic = Scr_GetAnimTreeByName("generic_human");
+        if (generic == nullptr)
+            G_Error("Could not find animation tree '%s'", "generic_human");
+        g_scr_data.generic_human_tree = generic;
+        for (int i = 0; i < 16; ++i)
+            g_scr_data.actorCorpseInfo[i].mEntity.mHandle.mVal = 0;
+    }
+    GScr_LoadConsts();
+    level.maxclients = 16;
+    for (int i = 0; i < 16; ++i)
+    {
+        g_clients[i].Clear(true, true);
+        g_clients[i].mServerClientIndex = i;
+    }
+    level.clients = g_clients;
+    level.sentients = g_sentients;
+    G_InitSentients();
+    for (int i = 0; i < level.maxclients; ++i)
+        EntityManager::sInst->mPlayers[i]->client = &level.clients[i];
+    if (restart == 0)
+    {
+        ConfigStringManager::sInst->CallbackSearch(
+            CurPakId(), "MPLOCDMGTABLE", ParseHitLocDmgTableEntry);
+        memset(itemRegistered, 0, 137 * sizeof(int));
+        itemRegistered[0] = 1;
+    }
+    Path_Init();
+    s_numNodes = 0;
+    G_InitScrVehicles();
+    turretInfo[0].inuse = 0;
+    level.turrets = turretInfo;
+    level.loading = (savegame != 0) + 1;
+    vehicle_InitDynamicBuffers(10);
+    SceneManager::sInst->InstanceEntities();
+    level.loading = 0;
+    CheckpointMgr::sInst->RestoreExplodedExploders();
+    MultiplayerMgr::sInst->LevelLoaded();
+    MP_ResolveAnims();
+    G_SetupVehiclePaths(0.0f);
+    G_SetupScrVehicles();
+    G_FindTeams();
+    level.bRegisterItems = 1;
+    level.snapTime = level.time;
+    SaveRegisteredItems();
+    level.bDrawCompassFriendlies = 1;
+    level.fFogOpaqueDist = 3.4028235e38f;
+    level.fFogOpaqueDistSqrd = 3.4028235e38f;
+    for (int i = 0; i < 17; ++i)
+        SV_SetConfigstring(i + 16, nullptr);
+    level.MissleOnlyActiveForTime = 0.0f;
+    level.initializing = 0;
+    CheckpointMgr::sInst->Restart();
+    LensFlareInit();
+    g_gameIsStartingUp = 0;
+    return 0;
+}
+
 // ea: 0x004505A0
 void SP_worldspawn(void)
 {
