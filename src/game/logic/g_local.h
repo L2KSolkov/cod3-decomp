@@ -1643,6 +1643,8 @@ void  RotatePointAroundVector(float* result, const float* axis,
 void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
 void  VEH_UpdateControllers(Entity* entity, int msec);  // g.o 0x46DE90
 void  G_UpdateVehicleTags(Entity* ent);                 // g.o 0x45E290
+void  G_FreeVehicle(Entity* ent);                       // g.o 0x46DC50
+void  vehicle_InitDynamicBuffers(unsigned short vehicles);  // g.o 0x46FF60
 void  G_DrawVehiclePaths(void);                         // g.o 0x464980
 void  VP_DrawPath(const vehicle_pathpos_t* vpp);        // g.o 0x464710
 void  VP_AddDebugLine(const float* start, const float* end, int forceDraw);  // g.o
@@ -1681,6 +1683,7 @@ int16_t VEH_GetPlayerVehicleInfo(const char* name); // g.o 0x44D4E0
 int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
 void    VEH_StopWheelEffects(Entity* ent);          // g.o 0x44DBD0
 void    VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex);  // g.o 0x45C7F0
+void    VEH_UpdateSounds(Entity* ent, int msec);   // g.o 0x46D560
 void    VEH_DebugBox(const math::Position3* pos, float width, float r,
                      float g, float b);             // g.o 0x45C3A0
 extern int g_renderPFXStats;                        // game2.o

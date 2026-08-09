@@ -873,6 +873,169 @@ const float (*VEH_GetPlayerFollowGoalPosition(const Entity* vehicle,
     return (const float(*)[3])vehicle->scr_vehicle->follow->slotGoalPosition[iFollowSlot];
 }
 
+// ea: 0x0046DC50
+void G_FreeVehicle(Entity* ent)
+{
+    if (ent->scr_vehicle->mRBVeh != nullptr)
+        rb_vehicle::remove_vehicle((rb_vehicle*)ent->scr_vehicle->mRBVeh);
+    if (ent->scr_vehicle->follow != nullptr)
+    {
+        TPakId mPakId = (TPakId)ent->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        vehicle_follow* follow = ent->scr_vehicle->follow;
+        if (follow != nullptr)
+            PakManager::sInst->MemFree(mPakId, follow, false);
+        ent->scr_vehicle->follow = nullptr;
+    }
+    if (HandleDbToEnt(ent->scr_vehicle->mEntity) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6850;
+        AeAssert::gCurrentExpr = "*ent->scr_vehicle->mEntity != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    ent->health = 0;
+    VEH_UpdateSounds(ent, 0);
+    Entity* idle = HandleDbToEnt(ent->scr_vehicle->mIdleSndEnt);
+    if (idle != nullptr)
+        G_FreeEntity(idle, 0);
+    Entity* engine = HandleDbToEnt(ent->scr_vehicle->mEngineSndEnt);
+    if (engine != nullptr)
+        G_FreeEntity(engine, 0);
+    vehicle_path_node_t* switchNode = ent->scr_vehicle->pathPos.switchNode;
+    ent->think = THINK__NULL;
+    ent->pain = 0;
+    ent->die = 0;
+    ent->touch = 0;
+    ent->use = 0;
+    ent->controller = 0;
+    ent->entinfo = 2;
+    ent->nextthink = 0;
+    ent->takedamage = 0;
+    ent->speed = 0.0f;
+    ent->active = 0;
+    ent->s.eFlags = 0;
+    ent->s.pos.trType = TR_STATIONARY;
+    ent->s.apos.trType = TR_STATIONARY;
+    switchNode->mName.clear();
+    ent->scr_vehicle->pathPos.switchNode[1].mName.clear();
+    ent->scr_vehicle->pathPos.switchNode[0].mTarget.clear();
+    ent->scr_vehicle->pathPos.switchNode[1].mTarget.clear();
+    ent->scr_vehicle->mEntity.mHandle.mVal = 0;
+    ent->scr_vehicle = nullptr;
+}
+
+// ea: 0x0046FF60
+void vehicle_InitDynamicBuffers(unsigned short vehicles)
+{
+    scr_vehicle_t* v1 = s_vehicles;
+    scr_vehicle_t* old_vehicles = nullptr;
+    int old_vehicle_size = 0;
+    int old_vehicles_used = 0;
+    if (s_vehicles != nullptr)
+    {
+        if (level.MaxVehicles != 0)
+        {
+            DbLinkedHandle<EntityHandleDb, Entity>* p_mEntity =
+                &s_vehicles->mEntity;
+            int MaxVehicles = level.MaxVehicles;
+            do
+            {
+                unsigned int v4 = p_mEntity->mHandle.mVal & 0xFFF;
+                if (v4 < 0x540
+                    && p_mEntity->mHandle.mVal >> 12
+                           == EntityHandleDb::sInst.mElements[v4].mKey
+                    && EntityHandleDb::sInst.mElements[v4].mObject != nullptr)
+                    ++old_vehicles_used;
+                p_mEntity += 468;
+                --MaxVehicles;
+            } while (MaxVehicles != 0);
+            if (old_vehicles_used != 0)
+            {
+                old_vehicle_size = level.MaxVehicles;
+                scr_vehicle_t* v5 = (scr_vehicle_t*)mem_heap_malloc(
+                    16, sizeof(scr_vehicle_t) * level.MaxVehicles);
+                old_vehicles = v5;
+                if (v5 == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                    AeAssert::gCurrentLine = 10363;
+                    AeAssert::gCurrentExpr = "old_vehicles";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("Out of memory"))
+                        __debugbreak();
+                }
+                memcpy(v5, s_vehicles, sizeof(scr_vehicle_t) * level.MaxVehicles);
+                v1 = s_vehicles;
+            }
+        }
+        if (v1 != nullptr)
+        {
+            mem_heap_free(v1);
+            s_vehicles = nullptr;
+        }
+    }
+    level.MaxVehicles = vehicles;
+    if (vehicles != 0)
+    {
+        s_vehicles = (scr_vehicle_t*)mem_heap_malloc(
+            16, sizeof(scr_vehicle_t) * vehicles);
+        if (s_vehicles == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 10378;
+            AeAssert::gCurrentExpr = "s_vehicles";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Out of memory"))
+                __debugbreak();
+        }
+        memset(s_vehicles, 0, sizeof(scr_vehicle_t) * level.MaxVehicles);
+    }
+    G_InitScrVehicles();
+    if (old_vehicles != nullptr)
+    {
+        if (old_vehicles_used > level.MaxVehicles)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 10389;
+            AeAssert::gCurrentExpr = "old_vehicles_used<=level.MaxVehicles";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Warning, you're scaling down the size of the vehicle array."))
+                __debugbreak();
+        }
+        scr_vehicle_t* v6 = s_vehicles;
+        if (old_vehicle_size > 0)
+        {
+            DbLinkedHandle<EntityHandleDb, Entity>* v7 =
+                &old_vehicles->mEntity;
+            for (int vehiclesa = old_vehicle_size; vehiclesa != 0; --vehiclesa)
+            {
+                unsigned int v8 = v7->mHandle.mVal & 0xFFF;
+                if (v8 < 0x540
+                    && v7->mHandle.mVal >> 12
+                           == EntityHandleDb::sInst.mElements[v8].mKey
+                    && EntityHandleDb::sInst.mElements[v8].mObject != nullptr)
+                {
+                    memcpy(v6, &v7[-92], sizeof(scr_vehicle_t));
+                    unsigned int v9 = v7->mHandle.mVal & 0xFFF;
+                    Entity* mObject = nullptr;
+                    if (v9 < 0x540
+                        && v7->mHandle.mVal >> 12
+                               == EntityHandleDb::sInst.mElements[v9].mKey)
+                        mObject = EntityHandleDb::sInst.mElements[v9].mObject;
+                    mObject->scr_vehicle = v6++;
+                }
+                v7 += 468;
+            }
+        }
+        mem_heap_free(old_vehicles);
+    }
+}
+
 // ea: 0x0045E900
 vehicle_info_t* G_GetVehicleInfo(Entity* ent)
 {
