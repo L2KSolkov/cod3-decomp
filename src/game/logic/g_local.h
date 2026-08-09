@@ -52,7 +52,9 @@ struct vehicleAnimRoute_t {
 static_assert(sizeof(vehicleAnimRoute_t) == 0x18, "vehicleAnimRoute_t size mismatch");
 
 struct vehicleAnimMap_t {
-    void* tags;              // +0x00
+    struct vehicleAnimTag_t {
+        unsigned int hash;   // +0x00
+    }* tags;                 // +0x00
     vehicleAnimStage_t* stages;  // +0x04
     int* entryTags;          // +0x08
     int  numEntryTags;       // +0x0C
@@ -1763,7 +1765,11 @@ void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
 extern const float colorBlue[4];                 // g.o .rdata
-struct debug_aabb { float data[7]; };            // opaque
+struct debug_aabb {
+    math::Position3 bmin;  // +0x00
+    math::Position3 bmax;  // +0x10
+    float color[4];        // +0x20
+};
 extern ae_vector<debug_aabb> debug_aabbs;        // g.o
 bool  CanMantleVehicle(scr_vehicle_t* veh, Entity* player);  // g.o
 void  G_DelayFreeAnimTree(XAnimTree* tree);      // g.o (g_dobj.cpp)
@@ -2010,8 +2016,11 @@ void  MultiplayerMgr_ApplyLocalPhysicsToVehicle(void* self, Entity* vehicle,
                                                 math::Position3* position,
                                                 math::Position3* angles,
                                                 float* velocity);  // mp.o
-extern unsigned int s_wheelTagHashes[6];         // g.o
-extern unsigned int s_gunnerFlashTagHashes[6];   // g.o
+extern unsigned int s_wheelTagHashes[6];         // g.o @ 0xEE62CC
+extern unsigned int s_gunnerFlashTagHashes[6];   // g.o @ 0xEE62E4
+extern unsigned int s_entryPointTagHashes[6];    // g.o @ 0xEE62F4
+extern unsigned int s_flashTagHashes[4];         // g.o @ 0xEE630C
+extern unsigned int s_seatTagHashes[6];          // g.o @ 0xEE631C
 bool  Entity_has_zone_collision(const void* self);  // game.o
 float VectorDistance(const float* v1, const float* v2);  // core.o
 void  InteractionController_ClearQueue(void* self);  // cl.o

@@ -1810,8 +1810,37 @@ void render_aabb(const math::Position3* bmin, const math::Position3* bmax,
     if (render)
     {
         debug_aabb v5;
+        v5.bmin.v = bmin->v;
+        v5.bmax.v = bmax->v;
+        v5.color[0] = color[0];
+        v5.color[1] = color[1];
+        v5.color[2] = color[2];
+        v5.color[3] = color[3];
         debug_aabbs.mElements[debug_aabbs.mSize++] = v5;
     }
+}
+
+// ea: 0x0047C110
+void debug_render()
+{
+    for (int v2 = 0; v2 < debug_spheres.mSize; ++v2)
+    {
+        math::Position3 pos;
+        pos.v.m128_f32[0] = debug_spheres.mElements[v2].x;
+        pos.v.m128_f32[1] = debug_spheres.mElements[v2].y;
+        pos.v.m128_f32[2] = debug_spheres.mElements[v2].z;
+        pos.v.m128_f32[3] = 0.0f;
+        DebugRender::RenderSphere(&pos, debug_spheres.mElements[v2].radius,
+                                  debug_spheres.mElements[v2].color);
+    }
+    debug_spheres.mSize = 0;
+    for (int v6 = 0; v6 < debug_aabbs.mSize; ++v6)
+    {
+        DebugRender::RenderBox(&debug_aabbs.mElements[v6].bmin,
+                               &debug_aabbs.mElements[v6].bmax,
+                               debug_aabbs.mElements[v6].color);
+    }
+    debug_aabbs.mSize = 0;
 }
 
 // ea: 0x00462A60

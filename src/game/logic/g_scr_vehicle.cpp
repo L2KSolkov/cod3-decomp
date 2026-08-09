@@ -1924,6 +1924,102 @@ void VEH_PlayerInteractionExit(void)
     VEH_UnlinkPlayer(Player, true);
 }
 
+// ea: 0x0045E290
+void G_UpdateVehicleTags(Entity* ent)
+{
+    if (ent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6984;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (ent->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6985;
+        AeAssert::gCurrentExpr = "ent->scr_vehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    scr_vehicle->boneIndex.leader = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_leader"));
+    scr_vehicle->boneIndex.player = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_driver"));
+    scr_vehicle->boneIndex.detach = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_detach"));
+    scr_vehicle->boneIndex.popout = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_popout"));
+    scr_vehicle->boneIndex.body = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_body"));
+    scr_vehicle->boneIndex.turret = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_turret"));
+    scr_vehicle->boneIndex.barrel = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_barrel"));
+    scr_vehicle->boneIndex.coax = SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_guncoax"));
+    scr_vehicle->boneIndex.gunner_barrel =
+        SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_gunner_barrel"));
+    scr_vehicle->boneIndex.gunner_player =
+        SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_gunner_player"));
+    scr_vehicle->boneIndex.gunner_flash =
+        SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_gunner_flash"));
+    scr_vehicle->boneIndex.steering_wheel =
+        SV_DObjGetBoneIndex(ent, HashString::CalcHash("tag_steeringwheel"));
+    for (int i = 0; i < 4; ++i)
+        scr_vehicle->boneIndex.flash[i] = SV_DObjGetBoneIndex(ent, s_flashTagHashes[i]);
+    for (int i = 0; i < 6; ++i)
+        scr_vehicle->boneIndex.wheel[i] = SV_DObjGetBoneIndex(ent, s_wheelTagHashes[i]);
+    float maxDist = 0.0f;
+    if (scr_vehicle->animMap == nullptr)
+    {
+        for (int i = 0; i < 6; ++i)
+        {
+            int v24 = SV_DObjGetBoneIndex(ent, s_entryPointTagHashes[i]);
+            scr_vehicle->boneIndex.entryPoint[i] = v24;
+            if (v24 >= 0)
+            {
+                scr_vehicle->mHasEntryPoints = true;
+                G_DObjCalcBone(ent, v24);
+                const DObjSkelMat* MatrixArray = SV_DObjGetMatrixArray(ent);
+                const float* origin = MatrixArray[v24].origin;
+                float dist = sqrt(origin[0] * origin[0] + origin[1] * origin[1]
+                                  + origin[2] * origin[2]);
+                if (dist > maxDist)
+                    maxDist = dist;
+            }
+        }
+    }
+    else
+    {
+        vehicleAnimMap_t* animMap = scr_vehicle->animMap;
+        if (animMap->numEntryTags >= 6)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 7041;
+            AeAssert::gCurrentExpr = "veh->animMap->numEntryTags < NUM_ENTRY_POINTS";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        for (int i = 0; i < animMap->numEntryTags; ++i)
+        {
+            int v30 = SV_DObjGetBoneIndex(ent,
+                                          animMap->tags[animMap->entryTags[i]].hash);
+            scr_vehicle->boneIndex.entryPoint[i] = v30;
+            if (v30 >= 0)
+            {
+                scr_vehicle->mHasEntryPoints = true;
+                G_DObjCalcBone(ent, v30);
+                const DObjSkelMat* v32 = SV_DObjGetMatrixArray(ent);
+                const float* origin = v32[v30].origin;
+                float v36 = sqrt(origin[0] * origin[0] + origin[1] * origin[1]
+                                 + origin[2] * origin[2]);
+                if (v36 > maxDist)
+                    maxDist = v36;
+            }
+        }
+    }
+    if (maxDist > 0.0f)
+        scr_vehicle->mUseRadius = (maxDist + 50.0f);
+}
+
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
 static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
 static scr_vehicle_t s_backup;     // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)
