@@ -615,3 +615,75 @@ next_event:
         client = ent->client;
     }
 }
+
+// ea: 0x0048EBF0
+char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
+                  int arg3)
+{
+    int v5 = 0;
+    switch (command)
+    {
+    case 0:
+        return (char*)G_InitGame((int)arg0, (int)arg1, arg2, arg3);
+    case 1:
+        G_ShutdownGame((int)arg0);
+        return nullptr;
+    case 2:
+        return ClientConnect(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
+    case 3:
+        ClientBegin(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
+        return nullptr;
+    case 4:
+        ClientDisconnect(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
+        return nullptr;
+    case 5:
+        ClientCommand(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
+        return nullptr;
+    case 6:
+        ClientThink(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
+        return nullptr;
+    case 7:
+        return (char*)GetFollowPlayerState((int)arg0, arg1);
+    case 8:
+        G_LoadLevel();
+        return nullptr;
+    case 9:
+        G_CheckLoadGame((int)arg0);
+        return nullptr;
+    case 11:
+        G_RunPreFrame((int)arg0);
+        return nullptr;
+    case 12:
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
+        AeAssert::gCurrentLine = 740;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::IsIgnored()
+            || !AeAssert::Warning("G_RunFrame should now be called directly - don't use VM"))
+            return nullptr;
+        __debugbreak();
+        return nullptr;
+    }
+    case 13:
+        return (char*)ConsoleCommand();
+    case 14:
+        return nullptr;
+    case 18:
+        return (char*)level.snapTime;
+    case 19:
+    {
+        Entity* v7 = HandleDbToEnt(*(DbLinkedHandle<EntityHandleDb, Entity>*)arg0);
+        G_DObjCalcPose(v7);
+        return nullptr;
+    }
+    case 20:
+        return (char*)level.time;
+    case 22:
+        G_SendClientMessages();
+        return nullptr;
+    default:
+        v5 = -1;
+        return (char*)v5;
+    }
+}

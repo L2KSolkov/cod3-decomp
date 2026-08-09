@@ -1792,6 +1792,11 @@ extern bool gGodModeEnabled;                         // g.o (sv_stubs.h has it)
 void  Cmd_Noclip_f(Entity* ent);                     // g.o 0x44A900
 void  Svcmd_ListEntities_f(void);                    // g.o 0x465650
 int   ConsoleCommand(void);                          // g.o 0x470780
+int   G_InitGame(int randomSeed, int restart, int savegame, int checksum);  // g.o 0x476AE0
+void  G_RunPreFrame(int msec);                      // g.o
+void  G_SendClientMessages(void);                   // g.o
+char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
+                  int arg3);                        // g.o 0x48EBF0
 void  G_GeneralLink(Entity* ent);                    // g.o 0x482B50
 void  ClientThink(DbLinkedHandle<EntityHandleDb, Entity> entityHandle);  // g.o 0x48EB30
 void  ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
