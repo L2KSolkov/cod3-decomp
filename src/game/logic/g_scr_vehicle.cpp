@@ -5131,6 +5131,177 @@ int VEH_SlideMove(Entity* ent, int gravity, int msec)
     return bumpCount == 0 && i != 0;
 }
 
+// ea: 0x0046C240
+int VEH_Slide(Entity* ent, int gravity, int msec, int move, int allowHit)
+{
+    scr_vehicle_t* veh = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    float timeScale = msec * 0.001f;
+    float target[3];
+    if (move != 0)
+    {
+        target[0] = veh->phys.origin.v.m128_f32[0]
+                  + veh->phys.vel.v.m128_f32[0] * timeScale;
+        target[1] = veh->phys.origin.v.m128_f32[1]
+                  + veh->phys.vel.v.m128_f32[1] * timeScale;
+        target[2] = veh->phys.origin.v.m128_f32[2]
+                  + veh->phys.vel.v.m128_f32[2] * timeScale;
+    }
+    else
+    {
+        target[0] = veh->phys.origin.v.m128_f32[0];
+        target[1] = veh->phys.origin.v.m128_f32[1];
+        target[2] = veh->phys.origin.v.m128_f32[2];
+    }
+    static bool sS123 = false;
+    static TouchEntityData entities;
+    if (!sS123)
+    {
+        sS123 = true;
+        memset(&entities, 0, sizeof(entities));
+    }
+    proximity_data_t proximity;
+    memset(&proximity, 0, sizeof(proximity));
+    prepare_collision_objects(ent, &veh->phys.origin, &veh->phys.origin,
+                              200.0f, ent->clipmask, &proximity, &entities);
+    DObjSkelMat bodyMtx;
+    G_DObjGetWorldBoneIndexMatrix(ent, veh->boneIndex.body, &bodyMtx);
+    float dir[3] = { bodyMtx.axis[0][0], bodyMtx.axis[0][1],
+                     bodyMtx.axis[0][2] };
+    float up[3] = { bodyMtx.axis[2][0], bodyMtx.axis[2][1],
+                    bodyMtx.axis[2][2] };
+    float right[3] = { bodyMtx.axis[1][0], bodyMtx.axis[1][1],
+                       bodyMtx.axis[1][2] };
+    float fwd[3] = { dir[0] * udelta + up[0] * fdelta,
+                     dir[1] * udelta + up[1] * fdelta,
+                     dir[2] * udelta + up[2] * fdelta };
+    float bwd[3] = { dir[0] * -fdelta + up[0] * udelta,
+                     dir[1] * -fdelta + up[1] * udelta,
+                     dir[2] * -fdelta + up[2] * udelta };
+    float hLen = (info->boundsLength * 0.5f) - info->boundsRadius;
+    float rLen = (info->boundsRadius * 0.5f) - info->boundsRadius;
+    float probe[3][3] = {
+        { fwd[0] * hLen, fwd[1] * hLen, fwd[2] * hLen },
+        { bwd[0] * hLen, bwd[1] * hLen, bwd[2] * hLen },
+        { right[0] * rLen * 0.85f, right[1] * rLen * 0.85f,
+          right[2] * rLen * 0.85f },
+    };
+    int hitCount = 0;
+    int result = 0;
+    float pushDir[3];
+    float hitNormal[3];
+    float curTarget[3] = { target[0], target[1], target[2] };
+    for (int i = 0; i < 3; ++i)
+    {
+        float radius = info->boundsRadius;
+        float probeLen = sqrtf(probe[i][0] * probe[i][0]
+                               + probe[i][1] * probe[i][1]
+                               + probe[i][2] * probe[i][2]);
+        float probeDir[3];
+        if (probeLen != 0.0f)
+        {
+            probeDir[0] = probe[i][0] / probeLen;
+            probeDir[1] = probe[i][1] / probeLen;
+            probeDir[2] = probe[i][2] / probeLen;
+        }
+        else
+        {
+            probeDir[0] = probeDir[1] = probeDir[2] = 0.0f;
+        }
+        float scale = 1.0f;
+        if (i == 2)
+            scale = 0.7f;
+        float probeRadius = info->boundsRadius * scale;
+        float probeCenter[3];
+        probeCenter[0] = curTarget[0] + probeDir[0] * probeRadius;
+        probeCenter[1] = curTarget[1] + probeDir[1] * probeRadius;
+        probeCenter[2] = curTarget[2] + probeDir[2] * probeRadius;
+        math::Position3 in;
+        math::Position3 out;
+        in.v.m128_f32[0] = probeCenter[0];
+        in.v.m128_f32[1] = probeCenter[1];
+        in.v.m128_f32[2] = probeCenter[2];
+        bool collided = collide_sphere(ent, proximity, entities, in, radius,
+                                       out);
+        if (!collided)
+        {
+            in.v.m128_f32[2] += 18.0f;
+            collided = collide_sphere(ent, proximity, entities, in, radius,
+                                      out);
+            if (!collided)
+            {
+                in.v.m128_f32[2] -= 36.0f;
+                collided = collide_sphere(ent, proximity, entities, in,
+                                          radius, out);
+            }
+        }
+        if (collided)
+        {
+            pushDir[0] = out.v.m128_f32[0] - in.v.m128_f32[0];
+            pushDir[1] = out.v.m128_f32[1] - in.v.m128_f32[1];
+            pushDir[2] = out.v.m128_f32[2] - in.v.m128_f32[2];
+            ++hitCount;
+            float plen = VectorNormalize(pushDir);
+            (void)plen;
+            hitNormal[0] = pushDir[0];
+            hitNormal[1] = pushDir[1];
+            hitNormal[2] = pushDir[2];
+            result = 1.0f;
+            curTarget[0] = out.v.m128_f32[0] - pushDir[0] * (1.0f + scale);
+            curTarget[1] = out.v.m128_f32[1] - pushDir[1] * (1.0f + scale);
+            curTarget[2] = out.v.m128_f32[2] - pushDir[2] * (1.0f + scale);
+        }
+        else
+        {
+            result = 0.0f;
+        }
+        if (i + 1 >= 3)
+            break;
+    }
+    if (move != 0)
+    {
+        if (result < 3 || allowHit != 0)
+        {
+            float dz = fabsf(veh->phys.origin.v.m128_f32[2] - curTarget[2]);
+            if (dz < 36.0f)
+            {
+                veh->phys.origin.v.m128_f32[0] = curTarget[0];
+                veh->phys.origin.v.m128_f32[1] = curTarget[1];
+                veh->phys.origin.v.m128_f32[2] = curTarget[2];
+            }
+        }
+        if (result != 0)
+        {
+            float speed = sqrtf(veh->phys.vel.v.m128_f32[0]
+                                    * veh->phys.vel.v.m128_f32[0]
+                                + veh->phys.vel.v.m128_f32[1]
+                                      * veh->phys.vel.v.m128_f32[1]
+                                + veh->phys.vel.v.m128_f32[2]
+                                      * veh->phys.vel.v.m128_f32[2]);
+            if (speed > 40.0f && veh->lastCollision < level.time - 1000)
+            {
+                float intensity = (speed - 20.0f) * 0.0033333334f;
+                float velDir[3];
+                VectorNormalize2(&veh->phys.vel.v.m128_f32[0], velDir);
+                float dot = 1.0f
+                          - (velDir[0] * hitNormal[0]
+                             + velDir[1] * hitNormal[1]
+                             + velDir[2] * hitNormal[2]);
+                if (dot < 0.0f)
+                    dot = 0.0f;
+                else if (dot > 1.0f)
+                    dot = 1.0f;
+                intensity *= dot;
+                veh->crashVolume = intensity;
+                VEH_JoltBody(ent, (math::Position3*)hitNormal, intensity,
+                             0.0f, 0.0f);
+                veh->crashSound = 1;
+            }
+        }
+    }
+    return hitCount;
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)

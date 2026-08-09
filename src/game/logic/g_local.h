@@ -224,7 +224,11 @@ struct scr_vehicle_t {
     } boneIndex;              // +0x460 (120 bytes)
     int     turretHitNum;     // +0x4D8
     int     numWaitNotify;    // +0x4DC
-    uint8_t _pad4E0[0x518 - 0x4E0];
+    int     lastCollision;    // +0x4E0
+    int     lastNoCollision;  // +0x4E4
+    uint8_t _pad4E8[0x510 - 0x4E8];
+    int     crashSound;       // +0x510
+    float   crashVolume;      // +0x514
     void*   mRBVeh;           // +0x518 rb_vehicle*
     uint8_t _pad51C[0x554 - 0x51C];
     float   mUseRadius;       // +0x554
@@ -2098,6 +2102,8 @@ extern float decal_radius;                       // g.o @ 0xDD8204
 extern float decal_radius_0;                     // g.o @ 0xDD826C
 extern float fudge_0;                            // g.o @ 0xDD812C
 extern float radius_0;                           // g.o @ 0xDD8264
+extern float udelta;                             // g.o @ 0xDD81FC
+extern float fdelta;                             // g.o @ 0xDD8200
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
 extern vmCvar_t com_timescale;                   // core.o
@@ -2214,6 +2220,10 @@ void prepare_collision_objects(Entity* ent, const math::Position3* p0,
                                const math::Position3* p1, float radius,
                                int mask, proximity_data_t* proximity_data,
                                TouchEntityData* entities);  // g.o 0x45C5F0
+bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
+                    const TouchEntityData& entities,
+                    const math::Position3& incenter, float radius,
+                    math::Position3& outcenter);  // g.o 0x46B3C0
 void  DebugDumpEnts(int a1, Entity* e);            // g.o 0x460C50 (redecl above)
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0 (redecl above)
 void  G_LoadLevel(void);                           // g.o 0x468D00
