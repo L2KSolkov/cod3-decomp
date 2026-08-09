@@ -801,7 +801,7 @@ void Camera::SaveLastPO()
         mPrevViewPos.v.m128_f32[0] = dword_F63C70[1580 * mClient];
         mPrevViewPos.v.m128_f32[1] = dword_F63C74[1580 * mClient];
         mPrevViewPos.v.m128_f32[2] = dword_F63C78[1580 * mClient];
-        mPrevAngles.v.m128_f32[0] = angle[6320 * mClient];
+        mPrevAngles.v.m128_f32[0] = angle[1580 * mClient];
         mPrevAngles.v.m128_f32[1] = dword_F63CB4[1580 * mClient];
         mPrevAngles.v.m128_f32[2] = dword_F63CB8[1580 * mClient];
         mPrevViewDir.v.m128_f32[0] = dword_F63C80[1580 * mClient];
@@ -1059,5 +1059,199 @@ void Camera::StartCircleTween(float tweenTime)
                   "!IS_NAN((mTweenStartAngles)[1]) && "
                   "!IS_NAN((mTweenStartAngles)[2])",
                   "c:\\cod\\code\\game\\Camera.cpp", 1068);
+    }
+}
+
+struct CameraShakeInstance {
+    unsigned char _pad[0x3C];
+    int m_active;  // +0x3C
+};
+struct CameraShake {
+    unsigned char _data[0x14C];
+};
+extern CameraShake g_cameraShake[4];
+extern CameraShakeInstance* CameraShake_StartCameraShake(
+    CameraShake* self, int type, math::Position3* worldPos, float size,
+    float timeOverride, float nextDelay);
+extern void CameraShakeInstance_SetTime(CameraShakeInstance* self, float time);
+extern void CameraShakeInstance_OverrideSettings(CameraShakeInstance* self,
+                                                 float frequency,
+                                                 float movement);
+extern float rumbleFullIntensity;
+extern void RumbleManager_SetIntensity(void* self, int handle,
+                                       float intensity);
+extern float tweenTime;  // 0x00DFA37C
+extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
+                                   float* tagMtx);
+extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
+extern void AxisToAngles(const float (*axis)[3], float* angles);
+extern float AngleDelta(float angle1, float angle2);
+
+static unsigned int s_headHash;
+static bool s_headHashInit;
+static unsigned int s_spineHash;
+static bool s_spineHashInit;
+
+// ea: 0x0068EBE0
+void Camera::EndVehicleCam()
+{
+    float newAngles[4] = {mPrevAngles.v.m128_f32[0],
+                          mPrevAngles.v.m128_f32[1], 0.0f,
+                          mPrevAngles.v.m128_f32[3]};
+    SetPlayerAngles(newAngles);
+}
+
+// ea: 0x0068E180
+void Camera::UpdateIntermissionCam()
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    dword_F63C70[1580 * mClient] = client->ps.origin.v.m128_f32[0];
+    dword_F63C74[1580 * mClient] = client->ps.origin.v.m128_f32[1];
+    dword_F63C78[1580 * mClient] = client->ps.origin.v.m128_f32[2];
+    angle[1580 * mClient] = client->ps.viewangles[0];
+    dword_F63CB4[1580 * mClient] = client->ps.viewangles[1];
+    dword_F63CB8[1580 * mClient] = client->ps.viewangles[2];
+}
+
+// ea: 0x006AE710
+void Camera::UpdateViewPO()
+{
+    UpdateTween(mTweenStartPos, mTweenStartAngles);
+    AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+                 (float(*)[3])&dword_F63C80[1580 * mClient]);
+    SaveLastPO();
+}
+
+// ea: 0x0068EFC0
+math::Position3 Camera::GetVehicleViewAngles(Entity* veh, PlayerState* ps)
+{
+    math::Position3 result;
+    result.v = _mm_setzero_ps();
+    if (ps->vehSubType == 2 && veh->scr_vehicle != nullptr
+        && *(void**)((char*)veh->scr_vehicle + 0x518) != nullptr)
+    {
+        result.v.m128_f32[0] = 7.0f;
+    }
+    return result;
+}
+
+// ea: 0x006A6750
+void Camera::BeginVehicleCam()
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    unsigned int v4 = client->ps.mViewLockedEntity & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v4 < 0x540
+        && (client->ps.mViewLockedEntity >> 12)
+               == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+    }
+    math::Position3 v15 = GetVehicleViewAngles(mObject, &client->ps);
+    SetPlayerAngles(v15.v.m128_f32);
+    mVehPrevAngles.v = mObject->r.currentAngles.v;
+    mVehPrevOrigin.v = mObject->r.currentOrigin.v;
+    bool mDoingFadeOutIn = this->mDoingFadeOutIn;
+    mVehPrevAnglesTime = cgGlobal.time;
+    mVehInputState = 0;  // INPUT_NONE
+    mSteerYawOffset = 0.0f;
+    if (mDoingFadeOutIn)
+    {
+        mPrevViewPos.v = _mm_add_ps(
+            mObject->r.currentOrigin.v,
+            _mm_mul_ps(mObject->r.currentMat.x.v, _mm_set1_ps(-300.0f)));
+        mPrevAngles.v = mVehPrevAngles.v;
+    }
+}
+
+// ea: 0x0069E2C0
+void Camera::UpdateReviveCam()
+{
+    StartTween(tweenTime, false);
+    if (!s_headHashInit)
+    {
+        s_headHashInit = true;
+        s_headHash = HashString_CalcHash("bip01 head");
+    }
+    if (!s_spineHashInit)
+    {
+        s_spineHashInit = true;
+        s_spineHash = HashString_CalcHash("bip01 spine1");
+    }
+    float tagMtx[31];
+    G_DObjGetWorldTagMatrix(EntityManager_GetPlayer(EntityManager_sInst,
+                                                    mClient),
+                            s_headHash, tagMtx);
+    float angTagMtx[31];
+    G_DObjGetWorldTagMatrix(EntityManager_GetPlayer(EntityManager_sInst,
+                                                    mClient),
+                            s_spineHash, angTagMtx);
+    dword_F63C70[1580 * mClient] = tagMtx[12];
+    dword_F63C74[1580 * mClient] = tagMtx[13];
+    dword_F63C78[1580 * mClient] = tagMtx[14];
+    float axis[3][3] = {{angTagMtx[4], angTagMtx[5], angTagMtx[6]},
+                        {angTagMtx[0], angTagMtx[1], angTagMtx[2]},
+                        {angTagMtx[8], angTagMtx[9], angTagMtx[10]}};
+    float angles[3];
+    AxisToAngles(axis, angles);
+    angle[1580 * mClient] = angles[0];
+    dword_F63CB4[1580 * mClient] = angles[1];
+    dword_F63CB8[1580 * mClient] = angles[2];
+    float rotScale[3] = {0.3f, 1.0f, 0.1f};
+    for (int i = 0; i < 3; ++i)
+    {
+        dword_F63C70[1580 * mClient + i] -= angTagMtx[i + 4] * 10.0f;
+        float v6;
+        if (rotScale[i] >= 1.0f)
+            v6 = AngleNormalize180(angle[1580 * mClient + i]);
+        else
+            v6 = AngleNormalize180(angle[1580 * mClient + i]) * rotScale[i];
+        angle[1580 * mClient + i] = AngleNormalize180(v6);
+    }
+}
+
+// ea: 0x0068F0E0
+void Camera::UpdateTankShakeRumble(Entity* veh, bool firstPerson)
+{
+    CameraShakeInstance* mShake = (CameraShakeInstance*)this->mShake;
+    if (mShake == nullptr || mShake->m_active == 0)
+    {
+        this->mShake = CameraShake_StartCameraShake(
+            &g_cameraShake[mClient], 11, nullptr, 1.0f, 1.0f, -1.0f);
+    }
+    CameraShakeInstance* v5 = (CameraShakeInstance*)this->mShake;
+    if (v5 != nullptr)
+    {
+        CameraShakeInstance_SetTime(v5, 0.1f);
+        float speed =
+            fabsf(*(float*)((char*)veh->scr_vehicle + 0x118) * 180.0f
+                  * 0.31830987f * 2.5f)
+            + veh->speed;
+        if (speed >= 220.0f)
+            speed = 1.0f;
+        else
+            speed = speed * 0.0045454544f;
+        float movement = speed * 1.5f;
+        if (!firstPerson)
+            movement = movement * 0.30000001f;
+        CameraShakeInstance_OverrideSettings(
+            (CameraShakeInstance*)this->mShake, 5.0f, movement);
+        float v9 = rumbleFullIntensity * speed;
+        float rumbleIntensity;
+        if (v9 >= 0.0f)
+        {
+            if (v9 > 1.0f)
+                rumbleIntensity = 1.0f;
+            else
+            {
+                rumbleIntensity = v9;
+                if (v9 >= 0.1f)
+                    goto set_intensity;
+            }
+        }
+        rumbleIntensity = 0.0f;
+    set_intensity:
+        RumbleManager_SetIntensity(RumbleManager_Inst(mClient), mRumbleEffect,
+                                   rumbleIntensity);
     }
 }
