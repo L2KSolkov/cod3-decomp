@@ -391,6 +391,8 @@ struct TaskHandlerImpl {
 
     TaskHandlerImpl(unsigned int task_id, unsigned int flags);
     void QuickDeactivation(DbLinkedHandle<EntityHandleDb, Entity> h);
+    void DeactivateAll();
+    Task* GetTaskForEntity(DbLinkedHandle<EntityHandleDb, Entity> h);
 };
 
 struct TaskSysImpl2 {
@@ -446,6 +448,47 @@ void TaskHandlerImpl::QuickDeactivation(
     tail->m_next = &v3->node;
     *mQuickDeactivationList.m_tail = &v3->node;
     ++mQuickDeactivationList.m_size;
+}
+
+// ============================================================================
+// TaskHandler::DeactivateAll - ea: 0x504B80
+// ============================================================================
+void TaskHandlerImpl::DeactivateAll()
+{
+    mFlags |= 8u;
+    DListNode* m_head = mTaskList.m_head;
+    DListNode* m_next = m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head != &mTaskList.m_end && m_next != nullptr)
+    {
+        do
+        {
+            // Task dlist node is embedded in Task; mFlags at +0x18
+            unsigned int* flags = (unsigned int*)((char*)m_head + 0x14);
+            *flags |= 4u;
+            m_head = m_next;
+            m_next = m_next->m_next;
+        } while (m_next != nullptr);
+    }
+}
+
+// ============================================================================
+// TaskHandler::GetTaskForEntity - ea: 0x504BC0
+// ============================================================================
+Task* TaskHandlerImpl::GetTaskForEntity(
+    DbLinkedHandle<EntityHandleDb, Entity> h)
+{
+    DListNode* m_head = mTaskList.m_head;
+    DListNode* m_next = m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == &mTaskList.m_end || m_next == nullptr)
+        return nullptr;
+    while (*(unsigned int*)((char*)m_head + 0x14) != h.mHandle.mVal)
+    {
+        m_head = m_next;
+        m_next = m_next->m_next;
+        if (m_next == nullptr)
+            return nullptr;
+    }
+    return (Task*)((char*)m_head - 0x4);
 }
 
 // ============================================================================
