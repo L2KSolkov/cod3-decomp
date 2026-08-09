@@ -425,6 +425,61 @@ void InspectorManager::FreeAll()
 }
 
 // ============================================================================
+// InspectorManager::AddRenderMenus - ea: 0x4EC720
+// ============================================================================
+extern int g_disableVSync;
+extern int g_showGPUTimers;
+extern int gRenderWorld;
+extern int gRenderEntities;
+extern int gRenderInstanceGroups;
+extern int gRenderLightGlows;
+extern int gRenderFX;
+extern int gRenderSky;
+extern int gRenderLocalEntities;
+extern int gRenderViewWeapon;
+extern int gRenderCG_2D;
+extern int gRenderStatusBar;
+extern int gRenderMemGraph;
+extern int gRenderDebug;
+extern vmCvar_t cg_norender;
+extern vmCvar_t cg_fov;
+extern vmCvar_t cg_widescreen;
+
+void InspectorManager::AddRenderMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Render Options/Switching");
+    AddItem(v2, "Disable VSync", &g_disableVSync, 2);
+    AddItem(v2, "Show GPU timers", &g_showGPUTimers, 2);
+    _INSPECTOR_MENU* v3 = AddSubMenu(v2, "Renderer Switching");
+    AddItem(v3, "Render: World", &gRenderWorld, 2);
+    AddItem(v3, "Render: Entities", &gRenderEntities, 2);
+    AddItem(v3, "Render: Instance Groups", &gRenderInstanceGroups, 2);
+    AddItem(v3, "Render: Light Glows", &gRenderLightGlows, 2);
+    AddItem(v3, "Render: FX", &gRenderFX, 2);
+    AddItem(v3, "Render: Sky", &gRenderSky, 2);
+    AddItem(v3, "Render: Local Entities", &gRenderLocalEntities, 2);
+    AddItem(v3, "Render: View Weapon", &gRenderViewWeapon, 2);
+    AddItem(v3, "Render: CG 2D", &gRenderCG_2D, 2);
+    AddItem(v3, "Render: Status Bar", &gRenderStatusBar, 2);
+    AddItem(v3, "Render: Mem Graph", &gRenderMemGraph, 2);
+    AddItem(v3, "Render: Debug", &gRenderDebug, 2);
+    AddItem(v3, "Render: CG", &cg_norender.integer, 2);
+    AddItem(v3, "Fov", &cg_fov.value, 6);
+    AddItem(v3, "Widescreen", &cg_widescreen.integer, 2);
+}
+
+// ============================================================================
+// InspectorManager::AddPhysicsMenus - ea: 0x4EC8A0
+// ============================================================================
+extern int g_useRagsOnNormalDeaths;
+
+void InspectorManager::AddPhysicsMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Physics / Nano");
+    AddItem(v2, "Rag Dolls on normal deaths", &g_useRagsOnNormalDeaths, 2);
+}
+
+// ============================================================================
 // InspectorManager::Update - ea: 0x4F71C0
 // Menu navigation + per-item value adjustment.
 // ============================================================================

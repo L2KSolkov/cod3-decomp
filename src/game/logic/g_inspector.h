@@ -97,6 +97,8 @@ public:
     void Render();                        // ea: 0x50BED0
     void SetupUserMenus();                // ea: 0x50E1B0
     void UserRenderHook();                // ea: 0x509CA0
+    void AddRenderMenus();                // ea: 0x4EC720
+    void AddPhysicsMenus();               // ea: 0x4EC8A0
 };
 static_assert(sizeof(InspectorManager) == 0x88,
               "InspectorManager size mismatch");
