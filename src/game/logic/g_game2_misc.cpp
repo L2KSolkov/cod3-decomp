@@ -1810,6 +1810,59 @@ int UpdateDroneAEMap(Entity* e, unsigned int animIndex)
 }
 
 // ============================================================================
+// CheckAEMapValidation - ea: 0x50B730
+// Remove dead drone entries and clean flags on surviving ones.
+// ============================================================================
+extern void ae_vector_erase_handle(DroneHandleVec* self,
+    DbLinkedHandle<EntityHandleDb, Entity>* elem);
+
+void CheckAEMapValidation()
+{
+    for (int i = 0; i < gDroneAEMap.m_size; ++i)
+    {
+        ae_pair<unsigned int, DroneHandleVec*>* entry = gDroneAEMap.m_elements[i];
+        DroneHandleVec* vec = entry->second;
+        if (vec != nullptr && vec->mElements != nullptr && vec->mSize > 0)
+        {
+            for (int j = 0; j < vec->mSize;)
+            {
+                unsigned int v4 = vec->mElements[j].mHandle.mVal & 0xFFF;
+                Entity* mObject = nullptr;
+                if (v4 < 0x540
+                    && vec->mElements[j].mHandle.mVal >> 12
+                        == EntityHandleDb::sInst.mElements[v4].mKey)
+                    mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+                if (mObject != nullptr)
+                {
+                    if ((0x400000 & mObject->flags) == 0)
+                    {
+                        mObject->mFlags &= ~8u;
+                        for (int k = j; k < vec->mSize - 1; ++k)
+                            vec->mElements[k] = vec->mElements[k + 1];
+                        --vec->mSize;
+                        continue;
+                    }
+                    mObject->mFlags = (mObject->mFlags & ~8u) | 4u;
+                }
+                ++j;
+            }
+        }
+        else if (gDroneAEMap.m_size > 1)
+        {
+            gDroneAEMap.m_elements[i] =
+                gDroneAEMap.m_elements[gDroneAEMap.m_size - 1];
+            --gDroneAEMap.m_size;
+            --i;
+        }
+        else
+        {
+            --gDroneAEMap.m_size;
+            break;
+        }
+    }
+}
+
+// ============================================================================
 // stat_StatDamageEvent - ea: 0x509460
 // ============================================================================
 void stat_StatDamageEvent(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
