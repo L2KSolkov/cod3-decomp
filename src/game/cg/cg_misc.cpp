@@ -4,6 +4,7 @@
 
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
+#include "game/trace_types.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -3483,4 +3484,541 @@ void FixupGunModelParts(XModelParts* xmp)
             }
         }
     }
+}
+
+// ============================================================================
+// Tank / driver cameras + CG_Init (cg.o cg_misc.cpp)
+// ============================================================================
+
+struct vehicle_info_full_t {
+    unsigned char _pad0[0x16C];
+    float turretVertSpanUp;      // +0x16C
+    float turretVertSpanDown;    // +0x170
+    unsigned char _pad1[0x1B0 - 0x174];
+    float turretCamOffset;       // +0x1B0
+    float cameraFPHeightOffset;  // +0x1B4
+    float cameraFPFwdOffset;     // +0x1B8
+    float cameraFPHeightLerp;    // +0x1BC
+    unsigned char _pad2[0x1D0 - 0x1C0];
+    float turretPitchClamp;      // +0x1D0
+    unsigned char _pad3[0x1D8 - 0x1D4];
+    float turretPitchUp;         // +0x1D8
+    float turretPitchFactor;     // +0x1DC
+    float turretPitchBias;       // +0x1E0
+    float turretPitchScale;      // +0x1E4
+    float camLinkedPitchFactor;  // +0x1E8
+    float pitchBasedCamOffsetX;  // +0x1EC
+    float pitchBasedCamOffsetZ;  // +0x1F0
+};
+
+extern void* VEH_GetInfo(int idx);
+extern bool IsPlayerFullySeatedInVehicle(Entity* player);
+extern float VectorNormalize(float* v);
+extern void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
+                           float (*out)[3]);
+extern float AngleNormalize360(float angle);
+extern int PadAliasMgr_GetButtonValue(void* self, int ctrlNum,
+                                      int buttonAlias);
+extern void* PadAliasMgr_sInst;  // 0x00F4F458
+extern int g_vehicle_button_threshold;  // 0x00E01F04
+extern vmCvar_t g_vehControlMode;       // 0x00EADD48
+extern float gTankDriverAnglesFrac;     // 0x00D0D1E0
+extern unsigned char unk_F6A294[4 * 3208];
+extern void CG_InitConsoleCommands();
+extern void CL_GetGlconfig(void* glconfig);
+extern void CG_Error(const char* msg, ...);
+extern void SCR_UpdateScreen();
+extern void trap_R_ClearScene();
+extern void LoadWorld(const char* name);
+extern void CG_RegisterGraphics();
+extern void CG_MapInit(int restart);
+extern void* SoundMediaMgr_sInst;
+extern void* GetTextureData(const char* name, int image_type,
+                            const char* fromPak);
+extern void Cvar_Register(void* vmCvar, const char* varName,
+                          const char* defaultValue, int flags);
+extern void Cvar_Set(const char* var_name, const char* value);
+extern int trap_R_RegisterShaderNoMip(const char* name, int imagetype);
+extern void* off_DF9208[];
+extern void* SoundMediaMgr_j_nullsub_91(void* self);
+extern int NS_CLIENT;
+extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
+extern void CG_Trace(trace_t* result, const math::Position3* start,
+                     const math::Position3* mins, const math::Position3* maxs,
+                     const math::Position3* end,
+                     const collision_context_t* context);
+
+struct glconfig_t {
+    unsigned char _pad[0x84];
+    int vidWidth;   // +0x84
+    int vidHeight;  // +0x88
+};
+extern glconfig_t cgs;  // 0x00F6A1D8
+
+struct cgsGlobal_t {
+    char mapname[128];  // +0x00
+    unsigned char _pad[0x578 - 0x80];
+    struct {
+        void* whiteShader;        // +0x578
+        void* softLineShader;     // +0x57C
+        void* softLineHShader;    // +0x580
+        void* friendlyFireShader; // +0x584
+    } media;
+};
+extern cgsGlobal_t cgsGlobal;  // 0x00F69BF8
+extern int cg_items[1];
+extern weaponInfo_s cg_weapons[1];
+extern vmCvar_t fs_debug_vm;
+extern unsigned int InteractionController_Inst(int instance);
+extern const float* InteractionController_GetHandsOrigin(void* self);
+extern const float* InteractionController_GetHandsAngles(void* self);
+
+static unsigned int s_tagTurretHash;
+static bool s_tagTurretHashInit;
+static unsigned int s_tagDriverHash;
+static bool s_tagDriverHashInit;
+static float s_prevCamHeight;
+
+// ea: 0x006AD8A0
+void CG_Init()
+{
+    memset(&cgsGlobal, 0, sizeof(cgsGlobal));
+    memset(cg_items, 0, sizeof(int));
+    memset(cg_weapons, 0, sizeof(weaponInfo_s));
+    cgsGlobal.media.whiteShader =
+        GetTextureData("white", 0, "mp_frontEnd");
+    cgsGlobal.media.softLineShader =
+        GetTextureData("softline", 0, "mp_frontEnd");
+    cgsGlobal.media.softLineHShader =
+        GetTextureData("softlineh", 0, "mp_frontEnd");
+    cgsGlobal.media.friendlyFireShader =
+        GetTextureData("friendlyfire", 0, "mp_frontEnd");
+    byte_F64194[0] = 0;
+    cgGlobal.teamGame = false;
+    for (int i = 170; i != 0; --i)
+    {
+        void** row = &off_DF9208[4 * i - 2];
+        Cvar_Register(row[0], (const char*)row[1], (const char*)row[2],
+                      (int)row[3]);
+    }
+    if (fs_debug_vm.integer == 2)
+        Cvar_Set("fs_debug", "0");
+    CG_InitConsoleCommands();
+    CL_GetGlconfig(&cgs);
+    unk_F6A278[0] = (float)cgs.vidWidth * 0.0015625f;
+    unk_F6A27C[0] = (float)cgs.vidHeight * 0.0020833334f;
+    currCl = NS_CLIENT;
+    const char* ConfigString = CL_GetConfigStringC(2);
+    if (strcmp(ConfigString, "cod-sp") != 0)
+        CG_Error("Client/Server game mismatch: %s/%s", "cod-sp",
+                 ConfigString);
+    const char* v3 = CL_GetConfigStringC(0);
+    const char* v4 = Info_ValueForKey(v3, "mapname");
+    Com_sprintf(cgsGlobal.mapname, 128, "maps/%s.bsp", v4);
+    SCR_UpdateScreen();
+    extern void j_nullsub_33(const char* mapname);
+    j_nullsub_33(cgsGlobal.mapname);
+    SCR_UpdateScreen();
+    memset(&dword_F63C50[0], 0, 0x60);
+    currCl = NS_CLIENT;
+    trap_R_ClearScene();
+    SCR_UpdateScreen();
+    LoadWorld(cgsGlobal.mapname);
+    SCR_UpdateScreen();
+    SCR_UpdateScreen();
+    SoundMediaMgr_j_nullsub_91(SoundMediaMgr_sInst);
+    SCR_UpdateScreen();
+    CG_RegisterGraphics();
+    SCR_UpdateScreen();
+    SCR_UpdateScreen();
+    SCR_UpdateScreen();
+    for (int j = 725; j < 980; ++j)
+    {
+        if (j < 724)
+        {
+            CG_ASSERT("num >= CS_SERVER_SHADERS && num < "
+                      "CS_SERVER_SHADERS + 256",
+                      "c:\\cod\\code\\game\\cg_servercmds.cpp", 106);
+        }
+        const char* v6;
+        if (j < 0)
+        {
+            CG_ASSERT("CG_ConfigString: bad index: %i",
+                      "c:\\cod\\code\\game\\cg_main.cpp", 1215);
+            v6 = nullptr;
+        }
+        else
+        {
+            v6 = CL_GetConfigStringC(j);
+        }
+        if (*v6 != 0)
+            trap_R_RegisterShaderNoMip(v6, 5);
+    }
+    SCR_UpdateScreen();
+    SCR_UpdateScreen();
+    currCl = NS_CLIENT;
+    if (dword_F6A290[0] == 2)
+    {
+        CG_MapInit(0);
+        currCl = NS_CLIENT;
+    }
+}
+
+// ea: 0x006B0410
+void Camera::UpdatePostViewModels()
+{
+    if (mCamMode == 16 || mCamMode == 18)
+    {
+        void* ic = (void*)InteractionController_Inst(mClient);
+        if ((*(unsigned char*)ic & 1) == 0)
+        {
+            CG_ASSERT("InteractionController::Inst(mClient)->IsFlagged("
+                      "InteractionController::kHandsSet)",
+                      "c:\\cod\\code\\game\\Camera.cpp", 308);
+        }
+        dword_F63C70[1580 * mClient] =
+            InteractionController_GetHandsOrigin(ic)[0];
+        dword_F63C74[1580 * mClient] =
+            InteractionController_GetHandsOrigin(ic)[1];
+        dword_F63C78[1580 * mClient] =
+            InteractionController_GetHandsOrigin(ic)[2];
+        angle[1580 * mClient] =
+            InteractionController_GetHandsAngles(ic)[0];
+        dword_F63CB4[1580 * mClient] =
+            InteractionController_GetHandsAngles(ic)[1];
+        dword_F63CB8[1580 * mClient] =
+            InteractionController_GetHandsAngles(ic)[2];
+    }
+    UpdateAnimation();
+    UpdateTween(mTweenStartPos, mTweenStartAngles);
+    AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+                 (float(*)[3])&dword_F63C80[1580 * mClient]);
+    SaveLastPO();
+    SaveLastPO();
+}
+
+// ea: 0x0068EDB0
+void Camera::UpdateVehicleDriverCamPos(Entity* veh, PlayerState* ps,
+                                       float extra_height_offset)
+{
+    void* Info = VEH_GetInfo(*(short*)((char*)veh->scr_vehicle + 0x178));
+    if (!s_tagDriverHashInit)
+    {
+        s_tagDriverHashInit = true;
+        s_tagDriverHash = HashString_CalcHash("tag_driver");
+    }
+    float tagMtx[16];
+    if (G_DObjGetWorldTagMatrix(veh, s_tagDriverHash, tagMtx) == 0)
+        G_DObjGetWorldTagMatrix(veh, HashString_CalcHash("tag_body"), tagMtx);
+    float height = ((vehicle_info_full_t*)Info)->cameraFPHeightOffset
+                   + extra_height_offset;
+    height = (height - s_prevCamHeight)
+                 * ((vehicle_info_full_t*)Info)->cameraFPHeightLerp
+             + s_prevCamHeight;
+    s_prevCamHeight = height;
+    // result = tag origin + tag up-axis * height + tag x-axis * fwd offset
+    float result[4] = {tagMtx[12] + tagMtx[8] * height
+                           + tagMtx[0] * ((vehicle_info_full_t*)Info)
+                                 ->cameraFPFwdOffset,
+                       tagMtx[13] + tagMtx[9] * height
+                           + tagMtx[1] * ((vehicle_info_full_t*)Info)
+                                 ->cameraFPFwdOffset,
+                       tagMtx[14] + tagMtx[10] * height
+                           + tagMtx[2] * ((vehicle_info_full_t*)Info)
+                                 ->cameraFPFwdOffset,
+                       0.0f};
+    dword_F63C70[1580 * mClient] = result[0];
+    dword_F63C74[1580 * mClient] = result[1];
+    dword_F63C78[1580 * mClient] = result[2];
+}
+
+// ea: 0x006A8690
+void Camera::UpdateTankCam()
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
+    dword_F63C70[1580 * mClient] = client->ps.origin.v.m128_f32[0];
+    dword_F63C74[1580 * mClient] = client->ps.origin.v.m128_f32[1];
+    dword_F63C78[1580 * mClient] = client->ps.origin.v.m128_f32[2];
+    angle[1580 * mClient] = client->ps.viewangles[0];
+    dword_F63CB4[1580 * mClient] = client->ps.viewangles[1];
+    dword_F63CB8[1580 * mClient] = client->ps.viewangles[2];
+    if (!s_tagTurretHashInit)
+    {
+        s_tagTurretHashInit = true;
+        s_tagTurretHash = HashString_CalcHash("tag_turret");
+    }
+    float tagMtx[16];
+    if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash, tagMtx) != 0)
+    {
+        vehicle_info_full_t* info =
+            (vehicle_info_full_t*)VEH_GetInfo(
+                *(short*)((char*)mObject->scr_vehicle + 0x178));
+        float forward[4] = {
+            mObject->r.currentAngles.v.m128_f32[0],
+            mObject->r.currentAngles.v.m128_f32[1]
+                + *(float*)((char*)mObject->scr_vehicle + 0x3F4),
+            mObject->r.currentAngles.v.m128_f32[2],
+            mObject->r.currentAngles.v.m128_f32[3]};
+        float axis[3][3];
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+        if (IsPlayerFullySeatedInVehicle(Player))
+            AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+                         axis);
+        else
+            AnglesToAxis(*(const math::Position3*)forward, axis);
+        VectorNormalize(axis[0]);
+        float v11 = 0.0f;
+        if (IsPlayerFullySeatedInVehicle(
+                EntityManager_GetPlayer(EntityManager_sInst, mClient))
+            && client->ps.vehPos == 0)
+        {
+            v11 = angle[1580 * mClient];
+            if (v11 < -40.0f)
+                v11 = -40.0f;
+            else if (v11 > 40.0f)
+                v11 = 40.0f;
+        }
+        float v15 = info->turretPitchUp + v11;
+        float v16;
+        if (v15 >= 0.0f)
+        {
+            v16 = info->turretPitchUp * 2.0f;
+            if (v15 <= v16)
+                v16 = v15;
+        }
+        else
+        {
+            v16 = 0.0f;
+        }
+        float v17 = v16 / (info->turretPitchUp * 2.0f);
+        float v18 = v17 * info->turretPitchFactor
+                    - info->turretPitchBias * info->turretPitchFactor;
+        float v19 = info->turretPitchScale;
+        float turretPos[3] = {tagMtx[9] + v18 * axis[0][0],
+                              tagMtx[10] + v18 * axis[0][1],
+                              tagMtx[11] + v18 * axis[0][2]};
+        float v23 = v17 / v19;
+        if (v19 <= v17)
+            v23 = 1.0f;
+        float v24 = 0.0f - info->turretPitchClamp * v23;
+        float finalPos[3] = {turretPos[0] + info->turretCamOffset * axis[1][0]
+                                 + v24 * axis[0][0],
+                             turretPos[1] + info->turretCamOffset * axis[1][1]
+                                 + v24 * axis[0][1],
+                             turretPos[2] + info->turretCamOffset * axis[1][2]
+                                 + v24 * axis[0][2]};
+        Entity* v31 = EntityManager_GetPlayer(EntityManager_sInst, mClient);
+        float delta[4];
+        if (IsPlayerFullySeatedInVehicle(v31))
+        {
+            if (mVehPrevAnglesTime != 0
+                && mVehPrevAnglesTime > cgGlobal.time - 500)
+            {
+                for (int i = 0; i < 4; ++i)
+                    delta[i] = mObject->r.currentAngles.v.m128_f32[i]
+                               - mVehPrevAngles.v.m128_f32[i];
+            }
+            else
+            {
+                memset(delta, 0, sizeof(delta));
+            }
+        }
+        else
+        {
+            angle[1580 * mClient] = forward[0];
+            dword_F63CB4[1580 * mClient] = forward[1];
+            dword_F63CB8[1580 * mClient] = forward[2];
+        }
+        mVehPrevAngles.v = mObject->r.currentAngles.v;
+        mVehPrevAnglesTime = cgGlobal.time;
+        if (IsPlayerFullySeatedInVehicle(
+                EntityManager_GetPlayer(EntityManager_sInst, mClient)))
+        {
+            *(float*)((char*)mObject->scr_vehicle + 0x434) =
+                AngleNormalize360(*(float*)((char*)mObject->scr_vehicle
+                                            + 0x434)
+                                  - delta[1]);
+        }
+        float mins[3] = {-1.0f, -1.0f, -1.0f};
+        float maxs[3] = {1.0f, 1.0f, 1.0f};
+        trace_t tr;
+        collision_context_t ctx;
+        memset(&ctx, 0, sizeof(ctx));
+        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+        ctx.pass_entity1.mHandle.mVal =
+            EntityManager_GetPlayer(EntityManager_sInst, mClient)->mHandle
+                .mHandle.mVal;
+        ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
+        CG_Trace(&tr, (const math::Position3*)turretPos,
+                 (const math::Position3*)mins, (const math::Position3*)maxs,
+                 (const math::Position3*)finalPos, &ctx);
+        if (tr.normal.v.m128_f32[1] < 1.0f)
+        {
+            finalPos[0] = tr.endpos.v.m128_f32[0];
+            finalPos[1] = tr.endpos.v.m128_f32[1];
+            finalPos[2] = tr.endpos.v.m128_f32[2];
+        }
+        dword_F63C70[1580 * mClient] = finalPos[0];
+        dword_F63C74[1580 * mClient] = finalPos[1];
+        dword_F63C78[1580 * mClient] = finalPos[2];
+        UpdateTankShakeRumble(mObject, false);
+    }
+}
+
+// ea: 0x006A8000
+void Camera::UpdateTankCommanderCam()
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
+    float vehAngles[4] = {mObject->r.currentAngles.v.m128_f32[0],
+                          mObject->r.currentAngles.v.m128_f32[1],
+                          mObject->r.currentAngles.v.m128_f32[2],
+                          mObject->r.currentAngles.v.m128_f32[3]};
+    vehAngles[1] += *(float*)((char*)mObject->scr_vehicle + 0x3F4);
+    float delta[4];
+    if (mVehPrevAnglesTime != 0 && mVehPrevAnglesTime > cgGlobal.time - 500)
+    {
+        for (int i = 0; i < 4; ++i)
+            delta[i] = mObject->r.currentAngles.v.m128_f32[i]
+                       - mVehPrevAngles.v.m128_f32[i];
+    }
+    else
+    {
+        memset(delta, 0, sizeof(delta));
+    }
+    mVehPrevAngles.v = mObject->r.currentAngles.v;
+    delta[0] *= gTankDriverAnglesFrac;
+    delta[2] *= gTankDriverAnglesFrac;
+    mVehPrevAnglesTime = cgGlobal.time;
+    mTweenStartAngles.v = _mm_add_ps(mTweenStartAngles.v,
+                                     _mm_loadu_ps(delta));
+    int port = dword_F6A28C[802 * mClient];
+    if (*(bool*)((char*)controller_inst() + 0x1C))  // is_locked
+        port = *(int*)((char*)controller_inst() + 0x18);  // locked_port
+    bool v16 = PadAliasMgr_GetButtonValue(
+                   (char*)PadAliasMgr_sInst + 0x148, port,
+                   3 /* kPadAliasButtonAlignTurret */)
+               > g_vehicle_button_threshold;
+    if (unk_F6A294[3208 * mClient] == 0 || v16)
+    {
+        float angle = *(float*)((char*)mObject->scr_vehicle + 0x434)
+                      - delta[1];
+        *(float*)((char*)mObject->scr_vehicle + 0x434) =
+            AngleNormalize360(angle);
+    }
+    dword_F63C70[1580 * mClient] = client->ps.origin.v.m128_f32[0];
+    dword_F63C74[1580 * mClient] = client->ps.origin.v.m128_f32[1];
+    dword_F63C78[1580 * mClient] = client->ps.origin.v.m128_f32[2];
+    angle[1580 * mClient] = client->ps.viewangles[0];
+    dword_F63CB4[1580 * mClient] = client->ps.viewangles[1];
+    dword_F63CB8[1580 * mClient] = client->ps.viewangles[2];
+    if (!s_tagTurretHashInit)
+    {
+        s_tagTurretHashInit = true;
+        s_tagTurretHash = HashString_CalcHash("tag_turret");
+    }
+    float tagMtx[16];
+    if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash, tagMtx) != 0)
+    {
+        vehicle_info_full_t* info =
+            (vehicle_info_full_t*)VEH_GetInfo(
+                *(short*)((char*)mObject->scr_vehicle + 0x178));
+        dword_F63C70[1580 * mClient] +=
+            info->cameraFPFwdOffset * tagMtx[2];
+        dword_F63C74[1580 * mClient] +=
+            info->cameraFPFwdOffset * tagMtx[6];
+        dword_F63C78[1580 * mClient] +=
+            info->cameraFPFwdOffset * tagMtx[10];
+        dword_F63C70[1580 * mClient] +=
+            info->cameraFPHeightOffset * tagMtx[5];
+        dword_F63C74[1580 * mClient] +=
+            info->cameraFPHeightOffset * tagMtx[9];
+        dword_F63C78[1580 * mClient] +=
+            info->cameraFPHeightOffset * tagMtx[13];
+        float mins[3] = {-1.0f, -1.0f, -1.0f};
+        float maxs[3] = {1.0f, 1.0f, 1.0f};
+        float start[3] = {
+            tagMtx[8] + info->cameraFPHeightOffset * tagMtx[5],
+            tagMtx[9] + info->cameraFPHeightOffset * tagMtx[9],
+            tagMtx[10] + info->cameraFPHeightOffset * tagMtx[13]};
+        collision_context_t ctx;
+        memset(&ctx, 0, sizeof(ctx));
+        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+        ctx.pass_entity1.mHandle.mVal =
+            EntityManager_GetPlayer(EntityManager_sInst, mClient)->mHandle
+                .mHandle.mVal;
+        ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
+        trace_t tr;
+        CG_Trace(&tr, (const math::Position3*)start,
+                 (const math::Position3*)mins, (const math::Position3*)maxs,
+                 (const math::Position3*)&dword_F63C70[1580 * mClient], &ctx);
+        if (tr.normal.v.m128_f32[1] < 1.0f)
+        {
+            dword_F63C70[1580 * mClient] = tr.endpos.v.m128_f32[0];
+            dword_F63C74[1580 * mClient] = tr.endpos.v.m128_f32[1];
+            dword_F63C78[1580 * mClient] = tr.endpos.v.m128_f32[2];
+        }
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+        if (!IsPlayerFullySeatedInVehicle(Player))
+        {
+            angle[1580 * mClient] = vehAngles[0];
+            dword_F63CB4[1580 * mClient] = vehAngles[1];
+            dword_F63CB8[1580 * mClient] = vehAngles[2];
+        }
+        UpdateTankShakeRumble(mObject, true);
+    }
+}
+
+// ea: 0x00699020
+void Camera::UpdateTankCamAngles(Entity* veh, PlayerState* ps)
+{
+    float delta[4];
+    if (mVehPrevAnglesTime != 0 && mVehPrevAnglesTime > cgGlobal.time - 500)
+    {
+        for (int i = 0; i < 4; ++i)
+            delta[i] = veh->r.currentAngles.v.m128_f32[i]
+                       - mVehPrevAngles.v.m128_f32[i];
+    }
+    else
+    {
+        memset(delta, 0, sizeof(delta));
+    }
+    float playerAxis[4] = {
+        AngleDelta(veh->r.currentAngles.v.m128_f32[0], 0.0f) * 0.64999998f,
+        veh->r.currentAngles.v.m128_f32[1],
+        AngleDelta(veh->r.currentAngles.v.m128_f32[2], 0.0f) * 0.64999998f,
+        0.0f};
+    float viewAxis[3][3];
+    AnglesToAxis(*(const math::Position3*)playerAxis, viewAxis);
+    int port = dword_F6A28C[802 * currCl];
+    float vehOffsetAngles[4] = {ps->viewangles[0] - mPrevAngles.v.m128_f32[0],
+                                ps->viewangles[1] - mPrevAngles.v.m128_f32[1],
+                                ps->viewangles[2] - mPrevAngles.v.m128_f32[2],
+                                0.0f};
+    if (*(bool*)((char*)controller_inst() + 0x1C))
+        port = *(int*)((char*)controller_inst() + 0x18);
+    bool v9 = PadAliasMgr_GetButtonValue(
+                  (char*)PadAliasMgr_sInst + 0x148, port,
+                  3 /* kPadAliasButtonAlignTurret */)
+              != 0;
+    if (g_vehControlMode.integer == 0 || v9)
+        vehOffsetAngles[1] -= delta[1];
+    mTankRelativeAngles.v = _mm_add_ps(
+        mTankRelativeAngles.v, _mm_loadu_ps(vehOffsetAngles));
+    float vehAxis[3][3];
+    AnglesToAxis(*(const math::Position3*)&mTankRelativeAngles, vehAxis);
+    float out[3][3];
+    MatrixMultiply(vehAxis, viewAxis, out);
+    float newViewAngles[3];
+    AxisToAngles(out, newViewAngles);
+    newViewAngles[0] = AngleNormalize180(newViewAngles[0]);
+    newViewAngles[1] = AngleNormalize180(newViewAngles[1]);
+    angle[1580 * currCl] = newViewAngles[0];
+    angle[1580 * currCl + 1] = newViewAngles[1];
+    angle[1580 * currCl + 2] = newViewAngles[2];
+    angle[1580 * currCl + 3] = 0.0f;
+    SetPlayerAngles(newViewAngles);
 }
