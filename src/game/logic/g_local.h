@@ -1779,6 +1779,18 @@ void  Bullet_Fire_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
                            int damage, int recursion, weaponParms* wp,
                            DbLinkedHandle<EntityHandleDb, Entity> weaponEntity,
                            float coneAngleTangent);  // g.o 0x48D980 (same family)
+float scr_vehicle_t_GetAverageWheelSpeed(scr_vehicle_t* veh);  // g.o 0x46F4F0
+void  G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx);  // g.o 0x452870
+void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+                              const math::Position3* vEnd, int iDamage,
+                              int iMOD);           // g.o 0x470BD0
+int   G_SpawnVehicle(Entity* ent, const char* typeName);  // g.o 0x488280
+void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o
+void  VEH_InitVehicle(scr_vehicle_t* veh);         // g.o
+void  Activate_trigger_damage(Entity* pEnt, Entity* pOther, int iDamage, int iMOD);  // g.o
+int   update_trigger_notifies(void);               // g.o 0x471100
+void  SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // g.o
+void  SetClientOrigin(Entity* ent, const float* origin);  // g.o 0x449A30
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o
@@ -1886,16 +1898,24 @@ struct StatusBar {
     static void Init();               // ?Init@StatusBar@@YAXXZ
 };
 
+
+struct rb_extra_info {
+    void* m_rb;  // +0x00 rb_vehicle*
+};
+
 // rb_vehicle (phys_xboxr) - minimal view for scr_vehicle_t::GetThrottle
 struct rb_vehicle {
     uint8_t _pad[0x254];
     float   m_throttle;  // +0x254
     uint8_t _pad258[0x320 - 0x258];
-    float*  m_wheels[6];  // +0x320
+    struct rigid_body_constraint_wheel* m_wheels[6];  // +0x320
 };
 
-struct rb_extra_info {
-    void* m_rb;  // +0x00 rb_vehicle*
+struct rigid_body_constraint_wheel {
+    float   m_origin[4];   // +0x00
+    float   m_wheel_vel;   // +0x10
+    uint8_t _pad14[0x30 - 0x14];
+    unsigned int m_wheel_flags;  // +0x30
 };
 void rb_vehicle_get_velocity(rb_vehicle* self, float* result);        // phys_xboxr
 void rb_vehicle_unpause_physics(rb_vehicle* self);                    // phys_xboxr

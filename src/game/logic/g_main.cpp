@@ -2344,3 +2344,164 @@ void Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
                              DbLinkedHandle<EntityHandleDb, Entity>(), coneAngleTangent);
     }
 }
+
+// ea: 0x0046F4F0
+float scr_vehicle_t_GetAverageWheelSpeed(scr_vehicle_t* veh)
+{
+    rb_vehicle* mRBVeh = (rb_vehicle*)veh->mRBVeh;
+    if (mRBVeh != nullptr)
+    {
+        float total = 0.0f;
+        int count = 0;
+        for (int i = 0; i < 6; ++i)
+        {
+            rigid_body_constraint_wheel* v = mRBVeh->m_wheels[i];
+            if (v != nullptr && (v->m_wheel_flags & 0x10) != 0)
+            {
+                total += v->m_wheel_vel;
+                ++count;
+            }
+        }
+        if (count > 0)
+            return total / count;
+    }
+    else
+    {
+        Entity* mObject = HandleDbToEnt(veh->mEntity);
+        if (mObject != nullptr)
+            return (mObject->speed * 0.1f) / 1.0f;
+    }
+    return 0.0f;
+}
+
+// ea: 0x00449A30
+void SetClientOrigin(Entity* ent, const float* origin)
+{
+    if (ent->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 611;
+        AeAssert::gCurrentExpr = "ent->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    ent->client->ps.origin.v.m128_f32[0] = origin[0];
+    ent->client->ps.origin.v.m128_f32[1] = origin[1];
+    ent->client->ps.origin.v.m128_f32[2] = origin[2] + 1.0f;
+    ent->client->ps.eFlags ^= 8u;
+    BG_PlayerStateToEntityState(&ent->client->ps, &ent->s, 1);
+    if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 623;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    ent->r.currentOrigin.v.m128_f32[0] = ent->client->ps.origin.v.m128_f32[0];
+    ent->r.currentOrigin.v.m128_f32[1] = ent->client->ps.origin.v.m128_f32[1];
+    ent->r.currentOrigin.v.m128_f32[2] = ent->client->ps.origin.v.m128_f32[2];
+    memcpy(ent->s.pos.trBase, &ent->client->ps.origin, sizeof(ent->s.pos.trBase));
+}
+
+// ea: 0x00454200
+void G_AddEvent(Entity* ent, int event, int eventParm)
+{
+    if (event != 0)
+    {
+        if (event >= 0x100)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+            AeAssert::gCurrentLine = 2110;
+            AeAssert::gCurrentExpr = "(unsigned) event < 256";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 2109;
+        AeAssert::gCurrentExpr = "event";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (eventParm >= 0x100)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 2111;
+        AeAssert::gCurrentExpr = "(unsigned) eventParm < 256";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (ent->s.eType >= 0x12u)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 2112;
+        AeAssert::gCurrentExpr = "ent->s.eType < ET_EVENTS";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Client* client = ent->client;
+    if (client != nullptr)
+    {
+        client->ps.event.events[client->ps.event.eventSequence & 3] = (uint8_t)event;
+        ent->client->ps.event.eventParms[ent->client->ps.event.eventSequence++ & 3] = (uint8_t)eventParm;
+    }
+    else
+    {
+        ent->s.events[ent->s.eventSequence & 3] = (uint8_t)event;
+        ent->s.eventParms[ent->s.eventSequence++ & 3] = (uint8_t)eventParm;
+    }
+    ent->r.eventTime = level.time;
+}
+
+// ea: 0x00471100
+int update_trigger_notifies(void)
+{
+    int result = g_performanceTest.integer;
+    if (g_performanceTest.integer == 0)
+    {
+        while (level.triggerListSize > 0)
+        {
+            Entity* ent = HandleDbToEnt(level.triggerList[0].mEntity);
+            Entity* mObject = HandleDbToEnt(level.triggerList[0].mOtherEntity);
+            if (ent != nullptr && mObject != nullptr
+                && ent->s.useCount == level.triggerList[0].useCount
+                && mObject->s.useCount == level.triggerList[0].otherUseCount)
+            {
+                if (ent->targetname == "checkpoint")
+                {
+                    const char* v6 = ent->mTarget.c_str();
+                    if (v6 == nullptr)
+                        v6 = defaultFileName;
+                    CheckpointMgr::sInst->SaveCheckpoint(v6, false);
+                }
+                Scr_NotifyFromEnt(ent, hash_const.trigger, mObject);
+            }
+            else if (ent == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_trigger.cpp";
+                AeAssert::gCurrentLine = 915;
+                AeAssert::gCurrentExpr = "ent";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("thou art in a trigger that hast been deleted! (verily, it wast probably unloaded)"))
+                    __debugbreak();
+            }
+            level.triggerList[0] = level.triggerList[level.triggerListSize];
+            --level.triggerListSize;
+            result = 0;
+        }
+        level.triggerListSize = 0;
+    }
+    return result;
+}

@@ -956,13 +956,12 @@ bool VEH_VehicleTouchesMine(Entity* vehicle, EntityState* item)
     }
     for (int v7 = 0; v7 < 6; ++v7)
     {
-        float* wheel = mRBVeh->m_wheels[v7];
+        rigid_body_constraint_wheel* wheel = mRBVeh->m_wheels[v7];
         if (wheel != nullptr)
         {
-            float* wheelPos = wheel + 4;  // origin at +0x10
-            float wx = v12[0] - wheelPos[0];
-            float wy = v12[1] - wheelPos[1];
-            float wz = v12[2] - wheelPos[2];
+            float wx = v12[0] - wheel->m_origin[0];
+            float wy = v12[1] - wheel->m_origin[1];
+            float wz = v12[2] - wheel->m_origin[2];
             if (v4 > ((wx * wx) + (wy * wy)) + (wz * wz))
                 return true;
         }
@@ -985,6 +984,44 @@ void G_VehInitPathPos(vehicle_pathpos_t* vpp)
     vpp->angles[1] = 0.0f;
     vpp->lookPos[0] = 0.0f;
     vpp->lookPos[1] = 0.0f;
+    for (int i = 0; i < 2; ++i)
+    {
+        vehicle_path_node_t* node = &vpp->switchNode[i];
+        node->mName.clear();
+        node->mTarget.clear();
+        node->speed = -1.0f;
+        node->lookAhead = -1.0f;
+        node->origin[0] = 0.0f;
+        node->origin[1] = 0.0f;
+        node->dir[0] = 0.0f;
+        node->dir[1] = 0.0f;
+        node->angles[0] = s_invalidAngles[0];
+        node->angles[1] = dword_DD7418;
+        node->angles[2] = dword_DD741C;
+        node->length = 0.0f;
+        node->nextIdx = 0xFFFFFFF;
+    }
+}
+
+// ea: 0x00452870
+void G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx)
+{
+    vehicle_node_t* v3 = s_nodes[nodeIdx];
+    vpp->nodeIdx = nodeIdx;
+    vpp->endOfPath = 0;
+    vpp->frac = 0.0f;
+    vpp->speed = v3->speed;
+    vpp->lookAhead = v3->lookAhead;
+    vpp->slide = (v3->nextIdx & 0x30000000) != 0 ? 1.0f : 0.0f;
+    vpp->origin[0] = v3->origin[0];
+    vpp->origin[1] = v3->origin[1];
+    vpp->origin[2] = v3->origin[2];
+    vpp->angles[0] = v3->angles[0];
+    vpp->angles[1] = v3->angles[1];
+    vpp->angles[2] = v3->angles[2];
+    vpp->lookPos[0] = v3->origin[0];
+    vpp->lookPos[1] = v3->origin[1];
+    vpp->lookPos[2] = v3->origin[2];
     for (int i = 0; i < 2; ++i)
     {
         vehicle_path_node_t* node = &vpp->switchNode[i];

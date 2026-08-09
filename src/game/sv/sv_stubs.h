@@ -269,6 +269,7 @@ struct CheckpointMgr {
     Broc::string mCurrentMapName;         // +0x04 (Broc::string, 4 bytes)
     static CheckpointMgr* sInst;          // ?sInst@CheckpointMgr@@2PAV1@A
     void ClearSavedCheckpointData();
+    void SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // ?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z
 };
 static_assert(sizeof(CheckpointMgr) == 8, "CheckpointMgr size mismatch (fields used)");
 
