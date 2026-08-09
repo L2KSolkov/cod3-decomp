@@ -144,7 +144,9 @@ struct scr_vehicle_t {
     DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x170
     DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner;  // +0x174
     int16_t infoIdx;      // +0x178
-    uint8_t _pad17A[0x194 - 0x17A];  // waitNode/waitSpeed/fireTime/etc (unused)
+    int16_t waitNode;     // +0x17A
+    float   waitSpeed;    // +0x17C
+    uint8_t _pad180[0x194 - 0x180];  // fireTime/altFireTime/etc (unused)
     int     drawOnCompass;   // +0x194
     int     drawAsEnemy;     // +0x198
     uint8_t _pad19C[0x1A0 - 0x19C];
@@ -158,7 +160,11 @@ struct scr_vehicle_t {
     vehicleSeat_t seats[11];  // +0x1E0 (0x134 bytes)
     uint8_t _pad314[0x318 - 0x314];
     int     barrelBlocked;  // +0x318
-    uint8_t _pad31C[0x330 - 0x31C];
+    int     manualMode;    // +0x31C
+    float   manualSpeed;   // +0x320
+    float   manualAccel;   // +0x324
+    float   manualTime;    // +0x328
+    uint8_t _pad32C[0x330 - 0x32C];
     float   wheelPitch;     // +0x330
     int     hasTarget;      // +0x334
     DbLinkedHandle<EntityHandleDb, Entity> mTargetEnt;  // +0x338
@@ -214,7 +220,8 @@ struct scr_vehicle_t {
         int leader;           // +0x74
     } boneIndex;              // +0x460 (120 bytes)
     int     turretHitNum;     // +0x4D8
-    uint8_t _pad4DC[0x518 - 0x4DC];
+    int     numWaitNotify;    // +0x4DC
+    uint8_t _pad4E0[0x518 - 0x4E0];
     void*   mRBVeh;           // +0x518 rb_vehicle*
     uint8_t _pad51C[0x554 - 0x51C];
     float   mUseRadius;       // +0x554
@@ -675,7 +682,10 @@ struct hash_const_t {
     uint8_t    _padF0[0x11C - 0xF0];
     HashString pickup;             // +0x11C
     HashString player;             // +0x120
-    uint8_t    _pad124[0x138 - 0x124];
+    uint8_t    _pad124[0x12C - 0x124];
+    HashString reached_end_node;   // +0x12C
+    HashString reached_wait_node;  // +0x130
+    HashString reached_wait_speed; // +0x134
     HashString fireSpecial;             // +0x138 (78)
     uint8_t    _pad13C[0x144 - 0x13C];
     HashString rotatedone;         // +0x144
@@ -2502,15 +2512,16 @@ struct vehicleVarConfig_t {
 };
 extern vehicleVarConfig_t sVehicleVarConfig[27];  // g.o @ 0xDD7608
 struct rb_vehicle {
-    uint8_t _pad[0x10];
-    unsigned int m_flags;           // +0x10
-    uint8_t _pad14[0x250 - 0x14];
+    uint8_t _pad[0x250];
     vehicle_rb_parameter* m_parameter;  // +0x250
     float   m_throttle;  // +0x254
-    uint8_t _pad258[0x320 - 0x258];
-    struct rigid_body_constraint_wheel* m_wheels[6];  // +0x320
+    uint8_t _pad258[0x280 - 0x258];
+    unsigned int m_flags;  // +0x280
+    uint8_t _pad284[0x320 - 0x284];
+    struct rigid_body_constraint_wheel* m_wheels[8];  // +0x320
 
     static void remove_vehicle(rb_vehicle* v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
+    static void end_path(rb_vehicle* v);        // physics.o
 };
 
 struct rigid_body_constraint_wheel {

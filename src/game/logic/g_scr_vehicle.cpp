@@ -4639,6 +4639,227 @@ void scr_vehicle_t::DebugRender()
     }
 }
 
+// ea: 0x0044D6F0 (inline COMDAT; static helper for VEH_UpdatePath)
+static float VEH_TrackAngle(float tgt, float cur, float rate, int msec)
+{
+    if (tgt - cur > 180.0f)
+    {
+        do
+        {
+            tgt -= 360.0f;
+        } while (tgt - cur > 180.0f);
+    }
+    if (tgt - cur < -180.0f)
+    {
+        do
+        {
+            tgt += 360.0f;
+        } while (tgt - cur < -180.0f);
+    }
+    float delta = tgt - cur;
+    float step = (msec * 0.001f) * delta * rate;
+    if (fabsf(delta) <= 0.005f || fabsf(step) > 0.005f)
+        return AngleNormalize180(tgt);
+    return AngleNormalize180(cur + step);
+}
+
+// ea: 0x0047F8B0
+void VEH_UpdatePath(Entity* ent, int msec)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    float startSpeed = ent->speed;
+    bool prevSpeed = false;
+    if (scr_vehicle->pathPos.nodeIdx < 0)
+        return;
+    if (scr_vehicle->pathPos.speed < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5472;
+        AeAssert::gCurrentExpr = "veh->pathPos.speed >= 0.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (scr_vehicle->manualSpeed < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5473;
+        AeAssert::gCurrentExpr = "veh->manualSpeed >= 0.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (scr_vehicle->manualMode != 0)
+    {
+        float tgtSpeed = (scr_vehicle->manualMode == 2)
+                             ? scr_vehicle->pathPos.speed
+                             : scr_vehicle->manualSpeed;
+        if (tgtSpeed <= ent->speed)
+        {
+            ent->speed -= (msec * 0.001f) * scr_vehicle->manualAccel;
+            if (tgtSpeed > ent->speed)
+                ent->speed = tgtSpeed;
+        }
+        else
+        {
+            ent->speed += (msec * 0.001f) * scr_vehicle->manualAccel;
+            if (ent->speed > tgtSpeed)
+                ent->speed = tgtSpeed;
+        }
+        if (scr_vehicle->manualMode == 2 && ent->speed == tgtSpeed)
+        {
+            scr_vehicle->manualMode = 0;
+        }
+        else
+        {
+            if (ent->speed < 0.0f || tgtSpeed < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                AeAssert::gCurrentLine = 5500;
+                AeAssert::gCurrentExpr =
+                    "ent->speed >= 0.0f && tgtSpeed >= 0.0f";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bad vehicle speed."))
+                    __debugbreak();
+            }
+            if (tgtSpeed > 0.0f)
+                scr_vehicle->manualTime += ent->speed / tgtSpeed;
+            scr_vehicle->pathPos.speed = ent->speed;
+        }
+    }
+    bool overrideSpeed;
+    if (scr_vehicle->manualMode == 0)
+    {
+        ent->speed = scr_vehicle->pathPos.speed;
+        if (ent->speed < 0.0f)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 5513;
+            AeAssert::gCurrentExpr = "ent->speed >= 0.0f";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Bad vehicle speed."))
+                __debugbreak();
+        }
+        if (scr_vehicle->pathPos.speed > 0.0f)
+            scr_vehicle->manualTime +=
+                ent->speed / scr_vehicle->pathPos.speed;
+        overrideSpeed = false;
+    }
+    else
+    {
+        overrideSpeed = true;
+    }
+    int steppedMsec = msec;
+    if (msec > 50)
+    {
+        int numSteps = (msec - 51) / 50 + 1;
+        steppedMsec = msec - 50 * numSteps;
+        do
+        {
+            if (G_VehUpdatePathPos(ent, &scr_vehicle->pathPos, overrideSpeed,
+                                   50, scr_vehicle->waitNode) != 0)
+                prevSpeed = true;
+            --numSteps;
+        } while (numSteps != 0);
+    }
+    if (G_VehUpdatePathPos(ent, &scr_vehicle->pathPos, overrideSpeed,
+                           steppedMsec, scr_vehicle->waitNode) != 0)
+        prevSpeed = true;
+    if (scr_vehicle->mRBVeh == nullptr)
+    {
+        scr_vehicle->phys.origin.v.m128_f32[0] =
+            scr_vehicle->pathPos.origin[0];
+        scr_vehicle->phys.origin.v.m128_f32[1] =
+            scr_vehicle->pathPos.origin[1];
+        scr_vehicle->phys.origin.v.m128_f32[2] =
+            scr_vehicle->pathPos.origin[2];
+        scr_vehicle->phys.angles.v.m128_f32[0] =
+            scr_vehicle->pathPos.angles[0];
+        scr_vehicle->phys.angles.v.m128_f32[1] =
+            scr_vehicle->pathPos.angles[1];
+        scr_vehicle->phys.angles.v.m128_f32[2] =
+            scr_vehicle->pathPos.angles[2];
+        scr_vehicle->phys.angles.v.m128_f32[0] = VEH_TrackAngle(
+            scr_vehicle->pathPos.angles[0],
+            scr_vehicle->phys.prevAngles.v.m128_f32[0], 6.0f, msec);
+        scr_vehicle->phys.angles.v.m128_f32[1] = VEH_TrackAngle(
+            scr_vehicle->pathPos.angles[1],
+            scr_vehicle->phys.prevAngles.v.m128_f32[1], 4.0f, msec);
+        scr_vehicle->phys.angles.v.m128_f32[2] = VEH_TrackAngle(
+            scr_vehicle->pathPos.angles[2],
+            scr_vehicle->phys.prevAngles.v.m128_f32[2], 6.0f, msec);
+        if (g_vehicleDebug.integer != 0)
+        {
+            math::Position3 tmp;
+            const math::Position3* pos =
+                native_to_cdl_pos3(&tmp, scr_vehicle->pathPos.lookPos);
+            VEH_DebugBox(pos, 8.0f, 0.0f, 1.0f, 1.0f);
+        }
+        float invMsec = 1.0f / (msec * 0.001f);
+        scr_vehicle->phys.vel.v.m128_f32[0] =
+            (scr_vehicle->phys.origin.v.m128_f32[0]
+             - scr_vehicle->phys.prevOrigin.v.m128_f32[0]) * invMsec;
+        scr_vehicle->phys.vel.v.m128_f32[1] =
+            (scr_vehicle->phys.origin.v.m128_f32[1]
+             - scr_vehicle->phys.prevOrigin.v.m128_f32[1]) * invMsec;
+        scr_vehicle->phys.vel.v.m128_f32[2] =
+            (scr_vehicle->phys.origin.v.m128_f32[2]
+             - scr_vehicle->phys.prevOrigin.v.m128_f32[2]) * invMsec;
+        AnglesSubtract((const math::Position3*)&scr_vehicle->phys.angles,
+                       (const math::Position3*)&scr_vehicle->phys.prevAngles,
+                       (math::Position3*)&scr_vehicle->phys.rotVel);
+        scr_vehicle->phys.rotVel.v.m128_f32[0] *= invMsec;
+        scr_vehicle->phys.rotVel.v.m128_f32[1] *= invMsec;
+        scr_vehicle->phys.rotVel.v.m128_f32[2] *= invMsec;
+        if (scr_vehicle->pathPos.endOfPath != 0)
+        {
+            ent->speed = 0.0f;
+            scr_vehicle->phys.rotVel.v.m128_f32[0] = 0.0f;
+            scr_vehicle->phys.rotVel.v.m128_f32[1] = 0.0f;
+            scr_vehicle->phys.rotVel.v.m128_f32[2] = 0.0f;
+            scr_vehicle->phys.vel.v.m128_f32[0] = 0.0f;
+            scr_vehicle->phys.vel.v.m128_f32[1] = 0.0f;
+            scr_vehicle->phys.vel.v.m128_f32[2] = 0.0f;
+        }
+    }
+    if (prevSpeed && scr_vehicle->waitNode > -1)
+    {
+        Scr_Notify(ent, hash_const.reached_wait_node, 0);
+        ++scr_vehicle->numWaitNotify;
+        if (scr_vehicle->numWaitNotify > 10)
+        {
+            scr_vehicle->waitNode = -1;
+            scr_vehicle->numWaitNotify = -1;
+        }
+    }
+    if (scr_vehicle->pathPos.endOfPath != 0)
+    {
+        Scr_Notify(ent, hash_const.reached_end_node, 0);
+        rb_vehicle* mRBVeh = (rb_vehicle*)scr_vehicle->mRBVeh;
+        if (mRBVeh != nullptr && (mRBVeh->m_flags & 0x200) != 0)
+            rb_vehicle::end_path(mRBVeh);
+    }
+    float speedFrac = ent->speed / info->engineSndSpeed;
+    if (speedFrac < 0.0f)
+        speedFrac = 0.0f;
+    else if (speedFrac > 1.0f)
+        speedFrac = 1.0f;
+    scr_vehicle->engineSndLerp = speedFrac;
+    scr_vehicle->idleSndLerp = 1.0f - speedFrac;
+    if (scr_vehicle->waitSpeed >= 0.0f
+        && ((scr_vehicle->waitSpeed >= startSpeed
+             && ent->speed >= scr_vehicle->waitSpeed)
+            || (startSpeed >= scr_vehicle->waitSpeed
+                && scr_vehicle->waitSpeed >= ent->speed)))
+    {
+        Scr_Notify(ent, hash_const.reached_wait_speed, 0);
+    }
+}
+
 // ea: 0x0046CB00
 void Svcmd_VehicleList_f()
 {
