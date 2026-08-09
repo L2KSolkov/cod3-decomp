@@ -4560,6 +4560,203 @@ void VEH_UpdateControllers(Entity* entity, int msec)
                                     entity, 0);
 }
 
+// ea: 0x0047FFB0
+void VEH_UnlinkPlayer(Entity* player, bool setOrigin)
+{
+    Client* client = player->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6149;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((client->ps.eFlags & 0x100000) == 0)
+        return;
+    Entity* vehEnt = HandleDbToEnt(player->r.mOwner);
+    if (vehEnt == nullptr)
+    {
+        client->ps.eFlags &= ~0x100000;
+        client->mVehicleAnimStage = -1;
+        return;
+    }
+    scr_vehicle_t* veh = vehEnt->scr_vehicle;
+    if (veh == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6176;
+        AeAssert::gCurrentExpr = "ent->scr_vehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    player->flags &= ~0x1000000;
+    G_EntUnlink(player);
+    DObjSkelMat detachMtx;
+    bool haveDetach = false;
+    if (veh->boneIndex.detach >= 0)
+    {
+        G_DObjGetWorldBoneIndexMatrix(vehEnt, veh->boneIndex.detach,
+                                      &detachMtx);
+        haveDetach = true;
+    }
+    int seatIdx = client->mVehicleAnimStage;
+    if (seatIdx >= 0 && seatIdx < 11)
+    {
+        veh->seats[seatIdx].occupant.mHandle.mVal = 0;
+        veh->seats[seatIdx].flags = 0;
+    }
+    Entity* owner = HandleDbToEnt(vehEnt->r.mOwner);
+    if (owner == player)
+    {
+        vehEnt->r.mOwner.mHandle.mVal = 0;
+        for (int i = 0; i < 11; ++i)
+        {
+            Entity* occ = HandleDbToEnt(veh->seats[i].occupant);
+            if (occ != nullptr)
+                vehEnt->r.mOwner = veh->seats[i].occupant;
+        }
+    }
+    if (vehEnt->r.mOwner.mHandle.mVal == 0 && veh->playersAttached == 0)
+    {
+        vehEnt->active = 0;
+        vehEnt->s.eFlags &= ~0x100000;
+        vehEnt->r.mOwner.mHandle.mVal = 0;
+    }
+    float origin[3];
+    bool bWasGunner = false;
+    bool bWasLocalPlayer = false;
+    if (client->mVehicleAnimStage >= 8 || client->mVehicleAnimGetOut)
+    {
+        bWasGunner = true;
+        if (client->mVehicleAnimStage == 2)
+            bWasLocalPlayer = true;
+        origin[0] = player->r.currentOrigin.v.m128_f32[0];
+        origin[1] = player->r.currentOrigin.v.m128_f32[1];
+        origin[2] = player->r.currentOrigin.v.m128_f32[2];
+        if (!VEH_FindValidDismountSpot(
+                vehEnt, &player->r.mins.v.m128_f32[0],
+                &player->r.maxs.v.m128_f32[0], origin, player, true))
+        {
+            origin[0] = veh->phys.origin.v.m128_f32[0];
+            origin[1] = veh->phys.origin.v.m128_f32[1];
+            origin[2] = veh->phys.origin.v.m128_f32[2] + 80.0f;
+        }
+    }
+    else
+    {
+        if (!VEH_FindValidDismountSpot(
+                vehEnt, &player->r.mins.v.m128_f32[0],
+                &player->r.maxs.v.m128_f32[0], origin, player, false))
+        {
+            origin[0] = veh->phys.origin.v.m128_f32[0];
+            origin[1] = veh->phys.origin.v.m128_f32[1];
+            origin[2] = veh->phys.origin.v.m128_f32[2] + 80.0f;
+        }
+    }
+    player->r.mOwner.mHandle.mVal = 0;
+    if (EntityManager::sInst->IsLocalPlayer(player))
+        cl_aADS[player->GetPlayerIndex()] = 1;
+    client = player->client;
+    client->ps.eFlags &= 0xFF8FFFFF;
+    *(int*)((char*)client + 0x4A0) = 0;
+    client->mVehicleAnimStage = -1;
+    client->mVehicleAnimStageAnim = 0;
+    client->mVehicleAnimStageAnimPlayed = 0;
+    if (EntityManager::sInst->IsLocalPlayer(player) && setOrigin)
+    {
+        float dirTo[3];
+        float fwd[3];
+        if (bWasGunner)
+        {
+            dirTo[0] = origin[0] - vehEnt->r.currentOrigin.v.m128_f32[0];
+            dirTo[1] = origin[1] - vehEnt->r.currentOrigin.v.m128_f32[1];
+            dirTo[2] = 0.0f;
+        }
+        else
+        {
+            dirTo[0] = origin[0] - vehEnt->r.currentOrigin.v.m128_f32[0];
+            dirTo[1] = origin[1] - vehEnt->r.currentOrigin.v.m128_f32[1];
+            dirTo[2] = 0.0f;
+        }
+        VectorNormalize(dirTo);
+        int mask = player->clipmask & 0xFDFFFFFF;
+        collision_context_t ctx;
+        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+        ctx.pass_entity1.mHandle.mVal = 0;
+        ctx.pass_entity2.mHandle.mVal =
+            vehEnt->s.eType == 14 ? 0x200051 : 0x200011;
+        ctx.pass_owner1.mHandle.mVal = 0;
+        ctx.pass_owner2.mHandle.mVal = 0;
+        ctx.contentmask = mask;
+        int steps = bWasGunner ? 30 : 15;
+        float stepSize = bWasGunner ? 4.0f : 16.0f;
+        for (int i = 0; i < steps; ++i)
+        {
+            math::Position3 start;
+            start.v.m128_f32[0] = origin[0];
+            start.v.m128_f32[1] = origin[1];
+            start.v.m128_f32[2] = origin[2] - 32.0f;
+            start.v.m128_f32[3] = 0.0f;
+            math::Position3 end;
+            end.v.m128_f32[0] = origin[0];
+            end.v.m128_f32[1] = origin[1];
+            end.v.m128_f32[2] = origin[2];
+            end.v.m128_f32[3] = 0.0f;
+            math::Position3 zero;
+            zero.v = _mm_setzero_ps();
+            trace_t tr;
+            memset(&tr, 0, sizeof(tr));
+            SV_Trace(&tr, &start, &zero, &zero, &end, &ctx, 1, 0, nullptr,
+                     0, 0.0f);
+            if (tr.fraction == 0.0f)
+                break;
+            origin[0] += dirTo[0] * stepSize;
+            origin[1] += dirTo[1] * stepSize;
+            origin[2] += stepSize * 0.5f + 2.0f;
+        }
+    }
+    G_DObjUpdate(player, false);
+    if (EntityManager::sInst->IsLocalPlayer(player))
+        SetClientOrigin(player, origin);
+    if (info->type == 2)
+        g_femanager.IGO->SetHUDType(0, currCl);
+    if (bWasLocalPlayer && EntityManager::sInst->IsLocalPlayer(player))
+    {
+        float fwd[3];
+        YawVectors(client->ps.viewangles[1], fwd, nullptr);
+        fwd[2] = 0.0f;
+        VectorNormalize(fwd);
+        float vel[3];
+        vel[0] = fwd[0] * 320.0f;
+        vel[1] = fwd[1] * 320.0f;
+        vel[2] = sqrtf((float)client->ps.gravity * 124.8f);
+        float norm[3] = { vel[0], vel[1], vel[2] };
+        VectorNormalize(norm);
+        float angles[3];
+        vectoangles(norm, angles);
+        angles[0] = 0.0f;
+        client->ps.pm_flags = (client->ps.pm_flags & 0xBFFFDEFF) | 0x2000200;
+        client->ps.pm_time = 4000;
+        MultiplayerMgr::sInst->AnimEvent(9);
+    }
+    if (bWasGunner)
+    {
+        float camAngles[3];
+        camAngles[0] = gCamera[currCl].mPrevAngles.v.m128_f32[0];
+        camAngles[1] = gCamera[currCl].mPrevAngles.v.m128_f32[1];
+        camAngles[2] = gCamera[currCl].mPrevAngles.v.m128_f32[2];
+        SetClientViewAngle(player, camAngles);
+    }
+    Cvar_Set("cl_stance", "0");
+    if (player->IsLocalPlayer())
+        cl_stance_ss[player->GetPlayerIndex()] = 0;
+    Scr_Notify(vehEnt, hash_const.player_off_vehicle, 0);
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)

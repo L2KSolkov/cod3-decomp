@@ -1867,6 +1867,9 @@ void  RotatePointAroundVector(float* result, const float* axis,
                               const float* src, float angle);  // core.o
 void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
 void  VEH_UpdateControllers(Entity* entity, int msec);  // g.o 0x46DE90
+int   VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
+                                float* origin, Entity* player,
+                                bool bOriginInput);  // g.o 0x45CE60
 void  G_UpdateVehicleTags(Entity* ent);                 // g.o 0x45E290
 void  G_FreeVehicle(Entity* ent);                       // g.o 0x46DC50
 void  vehicle_InitDynamicBuffers(unsigned short vehicles);  // g.o 0x46FF60
@@ -2239,7 +2242,7 @@ void AnimQueue_ExecuteMatrixQueue(void);
 void AnimQueue_ClearMatrixQueue(void);
 void DObjUpdateLod(Entity* e);
 extern int gCurrentCamera;                        // g.o
-extern int gCamera;                               // g.o
+extern Camera gCamera[];                          // g.o (stride 0x1F0)
 void  InteractionController_Update(void* self, float deltaT);  // cl.o
 void  PlayerAnimMgr_Update(float deltaT);          // game.o
 void  MultiplayerMgr_Step(void* self, int earlyOutInterval, bool fromThread,

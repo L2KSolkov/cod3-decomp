@@ -509,8 +509,18 @@ struct IGOFrontEnd {
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
     void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
     void AddActiveGrenade(const Entity* grenade);  // ?AddActiveGrenade@IGOFrontEnd@@QAEXPBVEntity@@@Z
+    void SetHUDType(int ht, int viewport);  // ?SetHUDType@IGOFrontEnd@@QAEXW4hud_type@@H@Z
 };
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
+
+// Camera â€” camera state (0x1F0 stride) - verified vs disasm VEH_UnlinkPlayer
+struct Camera {
+    uint8_t _pad[0x40];
+    math::Position3 mPrevAngles;  // +0x40
+    uint8_t _pad50[0x190 - 0x50];
+    int     mCamMode;  // +0x190 (CAM_VEHICLE_FIRST == 2)
+    void Restart();  // ?Restart@Camera@@QAEXXZ
+};
 
 // ============================================================================
 // Memory helpers (Z_MallocInternal / Z_FreeInternal / heap)
