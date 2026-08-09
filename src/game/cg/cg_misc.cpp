@@ -3564,8 +3564,15 @@ struct RumbleEffect_local {
 extern void RumbleEffect_Ctor(void* self);
 extern void RumbleEffect_SetIntensity(void* self, int rumbleID,
                                       float new_intensity);
+extern void RumbleEffect_SetNotes(void* self, int rumbleID, void* notes);
 extern RumbleEffectInstanceHandle RumbleManager_Play(void* self, void* effect,
                                                      float intensity);
+extern const char* gTankRumbleNotes;  // 0x00DF9D80
+extern void BrocString_ctor(void* self, const char* s);
+extern void BrocString_dtor(void* self);
+extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
+                                          void* tagMat);
+extern void Axis4ToAngles(const float (*axis)[4], float* angles);
 extern void CG_InitConsoleCommands();
 extern void CL_GetGlconfig(void* glconfig);
 extern void CG_Error(const char* msg, ...);
@@ -5048,4 +5055,257 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
             }
         }
     }
+}
+
+// ea: 0x006AE760
+float Camera::SetNewMode(ECameraModes newMode)
+{
+    if (newMode == (ECameraModes)mCamMode)
+        return 0.0f;
+    float mpTweenTime = 0.69999999f;
+    if ((0x100000
+         & EntityManager_GetPlayer(EntityManager_sInst, mClient)
+               ->client->ps.eFlags)
+        != 0)
+    {
+        Entity* mObject = DbHandleToEntity(
+            EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                ->r.mOwner.mHandle.mVal);
+        mTweenParentPos.v = mObject->r.currentOrigin.v;
+        mTweenParentAngles.v = mObject->r.currentAngles.v;
+    }
+    if (newMode != 12 && newMode != 16 && newMode != 17 && newMode != 18)
+        StopAnimating(0.0f);
+    if (newMode >= CAM_VEHICLE_FIRST
+        && newMode <= CAM_VEHICLE_TANK_COMMANDER)
+    {
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+        Entity* v11 = DbHandleToEntity(Player->client->ps.mViewLockedEntity);
+        void* mWorld = *(void**)((char*)EntityManager_sInst + 0x44);
+        if (mVehicleCamMode != VEH_MODE_FIRSTPERSON)
+        {
+            if (mVehicleCamMode == VEH_MODE_CHASECAM)
+            {
+                if (mWorld != nullptr)
+                {
+                    Entity_Notify(
+                        mWorld,
+                        *(unsigned int*)((char*)0x00ED2AB0 + 0x18));
+                }
+                if (v11 != nullptr)
+                {
+                    Entity_Notify(
+                        v11, *(unsigned int*)((char*)0x00ED2AB0 + 0x18));
+                }
+            }
+        }
+        else
+        {
+            if (mWorld != nullptr)
+            {
+                Entity_Notify(
+                    mWorld, *(unsigned int*)((char*)0x00ED2AB0 + 0x14));
+            }
+            if (v11 != nullptr)
+            {
+                Entity_Notify(
+                    v11, *(unsigned int*)((char*)0x00ED2AB0 + 0x14));
+            }
+        }
+    }
+    if ((0x100000
+         & EntityManager_GetPlayer(EntityManager_sInst, mClient)
+               ->client->ps.eFlags)
+        != 0)
+    {
+        Entity* v17 = DbHandleToEntity(
+            EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                ->r.mOwner.mHandle.mVal);
+        mTweenParentPos.v = v17->r.currentOrigin.v;
+        mTweenParentAngles.v = v17->r.currentAngles.v;
+    }
+    Client* playerClient =
+        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    if (playerClient->ps.vehPos == 6)
+    {
+        if (mVehicleCamMode == VEH_MODE_CHASECAM
+            && !*(bool*)((char*)playerClient + 0xAD8)
+            && newMode == CAM_TURRET)
+            mpTweenTime = 3.3f;
+        else if (mVehicleCamMode == VEH_MODE_FIRSTPERSON
+                 && newMode != CAM_TURRET)
+            mpTweenTime = 1.0f;
+    }
+    switch (mCamMode)
+    {
+    case CAM_VEHICLE_FIRST:
+    case CAM_VEHICLE_THIRD:
+        EndVehicleCam();
+        break;
+    case CAM_VEHICLE_TANK:
+    case CAM_VEHICLE_TANK_COMMANDER:
+        if (mRumbleEffect != 0)
+        {
+            RumbleEffectInstanceHandle handle = {mRumbleEffect};
+            RumbleManager_Remove(RumbleManager_Inst(mClient), handle);
+            mRumbleEffect = 0;
+        }
+        break;
+    case CAM_VEHICLE_GUNNER:
+        if (newMode == CAM_VEHICLE_PASSENGER)
+            mpTweenTime = 0.40000001f;
+        break;
+    case CAM_INTERACTION_FREE:
+        mpTweenTime = 0.0f;
+        break;
+    case CAM_MP_DEATH_CAMERA:
+        GetPlayer(mClient);
+        {
+            float newAngles[3] = {mPrevAngles.v.m128_f32[0],
+                                  mPrevAngles.v.m128_f32[1], 0.0f};
+            SetPlayerAngles(newAngles);
+        }
+        break;
+    default:
+        break;
+    }
+    float v21 = 2.0f;
+    switch (newMode)
+    {
+    case CAM_VEHICLE_FIRST:
+    case CAM_VEHICLE_THIRD:
+        {
+            Entity* v23 = GetPlayer(mClient);
+            float v24 = IsPlayerFullySeatedInVehicle(v23) ? 1.0f : 3.0f;
+            mpTweenTime = v24;
+        }
+        BeginVehicleCam();
+        break;
+    case CAM_VEHICLE_TANK:
+        mpTweenTime = 2.0f;
+        // fall through
+    case CAM_VEHICLE_TANK_COMMANDER:
+        if (mCamMode == CAM_VEHICLE_TANK)
+            goto tank_rumble;
+        if (mCamMode == CAM_VEHICLE_GUNNER)
+            v21 = 1.4f;
+    tank_rumble:
+        mpTweenTime = v21;
+        {
+            RumbleEffect_local effect;
+            RumbleEffect_Ctor(&effect);
+            effect.mRumbleDataArray[0].enabled = 1;
+            effect.mRumbleDataArray[1].enabled = 1;
+            RumbleEffect_SetIntensity(&effect, 0, 0.0f);
+            effect.mRumbleDataArray[0].steady_duration = 100000000.0f;
+            effect.mRumbleDataArray[0].delay = 0.0f;
+            RumbleEffect_SetIntensity(&effect, 1, 1.0f);
+            effect.mRumbleDataArray[1].delay = 0.0f;
+            effect.mRumbleDataArray[1].steady_duration = 100000000.0f;
+            effect.mRumbleDataArray[1].ramp_up_duration = 0.0f;
+            effect.mRumbleDataArray[1].ramp_down_duration = 0.0f;
+            char notes[32];
+            BrocString_ctor(notes, gTankRumbleNotes);
+            RumbleEffect_SetNotes(&effect, 1, notes);
+            BrocString_dtor(notes);
+            RumbleEffectInstanceHandle h =
+                RumbleManager_Play(RumbleManager_Inst(mClient), &effect, 0.0f);
+            mRumbleEffect = h.mVal;
+            Client* client = GetPlayer(mClient)->client;
+            float newAngles[3] = {client->ps.viewangles[0],
+                                  client->ps.viewangles[1], 0.0f};
+            SetPlayerAngles(newAngles);
+            Entity* v30 = DbHandleToEntity(client->ps.mViewLockedEntity);
+            mTankRelativeAngles.v.m128_f32[0] =
+                mPrevAngles.v.m128_f32[0]
+                - v30->r.currentAngles.v.m128_f32[0];
+            mTankRelativeAngles.v.m128_f32[2] = 0.0f;
+            mTankRelativeAngles.v.m128_f32[1] =
+                mPrevAngles.v.m128_f32[1]
+                - v30->r.currentAngles.v.m128_f32[1];
+        }
+        break;
+    case CAM_VEHICLE_GUNNER:
+        switch (mCamMode)
+        {
+        case 7:
+            mpTweenTime = 0.40000001f;
+            break;
+        case CAM_VEHICLE_TANK:
+            mpTweenTime = 2.0f;
+            break;
+        case CAM_VEHICLE_TANK_COMMANDER:
+            mpTweenTime = 1.2f;
+            break;
+        default:
+            break;
+        }
+        break;
+    case CAM_VEHICLE_ANIM:
+        if (mCamMode == CAM_VEHICLE_THIRD
+            && GetPlayer(mClient)->client->ps.vehType == 1)
+            mpTweenTime = 4.0f;
+        break;
+    case CAM_VEHICLE_ANIM_FIRST:
+        mpTweenTime = 2.0f;
+        break;
+    case CAM_TURRET_FIRST:
+        if (mCamMode != 18)
+        {
+            Client* v32 = GetPlayer(mClient)->client;
+            if (v32 != nullptr && v32->ps.vehType == 5)
+            {
+                Entity* v33 = DbHandleToEntity(v32->ps.mViewLockedEntity);
+                Entity* v34 = v33;
+                void* scr_vehicle = v33->scr_vehicle;
+                if (scr_vehicle != nullptr)
+                {
+                    weaponInfoCam* InfoForWeapon =
+                        (weaponInfoCam*)BG_GetInfoForWeapon(
+                            v33->s.weapon);
+                    int barrel;
+                    if (InfoForWeapon != nullptr
+                        && *(int*)((char*)InfoForWeapon + 0x7A0) != 0)
+                        barrel = *(int*)((char*)scr_vehicle + 0x460);
+                    else
+                        barrel = *(int*)((char*)scr_vehicle + 0x474);
+                    if (barrel < 0)
+                    {
+                        CG_ASSERT("boneIdx >= 0",
+                                  "c:\\cod\\code\\game\\Camera.cpp", 866);
+                    }
+                    float boneMtx[16];
+                    G_DObjGetWorldBoneIndexMatrix(v34, barrel, boneMtx);
+                    float newAngles[3];
+                    Axis4ToAngles((const float(*)[4])boneMtx, newAngles);
+                    newAngles[0] = AngleNormalize180(newAngles[0]);
+                    SetPlayerAngles(newAngles);
+                }
+            }
+        }
+        break;
+    case CAM_INTERMISSION:
+    case CAM_INTERACTION_FREE:
+    case CAM_INTERACTION_LOCKED:
+    case CAM_MP_DEATH_CAMERA:
+        mpTweenTime = 0.0f;
+        break;
+    case 18:
+    case CAM_DEATH_CAMERA:
+        break;
+    default:
+        {
+            Client* v38 =
+                EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+            float newAngles[3] = {v38->ps.viewangles[0],
+                                  v38->ps.viewangles[1], 0.0f};
+            SetPlayerAngles(newAngles);
+            if (mCamMode == 17 || mCamMode == 16)
+                mpTweenTime = 0.2f;
+        }
+        break;
+    }
+    mCamMode = newMode;
+    return mpTweenTime;
 }
