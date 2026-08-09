@@ -1671,6 +1671,7 @@ void    VEH_DebugBox(const math::Position3* pos, float width, float r,
                      float g, float b);             // g.o 0x45C3A0
 extern int g_renderPFXStats;                        // game2.o
 extern int sEntryPointSeatAssociation[4];           // g.o
+extern const char* hintStrings[17];                 // g.o .rdata
 extern cvar_t* cg_drawPosition;                     // cg.o
 extern char* va(const char* fmt, ...);              // core.o
 void  Use_BinaryMover(Entity* ent, Entity* other, Entity* activator);  // g.o (g_mover.cpp)

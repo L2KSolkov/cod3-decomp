@@ -205,6 +205,68 @@ label_5:
     }
 }
 
+// ea: 0x004598D0
+int G_PredictMissile(const Entity* ent, int duration, float* endPos,
+                     int allowBounce, int* timeAtRest)
+{
+    Entity backupEnt(PAK_ID_INVALID);
+    trajectory_t pos;
+    memcpy(&pos, &ent->s.pos, sizeof(pos));
+    math::Position3 origin;
+    BG_EvaluateTrajectory(&pos, level.time, origin);
+    *timeAtRest = ent->nextthink;
+    int i;
+    for (i = level.time + 100; i < duration + level.time; i += 100)
+    {
+        math::Position3 end;
+        BG_EvaluateTrajectory(&pos, i, end);
+        trace_t trace;
+        G_MissileTrace(&trace, &origin, &end, ent->r.mOwner, ent->clipmask,
+                       bulletPriorityMap);
+        origin.v = trace.endpos.v;
+        if (trace.allsolid != 0)
+            return 0;
+        float fraction = trace.fraction;
+        if (fraction == 1.0f
+            || (fraction < 1.0f && trace.normal.v.m128_f32[2] > 0.7f))
+        {
+            math::Position3 end2;
+            end2.v.m128_f32[0] = origin.v.m128_f32[0];
+            end2.v.m128_f32[1] = origin.v.m128_f32[1];
+            end2.v.m128_f32[2] = origin.v.m128_f32[2] - 1.5f;
+            G_MissileTrace(&trace, &origin, &end2, ent->r.mOwner, ent->clipmask,
+                           bulletPriorityMap);
+            fraction = trace.fraction;
+            if (fraction != 1.0f)
+            {
+                pos.trBase[2] += (trace.endpos.v.m128_f32[2] + 1.5f)
+                                 - origin.v.m128_f32[2];
+                origin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+                origin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+                origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2] + 1.5f;
+            }
+        }
+        if ((trace.surfaceFlags & 0x10) != 0)
+            return 0;
+        if (allowBounce != 0 && (ent->s.eFlags & 0x3000000) != 0)
+        {
+            G_PredictBounceMissile(ent, &pos, &trace,
+                                   i - (int)(fraction * -100.0f) - 100);
+            pos.trTime = i;
+            if (pos.trType != 0)
+                continue;
+        }
+        *timeAtRest = i;
+        break;
+    }
+    endPos[0] = origin.v.m128_f32[0];
+    endPos[1] = origin.v.m128_f32[1];
+    endPos[2] = origin.v.m128_f32[2];
+    if (allowBounce != 0 && (ent->s.eFlags & 0x3000000) != 0)
+        return ent->nextthink;
+    return i;
+}
+
 // ea: 0x0044C8C0
 void Static_Pain(Entity* ent)
 {

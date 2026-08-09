@@ -530,3 +530,110 @@ void Touch_trigger_mount(Entity* self, Entity* other)
 {
     G_Trigger(self, other);
 }
+
+static unsigned int cursorhint_hash;
+static unsigned int hintstring_hash;
+static unsigned int harc_hash;
+static unsigned int angle_hash;
+
+// ea: 0x0045BA30
+void trigger_use(Entity* ent)
+{
+    SV_SetBrushModel(ent);
+    g_LinkEntity(ent);
+    ent->delay *= 1000.0f;
+    ent->s.pos.trType = TR_STATIONARY;
+    ent->s.pos.trBase[0] = ent->r.currentOrigin.v.m128_f32[0];
+    ent->s.pos.trBase[1] = ent->r.currentOrigin.v.m128_f32[1];
+    ent->s.pos.trBase[2] = ent->r.currentOrigin.v.m128_f32[2];
+    ent->r.contents = 0x200000;
+    ent->r.svFlags = 1;
+    ent->use = 12;
+    ent->s.dmgFlags = 2;
+    if (cursorhint_hash == 0)
+        cursorhint_hash = HashString::CalcHash("cursorhint");
+    const char* cursorhint;
+    if (G_SpawnString(cursorhint_hash, "", &cursorhint) != 0)
+    {
+        int v4 = 1;
+        if (Q_strcasecmp(cursorhint, "HINT_INHERIT") != 0)
+        {
+            while (Q_strcasecmp(cursorhint, hintStrings[v4]) != 0)
+            {
+                if (++v4 >= 0x11)
+                    goto hint_done;
+            }
+            ent->s.dmgFlags = v4;
+        }
+        else
+        {
+            ent->s.dmgFlags = -1;
+        }
+    }
+hint_done:
+    ent->s.scale = 0xFF;
+    if (hintstring_hash == 0)
+        hintstring_hash = HashString::CalcHash("hintstring");
+    int numSpawnVars = level.numSpawnVars;
+    int v8 = 0;
+    if (level.numSpawnVars > 0)
+    {
+        while (hintstring_hash != level.spawnVars[v8].key)
+        {
+            if (++v8 >= level.numSpawnVars)
+                goto hintstring_done;
+        }
+        const char* hintstring = level.spawnVars[v8].value;
+        int v9 = 0;
+        while (1)
+        {
+            char szConfigString[256];
+            SV_GetConfigstring(v9 + 628, szConfigString, 256);
+            if (szConfigString[0] == 0)
+                break;
+            if (strcmp(hintstring, szConfigString) == 0)
+                goto hintstring_set;
+            if (++v9 >= 32)
+                goto hintstring_full;
+        }
+        SV_SetConfigstring(v9 + 628, hintstring);
+hintstring_set:
+        ent->s.scale = v9;
+hintstring_full:
+        if (v9 == 32)
+            Com_Error(ERR_DROP, "%i", 32);
+    }
+hintstring_done:
+    if (harc_hash == 0)
+        harc_hash = HashString::CalcHash("harc");
+    int harc = 0;
+    numSpawnVars = level.numSpawnVars;
+    int v11 = 0;
+    if (numSpawnVars > 0)
+    {
+        while (harc_hash != level.spawnVars[v11].key)
+        {
+            if (++v11 >= numSpawnVars)
+                goto harc_done;
+        }
+        harc = atoi(level.spawnVars[v11].value);
+    }
+harc_done:
+    ent->s.angles2.v.m128_f32[0] = cos(harc * 0.5f * 3.1415927f * 0.0055555557f);
+    if (angle_hash == 0)
+        angle_hash = HashString::CalcHash("angle");
+    float angle = 0.0f;
+    numSpawnVars = level.numSpawnVars;
+    int v15 = 0;
+    if (numSpawnVars > 0)
+    {
+        while (angle_hash != level.spawnVars[v15].key)
+        {
+            if (++v15 >= numSpawnVars)
+                goto angle_done;
+        }
+        angle = atof(level.spawnVars[v15].value);
+    }
+angle_done:
+    ent->s.angles2.v.m128_f32[1] = angle;
+}
