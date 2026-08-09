@@ -19,6 +19,61 @@ extern unsigned char* default_pak_buf;  // ?default_pak_buf (game2.o)
 extern bool gMissionDataInitialized;    // ?gMissionDataInitialized (game2.o)
 extern void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
                                 void* params);  // ?BrocAddEntityThread (scr.o)
+extern bool gTotalResetOfLevel;         // ?gTotalResetOfLevel (game2.o)
+extern const char* notSet;              // ?notSet (game2.o, "Not Set")
+extern int bg_iNumWeapons;              // ?bg_iNumWeapons (game.o)
+
+// ============================================================================
+// _xmission_data - 0x78 (IDA verified)
+// ============================================================================
+struct _xmission_data {
+    char name[0x20];             // +0x00
+    unsigned int weaponsUsed[3]; // +0x20
+    int missionTime;             // +0x2C
+    int missionLastTick;         // +0x30
+    int missionStat[17];         // +0x34
+};
+static_assert(sizeof(_xmission_data) == 0x78, "_xmission_data size mismatch");
+
+extern _xmission_data gXMissionData[];  // ?gXMissionData (game2.o)
+extern _xmission_data* gMissionData;      // ?gMissionData (game2.o)
+extern _xmission_data gTempMissionData;   // ?gTempMissionData (game2.o)
+
+// ============================================================================
+// Mission stats enums/types (stat_support.cpp)
+// ============================================================================
+enum eMissionStats {
+    eInvalid = -1,
+    eTotalKills = 0,
+    eTotalDeaths = 1,
+    eGrenadeKillsInterval = 0x10,
+    eNumStats = 0x11,
+};
+
+enum eWeaponCategory {
+    eRiffle = 0,
+    eNonGerman = 5,
+};
+
+struct _weapon_name {
+    char name[0x20];  // +0x00
+};
+
+struct _weapon_category {
+    _weapon_name* weapons;  // +0x00
+};
+
+extern _weapon_category gWeaponCategories[];  // ?gWeaponCategories (game2.o)
+
+#define STAT_ASSERT(which)                                                  \
+    do {                                                                    \
+        if ((int)(which) <= (int)eInvalid || (int)(which) >= (int)eNumStats) \
+        {                                                                   \
+            if (!AeAssert::IsIgnored()                                      \
+                && AeAssert::Assert("invalid range access detected!"))      \
+                __debugbreak();                                             \
+        }                                                                   \
+    } while (0)
 
 // ============================================================================
 // ScriptEventHandler - script event dispatch list (0x44, IDA verified)
@@ -202,21 +257,6 @@ AnimIK::~AnimIK()
 }
 
 // ============================================================================
-// _xmission_data - 0x78 (IDA verified)
-// ============================================================================
-struct _xmission_data {
-    char name[0x20];             // +0x00
-    unsigned int weaponsUsed[3]; // +0x20
-    int missionTime;             // +0x2C
-    int missionLastTick;         // +0x30
-    int missionStat[17];         // +0x34
-};
-static_assert(sizeof(_xmission_data) == 0x78, "_xmission_data size mismatch");
-
-extern _xmission_data* gMissionData;      // ?gMissionData (game2.o)
-extern _xmission_data gTempMissionData;   // ?gTempMissionData (game2.o)
-
-// ============================================================================
 // InitDefaultPak - load the embedded default pak archive
 // ea: 0x4F6040
 // ============================================================================
@@ -297,6 +337,332 @@ void stat_ResetMissionStats(bool total)
         gMissionData->weaponsUsed[1] = 0;
         gMissionData->weaponsUsed[2] = 0;
     }
+}
+
+// ============================================================================
+// stat_LoadMissionStatsFrom - load mission stats from an xmission data array
+// ea: 0x4F65C0
+// ============================================================================
+void stat_LoadMissionStatsFrom(_xmission_data* data, int num_missions)
+{
+    _xmission_data* table = gXMissionData;
+    while (num_missions > 0)
+    {
+        if (_stricmp(table->name, data->name) == 0)
+        {
+            table->missionTime = data->missionTime;
+            table->missionLastTick = data->missionLastTick;
+            memcpy(table->missionStat, data->missionStat, 0x44u);
+            table->weaponsUsed[0] = data->weaponsUsed[0];
+            table->weaponsUsed[1] = data->weaponsUsed[1];
+            table->weaponsUsed[2] = data->weaponsUsed[2];
+        }
+        ++table;
+        ++data;
+        --num_missions;
+    }
+}
+
+// ea: 0x4F6640
+void stat_ClearMissionStats()
+{
+    gTotalResetOfLevel = true;
+}
+
+// ea: 0x4F6650
+_xmission_data* stat_GetLevelName()
+{
+    if (gMissionData == nullptr)
+        return (_xmission_data*)notSet;
+    return gMissionData;
+}
+
+// ea: 0x4F6660
+int stat_GetStat(eMissionStats which, bool allLevels, bool andCommited)
+{
+    STAT_ASSERT(which);
+    if (!gMissionDataInitialized)
+        return 0;
+    int result = 0;
+    if (gMissionData != nullptr)
+    {
+        if (allLevels)
+        {
+            _xmission_data* v4 = gXMissionData;
+            for (;;)
+            {
+                result += v4->missionStat[which];
+                if (v4 == gMissionData)
+                    break;
+                ++v4;
+                if (v4 == nullptr)
+                    return result;
+            }
+            result += gTempMissionData.missionStat[which];
+        }
+        else
+        {
+            result = gTempMissionData.missionStat[which];
+            if (andCommited)
+                result += gMissionData->missionStat[which];
+        }
+    }
+    return result;
+}
+
+// ea: 0x4F6710
+void stat_SetStat(eMissionStats which, int stat, _xmission_data* xd)
+{
+    STAT_ASSERT(which);
+    if (xd != nullptr)
+        xd->missionStat[which] = stat;
+    else
+        gTempMissionData.missionStat[which] = stat;
+}
+
+// ea: 0x4F6790
+void stat_IncStat(eMissionStats which, _xmission_data* xd)
+{
+    STAT_ASSERT(which);
+    if (xd != nullptr)
+        ++xd->missionStat[which];
+    else
+        ++gTempMissionData.missionStat[which];
+}
+
+// ea: 0x4F6800
+void stat_DecStat(eMissionStats which, _xmission_data* xd)
+{
+    STAT_ASSERT(which);
+    if (xd != nullptr)
+    {
+        --xd->missionStat[which];
+        if (xd->missionStat[which] < 0)
+            xd->missionStat[which] = 0;
+    }
+    else
+    {
+        --gTempMissionData.missionStat[which];
+        if (gTempMissionData.missionStat[which] < 0)
+            gTempMissionData.missionStat[which] = 0;
+    }
+}
+
+// ea: 0x4F6890
+double stat_GetAvgStat(unsigned int which)
+{
+    STAT_ASSERT(which);
+    if (!gMissionDataInitialized || gMissionData == nullptr)
+        return 0.0;
+    int v2 = 0;
+    _xmission_data* v3 = gXMissionData;
+    int v4 = 0;
+    for (;;)
+    {
+        ++v4;
+        v2 += gMissionData->missionStat[which];
+        if (v3 == gMissionData)
+            break;
+        ++v3;
+        if (v3 == nullptr)
+            return 0.0;
+    }
+    return (double)v2 / (double)v4;
+}
+
+// ea: 0x4F6950
+void stat_GetWeaponMasks(int* m1, int* m2, int* m3)
+{
+    if (m1 != nullptr && m2 != nullptr && m3 != nullptr)
+    {
+        *m3 = 0;
+        *m2 = 0;
+        *m1 = 0;
+        if (gMissionDataInitialized && gMissionData != nullptr)
+        {
+            *m1 = gTempMissionData.weaponsUsed[0] | gMissionData->weaponsUsed[0];
+            *m2 = gTempMissionData.weaponsUsed[1] | gMissionData->weaponsUsed[1];
+            *m3 = gTempMissionData.weaponsUsed[2] | gMissionData->weaponsUsed[2];
+        }
+    }
+}
+
+// ea: 0x4F69D0
+int stat_GetMissionCompletionTime()
+{
+    if (gMissionDataInitialized && gMissionData != nullptr)
+        return gMissionData->missionTime;
+    return 0;
+}
+
+// ea: 0x4F69F0
+char stat_UpdateMissionCompletionTime()
+{
+    if (gMissionDataInitialized && gMissionData != nullptr)
+    {
+        unsigned long long v1 = __rdtsc();
+        int v2 = (int)(v1 - gMissionData->missionLastTick);
+        gMissionData->missionLastTick = (int)__rdtsc();
+        gMissionData->missionTime += v2;
+        gMissionData->missionTime = gMissionData->missionTime / 1000;
+        return (char)gMissionData->missionTime;
+    }
+    return 0;
+}
+
+// ea: 0x4F6A70
+char stat_WasPlayerWeaponUsed(int weaponHash, int* bitSetArray)
+{
+    if (!gMissionDataInitialized || gMissionData == nullptr)
+        return 0;
+    int v3 = 0;
+    if (bg_iNumWeapons <= 0)
+        return 0;
+    for (;;)
+    {
+        weaponFileInfo_t* info = BG_GetInfoForWeapon(v3);
+        if (info != nullptr && info->internalNameHash == (unsigned int)weaponHash)
+            break;
+        ++v3;
+        if (v3 >= bg_iNumWeapons)
+            return 0;
+    }
+    if (v3 == -1)
+        return 0;
+    int v5 = v3 >> 5;
+    int v6 = 1 << (v3 % 32);
+    if ((v6 & gMissionData->weaponsUsed[v3 >> 5]) == 0
+        && (v6 & gTempMissionData.weaponsUsed[v5]) == 0)
+        return 0;
+    if (bitSetArray != nullptr)
+        bitSetArray[v5] |= v6;
+    return 1;
+}
+
+// ea: 0x4F6B10
+void stat_FillMask(eWeaponCategory category, int* i1, int* i2, int* i3)
+{
+    *i1 = 0;
+    *i2 = 0;
+    *i3 = 0;
+    int bitSet = 0;
+    int v10 = 0;
+    int v11 = 0;
+    if (category <= eNonGerman)
+    {
+        _weapon_name* weapons = gWeaponCategories[category].weapons;
+        if (weapons->name[0] != 0)
+        {
+            do
+            {
+                stat_WasPlayerWeaponUsed((int)HashString::CalcHash(weapons->name),
+                                         &bitSet);
+                char v6 = weapons[1].name[0];
+                ++weapons;
+                if (v6 == 0)
+                    break;
+            } while (true);
+        }
+        *i1 = bitSet;
+        *i2 = v10;
+        *i3 = v11;
+    }
+}
+
+// ea: 0x4F6B90 / 0x4F6C10
+bool stat_WasPlayerWeaponCategoryUsed(eWeaponCategory category, bool exclusive)
+{
+    if (!gMissionDataInitialized || gMissionData == nullptr)
+        return false;
+    int mask1, mask2, mask3;
+    stat_FillMask(category, &mask1, &mask2, &mask3);
+    if ((mask3 | mask2 | mask1) == 0)
+        return false;
+    if (!exclusive)
+        return true;
+    if (category < 4)
+    {
+        for (int v3 = eRiffle; v3 != 4; ++v3)
+        {
+            if (v3 != (int)category)
+            {
+                stat_FillMask((eWeaponCategory)v3, &mask1, &mask2, &mask3);
+                if ((mask3 | mask2 | mask1) != 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+    if (category == 4)
+    {
+        stat_FillMask(eNonGerman, &mask3, &mask2, &mask1);
+        return (mask1 | mask2 | mask3) == 0;
+    }
+    if (category == eNonGerman)
+    {
+        stat_FillMask((eWeaponCategory)4, &mask3, &mask2, &mask1);
+        return (mask1 | mask2 | mask3) == 0;
+    }
+    return false;
+}
+
+// ea: 0x4F6C90
+void stat_SetPlayerWeaponUsed(int weapon)
+{
+    if (gMissionDataInitialized && gMissionData != nullptr)
+        gTempMissionData.weaponsUsed[weapon >> 5] |= 1 << (weapon % 32);
+}
+
+// ea: 0x4FE870
+int stat_support_Initialize()
+{
+    if (gXMissionData[0].name[0] != 0)
+    {
+        _xmission_data* table = gXMissionData;
+        do
+        {
+            table->missionTime = 0;
+            table->missionLastTick = 0;
+            memset(table->missionStat, 0, 0x44u);
+            table->weaponsUsed[0] = 0;
+            table->weaponsUsed[1] = 0;
+            table->weaponsUsed[2] = 0;
+            ++table;
+        } while (table->name[0] != 0);
+    }
+    memset(&gTempMissionData, 0, sizeof(gTempMissionData));
+    gTotalResetOfLevel = false;
+    gMissionDataInitialized = true;
+    return 0;
+}
+
+// ea: 0x4FE8D0
+char stat_SetMissionToTrack(const char* mission_name)
+{
+    gMissionData = nullptr;
+    _xmission_data* v1 = gXMissionData;
+    if (mission_name == nullptr)
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("mission name must be set"))
+            __debugbreak();
+    }
+    if (!gMissionDataInitialized || gXMissionData[0].name[0] == 0)
+        return 0;
+    while (_stricmp(v1->name, mission_name) != 0)
+    {
+        ++v1;
+        if (v1->name[0] == 0)
+            return 0;
+    }
+    gMissionData = v1;
+    stat_ResetMissionStats(gTotalResetOfLevel);
+    gTotalResetOfLevel = false;
+    if (v1 != nullptr)
+        ++v1->missionStat[0];
+    else
+        ++gTempMissionData.missionStat[0];
+    return 1;
 }
 
 // ============================================================================
