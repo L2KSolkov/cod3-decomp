@@ -50,8 +50,31 @@ enum EEndRoundCondition {
     kEndRoundNoPlayers = 4,
 };
 
+// ============================================================================
+// EHitLocation â€” damage location (hitLocation_t). HITLOC_NONE == 0 and
+// HITLOC_NUM == 0x13 verified via disassembly; middle order follows the
+// original hitLoc damage table (COD2-derived naming).
+// ============================================================================
 enum EHitLocation {
     HITLOC_NONE = 0,
+    HITLOC_HELMET,
+    HITLOC_HEAD,
+    HITLOC_NECK,
+    HITLOC_TORSO_UPR,
+    HITLOC_TORSO_LWR,
+    HITLOC_LEFT_ARM,
+    HITLOC_RIGHT_ARM,
+    HITLOC_LEFT_HAND,
+    HITLOC_RIGHT_HAND,
+    HITLOC_LEFT_LEG_UPR,
+    HITLOC_RIGHT_LEG_UPR,
+    HITLOC_LEFT_LEG_LWR,
+    HITLOC_RIGHT_LEG_LWR,
+    HITLOC_LEFT_FOOT,
+    HITLOC_RIGHT_FOOT,
+    HITLOC_GUN,
+    HITLOC_HEAD_BACK,
+    HITLOC_NUM = 0x13,
 };
 
 enum {

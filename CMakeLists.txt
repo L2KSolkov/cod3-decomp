@@ -273,6 +273,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/stubs_game.cpp
     src/game/logic/g_globals.cpp
     src/game/logic/g_trace.cpp
+    src/game/logic/g_utils.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)

@@ -125,6 +125,18 @@ extern int g_numLosMisses;             // 0xEB1114
 extern const char defaultFileName[];   // 0xCD67AE ("or")
 extern const float colorRed[4];        // 0xD0155C {1,0,0,1}
 extern const float colorGreen[4];      // 0xD0156C {0,1,0,1}
+extern char line[256];                 // 0xEF3448 (ConcatArgs scratch)
+extern unsigned int g_HitLocConstNames[19];  // 0xEAEAD0 (BSS, filled by ParseHitLocDmgTableEntry)
+extern const char* entityTypeNames[18];      // 0xDD7480
+
+// hitLocation_t is Broc's EHitLocation (HITLOC_NONE == 0, HITLOC_NUM == 0x13)
+typedef EHitLocation hitLocation_t;
+
+// Cross-object externs used by g_utils.cpp (game.o / scr.o provide later)
+extern cvar_t* g_cheats;               // g_cheats
+extern cvar_t* g_developer;            // g_developer
+extern cvar_t* g_debug_sound_aliases;  // g_debug_sound_aliases
+extern void    Scr_Error(const char* error);  // scr.o
 
 // ============================================================================
 // sv.o collision entry points (sv_world.cpp / sv_misc.cpp)
