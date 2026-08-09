@@ -853,6 +853,7 @@ struct ButtonMgr {
     static ButtonEntry mButtons[1][16];  // ?mButtons@ButtonMgr
     static void UpdateBinding(unsigned char keyInfoIndex, int clnt);
     static void InitKeyBindings(int c);
+    static void InitKeyBindings();
     static void ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt);
     static int ClearAllBindings();
 };
@@ -899,6 +900,45 @@ void ButtonMgr::InitKeyBindings(int c)
         if (v3 != 0xFF)
             v4->SetCmdBinding();
     }
+}
+
+// ea: 0x509610
+void ButtonMgr::InitKeyBindings()
+{
+    InitKeyBindings(0);
+}
+
+// ============================================================================
+// IN_Init - ea: 0x50BDF0
+// ============================================================================
+extern cvar_t* in_stickSouthPaw;
+extern cvar_t* in_stickLegacy;
+extern cvar_t* in_mouse;
+extern cvar_t* in_joystick;
+extern cvar_t* in_joyBallScale;
+extern cvar_t* in_debugJoystick;
+extern cvar_t* joy_threshold;
+extern bool g_waitingForPress;
+extern bool g_controllerConnectedGamePaused;
+extern bool g_controllerConnectedErrorShown;
+extern bool g_controllerConnected[4];
+extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
+
+void IN_Init()
+{
+    in_stickSouthPaw = Cvar_Get("in_stickSouthPaw", "0", 1);
+    in_stickLegacy = Cvar_Get("in_stickLegacy", "0", 1);
+    in_mouse = Cvar_Get("in_mouse", "0", 33);
+    in_joystick = Cvar_Get("in_joystick", "1", 33);
+    in_joyBallScale = Cvar_Get("in_joyBallScale", "0.02", 1);
+    in_debugJoystick = Cvar_Get("in_debugjoystick", "0", 256);
+    joy_threshold = Cvar_Get("joy_threshold", "27", 1);
+    ButtonMgr::InitKeyBindings(0);
+    g_waitingForPress = false;
+    g_controllerConnectedGamePaused = false;
+    g_controllerConnectedErrorShown = false;
+    for (int i = 0; i < 4; ++i)
+        g_controllerConnected[i] = true;
 }
 
 // ============================================================================
