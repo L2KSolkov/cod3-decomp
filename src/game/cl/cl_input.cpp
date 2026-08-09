@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "game/cvar_types.h"
+#include "game/platform_xbox/MPLiveEngine.h"
 
 // ============================================================================
 // Externs (cross-object; core.o / game.o / cg.o)
@@ -20,6 +21,7 @@ extern int frame_msec;
 extern int currCl;
 extern int dword_106000;
 extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A
+extern int dword_F6A28C[];     // ?dword_F6A28C (per-client port array)
 
 // sysEvent_t / sysEventType_t (game_xbox.o GameXbox.cpp)
 enum sysEventType_t {
@@ -73,6 +75,20 @@ controller* Controller_UnlockPort()
     controller* result = controller::inst();
     result->is_locked = false;
     return result;
+}
+
+// ============================================================================
+// Controller_LockPort - lock input to one controller port
+// ea: 0x4EBE60 (game2.o)
+// ============================================================================
+void Controller_LockPort(unsigned int port)
+{
+    controller* v1 = controller::inst();
+    v1->locked_port = port;
+    v1->is_locked = true;
+    dword_F6A28C[802 * currCl] = port;
+    gSaveGameData[port].mControllerPort = port;
+    MPLiveEngine::GetHandle()->actualPort = port;
 }
 
 // ============================================================================
