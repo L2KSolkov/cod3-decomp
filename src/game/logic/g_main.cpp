@@ -1014,6 +1014,97 @@ void G_InitObjectives()
         SV_SetConfigstring(i + 16, nullptr);
 }
 
+// ea: 0x00458270
+void UpdatePlayer()
+{
+    cdl_proftimer_ent_actors.start();
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* v1 = EntityManager::sInst->mPlayers[i];
+        Client* client = v1->client;
+        if (client == nullptr || client->pers.connected != 2 /* CON_CONNECTED */
+            || v1->r.linked == 0)
+            continue;
+        v1->r.mins.v.m128_f32[0] = playerMins.v.m128_f32[0];
+        v1->r.mins.v.m128_f32[1] = playerMins.v.m128_f32[1];
+        v1->r.mins.v.m128_f32[2] = playerMins.v.m128_f32[2];
+        v1->r.maxs.v.m128_f32[0] = playerMaxs.v.m128_f32[0];
+        v1->r.maxs.v.m128_f32[1] = playerMaxs.v.m128_f32[1];
+        v1->r.maxs.v.m128_f32[2] = playerMaxs.v.m128_f32[2];
+        int pm_flags = v1->client->ps.pm_flags;
+        if ((pm_flags & 1) != 0)
+            v1->r.maxs.v.m128_f32[2] = 30.0f;
+        else if ((pm_flags & 2) != 0)
+            v1->r.maxs.v.m128_f32[2] = 50.0f;
+        v1->client->ps.mins[0] = v1->r.mins.v.m128_f32[0];
+        v1->client->ps.mins[1] = v1->r.mins.v.m128_f32[1];
+        v1->client->ps.mins[2] = v1->r.mins.v.m128_f32[2];
+        v1->client->ps.maxs[0] = v1->r.maxs.v.m128_f32[0];
+        v1->client->ps.maxs[1] = v1->r.maxs.v.m128_f32[1];
+        v1->client->ps.maxs[2] = v1->r.maxs.v.m128_f32[2];
+        bool v5 = v1->r.linked != 0;
+        g_LinkEntity(v1);
+        if (!v5)
+            SV_UnlinkEntity(v1);
+    }
+    if (level.bounds_width != g_bounds_width.value
+        || level.bounds_height_standing != g_bounds_height_standing.value)
+    {
+        level.bounds_width = g_bounds_width.value;
+        level.bounds_height_standing = g_bounds_height_standing.value;
+        playerMins.v.m128_f32[1] = g_bounds_width.value * -0.5f;
+        playerMins.v.m128_f32[0] = g_bounds_width.value * -0.5f;
+        playerMaxs.v.m128_f32[1] = g_bounds_width.value * 0.5f;
+        playerMaxs.v.m128_f32[0] = g_bounds_width.value * 0.5f;
+        playerMaxs.v.m128_f32[2] = g_bounds_height_standing.value;
+        for (int j = 0; j < 16; ++j)
+        {
+            Entity* v7 = EntityManager::sInst->mPlayers[j];
+            v7->r.mins.v.m128_f32[0] = playerMins.v.m128_f32[0];
+            v7->r.mins.v.m128_f32[1] = playerMins.v.m128_f32[1];
+            v7->r.mins.v.m128_f32[2] = playerMins.v.m128_f32[2];
+            v7->r.maxs.v.m128_f32[0] = playerMaxs.v.m128_f32[0];
+            v7->r.maxs.v.m128_f32[1] = playerMaxs.v.m128_f32[1];
+            v7->r.maxs.v.m128_f32[2] = playerMaxs.v.m128_f32[2];
+            int v8 = v7->client->ps.pm_flags;
+            float v9;
+            if ((v8 & 1) != 0)
+                v9 = 30.0f;
+            else if ((v8 & 2) != 0)
+                v9 = 50.0f;
+            else
+                v9 = playerMaxs.v.m128_f32[2];
+            v7->r.maxs.v.m128_f32[2] = v9;
+            v7->client->ps.mins[0] = v7->r.mins.v.m128_f32[0];
+            v7->client->ps.mins[1] = v7->r.mins.v.m128_f32[1];
+            v7->client->ps.mins[2] = v7->r.mins.v.m128_f32[2];
+            v7->client->ps.maxs[0] = v7->r.maxs.v.m128_f32[0];
+            v7->client->ps.maxs[1] = v7->r.maxs.v.m128_f32[1];
+            v7->client->ps.maxs[2] = v7->r.maxs.v.m128_f32[2];
+            bool v10 = v7->r.linked != 0;
+            SV_LinkEntity(v7);
+            if (!v10)
+                SV_UnlinkEntity(v7);
+        }
+    }
+    if (level.viewheight_standing != bg_viewheight_standing.value
+        || level.viewheight_crouched != bg_viewheight_crouched.value
+        || level.viewheight_prone != bg_viewheight_prone.value)
+    {
+        level.viewheight_standing = bg_viewheight_standing.value;
+        level.viewheight_crouched = bg_viewheight_crouched.value;
+        level.viewheight_prone = bg_viewheight_prone.value;
+        for (int k = 0; k < 16; ++k)
+        {
+            Entity* v12 = EntityManager::sInst->mPlayers[k];
+            v12->client->ps.proneViewHeight = bg_viewheight_prone.integer;
+            v12->client->ps.crouchViewHeight = bg_viewheight_crouched.integer;
+            v12->client->ps.standViewHeight = bg_viewheight_standing.integer;
+        }
+    }
+    cdl_proftimer_ent_actors.stop();
+}
+
 // ea: 0x0044B8C0
 void G_RegisterCvars(void)
 {

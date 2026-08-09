@@ -400,6 +400,9 @@ extern math::Position3 playerMaxs;            // 0xEC9640
 extern math::Position3 playerMins;            // 0xEC9620
 extern vmCvar_t g_bounds_width;               // 0xEA6CA8
 extern vmCvar_t g_bounds_height_standing;     // 0xEA7368
+extern vmCvar_t bg_viewheight_standing;       // game.o
+extern vmCvar_t bg_viewheight_crouched;       // game.o
+extern vmCvar_t bg_viewheight_prone;          // game.o
 
 // cdl_proftimer - profile timing accumulator (game.o)
 struct cdl_proftimer {
@@ -1859,7 +1862,7 @@ void  Weapon_Melee(Entity* ent, weaponParms* wp);  // g.o 0x4891C0
 void  FireWeaponMelee(Entity* ent);                // g.o 0x48AA50
 void  UpdateAnims(int msec);                      // g.o
 void  AdvanceSceneAnims(float delta);             // g.o
-void  UpdatePlayer(void);                         // g.o
+void  UpdatePlayer(void);                         // g.o 0x458270
 void  j_nullsub_20(void);                         // g.o
 void  UpdateRigidBody(float delta_t);             // g.o
 void  ClientEndFrame(Entity* ent, int msec);      // g.o
