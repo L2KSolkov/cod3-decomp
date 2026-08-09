@@ -1139,6 +1139,7 @@ float  AngleNormalize360(float angle);
 float  AngleDelta(float a1, float a2);              // core.o 0x4B9CD0
 float  LerpAngle(float a1, float a2, float frac);   // core.o
 float  flrand(float min, float max);                // core.o
+int    Cvar_VariableIntegerValue(const char* var_name);  // core.o
 int    R_CellForPoint(const math::Position3* pos);  // render.o 0x6C52B0
 float  AngleSubtract(float a1, float a2);
 float  PitchForYawOnNormal(float fYaw, const float* vNormal);
@@ -1308,6 +1309,11 @@ struct weaponParms {
     weaponFileInfo_t* pWeapInfo;  // +0x3C
 };
 static_assert(sizeof(weaponParms) == 0x40, "weaponParms size mismatch");
+
+void   j_nullsub_37(actor_s* pSelf, weaponParms* wp);   // g.o
+Entity* Actor_Grenade_IsValidTrajectory(actor_s* pSelf, const float* vFrom,
+                                        const float* vVelocity,
+                                        const float* vGoal);  // mp_actors.o
 
 // ============================================================================
 // turretInfo_t - turret runtime state (0x8C bytes) - verified against IDA

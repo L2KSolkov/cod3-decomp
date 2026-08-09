@@ -1248,3 +1248,125 @@ Entity* fire_grenade(Entity* self, float* start, float* dir, int grenadeWPID,
     g_femanager.IGO->AddActiveGrenade(v9);
     return v9;
 }
+
+// ea: 0x0047ABC0
+Entity* fire_rifle_grenade(Entity* self, const float* target, int grenadeWPID,
+                           bool checkTrajectory)
+{
+    TPakId mPakId = (TPakId)self->mPakId;
+    if (mPakId == PAK_ID_INVALID)
+        mPakId = CurPakId();
+    Entity* v6 = G_Spawn(mPakId);
+    unsigned char WeaponIndexForName =
+        BG_GetWeaponIndexForName(self->actor->mWeaponName);
+    weaponParms wp;
+    wp.pWeapInfo = BG_GetInfoForWeapon(WeaponIndexForName);
+    j_nullsub_37(self->actor, &wp);
+    float start[3] = {wp.muzzleTrace[0], wp.muzzleTrace[1], wp.muzzleTrace[2]};
+    float time = VectorDistance(start, target) * 0.001f;
+    int v9 = Cvar_VariableIntegerValue("g_gravity");
+    float dir[3];
+    dir[0] = (target[0] - start[0]) * (1.0f / time);
+    dir[1] = (target[1] - start[1]) * (1.0f / time);
+    float drop = -v9 * (time * time) * 0.5f;
+    dir[2] = ((target[2] - start[2]) - drop) * (1.0f / time);
+    if (!checkTrajectory
+        || Actor_Grenade_IsValidTrajectory(self->actor, start, dir,
+                                           target) != nullptr)
+    {
+        Client* client = self->client;
+        if (client != nullptr && client->ps.grenadeTimeLeft != 0)
+        {
+            v6->nextthink = level.time + client->ps.grenadeTimeLeft;
+            self->client->ps.grenadeTimeLeft = 0;
+        }
+        else
+        {
+            v6->nextthink = (int)(time * 1000.0f) + level.time;
+        }
+        v6->think = THINK__G_ExplodeMissile;
+        v6->s.eType = 3;
+        v6->r.svFlags = 160;
+        v6->s.weapon = grenadeWPID;
+        v6->r.mOwner.mHandle.mVal = self->mHandle.mHandle.mVal;
+        v6->parentHandle.mHandle.mVal = self->mHandle.mHandle.mVal;
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(grenadeWPID);
+        v6->mClassName = str_const.rocket;
+        v6->mClassNameHash.mHash = HashString::CalcHash(v6->mClassName.GetBuff());
+        v6->damage = InfoForWeapon->iDamage;
+        v6->methodOfDeath = InfoForWeapon->slot == 7 /* WEAPSLOT_PISTOL */;
+        v6->splashMethodOfDeath =
+            InfoForWeapon->slot == 4 /* WEAPSLOT_GRENADE */;
+        v6->clipmask = 41951377;
+        v6->s.pos.trType = TR_GRAVITY;
+        v6->s.eFlags |= 0x8000;
+        v6->s.pos.trTime = level.time;
+        v6->s.pos.trBase[0] = start[0];
+        v6->s.pos.trBase[1] = start[1];
+        v6->s.pos.trBase[2] = start[2];
+        v6->s.pos.trDelta[0] = dir[0];
+        v6->s.pos.trDelta[1] = dir[1];
+        v6->s.pos.trDelta[2] = dir[2];
+        v6->timestamp = level.time;
+        v6->s.apos.trType = TR_LINEAR;
+        v6->s.apos.trTime = level.time;
+        vectoangles(dir, v6->s.apos.trBase);
+        if (InfoForWeapon->type == 1 /* WEAPTYPE_GRENADE */)
+        {
+            double v17 = AngleNormalize360(v6->s.apos.trBase[0] - 120.0f);
+            v6->s.apos.trBase[0] = (float)v17;
+            flrand(-45.0f, 45.0f);
+            v6->s.apos.trDelta[0] = (float)(v17 + 720.0);
+        }
+        v6->s.apos.trDelta[1] = 0.0f;
+        float a1 = flrand(-45.0f, 45.0f);
+        v6->s.apos.trDelta[2] = a1 + 360.0f;
+        if (IS_NAN(v6->r.currentOrigin.v.m128_f32[0])
+            || IS_NAN(v6->r.currentOrigin.v.m128_f32[1])
+            || IS_NAN(v6->r.currentOrigin.v.m128_f32[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+            AeAssert::gCurrentLine = 1452;
+            AeAssert::gCurrentExpr = "!IS_NAN((bolt->r.currentOrigin)[0]) && !IS_NAN((bolt->r.currentOrigin)[1]) && !IS_NAN((bolt->r.currentOrigin)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        v6->r.currentOrigin.v.m128_f32[0] = start[0];
+        v6->r.currentOrigin.v.m128_f32[1] = start[1];
+        v6->r.currentOrigin.v.m128_f32[2] = start[2];
+        v6->r.currentAngles.v.m128_f32[0] = v6->s.apos.trBase[0];
+        v6->r.currentAngles.v.m128_f32[1] = v6->s.apos.trBase[1];
+        v6->r.currentAngles.v.m128_f32[2] = v6->s.apos.trBase[2];
+        v6->key = PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
+                                        0x40).mVal;
+        ValidatePakId((TPakId)v6->mModel.mPakId);
+        if (v6->mModel.mValue != nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+            AeAssert::gCurrentLine = 1459;
+            AeAssert::gCurrentExpr = "!bolt->mModel";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        TPakId v18 = (TPakId)v6->mPakId;
+        if (v18 == PAK_ID_INVALID)
+            v18 = CurPakId();
+        v6->mModel = XModelManager::sInst->GetXModel(
+            v18, InfoForWeapon->szProjectileModel);
+        ValidatePakId((TPakId)v6->mModel.mPakId);
+        if (v6->mModel.mValue == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+            AeAssert::gCurrentLine = 1461;
+            AeAssert::gCurrentExpr = "bolt->mModel";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        G_DObjUpdate(v6, false);
+        return v6;
+    }
+    return nullptr;
+}
