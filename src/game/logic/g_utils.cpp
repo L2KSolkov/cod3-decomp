@@ -742,3 +742,222 @@ const char* G_GetEntityTypeName(Entity* ent)
     else
         return entityTypeNames[ent->s.eType];
 }
+
+namespace AeStringSupport {
+extern void CStrToAeStr(char* oBuff, int* oLen, int capacity, const char* src);
+}
+
+// ea: 0x00482540
+void G_SetFixedLink(Entity* ent, int eAngles)
+{
+    float parentAxis[4][3];
+    float axis[4][3];
+    G_CalcTagParentAxis(ent, parentAxis);
+    tagInfo_t* tagInfo = ent->tagInfo;
+    if (tagInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1271;
+        AeAssert::gCurrentExpr = "tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1272;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (eAngles != 0)
+    {
+        if (eAngles == 1)
+        {
+            MatrixMultiply43((const float(*)[3])tagInfo->axis, parentAxis, axis);
+            ent->r.currentOrigin.v.m128_f32[0] = axis[3][0];
+            ent->r.currentOrigin.v.m128_f32[1] = axis[3][1];
+            ent->r.currentOrigin.v.m128_f32[2] = axis[3][2];
+            ent->r.currentAngles.v.m128_f32[1] = vectoyaw(axis[0]);
+        }
+        else if (eAngles == 2)
+        {
+            MatrixTransformVector43(tagInfo->axis[3], parentAxis,
+                                    &ent->r.currentOrigin.v.m128_f32[0]);
+        }
+    }
+    else
+    {
+        MatrixMultiply43((const float(*)[3])tagInfo->axis, parentAxis, axis);
+        ent->r.currentOrigin.v.m128_f32[0] = axis[3][0];
+        ent->r.currentOrigin.v.m128_f32[1] = axis[3][1];
+        ent->r.currentOrigin.v.m128_f32[2] = axis[3][2];
+        float tmp[3] = {ent->r.currentAngles.v.m128_f32[0],
+                        ent->r.currentAngles.v.m128_f32[1],
+                        ent->r.currentAngles.v.m128_f32[2]};
+        AxisToAngles(axis, tmp);
+        ent->r.currentAngles.v.m128_f32[0] = tmp[0];
+        ent->r.currentAngles.v.m128_f32[1] = tmp[1];
+        ent->r.currentAngles.v.m128_f32[2] = tmp[2];
+    }
+}
+
+// ea: 0x00482780
+void G_SetPlayerFixedLink(Entity* ent)
+{
+    Client* client = ent->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1310;
+        AeAssert::gCurrentExpr = "ent->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float parentAxis[4][3];
+    G_CalcTagParentAxis(ent, parentAxis);
+    tagInfo_t* tagInfo = ent->tagInfo;
+    if (tagInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1316;
+        AeAssert::gCurrentExpr = "tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float axis[4][3];
+    MatrixMultiply43((const float(*)[3])tagInfo->axis, parentAxis, axis);
+    float localViewOff[3];
+    AxisToAngles(axis, localViewOff);
+    math::Position3 v12;
+    v12.v.m128_f32[0] = client->prevLinkAngles[0];
+    v12.v.m128_f32[1] = client->prevLinkAngles[1];
+    v12.v.m128_f32[2] = client->prevLinkAngles[2];
+    v12.v.m128_f32[3] = 0.0f;
+    math::Position3 v1;
+    v1.v.m128_f32[0] = localViewOff[0];
+    v1.v.m128_f32[1] = localViewOff[1];
+    v1.v.m128_f32[2] = localViewOff[2];
+    v1.v.m128_f32[3] = 0.0f;
+    math::Position3 angles;
+    AnglesSubtract(&v1, &v12, &angles);
+    client->prevLinkAngles[0] = localViewOff[0];
+    client->prevLinkAngles[1] = localViewOff[1];
+    client->prevLinkAngles[2] = localViewOff[2];
+    angles.v.m128_f32[0] *= client->linkAnglesFrac[0];
+    angles.v.m128_f32[1] *= client->linkAnglesFrac[1];
+    angles.v.m128_f32[2] *= client->linkAnglesFrac[2];
+    client->ps.delta_angles[0] += (int)(angles.v.m128_f32[0] * 182.04445f) & 0xFFFF;
+    client->ps.delta_angles[1] += (int)(angles.v.m128_f32[1] * 182.04445f) & 0xFFFF;
+    client->ps.delta_angles[2] += (int)(angles.v.m128_f32[2] * 182.04445f) & 0xFFFF;
+    client->ps.viewangles[0] += angles.v.m128_f32[0];
+    client->ps.viewangles[1] += angles.v.m128_f32[1];
+    client->ps.viewangles[2] += angles.v.m128_f32[2];
+    float v16[3] = {0.0f, 0.0f, client->ps.viewHeightCurrent};
+    float delta[3];
+    MatrixTransformVector43(v16, axis, delta);
+    delta[2] -= client->ps.viewHeightCurrent;
+    ent->s.pos.trBase[0] = ent->r.currentOrigin.v.m128_f32[0];
+    ent->s.pos.trBase[1] = ent->r.currentOrigin.v.m128_f32[1];
+    ent->s.pos.trBase[2] = ent->r.currentOrigin.v.m128_f32[2];
+    ent->s.pos.trDelta[0] = delta[0];
+    ent->s.pos.trDelta[1] = delta[1];
+    ent->s.pos.trDelta[2] = delta[2];
+    if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1350;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    ent->r.currentOrigin.v.m128_f32[0] = delta[0];
+    ent->r.currentOrigin.v.m128_f32[1] = delta[1];
+    ent->r.currentOrigin.v.m128_f32[2] = delta[2];
+    ent->s.pos.trType = TR_INTERPOLATE;
+    g_LinkEntity(ent);
+}
+
+// ea: 0x00482020
+int G_EntAttach(Entity* ent, const char* modelName, const char* tagName,
+                int ignoreCollision, TPakId modelpak)
+{
+    if (modelpak == PAK_ID_INVALID)
+    {
+        modelpak = (TPakId)ent->mPakId;
+        if (modelpak == PAK_ID_INVALID)
+            modelpak = CurPakId();
+    }
+    if (G_EntDetach(ent, modelName, tagName) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 608;
+        AeAssert::gCurrentExpr = "!G_EntDetach(ent, modelName, tagName)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (modelName != nullptr && strstr(modelName, "_VM") != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 615;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Attaching view model weapon to an entity!"))
+            __debugbreak();
+    }
+    int v6 = 0;
+    for (AttachModelInfo* i = ent->mAttachModels;; ++i)
+    {
+        ValidatePakId((TPakId)i->mModel.mPakId);
+        if (i->mModel.mValue == nullptr)
+            break;
+        if (++v6 >= 7)
+            return 0;
+    }
+    IVPointer<XModel> model = XModelManager::sInst->GetXModel(modelpak, modelName);
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 626;
+        AeAssert::gCurrentExpr = "model";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Failed to attach model %s because it wasn't found",
+                                modelName))
+            __debugbreak();
+    }
+    AttachModelInfo* slot = &ent->mAttachModels[v6];
+    slot->mModel.mValue = model.mValue;
+    slot->mModel.mPakId = model.mPakId;
+    int nameLen;
+    char tagNameLC[32];
+    AeStringSupport::CStrToAeStr(tagNameLC, &nameLen, 31, tagName);
+    tagNameLC[31] = (char)nameLen;
+    _strlwr(tagNameLC);
+    slot->mTag = tagNameLC;
+    if ((ent->attachIgnoreCollision & (1 << v6)) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 637;
+        AeAssert::gCurrentExpr = "!(ent->attachIgnoreCollision & (1 << i))";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (ignoreCollision != 0)
+        ent->attachIgnoreCollision |= (uint8_t)(1 << v6);
+    G_DObjUpdate(ent, false);
+    return 1;
+}

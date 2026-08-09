@@ -224,6 +224,7 @@ struct MultiplayerMgr {
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
     void ExitLevel();
     void StartDevServer();
+    void SpotEntity(Entity* ent);               // ?SpotEntity@MultiplayerMgr@@QAEXPAVEntity@@@Z
     void PlayerDamage(Entity* hitEntity, Entity* attacker,
                       const math::Position3& position, const math::Dir3& normal,
                       int weapon, float damage, unsigned char mod, int dflags,

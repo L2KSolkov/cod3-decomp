@@ -1834,3 +1834,72 @@ void VEH_PlayerInteractionExit(void)
     Entity* Player = EntityManager::sInst->GetPlayer(currCl);
     VEH_UnlinkPlayer(Player, true);
 }
+
+static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
+static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
+
+// ea: 0x0044DB90 (file-local)
+static Handle VEH_StartWheelEffect(Entity* ent, unsigned int wheel_tag_hash,
+                                   int mat)
+{
+    vehicle_info_t* info = s_vehicleInfos[ent->scr_vehicle->infoIdx];
+    if (info->type == 2)
+        wheel_tag_hash = 0;
+    return PostEffectEventVehicleWheel(ent, (const char*)info,
+                                       0x29 /* kActionVEHICLE_HORN */, mat,
+                                       wheel_tag_hash);
+}
+
+// ea: 0x0045C7F0
+void VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (info->maxSpeed <= 88.0f)
+        return;
+    if (scr_vehicle->engineSndLerp > s_sndLerpMin
+        && scr_vehicle->phys.wheelSurfType[wheelIndex] != 0)
+    {
+        if (scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex].mVal == 0)
+        {
+            scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex] =
+                VEH_StartWheelEffect(ent, s_wheelTagHashes[wheelIndex],
+                                     scr_vehicle->phys.wheelSurfType[wheelIndex]);
+        }
+        float v8 = (ent->speed - 88.0f) / (info->maxSpeed - 88.0f);
+        if (v8 < 0.0f)
+            v8 = 0.0f;
+        else if (v8 > 1.0f)
+            v8 = 1.0f;
+        float scaleValue2 = (float)(fabs(scr_vehicle->phys.rotVel.v.m128_f32[1])
+                                    / info->rotRate);
+        float v7 = (scr_vehicle->brakeSndLerp > 0.5f) ? 1.0f : 0.0f;
+        float v9 = (v8 <= scaleValue2) ? scaleValue2 : v8;
+        if (v9 <= v7)
+            v8 = v7;
+        else if (v8 <= scaleValue2)
+            v8 = scaleValue2;
+        EffectEventAdjustEffect_Scale(scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex],
+                                      "EmissionRate", rate * v8);
+    }
+    else
+    {
+        if (scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex].mVal != 0)
+            EffectEventStopEmitting(scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex].mVal);
+        scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex].mVal = 0;
+    }
+}
+
+// ea: 0x0045C3A0
+void VEH_DebugBox(const math::Position3* pos, float width, float r, float g, float b)
+{
+    float color[4] = {1.0f,
+                      pos->v.m128_f32[0] + width * 0.5f,
+                      pos->v.m128_f32[1] + width * 0.5f,
+                      pos->v.m128_f32[2] + width * 0.5f};
+    float mins[3] = {pos->v.m128_f32[0] - width * 0.5f,
+                     pos->v.m128_f32[1] - width * 0.5f,
+                     pos->v.m128_f32[2] - width * 0.5f};
+    float boxColor[3] = {r, g, b};
+    G_DebugBox(&color[1], mins, boxColor, 1, 0, 0);
+}

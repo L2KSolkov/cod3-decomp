@@ -116,8 +116,8 @@ struct scr_vehicle_t {
         math::Dir3      rotVel;     // +0x50
         float           wheelZVel[6];  // +0x60
         float           wheelZPos[6];  // +0x78
-        float           wheelSurfType[4];  // +0x90
-        float           _padA0[4];   // +0xA0
+        int             wheelSurfType[6];  // +0x90
+        uint8_t         _padA8[0xB0 - 0xA8];
     } phys;                          // +0xC0 (0xB0 bytes)
     DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x170
     DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner;  // +0x174
@@ -148,7 +148,10 @@ struct scr_vehicle_t {
     Handle  mWheel_ParticleEffectHandle[6];  // +0x3AC (0x18 bytes)
     Handle  mRumbleEffectHandle;  // +0x3C4
     int     playersAttached;  // +0x3C8
-    uint8_t _pad3CC[0x3E0 - 0x3CC];
+    float   idleSndLerp;    // +0x3CC
+    float   engineSndLerp;  // +0x3D0
+    float   brakeSndLerp;   // +0x3D4
+    float   hornSndLerp;    // +0x3D8
     struct LerpedVariables {
         math::Position3 mBodyPosition;  // +0x00
         math::Position3 mTurretAngles;  // +0x10
@@ -989,7 +992,10 @@ struct vehicle_info_t {
     int     numSeats;               // +0x44
     uint8_t _pad48[0x50 - 0x48];
     float   maxSpeed;               // +0x50
-    uint8_t _pad54[0x27C - 0x54];
+    float   accel;                  // +0x54
+    float   rotRate;                // +0x58
+    float   rotAccel;               // +0x5C
+    uint8_t _pad60[0x27C - 0x60];
     int16_t mMantleHintStringIndex; // +0x27C
     uint8_t _pad27E[0x310 - 0x27E];
 };
@@ -1479,8 +1485,13 @@ int   G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
 int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
 void  j_nullsub_120(Entity* pGrenade);
 Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);
+Handle PostEffectEventVehicleWheel(const Entity* ent, const char* vehicleType,
+                                   int action, int mat_type,
+                                   unsigned int wheel_tag_hash);  // core.o 0x4D32D0
 void  EffectEventKill(Handle effect);
 int   EffectEventStopEmitting(int effectId);
+void  EffectEventAdjustEffect_Scale(Handle effect, const char* param,
+                                    float scale);   // core.o 0x4CB8E0
 void  Com_Error(int code, const char* fmt, ...);
 void  Com_Printf(const char* fmt, ...);
 enum {
@@ -1494,6 +1505,8 @@ enum {
     ERR_LOCALIZATION = 7,
 };
 void  AngleVectors(const float* angles, float* forward, float* right, float* up);
+void  AnglesSubtract(const math::Position3* v1, const math::Position3* v2,
+                     math::Position3* v3);   // core.o 0x4B99F0
 extern vmCvar_t g_debugGrenades;
 extern vmCvar_t g_debugBullets;
 extern vmCvar_t g_player_maxhealth;
@@ -1568,6 +1581,9 @@ int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o
 vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
 int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
 void    VEH_StopWheelEffects(Entity* ent);          // g.o 0x44DBD0
+void    VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex);  // g.o 0x45C7F0
+void    VEH_DebugBox(const math::Position3* pos, float width, float r,
+                     float g, float b);             // g.o 0x45C3A0
 extern int g_renderPFXStats;                        // game2.o
 extern int sEntryPointSeatAssociation[4];           // g.o
 extern cvar_t* cg_drawPosition;                     // cg.o
@@ -1644,6 +1660,9 @@ void  G_setfog(const char* fogstring);               // g.o 0x455E80
 void  ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467610
 vehicle_info_t* G_GetVehicleInfoName(int16_t index); // g.o 0x44F100
 void  G_SetFixedLink(Entity* ent, int eAngles);      // g.o (g_utils.cpp)
+void  G_SetPlayerFixedLink(Entity* ent);             // g.o 0x482780
+int   G_EntAttach(Entity* ent, const char* modelName, const char* tagName,
+                  int ignoreCollision, TPakId modelpak);  // g.o 0x482020
 void  Svcmd_VehicleList_f(void);                     // g.o
 void  Svcmd_EntityList_f(void);                      // g.o
 void  SV_GetUsercmd(int clientNum, usercmd_s* cmd);  // sv.o
@@ -1673,6 +1692,7 @@ void  VEH_JoltBody(Entity* ent, math::Position3* dir, float intensity,
 void  CalcMuzzlePoint(Entity* ent, math::Position3* muzzlePoint);  // g.o 0x4534F0
 void  G_DebugAxis(const math::Mat43* mat, unsigned int length, int duration);  // g.o 0x456FE0
 void  G_LinkClient(Entity* ent);                 // g.o 0x483480
+void  Spotting(Entity* ent);                     // g.o 0x472130
 void  G_SetAnimTree(Entity* ent, AnimTree* animtree);  // g.o 0x47BB40
 void  G_VehicleClientThink(int msec);            // g.o 0x46DF60
 bool  ValidForGametype(void);                    // g.o 0x4507D0
