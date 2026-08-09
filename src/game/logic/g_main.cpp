@@ -1202,3 +1202,157 @@ void G_DebugBox(float* pos, float width, float r, float g, float b,
     maxs[2] = pos[2] - width * 0.5f;
     G_DebugBox(mins, maxs, color, 1, duration, fade);
 }
+
+// ea: 0x0044A900
+void Cmd_Noclip_f(Entity* ent)
+{
+    if (g_cheats->integer)
+    {
+        if (ent->health > 0)
+        {
+            const char* v5;
+            if (ent->client->noclip)
+            {
+                v5 = "GAME_NOCLIPOFF";
+                gNoClipEnabled = 0;
+            }
+            else
+            {
+                v5 = "GAME_NOCLIPON";
+                gNoClipEnabled = 1;
+            }
+            ent->client->noclip = ent->client->noclip == 0;
+            SV_GameSendServerCommand(ent->mHandle, va("print \"%s\"", v5));
+        }
+        else
+        {
+            SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_MUSTBEALIVECOMMAND\""));
+        }
+    }
+    else
+    {
+        SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_CHEATSNOTENABLED\""));
+    }
+}
+
+// ea: 0x00465650
+void Svcmd_ListEntities_f(void)
+{
+    int counter[18] = { 0 };
+    Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity** end = begin + EntityHandleDb::sInst.mActiveList.m_size;
+    for (Entity** p = begin; p != end; ++p)
+    {
+        if (*p != nullptr)
+            ++counter[(*p)->s.eType];
+    }
+    int v2 = 0;
+    for (int i = 0; i < 18; ++i)
+    {
+        G_Printf("%s %d\n", entityTypeNames[i], counter[i]);
+        v2 += counter[i];
+    }
+    G_Printf("total %d of %d\n", v2, 1344);
+}
+
+// ea: 0x00470780
+int ConsoleCommand(void)
+{
+    char cmd[128];
+    Cmd_ArgvBuffer(0, cmd, 128);
+    if (Q_stricmp(cmd, "entitylist") != 0)
+    {
+        if (Q_stricmp(cmd, "listvehicles") != 0)
+        {
+            if (Q_stricmp(cmd, "listnodes") != 0)
+            {
+                if (Q_stricmp(cmd, "listentities") != 0)
+                    return 0;
+                Svcmd_ListEntities_f();
+                return 1;
+            }
+            PathNodeMgr::sInst->NodeList();
+            return 1;
+        }
+        Svcmd_VehicleList_f();
+        return 1;
+    }
+    Svcmd_EntityList_f();
+    return 1;
+}
+
+// ea: 0x00482B50
+void G_GeneralLink(Entity* ent)
+{
+    if (ent->tagInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1365;
+        AeAssert::gCurrentExpr = "ent->tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    G_SetFixedLink(ent, 0);
+    G_SetOrigin(ent, &ent->r.currentOrigin);
+    G_SetAngle(ent, &ent->r.currentAngles);
+    memcpy(ent->s.pos.trDelta, &ent->r.currentOrigin, sizeof(ent->s.pos.trDelta));
+    memcpy(ent->s.apos.trDelta, &ent->r.currentAngles, sizeof(ent->s.apos.trDelta));
+    ent->s.pos.trType = TR_INTERPOLATE;
+    ent->s.apos.trType = TR_INTERPOLATE;
+    g_LinkEntity(ent);
+}
+
+// ea: 0x0048EB30
+void ClientThink(DbLinkedHandle<EntityHandleDb, Entity> entityHandle)
+{
+    Entity* mObject = HandleDbToEnt(entityHandle);
+    mObject->client->pers.oldcmd = mObject->client->pers.cmd;
+    SV_GetUsercmd(currCl, &mObject->client->pers.cmd);
+    mObject->client->lastCmdTime = level.time;
+    ClientThink_real(mObject);
+    if (mObject->client->ps.leanf == 0.0f)
+        G_RemoveHeadHitEnt(mObject);
+    else
+        G_UpdateHeadHitEnt(mObject);
+}
+
+// ea: 0x00455E80
+void G_setfog(const char* fogstring)
+{
+    SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), va("fog %s", fogstring));
+    level.fFogOpaqueDist = 3.4028235e38f;
+    level.fFogOpaqueDistSqrd = 3.4028235e38f;
+    float fNear, fFar, fDensity;
+    int clr, v3, v4, time;
+    if (sscanf(fogstring, "%f %f %f %d %d %d %d", &fNear, &fFar, &fDensity,
+               &clr, &v3, &v4, &time) == 7
+        && fDensity >= 1.0f)
+    {
+        level.fFogOpaqueDist = ((fFar - fNear) * 0.82800001f) + fNear;
+        level.fFogOpaqueDistSqrd = level.fFogOpaqueDist * level.fFogOpaqueDist;
+    }
+}
+
+// ea: 0x00467610
+void ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity)
+{
+    Entity* mObject = HandleDbToEnt(entity);
+    Client* client = mObject->client;
+    Entity* v4 = HandleDbToEnt(entity);
+    if (v4 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 1230;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    v4->r.svFlags = 0;
+    StopPhysics(v4);
+    Sentient_Free(v4->sentient);
+    v4->sentient = nullptr;
+    SV_UnlinkEntity(v4);
+    client->pers.connected = CON_DISCONNECTED;
+}

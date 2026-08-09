@@ -712,6 +712,29 @@ void G_FreeVehicleRefs(Entity* ent)
     }
 }
 
+// ea: 0x0044F100
+vehicle_info_t* G_GetVehicleInfoName(int16_t index)
+{
+    if (index < 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7097;
+        AeAssert::gCurrentExpr = "index >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (index < s_numVehicleInfos)
+        return s_vehicleInfos[index];
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+    AeAssert::gCurrentLine = 7098;
+    AeAssert::gCurrentExpr = "index < s_numVehicleInfos";
+    if (AeAssert::IsIgnored() || AeAssert::Assert("old cod assert"))
+        __debugbreak();
+    return s_vehicleInfos[index];
+}
+
 // ea: 0x0046E0B0
 bool G_IsPlayerInVehicle(Entity* player)
 {

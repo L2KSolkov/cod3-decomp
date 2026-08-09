@@ -400,6 +400,7 @@ struct PathNodeMgr {
     void AttachSentientToChainNode(sentient_s* pSentient, Broc::string* targetname);
     void ConnectPathsForEntity(Entity* ent);     // ?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void DisconnectPathsForEntity(Entity* ent);  // ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
+    void NodeList();                     // ?NodeList@PathNodeMgr@@QAEXXZ
 };
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
 

@@ -1592,6 +1592,24 @@ void  Add_Ammo(Entity* ent, int weapon, int count, int fillClip);  // g.o
 void  EntityHandleDb_Compact(void* self);            // g.o 0x454B00
 extern bool gNoTargetEnabled;                        // g.o
 extern bool gGodModeEnabled;                         // g.o (sv_stubs.h has it)
+void  Cmd_Noclip_f(Entity* ent);                     // g.o 0x44A900
+void  Svcmd_ListEntities_f(void);                    // g.o 0x465650
+int   ConsoleCommand(void);                          // g.o 0x470780
+void  G_GeneralLink(Entity* ent);                    // g.o 0x482B50
+void  ClientThink(DbLinkedHandle<EntityHandleDb, Entity> entityHandle);  // g.o 0x48EB30
+void  G_setfog(const char* fogstring);               // g.o 0x455E80
+void  ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467610
+vehicle_info_t* G_GetVehicleInfoName(int16_t index); // g.o 0x44F100
+void  G_SetFixedLink(Entity* ent, int eAngles);      // g.o (g_utils.cpp)
+void  Svcmd_VehicleList_f(void);                     // g.o
+void  Svcmd_EntityList_f(void);                      // g.o
+void  SV_GetUsercmd(int clientNum, usercmd_s* cmd);  // sv.o
+void  ClientThink_real(Entity* ent);                 // g.o
+void  G_RemoveHeadHitEnt(Entity* pSelf);             // g.o
+void  G_UpdateHeadHitEnt(Entity* pSelf);             // g.o
+void  StopPhysics(Entity* e);                        // g.o
+void  Sentient_Free(sentient_s* sentient);           // mp_actors.o
+enum { CON_DISCONNECTED = 0 };
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o
