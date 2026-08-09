@@ -29,7 +29,8 @@ struct scr_vehicle_t {
     int   shooter;        // +0x08
     uint8_t _pad0C[0x178 - 0x0C];
     int16_t infoIdx;      // +0x178
-    uint8_t _pad17A[0x180 - 0x17A];
+    uint8_t _pad17A[0x318 - 0x17A];
+    int     barrelBlocked;  // +0x318
 };
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
 
@@ -636,6 +637,9 @@ int    Actor_CheckArmor(actor_s* pSelf, int damage, int dflags);
 int    CheckArmor(Entity* ent, int damage, int dflags);
 int    LogAccuracyHit(Entity* target, Entity* attacker);
 int    G_IsVehicleImmune(Entity* ent, int mod);
+float  Damage_Falloff(float fDistance, float fDamage, float fMinDamagePercent,
+                      int iInnerRadius, int iOuterRadius);
+int    G_BounceMissile(Entity* ent, trace_t* trace);
 int    ParseConfigStringToStruct(unsigned char* pStruct, const cspField_t* pFieldList,
                                  int iNumFields, const ConfigString* pCfgStr,
                                  int iMaxFieldTypes, void* parseSpecialFieldType,
@@ -689,11 +693,17 @@ struct weaponFileInfo_t {
     uint8_t _pad1[0x5C4 - 0x59C];
     int     iProjectileSpeed;     // +0x5C4
     int     iProjectileSpeedUp;   // +0x5C8
-    uint8_t _pad2[0x5F8 - 0x5CC];
+    uint8_t _pad2[0x5DC - 0x5CC];
+    int     iMinDamagePercent;    // +0x5DC
+    int     iDamageInnerRadius;   // +0x5E0
+    int     iDamageOuterRadius;   // +0x5E4
+    uint8_t _pad3[0x5F8 - 0x5E8];
     int     iProjectileDelay;     // +0x5F8
-    uint8_t _pad3[0x6E8 - 0x5FC];
+    uint8_t _pad3b[0x6E8 - 0x5FC];
     int     bTwoHanded;           // +0x6E8
-    uint8_t _pad4[0x764 - 0x6EC];
+    uint8_t _pad4[0x704 - 0x6EC];
+    int     bNoBounce;            // +0x704
+    uint8_t _pad4b[0x764 - 0x708];
     int     iAltWeaponIndex;      // +0x764
     uint8_t _pad5[0x774 - 0x768];
     int     iTriggerRadius;       // +0x774
@@ -702,7 +712,9 @@ struct weaponFileInfo_t {
     int     iExplosionOuterDamage;// +0x780
     uint8_t _pad6[0x790 - 0x784];
     uint8_t projExplosion;        // +0x790
-    uint8_t _pad7[0x948 - 0x791];
+    uint8_t _pad7[0x79C - 0x791];
+    int     bProjImpactExplode;   // +0x79C
+    uint8_t _pad9[0x948 - 0x7A0];
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
 static_assert(offsetof(weaponFileInfo_t, bTwoHanded) == 0x6E8, "weaponFileInfo_t::bTwoHanded offset mismatch");
@@ -716,6 +728,7 @@ enum {
 enum {
     AI_EV_GRENADE_PING = 0x0E,
     AI_EV_PROJECTILE_PING = 0x0F,
+    AI_EV_PROJECTILE_IMPACT = 0x0C,
 };
 
 // ============================================================================
@@ -892,6 +905,18 @@ void  G_MissileTrace(trace_t* results, const math::Position3* start,
                      const math::Position3* end,
                      DbLinkedHandle<EntityHandleDb, Entity> passEntity,
                      int contentmask, unsigned char* priorityMap);
+void  j_nullsub_84(Entity* pOriginator, int eType, int iTeamFlags,
+                   const float* vStart, const float* vEnd, float fRadiusSqrd);
+void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+                              const math::Position3* vEnd, int iDamage, int iMOD);
+float VectorDistance(const float* v1, const float* v2);
+void  AnglesToAxis(const float* angles, float (*axis)[3]);
+void  MatrixInverse(const float (*in)[3], float (*out)[3]);
+void  MatrixTransformVector(const float* in1, const float (*in2)[3], float* out);
+int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
+                            const float* originOffset, const float* anglesOffset,
+                            bool useAngles);
+void  G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin);
 
 struct Destructible;
 class IVPointer_Destructible {

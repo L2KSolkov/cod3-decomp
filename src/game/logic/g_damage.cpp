@@ -1068,3 +1068,227 @@ label_71:
     if (ent->s.eType == 3)
         goto label_71;
 }
+
+// ea: 0x0048B520
+void G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin)
+{
+    unsigned int mVal = trace->mEntity.mHandle.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    int v62 = 0;
+    Entity* hitClientEnt = nullptr;
+    if (v4 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+        hitClientEnt = EntityHandleDb::sInst.mElements[v4].mObject;
+    Entity* other = nullptr;
+    unsigned int v5 = ent->r.mOwner.mHandle.mVal;
+    unsigned int v6 = v5 & 0xFFF;
+    if (v6 < 0x540 && v5 >> 12 == EntityHandleDb::sInst.mElements[v6].mKey
+        && EntityHandleDb::sInst.mElements[v6].mObject != nullptr)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+        other = mObject;
+        if (mObject->s.eType == 10)
+        {
+            Entity* owner = HandleDbToEnt(mObject->r.mOwner);
+            if (owner != nullptr)
+                other = owner;
+        }
+    }
+    if (ent->s.weapon == 0)
+        G_Printf("Warning Missle Weapon == 0, tell Ryan to fix it\n");
+    if ((hitClientEnt == nullptr || hitClientEnt->takedamage == 0) && other != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = other->scr_vehicle;
+        if (scr_vehicle != nullptr && scr_vehicle->barrelBlocked != 0)
+        {
+            float dx = trace->endpos.v.m128_f32[0] - other->r.currentOrigin.v.m128_f32[0];
+            float dy = trace->endpos.v.m128_f32[1] - other->r.currentOrigin.v.m128_f32[1];
+            float dz = trace->endpos.v.m128_f32[2] - other->r.currentOrigin.v.m128_f32[2];
+            float v63 = dx * dx + dy * dy + dz * dz;
+            if (sqrt(v63) < 384.0f)
+            {
+                ent->damage = 3000;
+            }
+        }
+    }
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ent->s.weapon);
+    int methodOfDeath = ent->methodOfDeath;
+    if (methodOfDeath != 3 && other != nullptr)
+    {
+        Entity* v19 = HandleDbToEnt(ent->r.mOwner);
+        j_nullsub_84(v19, AI_EV_PROJECTILE_IMPACT, 0,
+                     other->s.pos.trBase, trace->endpos.v.m128_f32, 0.0f);
+    }
+    if (InfoForWeapon->bNoBounce == 0 || InfoForWeapon->bProjImpactExplode != 0)
+    {
+        if (hitClientEnt != nullptr && hitClientEnt->takedamage != 0
+            || (ent->s.eFlags & 0x3000000) == 0)
+        {
+            goto label_88;
+        }
+        if (G_BounceMissile(ent, trace) != 0 && trace->startsolid == 0)
+        {
+            unsigned char v30 = DirToByte(trace->normal.v.m128_f32);
+            G_AddEvent(ent, 206, v30);
+            ent->s.scale = (trace->surfaceFlags >> 20) & 0x1F;
+        }
+        if (InfoForWeapon->bProjImpactExplode != 0)
+        {
+label_88:
+            bool damageToLocal;
+            if (!EntityManager::sInst->IsLocalPlayer(other) && other->client != nullptr)
+            {
+                damageToLocal = true;
+            }
+            else if (other->scr_vehicle == nullptr)
+            {
+                damageToLocal = false;
+            }
+            else
+            {
+                Entity* v32 = HandleDbToEnt(other->r.mOwner);
+                damageToLocal = !EntityManager::sInst->IsLocalPlayer(v32);
+            }
+            if (hitClientEnt != nullptr && hitClientEnt->takedamage != 0)
+            {
+                float damage = (float)ent->damage;
+                if (damage != 0.0f && !damageToLocal)
+                {
+                    int dmg = ent->damage;
+                    float fDistance = VectorDistance(ent->s.pos.trBase, ent->r.currentOrigin.v.m128_f32);
+                    damage = Damage_Falloff(fDistance, (float)dmg,
+                                            (float)InfoForWeapon->iMinDamagePercent,
+                                            InfoForWeapon->iDamageInnerRadius,
+                                            InfoForWeapon->iDamageOuterRadius);
+                    if (LogAccuracyHit(hitClientEnt, other) != 0)
+                        v62 = 1;
+                    float angleDelta[3];
+                    BG_EvaluateTrajectoryDelta(&ent->s.pos, level.time, angleDelta);
+                    float velocityLen = sqrt(angleDelta[0] * angleDelta[0]
+                                             + angleDelta[1] * angleDelta[1]
+                                             + angleDelta[2] * angleDelta[2]);
+                    float dist = velocityLen != 0.0f ? velocityLen : 1.0f;
+                    Entity* v33 = other;
+                    if (other->scr_vehicle != nullptr)
+                    {
+                        Entity* owner2 = HandleDbToEnt(other->r.mOwner);
+                        if (owner2 != nullptr)
+                            v33 = owner2;
+                        else
+                            v33 = other;
+                    }
+                    G_Damage(hitClientEnt, ent, v33, angleDelta,
+                             ent->r.currentOrigin.v.m128_f32, (int)damage,
+                             0, ent->methodOfDeath, HITLOC_NONE, -1);
+                }
+                if (InfoForWeapon->bProjImpactExplode == 0)
+                {
+                    G_BounceMissile(ent, trace);
+                }
+                else
+                {
+                    if (damageToLocal)
+                    {
+                        int key = ent->key;
+                        if (key > 0 && InfoForWeapon->slot != 5)
+                            EffectEventSys::sInst->StopEffect(key, true);
+                        G_FreeEntity(ent, 0);
+                    }
+                    else
+                    {
+                        int v35 = ent->damage;
+                        if (v35 != 0)
+                            G_CheckHitTriggerDamage(other, &ent->r.currentOrigin,
+                                                    &trace->endpos, v35, ent->methodOfDeath);
+                        if (v62 != 0 || trace->partName.mHash != 0)
+                            v62 = 1;
+                        unsigned char v37 = DirToByte(trace->normal.v.m128_f32);
+                        G_AddEvent(ent, (v62 != 0) + 210, v37);
+                        ent->s.scale = InfoForWeapon->projExplosion;
+                        int surfaceFlags = trace->surfaceFlags;
+                        ent->think = THINK__G_FreeEntity;
+                        ent->s.surfType = (surfaceFlags >> 20) & 0x1F;
+                        ent->s.eType = 0;
+                        ent->nextthink = level.time + 60000;
+                        G_SetOrigin(ent, &trace->endpos);
+                        Entity::SetLerpOrigin(&ent->s, &trace->endpos);
+                        MultiplayerMgr::sInst->ProjectileExplosion(ent, ent->s.weapon,
+                                                                   trace->endpos, trace->normal,
+                                                                   ent->s.surfType, nullptr);
+                        if (InfoForWeapon->iExplosionInnerDamage != 0)
+                        {
+                            math::Dir3 normal = trace->normal;
+                            math::Position3 pos = trace->endpos;
+                            math::Position3 endPos;
+                            endPos.v = _mm_add_ps(_mm_mul_ps(normal.v, _mm_set1_ps(4.0f)), trace->endpos.v);
+                            collision_context_t ctx;
+                            ctx.__vftable = nullptr;
+                            ctx.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
+                            ctx.pass_entity2.mHandle.mVal = 0;
+                            ctx.contentmask = 17;
+                            math::Position3 zeroA;
+                            math::Position3 zeroB;
+                            zeroA.v = _mm_setzero_ps();
+                            zeroB.v = _mm_setzero_ps();
+                            SV_Trace(trace, &pos, &zeroA, &zeroB, &endPos, &ctx, 0, 0, nullptr, 0, 0.0f);
+                            Entity* v44 = HandleDbToEnt(ent->parentHandle);
+                            G_RadiusDamage(endPos.v.m128_f32, ent, v44,
+                                           (float)InfoForWeapon->iExplosionInnerDamage,
+                                           (float)InfoForWeapon->iExplosionOuterDamage,
+                                           (float)InfoForWeapon->iExplosionRadius,
+                                           hitClientEnt, ent->splashMethodOfDeath);
+                        }
+                        int v45 = ent->key;
+                        if (v45 > 0 && InfoForWeapon->slot != 5)
+                            EffectEventSys::sInst->StopEffect(v45, true);
+                        SV_UnlinkEntity(ent);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        // sticky missile: stop movement, attach to hit entity
+        ent->s.pos.trType = TR_STATIONARY;
+        ent->s.apos.trType = TR_STATIONARY;
+        memcpy(ent->s.pos.trBase, &ent->r.currentOrigin, sizeof(ent->s.pos.trBase));
+        ent->r.currentAngles.v.m128_f32[0] = ent->s.lerpAngles.v.m128_f32[0];
+        ent->r.currentAngles.v.m128_f32[1] = ent->s.lerpAngles.v.m128_f32[1];
+        ent->r.currentAngles.v.m128_f32[2] = ent->s.lerpAngles.v.m128_f32[2];
+        ent->s.pos.trDelta[0] = 0.0f;
+        ent->s.pos.trDelta[1] = 0.0f;
+        ent->s.pos.trDelta[2] = 0.0f;
+        ent->s.apos.trDelta[0] = 0.0f;
+        ent->s.apos.trDelta[1] = 0.0f;
+        ent->s.apos.trDelta[2] = 0.0f;
+        ent->s.apos.trBase[0] = ent->r.currentAngles.v.m128_f32[0];
+        ent->s.apos.trBase[1] = ent->r.currentAngles.v.m128_f32[1];
+        ent->s.apos.trBase[2] = ent->r.currentAngles.v.m128_f32[2];
+        unsigned int v27 = trace->mEntity.mHandle.mVal & 0xFFF;
+        if (v27 < 0x540 && trace->mEntity.mHandle.mVal >> 12 == EntityHandleDb::sInst.mElements[v27].mKey)
+        {
+            Entity* v28 = EntityHandleDb::sInst.mElements[v27].mObject;
+            if (v28 != nullptr && (v28->client != nullptr || v28->scr_vehicle != nullptr))
+            {
+                float originOffset[3];
+                originOffset[0] = ent->r.currentOrigin.v.m128_f32[0] - v28->r.currentOrigin.v.m128_f32[0];
+                originOffset[1] = ent->r.currentOrigin.v.m128_f32[1] - v28->r.currentOrigin.v.m128_f32[1];
+                originOffset[2] = ent->r.currentOrigin.v.m128_f32[2] - v28->r.currentOrigin.v.m128_f32[2];
+                float anglesOffset[3];
+                anglesOffset[0] = ent->r.currentAngles.v.m128_f32[0] - v28->r.currentAngles.v.m128_f32[0];
+                anglesOffset[1] = ent->r.currentAngles.v.m128_f32[1] - v28->r.currentAngles.v.m128_f32[1];
+                anglesOffset[2] = ent->r.currentAngles.v.m128_f32[2] - v28->r.currentAngles.v.m128_f32[2];
+                float axis[3][3];
+                float inverse[3][3];
+                float localOffset[3];
+                AnglesToAxis(v28->r.currentAngles.v.m128_f32, axis);
+                MatrixInverse(axis, inverse);
+                MatrixTransformVector(originOffset, inverse, localOffset);
+                G_EntLinkToWithOffset(ent, v28, nullptr, localOffset, anglesOffset, true);
+            }
+        }
+        unsigned char v29 = DirToByte(trace->normal.v.m128_f32);
+        G_AddEvent(ent, 206, v29);
+        ent->s.scale = (trace->surfaceFlags >> 20) & 0x1F;
+    }
+}
