@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "core/tlFixedString.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -256,6 +257,108 @@ bool AnimationPlayer::nalAnimCallback::Invoke(AnimationPlayer* player)
 {
     (void)player;
     return true;
+}
+
+// ============================================================================
+// MetaNalBaseAnim - meta-animation wrapper (0x44, IDA verified)
+// ============================================================================
+struct MetaAnimData {
+    void** __vftable;  // +0x00
+    // vtable slots:
+    //   [0] GetAnimName() -> const tlFixedString*
+    //   [1] IsAnimLooping() -> int
+    //   [2] IsAnimTrajRelative() -> int
+    //   [3] GetAnimDuration() -> float
+    //   [4] GetSkeleton() -> nalBaseSkeleton*
+    //   [5] DelayCreate(nalAnimClass**, int)
+    //   [6] IsDelayCreate() -> int
+    //   [7] CreateAnimInst(...)
+};
+
+struct nalBaseSkeleton;
+struct nalInstanceClass;
+
+struct MetaNalBaseAnim {
+    void** __vftable;           // +0x00
+    tlFixedString Name;         // +0x04 (32 bytes)
+    unsigned char _pad24[0x30 - 0x24];  // +0x24 (nalAnimClass extra)
+    void* Skeleton;             // +0x30
+    unsigned int Flags;         // +0x34
+    float Duration;             // +0x38
+    unsigned char _pad3C[4];    // +0x3C (nalAnimClass instance ptr area)
+    MetaAnimData* mData;        // +0x40
+
+    MetaNalBaseAnim();                       // ea: 0x4F5F20
+    void Create(MetaAnimData* theMetaAnimData);  // ea: 0x4F5F50
+    void DelayCreate(void** animArray, int numAnims);  // ea: 0x4F5FE0
+    void DelayCreate(void* anim);            // ea: 0x4FAE20
+    int IsDelayCreate();                     // ea: 0x4F6010
+    void* CreateAnimInst(nalBaseSkeleton* theSkel);  // ea: 0x4F6020
+};
+static_assert(sizeof(MetaNalBaseAnim) == 0x44, "MetaNalBaseAnim size mismatch");
+
+extern void* MetaNalBaseAnim_vftable;  // ??_7MetaNalBaseAnim@@6B@
+
+typedef void* (*GetAnimNameFn)(void* self);
+typedef int (*IsAnimLoopingFn)(void* self);
+typedef int (*IsAnimTrajRelativeFn)(void* self);
+typedef float (*GetAnimDurationFn)(void* self);
+typedef void* (*GetSkeletonFn)(void* self);
+typedef void (*DelayCreateFn)(void* self, void** animArray, int numAnims);
+typedef int (*IsDelayCreateFn2)(void* self);
+typedef void* (*CreateAnimInstFn)(void* self, void* theSkel, void* metaAnim);
+
+// ea: 0x4F5F20
+MetaNalBaseAnim::MetaNalBaseAnim()
+{
+    memset(&Name, 0, sizeof(Name));
+    __vftable = (void**)&MetaNalBaseAnim_vftable;
+    mData = nullptr;
+}
+
+// ea: 0x4F5F50
+void MetaNalBaseAnim::Create(MetaAnimData* theMetaAnimData)
+{
+    mData = theMetaAnimData;
+    Flags = 0;
+    void** vt = (void**)theMetaAnimData->__vftable;
+    if (((IsAnimLoopingFn)vt[1])(theMetaAnimData) != 0)
+        Flags |= 1u;
+    if (((IsAnimTrajRelativeFn)mData->__vftable[2])(mData) != 0)
+        Flags |= 2u;
+    Duration = ((GetAnimDurationFn)mData->__vftable[3])(mData);
+    Skeleton = ((GetSkeletonFn)mData->__vftable[4])(mData);
+    const unsigned int* v5 = (const unsigned int*)
+        ((GetAnimNameFn)mData->__vftable[0])(mData);
+    Name.hash = v5[0];
+    memcpy(Name.str, v5 + 1, 28);
+}
+
+// ea: 0x4F5FE0
+void MetaNalBaseAnim::DelayCreate(void** animArray, int numAnims)
+{
+    ((DelayCreateFn)mData->__vftable[5])(mData, animArray, numAnims);
+    Create(mData);
+}
+
+// ea: 0x4FAE20
+void MetaNalBaseAnim::DelayCreate(void* anim)
+{
+    void* animArray = anim;
+    ((DelayCreateFn)mData->__vftable[5])(mData, &animArray, 1);
+    Create(mData);
+}
+
+// ea: 0x4F6010
+int MetaNalBaseAnim::IsDelayCreate()
+{
+    return ((IsDelayCreateFn2)mData->__vftable[6])(mData);
+}
+
+// ea: 0x4F6020
+void* MetaNalBaseAnim::CreateAnimInst(nalBaseSkeleton* theSkel)
+{
+    return ((CreateAnimInstFn)mData->__vftable[7])(mData, theSkel, this);
 }
 
 // ============================================================================
