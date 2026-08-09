@@ -294,8 +294,15 @@ struct MultiplayerMgr {
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 
+struct SmokeGrenadeInfo {
+    float mTime;   // +0x00
+    void* mEffect; // +0x04
+    bool  bHit[4]; // +0x08
+};
+
 struct SmokeGrenadeMgr {
     static void* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
+    float CalcOpacity(const SmokeGrenadeInfo& smokeGrenInfo) const;  // ?CalcOpacity@SmokeGrenadeMgr@@IBEMABUSmokeGrenadeInfo@@@Z (game2.o 0x4FA0E0)
 };
 
 struct SoundDevice {

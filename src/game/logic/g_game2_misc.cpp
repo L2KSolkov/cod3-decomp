@@ -875,6 +875,94 @@ void TestFPS::GetFilename(char* filename)
 }
 
 // ============================================================================
+// SplineMgr - spline asset bank (0x184, IDA verified)
+// ============================================================================
+struct SplineEntry {
+    int pakId;   // +0x00 (PAK_ID_INVALID = -1)
+    void* file;  // +0x04
+    int pad8;    // +0x08
+};
+
+class SplineMgr {
+public:
+    unsigned char m_assetBase[4];      // +0x00 AssetBankSet
+    SplineEntry mList[32];             // +0x04
+
+    SplineEntry* GetUnusedEntry();     // ea: 0x4F9700
+    void UnloadBank(int pakId);        // ea: 0x4F97C0
+    static bool EndOfSpline(const float* p);  // ea: 0x4F59A0
+};
+
+extern bool AeAssert_Error(const char* fmt, ...);
+
+// ea: 0x4F9700
+SplineEntry* SplineMgr::GetUnusedEntry()
+{
+    for (int i = 0; i < 32; ++i)
+    {
+        if (mList[i].pakId == -1)
+            return &mList[i];
+    }
+    if (!AeAssert::IsIgnored() && AeAssert_Error("Too many spline files loaded"))
+        __debugbreak();
+    return nullptr;
+}
+
+// ea: 0x4F97C0
+void SplineMgr::UnloadBank(int pakId)
+{
+    int v4 = 0;
+    for (;;)
+    {
+        if (v4 >= 32)
+            return;
+        if (mList[v4].pakId == pakId)
+            break;
+        ++v4;
+    }
+    mList[v4].pakId = -1;
+    mList[v4].file = nullptr;
+}
+
+// ============================================================================
+// SmokeGrenadeMgr visibility helpers
+// ============================================================================
+extern float sTime0, sTime1, sTime2, sTime3, sTime4;
+extern float sOpacity2, sOpacity3;
+extern bool g_drawSmokeGren_integer;  // vmCvar_t.integer
+extern float ClampRange(const float* in, const float* beg, const float* end);
+
+// ea: 0x4FA0E0
+float SmokeGrenadeMgr::CalcOpacity(const SmokeGrenadeInfo& info) const
+{
+    float v2 = info.mTime;
+    if (sTime0 > v2)
+        return 0.0f;
+    if (sTime1 > v2)
+    {
+        float in = (v2 - sTime0) / (sTime1 - sTime0);
+        float beg = 0.0f;
+        float end = 1.0f;
+        return ClampRange(&in, &beg, &end);
+    }
+    if (sTime2 > v2)
+        return 1.0f;
+    if (sTime3 > v2)
+    {
+        float in = (v2 - sTime2) / (sTime3 - sTime2);
+        float beg = 0.0f;
+        float end = 1.0f;
+        float v4 = ClampRange(&in, &beg, &end);
+        return (1.0f - v4) * sOpacity2 + sOpacity3 * v4;
+    }
+    float beg = (v2 - sTime3) / (sTime4 - sTime3);
+    float in = 0.0f;
+    float end = 1.0f;
+    return (1.0f - ClampRange(&beg, &in, &end)) * sOpacity3;
+}
+
+
+// ============================================================================
 // FN_Multiplayer_MapRestart - ea: 0x4F46D0
 // ============================================================================
 void FN_Multiplayer_MapRestart()
@@ -928,9 +1016,7 @@ Client* FN_Multiplayer_Rank3()
 // ============================================================================
 // SplineMgr::EndOfSpline - ea: 0x4F59A0
 // ============================================================================
-namespace SplineMgr {
-bool EndOfSpline(const float* p)
+bool SplineMgr::EndOfSpline(const float* p)
 {
     return *p == -1.0f && *(p + 1) == -1.0f && *(p + 2) == -1.0f;
-}
 }
