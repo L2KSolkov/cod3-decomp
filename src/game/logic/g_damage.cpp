@@ -850,3 +850,221 @@ void G_ExplodeMissile(Entity* ent, int msec)
         ent->nextthink = level.time + 3000;
     }
 }
+
+Entity* g_path_owner;  // 0xF51E40?
+
+// ea: 0x0048BDE0
+void G_RunMissile(Entity* ent, int msec)
+{
+    trace_t tr;
+    tr.surfaceFlags = 0;
+    tr.contents = 0;
+    if (g_debugGrenades.integer != 0)
+    {
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ent->s.weapon);
+        // debug rendering (RGBA color = 1.0 alpha)
+        float col[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        DebugRender::RenderSphere(&ent->r.currentOrigin,
+                                  (1.0f - ((float)(g_player_maxhealth.integer - ent->health)
+                                            / (float)g_player_maxhealth.integer)) * 1.0f,
+                                  col);
+        if (InfoForWeapon->iExplosionRadius != 0)
+        {
+            float col2[4] = { 1.0f, 0.0f, 0.1f, 1.0f };
+            DebugRender::RenderBox(&ent->r.absmin, &ent->r.absmax, col2);
+            float col3[4] = { 1.0f, 0.0f, 0.30000001f, 1.0f };
+            DebugRender::RenderSphere(&ent->r.currentOrigin, (float)InfoForWeapon->iExplosionRadius, col3);
+        }
+    }
+    if (ent->methodOfDeath == 3)
+    {
+        if (level.time - ent->timestamp >= 500)
+        {
+            j_nullsub_17(ent, AI_EV_GRENADE_PING, -1, &ent->r.currentOrigin, 0.0f);
+            ent->timestamp = level.time;
+        }
+    }
+    else
+    {
+        j_nullsub_17(ent, AI_EV_PROJECTILE_PING, -1, &ent->r.currentOrigin, 0.0f);
+    }
+    if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 823;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    math::Position3 vOldOrigin;
+    float vReflect[3];
+    math::Position3 origin;
+    float dir[3];
+    collision_context_t ctx;
+    if (ent->tagInfo != nullptr)
+        goto label_19;
+    BG_EvaluateTrajectory(&ent->s.pos, level.time, *reinterpret_cast<math::Position3*>(vReflect));
+    origin.v.m128_f32[0] = vReflect[0] - ent->r.currentOrigin.v.m128_f32[0];
+    origin.v.m128_f32[1] = vReflect[1] - ent->r.currentOrigin.v.m128_f32[1];
+    origin.v.m128_f32[2] = vReflect[2] - ent->r.currentOrigin.v.m128_f32[2];
+    if ((ent->s.eFlags & 0x20000000) != 0 && ent->s.apos.trType != TR_STATIONARY)
+    {
+        vectoangles(origin.v.m128_f32, ent->s.apos.trBase);
+        ent->s.apos.trBase[0] = ent->s.apos.trBase[0] + 90.0f;
+    }
+    if (VectorNormalize(origin.v.m128_f32) < 0.0049999999f)
+    {
+label_19:
+        G_RunThink(ent, msec);
+        return;
+    }
+    if (level.MissleOnlyActiveForTime != 0.0f && (level.time - ent->timestamp) >= level.MissleOnlyActiveForTime)
+        goto label_71;
+    float v10 = (float)fabs(ent->s.pos.trDelta[2]);
+    float v33[3];
+    int v35 = 0;
+    Entity* touch = nullptr;
+    ctx.__vftable = nullptr;
+    ctx.pass_entity1.mHandle.mVal = 0;
+    ctx.pass_entity2.mHandle.mVal = 34;
+    int contents;
+    if (v10 <= 30.0f || SV_PointContents(ent->r.currentOrigin, ctx) != 0)
+    {
+        unsigned int mVal = ent->r.mOwner.mHandle.mVal;
+        int clipmask = ent->clipmask;
+        collision_context_t ctx2;
+        ctx2.__vftable = nullptr;
+        ctx2.pass_entity1.mHandle.mVal = mVal;
+        ctx2.pass_entity2.mHandle.mVal = clipmask;
+        ctx2.contentmask = 0;
+        g_LocationalTrace((trace_t*)v33, &ent->r.currentOrigin,
+                          (const math::Position3*)vReflect, &ctx2,
+                          bulletPriorityMap, 0.0f);
+    }
+    else
+    {
+        G_MissileTrace((trace_t*)v33, &ent->r.currentOrigin,
+                       (const math::Position3*)vReflect, ent->r.mOwner,
+                       ent->clipmask | 0x22, bulletPriorityMap);
+    }
+    if (((int)tr.normal.v.m128_f32[2] & 0x1F00000) == 0x1400000
+        || ((int)tr.normal.v.m128_f32[2] & 0x1F00000) == 0x800000)
+    {
+        float norm[3];
+        VectorNormalize2(ent->s.pos.trDelta, norm);
+        float v39 = norm[2];
+        if (v39 < 0.0f)
+            v39 = v39 * -1.0f;
+        Entity* v15 = G_TempEntity(ent->r.currentOrigin.v.m128_f32, 203);
+        v15->s.eventParm = DirToByte(&tr.endpos.v.m128_f32[1]);
+        v15->s.scale = DirToByte(norm);
+        v15->s.surfType = ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F;
+        v15->s.weapon = ent->s.weapon;
+        v15->s.mOtherEntity.mHandle.mVal = ent->mHandle.mHandle.mVal;
+        G_MissileTrace((trace_t*)v33, &ent->r.currentOrigin,
+                       (const math::Position3*)vReflect, ent->r.mOwner,
+                       ent->clipmask, bulletPriorityMap);
+    }
+    if (ent->methodOfDeath == 3
+        && tr.mEntity.mHandle.mVal != 0
+        && (HandleDbToEnt(tr.mEntity)->flags & 0x80000) != 0)
+    {
+        Entity* v16 = HandleDbToEnt(tr.mEntity);
+        int v17 = v16->r.contents;
+        v16->r.contents = 0;
+        G_MissileTrace((trace_t*)v33, &ent->r.currentOrigin,
+                       (const math::Position3*)vReflect, ent->r.mOwner,
+                       ent->clipmask, bulletPriorityMap);
+        v16->r.contents = v17;
+    }
+    if (g_debugBullets.integer >= 5)
+    {
+        Entity* v19 = G_TempEntity(ent->r.currentOrigin.v.m128_f32, 214);
+        memcpy(&v19->s.origin2, v33, 12);
+    }
+    if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 921;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    unsigned char v20 = (unsigned char)(tr.mEntity.mHandle.mVal >> 8);
+    ent->r.currentOrigin.v.m128_f32[0] = v33[0];
+    ent->r.currentOrigin.v.m128_f32[1] = v33[1];
+    ent->r.currentOrigin.v.m128_f32[2] = v33[2];
+    float v21;
+    if (v20 != 0)
+    {
+        v21 = 0.0f;
+        tr.normal.v.m128_f32[1] = 0.0f;
+    }
+    else
+    {
+        v21 = tr.normal.v.m128_f32[1];
+    }
+    if ((ent->s.eFlags & 0x3800000) != 0
+        && (v21 == 1.0f || (v21 < 1.0f && tr.endpos.v.m128_f32[3] > 0.69999999f)))
+    {
+        math::Position3 start;
+        start.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
+        start.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+        start.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2] + 1.5f;
+        math::Position3 end;
+        end.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
+        end.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+        end.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2] - 1.5f;
+        G_MissileTrace((trace_t*)v33, &start, &end, ent->r.mOwner,
+                       ent->clipmask, bulletPriorityMap);
+        if (tr.normal.v.m128_f32[1] != 1.0f)
+        {
+            ent->s.pos.trBase[2] = ((v33[2] + 1.5f) - ent->r.currentOrigin.v.m128_f32[2]) + ent->s.pos.trBase[2];
+            ent->r.currentOrigin.v.m128_f32[0] = v33[0];
+            ent->r.currentOrigin.v.m128_f32[1] = v33[1];
+            ent->r.currentOrigin.v.m128_f32[2] = v33[2] + 1.5f;
+        }
+    }
+    g_LinkEntity(ent);
+    if (ent->methodOfDeath == 3)
+    {
+        weaponFileInfo_t* v29 = BG_GetInfoForWeapon(ent->s.weapon);
+        G_GrenadeTouchTriggerDamage(ent, &ent->r.currentOrigin, &ent->r.currentOrigin,
+                                    v29->iExplosionInnerDamage, ent->methodOfDeath);
+    }
+    if (tr.normal.v.m128_f32[1] == 1.0f || ((int)tr.normal.v.m128_f32[3] & 2) != 0)
+    {
+        if (sqrt(ent->s.pos.trDelta[0] * ent->s.pos.trDelta[0]
+                 + ent->s.pos.trDelta[1] * ent->s.pos.trDelta[1]
+                 + ent->s.pos.trDelta[2] * ent->s.pos.trDelta[2]) != 0.0f)
+            ent->s.mGroundEntity.mHandle.mVal = 0;
+        goto label_71;
+    }
+    if (((int)tr.normal.v.m128_f32[2] & 4) != 0)
+    {
+        if (ent->mDObj != nullptr)
+            ent->SetAlwaysRender(true);
+label_71:
+        G_RunThink(ent, msec);
+        return;
+    }
+    if (((int)tr.normal.v.m128_f32[2] & 0x10) != 0)
+    {
+        G_FreeEntity(ent, msec);
+        return;
+    }
+    g_path_owner = ent;
+    float oldOrigin[3] = { ent->r.currentOrigin.v.m128_f32[0],
+                           ent->r.currentOrigin.v.m128_f32[1],
+                           ent->r.currentOrigin.v.m128_f32[2] };
+    G_MissileImpact(ent, (trace_t*)v33, origin.v.m128_f32, oldOrigin);
+    g_path_owner = nullptr;
+    if (ent->s.eType == 3)
+        goto label_71;
+}

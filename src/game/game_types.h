@@ -229,6 +229,7 @@ public:
     ~Entity();            // ??1Entity@@QAE@XZ (core.o)
     static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
+    void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     void Notify(HashString h, const int& d, Broc::entity* e, int* mod,

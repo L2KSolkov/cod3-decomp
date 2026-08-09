@@ -713,6 +713,10 @@ static_assert(offsetof(weaponFileInfo_t, slot) == 0xB4, "weaponFileInfo_t::slot 
 enum {
     WEAPSLOT_SMOKE_GRENADE = 5,  // verified vs disasm G_ExplodeMissile
 };
+enum {
+    AI_EV_GRENADE_PING = 0x0E,
+    AI_EV_PROJECTILE_PING = 0x0F,
+};
 
 // ============================================================================
 // weaponParms - weapon fire params (0x40 bytes) - verified against IDA
@@ -868,11 +872,26 @@ int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelM
 void  j_nullsub_120(Entity* pGrenade);
 int   PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);
 extern vmCvar_t g_debugGrenades;
+extern vmCvar_t g_debugBullets;
+extern vmCvar_t g_player_maxhealth;
 enum {
     kActionEI_MELEE_PLAYER_LOSING = 0x400,
     kActionWEAPON_FIRE_3RD = 0x800,
 };
 void  G_ExplodeMissile(Entity* ent, int msec);
+void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+                                  const math::Position3* vEnd, int iDamage, int iMOD);
+Entity* G_TempEntity(const float* origin, int event);
+void  G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin);
+extern Entity* g_path_owner;
+namespace DebugRender {
+void RenderSphere(const math::Position3* pos, float radius, const float* argb_color);
+void RenderBox(const math::Position3* bmin, const math::Position3* bmax, const float* col);
+}
+void  G_MissileTrace(trace_t* results, const math::Position3* start,
+                     const math::Position3* end,
+                     DbLinkedHandle<EntityHandleDb, Entity> passEntity,
+                     int contentmask, unsigned char* priorityMap);
 
 struct Destructible;
 class IVPointer_Destructible {
