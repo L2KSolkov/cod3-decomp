@@ -1333,3 +1333,160 @@ void CG_Player(Entity* entity)
         }
     }
 }
+
+extern void CG_AddScaleFade(void* le);
+extern void CG_DrawTracer(const math::Position3* _start,
+                          const math::Position3* _finish, float width);
+extern void BG_EvaluateTrajectory(const void* tr, int atTime,
+                                  math::Position3* result);
+extern void VectorNormalize2(const float* v, float* out);
+extern int dword_DF6ADC[6];
+extern int dword_DF6AE0[6];
+extern int dword_F6400C[4 * 1580];
+extern int dword_F6413C[4 * 1580];
+extern int dword_F63BB8[4 * 1580];
+extern int dword_F63BBC[4 * 1580];
+extern int dword_F63BC0[4 * 1580];
+extern int dword_F63BE8[4 * 1580];
+extern int dword_F63BEC[4 * 1580];
+extern int dword_F63BF0[4 * 1580];
+extern int dword_F63C18[4 * 1580];
+extern int dword_F63C1C[4 * 1580];
+extern int dword_F63C20[4 * 1580];
+extern float unk_F63BC4[4 * 1580 * 4];
+extern float unk_F63BF4[4 * 6320];
+extern float unk_F63C24[4 * 6320];
+extern int dword_F63554[4 * 1580];
+extern void j_nullsub_89(void* obj, float dtime);
+extern void CL_DObjInvalidateSkels();
+extern int cg_addentities;
+extern void* TestFPS_sInst;
+extern int Entity_IsInSnapshot(Entity* ent);
+extern void CG_CalcEntityLerpPositions(Entity* cent);
+
+// ea: 0x006A1BC0
+void CG_AddMovingTracer(void* le)
+{
+    int v2 = 4 * ((localEntityFull*)le)->leFlags;
+    float v3 = *(float*)&dword_DF6ADC[v2];
+    float dir[3];
+    dir[0] = *(float*)&dword_DF6AE0[v2];
+    dir[1] = v3;
+    dir[2] = 0.0f;
+    math::Position3 end;
+    BG_EvaluateTrajectory(&((localEntityFull*)le)->pos, cgGlobal_time, &end);
+    float v6[3];
+    VectorNormalize2(((localEntityFull*)le)->pos.trDelta, v6);
+    float v4[3];
+    v4[0] = (v6[0] * dir[1]) + end.v.m128_f32[0];
+    v4[1] = (v6[1] * dir[1]) + end.v.m128_f32[1];
+    v4[2] = (v6[2] * dir[1]) + end.v.m128_f32[2];
+    CG_DrawTracer(&end, (math::Position3*)v4, dir[0]);
+}
+
+// ea: 0x006A1C80
+void CG_AddLocalEntities()
+{
+    localEntity_t* prev = cg_activeLocalEntities.prev;
+    dword_F6400C[1580 * currCl] = 0;
+    if (prev != &cg_activeLocalEntities)
+    {
+        localEntity_t* v2;
+        do
+        {
+            v2 = prev->prev;
+            if (cgGlobal_time < ((localEntityFull*)prev)->endTime)
+            {
+                int leType = ((localEntityFull*)prev)->leType;
+                if (leType)
+                {
+                    if (leType == 1)
+                    {
+                        CG_AddScaleFade(prev);
+                    }
+                    else if (leType == 2)
+                    {
+                        CG_AddMovingTracer(prev);
+                    }
+                    else
+                    {
+                        CG_Error("Bad leType: %i", leType);
+                    }
+                }
+                else
+                {
+                    RE_AddRefEntityToScene(&((localEntityFull*)prev)->refEntity,
+                                           -1);
+                }
+            }
+            else
+            {
+                if (v2 == nullptr)
+                    CG_Error("CG_FreeLocalEntity: not active");
+                prev->prev->next = prev->next;
+                prev->next->prev = prev->prev;
+                prev->next = cg_freeLocalEntities;
+                cg_freeLocalEntities = prev;
+            }
+            prev = v2;
+        } while (v2 != &cg_activeLocalEntities);
+    }
+}
+
+// ea: 0x006AC270
+void CG_AddPacketEntities()
+{
+    CL_DObjInvalidateSkels();
+    int count = *(int*)((char*)&EntityHandleDb_sInst + 0x2AB0);
+    for (int i = 0; i < count; ++i)
+    {
+        Entity* ent = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+                                  + 4 * i);
+        if (ent != nullptr && ent->mDObj != nullptr)
+            j_nullsub_89(ent->mDObj, dword_F63554[1580 * currCl] * 0.001f);
+    }
+    int v4 = 1580 * currCl;
+    dword_F6413C[v4] = 0;
+    dword_F63BB8[v4] = 0;
+    float ang0 = (360 * (cgGlobal_time & 0xFFF)) * 0.00024420026f;
+    memcpy(&dword_F63BBC[v4], &ang0, 4);
+    dword_F63BC0[v4] = 0;
+    dword_F63BE8[v4] = 0;
+    float ang1 = (360 * (cgGlobal_time & 0x7FF)) * 0.00048828125f;
+    memcpy(&dword_F63BEC[v4], &ang1, 4);
+    dword_F63BF0[v4] = 0;
+    dword_F63C18[v4] = 0;
+    float ang2 = (360 * (cgGlobal_time & 0x3FF)) * 0.0009765625f;
+    memcpy(&dword_F63C1C[v4], &ang2, 4);
+    dword_F63C20[v4] = 0;
+    float f0 = *(float*)&dword_F63BB8[v4];
+    float f1 = *(float*)&dword_F63BBC[v4];
+    float f2 = *(float*)&dword_F63BC0[v4];
+    float a0[3] = {f0, f1, f2};
+    AnglesToAxis((const math::Position3*)a0,
+                 (float (*)[3])(unk_F63BC4 + v4 * 4));
+    float g0 = *(float*)&dword_F63BE8[1580 * currCl];
+    float g1 = *(float*)&dword_F63BEC[1580 * currCl];
+    float g2 = *(float*)&dword_F63BF0[1580 * currCl];
+    float a1[3] = {g0, g1, g2};
+    AnglesToAxis((const math::Position3*)a1,
+                 (float (*)[3])(unk_F63BF4 + 6320 * currCl));
+    float h0 = *(float*)&dword_F63C18[1580 * currCl];
+    float h1 = *(float*)&dword_F63C1C[1580 * currCl];
+    float h2 = *(float*)&dword_F63C20[1580 * currCl];
+    float a2[3] = {h0, h1, h2};
+    AnglesToAxis((const math::Position3*)a2,
+                 (float (*)[3])(unk_F63C24 + 6320 * currCl));
+    for (int i = 0; i < count; ++i)
+    {
+        Entity* v9 = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+                                 + 4 * i);
+        if (v9 != nullptr && Entity_IsInSnapshot(v9)
+            && TestFPS_sInst == nullptr && cg_addentities != 0
+            && v9->s.eType < 0x12u)
+        {
+            CG_CalcEntityLerpPositions(v9);
+            CG_ProcessEntity(v9);
+        }
+    }
+}
