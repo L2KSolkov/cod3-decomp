@@ -893,7 +893,9 @@ int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHP
 // BrocAPI (g_scr.cpp) - artillery callback used by G_LaunchMissile
 // ============================================================================
 struct BrocExports {
-    uint8_t _pad[0xC50];
+    uint8_t _pad[0x154];
+    void (*mCallbackStopFollowing)();  // +0x154
+    uint8_t _pad158[0xC50 - 0x158];
     void (*mAnimInitialize)();  // +0xC50
     uint8_t _padC54[0xC90 - 0xC54];
     void (*mCallbackPlayerDamage)(unsigned int a1, unsigned int a2, unsigned int a3,
@@ -1101,13 +1103,16 @@ struct weaponFileInfo_t {
     int     iDamageOuterRadius;   // +0x5E4
     uint8_t _pad1c[0x5F8 - 0x5E8];
     int     iFireTime;            // +0x5F8
-    uint8_t _pad2[0x6E8 - 0x5FC];
+    uint8_t _pad2[0x634 - 0x5FC];
+    int     iFuseTime;            // +0x634
+    uint8_t _pad2b[0x6E8 - 0x638];
     int     bTwoHanded;           // +0x6E8
     uint8_t _pad4[0x704 - 0x6EC];
     int     bNoBounce;            // +0x704
     uint8_t _pad4b[0x764 - 0x708];
     int     iAltWeaponIndex;      // +0x764
-    uint8_t _pad5[0x774 - 0x768];
+    int     iShotCount;           // +0x768
+    uint8_t _pad5[0x774 - 0x76C];
     int     iTriggerRadius;       // +0x774
     int     iExplosionRadius;     // +0x778
     int     iExplosionInnerDamage;// +0x77C
@@ -1118,7 +1123,7 @@ struct weaponFileInfo_t {
     uint8_t projExplosion;        // +0x790
     uint8_t _pad7[0x79C - 0x791];
     int     bProjImpactExplode;   // +0x79C
-    uint8_t _pad7b[0x7AC - 0x7A0];
+    uint8_t _pad7a0[0x7AC - 0x7A0];
     int     iProjectileDelay;     // +0x7AC
     uint8_t _pad7b0[0x860 - 0x7B0];
     float   aiDamageMod;          // +0x860
@@ -1633,7 +1638,10 @@ void  G_RemoveHeadHitEnt(Entity* pSelf);             // g.o
 void  G_UpdateHeadHitEnt(Entity* pSelf);             // g.o
 void  StopPhysics(Entity* e);                        // g.o
 void  Sentient_Free(sentient_s* sentient);           // mp_actors.o
-enum { CON_DISCONNECTED = 0 };
+enum {
+    CON_DISCONNECTED = 0,
+    CON_CONNECTING = 1,
+};
 void  UpdateLinkedEntities(const ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities);  // g.o 0x485F20
 void  Svcmd_EntityList_f(void);                      // g.o 0x4640D0
 void  Scr_Vehicle_Pain(Entity* pSelf, Entity* pAttacker, int damage, const float* point,
@@ -1808,6 +1816,32 @@ int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o (redecl)
 int   Client_GetPushed(Entity* pSelf, Entity* pOther);  // g.o
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o (redecl)
+char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x4673B0
+Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin);  // g.o 0x4698C0
+Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType, weaponParms* wp);  // g.o 0x4816E0
+void  StopFollowing(Entity* ent);                // g.o 0x456160
+void  Spread_Fire_Fake(Entity* attacker, float gunPitch, float gunYaw,
+                       const float* weaponPosition, int weapon, float spread,
+                       float coneAngleTangent, unsigned int seed);  // g.o 0x481500
+void  Cmd_SetViewpos_f(Entity* ent);             // g.o 0x461930
+void  G_AddInvalidatedNode(Entity* pEnt, PathNodes::PathNode* pNode);  // g.o 0x455C10
+void  Sentient_Clean(sentient_s* sentient);      // mp_actors.o
+sentient_s* Sentient_Alloc(void);                // mp_actors.o
+void  Client_Clear(void* client, bool clearPersistentAlso, bool clearWeapons);  // game.o
+Entity* fire_grenade(Entity* self, const float* start, const float* dir,
+                     int grenadeWPID, int time);  // g.o
+void  AnglesToUp(const float* angles, float* up); // core.o
+void  bdRandom_setSeed(void* self, unsigned int seed);  // bd
+unsigned int bdRandom_nextUInt(void* self);       // bd
+void  j_nullsub_87(void* self);                   // g.o
+extern int g_doShellShock[16];                    // g.o
+extern float delta_0;                             // g.o
+int   Client_GetPushed(Entity* pSelf, Entity* pOther);  // g.o
+struct bdRandomState { unsigned int v[4]; };      // opaque
+PathNodes::PathNode* HandleDbToNode(PathNodes::NodeHandle h);  // helper
+void  Bullet_Endpos(float spread, float* end, weaponParms* wp, float randomA,
+                    float randomB);               // g.o overload
+int   G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode);  // g.o (g_dobj.cpp)
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o

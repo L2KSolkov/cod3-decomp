@@ -21,7 +21,7 @@ extern int   MSG_ReadLong(msg_t* msg);
 extern int   MSG_ReadByte(msg_t* msg);
 extern char* MSG_ReadString(msg_t* msg);
 extern void* _Z_MallocInternal(unsigned int size);
-extern void  ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
+extern char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
 extern void  SV_FreeAcknowledgedReliableCommands(client_s* cl);
 extern void  SV_PreFrame(int msec);
 extern void  SV_RunFrame(int msec);

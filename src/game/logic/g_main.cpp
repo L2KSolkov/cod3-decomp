@@ -2703,3 +2703,303 @@ void G_DebugCircle2Ex(const float* center, float radius, const float* dir,
     for (int i = 0; i < 16; ++i)
         CL_AddDebugLine((float*)center, pts[(i + 1) & 0xF], color, depthTest, duration, 1, 0);
 }
+
+// ea: 0x004673B0
+char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity)
+{
+    Entity* mObject = HandleDbToEnt(entity);
+    Client* client = mObject->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 854;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Client can not be null"))
+            __debugbreak();
+    }
+    Client_Clear(client, true, true);
+    client->pers.connected = CON_CONNECTING;
+    int v4 = (int)(g_player_maxhealth.value + 0.5f);
+    client->pers.maxHealth = v4;
+    client->ps.stats[2] = v4;
+    client->ps.mClient.mHandle.mVal = mObject->mHandle.mHandle.mVal;
+    mObject->touch = 2;
+    mObject->pain = 0;
+    mObject->client = client;
+    if (mObject->sentient != nullptr)
+    {
+        Sentient_Clean(mObject->sentient);
+    }
+    else
+    {
+        sentient_s* v7 = Sentient_Alloc();
+        if (v7 == nullptr)
+            G_Error("No sentient for player.\n");
+        mObject->sentient = v7;
+    }
+    mObject->sentient->pEnt = mObject;
+    mObject->sentient->eTeam = TEAM_ALLIES;
+    mObject->sentient->fScariness = 1.0f;
+    client->pers.playerState = 0;
+    client->pers.rank = 0;
+    client->ps.ctf_has_flag = 0;
+    client->pers.playerClass = -1;
+    client->pers.nextPlayerClass = -1;
+    client->ps.eFlags = 16;
+    mObject->r.svFlags = 512;
+    mObject->maxHealth = (int)g_player_maxhealth.value;
+    return nullptr;
+}
+
+// ea: 0x004698C0
+Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin)
+{
+    if (IS_NAN(origin->v.m128_f32[0]) || IS_NAN(origin->v.m128_f32[1])
+        || IS_NAN(origin->v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_mover.cpp";
+        AeAssert::gCurrentLine = 79;
+        AeAssert::gCurrentExpr = "!IS_NAN((origin)[0]) && !IS_NAN((origin)[1]) && !IS_NAN((origin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    unsigned int clipmask = ent->clipmask;
+    if (clipmask != 0)
+    {
+        if (ent->r.contents == 0x4000000)
+            return nullptr;
+    }
+    else
+    {
+        clipmask = 17;
+    }
+    int capsule = 0;
+    unsigned int mVal;
+    if (ent->s.eType == 3)
+    {
+        mVal = ent->r.mOwner.mHandle.mVal;
+    }
+    else if (ent->s.eType == 1)
+    {
+        mVal = ent->mHandle.mHandle.mVal;
+        capsule = 1;
+    }
+    else
+    {
+        mVal = 0;
+    }
+    math::Position3 end;
+    end.v.m128_f32[0] = origin->v.m128_f32[0];
+    end.v.m128_f32[1] = origin->v.m128_f32[1];
+    end.v.m128_f32[2] = origin->v.m128_f32[2] + 16.0f;
+    collision_context_t context(DbLinkedHandle<EntityHandleDb, Entity>(), (int)clipmask);
+    trace_t tr;
+    memset(&tr, 0, sizeof(tr));
+    SV_Trace(&tr, origin, &ent->r.mins, &ent->r.maxs, &end, &context,
+             capsule, 0, nullptr, 0, 0.0f);
+    if (tr.mEntity.mHandle.mVal == 0)
+        return nullptr;
+    return HandleDbToEnt(tr.mEntity);
+}
+
+// ea: 0x004816E0
+Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType, weaponParms* wp)
+{
+    weaponFileInfo_t* pWeapInfo = wp->pWeapInfo;
+    float tossPos[3];
+    tossPos[0] = pWeapInfo->iProjectileSpeed * wp->forward[0];
+    tossPos[1] = pWeapInfo->iProjectileSpeed * wp->forward[1];
+    tossPos[2] = pWeapInfo->iProjectileSpeed * wp->forward[2];
+    tossPos[2] += pWeapInfo->iProjectileSpeedUp;
+    int iFuseTime = pWeapInfo->iFuseTime;
+    float start[3];
+    start[0] = (wp->forward[0] * delta_0) + wp->muzzleTrace[0];
+    start[1] = (wp->forward[1] * delta_0) + wp->muzzleTrace[1];
+    start[2] = (wp->forward[2] * delta_0) + wp->muzzleTrace[2];
+    Entity* v7 = fire_grenade(ent, start, tossPos, grenType, iFuseTime);
+    VectorNormalize(tossPos);
+    float v8 = ((ent->client->ps.velocity.v.m128_f32[0] * tossPos[0])
+                + (ent->client->ps.velocity.v.m128_f32[1] * tossPos[1]))
+               + (ent->client->ps.velocity.v.m128_f32[2] * tossPos[2]);
+    v7->s.pos.trDelta[0] += v8 * tossPos[0];
+    v7->s.pos.trDelta[1] += v8 * tossPos[1];
+    v7->s.pos.trDelta[2] += v8 * tossPos[2];
+    math::Dir3 dir;
+    dir.v.m128_f32[0] = wp->forward[0];
+    dir.v.m128_f32[1] = wp->forward[1];
+    dir.v.m128_f32[2] = wp->forward[2];
+    math::Position3 pos;
+    pos.v.m128_f32[0] = start[0];
+    pos.v.m128_f32[1] = start[1];
+    pos.v.m128_f32[2] = start[2];
+    MultiplayerMgr::MPEntityHandle h;
+    h.mVal = 0;
+    MultiplayerMgr::sInst->FireMissile(grenType, pos, dir, h);
+    return v7;
+}
+
+// ea: 0x00456160
+void StopFollowing(Entity* ent)
+{
+    Client* client = ent->client;
+    if ((0x100000 & client->ps.pm_flags) != 0
+        && client->ps.spectatorClient != -1
+        && gpBrocAPI != nullptr)
+    {
+        if (gpBrocAPI->mBrocExports.mCallbackStopFollowing != nullptr)
+            gpBrocAPI->mBrocExports.mCallbackStopFollowing();
+    }
+    ent->client->ps.spectatorClient = -1;
+    if ((0x100000 & client->ps.pm_flags) != 0 && !Entity_IsInRagdoll(ent))
+    {
+        float vUp[3];
+        vUp[0] = client->ps.viewangles[0];
+        vUp[1] = client->ps.viewangles[1];
+        vUp[2] = client->ps.viewangles[2];
+        float v8[3];
+        AnglesToForward(vUp, v8);
+        float vUp2[3];
+        AnglesToUp(vUp, vUp2);
+        vUp[0] += 15.0f;
+        float vAngles[3];
+        vAngles[0] = client->ps.origin.v.m128_f32[0];
+        vAngles[1] = client->ps.origin.v.m128_f32[1];
+        vAngles[2] = client->ps.origin.v.m128_f32[2] + client->ps.viewHeightCurrent;
+        G_AddLean(ent, vAngles);
+        client->ps.pm_flags &= 0xFFEFFFDF;
+        client->ps.eFlags &= 0xFFEF9FFF;
+        client->ps.viewlocked = 0;
+        client->ps.fWeaponPosFrac = 0.0f;
+        G_SetOrigin(ent, vAngles);
+        client->ps.origin.v.m128_f32[0] = vAngles[0];
+        client->ps.origin.v.m128_f32[1] = vAngles[1];
+        client->ps.origin.v.m128_f32[2] = vAngles[2];
+        SetClientViewAngle(ent, vUp);
+        client->ps.shellshockIndex = 0;
+        client->ps.shellshockTime = 0;
+        client->ps.shellshockDuration = 0;
+        if (ent->IsLocalPlayer())
+            g_doShellShock[ent->GetPlayerIndex()] = 0;
+    }
+}
+
+// ea: 0x00481500
+void Spread_Fire_Fake(Entity* attacker, float gunPitch, float gunYaw,
+                      const float* weaponPosition, int weapon, float spread,
+                      float coneAngleTangent, unsigned int seed)
+{
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(weapon);
+    if (InfoForWeapon != nullptr)
+    {
+        weaponParms wp;
+        wp.pWeapInfo = InfoForWeapon;
+        float viewang[3] = { gunPitch, gunYaw, 0.0f };
+        AngleVectors(viewang, wp.forward, wp.right, wp.up);
+        wp.muzzleTrace[0] = weaponPosition[0];
+        wp.muzzleTrace[1] = weaponPosition[1];
+        wp.muzzleTrace[2] = weaponPosition[2];
+        float start[3] = { weaponPosition[0], weaponPosition[1], weaponPosition[2] };
+        if (InfoForWeapon->iShotCount > 0)
+        {
+            bdRandomState rng;
+            bdRandom_setSeed(&rng, seed);
+            for (int v8 = 0; v8 < InfoForWeapon->iShotCount; ++v8)
+            {
+                float randomA = bdRandom_nextUInt(&rng) * 4.6566129e-10f;
+                float randomB = bdRandom_nextUInt(&rng) * 4.6566129e-10f;
+                float end[3];
+                Bullet_Endpos(spread, end, &wp, randomA, randomB);
+                Bullet_Fire_Fake_Extended(attacker->mHandle, attacker, start, end,
+                                          0, 0, &wp, attacker->mHandle,
+                                          coneAngleTangent);
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 1318;
+        AeAssert::gCurrentExpr = "info";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Spread_Fire_Fake: invalid weapon"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x00461930
+void Cmd_SetViewpos_f(Entity* ent)
+{
+    if (g_cheats->integer != 0)
+    {
+        if (Cmd_Argc() == 5)
+        {
+            float origin[3];
+            float angles[3] = { 0.0f, 0.0f, 0.0f };
+            char buffer[128];
+            for (int i = 0; i < 3; ++i)
+            {
+                Cmd_ArgvBuffer(i + 1, buffer, 128);
+                origin[i] = (float)atof(buffer);
+            }
+            Cmd_ArgvBuffer(4, buffer, 128);
+            angles[1] = (float)atof(buffer);
+            SetClientOrigin(ent, origin);
+            SetClientViewAngle(ent, angles);
+            g_LinkEntity(ent);
+        }
+        else
+        {
+            SV_GameSendServerCommand(ent->mHandle, "print \"usage: viewpos <x> <y> <z> <yaw>\"");
+        }
+    }
+    else
+    {
+        SV_GameSendServerCommand(ent->mHandle, "print \"GAME_CHEATSNOTENABLED\"");
+    }
+}
+
+// ea: 0x00455C10
+void G_AddInvalidatedNode(Entity* pEnt, PathNodes::PathNode* pNode)
+{
+    if (pEnt != nullptr && pEnt->client != nullptr && pNode != nullptr
+        && G_FindInvalidatedNode(pEnt, pNode) < 0)
+    {
+        if (pEnt->client->mInvalidatedNodeNum >= 5)
+        {
+            float curPos[3];
+            curPos[0] = pEnt->r.currentOrigin.v.m128_f32[0];
+            curPos[1] = pEnt->r.currentOrigin.v.m128_f32[1];
+            curPos[2] = pEnt->r.currentOrigin.v.m128_f32[2];
+            float fartDist = VectorDistanceSquared(pNode->mConstant.mOrigin, curPos);
+            Client* client = pEnt->client;
+            int iRmv = -1;
+            for (int v6 = 0; v6 < client->mInvalidatedNodeNum; ++v6)
+            {
+                float dist;
+                PathNodes::PathNode* v8 = HandleDbToNode(client->mInvalidatedNode[v6]);
+                if (v8 != nullptr)
+                    dist = VectorDistanceSquared(v8->mConstant.mOrigin, curPos);
+                else
+                    dist = 100000000.0f;
+                if (dist > fartDist)
+                {
+                    fartDist = dist;
+                    iRmv = v6;
+                }
+            }
+            if (iRmv >= 0)
+            {
+                Path_MarkNodeInvalid(pNode, pEnt->sentient->eTeam);
+                pEnt->client->mInvalidatedNode[iRmv].mValue = pNode->mHandle.mValue;
+            }
+        }
+        else
+        {
+            Path_MarkNodeInvalid(pNode, pEnt->sentient->eTeam);
+            pEnt->client->mInvalidatedNode[pEnt->client->mInvalidatedNodeNum++].mValue =
+                pNode->mHandle.mValue;
+        }
+    }
+}
