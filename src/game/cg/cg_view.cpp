@@ -1327,3 +1327,1126 @@ void CG_CalculateWeaponPosition_IdleAngles(float* angles)
     angles[0] = sinf(cgGlobal_time * 0.001f) * v10 * 0.0099999998f
                 + angles[0];
 }
+
+extern void* BG_GetInfoForWeapon(int weapon);
+extern void* EntityManager_mPlayers[16];
+extern int cg_gun_move_minspeed;
+extern int cg_gun_move_f;
+extern int cg_gun_move_r;
+extern int cg_gun_move_u;
+extern int cg_gun_move_rate;
+extern int cg_gun_ofs_f;
+extern int cg_gun_ofs_r;
+extern int cg_gun_ofs_u;
+extern int cg_gun_rot_minspeed;
+extern int cg_gun_rot_y;
+extern int cg_gun_rot_p;
+extern int cg_gun_rot_r;
+extern int cg_gun_rot_rate;
+extern int cg_viewKickDeflectTime;
+extern int cg_viewKickReturnTime;
+extern float vehicleOffsetRate;
+extern float vehicleOffset;
+extern float GetLeanFraction(float fFrac);
+extern void AnglesToRight(const float* angles, float* right);
+extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
+extern void AnglesToAxisF(const float* angles, float (*axis)[3]);
+extern void AxisToAngles(const float (*axis)[3], float* angles);
+extern float AngleNormalize360(float angle);
+extern float AngleNormalize180(float angle);
+extern int dword_F64030[4 * 1580];
+extern int dword_F64034[4 * 1580];
+extern int dword_F64038[4 * 1580];
+extern int dword_F6403C[4 * 1580];
+extern int dword_F64040[4 * 1580];
+extern int dword_F64044[4 * 1580];
+extern int dword_F64048[4 * 1580];
+extern int dword_F6404C[4 * 1580];
+extern int dword_F64050[4 * 1580];
+extern int dword_F64054[4 * 1580];
+extern int dword_F64058[4 * 1580];
+extern int dword_F6405C[4 * 1580];
+extern int dword_F64060[4 * 1580];
+extern int dword_F63FFC[4 * 1580];
+extern int dword_F6401C[4 * 1580];
+extern int dword_F64020[4 * 1580];
+extern float dword_F63BB0[4 * 1580];
+extern float* unk_F63B30;
+extern void CG_CalculateWeaponPosition_IdleAngles(float* angles);
+extern void CG_CalculateWeaponPosition_BobMovement(float* origin);
+extern bool IsPlayerFullySeatedInVehicle(Entity* player);
+extern unsigned int InteractionController_Inst(int instance);
+extern Entity* GetPlayer(int idx);
+
+struct playerEntity_t {
+    float fWeaponPosFrac;      // +0x00
+    float fracDir;             // +0x04
+    unsigned char _pad[0x28 - 0x08];
+    float gunOfs[3];           // +0x28
+    float gunAngOfs[3];        // +0x34
+    unsigned char _pad2[0x44 - 0x40];
+    float vLastMoveOrg[3];     // +0x44
+    float vLastMoveAng[3];     // +0x50
+};
+
+static playerEntity_t* GetPlayerEntity(int client)
+{
+    return (playerEntity_t*)((char*)unk_F63B30 + 6320 * client);
+}
+
+// ea: 0x0068FB20
+int CG_CalculateWeaponPosition_Sway()
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    void* InfoForWeapon = (void*)BG_GetInfoForWeapon(Player->client->ps.weapon);
+    float fWeaponPosFrac =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.fWeaponPosFrac;
+    int v5 = *(int*)&dword_F64168[1580 * currCl];
+    int v6 = v5 + *(int*)&dword_F6416C[1580 * currCl] - cgGlobal_time;
+    bool v7 = v5 + *(int*)&dword_F6416C[1580 * currCl] == cgGlobal_time;
+    float swayPitchScale = fWeaponPosFrac;
+    float v10;
+    if (v6 < 0 || v7)
+        v10 = 0.0f;
+    else
+    {
+        float swayVertScale = 1.0f;
+        int v8 = *(int*)&dword_F64164[1580 * currCl];
+        if (v8 == 0)
+            CG_ASSERT("cg[currCl].shellshock.parms",
+                      "c:\\cod\\code\\game\\cg_weapons.cpp", 1896);
+        int v9 = *(int*)&dword_F64164[1580 * currCl];
+        if (v6 < v9)
+            swayVertScale = (float)v6 / (float)v9;
+        v10 = ((3.0f - (swayVertScale * 2.0f)) * swayVertScale)
+              * swayVertScale;
+    }
+    float swayYawScale =
+        ((*(float*)((char*)InfoForWeapon + 0x6CC) - 1.0f) * v10) + 1.0f;
+    float v17, v18, swayHorizScale, v20, swayVertScale2, swayMaxAngle,
+        swayLerpSpeed;
+    if (BG_IsAimDownSightWeapon(
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.weapon)
+        != 0)
+    {
+        float v12 = swayPitchScale;
+        if (swayPitchScale > 0.0f
+            && *(int*)((char*)InfoForWeapon + 0x654) != 0)
+            return 0;
+        v18 = ((*(float*)((char*)InfoForWeapon + 0x6D0)
+                - *(float*)((char*)InfoForWeapon + 0x6B4))
+                   * v12)
+              + *(float*)((char*)InfoForWeapon + 0x6B4);
+        swayHorizScale =
+            ((*(float*)((char*)InfoForWeapon + 0x6DC)
+              - *(float*)((char*)InfoForWeapon + 0x6C0))
+                 * v12)
+            + *(float*)((char*)InfoForWeapon + 0x6C0);
+        v20 = ((*(float*)((char*)InfoForWeapon + 0x6E0)
+                - *(float*)((char*)InfoForWeapon + 0x6C4))
+                   * v12)
+              + *(float*)((char*)InfoForWeapon + 0x6C4);
+        swayVertScale2 =
+            ((*(float*)((char*)InfoForWeapon + 0x6E4)
+              - *(float*)((char*)InfoForWeapon + 0x6C8))
+                 * swayPitchScale)
+            + *(float*)((char*)InfoForWeapon + 0x6C8);
+        swayLerpSpeed =
+            ((*(float*)((char*)InfoForWeapon + 0x6D4)
+              - *(float*)((char*)InfoForWeapon + 0x6B8))
+                 * swayPitchScale)
+            + *(float*)((char*)InfoForWeapon + 0x6B8);
+        v17 = ((*(float*)((char*)InfoForWeapon + 0x6D8)
+                - *(float*)((char*)InfoForWeapon + 0x6BC))
+                   * v12)
+              + *(float*)((char*)InfoForWeapon + 0x6BC);
+        swayPitchScale = swayLerpSpeed;
+    }
+    else
+    {
+        v18 = *(float*)((char*)InfoForWeapon + 0x6B4);
+        swayHorizScale = *(float*)((char*)InfoForWeapon + 0x6C0);
+        v20 = *(float*)((char*)InfoForWeapon + 0x6C4);
+        swayVertScale2 = *(float*)((char*)InfoForWeapon + 0x6C8);
+        swayPitchScale = *(float*)((char*)InfoForWeapon + 0x6B8);
+        v17 = *(float*)((char*)InfoForWeapon + 0x6BC);
+    }
+    float v21 = v20 * swayYawScale;
+    float v51 = v17 * swayYawScale;
+    float swayYawScale2 = swayHorizScale * swayYawScale;
+    float v52 = v21;
+    float v50[3] = {v18 * swayYawScale, v21, v17 * swayYawScale};
+    AnglesSubtract((const math::Position3*)&angle[1580 * currCl],
+                   (const math::Position3*)&dword_F63CC0[1580 * currCl],
+                   (math::Position3*)v50);
+    float mTickDelta = ServerTime_mTickDelta;
+    if (mTickDelta == 0.0f)
+        mTickDelta = 0.05f;
+    float invFrame = 1.0f / (mTickDelta * 60.0f);
+    v50[0] *= invFrame;
+    v50[1] *= invFrame;
+    v50[2] *= invFrame;
+    float v24 = v50[0];
+    if (0.0f - swayVertScale2 <= v50[0])
+    {
+        if (v50[0] > swayVertScale2)
+            v24 = swayVertScale2;
+    }
+    else
+        v24 = 0.0f - swayVertScale2;
+    float v25 = v50[1];
+    if (0.0f - swayVertScale2 <= v50[1])
+    {
+        if (v50[1] > swayVertScale2)
+            v25 = swayVertScale2;
+    }
+    else
+        v25 = 0.0f - swayVertScale2;
+    int v26 = 1580 * currCl;
+    float v27 = dword_F63CE4[1580 * currCl];
+    float v28 = cgGlobal_frametime * 0.001f;
+    float v29 = v25 * swayYawScale2;
+    float v30 = v24 * v52;
+    float sway = (v25 * swayYawScale2) - v27;
+    float v31 = fabsf(sway);
+    float v33;
+    if (v31 <= 0.0049999999f
+        || fabsf((v28 * sway) * swayPitchScale) > v31)
+        v33 = v29;
+    else
+        v33 = ((v28 * sway) * swayPitchScale) + v27;
+    dword_F63CE4[1580 * currCl] = v33;
+    float v34 = dword_F63CE8[v26];
+    float sway2 = v30 - v34;
+    float v35 = fabsf(sway2);
+    float v36;
+    if (v35 <= 0.0049999999f
+        || fabsf((v28 * sway2) * swayPitchScale) > v35)
+        v36 = v30;
+    else
+        v36 = ((v28 * sway2) * swayPitchScale) + v34;
+    float v37 = v24 * v51;
+    float v38 = v25 * v50[2];
+    dword_F63CE8[v26] = v36;
+    float v39 = dword_F63CD0[v26];
+    float v40 = v37;
+    v50[0] = v37;
+    v50[1] = v38;
+    if ((v37 - v39) > 180.0f)
+    {
+        do
+            v40 = v40 - 360.0f;
+        while ((v40 - v39) > 180.0f);
+        v50[0] = v40;
+    }
+    float v41 = dword_F63CD4[v26];
+    if ((v38 - v41) > 180.0f)
+    {
+        do
+            v38 = v38 - 360.0f;
+        while ((v38 - v41) > 180.0f);
+        v50[1] = v38;
+    }
+    float v42 = dword_F63CD0[v26];
+    float sway3 = v40 - v42;
+    float v43 = fabsf(sway3);
+    if (v43 > 0.0049999999f && fabsf((v28 * sway3) * swayPitchScale) <= v43)
+        v40 = ((v28 * sway3) * swayPitchScale) + v42;
+    dword_F63CD0[v26] = v40;
+    float v44 = dword_F63CD4[v26];
+    float sway4 = v38 - v44;
+    float v45 = fabsf(sway4);
+    float v46 = (v28 * sway4) * swayPitchScale;
+    float v47;
+    if (v45 <= 0.0049999999f || fabsf(v46) > v45)
+        v47 = v38;
+    else
+        v47 = v46 + v44;
+    dword_F63CD4[v26] = v47;
+    dword_F63CD0[v26] = AngleNormalize180(dword_F63CD0[v26]);
+    dword_F63CD4[1580 * currCl] =
+        AngleNormalize180(dword_F63CD4[1580 * currCl]);
+    dword_F63CC0[1580 * currCl] = angle[1580 * currCl];
+    dword_F63CC4[1580 * currCl] = dword_F63CB4[1580 * currCl];
+    dword_F63CC8[1580 * currCl] = dword_F63CB8[1580 * currCl];
+    return 0;
+}
+
+// ea: 0x00690340
+void CG_CalculateWeaponPosition_BasePosition_movement(float* origin)
+{
+    float targetPos[3];
+    float fWeaponPosFrac =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.fWeaponPosFrac;
+    int pm_flags =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.pm_flags;
+    float base;
+    if ((pm_flags & 0x10000) != 0)
+        base = dword_F63B8C[1580 * currCl][347];
+    else if ((pm_flags & 1) != 0)
+        base = dword_F63B8C[1580 * currCl][350];
+    else if ((pm_flags & 2) != 0)
+        base = dword_F63B8C[1580 * currCl][349];
+    else
+        base = dword_F63B8C[1580 * currCl][348];
+    float fMin = base + *(float*)&cg_gun_move_minspeed;
+    if (dword_F641DC[1580 * currCl] <= fMin
+        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                   ->client->ps.weaponstate
+               == 5)
+    {
+        targetPos[0] = 0.0f;
+        targetPos[1] = 0.0f;
+        targetPos[2] = 0.0f;
+        goto apply;
+    }
+    float fFactor =
+        (dword_F641DC[1580 * currCl] - fMin)
+        / (*(float*)((char*)&EntityManager_GetPlayer(EntityManager_sInst,
+                                                     currCl)
+                          ->client->ps
+                     + 0x31C)
+           - fMin);
+    if (fFactor < 0.0f)
+        fFactor = 0.0f;
+    else if (fFactor > 1.0f)
+        fFactor = 1.0f;
+    {
+        int pm = EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                     ->client->ps.pm_flags;
+        float v8, v9, v10;
+        if ((pm & 0x10000) != 0)
+        {
+            v8 = dword_F63B8C[1580 * currCl][315] * fFactor;
+            v9 = dword_F63B8C[1580 * currCl][316] * fFactor;
+            v10 = dword_F63B8C[1580 * currCl][317] * fFactor;
+        }
+        else if ((pm & 1) != 0)
+        {
+            v8 = dword_F63B8C[1580 * currCl][339] * fFactor;
+            v9 = dword_F63B8C[1580 * currCl][340] * fFactor;
+            v10 = dword_F63B8C[1580 * currCl][341] * fFactor;
+        }
+        else if ((pm & 2) != 0)
+        {
+            v8 = dword_F63B8C[1580 * currCl][330] * fFactor;
+            v9 = dword_F63B8C[1580 * currCl][331] * fFactor;
+            v10 = dword_F63B8C[1580 * currCl][332] * fFactor;
+        }
+        else
+        {
+            v8 = dword_F63B8C[1580 * currCl][321] * fFactor;
+            v9 = dword_F63B8C[1580 * currCl][322] * fFactor;
+            v10 = dword_F63B8C[1580 * currCl][323] * fFactor;
+        }
+        targetPos[1] = (*(float*)&cg_gun_move_r * fFactor) + v9;
+        targetPos[0] = (*(float*)&cg_gun_move_f * fFactor) + v8;
+        targetPos[2] = (*(float*)&cg_gun_move_u * fFactor) + v10;
+    }
+apply:
+    {
+        Client* client =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        float v23, v24, v25;
+        if (client->ps.viewHeightTarget
+            == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                   ->client->ps.crouchViewHeight)
+        {
+            v23 = dword_F63B8C[1580 * currCl][327];
+            v24 = dword_F63B8C[1580 * currCl][328];
+            v25 = dword_F63B8C[1580 * currCl][329];
+        }
+        else if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                         ->client->ps.viewHeightTarget
+                 == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                        ->client->ps.proneViewHeight)
+        {
+            v23 = dword_F63B8C[1580 * currCl][336];
+            v24 = dword_F63B8C[1580 * currCl][337];
+            v25 = dword_F63B8C[1580 * currCl][338];
+        }
+        else
+        {
+            v23 = v24 = v25 = 0.0f;
+        }
+        targetPos[1] = *(float*)&cg_gun_ofs_r + (v24 + targetPos[1]);
+        targetPos[0] = *(float*)&cg_gun_ofs_f + (v23 + targetPos[0]);
+        targetPos[2] = *(float*)&cg_gun_ofs_u + (v25 + targetPos[2]);
+    }
+    playerEntity_t* pe = GetPlayerEntity(currCl);
+    for (int i = 0; i < 3; ++i)
+    {
+        if (pe->vLastMoveOrg[i] != targetPos[i])
+        {
+            float fWeaponPos =
+                EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                    ->client->ps.viewHeightCurrent;
+            float rate;
+            if (fWeaponPos
+                == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                       ->client->ps.proneViewHeight)
+                rate = dword_F63B8C[1580 * currCl][346];
+            else
+                rate = dword_F63B8C[1580 * currCl][345];
+            float frametime = cgGlobal_frametime;
+            float v37 =
+                (((rate + *(float*)&cg_gun_move_rate)
+                  * (targetPos[i] - pe->vLastMoveOrg[i]))
+                 * frametime)
+                * 0.001f;
+            float v39;
+            bool v40;
+            if (targetPos[i] <= pe->vLastMoveOrg[i])
+            {
+                float v41 = frametime * -0.0001f;
+                if (v37 > v41)
+                    v37 = v41;
+                v39 = pe->vLastMoveOrg[i] + v37;
+                v40 = targetPos[i] <= v39;
+            }
+            else
+            {
+                float v38 = frametime * 0.0001f;
+                if (v38 > v37)
+                    v37 = v38;
+                v39 = pe->vLastMoveOrg[i] + v37;
+                v40 = v39 <= targetPos[i];
+            }
+            pe->vLastMoveOrg[i] = v39;
+            if (!v40)
+                pe->vLastMoveOrg[i] = targetPos[i];
+        }
+    }
+    float fWeaponPosFrac2 =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.fWeaponPosFrac;
+    if (fWeaponPosFrac2 == 0.0f)
+    {
+        origin[0] = pe->vLastMoveOrg[0] + origin[0];
+        origin[1] = pe->vLastMoveOrg[1] + origin[1];
+        origin[2] = pe->vLastMoveOrg[2] + origin[2];
+    }
+    else if (fWeaponPosFrac2 < 0.5f)
+    {
+        float v40 = 1.0f - (fWeaponPosFrac2 * 2.0f);
+        origin[0] = (v40 * pe->vLastMoveOrg[0]) + origin[0];
+        origin[1] = (v40 * pe->vLastMoveOrg[1]) + origin[1];
+        origin[2] = (v40 * pe->vLastMoveOrg[2]) + origin[2];
+    }
+}
+
+// ea: 0x00690AC0
+void CG_CalculateWeaponPosition_BasePosition_angles(float* angles)
+{
+    float targetAng[3];
+    int pm_flags =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.pm_flags;
+    float base;
+    if ((pm_flags & 1) != 0)
+        base = dword_F63B8C[1580 * currCl][356];
+    else if ((pm_flags & 2) != 0)
+        base = dword_F63B8C[1580 * currCl][355];
+    else
+        base = dword_F63B8C[1580 * currCl][354];
+    float fMin = base + *(float*)&cg_gun_rot_minspeed;
+    if (dword_F641DC[1580 * currCl] <= fMin
+        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                   ->client->ps.weaponstate
+               == 5)
+    {
+        targetAng[0] = 0.0f;
+        targetAng[1] = 0.0f;
+        targetAng[2] = 0.0f;
+        goto apply;
+    }
+    float fFactor =
+        (dword_F641DC[1580 * currCl] - fMin)
+        / (*(float*)((char*)&EntityManager_GetPlayer(EntityManager_sInst,
+                                                     currCl)
+                          ->client->ps
+                     + 0x31C)
+           - fMin);
+    if (fFactor < 0.0f)
+        fFactor = 0.0f;
+    else if (fFactor > 1.0f)
+        fFactor = 1.0f;
+    {
+        int pm = EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                     ->client->ps.pm_flags;
+        float v9, v10, v11;
+        if ((pm & 1) != 0)
+        {
+            v9 = dword_F63B8C[1580 * currCl][342] * fFactor;
+            v10 = dword_F63B8C[1580 * currCl][343] * fFactor;
+            v11 = dword_F63B8C[1580 * currCl][344] * fFactor;
+        }
+        else if ((pm & 2) != 0)
+        {
+            v9 = dword_F63B8C[1580 * currCl][333] * fFactor;
+            v10 = dword_F63B8C[1580 * currCl][334] * fFactor;
+            v11 = dword_F63B8C[1580 * currCl][335] * fFactor;
+        }
+        else
+        {
+            v9 = dword_F63B8C[1580 * currCl][324] * fFactor;
+            v10 = dword_F63B8C[1580 * currCl][325] * fFactor;
+            v11 = dword_F63B8C[1580 * currCl][326] * fFactor;
+        }
+        targetAng[1] = (*(float*)&cg_gun_rot_y * fFactor) + v10;
+        targetAng[0] = (*(float*)&cg_gun_rot_p * fFactor) + v9;
+        targetAng[2] = (*(float*)&cg_gun_rot_r * fFactor) + v11;
+    }
+apply:
+    {
+        float fWeaponPosFracApply =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.fWeaponPosFrac;
+        if (fWeaponPosFracApply != 0.0f)
+        {
+            float v19 = 1.0f - fWeaponPosFracApply;
+            targetAng[0] *= v19;
+            targetAng[1] *= v19;
+            targetAng[2] *= v19;
+        }
+    }
+    playerEntity_t* pe = GetPlayerEntity(currCl);
+    for (int i = 0; i < 3; ++i)
+    {
+        if (pe->vLastMoveAng[i] != targetAng[i])
+        {
+            float fWeaponPos =
+                EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                    ->client->ps.viewHeightCurrent;
+            float rate;
+            if (fWeaponPos
+                == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                       ->client->ps.proneViewHeight)
+                rate = dword_F63B8C[1580 * currCl][352];
+            else
+                rate = dword_F63B8C[1580 * currCl][351];
+            float frametime = cgGlobal_frametime;
+            float v29 =
+                (((rate + *(float*)&cg_gun_rot_rate)
+                  * (targetAng[i] - pe->vLastMoveAng[i]))
+                 * frametime)
+                * 0.001f;
+            float v31;
+            bool v32;
+            if (targetAng[i] <= pe->vLastMoveAng[i])
+            {
+                float v33 = frametime * -0.0001f;
+                if (v29 > v33)
+                    v29 = v33;
+                v31 = pe->vLastMoveAng[i] + v29;
+                v32 = targetAng[i] <= v31;
+            }
+            else
+            {
+                float v30 = frametime * 0.0001f;
+                if (v30 > v29)
+                    v29 = v30;
+                v31 = pe->vLastMoveAng[i] + v29;
+                v32 = v31 <= targetAng[i];
+            }
+            pe->vLastMoveAng[i] = v31;
+            if (!v32)
+                pe->vLastMoveAng[i] = targetAng[i];
+        }
+    }
+    float fWeaponPosFrac =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.fWeaponPosFrac;
+    if (fWeaponPosFrac == 0.0f)
+    {
+        angles[0] = angles[0] + pe->vLastMoveAng[0];
+        angles[1] = pe->vLastMoveAng[1] + angles[1];
+        angles[2] = pe->vLastMoveAng[2] + angles[2];
+    }
+    else if (fWeaponPosFrac < 0.5f)
+    {
+        float v40 = 1.0f - (fWeaponPosFrac * 2.0f);
+        angles[0] = (v40 * pe->vLastMoveAng[0]) + angles[0];
+        angles[1] = (v40 * pe->vLastMoveAng[1]) + angles[1];
+        angles[2] = (v40 * pe->vLastMoveAng[2]) + angles[2];
+    }
+}
+
+// ea: 0x00691120
+void CG_CalculateWeaponPosition_BasePosition(float* origin)
+{
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    float v3;
+    if ((0x100000 & client->ps.eFlags) != 0)
+    {
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        if (!IsPlayerFullySeatedInVehicle(Player)
+            || ((client->ps.vehType != 1 || client->ps.vehPos != 2)
+                && (*(unsigned char*)((void*)InteractionController_Inst(
+                         currCl))
+                    & 0x20)
+                       == 0))
+        {
+            v3 = ((cgGlobal_frametime * 0.001f) * vehicleOffsetRate)
+                 + vehicleOffset;
+            vehicleOffset = v3;
+            goto clamp;
+        }
+    }
+    v3 = vehicleOffset;
+    if (vehicleOffset > 0.0f)
+    {
+        v3 = vehicleOffset
+             - ((cgGlobal_frametime * 0.001f) * vehicleOffsetRate);
+        vehicleOffset = v3;
+    }
+clamp:
+    if (v3 < 0.0f || v3 > 1.0f)
+    {
+        v3 = v3 < 0.0f ? 0.0f : 1.0f;
+        vehicleOffset = v3;
+    }
+    float* v5 = dword_F63B8C[1580 * currCl];
+    float vGunOfs[3];
+    if (sqrtf(v5[315] * v5[315] + v5[316] * v5[316]
+              + v5[317] * v5[317])
+        <= 0.0099999998f)
+    {
+        vGunOfs[0] = 100.0f;
+        vGunOfs[1] = 100.0f;
+        vGunOfs[2] = 100.0f;
+    }
+    else
+    {
+        vGunOfs[0] = v5[315] * v3;
+        vGunOfs[1] = v5[316] * v3;
+        vGunOfs[2] = v5[317] * v3;
+    }
+    CG_CalculateWeaponPosition_BasePosition_movement(vGunOfs);
+    playerEntity_t* pe = GetPlayerEntity(currCl);
+    pe->gunOfs[0] = vGunOfs[0];
+    pe->gunOfs[1] = vGunOfs[1];
+    pe->gunOfs[2] = vGunOfs[2];
+    origin[0] = *origin + vGunOfs[0];
+    origin[1] = origin[1] + vGunOfs[1];
+    origin[2] = origin[2] + vGunOfs[2];
+}
+
+// ea: 0x00691310
+void CG_CalculateWeaponPosition_BaseAngles(float* angles)
+{
+    float vGunAngOfs[3] = {0.0f, 0.0f, 0.0f};
+    playerEntity_t* pe = GetPlayerEntity(currCl);
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) != 0)
+    {
+        float fWeaponPosFrac =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.fWeaponPosFrac;
+        if (fWeaponPosFrac != 1.0f && fWeaponPosFrac != 0.0f)
+        {
+            int v3;
+            if (fWeaponPosFrac == pe->fWeaponPosFrac)
+                v3 = (int)pe->fracDir;
+            else
+                v3 = fWeaponPosFrac >= pe->fWeaponPosFrac;
+            if (pe->fWeaponPosFrac == 1.0f
+                || pe->fWeaponPosFrac == 0.0f)
+            {
+                pe->fracDir = (float)v3;
+                pe->fWeaponPosFrac = 0.0f;
+            }
+        }
+        pe->fWeaponPosFrac =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.fWeaponPosFrac;
+        vGunAngOfs[0] =
+            dword_F63B8C[1580 * currCl][498]
+            * EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                  ->client->ps.fWeaponPosFrac;
+    }
+    CG_CalculateWeaponPosition_BasePosition_angles(vGunAngOfs);
+    pe->gunAngOfs[0] = vGunAngOfs[0];
+    pe->gunAngOfs[1] = vGunAngOfs[1];
+    pe->gunAngOfs[2] = vGunAngOfs[2];
+    angles[0] = *angles + vGunAngOfs[0];
+    angles[1] = angles[1] + vGunAngOfs[1];
+    angles[2] = angles[2] + vGunAngOfs[2];
+}
+
+// ea: 0x00691510
+int CG_CalculateWeaponPosition_GunRecoil_SingleAngle(
+    float* fOffset, float* fSpeed, float fTimeStep, float fOfsCap,
+    float fGunKickAccel, float fGunKickSpeedMax, float fGunKickSpeedDecay,
+    float fGunKickStaticDecay)
+{
+    if (fabsf(*fOffset) < 0.25f && fabsf(*fSpeed) < 1.0f)
+    {
+        *fOffset = 0.0f;
+        *fSpeed = 0.0f;
+        return 1;
+    }
+    float v9 = (*fSpeed * fTimeStep) + *fOffset;
+    *fOffset = v9;
+    if (v9 > fOfsCap)
+    {
+        *fOffset = fOfsCap;
+        if (*fSpeed > 0.0f)
+            *fSpeed = 0.0f;
+    }
+    else if ((0.0f - fOfsCap) > v9)
+    {
+        *fOffset = 0.0f - fOfsCap;
+        if (*fSpeed < 0.0f)
+            *fSpeed = 0.0f;
+    }
+    if (*fOffset <= 0.0f)
+    {
+        if (*fOffset < 0.0f)
+            *fSpeed = (fTimeStep * fGunKickAccel) + *fSpeed;
+    }
+    else
+    {
+        *fSpeed = *fSpeed - (fTimeStep * fGunKickAccel);
+    }
+    float v11 = fTimeStep * fGunKickStaticDecay;
+    float v12 = *fSpeed - ((*fSpeed * fTimeStep) * fGunKickSpeedDecay);
+    *fSpeed = v12;
+    bool v14;
+    if (v12 <= 0.0f)
+    {
+        float v15 = v11 + v12;
+        *fSpeed = v15;
+        v14 = v15 <= 0.0f;
+    }
+    else
+    {
+        float v13 = v12 - v11;
+        *fSpeed = v13;
+        v14 = v13 >= 0.0f;
+    }
+    if (!v14)
+        *fSpeed = 0.0f;
+    if (*fSpeed <= fGunKickSpeedMax)
+    {
+        if ((0.0f - fGunKickSpeedMax) > *fSpeed)
+            *fSpeed = 0.0f - fGunKickSpeedMax;
+    }
+    else
+    {
+        *fSpeed = fGunKickSpeedMax;
+    }
+    return 0;
+}
+
+// ea: 0x00691630
+void CG_CalculateWeaponPosition_GunRecoil(float* angles)
+{
+    float fPosLerp =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.fWeaponPosFrac;
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) != 0)
+    {
+        int v2 = 1580 * currCl;
+        float* v3 = dword_F63B8C[1580 * currCl];
+        int frametime = cgGlobal_frametime;
+        float v5 = ((v3[505] - v3[523]) * fPosLerp) + v3[523];
+        float fSpeedMax = ((v3[506] - v3[524]) * fPosLerp) + v3[524];
+        float v7 = ((v3[508] - v3[526]) * fPosLerp) + v3[526];
+        float fPosLerpa = ((v3[507] - v3[525]) * fPosLerp) + v3[525];
+        float v9 = v3[427];
+        if (cgGlobal_frametime > 0)
+        {
+            while (1)
+            {
+                int v8;
+                if (frametime <= 5)
+                {
+                    v8 = frametime;
+                    frametime = 0;
+                }
+                else
+                {
+                    v8 = 5;
+                    frametime -= 5;
+                }
+                float v10 = v8 * 0.001f;
+                int v11 = 0;
+                if (fabsf(*(float*)&dword_F64050[v2]) < 0.25f
+                    && fabsf(*(float*)&dword_F6405C[v2]) < 1.0f)
+                {
+                    dword_F64050[v2] = 0;
+                    dword_F6405C[v2] = 0;
+                    v11 = 1;
+                    goto label_28;
+                }
+                float v12 = (*(float*)&dword_F6405C[v2] * v10)
+                            + *(float*)&dword_F64050[v2];
+                *(float*)&dword_F64050[v2] = v12;
+                if (v12 > v9)
+                    break;
+                if ((0.0f - v9) > v12)
+                {
+                    *(float*)&dword_F64050[v2] = 0.0f - v9;
+                    if (*(float*)&dword_F6405C[v2] < 0.0f)
+                        dword_F6405C[v2] = 0;
+                }
+                if (*(float*)&dword_F64050[v2] <= 0.0f)
+                {
+                    if (*(float*)&dword_F64050[v2] < 0.0f)
+                        *(float*)&dword_F6405C[v2] =
+                            (v10 * v5) + *(float*)&dword_F6405C[v2];
+                }
+                else
+                {
+                    *(float*)&dword_F6405C[v2] =
+                        *(float*)&dword_F6405C[v2] - (v10 * v5);
+                }
+                float v14 = *(float*)&dword_F6405C[v2]
+                            - ((*(float*)&dword_F6405C[v2] * v10)
+                               * fPosLerpa);
+                *(float*)&dword_F6405C[v2] = v14;
+                float v15 = v10 * v7;
+                bool v17;
+                if (v14 <= 0.0f)
+                {
+                    float v18 = v15 + v14;
+                    *(float*)&dword_F6405C[v2] = v18;
+                    v17 = v18 <= 0.0f;
+                }
+                else
+                {
+                    float v16 = v14 - v15;
+                    *(float*)&dword_F6405C[v2] = v16;
+                    v17 = v16 >= 0.0f;
+                }
+                if (!v17)
+                    dword_F6405C[v2] = 0;
+                if (*(float*)&dword_F6405C[v2] <= fSpeedMax)
+                {
+                    if ((0.0f - fSpeedMax) > *(float*)&dword_F6405C[v2])
+                        *(float*)&dword_F6405C[v2] = 0.0f - fSpeedMax;
+                }
+                else
+                {
+                    *(float*)&dword_F6405C[v2] = fSpeedMax;
+                }
+            label_28:
+                float v19 = v3[428];
+                if (fabsf(*(float*)&dword_F64054[v2]) < 0.25f
+                    && fabsf(*(float*)&dword_F64060[v2]) < 1.0f)
+                {
+                    dword_F64054[v2] = 0;
+                    dword_F64060[v2] = 0;
+                    if (v11 != 0)
+                        goto label_32;
+                    goto label_31;
+                }
+                float v20 = (*(float*)&dword_F64060[v2] * v10)
+                            + *(float*)&dword_F64054[v2];
+                *(float*)&dword_F64054[v2] = v20;
+                if (v20 > v19)
+                {
+                    *(float*)&dword_F64054[v2] = v19;
+                    if (*(float*)&dword_F64060[v2] > 0.0f)
+                        dword_F64060[v2] = 0;
+                    goto label_31;
+                }
+                if ((0.0f - v19) > v20)
+                {
+                    *(float*)&dword_F64054[v2] = 0.0f - v19;
+                    if (*(float*)&dword_F64060[v2] < 0.0f)
+                        dword_F64060[v2] = 0;
+                }
+                if (*(float*)&dword_F64054[v2] <= 0.0f)
+                {
+                    if (*(float*)&dword_F64054[v2] < 0.0f)
+                        *(float*)&dword_F64060[v2] =
+                            (v10 * v5) + *(float*)&dword_F64060[v2];
+                }
+                else
+                {
+                    *(float*)&dword_F64060[v2] =
+                        *(float*)&dword_F64060[v2] - (v10 * v5);
+                }
+                float v22 = *(float*)&dword_F64060[v2]
+                            - ((*(float*)&dword_F64060[v2] * v10)
+                               * fPosLerpa);
+                *(float*)&dword_F64060[v2] = v22;
+                float v23 = v10 * v7;
+                bool v25;
+                if (v22 <= 0.0f)
+                {
+                    float v26 = v23 + v22;
+                    *(float*)&dword_F64060[v2] = v26;
+                    v25 = v26 <= 0.0f;
+                }
+                else
+                {
+                    float v24 = v22 - v23;
+                    *(float*)&dword_F64060[v2] = v24;
+                    v25 = v24 >= 0.0f;
+                }
+                if (!v25)
+                    dword_F64060[v2] = 0;
+                if (*(float*)&dword_F64060[v2] <= fSpeedMax)
+                {
+                    if ((0.0f - fSpeedMax) > *(float*)&dword_F64060[v2])
+                        *(float*)&dword_F64060[v2] = 0.0f - fSpeedMax;
+                }
+                else
+                {
+                    *(float*)&dword_F64060[v2] = fSpeedMax;
+                }
+            label_31:
+                if (frametime <= 0)
+                    goto label_32;
+            }
+            *(float*)&dword_F64050[v2] = v9;
+            if (*(float*)&dword_F6405C[v2] > 0.0f)
+                dword_F6405C[v2] = 0;
+            goto label_28;
+        }
+    label_32:
+        angles[0] = *(float*)&dword_F64050[v2] + angles[0];
+        angles[1] = *(float*)&dword_F64054[1580 * currCl] + angles[1];
+        angles[2] = *(float*)&dword_F64058[1580 * currCl] + angles[2];
+    }
+}
+
+// ea: 0x00691AB0
+void CG_CalculateWeaponPosition_ToWorldPosition(float* origin)
+{
+    float vOffset[3] = {origin[0], origin[1], origin[2]};
+    float vAxis[3], right[3], up[3];
+    AngleVectors(&angle[1580 * currCl], vAxis, right, up);
+    origin[0] = dword_F63C70[1580 * currCl];
+    origin[1] = dword_F63C74[1580 * currCl];
+    origin[2] = dword_F63C78[1580 * currCl];
+    float v2 = 0.0f - vOffset[1];
+    origin[0] = ((v2 * right[0]) + (up[0] * vOffset[2])
+                 + (vAxis[0] * vOffset[0]))
+                + origin[0];
+    origin[1] = ((v2 * right[1]) + (up[1] * vOffset[2])
+                 + (vAxis[1] * vOffset[0]))
+                + origin[1];
+    origin[2] = ((v2 * right[2]) + (up[2] * vOffset[2])
+                 + (vAxis[2] * vOffset[0]))
+                + origin[2];
+}
+
+// ea: 0x00691BE0
+void CG_CalculateWeaponPosition_ToWorldAngles(float* angles)
+{
+    float vAxis[3][3], vAxis2[3][3], vAxis3[3][3];
+    AnglesToAxisF(angles, vAxis);
+    AnglesToAxisF(&angle[1580 * currCl], vAxis2);
+    MatrixMultiply(vAxis, vAxis2, vAxis3);
+    AxisToAngles(vAxis3, angles);
+}
+
+// ea: 0x00691C40
+void CG_CalculateWeaponPosition_SaveOffsetMovement(float* origin)
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) != 0)
+    {
+        float fWeaponPosFrac =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.fWeaponPosFrac;
+        float v3 = 0.0f;
+        int v4 = 1580 * currCl;
+        if (fWeaponPosFrac == 0.0f)
+        {
+            dword_F64044[1580 * currCl] = 0;
+            dword_F64048[v4] = 0;
+        }
+        else
+        {
+            *(float*)&dword_F64044[1580 * currCl] =
+                (*origin - dword_F63C70[1580 * currCl]) * fWeaponPosFrac;
+            *(float*)&dword_F64048[v4] =
+                (origin[1] - dword_F63C74[v4]) * fWeaponPosFrac;
+            v3 = (origin[2] - dword_F63C78[v4]) * fWeaponPosFrac;
+        }
+        *(float*)&dword_F6404C[v4] = v3;
+    }
+    else
+    {
+        int v5 = 1580 * currCl;
+        dword_F64044[v5] = 0;
+        dword_F64048[v5] = 0;
+        dword_F6404C[v5] = 0;
+    }
+}
+
+// ea: 0x00691D40
+void CG_CalculateWeaponPosition_SaveOffsetAngles(float* angles)
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) == 0
+        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                   ->client->ps.fWeaponPosFrac
+               == 0.0f)
+    {
+        int v2 = 1580 * currCl;
+        dword_F6403C[v2] = *(int*)&angle[1580 * currCl];
+        dword_F64040[v2] = *(int*)&dword_F63CB4[v2];
+    }
+    else
+    {
+        *(float*)&dword_F6403C[1580 * currCl] = AngleNormalize360(*angles);
+        *(float*)&dword_F64040[1580 * currCl] =
+            AngleNormalize360(angles[1]);
+    }
+}
+
+// ea: 0x00691E00
+void CG_CalculateWeaponAngles(float* angles)
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (dword_F63B8C[1580 * currCl]
+        != (float*)BG_GetInfoForWeapon(Player->client->ps.weapon))
+    {
+        CG_ASSERT("cg[currCl].pCurrentWeapInfo == "
+                  "BG_GetInfoForWeapon(GetPlayerState().weapon)",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 2630);
+    }
+    angles[1] = 0.0f;
+    angles[0] = 0.0f;
+    if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.leanf
+        != 0.0f)
+    {
+        float LeanFraction = GetLeanFraction(
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.leanf);
+        angles[2] = angles[2] - (LeanFraction + LeanFraction);
+    }
+    CG_CalculateWeaponPosition_BaseAngles(angles);
+    CG_CalculateWeaponPosition_IdleAngles(angles);
+    angles[0] = *(float*)&dword_F64068[1580 * currCl] + angles[0];
+    angles[1] = *(float*)&dword_F6406C[1580 * currCl] + angles[1];
+    angles[2] = *(float*)&dword_F64070[1580 * currCl] + angles[2];
+    Entity* v6 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (BG_IsAimDownSightWeapon(v6->client->ps.weapon) == 0)
+    {
+        angles[0] = angles[0] - *(float*)&dword_F64030[1580 * currCl];
+        angles[1] = angles[1] - *(float*)&dword_F64034[1580 * currCl];
+        angles[2] = angles[2] - *(float*)&dword_F64038[1580 * currCl];
+    }
+    if (dword_F63FFC[1580 * currCl] != 0)
+    {
+        float fWeaponPosFrac =
+            (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                 ->client->ps.fWeaponPosFrac
+             + 1.0f)
+            * 0.5f;
+        float fDeflectTime = *(float*)&cg_viewKickDeflectTime * fWeaponPosFrac;
+        float fFactor = fWeaponPosFrac;
+        float fReturnTime = *(float*)&cg_viewKickReturnTime * fWeaponPosFrac;
+        float fWeaponPosFrac2 =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.fWeaponPosFrac;
+        if (fWeaponPosFrac2 != 0.0f
+            && *(int*)((float*)dword_F63B8C[1580 * currCl] + 405) != 0)
+        {
+            float v10 =
+                EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                    ->client->ps.fWeaponPosFrac;
+            fFactor = (1.0f - (v10 * 0.75f)) * fFactor;
+        }
+        float v11 = (float)(cgGlobal_time - dword_F63FFC[1580 * currCl]);
+        if (fDeflectTime > v11)
+        {
+            float v12 = GetLeanFraction(v11 / fDeflectTime);
+            float v14 = v12 * fFactor;
+            angles[0] = v14 * *(float*)&dword_F6401C[1580 * currCl] * 0.5f
+                        + angles[0];
+            angles[1] = angles[1] - v14 * *(float*)&dword_F64020[1580 * currCl];
+            angles[2] = v14 * *(float*)&dword_F64020[1580 * currCl] * 0.5f
+                        + angles[2];
+        }
+        else
+        {
+            float v13 = 1.0f - ((v11 - fDeflectTime) / fReturnTime);
+            if (v13 > 0.0f)
+            {
+                float v12 = 1.0f - GetLeanFraction(1.0f - v13);
+                float v14 = v12 * fFactor;
+                angles[0] = v14 * *(float*)&dword_F6401C[1580 * currCl] * 0.5f
+                            + angles[0];
+                angles[1] =
+                    angles[1] - v14 * *(float*)&dword_F64020[1580 * currCl];
+                angles[2] =
+                    v14 * *(float*)&dword_F64020[1580 * currCl] * 0.5f
+                    + angles[2];
+            }
+        }
+    }
+    CG_CalculateWeaponPosition_GunRecoil(angles);
+    angles[0] = AngleSubtract(angles[0], dword_F63CD0[1580 * currCl]);
+    float v15 = angles[1];
+    angles[1] = AngleSubtract(v15, dword_F63CD4[1580 * currCl]);
+    CG_CalculateWeaponPosition_ToWorldAngles(angles);
+    CG_CalculateWeaponPosition_SaveOffsetAngles(angles);
+}
+
+// ea: 0x00699D10
+void CG_CalculateWeaponPosition(float* origin)
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (dword_F63B8C[1580 * currCl]
+        != (float*)BG_GetInfoForWeapon(Player->client->ps.weapon))
+    {
+        CG_ASSERT("cg[currCl].pCurrentWeapInfo == "
+                  "BG_GetInfoForWeapon(GetPlayerState().weapon)",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 2580);
+    }
+    origin[1] = 0.0f;
+    origin[0] = 0.0f;
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    if (client->ps.leanf != 0.0f
+        && client->ps.fWeaponPosFrac < 1.0f)
+    {
+        float tempAngles[3] = {0.0f, 0.0f, 0.0f};
+        float LeanFraction =
+            GetLeanFraction(EntityManager_GetPlayer(EntityManager_sInst,
+                                                    currCl)
+                                ->client->ps.leanf);
+        tempAngles[2] = LeanFraction * -2.0f;
+        float fDist = LeanFraction;
+        float fDista =
+            ((1.0f - EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                         ->client->ps.fWeaponPosFrac)
+             * fDist)
+            * 1.6f;
+        float right[3];
+        AnglesToRight(tempAngles, right);
+        origin[0] = (right[0] * fDista) + origin[0];
+        origin[1] = (right[1] * fDista) + origin[1];
+        origin[2] = (right[2] * fDista) + origin[2];
+    }
+    CG_CalculateWeaponPosition_BasePosition(origin);
+    CG_CalculateWeaponPosition_BobMovement(origin);
+    origin[1] = origin[1] - dword_F63CE4[1580 * currCl];
+    origin[2] = dword_F63CE8[1580 * currCl] + origin[2];
+    CG_CalculateWeaponPosition_ToWorldPosition(origin);
+    int v5 = cgGlobal_time - dword_F63BB4[1580 * currCl];
+    if (v5 < 150)
+        origin[2] = (v5 * dword_F63BB0[1580 * currCl]) * 0.0016666667f
+                    + origin[2];
+    else if (v5 < 450)
+        origin[2] = ((450 - v5) * dword_F63BB0[1580 * currCl])
+                        * 0.00083333335f
+                    + origin[2];
+    CG_CalculateWeaponPosition_SaveOffsetMovement(origin);
+}
