@@ -18,8 +18,10 @@ struct nglTexture;
 namespace ShaderCommon {
 
 enum EDebugRenderMode {
-    EDRM_0 = 0,
-    EDRM_1 = 1,
+    kDebugRenderModeNormal = 0,
+    kDebugRenderModeFullbright = 1,
+    kDebugRenderModeWireframe = 2,
+    kDebugRenderModeTextureTiling = 3,
 };
 
 // Toggle flag bits for each shader (ShaderSwitching, @0x10DDB10).

@@ -287,6 +287,9 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_combat.cpp
     src/game/logic/g_damage.cpp
     src/game/logic/g_turret.cpp
+    src/game/logic/g_client.cpp
+    src/game/logic/g_main.cpp
+    src/game/logic/g_scr_vehicle.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)

@@ -28,6 +28,25 @@ void SV_GetConfigstring(int index, char* buffer, int bufferSize);
 void SV_SetConfigstring(int index, const char* val);
 const char* SV_GetConfigstringConst(int index);
 
+// ea: 0x00460D70
+void EntityHandleDb::Init()
+{
+    mDebugCallback = DebugDumpEnts;
+}
+
+// ea: 0x00460EC0
+void EntityHandleDb::Find(int fieldOfs, HashString match, ae_sized_array<Entity*, 4096>* results)
+{
+    EntityHandleDb_Find<HashString>(fieldOfs, match, *results);
+}
+
+// ea: 0x00460EE0
+void EntityHandleDb::Find(int fieldOfs, unsigned short match,
+                          ae_sized_array<Entity*, 4096>* results)
+{
+    EntityHandleDb_Find<unsigned short>(fieldOfs, match, *results);
+}
+
 // ea: 0x0044A240
 int CheatsOk(Entity* ent)
 {

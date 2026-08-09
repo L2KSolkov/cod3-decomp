@@ -199,6 +199,68 @@ extern math::Position3 playerMins;            // 0xEC9620
 extern vmCvar_t g_bounds_width;               // 0xEA6CA8
 extern vmCvar_t g_bounds_height_standing;     // 0xEA7368
 
+// ============================================================================
+// vehicle / scratch / debug globals
+// ============================================================================
+struct vehicle_node_t {
+    Broc::string mName;             // +0x00
+    Broc::string mTarget;           // +0x04
+    float        speed;             // +0x08
+    float        lookAhead;         // +0x0C
+    Broc::string script_noteworthy; // +0x10
+    float        origin[3];         // +0x14
+    float        dir[3];            // +0x20
+    float        angles[3];         // +0x2C
+    float        length;            // +0x38
+    int          nextIdx;           // +0x3C
+};
+static_assert(sizeof(vehicle_node_t) == 0x40, "vehicle_node_t size mismatch");
+
+extern char* g_scratchpadMem;              // 0xEA81C0
+extern int   s_numNodes;                   // 0xEA5DD0
+extern vehicle_node_t* s_nodes[];          // 0xEAEDF8
+struct vehicle_info_t;
+extern vehicle_info_t* s_vehicleInfos[];   // 0xEA7638
+extern int (*syscall)(int, ...);           // 0xDF9D70 (cg.o)
+void DebugDumpEnts(int a1, Entity* ent);   // g.o 0x450150
+
+// game2.o FPS test harness
+struct TestFPS {
+    static TestFPS* sInst;  // ?sInst@TestFPS@@2PAV1@A
+    bool mTesting;          // +0x00
+    void Test();            // ?Test@TestFPS@@QAEXXZ
+    void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
+};
+
+// g_main.cpp entry / console commands
+void game_dllEntry(int (*syscallptr)(int, ...));
+void Cmd_TestFPS(void);
+void Cmd_Wireframe_f(void);
+void Cmd_Fullbright_f(void);
+void Cmd_TextureTiling_f(void);
+void G_EndGame(void);
+char* GetScratchPad(void);
+int   G_GetServerSnapTime(void);
+void  G_InitVehiclePaths(void);
+vehicle_node_t* GetVehicleNode(int idx);
+vehicle_info_t* VEH_GetInfo(int idx);
+void  g_UnlinkEntity(Entity* ent);
+void  SnapVectorTowards(float* /*v*/, float* /*target*/);
+void  G_SetClientSound(Entity* ent);
+void  G_RunClient(Entity* ent);
+int   ClientInactivityTimer(Entity* ent);
+int   ClientSpectatorInactivityTimer(Entity* ent);
+void  MemGraph_RenderResources(void);
+int   G_StealVehicleSeat(Entity* ent, Entity* veh, int seat, bool bForce);
+void  G_FreeVehicleSeat(Entity* ent, Entity* veh, int seat);
+int   G_RequestVehicleSeat(Entity* ent, Entity* veh, HashString seat, bool bForce);
+int   G_RequestVehicleBestSeat(Entity* ent, Entity* veh, bool bForce, bool bPassenger, bool bCanDrive);
+int   G_GetNonPVSTankInfo(float* origin, DbLinkedHandle<EntityHandleDb, Entity> ent);
+void  Scr_Vehicle_OccupantStartEntering(scr_vehicle_t* veh, const Entity* ent, int seat);
+void  Scr_Vehicle_OccupantStartExiting(scr_vehicle_t* veh, const Entity* ent, int seat);
+void  Scr_Vehicle_OccupantIsSeat(scr_vehicle_t* veh, const Entity* ent, int seat);
+void  Scr_Vehicle_OccupantIsOut(scr_vehicle_t* veh, Entity* ent, int seat);
+
 template <typename T>
 class cFreeList {
 public:
@@ -207,12 +269,6 @@ public:
     T*  mpFree;  // +0x08
 };
 extern cFreeList<Entity> gEntFreeList;        // 0xF50D04
-
-template <typename T, unsigned int CAP>
-struct ae_sized_array {
-    T   m_elements[CAP];  // +0x00
-    int m_size;           // +CAP*sizeof(T)
-};
 
 template <typename K, typename V>
 struct InplaceTreeElement {
@@ -1105,7 +1161,16 @@ Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weap
 void  EffectEventKill(Handle effect);
 void  Com_Error(int code, const char* fmt, ...);
 void  Com_Printf(const char* fmt, ...);
-enum { ERR_DROP = 1 };
+enum {
+    ERR_FATAL = 0,
+    ERR_DROP = 1,
+    ERR_SERVERDISCONNECT = 2,
+    ERR_DISCONNECT = 3,
+    ERR_NEED_CD = 4,
+    ERR_ENDGAME = 5,
+    ERR_SCRIPT = 6,
+    ERR_LOCALIZATION = 7,
+};
 void  AngleVectors(const float* angles, float* forward, float* right, float* up);
 extern vmCvar_t g_debugGrenades;
 extern vmCvar_t g_debugBullets;

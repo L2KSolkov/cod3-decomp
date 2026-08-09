@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include "engine/broc_types.h"
 #include "game/game_types.h"
+#include "core/ae_array.h"
 
 // ============================================================================
 // TPakId — pak archive id enum
@@ -290,11 +291,14 @@ class EntityHandleDb {
 public:
     uint8_t  _pad[0xA8];                 // HandleDb BitSet<1344> (168 bytes)
     EntityHandleDbDbElement mElements[0x540];  // +0xA8 (1344 * 8 = 10752)
-    uint8_t  mDebugCallback[4];          // +0x2AA8
+    void     (*mDebugCallback)(int, Entity*);  // +0x2AA8
     AeSizedEntityArray mActiveList;      // +0x2AAC (16388 bytes)
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
+    void Init();                         // ?Init@EntityHandleDb@@QAEXXZ
     void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
     Entity* Find(int fieldofs, HashString match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HVHashString@@@Z
+    void Find(int fieldOfs, unsigned short match, ae_sized_array<Entity*, 4096>* results);  // ?Find@EntityHandleDb@@QBEXGAAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
+    void Find(int fieldOfs, HashString match, ae_sized_array<Entity*, 4096>* results);      // ?Find@EntityHandleDb@@QBEXVHashString@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
 };
 static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
 static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::mActiveList offset mismatch");
