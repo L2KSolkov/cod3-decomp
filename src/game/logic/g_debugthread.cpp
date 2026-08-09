@@ -362,6 +362,90 @@ void* MetaNalBaseAnim::CreateAnimInst(nalBaseSkeleton* theSkel)
 }
 
 // ============================================================================
+// TaskHandler - task dispatch handler (0x30, IDA verified)
+// ============================================================================
+struct DListNode {
+    DListNode* m_next;  // +0x00
+    DListNode* m_prev;  // +0x04
+};
+
+struct DList {
+    DListNode m_end;     // +0x00
+    DListNode* m_head;   // +0x08
+    DListNode** m_tail;  // +0x0C
+    int m_size;          // +0x10
+};
+
+struct QuickTaskDeactivation {
+    DListNode node;  // next/prev
+    unsigned int mEntHandle;  // +0x08
+};
+
+struct TaskHandlerImpl {
+    void* m_dlist[2];    // +0x00
+    unsigned int mTaskId;  // +0x08
+    unsigned int mFlags;   // +0x0C
+    DList mTaskList;       // +0x10
+    DList mQuickDeactivationList;  // +0x20
+
+    TaskHandlerImpl(unsigned int task_id, unsigned int flags);
+    void QuickDeactivation(DbLinkedHandle<EntityHandleDb, Entity> h);
+};
+
+struct TaskSysImpl2 {
+    TaskHandlerImpl* mTaskHandlers[32];  // +0x00
+    int m_size;                          // +0x80
+    DList mPostQueue;                    // +0x84
+    static TaskSysImpl2* sInst;          // ?sInst@TaskSys@@0V1@A
+};
+
+extern TaskSysImpl2* TaskSysImpl2_sInst;
+extern void ae_sized_array_push_back_handler(TaskSysImpl2* self,
+                                             TaskHandlerImpl* const* elt);
+extern void* mem_heap_malloc_sz(unsigned int size);
+
+// ea: 0x4FFB20
+TaskHandlerImpl::TaskHandlerImpl(unsigned int task_id, unsigned int flags)
+{
+    mFlags = flags;
+    mTaskId = task_id;
+    m_dlist[0] = nullptr;
+    m_dlist[1] = nullptr;
+    mTaskList.m_end.m_next = nullptr;
+    mTaskList.m_end.m_prev = nullptr;
+    mTaskList.m_head = &mTaskList.m_end;
+    mTaskList.m_tail = &mTaskList.m_head;
+    mTaskList.m_size = 0;
+    mQuickDeactivationList.m_end.m_next = nullptr;
+    mQuickDeactivationList.m_end.m_prev = nullptr;
+    mQuickDeactivationList.m_head = &mQuickDeactivationList.m_end;
+    mQuickDeactivationList.m_tail = &mQuickDeactivationList.m_head;
+    mQuickDeactivationList.m_size = 0;
+    TaskHandlerImpl* self = this;
+    ae_sized_array_push_back_handler(TaskSysImpl2_sInst, &self);
+}
+
+// ea: 0x4FFB80
+void TaskHandlerImpl::QuickDeactivation(
+    DbLinkedHandle<EntityHandleDb, Entity> h)
+{
+    QuickTaskDeactivation* v3 =
+        (QuickTaskDeactivation*)mem_heap_malloc_sz(0xC);
+    if (v3 != nullptr)
+    {
+        v3->node.m_next = nullptr;
+        v3->node.m_prev = nullptr;
+        v3->mEntHandle = h.mHandle.mVal;
+    }
+    DListNode* tail = *mQuickDeactivationList.m_tail;
+    v3->node.m_next = &mQuickDeactivationList.m_end;
+    v3->node.m_prev = tail;
+    tail->m_next = &v3->node;
+    *mQuickDeactivationList.m_tail = &v3->node;
+    ++mQuickDeactivationList.m_size;
+}
+
+// ============================================================================
 // TestFPS::TestFPS - ea: 0x4FEC20
 // ============================================================================
 TestFPS::TestFPS()
