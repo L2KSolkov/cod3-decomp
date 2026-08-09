@@ -243,6 +243,13 @@ struct MultiplayerMgr {
     void FireMissile(int weapon, const math::Position3& position, const math::Dir3& dir,
                      MultiplayerMgr::MPEntityHandle handle);  // ?FireMissile@MultiplayerMgr@@QAEXHABVPosition3@math@@ABVDir3@3@VMPEntityHandle@@@Z
     void Step(int earlyOutInterval, bool fromThread, bool a_bFromGame);  // ?Step@MultiplayerMgr@@QAEXH_N0@Z
+    bool IsLocalPlayer(Entity* player);            // ?IsLocalPlayer@MultiplayerMgr@@QAE_NPAVEntity@@@Z
+    void DropWeapon(int weapon, int netIndex, const math::Position3* position,
+                    const math::Position3* angles, const math::Dir3* velocity,
+                    int clipCount, int ammoCount);  // ?DropWeapon@MultiplayerMgr@@QAEXHHABVPosition3@math@@1ABVDir3@2@HH@Z
+    void SpreadFire(Entity* player, float gunPitch, float gunYaw,
+                    float* weaponPosition, int weapon, float spread,
+                    float coneAngleTangent, int seed);  // ?SpreadFire@MultiplayerMgr@@QAEXPAVEntity@@MMQAMHMHH@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 

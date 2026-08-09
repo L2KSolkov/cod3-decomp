@@ -2080,7 +2080,7 @@ void SpectatorThink(Entity* ent, usercmd_s* ucmd)
         SV_UnlinkEntity(ent);
 }
 
-// ea: 0x004473C40
+// ea: 0x00473C40
 void Player_UpdateActivate(Entity* ent)
 {
     if (ent == nullptr)
@@ -2161,5 +2161,186 @@ void HealthRegen(Entity* e, float deltaT)
                 integer = g_player_maxhealth.integer;
             e->health = integer;
         }
+    }
+}
+
+// ea: 0x004574B0
+void G_DebugArc(const float* center, float radius, float angle0, float angle1,
+                const float* color, int depthTest, int duration)
+{
+    float step = (angle1 - angle0) * 0.06666667f;
+    if (step < 0.0f)
+    {
+        angle0 = angle0 - 360.0f;
+        step = (angle1 - angle0) * 0.06666667f;
+    }
+    float pts[16][3];
+    for (int v10 = 0; v10 < 16; ++v10)
+    {
+        float radians = ((v10 * step) + angle0) * 3.1415927f * 0.0055555557f;
+        float s = sinf(radians);
+        float c = cosf(radians);
+        pts[v10][0] = (c * radius) + center[0];
+        pts[v10][1] = (s * radius) + center[1];
+        pts[v10][2] = center[2];
+    }
+    for (int i = 0; i < 15; ++i)
+        CL_AddDebugLine(pts[i], pts[i + 1], color, depthTest, duration, 1, 0);
+}
+
+// ea: 0x00457170
+void G_DebugCircleEx(const float* center, float radius, const float* dir,
+                     const float* color, int depthTest, int duration)
+{
+    float normal[3];
+    VectorNormalize2(dir, normal);
+    float up[3];
+    PerpendicularVector(up, normal);
+    float right[3];
+    CrossProduct(normal, up, right);
+    float pts[16][3];
+    for (int v7 = 0; v7 < 16; ++v7)
+    {
+        float radians = v7 * 0.39269909f;
+        float s = sinf(radians);
+        float c = cosf(radians);
+        pts[v7][0] = ((up[0] * (c * radius)) + (right[0] * (s * radius))) + center[0];
+        pts[v7][1] = ((up[1] * (c * radius)) + (right[1] * (s * radius))) + center[1];
+        pts[v7][2] = ((up[2] * (c * radius)) + (right[2] * (s * radius))) + center[2];
+    }
+    for (int i = 0; i < 16; ++i)
+        CL_AddDebugLine(pts[i], pts[(i + 1) & 0xF], color, depthTest, duration, 1, 0);
+}
+
+// ea: 0x004835F0
+void TossClientItems(Entity* self)
+{
+    if (MultiplayerMgr::sInst->IsLocalPlayer(self))
+    {
+        float forward[3];
+        AnglesToForward(self->r.currentAngles.v.m128_f32, forward);
+        Client* client = self->client;
+        int v3 = client->ps.weaponslots[1];
+        if (Com_BitCheck(client->ps.weapons, v3) != 0
+            && v3 > 0
+            && v3 <= BG_GetNumWeapons()
+            && (self->client->ps.ammo[BG_AmmoForWeapon(v3)] != 0
+                || self->client->ps.ammoclip[BG_ClipForWeapon(v3)] != 0))
+        {
+            BG_FindItemForWeapon(v3);
+            Client* v4 = self->client;
+            if ((v4->ps.eFlags & 0x6000) == 0 && v4->pers.playerState != 1)
+            {
+                Entity* v5 = Drop_Weapon(self, v3, nullptr);
+                Entity* v6 = v5;
+                if (v5 != nullptr)
+                {
+                    MultiplayerMgr::MPEntityHandle v16;
+                    MultiplayerMgr::sInst->RegisterDroppedItem(1, v5, self, 0);
+                    math::Position3 v14;
+                    native_to_cdl_pos3(&v14, v6->s.apos.trBase);
+                    int count = v6->count;
+                    int count2 = v6->count2;
+                    math::Dir3 v13;
+                    native_to_cdl_dir3(&v13, v6->s.pos.trDelta);
+                    math::Position3 v12;
+                    native_to_cdl_pos3(&v12, v6->s.pos.trBase);
+                    MultiplayerMgr::sInst->DropWeapon(v3, v16.mVal, &v12, &v14,
+                                                      &v13, count2, count);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00474710
+void G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* touchents)
+{
+    for (int i = 0; i < numtouch; ++i)
+    {
+        int j;
+        for (j = 0; j < i; ++j)
+        {
+            if (touchents[j].mHandle.mVal == touchents[i].mHandle.mVal)
+                break;
+        }
+        if (j == i)
+        {
+            Entity* mObject = HandleDbToEnt(touchents[i]);
+            if (Scr_IsSystemActive(1) != 0)
+            {
+                Scr_NotifyFromEnt(ent, hash_const.touch, mObject);
+                Scr_NotifyFromEnt(mObject, hash_const.touch, ent);
+            }
+            uint8_t touch = ent->touch;
+            if (touch != 0)
+            {
+                if (touch >= 0xDu)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+                    AeAssert::gCurrentLine = 157;
+                    AeAssert::gCurrentExpr = "ent->touch > 0 && ent->touch < TOUCH_MAX";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                touchtable[ent->touch](ent, mObject, 1);
+            }
+            uint8_t v8 = mObject->touch;
+            if (v8 != 0)
+            {
+                if (v8 >= 0xDu)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+                    AeAssert::gCurrentLine = 164;
+                    AeAssert::gCurrentExpr = "other->touch > 0 && other->touch < TOUCH_MAX";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                touchtable[mObject->touch](mObject, ent, 1);
+            }
+        }
+    }
+}
+
+// ea: 0x0048D980
+void Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
+                 Entity* weaponEnt, float coneAngleTangent)
+{
+    weaponFileInfo_t* pWeapInfo = wp->pWeapInfo;
+    if (attacker->actor != nullptr)
+    {
+        if (pWeapInfo->aiDamageMod > 0.0f)
+            damage = (int)(damage * pWeapInfo->aiDamageMod);
+    }
+    if (attacker->client != nullptr && wp->pWeapInfo->weapClass == 17)
+    {
+        int time = level.time;
+        math::Position3 muzzlePoint;
+        CalcMuzzlePoint(attacker, &muzzlePoint);
+        MultiplayerMgr::sInst->SpreadFire(attacker, attacker->client->fGunPitch,
+                                          attacker->client->fGunYaw,
+                                          muzzlePoint.v.m128_f32, pWeapInfo->index,
+                                          spread, coneAngleTangent, time);
+        G_BulletFireSpread(weaponEnt, attacker, wp, damage, spread, weaponEnt,
+                           coneAngleTangent, time);
+    }
+    else
+    {
+        float end[3];
+        end[0] = wp->muzzleTrace[0];
+        end[1] = wp->muzzleTrace[1];
+        end[2] = wp->muzzleTrace[2];
+        math::Position3 weaponPos;
+        Bullet_Endpos(spread, &weaponPos.v.m128_f32[2], wp);
+        unsigned int mVal;
+        if (weaponEnt != nullptr)
+            mVal = weaponEnt->mHandle.mHandle.mVal;
+        else
+            mVal = EntityManager::sInst->mWorld->mHandle.mHandle.mVal;
+        Bullet_Fire_Extended(DbLinkedHandle<EntityHandleDb, Entity>(), attacker, end,
+                             &weaponPos.v.m128_f32[2], damage, 0, wp,
+                             DbLinkedHandle<EntityHandleDb, Entity>(), coneAngleTangent);
     }
 }

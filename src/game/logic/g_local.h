@@ -65,7 +65,14 @@ static_assert(sizeof(vehicleAnimMap_t) == 0x1C, "vehicleAnimMap_t size mismatch"
 struct vehicle_path_node_t {
     Broc::string mName;    // +0x00
     Broc::string mTarget;  // +0x04
-    uint8_t _pad8[0x40 - 0x8];  // remaining 56 bytes opaque
+    float   speed;             // +0x08
+    float   lookAhead;         // +0x0C
+    Broc::string script_noteworthy;  // +0x10
+    float   origin[3];         // +0x14
+    float   dir[3];            // +0x20
+    float   angles[3];         // +0x2C
+    float   length;            // +0x38
+    int     nextIdx;           // +0x3C
 };
 static_assert(sizeof(vehicle_path_node_t) == 0x40, "vehicle_path_node_t size mismatch");
 
@@ -567,7 +574,8 @@ struct hash_const_t {
     HashString fireSpecial;             // +0x138 (78)
     uint8_t    _pad13C[0x144 - 0x13C];
     HashString rotatedone;         // +0x144
-    uint8_t    _pad148[0x208 - 0x148];
+    uint8_t    _pad148[0x204 - 0x148];
+    HashString touch;              // +0x204 (81)
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C
     HashString trigger_damage;     // +0x210
@@ -1073,7 +1081,8 @@ static_assert(offsetof(gitem_s, giType) == 0x24, "gitem_s::giType offset mismatc
 // weaponFileInfo_t - weapon definition (0x948 bytes; g.o uses a subset)
 // ============================================================================
 struct weaponFileInfo_t {
-    uint8_t _pad0[0x8];           // +0x000
+    int     index;                // +0x000
+    unsigned int internalNameHash; // +0x004
     char*   szInternalName;       // +0x8
     uint8_t _pad8[0xB0 - 0xC];
     int     weapClass;            // +0xB0 (weapClass_t; WEAPCLASS_TURRET == 7)
@@ -1109,7 +1118,9 @@ struct weaponFileInfo_t {
     int     bProjImpactExplode;   // +0x79C
     uint8_t _pad7b[0x7AC - 0x7A0];
     int     iProjectileDelay;     // +0x7AC
-    uint8_t _pad8b[0x86C - 0x7B0];
+    uint8_t _pad7b0[0x860 - 0x7B0];
+    float   aiDamageMod;          // +0x860
+    uint8_t _pad864[0x86C - 0x864];
     float   leftArc;              // +0x86C
     float   rightArc;             // +0x870
     float   topArc;               // +0x874
@@ -1126,6 +1137,8 @@ struct weaponFileInfo_t {
     uint8_t _pad10[0x948 - 0x8C0];
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
+static_assert(offsetof(weaponFileInfo_t, index) == 0x0, "weaponFileInfo_t::index offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, aiDamageMod) == 0x860, "weaponFileInfo_t::aiDamageMod offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, bTwoHanded) == 0x6E8, "weaponFileInfo_t::bTwoHanded offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, iAltWeaponIndex) == 0x764, "weaponFileInfo_t::iAltWeaponIndex offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, iProjectileSpeed) == 0x784, "weaponFileInfo_t::iProjectileSpeed offset mismatch");
@@ -1738,6 +1751,34 @@ void  MultiplayerMgr_Step(void* self, int earlyOutInterval, bool fromThread,
                           bool a_bFromGame);      // mp.o
 void* EntityNotifySet_GetNotify(void* self, unsigned int chk);  // core.o
 bool  Entity_IsInRagdoll(Entity* ent);            // game.o
+void  G_DebugArc(const float* center, float radius, float angle0, float angle1,
+                 const float* color, int depthTest, int duration);  // g.o 0x4574B0
+void  TossClientItems(Entity* self);              // g.o 0x4835F0
+void  G_VehInitPathPos(vehicle_pathpos_t* vpp);   // g.o 0x4526D0
+void  G_DebugCircleEx(const float* center, float radius, const float* dir,
+                      const float* color, int depthTest, int duration);  // g.o 0x457170
+void  G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* touchents);  // g.o 0x474710
+float VectorNormalize2(const float* v, float* out);  // core.o
+void  PerpendicularVector(float* dst, const float* src);  // core.o
+void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o
+void  BG_FindItemForWeapon(int weapon);           // game.o
+void  MultiplayerMgr_IsLocalPlayer(void* self, Entity* player);  // mp.o
+void  MultiplayerMgr_DropWeapon(void* self, int weapon, int netIndex,
+                                const math::Position3* position,
+                                const math::Dir3* angles,
+                                const math::Dir3* velocity, int clipCount,
+                                int ammoCount);  // mp.o
+const math::Dir3* native_to_cdl_dir3(math::Dir3* result, const float* v);  // core.o
+extern void (*touchtable[0xD])(Entity* ent, Entity* other, int bTouched);  // g.o
+enum { kItemTypeWeapons = 1 };                    // EDroppedItemTypes
+void  G_BulletFireSpread(Entity* source, Entity* attacker, weaponParms* wp,
+                         int damage, float spread, Entity* weaponEnt,
+                         float coneAngleTangent, int seed);  // g.o
+void  Bullet_Fire_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
+                           Entity* attacker, const float* start, const float* end,
+                           int damage, int recursion, weaponParms* wp,
+                           DbLinkedHandle<EntityHandleDb, Entity> weaponEntity,
+                           float coneAngleTangent);  // g.o 0x48D980 (same family)
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o

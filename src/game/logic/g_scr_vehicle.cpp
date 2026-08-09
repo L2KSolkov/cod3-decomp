@@ -893,7 +893,7 @@ void Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
     Scr_NotifyFromEnt(pSelf, hash_const.death, v16);
 }
 
-// ea: 0x004480970
+// ea: 0x00480970
 void Scr_Vehicle_Controller(Entity* pSelf)
 {
     if (pSelf == nullptr)
@@ -968,6 +968,40 @@ bool VEH_VehicleTouchesMine(Entity* vehicle, EntityState* item)
         }
     }
     return false;
+}
+
+// ea: 0x004526D0
+void G_VehInitPathPos(vehicle_pathpos_t* vpp)
+{
+    vpp->nodeIdx = -1;
+    vpp->endOfPath = 0;
+    vpp->frac = 0.0f;
+    vpp->speed = 0.0f;
+    vpp->lookAhead = 0.0f;
+    vpp->slide = 0.0f;
+    vpp->origin[0] = 0.0f;
+    vpp->origin[1] = 0.0f;
+    vpp->angles[0] = 0.0f;
+    vpp->angles[1] = 0.0f;
+    vpp->lookPos[0] = 0.0f;
+    vpp->lookPos[1] = 0.0f;
+    for (int i = 0; i < 2; ++i)
+    {
+        vehicle_path_node_t* node = &vpp->switchNode[i];
+        node->mName.clear();
+        node->mTarget.clear();
+        node->speed = -1.0f;
+        node->lookAhead = -1.0f;
+        node->origin[0] = 0.0f;
+        node->origin[1] = 0.0f;
+        node->dir[0] = 0.0f;
+        node->dir[1] = 0.0f;
+        node->angles[0] = s_invalidAngles[0];
+        node->angles[1] = dword_DD7418;
+        node->angles[2] = dword_DD741C;
+        node->length = 0.0f;
+        node->nextIdx = 0xFFFFFFF;
+    }
 }
 
 // ea: 0x0044D370
