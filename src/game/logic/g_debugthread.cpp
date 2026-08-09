@@ -453,6 +453,7 @@ TestFPS::TestFPS()
     memset(_pad, 0, sizeof(_pad));
     mStats_size = 0;
     mCells_size = 0;
+    mBlock = 0;
     mTesting = false;
     mCellIndex = 0;
     mCurrentAngle = 0;
@@ -468,15 +469,15 @@ TestFPS::TestFPS()
 }
 
 struct PerformanceStats {
-    int   mFrame;       // +0x00
-    int   mDrawn;       // +0x04
-    float mPos[3];      // +0x08
-    int   mNodes;       // +0x14
-    float mDrawMs;      // +0x18
-    float mFrameMs;     // +0x1C
-    float mTotalMs;     // +0x20
-    int   mPolys;       // +0x24
-    int   mVertices;    // +0x28
+    float mPosition[3];   // +0x00
+    int   mPositionIndex; // +0x0C
+    int   mCell;          // +0x10
+    int   mAngle;         // +0x14
+    float mDMATime;       // +0x18
+    float mSceneSubmitTime;  // +0x1C
+    float mRenderTime;    // +0x20
+    int   mNodeCount;     // +0x24
+    int   mPolyCount;     // +0x28
 };
 static_assert(sizeof(PerformanceStats) == 0x2C,
               "PerformanceStats size mismatch");
@@ -529,9 +530,10 @@ void TestFPS::OutputStats()
                 PerformanceStats& s = stats[i];
                 sprintf(temp,
                         "%i, %i, %g %g %g, %i, %g, %g, %g, %i, %i, \n",
-                        s.mFrame, s.mDrawn, s.mPos[0], s.mPos[1], s.mPos[2],
-                        s.mNodes, s.mDrawMs, s.mFrameMs, s.mTotalMs,
-                        s.mPolys, s.mVertices);
+                        s.mPositionIndex, s.mCell,
+                        s.mPosition[0], s.mPosition[1], s.mPosition[2],
+                        s.mAngle, s.mDMATime, s.mSceneSubmitTime,
+                        s.mRenderTime, s.mNodeCount, s.mPolyCount);
                 length += (int)strlen(temp);
                 strcat(buffer, temp);
                 if (length > 14336)
@@ -589,5 +591,51 @@ void TestFPS::StopTest()
             (int)((v3 - gStartTime) * 0.001) / 60 / 60,
             (int)((v3 - gStartTime) * 0.001) / 60 % 60,
             (int)((v3 - gStartTime) * 0.001) % 60);
+    }
+}
+
+// ============================================================================
+// TestFPS::GatherMetrics - ea: 0x501990
+// ============================================================================
+struct nglPerfInfoStruct {
+    float RenderMS;
+    float ListSubmitMS;
+    float ListSendMS;
+};
+struct nglSyncPerfInfoStruct {
+    int NodeCount;
+    int TotalPolys;
+};
+
+extern nglPerfInfoStruct nglPerfInfo;
+extern nglSyncPerfInfoStruct nglSyncPerfInfo;
+extern vmCvar_t bg_viewheight_standing;
+
+void TestFPS::GatherMetrics()
+{
+    if (mTesting)
+    {
+        float x = mCurrentPosition.x;
+        float y = mCurrentPosition.y;
+        float z = mCurrentPosition.z;
+        mBlock = 0;
+        PerformanceStats stat;
+        memset(&stat, 0, sizeof(stat));
+        stat.mPosition[2] = bg_viewheight_standing.integer + z;
+        stat.mPosition[0] = x;
+        stat.mPosition[1] = y;
+        stat.mPositionIndex = mCurrentPositionIndex;
+        stat.mDMATime = nglPerfInfo.ListSendMS;
+        stat.mCell = mCellIndex;
+        stat.mAngle = mCurrentAngle;
+        stat.mSceneSubmitTime = nglPerfInfo.ListSubmitMS;
+        stat.mNodeCount = nglSyncPerfInfo.NodeCount;
+        stat.mRenderTime = nglPerfInfo.RenderMS;
+        stat.mPolyCount = nglSyncPerfInfo.TotalPolys;
+        PerformanceStats* stats = reinterpret_cast<PerformanceStats*>(_pad);
+        stats[mStats_size] = stat;
+        ++mStats_size;
+        if (mStats_size >= 1000)
+            OutputStats();
     }
 }

@@ -503,10 +503,14 @@ struct TestFPS {
     unsigned char _pad2[0xAC48 - 0xABE4];  // mCells data
     int mCells_size;                  // +0xAC48 (mCells.m_size)
     bool mTesting;                    // +0xAC4C
-    unsigned char _pad2b[0xAC64 - 0xAC50];
+    int mBlock;                       // +0xAC50
+    struct Position3Packed {
+        float x, y, z;
+    } mCurrentPosition;               // +0xAC54
+    int mCurrentAngle;                // +0xAC60
     int mCellIndex;                   // +0xAC64
-    int mCurrentAngle;                // +0xAC68
-    int mCellX;                       // +0xAC6C
+    int mCellX;                       // +0xAC68
+    int mCellXDelta;                  // +0xAC6C
     int mCellY;                       // +0xAC70
     int mZoneIndex;                   // +0xAC74
     int mDeltaAngle;                  // +0xAC78
@@ -522,6 +526,7 @@ struct TestFPS {
     void GetPath(char* path);  // ?GetPath@TestFPS@@AAEXPAD@Z (game2.o 0x4EC020)
     void GetFilename(char* filename);  // ?GetFilename@TestFPS@@AAEXPAD@Z (game2.o 0x4F6F70)
     void OutputStats();  // ?OutputStats@TestFPS@@AAEXXZ (game2.o 0x4FEC80)
+    void GatherMetrics();  // ?GatherMetrics@TestFPS@@QAEXXZ (game2.o 0x501990)
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z
