@@ -1956,6 +1956,64 @@ void FN_DebugAnims_Select_Target()
 }
 
 // ============================================================================
+// _Return_MF_UnderCrossHair - ea: 0x503E30
+// Trace from the player's weapon muzzle to find the target entity.
+// ============================================================================
+extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);  // ?CalcMuzzlePoints (game.o)
+extern void g_LocationalTrace(trace_t* results,
+                              const math::Position3* start,
+                              const math::Position3* end,
+                              const void* context,
+                              const unsigned char* priorityMap,
+                              float coneAngleTangent);
+extern unsigned char bulletPriorityMap[16];
+extern unsigned char riflePriorityMap[16];
+extern void* collision_context_vftable;  // ??_7collision_context_t@@6B@
+
+Entity* _Return_MF_UnderCrossHair()
+{
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    weaponParms wp;
+    memset(&wp, 0, sizeof(wp));
+    CalcMuzzlePoints(player, &wp);
+    Client* client = player->client;
+    unsigned char* v4;
+    if (client->ps.weapon == 0
+        || BG_GetInfoForWeapon(client->ps.weapon)->bRifleBullet == 0)
+        v4 = bulletPriorityMap;
+    else
+        v4 = riflePriorityMap;
+    unsigned int mVal = player->mHandle.mHandle.mVal;
+
+    math::Position3 start;
+    start.v.m128_f32[0] = wp.muzzleTrace[0];
+    start.v.m128_f32[1] = wp.muzzleTrace[1];
+    start.v.m128_f32[2] = wp.muzzleTrace[2];
+    math::Position3 end;
+    end.v.m128_f32[0] = wp.muzzleTrace[0] + wp.forward[0] * 8192.0f;
+    end.v.m128_f32[1] = wp.muzzleTrace[1] + wp.forward[1] * 8192.0f;
+    end.v.m128_f32[2] = wp.muzzleTrace[2] + wp.forward[2] * 8192.0f;
+
+    // collision_context_t with vtable + skip entity handle
+    void* ctx[3];
+    ctx[0] = collision_context_vftable;
+    ctx[1] = (void*)mVal;
+    ctx[2] = nullptr;
+    int result;
+    g_LocationalTrace((trace_t*)&result, &start, &end, ctx, v4, 0.0f);
+
+    unsigned int hit = result;
+    if (hit == EntityManager::sInst->mWorld->mHandle.mHandle.mVal || hit == 0)
+        return nullptr;
+    unsigned int v7 = hit & 0xFFF;
+    g_debugThread.m_entityHandle.mHandle.mVal = hit;
+    if (v7 < 0x540
+        && hit >> 12 == EntityHandleDb::sInst.mElements[v7].mKey)
+        return EntityHandleDb::sInst.mElements[v7].mObject;
+    return nullptr;
+}
+
+// ============================================================================
 // SmokeGrenadeMgr::AddSmokeGrenade - ea: 0x4FFBD0
 // ============================================================================
 extern void ae_vector_push_back_smoke(DroneHandleVec* self, const SmokeGrenadeInfo* elem);
