@@ -229,6 +229,8 @@ public:
     ~Entity();            // ??1Entity@@QAE@XZ (core.o)
     static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
+    void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
+    void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     EntityState  s;                               // +0x000 (224 bytes)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
     trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ

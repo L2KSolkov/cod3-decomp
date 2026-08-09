@@ -203,7 +203,8 @@ void EntityHandleDb_Find(unsigned int fieldOfs, T match, ae_sized_array<Entity*,
 // str_const_t - shared script constant strings (0x2B4) - verified against IDA
 // ============================================================================
 struct str_const_t {
-    uint8_t    _pad[0x148];           // +0x000
+    Broc::string active;              // +0x000
+    uint8_t    _pad[0x148 - 0x4];     // +0x004
     Broc::string sound_blend;         // +0x148
     uint8_t    _pad14C[0x1FC - 0x14C];
     Broc::string tempEntity;          // +0x1FC
@@ -217,7 +218,8 @@ extern str_const_t str_const;         // 0xECBD30
 // Filled by GScr_LoadConsts (same 173-entry order as str_const_t).
 // ============================================================================
 struct hash_const_t {
-    uint8_t    _pad[0x34];
+    HashString active;             // +0x00
+    uint8_t    _pad[0x34 - 0x4];
     HashString damage;             // +0x34
     uint8_t    _pad38[0x98 - 0x38];
     HashString func_door;          // +0x98
@@ -440,6 +442,8 @@ struct corpseInfo_t {
 static_assert(sizeof(corpseInfo_t) == 0x1C, "corpseInfo_t size mismatch");
 struct scr_data_t {
     corpseInfo_t actorCorpseInfo[71];  // +0x000 (0x7CC bytes)
+    uint8_t      _pad7CC[0x8];         // +0x7CC
+    AnimTree*    generic_human_tree;   // +0x7D4 (approx; exact layout TBD)
 };
 extern scr_data_t g_scr_data;  // 0xEE58D0
 extern const math::Position3 actorMaxs;  // 0xF99330
@@ -480,6 +484,7 @@ float GetHeight(int bankID, float x, float y);  // ea: 0x7C0B70
 namespace BrocSys {
 const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
 void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
+int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHPBD@Z
 }
 
 // g.o data: think dispatch table (function pointers per fn_think_e)
