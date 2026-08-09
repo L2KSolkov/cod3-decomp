@@ -529,3 +529,180 @@ void CG_EventSpawnTracer(const math::Position3* pstart,
         CG_ASSERT("wp.pWeapInfo", "c:\\cod\\code\\game\\cg_event.cpp", 133);
     }
 }
+
+struct trace_t {
+    float fraction;      // +0x20
+    unsigned int mEntity; // +0x30
+};
+struct collision_context_t {
+    int contentmask;  // +0x00
+};
+struct snapshot_t {
+    int serverTime;  // +0x00
+    unsigned char ps[0x5D0];
+};
+extern int dword_F6295C[4 * 1580];
+extern int dword_F62944[4 * 1580];
+extern int cg_numSolidEntities;
+extern unsigned int cg_solidEntities[1024];
+extern int cg_norender;
+extern bool g_enableControllerTest;
+extern void Trace(trace_t* results, const math::Position3* start,
+                  const math::Position3* end, const math::Position3* mins,
+                  const math::Position3* maxs, void* model, int brushmask,
+                  int capsule, void* sphere);
+extern int CM_PointContents(const math::Position3* p, void* model);
+extern int CM_TransformedPointContents(const math::Position3* p, void* model,
+                                       const math::Position3* origin,
+                                       const math::Position3* angles);
+extern void CG_ClipMoveToEntities(const math::Position3* start,
+                                  const math::Position3* mins,
+                                  const math::Position3* maxs,
+                                  const math::Position3* end,
+                                  const collision_context_t* context,
+                                  int capsule, trace_t* tr);
+extern void CG_DamageFeedback(int yawByte, int pitchByte, float damage);
+extern void Cvar_Set(const char* var_name, const char* value);
+extern void SoundDevice_UnpauseAllSounds(void* sInst);
+extern void* SoundDevice_sInst;
+extern int Key_GetCatcher();
+extern void Key_SetCatcher(int catcher);
+extern void* EntityHandleDb_mActiveList;
+class EntityHandleDbLocal {
+public:
+    struct DbElement {
+        Entity* mObject;
+        int mKey;
+    };
+    DbElement mElements[0x540];
+};
+extern EntityHandleDbLocal EntityHandleDb_sInst;
+extern int cgGlobal_oldTime;
+
+// ea: 0x006A23D0
+void CG_Trace(trace_t* result, const math::Position3* start,
+              const math::Position3* mins, const math::Position3* maxs,
+              const math::Position3* end,
+              const collision_context_t* context)
+{
+    int contentmask = context->contentmask;
+    trace_t v9;
+    memset(&v9, 0, sizeof(v9));
+    Trace(&v9, start, end, mins, maxs, nullptr, contentmask, 0, nullptr);
+    v9.mEntity =
+        v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
+    CG_ClipMoveToEntities(start, mins, maxs, end, context, 0, &v9);
+    *result = v9;
+}
+
+// ea: 0x006A2480
+void CG_TraceCapsule(trace_t* result, const math::Position3* start,
+                     const math::Position3* mins,
+                     const math::Position3* maxs,
+                     const math::Position3* end,
+                     const collision_context_t* context)
+{
+    int contentmask = context->contentmask;
+    trace_t v9;
+    memset(&v9, 0, sizeof(v9));
+    Trace(&v9, start, end, mins, maxs, nullptr, contentmask, 0, nullptr);
+    v9.mEntity =
+        v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
+    CG_ClipMoveToEntities(start, mins, maxs, end, context, 1, &v9);
+    *result = v9;
+}
+
+// ea: 0x006A2530
+int CG_PointContents(const math::Position3* point,
+                     collision_context_t* context)
+{
+    int v17 = CM_PointContents(point, nullptr);
+    for (int i = 0; i < cg_numSolidEntities; ++i)
+    {
+        unsigned int v4 = cg_solidEntities[i] & 0xFFF;
+        if (v4 < 0x540
+            && cg_solidEntities[i] >> 12
+                   == EntityHandleDb_sInst.mElements[v4].mKey)
+        {
+            Entity* mObject = EntityHandleDb_sInst.mElements[v4].mObject;
+            if (mObject != nullptr && mObject->s.solid == 0xFFFFFF
+                && mObject->r.bmodel != nullptr)
+            {
+                v17 |= CM_TransformedPointContents(
+                    point, mObject->r.bmodel, &mObject->s.lerpOrigin,
+                    &mObject->s.lerpAngles);
+            }
+        }
+    }
+    return v17 & context->contentmask;
+}
+
+// ea: 0x0069D780
+void CG_TransitionPlayerState(void* ps, void* ops)
+{
+    if (((unsigned int*)ps)[0] != ((unsigned int*)ops)[0]
+        && ((unsigned int*)ps)[3] != 0)
+        CG_DamageFeedback(((unsigned int*)ps)[1], ((unsigned int*)ps)[2],
+                          (float)((unsigned int*)ps)[3]);
+}
+
+// ea: 0x0069D7B0
+void CG_BuildSolidList()
+{
+    int v0 = dword_F62960[1580 * currCl];
+    cg_numSolidEntities = 0;
+    if (v0 == 0)
+        CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_predict.cpp", 47);
+    int count = *(int*)((char*)&EntityHandleDb_sInst + 0x2AB0);
+    for (int i = 0; i < count; ++i)
+    {
+        Entity* ent = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+                                  + 4 * i);
+        if (ent != nullptr)
+        {
+            if ((ent->s.solid != 0xFFFFFF || (ent->s.eFlags & 2) == 0)
+                && ent->s.eType != 2 && ent->r.bmodel != nullptr)
+            {
+                if (cg_numSolidEntities < 1024)
+                {
+                    cg_solidEntities[cg_numSolidEntities] =
+                        *(unsigned int*)((char*)ent + 564);
+                    ++cg_numSolidEntities;
+                }
+                else
+                {
+                    CG_ASSERT("0", "c:\\cod\\code\\game\\cg_predict.cpp", 80);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0069D8D0
+void CG_SetInitialSnapshot(snapshot_t* snap)
+{
+    if (snap == nullptr)
+        CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_snapshot.cpp", 66);
+    int v1 = 1580 * currCl;
+    dword_F6295C[v1] = 1;
+    dword_F62960[v1] = (int)snap;
+    dword_F62944[v1] = *(int*)((char*)snap + 0xA0);
+    int count = *(int*)((char*)&EntityHandleDb_sInst + 0x2AB0);
+    for (int i = 0; i < count; ++i)
+    {
+        Entity* ent = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+                                  + 4 * i);
+        if (ent != nullptr)
+            ent->currentValid = 0;
+    }
+    cgGlobal_time = snap->serverTime;
+    cgGlobal_oldTime = cgGlobal_time;
+    if (cg_norender != 0)
+    {
+        g_enableControllerTest = true;
+        Cvar_Set("cg_norender", "0");
+        SoundDevice_UnpauseAllSounds(SoundDevice_sInst);
+        int Catcher = Key_GetCatcher();
+        Key_SetCatcher(Catcher & 0xFFFFFFFD);
+    }
+}
