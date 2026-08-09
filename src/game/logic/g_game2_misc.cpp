@@ -1481,3 +1481,101 @@ TaskHandler* TaskSysImpl::LookupHandler(unsigned int id)
     }
     return nullptr;
 }
+
+// ============================================================================
+// Drone animation entity map helpers
+// ============================================================================
+template <typename A, typename B>
+struct ae_pair {
+    A first;   // +0x00
+    B second;  // +0x04
+};
+
+// ae_vector<DbLinkedHandle<EntityHandleDb,Entity>> - 12 bytes
+struct DroneHandleVec {
+    DbLinkedHandle<EntityHandleDb, Entity>* mElements;  // +0x00
+    int mCapacity;   // +0x04
+    int mSize;       // +0x08
+};
+
+// gDroneAEMap: ae_sized_array<ae_pair<uint, DroneHandleVec*>*, 8>
+struct DroneAEMap {
+    ae_pair<unsigned int, DroneHandleVec*>* m_elements[8];  // +0x00
+    int m_size;   // +0x20
+};
+
+extern DroneAEMap gDroneAEMap;  // ?gDroneAEMap (game2.o)
+extern void ae_vector_push_back_handle(DroneHandleVec* self,
+    const DbLinkedHandle<EntityHandleDb, Entity>* elem);
+extern void ae_sized_array_push_back_pair(DroneAEMap* self,
+    ae_pair<unsigned int, DroneHandleVec*>* const* elt);
+extern void* mem_heap_malloc_sz(unsigned int size);
+
+// ea: 0x4FF800
+int InsertDroneSlave(Entity* e, unsigned int animIndex)
+{
+    e->mFlags |= 8u;
+    rand();
+    for (int i = 0; i < gDroneAEMap.m_size; ++i)
+    {
+        ae_pair<unsigned int, DroneHandleVec*>* entry = gDroneAEMap.m_elements[i];
+        if (entry->first == animIndex)
+        {
+            DbLinkedHandle<EntityHandleDb, Entity> h = e->mHandle;
+            ae_vector_push_back_handle(entry->second, &h);
+            return 0;
+        }
+    }
+    return 0;
+}
+
+// ea: 0x4FF880
+int InsertDroneMaster(Entity* e, unsigned int animIndex)
+{
+    e->mFlags |= 8u;
+    DroneHandleVec* v3 = (DroneHandleVec*)mem_heap_malloc_sz(0xC);
+    DroneHandleVec* v4 = nullptr;
+    if (v3 != nullptr)
+    {
+        v3->mElements = nullptr;
+        v3->mCapacity = 0;
+        v3->mSize = 0;
+        v4 = v3;
+    }
+    DbLinkedHandle<EntityHandleDb, Entity> h = e->mHandle;
+    ae_vector_push_back_handle(v4, &h);
+    ae_pair<unsigned int, DroneHandleVec*>* v5 =
+        (ae_pair<unsigned int, DroneHandleVec*>*)mem_heap_malloc_sz(8);
+    if (v5 != nullptr)
+    {
+        v5->first = animIndex;
+        v5->second = v4;
+    }
+    ae_pair<unsigned int, DroneHandleVec*>* p = v5;
+    ae_sized_array_push_back_pair(&gDroneAEMap, &p);
+    return 0;
+}
+
+// ea: 0x4FF910
+int RemoveDrone(Entity* e)
+{
+    unsigned int mVal = e->mHandle.mHandle.mVal;
+    for (int i = 0; i < gDroneAEMap.m_size; ++i)
+    {
+        ae_pair<unsigned int, DroneHandleVec*>* entry = gDroneAEMap.m_elements[i];
+        DroneHandleVec* vec = entry->second;
+        for (int j = 0; j < vec->mSize; ++j)
+        {
+            if (vec->mElements[j].mHandle.mVal == mVal)
+            {
+                // erase by shifting
+                for (int k = j; k < vec->mSize - 1; ++k)
+                    vec->mElements[k] = vec->mElements[k + 1];
+                --vec->mSize;
+                break;
+            }
+        }
+    }
+    e->mFlags &= ~8u;
+    return 0;
+}
