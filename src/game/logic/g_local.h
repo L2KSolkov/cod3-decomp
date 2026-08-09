@@ -1814,6 +1814,7 @@ enum {
     ERR_LOCALIZATION = 7,
 };
 void  AngleVectors(const float* angles, float* forward, float* right, float* up);
+void  VectorInverse(float* v);  // core.o
 void  VectorNormalizeFast(float* v);   // core.o 0x4BDF70
 void  AnglesSubtract(const math::Position3* v1, const math::Position3* v2,
                      math::Position3* v3);   // core.o 0x4B99F0

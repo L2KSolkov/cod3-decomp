@@ -184,6 +184,149 @@ bool push_entity(Entity* ent, Entity* vehicle)
     return true;
 }
 
+// ea: 0x00469A80
+int G_TryPushingEntity(Entity* check, Entity* pusher,
+                       const math::Position3& move,
+                       const math::Position3& amove)
+{
+    if ((pusher->s.eFlags & 0x4000000) != 0
+        && check->s.mGroundEntity.mHandle.mVal
+               != pusher->mHandle.mHandle.mVal)
+        return 0;
+    float x = move.v.m128_f32[0]
+            + check->r.currentOrigin.v.m128_f32[0];
+    float y = move.v.m128_f32[1]
+            + check->r.currentOrigin.v.m128_f32[1];
+    float z = move.v.m128_f32[2]
+            + check->r.currentOrigin.v.m128_f32[2];
+    float forward[3], right[3], up[3];
+    AngleVectors(&amove.v.m128_f32[0], forward, right, up);
+    VectorInverse(right);
+    float matrix[3][3];
+    for (int i = 0; i < 3; ++i)
+    {
+        matrix[i][0] = forward[i];
+        matrix[i][1] = right[i];
+        matrix[i][2] = up[i];
+    }
+    float dx = x - pusher->r.currentOrigin.v.m128_f32[0];
+    float dy = y - pusher->r.currentOrigin.v.m128_f32[1];
+    float dz = z - pusher->r.currentOrigin.v.m128_f32[2];
+    float fz = matrix[2][0] * dx + matrix[2][1] * dy + matrix[2][2] * dz;
+    float fx = matrix[0][0] * dx + matrix[0][1] * dy + matrix[0][2] * dz;
+    float fy = matrix[1][0] * dx + matrix[1][1] * dy + matrix[1][2] * dz;
+    y = y + (fx - dy);
+    x = x + (fz - dx);
+    z = z + (fy - dz);
+    math::Position3 testPos;
+    testPos.v.m128_f32[0] = x;
+    testPos.v.m128_f32[1] = y;
+    testPos.v.m128_f32[2] = z;
+    if (G_TestEntityPosition(check, testPos) == nullptr)
+    {
+        if (check->s.mGroundEntity.mHandle.mVal
+            != pusher->mHandle.mHandle.mVal)
+            check->s.mGroundEntity.mHandle.mVal = 0;
+        check->r.currentOrigin.v.m128_f32[0] = x;
+        check->r.currentOrigin.v.m128_f32[1] = y;
+        check->r.currentOrigin.v.m128_f32[2] = z;
+        check->s.pos.trBase[0] = x;
+        check->s.pos.trBase[1] = y;
+        check->s.pos.trBase[2] = z;
+        Client* client = check->client;
+        if (client != nullptr)
+        {
+            client->ps.delta_angles[1] += amove.v.m128_f32[1] * 182.04445f;
+            client->ps.origin.v.m128_f32[0] = x;
+            client->ps.origin.v.m128_f32[1] = y;
+            client->ps.origin.v.m128_f32[2] = z;
+            goto pushed;
+        }
+        goto set_actor_orient;
+    }
+    float half = check->r.maxs.v.m128_f32[0] * 0.5f;
+    if (half > 4.0f)
+    {
+        float orgX = x;
+        float orgY = y;
+        float orgZ = z;
+        float v48 = 0.0f;
+        float bestX, bestY, bestZ;
+        bool found = false;
+        for (float sx = -half; sx <= half && !found; sx += 4.0f)
+        {
+            for (float sy = -half; sy <= half && !found; sy += 4.0f)
+            {
+                for (float sz = -half; sz <= half && !found; sz += 4.0f)
+                {
+                    float tx = orgX + sx;
+                    float ty = orgY + sy;
+                    float tz = orgZ + sz;
+                    math::Position3 tp;
+                    tp.v.m128_f32[0] = tx;
+                    tp.v.m128_f32[1] = ty;
+                    tp.v.m128_f32[2] = tz;
+                    if (G_TestEntityPosition(check, tp) == nullptr)
+                    {
+                        x = tx;
+                        y = ty;
+                        z = tz;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (found)
+        {
+            if (check->s.mGroundEntity.mHandle.mVal
+                != pusher->mHandle.mHandle.mVal)
+                check->s.mGroundEntity.mHandle.mVal = 0;
+            check->r.currentOrigin.v.m128_f32[0] = x;
+            check->r.currentOrigin.v.m128_f32[1] = y;
+            check->r.currentOrigin.v.m128_f32[2] = z;
+            check->s.pos.trBase[0] = x;
+            check->s.pos.trBase[1] = y;
+            check->s.pos.trBase[2] = z;
+            Client* client = check->client;
+            if (client != nullptr)
+            {
+                client->ps.delta_angles[1] += amove.v.m128_f32[1] * 182.04445f;
+                client->ps.origin.v.m128_f32[0] = x;
+                client->ps.origin.v.m128_f32[1] = y;
+                client->ps.origin.v.m128_f32[2] = z;
+                goto pushed;
+            }
+        }
+        else
+        {
+            goto still_blocked;
+        }
+    }
+    else
+    {
+        goto still_blocked;
+    }
+set_actor_orient:
+    if (check->actor != nullptr)
+    {
+        j_nullsub_83(&check->actor->CodeOrient,
+                     check->actor->CodeOrient.fDesiredBodyYaw
+                         + amove.v.m128_f32[1]);
+        j_nullsub_83(&check->actor->ScriptOrient,
+                     check->actor->ScriptOrient.fDesiredBodyYaw
+                         + amove.v.m128_f32[1]);
+    }
+pushed:
+    ++pushed_p;
+    return 1;
+still_blocked:
+    if (G_TestEntityPosition(check, check->r.currentOrigin) != nullptr)
+        return 0;
+    check->s.mGroundEntity.mHandle.mVal = 0;
+    return 1;
+}
+
 // ea: 0x0045C5F0
 void prepare_collision_objects(Entity* ent, const math::Position3* p0,
                                const math::Position3* p1, float radius,
