@@ -257,3 +257,21 @@ bool AnimationPlayer::nalAnimCallback::Invoke(AnimationPlayer* player)
     (void)player;
     return true;
 }
+
+// ============================================================================
+// TestFPS::TestFPS - ea: 0x4FEC20
+// ============================================================================
+TestFPS::TestFPS()
+{
+    memset(_pad, 0, sizeof(_pad));
+    mTesting = false;
+    mCellIndex = 0;
+    mCurrentAngle = 0;
+    mCellX = 0;
+    mCellY = 0;
+    mZoneIndex = 0;
+    mDeltaAngle = 45;
+    mCurrentPositionIndex = 0;
+    mPlayerHandle.mVal = 0;
+    mFile = nullptr;
+}

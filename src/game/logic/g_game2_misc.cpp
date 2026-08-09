@@ -683,6 +683,9 @@ struct ButtonEntry {
     void SetCmdBinding();                    // ea: 0x4F6CC0
     const BaseCmdFuncInfo* GetBoundCmdPress();  // ea: 0x4F6D50
     const BaseCmdFuncInfo* GetBoundCmdRelease();  // ea: 0x4F6D80
+    void SetKeyBinding(unsigned char keyInfoIndex);  // ea: 0x4FEAA0
+    void Press(bool doCommands);             // ea: 0x4FEAD0
+    void Release(bool doCommands);           // ea: 0x4FEB60
 };
 static_assert(sizeof(ButtonEntry) == 0xC, "ButtonEntry size mismatch");
 
@@ -748,6 +751,122 @@ const BaseCmdFuncInfo* ButtonEntry::GetBoundCmdRelease()
     }
     SetCmdBinding();
     return mBoundCmdRelease;
+}
+
+// ============================================================================
+// ButtonEntry::SetKeyBinding - ea: 0x4FEAA0
+// ============================================================================
+extern void* InteractionController_Inst(int instance);  // ?Inst@InteractionController
+extern int InteractionController_Press(void* self, int buttonIndex);
+extern int InteractionController_Release(void* self, int buttonIndex);
+extern void Cmd_CallCmdFunction(const BaseCmdFuncInfo* cmd, int key, int time);
+extern void CL_KeyEvent(int key, bool down, unsigned int time);
+
+void ButtonEntry::SetKeyBinding(unsigned char keyInfoIndex)
+{
+    mKeyInfoIndex = keyInfoIndex;
+    mBoundCmdPress = nullptr;
+    mBoundCmdRelease = nullptr;
+    if (keyInfoIndex != 0xFF)
+        SetCmdBinding();
+}
+
+// ea: 0x4FEAD0
+void ButtonEntry::Press(bool doCommands)
+{
+    int mKeyInfoIndex = this->mKeyInfoIndex;
+    void* v3 = InteractionController_Inst(currCl);
+    if (InteractionController_Press(v3, mKeyInfoIndex) != 0)
+        return;
+    if (mBoundCmdPress == nullptr)
+    {
+        if (mKeyInfoIndex == -1)
+            goto bind_done;
+    }
+    else if (mKeyInfoIndex != -1)
+    {
+        goto bind_done;
+    }
+    SetCmdBinding();
+bind_done:
+    const BaseCmdFuncInfo* mBoundCmdPress = this->mBoundCmdPress;
+    if (mBoundCmdPress != nullptr && doCommands)
+    {
+        int v5 = Sys_Milliseconds();
+        Cmd_CallCmdFunction(mBoundCmdPress, this->mKeyInfoIndex, v5);
+    }
+    else
+    {
+        unsigned int v6 = (unsigned int)Sys_Milliseconds();
+        CL_KeyEvent(this->mKeyInfoIndex, true, v6);
+    }
+}
+
+// ea: 0x4FEB60
+void ButtonEntry::Release(bool doCommands)
+{
+    int mKeyInfoIndex = this->mKeyInfoIndex;
+    void* v3 = InteractionController_Inst(currCl);
+    if (InteractionController_Release(v3, mKeyInfoIndex) != 0)
+        return;
+    if (mBoundCmdRelease == nullptr)
+    {
+        if (mKeyInfoIndex == -1)
+            goto release_bind_done;
+    }
+    else if (mKeyInfoIndex != -1)
+    {
+        goto release_bind_done;
+    }
+    SetCmdBinding();
+release_bind_done:
+    const BaseCmdFuncInfo* mBoundCmdRelease = this->mBoundCmdRelease;
+    if (mBoundCmdRelease != nullptr && doCommands)
+    {
+        int v5 = Sys_Milliseconds();
+        Cmd_CallCmdFunction(mBoundCmdRelease, this->mKeyInfoIndex, v5);
+        return;
+    }
+    if (mBoundCmdPress == nullptr)
+    {
+        if (mKeyInfoIndex == -1)
+            goto press_bind_done;
+    }
+    else if (mKeyInfoIndex != -1)
+    {
+        goto press_bind_done;
+    }
+    SetCmdBinding();
+press_bind_done:
+    if (this->mBoundCmdPress == nullptr || !doCommands)
+    {
+        unsigned int v6 = (unsigned int)Sys_Milliseconds();
+        CL_KeyEvent(this->mKeyInfoIndex, false, v6);
+    }
+}
+
+// ============================================================================
+// ButtonMgr::UpdateBinding - ea: 0x4FE9A0
+// ============================================================================
+struct ButtonMgr {
+    static ButtonEntry mButtons[1][16];  // ?mButtons@ButtonMgr
+    static void UpdateBinding(unsigned char keyInfoIndex, int clnt);
+};
+
+ButtonEntry ButtonMgr::mButtons[1][16];
+
+void ButtonMgr::UpdateBinding(unsigned char keyInfoIndex, int clnt)
+{
+    int v4 = 0;
+    for (;;)
+    {
+        if (mButtons[clnt][v4].mKeyInfoIndex == keyInfoIndex)
+            break;
+        ++v4;
+        if (v4 > 15)
+            return;
+    }
+    mButtons[clnt][v4].SetCmdBinding();
 }
 
 // ============================================================================
