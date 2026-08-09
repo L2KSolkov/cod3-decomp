@@ -224,6 +224,9 @@ struct MultiplayerMgr {
                        const math::Position3& position, const math::Dir3& normal,
                        float damage, int weapon, unsigned char mod, int dflags);
     void VehicleDeath(Entity* hitEntity, Entity* killer, int weapon, int mod);
+    void ProjectileExplosion(Entity* projectile, int weapon,
+                             const math::Position3& position, const math::Dir3& normal,
+                             unsigned char surfaceType, Entity* owner);
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 

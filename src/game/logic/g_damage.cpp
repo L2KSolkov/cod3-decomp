@@ -712,3 +712,141 @@ bool G_CanPlayerBeDamagedInVehicle(Entity* player)
         || s_vehicleInfos[scr_vehicle->infoIdx]->type != 2
         || player->client->ps.vehPos != 0;
 }
+
+// ea: 0x00485FF0
+void G_ExplodeMissile(Entity* ent, int msec)
+{
+    unsigned int mVal = ent->parentHandle.mHandle.mVal;
+    Entity* mObject = nullptr;
+    unsigned int v5 = mVal & 0xFFF;
+    trace_t trace;
+    trace.surfaceFlags = 0;
+    trace.contents = 0;
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ent->s.weapon);
+    if (v5 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v5].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v5].mObject;
+    Entity* owner = mObject;
+    if (mObject != nullptr)
+    {
+        if (!EntityManager::sInst->IsLocalPlayer(mObject)
+            && mObject->client != nullptr
+            && InfoForWeapon->iTriggerRadius == 0)
+        {
+            G_FreeEntity(ent, msec);
+            return;
+        }
+        if (mObject->s.eType == 10 && mObject->r.mOwner.mHandle.mVal != 0)
+            owner = HandleDbToEnt(mObject->r.mOwner);
+    }
+    if (InfoForWeapon->slot != WEAPSLOT_SMOKE_GRENADE || ent->s.mGroundEntity.mHandle.mVal != 0)
+    {
+        ent->nextthink = 0;
+        Entity* activator = ent->activator;
+        if (activator != nullptr && activator->actor != nullptr && (ent->r.svFlags & 1) != 0)
+        {
+            static unsigned int sInit = 0;
+            static unsigned int GRENADE_RETURN_HAND_TAG_hash;
+            if ((sInit & 1) == 0)
+            {
+                sInit |= 1u;
+                GRENADE_RETURN_HAND_TAG_hash = HashString::CalcHash("tag_weapon_right");
+            }
+            DObjSkelMat tagMat;
+            G_DObjGetWorldTagMatrix(ent->activator, GRENADE_RETURN_HAND_TAG_hash, &tagMat);
+            G_SetOrigin(ent, &tagMat.origin[0]);
+            ent->r.svFlags &= ~1u;
+            G_EntDetach(ent->activator, InfoForWeapon->szWorldModel, "tag_weapon_right");
+        }
+        else
+        {
+            math::Position3 pos;
+            BG_EvaluateTrajectory(&ent->s.pos, level.time, pos);
+            G_SetOrigin(ent, &pos);
+        }
+        j_nullsub_120(ent);
+        int eFlags = ent->s.eFlags;
+        int svFlags = ent->r.svFlags;
+        float v10 = ent->r.currentOrigin.v.m128_f32[0];
+        ent->flags |= 0x400u;
+        int clipmask = ent->clipmask;
+        ent->s.eFlags = eFlags | 0x80;
+        ent->s.eType = 0;
+        ent->r.contents = 0;
+        ent->r.svFlags = svFlags | 0x20;
+        collision_context_t context;
+        context.__vftable = nullptr;
+        context.pass_entity1.mHandle.mVal = 0;
+        context.pass_entity2.mHandle.mVal = clipmask & 0xFDFFFFEE | 0x11;
+        math::Position3 end;
+        end.v.m128_f32[0] = v10;
+        end.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+        end.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2] - 16.0f;
+        context.contentmask = (int)(ent->r.currentOrigin.v.m128_f32[2] + 2.0f);
+        math::Position3 zeroA;
+        math::Position3 zeroB;
+        zeroA.v = _mm_setzero_ps();
+        zeroB.v = _mm_setzero_ps();
+        math::Position3 start;
+        start.v.m128_f32[0] = v10;
+        start.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+        start.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2];
+        SV_Trace(&trace, &start, &zeroB, &zeroA, &end, &context, 0, 0, nullptr, 0, 0.0f);
+        unsigned char v16 = DirToByte(trace.normal.v.m128_f32);
+        G_AddEvent(ent, 210, v16);
+        unsigned char projExplosion = InfoForWeapon->projExplosion;
+        ent->s.scale = projExplosion;
+        collision_context_t ctx2(32);
+        if (SV_PointContents(ent->r.currentOrigin, ctx2) != 0)
+            ent->s.surfType = 20;
+        else
+            ent->s.surfType = ((int)trace.normal.v.m128_f32[2] >> 20) & 0x1F;
+        float v18 = trace.endpos.v.m128_f32[0];
+        float v19 = trace.endpos.v.m128_f32[1];
+        ent->think = THINK__G_FreeEntity;
+        ent->nextthink = level.time + 60000;
+        math::Position3 origin;
+        origin.v.m128_f32[0] = v18;
+        origin.v.m128_f32[1] = v19;
+        origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+        G_SetOrigin(ent, &origin);
+        Entity::SetLerpOrigin(&ent->s, &origin);
+        Entity* v21 = HandleDbToEnt(ent->r.mOwner);
+        MultiplayerMgr::sInst->ProjectileExplosion(ent, ent->s.weapon, origin,
+                                                   trace.normal, ent->s.surfType, v21);
+        weaponFileInfo_t* v22 = InfoForWeapon;
+        if (InfoForWeapon->slot == WEAPSLOT_SMOKE_GRENADE || InfoForWeapon->iExplosionInnerDamage != 0)
+        {
+            collision_context_t ctx3;
+            ctx3.__vftable = nullptr;
+            ctx3.pass_entity1.mHandle.mVal = 0;
+            ctx3.pass_entity2.mHandle.mVal = ent->mHandle.mHandle.mVal;
+            ctx3.contentmask = 0;
+            math::Position3 end2;
+            end2.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
+            end2.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+            end2.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2] + 10.0f;
+            math::Position3 zeroC;
+            math::Position3 zeroD;
+            zeroC.v = _mm_setzero_ps();
+            zeroD.v = _mm_setzero_ps();
+            SV_Trace(&trace, &ent->r.currentOrigin, &zeroD, &zeroC, &end2, &ctx3, 0, 0, nullptr, 0, 0.0f);
+            G_RadiusDamage(origin.v.m128_f32, ent, owner,
+                           (float)InfoForWeapon->iExplosionInnerDamage,
+                           (float)InfoForWeapon->iExplosionOuterDamage,
+                           (float)InfoForWeapon->iExplosionRadius,
+                           ent, ent->splashMethodOfDeath);
+            v22 = InfoForWeapon;
+        }
+        int key = ent->key;
+        if (key > 0 && v22->slot != WEAPSLOT_SMOKE_GRENADE)
+            EffectEventSys::sInst->StopEffect(key, false);
+        SV_UnlinkEntity(ent);
+    }
+    else
+    {
+        if (ent->key == 0)
+            ent->key = PostEffectEventWeapon(ent, InfoForWeapon->szInternalName,
+                                             kActionEI_MELEE_PLAYER_LOSING | kActionWEAPON_FIRE_3RD);
+        ent->nextthink = level.time + 3000;
+    }
+}

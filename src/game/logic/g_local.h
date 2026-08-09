@@ -680,21 +680,39 @@ static_assert(offsetof(gitem_s, giType) == 0x24, "gitem_s::giType offset mismatc
 // weaponFileInfo_t - weapon definition (0x948 bytes; g.o uses a subset)
 // ============================================================================
 struct weaponFileInfo_t {
-    uint8_t _pad0[0x5C4];         // +0x000
+    uint8_t _pad0[0x8];           // +0x000
+    char*   szInternalName;       // +0x8
+    uint8_t _pad8[0xB4 - 0xC];
+    int     slot;                 // +0xB4
+    uint8_t _padB8[0x598 - 0xB8];
+    char*   szWorldModel;         // +0x598
+    uint8_t _pad1[0x5C4 - 0x59C];
     int     iProjectileSpeed;     // +0x5C4
     int     iProjectileSpeedUp;   // +0x5C8
-    uint8_t _pad1[0x5F8 - 0x5CC];
+    uint8_t _pad2[0x5F8 - 0x5CC];
     int     iProjectileDelay;     // +0x5F8
-    uint8_t _pad2[0x6E8 - 0x5FC];
+    uint8_t _pad3[0x6E8 - 0x5FC];
     int     bTwoHanded;           // +0x6E8
-    uint8_t _pad3[0x764 - 0x6EC];
+    uint8_t _pad4[0x764 - 0x6EC];
     int     iAltWeaponIndex;      // +0x764
-    uint8_t _pad4[0x948 - 0x768];
+    uint8_t _pad5[0x774 - 0x768];
+    int     iTriggerRadius;       // +0x774
+    int     iExplosionRadius;     // +0x778
+    int     iExplosionInnerDamage;// +0x77C
+    int     iExplosionOuterDamage;// +0x780
+    uint8_t _pad6[0x790 - 0x784];
+    uint8_t projExplosion;        // +0x790
+    uint8_t _pad7[0x948 - 0x791];
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
 static_assert(offsetof(weaponFileInfo_t, bTwoHanded) == 0x6E8, "weaponFileInfo_t::bTwoHanded offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, iAltWeaponIndex) == 0x764, "weaponFileInfo_t::iAltWeaponIndex offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, iProjectileSpeed) == 0x5C4, "weaponFileInfo_t::iProjectileSpeed offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, slot) == 0xB4, "weaponFileInfo_t::slot offset mismatch");
+
+enum {
+    WEAPSLOT_SMOKE_GRENADE = 5,  // verified vs disasm G_ExplodeMissile
+};
 
 // ============================================================================
 // weaponParms - weapon fire params (0x40 bytes) - verified against IDA
@@ -841,6 +859,21 @@ int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,
                      float fInnerDamage, float fOuterDamage, float radius,
                      Entity* ignore, int mod);
 
+// ============================================================================
+// missile/explosion helpers
+// ============================================================================
+unsigned char DirToByte(const float* dir);
+void  G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
+int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
+void  j_nullsub_120(Entity* pGrenade);
+int   PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);
+extern vmCvar_t g_debugGrenades;
+enum {
+    kActionEI_MELEE_PLAYER_LOSING = 0x400,
+    kActionWEAPON_FIRE_3RD = 0x800,
+};
+void  G_ExplodeMissile(Entity* ent, int msec);
+
 struct Destructible;
 class IVPointer_Destructible {
 public:
@@ -889,6 +922,7 @@ class EffectEventSys {
 public:
     static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
     void SendSoundNotify(Entity* pEnt);  // ea: 0x004BCDE0
+    void StopEffect(int handle, bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z
 };
 
 namespace BrocSys {

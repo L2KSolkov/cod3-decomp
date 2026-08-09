@@ -237,6 +237,7 @@ public:
     int  GetPlayerIndex();                           // ?GetPlayerIndex@Entity@@QBEHXZ
     EntityState  s;                               // +0x000 (224 bytes)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
+    static void SetLerpOrigin(EntityState* s, const math::Position3* origin);  // ?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z
     trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ
     EntityShared r;                               // +0x0E0 (336 bytes)
     int32_t  mPakId;                              // +0x230
