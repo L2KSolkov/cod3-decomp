@@ -2200,8 +2200,95 @@ extern const char* s_vehicleSubTypeNames[9];      // g.o
 void  Pmove(pmove_t* pmove, bool isThisThePredictStep);  // game.o
 extern void (*entinfotable[3])(Entity* ent);      // g.o
 float vectoyaw(const float* vec);                 // core.o
-struct proximity_data_t { struct { __m128 v; } lo, hi; };  // opaque
 struct TouchEntityData;
+
+// CDL collision types (cdl_types.h / cgbank.h) - used by collide_sphere +
+// push_in_world
+struct cdl_object_t {
+    int      cflags;        // +0x00
+    int      sflags;        // +0x04
+    float    center[3];     // +0x08 (Position3::Packed)
+    float    box_radius[3]; // +0x14 (Dir3::Packed)
+    float    sphere_radius; // +0x20
+};
+static_assert(sizeof(cdl_object_t) == 0x24, "cdl_object_t size mismatch");
+struct cdl_brush_t {
+    uint16_t first_side;  // +0x00
+    uint16_t num_sides;   // +0x02
+};
+struct cdlPlane { int packed[4]; };  // 16 bytes
+struct cdl_patch_t {
+    uint16_t first_index;  // +0x00
+    uint16_t num_inds;     // +0x02
+};
+struct proxy_obj_t {
+    uint16_t oi;  // +0x00
+    uint8_t  bi;  // +0x02
+    uint8_t  ti;  // +0x03
+};
+struct cdl_array_t {
+    int   m_count;     // +0x00
+    void* m_elements;  // +0x04
+};
+
+struct proximity_data_t {
+    math::Position3 lo;              // +0x000
+    math::Position3 hi;              // +0x010
+    uint8_t         boxesBuf[0x400]; // +0x020 (256 * proxy_obj_t)
+    proxy_obj_t* const* boxes_slot;  // +0x420
+    int             boxes_count;     // +0x424
+    uint8_t         _pad428[0x430 - 0x428];
+    uint8_t         brushesBuf[0x400];  // +0x430 (256 * proxy_obj_t)
+    proxy_obj_t* const* brushes_slot;   // +0x830
+    int             brushes_count;      // +0x834
+    uint8_t         _pad838[0x840 - 0x838];
+    uint8_t         poliesBuf[0x1000];  // +0x840 (128 * bounded_proxy_obj_t)
+    proxy_obj_t* const* polies_slot;    // +0x1840
+    int             polies_count;       // +0x1844
+    uint8_t         _pad1848[0x1850 - 0x1848];
+};
+static_assert(sizeof(proximity_data_t) == 0x1850,
+              "proximity_data_t size mismatch");
+struct CGBank {
+    math::Position3 min;      // +0x00
+    math::Position3 max;      // +0x10
+    math::Position3 center;   // +0x20
+    float radius;             // +0x30
+    float radius2;            // +0x34
+    uint16_t nboxes;          // +0x38
+    uint16_t nbrushes;        // +0x3A
+    cdl_array_t objects;      // +0x3C
+    cdl_array_t brushes;      // +0x44
+    cdl_array_t gjk_brushes;  // +0x4C
+    cdl_array_t patches;      // +0x54
+    cdl_array_t gjk_patches;  // +0x5C
+    cdl_array_t brush_sides;  // +0x64
+    cdl_array_t brush_verts;  // +0x6C
+    cdl_array_t patch_inds;   // +0x74
+    cdl_array_t patch_verts;  // +0x7C
+    uint8_t _pad84[0xC0 - 0x84];
+    void* rtree_data;         // +0xC4
+};
+static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
+struct CGBankManager {
+    static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
+    CGBank* mBankArray[99];  // +0x00
+};
+
+bool collide_sphere_brush(const float* sphere_center, float sphere_radius,
+                          const cdl_object_t* obj, const cdlPlane* sides,
+                          int nsides, float* new_sphere_center);  // game.o
+bool collide_sphere_box(const float* sphere_center, float sphere_radius,
+                        const cdl_object_t* box,
+                        float* new_sphere_center);  // game.o
+bool new_push_out_sphere_triangle(const float* sphere_center,
+                                  float sphere_radius, const float* v0,
+                                  const float* v1, const float* v2,
+                                  const float* normal,
+                                  float* new_sphere_center);  // game.o
+void calc_normal(float* result, const float* v0, const float* v1,
+                 const float* v2);  // game.o
+
 void query_proximity_data(const math::Position3& lo, const math::Position3& hi,
                           proximity_data_t& out);      // game.o 0x60A25BC0
 void filter_proximity_data(const math::Position3& lo, const math::Position3& hi,

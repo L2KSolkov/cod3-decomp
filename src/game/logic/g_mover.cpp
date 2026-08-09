@@ -327,6 +327,172 @@ still_blocked:
     return 1;
 }
 
+// ea: 0x0046B3C0
+bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
+                    const TouchEntityData& entities,
+                    const math::Position3& incenter, float radius,
+                    math::Position3& outcenter)
+{
+    outcenter = incenter;
+    bool hit = false;
+    for (int i = 0; i < entities.num; ++i)
+    {
+        Entity* ent = HandleDbToEnt(entities.touch[i]);
+        if (ent == nullptr || ent == vehicle || ent->r.bmodel == nullptr)
+            continue;
+        math::Mat43 rot = ent->CalcRotTranMat43();
+        const char* bmodel = (const char*)ent->r.bmodel;
+        int nboxes = *(const uint16_t*)(bmodel + 0x00);
+        int nbrushes = *(const uint16_t*)(bmodel + 0x02);
+        cdl_object_t* objects = *(cdl_object_t**)(bmodel + 0x04);
+        cdl_brush_t* brushes = *(cdl_brush_t**)(bmodel + 0x0C);
+        cdlPlane* sides = *(cdlPlane**)(bmodel + 0x1C);
+        math::Position3 local;
+        local.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(outcenter.v, outcenter.v, 0),
+                           rot.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(outcenter.v, outcenter.v, 85),
+                           rot.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(outcenter.v, outcenter.v, 170),
+                           rot.z.v),
+                _mm_xor_ps(rot.w.v, sSignMask)));
+        for (int b = 0; b < nbrushes; ++b)
+        {
+            cdl_object_t* obj = &objects[nboxes + b];
+            float c0 = obj->center[0];
+            float c1 = obj->center[1];
+            float c2 = obj->center[2];
+            float r0 = obj->box_radius[0];
+            float r1 = obj->box_radius[1];
+            float r2 = obj->box_radius[2];
+            float dx = local.v.m128_f32[0] - (c0 + r0);
+            float dy = local.v.m128_f32[1] - (c1 + r1);
+            float dz = local.v.m128_f32[2] - (c2 + r2);
+            if (dx * dx + dy * dy + dz * dz < 9.0f)
+            {
+                cdl_brush_t* br = &brushes[b];
+                if (collide_sphere_brush(
+                        &local.v.m128_f32[0], radius, obj,
+                        &sides[br->first_side], br->num_sides,
+                        &local.v.m128_f32[0]))
+                    hit = true;
+            }
+        }
+        for (int b = 0; b < nboxes; ++b)
+        {
+            cdl_object_t* obj = &objects[b];
+            float c0 = obj->center[0];
+            float c1 = obj->center[1];
+            float c2 = obj->center[2];
+            float r0 = obj->box_radius[0];
+            float r1 = obj->box_radius[1];
+            float r2 = obj->box_radius[2];
+            float dx = local.v.m128_f32[0] - (c0 + r0);
+            float dy = local.v.m128_f32[1] - (c1 + r1);
+            float dz = local.v.m128_f32[2] - (c2 + r2);
+            if (dx * dx + dy * dy + dz * dz < 9.0f)
+            {
+                if (collide_sphere_box(&local.v.m128_f32[0], radius, obj,
+                                       &local.v.m128_f32[0]))
+                    hit = true;
+            }
+        }
+        outcenter.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(local.v, local.v, 0), rot.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(local.v, local.v, 85), rot.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(local.v, local.v, 170), rot.z.v),
+                rot.w.v));
+    }
+    for (int i = 0; i < proximity_data.brushes_count; ++i)
+    {
+        proxy_obj_t* slot = (proxy_obj_t*)proximity_data.brushes_slot[i];
+        CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
+                           ->mBankArray[slot->bi];
+        if (slot->oi >= (unsigned int)bank->objects.m_count
+            || slot->oi < bank->nbrushes)
+            continue;
+        int brushIdx = slot->oi - bank->nbrushes;
+        cdl_brush_t* br =
+            &((cdl_brush_t*)bank->brushes.m_elements)[brushIdx];
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[slot->oi];
+        if (outcenter.v.m128_f32[2]
+                - (obj->center[2] + obj->box_radius[2])
+            < 9.0f)
+        {
+            if (collide_sphere_brush(
+                    &outcenter.v.m128_f32[0], radius, obj,
+                    &((cdlPlane*)bank->brush_sides.m_elements)
+                        [br->first_side],
+                    br->num_sides, &outcenter.v.m128_f32[0]))
+                hit = true;
+        }
+    }
+    for (int i = 0; i < proximity_data.boxes_count; ++i)
+    {
+        proxy_obj_t* slot = (proxy_obj_t*)proximity_data.boxes_slot[i];
+        CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
+                           ->mBankArray[slot->bi];
+        if (slot->oi >= (unsigned int)bank->objects.m_count)
+            continue;
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[slot->oi];
+        if (outcenter.v.m128_f32[2]
+                - (obj->center[2] + obj->box_radius[2])
+            < 9.0f)
+        {
+            if (collide_sphere_box(&outcenter.v.m128_f32[0], radius, obj,
+                                   &outcenter.v.m128_f32[0]))
+                hit = true;
+        }
+    }
+    const float scale = 0.25f;
+    for (int i = 0; i < proximity_data.polies_count; ++i)
+    {
+        proxy_obj_t* slot = (proxy_obj_t*)proximity_data.polies_slot[i];
+        CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
+                           ->mBankArray[slot->bi];
+        int patchIdx = slot->oi - bank->nbrushes - bank->nboxes;
+        if (patchIdx < 0 || patchIdx >= bank->patches.m_count)
+            continue;
+        cdl_patch_t* patch =
+            &((cdl_patch_t*)bank->patches.m_elements)[patchIdx];
+        uint32_t* inds = (uint32_t*)bank->patch_inds.m_elements;
+        uint32_t i0 = inds[patch->first_index + 0];
+        uint32_t i1 = inds[patch->first_index + 1];
+        uint32_t i2 = inds[patch->first_index + 2];
+        float v0[3] = { (float)(i0 & 0x7FF) * scale,
+                        (float)((i0 >> 11) & 0x7FF) * scale,
+                        (float)((i0 >> 22) & 0x7FF) * scale };
+        float v1[3] = { (float)(i1 & 0x7FF) * scale,
+                        (float)((i1 >> 11) & 0x7FF) * scale,
+                        (float)((i1 >> 22) & 0x7FF) * scale };
+        float v2[3] = { (float)(i2 & 0x7FF) * scale,
+                        (float)((i2 >> 11) & 0x7FF) * scale,
+                        (float)((i2 >> 22) & 0x7FF) * scale };
+        float normal[4];
+        calc_normal(normal, v0, v1, v2);
+        if (fabsf(normal[2]) <= 0.7f)
+        {
+            float dot = normal[0] * outcenter.v.m128_f32[0]
+                      + normal[1] * outcenter.v.m128_f32[1]
+                      + normal[2] * outcenter.v.m128_f32[2];
+            if (normal[3] + dot >= 0.0f)
+            {
+                if (new_push_out_sphere_triangle(
+                        &outcenter.v.m128_f32[0], radius, v0, v1, v2,
+                        normal, &outcenter.v.m128_f32[0]))
+                    hit = true;
+            }
+        }
+    }
+    return hit;
+}
+
 // ea: 0x0045C5F0
 void prepare_collision_objects(Entity* ent, const math::Position3* p0,
                                const math::Position3* p1, float radius,
@@ -2475,3 +2641,4 @@ label_20:
         }
     }
 }
+
