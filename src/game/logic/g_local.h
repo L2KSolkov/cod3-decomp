@@ -1045,6 +1045,10 @@ struct BrocExports {
                                   hitLocation_t a9);  // +0xC90
     uint8_t _padC94[0xD44 - 0xC94];
     void (*mCallbackFireArtilleryShell)(unsigned int handle);  // +0xD44
+    uint8_t _padD48[0xD5C - 0xD48];
+    void (*mCallbackGiveAmmoPack)(unsigned int ent, unsigned int count);  // +0xD5C
+    uint8_t _padD60[0xD68 - 0xD60];
+    void (*mCallbackPickupKit)(unsigned int ent, unsigned int count);  // +0xD68
 };
 struct BrocAPI {
     BrocExports mBrocExports;
@@ -1133,9 +1137,18 @@ bool IsSplitScreen();  // ea: 0x00693C10 (cg_misc.cpp)
 // ============================================================================
 // weapon helpers (BG_* from game2.o; extern)
 // ============================================================================
+enum weapSlot_t : int;  // full definition below (after weaponFileInfo_t)
 int  BG_AmmoForWeapon(int iWeapon);
 int  BG_ClipForWeapon(int iWeapon);
 void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex);  // game2.o
+const char* BG_GetAmmoTypeName(int iAmmoIndex);       // game.o 0x6071B0
+int  BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x6074F0
+int  BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                              weapSlot_t preferedSlot);  // game.o 0x607570
+weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS, int iWeaponIndex,
+                                   int bAnyMode);    // game.o 0x616AA0
+int  BG_CanItemBeGrabbed(const EntityState* ent, const PlayerState* ps,
+                         int bTouched);              // game.o 0x6278C0
 int  BG_GetNumWeapons();
 int  BG_GetAmmoClipSize(int iClipIndex);
 int  BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
@@ -1326,7 +1339,8 @@ struct weaponFileInfo_t {
     uint8_t _padB8[0xBC - 0xB8];
     int     stance;               // +0xBC (weapStance_t)
     int     ammoType;             // +0xC0 (weapAmmoType_t; WEAPAMMOTYPE_UMG == 5)
-    uint8_t _padC4[0x598 - 0xC4];
+    int     pickupWithoutSelect;  // +0xC4
+    uint8_t _padC8[0x598 - 0xC8];
     char*   szWorldModel;         // +0x598
     uint8_t _pad1[0x5CC - 0x59C];
     int     iSharedAmmoCapIndex;  // +0x5CC
@@ -1353,7 +1367,8 @@ struct weaponFileInfo_t {
     uint8_t _pad73C[0x764 - 0x73C];
     int     iAltWeaponIndex;      // +0x764
     int     iShotCount;           // +0x768
-    uint8_t _pad5[0x774 - 0x76C];
+    int     iDropAmmoMin;         // +0x76C
+    int     iDropAmmoMax;         // +0x770
     int     iTriggerRadius;       // +0x774
     int     iExplosionRadius;     // +0x778
     int     iExplosionInnerDamage;// +0x77C
@@ -1409,13 +1424,17 @@ static_assert(offsetof(weaponFileInfo_t, turnSpeed) == 0x880, "weaponFileInfo_t:
 static_assert(offsetof(weaponFileInfo_t, szScript) == 0x8BC, "weaponFileInfo_t::szScript offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, slot) == 0xB4, "weaponFileInfo_t::slot offset mismatch");
 
-enum weapSlot_t {
+enum weapSlot_t : int {
+    WEAPSLOT_NONE = 0,
     WEAPSLOT_PRIMARY = 1,        // verified vs disasm Drop_Weapon
     WEAPSLOT_PRIMARYB = 2,
     WEAPSLOT_PISTOL = 3,
     WEAPSLOT_GRENADE = 4,
     WEAPSLOT_SMOKE_GRENADE = 5,
     WEAPSLOT_SPECIAL = 9,
+};
+enum {
+    WEAPCLASS_GRENADE = 5,  // verified vs disasm Pickup_Weapon
 };
 enum {
     AI_EV_GRENADE_PING = 0x0E,
@@ -1609,6 +1628,10 @@ void SV_UnlinkEntity(Entity* gEnt);
 void G_AddEvent(Entity* ent, int event, int eventParm);
 void G_Printf(const char* fmt, ...);
 Entity* Drop_Item(Entity* ent, const gitem_s* item, float angle, int novelocity);
+int  Pickup_Weapon(Entity* ent, Entity* other, int* piMakeNoise, int bTouched);  // g.o 0x484F20
+int  Pickup_Ammo(Entity* ent, Entity* other, int bTouched);          // g.o 0x475890
+int  Pickup_Weapon_Ammo(Entity* ent, Entity* other);                 // g.o 0x44B3B0
+int  Pickup_Kit(Entity* ent, Entity* other, int bTouched);           // g.o 0x44B3F0
 
 // ============================================================================
 // items/script externs (game.o / game2.o / mp.o provide later)
@@ -2010,6 +2033,8 @@ extern int dword_F64018[4 * 1580];               // cg.o @ 0xF64018
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);  // cg.o
 extern float radius_1;                           // g.o @ 0xDD8268
+extern vmCvar_t g_weaponAmmoPools;               // g.o
+extern vmCvar_t g_weaponRespawn;                 // g.o
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
@@ -2418,7 +2443,7 @@ void  LookAtKiller(Entity* self, Entity* inflictor, Entity* attacker);  // g.o 0
 void  player_die(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                  int meansOfDeath, int iWeapon, const float* vPosition,
                  const float* vDir, hitLocation_t hitLoc);    // g.o 0x474FE0
-Entity* Touch_Item(Entity* ent, Entity* other, int bTouched);  // g.o 0x4859C0
+void  Touch_Item(Entity* ent, Entity* other, int bTouched);    // g.o 0x4859C0
 Entity* Drop_Weapon(Entity* pEnt, int iWeaponIndex, const char* pszTag);  // g.o 0x475E40
 void  Touch_Item_Auto(Entity* ent, Entity* other, int bTouched);  // g.o 0x48B4E0
 void  Cmd_Kill_f(Entity* ent);                                 // g.o 0x483560
@@ -2551,8 +2576,14 @@ struct Task {
     unsigned int mFlags;           // +0x18 Bitmask<unsigned int>
 
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
+    static class PoolAllocator* sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
 };
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
+
+struct TaskSys {
+    static TaskSys* sInst;  // ?sInst@TaskSys@@0V1@A @ 0x012F4120
+    void PostTask(Task* t);  // ?PostTask@TaskSys@@QAEXPAVTask@@@Z game2.o
+};
 
 struct EntityDeathTask : Task {
     EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // ??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z

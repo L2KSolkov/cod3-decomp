@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "core/PoolAllocator.h"
 
 // ea: 0x00457A10
 void Use_Item(Entity* ent, Entity* /*other*/, Entity* /*activator*/)
@@ -546,6 +547,578 @@ int Pickup_Health(Entity* ent, Entity* other)
     if (other->client != nullptr)
         Scr_Notify(other, hash_const.pickup, 1u);
     return -1;
+}
+
+// ea: 0x00475890
+int Pickup_Ammo(Entity* ent, Entity* other, int bTouched)
+{
+    int count = ent->count;
+    if (count == 0)
+        count = ent->item->quantity;
+    int result = Add_Ammo(other, ent->item->giTag, count, 0);
+    if (result != 0)
+    {
+        unsigned int e = other->mHandle.mHandle.mVal;
+        ent->Notify(hash_const.trigger, &e);
+        if (other->client != nullptr)
+            Scr_Notify(other, hash_const.pickup, 1);
+        return (ent->spawnflags & 8) != 0 ? 40 : -1;
+    }
+    return result;
+}
+
+// ea: 0x0044B3B0
+int Pickup_Weapon_Ammo(Entity* ent, Entity* other)
+{
+    if (gpBrocAPI->mBrocExports.mCallbackGiveAmmoPack != nullptr)
+    {
+        gpBrocAPI->mBrocExports.mCallbackGiveAmmoPack(
+            other->mHandle.mHandle.mVal, ent->count);
+    }
+    return -1;
+}
+
+// ea: 0x0044B3F0
+int Pickup_Kit(Entity* ent, Entity* other, int bTouched)
+{
+    if (gpBrocAPI->mBrocExports.mCallbackPickupKit != nullptr)
+    {
+        if (other->client == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+            AeAssert::gCurrentLine = 287;
+            AeAssert::gCurrentExpr = "other->client";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        int count = ent->count;
+        if (other->client->pers.playerClass == count)
+            return 0;
+        MultiplayerMgr::MPEntityHandle handle =
+            MultiplayerMgr::sInst->FindDroppedItemID(kItemTypeMax, ent,
+                                                     nullptr);
+        if (handle.mVal == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+            AeAssert::gCurrentLine = 295;
+            AeAssert::gCurrentExpr = "handle.IsAssigned()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Pickup_Weapon could not find the "
+                                    "network entity from the dropped weapon"))
+                __debugbreak();
+            if (handle.mVal == 0)
+            {
+                MultiplayerMgr::MPEntityHandle v6;
+                MultiplayerMgr::sInst->GetNextDroppedItemID(
+                    &v6, kItemTypeMax, nullptr);
+                handle.mVal = v6.mVal;
+            }
+        }
+        MultiplayerMgr::sInst->RegisterDroppedItem(kItemTypeMax, ent, other,
+                                                   handle.mVal & 0x7FF);
+        MultiplayerMgr::sInst->SwapKit(other->client->pers.playerClass,
+                                       handle.mVal);
+        gpBrocAPI->mBrocExports.mCallbackPickupKit(
+            other->mHandle.mHandle.mVal, count);
+    }
+    return -1;
+}
+
+// ea: 0x00484F20
+int Pickup_Weapon(Entity* ent, Entity* other, int* piMakeNoise, int bTouched)
+{
+    int giTag = ent->item->giTag;
+    weaponFileInfo_t* pWeap = BG_GetInfoForWeapon(giTag);
+    if (pWeap->slot == WEAPSLOT_PISTOL)
+    {
+        const char* ammoTypeName = BG_GetAmmoTypeName(giTag);
+        Entity* player = EntityManager::sInst->GetPlayer(currCl);
+        const char* v9 =
+            BG_GetAmmoTypeName(player->client->ps.weaponslots[3]);
+        if (_strnicmp(v9, ammoTypeName, strlen(ammoTypeName)) == 0)
+        {
+            giTag = EntityManager::sInst->GetPlayer(currCl)
+                        ->client->ps.weaponslots[3];
+            pWeap = BG_GetInfoForWeapon(giTag);
+        }
+    }
+    int quantity;
+    int count = ent->count;
+    if (count < 0)
+    {
+        quantity = 0;
+        goto clip_stage;
+    }
+    if (count == 0)
+    {
+        int iDropAmmoMax = pWeap->iDropAmmoMax;
+        int iDropAmmoMin = pWeap->iDropAmmoMin;
+        if (iDropAmmoMax < iDropAmmoMin)
+        {
+            int tmp = iDropAmmoMax;
+            iDropAmmoMax = iDropAmmoMin;
+            iDropAmmoMin = tmp;
+        }
+        if (iDropAmmoMax != 0)
+        {
+            if (iDropAmmoMax < 0)
+            {
+                ent->count = 0;
+                goto ammo_clamp;
+            }
+        }
+        else if (iDropAmmoMin == 0)
+        {
+            int maxClip = BG_GetAmmoClipSize(BG_ClipForWeapon(giTag)) - 1;
+            ent->count = (int)((random() + 1.0f) * maxClip * 0.5f + 0.5f) + 1;
+            goto ammo_clamp;
+        }
+        if (iDropAmmoMax < iDropAmmoMin)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+            AeAssert::gCurrentLine = 379;
+            AeAssert::gCurrentExpr = "iMax >= iMin";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        int v17 = (iDropAmmoMax == iDropAmmoMin)
+                      ? iDropAmmoMin
+                      : iDropAmmoMin + rand() % (iDropAmmoMax - iDropAmmoMin);
+        ent->count = v17;
+        if (v17 <= 0)
+            ent->count = 0;
+    }
+ammo_clamp:
+    if (ent->count > BG_GetAmmoTypeMax(BG_AmmoForWeapon(giTag)))
+        ent->count = BG_GetAmmoTypeMax(BG_AmmoForWeapon(giTag));
+    quantity = ent->count;
+clip_stage:
+    int iClipAmmo;
+    if (ent->count2 >= 0)
+    {
+        if (ent->count2 == 0)
+        {
+            if (ent->count >= 0)
+            {
+                int clipSize = BG_GetAmmoClipSize(BG_ClipForWeapon(giTag));
+                ent->count2 = clipSize;
+                if (clipSize > ent->count)
+                    ent->count2 = ent->count;
+                ent->count -= ent->count2;
+                quantity = ent->count;
+            }
+            else
+            {
+                ent->count2 = 0;
+            }
+        }
+        if (ent->count2 > BG_GetAmmoClipSize(BG_ClipForWeapon(giTag)))
+            ent->count2 = BG_GetAmmoClipSize(BG_ClipForWeapon(giTag));
+        iClipAmmo = ent->count2;
+    }
+    else
+    {
+        iClipAmmo = 0;
+    }
+    if (Com_BitCheck(other->client->ps.weapons, giTag) != 0)
+    {
+        *piMakeNoise = 173;
+        quantity += iClipAmmo;
+        if (g_gameskill->integer != 2 && g_gameskill->integer != 3)
+        {
+            int maxAmmo = BG_GetAmmoTypeMax(BG_AmmoForWeapon(giTag));
+            int curTotal =
+                other->client->ps.ammoclip[BG_AmmoForWeapon(giTag)]
+                + other->client->ps.ammo[BG_AmmoForWeapon(giTag)];
+            int dropMax = BG_GetInfoForWeapon(giTag)->iDropAmmoMax;
+            int dropMin = BG_GetInfoForWeapon(giTag)->iDropAmmoMin;
+            float v55 = 0.1f;
+            float v56 = 0.7f;
+            if (g_gameskill->integer == 0)
+            {
+                v55 = 0.3f;
+                v56 = 0.9f;
+            }
+            float v57 = 1.0f
+                        - ((curTotal / (float)maxAmmo - v55) / (v56 - v55));
+            if (v57 < 0.0f)
+                v57 = 0.0f;
+            else if (v57 > 1.0f)
+                v57 = 1.0f;
+            quantity = (int)((dropMax - dropMin) * v57) + dropMin;
+        }
+        int v58 = Add_Ammo(other, giTag, quantity, 0);
+        if (v58 == quantity)
+            goto pickup_done;
+        ent->count -= v58;
+        if (ent->count <= 0)
+        {
+            ent->count2 += ent->count;
+            ent->count = -1;
+            if (ent->count2 <= 0)
+                ent->count2 = -1;
+        }
+        if ((ent->count <= 0 && ent->count2 <= 0)
+            || g_weaponAmmoPools.integer == 0)
+            goto pickup_done;
+        return 0;
+    }
+    if (other->client->ps.weapon != 0
+        && Com_BitCheck(other->client->ps.weapons,
+                        other->client->ps.weapon) != 0
+        && BG_IsPlayerWeaponInSlot(&other->client->ps,
+                                   other->client->ps.weapon, 1)
+               == WEAPSLOT_NONE)
+    {
+        weaponFileInfo_t* v28 =
+            BG_GetInfoForWeapon(other->client->ps.weapon);
+            if (BG_GetStackSlotForWeapon(&other->client->ps,
+                                         other->client->ps.weapon,
+                                         (weapSlot_t)v28->slot) == 0
+            && BG_GetEmptySlotForWeapon(&other->client->ps, giTag) == 0)
+        {
+            Com_Printf("WARNING: cannot swap out a debug weapon (can result "
+                       "from too many weapons given to the player)\n");
+            return 0;
+        }
+    }
+    if (BG_GetEmptySlotForWeapon(&other->client->ps, giTag) == 0)
+    {
+        weaponFileInfo_t* v30 =
+            BG_GetInfoForWeapon(other->client->ps.weapon);
+        if (BG_GetStackSlotForWeapon(&other->client->ps, giTag,
+                                     (weapSlot_t)v30->slot) == 0)
+        {
+            int iWeap = other->client->ps.weaponslots[2];
+            Entity* pDropped = Drop_Weapon(other, iWeap, nullptr);
+            if (pDropped == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+                AeAssert::gCurrentLine = 500;
+                AeAssert::gCurrentExpr = "pDropped";
+                if (!AeAssert::IsIgnored())
+                {
+                    const char* v34 = va(
+                        "weapon=%s iWeap=%s", pWeap->szInternalName,
+                        BG_GetInfoForWeapon(iWeap)->szInternalName);
+                    if (AeAssert::Assert(v34))
+                        return 0;
+                }
+                return 0;
+            }
+            float vPos[3];
+            vPos[0] = ent->r.currentOrigin.v.m128_f32[0];
+            vPos[1] = ent->r.currentOrigin.v.m128_f32[1];
+            vPos[2] = ent->r.currentOrigin.v.m128_f32[2];
+            G_SetOrigin(pDropped, vPos);
+            G_SetAngle(pDropped, &ent->r.currentAngles);
+            g_LinkEntity(pDropped);
+            if (iWeap != 0)
+            {
+                pDropped->r.mOwner = ent->r.mOwner;
+                Entity* owner = HandleDbToEnt(ent->r.mOwner);
+                MultiplayerMgr::MPEntityHandle handle =
+                    MultiplayerMgr::sInst->FindDroppedItemID(
+                        kItemTypeWeapons, ent, owner);
+                if (handle.mVal == 0)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\g_items.cpp";
+                    AeAssert::gCurrentLine = 547;
+                    AeAssert::gCurrentExpr = "handle.IsAssigned()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Pickup_Weapon could not find the "
+                                            "network entity from the dropped "
+                                            "weapon"))
+                        __debugbreak();
+                    if (handle.mVal == 0)
+                    {
+                        MultiplayerMgr::MPEntityHandle v85;
+                        Entity* owner2 = HandleDbToEnt(ent->r.mOwner);
+                        MultiplayerMgr::sInst->GetNextDroppedItemID(
+                            &v85, kItemTypeWeapons, owner2);
+                        handle.mVal = v85.mVal;
+                    }
+                }
+                Entity* owner3 = HandleDbToEnt(ent->r.mOwner);
+                MultiplayerMgr::sInst->RegisterDroppedItem(
+                    kItemTypeWeapons, pDropped, owner3,
+                    handle.mVal & 0x7FF);
+                MultiplayerMgr::sInst->SwapWeapon(
+                    iWeap, handle.mVal, pDropped->count2, pDropped->count);
+            }
+            else
+            {
+                Entity* owner = HandleDbToEnt(ent->r.mOwner);
+                MultiplayerMgr::sInst->RegisterDroppedItem(kItemTypeWeapons,
+                                                           pDropped, owner);
+            }
+        }
+    }
+    if (BG_GetEmptySlotForWeapon(&other->client->ps, giTag) == 0)
+    {
+        weaponFileInfo_t* v40 =
+            BG_GetInfoForWeapon(other->client->ps.weapon);
+        if (BG_GetStackSlotForWeapon(&other->client->ps, giTag,
+                                     (weapSlot_t)v40->slot) == 0
+            && !AeAssert::IsIgnored())
+        {
+            int iWeap = other->client->ps.weaponslots[4] != 0
+                            ? Com_BitCheck(other->client->ps.weapons,
+                                           other->client->ps.weaponslots[4])
+                            : -1;
+            const char* handle = other->client->ps.weaponslots[4] != 0
+                                     ? BG_GetInfoForWeapon(
+                                           other->client->ps.weaponslots[4])
+                                           ->szInternalName
+                                     : "none";
+            int v85 = other->client->ps.weaponslots[3] != 0
+                          ? Com_BitCheck(other->client->ps.weapons,
+                                         other->client->ps.weaponslots[3])
+                          : -1;
+            const char* szInternalName =
+                other->client->ps.weaponslots[3] != 0
+                    ? BG_GetInfoForWeapon(
+                          other->client->ps.weaponslots[3])->szInternalName
+                    : "none";
+            int sa_max_drop_ammo =
+                other->client->ps.weaponslots[2] != 0
+                    ? Com_BitCheck(other->client->ps.weapons,
+                                   other->client->ps.weaponslots[2])
+                    : -1;
+            const char* sa_max_ammo =
+                other->client->ps.weaponslots[2] != 0
+                    ? BG_GetInfoForWeapon(
+                          other->client->ps.weaponslots[2])->szInternalName
+                    : "none";
+            int v44 = other->client->ps.weaponslots[1] != 0
+                          ? Com_BitCheck(other->client->ps.weapons,
+                                         other->client->ps.weaponslots[1])
+                          : -1;
+            const char* v46 = other->client->ps.weaponslots[1] != 0
+                                  ? BG_GetInfoForWeapon(
+                                        other->client->ps.weaponslots[1])
+                                        ->szInternalName
+                                  : "none";
+            int v47 =
+                Com_BitCheck(other->client->ps.weapons, giTag);
+            const char* v48 = va(
+                "weapon=%s, owned=%i slot1='%s'(%i) slot2='%s'(%i) "
+                "slot3='%s'(%i) slot4='%s'(%i)",
+                pWeap->szInternalName, v47, v46, v44, sa_max_ammo,
+                sa_max_drop_ammo, szInternalName, v85, handle, iWeap);
+            if (AeAssert::Assert(v48))
+                __debugbreak();
+        }
+    }
+    BG_GivePlayerWeapon(&other->client->ps, giTag);
+    if (bTouched == 0 && other->IsLocalPlayer()
+        && pWeap->pickupWithoutSelect == 0)
+    {
+        BG_SelectWeaponIndex(giTag, other->GetPlayerIndex());
+    }
+    if (pWeap->weapClass == WEAPCLASS_GRENADE)
+    {
+        quantity += iClipAmmo;
+    }
+    else if (iClipAmmo >= 0)
+    {
+        int clipSize = BG_GetAmmoClipSize(BG_ClipForWeapon(giTag));
+        if (iClipAmmo > clipSize)
+        {
+            quantity += iClipAmmo - clipSize;
+            iClipAmmo = BG_GetAmmoClipSize(BG_ClipForWeapon(giTag));
+        }
+        other->client->ps.ammoclip[BG_ClipForWeapon(giTag)] = iClipAmmo;
+    }
+    Add_Ammo(other, giTag, quantity, iClipAmmo == -1);
+pickup_done:
+    Scr_Notify(ent, hash_const.trigger, 2);
+    if (other->client != nullptr)
+        Scr_Notify(other, hash_const.pickup, 2);
+    if ((ent->spawnflags & 8) == 0)
+        return -1;
+    ent->count = 0;
+    ent->count2 = 0;
+    return g_weaponRespawn.integer;
+}
+
+// ea: 0x004859C0
+void Touch_Item(Entity* ent, Entity* other, int bTouched)
+{
+    if (ent->active == 0)
+        return;
+    ent->active = 0;
+    Client* client = other->client;
+    if (client == nullptr || other->health < 1
+        || (client->ps.eFlags & 0x100000) != 0 || !other->IsLocalPlayer()
+        || (ent->s.pos.trType == TR_GRAVITY
+            && ent->r.mOwner.mHandle.mVal == other->mHandle.mHandle.mVal))
+    {
+        return;
+    }
+    if (BG_CanItemBeGrabbed(&ent->s, &other->client->ps, bTouched) != 0)
+    {
+        int makenoise = 171;
+        int v24 = 0;
+        switch (ent->item->giType)
+        {
+        case IT_WEAPON:
+            v24 = Pickup_Weapon(ent, other, &makenoise, bTouched);
+            goto pickup_done;
+        case IT_AMMO:
+            v24 = Pickup_Ammo(ent, other, bTouched);
+            goto pickup_done;
+        case IT_WEAPON_HEALTH:
+        case IT_HEALTH:
+            v24 = Pickup_Health(ent, other);
+            goto pickup_done;
+        case IT_WEAPON_AMMO:
+            v24 = Pickup_Weapon_Ammo(ent, other);
+            goto pickup_done;
+        case IT_KIT:
+            if (ent->count == client->pers.playerClass)
+            {
+                DbLinkedHandle<EntityHandleDb, Entity> h;
+                h.mHandle.mVal = other->mHandle.mHandle.mVal;
+                SV_GameSendServerCommand(h,
+                                         va("gm \"MPGAME_PICKUP_KIT_SAME\""));
+            }
+            else if (client->ps.ctf_has_flag != 0)
+            {
+                DbLinkedHandle<EntityHandleDb, Entity> h;
+                h.mHandle.mVal = other->mHandle.mHandle.mVal;
+                SV_GameSendServerCommand(h,
+                                         va("gm \"MPGAME_PICKUP_KIT_FLAG\""));
+            }
+            else
+            {
+                v24 = Pickup_Kit(ent, other, bTouched);
+            pickup_done:
+                if (v24 != 0)
+                {
+                    G_DPrintf("Item: %i %s\n", other->mHandle.mHandle.mVal,
+                              ent->item->classname);
+                    if (ent->noise_index != 0)
+                        makenoise = 172;
+                    G_AddEvent(other, makenoise, ent->s.brushmodel);
+                    if (ent->wait == -1.0f)
+                    {
+                        ent->flags |= 0x400;
+                        ent->r.svFlags |= 1;
+                        ent->s.eFlags |= 0x80;
+                        ent->r.contents = 0;
+                        ent->r.eventType |= 2;
+                    }
+                    else
+                    {
+                        int wait = (int)ent->wait;
+                        if (ent->wait != 0.0f)
+                            wait = (int)ent->wait;
+                        if (ent->random != 0.0f)
+                        {
+                            float r = random();
+                            wait += (int)((r + r - 1.0f) * ent->random);
+                            if (wait < 1)
+                                wait = 1;
+                        }
+                        if ((ent->flags & 0x40) != 0)
+                            ent->r.eventType |= 1;
+                        ent->flags |= 0x400;
+                        ent->r.svFlags |= 1;
+                        ent->r.contents = 0;
+                        if (wait > 0)
+                        {
+                            ent->nextthink = level.time + 1000 * wait;
+                            ent->think = THINK__multi_wait;
+                        }
+                        else
+                        {
+                            ent->nextthink = 0;
+                            ent->think = THINK__NULL;
+                        }
+                        if (wait == -1)
+                        {
+                            int droppedType =
+                                MultiplayerMgr::sInst->GetDroppedItemType(
+                                    ent->item->giType);
+                            Entity* owner = HandleDbToEnt(ent->r.mOwner);
+                            MultiplayerMgr::MPEntityHandle netIndex =
+                                MultiplayerMgr::sInst->FindDroppedItemID(
+                                    droppedType, ent, owner);
+                            if (netIndex.mVal != 0)
+                            {
+                                MultiplayerMgr::sInst->PickupItem(
+                                    netIndex.mVal, droppedType, other, false);
+                            }
+                            void* mem = Task::sAllocator->Allocate(0x1C, false);
+                            EntityDeathTask* task =
+                                mem ? new (mem) EntityDeathTask(ent->mHandle)
+                                    : nullptr;
+                            TaskSys::sInst->PostTask(task);
+                        }
+                        else
+                        {
+                            g_LinkEntity(ent);
+                        }
+                    }
+                }
+            }
+            break;
+        default:
+            return;
+        }
+    }
+    else if (bTouched == 0)
+    {
+        const gitem_s* item = ent->item;
+        if (item->giType == IT_WEAPON)
+        {
+            int giTag = item->giTag;
+            if (Com_BitCheck(other->client->ps.weapons, giTag) != 0)
+            {
+                weaponFileInfo_t* info = BG_GetInfoForWeapon(giTag);
+                DbLinkedHandle<EntityHandleDb, Entity> h;
+                h.mHandle.mVal = other->mHandle.mHandle.mVal;
+                SV_GameSendServerCommand(
+                    h, va("gm \"GAME_PICKUP_CANTCARRYMOREAMMO%s\"",
+                          info->szDisplayName));
+            }
+            else
+            {
+                const char* msg = nullptr;
+                switch (BG_GetInfoForWeapon(giTag)->slot)
+                {
+                case WEAPSLOT_PRIMARY:
+                case WEAPSLOT_PRIMARYB:
+                    msg = "gm \"GAME_CANT_GET_PRIMARY_WEAP_MESSAGE\"";
+                    break;
+                case WEAPSLOT_PISTOL:
+                    msg = "gm \"GAME_CANT_GET_PISTOL_WEAP_MESSAGE\"";
+                    break;
+                case WEAPSLOT_GRENADE:
+                    msg = "gm \"GAME_CANT_GET_GRENADE_WEAP_MESSAGE\"";
+                    break;
+                case WEAPSLOT_SMOKE_GRENADE:
+                    msg = "gm \"GAME_CANT_GET_SMOKE_GRENADE_WEAP_MESSAGE\"";
+                    break;
+                case WEAPSLOT_SPECIAL:
+                    msg = "gm \"GAME_CANT_GET_SPECIAL_WEAP_MESSAGE\"";
+                    break;
+                default:
+                    return;
+                }
+                DbLinkedHandle<EntityHandleDb, Entity> h;
+                h.mHandle.mVal = other->mHandle.mHandle.mVal;
+                SV_GameSendServerCommand(h, va(msg));
+            }
+        }
+    }
 }
 
 // ea: 0x00457A30

@@ -15,6 +15,9 @@ float max_intensity = 120.0f;  // @ 0xDD7FD4
 float max_dist2 = 176400.0f;   // @ 0xDD7FD8
 float radius = 30.0f;          // @ 0xDD8208 (Weapon_Revive_Test revive radius)
 float radius_1 = 30.0f;        // @ 0xDD8268 (Weapon_Melee melee range)
+vmCvar_t g_weaponAmmoPools;    // @ 0x01297030
+vmCvar_t g_weaponRespawn;      // @ 0x01296988
+PoolAllocator* Task::sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
 const float s_invalidAngles[3] = { 3.1415927f, 3.1415927f, 3.1415927f };  // @ 0xDD7414
 float dword_DD7418 = 3.1415927f;  // @ 0xDD7418
 float dword_DD741C = 3.1415927f;  // @ 0xDD741C
