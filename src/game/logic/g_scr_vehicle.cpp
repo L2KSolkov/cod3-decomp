@@ -8,6 +8,12 @@
 #include <stdio.h>
 #include <string.h>
 
+struct clientActive_t {
+    uint8_t _pad[0x638];
+    bool    stanceHeld;  // +0x638
+};
+extern clientActive_t cl[2];  // ?cl@@3PAUclientActive_t@@A @ 0xDF01C0
+
 // ea: 0x00452BC0
 void VehicleNodeAllocator::Initialize()
 {
@@ -4086,6 +4092,295 @@ no_target:
                 scr_vehicle->next.mGunnerAngles.v.m128_f32[1];
         }
     }
+}
+
+static int lastGunnerCrouchMsgLocal;  // @ 0xEF59D4
+int byte_A00000 = 0xA00000;           // @ .data 0xDD6B40
+
+// ea: 0x00490ED0
+void Scr_Vehicle_Think(Entity* pSelf, int msec)
+{
+    if (pSelf->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7885;
+        AeAssert::gCurrentExpr = "pSelf->scr_vehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    scr_vehicle_t* veh = pSelf->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    if (pSelf->active == 2 && s_clientThink == 0)
+    {
+        pSelf->nextthink = level.time;
+        return;
+    }
+    VEH_Backup(pSelf);
+    memset(&s_phys, 0, sizeof(s_phys));
+    int eFlags = pSelf->s.eFlags;
+    int contents = pSelf->r.contents;
+    if (pSelf->takedamage == 0)
+    {
+        pSelf->s.eFlags = eFlags | 0x80;
+        if (contents != 0)
+        {
+            pSelf->s.brushmodel = 0;
+            pSelf->r.contents = 0;
+            g_LinkEntity(pSelf);
+            SV_UnlinkEntity(pSelf);
+        }
+        pSelf->nextthink = level.time + 1;
+        return;
+    }
+    pSelf->s.eFlags = eFlags & 0xFFFFFF7F;
+    if (contents == 0)
+    {
+        pSelf->s.brushmodel = 0;
+        SV_SetBrushModel(pSelf);
+        pSelf->r.contents = 0xA00000;
+        g_LinkEntity(pSelf);
+    }
+    if (veh->playersAttached != 0)
+    {
+        veh->lastOccupantTime = level.time;
+        VEH_UpdateControllers(pSelf, msec);
+    }
+    if (veh->mRBVeh == nullptr)
+    {
+        Entity* mObject = HandleDbToEnt(pSelf->r.mOwner);
+        if (EntityManager::sInst->IsLocalPlayer(mObject))
+            veh->mPhysicsOwner.mHandle.mVal = pSelf->r.mOwner.mHandle.mVal;
+    }
+    Entity* physOwner = HandleDbToEnt(veh->mPhysicsOwner);
+    if (physOwner != nullptr
+        && (physOwner->client == nullptr
+            || physOwner->client->pers.connected != 2 /* CON_CONNECTED */)
+        && veh->mPhysicsOwner.mHandle.mVal
+               == physOwner->mHandle.mHandle.mVal)
+    {
+        veh->mPhysicsOwner.mHandle.mVal = 0;
+    }
+    if (veh->playersAttached != 0)
+    {
+        for (int i = 0; i < 11; ++i)
+        {
+            Entity* occupant = HandleDbToEnt(veh->seats[i].occupant);
+            if (occupant == nullptr)
+                continue;
+            if (IsPlayerFullySeatedInVehicle(occupant))
+            {
+                if (info->type == 2
+                    && EntityManager::sInst->IsLocalPlayer(occupant)
+                    && lastGunnerCrouchMsgLocal < level.time - 1000)
+                {
+                    bool v18 =
+                        cl[EntityManager::sInst->GetPlayerIndex(occupant)]
+                            .stanceHeld
+                        || veh->forceGunnerCrouchTime > level.time;
+                    if (i == 1)
+                    {
+                        if (v18)
+                        {
+                            MultiplayerMgr::sInst->AttemptVehicleSeatChange(
+                                pSelf, occupant, 6);
+                            lastGunnerCrouchMsgLocal = level.time;
+                        }
+                    }
+                    else if (i == 6 && !v18)
+                    {
+                        MultiplayerMgr::sInst->AttemptVehicleSeatChange(
+                            pSelf, occupant, 1);
+                        lastGunnerCrouchMsgLocal = level.time;
+                    }
+                }
+            }
+            else
+            {
+                UpdateAnimRoute(veh, pSelf, occupant);
+            }
+        }
+        if (info->type == 2)
+        {
+            if (veh->mHatchOpen)
+            {
+                if (veh->LetHatchClose())
+                {
+                    PostEffectEventScriptCall(pSelf, "TANK_HATCH_CLOSE", false,
+                                              PAK_ID_INVALID, false);
+                    veh->mHatchOpen = false;
+                }
+            }
+            else if (!veh->LetHatchClose())
+            {
+                PostEffectEventScriptCall(pSelf, "TANK_HATCH_OPEN", false,
+                                          PAK_ID_INVALID, false);
+                veh->mHatchOpen = true;
+            }
+        }
+    }
+    else if (info->type == 2 && !veh->mHatchOpen)
+    {
+        PostEffectEventScriptCall(pSelf, "TANK_HATCH_OPEN", false,
+                                  PAK_ID_INVALID, false);
+        veh->mHatchOpen = true;
+    }
+    Entity* owner = HandleDbToEnt(pSelf->r.mOwner);
+    if (owner != nullptr)
+    {
+        if (EntityManager::sInst->IsLocalPlayer(owner))
+        {
+            if (veh->mMantleTime != 0 && veh->mMantleTime < level.time)
+            {
+                Entity* mantleEnt = HandleDbToEnt(veh->mMantleEntity);
+                if (mantleEnt == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                    AeAssert::gCurrentLine = 8062;
+                    AeAssert::gCurrentExpr = "*veh->mMantleEntity";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid mantle entity"))
+                        __debugbreak();
+                }
+                G_Damage(pSelf, mantleEnt, mantleEnt, nullptr,
+                         pSelf->r.currentOrigin.v.m128_f32, pSelf->health + 100,
+                         160, 27, HITLOC_NONE, -1);
+            }
+            if (owner->health <= 0)
+            {
+                tlPrintf("=======================================GetOutOfVehicle cause owner has no health\n");
+                MultiplayerMgr::sInst->GetOutOfVehicle(
+                    pSelf, owner->client->ps.vehPos);
+            }
+        }
+    }
+    else if (pSelf->health > 0 && MultiplayerMgr::sInst->IsHost())
+    {
+        if (veh->mMantleTime != 0 && veh->mMantleTime < level.time)
+        {
+            Entity* mantleEnt = HandleDbToEnt(veh->mMantleEntity);
+            if (mantleEnt == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                AeAssert::gCurrentLine = 8094;
+                AeAssert::gCurrentExpr = "*veh->mMantleEntity";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid mantle entity"))
+                    __debugbreak();
+            }
+            G_Damage(pSelf, mantleEnt, mantleEnt, nullptr,
+                     pSelf->r.currentOrigin.v.m128_f32, pSelf->health + 100,
+                     160, 27, HITLOC_NONE, -1);
+        }
+        if (veh->playersAttached == 0 && veh->lastOccupantTime != 0)
+        {
+            int inactiveBlowupSeconds = info->inactiveBlowupSeconds;
+            if (inactiveBlowupSeconds == 0)
+                inactiveBlowupSeconds = 60;
+            if (veh->lastOccupantTime
+                < level.time - 1000 * inactiveBlowupSeconds)
+            {
+                G_Damage(pSelf, nullptr, nullptr, nullptr, nullptr,
+                         pSelf->health - 1, 0, 20, HITLOC_NONE, -1);
+                unsigned int handle = pSelf->mHandle.mHandle.mVal;
+                pSelf->Notify(hash_const.killanimscript, &handle);
+                veh->lastOccupantTime = 0;
+            }
+        }
+    }
+    vehicle_info_t* v36 = info;
+    int v37 = msec;
+    if (info->type != 5)
+    {
+        if (pSelf->active == 1)
+        {
+            VEH_UpdatePath(pSelf, msec);
+        }
+        else if (pSelf->active == 2)
+        {
+            if (*(char*)((char*)info + 0x21C) == 0)
+                VEH_UpdateClient(pSelf, msec);
+            else if (HandleDbToEnt(pSelf->r.mOwner) == nullptr)
+                pSelf->speed = 0.0f;
+        }
+    }
+    if (*(char*)((char*)info + 0x21C) != 0)
+    {
+        VEH_UpdateParticlesRBVeh(pSelf);
+    }
+    else if (info->type == 1 || info->type == 2)
+    {
+        if (Entity_has_zone_collision(pSelf))
+            VEH_GroundPlant(pSelf, 1, v37);
+        else
+            VEH_StopWheelEffects(pSelf);
+    }
+    if (pSelf->speed < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 8166;
+        AeAssert::gCurrentExpr = "pSelf->speed >= 0.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Entity* physOwner2 = HandleDbToEnt(veh->mPhysicsOwner);
+    if (EntityManager::sInst->IsLocalPlayer(physOwner2)
+        && (veh->mRBVeh == nullptr
+            || (((rb_vehicle*)veh->mRBVeh)->m_flags & 0x300) != 0)
+        && info->type != 5
+        && pSelf->active == 1)
+    {
+        VEH_VerifyPosition(pSelf);
+    }
+    if (*(char*)((char*)info + 0x21C) == 0)
+        VEH_SetPosition(pSelf, &veh->phys.origin, &veh->phys.angles,
+                        veh->phys.vel.v.m128_f32);
+    if (pSelf->health > 0)
+    {
+        collision_context_t context;
+        context.__vftable = nullptr;
+        context.pass_entity1.mHandle.mVal = 0;
+        context.pass_entity2.mHandle.mVal = 0;
+        context.pass_owner1.mHandle.mVal = 0;
+        context.pass_owner2.mHandle.mVal = 0;
+        context.contentmask = -1;
+        G_DoTouchTriggers(pSelf, &pSelf->r.currentOrigin, nullptr, &context);
+    }
+    if (g_vehicleDebug.integer != 0)
+        VEH_DebugBox(&veh->phys.origin, 4.0f, 1.0f, 1.0f, 0.0f);
+    veh->barrelBlocked = 0;
+    if (pSelf->active == 2 && HandleDbToEnt(pSelf->r.mOwner) != nullptr)
+        VEH_UpdateWeapon(pSelf);
+    VEH_UpdateAim(pSelf);
+    VEH_UpdateGunnerAim(pSelf);
+    VEH_UpdateControllers(pSelf, v37);
+    VEH_UpdateAltWeapon(pSelf, v37);
+    VEH_UpdateGunnerWeapon(pSelf);
+    VEH_UpdateOverHeat(pSelf, v37);
+    if (veh->joltTime > 0.0f)
+    {
+        float joltWave = veh->joltWave;
+        float v46 = v37 * 0.001f;
+        veh->joltTime -= v46;
+        float v48;
+        if (joltWave < 0.0f || joltWave > 90.0f
+            || veh->joltTime <= 0.48000002f)
+            v48 = v46 * 450.0f;
+        else
+            v48 = (v46 * 450.0f) * 2.5f;
+        veh->joltWave = v48 + veh->joltWave;
+    }
+    VEH_UpdateSteering(pSelf);
+    VEH_UpdateHatch(pSelf, v37);
+    VEH_UpdateFollow(pSelf);
+    VEH_UpdateShaderTime(pSelf);
+    VEH_UpdateSounds(pSelf, v37);
+    if (veh->mRBVeh == nullptr)
+        ChiefMammalInChargeOfVehicleDamageAndPushOut(pSelf);
+    pSelf->nextthink = level.time + 1;
 }
 
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)

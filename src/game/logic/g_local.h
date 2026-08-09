@@ -178,6 +178,7 @@ struct scr_vehicle_t {
     Handle  mWheel_ParticleEffectHandle[6];  // +0x3AC (0x18 bytes)
     Handle  mRumbleEffectHandle;  // +0x3C4
     int     playersAttached;  // +0x3C8
+    int     lastOccupantTime;  // +0x3C8 (alias; only read when playersAttached==0)
     float   idleSndLerp;    // +0x3CC
     float   engineSndLerp;  // +0x3D0
     float   brakeSndLerp;   // +0x3D4
@@ -217,12 +218,14 @@ struct scr_vehicle_t {
     uint8_t _pad51C[0x554 - 0x51C];
     float   mUseRadius;       // +0x554
     uint8_t mHasEntryPoints;  // +0x558
-    uint8_t _pad559[0x55C - 0x559];
-    int     noEntryTime;      // +0x55C
-    int     noExitTime;       // +0x560
-    int     forceGunnerCrouchTime;  // +0x564
-    vehicleAnimMap_t* animMap;  // +0x568
-    vehicle_follow* follow;   // +0x56C
+    bool    mHatchOpen;        // +0x559
+    uint8_t _pad55A[0x560 - 0x55A];
+    int     noEntryTime;      // +0x560
+    int     noExitTime;       // +0x564
+    int     forceGunnerCrouchTime;  // +0x568
+    vehicleAnimMap_t* animMap;  // +0x56C
+    vehicle_follow* follow;   // +0x570
+    uint8_t wheel_polies[0x750 - 0x574];  // cdl_poly_inl_t[6] (untyped)
     static int sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
 
     vehicleAnimStage_t* GetRouteStage(int routeIdx, int stage);  // ?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z
@@ -250,7 +253,7 @@ struct scr_vehicle_t {
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
 static_assert(offsetof(scr_vehicle_t, boneIndex) == 0x460, "scr_vehicle_t::boneIndex offset mismatch");
 static_assert(offsetof(scr_vehicle_t, mRBVeh) == 0x518, "scr_vehicle_t::mRBVeh offset mismatch");
-static_assert(offsetof(scr_vehicle_t, animMap) == 0x568, "scr_vehicle_t::animMap offset mismatch");
+static_assert(offsetof(scr_vehicle_t, animMap) == 0x56C, "scr_vehicle_t::animMap offset mismatch");
 
 void Use_Item(Entity* ent, Entity* other, Entity* activator);
 void RespawnItem(Entity* ent);
@@ -647,7 +650,8 @@ struct hash_const_t {
     uint8_t    _pad24C[0x250 - 0x24C];
     HashString turretstatechange;  // +0x250 (148)
     HashString turretownerchange;  // +0x254 (149)
-    uint8_t    _pad258[0x284 - 0x258];
+    HashString killanimscript;     // +0x258 (150)
+    uint8_t    _pad25C[0x284 - 0x25C];
     HashString overheated;         // +0x284 (161)
     uint8_t    _pad288[0x2B4 - 0x288];
 };
@@ -698,6 +702,7 @@ extern vmCvar_t g_entinfo_maxdist;     // ?g_entinfo_maxdist@@3UvmCvar_t@@A @ 0x
 extern const float colorMagenta[4];    // @ 0xD015CC
 extern vmCvar_t g_vehicleDrawPath;     // ?g_vehicleDrawPath@@3UvmCvar_t@@A @ 0xEA66F8
 extern vmCvar_t g_drawEntBBoxes;       // g.o
+extern vmCvar_t g_vehicleDebug;        // g.o
 extern int s_newDebugLine;             // g.o
 extern int com_frameNumber;              // 0x012F0324
 extern vmCvar_t g_gravity;             // g_gravity
@@ -1880,6 +1885,9 @@ void  render_aabb(const math::Position3* bmin, const math::Position3* bmax,
 Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck);  // g.o 0x480880
 int16_t G_GetVehicleInfoIndex(const char* name); // g.o 0x44F010
 extern int s_clientThink;                        // g.o
+extern int lastGunnerCrouchMsg;                  // g.o
+extern scr_vehicle_t s_phys;                     // g.o
+extern int byte_A00000;                          // g.o .data
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
@@ -2102,6 +2110,22 @@ int   SV_GetCurrentClientInfo(int clientNum, PlayerState* ps);  // sv.o
 void  VEH_RemoveVehicle(void* v);                 // phys_xboxr
 void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
                      int fromPos);                 // g.o 0x490A60
+void  VEH_UpdateClient(Entity* ent, int msec);    // g.o
+void  VEH_VerifyPosition(Entity* ent);            // g.o
+void  VEH_UpdateParticlesRBVeh(Entity* ent);      // g.o
+void  VEH_UpdateWeapon(Entity* ent);              // g.o
+void  VEH_UpdateAim(Entity* ent);                 // g.o
+void  VEH_UpdateAltWeapon(Entity* ent, int msec); // g.o
+void  VEH_UpdateGunnerWeapon(Entity* ent);        // g.o
+void  VEH_UpdateSteering(Entity* ent);            // g.o
+void  VEH_UpdateHatch(Entity* ent, int msec);     // g.o
+void  VEH_UpdateFollow(Entity* ent);              // g.o
+void  VEH_UpdateShaderTime(Entity* ent);          // g.o
+void  Scr_Vehicle_Think(Entity* pSelf, int msec); // g.o 0x490ED0
+void  VEH_UpdatePath(Entity* ent, int msec);     // g.o 0x47F8B0
+void  VEH_UpdateOverHeat(Entity* self, int msec);// g.o 0x47F630
+void  ChiefMammalInChargeOfVehicleDamageAndPushOut(Entity* pSelf);  // g.o 0x488420
+void  UpdateAnimRoute(scr_vehicle_t* veh, Entity* ent, Entity* player);  // g.o 0x48D200
 void  VEH_SetPosition(Entity* ent, const math::Position3* origin,
                       const math::Position3* angles,
                       const float* vel);  // g.o 0x46A370
@@ -2325,7 +2349,9 @@ struct vehicle_rb_parameter {
     float m_peel_out_max_speed;  // +0x58
 };
 struct rb_vehicle {
-    uint8_t _pad[0x250];
+    uint8_t _pad[0x10];
+    unsigned int m_flags;           // +0x10
+    uint8_t _pad14[0x250 - 0x14];
     vehicle_rb_parameter* m_parameter;  // +0x250
     float   m_throttle;  // +0x254
     uint8_t _pad258[0x320 - 0x258];
