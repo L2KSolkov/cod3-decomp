@@ -606,3 +606,136 @@ void G_DuplicateScriptFields(Entity* dest, const Entity* source)
     }
     BrocSys::CopyExtendedEntity(source, dest);
 }
+
+// ea: 0x0047A700
+void misc_spawner_think(Entity* ent)
+{
+    const char* v2 = ent->mSpawnItem.mBlock != nullptr
+                         ? (const char*)(ent->mSpawnItem.mBlock + 1)
+                         : &defaultFileName[0];
+    const gitem_s* Item = BG_FindItem(v2);
+    if (Drop_Item(ent, Item, 0.0f, 0) == nullptr)
+    {
+        G_Printf("-----> WARNING <-------\n");
+        G_Printf("misc_spawner used at %s failed to drop!\n", vtos(&ent->r.currentOrigin));
+    }
+}
+
+// ea: 0x00481280
+void G_CallEntitySpawnFunction(Entity* ent)
+{
+    prepare_spawns();
+    for (unsigned int i = 0; i < 0x35; ++i)
+    {
+        if (gSpawnHashes[i].mHash == ent->mClassNameHash.mHash)
+        {
+            gSpawnFuncs[i](ent);
+            UpdateEntityHash(ent);
+            return;
+        }
+    }
+    const char* classname = ent->mClassName.mBlock != nullptr
+                                ? (const char*)(ent->mClassName.mBlock + 1)
+                                : &defaultFileName[0];
+    if (strncmp(classname, "actor_", 6u) != 0)
+    {
+        const gitem_s* v5 = &bg_itemlist[1];
+        if (bg_itemlist[1].classname != nullptr)
+        {
+            while (v5->classname_hash != ent->mClassNameHash.mHash)
+            {
+                ++v5;
+                if (v5->classname == nullptr)
+                    goto no_spawn_func;
+            }
+            G_SpawnItem(ent, v5);
+            UpdateEntityHash(ent);
+        }
+        else
+        {
+no_spawn_func:
+            G_Printf("%s doesn't have a spawn function\n", classname);
+        }
+    }
+    else
+    {
+        SP_actor(ent);
+        UpdateEntityHash(ent);
+    }
+}
+
+// ea: 0x00481350
+int G_CallSpawnEntity(Entity* ent)
+{
+    if (ent->mClassName.mBlock == nullptr
+        || ent->mClassName.mBlock + 1 == nullptr
+        || *(char*)((char*)(ent->mClassName.mBlock + 1)) == 0)
+    {
+        G_Printf("G_CallSpawnEntity: NULL classname\n");
+        return 0;
+    }
+    prepare_spawns();
+    for (unsigned int i = 0; i < 0x35; ++i)
+    {
+        if (gSpawnHashes[i].mHash == ent->mClassNameHash.mHash)
+        {
+            gSpawnFuncs[i](ent);
+            UpdateEntityHash(ent);
+            return 1;
+        }
+    }
+    const char* classname = ent->mClassName.mBlock != nullptr
+                                ? (const char*)(ent->mClassName.mBlock + 1)
+                                : &defaultFileName[0];
+    if (strncmp(classname, "actor_", 6u) == 0)
+    {
+        G_Error("cannot spawn AI directly; use spawners instead\n");
+        return 0;
+    }
+    const gitem_s* v8 = &bg_itemlist[1];
+    if (bg_itemlist[1].classname == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_spawn.cpp";
+        AeAssert::gCurrentLine = 563;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v11 = ent->mClassName.mBlock != nullptr
+                                  ? (const char*)(ent->mClassName.mBlock + 1)
+                                  : &defaultFileName[0];
+            if (AeAssert::Warning("%s doesn't have a spawn function\n", v11))
+            {
+                __debugbreak();
+                return 0;
+            }
+        }
+        return 0;
+    }
+    while (v8->classname_hash != ent->mClassNameHash.mHash)
+    {
+        ++v8;
+        if (v8->classname == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_spawn.cpp";
+            AeAssert::gCurrentLine = 563;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored())
+            {
+                const char* v11 = ent->mClassName.mBlock != nullptr
+                                      ? (const char*)(ent->mClassName.mBlock + 1)
+                                      : &defaultFileName[0];
+                if (AeAssert::Warning("%s doesn't have a spawn function\n", v11))
+                {
+                    __debugbreak();
+                    return 0;
+                }
+            }
+            return 0;
+        }
+    }
+    G_SpawnItem(ent, v8);
+    UpdateEntityHash(ent);
+    return 1;
+}

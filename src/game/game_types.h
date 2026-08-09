@@ -141,7 +141,11 @@ struct EntityState {
     uint8_t  weapon;                              // +0x03
     uint8_t  eventParm;                           // +0x04
     uint8_t  scale;                               // +0x05 (verified vs disasm G_SetSoundBlend)
-    uint16_t index;                               // +0x06 (truncated entity index)
+    union {
+        uint16_t index;       // +0x06 (truncated entity index)
+        uint16_t brushmodel;  // item/brushmodel index
+        uint16_t item;        // item table index
+    };
     DbLinkedHandle<EntityHandleDb, Entity> mOtherEntity;    // +0x08
     DbLinkedHandle<EntityHandleDb, Entity> mGroundEntity;   // +0x0C
     int32_t  eFlags;                              // +0x10

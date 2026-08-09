@@ -224,7 +224,9 @@ struct hash_const_t {
     HashString func_door_rotating; // +0x9C
     uint8_t    _padA0[0xA4 - 0xA0];
     HashString func_tramcar;       // +0xA4
-    uint8_t    _padA8[0x208 - 0xA8];
+    uint8_t    _padA8[0x11C - 0xA8];
+    HashString pickup;             // +0x11C
+    uint8_t    _pad120[0x208 - 0x120];
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C
     HashString trigger_damage;     // +0x210
@@ -346,6 +348,7 @@ void g_UnlinkEntity(Entity* ent);
 void G_FreeEntity(Entity* e, int msec);
 Entity* G_Spawn(TPakId pakId);
 void UpdateEntityHash(Entity* ent);
+void G_RunThink(Entity* ent, int msec);
 int  G_SpawnString(unsigned int key, const char* defaultString, const char** out);
 bool G_SpawnString(unsigned int key, const char** out);
 int  G_SpawnFloat(unsigned int key, float default_value, float* out);
@@ -479,15 +482,97 @@ extern void (*thinktable[])(Entity* ent, int msec);
 // fn_think_e values used by g.o (verified via disasm)
 enum {
     THINK__NULL = 0,
+    THINK__FinishSpawningItem = 6,
     THINK__G_FreeEntity = 0x0C,
     THINK__GotoPos3 = 0x0E,
     THINK__turret_think_init = 0x11,
     THINK__misc_spawner_think = 0x12,
+    THINK__multi_wait = 0x13,
     THINK__Scr_Vehicle_Think = 0x19,
     THINK__Think_SpawnNewDoorTrigger = 0x1B,
     THINK__Think_SpawnNewAutoDoorTrigger = 0x1C,
     THINK_MAX = 0x1E,
 };
+
+// ============================================================================
+// itemType_t / gitem_s - item table entry (0x34 bytes) - verified against IDA
+// ============================================================================
+enum itemType_t {
+    IT_BAD = 0,
+    IT_WEAPON = 1,
+    IT_AMMO = 2,
+    IT_HEALTH = 3,
+    IT_WEAPON_AMMO = 4,
+    IT_WEAPON_HEALTH = 5,
+    IT_FLAG = 6,
+    IT_KIT = 7,   // IT_FLAG | IT_WEAPON (class kits)
+};
+struct gitem_s {
+    unsigned int classname_hash;  // +0x00
+    char*        classname;       // +0x04
+    char*        pickup_sound;    // +0x08
+    char*        world_model[2];  // +0x0C
+    char*        icon;            // +0x14
+    char*        ammoicon;        // +0x18
+    char*        pickup_name;     // +0x1C
+    int          quantity;        // +0x20
+    itemType_t   giType;          // +0x24
+    int          giTag;           // +0x28
+    int          giAmmoIndex;     // +0x2C
+    int          giClipIndex;     // +0x30
+};
+static_assert(sizeof(gitem_s) == 0x34, "gitem_s size mismatch");
+static_assert(offsetof(gitem_s, giType) == 0x24, "gitem_s::giType offset mismatch");
+
+// ============================================================================
+// weaponFileInfo_t - weapon definition (0x948 bytes; g.o uses a subset)
+// ============================================================================
+struct weaponFileInfo_t {
+    uint8_t _pad[0x6E8];          // +0x000
+    int     bTwoHanded;           // +0x6E8
+    uint8_t _pad2[0x764 - 0x6EC];
+    int     iAltWeaponIndex;      // +0x764
+    uint8_t _pad3[0x948 - 0x768];
+};
+static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
+static_assert(offsetof(weaponFileInfo_t, bTwoHanded) == 0x6E8, "weaponFileInfo_t::bTwoHanded offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iAltWeaponIndex) == 0x764, "weaponFileInfo_t::iAltWeaponIndex offset mismatch");
+
+// ============================================================================
+// g.o data
+// ============================================================================
+extern gitem_s bg_itemlist[];     // 0xF51EC0
+extern int  itemRegistered[];     // 0xEA68A8 (bg_numItems == 137)
+extern void (*gSpawnFuncs[53])(Entity* ent);  // 0xDD7338
+
+// ============================================================================
+// items/spawn helpers (defined within g.o)
+// ============================================================================
+void G_SpawnItem(Entity* ent, const gitem_s* item);
+void G_SetModel(Entity* ent, const char* modelName, TPakId pakId, int ngIndex);
+void G_DObjUpdate(Entity* ent, bool forceWeaponModel);
+void SV_LinkEntity(Entity* gEnt);
+void SV_UnlinkEntity(Entity* gEnt);
+void G_AddEvent(Entity* ent, int event, int eventParm);
+void G_Printf(const char* fmt, ...);
+Entity* Drop_Item(Entity* ent, const gitem_s* item, float angle, int novelocity);
+
+// ============================================================================
+// items/script externs (game.o / game2.o / mp.o provide later)
+// ============================================================================
+weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);
+const gitem_s* BG_FindItem(const char* pickupName);
+void SP_actor(Entity* pEnt);
+void Scr_Notify(Entity* ent, HashString hashValue, int paramcount);
+Handle PostEffectEventScriptCall(Entity* ent, const char* scriptId, bool queue,
+                                 TPakId pakid, bool important);
+void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, float* result);
+void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3* result);
+void AxisToAngles(const float (*axis)[3], float* angles);
+void CrossProduct(const float* v1, const float* v2, float* cross);
+float VectorNormalize(float* v);
+void j_nullsub_74(Entity* pSelf, int bLerp);
+bool Entity_has_zone_collision(const void* self);
 
 // ============================================================================
 // g_trigger.cpp externs

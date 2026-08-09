@@ -50,5 +50,9 @@ struct collision_context_t {
     int   contentmask;                            // +0x0C
     // +0x10 .. 0x18 derived-specific data
     uint8_t _pad10[8];                            // +0x10
+
+    collision_context_t();                       // ??0collision_context_t@@QAE@XZ
+    collision_context_t(int mask);               // ??0collision_context_t@@QAE@H@Z
+    collision_context_t(DbLinkedHandle<EntityHandleDb, Entity> handle, int mask);  // ??0collision_context_t@@QAE@V?$DbLinkedHandle@...@@H@Z
 };
 static_assert(sizeof(collision_context_t) == 0x18, "collision_context_t size mismatch");
