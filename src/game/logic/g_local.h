@@ -633,7 +633,8 @@ struct hash_const_t {
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C
     HashString trigger_damage;     // +0x210
-    uint8_t    _pad214[0x224 - 0x214];
+    HashString trigger_lookat;     // +0x214 (133)
+    uint8_t    _pad218[0x224 - 0x218];
     HashString turret_on_target;   // +0x224 (137)
     HashString player_on_vehicle;  // +0x228 (138)
     HashString player_off_vehicle; // +0x22C (139)
@@ -1048,6 +1049,8 @@ void G_AddLean(Entity* ent, float* point);
 extern float delta;          // 0xDD7FE4 (mine test standoff distance)
 extern float dword_F63C70[];  // 0xF63C70 (per-client muzzle offsets)
 extern unsigned char bulletPriorityMap[];  // 0xDD55D0
+extern unsigned char riflePriorityMap[];   // g.o .rdata
+extern float gTriggerLookAtOverride;       // @ 0xDF4914
 
 // ============================================================================
 // g_combat.cpp types/globals
@@ -1221,7 +1224,8 @@ struct weaponFileInfo_t {
     int     iFuseTime;            // +0x634
     uint8_t _pad2b[0x6E8 - 0x638];
     int     bTwoHanded;           // +0x6E8
-    uint8_t _pad4[0x704 - 0x6EC];
+    int     bRifleBullet;         // +0x6EC
+    uint8_t _pad4[0x704 - 0x6F0];
     int     bNoBounce;            // +0x704
     int     bNoTumble;            // +0x708
     int     bCanMantle;           // +0x70C

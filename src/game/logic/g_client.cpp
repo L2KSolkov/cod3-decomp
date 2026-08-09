@@ -991,3 +991,140 @@ void Player_UpdateCursorHints(Entity* ent)
         }
     }
 }
+
+// ea: 0x004664A0
+void Player_UpdateLookAtEntity(Entity* pEnt)
+{
+    Client* client = pEnt->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+        AeAssert::gCurrentLine = 1046;
+        AeAssert::gCurrentExpr = "pEnt->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Entity* pLookatEnt = pEnt->client->pLookatEnt;
+    if (pLookatEnt == nullptr || pLookatEnt->actor == nullptr)
+        pEnt->sentient->mDesiredChainPos = 0;
+    pEnt->client->iLookatEntLastTime = 0;
+    weaponParms weapParms;
+    if (pEnt->active != 0)
+    {
+        Entity* mObject = HandleDbToEnt(pEnt->client->ps.mViewLockedEntity);
+        if (Turret_FillWeaponParms(mObject, pEnt, &weapParms, 0) == 0)
+            return;
+    }
+    else
+    {
+        CalcMuzzlePoints(pEnt, &weapParms);
+    }
+    unsigned char* v6 = riflePriorityMap;
+    if (pEnt->client->ps.weapon == 0
+        || BG_GetInfoForWeapon(pEnt->client->ps.weapon)->bRifleBullet == 0)
+        v6 = bulletPriorityMap;
+    math::Position3 start;
+    math::Position3 end;
+    collision_context_t context;
+    context.__vftable = nullptr;
+    context.pass_entity1.mHandle.mVal = 0;
+    context.pass_entity2.mHandle.mVal = 578822145;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0x2802033;
+    trace_t trace;
+    if ((0x100000 & pEnt->client->ps.eFlags) != 0)
+    {
+        int idx = 1580 * EntityManager::sInst->GetPlayerIndex(pEnt);
+        start.v.m128_f32[0] = dword_F63C70[idx];
+        start.v.m128_f32[1] = dword_F63C70[idx + 1];
+        start.v.m128_f32[2] = dword_F63C70[idx + 2];
+        start.v.m128_f32[3] = 0.0f;
+        float forward[3];
+        AnglesToForward(pEnt->client->ps.viewangles, forward);
+        end.v.m128_f32[0] = forward[0] * 8192.0f + start.v.m128_f32[0];
+        end.v.m128_f32[1] = forward[1] * 8192.0f + start.v.m128_f32[1];
+        end.v.m128_f32[2] = forward[2] * 8192.0f + start.v.m128_f32[2];
+        end.v.m128_f32[3] = 0.0f;
+        context.pass_entity1.mHandle.mVal = pEnt->r.mOwner.mHandle.mVal;
+        g_LocationalTrace(&trace, &start, &end, &context, v6, 0.0f);
+    }
+    else
+    {
+        start.v.m128_f32[0] = weapParms.up[0];
+        start.v.m128_f32[1] = weapParms.up[1];
+        start.v.m128_f32[2] = weapParms.up[2];
+        start.v.m128_f32[3] = 0.0f;
+        end.v.m128_f32[0] = weapParms.forward[0] * 8192.0f + start.v.m128_f32[0];
+        end.v.m128_f32[1] = weapParms.forward[1] * 8192.0f + start.v.m128_f32[1];
+        end.v.m128_f32[2] = weapParms.forward[2] * 8192.0f + start.v.m128_f32[2];
+        end.v.m128_f32[3] = 0.0f;
+        context.pass_entity1.mHandle.mVal = pEnt->mHandle.mHandle.mVal;
+        g_LocationalTrace(&trace, &start, &end, &context, v6, 0.0f);
+    }
+    pEnt->client->fLastTraceDist = trace.normal.v.m128_f32[1] * 8192.0f;
+    if (trace.mEntity.mHandle.mVal
+        == EntityManager::sInst->mWorld->mHandle.mHandle.mVal)
+        return;
+    Entity* v11 = HandleDbToEnt(trace.mEntity);
+    if (v11 == nullptr)
+        return;
+    int weapon = pEnt->client->ps.weapon;
+    float fTraceDist = trace.normal.v.m128_f32[1] * 8192.0f;
+    if ((weapon == 0
+         || (BG_GetInfoForWeapon(weapon)->iDamageOuterRadius) < 0
+         || v11->sentient == nullptr
+         || v11->sentient->eTeam == pEnt->sentient->eTeam
+         || BG_GetInfoForWeapon(weapon)->iDamageOuterRadius > fTraceDist)
+        && SmokeGrenadeMgr_EntityCanSeeEntity(SmokeGrenadeMgr::sInst, pEnt,
+                                              v11, 0.40000001f))
+    {
+        pEnt->client->pLookatEnt = v11;
+        pEnt->client->iLookatEntLastTime = level.time;
+    }
+    if ((v11->flags & 0x2000000) != 0)
+    {
+        if (v11->team.mBlock != nullptr
+            && (v11->team.mBlock + 1) != nullptr
+            && ((char*)&(v11->team.mBlock + 1)->mBuff)[0] != 0
+            && v11->team.GetBuff()[1] == 'l')
+            pEnt->client->pLookatEnt = v11;
+        else if (v11->team.mBlock != nullptr
+                 && (v11->team.mBlock + 1) != nullptr
+                 && ((char*)&(v11->team.mBlock + 1)->mBuff)[0] != 0
+                 && v11->team.GetBuff()[1] == 'x')
+            pEnt->client->pLookatEnt = v11;
+        goto trigger_check;
+    }
+    if ((v11->r.contents & 0x4000) != 0)
+    {
+        if ((trace.normal.v.m128_f32[2] != 0.0f)
+            && (v11->sentient == nullptr
+                || (~(1 << Sentient_EnemyTeam(pEnt->sentient->eTeam))
+                    & (1 << v11->sentient->eTeam)) != 0))
+        {
+            if (g_femanager.mDontDrawHud)
+                pEnt->client->pLookatEnt = nullptr;
+            else
+                pEnt->client->pLookatEnt = v11;
+        }
+    }
+    else if (v11->scr_vehicle == nullptr)
+    {
+    trigger_check:
+        if ((gTriggerLookAtOverride < 0.0f
+             || (trace.normal.v.m128_f32[1] * 8192.0f)
+                    <= gTriggerLookAtOverride)
+            && v11->mClassNameHash.mHash == hash_const.trigger_lookat.mHash)
+        {
+            pEnt->client->pLookatEnt = v11;
+            G_Trigger(v11, pEnt);
+        }
+        return;
+    }
+    else if (!g_femanager.mDontDrawHud)
+    {
+        pEnt->client->pLookatEnt = v11;
+    }
+}
