@@ -33,6 +33,8 @@ extern void CrossProduct(const float* v1, const float* v2, float* cross);
 extern void* controller_inst();
 extern int controller_button_value(void* self, int i_controller_num,
                                    int i_button);
+extern int controller_button_pressed(void* self, int i_controller_num,
+                                     int i_button);
 extern void* FEManager_GetIGMS(void* self, int client);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 
@@ -65,6 +67,7 @@ extern float   dword_F63C5C[4 * 1580];
 extern int     dword_F62960[4 * 1580];
 extern int     dword_F62964[4 * 1580];
 extern float   dword_F63550[4 * 1580];
+extern int     dword_F6355C[4 * 1580];
 
 // ea: 0x00687BC0
 void CG_ScoresDown_f()
@@ -1305,6 +1308,7 @@ extern void CG_CalcPassengerViewPos();
 extern void CG_CalcTurretViewValues();
 extern void* G_GetVehicleInfo(void* scr_vehicle);
 extern void vectosignedangles(const float* vec, float* angles);
+extern void LerpAngle(float a1, float a2, float a3);
 extern void InterpolateAngles(float* curAngles, const float* initialAngles,
                               const float* targetAngles, float t);
 extern void AnglesToForward(const math::Position3& angles,
@@ -3499,8 +3503,11 @@ struct vehicle_info_full_t {
     float cameraFPHeightOffset;  // +0x1B4
     float cameraFPFwdOffset;     // +0x1B8
     float cameraFPHeightLerp;    // +0x1BC
-    unsigned char _pad2[0x1D0 - 0x1C0];
-    float turretPitchClamp;      // +0x1D0
+    float cameraChaseOffsetX;    // +0x1C0
+    float cameraChaseOffsetY;    // +0x1C4
+    float cameraChaseOffsetZ;    // +0x1C8
+    float cameraChaseRadiusInner;  // +0x1CC
+    float cameraChaseRadiusOuter;  // +0x1D0
     unsigned char _pad3[0x1D8 - 0x1D4];
     float turretPitchUp;         // +0x1D8
     float turretPitchFactor;     // +0x1DC
@@ -3572,6 +3579,18 @@ extern vmCvar_t fs_debug_vm;
 extern unsigned int InteractionController_Inst(int instance);
 extern const float* InteractionController_GetHandsOrigin(void* self);
 extern const float* InteractionController_GetHandsAngles(void* self);
+extern int InteractionController_GetCameraMode(void* self);
+extern void InteractionController_EndInteraction(void* self, int wasInteracting);
+extern int InteractionController_StartInteraction(void* self, Entity* interactable,
+                                                  const char* name, int curPakId);
+extern float InteractionController_GetRotation(void* self);
+extern int Entity_GetPlayerIndex(const Entity* self);
+extern bool gSceneAnimCamera;  // 0x00F258F6
+extern vmCvar_t cg_altTankCam;  // 0x00F5BC30
+extern int CurPakId();
+extern void* G_GetVehicleInfoEntity(Entity* veh);
+extern void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
+                               const float* minClamp, const float* maxClamp);
 
 static unsigned int s_tagTurretHash;
 static bool s_tagTurretHashInit;
@@ -3802,7 +3821,7 @@ void Camera::UpdateTankCam()
         float v23 = v17 / v19;
         if (v19 <= v17)
             v23 = 1.0f;
-        float v24 = 0.0f - info->turretPitchClamp * v23;
+        float v24 = 0.0f - info->cameraChaseRadiusOuter * v23;
         float finalPos[3] = {turretPos[0] + info->turretCamOffset * axis[1][0]
                                  + v24 * axis[0][0],
                              turretPos[1] + info->turretCamOffset * axis[1][1]
@@ -4021,4 +4040,424 @@ void Camera::UpdateTankCamAngles(Entity* veh, PlayerState* ps)
     angle[1580 * currCl + 2] = newViewAngles[2];
     angle[1580 * currCl + 3] = 0.0f;
     SetPlayerAngles(newViewAngles);
+}
+
+// ea: 0x006A5A10
+ECameraModes Camera::CalcCamMode()
+{
+    void* v2 = (void*)InteractionController_Inst(mClient);
+    int mode = InteractionController_GetCameraMode(v2);
+    if (mode != -1)
+        return (ECameraModes)InteractionController_GetCameraMode(v2);
+    if (*(int*)((char*)EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                    ->client
+                + 0x7E8)
+        != 0)
+        return CAM_NORMAL_FIRST;
+    if (gSceneAnimCamera)
+        return CAM_SCENE_ANIMATED;
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    if (client->ps.pm_type == 5)
+        return CAM_INTERMISSION;
+    if (client->ps.eFlags < 0)
+        return CAM_MP_DEATH_CAMERA_NO_KILLER;
+    if (*(int*)(dword_F62960[1580 * mClient] + 52) >= 6)
+        return CAM_MP_DEATH_CAMERA;
+    Entity* Player = GetPlayer(mClient);
+    if (!IsPlayerFullySeatedInVehicle(Player))
+    {
+        void* ic = (void*)InteractionController_Inst(mClient);
+        if (*(void**)((char*)ic + 4) != nullptr)
+            InteractionController_EndInteraction(ic, 1);
+        if ((client->ps.vehType != 2
+             && *(bool*)((char*)GetPlayer(mClient)->client + 0xAD8))
+            || *(bool*)((char*)GetPlayer(mClient)->client + 0xAE0))
+            return CAM_VEHICLE_ANIM;
+        int vehPos = client->ps.vehPos;
+        if (vehPos >= 8)
+            return CAM_VEHICLE_ANIM_FIRST;
+        if (client->ps.vehType != 2)
+        {
+            if (vehPos != 0 || mVehicleCamMode != VEH_MODE_CHASECAM)
+                return CAM_VEHICLE_ANIM;
+            return CAM_VEHICLE_THIRD;
+        }
+        if (!*(bool*)((char*)GetPlayer(mClient)->client + 0xAD8))
+            return CAM_VEHICLE_TANK;
+    }
+    Entity* v9 = DbHandleToEntity(client->ps.mViewLockedEntity);
+    if ((client->ps.eFlags & 0x6000) != 0 && v9 != nullptr
+        && *(int*)((char*)client + 0x49C) != 0)
+        return CAM_TURRET;
+    if ((client->ps.eFlags & 0x100000) == 0 || v9 == nullptr
+        || v9->scr_vehicle == nullptr)
+    {
+        if (client->ps.pm_type == 1)
+            return CAM_TURRET_FIRST;
+        return (ECameraModes)(dword_F6355C[1580 * mClient] != 0);
+    }
+    if (client->ps.vehPos == 0)
+    {
+        int v16 = dword_F6A28C[802 * mClient];
+        if (controller_button_pressed(controller_inst(), v16,
+                                      12 /* R3 */))
+        {
+            if (mVehicleCamMode != VEH_MODE_FIRSTPERSON)
+            {
+                mVehicleCamMode = VEH_MODE_FIRSTPERSON;
+            }
+            else
+            {
+                int mClient2 = mClient;
+                mVehicleCamMode = VEH_MODE_CHASECAM;
+                if ((*(unsigned char*)((char*)GetPlayer(mClient2)->client
+                                       + 0x800)
+                     & 8)
+                    != 0)
+                {
+                    mVehicleCamMode =
+                        mVehicleCamMode == VEH_MODE_FIRSTPERSON;
+                }
+                void* ic2 = (void*)InteractionController_Inst(mClient);
+                if (*(void**)((char*)ic2 + 4) != nullptr)
+                    InteractionController_EndInteraction(ic2, 1);
+            }
+        }
+    }
+    if (cg_altTankCam.integer == 0 || client->ps.vehType != 2)
+    {
+        if (*(void**)((char*)v9->scr_vehicle + 0x518) != nullptr
+            && client->ps.vehType == 1)
+        {
+            if (dword_F6355C[1580 * mClient] == 0)
+            {
+                int v13 = client->ps.vehPos;
+                if (v13 != 0)
+                    return v13 != 1 ? CAM_VEHICLE_PASSENGER : CAM_VEHICLE_GUNNER;
+                if (mVehicleCamMode == VEH_MODE_FIRSTPERSON)
+                {
+                    if (mTweenTime >= mTweenDuration
+                        && mCamMode == CAM_VEHICLE_FIRST
+                        && *(void**)((char*)InteractionController_Inst(mClient)
+                                     + 4)
+                               == nullptr)
+                    {
+                        void* VehicleInfo =
+                            G_GetVehicleInfoEntity(v9);
+                        int v18 = CurPakId();
+                        InteractionController_StartInteraction(
+                            (void*)InteractionController_Inst(mClient), v9,
+                            (const char*)((char*)VehicleInfo + 0x284), v18);
+                    }
+                    return CAM_VEHICLE_FIRST;
+                }
+            }
+            return CAM_VEHICLE_THIRD;
+        }
+        if (client->ps.vehPos == 1)
+            return CAM_VEHICLE_GUNNER;
+        if (client->ps.pm_type == 1)
+            return CAM_TURRET_FIRST;
+        return (ECameraModes)(dword_F6355C[1580 * mClient] != 0);
+    }
+    int v12 = client->ps.vehPos;
+    if (v12 == 1)
+        return CAM_VEHICLE_GUNNER;
+    if (v12 == 6)
+        return CAM_VEHICLE_GUNNER_CROUCHED;
+    if (*(void**)((char*)v9->scr_vehicle + 0x518) == nullptr
+        || mVehicleCamMode != VEH_MODE_FIRSTPERSON)
+        return CAM_VEHICLE_TANK;
+    return CAM_VEHICLE_TANK_COMMANDER;
+}
+
+// ea: 0x006A68A0
+void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
+{
+    float vehAxis[3][3];
+    float playerAxis[3][3];
+    vehAxis[2][1] = veh->r.currentAngles.v.m128_f32[1];
+    vehAxis[2][2] =
+        AngleDelta(veh->r.currentAngles.v.m128_f32[2], 0.0f) * 0.47999999f;
+    vehAxis[2][0] =
+        AngleDelta(veh->r.currentAngles.v.m128_f32[0], 0.0f);
+    AnglesToAxis(*(const math::Position3*)vehAxis[2], playerAxis);
+    float vehOffsetAngles[4] = {0.0f, 0.0f, -90.0f, -90.0f};
+    float minClamp[3] = {5.0f, 40.0f, 0.0f};
+    if (ps->vehSubType == 2
+        && *(void**)((char*)veh->scr_vehicle + 0x518) != nullptr)
+    {
+        Entity* mObject = DbHandleToEntity(veh->r.mOwner.mHandle.mVal);
+        int PlayerIndex = Entity_GetPlayerIndex(mObject);
+        float Rotation =
+            InteractionController_GetRotation(
+                (void*)InteractionController_Inst(PlayerIndex));
+        float angle = mPrevAngles.v.m128_f32[1]
+                      - veh->r.currentAngles.v.m128_f32[1];
+        float newViewAngles3 = Rotation * 0.028571429f;
+        float v40 = -AngleNormalize180(angle);
+        float v14 = fabsf(v40);
+        if ((newViewAngles3 < 0.0f) == (v40 < 0.0f))
+        {
+            float v15 = v14 * 0.06666667f;
+            v40 = v15;
+            float v16 = v40;
+            float v17;
+            if (v15 >= 0.0f)
+            {
+                v17 = 1.0f;
+                if (v40 <= 1.0f)
+                    v17 = v40;
+            }
+            else
+            {
+                v17 = 0.0f;
+            }
+            newViewAngles3 = fabsf(newViewAngles3);
+            float v18 = newViewAngles3 * 4.0f;
+            if ((newViewAngles3 * v17 * 13.0f) + v18 >= 0.0f)
+            {
+                float v19;
+                if (v40 >= 0.0f)
+                {
+                    v19 = 1.0f;
+                    if (v40 <= 1.0f)
+                        v19 = v40;
+                }
+                else
+                {
+                    v19 = 0.0f;
+                }
+                if (((newViewAngles3 * v19) * 13.0f) + v18 <= 17.0f)
+                {
+                    if (v40 >= 0.0f)
+                    {
+                        if (v40 > 1.0f)
+                            v16 = 1.0f;
+                    }
+                    else
+                    {
+                        v16 = 0.0f;
+                    }
+                    minClamp[0] =
+                        13.0f - (((newViewAngles3 * v16) * 13.0f) + v18);
+                }
+                else
+                {
+                    minClamp[0] = 13.0f - 17.0f;
+                }
+            }
+            else
+            {
+                minClamp[0] = 13.0f - 0.0f;
+            }
+        }
+        else
+        {
+            float v20 = v14 * 0.033333335f;
+            v40 = v20;
+            float v21;
+            if (v20 >= 0.0f)
+            {
+                v21 = v40;
+                v40 = 1.0f;
+                if (v21 <= 1.0f)
+                    v40 = v21;
+            }
+            else
+            {
+                v40 = 0.0f;
+            }
+            minClamp[0] = 13.0f
+                          - fabsf(newViewAngles3) * (1.0f - v40) * 3.0f;
+        }
+        if (minClamp[0] == 0.0f)
+            minClamp[0] = -0.1f;
+        vehOffsetAngles[3] = -30.0f;
+        minClamp[1] = 30.0f;
+    }
+    CG_ClampViewAngles(ps, vec3_origin, &vehOffsetAngles[2], minClamp);
+    float viewAxis[3][3];
+    AnglesToAxis(*(const math::Position3*)ps->viewangles, viewAxis);
+    float v30[3][3];
+    MatrixMultiply(viewAxis, playerAxis, v30);
+    float outAngles[3];
+    AxisToAngles(v30, outAngles);
+    outAngles[0] = AngleNormalize180(outAngles[0]);
+    outAngles[1] = AngleNormalize180(outAngles[1]);
+    UpdateVehicleDriverSteerLookAhead(veh);
+    outAngles[1] = mSteerYawOffset + outAngles[1];
+    if (mTweenDuration <= mTweenTime)
+    {
+        InterpolateAngles(&angle[1580 * mClient], &mPrevAngles.v.m128_f32[0],
+                          outAngles, ServerTime_sInst.mTickDelta * 15.0f);
+    }
+    else
+    {
+        angle[1580 * mClient] = outAngles[0];
+        angle[1580 * mClient + 1] = outAngles[1];
+        angle[1580 * mClient + 2] = outAngles[2];
+        angle[1580 * mClient + 3] = 0.0f;
+    }
+    __m128 v28;
+    if (mVehPrevAnglesTime != 0 && mVehPrevAnglesTime > cgGlobal.time - 500)
+    {
+        v28 = _mm_sub_ps(veh->r.currentAngles.v, mVehPrevAngles.v);
+    }
+    else
+    {
+        outAngles[0] = 0.0f;
+        outAngles[1] = 0.0f;
+        outAngles[2] = 0.0f;
+        v28 = _mm_setzero_ps();
+    }
+    mVehPrevAngles.v = veh->r.currentAngles.v;
+    mVehPrevAnglesTime = cgGlobal.time;
+    mTweenStartAngles.v = _mm_add_ps(mTweenStartAngles.v, v28);
+}
+
+// ea: 0x006AF000
+void Camera::UpdateVehicleDriverCamThird()
+{
+    if (special_tween_bool)
+    {
+        if (mTweenTime < 0.40000001f)
+        {
+            UpdateVehicleDriverCam(30.0f);
+            return;
+        }
+        StartTween(0.5f, false);
+        special_tween_bool = false;
+    }
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
+    UpdateVehicleDriverCamAnglesInput(mObject, &client->ps);
+    vehicle_info_full_t* v7 =
+        (vehicle_info_full_t*)VEH_GetInfo(
+            *(short*)((char*)mObject->scr_vehicle + 0x178));
+    float chaseOffset[4] = {v7->cameraChaseOffsetX, v7->cameraChaseOffsetY,
+                            v7->cameraChaseOffsetZ, 0.0f};
+    float start[4];
+    start[0] = mObject->r.currentOrigin.v.m128_f32[0] + chaseOffset[0];
+    start[1] = mObject->r.currentOrigin.v.m128_f32[1] + chaseOffset[1];
+    start[2] = mObject->r.currentOrigin.v.m128_f32[2] + chaseOffset[2];
+    float dist2 = (start[0] - mPrevViewPos.v.m128_f32[0])
+                      * (start[0] - mPrevViewPos.v.m128_f32[0])
+                  + (start[1] - mPrevViewPos.v.m128_f32[1])
+                        * (start[1] - mPrevViewPos.v.m128_f32[1])
+                  + (start[2] - mPrevViewPos.v.m128_f32[2])
+                        * (start[2] - mPrevViewPos.v.m128_f32[2]);
+    float dist = sqrtf(dist2);
+    float v12 = mObject->speed * 0.0022222223f;
+    if (v12 < 0.0f)
+        v12 = 0.0f;
+    else if (v12 > 1.0f)
+        v12 = 1.0f;
+    float pitch = 14.0f;  // (v12 * 0.0) + 14.0
+    float yaw;
+    float roll = 0.0f;
+    if (mVehInputState != INPUT_NONE)
+    {
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+        float v17, v18;
+        if (IsPlayerFullySeatedInVehicle(Player)
+            || client->ps.vehPos >= 8)
+        {
+            v17 = client->ps.viewangles[0];
+            v18 = client->ps.viewangles[1];
+            roll = client->ps.viewangles[2];
+        }
+        else
+        {
+            v17 = 0.0f;
+            v18 = 0.0f;
+            roll = 0.0f;
+        }
+        yaw = mObject->r.currentAngles.v.m128_f32[1] + v18;
+        pitch = v17 + pitch;
+    }
+    else
+    {
+        float dir[3] = {
+            (start[0] - mPrevViewPos.v.m128_f32[0]) / dist,
+            (start[1] - mPrevViewPos.v.m128_f32[1]) / dist,
+            (start[2] - mPrevViewPos.v.m128_f32[2]) / dist};
+        float signedAngles[3];
+        vectosignedangles(dir, signedAngles);
+        yaw = signedAngles[1];
+        pitch = client->ps.viewangles[0] + pitch;
+        void* mRBVeh = *(void**)((char*)mObject->scr_vehicle + 0x518);
+        if (mRBVeh != nullptr && *(float*)((char*)mRBVeh + 0x254) > 0.0f)
+        {
+            LerpAngle(yaw, mObject->r.currentAngles.v.m128_f32[1],
+                      ServerTime_sInst.mTickDelta * 1.4f);
+            yaw = dist;
+        }
+    }
+    if (mTweenDuration > mTweenTime)
+    {
+        pitch = client->ps.viewangles[0] + 14.0f;
+        yaw = mObject->r.currentAngles.v.m128_f32[1] + client->ps.viewangles[1];
+        dist = 250.0f;
+    }
+    angle[1580 * mClient] = pitch;
+    angle[1580 * mClient + 1] = yaw;
+    angle[1580 * mClient + 2] = roll;
+    angle[1580 * mClient + 3] = 0.0f;
+    float sinY, cosY, sinX, cosX;
+    FastSinCos(angle[1580 * mClient + 1] * 0.017453292f, &sinY, &cosY);
+    FastSinCos(angle[1580 * mClient] * 0.017453292f, &sinX, &cosX);
+    float dir[3] = {cosX * cosY, cosX * sinY, -sinX};
+    float finalPos[3] = {start[0] - dir[0] * dist,
+                         start[1] - dir[1] * dist,
+                         start[2] - dir[2] * dist};
+    if (dist > v7->cameraChaseRadiusOuter)
+    {
+        float adjust = dist - v7->cameraChaseRadiusOuter;
+        finalPos[0] += dir[0] * adjust;
+        finalPos[1] += dir[1] * adjust;
+        finalPos[2] += dir[2] * adjust;
+    }
+    else if (v7->cameraChaseRadiusInner > dist)
+    {
+        float adjust = 0.0f - (v7->cameraChaseRadiusInner - dist);
+        finalPos[0] += dir[0] * adjust;
+        finalPos[1] += dir[1] * adjust;
+        finalPos[2] += dir[2] * adjust;
+    }
+    float mins[3] = {-1.0f, -1.0f, -1.0f};
+    float maxs[3] = {1.0f, 1.0f, 1.0f};
+    collision_context_t ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    ctx.pass_entity1.mHandle.mVal = client->ps.mViewLockedEntity;
+    ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
+    trace_t tr;
+    CG_Trace(&tr, (const math::Position3*)start, (const math::Position3*)mins,
+             (const math::Position3*)maxs, (const math::Position3*)finalPos,
+             &ctx);
+    if (tr.normal.v.m128_f32[1] < 1.0f)
+    {
+        finalPos[0] = tr.endpos.v.m128_f32[0];
+        finalPos[1] = tr.endpos.v.m128_f32[1];
+        finalPos[2] = tr.endpos.v.m128_f32[2];
+    }
+    // height smoothing (chase cam)
+    float height = finalPos[2];
+    static float s_prevChaseHeight;
+    height = (height - s_prevChaseHeight) * v7->cameraFPHeightLerp
+             + s_prevChaseHeight;
+    s_prevChaseHeight = height;
+    finalPos[2] = height;
+    dword_F63C70[1580 * mClient] = finalPos[0];
+    dword_F63C74[1580 * mClient] = finalPos[1];
+    dword_F63C78[1580 * mClient] = finalPos[2];
+    mTweenStartPos.v = _mm_add_ps(
+        mTweenStartPos.v,
+        _mm_add_ps(mObject->r.currentOrigin.v,
+                   _mm_sub_ps(_mm_setzero_ps(), mVehPrevOrigin.v)));
+    mVehPrevOrigin.v = mObject->r.currentOrigin.v;
 }
