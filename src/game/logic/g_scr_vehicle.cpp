@@ -4305,6 +4305,117 @@ void scr_vehicle_t::UpdateAnimRoute(Entity* ent, Entity* player)
     }
 }
 
+// ea: 0x00490080
+void VEH_FireGunnerWeapon(Entity* ent, int msec)
+{
+    scr_vehicle_t* veh = ent->scr_vehicle;
+    Entity* gunner = HandleDbToEnt(veh->seats[1].occupant);
+    if (!veh->seats[1].gunMounted)
+        return;
+    weaponFileInfo_t* info = BG_GetInfoForWeapon(veh->gunnerWeapon);
+    veh->gunnerFireTime = info->iFireTime;
+    weaponParms wp;
+    memset(&wp, 0, sizeof(wp));
+    wp.pWeapInfo = info;
+    if (veh->boneIndex.gunner_flash < 0)
+    {
+        gpBrocAPI->mBrocExports.mFireTurret(ent->mHandle.mHandle.mVal, true);
+        if (wp.pWeapInfo->type != WEAPTYPE_BULLET)
+            return;
+        veh->seats[1].heat += (msec * info->fFireHeat) * 0.001f;
+        return;
+    }
+    DObjSkelMat flashMtx;
+    G_DObjGetWorldBoneIndexMatrix(ent, veh->boneIndex.gunner_flash,
+                                  &flashMtx);
+    wp.right[0] = flashMtx.axis[1][0];
+    wp.right[1] = flashMtx.axis[1][1];
+    wp.right[2] = flashMtx.axis[1][2];
+    wp.up[0] = flashMtx.axis[2][0];
+    wp.up[1] = flashMtx.axis[2][1];
+    wp.up[2] = flashMtx.axis[2][2];
+    wp.gunForward[0] = flashMtx.axis[0][0];
+    wp.gunForward[1] = flashMtx.axis[0][1];
+    wp.gunForward[2] = flashMtx.axis[0][2];
+    wp.forward[0] = flashMtx.axis[0][0];
+    wp.forward[1] = flashMtx.axis[0][1];
+    wp.forward[2] = flashMtx.axis[0][2];
+    if (veh->barrelBlocked != 0)
+    {
+        wp.muzzleTrace[0] = (0.0f - veh->barrelOffset) * flashMtx.axis[0][0]
+                          + flashMtx.origin[0];
+        wp.muzzleTrace[1] = (0.0f - veh->barrelOffset) * flashMtx.axis[0][1]
+                          + flashMtx.origin[1];
+        wp.muzzleTrace[2] = (0.0f - veh->barrelOffset) * flashMtx.axis[0][2]
+                          + flashMtx.origin[2];
+    }
+    else
+    {
+        wp.muzzleTrace[0] = flashMtx.origin[0];
+        wp.muzzleTrace[1] = flashMtx.origin[1];
+        wp.muzzleTrace[2] = flashMtx.origin[2];
+    }
+    if (wp.pWeapInfo->type == WEAPTYPE_BULLET)
+    {
+        float spread = (100.0f - info->accuracy) * 0.1f;
+        Entity* attacker = gunner != nullptr ? gunner : ent;
+        Entity* attacker2 = gunner != nullptr ? gunner : ent;
+        int damage = info->iDamage;
+        if (EntityManager::sInst->IsLocalPlayer(attacker2))
+        {
+            Bullet_Fire(gunner != nullptr ? gunner : ent, spread, damage, &wp,
+                        ent, 0.0f);
+        }
+        else
+        {
+            Bullet_Fire_Fake(gunner != nullptr ? gunner : ent, 0.0f, damage,
+                             &wp, ent, 0.0f);
+        }
+        CG_FireWeapon(attacker, &attacker->s, 187, 0, 0);
+        for (int i = 0; i < 11; ++i)
+        {
+            Entity* occupant = HandleDbToEnt(veh->seats[i].occupant);
+            if (occupant != nullptr
+                && EntityManager::sInst->IsLocalPlayer(occupant))
+            {
+                int client = occupant->client->mServerClientIndex;
+                if (RumbleManager_Inst(client) != nullptr)
+                {
+                    RumbleEffect effect;
+                    effect.mRumbleDataArray[0].enabled = true;
+                    effect.mRumbleDataArray[0].delay = 0.0f;
+                    effect.mRumbleDataArray[0].steady_duration = 0.5f;
+                    effect.mRumbleDataArray[1].enabled = true;
+                    effect.mRumbleDataArray[1].delay = 0.0f;
+                    effect.mRumbleDataArray[1].steady_duration = 0.2f;
+                    effect.mRumbleDataArray[1].ramp_up_duration = 0.0f;
+                    effect.mRumbleDataArray[1].ramp_down_duration = 0.0f;
+                    RumbleEffect_SetIntensity(&effect, kRumbleLEFT, 0.5f);
+                    float playIntensity;
+                    if (i == 1)
+                    {
+                        RumbleEffect_SetIntensity(&effect, kRumbleRIGHT,
+                                                  0.5f);
+                        playIntensity = 1.0f;
+                    }
+                    else
+                    {
+                        RumbleEffect_SetIntensity(&effect, kRumbleRIGHT,
+                                                  0.2f);
+                        playIntensity = 0.5f;
+                    }
+                    RumbleManager_Play(RumbleManager_Inst(client), &effect,
+                                       playIntensity);
+                }
+            }
+        }
+        veh->seats[1].heat += (info->iFireTime * info->fFireHeat)
+                              * 0.00075000001f;
+        return;
+    }
+    Weapon_RocketLauncher_Fire(ent, 0.0f, &wp, 10.0f, true);
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)

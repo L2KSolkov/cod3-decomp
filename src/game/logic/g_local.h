@@ -146,7 +146,10 @@ struct scr_vehicle_t {
     int16_t infoIdx;      // +0x178
     int16_t waitNode;     // +0x17A
     float   waitSpeed;    // +0x17C
-    uint8_t _pad180[0x194 - 0x180];  // fireTime/altFireTime/etc (unused)
+    int     fireTime;     // +0x180
+    int     altFireTime;  // +0x184
+    int     gunnerFireTime;  // +0x188
+    uint8_t _pad18C[0x194 - 0x18C];
     int     drawOnCompass;   // +0x194
     int     drawAsEnemy;     // +0x198
     uint8_t _pad19C[0x1A0 - 0x19C];
@@ -158,7 +161,7 @@ struct scr_vehicle_t {
     math::Position3 respawn_origin;  // +0x1C0
     math::Position3 respawn_angles;  // +0x1D0
     vehicleSeat_t seats[11];  // +0x1E0 (0x134 bytes)
-    uint8_t _pad314[0x318 - 0x314];
+    float   barrelOffset;   // +0x314
     int     barrelBlocked;  // +0x318
     int     manualMode;    // +0x31C
     float   manualSpeed;   // +0x320
@@ -1042,7 +1045,9 @@ struct BrocExports {
     uint8_t _pad5A8[0x81C - 0x5A8];
     void (*mShellShock)(unsigned int ent, Broc::string* shock,
                         float fVal);                       // +0x81C
-    uint8_t _pad820[0xC50 - 0x820];
+    uint8_t _pad820[0xB70 - 0x820];
+    void (*mFireTurret)(unsigned int ent, bool fire);      // +0xB70
+    uint8_t _padB74[0xC50 - 0xB74];
     void (*mAnimInitialize)();  // +0xC50
     uint8_t _padC54[0xC90 - 0xC54];
     void (*mCallbackPlayerDamage)(unsigned int a1, unsigned int a2, unsigned int a3,
@@ -2079,6 +2084,8 @@ void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                        Entity* hitEnt);  // cg.o
 void CG_EventSpawnTracer(const math::Position3* pstart,
                          const math::Position3* pend, int weapon);  // cg.o
+void CG_FireWeapon(Entity* attacker, EntityState* attackerState, int event,
+                   int barrel, int inWeapon);  // cg.o
 void* controller_inst();                                   // controller_xboxr
 int  controller_button_pressed(void* self, int i_controller_num,
                                int i_button);              // controller_xboxr
