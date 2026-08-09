@@ -85,7 +85,7 @@ void LivePlayer::Reset()
     bitflags = 0;
 }
 
-// ea: 0x721740
+// ea: 0x721710
 bool __stdcall LivePlayer::IsTalking()
 {
     return LiveWrapper::theWrapper->IsTalking(
@@ -402,6 +402,8 @@ LiveFeature g_VoiceMailPseudoFeature;
 void* nsl_fxDesc;
 void* g_voicemailMode;
 void* g_voicechatMode;
+int nIgnoreInputFrames;   // game_xbox.o (LiveWrapper.cpp)
+bool bUIXInputDelay;      // game_xbox.o (LiveWrapper.cpp)
 
 // ea: 0x722530
 LiveWrapper::LiveWrapper()
@@ -443,7 +445,7 @@ LiveWrapper::LiveWrapper()
     memset(commKey.ab, 0, sizeof(commKey.ab));
 }
 
-// ea: 0x7226A0
+// ea: 0x725BF0
 void LiveWrapper::SetupAsAware(void* renderDevice, const char* skinPath,
                                void* font)
 {
@@ -473,7 +475,7 @@ void LiveWrapper::SetupAsAware(void* renderDevice, const char* skinPath,
     internalMode = kAware;
 }
 
-// ea: 0x722780
+// ea: 0x725C40
 void LiveWrapper::SetupAsSession(void* renderDevice, const char* skinPath,
                                  void* font)
 {
@@ -529,6 +531,322 @@ void LiveWrapper::SignInSilently(unsigned int serviceBitfield)
                                               params);
     HandleError(started);
     internalState = kSigningIn;
+}
+
+// ea: 0x722870
+bool LiveWrapper::HandleInput(unsigned int port,
+                              const XINPUT_STATE* controllerInput)
+{
+    if (internalMode == kNotSetup)
+    {
+        ASSERT("internalMode != kNotSetup",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 169);
+    }
+    if (g_IgnoreUIXInput)
+    {
+        nIgnoreInputFrames = 15;
+        g_IgnoreUIXInput = false;
+    }
+    else if (nIgnoreInputFrames != 0)
+    {
+        --nIgnoreInputFrames;
+    }
+    else
+    {
+        goto pass_input;
+    }
+    ((XINPUT_STATE*)controllerInput)->dwPacketNumber = 0;
+    ((XINPUT_STATE*)controllerInput)->Gamepad.wButtons = 0;
+    ((XINPUT_STATE*)controllerInput)->Gamepad.sThumbLX = 0;
+    ((XINPUT_STATE*)controllerInput)->Gamepad.sThumbRX = 0;
+    ((XINPUT_STATE*)controllerInput + 1)->dwPacketNumber = 0;
+    ((XINPUT_STATE*)controllerInput + 1)->Gamepad.wButtons = 0;
+pass_input:
+    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+    {
+        for (unsigned int i = 0; i < 4; ++i)
+        {
+            HRESULT v6 = LiveEngine_SetInput(uixEngine, i, controllerInput);
+            HandleError(v6);
+        }
+        return (uixFlags & 0x10) != 0;
+    }
+    if ((uixFlags & 1) != 0 && renderingEnabled
+        && (controllerInput->Gamepad.bLeftTrigger != 0
+            || controllerInput->Gamepad.bRightTrigger != 0)
+        && bUIXInputDelay)
+    {
+        Sleep(250);
+        bUIXInputDelay = false;
+    }
+    HRESULT v8 = LiveEngine_SetInput(uixEngine, port, controllerInput);
+    HandleError(v8);
+    return (uixFlags & 0x10) != 0;
+}
+
+// ea: 0x7229A0
+void LiveWrapper::Render(void* renderSurface)
+{
+    if (internalMode == kNotSetup)
+    {
+        ASSERT("internalMode != kNotSetup",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 253);
+    }
+    if ((uixFlags & 1) != 0 && renderingEnabled)
+    {
+        HRESULT v3 = LiveEngine_Render(uixEngine, renderSurface);
+        HandleError(v3);
+    }
+}
+
+// ea: 0x722A20
+void LiveWrapper::Render()
+{
+    if (internalMode == kNotSetup)
+    {
+        ASSERT("internalMode != kNotSetup",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 261);
+    }
+    if ((uixFlags & 1) != 0 && renderingEnabled)
+    {
+        HRESULT v2 = LiveEngine_Render(uixEngine, backBuffer);
+        HandleError(v2);
+    }
+}
+
+// ea: 0x722AA0
+char* LiveWrapper::GetIcon(unsigned int portNumber)
+{
+    if (LiveWrapper::theWrapper->internalState != kSignedIn)
+        return nullptr;
+    unsigned int v3 = (logonMethod == UIX_LOGON_TYPE_SILENT)
+                          ? 0
+                          : portNumber;
+    DWORD notificationBitfield = portNumber;
+    HRESULT Notifications =
+        LiveEngine_GetNotifications(uixEngine, v3, UIX_NOTIFICATION_MENU,
+                                    &notificationBitfield);
+    HandleError(Notifications);
+    if ((notificationBitfield & 0x20000) != 0)
+        return (char*)0x20000;
+    if ((notificationBitfield & 0x10000) != 0)
+        return (char*)0x10000;
+    return nullptr;
+}
+
+// ea: 0x722BB0
+void LiveWrapper::SignInFromInvite(void* acceptedInvite,
+                                   unsigned int serviceBitfield)
+{
+    if (internalState != kNotSignedIn)
+    {
+        ASSERT("internalState == kNotSignedIn",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 317);
+    }
+    logonMethod = UIX_LOGON_TYPE_RETRIEVED_GAME_INVITE;
+    lastLoginCode = 0;
+    DWORD params[21];
+    params[0] = 84;
+    params[1] = 3;
+    params[2] = 1;
+    params[19] = 0;
+    params[20] = (DWORD)acceptedInvite;
+    int v4 = 0;
+    for (unsigned int i = 0; i < 0x10; ++i)
+    {
+        if (((1 << i) & serviceBitfield) != 0)
+            params[v4++ + 3] = i;
+    }
+    params[v4 + 3] = 0;
+    HRESULT started =
+        LiveEngine_StartFeature(uixEngine, &g_LogonFeature, params);
+    HandleError(started);
+    internalState = kSigningIn;
+}
+
+// ea: 0x722C90
+void LiveWrapper::ShowLoginScreen(unsigned int serviceBitfield)
+{
+    if (internalMode == kNotSetup)
+    {
+        ASSERT("internalMode != kNotSetup",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 343);
+    }
+    lastLoginCode = 0;
+    logonMethod = UIX_LOGON_TYPE_NORMAL;
+    DWORD params[21];
+    params[0] = 84;
+    params[1] = 0;
+    params[2] = 1;
+    params[20] = 0;
+    int v3 = 0;
+    for (unsigned int i = 0; i < 0x10; ++i)
+    {
+        if (((1 << i) & serviceBitfield) != 0)
+            params[v3++ + 3] = i;
+    }
+    params[v3 + 3] = 0;
+    HRESULT v4 = LiveEngine_SetProperty(
+        uixEngine, UIX_PROPERTY_DISPLAY_CONNECTION_ERRORS, 1);
+    HandleError(v4);
+    internalState = kSigningIn;
+    HRESULT started =
+        LiveEngine_StartFeature(uixEngine, &g_LogonFeature, params);
+    HandleError(started);
+}
+
+// ea: 0x722D70
+void LiveWrapper::ShowFriendsList(unsigned int portNumber)
+{
+    if (internalState == kNotSignedIn)
+    {
+        ASSERT("internalState != kNotSetup",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 371);
+    }
+    DWORD params[6];
+    memset(&params[2], 0, 16);
+    params[0] = 24;
+    params[1] = portNumber;
+    HRESULT started =
+        LiveEngine_StartFeature(uixEngine, &g_FriendsFeature, params);
+    HandleError(started);
+    activeController = portNumber;
+}
+
+// ea: 0x722E10
+void LiveWrapper::ShowPlayersList(unsigned int portNumber,
+                                  unsigned int bitFlagMask)
+{
+    if (internalState == kNotSignedIn)
+    {
+        ASSERT("internalState != kNotSetup",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 387);
+    }
+    if (internalMode != kSession)
+    {
+        ASSERT("internalMode == kSession",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 388);
+    }
+    for (int i = 0; i < 4; ++i)
+    {
+        if (muteListTask[i].needsWork)
+        {
+            XOnlineTaskClose(muteListTask[i].taskHandle);
+            muteListTask[i].taskHandle = nullptr;
+            muteListTask[i].needsWork = false;
+        }
+    }
+    playersListActive = true;
+    DWORD params[6];
+    params[0] = 28;
+    params[1] = portNumber;
+    params[2] = portNumber;
+    params[3] = bitFlagMask;
+    params[4] = 0;
+    params[5] = 3;
+    HRESULT started =
+        LiveEngine_StartFeature(uixEngine, &g_PlayersFeature, params);
+    HandleError(started);
+    activeController = portNumber;
+}
+
+// ea: 0x722F50
+void LiveWrapper::ToggleOfflineAppearance(unsigned int portNumber)
+{
+    if (logonMethod == UIX_LOGON_TYPE_SILENT)
+        ToggleNotificationFlag(0, 1);
+    else
+        ToggleNotificationFlag(portNumber, 1);
+}
+
+// ea: 0x723060
+void LiveWrapper::AddRemotePlayer(const LivePlayer* playerToAdd)
+{
+    if (numRemotePlayers >= 15)
+    {
+        ASSERT("numRemotePlayers < 15",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 464);
+    }
+    int freeIndex = -1;
+    for (int i = 0; i < 15; ++i)
+    {
+        if (remotePlayers[i].xuid.qwValue == 0)
+        {
+            freeIndex = i;
+            break;
+        }
+    }
+    if (freeIndex == -1)
+    {
+        ASSERT("freeIndex != -1",
+               "c:\\cod\\code\\game\\LiveWrapper.cpp", 476);
+    }
+    LiveRemote* v7 = &remotePlayers[freeIndex];
+    v7->xuid = playerToAdd->xuid;
+    v7->consoleID = playerToAdd->consoleID;
+    v7->voiceStatus = playerToAdd->voiceStatus;
+    v7->bitflags = playerToAdd->bitflags;
+    v7->notificationFlags = playerToAdd->notificationFlags;
+    memcpy(v7->gamertag, playerToAdd->gamertag, sizeof(v7->gamertag));
+    v7->Reset();
+    if ((v7->xuid.dwUserFlags & 0x10003) == 0
+        && voiceEngine != nullptr)
+    {
+        HRESULT v9 =
+            XHVEngine_RegisterRemoteTalker(voiceEngine, v7->xuid);
+        HandleError(v9);
+        _DSMIXBINVOLUMEPAIR dsmbvp;
+        dsmbvp.dwMixBin = 26;
+        dsmbvp.lVolume = 0;
+        _DSMIXBINS dsmb;
+        dsmb.dwMixBinCount = 1;
+        dsmb.lpMixBinVolumePairs = &dsmbvp;
+        XHVEngine_SetMixBinMapping(voiceEngine, v7->xuid, 4, &dsmb);
+    }
+    for (unsigned int localControl = 0; localControl < 4; ++localControl)
+    {
+        LiveLocal& local = localPlayers[localControl];
+        if (local.muteListSize != 0)
+        {
+            for (unsigned int j = 0; j < local.muteListSize; ++j)
+            {
+                if (local.muteList[j].xuid.qwValue
+                    == v7->xuid.qwValue)
+                {
+                    v7->SetMuted(localControl, true);
+                    SendMuteUpdate(&local.xuid, &v7->xuid, true);
+                    break;
+                }
+            }
+        }
+    }
+    if (numRemotePlayers == 0 && voiceEngine != nullptr)
+    {
+        if (logonMethod == UIX_LOGON_TYPE_SILENT)
+        {
+            if (localPlayers[0].xuid.qwValue != 0
+                && (localPlayers[0].xuid.dwUserFlags & 0x10003) == 0)
+            {
+                for (int i = 0; i < 4; ++i)
+                    XHVEngine_SetProcessingMode(voiceEngine, i,
+                                                g_voicechatMode);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                if (localPlayers[i].xuid.qwValue != 0
+                    && (localPlayers[i].xuid.dwUserFlags & 0x10003) == 0)
+                {
+                    XHVEngine_SetProcessingMode(voiceEngine, i,
+                                                g_voicechatMode);
+                }
+            }
+        }
+    }
+    ++numRemotePlayers;
+    CalcVoicePriorities();
 }
 
 // ea: 0x722F80
@@ -1946,7 +2264,7 @@ void CSession::Reset()
     }
 }
 
-// ea: 0x7266B0
+// ea: 0x726680
 HRESULT CSession::Process()
 {
     while (1)

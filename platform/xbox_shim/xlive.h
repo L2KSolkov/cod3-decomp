@@ -283,6 +283,25 @@ void __stdcall XHVEngine_SetCallbackInterface(XHVEngine* pThis,
                                               void* pITitleXHV);
 void __stdcall XHVEngine_EnableProcessingMode(XHVEngine* pThis,
                                               void* processingMode);
+HRESULT __stdcall XHVEngine_RegisterRemoteTalker(XHVEngine* pThis,
+                                                 XUID xuidRemoteTalker);
+void __stdcall XHVEngine_SetMixBinMapping(XHVEngine* pThis,
+                                          XUID xuidRemoteTalker,
+                                          DWORD dwLocalPort,
+                                          void* pMixBins);
+void __stdcall XHVEngine_SetProcessingMode(XHVEngine* pThis,
+                                           DWORD dwLocalPort,
+                                           void* processingMode);
+
+// DirectSound mix-bin types (AddRemotePlayer)
+typedef struct _DSMIXBINVOLUMEPAIR {
+    unsigned int dwMixBin;  // +0x00
+    int lVolume;            // +0x04
+} _DSMIXBINVOLUMEPAIR;
+typedef struct _DSMIXBINS {
+    unsigned int dwMixBinCount;         // +0x00
+    const _DSMIXBINVOLUMEPAIR* lpMixBinVolumePairs;  // +0x04
+} _DSMIXBINS;
 
 // ============================================================================
 // XHV runtime params (0x24, verified against IDA)
@@ -360,9 +379,19 @@ HRESULT __stdcall LiveEngine_GetFeatureInterface(
 HRESULT __stdcall LiveEngine_StartFeature(LiveEngine* pThis,
                                           LiveFeature* FeatureID,
                                           DWORD* pFeatureParams);
+HRESULT __stdcall LiveEngine_SetInput(LiveEngine* pThis, DWORD Port,
+                                      const XINPUT_STATE* pInputState);
+HRESULT __stdcall LiveEngine_Render(LiveEngine* pThis, void* pSurface);
+HRESULT __stdcall LiveEngine_GetNotifications(LiveEngine* pThis, DWORD Port,
+                                              DWORD Purpose, DWORD* pNotifications);
 HRESULT __stdcall LiveEngine_GetExitInfo(LiveEngine* pThis,
                                          void* pExitInfo);
 HRESULT __stdcall LiveEngine_SetUIPlugin(LiveEngine* pThis, void* pUIPlugin);
+
+// UIX notification purposes (GetIcon uses the MENU icon)
+enum {
+    UIX_NOTIFICATION_MENU = 1,
+};
 
 // UIX property ids (values verified against disassembly)
 enum {

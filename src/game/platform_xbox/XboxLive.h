@@ -129,6 +129,9 @@ extern LiveFeature g_LogonFeature;
 extern LiveFeature g_FriendsFeature;
 extern LiveFeature g_PlayersFeature;
 extern LiveFeature g_VoiceMailPseudoFeature;
+extern bool g_IgnoreUIXInput;
+extern int nIgnoreInputFrames;
+extern bool bUIXInputDelay;
 extern void* nsl_fxDesc;          // _DSEFFECTIMAGEDESC* (sound lib)
 extern void* g_voicemailMode;     // _XHV_PROCESSING_MODE*
 extern void* g_voicechatMode;     // _XHV_PROCESSING_MODE*
@@ -195,7 +198,9 @@ public:
     void ShowLoginScreen(unsigned int serviceBitfield);
     void ToggleOfflineAppearance(unsigned int portNumber);
     void SignInFromInvite(void* acceptedInvite, unsigned int serviceBitfield);
+    void AddRemotePlayer(const LivePlayer* playerToAdd);
     void Render();
+    void Render(void* renderSurface);
     char* GetIcon(unsigned int portNumber);
 
     // LiveWrapper batch 2

@@ -251,7 +251,7 @@ unsigned int MPLiveEngine::GetVoiceDataSize(unsigned int consoleID)
     return 0;
 }
 
-// ea: 0x724990
+// ea: 0x724970
 bool MPLiveEngine::HandleInput(unsigned int port,
                                const XINPUT_STATE* controllerInput)
 {
@@ -261,7 +261,7 @@ bool MPLiveEngine::HandleInput(unsigned int port,
     return result;
 }
 
-// ea: 0x7243C0 - voice packet -> bdMessage type 0x26 to remote players
+// ea: 0x724370 - voice packet -> bdMessage type 0x26 to remote players
 void MPLiveEngine::HandleOutgoingVoice(unsigned int dwLocalPort,
                                        unsigned int dwSize,
                                        const unsigned char* pData)
@@ -385,7 +385,7 @@ void MPLiveEngine::LogonCallBack()
     gSaveGameData[0].savedStateIsValid = false;
 }
 
-// ea: 0x7247B0
+// ea: 0x7247C0
 bool MPLiveEngine::OccupyPrivateSlot()
 {
     unsigned int PrivateOpen = liveSession.PrivateOpen;
@@ -399,7 +399,7 @@ bool MPLiveEngine::OccupyPrivateSlot()
     return 1;
 }
 
-// ea: 0x724750
+// ea: 0x724760
 bool MPLiveEngine::OccupyPublicSlot()
 {
     unsigned int PublicOpen = liveSession.PublicOpen;
@@ -460,7 +460,7 @@ void MPLiveEngine::RunQuery(QueryInterface* newQuery)
     newQuery->Process();
 }
 
-// ea: 0x724660 - comm status -> bdMessage type 0x6F to others
+// ea: 0x724640 - comm status -> bdMessage type 0x6F to others
 void MPLiveEngine::SendCommunicatorStatus(UIX_VOICE_STATUS_TYPE commStatus)
 {
     if (MPUIInterface::InSession() && MPUIInterface::IsOnlineGame())
@@ -482,7 +482,7 @@ void MPLiveEngine::SendCommunicatorStatus(UIX_VOICE_STATUS_TYPE commStatus)
     }
 }
 
-// ea: 0x7244C0 - mute state -> bdMessage type 0x36 to the single target
+// ea: 0x7244A0 - mute state -> bdMessage type 0x36 to the single target
 void MPLiveEngine::SendMuteUpdate(XUID* muter, XUID* mutee, bool isMuted)
 {
     if (MultiplayerMgr::sInst != nullptr
