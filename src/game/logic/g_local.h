@@ -1428,10 +1428,19 @@ void Fire_Lead(Entity* ent, Entity* activator, int damage, int bUseAccuracy);  /
 void SetClientOrigin(Entity* ent, const float* origin);
 void SetClientViewAngle(Entity* ent, const float* angle);
 void BG_PlayerStateToEntityState(PlayerState* ps, EntityState* s, int snap);
+void BG_PlayerStateToEntityStateExtrapolate(PlayerState* ps, EntityState* s,
+                                            int time, int snap);  // game.o
+void IntermissionClientEndFrame(Entity* ent);  // g.o 0x456A00
+void SpectatorClientEndFrame(Entity* ent);     // g.o 0x456B00
 unsigned char BG_GetWeaponIndexForName(const char* pszName);
 void Sentient_GetEyePosition(sentient_s* pSelf, float* vEyePosOut);      // mp_actors.o
 void Sentient_GetEyePosition(sentient_s* pSelf, math::Position3& vEyePosOut);  // mp_actors.o
 void Sentient_GetOrigin(sentient_s* pSelf, float* vOriginOut);           // mp_actors.o
+void Sentient_UpdateActualChainPos(sentient_s* pSelf);                   // mp_actors.o
+void G_SetClientContents(Entity* pEnt);                                  // g.o
+void P_DamageFeedback(Entity* player);                                   // g.o
+int  G_GetNonPVSFriendlyInfo(const float* vPosition, int iOldInfo);      // g.o
+Entity* G_GetFriendlyIndexActor(int iFriendlyIndex);                     // g.o
 team_t Sentient_EnemyTeam(team_t eTeam);
 sentient_s* Sentient_FirstSentient(int iTeamFlags);
 sentient_s* Sentient_NextSentient(sentient_s* pPrevSentient, int iTeamFlags);

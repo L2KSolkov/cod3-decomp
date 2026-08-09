@@ -1128,3 +1128,129 @@ void Player_UpdateLookAtEntity(Entity* pEnt)
         pEnt->client->pLookatEnt = v11;
     }
 }
+
+// ea: 0x00491B60
+void ClientEndFrame(Entity* ent, int msec)
+{
+    Client* client = ent->client;
+    int playerState = client->pers.playerState;
+    if (playerState == 2)
+    {
+        IntermissionClientEndFrame(ent);
+        return;
+    }
+    if (playerState == 1)
+    {
+        SpectatorClientEndFrame(ent);
+        return;
+    }
+    if ((client->ps.eFlags & 0x6000) != 0)
+    {
+        if (client->ps.mViewLockedEntity.mHandle.mVal == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+            AeAssert::gCurrentLine = 1230;
+            AeAssert::gCurrentExpr = "ent->client->ps.mViewLockedEntity != TEntityHandle::NullHandle()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        Entity* v5 = HandleDbToEnt(ent->client->ps.mViewLockedEntity);
+        turret_think_client(v5);
+    }
+    ent->r.svFlags = ent->r.svFlags & 0xFFFFFFF6 | 8;
+    ent->takedamage = level.time >= ent->invulnerability_timeout;
+    ent->client->ps.pm_flags |= 0x80000;
+    G_SetClientContents(ent);
+    Client* v8 = ent->client;
+    if (v8->mVehicleNoWeaponTime != 0 && v8->mVehicleNoWeaponTime < level.time)
+    {
+        v8->mVehicleNoWeaponTime = 0;
+        G_DObjUpdate(ent, false);
+    }
+    G_VehicleClientThink(msec);
+    if (ent->client->ps.eFlags == 0 && ent->client->ps.eFlags == 0)
+    {
+        if (ent->tagInfo != nullptr)
+        {
+            ent->client->ps.pm_type = ent->client->ps.stats[0] > 0 ? 1 : 7;
+            G_LinkClient(ent);
+        }
+        else
+        {
+            if (ent->client->ps.pm_type == 1 || ent->client->ps.pm_type == 7)
+            {
+                --ent->client->ps.pm_type;
+            }
+            else
+            {
+                ent->client->ps.pm_time = 0;
+                ent->client->prevLinkAngles[0] = 0.0f;
+                ent->client->prevLinkAngles[1] = 0.0f;
+            }
+        }
+    }
+    if (ent->sentient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+        AeAssert::gCurrentLine = 1305;
+        AeAssert::gCurrentExpr = "ent->sentient";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Sentient_UpdateActualChainPos(ent->sentient);
+    if (ent->client->ps.commandTime != 0
+        && level.time > 500
+        && EntityManager::sInst->IsLocalPlayer(ent))
+    {
+        Player_UpdateLookAtEntity(ent);
+        Player_UpdateCursorHints(ent);
+    }
+    P_DamageFeedback(ent);
+    int eFlags = ent->s.eFlags;
+    if (level.time - ent->client->lastCmdTime <= 1000)
+        ent->s.eFlags = eFlags & 0xFFFFF7FF;
+    else
+        ent->s.eFlags = eFlags | 0x800;
+    ent->client->ps.stats[0] = ent->health;
+    ent->s.loopSound = 0;
+    BG_PlayerStateToEntityStateExtrapolate(&ent->client->ps, &ent->s,
+                                           ent->client->ps.commandTime, 1);
+    if (BG_GetInfoForWeapon(ent->client->ps.weapon)->type == 1 /* WEAPTYPE_GRENADE */)
+    {
+        int grenadeTimeLeft = ent->client->ps.grenadeTimeLeft;
+        if (grenadeTimeLeft != 0 && grenadeTimeLeft < 3000)
+            j_nullsub_17(ent, 0x10 /* AI_EV_GRENADE_COOK */, 0,
+                         (math::Position3*)&ent->client->ps.origin, 0.0f);
+    }
+    float viewPos[3];
+    viewPos[0] = ent->client->ps.origin.v.m128_f32[0];
+    viewPos[1] = ent->client->ps.origin.v.m128_f32[1];
+    viewPos[2] = ent->client->ps.origin.v.m128_f32[2]
+                 + ent->client->ps.viewHeightCurrent;
+    G_AddLean(ent, viewPos);
+    ent->client->ps.iCompassFriendInfo =
+        G_GetNonPVSFriendlyInfo(viewPos, ent->client->hLastCompassFriendlyInfoEnt.mHandle.mVal);
+    if (ent->client->ps.iCompassFriendInfo != 0)
+    {
+        Entity* actor = G_GetFriendlyIndexActor(ent->client->ps.iCompassFriendInfo & 0x3F);
+        ent->client->hLastCompassFriendlyInfoEnt.mHandle.mVal =
+            actor != nullptr ? actor->mHandle.mHandle.mVal : 0;
+    }
+    else
+    {
+        ent->client->hLastCompassFriendlyInfoEnt.mHandle.mVal = 0;
+    }
+    ent->client->ps.iCompassTankInfo = 0;
+    if (ent->client->ps.iCompassTankInfo != 0)
+    {
+        DbLinkedHandle<EntityHandleDb, Entity> result =
+            G_GetTankEntNum(ent->client->ps.iCompassTankInfo & 0x3F);
+        ent->client->hLastCompassTankInfoEnt.mHandle.mVal = result.mHandle.mVal;
+    }
+    else
+    {
+        ent->client->hLastCompassTankInfoEnt.mHandle.mVal = 0;
+    }
+}
