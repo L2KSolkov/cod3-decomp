@@ -265,6 +265,8 @@ public:
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     void Notify(HashString h, const int& d, Broc::entity* e, int* mod,
                 EHitLocation* hitloc, const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z
+    void Notify(HashString h, const int& d, const Broc::entity& e,
+                const int& mod, const int& hitloc);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11@Z
     void FreeDObj(bool deleteDObjs);              // ?FreeDObj@Entity@@QAEX_N@Z (game.o)
     void CreateDObj(DObjModel* models, unsigned short numModels,
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)

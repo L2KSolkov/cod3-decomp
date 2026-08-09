@@ -10,6 +10,15 @@ int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
 #include <math.h>
 #include <stdlib.h>
 
+static Entity* EntFromHandle(unsigned int h)
+{
+    unsigned int idx = h & 0xFFF;
+    if (idx < 0x540
+        && h >> 12 == EntityHandleDb::sInst.mElements[idx].mKey)
+        return EntityHandleDb::sInst.mElements[idx].mObject;
+    return nullptr;
+}
+
 // ea: 0x0044B130
 void Fill_Clip(PlayerState* ps, int weapon)
 {
@@ -1369,4 +1378,231 @@ Entity* fire_rifle_grenade(Entity* self, const float* target, int grenadeWPID,
         return v6;
     }
     return nullptr;
+}
+
+// ea: 0x004891C0
+void Weapon_Melee(Entity* ent, weaponParms* wp)
+{
+    int weapon = ent->s.weapon;
+    int damage = BG_GetInfoForWeapon(weapon)->iMeleeDamage;
+    if (level.time < ent->invulnerability_timeout)
+        ent->invulnerability_timeout = 0;
+    math::Position3 end;
+    end.v.m128_f32[0] = (wp->forward[0] * 72.0f) + wp->muzzleTrace[0];
+    end.v.m128_f32[1] = (wp->forward[1] * 72.0f) + wp->muzzleTrace[1];
+    end.v.m128_f32[2] = (wp->forward[2] * 72.0f) + wp->muzzleTrace[2];
+    end.v.m128_f32[3] = 0.0f;
+    collision_context_t context;
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    context.pass_entity1 = ent->mHandle;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0x2802033;
+    trace_t tr;
+    unsigned int hitHandle = 0;
+    if ((g_debugBullets.integer & 1) != 0 && ent->actor != nullptr
+        || g_debugBullets.integer >= 5)
+    {
+        Entity* v12 = G_TempEntity(wp->muzzleTrace, 214);
+        v12->s.origin2.v.m128_f32[0] = end.v.m128_f32[0];
+        v12->s.origin2.v.m128_f32[1] = end.v.m128_f32[1];
+        v12->s.origin2.v.m128_f32[2] = end.v.m128_f32[2];
+        if (ent->sentient != nullptr && ent->sentient->eTeam == TEAM_AXIS)
+            v12->s.dmgFlags = 1;
+    }
+    if (ent->client == nullptr)
+    {
+        math::Position3 start;
+        start.v.m128_f32[0] = wp->muzzleTrace[0];
+        start.v.m128_f32[1] = wp->muzzleTrace[1];
+        start.v.m128_f32[2] = wp->muzzleTrace[2];
+        start.v.m128_f32[3] = 0.0f;
+        g_LocationalTrace(&tr, &start, &end, &context, bulletPriorityMap, 0.0f);
+        hitHandle = tr.mEntity.mHandle.mVal;
+    }
+    else
+    {
+        TouchEntityData entities;
+        memset(&entities, 0, sizeof(entities));
+        entities.mins = ent->r.absmin;
+        entities.maxs = ent->r.absmax;
+        math::Position3 end;
+        end.v.m128_f32[0] = (wp->forward[0] * 45.0f) + wp->muzzleTrace[0];
+        end.v.m128_f32[1] = (wp->forward[1] * 45.0f) + wp->muzzleTrace[1];
+        end.v.m128_f32[2] = (wp->forward[2] * 45.0f) + wp->muzzleTrace[2];
+        end.v.m128_f32[3] = 0.0f;
+        math::Position3 boxMins;
+        boxMins.v.m128_f32[0] =
+            ent->r.absmin.v.m128_f32[0] + wp->forward[0] * 30.0f - 20.0f;
+        boxMins.v.m128_f32[1] =
+            ent->r.absmin.v.m128_f32[1] + wp->forward[1] * 30.0f - 20.0f;
+        boxMins.v.m128_f32[2] =
+            ent->r.absmin.v.m128_f32[2] + wp->forward[2] * 30.0f - 20.0f;
+        math::Position3 boxMaxs;
+        boxMaxs.v.m128_f32[0] =
+            ent->r.absmax.v.m128_f32[0] + wp->forward[0] * 30.0f + 20.0f;
+        boxMaxs.v.m128_f32[1] =
+            ent->r.absmax.v.m128_f32[1] + wp->forward[1] * 30.0f + 20.0f;
+        boxMaxs.v.m128_f32[2] =
+            ent->r.absmax.v.m128_f32[2] + wp->forward[2] * 30.0f + 20.0f;
+        int num = CM_AreaEntities(boxMins, boxMaxs, entities.touch, 128,
+                                  0x2000000);
+        Entity* mObject = nullptr;
+        int i;
+        for (i = 0; i < num; ++i)
+        {
+            Entity* ent2 = HandleDbToEnt(entities.touch[i]);
+            if (ent2 != nullptr
+                && (ent2->client != nullptr || ent2->actor != nullptr)
+                && ent != ent2)
+            {
+                math::Position3 closest;
+                closest.v.m128_f32[0] = end.v.m128_f32[0];
+                if (closest.v.m128_f32[0] < ent2->r.absmin.v.m128_f32[0])
+                    closest.v.m128_f32[0] = ent2->r.absmin.v.m128_f32[0];
+                if (closest.v.m128_f32[0] > ent2->r.absmax.v.m128_f32[0])
+                    closest.v.m128_f32[0] = ent2->r.absmax.v.m128_f32[0];
+                closest.v.m128_f32[1] = end.v.m128_f32[1];
+                if (closest.v.m128_f32[1] < ent2->r.absmin.v.m128_f32[1])
+                    closest.v.m128_f32[1] = ent2->r.absmin.v.m128_f32[1];
+                if (closest.v.m128_f32[1] > ent2->r.absmax.v.m128_f32[1])
+                    closest.v.m128_f32[1] = ent2->r.absmax.v.m128_f32[1];
+                closest.v.m128_f32[2] = end.v.m128_f32[2];
+                if (closest.v.m128_f32[2] < ent2->r.absmin.v.m128_f32[2])
+                    closest.v.m128_f32[2] = ent2->r.absmin.v.m128_f32[2];
+                if (closest.v.m128_f32[2] > ent2->r.absmax.v.m128_f32[2])
+                    closest.v.m128_f32[2] = ent2->r.absmax.v.m128_f32[2];
+                float dx = end.v.m128_f32[0] - closest.v.m128_f32[0];
+                float dy = end.v.m128_f32[1] - closest.v.m128_f32[1];
+                float dz = end.v.m128_f32[2] - closest.v.m128_f32[2];
+                if (radius_1 * radius_1 > dx * dx + dy * dy + dz * dz)
+                {
+                    mObject = ent2;
+                    break;
+                }
+            }
+        }
+        if (mObject != nullptr)
+        {
+            math::Position3 start;
+            start.v.m128_f32[0] = wp->muzzleTrace[0];
+            start.v.m128_f32[1] = wp->muzzleTrace[1];
+            start.v.m128_f32[2] = wp->muzzleTrace[2];
+            start.v.m128_f32[3] = 0.0f;
+            math::Position3 closest;
+            closest.v.m128_f32[0] = end.v.m128_f32[0];
+            if (closest.v.m128_f32[0] < mObject->r.absmin.v.m128_f32[0])
+                closest.v.m128_f32[0] = mObject->r.absmin.v.m128_f32[0];
+            if (closest.v.m128_f32[0] > mObject->r.absmax.v.m128_f32[0])
+                closest.v.m128_f32[0] = mObject->r.absmax.v.m128_f32[0];
+            closest.v.m128_f32[1] = end.v.m128_f32[1];
+            if (closest.v.m128_f32[1] < mObject->r.absmin.v.m128_f32[1])
+                closest.v.m128_f32[1] = mObject->r.absmin.v.m128_f32[1];
+            if (closest.v.m128_f32[1] > mObject->r.absmax.v.m128_f32[1])
+                closest.v.m128_f32[1] = mObject->r.absmax.v.m128_f32[1];
+            closest.v.m128_f32[2] = end.v.m128_f32[2];
+            if (closest.v.m128_f32[2] < mObject->r.absmin.v.m128_f32[2])
+                closest.v.m128_f32[2] = mObject->r.absmin.v.m128_f32[2];
+            if (closest.v.m128_f32[2] > mObject->r.absmax.v.m128_f32[2])
+                closest.v.m128_f32[2] = mObject->r.absmax.v.m128_f32[2];
+            math::Position3 zero;
+            zero.v = _mm_setzero_ps();
+            SV_Trace(&tr, &start, &zero, &zero, &closest, &context, 0, 1,
+                     bulletPriorityMap, 1, 0.0f);
+            hitHandle = tr.mEntity.mHandle.mVal;
+            if (hitHandle == mObject->mHandle.mHandle.mVal
+                || tr.fraction == 1.0f)
+            {
+                tr.fraction = 0.5f;
+                tr.endpos = closest;
+                hitHandle = mObject->mHandle.mHandle.mVal;
+            }
+        }
+        else
+        {
+            math::Position3 start;
+            start.v.m128_f32[0] = wp->muzzleTrace[0];
+            start.v.m128_f32[1] = wp->muzzleTrace[1];
+            start.v.m128_f32[2] = wp->muzzleTrace[2];
+            start.v.m128_f32[3] = 0.0f;
+            math::Position3 zero;
+            zero.v = _mm_setzero_ps();
+            SV_Trace(&tr, &start, &zero, &zero, &end, &context, 0, 1,
+                     bulletPriorityMap, 1, 0.0f);
+            hitHandle = tr.mEntity.mHandle.mVal;
+        }
+    }
+    Entity* hitEnt = EntFromHandle(hitHandle);
+    if (hitEnt == nullptr || hitEnt->actor == nullptr
+        || !Actor_IsMeleeInteractable(hitEnt->actor)
+        || !CheckActorInteraction(*hitEnt, "interacttest"))
+    {
+        math::Position3 muzzlePos;
+        muzzlePos.v.m128_f32[0] = wp->muzzleTrace[0];
+        muzzlePos.v.m128_f32[1] = wp->muzzleTrace[1];
+        muzzlePos.v.m128_f32[2] = wp->muzzleTrace[2];
+        muzzlePos.v.m128_f32[3] = 0.0f;
+        G_CheckHitTriggerDamage(ent, &muzzlePos, &tr.endpos, damage, 11);
+        if ((((unsigned char*)&tr.normal.v.m128_f32[2])[0] & 0x10) != 0
+            || tr.normal.v.m128_f32[1] == 1.0f)
+            goto melee_miss;
+        Entity* v58 = EntFromHandle(hitHandle);
+        if (v58 == nullptr)
+            goto melee_miss;
+        Entity* v40 =
+            (v58->client != nullptr || v58->actor != nullptr)
+                ? G_TempEntity(&tr.endpos.v.m128_f32[0], 194)
+                : G_TempEntity(&tr.endpos.v.m128_f32[0], 195);
+        v40->s.mOtherEntity.mHandle.mVal = hitHandle;
+        v40->s.eventParm = DirToByte(&tr.normal.v.m128_f32[0]);
+        v40->s.weapon = ent->s.weapon;
+        if (hitHandle == 0)
+            goto melee_miss;
+        if (v58->takedamage != 0)
+        {
+            if (v58->scr_vehicle == nullptr)
+            {
+                G_Damage(v58, ent, ent, wp->forward,
+                         &tr.endpos.v.m128_f32[0], damage, 0, 11,
+                         (hitLocation_t)(intptr_t)tr.shader, -1);
+            }
+            Weapon_MeleeHitShock(v58);
+            int surfaceType = (tr.surfaceFlags >> 20) & 0xFFFFFF1F;
+            math::Dir3 scratch;
+            const math::Dir3* dir =
+                native_to_cdl_dir3(&scratch, wp->forward);
+            MultiplayerMgr::sInst->MeleeHit(v58, ent, tr.endpos, *dir,
+                                            (unsigned char)surfaceType,
+                                            (short)damage, 11, (int)tr.shader);
+        }
+        else
+        {
+            math::Position3 zeroPos;
+            math::Dir3 zeroDir;
+            zeroPos.v = _mm_setzero_ps();
+            zeroDir.v = _mm_setzero_ps();
+            MultiplayerMgr::sInst->MeleeHit(nullptr, ent, zeroPos, zeroDir, 0,
+                                            0, 0, 0);
+            if (ent->sentient == nullptr || v58->sentient == nullptr
+                || ent->sentient->eTeam != v58->sentient->eTeam)
+            {
+                Broc::entity e;
+                e.___u0 = ent->mHandle.mHandle.mVal;
+                int d = 0;
+                int mod = 11;
+                int hitloc = 0;
+                v58->Notify(hash_const.damage, d, e, mod, hitloc);
+            }
+        }
+        return;
+    }
+    return;
+melee_miss:
+    math::Position3 zeroPos;
+    math::Dir3 zeroDir;
+    zeroPos.v = _mm_setzero_ps();
+    zeroDir.v = _mm_setzero_ps();
+    MultiplayerMgr::sInst->MeleeHit(nullptr, ent, zeroPos, zeroDir, 0, 0, 0,
+                                    0);
 }

@@ -269,6 +269,10 @@ struct MultiplayerMgr {
     void VehicleMantled(Entity* vehicle, Entity* killer);  // ?VehicleMantled@MultiplayerMgr@@QAEXPAVEntity@@0@Z
     void AnimEvent(int animEvent);  // ?AnimEvent@MultiplayerMgr@@QAEXH@Z
     bool IsHost();                  // ?IsHost@MultiplayerMgr@@QAE_NXZ
+    void MeleeHit(Entity* hitEntity, Entity* attackerEntity,
+                  const math::Position3& position, const math::Dir3& normal,
+                  unsigned char surfaceType, short damage, unsigned char mod,
+                  int hitLocation);  // ?MeleeHit@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EFEH@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 

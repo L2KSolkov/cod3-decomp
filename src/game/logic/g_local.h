@@ -1336,7 +1336,8 @@ struct weaponFileInfo_t {
     int     iMinDamagePercent;    // +0x5DC
     int     iDamageInnerRadius;   // +0x5E0
     int     iDamageOuterRadius;   // +0x5E4
-    uint8_t _pad1c[0x5F8 - 0x5E8];
+    int     iMeleeDamage;         // +0x5E8
+    uint8_t _pad1ec[0x5F8 - 0x5EC];
     int     iFireTime;            // +0x5F8
     uint8_t _pad2[0x634 - 0x5FC];
     int     iFuseTime;            // +0x634
@@ -1747,6 +1748,9 @@ int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,
 // missile/explosion helpers
 // ============================================================================
 unsigned char DirToByte(const float* dir);
+void Weapon_MeleeHitShock(Entity* traceEnt);                  // g.o 0x464AC0
+bool Actor_IsMeleeInteractable(const actor_s* pSelf);         // mp_actors.o
+int  CheckActorInteraction(Entity& ent, const char* interactionName);  // mp_actors.o
 int   G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
 int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
 void  j_nullsub_120(Entity* pGrenade);
@@ -2005,6 +2009,7 @@ extern vmCvar_t cg_redFlashTime;                 // cg.o
 extern int dword_F64018[4 * 1580];               // cg.o @ 0xF64018
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);  // cg.o
+extern float radius_1;                           // g.o @ 0xDD8268
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
