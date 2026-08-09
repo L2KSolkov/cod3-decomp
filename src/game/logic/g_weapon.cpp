@@ -518,3 +518,241 @@ bool Weapon_Revive_Test(Entity* ent, weaponParms* wp, Entity** traceEnt)
     ent->client->mMedicNobodyToReviveTime = level.time;
     return false;
 }
+
+// ea: 0x0047B500
+Entity* fire_rocket(Entity* self, float* start, float* dir, float lifetime)
+{
+    VectorNormalize(dir);
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(self->s.weapon);
+    TPakId mPakId = (TPakId)self->mPakId;
+    if (mPakId == PAK_ID_INVALID)
+        mPakId = CurPakId();
+    Entity* v6 = G_Spawn(mPakId);
+    v6->mClassName = str_const.rocket;
+    v6->mClassNameHash.mHash = HashString::CalcHash(v6->mClassName.GetBuff());
+    v6->think = THINK__G_ExplodeMissile;
+    v6->s.eType = 3;
+    v6->r.svFlags = 160;
+    v6->nextthink = (int)(lifetime * 1000.0f) + level.time;
+    v6->s.eFlags |= 0x8000;
+    v6->s.weapon = self->s.weapon;
+    v6->timestamp = level.time;
+    v6->r.mOwner.mHandle.mVal = self->mHandle.mHandle.mVal;
+    v6->parentHandle.mHandle.mVal = self->mHandle.mHandle.mVal;
+    v6->damage = InfoForWeapon->iDamage;
+    v6->methodOfDeath = 9;
+    v6->splashMethodOfDeath = 10;
+    v6->clipmask = 41951377;
+    v6->s.pos.trType = TR_LINEAR;
+    v6->s.pos.trTime = level.time - 50;
+    v6->s.pos.trBase[0] = start[0];
+    v6->s.pos.trBase[1] = start[1];
+    v6->s.pos.trBase[2] = start[2];
+    v6->s.pos.trDelta[0] = InfoForWeapon->iProjectileSpeed * dir[0];
+    v6->s.pos.trDelta[1] = InfoForWeapon->iProjectileSpeed * dir[1];
+    v6->s.pos.trDelta[2] = InfoForWeapon->iProjectileSpeed * dir[2];
+    if (IS_NAN(v6->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 1596;
+        AeAssert::gCurrentExpr = "!IS_NAN((bolt->r.currentOrigin)[0]) && !IS_NAN((bolt->r.currentOrigin)[1]) && !IS_NAN((bolt->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    v6->r.currentOrigin.v.m128_f32[0] = start[0];
+    v6->r.currentOrigin.v.m128_f32[1] = start[1];
+    v6->r.currentOrigin.v.m128_f32[2] = start[2];
+    vectoangles(dir, v6->r.currentAngles.v.m128_f32);
+    G_SetAngle(v6, &v6->r.currentAngles);
+    ValidatePakId((TPakId)v6->mModel.mPakId);
+    if (v6->mModel.mValue != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 1602;
+        AeAssert::gCurrentExpr = "!bolt->mModel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    TPakId v13 = (TPakId)v6->mPakId;
+    if (v13 == PAK_ID_INVALID)
+        v13 = CurPakId();
+    v6->mModel = XModelManager::sInst->GetXModel(v13, InfoForWeapon->szProjectileModel);
+    if (InfoForWeapon->type == 2 /* WEAPTYPE_PROJECTILE */)
+        v6->key = PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
+                                        0x40 /* kActionEI_MELEE_PLAYER_LOSING|kActionWEAPON_FIRE_3RD */).mVal;
+    if (self->scr_vehicle == nullptr)
+        goto label_26;
+    Entity* mObject = HandleDbToEnt(self->r.mOwner);
+    if (mObject == nullptr)
+        goto label_26;
+    if (mObject->sentient != nullptr)
+    {
+        HandleDbToEnt(self->r.mOwner)->sentient->lastShotTime = cgGlobal.time;
+        G_DObjUpdate(v6, false);
+        return v6;
+    }
+label_26:
+    if (self->sentient != nullptr)
+        self->sentient->lastShotTime = cgGlobal.time;
+    G_DObjUpdate(v6, false);
+    return v6;
+}
+
+// ea: 0x0047B0E0
+Entity* fire_mine(Entity* self, float* position, float* dir, int weapon)
+{
+    Entity* v6 = G_Spawn(CurPakId());
+    v6->think = THINK__Think_GeneralLink;
+    v6->nextthink = level.time + 10;
+    v6->s.eType = 3;
+    v6->r.svFlags = 160;
+    v6->s.weapon = weapon;
+    v6->r.mOwner.mHandle.mVal = self->mHandle.mHandle.mVal;
+    v6->parentHandle.mHandle.mVal = self->mHandle.mHandle.mVal;
+    v6->touch = 12;
+    v6->die = 6;
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(weapon);
+    float iTriggerRadius = (float)InfoForWeapon->iTriggerRadius;
+    v6->r.mins.v.m128_f32[0] = -iTriggerRadius;
+    v6->r.mins.v.m128_f32[1] = -iTriggerRadius;
+    v6->r.mins.v.m128_f32[2] = -iTriggerRadius;
+    v6->r.maxs.v.m128_f32[0] = iTriggerRadius;
+    v6->r.maxs.v.m128_f32[1] = iTriggerRadius;
+    v6->r.maxs.v.m128_f32[2] = iTriggerRadius;
+    v6->mClassName = str_const.mine;
+    v6->mClassNameHash.mHash = HashString::CalcHash(v6->mClassName.GetBuff());
+    v6->damage = InfoForWeapon->iDamage;
+    v6->methodOfDeath = 5;
+    v6->splashMethodOfDeath = 6;
+    v6->s.eFlags = (InfoForWeapon->bNoTumble != 0 ? 0x20000000 : 0) | v6->s.eFlags;
+    v6->clipmask = 41951377;
+    v6->r.contents = 1073741832;
+    v6->takedamage = 1;
+    v6->health = 20;
+    v6->s.pos.trType = TR_STATIONARY;
+    v6->s.pos.trTime = level.time;
+    v6->s.pos.trBase[0] = position[0];
+    v6->s.pos.trBase[1] = position[1];
+    v6->s.pos.trBase[2] = position[2];
+    v6->s.apos.trType = TR_STATIONARY;
+    v6->timestamp = level.time;
+    v6->s.apos.trTime = level.time;
+    vectoangles(dir, v6->r.currentAngles.v.m128_f32);
+    v6->r.currentAngles.v.m128_f32[0] += 90.0f;
+    G_SetAngle(v6, &v6->r.currentAngles);
+    if (IS_NAN(v6->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(v6->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 1533;
+        AeAssert::gCurrentExpr = "!IS_NAN((bolt->r.currentOrigin)[0]) && !IS_NAN((bolt->r.currentOrigin)[1]) && !IS_NAN((bolt->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    v6->r.currentOrigin.v.m128_f32[0] = position[0];
+    v6->r.currentOrigin.v.m128_f32[1] = position[1];
+    v6->r.currentOrigin.v.m128_f32[2] = position[2];
+    v6->r.currentAngles.v.m128_f32[0] = v6->s.apos.trBase[0];
+    v6->r.currentAngles.v.m128_f32[1] = v6->s.apos.trBase[1];
+    v6->r.currentAngles.v.m128_f32[2] = v6->s.apos.trBase[2];
+    ValidatePakId((TPakId)v6->mModel.mPakId);
+    if (v6->mModel.mValue != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 1537;
+        AeAssert::gCurrentExpr = "!bolt->mModel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    TPakId v16 = (TPakId)v6->mPakId;
+    if (v16 == PAK_ID_INVALID)
+        v16 = CurPakId();
+    v6->mModel = XModelManager::sInst->GetXModel(v16, InfoForWeapon->szProjectileModel);
+    ValidatePakId((TPakId)v6->mModel.mPakId);
+    if (v6->mModel.mValue == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+        AeAssert::gCurrentLine = 1539;
+        AeAssert::gCurrentExpr = "bolt->mModel";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    G_DObjUpdate(v6, false);
+    g_LinkEntity(v6);
+    return v6;
+}
+
+// ea: 0x0047B8A0
+Entity* fire_artillery(Entity* i_Self, float* i_StrikePoint, int i_Delay)
+{
+    int weapon = i_Self->s.weapon;
+    float dir[3] = { 0.0f, 0.0f, -1.0f };
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(weapon);
+    TPakId mPakId = (TPakId)i_Self->mPakId;
+    if (mPakId == PAK_ID_INVALID)
+        mPakId = CurPakId();
+    Entity* v7 = G_Spawn(mPakId);
+    v7->mClassName = str_const.rocket;
+    v7->mClassNameHash.mHash = HashString::CalcHash(v7->mClassName.GetBuff());
+    v7->think = THINK__G_LaunchMissile;
+    v7->s.eType = 3;
+    v7->r.svFlags = 160;
+    v7->nextthink = (level.time - InfoForWeapon->iProjectileDelay) + i_Delay + 250;
+    v7->s.eFlags |= 0x8000;
+    v7->s.weapon = i_Self->s.weapon;
+    v7->r.mOwner.mHandle.mVal = i_Self->mHandle.mHandle.mVal;
+    v7->parentHandle.mHandle.mVal = i_Self->mHandle.mHandle.mVal;
+    v7->damage = InfoForWeapon->iDamage;
+    v7->methodOfDeath = 17;
+    v7->splashMethodOfDeath = 18;
+    v7->clipmask = 41951377;
+    v7->s.pos.trType = TR_STATIONARY;
+    v7->s.pos.trBase[0] = i_StrikePoint[0];
+    v7->s.pos.trBase[1] = i_StrikePoint[1];
+    v7->s.pos.trBase[2] = i_StrikePoint[2];
+    v7->s.pos.trDelta[0] = InfoForWeapon->iProjectileSpeed * dir[0];
+    v7->s.pos.trDelta[1] = InfoForWeapon->iProjectileSpeed * dir[1];
+    v7->s.pos.trDelta[2] = InfoForWeapon->iProjectileSpeed * dir[2];
+    v7->r.currentOrigin.v.m128_f32[0] = i_StrikePoint[0];
+    v7->r.currentOrigin.v.m128_f32[1] = i_StrikePoint[1];
+    v7->r.currentOrigin.v.m128_f32[2] = i_StrikePoint[2];
+    vectoangles(dir, v7->r.currentAngles.v.m128_f32);
+    G_SetAngle(v7, &v7->r.currentAngles);
+    if (InfoForWeapon->szProjectileModel[0] != 0)
+    {
+        ValidatePakId((TPakId)v7->mModel.mPakId);
+        if (v7->mModel.mValue != nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+            AeAssert::gCurrentLine = 1682;
+            AeAssert::gCurrentExpr = "!bolt->mModel";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        TPakId v14 = (TPakId)v7->mPakId;
+        if (v14 == PAK_ID_INVALID)
+            v14 = CurPakId();
+        v7->mModel = XModelManager::sInst->GetXModel(v14, InfoForWeapon->szProjectileModel);
+        ValidatePakId((TPakId)v7->mModel.mPakId);
+        if (v7->mModel.mValue == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_missile.cpp";
+            AeAssert::gCurrentLine = 1684;
+            AeAssert::gCurrentExpr = "bolt->mModel";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+    }
+    G_DObjUpdate(v7, false);
+    return v7;
+}

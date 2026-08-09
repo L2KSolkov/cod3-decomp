@@ -526,7 +526,9 @@ struct str_const_t {
     Broc::string active;              // +0x000
     uint8_t    _pad[0xBC - 0x4];      // +0x004
     Broc::string info_player_deathmatch;  // +0xBC
-    uint8_t    _padC0[0x148 - 0xC0];  // +0xC0
+    uint8_t    _padC0[0x13C - 0xC0];  // +0xC0
+    Broc::string rocket;              // +0x13C
+    uint8_t    _pad140[0x148 - 0x140];
     Broc::string sound_blend;         // +0x148
     uint8_t    _pad14C[0x168 - 0x14C];
     Broc::string spawn_intermission;  // +0x168
@@ -553,7 +555,9 @@ struct str_const_t {
     Broc::string tempEntity;          // +0x1FC
     uint8_t    _pad200[0x23C - 0x200];
     Broc::string worldspawn;          // +0x23C
-    uint8_t    _pad240[0x2B4 - 0x240];
+    uint8_t    _pad240[0x29C - 0x240];
+    Broc::string mine;                // +0x29C
+    uint8_t    _pad2A0[0x2B4 - 0x2A0];
 };
 static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
 static_assert(offsetof(str_const_t, worldspawn) == 0x23C,
@@ -1177,7 +1181,7 @@ struct weaponFileInfo_t {
     int     bTwoHanded;           // +0x6E8
     uint8_t _pad4[0x704 - 0x6EC];
     int     bNoBounce;            // +0x704
-    uint8_t _pad4b[0x70C - 0x708];
+    int     bNoTumble;            // +0x708
     int     bCanMantle;           // +0x70C
     uint8_t _pad70[0x764 - 0x710];
     int     iAltWeaponIndex;      // +0x764
@@ -1189,7 +1193,7 @@ struct weaponFileInfo_t {
     int     iExplosionOuterDamage;// +0x780
     int     iProjectileSpeed;     // +0x784
     int     iProjectileSpeedUp;   // +0x788
-    uint8_t _pad6[0x790 - 0x78C];
+    char*   szProjectileModel;    // +0x78C
     uint8_t projExplosion;        // +0x790
     uint8_t _pad7[0x79C - 0x791];
     int     bProjImpactExplode;   // +0x79C
@@ -1524,8 +1528,17 @@ extern int damageForceReductionThreshold;  // 0xDD7F40?
 extern int damageForceMax;
 extern int dword_F63D1C[1580 * 802];
 struct cgGlobal_t {
-    uint8_t _pad0[0x04];
-    int teamGame;   // +0x04 (verified vs disasm)
+    int  frametime;  // +0x00
+    int  time;       // +0x04
+    int  oldTime;    // +0x08
+    int  cubemapShot; // +0x0C
+    int  cubemapSize; // +0x10
+    bool teamGame;   // +0x14 (verified vs disasm)
+    bool showScore;  // +0x15
+    uint8_t _pad16[0x18 - 0x16];
+    float gameTime;  // +0x18
+    float gameTimeStartTime;  // +0x1C
+    int   teamScores[5];      // +0x20
 };
 extern cgGlobal_t cgGlobal;   // 0xF5FE30
 float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker, Entity* pInflictor,
