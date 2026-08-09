@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // cg_draw.cpp - 2D draw helpers (cg.o cg_draw.cpp)
 // ============================================================================
 
@@ -59,209 +59,165 @@ struct vmCvar_t {
 };
 extern vmCvar_t cg_skybox;
 
-// ea: 0x0068BA80
-float CG_DrawObjective(const void* pObjective, float a2, float* a3, float& a4,
-                       float& a5, float& a6, float& a7, float& a8, float& a9,
-                       bool a10)
-{
-    return 0.0f;
-}
+struct cgGlobal_t {
+    int frametime;    // +0x00
+    int time;         // +0x04
+    int oldTime;      // +0x08
+    int cubemapShot;  // +0x0C
+    int cubemapSize;  // +0x10
+};
+extern cgGlobal_t cgGlobal;
 
-static int s_foginited;
+extern float gTracerDistScale;   // 0x00DF9DA8
+extern float tr_viewParms_zFar;  // 0x00F74F60
+extern void* auxCreateScratchMesh(int flags, int num);
+extern void* nglListAlloc(unsigned int bytes, unsigned int alignment);
+extern void* cdScratchMaterial_Ctor(void* self, void* tex,
+                                    unsigned int blendMode, int mapflags,
+                                    bool heatHaze);
+extern void* nglCreateScratchSection(int prim, int nIndices, int nVertices,
+                                     void* vertexFormat);
+extern void nglAddMeshSection(void* mesh, void* section, void* material,
+                              int flags);
+extern void* nglLockSectionIndices(void* section);
+extern void* nglLockSectionVertices(void* section);
+extern void nglListAddMesh(void* mesh, const math::Mat43* localToWorld,
+                           void* meshParams, void* shaderParams, void* fn);
+extern void* cdscratch_vertex_format;
+extern void* cgsGlobal_media_tracerShader;
+extern int dword_F6355C[4 * 1580];
+extern int dword_F62948[4 * 1580];
+extern int dword_F640A4[4 * 1580];
+extern int dword_F64158[4 * 1580];
+extern int dword_F64164[4 * 1580];
+extern int dword_F64168[4 * 1580];
+extern int dword_F6416C[4 * 1580];
+extern int dword_F64174[4 * 1580];
+extern int dword_F6418C[4 * 1580];
+extern int dword_F64190[4 * 1580];
+extern int dword_F63554[4 * 1580];
+extern float dword_F63CF0[4 * 1580];
+extern int dword_F63CA4[4 * 1580];
+extern int dword_F63CA8[4 * 1580];
+extern float dword_F63C60[4 * 1580];
+extern float dword_F63C64[4 * 1580];
+extern void* dword_F63B8C[4 * 1580];
+extern float dword_F6403C[4 * 1580];
+extern float dword_F64040[4 * 1580];
+extern float dword_F64044[4 * 1580];
+extern float dword_F64048[4 * 1580];
+extern float dword_F6404C[4 * 1580];
+extern int cg_crosshairAlpha;
+extern int cg_crosshairDynamic;
+extern int cg_drawGun;
+extern vmCvar_t cg_draw2D;
+extern vmCvar_t cg_drawStatus;
+extern vmCvar_t cg_norender;
+extern vmCvar_t cg_thirdPerson;
+extern bool gStillDrawMenus;
+extern int gRenderCG_2D;
+extern int gRenderViewWeapon;
+extern bool gFirstCamera;
+extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;
+extern float move_back_distance;
+extern int curListener;
+extern void* gSaveGameData;
+extern void* g_femanager;
+extern void* nglBuildScene_RenderTarget;
+extern void* SoundDevice_sInst;
+extern void* gCurrentCamera;
+extern void* gCamera;
+extern void Camera_Update(void* self);
+extern void Camera_UpdatePostViewModels(void* self);
+extern int LocalClient_FirstLocalClientIndex();
+extern int G_GetServerSnapTime();
+extern void CG_UpdateCvars();
+extern void CG_ProcessSnapshots();
+extern void CG_PredictPlayerState_Internal();
+extern void CG_UpdateShellShock(const void* parms, int start, int duration);
+extern void CG_CalcCubemapViewValues();
+extern void CG_CalcVrect(const void* window);
+extern void CG_CalcFov();
+extern void CG_ShakeCamera(int client);
+extern void CG_PerturbCamera();
+extern void CG_AddViewWeapon(PlayerState* ps);
+extern void CL_SetUserCmdValue(int userCmdValue, int holdableValue,
+                               float sensitivityScale);
+extern void CL_SetUserCmdAimValues(float gunPitch, float gunYaw,
+                                   float gunXOfs, float gunYOfs,
+                                   float gunZOfs);
+extern void R_ToggleSmpFrame();
+extern void CG_DrawViewportFrames(int numViewports);
+extern void SoundDevice_SetListenerVectors(void* self, int listener,
+                                           const float* position,
+                                           const float* front,
+                                           const float* up);
+extern int SoundDevice_GetNumberOfListeners(void* self);
+extern void subtitle_manager_render();
+extern bool FEManager_InGameMenusActive(void* self, int client);
+extern void FEManager_DrawIGO(void* self, int client);
+extern void* Cvar_Get(const char* name, const char* value, int flags);
+extern void CG_DrawFlashDamage();
+extern void CG_DrawDamageDirectionIndicators();
+extern void CG_DrawPlayerLowHealthOverlay();
+extern void CG_DrawCenterString();
+extern void CG_ScreenFade();
+extern int GamePause_IsGamePaused(int client);
+extern Entity* GetPlayer(int idx);
+extern bool IsPlayerFullySeatedInVehicle(Entity* player);
+extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
+extern int BG_GetWeaponForInfo(void* pWeapInfo);
+extern void CG_DrawWeapReticle();
+extern void CG_CalcCrosshairColor(float alpha, int* color);
+extern void CG_CalcCrosshairPosition(float* pfX, float* pfY);
+extern void CG_DrawReticleHitIndicator(void* weapDef, int weapIndex,
+                                       int* baseColor, float centerX,
+                                       float centerY, float transScale);
+extern void CG_TransitionToAds(void* weapDef, float posLerp,
+                               float* transScale, float* transShift);
+extern void CG_DrawAdsAimIndicator(void* weapDef, int weapIndex, int* color,
+                                   float centerX, float centerY,
+                                   float transScale);
+extern void CG_DrawReticleName(int* color);
+extern void CG_DrawReticleCenter(void* weapDef, int weapIndex, int* color,
+                                 float centerX, float centerY,
+                                 float transScale);
+extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
+                                float centerX, float centerY,
+                                float transScale);
+extern bool CG_AllowedToDrawCrosshair();
+extern int CG_ForceDebugCrosshair();
+extern void nglListBeginScene(int paramSource);
+extern void nglSetClearFlags(unsigned int flags);
+extern void nglSetZTestEnable(bool enable);
+extern void nglSetZWriteEnable(bool enable);
+extern void nglListEndScene();
+extern void nglSetView(float x1, float y1, float x2, float y2);
+extern void nglSetScissor(float x1, float y1, float x2, float y2);
+extern void CG_DrawCrosshair(float transScale);
+extern void CG_Draw2D(float a2);
+extern void CG_DrawActive(float a1);
+extern char cgsGlobal_shellshockParms[0x7C];
+extern void View_SetViewportClipping(int clientIndex);
+extern int View_lNumViewports;
+extern int cg_aWeaponSelect[4];
+extern int* cg_clientFrame;
+extern void FastSinCos(float radians, float* psin, float* pcos);
+extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
+extern float g_TestForward[4];
+extern void InspectorManager_Render(void* self);
+extern void* g_inspectorManager;
+extern int dword_F62964[4 * 1580];
+extern void CheckAndRunOverHeatBlur();
+extern void trap_R_ClearScene();
+extern float angle[4 * 395];
+extern float dword_F63C80[4 * 1580];
+extern float dword_F63C84[4 * 1580];
+extern float dword_F63C88[4 * 1580];
+extern float dword_F63C98[4 * 1580];
+extern float dword_F63C9C[4 * 1580];
+extern float dword_F63CA0[4 * 1580];
 
-// ea: 0x0068DBB0
-void CG_DrawSkyBoxPortal()
-{
-    const char* ConfigString = CL_GetConfigStringC(10);
-    const char* x = ConfigString;
-    if (ConfigString != nullptr)
-    {
-        if (strlen(ConfigString) != 0)
-        {
-            int v2 = 1580 * currCl;
-            char v32[108];
-            memcpy(v32, &dword_F63C50[1580 * currCl], 0x60);
-            if (cg_skybox.integer == 0)
-            {
-                int v30 = dword_F63CA8[1580 * currCl] & 0xFFFFFFE7 | 8;
-            done:
-                int time = cgGlobal_time;
-                dword_F63CA8[v2] = v30;
-                dword_F63CA4[v2] = time;
-                trap_R_RenderScene(&dword_F63C50[v2]);
-                memcpy(&dword_F63C50[1580 * currCl], v32, 96);
-                return;
-            }
-            CG_ASSERT("Dead code reached", "c:\\cod\\code\\game\\cg_view.cpp",
-                      1542);
-            const char* v3 = Com_ParseOnLine(&x);
-            const char* v4 = v3;
-            if (v3 == nullptr || *v3 == 0)
-                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                         "configstring\n");
-            dword_F63C70[1580 * currCl] = (float)atof(v4);
-            const char* v6 = Com_ParseOnLine(&x);
-            const char* v7 = v6;
-            if (v6 == nullptr || *v6 == 0)
-                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                         "configstring\n");
-            dword_F63C74[1580 * currCl] = (float)atof(v7);
-            const char* v9 = Com_ParseOnLine(&x);
-            const char* v10 = v9;
-            if (v9 == nullptr || *v9 == 0)
-                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                         "configstring\n");
-            dword_F63C78[1580 * currCl] = (float)atof(v10);
-            const char* v12 = Com_ParseOnLine(&x);
-            const char* v13 = v12;
-            if (v12 == nullptr || *v12 == 0)
-                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                         "configstring\n");
-            atoi(v13);
-            const char* v14 = Com_ParseOnLine(&x);
-            if (v14 == nullptr || *v14 == 0)
-            {
-                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                         "configstring.  No fog state\n");
-                goto label_44;
-            }
-            if (atoi(v14) != 0)
-            {
-                const char* v15 = Com_ParseOnLine(&x);
-                const char* v16 = v15;
-                if (v15 == nullptr || *v15 == 0)
-                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                             "configstring.  No fog[0]\n");
-                *(float*)&v32[100] = (float)atof(v16);
-                const char* v17 = Com_ParseOnLine(&x);
-                const char* v18 = v17;
-                if (v17 == nullptr || *v17 == 0)
-                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                             "configstring.  No fog[1]\n");
-                *(float*)&v32[104] = (float)atof(v18);
-                const char* v19 = Com_ParseOnLine(&x);
-                const char* v20 = v19;
-                if (v19 == nullptr || *v19 == 0)
-                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
-                             "configstring.  No fog[2]\n");
-                float v33 = (float)atof(v20);
-                const char* v21 = Com_ParseOnLine(&x);
-                int v22 = (v21 != nullptr && *v21 != 0) ? atoi(v21) : 0;
-                const char* v23 = Com_ParseOnLine(&x);
-                int v24 = (v23 != nullptr && *v23 != 0) ? atoi(v23) : 0;
-                re.SetFog(2, v22, v24, *(float*)&v32[100], *(float*)&v32[104],
-                          v33, 1.1f);
-            }
-            else
-            {
-                if (s_foginited != 0)
-                {
-                label_44:
-                    float fogColor3 = CG_GetViewFov();
-                    v2 = 1580 * currCl;
-                    float v35 = dword_F63C58[1580 * currCl]
-                                / tanf(fogColor3 * 0.0087266462f);
-                    float v36 = dword_F63C5C[1580 * currCl];
-                    float fogColor2 = fabsf(v35);
-                    float fov_x = fabsf(v36);
-                    float v26;
-                    if (0.0f == fov_x + fogColor2)
-                    {
-                        v26 = 0.0f;
-                    }
-                    else
-                    {
-                        float invLen = 1.0f
-                                       / sqrtf(v36 * v36 + v35 * v35);
-                        if (fov_x <= fogColor2)
-                        {
-                            float v29 = invLen * fov_x;
-                            fov_x = v29;
-                            if (v29 >= 0.5f)
-                            {
-                                fov_x = sqrtf(fabsf((1.0f - fov_x) * 0.5f));
-                                float x6 = (fov_x * fov_x) * (fov_x * fov_x)
-                                           * (fov_x * fov_x);
-                                float x4 = (fov_x * fov_x) * (fov_x * fov_x);
-                                float x3 = (fov_x * fov_x) * fov_x;
-                                v26 = x6 * -0.1079625f - x4 * 0.15000001f
-                                      - x3 * 0.33333331f - fov_x * 2.0f
-                                      + 1.570796f;
-                            }
-                            else
-                            {
-                                v26 = (((((((v29 * v29) * v29) * (v29 * v29))
-                                          * (v29 * v29))
-                                         * 0.053981241f)
-                                        + ((((v29 * v29) * v29) * (v29 * v29))
-                                           * 0.075000003f))
-                                       + (((v29 * v29) * v29) * 0.1666667f))
-                                      + v29;
-                            }
-                        }
-                        else
-                        {
-                            fov_x = invLen * fogColor2;
-                            float v28;
-                            if ((invLen * fogColor2) >= 0.5f)
-                            {
-                                fov_x = sqrtf(fabsf((1.0f - fov_x) * 0.5f));
-                                float x6 = (fov_x * fov_x) * (fov_x * fov_x)
-                                           * (fov_x * fov_x);
-                                float x4 = (fov_x * fov_x) * (fov_x * fov_x);
-                                float x3 = (fov_x * fov_x) * fov_x;
-                                v28 = x6 * -0.1079625f - x4 * 0.15000001f
-                                      - x3 * 0.33333331f - fov_x * 2.0f
-                                      + 1.570796f;
-                            }
-                            else
-                            {
-                                float v27 = invLen * fogColor2;
-                                v28 = (((((((v27 * v27) * v27) * (v27 * v27))
-                                          * (v27 * v27))
-                                         * 0.053981241f)
-                                        + ((((v27 * v27) * v27) * (v27 * v27))
-                                           * 0.075000003f))
-                                       + (((v27 * v27) * v27) * 0.1666667f))
-                                      + v27;
-                            }
-                            v26 = 1.5707964f - v28;
-                        }
-                        if (v35 < 0.0f)
-                            v26 = 3.1415927f - v26;
-                        if (v36 < 0.0f)
-                            v26 = 0.0f - v26;
-                    }
-                    dword_F63C60[1580 * currCl] = *(int*)&fogColor3;
-                    *(float*)&dword_F63C64[v2] = v26 * 114.59155f;
-                    int v30 = dword_F63CA8[v2] | 0x18;
-                    goto done;
-                }
-                re.SetFog(2, 0, 0, 0.0f, 0.0f, 0.0f, 0.0f);
-            }
-            s_foginited = 1;
-            goto label_44;
-        }
-    }
-}
-
-// ea: 0x0069D150
-void CG_DrawHudElems()
-{
-    void* elems[16];
-    int v0 = 0;
-    for (int i = 0; i < 16; ++i)
-    {
-        if (g_hudelems[i].elem.type != 0 /* HE_TYPE_FREE */)
-            elems[v0++] = &g_hudelems[i];
-    }
-    qsort(elems, v0, 4, compare_hudelems);
-    if (v0 != 0)
-    {
-        for (int i = 0; i < v0; ++i)
-            CG_DrawSingleHudElem(elems[i]);
-    }
-}
 
 // ea: 0x00687CB0
 float CG_DrawTimer(float y)
@@ -977,5 +933,794 @@ void CG_DrawTurretCrossHair()
                 }
             }
         }
+    }
+}
+// ea: 0x0068BA80
+float CG_DrawObjective(const void* pObjective, float a2, float* a3, float& a4,
+                       float& a5, float& a6, float& a7, float& a8, float& a9,
+                       bool a10)
+{
+    return 0.0f;
+}
+
+static int s_foginited;
+
+// ea: 0x0068DBB0
+void CG_DrawSkyBoxPortal()
+{
+    const char* ConfigString = CL_GetConfigStringC(10);
+    const char* x = ConfigString;
+    if (ConfigString != nullptr)
+    {
+        if (strlen(ConfigString) != 0)
+        {
+            int v2 = 1580 * currCl;
+            char v32[108];
+            memcpy(v32, &dword_F63C50[1580 * currCl], 0x60);
+            if (cg_skybox.integer == 0)
+            {
+                int v30 = dword_F63CA8[1580 * currCl] & 0xFFFFFFE7 | 8;
+            done:
+                int time = cgGlobal_time;
+                dword_F63CA8[v2] = v30;
+                dword_F63CA4[v2] = time;
+                trap_R_RenderScene(&dword_F63C50[v2]);
+                memcpy(&dword_F63C50[1580 * currCl], v32, 96);
+                return;
+            }
+            CG_ASSERT("Dead code reached", "c:\\cod\\code\\game\\cg_view.cpp",
+                      1542);
+            const char* v3 = Com_ParseOnLine(&x);
+            const char* v4 = v3;
+            if (v3 == nullptr || *v3 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            dword_F63C70[1580 * currCl] = (float)atof(v4);
+            const char* v6 = Com_ParseOnLine(&x);
+            const char* v7 = v6;
+            if (v6 == nullptr || *v6 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            dword_F63C74[1580 * currCl] = (float)atof(v7);
+            const char* v9 = Com_ParseOnLine(&x);
+            const char* v10 = v9;
+            if (v9 == nullptr || *v9 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            dword_F63C78[1580 * currCl] = (float)atof(v10);
+            const char* v12 = Com_ParseOnLine(&x);
+            const char* v13 = v12;
+            if (v12 == nullptr || *v12 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            atoi(v13);
+            const char* v14 = Com_ParseOnLine(&x);
+            if (v14 == nullptr || *v14 == 0)
+            {
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring.  No fog state\n");
+                goto label_44;
+            }
+            if (atoi(v14) != 0)
+            {
+                const char* v15 = Com_ParseOnLine(&x);
+                const char* v16 = v15;
+                if (v15 == nullptr || *v15 == 0)
+                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                             "configstring.  No fog[0]\n");
+                *(float*)&v32[100] = (float)atof(v16);
+                const char* v17 = Com_ParseOnLine(&x);
+                const char* v18 = v17;
+                if (v17 == nullptr || *v17 == 0)
+                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                             "configstring.  No fog[1]\n");
+                *(float*)&v32[104] = (float)atof(v18);
+                const char* v19 = Com_ParseOnLine(&x);
+                const char* v20 = v19;
+                if (v19 == nullptr || *v19 == 0)
+                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                             "configstring.  No fog[2]\n");
+                float v33 = (float)atof(v20);
+                const char* v21 = Com_ParseOnLine(&x);
+                int v22 = (v21 != nullptr && *v21 != 0) ? atoi(v21) : 0;
+                const char* v23 = Com_ParseOnLine(&x);
+                int v24 = (v23 != nullptr && *v23 != 0) ? atoi(v23) : 0;
+                re.SetFog(2, v22, v24, *(float*)&v32[100], *(float*)&v32[104],
+                          v33, 1.1f);
+            }
+            else
+            {
+                if (s_foginited != 0)
+                {
+                label_44:
+                    float fogColor3 = CG_GetViewFov();
+                    v2 = 1580 * currCl;
+                    float v35 = dword_F63C58[1580 * currCl]
+                                / tanf(fogColor3 * 0.0087266462f);
+                    float v36 = dword_F63C5C[1580 * currCl];
+                    float fogColor2 = fabsf(v35);
+                    float fov_x = fabsf(v36);
+                    float v26;
+                    if (0.0f == fov_x + fogColor2)
+                    {
+                        v26 = 0.0f;
+                    }
+                    else
+                    {
+                        float invLen = 1.0f
+                                       / sqrtf(v36 * v36 + v35 * v35);
+                        if (fov_x <= fogColor2)
+                        {
+                            float v29 = invLen * fov_x;
+                            fov_x = v29;
+                            if (v29 >= 0.5f)
+                            {
+                                fov_x = sqrtf(fabsf((1.0f - fov_x) * 0.5f));
+                                float x6 = (fov_x * fov_x) * (fov_x * fov_x)
+                                           * (fov_x * fov_x);
+                                float x4 = (fov_x * fov_x) * (fov_x * fov_x);
+                                float x3 = (fov_x * fov_x) * fov_x;
+                                v26 = x6 * -0.1079625f - x4 * 0.15000001f
+                                      - x3 * 0.33333331f - fov_x * 2.0f
+                                      + 1.570796f;
+                            }
+                            else
+                            {
+                                v26 = (((((((v29 * v29) * v29) * (v29 * v29))
+                                          * (v29 * v29))
+                                         * 0.053981241f)
+                                        + ((((v29 * v29) * v29) * (v29 * v29))
+                                           * 0.075000003f))
+                                       + (((v29 * v29) * v29) * 0.1666667f))
+                                      + v29;
+                            }
+                        }
+                        else
+                        {
+                            fov_x = invLen * fogColor2;
+                            float v28;
+                            if ((invLen * fogColor2) >= 0.5f)
+                            {
+                                fov_x = sqrtf(fabsf((1.0f - fov_x) * 0.5f));
+                                float x6 = (fov_x * fov_x) * (fov_x * fov_x)
+                                           * (fov_x * fov_x);
+                                float x4 = (fov_x * fov_x) * (fov_x * fov_x);
+                                float x3 = (fov_x * fov_x) * fov_x;
+                                v28 = x6 * -0.1079625f - x4 * 0.15000001f
+                                      - x3 * 0.33333331f - fov_x * 2.0f
+                                      + 1.570796f;
+                            }
+                            else
+                            {
+                                float v27 = invLen * fogColor2;
+                                v28 = (((((((v27 * v27) * v27) * (v27 * v27))
+                                          * (v27 * v27))
+                                         * 0.053981241f)
+                                        + ((((v27 * v27) * v27) * (v27 * v27))
+                                           * 0.075000003f))
+                                       + (((v27 * v27) * v27) * 0.1666667f))
+                                      + v27;
+                            }
+                            v26 = 1.5707964f - v28;
+                        }
+                        if (v35 < 0.0f)
+                            v26 = 3.1415927f - v26;
+                        if (v36 < 0.0f)
+                            v26 = 0.0f - v26;
+                    }
+                    dword_F63C60[1580 * currCl] = *(int*)&fogColor3;
+                    *(float*)&dword_F63C64[v2] = v26 * 114.59155f;
+                    int v30 = dword_F63CA8[v2] | 0x18;
+                    goto done;
+                }
+                re.SetFog(2, 0, 0, 0.0f, 0.0f, 0.0f, 0.0f);
+            }
+            s_foginited = 1;
+            goto label_44;
+        }
+    }
+}
+
+// ea: 0x0069D150
+void CG_DrawHudElems()
+{
+    void* elems[16];
+    int v0 = 0;
+    for (int i = 0; i < 16; ++i)
+    {
+        if (g_hudelems[i].elem.type != 0 /* HE_TYPE_FREE */)
+            elems[v0++] = &g_hudelems[i];
+    }
+    qsort(elems, v0, 4, compare_hudelems);
+    if (v0 != 0)
+    {
+        for (int i = 0; i < v0; ++i)
+            CG_DrawSingleHudElem(elems[i]);
+    }
+}
+
+// ea: 0x0069F4B0
+void CG_DrawTracer(const math::Position3& _start,
+                   const math::Position3& _finish, float width)
+{
+    float start[4] = {_start.v.m128_f32[0], _start.v.m128_f32[1],
+                      _start.v.m128_f32[2], _start.v.m128_f32[3]};
+    float finish[4] = {_finish.v.m128_f32[0], _finish.v.m128_f32[1],
+                       _finish.v.m128_f32[2], _finish.v.m128_f32[3]};
+    float cam[4] = {dword_F63C70[1580 * currCl],
+                    dword_F63C74[1580 * currCl],
+                    dword_F63C78[1580 * currCl], 0.0f};
+    float mid[3] = {(start[0] + finish[0]) * 0.5f - cam[0],
+                    (start[1] + finish[1]) * 0.5f - cam[1],
+                    (start[2] + finish[2]) * 0.5f - cam[2]};
+    float dir[3] = {finish[0] - start[0], finish[1] - start[1],
+                    finish[2] - start[2]};
+    float cross[3] = {mid[1] * dir[2] - mid[2] * dir[1],
+                      mid[2] * dir[0] - mid[0] * dir[2],
+                      mid[0] * dir[1] - mid[1] * dir[0]};
+    float crossLen = sqrtf(cross[0] * cross[0] + cross[1] * cross[1]
+                           + cross[2] * cross[2]);
+    float midLen = sqrtf(mid[0] * mid[0] + mid[1] * mid[1]
+                         + mid[2] * mid[2]);
+    float v17 = (gTracerDistScale / tr_viewParms_zFar) * midLen;
+    if (v17 <= 0.0f)
+        v17 = 0.0f;
+    float widtha = (v17 + 1.0f) * width;
+    void* mesh = auxCreateScratchMesh(0x40000, 1);
+    void* matMem = nglListAlloc(0x20, 0x10);
+    void* material = nullptr;
+    if (matMem != nullptr)
+    {
+        material = cdScratchMaterial_Ctor(matMem, cgsGlobal_media_tracerShader,
+                                          0x64078600u, 2, false);
+    }
+    void* section = nglCreateScratchSection(6, 8, 8,
+                                            cdscratch_vertex_format);
+    nglAddMeshSection(mesh, section, material, 1);
+    unsigned short* indices =
+        (unsigned short*)nglLockSectionIndices(section);
+    float* verts = (float*)nglLockSectionVertices(section);
+    float norm[3] = {cross[0] / crossLen, cross[1] / crossLen,
+                     cross[2] / crossLen};
+    float half = widtha * 1.1f;
+    float off05[3] = {dir[0] * 0.05f, dir[1] * 0.05f, dir[2] * 0.05f};
+    float off90[3] = {dir[0] * 0.9f, dir[1] * 0.9f, dir[2] * 0.9f};
+    float v[8][3] = {
+        {start[0] + norm[0] * half, start[1] + norm[1] * half,
+         start[2] + norm[2] * half},
+        {start[0] - norm[0] * half, start[1] - norm[1] * half,
+         start[2] - norm[2] * half},
+        {start[0] + off05[0] + norm[0] * half,
+         start[1] + off05[1] + norm[1] * half,
+         start[2] + off05[2] + norm[2] * half},
+        {start[0] + off05[0] - norm[0] * half,
+         start[1] + off05[1] - norm[1] * half,
+         start[2] + off05[2] - norm[2] * half},
+        {start[0] + off90[0] + norm[0] * half,
+         start[1] + off90[1] + norm[1] * half,
+         start[2] + off90[2] + norm[2] * half},
+        {start[0] + off90[0] - norm[0] * half,
+         start[1] + off90[1] - norm[1] * half,
+         start[2] + off90[2] - norm[2] * half},
+        {finish[0] + norm[0] * half, finish[1] + norm[1] * half,
+         finish[2] + norm[2] * half},
+        {finish[0] - norm[0] * half, finish[1] - norm[1] * half,
+         finish[2] - norm[2] * half}};
+    float uv[8][2] = {{0.0f, 0.0f}, {0.0f, 1.0f}, {0.5f, 0.0f},
+                      {0.5f, 1.0f}, {0.5f, 0.0f}, {0.5f, 1.0f},
+                      {1.0f, 0.0f}, {1.0f, 1.0f}};
+    for (int i = 0; i < 8; ++i)
+    {
+        verts[i * 6 + 0] = v[i][0];
+        verts[i * 6 + 1] = v[i][1];
+        verts[i * 6 + 2] = v[i][2];
+        verts[i * 6 + 3] = uv[i][0];
+        verts[i * 6 + 4] = uv[i][1];
+        verts[i * 6 + 5] = -1.0f;
+        indices[i] = (unsigned short)i;
+    }
+    math::Mat43 identity;
+    identity.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    identity.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    identity.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    identity.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    nglListAddMesh(mesh, &identity, nullptr, nullptr, nullptr);
+}
+
+// ea: 0x006A07D0
+void CG_DrawCrosshair(float transScaleArg)
+{
+    int color[4] = {1065353216, 1065353216, 1065353216, 0};
+    float fWeaponPosFrac =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ->client->ps.fWeaponPosFrac;
+    int v2 = dword_F6355C[1580 * currCl];
+    float fPosLerp = fWeaponPosFrac;
+    float fTransScale = 1.0f;
+    float fTransShift = 0.0f;
+    if (v2 == 0)
+    {
+        float value = *(float*)&cg_crosshairAlpha;
+        color[3] = cg_crosshairAlpha;
+        if (!GamePause_IsGamePaused(currCl))
+        {
+            Client* client =
+                EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+            if ((client->ps.eFlags & 0x6000) != 0)
+            {
+                if (client->ps.mViewLockedEntity != 0)
+                    CG_DrawTurretCrossHair();
+            }
+            else if ((0x100000
+                      & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                            ->client->ps.eFlags)
+                         == 0
+                     || (client->ps.eFlags & 0x400000) != 0)
+            {
+                goto label_21;
+            }
+            else
+            {
+                Entity* Player = GetPlayer(currCl);
+                if (!IsPlayerFullySeatedInVehicle(Player))
+                    return;
+                if (BG_AllowPlayerWeaponAtVehiclePos(client->ps.vehType,
+                                                     client->ps.vehPos))
+                {
+                label_21:
+                    int weapnum =
+                        BG_GetWeaponForInfo(dword_F63B8C[1580 * currCl]);
+                    if (!CG_ForceDebugCrosshair())
+                    {
+                        CG_DrawWeapReticle();
+                        float centerY = value;
+                        CG_CalcCrosshairColor(value, color);
+                        if (value >= 0.0099999998f
+                            && CG_AllowedToDrawCrosshair())
+                        {
+                            float centerX;
+                            CG_CalcCrosshairPosition(&centerX, &centerY);
+                            float v6 = centerY;
+                            CG_DrawReticleHitIndicator(
+                                dword_F63B8C[1580 * currCl], weapnum, color,
+                                centerX, centerY, 1.0f);
+                            float v7 = fPosLerp;
+                            if (fPosLerp != 1.0f || cg_drawGun == 0)
+                            {
+                                if (fPosLerp != 0.0f)
+                                {
+                                    CG_TransitionToAds(
+                                        dword_F63B8C[1580 * currCl], fPosLerp,
+                                        &fTransScale, &fTransShift);
+                                    CG_DrawAdsAimIndicator(
+                                        dword_F63B8C[1580 * currCl], weapnum,
+                                        color, centerX, centerY, fTransScale);
+                                    v7 = fPosLerp;
+                                }
+                                if (v7 == 1.0f)
+                                {
+                                    trap_R_SetColor(nullptr);
+                                }
+                                else
+                                {
+                                    if (cg_crosshairDynamic == 0)
+                                    {
+                                        centerX = 0.0f;
+                                        centerY = fTransShift;
+                                        v6 = fTransShift;
+                                    }
+                                    int port = dword_F6A28C[802 * currCl];
+                                    if (port == 0
+                                        && *(unsigned char*)((char*)gSaveGameData
+                                                             + 0x3A))
+                                    {
+                                        CG_DrawReticleName(color);
+                                        v6 = centerY;
+                                    }
+                                    float v9 = centerX;
+                                    int v10 = weapnum;
+                                    CG_DrawReticleCenter(
+                                        dword_F63B8C[1580 * currCl], weapnum,
+                                        color, centerX, v6,
+                                        transScaleArg);
+                                    CG_DrawReticleSides(
+                                        dword_F63B8C[1580 * currCl], v10,
+                                        color, v9, v6, fTransScale);
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    color[0] = 0;
+                    color[1] = 0;
+                    color[2] = 0;
+                    color[3] = 1036831949;  // 0.6f
+                    if (GetPlayerState(currCl)->vehType == 1
+                        || (GetPlayerState(currCl)->vehType == 2
+                            && GetPlayerState(currCl)->vehPos == 1))
+                    {
+                        if (GetPlayerState(currCl)->vehPos != 0)
+                        {
+                            float x = -10.0f;
+                            float y = 0.0f;
+                            CG_GetCenterOfScreen(&x, &y);
+                            CG_FillRect(x, y, 20.0f, 2.0f, (float*)color, 0.0f);
+                            x = -1.0f;
+                            y = 2.0f;
+                            CG_GetCenterOfScreen(&x, &y);
+                            CG_FillRect(x, y, 2.0f, 8.0f, (float*)color, 0.0f);
+                        }
+                    }
+                    else
+                    {
+                        void* IGO = *(void**)((char*)g_femanager + 0x14);
+                        if (IGO == nullptr)
+                            goto label_18;
+                        void* widget =
+                            *(void**)((char*)IGO + 0x38 + 4 * currCl);
+                        if (widget != nullptr
+                            && (*(int(**)(void*))*(void**)widget)(widget))
+                        {
+                            CG_CalcCrosshairColor(0.5f, color);
+                            return;
+                        }
+                        if (IGO == nullptr)
+                            goto label_18;
+                        widget = *(void**)((char*)IGO + 0x38 + 4 * currCl);
+                        if (widget == nullptr
+                            || !(*(int(**)(void*))*(void**)widget)(widget))
+                        {
+                        label_18:
+                            CG_FillRect(300.0f, 240.0f, 40.0f, 2.0f,
+                                        (float*)color, 0.0f);
+                            CG_FillRect(319.0f, 242.0f, 2.0f, 16.0f,
+                                        (float*)color, 0.0f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x006A0F50
+void CG_Draw2D(float a2)
+{
+    if (dword_F62948[1580 * currCl] != 0
+        || cgGlobal.cubemapShot != 0 /* CUBEMAPSHOT_NONE */)
+        return;
+    nglListBeginScene(0 /* NGLSCENE_PARENT */);
+    nglSetClearFlags(0);
+    nglSetZTestEnable(false);
+    nglSetZWriteEnable(false);
+    if (dword_F640A4[1580 * currCl] != 0 || cg_draw2D.integer == 0)
+        goto label_46;
+    int v2 = currCl;
+    int port = dword_F6A28C[802 * currCl];
+    if (port == 0 && *(unsigned char*)((char*)gSaveGameData + 0x3A)
+        && !*(bool*)((char*)g_femanager + 0x3C))
+    {
+        FEManager_InGameMenusActive(g_femanager, currCl);
+        v2 = currCl;
+    }
+    if (!FEManager_InGameMenusActive(g_femanager, v2))
+    {
+        CG_ScreenFade();
+        CG_DrawFlashDamage();
+        CG_DrawDamageDirectionIndicators();
+    }
+    int v3 = *(int*)(dword_F62960[1580 * currCl] + 52);
+    if (v3 != 5)
+    {
+        if (v3 == 4)
+        {
+            if (cg_drawStatus.integer != 0)
+                CG_DrawHudElems();
+        }
+        else
+        {
+            void* v6 = Cvar_Get("introScreen", "0", 0);
+            int v7 = *(int*)(dword_F62960[1580 * currCl] + 52);
+            if (*(int*)v6 != 0)
+            {
+                if (v7 < 6)
+                {
+                    CG_DrawCrosshair(a2);
+                    if (dword_F6A28C[802 * currCl] == 0
+                        && *(unsigned char*)((char*)gSaveGameData + 0x3A)
+                        && !*(bool*)((char*)g_femanager + 0x3C)
+                        && !FEManager_InGameMenusActive(g_femanager, currCl))
+                    {
+                        CG_DrawFriendlyFire();
+                    }
+                }
+                if (*(int*)(dword_F62960[1580 * currCl] + 52) < 6
+                    && cg_drawStatus.integer != 0)
+                    CG_DrawHudElems();
+            }
+            else
+            {
+                if (v7 < 6 && cg_drawStatus.integer != 0)
+                {
+                    CG_DrawPlayerLowHealthOverlay();
+                    CG_DrawHudElems();
+                }
+                if (*(int*)(dword_F62960[1580 * currCl] + 52) < 6)
+                {
+                    CG_DrawCrosshair(a2);
+                    if (dword_F6A28C[802 * currCl] == 0
+                        && *(unsigned char*)((char*)gSaveGameData + 0x3A)
+                        && !*(bool*)((char*)g_femanager + 0x3C)
+                        && !FEManager_InGameMenusActive(g_femanager, currCl))
+                    {
+                        CG_DrawFriendlyFire();
+                    }
+                }
+            }
+            if (!FEManager_InGameMenusActive(g_femanager, currCl))
+                CheckAndRunOverHeatBlur();
+        }
+        CG_DrawPerformanceWarnings();
+        CG_DrawUpperRight();
+        CG_DrawCenterString();
+        CG_DrawGameMessages();
+        CG_DrawBoldGameMessages();
+        CG_DrawMiniConsole();
+        subtitle_manager_render();
+        nglListEndScene();
+        int v9 = dword_F64158[1580 * currCl];
+        dword_F64158[1580 * currCl] = 1065353216;
+        if (*(float*)&v9 < 1.0f)
+            gStillDrawMenus = true;
+        FEManager_DrawIGO(g_femanager, currCl);
+        if (*(float*)&v9 < 1.0f)
+            gStillDrawMenus = false;
+        dword_F64158[1580 * currCl] = v9;
+        nglListBeginScene(0);
+        nglSetClearFlags(0);
+        nglSetZTestEnable(false);
+        nglSetZWriteEnable(false);
+        goto label_46;
+    }
+    CG_DrawFlashFade();
+    nglListEndScene();
+    int v5 = dword_F64158[1580 * currCl];
+    dword_F64158[1580 * currCl] = 1065353216;
+    if (*(float*)&v5 < 1.0f)
+        gStillDrawMenus = true;
+    FEManager_DrawIGO(g_femanager, currCl);
+    if (*(float*)&v5 < 1.0f)
+        gStillDrawMenus = false;
+    dword_F64158[1580 * currCl] = v5;
+    return;
+label_46:
+    CG_DrawFlashFade();
+    nglListEndScene();
+}
+
+// ea: 0x006A12F0
+void CG_DrawActive(float a1)
+{
+    if (dword_F62960[1580 * currCl] != 0)
+    {
+        int v1 = 1580 * currCl;
+        int v2 = dword_F63CA8[1580 * currCl] | 0x10;
+        bool v3 = cg_skybox.integer == 0;
+        dword_F63CA8[1580 * currCl] = v2;
+        if (v3)
+            dword_F63CA8[v1] = v2 & 0xFFFFFFEF;
+        trap_R_RenderScene(&dword_F63C50[v1]);
+        CG_DrawShellShockSavedScreenBlend(
+            (void*)dword_F64164[1580 * currCl],
+            dword_F64168[1580 * currCl], dword_F6416C[1580 * currCl]);
+        if (gRenderCG_2D != 0)
+            CG_Draw2D(a1);
+        InspectorManager_Render(g_inspectorManager);
+    }
+    else
+    {
+        CG_DrawInformation();
+    }
+}
+
+// ea: 0x006B0600
+void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
+                        int cubemapSize, int animFrametime)
+{
+    if (currCl == LocalClient_FirstLocalClientIndex())
+    {
+        int v6 = serverTime - cgGlobal.time;
+        cgGlobal.oldTime = cgGlobal.time;
+        cgGlobal.time = serverTime;
+        cgGlobal.frametime = v6;
+        if (v6 < 0)
+        {
+            cgGlobal.frametime = 0;
+            cgGlobal.oldTime = serverTime;
+        }
+    }
+    float v7 = (float)cubemapShot;
+    dword_F63554[1580 * currCl] = animFrametime;
+    cgGlobal.cubemapShot = cubemapShot;
+    cgGlobal.cubemapSize = cubemapSize;
+    CG_UpdateCvars();
+    CG_ProcessSnapshots();
+    int v9 = currCl;
+    if (dword_F62960[1580 * currCl] == 0)
+    {
+        CG_ASSERT("cg[currCl].snap", "c:\\cod\\code\\game\\cg_view.cpp",
+                  1740);
+        v9 = currCl;
+    }
+    if (dword_F62964[1580 * v9] == 0)
+    {
+        CG_ASSERT("cg[currCl].nextSnap", "c:\\cod\\code\\game\\cg_view.cpp",
+                  1741);
+    }
+    if (*(int*)(dword_F62964[1580 * currCl] + 4) != G_GetServerSnapTime())
+    {
+        CG_ASSERT("cg[currCl].nextSnap->serverTime == G_GetServerSnapTime()",
+                  "c:\\cod\\code\\game\\cg_view.cpp", 1742);
+    }
+    int ServerSnapTime = G_GetServerSnapTime();
+    int v11 = currCl;
+    if (*(int*)(dword_F62964[1580 * currCl] + 4) != ServerSnapTime)
+    {
+        CG_ASSERT("cg[currCl].nextSnap->serverTime == G_GetServerSnapTime()",
+                  "c:\\cod\\code\\game\\cg_view.cpp", 1747);
+        v11 = currCl;
+    }
+    if (cg_norender.integer == 0)
+    {
+        ++cg_clientFrame[1580 * v11];
+        CG_PredictPlayerState_Internal();
+        int v12 = 1580 * currCl;
+        int v13;
+        if (*(int*)(dword_F62960[1580 * currCl] + 1352) != 0)
+        {
+            dword_F64164[1580 * currCl] =
+                (int)&cgsGlobal_shellshockParms
+                    [*(int*)(dword_F62960[1580 * currCl] + 1352)];
+            dword_F64168[v12] = *(int*)(dword_F62960[v12] + 1356);
+            v13 = *(int*)(dword_F62960[v12] + 1360);
+        }
+        else
+        {
+            dword_F64164[1580 * currCl] =
+                (int)cgsGlobal_shellshockParms;
+            dword_F64168[v12] = dword_F6418C[v12];
+            v13 = dword_F64190[v12];
+        }
+        dword_F6416C[v12] = v13;
+        CG_UpdateShellShock((void*)dword_F64164[v12],
+                            dword_F64168[v12], v13);
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        Client* client = Player->client;
+        if (IsPlayerFullySeatedInVehicle(Player)
+            || *(bool*)((char*)client + 0xAD8)
+            || *(bool*)((char*)client + 0xAE0))
+        {
+            dword_F6355C[1580 * currCl] = cg_thirdPerson.integer;
+        }
+        else
+        {
+            dword_F6355C[1580 * currCl] = 1;
+        }
+        nglSetView(-1.0f, -1.0f, 1.0f, 1.0f);
+        nglSetScissor(-1.0f, -1.0f, 1.0f, 1.0f);
+        nglSetClearFlags(0);
+        nglListBeginScene(0);
+        nglSetClearFlags(0);
+        View_SetViewportClipping(currCl);
+        if (cubemapShot != 0)
+        {
+            void* RenderTarget = nglBuildScene_RenderTarget;
+            float v17 = (float)cubemapSize * 2.0f;
+            float v18 = v17 / *(float*)((char*)RenderTarget + 4);
+            float y2 = (v17 / *(float*)((char*)RenderTarget + 8)) - 1.0f;
+            v7 = v18 - 1.0f;
+            nglSetView(-1.0f, -1.0f, v18 - 1.0f, y2);
+            nglSetScissor(-1.0f, -1.0f, v18 - 1.0f, y2);
+        }
+        trap_R_ClearScene();
+        const void* v19 = nullptr;
+        if (cgGlobal.cubemapShot != 0)
+        {
+            CG_CalcCubemapViewValues();
+        }
+        else
+        {
+            Camera_Update((char*)gCamera + 0x1F0 * currCl);
+            CG_CalcVrect(v19);
+            CG_CalcFov();
+        }
+        if (cgGlobal.cubemapShot == 0)
+        {
+            CG_ShakeCamera(currCl);
+            AnglesToAxis(*(const math::Position3*)&angle[1580 * currCl],
+                         (float(*)[3])&dword_F63C80[1580 * currCl]);
+            CG_PerturbCamera();
+        }
+        CG_DrawSkyBoxPortal();
+        if (*(int*)(dword_F62964[1580 * currCl] + 4) != G_GetServerSnapTime())
+        {
+            CG_ASSERT("cg[currCl].nextSnap->serverTime == G_GetServerSnapTime()",
+                      "c:\\cod\\code\\game\\cg_view.cpp", 1857);
+        }
+        if (gRenderViewWeapon != 0)
+        {
+            Entity* v20 =
+                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            CG_AddViewWeapon(&v20->client->ps);
+        }
+        gCurrentCamera = (char*)gCamera + 0x1F0 * currCl;
+        if (cgGlobal.cubemapShot == 0)
+        {
+            Camera_UpdatePostViewModels(gCurrentCamera);
+            *(int*)((char*)gCurrentCamera + 0x24) = currCl;
+        }
+        int v21 = currCl;
+        int v22 = 1580 * currCl;
+        dword_F63CA4[v22] = cgGlobal.time;
+        float v23 = *(float*)&dword_F64174[v22];
+        float v24 = *(float*)&dword_F63CF0[v22];
+        float sens = v24;
+        if (v23 != 0.0f)
+            sens = v23 * v24;
+        CL_SetUserCmdValue(cg_aWeaponSelect[v21], 0, sens);
+        CL_SetUserCmdAimValues(*(float*)&dword_F6403C[1580 * currCl],
+                               *(float*)&dword_F64040[1580 * currCl],
+                               *(float*)&dword_F64044[1580 * currCl],
+                               *(float*)&dword_F64048[1580 * currCl],
+                               *(float*)&dword_F6404C[1580 * currCl]);
+        if (*(int*)(dword_F62964[1580 * currCl] + 4) != G_GetServerSnapTime())
+        {
+            CG_ASSERT("cg[currCl].nextSnap->serverTime == G_GetServerSnapTime()",
+                      "c:\\cod\\code\\game\\cg_view.cpp", 1890);
+        }
+        CG_DrawActive(v7);
+        nglListEndScene();
+        R_ToggleSmpFrame();
+        gFirstCamera = false;
+        g_DOBJF_NOT_RENDERED_LAST_FRAME *= 2;
+        nglListBeginScene(0);
+        nglSetClearFlags(0);
+        CG_DrawViewportFrames(View_lNumViewports);
+        nglListEndScene();
+        int v25 = 1580 * currCl;
+        float sinYaw, cosYaw;
+        FastSinCos(angle[1580 * currCl + 1] * 0.017453292f, &sinYaw,
+                   &cosYaw);
+        float sinPitch, cosPitch;
+        FastSinCos(0.0f, &sinPitch, &cosPitch);
+        float pos[3] = {
+            ((cosPitch * cosYaw) * move_back_distance)
+                + dword_F63C70[v25],
+            (0.0f - ((cosPitch * sinYaw) * move_back_distance))
+                - dword_F63C74[v25],
+            ((0.0f - sinPitch) * move_back_distance)
+                + dword_F63C78[v25]};
+        float listenerPos[3] = {pos[0], pos[1], pos[2]};
+        float front[3] = {-dword_F63C84[v25], dword_F63C88[v25],
+                          dword_F63C80[v25]};
+        float up[3] = {-dword_F63C9C[v25], dword_F63CA0[v25],
+                       dword_F63C98[v25]};
+        float testFwd[3] = {dword_F63C80[v25], dword_F63C84[v25],
+                            dword_F63C88[v25]};
+        float len = sqrtf(testFwd[0] * testFwd[0] + testFwd[1] * testFwd[1]
+                          + testFwd[2] * testFwd[2]);
+        testFwd[0] /= len;
+        testFwd[1] /= len;
+        testFwd[2] /= len;
+        g_TestForward[0] = dword_F63C70[1580 * currCl] + testFwd[0] * 10.0f;
+        g_TestForward[1] = dword_F63C74[1580 * currCl] + testFwd[1] * 10.0f;
+        g_TestForward[2] = dword_F63C78[1580 * currCl] + testFwd[2] * 10.0f;
+        SoundDevice_SetListenerVectors(SoundDevice_sInst, curListener,
+                                       listenerPos, front, up);
+        ++curListener;
+        curListener %= SoundDevice_GetNumberOfListeners(SoundDevice_sInst);
     }
 }
