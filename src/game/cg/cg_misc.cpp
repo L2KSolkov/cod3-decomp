@@ -5309,3 +5309,354 @@ float Camera::SetNewMode(ECameraModes newMode)
     mCamMode = newMode;
     return mpTweenTime;
 }
+
+extern const float* DObjGetMat(void* dobj, int boneIndex);
+
+static void MatrixMultiply4x4(const float* a, const float* b, float* out)
+{
+    for (int r = 0; r < 4; ++r)
+    {
+        for (int c = 0; c < 4; ++c)
+        {
+            out[r * 4 + c] = a[r * 4 + 0] * b[0 * 4 + c]
+                             + a[r * 4 + 1] * b[1 * 4 + c]
+                             + a[r * 4 + 2] * b[2 * 4 + c]
+                             + a[r * 4 + 3] * b[3 * 4 + c];
+        }
+    }
+}
+
+// ea: 0x0069E630
+void Camera::UpdateAnimation()
+{
+    if ((mAnimFlags & 1) != 0)
+    {
+        if (EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                ->client->ps.weapon
+            > 0)
+        {
+            if (mTagCameraIndex == -1)
+            {
+                CG_ASSERT("mTagCameraIndex != -1",
+                          "c:\\cod\\code\\game\\Camera.cpp", 2074);
+            }
+            const float* mat;
+            if ((mAnimFlags & 4) != 0)
+                mat = &mLastTagCamMat.x.v.m128_f32[0];
+            else
+                mat = DObjGetMat(dword_F6A2A0[802 * mClient],
+                                 mTagCameraIndex);
+            float tag[16];
+            for (int i = 0; i < 16; ++i)
+                tag[i] = mat[i];
+            float axis[3][3];
+            AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+                         axis);
+            float t[16] = {
+                axis[0][0], axis[0][1], axis[0][2], 0.0f,
+                axis[1][0], axis[1][1], axis[1][2], 0.0f,
+                axis[2][0], axis[2][1], axis[2][2], 0.0f,
+                0.0f,       0.0f,       0.0f,       1.0f};
+            float out[16];
+            MatrixMultiply4x4(tag, t, out);
+            out[12] += dword_F63C70[1580 * mClient];
+            out[13] += dword_F63C74[1580 * mClient];
+            out[14] += dword_F63C78[1580 * mClient];
+            float viewAngles[3];
+            Axis4ToAngles((const float(*)[4])out, viewAngles);
+            angle[1580 * mClient] = viewAngles[0];
+            dword_F63CB4[1580 * mClient] = viewAngles[1];
+            dword_F63CB8[1580 * mClient] = viewAngles[2];
+            dword_F63C70[1580 * mClient] = out[12];
+            dword_F63C74[1580 * mClient] = out[13];
+            dword_F63C78[1580 * mClient] = out[14];
+            AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+                         (float(*)[3])&dword_F63C80[1580 * mClient]);
+            for (int i = 0; i < 16; ++i)
+                mLastTagCamMat.x.v.m128_f32[i] = tag[i];
+        }
+        mAnimFlags |= 2u;
+    }
+    else if ((mAnimFlags & 2) != 0)
+    {
+        mAnimFlags &= ~2u;
+    }
+}
+
+extern float gSceneAnimCameraFOV;  // 0x00F258F0
+extern void* gSceneAnimCameraPO;   // 0x00F25AB0
+extern float dword_F63C60[4 * 1580];
+extern float dword_F63C8C[4 * 1580];
+extern float dword_F63C90[4 * 1580];
+extern float dword_F63C94[4 * 1580];
+extern float dword_F63C98[4 * 1580];
+extern float dword_F63C9C[4 * 1580];
+extern float dword_F63CA0[4 * 1580];
+extern void G_SetOrigin(Entity* ent, const float* origin);
+
+// ea: 0x0068E230
+void Camera::UpdateSceneAnimCam()
+{
+    // Flip/permute matrix built from four vectors in the original
+    float M[16] = {0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+                   0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float C[16];
+    memcpy(C, gSceneAnimCameraPO, sizeof(C));
+    float out[16];
+    MatrixMultiply4x4(M, C, out);
+    dword_F63C80[1580 * mClient] = out[0];
+    dword_F63C84[1580 * mClient] = out[1];
+    dword_F63C88[1580 * mClient] = out[2];
+    dword_F63C8C[1580 * mClient] = out[4];
+    dword_F63C90[1580 * mClient] = out[5];
+    dword_F63C94[1580 * mClient] = out[8];
+    dword_F63C98[1580 * mClient] = out[9];
+    dword_F63C9C[1580 * mClient] = out[10];
+    dword_F63CA0[1580 * mClient] = out[11];
+    dword_F63C70[1580 * mClient] = out[12];
+    dword_F63C74[1580 * mClient] = out[13];
+    dword_F63C78[1580 * mClient] = out[14];
+    AxisToAngles((const float(*)[3])&dword_F63C80[1580 * mClient],
+                 &angle[1580 * mClient]);
+    dword_F63C60[1580 * mClient] = gSceneAnimCameraFOV;
+    float origin[3] = {out[12], out[13], out[14]};
+    Entity* Player =
+        EntityManager_GetPlayer(EntityManager_sInst, mClient);
+    G_SetOrigin(Player, origin);
+    Player->s.pos.trBase[0] = origin[0];
+    Player->s.pos.trBase[1] = origin[1];
+    Player->s.pos.trBase[2] = origin[2];
+    Player->client->ps.origin.v.m128_f32[0] = origin[0];
+    Player->client->ps.origin.v.m128_f32[1] = origin[1];
+    Player->client->ps.origin.v.m128_f32[2] = origin[2];
+    EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        ->client->ps.viewHeightCurrent = 0.0f;
+}
+
+extern void vectosignedangles(const float* vec, float* angles);
+
+static unsigned int s_pelvisHash;
+static bool s_pelvisHashInit;
+static unsigned int s_bodyHash;
+static bool s_bodyHashInit;
+static unsigned int s_animHeadHash;
+static bool s_animHeadHashInit;
+static unsigned int s_animSpineHash;
+static bool s_animSpineHashInit;
+
+// ea: 0x006A6D00
+void Camera::UpdateVehicleAnimCam()
+{
+    bool v79 = mTweenTime != 0.0f || mTweenDuration <= 0.0f;
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
+    if (mObject != nullptr)
+    {
+        vehicle_info_full_t* Info =
+            (vehicle_info_full_t*)VEH_GetInfo(
+                *(short*)((char*)mObject->scr_vehicle + 0x178));
+        if (mVehicleCamMode != VEH_MODE_FIRSTPERSON
+            && (*(short*)((char*)Info + 0x20) == 2
+                || !*(bool*)((char*)client + 0xAD8))
+            && !*(bool*)((char*)client + 0xAE0))
+        {
+            // third-person chase camera
+            if (mVehicleCamMode == VEH_MODE_CHASECAM
+                && client->ps.vehPos == 1
+                && !*(bool*)((char*)GetPlayer(mClient)->client + 0xAD8))
+            {
+                Entity* Player = GetPlayer(mClient);
+                dword_F63C70[1580 * mClient] =
+                    Player->r.currentOrigin.v.m128_f32[0];
+                dword_F63C74[1580 * mClient] =
+                    Player->r.currentOrigin.v.m128_f32[1];
+                dword_F63C78[1580 * mClient] =
+                    Player->r.currentOrigin.v.m128_f32[2]
+                    + *(float*)((char*)Player->client + 224);
+                angle[1580 * mClient] = mPrevAngles.v.m128_f32[0];
+                dword_F63CB4[1580 * mClient] =
+                    mPrevAngles.v.m128_f32[1];
+                dword_F63CB8[1580 * mClient] =
+                    mPrevAngles.v.m128_f32[2];
+                return;
+            }
+            StartTween(0.25f, false);
+            float radius = Info->cameraChaseRadiusOuter;
+            if (!s_pelvisHashInit)
+            {
+                s_pelvisHashInit = true;
+                s_pelvisHash = HashString_CalcHash("bip01 pelvis");
+            }
+            float tagMtx[16];
+            G_DObjGetWorldTagMatrix(
+                EntityManager_GetPlayer(EntityManager_sInst, mClient),
+                s_pelvisHash, tagMtx);
+            if (client->ps.vehPos == 1 || client->ps.vehPos == 2)
+                radius = Info->cameraChaseRadiusInner;
+            float delta[3] = {
+                (tagMtx[9] - mObject->r.currentOrigin.v.m128_f32[0]) * 2.8f,
+                (tagMtx[10] - mObject->r.currentOrigin.v.m128_f32[1]) * 2.8f,
+                ((tagMtx[11] + 24.0f) - mObject->r.currentOrigin.v.m128_f32[2])
+                        * 0.25f
+                    * 2.8f};
+            float startOffset[3];
+            if (v79)
+            {
+                float len = -sqrtf(delta[0] * delta[0] + delta[1] * delta[1]
+                                   + delta[2] * delta[2]);
+                startOffset[0] = delta[0] / len;
+                startOffset[1] = delta[1] / len;
+                startOffset[2] = delta[2] / len;
+                if (client->ps.vehPos >= 8)
+                {
+                    if (!s_bodyHashInit)
+                    {
+                        s_bodyHashInit = true;
+                        s_bodyHash = HashString_CalcHash("tag_body");
+                    }
+                    float bodyMtx[16];
+                    G_DObjGetWorldTagMatrix(mObject, s_bodyHash, bodyMtx);
+                    float combined[3] = {
+                        startOffset[0] + bodyMtx[12] * 2.0f,
+                        startOffset[1] + bodyMtx[13] * 2.0f,
+                        startOffset[2] + bodyMtx[14] * 2.0f};
+                    float len2 = sqrtf(combined[0] * combined[0]
+                                       + combined[1] * combined[1]
+                                       + combined[2] * combined[2]);
+                    startOffset[0] = combined[0] / len2;
+                    startOffset[1] = combined[1] / len2;
+                    startOffset[2] = combined[2] / len2;
+                }
+            }
+            else
+            {
+                startOffset[0] = 0.0f;
+                startOffset[1] = 0.0f;
+                startOffset[2] = 0.0f;
+            }
+            float outer = Info->cameraChaseRadiusOuter * 2.8f;
+            delta[0] -= startOffset[0] * outer;
+            delta[1] -= startOffset[1] * outer;
+            delta[2] -= startOffset[2] * outer;
+            float f = (client->ps.vehPos < 8)
+                          ? Info->cameraChaseRadiusOuter * 0.80000001f
+                          : Info->cameraChaseRadiusOuter * 0.30000001f;
+            delta[2] += f;
+            if (v79)
+                delta[2] += 80.0f;
+            float len = sqrtf(delta[0] * delta[0] + delta[1] * delta[1]
+                              + delta[2] * delta[2]);
+            float dir[3] = {delta[0] / len, delta[1] / len, delta[2] / len};
+            float chasePos[3] = {tagMtx[12] + dir[0] * radius,
+                                 tagMtx[13] + dir[1] * radius,
+                                 tagMtx[14] + dir[2] * radius};
+            float d2[3] = {tagMtx[12] - chasePos[0],
+                           tagMtx[13] - chasePos[1],
+                           tagMtx[14] - chasePos[2]};
+            float len2 = sqrtf(d2[0] * d2[0] + d2[1] * d2[1]
+                               + d2[2] * d2[2]);
+            float dir2[3] = {d2[0] / len2, d2[1] / len2, d2[2] / len2};
+            float signedAngles[3];
+            vectosignedangles(dir2, signedAngles);
+            float fwd[3];
+            AnglesToForward(*(const math::Position3*)signedAngles,
+                            *(math::Dir3*)fwd);
+            angle[1580 * mClient] = signedAngles[0];
+            angle[1580 * mClient + 1] = signedAngles[1];
+            angle[1580 * mClient + 2] = signedAngles[2];
+            angle[1580 * mClient + 3] = 0.0f;
+            float rotScale[3] = {chasePos[0], chasePos[1], chasePos[2]};
+            if (radius <= Info->cameraChaseRadiusOuter)
+            {
+                if (Info->cameraChaseRadiusInner <= radius)
+                    goto do_trace;
+                radius = 0.0f - (Info->cameraChaseRadiusInner - radius);
+            }
+            else
+            {
+                radius = radius - Info->cameraChaseRadiusOuter;
+            }
+            rotScale[0] = chasePos[0] + dir2[0] * radius;
+            rotScale[1] = chasePos[1] + dir2[1] * radius;
+            rotScale[2] = chasePos[2] + dir2[2] * radius;
+        do_trace:
+            {
+                float mins[3] = {-1.0f, -1.0f, -1.0f};
+                float maxs[3] = {1.0f, 1.0f, 1.0f};
+                collision_context_t ctx;
+                memset(&ctx, 0, sizeof(ctx));
+                ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+                ctx.pass_entity1.mHandle.mVal = client->ps.mViewLockedEntity;
+                ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
+                trace_t tr;
+                CG_Trace(&tr, (const math::Position3*)chasePos,
+                         (const math::Position3*)mins,
+                         (const math::Position3*)maxs,
+                         (const math::Position3*)rotScale, &ctx);
+                if (tr.normal.v.m128_f32[1] < 1.0f)
+                {
+                    rotScale[0] = tr.endpos.v.m128_f32[0];
+                    rotScale[1] = tr.endpos.v.m128_f32[1];
+                    rotScale[2] = tr.endpos.v.m128_f32[2];
+                }
+                dword_F63C70[1580 * mClient] = rotScale[0];
+                dword_F63C74[1580 * mClient] = rotScale[1];
+                dword_F63C78[1580 * mClient] = rotScale[2];
+            }
+            return;
+        }
+        // first-person anim camera
+        float tween = ServerTime_sInst.mTickDelta * 4.0f;
+        if (mTweenDuration < 1.0f)
+            StartTween(tween, false);
+        if (!s_animHeadHashInit)
+        {
+            s_animHeadHashInit = true;
+            s_animHeadHash = HashString_CalcHash("bip01 head");
+        }
+        if (!s_animSpineHashInit)
+        {
+            s_animSpineHashInit = true;
+            s_animSpineHash = HashString_CalcHash("bip01 spine1");
+        }
+        float headMtx[16];
+        G_DObjGetWorldTagMatrix(
+            EntityManager_GetPlayer(EntityManager_sInst, mClient),
+            s_animHeadHash, headMtx);
+        float spineMtx[16];
+        G_DObjGetWorldTagMatrix(
+            EntityManager_GetPlayer(EntityManager_sInst, mClient),
+            s_animSpineHash, spineMtx);
+        dword_F63C70[1580 * mClient] = headMtx[12];
+        dword_F63C74[1580 * mClient] = headMtx[13];
+        dword_F63C78[1580 * mClient] = headMtx[14];
+        float axis[3][3] = {{spineMtx[4], spineMtx[5], spineMtx[6]},
+                            {spineMtx[0], spineMtx[1], spineMtx[2]},
+                            {spineMtx[8], spineMtx[9], spineMtx[10]}};
+        float angles[3];
+        AxisToAngles(axis, angles);
+        angle[1580 * mClient] = angles[0];
+        dword_F63CB4[1580 * mClient] = angles[1];
+        dword_F63CB8[1580 * mClient] = angles[2];
+        float rotScale[3] = {0.3f, 1.0f, 0.1f};
+        for (int i = 0; i < 3; ++i)
+        {
+            dword_F63C70[1580 * mClient + i] -= spineMtx[4 * i] * 10.0f;
+            float baseAngle = *(float*)((char*)mObject + 0x160 + 4 * i);
+            if (rotScale[i] >= 1.0f)
+            {
+                angle[1580 * mClient + i] = AngleNormalize180(
+                    AngleNormalize180(angle[1580 * mClient + i]));
+            }
+            else
+            {
+                float diff =
+                    AngleNormalize180(angle[1580 * mClient + i]
+                                      - AngleNormalize180(baseAngle));
+                angle[1580 * mClient + i] = AngleNormalize180(
+                    diff * rotScale[i] + baseAngle);
+            }
+        }
+    }
+}
