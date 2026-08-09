@@ -291,6 +291,7 @@ struct PakManager {
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
     bool IsUnloading(TPakId id) const;   // ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z
+    void MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
 };
 static_assert(sizeof(PakManager) == 0x2C, "PakManager size mismatch (opaque)");
 

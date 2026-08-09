@@ -146,7 +146,7 @@ struct scr_vehicle_t {
     int     drawAsEnemy;     // +0x198
     uint8_t _pad19C[0x1A0 - 0x19C];
     int     gunnerWeapon;     // +0x1A0
-    int     playEngineSound; // +0x1A4
+    int     shooter;          // +0x1A4
     uint8_t _pad1A8[0x1B4 - 0x1A8];
     int     mMantleTime;  // +0x1B4
     DbLinkedHandle<EntityHandleDb, Entity> mMantleEntity;  // +0x1B8
@@ -159,7 +159,11 @@ struct scr_vehicle_t {
     float   wheelPitch;     // +0x330
     uint8_t _pad334[0x338 - 0x334];
     DbLinkedHandle<EntityHandleDb, Entity> mTargetEnt;  // +0x338
-    uint8_t _pad33C[0x388 - 0x33C];
+    uint8_t _pad33C[0x374 - 0x33C];
+    float   joltDir[2];     // +0x374
+    float   joltTime;       // +0x37C
+    float   joltWave;       // +0x380
+    int     playEngineSound; // +0x384
     DbLinkedHandle<EntityHandleDb, Entity> mIdleSndEnt;  // +0x388
     DbLinkedHandle<EntityHandleDb, Entity> mEngineSndEnt;  // +0x38C
     uint8_t _pad390[0x394 - 0x390];
@@ -1015,7 +1019,12 @@ struct vehicle_info_t {
     float   accel;                  // +0x54
     float   rotRate;                // +0x58
     float   rotAccel;               // +0x5C
-    uint8_t _pad60[0x27C - 0x60];
+    float   maxBodyPitch;           // +0x60
+    float   maxBodyRoll;            // +0x64
+    float   collisionDamage;        // +0x68
+    float   collisionSpeed;         // +0x6C
+    float   suspensionTravel;       // +0x70
+    uint8_t _pad74[0x27C - 0x74];
     int16_t mMantleHintStringIndex; // +0x27C
     uint8_t _pad27E[0x310 - 0x27E];
 };
@@ -1127,7 +1136,8 @@ struct weaponFileInfo_t {
     int     slot;                 // +0xB4
     uint8_t _padB8[0xBC - 0xB8];
     int     stance;               // +0xBC (weapStance_t)
-    uint8_t _padC0[0x598 - 0xC0];
+    int     ammoType;             // +0xC0 (weapAmmoType_t; WEAPAMMOTYPE_UMG == 5)
+    uint8_t _padC4[0x598 - 0xC4];
     char*   szWorldModel;         // +0x598
     uint8_t _pad1[0x5D4 - 0x59C];
     int     iDamage;              // +0x5D4
@@ -1530,6 +1540,9 @@ void  AngleVectors(const float* angles, float* forward, float* right, float* up)
 void  VectorNormalizeFast(float* v);   // core.o 0x4BDF70
 void  AnglesSubtract(const math::Position3* v1, const math::Position3* v2,
                      math::Position3* v3);   // core.o 0x4B99F0
+void  ApplyPhysics(Entity* hitEnt, const math::Position3* hitp,
+                   const math::Dir3* hitd, float force, bool local_hitp,
+                   hitLocation_t hitLoc);   // physics.o 0x70D380
 extern vmCvar_t g_debugGrenades;
 extern vmCvar_t g_debugBullets;
 extern vmCvar_t g_player_maxhealth;
@@ -2081,6 +2094,8 @@ struct rb_vehicle {
     float   m_throttle;  // +0x254
     uint8_t _pad258[0x320 - 0x258];
     struct rigid_body_constraint_wheel* m_wheels[6];  // +0x320
+
+    static void remove_vehicle(rb_vehicle* v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
 };
 
 struct rigid_body_constraint_wheel {

@@ -7,6 +7,7 @@
 int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
                      math::Dir3* normal);
 
+#include <math.h>
 #include <stdlib.h>
 
 // ea: 0x0044B130
@@ -277,4 +278,128 @@ int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position, ma
         normal->v.m128_f32[3] = tr.normal.v.m128_f32[0];
     }
     return 1;
+}
+
+// ea: 0x0045F3B0
+float Bullet_Endpos(float spread, float* end, const weaponParms* wp,
+                    float randomA, float randomB)
+{
+    float v6 = 16384.0f;
+    if (wp->pWeapInfo->ammoType != 5 /* WEAPAMMOTYPE_UMG */)
+        v6 = 8192.0f;
+    if (IS_NAN(spread))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 549;
+        AeAssert::gCurrentExpr = "!IS_NAN(spread)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    double v7 = tan(spread * 3.1415927f * 0.0055555557f);
+    gTanAimConeSpread = (float)v7;
+    float fAimOffset = (float)(v7 * v6);
+    if (IS_NAN(fAimOffset))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 557;
+        AeAssert::gCurrentExpr = "!IS_NAN(fAimOffset)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    float psin;
+    FastSinCos((randomA * 360.0f) * 3.1415927f * 0.0055555557f, &psin, &randomA);
+    randomA = randomA * randomB * fAimOffset;
+    randomB = (psin * randomB) * fAimOffset;
+    if (IS_NAN(randomA))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 563;
+        AeAssert::gCurrentExpr = "!IS_NAN(r)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if (IS_NAN(randomB))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 564;
+        AeAssert::gCurrentExpr = "!IS_NAN(u)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if (IS_NAN(wp->muzzleTrace[0])
+        || IS_NAN(wp->muzzleTrace[1])
+        || IS_NAN(wp->muzzleTrace[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 565;
+        AeAssert::gCurrentExpr = "!IS_NAN((wp->muzzleTrace)[0]) && !IS_NAN((wp->muzzleTrace)[1]) && !IS_NAN((wp->muzzleTrace)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (IS_NAN(wp->forward[0])
+        || IS_NAN(wp->forward[1])
+        || IS_NAN(wp->forward[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 566;
+        AeAssert::gCurrentExpr = "!IS_NAN((wp->forward)[0]) && !IS_NAN((wp->forward)[1]) && !IS_NAN((wp->forward)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (IS_NAN(wp->right[0])
+        || IS_NAN(wp->right[1])
+        || IS_NAN(wp->right[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 567;
+        AeAssert::gCurrentExpr = "!IS_NAN((wp->right)[0]) && !IS_NAN((wp->right)[1]) && !IS_NAN((wp->right)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (IS_NAN(wp->up[0])
+        || IS_NAN(wp->up[1])
+        || IS_NAN(wp->up[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 568;
+        AeAssert::gCurrentExpr = "!IS_NAN((wp->up)[0]) && !IS_NAN((wp->up)[1]) && !IS_NAN((wp->up)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    end[0] = (wp->forward[0] * v6) + wp->muzzleTrace[0];
+    end[1] = (wp->forward[1] * v6) + wp->muzzleTrace[1];
+    end[2] = (wp->forward[2] * v6) + wp->muzzleTrace[2];
+    if (IS_NAN(end[0]) || IS_NAN(end[1]) || IS_NAN(end[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 572;
+        AeAssert::gCurrentExpr = "!IS_NAN((end)[0]) && !IS_NAN((end)[1]) && !IS_NAN((end)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    end[0] = (wp->right[0] * randomA) + end[0];
+    end[1] = (wp->right[1] * randomA) + end[1];
+    end[2] = (wp->right[2] * randomA) + end[2];
+    end[0] = (wp->up[0] * randomB) + end[0];
+    end[1] = (wp->up[1] * randomB) + end[1];
+    end[2] = (wp->up[2] * randomB) + end[2];
+    if (IS_NAN(end[0]) || IS_NAN(end[1]) || IS_NAN(end[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 577;
+        AeAssert::gCurrentExpr = "!IS_NAN((end)[0]) && !IS_NAN((end)[1]) && !IS_NAN((end)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    return fAimOffset;
 }

@@ -1837,6 +1837,101 @@ void VEH_PlayerInteractionExit(void)
 
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
 static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
+static scr_vehicle_t s_backup;     // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)
+static float intensity_scale = 500.0f;  // @ 0xDD7F48
+static float hit_offset = 30.0f;        // @ 0xDD7F4C
+
+// ea: 0x0044DD00
+void VEH_Backup(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    scr_vehicle->phys.prevOrigin.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
+    scr_vehicle->phys.prevOrigin.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+    scr_vehicle->phys.prevOrigin.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2];
+    scr_vehicle->phys.prevAngles.v.m128_f32[0] = ent->r.currentAngles.v.m128_f32[0];
+    scr_vehicle->phys.prevAngles.v.m128_f32[1] = ent->r.currentAngles.v.m128_f32[1];
+    scr_vehicle->phys.prevAngles.v.m128_f32[2] = ent->r.currentAngles.v.m128_f32[2];
+    s_backup = *scr_vehicle;
+}
+
+// ea: 0x0044D8F0
+void VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
+                  float speedFrac, float decel)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    if (scr_vehicle != nullptr)
+    {
+        rb_vehicle* mRBVeh = (rb_vehicle*)scr_vehicle->mRBVeh;
+        vehicle_info_t* v8 = s_vehicleInfos[scr_vehicle->infoIdx];
+        if (mRBVeh != nullptr && v8->type == 2)
+        {
+            math::Position3 hitp;
+            hitp.v = _mm_setzero_ps();
+            hitp.v.m128_f32[2] = hit_offset;
+            math::Position3 hitd;
+            hitd.v = dir->v;
+            ApplyPhysics(ent, &hitp, (const math::Dir3*)&hitd,
+                         intensity_scale * intensity, true, HITLOC_TORSO_UPR);
+        }
+        if (intensity < 0.0f)
+            intensity = 0.0f;
+        else if (intensity > 1.0f)
+            intensity = 1.0f;
+        float axis[3][3];
+        AnglesToAxis(&scr_vehicle->phys.angles, axis);
+        scr_vehicle->joltDir[0] = (dir->v.m128_f32[0] * axis[0][0])
+                                + (dir->v.m128_f32[1] * axis[0][1])
+                                + (dir->v.m128_f32[2] * axis[0][2]);
+        scr_vehicle->joltDir[1] = -((dir->v.m128_f32[0] * axis[1][0])
+                                  + (dir->v.m128_f32[1] * axis[1][1])
+                                  + (dir->v.m128_f32[2] * axis[1][2]));
+        scr_vehicle->joltTime = 0.80000001f;
+        scr_vehicle->joltWave = 0.0f;
+        VectorNormalize2D(scr_vehicle->joltDir);
+        scr_vehicle->joltDir[0] = (v8->maxBodyPitch * scr_vehicle->joltDir[0]) * intensity;
+        scr_vehicle->joltDir[1] = (v8->maxBodyRoll * scr_vehicle->joltDir[1]) * intensity;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 1699;
+        AeAssert::gCurrentExpr = "veh";
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v6 = ent->mClassName.mBlock != nullptr
+                                 ? (const char*)&ent->mClassName.mBlock[1]
+                                 : defaultFileName;
+            if (AeAssert::Assert("Non vehicle entity %s passed to VEH_JoltBody", v6))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x0046CB00
+void Svcmd_VehicleList_f()
+{
+    int v0 = 0;
+    for (int i = 0; i < level.MaxVehicles; ++i)
+    {
+        unsigned int v3 = s_vehicles[i].mEntity.mHandle.mVal & 0xFFF;
+        if (v3 < 0x540
+            && s_vehicles[i].mEntity.mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v3].mKey
+            && EntityHandleDb::sInst.mElements[v3].mObject != nullptr)
+            ++v0;
+    }
+    G_Printf("vehicles %d\n", v0);
+}
+
+// ea: 0x0046D2B0
+void VEH_NetAltWeaponStatus(Entity* ent, int status)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    Entity* mObject = HandleDbToEnt(ent->r.mOwner);
+    if (!EntityManager::sInst->IsLocalPlayer(mObject))
+        scr_vehicle->seats[0].firing = (status != 0);
+}
 
 // ea: 0x0044DB90 (file-local)
 static Handle VEH_StartWheelEffect(Entity* ent, unsigned int wheel_tag_hash,
