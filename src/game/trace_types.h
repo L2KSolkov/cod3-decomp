@@ -21,7 +21,7 @@ struct trace_t {
     int32_t  surfaceFlags;                            // +0x24
     int32_t  contents;                                // +0x28
     const char* shader;                               // +0x2C
-    DbLinkedHandle<void, Entity> mEntity;             // +0x30
+    DbLinkedHandle<EntityHandleDb, Entity> mEntity;             // +0x30
     HashString partName;                              // +0x34
     uint32_t  partGroup;                              // +0x38
     uint8_t   allsolid;                               // +0x3C
@@ -45,8 +45,8 @@ static_assert(offsetof(trace_t, fraction) == 0x20, "trace_t::fraction offset mis
 // ============================================================================
 struct collision_context_t {
     struct collision_context_t_vtbl* __vftable;  // +0x00
-    DbLinkedHandle<void, Entity> pass_entity1;    // +0x04
-    DbLinkedHandle<void, Entity> pass_entity2;    // +0x08
+    DbLinkedHandle<EntityHandleDb, Entity> pass_entity1;    // +0x04
+    DbLinkedHandle<EntityHandleDb, Entity> pass_entity2;    // +0x08
     int   contentmask;                            // +0x0C
     // +0x10 .. 0x18 derived-specific data
     uint8_t _pad10[8];                            // +0x10

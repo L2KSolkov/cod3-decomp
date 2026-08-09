@@ -110,7 +110,7 @@ void   UpdateCVars(void);
 int    Q_isforfilename(int c);
 void   Q_strncpyz(char* dest, const char* src, int destsize);
 void   XModelEnforceExist(int bEnforce);
-void   ClientConnect(DbLinkedHandle<void, Entity> entity);
+void   ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
 
 // fs.cpp
 int    FS_FOpenFileByMode(const char* qpath, int* f, int mode);

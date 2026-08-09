@@ -269,7 +269,12 @@ add_library(cod3_threading STATIC
 # Game code (amalgamated objects — split per subdir)
 # ============================================================================
 add_library(cod3_game_main STATIC src/game/main/stubs_game.cpp)
-add_library(cod3_game_logic STATIC src/game/logic/stubs_game.cpp src/game/CallFunctor.cpp)
+add_library(cod3_game_logic STATIC
+    src/game/logic/stubs_game.cpp
+    src/game/logic/g_globals.cpp
+    src/game/logic/g_trace.cpp
+    src/game/CallFunctor.cpp
+)
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)
 add_library(cod3_game_mp STATIC src/game/mp/stubs_game.cpp)
 add_library(cod3_game_mpshell STATIC src/game/mpshell/stubs_game.cpp)

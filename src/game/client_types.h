@@ -114,17 +114,17 @@ struct Client {
     float              currentAimSpreadScale;         // +0x84C
     Entity*            pHitHitEnt;                    // +0x850
     Entity*            pLookatEnt;                    // +0x854
-    DbLinkedHandle<void, Entity> pLookatEntLast;      // +0x858
+    DbLinkedHandle<EntityHandleDb, Entity> pLookatEntLast;      // +0x858
     int                iLookatEntLastTime;            // +0x85C
     int                iLastFriendlyUseTime;          // +0x860
     float              fLastTraceDist;                // +0x864
-    DbLinkedHandle<void, Entity> hLastCompassFriendlyInfoEnt;  // +0x868
-    DbLinkedHandle<void, Entity> hLastCompassTankInfoEnt;      // +0x86C
+    DbLinkedHandle<EntityHandleDb, Entity> hLastCompassFriendlyInfoEnt;  // +0x868
+    DbLinkedHandle<EntityHandleDb, Entity> hLastCompassTankInfoEnt;      // +0x86C
     float              prevLinkAngles[3];             // +0x870
     float              linkAnglesFrac[3];             // +0x87C
     int                inControlTime;                 // +0x888
     int                lastTouchTime;                 // +0x88C
-    DbLinkedHandle<void, Entity> mUseHoldEntity;      // +0x890
+    DbLinkedHandle<EntityHandleDb, Entity> mUseHoldEntity;      // +0x890
     int                mUseHoldTime;                  // +0x894
     int                bDisableAutoPickup;            // +0x898
     int                pain_debounce_time;            // +0x89C

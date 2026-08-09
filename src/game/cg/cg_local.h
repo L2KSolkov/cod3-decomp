@@ -8,6 +8,7 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#include "game/game_types.h"
 
 struct Entity;
 struct DObj;
@@ -71,17 +72,25 @@ extern re_export_view re;
 extern void* _Z_MallocInternal(unsigned int size);
 extern void  _Z_FreeInternal(void* ptr);
 
-// EntityHandleDb - entity handle database (elements at +0xA8)
+// EntityHandleDb - entity handle database (full layout, verified against IDA)
+struct EntityHandleDbDbElement {
+    Entity* mObject;  // +0x00
+    int     mKey;     // +0x04
+};
 class EntityHandleDb {
 public:
-    struct DbElement {
-        Entity* mObject;  // +0x00
-        int     mKey;     // +0x04
-    };
-    unsigned char _pad[0xA8];
-    DbElement     mElements[0x540];
-    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
+    uint8_t  _pad[0xA8];                 // HandleDb BitSet<1344> (168 bytes)
+    EntityHandleDbDbElement mElements[0x540];  // +0xA8 (1344 * 8 = 10752)
+    uint8_t  mDebugCallback[4];          // +0x2AA8
+    struct AeSizedEntityArray {
+        Entity* m_elements[4096];        // +0x00
+        int     m_size;                  // +0x4000
+    } mActiveList;                       // +0x2AAC (16388 bytes)
+    static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
+    void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
 };
+static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
+static_assert(sizeof(EntityHandleDb) == 27312, "EntityHandleDb size mismatch");
 
 struct weaponFileInfo_t {
     char  szKillIcon[64];      // +0x00

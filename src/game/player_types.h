@@ -7,6 +7,7 @@
 #pragma once
 
 #include "game/game_types.h"
+#include "game/trace_types.h"
 #include "core/math_types.h"
 
 // Forward
@@ -52,7 +53,7 @@ public:
     float    leanf;                        // +0x04C
     int32_t  speed;                        // +0x050
     int32_t  delta_angles[3];              // +0x054
-    DbLinkedHandle<void, Entity> mGroundEntity;  // +0x060
+    DbLinkedHandle<EntityHandleDb, Entity> mGroundEntity;  // +0x060
     float    vLadderVec[3];               // +0x064
     int32_t  jumpTime;                     // +0x070
     float    fJumpOriginZ;                 // +0x074
@@ -61,12 +62,12 @@ public:
     int32_t  torsoAnim;                    // +0x080
     int32_t  spotTime;                     // +0x084
     int32_t  respawnUntilTime;             // +0x088
-    DbLinkedHandle<void, Entity> mLastSpotter;     // +0x08C
-    DbLinkedHandle<void, Entity> mKiller;          // +0x090
-    DbLinkedHandle<void, Entity> mTarget;          // +0x094
+    DbLinkedHandle<EntityHandleDb, Entity> mLastSpotter;     // +0x08C
+    DbLinkedHandle<EntityHandleDb, Entity> mKiller;          // +0x090
+    DbLinkedHandle<EntityHandleDb, Entity> mTarget;          // +0x094
     int32_t  mTargetTime;                  // +0x098
     int32_t  movementDir;                  // +0x09C
-    DbLinkedHandle<void, Entity> mClient;          // +0x0A0
+    DbLinkedHandle<EntityHandleDb, Entity> mClient;          // +0x0A0
     int32_t  weapon;                       // +0x0A4
     int32_t  weaponstate;                  // +0x0A8
     float    fWeaponPosFrac;               // +0x0AC
@@ -108,14 +109,66 @@ public:
     int32_t  deadViewHeight;               // +0x464
     float    walkSpeedScale;               // +0x468
     float    runSpeedScale;                // +0x46C
-    // Remaining members (to +0x5D0) will be filled during porting
-    uint8_t  _pad_remaining[0x160];        // +0x470 ... +0x5D0
+    float    sprintSpeedScale;             // +0x470
+    float    proneSpeedScale;              // +0x474
+    float    crouchSpeedScale;             // +0x478
+    float    strafeSpeedScale;             // +0x47C
+    float    backSpeedScale;               // +0x480
+    float    leanSpeedScale;               // +0x484
+    float    proneDirection;               // +0x488
+    float    proneDirectionPitch;          // +0x48C
+    float    proneTorsoPitch;              // +0x490
+    float    fatigueScale;                 // +0x494
+    int32_t  lastSprintTime;               // +0x498
+    int32_t  viewlocked;                   // +0x49C
+    DbLinkedHandle<EntityHandleDb, Entity> mViewLockedEntity;  // +0x4A0
+    float    friction;                     // +0x4A4
+    int32_t  serverCursorHint;             // +0x4A8
+    int32_t  serverCursorHintVal;          // +0x4AC
+    int32_t  serverCursorHintString;       // +0x4B0
+    // pad 12 (0x4B4 .. 0x4C0)
+    uint8_t  _pad4B4[12];                  // +0x4B4
+    trace_t  serverCursorHintTrace;        // +0x4C0 (80 bytes)
+    int32_t  iCompassFriendInfo;           // +0x510
+    int32_t  iCompassTankInfo;             // +0x514
+    float    fTorsoHeight;                 // +0x518
+    float    fTorsoPitch;                  // +0x51C
+    float    fWaistPitch;                  // +0x520
+    int32_t  vehPos;                       // +0x524
+    int32_t  vehType;                      // +0x528
+    int32_t  vehSubType;                   // +0x52C
+    int32_t  weapAnim;                     // +0x530
+    float    aimSpreadScale;               // +0x534
+    int32_t  shellshockIndex;              // +0x538
+    int32_t  shellshockTime;               // +0x53C
+    int32_t  shellshockDuration;           // +0x540
+    float    mTimeSinceDamage;             // +0x544
+    float    mHealthDelta;                 // +0x548
+    int16_t  ctf_has_flag;                 // +0x54C
+    int32_t  spectatorClient;              // +0x550
+    int32_t  mDamageFromPlayers[16];       // +0x554
+    int32_t  mLastFireWeaponTime;          // +0x594
+    int32_t  mLastFireWeapon;              // +0x598
+    int32_t  mAmmoDropTime;                // +0x59C
+    int32_t  prevTargetPointValid;         // +0x5A0
+    DbLinkedHandle<EntityHandleDb, Entity> currentTargetHandle;  // +0x5A4
+    float    prevTargetRelPt[3];           // +0x5A8
+    float    mClosestStickyAimDistance;    // +0x5B4
+    DbLinkedHandle<EntityHandleDb, Entity> mMeleeAssistTarget;   // +0x5B8
+    int16_t  mMeleeAssistSpeed;            // +0x5BC
+    float    mHoldBreathScale;             // +0x5C0
+    int32_t  mHoldBreathTimer;             // +0x5C4
+    uint32_t mFlags;                       // +0x5C8 (Bitmask<unsigned int>)
 };
 static_assert(sizeof(PlayerState) == 0x5D0, "PlayerState size mismatch");
 static_assert(offsetof(PlayerState, origin) == 0x000, "PlayerState::origin offset mismatch");
 static_assert(offsetof(PlayerState, weapon) == 0x0A4, "PlayerState::weapon offset mismatch");
 static_assert(offsetof(PlayerState, eFlags) == 0x0F4, "PlayerState::eFlags offset mismatch");
 static_assert(offsetof(PlayerState, event) == 0x0F8, "PlayerStateEvents offset mismatch");
+static_assert(offsetof(PlayerState, serverCursorHint) == 0x4A8, "PlayerState::serverCursorHint offset mismatch");
+static_assert(offsetof(PlayerState, serverCursorHintTrace) == 0x4C0, "PlayerState::serverCursorHintTrace offset mismatch");
+static_assert(offsetof(PlayerState, vehPos) == 0x524, "PlayerState::vehPos offset mismatch");
+static_assert(offsetof(PlayerState, mFlags) == 0x5C8, "PlayerState::mFlags offset mismatch");
 
 // ============================================================================
 // usercmd_s — user input command (48 bytes)

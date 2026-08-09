@@ -21,7 +21,7 @@ extern int   MSG_ReadLong(msg_t* msg);
 extern int   MSG_ReadByte(msg_t* msg);
 extern char* MSG_ReadString(msg_t* msg);
 extern void* _Z_MallocInternal(unsigned int size);
-extern void  ClientConnect(DbLinkedHandle<void, Entity> entity);
+extern void  ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
 extern void  SV_FreeAcknowledgedReliableCommands(client_s* cl);
 extern void  SV_PreFrame(int msec);
 extern void  SV_RunFrame(int msec);
@@ -88,7 +88,7 @@ void SV_PostConnect() {
         v6 = currCl;
     }
     Entity* playerEnt = EntityManager_GetPlayerEntity(v6);
-    DbLinkedHandle<void, Entity>* v9 = (DbLinkedHandle<void, Entity>*)((char*)playerEnt + 0x234);
+    DbLinkedHandle<EntityHandleDb, Entity>* v9 = (DbLinkedHandle<EntityHandleDb, Entity>*)((char*)playerEnt + 0x234);
     client_s* v10 = &svs.clients[v6];
     v10->mEntityHandle = v9[141];
     v10->deltaMessage = -1;

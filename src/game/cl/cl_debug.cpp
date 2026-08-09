@@ -298,7 +298,7 @@ void CL_AddDebugString2D(int x, int y, float* color, float scale,
 }
 
 // ea: 0x52D4A0
-void CL_AddDebugLine(float* start, const float* end, const float* color,
+void CL_AddDebugLine(const float* start, const float* end, const float* color,
                      int depthTest, int duration, int fromServer, int fadeOut)
 {
     if (dword_F170E0 != 0)

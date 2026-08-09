@@ -33,6 +33,7 @@ struct actor_s;
 struct sentient_s;
 class DCGSet;
 struct WorldSector;
+class EntityHandleDb;
 
 // ============================================================================
 // Handle — generic object handle (4 bytes) — verified against IDA
@@ -115,10 +116,10 @@ struct EntityState {
     uint8_t  surfType;                            // +0x02
     uint8_t  weapon;                              // +0x03
     uint8_t  eventParm;                           // +0x04
-    uint8_t  ___u5;                               // +0x05 (padding/unknown)
+    uint8_t  scale;                               // +0x05 (verified vs disasm G_SetSoundBlend)
     uint16_t index;                               // +0x06 (truncated entity index)
-    DbLinkedHandle<void, Entity> mOtherEntity;    // +0x08
-    DbLinkedHandle<void, Entity> mGroundEntity;   // +0x0C
+    DbLinkedHandle<EntityHandleDb, Entity> mOtherEntity;    // +0x08
+    DbLinkedHandle<EntityHandleDb, Entity> mGroundEntity;   // +0x0C
     int32_t  eFlags;                              // +0x10
     trajectory_t pos;                             // +0x14
     trajectory_t apos;                            // +0x3C
@@ -146,7 +147,7 @@ static_assert(offsetof(EntityState, eFlags) == 0x10, "EntityState::eFlags offset
 struct EntityShared {
     int32_t  linked;                              // +0x00
     int32_t  svFlags;                             // +0x04
-    DbLinkedHandle<void, Entity> mSingleClient;   // +0x08
+    DbLinkedHandle<EntityHandleDb, Entity> mSingleClient;   // +0x08
     DCGSet*  bmodel;                              // +0x0C
     math::Position3 mins;                         // +0x10
     math::Position3 maxs;                         // +0x20
@@ -160,7 +161,7 @@ struct EntityShared {
     math::Position3 currentOrigin;                // +0x70
     math::Position3 currentAngles;                // +0x80
     math::Mat43    currentMat;                    // +0x90
-    DbLinkedHandle<void, Entity> mOwner;          // +0xD0
+    DbLinkedHandle<EntityHandleDb, Entity> mOwner;          // +0xD0
     int32_t  eventType;                           // +0xD4
     int32_t  eventTime;                           // +0xD8
     WorldSector* worldSector;                     // +0xDC
@@ -199,7 +200,7 @@ public:
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
     EntityShared r;                               // +0x0E0 (336 bytes)
     int32_t  mPakId;                              // +0x230
-    DbLinkedHandle<void, Entity> mHandle;         // +0x234
+    DbLinkedHandle<EntityHandleDb, Entity> mHandle;         // +0x234
     int16_t  mEntityArrayIndex;                   // +0x238
     // pad 2
     uint8_t  _pad23A[2];                          // +0x23A
@@ -245,7 +246,7 @@ public:
     unsigned int mFlags;                          // +0x2C8 (Bitmask<unsigned int>)
     int32_t  clipmask;                            // +0x2CC
     int32_t  processedFrame;                      // +0x2D0
-    DbLinkedHandle<void, Entity> parentHandle;    // +0x2D4
+    DbLinkedHandle<EntityHandleDb, Entity> parentHandle;    // +0x2D4
     // pad 4 (align to 0x2E0)
     uint8_t  _pad2D8[4];                          // +0x2D8
     math::Position3 pos1;                         // +0x2E0

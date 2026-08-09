@@ -76,7 +76,7 @@ extern int           SightTrace(int oldHitNum, const math::Position3* start, con
                                 const math::Position3* origin, int brushmask, int capsule, void* sphere);
 extern int           CM_PointContents(const math::Position3* p, DCGSet* model);
 extern int           CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
-                                     DbLinkedHandle<void, Entity>* entityList, int maxcount, int contentmask);
+                                     DbLinkedHandle<EntityHandleDb, Entity>* entityList, int maxcount, int contentmask);
 extern DCGSet*       TempBoxModel(const math::Position3* mins, const math::Position3* maxs, int contents, int capsule);
 extern int           CM_TransformedPointContents(const math::Position3* p, DCGSet* model,
                                                  const math::Position3* origin, const math::Position3* angles);
@@ -103,7 +103,7 @@ extern void          Com_DPrintf(const char* fmt, ...);
 extern EntityManager* EntityManager_sInst(void);
 
 // Handle db dereference helper (reconstructed from IDA operator* / operator->)
-static Entity* HandleDbDeref(const DbLinkedHandle<void, Entity>& h) {
+static Entity* HandleDbDeref(const DbLinkedHandle<EntityHandleDb, Entity>& h) {
     unsigned int mVal = h.mHandle.mVal;
     unsigned int idx = mVal & 0xFFF;
     if (idx < 0x540 && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[idx].mKey)
@@ -794,7 +794,7 @@ int SV_SightTraceToEntity(const math::Position3* start, const math::Position3* m
 // SV_PointContents Ã¢â‚¬â€ ea: 0x523850
 // ============================================================================
 int SV_PointContents(const math::Position3* p, const collision_context_t* context) {
-    DbLinkedHandle<void, Entity> touch[256];
+    DbLinkedHandle<EntityHandleDb, Entity> touch[256];
     memset(touch, 0, sizeof(touch));
     int contents = CM_PointContents(p, NULL);
     int num = CM_AreaEntities(p, p, touch, 256, context->contentmask);

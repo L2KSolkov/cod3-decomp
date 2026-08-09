@@ -129,7 +129,7 @@ struct client_s {
     int                 lastMessageNum;           // +0x060
     int                 lastClientCommand;        // +0x064
     char                lastClientCommandString[256];  // +0x068
-    DbLinkedHandle<void, Entity> mEntityHandle;   // +0x168
+    DbLinkedHandle<EntityHandleDb, Entity> mEntityHandle;   // +0x168
     int                 deltaMessage;             // +0x16C
     PlayerState         frames[1];                // +0x170
     uint8_t             netchan[3120];            // +0x740
@@ -199,8 +199,8 @@ struct moveclip_t {
     math::Position3 start;                     // +0x30
     math::Position3 end;                       // +0x40
     trace_t         trace;                     // +0x50
-    DbLinkedHandle<void, Entity> mPassEntity;  // +0xA0
-    DbLinkedHandle<void, Entity> mPassOwner;   // +0xA4
+    DbLinkedHandle<EntityHandleDb, Entity> mPassEntity;  // +0xA0
+    DbLinkedHandle<EntityHandleDb, Entity> mPassOwner;   // +0xA4
     int             contentmask;               // +0xA8
     int             capsule;                   // +0xAC
 };
@@ -214,8 +214,8 @@ struct pointtrace_t {
     math::Position3 start;                     // +0x00
     math::Position3 end;                       // +0x10
     trace_t         trace;                     // +0x20
-    DbLinkedHandle<void, Entity> mPassEntity;  // +0x70
-    DbLinkedHandle<void, Entity> mPassOwner;   // +0x74
+    DbLinkedHandle<EntityHandleDb, Entity> mPassEntity;  // +0x70
+    DbLinkedHandle<EntityHandleDb, Entity> mPassOwner;   // +0x74
     int             contentmask;               // +0x78
     int             bLocational;               // +0x7C
     float           mAngleTangent;             // +0x80
@@ -233,10 +233,10 @@ struct sightclip_t {
     math::Position3 outerSize;                 // +0x20
     math::Position3 start;                     // +0x30
     math::Position3 end;                       // +0x40
-    DbLinkedHandle<void, Entity> mPassEntity1; // +0x50
-    DbLinkedHandle<void, Entity> mPassEntity2; // +0x54
-    DbLinkedHandle<void, Entity> mPassOwner1;  // +0x58
-    DbLinkedHandle<void, Entity> mPassOwner2;  // +0x5C
+    DbLinkedHandle<EntityHandleDb, Entity> mPassEntity1; // +0x50
+    DbLinkedHandle<EntityHandleDb, Entity> mPassEntity2; // +0x54
+    DbLinkedHandle<EntityHandleDb, Entity> mPassOwner1;  // +0x58
+    DbLinkedHandle<EntityHandleDb, Entity> mPassOwner2;  // +0x5C
     int             contentmask;               // +0x60
     int             capsule;                   // +0x64
 };
@@ -249,10 +249,10 @@ static_assert(sizeof(sightclip_t) == 0x70, "sightclip_t size mismatch");
 struct sightpointtrace_t {
     math::Position3 start;                     // +0x00
     math::Position3 end;                       // +0x10
-    DbLinkedHandle<void, Entity> mPassEntity1; // +0x20
-    DbLinkedHandle<void, Entity> mPassEntity2; // +0x24
-    DbLinkedHandle<void, Entity> mPassOwner1;  // +0x28
-    DbLinkedHandle<void, Entity> mPassOwner2;  // +0x2C
+    DbLinkedHandle<EntityHandleDb, Entity> mPassEntity1; // +0x20
+    DbLinkedHandle<EntityHandleDb, Entity> mPassEntity2; // +0x24
+    DbLinkedHandle<EntityHandleDb, Entity> mPassOwner1;  // +0x28
+    DbLinkedHandle<EntityHandleDb, Entity> mPassOwner2;  // +0x2C
     int             contentmask;               // +0x30
 };
 static_assert(sizeof(sightpointtrace_t) == 0x40, "sightpointtrace_t size mismatch");
