@@ -6,7 +6,7 @@ scr.o		scr.o	game	846	TODO
 
 mp.o		mp.o	game	770	TODO	
 
-g.o	g.o	game	732	IN_PROGRESS	g.o porting in src/game/logic/ (646/732 non-inline funcs via manifest-verified // ea: markers as of 2026-08-09): trace/utils/dobj/spawn/active/trigger/hudelem/prone/items/mover/scr/weapon/combat/damage/turret/dobj committed; dobj family complete; fixedlink/entattach/spotting/wheelparticles/overheat/firelead/followhistory/backup/joltbody/bulletendpos/touchents/touchvehicles committed
+g.o	g.o	game	732	IN_PROGRESS	g.o porting in src/game/logic/ (650/732 non-inline funcs via manifest-verified // ea: markers as of 2026-08-09): trace/utils/dobj/spawn/active/trigger/hudelem/prone/items/mover/scr/weapon/combat/damage/turret/dobj committed; dobj family complete; fixedlink/entattach/spotting/wheelparticles/overheat/firelead/followhistory/backup/joltbody/bulletendpos/touchents/touchvehicles/addammo/takef/candamage/entinfo committed
 
 mp_shell.o		mp_shell.o	game	680	TODO	
 

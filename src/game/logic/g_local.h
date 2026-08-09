@@ -666,6 +666,9 @@ typedef EHitLocation hitLocation_t;
 extern cvar_t* g_cheats;               // g_cheats
 extern cvar_t* g_developer;            // g_developer
 extern cvar_t* g_debug_sound_aliases;  // g_debug_sound_aliases
+extern vmCvar_t g_entinfo_scale;       // ?g_entinfo_scale@@3UvmCvar_t@@A @ 0xEA5020
+extern vmCvar_t g_entinfo_maxdist;     // ?g_entinfo_maxdist@@3UvmCvar_t@@A @ 0xEAE2F0
+extern const float colorMagenta[4];    // @ 0xD015CC
 extern vmCvar_t g_gravity;             // g_gravity
 extern vmCvar_t g_reloading;           // g_reloading
 extern void    Scr_Error(const char* error);  // scr.o
@@ -994,6 +997,11 @@ int  BG_GetNumWeapons();
 int  BG_GetAmmoClipSize(int iClipIndex);
 int  BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
 bool BG_PlayerTouchesItem(PlayerState* ps, EntityState* item, int atTime);  // game.o 0x621820
+int  BG_WeaponIsClipOnly(int iWeapon);            // game.o 0x607A50
+int  BG_GetAmmoTypeMax(int iAmmoIndex);           // game.o 0x607080
+int  BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616B70
+int  BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x621F60
+int  BG_SelectWeaponIndex(int iWeaponIndex, int client);  // game.o 0x6076E0
 int  irand(int min, int max);
 void G_AddLean(Entity* ent, float* point);
 extern float delta;          // 0xDD7FE4 (mine test standoff distance)
@@ -1140,9 +1148,11 @@ struct weaponFileInfo_t {
     int     ammoType;             // +0xC0 (weapAmmoType_t; WEAPAMMOTYPE_UMG == 5)
     uint8_t _padC4[0x598 - 0xC4];
     char*   szWorldModel;         // +0x598
-    uint8_t _pad1[0x5D4 - 0x59C];
+    uint8_t _pad1[0x5CC - 0x59C];
+    int     iSharedAmmoCapIndex;  // +0x5CC
+    uint8_t _pad1b[0x5D4 - 0x5D0];
     int     iDamage;              // +0x5D4
-    uint8_t _pad1b[0x5DC - 0x5D8];
+    uint8_t _pad1c0[0x5DC - 0x5D8];
     int     iMinDamagePercent;    // +0x5DC
     int     iDamageInnerRadius;   // +0x5E0
     int     iDamageOuterRadius;   // +0x5E4
@@ -1674,6 +1684,8 @@ void  SceneManager_ResetAllStaticModels(void);       // render.o
 void  AnimationPlayer_DebugDump(Entity* ent);        // anim.o
 void  Cmd_God_f(Entity* ent);                        // g.o 0x44A7A0
 void  Cmd_Notarget_f(Entity* ent);                   // g.o 0x44A850
+void  Cmd_Take_f(Entity* ent);                       // g.o 0x44A390
+void  misc_EntInfo(Entity* pSelf);                   // g.o 0x4620F0
 void  VEH_StopAllEffects(Entity* ent);               // g.o 0x44DC50
 void  G_DebugBox(const float* mins, const float* maxs, const float* color,
                  int depthTest, int duration, int fade);  // g.o 0x4570C0
@@ -1684,7 +1696,7 @@ void  hurt_touch(Entity* self, Entity* other, int bTouched);  // g.o 0x489110
 void  G_Trigger(Entity* self, Entity* other);        // g.o (g_trigger.cpp)
 void  BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o
 int   Com_BitCheck(int* array, int bitNum);          // core.o
-void  Add_Ammo(Entity* ent, int weapon, int count, int fillClip);  // g.o
+int   Add_Ammo(Entity* ent, int weapon, int count, int fillClip);  // g.o 0x44B1A0
 void  EntityHandleDb_Compact(void* self);            // g.o 0x454B00
 extern bool gNoTargetEnabled;                        // g.o
 extern bool gGodModeEnabled;                         // g.o (sv_stubs.h has it)

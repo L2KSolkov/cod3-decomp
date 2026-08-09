@@ -764,3 +764,101 @@ int G_BounceMissile(Entity* ent, trace_t* trace)
     float v13 = ent->s.pos.trDelta[0] - vDelta[0];
     return sqrt(v12 + v13 * v13) > 100.0f;
 }
+
+// ea: 0x00456BB0
+int CanDamage(Entity* targ, const float* origin, Entity* inflictor)
+{
+    float v30 = 15.0f;
+    float dest[5][3];
+    float halfHeight;
+    float v11;
+    if (inflictor == nullptr || inflictor->tagInfo == nullptr
+        || inflictor->tagInfo->parent != targ)
+    {
+        sentient_s* sentient = targ->sentient;
+        if (sentient != nullptr)
+        {
+            if (targ->client != nullptr)
+                v30 = 8.0f;
+            Sentient_GetEyePosition(sentient, dest[4]);
+            float v24 = (dest[4][2] - targ->r.currentOrigin.v.m128_f32[2]) * 0.5f;
+            float traceEnd[4];
+            traceEnd[1] = origin[0] - targ->r.currentOrigin.v.m128_f32[0];
+            traceEnd[2] = origin[1] - targ->r.currentOrigin.v.m128_f32[1];
+            traceEnd[3] = 0.0f;
+            VectorNormalize(&traceEnd[1]);
+            float v6 = dest[4][2] + targ->r.currentOrigin.v.m128_f32[2];
+            float v7 = (targ->r.currentOrigin.v.m128_f32[0] + dest[4][0]) * 0.5f;
+            float v26 = (targ->r.currentOrigin.v.m128_f32[1] + dest[4][1]) * 0.5f;
+            float v8 = v6 * 0.5f;
+            float v9 = (traceEnd[3] * v30) + v8;
+            halfHeight = v8;
+            dest[1][2] = v9 - v24;
+            dest[0][2] = v9 + v24;
+            dest[0][0] = (-traceEnd[2] * v30) + v7;
+            dest[0][1] = (traceEnd[1] * v30) + v26;
+            dest[1][0] = dest[0][0];
+            dest[1][1] = dest[0][1];
+            float v10 = (-v30 * traceEnd[3]) + v8;
+            v11 = (-v30 * traceEnd[1]) + v26;
+            dest[2][0] = (-v30 * -traceEnd[2]) + v7;
+            dest[2][2] = v10 + v24;
+            dest[3][0] = dest[2][0];
+            dest[3][1] = v11;
+            dest[3][2] = v10 - v24;
+        }
+        else
+        {
+            float v12 = (targ->r.absmax.v.m128_f32[2] + targ->r.absmin.v.m128_f32[2]) * 0.5f;
+            float v13 = (targ->r.absmax.v.m128_f32[1] + targ->r.absmin.v.m128_f32[1]) * 0.5f;
+            float v25 = (targ->r.absmax.v.m128_f32[0] + targ->r.absmin.v.m128_f32[0]) * 0.5f;
+            halfHeight = v12;
+            dest[0][2] = v12;
+            v11 = v13 + 15.0f;
+            dest[1][2] = v12;
+            dest[2][2] = v12;
+            dest[3][2] = v12;
+            dest[0][0] = v25 + 15.0f;
+            dest[0][1] = v13 + 15.0f;
+            dest[1][0] = v25 + 15.0f;
+            dest[1][1] = v13 - 15.0f;
+            dest[2][0] = v25 - 15.0f;
+            dest[3][0] = v25 - 15.0f;
+            dest[3][1] = v13 - 15.0f;
+        }
+        dest[2][1] = v11;
+        collision_context_t context;
+        context.__vftable = nullptr;
+        context.pass_entity1.mHandle.mVal = targ->mHandle.mHandle.mVal;
+        context.pass_entity2.mHandle.mVal = 0;
+        context.pass_owner1.mHandle.mVal = 0;
+        context.pass_owner2.mHandle.mVal = 0;
+        context.contentmask = 41951377;
+        math::Position3 zeroMins;
+        math::Position3 zeroMaxs;
+        zeroMins.v = _mm_setzero_ps();
+        zeroMaxs.v = _mm_setzero_ps();
+        for (int i = 0; i < 5; ++i)
+        {
+            math::Position3 start;
+            start.v.m128_f32[0] = dest[i][0];
+            start.v.m128_f32[1] = dest[i][1];
+            start.v.m128_f32[2] = dest[i][2];
+            math::Position3 end;
+            end.v.m128_f32[0] = origin[0];
+            end.v.m128_f32[1] = origin[1];
+            end.v.m128_f32[2] = origin[2];
+            trace_t trace;
+            SV_Trace(&trace, &start, &zeroMins, &zeroMaxs, &end, &context, 0, 1,
+                     bulletPriorityMap, 1, 0.0f);
+            dest[4][0] = trace.endpos.v.m128_f32[0];
+            dest[4][1] = trace.endpos.v.m128_f32[1];
+            dest[4][2] = trace.endpos.v.m128_f32[2];
+            if (trace.fraction == 1.0f || VectorDistance(origin, dest[4]) < 2.0f)
+                break;
+            if (i + 1 >= 5)
+                return 0;
+        }
+    }
+    return 1;
+}

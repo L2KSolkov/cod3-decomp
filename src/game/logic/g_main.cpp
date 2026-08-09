@@ -842,6 +842,171 @@ int GetFollowPlayerState(int clientNum, PlayerState* ps)
     return 1;
 }
 
+// ea: 0x0044A390
+void Cmd_Take_f(Entity* ent)
+{
+    if (g_cheats->integer == 0)
+    {
+        DbLinkedHandle<EntityHandleDb, Entity> h;
+        h.mHandle.mVal = ent->mHandle.mHandle.mVal;
+        SV_GameSendServerCommand(h, va("print \"GAME_CHEATSNOTENABLED\""));
+        return;
+    }
+    if (ent->health <= 0)
+    {
+        DbLinkedHandle<EntityHandleDb, Entity> h;
+        h.mHandle.mVal = ent->mHandle.mHandle.mVal;
+        SV_GameSendServerCommand(h, va("print \"GAME_MUSTBEALIVECOMMAND\""));
+        return;
+    }
+    int amount = atoi(ConcatArgs(2));
+    const char* name = ConcatArgs(1);
+    if (name == nullptr || strlen(name) == 0)
+        return;
+    int take_all = 0;
+    int v9 = 1;
+    if (Q_stricmp(name, "all") == 0)
+    {
+        take_all = 1;
+        goto take_health;
+    }
+    if (Q_stricmpn(name, "health", 6) == 0)
+        goto take_health;
+    if (Q_stricmp(name, "weapons") == 0)
+        goto take_weapons;
+    if (Q_stricmpn(name, "ammo", 4) == 0)
+        goto take_ammo;
+    goto take_allammo;
+
+take_health:
+    if (amount == 0 || (ent->health -= amount) < 1)
+        ent->health = 1;
+    if (take_all == 0)
+        return;
+
+take_weapons:
+    for (v9 = 1; v9 <= BG_GetNumWeapons(); ++v9)
+    {
+        BG_TakePlayerWeapon(&ent->client->ps, v9);
+        ent->client->ps.ammo[BG_AmmoForWeapon(v9)] = 0;
+        ent->client->ps.ammoclip[BG_ClipForWeapon(v9)] = 0;
+    }
+    if (ent->client->ps.weapon != 0)
+    {
+        ent->client->ps.weapon = 0;
+        BG_SelectWeaponIndex(0, ent->GetPlayerIndex());
+    }
+    if (take_all == 0)
+        return;
+
+take_ammo:
+    if (amount != 0)
+    {
+        int weapon = ent->client->ps.weapon;
+        if (weapon != 0)
+        {
+            ent->client->ps.ammo[BG_AmmoForWeapon(weapon)] -= amount;
+            if (ent->client->ps.ammo[BG_AmmoForWeapon(weapon)] < 0)
+            {
+                ent->client->ps.ammoclip[BG_ClipForWeapon(weapon)]
+                    += ent->client->ps.ammo[BG_AmmoForWeapon(weapon)];
+                ent->client->ps.ammo[BG_AmmoForWeapon(weapon)] = 0;
+                if (ent->client->ps.ammoclip[BG_ClipForWeapon(weapon)] < 0)
+                ent->client->ps.ammoclip[BG_ClipForWeapon(weapon)] = 0;
+            }
+        }
+    }
+    else
+    {
+        for (int j = 1; j <= BG_GetNumWeapons(); ++j)
+        {
+            ent->client->ps.ammo[BG_AmmoForWeapon(j)] = 0;
+            ent->client->ps.ammoclip[BG_ClipForWeapon(j)] = 0;
+        }
+    }
+    if (take_all == 0)
+        return;
+
+take_allammo:
+    if (Q_stricmpn(name, "allammo", 7) == 0 && amount != 0)
+    {
+        for (int i = 1; i <= BG_GetNumWeapons(); ++i)
+        {
+            ent->client->ps.ammo[BG_AmmoForWeapon(i)] -= amount;
+            if (ent->client->ps.ammo[BG_AmmoForWeapon(i)] < 0)
+            {
+                ent->client->ps.ammoclip[BG_ClipForWeapon(i)]
+                    += ent->client->ps.ammo[BG_AmmoForWeapon(i)];
+                ent->client->ps.ammo[BG_AmmoForWeapon(i)] = 0;
+                if (ent->client->ps.ammoclip[BG_ClipForWeapon(i)] < 0)
+                ent->client->ps.ammoclip[BG_ClipForWeapon(i)] = 0;
+            }
+        }
+    }
+}
+
+// ea: 0x004620F0
+void misc_EntInfo(Entity* pSelf)
+{
+    float color[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_misc.cpp";
+        AeAssert::gCurrentLine = 42;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float xyz[3];
+    xyz[0] = (pSelf->r.absmax.v.m128_f32[0] + pSelf->r.absmin.v.m128_f32[0]) * 0.5f;
+    xyz[1] = (pSelf->r.absmax.v.m128_f32[1] + pSelf->r.absmin.v.m128_f32[1]) * 0.5f;
+    xyz[2] = (pSelf->r.absmax.v.m128_f32[2] + pSelf->r.absmin.v.m128_f32[2]) * 0.5f;
+    float fInfoScale = g_entinfo_scale.value;
+    Entity* v5 = EntityHandleDb::sInst.Find(640, hash_const.player);
+    if (v5 != nullptr)
+    {
+        float* m128_f32 = v5->client->ps.origin.v.m128_f32;
+        float v7 = m128_f32[1] - pSelf->r.currentOrigin.v.m128_f32[1];
+        float v8 = m128_f32[2] - pSelf->r.currentOrigin.v.m128_f32[2];
+        float v9 = m128_f32[0] - pSelf->r.currentOrigin.v.m128_f32[0];
+        float fDist = sqrt(v8 * v8 + v7 * v7 + v9 * v9);
+        if (g_entinfo_maxdist.value > 0.0f && fDist > g_entinfo_maxdist.value)
+            return;
+        fInfoScale = (fDist * g_entinfo_scale.value) * 0.0026041667f;
+    }
+    G_DebugBox(pSelf->r.absmin.v.m128_f32, pSelf->r.absmax.v.m128_f32,
+               colorMagenta, 1, 0, 0);
+    Broc::string::Block* mBlock = pSelf->mClassName.mBlock;
+    if (mBlock == nullptr || (mBlock + 1) == nullptr
+        || ((char*)&(mBlock + 1)->mBuff)[0] == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_misc.cpp";
+        AeAssert::gCurrentLine = 64;
+        AeAssert::gCurrentExpr = "pSelf->mClassName.IsDefined() && !pSelf->mClassName.is_empty()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    const char* v13;
+    if (pSelf->targetname.mBlock == (Broc::string::Block*)-12)
+    {
+        v13 = "<noname>";
+    }
+    else
+    {
+        Broc::string::Block* v12 = pSelf->targetname.mBlock;
+        v13 = v12 != nullptr ? (const char*)&v12[1] : &defaultFileName[0];
+    }
+    Broc::string::Block* v14 = pSelf->mClassName.mBlock;
+    const char* v15 = (const char*)&v14[1];
+    if (v14 == nullptr)
+        v15 = &defaultFileName[0];
+    const char* v16 = va("%i : %s : %i : %s", pSelf->mHandle.mHandle.mVal,
+                         v13, pSelf->health, v15);
+    CL_AddDebugString(xyz, color, fInfoScale * 0.75f, v16, 1);
+}
+
 // ea: 0x0044B8C0
 void G_RegisterCvars(void)
 {

@@ -707,3 +707,63 @@ void FinishSpawningItem(Entity* ent, int msec)
         G_FreeEntity(ent, msec);
     }
 }
+
+// ea: 0x0044B1A0
+int Add_Ammo(Entity* ent, int weapon, int count, int fillClip)
+{
+    int v4 = BG_AmmoForWeapon(weapon);
+    int v6 = BG_ClipForWeapon(weapon);
+    Client* client = ent->client;
+    int iClipIndex = v6;
+    int iOldClip = client->ps.ammoclip[v6];
+    int v14 = client->ps.ammo[v4];
+    int noPack = 0;
+    client->ps.ammo[v4] = count + v14;
+    if (BG_WeaponIsClipOnly(weapon) != 0)
+    {
+        BG_GivePlayerWeapon(&ent->client->ps, weapon);
+        noPack = 1;
+    }
+    if (fillClip != 0 || noPack != 0)
+        Fill_Clip(&ent->client->ps, weapon);
+    if (ent->actor != nullptr || noPack == 0)
+    {
+        if (ent->client->ps.ammo[v4] > BG_GetAmmoTypeMax(v4))
+            ent->client->ps.ammo[v4] = BG_GetAmmoTypeMax(v4);
+    }
+    else
+    {
+        ent->client->ps.ammo[v4] = 0;
+    }
+    if (ent->client->ps.ammoclip[iClipIndex] > BG_GetAmmoClipSize(iClipIndex))
+        ent->client->ps.ammoclip[iClipIndex] = BG_GetAmmoClipSize(iClipIndex);
+    if (BG_GetInfoForWeapon(weapon)->iSharedAmmoCapIndex >= 0)
+    {
+        int counta = BG_GetMaxPickupableAmmo(&ent->client->ps, weapon);
+        if (counta < 0)
+        {
+            Client* v9 = ent->client;
+            if (BG_WeaponIsClipOnly(weapon) == 0)
+            {
+                v9->ps.ammo[v4] += counta;
+                Client* v13 = ent->client;
+                if (v13->ps.ammo[v4] < 0)
+                    v13->ps.ammo[v4] = 0;
+                return ent->client->ps.ammo[v4] + ent->client->ps.ammoclip[iClipIndex]
+                       - iOldClip - v14;
+            }
+            v9->ps.ammoclip[iClipIndex] += counta;
+            Client* v11 = ent->client;
+            if (v11->ps.ammoclip[iClipIndex] <= 0)
+            {
+                v11->ps.ammoclip[iClipIndex] = 0;
+                BG_TakePlayerWeapon(&ent->client->ps, weapon);
+                return 0;
+            }
+            return ent->client->ps.ammo[v4] + ent->client->ps.ammoclip[iClipIndex]
+                   - iOldClip - v14;
+        }
+    }
+    return ent->client->ps.ammo[v4] + ent->client->ps.ammoclip[iClipIndex]
+           - iOldClip - v14;
+}
