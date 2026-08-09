@@ -1047,3 +1047,289 @@ void CG_Item(Entity* entity)
         }
     }
 }
+
+extern void CG_General(Entity* entity);
+extern void CG_Portal(Entity* entity);
+extern void CG_mg42(Entity* entity);
+extern void CG_WeaponUpdateLoopingSound(Entity* entity);
+extern void G_GetVehicleInfo(Entity* ent);
+extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
+extern bool IsPlayerFullySeatedInVehicle(Entity* player);
+extern int AnimationPlayer_IsPartialIdle(void* player, bool checkLooping);
+extern int Entity_GetPlayerIndex(Entity* ent);
+extern bool Camera_IsTweening(void* cam);
+extern bool IsLocalPlayer(Entity* ent);
+extern int level_time;
+extern int dword_F62964[4 * 1580];
+extern int dword_F6355C[4 * 1580];
+extern float dword_F63C70[4 * 1580];
+extern float* gCamera;
+extern int dword_180000;
+extern unsigned int head_hash_0;
+extern unsigned int HashString_CalcHash(const char* str);
+extern float VectorDistance(const float* v1, const float* v2);
+extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
+                                   float* tagMat);
+extern Entity* GetPlayer2(int idx);
+void CG_Player(Entity* entity);
+void CG_Actor(Entity* entity);
+
+// ea: 0x00689A80
+void CG_EntityEffects()
+{
+}
+
+// ea: 0x006A1AD0
+void CG_ProcessEntity(Entity* entity)
+{
+    switch (entity->s.eType)
+    {
+    case 0u: CG_General(entity); break;
+    case 1u: CG_Player(entity); break;
+    case 2u: CG_Item(entity); break;
+    case 3u: CG_Missile(entity); break;
+    case 4u: CG_Mover(entity); break;
+    case 5u: CG_Portal(entity); break;
+    case 6u:
+    case 8u:
+    case 9u:
+        return;
+    case 7u: CG_ScriptMover(entity); break;
+    case 0xAu: CG_mg42(entity); break;
+    case 0xBu:
+    case 0xDu: CG_Actor(entity); break;
+    case 0xCu: CG_ActorSpawner(entity); break;
+    case 0xEu:
+    case 0xFu: CG_Vehicle(entity); break;
+    default:
+        CG_Error("Bad entity type: %i\n", entity->s.eType);
+        break;
+    }
+}
+
+// ea: 0x0069B160
+void CG_Actor(Entity* entity)
+{
+    int eFlags = entity->s.eFlags;
+    if ((eFlags & 0x80u) == 0 && (eFlags & 0x100000) == 0)
+    {
+        void* mDObj = entity->mDObj;
+        if (mDObj != nullptr)
+        {
+            refEntity_t* RefEntity =
+                (refEntity_t*)Entity_GetRefEntity(entity);
+            RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+            RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+            RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+            RefEntity->lightingOrigin[0] =
+                entity->s.lerpOrigin.v.m128_f32[0];
+            RefEntity->lightingOrigin[1] =
+                entity->s.lerpOrigin.v.m128_f32[1];
+            RefEntity->lightingOrigin[2] =
+                entity->s.lerpOrigin.v.m128_f32[2] + 32.0f;
+            RefEntity->renderfx = 128;
+            RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+            RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+            RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+            AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            RefEntity->reType = 1;
+            RefEntity->obj = mDObj;
+            RefEntity->entity = entity;
+            if ((entity->s.eFlags & 0x100) != 0)
+                RefEntity->renderfx |= 0x20u;
+            RE_AddRefEntityToScene(RefEntity, -1);
+            CG_WeaponUpdateLoopingSound(entity);
+        }
+    }
+}
+
+static unsigned int sHeadHashInit = 0;
+
+// ea: 0x0069FAA0
+void CG_Player(Entity* entity)
+{
+    int eFlags = entity->s.eFlags;
+    if ((eFlags & 0x80u) == 0
+        && (dword_F6355C[1580 * currCl] != 0
+            || (eFlags & 0x100000) != 0
+            || *(int*)(dword_F62964[1580 * currCl] + 52) >= 6
+            || entity != EntityManager_GetPlayer(EntityManager_sInst,
+                                                 currCl)))
+    {
+        if ((entity->s.eFlags & 0x100000) == 0)
+            goto LABEL_72;
+        Entity* mObject = EntityHandleDb_Get(entity->r.mOwner.mHandle.mVal);
+        G_GetVehicleInfo(mObject);
+        if (entity != EntityManager_GetPlayer(EntityManager_sInst, currCl))
+            goto LABEL_31;
+        if (IsPlayerFullySeatedInVehicle(entity))
+        {
+            Client* client = entity->client;
+            if (client->ps.vehType != 1 && client->ps.vehPos == 0)
+                goto LABEL_31;
+        }
+        if ((sHeadHashInit & 1) == 0)
+        {
+            sHeadHashInit |= 1u;
+            head_hash_0 = HashString_CalcHash("bip01 head");
+        }
+        float tagMtx[31];
+        G_DObjGetWorldTagMatrix(entity, head_hash_0, tagMtx);
+        float v6 = entity->client->ps.vehType != 2 ? 64.0f : 26.0f;
+        if (v6 <= VectorDistance(&tagMtx[12],
+                                 &dword_F63C70[1580 * currCl]))
+        {
+        LABEL_31:
+            if (!IsPlayerFullySeatedInVehicle(entity)
+                || entity->client->ps.vehType != 2
+                || entity->client->ps.vehPos != 0)
+            {
+                if (entity != EntityManager_GetPlayer(EntityManager_sInst,
+                                                      currCl)
+                    || dword_F6355C[1580 * currCl] != 0
+                    || !IsPlayerFullySeatedInVehicle(entity)
+                    || entity->client->ps.vehType != 2
+                    || (Camera_IsTweening(
+                            &((char*)gCamera)[0x1F0
+                                              * Entity_GetPlayerIndex(
+                                                  entity)])
+                        || ((entity->client->ps.vehPos != 6
+                             && entity->client->ps.vehPos != 1)
+                            || !IsLocalPlayer(entity))
+                               && (*(int*)((char*)&gCamera[currCl] + 0x194)
+                                       != 1
+                                   || entity != GetPlayer2(currCl))))
+                {
+                LABEL_72:
+                    if (entity->sentient != nullptr)
+                    {
+                        Client* v10 = entity->client;
+                        int playerState = v10->pers.playerState;
+                        if (playerState != 0 && playerState != 2)
+                        {
+                            void* obj = entity->mDObj;
+                            if (obj != nullptr)
+                            {
+                                int time = level_time;
+                                if (v10->mNoDrawTime > level_time)
+                                {
+                                    v10->mNoDrawTime = 0;
+                                    time = level_time;
+                                }
+                                Client* v13 = entity->client;
+                                if (v13->mNoDrawTime <= time - 200)
+                                {
+                                    void* v14 =
+                                        ((void**)obj)[4];  // animPlayers[0]
+                                    if (v14 == nullptr
+                        || AnimationPlayer_IsPartialIdle(v14, true) != 0)
+                                    {
+                                        v13->mNoDrawTime = time;
+                                        return;
+                                    }
+                                    refEntity_t* RefEntity =
+                                        (refEntity_t*)Entity_GetRefEntity(
+                                            entity);
+                                    float v16 =
+                                        entity->r.currentOrigin.v.m128_f32[2];
+                                    float v17 =
+                                        entity->r.currentOrigin.v.m128_f32[0];
+                                    float v18 =
+                                        entity->r.currentOrigin.v.m128_f32[1];
+                                    RefEntity->origin[0] = v17;
+                                    RefEntity->origin[1] = v18;
+                                    RefEntity->origin[2] = v16;
+                                    RefEntity->lightingOrigin[0] = v17;
+                                    RefEntity->lightingOrigin[1] = v18;
+                                    RefEntity->lightingOrigin[2] = v16 + 32.0f;
+                                    RefEntity->oldorigin[0] = v17;
+                                    RefEntity->oldorigin[1] = v18;
+                                    RefEntity->oldorigin[2] = v16;
+                                    math::Position3* p_currentAngles;
+                                    if ((entity->s.eFlags & 0x100000) != 0)
+                                    {
+                                        Entity* v21 = EntityHandleDb_Get(
+                                            entity->r.mOwner.mHandle.mVal);
+                                        if (v21 == nullptr
+                                            || v21->scr_vehicle == nullptr)
+                                            CG_ASSERT(
+                                                "vehicle && "
+                                                "vehicle->scr_vehicle",
+                                                "c:\\cod\\code\\game\\"
+                                                "cg_player.cpp",
+                                                399);
+                                        G_GetVehicleInfo(v21);
+                                        if (entity->tagInfo != nullptr)
+                                        {
+                                            if (IsPlayerFullySeatedInVehicle(
+                                                    entity))
+                                            {
+                                                float parentAxis[4][3];
+                                                G_CalcTagParentAxis(
+                                                    entity, parentAxis);
+                                                RefEntity->axis[0][0] =
+                                                    parentAxis[0][0];
+                                                RefEntity->axis[0][1] =
+                                                    parentAxis[0][1];
+                                                RefEntity->axis[0][2] =
+                                                    parentAxis[0][2];
+                                                RefEntity->axis[1][0] =
+                                                    parentAxis[1][0];
+                                                RefEntity->axis[1][1] =
+                                                    parentAxis[1][1];
+                                                RefEntity->axis[1][2] =
+                                                    parentAxis[1][2];
+                                                RefEntity->axis[2][0] =
+                                                    parentAxis[2][0];
+                                                RefEntity->axis[2][1] =
+                                                    parentAxis[2][1];
+                                                RefEntity->axis[2][2] =
+                                                    parentAxis[2][2];
+                                                goto LABEL_60;
+                                            }
+                                        LABEL_56:
+                                            AnglesToAxis(
+                                                &entity->r.currentAngles,
+                                                RefEntity->axis);
+                                        LABEL_60:
+                                            RefEntity->renderfx = 128;
+                                            RefEntity->reType = 1;
+                                            RefEntity->obj = obj;
+                                            RefEntity->entity = entity;
+                                            if ((entity->s.eFlags & 0x100)
+                                                != 0)
+                                                RefEntity->renderfx = 160;
+                                            RE_AddRefEntityToScene(RefEntity,
+                                                                   -1);
+                                            CG_WeaponUpdateLoopingSound(
+                                                entity);
+                                            return;
+                                        }
+                                        p_currentAngles =
+                                            &entity->r.currentAngles;
+                                    }
+                                    else
+                                    {
+                                        GetPlayer2(currCl);
+                                        entity->r.currentAngles.v.m128_f32[0] =
+                                            0.0f;
+                                        entity->r.currentAngles.v.m128_f32[1] =
+                                            entity->client
+                                                ->mLastTorsoIKLegsYaw;
+                                        entity->r.currentAngles.v.m128_f32[2] =
+                                            0.0f;
+                                        p_currentAngles =
+                                            &entity->r.currentAngles;
+                                    }
+                                    AnglesToAxis(p_currentAngles,
+                                                 RefEntity->axis);
+                                    goto LABEL_60;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

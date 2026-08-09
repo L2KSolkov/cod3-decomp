@@ -235,6 +235,11 @@ struct AnimIKFireEvent {
 struct Client {
     PlayerState ps;  // +0x00
     AnimIKFireEvent AnimIKFireEvents[15];  // +0x5D0
+    int mNoDrawTime;  // +0x654
+    float mLastTorsoIKLegsYaw;  // +0x658
+    struct {
+        int playerState;  // +0x00
+    } pers;              // +0x65C
 };
 
 namespace AeAssert {
