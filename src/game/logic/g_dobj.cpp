@@ -48,6 +48,83 @@ int G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode)
     return result;
 }
 
+// ea: 0x004690B0
+void UpdateAnims(int msec)
+{
+    cdl_proftimer_dobj_anim.start();
+    float deltaT = msec * 0.001f;
+    TaskFunctor1_Anim ftorA;
+    ftorA.__vftable = nullptr;
+    ftorA.fn = nullptr;
+    ftorA.deltaT = deltaT;
+    TaskHandler_Update(AnimationUpdateTask_sHandler(), deltaT, &ftorA);
+    TaskFunctor1_XAnim ftorX1;
+    ftorX1.__vftable = nullptr;
+    ftorX1.fn = (void*)0x1;  // UpdateServerTime slot
+    ftorX1.deltaT = deltaT;
+    TaskHandler_Update(XAnimUpdateTask_sHandler(), deltaT, &ftorX1);
+    TaskFunctor1_XAnim ftorX2;
+    ftorX2.__vftable = nullptr;
+    ftorX2.fn = (void*)0x2;  // CalcAnim1 slot
+    ftorX2.deltaT = deltaT;
+    TaskHandler_Update(XAnimUpdateTask_sHandler(), deltaT, &ftorX2);
+    for (int i = 0; i < 16; ++i)
+    {
+        Entity* v2 = EntityManager::sInst->mPlayers[i];
+        if (v2 != nullptr && v2->client != nullptr)
+        {
+            tagInfo_t* tagInfo = v2->tagInfo;
+            if (tagInfo != nullptr)
+            {
+                Entity* v4 = tagInfo->parent;
+                if (v4->scr_vehicle != nullptr)
+                    VEH_UpdateControllers(v4, 0);
+            }
+        }
+    }
+    AnimQueue_ExecuteMatrixQueue();
+    TaskFunctor1_Anim ftorA2;
+    ftorA2.__vftable = nullptr;
+    ftorA2.fn = (void*)0x3;  // ApplyPose slot
+    ftorA2.deltaT = deltaT;
+    TaskHandler_Update(AnimationUpdateTask_sHandler(), deltaT, &ftorA2);
+    TaskFunctor1_XAnim ftorX3;
+    ftorX3.__vftable = nullptr;
+    ftorX3.fn = (void*)0x4;  // CalcAnim2 slot
+    ftorX3.deltaT = deltaT;
+    TaskHandler_Update(XAnimUpdateTask_sHandler(), deltaT, &ftorX3);
+    int mSize = dobjects.mSize;
+    for (int v6 = 0; v6 < dobjects.mSize; ++v6)
+    {
+        if (v6 < 0 || v6 >= mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+            AeAssert::gCurrentLine = 167;
+            AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        unsigned int v7 = dobjects.mElements[v6].mHandle.mVal & 0xFFF;
+        if (v7 < 0x540
+            && dobjects.mElements[v6].mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v7].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+            if (mObject != nullptr)
+            {
+                DObjUpdateLod(mObject);
+                if ((mObject->flags & 0x10000) == 0
+                    || (mObject->mFlags & 0x10) != 0)
+                    CG_DoControllers(mObject, nullptr);
+            }
+        }
+        mSize = dobjects.mSize;
+    }
+    AnimQueue_ClearMatrixQueue();
+    cdl_proftimer_dobj_anim.stop();
+}
+
 // ea: 0x0044A230
 void G_UpdateInvalidatedNode(Entity* /*pEnt*/)
 {

@@ -1863,9 +1863,14 @@ void  FireWeaponMelee(Entity* ent);                // g.o 0x48AA50
 void  UpdateAnims(int msec);                      // g.o
 void  AdvanceSceneAnims(float delta);             // g.o
 void  UpdatePlayer(void);                         // g.o 0x458270
+void  UpdateAnims(int msec);                      // g.o 0x4690B0
 void  j_nullsub_20(void);                         // g.o
 void  UpdateRigidBody(float delta_t);             // g.o
 void  ClientEndFrame(Entity* ent, int msec);      // g.o
+
+// cg.o / anim.o cross-object
+void  CG_DoControllers(Entity* entity, int* partBits);
+void  VEH_UpdateControllers(Entity* entity, int msec);
 void  Path_DrawDebug(void);                       // g.o
 void  G_DrawVehiclePaths(void);                   // g.o
 void  G_DrawEntityBBoxes(void);                   // g.o
@@ -1880,6 +1885,27 @@ void  MultiplayerMgr_SpreadFire(void* self, Entity* player, float gunPitch,
 extern int g_listEntity;                          // g.o
 extern vmCvar_t g_performanceTest;                // g.o
 extern cdl_proftimer cdl_proftimer_ent_actors;    // game.o
+extern cdl_proftimer cdl_proftimer_dobj_anim;     // game.o
+
+// anim.o task-handler system (external; opaque views)
+struct TaskHandler;
+struct TaskFunctor {
+    void* __vftable;
+};
+struct TaskFunctor1_Anim : TaskFunctor {
+    void* fn;
+    float deltaT;
+};
+struct TaskFunctor1_XAnim : TaskFunctor {
+    void* fn;
+    float deltaT;
+};
+extern TaskHandler* AnimationUpdateTask_sHandler(void);
+extern TaskHandler* XAnimUpdateTask_sHandler(void);
+void TaskHandler_Update(TaskHandler* h, float deltaT, TaskFunctor* ftor);
+void AnimQueue_ExecuteMatrixQueue(void);
+void AnimQueue_ClearMatrixQueue(void);
+void DObjUpdateLod(Entity* e);
 extern int gCurrentCamera;                        // g.o
 extern int gCamera;                               // g.o
 void  InteractionController_Update(void* self, float deltaT);  // cl.o
