@@ -1081,6 +1081,8 @@ static_assert(sizeof(cspField_t) == 0xC, "cspField_t size mismatch");
 // externs
 float  AngleNormalize180(float angle);
 float  AngleNormalize360(float angle);
+float  AngleDelta(float a1, float a2);              // core.o 0x4B9CD0
+int    R_CellForPoint(const math::Position3* pos);  // render.o 0x6C52B0
 float  AngleSubtract(float a1, float a2);
 float  PitchForYawOnNormal(float fYaw, const float* vNormal);
 void   gunrandom(float* x, float* y);
