@@ -257,6 +257,10 @@ struct MultiplayerMgr {
                   int netIndex, bool scriptFrom, int typeIndex);  // ?DropItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@ABVPosition3@math@@ABVDir3@2@2H_NH@Z
     void ApplyLocalPhysicsToVehicle(Entity* vehicle, math::Position3* position,
                                     math::Position3* angles, float* velocity);  // ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@AAVPosition3@math@@1QAM@Z
+    void AttemptToGetInVehicle(Entity* vehicle, Entity* player, int seatIdx,
+                               int entryIdx);  // ?AttemptToGetInVehicle@MultiplayerMgr@@QAEXPAVEntity@@0HH@Z
+    void AttemptVehicleSeatChange(Entity* vehicle, Entity* player, int newSeatIdx);  // ?AttemptVehicleSeatChange@MultiplayerMgr@@QAEXPAVEntity@@0H@Z
+    void GetOutOfVehicle(Entity* vehicle, int seatIdx);  // ?GetOutOfVehicle@MultiplayerMgr@@QAEXPAVEntity@@H@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 

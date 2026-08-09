@@ -60,7 +60,7 @@ struct vehicleAnimMap_t {
     int  numEntryTags;       // +0x0C
     vehicleAnimRoute_t* routes;  // +0x10
     int  numRoutes;          // +0x14
-    void* exitMap;           // +0x18
+    int* exitMap;            // +0x18
 };
 static_assert(sizeof(vehicleAnimMap_t) == 0x1C, "vehicleAnimMap_t size mismatch");
 
@@ -213,7 +213,8 @@ struct scr_vehicle_t {
     uint8_t mHasEntryPoints;  // +0x558
     uint8_t _pad559[0x55C - 0x559];
     int     noEntryTime;      // +0x55C
-    uint8_t _pad560[0x568 - 0x560];
+    int     noExitTime;       // +0x560
+    int     forceGunnerCrouchTime;  // +0x564
     vehicleAnimMap_t* animMap;  // +0x568
     vehicle_follow* follow;   // +0x56C
     static int sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
@@ -2097,6 +2098,7 @@ void  InteractionController_EndInteraction(void* self, int wasInteracting);  // 
 void  InitCvars(int restart);                        // g.o 0x44B950
 void  Cmd_UFO_f(Entity* ent);                        // g.o 0x44A9C0
 bool  G_IsPlayerInVehicle(Entity* player);           // g.o 0x46E0B0
+void  Scr_Vehicle_Use(Entity* pEnt, Entity* pOther);  // g.o 0x480DA0
 vehicle_node_t* SP_create_info_vehicle_node(void);   // g.o 0x45F210
 float Scr_Vehicle_CalcSpeed(const scr_vehicle_t* pVehicle);  // g.o 0x44F3D0
 void  ClientBegin(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467570

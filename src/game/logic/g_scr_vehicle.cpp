@@ -2284,6 +2284,142 @@ float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker,
     return ((1.0f - v16) * v14 + scalar_best_side * v16) * scale * 0.69999999f;
 }
 
+static int last_use;  // @ 0xEF5934 (g_scr_vehicle.cpp local)
+
+// ea: 0x00480DA0
+void Scr_Vehicle_Use(Entity* pEnt, Entity* pOther)
+{
+    Client* v21 = pOther->client;
+    if (v21 == nullptr)
+        return;
+    if (last_use != 0 && last_use > level.time - 1000 && last_use <= level.time)
+        return;
+    last_use = level.time;
+    if ((0x100000 & v21->ps.eFlags) == 0)
+    {
+        if (IsVehFlipped(pEnt))
+        {
+            math::Position3 hitp;
+            hitp.v = pOther->r.currentOrigin.v;
+            math::Dir3 hitd;
+            hitd.v = _mm_setzero_ps();
+            hitd.v.m128_f32[2] = 1.0f;
+            ApplyPhysics(pEnt, &hitp, &hitd, 70.0f, false, HITLOC_TORSO_UPR);
+        }
+        else if (v21->ps.ctf_has_flag == 0
+                 || s_vehicleInfos[pEnt->scr_vehicle->infoIdx]->type != 2)
+        {
+            if (pEnt->scr_vehicle->CanMantleVehicle(pOther))
+            {
+                MultiplayerMgr::sInst->AttemptToGetInVehicle(pEnt, pOther, 7,
+                                                             v21->mVehicleAnimRoute);
+            }
+            else
+            {
+                scr_vehicle_t* scr_vehicle = pEnt->scr_vehicle;
+                if (scr_vehicle == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                    AeAssert::gCurrentLine = 8906;
+                    AeAssert::gCurrentExpr = "pEnt->scr_vehicle";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Entity not a vehicle"))
+                        __debugbreak();
+                }
+                if (s_vehicleInfos[scr_vehicle->infoIdx]->type == 2)
+                {
+                    int v17 = 0;
+                    while (HandleDbToEnt(scr_vehicle->seats[v17].occupant) != nullptr)
+                    {
+                        ++v17;
+                        if (v17 > 10)
+                            return;
+                    }
+                    MultiplayerMgr::sInst->AttemptToGetInVehicle(pEnt, pOther, v17,
+                                                                 v21->mVehicleAnimRoute);
+                }
+                else
+                {
+                    float distToUsePoint;
+                    int entryPoint;
+                    if (!scr_vehicle->CanUseVehicle(pOther, &distToUsePoint,
+                                                    &entryPoint))
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                        AeAssert::gCurrentLine = 8934;
+                        AeAssert::gCurrentExpr = "canUseVehicle";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Player not in an entry point"))
+                            __debugbreak();
+                    }
+                    if (pOther->client->ps.ctf_has_flag == 0
+                        || sEntryPointSeatAssociation[entryPoint] == 2)
+                    {
+                        int seatIdx = sEntryPointSeatAssociation[entryPoint];
+                        if (HandleDbToEnt(pEnt->scr_vehicle->seats[seatIdx].occupant)
+                            == nullptr)
+                            MultiplayerMgr::sInst->AttemptToGetInVehicle(
+                                pEnt, pOther, seatIdx, v21->mVehicleAnimRoute);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        scr_vehicle_t* v4 = pEnt->scr_vehicle;
+        if (v4->noExitTime > level.time)
+            return;
+        if (v21->ps.vehType == 2 && v21->ps.vehPos == 0
+            && HandleDbToEnt(v4->seats[7].occupant) != nullptr)
+        {
+            *(int*)((char*)v21 + 0xB78) = level.time;
+        }
+        else if (v21->ps.vehPos == 6)
+        {
+            MultiplayerMgr::sInst->AttemptVehicleSeatChange(pEnt, pOther, 1);
+        }
+        else if (IsPlayerFullySeatedInVehicle(pOther))
+        {
+            scr_vehicle_t* v6 = pEnt->scr_vehicle;
+            vehicleAnimMap_t* animMap = v6->animMap;
+            if (animMap != nullptr && animMap->exitMap != nullptr)
+            {
+                Client* client = pOther->client;
+                int vehPos = client->ps.vehPos;
+                int v11 = animMap->exitMap[vehPos];
+                if (v11 == -1
+                    || v6->GetSwitchPosRoute(v11, vehPos,
+                                             client->ps.ctf_has_flag != 0) < 0)
+                {
+                    tlPrintf("=======================================GetOutOfVehicle due to a use during an anim\n");
+                    MultiplayerMgr::sInst->GetOutOfVehicle(
+                        pEnt, pOther->client->ps.vehPos);
+                }
+                else
+                {
+                    MultiplayerMgr::sInst->AttemptVehicleSeatChange(pEnt, pOther,
+                                                                    v11);
+                }
+            }
+            else
+            {
+                tlPrintf("=======================================GetOutOfVehicle due to a use\n");
+                MultiplayerMgr::sInst->GetOutOfVehicle(pEnt,
+                                                       pOther->client->ps.vehPos);
+            }
+        }
+        else
+        {
+            Client* v5 = pOther->client;
+            if (v5->ps.vehType == 2 && v5->mVehicleAnimStage <= 4)
+                v5->mVehicleAnimGetOut = true;
+        }
+    }
+}
+
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
 static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
 static scr_vehicle_t s_backup;     // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)
