@@ -785,6 +785,25 @@ extern vmCvar_t pmove_msec;            // pmove_msec
 extern vmCvar_t pmove_fixed;           // pmove_fixed
 extern vmCvar_t g_debugMove;           // g_debugMove
 extern float    radius_2;              // g.o @ 0xDD8260
+extern int    mem_get_used_bytes(int heap_name);   // mem_heap
+extern int    mem_get_free_bytes(int heap_name);   // mem_heap
+extern int    MEM_HEAP_NONE;                        // mem_heap
+extern float  mainLWM;                              // g.o
+extern float  brocLWM;                              // g.o
+extern void*  gBrocHeap;                            // core.o
+extern void*  gApsHeap;                             // core.o
+extern float  textScale;                            // render.o
+extern float  fontScale;                            // render.o
+extern float  alpha;                                // render.o
+extern float  barWidth;                             // render.o
+extern float  spacing;                              // render.o
+extern float  tickWidth;                            // render.o
+extern float  left;                                 // render.o
+extern float  MBRenderScale;                        // render.o
+extern float  textOffset;                           // render.o
+extern float  bigHeapScale;                         // render.o
+extern int    gRenderMemGraph;                      // render.o
+extern float nglPerfInfo_FPS;                       // ngl.o (offset 0)
 extern vmCvar_t g_reloading;           // g_reloading
 extern void    Scr_Error(const char* error);  // scr.o
 extern void    tlPrintf(const char* fmt, ...);  // core.o
@@ -984,6 +1003,16 @@ struct game_hudelem_s {
 };
 static_assert(sizeof(game_hudelem_s) == 0x7C, "game_hudelem_s size mismatch");
 extern game_hudelem_s g_hudelems[16];  // 0xEA5580
+struct ae_formatted_string_256w {
+    unsigned short mBuff[256];  // +0x00
+    int mLength;                // +0x200
+};
+struct PakInfoNode {
+    Broc::string longName;  // +0x00
+};
+extern int gPakHeaps_m_size;       // core.o
+extern void* gPakHeaps_elements[32];  // core.o
+extern float iMemUsed, iMemFree, memPeak;  // g.o statics
 void HudElem_SetDefaults(game_hudelem_s* hud);  // ea: 0x44AFE0 (inline COMDAT)
 void Scr_ParamError(unsigned int index, const char* error);
 
@@ -1857,6 +1886,10 @@ extern Entity* g_path_owner;
 namespace DebugRender {
 void RenderSphere(const math::Position3* pos, float radius, const float* argb_color);
 void RenderBox(const math::Position3* bmin, const math::Position3* bmax, const float* col);
+void RenderQuad2D(float l, float t, float r, float b, float z,
+                  const float* col);  // render.o
+void RenderText(const char* str, int x, int y, const float* col,
+                float depth, float size);  // render.o
 }
 void  G_MissileTrace(trace_t* results, const math::Position3* start,
                      const math::Position3* end,
@@ -2742,7 +2775,15 @@ void  ParseVehiclePhysicsConfigString(const char* szKey, const ConfigString* pCf
 struct StatusBar {
     static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
     static void Init();               // ?Init@StatusBar@@YAXXZ
+    static void Render();             // ?Render@StatusBar@@SAXXZ
 };
+
+namespace AeStringSupport {
+extern void CStrToAeStr(char* oBuff, int* oLen, int capacity,
+                        const char* src);
+extern void SubStr(char* oBuff, int* oLen, const char* src, int begin,
+                   int len, int srcCapacity);
+}
 
 
 struct rb_extra_info {

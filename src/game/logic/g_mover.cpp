@@ -848,6 +848,110 @@ draw_box:
     }
 }
 
+// ea: 0x00460860
+void StatusBar::Render()
+{
+    if (StatusBar::sStatusBarActive->integer == 0)
+        return;
+    static bool sS5_41 = false;
+    static int sStatus_iMemUsed = 0;
+    static int sStatus_iMemFree = 0;
+    static float sStatus_memPeak = 0.0f;
+    if (!(sS5_41 & 1))
+    {
+        sS5_41 |= 1u;
+        sStatus_iMemUsed = mem_get_used_bytes(MEM_HEAP_NONE);
+    }
+    if (!(sS5_41 & 2))
+    {
+        sS5_41 |= 2u;
+        sStatus_iMemFree = mem_get_free_bytes(MEM_HEAP_NONE);
+    }
+    float memFree = (float)sStatus_iMemFree;
+    float memUsed = (float)sStatus_iMemUsed;
+    float peak = (sS5_41 & 4) != 0
+                     ? sStatus_memPeak
+                     : memUsed * 0.00000095367432f;
+    if (!(sS5_41 & 4))
+    {
+        sS5_41 |= 4u;
+        sStatus_memPeak = memUsed * 0.00000095367432f;
+        peak = sStatus_memPeak;
+    }
+    float cur = memUsed * 0.00000095367432f;
+    if (cur > peak)
+    {
+        sStatus_memPeak = cur;
+        peak = cur;
+    }
+    for (int i = 0; i < gPakHeaps_m_size && i < 32; ++i)
+    {
+        void* heap = gPakHeaps_elements[i];
+        if (heap == nullptr)
+            continue;
+        int size = *(int*)((char*)heap + 0x484);
+        int used = *(int*)((char*)heap + 0x488);
+        memFree += (float)(size - used);
+    }
+    memFree *= 0.00000095367432f;
+    char zoneId[64];
+    int zoneLen = 63;
+    AeStringSupport::CStrToAeStr(zoneId, &zoneLen, 63, "NONE");
+    const PakInfoNode* cellInfo =
+        (const PakInfoNode*)StreamZoneManager::sInst->GetCellPakInfo(
+            StreamZoneManager::sInst->mLastCellNum);
+    if (cellInfo != nullptr)
+    {
+        char zoneName[64];
+        int nameLen = 63;
+        AeStringSupport::CStrToAeStr(zoneName, &nameLen, 63,
+                                     cellInfo->longName.c_str());
+        int v7 = nameLen - 1;
+        if (nameLen != 0)
+        {
+            while (zoneName[v7] != '_')
+            {
+                if (--v7 < 0)
+                    break;
+            }
+        }
+        if (v7 < 0)
+            v7 = 0;
+        zoneLen = 63;
+        AeStringSupport::SubStr(zoneId, &zoneLen, zoneName, v7 + 1,
+                                nameLen - v7 - 1, 63);
+    }
+    int yOff = 0;
+    if (ServerTime::sInst.mTickDelta == 0.0f)
+        yOff = -60;
+    if (mainLWM > memFree)
+        mainLWM = memFree;
+    float brocFree = 0.0f;
+    if (gBrocHeap != nullptr)
+    {
+        int size = *(int*)((char*)gBrocHeap + 0x484);
+        int used = *(int*)((char*)gBrocHeap + 0x488);
+        if (used > 0)
+        {
+            brocFree = (float)(size - used) * 0.00000095367432f;
+            if (brocLWM > brocFree)
+                brocLWM = brocFree;
+        }
+    }
+    char txt[512];
+    sprintf(txt, "FPS[%2.0f] MAIN[%2.3f] BROC[%2.3f] CELL[%i] ZN[%s]",
+            nglPerfInfo_FPS, memFree, brocFree,
+            StreamZoneManager::sInst->mLastCellNum, zoneId);
+    if (Cvar_Get("letterbox_enabled", "0", 256)->integer == 1)
+        yOff -= 40;
+    float col[4] = { 0.1f, 0.1f, 0.1f, 0.75f };
+    DebugRender::RenderQuad2D(50.0f, (float)(yOff + 442), 540.0f,
+                              (float)(yOff + 460), 1.0f, col);
+    float txtCol[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    DebugRender::RenderText(txt, 65, yOff + 440, txtCol, 1.0f,
+                            textScale);
+}
+
 // ea: 0x0045C5F0
 void prepare_collision_objects(Entity* ent, const math::Position3* p0,
                                const math::Position3* p1, float radius,
