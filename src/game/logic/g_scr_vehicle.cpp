@@ -1424,6 +1424,66 @@ int scr_vehicle_t::GetEntryHintStringIndex(Entity* vehicle, unsigned int entryPo
     return BG_GetInfoForWeapon(mObject->s.weapon)->iUseHintStringIndex;
 }
 
+// ea: 0x00480AC0
+void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
+{
+    scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    bool v4 = pSelf->active == 2;
+    if (!v4 || s_clientThink != 0)
+    {
+        float* wheelZPos = scr_vehicle->phys.wheelZPos;
+        for (int i = 0; i < 6; ++i)
+        {
+            int BoneIndex = SV_DObjGetBoneIndex(pSelf, s_wheelTagHashes[i]);
+            if (BoneIndex >= 0)
+            {
+                DObjSkelMat mtx;
+                G_DObjGetWorldBoneIndexMatrix(pSelf, BoneIndex, &mtx);
+                wheelZPos[i] = mtx.origin[2];
+            }
+            scr_vehicle->mWheel_ParticleEffectHandle[i].mVal = 0;
+        }
+        int turretPitch = scr_vehicle->boneIndex.turret;
+        if (turretPitch >= 0)
+        {
+            DObjSkelMat mtx;
+            G_DObjGetWorldBoneIndexMatrix(pSelf, turretPitch, &mtx);
+            float turretPos[3] = { mtx.origin[0], mtx.origin[1], mtx.origin[2] };
+            int turretSpan = scr_vehicle->boneIndex.barrel;
+            if (turretSpan >= 0)
+            {
+                DObjSkelMat mtx2;
+                G_DObjGetWorldBoneIndexMatrix(pSelf, turretSpan, &mtx2);
+                float spanPos[3] = { mtx2.origin[0], mtx2.origin[1], mtx2.origin[2] };
+                scr_vehicle->mUseRadius = VectorDistance(turretPos, spanPos);
+            }
+        }
+        int type = info->type;
+        if ((type == 1 || type == 2) && Entity_has_zone_collision(pSelf))
+            VEH_GroundPlant(pSelf, 0, 10000);
+        float vel[3] = { 0.0f, 0.0f, 0.0f };
+        VEH_SetPosition(pSelf, &scr_vehicle->phys.origin, &scr_vehicle->phys.angles, vel);
+        scr_vehicle->phys.prevOrigin.v.m128_f32[0] = scr_vehicle->phys.origin.v.m128_f32[0];
+        scr_vehicle->phys.prevOrigin.v.m128_f32[1] = scr_vehicle->phys.origin.v.m128_f32[1];
+        scr_vehicle->phys.prevOrigin.v.m128_f32[2] = scr_vehicle->phys.origin.v.m128_f32[2];
+        scr_vehicle->phys.prevAngles.v.m128_f32[0] = scr_vehicle->phys.angles.v.m128_f32[0];
+        scr_vehicle->phys.prevAngles.v.m128_f32[1] = scr_vehicle->phys.angles.v.m128_f32[1];
+        scr_vehicle->phys.prevAngles.v.m128_f32[2] = scr_vehicle->phys.angles.v.m128_f32[2];
+        math::Position3 angles = scr_vehicle->phys.angles;
+        MultiplayerMgr::sInst->ApplyLocalPhysicsToVehicle(pSelf, &scr_vehicle->phys.origin,
+                                                          &angles, vel);
+        int context[3] = { 0, 0, 0 };
+        G_DoTouchTriggers(pSelf, &pSelf->r.currentOrigin, nullptr, context);
+        pSelf->think = THINK__Scr_Vehicle_Init;
+        pSelf->nextthink = level.time + 1;
+    }
+    else
+    {
+        pSelf->nextthink = level.time;
+    }
+}
+
 // ea: 0x0044D370
 int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType)
 {

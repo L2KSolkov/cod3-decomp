@@ -3395,3 +3395,220 @@ void G_Animscripted_Think(Entity* ent)
         ent->scripted = nullptr;
     }
 }
+
+// ea: 0x004505A0
+void SP_worldspawn(void)
+{
+    static unsigned char s_init = 0;
+    static unsigned int ambienttrack_hash = 0;
+    static unsigned int message_hash = 0;
+    static unsigned int gravity_hash = 0;
+    static unsigned int northyaw_hash = 0;
+    const char* s = nullptr;
+    G_SpawnString(classname_hash.mHash, defaultFileName, &s);
+    if (Q_stricmp(s, "worldspawn") != 0)
+        G_Error("SP_worldspawn: The first entity isn't 'worldspawn'");
+    SV_SetConfigstring(2, "cod-sp");
+    if (!(s_init & 1))
+    {
+        s_init |= 1;
+        ambienttrack_hash = HashString::CalcHash("ambienttrack");
+    }
+    G_SpawnString(ambienttrack_hash, defaultFileName, &s);
+    if (*s != 0)
+        SV_SetConfigstring(3, va("n\\%s", s));
+    else
+        SV_SetConfigstring(3, defaultFileName);
+    if (!(s_init & 2))
+    {
+        s_init |= 2;
+        message_hash = HashString::CalcHash("message");
+    }
+    G_SpawnString(message_hash, defaultFileName, &s);
+    SV_SetConfigstring(4, s);
+    if (!(s_init & 4))
+    {
+        s_init |= 4;
+        gravity_hash = HashString::CalcHash("gravity");
+    }
+    G_SpawnString(gravity_hash, "800", &s);
+    Cvar_Set("g_gravity", s);
+    if (!(s_init & 8))
+    {
+        s_init |= 8;
+        northyaw_hash = HashString::CalcHash("northyaw");
+    }
+    G_SpawnString(northyaw_hash, defaultFileName, &s);
+    if (*s != 0)
+        SV_SetConfigstring(11, s);
+    else
+        SV_SetConfigstring(11, "0");
+    Entity* mWorld = EntityManager::sInst->mWorld;
+    mWorld->mClassName = str_const.worldspawn;
+    mWorld->mClassNameHash.mHash = HashString::CalcHash(mWorld->mClassName.c_str());
+    UpdateEntityHash(mWorld);
+}
+
+// ea: 0x0046E310
+bool G_GetTankIndex(DbLinkedHandle<EntityHandleDb, Entity> entity, int* index,
+                    bool* enemy)
+{
+    Entity* vehicle = HandleDbToEnt(entity);
+    if (vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7494;
+        AeAssert::gCurrentExpr = "*entity != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (level.bDrawCompassFriendlies == 0)
+        return false;
+    scr_vehicle_t* scr_vehicle = vehicle->scr_vehicle;
+    if (scr_vehicle == nullptr)
+        return false;
+    if (vehicle->health <= 0)
+        return false;
+    if (HandleDbToEnt(scr_vehicle->mEntity) == nullptr)
+        return false;
+    vehicle_info_t* v7 = s_vehicleInfos[scr_vehicle->infoIdx];
+    int type = v7->type;
+    if (type != 2 && type != 1)
+        return false;
+    if (index != nullptr)
+        *index = (int)(scr_vehicle - level.vehicles);
+    if (v7->type != 2)
+        return false;
+    if (G_GetVehicleOccupantCount(vehicle) == 0)
+        return false;
+    Entity* driver = HandleDbToEnt(vehicle->r.mOwner);
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    sentient_s* sentient = Player->sentient;
+    if (sentient == nullptr)
+        return false;
+    bool v20 = true;
+    if (driver != nullptr)
+    {
+        if (driver->sentient == nullptr)
+            return false;
+        v20 = sentient->eTeam == driver->sentient->eTeam;
+    }
+    for (int v13 = 0; v13 < 11; ++v13)
+    {
+        Entity* occupant = HandleDbToEnt(scr_vehicle->seats[v13].occupant);
+        if (occupant != nullptr)
+        {
+            if (Player == occupant)
+                return false;
+            if (driver == nullptr && sentient->eTeam != occupant->sentient->eTeam)
+                v20 = false;
+        }
+    }
+    if (v20)
+    {
+        if (enemy != nullptr)
+            *enemy = false;
+        return true;
+    }
+    if (IsVehicleSpotted(vehicle))
+    {
+        if (enemy != nullptr)
+            *enemy = true;
+        return true;
+    }
+    return false;
+}
+
+// ea: 0x00481930
+void Weapon_RocketLauncher_Fire(Entity* ent, float spread, weaponParms* wp,
+                                float lifetime, bool explode)
+{
+    float fAimOffset = 0.0f;
+    float dir[3];
+    dir[0] = tanf(spread * 3.1415927f * 0.0055555557f) * 16.0f;
+    gunrandom(&dir[2], &dir[1]);
+    float v6 = wp->forward[1] * 16.0f;
+    float v7 = wp->forward[0] * 16.0f;
+    float v8 = wp->forward[2] * 16.0f;
+    dir[2] = dir[2] * dir[0];
+    float v10 = (wp->right[0] * dir[2]) + v7;
+    float v11 = (wp->right[1] * dir[2]) + v6;
+    float v12 = wp->right[2] * dir[2];
+    float launchpos[3];
+    launchpos[0] = (wp->up[0] * (dir[1] * dir[0])) + v10;
+    launchpos[1] = (wp->up[1] * (dir[1] * dir[0])) + v11;
+    launchpos[2] = (wp->up[2] * (dir[1] * dir[0])) + (v12 + v8);
+    dir[1] = dir[1] * dir[0];
+    VectorNormalize(launchpos);
+    float start[3] = { wp->muzzleTrace[0], wp->muzzleTrace[1], wp->muzzleTrace[2] };
+    Entity* v14 = fire_rocket(ent, start, launchpos, lifetime);
+    if (!explode && v14 != nullptr)
+        v14->think = THINK__G_FreeEntity;
+    Client* client = ent->client;
+    if (client != nullptr)
+    {
+        client->ps.velocity.v.m128_f32[0] -= wp->forward[0] * 64.0f;
+        ent->client->ps.velocity.v.m128_f32[1] -= wp->forward[1] * 64.0f;
+        ent->client->ps.velocity.v.m128_f32[2] -= wp->forward[2] * 64.0f;
+    }
+    math::Dir3 dirv;
+    dirv.v.m128_f32[0] = launchpos[0];
+    dirv.v.m128_f32[1] = launchpos[1];
+    dirv.v.m128_f32[2] = launchpos[2];
+    math::Position3 posv;
+    posv.v.m128_f32[0] = start[0];
+    posv.v.m128_f32[1] = start[1];
+    posv.v.m128_f32[2] = start[2];
+    MultiplayerMgr::MPEntityHandle h;
+    h.mVal = 0;
+    MultiplayerMgr::sInst->FireMissile(ent->s.weapon, posv, dirv, h);
+}
+
+// ea: 0x00481E00
+void Weapon_ArtilleryStrike_Launch(Entity* ent, weaponParms* wp, float* center,
+                                   unsigned int seed)
+{
+    weaponFileInfo_t* pWeapInfo = wp->pWeapInfo;
+    int delay = pWeapInfo->iProjectileDelay;
+    if (pWeapInfo->iProjectileCount > 15)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 2004;
+        AeAssert::gCurrentExpr = "wp->pWeapInfo->iProjectileCount <= 15";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("To many artillery shells in weapon"))
+            __debugbreak();
+    }
+    int delays[15] = { 0 };
+    int dists[15] = { 0 };
+    int angles[15] = { 0 };
+    bdRandomState rng;
+    bdRandom_setSeed(&rng, seed);
+    int angle = 0;
+    float v26 = 0.0f;
+    int v27 = 0;
+    int v8 = pWeapInfo->iProjectileRadius;
+    int delayRange = pWeapInfo->iProjectileSpacingMax - pWeapInfo->iProjectileSpacingMin;
+    unsigned int v9 = 2 * v8;
+    for (int v6 = 0; v6 < pWeapInfo->iProjectileCount; ++v6)
+    {
+        angles[v6] = (int)(bdRandom_nextUInt(&rng) % 0x168);
+        dists[v6] = (int)(bdRandom_nextUInt(&rng) % v9) - pWeapInfo->iProjectileRadius;
+        delays[v6] = pWeapInfo->iProjectileSpacingMin
+                     + (int)(bdRandom_nextUInt(&rng) % delayRange);
+    }
+    Scr_Notify(ent, hash_const.fireSpecial, 0);
+    for (int v12 = 0; v12 < pWeapInfo->iProjectileCount; ++v12)
+    {
+        angle = angles[v12];
+        float offset[3];
+        AnglesToForward((const float*)&angle, offset);
+        float end[3];
+        end[0] = (dists[v12] * offset[0]) + center[0];
+        end[1] = (dists[v12] * offset[1]) + center[1];
+        end[2] = (dists[v12] * offset[2]) + center[2];
+        fire_artillery(ent, end, delay);
+        delay = delays[v12] + delay;
+    }
+}

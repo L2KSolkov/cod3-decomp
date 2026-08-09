@@ -519,9 +519,13 @@ struct str_const_t {
     Broc::string hq_point;                 // +0x1B4
     uint8_t    _pad1B8[0x1FC - 0x1B8];
     Broc::string tempEntity;          // +0x1FC
-    uint8_t    _pad200[0x2B4 - 0x200];
+    uint8_t    _pad200[0x23C - 0x200];
+    Broc::string worldspawn;          // +0x23C
+    uint8_t    _pad240[0x2B4 - 0x240];
 };
 static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
+static_assert(offsetof(str_const_t, worldspawn) == 0x23C,
+              "str_const_t::worldspawn offset mismatch");
 static_assert(offsetof(str_const_t, spawn_intermission) == 0x168,
               "str_const_t::spawn_intermission offset mismatch");
 static_assert(offsetof(str_const_t, spawn_sd_axis) == 0x1B0,
@@ -1126,9 +1130,13 @@ struct weaponFileInfo_t {
     uint8_t projExplosion;        // +0x790
     uint8_t _pad7[0x79C - 0x791];
     int     bProjImpactExplode;   // +0x79C
-    uint8_t _pad7a0[0x7AC - 0x7A0];
+    uint8_t _pad7a0[0x7A4 - 0x7A0];
+    int     iProjectileCount;     // +0x7A4
+    int     iProjectileRadius;    // +0x7A8
     int     iProjectileDelay;     // +0x7AC
-    uint8_t _pad7b0[0x860 - 0x7B0];
+    int     iProjectileSpacingMin;  // +0x7B0
+    int     iProjectileSpacingMax;  // +0x7B4
+    uint8_t _pad7b0[0x860 - 0x7B8];
     float   aiDamageMod;          // +0x860
     uint8_t _pad864[0x86C - 0x864];
     float   leftArc;              // +0x86C
@@ -1884,6 +1892,34 @@ void  MultiplayerMgr_DropItem(void* self, int itemType, const math::Position3* p
                               const math::Dir3* angles, const math::Dir3* velocity,
                               int netIndex, bool scriptFrom, int typeIndex);  // mp.o
 enum { kItemTypeMax = 3 };                       // EDroppedItemTypes
+void  SP_worldspawn(void);                       // g.o 0x4505A0
+bool  G_GetTankIndex(DbLinkedHandle<EntityHandleDb, Entity> entity, int* index,
+                     bool* enemy);               // g.o 0x46E310
+bool  IsVehicleSpotted(Entity* vehicle);         // g.o
+void  Weapon_RocketLauncher_Fire(Entity* ent, float spread, weaponParms* wp,
+                                 float lifetime, bool explode);  // g.o 0x481930
+Entity* fire_rocket(Entity* self, const float* start, const float* dir, float lifetime);  // g.o
+void  gunrandom(float* x, float* y);             // core.o
+void  Weapon_ArtilleryStrike_Launch(Entity* ent, weaponParms* wp, float* center,
+                                    unsigned int seed);  // g.o 0x481E00
+void  fire_artillery(Entity* i_Self, const float* i_StrikePoint, int i_Delay);  // g.o
+void  j_nullsub_54(weaponParms* wp, const float* target, float* out);  // g.o
+void  j_nullsub_47(weaponParms* wp, const float* target, float* out);  // g.o
+int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEnt,
+                                         float visThreshold);  // game.o
+enum { WEAPTYPE_BULLET = 0 };
+void  Scr_Vehicle_Init(Entity* pSelf, int msec); // g.o 0x480AC0
+void  VEH_GroundPlant(Entity* ent, int gravity, int msec);  // g.o
+void  G_DoTouchTriggers(Entity* ent, const math::Position3* origin, void* tData,
+                        int* context);          // g.o
+void  MultiplayerMgr_ApplyLocalPhysicsToVehicle(void* self, Entity* vehicle,
+                                                math::Position3* position,
+                                                math::Position3* angles,
+                                                float* velocity);  // mp.o
+extern unsigned int s_wheelTagHashes[6];         // g.o
+extern unsigned int s_gunnerFlashTagHashes[6];   // g.o
+bool  Entity_has_zone_collision(const void* self);  // game.o
+float VectorDistance(const float* v1, const float* v2);  // core.o
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o

@@ -254,6 +254,8 @@ struct MultiplayerMgr {
     void DropItem(int itemType, const math::Position3* position,
                   const math::Dir3* angles, const math::Dir3* velocity,
                   int netIndex, bool scriptFrom, int typeIndex);  // ?DropItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@ABVPosition3@math@@ABVDir3@2@2H_NH@Z
+    void ApplyLocalPhysicsToVehicle(Entity* vehicle, math::Position3* position,
+                                    math::Position3* angles, float* velocity);  // ?ApplyLocalPhysicsToVehicle@MultiplayerMgr@@QAEXPAVEntity@@AAVPosition3@math@@1QAM@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 
