@@ -356,6 +356,7 @@ struct PathNodeMgr {
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
     void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ
     void ValidateAllNodes();             // ?ValidateAllNodes@PathNodeMgr@@QAEXXZ
+    void AttachSentientToChainNode(sentient_s* pSentient, Broc::string* targetname);
 };
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
 

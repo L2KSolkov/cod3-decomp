@@ -213,6 +213,27 @@ static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
 // ============================================================================
+// hash_const_t - runtime-filled script hash constants (0x2B4, mirrors str_const)
+// Filled by GScr_LoadConsts (same 173-entry order as str_const_t).
+// ============================================================================
+struct hash_const_t {
+    uint8_t    _pad[0x34];
+    HashString damage;             // +0x34
+    uint8_t    _pad38[0x98 - 0x38];
+    HashString func_door;          // +0x98
+    HashString func_door_rotating; // +0x9C
+    uint8_t    _padA0[0xA4 - 0xA0];
+    HashString func_tramcar;       // +0xA4
+    uint8_t    _padA8[0x208 - 0xA8];
+    HashString trigger;            // +0x208
+    HashString trigger_use;        // +0x20C
+    HashString trigger_damage;     // +0x210
+    uint8_t    _pad214[0x2B4 - 0x214];
+};
+static_assert(sizeof(hash_const_t) == 0x2B4, "hash_const_t size mismatch");
+extern hash_const_t hash_const;    // 0xED2AB0
+
+// ============================================================================
 // Spawn field parsing (ent_field_t + fieldtype_t) - verified against IDA
 // ============================================================================
 enum fieldtype_t {
@@ -319,11 +340,18 @@ void G_SetOrigin(Entity* ent, const float* origin);
 void G_SetOrigin(Entity* ent, const math::Position3* origin);
 void G_SetAngle(Entity* ent, const float* angle);
 void G_SetAngle(Entity* ent, const math::Position3* angle);
+void G_SetMovedir(math::Position3* angles, math::Position3* movedir);
 void g_LinkEntity(Entity* ent);
 void g_UnlinkEntity(Entity* ent);
 void G_FreeEntity(Entity* e, int msec);
 Entity* G_Spawn(TPakId pakId);
 void UpdateEntityHash(Entity* ent);
+int  G_SpawnString(unsigned int key, const char* defaultString, const char** out);
+bool G_SpawnString(unsigned int key, const char** out);
+int  G_SpawnFloat(unsigned int key, float default_value, float* out);
+int  G_SpawnInt(unsigned int key, int default_value, int* out);
+int  G_SpawnVector(unsigned int key, const float* default_value, float* out);
+unsigned char G_SoundAliasIndex(const char* name);
 
 // g_utils.cpp (defined within g.o)
 void G_Printf(const char* fmt, ...);
@@ -364,9 +392,24 @@ extern void (*thinktable[])(Entity* ent, int msec);
 // fn_think_e values used by g.o (verified via disasm)
 enum {
     THINK__NULL = 0,
+    THINK__G_FreeEntity = 0x0C,
+    THINK__GotoPos3 = 0x0E,
     THINK__turret_think_init = 0x11,
+    THINK__misc_spawner_think = 0x12,
+    THINK__Scr_Vehicle_Think = 0x19,
+    THINK__Think_SpawnNewDoorTrigger = 0x1B,
+    THINK__Think_SpawnNewAutoDoorTrigger = 0x1C,
     THINK_MAX = 0x1E,
 };
+
+// ============================================================================
+// g_trigger.cpp externs
+// ============================================================================
+void SV_SetBrushModel(Entity* ent);
+int  Q_strcasecmp(const char* s1, const char* s2);
+float random();
+int  Scr_IsSystemActive(unsigned char sys);
+void Scr_NotifyFromEnt(Entity* ent, HashString hashValue, Entity* fromEnt);
 
 // g.o data: DObj controller dispatch table @ 0xDD57C0 (anim.o provides funcs)
 extern void (*controllertable[4])(Entity* ent, int* partBits);

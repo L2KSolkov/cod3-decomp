@@ -277,6 +277,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_dobj.cpp
     src/game/logic/g_spawn.cpp
     src/game/logic/g_active.cpp
+    src/game/logic/g_trigger.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)

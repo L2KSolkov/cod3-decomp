@@ -17,6 +17,12 @@ struct sentient_s;
 // team_t — team enumeration
 // ============================================================================
 typedef int32_t team_t;
+enum {
+    TEAM_NONE = 0,
+    TEAM_AXIS = 1,
+    TEAM_ALLIES = 2,
+    TEAM_NEUTRAL = 3,
+};
 
 // ============================================================================
 // ai_state_e — AI state enum (4 bytes per slot)
