@@ -4,8 +4,185 @@
 
 #include "game/logic/g_local.h"
 
+#include <math.h>
+
 static bool s_rdirInit = false;
 static math::Position3 rdir;
+static bool sS129 = false;
+static math::Position3 rdir_0;
+static const __m128 sSignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
+
+// ea: 0x00463A20
+bool push_entity(Entity* ent, Entity* vehicle)
+{
+    if (ent == nullptr || vehicle == nullptr
+        || vehicle->r.bmodel == nullptr
+        || (vehicle->r.contents & 0x800000) == 0)
+        return true;
+    DCGSet* bmodel = vehicle->r.bmodel;
+    math::Mat43 rot;
+    rot = vehicle->CalcRotTranMat43();
+    math::Position3 origOrigin = ent->r.currentOrigin;
+    float offs[2] = { 15.1f, 36.2f };
+    bool moved = false;
+    __m128 axesX = rot.x.v;
+    __m128 axesY = rot.y.v;
+    __m128 axesZ = rot.z.v;
+    __m128 trans = rot.w.v;
+    for (int i = 0; i < 2; ++i)
+    {
+        ent->r.currentOrigin.v.m128_f32[2] += offs[i];
+        __m128 origin = ent->r.currentOrigin.v;
+        // local = origin . axes - translation
+        __m128 s0 = _mm_shuffle_ps(origin, origin, 0);
+        __m128 s1 = _mm_shuffle_ps(origin, origin, 85);
+        __m128 s2 = _mm_shuffle_ps(origin, origin, 170);
+        __m128 local =
+            _mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(s0, axesX), _mm_mul_ps(s1, axesY)),
+                _mm_add_ps(_mm_mul_ps(s2, axesZ),
+                           _mm_xor_ps(trans, sSignMask)));
+        __m128 bmin = bmodel->min.v;
+        __m128 bmax = bmodel->max.v;
+        __m128 clamped = _mm_min_ps(_mm_max_ps(local, bmin), bmax);
+        __m128 delta = _mm_sub_ps(local, clamped);
+        __m128 d2 = _mm_mul_ps(delta, delta);
+        __m128 sum =
+            _mm_add_ps(d2,
+                       _mm_add_ps(_mm_shuffle_ps(d2, d2, 85),
+                                  _mm_shuffle_ps(d2, d2, 170)));
+        float dist2 = sum.m128_f32[0];
+        __m128 newLocal = local;
+        if (dist2 < 0.001f)
+        {
+            // inside the box: push out to the nearest face in local space
+            __m128 center = bmodel->center.v;
+            __m128 dim = _mm_sub_ps(bmax, center);
+            __m128 fifteen = _mm_setr_ps(15.1f, 15.1f, 15.1f, 0.0f);
+            dim = _mm_add_ps(dim, fifteen);
+            __m128 rel = _mm_sub_ps(local, center);
+            if (dim.m128_f32[1] - fabsf(rel.m128_f32[1])
+                <= dim.m128_f32[0] - fabsf(rel.m128_f32[0]))
+            {
+                float y = dim.m128_f32[1] + fudge_0;
+                if (rel.m128_f32[1] >= 0.0f)
+                    y = dim.m128_f32[1] + fudge_0;
+                else
+                    y = -(dim.m128_f32[1] + fudge_0);
+                newLocal = _mm_setr_ps(center.m128_f32[0], center.m128_f32[1] + y,
+                                       center.m128_f32[2], 0.0f);
+            }
+            else
+            {
+                float x = dim.m128_f32[0] + fudge_0;
+                if (rel.m128_f32[0] < 0.0f)
+                    x = -(dim.m128_f32[0] + fudge_0);
+                newLocal = _mm_setr_ps(center.m128_f32[0] + x,
+                                       center.m128_f32[1], center.m128_f32[2],
+                                       0.0f);
+            }
+        }
+        else if (dist2 < 228.01001f)
+        {
+            float dist = sqrtf(dist2);
+            float pushDist = 15.1f - dist + 0.01f;
+            __m128 dir = _mm_div_ps(delta, _mm_set1_ps(dist));
+            newLocal = _mm_add_ps(local, _mm_mul_ps(dir, _mm_set1_ps(pushDist)));
+        }
+        else
+        {
+            continue;
+        }
+        // transform local back to world: world = axes^T * local + trans
+        __m128 w0 = _mm_shuffle_ps(newLocal, newLocal, 0);
+        __m128 w1 = _mm_shuffle_ps(newLocal, newLocal, 85);
+        __m128 w2 = _mm_shuffle_ps(newLocal, newLocal, 170);
+        __m128 world =
+            _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(w0, _mm_shuffle_ps(rot.x.v, rot.x.v, 0)),
+                    _mm_mul_ps(w1, _mm_shuffle_ps(rot.y.v, rot.y.v, 85))),
+                _mm_add_ps(
+                    _mm_mul_ps(w2, _mm_shuffle_ps(rot.z.v, rot.z.v, 170)),
+                    trans));
+        ent->r.currentOrigin.v = world;
+        moved = true;
+    }
+    if (moved)
+    {
+        int clipmask = ent->clipmask;
+        if (clipmask == 0)
+            clipmask = 17;
+        proximity_data_t data;
+        memset(&data, 0, sizeof(data));
+        proximity_data_t* src = ent->proximity_data;
+        if (src == nullptr)
+            src = &data;
+        math::Position3 pos = ent->r.currentOrigin;
+        math::Position3 lo;
+        lo.v = _mm_sub_ps(pos.v,
+                          _mm_setr_ps(15.1f, 15.1f, 45.3f, 0.0f));
+        math::Position3 hi;
+        hi.v = _mm_add_ps(pos.v,
+                          _mm_setr_ps(15.1f, 15.1f, 15.1f, 0.0f));
+        __m128 overlap = _mm_max_ps(
+            _mm_sub_ps(src->lo.v, lo.v), _mm_sub_ps(hi.v, src->hi.v));
+        if ((_mm_movemask_ps(
+                 _mm_cmplt_ps(overlap, _mm_setzero_ps()))
+             & 7) != 7)
+        {
+            if (!sS129)
+            {
+                sS129 = true;
+                rdir_0.v = _mm_setr_ps(30.0f, 30.0f, 30.0f, 0.0f);
+            }
+            math::Position3 qlo;
+            qlo.v = _mm_sub_ps(lo.v, rdir_0.v);
+            math::Position3 qhi;
+            qhi.v = _mm_add_ps(hi.v, rdir_0.v);
+            query_proximity_data(qlo, qhi, *src);
+        }
+        proximity_data_t filtered;
+        memset(&filtered, 0, sizeof(filtered));
+        filter_proximity_data(lo, hi, clipmask, *src, filtered);
+        if (push_sphere_in_world(ent->r.currentOrigin, 15.1f, filtered,
+                                 nullptr))
+        {
+            pos = ent->r.currentOrigin;
+            __m128 sph = _mm_setr_ps(15.1f, 15.1f, 15.1f, 0.0f);
+            math::Position3 lo2;
+            lo2.v = _mm_sub_ps(
+                _mm_min_ps(pos.v, _mm_setzero_ps()), sph);
+            math::Position3 hi2;
+            hi2.v = _mm_add_ps(_mm_max_ps(pos.v, _mm_setzero_ps()), sph);
+            __m128 ov2 = _mm_max_ps(
+                _mm_sub_ps(src->lo.v, lo2.v), _mm_sub_ps(hi2.v, src->hi.v));
+            if ((_mm_movemask_ps(
+                     _mm_cmplt_ps(ov2, _mm_setzero_ps()))
+                 & 7) != 7)
+            {
+                query_proximity_data(lo2, hi2, *src);
+            }
+            proximity_data_t filtered2;
+            memset(&filtered2, 0, sizeof(filtered2));
+            filter_proximity_data(lo2, hi2, clipmask, *src, filtered2);
+            math::Position3 start;
+            start.v = _mm_add_ps(
+                lo2.v, _mm_setr_ps(0.0f, 0.0f, 15.1f, 0.0f));
+            math::Position3 end;
+            end.v = _mm_add_ps(pos.v, _mm_setr_ps(0.0f, 0.0f, 15.1f, 0.0f));
+            trace_t tr;
+            memset(&tr, 0, sizeof(tr));
+            TracePoint(filtered2, &tr, start, end, clipmask);
+            if (tr.fraction < 1.0f)
+            {
+                ent->r.currentOrigin = origOrigin;
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 // ea: 0x0045C5F0
 void prepare_collision_objects(Entity* ent, const math::Position3* p0,

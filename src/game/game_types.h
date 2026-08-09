@@ -265,6 +265,7 @@ public:
     static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
+    math::Mat43 CalcRotTranMat43();              // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     void Notify(HashString h, const int& d, Broc::entity* e, int* mod,

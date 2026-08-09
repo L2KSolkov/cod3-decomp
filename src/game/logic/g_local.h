@@ -2056,6 +2056,7 @@ extern float helmetMass;                         // g.o @ 0xDD8218
 extern int   timeToAdd;                          // g.o @ 0xDD821C
 extern float decal_radius;                       // g.o @ 0xDD8204
 extern float decal_radius_0;                     // g.o @ 0xDD826C
+extern float fudge_0;                            // g.o @ 0xDD812C
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
 
@@ -2144,11 +2145,18 @@ void  Pmove(pmove_t* pmove, bool isThisThePredictStep);  // game.o
 extern void (*entinfotable[3])(Entity* ent);      // g.o
 float vectoyaw(const float* vec);                 // core.o
 struct proximity_data_t { struct { __m128 v; } lo, hi; };  // opaque
+struct TouchEntityData;
 void query_proximity_data(const math::Position3& lo, const math::Position3& hi,
                           proximity_data_t& out);      // game.o 0x60A25BC0
 void filter_proximity_data(const math::Position3& lo, const math::Position3& hi,
                            int contents, const proximity_data_t& in,
                            proximity_data_t& out);     // game.o 0x60A0D100
+bool push_sphere_in_world(math::Position3& pos, float radius,
+                          const proximity_data_t& proximity_data,
+                          TouchEntityData* entities);  // game.o 0x60A25FC0
+void TracePoint(const proximity_data_t& data, trace_t* results,
+                const math::Position3& start, const math::Position3& end,
+                int brushmask);  // game.o 0x60A30D80
 void  DebugDumpEnts(int a1, Entity* e);            // g.o 0x460C50 (redecl above)
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0 (redecl above)
 void  G_LoadLevel(void);                           // g.o 0x468D00
