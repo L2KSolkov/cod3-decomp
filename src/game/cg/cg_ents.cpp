@@ -1877,6 +1877,462 @@ void CG_BulletHitClientEvent(unsigned int sourceEntity,
                                s_barrelTags[0], weapon);
 }
 
+extern void PostEffectEventFootstep(void* result, Entity* ent,
+                                    int stanceType, void* col);
+extern void PostEffectEventGearRattle(void* result, Entity* ent,
+                                      int stanceType, void* col);
+extern void SoundMediaMgr_PlayLandingSound(void* self, Entity* ent,
+                                           int surfaceType, bool damage);
+extern void* SoundMediaMgr_sInst;
+extern PlayerState& GetPlayerState(int idx);
+extern int cl_stance_ss[4];
+extern vmCvar_t cg_stanceTemp;
+extern vmCvar_t cg_nopredict;
+extern int dword_F63BA8[4 * 1580];
+extern int dword_F63BAC[4 * 1580];
+extern int dword_F63BB0[4 * 1580];
+extern int dword_F63BB4[4 * 1580];
+extern void PostEffectEventWeaponReload(void* result, Entity* ent,
+                                        const char* weaponType,
+                                        int weaponAction, bool queue);
+extern void PostEffectEventWeapon(void* result, Entity* ent,
+                                  const char* weaponType, int weaponAction);
+extern void CG_ItemPickup(int itemNum);
+extern void CG_OutOfAmmoChange();
+extern void PostEffectEventGrenadeBounce(void* result, Entity* ent,
+                                         const char* weaponType,
+                                         void* col_desc);
+extern void PostEffectEventProjExplode(void* result, Entity* ent,
+                                       const char* weaponType,
+                                       void* col_desc);
+extern void CG_EventSpawnTracer(const math::Position3* pstart,
+                                const math::Position3* pend, int weapon);
+extern void CG_RailTrail(const float* start, const float* end, int type);
+extern void VEH_NetAltWeaponStatus(Entity* ent, int status);
+extern vmCvar_t bg_fallDamageMaxHeight;
+extern vmCvar_t bg_fallDamageMinHeight;
+extern Entity* GetPlayer(int idx);
+
+static CollisionDesc MakeCollisionDesc(const math::Position3* c,
+                                       const float* n, int m)
+{
+    CollisionDesc d;
+    d.coord.v = c->v;
+    d.normal.v = _mm_setr_ps(n[0], n[1], n[2], 0.0f);
+    d.material = m;
+    return d;
+}
+
+// ea: 0x006AC480
+void CG_EntityEvent(Entity* entity, int event, int bPredict)
+{
+    if (event == 0)
+    {
+        if (cg_debugEvents != 0)
+            CG_Printf("CG_EntityEvent:ZERO EVENT\n");
+        return;
+    }
+    int eventParm = entity->s.eventParm;
+    if (cg_debugEvents != 0)
+        CG_Printf("ent:0x%08x  event:%3i ", entity->mHandle.mHandle.mVal,
+                  event);
+    if (event <= 0)
+        CG_ASSERT("event > 0", "c:\\cod\\code\\game\\cg_event.cpp", 175);
+    if (event >= 223)
+        CG_ASSERT("event < EV_MAX_EVENTS",
+                  "c:\\cod\\code\\game\\cg_event.cpp", 176);
+    if (cg_debugEvents != 0)
+        CG_Printf("CG_EntityEvent:%s\n", pEventNamesList[event]);
+    unsigned int clientHandle = entity->mHandle.mHandle.mVal;
+    float footstepPos[3];
+    float zero[3] = {0.0f, 0.0f, 0.0f};
+    if (bPredict != 0)
+        goto label_43;
+    if (event >= 1 && event < 24)
+    {
+        footstepPos[0] = entity->s.pos.trBase[0];
+        footstepPos[1] = entity->s.pos.trBase[1];
+        footstepPos[2] = entity->s.pos.trBase[2];
+        CollisionDesc d = MakeCollisionDesc(
+            (const math::Position3*)footstepPos, zero, event - 1);
+        PostEffectEventFootstep(nullptr, entity, 1 /* kStanceRun */, &d);
+        CollisionDesc d2 = MakeCollisionDesc(
+            (const math::Position3*)footstepPos, zero, -1);
+        PostEffectEventGearRattle(nullptr, entity, 1, &d2);
+        return;
+    }
+    if (event >= 70 && event < 93)
+    {
+        footstepPos[0] = entity->s.pos.trBase[0];
+        footstepPos[1] = entity->s.pos.trBase[1];
+        footstepPos[2] = entity->s.pos.trBase[2];
+        CollisionDesc d = MakeCollisionDesc(
+            (const math::Position3*)footstepPos, zero, event - 70);
+        PostEffectEventFootstep(nullptr, entity, 0 /* kStanceSprint */, &d);
+        CollisionDesc d2 = MakeCollisionDesc(
+            (const math::Position3*)footstepPos, zero, -1);
+        PostEffectEventGearRattle(nullptr, entity, 0, &d2);
+        return;
+    }
+    if (event >= 24)
+    {
+        if (event < 47)
+        {
+            footstepPos[0] = entity->s.pos.trBase[0];
+            footstepPos[1] = entity->s.pos.trBase[1];
+            footstepPos[2] = entity->s.pos.trBase[2];
+            CollisionDesc d = MakeCollisionDesc(
+                (const math::Position3*)footstepPos, zero, event - 24);
+            PostEffectEventFootstep(nullptr, entity, 2 /* kStanceWalk */, &d);
+            CollisionDesc d2 = MakeCollisionDesc(
+                (const math::Position3*)footstepPos, zero, -1);
+            PostEffectEventGearRattle(nullptr, entity, 2, &d2);
+            return;
+        }
+        if (event < 70)
+        {
+            footstepPos[0] = entity->s.pos.trBase[0];
+            footstepPos[1] = entity->s.pos.trBase[1];
+            footstepPos[2] = entity->s.pos.trBase[2];
+            CollisionDesc d = MakeCollisionDesc(
+                (const math::Position3*)footstepPos, zero, event - 47);
+            PostEffectEventFootstep(nullptr, entity, 3 /* kStanceProne */, &d);
+            CollisionDesc d2 = MakeCollisionDesc(
+                (const math::Position3*)footstepPos, zero, -1);
+            PostEffectEventGearRattle(nullptr, entity, 3, &d2);
+            return;
+        }
+    }
+    if (event < 93)
+        goto label_43;
+    if (event < 116)
+    {
+        footstepPos[0] = entity->s.pos.trBase[0];
+        footstepPos[1] = entity->s.pos.trBase[1];
+        footstepPos[2] = entity->s.pos.trBase[2];
+        CollisionDesc d = MakeCollisionDesc(
+            (const math::Position3*)footstepPos, zero, event - 93);
+        PostEffectEventFootstep(nullptr, entity, 1 /* kStanceRun */, &d);
+        CollisionDesc d2 = MakeCollisionDesc(
+            (const math::Position3*)footstepPos, zero, -1);
+        PostEffectEventGearRattle(nullptr, entity, 1, &d2);
+        return;
+    }
+    if (event < 139)
+    {
+        SoundMediaMgr_PlayLandingSound(SoundMediaMgr_sInst, entity,
+                                       event - 116, false);
+        if (clientHandle
+            == *(unsigned int*)((char*)&GetPlayerState(currCl) + 0xA0))
+        {
+            int v14 = 1580 * currCl;
+            int time = cgGlobal_time;
+            *(float*)&dword_F63BB0[v14] = 0.0f - (float)eventParm;
+            dword_F63BB4[v14] = time;
+        }
+        return;
+    }
+    if (event >= 162)
+    {
+    label_43:
+        switch (event)
+        {
+        case 162:
+            if (bPredict == 0)
+                PostEffectEventScriptCall(nullptr, entity, "Body_Bushes",
+                                          false, 0, false);
+            break;
+        case 165:
+            if (cg_stanceTemp.integer == 0)
+                cl_stance_ss[currCl] = 0;
+            break;
+        case 166:
+            if (cg_stanceTemp.integer == 0)
+                cl_stance_ss[currCl] = 1;
+            break;
+        case 167:
+            if (cg_stanceTemp.integer == 0)
+                cl_stance_ss[currCl] = 2;
+            break;
+        case 168:
+            if (clientHandle
+                    == *(unsigned int*)((char*)&GetPlayerState(currCl) + 0xA0)
+                && cg_nopredict.integer == 0)
+            {
+                int v20 = cgGlobal_time;
+                int v21 = 1580 * currCl;
+                int v22 = cgGlobal_time - dword_F63BAC[1580 * currCl];
+                float v23;
+                if (v22 >= 100)
+                    v23 = 0.0f;
+                else
+                    v23 = (((100 - v22) * *(float*)&dword_F63BA8[1580 * currCl])
+                           * 0.0099999998f)
+                          * 0.89999998f;
+                float v24 = (float)(eventParm - 128) + v23;
+                *(float*)&dword_F63BA8[1580 * currCl] = v24;
+                if (v24 <= 24.0f)
+                {
+                    if (*(float*)&dword_F63BA8[v21] < -16.0f)
+                        *(int*)&dword_F63BA8[v21] = -1048576000;
+                    dword_F63BAC[v21] = v20;
+                }
+                else
+                {
+                    *(int*)&dword_F63BA8[v21] = 1103101952;
+                    dword_F63BAC[v21] = v20;
+                }
+            }
+            break;
+        case 171:
+        case 172:
+        case 173:
+            if (bPredict == 0)
+            {
+                eventParm = entity->s.eventParm;
+                if (eventParm != 0 && eventParm < 137)
+                {
+                    if (event == 171)
+                        PostEffectEventScriptCall(nullptr, entity,
+                                                  "WEAPON_PICKUP", false, 0,
+                                                  false);
+                    else if (event == 173)
+                        PostEffectEventScriptCall(nullptr, entity,
+                                                  "AMMO_PICKUP", false, 0,
+                                                  false);
+                    Entity* v26 =
+                        EntityHandleDb_Get(clientHandle);
+                    if (v26 == GetPlayer(currCl))
+                        CG_ItemPickup(eventParm);
+                }
+            }
+            break;
+        case 174:
+            {
+                Entity* v29 = EntityHandleDb_Get(clientHandle);
+                if (v29 == GetPlayer(currCl))
+                    CG_OutOfAmmoChange();
+            }
+            break;
+        case 178:
+            if (bPredict == 0)
+            {
+                void* InfoForWeapon =
+                    (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeaponReload(
+                    nullptr, entity,
+                    *(const char**)((char*)InfoForWeapon + 8),
+                    0x10 /* kActionWEAPON_RELOAD_START */, false);
+            }
+            break;
+        case 179:
+            if (bPredict == 0)
+            {
+                void* v28 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeaponReload(
+                    nullptr, entity,
+                    *(const char**)((char*)v28 + 8),
+                    0x11 /* kActionWEAPON_RELOAD_END */, false);
+            }
+            break;
+        case 180:
+            {
+                void* v30 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeapon(nullptr, entity,
+                                      *(const char**)((char*)v30 + 8),
+                                      0x13 /* kActionWEAPON_RAISE */);
+            }
+            break;
+        case 182:
+            if (bPredict == 0)
+            {
+                void* v31 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeapon(nullptr, entity,
+                                      *(const char**)((char*)v31 + 8),
+                                      0x12 /* kActionWEAPON_ALT_SWITCH */);
+            }
+            break;
+        case 183:
+            if (bPredict == 0)
+            {
+                void* v32 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeapon(nullptr, entity,
+                                      *(const char**)((char*)v32 + 8),
+                                      0x15 /* kActionWEAPON_DEPLOY */);
+            }
+            break;
+        case 184:
+            if (bPredict == 0)
+            {
+                void* v33 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeapon(nullptr, entity,
+                                      *(const char**)((char*)v33 + 8),
+                                      0x16 /* kActionWEAPON_BREAKDOWN */);
+            }
+            break;
+        case 190:
+            if (bPredict != 0)
+            {
+                void* v34 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeapon(nullptr, entity,
+                                      *(const char**)((char*)v34 + 8),
+                                      0x0D /* kActionWEAPON_RECHAMBER */);
+            }
+            break;
+        case 191:
+            if (bPredict != 0)
+                CG_EjectWeaponBrass(entity, event);
+            break;
+        case 192:
+            if (bPredict == 0)
+            {
+                void* v35 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeapon(
+                    nullptr, entity, *(const char**)((char*)v35 + 8),
+                    0x17 /* kActionWEAPON_NOTE_TRACK_SOUND_A */);
+            }
+            break;
+        case 194:
+            if (bPredict == 0)
+            {
+                void* v36 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventWeapon(
+                    nullptr, entity, *(const char**)((char*)v36 + 8),
+                    0x18 /* kActionWEAPON_NOTE_TRACK_SOUND_B */);
+            }
+            break;
+        case 197:
+            if (bPredict != 0)
+                CG_FireWeapon(entity, &entity->s, event, 0);
+            break;
+        case 198:
+            if (bPredict != 0)
+            {
+                CG_FireWeapon(entity, &entity->s, event, 0);
+                CG_FireWeapon(entity, &entity->s, event, 1);
+            }
+            break;
+        case 199:
+            if (bPredict != 0)
+            {
+                CG_FireWeapon(entity, &entity->s, event, 2);
+                CG_FireWeapon(entity, &entity->s, event, 3);
+            }
+            break;
+        case 200:
+            {
+                int weapon = entity->s.weapon;
+                math::Position3 v76;
+                native_to_cdl_pos3(&v76, entity->s.pos.trBase);
+                CG_EventSpawnTracer(&v76, &entity->s.origin2, weapon);
+            }
+            break;
+        case 206:
+            if (entity->s.surfType >= 0x17)
+                CG_ASSERT("es->surfType >= 0 && es->surfType < 23",
+                          "c:\\cod\\code\\game\\cg_event.cpp", 571);
+            ByteToDir(entity->s.eventParm, (float*)&clientHandle);
+            if (bPredict == 0)
+            {
+                float nrm[3];
+                ByteToDir(entity->s.eventParm, nrm);
+                CollisionDesc d = MakeCollisionDesc(
+                    &entity->r.currentOrigin, nrm,
+                    *(unsigned char*)((char*)&entity->s + 5));
+                void* v43 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                PostEffectEventGrenadeBounce(
+                    nullptr, entity, *(const char**)((char*)v43 + 8), &d);
+            }
+            break;
+        case 210:
+        case 211:
+            if (entity->s.surfType >= 0x17)
+                CG_ASSERT("es->surfType >= 0 && es->surfType < 23",
+                          "c:\\cod\\code\\game\\cg_event.cpp", 595);
+            ByteToDir(entity->s.eventParm, (float*)&clientHandle);
+            {
+                int v44 = *(unsigned char*)((char*)&entity->s + 5);
+                if (v44 != 8)
+                {
+                    float nrm[3];
+                    ByteToDir(entity->s.eventParm, nrm);
+                    CollisionDesc d = MakeCollisionDesc(
+                        &entity->r.currentOrigin, nrm,
+                        entity->s.surfType);
+                    if (v44 == 1)
+                    {
+                        entity->flags &= ~0x400;
+                        entity->s.eFlags &= ~0x80u;
+                    }
+                    void* v51 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
+                    PostEffectEventProjExplode(
+                        nullptr, entity, *(const char**)((char*)v51 + 8), &d);
+                    if (eventParm != 0)
+                    {
+                        entity->r.eventType |= 4u;
+                        entity->r.eventTime = eventParm;
+                    }
+                    else
+                    {
+                        entity->r.eventType |= 1u;
+                    }
+                }
+            }
+            break;
+        case 212:
+        case 213:
+            CG_ASSERT("0", "c:\\cod\\code\\game\\cg_event.cpp", 655);
+            break;
+        case 214:
+            CG_RailTrail(entity->s.origin2.v.m128_f32,
+                         entity->s.pos.trBase, entity->s.dmgFlags);
+            break;
+        case 221:
+            VEH_NetAltWeaponStatus(entity, eventParm);
+            break;
+        case 222:
+            if (bPredict == 0)
+            {
+                float nrm[3] = {0.0f, 0.0f, 1.0f};
+                CollisionDesc d = MakeCollisionDesc(
+                    &entity->r.currentOrigin, nrm, entity->s.surfType);
+                PostEffectEventProjExplode(nullptr, entity, "fraggrenade",
+                                           &d);
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+        SoundMediaMgr_PlayLandingSound(SoundMediaMgr_sInst, entity,
+                                       event - 139, true);
+        if (clientHandle
+            == *(unsigned int*)((char*)&GetPlayerState(currCl) + 0xA0))
+        {
+            float v16 =
+                ((*(float*)&bg_fallDamageMaxHeight
+                  - *(float*)&bg_fallDamageMinHeight)
+                 * (eventParm * 0.0099999998f))
+                + *(float*)&bg_fallDamageMinHeight;
+            if (v16 > 12.0f)
+            {
+                int v17 = (int)((((v16 - 12.0f) * 0.03846154f) + 1.0f)
+                                * 4.0f);
+                if (v17 > 24)
+                    v17 = 24;
+                if (v17 <= 0)
+                    return;
+                int v18 = 1580 * currCl;
+                int v19 = cgGlobal_time;
+                *(float*)&dword_F63BB0[v18] = 0.0f - (float)v17;
+                dword_F63BB4[v18] = v19;
+            }
+        }
+    }
+}
+
 // ea: 0x006A1730
 void CG_AdjustPositionForMover(const math::Position3* in, unsigned int mover,
                                int fromTime, int toTime, math::Position3* out,
