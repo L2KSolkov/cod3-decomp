@@ -2630,6 +2630,54 @@ void ParseVehicleConfigString(const char* name, const ConfigString* cfgstr)
                              v3->mMantleHintString);
 }
 
+// ea: 0x00463730
+void ParseVehiclePhysicsConfigString(const char* name, const ConfigString* cfgstr)
+{
+    if (vehicle_rb_parameter::GetRBVehParameter(name) != nullptr)
+        return;
+    vehicle_rb_parameter* param = vehicle_rb_parameter::AddRBVehParameter(name);
+    if (param == nullptr)
+        return;
+    const InplaceTree<InplaceString, InplaceString>& stringMap =
+        cfgstr->mStringMap;
+    const char* str = nullptr;
+    InplaceString* entry = stringMap.Find<const char*>("tractiontype");
+    if (entry != nullptr)
+        str = entry->mStr;
+    if (_stricmp(str, "all_wd") == 0)
+        param->m_traction_type = TRACTION_TYPE_ALL_WD;
+    else if (_stricmp(str, "front") == 0)
+        param->m_traction_type = TRACTION_TYPE_FRONT;
+    else if (_stricmp(str, "back") == 0)
+        param->m_traction_type = TRACTION_TYPE_BACK;
+    for (int i = 0; i < 27; ++i)
+    {
+        InplaceString* item =
+            stringMap.Find<const char*>(sVehicleVarConfig[i].name);
+        if (item != nullptr && item->mStr != nullptr)
+            *(float*)((char*)param + sVehicleVarConfig[i].offset) =
+                atof(item->mStr);
+    }
+    entry = stringMap.Find<const char*>("bbox_min_x");
+    if (entry != nullptr && entry->mStr != nullptr)
+        param->m_bbox_min.v.m128_f32[0] = atof(entry->mStr);
+    entry = stringMap.Find<const char*>("bbox_min_y");
+    if (entry != nullptr && entry->mStr != nullptr)
+        param->m_bbox_min.v.m128_f32[1] = atof(entry->mStr);
+    entry = stringMap.Find<const char*>("bbox_min_z");
+    if (entry != nullptr && entry->mStr != nullptr)
+        param->m_bbox_min.v.m128_f32[2] = atof(entry->mStr);
+    entry = stringMap.Find<const char*>("bbox_max_x");
+    if (entry != nullptr && entry->mStr != nullptr)
+        param->m_bbox_max.v.m128_f32[0] = atof(entry->mStr);
+    entry = stringMap.Find<const char*>("bbox_max_y");
+    if (entry != nullptr && entry->mStr != nullptr)
+        param->m_bbox_max.v.m128_f32[1] = atof(entry->mStr);
+    entry = stringMap.Find<const char*>("bbox_max_z");
+    if (entry != nullptr && entry->mStr != nullptr)
+        param->m_bbox_max.v.m128_f32[2] = atof(entry->mStr);
+}
+
 static const char* s_seatTags[11] = {
     "tag_driver", "tag_gunner", "tag_passenger1", "tag_passenger2",
     "tag_passenger3", "tag_passenger4", "tag_gunner", "tag_passenger1",

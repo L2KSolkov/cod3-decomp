@@ -20,6 +20,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <intrin.h>
+#include <string.h>
 
 // ae_vector<T> - dynamic array (12 bytes) - verified against IDA
 template <typename T>
@@ -532,6 +533,47 @@ template <typename K, typename V>
 struct InplaceTreeElement {
     K mKey;  // +0x00
     V mVal;  // +0x04
+};
+
+// InplaceTree - binary heap tree over InplaceTreeElement (8-byte entries).
+// Verified against IDA InplaceTree.h (Find<const char*> at 0x4B1BC0,
+// IsUsed at 0x4AEB00).
+template <typename K, typename V>
+struct InplaceTree {
+    unsigned int mSize;              // +0x00
+    InplaceTreeElement<K, V>* mElements;  // +0x04
+
+    bool IsUsed(unsigned int index) const
+    {
+        const unsigned char* p = (const unsigned char*)&mElements[index];
+        for (unsigned int i = 0; i < sizeof(InplaceTreeElement<K, V>); ++i)
+        {
+            if (p[i] != 0)
+                return true;
+        }
+        return false;
+    }
+
+    template <typename TKey>
+    V* Find(const TKey& key) const
+    {
+        unsigned int index = 0;
+        if (index >= mSize)
+            return nullptr;
+        for (;;)
+        {
+            if (_stricmp(mElements[index].mKey.mStr, key) == 0)
+                return &mElements[index].mVal;
+            if (_stricmp(key, mElements[index].mKey.mStr) < 0)
+                index = index * 2 + 2;
+            else
+                index = index * 2 + 1;
+            if (index >= mSize)
+                return nullptr;
+            if (!IsUsed(index))
+                return nullptr;
+        }
+    }
 };
 
 template <typename T>
@@ -1171,7 +1213,12 @@ inline Entity* HandleDbToEnt(const DbLinkedHandle<EntityHandleDb, Entity>& h) {
 }
 
 // Forward decls for config-string parsing (full types in core_systems.h)
-struct ConfigString;
+struct ConfigString {
+    InplaceString mName;          // +0x00
+    unsigned int  mNumKeyValues;  // +0x04
+    InplaceTree<InplaceString, InplaceString> mStringMap;  // +0x08
+};
+static_assert(sizeof(ConfigString) == 0x10, "ConfigString size mismatch");
 class ConfigStringManager {
 public:
     unsigned char mData[0x190];
@@ -2389,14 +2436,57 @@ struct rb_extra_info {
     void* m_rb;  // +0x00 rb_vehicle*
 };
 
-// rb_vehicle (phys_xboxr) - minimal view for scr_vehicle_t::GetThrottle
-struct vehicle_rb_parameter {
-    float m_speed_max;       // +0x00
-    uint8_t _pad4[0x10 - 0x4];
-    float m_steer_speed;     // +0x10
-    uint8_t _pad14[0x58 - 0x14];
-    float m_peel_out_max_speed;  // +0x58
+enum traction_type_e {
+    TRACTION_TYPE_FRONT = 0,
+    TRACTION_TYPE_BACK = 1,
+    TRACTION_TYPE_ALL_WD = 2,
 };
+
+// vehicle_rb_parameter (phys_xboxr) - verified against IDA (size 0xD0)
+struct vehicle_rb_parameter {
+    float m_speed_max;            // +0x00
+    float m_accel_max;            // +0x04
+    float m_reverse_scale;        // +0x08
+    float m_steer_angle_max;      // +0x0C
+    float m_steer_speed;          // +0x10
+    float m_wheel_radius;         // +0x14
+    float m_susp_spring_k;        // +0x18
+    float m_susp_damp_k;          // +0x1C
+    float m_susp_adj;             // +0x20
+    float m_susp_hard_limit;      // +0x24
+    float m_tire_fric_fwd;        // +0x28
+    float m_tire_fric_side;       // +0x2C
+    float m_tire_fric_brake;      // +0x30
+    float m_tire_fric_hand_brake; // +0x34
+    float m_body_mass;            // +0x38
+    float m_mass_center_delta_x;  // +0x3C
+    float m_mass_center_delta_y;  // +0x40
+    float m_mass_center_delta_z;  // +0x44
+    float m_roll_stability;       // +0x48
+    float m_roll_resistance;      // +0x4C
+    float m_upright_strength;     // +0x50
+    float m_tilt_fakey;           // +0x54
+    float m_peel_out_max_speed;   // +0x58
+    float m_inertia_scale_x;      // +0x5C
+    float m_tire_damp_coast;      // +0x60
+    float m_tire_damp_brake;      // +0x64
+    float m_tire_damp_hand;       // +0x68
+    traction_type_e m_traction_type;  // +0x6C
+    char  m_name[64];             // +0x70
+    math::Position3 m_bbox_min;   // +0xB0
+    math::Position3 m_bbox_max;   // +0xC0
+
+    static vehicle_rb_parameter* GetRBVehParameter(const char* name);  // physics.o
+    static vehicle_rb_parameter* AddRBVehParameter(const char* name);  // physics.o
+};
+static_assert(sizeof(vehicle_rb_parameter) == 0xD0,
+              "vehicle_rb_parameter size mismatch");
+
+struct vehicleVarConfig_t {
+    const char* name;    // +0x00
+    unsigned int offset; // +0x04
+};
+extern vehicleVarConfig_t sVehicleVarConfig[27];  // g.o @ 0xDD7608
 struct rb_vehicle {
     uint8_t _pad[0x10];
     unsigned int m_flags;           // +0x10

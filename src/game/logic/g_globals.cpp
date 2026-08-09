@@ -21,6 +21,24 @@ float minPitch = 16.0f;      // @ 0xDD822C (tank gunner min pitch)
 float deltaYAWmaxs = 140.0f; // @ 0xDD8238
 float deltaYAWmins = -140.0f;// @ 0xDD8244
 
+// vehicle_rb_parameter field name -> offset table (ParseVehiclePhysicsConfigString)
+vehicleVarConfig_t sVehicleVarConfig[27] = {  // @ 0xDD7608
+    { "speed_max", 0x00 },           { "accel_max", 0x04 },
+    { "reverse_scale", 0x08 },       { "steer_angle_max", 0x0C },
+    { "steer_speed", 0x10 },         { "wheel_radius", 0x14 },
+    { "susp_spring_k", 0x18 },       { "susp_damp_k", 0x1C },
+    { "susp_adj", 0x20 },            { "susp_hard_limit", 0x24 },
+    { "tire_fric_fwd", 0x28 },       { "tire_fric_side", 0x2C },
+    { "tire_fric_brake", 0x30 },     { "tire_fric_hand_brake", 0x34 },
+    { "body_mass", 0x38 },           { "mass_center_delta_x", 0x3C },
+    { "mass_center_delta_y", 0x40 }, { "mass_center_delta_z", 0x44 },
+    { "roll_stability", 0x48 },      { "roll_resistance", 0x4C },
+    { "upright_strength", 0x50 },    { "tilt_fakey", 0x54 },
+    { "peel_out_max_speed", 0x58 },  { "inertia_scale_x", 0x5C },
+    { "tire_damp_coast", 0x60 },     { "tire_damp_brake", 0x64 },
+    { "tire_damp_hand", 0x68 },
+};
+
 // tag hash arrays (g_scr_vehicle.cpp data, filled by static init) @ .data 0xEE62CC
 static unsigned int TagHash(const char* s) { return HashString::CalcHash(s); }
 unsigned int s_wheelTagHashes[6] = {
