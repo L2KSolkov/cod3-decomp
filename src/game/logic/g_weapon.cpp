@@ -32,6 +32,17 @@ void G_CheckReloadStatus()
     ;
 }
 
+// ea: 0x004835B0
+void Cmd_DropWeapon_f(Entity* pSelf)
+{
+    if (g_developer->integer != 0
+        && g_cheats->integer != 0
+        && Drop_Weapon(pSelf, pSelf->s.weapon, nullptr) != nullptr)
+    {
+        G_AddEvent(pSelf, 174, 0);
+    }
+}
+
 // ea: 0x0044C6B0
 void Die_MineDamaged(Entity* mine)
 {

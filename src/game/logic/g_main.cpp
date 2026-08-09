@@ -353,7 +353,7 @@ void G_XAnimUpdateEnt(Entity* ent)
     }
 }
 
-// ea: 0x00458820 (TeleportPlayer)
+// ea: 0x00458770
 void TeleportPlayer(Entity* player, const float* origin, const float* angles)
 {
     SetClientOrigin(player, origin);
@@ -389,5 +389,60 @@ void render_sphere(const math::Position3* center, float radius, const float* col
         v4.color[2] = color[2];
         v4.color[3] = color[3];
         debug_spheres.mElements[debug_spheres.mSize++] = v4;
+    }
+}
+
+// ea: 0x0044ABD0
+void Cmd_TextureMip_f(void)
+{
+    if (Cmd_Argc() == 2)
+    {
+        char s[256];
+        Cmd_ArgvBuffer(1, s, 256);
+        ShaderCommon::SetTextureSizeMipLevel(atoi(s));
+    }
+}
+
+// ea: 0x00456120
+void Cmd_LockPVSFlash_f(void)
+{
+    gEnableMeshFlash ^= 1u;
+    if (gEnableMeshFlash)
+        SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), "print \"PVS lock flash is on\"");
+    else
+        SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), "print \"PVS lock flash is off\"");
+}
+
+// ea: 0x004499E0
+void SP_sd_axis(Entity* ent)
+{
+    if (_stricmp("sd", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_sd_axis;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00474FE0
+void player_die(Entity* self, Entity* inflictor, Entity* attacker, int damage,
+                int meansOfDeath, int iWeapon, const float* vPosition,
+                const float* vDir, hitLocation_t hitLoc)
+{
+    if (self->client->ps.pm_type < 6)
+    {
+        Scr_NotifyFromEnt(self, hash_const.death, attacker);
+        self->enemy = attacker;
+        LookAtKiller(self, inflictor, attacker);
+        Entity* mObject = HandleDbToEnt(self->client->ps.mClient);
+        int PlayerIndex = mObject->GetPlayerIndex();
+        g_femanager.IGO->SetFuse(-1.0f, -1.0f, PlayerIndex);
+        self->client->ps.pm_type = 7 - (self->client->ps.pm_type != 1);
+        MultiplayerMgr::sInst->PlayerDead(self, inflictor, attacker, damage,
+                                          meansOfDeath, iWeapon, vPosition, vDir,
+                                          (int)hitLoc);
     }
 }

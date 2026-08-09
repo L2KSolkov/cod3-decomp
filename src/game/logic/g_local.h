@@ -102,6 +102,9 @@ struct scr_vehicle_t {
     float GetAnimSpeedScale(Client* client);  // ?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z
     float GetThrottle();                      // ?GetThrottle@scr_vehicle_t@@QAEMXZ
     int   GetStageAnim(Client* client);       // ?GetStageAnim@scr_vehicle_t@@QAEHPAUClient@@@Z
+    bool  IsPhysicsPaused();                  // ?IsPhysicsPaused@scr_vehicle_t@@QAE_NXZ
+    void  CollisionDamage(Entity* ent, const math::Position3* pos,
+                          const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
 };
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
@@ -405,9 +408,15 @@ struct str_const_t {
     Broc::string spawn_intermission;  // +0x168
     uint8_t    _pad16C[0x1FC - 0x16C];
     Broc::string tempEntity;          // +0x1FC
-    uint8_t    _pad200[0x2B4 - 0x200];
+    uint8_t    _pad200[0x210 - 0x200];
+    Broc::string spawn_sd_axis;       // +0x210
+    uint8_t    _pad214[0x2B4 - 0x214];
 };
 static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
+static_assert(offsetof(str_const_t, spawn_intermission) == 0x168,
+              "str_const_t::spawn_intermission offset mismatch");
+static_assert(offsetof(str_const_t, spawn_sd_axis) == 0x210,
+              "str_const_t::spawn_sd_axis offset mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
 // ============================================================================
@@ -1352,6 +1361,8 @@ void  G_setfog(const char* fogstring);                  // g.o 0x845380
 void  SaveRegisteredItems(void);                        // g.o 0x83AA80
 void  Scr_FreePrecachedAnimTrees(void);                 // scr.o 0x9B6E10
 void  VEH_UnlinkPlayer(Entity* player, bool setOrigin); // g.o 0x86F4B0
+void  SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity> entityHandle,
+                               const char* text);       // sv.o
 void  CL_AddDebugString(float* xyz, float* color, float scale, const char* pszText,
                         int fromServer);                // cl.o
 void  G_FreeEntity(Entity* e, int msec);                // g.o (g_active.cpp)
@@ -1387,6 +1398,32 @@ int   G_EntLinkToWithOffsetHash(Entity* ent, Entity* parent, unsigned int tag_na
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,
                             bool useAngles);                 // g.o 0x48B160
+void  LookAtKiller(Entity* self, Entity* inflictor, Entity* attacker);  // g.o 0x845900
+void  player_die(Entity* self, Entity* inflictor, Entity* attacker, int damage,
+                 int meansOfDeath, int iWeapon, const float* vPosition,
+                 const float* vDir, hitLocation_t hitLoc);    // g.o 0x474FE0
+Entity* Touch_Item(Entity* ent, Entity* other, int bTouched);  // g.o 0x4859C0
+Entity* Drop_Weapon(Entity* pEnt, int iWeaponIndex, const char* pszTag);  // g.o 0x475E40
+void  Touch_Item_Auto(Entity* ent, Entity* other, int bTouched);  // g.o 0x48B4E0
+void  Cmd_Kill_f(Entity* ent);                                 // g.o 0x483560
+void  Cmd_DropWeapon_f(Entity* pSelf);                         // g.o 0x4835B0
+void  Cmd_LockPVSFlash_f(void);                                // g.o 0x456120
+void  Cmd_TextureMip_f(void);                                  // g.o 0x44ABD0
+void  SP_sd_axis(Entity* ent);                                 // g.o 0x4499E0
+void  G_FreeScrVehicleInfo(void);                              // g.o 0x44EFD0
+void  G_FreeScrVehicles(void);                                 // g.o 0x45E240
+int   G_FreeVehiclePaths(void);                                // g.o 0x4523F0
+int   IsVehicleTank(Entity* ent);                              // g.o 0x44D320
+void  UpdatePaths(Entity* ent);                                // g.o 0x44C7E0
+void  scr_vehicle_t_CollisionDamage(scr_vehicle_t* veh, Entity* ent,
+                                    const math::Position3* pos,
+                                    const math::Position3* dir, float intensity);  // g.o 0x4890C0
+extern int gEnableMeshFlash;          // g.o 0x...
+extern int s_numVehicleInfos;         // g.o
+extern bool no_really_delete_it;      // g.o
+extern int dword_186A0;               // game.o
+extern vmCvar_t mp_gametype;          // mp.o ?mp_gametype@@3UvmCvar_t@@A
+void  VehicleNodeAllocator_Initialize(void* self);             // g.o 0x452BC0
 
 struct StatusBar {
     static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A

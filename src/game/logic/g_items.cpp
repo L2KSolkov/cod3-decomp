@@ -10,6 +10,18 @@ void Use_Item(Entity* ent, Entity* /*other*/, Entity* /*activator*/)
     RespawnItem(ent);
 }
 
+// ea: 0x0048B4E0
+void Touch_Item_Auto(Entity* ent, Entity* other, int bTouched)
+{
+    if (bTouched == 0
+        || other->client == nullptr
+        || other->client->bDisableAutoPickup == 0)
+    {
+        ent->active = 1;
+        Touch_Item(ent, other, bTouched);
+    }
+}
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>

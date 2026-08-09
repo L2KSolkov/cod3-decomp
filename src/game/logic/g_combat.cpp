@@ -16,6 +16,18 @@ void handleDeathInvulnerability(Entity* /*ent*/, int /*a2*/, int /*a3*/)
     ;
 }
 
+// ea: 0x00483560
+void Cmd_Kill_f(Entity* ent)
+{
+    if (g_reloading.integer == 0)
+    {
+        ent->flags &= ~1u;
+        ent->health = 0;
+        ent->client->ps.stats[0] = 0;
+        player_die(ent, ent, ent, dword_186A0, 25, 0, nullptr, nullptr, HITLOC_NONE);
+    }
+}
+
 static bool IS_NAN(float x) {
     return (__fpclass(x) & 0x297) != 0;
 }

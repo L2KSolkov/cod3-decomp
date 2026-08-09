@@ -228,6 +228,9 @@ struct MultiplayerMgr {
     void ProjectileExplosion(Entity* projectile, int weapon,
                              const math::Position3& position, const math::Dir3& normal,
                              unsigned char surfaceType, Entity* owner);
+    void PlayerDead(Entity* player, Entity* inflictor, Entity* attacker,
+                    int damage, int mod, int weapon, const float* position,
+                    const float* dir, int hitLoc);   // ?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 
@@ -418,6 +421,7 @@ struct VehicleNodeAllocator {
 struct IGOFrontEnd {
     uint8_t _pad[168];
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
+    void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
 };
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
 

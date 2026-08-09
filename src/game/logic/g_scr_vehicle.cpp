@@ -58,6 +58,99 @@ void VEH_PlayerInteractionEntry(Entity* vehicle)
     VEH_LinkPlayer(vehicle, Player, 0, 0, 0);
 }
 
+// ea: 0x0044C7E0
+void UpdatePaths(Entity* ent)
+{
+    if ((ent->flags & 0x1000) != 0)
+    {
+        if (ent->moverState == 7)
+        {
+            if (ent->key != 0)
+            {
+                PathNodeMgr::sInst->DisconnectPathsForEntity(ent);
+                return;
+            }
+        }
+        else if (ent->moverState == 8)
+        {
+            PathNodeMgr::sInst->DisconnectPathsForEntity(ent);
+            return;
+        }
+        PathNodeMgr::sInst->ConnectPathsForEntity(ent);
+    }
+}
+
+// ea: 0x0044D320
+int IsVehicleTank(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    return scr_vehicle != nullptr && s_vehicleInfos[scr_vehicle->infoIdx]->type == 2;
+}
+
+// ea: 0x0044EFD0
+void G_FreeScrVehicleInfo(void)
+{
+    for (int i = 0; i < s_numVehicleInfos; mem_heap_free(s_vehicleInfos[i++]))
+        ;
+    s_numVehicleInfos = 0;
+}
+
+// ea: 0x0045E240
+void G_FreeScrVehicles(void)
+{
+    if (level.MaxVehicles != 0)
+    {
+        for (int v0 = 0; v0 < level.MaxVehicles; ++v0)
+        {
+            Broc::string* v2 = (Broc::string*)&s_vehicles[v0];
+            v2[14].clear();
+            v2[15].clear();
+            v2[30].clear();
+            v2[31].clear();
+        }
+    }
+}
+
+// ea: 0x004523F0
+int G_FreeVehiclePaths(void)
+{
+    int result = s_numNodes;
+    int v1 = 0;
+    if (s_numNodes > 0)
+    {
+        result = 0;
+        do
+        {
+            vehicle_node_t* v2 = s_nodes[result];
+            v2->mName.clear();
+            v2->mTarget.clear();
+            result = ++v1;
+        } while (v1 < s_numNodes);
+    }
+    s_numNodes = 0;
+    return result;
+}
+
+// ea: 0x0046F300
+bool scr_vehicle_t::IsPhysicsPaused()
+{
+    rb_vehicle* mRBVeh = (rb_vehicle*)this->mRBVeh;
+    if (mRBVeh != nullptr)
+        return (*(unsigned int*)((char*)mRBVeh + 0x280) & 1) != 0;  // m_flags.mMask
+    Entity* mObject = HandleDbToEnt(
+        *(DbLinkedHandle<EntityHandleDb, Entity>*)((char*)this + 0x1E0));  // seats[0].occupant
+    return mObject == nullptr;
+}
+
+// ea: 0x004890C0
+void scr_vehicle_t::CollisionDamage(Entity* ent, const math::Position3* pos,
+                                    const math::Position3* dir, float intensity)
+{
+    float damage = *(float*)((char*)s_vehicleInfos[infoIdx] + 0x68) * intensity;
+    G_Damage(ent, nullptr, nullptr, dir->v.m128_f32, pos->v.m128_f32,
+             (int)damage, 32, 27, HITLOC_NONE, -1);
+}
+
 // ea: 0x0044D2E0
 vehicle_info_t* VEH_GetInfo(int idx)
 {
