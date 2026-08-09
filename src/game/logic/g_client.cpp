@@ -4,6 +4,12 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x00448BB0
+bool Player_CheckFriendlyFireUse(PlayerState* /*ps*/)
+{
+    return true;
+}
+
 // ea: 0x00449F50
 void respawn(Entity* /*ent*/)
 {

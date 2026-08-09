@@ -22,6 +22,7 @@ enum EDebugRenderMode {
     kDebugRenderModeFullbright = 1,
     kDebugRenderModeWireframe = 2,
     kDebugRenderModeSolidColor = 3,
+    kDebugRenderModeTextureSize = 4,
     kDebugRenderModeTextureTiling = 5,
 };
 

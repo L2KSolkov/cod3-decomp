@@ -4,6 +4,12 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x00457A10
+void Use_Item(Entity* ent, Entity* /*other*/, Entity* /*activator*/)
+{
+    RespawnItem(ent);
+}
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>

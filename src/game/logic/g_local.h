@@ -33,16 +33,81 @@ static_assert(sizeof(ae_vector<char>) == 0x0C, "ae_vector size mismatch");
 // ============================================================================
 // scr_vehicle_t - vehicle runtime state (infoIdx at +0x178 verified vs disasm)
 // ============================================================================
+struct vehicleAnimStage_t {
+    int startTag;  // +0x00
+    int endTag;    // +0x04
+    int animRow;   // +0x08
+    int flags;     // +0x0C
+};
+static_assert(sizeof(vehicleAnimStage_t) == 0x10, "vehicleAnimStage_t size mismatch");
+
+struct vehicleAnimRoute_t {
+    int   vehPosSrc;   // +0x00
+    int   vehPosDest;  // +0x04
+    int   stages[1];   // +0x08 (numStages entries)
+    int   numStages;   // +0x0C
+    float animSpeedScale;  // +0x10
+    int   flags;       // +0x14
+};
+static_assert(sizeof(vehicleAnimRoute_t) == 0x18, "vehicleAnimRoute_t size mismatch");
+
+struct vehicleAnimMap_t {
+    void* tags;              // +0x00
+    vehicleAnimStage_t* stages;  // +0x04
+    int* entryTags;          // +0x08
+    int  numEntryTags;       // +0x0C
+    vehicleAnimRoute_t* routes;  // +0x10
+    int  numRoutes;          // +0x14
+    void* exitMap;           // +0x18
+};
+static_assert(sizeof(vehicleAnimMap_t) == 0x1C, "vehicleAnimMap_t size mismatch");
+
 struct scr_vehicle_t {
-    void* gunnerWeapon;   // +0x00
-    void* altWeapon;      // +0x04
-    int   shooter;        // +0x08
-    uint8_t _pad0C[0x178 - 0x0C];
+    uint8_t _pad0[0x174];
+    DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner;  // +0x174
     int16_t infoIdx;      // +0x178
     uint8_t _pad17A[0x318 - 0x17A];
     int     barrelBlocked;  // +0x318
+    uint8_t _pad31C[0x460 - 0x31C];
+    struct VehicleBoneIndex {
+        int player;           // +0x00
+        int detach;           // +0x04
+        int popout;           // +0x08
+        int body;             // +0x0C
+        int turret;           // +0x10
+        int barrel;           // +0x14
+        int coax;             // +0x18
+        int gunner_barrel;    // +0x1C
+        int gunner_player;    // +0x20
+        int steering_wheel;   // +0x24
+        int gunner_flash;     // +0x28
+        int flash[4];         // +0x2C
+        int wheel[6];         // +0x3C
+        int entryPoint[6];    // +0x54
+        int hatchLeft;        // +0x6C
+        int hatchRight;       // +0x70
+        int leader;           // +0x74
+    } boneIndex;              // +0x460 (120 bytes)
+    uint8_t _pad4D8[0x518 - 0x4D8];
+    void*   mRBVeh;           // +0x518 rb_vehicle*
+    uint8_t _pad51C[0x554 - 0x51C];
+    float   mUseRadius;       // +0x554
+    uint8_t mHasEntryPoints;  // +0x558
+    uint8_t _pad559[0x568 - 0x559];
+    vehicleAnimMap_t* animMap;  // +0x568
+
+    vehicleAnimStage_t* GetRouteStage(int routeIdx, int stage);  // ?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z
+    float GetAnimSpeedScale(Client* client);  // ?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z
+    float GetThrottle();                      // ?GetThrottle@scr_vehicle_t@@QAEMXZ
+    void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
 };
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
+static_assert(offsetof(scr_vehicle_t, boneIndex) == 0x460, "scr_vehicle_t::boneIndex offset mismatch");
+static_assert(offsetof(scr_vehicle_t, mRBVeh) == 0x518, "scr_vehicle_t::mRBVeh offset mismatch");
+static_assert(offsetof(scr_vehicle_t, animMap) == 0x568, "scr_vehicle_t::animMap offset mismatch");
+
+void Use_Item(Entity* ent, Entity* other, Entity* activator);
+void RespawnItem(Entity* ent);
 
 // ============================================================================
 // trRefEntity - render entity (0x104 bytes) - verified against IDA (subset)
@@ -221,6 +286,13 @@ extern int   s_numNodes;                   // 0xEA5DD0
 extern vehicle_node_t* s_nodes[];          // 0xEAEDF8
 struct vehicle_info_t;
 extern vehicle_info_t* s_vehicleInfos[];   // 0xEA7638
+extern scr_vehicle_t* s_vehicles;          // 0xEAE044
+extern int sEntryPointHintIndicies[6];     // 0xECCCF4
+extern int dword_DD67B8;                   // 0xDD67B8
+extern int dword_DD67BC;                   // 0xDD67BC
+extern int dword_DD67C0;                   // 0xDD67C0
+extern int dword_DD67C4;                   // 0xDD67C4
+extern int dword_DD67C8;                   // 0xDD67C8
 extern int (*syscall)(int, ...);           // 0xDF9D70 (cg.o)
 void DebugDumpEnts(int a1, Entity* ent);   // g.o 0x450150
 
@@ -260,6 +332,7 @@ void  G_SetClientSound(Entity* ent);
 void  G_RunClient(Entity* ent);
 int   ClientInactivityTimer(Entity* ent);
 int   ClientSpectatorInactivityTimer(Entity* ent);
+bool  Player_CheckFriendlyFireUse(PlayerState* ps);
 void  respawn(Entity* ent);
 void  handleDeathInvulnerability(Entity* ent, int a2, int a3);
 void  Fill_Clip(PlayerState* ps, int weapon);
@@ -573,10 +646,15 @@ struct corpseInfo_t {
 };
 static_assert(sizeof(corpseInfo_t) == 0x1C, "corpseInfo_t size mismatch");
 struct scr_data_t {
-    corpseInfo_t actorCorpseInfo[71];  // +0x000 (0x7CC bytes)
-    uint8_t      _pad7CC[0x8];         // +0x7CC
-    AnimTree*    generic_human_tree;   // +0x7D4 (approx; exact layout TBD)
+    int          levelscript;             // +0x000
+    int          scripted_init;           // +0x004
+    uint8_t      _pad8[0x60C - 0x8];      // generic_human/anim/classMap
+    corpseInfo_t actorCorpseInfo[16];     // +0x60C (0x1C0 bytes)
+    uint8_t      _pad7CC[0x7D4 - 0x7CC];
+    AnimTree*    generic_human_tree;      // +0x7D4
 };
+static_assert(offsetof(scr_data_t, actorCorpseInfo) == 0x60C,
+              "scr_data_t::actorCorpseInfo offset mismatch");
 extern scr_data_t g_scr_data;  // 0xEE58D0
 extern const math::Position3 actorMaxs;  // 0xF99330
 int  G_GetActorCorpseIndex(Entity* ent);
@@ -1235,6 +1313,31 @@ void  G_UpdateTags(Entity* ent, int bHasDObj);           // g.o 0x464C40
 void  G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);  // g.o 0x482270
 void  G_CalcTagParentRelAxis(Entity* ent, float (*parentRelAxis)[3]);  // g.o 0x4823C0
 void  G_CalcTagAxis(Entity* ent, int bAnglesOnly);      // g.o 0x482440
+char* ConcatArgs(int start);                            // g.o 0x839790
+void  G_setfog(const char* fogstring);                  // g.o 0x845380
+void  SaveRegisteredItems(void);                        // g.o 0x83AA80
+void  Scr_FreePrecachedAnimTrees(void);                 // scr.o 0x9B6E10
+void  VEH_UnlinkPlayer(Entity* player, bool setOrigin); // g.o 0x86F4B0
+void  CL_AddDebugString(float* xyz, float* color, float scale, const char* pszText,
+                        int fromServer);                // cl.o
+void  G_FreeEntity(Entity* e, int msec);                // g.o (g_active.cpp)
+cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);  // core.o
+
+struct StatusBar {
+    static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
+    static void Init();               // ?Init@StatusBar@@YAXXZ
+};
+
+// rb_vehicle (phys_xboxr) - minimal view for scr_vehicle_t::GetThrottle
+struct rb_vehicle {
+    uint8_t _pad[0x254];
+    float   m_throttle;  // +0x254
+};
+
+struct EntityDeathTask {
+    struct { unsigned int mMask; } mFlags;  // +0x00 Bitmask<unsigned int>
+    void Update(Entity* e, float delta);    // ?Update@EntityDeathTask@@UAEXPAVEntity@@M@Z
+};
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,
                             bool useAngles);

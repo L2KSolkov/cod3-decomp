@@ -15,6 +15,7 @@ extern int gRenderCG_2D;         // cg.o 0x011E86E4
 extern int g_renderGameEntityStats;  // game2.o 0x012F3E10
 extern int Cmd_Argc(void);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
+extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 
 // ea: 0x00448B70
 void MemGraph_RenderResources(void)
@@ -186,4 +187,103 @@ int Cmd_EntityStats_f(void)
     }
     g_renderGameEntityStats = 0;
     return result;
+}
+
+// ea: 0x0044A780
+void Cmd_Invinc_f(Entity* /*ent*/)
+{
+    EntityManager::sInst->GetPlayer(currCl);
+}
+
+// ea: 0x0044AB30
+int Cmd_NGLFPSDisplay_f(void)
+{
+    int result = nglDebug.ShowPerfInfo == 2 ? 0 : 2;
+    nglDebug.ShowPerfInfo = nglDebug.ShowPerfInfo == 2 ? 0 : 2;
+    return result;
+}
+
+// ea: 0x0044ABB0
+void Cmd_TextureSize_f(void)
+{
+    if (ShaderCommon::GetDebugRenderMode() == ShaderCommon::kDebugRenderModeTextureSize)
+        ShaderCommon::SetDebugRenderMode(ShaderCommon::kDebugRenderModeNormal);
+    else
+        ShaderCommon::SetDebugRenderMode(ShaderCommon::kDebugRenderModeTextureSize);
+}
+
+// ea: 0x0044BA00
+void G_RunPreFrame(int msec)
+{
+    ++level.framenum;
+    level.previousTime = level.time;
+    level.time += msec;
+}
+
+// ea: 0x0044BA90
+void G_SendClientMessages(void)
+{
+    level.snapTime = level.time;
+    if (level.bRegisterItems != 0)
+        SaveRegisteredItems();
+}
+
+// ea: 0x00448B50
+void StatusBar::Init()
+{
+    sStatusBarActive = Cvar_Get("statusbar", "1", 256);
+}
+
+// ea: 0x00450CF0
+void g_AddDebugString(float* xyz, float* color, float scale, const char* pszText)
+{
+    CL_AddDebugString(xyz, color, scale, pszText, 1);
+}
+
+// ea: 0x00455F40
+void Cmd_Fogswitch_f(void)
+{
+    const char* v0 = ConcatArgs(1);
+    G_setfog(v0);
+}
+
+// ea: 0x00457F60
+void G_LoadAnimTreeInstances(bool /*bReload*/)
+{
+    for (int i = 0; i < 16; ++i)
+        g_scr_data.actorCorpseInfo[i].mEntity.mHandle.mVal = 0;
+}
+
+// ea: 0x00457FC0
+void G_ClearLowHunk(void)
+{
+    Scr_FreePrecachedAnimTrees();
+    Com_FreeWeaponInfoMemory(1, 0);
+}
+
+// ea: 0x00460E90
+void EntityHandleDb::Find(int fieldOfs, const Broc::string* match,
+                          ae_sized_array<Entity*, 4096>* results)
+{
+    Broc::string v4 = *match;
+    EntityHandleDb_Find<Broc::string>(fieldOfs, v4, *results);
+}
+
+// ea: 0x00460660
+void EntityDeathTask::Update(Entity* e, float /*delta*/)
+{
+    if ((mFlags.mMask & 4) == 0)
+        G_FreeEntity(e, 0);
+}
+
+// ea: 0x0044FCE0
+int G_ResetEntryPointHintIndicies(void)
+{
+    sEntryPointHintIndicies[0] = -1;
+    dword_DD67B8 = -1;
+    dword_DD67BC = -1;
+    dword_DD67C0 = -1;
+    dword_DD67C4 = -1;
+    dword_DD67C8 = -1;
+    return -1;
 }
