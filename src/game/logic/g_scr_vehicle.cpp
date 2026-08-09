@@ -837,6 +837,62 @@ int16_t G_GetVehicleInfoIndex(const char* name)
     return VehicleInfo;
 }
 
+// ea: 0x0046E540
+DbLinkedHandle<EntityHandleDb, Entity> G_GetTankEntNum(int index)
+{
+    DbLinkedHandle<EntityHandleDb, Entity> result;
+    result.mHandle.mVal = 0;
+    if (index >= level.MaxVehicles)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7601;
+        AeAssert::gCurrentExpr = "index < level.MaxVehicles";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    scr_vehicle_t* v2 = &level.vehicles[index];
+    Entity* v4 = HandleDbToEnt(v2->mEntity);
+    if (v4 != nullptr
+        && s_vehicleInfos[v2->infoIdx]->type == 2
+        && v2->drawOnCompass != 0
+        && v4->scr_vehicle != nullptr
+        && v4->health > 0
+        && HandleDbToEnt(v4->r.mOwner) == nullptr)
+    {
+        result.mHandle.mVal = v4->mHandle.mHandle.mVal;
+    }
+    return result;
+}
+
+// ea: 0x00488BE0
+void Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
+                     int /*damage*/, int mod, int weapon, const float* position,
+                     const float* dir, hitLocation_t hitLoc)
+{
+    scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
+    scr_vehicle->playEngineSound = 0;
+    VEH_StopWheelEffects(pSelf);
+    for (int seat = 0; seat < 11; ++seat)
+    {
+        Entity* mObject = HandleDbToEnt(scr_vehicle->seats[seat].occupant);
+        if (mObject != nullptr)
+        {
+            Scr_Vehicle_GetOut(pSelf, mObject, pSelf->health);
+            G_Damage(mObject, pInflictor, pAttacker, dir, position, 9999, 160,
+                     mod, hitLoc, weapon);
+        }
+    }
+    Entity* v16 = pAttacker;
+    if (pAttacker == nullptr)
+    {
+        v16 = pInflictor;
+        if (pInflictor == nullptr)
+            v16 = pSelf;
+    }
+    Scr_NotifyFromEnt(pSelf, hash_const.death, v16);
+}
+
 // ea: 0x0046E0B0
 bool G_IsPlayerInVehicle(Entity* player)
 {

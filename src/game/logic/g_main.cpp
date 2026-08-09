@@ -1641,3 +1641,96 @@ void render_aabb(const math::Position3* bmin, const math::Position3* bmax,
         debug_aabbs.mElements[debug_aabbs.mSize++] = v5;
     }
 }
+
+// ea: 0x00462A60
+void Concussive_think(Entity* ent, int /*msec*/)
+{
+    if (level.time > ent->delay)
+        ent->think = THINK__G_FreeEntity;
+    ent->nextthink = level.time + 100;
+    Entity* v1 = EntityHandleDb::sInst.Find(640, hash_const.player);
+    if (v1 != nullptr)
+    {
+        float dx = v1->r.currentOrigin.v.m128_f32[0] - ent->r.currentOrigin.v.m128_f32[0];
+        float dy = v1->r.currentOrigin.v.m128_f32[1] - ent->r.currentOrigin.v.m128_f32[1];
+        float dz = v1->r.currentOrigin.v.m128_f32[2] - ent->r.currentOrigin.v.m128_f32[2];
+        if (sqrtf((dx * dx) + (dy * dy) + (dz * dz)) <= 512.0f)
+        {
+            v1->client->ps.velocity.v.m128_f32[2] += 24.0f;
+            Client* client = v1->client;
+            if (client->ps.pm_time == 0)
+            {
+                client->ps.pm_time = 50;
+                v1->client->ps.pm_flags |= 0x200u;
+            }
+        }
+    }
+}
+
+// ea: 0x00466F40
+Entity* SelectRandomDeathmatchSpawnPoint(void)
+{
+    ae_sized_array<Entity*, 4096> entList;
+    ae_sized_array<Entity*, 128> spotList;
+    entList.m_size = 0;
+    spotList.m_size = 0;
+    EntityHandleDb_Find<HashString>(640, hash_const.info_player_deathmatch, entList);
+    for (int i = 0; i < entList.m_size; ++i)
+    {
+        Entity* spot = entList.m_elements[i];
+        if (!SpotWouldTelefrag(&spot->r.currentOrigin))
+            spotList.m_elements[spotList.m_size++] = spot;
+    }
+    if (spotList.m_size == 0)
+        return entList.m_elements[0];
+    unsigned int v4 = rand() % spotList.m_size;
+    return spotList.m_elements[v4];
+}
+
+// ea: 0x00461830
+Entity* SelectNearestDeathmatchSpawnPoint(const float* from)
+{
+    float v1 = 999999.0f;
+    Entity* nearestSpot = nullptr;
+    Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity** end = begin + EntityHandleDb::sInst.mActiveList.m_size;
+    for (Entity** p = begin; p != end; ++p)
+    {
+        Entity* spot = *p;
+        if (spot == nullptr)
+            continue;
+        if (spot->mClassNameHash.mHash == 0
+            || spot->mClassNameHash.mHash != hash_const.info_player_deathmatch.mHash)
+            continue;
+        float dx = spot->r.currentOrigin.v.m128_f32[0] - from[0];
+        float dy = spot->r.currentOrigin.v.m128_f32[1] - from[1];
+        float dz = spot->r.currentOrigin.v.m128_f32[2] - from[2];
+        float dist = sqrtf((dx * dx) + (dy * dy) + (dz * dz));
+        if (v1 > dist)
+        {
+            v1 = dist;
+            nearestSpot = spot;
+        }
+    }
+    return nearestSpot;
+}
+
+// ea: 0x004676E0
+void Cmd_MenuResponse_f(Entity* pEnt)
+{
+    char szResponse[128];
+    char szMenuName[128];
+    if (Cmd_Argc() == 3)
+    {
+        Cmd_ArgvBuffer(1, szMenuName, 128);
+        if (atoi(szMenuName) == 0)
+            SV_GetConfigstring(627, szMenuName, 128);
+        Cmd_ArgvBuffer(2, szResponse, 128);
+    }
+    else
+    {
+        szMenuName[0] = 0;
+        szResponse[0] = 0;
+    }
+    Scr_Notify(pEnt, hash_const.menuresponse, 0);
+}

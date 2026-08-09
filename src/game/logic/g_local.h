@@ -115,7 +115,12 @@ struct scr_vehicle_t {
     DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x170
     DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner;  // +0x174
     int16_t infoIdx;      // +0x178
-    uint8_t _pad17A[0x1B4 - 0x17A];
+    uint8_t _pad17A[0x194 - 0x17A];  // waitNode/waitSpeed/fireTime/etc (unused)
+    int     drawOnCompass;   // +0x194
+    int     drawAsEnemy;     // +0x198
+    uint8_t _pad19C[0x1A4 - 0x19C];
+    int     playEngineSound; // +0x1A4
+    uint8_t _pad1A8[0x1B4 - 0x1A8];
     int     mMantleTime;  // +0x1B4
     DbLinkedHandle<EntityHandleDb, Entity> mMantleEntity;  // +0x1B8
     uint8_t _pad1BC[0x1E0 - 0x1BC];
@@ -547,9 +552,13 @@ struct hash_const_t {
     HashString func_door_rotating; // +0x9C
     HashString func_rotating;      // +0xA0
     HashString func_tramcar;       // +0xA4
-    uint8_t    _padA8[0xC4 - 0xA8];
+    uint8_t    _padA8[0xBC - 0xA8];
+    HashString info_player_deathmatch;  // +0xBC (47)
+    uint8_t    _padC0[0xC4 - 0xC0];
     HashString player_off_vehicle;      // +0xC4 (49)
-    uint8_t    _padC8[0xEC - 0xC8];
+    uint8_t    _padC8[0xDC - 0xC8];
+    HashString menuresponse;            // +0xDC (55)
+    uint8_t    _padE0[0xEC - 0xE0];
     HashString movedone;           // +0xEC
     uint8_t    _padF0[0x11C - 0xF0];
     HashString pickup;             // +0x11C
@@ -1643,6 +1652,18 @@ struct debug_aabb { float data[7]; };            // opaque
 extern ae_vector<debug_aabb> debug_aabbs;        // g.o
 bool  CanMantleVehicle(scr_vehicle_t* veh, Entity* player);  // g.o
 void  G_DelayFreeAnimTree(XAnimTree* tree);      // g.o (g_dobj.cpp)
+void  Concussive_think(Entity* ent, int msec);   // g.o 0x462A60
+Entity* SelectRandomDeathmatchSpawnPoint(void);  // g.o 0x466F40
+Entity* SelectNearestDeathmatchSpawnPoint(const float* from);  // g.o 0x461830 (redeclared above)
+DbLinkedHandle<EntityHandleDb, Entity> G_GetTankEntNum(int index);  // g.o 0x46E540
+void  Cmd_MenuResponse_f(Entity* pEnt);          // g.o 0x4676E0
+void  Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
+                      int damage, int mod, int weapon, const float* position,
+                      const float* dir, hitLocation_t hitLoc);  // g.o 0x488BE0
+void  EntityHandleDb_Validate(void* self);       // g.o 0x466350
+int   SpotWouldTelefrag(const math::Position3* origin);  // g.o
+HashString hash_const_info_player_deathmatch;    // helper
+void  SV_GetConfigstring(int index, char* buffer, int bufferSize);  // sv.o
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o
