@@ -567,25 +567,33 @@ enum ECameraModes {
     CAM_NORMAL_THIRD = 1,
     CAM_VEHICLE_FIRST = 2,
     CAM_VEHICLE_THIRD = 3,
-    CAM_TURRET = 4,
-    CAM_VEHICLE_TANK = 5,
-    CAM_VEHICLE_PASSENGER = 6,
-    CAM_VEHICLE_GUNNER = 7,
-    CAM_VEHICLE_DRIVER = 8,
-    CAM_VEHICLE_TANK_GUNNER = 9,
+    CAM_VEHICLE_TANK = 4,
+    CAM_VEHICLE_TANK_COMMANDER = 5,
+    CAM_VEHICLE_GUNNER = 6,
+    CAM_VEHICLE_GUNNER_CROUCHED = 7,  // CG_CalcGunnerViewPos(true)
+    CAM_VEHICLE_GUNNER_STANDING = 8,  // CG_CalcGunnerViewPos(false)
+    CAM_VEHICLE_PASSENGER = 9,        // CG_CalcPassengerViewPos
     CAM_VEHICLE_ANIM = 10,
     CAM_VEHICLE_ANIM_FIRST = 11,
-    CAM_MP_DEATH_CAMERA = 12,
-    CAM_LINKED = 13,
-    CAM_DEATH_CAMERA = 14,
+    CAM_TURRET_FIRST = 12,            // first-person w/ turret sway
+    CAM_TURRET = 13,
+    CAM_INTERMISSION = 14,
     CAM_SCENE_ANIMATED = 15,
     CAM_INTERACTION_FREE = 16,
     CAM_INTERACTION_LOCKED = 17,
-    CAM_TURRET_TANK = 18,
-    CAM_MP_TEAM = 19,
+    CAM_TURRET_ANIMATED = 18,         // skips UpdateViewPO
+    CAM_MP_DEATH_CAMERA = 19,
     CAM_MP_DEATH_CAMERA_NO_KILLER = 20,
-    CAM_MP_DEATH_CAMERA_KILLER = 21,
-    CAM_VEHICLE_TANK_COMMANDER = 22,
+    CAM_DEATH_CAMERA = 21,
+};
+
+// Camera::EVehInputState
+enum {
+    INPUT_NONE = 0,
+    INPUT_STICK = 1,
+    INPUT_LOOK_RIGHT = 2,
+    INPUT_LOOK_LEFT = 3,
+    INPUT_LOOK_BACK = 4,
 };
 
 struct RumbleEffectInstanceHandle {
@@ -618,6 +626,7 @@ extern float dword_F63CB8[4 * 1580];
 extern float dword_F63C80[4 * 1580];
 extern float dword_F63C84[4 * 1580];
 extern float dword_F63C88[4 * 1580];
+extern int dword_F6A28C[4 * 802];
 extern float dword_F641D8[4 * 1580];
 extern float dword_F641DC[4 * 1580];
 extern int dword_F64154[4 * 1580];
@@ -667,10 +676,12 @@ public:
     unsigned short mAnimFlags;                 // +0x140
     unsigned char _pad5[0x144 - 0x142];
     int mTagCameraIndex;                       // +0x144
-    unsigned char _pad6[0x190 - 0x148];
+    unsigned char _pad6[0x150 - 0x148];
+    math::Mat43 mLastTagCamMat;                // +0x150
     int mCamMode;                              // +0x190
     int mVehicleCamMode;                       // +0x194
-    unsigned char _pad7[0x1B0 - 0x198];
+    unsigned char _pad7[0x1A0 - 0x198];
+    math::Position3 mVehCamThirdAnglesOffset;  // +0x1A0
     math::Position3 mTweenParentPos;           // +0x1B0
     math::Position3 mTweenParentAngles;        // +0x1C0
     void* mShake;                              // +0x1D0
@@ -1254,4 +1265,513 @@ void Camera::UpdateTankShakeRumble(Entity* veh, bool firstPerson)
         RumbleManager_SetIntensity(RumbleManager_Inst(mClient), mRumbleEffect,
                                    rumbleIntensity);
     }
+}
+
+struct vehicle_info_t {
+    unsigned char _pad0[0x16C];
+    float turretVertSpanUp;      // +0x16C
+    float turretVertSpanDown;    // +0x170
+    unsigned char _pad1[0x1E8 - 0x174];
+    float camLinkedPitchFactor;  // +0x1E8
+    float pitchBasedCamOffsetX;  // +0x1EC
+    float pitchBasedCamOffsetZ;  // +0x1F0
+};
+
+extern float maxAngle;  // 0x00DFA294
+extern bool special_tween_bool;  // 0x00F6171D
+extern bool gCameraSwayOnTurrets;  // 0x00DF9D84
+extern void controller_stick_value(void* self, int index, int stick,
+                                   int* outX, int* outY);
+extern int RecalibrateInput(int val);
+extern math::Dir3 rb_vehicle_get_velocity(void* self);
+extern PlayerState& GetPlayerState(int idx);
+extern void CG_OffsetFirstPersonView();
+extern void CG_OffsetThirdPersonView();
+extern void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_hash);
+extern void CG_CalcPassengerViewPos();
+extern void CG_CalcTurretViewValues();
+extern void* G_GetVehicleInfo(void* scr_vehicle);
+extern void vectosignedangles(const float* vec, float* angles);
+extern void InterpolateAngles(float* curAngles, const float* initialAngles,
+                              const float* targetAngles, float t);
+extern void AnglesToForward(const math::Position3& angles,
+                            math::Dir3& forward);
+extern Entity* GetPlayer(int idx);
+
+static unsigned int s_tagGunnerBarrelHash;
+static bool s_tagGunnerBarrelHashInit;
+static unsigned int s_tagBarrelHash;
+static bool s_tagBarrelHashInit;
+
+static Entity* DbHandleToEntity(unsigned int handle)
+{
+    unsigned int idx = handle & 0xFFF;
+    if (idx < 0x540
+        && (handle >> 12) == EntityHandleDb::sInst.mElements[idx].mKey)
+        return EntityHandleDb::sInst.mElements[idx].mObject;
+    return nullptr;
+}
+
+// ea: 0x0068EC30
+void Camera::UpdateVehicleDriverSteerLookAhead(Entity* veh)
+{
+    float v2 = 10.0f;
+    float m_steer_factor = 0.0f;
+    float steerFactor = 0.0f;
+    if (veh->speed > 50.0f)
+    {
+        void* mRBVeh = *(void**)((char*)veh->scr_vehicle + 0x518);
+        m_steer_factor = *(float*)((char*)mRBVeh + 0x264);
+        steerFactor = m_steer_factor;
+    }
+    if (fabsf(steerFactor) < 0.80000001f)
+        goto relax;
+    if (m_steer_factor > 0.0f)
+    {
+        if (mSteerYawOffset < 0.0f)
+            v2 = 60.0f;
+        mSteerYawOffset =
+            ((ServerTime_sInst.mTickDelta * m_steer_factor) * v2)
+            + mSteerYawOffset;
+        goto clamp;
+    }
+    if (m_steer_factor >= 0.0f)
+    {
+    relax:
+        float cur = mSteerYawOffset;
+        float v6;
+        bool v7;
+        if (cur <= 0.0f)
+        {
+            if (mSteerYawOffset >= 0.0f)
+                goto clamp;
+            v6 = (ServerTime_sInst.mTickDelta * 40.0f) + mSteerYawOffset;
+            v7 = v6 <= 0.0f;
+        }
+        else
+        {
+            v6 = cur - (ServerTime_sInst.mTickDelta * 40.0f);
+            v7 = v6 >= 0.0f;
+        }
+        mSteerYawOffset = v6;
+        if (!v7)
+            mSteerYawOffset = 0.0f;
+    }
+    else
+    {
+        if (mSteerYawOffset > 0.0f)
+            v2 = 60.0f;
+        mSteerYawOffset = mSteerYawOffset
+                          - ((fabsf(steerFactor) * ServerTime_sInst.mTickDelta)
+                             * v2);
+    }
+clamp:
+    float v8 = 0.0f - maxAngle;
+    if (v8 <= mSteerYawOffset)
+    {
+        if (mSteerYawOffset > maxAngle)
+        {
+            mSteerYawOffset = maxAngle;
+            return;
+        }
+        v8 = mSteerYawOffset;
+    }
+    mSteerYawOffset = v8;
+}
+
+// ea: 0x0069DFE0
+void Camera::UpdateVehicleDriverCamAnglesInput(Entity* veh, PlayerState* ps)
+{
+    mVehTimeSinceInput = ServerTime_sInst.mTickDelta + mVehTimeSinceInput;
+    int v5 = dword_F6A28C[802 * currCl];
+    int prevVehInputState;
+    int stickY;
+    controller_stick_value(controller_inst(), v5, 1 /* RIGHTSTICK */,
+                           &prevVehInputState, &stickY);
+    prevVehInputState = RecalibrateInput(prevVehInputState);
+    stickY = RecalibrateInput(stickY);
+    int prevState = mVehInputState;
+    void* mRBVeh = *(void**)((char*)veh->scr_vehicle + 0x518);
+    if (mRBVeh != nullptr)
+    {
+        bool v27 = prevVehInputState != INPUT_NONE || stickY != 0;
+        bool v28 = *(float*)((char*)mRBVeh + 0x254) > 0.0f;  // m_throttle
+        math::Dir3 velocity = rb_vehicle_get_velocity(mRBVeh);
+        float v24 = velocity.v.m128_f32[0] * velocity.v.m128_f32[0]
+                    + velocity.v.m128_f32[1] * velocity.v.m128_f32[1]
+                    + velocity.v.m128_f32[2] * velocity.v.m128_f32[2];
+        if (v28)
+            mVehGasPressedTime = mVehGasPressedTime
+                                 + ServerTime_sInst.mTickDelta;
+        else
+            mVehGasPressedTime = 0.0f;
+        if (v27)
+        {
+            mVehTimeSinceInput = 0.0f;
+            mVehInputState = INPUT_STICK;
+        }
+        else if (mVehTimeSinceInput >= 0.30000001f)
+        {
+            if (controller_button_value(controller_inst(), v5, 7 /* R2 */) != 0
+                && controller_button_value(controller_inst(), v5, 6 /* L2 */)
+                       != 0)
+                mVehInputState = INPUT_LOOK_BACK;
+            else if (controller_button_value(controller_inst(), v5, 7) != 0)
+                mVehInputState = INPUT_LOOK_RIGHT;
+            else if (controller_button_value(controller_inst(), v5, 6) != 0)
+                mVehInputState = INPUT_LOOK_LEFT;
+            else if (mVehGasPressedTime > 0.30000001f || v24 > 250000.0f
+                     || mVehInputState != INPUT_STICK)
+                mVehInputState = INPUT_NONE;
+        }
+        else
+        {
+            mVehInputState = INPUT_STICK;
+        }
+        int v19 = mVehInputState;
+        if ((v19 != INPUT_STICK || mTweenDuration <= mTweenTime)
+            && prevState != v19)
+        {
+            if (v19 != INPUT_STICK)
+            {
+                if (mVehicleCamMode != VEH_MODE_FIRSTPERSON)
+                    StartCircleTween(0.60000002f);
+                else
+                    StartTween(0.40000001f, true);
+            }
+            math::Position3 v21 = GetVehicleViewAngles(veh, ps);
+            float v20;
+            switch (mVehInputState)
+            {
+            case INPUT_STICK:
+                v20 = mPrevAngles.v.m128_f32[1]
+                      - veh->r.currentAngles.v.m128_f32[1];
+                break;
+            case INPUT_LOOK_RIGHT:
+                v20 = v21.v.m128_f32[1] - 90.0f;
+                break;
+            case INPUT_LOOK_LEFT:
+                v20 = v21.v.m128_f32[1] + 90.0f;
+                break;
+            case INPUT_LOOK_BACK:
+                v20 = v21.v.m128_f32[1] + 180.0f;
+                break;
+            default:
+                break;
+            }
+            v21.v.m128_f32[1] = v20;
+            SetPlayerAngles(v21.v.m128_f32);
+        }
+    }
+}
+
+// ea: 0x006AEF30
+void Camera::UpdateVehicleDriverCam(float extra_height_offset)
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
+    UpdateVehicleDriverCamAngles(mObject, &client->ps);
+    UpdateVehicleDriverCamAnglesInput(mObject, &client->ps);
+    if (special_tween_bool)
+    {
+        if (mTweenTime < 0.69999999f)
+        {
+            UpdateVehicleDriverCamPos(mObject, &client->ps, 20.0f);
+            return;
+        }
+        StartTween(0.30000001f, false);
+        special_tween_bool = false;
+    }
+    UpdateVehicleDriverCamPos(mObject, &client->ps, extra_height_offset);
+}
+
+// ea: 0x006AF640
+void Camera::Update()
+{
+    if (mPrevViewPos.v.m128_f32[0] != 0.0f)
+        mPrevFOV = CG_GetViewFov();
+    memset(&dword_F63C50[1580 * mClient], 0, 0x60u);
+    ECameraModes v2 = CalcCamMode();
+    ECameraModes newMode = v2;
+    float adjX = SetNewMode(v2);
+    if (IsInvalidFloat(mTweenStartPos.v.m128_f32[0])
+        || IsInvalidFloat(mTweenStartPos.v.m128_f32[1])
+        || IsInvalidFloat(mTweenStartPos.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((mTweenStartPos)[0]) && !IS_NAN((mTweenStartPos)[1]) "
+                  "&& !IS_NAN((mTweenStartPos)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 96);
+    }
+    if (IsInvalidFloat(mTweenStartAngles.v.m128_f32[0])
+        || IsInvalidFloat(mTweenStartAngles.v.m128_f32[1])
+        || IsInvalidFloat(mTweenStartAngles.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((mTweenStartAngles)[0]) && "
+                  "!IS_NAN((mTweenStartAngles)[1]) && "
+                  "!IS_NAN((mTweenStartAngles)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 97);
+    }
+    if (adjX > 0.001f)
+    {
+        StartTween(adjX, false);
+        if (v2 == CAM_VEHICLE_THIRD)
+        {
+            mVehCamThirdAnglesOffset.v.m128_f32[1] =
+                EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                    ->client->ps.viewangles[1];
+        }
+    }
+    if (!s_tagGunnerBarrelHashInit)
+    {
+        s_tagGunnerBarrelHashInit = true;
+        s_tagGunnerBarrelHash = HashString_CalcHash("tag_gunner_barrel");
+    }
+    if (!s_tagBarrelHashInit)
+    {
+        s_tagBarrelHashInit = true;
+        s_tagBarrelHash = HashString_CalcHash("tag_barrel");
+    }
+    unsigned int v3 = s_tagGunnerBarrelHash;
+    switch (newMode)
+    {
+    case 0:
+        UpdateViewBob();
+        {
+            Client* client = GetPlayer(mClient)->client;
+            dword_F63C70[1580 * mClient] = client->ps.origin.v.m128_f32[0];
+            dword_F63C74[1580 * mClient] = client->ps.origin.v.m128_f32[1];
+            dword_F63C78[1580 * mClient] = client->ps.origin.v.m128_f32[2];
+            angle[1580 * mClient] = client->ps.viewangles[0];
+            dword_F63CB4[1580 * mClient] = client->ps.viewangles[1];
+            dword_F63CB8[1580 * mClient] = client->ps.viewangles[2];
+        }
+        CG_OffsetFirstPersonView();
+        break;
+    case 1:
+        {
+            Client* v6 = GetPlayer(mClient)->client;
+            dword_F63C70[1580 * mClient] = v6->ps.origin.v.m128_f32[0];
+            dword_F63C74[1580 * mClient] = v6->ps.origin.v.m128_f32[1];
+            dword_F63C78[1580 * mClient] = v6->ps.origin.v.m128_f32[2];
+            angle[1580 * mClient] = v6->ps.viewangles[0];
+            dword_F63CB4[1580 * mClient] = v6->ps.viewangles[1];
+            dword_F63CB8[1580 * mClient] = v6->ps.viewangles[2];
+        }
+        CG_OffsetThirdPersonView();
+        break;
+    case 2:
+        UpdateVehicleDriverCam(0.0f);
+        break;
+    case 3:
+        UpdateVehicleDriverCamThird();
+        break;
+    case 4:
+        UpdateTankCam();
+        break;
+    case 5:
+        UpdateTankCommanderCam();
+        break;
+    case 6:
+        CG_CalcGunnerViewPos(false, v3);
+        break;
+    case 7:
+        CG_CalcGunnerViewPos(true, v3);
+        break;
+    case 8:
+        CG_CalcGunnerViewPos(false, s_tagBarrelHash);
+        break;
+    case 9:
+        CG_CalcPassengerViewPos();
+        break;
+    case 10:
+        UpdateVehicleAnimCam();
+        break;
+    case 11:
+        {
+            Client* v4 = GetPlayer(mClient)->client;
+            dword_F63C70[1580 * mClient] =
+                GetPlayer(mClient)->r.currentOrigin.v.m128_f32[0];
+            dword_F63C74[1580 * mClient] =
+                GetPlayer(mClient)->r.currentOrigin.v.m128_f32[1];
+            dword_F63C78[1580 * mClient] =
+                GetPlayer(mClient)->r.currentOrigin.v.m128_f32[2];
+            dword_F63C78[1580 * mClient] += v4->ps.viewHeightCurrent;
+            angle[1580 * mClient] = mPrevAngles.v.m128_f32[0];
+            dword_F63CB4[1580 * mClient] = mPrevAngles.v.m128_f32[1];
+            dword_F63CB8[1580 * mClient] = mPrevAngles.v.m128_f32[2];
+        }
+        break;
+    case 12:
+        {
+            Client* v8 = GetPlayer(mClient)->client;
+            if ((gCameraSwayOnTurrets && v8->ps.vehType != 5
+                 && GetPlayer(mClient)->client->ps.vehPos == 1
+                 && (0x100000 & GetPlayerState(mClient).eFlags) != 0)
+                || (GetPlayerState(mClient).eFlags & 0x6000) != 0)
+            {
+                angle[1580 * mClient] = v8->ps.viewangles[0];
+                dword_F63CB4[1580 * mClient] = v8->ps.viewangles[1];
+                dword_F63CB8[1580 * mClient] = v8->ps.viewangles[2];
+                CG_CalcGunnerViewPos(false, v3);
+                CG_OffsetFirstPersonView();
+                if (IsInvalidFloat(v8->ps.origin.v.m128_f32[0])
+                    || IsInvalidFloat(v8->ps.origin.v.m128_f32[1])
+                    || IsInvalidFloat(v8->ps.origin.v.m128_f32[2]))
+                {
+                    CG_ASSERT("!IS_NAN((ps->origin)[0]) && "
+                              "!IS_NAN((ps->origin)[1]) && "
+                              "!IS_NAN((ps->origin)[2])",
+                              "c:\\cod\\code\\game\\Camera.cpp", 198);
+                }
+                if (IsInvalidFloat(v8->ps.viewangles[0])
+                    || IsInvalidFloat(v8->ps.viewangles[1])
+                    || IsInvalidFloat(v8->ps.viewangles[2]))
+                {
+                    CG_ASSERT("!IS_NAN((ps->viewangles)[0]) && "
+                              "!IS_NAN((ps->viewangles)[1]) && "
+                              "!IS_NAN((ps->viewangles)[2])",
+                              "c:\\cod\\code\\game\\Camera.cpp", 199);
+                }
+                if (IsInvalidFloat(dword_F63C70[1580 * mClient])
+                    || IsInvalidFloat(dword_F63C74[1580 * mClient])
+                    || IsInvalidFloat(dword_F63C78[1580 * mClient]))
+                {
+                    CG_ASSERT("!IS_NAN((cg[mClient].refdef.vieworg)[0]) && "
+                              "!IS_NAN((cg[mClient].refdef.vieworg)[1]) && "
+                              "!IS_NAN((cg[mClient].refdef.vieworg)[2])",
+                              "c:\\cod\\code\\game\\Camera.cpp", 200);
+                }
+                if (IsInvalidFloat(angle[1580 * mClient])
+                    || IsInvalidFloat(dword_F63CB4[1580 * mClient])
+                    || IsInvalidFloat(dword_F63CB8[1580 * mClient]))
+                {
+                    CG_ASSERT("!IS_NAN((cg[mClient].refdefViewAngles)[0]) && "
+                              "!IS_NAN((cg[mClient].refdefViewAngles)[1]) && "
+                              "!IS_NAN((cg[mClient].refdefViewAngles)[2])",
+                              "c:\\cod\\code\\game\\Camera.cpp", 201);
+                }
+            }
+            else
+            {
+                if (IsInvalidFloat(v8->ps.origin.v.m128_f32[0])
+                    || IsInvalidFloat(v8->ps.origin.v.m128_f32[1])
+                    || IsInvalidFloat(v8->ps.origin.v.m128_f32[2]))
+                {
+                    CG_ASSERT("!IS_NAN((ps->origin)[0]) && "
+                              "!IS_NAN((ps->origin)[1]) && "
+                              "!IS_NAN((ps->origin)[2])",
+                              "c:\\cod\\code\\game\\Camera.cpp", 205);
+                }
+                if (IsInvalidFloat(v8->ps.viewangles[0])
+                    || IsInvalidFloat(v8->ps.viewangles[1])
+                    || IsInvalidFloat(v8->ps.viewangles[2]))
+                {
+                    CG_ASSERT("!IS_NAN((ps->viewangles)[0]) && "
+                              "!IS_NAN((ps->viewangles)[1]) && "
+                              "!IS_NAN((ps->viewangles)[2])",
+                              "c:\\cod\\code\\game\\Camera.cpp", 206);
+                }
+                dword_F63C70[1580 * mClient] = v8->ps.origin.v.m128_f32[0];
+                dword_F63C74[1580 * mClient] = v8->ps.origin.v.m128_f32[1];
+                dword_F63C78[1580 * mClient] = v8->ps.origin.v.m128_f32[2];
+                angle[1580 * mClient] = v8->ps.viewangles[0];
+                dword_F63CB4[1580 * mClient] = v8->ps.viewangles[1];
+                dword_F63CB8[1580 * mClient] = v8->ps.viewangles[2];
+                if ((0x100000 & v8->ps.eFlags) != 0)
+                {
+                    Entity* v9 = DbHandleToEntity(v8->ps.mViewLockedEntity);
+                    if (v9 != nullptr)
+                    {
+                        void* scr_vehicle = v9->scr_vehicle;
+                        if (scr_vehicle != nullptr)
+                        {
+                            vehicle_info_t* VehicleInfo =
+                                (vehicle_info_t*)G_GetVehicleInfo(scr_vehicle);
+                            angle[1580 * mClient] =
+                                VehicleInfo->camLinkedPitchFactor
+                                * angle[1580 * mClient];
+                            if (VehicleInfo->pitchBasedCamOffsetX > 0.001f
+                                || VehicleInfo->pitchBasedCamOffsetZ > 0.001f)
+                            {
+                                float v12 = 0.0f;
+                                float ratio =
+                                    (VehicleInfo->turretVertSpanUp
+                                     + *(float*)((char*)scr_vehicle + 0x430))
+                                    / (VehicleInfo->turretVertSpanUp
+                                       + VehicleInfo->turretVertSpanDown);
+                                if (ratio >= 0.0f)
+                                {
+                                    v12 = 1.0f;
+                                    if (ratio <= 1.0f)
+                                        v12 = ratio;
+                                }
+                                float adjX_ = v12
+                                              * VehicleInfo
+                                                    ->pitchBasedCamOffsetX;
+                                float adjZ = VehicleInfo->pitchBasedCamOffsetZ
+                                             * v12;
+                                float viewAxes[9];
+                                AnglesToAxis(
+                                    *(const math::Position3*)&angle[1580
+                                                                    * mClient],
+                                    (float(*)[3])viewAxes);
+                                dword_F63C70[1580 * mClient] +=
+                                    viewAxes[0] * adjX_;
+                                dword_F63C74[1580 * mClient] +=
+                                    viewAxes[1] * adjX_;
+                                dword_F63C78[1580 * mClient] +=
+                                    viewAxes[2] * adjX_;
+                                dword_F63C70[1580 * mClient] +=
+                                    viewAxes[6] * adjZ;
+                                dword_F63C74[1580 * mClient] +=
+                                    viewAxes[7] * adjZ;
+                                dword_F63C78[1580 * mClient] +=
+                                    viewAxes[8] * adjZ;
+                            }
+                        }
+                    }
+                }
+                CG_OffsetFirstPersonView();
+            }
+        }
+        break;
+    case 13:
+        if (gCameraSwayOnTurrets)
+            CG_CalcGunnerViewPos(false, v3);
+        else
+        {
+            CG_CalcTurretViewValues();
+            CG_OffsetFirstPersonView();
+        }
+        break;
+    case 14:
+        UpdateIntermissionCam();
+        break;
+    case 15:
+        UpdateSceneAnimCam();
+        break;
+    case 17:
+        {
+            Client* v16 = GetPlayer(mClient)->client;
+            dword_F63C70[1580 * mClient] = v16->ps.origin.v.m128_f32[0];
+            dword_F63C74[1580 * mClient] = v16->ps.origin.v.m128_f32[1];
+            dword_F63C78[1580 * mClient] = v16->ps.origin.v.m128_f32[2];
+            angle[1580 * mClient] = v16->ps.viewangles[0];
+            dword_F63CB4[1580 * mClient] = v16->ps.viewangles[1];
+            dword_F63CB8[1580 * mClient] = v16->ps.viewangles[2];
+        }
+        CG_OffsetFirstPersonView();
+        break;
+    case 19:
+        UpdateMPDeathCamera();
+        break;
+    case 21:
+        UpdateDeathCamera();
+        break;
+    default:
+        break;
+    }
+    UpdateFade();
+    if (newMode != 16 && newMode != 18)
+        UpdateViewPO();
 }
