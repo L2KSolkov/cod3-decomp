@@ -1579,3 +1579,81 @@ int RemoveDrone(Entity* e)
     e->mFlags &= ~8u;
     return 0;
 }
+
+// ============================================================================
+// SmokeGrenadeMgr::AddSmokeGrenade - ea: 0x4FFBD0
+// ============================================================================
+extern void ae_vector_push_back_smoke(DroneHandleVec* self, const SmokeGrenadeInfo* elem);
+
+void SmokeGrenadeMgr::AddSmokeGrenade(const SmokeGrenadeInfo* smokeGrenInfo)
+{
+    if (smokeGrenInfo->mEffect != nullptr)
+    {
+        ae_vector_push_back_smoke(
+            (DroneHandleVec*)&mSmokeGrenadeInfoList,
+            smokeGrenInfo);
+    }
+    else
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Smoke Grenade Info with null effect"))
+            __debugbreak();
+    }
+}
+
+// ============================================================================
+// TaskSys queue helpers (local dlist view)
+// ============================================================================
+struct DListNode {
+    DListNode* m_next;  // +0x00
+    DListNode* m_prev;  // +0x04
+};
+
+struct DList {
+    DListNode m_end;     // +0x00 (sentinel: next/prev)
+    DListNode* m_head;   // +0x08
+    DListNode* m_tail;   // +0x0C
+    int m_size;          // +0x10
+};
+
+// TaskHandler view for queue ops (mTaskId +8, mFlags +0xC, mTaskList +0x10)
+struct TaskHandlerView {
+    void* m_dlist[2];    // +0x00
+    unsigned int mTaskId;  // +0x08
+    unsigned int mFlags;   // +0x0C
+    DList mTaskList;       // +0x10
+};
+
+// ea: 0x4FFA80
+void TaskSys_PostTask(DList* mPostQueue, Task* t,
+                      TaskHandlerView* (*lookup)(unsigned int id))
+{
+    if (t != nullptr)
+    {
+        TaskHandlerView* v3 = lookup(t->mTaskId);
+        if (v3 != nullptr && (v3->mFlags & 8) != 0)
+            t->mFlags |= 4u;
+        DListNode* node = (DListNode*)&t->_dlist[0];
+        node->m_next = &mPostQueue->m_end;
+        node->m_prev = mPostQueue->m_tail;
+        mPostQueue->m_tail->m_next = node;
+        mPostQueue->m_tail = node;
+        ++mPostQueue->m_size;
+    }
+}
+
+// ea: 0x4FFAE0
+void TaskSys_SendTask(TaskHandlerView* handler, Task* t)
+{
+    if (t != nullptr)
+    {
+        DListNode* sentinel = &handler->mTaskList.m_end;
+        DListNode* node = (DListNode*)&t->_dlist[0];
+        node->m_next = sentinel + 1;
+        DListNode* m_prev = handler->mTaskList.m_tail;
+        node->m_prev = m_prev;
+        m_prev->m_next = node;
+        handler->mTaskList.m_tail = node;
+        ++handler->mTaskList.m_size;
+    }
+}

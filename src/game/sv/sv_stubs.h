@@ -318,6 +318,7 @@ struct SmokeGrenadeMgr {
     bool EntityCanSeeEntity(const class Entity* ent, const class Entity* targEnt,
                             float visThreshold);  // ?EntityCanSeeEntity@SmokeGrenadeMgr@@QAE_NPBVEntity@@0M@Z (game2.o 0x4FA460)
     void Update(float deltaT);  // ?Update@SmokeGrenadeMgr@@QAEXM@Z (game2.o 0x4F9CC0)
+    void AddSmokeGrenade(const SmokeGrenadeInfo* smokeGrenInfo);  // ?AddSmokeGrenade@SmokeGrenadeMgr@@QAEXABUSmokeGrenadeInfo@@@Z (game2.o 0x4FFBD0)
 };
 static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
 
