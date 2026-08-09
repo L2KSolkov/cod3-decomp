@@ -4,6 +4,7 @@
 
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
+#include "game/trace_types.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -1371,6 +1372,19 @@ extern int dword_F63FFC[4 * 1580];
 extern int dword_F6401C[4 * 1580];
 extern int dword_F64020[4 * 1580];
 extern float dword_F63BB0[4 * 1580];
+extern float dword_F63C58[4 * 1580];
+extern float dword_F63C5C[4 * 1580];
+extern float dword_F63C60[4 * 1580];
+extern float dword_F63C64[4 * 1580];
+extern float dword_F63CF0[4 * 1580];
+extern int dword_F63CA8[4 * 1580];
+extern bool Entity_IsLocalPlayer(const Entity* ent);
+extern void CG_AdjustPositionForMover(const math::Position3* in,
+                                      unsigned int mover, int fromTime,
+                                      int toTime, math::Position3* out,
+                                      float* outDeltaAngles);
+extern void BG_EvaluateTrajectory(const void* tr, int atTime,
+                                  math::Position3* result);
 extern float* unk_F63B30;
 extern void CG_CalculateWeaponPosition_IdleAngles(float* angles);
 extern void CG_CalculateWeaponPosition_BobMovement(float* origin);
@@ -2449,4 +2463,199 @@ void CG_CalculateWeaponPosition(float* origin)
                         * 0.00083333335f
                     + origin[2];
     CG_CalculateWeaponPosition_SaveOffsetMovement(origin);
+}
+
+extern void CG_InterpolateEntityOrigin(Entity* cent);
+extern void CG_InterpolateEntityAngles(Entity* cent);
+extern int CG_PredictPlayerState_Internal();
+extern int CG_PointContents(const math::Position3* point,
+                            const collision_context_t* context);
+extern void* BG_GetPlayerWeaponInfo();
+extern int cg_fov;
+extern int cg_widescreen;
+extern float gZoomRatio;
+extern float* gCamera;
+
+// ea: 0x006A1900
+void CG_CalcEntityLerpPositions(Entity* cent)
+{
+    if (cent->s.pos.trType != 0 /* TR_STATIONARY */)
+    {
+        if (cent->s.pos.trType == 5 /* TR_INTERPOLATE */)
+        {
+            CG_InterpolateEntityOrigin(cent);
+        }
+        else
+        {
+            math::Position3 v6;
+            BG_EvaluateTrajectory(&cent->s.pos, cgGlobal_time, &v6);
+            cent->s.lerpOrigin.v = v6.v;
+            if (!Entity_IsLocalPlayer(cent))
+            {
+                math::Position3 in = cent->s.lerpOrigin;
+                CG_AdjustPositionForMover(
+                    &in, cent->s.mGroundEntity.mHandle.mVal,
+                    *(int*)((char*)&dword_F62960[1580 * currCl] + 4),
+                    cgGlobal_time,
+                    &v6, nullptr);
+                cent->s.lerpOrigin.v = v6.v;
+            }
+        }
+    }
+    else
+    {
+        math::Position3 v6;
+        v6.v = _mm_setr_ps(cent->s.pos.trBase[0], cent->s.pos.trBase[1],
+                           cent->s.pos.trBase[2], 0.0f);
+        cent->s.lerpOrigin.v = v6.v;
+    }
+    if (cent->s.apos.trType != 0 /* TR_STATIONARY */)
+    {
+        if (cent->s.apos.trType == 5 /* TR_INTERPOLATE */)
+        {
+            CG_InterpolateEntityAngles(cent);
+        }
+        else
+        {
+            math::Position3 v6;
+            BG_EvaluateTrajectory(&cent->s.apos, cgGlobal_time, &v6);
+            cent->s.lerpAngles.v = v6.v;
+        }
+    }
+    else
+    {
+        math::Position3 v6;
+        v6.v = _mm_setr_ps(cent->s.apos.trBase[0], cent->s.apos.trBase[1],
+                           cent->s.apos.trBase[2], 0.0f);
+        cent->s.lerpAngles.v = v6.v;
+    }
+}
+
+// ea: 0x006A30B0
+int CG_PredictPlayerState()
+{
+    return CG_PredictPlayerState_Internal();
+}
+
+static float AtanApprox(float x)
+{
+    if (x >= 0.5f)
+    {
+        float t = sqrtf(fabsf((1.0f - x) * 0.5f));
+        float t2 = t * t;
+        return t2 * t2 * t2 * -0.1079625f - t2 * t2 * 0.15000001f
+               - t2 * t * 0.33333331f - t * 2.0f + 1.570796f;
+    }
+    float x2 = x * x;
+    return x2 * x2 * x2 * 0.053981241f + x2 * x2 * 0.075000003f
+           + x2 * x * 0.1666667f + x;
+}
+
+static float Atan2Approx(float y, float x)
+{
+    if (0.0f == fabsf(y) + fabsf(x))
+        return 0.0f;
+    float invLen = 1.0f / sqrtf(x * x + y * y);
+    float result;
+    if (fabsf(y) <= fabsf(x))
+        result = AtanApprox(invLen * fabsf(y));
+    else
+        result = 1.5707964f - AtanApprox(invLen * fabsf(x));
+    if (x < 0.0f)
+        result = 3.1415927f - result;
+    if (y < 0.0f)
+        result = 0.0f - result;
+    return result;
+}
+
+// ea: 0x006A44D0
+int CG_CalcFov()
+{
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    float* cam = (float*)((char*)gCamera + 0x1F0 * currCl);
+    float y = CG_GetViewFov();
+    float v4 = y;
+    if (*(float*)((char*)cam + 0x118) > *(float*)((char*)cam + 0x114))
+    {
+        v4 = (((y - *(float*)((char*)cam + 0x110))
+               / *(float*)((char*)cam + 0x118))
+              * *(float*)((char*)cam + 0x114))
+             + *(float*)((char*)cam + 0x110);
+        y = v4;
+    }
+    float v5 = (v4 - 20.0f) / (*(float*)&cg_fov - 20.0f);
+    dword_F63CF0[1580 * currCl] = v5;
+    if (v5 < 0.16f)
+        dword_F63CF0[1580 * currCl] = 0.16f;
+    if ((client->ps.eFlags & 0x200) != 0)
+    {
+        float v7 = dword_F63CF0[1580 * currCl];
+        dword_F63CF0[1580 * currCl] =
+            *(int*)((char*)client + 0x5A0) != 0 ? v7 * 0.89999998f
+                                                : v7 * 0.69999999f;
+    }
+    void* PlayerWeaponInfo = BG_GetPlayerWeaponInfo();
+    if (PlayerWeaponInfo != nullptr)
+    {
+        if (client->ps.fWeaponPosFrac == 1.0f)
+        {
+            if (*(float*)((char*)PlayerWeaponInfo + 0x644) > 0.0f)
+                dword_F63CF0[1580 * currCl] =
+                    dword_F63CF0[1580 * currCl]
+                    * *(float*)((char*)PlayerWeaponInfo + 0x644);
+        }
+        else if (*(float*)((char*)PlayerWeaponInfo + 0x638) > 0.0f)
+        {
+            dword_F63CF0[1580 * currCl] =
+                dword_F63CF0[1580 * currCl]
+                * *(float*)((char*)PlayerWeaponInfo + 0x638);
+        }
+    }
+    int v13 = 1580 * currCl;
+    float aspectX = dword_F63C58[v13];
+    float aspectY = dword_F63C5C[v13];
+    float v14 = aspectX / tanf(y * 0.0087266462f);
+    float fov_y = Atan2Approx(aspectY, v14) * 114.59155f;
+    if (cg_widescreen != 0)
+    {
+        aspectX = aspectX * 4.0f;
+        aspectY = aspectY * 3.0f;
+    }
+    float v22 = aspectY / tanf(fov_y * 0.0087266462f);
+    y = Atan2Approx(aspectX, v22) * 114.59155f;
+    collision_context_t context;
+    memset(&context, 0, sizeof(context));
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    context.contentmask = 32;
+    int v30;
+    if (CG_PointContents((const math::Position3*)&dword_F63C70[v13],
+                         &context)
+        != 0)
+    {
+        float v29 = sinf(cgGlobal_time * 0.0025132743f);
+        v30 = dword_F63CA8[1580 * currCl] | 0x20;
+        y = y + v29;
+        fov_y = fov_y - v29;
+    }
+    else
+    {
+        v30 = dword_F63CA8[1580 * currCl] & 0xFFFFFFDF;
+    }
+    dword_F63CA8[1580 * currCl] = v30;
+    dword_F63C60[1580 * currCl] = *(int*)&y;
+    dword_F63C64[1580 * currCl] = *(int*)&fov_y;
+    if (dword_F63C60[1580 * currCl] <= 0 || *(float*)&cg_fov <= 0.0f)
+    {
+        gZoomRatio = 1.0f;
+    }
+    else
+    {
+        float v32 = dword_F63C60[1580 * currCl] / *(float*)&cg_fov;
+        if (v32 < 1.0f)
+            gZoomRatio = v32 * 0.75f;
+        else
+            gZoomRatio = 1.0f;
+    }
+    return 1580 * currCl * 4;
 }
