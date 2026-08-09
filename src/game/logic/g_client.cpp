@@ -499,3 +499,119 @@ void ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
     ClientEndFrame(ent, ServerTime::sInst.mTickMSec);
     BG_PlayerStateToEntityState(&client->ps, &ent->s, 1);
 }
+
+// ea: 0x0048DE60
+void ClientEvents(Entity* ent, float oldEventSequence)
+{
+    Client* client = ent->client;
+    int eventSequence = client->ps.event.eventSequence;
+    if ((int)oldEventSequence < eventSequence - 4)
+        oldEventSequence = (float)(eventSequence - 4);
+    unsigned char v6 = (unsigned char)(int)oldEventSequence;
+    int iTeamFlags = 0;
+    int vSentientPos[3];
+    vSentientPos[2] = (int)oldEventSequence;
+    if ((int)oldEventSequence >= eventSequence)
+        return;
+    while (1)
+    {
+        int v7 = v6 & 3;
+        int v8 = client->ps.event.events[v7];
+        int v9 = ent->client->ps.event.eventParms[v7];
+        if (v8 < 139 || v8 >= 162)
+        {
+            switch (v8)
+            {
+            case 186: case 187: case 189: case 197: case 198: case 199:
+                FireWeapon(ent);
+                break;
+            case 193:
+                FireWeaponMelee(ent);
+                break;
+            case 196:
+                Spotting(ent);
+                break;
+            case 222:
+            {
+                Client* v12 = ent->client;
+                if (v12 != nullptr && (ent->flags & 1) == 0)
+                {
+                    ent->health = 0;
+                    v12->ps.stats[0] = 0;
+                    player_die(ent, ent, ent, dword_186A0, 25,
+                               ent->s.weapon, nullptr, nullptr, HITLOC_NONE);
+                }
+                break;
+            }
+            default:
+            {
+                Client* v13 = ent->client;
+                if ((v13->ps.pm_flags & 2) == 0
+                    && (v13->pers.cmd.buttons & 8) == 0
+                    && ((v8 >= 1 && v8 <= 46) || (v8 >= 93 && v8 <= 138)))
+                {
+                    sentient_s* sentient = ent->sentient;
+                    if (sentient != nullptr)
+                    {
+                        team_t v15 = Sentient_EnemyTeam(sentient->eTeam);
+                        if (v15 != 0 /* TEAM_FREE */)
+                        {
+                            float v25[3];
+                            Sentient_GetOrigin(ent->sentient, v25);
+                            int v27 = 1 << v15;
+                            if (v8 < 24 || v8 >= 47)
+                            {
+                                j_nullsub_17(ent, 12 /* AI_EV_FOOTSTEP */, v27,
+                                             (math::Position3*)v25, 0.0f);
+                            }
+                            else
+                            {
+                                j_nullsub_17(ent, 13 /* AI_EV_FOOTSTEP_LITE */,
+                                             v27, (math::Position3*)v25, 0.0f);
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            }
+        }
+        else
+        {
+            if (ent->s.eType != 1)
+                return;
+            float v10;
+            if (v9 < 100)
+            {
+                v10 = v9 * 0.0099999998f;
+                if (v10 == 0.0f)
+                    goto next_event;
+            }
+            else
+            {
+                v10 = 1.1f;
+            }
+            Client* v11 = ent->client;
+            int damageAmount = (int)(ent->client->ps.stats[2] * v10);
+            if (v11 == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+                AeAssert::gCurrentLine = 468;
+                AeAssert::gCurrentExpr = "ent->client";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("this must be a player"))
+                    __debugbreak();
+            }
+            ent->client->pain_debounce_time = level.time + 200;
+            G_Damage(ent, nullptr, nullptr, nullptr, nullptr, damageAmount, 0,
+                     24, HITLOC_NONE, -1);
+        }
+next_event:
+        v6 = (unsigned char)(vSentientPos[2] + 1);
+        vSentientPos[2] = vSentientPos[2] + 1;
+        if (vSentientPos[2] >= ent->client->ps.event.eventSequence)
+            return;
+        client = ent->client;
+    }
+}

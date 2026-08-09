@@ -959,7 +959,11 @@ int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHP
 // BrocAPI (g_scr.cpp) - artillery callback used by G_LaunchMissile
 // ============================================================================
 struct BrocExports {
-    uint8_t _pad[0x154];
+    uint8_t _pad[0xD8];
+    void (*mCallbackMineFailed)(unsigned int);            // +0xD8
+    uint8_t _padDC[0x128 - 0xDC];
+    void (*mCallbackDropFlag)(unsigned int);              // +0x128
+    uint8_t _pad12C[0x154 - 0x12C];
     void (*mCallbackStopFollowing)();  // +0x154
     uint8_t _pad158[0xC50 - 0x158];
     void (*mAnimInitialize)();  // +0xC50
@@ -1032,6 +1036,10 @@ int  BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex);  // game
 int  BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x621F60
 int  BG_SelectWeaponIndex(int iWeaponIndex, int client);  // game.o 0x6076E0
 int  BG_GetWeaponForInfo(void* pWeapInfo);  // game.o 0x607050
+float BG_GetMinSpreadForWeapon(PlayerState* pPS, int iWeaponIndex, int iTime,
+                               bool bAds);   // game.o
+float BG_GetConeAngleForWeapon(PlayerState* pPS, int iWeaponIndex, int iTime,
+                               bool bAds);   // game.o
 unsigned char BG_GetWeaponIndexForName(const char* name);  // game.o 0x6073A0
 unsigned char BG_GetWeaponIndexForName(unsigned int name);  // game.o 0x607310
 int  irand(int min, int max);
@@ -1422,6 +1430,7 @@ void BG_PlayerStateToEntityState(PlayerState* ps, EntityState* s, int snap);
 unsigned char BG_GetWeaponIndexForName(const char* pszName);
 void Sentient_GetEyePosition(sentient_s* pSelf, float* vEyePosOut);      // mp_actors.o
 void Sentient_GetEyePosition(sentient_s* pSelf, math::Position3& vEyePosOut);  // mp_actors.o
+void Sentient_GetOrigin(sentient_s* pSelf, float* vOriginOut);           // mp_actors.o
 team_t Sentient_EnemyTeam(team_t eTeam);
 sentient_s* Sentient_FirstSentient(int iTeamFlags);
 sentient_s* Sentient_NextSentient(sentient_s* pPrevSentient, int iTeamFlags);
@@ -1903,8 +1912,12 @@ void  Scr_Vehicle_Controller(Entity* pSelf);      // g.o 0x480970
 void  HealthRegen(Entity* e, float deltaT);       // g.o 0x455380
 void  Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
                   Entity* weaponEnt, float coneAngleTangent);  // g.o 0x48D980
+void  Weapon_ItemHealth_Fire(Entity* ent, int grenType, weaponParms* wp);  // g.o 0x45F630
+void  Weapon_ItemAmmo_Fire(Entity* ent, int grenType, weaponParms* wp);    // g.o 0x45FB40
 void  Weapon_Melee(Entity* ent, weaponParms* wp);  // g.o 0x4891C0
 void  FireWeaponMelee(Entity* ent);                // g.o 0x48AA50
+void  FireWeapon(Entity* ent);                     // g.o 0x48DAE0
+void  ClientEvents(Entity* ent, float oldEventSequence);  // g.o 0x48DE60
 void  UpdateAnims(int msec);                      // g.o
 void  AdvanceSceneAnims(float delta);             // g.o
 void  UpdatePlayer(void);                         // g.o 0x458270

@@ -892,3 +892,110 @@ void Weapon_ArtilleryStrike_Fire(Entity* ent, float spread, weaponParms* wp)
     MultiplayerMgr::sInst->FireArtillery(ent, pWeapInfo->index, &position,
                                          level.time, false);
 }
+
+// ea: 0x0048DAE0
+void FireWeapon(Entity* ent)
+{
+    if (((0x106000 & ent->client->ps.eFlags) == 0 || ent->active == 0)
+        && EntityManager::sInst->IsLocalPlayer(ent))
+    {
+        int weapon = ent->s.weapon;
+        ent->invulnerability_timeout = 0;
+        weaponParms wp;
+        wp.pWeapInfo = BG_GetInfoForWeapon(weapon);
+        CalcMuzzlePoints(ent, &wp);
+        Client* client = ent->client;
+        float aimSpreadScale = client->currentAimSpreadScale;
+        bool bAds = client->ps.fWeaponPosFrac == 1.0f;
+        float MinSpreadForWeapon = BG_GetMinSpreadForWeapon(
+            &client->ps, ent->s.weapon, level.time, bAds);
+        int type = wp.pWeapInfo->type;
+        aimSpreadScale = (*(float*)((char*)wp.pWeapInfo + 0x674)
+                          - MinSpreadForWeapon)
+                             * aimSpreadScale
+                         + MinSpreadForWeapon;
+        switch (type)
+        {
+        case 0:
+        {
+            float coneAngleTangent = BG_GetConeAngleForWeapon(
+                &ent->client->ps, ent->s.weapon, level.time, bAds);
+            Bullet_Fire(ent, aimSpreadScale, wp.pWeapInfo->iDamage, &wp, ent,
+                        coneAngleTangent);
+            ent->client->ps.mLastFireWeaponTime = level.time;
+            ent->client->ps.mLastFireWeapon = ent->s.weapon;
+            break;
+        }
+        case 1:
+        {
+            Client* v6 = ent->client;
+            if ((0x100000 & v6->ps.eFlags) == 0 || v6->ps.vehPos != 7)
+                goto launcher;
+            Entity* v8 = HandleDbToEnt(ent->r.mOwner);
+            if (v8 == nullptr || v8->scr_vehicle == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+                AeAssert::gCurrentLine = 2278;
+                AeAssert::gCurrentExpr = "vehicle && vehicle->scr_vehicle";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Player is not correctly attached to vehicle."))
+                    __debugbreak();
+            }
+            if (v8->scr_vehicle->mMantleTime == 0)
+                MultiplayerMgr::sInst->VehicleMantled(v8, ent);
+            break;
+        }
+        case 2:
+launcher:
+            if (wp.pWeapInfo->weapClass == 5 /* WEAPCLASS_GRENADE */)
+                weapon_grenadelauncher_fire(ent, ent->s.weapon, &wp);
+            else
+                Weapon_RocketLauncher_Fire(ent, aimSpreadScale, &wp, 10.0f,
+                                           true);
+            break;
+        case 3:
+            Weapon_ArtilleryStrike_Fire(ent, aimSpreadScale, &wp);
+            break;
+        case 4:
+            switch (wp.pWeapInfo->weapClass)
+            {
+            case 1 /* WEAPCLASS_HEALTH */:
+                Weapon_ItemHealth_Fire(ent, ent->s.weapon, &wp);
+                break;
+            case 2 /* WEAPCLASS_AMMO */:
+                Weapon_ItemAmmo_Fire(ent, ent->s.weapon, &wp);
+                break;
+            case 3 /* WEAPCLASS_REVIVE */:
+                Weapon_Revive(ent, ent->s.weapon, &wp);
+                break;
+            default:
+                break;
+            }
+            break;
+        case 5:
+            return;
+        case 7:
+            if (weapon_mine_fire(ent, ent->s.weapon, &wp) == nullptr)
+            {
+                Add_Ammo(ent, ent->s.weapon, 1, 0);
+                if (gpBrocAPI->mBrocExports.mCallbackMineFailed != nullptr)
+                    gpBrocAPI->mBrocExports.mCallbackMineFailed(
+                        ent->mHandle.mHandle.mVal);
+            }
+            break;
+        case 8:
+            if (gpBrocAPI->mBrocExports.mCallbackDropFlag != nullptr)
+            {
+                MultiplayerMgr::sInst->AnimEvent(20);
+                gpBrocAPI->mBrocExports.mCallbackDropFlag(
+                    ent->mHandle.mHandle.mVal);
+            }
+            break;
+        default:
+            G_Error("Unknown weapon type %i for %s\n", type,
+                    wp.pWeapInfo->szInternalName);
+            break;
+        }
+    }
+}
