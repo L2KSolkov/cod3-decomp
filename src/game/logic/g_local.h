@@ -1625,6 +1625,24 @@ void  G_RunFrameForEntity(Entity* ent, int msec);   // g.o
 void  VEH_JoltBody(Entity* ent, math::Position3* dir, float intensity,
                    float speedFrac, float decel);   // g.o
 void  CalcMuzzlePoint(Entity* ent, math::Position3* muzzlePoint);  // g.o 0x4534F0
+void  G_DebugAxis(const math::Mat43* mat, unsigned int length, int duration);  // g.o 0x456FE0
+void  G_LinkClient(Entity* ent);                 // g.o 0x483480
+void  G_SetAnimTree(Entity* ent, AnimTree* animtree);  // g.o 0x47BB40
+void  G_VehicleClientThink(int msec);            // g.o 0x46DF60
+bool  ValidForGametype(void);                    // g.o 0x4507D0
+void  render_aabb(const math::Position3* bmin, const math::Position3* bmax,
+                  const float* color);           // g.o 0x46A290
+Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck);  // g.o 0x480880
+int16_t G_GetVehicleInfoIndex(const char* name); // g.o 0x44F010
+extern int s_clientThink;                        // g.o
+void  G_RunThink(Entity* ent, int msec);         // g.o
+int   XAnimGetAnims(AnimTree* tree);             // anim.o
+void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
+extern const float colorBlue[4];                 // g.o .rdata
+struct debug_aabb { float data[7]; };            // opaque
+extern ae_vector<debug_aabb> debug_aabbs;        // g.o
+bool  CanMantleVehicle(scr_vehicle_t* veh, Entity* player);  // g.o
+void  G_DelayFreeAnimTree(XAnimTree* tree);      // g.o (g_dobj.cpp)
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o

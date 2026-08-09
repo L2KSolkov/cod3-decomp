@@ -771,6 +771,72 @@ void Scr_Vehicle_Pain(Entity* pSelf, Entity* pAttacker, int /*damage*/,
     }
 }
 
+// ea: 0x00480880
+Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck)
+{
+    Client* result = player->client;
+    if (result != nullptr)
+    {
+        if (ent->health < 0
+            || (ent->s.eFlags & 0x80000) != 0
+            || (result->ps.eFlags & 0x100000) != 0
+            || HandleDbToEnt(player->r.mOwner) != nullptr
+            || ent->scr_vehicle->noEntryTime + 200 > level.time)
+        {
+            return nullptr;
+        }
+        vehicle_info_t* VehicleInfo = G_GetVehicleInfo(ent);
+        scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+        bool canUse = CanMantleVehicle(scr_vehicle, player)
+                      || (scr_vehicle->playersAttached < VehicleInfo->numSeats
+                          && (VehicleInfo->type != 2
+                              || player->sentient == nullptr
+                              || !scr_vehicle->IsOppositeTeamInVehicle(player->sentient->eTeam)));
+        if (canUse
+            && (ent->r.contents & 0x200000) != 0
+            && (!speedCheck || (ent->speed <= 100.0f && ent->health > 0)))
+        {
+            return result;
+        }
+        return nullptr;
+    }
+    return result;
+}
+
+// ea: 0x0044F010
+int16_t G_GetVehicleInfoIndex(const char* name)
+{
+    if (name == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7080;
+        AeAssert::gCurrentExpr = "name";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (*name == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7081;
+        AeAssert::gCurrentExpr = "name[0]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int16_t VehicleInfo = (int16_t)VEH_GetVehicleInfo(name);
+    if (VehicleInfo == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7084;
+        AeAssert::gCurrentExpr = "index != -1";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return VehicleInfo;
+}
+
 // ea: 0x0046E0B0
 bool G_IsPlayerInVehicle(Entity* player)
 {

@@ -1492,3 +1492,152 @@ void G_ReduceOriginError(float* origin, float* originError, float frametime)
         }
     }
 }
+
+// ea: 0x00456FE0
+void G_DebugAxis(const math::Mat43* mat, unsigned int length, int duration)
+{
+    float start[4] = { mat->w.v.m128_f32[0], mat->w.v.m128_f32[1],
+                       mat->w.v.m128_f32[2], mat->w.v.m128_f32[3] };
+    float len = (float)length;
+    float end[3];
+    end[0] = start[0] + mat->x.v.m128_f32[0] * len;
+    end[1] = start[1] + mat->x.v.m128_f32[1] * len;
+    end[2] = start[2] + mat->x.v.m128_f32[2] * len;
+    CL_AddDebugLine(start, end, colorRed, 1, duration, 1, 0);
+    end[0] = start[0] + mat->y.v.m128_f32[0] * len;
+    end[1] = start[1] + mat->y.v.m128_f32[1] * len;
+    end[2] = start[2] + mat->y.v.m128_f32[2] * len;
+    CL_AddDebugLine(start, end, colorGreen, 1, duration, 1, 0);
+    end[0] = start[0] + mat->z.v.m128_f32[0] * len;
+    end[1] = start[1] + mat->z.v.m128_f32[1] * len;
+    end[2] = start[2] + mat->z.v.m128_f32[2] * len;
+    CL_AddDebugLine(start, end, colorBlue, 1, duration, 1, 0);
+}
+
+// ea: 0x00483480
+void G_LinkClient(Entity* ent)
+{
+    if (ent->client->noclip == 0 && IsPlayerFullySeatedInVehicle(ent))
+    {
+        if (ent->tagInfo != nullptr && ent->client != nullptr)
+        {
+            Client* v1 = ent->client;
+            int playerState = v1->pers.playerState;
+            int v4;
+            if (playerState == 4 || playerState == 5)
+                v4 = 7;
+            else
+                v4 = 1;
+            v1->ps.pm_type = v4;
+            G_SetFixedLink(ent, 0);
+            G_SetOrigin(ent, &ent->r.currentOrigin);
+            ent->s.pos.trType = TR_INTERPOLATE;
+            ent->s.apos.trType = TR_INTERPOLATE;
+            g_LinkEntity(ent);
+            ent->client->ps.origin.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
+            ent->client->ps.origin.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+            ent->client->ps.origin.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2];
+        }
+        else
+        {
+            Client* client = ent->client;
+            int pm_type = client->ps.pm_type;
+            if (pm_type == 1 || pm_type == 7)
+                --client->ps.pm_type;
+        }
+    }
+}
+
+// ea: 0x0047BB40
+void G_SetAnimTree(Entity* ent, AnimTree* animtree)
+{
+    XAnimTree* ActorAnimTree;
+    if (ent->s.eType == 11)
+        ActorAnimTree = G_GetActorAnimTree(ent->actor);
+    else if (ent->s.eType == 13)
+        ActorAnimTree = G_GetActorCorpseAnimTree(ent);
+    else
+        ActorAnimTree = ent->pAnimTree;
+    if (ActorAnimTree != ent->pAnimTree)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_main.cpp";
+        AeAssert::gCurrentLine = 708;
+        AeAssert::gCurrentExpr = "G_GetEntAnimTree(ent) == ent->pAnimTree";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    XAnimTree* pAnimTree = ent->pAnimTree;
+    if (animtree == nullptr)
+    {
+        if (pAnimTree == nullptr)
+            return;
+        ent->pAnimTree = nullptr;
+        G_DObjUpdate(ent, false);
+        G_DelayFreeAnimTree(pAnimTree);
+        return;
+    }
+    if (pAnimTree == nullptr || (AnimTree*)XAnimGetAnims(ent->pAnimTree) != animtree)
+    {
+        ent->pAnimTree = (XAnimTree*)XAnimCreateTree(ent, animtree);
+        G_DObjUpdate(ent, false);
+        if (pAnimTree != nullptr)
+            G_DelayFreeAnimTree(pAnimTree);
+    }
+}
+
+// ea: 0x0046DF60
+void G_VehicleClientThink(int msec)
+{
+    s_clientThink = 1;
+    if (level.MaxVehicles != 0)
+    {
+        for (int i = 0; i < level.MaxVehicles; ++i)
+        {
+            Entity* mObject = HandleDbToEnt(s_vehicles[i].mEntity);
+            if (mObject != nullptr && mObject->nextthink <= level.time)
+                G_RunThink(mObject, msec);
+        }
+    }
+    s_clientThink = 0;
+}
+
+// ea: 0x004507D0
+bool ValidForGametype(void)
+{
+    static unsigned char s_init = 0;
+    static unsigned int gametypes_hash = 0;
+    if (!(s_init & 1))
+    {
+        s_init |= 1;
+        gametypes_hash = HashString::CalcHash("gametypes");
+    }
+    const char* gametypes = nullptr;
+    G_SpawnString(gametypes_hash, defaultFileName, &gametypes);
+    if (*gametypes != 0)
+    {
+        char temp[64];
+        strcpy(temp, gametypes);
+        const char* v3 = strtok(temp, " ");
+        if (v3 == nullptr)
+            return 0;
+        while (_stricmp(v3, mp_gametype.string) != 0)
+        {
+            v3 = strtok(nullptr, " ");
+            if (v3 == nullptr)
+                return 0;
+        }
+    }
+    return 1;
+}
+
+// ea: 0x0046A290
+void render_aabb(const math::Position3* bmin, const math::Position3* bmax,
+                 const float* color)
+{
+    if (render)
+    {
+        debug_aabb v5;
+        debug_aabbs.mElements[debug_aabbs.mSize++] = v5;
+    }
+}
