@@ -2659,3 +2659,432 @@ int CG_CalcFov()
     }
     return 1580 * currCl * 4;
 }
+
+extern void CG_OffsetFirstPersonView();
+extern void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
+                               const float* minClamp,
+                               const float* maxClamp);
+extern void AddLeanToPosition(float* vPosition, float fViewYaw,
+                              float fLeanFrac, float fViewRoll,
+                              float fLeanDist);
+extern void Com_DPrintf(const char* fmt, ...);
+extern void G_DObjSetLocalTag(Entity* ent, int* partBits,
+                              unsigned int tag_name_hash,
+                              const float* trans, const float* angles,
+                              bool relative);
+extern float flrand(float min, float max);
+extern void CG_CalcCubemapViewValues();
+extern void CG_CalcVrect(const void* window);
+extern void Camera_Update(void* self);
+extern int cgGlobal_cubemapShot;
+extern int bg_viewheight_prone;
+extern int bg_viewheight_crouched;
+extern int bg_viewheight_standing;
+extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
+                                   float* tagMtx);
+extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
+                                          float* tagMtx);
+extern void* VEH_GetInfo(int idx);
+extern unsigned int HashString_CalcHash(const char* str);
+
+static Entity* DbHandleToEntityLocal(unsigned int handle)
+{
+    unsigned int idx = handle & 0xFFF;
+    if (idx < 0x540
+        && (handle >> 12) == EntityHandleDb::sInst.mElements[idx].mKey)
+        return EntityHandleDb::sInst.mElements[idx].mObject;
+    return nullptr;
+}
+
+static float s_offset[4][12];
+static float s_swayOffset[4][12];
+static float s_swayAngles[4][12];
+static float s_swayViewAngles[4][12];
+static bool s_wasAnimating[4];
+static float s_F73C20[4 * 1580];
+static float s_F73C24[4 * 1580];
+static float s_F73C30[4 * 1580];
+static float s_F73C34[4 * 1580];
+static float s_F73C40[4 * 1580];
+static float s_F73C44[4 * 1580];
+static float s_F73C50[4 * 1580];
+static float s_F73C54[4 * 1580];
+static unsigned int s_tagBarrelHash;
+static bool s_tagBarrelHashInit;
+static unsigned int s_tagPlayerHash;
+static bool s_tagPlayerHashInit;
+static unsigned int s_tagAimHash;
+static bool s_tagAimHashInit;
+static float s_horchOfs[3];
+static float s_dodgeOfs[3];
+static float s_shake;
+
+// ea: 0x006A4BF0
+void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
+{
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Entity* ent = DbHandleToEntityLocal(client->ps.mViewLockedEntity);
+    if (!s_tagBarrelHashInit)
+    {
+        s_tagBarrelHashInit = true;
+        s_tagBarrelHash = HashString_CalcHash("tag_barrel");
+    }
+    if (ent == nullptr)
+    {
+        int v6 = 1580 * currCl;
+        dword_F63C70[v6] = client->ps.origin.v.m128_f32[0];
+        dword_F63C74[v6] = client->ps.origin.v.m128_f32[1];
+        dword_F63C78[v6] = client->ps.origin.v.m128_f32[2];
+        angle[1580 * currCl] = client->ps.viewangles[0];
+        dword_F63CB4[v6] = client->ps.viewangles[1];
+        dword_F63CB8[v6] = client->ps.viewangles[2];
+        CG_OffsetFirstPersonView();
+        return;
+    }
+    float tagMtx[16];
+    if (G_DObjGetWorldTagMatrix(ent, tag_gunner_barrel_hash, tagMtx) == 0)
+    {
+        if (!s_tagPlayerHashInit)
+        {
+            s_tagPlayerHashInit = true;
+            s_tagPlayerHash = HashString_CalcHash("tag_player");
+        }
+        if (G_DObjGetWorldTagMatrix(ent, s_tagPlayerHash, tagMtx) == 0)
+            return;
+    }
+    int v7 = 1580 * currCl;
+    dword_F63C70[v7] = tagMtx[12];
+    dword_F63C74[v7] = tagMtx[13];
+    dword_F63C78[v7] = tagMtx[14];
+    if (crouched)
+    {
+        void* Info = VEH_GetInfo(
+            *(short*)((char*)ent->scr_vehicle + 0x178));
+        float fwd[3] = {tagMtx[0], tagMtx[1], tagMtx[2]};
+        float len = sqrtf(fwd[0] * fwd[0] + fwd[1] * fwd[1]
+                          + fwd[2] * fwd[2]);
+        fwd[0] /= len;
+        fwd[1] /= len;
+        fwd[2] /= len;
+        dword_F63C70[v7] = dword_F63C70[v7] - fwd[0] * 25.0f;
+        dword_F63C74[v7] = dword_F63C74[v7] - fwd[1] * 25.0f;
+        dword_F63C78[v7] = dword_F63C78[v7] - fwd[2] * 25.0f;
+        if (*(int*)((char*)Info + 0x4B4) == 1)
+            dword_F63C78[v7] = dword_F63C78[v7] - 11.0f;
+        else
+            dword_F63C78[v7] = dword_F63C78[v7] - 4.0f;
+    }
+    else if (tag_gunner_barrel_hash == s_tagBarrelHash)
+    {
+        dword_F63C70[v7] = dword_F63C70[v7] - tagMtx[0] * 35.0f;
+        dword_F63C74[v7] = dword_F63C74[v7] - tagMtx[1] * 35.0f;
+        dword_F63C78[v7] = dword_F63C78[v7] - tagMtx[2] * 35.0f;
+    }
+    else
+    {
+        void* scr_vehicle = ent->scr_vehicle;
+        float v19 = 10.0f;
+        if (scr_vehicle != nullptr)
+        {
+            void* v21 =
+                VEH_GetInfo(*(short*)((char*)scr_vehicle + 0x178));
+            if (client->ps.vehType == 1
+                && *(int*)((char*)v21 + 0x4B4) == 1)
+            {
+                dword_F63C70[v7] += s_horchOfs[0] * tagMtx[0];
+                dword_F63C74[v7] += s_horchOfs[0] * tagMtx[1];
+                dword_F63C78[v7] += s_horchOfs[0] * tagMtx[2];
+                dword_F63C70[v7] += s_horchOfs[1] * tagMtx[4];
+                dword_F63C74[v7] += s_horchOfs[1] * tagMtx[5];
+                dword_F63C78[v7] += s_horchOfs[1] * tagMtx[6];
+                v19 = s_horchOfs[2];
+            }
+            else
+            {
+                dword_F63C70[v7] += s_dodgeOfs[0] * tagMtx[0];
+                dword_F63C74[v7] += s_dodgeOfs[0] * tagMtx[1];
+                dword_F63C78[v7] += s_dodgeOfs[0] * tagMtx[2];
+                dword_F63C70[v7] += s_dodgeOfs[1] * tagMtx[4];
+                dword_F63C74[v7] += s_dodgeOfs[1] * tagMtx[5];
+                dword_F63C78[v7] += s_dodgeOfs[1] * tagMtx[6];
+                v19 = s_dodgeOfs[2];
+            }
+            dword_F63C70[v7] += v19 * tagMtx[8];
+            dword_F63C74[v7] += v19 * tagMtx[9];
+            dword_F63C78[v7] += v19 * tagMtx[10];
+        }
+        else
+        {
+            dword_F63C70[v7] += tagMtx[0] * 0.0f;
+            dword_F63C74[v7] += tagMtx[1] * 0.0f;
+            dword_F63C78[v7] += tagMtx[2] * 0.0f;
+            dword_F63C70[v7] += tagMtx[8] * v19;
+            dword_F63C74[v7] += tagMtx[9] * v19;
+            dword_F63C78[v7] += tagMtx[10] * v19;
+        }
+    }
+    float viewaxis[3][3] = {{tagMtx[0], tagMtx[4], tagMtx[8]},
+                            {tagMtx[1], tagMtx[5], tagMtx[9]},
+                            {tagMtx[2], tagMtx[6], tagMtx[10]}};
+    float angoffset[3];
+    AxisToAngles(viewaxis, angoffset);
+    angoffset[0] = AngleNormalize180(angoffset[0]);
+    angle[1580 * currCl] = angoffset[0];
+    dword_F63CB4[1580 * currCl] = angoffset[1];
+    dword_F63CB8[1580 * currCl] = 0.0f;
+    if (crouched)
+    {
+        angle[1580 * currCl] = 0.0f;
+    }
+    else
+    {
+        void* v41 = ent->scr_vehicle;
+        int v43;
+        if (v41 != nullptr && *(int*)((char*)v41 + 0) != 0)
+            v43 = *(int*)((char*)v41 + 0);
+        else
+        {
+            if (ent->s.weapon == 0)
+                return;
+            v43 = ent->s.weapon;
+        }
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        if (*(bool*)((char*)Player->client + 0xAE8))
+        {
+            s_wasAnimating[currCl] = true;
+        }
+        else
+        {
+            if (s_wasAnimating[currCl])
+            {
+                s_swayViewAngles[currCl][0] = client->ps.viewangles[0];
+                s_F73C50[1580 * currCl] = client->ps.viewangles[1];
+                s_F73C54[1580 * currCl] = client->ps.viewangles[2];
+                s_F73C34[1580 * currCl] = 0.0f;
+                s_F73C30[1580 * currCl] = 0.0f;
+                s_F73C40[1580 * currCl] = 0.0f;
+                s_F73C44[1580 * currCl] = 0.0f;
+                s_swayOffset[currCl][0] = 0.0f;
+                s_swayAngles[currCl][0] = 0.0f;
+                s_wasAnimating[currCl] = false;
+            }
+            CG_CalculateWeaponPosition_Sway();
+        }
+    }
+    int v48 = cgGlobal_time % 100;
+    if (cgGlobal_time % 100 > 50)
+        v48 = 100 - v48;
+    float v50 = v48 * 0.02f;
+    s_F73C24[1580 * currCl] = 0.0f;
+    s_F73C20[1580 * currCl] = 0.0f;
+    s_offset[currCl][0] = 0.0f;
+    bool overheating = false;
+    if (!crouched && (client->ps.eFlags & 0x200) != 0)
+    {
+        void* v52 = ent->scr_vehicle;
+        if (v52 != nullptr)
+            overheating = *(bool*)((char*)v52 + 0x3BC);
+        else
+        {
+            void* pTurretInfo = ent->pTurretInfo;
+            if (pTurretInfo != nullptr)
+                overheating = *(bool*)((char*)pTurretInfo + 0);
+        }
+        if (!overheating)
+        {
+            int v56 = 1580 * currCl;
+            angle[1580 * currCl] -= v50 * 0.5f;
+            float v57 = 0.0f - (v50 * 0.5f);
+            s_offset[currCl][0] += v57 * tagMtx[0];
+            s_F73C20[1580 * currCl] += v57 * tagMtx[1];
+            s_F73C24[1580 * currCl] += v57 * tagMtx[2];
+            float turretShake = cosf(0.020092782f * cgGlobal_time);
+            angle[1580 * currCl] =
+                sinf(cgGlobal_time * 0.014666426f) * turretShake * 0.25f
+                + angle[1580 * currCl];
+            s_shake = turretShake;
+            if (!s_tagAimHashInit)
+            {
+                s_tagAimHashInit = true;
+                s_tagAimHash = HashString_CalcHash("tag_aim");
+            }
+            unsigned int v64 = ent->pTurretInfo == nullptr
+                                   ? tag_gunner_barrel_hash
+                                   : s_tagAimHash;
+            int partBits[4] = {0, 0, 0, 0};
+            G_DObjSetLocalTag(ent, partBits, v64, &s_shake, nullptr, true);
+        }
+    }
+    if (overheating || crouched || (client->ps.eFlags & 0x200) == 0)
+    {
+        s_offset[currCl][0] += tagMtx[0] * s_swayOffset[currCl][0];
+        s_F73C20[1580 * currCl] += tagMtx[1] * s_swayOffset[currCl][0];
+        s_F73C24[1580 * currCl] += tagMtx[2] * s_swayOffset[currCl][0];
+        float v67 = 0.0f - s_F73C44[1580 * currCl];
+        s_offset[currCl][0] += s_F73C40[1580 * currCl] * tagMtx[4];
+        s_F73C20[1580 * currCl] +=
+            s_F73C40[1580 * currCl] * tagMtx[5];
+        s_F73C24[1580 * currCl] +=
+            s_F73C40[1580 * currCl] * tagMtx[6];
+        s_offset[currCl][0] += v67 * tagMtx[8];
+        s_F73C20[1580 * currCl] += v67 * tagMtx[9];
+        s_F73C24[1580 * currCl] += v67 * tagMtx[10];
+        dword_F63C70[1580 * currCl] += s_offset[currCl][0];
+        dword_F63C74[1580 * currCl] += s_F73C20[1580 * currCl];
+        dword_F63C78[1580 * currCl] += s_F73C24[1580 * currCl];
+    }
+}
+
+// ea: 0x006A5680
+int CG_CalcPassengerViewPos()
+{
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Entity* mObject = DbHandleToEntityLocal(client->ps.mViewLockedEntity);
+    Client* v3 = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    if (mObject->scr_vehicle == nullptr)
+        CG_ASSERT("ent->scr_vehicle", "c:\\cod\\code\\game\\cg_view.cpp",
+                  1421);
+    float tagMtx[16];
+    int v4 = G_DObjGetWorldBoneIndexMatrix(
+        mObject,
+        *(int*)((char*)mObject->scr_vehicle + 0x10 + 12 * client->ps.vehPos),
+        tagMtx);
+    if (v4 != 0)
+    {
+        int v5 = 1580 * currCl;
+        dword_F63C70[v5] = tagMtx[12] + tagMtx[8] * 25.0f;
+        dword_F63C74[v5] = tagMtx[13] + tagMtx[9] * 25.0f;
+        dword_F63C78[v5] = tagMtx[14] + tagMtx[10] * 25.0f;
+        float tagAngles[3];
+        AxisToAngles((const float(*)[3])tagMtx, tagAngles);
+        if ((v3->ps.pm_flags & 0x20) != 0
+            && *(int*)((char*)BG_GetInfoForWeapon(v3->ps.weapon) + 0x84)
+                   == 10 /* WEAPCLASS_LMG */)
+        {
+            extern float minClamp_0[3];
+            extern float maxClamp_0[3];
+            CG_ClampViewAngles(&client->ps, tagAngles, minClamp_0,
+                               maxClamp_0);
+        }
+        else
+        {
+            extern float minClamp[3];
+            extern float maxClamp[3];
+            CG_ClampViewAngles(&client->ps, tagAngles, minClamp, maxClamp);
+        }
+        angle[1580 * currCl] = client->ps.viewangles[0];
+        dword_F63CB4[1580 * currCl] = client->ps.viewangles[1];
+        dword_F63CB8[1580 * currCl] = client->ps.viewangles[2];
+    }
+    return v4;
+}
+
+// ea: 0x006AB800
+int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
+{
+    int result = dword_F62960[1580 * currCl];
+    if (result != 0)
+    {
+        unsigned int mVal = entity;
+        Entity* mObject = nullptr;
+        if ((*(int*)((char*)&dword_F62960[1580 * currCl] + 60)
+             & 0x180000)
+            == 0)
+            goto label_8;
+        mObject = DbHandleToEntityLocal(entity);
+        if (mObject == EntityManager_GetPlayer(EntityManager_sInst, currCl))
+        {
+            muzzle[0] =
+                *(float*)((char*)&dword_F62960[1580 * currCl] + 16);
+            muzzle[1] =
+                *(float*)((char*)&dword_F62960[1580 * currCl] + 20);
+            muzzle[2] = *(float*)((char*)&dword_F62960[1580 * currCl] + 24)
+                        + *(float*)((char*)&dword_F62960[1580 * currCl]
+                                    + 240);
+            AddLeanToPosition(muzzle, dword_F63CB4[1580 * currCl],
+                              *(float*)((char*)&dword_F62960[1580 * currCl]
+                                        + 92),
+                              16.0f, 20.0f);
+        }
+        else
+        {
+        label_8:
+            Entity* v10 = DbHandleToEntityLocal(entity);
+            if (v10 != nullptr)
+            {
+                const char* v11 = flashTag;
+                unsigned int flash_tag_hash = HashString_CalcHash(flashTag);
+                float tagMat[16];
+                if (G_DObjGetWorldTagMatrix(v10, flash_tag_hash, tagMat)
+                    != 0)
+                {
+                    muzzle[0] = tagMat[12];
+                    muzzle[1] = tagMat[13];
+                    muzzle[2] = tagMat[14];
+                }
+                else
+                {
+                    muzzle[0] = v10->s.pos.trBase[0];
+                    muzzle[1] = v10->s.pos.trBase[1];
+                    muzzle[2] = v10->s.pos.trBase[2];
+                    float v15;
+                    if (v10->client != nullptr)
+                    {
+                        Com_DPrintf("No %s in CG_CalcMuzzlePoint on "
+                                    "entity.\n",
+                                    v11);
+                        int eFlags = v10->s.eFlags;
+                        if ((eFlags & 0x40) != 0)
+                            v15 = bg_viewheight_prone + muzzle[2];
+                        else if ((eFlags & 0x20) != 0)
+                            v15 = bg_viewheight_crouched + muzzle[2];
+                        else
+                            v15 = bg_viewheight_standing + muzzle[2];
+                    }
+                    else
+                    {
+                        static unsigned int s_gunnerFlashHash;
+                        static bool s_gunnerFlashHashInit;
+                        unsigned int v16;
+                        if (!s_gunnerFlashHashInit)
+                        {
+                            s_gunnerFlashHashInit = true;
+                            s_gunnerFlashHash =
+                                HashString_CalcHash("tag_gunner_flash");
+                        }
+                        v16 = s_gunnerFlashHash;
+                        float tagMat2[16];
+                        if (flash_tag_hash == v16
+                            || G_DObjGetWorldTagMatrix(v10, v16, tagMat2)
+                                   == 0)
+                            return 1;
+                        muzzle[0] = tagMat2[12];
+                        muzzle[1] = tagMat2[13];
+                        v15 = tagMat2[14];
+                    }
+                    muzzle[2] = v15;
+                }
+            }
+        }
+        return 1;
+    }
+    return result;
+}
+
+// ea: 0x006B05C0
+void CG_CalcViewValues(const void* window)
+{
+    if (cgGlobal_cubemapShot != 0 /* CUBEMAPSHOT_NONE */)
+    {
+        CG_CalcCubemapViewValues();
+    }
+    else
+    {
+        Camera_Update((char*)gCamera + 0x1F0 * currCl);
+        CG_CalcVrect(window);
+        CG_CalcFov();
+    }
+}
