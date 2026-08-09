@@ -236,6 +236,7 @@ public:
                 EHitLocation* hitloc, const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z
     bool IsLocalPlayer();                            // ?IsLocalPlayer@Entity@@QBE_NXZ
     int  GetPlayerIndex();                           // ?GetPlayerIndex@Entity@@QBEHXZ
+    int  IsVisible() const;                          // ?IsVisible@Entity@@QBEHXZ (game.o)
     EntityState  s;                               // +0x000 (224 bytes)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
     static void SetLerpOrigin(EntityState* s, const math::Position3* origin);  // ?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z

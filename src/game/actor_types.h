@@ -29,6 +29,7 @@ enum {
 // ============================================================================
 typedef int32_t ai_state_e;
 enum {
+    AIS_TURRET = 0x03,
     AIS_WOUNDED = 0x0B,  // verified vs disasm G_Damage
 };
 
@@ -214,6 +215,55 @@ static_assert(offsetof(sentient_s, eTeam) == 0x004, "sentient_s::eTeam offset mi
 static_assert(offsetof(sentient_s, pEnemy) == 0x068, "sentient_s::pEnemy offset mismatch");
 
 // ============================================================================
+// vis_cache_t - AI visibility cache (20 bytes) - verified against IDA
+// ============================================================================
+struct vis_cache_t {
+    uint8_t  bVisible;          // +0x00
+    uint8_t  _pad1[3];          // +0x01
+    float    fVisibility;       // +0x04
+    int      iLastUpdateTime;   // +0x08
+    int      iLastVisTime;      // +0x0C
+    int      iSightHitNum;      // +0x10
+};
+static_assert(sizeof(vis_cache_t) == 0x14, "vis_cache_t size mismatch");
+static_assert(offsetof(vis_cache_t, bVisible) == 0x00, "vis_cache_t::bVisible offset mismatch");
+
+// ============================================================================
+// sentient_info_t - per-sentient AI knowledge (80 bytes) - verified IDA
+// ============================================================================
+struct sentient_info_t {
+    math::Position3 vLastKnownPos;      // +0x00
+    math::Position3 vKnownFromPos;      // +0x10
+    vis_cache_t     VisCache;           // +0x20
+    int             iLastAttackMeTime;  // +0x34
+    int             iLastKnownPosTime;  // +0x38
+    int             iTimeWithoutEnemyInView;  // +0x3C
+    int             attackTime;         // +0x40
+    PathNodes::NodeHandle mLastKnownNode;      // +0x44
+    unsigned int    bLastKnownNodeValid : 1;   // +0x48
+    unsigned int    bNeedsVisToPass : 1;       // +0x48
+};
+static_assert(sizeof(sentient_info_t) == 0x50, "sentient_info_t size mismatch");
+static_assert(offsetof(sentient_info_t, vLastKnownPos) == 0x00,
+              "sentient_info_t::vLastKnownPos offset mismatch");
+static_assert(offsetof(sentient_info_t, VisCache) == 0x20,
+              "sentient_info_t::VisCache offset mismatch");
+static_assert(offsetof(sentient_info_t, iLastKnownPosTime) == 0x38,
+              "sentient_info_t::iLastKnownPosTime offset mismatch");
+static_assert(offsetof(sentient_info_t, attackTime) == 0x40,
+              "sentient_info_t::attackTime offset mismatch");
+
+// ============================================================================
+// sentient_info_array - per-actor view of the sentient info pool (0xC0 bytes)
+// ============================================================================
+struct sentient_info_array {
+    sentient_info_t* mInfos[48];  // +0x00
+
+    sentient_info_t* operator[](int idx) { return mInfos[idx]; }
+};
+static_assert(sizeof(sentient_info_array) == 0xC0, "sentient_info_array size mismatch");
+
+// ============================================================================
 // actor_s — full AI actor (2864 bytes)
 // Size: 0xB30 (2864 bytes) — verified against IDA (184 members, truncated)
 // Key members only; full layout during porting.
@@ -325,7 +375,14 @@ struct actor_s {
     int32_t        iFollowMin;                   // +0x824
     int32_t        iFollowMax;                   // +0x828
     float          fInterval;                    // +0x82C
-    uint8_t        _pad830[0xAA4 - 0x830];
+    uint8_t        _pad830[0x8AC - 0x830];
+    float          fFovDot;                      // +0x8AC
+    float          fMaxSightDistSqrd;            // +0x8B0
+    uint8_t        _pad8B4[0x8CC - 0x8B4];
+    sentient_info_array sentientInfo;            // +0x8CC (0xC0 bytes)
+    uint8_t        _pad98C[0xA98 - 0x98C];
+    int32_t        mg42stayput;                  // +0xA98
+    uint8_t        _padA9C[0xAA4 - 0xA9C];
     int16_t        iUseHintString;               // +0xAA4
     int16_t        mActorIndex;                  // +0xAA6
     uint8_t        _padAA8[0xAB8 - 0xAA8];
@@ -336,3 +393,9 @@ struct actor_s {
 static_assert(sizeof(actor_s) == 0xB30, "actor_s size mismatch");
 static_assert(offsetof(actor_s, pEnt) == 0x000, "actor_s::pEnt offset mismatch");
 static_assert(offsetof(actor_s, pSentient) == 0x004, "actor_s::pSentient offset mismatch");
+static_assert(offsetof(actor_s, fFovDot) == 0x8AC, "actor_s::fFovDot offset mismatch");
+static_assert(offsetof(actor_s, fMaxSightDistSqrd) == 0x8B0,
+              "actor_s::fMaxSightDistSqrd offset mismatch");
+static_assert(offsetof(actor_s, sentientInfo) == 0x8CC, "actor_s::sentientInfo offset mismatch");
+static_assert(offsetof(actor_s, mg42stayput) == 0xA98, "actor_s::mg42stayput offset mismatch");
+static_assert(offsetof(actor_s, iUseHintString) == 0xAA4, "actor_s::iUseHintString offset mismatch");

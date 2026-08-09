@@ -47,12 +47,25 @@ struct collision_context_t {
     struct collision_context_t_vtbl* __vftable;  // +0x00
     DbLinkedHandle<EntityHandleDb, Entity> pass_entity1;    // +0x04
     DbLinkedHandle<EntityHandleDb, Entity> pass_entity2;    // +0x08
-    int   contentmask;                            // +0x0C
-    // +0x10 .. 0x18 derived-specific data
-    uint8_t _pad10[8];                            // +0x10
+    DbLinkedHandle<EntityHandleDb, Entity> pass_owner1;     // +0x0C
+    DbLinkedHandle<EntityHandleDb, Entity> pass_owner2;     // +0x10
+    int   contentmask;                            // +0x14
 
     collision_context_t();                       // ??0collision_context_t@@QAE@XZ
     collision_context_t(int mask);               // ??0collision_context_t@@QAE@H@Z
     collision_context_t(DbLinkedHandle<EntityHandleDb, Entity> handle, int mask);  // ??0collision_context_t@@QAE@V?$DbLinkedHandle@...@@H@Z
+    collision_context_t(DbLinkedHandle<EntityHandleDb, Entity> handle1,
+                        DbLinkedHandle<EntityHandleDb, Entity> handle2,
+                        int mask);                // ??0collision_context_t@@QAE@V?$DbLinkedHandle@...@@0H@Z
 };
 static_assert(sizeof(collision_context_t) == 0x18, "collision_context_t size mismatch");
+static_assert(offsetof(collision_context_t, pass_entity1) == 0x04,
+              "collision_context_t::pass_entity1 offset mismatch");
+static_assert(offsetof(collision_context_t, pass_entity2) == 0x08,
+              "collision_context_t::pass_entity2 offset mismatch");
+static_assert(offsetof(collision_context_t, pass_owner1) == 0x0C,
+              "collision_context_t::pass_owner1 offset mismatch");
+static_assert(offsetof(collision_context_t, pass_owner2) == 0x10,
+              "collision_context_t::pass_owner2 offset mismatch");
+static_assert(offsetof(collision_context_t, contentmask) == 0x14,
+              "collision_context_t::contentmask offset mismatch");

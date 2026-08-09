@@ -264,9 +264,24 @@ struct hash_const_t {
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C
     HashString trigger_damage;     // +0x210
-    uint8_t    _pad214[0x2B4 - 0x214];
+    uint8_t    _pad214[0x224 - 0x214];
+    HashString turret_on_target;   // +0x224 (137)
+    uint8_t    _pad228[0x250 - 0x228];
+    HashString turretstatechange;  // +0x250 (148)
+    HashString turretownerchange;  // +0x254 (149)
+    uint8_t    _pad258[0x284 - 0x258];
+    HashString overheated;         // +0x284 (161)
+    uint8_t    _pad288[0x2B4 - 0x288];
 };
 static_assert(sizeof(hash_const_t) == 0x2B4, "hash_const_t size mismatch");
+static_assert(offsetof(hash_const_t, turret_on_target) == 0x224,
+              "hash_const_t::turret_on_target offset mismatch");
+static_assert(offsetof(hash_const_t, turretstatechange) == 0x250,
+              "hash_const_t::turretstatechange offset mismatch");
+static_assert(offsetof(hash_const_t, turretownerchange) == 0x254,
+              "hash_const_t::turretownerchange offset mismatch");
+static_assert(offsetof(hash_const_t, overheated) == 0x284,
+              "hash_const_t::overheated offset mismatch");
 extern hash_const_t hash_const;    // 0xED2AB0
 
 // ============================================================================
@@ -413,6 +428,11 @@ void g_LocationalTrace(trace_t* results, const math::Position3* start,
                        const math::Position3* end, const collision_context_t* context,
                        unsigned char* priorityMap, float coneAngleTangent);
 int  SV_PointContents(const math::Position3& p, const collision_context_t& context);
+void g_SightTrace(int* hitNum, const math::Position3* start, const math::Position3* mins,
+                  const math::Position3* maxs, const math::Position3* end,
+                  const collision_context_t* context);
+void TraceDebugLine(const math::Position3* start, const math::Position3* end,
+                    int hitNum, DbLinkedHandle<EntityHandleDb, Entity> entityHandle);
 
 // ============================================================================
 // g_hudelem.cpp types/globals
@@ -542,18 +562,35 @@ extern void (*thinktable[])(Entity* ent, int msec);
 // fn_think_e values used by g.o (verified via disasm)
 enum {
     THINK__NULL = 0,
-    THINK__G_ExplodeMissile = 8,
-    THINK__G_IncomingMissile = 0x0B,
-    THINK__G_DelayMissile = 0x0D,
+    THINK__Actor_CorpseThink = 1,
+    THINK__Actor_Think = 2,
+    THINK__BodySink = 3,
+    THINK__Concussive_think = 4,
+    THINK__G_FinishSetupSpawnPoint = 5,
     THINK__FinishSpawningItem = 6,
+    THINK__finishSpawningKeyedMover = 7,
+    THINK__G_ExplodeMissile = 8,
+    THINK__G_DelayMissile = 9,
+    THINK__G_LaunchMissile = 10,
+    THINK__G_IncomingMissile = 0x0B,
     THINK__G_FreeEntity = 0x0C,
-    THINK__GotoPos3 = 0x0E,
-    THINK__turret_think_init = 0x11,
-    THINK__misc_spawner_think = 0x12,
-    THINK__multi_wait = 0x13,
-    THINK__Scr_Vehicle_Think = 0x19,
-    THINK__Think_SpawnNewDoorTrigger = 0x1B,
-    THINK__Think_SpawnNewAutoDoorTrigger = 0x1C,
+    THINK__GotoPos3 = 0x0D,
+    THINK__hurt_think = 0x0E,
+    THINK__turret_think = 0x0F,
+    THINK__turret_think_init = 0x10,
+    THINK__misc_spawner_think = 0x11,
+    THINK__multi_wait = 0x12,
+    THINK__RespawnItem = 0x13,
+    THINK__ReturnToPos1 = 0x14,
+    THINK__ReturnToPos1Rotate = 0x15,
+    THINK__ReturnToPos2 = 0x16,
+    THINK__Scr_Vehicle_Init = 0x17,
+    THINK__Scr_Vehicle_Think = 0x18,
+    THINK__Think_MatchTeam = 0x19,
+    THINK__Think_SpawnNewDoorTrigger = 0x1A,
+    THINK__Think_SpawnNewAutoDoorTrigger = 0x1B,
+    THINK__Think_GeneralLink = 0x1C,
+    THINK__Think_EnableMine = 0x1D,
     THINK_MAX = 0x1E,
 };
 
@@ -686,20 +723,22 @@ static_assert(offsetof(gitem_s, giType) == 0x24, "gitem_s::giType offset mismatc
 struct weaponFileInfo_t {
     uint8_t _pad0[0x8];           // +0x000
     char*   szInternalName;       // +0x8
-    uint8_t _pad8[0xB4 - 0xC];
+    uint8_t _pad8[0xB0 - 0xC];
+    int     weapClass;            // +0xB0 (weapClass_t; WEAPCLASS_TURRET == 7)
     int     slot;                 // +0xB4
-    uint8_t _padB8[0x598 - 0xB8];
+    uint8_t _padB8[0xBC - 0xB8];
+    int     stance;               // +0xBC (weapStance_t)
+    uint8_t _padC0[0x598 - 0xC0];
     char*   szWorldModel;         // +0x598
-    uint8_t _pad1[0x5C4 - 0x59C];
-    int     iProjectileSpeed;     // +0x5C4
-    int     iProjectileSpeedUp;   // +0x5C8
-    uint8_t _pad2[0x5DC - 0x5CC];
+    uint8_t _pad1[0x5D4 - 0x59C];
+    int     iDamage;              // +0x5D4
+    uint8_t _pad1b[0x5DC - 0x5D8];
     int     iMinDamagePercent;    // +0x5DC
     int     iDamageInnerRadius;   // +0x5E0
     int     iDamageOuterRadius;   // +0x5E4
-    uint8_t _pad3[0x5F8 - 0x5E8];
-    int     iProjectileDelay;     // +0x5F8
-    uint8_t _pad3b[0x6E8 - 0x5FC];
+    uint8_t _pad1c[0x5F8 - 0x5E8];
+    int     iFireTime;            // +0x5F8
+    uint8_t _pad2[0x6E8 - 0x5FC];
     int     bTwoHanded;           // +0x6E8
     uint8_t _pad4[0x704 - 0x6EC];
     int     bNoBounce;            // +0x704
@@ -710,16 +749,44 @@ struct weaponFileInfo_t {
     int     iExplosionRadius;     // +0x778
     int     iExplosionInnerDamage;// +0x77C
     int     iExplosionOuterDamage;// +0x780
-    uint8_t _pad6[0x790 - 0x784];
+    int     iProjectileSpeed;     // +0x784
+    int     iProjectileSpeedUp;   // +0x788
+    uint8_t _pad6[0x790 - 0x78C];
     uint8_t projExplosion;        // +0x790
     uint8_t _pad7[0x79C - 0x791];
     int     bProjImpactExplode;   // +0x79C
-    uint8_t _pad9[0x948 - 0x7A0];
+    uint8_t _pad7b[0x7AC - 0x7A0];
+    int     iProjectileDelay;     // +0x7AC
+    uint8_t _pad8b[0x86C - 0x7B0];
+    float   leftArc;              // +0x86C
+    float   rightArc;             // +0x870
+    float   topArc;               // +0x874
+    float   bottomArc;            // +0x878
+    float   accuracy;             // +0x87C
+    float   turnSpeed[2];         // +0x880
+    float   convergenceTime;      // +0x888
+    float   maxRange;             // +0x88C
+    uint8_t _pad9[0x8A4 - 0x890];
+    float   fFireHeat;            // +0x8A4
+    float   fCooldownRate;        // +0x8A8
+    uint8_t _pad9b[0x8BC - 0x8AC];
+    char*   szScript;             // +0x8BC
+    uint8_t _pad10[0x948 - 0x8C0];
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
 static_assert(offsetof(weaponFileInfo_t, bTwoHanded) == 0x6E8, "weaponFileInfo_t::bTwoHanded offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, iAltWeaponIndex) == 0x764, "weaponFileInfo_t::iAltWeaponIndex offset mismatch");
-static_assert(offsetof(weaponFileInfo_t, iProjectileSpeed) == 0x5C4, "weaponFileInfo_t::iProjectileSpeed offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iProjectileSpeed) == 0x784, "weaponFileInfo_t::iProjectileSpeed offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iProjectileSpeedUp) == 0x788, "weaponFileInfo_t::iProjectileSpeedUp offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iProjectileDelay) == 0x7AC, "weaponFileInfo_t::iProjectileDelay offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iFireTime) == 0x5F8, "weaponFileInfo_t::iFireTime offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iMinDamagePercent) == 0x5DC, "weaponFileInfo_t::iMinDamagePercent offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iDamageInnerRadius) == 0x5E0, "weaponFileInfo_t::iDamageInnerRadius offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iDamageOuterRadius) == 0x5E4, "weaponFileInfo_t::iDamageOuterRadius offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, weapClass) == 0xB0, "weaponFileInfo_t::weapClass offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, stance) == 0xBC, "weaponFileInfo_t::stance offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, turnSpeed) == 0x880, "weaponFileInfo_t::turnSpeed offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, szScript) == 0x8BC, "weaponFileInfo_t::szScript offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, slot) == 0xB4, "weaponFileInfo_t::slot offset mismatch");
 
 enum {
@@ -743,6 +810,138 @@ struct weaponParms {
     weaponFileInfo_t* pWeapInfo;  // +0x3C
 };
 static_assert(sizeof(weaponParms) == 0x40, "weaponParms size mismatch");
+
+// ============================================================================
+// turretInfo_t - turret runtime state (0x8C bytes) - verified against IDA
+// ============================================================================
+struct turretInfo_t {
+    uint8_t  inuse;              // +0x00
+    uint8_t  turret_state;       // +0x01 (0 idle, 1 aligned, 2 firing)
+    uint16_t turret_flags;       // +0x02
+    int16_t  fireTime;           // +0x04
+    Entity*  manualTarget;       // +0x08
+    Entity*  target;             // +0x0C
+    float    targetPos[3];       // +0x10
+    int      targetTime;         // +0x1C
+    float    missTarget[3];      // +0x20
+    float    arcmin[2];          // +0x2C
+    float    arcmax[2];          // +0x34
+    float    defaultPitch;       // +0x3C
+    float    defaultYaw;         // +0x40
+    int      convergenceTime;    // +0x44
+    float    maxRangeSquared;    // +0x48
+    sentient_s* detachSentient;  // +0x4C
+    char     stance;             // +0x50
+    char     prevStance;         // +0x51
+    int16_t  prevSentTarget;     // +0x52
+    float    accuracy;           // +0x54
+    float    userOrigin[3];      // +0x58
+    team_t   eTeam;              // +0x64
+    float    ambientTargetAngles[2];  // +0x68
+    float    pitchCap;           // +0x70
+    const void* obstruction;     // +0x74 cdlConvex*
+    float    initialYawmin;      // +0x78
+    float    initialYawmax;      // +0x7C
+    float    heat;               // +0x80
+    bool     overheating;        // +0x84
+    Handle   overheatEffect;     // +0x88
+};
+static_assert(sizeof(turretInfo_t) == 0x8C, "turretInfo_t size mismatch");
+static_assert(offsetof(turretInfo_t, turret_state) == 0x01, "turretInfo_t::turret_state offset mismatch");
+static_assert(offsetof(turretInfo_t, turret_flags) == 0x02, "turretInfo_t::turret_flags offset mismatch");
+static_assert(offsetof(turretInfo_t, arcmin) == 0x2C, "turretInfo_t::arcmin offset mismatch");
+static_assert(offsetof(turretInfo_t, arcmax) == 0x34, "turretInfo_t::arcmax offset mismatch");
+static_assert(offsetof(turretInfo_t, defaultPitch) == 0x3C, "turretInfo_t::defaultPitch offset mismatch");
+static_assert(offsetof(turretInfo_t, maxRangeSquared) == 0x48, "turretInfo_t::maxRangeSquared offset mismatch");
+static_assert(offsetof(turretInfo_t, detachSentient) == 0x4C, "turretInfo_t::detachSentient offset mismatch");
+static_assert(offsetof(turretInfo_t, eTeam) == 0x64, "turretInfo_t::eTeam offset mismatch");
+static_assert(offsetof(turretInfo_t, heat) == 0x80, "turretInfo_t::heat offset mismatch");
+static_assert(offsetof(turretInfo_t, overheatEffect) == 0x88, "turretInfo_t::overheatEffect offset mismatch");
+
+// turret flags (bits observed via disasm)
+enum {
+    TURRET_MANUAL = 0x1,
+    TURRET_AUTO = 0x2,
+    TURRET_HAS_TARGET = 0x4,
+    TURRET_MISSING = 0x8,
+    TURRET_20 = 0x20,          // manned/active
+    TURRET_ON_TARGET = 0x40,   // last shot on target
+    TURRET_800 = 0x800,        // view locked to client
+    TURRET_USABLE = 0x1000,
+};
+
+// g.o turret data (defined in g_turret.cpp / g_globals.cpp)
+extern turretInfo_t turretInfo[1];   // 0xED9E08
+extern float emissionRate;           // 0xDD8220 (turret overheat particle emission rate)
+extern float gFireHeatBlur;          // 0xF616EC (cg.o global, blurred by turret fire)
+extern float vec3_origin[3];         // core.o q_math.cpp
+
+// turret family (g.o: g_misc.cpp turret block -> g_turret.cpp)
+void InvalidateTurretCaches(void);
+void G_InitTurrets(void);
+void G_SpawnTurret(Entity* self, const char* weaponinfoname);
+void G_FreeTurret(Entity* self);
+void G_ClientStopUsingTurret(Entity* self);
+void SP_turret(Entity* self);
+void SP_turret_XAnimPrecache(const char* classname);
+int  Turret_FillWeaponParms(Entity* ent, Entity* activator, weaponParms* wp, int barrelNum);
+int  turret_IsFiring(Entity* self);
+int  turret_IsFiringInternal(int state);
+void turret_SetTargetEnt(Entity* self, Entity* pEnt);
+int  turret_behind(Entity* self, Entity* other);
+int  G_IsTurretUsable(Entity* self, Entity* owner);
+int  turret_CanTargetPoint(Entity* self, const math::Position3* vPoint,
+                           float* vSource, float* localAngles);
+int  turret_CanTargetSentient(Entity* self, sentient_s* sentient,
+                              float* vPoint, float* vSource, float* localAngles);
+int  turret_aimat_vector(Entity* self, const math::Position3* origin,
+                         int bShoot, float* desiredAngles);
+void turret_aimat_vector_internal(Entity* self, const math::Position3* origin,
+                                  int bShoot, float* desiredAngles);
+int  turret_aimat_Sentient(Entity* self, sentient_s* pEnemy, int bShoot, int missTime);
+int  turret_aimat_Sentient_Internal(Entity* self, sentient_s* pEnemy, int bShoot,
+                                    int missTime, float* desiredAngles);
+int  turret_aimat_Ent(Entity* self, Entity* pEnt, int bShoot);
+int  turret_isTargetVisable(Entity* self, Entity* target, float* distSqr);
+sentient_s* turret_findBestTarget(Entity* self);
+int  turret_UpdateTargetAngles(Entity* self, float* desiredAngles, int bManned);
+int  turret_ReturnToDefaultPos(Entity* self, int bManned);
+int  turret_random_aim(Entity* self);
+int  turret_canuse_auto(Entity* self, actor_s* pActor);
+int  turret_canuse_manual(Entity* self, actor_s* pActor);
+int  turret_canuse(actor_s* pActor, Entity* pTurret);
+void turret_think_auto_nonai(Entity* self);
+int  turret_think_auto(Entity* self, actor_s* pActor);
+int  turret_think_manual(Entity* self, actor_s* pActor);
+void turret_think(Entity* self, int msec);
+void turret_think_init(Entity* self, int msec);
+void turret_think_client(Entity* self);
+void turret_controller(Entity* self, int* partBits);
+void turret_track(Entity* self, Entity* other);
+void turret_shoot(Entity* self, Entity* owner);
+void turret_shoot_internal(Entity* self, Entity* other);
+void turret_clientaim(Entity* self, Entity* other);
+void clamp_playerbehindgun(Entity* self, Entity* other);
+
+// externs pulled in by the turret family
+void CG_mg42_DoControllers(Entity* entity, bool playerTurret);        // cg.o 0x6A1380
+void Fire_Lead(Entity* ent, Entity* activator, int damage, int bUseAccuracy);  // g.o 0x48F340
+void SetClientOrigin(Entity* ent, const float* origin);
+void SetClientViewAngle(Entity* ent, const float* angle);
+void BG_PlayerStateToEntityState(PlayerState* ps, EntityState* s, int snap);
+unsigned char BG_GetWeaponIndexForName(const char* pszName);
+void Sentient_GetEyePosition(sentient_s* pSelf, float* vEyePosOut);      // mp_actors.o
+void Sentient_GetEyePosition(sentient_s* pSelf, math::Position3& vEyePosOut);  // mp_actors.o
+team_t Sentient_EnemyTeam(team_t eTeam);
+sentient_s* Sentient_FirstSentient(int iTeamFlags);
+sentient_s* Sentient_NextSentient(sentient_s* pPrevSentient, int iTeamFlags);
+float Actor_CanSeePointEx(actor_s* pSelf, const float* vPoint, float fFovDot,
+                          float fMaxDistSqrd,
+                          DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity);  // mp_actors.o
+bool G_IsPlayerDrivingVehicle(Entity* player);
+float VectorDistanceSquared2D(const math::Position3* p1, const math::Position3* p2);
+const math::Position3* native_to_cdl_pos3(math::Position3* result, const float* v);
+void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone);
 
 // ============================================================================
 // g.o data
@@ -777,6 +976,15 @@ void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3& 
 void AxisToAngles(const float (*axis)[3], float* angles);
 void CrossProduct(const float* v1, const float* v2, float* cross);
 float VectorNormalize(float* v);
+float VectorNormalize2D(float* v);
+float Q_acos(float c);
+void  YawVectors(float yaw, float* forward, float* right);
+float vectosignedpitch(const float* vec);
+void  vectosignedangles(float* vec, float* angles);
+void  G_DObjCalcBone(Entity* ent, int boneIndex);
+bool  G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex, DObjSkelMat* tagMat);
+void  RegisterItem(unsigned int iItemIndex, int bUpdateCS);
+int   Actor_IsUsingTurret(actor_s* pSelf);
 void j_nullsub_74(Entity* pSelf, int bLerp);
 bool Entity_has_zone_collision(const void* self);
 
@@ -883,7 +1091,12 @@ unsigned char DirToByte(const float* dir);
 void  G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
 int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
 void  j_nullsub_120(Entity* pGrenade);
-int   PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);
+Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);
+void  EffectEventKill(Handle effect);
+void  Com_Error(int code, const char* fmt, ...);
+void  Com_Printf(const char* fmt, ...);
+enum { ERR_DROP = 1 };
+void  AngleVectors(const float* angles, float* forward, float* right, float* up);
 extern vmCvar_t g_debugGrenades;
 extern vmCvar_t g_debugBullets;
 extern vmCvar_t g_player_maxhealth;
@@ -913,6 +1126,10 @@ float VectorDistance(const float* v1, const float* v2);
 void  AnglesToAxis(const float* angles, float (*axis)[3]);
 void  MatrixInverse(const float (*in)[3], float (*out)[3]);
 void  MatrixTransformVector(const float* in1, const float (*in2)[3], float* out);
+void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
+                              math::Position3* out);
+void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
+                              float* out);
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,
                             bool useAngles);
@@ -942,13 +1159,6 @@ void    G_FinishDamage(Entity* targ, Entity* inflictor, Entity* attacker,
                        const float* dir, const float* point, int damage, int mod,
                        int weapon, hitLocation_t hitLoc);
 
-// THINK table indices used by movers
-enum {
-    THINK__finishSpawningKeyedMover = 7,
-    THINK__RespawnItem = 0x14,
-    THINK__ReturnToPos1 = 0x15,
-};
-
 // ============================================================================
 // g_trigger.cpp externs
 // ============================================================================
@@ -967,6 +1177,7 @@ public:
     static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
     void SendSoundNotify(Entity* pEnt);  // ea: 0x004BCDE0
     void StopEffect(int handle, bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z
+    void AdjustEffect_Scale(int handle, const char* param, float scale);  // ?AdjustEffect_Scale@EffectEventSys@@QAEXVHandle@@PBDM@Z
 };
 
 namespace BrocSys {
