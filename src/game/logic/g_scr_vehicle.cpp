@@ -2420,6 +2420,131 @@ void Scr_Vehicle_Use(Entity* pEnt, Entity* pOther)
     }
 }
 
+static int s_newDebugLineLocal;  // @ 0xDD7410
+static float s_start[3];   // @ 0xEF392C
+static float s_end[3];     // @ 0xEF393C
+static float s_dir[3];     // @ 0xEF394C
+
+// ea: 0x0045EC30 (file-local)
+static void VP_AddDebugLine(const float* start, const float* end, int forceDraw)
+{
+    float dir[3];
+    dir[0] = end[0] - start[0];
+    dir[1] = end[1] - start[1];
+    dir[2] = end[2] - start[2];
+    VectorNormalize(dir);
+    if (s_newDebugLineLocal != 0)
+    {
+        s_newDebugLineLocal = 0;
+    }
+    else
+    {
+        if ((s_dir[0] * dir[0]) + (s_dir[1] * dir[1]) + (s_dir[2] * dir[2])
+                >= 0.99989998f
+            && forceDraw == 0)
+        {
+            s_end[0] = end[0];
+            s_end[1] = end[1];
+            s_end[2] = end[2];
+            return;
+        }
+        float k_lineColor[4] = {1.0f, 0.0f, 0.0f, 1.0f};
+        CL_AddDebugLine(s_start, s_end, k_lineColor, 1, 0, 1, 0);
+    }
+    s_start[0] = start[0];
+    s_start[1] = start[1];
+    s_start[2] = start[2];
+    s_end[0] = end[0];
+    s_end[1] = end[1];
+    s_end[2] = end[2];
+    s_dir[0] = dir[0];
+    s_dir[1] = dir[1];
+    s_dir[2] = dir[2];
+}
+
+// ea: 0x00464710
+void VP_DrawPath(const vehicle_pathpos_t* vpp)
+{
+    vehicle_pathpos_t prevVPP = *vpp;
+    vehicle_pathpos_t nextVPP = *vpp;
+    s_newDebugLineLocal = 1;
+    int v3 = 0;
+    int loopNode = -1;
+    int count = 0;
+    while (1)
+    {
+        count = count + 1;
+        if (count > 50000)
+            break;
+        if (prevVPP.nodeIdx != vpp->nodeIdx)
+            loopNode = vpp->nodeIdx;
+        prevVPP = nextVPP;
+        int updated = G_VehUpdatePathPos(nullptr, &nextVPP, false,
+                                         ServerTime::sInst.mTickMSec, loopNode);
+        if (nextVPP.endOfPath != 0 || updated != 0)
+            v3 = 1;
+        VP_AddDebugLine(prevVPP.origin, nextVPP.origin, v3);
+        if (v3 != 0)
+            goto draw_boxes;
+    }
+    Com_Printf("WARNING: Invalid vehicle path.  Possible infinite loop\n");
+draw_boxes:
+    int nodeIdx = vpp->nodeIdx;
+    vehicle_node_t* v7 = s_nodes[nodeIdx];
+    float k_boxColor1[4] = {0.0f, 1.0f, 0.0f, 1.0f};
+    float k_boxColor2[4] = {0.0f, 0.0f, 1.0f, 1.0f};
+    int v11 = 0;
+    for (int v8 = 0; v8 < s_numNodes; v7 = s_nodes[v11])
+    {
+        vehicle_node_t* v9 = s_nodes[nodeIdx];
+        float mins[3] = {v7->origin[0] + 4.0f, v7->origin[1] + 4.0f,
+                         v7->origin[2] + 4.0f};
+        float maxs[3] = {v7->origin[0] - 4.0f, v7->origin[1] - 4.0f,
+                         v7->origin[2] - 4.0f};
+        ++v8;
+        const float* v10 = v7 != v9 ? k_boxColor2 : k_boxColor1;
+        G_DebugBox(mins, maxs, v10, 1, 0, 0);
+        int v11 = (v7->nextIdx << 18) >> 18;
+        if (v11 < 0)
+            break;
+        if (v11 == nodeIdx)
+            break;
+    }
+}
+
+// ea: 0x00464980
+void G_DrawVehiclePaths()
+{
+    vehicle_pathpos_t vpp;
+    memset(&vpp, 0, sizeof(vpp));
+    if (g_vehicleDrawPath.string[0] == 0 || g_vehicleDrawPath.string[0] == '0')
+        return;
+    int16_t v0 = 0;
+    if (s_numNodes > 0)
+    {
+        int v1 = 0;
+        while (1)
+        {
+            Broc::string::Block* mBlock = s_nodes[v1]->mName.mBlock;
+            const char* v3 = mBlock != nullptr ? (const char*)&mBlock[1]
+                                               : defaultFileName;
+            if (_stricmp(v3, g_vehicleDrawPath.string) == 0)
+                break;
+            v1 = ++v0;
+            if (v0 >= s_numNodes)
+                goto done;
+        }
+        vpp.switchNode[0].mName.clear();
+        vpp.switchNode[0].mTarget.clear();
+        vpp.switchNode[1].mName.clear();
+        vpp.switchNode[1].mTarget.clear();
+        G_VehSetUpPathPos(&vpp, v0);
+        VP_DrawPath(&vpp);
+    }
+done:
+    ;
+}
+
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
 static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
 static scr_vehicle_t s_backup;     // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)

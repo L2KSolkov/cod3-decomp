@@ -682,6 +682,9 @@ extern cvar_t* g_debug_sound_aliases;  // g_debug_sound_aliases
 extern vmCvar_t g_entinfo_scale;       // ?g_entinfo_scale@@3UvmCvar_t@@A @ 0xEA5020
 extern vmCvar_t g_entinfo_maxdist;     // ?g_entinfo_maxdist@@3UvmCvar_t@@A @ 0xEAE2F0
 extern const float colorMagenta[4];    // @ 0xD015CC
+extern vmCvar_t g_vehicleDrawPath;     // ?g_vehicleDrawPath@@3UvmCvar_t@@A @ 0xEA66F8
+extern vmCvar_t g_drawEntBBoxes;       // g.o
+extern int s_newDebugLine;             // g.o
 extern vmCvar_t g_gravity;             // g_gravity
 extern vmCvar_t g_reloading;           // g_reloading
 extern void    Scr_Error(const char* error);  // scr.o
@@ -1633,6 +1636,9 @@ void  MatrixTranspose(const float (*in)[3], float (*out)[3]);
 void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
 void  VEH_UpdateControllers(Entity* entity, int msec);  // g.o 0x46DE90
 void  G_UpdateVehicleTags(Entity* ent);                 // g.o 0x45E290
+void  G_DrawVehiclePaths(void);                         // g.o 0x464980
+void  VP_DrawPath(const vehicle_pathpos_t* vpp);        // g.o 0x464710
+void  VP_AddDebugLine(const float* start, const float* end, int forceDraw);  // g.o
 void  G_UpdateTagInfoOfChildren(Entity* parent, int bHasDObj);  // g.o 0x4603D0
 void  G_UpdateTagInfo(Entity* ent, int bParentHasDObj);  // g.o 0x460330
 void  G_UpdateTags(Entity* ent, int bHasDObj);           // g.o 0x464C40
