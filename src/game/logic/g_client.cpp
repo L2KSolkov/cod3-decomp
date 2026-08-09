@@ -687,3 +687,307 @@ char* game_vmMain(int command, void* arg0, PlayerState* arg1, int arg2,
         return (char*)v5;
     }
 }
+
+// ea: 0x00482C10
+void Player_UpdateCursorHints(Entity* ent)
+{
+    if (ent->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+        AeAssert::gCurrentLine = 573;
+        AeAssert::gCurrentExpr = "ent->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PlayerState* p_ps = &ent->client->ps;
+    p_ps->serverCursorHint = 0;
+    p_ps->serverCursorHintVal = 0;
+    p_ps->serverCursorHintTrace.mEntity.mHandle.mVal = 0;
+    gGrenadeCanBePickedUp = false;
+    if (ent->health <= 0)
+        return;
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(p_ps->weapon);
+    if (InfoForWeapon->type != 1 /* WEAPTYPE_GRENADE */
+        || (*(int*)((char*)InfoForWeapon + 0x6EC)) == 0
+        || (p_ps->grenadeTimeLeft >= InfoForWeapon->iFuseTime)
+        || p_ps->grenadeTimeLeft == 0
+        || Com_BitCheck(p_ps->weapons, p_ps->weapon) == 0)
+    {
+        Player_UpdateFriendlyOverlay(ent);
+        if (ent->active == 0 && g_reloading.integer != 4)
+        {
+            p_ps->serverCursorHint = 0;
+            p_ps->serverCursorHintVal = 0;
+            int hintType = 0;
+            int hintVal = 0;
+            p_ps->serverCursorHintString = -1;
+            int hintString = -1;
+            int weapClass = BG_GetInfoForWeapon(ent->client->ps.weapon)->weapClass;
+            Client* client = ent->client;
+            if ((client->ps.pm_flags & 0x20) != 0 && weapClass == 14 /* WEAPCLASS_LMG */)
+            {
+            }
+            else if ((0x100000 & client->ps.eFlags) != 0)
+            {
+                Entity* owner = HandleDbToEnt(ent->r.mOwner);
+                if (owner == nullptr || owner->scr_vehicle == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+                    AeAssert::gCurrentLine = 620;
+                    AeAssert::gCurrentExpr = "*ent->r.mOwner && ent->r.mOwner->scr_vehicle";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("bad vehicle entity"))
+                        __debugbreak();
+                }
+                if (ent->client->ps.vehPos != 7
+                    || owner->scr_vehicle->mMantleTime != 0)
+                {
+                    if (weapClass == 14 /* WEAPCLASS_LMG */
+                        && BG_AllowPlayerWeaponAtVehiclePos(
+                            ent->client->ps.vehType, ent->client->ps.vehPos))
+                        p_ps->serverCursorHint = 12;
+                }
+                else
+                {
+                    int v8 = p_ps->weaponslots[4];
+                    p_ps->serverCursorHint = 2;
+                    static unsigned int mantleJumpOffHintString =
+                        HashString::CalcHash("MPGAME_TANK_MANTLE_JUMPOFF");
+                    if (v8 != 0)
+                    {
+                        weaponFileInfo_t* v9 = BG_GetInfoForWeapon(v8);
+                        if (v9 != nullptr && v9->bCanMantle != 0)
+                        {
+                            static unsigned int mantleGrenadeThrowHintString =
+                                HashString::CalcHash("MPGAME_TANK_MANTLE_GRENADE");
+                            p_ps->serverCursorHintString =
+                                mantleGrenadeThrowHintString;
+                        }
+                        else
+                        {
+                            p_ps->serverCursorHintString =
+                                mantleJumpOffHintString;
+                        }
+                    }
+                    else
+                    {
+                        p_ps->serverCursorHintString = mantleJumpOffHintString;
+                    }
+                }
+            }
+            else if (!EntityManager::sInst->IsLocalPlayer(ent)
+                     || InteractionController_Inst(
+                            EntityManager::sInst->GetPlayerIndex(ent)) == nullptr)
+            {
+                useList_t useList[1344];
+                int numUsable = Player_GetActivateEnt(ent, useList);
+                if (weapClass == 14 /* WEAPCLASS_LMG */)
+                {
+                    float point[3];
+                    point[0] = 0.0f;
+                    point[1] = ent->client->ps.viewangles[1];
+                    point[2] = 0.0f;
+                    float forward[3];
+                    AnglesToForward(point, forward);
+                    point[0] = forward[0] * 25.0f
+                               + ent->r.currentOrigin.v.m128_f32[0];
+                    point[1] = forward[1] * 25.0f
+                               + ent->r.currentOrigin.v.m128_f32[1];
+                    point[2] = forward[2] * 25.0f
+                               + ent->r.currentOrigin.v.m128_f32[2] + 1.0f;
+                    int crouch = 0;
+                    if (G_CheckPointInsideTriggerMount(ent, point, &crouch) != 0)
+                    {
+                        hintType = 12;
+                        hintVal = crouch;
+                        if (BG_GetInfoForWeapon(ent->client->ps.weapon)
+                                ->szUseHintString[0]
+                            != 0)
+                            hintString = BG_GetInfoForWeapon(
+                                             ent->client->ps.weapon)
+                                             ->iUseHintStringIndex;
+                    }
+                    p_ps->serverCursorHint = hintType;
+                    p_ps->serverCursorHintVal = hintVal;
+                    p_ps->serverCursorHintString = hintString;
+                }
+                if (numUsable != 0)
+                {
+                    int hasString = 0;
+                    for (int i = 0; i < numUsable; ++i)
+                    {
+                        Entity* v13 = useList[i].ent;
+                        p_ps->serverCursorHintTrace.mEntity.mHandle.mVal =
+                            v13->mHandle.mHandle.mVal;
+                        if (v13 == EntityManager::sInst->mWorld)
+                        {
+                            int dmgFlags;
+                            if ((p_ps->serverCursorHintTrace.surfaceFlags & 8)
+                                    != 0
+                                && (p_ps->pm_flags & 0x10) == 0)
+                                dmgFlags = 14;
+                            else
+                                dmgFlags = hintType;
+                            p_ps->serverCursorHintVal = hintVal;
+                            p_ps->serverCursorHint = dmgFlags;
+                            if (hasString == 0)
+                                p_ps->serverCursorHintString = hintString;
+                            if (dmgFlags == 0)
+                                p_ps->serverCursorHintTrace.mEntity.mHandle.mVal = 0;
+                            return;
+                        }
+                        if (v13->actor != nullptr)
+                        {
+                            sentient_s* sentient = v13->sentient;
+                            int dmgFlags = hintType;
+                            if (sentient != nullptr
+                                && (sentient->eTeam == TEAM_ALLIES
+                                    || sentient->eTeam == TEAM_NEUTRAL))
+                                dmgFlags = 16;
+                            if (v13->actor->iUseHintString >= 0)
+                                hintString = v13->actor->iUseHintString;
+                            p_ps->serverCursorHintVal = hintVal;
+                            p_ps->serverCursorHint = dmgFlags;
+                            if (hasString == 0)
+                                p_ps->serverCursorHintString = hintString;
+                            if (dmgFlags == 0)
+                                p_ps->serverCursorHintTrace.mEntity.mHandle.mVal = 0;
+                            return;
+                        }
+                        if (v13->s.eType == 0)
+                        {
+                            if (v13->mClassNameHash.mHash
+                                == hash_const.trigger_use.mHash)
+                            {
+                                hintType = v13->s.dmgFlags;
+                                if (hintType != 0)
+                                {
+                                    unsigned char scale = v13->s.scale;
+                                    if (scale != 0xFF)
+                                        hintString = scale;
+                                }
+                            }
+                        }
+                        else if (v13->s.eType == 10)
+                        {
+                            if (G_IsTurretUsable(v13, ent) != 0)
+                            {
+                                hintType = 11;
+                                if (BG_GetInfoForWeapon(v13->s.weapon)
+                                        ->szUseHintString[0]
+                                    != 0)
+                                    hintString = BG_GetInfoForWeapon(
+                                                     v13->s.weapon)
+                                                     ->iUseHintStringIndex;
+                            }
+                        }
+                        else if (v13->s.eType == 14)
+                        {
+                            if (v13->scr_vehicle->CanMantleVehicle(ent))
+                            {
+                                if (G_IsVehicleUsable(v13, ent, true) != nullptr)
+                                {
+                                    hintType = 6;
+                                    hintString =
+                                        v13->scr_vehicle->GetMantleHintStringIndex();
+                                }
+                            }
+                            else if (G_IsVehicleUsable(v13, ent, true)
+                                     != nullptr)
+                            {
+                                int mVehicleEntryPoint =
+                                    ent->client->mVehicleEntryPoint;
+                                int v23 =
+                                    G_EntryPointSeatAssociation(v13, mVehicleEntryPoint);
+                                if (v23 != 0)
+                                {
+                                    int v24 = v23 - 1;
+                                    if (v24 == 1)
+                                        hintType = 3;
+                                    else if (v24 == 0)
+                                        hintType = 5;
+                                }
+                                else
+                                {
+                                    hintType = 4;
+                                }
+                                hintString =
+                                    v13->scr_vehicle->GetEntryHintStringIndex(
+                                        v13, mVehicleEntryPoint);
+                            }
+                        }
+                        else if (v13->s.eType == 7)
+                        {
+                            hintType = 7;
+                        }
+                        else if (v13->s.eType == 2)
+                        {
+                            const gitem_s* v26 = v13->item;
+                            switch (v26->giType)
+                            {
+                            case 1 /* IT_WEAPON */:
+                            {
+                                int giTag = v26->giTag;
+                                hintType = Com_BitCheck(ent->client->ps.weapons,
+                                                        giTag)
+                                               ? giTag + 144
+                                               : giTag + 16;
+                                break;
+                            }
+                            case 2 /* IT_AMMO */:
+                                hintType = v26->giTag + 144;
+                                break;
+                            case 3: case 5:
+                                hintType = 13;
+                                break;
+                            case 4:
+                                hintType = 145;
+                                break;
+                            case 6:
+                                hintType = 7;
+                                break;
+                            case 7:
+                                hintType = v13->count + 273;
+                                break;
+                            default:
+                                break;
+                            }
+                        }
+                        else if (v13->s.eType == 4)
+                        {
+                            unsigned int mHash = v13->mClassNameHash.mHash;
+                            if (mHash == hash_const.func_door_rotating.mHash
+                                && v13->moverState != 7
+                                && v13->moverState != 8)
+                                continue;
+                            if (mHash == hash_const.func_door.mHash
+                                && v13->moverState != 0
+                                && v13->moverState != 1)
+                                continue;
+                            hintType = 9;
+                            if (v13->key != 0)
+                                hintType = 10;
+                        }
+                        int dmgFlags = hintType;
+                        if (v13->s.dmgFlags > 0 && hintType != 0)
+                            dmgFlags = v13->s.dmgFlags;
+                        if (v13->mHintString != 0)
+                        {
+                            p_ps->serverCursorHintString = v13->mHintString;
+                            hasString = 1;
+                        }
+                        p_ps->serverCursorHintVal = hintVal;
+                        p_ps->serverCursorHint = dmgFlags;
+                        if (hasString == 0)
+                            p_ps->serverCursorHintString = hintString;
+                        if (dmgFlags == 0)
+                            p_ps->serverCursorHintTrace.mEntity.mHandle.mVal = 0;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}

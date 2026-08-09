@@ -1042,6 +1042,7 @@ float BG_GetConeAngleForWeapon(PlayerState* pPS, int iWeaponIndex, int iTime,
                                bool bAds);   // game.o
 unsigned char BG_GetWeaponIndexForName(const char* name);  // game.o 0x6073A0
 unsigned char BG_GetWeaponIndexForName(unsigned int name);  // game.o 0x607310
+bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);  // game.o 0x604A60
 int  irand(int min, int max);
 void G_AddLean(Entity* ent, float* point);
 extern float delta;          // 0xDD7FE4 (mine test standoff distance)
@@ -2129,10 +2130,18 @@ struct TouchEntityData {
     DbLinkedHandle<EntityHandleDb, Entity> touch[128];  // +0x30
 };
 static_assert(sizeof(TouchEntityData) == 0x230, "TouchEntityData size mismatch");
+
+struct useList_t {
+    Entity* ent;   // +0x00
+    float   score; // +0x04
+};
 void  G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
                         TouchEntityData* tData, collision_context_t* context);  // g.o 0x474C90
 void  G_TouchVehicles(Entity* ent, const math::Position3* origin,
                       TouchEntityData* tData, collision_context_t* context);  // g.o 0x4748A0
+int   Player_GetActivateEnt(Entity* pEnt, useList_t* useList);  // g.o 0x473D90
+void  Player_UpdateCursorHints(Entity* ent);                    // g.o 0x482C10
+extern bool gGrenadeCanBePickedUp;  // g.o
 void  SP_script_model(Entity* pSelf);      // g.o 0x47BD80
 float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker, Entity* pInflictor,
                               const float* point, int mod);  // g.o 0x44F7E0
