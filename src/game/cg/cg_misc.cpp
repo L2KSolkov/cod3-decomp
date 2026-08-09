@@ -1775,3 +1775,901 @@ void Camera::Update()
     if (newMode != 16 && newMode != 18)
         UpdateViewPO();
 }
+
+// ============================================================================
+// View namespace - split-screen viewport/window helpers (cg.o View.cpp)
+// ============================================================================
+
+struct View_Window {
+    float XPos;    // +0x00
+    float YPos;    // +0x04
+    float Width;   // +0x08
+    float Height;  // +0x0C
+    unsigned char _pad[0x1C - 0x10];
+};
+
+struct View_Setup {
+    int Windows[5];  // +0x00
+};
+
+namespace View {
+extern int lNumViewports;  // 0x00F61728
+}
+extern View_Setup Setups[];         // 0x00DF9DB8
+extern View_Window Windows[];       // 0x00DF9E58
+extern int ViewSetupConfigurations[];  // 0x00D0D200
+extern float scalar2View;           // 0x00DF9E44
+extern float scalar4View;           // 0x00DF9E48
+extern float unk_F6A284[4 * 802];
+extern float unk_F6A288[4 * 802];
+extern int dword_F6A290[4 * 802];
+extern vmCvar_t cg_widescreen;      // 0x00F5CC88
+extern float get_screensafe_left();
+extern float get_screensafe_top();
+extern void tlPrintf(const char* fmt, ...);
+extern void FEManager_UpdateSplitScreen(void* self);
+extern void nglSetView(float x1, float y1, float x2, float y2);
+extern void nglSetScissor(float x1, float y1, float x2, float y2);
+
+namespace View {
+
+// ea: 0x00693C10
+bool IsSplitScreen()
+{
+    return lNumViewports > 1;
+}
+
+// ea: 0x00693C20
+int GetNumViewports()
+{
+    return lNumViewports;
+}
+
+// ea: 0x00693C30
+void UpdateViewports()
+{
+    unk_F6A284[0] = 0.0f;
+}
+
+// ea: 0x00693C40
+const View_Setup* GetCurrentSetup()
+{
+    return &Setups[ViewSetupConfigurations[lNumViewports]];
+}
+
+// ea: 0x00693C60
+const View_Window* GetCurrentWindow(int clientIndex)
+{
+    return &Windows[Setups[ViewSetupConfigurations[lNumViewports]]
+                        .Windows[(int)unk_F6A288[802 * clientIndex]]];
+}
+
+// ea: 0x00693CA0
+void SetViewportClipping(int clientIndex)
+{
+    if (lNumViewports > 1)
+    {
+        const View_Window* v1 =
+            &Windows[Setups[ViewSetupConfigurations[lNumViewports]]
+                         .Windows[(int)unk_F6A288[802 * clientIndex]]];
+        nglSetView(v1->XPos, v1->YPos, v1->XPos + v1->Width,
+                   v1->YPos + v1->Height);
+        nglSetScissor(v1->XPos, v1->YPos, v1->XPos + v1->Width,
+                      v1->YPos + v1->Height);
+    }
+}
+
+// ea: 0x00693DB0
+float GetScalingForWindow(int window)
+{
+    switch (window)
+    {
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        return 0.5f;
+    default:
+        return 1.0f;
+    }
+}
+
+// ea: 0x00693DF0
+float GetXScalingForWindow(int window, bool normal_aspect)
+{
+    float v2 = 0.75f;
+    if (cg_widescreen.integer == 0)
+        v2 = 1.0f;
+    switch (window)
+    {
+    case 3:
+    case 4:
+        if (!normal_aspect)
+            return v2;
+        return v2 * 0.5f;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        return v2 * 0.5f;
+    default:
+        return v2;
+    }
+}
+
+// ea: 0x00693E60
+float GetYScalingForWindow(int window)
+{
+    switch (window)
+    {
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        return 0.5f;
+    default:
+        return 1.0f;
+    }
+}
+
+// ea: 0x00693EA0
+float GetScalingForHUD(int window)
+{
+    float v1 = 0.75f;
+    if (cg_widescreen.integer == 0)
+        v1 = 1.0f;
+    float scale = v1;
+    switch (window)
+    {
+    case 3:
+    case 4:
+        return scalar2View * v1;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        scale = scalar4View * v1;
+        return scale;
+    default:
+        return scale;
+    }
+}
+
+// ea: 0x00693F20
+float GetXScalingForHUD(int window)
+{
+    float v1 = 0.75f;
+    if (cg_widescreen.integer == 0)
+        v1 = 1.0f;
+    float scale = v1;
+    switch (window)
+    {
+    case 3:
+    case 4:
+        return scalar2View * v1;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        scale = scalar4View * v1;
+        return scale;
+    default:
+        return scale;
+    }
+}
+
+// ea: 0x00693FA0
+float GetYScalingForHUD(int window)
+{
+    float scale = 1.0f;
+    switch (window)
+    {
+    case 3:
+    case 4:
+        return scalar2View;
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+        scale = scalar4View;
+        return scale;
+    default:
+        return scale;
+    }
+}
+
+// ea: 0x00694010
+float GetPreviousHUDXPos(float pos, int window, char justification,
+                         float width)
+{
+    float screensafe_size = get_screensafe_left();
+    float v4 = screensafe_size * 0.5f;
+    float v5 = 320.0f - (screensafe_size * 0.5f);
+    float v6 = v5 * 0.003125f;
+    float pos_x = pos;
+    switch (window)
+    {
+    case 0:
+    case 3:
+    case 4:
+        return pos;
+    case 5:
+    case 7:
+        pos_x = ((pos - v5) / v6) + v5;
+        if ((justification & 2) == 0)
+            return (pos_x - screensafe_size - scalar4View * width)
+                       / ((320.0f - screensafe_size) * 0.0015625f)
+                   + screensafe_size;
+        {
+            float v8 = (((pos - v5) / v6) + v5) - v4;
+            pos_x = v8;
+        }
+        return (pos_x - screensafe_size - scalar4View * width)
+                   / ((320.0f - screensafe_size) * 0.0015625f)
+               + screensafe_size;
+    case 6:
+    case 8:
+        {
+            float v9 = ((pos - (v4 + 320.0f)) / v6) + (v4 + 320.0f);
+            if ((justification & 1) != 0)
+                v9 = v4 + v9;
+            pos_x = v9 - 320.0f;
+        }
+        return (pos_x - screensafe_size - scalar4View * width)
+                   / ((320.0f - screensafe_size) * 0.0015625f)
+               + screensafe_size;
+    default:
+        return (pos_x - screensafe_size - scalar4View * width)
+                   / ((320.0f - screensafe_size) * 0.0015625f)
+               + screensafe_size;
+    }
+}
+
+// ea: 0x00694100
+float GetCurrentHUDXPos(float pos, int window, char justification, float width)
+{
+    float screensafe_size = get_screensafe_left();
+    float v4 = screensafe_size * 0.5f;
+    float v5 = 320.0f - (screensafe_size * 0.5f);
+    float v6 = v5 * 0.003125f;
+    float pos_x = (320.0f - screensafe_size) * 0.0015625f
+                      * (pos - screensafe_size)
+                  + scalar4View * width + screensafe_size;
+    switch (window)
+    {
+    case 0:
+    case 3:
+    case 4:
+        return pos;
+    case 5:
+    case 7:
+        {
+            float v8 = v4 + pos_x;
+            if ((justification & 2) == 0)
+                v8 = pos_x;
+            return (((v8 - v5) * v6) + v5);
+        }
+    case 6:
+    case 8:
+        {
+            float v9 = pos_x + 320.0f;
+            if ((justification & 1) != 0)
+                v9 = v9 - v4;
+            pos_x = ((v9 - (v4 + 320.0f)) * v6) + (v4 + 320.0f);
+        }
+        return pos_x;
+    default:
+        return pos_x;
+    }
+}
+
+// ea: 0x006941F0
+float GetCurrentHUDYPos(float pos, int window, char justification, float height)
+{
+    float screensafe_size = get_screensafe_top();
+    float v5 = scalar4View;
+    if (window == 4 || window == 3)
+        v5 = 1.0f;
+    float v6 = (((pos - screensafe_size)
+                 * ((240.0f - screensafe_size) * 0.0020833334f))
+                + (v5 * height))
+               + screensafe_size;
+    float pos_x = v6;
+    switch (window)
+    {
+    case 0:
+        return pos;
+    case 3:
+    case 5:
+    case 6:
+        if ((justification & 8) == 0)
+            return pos_x;
+        return (screensafe_size * 0.5f) + v6;
+    case 4:
+    case 7:
+    case 8:
+        pos_x = v6 + (240.0f - screensafe_size);
+        return pos_x;
+    default:
+        return pos_x;
+    }
+}
+
+// ea: 0x006942C0
+float GetPreviousHUDYPos(float pos, int window, char justification,
+                         float height)
+{
+    float screensafe_size = get_screensafe_top();
+    float pos_x = pos;
+    switch (window)
+    {
+    case 0:
+        return pos;
+    case 3:
+    case 5:
+    case 6:
+        if ((justification & 8) == 0)
+            break;
+        pos_x = pos - (screensafe_size * 0.5f);
+        break;
+    case 4:
+    case 7:
+    case 8:
+        pos_x = pos - (240.0f - screensafe_size);
+        break;
+    default:
+        break;
+    }
+    float height_scalar = scalar4View;
+    if (window == 4 || window == 3)
+        height_scalar = 1.0f;
+    return (pos_x - screensafe_size - height_scalar * height)
+               / ((240.0f - screensafe_size) * 0.0020833334f)
+           + screensafe_size;
+}
+
+// ea: 0x00694390
+float GetCurrentXPos(float pos, int window)
+{
+    switch (window)
+    {
+    case 5:
+    case 7:
+        return (pos * 0.0015625f) * 320.0f;
+    case 6:
+    case 8:
+        pos = ((pos * 0.0015625f) + 1.0f) * 320.0f;
+        return pos;
+    default:
+        return pos;
+    }
+}
+
+// ea: 0x00694400
+float GetCurrentYPos(float pos, int window)
+{
+    switch (window)
+    {
+    case 3:
+    case 5:
+    case 6:
+        return (pos * 0.0020833334f) * 240.0f;
+    case 4:
+    case 7:
+    case 8:
+        pos = ((pos * 0.0020833334f) + 1.0f) * 240.0f;
+        return pos;
+    default:
+        return pos;
+    }
+}
+
+// ea: 0x0069B0B0
+void SetNumViewports(int num)
+{
+    tlPrintf("SetNumViewports: set to %i\n", num);
+    unk_F6A284[0] = 0.0f;
+    if (num <= lNumViewports)
+    {
+        lNumViewports = num + 1;
+        FEManager_UpdateSplitScreen(g_femanager);
+        --lNumViewports;
+    }
+    else
+    {
+        lNumViewports = num;
+        FEManager_UpdateSplitScreen(g_femanager);
+    }
+}
+
+// ea: 0x0069B100
+void UpdateNumViewports()
+{
+    int v1 = dword_F6A290 != 0;
+    tlPrintf("SetNumViewports: set to %i\n", v1);
+    unk_F6A284[0] = 0.0f;
+    if (v1 <= lNumViewports)
+    {
+        lNumViewports = v1 + 1;
+        FEManager_UpdateSplitScreen(g_femanager);
+        --lNumViewports;
+    }
+    else
+    {
+        lNumViewports = v1;
+        FEManager_UpdateSplitScreen(g_femanager);
+    }
+}
+
+}  // namespace View
+
+// ============================================================================
+// Weapon selection helpers (cg.o cg_misc.cpp)
+// ============================================================================
+
+extern int cg_aWeaponSelect[4];       // 0x00F5D078
+extern int cg_aWeaponSelectTime[4];   // 0x00F610D8
+extern vmCvar_t cg_weaponCycleDelay;  // 0x00F5EF18
+extern void* EntityManager_mPlayers[16];
+extern bool Entity_IsLocalPlayer(const Entity* ent);
+extern int CG_WeaponSelectable(int i);
+extern int BG_SelectWeaponIndex(int iWeaponIndex, int client);
+extern void CG_GameMessage(const char* msg, int flags);
+extern const char* SEH_LocalizeTextMessage(const char* pszMessage,
+                                           const char* pszMsgType);
+extern int Com_BitCheck(const int* array, int bitNum);
+extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
+extern int BG_GetNumWeapons();
+extern int BG_IsPlayerWeaponInSlot(const PlayerState* pPS, int iWeaponIndex,
+                                   int bAnyMode);
+extern int BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                                    int preferedSlot);
+extern int BG_IsPlayerWeaponAnAlt(int iWeaponIndex, int iAltIndex);
+extern void PM_KillQueuedReloadSound(PlayerState& ps);
+extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
+extern void* BG_GetInfoForWeapon(int weapon);
+extern void* gpBrocAPI;  // 0x00F3ABDC
+extern void CalcMuzzlePoints(Entity* ent, void* wp);
+extern bool Weapon_Revive_Test(Entity* ent, void* wp, Entity** traceEnt);
+extern bool Weapon_Mine_Test(Entity* ent, void* wp, math::Position3* position,
+                             math::Dir3* normal);
+
+// weaponFileInfo_t extra fields (offsets verified from disassembly)
+struct weaponInfoCam {
+    unsigned char _pad0[0x84];
+    int weapClass;        // +0x84
+    int slot;             // +0x88
+    unsigned char _pad1[0xAC - 0x8C];
+    int type;             // +0xAC (weapType_t)
+    unsigned char _pad3[0x764 - 0xB4];
+    int iAltWeaponIndex;  // +0x764
+};
+
+struct weaponParms {
+    void* pWeapInfo;  // +0x00
+};
+
+// ea: 0x00692600
+void CG_AltWeapon_f()
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (Player && Player->client
+        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.pm_flags
+            & 0x4000)
+               == 0
+        && (0x80000
+            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                  ->client->ps.pm_flags)
+               != 0
+        && (0x106000
+            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                  ->client->ps.eFlags)
+               == 0
+        && cgGlobal.time - cg_aWeaponSelectTime[currCl]
+               >= cg_weaponCycleDelay.integer)
+    {
+        weaponInfoCam* InfoForWeapon =
+            (weaponInfoCam*)BG_GetInfoForWeapon(cg_aWeaponSelect[currCl]);
+        int iAltWeaponIndex = InfoForWeapon->iAltWeaponIndex;
+        if (iAltWeaponIndex)
+        {
+            if (CG_WeaponSelectable(iAltWeaponIndex))
+                BG_SelectWeaponIndex(iAltWeaponIndex, currCl);
+        }
+        else
+        {
+            const char* v3 = SEH_LocalizeTextMessage(
+                "CGAME_THIS_WEAPON_HAS_NO_ALTERNATE", "game message");
+            CG_GameMessage(v3, 0);
+        }
+    }
+}
+
+// ea: 0x00692C70
+bool TestSpecialWeapon(Entity* player, int weapon)
+{
+    weaponParms wp;
+    wp.pWeapInfo = BG_GetInfoForWeapon(weapon);
+    CalcMuzzlePoints(player, &wp);
+    int type = *(int*)((char*)wp.pWeapInfo + 0xAC);
+    if (type == 4 /* WEAPTYPE_ITEM */)
+    {
+        if (*(int*)((char*)wp.pWeapInfo + 0xB0) == 0xB /* WEAPCLASS_REVIVE */
+            && !Weapon_Revive_Test(player, &wp, nullptr))
+        {
+            if (*(void**)((char*)gpBrocAPI + 0xCC4) != nullptr)
+            {
+                (*(void(**)(int))((char*)gpBrocAPI + 0xCC4))(
+                    *(int*)((char*)player + 0x234));
+            }
+            return false;
+        }
+    }
+    else if (type == 7 /* WEAPTYPE_NUM */
+             && !Weapon_Mine_Test(player, &wp, nullptr, nullptr))
+    {
+        if (*(void**)((char*)gpBrocAPI + 0xCC0) != nullptr)
+        {
+            (*(void(**)(int))((char*)gpBrocAPI + 0xCC0))(
+                *(int*)((char*)player + 0x234));
+            return false;
+        }
+        return false;
+    }
+    return true;
+}
+
+// ea: 0x00692FF0
+int CG_SelectFirstWeaponInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
+                                             int localIdx)
+{
+    int v3 = bNext != 0 ? 1 : 9;
+    int iStep = bNext != 0 ? 1 : -1;
+    while (1)
+    {
+        if (localIdx >= 16)
+            CG_ASSERT("idx<16", "c:\\cod\\code\\game\\EntityManager.h", 19);
+        if (((Entity*)EntityManager_mPlayers[localIdx])->client->ps.weaponslots
+                    [v3]
+                != 0
+            && (v3 == 1 || v3 == 2))
+        {
+            if (localIdx >= 16)
+                CG_ASSERT("idx<16", "c:\\cod\\code\\game\\EntityManager.h",
+                          19);
+            if (Entity_IsLocalPlayer(
+                    (const Entity*)EntityManager_mPlayers[localIdx]))
+            {
+                if (bIgnoreEmpty == 0)
+                    break;
+                Client* client =
+                    EntityManager_GetPlayer(EntityManager_sInst, localIdx)
+                        ->client;
+                Entity* Player =
+                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                if (BG_WeaponAmmo(&Player->client->ps,
+                                  client->ps.weaponslots[v3])
+                    != 0)
+                    break;
+            }
+        }
+        v3 += iStep;
+        if (v3 == 0 || v3 == 10)
+            return 0;
+    }
+    Entity* v9 = EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+    BG_SelectWeaponIndex(v9->client->ps.weaponslots[v3], localIdx);
+    return 1;
+}
+
+// ea: 0x00693180
+int CG_SelectFirstWeaponInSlot(int bNext, int bIgnoreEmpty)
+{
+    return CG_SelectFirstWeaponInSlotWithLocalIndex(bNext, bIgnoreEmpty,
+                                                    currCl);
+}
+
+// ea: 0x006931A0
+int CG_SelectFirstWeaponNotInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
+                                                int localIdx)
+{
+    int v3 = bNext ? 1 : -1;
+    int NumWeapons = bNext ? 1 : BG_GetNumWeapons();
+    while (NumWeapons < BG_GetNumWeapons())
+    {
+        weaponInfoCam* InfoForWeapon =
+            (weaponInfoCam*)BG_GetInfoForWeapon(NumWeapons);
+        if (InfoForWeapon)
+        {
+            int slot = InfoForWeapon->slot;
+            if (slot == 7 /* WEAPSLOT_BINOCS */)
+                NumWeapons += v3;
+            else if (slot == 4 /* WEAPSLOT_GRENADE */)
+                NumWeapons += v3;
+            else
+            {
+                Entity* Player =
+                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                Entity* v8 =
+                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                Entity* v9 =
+                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                Entity* v10 =
+                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                if (!Com_BitCheck(Player->client->ps.weapons, NumWeapons)
+                    || BG_IsPlayerWeaponInSlot(&v8->client->ps, NumWeapons,
+                                               1)
+                    || BG_GetStackSlotForWeapon(&v9->client->ps, NumWeapons,
+                                                0)
+                    || (bIgnoreEmpty
+                        && !BG_WeaponAmmo(&v10->client->ps, NumWeapons)))
+                {
+                    NumWeapons += v3;
+                    if (!NumWeapons || NumWeapons == BG_GetNumWeapons())
+                        return 0;
+                }
+                else
+                {
+                    Entity* v11 =
+                        EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                    if (Entity_IsLocalPlayer(v11))
+                    {
+                        BG_SelectWeaponIndex(NumWeapons, localIdx);
+                        return 1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            CG_ASSERT("0", "c:\\cod\\code\\game\\cg_weapons.cpp", 3912);
+            NumWeapons += v3;
+        }
+    }
+    return 0;
+}
+
+// ea: 0x00693320
+int CG_SelectFirstWeaponNotInSlot(int bNext, int bIgnoreEmpty)
+{
+    return CG_SelectFirstWeaponNotInSlotWithLocalIndex(bNext, bIgnoreEmpty,
+                                                       currCl);
+}
+
+// ea: 0x00693340
+void CG_CycleWeap(int bNext, int bIgnoreEmpty)
+{
+    if (dword_F62960[1580 * currCl] != 0
+        && (0x80000
+            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                  ->client->ps.pm_flags)
+               != 0)
+    {
+        Entity* Player =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        if (Entity_IsLocalPlayer(Player))
+        {
+            int v3;
+            int iStep;
+            int iWeaponLooped;
+            if (bNext != 0)
+            {
+                v3 = 1;
+                iStep = 1;
+                iWeaponLooped = 1;
+            }
+            else
+            {
+                iStep = -1;
+                v3 = -1;
+                iWeaponLooped = BG_GetNumWeapons();
+            }
+            Entity* v4 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            int StackSlotForWeapon =
+                BG_IsPlayerWeaponInSlot(&v4->client->ps,
+                                        cg_aWeaponSelect[currCl], 1);
+            if (StackSlotForWeapon == 0 /* WEAPSLOT_NONE */)
+            {
+                Entity* v6 =
+                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                StackSlotForWeapon = BG_GetStackSlotForWeapon(
+                    &v6->client->ps, cg_aWeaponSelect[currCl],
+                    0 /* WEAPSLOT_NONE */);
+            }
+            Entity* v7 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            PM_KillQueuedReloadSound(v7->client->ps);
+            if (StackSlotForWeapon != 0)
+            {
+                for (int i = (StackSlotForWeapon + v3 + 8) % 9 + 1;
+                     i != StackSlotForWeapon; i = (i + v3 + 8) % 9 + 1)
+                {
+                    if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                                ->client->ps.weaponslots[i]
+                            != 0
+                        && (i == 1 || i == 2))
+                    {
+                        Client* client =
+                            EntityManager_GetPlayer(EntityManager_sInst,
+                                                    currCl)
+                                ->client;
+                        Entity* v10 = EntityManager_GetPlayer(
+                            EntityManager_sInst, currCl);
+                        if (bIgnoreEmpty == 0
+                            || BG_WeaponAmmo(&v10->client->ps,
+                                             client->ps.weaponslots[i])
+                                   != 0)
+                        {
+                            PlayerState* ps =
+                                &GetPlayerState(currCl);
+                            BG_SelectWeaponIndex(
+                                ps->weaponslots[i], currCl);
+                            return;
+                        }
+                        v3 = iStep;
+                    }
+                }
+                if (CG_SelectFirstWeaponNotInSlot(bNext, bIgnoreEmpty) == 0)
+                {
+                    if (StackSlotForWeapon != 1 /* WEAPSLOT_PRIMARY */
+                        && StackSlotForWeapon != 2 /* WEAPSLOT_PRIMARYB */)
+                        CG_SelectFirstWeaponInSlot(bNext, 0);
+                done:
+                    Entity* v18 =
+                        EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                    if (!Com_BitCheck(v18->client->ps.weapons,
+                                      cg_aWeaponSelect[currCl]))
+                        BG_SelectWeaponIndex(0, currCl);
+                }
+            }
+            else
+            {
+                int v12 = cg_aWeaponSelect[currCl];
+                while (1)
+                {
+                    v12 = (v12 + v3 - 1 + BG_GetNumWeapons())
+                              % BG_GetNumWeapons()
+                          + 1;
+                    if (v12 == iWeaponLooped)
+                        break;
+                    Entity* v13 =
+                        EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                    if (Com_BitCheck(v13->client->ps.weapons, v12) != 0
+                        && !BG_IsPlayerWeaponAnAlt(v12,
+                                                   cg_aWeaponSelect[currCl]))
+                    {
+                        Entity* v14 =
+                            EntityManager_GetPlayer(EntityManager_sInst,
+                                                    currCl);
+                        if (BG_IsPlayerWeaponInSlot(&v14->client->ps, v12, 1)
+                            == 0 /* WEAPSLOT_NONE */)
+                        {
+                            Entity* v15 =
+                                EntityManager_GetPlayer(EntityManager_sInst,
+                                                        currCl);
+                            if (BG_GetStackSlotForWeapon(&v15->client->ps,
+                                                         v12, 0)
+                                == 0)
+                            {
+                                Entity* v16 = EntityManager_GetPlayer(
+                                    EntityManager_sInst, currCl);
+                                if (bIgnoreEmpty == 0
+                                    || BG_WeaponAmmo(&v16->client->ps, v12)
+                                           != 0)
+                                {
+                                    int slot =
+                                        ((weaponInfoCam*)BG_GetInfoForWeapon(
+                                             v12))
+                                            ->slot;
+                                    if (slot == 1 /* WEAPSLOT_PRIMARY */
+                                        || slot == 2 /* WEAPSLOT_PRIMARYB */)
+                                    {
+                                        BG_SelectWeaponIndex(v12, currCl);
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (CG_SelectFirstWeaponInSlotWithLocalIndex(
+                        bNext, bIgnoreEmpty, currCl)
+                    == 0)
+                {
+                    if (CG_SelectFirstWeaponNotInSlotWithLocalIndex(
+                            bNext, bIgnoreEmpty, currCl)
+                        == 0)
+                        CG_SelectFirstWeaponInSlotWithLocalIndex(bNext, 0,
+                                                                 currCl);
+                    goto done;
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0069A3B0
+void CG_NextWeapon_f()
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (Player != nullptr && Player->client != nullptr
+        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.pm_flags
+            & 0x4000)
+               == 0
+        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.eFlags
+            & 0x6000)
+               == 0)
+    {
+        Client* client =
+            EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        Entity* v2 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        if ((0x100000
+             & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                   ->client->ps.eFlags)
+                == 0
+            || BG_AllowPlayerWeaponAtVehiclePos(v2->client->ps.vehType,
+                                                client->ps.vehPos))
+        {
+            Entity* v3 =
+                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            weaponInfoCam* InfoForWeapon =
+                (weaponInfoCam*)BG_GetInfoForWeapon(v3->client->ps.weapon);
+            weaponInfoCam* v5 = InfoForWeapon;
+            if ((InfoForWeapon == nullptr
+                 || ((InfoForWeapon->weapClass != 10 /* WEAPCLASS_LMG */
+                      || (GetPlayerState(currCl).pm_flags & 0x20) == 0)
+                     && v5->weapClass != 16))
+                && (0x80000
+                    & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                          ->client->ps.pm_flags)
+                       != 0
+                && cgGlobal.time - cg_aWeaponSelectTime[currCl]
+                       >= cg_weaponCycleDelay.integer)
+            {
+                cg_aWeaponSelectTime[currCl] = cgGlobal.time;
+                CG_CycleWeap(1, 0);
+            }
+        }
+    }
+}
+
+// ea: 0x0069A540
+void CG_PrevWeapon_f()
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    if (Player != nullptr && Player->client != nullptr
+        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                ->client->ps.pm_flags
+            & 0x4000)
+               == 0
+        && (0x106000
+            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                  ->client->ps.eFlags)
+               == 0)
+    {
+        Entity* v1 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        weaponInfoCam* InfoForWeapon =
+            (weaponInfoCam*)BG_GetInfoForWeapon(v1->client->ps.weapon);
+        weaponInfoCam* v3 = InfoForWeapon;
+        if ((InfoForWeapon == nullptr
+             || ((InfoForWeapon->weapClass != 10 /* WEAPCLASS_LMG */
+                  || (GetPlayerState(currCl).pm_flags & 0x20) == 0)
+                 && v3->weapClass != 16))
+            && (0x80000
+                & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                      ->client->ps.pm_flags)
+                   != 0
+            && cgGlobal.time - cg_aWeaponSelectTime[currCl]
+                   >= cg_weaponCycleDelay.integer)
+        {
+            cg_aWeaponSelectTime[currCl] = cgGlobal.time;
+            CG_CycleWeap(0, 0);
+        }
+    }
+}
