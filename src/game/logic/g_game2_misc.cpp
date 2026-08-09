@@ -1110,6 +1110,8 @@ public:
     SplinePathData* GetSplinePathData(unsigned int name, int* pakId);  // ea: 0x4FF5D0
     SplineGroup* GetSplinePathGroup(unsigned int name, int* pakId);    // ea: 0x4FF660
     void GetSpline(unsigned int name, SplinePath* splinePath);         // ea: 0x4FF6F0
+    void GetSpline(const char* name, SplinePath* splinePath);          // ea: 0x5045C0
+    SplineMgr();                                                       // ea: 0x504580
 };
 
 extern bool AeAssert_Error(const char* fmt, ...);
@@ -1520,6 +1522,32 @@ void SplineMgr::GetSpline(unsigned int name, SplinePath* splinePath)
 }
 
 // ============================================================================
+// SplineMgr::GetSpline(const char*) - ea: 0x5045C0
+// ============================================================================
+void SplineMgr::GetSpline(const char* name, SplinePath* splinePath)
+{
+    unsigned int v4 = HashString::CalcHash(name);
+    GetSpline(v4, splinePath);
+}
+
+// ============================================================================
+// SplineMgr::SplineMgr - ea: 0x504580
+// ============================================================================
+extern float* (*GetSplineGroup)(unsigned int);  // ?GetSplineGroup (game2.o)
+#include "aeps/apsCommon.h"
+
+SplineMgr::SplineMgr()
+{
+    m_assetBase[0] = 0;  // AssetBankSet base
+    for (int i = 0; i < 32; ++i)
+    {
+        mList[i].pakId = -1;
+        mList[i].file = nullptr;
+    }
+    apsCommon::SetSplineCallback(GetSplineGroup);
+}
+
+// ============================================================================
 // ScriptEventHandler::AddEvent(HashString, const char*)
 // ea: 0x4FF780
 // ============================================================================
@@ -1679,6 +1707,12 @@ void SmokeGrenadeMgr::AddSmokeGrenade(const SmokeGrenadeInfo* smokeGrenInfo)
             && AeAssert::Warning("Smoke Grenade Info with null effect"))
             __debugbreak();
     }
+}
+
+// ea: 0x504C50
+void SmokeGrenadeMgr::ReInitialize()
+{
+    mSmokeGrenadeInfoList.mSize = 0;
 }
 
 // ============================================================================

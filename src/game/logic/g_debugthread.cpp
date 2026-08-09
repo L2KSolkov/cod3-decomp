@@ -396,6 +396,7 @@ struct TaskSysImpl2 {
     TaskHandlerImpl* mTaskHandlers[32];  // +0x00
     int m_size;                          // +0x80
     DList mPostQueue;                    // +0x84
+    void* mHandleDb[8];                  // +0x98 (HandleDb<Task,32,...>)
     static TaskSysImpl2* sInst;          // ?sInst@TaskSys@@0V1@A
 };
 
@@ -403,6 +404,7 @@ extern TaskSysImpl2* TaskSysImpl2_sInst;
 extern void ae_sized_array_push_back_handler(TaskSysImpl2* self,
                                              TaskHandlerImpl* const* elt);
 extern void* mem_heap_malloc_sz(unsigned int size);
+extern void HandleDb_ReleaseTaskHandle(void* self, Handle h);
 
 // ea: 0x4FFB20
 TaskHandlerImpl::TaskHandlerImpl(unsigned int task_id, unsigned int flags)
@@ -443,6 +445,16 @@ void TaskHandlerImpl::QuickDeactivation(
     tail->m_next = &v3->node;
     *mQuickDeactivationList.m_tail = &v3->node;
     ++mQuickDeactivationList.m_size;
+}
+
+// ============================================================================
+// TaskSys::ReleaseTask - ea: 0x504970
+// ============================================================================
+void TaskSys_ReleaseTask(Task* t)
+{
+    if (t->mTaskHandle.mVal != 0)
+        HandleDb_ReleaseTaskHandle(&TaskSysImpl2_sInst->mHandleDb,
+                                   t->mTaskHandle);
 }
 
 // ============================================================================
