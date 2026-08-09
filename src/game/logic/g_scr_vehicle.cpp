@@ -215,7 +215,7 @@ int VEH_GetVehicleInfo(const char* name)
     return v1;
 }
 
-// ea: 0x00446DBF0
+// ea: 0x0046DBF0
 void G_SetupScrVehicles(void)
 {
     int v0 = 0;
@@ -291,6 +291,141 @@ int scr_vehicle_t::GetMantleHintStringIndex()
             __debugbreak();
     }
     return s_vehicleInfos[infoIdx]->mMantleHintStringIndex;
+}
+
+// ea: 0x00446F350
+bool scr_vehicle_t::IsOppositeTeamInVehicle(int team)
+{
+    for (int v2 = 0; v2 < 11; ++v2)
+    {
+        Entity* mObject = HandleDbToEnt(seats[v2].occupant);
+        if (mObject != nullptr)
+        {
+            sentient_s* sentient = mObject->sentient;
+            if (sentient != nullptr && sentient->eTeam != team)
+                return true;
+        }
+    }
+    return false;
+}
+
+// ea: 0x0044F6A0
+void scr_vehicle_t::Mantled(Entity* player)
+{
+    if (mMantleTime != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10101;
+        AeAssert::gCurrentExpr = "mMantleTime == 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Vehicle has already been mantled"))
+            __debugbreak();
+    }
+    mMantleTime = level.time + 1800;
+    mMantleEntity.mHandle.mVal = player->mHandle.mHandle.mVal;
+}
+
+// ea: 0x00445E1D0
+int G_InitScrVehicles(void)
+{
+    int result = 0;
+    if (level.MaxVehicles != 0)
+    {
+        int v0 = 0;
+        int v1 = 0;
+        do
+        {
+            int v2 = v1;
+            G_VehInitPathPos(&s_vehicles[v2].pathPos);
+            ++v0;
+            s_vehicles[v2].mEntity.mHandle.mVal = 0;
+            result = level.MaxVehicles;
+            v1 = v0;
+        } while (v0 < level.MaxVehicles);
+    }
+    level.vehicles = s_vehicles;
+    return result;
+}
+
+// ea: 0x0044DBD0
+void VEH_StopWheelEffects(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* v2 = s_vehicleInfos[scr_vehicle->infoIdx];
+    int count = 2 * (v2->type != 1) + 4;
+    if (count != -4)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            if (scr_vehicle->mWheel_ParticleEffectHandle[i].mVal != 0)
+            {
+                EffectEventStopEmitting(scr_vehicle->mWheel_ParticleEffectHandle[i].mVal);
+                scr_vehicle->mWheel_ParticleEffectHandle[i].mVal = 0;
+            }
+        }
+    }
+    if (scr_vehicle->mRumbleEffectHandle.mVal != 0)
+    {
+        EffectEventStopEmitting(scr_vehicle->mRumbleEffectHandle.mVal);
+        scr_vehicle->mRumbleEffectHandle.mVal = 0;
+    }
+}
+
+// ea: 0x0046E040
+Entity* G_IsVehicleUnusable(Entity* player)
+{
+    Client* client = player->client;
+    if (client == nullptr)
+        return nullptr;
+    if ((0x100000 & client->ps.eFlags) == 0)
+        return nullptr;
+    Entity* v4 = HandleDbToEnt(player->r.mOwner);
+    if (v4 == nullptr)
+        return nullptr;
+    return (0x200000 & v4->r.contents) != 0 ? v4 : nullptr;
+}
+
+// ea: 0x0046E200
+bool G_IsPlayerVehicleGunner(Entity* player)
+{
+    Client* client = player->client;
+    if (client == nullptr)
+        return false;
+    int eFlags = client->ps.eFlags;
+    if ((0x100000 & eFlags) == 0 || (0x400000 & eFlags) != 0)
+        return false;
+    Entity* mOwner = HandleDbToEnt(player->r.mOwner);
+    if (mOwner != nullptr && mOwner->scr_vehicle != nullptr)
+        return client->ps.vehPos == 1;
+    return false;
+}
+
+// ea: 0x0046F9F0
+int G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition)
+{
+    scr_vehicle_t* scr_vehicle = vehicle->scr_vehicle;
+    if (s_vehicleInfos[scr_vehicle->infoIdx]->type != 2)
+        return sEntryPointSeatAssociation[entryPosition];
+    Entity* mObject = HandleDbToEnt(scr_vehicle->seats[0].occupant);
+    return mObject != nullptr;
+}
+
+// ea: 0x00470490
+vehicle_info_t* VEH_GetPlayerVehicleInfo(void)
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player == nullptr)
+        return nullptr;
+    Entity* mObject = HandleDbToEnt(Player->r.mOwner);
+    if (mObject == nullptr)
+        return nullptr;
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    if (scr_vehicle == nullptr)
+        return nullptr;
+    vehicle_info_t* result = s_vehicleInfos[scr_vehicle->infoIdx];
+    if (result == nullptr)
+        return nullptr;
+    return result;
 }
 
 // ea: 0x004639D0

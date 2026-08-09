@@ -154,7 +154,7 @@ void Cmd_KillSound(void)
     SoundDevice::sInst->StopAllSounds();
 }
 
-// ea: 0x0044AD90
+// ea: 0x0044AD60
 void Cmd_BuilderTest_f(void)
 {
     ShaderCommon::ToggleShader(defaultFileName);
@@ -790,4 +790,35 @@ void g_LinkEntity(Entity* ent)
             __debugbreak();
     }
     SV_LinkEntity(ent);
+}
+
+// ea: 0x00456010
+void Cmd_Where_f(Entity* ent)
+{
+    if (!GamePause::IsGamePaused(currCl))
+    {
+        Client* client = ent->client;
+        if (client != nullptr)
+        {
+            unsigned int mVal = ent->mHandle.mHandle.mVal;
+            char* v3 = vtos(&client->ps.origin);
+            SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), va("print \"%s\"", v3));
+            strcpy(cg_drawPosition->string, vtos(&ent->client->ps.origin));
+        }
+    }
+}
+
+// ea: 0x0044AEA0
+int Cmd_PFXStats_f(void)
+{
+    int result = Cmd_Argc();
+    if (result == 2)
+    {
+        char tmpstr[64];
+        Cmd_ArgvBuffer(1, tmpstr, 64);
+        g_renderPFXStats = strcmp(tmpstr, "1") == 0;
+        return g_renderPFXStats;
+    }
+    g_renderPFXStats = 0;
+    return result;
 }

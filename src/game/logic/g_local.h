@@ -62,14 +62,57 @@ struct vehicleAnimMap_t {
 };
 static_assert(sizeof(vehicleAnimMap_t) == 0x1C, "vehicleAnimMap_t size mismatch");
 
+struct vehicle_path_node_t {
+    Broc::string mName;    // +0x00
+    Broc::string mTarget;  // +0x04
+    uint8_t _pad8[0x40 - 0x8];  // remaining 56 bytes opaque
+};
+static_assert(sizeof(vehicle_path_node_t) == 0x40, "vehicle_path_node_t size mismatch");
+
+struct vehicle_pathpos_t {
+    int16_t nodeIdx;    // +0x00
+    int16_t endOfPath;  // +0x02
+    float   frac;       // +0x04
+    float   speed;      // +0x08
+    float   lookAhead;  // +0x0C
+    float   slide;      // +0x10
+    float   origin[3];  // +0x14
+    float   angles[3];  // +0x20
+    float   lookPos[3]; // +0x2C
+    vehicle_path_node_t switchNode[2];  // +0x38
+};
+static_assert(sizeof(vehicle_pathpos_t) == 0xB8, "vehicle_pathpos_t size mismatch");
+
+struct vehicleSeat_t {
+    int      flags;      // +0x00
+    DbLinkedHandle<EntityHandleDb, Entity> occupant;  // +0x04
+    int      boneIndex;  // +0x08
+    int      weapon;     // +0x0C
+    float    heat;       // +0x10
+    Handle   overheatEffect;  // +0x14
+    uint8_t  gunMounted; // +0x18
+    uint8_t  overheating;// +0x19
+    uint8_t  firing;     // +0x1A
+    uint8_t  _pad1B;     // +0x1B
+};
+static_assert(sizeof(vehicleSeat_t) == 0x1C, "vehicleSeat_t size mismatch");
+
 struct scr_vehicle_t {
-    uint8_t _pad0[0x170];
+    vehicle_pathpos_t pathPos;   // +0x00
+    uint8_t _padB8[0x170 - 0xB8];
     DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x170
     DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner;  // +0x174
     int16_t infoIdx;      // +0x178
-    uint8_t _pad17A[0x318 - 0x17A];
+    uint8_t _pad17A[0x1B4 - 0x17A];
+    int     mMantleTime;  // +0x1B4
+    DbLinkedHandle<EntityHandleDb, Entity> mMantleEntity;  // +0x1B8
+    uint8_t _pad1BC[0x1E0 - 0x1BC];
+    vehicleSeat_t seats[11];  // +0x1E0 (0x134 bytes)
+    uint8_t _pad314[0x318 - 0x314];
     int     barrelBlocked;  // +0x318
-    uint8_t _pad31C[0x3C8 - 0x31C];
+    uint8_t _pad31C[0x3AC - 0x31C];
+    Handle  mWheel_ParticleEffectHandle[6];  // +0x3AC (0x18 bytes)
+    Handle  mRumbleEffectHandle;  // +0x3C4
     int     playersAttached;  // +0x3C8
     uint8_t _pad3CC[0x460 - 0x3CC];
     struct VehicleBoneIndex {
@@ -107,6 +150,8 @@ struct scr_vehicle_t {
     bool  IsPhysicsPaused();                  // ?IsPhysicsPaused@scr_vehicle_t@@QAE_NXZ
     bool  IsPhysicsStable();                  // ?IsPhysicsStable@scr_vehicle_t@@QAE_NXZ
     int   GetMantleHintStringIndex();         // ?GetMantleHintStringIndex@scr_vehicle_t@@QAEHXZ
+    bool  IsOppositeTeamInVehicle(int team);  // ?IsOppositeTeamInVehicle@scr_vehicle_t@@QAE_NH@Z
+    void  Mantled(Entity* player);            // ?Mantled@scr_vehicle_t@@QAEXPAVEntity@@@Z
     void  CollisionDamage(Entity* ent, const math::Position3* pos,
                           const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
@@ -299,24 +344,6 @@ struct vehicle_node_t {
     int          nextIdx;           // +0x3C
 };
 static_assert(sizeof(vehicle_node_t) == 0x40, "vehicle_node_t size mismatch");
-
-struct vehicle_path_node_t {
-    Broc::string mName;    // +0x00
-    Broc::string mTarget;  // +0x04
-};
-
-struct vehicle_pathpos_t {
-    int16_t nodeIdx;    // +0x00
-    int16_t endOfPath;  // +0x02
-    float   frac;       // +0x04
-    float   speed;      // +0x08
-    float   lookAhead;  // +0x0C
-    float   slide;      // +0x10
-    float   origin[3];  // +0x14
-    float   angles[3];  // +0x20
-    float   lookPos[3]; // +0x2C
-    vehicle_path_node_t switchNode[2];  // +0x38
-};
 
 // debug render (g.o) - debug_sphere batch
 struct debug_sphere {
@@ -1371,6 +1398,7 @@ int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelM
 void  j_nullsub_120(Entity* pGrenade);
 Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);
 void  EffectEventKill(Handle effect);
+int   EffectEventStopEmitting(int effectId);
 void  Com_Error(int code, const char* fmt, ...);
 void  Com_Printf(const char* fmt, ...);
 enum {
@@ -1449,6 +1477,19 @@ extern cdl_proftimer cdl_proftimer_cvar;  // game.o 0x0133E0C8
 Entity* VEH_GetEntity(unsigned int entityHandleVal);  // g.o 0x...
 void    FastSinCos(float radians, float* psin, float* pcos);  // core.o
 int     VEH_GetVehicleInfo(const char* name);  // g.o 0x44D480 (returns index, -1 if not found)
+void    G_VehInitPathPos(vehicle_pathpos_t* vpp);  // g.o 0x... (g_scr_vehicle.cpp)
+Entity* G_IsVehicleUnusable(Entity* player);        // g.o 0x46E040
+bool    G_IsPlayerVehicleGunner(Entity* player);    // g.o 0x46E200
+void    Cmd_Where_f(Entity* ent);                   // g.o 0x456010
+int     Cmd_PFXStats_f(void);                       // g.o 0x44AEA0
+int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o 0x46F9F0
+vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
+int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
+void    VEH_StopWheelEffects(Entity* ent);          // g.o 0x44DBD0
+extern int g_renderPFXStats;                        // game2.o
+extern int sEntryPointSeatAssociation[4];           // g.o
+extern cvar_t* cg_drawPosition;                     // cg.o
+extern char* va(const char* fmt, ...);              // core.o
 void  BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
                                           PlayerState* ps);  // game.o 0x9F3A40
 void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
