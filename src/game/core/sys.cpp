@@ -48,7 +48,6 @@ extern void PakManager_MemFree(void* self, int id, void* ptr,
                                bool bUseActorHeap);
 extern int MEM_HEAP_COMBINE;
 extern int MEM_HEAP_MAIN;
-extern int PAK_ID_INVALID;
 extern int g_bDObjInited;
 extern void* sSpinnerFrames[8];
 extern void* dword_F00EB0;

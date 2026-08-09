@@ -24,13 +24,16 @@
 // trRefEntity - render entity (0x104 bytes) - verified against IDA (subset)
 // ============================================================================
 struct trRefEntity {
-    uint8_t _pad[0xFC];   // +0x00
-    uint8_t iflIndex;     // +0xFC
-    uint8_t _padFD[3];    // +0xFD
-    int32_t mSnapshotId;  // +0x100
+    uint8_t _pad[0xF4];      // +0x00
+    int16_t mWaterHeightOffset;  // +0xF4
+    uint8_t _padF6[0xFC - 0xF6];
+    uint8_t iflIndex;        // +0xFC
+    uint8_t _padFD[3];       // +0xFD
+    int32_t mSnapshotId;     // +0x100
 };
 static_assert(sizeof(trRefEntity) == 0x104, "trRefEntity size mismatch");
 static_assert(offsetof(trRefEntity, iflIndex) == 0xFC, "trRefEntity::iflIndex offset mismatch");
+static_assert(offsetof(trRefEntity, mWaterHeightOffset) == 0xF4, "trRefEntity::mWaterHeightOffset offset mismatch");
 
 // ============================================================================
 // AnimTree - animation set (0x38 bytes) - verified against IDA (subset)
@@ -160,6 +163,76 @@ extern const float colorGreen[4];      // 0xD0156C {0,1,0,1}
 extern char line[256];                 // 0xEF3448 (ConcatArgs scratch)
 extern unsigned int g_HitLocConstNames[19];  // 0xEAEAD0 (BSS, filled by ParseHitLocDmgTableEntry)
 extern const char* entityTypeNames[18];      // 0xDD7480
+extern const char* gSpawnStrings[53];         // 0xDD7260
+extern HashString gSpawnHashes[53];           // 0xED9D30 (BSS)
+extern const char* g_key;                     // 0xEA6418
+extern const char* g_value;                   // 0xEA62F0
+extern HashString classname_hash;             // 0xEE6270
+extern bool dont_delete;                      // 0xEB111C
+extern bool gCareAboutCheckpoint;             // 0xDD74C8
+extern math::Position3 playerMaxs;            // 0xEC9640
+extern math::Position3 playerMins;            // 0xEC9620
+extern vmCvar_t g_bounds_width;               // 0xEA6CA8
+extern vmCvar_t g_bounds_height_standing;     // 0xEA7368
+
+template <typename T>
+class cFreeList {
+public:
+    int mFree;   // +0x00
+    int mUsed;   // +0x04
+    T*  mpFree;  // +0x08
+};
+extern cFreeList<Entity> gEntFreeList;        // 0xF50D04
+
+template <typename T, unsigned int CAP>
+struct ae_sized_array {
+    T   m_elements[CAP];  // +0x00
+    int m_size;           // +CAP*sizeof(T)
+};
+
+template <typename K, typename V>
+struct InplaceTreeElement {
+    K mKey;  // +0x00
+    V mVal;  // +0x04
+};
+
+template <typename T>
+void EntityHandleDb_Find(unsigned int fieldOfs, T match, ae_sized_array<Entity*, 4096>& results);
+
+// ============================================================================
+// str_const_t - shared script constant strings (0x2B4) - verified against IDA
+// ============================================================================
+struct str_const_t {
+    uint8_t    _pad[0x148];           // +0x000
+    Broc::string sound_blend;         // +0x148
+    uint8_t    _pad14C[0x1FC - 0x14C];
+    Broc::string tempEntity;          // +0x1FC
+    uint8_t    _pad200[0x2B4 - 0x200];
+};
+static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
+extern str_const_t str_const;         // 0xECBD30
+
+// ============================================================================
+// Spawn field parsing (ent_field_t + fieldtype_t) - verified against IDA
+// ============================================================================
+enum fieldtype_t {
+    F_INT = 0,
+    F_SHORT = 1,
+    F_BYTE = 2,
+    F_FLOAT = 3,
+    F_STRING = 4,
+    F_VECTOR = 5,
+    F_MODEL = 0xC,
+    F_BROCSTR = 0xE,
+    F_NONE = -1
+};
+struct ent_field_t {
+    const char* name;      // +0x00
+    int         ofs;       // +0x04
+    fieldtype_t type;      // +0x08
+    void (*callback)(Entity*, int);  // +0x0C
+};
+static_assert(sizeof(ent_field_t) == 0x10, "ent_field_t size mismatch");
 
 // hitLocation_t is Broc's EHitLocation (HITLOC_NONE == 0, HITLOC_NUM == 0x13)
 typedef EHitLocation hitLocation_t;
@@ -238,6 +311,62 @@ void      ValidatePakId(TPakId pakId);
 XAnimTree* G_GetActorAnimTree(actor_s* actor);
 XAnimTree* G_GetActorCorpseAnimTree(Entity* ent);
 void       G_EntUnlink(Entity* ent);
+
+// ============================================================================
+// g_active.cpp / g_spawn.cpp helpers (defined within g.o)
+// ============================================================================
+void G_SetOrigin(Entity* ent, const float* origin);
+void G_SetOrigin(Entity* ent, const math::Position3* origin);
+void G_SetAngle(Entity* ent, const float* angle);
+void G_SetAngle(Entity* ent, const math::Position3* angle);
+void g_LinkEntity(Entity* ent);
+void g_UnlinkEntity(Entity* ent);
+void G_FreeEntity(Entity* e, int msec);
+Entity* G_Spawn(TPakId pakId);
+void UpdateEntityHash(Entity* ent);
+
+// g_utils.cpp (defined within g.o)
+void G_Printf(const char* fmt, ...);
+void G_DPrintf(const char* fmt, ...);
+void G_Error(const char* fmt, ...);
+void G_Error_Localized(const char* fmt, ...);
+char* vtos(const float* v);
+char* vtos(const math::Position3* v);
+void G_CleanupAnimTrees();
+
+// sv.o
+void SV_SetConfigstring(int index, const char* val);
+
+// ============================================================================
+// Cross-object externs
+// ============================================================================
+TPakId CurPakId();
+bool ShouldConnectPaths();
+void SV_UnlinkEntity(Entity* gEnt);
+void mem_heap_free(void* ptr);
+void AnglesToForward(const float* angles, float* forward);
+int  Q_stricmp(const char* s1, const char* s2);
+void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int eTeam);
+float VectorDistanceSquared(const float* p1, const float* p2);
+
+namespace cdOceanGlobals {
+float GetHeight(int bankID, float x, float y);  // ea: 0x7C0B70
+}
+
+namespace BrocSys {
+const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
+void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
+}
+
+// g.o data: think dispatch table (function pointers per fn_think_e)
+extern void (*thinktable[])(Entity* ent, int msec);
+
+// fn_think_e values used by g.o (verified via disasm)
+enum {
+    THINK__NULL = 0,
+    THINK__turret_think_init = 0x11,
+    THINK_MAX = 0x1E,
+};
 
 // g.o data: DObj controller dispatch table @ 0xDD57C0 (anim.o provides funcs)
 extern void (*controllertable[4])(Entity* ent, int* partBits);

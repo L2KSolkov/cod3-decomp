@@ -15,9 +15,6 @@
 // ============================================================================
 // TPakId — pak archive id enum
 // ============================================================================
-enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
-#define PAK_ID_INVALID ((TPakId)-1)
-
 // ============================================================================
 // DCGSet â€” collision model (opaque; only fields SV_SetBrushModel touches)
 // The release decompile views the entity as a DCGSet*; fields below mirror the
@@ -246,6 +243,7 @@ struct PakManager {
     static PakManager* sInst;            // ?sInst@PakManager@@2PAV1@A
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
+    bool IsUnloading(TPakId id) const;   // ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z
 };
 static_assert(sizeof(PakManager) == 4, "PakManager size mismatch (opaque)");
 
@@ -314,6 +312,7 @@ struct EntityManager {
     void SwapPlayers(int eA, int eB);       // ?SwapPlayers@EntityManager@@QAEXHH@Z
     void CreatePlayers();                   // ?CreatePlayers@EntityManager@@QAEXXZ
     void CreateWorld();                     // ?CreateWorld@EntityManager@@QAEXXZ
+    void DeleteAllEntities();               // ?DeleteAllEntities@EntityManager@@QAEXXZ
 };
 static_assert(offsetof(EntityManager, mPlayers) == 0x04, "EntityManager::mPlayers offset mismatch");
 static_assert(offsetof(EntityManager, mWorld) == 0x44, "EntityManager::mWorld offset mismatch");
@@ -356,8 +355,19 @@ struct PathNodeMgr {
     uint8_t _pad[4];
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
     void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ
+    void ValidateAllNodes();             // ?ValidateAllNodes@PathNodeMgr@@QAEXXZ
 };
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
+
+// ============================================================================
+// SceneManager â€” scene/static-model manager (opaque)
+// ============================================================================
+struct SceneManager {
+    uint8_t _pad[4];
+    static SceneManager* sInst;          // ?sInst@SceneManager@@2PAV1@A
+    InplaceVector<unsigned char>* mPersistantStorage;
+    void ResetAllStaticModels();         // ?ResetAllStaticModels@SceneManager@@QAEXXZ
+};
 
 struct FEMenuSystem {
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z

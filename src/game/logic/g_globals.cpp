@@ -23,6 +23,77 @@ const char* entityTypeNames[18] = {
     "ET_VEHICLE_CORPSE", "ET_VEHICLE_COLLMAP", "ET_PROP_COLLMAP",
 };
 
+// .data @ 0xDD7260 (verified against XBE bytes)
+const char* gSpawnStrings[53] = {
+    "sound_blend",
+    "script_brushmodel",
+    "script_model",
+    "script_origin",
+    "script_prop_collmap",
+    "script_vehicle",
+    "script_vehicle_collmap",
+    "misc_model",
+    "info_player_start",
+    "info_null",
+    "info_notnull",
+    "info_notnull_big",
+    "info_grenade_hint",
+    "func_door",
+    "func_static",
+    "func_rotating",
+    "func_bobbing",
+    "func_pendulum",
+    "func_group",
+    "func_door_rotating",
+    "trigger_use",
+    "trigger_multiple",
+    "trigger_friendlychain",
+    "trigger_hurt",
+    "trigger_once",
+    "trigger_damage",
+    "trigger_lookat",
+    "trigger_mount",
+    "light",
+    "misc_mg42",
+    "misc_turret",
+    "props_skyportal",
+    "corona",
+    "spawn_intermission",
+    "spawn_deathmatch",
+    "spawn_teamdeathmatch",
+    "spawn_ctf_allies_primary",
+    "spawn_ctf_allies_secondary",
+    "spawn_ctf_axis_primary",
+    "spawn_ctf_axis_secondary",
+    "spawn_single_ctf_allies",
+    "spawn_single_ctf_axis",
+    "spawn_hq_allies_primary",
+    "spawn_hq_allies_secondary",
+    "spawn_hq_axis_primary",
+    "spawn_hq_axis_secondary",
+    "hq_point",
+    "spawn_dom_allies",
+    "spawn_dom_axis",
+    "spawn_war_allies",
+    "spawn_war_axis",
+    "spawn_sd_allies",
+    "spawn_sd_axis",
+};
+
+HashString gSpawnHashes[53];       // @ 0xED9D30 (BSS, filled by prepare_spawns)
+const char* g_key;                 // @ 0xEA6418
+const char* g_value;               // @ 0xEA62F0
+HashString classname_hash;         // @ 0xEE6270
+bool dont_delete;                  // @ 0xEB111C
+bool gCareAboutCheckpoint;         // @ 0xDD74C8
+math::Position3 playerMaxs;        // @ 0xEC9640
+math::Position3 playerMins;        // @ 0xEC9620
+vmCvar_t g_bounds_width;           // @ 0xEA6CA8
+vmCvar_t g_bounds_height_standing; // @ 0xEA7368
+cFreeList<Entity> gEntFreeList;    // @ 0xF50D04
+
+str_const_t str_const;             // @ 0xECBD30 (runtime-filled)
+
 // .rdata @ 0xCD67AE (2 bytes + NUL)
 const char defaultFileName[] = "or";
 

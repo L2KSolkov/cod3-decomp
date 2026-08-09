@@ -11,6 +11,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// ============================================================================
+// TPakId â€” pak archive id enum
+// ============================================================================
+enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
+#define PAK_ID_INVALID ((TPakId)-1)
+
 // Forward declarations
 class Entity;
 class DObj;
@@ -75,6 +81,8 @@ template <typename T>
 struct InplaceVector {
     unsigned int mSize;  // +0x00
     T*           mList;  // +0x04
+
+    T& operator[](unsigned int i) { return mList[i]; }
 };
 static_assert(sizeof(InplaceVector<char>) == 8, "InplaceVector size mismatch");
 
@@ -212,6 +220,11 @@ struct EntityAnimationDebug;  // opaque — Entity::AnimationDebug
 // ============================================================================
 class Entity {
 public:
+    Entity();             // ?Entity@@QAE@XZ (core.o)
+    Entity(TPakId pakId); // ?Entity@@QAE@W4TPakId@@@Z (core.o)
+    ~Entity();            // ??1Entity@@QAE@XZ (core.o)
+    static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
+    static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     EntityState  s;                               // +0x000 (224 bytes)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
     trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ
