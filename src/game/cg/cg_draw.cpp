@@ -5,6 +5,8 @@
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
 
+#include <math.h>
+#include <stdlib.h>
 #include <string.h>
 
 extern int currCl;
@@ -23,9 +25,243 @@ extern void trap_R_Text_Paint(float x, float y, int font, float scale,
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, void* tex,
                                   float z);
+extern void trap_R_RenderScene(const void* fd);
+extern const char* CL_GetConfigStringC(int index);
+extern const char* Com_ParseOnLine(const char** data);
+extern float CG_GetViewFov();
+extern void CG_Error(const char* msg, ...);
+extern int CG_DrawSingleHudElem(void* elem);
+extern int compare_hudelems(const void* pe0, const void* pe1);
+extern int dword_F63CA4[4 * 1580];
+extern int dword_F63CA8[4 * 1580];
+extern float dword_F63C60[4 * 1580];
+extern float dword_F63C64[4 * 1580];
+extern float dword_F63C70[4 * 1580];
+extern float dword_F63C74[4 * 1580];
+extern float dword_F63C78[4 * 1580];
+extern float dword_F63C50[4 * 1580];
+extern float dword_F63C58[4 * 1580];
+extern float dword_F63C5C[4 * 1580];
+struct game_hudelem_s {
+    struct {
+        int type;  // +0x00
+    } elem;        // +0x00
+    unsigned char _pad[0x7C - 0x04];
+};
+extern game_hudelem_s g_hudelems[16];
 struct sentient_s {
     int eTeam;  // +0x00
 };
+
+struct vmCvar_t {
+    int   integer;  // +0x00
+    float value;    // +0x04
+};
+extern vmCvar_t cg_skybox;
+
+// ea: 0x0068BA80
+float CG_DrawObjective(const void* pObjective, float a2, float* a3, float& a4,
+                       float& a5, float& a6, float& a7, float& a8, float& a9,
+                       bool a10)
+{
+    return 0.0f;
+}
+
+static int s_foginited;
+
+// ea: 0x0068DBB0
+void CG_DrawSkyBoxPortal()
+{
+    const char* ConfigString = CL_GetConfigStringC(10);
+    const char* x = ConfigString;
+    if (ConfigString != nullptr)
+    {
+        if (strlen(ConfigString) != 0)
+        {
+            int v2 = 1580 * currCl;
+            char v32[108];
+            memcpy(v32, &dword_F63C50[1580 * currCl], 0x60);
+            if (cg_skybox.integer == 0)
+            {
+                int v30 = dword_F63CA8[1580 * currCl] & 0xFFFFFFE7 | 8;
+            done:
+                int time = cgGlobal_time;
+                dword_F63CA8[v2] = v30;
+                dword_F63CA4[v2] = time;
+                trap_R_RenderScene(&dword_F63C50[v2]);
+                memcpy(&dword_F63C50[1580 * currCl], v32, 96);
+                return;
+            }
+            CG_ASSERT("Dead code reached", "c:\\cod\\code\\game\\cg_view.cpp",
+                      1542);
+            const char* v3 = Com_ParseOnLine(&x);
+            const char* v4 = v3;
+            if (v3 == nullptr || *v3 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            dword_F63C70[1580 * currCl] = (float)atof(v4);
+            const char* v6 = Com_ParseOnLine(&x);
+            const char* v7 = v6;
+            if (v6 == nullptr || *v6 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            dword_F63C74[1580 * currCl] = (float)atof(v7);
+            const char* v9 = Com_ParseOnLine(&x);
+            const char* v10 = v9;
+            if (v9 == nullptr || *v9 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            dword_F63C78[1580 * currCl] = (float)atof(v10);
+            const char* v12 = Com_ParseOnLine(&x);
+            const char* v13 = v12;
+            if (v12 == nullptr || *v12 == 0)
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring\n");
+            atoi(v13);
+            const char* v14 = Com_ParseOnLine(&x);
+            if (v14 == nullptr || *v14 == 0)
+            {
+                CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                         "configstring.  No fog state\n");
+                goto label_44;
+            }
+            if (atoi(v14) != 0)
+            {
+                const char* v15 = Com_ParseOnLine(&x);
+                const char* v16 = v15;
+                if (v15 == nullptr || *v15 == 0)
+                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                             "configstring.  No fog[0]\n");
+                *(float*)&v32[100] = (float)atof(v16);
+                const char* v17 = Com_ParseOnLine(&x);
+                const char* v18 = v17;
+                if (v17 == nullptr || *v17 == 0)
+                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                             "configstring.  No fog[1]\n");
+                *(float*)&v32[104] = (float)atof(v18);
+                const char* v19 = Com_ParseOnLine(&x);
+                const char* v20 = v19;
+                if (v19 == nullptr || *v19 == 0)
+                    CG_Error("CG_DrawSkyBoxPortal: error parsing skybox "
+                             "configstring.  No fog[2]\n");
+                float v33 = (float)atof(v20);
+                const char* v21 = Com_ParseOnLine(&x);
+                int v22 = (v21 != nullptr && *v21 != 0) ? atoi(v21) : 0;
+                const char* v23 = Com_ParseOnLine(&x);
+                int v24 = (v23 != nullptr && *v23 != 0) ? atoi(v23) : 0;
+                re.SetFog(2, v22, v24, *(float*)&v32[100], *(float*)&v32[104],
+                          v33, 1.1f);
+            }
+            else
+            {
+                if (s_foginited != 0)
+                {
+                label_44:
+                    float fogColor3 = CG_GetViewFov();
+                    v2 = 1580 * currCl;
+                    float v35 = dword_F63C58[1580 * currCl]
+                                / tanf(fogColor3 * 0.0087266462f);
+                    float v36 = dword_F63C5C[1580 * currCl];
+                    float fogColor2 = fabsf(v35);
+                    float fov_x = fabsf(v36);
+                    float v26;
+                    if (0.0f == fov_x + fogColor2)
+                    {
+                        v26 = 0.0f;
+                    }
+                    else
+                    {
+                        float invLen = 1.0f
+                                       / sqrtf(v36 * v36 + v35 * v35);
+                        if (fov_x <= fogColor2)
+                        {
+                            float v29 = invLen * fov_x;
+                            fov_x = v29;
+                            if (v29 >= 0.5f)
+                            {
+                                fov_x = sqrtf(fabsf((1.0f - fov_x) * 0.5f));
+                                float x6 = (fov_x * fov_x) * (fov_x * fov_x)
+                                           * (fov_x * fov_x);
+                                float x4 = (fov_x * fov_x) * (fov_x * fov_x);
+                                float x3 = (fov_x * fov_x) * fov_x;
+                                v26 = x6 * -0.1079625f - x4 * 0.15000001f
+                                      - x3 * 0.33333331f - fov_x * 2.0f
+                                      + 1.570796f;
+                            }
+                            else
+                            {
+                                v26 = (((((((v29 * v29) * v29) * (v29 * v29))
+                                          * (v29 * v29))
+                                         * 0.053981241f)
+                                        + ((((v29 * v29) * v29) * (v29 * v29))
+                                           * 0.075000003f))
+                                       + (((v29 * v29) * v29) * 0.1666667f))
+                                      + v29;
+                            }
+                        }
+                        else
+                        {
+                            fov_x = invLen * fogColor2;
+                            float v28;
+                            if ((invLen * fogColor2) >= 0.5f)
+                            {
+                                fov_x = sqrtf(fabsf((1.0f - fov_x) * 0.5f));
+                                float x6 = (fov_x * fov_x) * (fov_x * fov_x)
+                                           * (fov_x * fov_x);
+                                float x4 = (fov_x * fov_x) * (fov_x * fov_x);
+                                float x3 = (fov_x * fov_x) * fov_x;
+                                v28 = x6 * -0.1079625f - x4 * 0.15000001f
+                                      - x3 * 0.33333331f - fov_x * 2.0f
+                                      + 1.570796f;
+                            }
+                            else
+                            {
+                                float v27 = invLen * fogColor2;
+                                v28 = (((((((v27 * v27) * v27) * (v27 * v27))
+                                          * (v27 * v27))
+                                         * 0.053981241f)
+                                        + ((((v27 * v27) * v27) * (v27 * v27))
+                                           * 0.075000003f))
+                                       + (((v27 * v27) * v27) * 0.1666667f))
+                                      + v27;
+                            }
+                            v26 = 1.5707964f - v28;
+                        }
+                        if (v35 < 0.0f)
+                            v26 = 3.1415927f - v26;
+                        if (v36 < 0.0f)
+                            v26 = 0.0f - v26;
+                    }
+                    dword_F63C60[1580 * currCl] = *(int*)&fogColor3;
+                    *(float*)&dword_F63C64[v2] = v26 * 114.59155f;
+                    int v30 = dword_F63CA8[v2] | 0x18;
+                    goto done;
+                }
+                re.SetFog(2, 0, 0, 0.0f, 0.0f, 0.0f, 0.0f);
+            }
+            s_foginited = 1;
+            goto label_44;
+        }
+    }
+}
+
+// ea: 0x0069D150
+void CG_DrawHudElems()
+{
+    void* elems[16];
+    int v0 = 0;
+    for (int i = 0; i < 16; ++i)
+    {
+        if (g_hudelems[i].elem.type != 0 /* HE_TYPE_FREE */)
+            elems[v0++] = &g_hudelems[i];
+    }
+    qsort(elems, v0, 4, compare_hudelems);
+    if (v0 != 0)
+    {
+        for (int i = 0; i < v0; ++i)
+            CG_DrawSingleHudElem(elems[i]);
+    }
+}
 
 // ea: 0x00687CB0
 float CG_DrawTimer(float y)
