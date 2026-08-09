@@ -41,6 +41,8 @@ struct NoiseFloat {
     unsigned int m_num_octaves;  // +0x04
     float m_freq_mult;    // +0x08
     float m_range;        // +0x0C
+
+    float GetValue();     // ea: 0x4F5830
 };
 static_assert(sizeof(NoiseFloat) == 0x10, "NoiseFloat size mismatch");
 

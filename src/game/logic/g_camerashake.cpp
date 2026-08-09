@@ -23,6 +23,7 @@ extern bool Assert(const char* fmt, ...);
 
 extern int currCl;                       // ?currCl
 extern int cgGlobal_time;                // cgGlobal.time
+extern NoiseManager g_noise;             // ?g_noise (game2.o)
 extern const math::Mat43& nglGetMatrix_ViewToWorld(void* Scene);
 extern void* nglBuildScene;
 extern void StartCameraShake_glue(int type, void* worldPos, float size,
@@ -136,6 +137,30 @@ void NoiseManager::Normalize3(float* v)
 float NoiseManager::GetElapsedTime()
 {
     return (float)cgGlobal_time * 0.001f;
+}
+
+// ea: 0x4F5830
+float NoiseFloat::GetValue()
+{
+    if (m_seed < 0.0f || m_seed > 16384.0f)
+        m_seed = (float)(rand() % 0x4000);
+    float t = ((float)cgGlobal_time * 0.001f) * m_freq_mult + m_seed;
+    float n = 0.0f;
+    float mult = 1.0f;
+    for (unsigned int octave = 1; octave <= m_num_octaves;
+         mult = mult * 0.5f, ++octave)
+    {
+        float v7 = (float)octave * t;
+        if (NoiseManager::m_initialised == 0)
+            g_noise.Init();
+        int idx = (int)(v7 + 4096.0f);
+        float rx0 = (v7 + 4096.0f) - (float)idx;
+        float v5 = g_noiseG[g_noiseP[idx]] * rx0;
+        float y1 = (rx0 - 1.0f) * g_noiseG[g_noiseP[(idx + 1)]];
+        n = ((((y1 - v5) * (((3.0f - (rx0 * 2.0f)) * rx0) * rx0)) + v5)
+             * mult) + n;
+    }
+    return n * m_range;
 }
 
 // ============================================================================
