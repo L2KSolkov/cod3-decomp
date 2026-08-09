@@ -1675,6 +1675,208 @@ struct vmCvar_t {
 };
 extern vmCvar_t fs_debug_vm;
 
+struct CollisionDesc {
+    math::Position3 coord;    // +0x00
+    math::Position3 normal;   // +0x10
+    int material;             // +0x20
+};
+
+extern int dword_DF6AE4[4 * 6];
+extern int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle,
+                              const char* flashTag);
+extern math::Position3* native_to_cdl_pos3(math::Position3* result,
+                                           const float* v);
+extern void CG_SpawnTracer(const math::Position3* pstart,
+                           const math::Position3* pend, int ammo);
+extern void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
+                           const float* vEnd);
+extern void PostEffectEventBulletHit(void* result, Entity* ent,
+                                     int weaponClass, void* col_desc);
+extern void PostEffectEventScriptCall(void* result, Entity* ent,
+                                      const char* scriptId, bool queue,
+                                      int pakid, bool important);
+extern const char** s_barrelTags;
+extern const char** s_gunnerBarrelTags;
+
+// ea: 0x006ABAA0
+void CG_BulletTrajectoryEffects(unsigned int sourceEntity,
+                                const math::Position3* position,
+                                int surfType, const char* flashTag,
+                                int weapon)
+{
+    if (sourceEntity == 0)
+        CG_ASSERT("sourceEntity != TEntityHandle::NullHandle()",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 4726);
+    Entity* mObj = EntityHandleDb_Get(sourceEntity);
+    if (mObj == nullptr)
+        CG_ASSERT("*sourceEntity", "c:\\cod\\code\\game\\cg_weapons.cpp",
+                  4727);
+    if (dword_F62960[1580 * currCl] != 0
+        && *(float*)&cg_tracerChance > 0.0f)
+    {
+        float muzzle[3];
+        if (CG_CalcMuzzlePoint(sourceEntity, muzzle, flashTag) != 0)
+        {
+            Entity* v8 = EntityHandleDb_Get(sourceEntity);
+            if (v8 != nullptr)
+            {
+                if (v8 != EntityManager_GetPlayer(EntityManager_sInst,
+                                                  currCl)
+                    && (*(int*)(dword_F62960[1580 * currCl] + 60)
+                        & 0x180000)
+                           == 0
+                    || (EntityManager_GetPlayer(EntityManager_sInst, currCl),
+                        EntityHandleDb_Get(sourceEntity)
+                            != EntityManager_GetPlayer(EntityManager_sInst,
+                                                       currCl)))
+                {
+                    void* InfoForWeapon =
+                        (void*)BG_GetInfoForWeapon(weapon);
+                    if (InfoForWeapon == nullptr)
+                        CG_ASSERT("wp.pWeapInfo",
+                                  "c:\\cod\\code\\game\\cg_weapons.cpp",
+                                  4751);
+                    int ammoType = *(int*)((char*)InfoForWeapon + 0xA8);
+                    if (ammoType >= 6)
+                        CG_ASSERT("ammotype < WEAPAMMOTYPE_NUM",
+                                  "c:\\cod\\code\\game\\cg_weapons.cpp",
+                                  4754);
+                    int v16 = dword_DF6AE4[4 * ammoType];
+                    if ((*(float*)&v16 * 100.0f) > (float)(rand() % 100))
+                    {
+                        math::Position3 v14;
+                        native_to_cdl_pos3(&v14, muzzle);
+                        CG_SpawnTracer(&v14, position, ammoType);
+                    }
+                }
+                if (EntityHandleDb_Get(sourceEntity) != v8)
+                    CG_ASSERT("*sourceEntity == entity",
+                              "c:\\cod\\code\\game\\cg_weapons.cpp", 4771);
+                if (v8 != EntityManager_GetPlayer(EntityManager_sInst,
+                                                  currCl))
+                    CG_WhizbySound(sourceEntity, muzzle,
+                                   position->v.m128_f32);
+            }
+        }
+    }
+}
+
+// ea: 0x006ABD80
+void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
+                       float* normal, int weapon, int surfType,
+                       Entity* hitEnt)
+{
+    if (entity != nullptr)
+    {
+        float v17 = normal[0];
+        float v18 = normal[1];
+        float v19 = normal[2];
+        if (surfType > 22)
+            CG_ASSERT("surfType >= 0 && surfType < 23",
+                      "c:\\cod\\code\\game\\cg_weapons.cpp", 4795);
+        int ammoType = *(int*)((char*)BG_GetInfoForWeapon(weapon) + 0xA8);
+        Entity* ent = hitEnt != nullptr ? hitEnt : entity;
+        Client* client = entity->client;
+        if (client != nullptr && (0x100000 & client->ps.eFlags) != 0
+            && client->ps.vehPos <= 1)
+        {
+            Entity* v21 =
+                EntityHandleDb_Get(entity->r.mOwner.mHandle.mVal);
+            if (v21 == nullptr)
+                CG_ASSERT("vehicle", "c:\\cod\\code\\game\\cg_weapons.cpp",
+                          4811);
+            if (v21->scr_vehicle == nullptr)
+                CG_ASSERT("vehicle->scr_vehicle",
+                          "c:\\cod\\code\\game\\cg_weapons.cpp", 4812);
+            CollisionDesc v16;
+            v16.coord.v = origin->v;
+            v16.normal.v = _mm_setr_ps(v17, v18, v19, 0.0f);
+            v16.material = surfType;
+            PostEffectEventBulletHit(nullptr, ent, ammoType, &v16);
+            if (entity->client->ps.vehPos != 0)
+                CG_BulletTrajectoryEffects(v21->mHandle.mHandle.mVal, origin,
+                                           surfType,
+                                           (char*)"tag_gunner_flash",
+                                           weapon);
+            else
+                CG_BulletTrajectoryEffects(v21->mHandle.mHandle.mVal, origin,
+                                           surfType, (char*)"tag_guncoax",
+                                           weapon);
+        }
+        else
+        {
+            CollisionDesc v16;
+            v16.coord.v = origin->v;
+            v16.normal.v = _mm_setr_ps(v17, v18, v19, 0.0f);
+            v16.material = surfType;
+            PostEffectEventBulletHit(nullptr, ent, ammoType, &v16);
+            void* scr_vehicle = entity->scr_vehicle;
+            if (scr_vehicle != nullptr)
+            {
+                if (*(int*)((char*)scr_vehicle + 0x19C) == weapon)
+                {
+                    CG_BulletTrajectoryEffects(
+                        entity->mHandle.mHandle.mVal, origin, surfType,
+                        (char*)"tag_guncoax", weapon);
+                }
+                else
+                {
+                    int shooter = *(int*)((char*)scr_vehicle + 0x1A4);
+                    int fireBarrel = *(int*)((char*)scr_vehicle + 0x18C);
+                    unsigned int mVal = entity->mHandle.mHandle.mVal;
+                    if (shooter == 1)
+                        CG_BulletTrajectoryEffects(
+                            mVal, origin, surfType,
+                            s_gunnerBarrelTags[fireBarrel], weapon);
+                    else
+                        CG_BulletTrajectoryEffects(
+                            mVal, origin, surfType,
+                            s_barrelTags[fireBarrel], weapon);
+                }
+            }
+            else
+            {
+                CG_BulletTrajectoryEffects(entity->mHandle.mHandle.mVal,
+                                           origin, surfType, s_barrelTags[0],
+                                           weapon);
+            }
+        }
+    }
+}
+
+// ea: 0x006AC070
+void CG_BulletHitClientEvent(unsigned int sourceEntity,
+                             const math::Position3* position,
+                             float* normal, unsigned int surfType,
+                             int weapon)
+{
+    if (sourceEntity == 0)
+        CG_ASSERT("sourceEntity != TEntityHandle::NullHandle()",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 4854);
+    if (surfType > 0x16)
+        CG_ASSERT("surfType >= 0 && surfType < 23",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 4855);
+    float v15 = normal[0];
+    float v16 = normal[1];
+    float v17 = normal[2];
+    int ammoType = *(int*)((char*)BG_GetInfoForWeapon(weapon) + 0xA8);
+    Entity* mObject = EntityHandleDb_Get(sourceEntity);
+    if (mObject != nullptr && mObject->client != nullptr
+        && EntityManager_IsLocalPlayer(EntityManager_sInst, mObject))
+    {
+        PostEffectEventScriptCall(nullptr, mObject, "PLAYER_HIT_SUCCESS",
+                                  false, 0 /* PAK_ID_INVALID */, false);
+    }
+    CollisionDesc v14;
+    v14.coord.v = position->v;
+    v14.normal.v = _mm_setr_ps(v15, v16, v17, 0.0f);
+    v14.material = surfType;
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    PostEffectEventBulletHit(nullptr, Player, ammoType, &v14);
+    CG_BulletTrajectoryEffects(sourceEntity, position, surfType,
+                               s_barrelTags[0], weapon);
+}
+
 // ea: 0x006A1730
 void CG_AdjustPositionForMover(const math::Position3* in, unsigned int mover,
                                int fromTime, int toTime, math::Position3* out,
