@@ -93,6 +93,17 @@ void EntityHandleDb::Release(Entity* e)
     }
 }
 
+// ea: 0x00460D80
+Entity* EntityHandleDb::Find(int fieldofs, unsigned short match)
+{
+    Entity** begin = mActiveList.m_elements;
+    Entity** end = begin + mActiveList.m_size;
+    Entity** result = Find(fieldofs, match, begin, end);
+    if (result == end)
+        return nullptr;
+    return *result;
+}
+
 // ea: 0x0044A240
 int CheatsOk(Entity* ent)
 {

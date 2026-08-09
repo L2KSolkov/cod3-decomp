@@ -161,6 +161,54 @@ void scr_vehicle_t::CollisionDamage(Entity* ent, const math::Position3* pos,
              (int)damage, 32, 27, HITLOC_NONE, -1);
 }
 
+// ea: 0x0044FB30
+vehicle_info_t* VEH_GetVehicleInfo(unsigned int iIndex)
+{
+    if (iIndex > 0x40)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10667;
+        AeAssert::gCurrentExpr = "(iIndex >= 0) && (iIndex <= 64)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return s_vehicleInfos[iIndex];
+}
+
+// ea: 0x0044F620
+int scr_vehicle_t::GetSwitchPosRoute(int seatIdx, int fromPos, bool hasFlag)
+{
+    vehicleAnimMap_t* animMap = this->animMap;
+    if (animMap == nullptr)
+        return -1;
+    int numRoutes = animMap->numRoutes;
+    int result = 0;
+    if (numRoutes <= 0)
+        return -1;
+    for (vehicleAnimRoute_t* i = animMap->routes;
+         i->vehPosSrc != fromPos || i->vehPosDest != seatIdx
+             || ((i->flags & 4) != 0 && !hasFlag);
+         ++i)
+    {
+        if (++result >= numRoutes)
+            return -1;
+    }
+    return result;
+}
+
+// ea: 0x004639D0
+void G_ParseScrVehicleInfo(void)
+{
+    ConfigStringManager* v0 = ConfigStringManager::sInst;
+    s_numVehicleInfos = 0;
+    TPakId v1 = CurPakId();
+    v0->CallbackSearch(v1, "VEHICLEFILE", ParseVehicleConfigString);
+    ConfigStringManager* v2 = ConfigStringManager::sInst;
+    TPakId v3 = CurPakId();
+    v2->CallbackSearch(v3, "VEHICLEPHYSICSFILE", ParseVehiclePhysicsConfigString);
+}
+
 // ea: 0x0044D2E0
 vehicle_info_t* VEH_GetInfo(int idx)
 {

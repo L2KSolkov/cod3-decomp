@@ -548,6 +548,160 @@ void SP_sd_allies(Entity* ent)
     }
 }
 
+// ea: 0x00449440
+void SP_deathmatch(Entity* ent)
+{
+    if (_stricmp("dm", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_deathmatch;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449490
+void SP_teamdeathmatch(Entity* ent)
+{
+    if (_stricmp("tdm", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_teamdeathmatch;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x004494E0
+void SP_ctf_allies_primary(Entity* ent)
+{
+    if (_stricmp("ctf", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_ctf_allies_primary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449530
+void SP_ctf_allies_secondary(Entity* ent)
+{
+    if (_stricmp("ctf", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_ctf_allies_secondary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449580
+void SP_ctf_axis_primary(Entity* ent)
+{
+    if (_stricmp("ctf", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_ctf_axis_primary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x004495D0
+void SP_ctf_axis_secondary(Entity* ent)
+{
+    if (_stricmp("ctf", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_ctf_axis_secondary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449620
+void SP_hq_allies_primary(Entity* ent)
+{
+    if (_stricmp("hq", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_hq_allies_primary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449670
+void SP_hq_allies_secondary(Entity* ent)
+{
+    if (_stricmp("hq", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_hq_allies_secondary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x004496C0
+void SP_hq_axis_primary(Entity* ent)
+{
+    if (_stricmp("hq", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_hq_axis_primary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449710
+void SP_hq_axis_secondary(Entity* ent)
+{
+    if (_stricmp("hq", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_hq_axis_secondary;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449760
+void HQ_Point(Entity* ent)
+{
+    if (_stricmp("hq", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.hq_point;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
 // ea: 0x0044ACC0
 void Cmd_MemPools_f(void)
 {

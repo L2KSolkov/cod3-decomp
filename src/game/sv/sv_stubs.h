@@ -307,6 +307,7 @@ public:
     Entity** Find(int fieldofs, unsigned short match, Entity** begin, Entity** end);  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HGV23@0@Z
     Entity** Find(int fieldofs, HashString match, Entity** begin, Entity** end);      // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVHashString@@V23@1@Z
     void Release(Entity* e);                    // ?Release@EntityHandleDb@@QAEXAAVEntity@@@Z
+    Entity* Find(int fieldofs, unsigned short match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HG@Z
 };
 static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
 static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::mActiveList offset mismatch");

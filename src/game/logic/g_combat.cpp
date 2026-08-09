@@ -28,6 +28,19 @@ void Cmd_Kill_f(Entity* ent)
     }
 }
 
+// ea: 0x004814A0
+void Bullet_Fire_Fake(Entity* attacker, float spread, int damage,
+                      weaponParms* wp, Entity* weaponEnt, float coneAngleTangent)
+{
+    float end[3];
+    Bullet_Endpos(spread, end, wp);
+    Entity* mWorld = weaponEnt;
+    if (weaponEnt == nullptr)
+        mWorld = EntityManager::sInst->mWorld;
+    Bullet_Fire_Fake_Extended(mWorld->mHandle, attacker, wp->muzzleTrace, end,
+                              damage, 0, wp, mWorld->mHandle, coneAngleTangent);
+}
+
 static bool IS_NAN(float x) {
     return (__fpclass(x) & 0x297) != 0;
 }

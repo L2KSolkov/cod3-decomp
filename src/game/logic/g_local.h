@@ -102,6 +102,7 @@ struct scr_vehicle_t {
     float GetAnimSpeedScale(Client* client);  // ?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z
     float GetThrottle();                      // ?GetThrottle@scr_vehicle_t@@QAEMXZ
     int   GetStageAnim(Client* client);       // ?GetStageAnim@scr_vehicle_t@@QAEHPAUClient@@@Z
+    int   GetSwitchPosRoute(int seatIdx, int fromPos, bool hasFlag);  // ?GetSwitchPosRoute@scr_vehicle_t@@QAEHHH_N@Z
     bool  IsPhysicsPaused();                  // ?IsPhysicsPaused@scr_vehicle_t@@QAE_NXZ
     void  CollisionDamage(Entity* ent, const math::Position3* pos,
                           const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
@@ -406,17 +407,26 @@ struct str_const_t {
     Broc::string sound_blend;         // +0x148
     uint8_t    _pad14C[0x168 - 0x14C];
     Broc::string spawn_intermission;  // +0x168
-    uint8_t    _pad16C[0x184 - 0x16C];
+    Broc::string spawn_deathmatch;        // +0x16C
+    Broc::string spawn_teamdeathmatch;    // +0x170
+    Broc::string spawn_ctf_allies_primary;    // +0x174
+    Broc::string spawn_ctf_allies_secondary;  // +0x178
+    Broc::string spawn_ctf_axis_primary;      // +0x17C
+    Broc::string spawn_ctf_axis_secondary;    // +0x180
     Broc::string spawn_single_ctf_allies;  // +0x184
     Broc::string spawn_single_ctf_axis;    // +0x188
-    uint8_t    _pad18C[0x19C - 0x18C];
+    Broc::string spawn_hq_allies_primary;   // +0x18C
+    Broc::string spawn_hq_allies_secondary; // +0x190
+    Broc::string spawn_hq_axis_primary;     // +0x194
+    Broc::string spawn_hq_axis_secondary;   // +0x198
     Broc::string spawn_dom_allies;         // +0x19C
     Broc::string spawn_dom_axis;           // +0x1A0
     Broc::string spawn_war_allies;         // +0x1A4
     Broc::string spawn_war_axis;           // +0x1A8
     Broc::string spawn_sd_allies;          // +0x1AC
     Broc::string spawn_sd_axis;            // +0x1B0
-    uint8_t    _pad1B4[0x1FC - 0x1B4];
+    Broc::string hq_point;                 // +0x1B4
+    uint8_t    _pad1B8[0x1FC - 0x1B8];
     Broc::string tempEntity;          // +0x1FC
     uint8_t    _pad200[0x2B4 - 0x200];
 };
@@ -425,6 +435,12 @@ static_assert(offsetof(str_const_t, spawn_intermission) == 0x168,
               "str_const_t::spawn_intermission offset mismatch");
 static_assert(offsetof(str_const_t, spawn_sd_axis) == 0x1B0,
               "str_const_t::spawn_sd_axis offset mismatch");
+static_assert(offsetof(str_const_t, spawn_deathmatch) == 0x16C,
+              "str_const_t::spawn_deathmatch offset mismatch");
+static_assert(offsetof(str_const_t, spawn_hq_allies_primary) == 0x18C,
+              "str_const_t::spawn_hq_allies_primary offset mismatch");
+static_assert(offsetof(str_const_t, hq_point) == 0x1B4,
+              "str_const_t::hq_point offset mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
 // ============================================================================
@@ -889,6 +905,7 @@ struct ConfigString;
 class ConfigStringManager {
 public:
     unsigned char mData[0x190];
+    static ConfigStringManager* sInst;  // ?sInst@ConfigStringManager@@0PAV1@A
     void CallbackSearch(TPakId pakId, const char* type,
                         void (*callback)(const char*, const ConfigString*));
 };
@@ -1463,6 +1480,18 @@ extern vmCvar_t mp_gametype;          // mp.o ?mp_gametype@@3UvmCvar_t@@A
 void  VehicleNodeAllocator_Initialize(void* self);             // g.o 0x452BC0
 bool  Weapon_Revive_Test(Entity* ent, void* wp, Entity** traceEnt);  // g.o 0x... (used by cg)
 void  Weapon_Revive(Entity* ent, int grenType, weaponParms* wp);     // g.o 0x4720E0
+float Bullet_Endpos(float spread, float* end, const weaponParms* wp);  // g.o 0x... (g_combat.cpp)
+void  Bullet_Fire_Fake_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
+                                Entity* attacker, const float* start, const float* end,
+                                int damage, int recursion, weaponParms* wp,
+                                DbLinkedHandle<EntityHandleDb, Entity> weaponEntity,
+                                float coneAngleTangent);            // g.o 0x4712A0
+void  Bullet_Fire_Fake(Entity* attacker, float spread, int damage,
+                       weaponParms* wp, Entity* weaponEnt,
+                       float coneAngleTangent);                    // g.o 0x4814A0
+void  G_ParseScrVehicleInfo(void);                                 // g.o 0x4639D0
+void  ParseVehicleConfigString(const char* szKey, const ConfigString* pCfgStr);        // g.o 0x44EC90
+void  ParseVehiclePhysicsConfigString(const char* szKey, const ConfigString* pCfgStr); // g.o 0x463730
 
 struct StatusBar {
     static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
