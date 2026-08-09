@@ -15,6 +15,10 @@ float max_intensity = 120.0f;  // @ 0xDD7FD4
 float max_dist2 = 176400.0f;   // @ 0xDD7FD8
 float radius = 30.0f;          // @ 0xDD8208 (Weapon_Revive_Test revive radius)
 float radius_1 = 30.0f;        // @ 0xDD8268 (Weapon_Melee melee range)
+float helmetBounce = 0.65f;    // @ 0xDD8210 (SpawnHelmet phys data)
+float helmetFriction = 0.65f;  // @ 0xDD8214
+float helmetMass = 0.035f;     // @ 0xDD8218
+int   timeToAdd = 20000;       // @ 0xDD821C (helmet self-free time)
 vmCvar_t g_weaponAmmoPools;    // @ 0x01297030
 vmCvar_t g_weaponRespawn;      // @ 0x01296988
 PoolAllocator* Task::sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8

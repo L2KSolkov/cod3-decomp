@@ -1121,6 +1121,131 @@ void Touch_Item(Entity* ent, Entity* other, int bTouched)
     }
 }
 
+// ea: 0x004750B0
+Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir)
+{
+    if (EntityManager::sInst->GetPlayer(currCl) == self)
+        return nullptr;
+    Broc::string helmetName;
+    if ((self->flags & 0x2000000) == 0 && self->actor != nullptr)
+        helmetName = self->actor->mPopedHelmetName;
+    else
+        helmetName = self->mTarget;
+    if (helmetName.is_empty())
+        return nullptr;
+    static unsigned int sHelmetHashInit = 0;
+    static unsigned int helmetHash = 0;
+    if ((sHelmetHashInit & 1) == 0)
+    {
+        sHelmetHashInit |= 1u;
+        helmetHash = HashString::CalcHash("Bip01 Helmet");
+    }
+    int boneIndex = SV_DObjGetBoneIndex(self, helmetHash);
+    if (boneIndex < 0)
+        return nullptr;
+    TPakId pakId = (TPakId)self->mPakId;
+    if (pakId == PAK_ID_INVALID)
+        pakId = CurPakId();
+    Entity* v9 = G_Spawn(pakId);
+    if (v9 == nullptr || HandleDbToEnt(v9->mHandle) == nullptr)
+        return nullptr;
+    v9->mClassName = helmetName;
+    HashString hs(v9->mClassName);
+    v9->mClassNameHash = hs;
+    v9->spawnflags = 0;
+    const char* modelName = v9->mClassName.GetBuff();
+    G_SetModel(v9, modelName, (TPakId)v9->mPakId, 0);
+    v9->s.brushmodel = 0;
+    SV_SetBrushModel(v9);
+    DObjSkelMat mat;
+    G_DObjGetWorldBoneIndexMatrix(self, boneIndex, &mat);
+    float origin[3] = { mat.origin[0], mat.origin[1], mat.origin[2] };
+    G_SetOrigin(v9, origin);
+    float angles[3] = { self->r.currentAngles.v.m128_f32[0],
+                        self->r.currentAngles.v.m128_f32[1] + 90.0f,
+                        self->r.currentAngles.v.m128_f32[2] };
+    G_SetAngle(v9, angles);
+    G_DObjUpdate(v9, false);
+    g_LinkEntity(v9);
+
+    math::Position3 center;
+    if (v9->r.bmodel != nullptr)
+    {
+        const math::Position3* bmin =
+            (const math::Position3*)((const char*)v9->r.bmodel + 0x30);
+        const math::Position3* bmax =
+            (const math::Position3*)((const char*)v9->r.bmodel + 0x40);
+        center.v.m128_f32[0] = v9->r.currentOrigin.v.m128_f32[0]
+                             + (bmin->v.m128_f32[0]
+                                + bmax->v.m128_f32[0]) * 0.5f;
+        center.v.m128_f32[1] = v9->r.currentOrigin.v.m128_f32[1]
+                             + (bmin->v.m128_f32[1]
+                                + bmax->v.m128_f32[1]) * 0.5f;
+        center.v.m128_f32[2] = v9->r.currentOrigin.v.m128_f32[2]
+                             + (bmin->v.m128_f32[2]
+                                + bmax->v.m128_f32[2]) * 0.5f;
+    }
+    else
+    {
+        center.v.m128_f32[0] =
+            (v9->r.absmin.v.m128_f32[0] + v9->r.absmax.v.m128_f32[0]) * 0.5f;
+        center.v.m128_f32[1] =
+            (v9->r.absmin.v.m128_f32[1] + v9->r.absmax.v.m128_f32[1]) * 0.5f;
+        center.v.m128_f32[2] =
+            (v9->r.absmin.v.m128_f32[2] + v9->r.absmax.v.m128_f32[2]) * 0.5f;
+    }
+    math::Position3 hitp;
+    hitp.v.m128_f32[0] = (hitP[0] + center.v.m128_f32[0]) * 0.5f;
+    hitp.v.m128_f32[1] = (hitP[1] + center.v.m128_f32[1]) * 0.5f;
+    hitp.v.m128_f32[2] = (hitP[2] + center.v.m128_f32[2]) * 0.5f;
+    math::Dir3 hitd;
+    hitd.v.m128_f32[0] = hitDir[0];
+    hitd.v.m128_f32[1] = hitDir[1];
+    float vert = fabsf(hitDir[2]) * 5.0f;
+    if (vert < 1.5f)
+        vert = 1.5f;
+    else if (vert > 2.2f)
+        vert = 2.2f;
+    hitd.v.m128_f32[2] = vert;
+    hitd.v.m128_f32[3] = 0.0f;
+    float force = ((rand() % 100) * 0.01f + 1.0f) * 2.0f;
+    if (force < 2.0f)
+        force = 2.0f;
+    else if (force > 4.0f)
+        force = 4.0f;
+    ApplyPhysics(v9, &hitp, &hitd, force, false, HITLOC_TORSO_UPR);
+
+    v9->think = THINK__G_FreeEntity;
+    v9->nextthink = level.time + timeToAdd;
+    IVPointer<Destructible> d =
+        ((DestructibleBankManager*)DestructibleBankManager::sInst)
+            ->GetDestructible((TPakId)v9->mPakId, "global");
+    if (d.mValue != nullptr)
+    {
+        v9->mDestructible.mValue = d.mValue;
+        v9->mDestructible.mPakId = d.mPakId;
+        v9->takedamage = 1;
+        IVPointer<PhysData> pd =
+            ((PhysDataBankManager*)PhysDataBankManager::sInst)
+                ->GetPhysData((TPakId)v9->mPakId, "helmet_pop");
+        if (pd.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)pd.mPakId);
+            pd.mValue->mMass = helmetMass;
+            ValidatePakId((TPakId)pd.mPakId);
+            pd.mValue->mFric = helmetFriction;
+            ValidatePakId((TPakId)pd.mPakId);
+            pd.mValue->mBounce = helmetBounce;
+            v9->mDObj->mPhysData.mValue = pd.mValue;
+            v9->mDObj->mPhysData.mPakId = pd.mPakId;
+        }
+    }
+    SoundDevice::sInst->PlaySound("helmetpop", v9->mHandle, true, true, hitp,
+                                  hitd, -1.0f, -1.0f, -1.0f, -1.0f);
+    self->mFlags &= ~0x10u;
+    return v9;
+}
+
 // ea: 0x00457A30
 void G_BounceItem(Entity* ent, trace_t* trace)
 {

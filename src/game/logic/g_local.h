@@ -2033,6 +2033,10 @@ extern int dword_F64018[4 * 1580];               // cg.o @ 0xF64018
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);  // cg.o
 extern float radius_1;                           // g.o @ 0xDD8268
+extern float helmetBounce;                       // g.o @ 0xDD8210
+extern float helmetFriction;                     // g.o @ 0xDD8214
+extern float helmetMass;                         // g.o @ 0xDD8218
+extern int   timeToAdd;                          // g.o @ 0xDD821C
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
 void  G_RunThink(Entity* ent, int msec);         // g.o
@@ -2612,7 +2616,14 @@ struct Destructible {
     static void Initialize(Destructible* self, Entity* ent, bool reInit);
 };
 
-struct PhysData;  // physics.o
+struct PhysData {
+    InplaceString mName;          // +0x00
+    float         mMass;          // +0x04
+    float         mBounce;        // +0x08
+    float         mFric;          // +0x0C
+    void*         mConstraints;   // +0x10 (InplaceVector<PhysConstraint>)
+};
+static_assert(sizeof(PhysData) == 0x14, "PhysData size mismatch");
 struct DestructibleBankManager {
     static void* sInst;
     IVPointer<Destructible> GetDestructible(TPakId pak_id, const char* name);
@@ -2651,7 +2662,9 @@ extern void (*controllertable[4])(Entity* ent, int* partBits);
 struct DObj {
     uint8_t      _pad0[0x80];      // +0x00
     IVPointer<XModel> models[8];   // +0x80
-    uint8_t      _padC0[0xCE - 0xC0];
+    uint8_t      _padC0[0xC4 - 0xC0];
+    IVPointerRaw mPhysData;        // +0xC4
+    uint8_t      _padCC[0xCE - 0xCC];
     unsigned char numModels;       // +0xCE
     uint8_t      _padCF[0xE4 - 0xCF];
     unsigned int mFlags;           // +0xE4
