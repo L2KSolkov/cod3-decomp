@@ -1161,6 +1161,43 @@ bool SmokeGrenadeMgr::EntityCanSeeEntity(const Entity* ent,
     return PointCanSeePoint(startPoint, endPoint, visThreshold);
 }
 
+// ============================================================================
+// DisplayPoolTotals - render pool report lines (game2.o)
+// ea: 0x4FEFB0
+// ============================================================================
+#include "core/PoolAllocator.h"
+#include "core/ae_fixed_string.h"
+
+struct InspectorManager;
+extern InspectorManager g_inspectorManager;  // ?g_inspectorManager (game2.o)
+extern float scaleScalar;         // render.o
+extern void RE_Text_Paint(float x, float y, int font, float scale,
+                          const float* color, const char* text, float a7,
+                          int a8, int a9);
+
+void DisplayPoolTotals(PoolAllocator* pool)
+{
+    ae_sized_array<ae_fixed_string<64, unsigned char>, 8> strList;
+    for (int i = 0; i < 8; ++i)
+    {
+        strList.m_elements[i].mLength = 0;
+        strList.m_elements[i].mBuff[0] = 0;
+    }
+    strList.m_size = 0;
+    pool->ReportTotals(&strList);
+    float black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    int y = 64;
+    for (int i = 0; i < strList.m_size; ++i)
+    {
+        const char* text = (const char*)strList.m_elements[i].mBuff;
+        RE_Text_Paint(340.0f, (float)y + 2.0f, 5, scaleScalar * 0.75f,
+                      black, text, 0, 0, 0);
+        RE_Text_Paint(330.0f, (float)y, 5, scaleScalar * 0.75f,
+                      (const float*)&g_inspectorManager, text, 0, 0, 0);
+        y += 18;
+    }
+}
+
 
 // ============================================================================
 // FN_Multiplayer_MapRestart - ea: 0x4F46D0

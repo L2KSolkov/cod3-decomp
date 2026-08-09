@@ -66,7 +66,7 @@ extern const char* sBuildId;       // ?sBuildId
 enum { CUBEMAPSHOT_NONE = 0 };
 
 _INSPECTOR_MENU g_inspectorRootMenu;   // ?g_inspectorRootMenu (game2.o)
-InspectorManager* g_inspectorManager;  // ?g_inspectorManager (game2.o)
+InspectorManager g_inspectorManager;  // ?g_inspectorManager (game2.o)
 
 // Minimal controller view (full implementation in input/controller.cpp).
 // ButtonIndex values verified against ReadKeys disassembly.

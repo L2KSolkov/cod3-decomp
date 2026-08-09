@@ -101,5 +101,5 @@ public:
 static_assert(sizeof(InspectorManager) == 0x88,
               "InspectorManager size mismatch");
 
-extern InspectorManager* g_inspectorManager;  // ?g_inspectorManager (game2.o)
+extern InspectorManager g_inspectorManager;  // ?g_inspectorManager (game2.o)
 extern _INSPECTOR_MENU g_inspectorRootMenu;   // ?g_inspectorRootMenu (game2.o)
