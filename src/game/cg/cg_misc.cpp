@@ -567,7 +567,14 @@ float SwayRand(float x, float y, float time)
 
 struct GlobalEffectNode {
     void* vftable;        // +0x00
-    unsigned char _pad[0x20 - 0x04];
+    unsigned char _pad[0x0C - 0x04];
+    struct {
+        int on;      // +0x0C
+        float r1;    // +0x10
+        float r2;    // +0x14
+        float r3;    // +0x18
+        float r4;    // +0x1C
+    } mDof;          // +0x0C
     float glowIntensity;  // +0x20
     int   ShockedClient;  // +0x24
     int   mClientIndex;   // +0x28
@@ -1308,6 +1315,7 @@ extern void CG_CalcPassengerViewPos();
 extern void CG_CalcTurretViewValues();
 extern void* G_GetVehicleInfo(void* scr_vehicle);
 extern void vectosignedangles(const float* vec, float* angles);
+extern void vectoangles(const float* vec, float* angles);
 extern void LerpAngle(float a1, float a2, float a3);
 extern void InterpolateAngles(float* curAngles, const float* initialAngles,
                               const float* targetAngles, float t);
@@ -3531,6 +3539,33 @@ extern int g_vehicle_button_threshold;  // 0x00E01F04
 extern vmCvar_t g_vehControlMode;       // 0x00EADD48
 extern float gTankDriverAnglesFrac;     // 0x00D0D1E0
 extern unsigned char unk_F6A294[4 * 3208];
+extern vmCvar_t cg_thirdPersonRange;    // 0x00F5F1E8
+extern vmCvar_t cg_redFlashTime;        // 0x00F5C4A8
+extern float the_rate;                  // 0x00DFA3E8
+extern int dword_F64018[4 * 1580];
+extern void CG_StartShakeCamera(float p, int duration, const float* src,
+                                float radius, int client);
+extern void Entity_Notify(void* ent, unsigned int hash);
+
+struct RumbleEffect_local {
+    struct RumbleData {
+        unsigned char enabled;          // +0x00
+        unsigned char _pad[3];
+        float delay;                    // +0x04
+        float intensity;                // +0x08
+        float ramp_up_duration;         // +0x0C
+        float steady_duration;          // +0x10
+        float ramp_down_duration;       // +0x14
+        void* rumble_notes;             // +0x18
+        unsigned int m_flags;           // +0x1C
+    };  // 0x20
+    RumbleData mRumbleDataArray[2];     // +0x00
+};
+extern void RumbleEffect_Ctor(void* self);
+extern void RumbleEffect_SetIntensity(void* self, int rumbleID,
+                                      float new_intensity);
+extern RumbleEffectInstanceHandle RumbleManager_Play(void* self, void* effect,
+                                                     float intensity);
 extern void CG_InitConsoleCommands();
 extern void CL_GetGlconfig(void* glconfig);
 extern void CG_Error(const char* msg, ...);
@@ -4460,4 +4495,272 @@ void Camera::UpdateVehicleDriverCamThird()
         _mm_add_ps(mObject->r.currentOrigin.v,
                    _mm_sub_ps(_mm_setzero_ps(), mVehPrevOrigin.v)));
     mVehPrevOrigin.v = mObject->r.currentOrigin.v;
+}
+
+// ea: 0x006A7910
+void Camera::UpdateMPDeathCameraNoKiller()
+{
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    float eye[4] = {client->ps.origin.v.m128_f32[0],
+                    client->ps.origin.v.m128_f32[1],
+                    client->ps.origin.v.m128_f32[2],
+                    client->ps.origin.v.m128_f32[3]};
+    eye[2] = eye[2] + 10.0f;
+    float yaw = client->ps.viewangles[1];
+    float roll = client->ps.viewangles[2];
+    float sinYaw, cosYaw, sinPitch, cosPitch;
+    FastSinCos(yaw * 0.017453292f, &sinYaw, &cosYaw);
+    FastSinCos(0.34906584f, &sinPitch, &cosPitch);
+    float range = cg_thirdPersonRange.value;
+    float target[4] = {eye[0] + (cosPitch * cosYaw) * (512.0f - range),
+                       eye[1] + (cosPitch * sinYaw) * (512.0f - range),
+                       eye[2] + (0.0f - sinPitch) * (512.0f - range), 0.0f};
+    float delta[3] = {target[0] - mPrevViewPos.v.m128_f32[0],
+                      target[1] - mPrevViewPos.v.m128_f32[1],
+                      target[2] - mPrevViewPos.v.m128_f32[2]};
+    float newAngles[3];
+    vectoangles(delta, newAngles);
+    angle[1580 * mClient] = newAngles[0];
+    angle[1580 * mClient + 1] = yaw;
+    angle[1580 * mClient + 2] = roll;
+    angle[1580 * mClient + 3] = 0.0f;
+    float mins[3] = {-1.0f, -1.0f, -1.0f};
+    float maxs[3] = {1.0f, 1.0f, 1.0f};
+    collision_context_t ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    ctx.pass_entity1.mHandle.mVal = 0;
+    ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
+    trace_t tr;
+    CG_Trace(&tr, (const math::Position3*)eye, (const math::Position3*)mins,
+             (const math::Position3*)maxs, (const math::Position3*)target,
+             &ctx);
+    float result[4];
+    if (tr.normal.v.m128_f32[1] >= 1.0f)
+    {
+        result[0] = target[0];
+        result[1] = target[1];
+        result[2] = target[2];
+        result[3] = eye[3];
+    }
+    else
+    {
+        result[0] = tr.endpos.v.m128_f32[0];
+        result[1] = tr.endpos.v.m128_f32[1];
+        result[2] = tr.endpos.v.m128_f32[2];
+        result[3] = tr.endpos.v.m128_f32[3];
+    }
+    dword_F63C70[1580 * mClient] = result[0];
+    dword_F63C74[1580 * mClient] = result[1];
+    dword_F63C78[1580 * mClient] = result[2];
+    dword_F63C70[1580 * mClient + 3] = result[3];
+    mGlobalEffectNode.mDof.r1 = 100.0f;
+    mGlobalEffectNode.mDof.r2 = 500.0f;
+    mGlobalEffectNode.mDof.r3 = the_rate;
+    mGlobalEffectNode.mDof.on = 1;
+    mGlobalEffectNode.mDof.r4 = 100000.0f;
+}
+
+// ea: 0x006A7C50
+void Camera::UpdateMPDeathCamera()
+{
+    Client* client =
+        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    unsigned int killer = *(unsigned int*)((char*)client + 0x90);
+    Entity* mObject = DbHandleToEntity(killer);
+    if (mObject != nullptr)
+    {
+        float eye[4] = {client->ps.origin.v.m128_f32[0],
+                        client->ps.origin.v.m128_f32[1],
+                        client->ps.origin.v.m128_f32[2],
+                        client->ps.origin.v.m128_f32[3]};
+        float yaw = client->ps.viewangles[1];
+        float roll = client->ps.viewangles[2];
+        float enemyPos[4] = {mObject->r.currentOrigin.v.m128_f32[0],
+                             mObject->r.currentOrigin.v.m128_f32[1],
+                             mObject->r.currentOrigin.v.m128_f32[2],
+                             mObject->r.currentOrigin.v.m128_f32[3]};
+        float delta[3] = {enemyPos[0] - eye[0], enemyPos[1] - eye[1],
+                          enemyPos[2] - eye[2]};
+        float newAngles[3];
+        vectoangles(delta, newAngles);
+        newAngles[0] = 20.0f;
+        float sinYaw, cosYaw, sinPitch, cosPitch;
+        FastSinCos(yaw * 0.017453292f, &sinYaw, &cosYaw);
+        FastSinCos(0.34906584f, &sinPitch, &cosPitch);
+        float range = cg_thirdPersonRange.value;
+        float target[4] = {eye[0] + (cosPitch * cosYaw) * (512.0f - range),
+                           eye[1] + (cosPitch * sinYaw) * (512.0f - range),
+                           eye[2] + (0.0f - sinPitch) * (512.0f - range),
+                           0.0f};
+        float delta2[3] = {enemyPos[0] - mPrevViewPos.v.m128_f32[0],
+                           enemyPos[1] - mPrevViewPos.v.m128_f32[1],
+                           enemyPos[2] - mPrevViewPos.v.m128_f32[2]};
+        float dist = sqrtf(delta2[0] * delta2[0] + delta2[1] * delta2[1]
+                           + delta2[2] * delta2[2]);
+        vectoangles(delta2, newAngles);
+        angle[1580 * mClient] = newAngles[0];
+        angle[1580 * mClient + 1] = yaw;
+        angle[1580 * mClient + 2] = roll;
+        angle[1580 * mClient + 3] = 0.0f;
+        float mins[3] = {-1.0f, -1.0f, -1.0f};
+        float maxs[3] = {1.0f, 1.0f, 1.0f};
+        collision_context_t ctx;
+        memset(&ctx, 0, sizeof(ctx));
+        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+        ctx.pass_entity1.mHandle.mVal = 0;
+        ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
+        trace_t tr;
+        CG_Trace(&tr, (const math::Position3*)eye, (const math::Position3*)mins,
+                 (const math::Position3*)maxs, (const math::Position3*)target,
+                 &ctx);
+        float result[4];
+        if (tr.normal.v.m128_f32[1] >= 1.0f)
+        {
+            result[0] = target[0];
+            result[1] = target[1];
+            result[2] = target[2];
+            result[3] = eye[3];
+        }
+        else
+        {
+            result[0] = tr.endpos.v.m128_f32[0];
+            result[1] = tr.endpos.v.m128_f32[1];
+            result[2] = tr.endpos.v.m128_f32[2];
+            result[3] = tr.endpos.v.m128_f32[3];
+        }
+        dword_F63C70[1580 * mClient] = result[0];
+        dword_F63C74[1580 * mClient] = result[1];
+        dword_F63C78[1580 * mClient] = result[2];
+        dword_F63C70[1580 * mClient + 3] = result[3];
+        mGlobalEffectNode.mDof.r1 = 50.0f;
+        mGlobalEffectNode.mDof.r3 = 1.0f;
+        mGlobalEffectNode.mDof.on = 1;
+        mGlobalEffectNode.mDof.r2 = dist + 150.0f;
+        mGlobalEffectNode.mDof.r4 = 100000.0f;
+    }
+    else
+    {
+        UpdateMPDeathCameraNoKiller();
+    }
+}
+
+// ea: 0x006A8D50
+void Camera::UpdateDeathCamera()
+{
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, mClient);
+    if (Player != nullptr)
+    {
+        Client* client = Player->client;
+        if (Player->enemy != nullptr)
+        {
+            float eye[4] = {client->ps.origin.v.m128_f32[0],
+                            client->ps.origin.v.m128_f32[1],
+                            client->ps.origin.v.m128_f32[2],
+                            client->ps.origin.v.m128_f32[3]};
+            float enemyPos[4] = {Player->enemy->r.currentOrigin.v.m128_f32[0],
+                                 Player->enemy->r.currentOrigin.v.m128_f32[1],
+                                 Player->enemy->r.currentOrigin.v.m128_f32[2],
+                                 Player->enemy->r.currentOrigin.v.m128_f32[3]};
+            float delta[3] = {enemyPos[0] - eye[0], enemyPos[1] - eye[1],
+                              enemyPos[2] - eye[2]};
+            float newAngles[3];
+            vectoangles(delta, newAngles);
+            newAngles[0] = 20.0f;
+            float fwd[3];
+            AnglesToForward(*(const math::Position3*)newAngles, *(math::Dir3*)fwd);
+            float range = cg_thirdPersonRange.value;
+            float target[4] = {eye[0] + fwd[0] * range,
+                               eye[1] + fwd[1] * range,
+                               eye[2] + fwd[2] * range, 0.0f};
+            float delta2[3] = {enemyPos[0] - mPrevViewPos.v.m128_f32[0],
+                               enemyPos[1] - mPrevViewPos.v.m128_f32[1],
+                               enemyPos[2] - mPrevViewPos.v.m128_f32[2]};
+            float dist = sqrtf(delta2[0] * delta2[0] + delta2[1] * delta2[1]
+                               + delta2[2] * delta2[2]);
+            vectoangles(delta2, newAngles);
+            newAngles[2] = 90.0f;
+            angle[1580 * mClient] = newAngles[0];
+            angle[1580 * mClient + 1] = newAngles[1];
+            angle[1580 * mClient + 2] = newAngles[2];
+            angle[1580 * mClient + 3] = 0.0f;
+            float mins[3] = {-1.0f, -1.0f, -1.0f};
+            float maxs[3] = {1.0f, 1.0f, 1.0f};
+            collision_context_t ctx;
+            memset(&ctx, 0, sizeof(ctx));
+            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+            ctx.pass_entity1.mHandle.mVal = 0;
+            ctx.pass_entity2.mHandle.mVal = 0x80206D + 6;
+            trace_t tr;
+            CG_Trace(&tr, (const math::Position3*)eye,
+                     (const math::Position3*)mins, (const math::Position3*)maxs,
+                     (const math::Position3*)target, &ctx);
+            float finalPos[4];
+            if (tr.normal.v.m128_f32[1] >= 1.0f)
+            {
+                finalPos[0] = target[0];
+                finalPos[1] = target[1];
+                finalPos[2] = target[2];
+                finalPos[3] = eye[3];
+            }
+            else
+            {
+                finalPos[0] = tr.endpos.v.m128_f32[0];
+                finalPos[1] = tr.endpos.v.m128_f32[1];
+                finalPos[2] = tr.endpos.v.m128_f32[2] + 3.0f;
+                finalPos[3] = tr.endpos.v.m128_f32[3];
+            }
+            dword_F63C70[1580 * mClient] = finalPos[0];
+            dword_F63C74[1580 * mClient] = finalPos[1];
+            dword_F63C78[1580 * mClient] = finalPos[2];
+            dword_F63C70[1580 * mClient + 3] = finalPos[3];
+            float toPrev[3] = {finalPos[0] - mPrevViewPos.v.m128_f32[0],
+                               finalPos[1] - mPrevViewPos.v.m128_f32[1],
+                               finalPos[2] - mPrevViewPos.v.m128_f32[2]};
+            if (toPrev[0] * toPrev[0] + toPrev[1] * toPrev[1]
+                        + toPrev[2] * toPrev[2]
+                    < 9.0f
+                && !mDeathRumble)
+            {
+                mDeathRumble = true;
+                CG_StartShakeCamera(0.80000001f, 800,
+                                    &dword_F63C70[1580 * currCl], 800.0f,
+                                    currCl);
+                dword_F64018[1580 * currCl] =
+                    cgGlobal.time + (int)cg_redFlashTime.value;
+                if (RumbleManager_Inst(currCl) != nullptr)
+                {
+                    RumbleEffect_local effect;
+                    RumbleEffect_Ctor(&effect);
+                    effect.mRumbleDataArray[0].enabled = 1;
+                    RumbleEffect_SetIntensity(&effect, 0, 1.0f);
+                    effect.mRumbleDataArray[0].steady_duration = 0.2f;
+                    effect.mRumbleDataArray[0].delay = 0.0f;
+                    effect.mRumbleDataArray[1].enabled = 1;
+                    RumbleEffect_SetIntensity(&effect, 1, 1.0f);
+                    effect.mRumbleDataArray[1].steady_duration = 0.2f;
+                    effect.mRumbleDataArray[1].delay = 0.0f;
+                    effect.mRumbleDataArray[1].ramp_up_duration = 0.2f;
+                    effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
+                    RumbleManager_Play(RumbleManager_Inst(currCl), &effect,
+                                       1.0f);
+                }
+                void* mWorld =
+                    *(void**)((char*)EntityManager_sInst + 0x44);
+                unsigned int hash =
+                    HashString_CalcHash("playerDeathHitGround");
+                if (mWorld != nullptr)
+                    Entity_Notify(mWorld, hash);
+            }
+            dword_F63C70[1580 * currCl] = finalPos[0];
+            dword_F63C74[1580 * currCl] = finalPos[1];
+            dword_F63C78[1580 * currCl] = finalPos[2];
+            dword_F63C70[1580 * currCl + 3] = finalPos[3];
+        }
+        else
+        {
+            UpdateMPDeathCameraNoKiller();
+        }
+    }
 }
