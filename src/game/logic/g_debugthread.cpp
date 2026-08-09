@@ -536,6 +536,7 @@ extern TaskHandlerImpl* AnimNotifyTask_sHandler;
 extern TaskHandlerImpl* EntityDeathTask_sHandler;
 extern void TaskHandler_Update(TaskHandlerImpl* self, float deltaT,
                                void* ftor);
+extern TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id);
 
 void TaskSys_Update(float deltaT)
 {
@@ -624,6 +625,37 @@ void TaskSys_ShutDown()
     TaskHandler_Update(HealthRegenTask_sHandler, 0.01f, nullptr);
     TaskHandler_Update(AnimNotifyTask_sHandler, 0.01f, nullptr);
     TaskHandler_Update(EntityDeathTask_sHandler, 0.01f, nullptr);
+}
+
+// ============================================================================
+// TaskSys::DeliverTasks - ea: 0x4FF9D0
+// ============================================================================
+extern void TaskSys_DeliverTasks();
+
+void TaskSys_DeliverTasks()
+{
+    TaskSysImpl2* sys = TaskSysImpl2_sInst;
+    // Move each posted task from mPostQueue to its handler's mTaskList.
+    int count = sys->mPostQueue.m_size;
+    while (count > 0)
+    {
+        DListNode* head = sys->mPostQueue.m_head;
+        Task* task = (Task*)((char*)head - 0x4);
+        sys->mPostQueue.m_head = head->m_next;
+        --sys->mPostQueue.m_size;
+        unsigned int taskId = *(unsigned int*)((char*)head + 0x8);
+        TaskHandlerImpl* handler = TaskSys_LookupHandler(taskId);
+        if (handler != nullptr)
+        {
+            DListNode* node = (DListNode*)&task->_dlist[0];
+            node->m_next = &handler->mTaskList.m_end;
+            node->m_prev = *handler->mTaskList.m_tail;
+            (*handler->mTaskList.m_tail)->m_next = node;
+            *handler->mTaskList.m_tail = node;
+            ++handler->mTaskList.m_size;
+        }
+        --count;
+    }
 }
 
 // ============================================================================
