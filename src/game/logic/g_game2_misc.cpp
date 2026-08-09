@@ -17,6 +17,189 @@ extern int default_apk_size;    // ?default_apk_size (game2.o)
 extern unsigned char default_apk[];  // ?default_apk (game2.o)
 extern unsigned char* default_pak_buf;  // ?default_pak_buf (game2.o)
 extern bool gMissionDataInitialized;    // ?gMissionDataInitialized (game2.o)
+extern void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
+                                void* params);  // ?BrocAddEntityThread (scr.o)
+
+// ============================================================================
+// ScriptEventHandler - script event dispatch list (0x44, IDA verified)
+// ============================================================================
+struct ScriptEvent {
+    HashString notify;    // +0x00
+    HashString callback;  // +0x04
+};
+
+struct ScriptEventHandler {
+    unsigned char m_dlist_node[8];      // +0x00
+    ScriptEvent mEvents[7];             // +0x08
+    ScriptEventHandler* mNext;          // +0x40
+
+    ~ScriptEventHandler();              // ea: 0x4F59D0
+    bool RemoveEvent(HashString h, HashString callback);  // ea: 0x4F59F0
+    bool ExecEvents(Entity* ent, HashString h, void* params);  // ea: 0x4F5A50
+};
+static_assert(sizeof(ScriptEventHandler) == 0x44,
+              "ScriptEventHandler size mismatch");
+
+// ============================================================================
+// ScriptEventHandler::~ScriptEventHandler - ea: 0x4F59D0
+// ============================================================================
+ScriptEventHandler::~ScriptEventHandler()
+{
+    ScriptEventHandler* mNext = this->mNext;
+    if (mNext != nullptr)
+    {
+        mNext->~ScriptEventHandler();
+        operator delete(mNext);
+    }
+}
+
+// ============================================================================
+// ScriptEventHandler::RemoveEvent - ea: 0x4F59F0
+// ============================================================================
+bool ScriptEventHandler::RemoveEvent(HashString h, HashString callback)
+{
+    ScriptEventHandler* cur = this;
+    for (;;)
+    {
+        int v3 = 0;
+        do
+        {
+            if (cur->mEvents[v3].notify.mHash == h.mHash
+                && cur->mEvents[v3].callback.mHash == callback.mHash)
+            {
+                cur->mEvents[v3].callback.mHash = 0;
+                cur->mEvents[v3].notify.mHash = 0;
+                return true;
+            }
+            ++v3;
+        } while (v3 < 7);
+        if (cur->mNext == nullptr)
+            break;
+        cur = cur->mNext;
+    }
+    return false;
+}
+
+// ============================================================================
+// ScriptEventHandler::ExecEvents - ea: 0x4F5A50
+// ============================================================================
+bool ScriptEventHandler::ExecEvents(Entity* ent, HashString h, void* params)
+{
+    bool v4 = false;
+    for (int i = 7; i != 0; --i)
+    {
+        if (mEvents[7 - i].notify.mHash == h.mHash)
+        {
+            BrocAddEntityThread(ent, mEvents[7 - i].callback.mHash, params);
+            v4 = true;
+        }
+    }
+    ScriptEventHandler* mNext = this->mNext;
+    if (mNext != nullptr)
+        return mNext->ExecEvents(ent, h, nullptr) || v4;
+    return v4;
+}
+
+// ============================================================================
+// SegmentSphereIntersection - segment/sphere test
+// ea: 0x4F5AC0
+// ============================================================================
+bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
+                               const float* sphereOrigin, float sphereRadius)
+{
+    extern vmCvar_t g_drawSmokeGren;  // ?g_drawSmokeGren (g.o)
+    struct DebugColor { float r, g, b, a; };
+    extern void DebugRender_RenderLine(const math::Position3* pt1,
+        const math::Position3* pt2, const DebugColor* col, float thickness);
+    extern float VectorNormalize(float* v);  // ?VectorNormalize (g.o)
+
+    if (g_drawSmokeGren.integer == 2)
+    {
+        DebugColor col = { 1.0f, 1.0f, 0.0f, 1.0f };
+        math::Position3 p1;
+        math::Position3 p2;
+        p1.v.m128_f32[0] = startPoint[0];
+        p1.v.m128_f32[1] = startPoint[1];
+        p1.v.m128_f32[2] = startPoint[2];
+        p2.v.m128_f32[0] = endPoint[0];
+        p2.v.m128_f32[1] = endPoint[1];
+        p2.v.m128_f32[2] = endPoint[2];
+        DebugRender_RenderLine(&p1, &p2, &col, 5.0f);
+    }
+    float segDir[3];
+    segDir[0] = endPoint[0] - startPoint[0];
+    segDir[1] = endPoint[1] - startPoint[1];
+    segDir[2] = endPoint[2] - startPoint[2];
+    float rel[3] = {
+        startPoint[0] - sphereOrigin[0],
+        startPoint[1] - sphereOrigin[1],
+        startPoint[2] - sphereOrigin[2],
+    };
+    float segLen = VectorNormalize(segDir);
+    float v5 = (segDir[2] * segDir[2]) + (segDir[1] * segDir[1])
+        + (segDir[0] * segDir[0]);
+    float v6 = ((rel[2] * segDir[2]) + (rel[1] * segDir[1])
+                + (rel[0] * segDir[0])) * 2.0f;
+    float v7 = ((((rel[2] * rel[2]) + (rel[1] * rel[1])
+                  + (rel[0] * rel[0])) - (sphereRadius * sphereRadius))
+                * v5) * 4.0f;
+    float v8 = (v6 * v6) - v7;
+    if (v8 < 0.0f)
+        return false;
+    float inv = 1597463007.0f - ((float)((int)v8) * 0.5f);
+    float t = ((0.0f - v6) - ((1.5f - (((v8 * 0.5f) * inv) * inv)) * inv))
+        / (v5 * 2.0f);
+    return t > 0.0f && segLen > t;
+}
+
+// ============================================================================
+// nalMatrix4x4_to_Axis4 - copy rotation rows to axis array
+// ea: 0x4F5ED0
+// ============================================================================
+struct nalMatrix4x4 {
+    float x[4];  // rows
+    float y[4];
+    float z[4];
+    float w[4];
+};
+
+void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        axis[i][0] = mat->x[i];
+        axis[i][1] = mat->y[i];
+        axis[i][2] = mat->z[i];
+    }
+}
+
+// ============================================================================
+// AnimIK - IK state (0x7C, IDA verified; ctor/dtor only here)
+// ============================================================================
+struct AnimIK {
+    unsigned char ikJoints[0x50];   // +0x00 AnimIKJointVars_t[4]
+    int initialized;                // +0x50
+    void* pose;                     // +0x54
+    void* skeleton;                 // +0x58
+    unsigned char _pad5C[0x7C - 0x5C];  // rest of AnimIK layout
+
+    AnimIK();  // ea: 0x4F60A0
+    ~AnimIK();  // ea: 0x4F60B0
+};
+static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
+
+// ea: 0x4F60A0
+AnimIK::AnimIK()
+{
+    initialized = 0;
+    pose = nullptr;
+    skeleton = nullptr;
+}
+
+// ea: 0x4F60B0
+AnimIK::~AnimIK()
+{
+}
 
 // ============================================================================
 // _xmission_data - 0x78 (IDA verified)
