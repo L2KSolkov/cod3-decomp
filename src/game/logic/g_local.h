@@ -125,7 +125,8 @@ struct scr_vehicle_t {
     uint8_t _pad17A[0x194 - 0x17A];  // waitNode/waitSpeed/fireTime/etc (unused)
     int     drawOnCompass;   // +0x194
     int     drawAsEnemy;     // +0x198
-    uint8_t _pad19C[0x1A4 - 0x19C];
+    uint8_t _pad19C[0x1A0 - 0x19C];
+    int     gunnerWeapon;     // +0x1A0
     int     playEngineSound; // +0x1A4
     uint8_t _pad1A8[0x1B4 - 0x1A8];
     int     mMantleTime;  // +0x1B4
@@ -200,6 +201,7 @@ struct scr_vehicle_t {
     bool  LetHatchClose();                    // ?LetHatchClose@scr_vehicle_t@@QAE_NXZ
     void  AssignPhysics(Entity* player);      // ?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
     int   GetEntryRoute(int seatIdx, int entryIdx, bool hasFlag);  // ?GetEntryRoute@scr_vehicle_t@@QAEHHH_N@Z
+    int   GetEntryHintStringIndex(Entity* vehicle, unsigned int entryPosition);  // ?GetEntryHintStringIndex@scr_vehicle_t@@QAEHPAVEntity@@I@Z
     void  CollisionDamage(Entity* ent, const math::Position3* pos,
                           const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
@@ -1137,7 +1139,10 @@ struct weaponFileInfo_t {
     float   turnSpeed[2];         // +0x880
     float   convergenceTime;      // +0x888
     float   maxRange;             // +0x88C
-    uint8_t _pad9[0x8A4 - 0x890];
+    uint8_t _pad9[0x898 - 0x890];
+    char*   szUseHintString;      // +0x898
+    int     iUseHintStringIndex;  // +0x89C
+    uint8_t _pad8a0[0x8A4 - 0x8A0];
     float   fFireHeat;            // +0x8A4
     float   fCooldownRate;        // +0x8A8
     uint8_t _pad9b[0x8BC - 0x8AC];
@@ -1863,6 +1868,22 @@ void  VEH_RespawnVehicle(Entity* ent);           // g.o 0x488ED0
 void  Cmd_Give_f(Entity* ent);                   // g.o 0x48B2F0
 void  SpectatorClientEndFrame(Entity* ent);      // g.o 0x460F00
 int   Q_stricmpn(const char* s1, const char* s2, int n);  // core.o
+void  Drop_Kit(Entity* pEnt, int iPlayerClass);  // g.o 0x457810
+void  G_FindTeams(void);                         // g.o 0x467BD0
+void  G_VehiclePopOut(Entity* player);           // g.o 0x48CC10
+int   G_GetHintStringIndex(int* piIndex, const char* pszString);  // g.o
+extern const char* sEntryPointHintText[6];       // g.o
+void  G_Animscripted_Think(Entity* ent);         // g.o 0x466BE0
+void  XAnimSetCompleteGoalWeight(XAnimTree* tree, unsigned int animIndex,
+                                 float goalWeight, float goalTime, float rate,
+                                 unsigned int notifyName, unsigned int notifyType,
+                                 void* bRestart);  // anim.o
+void  MultiplayerMgr_GetNextDroppedItemID(void* self, void* result, int itemType,
+                                          Entity* owner);  // mp.o
+void  MultiplayerMgr_DropItem(void* self, int itemType, const math::Position3* position,
+                              const math::Dir3* angles, const math::Dir3* velocity,
+                              int netIndex, bool scriptFrom, int typeIndex);  // mp.o
+enum { kItemTypeMax = 3 };                       // EDroppedItemTypes
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o

@@ -250,6 +250,10 @@ struct MultiplayerMgr {
     void SpreadFire(Entity* player, float gunPitch, float gunYaw,
                     float* weaponPosition, int weapon, float spread,
                     float coneAngleTangent, int seed);  // ?SpreadFire@MultiplayerMgr@@QAEXPAVEntity@@MMQAMHMHH@Z
+    void GetNextDroppedItemID(void* result, int itemType, Entity* owner);  // ?GetNextDroppedItemID@MultiplayerMgr@@QAEXAAVMPEntityHandle@@W4EDroppedItemTypes@@PAVEntity@@@Z
+    void DropItem(int itemType, const math::Position3* position,
+                  const math::Dir3* angles, const math::Dir3* velocity,
+                  int netIndex, bool scriptFrom, int typeIndex);  // ?DropItem@MultiplayerMgr@@QAEXW4EDroppedItemTypes@@ABVPosition3@math@@ABVDir3@2@2H_NH@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 

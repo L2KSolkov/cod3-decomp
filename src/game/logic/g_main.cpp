@@ -3184,3 +3184,214 @@ void SpectatorClientEndFrame(Entity* ent)
     v2->ps.viewHeightLerpDown = viewHeightLerpDown;
     v2->ps.pm_flags = 0x100000 | (v2->ps.pm_flags & 0xFFF7FFFF);
 }
+
+// ea: 0x00457810
+void Drop_Kit(Entity* pEnt, int iPlayerClass)
+{
+    math::Dir3 v6;
+    v6.v.m128_f32[2] = pEnt->r.currentAngles.v.m128_f32[1];
+    v6.v.m128_f32[1] = 0.0f;
+    v6.v.m128_f32[3] = 0.0f;
+    math::Dir3 vPos;
+    AnglesToForward(&v6.v.m128_f32[1], &vPos.v.m128_f32[1]);
+    vPos.v.m128_f32[1] *= 150.0f;
+    vPos.v.m128_f32[2] *= 150.0f;
+    float v3 = ((rand() * 0.000061035156f) - 1.0f) * 50.0f;
+    Client* client = pEnt->client;
+    vPos.v.m128_f32[3] = (v3 + (vPos.v.m128_f32[3] * 150.0f)) + 200.0f;
+    float angles[3];
+    angles[1] = pEnt->r.currentOrigin.v.m128_f32[0];
+    angles[2] = pEnt->r.currentOrigin.v.m128_f32[1];
+    float v8 = ((pEnt->r.maxs.v.m128_f32[2] - pEnt->r.mins.v.m128_f32[2]) * 0.5f)
+               + pEnt->r.currentOrigin.v.m128_f32[2];
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+        AeAssert::gCurrentLine = 1373;
+        AeAssert::gCurrentExpr = "pEnt->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    MultiplayerMgr::MPEntityHandle v10;
+    MultiplayerMgr::sInst->GetNextDroppedItemID(&v10, kItemTypeMax, pEnt);
+    math::Position3 v5;
+    v5.v.m128_f32[0] = vPos.v.m128_f32[1];
+    v5.v.m128_f32[1] = vPos.v.m128_f32[2];
+    v5.v.m128_f32[2] = vPos.v.m128_f32[3];
+    v5.v.m128_f32[3] = 0.0f;
+    vPos.v = v5.v;
+    math::Dir3 v6b;
+    v6b.v.m128_f32[0] = 0.0f;
+    v6b.v.m128_f32[1] = v6.v.m128_f32[2];
+    v6b.v.m128_f32[2] = 0.0f;
+    math::Position3 v5b;
+    v5b.v.m128_f32[0] = angles[1];
+    v5b.v.m128_f32[1] = angles[2];
+    v5b.v.m128_f32[2] = v8;
+    v5b.v.m128_f32[3] = 0.0f;
+    MultiplayerMgr::sInst->DropItem(3, &v5b, &v6b, &vPos, v10.mVal, false, iPlayerClass);
+}
+
+// ea: 0x00467BD0
+void G_FindTeams(void)
+{
+    for (int idx = 0; idx < 0x540; ++idx)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[idx].mObject;
+        if (mObject == nullptr)
+            continue;
+        if (mObject->team.mBlock == nullptr
+            || mObject->team.c_str()[0] == 0
+            || (mObject->flags & 0x10) != 0
+            || (mObject->mClassNameHash.mHash == hash_const.func_tramcar.mHash
+                && (mObject->spawnflags & 8) == 0))
+        {
+            continue;
+        }
+        mObject->teammaster = mObject;
+        for (int j = idx + 1; j < 0x540; ++j)
+        {
+            Entity* v8 = EntityHandleDb::sInst.mElements[j].mObject;
+            if (v8 == nullptr)
+                continue;
+            if (v8->team.mBlock != nullptr
+                && v8->team.c_str()[0] != 0
+                && (v8->flags & 0x10) == 0
+                && strcmp(mObject->team.c_str(), v8->team.c_str()) == 0)
+            {
+                v8->teamchain = mObject->teamchain;
+                mObject->teamchain = v8;
+                v8->teammaster = mObject;
+                v8->flags |= 0x10;
+                if (v8->mClassNameHash.mHash == hash_const.func_tramcar.mHash)
+                    SV_UnlinkEntity(v8);
+            }
+        }
+    }
+}
+
+// ea: 0x0048CC10
+void G_VehiclePopOut(Entity* player)
+{
+    Client* client = player->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7443;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((0x100000 & client->ps.eFlags) != 0)
+    {
+        Entity* mObject = HandleDbToEnt(player->r.mOwner);
+        if (mObject != nullptr)
+        {
+            if (mObject->scr_vehicle == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                AeAssert::gCurrentLine = 7452;
+                AeAssert::gCurrentExpr = "ent->scr_vehicle";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            Entity* driver = HandleDbToEnt(mObject->r.mOwner);
+            if (driver != nullptr && (mObject->r.contents & 0x200000) == 0)
+            {
+                int eFlags = client->ps.eFlags;
+                int popout;
+                const char* v9;
+                if ((0x400000 & eFlags) != 0)
+                {
+                    client->ps.eFlags = eFlags & 0xFFBFFFFF;
+                    popout = mObject->scr_vehicle->boneIndex.player;
+                    v9 = "tag_body";
+                }
+                else
+                {
+                    client->ps.eFlags = 0x400000 | eFlags;
+                    popout = mObject->scr_vehicle->boneIndex.popout;
+                    v9 = "tag_popout";
+                }
+                if (popout < 0)
+                    Com_Error(ERR_DROP, "Vehicle %s missing popout tag", v9);
+                G_EntUnlink(player);
+                DObjSkelMat playerMtx;
+                G_DObjGetWorldBoneIndexMatrix(mObject, popout, &playerMtx);
+                SetClientOrigin(player, playerMtx.origin);
+                if (G_EntLinkToWithOffset(player, mObject, v9, vec3_origin, vec3_origin,
+                                          false) == 0)
+                    Com_Error(ERR_DROP, "Could not link player to %s", v9);
+            }
+        }
+    }
+}
+
+// ea: 0x00466BE0
+void G_Animscripted_Think(Entity* ent)
+{
+    animscripted_t* v2 = ent->scripted;
+    if (v2 == nullptr)
+        return;
+    XAnimTree* v3;
+    if (ent->s.eType == 11)
+        v3 = G_GetActorAnimTree(ent->actor);
+    else if (ent->s.eType == 13)
+        v3 = G_GetActorCorpseAnimTree(ent);
+    else
+        v3 = ent->pAnimTree;
+    if (v3 != nullptr && v2->anim != 0)
+    {
+        if (v2->bStarted != 0)
+        {
+            if (v2->fBlendOutTime <= 0.0f)
+            {
+                if (XAnimHasFinished(v3, v2->anim) != 0)
+                {
+                    ent->flags &= 0xFEFFFFFF;
+                    XAnimSetCompleteGoalWeight(v3, v2->anim, 1.0f, 0.0f, 1.0f,
+                                               0, 0, nullptr);
+                    XAnimSetCompleteGoalWeight(v3, v2->anim, 0.0f, 0.0f, 1.0f,
+                                               0, 0, nullptr);
+                    v2->anim = 0;
+                }
+            }
+            else
+            {
+                float len = XAnimGetLength(Scr_GetAnims((int)XAnimGetAnims(v3)), v2->anim);
+                if (len <= 0.0f
+                    || ((len - v2->fBlendOutTime) / len
+                        < XAnimGetTime(v3, v2->anim)))
+                {
+                    static unsigned char s_init = 0;
+                    static unsigned int end_hash = 0;
+                    if (!(s_init & 1))
+                    {
+                        s_init |= 1;
+                        end_hash = HashString::CalcHash("end");
+                    }
+                    HashString h;
+                    h.mHash = end_hash;
+                    Scr_Notify(ent, h, 0);
+                    HashString n;
+                    n.mHash = v2->notifyName;
+                    Scr_Notify(ent, n, 0);
+                    ent->flags &= ~0x1000000u;
+                    v2->anim = 0;
+                }
+            }
+        }
+        else
+        {
+            v2->bStarted = 1;
+        }
+    }
+    else
+    {
+        mem_heap_free(v2);
+        ent->scripted = nullptr;
+    }
+}

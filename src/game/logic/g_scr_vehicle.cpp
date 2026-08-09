@@ -1373,6 +1373,57 @@ void SP_script_vehicle(Entity* pSelf)
     }
 }
 
+// ea: 0x0046FD50
+int scr_vehicle_t::GetEntryHintStringIndex(Entity* vehicle, unsigned int entryPosition)
+{
+    if (entryPosition >= 6)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10121;
+        AeAssert::gCurrentExpr = "entryPosition >= 0 && entryPosition < NUM_ENTRY_POINTS";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid entry point index"))
+            __debugbreak();
+    }
+    if (s_vehicleInfos[infoIdx] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10122;
+        AeAssert::gCurrentExpr = "s_vehicleInfos[ infoIdx ]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid info pointer in vehicle"))
+            __debugbreak();
+    }
+    if (s_vehicleInfos[infoIdx]->type != 2)
+    {
+        if (sEntryPointHintIndicies[entryPosition] == -1)
+        {
+            G_GetHintStringIndex(&sEntryPointHintIndicies[entryPosition],
+                                 sEntryPointHintText[entryPosition]);
+            if (sEntryPointHintIndicies[entryPosition] < 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                AeAssert::gCurrentLine = 10136;
+                AeAssert::gCurrentExpr = "sEntryPointHintIndicies[entryPosition]>= 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid vehicle entry hint string."))
+                    __debugbreak();
+            }
+        }
+        if (sEntryPointSeatAssociation[entryPosition] != 1
+            || *BG_GetInfoForWeapon((int)gunnerWeapon)->szUseHintString == 0)
+        {
+            return sEntryPointHintIndicies[entryPosition];
+        }
+        return BG_GetInfoForWeapon((int)gunnerWeapon)->iUseHintStringIndex;
+    }
+    if (HandleDbToEnt(vehicle->scr_vehicle->seats[0].occupant) != nullptr)
+        return BG_GetInfoForWeapon((int)gunnerWeapon)->iUseHintStringIndex;
+    Entity* mObject = HandleDbToEnt(mEntity);
+    return BG_GetInfoForWeapon(mObject->s.weapon)->iUseHintStringIndex;
+}
+
 // ea: 0x0044D370
 int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType)
 {

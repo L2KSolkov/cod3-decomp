@@ -34,7 +34,20 @@ class PoolAllocator;
 struct gitem_s;
 struct Curve;
 struct tagInfo_t;
-struct animscripted_t;
+struct animscripted_t {
+    math::Position3 origin;     // +0x00
+    math::Position3 offset;     // +0x20
+    unsigned int    anim;       // +0x40 (scr_anim_s mHandle)
+    void*           root;       // +0x44
+    int             bStarted;   // +0x48
+    int             mode;       // +0x4C
+    float           fBlendOutTime;  // +0x50
+    unsigned int    notifyName; // +0x54
+    float           fHeightOfs; // +0x58
+    float           fEndPitch;  // +0x5C
+    float           fEndRoll;   // +0x60
+    float           fOrientLerp;// +0x64
+};
 struct proximity_data_t;
 struct actor_s;
 struct sentient_s;
