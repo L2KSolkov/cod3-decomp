@@ -566,7 +566,9 @@ struct str_const_t {
     Broc::string hq_point;                 // +0x1B4
     uint8_t    _pad1B8[0x1FC - 0x1B8];
     Broc::string tempEntity;          // +0x1FC
-    uint8_t    _pad200[0x2B4 - 0x200];
+    uint8_t    _pad200[0x298 - 0x200];
+    Broc::string smoke_grenade;       // +0x298
+    uint8_t    _pad29C[0x2B4 - 0x29C];
 };
 static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
 static_assert(offsetof(str_const_t, spawn_intermission) == 0x168,
@@ -1136,6 +1138,7 @@ float  AngleNormalize180(float angle);
 float  AngleNormalize360(float angle);
 float  AngleDelta(float a1, float a2);              // core.o 0x4B9CD0
 float  LerpAngle(float a1, float a2, float frac);   // core.o
+float  flrand(float min, float max);                // core.o
 int    R_CellForPoint(const math::Position3* pos);  // render.o 0x6C52B0
 float  AngleSubtract(float a1, float a2);
 float  PitchForYawOnNormal(float fYaw, const float* vNormal);
