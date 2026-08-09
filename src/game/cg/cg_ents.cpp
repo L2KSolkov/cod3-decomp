@@ -865,3 +865,185 @@ void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
         }
     }
 }
+
+extern void* cg_weapons;
+extern void* cg_items;
+extern void* bg_itemlist;
+extern void* Entity_GetRefEntity(Entity* ent);
+extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
+extern void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
+extern void CG_LockLightingOrigin(Entity* ent, void* refEnt);
+extern void CG_RegisterItemVisuals(int itemNum);
+extern void CG_Error(const char* msg, ...);
+extern int BG_GetNumWeapons();
+
+// ea: 0x00689CD0
+void CG_Missile(Entity* entity)
+{
+    if (entity->s.eFlags >= 0)
+    {
+        if (entity->s.weapon > BG_GetNumWeapons())
+            entity->s.weapon = 0;
+        weaponInfo_s* v23 = &((weaponInfo_s*)cg_weapons)[entity->s.weapon];
+        void* mDObj = entity->mDObj;
+        if (mDObj != nullptr)
+        {
+            refEntity_t* RefEntity =
+                (refEntity_t*)Entity_GetRefEntity(entity);
+            RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+            RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+            RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+            RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+            RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+            RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+            RefEntity->renderfx = v23->missileRenderfx | 0x40;
+            AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            RefEntity->obj = mDObj;
+            RefEntity->entity = entity;
+            RefEntity->reType = 1;
+            RE_AddRefEntityToScene(RefEntity, -1);
+        }
+    }
+}
+
+// ea: 0x00689E70
+void CG_Mover(Entity* entity)
+{
+    if (entity->s.eFlags >= 0)
+    {
+        bool v2 = entity->s.solid == 0xFFFFFF;
+        void* mDObj = entity->mDObj;
+        if (v2 || mDObj != nullptr)
+        {
+            refEntity_t* RefEntity =
+                (refEntity_t*)Entity_GetRefEntity(entity);
+            RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+            RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+            RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+            RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+            RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+            RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+            AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            RefEntity->renderfx = 64;
+            RefEntity->obj = mDObj;
+            RefEntity->entity = entity;
+            RefEntity->reType = 1;
+            RE_AddRefEntityToScene(RefEntity, -1);
+        }
+    }
+}
+
+// ea: 0x00689FF0
+void CG_ScriptMover(Entity* entity)
+{
+    if (entity->s.eFlags >= 0)
+    {
+        bool v2 = entity->s.solid == 0xFFFFFF;
+        void* mDObj = entity->mDObj;
+        if (v2 || mDObj != nullptr)
+        {
+            refEntity_t* RefEntity =
+                (refEntity_t*)Entity_GetRefEntity(entity);
+            int eFlags = entity->s.eFlags;
+            if ((eFlags & 0x40000000) != 0)
+            {
+                entity->s.eFlags = eFlags & 0xBFFFFFFF;
+                RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+                RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+                RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+                RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+                RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+                RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+                AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            }
+            RefEntity->renderfx = 64;
+            RefEntity->reType = 1;
+            RefEntity->entity = entity;
+            RefEntity->obj = mDObj;
+            if (v2)
+            {
+                RE_AddRefEntityToScene(RefEntity, -1);
+            }
+            else
+            {
+                CG_LockLightingOrigin(entity, RefEntity);
+                RE_AddRefEntityToScene(RefEntity, -1);
+            }
+        }
+    }
+}
+
+// ea: 0x0068A540
+void CG_Vehicle(Entity* entity)
+{
+    if (entity->s.eFlags >= 0)
+    {
+        void* mDObj = entity->mDObj;
+        if (mDObj != nullptr)
+        {
+            refEntity_t* RefEntity =
+                (refEntity_t*)Entity_GetRefEntity(entity);
+            memcpy(RefEntity->origin, &entity->r.currentOrigin, 12);
+            memcpy(RefEntity->oldorigin, &entity->r.currentOrigin, 12);
+            AnglesToAxis(&entity->r.currentAngles, RefEntity->axis);
+            RefEntity->lightingOrigin[0] =
+                entity->r.currentOrigin.v.m128_f32[0];
+            RefEntity->lightingOrigin[1] =
+                entity->r.currentOrigin.v.m128_f32[1];
+            RefEntity->lightingOrigin[2] =
+                entity->r.currentOrigin.v.m128_f32[2] + 32.0f;
+            RefEntity->renderfx = 128;
+            RefEntity->obj = mDObj;
+            RefEntity->entity = entity;
+            RefEntity->reType = 1;
+            int eFlags = entity->s.eFlags;
+            if ((eFlags & 0x100000) != 0 && (eFlags & 0x400) == 0)
+                RefEntity->renderfx = 16;
+            RE_AddRefEntityToScene(RefEntity, -1);
+        }
+    }
+}
+
+// ea: 0x00696C20
+void CG_Item(Entity* entity)
+{
+    int brushmodel = *(int*)((char*)&entity->s + 6) & 0xFF;
+    if (brushmodel >= 0x89)
+        CG_Error("Bad item index %i on entity", brushmodel);
+    if (entity->s.eFlags >= 0)
+    {
+        if (((unsigned char*)cg_items)[8 * brushmodel] != 0)
+        {
+            void* mDObj = entity->mDObj;
+            if (mDObj != nullptr)
+            {
+                refEntity_t* RefEntity =
+                    (refEntity_t*)Entity_GetRefEntity(entity);
+                RefEntity->scale = 0.0f;
+                if (((unsigned int*)bg_itemlist)[13 * brushmodel + 4]
+                    == 1 /* IT_WEAPON */)
+                {
+                    AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+                    RefEntity->scale = 1.5f;
+                }
+                else
+                {
+                    AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+                }
+                RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+                RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+                RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+                RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
+                RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
+                RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
+                RefEntity->entity = entity;
+                RefEntity->reType = 1;
+                RE_AddRefEntityToScene(RefEntity, -1);
+            }
+        }
+        else
+        {
+            CG_RegisterItemVisuals(brushmodel);
+        }
+    }
+}
