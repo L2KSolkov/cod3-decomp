@@ -852,6 +852,9 @@ press_bind_done:
 struct ButtonMgr {
     static ButtonEntry mButtons[1][16];  // ?mButtons@ButtonMgr
     static void UpdateBinding(unsigned char keyInfoIndex, int clnt);
+    static void InitKeyBindings(int c);
+    static void ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt);
+    static int ClearAllBindings();
 };
 
 ButtonEntry ButtonMgr::mButtons[1][16];
@@ -868,6 +871,83 @@ void ButtonMgr::UpdateBinding(unsigned char keyInfoIndex, int clnt)
             return;
     }
     mButtons[clnt][v4].SetCmdBinding();
+}
+
+// ============================================================================
+// ButtonMgr::InitKeyBindings - ea: 0x501590
+// ============================================================================
+void ButtonMgr::InitKeyBindings(int c)
+{
+    for (int v2 = 0; v2 <= 15; ++v2)
+    {
+        unsigned char v3;
+        switch (v2)
+        {
+        case 0:  v3 = 0x9C; break;
+        case 1:  v3 = 0x9B; break;
+        case 2:  v3 = 0x9D; break;
+        case 3:  v3 = 0x9A; break;
+        case 5:  v3 = 0xD4; break;
+        case 14: v3 = 27; break;
+        case 15: v3 = 9; break;
+        default: v3 = (unsigned char)(v2 - 49); break;
+        }
+        ButtonEntry* v4 = &mButtons[c][v2];
+        v4->mBoundCmdPress = nullptr;
+        v4->mBoundCmdRelease = nullptr;
+        v4->mKeyInfoIndex = v3;
+        if (v3 != 0xFF)
+            v4->SetCmdBinding();
+    }
+}
+
+// ============================================================================
+// ButtonMgr::ClearBinding - ea: 0x5016F0
+// ============================================================================
+void ButtonMgr::ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt)
+{
+    if (boundCmd != nullptr)
+    {
+        for (int v2 = 0; v2 <= 15; ++v2)
+        {
+            ButtonEntry* v4 = &mButtons[clnt][v2];
+            if (v4->mBoundCmdPress == nullptr && v4->mKeyInfoIndex != 0xFF)
+                v4->SetCmdBinding();
+            if (v4->mBoundCmdPress == boundCmd)
+                goto found;
+            ButtonEntry* v6 = &mButtons[clnt][v2];
+            if (v6->mBoundCmdRelease == nullptr && v6->mKeyInfoIndex != 0xFF)
+                v6->SetCmdBinding();
+            if (v6->mBoundCmdRelease == boundCmd)
+            {
+            found:
+                ButtonEntry* v8 = &mButtons[clnt][v2];
+                v8->mBoundCmdPress = nullptr;
+                v8->mBoundCmdRelease = nullptr;
+                v8->mKeyInfoIndex = 0xFF;
+                v8->SetCmdBinding();
+            }
+        }
+    }
+}
+
+// ============================================================================
+// ButtonMgr::ClearAllBindings - ea: 0x5017C0
+// ============================================================================
+int ButtonMgr::ClearAllBindings()
+{
+    for (int i = 0; i < 1; ++i)
+    {
+        for (int j = 0; j < 16; ++j)
+        {
+            ButtonEntry* e = &mButtons[i][j];
+            e->mKeyInfoIndex = 0xFF;
+            e->mBoundCmdPress = nullptr;
+            e->mBoundCmdRelease = nullptr;
+            e->SetCmdBinding();
+        }
+    }
+    return 0;
 }
 
 // ============================================================================

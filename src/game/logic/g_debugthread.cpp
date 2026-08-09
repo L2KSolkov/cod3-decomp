@@ -475,3 +475,35 @@ void TestFPS::OutputStats()
     }
     (void)m_size;
 }
+
+// ============================================================================
+// TestFPS::StopTest - ea: 0x5018C0
+// ============================================================================
+extern int gStartTime;  // ?gStartTime (game2.o)
+extern void Com_Printf(const char* fmt, ...);
+extern void Cvar_Set(const char* var_name, const char* value);
+
+void TestFPS::StopTest()
+{
+    if (mTesting)
+    {
+        OutputStats();
+        if (mFile != nullptr)
+        {
+            fclose((FILE*)mFile);
+            mFile = nullptr;
+        }
+        mTesting = false;
+        Entity* player = EntityManager::sInst->GetPlayer(currCl);
+        player->client->noclip = 0;
+        player->client->bFrozen = 0;
+        player->client->ps.pm_flags &= ~0x4000u;
+        Cvar_Set("g_performanceTest", "0");
+        int v3 = Sys_Milliseconds();
+        Com_Printf(
+            "Performance test finished in %i hours %i minutes %i seconds.\n",
+            (int)((v3 - gStartTime) * 0.001) / 60 / 60,
+            (int)((v3 - gStartTime) * 0.001) / 60 % 60,
+            (int)((v3 - gStartTime) * 0.001) % 60);
+    }
+}
