@@ -94,6 +94,7 @@ struct ScriptEventHandler {
     ScriptEventHandler();               // ea: 0x4F9860
     ~ScriptEventHandler();              // ea: 0x4F59D0
     bool AddEvent(HashString h, HashString callback);  // ea: 0x4F98D0
+    bool AddEvent(HashString h, const char* callback); // ea: 0x4FF780
     bool RemoveEvent(HashString h, HashString callback);  // ea: 0x4F59F0
     bool ExecEvents(Entity* ent, HashString h, void* params);  // ea: 0x4F5A50
 };
@@ -1002,6 +1003,21 @@ struct SplineEntry {
     int pad8;    // +0x08
 };
 
+struct SplineGroupFile {
+    void* mTree;      // +0x00 InplaceTree<uint,uint>
+    void** mPtrs;     // +0x04 InplaceVector<SplineGroup*>
+};
+
+struct SplineGroup;
+struct SplinePathData {
+    float* mSpline;  // +0x00 InplaceVector<float>
+};
+struct SplinePath {
+    void* mEventIndices;  // +0x00
+    void* mEventHashes;   // +0x04
+    float* mSpline;       // +0x08
+};
+
 class SplineMgr {
 public:
     unsigned char m_assetBase[4];      // +0x00 AssetBankSet
@@ -1010,6 +1026,10 @@ public:
     SplineEntry* GetUnusedEntry();     // ea: 0x4F9700
     void UnloadBank(int pakId);        // ea: 0x4F97C0
     static bool EndOfSpline(const float* p);  // ea: 0x4F59A0
+    void AddSplineGroupFile(unsigned char* data, int pakId);  // ea: 0x4FF5B0
+    SplinePathData* GetSplinePathData(unsigned int name, int* pakId);  // ea: 0x4FF5D0
+    SplineGroup* GetSplinePathGroup(unsigned int name, int* pakId);    // ea: 0x4FF660
+    void GetSpline(unsigned int name, SplinePath* splinePath);         // ea: 0x4FF6F0
 };
 
 extern bool AeAssert_Error(const char* fmt, ...);
@@ -1309,4 +1329,155 @@ Client* FN_Multiplayer_Rank3()
 bool SplineMgr::EndOfSpline(const float* p)
 {
     return *p == -1.0f && *(p + 1) == -1.0f && *(p + 2) == -1.0f;
+}
+
+// ============================================================================
+// SplineMgr path lookup helpers
+// ============================================================================
+extern unsigned int InplaceTree_Find(void* tree, const unsigned int* key);
+extern void InplaceAssetBank_Fixup(void* data);
+extern SplineGroup* SplineGroup_GetPath(void* self);
+
+// ea: 0x4FF5B0
+void SplineMgr::AddSplineGroupFile(unsigned char* data, int pakId)
+{
+    SplineEntry* entry = GetUnusedEntry();
+    entry->pakId = pakId;
+    entry->file = data;
+    InplaceAssetBank_Fixup(data);
+}
+
+// ea: 0x4FF5D0
+SplinePathData* SplineMgr::GetSplinePathData(unsigned int name, int* pakId)
+{
+    *pakId = -1;
+    if (name == 0)
+        return nullptr;
+    for (int v4 = 0; v4 < 32; ++v4)
+    {
+        if (mList[v4].pakId != -1)
+        {
+            void* file = mList[v4].file;
+                unsigned int* v7 =
+                (unsigned int*)InplaceTree_Find(&((SplineGroupFile*)file)->mTree,
+                                                &name);
+            if (v7 != nullptr)
+            {
+                SplineGroup* v8 = (SplineGroup*)
+                    ((SplineGroupFile*)file)->mPtrs[*v7];
+                if (v8 != nullptr)
+                {
+                    *pakId = mList[v4].pakId;
+                    return (SplinePathData*)SplineGroup_GetPath(v8);
+                }
+            }
+        }
+    }
+    return nullptr;
+}
+
+// ea: 0x4FF660
+SplineGroup* SplineMgr::GetSplinePathGroup(unsigned int name, int* pakId)
+{
+    *pakId = -1;
+    if (name == 0)
+        return nullptr;
+    for (int v4 = 0; v4 < 32; ++v4)
+    {
+        if (mList[v4].pakId != -1)
+        {
+            void* file = mList[v4].file;
+            unsigned int* v7 =
+                (unsigned int*)InplaceTree_Find(&((SplineGroupFile*)file)->mTree,
+                                                &name);
+            if (v7 != nullptr)
+            {
+                SplineGroup* v8 = (SplineGroup*)
+                    ((SplineGroupFile*)file)->mPtrs[*v7];
+                if (v8 != nullptr)
+                {
+                    *pakId = mList[v4].pakId;
+                    return v8;
+                }
+            }
+        }
+    }
+    return nullptr;
+}
+
+// ea: 0x4FF6F0
+void SplineMgr::GetSpline(unsigned int name, SplinePath* splinePath)
+{
+    splinePath->mEventIndices = nullptr;
+    splinePath->mEventHashes = nullptr;
+    splinePath->mSpline = nullptr;
+    if (name == 0)
+        return;
+    for (int v3 = 0; v3 < 32; ++v3)
+    {
+        if (mList[v3].pakId != -1)
+        {
+            void* file = mList[v3].file;
+            unsigned int* v8 =
+                (unsigned int*)InplaceTree_Find(&((SplineGroupFile*)file)->mTree,
+                                                &name);
+            if (v8 != nullptr)
+            {
+                SplineGroup* v9 = (SplineGroup*)
+                    ((SplineGroupFile*)file)->mPtrs[*v8];
+                if (v9 != nullptr)
+                {
+                    SplinePathData* path =
+                        (SplinePathData*)SplineGroup_GetPath(v9);
+                    splinePath->mEventHashes = nullptr;
+                    splinePath->mEventIndices = nullptr;
+                    splinePath->mSpline = (float*)&path->mSpline[0];
+                    return;
+                }
+            }
+        }
+    }
+}
+
+// ============================================================================
+// ScriptEventHandler::AddEvent(HashString, const char*)
+// ea: 0x4FF780
+// ============================================================================
+bool ScriptEventHandler::AddEvent(HashString h, const char* callback)
+{
+    if (callback == nullptr)
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Adding a script event with no callback."))
+            __debugbreak();
+    }
+    HashString v4;
+    v4.mHash = HashString::CalcHash(callback);
+    return AddEvent(h, v4);
+}
+
+// ============================================================================
+// TaskSys::LookupHandler - ea: 0x4FF990
+// ============================================================================
+struct TaskHandler {
+    unsigned int mTaskId;  // +0x00 FourCC
+};
+
+struct TaskSysImpl {
+    TaskHandler* mTaskHandlers[32];  // +0x00 ae_sized_array<TaskHandler*,32>
+    int m_size;                      // +0x80
+
+    TaskHandler* LookupHandler(unsigned int id);
+};
+
+// ea: 0x4FF990
+TaskHandler* TaskSysImpl::LookupHandler(unsigned int id)
+{
+    int count = m_size;
+    for (int i = 0; i < count; ++i)
+    {
+        if (mTaskHandlers[i]->mTaskId == id)
+            return mTaskHandlers[i];
+    }
+    return nullptr;
 }
