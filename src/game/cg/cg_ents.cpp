@@ -5,6 +5,8 @@
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
 
+#include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -568,6 +570,8 @@ extern void* SoundDevice_sInst;
 extern int Key_GetCatcher();
 extern void Key_SetCatcher(int catcher);
 extern void* EntityHandleDb_mActiveList;
+extern char cgsGlobal_shellshockParms[0x7C];
+class EntityHandleDbLocal;
 class EntityHandleDbLocal {
 public:
     struct DbElement {
@@ -577,6 +581,13 @@ public:
     DbElement mElements[0x540];
 };
 extern EntityHandleDbLocal EntityHandleDb_sInst;
+static Entity* EntityHandleDb_Get(unsigned int handleVal)
+{
+    unsigned int v = handleVal & 0xFFF;
+    if (v < 0x540 && handleVal >> 12 == EntityHandleDb_sInst.mElements[v].mKey)
+        return EntityHandleDb_sInst.mElements[v].mObject;
+    return nullptr;
+}
 extern int cgGlobal_oldTime;
 
 // ea: 0x006A23D0
@@ -704,5 +715,153 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
         SoundDevice_UnpauseAllSounds(SoundDevice_sInst);
         int Catcher = Key_GetCatcher();
         Key_SetCatcher(Catcher & 0xFFFFFFFD);
+    }
+}
+
+extern void CG_RegisterItems();
+extern void CG_ParseCullDist();
+extern void CG_NorthDirectionChanged();
+extern void CG_RegisterServerShader(int num);
+extern void CG_ParseObjectiveChange(int iNum);
+extern int CG_LoadShellShockCvars(const char* name);
+extern void CG_SetShellShockParmsFromCvars(void* parms);
+extern void CG_CheckOpenWaitingScriptMenu();
+extern void CG_ServerCommand();
+extern int CL_GetServerCommand(int serverCommandNumber);
+extern int dword_F6294C[4 * 1580];
+extern void* RE_RegisterModel(void* result, const char* name, int pakId,
+                              int imagetype);
+extern int CurPakId();
+extern void VectorNormalize2(const float* v, float* out);
+extern void PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
+                                      bool queue, int pakid, bool important);
+extern float dword_F63C70[4 * 1580];
+extern float dword_F63C74[4 * 1580];
+extern float dword_F63C78[4 * 1580];
+extern float* gCamera_mLastTagCamMat_w;
+
+// ea: 0x006A34D0
+void CG_ConfigStringModifiedInternal(int num)
+{
+    const char* v2 = CG_ConfigString(num);
+    if (num == 8)
+    {
+        CG_RegisterItems();
+    }
+    else if (num == 3)
+    {
+        const char* ConfigString = CL_GetConfigStringC(3);
+        Info_ValueForKey(ConfigString, "n");
+        Info_ValueForKey(ConfigString, "t");
+    }
+    else if (num != 0)
+    {
+        if (num == 9)
+        {
+            CG_ParseCullDist();
+        }
+        else if (num < 33 || num >= 161)
+        {
+            if (num < 225 || num >= 305)
+            {
+                if (num < 561 || num >= 563)
+                {
+                    if (num < 16 || num >= 33)
+                    {
+                        if (num != 627)
+                        {
+                            if (num < 724 || num >= 980)
+                            {
+                                if (num == 11)
+                                    CG_NorthDirectionChanged();
+                                else if (num == 12)
+                                {
+                                    char wind_str[128];
+                                    strcpy(wind_str, CL_GetConfigStringC(12));
+                                    float f[4];
+                                    sscanf(wind_str, "%f %f %f %f", &f[0],
+                                           &f[1], &f[2], &f[3]);
+                                    CG_ASSERT("0 && \"FX_SetWind GONE\"",
+                                              "c:\\cod\\code\\game\\"
+                                              "cg_servercmds.cpp",
+                                              193);
+                                }
+                            }
+                            else
+                            {
+                                CG_RegisterServerShader(num);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        CG_ParseObjectiveChange(num);
+                    }
+                }
+                else if (v2 != nullptr && v2[0] != 0)
+                {
+                    if (CG_LoadShellShockCvars(v2) != 0)
+                        CG_SetShellShockParmsFromCvars(
+                            (char*)cgsGlobal_shellshockParms + (num - 561));
+                }
+            }
+        }
+        else
+        {
+            int v6 = CurPakId();
+            void* result;
+            void* v7 = RE_RegisterModel(&result, v2, v6, 7);
+            gCamera_mLastTagCamMat_w[2 * num] = *(float*)v7;
+            gCamera_mLastTagCamMat_w[2 * num + 1] = *(float*)((char*)v7 + 4);
+        }
+    }
+    else
+    {
+        CG_ParseServerinfo();
+    }
+}
+
+// ea: 0x006A3B60
+void CG_ExecuteNewServerCommands(int latestSequence)
+{
+    CG_CheckOpenWaitingScriptMenu();
+    int* i = &dword_F6294C[1580 * currCl];
+    while (*i < latestSequence)
+    {
+        int v2 = *i + 1;
+        *i = v2;
+        if (CL_GetServerCommand(v2) != 0)
+            CG_ServerCommand();
+    }
+}
+
+// ea: 0x006AB640
+void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
+                    const float* vEnd)
+{
+    float vDelta[3] = {vEnd[0] - vStart[0], vEnd[1] - vStart[1],
+                       vEnd[2] - vStart[2]};
+    float vDir[3];
+    VectorNormalize2(vDelta, vDir);
+    float v4 = ((dword_F63C78[1580 * currCl] - vStart[2]) * vDir[2]
+                + (dword_F63C74[1580 * currCl] - vStart[1]) * vDir[1])
+               + (dword_F63C70[1580 * currCl] - vStart[0]) * vDir[0];
+    if (v4 >= 64.0f
+        && (v4 + 64.0f) <= ((vDir[2] * vDelta[2]) + (vDir[1] * vDelta[1])
+                            + (vDir[0] * vDelta[0])))
+    {
+        float v5 = ((v4 * vDir[0]) + vStart[0])
+                   - dword_F63C70[1580 * currCl];
+        float v6 = ((v4 * vDir[1]) + vStart[1])
+                   - dword_F63C74[1580 * currCl];
+        float v13 = ((v4 * vDir[2]) + vStart[2])
+                    - dword_F63C78[1580 * currCl];
+        if (sqrtf(v13 * v13 + v6 * v6 + v5 * v5) <= 140.0f)
+        {
+            Entity* v7 = EntityHandleDb_Get(sourceEntity);
+            if (v7 == nullptr)
+                CG_ASSERT("cent", "c:\\cod\\code\\game\\cg_weapons.cpp", 4472);
+            PostEffectEventScriptCall(v7, "WhizBySound", false, -1, false);
+        }
     }
 }
