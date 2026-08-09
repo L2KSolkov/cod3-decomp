@@ -862,3 +862,223 @@ int CanDamage(Entity* targ, const float* origin, Entity* inflictor)
     }
     return 1;
 }
+
+// CollisionDesc layout twin (core_systems.h cannot be included here)
+struct LocalCollisionDesc {
+    math::Position3 coord;   // +0x00
+    math::Position3 normal;  // +0x10
+    int             material; // +0x20
+};
+
+// ea: 0x00456520
+void SentientApplyPhysicsDamage(Entity* pSelf, Entity* pInflictor, int iDamage,
+                                int iMod, const float* vPosition,
+                                const float* vDir, hitLocation_t hitLoc,
+                                int iWeapon)
+{
+    float force = ((0x400000 & pSelf->flags) != 0) ? 0.5f : 1.0f;
+    switch (iMod)
+    {
+    case 3: case 4: case 5: case 6: case 9: case 10: case 11:
+    case 17: case 18: case 20: case 32:
+    {
+        float vdir[4];
+        vdir[0] = vDir[0];
+        vdir[1] = vDir[1];
+        vdir[2] = vDir[2];
+        vdir[3] = 0.0f;
+        float v12;
+        if (vdir[2] >= 0.2f)
+        {
+            if (vdir[2] <= 0.64999998f)
+                goto skip_updir;
+            vdir[0] += (vdir[0] >= 0.0f ? 1 : -1) * 0.2f;
+            vdir[1] += (vdir[1] >= 0.0f ? 1 : -1) * 0.2f;
+            v12 = vdir[2] * 0.89999998f;
+        }
+        else
+        {
+            v12 = vdir[2] + 0.5f;
+        }
+        vdir[2] = v12;
+skip_updir:
+        float v11;
+        if (iMod == 11)
+        {
+            float v15 = iDamage * 2.2f;
+            v11 = 70.0f;
+            if (v15 >= 70.0f)
+            {
+                v11 = 150.0f;
+                if (v15 <= v11)
+                    v11 = v15;
+            }
+        }
+        else if (iMod != 32 && iMod != 20)
+        {
+            if (iMod == 3 || iMod == 4 || iMod == 7 || iMod == 8 || iMod == 9
+                || iMod == 10 || iMod == 5 || iMod == 6 || iMod == 17
+                || iMod == 18 || iMod == 27)
+            {
+                float v15 = iDamage * 1.4f;
+                v11 = 100.0f;
+                if (v15 < 100.0f)
+                    goto done_cap;
+                v11 = 220.0f;
+                if (v15 <= v11)
+                    v11 = v15;
+            }
+            else
+            {
+                float v15 = iDamage * 1.4f;
+                v11 = 80.0f;
+                if (v15 < 80.0f)
+                    goto done_cap;
+                v11 = 170.0f;
+                if (v15 <= v11)
+                    v11 = v15;
+            }
+        }
+        else
+        {
+            v11 = 0.0f;
+        }
+done_cap:
+        force = v11 * force;
+        math::Position3 hitp;
+        hitp.v = _mm_setzero_ps();
+        math::Dir3 hitd;
+        hitd.v.m128_f32[0] = vdir[0];
+        hitd.v.m128_f32[1] = vdir[1];
+        hitd.v.m128_f32[2] = vdir[2];
+        hitd.v.m128_f32[3] = 0.0f;
+        ApplyPhysics(pSelf, &hitp, &hitd, force, false, HITLOC_TORSO_UPR);
+        if ((vdir[2] * force) > 100.0f)
+        {
+            float v16 = vdir[0] * force;
+            float v17 = vdir[1] * force;
+            float v18 = vdir[2] * force;
+            if (sqrt(v16 * v16 + v17 * v17 + v18 * v18) > 180.0f)
+                PostEffectEventScriptCall(pSelf, "PLAYER_DEATH_FLYING", false,
+                                          PAK_ID_INVALID, false);
+        }
+        return;
+    }
+    case 25:
+    {
+        math::Position3 hitp;
+        hitp.v = pSelf->r.currentOrigin.v;
+        float vdir[4];
+        vdir[0] = vDir[0];
+        vdir[1] = vDir[1];
+        vdir[2] = vDir[2];
+        vdir[3] = 0.0f;
+        weaponFileInfo_t* info = BG_GetInfoForWeapon(iWeapon);
+        float v27;
+        if (info->weapClass == 5 /* WEAPCLASS_GRENADE */)
+        {
+            math::Position3 pos;
+            pos.v = pSelf->r.currentOrigin.v;
+            LocalCollisionDesc cd;
+            cd.coord.v = pos.v;
+            cd.normal.v = _mm_setzero_ps();
+            cd.normal.v.m128_f32[2] = 1.0f;
+            cd.material = (int)pSelf->s.surfType;
+            PostEffectEventProjExplode(pSelf, "fraggrenade",
+                                       (const CollisionDesc*)&cd);
+            v27 = 100.0f;
+            AnglesToForward(pSelf->r.currentAngles.v.m128_f32, vdir);
+            vdir[0] = -vdir[0];
+            vdir[1] = -vdir[1];
+            vdir[2] = -vdir[2];
+            *(unsigned int*)&vdir[3] = 0x40000000;
+        }
+        else
+        {
+            v27 = (float)iDamage;
+            if (iDamage == 0)
+            {
+                AnglesToForward(pSelf->r.currentAngles.v.m128_f32, vdir);
+                vdir[3] = 1.0f;
+            }
+        }
+        float fforce;
+        if (v27 >= 0.0f)
+        {
+            fforce = 100.0f;
+            if (v27 <= 100.0f)
+                fforce = v27;
+        }
+        else
+        {
+            fforce = 0.0f;
+        }
+        math::Dir3 hitd;
+        hitd.v.m128_f32[0] = vdir[0];
+        hitd.v.m128_f32[1] = vdir[1];
+        hitd.v.m128_f32[2] = vdir[2];
+        hitd.v.m128_f32[3] = vdir[3];
+        ApplyPhysics(pSelf, &hitp, &hitd, fforce, true, HITLOC_TORSO_UPR);
+        return;
+    }
+    default:
+    {
+        weaponFileInfo_t* InfoForWeapon = iWeapon > 0 ? BG_GetInfoForWeapon(iWeapon) : nullptr;
+        bool v30 = InfoForWeapon != nullptr && InfoForWeapon->weapClass == 17;
+        float v31 = vDir[2] >= 0.2f ? 0.1f : 0.40000001f;
+        if (v30)
+            v31 = v31 + 0.1f;
+        float vdir[4];
+        vdir[0] = vDir[0];
+        vdir[1] = vDir[1];
+        vdir[2] = v31 + vDir[2];
+        vdir[3] = 0.0f;
+        math::Position3 hitp;
+        hitp.v.m128_f32[0] = vPosition[0];
+        hitp.v.m128_f32[1] = vPosition[1];
+        hitp.v.m128_f32[2] = vPosition[2];
+        hitp.v.m128_f32[3] = 0.0f;
+        if (v30)
+        {
+            float dx = pSelf->r.currentOrigin.v.m128_f32[0] - pInflictor->r.currentOrigin.v.m128_f32[0];
+            float dy = pSelf->r.currentOrigin.v.m128_f32[1] - pInflictor->r.currentOrigin.v.m128_f32[1];
+            float dz = pSelf->r.currentOrigin.v.m128_f32[2] - pInflictor->r.currentOrigin.v.m128_f32[2];
+            float dist2 = dx * dx + dy * dy + dz * dz;
+            float v35 = dist2 > max_dist2 ? max_dist2 : dist2;
+            float v36 = (1.0f - (v35 / max_dist2)) * max_intensity;
+            float v37 = 30.0f;
+            if (v36 >= 30.0f)
+            {
+                v37 = 110.0f;
+                if (v36 <= 110.0f)
+                    v37 = v36;
+            }
+            force = (v37 / InfoForWeapon->iShotCount) * force;
+            math::Position3 p1;
+            p1.v = _mm_setzero_ps();
+            math::Dir3 d;
+            d.v.m128_f32[0] = vdir[0];
+            d.v.m128_f32[1] = vdir[1];
+            d.v.m128_f32[2] = vdir[2];
+            d.v.m128_f32[3] = 0.0f;
+            ApplyPhysics(pSelf, &p1, &d, force, true, HITLOC_TORSO_LWR);
+            ApplyPhysics(pSelf, &p1, &d, force * 0.69999999f, true, hitLoc);
+        }
+        else
+        {
+            float v38 = iDamage * 0.5f;
+            if (v38 < 20.0f)
+                v38 = 20.0f;
+            else if (v38 > 30.0f)
+                v38 = 30.0f;
+            math::Dir3 d;
+            d.v.m128_f32[0] = vdir[0];
+            d.v.m128_f32[1] = vdir[1];
+            d.v.m128_f32[2] = vdir[2];
+            d.v.m128_f32[3] = 0.0f;
+            ApplyPhysics(pSelf, &hitp, &d, v38 * force, false, hitLoc);
+        }
+        return;
+    }
+    }
+}

@@ -1318,6 +1318,9 @@ enum {
 extern turretInfo_t turretInfo[1];   // 0xED9E08
 extern float emissionRate;           // 0xDD8220 (turret overheat particle emission rate)
 extern float emissionRate_0;         // 0xDD8254 (vehicle gunner overheat emission rate)
+extern float max_intensity;          // 0xDD7FD4 (120.0 - explosion impulse cap)
+extern float max_dist2;              // 0xDD7FD8 (176400.0 - explosion falloff distance sq)
+extern float radius;                 // 0xDD8208 (30.0 - revive trace radius)
 extern float gFireHeatBlur;          // 0xF616EC (cg.o global, blurred by turret fire)
 extern float vec3_origin[3];         // core.o q_math.cpp
 
@@ -1541,6 +1544,9 @@ Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weap
 Handle PostEffectEventVehicleWheel(const Entity* ent, const char* vehicleType,
                                    int action, int mat_type,
                                    unsigned int wheel_tag_hash);  // core.o 0x4D32D0
+struct CollisionDesc;
+Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
+                                  const CollisionDesc* col_desc);  // core.o
 void  EffectEventKill(Handle effect);
 int   EffectEventStopEmitting(int effectId);
 void  EffectEventAdjustEffect_Scale(Handle effect, const char* param,

@@ -422,3 +422,99 @@ void FireWeaponMelee(Entity* ent)
         Weapon_Melee(ent, &wp);
     }
 }
+
+// ea: 0x00471BA0
+bool Weapon_Revive_Test(Entity* ent, weaponParms* wp, Entity** traceEnt)
+{
+    Client* client = ent->client;
+    AngleVectors(client->ps.viewangles, wp->forward, wp->right, wp->up);
+    math::Position3 muzzle;
+    CalcMuzzlePoint(ent, &muzzle);
+    math::Position3 end;
+    end.v.m128_f32[0] = wp->forward[0] * 100.0f + muzzle.v.m128_f32[0];
+    end.v.m128_f32[1] = wp->forward[1] * 100.0f + muzzle.v.m128_f32[1];
+    end.v.m128_f32[2] = wp->forward[2] * 100.0f + muzzle.v.m128_f32[2];
+    wp->muzzleTrace[0] = muzzle.v.m128_f32[0];
+    wp->muzzleTrace[1] = muzzle.v.m128_f32[1];
+    wp->muzzleTrace[2] = muzzle.v.m128_f32[2];
+    int entityList[128];
+    math::Position3 mins;
+    math::Position3 maxs;
+    mins.v.m128_f32[0] = ent->r.absmin.v.m128_f32[0] + wp->forward[0] * 30.0f - 20.0f;
+    mins.v.m128_f32[1] = ent->r.absmin.v.m128_f32[1] + wp->forward[1] * 30.0f - 20.0f;
+    mins.v.m128_f32[2] = ent->r.absmin.v.m128_f32[2] + wp->forward[2] * 30.0f - 20.0f;
+    maxs.v.m128_f32[0] = ent->r.absmax.v.m128_f32[0] + wp->forward[0] * 30.0f + 20.0f;
+    maxs.v.m128_f32[1] = ent->r.absmax.v.m128_f32[1] + wp->forward[1] * 30.0f + 20.0f;
+    maxs.v.m128_f32[2] = ent->r.absmax.v.m128_f32[2] + wp->forward[2] * 30.0f + 20.0f;
+    int v35 = CM_AreaEntities(&mins, &maxs, entityList, 128, 0x4000000);
+    math::Position3 probe;
+    probe.v.m128_f32[0] = wp->forward[0] * 45.0f + wp->muzzleTrace[0];
+    probe.v.m128_f32[1] = wp->forward[1] * 45.0f + wp->muzzleTrace[1];
+    probe.v.m128_f32[2] = wp->forward[2] * 45.0f + wp->muzzleTrace[2];
+    Entity* found = nullptr;
+    for (int v20 = 0; v20 < v35; ++v20)
+    {
+        Entity* mObject = HandleDbToEnt(*(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v20]);
+        if (mObject == nullptr)
+            continue;
+        if ((mObject->client == nullptr && mObject->actor == nullptr) || ent == mObject)
+            continue;
+        __m128 clamped = _mm_min_ps(_mm_max_ps(probe.v, mObject->r.absmin.v),
+                                    mObject->r.absmax.v);
+        float dx = probe.v.m128_f32[0] - clamped.m128_f32[0];
+        float dy = probe.v.m128_f32[1] - clamped.m128_f32[1];
+        float dz = probe.v.m128_f32[2] - clamped.m128_f32[2];
+        if (radius * radius > dx * dx + dy * dy + dz * dz)
+        {
+            found = mObject;
+            break;
+        }
+    }
+    collision_context_t context;
+    context.__vftable = nullptr;
+    context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0x4000000;
+    math::Position3 zeroA;
+    math::Position3 zeroB;
+    zeroA.v = _mm_setzero_ps();
+    zeroB.v = _mm_setzero_ps();
+    trace_t trace;
+    if (found != nullptr)
+    {
+        math::Position3 closest;
+        closest.v = _mm_min_ps(_mm_max_ps(probe.v, found->r.absmin.v),
+                               found->r.absmax.v);
+        SV_Trace(&trace, &muzzle, &zeroA, &zeroB, &closest, &context, 0, 1,
+                 bulletPriorityMap, 1, 0.0f);
+        if (trace.mEntity.mHandle.mVal == found->mHandle.mHandle.mVal
+            || trace.fraction == 1.0f)
+        {
+            trace.fraction = 0.5f;
+            trace.endpos.v = closest.v;
+            trace.mEntity.mHandle.mVal = found->mHandle.mHandle.mVal;
+        }
+    }
+    else
+    {
+        SV_Trace(&trace, &muzzle, &zeroA, &zeroB, &end, &context, 0, 1,
+                 bulletPriorityMap, 1, 0.0f);
+    }
+    unsigned int v27 = trace.mEntity.mHandle.mVal;
+    Entity* v30 = HandleDbToEnt(*(DbLinkedHandle<EntityHandleDb, Entity>*)&v27);
+    if (v30 != nullptr
+        && v30->client != nullptr
+        && v30->sentient != nullptr
+        && ent->sentient != nullptr
+        && v30->client->pers.playerState == 4
+        && v30->sentient->eTeam == ent->sentient->eTeam)
+    {
+        if (traceEnt != nullptr)
+            *traceEnt = v30;
+        return true;
+    }
+    ent->client->mMedicNobodyToReviveTime = level.time;
+    return false;
+}

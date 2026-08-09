@@ -9,6 +9,9 @@ DebugThread g_debugThread;     // ?g_debugThread@@3VDebugThread@@A @ 0xDEB5A0
 void* SmokeGrenadeMgr::sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
 float emissionRate_0 = 1.0f;   // @ 0xDD8254 (vehicle gunner overheat emission rate)
 float gTanAimConeSpread;       // @ 0xEB1118 (g_weapon.cpp Bullet_Endpos scratch)
+float max_intensity = 120.0f;  // @ 0xDD7FD4
+float max_dist2 = 176400.0f;   // @ 0xDD7FD8
+float radius = 30.0f;          // @ 0xDD8208 (Weapon_Revive_Test revive radius)
 
 // tag hash arrays (g_scr_vehicle.cpp data, filled by static init) @ .data 0xEE62CC
 static unsigned int TagHash(const char* s) { return HashString::CalcHash(s); }
