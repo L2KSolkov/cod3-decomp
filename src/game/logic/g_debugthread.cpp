@@ -211,6 +211,8 @@ public:
 
         nalPlayMethod();       // ea: 0x4FA500
         ~nalPlayMethod();      // ea: 0x50BB30
+        void Advance(void* state, float delta);  // ea: 0x50BB80
+        void* CreateInstance(void* anim, void* skeleton);  // ea: 0x504C60
         void SetNoteHandlerEntityHandle(
             DbLinkedHandle<EntityHandleDb, Entity> handle);  // ea: 0x4F5D10
         void Release();  // nalPlayMethod::Release (thunk)
@@ -642,6 +644,41 @@ AnimationPlayer::nalPlayMethod::~nalPlayMethod()
         mNoteHandler->mNotify = nullptr;
         mem_heap_free(mNoteHandler);
     }
+}
+
+// ============================================================================
+// AnimationPlayer::nalPlayMethod::Advance - ea: 0x50BB80
+// ============================================================================
+struct nalAnimStateView {
+    void* instance;      // +0x00
+    float speed;         // +0x04
+    float t;             // +0x08
+};
+
+extern void AnimNoteHandler_Advance(void* self, float t);
+
+void AnimationPlayer::nalPlayMethod::Advance(void* state, float delta)
+{
+    nalAnimStateView* st = (nalAnimStateView*)state;
+    float v3 = (*(float*)((char*)st->instance + 0x14)
+                * st->speed) * delta + st->t;
+    st->t = v3;
+    if (mNoteHandler != nullptr)
+        AnimNoteHandler_Advance(mNoteHandler, v3);
+}
+
+// ============================================================================
+// AnimationPlayer::nalPlayMethod::CreateInstance - ea: 0x504C60
+// ============================================================================
+extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
+extern void AnimNoteHandler_ParseNoteTracks(void* self, void* anim);
+
+void* AnimationPlayer::nalPlayMethod::CreateInstance(void* anim, void* skeleton)
+{
+    void* instance = nalGenericAnim_CreateInstance(anim, skeleton);
+    if (mNoteHandler != nullptr)
+        AnimNoteHandler_ParseNoteTracks(mNoteHandler, anim);
+    return instance;
 }
 
 // ============================================================================
