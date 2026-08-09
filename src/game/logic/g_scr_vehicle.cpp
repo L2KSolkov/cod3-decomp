@@ -5302,6 +5302,306 @@ int VEH_Slide(Entity* ent, int gravity, int msec, int move, int allowHit)
     return hitCount;
 }
 
+// ea: 0x0045CE60
+int VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
+                              float* origin, Entity* player,
+                              bool bOriginInput)
+{
+    if (player == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5934;
+        AeAssert::gCurrentExpr = "player";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (ent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5940;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    scr_vehicle_t* veh = ent->scr_vehicle;
+    if (veh == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5941;
+        AeAssert::gCurrentExpr = "ent->scr_vehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    if (bOriginInput)
+    {
+        if (ent->health > 0)
+        {
+            float testOrigin[3] = { origin[0], origin[1], origin[2] };
+            float delta[3];
+            delta[0] = testOrigin[0] - veh->phys.origin.v.m128_f32[0];
+            delta[1] = testOrigin[1] - veh->phys.origin.v.m128_f32[1];
+            delta[2] = testOrigin[2] - veh->phys.origin.v.m128_f32[2];
+            float dist = sqrtf(delta[0] * delta[0] + delta[1] * delta[1]
+                               + delta[2] * delta[2]);
+            if (dist > 0.0f)
+            {
+                delta[0] /= dist;
+                delta[1] /= dist;
+                delta[2] /= dist;
+            }
+            collision_context_t ctx;
+            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+            ctx.pass_entity1 = player->mHandle;
+            ctx.pass_entity2.mHandle.mVal = 0x2000000;
+            ctx.pass_owner1.mHandle.mVal = 0;
+            ctx.pass_owner2.mHandle.mVal = 0;
+            ctx.contentmask = 0;
+            for (int i = 0; i < 4; ++i)
+            {
+                math::Position3 s;
+                math::Position3 e;
+                s.v.m128_f32[0] = testOrigin[0];
+                s.v.m128_f32[1] = testOrigin[1];
+                s.v.m128_f32[2] = testOrigin[2];
+                e.v.m128_f32[0] = testOrigin[0];
+                e.v.m128_f32[1] = testOrigin[1];
+                e.v.m128_f32[2] = testOrigin[2];
+                math::Position3 zero;
+                zero.v = _mm_setzero_ps();
+                trace_t tr;
+                memset(&tr, 0, sizeof(tr));
+                SV_Trace(&tr, &s, &zero, &zero, &e, &ctx, 0, 0, nullptr, 0,
+                         0.0f);
+                if (!tr.allsolid)
+                {
+                    math::Position3 start;
+                    math::Position3 end;
+                    start.v.m128_f32[0] = testOrigin[0];
+                    start.v.m128_f32[1] = testOrigin[1];
+                    start.v.m128_f32[2] = testOrigin[2] + 30.0f;
+                    end.v.m128_f32[0] = veh->phys.origin.v.m128_f32[0];
+                    end.v.m128_f32[1] = veh->phys.origin.v.m128_f32[1];
+                    end.v.m128_f32[2] =
+                        veh->phys.origin.v.m128_f32[2] + 30.0f;
+                    math::Position3 pmins;
+                    pmins.v.m128_f32[0] = mins[0];
+                    pmins.v.m128_f32[1] = mins[1];
+                    pmins.v.m128_f32[2] = mins[2];
+                    math::Position3 pmaxs;
+                    pmaxs.v.m128_f32[0] = maxs[0];
+                    pmaxs.v.m128_f32[1] = maxs[1];
+                    pmaxs.v.m128_f32[2] = maxs[2] - 30.0f;
+                    memset(&tr, 0, sizeof(tr));
+                    SV_Trace(&tr, &start, &pmins, &pmaxs, &end, &ctx, 0, 0,
+                             nullptr, 0, 0.0f);
+                    if (!tr.allsolid
+                        && (tr.fraction == 1.0f
+                            || tr.mEntity.mHandle.mVal
+                                   == ent->mHandle.mHandle.mVal))
+                    {
+                        origin[0] = testOrigin[0];
+                        origin[1] = testOrigin[1];
+                        origin[2] = testOrigin[2];
+                        return 1;
+                    }
+                }
+                testOrigin[0] += delta[0] * 16.0f;
+                testOrigin[1] += delta[1] * 16.0f;
+            }
+        }
+        else
+        {
+            return 1;
+        }
+    }
+    if (info->maxSpeed > 0.0f)
+    {
+        float fwd[3], right[3], up[3];
+        AngleVectors(&veh->phys.angles.v.m128_f32[0], fwd, right, up);
+        float velLen = sqrtf(veh->phys.vel.v.m128_f32[0]
+                                 * veh->phys.vel.v.m128_f32[0]
+                             + veh->phys.vel.v.m128_f32[1]
+                                   * veh->phys.vel.v.m128_f32[1]
+                             + veh->phys.vel.v.m128_f32[2]
+                                   * veh->phys.vel.v.m128_f32[2]);
+        float dir[3];
+        if (velLen <= 0.0f)
+        {
+            dir[0] = -fwd[0];
+            dir[1] = -fwd[1];
+            dir[2] = -fwd[2];
+        }
+        else
+        {
+            dir[0] = -veh->phys.vel.v.m128_f32[0];
+            dir[1] = -veh->phys.vel.v.m128_f32[1];
+            dir[2] = -veh->phys.vel.v.m128_f32[2];
+        }
+        VectorNormalize(dir);
+        float fwdDist = (info->boundsLength * 0.5f) + maxs[0] + 40.0f;
+        float rightDist = info->boundsRadius + maxs[1] + 40.0f;
+        float side = 1.0f;
+        if (fwd[0] * dir[0] + fwd[1] * dir[1] + fwd[2] * dir[2] <= 0.0f)
+            side = -1.0f;
+        float dfc = side * fwdDist;
+        if (dfc > rightDist)
+            dfc = rightDist;
+        else if (dfc < -rightDist)
+            dfc = -rightDist;
+        float dr = 0.0f;
+        if (rightDist < 0.0f)
+            dr = rightDist;
+        collision_context_t ctx;
+        ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+        ctx.pass_entity1 = player->mHandle;
+        ctx.pass_entity2.mHandle.mVal = 0x2000000;
+        ctx.pass_owner1.mHandle.mVal = 0;
+        ctx.pass_owner2.mHandle.mVal = 0;
+        ctx.contentmask = 0;
+        for (int i = 0; i < 8; ++i)
+        {
+            float offF = (i & 4) ? -dfc : dfc;
+            float offR = dr + 20.0f * (i & 3);
+            float tryOrigin[3];
+            tryOrigin[0] = veh->phys.origin.v.m128_f32[0]
+                         + fwd[0] * offF + right[0] * offR;
+            tryOrigin[1] = veh->phys.origin.v.m128_f32[1]
+                         + fwd[1] * offF + right[1] * offR;
+            tryOrigin[2] = veh->phys.origin.v.m128_f32[2] + 4.0f;
+            for (int dz = 0; dz < 2; ++dz)
+            {
+                for (float z = tryOrigin[2]; z >= tryOrigin[2] - 256.0f;
+                     z -= 32.0f)
+                {
+                    math::Position3 start;
+                    math::Position3 end;
+                    start.v.m128_f32[0] = tryOrigin[0];
+                    start.v.m128_f32[1] = tryOrigin[1];
+                    start.v.m128_f32[2] = z + 1.0f;
+                    end.v.m128_f32[0] = tryOrigin[0];
+                    end.v.m128_f32[1] = tryOrigin[1];
+                    end.v.m128_f32[2] = z;
+                    math::Position3 pmins;
+                    pmins.v.m128_f32[0] = mins[0];
+                    pmins.v.m128_f32[1] = mins[1];
+                    pmins.v.m128_f32[2] = mins[2];
+                    math::Position3 pmaxs;
+                    pmaxs.v.m128_f32[0] = maxs[0];
+                    pmaxs.v.m128_f32[1] = maxs[1];
+                    pmaxs.v.m128_f32[2] = maxs[2];
+                    trace_t tr;
+                    memset(&tr, 0, sizeof(tr));
+                    SV_Trace(&tr, &start, &pmins, &pmaxs, &end, &ctx, 1, 0,
+                             nullptr, 0, 0.0f);
+                    if (tr.fraction == 1.0f && !tr.allsolid)
+                    {
+                        math::Position3 dstart;
+                        math::Position3 dend;
+                        dstart.v.m128_f32[0] = tryOrigin[0];
+                        dstart.v.m128_f32[1] = tryOrigin[1];
+                        dstart.v.m128_f32[2] = tryOrigin[2];
+                        dend.v.m128_f32[0] = tryOrigin[0];
+                        dend.v.m128_f32[1] = tryOrigin[1];
+                        dend.v.m128_f32[2] = z - 256.0f;
+                        memset(&tr, 0, sizeof(tr));
+                        SV_Trace(&tr, &dstart, &pmins, &pmaxs, &dend, &ctx,
+                                 1, 0, nullptr, 0, 0.0f);
+                        if (!tr.allsolid && tr.fraction < 1.0f)
+                        {
+                            math::Position3 cstart;
+                            math::Position3 cend;
+                            cstart.v.m128_f32[0] =
+                                veh->phys.origin.v.m128_f32[0];
+                            cstart.v.m128_f32[1] =
+                                veh->phys.origin.v.m128_f32[1];
+                            cstart.v.m128_f32[2] =
+                                veh->phys.origin.v.m128_f32[2] + 30.0f;
+                            cend.v.m128_f32[0] = tryOrigin[0];
+                            cend.v.m128_f32[1] = tryOrigin[1];
+                            cend.v.m128_f32[2] = tryOrigin[2] + 30.0f;
+                            math::Position3 cmins;
+                            cmins.v.m128_f32[0] = mins[0];
+                            cmins.v.m128_f32[1] = mins[1];
+                            cmins.v.m128_f32[2] = mins[2];
+                            math::Position3 cmaxs;
+                            cmaxs.v.m128_f32[0] = maxs[0];
+                            cmaxs.v.m128_f32[1] = maxs[1];
+                            cmaxs.v.m128_f32[2] = maxs[2] - 30.0f;
+                            memset(&tr, 0, sizeof(tr));
+                            SV_Trace(&tr, &cstart, &cmins, &cmaxs, &cend,
+                                     &ctx, 1, 0, nullptr, 0, 0.0f);
+                            if (!tr.allsolid
+                                && (tr.fraction == 1.0f
+                                    || tr.mEntity.mHandle.mVal
+                                           == ent->mHandle.mHandle.mVal))
+                            {
+                                origin[0] = tryOrigin[0];
+                                origin[1] = tryOrigin[1];
+                                origin[2] = z;
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+    if (veh->boneIndex.detach >= 0)
+    {
+        DObjSkelMat mtx;
+        G_DObjGetWorldBoneIndexMatrix(ent, veh->boneIndex.detach, &mtx);
+        origin[0] = mtx.origin[0];
+        origin[1] = mtx.origin[1];
+        origin[2] = mtx.origin[2];
+    }
+    else
+    {
+        origin[0] = ent->r.currentOrigin.v.m128_f32[0];
+        origin[1] = ent->r.currentOrigin.v.m128_f32[1];
+        origin[2] = ent->r.currentOrigin.v.m128_f32[2]
+                  + (float)(info->mMantleHintStringIndex + 48);
+    }
+    collision_context_t ctx;
+    ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    ctx.pass_entity1 = player->mHandle;
+    ctx.pass_entity2.mHandle.mVal = 0x2000000;
+    ctx.pass_owner1.mHandle.mVal = 0;
+    ctx.pass_owner2.mHandle.mVal = 0;
+    ctx.contentmask = 0;
+    for (int i = 0; i < 8; ++i)
+    {
+        math::Position3 start;
+        math::Position3 end;
+        start.v.m128_f32[0] = origin[0];
+        start.v.m128_f32[1] = origin[1];
+        start.v.m128_f32[2] = origin[2];
+        end.v.m128_f32[0] = origin[0];
+        end.v.m128_f32[1] = origin[1];
+        end.v.m128_f32[2] = origin[2];
+        math::Position3 pmins;
+        pmins.v.m128_f32[0] = mins[0];
+        pmins.v.m128_f32[1] = mins[1];
+        pmins.v.m128_f32[2] = mins[2];
+        math::Position3 pmaxs;
+        pmaxs.v.m128_f32[0] = maxs[0];
+        pmaxs.v.m128_f32[1] = maxs[1];
+        pmaxs.v.m128_f32[2] = maxs[2];
+        trace_t tr;
+        memset(&tr, 0, sizeof(tr));
+        SV_Trace(&tr, &start, &pmins, &pmaxs, &end, &ctx, 1, 0, nullptr, 0,
+                 0.0f);
+        if (tr.fraction == 1.0f && !tr.allsolid)
+            return 1;
+        origin[2] += 4.0f;
+    }
+    return 0;
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)
