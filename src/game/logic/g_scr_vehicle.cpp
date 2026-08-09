@@ -4,6 +4,16 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x00452BC0
+void VehicleNodeAllocator::Initialize()
+{
+    m_numNodes = 0;
+    m_numBlocks = 0;
+    m_currentBlockIndex = 0;
+    for (int i = 0; i < 16; ++i)
+        m_pNodeBlocks[i] = nullptr;
+}
+
 // ea: 0x0044D8C0
 void VEH_SetupCollmap(Entity* ent)
 {

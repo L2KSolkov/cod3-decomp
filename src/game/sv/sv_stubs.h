@@ -231,6 +231,7 @@ struct MultiplayerMgr {
     void PlayerDead(Entity* player, Entity* inflictor, Entity* attacker,
                     int damage, int mod, int weapon, const float* position,
                     const float* dir, int hitLoc);   // ?PlayerDead@MultiplayerMgr@@QAEXPAVEntity@@00HHHQBM1H@Z
+    void AttemptToRevivePlayer(Entity* player, Entity* medic);  // ?AttemptToRevivePlayer@MultiplayerMgr@@QAEXPAVEntity@@0@Z
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 
@@ -303,6 +304,9 @@ public:
     void Find(int fieldOfs, unsigned short match, ae_sized_array<Entity*, 4096>* results);  // ?Find@EntityHandleDb@@QBEXGAAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
     void Find(int fieldOfs, HashString match, ae_sized_array<Entity*, 4096>* results);      // ?Find@EntityHandleDb@@QBEXVHashString@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
     void Find(int fieldOfs, const Broc::string* match, ae_sized_array<Entity*, 4096>* results);  // ?Find@EntityHandleDb@@QBEXHABVstring@Broc@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
+    Entity** Find(int fieldofs, unsigned short match, Entity** begin, Entity** end);  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HGV23@0@Z
+    Entity** Find(int fieldofs, HashString match, Entity** begin, Entity** end);      // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVHashString@@V23@1@Z
+    void Release(Entity* e);                    // ?Release@EntityHandleDb@@QAEXAAVEntity@@@Z
 };
 static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
 static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::mActiveList offset mismatch");
@@ -412,7 +416,13 @@ struct GamePause {
 // VehicleNodeAllocator — vehicle node manager
 // ============================================================================
 struct VehicleNodeAllocator {
+    uint16_t m_numNodes;        // +0x00
+    uint16_t m_numBlocks;       // +0x02
+    uint16_t m_currentBlockIndex;  // +0x04
+    uint16_t spad;              // +0x06
+    void*    m_pNodeBlocks[16]; // +0x08 (64 bytes)
     void FreeAll();   // ?FreeAll@VehicleNodeAllocator@@QAEXXZ
+    void Initialize();  // ?Initialize@VehicleNodeAllocator@@QAEXXZ
 };
 
 // ============================================================================

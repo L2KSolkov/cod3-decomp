@@ -406,16 +406,24 @@ struct str_const_t {
     Broc::string sound_blend;         // +0x148
     uint8_t    _pad14C[0x168 - 0x14C];
     Broc::string spawn_intermission;  // +0x168
-    uint8_t    _pad16C[0x1FC - 0x16C];
+    uint8_t    _pad16C[0x184 - 0x16C];
+    Broc::string spawn_single_ctf_allies;  // +0x184
+    Broc::string spawn_single_ctf_axis;    // +0x188
+    uint8_t    _pad18C[0x19C - 0x18C];
+    Broc::string spawn_dom_allies;         // +0x19C
+    Broc::string spawn_dom_axis;           // +0x1A0
+    Broc::string spawn_war_allies;         // +0x1A4
+    Broc::string spawn_war_axis;           // +0x1A8
+    Broc::string spawn_sd_allies;          // +0x1AC
+    Broc::string spawn_sd_axis;            // +0x1B0
+    uint8_t    _pad1B4[0x1FC - 0x1B4];
     Broc::string tempEntity;          // +0x1FC
-    uint8_t    _pad200[0x210 - 0x200];
-    Broc::string spawn_sd_axis;       // +0x210
-    uint8_t    _pad214[0x2B4 - 0x214];
+    uint8_t    _pad200[0x2B4 - 0x200];
 };
 static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
 static_assert(offsetof(str_const_t, spawn_intermission) == 0x168,
               "str_const_t::spawn_intermission offset mismatch");
-static_assert(offsetof(str_const_t, spawn_sd_axis) == 0x210,
+static_assert(offsetof(str_const_t, spawn_sd_axis) == 0x1B0,
               "str_const_t::spawn_sd_axis offset mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
@@ -450,7 +458,9 @@ struct hash_const_t {
     uint8_t    _padF0[0x11C - 0xF0];
     HashString pickup;             // +0x11C
     HashString player;             // +0x120
-    uint8_t    _pad124[0x144 - 0x124];
+    uint8_t    _pad124[0x138 - 0x124];
+    HashString fireSpecial;             // +0x138 (78)
+    uint8_t    _pad13C[0x144 - 0x13C];
     HashString rotatedone;         // +0x144
     uint8_t    _pad148[0x208 - 0x148];
     HashString trigger;            // +0x208
@@ -474,6 +484,8 @@ static_assert(offsetof(hash_const_t, turretownerchange) == 0x254,
               "hash_const_t::turretownerchange offset mismatch");
 static_assert(offsetof(hash_const_t, overheated) == 0x284,
               "hash_const_t::overheated offset mismatch");
+static_assert(offsetof(hash_const_t, fireSpecial) == 0x138,
+              "hash_const_t::fireSpecial offset mismatch");
 extern hash_const_t hash_const;    // 0xED2AB0
 
 // ============================================================================
@@ -508,6 +520,31 @@ extern cvar_t* g_debug_sound_aliases;  // g_debug_sound_aliases
 extern vmCvar_t g_gravity;             // g_gravity
 extern vmCvar_t g_reloading;           // g_reloading
 extern void    Scr_Error(const char* error);  // scr.o
+extern void    tlPrintf(const char* fmt, ...);  // core.o
+extern PoolAllocator* gBrocPool;       // core.o
+extern void*   gShotProf;              // g.o 0x... (ShotPerfTest*)
+extern cvar_t* gStatusBar;             // core.o
+
+struct TimerRenderBars {
+    uint8_t _pad[0x48];
+    int mActive;   // +0x48
+    static TimerRenderBars sInst;  // ?sInst@TimerRenderBars@@0V1@A (render.o 0x011EA668)
+    void ToggleActive();  // ?ToggleActive@TimerRenderBars@@QAEXXZ (inline)
+};
+
+extern void Cvar_Set(const char* var_name, const char* value);  // core.o
+extern void* ShaderCommon_StartShotPerfTest();                  // render.o
+extern void* gShotProf;                       // g.o 0x012A05DC
+extern PoolAllocator* gBrocPool;              // scr.o 0x0132A0E4
+extern PoolAllocator* gAeThreadBackupStackAllocator;  // core.o 0xF3ABCC
+struct ClientCmdPair {
+    const char* first;  // +0x00
+};
+extern ClientCmdPair sClientCommand0List[24];  // g.o .rdata
+extern ClientCmdPair sClientCommand1List[15];  // g.o .rdata
+void Cmd_MemPools_f(void);          // g.o 0x44ACC0
+void Cmd_ShotProf_f(void);          // g.o 0x44AD10
+void Cmd_ClientCommandCompletion(void (*callback)(const char*));  // g.o 0x44ADE0
 
 // ============================================================================
 // sv.o collision entry points (sv_world.cpp / sv_misc.cpp)
@@ -1424,6 +1461,8 @@ extern bool no_really_delete_it;      // g.o
 extern int dword_186A0;               // game.o
 extern vmCvar_t mp_gametype;          // mp.o ?mp_gametype@@3UvmCvar_t@@A
 void  VehicleNodeAllocator_Initialize(void* self);             // g.o 0x452BC0
+bool  Weapon_Revive_Test(Entity* ent, void* wp, Entity** traceEnt);  // g.o 0x... (used by cg)
+void  Weapon_Revive(Entity* ent, int grenType, weaponParms* wp);     // g.o 0x4720E0
 
 struct StatusBar {
     static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A

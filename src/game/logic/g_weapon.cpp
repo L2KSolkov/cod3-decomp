@@ -43,6 +43,15 @@ void Cmd_DropWeapon_f(Entity* pSelf)
     }
 }
 
+// ea: 0x004720E0
+void Weapon_Revive(Entity* ent, int /*grenType*/, weaponParms* wp)
+{
+    Entity* traceEnt = nullptr;
+    if (Weapon_Revive_Test(ent, wp, &traceEnt))
+        MultiplayerMgr::sInst->AttemptToRevivePlayer(traceEnt, ent);
+    Scr_Notify(ent, hash_const.fireSpecial, 0);
+}
+
 // ea: 0x0044C6B0
 void Die_MineDamaged(Entity* mine)
 {

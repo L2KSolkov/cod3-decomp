@@ -47,6 +47,52 @@ void EntityHandleDb::Find(int fieldOfs, unsigned short match,
     EntityHandleDb_Find<unsigned short>(fieldOfs, match, *results);
 }
 
+// ea: 0x00454C80
+Entity** EntityHandleDb::Find(int fieldofs, unsigned short match,
+                              Entity** begin, Entity** end)
+{
+    Entity** i = begin;
+    for (; i != end; ++i)
+    {
+        if (*i != nullptr)
+        {
+            int16_t v7 = *(int16_t*)((char*)&(*i)->s.eType + fieldofs);
+            if (v7 != 0 && v7 == match)
+                break;
+        }
+    }
+    return i;
+}
+
+// ea: 0x00454CC0
+Entity** EntityHandleDb::Find(int fieldofs, HashString match,
+                              Entity** begin, Entity** end)
+{
+    Entity** i = begin;
+    for (; i != end; ++i)
+    {
+        if (*i != nullptr)
+        {
+            int v7 = *(int*)((char*)&(*i)->s.eType + fieldofs);
+            if (v7 != 0 && v7 == (int)match.mHash)
+                break;
+        }
+    }
+    return i;
+}
+
+// ea: 0x00466460
+void EntityHandleDb::Release(Entity* e)
+{
+    if (e->mHandle.mHandle.mVal != 0)
+    {
+        unsigned int idx = e->mHandle.mHandle.mVal & 0xFFF;
+        if (idx < 0x540)
+            EntityHandleDb::sInst.mElements[idx].mKey = 0;  // ReleaseHandle
+        mActiveList.m_elements[e->mEntityArrayIndex] = nullptr;
+    }
+}
+
 // ea: 0x0044A240
 int CheatsOk(Entity* ent)
 {

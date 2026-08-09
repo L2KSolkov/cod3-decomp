@@ -9,6 +9,9 @@
 
 #include "render/ShaderCommon.h"
 #include "ngl/nglDebug.h"
+#include "core/PoolAllocator.h"
+
+extern PoolAllocator* gCommonPoolAllocator;  // core.o 0x012EFF18
 
 extern nglDebugStruct nglDebug;  // ngl_debug.o
 extern int gRenderCG_2D;         // cg.o 0x011E86E4
@@ -445,4 +448,136 @@ void player_die(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                                           meansOfDeath, iWeapon, vPosition, vDir,
                                           (int)hitLoc);
     }
+}
+
+// ea: 0x004497B0
+void SP_single_ctf_allies(Entity* ent)
+{
+    if (_stricmp("scf", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_single_ctf_allies;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449800
+void SP_single_ctf_axis(Entity* ent)
+{
+    if (_stricmp("scf", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_single_ctf_axis;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449850
+void SP_dom_allies(Entity* ent)
+{
+    if (_stricmp("dom", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_dom_allies;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x004498A0
+void SP_dom_axis(Entity* ent)
+{
+    if (_stricmp("dom", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_dom_axis;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x004498F0
+void SP_war_allies(Entity* ent)
+{
+    if (_stricmp("war", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_war_allies;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449940
+void SP_war_axis(Entity* ent)
+{
+    if (_stricmp("war", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_war_axis;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x00449990
+void SP_sd_allies(Entity* ent)
+{
+    if (_stricmp("sd", mp_gametype.string) == 0)
+    {
+        ent->mClassName = str_const.spawn_sd_allies;
+        UpdateEntityHash(ent);
+    }
+    else
+    {
+        no_really_delete_it = true;
+    }
+}
+
+// ea: 0x0044ACC0
+void Cmd_MemPools_f(void)
+{
+    tlPrintf("Common Pool Allocator\n");
+    gCommonPoolAllocator->ReportAllocations();
+    tlPrintf("\n\nBroc Common Pool\n");
+    gBrocPool->ReportAllocations();
+    tlPrintf("\n\nBroc Thread Pool Allocator\n");
+    gAeThreadBackupStackAllocator->ReportAllocations();
+}
+
+// ea: 0x0044AD10
+void Cmd_ShotProf_f(void)
+{
+    if (gShotProf == nullptr)
+    {
+        gRenderCG_2D = 0;
+        nglDebug.ShowPerfInfo = 0;
+        Cvar_Set("statusbar", "0");
+        if (TimerRenderBars::sInst.mActive != 0)
+            TimerRenderBars::sInst.mActive ^= 1u;
+        gShotProf = ShaderCommon_StartShotPerfTest();
+    }
+}
+
+// ea: 0x0044ADE0
+void Cmd_ClientCommandCompletion(void (*callback)(const char*))
+{
+    for (unsigned int i = 0; i < 24; ++i)
+        callback(sClientCommand0List[i].first);
+    for (unsigned int j = 0; j < 15; ++j)
+        callback(sClientCommand1List[j].first);
 }
