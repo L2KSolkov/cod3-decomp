@@ -164,9 +164,11 @@ struct vehicle_rb_parameter {
     float m_tire_damp_coast;    // +0x60
     float m_tire_damp_brake;    // +0x64
     float m_tire_damp_hand;     // +0x68
+    unsigned char _pad6C[0xB0 - 0x6C];
+    struct BBox { float v[4]; } m_bbox_min;  // +0xB0
+    struct BBox m_bbox_max;                 // +0xC0
 };
-// NOTE: subset view - only the stat fields used by the helpers;
-// full 0xD0 layout includes m_traction_type/m_name/bbox.
+static_assert(sizeof(vehicle_rb_parameter) == 0xD0, "vehicle_rb_parameter size mismatch");
 
 struct rb_vehicle {
     unsigned char _pad[0x250];      // +0x000
@@ -174,6 +176,13 @@ struct rb_vehicle {
     void update_parms(vehicle_rb_parameter* params, bool initialization);  // ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z
 };
 rb_vehicle* GetPlayerRBVehicle();  // game2.o
+double SetVehicleInertiaBox(bool setMin, int xyz, float f);
+double SetVehicleInertiaBoxMinX(float f);
+double SetVehicleInertiaBoxMaxX(float f);
+double SetVehicleInertiaBoxMinY(float f);
+double SetVehicleInertiaBoxMaxY(float f);
+double SetVehicleInertiaBoxMinZ(float f);
+double SetVehicleInertiaBoxMaxZ(float f);
 double speed_max_Function(float f);
 double accel_max_Function(float f);
 double reverse_scale_Function(float f);

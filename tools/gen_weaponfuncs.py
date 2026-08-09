@@ -833,9 +833,12 @@ def gen_vehicle_header():
     out.append("    float m_tire_damp_coast;    // +0x60")
     out.append("    float m_tire_damp_brake;    // +0x64")
     out.append("    float m_tire_damp_hand;     // +0x68")
+    out.append("    unsigned char _pad6C[0xB0 - 0x6C];")
+    out.append("    struct BBox { float v[4]; } m_bbox_min;  // +0xB0")
+    out.append("    struct BBox m_bbox_max;                 // +0xC0")
     out.append("};")
-    out.append("// NOTE: subset view - only the stat fields used by the helpers;")
-    out.append("// full 0xD0 layout includes m_traction_type/m_name/bbox.")
+    out.append("static_assert(sizeof(vehicle_rb_parameter) == 0xD0, "
+               '"vehicle_rb_parameter size mismatch");')
     out.append("")
     out.append("struct rb_vehicle {")
     out.append("    unsigned char _pad[0x250];      // +0x000")
@@ -845,6 +848,11 @@ def gen_vehicle_header():
                "vehicle_rb_parameter@@_N@Z")
     out.append("};")
     out.append("rb_vehicle* GetPlayerRBVehicle();  // game2.o")
+    out.append("double SetVehicleInertiaBox(bool setMin, int xyz, float f);")
+    for axis in ("X", "Y", "Z"):
+        for mn in ("Min", "Max"):
+            out.append("double SetVehicleInertiaBox%s%s(float f);"
+                       % (mn, axis))
     for fname in RB_PARAM_FIELDS:
         out.append("double %s_Function(float f);" % fname)
     out.append("")
@@ -956,6 +964,65 @@ def gen_vehicle_cpp():
         out.append("        vehicle->update_parms(params, false);")
         out.append("    return params->%s;" % RB_PARAM_FIELDS[stem])
         out.append("}")
+        out.append("")
+    # SetVehicleInertiaBox family (game2.o physics stat helpers)
+    inertia = {
+        "SetVehicleInertiaBox": (None, None),       # generic 3-arg
+        "SetVehicleInertiaBoxMinX": (0, "min"),
+        "SetVehicleInertiaBoxMinY": (1, "min"),
+        "SetVehicleInertiaBoxMinZ": (2, "min"),
+        "SetVehicleInertiaBoxMaxX": (0, "max"),
+        "SetVehicleInertiaBoxMaxY": (1, "max"),
+        "SetVehicleInertiaBoxMaxZ": (2, "max"),
+    }
+    for line in open(MANIFEST, encoding="utf-8"):
+        parts = line.rstrip("\n").split("\t")
+        if len(parts) < 8 or parts[0] == "ida_ea":
+            continue
+        if parts[3] != "f" or parts[5] != "game2.o":
+            continue
+        name = parts[2]
+        if not name.startswith("?") or "SetVehicleInertiaBox" not in name:
+            continue
+        fn = name.split("@")[0][1:]
+        if fn not in inertia:
+            continue
+        out.append("// ea: %s" % parts[0])
+        if fn == "SetVehicleInertiaBox":
+            out.append("double SetVehicleInertiaBox(bool setMin, int xyz, float f)")
+            out.append("{")
+            out.append("    rb_vehicle* vehicle = GetPlayerRBVehicle();")
+            out.append("    if (vehicle == nullptr)")
+            out.append("        return 0;")
+            out.append("    vehicle_rb_parameter* params = vehicle->m_parameter;")
+            out.append("    if (params == nullptr)")
+            out.append("        return 0;")
+            out.append("    if (setMin)")
+            out.append("        params->m_bbox_min.v[xyz] = f + params->m_bbox_min.v[xyz];")
+            out.append("    else")
+            out.append("        params->m_bbox_max.v[xyz] = params->m_bbox_max.v[xyz] + f;")
+            out.append("    if (f != 0.0f)")
+            out.append("        vehicle->update_parms(params, false);")
+            out.append("    if (setMin)")
+            out.append("        return params->m_bbox_min.v[xyz];")
+            out.append("    return params->m_bbox_max.v[xyz];")
+            out.append("}")
+        else:
+            axis, which = inertia[fn]
+            out.append("double %s(float f)" % fn)
+            out.append("{")
+            out.append("    rb_vehicle* vehicle = GetPlayerRBVehicle();")
+            out.append("    if (vehicle == nullptr)")
+            out.append("        return 0;")
+            out.append("    vehicle_rb_parameter* params = vehicle->m_parameter;")
+            out.append("    if (params == nullptr)")
+            out.append("        return 0;")
+            out.append("    params->m_bbox_%s.v[%d] = f + params->m_bbox_%s.v[%d];"
+                       % (which, axis, which, axis))
+            out.append("    if (f != 0.0f)")
+            out.append("        vehicle->update_parms(params, false);")
+            out.append("    return params->m_bbox_%s.v[%d];" % (which, axis))
+            out.append("}")
         out.append("")
     return "\n".join(out)
 

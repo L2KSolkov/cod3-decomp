@@ -1021,3 +1021,113 @@ double tire_damp_hand_Function(float f)
         vehicle->update_parms(params, false);
     return params->m_tire_damp_hand;
 }
+
+// ea: 0x004F0860
+double SetVehicleInertiaBox(bool setMin, int xyz, float f)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return 0;
+    vehicle_rb_parameter* params = vehicle->m_parameter;
+    if (params == nullptr)
+        return 0;
+    if (setMin)
+        params->m_bbox_min.v[xyz] = f + params->m_bbox_min.v[xyz];
+    else
+        params->m_bbox_max.v[xyz] = params->m_bbox_max.v[xyz] + f;
+    if (f != 0.0f)
+        vehicle->update_parms(params, false);
+    if (setMin)
+        return params->m_bbox_min.v[xyz];
+    return params->m_bbox_max.v[xyz];
+}
+
+// ea: 0x004F0900
+double SetVehicleInertiaBoxMinX(float f)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return 0;
+    vehicle_rb_parameter* params = vehicle->m_parameter;
+    if (params == nullptr)
+        return 0;
+    params->m_bbox_min.v[0] = f + params->m_bbox_min.v[0];
+    if (f != 0.0f)
+        vehicle->update_parms(params, false);
+    return params->m_bbox_min.v[0];
+}
+
+// ea: 0x004F0980
+double SetVehicleInertiaBoxMinY(float f)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return 0;
+    vehicle_rb_parameter* params = vehicle->m_parameter;
+    if (params == nullptr)
+        return 0;
+    params->m_bbox_min.v[1] = f + params->m_bbox_min.v[1];
+    if (f != 0.0f)
+        vehicle->update_parms(params, false);
+    return params->m_bbox_min.v[1];
+}
+
+// ea: 0x004F0A00
+double SetVehicleInertiaBoxMinZ(float f)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return 0;
+    vehicle_rb_parameter* params = vehicle->m_parameter;
+    if (params == nullptr)
+        return 0;
+    params->m_bbox_min.v[2] = f + params->m_bbox_min.v[2];
+    if (f != 0.0f)
+        vehicle->update_parms(params, false);
+    return params->m_bbox_min.v[2];
+}
+
+// ea: 0x004F0A80
+double SetVehicleInertiaBoxMaxX(float f)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return 0;
+    vehicle_rb_parameter* params = vehicle->m_parameter;
+    if (params == nullptr)
+        return 0;
+    params->m_bbox_max.v[0] = f + params->m_bbox_max.v[0];
+    if (f != 0.0f)
+        vehicle->update_parms(params, false);
+    return params->m_bbox_max.v[0];
+}
+
+// ea: 0x004F0B00
+double SetVehicleInertiaBoxMaxY(float f)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return 0;
+    vehicle_rb_parameter* params = vehicle->m_parameter;
+    if (params == nullptr)
+        return 0;
+    params->m_bbox_max.v[1] = f + params->m_bbox_max.v[1];
+    if (f != 0.0f)
+        vehicle->update_parms(params, false);
+    return params->m_bbox_max.v[1];
+}
+
+// ea: 0x004F0B80
+double SetVehicleInertiaBoxMaxZ(float f)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return 0;
+    vehicle_rb_parameter* params = vehicle->m_parameter;
+    if (params == nullptr)
+        return 0;
+    params->m_bbox_max.v[2] = f + params->m_bbox_max.v[2];
+    if (f != 0.0f)
+        vehicle->update_parms(params, false);
+    return params->m_bbox_max.v[2];
+}
