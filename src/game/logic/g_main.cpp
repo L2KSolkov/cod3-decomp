@@ -1980,3 +1980,186 @@ void G_AddLean(Entity* ent, float* point)
     AddLeanToPosition(point, ent->client->ps.viewangles[1],
                       ent->client->ps.leanf, 16.0f, 20.0f);
 }
+
+// ea: 0x00492600
+void G_RunFrame(int msec)
+{
+    commit_dobjects();
+    UpdateCVars();
+    if (level.actorPredictDepth != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
+        AeAssert::gCurrentLine = 3592;
+        AeAssert::gCurrentExpr = "!level.actorPredictDepth";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (g_performanceTest.integer == 0)
+    {
+        void* v2 = InteractionController_Inst(currCl);
+        InteractionController_Update(v2, msec * 0.001f);
+        UpdateAnims(msec);
+    }
+    float delta = msec * 0.001f;
+    AdvanceSceneAnims(delta);
+    UpdatePlayer();
+    j_nullsub_20();
+    PlayerAnimMgr_Update(delta);
+    ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000> linkedEntities;
+    linkedEntities.m_size = 0;
+    UpdateEntities(&linkedEntities, msec);
+    UpdateRigidBody(delta);
+    UpdateLinkedEntities(&linkedEntities);
+    if (cls.state == CA_ACTIVE)
+        MultiplayerMgr::sInst->Step(0, false, true);
+    if (level.actorPredictDepth != 0)
+        Com_Error(ERR_DROP, "actorPredictDepth mismatch");
+    if (level.maxclients > 0)
+    {
+        for (int v1 = 0; v1 < level.maxclients; ++v1)
+        {
+            Entity* v6 = EntityManager::sInst->mPlayers[v1];
+            if (v6->sentient != nullptr)
+            {
+                gCurrentCamera = v6->IsLocalPlayer() ? 1 : 0;
+                ClientEndFrame(v6, msec);
+            }
+        }
+    }
+    cdl_proftimer_ent_actors.start();
+    cdl_proftimer_ent_actors.stop();
+    Path_DrawDebug();
+    G_DrawVehiclePaths();
+    G_DrawEntityBBoxes();
+    if (g_listEntity != 0)
+    {
+        Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
+        Entity** end = begin + EntityHandleDb::sInst.mActiveList.m_size;
+        int v9 = 0;
+        for (Entity** p = begin; p != end; ++p)
+        {
+            if (*p != nullptr)
+                G_Printf("%4i: %s\n", v9++, (*p)->mClassName.c_str());
+        }
+        Cvar_Set("g_listEntity", "0");
+    }
+    ShowEntityInfo();
+    DObjSetNotRenderedFlag();
+}
+
+// ea: 0x004554E0
+void SpectatorThink(Entity* ent, usercmd_s* ucmd)
+{
+    Client* client = ent->client;
+    client->oldbuttons = client->buttons;
+    client->buttons = ucmd->buttons;
+    pmove_t pm;
+    memset(&pm, 0, sizeof(pm));
+    pm.ps = &client->ps;
+    pm.cmd = *ucmd;
+    pm.trace = (void (__cdecl*)(trace_t*, const math::Position3*, const math::Position3*,
+                                const math::Position3*, const math::Position3*,
+                                const collision_context_t*))g_TraceCapsule;
+    pm.boxtrace = (void (__cdecl*)(trace_t*, const math::Position3*, const math::Position3*,
+                                   const math::Position3*, const math::Position3*,
+                                   const collision_context_t*))g_TraceCapsule;
+    pm.capsuletrace = (void (__cdecl*)(trace_t*, const math::Position3*, const math::Position3*,
+                                       const math::Position3*, const math::Position3*,
+                                       const collision_context_t*))g_TraceCapsule;
+    pm.tracemask = 0x800011;
+    pm.pointcontents = (int (__cdecl*)(const math::Position3*,
+                                       const collision_context_t*))SV_PointContents;
+    client->ps.pm_type = (0x100000 & client->ps.pm_flags) != 0 ? 1 : 4;
+    client->ps.speed = (ent->sentient->noSpectate & 0x20) == 0 ? 400 : 0;
+    Pmove(&pm, false);
+    ent->r.currentOrigin.v.m128_f32[0] = client->ps.origin.v.m128_f32[0];
+    ent->r.currentOrigin.v.m128_f32[1] = client->ps.origin.v.m128_f32[1];
+    ent->r.currentOrigin.v.m128_f32[2] = client->ps.origin.v.m128_f32[2];
+    if (!Entity_IsInRagdoll(ent))
+        SV_UnlinkEntity(ent);
+}
+
+// ea: 0x004473C40
+void Player_UpdateActivate(Entity* ent)
+{
+    if (ent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+        AeAssert::gCurrentLine = 192;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (ent->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+        AeAssert::gCurrentLine = 193;
+        AeAssert::gCurrentExpr = "ent->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    ent->client->ps.pm_flags &= ~0x40000u;
+    Entity* mObject = HandleDbToEnt(ent->client->mUseHoldEntity);
+    bool v2 = false;
+    if (mObject != nullptr
+        && (ent->client->oldbuttons & 0x40) != 0
+        && (ent->client->buttons & 0x40) == 0)
+    {
+        ent->client->ps.pm_flags |= 0x40000u;
+        return;
+    }
+    if ((ent->client->latched_buttons & 0x60) != 0)
+        v2 = Player_ActivateCmd(ent) != 0;
+    if (mObject == nullptr && !v2)
+    {
+        if ((ent->client->latched_buttons & 0x40) == 0)
+            return;
+        ent->client->ps.pm_flags |= 0x40000u;
+        return;
+    }
+    if ((ent->client->buttons & 0x60) != 0)
+        Player_ActivateHoldCmd(ent);
+}
+
+// ea: 0x00451800
+void VP_SetScriptVariable(const char* /*a1*/, const char* /*a2*/, vehicle_node_t* /*a3*/)
+{
+    ;
+}
+
+// ea: 0x00455380
+void HealthRegen(Entity* e, float deltaT)
+{
+    static unsigned char s_init = 0;
+    static unsigned int sDamageStr = 0;
+    if (e->health > 0)
+    {
+        if (!(s_init & 1))
+        {
+            s_init |= 1;
+            sDamageStr = HashString::CalcHash("damage");
+        }
+        if (e->mNotifySet != nullptr && EntityNotifySet_GetNotify(e->mNotifySet, sDamageStr) != nullptr)
+            e->client->ps.mTimeSinceDamage = 4.0f;
+        Client* client = e->client;
+        float v5 = deltaT;
+        if (client->ps.mTimeSinceDamage > 0.0f)
+            client->ps.mTimeSinceDamage -= deltaT;
+        Client* v6 = e->client;
+        if (v6->ps.mTimeSinceDamage <= 0.0f && e->health < g_player_maxhealth.integer)
+            v6->ps.mHealthDelta += v5 * 50.0f;
+        Client* v7 = e->client;
+        float mHealthDelta = v7->ps.mHealthDelta;
+        if (mHealthDelta > 1.0f)
+        {
+            v7->ps.mHealthDelta -= mHealthDelta;
+            int integer = (int)mHealthDelta + e->health;
+            if (integer >= g_player_maxhealth.integer)
+                integer = g_player_maxhealth.integer;
+            e->health = integer;
+        }
+    }
+}

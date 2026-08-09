@@ -149,7 +149,7 @@ struct scr_vehicle_t {
         float mHatchAngleLeft;          // +0x38
         float _pad3C;                   // +0x3C
     } current;                          // +0x3E0 (0x3C bytes)
-    uint8_t _pad420[0x460 - 0x420];
+    struct LerpedVariables next;        // +0x420 (0x40 bytes)
     struct VehicleBoneIndex {
         int player;           // +0x00
         int detach;           // +0x04
@@ -1652,6 +1652,15 @@ struct debug_aabb { float data[7]; };            // opaque
 extern ae_vector<debug_aabb> debug_aabbs;        // g.o
 bool  CanMantleVehicle(scr_vehicle_t* veh, Entity* player);  // g.o
 void  G_DelayFreeAnimTree(XAnimTree* tree);      // g.o (g_dobj.cpp)
+void  commit_dobjects(void);                     // g.o (g_dobj.cpp)
+void  DObjSetNotRenderedFlag(void);              // g.o (g_dobj.cpp)
+void  UpdateCVars(void);                         // g.o (g_main.cpp)
+void  ShowEntityInfo(void);                      // g.o (g_main.cpp)
+void  G_DrawVehiclePaths(void);                  // g.o
+void  G_DrawEntityBBoxes(void);                  // g.o
+void  Path_DrawDebug(void);                      // g.o
+void  ClientEndFrame(Entity* ent, int msec);     // g.o
+void  PlayerAnimMgr_Update(float deltaT);        // game.o
 void  Concussive_think(Entity* ent, int msec);   // g.o 0x462A60
 Entity* SelectRandomDeathmatchSpawnPoint(void);  // g.o 0x466F40
 Entity* SelectNearestDeathmatchSpawnPoint(const float* from);  // g.o 0x461830 (redeclared above)
@@ -1675,7 +1684,6 @@ extern const char* s_vehicleSubTypeNames[9];      // g.o
 void  Pmove(pmove_t* pmove, bool isThisThePredictStep);  // game.o
 extern void (*entinfotable[3])(Entity* ent);      // g.o
 float vectoyaw(const float* vec);                 // core.o
-struct pmove_t;                                   // opaque
 struct proximity_data_t { struct { __m128 v; } lo, hi; };  // opaque
 void  DebugDumpEnts(int a1, Entity* e);            // g.o 0x460C50 (redecl above)
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0 (redecl above)
@@ -1693,6 +1701,43 @@ void  CG_FreeWeapons(void);                        // cg.o
 void  BG_FreeWeaponInfo(void);                     // game.o
 void  G_FreeInteractionInfo(void);                 // g.o
 int   ae_stricmpn(const char* s1, const char* s2, int n);  // core.o ae_string_support.cpp
+void  G_RunFrame(int msec);                       // g.o 0x492600
+void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0
+void  Player_UpdateActivate(Entity* ent);         // g.o 0x473C40
+void  VP_SetScriptVariable(const char* a1, const char* a2, vehicle_node_t* a3);  // g.o 0x451800
+bool  VEH_VehicleTouchesMine(Entity* vehicle, EntityState* item);  // g.o 0x44FB90
+void  Scr_Vehicle_Controller(Entity* pSelf);      // g.o 0x480970
+void  HealthRegen(Entity* e, float deltaT);       // g.o 0x455380
+void  Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
+                  Entity* weaponEnt, float coneAngleTangent);  // g.o 0x48D980
+void  UpdateAnims(int msec);                      // g.o
+void  AdvanceSceneAnims(float delta);             // g.o
+void  UpdatePlayer(void);                         // g.o
+void  j_nullsub_20(void);                         // g.o
+void  UpdateRigidBody(float delta_t);             // g.o
+void  ClientEndFrame(Entity* ent, int msec);      // g.o
+void  Path_DrawDebug(void);                       // g.o
+void  G_DrawVehiclePaths(void);                   // g.o
+void  G_DrawEntityBBoxes(void);                   // g.o
+void  G_BulletFireSpread(Entity* source, Entity* attacker, weaponParms* wp,
+                         int damage, float spread, Entity* weaponEnt,
+                         float coneAngleTangent, int seed);  // g.o
+int   Player_ActivateCmd(Entity* ent);            // g.o
+void  Player_ActivateHoldCmd(Entity* ent);        // g.o
+void  MultiplayerMgr_SpreadFire(void* self, Entity* player, float gunPitch,
+                                float gunYaw, float* weaponPosition, int weapon,
+                                float spread, float coneAngleTangent, int seed);  // mp.o
+extern int g_listEntity;                          // g.o
+extern vmCvar_t g_performanceTest;                // g.o
+extern cdl_proftimer cdl_proftimer_ent_actors;    // game.o
+extern int gCurrentCamera;                        // g.o
+extern int gCamera;                               // g.o
+void  InteractionController_Update(void* self, float deltaT);  // cl.o
+void  PlayerAnimMgr_Update(float deltaT);          // game.o
+void  MultiplayerMgr_Step(void* self, int earlyOutInterval, bool fromThread,
+                          bool a_bFromGame);      // mp.o
+void* EntityNotifySet_GetNotify(void* self, unsigned int chk);  // core.o
+bool  Entity_IsInRagdoll(Entity* ent);            // game.o
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o
@@ -1804,6 +1849,8 @@ struct StatusBar {
 struct rb_vehicle {
     uint8_t _pad[0x254];
     float   m_throttle;  // +0x254
+    uint8_t _pad258[0x320 - 0x258];
+    float*  m_wheels[6];  // +0x320
 };
 
 struct rb_extra_info {

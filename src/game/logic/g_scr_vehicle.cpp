@@ -893,6 +893,83 @@ void Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
     Scr_NotifyFromEnt(pSelf, hash_const.death, v16);
 }
 
+// ea: 0x004480970
+void Scr_Vehicle_Controller(Entity* pSelf)
+{
+    if (pSelf == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7746;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7747;
+        AeAssert::gCurrentExpr = "pSelf->scr_vehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
+    float bodyAngles[3];
+    bodyAngles[0] = scr_vehicle->next.mBodyPosition.v.m128_f32[0];
+    bodyAngles[1] = 0.0f;
+    bodyAngles[2] = scr_vehicle->next.mBodyPosition.v.m128_f32[2];
+    int body = scr_vehicle->boneIndex.body;
+    if (body >= 0)
+        G_DObjSetLocalTagInternal_0(vec3_origin, bodyAngles, body, pSelf, 0);
+    float turretAngles[3] = { 0.0f, scr_vehicle->next.mTurretAngles.v.m128_f32[1], 0.0f };
+    float barrelAngles[3] = { scr_vehicle->next.mTurretAngles.v.m128_f32[0], 0.0f, 0.0f };
+    int turret = scr_vehicle->boneIndex.turret;
+    if (turret >= 0)
+        G_DObjSetLocalTagInternal_0(vec3_origin, turretAngles, turret, pSelf, 0);
+    int barrel = scr_vehicle->boneIndex.barrel;
+    if (barrel >= 0)
+        G_DObjSetLocalTagInternal_0(vec3_origin, barrelAngles, barrel, pSelf, 0);
+}
+
+// ea: 0x0044FB90
+bool VEH_VehicleTouchesMine(Entity* vehicle, EntityState* item)
+{
+    float v12[3];
+    v12[0] = item->pos.trBase[0];
+    v12[1] = item->pos.trBase[1];
+    v12[2] = item->pos.trBase[2];
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(item->weapon);
+    if (InfoForWeapon->iTriggerRadius == 0)
+        return false;
+    rb_vehicle* mRBVeh = (rb_vehicle*)vehicle->scr_vehicle->mRBVeh;
+    if (mRBVeh == nullptr)
+        return false;
+    int v4 = InfoForWeapon->iTriggerRadius * InfoForWeapon->iTriggerRadius;
+    float dx = v12[0] - vehicle->r.currentOrigin.v.m128_f32[0];
+    float dy = v12[1] - vehicle->r.currentOrigin.v.m128_f32[1];
+    float dz = v12[2] - vehicle->r.currentOrigin.v.m128_f32[2];
+    if (((dx * dx) + (dy * dy)) + (dz * dz)
+        > (vehicle->scr_vehicle->mUseRadius * vehicle->scr_vehicle->mUseRadius) + v4)
+    {
+        return false;
+    }
+    for (int v7 = 0; v7 < 6; ++v7)
+    {
+        float* wheel = mRBVeh->m_wheels[v7];
+        if (wheel != nullptr)
+        {
+            float* wheelPos = wheel + 4;  // origin at +0x10
+            float wx = v12[0] - wheelPos[0];
+            float wy = v12[1] - wheelPos[1];
+            float wz = v12[2] - wheelPos[2];
+            if (v4 > ((wx * wx) + (wy * wy)) + (wz * wz))
+                return true;
+        }
+    }
+    return false;
+}
+
 // ea: 0x0044D370
 int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType)
 {
