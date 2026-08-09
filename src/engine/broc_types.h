@@ -199,6 +199,7 @@ struct string {
     ~string();
 
     int length() const;
+    bool is_empty() const;  // ?is_empty@string@Broc@@QBE_NXZ
 
     // --- assignment ---
     string& operator=(const string& rhs);

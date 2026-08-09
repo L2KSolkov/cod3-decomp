@@ -46,7 +46,7 @@ struct ai_orient_t {
     float   yaw;          // +0x00
     float   yawTolerance; // +0x04
     float   targetYaw;    // +0x08
-    int32_t orientTime;   // +0x0C
+    float   fDesiredBodyYaw;  // +0x0C (verified vs disasm G_MoverTeam)
     int32_t orientType;   // +0x10
 };
 static_assert(sizeof(ai_orient_t) == 0x14, "ai_orient_t size mismatch");

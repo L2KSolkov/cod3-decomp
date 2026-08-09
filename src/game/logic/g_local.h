@@ -222,11 +222,16 @@ struct hash_const_t {
     uint8_t    _pad38[0x98 - 0x38];
     HashString func_door;          // +0x98
     HashString func_door_rotating; // +0x9C
-    uint8_t    _padA0[0xA4 - 0xA0];
+    HashString func_rotating;      // +0xA0
     HashString func_tramcar;       // +0xA4
-    uint8_t    _padA8[0x11C - 0xA8];
+    uint8_t    _padA8[0xEC - 0xA8];
+    HashString movedone;           // +0xEC
+    uint8_t    _padF0[0x11C - 0xF0];
     HashString pickup;             // +0x11C
-    uint8_t    _pad120[0x208 - 0x120];
+    HashString player;             // +0x120
+    uint8_t    _pad124[0x144 - 0x124];
+    HashString rotatedone;         // +0x144
+    uint8_t    _pad148[0x208 - 0x148];
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C
     HashString trigger_damage;     // +0x210
@@ -264,6 +269,7 @@ typedef EHitLocation hitLocation_t;
 extern cvar_t* g_cheats;               // g_cheats
 extern cvar_t* g_developer;            // g_developer
 extern cvar_t* g_debug_sound_aliases;  // g_debug_sound_aliases
+extern vmCvar_t g_gravity;             // g_gravity
 extern void    Scr_Error(const char* error);  // scr.o
 
 // ============================================================================
@@ -567,12 +573,85 @@ void Scr_Notify(Entity* ent, HashString hashValue, int paramcount);
 Handle PostEffectEventScriptCall(Entity* ent, const char* scriptId, bool queue,
                                  TPakId pakid, bool important);
 void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, float* result);
-void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3* result);
+void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3& result);
 void AxisToAngles(const float (*axis)[3], float* angles);
 void CrossProduct(const float* v1, const float* v2, float* cross);
 float VectorNormalize(float* v);
 void j_nullsub_74(Entity* pSelf, int bLerp);
 bool Entity_has_zone_collision(const void* self);
+
+// ============================================================================
+// g_mover.cpp types/globals
+// ============================================================================
+enum moverState_t {
+    MOVER_POS1 = 0,
+    MOVER_POS2 = 1,
+    MOVER_POS3 = 2,
+    MOVER_1TO2 = 3,
+    MOVER_2TO1 = 4,
+    MOVER_2TO3 = 5,
+    MOVER_3TO2 = 6,
+    MOVER_POS1ROTATE = 7,
+    MOVER_POS2ROTATE = 8,
+    MOVER_1TO2ROTATE = 9,
+    MOVER_2TO1ROTATE = 10,
+};
+
+struct pushed_t {
+    Entity* ent;        // +0x00
+    float   origin[3];  // +0x04
+    float   deltayaw;   // +0x10
+};
+static_assert(sizeof(pushed_t) == 0x14, "pushed_t size mismatch");
+
+extern pushed_t pushed[256];   // 0xEAC948
+extern pushed_t* pushed_p;     // 0xEAE2E8
+extern DbLinkedHandle<EntityHandleDb, Entity> entityList[256];  // 0xEF5E20
+extern DbLinkedHandle<EntityHandleDb, Entity> moveList[256];    // 0xEF5950
+extern unsigned int _S68_2;    // 0xEF62EC
+
+// dispatch tables (function pointers per mover state)
+extern void (*reachedtable[3])(Entity* ent);   // REACHED_MAX == 3
+extern void (*blockedtable[3])(Entity* ent, Entity* other);  // BLOCKED_MAX == 3
+extern void (*thinktable[])(Entity* ent, int msec);
+
+// externs
+void SV_AdjustAreaPortalState(Entity* ent, int open);
+int  SV_inPVS(const math::Position3* p1, const math::Position3* p2);
+void vectoangles(const float* vec, float* angles);
+float RadiusFromBounds(const math::Position3& mins, const math::Position3& maxs);
+int  CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
+                     DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                     int maxcount, int contentmask);
+void G_Animscripted_Think(Entity* ent);
+void G_SetEntityOceanHeight(Entity* pEnt);
+int  ScriptMover_Updatemove(float speed, float time, math::Position3* dest);
+float AngleNormalize180(float angle);
+float AngleNormalize360(float angle);
+void DoorRotateStartOpen(Entity* ent);
+void G_MoverTeam(Entity* ent);
+void G_Animscripted_Think(Entity* ent);
+void j_nullsub_17(Entity* pOriginator, int eType, int iTeamFlags,
+                  math::Position3* vOrigin, float fRadiusSqrd);
+void j_nullsub_60(actor_s* pSelf);
+void j_nullsub_83(ai_orient_t* pOrient, float fAngle);
+void Sentient_InvalidateNearestNode(sentient_s* pSelf);
+int  G_TryPushingEntity(Entity* check, Entity* pusher,
+                        const math::Position3& move, const math::Position3& amove);
+Entity* G_TestEntityPosition(Entity* ent, const math::Position3& origin);
+int  G_MoverPush(Entity* pusher, const float* move, const float* amove);
+
+// g_combat.cpp (unported; declared for g_mover callers)
+void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
+              const float* dir, const float* point, int damage, int dflags,
+              int mod, hitLocation_t hitLoc, int weapon);
+
+// THINK table indices used by movers
+enum {
+    THINK__finishSpawningKeyedMover = 7,
+    THINK__RespawnItem = 0x14,
+    THINK__ReturnToPos1 = 0x15,
+};
 
 // ============================================================================
 // g_trigger.cpp externs

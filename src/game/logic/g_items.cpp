@@ -515,7 +515,7 @@ void G_RunItem(Entity* ent, int msec)
     if (trType != TR_STATIONARY && trType != TR_GRAVITY_PAUSED && Entity_has_zone_collision(ent))
     {
         math::Position3 dir;
-        BG_EvaluateTrajectory(&ent->s.pos, level.time, &dir);
+        BG_EvaluateTrajectory(&ent->s.pos, level.time, dir);
         if (IS_NAN(dir.v.m128_f32[0]) || IS_NAN(dir.v.m128_f32[1]) || IS_NAN(dir.v.m128_f32[2]))
         {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;

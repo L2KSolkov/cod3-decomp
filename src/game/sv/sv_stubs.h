@@ -283,6 +283,7 @@ public:
     AeSizedEntityArray mActiveList;      // +0x2AAC (16388 bytes)
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
     void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
+    Entity* Find(int fieldofs, HashString match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HVHashString@@@Z
 };
 static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
 static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::mActiveList offset mismatch");
@@ -357,6 +358,8 @@ struct PathNodeMgr {
     void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ
     void ValidateAllNodes();             // ?ValidateAllNodes@PathNodeMgr@@QAEXXZ
     void AttachSentientToChainNode(sentient_s* pSentient, Broc::string* targetname);
+    void ConnectPathsForEntity(Entity* ent);     // ?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
+    void DisconnectPathsForEntity(Entity* ent);  // ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
 };
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
 
