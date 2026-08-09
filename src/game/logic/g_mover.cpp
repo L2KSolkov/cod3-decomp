@@ -4,6 +4,65 @@
 
 #include "game/logic/g_local.h"
 
+static bool s_rdirInit = false;
+static math::Position3 rdir;
+
+// ea: 0x0045C5F0
+void prepare_collision_objects(Entity* ent, const math::Position3* p0,
+                               const math::Position3* p1, float radius,
+                               int mask, proximity_data_t* proximity_data,
+                               TouchEntityData* entities)
+{
+    math::Position3 pmin;
+    pmin.v = _mm_min_ps(p0->v, p1->v);
+    math::Position3 pmax;
+    pmax.v = _mm_max_ps(p0->v, p1->v);
+    if (ent != nullptr && ent->proximity_data != nullptr)
+    {
+        math::Position3 expand;
+        expand.v.m128_f32[0] = radius;
+        expand.v.m128_f32[1] = radius;
+        expand.v.m128_f32[2] = radius * 2.0f;
+        expand.v.m128_f32[3] = 0.0f;
+        math::Position3 lo;
+        lo.v = _mm_sub_ps(pmin.v, expand.v);
+        math::Position3 hi;
+        hi.v = _mm_add_ps(pmax.v, expand.v);
+        __m128 overlap = _mm_max_ps(
+            _mm_sub_ps(ent->proximity_data->lo.v, lo.v),
+            _mm_sub_ps(hi.v, ent->proximity_data->hi.v));
+        if ((_mm_movemask_ps(
+                 _mm_cmplt_ps(overlap, _mm_setzero_ps()))
+             & 7) != 7)
+        {
+            if (!s_rdirInit)
+            {
+                s_rdirInit = true;
+                rdir.v.m128_f32[0] = 50.0f;
+                rdir.v.m128_f32[1] = 50.0f;
+                rdir.v.m128_f32[2] = 50.0f;
+                rdir.v.m128_f32[3] = 0.0f;
+            }
+            math::Position3 qlo;
+            qlo.v = _mm_sub_ps(lo.v, rdir.v);
+            math::Position3 qhi;
+            qhi.v = _mm_add_ps(hi.v, rdir.v);
+            query_proximity_data(qlo, qhi, *ent->proximity_data);
+        }
+        filter_proximity_data(lo, hi, mask, *ent->proximity_data,
+                              *proximity_data);
+    }
+    math::Position3 expand2;
+    expand2.v.m128_f32[0] = radius;
+    expand2.v.m128_f32[1] = radius;
+    expand2.v.m128_f32[2] = radius;
+    expand2.v.m128_f32[3] = 0.0f;
+    entities->mins.v = _mm_sub_ps(pmin.v, expand2.v);
+    entities->maxs.v = _mm_add_ps(pmax.v, expand2.v);
+    entities->num = CM_AreaEntities(entities->mins, entities->maxs,
+                                    entities->touch, 128, mask);
+}
+
 // ea: 0x0048CB90
 void G_Activate(Entity* ent, Entity* activator)
 {

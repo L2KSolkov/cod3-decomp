@@ -2080,6 +2080,11 @@ void  Pmove(pmove_t* pmove, bool isThisThePredictStep);  // game.o
 extern void (*entinfotable[3])(Entity* ent);      // g.o
 float vectoyaw(const float* vec);                 // core.o
 struct proximity_data_t { struct { __m128 v; } lo, hi; };  // opaque
+void query_proximity_data(const math::Position3& lo, const math::Position3& hi,
+                          proximity_data_t& out);      // game.o 0x60A25BC0
+void filter_proximity_data(const math::Position3& lo, const math::Position3& hi,
+                           int contents, const proximity_data_t& in,
+                           proximity_data_t& out);     // game.o 0x60A0D100
 void  DebugDumpEnts(int a1, Entity* e);            // g.o 0x460C50 (redecl above)
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0 (redecl above)
 void  G_LoadLevel(void);                           // g.o 0x468D00
