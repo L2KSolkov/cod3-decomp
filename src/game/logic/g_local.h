@@ -237,6 +237,9 @@ struct scr_vehicle_t {
     vehicleAnimMap_t* animMap;  // +0x56C
     vehicle_follow* follow;   // +0x570
     uint8_t wheel_polies[0x750 - 0x574];  // cdl_poly_inl_t[6] (untyped)
+    bool    hasGround;     // +0x750 (static s_phys scratch)
+    uint8_t _pad751[0x760 - 0x751];
+    trace_t groundTrace;   // +0x760 (static s_phys scratch)
     static int sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
     static int sRenderEntryPoints;  // ?sRenderEntryPoints@scr_vehicle_t@@2HA
     static int sDebugAnims;     // ?sDebugAnims@scr_vehicle_t@@2HA

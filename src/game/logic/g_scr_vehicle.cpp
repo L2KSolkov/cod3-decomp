@@ -4878,6 +4878,259 @@ void ChiefMammalInChargeOfVehicleDamageAndPushOut(Entity* pSelf)
     }
 }
 
+// ea: 0x0046AAC0
+int VEH_SlideMove(Entity* ent, int gravity, int msec)
+{
+    scr_vehicle_t* veh = ent->scr_vehicle;
+    math::Position3& origin = veh->phys.origin;
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    trace_t trace;
+    memset(&trace, 0, sizeof(trace));
+    int bumpCount = 0;
+    float timeScale = msec * 0.001f;
+    math::Dir3 endVel;
+    endVel.v.m128_f32[3] = timeScale;
+    float origVel[3];
+    if (gravity != 0)
+    {
+        origVel[0] = veh->phys.vel.v.m128_f32[0];
+        origVel[1] = veh->phys.vel.v.m128_f32[1];
+        origVel[2] = veh->phys.vel.v.m128_f32[2]
+                   - timeScale * 800.0f;
+        float avgZ = (origVel[2] + veh->phys.vel.v.m128_f32[2]) * 0.5f;
+        veh->phys.vel.v.m128_f32[2] = avgZ;
+        if (s_phys.hasGround)
+        {
+            float dot =
+                veh->phys.vel.v.m128_f32[0]
+                    * s_phys.groundTrace.normal.v.m128_f32[0]
+                + veh->phys.vel.v.m128_f32[1]
+                      * s_phys.groundTrace.normal.v.m128_f32[1]
+                + avgZ * s_phys.groundTrace.normal.v.m128_f32[2];
+            float scale = dot >= 0.0f ? dot * 0.99009901f : dot * 1.01f;
+            veh->phys.vel.v.m128_f32[0] -=
+                scale * s_phys.groundTrace.normal.v.m128_f32[0];
+            veh->phys.vel.v.m128_f32[1] -=
+                scale * s_phys.groundTrace.normal.v.m128_f32[1];
+            veh->phys.vel.v.m128_f32[2] -=
+                scale * s_phys.groundTrace.normal.v.m128_f32[2];
+        }
+    }
+    math::Dir3 planes[5];
+    memset(planes, 0, sizeof(planes));
+    int numPlanes = 0;
+    if (s_phys.hasGround)
+    {
+        planes[0] = s_phys.groundTrace.normal;
+        numPlanes = 1;
+    }
+    VectorNormalize2(&veh->phys.vel, &veh->phys.vel);
+    collision_context_t context;
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    context.pass_entity2.mHandle.mVal = ent->clipmask;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0;
+    float timeLeft = 0.0f;
+    float clipVel[3];
+    int i = 0;
+    for (;;)
+    {
+        math::Position3 end;
+        end.v.m128_f32[0] =
+            origin.v.m128_f32[0] + veh->phys.vel.v.m128_f32[0] * timeScale;
+        end.v.m128_f32[1] =
+            origin.v.m128_f32[1] + veh->phys.vel.v.m128_f32[1] * timeScale;
+        end.v.m128_f32[2] =
+            origin.v.m128_f32[2] + veh->phys.vel.v.m128_f32[2] * timeScale;
+        SV_Trace(&trace, &origin, &info->mins, &info->maxs, &end, &context,
+                 1, 0, nullptr, 0, 0.0f);
+        if (trace.allsolid)
+        {
+            veh->phys.vel.v.m128_f32[0] = 0.0f;
+            veh->phys.vel.v.m128_f32[1] = 0.0f;
+            veh->phys.vel.v.m128_f32[2] = 0.0f;
+            return 1;
+        }
+        float normalY = trace.normal.v.m128_f32[1];
+        if (normalY > 0.0f)
+        {
+            origin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+            origin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+            origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+            normalY = trace.normal.v.m128_f32[1];
+        }
+        if (normalY == 1.0f)
+        {
+            if (gravity != 0)
+            {
+                veh->phys.vel.v.m128_f32[0] = origVel[0];
+                veh->phys.vel.v.m128_f32[1] = origVel[1];
+                veh->phys.vel.v.m128_f32[2] = origVel[2];
+            }
+            return bumpCount == 0 && i != 0;
+        }
+        Entity* hitEnt = HandleDbToEnt(*(DbLinkedHandle<EntityHandleDb, Entity>*)
+                                           &trace.surfaceFlags);
+        if (hitEnt != nullptr
+            && (hitEnt->s.eType == 14 || hitEnt->s.eType == 1))
+            bumpCount = 1;
+        timeScale -= trace.fraction * timeScale;
+        if (numPlanes >= 5)
+        {
+            veh->phys.vel.v.m128_f32[0] = 0.0f;
+            veh->phys.vel.v.m128_f32[1] = 0.0f;
+            veh->phys.vel.v.m128_f32[2] = 0.0f;
+            return bumpCount == 0;
+        }
+        bool planeMatch = false;
+        for (int p = 0; p < numPlanes; ++p)
+        {
+            float dot = planes[p].v.m128_f32[0]
+                            * trace.normal.v.m128_f32[0]
+                        + planes[p].v.m128_f32[1]
+                              * trace.normal.v.m128_f32[1]
+                        + planes[p].v.m128_f32[2]
+                              * trace.normal.v.m128_f32[2];
+            if (dot > 0.99f)
+            {
+                veh->phys.vel.v.m128_f32[0] += trace.normal.v.m128_f32[0];
+                veh->phys.vel.v.m128_f32[1] += trace.normal.v.m128_f32[1];
+                veh->phys.vel.v.m128_f32[2] += trace.normal.v.m128_f32[2];
+                planeMatch = true;
+                break;
+            }
+        }
+        if (planeMatch)
+        {
+            ++i;
+            if (i >= 4)
+                break;
+            continue;
+        }
+        planes[numPlanes] = trace.normal;
+        ++numPlanes;
+        int clipIdx = -1;
+        for (int p = 0; p < numPlanes; ++p)
+        {
+            float dot = planes[p].v.m128_f32[0]
+                            * veh->phys.vel.v.m128_f32[0]
+                        + planes[p].v.m128_f32[1]
+                              * veh->phys.vel.v.m128_f32[1]
+                        + planes[p].v.m128_f32[2]
+                              * veh->phys.vel.v.m128_f32[2];
+            if (dot < 0.1f)
+            {
+                clipIdx = p;
+                break;
+            }
+        }
+        if (clipIdx < 0)
+        {
+            ++i;
+            if (i >= 4)
+                break;
+            continue;
+        }
+        math::Dir3& plane = planes[clipIdx];
+        float vdot = plane.v.m128_f32[0] * veh->phys.vel.v.m128_f32[0]
+                   + plane.v.m128_f32[1] * veh->phys.vel.v.m128_f32[1]
+                   + plane.v.m128_f32[2] * veh->phys.vel.v.m128_f32[2];
+        float vscale = vdot >= 0.0f ? vdot * 0.99009901f : vdot * 1.01f;
+        clipVel[0] = veh->phys.vel.v.m128_f32[0]
+                   - plane.v.m128_f32[0] * vscale;
+        clipVel[1] = veh->phys.vel.v.m128_f32[1]
+                   - plane.v.m128_f32[1] * vscale;
+        clipVel[2] = veh->phys.vel.v.m128_f32[2]
+                   - plane.v.m128_f32[2] * vscale;
+        float odot = plane.v.m128_f32[0] * origVel[0]
+                   + plane.v.m128_f32[1] * origVel[1]
+                   + plane.v.m128_f32[2] * origVel[2];
+        float oscale = odot >= 0.0f ? odot * 0.99009901f : odot * 1.01f;
+        float endClipVel[3] = {
+            origVel[0] - plane.v.m128_f32[0] * oscale,
+            origVel[1] - plane.v.m128_f32[1] * oscale,
+            origVel[2] - plane.v.m128_f32[2] * oscale,
+        };
+        veh->phys.vel.v.m128_f32[0] = clipVel[0];
+        veh->phys.vel.v.m128_f32[1] = clipVel[1];
+        veh->phys.vel.v.m128_f32[2] = clipVel[2];
+        origVel[0] = endClipVel[0];
+        origVel[1] = endClipVel[1];
+        origVel[2] = endClipVel[2];
+        for (int p = 0; p < numPlanes; ++p)
+        {
+            if (p == clipIdx)
+                continue;
+            float d2 = planes[p].v.m128_f32[0] * clipVel[0]
+                     + planes[p].v.m128_f32[1] * clipVel[1]
+                     + planes[p].v.m128_f32[2] * clipVel[2];
+            if (d2 >= 0.1f)
+                continue;
+            float s2 = d2 >= 0.0f ? d2 * 0.99009901f : d2 * 1.01f;
+            clipVel[0] -= planes[p].v.m128_f32[0] * s2;
+            clipVel[1] -= planes[p].v.m128_f32[1] * s2;
+            clipVel[2] -= planes[p].v.m128_f32[2] * s2;
+            float e2 = planes[p].v.m128_f32[0] * endClipVel[0]
+                     + planes[p].v.m128_f32[1] * endClipVel[1]
+                     + planes[p].v.m128_f32[2] * endClipVel[2];
+            float s3 = e2 >= 0.0f ? e2 * 0.99009901f : e2 * 1.01f;
+            endClipVel[0] -= planes[p].v.m128_f32[0] * s3;
+            endClipVel[1] -= planes[p].v.m128_f32[1] * s3;
+            endClipVel[2] -= planes[p].v.m128_f32[2] * s3;
+            float edgeDot = clipVel[0] * plane.v.m128_f32[0]
+                          + clipVel[1] * plane.v.m128_f32[1]
+                          + clipVel[2] * plane.v.m128_f32[2];
+            if (edgeDot >= 0.0f)
+                continue;
+            // slide along the edge (cross product of the two normals)
+            float edge[3];
+            edge[0] = plane.v.m128_f32[1] * planes[p].v.m128_f32[2]
+                    - plane.v.m128_f32[2] * planes[p].v.m128_f32[1];
+            edge[1] = plane.v.m128_f32[2] * planes[p].v.m128_f32[0]
+                    - plane.v.m128_f32[0] * planes[p].v.m128_f32[2];
+            edge[2] = plane.v.m128_f32[0] * planes[p].v.m128_f32[1]
+                    - plane.v.m128_f32[1] * planes[p].v.m128_f32[0];
+            VectorNormalize(edge);
+            float ev = edge[0] * veh->phys.vel.v.m128_f32[0]
+                     + edge[1] * veh->phys.vel.v.m128_f32[1]
+                     + edge[2] * veh->phys.vel.v.m128_f32[2];
+            float eo = edge[0] * origVel[0] + edge[1] * origVel[1]
+                     + edge[2] * origVel[2];
+            veh->phys.vel.v.m128_f32[0] = edge[0] * ev;
+            veh->phys.vel.v.m128_f32[1] = edge[1] * ev;
+            veh->phys.vel.v.m128_f32[2] = edge[2] * ev;
+            origVel[0] = edge[0] * eo;
+            origVel[1] = edge[1] * eo;
+            origVel[2] = edge[2] * eo;
+            clipVel[0] = veh->phys.vel.v.m128_f32[0];
+            clipVel[1] = veh->phys.vel.v.m128_f32[1];
+            clipVel[2] = veh->phys.vel.v.m128_f32[2];
+            endClipVel[0] = origVel[0];
+            endClipVel[1] = origVel[1];
+            endClipVel[2] = origVel[2];
+            break;
+        }
+        veh->phys.vel.v.m128_f32[0] = clipVel[0];
+        veh->phys.vel.v.m128_f32[1] = clipVel[1];
+        veh->phys.vel.v.m128_f32[2] = clipVel[2];
+        origVel[0] = endClipVel[0];
+        origVel[1] = endClipVel[1];
+        origVel[2] = endClipVel[2];
+        ++i;
+        if (i >= 4)
+            break;
+    }
+    if (gravity != 0)
+    {
+        veh->phys.vel.v.m128_f32[0] = origVel[0];
+        veh->phys.vel.v.m128_f32[1] = origVel[1];
+        veh->phys.vel.v.m128_f32[2] = origVel[2];
+    }
+    return bumpCount == 0 && i != 0;
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)

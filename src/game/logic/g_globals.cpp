@@ -27,6 +27,7 @@ int   timeToAdd = 20000;       // @ 0xDD821C (helmet self-free time)
 vmCvar_t g_weaponAmmoPools;    // @ 0x01297030
 vmCvar_t g_weaponRespawn;      // @ 0x01296988
 PoolAllocator* Task::sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
+scr_vehicle_t s_phys;          // g_scr_vehicle.cpp static scratch
 const float s_invalidAngles[3] = { 3.1415927f, 3.1415927f, 3.1415927f };  // @ 0xDD7414
 float dword_DD7418 = 3.1415927f;  // @ 0xDD7418
 float dword_DD741C = 3.1415927f;  // @ 0xDD741C
