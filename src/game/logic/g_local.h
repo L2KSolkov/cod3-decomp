@@ -235,8 +235,18 @@ struct TestFPS {
 // g_main.cpp entry / console commands
 void game_dllEntry(int (*syscallptr)(int, ...));
 void Cmd_TestFPS(void);
+void Cmd_NGLStats_f(void);
+bool Cmd_NGLStatDisplay_f(void);
+void Cmd_ProfileShaders_f(void);
+void Cmd_ProfileNodes_f(void);
 void Cmd_Wireframe_f(void);
 void Cmd_Fullbright_f(void);
+void Cmd_SolidColor_f(void);
+void Cmd_ToggleShader_f(void);
+void Cmd_KillSound(void);
+void Cmd_BuilderTest_f(void);
+void Cmd_Thread_Debug_f(void);
+int  Cmd_EntityStats_f(void);
 void Cmd_TextureTiling_f(void);
 void G_EndGame(void);
 char* GetScratchPad(void);
@@ -250,6 +260,9 @@ void  G_SetClientSound(Entity* ent);
 void  G_RunClient(Entity* ent);
 int   ClientInactivityTimer(Entity* ent);
 int   ClientSpectatorInactivityTimer(Entity* ent);
+void  respawn(Entity* ent);
+void  handleDeathInvulnerability(Entity* ent, int a2, int a3);
+void  Fill_Clip(PlayerState* ps, int weapon);
 void  MemGraph_RenderResources(void);
 int   G_StealVehicleSeat(Entity* ent, Entity* veh, int seat, bool bForce);
 void  G_FreeVehicleSeat(Entity* ent, Entity* veh, int seat);

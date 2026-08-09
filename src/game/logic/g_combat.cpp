@@ -10,6 +10,12 @@
 
 extern "C" int __fpclass(float);
 
+// ea: 0x0044AF10
+void handleDeathInvulnerability(Entity* /*ent*/, int /*a2*/, int /*a3*/)
+{
+    ;
+}
+
 static bool IS_NAN(float x) {
     return (__fpclass(x) & 0x297) != 0;
 }

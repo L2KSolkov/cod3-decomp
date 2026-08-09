@@ -21,7 +21,8 @@ enum EDebugRenderMode {
     kDebugRenderModeNormal = 0,
     kDebugRenderModeFullbright = 1,
     kDebugRenderModeWireframe = 2,
-    kDebugRenderModeTextureTiling = 3,
+    kDebugRenderModeSolidColor = 3,
+    kDebugRenderModeTextureTiling = 5,
 };
 
 // Toggle flag bits for each shader (ShaderSwitching, @0x10DDB10).

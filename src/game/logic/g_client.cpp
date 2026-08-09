@@ -4,6 +4,12 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x00449F50
+void respawn(Entity* /*ent*/)
+{
+    ;
+}
+
 // ea: 0x00448BD0
 void G_SetClientSound(Entity* ent)
 {
