@@ -617,6 +617,26 @@ int inactiveBlowupSeconds_Function(int v)
 // vehicle physics stat helpers (GetPlayerRBVehicle + vehicle_rb_parameter)
 // ============================================================================
 
+// ea: 0x4F7D10
+int SetVehicleDebugRender(int onoff)
+{
+    rb_vehicle* vehicle = GetPlayerRBVehicle();
+    if (vehicle == nullptr)
+        return -1;
+    bool v3 = (vehicle->m_flags & 0x10) != 0;
+    if (onoff != 0)
+    {
+        unsigned int mMask = vehicle->m_flags;
+        if ((mMask & 0x10) == 0)
+        {
+            vehicle->m_flags = mMask | 0x10;
+            return 0;
+        }
+        vehicle->m_flags = mMask & 0xFFFFFFEF;
+    }
+    return v3;
+}
+
 // ea: 0x004EF150
 double speed_max_Function(float f)
 {

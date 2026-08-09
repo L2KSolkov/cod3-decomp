@@ -192,3 +192,68 @@ void HealthRegenTask::Update(Entity* e, float deltaT)
         }
     }
 }
+
+// ============================================================================
+// AnimationPlayer note handler + play method (game2.o)
+// ============================================================================
+struct AnimNoteHandler {
+    DbLinkedHandle<EntityHandleDb, Entity> mEntHandle;  // +0x00
+    void* mNotify;       // +0x04
+    int mNotifyIndex;    // +0x08
+};
+
+class AnimationPlayer {
+public:
+    struct nalPlayMethod {
+        void** __vftable;       // +0x00
+        AnimNoteHandler* mNoteHandler;  // +0x04
+
+        nalPlayMethod();       // ea: 0x4FA500
+        void SetNoteHandlerEntityHandle(
+            DbLinkedHandle<EntityHandleDb, Entity> handle);  // ea: 0x4F5D10
+        void Release();  // nalPlayMethod::Release (thunk)
+    };
+
+    struct nalAnimCallback {
+        void** __vftable;       // +0x00
+        virtual bool Invoke(AnimationPlayer* player);  // ea: 0x4F5F10
+    };
+};
+
+extern void* nalPlayMethod_vftable;   // ??_7nalPlayMethod@AnimationPlayer@@6B@
+extern void* mem_heap_malloc(unsigned int size);
+
+// ea: 0x4FA500
+AnimationPlayer::nalPlayMethod::nalPlayMethod()
+{
+    __vftable = (void**)&nalPlayMethod_vftable;
+    mNoteHandler = nullptr;
+    AnimNoteHandler* v2 = (AnimNoteHandler*)mem_heap_malloc(0xC);
+    if (v2 != nullptr)
+    {
+        v2->mEntHandle.mHandle.mVal = 0;
+        v2->mNotify = nullptr;
+        v2->mNotifyIndex = -1;
+        mNoteHandler = v2;
+    }
+    else
+    {
+        mNoteHandler = nullptr;
+    }
+}
+
+// ea: 0x4F5D10
+void AnimationPlayer::nalPlayMethod::SetNoteHandlerEntityHandle(
+    DbLinkedHandle<EntityHandleDb, Entity> handle)
+{
+    AnimNoteHandler* mNoteHandler = this->mNoteHandler;
+    if (mNoteHandler != nullptr)
+        mNoteHandler->mEntHandle = handle;
+}
+
+// ea: 0x4F5F10
+bool AnimationPlayer::nalAnimCallback::Invoke(AnimationPlayer* player)
+{
+    (void)player;
+    return true;
+}

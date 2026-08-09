@@ -173,6 +173,8 @@ static_assert(sizeof(vehicle_rb_parameter) == 0xD0, "vehicle_rb_parameter size m
 struct rb_vehicle {
     unsigned char _pad[0x250];      // +0x000
     vehicle_rb_parameter* m_parameter;  // +0x250
+    unsigned char _pad254[0x280 - 0x254];
+    unsigned int m_flags;           // +0x280
     void update_parms(vehicle_rb_parameter* params, bool initialization);  // ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z
 };
 rb_vehicle* GetPlayerRBVehicle();  // game2.o
