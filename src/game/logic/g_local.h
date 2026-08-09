@@ -2061,6 +2061,7 @@ extern int   timeToAdd;                          // g.o @ 0xDD821C
 extern float decal_radius;                       // g.o @ 0xDD8204
 extern float decal_radius_0;                     // g.o @ 0xDD826C
 extern float fudge_0;                            // g.o @ 0xDD812C
+extern float radius_0;                           // g.o @ 0xDD8264
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
 
@@ -2161,6 +2162,13 @@ bool push_sphere_in_world(math::Position3& pos, float radius,
 void TracePoint(const proximity_data_t& data, trace_t* results,
                 const math::Position3& start, const math::Position3& end,
                 int brushmask);  // game.o 0x60A30D80
+bool push_in_world(math::Position3& pos, float radius,
+                   const proximity_data_t& proximity_data,
+                   TouchEntityData& entities);  // g.o 0x46E640
+void prepare_collision_objects(Entity* ent, const math::Position3* p0,
+                               const math::Position3* p1, float radius,
+                               int mask, proximity_data_t* proximity_data,
+                               TouchEntityData* entities);  // g.o 0x45C5F0
 void  DebugDumpEnts(int a1, Entity* e);            // g.o 0x460C50 (redecl above)
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0 (redecl above)
 void  G_LoadLevel(void);                           // g.o 0x468D00

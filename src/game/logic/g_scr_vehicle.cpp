@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <string.h>
 
+static const __m128 sSignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
+
 struct clientActive_t {
     uint8_t _pad[0x638];
     bool    stanceHeld;  // +0x638
@@ -4755,6 +4757,125 @@ void VEH_UnlinkPlayer(Entity* player, bool setOrigin)
     if (player->IsLocalPlayer())
         cl_stance_ss[player->GetPlayerIndex()] = 0;
     Scr_Notify(vehEnt, hash_const.player_off_vehicle, 0);
+}
+
+// ea: 0x00488420
+void ChiefMammalInChargeOfVehicleDamageAndPushOut(Entity* pSelf)
+{
+    scr_vehicle_t* veh = pSelf->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    if (info->collisionDamage <= 0.0f)
+        return;
+    float velSq = veh->phys.vel.v.m128_f32[0] * veh->phys.vel.v.m128_f32[0]
+                + veh->phys.vel.v.m128_f32[1] * veh->phys.vel.v.m128_f32[1]
+                + veh->phys.vel.v.m128_f32[2] * veh->phys.vel.v.m128_f32[2];
+    if (sqrtf(velSq) < 1.0f)
+        return;
+    static bool sS128 = false;
+    static TouchEntityData entities;
+    if (!sS128)
+    {
+        sS128 = true;
+        memset(&entities, 0, sizeof(entities));
+    }
+    proximity_data_t proximity;
+    memset(&proximity, 0, sizeof(proximity));
+    prepare_collision_objects(
+        pSelf, &veh->phys.origin, &veh->phys.origin, 200.0f,
+        pSelf->clipmask | 0x2000000, &proximity, &entities);
+    math::Mat43 rot = pSelf->CalcRotTranMat43();
+    math::Position3 lo = rot.w;
+    // bmodel bounds in the tree's DCGSet layout: min/max at +0x30/+0x40
+    const math::Position3* bmin =
+        (const math::Position3*)((const char*)pSelf->r.bmodel + 0x30);
+    const math::Position3* bmax =
+        (const math::Position3*)((const char*)pSelf->r.bmodel + 0x40);
+    for (int i = 0; i < entities.num; ++i)
+    {
+        Entity* ent = HandleDbToEnt(entities.touch[i]);
+        if (ent == nullptr)
+            continue;
+        if (ent->s.eType != 1 && ent->s.eType != 11)
+            continue;
+        if (ent->tagInfo != nullptr)
+            continue;
+        math::Position3 origin = ent->r.currentOrigin;
+        // transform into vehicle local space
+        __m128 local =
+            _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(origin.v, origin.v, 0),
+                               rot.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(origin.v, origin.v, 85),
+                               rot.y.v)),
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(origin.v, origin.v, 170),
+                               rot.z.v),
+                    _mm_xor_ps(rot.w.v, sSignMask)));
+        __m128 clamped = _mm_min_ps(_mm_max_ps(local, bmin->v), bmax->v);
+        __m128 delta = _mm_sub_ps(local, clamped);
+        __m128 d2 = _mm_mul_ps(delta, delta);
+        __m128 sum =
+            _mm_add_ps(d2,
+                       _mm_add_ps(_mm_shuffle_ps(d2, d2, 85),
+                                  _mm_shuffle_ps(d2, d2, 170)));
+        float dist2 = sum.m128_f32[0];
+        if (radius_0 * radius_0 <= dist2 || dist2 <= 0.001f)
+            continue;
+        float pushDir[3];
+        pushDir[0] = veh->phys.origin.v.m128_f32[0]
+                   - veh->phys.prevOrigin.v.m128_f32[0];
+        pushDir[1] = veh->phys.origin.v.m128_f32[1]
+                   - veh->phys.prevOrigin.v.m128_f32[1];
+        pushDir[2] = veh->phys.origin.v.m128_f32[2]
+                   - veh->phys.prevOrigin.v.m128_f32[2];
+        math::Dir3 moveDir;
+        if (VectorNormalize2(pushDir, &moveDir.v.m128_f32[0]) <= 0.005f)
+            continue;
+        float ddx = ent->r.currentOrigin.v.m128_f32[0]
+                  - pSelf->r.currentOrigin.v.m128_f32[0];
+        float ddy = ent->r.currentOrigin.v.m128_f32[1]
+                  - pSelf->r.currentOrigin.v.m128_f32[1];
+        float ddz = ent->r.currentOrigin.v.m128_f32[2]
+                  - pSelf->r.currentOrigin.v.m128_f32[2];
+        float dist = sqrtf(ddx * ddx + ddy * ddy + ddz * ddz);
+        float dirTo[3];
+        if (dist <= 0.01f)
+        {
+            dirTo[0] = 0.0f;
+            dirTo[1] = 0.0f;
+            dirTo[2] = 1.0f;
+        }
+        else
+        {
+            dirTo[0] = ddx / dist;
+            dirTo[1] = ddy / dist;
+            dirTo[2] = ddz / dist;
+        }
+        float speedFrac = pSelf->speed / info->collisionSpeed;
+        if (speedFrac > 1.0f)
+            speedFrac = 1.0f;
+        float dot = moveDir.v.m128_f32[0] * dirTo[0]
+                  + moveDir.v.m128_f32[1] * dirTo[1]
+                  + moveDir.v.m128_f32[2] * dirTo[2];
+        if (dot > 0.8f)
+        {
+            int damage = (int)(((dot - 0.8f) * speedFrac * 5.0000005f)
+                               * 120.0f);
+            G_Damage(ent, pSelf, pSelf, dirTo,
+                     &ent->r.currentOrigin.v.m128_f32[0], damage, 0, 20,
+                     HITLOC_NONE, -1);
+        }
+        int pushes = 0;
+        while (push_in_world(ent->r.currentOrigin, radius_0, proximity,
+                             entities))
+        {
+            if (++pushes > 4)
+                break;
+        }
+        MultiplayerMgr::sInst->SetPlayerPos(
+            ent, &ent->r.currentOrigin.v.m128_f32[0]);
+    }
 }
 
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
