@@ -408,6 +408,9 @@ struct DebugThread {
     int m_displayThreads;                                   // +0x0C
     int m_active;                                           // +0x10
     void Render();   // ?Render@DebugThread@@QAEXXZ (game2.o 0x50A050)
+    char* DisplayMessage(char* msg, int xpos, int ypos, float r, float g,
+                         float b, float scale, float alphaMin);
+    void Update();   // ?Update@DebugThread@@QAEXXZ (game2.o 0x4F46A0)
 };
 static_assert(sizeof(DebugThread) == 0x14, "DebugThread size mismatch");
 
@@ -1123,6 +1126,8 @@ struct BrocExports {
     uint8_t _pad94[0xD8 - 0x94];
     void (*mCallbackMineFailed)(unsigned int);            // +0xD8
     uint8_t _padDC[0x128 - 0xDC];
+    void (*mCallbackHealthRegenRecovering)(Broc::entity); // +0xEC
+    uint8_t _padF0[0x128 - 0xF0];
     void (*mCallbackDropFlag)(unsigned int);              // +0x128
     uint8_t _pad12C[0x154 - 0x12C];
     void (*mCallbackStopFollowing)();  // +0x154
@@ -2943,6 +2948,7 @@ struct Task {
     unsigned int mFlags;           // +0x18 Bitmask<unsigned int>
 
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
+    Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o 0x4F9970
     static class PoolAllocator* sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
 };
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
