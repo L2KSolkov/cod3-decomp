@@ -380,7 +380,8 @@ struct actor_s {
     Entity*        pPileUpEnt;                   // +0x840
     uint8_t        _pad844[0x84C - 0x844];
     int32_t        bDontAvoidPlayer;             // +0x84C
-    uint8_t        _pad850[0x8AC - 0x850];
+    uint8_t        _pad850[0x8A8 - 0x850];
+    float          fVisibilityThreshold;          // +0x8A8
     float          fFovDot;                      // +0x8AC
     float          fMaxSightDistSqrd;            // +0x8B0
     uint8_t        _pad8B4[0x8CC - 0x8B4];

@@ -260,6 +260,10 @@ struct MultiplayerMgr {
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 
+struct SmokeGrenadeMgr {
+    static void* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
+};
+
 struct SoundDevice {
     uint8_t _pad[31392];
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A

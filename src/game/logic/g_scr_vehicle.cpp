@@ -1903,3 +1903,115 @@ void VEH_DebugBox(const math::Position3* pos, float width, float r, float g, flo
     float boxColor[3] = {r, g, b};
     G_DebugBox(&color[1], mins, boxColor, 1, 0, 0);
 }
+
+// ea: 0x0045CA30
+void VEH_FillFollowHistoryBuffer(scr_vehicle_t* veh)
+{
+    float facing[3];
+    AnglesToForward(veh->phys.angles.v.m128_f32, facing);
+    VectorNormalizeFast(facing);
+    int v1 = 117;
+    int v2 = -36;
+    do
+    {
+        for (int b = 0; b < 10; ++b)
+        {
+            float dist = (float)(v2 + 18 - 18 * b);
+            float* dst = veh->follow->positionHistory[v1 / 3 - b];
+            dst[0] = veh->phys.origin.v.m128_f32[0] + dist * facing[0];
+            dst[1] = veh->phys.origin.v.m128_f32[1] + dist * facing[1];
+            dst[2] = veh->phys.origin.v.m128_f32[2] + dist * facing[2];
+        }
+        v2 -= 180;
+        v1 -= 30;
+    } while (v2 >= -576);
+    veh->follow->numHistoryBufferEntries = 40;
+    veh->follow->historyBufferFront = 0;
+}
+
+// ea: 0x0047F630
+void VEH_UpdateOverHeat(Entity* self, int msec)
+{
+    scr_vehicle_t* scr_vehicle = self->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    for (int i = 0; i < 11; ++i)
+    {
+        vehicleSeat_t& seat = scr_vehicle->seats[i];
+        if (seat.gunMounted)
+        {
+            if (seat.weapon != 0)
+            {
+                weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(seat.weapon);
+                if (seat.heat < 1.0f)
+                {
+                    if (seat.overheating && seat.heat <= 0.5f)
+                    {
+                        Handle v9;
+                        v9.mVal = seat.overheatEffect.mVal;
+                        seat.overheating = false;
+                        if (v9.mVal != 0)
+                        {
+                            EffectEventSys::sInst->StopEffect(v9.mVal, false);
+                            seat.overheatEffect.mVal = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    seat.overheating = true;
+                    PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
+                                          0x37 /* kActionMax|kActionWEAPON_PICKUP */);
+                    Scr_Notify(self, hash_const.overheated, 0);
+                    Handle v8;
+                    v8.mVal = seat.overheatEffect.mVal;
+                    if (v8.mVal != 0)
+                        EffectEventSys::sInst->AdjustEffect_Scale(v8.mVal,
+                                                                  "EmissionRate", 200.0f);
+                }
+                float heat = seat.heat;
+                if (heat <= 0.0f)
+                    seat.heat = 0.0f;
+                else
+                    seat.heat = heat - (msec * InfoForWeapon->fCooldownRate) * 0.001f;
+                Handle v11;
+                v11.mVal = seat.overheatEffect.mVal;
+                if (seat.heat <= 0.25f)
+                {
+                    if (v11.mVal != 0)
+                    {
+                        EffectEventSys::sInst->StopEffect(v11.mVal, false);
+                        seat.overheatEffect.mVal = 0;
+                    }
+                }
+                else
+                {
+                    if (v11.mVal == 0)
+                        seat.overheatEffect =
+                            PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
+                                                  0x36 /* kActionMax|kActionWEAPON_LAST_SHOT_EJECT */);
+                    float scale = (seat.heat - 0.25f) * 1.333333333333333f * emissionRate_0;
+                    EffectEventSys::sInst->AdjustEffect_Scale(seat.overheatEffect.mVal,
+                                                              "EmissionRate", scale);
+                }
+            }
+        }
+        else if (info->type == 1 && i == 0)
+        {
+            if (scr_vehicle->seats[0].heat < 1.0f)
+            {
+                if (scr_vehicle->seats[0].overheating
+                    && scr_vehicle->seats[0].heat <= 0.5f)
+                    scr_vehicle->seats[0].overheating = false;
+            }
+            else
+            {
+                scr_vehicle->seats[0].overheating = true;
+            }
+            float heat = scr_vehicle->seats[0].heat;
+            if (heat <= 0.0f)
+                scr_vehicle->seats[0].heat = 0.0f;
+            else
+                scr_vehicle->seats[0].heat = heat - msec * 0.00025000001f;
+        }
+    }
+}

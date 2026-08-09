@@ -2392,3 +2392,66 @@ void turret_shoot(Entity* self, Entity* owner)
         turret_shoot_internal(self, mObject);
     }
 }
+
+// ea: 0x0048F340
+void Fire_Lead(Entity* ent, Entity* activator, int damage, int bUseAccuracy)
+{
+    float spread = (bUseAccuracy == 0) ? 1.0f : 0.0f;
+    Entity* v5 = activator;
+    if (activator == nullptr || activator->mHandle.mHandle.mVal == 0)
+        activator = EntityManager::sInst->mWorld;
+    sentient_s* sentient;
+    Entity* v8;
+    actor_s* actor;
+    if (v5 == nullptr
+        || (sentient = v5->sentient) == nullptr
+        || (sentient = sentient->pEnemy) == nullptr
+        || (v8 = sentient->pEnt) == nullptr
+        || (actor = v5->actor) == nullptr
+        || SmokeGrenadeMgr_EntityCanSeeEntity(SmokeGrenadeMgr::sInst, v5, v8,
+                                              actor->fVisibilityThreshold * 0.75f))
+    {
+        int v10 = 0;
+        weaponParms wp;
+        for (int i = 0;
+             i < 2 && Turret_FillWeaponParms(ent, activator, &wp, i) != 0;
+             ++i)
+        {
+            wp.pWeapInfo = BG_GetInfoForWeapon(ent->s.weapon);
+            if (bUseAccuracy != 0)
+            {
+                turretInfo_t* pTurretInfo = ent->pTurretInfo;
+                if ((wp.forward[2] * (pTurretInfo->targetPos[2] - wp.muzzleTrace[2]))
+                        + (wp.forward[1] * (pTurretInfo->targetPos[1] - wp.muzzleTrace[1]))
+                        + (wp.forward[0] * (pTurretInfo->targetPos[0] - wp.muzzleTrace[0]))
+                    > 0.0f)
+                    pTurretInfo->turret_flags &= ~0x80u;
+                else
+                    pTurretInfo->turret_flags |= 0x80u;
+                float newForward[3];
+                if (rand() * 0.000030517578f
+                    < pTurretInfo->accuracy * 0.0099999998f)
+                    j_nullsub_54(&wp, pTurretInfo->targetPos, newForward);
+                else
+                    j_nullsub_47(&wp, pTurretInfo->targetPos, newForward);
+                if ((newForward[2] * wp.forward[2])
+                        + (newForward[1] * wp.forward[1])
+                        + (newForward[0] * wp.forward[0])
+                    > 0.995f)
+                {
+                    wp.forward[0] = newForward[0];
+                    wp.forward[1] = newForward[1];
+                    wp.forward[2] = newForward[2];
+                }
+            }
+            if (wp.pWeapInfo->type != WEAPTYPE_BULLET)
+                Weapon_RocketLauncher_Fire(ent, 0.0f, &wp, 5.0f, false);
+            else
+                Bullet_Fire(activator, spread, damage, &wp, ent, 0.0f);
+            v10 = 1;
+        }
+        if (v10 == 0)
+            return;
+        G_AddEvent(ent, 197, 0);
+    }
+}

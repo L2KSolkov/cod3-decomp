@@ -2578,7 +2578,7 @@ void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vSta
     }
 }
 
-// ea: 0x004670F40
+// ea: 0x00470F40
 int G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* crouch)
 {
     math::Position3 p;

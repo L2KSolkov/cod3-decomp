@@ -104,6 +104,25 @@ struct vehicleSeat_t {
 };
 static_assert(sizeof(vehicleSeat_t) == 0x1C, "vehicleSeat_t size mismatch");
 
+// vehicle_follow - vehicle follow formation data (1048 bytes) - verified IDA
+struct vehicle_follow {
+    int      numFollowingActors;        // +0x00
+    DbLinkedHandle<EntityHandleDb, Entity> claimedSlotEntityHandleList[6];  // +0x04
+    float    slotGoalPosition[6][3];    // +0x1C
+    float    positionHistory[40][3];    // +0x64
+    int      historyBufferFront;        // +0x244
+    int      numHistoryBufferEntries;   // +0x248
+    int      rows;                      // +0x24C
+    int      columns;                   // +0x250
+    float    rowSpacing;                // +0x254
+    float    columnSpacing;             // +0x258
+    float    minFollowDistance;         // +0x25C
+    int      actualRows;                // +0x260
+    int      actualColumns;             // +0x264
+    float    relativeFormation[6][6][3];// +0x268
+};
+static_assert(sizeof(vehicle_follow) == 0x418, "vehicle_follow size mismatch");
+
 struct scr_vehicle_t {
     vehicle_pathpos_t pathPos;   // +0x00
     uint8_t _padB8[0xC0 - 0xB8];
@@ -190,6 +209,7 @@ struct scr_vehicle_t {
     int     noEntryTime;      // +0x55C
     uint8_t _pad560[0x568 - 0x560];
     vehicleAnimMap_t* animMap;  // +0x568
+    vehicle_follow* follow;   // +0x56C
 
     vehicleAnimStage_t* GetRouteStage(int routeIdx, int stage);  // ?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z
     float GetAnimSpeedScale(Client* client);  // ?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z
@@ -1101,7 +1121,8 @@ struct weaponFileInfo_t {
     int     index;                // +0x000
     unsigned int internalNameHash; // +0x004
     char*   szInternalName;       // +0x8
-    uint8_t _pad8[0xB0 - 0xC];
+    uint8_t _pad8[0xAC - 0xC];
+    int     type;                 // +0xAC (weapType_t; WEAPTYPE_BULLET == 0)
     int     weapClass;            // +0xB0 (weapClass_t; WEAPCLASS_TURRET == 7)
     int     slot;                 // +0xB4
     uint8_t _padB8[0xBC - 0xB8];
@@ -1265,6 +1286,7 @@ enum {
 // g.o turret data (defined in g_turret.cpp / g_globals.cpp)
 extern turretInfo_t turretInfo[1];   // 0xED9E08
 extern float emissionRate;           // 0xDD8220 (turret overheat particle emission rate)
+extern float emissionRate_0;         // 0xDD8254 (vehicle gunner overheat emission rate)
 extern float gFireHeatBlur;          // 0xF616EC (cg.o global, blurred by turret fire)
 extern float vec3_origin[3];         // core.o q_math.cpp
 
@@ -1505,6 +1527,7 @@ enum {
     ERR_LOCALIZATION = 7,
 };
 void  AngleVectors(const float* angles, float* forward, float* right, float* up);
+void  VectorNormalizeFast(float* v);   // core.o 0x4BDF70
 void  AnglesSubtract(const math::Position3* v1, const math::Position3* v2,
                      math::Position3* v3);   // core.o 0x4B99F0
 extern vmCvar_t g_debugGrenades;

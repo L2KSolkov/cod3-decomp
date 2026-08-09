@@ -6,6 +6,8 @@
 
 level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 DebugThread g_debugThread;     // ?g_debugThread@@3VDebugThread@@A @ 0xDEB5A0
+void* SmokeGrenadeMgr::sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
+float emissionRate_0 = 1.0f;   // @ 0xDD8254 (vehicle gunner overheat emission rate)
 
 int g_drawDebugLos;            // @ 0xEB1108
 int g_drawDebugEntityLos;      // @ 0xEB110C
