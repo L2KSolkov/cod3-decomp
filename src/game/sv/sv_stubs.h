@@ -495,12 +495,29 @@ extern int              dword_F641E0[];
 // ============================================================================
 struct XModelLod;
 struct nglMesh;
+struct XModelParts;
+
+// XModelLod - model LOD entry (12 bytes) - verified against IDA
+struct XModelLod {
+    float        dist;         // +0x00
+    InplaceString filename;    // +0x04
+    XModelParts* xmodelParts;  // +0x08
+};
+static_assert(sizeof(XModelLod) == 0x0C, "XModelLod size mismatch");
+
+// XBoneHierarchy - bone hierarchy entry (12 bytes) - verified against IDA
+struct XBoneHierarchy {
+    InplaceString mName;        // +0x00
+    unsigned int  mNameHash;    // +0x04
+    int           mParentIndex; // +0x08
+};
+static_assert(sizeof(XBoneHierarchy) == 0x0C, "XBoneHierarchy size mismatch");
 
 // XModelParts - model geometry/anim data (0x40 bytes) - verified against IDA
 struct XModelParts {
     InplaceVector<math::Mat43::Packed> mTransforms;  // +0x00
     void*            mBoneInfos;                     // +0x08 InplaceVector<XBoneInfo>
-    InplaceVector<int> mHierarchy;                   // +0x10 InplaceVector<XBoneHierarchy>
+    InplaceVector<XBoneHierarchy> mHierarchy;        // +0x10 InplaceVector<XBoneHierarchy>
     void*            mPartClassifications;           // +0x18
     void*            mMeshNames;                     // +0x20
     InplaceVector<nglMesh*> mMeshPtrs;               // +0x28

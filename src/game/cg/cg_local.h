@@ -113,18 +113,6 @@ struct weaponFileInfoFull : weaponFileInfo_t {
     float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
 };
 
-struct IVPointerRaw {
-    void* mValue;  // +0x00
-    int   mPakId;  // +0x04
-};
-
-struct DObjModel {
-    IVPointerRaw model;          // +0x00
-    Broc::string boneName;       // +0x08
-    int          ignoreCollision; // +0x0C
-    void*        animTree;       // +0x10 XAnimTree*
-};
-
 struct DObj {
     void* tree[8];        // +0x00 XAnimTree*[8]
     void* animPlayers[8]; // +0x20 AnimationPlayer*[8]

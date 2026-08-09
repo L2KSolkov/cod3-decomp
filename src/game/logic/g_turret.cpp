@@ -1918,22 +1918,22 @@ void turret_controller(Entity* self, int* /*partBits*/)
     angles[2] = 0.0f;
     int BoneIndex = SV_DObjGetBoneIndex(self, tag_aim_hash_3);
     if (BoneIndex >= 0)
-        G_DObjSetLocalTagInternal_0(vec3_origin, angles, BoneIndex);
+        G_DObjSetLocalTagInternal_0(vec3_origin, angles, BoneIndex, self, 0);
     int v2 = SV_DObjGetBoneIndex(self, tag_aim_animated_hash);
     if (v2 >= 0)
-        G_DObjSetLocalTagInternal_0(vec3_origin, angles, v2);
+        G_DObjSetLocalTagInternal_0(vec3_origin, angles, v2, self, 0);
     float angles2[3];
     angles2[0] = 0.0f;
     angles2[1] = angles[1];
     angles2[2] = 0.0f;
     int v3 = SV_DObjGetBoneIndex(self, tag_aim_animatedY_hash);
     if (v3 >= 0)
-        G_DObjSetLocalTagInternal_0(vec3_origin, angles2, v3);
+        G_DObjSetLocalTagInternal_0(vec3_origin, angles2, v3, self, 0);
     angles2[0] = angles[0];
     angles2[1] = 0.0f;
     int v4 = SV_DObjGetBoneIndex(self, tag_aim_animatedP_hash);
     if (v4 >= 0)
-        G_DObjSetLocalTagInternal_0(vec3_origin, angles2, v4);
+        G_DObjSetLocalTagInternal_0(vec3_origin, angles2, v4, self, 0);
 }
 
 // ea: 0x00479970

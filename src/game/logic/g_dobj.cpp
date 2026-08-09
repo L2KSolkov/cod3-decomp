@@ -5,13 +5,16 @@
 
 #include "game/logic/g_local.h"
 
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "core/tlFixedString.h"
 
 extern void G_RmvInvalidatedNode(Entity* pEnt, int iRmv);
-extern void G_DObjSetLocalTagInternal(int bone);  // file-local g_utils.cpp helper
+extern void DObjSkelMatrixMultiply43(const DObjSkelMat* in1, const float (*in2)[3],
+                                     float (*out)[3]);
+extern void DObjUpdateChildren(DObj* obj, int boneIndex);  // render.o 0xABB990
 
 // ea: 0x0044A190
 int G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode)
@@ -765,30 +768,33 @@ int G_EntDetach(Entity* ent, const char* modelName, const char* tagName)
 // ============================================================================
 
 // ea: 0x004735E0
-int G_DObjSetLocalBoneIndex(Entity* /*ent*/, int* /*partBits*/, int boneIndex,
-                            const float* trans, const float* angles, bool /*bSomething*/)
+int G_DObjSetLocalBoneIndex(Entity* ent, int* /*partBits*/, int boneIndex,
+                            const float* trans, const float* angles, bool bRelative)
 {
-    G_DObjSetLocalTagInternal_0(trans, angles, boneIndex);
+    G_DObjSetLocalTagInternal_0(trans, angles, boneIndex, ent, bRelative);
     return 1;
 }
 
 // ea: 0x00473610
-int G_DObjSetLocalBoneIndex(Entity* /*ent*/, int* /*partBits*/, int boneIndex,
-                            const math::Position3& /*trans*/, const math::Mat33& /*angles*/,
-                            bool /*bSomething*/)
+int G_DObjSetLocalBoneIndex(Entity* ent, int* /*partBits*/, int boneIndex,
+                            const math::Position3& trans, const math::Mat33& angles,
+                            bool bRelative)
 {
-    G_DObjSetLocalTagInternal(boneIndex);
+    float ftrans[3] = { trans.v.m128_f32[0], trans.v.m128_f32[1], trans.v.m128_f32[2] };
+    float fangles[3];
+    AxisToAngles((const float(*)[3])&angles, fangles);
+    G_DObjSetLocalTagInternal_0(ftrans, fangles, boneIndex, ent, bRelative);
     return 1;
 }
 
 // ea: 0x00473640
 int G_DObjSetLocalTag(Entity* ent, int* /*partBits*/, unsigned int tag_name_hash,
-                      const float* trans, const float* angles, bool /*bSomething*/)
+                      const float* trans, const float* angles, bool bRelative)
 {
     int BoneIndex = SV_DObjGetBoneIndex(ent, tag_name_hash);
     if (BoneIndex < 0)
         return 0;
-    G_DObjSetLocalTagInternal_0(trans, angles, BoneIndex);
+    G_DObjSetLocalTagInternal_0(trans, angles, BoneIndex, ent, bRelative);
     return 1;
 }
 
@@ -799,7 +805,7 @@ int G_DObjSetControlTagAngles(Entity* ent, int* /*partBits*/, unsigned int tag_n
     int BoneIndex = SV_DObjGetBoneIndex(ent, tag_name_hash);
     if (BoneIndex < 0)
         return 0;
-    G_DObjSetLocalTagInternal_0(vec3_origin, angles, BoneIndex);
+    G_DObjSetLocalTagInternal_0(vec3_origin, angles, BoneIndex, ent, 0);
     return 1;
 }
 
@@ -887,5 +893,645 @@ void G_SetModel(Entity* ent, const char* modelName, TPakId pakId, int ngIndex)
         AeAssert::gCurrentExpr = "modelName";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("G_SetModel: bad model name"))
             __debugbreak();
+    }
+}
+
+// ============================================================================
+// XModel children propagation (g.o: g_utils.cpp)
+// ============================================================================
+
+static XModelParts* FirstValidModelParts(XModel* xm)
+{
+    int lodIdx = 0;
+    while (xm->lod[lodIdx] == nullptr)
+        ++lodIdx;
+    XModelLod* lod = xm->lod[lodIdx];
+    if (lod == nullptr || lod->xmodelParts == nullptr)
+        return nullptr;
+    return lod->xmodelParts;
+}
+
+// Gram-Schmidt orthonormalization of the 3x3 rotation rows.
+// Mirrors math::Mat43 orthonormalize (phys_xboxr inline @ runtime 0xC84200).
+static void OrthonormalizeDObjSkel(DObjSkelMat* m)
+{
+    float* x = m->axis[0];
+    float* y = m->axis[1];
+    float* z = m->axis[2];
+
+    float len = sqrtf(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]);
+    float inv = 1.0f / len;
+    x[0] *= inv;
+    x[1] *= inv;
+    x[2] *= inv;
+
+    float dot = y[0] * x[0] + y[1] * x[1] + y[2] * x[2];
+    y[0] -= dot * x[0];
+    y[1] -= dot * x[1];
+    y[2] -= dot * x[2];
+    len = sqrtf(y[0] * y[0] + y[1] * y[1] + y[2] * y[2]);
+    inv = 1.0f / len;
+    y[0] *= inv;
+    y[1] *= inv;
+    y[2] *= inv;
+
+    z[0] = x[1] * y[2] - x[2] * y[1];
+    z[1] = x[2] * y[0] - x[0] * y[2];
+    z[2] = x[0] * y[1] - x[1] * y[0];
+}
+
+// Build the inverse of an orthonormal 4x3 row-major matrix:
+// rotation transposed, translation negated and rotated.
+static void InverseDObjSkel(const DObjSkelMat* in, DObjSkelMat* out)
+{
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+            out->axis[i][j] = in->axis[j][i];
+        out->axis[i][3] = 0.0f;
+    }
+    for (int j = 0; j < 3; ++j)
+        out->origin[j] = -(in->origin[0] * in->axis[j][0]
+                           + in->origin[1] * in->axis[j][1]
+                           + in->origin[2] * in->axis[j][2]);
+    out->origin[3] = 1.0f;
+}
+
+// ea: 0x00464CF0
+void XModelChildrenToLocal(IVPointer<XModel> model, DObjSkelMat* matrices, int parent)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    XModel* xm = model.mValue;
+    if (xm == nullptr)
+        return;
+    XModelParts* parts = FirstValidModelParts(xm);
+    if (parts == nullptr)
+        return;
+    InplaceVector<XBoneHierarchy>& hierarchy = parts->mHierarchy;
+    int mSize = hierarchy.mSize;
+
+    // DFS over descendants of `parent`, recording pre-order into `bones`.
+    // `stack` drives the descent; `bones` accumulates the full queue.
+    int bones[45];
+    int stack[45];
+    int count = 0;
+    int stackCount = 0;
+    int cur = parent;
+    for (;;)
+    {
+        for (int i = cur + 1; i < mSize; ++i)
+        {
+            int idx = i < hierarchy.mSize ? i : 0;
+            if (hierarchy.mList[idx].mParentIndex == cur)
+            {
+                if (count < 45)
+                    bones[count++] = i;
+                else
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 174;
+                    AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("no room left in array"))
+                        __debugbreak();
+                }
+                if (stackCount < 45)
+                    stack[stackCount++] = i;
+                else
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 174;
+                    AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("no room left in array"))
+                        __debugbreak();
+                }
+            }
+        }
+        if (stackCount <= 0)
+            break;
+        cur = stack[stackCount - 1];
+        --stackCount;
+    }
+
+    // Convert each descendant to its parent's local frame, deepest first.
+    int cachedParent = -1;
+    DObjSkelMat invParent;
+    for (int n = count - 1; n >= 0; --n)
+    {
+        int bone = bones[n];
+        int idx = bone < hierarchy.mSize ? bone : 0;
+        int boneParent = hierarchy.mList[idx].mParentIndex;
+        if (boneParent != cachedParent)
+        {
+            cachedParent = boneParent;
+            InverseDObjSkel(&matrices[boneParent], &invParent);
+        }
+        DObjSkelMatrixMultiply(&matrices[bone], &matrices[bone], &invParent);
+    }
+}
+
+// ea: 0x00465290
+void XModelChildrenToModel(IVPointer<XModel> model, DObjSkelMat* matrices, int parent)
+{
+    ValidatePakId((TPakId)model.mPakId);
+    XModel* xm = model.mValue;
+    if (xm == nullptr)
+        return;
+    XModelParts* parts = FirstValidModelParts(xm);
+    if (parts == nullptr)
+        return;
+    InplaceVector<XBoneHierarchy>& hierarchy = parts->mHierarchy;
+    int mSize = hierarchy.mSize;
+
+    int stack[45];
+    int stackCount = 0;
+    int cur = parent;
+    for (;;)
+    {
+        for (int i = cur + 1; i < mSize; ++i)
+        {
+            int idx = i < hierarchy.mSize ? i : 0;
+            if (hierarchy.mList[idx].mParentIndex == cur)
+            {
+                if (stackCount < 45)
+                {
+                    stack[stackCount++] = i;
+                }
+                else
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 174;
+                    AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("no room left in array"))
+                        __debugbreak();
+                }
+                DObjSkelMatrixMultiply(&matrices[i], &matrices[i], &matrices[cur]);
+                OrthonormalizeDObjSkel(&matrices[i]);
+            }
+        }
+        if (stackCount <= 0)
+            break;
+        cur = stack[stackCount - 1];
+        --stackCount;
+    }
+}
+
+// ============================================================================
+// Local tag setters (g.o: g_utils.cpp file-local helpers)
+// ============================================================================
+
+static void Mat43PackedToDObjSkel(const math::Mat43::Packed* in, DObjSkelMat* out)
+{
+    // Mat43::Packed: three 16-byte rows (x/y/z)
+    memcpy(out->axis[0], &in->x, 16);
+    memcpy(out->axis[1], &in->y, 16);
+    memcpy(out->axis[2], &in->z, 16);
+    out->axis[0][3] = 0.0f;
+    out->axis[1][3] = 0.0f;
+    out->axis[2][3] = 0.0f;
+    out->origin[0] = 0.0f;
+    out->origin[1] = 0.0f;
+    out->origin[2] = 0.0f;
+    out->origin[3] = 1.0f;
+}
+
+// Apply a local 4x3 tag transform to `bone` of `ent`.
+//   a5 != 0: matrices[bone] = local * matrices[bone] (relative to current pose)
+//   a5 == 0: matrices[bone] = local * bindPose[bone] (* matrices[parent] when present)
+// ea: 0x00472CD0 (file-local)
+static void G_DObjSetLocalTagInternal(Entity* ent, int bone, const DObjSkelMat* local,
+                                      int a5)
+{
+    DObj* mDObj = ent->mDObj;
+    if (mDObj == nullptr)
+        return;
+    IVPointer<XModel> model;
+    model.mValue = (XModel*)mDObj->models[0].mValue;
+    model.mPakId = mDObj->models[0].mPakId;
+    ValidatePakId((TPakId)model.mPakId);
+    if (model.mValue == nullptr)
+        return;
+    ValidatePakId((TPakId)model.mPakId);
+
+    int lodIdx = 0;
+    while (model.mValue->lod[lodIdx] == nullptr)
+        ++lodIdx;
+    XModelParts* parts = model.mValue->lod[lodIdx]->xmodelParts;
+    if (parts == nullptr)
+        return;
+    int mParentIndex = -1;
+    if (bone < parts->mHierarchy.mSize)
+        mParentIndex = parts->mHierarchy.mList[bone].mParentIndex;
+
+    DObjSkelMat* matrices = SV_DObjGetMatrixArray(ent);
+    if (matrices == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1517;
+        AeAssert::gCurrentExpr = "matrices";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("no matrices for dobj?"))
+            __debugbreak();
+        return;
+    }
+    XModelChildrenToLocal(model, matrices, bone);
+
+    // Compose the new bone matrix.
+    if (a5 != 0)
+    {
+        // Relative to the bone's current matrix.
+        DObjSkelMatrixMultiply(&matrices[bone], local, &matrices[bone]);
+    }
+    else
+    {
+        // Base is the model's bind-pose transform, composed with the parent's
+        // current world matrix when the bone has a parent.
+        DObjSkelMat bind;
+        math::Mat43::Packed* bindPose = &parts->mTransforms.mList[bone];
+        Mat43PackedToDObjSkel(bindPose, &bind);
+        DObjSkelMat composed;
+        DObjSkelMatrixMultiply(&composed, local, &bind);
+        if (mParentIndex >= 0)
+            DObjSkelMatrixMultiply(&matrices[bone], &composed, &matrices[mParentIndex]);
+        else
+            memcpy(&matrices[bone], &composed, sizeof(composed));
+    }
+
+    XModelChildrenToModel(model, matrices, bone);
+    if (ent->scr_vehicle != nullptr && mDObj->numModels != 0)
+        DObjUpdateChildren(mDObj, bone);
+}
+
+// Build a local tag matrix from trans + angles and apply it to bone `bone`.
+// ea: 0x004733E0 (file-local)
+void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
+                                 Entity* ent, int a5)
+{
+    DObjSkelMat local;
+    memset(&local, 0, sizeof(local));
+    if (angles != nullptr)
+    {
+        float axis[3][3];
+        AnglesToAxis(angles, axis);
+        for (int i = 0; i < 3; ++i)
+            for (int j = 0; j < 3; ++j)
+                local.axis[i][j] = axis[i][j];
+    }
+    else
+    {
+        local.axis[0][0] = 1.0f;
+        local.axis[1][1] = 1.0f;
+        local.axis[2][2] = 1.0f;
+    }
+    if (trans != nullptr)
+    {
+        local.origin[0] = trans[0];
+        local.origin[1] = trans[1];
+        local.origin[2] = trans[2];
+    }
+    local.origin[3] = 1.0f;
+
+    G_DObjSetLocalTagInternal(ent, bone, &local, a5);
+}
+
+// ============================================================================
+// Tag info maintenance (g.o: g_utils.cpp)
+// ============================================================================
+
+// ea: 0x00460330
+void G_UpdateTagInfo(Entity* ent, int bParentHasDObj)
+{
+    tagInfo_t* tagInfo = ent->tagInfo;
+    if (tagInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1110;
+        AeAssert::gCurrentExpr = "tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (tagInfo->name.mHash != 0)
+    {
+        if (bParentHasDObj == 0)
+        {
+            G_EntUnlink(ent);
+            return;
+        }
+        const char* v3 = BrocSys::ConvertHashToString(tagInfo->name.mHash);
+        unsigned int v4 = HashString::CalcHash(v3);
+        int16_t BoneIndex = (int16_t)SV_DObjGetBoneIndex(tagInfo->parent, v4);
+        tagInfo->index = BoneIndex;
+        if (BoneIndex < 0)
+            G_EntUnlink(ent);
+    }
+    else
+    {
+        tagInfo->index = -1;
+    }
+}
+
+// ea: 0x004603D0
+void G_UpdateTagInfoOfChildren(Entity* parent, int bHasDObj)
+{
+    Entity* tagChildren = parent->tagChildren;
+    if (tagChildren != nullptr)
+    {
+        Entity* next = nullptr;
+        do
+        {
+            next = tagChildren->tagInfo->next;
+            G_UpdateTagInfo(tagChildren, bHasDObj);
+            tagChildren = next;
+        } while (next != nullptr);
+    }
+}
+
+// ea: 0x00464C40
+void G_UpdateTags(Entity* ent, int bHasDObj)
+{
+    if (ent->scr_vehicle != nullptr)
+        G_UpdateVehicleTags(ent);
+    G_UpdateTagInfoOfChildren(ent, bHasDObj);
+}
+
+// ea: 0x00482270
+void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3])
+{
+    tagInfo_t* tagInfo = ent->tagInfo;
+    if (tagInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1176;
+        AeAssert::gCurrentExpr = "tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Entity* parent = tagInfo->parent;
+    if (parent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1178;
+        AeAssert::gCurrentExpr = "parent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (tagInfo->index < 0)
+    {
+        AnglesToAxis(&parent->r.currentAngles, parentAxis);
+        (*parentAxis)[9] = parent->r.currentOrigin.v.m128_f32[0];
+        (*parentAxis)[10] = parent->r.currentOrigin.v.m128_f32[1];
+        (*parentAxis)[11] = parent->r.currentOrigin.v.m128_f32[2];
+        return;
+    }
+    float tempAxis[4][3];
+    AnglesToAxis(&parent->r.currentAngles, tempAxis);
+    tempAxis[3][0] = parent->r.currentOrigin.v.m128_f32[0];
+    tempAxis[3][1] = parent->r.currentOrigin.v.m128_f32[1];
+    tempAxis[3][2] = parent->r.currentOrigin.v.m128_f32[2];
+    G_DObjCalcBone(parent, tagInfo->index);
+    if (parent->scr_vehicle != nullptr)
+        VEH_UpdateControllers(parent, 0);
+    DObjSkelMat* MatrixArray = SV_DObjGetMatrixArray(parent);
+    DObjSkelMatrixMultiply43(&MatrixArray[tagInfo->index], tempAxis, parentAxis);
+}
+
+// ea: 0x004823C0
+void G_CalcTagParentRelAxis(Entity* ent, float (*parentRelAxis)[3])
+{
+    tagInfo_t* tagInfo = ent->tagInfo;
+    if (tagInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1219;
+        AeAssert::gCurrentExpr = "tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float parentAxis[4][3];
+    G_CalcTagParentAxis(ent, parentAxis);
+    MatrixMultiply43((const float(*)[3])tagInfo->parentInvAxis, parentAxis, parentRelAxis);
+}
+
+// ea: 0x00482440
+void G_CalcTagAxis(Entity* ent, int bAnglesOnly)
+{
+    float parentAxis[4][3];
+    float invParentAxis[4][3];
+    float axis[4][3];
+    G_CalcTagParentAxis(ent, parentAxis);
+    AnglesToAxis(&ent->r.currentAngles, axis);
+    tagInfo_t* tagInfo = ent->tagInfo;
+    if (tagInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1242;
+        AeAssert::gCurrentExpr = "tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (bAnglesOnly != 0)
+    {
+        MatrixTranspose(parentAxis, invParentAxis);
+        MatrixMultiply(axis, invParentAxis, tagInfo->axis);
+    }
+    else
+    {
+        MatrixInverseOrthogonal43(parentAxis, invParentAxis);
+        axis[3][0] = ent->r.currentOrigin.v.m128_f32[0];
+        axis[3][1] = ent->r.currentOrigin.v.m128_f32[1];
+        axis[3][2] = ent->r.currentOrigin.v.m128_f32[2];
+        MatrixMultiply43(axis, invParentAxis, tagInfo->axis);
+    }
+}
+
+// ============================================================================
+// G_DObjUpdate - rebuild an entity's DObj from its model + attachments
+// ============================================================================
+
+// Minimal cg.o weapon-info view (iWorldSurfIndex at +0x90)
+struct CgWeaponSurf {
+    uint8_t     _pad[0x90];
+    IVPointerRaw iWorldSurfIndex;  // +0x90
+};
+extern CgWeaponSurf cg_weapons[];
+extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
+extern IVPointer<XModel> SV_XModelGet(const char* name);
+
+// ea: 0x00472370
+void G_DObjUpdate(Entity* ent, bool forceWeaponModel)
+{
+    DObjModel dobjModels[8];
+    memset(dobjModels, 0, sizeof(dobjModels));
+    for (int k = 0; k < 8; ++k)
+        dobjModels[k].boneName = Broc::string();
+
+    XModel* oldModel = nullptr;
+    TPakId oldPakId = PAK_ID_INVALID;
+    DObj* mDObj = ent->mDObj;
+    if (mDObj != nullptr)
+    {
+        oldModel = (XModel*)mDObj->models[0].mValue;
+        oldPakId = (TPakId)mDObj->models[0].mPakId;
+    }
+    ent->FreeDObj(false);
+
+    XModel* v7 = ent->mModel.mValue;
+    TPakId modelPakId = (TPakId)ent->mModel.mPakId;
+    ValidatePakId(modelPakId);
+    if (v7 == nullptr)
+    {
+        if (ent->scr_vehicle != nullptr)
+            G_UpdateVehicleTags(ent);
+        G_UpdateTagInfoOfChildren(ent, 0);
+        return;
+    }
+
+    int v8 = ent->s.eType - 11;
+    XAnimTree* tree;
+    if (v8 != 0)
+    {
+        if (v8 == 2)
+            tree = G_GetActorCorpseAnimTree(ent);
+        else
+            tree = ent->pAnimTree;
+    }
+    else
+    {
+        tree = G_GetActorAnimTree(ent->actor);
+    }
+
+    ValidatePakId(oldPakId);
+    if (oldModel != nullptr)
+    {
+        ValidatePakId(modelPakId);
+        int v11 = 0;
+        while (v7->lod[v11] == nullptr)
+            ++v11;
+        XModelParts* xmodelParts = v7->lod[v11]->xmodelParts;
+        ValidatePakId(oldPakId);
+        int v14 = 0;
+        while (oldModel->lod[v14] == nullptr)
+            ++v14;
+        void* mAnimDef = xmodelParts->mAnimDef;
+        modelPakId = (TPakId)ent->mModel.mPakId;
+        if (mAnimDef != oldModel->lod[v14]->xmodelParts->mAnimDef)
+            tree = nullptr;
+    }
+
+    ValidatePakId(modelPakId);
+    dobjModels[0].model.mValue = v7;
+    dobjModels[0].model.mPakId = modelPakId;
+    int numModels = 1;
+
+    Client* client = ent->client;
+    if (client != nullptr
+        && ent->health > 0
+        && client->mVehicleNoWeaponTime == 0
+        && client->ps.weapon != 0
+        && ((0x100000 & client->ps.eFlags) == 0
+            || BG_AllowPlayerWeaponAtVehiclePos(client->ps.vehType, client->ps.vehPos)))
+    {
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(client->ps.weapon);
+        if ((InfoForWeapon->weapClass != 0x0D /* WEAPCLASS_AMMO */
+             || client->ps.mAmmoDropTime + 2000 <= level.time)
+            && cg_weapons[client->ps.weapon].iWorldSurfIndex.mValue != nullptr)
+        {
+            IVPointer<XModel> svx = SV_XModelGet(InfoForWeapon->szWorldModel);
+            dobjModels[1].model.mValue = svx.mValue;
+            dobjModels[1].model.mPakId = svx.mPakId;
+            dobjModels[1].boneName = Broc::string("TAG_WEAPON_RIGHT");
+            dobjModels[1].ignoreCollision = 0;
+            numModels = 2;
+        }
+    }
+    else if (forceWeaponModel)
+    {
+        weaponFileInfo_t* v21 = BG_GetInfoForWeapon(ent->s.weapon);
+        ValidatePakId((TPakId)cg_weapons[ent->s.weapon].iWorldSurfIndex.mPakId);
+        if (cg_weapons[ent->s.weapon].iWorldSurfIndex.mValue != nullptr)
+        {
+            IVPointer<XModel> svx = SV_XModelGet(v21->szWorldModel);
+            dobjModels[1].model.mValue = svx.mValue;
+            dobjModels[1].model.mPakId = svx.mPakId;
+            dobjModels[1].boneName = Broc::string("TAG_WEAPON_RIGHT");
+            dobjModels[1].ignoreCollision = 0;
+            numModels = 2;
+        }
+    }
+
+    for (int i = 0; i < 7; ++i)
+    {
+        AttachModelInfo* mAttachModels = &ent->mAttachModels[i];
+        ValidatePakId((TPakId)mAttachModels->mModel.mPakId);
+        if (mAttachModels->mModel.mValue != nullptr)
+        {
+            if (numModels >= 8)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+                AeAssert::gCurrentLine = 456;
+                AeAssert::gCurrentExpr = "numModels < DOBJ_MAX_SUBMODELS";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            DObjModel* slot = &dobjModels[numModels];
+            slot->model.mValue = mAttachModels->mModel.mValue;
+            slot->model.mPakId = mAttachModels->mModel.mPakId;
+            ValidatePakId((TPakId)slot->model.mPakId);
+            if (slot->model.mValue == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+                AeAssert::gCurrentLine = 458;
+                AeAssert::gCurrentExpr = "dobjModels[numModels].model";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            slot->boneName = mAttachModels->mTag;
+            slot->ignoreCollision = ((1 << i) & ent->attachIgnoreCollision) != 0;
+            ++numModels;
+        }
+    }
+
+    unsigned short gameId = (unsigned short)ent->mHandle.mHandle.mVal;
+    ent->CreateDObj(dobjModels, (unsigned short)numModels, tree, gameId);
+    if (ent->scr_vehicle != nullptr)
+        G_UpdateVehicleTags(ent);
+
+    Entity* tagChildren = ent->tagChildren;
+    while (tagChildren != nullptr)
+    {
+        tagInfo_t* tagInfo = tagChildren->tagInfo;
+        Entity* next = tagInfo->next;
+        if (tagInfo == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+            AeAssert::gCurrentLine = 1110;
+            AeAssert::gCurrentExpr = "tagInfo";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (tagInfo->name.mHash != 0)
+        {
+            const char* v30 = BrocSys::ConvertHashToString(tagInfo->name.mHash);
+            unsigned int v31 = HashString::CalcHash(v30);
+            int16_t BoneIndex = (int16_t)SV_DObjGetBoneIndex(tagInfo->parent, v31);
+            tagInfo->index = BoneIndex;
+            if (BoneIndex < 0)
+                G_EntUnlink(tagChildren);
+        }
+        else
+        {
+            tagInfo->index = -1;
+        }
+        tagChildren = next;
     }
 }

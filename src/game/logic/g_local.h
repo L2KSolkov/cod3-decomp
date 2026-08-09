@@ -459,6 +459,8 @@ DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
 int       SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
 void      AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
 void      DObjSkel2MatrixMultiply43(const DObjSkelMat* in1, const float (*in2)[3], DObjSkelMat* out);
+DObjSkelMat* DObjSkelMatrixMultiply(DObjSkelMat* result, const DObjSkelMat* in1,
+                                    const DObjSkelMat* in2);
 void      ValidatePakId(TPakId pakId);
 
 XAnimTree* G_GetActorAnimTree(actor_s* actor);
@@ -1020,7 +1022,8 @@ float Actor_CanSeePointEx(actor_s* pSelf, const float* vPoint, float fFovDot,
 bool G_IsPlayerDrivingVehicle(Entity* player);
 float VectorDistanceSquared2D(const math::Position3* p1, const math::Position3* p2);
 const math::Position3* native_to_cdl_pos3(math::Position3* result, const float* v);
-void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone);
+void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
+                                 Entity* ent, int a5);
 
 // ============================================================================
 // g.o data
@@ -1218,6 +1221,20 @@ void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
                               math::Position3* out);
 void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
                               float* out);
+void  MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
+                     float (*out)[3]);
+void  MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
+                       float (*out)[3]);
+void  MatrixTranspose(const float (*in)[3], float (*out)[3]);
+void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
+void  VEH_UpdateControllers(Entity* entity, int msec);  // g.o 0x46DE90
+void  G_UpdateVehicleTags(Entity* ent);                 // g.o 0x45E290
+void  G_UpdateTagInfoOfChildren(Entity* parent, int bHasDObj);  // g.o 0x4603D0
+void  G_UpdateTagInfo(Entity* ent, int bParentHasDObj);  // g.o 0x460330
+void  G_UpdateTags(Entity* ent, int bHasDObj);           // g.o 0x464C40
+void  G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);  // g.o 0x482270
+void  G_CalcTagParentRelAxis(Entity* ent, float (*parentRelAxis)[3]);  // g.o 0x4823C0
+void  G_CalcTagAxis(Entity* ent, int bAnglesOnly);      // g.o 0x482440
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
                             const float* originOffset, const float* anglesOffset,
                             bool useAngles);
@@ -1261,8 +1278,12 @@ extern void (*controllertable[4])(Entity* ent, int* partBits);
 
 // DObj - server-side dynamic object (minimal view; full layout in cg_local.h)
 struct DObj {
-    uint8_t      _pad0[0xE4];   // +0x00
-    unsigned int mFlags;        // +0xE4
+    uint8_t      _pad0[0x80];      // +0x00
+    IVPointer<XModel> models[8];   // +0x80
+    uint8_t      _padC0[0xCE - 0xC0];
+    unsigned char numModels;       // +0xCE
+    uint8_t      _padCF[0xE4 - 0xCF];
+    unsigned int mFlags;           // +0xE4
 };
 
 // cdl_proftimer - profile timing accumulator (game.o)

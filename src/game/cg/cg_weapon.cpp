@@ -1924,7 +1924,7 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
     void* mainTree = XAnimCreateTree(nullptr, pAnims);
     if (mainTree == nullptr)
         CG_ASSERT("pAnimTree", "c:\\cod\\code\\game\\cg_weapons.cpp", 1050);
-    dobjModels[0].animTree = mainTree;
+    dobjModels[0].animTree = (XAnimTree*)mainTree;
     XAnimIsLooped(pAnims, 0x17);
     XAnimIsLooped(pAnims, 0x18);
     DObjCreate(dobjModels, v8, mainTree, dobj, 0);

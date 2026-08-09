@@ -97,6 +97,21 @@ public:
 static_assert(sizeof(IVPointer<char>) == 8, "IVPointer size mismatch");
 
 // ============================================================================
+// DObjModel — model slot for Entity::CreateDObj (20 bytes) - verified IDA
+// ============================================================================
+struct IVPointerRaw {
+    void* mValue;  // +0x00
+    int   mPakId;  // +0x04
+};
+struct DObjModel {
+    IVPointerRaw  model;            // +0x00
+    Broc::string      boneName;         // +0x08
+    int               ignoreCollision;  // +0x0C
+    XAnimTree*        animTree;         // +0x10
+};
+static_assert(sizeof(DObjModel) == 0x14, "DObjModel size mismatch");
+
+// ============================================================================
 // trType_t — trajectory type enumeration (from IDA, all values verified)
 // ============================================================================
 enum trType_t {
@@ -235,6 +250,8 @@ public:
     void Notify(HashString h, const int& d, Broc::entity* e, int* mod,
                 EHitLocation* hitloc, const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z
     void FreeDObj(bool deleteDObjs);              // ?FreeDObj@Entity@@QAEX_N@Z (game.o)
+    void CreateDObj(DObjModel* models, unsigned short numModels,
+                    XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)
     bool IsLocalPlayer();                            // ?IsLocalPlayer@Entity@@QBE_NXZ
     int  GetPlayerIndex();                           // ?GetPlayerIndex@Entity@@QBEHXZ
     int  IsVisible() const;                          // ?IsVisible@Entity@@QBEHXZ (game.o)
