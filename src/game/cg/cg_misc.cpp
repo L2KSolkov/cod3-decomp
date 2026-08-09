@@ -6,6 +6,8 @@
 #include "game/game_types.h"
 
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 extern int currCl;
@@ -18,7 +20,7 @@ extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, void* tex,
                                   float z);
-extern void CL_AddDebugLine(float* start, const float* end,
+extern void CL_AddDebugLine(const float* start, const float* end,
                             const float* color, int depthTest, int duration,
                             int fromServer, int fadeOut);
 extern void* Entity_GetRefEntity(Entity* ent);
@@ -351,7 +353,17 @@ struct game_hudelem_s {
 extern game_hudelem_s g_hudelems[16];  // 0x00EA5580
 
 struct _objectiveInfo_t {
-    _objectiveInfo_t* pChild;  // +0x00
+    int state;                    // +0x00
+    float height;                 // +0x04
+    int entity;                   // +0x08
+    int state2;                   // +0x0C
+    float vOrigin[3];             // +0x10
+    int ringTime;                 // +0x1C
+    int ring;                     // +0x20
+    int displayOrder;             // +0x24
+    _objectiveInfo_t* pChild;     // +0x28
+    _objectiveInfo_t* pParent;    // +0x2C
+    char szString[128];           // +0x30
 };
 
 struct localEntity_t {
@@ -2671,5 +2683,440 @@ void CG_PrevWeapon_f()
             cg_aWeaponSelectTime[currCl] = cgGlobal.time;
             CG_CycleWeap(0, 0);
         }
+    }
+}
+
+// ============================================================================
+// Misc draw/parse/debug helpers (cg.o cg_misc.cpp)
+// ============================================================================
+
+extern float gFireHeatBlur;   // 0x00F616EC
+extern float maxBlurScale;    // 0x00DFA314
+extern float r_1;             // 0x00DFA310
+extern float g;               // 0x00DFA30C
+extern float b_1;             // 0x00DFA308
+extern float a_0;             // 0x00DFA304
+extern int g_blendType;       // 0x00DD9254
+extern int fireBlendType;     // 0x00DFA300
+extern float YOfs;            // 0x00DFA2FC
+extern float XOfs;            // 0x00DFA2F8
+extern char buffer_0[256];    // 0x00F73890
+extern _objectiveInfo_t objectives[4][17];  // 0x00F6A2B0
+extern float vec3_origin[3];
+extern void nglInitQuad(void* quad);
+extern void nglSetQuadColor(void* quad, unsigned int c);
+extern void nglSetQuadBlend(void* quad, unsigned int blend);
+extern int nglGetScreenHeight();
+extern int nglGetScreenWidth();
+extern void nglSetQuadRect(void* quad, float x1, float y1, float x2, float y2);
+extern void* nglGetFrontBufferTex();
+extern void nglSetQuadTex(void* quad, void* tex);
+extern void nglListAddQuad(void* quad);
+extern void CG_PerturbationPoint(const float* prev, float* out, float mindist);
+extern float VectorNormalize2(const float* v, float* out);
+extern void Q_strncpyz(char* dest, const char* src, int destsize);
+extern char* va(const char* fmt, ...);
+extern void Com_Printf(const char* fmt, ...);
+extern const char* CL_GetConfigStringC(int index);
+extern char* Info_ValueForKey(const char* s, const char* key);
+extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
+
+// ea: 0x0068C920
+bool CG_FxTest()
+{
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cg_view.cpp";
+    AeAssert::gCurrentLine = 63;
+    AeAssert::gCurrentExpr = "0 && \"CG_FxTest Gone\"";
+    bool result = AeAssert::IsIgnored();
+    if (!result)
+    {
+        result = AeAssert::Assert("old cod assert");
+        if (result)
+            __debugbreak();
+    }
+    return result;
+}
+
+// ea: 0x006960D0
+void CheckAndRunOverHeatBlur()
+{
+    gFireHeatBlur = gFireHeatBlur - ServerTime_sInst.mTickDelta;
+    if (gFireHeatBlur < 0.0f)
+        gFireHeatBlur = 0.0f;
+    else if (gFireHeatBlur > maxBlurScale)
+        gFireHeatBlur = maxBlurScale;
+    if (gFireHeatBlur > 0.0f)
+    {
+        unsigned char r = (unsigned char)(r_1 * 255.0f);
+        unsigned char green = (unsigned char)(g * 255.0f);
+        unsigned char blue = (unsigned char)(b_1 * 255.0f);
+        int beg = (int)(a_0 * 255.0f);
+        unsigned char alpha = (unsigned char)(beg * gFireHeatBlur);
+        if (g_blendType == 5 || g_blendType == 6)
+        {
+            r = (unsigned char)(r * gFireHeatBlur);
+            green = (unsigned char)(green * gFireHeatBlur);
+            blue = (unsigned char)(blue * gFireHeatBlur);
+        }
+        unsigned char q[0x60];
+        memset(q, 0, sizeof(q));
+        void* quad = q;
+        nglInitQuad(quad);
+        int v2 = alpha;
+        nglSetQuadColor(quad,
+                        (unsigned int)((alpha << 24) | (r << 16)
+                                       | (green << 8) | blue));
+        int blendconvert[7];
+        blendconvert[5] = v2 | 0x87128600;
+        blendconvert[1] = 0x10000 | v2;
+        blendconvert[0] = 0;
+        blendconvert[2] = 1691321856;
+        blendconvert[3] = 1678214656;
+        blendconvert[4] = 1678215936;
+        blendconvert[6] = v2 | 0x86068600;
+        nglSetQuadBlend(quad, (unsigned int)blendconvert[fireBlendType]);
+        float y2 = (float)nglGetScreenHeight() + YOfs;
+        int ScreenWidth = nglGetScreenWidth();
+        nglSetQuadRect(quad, XOfs, YOfs, (float)ScreenWidth + XOfs, y2);
+        nglSetQuadTex(quad, nglGetFrontBufferTex());
+        nglListAddQuad(quad);
+    }
+}
+
+// ea: 0x00696840
+void CG_FillRectGradient(float x, float y, float width, float height,
+                         const float* color, const float* gradcolor,
+                         int gradientType)
+{
+    trap_R_SetColor(color);
+    re.DrawStretchPicGradient(
+        unk_F6A278[802 * currCl] * x, unk_F6A27C[802 * currCl] * y,
+        unk_F6A278[802 * currCl] * width, unk_F6A27C[802 * currCl] * height,
+        0.0f, 0.0f, 0.0f, 0.0f, cgsGlobal_media_whiteShader, gradcolor,
+        gradientType);
+    trap_R_SetColor(nullptr);
+}
+
+// ea: 0x00697E80
+void CG_ClearObjective(_objectiveInfo_t* pObjective)
+{
+    if (pObjective == nullptr)
+        return;
+    _objectiveInfo_t* v1 = pObjective;
+    _objectiveInfo_t* pParent = pObjective->pParent;
+    pObjective->state = 0;  // OBJST_EMPTY
+    if (pParent != nullptr)
+    {
+        pObjective->ringTime = -1;
+        pObjective->displayOrder = -1;
+        pObjective->vOrigin[0] = 0.0f;
+        pObjective->vOrigin[1] = 0.0f;
+        pObjective->vOrigin[2] = 0.0f;
+        pObjective->szString[0] = 0;
+        pObjective->ring = 0;
+        pObjective->entity = 0;
+        pObjective->pParent->pChild = pObjective->pChild;
+        _objectiveInfo_t* pChild = pObjective->pChild;
+        if (pChild != nullptr)
+        {
+            pChild->pParent = pObjective->pParent;
+            pObjective->pChild = nullptr;
+        }
+        pObjective->pParent = nullptr;
+    }
+    else
+    {
+        do
+        {
+            v1->vOrigin[0] = 0.0f;
+            v1->vOrigin[1] = 0.0f;
+            v1->vOrigin[2] = 0.0f;
+            v1->szString[0] = 0;
+            v1->ringTime = -1;
+            v1->ring = 0;
+            v1->displayOrder = -1;
+            v1->entity = 0;
+            v1->pParent = nullptr;
+            _objectiveInfo_t* next = v1->pChild;
+            v1->pChild = nullptr;
+            v1 = next;
+        } while (v1 != nullptr);
+    }
+}
+
+// ea: 0x00697F10
+void CG_ParseCullDist()
+{
+    const char* ConfigString = CL_GetConfigStringC(9);
+    float dist = (float)atof(ConfigString);
+    re.SetCullDist(dist);
+}
+
+// ea: 0x00697F40
+void CG_ParseFog()
+{
+    float ne, fa, r, g, b, density;
+    Cmd_ArgvBuffer(1, buffer_0, 256);
+    ne = (float)atof(buffer_0);
+    Cmd_ArgvBuffer(2, buffer_0, 256);
+    if (buffer_0[0] != 0)
+    {
+        fa = (float)atof(buffer_0);
+        Cmd_ArgvBuffer(3, buffer_0, 256);
+        density = (float)atof(buffer_0);
+        Cmd_ArgvBuffer(4, buffer_0, 256);
+        r = (float)atof(buffer_0);
+        Cmd_ArgvBuffer(5, buffer_0, 256);
+        g = (float)atof(buffer_0);
+        Cmd_ArgvBuffer(6, buffer_0, 256);
+        b = (float)atof(buffer_0);
+        Cmd_ArgvBuffer(7, buffer_0, 256);
+        int v0 = atoi(buffer_0);
+        re.SetFog(4, (int)ne, (int)fa, r, g, b, density);
+        re.SetFog(8, 4, v0, 0.0f, 0.0f, 0.0f, 0.0f);
+    }
+    else
+    {
+        re.SetFog(8, 3, (int)ne, 0.0f, 0.0f, 0.0f, 0.0f);
+    }
+}
+
+// ea: 0x00698330
+void CG_PrintPerturbationPoints()
+{
+    float perturb[128][2];
+    CG_PerturbationPoint(vec3_origin, perturb[0], 0.5f);
+    for (int i = 1; i < 128; ++i)
+        CG_PerturbationPoint(perturb[i - 1], perturb[i], 0.5f);
+    for (int j = 0; j < 128; ++j)
+        Com_Printf("\t{%f, %f},\n", perturb[j][0], perturb[j][1]);
+}
+
+// ea: 0x006A0370
+Entity* GetPlayerTarget()
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    if (client->ps.mTargetTime + 1000 <= cgGlobal.time)
+        return nullptr;
+    return DbHandleToEntity(client->ps.mTarget);
+}
+
+// ea: 0x006A30C0
+void CG_ParseObjectiveChange(int iNum)
+{
+    int client = -1;
+    int v1 = iNum - 16;
+    const char* v2 = CG_ConfigString(iNum);
+    if (v1 < 0 || v1 >= 17)
+    {
+        CG_ASSERT("(iObjective >= 0) && (iObjective < (16 + 1))",
+                  "c:\\cod\\code\\game\\cg_scoreboard.cpp", 656);
+        va("iObjective = %i\n", v1);
+    }
+    char* v4 = Info_ValueForKey(v2, "clid");
+    _objectiveInfo_t* v6;
+    if (*v4 != 0 && (client = atoi(v4), client >= 0))
+        v6 = &objectives[client][v1];
+    else
+        v6 = &objectives[0][v1];
+    char* v7 = Info_ValueForKey(v2, "delete");
+    if (*v2 == 0 || *v7 != 0)
+    {
+        v6->state2 = 0;
+    }
+    else
+    {
+        int v8 = v6->state2;
+        char* v9 = Info_ValueForKey(v2, "state");
+        if (*v9 != 0)
+            v6->state2 = atoi(v9);
+        else
+            v6->state2 = 0;
+        if (v6->state2 > 0x1A)
+        {
+            CG_ASSERT("(pObjective->state >= IGOCompassWidget::i_guy_bad_c) "
+                      "&& (pObjective->state < "
+                      "IGOCompassWidget::MAX_OBJECTIVE_ICONS)",
+                      "c:\\cod\\code\\game\\cg_scoreboard.cpp", 695);
+            va("pObjective->state = %i\n", v6->state2);
+        }
+        int v11 = v6->state2;
+        v6->state = v11;
+        if (v8 != 4 && v11 == 4)
+            v6->ringTime = cgGlobal.time;
+    }
+    if (v6->state2 != 0)
+    {
+        char* v12 = Info_ValueForKey(v2, "str");
+        if (*v12 != 0)
+            Q_strncpyz(v6->szString, v12, 128);
+        else
+            v6->szString[0] = 0;
+        char* v13 = Info_ValueForKey(v2, "org");
+        if (*v13 != 0)
+            sscanf(v13, "%f %f %f", &v6->vOrigin[0], &v6->vOrigin[1],
+                   &v6->vOrigin[2]);
+        else
+        {
+            v6->vOrigin[1] = 0.0f;
+            v6->vOrigin[0] = 0.0f;
+        }
+        int v14 = v6->displayOrder;
+        char* v15 = Info_ValueForKey(v2, "ring");
+        int v16 = *v15 != 0 ? atoi(v15) : 0;
+        v6->ring = v16;
+        if (v14 != v16)
+            v6->ringTime = cgGlobal.time;
+        char* v17 = Info_ValueForKey(v2, "wstate");
+        if (*v17 != 0)
+            v6->state = atoi(v17);
+        char* v18 = Info_ValueForKey(v2, "height");
+        v6->height = *v18 != 0 ? (float)atof(v18) : 0.0f;
+        char* v20 = Info_ValueForKey(v2, "ent");
+        if (*v20 != 0)
+        {
+            unsigned int v21 = atoi(v20);
+            unsigned int v22 = v21 & 0xFFF;
+            Entity* mObject;
+            if (v22 < 0x540
+                && (v21 >> 12) == EntityHandleDb::sInst.mElements[v22].mKey
+                && (mObject = EntityHandleDb::sInst.mElements[v22].mObject)
+                       != nullptr)
+            {
+                v6->entity = *(int*)((char*)mObject + 0x234);
+            }
+            else
+            {
+                CG_ASSERT("pEnt",
+                          "c:\\cod\\code\\game\\cg_scoreboard.cpp", 766);
+            }
+        }
+        char* v24 = Info_ValueForKey(v2, "pobj");
+        if (v6->pParent == 0 && *v24 != 0)
+        {
+            int v25 = atoi(v24);
+            _objectiveInfo_t* v26 =
+                client < 0 ? &objectives[0][v25] : &objectives[client][v25];
+            char* v27 = Info_ValueForKey(v2, "order");
+            v6->displayOrder = atoi(v27);
+            if (v26->pChild != nullptr)
+            {
+                v26 = v26->pChild;
+                if (v6->pChild != nullptr)
+                {
+                    CG_ASSERT("pObjective->pChild == 0",
+                              "c:\\cod\\code\\game\\cg_scoreboard.cpp", 806);
+                }
+                while (v6->displayOrder > v26->displayOrder)
+                {
+                    if (v26->pChild == nullptr)
+                        goto link_as_child;
+                    v26 = v26->pChild;
+                }
+                v6->pChild = v26;
+                _objectiveInfo_t* v28 = v26->pParent;
+                v6->pParent = v28;
+                v28->pChild = v6;
+                v26->pParent = v6;
+            }
+            else
+            {
+            link_as_child:
+                v26->pChild = v6;
+                v6->pParent = v26;
+            }
+        }
+    }
+    else
+    {
+        CG_ClearObjective(v6);
+    }
+}
+
+// ea: 0x0069C6E0
+void CG_DebugCircleEx(const float* center, float radius, const float* dir,
+                      const float* color, int depthTest, int duration)
+{
+    float norm[3];
+    VectorNormalize2(dir, norm);
+    float up[3], cross[3];
+    PerpendicularVector(up, norm);
+    CrossProduct(norm, up, cross);
+    float points[16][3];
+    for (int i = 0; i < 16; ++i)
+    {
+        float ang = i * 0.39269909f;
+        float s = sinf(ang), c = cosf(ang);
+        points[i][0] = up[0] * (s * radius) + cross[0] * (c * radius)
+                       + center[0];
+        points[i][1] = up[1] * (s * radius) + cross[1] * (c * radius)
+                       + center[1];
+        points[i][2] = up[2] * (s * radius) + cross[2] * (c * radius)
+                       + center[2];
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        CL_AddDebugLine(points[i], points[(i + 1) & 0xF], color, depthTest,
+                        duration, 0, 0);
+    }
+}
+
+// ea: 0x0069C860
+void CG_DebugCircle2Ex(const float* center, float radius, const float* dir,
+                       const float* color, int depthTest, int duration)
+{
+    float norm[3];
+    VectorNormalize2(dir, norm);
+    float up[3], cross[3];
+    PerpendicularVector(up, norm);
+    CrossProduct(norm, up, cross);
+    float points[16][3];
+    for (int i = 0; i < 16; ++i)
+    {
+        float ang = i * 0.39269909f;
+        float s = sinf(ang), c = cosf(ang);
+        points[i][0] = up[0] * (s * radius) + cross[0] * (c * radius)
+                       + center[0];
+        points[i][1] = up[1] * (s * radius) + cross[1] * (c * radius)
+                       + center[1];
+        points[i][2] = up[2] * (s * radius) + cross[2] * (c * radius)
+                       + center[2];
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        CL_AddDebugLine(points[i], points[(i + 1) & 0xF], color, depthTest,
+                        duration, 0, 0);
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        CL_AddDebugLine(center, points[(i + 1) & 0xF], color, depthTest,
+                        duration, 0, 0);
+    }
+}
+
+// ea: 0x0069CA20
+void CG_DebugArc(const float* center, float radius, float angle0, float angle1,
+                 const float* color, int depthTest, int duration)
+{
+    float step = (angle1 - angle0) * 0.06666667f;
+    if (step < 0.0f)
+    {
+        angle0 = angle0 - 360.0f;
+        step = (angle1 - angle0) * 0.06666667f;
+    }
+    float points[16][3];
+    for (int i = 0; i < 16; ++i)
+    {
+        float rad = ((i * step) + angle0) * 3.1415927f * 0.0055555557f;
+        float s = sinf(rad), c = cosf(rad);
+        points[i][0] = (s * radius) + center[0];
+        points[i][1] = (c * radius) + center[1];
+        points[i][2] = center[2];
+    }
+    for (int i = 0; i < 15; ++i)
+    {
+        CL_AddDebugLine(points[i], points[i + 1], color, depthTest, duration,
+                        0, 0);
     }
 }

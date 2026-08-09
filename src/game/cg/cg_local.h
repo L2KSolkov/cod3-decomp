@@ -204,6 +204,8 @@ struct PlayerState {
     int pm_flags;                      // +0x2C
     int delta_angles[3];               // +0x54
     int jumpTime;                      // +0x70
+    unsigned int mTarget;              // +0x94
+    int mTargetTime;                   // +0x98
     int weaponstate;                   // +0xA8
     float fWeaponPosFrac;              // +0xAC
     unsigned char queuedReloadSoundPlayStarted;  // +0xB8
