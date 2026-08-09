@@ -28,6 +28,9 @@ enum {
 // ai_state_e — AI state enum (4 bytes per slot)
 // ============================================================================
 typedef int32_t ai_state_e;
+enum {
+    AIS_WOUNDED = 0x0B,  // verified vs disasm G_Damage
+};
 
 // ============================================================================
 // ai_substate_e — AI sub-state

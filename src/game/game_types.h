@@ -231,6 +231,10 @@ public:
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
+    void Notify(HashString h, const int& d, Broc::entity* e, int* mod,
+                EHitLocation* hitloc, const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z
+    bool IsLocalPlayer();                            // ?IsLocalPlayer@Entity@@QBE_NXZ
+    int  GetPlayerIndex();                           // ?GetPlayerIndex@Entity@@QBEHXZ
     EntityState  s;                               // +0x000 (224 bytes)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
     trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ

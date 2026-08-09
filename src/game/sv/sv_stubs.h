@@ -216,6 +216,14 @@ struct MultiplayerMgr {
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
     void ExitLevel();
     void StartDevServer();
+    void PlayerDamage(Entity* hitEntity, Entity* attacker,
+                      const math::Position3& position, const math::Dir3& normal,
+                      int weapon, float damage, unsigned char mod, int dflags,
+                      EHitLocation hitLocation);
+    void VehicleDamage(Entity* hitEntity, Entity* attacker,
+                       const math::Position3& position, const math::Dir3& normal,
+                       float damage, int weapon, unsigned char mod, int dflags);
+    void VehicleDeath(Entity* hitEntity, Entity* killer, int weapon, int mod);
 };
 static_assert(sizeof(MultiplayerMgr) == 80, "MultiplayerMgr size mismatch");
 
@@ -315,6 +323,7 @@ struct EntityManager {
     void CreatePlayers();                   // ?CreatePlayers@EntityManager@@QAEXXZ
     void CreateWorld();                     // ?CreateWorld@EntityManager@@QAEXXZ
     void DeleteAllEntities();               // ?DeleteAllEntities@EntityManager@@QAEXXZ
+    int  GetPlayerIndex(Entity* entity);    // ?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z
 };
 static_assert(offsetof(EntityManager, mPlayers) == 0x04, "EntityManager::mPlayers offset mismatch");
 static_assert(offsetof(EntityManager, mWorld) == 0x44, "EntityManager::mWorld offset mismatch");
@@ -478,7 +487,9 @@ extern int              dword_F641E0[];
 // XModel â€” minimal view for SV_PointTraceToEntity model scan
 // ============================================================================
 struct XModel {
-    int  collLod;  // +0x00
+    uint8_t _pad0[0x48];  // +0x00
+    InplaceString name;   // +0x48
+    int  collLod;         // +0x4C
     static int GetNumBones(XModel* model, int lodIndex);
 };
 

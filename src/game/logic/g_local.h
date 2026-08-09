@@ -231,10 +231,23 @@ extern str_const_t str_const;         // 0xECBD30
 // Filled by GScr_LoadConsts (same 173-entry order as str_const_t).
 // ============================================================================
 struct hash_const_t {
-    HashString active;             // +0x00
-    uint8_t    _pad[0x34 - 0x4];
-    HashString damage;             // +0x34
-    uint8_t    _pad38[0x98 - 0x38];
+    HashString active;                  // +0x00
+    HashString activate;                // +0x04
+    HashString angle_deltas;            // +0x08
+    HashString animdone;                // +0x0C
+    HashString bodyque;                 // +0x10
+    HashString cam_vehicle_first;       // +0x14
+    HashString cam_vehicle_third;       // +0x18
+    HashString claimed;                 // +0x1C
+    HashString combat;                  // +0x20
+    HashString count;                   // +0x24
+    HashString crouch;                  // +0x28
+    HashString crowbar;                 // +0x2C
+    HashString current;                 // +0x30
+    HashString damage;                  // +0x34
+    HashString deactivate;              // +0x38
+    HashString death;                   // +0x3C
+    uint8_t    _pad40[0x98 - 0x40];
     HashString func_door;          // +0x98
     HashString func_door_rotating; // +0x9C
     HashString func_rotating;      // +0xA0
@@ -285,6 +298,7 @@ extern cvar_t* g_cheats;               // g_cheats
 extern cvar_t* g_developer;            // g_developer
 extern cvar_t* g_debug_sound_aliases;  // g_debug_sound_aliases
 extern vmCvar_t g_gravity;             // g_gravity
+extern vmCvar_t g_reloading;           // g_reloading
 extern void    Scr_Error(const char* error);  // scr.o
 
 // ============================================================================
@@ -509,7 +523,11 @@ int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHP
 struct BrocExports {
     uint8_t _pad[0xC50];
     void (*mAnimInitialize)();  // +0xC50
-    uint8_t _padC54[0xD44 - 0xC54];
+    uint8_t _padC54[0xC90 - 0xC54];
+    void (*mCallbackPlayerDamage)(unsigned int a1, unsigned int a2, unsigned int a3,
+                                  float* a4, float* a5, int a6, int a7, int a8,
+                                  hitLocation_t a9);  // +0xC90
+    uint8_t _padC94[0xD44 - 0xC94];
     void (*mCallbackFireArtilleryShell)(unsigned int handle);  // +0xD44
 };
 struct BrocAPI {
@@ -560,7 +578,10 @@ extern unsigned char bulletPriorityMap[];  // 0xDD55D0
 // g_combat.cpp types/globals
 // ============================================================================
 struct vehicle_info_t {
-    uint8_t _pad0[0x30];            // +0x00
+    uint8_t _pad0[0x20];            // +0x00
+    int16_t type;                   // +0x20
+    int16_t subtype;                // +0x22
+    uint8_t _pad24[0x30 - 0x24];
     float   bulletDamage;           // +0x30
     float   grenadeDamage;          // +0x34
     float   mineDamage;             // +0x38
@@ -576,6 +597,15 @@ struct hitLoc {
 extern hitLoc g_hitLocs[];             // 0xDD76E0
 extern float g_fHitLocDamageMult[19];  // 0xEA5380
 extern int dword_EA53C8;               // 0xEA53C8
+
+// HandleDb deref helper (matches IDA operator* / operator->)
+inline Entity* HandleDbToEnt(const DbLinkedHandle<EntityHandleDb, Entity>& h) {
+    unsigned int mVal = h.mHandle.mVal;
+    unsigned int idx = mVal & 0xFFF;
+    if (idx < 0x540 && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[idx].mKey)
+        return EntityHandleDb::sInst.mElements[idx].mObject;
+    return nullptr;
+}
 
 // Forward decls for config-string parsing (full types in core_systems.h)
 struct ConfigString;
@@ -603,6 +633,9 @@ float  PitchForYawOnNormal(float fYaw, const float* vNormal);
 void   gunrandom(float* x, float* y);
 extern float gTanAimConeSpread;
 int    Actor_CheckArmor(actor_s* pSelf, int damage, int dflags);
+int    CheckArmor(Entity* ent, int damage, int dflags);
+int    LogAccuracyHit(Entity* target, Entity* attacker);
+int    G_IsVehicleImmune(Entity* ent, int mod);
 int    ParseConfigStringToStruct(unsigned char* pStruct, const cspField_t* pFieldList,
                                  int iNumFields, const ConfigString* pCfgStr,
                                  int iMaxFieldTypes, void* parseSpecialFieldType,
@@ -781,6 +814,56 @@ void SentientApplyPhysicsDamage(Entity* pSelf, Entity* pInflictor, int iDamage,
                                 int iMod, const float* vPosition, const float* vDir,
                                 hitLocation_t hitLoc, int iWeapon);
 void j_nullsub_64(Entity* pGrenade, Entity* pHitEnt);
+
+// ============================================================================
+// g_combat.cpp core (G_Damage family)
+// ============================================================================
+bool  IsLocalPlayer(Entity* ent);   // ?IsLocalPlayer@@YA_NPAVEntity@@@Z
+float VectorNormalize2(const float* v, float* out);
+extern vmCvar_t mp_friendlyfire;      // 0xEABBC8
+extern vmCvar_t g_knockback;
+extern vmCvar_t g_debugDamage;
+extern int damageForceReductionThreshold;  // 0xDD7F40?
+extern int damageForceMax;
+extern int dword_F63D1C[1580 * 802];
+struct cgGlobal_t {
+    uint8_t _pad0[0x04];
+    int teamGame;   // +0x04 (verified vs disasm)
+};
+extern cgGlobal_t cgGlobal;   // 0xF5FE30
+float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker, Entity* pInflictor,
+                              const float* point, int mod);
+bool  G_IsPlayerInVehicle(Entity* player);       // ?G_IsPlayerInVehicle@@YA_NPAVEntity@@@Z
+bool  IsPlayerFullySeatedInVehicle(Entity* player);
+bool  G_CanPlayerBeDamagedInVehicle(Entity* player);
+int   CanDamage(Entity* targ, const float* origin, Entity* inflictor);
+int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,
+                     float fInnerDamage, float fOuterDamage, float radius,
+                     Entity* ignore, int mod);
+
+struct Destructible;
+class IVPointer_Destructible {
+public:
+    Destructible* mValue;   // +0x00
+    int           mPakId;   // +0x04
+};
+struct Destructible {
+    static void DoDamage(Destructible* self, Entity* ent, int damage,
+                         const math::Position3* hitp, const float* hitd,
+                         int meansOfDeath, bool scriptExplode);
+};
+
+// dispatch tables
+extern void (*usetable[0xE])(Entity* ent, Entity* other, Entity* activator);
+extern void (*paintable[6])(Entity* ent, Entity* other, int damage, const float* point,
+                            int mod, const float* dir, hitLocation_t hitLoc);
+extern void (*dietable[8])(Entity* self, Entity* inflictor, Entity* attacker,
+                           int damage, int mod, int weapon, const float* point,
+                           const float* dir, hitLocation_t hitLoc);
+Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir, int iDamage);
+void    G_FinishDamage(Entity* targ, Entity* inflictor, Entity* attacker,
+                       const float* dir, const float* point, int damage, int mod,
+                       int weapon, hitLocation_t hitLoc);
 
 // THINK table indices used by movers
 enum {
