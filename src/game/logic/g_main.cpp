@@ -3003,3 +3003,184 @@ void G_AddInvalidatedNode(Entity* pEnt, PathNodes::PathNode* pNode)
         }
     }
 }
+
+// ea: 0x004679F0
+int Cmd_FollowCycle_f(Entity* ent, int dir)
+{
+    if (dir != 1 && dir != -1)
+        G_Error("Cmd_FollowCycle_f: bad dir %i", dir);
+    if (ent->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_cmds.cpp";
+        AeAssert::gCurrentLine = 1750;
+        AeAssert::gCurrentExpr = "ent->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Client* client = ent->client;
+    if (client->pers.playerState != 1)
+        return -1;
+    int spectatorClient = client->ps.spectatorClient;
+    if (spectatorClient < 0)
+        spectatorClient = 0;
+    int v12 = spectatorClient;
+    for (;;)
+    {
+        spectatorClient += dir;
+        if (spectatorClient < level.maxclients)
+        {
+            if (spectatorClient < 0)
+                spectatorClient = level.maxclients - 1;
+        }
+        else
+        {
+            spectatorClient = 0;
+        }
+        PlayerState ps;
+        if (SV_GetCurrentClientInfo(spectatorClient, &ps) != 0)
+        {
+            Entity* mObject = HandleDbToEnt(
+                EntityManager::sInst->mPlayers[spectatorClient]->mHandle);
+            if (mObject != nullptr)
+            {
+                Client* v8 = mObject->client;
+                if (v8 != nullptr && v8->pers.playerState == 3)
+                {
+                    if ((ps.pm_flags & 0x80000) == 0)
+                    {
+                        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_cmds.cpp";
+                        AeAssert::gCurrentLine = 1782;
+                        AeAssert::gCurrentExpr = "ps.pm_flags & (1<<19)";
+                        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    if (((1 << mObject->sentient->eTeam) & ent->sentient->noSpectate) == 0)
+                        return spectatorClient;
+                }
+            }
+        }
+        if (spectatorClient == v12)
+            return -1;
+    }
+}
+
+// ea: 0x0048B2F0
+void Cmd_Give_f(Entity* ent)
+{
+    if (g_cheats->integer != 0)
+    {
+        if (ent->health > 0)
+        {
+            const char* v5 = ConcatArgs(2);
+            int v6 = atoi(v5);
+            const char* name = ConcatArgs(1);
+            if (name != nullptr && strlen(name) != 0)
+            {
+                int integer;
+                if (v6 != 0)
+                    integer = v6 + ent->health;
+                else
+                {
+                    ent->client->ps.stats[2] = g_player_maxhealth.integer;
+                    integer = g_player_maxhealth.integer;
+                }
+                ent->health = integer;
+                level.initializing = 1;
+                for (int v10 = 1; v10 <= BG_GetNumWeapons(); ++v10)
+                    BG_GivePlayerWeapon(&ent->client->ps, v10);
+                level.initializing = 0;
+                if (v6 != 0)
+                {
+                    int weapon = ent->client->ps.weapon;
+                    if (weapon != 0)
+                        Add_Ammo(ent, weapon, v6, 1);
+                }
+                else
+                {
+                    for (int i = 1; i <= BG_GetNumWeapons(); ++i)
+                    {
+                        if (Com_BitCheck(ent->client->ps.weapons, i) != 0)
+                            Add_Ammo(ent, i, 998, 1);
+                    }
+                }
+                if (Q_stricmpn(name, "allammo", 7) == 0 && v6 != 0)
+                {
+                    for (int j = 1; j <= BG_GetNumWeapons(); ++j)
+                    {
+                        if (Com_BitCheck(ent->client->ps.weapons, j) != 0)
+                            Add_Ammo(ent, j, v6, 1);
+                    }
+                }
+            }
+        }
+        else
+        {
+            SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_MUSTBEALIVECOMMAND\""));
+        }
+    }
+    else
+    {
+        SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_CHEATSNOTENABLED\""));
+    }
+}
+
+// ea: 0x00460F00
+void SpectatorClientEndFrame(Entity* ent)
+{
+    Client* v2 = ent->client;
+    ent->r.svFlags &= ~8u;
+    ent->takedamage = 0;
+    ent->r.contents = 0;
+    v2->ps.pm_flags &= 0xFFF7FFFF;
+    if (Entity_IsInRagdoll(ent))
+    {
+        ent->r.contents = 0x4000000;
+    }
+    else
+    {
+        ent->r.svFlags |= 1u;
+        ent->s.eType = 6;
+    }
+    v2->fGunPitch = 0.0f;
+    v2->fGunYaw = 0.0f;
+    int spectatorClient = ent->client->ps.spectatorClient;
+    PlayerState v14;
+    if (spectatorClient < 0 || SV_GetCurrentClientInfo(spectatorClient, &v14) == 0)
+    {
+        StopFollowing(ent);
+        return;
+    }
+    if ((v14.pm_flags & 0x80000) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+        AeAssert::gCurrentLine = 1621;
+        AeAssert::gCurrentExpr = "ps.pm_flags & (1<<19)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (((1 << ent->sentient->eTeam) & ent->sentient->noSpectate) != 0)
+    {
+        StopFollowing(ent);
+        return;
+    }
+    int eFlags = v14.eFlags;
+    int viewHeightLerpTime = v2->ps.viewHeightLerpTime;
+    float viewHeightTarget = v2->ps.viewHeightTarget;
+    float viewHeightCurrent = v2->ps.viewHeightCurrent;
+    float viewHeightLerpPosAdj = v2->ps.viewHeightLerpPosAdj;
+    int clientNum = v2->ps.viewHeightLerpTarget;
+    int viewHeightLerpDown = v2->ps.viewHeightLerpDown;
+    v2->ps = v14;
+    v2->ps.spectatorClient = spectatorClient;
+    v2->ps.viewHeightTarget = viewHeightTarget;
+    v2->ps.eFlags = eFlags;
+    v2->ps.viewHeightLerpTime = viewHeightLerpTime;
+    v2->ps.viewHeightLerpTarget = clientNum;
+    v2->ps.viewHeightCurrent = viewHeightCurrent;
+    v2->ps.viewHeightLerpPosAdj = viewHeightLerpPosAdj;
+    v2->ps.viewHeightLerpDown = viewHeightLerpDown;
+    v2->ps.pm_flags = 0x100000 | (v2->ps.pm_flags & 0xFFF7FFFF);
+}

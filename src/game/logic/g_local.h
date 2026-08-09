@@ -1842,6 +1842,26 @@ PathNodes::PathNode* HandleDbToNode(PathNodes::NodeHandle h);  // helper
 void  Bullet_Endpos(float spread, float* end, weaponParms* wp, float randomA,
                     float randomB);               // g.o overload
 int   G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode);  // g.o (g_dobj.cpp)
+int   Cmd_FollowCycle_f(Entity* ent, int dir);   // g.o 0x4679F0
+int   SV_GetCurrentClientInfo(int clientNum, PlayerState* ps);  // sv.o
+void  VEH_RemoveVehicle(void* v);                 // phys_xboxr
+void  VEH_SetPosition(Entity* ent, const math::Position3* origin,
+                      const math::Position3* angles, const float* vel);  // g.o
+void  SP_script_vehicle(Entity* pSelf);          // g.o 0x488CE0
+void  VEH_Backup(Entity* ent);                   // g.o
+int   VP_GetNodeIndex(Broc::string* name, math::Position3* origin);  // g.o
+void  VP_GetLookAheadXYZ(const vehicle_pathpos_t* vpp, float* lookXYZ);  // g.o
+void  vectoangles(const float* vec, float* angles);  // core.o
+int   VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,
+                       bool overrideSpeed, int waitNode);  // g.o
+void  VP_GetAngles(vehicle_pathpos_t* vpp, float* angles);  // g.o
+int   G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
+                         int msec, int waitNode);  // g.o 0x45F030
+unsigned int Scr_Vehicle_SeatChange(Entity* occupant, unsigned int newSeatIdx);  // g.o 0x491980
+void  VEH_RespawnVehicle(Entity* ent);           // g.o 0x488ED0
+void  Cmd_Give_f(Entity* ent);                   // g.o 0x48B2F0
+void  SpectatorClientEndFrame(Entity* ent);      // g.o 0x460F00
+int   Q_stricmpn(const char* s1, const char* s2, int n);  // core.o
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o
