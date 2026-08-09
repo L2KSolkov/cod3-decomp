@@ -388,7 +388,9 @@ struct actor_s {
     float          fMaxSightDistSqrd;            // +0x8B0
     uint8_t        _pad8B4[0x8CC - 0x8B4];
     sentient_info_array sentientInfo;            // +0x8CC (0xC0 bytes)
-    uint8_t        _pad98C[0xA84 - 0x98C];
+    uint8_t        _pad98C[0xA2C - 0x98C];
+    int            iFollowSlot;                  // +0xA2C
+    uint8_t        _padA30[0xA84 - 0xA30];
     int32_t        iSpawnTime;                   // +0xA84
     uint8_t        _padA88[0xA98 - 0xA88];
     int32_t        mg42stayput;                  // +0xA98

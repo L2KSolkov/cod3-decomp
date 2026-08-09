@@ -1638,6 +1638,8 @@ void  MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
 void  MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
                        float (*out)[3]);
 void  MatrixTranspose(const float (*in)[3], float (*out)[3]);
+void  RotatePointAroundVector(float* result, const float* axis,
+                              const float* src, float angle);  // core.o
 void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
 void  VEH_UpdateControllers(Entity* entity, int msec);  // g.o 0x46DE90
 void  G_UpdateVehicleTags(Entity* ent);                 // g.o 0x45E290
@@ -2110,6 +2112,16 @@ void  InitCvars(int restart);                        // g.o 0x44B950
 void  Cmd_UFO_f(Entity* ent);                        // g.o 0x44A9C0
 bool  G_IsPlayerInVehicle(Entity* player);           // g.o 0x46E0B0
 void  Scr_Vehicle_Use(Entity* pEnt, Entity* pOther);  // g.o 0x480DA0
+bool  VEH_AcquirePlayerFollowSlot(Entity* vehicle, Entity* follower);  // g.o 0x44E440
+void  VEH_ReleasePlayerFollowSlot(Entity* vehicle, Entity* follower);  // g.o 0x46CF00
+const float (*VEH_GetPlayerFollowGoalPosition(const Entity* vehicle,
+                                              const Entity* follower))[3];  // g.o 0x44E6A0
+void  VEH_GenerateRelativeFormationTable(scr_vehicle_t* veh);  // g.o 0x44DFE0
+void  VEH_UpdateFollowFormation(scr_vehicle_t* veh, float requiredDistance);  // g.o 0x44E260
+int   VEH_GetGenericDistancedFollowHistoryIndex(scr_vehicle_t* veh,
+                                                const float* origin,
+                                                float requiredDistance,
+                                                int startingIndex);  // g.o 0x44E120
 vehicle_node_t* SP_create_info_vehicle_node(void);   // g.o 0x45F210
 float Scr_Vehicle_CalcSpeed(const scr_vehicle_t* pVehicle);  // g.o 0x44F3D0
 int16_t VP_GetNodeIndex(const Broc::string* name, float* origin);  // g.o 0x451950

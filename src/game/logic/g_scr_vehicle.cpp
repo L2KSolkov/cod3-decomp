@@ -496,6 +496,383 @@ label_12:
     }
 }
 
+// ea: 0x0044E120
+int VEH_GetGenericDistancedFollowHistoryIndex(scr_vehicle_t* veh,
+                                              const float* origin,
+                                              float requiredDistance,
+                                              int startingIndex)
+{
+    vehicle_follow* follow = veh->follow;
+    int i = 0;
+    float v6 = requiredDistance * requiredDistance;
+    int j;
+    for (j = startingIndex + 40;; --j)
+    {
+        int result = j % 40;
+        float v9 = origin[1] - follow->positionHistory[j % 40][1];
+        float v10 = origin[0] - follow->positionHistory[j % 40][0];
+        float v11 = origin[2] - follow->positionHistory[j % 40][2];
+        if ((v11 * v11 + v9 * v9 + v10 * v10) >= v6)
+            return result;
+        if (++i >= 40)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 3871;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            return veh->follow->historyBufferFront;
+        }
+    }
+}
+
+// ea: 0x0044DFE0
+void VEH_GenerateRelativeFormationTable(scr_vehicle_t* veh)
+{
+    veh->follow->actualColumns = veh->follow->columns;
+    vehicle_follow* follow = veh->follow;
+    if (follow->numFollowingActors < follow->columns)
+        follow->actualColumns = follow->numFollowingActors;
+    veh->follow->actualRows =
+        (int)ceil((float)veh->follow->numFollowingActors
+                  / (float)veh->follow->actualColumns);
+    vehicle_follow* v3 = veh->follow;
+    int v4 = 0;
+    float v5 = 0.0f;
+    int r = 0;
+    if (v3->actualRows > 0)
+    {
+        int actualColumns = v3->actualColumns;
+        float startingX = (actualColumns - 1) * -0.5f * v3->columnSpacing;
+        do
+        {
+            int v7 = 0;
+            float v8 = startingX;
+            if (actualColumns > 0)
+            {
+                vehicle_follow* v9 = veh->follow;
+                int v10 = v4;
+                do
+                {
+                    *(float*)((char*)v9->relativeFormation + v10) = v8;
+                    *(float*)((char*)&v9->relativeFormation[0][0][1] + v10) = v5;
+                    *(float*)((char*)&v9->relativeFormation[0][0][2] + v10) = 0.0f;
+                    v9 = veh->follow;
+                    actualColumns = v9->actualColumns;
+                    ++v7;
+                    v10 += 12;
+                    v8 = v9->columnSpacing + v8;
+                } while (v7 < actualColumns);
+            }
+            vehicle_follow* v11 = veh->follow;
+            float rowSpacing = v11->rowSpacing;
+            v5 = v5 - rowSpacing;
+            v4 += 72;
+            ++r;
+        } while (r < veh->follow->actualRows);
+    }
+}
+
+// ea: 0x0044E260
+void VEH_UpdateFollowFormation(scr_vehicle_t* veh, float requiredDistance)
+{
+    float up[3] = {0.0f, 0.0f, 1.0f};
+    vehicle_follow* follow = veh->follow;
+    int v3 = (follow->historyBufferFront + 39) % 40;
+    float requiredTotalRowDistance =
+        (follow->actualRows - 1) * follow->rowSpacing;
+    int GenericDistancedFollowHistoryIndex =
+        VEH_GetGenericDistancedFollowHistoryIndex(
+            veh, veh->phys.origin.v.m128_f32, requiredDistance, v3);
+    float v5 = 0.0f;
+    int v6 = VEH_GetGenericDistancedFollowHistoryIndex(
+        veh,
+        veh->follow->positionHistory[(GenericDistancedFollowHistoryIndex + 39) % 40],
+        v5, (GenericDistancedFollowHistoryIndex + 39) % 40);
+    int numFollowingActors = veh->follow->numFollowingActors;
+    int v8 = 0;
+    int slot = 0;
+    if (numFollowingActors > 0)
+    {
+        int v28 = 4 * (3 * v6 + 27);
+        int v9 = GenericDistancedFollowHistoryIndex;
+        int v29 = 12 * v6;
+        int v32 = 4 * (3 * GenericDistancedFollowHistoryIndex + 27);
+        requiredTotalRowDistance = 0.0f;
+        do
+        {
+            vehicle_follow* v10 = veh->follow;
+            int actualColumns = v10->actualColumns;
+            int v12 = v8 / actualColumns;
+            int v13 = v8 % actualColumns;
+            int v14 = v12;
+            float minMaxDelta[3];
+            minMaxDelta[0] = v10->positionHistory[v9][0]
+                             - v10->positionHistory[v29 / 12][0];
+            float v15 = v10->positionHistory[v9][1]
+                        - v10->positionHistory[v29 / 12][1];
+            minMaxDelta[1] = v15;
+            minMaxDelta[2] = *(float*)((char*)&v10->numFollowingActors + v32)
+                             - *(float*)((char*)&v10->numFollowingActors + v28);
+            float angleDiff[3];
+            vectoangles(minMaxDelta, angleDiff);
+            float rotatedRelativePosition[3];
+            RotatePointAroundVector(rotatedRelativePosition, up,
+                                    veh->follow->relativeFormation[v14][v13],
+                                    (angleDiff[1] - 90.0f));
+            veh->follow->slotGoalPosition[slot][0] =
+                veh->follow->positionHistory[v9][0] + rotatedRelativePosition[0];
+            veh->follow->slotGoalPosition[slot][1] =
+                veh->follow->positionHistory[v9][1] + rotatedRelativePosition[1];
+            veh->follow->slotGoalPosition[slot][2] =
+                *(float*)((char*)veh->follow + v32)
+                + rotatedRelativePosition[2];
+            v8 = slot + 1;
+            slot = v8;
+        } while (v8 < veh->follow->numFollowingActors);
+    }
+}
+
+// ea: 0x0044E440
+bool VEH_AcquirePlayerFollowSlot(Entity* vehicle, Entity* follower)
+{
+    if (vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 3985;
+        AeAssert::gCurrentExpr = "vehicle != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (follower == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 3986;
+        AeAssert::gCurrentExpr = "follower != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (vehicle->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 3987;
+        AeAssert::gCurrentExpr = "vehicle->scr_vehicle != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (follower->actor == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 3988;
+        AeAssert::gCurrentExpr = "follower->actor";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    scr_vehicle_t* scr_vehicle = vehicle->scr_vehicle;
+    if (scr_vehicle->follow == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 3993;
+        AeAssert::gCurrentExpr = "veh->follow";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (follower->actor->iFollowSlot == -1)
+    {
+        if (scr_vehicle->follow->numFollowingActors + 1 > 6)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 4004;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            return false;
+        }
+        scr_vehicle->follow->claimedSlotEntityHandleList[
+            scr_vehicle->follow->numFollowingActors].mHandle.mVal =
+            follower->mHandle.mHandle.mVal;
+        follower->actor->iFollowSlot = scr_vehicle->follow->numFollowingActors++;
+        VEH_GenerateRelativeFormationTable(scr_vehicle);
+        VEH_UpdateFollowFormation(scr_vehicle, 0.0f);
+        return true;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+    AeAssert::gCurrentLine = 3997;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("This actor is already following a vehicle!!!"))
+        __debugbreak();
+    return false;
+}
+
+// ea: 0x0046CF00
+void VEH_ReleasePlayerFollowSlot(Entity* vehicle, Entity* follower)
+{
+    if (vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4025;
+        AeAssert::gCurrentExpr = "vehicle != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (follower == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4026;
+        AeAssert::gCurrentExpr = "follower != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (vehicle->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4027;
+        AeAssert::gCurrentExpr = "vehicle->scr_vehicle != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (follower->actor == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4028;
+        AeAssert::gCurrentExpr = "follower->actor";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int iFollowSlot = follower->actor->iFollowSlot;
+    scr_vehicle_t* scr_vehicle = vehicle->scr_vehicle;
+    if (iFollowSlot == -1)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4035;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("This actor was not following a vehicle!!!"))
+            __debugbreak();
+        return;
+    }
+    if (scr_vehicle->follow->numFollowingActors <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4039;
+        AeAssert::gCurrentExpr = "veh->follow->numFollowingActors > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Entity* mObject = HandleDbToEnt(
+        scr_vehicle->follow->claimedSlotEntityHandleList[iFollowSlot]);
+    if (mObject != follower)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4040;
+        AeAssert::gCurrentExpr = "*veh->follow->claimedSlotEntityHandleList[slot] == follower";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    scr_vehicle->follow->claimedSlotEntityHandleList[iFollowSlot].mHandle.mVal = 0;
+    --scr_vehicle->follow->numFollowingActors;
+    follower->actor->iFollowSlot = -1;
+    vehicle_follow* follow = scr_vehicle->follow;
+    if (follow->numFollowingActors > 0 && iFollowSlot != follow->numFollowingActors)
+    {
+        Entity* last = HandleDbToEnt(
+            follow->claimedSlotEntityHandleList[follow->numFollowingActors]);
+        if (last == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 4054;
+            AeAssert::gCurrentExpr = "*veh->follow->claimedSlotEntityHandleList[veh->follow->numFollowingActors]";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        scr_vehicle->follow->claimedSlotEntityHandleList[iFollowSlot].mHandle.mVal =
+            scr_vehicle->follow->claimedSlotEntityHandleList[
+                scr_vehicle->follow->numFollowingActors].mHandle.mVal;
+        scr_vehicle->follow->claimedSlotEntityHandleList[
+            scr_vehicle->follow->numFollowingActors].mHandle.mVal = 0;
+        Entity* v7 = HandleDbToEnt(
+            scr_vehicle->follow->claimedSlotEntityHandleList[iFollowSlot]);
+        if (v7 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 4071;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("TELL STAVRO! Vehicle's entity follow handle got hosed!!! Was weird zone loading/unloading going on???"))
+                __debugbreak();
+            return;
+        }
+        actor_s* actor = v7->actor;
+        if (actor == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 4064;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Vehicle's actor follow handle got hosed!!! Was weird zone loading/unloading going on???"))
+                __debugbreak();
+            return;
+        }
+        actor->iFollowSlot = iFollowSlot;
+    }
+    VEH_GenerateRelativeFormationTable(scr_vehicle);
+    VEH_UpdateFollowFormation(scr_vehicle, 0.0f);
+}
+
+// ea: 0x0044E6A0
+const float (*VEH_GetPlayerFollowGoalPosition(const Entity* vehicle,
+                                              const Entity* follower))[3]
+{
+    if (vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4083;
+        AeAssert::gCurrentExpr = "vehicle != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (vehicle->scr_vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4084;
+        AeAssert::gCurrentExpr = "vehicle->scr_vehicle != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    unsigned int iFollowSlot = follower->actor->iFollowSlot;
+    if (iFollowSlot >= 6)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 4087;
+        AeAssert::gCurrentExpr = "slot >= 0 && slot < 6";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return (const float(*)[3])vehicle->scr_vehicle->follow->slotGoalPosition[iFollowSlot];
+}
+
 // ea: 0x0045E900
 vehicle_info_t* G_GetVehicleInfo(Entity* ent)
 {
