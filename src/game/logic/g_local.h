@@ -1406,7 +1406,8 @@ struct weaponFileInfo_t {
     float   fCooldownRate;        // +0x8A8
     uint8_t _pad9b[0x8BC - 0x8AC];
     char*   szScript;             // +0x8BC
-    uint8_t _pad10[0x948 - 0x8C0];
+    uint8_t _pad10[0x8EC - 0x8C0];
+    struct gdDecal* pDecals[23];  // +0x8EC
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
 static_assert(offsetof(weaponFileInfo_t, index) == 0x0, "weaponFileInfo_t::index offset mismatch");
@@ -2040,8 +2041,37 @@ extern float helmetBounce;                       // g.o @ 0xDD8210
 extern float helmetFriction;                     // g.o @ 0xDD8214
 extern float helmetMass;                         // g.o @ 0xDD8218
 extern int   timeToAdd;                          // g.o @ 0xDD821C
+extern float decal_radius;                       // g.o @ 0xDD8204
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
+
+// ============================================================================
+// gdDecal / DynamicDecalMgr (render.o) - used by Bullet_Fire_Fake_Extended
+// ============================================================================
+struct gdDecal {
+    float  level1_radius;      // +0x00
+    void*  level1_cg_texture;  // +0x04 (nglTexture*)
+    void*  level1_ng_texture;  // +0x08
+    float  level2_radius;      // +0x0C
+    void*  level2_cg_texture;  // +0x10
+    void*  level2_ng_texture;  // +0x14
+    float  level3_radius;      // +0x18
+    void*  level3_cg_texture;  // +0x1C
+    void*  level3_ng_texture;  // +0x20
+};
+static_assert(sizeof(gdDecal) == 0x24, "gdDecal size mismatch");
+struct DynamicDecalMgr {
+    static void* sInst;  // ?sInst@DynamicDecalMgr@@2PAV1@A @ 0xF74478
+    void Add(void* texture, float zBias, bool alphaBlend, int maxNum,
+             const math::Position3& pos, const math::Position3& normal,
+             float radius, float angle, const float* color,
+             bool isHighPriority);  // ?Add@DynamicDecalMgr@@QAEXPAUnglTexture@@M_NHABVPosition3@math@@2MMABVColor@@1@Z
+};
+void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
+                       const float* normal, int weapon, int surfType,
+                       Entity* hitEnt);  // cg.o
+void CG_EventSpawnTracer(const math::Position3* pstart,
+                         const math::Position3* pend, int weapon);  // cg.o
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o

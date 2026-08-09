@@ -1606,3 +1606,239 @@ melee_miss:
     MultiplayerMgr::sInst->MeleeHit(nullptr, ent, zeroPos, zeroDir, 0, 0, 0,
                                     0);
 }
+
+// ea: 0x004712A0
+void Bullet_Fire_Fake_Extended(
+    DbLinkedHandle<EntityHandleDb, Entity> sourceEntity, Entity* attacker,
+    float* start, const float* end, int damage, int recursion, weaponParms* wp,
+    DbLinkedHandle<EntityHandleDb, Entity> weaponEntity,
+    float coneAngleTangent)
+{
+    if (attacker == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 1372;
+        AeAssert::gCurrentExpr = "attacker";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (recursion > 12)
+    {
+        Com_Printf("Bullet_Fire_Fake_Extended: Too many resursions, bullet "
+                   "aborted\n");
+        return;
+    }
+    collision_context_t context;
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    context.pass_entity1 = sourceEntity;
+    context.pass_entity2.mHandle.mVal = 0x2802033;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0;
+    trace_t tr;
+    memset(&tr, 0, sizeof(tr));
+    tr.check_decal = true;
+    tr.decal_radius = decal_radius;
+    unsigned char* prioMap = wp->pWeapInfo->bRifleBullet != 0
+                                 ? riflePriorityMap
+                                 : bulletPriorityMap;
+    math::Position3 s;
+    s.v.m128_f32[0] = start[0];
+    s.v.m128_f32[1] = start[1];
+    s.v.m128_f32[2] = start[2];
+    s.v.m128_f32[3] = 0.0f;
+    math::Position3 e;
+    e.v.m128_f32[0] = end[0];
+    e.v.m128_f32[1] = end[1];
+    e.v.m128_f32[2] = end[2];
+    e.v.m128_f32[3] = 0.0f;
+    g_LocationalTrace(&tr, &s, &e, &context, prioMap, coneAngleTangent);
+    if (g_debugBullets.integer > 0)
+    {
+        CL_AddDebugLine(start, &tr.endpos.v.m128_f32[0], colorGreen, 1, 20,
+                        1, 0);
+        math::Position3 dbg2;
+        dbg2.v.m128_f32[0] =
+            tr.endpos.v.m128_f32[0] + tr.normal.v.m128_f32[0] * 20.0f;
+        dbg2.v.m128_f32[1] =
+            tr.endpos.v.m128_f32[1] + tr.normal.v.m128_f32[1] * 20.0f;
+        dbg2.v.m128_f32[2] =
+            tr.endpos.v.m128_f32[2] + tr.normal.v.m128_f32[2] * 20.0f;
+        CL_AddDebugLine(&tr.endpos.v.m128_f32[0], &dbg2.v.m128_f32[0],
+                        colorBlue, 1, 20, 1, 0);
+    }
+    if (((g_debugBullets.integer & 1) != 0 && attacker->actor != nullptr)
+        || g_debugBullets.integer >= 5)
+    {
+        Entity* v13 = G_TempEntity(start, 214);
+        v13->s.origin2.v.m128_f32[0] = tr.endpos.v.m128_f32[0];
+        v13->s.origin2.v.m128_f32[1] = tr.endpos.v.m128_f32[1];
+        v13->s.origin2.v.m128_f32[2] = tr.endpos.v.m128_f32[2];
+        if (attacker->sentient != nullptr
+            && attacker->sentient->eTeam == TEAM_AXIS)
+            v13->s.dmgFlags = 1;
+    }
+    Entity* mObject = EntFromHandle(tr.surfaceFlags);
+    if (tr.normal.v.m128_f32[1] >= 1.0f)
+    {
+        math::Position3 pstart;
+        pstart.v.m128_f32[0] = start[0];
+        pstart.v.m128_f32[1] = start[1];
+        pstart.v.m128_f32[2] = start[2];
+        pstart.v.m128_f32[3] = 0.0f;
+        CG_EventSpawnTracer(&pstart, &e, wp->pWeapInfo->index);
+    }
+    else
+    {
+        if (g_debugBullets.integer <= -2)
+        {
+            float dbgStart[3];
+            dbgStart[0] = mObject->r.currentOrigin.v.m128_f32[0]
+                        + mObject->r.mins.v.m128_f32[0];
+            dbgStart[1] = mObject->r.currentOrigin.v.m128_f32[1]
+                        + mObject->r.mins.v.m128_f32[1];
+            dbgStart[2] = mObject->r.currentOrigin.v.m128_f32[2]
+                        + mObject->r.mins.v.m128_f32[2];
+            Entity* v22 = G_TempEntity(dbgStart, 214);
+            v22->s.origin2.v.m128_f32[0] = mObject->r.currentOrigin.v.m128_f32[0]
+                                         + mObject->r.maxs.v.m128_f32[0];
+            v22->s.origin2.v.m128_f32[1] = mObject->r.currentOrigin.v.m128_f32[1]
+                                         + mObject->r.maxs.v.m128_f32[1];
+            v22->s.origin2.v.m128_f32[2] = mObject->r.currentOrigin.v.m128_f32[2]
+                                         + mObject->r.maxs.v.m128_f32[2];
+            v22->s.dmgFlags = 2;
+        }
+        float dir[3];
+        dir[0] = end[0] - start[0];
+        dir[1] = end[1] - start[1];
+        dir[2] = end[2] - start[2];
+        VectorNormalize(dir);
+        float v23 = (tr.normal.v.m128_f32[0] * dir[0]
+                     + tr.normal.v.m128_f32[1] * dir[1]
+                     + tr.normal.v.m128_f32[2] * dir[2])
+                    * -2.0f;
+        dir[0] = tr.normal.v.m128_f32[0] * v23 + dir[0];
+        dir[1] = tr.normal.v.m128_f32[1] * v23 + dir[1];
+        dir[2] = tr.normal.v.m128_f32[2] * v23 + dir[2];
+        if (((int)tr.normal.v.m128_f32[2] & 4) == 0)
+        {
+            if (mObject == nullptr)
+            {
+                int surfType = ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F;
+                CG_BulletHitEvent(attacker, &tr.endpos,
+                                  &tr.normal.v.m128_f32[0],
+                                  wp->pWeapInfo->index, surfType, mObject);
+                if (tr.partGroup != 0
+                    && tr.surfaceFlags
+                           == EntityManager::sInst->mWorld->mHandle.mHandle
+                                  .mVal)
+                {
+                    gdDecal* decal =
+                        wp->pWeapInfo->pDecals[surfType];
+                    if (decal != nullptr)
+                    {
+                        float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+                        float angle = rand() * 0.000095876727f;
+                        void* tex = decal->level1_cg_texture;
+                        if (tex != nullptr)
+                        {
+                            bool isHighPriority = attacker->s.eType == 1;
+                            float decalRadius =
+                                (rand() * 0.000009155552842799158f + 1.0f)
+                                * decal->level1_radius;
+                            ((DynamicDecalMgr*)DynamicDecalMgr::sInst)
+                                ->Add(tex, 0.1f, true, 100, tr.endpos,
+                                      *(math::Position3*)&tr.normal,
+                                      decalRadius, angle, color,
+                                      isHighPriority);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                sentient_s* sentient = mObject->sentient;
+                if (sentient == nullptr || attacker->actor == nullptr
+                    || sentient->eTeam != attacker->sentient->eTeam)
+                {
+                    if ((mObject->client != nullptr
+                         || (sentient != nullptr
+                             && tr.normal.v.m128_f32[2] == 0.0f))
+                        && mObject->takedamage != 0)
+                    {
+                        tr.normal.v.m128_f32[2] = (float)0x700000u;
+                    }
+                    int surfType =
+                        ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F;
+                    CG_BulletHitEvent(attacker, &tr.endpos,
+                                      &tr.normal.v.m128_f32[0],
+                                      wp->pWeapInfo->index, surfType,
+                                      mObject);
+                }
+            }
+        }
+        else
+        {
+            CG_EventSpawnTracer(&s, &tr.endpos, wp->pWeapInfo->index);
+        }
+    }
+    char passThrough = 0;
+    if (mObject != nullptr)
+    {
+        ValidatePakId((TPakId)mObject->mModel.mPakId);
+        if (mObject->mModel.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)mObject->mModel.mPakId);
+            if ((mObject->mModel.mValue->contents & 0x12) != 0)
+                passThrough = 1;
+        }
+    }
+    if (((int)tr.normal.v.m128_f32[3] & 0x12) != 0 || passThrough != 0)
+    {
+        float dir[3];
+        dir[0] = end[0] - start[0];
+        dir[1] = end[1] - start[1];
+        dir[2] = end[2] - start[2];
+        VectorNormalize(dir);
+        float v37 = tr.normal.v.m128_f32[0] * dir[0]
+                  + tr.normal.v.m128_f32[1] * dir[1]
+                  + tr.normal.v.m128_f32[2] * dir[2];
+        float v38 = 0.0f;
+        if (-v37 >= 0.125f)
+            v38 = 0.25f / -v37;
+        start[0] = tr.endpos.v.m128_f32[0] + v38 * dir[0];
+        start[1] = tr.endpos.v.m128_f32[1] + v38 * dir[1];
+        start[2] = tr.endpos.v.m128_f32[2] + v38 * dir[2];
+        Bullet_Fire_Fake_Extended(sourceEntity, attacker, start, end, damage,
+                                  recursion + 1, wp, weaponEntity, 0.0f);
+    }
+    else if (mObject != nullptr && mObject->takedamage != 0)
+    {
+        actor_s* actor = attacker->actor;
+        if (actor != nullptr && attacker->tagInfo != nullptr
+            && attacker->tagInfo->parent == mObject)
+        {
+            G_DPrintf("^3AI Shooting through vehicle\n");
+            DbLinkedHandle<EntityHandleDb, Entity> src;
+            src.mHandle.mVal = mObject->mHandle.mHandle.mVal;
+            Bullet_Fire_Fake_Extended(src, attacker,
+                                      &tr.endpos.v.m128_f32[0], end, damage,
+                                      recursion + 1, wp, weaponEntity, 0.0f);
+        }
+        else
+        {
+            sentient_s* sentient = mObject->sentient;
+            if (sentient != nullptr && actor != nullptr
+                && sentient->eTeam == attacker->sentient->eTeam)
+            {
+                G_DPrintf("^3Ignoring AI shooting teammate\n");
+                DbLinkedHandle<EntityHandleDb, Entity> src;
+                src.mHandle.mVal = mObject->mHandle.mHandle.mVal;
+                Bullet_Fire_Fake_Extended(
+                    src, attacker, &tr.endpos.v.m128_f32[0], end, damage,
+                    recursion + 1, wp, weaponEntity, 0.0f);
+            }
+        }
+    }
+}
