@@ -3357,6 +3357,7 @@ void G_UpdateVehicleTags(Entity* ent)
 
 int scr_vehicle_t::sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
 int scr_vehicle_t::sRenderEntryPoints;  // ?sRenderEntryPoints@scr_vehicle_t@@2HA
+int scr_vehicle_t::sDebugAnims;         // ?sDebugAnims@scr_vehicle_t@@2HA
 
 // ea: 0x0046F680
 bool scr_vehicle_t::CanUseVehicle(Entity* player, float* distToUsePoint,
@@ -4147,6 +4148,163 @@ static int lastGunnerCrouchMsgLocal;  // @ 0xEF59D4
 int byte_A00000 = 0xA00000;           // @ .data 0xDD6B40
 
 // ea: 0x00490ED0
+// ea: 0x0048D200
+void scr_vehicle_t::UpdateAnimRoute(Entity* ent, Entity* player)
+{
+    Client* client = player->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 9635;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    vehicle_info_t* info = s_vehicleInfos[infoIdx];
+    vehicleAnimMap_t* animMap = vehicleAnimMaps[info->type];
+    if (animMap == nullptr)
+        return;
+    int route = client->mVehicleAnimRoute;
+    int stageIdx = client->mVehicleAnimStage;
+    vehicleAnimStage_t* stage =
+        &animMap->stages[animMap->routes[route].stages[stageIdx]];
+    if ((stage->flags & 2) != 0)
+    {
+        if (client->mVehicleAnimStageChangeTime
+            < level.time - (info->vehicleAnimMatrixColumn != 0 ? 50 : 200))
+        {
+            DObjSkelMat mtx;
+            int bone = SV_DObjGetBoneIndex(
+                ent, animMap->tags[stage->startTag].hash);
+            G_DObjGetWorldBoneIndexMatrix(ent, bone, &mtx);
+            float angles1[3];
+            AxisToAngles((const float(*)[3])mtx.axis, angles1);
+            bone = SV_DObjGetBoneIndex(ent,
+                                       animMap->tags[stage->endTag].hash);
+            G_DObjGetWorldBoneIndexMatrix(ent, bone, &mtx);
+            float angles2[3];
+            AxisToAngles((const float(*)[3])mtx.axis, angles2);
+            float delta =
+                AngleNormalize180(AngleSubtract(angles2[1], angles1[1]));
+            float rate = fabsf(delta) * 1.3333334f;
+            float angleb = VEH_LerpAngle(rate);
+            client->mVehicleAnimAngleOffset[1] =
+                AngleNormalize180(angleb);
+            client = player->client;
+            if (fabsf(client->mVehicleAnimAngleOffset[1] - delta) > 2.0f)
+                return;
+        }
+    }
+    if (client->mVehicleAnimStageAnim > client->mVehicleAnimStage)
+    {
+        VEH_UpdateControllers(ent, 0);
+        if (sDebugAnims == 0
+            || controller_button_pressed(controller_inst(), 0, 7))
+        {
+            if (EntityManager::sInst->IsLocalPlayer(player)
+                && (stage->flags & 1) != 0)
+            {
+                Client* c = player->client;
+                int clipIdx = BG_ClipForWeapon(c->ps.weaponslots[4]);
+                if (c->ps.ammoclip[clipIdx] > 0)
+                {
+                    --c->ps.ammoclip[clipIdx];
+                    MultiplayerMgr::sInst->VehicleMantled(ent, player);
+                }
+                else
+                {
+                    c->mVehicleAnimGetOut = true;
+                }
+            }
+            if ((stage->flags & 0x10) != 0
+                || player->client->mVehicleAnimGetOut)
+            {
+                if (EntityManager::sInst->IsLocalPlayer(player))
+                {
+                    MultiplayerMgr::sInst->GetOutOfVehicle(
+                        ent, player->client->ps.vehPos);
+                }
+                else
+                {
+                    G_EntUnlink(player);
+                }
+                Client* c = player->client;
+                player->flags &= ~0x1000000;
+                if (c->ps.ctf_has_flag == 0)
+                    c->mVehicleNoWeaponTime = level.time + 300;
+            }
+            if (!SetAnimRouteStage(
+                    player, ent, player->client->mVehicleAnimRoute,
+                    player->client->mVehicleAnimStageAnim))
+            {
+                player->client->mVehicleAnimMoving = false;
+                if (player->IsLocalPlayer()
+                    && player->client->ps.vehPos == 2)
+                {
+                    int idx = player->GetPlayerIndex();
+                    weaponFileInfo_t* weap =
+                        BG_GetInfoForWeapon(cg_aWeaponSelect[idx]);
+                    if (weap == nullptr || weap->type == WEAPTYPE_INTERACT)
+                    {
+                        if (CG_SelectFirstWeaponInSlotWithLocalIndex(1, 1,
+                                                                     idx)
+                            == 0)
+                        {
+                            if (CG_SelectFirstWeaponNotInSlotWithLocalIndex(
+                                    1, 1, idx)
+                                == 0)
+                            {
+                                CG_SelectFirstWeaponInSlotWithLocalIndex(1, 0,
+                                                                         idx);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return;
+    }
+    if (player->client->ps.vehPos == 7 && client->mVehicleAnimStage < 2)
+    {
+        collision_context_t ctx(0x2000000);
+        int bone = boneIndex.barrel;
+        if (bone >= 0)
+        {
+            DObjSkelMat mtx;
+            G_DObjGetWorldBoneIndexMatrix(ent, bone, &mtx);
+            float dist =
+                VectorDistance(&mtx.origin[0],
+                               &player->r.currentOrigin.v.m128_f32[0]);
+            float barrelExit[3];
+            barrelExit[0] = mtx.axis[0][0] * dist + mtx.origin[0];
+            barrelExit[1] = mtx.axis[0][1] * dist + mtx.origin[1];
+            barrelExit[2] = mtx.axis[0][2] * dist + mtx.origin[2];
+            float playerCenter[3];
+            playerCenter[0] = player->r.currentOrigin.v.m128_f32[0];
+            playerCenter[1] = player->r.currentOrigin.v.m128_f32[1];
+            playerCenter[2] = player->r.currentOrigin.v.m128_f32[2] + 16.0f;
+            if (VectorDistance(barrelExit, playerCenter) < 24.0f)
+                player->client->mVehicleAnimGetOut = true;
+        }
+    }
+    client = player->client;
+    if (client->mVehicleAnimGetOut && info->type == 2
+        && client->mVehicleAnimStage <= 4)
+    {
+        if (IsLocalPlayer(player))
+        {
+            MultiplayerMgr::sInst->GetOutOfVehicle(
+                ent, player->client->ps.vehPos);
+        }
+        G_EntUnlink(player);
+        player->flags &= ~0x1000000;
+        client = player->client;
+        if (client->ps.ctf_has_flag == 0)
+            client->mVehicleNoWeaponTime = level.time + 300;
+    }
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)

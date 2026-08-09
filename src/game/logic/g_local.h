@@ -236,6 +236,7 @@ struct scr_vehicle_t {
     uint8_t wheel_polies[0x750 - 0x574];  // cdl_poly_inl_t[6] (untyped)
     static int sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
     static int sRenderEntryPoints;  // ?sRenderEntryPoints@scr_vehicle_t@@2HA
+    static int sDebugAnims;     // ?sDebugAnims@scr_vehicle_t@@2HA
 
     vehicleAnimStage_t* GetRouteStage(int routeIdx, int stage);  // ?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z
     float GetAnimSpeedScale(Client* client);  // ?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z
@@ -259,6 +260,7 @@ struct scr_vehicle_t {
                           const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
     void  DebugRender();                      // ?DebugRender@scr_vehicle_t@@QAEXXZ
+    void  UpdateAnimRoute(Entity* ent, Entity* player);  // ?UpdateAnimRoute@scr_vehicle_t@@QAEXPAVEntity@@0@Z
 };
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
 static_assert(offsetof(scr_vehicle_t, boneIndex) == 0x460, "scr_vehicle_t::boneIndex offset mismatch");
@@ -1214,7 +1216,8 @@ struct vehicle_info_t {
     uint8_t _pad1B0[0x25C - 0x1B0];
     char    mMantleHintString[32];  // +0x25C
     int     mMantleHintStringIndex; // +0x27C
-    uint8_t _pad280[0x2EC - 0x280];
+    int     vehicleAnimMatrixColumn;  // +0x280
+    uint8_t _pad284[0x2EC - 0x284];
     char    nameOverlay[32];        // +0x2EC
     int     inactiveBlowupSeconds;  // +0x30C
 };
@@ -2072,6 +2075,9 @@ void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                        Entity* hitEnt);  // cg.o
 void CG_EventSpawnTracer(const math::Position3* pstart,
                          const math::Position3* pend, int weapon);  // cg.o
+void* controller_inst();                                   // controller_xboxr
+int  controller_button_pressed(void* self, int i_controller_num,
+                               int i_button);              // controller_xboxr
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
@@ -2367,6 +2373,7 @@ int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEn
 enum {
     WEAPTYPE_BULLET = 0,
     WEAPTYPE_ITEM = 4,  // verified vs disasm Drop_Weapon
+    WEAPTYPE_INTERACT = 6,  // verified vs disasm UpdateAnimRoute
 };
 void  Scr_Vehicle_Init(Entity* pSelf, int msec); // g.o 0x480AC0
 void  VEH_GroundPlant(Entity* ent, int gravity, int msec);  // g.o
