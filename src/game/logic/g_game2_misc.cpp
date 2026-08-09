@@ -1777,6 +1777,111 @@ int RemoveDrone(Entity* e)
 }
 
 // ============================================================================
+// UpdateDroneAEMap - ea: 0x5048C0
+// ============================================================================
+extern int RemoveDrone(Entity* e, unsigned int animIndex);
+extern int InsertDroneMaster(Entity* e, unsigned int animIndex);
+extern int InsertDroneSlave(Entity* e, unsigned int animIndex);
+
+int UpdateDroneAEMap(Entity* e, unsigned int animIndex)
+{
+    unsigned int mMask = e->mFlags;
+    if (((mMask & 8) != 0 || (mMask & 4) != 0) && (e->flags & 0x2000000) != 0)
+    {
+        RemoveDrone(e, animIndex);
+        return 0;
+    }
+    if ((0x400000 & e->flags) == 0 && animIndex != 0)
+    {
+        int v6 = 0;
+        for (int i = 0; i < gDroneAEMap.m_size; ++i)
+        {
+            if (gDroneAEMap.m_elements[i]->first == animIndex)
+                ++v6;
+        }
+        if (v6 < 1)
+        {
+            InsertDroneMaster(e, animIndex);
+            return 0;
+        }
+        InsertDroneSlave(e, animIndex);
+    }
+    return 0;
+}
+
+// ============================================================================
+// stat_StatDamageEvent - ea: 0x509460
+// ============================================================================
+void stat_StatDamageEvent(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
+                          int iMod, int hitLoc)
+{
+    Entity* v5 = pAttacker;
+    if (pAttacker->scr_vehicle != nullptr)
+    {
+        unsigned int v6 = pAttacker->r.mOwner.mHandle.mVal & 0xFFF;
+        v5 = nullptr;
+        if (v6 < 0x540
+            && pAttacker->r.mOwner.mHandle.mVal >> 12
+                == EntityHandleDb::sInst.mElements[v6].mKey)
+            v5 = EntityHandleDb::sInst.mElements[v6].mObject;
+    }
+    Entity* v8 = pInflictor;
+    if (pInflictor->scr_vehicle != nullptr)
+    {
+        unsigned int v9 = pInflictor->r.mOwner.mHandle.mVal & 0xFFF;
+        v8 = nullptr;
+        if (v9 < 0x540
+            && pInflictor->r.mOwner.mHandle.mVal >> 12
+                == EntityHandleDb::sInst.mElements[v9].mKey)
+            v8 = EntityHandleDb::sInst.mElements[v9].mObject;
+    }
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if (v5 == player || v8 == player)
+    {
+        sentient_s* sentient = pSelf->sentient;
+        if (sentient != nullptr)
+        {
+            if (sentient->eTeam == TEAM_ALLIES)
+                return;
+        }
+        else
+        {
+            const char* team = pSelf->team.mBlock != nullptr
+                ? (const char*)(pSelf->team.mBlock + 1) : "";
+            if (_stricmp(team, "axis") != 0)
+                return;
+        }
+        ++gTempMissionData.missionStat[15];
+        ++gTempMissionData.missionStat[6];
+        if (pSelf->health <= 0)
+        {
+            switch (iMod)
+            {
+            case 3:
+            case 4:
+                ++gTempMissionData.missionStat[9];
+                ++gTempMissionData.missionStat[16];
+                break;
+            case 10:
+            case 27:
+                ++gTempMissionData.missionStat[11];
+                break;
+            case 11:
+                ++gTempMissionData.missionStat[7];
+                break;
+            case 32:
+                ++gTempMissionData.missionStat[12];
+                break;
+            default:
+                break;
+            }
+            if (hitLoc == HITLOC_HEAD)
+                ++gTempMissionData.missionStat[5];
+        }
+    }
+}
+
+// ============================================================================
 // SmokeGrenadeMgr::AddSmokeGrenade - ea: 0x4FFBD0
 // ============================================================================
 extern void ae_vector_push_back_smoke(DroneHandleVec* self, const SmokeGrenadeInfo* elem);
