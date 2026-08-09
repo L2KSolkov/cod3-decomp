@@ -492,14 +492,20 @@ extern int dword_DD67C8;                   // 0xDD67C8
 extern int (*syscall)(int, ...);           // 0xDF9D70 (cg.o)
 void DebugDumpEnts(int a1, Entity* ent);   // g.o 0x450150
 
-// game2.o FPS test harness
+// game2.o FPS test harness (full layout 0xAD90, verified against IDA)
 struct TestFPS {
+    unsigned char _pad[0xAC4C];       // mStats[1000] + mCells
+    bool mTesting;                    // +0xAC4C
+    unsigned char _pad2[0xAD8C - 0xAC50];
+    void* mFile;                      // +0xAD8C (_iobuf*)
     static TestFPS* sInst;  // ?sInst@TestFPS@@2PAV1@A
-    bool mTesting;          // +0x00
+    ~TestFPS();             // ?~TestFPS@TestFPS@@QAE@XZ (game2.o 0x4EBFF0)
+    void GetPath(char* path);  // ?GetPath@TestFPS@@AAEXPAD@Z (game2.o 0x4EC020)
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z
 };
+static_assert(sizeof(TestFPS) == 0xAD90, "TestFPS size mismatch");
 
 // g_main.cpp entry / console commands
 void game_dllEntry(int (*syscallptr)(int, ...));
