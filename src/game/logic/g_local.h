@@ -167,7 +167,7 @@ struct scr_vehicle_t {
     float   manualSpeed;   // +0x320
     float   manualAccel;   // +0x324
     float   manualTime;    // +0x328
-    uint8_t _pad32C[0x330 - 0x32C];
+    float   wheelRadius;   // +0x32C
     float   wheelPitch;     // +0x330
     int     hasTarget;      // +0x334
     DbLinkedHandle<EntityHandleDb, Entity> mTargetEnt;  // +0x338
@@ -2060,6 +2060,27 @@ void  SV_DObjDisplayAnim(Entity* entity);            // sv.o
 void  j_nullsub_93(void);                            // g.o
 int   HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
 extern int TAG_WHEEL_FRONT_LEFT;                     // g.o enum
+extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
+extern float r;                                      // g.o @ 0xDD8228
+extern int VEH_GetWheelOrigin(Entity* ent);          // g.o 0x45C4B0
+extern bool collide_segment_poly(const math::Position3& p0,
+                                 const math::Position3& p1,
+                                 void* poly, void* cinfo);  // game.o
+extern void collide_segment(const void* data, const math::Position3& p0,
+                            const math::Position3& p1, float* t, int* sflags,
+                            int* cflags, void* poly);  // game.o 0x60A290B0
+extern void filter_proximity_brushes(const math::Position3& lo,
+                                     const math::Position3& hi, int contents,
+                                     const proximity_data_t& in,
+                                     proximity_data_t& out);  // game.o
+extern void UpdateWheelMarks(Entity* owner, int wheel_id, bool wheel_state,
+                             const math::Position3& hitp,
+                             const math::Dir3& hitn);  // physics.o
+extern Handle PostEffectEventVehicle(const Entity* ent,
+                                     const char* vehicleType,
+                                     int action);  // core.o
+extern void j_nullsub_50(void* self);  // g.o
+extern int kActionVEHICLE_BRAKE;       // core.o enum (40)
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 void  EntityManager_DeleteAllEntities(void);         // game.o
 void  SceneManager_ResetAllStaticModels(void);       // render.o

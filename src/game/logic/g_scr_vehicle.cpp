@@ -5602,6 +5602,323 @@ int VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
     return 0;
 }
 
+// ea: 0x0047C4F0
+void VEH_GroundPlant(Entity* ent, int gravity, int msec)
+{
+    scr_vehicle_t* veh = ent->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    if (info->type != 1 && info->type != 2)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 2746;
+        AeAssert::gCurrentExpr =
+            "( info->type == VEH_WHEELS_4 ) || ( info->type == VEH_TANK )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int numWheels = 2 * (info->type != 1) + 4;
+    if (ent->takedamage == 0)
+    {
+        for (int i = 0; i < numWheels; ++i)
+        {
+            if (veh->mWheel_ParticleEffectHandle[i].mVal != 0)
+            {
+                EffectEventStopEmitting(
+                    veh->mWheel_ParticleEffectHandle[i].mVal);
+                veh->mWheel_ParticleEffectHandle[i].mVal = 0;
+            }
+        }
+        if (veh->mRumbleEffectHandle.mVal != 0)
+        {
+            EffectEventStopEmitting(veh->mRumbleEffectHandle.mVal);
+            veh->mRumbleEffectHandle.mVal = 0;
+        }
+        return;
+    }
+    float trans[3][3];
+    AnglesToAxis(&veh->phys.angles.v.m128_f32[0], trans);
+    float curMin[3] = { 3.4028235e38f, 3.4028235e38f, 3.4028235e38f };
+    float curMax[3] = { -3.4028235e38f, -3.4028235e38f, -3.4028235e38f };
+    float wheelPos[6][3];
+    for (int i = 0; i < numWheels; ++i)
+    {
+        int bone = VEH_GetWheelOrigin(ent);
+        DObjSkelMat mtx;
+        if (bone >= 0)
+            G_DObjGetWorldBoneIndexMatrix(ent, bone, &mtx);
+        float local[3] = { mtx.origin[0] - veh->phys.origin.v.m128_f32[0],
+                           mtx.origin[1] - veh->phys.origin.v.m128_f32[1],
+                           mtx.origin[2] - veh->phys.origin.v.m128_f32[2] };
+        float t[3];
+        MatrixTransformVector43(local, trans, t);
+        wheelPos[i][0] = t[0];
+        wheelPos[i][1] = t[1];
+        wheelPos[i][2] = t[2];
+        if (t[0] < curMin[0]) curMin[0] = t[0];
+        if (t[1] < curMin[1]) curMin[1] = t[1];
+        if (t[2] - 256.0f < curMin[2]) curMin[2] = t[2] - 256.0f;
+        if (t[0] > curMax[0]) curMax[0] = t[0];
+        if (t[1] > curMax[1]) curMax[1] = t[1];
+        if (t[2] + 64.0f > curMax[2]) curMax[2] = t[2] + 64.0f;
+    }
+    if (ent->proximity_data != nullptr)
+    {
+        math::Position3 lo;
+        math::Position3 hi;
+        lo.v.m128_f32[0] =
+            curMin[0] + veh->phys.origin.v.m128_f32[0] - r;
+        lo.v.m128_f32[1] =
+            curMin[1] + veh->phys.origin.v.m128_f32[1] - r;
+        lo.v.m128_f32[2] =
+            curMin[2] + veh->phys.origin.v.m128_f32[2] - r;
+        hi.v.m128_f32[0] =
+            curMax[0] + veh->phys.origin.v.m128_f32[0] + r;
+        hi.v.m128_f32[1] =
+            curMax[1] + veh->phys.origin.v.m128_f32[1] + r;
+        hi.v.m128_f32[2] =
+            curMax[2] + veh->phys.origin.v.m128_f32[2] + r;
+        query_proximity_data(lo, hi, *ent->proximity_data);
+    }
+    proximity_data_t filtered;
+    memset(&filtered, 0, sizeof(filtered));
+    int mask = (ent->active != 2) ? 593 : 0x10000 + 593;
+    for (int i = 0; i < numWheels; ++i)
+    {
+        int bone = VEH_GetWheelOrigin(ent);
+        DObjSkelMat mtx;
+        if (bone >= 0)
+            G_DObjGetWorldBoneIndexMatrix(ent, bone, &mtx);
+        float local[3] = { mtx.origin[0] - veh->phys.origin.v.m128_f32[0],
+                           mtx.origin[1] - veh->phys.origin.v.m128_f32[1],
+                           mtx.origin[2] - veh->phys.origin.v.m128_f32[2] };
+        float wheelCenter[3];
+        MatrixTransformVector43(local, trans, wheelCenter);
+        float start[3] = {
+            wheelCenter[0] + veh->phys.origin.v.m128_f32[0],
+            wheelCenter[1] + veh->phys.origin.v.m128_f32[1],
+            wheelCenter[2] + veh->phys.origin.v.m128_f32[2] + 64.0f,
+        };
+        float end[3] = {
+            wheelCenter[0] + veh->phys.origin.v.m128_f32[0],
+            wheelCenter[1] + veh->phys.origin.v.m128_f32[1],
+            wheelCenter[2] + veh->phys.origin.v.m128_f32[2] - 256.0f,
+        };
+        float t = 1.0f;
+        int sflags = 0;
+        int cflags = 0;
+        math::Position3 loP;
+        math::Position3 hiP;
+        loP.v.m128_f32[0] = start[0] < end[0] ? start[0] : end[0];
+        loP.v.m128_f32[1] = start[1] < end[1] ? start[1] : end[1];
+        loP.v.m128_f32[2] = start[2] < end[2] ? start[2] : end[2];
+        hiP.v.m128_f32[0] = start[0] > end[0] ? start[0] : end[0];
+        hiP.v.m128_f32[1] = start[1] > end[1] ? start[1] : end[1];
+        hiP.v.m128_f32[2] = start[2] > end[2] ? start[2] : end[2];
+        filter_proximity_data(loP, hiP, mask, *ent->proximity_data,
+                              filtered);
+        math::Position3 p0;
+        math::Position3 p1;
+        p0.v.m128_f32[0] = start[0];
+        p0.v.m128_f32[1] = start[1];
+        p0.v.m128_f32[2] = start[2];
+        p1.v.m128_f32[0] = end[0];
+        p1.v.m128_f32[1] = end[1];
+        p1.v.m128_f32[2] = end[2];
+        collide_segment(&filtered, p0, p1, &t, &sflags, &cflags, nullptr);
+        if (t < 1.0f)
+        {
+            start[0] += (end[0] - start[0]) * t;
+            start[1] += (end[1] - start[1]) * t;
+            start[2] += (end[2] - start[2]) * t;
+        }
+        if (t > 0.4f)
+        {
+            collision_context_t ctx;
+            ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+            ctx.pass_entity1.mHandle.mVal = 0;
+            ctx.pass_entity2.mHandle.mVal = 0;
+            ctx.pass_owner1.mHandle.mVal = 0;
+            ctx.pass_owner2.mHandle.mVal = 0;
+            ctx.contentmask = mask;
+            math::Position3 zero;
+            zero.v = _mm_setzero_ps();
+            math::Position3 s;
+            s.v.m128_f32[0] = start[0];
+            s.v.m128_f32[1] = start[1];
+            s.v.m128_f32[2] = start[2];
+            math::Position3 e;
+            e.v.m128_f32[0] = end[0];
+            e.v.m128_f32[1] = end[1];
+            e.v.m128_f32[2] = end[2];
+            trace_t tr;
+            memset(&tr, 0, sizeof(tr));
+            SV_Trace(&tr, &s, &zero, &zero, &e, &ctx, 0, 0, nullptr, 0,
+                     0.0f);
+            t = tr.fraction;
+            start[0] = tr.endpos.v.m128_f32[0];
+            start[1] = tr.endpos.v.m128_f32[1];
+            start[2] = tr.endpos.v.m128_f32[2];
+            sflags = tr.surfaceFlags;
+        }
+        float targetZ;
+        if (t >= 1.0f)
+        {
+            targetZ = end[2];
+            veh->phys.wheelZPos[i] = 0.0f;
+        }
+        else
+        {
+            targetZ = start[2];
+            veh->phys.wheelZPos[i] = (float)((sflags >> 20) & 0x1F);
+        }
+        if (gravity != 0)
+        {
+            float newZ = veh->phys.wheelZVel[i] - (msec * 0.001f) * 800.0f;
+            veh->phys.wheelZVel[i] = newZ;
+            float v = veh->phys.wheelZPos[i] + newZ * (msec * 0.001f);
+            if (targetZ > v)
+            {
+                v = targetZ;
+                veh->phys.wheelZVel[i] = 0.0f;
+            }
+            veh->phys.wheelZPos[i] = v;
+        }
+        else
+        {
+            veh->phys.wheelZPos[i] = targetZ;
+            veh->phys.wheelZVel[i] = 0.0f;
+        }
+        wheelPos[i][0] = start[0];
+        wheelPos[i][1] = start[1];
+        wheelPos[i][2] = veh->phys.wheelZPos[i];
+        if (i < 4)
+        {
+            math::Position3 hp;
+            hp.v.m128_f32[0] = start[0];
+            hp.v.m128_f32[1] = start[1];
+            hp.v.m128_f32[2] = start[2];
+            math::Dir3 hn;
+            hn.v.m128_f32[0] = 0.0f;
+            hn.v.m128_f32[1] = 0.0f;
+            hn.v.m128_f32[2] = 1.0f;
+            UpdateWheelMarks(ent, i, veh->phys.wheelZVel[i] != 0.0f, hp,
+                             hn);
+        }
+        float dz = (veh->phys.origin.v.m128_f32[2] - veh->phys.wheelZPos[i])
+                 - veh->wheelRadius;
+        if (dz > 15.0f)
+            dz = 15.0f;
+        else if (dz < -15.0f)
+            dz = -15.0f;
+        float steer = -dz;
+        float angles[3] = { -veh->wheelPitch, 0.0f, 0.0f };
+        if (i == TAG_WHEEL_FRONT_LEFT || i == TAG_WHEEL_FRONT_RIGHT)
+            angles[1] = veh->current.mSteeringAngle;
+        if (bone >= 0)
+            G_DObjSetLocalTagInternal_0(&steer, angles, bone, ent, 0);
+        VEH_UpdateWheelParticleEffects(ent, i);
+    }
+    float forward[3] = {
+        (wheelPos[0][0] + wheelPos[1][0]) * 0.5f
+            - (wheelPos[3][0] + wheelPos[2][0]) * 0.5f,
+        (wheelPos[0][1] + wheelPos[1][1]) * 0.5f
+            - (wheelPos[3][1] + wheelPos[2][1]) * 0.5f,
+        (wheelPos[0][2] + wheelPos[1][2]) * 0.5f
+            - (wheelPos[3][2] + wheelPos[2][2]) * 0.5f,
+    };
+    VectorNormalize(forward);
+    float right[3] = {
+        (wheelPos[3][0] + wheelPos[0][0]) * 0.5f
+            - (wheelPos[2][0] + wheelPos[1][0]) * 0.5f,
+        (wheelPos[3][1] + wheelPos[0][1]) * 0.5f
+            - (wheelPos[2][1] + wheelPos[1][1]) * 0.5f,
+        (wheelPos[3][2] + wheelPos[0][2]) * 0.5f
+            - (wheelPos[2][2] + wheelPos[1][2]) * 0.5f,
+    };
+    VectorNormalize(right);
+    float up[3];
+    CrossProduct(forward, right, up);
+    float planeD = up[0] * wheelPos[0][0] + up[1] * wheelPos[0][1]
+                 + up[2] * wheelPos[0][2];
+    for (int i = 1; i < numWheels; ++i)
+    {
+        float d = up[0] * wheelPos[i][0] + up[1] * wheelPos[i][1]
+                + up[2] * wheelPos[i][2];
+        if (d - planeD > info->suspensionTravel)
+            planeD = d - info->suspensionTravel;
+    }
+    float rollAxis[3];
+    CrossProduct(up, trans[2], rollAxis);
+    VectorNormalize(rollAxis);
+    float pitchAxis[3];
+    CrossProduct(rollAxis, up, pitchAxis);
+    VectorNormalize(pitchAxis);
+    float ang[3];
+    AxisToAngles((const float(*)[3])pitchAxis, ang);
+    float dT = msec * 0.001f;
+    float pitch = ang[0];
+    float prevPitch = veh->phys.prevAngles.v.m128_f32[0];
+    while (pitch - prevPitch > 180.0f) pitch -= 360.0f;
+    while (pitch - prevPitch < -180.0f) pitch += 360.0f;
+    float pStep = (pitch - prevPitch) * dT * 6.0f;
+    veh->phys.angles.v.m128_f32[0] = AngleNormalize180(
+        (fabsf(pitch - prevPitch) <= 0.005f
+         || fabsf(pStep) > fabsf(pitch - prevPitch))
+            ? pitch
+            : prevPitch + pStep);
+    float roll = ang[2];
+    float prevRoll = veh->phys.prevAngles.v.m128_f32[2];
+    while (roll - prevRoll > 180.0f) roll -= 360.0f;
+    while (roll - prevRoll < -180.0f) roll += 360.0f;
+    float rStep = (roll - prevRoll) * dT * 6.0f;
+    veh->phys.angles.v.m128_f32[2] = AngleNormalize180(
+        (fabsf(roll - prevRoll) <= 0.005f
+         || fabsf(rStep) > fabsf(roll - prevRoll))
+            ? roll
+            : prevRoll + rStep);
+    if (veh->phys.angles.v.m128_f32[0] < -60.0f)
+        veh->phys.angles.v.m128_f32[0] = -60.0f;
+    else if (veh->phys.angles.v.m128_f32[0] > 60.0f)
+        veh->phys.angles.v.m128_f32[0] = 60.0f;
+    if (veh->phys.angles.v.m128_f32[2] < -60.0f)
+        veh->phys.angles.v.m128_f32[2] = -60.0f;
+    else if (veh->phys.angles.v.m128_f32[2] > 60.0f)
+        veh->phys.angles.v.m128_f32[2] = 60.0f;
+    if (ent->active != 2)
+    {
+        veh->phys.origin.v.m128_f32[2] =
+            (planeD - (up[0] * veh->phys.origin.v.m128_f32[0]
+                       + up[1] * veh->phys.origin.v.m128_f32[1]))
+            / up[2];
+    }
+    AnglesSubtract((const math::Position3*)&veh->phys.angles,
+                   (const math::Position3*)&veh->phys.prevAngles,
+                   (math::Position3*)&veh->phys.rotVel);
+    float invD = 1.0f / dT;
+    veh->phys.rotVel.v.m128_f32[0] *= invD;
+    veh->phys.rotVel.v.m128_f32[1] *= invD;
+    veh->phys.rotVel.v.m128_f32[2] *= invD;
+    if (veh->engineSndLerp > 0.1f)
+    {
+        if (veh->mRumbleEffectHandle.mVal == 0)
+        {
+            Entity* owner = HandleDbToEnt(ent->r.mOwner);
+            if (owner == nullptr
+                || owner != EntityManager::sInst->GetPlayer(currCl))
+            {
+                veh->mRumbleEffectHandle = PostEffectEventVehicle(
+                    ent, info->name, 40 /* kActionVEHICLE_BRAKE */);
+            }
+        }
+    }
+    else if (veh->mRumbleEffectHandle.mVal != 0)
+    {
+        EffectEventStopEmitting(veh->mRumbleEffectHandle.mVal);
+        veh->mRumbleEffectHandle.mVal = 0;
+    }
+}
+
 void Scr_Vehicle_Think(Entity* pSelf, int msec)
 {
     if (pSelf->scr_vehicle == nullptr)
