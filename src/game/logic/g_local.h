@@ -559,7 +559,9 @@ struct hash_const_t {
     HashString func_door_rotating; // +0x9C
     HashString func_rotating;      // +0xA0
     HashString func_tramcar;       // +0xA4
-    uint8_t    _padA8[0xBC - 0xA8];
+    uint8_t    _padA8[0xB0 - 0xA8];
+    HashString trigger_mount;      // +0xB0 (44)
+    uint8_t    _padB4[0xBC - 0xB4];
     HashString info_player_deathmatch;  // +0xBC (47)
     uint8_t    _padC0[0xC4 - 0xC0];
     HashString player_off_vehicle;      // +0xC4 (49)
@@ -1791,6 +1793,21 @@ void  Activate_trigger_damage(Entity* pEnt, Entity* pOther, int iDamage, int iMO
 int   update_trigger_notifies(void);               // g.o 0x471100
 void  SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // g.o
 void  SetClientOrigin(Entity* ent, const float* origin);  // g.o 0x449A30
+void  G_EntUnlink(Entity* ent);                  // g.o 0x460190
+void  G_VehSetSwitchNode(vehicle_pathpos_t* vpp, int16_t srcNodeIdx, uint16_t dstNodeIdx);  // g.o 0x452A10
+void  VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst);  // g.o
+void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+                                  const math::Position3* vEnd, int iDamage,
+                                  int iMOD);      // g.o 0x470D70
+int   G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* crouch);  // g.o 0x470F40
+void  Client_Touch(Entity* pSelf, Entity* pOther);  // g.o 0x4671F0
+void  G_DebugCircle2Ex(const float* center, float radius, const float* dir,
+                       const float* color, int depthTest, int duration);  // g.o 0x4572F0
+int   CM_PointContents(const math::Position3* p, void* model);  // sv.o
+int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
+                      int* entityList, int maxcount, int contentmask);  // sv.o (redecl)
+int   Client_GetPushed(Entity* pSelf, Entity* pOther);  // g.o
+void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o (redecl)
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o

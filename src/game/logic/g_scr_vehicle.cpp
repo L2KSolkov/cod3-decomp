@@ -1041,6 +1041,117 @@ void G_VehSetUpPathPos(vehicle_pathpos_t* vpp, int16_t nodeIdx)
     }
 }
 
+// ea: 0x00452A10
+void G_VehSetSwitchNode(vehicle_pathpos_t* vpp, int16_t srcNodeIdx, uint16_t dstNodeIdx)
+{
+    for (int i = 0; i < 2; ++i)
+    {
+        vehicle_path_node_t* node = &vpp->switchNode[i];
+        node->mName.clear();
+        node->mTarget.clear();
+        node->speed = -1.0f;
+        node->lookAhead = -1.0f;
+        node->origin[0] = 0.0f;
+        node->origin[1] = 0.0f;
+        node->dir[0] = 0.0f;
+        node->dir[1] = 0.0f;
+        node->angles[0] = s_invalidAngles[0];
+        node->angles[1] = dword_DD7418;
+        node->angles[2] = dword_DD741C;
+        node->length = 0.0f;
+        node->nextIdx = 0xFFFFFFF;
+    }
+    if (srcNodeIdx >= 0 && (dstNodeIdx & 0x8000u) == 0)
+    {
+        vehicle_node_t* v6 = s_nodes[srcNodeIdx];
+        vehicle_node_t* dstNode = s_nodes[dstNodeIdx];
+        VP_CopyNode(v6, &vpp->switchNode[0]);
+        VP_CopyNode(v6, &vpp->switchNode[1]);
+        vpp->switchNode[0].nextIdx ^= (dstNodeIdx ^ vpp->switchNode[0].nextIdx) & 0x3FFF;
+        vpp->switchNode[0].dir[0] = dstNode->origin[0] - v6->origin[0];
+        vpp->switchNode[0].dir[1] = dstNode->origin[1] - v6->origin[1];
+        vpp->switchNode[0].dir[2] = dstNode->origin[2] - v6->origin[2];
+        vpp->switchNode[0].length = VectorNormalize(vpp->switchNode[0].dir);
+    }
+}
+
+// ea: 0x0045F1A0 (VP_CopyNode)
+void VP_CopyNode(vehicle_node_t* src, vehicle_path_node_t* dst)
+{
+    dst->mName = src->mName;
+    dst->mTarget = src->mTarget;
+    dst->speed = src->speed;
+    dst->lookAhead = src->lookAhead;
+    dst->script_noteworthy = src->script_noteworthy;
+    memcpy(dst->origin, src->origin, sizeof(dst->origin));
+    memcpy(dst->dir, src->dir, sizeof(dst->dir));
+    memcpy(dst->angles, src->angles, sizeof(dst->angles));
+    dst->length = src->length;
+    dst->nextIdx = src->nextIdx;
+}
+
+// ea: 0x00488280
+int G_SpawnVehicle(Entity* ent, const char* typeName)
+{
+    scr_vehicle_t* v3;
+    if (ent->scr_vehicle != nullptr)
+    {
+        v3 = ent->scr_vehicle;
+    }
+    else
+    {
+        v3 = nullptr;
+        int16_t v4 = 0;
+        if (level.MaxVehicles != 0)
+        {
+            do
+            {
+                int v5 = v4;
+                unsigned int mVal = s_vehicles[v5].mEntity.mHandle.mVal;
+                v3 = &s_vehicles[v5];
+                if (mVal & 0xFFF >= 0x540
+                    || mVal >> 12 != EntityHandleDb::sInst.mElements[mVal & 0xFFF].mKey
+                    || EntityHandleDb::sInst.mElements[mVal & 0xFFF].mObject == nullptr)
+                {
+                    break;
+                }
+                ++v4;
+            } while (v4 < level.MaxVehicles);
+        }
+        if (v4 == level.MaxVehicles)
+            Com_Error(ERR_DROP, "Too many vehicles");
+    }
+    int16_t v8 = v3->infoIdx;
+    memset(v3, 0, sizeof(scr_vehicle_t));
+    v3->mTargetEnt.mHandle.mVal = 0;
+    v3->mIdleSndEnt.mHandle.mVal = 0;
+    v3->mEngineSndEnt.mHandle.mVal = 0;
+    int16_t infoIdxa = v8;
+    v3->playEngineSound = 1;
+    if (typeName != nullptr && (infoIdxa = (int16_t)VEH_GetVehicleInfo(typeName)) < 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6803;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Can't find info for script vehicle [%s]\n", typeName))
+            __debugbreak();
+        return 0;
+    }
+    VEH_InitEntity(ent, v3, infoIdxa);
+    VEH_InitVehicle(v3);
+    ent->s.brushmodel = 0;
+    SV_SetBrushModel(ent);
+    ent->r.contents = 0xA00000;
+    if (ent->scr_vehicle != nullptr
+        && s_vehicleInfos[ent->scr_vehicle->infoIdx]->type == 3)
+    {
+        ent->SetAlwaysRender(true);
+    }
+    return 1;
+}
+
 // ea: 0x0044D370
 int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType)
 {

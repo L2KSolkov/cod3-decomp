@@ -378,7 +378,9 @@ struct actor_s {
     uint8_t        _pad830[0x83C - 0x830];
     actor_s*       pPileUpActor;                 // +0x83C
     Entity*        pPileUpEnt;                   // +0x840
-    uint8_t        _pad844[0x8AC - 0x844];
+    uint8_t        _pad844[0x84C - 0x844];
+    int32_t        bDontAvoidPlayer;             // +0x84C
+    uint8_t        _pad850[0x8AC - 0x850];
     float          fFovDot;                      // +0x8AC
     float          fMaxSightDistSqrd;            // +0x8B0
     uint8_t        _pad8B4[0x8CC - 0x8B4];
@@ -390,7 +392,8 @@ struct actor_s {
     uint8_t        _padA9C[0xAA4 - 0xA9C];
     int16_t        iUseHintString;               // +0xAA4
     int16_t        mActorIndex;                  // +0xAA6
-    uint8_t        _padAA8[0xAB8 - 0xAA8];
+    uint8_t        _padAA8[0xAB4 - 0xAA8];
+    DbLinkedHandle<EntityHandleDb, Entity> closeEnt;  // +0xAB4
     int32_t        moveHistoryIndex;             // +0xAB8
     // Remaining members (to +0xB30)
     uint8_t        _pad_remaining[0xB30 - 0xABC];
@@ -406,4 +409,5 @@ static_assert(offsetof(actor_s, pPileUpActor) == 0x83C, "actor_s::pPileUpActor o
 static_assert(offsetof(actor_s, pPileUpEnt) == 0x840, "actor_s::pPileUpEnt offset mismatch");
 static_assert(offsetof(actor_s, iSpawnTime) == 0xA84, "actor_s::iSpawnTime offset mismatch");
 static_assert(offsetof(actor_s, mg42stayput) == 0xA98, "actor_s::mg42stayput offset mismatch");
+static_assert(offsetof(actor_s, closeEnt) == 0xAB4, "actor_s::closeEnt offset mismatch");
 static_assert(offsetof(actor_s, iUseHintString) == 0xAA4, "actor_s::iUseHintString offset mismatch");

@@ -2505,3 +2505,201 @@ int update_trigger_notifies(void)
     }
     return result;
 }
+
+// ea: 0x00470BD0
+void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+                             const math::Position3* vEnd, int iDamage, int iMOD)
+{
+    math::Position3 mins;
+    math::Position3 maxs;
+    mins.v = _mm_min_ps(vStart->v, vEnd->v);
+    maxs.v = _mm_max_ps(vStart->v, vEnd->v);
+    int entityList[256];
+    int iNum = CM_AreaEntities(&mins, &maxs, entityList, 256, 0x400000);
+    for (int v7 = 0; v7 < iNum; ++v7)
+    {
+        Entity* mObject = HandleDbToEnt(
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v7]);
+        if (mObject != nullptr
+            && mObject->takedamage != 0
+            && mObject->mClassNameHash.mHash == hash_const.trigger_damage.mHash)
+        {
+            math::Position3 zeroMins, zeroMaxs;
+            zeroMins.v = _mm_setzero_ps();
+            zeroMaxs.v = _mm_setzero_ps();
+            collision_context_t context;
+            if (SV_SightTraceToEntity(vStart, &zeroMins, &zeroMaxs, vEnd,
+                                      mObject->mHandle, &context, 1) != 0)
+            {
+                int h = pActivator->mHandle.mHandle.mVal;
+                mObject->Notify(hash_const.damage, iDamage, (Broc::entity*)&h,
+                                &iMOD, nullptr, nullptr);
+                Activate_trigger_damage(mObject, pActivator, iDamage, iMOD);
+                if (mObject->count == 0)
+                    mObject->health = 32000;
+            }
+        }
+    }
+}
+
+// ea: 0x00470D70
+void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vStart,
+                                 const math::Position3* vEnd, int iDamage, int iMOD)
+{
+    math::Position3 mins, maxs;
+    mins.v = _mm_min_ps(vStart->v, vEnd->v);
+    maxs.v = _mm_max_ps(vStart->v, vEnd->v);
+    int entityList[1344];
+    int iNum = CM_AreaEntities(&mins, &maxs, entityList, 1344, 0x400000);
+    for (int v7 = 0; v7 < iNum; ++v7)
+    {
+        Entity* mObject = HandleDbToEnt(
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v7]);
+        if (mObject != nullptr
+            && mObject->takedamage != 0
+            && mObject->mClassNameHash.mHash == hash_const.trigger_damage.mHash
+            && (mObject->flags & 0x40000) != 0)
+        {
+            math::Position3 zeroMins, zeroMaxs;
+            zeroMins.v = _mm_setzero_ps();
+            zeroMaxs.v = _mm_setzero_ps();
+            collision_context_t context;
+            if (SV_SightTraceToEntity(vStart, &zeroMins, &zeroMaxs, vEnd,
+                                      mObject->mHandle, &context, 1) != 0)
+            {
+                int h = pActivator->mHandle.mHandle.mVal;
+                mObject->Notify(hash_const.damage, iDamage, (Broc::entity*)&h,
+                                &iMOD, nullptr, nullptr);
+                Activate_trigger_damage(mObject, pActivator, iDamage, iMOD);
+                if (mObject->count == 0)
+                    mObject->health = 32000;
+            }
+        }
+    }
+}
+
+// ea: 0x004670F40
+int G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* crouch)
+{
+    math::Position3 p;
+    p.v.m128_f32[0] = vStart[0];
+    p.v.m128_f32[1] = vStart[1];
+    p.v.m128_f32[2] = vStart[2];
+    int contents = CM_PointContents(&p, nullptr);
+    if ((0x400000 & contents) != 0)
+    {
+        if (crouch != nullptr)
+            *crouch = 1;
+        return 1;
+    }
+    if ((0x1000000 & contents) != 0)
+        return 1;
+    int entityList[256];
+    float v12[3] = { vStart[0] - 0.1f, vStart[1] - 0.1f, vStart[2] - 0.1f };
+    math::Position3 vMins;
+    vMins.v.m128_f32[0] = vStart[0] + 0.1f;
+    vMins.v.m128_f32[1] = vStart[1] + 0.1f;
+    vMins.v.m128_f32[2] = vStart[2] + 0.1f;
+    int v5 = CM_AreaEntities((const math::Position3*)v12, &vMins, entityList, 256,
+                             1094713352);
+    for (int v6 = 0; v6 < v5; ++v6)
+    {
+        Entity* mObject = HandleDbToEnt(
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v6]);
+        if (mObject == nullptr)
+            continue;
+        if (mObject->actor == nullptr)
+        {
+            if (mObject->mClassNameHash.mHash == hash_const.trigger_mount.mHash)
+            {
+                if (crouch != nullptr)
+                    *crouch = mObject->spawnflags & 1;
+                return 1;
+            }
+            if ((0x1000000 & mObject->r.contents) != 0)
+                return 1;
+            if ((0x400000 & mObject->r.contents) != 0)
+            {
+                if (crouch != nullptr)
+                    *crouch = 1;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+// ea: 0x004671F0
+void Client_Touch(Entity* pSelf, Entity* pOther)
+{
+    if (pSelf->sentient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 755;
+        AeAssert::gCurrentExpr = "pSelf->sentient";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 756;
+        AeAssert::gCurrentExpr = "pSelf->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (Client_GetPushed(pSelf, pOther) == 0)
+        pSelf->client->inControlTime = level.time;
+    pSelf->client->lastTouchTime = level.time;
+    actor_s* actor = pOther->actor;
+    if (actor != nullptr)
+    {
+        if (HandleDbToEnt(actor->closeEnt) == nullptr
+            && actor->bDontAvoidPlayer == 0
+            && (*(int*)((char*)&actor->physics_data + 0x80) & 0x2000000) != 0)
+        {
+            if (pOther->sentient == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+                AeAssert::gCurrentLine = 766;
+                AeAssert::gCurrentExpr = "pOther->sentient";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (((1 << pOther->sentient->eTeam)
+                 & ~(1 << Sentient_EnemyTeam(pSelf->sentient->eTeam))) != 0)
+            {
+                actor->closeEnt.mHandle.mVal = pSelf->mHandle.mHandle.mVal;
+            }
+        }
+    }
+}
+
+// ea: 0x004572F0
+void G_DebugCircle2Ex(const float* center, float radius, const float* dir,
+                      const float* color, int depthTest, int duration)
+{
+    float normal[3];
+    VectorNormalize2(dir, normal);
+    float up[3];
+    PerpendicularVector(up, normal);
+    float right[3];
+    CrossProduct(normal, up, right);
+    float pts[16][3];
+    for (int v7 = 0; v7 < 16; ++v7)
+    {
+        float radians = v7 * 0.39269909f;
+        float s = sinf(radians);
+        float c = cosf(radians);
+        pts[v7][0] = ((up[0] * (c * radius)) + (right[0] * (s * radius))) + center[0];
+        pts[v7][1] = ((up[1] * (c * radius)) + (right[1] * (s * radius))) + center[1];
+        pts[v7][2] = ((up[2] * (c * radius)) + (right[2] * (s * radius))) + center[2];
+    }
+    for (int i = 0; i < 16; ++i)
+        CL_AddDebugLine(pts[i], pts[(i + 1) & 0xF], color, depthTest, duration, 1, 0);
+    for (int i = 0; i < 16; ++i)
+        CL_AddDebugLine((float*)center, pts[(i + 1) & 0xF], color, depthTest, duration, 1, 0);
+}

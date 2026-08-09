@@ -9,6 +9,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "core/PoolAllocator.h"
+
 // zlib entry points (zlib_xboxr; modern zlib will provide these)
 extern "C" int compress2(void* dest, int* destLen, void* src, int sourceLen, int level);
 extern "C" int uncompress(void* dest, int* destLen, void* src, int sourceLen);
@@ -232,6 +234,66 @@ void EntityHandleDb::Validate()
                 __debugbreak();
         }
     }
+}
+
+// ea: 0x00460190
+void G_EntUnlink(Entity* ent)
+{
+    tagInfo_t* tagInfo = ent->tagInfo;
+    if (tagInfo == nullptr)
+        return;
+    G_SetOrigin(ent, &ent->r.currentOrigin);
+    G_SetAngle(ent, &ent->r.currentAngles);
+    Entity* parent = tagInfo->parent;
+    if (parent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 1040;
+        AeAssert::gCurrentExpr = "parent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    Entity* next = parent->tagChildren;
+    Entity* v4 = nullptr;
+    if (next != ent)
+    {
+        do
+        {
+            if (next->tagInfo == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+                AeAssert::gCurrentLine = 1046;
+                AeAssert::gCurrentExpr = "next->tagInfo";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            v4 = next;
+            next = next->tagInfo->next;
+            if (next == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+                AeAssert::gCurrentLine = 1049;
+                AeAssert::gCurrentExpr = "next";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+        } while (next != ent);
+    }
+    if (v4 == nullptr)
+        parent->tagChildren = tagInfo->next;
+    else
+        v4->tagInfo->next = tagInfo->next;
+    if (ent->client != nullptr)
+    {
+        scr_vehicle_t* veh = parent->scr_vehicle;
+        if (veh != nullptr)
+            --veh->playersAttached;
+    }
+    ent->tagInfo = nullptr;
+    tagInfo_t::sAllocator->Release(tagInfo);
 }
 
 // ea: 0x0044A240
