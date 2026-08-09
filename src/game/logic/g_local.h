@@ -1919,6 +1919,9 @@ void  Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
                   Entity* weaponEnt, float coneAngleTangent);  // g.o 0x48D980
 void  Weapon_ItemHealth_Fire(Entity* ent, int grenType, weaponParms* wp);  // g.o 0x45F630
 void  Weapon_ItemAmmo_Fire(Entity* ent, int grenType, weaponParms* wp);    // g.o 0x45FB40
+void  G_BulletFireSpread(const Entity* source, Entity* attacker, weaponParms* wp,
+                         int damage, float spread, Entity* weaponEnt,
+                         float coneAngleTangent, unsigned int seed);  // g.o 0x48D730
 void  Weapon_Melee(Entity* ent, weaponParms* wp);  // g.o 0x4891C0
 void  FireWeaponMelee(Entity* ent);                // g.o 0x48AA50
 void  FireWeapon(Entity* ent);                     // g.o 0x48DAE0

@@ -999,3 +999,68 @@ launcher:
         }
     }
 }
+
+// ea: 0x0048D730
+void G_BulletFireSpread(const Entity* source, Entity* attacker, weaponParms* wp,
+                        int damage, float spread, Entity* weaponEnt,
+                        float coneAngleTangent, unsigned int seed)
+{
+    if (source == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 628;
+        AeAssert::gCurrentExpr = "source";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("G_BulletFireSpread: No source entity"))
+            __debugbreak();
+    }
+    if (attacker == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 629;
+        AeAssert::gCurrentExpr = "attacker";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("G_BulletFireSpread: No attacker entity"))
+            __debugbreak();
+    }
+    if (wp == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 630;
+        AeAssert::gCurrentExpr = "wp";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("G_BulletFireSpread: No weapon params"))
+            __debugbreak();
+    }
+    if (wp->pWeapInfo == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 631;
+        AeAssert::gCurrentExpr = "wp->pWeapInfo";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("G_BulletFireSpread: No no weapon info"))
+            __debugbreak();
+    }
+    float start[3] = { wp->muzzleTrace[0], wp->muzzleTrace[1],
+                       wp->muzzleTrace[2] };
+    bdRandomState rng;
+    bdRandom_setSeed(&rng, seed);
+    for (int i = 0; i < wp->pWeapInfo->iShotCount; ++i)
+    {
+        float randomA = (float)bdRandom_nextUInt(&rng) * 4.6566129e-10f;
+        float randomB = (float)bdRandom_nextUInt(&rng) * 4.6566129e-10f;
+        float end[3];
+        Bullet_Endpos(spread, end, wp, randomA, randomB);
+        unsigned int mVal = weaponEnt != nullptr
+                                ? weaponEnt->mHandle.mHandle.mVal
+                                : EntityManager::sInst->mWorld->mHandle.mHandle.mVal;
+        Bullet_Fire_Extended(*(DbLinkedHandle<EntityHandleDb, Entity>*)&mVal,
+                             attacker, start, end, damage, 0, wp,
+                             *(DbLinkedHandle<EntityHandleDb, Entity>*)&mVal,
+                             coneAngleTangent);
+    }
+}
