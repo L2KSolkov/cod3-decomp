@@ -210,6 +210,7 @@ public:
         AnimNoteHandler* mNoteHandler;  // +0x04
 
         nalPlayMethod();       // ea: 0x4FA500
+        ~nalPlayMethod();      // ea: 0x50BB30
         void SetNoteHandlerEntityHandle(
             DbLinkedHandle<EntityHandleDb, Entity> handle);  // ea: 0x4F5D10
         void Release();  // nalPlayMethod::Release (thunk)
@@ -455,6 +456,82 @@ void TaskSys_ReleaseTask(Task* t)
     if (t->mTaskHandle.mVal != 0)
         HandleDb_ReleaseTaskHandle(&TaskSysImpl2_sInst->mHandleDb,
                                    t->mTaskHandle);
+}
+
+// ============================================================================
+// TaskSys::Update - ea: 0x50B8E0
+// ============================================================================
+extern TaskHandlerImpl* HealthRegenTask_sHandler;
+extern TaskHandlerImpl* AnimNotifyTask_sHandler;
+extern TaskHandlerImpl* EntityDeathTask_sHandler;
+extern void TaskHandler_Update(TaskHandlerImpl* self, float deltaT,
+                               void* ftor);
+
+void TaskSys_Update(float deltaT)
+{
+    TaskHandler_Update(HealthRegenTask_sHandler, deltaT, nullptr);
+    TaskHandler_Update(AnimNotifyTask_sHandler, deltaT, nullptr);
+    TaskHandler_Update(EntityDeathTask_sHandler, deltaT, nullptr);
+}
+
+// ============================================================================
+// TaskSys::DeactivateTask - ea: 0x50B9C0
+// ============================================================================
+extern Task* HandleDb_GetTask(void* self, Handle h);  // GetObject on Task HandleDb
+
+void TaskSys_DeactivateTask(Handle taskHandle)
+{
+    Task* t = HandleDb_GetTask(&TaskSysImpl2_sInst->mHandleDb, taskHandle);
+    if (t != nullptr)
+        t->mFlags |= 4u;
+}
+
+// ============================================================================
+// TaskSys::PostTaskAndAllocateHandle - ea: 0x50D810
+// ============================================================================
+extern void TaskSys_PostTask_glue(Task* t);
+extern Handle TaskSys_CreateTaskHandle(Task* t);
+
+Handle TaskSys_PostTaskAndAllocateHandle(Task* t)
+{
+    TaskSys_PostTask_glue(t);
+    return TaskSys_CreateTaskHandle(t);
+}
+
+// ============================================================================
+// TaskSys::GetTaskForEntity - ea: 0x50BA90
+// ============================================================================
+extern Task* TaskHandler_GetTaskForEntity(TaskHandlerImpl* self,
+    DbLinkedHandle<EntityHandleDb, Entity> h);
+extern TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id);
+
+Task* TaskSys_GetTaskForEntity(unsigned int taskId,
+    DbLinkedHandle<EntityHandleDb, Entity> eh)
+{
+    TaskHandlerImpl* v3 = TaskSys_LookupHandler(taskId);
+    if (v3 != nullptr)
+        return TaskHandler_GetTaskForEntity(v3, eh);
+    return nullptr;
+}
+
+// ============================================================================
+// AnimationPlayer::nalPlayMethod dtor - ea: 0x50BB30
+// ============================================================================
+extern void* mem_heap_free_sz(void* ptr);
+
+AnimationPlayer::nalPlayMethod::~nalPlayMethod()
+{
+    __vftable = (void**)&nalPlayMethod_vftable;
+    AnimNoteHandler* mNoteHandler = this->mNoteHandler;
+    if (mNoteHandler != nullptr)
+    {
+        // NotifyInfo block: [count][NotifyInfo...] freed as one heap block
+        mem_heap_free_sz(mNoteHandler->mNotify != nullptr
+                             ? (char*)mNoteHandler->mNotify - 4
+                             : nullptr);
+        mNoteHandler->mNotify = nullptr;
+        mem_heap_free_sz(mNoteHandler);
+    }
 }
 
 // ============================================================================
