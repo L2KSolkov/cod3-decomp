@@ -390,6 +390,7 @@ struct TaskHandlerImpl {
     DList mQuickDeactivationList;  // +0x20
 
     TaskHandlerImpl(unsigned int task_id, unsigned int flags);
+    ~TaskHandlerImpl();
     void QuickDeactivation(DbLinkedHandle<EntityHandleDb, Entity> h);
     void DeactivateAll();
     Task* GetTaskForEntity(DbLinkedHandle<EntityHandleDb, Entity> h);
@@ -428,6 +429,30 @@ TaskHandlerImpl::TaskHandlerImpl(unsigned int task_id, unsigned int flags)
     mQuickDeactivationList.m_size = 0;
     TaskHandlerImpl* self = this;
     ae_sized_array_push_back_handler(TaskSysImpl2_sInst, &self);
+}
+
+// ea: 0x50BAC0
+TaskHandlerImpl::~TaskHandlerImpl()
+{
+    // Delete owned quick-deactivation records (each is a heap block).
+    DListNode* q = mQuickDeactivationList.m_head;
+    while (q != nullptr && q != &mQuickDeactivationList.m_end)
+    {
+        DListNode* next = q->m_next;
+        QuickTaskDeactivation* rec = (QuickTaskDeactivation*)q;
+        mem_heap_free(rec);
+        q = next;
+    }
+    // Delete owned task objects (dlist node is embedded in Task).
+    DListNode* t = mTaskList.m_head;
+    while (t != nullptr && t != &mTaskList.m_end)
+    {
+        DListNode* next = t->m_next;
+        Task* task = (Task*)((char*)t - 0x4);
+        task->~Task();
+        mem_heap_free(task);
+        t = next;
+    }
 }
 
 // ea: 0x4FFB80
@@ -602,7 +627,7 @@ void TaskSys_ShutDown()
 // ============================================================================
 // AnimationPlayer::nalPlayMethod dtor - ea: 0x50BB30
 // ============================================================================
-extern void* mem_heap_free_sz(void* ptr);
+extern void mem_heap_free(void* ptr);
 
 AnimationPlayer::nalPlayMethod::~nalPlayMethod()
 {
@@ -611,11 +636,11 @@ AnimationPlayer::nalPlayMethod::~nalPlayMethod()
     if (mNoteHandler != nullptr)
     {
         // NotifyInfo block: [count][NotifyInfo...] freed as one heap block
-        mem_heap_free_sz(mNoteHandler->mNotify != nullptr
-                             ? (char*)mNoteHandler->mNotify - 4
-                             : nullptr);
+        mem_heap_free(mNoteHandler->mNotify != nullptr
+                          ? (char*)mNoteHandler->mNotify - 4
+                          : nullptr);
         mNoteHandler->mNotify = nullptr;
-        mem_heap_free_sz(mNoteHandler);
+        mem_heap_free(mNoteHandler);
     }
 }
 
