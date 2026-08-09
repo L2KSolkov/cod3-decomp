@@ -1818,6 +1818,8 @@ void  Scr_Vehicle_Controller(Entity* pSelf);      // g.o 0x480970
 void  HealthRegen(Entity* e, float deltaT);       // g.o 0x455380
 void  Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
                   Entity* weaponEnt, float coneAngleTangent);  // g.o 0x48D980
+void  Weapon_Melee(Entity* ent, weaponParms* wp);  // g.o 0x4891C0
+void  FireWeaponMelee(Entity* ent);                // g.o 0x48AA50
 void  UpdateAnims(int msec);                      // g.o
 void  AdvanceSceneAnims(float delta);             // g.o
 void  UpdatePlayer(void);                         // g.o

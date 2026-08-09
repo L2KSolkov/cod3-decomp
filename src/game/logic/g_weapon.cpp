@@ -403,3 +403,22 @@ float Bullet_Endpos(float spread, float* end, const weaponParms* wp,
     }
     return fAimOffset;
 }
+
+// ea: 0x0048AA50
+void FireWeaponMelee(Entity* ent)
+{
+    if ((0x106000 & ent->client->ps.eFlags) == 0 || ent->active == 0)
+    {
+        int weapon = ent->s.weapon;
+        ent->invulnerability_timeout = 0;
+        weaponParms wp;
+        wp.pWeapInfo = BG_GetInfoForWeapon(weapon);
+        AngleVectors(ent->client->ps.viewangles, wp.forward, wp.right, wp.up);
+        math::Position3 muzzlePoint;
+        CalcMuzzlePoint(ent, &muzzlePoint);
+        wp.muzzleTrace[0] = muzzlePoint.v.m128_f32[0];
+        wp.muzzleTrace[1] = muzzlePoint.v.m128_f32[1];
+        wp.muzzleTrace[2] = muzzlePoint.v.m128_f32[2];
+        Weapon_Melee(ent, &wp);
+    }
+}
