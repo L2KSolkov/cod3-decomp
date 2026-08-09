@@ -2023,6 +2023,9 @@ void  G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
                         TouchEntityData* tData, collision_context_t* context);  // g.o 0x474C90
 void  G_TouchVehicles(Entity* ent, const math::Position3* origin,
                       TouchEntityData* tData, collision_context_t* context);  // g.o 0x4748A0
+void  SP_script_model(Entity* pSelf);      // g.o 0x47BD80
+float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker, Entity* pInflictor,
+                              const float* point, int mod);  // g.o 0x44F7E0
 void  MultiplayerMgr_ApplyLocalPhysicsToVehicle(void* self, Entity* vehicle,
                                                 math::Position3* position,
                                                 math::Position3* angles,
@@ -2208,7 +2211,19 @@ struct Destructible {
     static void DoDamage(Destructible* self, Entity* ent, int damage,
                          const math::Position3* hitp, const float* hitd,
                          int meansOfDeath, bool scriptExplode);
+    static void Initialize(Destructible* self, Entity* ent, bool reInit);
 };
+
+struct PhysData;  // physics.o
+struct DestructibleBankManager {
+    static void* sInst;
+    IVPointer<Destructible> GetDestructible(TPakId pak_id, const char* name);
+};
+struct PhysDataBankManager {
+    static void* sInst;
+    IVPointer<PhysData> GetPhysData(TPakId pak_id, const char* name);
+};
+void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData);  // physics.o 0x7030B0
 
 // dispatch tables
 extern void (*usetable[0xE])(Entity* ent, Entity* other, Entity* activator);

@@ -7,6 +7,8 @@
 level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 DebugThread g_debugThread;     // ?g_debugThread@@3VDebugThread@@A @ 0xDEB5A0
 void* SmokeGrenadeMgr::sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
+void* DestructibleBankManager::sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A
+void* PhysDataBankManager::sInst;      // ?sInst@PhysDataBankManager@@2PAV1@A
 float emissionRate_0 = 1.0f;   // @ 0xDD8254 (vehicle gunner overheat emission rate)
 float gTanAimConeSpread;       // @ 0xEB1118 (g_weapon.cpp Bullet_Endpos scratch)
 float max_intensity = 120.0f;  // @ 0xDD7FD4

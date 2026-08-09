@@ -419,6 +419,7 @@ struct PathNodeMgr {
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
     void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ
     void ValidateAllNodes();             // ?ValidateAllNodes@PathNodeMgr@@QAEXXZ
+    void SetCoverNodeStatus(Broc::string* name, int inValid);  // ?SetCoverNodeStatus@PathNodeMgr@@QAEXPBVstring@Broc@@H@Z
     void AttachSentientToChainNode(sentient_s* pSentient, Broc::string* targetname);
     void ConnectPathsForEntity(Entity* ent);     // ?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void DisconnectPathsForEntity(Entity* ent);  // ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z

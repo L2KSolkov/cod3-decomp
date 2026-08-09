@@ -2186,6 +2186,104 @@ bool scr_vehicle_t::CanMantleVehicle(Entity* player)
     return false;
 }
 
+// ea: 0x0044F7E0
+float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker,
+                              Entity* pInflictor, const float* point, int mod)
+{
+    scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
+    vehicle_info_t* v6 = s_vehicleInfos[scr_vehicle->infoIdx];
+    auto* p_phys = &scr_vehicle->phys;
+    float width = cos(0.3490658700466156f);
+    float scalar_best_side;
+    switch (mod)
+    {
+    case 4: case 6: case 10: case 18:
+        scalar_best_side = 1.0f;
+        break;
+    default:
+        scalar_best_side = 0.0f;
+        break;
+    }
+    float bulletDamage;
+    switch (mod)
+    {
+    case 1: case 2:
+        bulletDamage = v6->bulletDamage;
+        break;
+    case 3: case 4:
+        bulletDamage = v6->grenadeDamage;
+        break;
+    case 5: case 6:
+        bulletDamage = v6->mineDamage;
+        break;
+    case 9: case 10: case 17: case 18:
+        bulletDamage = v6->projectileDamage;
+        break;
+    default:
+        bulletDamage = 1.0f;
+        break;
+    }
+    float scale = bulletDamage;
+    float axis[3][3];
+    AnglesToAxis(&scr_vehicle->phys.angles, axis);
+    float vdir[3];
+    vdir[0] = point[0] - p_phys->origin.v.m128_f32[0];
+    vdir[1] = point[1] - p_phys->origin.v.m128_f32[1];
+    vdir[2] = 0.0f;
+    VectorNormalize(vdir);
+    float dotAxis = (axis[0][0] * vdir[0]) + (axis[0][1] * vdir[1]) + (axis[0][2] * vdir[2]);
+    float dotOther = (axis[1][0] * vdir[0]) + (axis[1][1] * vdir[1]) + (axis[1][2] * vdir[2]);
+    float bestDot = dotAxis;
+    int v11 = 0;
+    if (fabs(dotOther) > fabs(dotAxis))
+    {
+        bestDot = dotOther;
+        v11 = 1;
+    }
+    if (scalar_best_side == 0.0f)
+    {
+        if (v11 != 0)
+            return scale * 1.5f;
+        if (bestDot >= 0.0f)
+            return scale * 1.0f;
+        if (width > -bestDot)
+            return scale * 1.5f;
+        return scale + scale;
+    }
+    scalar_best_side = 1.0f;
+    float scalar_worst_side = 1.0f;
+    width = pSelf->r.maxs.v.m128_f32[1] * 0.80000001f;
+    float height = pSelf->r.maxs.v.m128_f32[2] * 0.5f;
+    float dx = point[0] - p_phys->origin.v.m128_f32[0];
+    float dy = point[1] - p_phys->origin.v.m128_f32[1];
+    float dz = point[2] - p_phys->origin.v.m128_f32[2];
+    float dist = dx * dx + dy * dy + dz * dz;
+    if (mod == 4)
+    {
+        if ((p_phys->origin.v.m128_f32[2] + height) > (point[2] - 10.0f)
+            && (width * width) > dist)
+            return scale + scale;
+        return scale;
+    }
+    float v14;
+    if (v11 != 0)
+    {
+        scalar_best_side = 1.5f;
+        float frontDot = (axis[0][0] * vdir[0]) + (axis[0][1] * vdir[1]) + (axis[0][2] * vdir[2]);
+        v14 = frontDot >= 0.0f ? 1.0f : 2.0f;
+    }
+    else
+    {
+        v14 = 2.0f;
+        if (bestDot >= 0.0f)
+            v14 = 1.0f;
+        scalar_best_side = v14;
+        v14 = 1.5f;
+    }
+    float v16 = fabs(bestDot);
+    return ((1.0f - v16) * v14 + scalar_best_side * v16) * scale * 0.69999999f;
+}
+
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
 static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
 static scr_vehicle_t s_backup;     // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)

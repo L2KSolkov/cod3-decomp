@@ -1005,6 +1005,147 @@ void SP_script_origin(Entity* pSelf)
         pSelf->r.svFlags |= 1u;
 }
 
+// ea: 0x0047BD80
+void SP_script_model(Entity* pSelf)
+{
+    G_DObjUpdate(pSelf, false);
+    InitScriptMover(pSelf);
+    bool v2 = pSelf->s.brushmodel == 0;
+    pSelf->r.svFlags |= 0x10u;
+    pSelf->r.contents = 8320;
+    if (v2)
+    {
+        extern bool Prop_SetupCollmap(Entity* ent);
+        Prop_SetupCollmap(pSelf);
+    }
+    else
+    {
+        if ((pSelf->spawnflags & 0x40) == 0)
+            pSelf->flags |= 0x800000;
+        SV_SetBrushModel(pSelf);
+    }
+    if (pSelf->r.bmodel != nullptr)
+    {
+        ValidatePakId((TPakId)pSelf->mModel.mPakId);
+        if (pSelf->mModel.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)pSelf->mModel.mPakId);
+            if (pSelf->mModel.mValue->name.mStr != nullptr)
+            {
+                ValidatePakId((TPakId)pSelf->mModel.mPakId);
+                if (strstr(pSelf->mModel.mValue->name.mStr, "sbmodel") != nullptr)
+                    pSelf->r.svFlags &= ~0x10u;
+            }
+        }
+    }
+    if ((pSelf->spawnflags & 1) != 0)
+    {
+        ValidatePakId((TPakId)pSelf->mModel.mPakId);
+        if (pSelf->mModel.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)pSelf->mModel.mPakId);
+            if (pSelf->mModel.mValue != nullptr)
+            {
+                ValidatePakId((TPakId)pSelf->mModel.mPakId);
+                TPakId mPakId = (TPakId)pSelf->mPakId;
+                if (mPakId == PAK_ID_INVALID)
+                    mPakId = CurPakId();
+                IVPointer<Destructible> p =
+                    DestructibleBankManager::sInst
+                        ? ((DestructibleBankManager*)DestructibleBankManager::sInst)
+                              ->GetDestructible(mPakId, pSelf->mModel.mValue->name.mStr)
+                        : IVPointer<Destructible>();
+                if (p.mValue != nullptr)
+                {
+                    pSelf->mDestructible = p;
+                    pSelf->takedamage = 1;
+                }
+            }
+        }
+    }
+    ValidatePakId((TPakId)pSelf->mDestructible.mPakId);
+    if (pSelf->mDestructible.mValue != nullptr)
+    {
+        Destructible::Initialize(pSelf->mDestructible.mValue, pSelf, true);
+        if (pSelf->mTarget.mBlock != nullptr)
+            PathNodeMgr::sInst->SetCoverNodeStatus(&pSelf->mTarget, 0);
+    }
+    void* v7 = nullptr;
+    TPakId v8 = PAK_ID_INVALID;
+    if (pSelf->targetname.mBlock != (Broc::string::Block*)-12)
+    {
+        Broc::string::Block* mBlock = pSelf->targetname.mBlock;
+        const char* v10 = (const char*)&mBlock[1];
+        if (mBlock == nullptr)
+            v10 = defaultFileName;
+        TPakId v11 = (TPakId)pSelf->mPakId;
+        if (v11 == PAK_ID_INVALID)
+            v11 = CurPakId();
+        IVPointer<PhysData> p =
+            ((PhysDataBankManager*)PhysDataBankManager::sInst)->GetPhysData(v11, v10);
+        v7 = p.mValue;
+        v8 = (TPakId)p.mPakId;
+    }
+    ValidatePakId(v8);
+    if (v7 == nullptr)
+    {
+        ValidatePakId((TPakId)pSelf->mModel.mPakId);
+        if (pSelf->mModel.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)pSelf->mModel.mPakId);
+            char* v13 = pSelf->mModel.mValue->name.mStr;
+            TPakId v14 = (TPakId)pSelf->mPakId;
+            if (v14 == PAK_ID_INVALID)
+                v14 = CurPakId();
+            IVPointer<PhysData> p =
+                ((PhysDataBankManager*)PhysDataBankManager::sInst)->GetPhysData(v14, v13);
+            v7 = p.mValue;
+            v8 = (TPakId)p.mPakId;
+        }
+    }
+    ValidatePakId(v8);
+    if (v7 != nullptr)
+    {
+        IVPointer<PhysData> pd;
+        pd.mValue = (PhysData*)v7;
+        pd.mPakId = v8;
+        CalculatePhysData(pSelf, pd);
+        if (pSelf->mDObj != nullptr)
+        {
+            *(void**)((char*)pSelf->mDObj + 0xC4) = v7;
+            *(int*)((char*)pSelf->mDObj + 0xC8) = v8;
+        }
+    }
+    unsigned int v17 = HashString::CalcHash("ctf_axis");
+    unsigned int v18 = HashString::CalcHash("ctf_allies");
+    unsigned int scf_flag_hash = HashString::CalcHash("scf_flag_point");
+    Broc::string::Block* v19 = pSelf->targetname.mBlock;
+    if (v19 != nullptr)
+    {
+        char* mBuff = v19->mBuff;
+        if (mBuff != nullptr
+            && (HashString::CalcHash(mBuff) == v17
+                || HashString::CalcHash(pSelf->targetname.mBlock->mBuff) == v18
+                || HashString::CalcHash(pSelf->targetname.mBlock->mBuff) == scf_flag_hash))
+        {
+            pSelf->clipmask = 0x810011;
+            pSelf->r.maxs.v.m128_f32[2] = 40.0f;
+            pSelf->s.eFlags |= 0x10u;
+        }
+    }
+    g_LinkEntity(pSelf);
+    DCGSet* bmodel = pSelf->r.bmodel;
+    unsigned int v22 = 0x20000 | pSelf->flags;
+    pSelf->flags = v22;
+    if (bmodel != nullptr)
+    {
+        pSelf->flags = v22 | 0x3000;
+        if (!ShouldConnectPaths())
+            PathNodeMgr::sInst->DisconnectPathsForEntity(pSelf);
+    }
+    pSelf->entinfo = 2;
+}
+
 // ea: 0x00462B50
 void ReturnToPos1Rotate(Entity* ent)
 {
