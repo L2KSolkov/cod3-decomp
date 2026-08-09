@@ -82,7 +82,7 @@ void ragdoll_joint_limit_info::set_b1_ud_loc(const math::Dir3& b1_ud_loc) {
 }
 
 // ============================================================================
-// ragdoll_joint_limit_info::set_theta_limit â€” ea: 0x890040
+// ragdoll_joint_limit_info::set_theta_limit â€” ea: 0x889040
 // ============================================================================
 void ragdoll_joint_limit_info::set_theta_limit(float theta_limit) {
     float v2 = theta_limit;

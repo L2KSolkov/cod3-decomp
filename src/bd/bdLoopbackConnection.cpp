@@ -27,6 +27,15 @@ bool bdLoopbackConnection::receive(const unsigned char*, unsigned int) {
 }
 
 // ============================================================================
+// bdLoopbackConnection::checkNewMessages - ea: 0x8A3A70
+// ============================================================================
+bool bdLoopbackConnection::checkNewMessages() {
+    bool result = (m_flag70 != 0);
+    m_flag70 = 0;
+    return result;
+}
+
+// ============================================================================
 // bdLoopbackConnection::send - ea: 0x8A40A0
 // ============================================================================
 bool bdLoopbackConnection::send(const bdReference<bdMessage>& message, bool) {

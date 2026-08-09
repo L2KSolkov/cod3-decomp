@@ -89,6 +89,7 @@ void jqInit() {
     _jqInit();
 }
 
+// ea: 0x8353D0
 void jqShutdown() {
     jqStop();
     if (jqWorkers) {

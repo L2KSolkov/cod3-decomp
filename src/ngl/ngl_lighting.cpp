@@ -414,6 +414,7 @@ static void nglListAddPointLightCommon(nglLightType Type, unsigned int LightCat,
     }
 }
 
+// ea: 0x846310
 void nglListAddPointLight(unsigned int LightCat, const math::Position3* Pos,
                           float Near, float Far, const math::Vector4* Color,
                           bool isVertexPointLight) {
@@ -421,6 +422,7 @@ void nglListAddPointLight(unsigned int LightCat, const math::Position3* Pos,
                                isVertexPointLight);
 }
 
+// ea: 0x8463F0
 void nglListAddPointLightGun(unsigned int LightCat, const math::Position3* Pos,
                              float Near, float Far, const math::Vector4* Color,
                              bool isVertexPointLight) {

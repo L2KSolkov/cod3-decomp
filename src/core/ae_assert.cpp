@@ -59,8 +59,8 @@ bool IsIgnored() {
 }
 
 // ============================================================================
-// OnScreenMessageHandler — display assertion on screen / debug output
-// ea: referenced by Assert, Error, Warning
+// OnScreenMessageHandler - display assertion on screen / debug output
+// ea: 0x7BE500
 // ============================================================================
 static bool OnScreenMessageHandler(ONSCREEN_MESSAGE_TYPE type, const char* text) {
     const char* prefix = "ASSERT";
