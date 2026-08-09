@@ -93,8 +93,13 @@ public:
                      float scale);        // ea: 0x4EC690
     void FreeAll();                       // ea: 0x4F7180
     void Update();                        // ea: 0x4F71C0
+    void Initialise();                    // ea: 0x50E250
+    void Render();                        // ea: 0x50BED0
+    void SetupUserMenus();                // ea: 0x50E1B0
+    void UserRenderHook();                // ea: 0x509CA0
 };
 static_assert(sizeof(InspectorManager) == 0x88,
               "InspectorManager size mismatch");
 
 extern InspectorManager* g_inspectorManager;  // ?g_inspectorManager (game2.o)
+extern _INSPECTOR_MENU g_inspectorRootMenu;   // ?g_inspectorRootMenu (game2.o)

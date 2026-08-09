@@ -7,6 +7,8 @@
 #include "game/logic/g_local.h"
 #include "ngl/ngl_scene.h"
 
+#include <math.h>
+#include <stdio.h>
 #include <string.h>
 
 // Cross-object externs
@@ -19,6 +21,52 @@ extern float RE_Text_Paint(float x, float y, int font, float scale,
                            int a8, int a9);  // ?RE_Text_Paint (render.o)
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);  // ?RE_Text_Width
+
+// ShaderCommon glow state (cdGlowShader.o / render.o)
+namespace ShaderCommon {
+extern float gGlowIntensity;  // ?gGlowIntensity@ShaderCommon@@3MA
+extern float gGlowExpansion;  // ?gGlowExpansion@ShaderCommon@@3MA
+extern int   gGlowEnable;     // ?gGlowEnable@ShaderCommon@@3HA
+extern int   gGlowPasses;     // ?gGlowPasses@ShaderCommon@@3HA
+extern bool  gGlowGodRays;    // ?gGlowGodRays@ShaderCommon@@3_NA
+extern float gGlowBrighten;   // ?gGlowBrighten@ShaderCommon@@3MA
+}
+
+// FogConfig helpers (render.o)
+namespace FogConfig {
+void GetEnabled(int& enable);                    // ?GetEnabled@FogConfig@@YAXAAH@Z
+void GetColor(float& red, float& green, float& blue);  // ?GetColor@FogConfig@@YAXAAM00@Z
+void GetRange(float& n, float& f);               // ?GetRange@FogConfig@@YAXAAM0@Z
+void GetVal(float& s, float& e);                 // ?GetVal@FogConfig@@YAXAAM0@Z
+void SetColor(float r, float g, float b);        // ?SetColor@FogConfig@@YAXMMM@Z
+void SetRange(float n, float f);                 // ?SetRange@FogConfig@@YAXMM@Z
+void SetVal(float s, float e);                   // ?SetVal@FogConfig@@YAXMM@Z
+void SetEnabled(int enable);                     // ?SetEnabled@FogConfig@@YAXH@Z
+}
+
+// game2.o data globals (glow + fog editor state, verified against the map)
+int   g_GlowEnable;       // @ 0x011C86F8
+int   g_GlowPasses;       // @ 0x011C86FC
+float g_GlowIntensity;    // @ 0x011C8700
+float g_GlowExpansion;    // @ 0x011C8704
+float g_GlowBrightness;   // @ 0x011C8708
+int   g_GlowGodRaysEnable;// @ 0x011C870C
+int   g_FogEnable;        // @ 0x011C8710
+float g_FogNear;          // @ 0x011C8714
+float g_FogFar;           // @ 0x011C8718
+float g_FogEnd;           // @ 0x011C871C
+float g_FogRed;           // @ 0x011C8720
+float g_FogGreen;         // @ 0x011C8724
+float g_FogBlue;          // @ 0x011C8728
+float g_FogStart;         // @ 0x012F3DF8
+
+// cg.o / core.o externs used by Render
+extern int gScreenshotInProgress;  // ?gScreenshotInProgress
+extern const char* sBuildId;       // ?sBuildId
+enum { CUBEMAPSHOT_NONE = 0 };
+
+_INSPECTOR_MENU g_inspectorRootMenu;   // ?g_inspectorRootMenu (game2.o)
+InspectorManager* g_inspectorManager;  // ?g_inspectorManager (game2.o)
 
 // Minimal controller view (full implementation in input/controller.cpp).
 // ButtonIndex values verified against ReadKeys disassembly.
@@ -374,4 +422,436 @@ void InspectorManager::FreeAll()
         m_data.rootMenu->lastCurrentItem = nullptr;
         m_data.memory = 0;
     }
+}
+
+// ============================================================================
+// InspectorManager::Update - ea: 0x4F71C0
+// Menu navigation + per-item value adjustment.
+// ============================================================================
+void InspectorManager::Update()
+{
+    if (!m_data.active)
+        return;
+    g_GlowIntensity = ShaderCommon::gGlowIntensity;
+    g_GlowExpansion = ShaderCommon::gGlowExpansion;
+    g_GlowEnable = ShaderCommon::gGlowEnable;
+    g_GlowPasses = ShaderCommon::gGlowPasses;
+    g_GlowGodRaysEnable = ShaderCommon::gGlowGodRays ? 1 : 0;
+    g_GlowBrightness = ShaderCommon::gGlowBrighten;
+    FogConfig::GetEnabled(g_FogEnable);
+    FogConfig::GetColor(g_FogRed, g_FogGreen, g_FogBlue);
+    FogConfig::GetRange(g_FogNear, g_FogFar);
+    FogConfig::GetVal(g_FogStart, g_FogEnd);
+
+    _INSPECTOR_MENU_ITEM* currentItem = m_data.currentItem;
+    if (currentItem)
+    {
+        if (m_KEY_UP)
+        {
+            _INSPECTOR_MENU_ITEM* prev = currentItem->prev;
+            if (!prev)
+                prev = m_data.currentMenu->last;
+            m_data.currentItem = prev;
+        }
+        if (m_KEY_DOWN)
+        {
+            _INSPECTOR_MENU_ITEM* next = m_data.currentItem->next;
+            if (!next)
+                next = m_data.currentMenu->first;
+            m_data.currentItem = next;
+        }
+        _INSPECTOR_MENU_ITEM* v5 = m_data.currentItem;
+        float v6;
+        float angle;
+        int veryFast = 0;
+        if ((0x20000 & v5->type) != 0)
+        {
+            if (m_KEY_LEFT_DEBOUNCE || m_KEY_LEFT_FAST_DEBOUNCE
+                || m_KEY_LEFT_VERY_FAST_DEBOUNCE)
+            {
+                v6 = -1.0f;
+                angle = -1.0f;
+                if (m_KEY_LEFT_FAST_DEBOUNCE)
+                {
+                    v6 = -12.0f;
+                    angle = -12.0f;
+                }
+                veryFast = m_KEY_LEFT_VERY_FAST_DEBOUNCE;
+            }
+            else if (!m_KEY_RIGHT_DEBOUNCE && !m_KEY_RIGHT_FAST_DEBOUNCE
+                     && !m_KEY_RIGHT_VERY_FAST_DEBOUNCE)
+            {
+                v6 = 0.0f;
+                angle = v6;
+                goto input_done;
+            }
+            else
+            {
+                v6 = 1.0f;
+                angle = 1.0f;
+                if (m_KEY_RIGHT_FAST_DEBOUNCE)
+                {
+                    v6 = 12.0f;
+                    angle = 12.0f;
+                }
+                veryFast = m_KEY_RIGHT_VERY_FAST_DEBOUNCE;
+            }
+        }
+        else if (m_KEY_LEFT || m_KEY_LEFT_FAST || m_KEY_LEFT_VERY_FAST)
+        {
+            v6 = -1.0f;
+            angle = -1.0f;
+            if (m_KEY_LEFT_FAST)
+            {
+                v6 = -12.0f;
+                angle = -12.0f;
+            }
+            veryFast = m_KEY_LEFT_VERY_FAST;
+        }
+        else if (!m_KEY_RIGHT && !m_KEY_RIGHT_FAST && !m_KEY_RIGHT_VERY_FAST)
+        {
+            v6 = 0.0f;
+            angle = v6;
+            goto input_done;
+        }
+        else
+        {
+            v6 = 1.0f;
+            angle = 1.0f;
+            if (m_KEY_RIGHT_FAST)
+            {
+                v6 = 12.0f;
+                angle = 12.0f;
+            }
+            veryFast = m_KEY_RIGHT_VERY_FAST;
+        }
+        if (veryFast)
+            v6 = v6 * 80.0f;
+        angle = v6;
+    input_done:
+        int v8 = (int)v6;
+        if ((0x10000 & v5->type) == 0)
+        {
+            switch (v5->type & 0xFFFF)
+            {
+            case 0u:  // submenu
+                if (m_KEY_SELECT)
+                {
+                    m_data.currentMenu->lastCurrentItem = v5;
+                    _INSPECTOR_MENU* vp = (_INSPECTOR_MENU*)v5->value.vp;
+                    m_data.currentMenu = vp;
+                    m_data.currentItem = vp->lastCurrentItem;
+                }
+                break;
+            case 1u:  // int adjust
+                *v5->value.ip += v8;
+                if ((0x40000 & v5->type) != 0)
+                {
+                    if (*v5->value.ip < 0)
+                        *v5->value.ip = 0;
+                }
+                if ((0x80000 & v5->type) != 0)
+                {
+                    if (*v5->value.ip > 0)
+                        *v5->value.ip = 1;
+                }
+                break;
+            case 2u:  // int toggle
+                if (m_KEY_SELECT)
+                    *v5->value.ip ^= 1u;
+                break;
+            case 3u:
+                *v5->value.fp = *v5->value.fp + v6;
+                goto clamp_float;
+            case 4u:
+                *v5->value.fp = (v6 * 5.0f) + *v5->value.fp;
+                goto clamp_float;
+            case 5u:
+                *v5->value.fp = (v6 * 1000.0f) + *v5->value.fp;
+                goto clamp_float;
+            case 6u:
+                *v5->value.fp = (v6 * 0.05f) + *v5->value.fp;
+                goto clamp_float;
+            case 7u:
+                *v5->value.fp = (v6 * 0.005f) + *v5->value.fp;
+                goto clamp_float;
+            case 8u:
+                *v5->value.fp = (v6 * 0.0002f) + *v5->value.fp;
+            clamp_float:
+                if ((0x40000 & v5->type) != 0)
+                {
+                    if (*v5->value.fp < 0.0f)
+                        *v5->value.fp = 0.0f;
+                }
+                if ((0x80000 & v5->type) != 0)
+                {
+                    if (*v5->value.fp > 1.0f)
+                        *v5->value.fp = 1.0f;
+                }
+                break;
+            case 9u:
+                *v5->value.fp = (v6 * 0.005f) + *v5->value.fp;
+                if (*v5->value.fp < 0.0f)
+                    *v5->value.fp = 0.0f;
+                if (*v5->value.fp > 1.0f)
+                    *v5->value.fp = 1.0f;
+                break;
+            case 0xAu:
+                *v5->value.fp = (v6 * 0.01f) + *v5->value.fp;
+                if (*v5->value.fp < 0.0f)
+                    *v5->value.fp = 0.0f;
+                if (*v5->value.fp > 2.0f)
+                    *v5->value.fp = 2.0f;
+                break;
+            case 0xBu:
+                *v5->value.fp = *v5->value.fp + v6;
+                if (*v5->value.fp < 0.0f)
+                    *v5->value.fp = 0.0f;
+                if (*v5->value.fp > 255.0f)
+                    *v5->value.fp = 255.0f;
+                break;
+            case 0xCu:  // angle (radians)
+            {
+                float* v10 = v5->value.fp;
+                float v11 = (float)fmod(angle * 0.017453292f + *v10
+                                        + 251.32741f, 6.283185482025146f);
+                float v12 = v11;
+                if (v11 >= 3.1415927f)
+                    v12 = v11 - 6.2831855f;
+                *v10 = v12;
+                break;
+            }
+            case 0xDu:  // angle (degrees)
+            {
+                float* v13 = v5->value.fp;
+                float v14 = (float)fmod(*v13 * 3.1415927f * 0.0055555557f
+                                        + angle * 0.017453292f + 251.32741f,
+                                        6.283185482025146f);
+                float v15 = v14;
+                if (v14 >= 3.1415927f)
+                    v15 = v14 - 6.2831855f;
+                *v13 = (v15 * 180.0f) * 0.31830987f;
+                break;
+            }
+            case 0xEu:
+                if (m_KEY_SELECT)
+                    *v5->value.ip = 1;
+                break;
+            case 0xFu:
+                *v5->value.ucp += v8;
+                break;
+            case 0x10u:
+                if (m_KEY_SELECT)
+                    *v5->value.ucp ^= 1u;
+                break;
+            case 0x11u:
+                if (m_KEY_SELECT)
+                    v5->value.fn();
+                break;
+            case 0x12u:
+                if (m_KEY_SELECT)
+                {
+                    _INSPECTOR_MENU* currentMenu = m_data.currentMenu;
+                    _INSPECTOR_MENU_ITEM* first = currentMenu->first;
+                    int v31 = 0;
+                    if (first != currentMenu->last)
+                    {
+                        do
+                        {
+                            if (first == v5)
+                                break;
+                            first = first->next;
+                            ++v31;
+                        } while (first != m_data.currentMenu->last);
+                    }
+                    ((void(*)(int))v5->value.vp)(v31);
+                }
+                break;
+            case 0x16u:
+            case 0x17u:
+                ((void(*)(float))v5->value.vp)(v6);
+                break;
+            case 0x18u:
+                ((void(*)(float))v5->value.vp)(v6 * 0.005f);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    if (m_KEY_MENU_BACK)
+    {
+        _INSPECTOR_MENU* v32 = m_data.currentMenu;
+        if (v32->parentMenu)
+        {
+            v32->lastCurrentItem = m_data.currentItem;
+            _INSPECTOR_MENU* parentMenu = m_data.currentMenu->parentMenu;
+            m_data.currentMenu = parentMenu;
+            m_data.currentItem = parentMenu->lastCurrentItem;
+        }
+        else
+        {
+            m_data.active = 0;
+        }
+    }
+    ShaderCommon::gGlowIntensity = g_GlowIntensity;
+    ShaderCommon::gGlowExpansion = g_GlowExpansion;
+    ShaderCommon::gGlowBrighten = g_GlowBrightness;
+    ShaderCommon::gGlowPasses = g_GlowPasses;
+    ShaderCommon::gGlowGodRays = g_GlowGodRaysEnable != 0;
+    ShaderCommon::gGlowEnable = g_GlowEnable;
+    if (g_FogNear > g_FogFar)
+        g_FogNear = g_FogFar;
+    if (g_FogStart > g_FogEnd)
+        g_FogStart = g_FogEnd;
+    FogConfig::SetColor(g_FogRed, g_FogGreen, g_FogBlue);
+    FogConfig::SetRange(g_FogNear, g_FogFar);
+    FogConfig::SetVal(g_FogStart, g_FogEnd);
+    FogConfig::SetEnabled(g_FogEnable);
+}
+
+// ============================================================================
+// InspectorManager::Initialise - ea: 0x50E250
+// ============================================================================
+void InspectorManager::Initialise()
+{
+    m_data.active = 0;
+    m_data.rootMenu = &g_inspectorRootMenu;
+    m_data.currentMenu = &g_inspectorRootMenu;
+    m_data.currentItem = nullptr;
+    SetupUserMenus();
+}
+
+// ============================================================================
+// InspectorManager::Render - ea: 0x50BED0
+// ============================================================================
+void InspectorManager::Render()
+{
+    if (gScreenshotInProgress != 0
+        || cgGlobal.cubemapShot != CUBEMAPSHOT_NONE)
+        return;
+    nglListBeginScene(NGLSCENE_PARENT);
+    g_debugThread.Render();
+    UserRenderHook();
+    if (m_data.active == 0)
+    {
+        Print((char*)sBuildId, 15, 40, 0.55f);
+        nglListEndScene();
+        return;
+    }
+    if (m_data.currentItem == nullptr)
+    {
+        Print((char*)"Empty Menu", 40, 40, 0.55f);
+        return;
+    }
+    m_currentRgba[0] = m_headingRgba[0];
+    m_currentRgba[1] = m_headingRgba[1];
+    m_currentRgba[2] = m_headingRgba[2];
+    m_currentRgba[3] = m_headingRgba[3];
+    char insp_s[208];
+    char insp_val[208];
+    char selected[4];
+    _INSPECTOR_MENU* currentMenu = m_data.currentMenu;
+    sprintf(insp_s, "---- %s ----", currentMenu->heading);
+    Print(insp_s, 40, 40, 0.55f);
+    m_currentRgba[0] = m_textRgba[0];
+    m_currentRgba[1] = m_textRgba[1];
+    m_currentRgba[2] = m_textRgba[2];
+    m_currentRgba[3] = m_textRgba[3];
+    _INSPECTOR_MENU_ITEM* first = m_data.currentMenu->first;
+    int v11 = 57;
+    if (first == nullptr)
+    {
+        nglListEndScene();
+        return;
+    }
+    do
+    {
+        *selected = first != m_data.currentItem ? 32 : 62;
+        switch (first->type & 0xFFFF)
+        {
+        case 0u:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "->");
+            break;
+        case 1u:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%d", *first->value.ip);
+            break;
+        case 2u:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%s", *first->value.ip == 0 ? "OFF" : "ON");
+            break;
+        case 3u:
+        case 4u:
+        case 5u:
+        case 6u:
+        case 7u:
+        case 8u:
+        case 0xBu:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%g", *first->value.fp);
+            break;
+        case 9u:
+        case 0xAu:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%1.3f", *first->value.fp);
+            break;
+        case 0xCu:
+        {
+            float v = (float)fmod(*first->value.fp + 251.32741f,
+                                  6.283185482025146f) * 180.0f * 0.31830987f;
+            if (v > 180.0f)
+                v = v - 360.0f;
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%4.2f", v);
+            break;
+        }
+        case 0xDu:
+        {
+            float v = (float)fmod(*first->value.fp * 3.1415927f * 0.0055555557f
+                                  + 251.32741f,
+                                  6.283185482025146f) * 180.0f * 0.31830987f;
+            if (v > 180.0f)
+                v = v - 360.0f;
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%4.2f", v);
+            break;
+        }
+        case 0xEu:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%s", *first->value.ip == 0 ? "-" : "SELECTED");
+            break;
+        case 0xFu:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%d", *first->value.ucp);
+            break;
+        case 0x10u:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%s", *first->value.ucp == 0 ? "OFF" : "ON");
+            break;
+        case 0x11u:
+        case 0x12u:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            insp_val[0] = 0;
+            break;
+        case 0x16u:
+        case 0x17u:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%d", first->value.ifn(0));
+            break;
+        case 0x18u:
+            sprintf(insp_s, "%s %s", selected, first->text);
+            sprintf(insp_val, "%g", first->value.ffn(0));
+            break;
+        default:
+            break;
+        }
+        Print(insp_s, 40, v11, 0.55f);
+        if (insp_val[0] != 0)
+            Print(insp_val, 290, v11, 0.55f);
+        first = first->next;
+        v11 += 17;
+    } while (first != nullptr);
+    nglListEndScene();
 }

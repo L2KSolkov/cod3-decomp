@@ -407,6 +407,7 @@ struct DebugThread {
     int m_menuMaxOnPage;                                    // +0x08
     int m_displayThreads;                                   // +0x0C
     int m_active;                                           // +0x10
+    void Render();   // ?Render@DebugThread@@QAEXXZ (game2.o 0x50A050)
 };
 static_assert(sizeof(DebugThread) == 0x14, "DebugThread size mismatch");
 
