@@ -9,14 +9,46 @@
 #include "game/game_types.h"
 #include "game/player_types.h"
 #include "game/client_types.h"
+#include "game/actor_types.h"
 #include "game/trace_types.h"
 #include "game/cvar_types.h"
 #include "game/sv/sv_decl.h"
 #include "game/sv/sv_stubs.h"
+#include "game/core/core_types.h"
 #include "engine/broc_types.h"
 
 #include <stddef.h>
 #include <stdint.h>
+
+// ============================================================================
+// trRefEntity - render entity (0x104 bytes) - verified against IDA (subset)
+// ============================================================================
+struct trRefEntity {
+    uint8_t _pad[0xFC];   // +0x00
+    uint8_t iflIndex;     // +0xFC
+    uint8_t _padFD[3];    // +0xFD
+    int32_t mSnapshotId;  // +0x100
+};
+static_assert(sizeof(trRefEntity) == 0x104, "trRefEntity size mismatch");
+static_assert(offsetof(trRefEntity, iflIndex) == 0xFC, "trRefEntity::iflIndex offset mismatch");
+
+// ============================================================================
+// AnimTree - animation set (0x38 bytes) - verified against IDA (subset)
+// ============================================================================
+struct XAnimEntry {
+    unsigned int hash;        // +0x00
+    unsigned short numAnims;  // +0x04
+    unsigned short parent;    // +0x06
+    void* anim;               // +0x08 nalGeneric::nalGenericAnim*
+    void* notify;             // +0x0C
+    int   lastAttempt;        // +0x10
+    unsigned char ucLastChosenChild;  // +0x14
+};
+struct AnimTree {
+    void* name;               // +0x00 InplaceString
+    XAnimEntry entries[2];    // +0x04 InplaceVector<XAnimEntry>
+    int entriesSize;          // +0x38
+};
 
 // ============================================================================
 // trigger_info_t - per-pair trigger bookkeeping (16 bytes) - verified IDA
@@ -158,3 +190,65 @@ int  SV_EntityContact(const math::Position3& mins, const math::Position3& maxs,
 // cl.o debug-line helper (cl_debug.cpp)
 void CL_AddDebugLine(const float* start, const float* end, const float* color,
                      int depthTest, int duration, int fromServer, int fadeOut);
+
+// ============================================================================
+// anim.o (unported) - XAnim / DObj core entry points
+// ============================================================================
+AnimTree* XAnimGetAnims(XAnimTree* tree);
+AnimTree* Scr_GetAnims(int index);
+int       Scr_GetAnimsIndex(AnimTree* anims);
+void      XAnimClearTreeGoalWeights(XAnimTree* tree, unsigned int animIndex, float blendTime);
+void      XAnimClearGoalWeight(XAnimTree* tree, unsigned int animIndex, float blendTime);
+void      XAnimClearTreeGoalWeightsStrict(XAnimTree* tree, unsigned int animIndex, float blendTime);
+void      XAnimSetAnimRate(XAnimTree* tree, unsigned int animIndex, float rate);
+void      XAnimSetTime(XAnimTree* tree, unsigned int animIndex, float time);
+int       XAnimHasTime(AnimTree* anims, unsigned int animIndex);
+int       XAnimIsPrimitive(AnimTree* anims, unsigned int animIndex);
+float     XAnimGetLength(AnimTree* anims, unsigned int animIndex);
+void      XAnimCalcAbsDelta(XAnimTree* tree, unsigned int animIndex, float* rot, float* trans);
+void      XAnimGetRelDelta(AnimTree* anims, unsigned int animIndex, float* rot, float* trans,
+                           float time1, float time2);
+void      XAnimGetAbsDelta(AnimTree* anims, unsigned int animIndex, float* rot, float* trans, float time);
+int       XAnimIsLooped(AnimTree* anims, unsigned int animIndex);
+bool      XAnimNotetrackExists(AnimTree* anims, unsigned int animIndex, const unsigned int& name);
+float     XAnimGetTime(XAnimTree* tree, unsigned int animIndex);
+float     XAnimGetWeight(XAnimTree* tree, unsigned int animIndex);
+int       XAnimHasFinished(XAnimTree* tree, unsigned int animIndex);
+int       XAnimGetNumChildren(AnimTree* anims, unsigned int animIndex);
+unsigned int XAnimGetChildAt(AnimTree* anims, unsigned int animIndex, unsigned int childIndex);
+const char*  XAnimGetAnimName(AnimTree* anims, unsigned int animIndex);
+void      XAnimClearTree(XAnimTree* tree);
+void      Com_XAnimFreeSmallTree(XAnimTree* animtree);
+
+// ============================================================================
+// sv.o / anim.o DObj server helpers
+// ============================================================================
+bool      SV_DObjUpdateServerTime(Entity* entity, float dtime, bool bNotify);
+bool      SV_DObjCreateSkelForBones(Entity* entity);
+bool      SV_DObjCreateSkelForBone(Entity* entity, int boneIndex);
+void      SV_DObjCalcAnim(Entity* entity, int iPhase);
+void      SV_DObjCalcSkel(Entity* entity, int* partBits);
+void      SV_DObjGetHierarchyBits(Entity* entity, int boneIndex, int* partBits);
+DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
+int       SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
+void      AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
+void      DObjSkel2MatrixMultiply43(const DObjSkelMat* in1, const float (*in2)[3], DObjSkelMat* out);
+void      ValidatePakId(TPakId pakId);
+
+XAnimTree* G_GetActorAnimTree(actor_s* actor);
+XAnimTree* G_GetActorCorpseAnimTree(Entity* ent);
+void       G_EntUnlink(Entity* ent);
+
+// g.o data: DObj controller dispatch table @ 0xDD57C0 (anim.o provides funcs)
+extern void (*controllertable[4])(Entity* ent, int* partBits);
+
+// core.o (effect_events.cpp) - sound notify
+class EffectEventSys {
+public:
+    static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
+    void SendSoundNotify(Entity* pEnt);  // ea: 0x004BCDE0
+};
+
+namespace BrocSys {
+const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
+}

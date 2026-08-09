@@ -54,6 +54,22 @@ public:
 };
 static_assert(sizeof(DbLinkedHandle<void, void>) == 4, "DbLinkedHandle size mismatch");
 
+// ============================================================================
+// tagInfo_t - entity tag attachment info (112 bytes) - verified against IDA
+// ============================================================================
+struct tagInfo_t {
+    Entity*    parent;          // +0x00
+    Entity*    next;            // +0x04
+    HashString name;            // +0x08
+    int16_t    index;           // +0x0C
+    int16_t    useAngles;       // +0x0E
+    float      axis[4][3];      // +0x10
+    float      parentInvAxis[4][3];  // +0x40
+};
+static_assert(sizeof(tagInfo_t) == 0x70, "tagInfo_t size mismatch");
+static_assert(offsetof(tagInfo_t, name) == 0x08, "tagInfo_t::name offset mismatch");
+static_assert(offsetof(tagInfo_t, index) == 0x0C, "tagInfo_t::index offset mismatch");
+
 // Inplace vector
 template <typename T>
 struct InplaceVector {
@@ -198,6 +214,7 @@ class Entity {
 public:
     EntityState  s;                               // +0x000 (224 bytes)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
+    trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ
     EntityShared r;                               // +0x0E0 (336 bytes)
     int32_t  mPakId;                              // +0x230
     DbLinkedHandle<EntityHandleDb, Entity> mHandle;         // +0x234
@@ -296,7 +313,10 @@ public:
     int16_t  mPersistentIndex;                    // +0x3BE
     int32_t  count2;                              // +0x3C0
     int32_t  grenadeExplodeTime;                  // +0x3C4
-    uint8_t  snd_wait[8];                         // +0x3C8 (opaque 8 bytes)
+    struct {
+        HashString notifyHash;                    // +0x3C8
+        HashString soundName;                     // +0x3CC
+    } snd_wait;                                   // +0x3C8 (8 bytes)
     Curve*   curve;                               // +0x3D0
     tagInfo_t* tagInfo;                           // +0x3D4
     Entity*  tagChildren;                         // +0x3D8

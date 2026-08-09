@@ -166,9 +166,6 @@ extern unsigned int tag_brass_hash;
 extern unsigned int HashString_CalcHash(const char* str);
 extern void CG_ChangeViewmodelDobj(int client, const char* handModel);
 extern void CG_RegisterWeapon(int weaponNum);
-struct tagInfo_t {
-    void* parent;  // +0x00
-};
 extern struct ServerTime_t { float mTickDelta; } ServerTime_sInst;
 extern float tr_viewModelInfo_mWeaponScale[4];
 extern int tr_viewModelInfo_mWeaponOrigin_used;

@@ -36,6 +36,7 @@ struct HashString {
     unsigned int mHash;  // +0x00
     HashString() : mHash(0) {}
     HashString(Broc::string& str);  // ea: 0x004C1450
+    static unsigned int CalcHash(const char* str);  // ea: 0x004C1540
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(HashString) == 4, "HashString size mismatch");
 
@@ -924,8 +925,23 @@ namespace PathNodes {
 struct NodeHandle {
     uint16_t mValue;  // +0x00
 };
+
+// ============================================================================
+// PathNode - AI path node (0x84 bytes) - verified against IDA
+// ============================================================================
+struct PathNode {
+    NodeHandle mHandle;    // +0x00
+    uint8_t    _pad4[0x24];   // +0x04 (PathNodeDynamic)
+    struct Constant {
+        uint8_t  _pad0[0x24];   // +0x00 (mType .. mAnimScriptFunc)
+        float    mOrigin[3];    // +0x24
+        uint8_t  _pad30[0x18];  // +0x30 (mAngle .. mLinks)
+    } mConstant;               // +0x28 (mOrigin at +0x4C)
+    uint8_t    _pad70[0x14];   // +0x70 (PathNodeTransient)
+};
 } // namespace PathNodes
 COD3_STATIC_ASSERT_32BIT(sizeof(PathNodes::NodeHandle) == 2, "PathNodes::NodeHandle size mismatch");
+static_assert(sizeof(PathNodes::PathNode) == 0x84, "PathNode size mismatch");
 
 // ============================================================================
 // InplaceString — in-place char* (4 bytes)
