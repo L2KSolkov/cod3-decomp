@@ -6,6 +6,7 @@
 
 #include "game/logic/g_local.h"
 
+#include <new>
 #include <string.h>
 
 #include "filesystem/apk.h"
@@ -88,7 +89,9 @@ struct ScriptEventHandler {
     ScriptEvent mEvents[7];             // +0x08
     ScriptEventHandler* mNext;          // +0x40
 
+    ScriptEventHandler();               // ea: 0x4F9860
     ~ScriptEventHandler();              // ea: 0x4F59D0
+    bool AddEvent(HashString h, HashString callback);  // ea: 0x4F98D0
     bool RemoveEvent(HashString h, HashString callback);  // ea: 0x4F59F0
     bool ExecEvents(Entity* ent, HashString h, void* params);  // ea: 0x4F5A50
 };
@@ -606,7 +609,7 @@ bool stat_WasPlayerWeaponCategoryUsed(eWeaponCategory category, bool exclusive)
     return false;
 }
 
-// ea: 0x4F6C90
+// ea: 0x4F6C80
 void stat_SetPlayerWeaponUsed(int weapon)
 {
     if (gMissionDataInitialized && gMissionData != nullptr)
@@ -663,6 +666,141 @@ char stat_SetMissionToTrack(const char* mission_name)
     else
         ++gTempMissionData.missionStat[0];
     return 1;
+}
+
+// ============================================================================
+// ButtonEntry - key binding entry (0xC, IDA verified)
+// ============================================================================
+struct BaseCmdFuncInfo;
+
+struct ButtonEntry {
+    unsigned char mKeyInfoIndex;         // +0x00
+    unsigned char _pad1[3];
+    const BaseCmdFuncInfo* mBoundCmdPress;   // +0x04
+    const BaseCmdFuncInfo* mBoundCmdRelease; // +0x08
+
+    void SetCmdBinding();                    // ea: 0x4F6CC0
+    const BaseCmdFuncInfo* GetBoundCmdPress();  // ea: 0x4F6D50
+    const BaseCmdFuncInfo* GetBoundCmdRelease();  // ea: 0x4F6D80
+};
+static_assert(sizeof(ButtonEntry) == 0xC, "ButtonEntry size mismatch");
+
+struct KeyInfoEntry {
+    int mState;              // +0x00 (bitfields mDown/mRepeats)
+    char* mBoundCmdName;     // +0x04
+};
+static_assert(sizeof(KeyInfoEntry) == 8, "KeyInfoEntry size mismatch");
+
+extern const BaseCmdFuncInfo* GetCmd(const char* cmdName);  // ?GetCmd (core.o)
+extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
+
+// KeyInfo::mKeys - per-client array of 256 KeyInfoEntry
+extern KeyInfoEntry gKeyInfoMKeys[1][256];  // ?mKeys@KeyInfo (game2.o)
+
+// ea: 0x4F6CC0
+void ButtonEntry::SetCmdBinding()
+{
+    int mKeyInfoIndex = this->mKeyInfoIndex;
+    mBoundCmdPress = nullptr;
+    mBoundCmdRelease = nullptr;
+    KeyInfoEntry* v4 = &gKeyInfoMKeys[currCl][mKeyInfoIndex];
+    char* mBoundCmdName = v4->mBoundCmdName;
+    if (mBoundCmdName != nullptr)
+    {
+        mBoundCmdPress = GetCmd(v4->mBoundCmdName);
+        if (*mBoundCmdName == '+')
+        {
+            char releaseName[512];
+            Com_sprintf(releaseName, 512, "-%s", mBoundCmdName + 1);
+            mBoundCmdRelease = GetCmd(releaseName);
+        }
+    }
+}
+
+// ea: 0x4F6D50
+const BaseCmdFuncInfo* ButtonEntry::GetBoundCmdPress()
+{
+    if (mBoundCmdPress == nullptr)
+    {
+        if (mKeyInfoIndex == 0xFF)
+            return mBoundCmdPress;
+    }
+    else if (mKeyInfoIndex != 0xFF)
+    {
+        return mBoundCmdPress;
+    }
+    SetCmdBinding();
+    return mBoundCmdPress;
+}
+
+// ea: 0x4F6D80
+const BaseCmdFuncInfo* ButtonEntry::GetBoundCmdRelease()
+{
+    if (mBoundCmdRelease == nullptr)
+    {
+        if (mKeyInfoIndex == 0xFF)
+            return mBoundCmdRelease;
+    }
+    else if (mKeyInfoIndex != 0xFF)
+    {
+        return mBoundCmdRelease;
+    }
+    SetCmdBinding();
+    return mBoundCmdRelease;
+}
+
+// ============================================================================
+// ScriptEventHandler ctor / AddEvent (extend the existing struct)
+// ============================================================================
+extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler
+extern void* PoolAllocator_Allocate(void* self, unsigned int s,
+                                    bool forceHeapAlloc);
+
+// ea: 0x4F9860
+ScriptEventHandler::ScriptEventHandler()
+{
+    memset(m_dlist_node, 0, sizeof(m_dlist_node));
+    for (int i = 0; i < 7; ++i)
+    {
+        mEvents[i].notify.mHash = 0;
+        mEvents[i].callback.mHash = 0;
+    }
+    mNext = nullptr;
+}
+
+// ea: 0x4F98D0
+bool ScriptEventHandler::AddEvent(HashString h, HashString callback)
+{
+    ScriptEventHandler* cur = this;
+    for (;;)
+    {
+        int v4 = 0;
+        do
+        {
+            if (cur->mEvents[v4].callback.mHash == 0)
+            {
+                cur->mEvents[v4].notify = h;
+                cur->mEvents[v4].callback = callback;
+                return true;
+            }
+            ++v4;
+        } while (v4 < 7);
+        if (cur->mNext != nullptr)
+        {
+            cur = cur->mNext;
+            continue;
+        }
+        void* v6 = PoolAllocator_Allocate(ScriptEventHandler_sAllocator, 0x44u,
+                                          false);
+        ScriptEventHandler* v7 = nullptr;
+        if (v6 != nullptr)
+            v7 = new (v6) ScriptEventHandler;
+        cur->mNext = v7;
+        if (v7 == nullptr)
+            break;
+        cur = v7;
+    }
+    return false;
 }
 
 // ============================================================================
