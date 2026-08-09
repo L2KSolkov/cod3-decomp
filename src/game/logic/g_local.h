@@ -527,6 +527,7 @@ struct TestFPS {
     void GetFilename(char* filename);  // ?GetFilename@TestFPS@@AAEXPAD@Z (game2.o 0x4F6F70)
     void OutputStats();  // ?OutputStats@TestFPS@@AAEXXZ (game2.o 0x4FEC80)
     void GatherMetrics();  // ?GatherMetrics@TestFPS@@QAEXXZ (game2.o 0x501990)
+    void NextPosition();   // ?NextPosition@TestFPS@@AAEXXZ (game2.o 0x501A60)
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z

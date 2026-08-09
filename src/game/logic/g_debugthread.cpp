@@ -956,3 +956,54 @@ void TestFPS::GatherMetrics()
             OutputStats();
     }
 }
+
+// ============================================================================
+// TestFPS::PositionCamera - ea: 0x509B50
+// ============================================================================
+extern void TeleportPlayer(Entity* player, const float* origin,
+                           const float* angles);
+extern PakManager* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A
+extern char tr[0x3A0];  // ?tr@@3UtrGlobals_t@@A (render.o)
+
+static int TestFPS_tr_cell_count()
+{
+    void* world = *(void**)(tr + 0x290);
+    if (world == nullptr)
+        return 0;
+    void* bspTree = *(void**)((char*)world + 0x100);
+    if (bspTree == nullptr)
+        return 0;
+    return *(int*)((char*)bspTree + 0x1C);  // mCells.mSize
+}
+
+void TestFPS::PositionCamera(pmove_t* pmove)
+{
+    PakManager_sInst->FillBanks();
+    if (mBlock == 0)
+    {
+        mBlock = 1;
+        Entity* player = EntityManager::sInst->GetPlayer(currCl);
+        player->client->noclip = 1;
+        player->client->bFrozen = 1;
+        int mSize = TestFPS_tr_cell_count();
+        mCurrentAngle += mDeltaAngle;
+        pmove->ps->pm_flags |= 0x4000u;
+        if (mCurrentAngle >= 360)
+        {
+            mCurrentAngle = 0;
+            NextPosition();
+        }
+        if (mCellIndex >= mSize)
+        {
+            StopTest();
+        }
+        else
+        {
+            float angles[3] = { 0.0f, (float)mCurrentAngle, 0.0f };
+            float position[3] = {
+                mCurrentPosition.x, mCurrentPosition.y, mCurrentPosition.z
+            };
+            TeleportPlayer(player, position, angles);
+        }
+    }
+}
