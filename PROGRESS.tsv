@@ -1,312 +1,624 @@
 source_cpp	lib	obj	class	funcs	status	notes
+
 shell.o		shell.o	game	1175	TODO	
+
 scr.o		scr.o	game	846	TODO	
+
 mp.o		mp.o	game	770	TODO	
-g.o	g.o	game	732	IN_PROGRESS	g.o porting in src/game/logic/ (248/732 non-inline funcs via // ea: markers as of 2026-08-08): trace/utils/dobj/spawn/active/trigger/hudelem/prone/items/mover/scr/weapon committed
+
+g.o	g.o	game	732	IN_PROGRESS	g.o porting in src/game/logic/ (281/732 non-inline funcs via // ea: markers as of 2026-08-08): trace/utils/dobj/spawn/active/trigger/hudelem/prone/items/mover/scr/weapon/combat/damage committed
+
 mp_shell.o		mp_shell.o	game	680	TODO	
+
 game.o		game.o	game	663	TODO	
+
 core.o		core.o	game	541	IN_PROGRESS	Types+globals staged: core_types.h + core_systems.h + core_globals.h (35+ size/offset checks pass vs IDA); 147 core.o data symbols w/ exact VAs extracted from linker map (analysis/core_o_data.tsv); inventory+plan in analysis/; bodies blocked until decompiles fetched via ida MCP
+
 MPBrocCore_xboxd:mp_util_wad.o	MPBrocCore_xboxd	mp_util_wad.o	engine	523	PORTED	mp_util_wad.cpp/h COMPLETE (403/403): accessors + wrappers + dyn_array + Level (560B) + pLevel; _mp_common/_mp_audio/_mp_loadout/_mp_ctf/_mp_scf/_mp_hq/_mp_war/_mp_tankdrive/_mp_spawnlogic/_mp_teambalance/_mp_shellshock/_mp_minefield/_mp_tdm/_mp_nano/_mp_dm/_mp_airplanes ALL DONE; capture threads stubbed pending runtime hook layer
+
 MPBrocCore_xboxd:mp_anim_wad.o	MPBrocCore_xboxd	mp_anim_wad.o	engine	332	PORTED	mp_anim_wad.cpp/h: RegisterHashStrings (238) + 94 GetEE_/IsEEDefined_ pairs + ResolveAnim/ResolveAnimName/ValidateAnimationIndices/GetBroAnim + _mp_setup main/hack_function; generic_human AnimRef layer extern (data, /FORCE)
+
 game2.o		game2.o	game	521	TODO	
+
 render.o		render.o	game	426	TODO	
+
 anim.o		anim.o	game	408	TODO	
+
 mp_actors.o		mp_actors.o	game	380	TODO	
+
 cg.o		cg.o	game	350	TODO	
+
 cl.o		cl.o	game	313	PORTED	cl_input (99) + cl_console core+draw/print (26) + cl_usercmd (24) + cl_keys (26) + cl_snapshot (8) + cl_debug (18) + cl_dobj (12) + cl_localclient (24) + cl_scr (24) + cl_field (17) + cl_lifecycle (15) + cl_parse (20) = 313/313 COMPLETE; render parse + Con_Draw* + SCR_UpdateScreen + CL_Frame + CL_InitRef ported
+
 streamer.o		streamer.o	game	268	TODO	
+
 physics.o		physics.o	game	224	TODO	
+
 game_xbox.o		game_xbox.o	game	210	PORTED	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26) + MPPlayerSet header (2) + XboxLiveMenus.cpp (46: XboxLiveOptionsMenu + InGameLiveOptionsMenu classes, ShowNotificationIcon, Xbox_LaunchInfo, RenderUIX) = 210/210; FEMenu/UIListBox/PanelFile/DialogMenu bases extern (shell.o/core.o provide); HandleError Com_Printf fix; XLive APIs stubbed via /FORCE
+
 sv.o		sv.o	game	118	PORTED	[game:sv.o] COMPLETE 118/118: sv_world collision suite, SV_PostConnect, sv_init/configstrings/reliable cmds, sv_game DObj/XModel, sv_misc helpers, SV_SpawnServer server boot sequence
+
 MPBrocCore_xboxd:Broc.o	MPBrocCore_xboxd	Broc.o	engine	112	PORTED	
+
 aeps_xboxr:apsSuppliedActions.o	aeps_xboxr	apsSuppliedActions.o	engine	88	PORTED	Phase 4: apsSuppliedActions.h/.cpp (particle action stubs, ABI-correct ctors from IDA)
+
 phys_xboxr:physics_system.o	phys_xboxr	physics_system.o	engine	87	PORTED	physics_system.cpp/h: phys_sys API (create/destroy/slots/init/frame/update_constraint_infos/get_user_rigid_body); phys_heap_memory_pool<T> + phys_inplace_avl_tree templates (add/find/remove/rotate/avl_max) in pulse_sum.h; real 0x360 physics_system layout; constraint ctors; rbint/rbcint + list functors; create<T> free template incl. contact tree-insert
+
 nsl_xboxr:nslSource.o	nsl_xboxr	nslSource.o	engine	68	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 ngl_xboxr:ngl_scene.o	ngl_xboxr	ngl_scene.o	engine	67	PORTED	ngl_scene.cpp: full scene graph + matrices (Perspective/Ortho/Viewport/InvScissor/ViewportToWorld/UI), projection/viewport/scissor/fog/clear setters, matrix getters, project/unproject, scene begin/end/present, hires screenshots, frame-buffer sync, callback setters; owns nglBuildScene/nglRootBuildScene/list work + end-of-frame callbacks; nglScene full 0x400 layout
+
 mp_xbox.o		mp_xbox.o	game	61	PORTED	MPMainMenuXBox.cpp (61/61): JoinGameMenu + MPMainMenuXBox + XBoxLiveIngameOptionsCOD3 + AARXBoxLiveIngameOptions menu classes; FEMenu/UIListBox bases extern (shell.o/core.o)
+
 nfl_xboxr:nfl_system.o	nfl_xboxr	nfl_system.o	engine	52	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 aeps_xboxr:apsMemory.o	aeps_xboxr	apsMemory.o	engine	48	PORTED	apsMemory.cpp (Pool/BlockManager/BlockAllocator/Config memory pools; Init/Term/Report; gConfig + BlockManager/BlockAllocator sInstancePtr)
+
 nsl_xboxr:nslWaveBank.o	nsl_xboxr	nslWaveBank.o	engine	48	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 peripherals_xboxr:XboxMemoryUnit.o	peripherals_xboxr	XboxMemoryUnit.o	engine	46	PORTED	XBoxStorage filesystem-backed save/load; async Service loop; CRC trailer
+
 bdPeer:bdSession.obj	bdPeer	bdSession.obj	engine	44	PORTED	[bdPeer] bdSession.cpp: peer-to-peer session state machine (44 funcs) from Demonware 2.0 + IDA
+
 mem_mp_xboxr:mem_lib.o	mem_mp_xboxr	mem_lib.o	engine	43	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
+
 render_xboxr:ngl_aux.o	render_xboxr	ngl_aux.o	engine	40	PORTED	ngl_aux.cpp/h + tlResourceDirectory.h: 40 non-inline (sphere helpers, cdGetClipResult, dir add/del/get/set, auxMeshIterator, static init) + 124 inline (tlResourceDirectory/delegate_directory templates over tlSkipList, GetKeyPtr)
+
 nal_xboxr:nal_generic.o	nal_xboxr	nal_generic.o	engine	38	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 aeps_xboxr:apsEffect.o	aeps_xboxr	apsEffect.o	engine	37	PORTED	apsEffect.cpp (full apsEffect 128B class: ctor/Construct/dtor/Destruct, Update, Render, pool InitPool/New/Delete/TermPool/TestAlloc/IsPoolEmpty/GetNumActiveEffects, modifiers, raycast, Report/ReportTemplate/ReportEffects; apsBlockArray<T>; AEPS_VECTOR_NEW<apsEffect>; g_effectTime)
+
 ngl_xboxr:ngl_debug.o	ngl_xboxr	ngl_debug.o	engine	36	PORTED	ngl_debug.cpp: debug flags, perf averaging, shader profiler (inline COMDATs), line/tri batch adders, shape drawing (box/ellipse/cylinder/sphere/pyramid/solid variants); owns nglDebug/nglPerfInfo/nglAvgPerfInfo/nglSyncDebug/nglSyncPerfInfo + node cur pointers; DiagMat33 added to math_types.h; fast-sin polynomial from math::Sin
+
 bdConnection:bdUnicastConnection.obj	bdConnection	bdUnicastConnection.obj	engine	36	PORTED	[bdConnection] bdUnicastConnection.cpp: reliable unicast state machine (36 funcs) from Demonware 2.0 + IDA
+
 peripherals_xboxr:MemoryUnit.o	peripherals_xboxr	MemoryUnit.o	engine	35	PORTED	MemoryUnitManager state machine + Container/SavedGame types
+
 aeps_xboxr:apsEffectTemplate.o	aeps_xboxr	apsEffectTemplate.o	engine	31	PORTED	apsEffectTemplate.cpp (full apsEffectTemplate class 208B: Element/Modifier/Stats, ctor/dtor, per-element setters, RebuildPFD, Fixup, CalcMemoryNeeded/TestAlloc/MemoryMatch, SetElementData, modifiers; sMaxElements/sMaxModifiers/kDefaultTimeScale; apsArray erase/destroy_all)
+
 phys_xboxr:rb_ragdoll_model.o	phys_xboxr	rb_ragdoll_model.o	engine	31	PORTED	rb_ragdoll_model.cpp/h: ragdoll model (add/remove body/joint/actuator, ballistic target, stability, impulses/damping, velocity field, forces on/off, time scale); phys_static_array<T,10> template (48B) with iterator/add/push_back/find_by_val
+
 bdCore:bdString.obj	bdCore	bdString.obj	engine	28	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 aeps_xboxr:apsSuppliedDomains.o	aeps_xboxr	apsSuppliedDomains.o	engine	26	PORTED	apsSuppliedDomains.cpp (apsDomain::Fixup + Sphere/Y/ZHemisphere/SphereSurface/Line/Disc/Circle domain GetValue/TestValue/ctors, 26 funcs; gHiHat_* globals; GetId FourCCs inline)
+
 ngl_xboxr:ngl_dx_core.o	ngl_xboxr	ngl_dx_core.o	engine	25	PORTED	ngl_dx_core.cpp: D3D device init/present/frame-lock/render frame; ngl_dx_core.h (nglFrameLockType); d3d8.h gamma/vblank/callback/device shims; nglDisplayMode fixed to 16B type; nglSysFont/nglFrameVBlankCount added to owners
+
 bdCore:bdInetAddr.obj	bdCore	bdInetAddr.obj	engine	25	PORTED	bdInetAddr.cpp: internet address (25 funcs) from IDA + Demonware 2.0
+
 nal_xboxr:nal_anim.o	nal_xboxr	nal_anim.o	engine	24	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 tl_xboxr:tl_system.o	tl_xboxr	tl_system.o	engine	23	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
+
 apk_xboxr:apk.o	apk_xboxr	apk.o	engine	23	PORTED	Phase 2: apk.h + apk.cpp (APKF loader)
+
 nal_xboxr:nal_generic_component.o	nal_xboxr	nal_generic_component.o	engine	23	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 bdCore:bdMemory.obj	bdCore	bdMemory.obj	engine	23	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 aeps_xboxr:apsCommon.o	aeps_xboxr	apsCommon.o	engine	22	PORTED	apsCommon.cpp (apsAllocator virtuals + camera/roll + LOD table + statics; apsSingleton<apsError>::sInstancePtr emitted here; InitShaders now calls void InitShader
+
 aeps_xboxr:apsGroup.o	aeps_xboxr	apsGroup.o	engine	22	PORTED	Phase 3: apsGroup.cpp (particle group, all 22 funcs)
+
 ngl_xboxr:ngl_lighting.o	ngl_xboxr	ngl_lighting.o	engine	22	PORTED	ngl_lighting.cpp: light contexts, dir/point/proj light list-add, determine gun/lights/proj-lights, get-single-light helpers, dir-light matrix; owns nglDefault/Build/SendLightContext + nglLightContextParam(ID); nglLightType enum + light info structs; nglScene.LightContext@0x33C added
+
 render_xboxr:ShaderCommon.o	render_xboxr	ShaderCommon.o	engine	21	PORTED	ShaderCommon.h/cpp: toggles (Particles/Fog/ToggleShader + gShaderSwitches table of 36), Init/Register/SetupFrame, texture lookups, Glow/HeatHaze thunks, ShotPerfTest + ShaderInfo; ae_fixed_string operator+=/ae_formatted_string format ctor added
+
 nsl_xboxr:nslCompat.o	nsl_xboxr	nslCompat.o	engine	21	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nvl_xboxr:nvl_base.o	nvl_xboxr	nvl_base.o	engine	21	PORTED	Phase 2: nvl.cpp (video codec stubs)
+
 mp_level.xboxd:mp_level_wad.o	mp_level.xboxd	mp_level_wad.o	engine	20	PORTED	Phase 2: mp_level.cpp (level init stubs)
+
 ngl_xboxr:ngl_font.o	ngl_xboxr	ngl_font.o	engine	19	PORTED	ngl_font.cpp: font dir + parse/string list/dims/listadd; nglFont.h + nglRenderNode.h (render list inline helpers); nglBuildScene/list globals temporarily here until ngl_scene.o
+
 bdCore:bdCommonAddr-xbox.obj	bdCore	bdCommonAddr-xbox.obj	engine	19	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 zlib_xboxr:unzip.o	zlib_xboxr	unzip.o	engine	18	TODO	
+
 ngl_xboxr:ngl_internal.o	ngl_xboxr	ngl_internal.o	engine	18	PORTED	ngl_internal.cpp: skip-list resource dirs (tlSkipList.h), init/exit, globals
+
 ngl_xboxr:ngl_dx_filters.o	ngl_xboxr	ngl_dx_filters.o	engine	18	PORTED	ngl_dx_filters.cpp: filter texture alloc/update/destroy, FillDepth/FogPalette, CopyImage/FilterCopy/RenderGlow/RenderBlur, callbacks; owns CurZBufferLUT/WorkTex/SrcTex/ZBufferTex/ZBufferLUT/BoxFilter/XFilter/YFilter/NPasses/Inc/PrevVals*/D3DZTex; shim adds ZEnable/StencilEnable/XGSetTextureHeader + PS render-state enums
+
 phys_xboxr:phys_constraint_solver_multithreaded.o	phys_xboxr	phys_constraint_solver_multithreaded.o	engine	18	PORTED	phys_constraint_solver_multithreaded.cpp: pulse_sum_normal/point/angular set+get_vel/get_pos/get_objective/apply/clamp/relax, pulse_sum_contact::set + psc_cpi (get_vel/get_objective/apply/SOLVER prolog/relax/intermediate), solve_iterative, list_constraint_solver::process, execute_constraint_solver/solve_constraints/create_pulse_sum_node/add_urb/list_urbri_restore/set_solver_params, temp_user_rigid_body/user_rigid_body_restore_info, rbint euler_integrate_velocity/pos/update_stability/gtv/inv_L/mul_inv_L/setup_constraint/substep, phys_link_list iterator; heavy per-row calc_abs/calc_abs_and_fric_dir/setup_vel_uni_restitution TODO-stubbed
+
 bdCore:bdBitBuffer.obj	bdCore	bdBitBuffer.obj	engine	18	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdAddr.obj	bdCore	bdAddr.obj	engine	18	PORTED	bdAddr.cpp: address+port (18 funcs) from IDA + Demonware 2.0
+
 core_xboxr:PoolAllocator.o	core_xboxr	PoolAllocator.o	engine	17	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
+
 ngl_xboxr:ngl_quad.o	ngl_xboxr	ngl_quad.o	engine	17	PORTED	[ngl_xboxr] ngl_quad.cpp: quad helpers (17 funcs)
+
 ngl_xboxr:ngl_mesh.o	ngl_xboxr	ngl_mesh.o	engine	17	PORTED	ngl_mesh.cpp: process/load/unload mesh+material, LOD selection, mesh list-add + scaled matrix; owns mesh/material directories (moved from ngl_internal) + 3 instance banks + GetMesh/GetMaterialFunc; nglShader canonical vtable + nglMeshNode added; tlInstanceBank.h extracted; fixed real nglMeshSection/nglMesh/nglMeshLOD layouts + ngl_gpu_meshedit offsets
+
 ngl_xboxr:ngl_dx_scene.o	ngl_xboxr	ngl_dx_scene.o	engine	17	PORTED	ngl_dx_scene.cpp: render/z-target + cube-map setters, FSAA device matrix, garbage states, scene setup (Z/stencil/viewport/clear), render scene recursion + render-node dispatch, scene-node callback, begin-scene defaults, fog/DOF enable; ngliScene base (ClearStencil/CubeMapFace) added; RopZCmpAlwaysRead/SetViewport/Clear shims
+
 nsl_xboxr:nslMaster.o	nsl_xboxr	nslMaster.o	engine	16	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 phys_xboxr:rbc_def_generic.o	phys_xboxr	rbc_def_generic.o	engine	16	PORTED	[phys_xboxr] rbc_def_generic.cpp: generic constraints (16 funcs)
+
 bdConnection:bdConnectionStatistics.obj	bdConnection	bdConnectionStatistics.obj	engine	16	PORTED	[bdConnection] bdConnectionStatistics.cpp: stats object (16 funcs)
+
 mem_mp_xboxr:dlmalloc.o	mem_mp_xboxr	dlmalloc.o	engine	15	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
+
 nsl_xboxr:nslWave.o	nsl_xboxr	nslWave.o	engine	15	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nfl_xboxr:txSlotPool.o	nfl_xboxr	txSlotPool.o	engine	15	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 nvl_xboxr:nvl_afmv.o	nvl_xboxr	nvl_afmv.o	engine	15	PORTED	Phase 2: nvl.cpp (video codec stubs)
+
 bdConnection:bdConnection.obj	bdConnection	bdConnection.obj	engine	15	PORTED	[bdConnection] bdConnection.cpp: connection base (15 funcs)
+
 render_xboxr:cdOceanGlobals.o	render_xboxr	cdOceanGlobals.o	engine	14	PORTED	cdOceanGlobals.h/.cpp (ocean globals: sBanks data + SetSeaLevel/Init/SetDefaults/6xSetWave; SetLayer*+SetWaveOrigin+DumpSettings+GetHeight deferred)
+
 controller_xboxr:controller_xbox.o	controller_xboxr	controller_xbox.o	engine	14	PORTED	Phase 2: controller.cpp (XInput wrapper)
+
 jobqueue_xboxr:jobqueue.o	jobqueue_xboxr	jobqueue.o	engine	14	PORTED	Phase 2: jobqueue.cpp (batch job system)
+
 phys_xboxr:rbc_def_ragdoll.o	phys_xboxr	rbc_def_ragdoll.o	engine	14	PORTED	[phys_xboxr] rbc_def_ragdoll.cpp: ragdoll constraint (14 funcs)
+
 phys_xboxr:physics_system_internal.o	phys_xboxr	physics_system_internal.o	engine	14	PORTED	physics_system_internal.cpp: ctor/dtor/allocate_buffer/create_inst/destroy_inst/free_buffer/get_alignment/get_buffer_size/frame_advance/time_step/solver_priority_sort/verify_time_scale/IPN_merge/IPN_verify_time_scale; pool/heap/solver inline templates (allocate_buffer/destroy/calc_index/swap_adjacent/iterators, phys_link_list, pulse_sum_point, solver_info, list_constraint_solver); rbint prolog/take_step/mul_L/calc_col_mat(urb); 2 heavy funcs (IPN_verify_rigid_bodies, generate_partitions_and_stuff) TODO-stubbed
+
 bdNet:bdNet-xbox.obj	bdNet	bdNet-xbox.obj	engine	14	PORTED	[bdNet] bdNet.cpp: network singleton (14 funcs) from Demonware 2.0 + IDA
+
 bdCore:bdSequenceNumber.obj	bdCore	bdSequenceNumber.obj	engine	14	PORTED	bdSequenceNumber.cpp: RFC1982 seq arithmetic from Demonware 2.0 + IDA
+
 nsl_xboxr:nslDriverXBOXDSOUND.o	nsl_xboxr	nslDriverXBOXDSOUND.o	engine	13	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 ngl_xboxr:ngl_gpu.o	ngl_xboxr	ngl_gpu.o	engine	13	PORTED	[ngl_xboxr] ngl_gpu.cpp: full 13 funcs - pack/unpack vertex buffer (14 format cases each), SetBonesWorld/Local; gpuVertexElementUsage enum added; fixed dx_shader bone-matrix order (InvRest*Rel) + identity rows
+
 bdConnection:bdSAckChunk.obj	bdConnection	bdSAckChunk.obj	engine	13	PORTED	[bdConnection] bdSAckChunk.cpp: selective-ack chunk (13 funcs)
+
 bdNet:bdGameInfo.obj	bdNet	bdGameInfo.obj	engine	13	PORTED	[bdNet] bdGameInfo.cpp: discovery game info + factory (18 funcs)
+
 render_xboxr:cdOceanShader.o	render_xboxr	cdOceanShader.o	engine	12	PORTED	cdOceanShader.h/.cpp (ocean shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; SetContext+Render deferred)
+
 zlib_xboxr:deflate.o	zlib_xboxr	deflate.o	engine	12	TODO	
+
 aeps_xboxr:apsInternal.o	aeps_xboxr	apsInternal.o	engine	12	PORTED	apsInternal.cpp (SpawnedEffectQueue + basis helpers; 5 D3D render-state funcs as exact-signature stubs; defines apsQuaternion default ctor; GetBlendColor inline fixed to real name
+
 nfl_xboxr:nfl_debug.o	nfl_xboxr	nfl_debug.o	engine	12	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 ngl_xboxr:ngl_gpu_meshedit.o	ngl_xboxr	ngl_gpu_meshedit.o	engine	12	PORTED	[ngl_xboxr] ngl_gpu_meshedit.cpp: GPU mesh sections (12 funcs)
+
 bdConnection:bdConnectionStore.obj	bdConnection	bdConnectionStore.obj	engine	12	PORTED	[bdConnection] bdConnectionStore.cpp: connection store + bdHashMap template (12 funcs) from Demonware 2.0 + IDA
+
 bdConnection:bdDataChunk.obj	bdConnection	bdDataChunk.obj	engine	12	PORTED	[bdConnection] bdDataChunk.cpp: data chunk (12 funcs) from Demonware 2.0 + IDA
+
 mem_mp_xboxr:mem_lib_platform.o	mem_mp_xboxr	mem_lib_platform.o	engine	11	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
+
 controller_xboxr:controller.o	controller_xboxr	controller.o	engine	11	PORTED	Phase 2: controller.cpp (XInput wrapper)
+
 zlib_xboxr:inflate.o	zlib_xboxr	inflate.o	engine	11	TODO	
+
 nfl_xboxr:txPath.o	nfl_xboxr	txPath.o	engine	11	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 jobqueue_xboxr:jobqueue_legacy.o	jobqueue_xboxr	jobqueue_legacy.o	engine	11	PORTED	Phase 2: jobqueue.cpp (batch job system)
+
 ngl_xboxr:ngl_dx_tex_create.o	ngl_xboxr	ngl_dx_tex_create.o	engine	11	PORTED	ngl_dx_tex_create.cpp: save/create-from-file/destroy + framebuffer/cube textures; homes nglFront/Back/DepthBufferTex + normal cube map; D3DFMT/_D3DSURFACE_DESC shims
+
 ngl_xboxr:ngl_debugdraw.o	ngl_xboxr	ngl_debugdraw.o	engine	11	PORTED	ngl_debugdraw.cpp: front-buffer CPU raster (begin/end, width/height, plot 565+8888, hline/vline/rect/fill), 8x8 bitmap font text (internal + text)
+
 nal_xboxr:nal_init.o	nal_xboxr	nal_init.o	engine	11	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 bdSocket:bdQoSProbe-xbox.obj	bdSocket	bdQoSProbe-xbox.obj	engine	11	PORTED	[bdSocket] bdQoSProbe.cpp: XNet QoS probe (11 funcs) from Demonware 2.0 + IDA; listener callbacks fixed
+
 render_xboxr:cdRiverShader.o	render_xboxr	cdRiverShader.o	engine	10	PORTED	cdRiverShader.h/.cpp (river shader: mat ctor/Init/Toggle/5 node getters/Register/AddNode; Render deferred)
+
 ngl_xboxr:ngl_dx_texture.o	ngl_xboxr	ngl_dx_texture.o	engine	10	PORTED	ngl_dx_texture.cpp: tex stage cache + front/back buffer + genmipmaps; D3D__TextureState/DTE shim decls; StageCache layout fixed (32B)
+
 phys_xboxr:rbc_def_vehicle.o	phys_xboxr	rbc_def_vehicle.o	engine	10	PORTED	[phys_xboxr] rbc_def_vehicle.cpp: wheel constraint (10 funcs)
+
 phys_xboxr:phys_contact_manifold.o	phys_xboxr	phys_contact_manifold.o	engine	10	PORTED	[phys_xboxr] phys_contact_manifold.cpp: manifold convex-poly (10 funcs)
+
 bdConnection:bdReliableSendWindow.obj	bdConnection	bdReliableSendWindow.obj	engine	10	PORTED	[bdConnection] bdReliableSendWindow.cpp: reliable send window (10 funcs) from Demonware 2.0 + IDA
+
 bdConnection:bdInitAckChunk.obj	bdConnection	bdInitAckChunk.obj	engine	10	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
+
 bdConnection:bdCookie.obj	bdConnection	bdCookie.obj	engine	10	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
+
 bdPeer:bdSessionListener.obj	bdPeer	bdSessionListener.obj	engine	10	PORTED	[bdPeer] bdSessionListener.cpp: session listener callbacks (10 funcs) from Demonware 2.0 + IDA
+
 bdSocket:bdSocketRouter-xbox.obj	bdSocket	bdSocketRouter-xbox.obj	engine	10	PORTED	[bdSocket] bdSocketRouter.cpp: socket routing layer (10 funcs) from Demonware 2.0 + IDA
+
 bdCore:bdSocket.obj	bdCore	bdSocket.obj	engine	10	PORTED	bdSocket.cpp: UDP socket wrapper (10 funcs) from IDA + Demonware 2.0
+
 core_xboxr:ae_fixed_string.o	core_xboxr	ae_fixed_string.o	engine	9	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
+
 cdl_xboxr:cdl_common.o	cdl_xboxr	cdl_common.o	engine	9	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
+
 nsl_xboxr:nslAram.o	nsl_xboxr	nslAram.o	engine	9	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nfl_xboxr:nfl_common.o	nfl_xboxr	nfl_common.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 nfl_xboxr:nfl_win32_driver.o	nfl_xboxr	nfl_win32_driver.o	engine	9	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 tl_xboxr:tl_instbank.o	tl_xboxr	tl_instbank.o	engine	9	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
+
 ngl_xboxr:ngl_meshedit.o	ngl_xboxr	ngl_meshedit.o	engine	9	PORTED	[ngl_xboxr] ngl_meshedit.cpp: mesh container management (9 funcs) from IDA
+
 ngl_xboxr:ngl_dx_shader.o	ngl_xboxr	ngl_dx_shader.o	engine	9	PORTED	ngl_dx_shader.cpp: vshader/pshader registration, bones world/local, fog/light constant setup, internal shader register + init; nglSkeleton/nglSkeletonBone added; SetShaderConstantMode shim
+
 ngl_xboxr:ngl_xb_palette.o	ngl_xboxr	ngl_xb_palette.o	engine	9	PORTED	ngl_xb_palette.cpp: palette create/destroy/bind + nglPalette.h; D3DPalette/_D3DCAPS8/palette shims in d3d8.h
+
 nal_xboxr:nal_skeleton.o	nal_xboxr	nal_skeleton.o	engine	9	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 bdCore:bdLog.obj	bdCore	bdLog.obj	engine	9	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdConnection:bdMessage.obj	bdConnection	bdMessage.obj	engine	9	PORTED	[bdConnection] bdMessage.cpp: network message (9 funcs)
+
 bdConnection:bdInitChunk.obj	bdConnection	bdInitChunk.obj	engine	9	PORTED	[bdConnection] bdInitChunk.cpp: connection init chunks (19 funcs)
+
 bdConnection:bdPacket.obj	bdConnection	bdPacket.obj	engine	9	PORTED	[bdConnection] bdPacket.cpp: packet container (9 funcs)
+
 bdNet:bdDiscoveryServer.obj	bdNet	bdDiscoveryServer.obj	engine	9	PORTED	[bdNet] bdDiscoveryServer.cpp: LAN discovery server (9 funcs) from Demonware 2.0 + IDA
+
 nextgen.o		nextgen.o	game	8	PORTED	[game:nextgen.o] nextgen.cpp: CG_MotionBlur + CG_SceneBlur post callbacks (8 funcs)
+
 aeps_xboxr:apsMath.o	aeps_xboxr	apsMath.o	engine	21	PORTED	apsMath.cpp (math helpers: quaternion ops, ortho basis, AABB, Shepperd, fast SinCos; apsQuaternion fixed to struct/operator+=
+
 nsl_xboxr:nslGroup.o	nsl_xboxr	nslGroup.o	engine	8	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nfl_xboxr:tx_tl.o	nfl_xboxr	tx_tl.o	engine	8	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 ngl_xboxr:ngl_texture.o	ngl_xboxr	ngl_texture.o	engine	8	PORTED	ngl_texture.cpp: texture dir globals + apk callbacks; tlSkipList.h/tlFixedString.h rewritten binary-exact; apk.h/cpp field layouts fixed (apkFile at +8)
+
 phys_xboxr:phys_util.o	phys_xboxr	phys_util.o	engine	8	PORTED	[phys_xboxr] phys_util.cpp: nuge aggregate utils (8 funcs)
+
 bdCore:bdBytePacker.obj	bdCore	bdBytePacker.obj	engine	8	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdConnection:bdLoopbackConnection.obj	bdConnection	bdLoopbackConnection.obj	engine	8	PORTED	[bdConnection] bdLoopbackConnection.cpp: loopback connection (8 funcs) from Demonware 2.0 + IDA
+
 bdConnection:bdCookieEchoChunk.obj	bdConnection	bdCookieEchoChunk.obj	engine	8	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
+
 bdNet:bdDiscoveryClient.obj	bdNet	bdDiscoveryClient.obj	engine	8	PORTED	[bdNet] bdDiscoveryClient.cpp: LAN discovery client (8 funcs) from Demonware 2.0 + IDA
+
 core_xboxr:AeAssert.o	core_xboxr	AeAssert.o	engine	7	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
+
 render_xboxr:cdGlowShader.o	render_xboxr	cdGlowShader.o	engine	7	PORTED	cdGlowShader.h/.cpp (glow shader: Toggle/Init/Setup/GlowSetTaps/LerpTaps; GlowFilter+GlowCallback deferred)
+
 render_xboxr:cdSimpleInstance.o	render_xboxr	cdSimpleInstance.o	engine	7	PORTED	cdSimpleInstance.h/.cpp (simple instance: Init/Toggle/Create/Destroy; Add/Finalize/Render deferred)
+
 render_xboxr:cdDebugShader.o	render_xboxr	cdDebugShader.o	engine	7	PORTED	cdDebugShader.h/.cpp (debug shader: mat ctor/Init/Toggle/Register/AddNode; GetSortInfo+Render deferred)
+
 render_xboxr:cdSimpleUVAnimShader.o	render_xboxr	cdSimpleUVAnimShader.o	engine	7	PORTED	cdSimpleUVAnimShader.h/.cpp (UV anim shader: mat ctor/Init/Toggle/Register/AddNode; SetTextureMatrix+Render deferred)
+
 render_xboxr:cdWheelMarkShader.o	render_xboxr	cdWheelMarkShader.o	engine	7	PORTED	cdWheelMarkShader.h/.cpp (wheel mark shader: mat ctor/Init/Toggle(empty)/VertexDefBuilder/Register/AddNode; Render deferred)
+
 render_xboxr:cdFlagShader.o	render_xboxr	cdFlagShader.o	engine	7	PORTED	cdFlagShader.h/.cpp (flag shader: mat ctor/Init+FlagSinTable/Toggle/Register/AddNode; CalculateFlagMatrix+Render deferred)
+
 render_xboxr:cdSimpleSpecularShader.o	render_xboxr	cdSimpleSpecularShader.o	engine	7	PORTED	cdSimpleSpecularShader.h/.cpp (specular shader: mat ctor/Init/Toggle/Register/AddNode; GetEyePos+Render deferred)
+
 aeps_xboxr:apsGroupMgr.o	aeps_xboxr	apsGroupMgr.o	engine	7	PORTED	apsGroupMgr.cpp (group manager singleton: CreateGroup/DestroyGroup/DestroyAllGroups/TestAlloc/Report/ctor/dtor over apsMemory::PoolAllocator<apsGroup>)
+
 aeps_xboxr:apsActionList.o	aeps_xboxr	apsActionList.o	engine	7	PORTED	apsActionList.cpp (Apply/EnhancePFD/Fixup/ctor/dtor/Add + anon GetVisibleParticleUpdateDelay; g_updateLOD static table; apsEffect.h minimal views; apsArray push_back/push_front
+
 nsl_xboxr:nslListener.o	nsl_xboxr	nslListener.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nsl_xboxr:nslInit.o	nsl_xboxr	nslInit.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nsl_xboxr:nslPriority.o	nsl_xboxr	nslPriority.o	engine	7	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 ngl_xboxr:ngl_scenedump.o	ngl_xboxr	ngl_scenedump.o	engine	7	PORTED	ngl_scenedump.cpp: scene dump helpers; nglDebug.h (17-byte nglDebugStruct); nglMeshParams type added to ngl_dx_gpu.h
+
 ngl_xboxr:ngl_morph.o	ngl_xboxr	ngl_morph.o	engine	7	PORTED	ngl_morph.cpp: morph dir + blend/unique/process; nglMorph.h (morph types); directory moved from ngl_internal.cpp
+
 nal_xboxr:nal_cache.o	nal_xboxr	nal_cache.o	engine	7	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 phys_xboxr:rigid_body.o	phys_xboxr	rigid_body.o	engine	7	PORTED	[phys_xboxr] rigid_body.cpp: body setup + forces (7 funcs)
+
 bdCore:bdRandom.obj	bdCore	bdRandom.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdStopwatch.obj	bdCore	bdStopwatch.obj	engine	7	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdConnection:bdChunk.obj	bdConnection	bdChunk.obj	engine	7	PORTED	[bdConnection] bdChunk.cpp: packet chunk base (7 funcs)
+
 bdSocket:bdAddressMap-xbox.obj	bdSocket	bdAddressMap-xbox.obj	engine	7	PORTED	[bdSocket] bdAddressMap.cpp: address handle <-> common addr map (7 funcs) from Demonware 2.0 + IDA
+
 mem_mp_xboxr:ae_heap.o	mem_mp_xboxr	ae_heap.o	engine	6	PORTED	Phase 2: mem_heap.cpp (malloc wrappers, dlmalloc stubs, ae_heap)
+
 render_xboxr:cdScratchShader.o	render_xboxr	cdScratchShader.o	engine	6	PORTED	cdScratchShader.h/.cpp (scratch shader: material ctor/Toggle/Register/Init/AddNode; Render deferred) + add as_u32 to ShaderSwitching_t
+
 render_xboxr:cdSimpleAlphaShader.o	render_xboxr	cdSimpleAlphaShader.o	engine	6	PORTED	cdSimpleAlphaShader.h/.cpp (simple alpha shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdDynamicDecalShader.o	render_xboxr	cdDynamicDecalShader.o	engine	6	PORTED	cdDynamicDecalShader.h/.cpp (dynamic decal shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdGunSightSpecularShader.o	render_xboxr	cdGunSightSpecularShader.o	engine	6	PORTED	cdGunSightSpecularShader.h/.cpp (gun sight specular: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdGunSightShader.o	render_xboxr	cdGunSightShader.o	engine	6	PORTED	cdGunSightShader.h/.cpp (gun sight shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdGunShader.o	render_xboxr	cdGunShader.o	engine	6	PORTED	cdGunShader.h/.cpp (gun shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdPropellerShader.o	render_xboxr	cdPropellerShader.o	engine	6	PORTED	cdPropellerShader.h/.cpp (propeller shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdDecalShader.o	render_xboxr	cdDecalShader.o	engine	6	PORTED	cdDecalShader.h/.cpp (decal shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred) + fix Toggle bit-preserve expr in 3 prior shaders
+
 render_xboxr:cdSimplePrelitShader.o	render_xboxr	cdSimplePrelitShader.o	engine	6	PORTED	cdSimplePrelitShader.h/.cpp (simple prelit shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdSimpleShader.o	render_xboxr	cdSimpleShader.o	engine	6	PORTED	cdSimpleShader.h/.cpp (simple shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdWaterShader.o	render_xboxr	cdWaterShader.o	engine	6	PORTED	cdWaterShader.h/.cpp (water shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdWorldVertexLitShader.o	render_xboxr	cdWorldVertexLitShader.o	engine	6	PORTED	cdWorldVertexLitShader.h/.cpp (world vertex lit: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdBackgroundShader.o	render_xboxr	cdBackgroundShader.o	engine	6	PORTED	cdBackgroundShader.h/.cpp (background shader: mat ctor/Init/Toggle/Register/AddNode; Render deferred)
+
 aeps_xboxr:apsRegister.o	aeps_xboxr	apsRegister.o	engine	6	PORTED	apsRegister.cpp (registry: GetNewSimpleMesh/ShrimpRenderer, apsGetRenderer/apsGetDomain/apsGetAction dispatch + fixup-table build, apsLoadEffectInplace; apsParam ops, GetEnum, Create*Domain, GetNew*Renderer, template domains, RetrieveVtable COMDATs)
+
 aeps_xboxr:apsBillboardRenderer.o	aeps_xboxr	apsBillboardRenderer.o	engine	6	PORTED	apsBillboardRenderer.h/.cpp (billboard renderer + node + DefaultRender template + apsLight::LightInfo)
+
 nvl_xboxr:nvl_xbox.o	nvl_xboxr	nvl_xbox.o	engine	6	PORTED	Phase 2: nvl.cpp (video codec stubs)
+
 bdCore:bdSecurityKey-xbox.obj	bdCore	bdSecurityKey-xbox.obj	engine	6	PORTED	bdSecurityKeyMap.cpp: XNet key registry (6 funcs) from IDAverified against COD3 decompilation
+
 bdCore:bdLogChannel.obj	bdCore	bdLogChannel.obj	engine	6	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdConnection:bdReliableReceiveWindow.obj	bdConnection	bdReliableReceiveWindow.obj	engine	6	PORTED	[bdConnection] bdReliableReceiveWindow.cpp: reliable recv window (6 funcs) from Demonware 2.0 + IDA
+
 bdConnection:bdCookieAckChunk.obj	bdConnection	bdCookieAckChunk.obj	engine	6	PORTED	[bdConnection] bdCookie.cpp: cookie + echo/ack chunks (24 funcs)
+
 bdConnection:bdHeartbeatChunk.obj	bdConnection	bdHeartbeatChunk.obj	engine	6	PORTED	[bdConnection] bdHeartbeatChunk.cpp: heartbeat control chunks (12 funcs)
+
 bdConnection:bdHeartbeatAckChunk.obj	bdConnection	bdHeartbeatAckChunk.obj	engine	6	PORTED	[bdConnection] bdHeartbeatChunk.cpp: heartbeat control chunks (12 funcs)
+
 bdConnection:bdShutdownChunk.obj	bdConnection	bdShutdownChunk.obj	engine	6	PORTED	[bdConnection] bdShutdownChunk.cpp: shutdown control chunks (18 funcs)
+
 bdConnection:bdShutdownAckChunk.obj	bdConnection	bdShutdownAckChunk.obj	engine	6	PORTED	[bdConnection] bdShutdownChunk.cpp: shutdown control chunks (18 funcs)
+
 bdConnection:bdShutdownCompleteChunk.obj	bdConnection	bdShutdownCompleteChunk.obj	engine	6	PORTED	[bdConnection] bdShutdownChunk.cpp: shutdown control chunks (18 funcs)
+
 render_xboxr:cdCharSpecularShader.o	render_xboxr	cdCharSpecularShader.o	engine	5	PORTED	cdCharSpecularShader.h/.cpp (char specular shader: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdCharShader.o	render_xboxr	cdCharShader.o	engine	5	PORTED	cdCharShader.h/.cpp (char shader: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdPrelitShader.o	render_xboxr	cdPrelitShader.o	engine	5	PORTED	cdPrelitShader.h/.cpp (prelit shader: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdAirplaneMetalShader.o	render_xboxr	cdAirplaneMetalShader.o	engine	5	PORTED	cdAirplaneMetalShader.h/.cpp (airplane metal shader: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdWorldBlendPointLitShader.o	render_xboxr	cdWorldBlendPointLitShader.o	engine	5	PORTED	cdWorldBlendPointLitShader.h/.cpp (world blend point lit: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdWorldPointLitShader.o	render_xboxr	cdWorldPointLitShader.o	engine	5	PORTED	cdWorldPointLitShader.h/.cpp (world point lit: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdWorldBlendShader.o	render_xboxr	cdWorldBlendShader.o	engine	5	PORTED	cdWorldBlendShader.h/.cpp (world blend: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdWorldShader.o	render_xboxr	cdWorldShader.o	engine	5	PORTED	cdWorldShader.h/.cpp (world shader: Init/Toggle/Register/AddNode; Render deferred)
+
 zlib_xboxr:trees.o	zlib_xboxr	trees.o	engine	5	TODO	
+
 zlib_xboxr:zutil.o	zlib_xboxr	zutil.o	engine	5	TODO	
+
 aeps_xboxr:apsAction.o	aeps_xboxr	apsAction.o	engine	5	PORTED	apsAction.cpp (apsAction base: ctor/dtor/SetParam/SetDomain/Fixup; apsArray<T>+apsVirtualBase+apsDestroy/apsFixUp in apsAction.h; removed stale apsSuppliedActions stubs
+
 cdl_xboxr:cdl_gjk.o	cdl_xboxr	cdl_gjk.o	engine	5	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
+
 nsl_xboxr:nslVoice.o	nsl_xboxr	nslVoice.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nsl_xboxr:nslWaveBankLoader.o	nsl_xboxr	nslWaveBankLoader.o	engine	5	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nfl_xboxr:tx.o	nfl_xboxr	tx.o	engine	5	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 ngl_xboxr:ngl_dx_debug.o	ngl_xboxr	ngl_dx_debug.o	engine	5	PORTED	ngl_dx_debug.cpp: shader profile print/record/compare + ngliShaderProfile.h; verified vs cod_3p reference (older NGL) + IDA
+
 nal_xboxr:nal_stream.o	nal_xboxr	nal_stream.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 nal_xboxr:nal_sceneanim.o	nal_xboxr	nal_sceneanim.o	engine	5	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 phys_xboxr:phys_gjk.o	phys_xboxr	phys_gjk.o	engine	5	PORTED	[phys_xboxr] phys_gjk.cpp: GJK simplex core (5 funcs)
+
 bdCore:bdMallocMemory.obj	bdCore	bdMallocMemory.obj	engine	5	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdConnection:bdUnreliableSendWindow.obj	bdConnection	bdUnreliableSendWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableSendWindow.cpp: unreliable send window (5 funcs) from Demonware 2.0 + IDA
+
 bdConnection:bdUnreliableReceiveWindow.obj	bdConnection	bdUnreliableReceiveWindow.obj	engine	5	PORTED	[bdConnection] bdUnreliableReceiveWindow.cpp: unreliable recv window (5 funcs) from Demonware 2.0 + IDA
+
 bdNet:bdGameInfoFactory.obj	bdNet	bdGameInfoFactory.obj	engine	5	PORTED	[bdNet] bdGameInfo.cpp: game info factory (5 funcs)
+
 bdNet:bdDiscoveryListener.obj	bdNet	bdDiscoveryListener.obj	engine	5	PORTED	[bdNet] bdDiscoveryListener.cpp: discovery listener (5 funcs) from Demonware 2.0 + IDA
+
 bdPlatform:bdPlatformTiming-xbox.obj	bdPlatform	bdPlatformTiming-xbox.obj	engine	5	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
+
 bdConnection:bdConnectionListener.obj	bdConnection	bdConnectionListener.obj	engine	5	PORTED	[bdConnection] bdConnectionListener.cpp: connection listener (5 funcs) from Demonware 2.0 + IDA
+
 render_xboxr:cdHeatHazeShader.o	render_xboxr	cdHeatHazeShader.o	engine	4	PORTED	cdHeatHazeShader.h/.cpp (heat haze: Toggle/Init; Setup+Render deferred)
+
 render_xboxr:cdGlassShader.o	render_xboxr	cdGlassShader.o	engine	4	PORTED	cdGlassShader.h/.cpp (glass shader: Init/Toggle/Register/AddNode; Render deferred)
+
 render_xboxr:cdSimpleColorShader.o	render_xboxr	cdSimpleColorShader.o	engine	4	PORTED	cdSimpleColorShader.h/.cpp (solid-color shader + node)
+
 render_xboxr:cdWorldColorShader.o	render_xboxr	cdWorldColorShader.o	engine	4	PORTED	cdWorldColorShader.h/.cpp (world color shader + node + clip)
+
 render_xboxr:cdSkyShader.o	render_xboxr	cdSkyShader.o	engine	4	PORTED	cdSkyShader.h/.cpp (sky shader: Init/Toggle/Register; Render deferred)
+
 aeps_xboxr:apsSimpleMeshRenderer.o	aeps_xboxr	apsSimpleMeshRenderer.o	engine	4	PORTED	apsSimpleMeshRenderer.h/.cpp + apsRenderNode.h + nglScene.h (mesh renderer, node/shader inline COMDATs)
+
 aeps_xboxr:apsVertexBuffer.o	aeps_xboxr	apsVertexBuffer.o	engine	4	PORTED	apsVertexBuffer.h/.cpp (double-buffered sprite vertex/index pool + 12 data globals)
+
 aeps_xboxr:apsPFD.o	aeps_xboxr	apsPFD.o	engine	4	PORTED	apsPFD.cpp (field descriptor: sizes/offsets/stride + sElementSizes data)
+
 nfl_xboxr:nfl_driver.o	nfl_xboxr	nfl_driver.o	engine	4	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 ngl_xboxr:ngl_dx_state.o	ngl_xboxr	ngl_dx_state.o	engine	6	PORTED	ngl_dx_state.cpp: nglDxRenderState Reset/SetBlendMode/FSAAFixup/Init/SetBlendColor/SetMaxAnisotropy (4 non-inline + 2 inline-ish); verbatim BM bitfield; XDK state-cache externs in d3d8.h
+
 ngl_xboxr:ngl_dx_buf.o	ngl_xboxr	ngl_dx_buf.o	engine	4	PORTED	ngl_dx_buf.cpp: work buffer get/alloc + push buffer sizes + init; owns nglPushBufferSize(0x100000)/Kickoff(0x10000) + nglWorkBuffer*; nglBufferType enum; scratch buffers externed to ngl_gpu_meshedit.o
+
 ngl_xboxr:ngl_dx_mesh.o	ngl_xboxr	ngl_dx_mesh.o	engine	4	PORTED	ngl_dx_mesh.cpp: vertex-decl bank dedup + section D3D pointer fixups + clip-result; owns nglVertexDeclarationBank; ngliReleaseSection empty
+
 phys_xboxr:rbc_def_contact.o	phys_xboxr	rbc_def_contact.o	engine	4	PORTED	[phys_xboxr] rbc_def_contact.cpp: contact constraint (4 funcs)
+
 bdCore:bdBitOperations.obj	bdCore	bdBitOperations.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdMutex.obj	bdCore	bdMutex.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdConnection:bdReceivedMessage.obj	bdConnection	bdReceivedMessage.obj	engine	4	PORTED	[bdConnection] bdReceivedMessage.cpp: received message (4 funcs) from Demonware 2.0 + IDA
+
 bdNet:bdDispatcher.obj	bdNet	bdDispatcher.obj	engine	4	PORTED	[bdNet] bdDispatcher.cpp: message dispatcher (4 funcs) from Demonware 2.0 + IDA; bdFastArray helpers now real
+
 bdPlatform:bdPlatformMutex-xbox.obj	bdPlatform	bdPlatformMutex-xbox.obj	engine	4	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
+
 bdCore:bdShortTimer.obj	bdCore	bdShortTimer.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdHMacSHA1.obj	bdCore	bdHMacSHA1.obj	engine	4	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 zlib_xboxr:compress.o	zlib_xboxr	compress.o	engine	3	PORTED	
+
 zlib_xboxr:crc32.o	zlib_xboxr	crc32.o	engine	3	PORTED	
+
 aeps_xboxr:apsVFC.o	aeps_xboxr	apsVFC.o	engine	3	PORTED	Phase 3: apsVFC.cpp (frustum culling, all 3 funcs)
+
 aeps_xboxr:apsError.o	aeps_xboxr	apsError.o	engine	3	PORTED	Phase 3: apsError.cpp/.h (error singleton + allocator, 3 funcs)
+
 aeps_xboxr:apsShrimpRenderer.o	aeps_xboxr	apsShrimpRenderer.o	engine	3	PORTED	apsShrimpRenderer.h/.cpp (shrimp/sprite renderer, shrimp node + apsEBlendMode)
+
 aeps_xboxr:apsColorRectangleRenderer.o	aeps_xboxr	apsColorRectangleRenderer.o	engine	3	PORTED	apsColorRectangleRenderer.h/.cpp (color rectangle renderer + node)
+
 aeps_xboxr:apsColorRectangleRenderer.o	aeps_xboxr	apsColorRectangleRenderer.o	engine	3	PORTED	
+
 aeps_xboxr:apsColorUVARectangleRenderer.o	aeps_xboxr	apsColorUVARectangleRenderer.o	engine	3	PORTED	apsColorUVARectangleRenderer.h/.cpp (color UVA rectangle renderer + node)
+
 aeps_xboxr:apsColorUVARectangleRenderer.o	aeps_xboxr	apsColorUVARectangleRenderer.o	engine	3	PORTED	
+
 aeps_xboxr:apsUVARectangleRenderer.o	aeps_xboxr	apsUVARectangleRenderer.o	engine	3	PORTED	apsUVARectangleRenderer.h/.cpp (UVA rectangle renderer + node)
+
 aeps_xboxr:apsUVARectangleRenderer.o	aeps_xboxr	apsUVARectangleRenderer.o	engine	3	PORTED	
+
 aeps_xboxr:apsRectangleRenderer.o	aeps_xboxr	apsRectangleRenderer.o	engine	3	PORTED	apsRectangleRenderer.h/.cpp (rectangle renderer + node)
+
 aeps_xboxr:apsRectangleRenderer.o	aeps_xboxr	apsRectangleRenderer.o	engine	3	PORTED	
+
 aeps_xboxr:apsColorUVARenderer.o	aeps_xboxr	apsColorUVARenderer.o	engine	3	PORTED	apsColorUVARenderer.h/.cpp (color UVA renderer + node)
+
 aeps_xboxr:apsColorUVARenderer.o	aeps_xboxr	apsColorUVARenderer.o	engine	3	PORTED	
+
 aeps_xboxr:apsColorBillboardRenderer.o	aeps_xboxr	apsColorBillboardRenderer.o	engine	3	PORTED	apsColorBillboardRenderer.h/.cpp (color billboard renderer + node)
+
 aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	PORTED	apsUVARenderer.h/.cpp (UVA renderer + node + frame math)
+
 aeps_xboxr:apsUVARenderer.o	aeps_xboxr	apsUVARenderer.o	engine	3	PORTED	
+
 aeps_xboxr:apsRenderer.o	aeps_xboxr	apsRenderer.o	engine	3	PORTED	Phase 3: apsRenderer.cpp/.h (renderer base + fixup, 3 funcs)
+
 nsl_xboxr:nslWaveBankSort.o	nsl_xboxr	nslWaveBankSort.o	engine	3	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nvl_xboxr:afmv_dx_idct.o	nvl_xboxr	afmv_dx_idct.o	engine	3	PORTED	Phase 2: nvl.cpp (video codec stubs)
+
 ngl_xboxr:ngl_dx_scenedump.o	ngl_xboxr	ngl_dx_scenedump.o	engine	3	PORTED	ngl_dx_scenedump.cpp: nglHostOpen/Printf/Close (host file I/O)
+
 bdCore:bdLogSubscriber.obj	bdCore	bdLogSubscriber.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdByteBuffer.obj	bdCore	bdByteBuffer.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdCore.obj	bdCore	bdCore.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdAlignedOffsetMemory.obj	bdCore	bdAlignedOffsetMemory.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdPeer:bdSessionInfo.obj	bdPeer	bdSessionInfo.obj	engine	3	PORTED	bdSessionInfo.h/.cpp (session info formatters; bdSession/bdAddressMapImpl opaque)
+
 bdPeer:bdSessionHandler.obj	bdPeer	bdSessionHandler.obj	engine	3	PORTED	bdSessionHandler.h/.cpp (bdSessionInterceptor interface + default handler)
+
 bdCore:bdTrulyRandom.obj	bdCore	bdTrulyRandom.obj	engine	3	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 core_xboxr:ae_controller.o	core_xboxr	ae_controller.o	engine	2	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
+
 render_xboxr:cdDebugVertexDef.o	render_xboxr	cdDebugVertexDef.o	engine	2	PORTED	cdDebugVertexDef.cpp/.h (debug vertex format + tlInitListFunction inline class)
+
 render_xboxr:cdScratchVertexDef.o	render_xboxr	cdScratchVertexDef.o	engine	2	PORTED	cdScratchVertexDef.cpp (scratch vertex format builder)
+
 render_xboxr:cdDynamicDecalVertexDef.o	render_xboxr	cdDynamicDecalVertexDef.o	engine	2	PORTED	cdDynamicDecalVertexDef.cpp (dynamic decal vertex format builder)
+
 zlib_xboxr:adler32.o	zlib_xboxr	adler32.o	engine	2	PORTED	
+
 aeps_xboxr:apsDebug.o	aeps_xboxr	apsDebug.o	engine	2	PORTED	apsDebug.h/.cpp (PrintWarning/Print + mbEnabled data, Enabled/SetEnabled inline)
+
 cdl_xboxr:cdl_base.o	cdl_xboxr	cdl_base.o	engine	2	PORTED	Phase 2: cdl_common, cdl_gjk (stubs), cdl_base
+
 nsl_xboxr:nslUpdate.o	nsl_xboxr	nslUpdate.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nsl_xboxr:nslMemory.o	nsl_xboxr	nslMemory.o	engine	2	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nvl_xboxr:afmv_dx_rgb.o	nvl_xboxr	afmv_dx_rgb.o	engine	2	PORTED	Phase 2: nvl.cpp (video codec stubs)
+
 ngl_xboxr:ngl_dx_quad.o	ngl_xboxr	ngl_dx_quad.o	engine	2	PORTED	ngl_dx_quad.h/.cpp (push-buffer quad render + ViewToScreenZ/SetTextureUV inlines)
+
 ngl_xboxr:ngl_gpu_debug.o	ngl_xboxr	ngl_gpu_debug.o	engine	2	PORTED	ngl_gpu_debug.h/.cpp (debug line/tri render + gpuSetVertexShader inline)
+
 nal_xboxr:nal_ik.o	nal_xboxr	nal_ik.o	engine	2	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 phys_xboxr:phys_collision.o	phys_xboxr	phys_collision.o	engine	2	PORTED	phys_collision.cpp calc_feature_normal ported; process @0x878C10 (2678B) deferred (needs manifold_process infra)
+
 phys_xboxr:rbc_def_custom.o	phys_xboxr	rbc_def_custom.o	engine	2	PORTED	rbc_def_custom.cpp + pulse_sum.h (custom orientation/path constraint setup)
+
 bdPeer:bdSessionInterceptor.obj	bdPeer	bdSessionInterceptor.obj	engine	2	PORTED	bdSessionInterceptor.cpp (abstract connect-intercept interface)
+
 bdSocket:bdQoSProbeListener.obj	bdSocket	bdQoSProbeListener.obj	engine	2	PORTED	bdQoSProbeListener.h/.cpp (abstract QoS probe listener)
+
 bdNet:bdDispatchInterceptor.obj	bdNet	bdDispatchInterceptor.obj	engine	2	PORTED	bdDispatchInterceptor.h/.cpp (abstract dispatch interface)
+
 CallFunctor.o		CallFunctor.o	game	1	PORTED	AeThreadFunctor.h + CallFunctor.cpp (virtual CallFunction dispatch)
+
 core_xboxr:AeHash.o	core_xboxr	AeHash.o	engine	1	PORTED	Phase 2: PoolAllocator, ae_string_support, ae_assert, ae_hash, ae_controller
+
 inplace_xboxr:InplaceTree.o	inplace_xboxr	InplaceTree.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
+
 inplace_xboxr:PtrFixupTable.o	inplace_xboxr	PtrFixupTable.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
+
 inplace_xboxr:InplaceFileBuilder.o	inplace_xboxr	InplaceFileBuilder.o	engine	1	PORTED	Phase 2: inplace.cpp (fixups, tree extract)
+
 zlib_xboxr:uncompr.o	zlib_xboxr	uncompr.o	engine	1	TODO	
+
 zlib_xboxr:inffast.o	zlib_xboxr	inffast.o	engine	1	TODO	
+
 zlib_xboxr:inftrees.o	zlib_xboxr	inftrees.o	engine	1	TODO	
+
 aeps_xboxr:apsSimpleMeshNode.o	aeps_xboxr	apsSimpleMeshNode.o	engine	1	PORTED	apsSimpleMeshNode.cpp (Render stub - GPU mesh draw deferred; requires unported Xbox D3D8/ngl pipeline)
+
 aeps_xboxr:apsShrimpNode.o	aeps_xboxr	apsShrimpNode.o	engine	1	PORTED	apsShrimpNode.cpp (Render stub - GPU sprite draw deferred; requires unported Xbox D3D8/ngl pipeline)
+
 aeps_xboxr:apsBillboardNode.o	aeps_xboxr	apsBillboardNode.o	engine	1	PORTED	apsBillboardNode.cpp (Render forwarder to cNodeRenderer<,apsBillboardNode>::Render)
+
 aeps_xboxr:apsColorRectangleNode.o	aeps_xboxr	apsColorRectangleNode.o	engine	1	PORTED	apsColorRectangleNode.cpp (Render forwarder to cNodeRenderer<,apsColorRectangleNode>::Render)
+
 aeps_xboxr:apsUVANode.o	aeps_xboxr	apsUVANode.o	engine	1	PORTED	apsUVANode.cpp (Render forwarder to cNodeRenderer<,apsUVANode>::Render)
+
 aeps_xboxr:apsColorUVARectangleNode.o	aeps_xboxr	apsColorUVARectangleNode.o	engine	1	PORTED	apsColorUVARectangleNode.cpp (Render forwarder to cNodeRenderer<,apsColorUVARectangleNode>::Render)
+
 aeps_xboxr:apsUVARectangleNode.o	aeps_xboxr	apsUVARectangleNode.o	engine	1	PORTED	apsUVARectangleNode.cpp (Render forwarder to cNodeRenderer<,apsUVARectangleNode>::Render)
+
 aeps_xboxr:apsRectangleNode.o	aeps_xboxr	apsRectangleNode.o	engine	1	PORTED	apsRectangleNode.cpp (Render forwarder to cNodeRenderer<,apsRectangleNode>::Render)
+
 aeps_xboxr:apsColorUVANode.o	aeps_xboxr	apsColorUVANode.o	engine	1	PORTED	apsColorUVANode.cpp (Render forwarder to cNodeRenderer<,apsColorUVANode>::Render)
+
 aeps_xboxr:apsColorBillboardNode.o	aeps_xboxr	apsColorBillboardNode.o	engine	1	PORTED	apsColorBillboardNode.cpp (Render forwarder to cNodeRenderer<,apsColorBillboardNode>::Render)
+
 nsl_xboxr:nslWaveBankFixup.o	nsl_xboxr	nslWaveBankFixup.o	engine	1	PORTED	Phase 3: nsl.cpp (audio subsystem stubs)
+
 nfl_xboxr:nfl_xbox_driver.o	nfl_xboxr	nfl_xbox_driver.o	engine	1	PORTED	Phase 2: nfl.cpp (file streaming stubs)
+
 tl_xboxr:tl_initlist.o	tl_xboxr	tl_initlist.o	engine	1	PORTED	Phase 2: tl_system.cpp + tl_instbank.cpp
+
 ngl_xboxr:ngl_xb_tex_load.o	ngl_xboxr	ngl_xb_tex_load.o	engine	1	PORTED	ngl_xb_tex_load.cpp (image/physical section fixup + D3DResource_Register); apk.h class mangling fix
+
 ngl_xboxr:ngl_gpu_texture.o	ngl_xboxr	ngl_gpu_texture.o	engine	1	PORTED	ngl_gpu_texture.cpp + ngl_dx_gpu.h (nglCreateTexture + gpu/D3DDevice inline wrappers)
+
 ngl_xboxr:ngl_dx_fsaa.o	ngl_xboxr	ngl_dx_fsaa.o	engine	1	PORTED	Phase 6: ngl_dx_fsaa.cpp/.h (FSAA mode select + nglFSAAScaleX/Y/nglFSAA/nglFSAAParams data)
+
 ngl_xboxr:ngl_dx_draw.o	ngl_xboxr	ngl_dx_draw.o	engine	1	PORTED	Phase 6: ngl_dx_draw.cpp (render-target switch + nglCurSurface/nglCurDepthBuffer data)
+
 ngl_xboxr:ngl_dx_font.o	ngl_xboxr	ngl_dx_font.o	engine	1	PORTED	ngl_dx_font.cpp: nglStringNode::Render push-buffer font quad stream; nglFont::SetMeasures inline; apsRenderNode gains virtual Render
+
 ngl_xboxr:ngl_xb_internal.o	ngl_xboxr	ngl_xb_internal.o	engine	1	PORTED	ngl_xb_internal.cpp/.h (CreateVertexDeclaration + nglXbPushQuad data)
+
 nal_xboxr:nal_initlist.o	nal_xboxr	nal_initlist.o	engine	1	PORTED	Phase 2/3: nal.cpp (animation engine types + stubs)
+
 bdCore:bdReferencable.obj	bdCore	bdReferencable.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdCore:bdHMac.obj	bdCore	bdHMac.obj	engine	1	PORTED	Phase 2: ported from Demonware 2.3.4 source, verified against COD3 decompilation
+
 bdPlatform:bdPlatformTrulyRandom-xbox.obj	bdPlatform	bdPlatformTrulyRandom-xbox.obj	engine	1	PORTED	Phase 2: bdPlatform.cpp (timing, sockets, mutex, random)
+
 bdPlatform:bdPlatformSocket-win32.obj	bdPlatform	bdPlatformSocket-win32.obj	engine	8	PORTED	bdPlatformSocket-win32.cpp: WinSock impl (8 funcs) from IDA
+
 bdPlatform:bdPlatformSocket.obj	bdPlatform	bdPlatformSocket.obj	engine	5	PORTED	bdPlatformSocket.cpp: socket stats + ctor (5 funcs) from IDA
+
 bdPlatform:bdInAddr.obj	bdPlatform	bdInAddr.obj	engine	5	PORTED	bdInAddr.cpp: IPv4 address (5 funcs) from IDA
+
