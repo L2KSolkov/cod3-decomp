@@ -879,3 +879,70 @@ Entity* SelectSpawnPoint(const float* avoidPoint, float* origin, float* angles)
     angles[2] = v4->r.currentAngles.v.m128_f32[2];
     return v4;
 }
+
+// ea: 0x0044B950
+void InitCvars(int restart)
+{
+    int integer = 0;
+    int v2 = 0;
+    if (restart != 0)
+    {
+        integer = g_gameskill->integer;
+        v2 = Cvar_Get("g_player_maxhealth", "1", 0)->integer;
+    }
+    G_RegisterCvars();
+    if (restart != 0)
+    {
+        Cvar_SetValue("g_gameskill", (float)integer);
+        g_gameskill->integer = integer;
+        Cvar_SetValue("g_player_maxhealth", (float)v2);
+        g_player_maxhealth.integer = v2;
+        g_player_maxhealth.value = (float)v2;
+    }
+    cl_aADS[0] = 1;
+    cg_aWeaponSelect[0] = 0;
+    cg_aWeaponSelectTime[0] = 0;
+    cl_stance_ss[0] = 0;
+}
+
+// ea: 0x0044A9C0
+void Cmd_UFO_f(Entity* ent)
+{
+    if (g_cheats->integer != 0)
+    {
+        if (ent->health > 0)
+        {
+            Client* client = ent->client;
+            int ufo = client->ufo;
+            const char* v7 = "GAME_UFOOFF";
+            if (ufo == 0)
+                v7 = "GAME_UFOON";
+            client->ufo = ufo == 0;
+            SV_GameSendServerCommand(ent->mHandle, va("print \"%s\"", v7));
+        }
+        else
+        {
+            SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_MUSTBEALIVECOMMAND\""));
+        }
+    }
+    else
+    {
+        SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_CHEATSNOTENABLED\""));
+    }
+}
+
+// ea: 0x00467570
+void ClientBegin(DbLinkedHandle<EntityHandleDb, Entity> entity)
+{
+    Entity* mObject = HandleDbToEnt(entity);
+    float* origin = mObject->client->ps.origin.v.m128_f32;
+    Entity* v4 = HandleDbToEnt(entity);
+    origin[0] = v4->r.currentOrigin.v.m128_f32[0];
+    origin[1] = v4->r.currentOrigin.v.m128_f32[1];
+    origin[2] = v4->r.currentOrigin.v.m128_f32[2];
+    origin[3] = v4->r.currentOrigin.v.m128_f32[3];
+    origin[52] = v4->r.currentAngles.v.m128_f32[0];
+    origin[53] = v4->r.currentAngles.v.m128_f32[1];
+    origin[54] = v4->r.currentAngles.v.m128_f32[2];
+    origin[9] = 5;
+}

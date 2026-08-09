@@ -99,7 +99,19 @@ static_assert(sizeof(vehicleSeat_t) == 0x1C, "vehicleSeat_t size mismatch");
 
 struct scr_vehicle_t {
     vehicle_pathpos_t pathPos;   // +0x00
-    uint8_t _padB8[0x170 - 0xB8];
+    uint8_t _padB8[0xC0 - 0xB8];
+    struct vehicle_physic_t {
+        math::Position3 origin;     // +0x00
+        math::Position3 prevOrigin; // +0x10
+        math::Position3 angles;     // +0x20
+        math::Position3 prevAngles; // +0x30
+        math::Dir3      vel;        // +0x40
+        math::Dir3      rotVel;     // +0x50
+        float           wheelZVel[6];  // +0x60
+        float           wheelZPos[6];  // +0x78
+        float           wheelSurfType[4];  // +0x90
+        float           _padA0[4];   // +0xA0
+    } phys;                          // +0xC0 (0xB0 bytes)
     DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x170
     DbLinkedHandle<EntityHandleDb, Entity> mPhysicsOwner;  // +0x174
     int16_t infoIdx;      // +0x178
@@ -153,6 +165,8 @@ struct scr_vehicle_t {
     bool  IsOppositeTeamInVehicle(int team);  // ?IsOppositeTeamInVehicle@scr_vehicle_t@@QAE_NH@Z
     void  Mantled(Entity* player);            // ?Mantled@scr_vehicle_t@@QAEXPAVEntity@@@Z
     bool  LetHatchClose();                    // ?LetHatchClose@scr_vehicle_t@@QAE_NXZ
+    void  AssignPhysics(Entity* player);      // ?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
+    int   GetEntryRoute(int seatIdx, int entryIdx, bool hasFlag);  // ?GetEntryRoute@scr_vehicle_t@@QAEHHH_N@Z
     void  CollisionDamage(Entity* ent, const math::Position3* pos,
                           const math::Position3* dir, float intensity);  // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
@@ -1515,10 +1529,27 @@ extern int cg_victoryscreen_levelname;// cg.o
 void  Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultValue,
                     int flags);                      // core.o
 void  Cvar_VMSet(vmCvar_t* vmCvar, const char* value);  // core.o
+void  Cvar_SetValue(const char* var_name, float value);  // core.o
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o
 void  InteractionController_EndInteraction(void* self, int wasInteracting);  // cl.o
+void  InitCvars(int restart);                        // g.o 0x44B950
+void  Cmd_UFO_f(Entity* ent);                        // g.o 0x44A9C0
+bool  G_IsPlayerInVehicle(Entity* player);           // g.o 0x46E0B0
+vehicle_node_t* SP_create_info_vehicle_node(void);   // g.o 0x45F210
+float Scr_Vehicle_CalcSpeed(const scr_vehicle_t* pVehicle);  // g.o 0x44F3D0
+void  ClientBegin(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467570
+extern cvar_t* g_gameskill;           // g.o (cvar_t* per sv_decl.h)
+extern vmCvar_t g_player_maxhealth;   // g.o
+extern int cl_aADS[4];                // cl.o
+extern int cg_aWeaponSelect[4];       // cg.o
+extern int cg_aWeaponSelectTime[4];   // cg.o
+extern int cl_stance_ss[4];           // cl.o
+extern VehicleNodeAllocator g_vehicleNodeManager;  // g.o
+extern float s_invalidAngles[3];      // g.o .rdata
+extern float dword_DD7418;            // g.o .rdata
+extern float dword_DD741C;            // g.o .rdata
 void  BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
                                           PlayerState* ps);  // game.o 0x9F3A40
 void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
@@ -1605,6 +1636,11 @@ struct rb_vehicle {
 struct rb_extra_info {
     void* m_rb;  // +0x00 rb_vehicle*
 };
+void rb_vehicle_get_velocity(rb_vehicle* self, float* result);        // phys_xboxr
+void rb_vehicle_unpause_physics(rb_vehicle* self);                    // phys_xboxr
+void rb_vehicle_update_from_network(rb_vehicle* self, math::Position3* position,
+                                    math::Position3* angles, math::Dir3* vel,
+                                    math::Dir3* aVel);                // phys_xboxr
 
 // Task - task system base (28 bytes) - verified against IDA
 struct Task {

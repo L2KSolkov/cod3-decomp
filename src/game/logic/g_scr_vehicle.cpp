@@ -4,11 +4,72 @@
 
 #include "game/logic/g_local.h"
 
+#include <math.h>
 #include <string.h>
 
 // ea: 0x00452BC0
 void VehicleNodeAllocator::Initialize()
 {
+    m_numNodes = 0;
+    m_numBlocks = 0;
+    m_currentBlockIndex = 0;
+    for (int i = 0; i < 16; ++i)
+        m_pNodeBlocks[i] = nullptr;
+}
+
+// ea: 0x00452C10
+vehicle_node_t* VehicleNodeAllocator::AllocNode()
+{
+    int16_t m_numBlocks = this->m_numBlocks;
+    if (m_numBlocks == 0 || this->m_currentBlockIndex >= 128)
+    {
+        if (m_numBlocks >= 16)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_vehicle_path.cpp";
+            AeAssert::gCurrentLine = 1605;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Out of vehicle Nodes - Tell MikeA"))
+                __debugbreak();
+        }
+        this->m_pNodeBlocks[this->m_numBlocks] = mem_heap_malloc(16, 0x2000u);
+        vehicle_node_t* v3 = (vehicle_node_t*)this->m_pNodeBlocks[this->m_numBlocks];
+        memset(v3, 0, 0x2000);
+        for (int i = 128; i != 0; --i)
+        {
+            if (v3 != nullptr)
+            {
+                v3->mName = Broc::string();
+                v3->mTarget = Broc::string();
+                v3->script_noteworthy = Broc::string();
+            }
+            ++v3;
+        }
+        ++this->m_numBlocks;
+        this->m_currentBlockIndex = 0;
+    }
+    uint16_t m_currentBlockIndex = this->m_currentBlockIndex;
+    vehicle_node_t* result =
+        (vehicle_node_t*)this->m_pNodeBlocks[this->m_numBlocks] + m_currentBlockIndex;
+    this->m_currentBlockIndex = m_currentBlockIndex + 1;
+    s_nodes[this->m_numNodes++] = result;
+    return result;
+}
+
+// ea: 0x0045F2B0
+void VehicleNodeAllocator::FreeAll()
+{
+    if (this->m_numBlocks > 0)
+    {
+        for (int i = 0; i < this->m_numBlocks; ++i)
+        {
+            vehicle_node_t* v3 = (vehicle_node_t*)m_pNodeBlocks[i];
+            for (int j = 128; j != 0; --j)
+                v3++->~vehicle_node_t();
+            mem_heap_free(m_pNodeBlocks[i]);
+        }
+    }
     m_numNodes = 0;
     m_numBlocks = 0;
     m_currentBlockIndex = 0;
@@ -428,7 +489,7 @@ vehicle_info_t* VEH_GetPlayerVehicleInfo(void)
     return result;
 }
 
-// ea: 0x00446F460
+// ea: 0x0046F460
 bool scr_vehicle_t::LetHatchClose()
 {
     if (s_vehicleInfos[infoIdx]->type != 2)
@@ -522,6 +583,122 @@ void VEH_UnlinkPlayerDropped(Entity* ent)
     ent->active = 0;
     ent->r.mOwner.mHandle.mVal = 0;
     Scr_Notify(ent, hash_const.player_off_vehicle, 0);
+}
+
+// ea: 0x00446E0B0
+bool G_IsPlayerInVehicle(Entity* player)
+{
+    Client* client = player->client;
+    if (client == nullptr)
+        return false;
+    int eFlags = client->ps.eFlags;
+    if ((0x100000 & eFlags) == 0 || (0x400000 & eFlags) != 0)
+        return false;
+    Entity* v3 = HandleDbToEnt(player->r.mOwner);
+    if (v3 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7302;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return false;
+    }
+    return v3->scr_vehicle != nullptr;
+}
+
+// ea: 0x0045F210
+vehicle_node_t* SP_create_info_vehicle_node(void)
+{
+    vehicle_node_t* v0 = g_vehicleNodeManager.AllocNode();
+    v0->mName.clear();
+    v0->mTarget.clear();
+    int v1 = v0->nextIdx;
+    v0->speed = -1.0f;
+    v0->lookAhead = -1.0f;
+    v0->origin[0] = 0.0f;
+    v0->origin[1] = 0.0f;
+    v0->dir[0] = 0.0f;
+    v0->dir[1] = 0.0f;
+    v1 &= 0xCFFFFFFF;
+    v0->nextIdx = v1;
+    v0->angles[0] = s_invalidAngles[0];
+    v0->angles[1] = dword_DD7418;
+    float v2 = dword_DD741C;
+    v0->nextIdx = v1 | 0xFFFFFFF;
+    v0->angles[2] = v2;
+    v0->length = 0.0f;
+    ++s_numNodes;
+    return v0;
+}
+
+// ea: 0x0044F3D0
+float Scr_Vehicle_CalcSpeed(const scr_vehicle_t* pVehicle)
+{
+    if (pVehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 8963;
+        AeAssert::gCurrentExpr = "pVehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vehicle"))
+            __debugbreak();
+        return 0.0f;
+    }
+    rb_vehicle* mRBVeh = (rb_vehicle*)pVehicle->mRBVeh;
+    if (mRBVeh == nullptr)
+        return 0.0f;
+    float v4[3];
+    rb_vehicle_get_velocity(mRBVeh, v4);
+    return sqrtf(v4[0] * v4[0] + v4[1] * v4[1] + v4[2] * v4[2]);
+}
+
+// ea: 0x0046F3C0
+void scr_vehicle_t::AssignPhysics(Entity* player)
+{
+    if (mRBVeh != nullptr)
+    {
+        if (EntityManager::sInst->IsLocalPlayer(player)
+            && mPhysicsOwner.mHandle.mVal != player->mHandle.mHandle.mVal)
+        {
+            if (IsPhysicsPaused())
+                rb_vehicle_unpause_physics((rb_vehicle*)mRBVeh);
+            rb_vehicle_update_from_network((rb_vehicle*)mRBVeh,
+                                           &phys.origin, &phys.angles, &phys.vel,
+                                           &phys.rotVel);
+        }
+    }
+    mPhysicsOwner.mHandle.mVal = player->mHandle.mHandle.mVal;
+}
+
+// ea: 0x0044F580
+int scr_vehicle_t::GetEntryRoute(int seatIdx, int entryIdx, bool hasFlag)
+{
+    vehicleAnimMap_t* animMap = this->animMap;
+    if (animMap == nullptr)
+        return -1;
+    int numRoutes = animMap->numRoutes;
+    int result = 0;
+    if (numRoutes > 0)
+    {
+        do
+        {
+            if (animMap->routes[result].vehPosSrc == -1
+                && animMap->routes[result].vehPosDest == seatIdx)
+            {
+                if (this->animMap->stages[this->animMap->routes[result].stages[0]].startTag
+                        == this->animMap->entryTags[entryIdx]
+                    && ((animMap->routes[result].flags & 4) == 0 || hasFlag))
+                {
+                    return result;
+                }
+                numRoutes = animMap->numRoutes;
+            }
+            ++result;
+        } while (result < numRoutes);
+    }
+    return -1;
 }
 
 // ea: 0x004639D0

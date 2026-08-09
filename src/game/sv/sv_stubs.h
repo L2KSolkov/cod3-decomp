@@ -421,6 +421,7 @@ struct GamePause {
 // ============================================================================
 // VehicleNodeAllocator — vehicle node manager
 // ============================================================================
+struct vehicle_node_t;
 struct VehicleNodeAllocator {
     uint16_t m_numNodes;        // +0x00
     uint16_t m_numBlocks;       // +0x02
@@ -429,6 +430,7 @@ struct VehicleNodeAllocator {
     void*    m_pNodeBlocks[16]; // +0x08 (64 bytes)
     void FreeAll();   // ?FreeAll@VehicleNodeAllocator@@QAEXXZ
     void Initialize();  // ?Initialize@VehicleNodeAllocator@@QAEXXZ
+    vehicle_node_t* AllocNode();  // ?AllocNode@VehicleNodeAllocator@@QAEPAUvehicle_node_t@@XZ
 };
 
 // ============================================================================
