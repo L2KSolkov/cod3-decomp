@@ -961,6 +961,87 @@ float SmokeGrenadeMgr::CalcOpacity(const SmokeGrenadeInfo& info) const
     return (1.0f - ClampRange(&beg, &in, &end)) * sOpacity3;
 }
 
+// ============================================================================
+// SmokeGrenadeMgr visibility helpers (uses apsEffect bounds + opacity)
+// ============================================================================
+#include "aeps/apsEffect.h"
+#include "aeps/apsGroup.h"
+
+// ea: 0x4FA220
+bool SmokeGrenadeMgr::PointCanSeePoint(const float* startPoint,
+                                       const float* endPoint,
+                                       float visThreshold)
+{
+    SmokeGrenadeInfo* mElements = mSmokeGrenadeInfoList.mElements;
+    SmokeGrenadeInfo* end = &mElements[mSmokeGrenadeInfoList.mSize];
+    if (mElements == end)
+        return true;
+    for (; mElements != end; ++mElements)
+    {
+        apsEffect* mEffect = (apsEffect*)mElements->mEffect;
+        apsBounds bounds;
+        mEffect->GetBounds(bounds);
+        apsSphere sph = bounds.Sphere();
+        bool hit = SegmentSphereIntersection(
+            startPoint, endPoint, &sph.mSphere.v.m128_f32[0],
+            sph.mSphere.v.m128_f32[3] * 0.33333334f);
+        mElements->bHit[0] = hit;
+        if (!hit)
+            continue;
+        int mSize = mEffect->mGroups.mSize;
+        for (int i = 0; i < mSize; ++i)
+        {
+            apsGroup* group = mEffect->mGroups.mElements[i];
+            if (group == nullptr)
+                continue;
+            apsBounds gb = group->mBounds;
+            apsSphere gs = gb.Sphere();
+            bool ghit = SegmentSphereIntersection(
+                startPoint, endPoint, &gs.mSphere.v.m128_f32[0],
+                gs.mSphere.v.m128_f32[3] * 0.25f);
+            mElements->bHit[i + 1] = ghit;
+            if (ghit)
+            {
+                if (CalcOpacity(*mElements) <= visThreshold)
+                    break;
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+// ea: 0x4FA400
+bool SmokeGrenadeMgr::EntityCanSeePoint(const Entity* ent,
+                                        const float* endPoint,
+                                        float visThreshold)
+{
+    float startPoint[3];
+    startPoint[0] = ent->r.currentOrigin.v.m128_f32[0];
+    startPoint[1] = ent->r.currentOrigin.v.m128_f32[1];
+    startPoint[2] = (ent->r.maxs.v.m128_f32[2] * 0.5f)
+        + ent->r.currentOrigin.v.m128_f32[2];
+    return PointCanSeePoint(startPoint, endPoint, visThreshold);
+}
+
+// ea: 0x4FA460
+bool SmokeGrenadeMgr::EntityCanSeeEntity(const Entity* ent,
+                                         const Entity* targEnt,
+                                         float visThreshold)
+{
+    float startPoint[3];
+    float endPoint[3];
+    float v4 = ent->r.maxs.v.m128_f32[2];
+    startPoint[0] = ent->r.currentOrigin.v.m128_f32[0];
+    startPoint[1] = ent->r.currentOrigin.v.m128_f32[1];
+    endPoint[0] = targEnt->r.currentOrigin.v.m128_f32[0];
+    endPoint[1] = targEnt->r.currentOrigin.v.m128_f32[1];
+    startPoint[2] = (v4 * 0.5f) + ent->r.currentOrigin.v.m128_f32[2];
+    endPoint[2] = (targEnt->r.maxs.v.m128_f32[2] * 0.5f)
+        + targEnt->r.currentOrigin.v.m128_f32[2];
+    return PointCanSeePoint(startPoint, endPoint, visThreshold);
+}
+
 
 // ============================================================================
 // FN_Multiplayer_MapRestart - ea: 0x4F46D0

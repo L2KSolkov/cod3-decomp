@@ -300,10 +300,25 @@ struct SmokeGrenadeInfo {
     bool  bHit[4]; // +0x08
 };
 
+// ae_vector<SmokeGrenadeInfo> - 12 bytes
+struct SmokeGrenadeInfoList {
+    SmokeGrenadeInfo* mElements;  // +0x00
+    int mSize;                    // +0x04
+    int mCapacity;                // +0x08
+};
+
 struct SmokeGrenadeMgr {
+    SmokeGrenadeInfoList mSmokeGrenadeInfoList;  // +0x00
     static void* sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
     float CalcOpacity(const SmokeGrenadeInfo& smokeGrenInfo) const;  // ?CalcOpacity@SmokeGrenadeMgr@@IBEMABUSmokeGrenadeInfo@@@Z (game2.o 0x4FA0E0)
+    bool PointCanSeePoint(const float* startPoint, const float* endPoint,
+                          float visThreshold);  // ?PointCanSeePoint@SmokeGrenadeMgr@@QAE_NQBM0M@Z (game2.o 0x4FA220)
+    bool EntityCanSeePoint(const class Entity* ent, const float* endPoint,
+                           float visThreshold);  // ?EntityCanSeePoint@SmokeGrenadeMgr@@QAE_NPBVEntity@@QBMM@Z (game2.o 0x4FA400)
+    bool EntityCanSeeEntity(const class Entity* ent, const class Entity* targEnt,
+                            float visThreshold);  // ?EntityCanSeeEntity@SmokeGrenadeMgr@@QAE_NPBVEntity@@0M@Z (game2.o 0x4FA460)
 };
+static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
 
 struct SoundDevice {
     uint8_t _pad[31392];
