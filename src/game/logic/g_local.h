@@ -497,11 +497,14 @@ void DebugDumpEnts(int a1, Entity* ent);   // g.o 0x450150
 struct TestFPS {
     unsigned char _pad[0xAC4C];       // mStats[1000] + mCells
     bool mTesting;                    // +0xAC4C
-    unsigned char _pad2[0xAD8C - 0xAC50];
+    unsigned char _pad2[0xAC64 - 0xAC50];
+    int mCellIndex;                   // +0xAC64
+    unsigned char _pad3[0xAD8C - 0xAC68];
     void* mFile;                      // +0xAD8C (_iobuf*)
     static TestFPS* sInst;  // ?sInst@TestFPS@@2PAV1@A
     ~TestFPS();             // ?~TestFPS@TestFPS@@QAE@XZ (game2.o 0x4EBFF0)
     void GetPath(char* path);  // ?GetPath@TestFPS@@AAEXPAD@Z (game2.o 0x4EC020)
+    void GetFilename(char* filename);  // ?GetFilename@TestFPS@@AAEXPAD@Z (game2.o 0x4F6F70)
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z

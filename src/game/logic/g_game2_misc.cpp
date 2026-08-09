@@ -7,6 +7,7 @@
 #include "game/logic/g_local.h"
 
 #include <new>
+#include <stdio.h>
 #include <string.h>
 
 #include "filesystem/apk.h"
@@ -801,6 +802,76 @@ bool ScriptEventHandler::AddEvent(HashString h, HashString callback)
         cur = v7;
     }
     return false;
+}
+
+// ============================================================================
+// FnReverseOptions - flip all effect-sound toggles
+// ea: 0x4F4510
+// ============================================================================
+struct SoundOptions {
+    int mFxDontPlayFootSteps;     // +0x00
+    int mFxDontPlayGearRattle;    // +0x04
+    int mFxDontPlayLanding;       // +0x08
+    int mFxDontPlayScriptCall;    // +0x0C
+    int mFxDontPlayScriptCall_Dir;// +0x10
+    int mFxDontPlayWeapon;        // +0x14
+    int mFxDontPlayBulletHit;     // +0x18
+    int mFxDontPlayGrenadeBounce; // +0x1C
+    int mFxDontPlayProjExplode;   // +0x20
+    int mFxDontPlayVehicle;       // +0x24
+    int mFxDontPlayTurret;        // +0x28
+    int mFxDontPlayVehicleWheel;  // +0x2C
+    int mFxDontPlayLightFlash;    // +0x30
+    int mFxDontPlayMusic;         // +0x34
+};
+static_assert(sizeof(SoundOptions) == 0x38, "SoundOptions size mismatch");
+
+extern SoundOptions gSoundOptions;  // ?gSoundOptions (game2.o)
+
+int FnReverseOptions()
+{
+    gSoundOptions.mFxDontPlayFootSteps =
+        gSoundOptions.mFxDontPlayFootSteps == 0;
+    gSoundOptions.mFxDontPlayGearRattle =
+        gSoundOptions.mFxDontPlayGearRattle == 0;
+    gSoundOptions.mFxDontPlayLanding =
+        gSoundOptions.mFxDontPlayLanding == 0;
+    gSoundOptions.mFxDontPlayScriptCall =
+        gSoundOptions.mFxDontPlayScriptCall == 0;
+    gSoundOptions.mFxDontPlayScriptCall_Dir =
+        gSoundOptions.mFxDontPlayScriptCall_Dir == 0;
+    gSoundOptions.mFxDontPlayWeapon =
+        gSoundOptions.mFxDontPlayWeapon == 0;
+    gSoundOptions.mFxDontPlayBulletHit =
+        gSoundOptions.mFxDontPlayBulletHit == 0;
+    gSoundOptions.mFxDontPlayGrenadeBounce =
+        gSoundOptions.mFxDontPlayGrenadeBounce == 0;
+    gSoundOptions.mFxDontPlayProjExplode =
+        gSoundOptions.mFxDontPlayProjExplode == 0;
+    gSoundOptions.mFxDontPlayVehicle =
+        gSoundOptions.mFxDontPlayVehicle == 0;
+    gSoundOptions.mFxDontPlayTurret =
+        gSoundOptions.mFxDontPlayTurret == 0;
+    gSoundOptions.mFxDontPlayVehicleWheel =
+        gSoundOptions.mFxDontPlayVehicleWheel == 0;
+    gSoundOptions.mFxDontPlayLightFlash =
+        gSoundOptions.mFxDontPlayLightFlash == 0;
+    int result = gSoundOptions.mFxDontPlayMusic;
+    gSoundOptions.mFxDontPlayMusic =
+        gSoundOptions.mFxDontPlayMusic == 0;
+    return result;
+}
+
+// ============================================================================
+// TestFPS::GetFilename - ea: 0x4F6F70
+// ============================================================================
+extern cvar_t* sv_mapname;  // ?sv_mapname@@3PAUcvar_t@@A
+
+void TestFPS::GetFilename(char* filename)
+{
+    char path[256];
+    sprintf(path, "c:\\cod\\assets\\levels\\%s\\stats\\", sv_mapname->string);
+    sprintf(filename, "%sC%i.csv", path, mCellIndex);
 }
 
 // ============================================================================
