@@ -205,6 +205,158 @@ label_5:
     }
 }
 
+// ea: 0x00483760
+void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
+                int meansOfDeath, int weapon, const float* position,
+                const float* dir, hitLocation_t hitLoc)
+{
+    Entity* mWorld = inflictor;
+    if (inflictor == nullptr)
+    {
+        mWorld = attacker;
+        if (attacker == nullptr)
+            mWorld = EntityManager::sInst->mWorld;
+    }
+    Entity* v10 = self;
+    self->client->ps.pm_type = 7 - (self->client->ps.pm_type != 1);
+    if (v10->health > 0)
+        v10->health = 0;
+    if (v10->health < -999)
+        v10->health = -999;
+    v10->client->ps.stats[0] = v10->health;
+    if (v10->client->ps.grenadeTimeLeft != 0)
+    {
+        float launchvel[3];
+        launchvel[0] = (rand() * 0.000061035156f - 1.0f) * 160.0f;
+        launchvel[1] = (rand() * 0.000061035156f - 1.0f) * 160.0f;
+        launchvel[2] = (rand() * 0.000030517578f) * 160.0f;
+        float vOrigin[3];
+        vOrigin[0] = v10->r.currentOrigin.v.m128_f32[0];
+        vOrigin[1] = v10->r.currentOrigin.v.m128_f32[1];
+        vOrigin[2] = v10->r.currentOrigin.v.m128_f32[2] + 40.0f;
+        fire_grenade(v10, vOrigin, launchvel, v10->s.weapon,
+                     v10->client->ps.grenadeTimeLeft);
+        v10->s.weapon = 0;
+        v10->client->ps.weapon = 0;
+    }
+    v10->client->ps.viewangles[0] = v10->r.currentAngles.v.m128_f32[0];
+    v10->client->ps.viewangles[1] = v10->r.currentAngles.v.m128_f32[1];
+    v10->client->ps.viewangles[2] = v10->r.currentAngles.v.m128_f32[2];
+    int oldWeapon = v10->s.weapon;
+    v10->takedamage = 1;
+    v10->r.contents = 0x4000000;
+    v10->s.weapon = 0;
+    v10->client->ps.weapon = 0;
+    v10->client->mVehicleAnimMoving = false;
+    v10->r.currentAngles.v.m128_f32[0] = 0.0f;
+    v10->r.currentAngles.v.m128_f32[2] = 0.0f;
+    v10->s.loopSound = 0;
+    v10->r.maxs.v.m128_f32[2] = 16.0f;
+    if (v10->r.mins.v.m128_f32[2] > 16.0f)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_combat.cpp";
+        AeAssert::gCurrentLine = 638;
+        AeAssert::gCurrentExpr = "self->r.maxs[2] >= self->r.mins[2]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    v10->client->respawnTime = level.time + 1700;
+    v10->die = 0;
+    G_DObjUpdate(v10, false);
+    if (v10->mDObj != nullptr)
+        G_DObjCalcPose(v10);
+    SentientApplyPhysicsDamage(v10, mWorld, damage, meansOfDeath, position,
+                               dir, hitLoc, weapon);
+    v10->s.weapon = oldWeapon;
+    v10->client->ps.weapon = oldWeapon;
+    if (EntityManager::sInst->IsLocalPlayer(v10))
+        g_femanager.mDontDrawHud = false;
+    if (EntityManager::sInst->IsLocalPlayer(v10))
+    {
+        int mServerClientIndex = v10->client->mServerClientIndex;
+        float vOrigin[3];
+        Sentient_GetOrigin(v10->sentient, vOrigin);
+        if (meansOfDeath == 25)
+        {
+            if (oldWeapon != 0)
+                goto shock_branch_a;
+        }
+        else if (meansOfDeath == 3 || meansOfDeath == 4 || meansOfDeath == 7
+                 || meansOfDeath == 8 || meansOfDeath == 9
+                 || meansOfDeath == 10 || meansOfDeath == 5
+                 || meansOfDeath == 6 || meansOfDeath == 17
+                 || meansOfDeath == 18 || meansOfDeath == 27)
+        {
+        shock_branch_a:
+            if ((0x100000 & v10->client->ps.eFlags) == 0
+                || v10->client->ps.vehType != 2
+                || v10->client->ps.vehPos == 0)
+            {
+                Broc::string shock("default");
+                gpBrocAPI->mBrocExports.mShellShock(
+                    v10->mHandle.mHandle.mVal, &shock, 3.0f);
+                CG_StartShakeCamera(1.0f, 800, vOrigin, 2000.0f,
+                                    mServerClientIndex);
+                dword_F64018[1580 * mServerClientIndex] =
+                    (int)(cgGlobal.time + cg_redFlashTime.value);
+            }
+            void* rumbleMgr = RumbleManager_Inst(mServerClientIndex);
+            if (rumbleMgr != nullptr)
+            {
+                RumbleEffect effect;
+                effect.mRumbleDataArray[0].enabled = true;
+                effect.mRumbleDataArray[0].delay = 0.0f;
+                effect.mRumbleDataArray[0].intensity = 1.0f;
+                effect.mRumbleDataArray[0].ramp_up_duration = 0.0f;
+                effect.mRumbleDataArray[0].steady_duration = 1.0f;
+                effect.mRumbleDataArray[0].ramp_down_duration = 0.0f;
+                effect.mRumbleDataArray[1].enabled = true;
+                effect.mRumbleDataArray[1].delay = 0.1f;
+                effect.mRumbleDataArray[1].intensity = 1.0f;
+                effect.mRumbleDataArray[1].ramp_up_duration = 0.5f;
+                effect.mRumbleDataArray[1].steady_duration = 0.5f;
+                effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
+                RumbleManager_Play(rumbleMgr, &effect, 1.0f);
+            }
+        }
+        else
+        {
+            if ((0x100000 & v10->client->ps.eFlags) == 0
+                || v10->client->ps.vehType != 2
+                || v10->client->ps.vehPos == 0)
+            {
+                Broc::string shock("default");
+                gpBrocAPI->mBrocExports.mShellShock(
+                    v10->mHandle.mHandle.mVal, &shock, 2.0f);
+                CG_StartShakeCamera(1.0f, 800, vOrigin, 2000.0f,
+                                    mServerClientIndex);
+                dword_F64018[1580 * mServerClientIndex] =
+                    (int)(cgGlobal.time + cg_redFlashTime.value);
+            }
+            void* rumbleMgr = RumbleManager_Inst(mServerClientIndex);
+            if (rumbleMgr != nullptr)
+            {
+                RumbleEffect effect;
+                effect.mRumbleDataArray[0].enabled = true;
+                RumbleEffect_SetIntensity(&effect, kRumbleLEFT, 0.7f);
+                effect.mRumbleDataArray[0].steady_duration = 0.2f;
+                effect.mRumbleDataArray[0].delay = 0.0f;
+                effect.mRumbleDataArray[1].enabled = true;
+                RumbleEffect_SetIntensity(&effect, kRumbleRIGHT, 0.7f);
+                effect.mRumbleDataArray[1].steady_duration = 0.2f;
+                effect.mRumbleDataArray[1].delay = 0.0f;
+                effect.mRumbleDataArray[1].ramp_up_duration = 0.2f;
+                effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
+                RumbleManager_Play(rumbleMgr, &effect, 1.0f);
+            }
+        }
+    }
+    g_LinkEntity(v10);
+    Broc::string msg("INGAME_PLAYER_DIED");
+    gpBrocAPI->mBrocExports.mMissionFailed(&msg);
+}
+
 // ea: 0x004598D0
 int G_PredictMissile(const Entity* ent, int duration, float* endPos,
                      int allowBounce, int* timeAtRest)

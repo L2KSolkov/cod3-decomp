@@ -978,7 +978,12 @@ struct BrocExports {
     void (*mCallbackDropFlag)(unsigned int);              // +0x128
     uint8_t _pad12C[0x154 - 0x12C];
     void (*mCallbackStopFollowing)();  // +0x154
-    uint8_t _pad158[0xC50 - 0x158];
+    uint8_t _pad158[0x5A4 - 0x158];
+    void (*mMissionFailed)(Broc::string* msg);            // +0x5A4
+    uint8_t _pad5A8[0x81C - 0x5A8];
+    void (*mShellShock)(unsigned int ent, Broc::string* shock,
+                        float fVal);                       // +0x81C
+    uint8_t _pad820[0xC50 - 0x820];
     void (*mAnimInitialize)();  // +0xC50
     uint8_t _padC54[0xC90 - 0xC54];
     void (*mCallbackPlayerDamage)(unsigned int a1, unsigned int a2, unsigned int a3,
@@ -991,6 +996,43 @@ struct BrocAPI {
     BrocExports mBrocExports;
 };
 extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
+
+// ============================================================================
+// RumbleEffect layout twin + rumble shims (full types live in
+// core/core_systems.h, which cannot be included alongside g_local.h)
+// ============================================================================
+enum ERumbleMotorID {
+    kRumbleMin = 0,
+    kRumbleLEFT = 0,
+    kRumbleRIGHT = 1,
+    kRumbleMax = 1,
+};
+struct RumbleEffect {
+    struct RumbleData {
+        bool  enabled;             // +0x00
+        unsigned char _pad[0x4 - 0x1];
+        float delay;               // +0x04
+        float intensity;           // +0x08
+        float ramp_up_duration;    // +0x0C
+        float steady_duration;     // +0x10
+        float ramp_down_duration;  // +0x14
+        void* rumble_notes;        // +0x18
+        unsigned int m_flags;      // +0x1C
+
+        RumbleData() : enabled(false), delay(0.0f), intensity(0.0f),
+                       ramp_up_duration(0.0f), steady_duration(0.0f),
+                       ramp_down_duration(0.0f), rumble_notes(nullptr),
+                       m_flags(0) {}
+    };
+    static_assert(sizeof(RumbleData) == 0x20, "RumbleData size mismatch");
+    RumbleData mRumbleDataArray[2];  // +0x00
+};
+static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
+extern void* RumbleManager_Inst(int instance);              // core.o
+extern void RumbleEffect_SetIntensity(void* self, int rumbleID,
+                                      float intensity);     // core.o
+extern void RumbleManager_Play(void* self, void* effect,
+                               float intensity);            // core.o
 
 // g.o data: think dispatch table (function pointers per fn_think_e)
 extern void (*thinktable[])(Entity* ent, int msec);
@@ -1888,6 +1930,10 @@ extern int s_clientThink;                        // g.o
 extern int lastGunnerCrouchMsg;                  // g.o
 extern scr_vehicle_t s_phys;                     // g.o
 extern int byte_A00000;                          // g.o .data
+extern vmCvar_t cg_redFlashTime;                 // cg.o
+extern int dword_F64018[4 * 1580];               // cg.o @ 0xF64018
+extern void CG_StartShakeCamera(float p, int duration, const float* src,
+                                float radius, int client);  // cg.o
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
 void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
