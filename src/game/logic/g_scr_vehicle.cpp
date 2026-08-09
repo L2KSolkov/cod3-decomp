@@ -3356,6 +3356,7 @@ void G_UpdateVehicleTags(Entity* ent)
 }
 
 int scr_vehicle_t::sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
+int scr_vehicle_t::sRenderEntryPoints;  // ?sRenderEntryPoints@scr_vehicle_t@@2HA
 
 // ea: 0x0046F680
 bool scr_vehicle_t::CanUseVehicle(Entity* player, float* distToUsePoint,
@@ -4588,6 +4589,53 @@ void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
         G_Damage(pOther, pSelf, owner, &moveDir.v.m128_f32[0],
                  &pOther->r.currentOrigin.v.m128_f32[0], damage, 0, 20,
                  HITLOC_NONE, -1);
+    }
+}
+
+// ea: 0x00470210
+void scr_vehicle_t::DebugRender()
+{
+    if (sRenderEntryPoints == 0)
+        return;
+    int* entryPoint = boneIndex.entryPoint;
+    for (int i = 6; i != 0; --i)
+    {
+        if (*entryPoint >= 0)
+        {
+            Entity* ent = HandleDbToEnt(mEntity);
+            DObjSkelMat mat;
+            G_DObjGetWorldBoneIndexMatrix(ent, *entryPoint, &mat);
+            math::Position3 pos;
+            pos.v.m128_f32[0] = mat.origin[0];
+            pos.v.m128_f32[1] = mat.origin[1];
+            pos.v.m128_f32[2] = mat.origin[2];
+            pos.v.m128_f32[3] = 0.0f;
+            float red[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+            DebugRender::RenderSphere(&pos, 3.0f, red);
+            float blue[] = { 0.0f, 0.0f, 1.0f, 0.1f };
+            DebugRender::RenderSphere(&pos, 50.0f, blue);
+        }
+        ++entryPoint;
+    }
+    Entity* ent = HandleDbToEnt(mEntity);
+    float yellow[] = { 1.0f, 1.0f, 0.0f, 0.1f };
+    DebugRender::RenderSphere(&ent->r.currentOrigin, mUseRadius, yellow);
+    if (s_vehicleInfos[infoIdx]->type == 2)
+    {
+        int seatBone = seats[7].boneIndex;
+        if (seatBone >= 0)
+        {
+            Entity* gunnerEnt = HandleDbToEnt(mEntity);
+            DObjSkelMat mat;
+            G_DObjGetWorldBoneIndexMatrix(gunnerEnt, seatBone, &mat);
+            math::Position3 pos;
+            pos.v.m128_f32[0] = mat.origin[0];
+            pos.v.m128_f32[1] = mat.origin[1];
+            pos.v.m128_f32[2] = mat.origin[2];
+            pos.v.m128_f32[3] = 0.0f;
+            float white[] = { 1.0f, 0.0f, 0.0f, 1.0f };
+            DebugRender::RenderSphere(&pos, 5.0f, white);
+        }
     }
 }
 
