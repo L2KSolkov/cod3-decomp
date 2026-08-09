@@ -1490,3 +1490,169 @@ void CG_AddPacketEntities()
         }
     }
 }
+
+extern int cg_debugEvents;
+extern void CG_Printf(const char* msg, ...);
+extern void CG_EntityEvent(Entity* entity, int event, int bPredict);
+extern void CG_EntityPreEvent(Entity* entity, int event);
+extern void CG_FireWeapon(Entity* attacker, EntityState* attackerState,
+                          int event, unsigned int barrel);
+extern void CG_EjectWeaponBrass(Entity* entity, int event);
+extern void PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                                  int weaponAction);
+extern void ByteToDir(int b, float* dir);
+extern void CG_BulletHitEvent(Entity* entity, math::Position3* origin,
+                              float* normal, int weapon, int surfType,
+                              Entity* hitEnt);
+extern void CG_BulletHitClientEvent(unsigned int sourceEntity,
+                                    math::Position3* position, float* normal,
+                                    int surfType, int weapon);
+extern void CG_StartShakeCamera(float p, int duration, const float* src,
+                                float radius, int client);
+extern int EntityManager_IsLocalPlayer(void* mgr, Entity* entity);
+extern int dword_F63BA4[4 * 1580];
+extern const char** pEventNamesList;
+
+// ea: 0x006AD640
+void CG_CheckEvents(Entity* entity)
+{
+    if (entity->s.eType <= 0x12u)
+    {
+        int eventSequence = entity->s.eventSequence;
+        if (eventSequence != 0)
+        {
+            if (eventSequence - entity->previousEventSequence < 0)
+                entity->previousEventSequence = 0;
+            if (eventSequence - entity->previousEventSequence > 4)
+                entity->previousEventSequence = eventSequence - 4;
+            int previousEventSequence = entity->previousEventSequence;
+            if (previousEventSequence < eventSequence)
+            {
+                unsigned char eventParm = entity->s.eventParm;
+                do
+                {
+                    int v4 = previousEventSequence & 3;
+                    int v5 = entity->s.events[v4];
+                    entity->s.eventParm = entity->s.eventParms[v4];
+                    CG_EntityEvent(entity, v5, 0);
+                    ++previousEventSequence;
+                } while (previousEventSequence != entity->s.eventSequence);
+                eventSequence = entity->s.eventSequence;
+                entity->s.eventParm = eventParm;
+            }
+            entity->previousEventSequence = eventSequence;
+        }
+        else
+        {
+            entity->previousEventSequence = 0;
+        }
+    }
+    else
+    {
+        if (entity->s.eventSequence != 0)
+            CG_ASSERT("!entity->s.eventSequence",
+                      "c:\\cod\\code\\game\\cg_event.cpp", 830);
+        if (entity->previousEventSequence == 0)
+        {
+            entity->previousEventSequence = 1;
+            CG_EntityEvent(entity, entity->s.eType - 18, 0);
+        }
+    }
+}
+
+// ea: 0x006AD770
+void CG_CheckPreEvents(Entity* entity)
+{
+    if (entity->s.eType <= 0x12u)
+    {
+        int eventSequence = entity->s.eventSequence;
+        if (eventSequence != 0)
+        {
+            if (eventSequence - entity->previousPreEventSequence < 0)
+                entity->previousPreEventSequence = 0;
+            if (eventSequence - entity->previousPreEventSequence > 4)
+                entity->previousPreEventSequence = eventSequence - 4;
+            int previousPreEventSequence = entity->previousPreEventSequence;
+            if (previousPreEventSequence < eventSequence)
+            {
+                unsigned char eventParm = entity->s.eventParm;
+                if (previousPreEventSequence != eventSequence)
+                {
+                    do
+                    {
+                        int v4 = previousPreEventSequence & 3;
+                        int v6 = entity->s.events[v4];
+                        entity->s.eventParm = entity->s.eventParms[v4];
+                        CG_EntityPreEvent(entity, v6);
+                        ++previousPreEventSequence;
+                    } while (previousPreEventSequence != entity->s.eventSequence);
+                }
+                entity->s.eventParm = eventParm;
+                entity->previousPreEventSequence = entity->s.eventSequence;
+            }
+            else
+            {
+                entity->previousPreEventSequence = eventSequence;
+            }
+        }
+        else
+        {
+            entity->previousPreEventSequence = 0;
+        }
+    }
+    else
+    {
+        if (entity->s.eventSequence != 0)
+            CG_ASSERT("!entity->s.eventSequence",
+                      "c:\\cod\\code\\game\\cg_event.cpp", 893);
+        if (entity->previousPreEventSequence == 0)
+        {
+            entity->previousPreEventSequence = 1;
+            CG_EntityPreEvent(entity, entity->s.eType - 18);
+        }
+    }
+}
+
+// ea: 0x006ADB70
+void CG_CheckPlayerstateEvents(unsigned int* ps, unsigned int* ops,
+                               unsigned char eFlags,
+                               unsigned char old_eFlags)
+{
+    int iOldEvents[4];
+    int iOldEventSequence;
+    if (((old_eFlags ^ eFlags) & 4) != 0)
+    {
+        memset(iOldEvents, 0, sizeof(iOldEvents));
+        iOldEventSequence = 0;
+    }
+    else
+    {
+        iOldEventSequence = ops[0];
+        iOldEvents[0] = ops[1];
+        iOldEvents[1] = ops[2];
+        iOldEvents[2] = ops[3];
+        iOldEvents[3] = ops[4];
+    }
+    Entity* Player =
+        EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    int v8 = ps[0] - 4;
+    if (v8 != ps[0])
+    {
+        int v9 = v8 - iOldEventSequence;
+        int v10 = iOldEventSequence - v8;
+        do
+        {
+            if (v9 >= 0 || v10 < 4 && ps[1 + (v8 & 3)] != iOldEvents[v8 & 3])
+            {
+                int v11 = ps[1 + (v8 & 3)];
+                Player->s.eventParm = ps[5 + (v8 & 3)];
+                CG_EntityEvent(Player, v11, 1);
+                ++dword_F63BA4[1580 * currCl];
+                v9 = v8 - iOldEventSequence;
+            }
+            ++v8;
+            ++v9;
+            --v10;
+        } while (v8 != ps[0]);
+    }
+}
