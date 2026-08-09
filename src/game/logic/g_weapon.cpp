@@ -1842,3 +1842,427 @@ void Bullet_Fire_Fake_Extended(
         }
     }
 }
+
+// ea: 0x00489A70
+void Bullet_Fire_Extended(
+    DbLinkedHandle<EntityHandleDb, Entity> sourceEntity, Entity* attacker,
+    float* start, const float* end, int damage, int recursion,
+    const weaponParms* wp,
+    DbLinkedHandle<EntityHandleDb, Entity> weaponEntity,
+    float coneAngleTangent)
+{
+    Entity* sourceEnt = EntFromHandle(sourceEntity.mHandle.mVal);
+    trace_t tr;
+    memset(&tr, 0, sizeof(tr));
+    int dflags = 0;
+    int sourceMod = 1;
+    if (attacker == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_weapon.cpp";
+        AeAssert::gCurrentLine = 790;
+        AeAssert::gCurrentExpr = "attacker";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (recursion > 12)
+    {
+        Com_Printf("Bullet_Fire_Extended: Too many resursions, bullet "
+                   "aborted\n");
+        return;
+    }
+    weaponFileInfo_t* pWeapInfo = wp->pWeapInfo;
+    if (pWeapInfo->bRifleBullet != 0)
+    {
+        sourceMod = 2;
+        dflags = 64;
+    }
+    unsigned int passEnt = sourceEntity.mHandle.mVal;
+    Client* attackerClient = attacker->client;
+    if (attackerClient != nullptr
+        && (attackerClient->ps.eFlags & 0x100000) != 0
+        && attackerClient->ps.vehPos != 0)
+        passEnt = 0;
+    collision_context_t context;
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    context.pass_entity1.mHandle.mVal = passEnt;
+    context.pass_entity2.mHandle.mVal = 0x2802033;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0;
+    tr.check_decal = true;
+    tr.decal_radius = decal_radius_0;
+    unsigned char* prioMap = pWeapInfo->bRifleBullet != 0
+                                 ? riflePriorityMap
+                                 : bulletPriorityMap;
+    math::Position3 s;
+    s.v.m128_f32[0] = start[0];
+    s.v.m128_f32[1] = start[1];
+    s.v.m128_f32[2] = start[2];
+    s.v.m128_f32[3] = 0.0f;
+    math::Position3 e;
+    e.v.m128_f32[0] = end[0];
+    e.v.m128_f32[1] = end[1];
+    e.v.m128_f32[2] = end[2];
+    e.v.m128_f32[3] = 0.0f;
+    g_LocationalTrace(&tr, &s, &e, &context, prioMap, coneAngleTangent);
+    int debugBullets = g_debugBullets.integer;
+    if (g_debugBullets.integer > 0)
+    {
+        int duration = 20;
+        if (g_debugBullets.integer > 3)
+            duration = 600;
+        CL_AddDebugLine(start, &tr.endpos.v.m128_f32[0], colorGreen, 1,
+                        duration, 1, 0);
+        math::Position3 dbg2;
+        dbg2.v.m128_f32[0] =
+            tr.endpos.v.m128_f32[0] + tr.normal.v.m128_f32[0] * 20.0f;
+        dbg2.v.m128_f32[1] =
+            tr.endpos.v.m128_f32[1] + tr.normal.v.m128_f32[1] * 20.0f;
+        dbg2.v.m128_f32[2] =
+            tr.endpos.v.m128_f32[2] + tr.normal.v.m128_f32[2] * 20.0f;
+        CL_AddDebugLine(&tr.endpos.v.m128_f32[0], &dbg2.v.m128_f32[0],
+                        colorBlue, 1, duration, 1, 0);
+        float dx = tr.endpos.v.m128_f32[0] - start[0];
+        float dy = tr.endpos.v.m128_f32[1] - start[1];
+        float dz = tr.endpos.v.m128_f32[2] - start[2];
+        float dir[3] = { -wp->forward[0], -wp->forward[1], -wp->forward[2] };
+        float dist = sqrtf(dx * dx + dy * dy + dz * dz);
+        if (g_debugBullets.integer > 1 && gTanAimConeSpread > 0.0f)
+        {
+            float center[3];
+            center[0] = wp->forward[0] * (dist - 4.0f) + start[0];
+            center[1] = wp->forward[1] * (dist - 4.0f) + start[1];
+            center[2] = wp->forward[2] * (dist - 4.0f) + start[2];
+            G_DebugCircleEx(center, dist * gTanAimConeSpread, dir, colorBlue,
+                            0, duration);
+            float center2[3];
+            center2[0] = dir[0] * 4.0f + tr.endpos.v.m128_f32[0];
+            center2[1] = dir[1] * 4.0f + tr.endpos.v.m128_f32[1];
+            center2[2] = dir[2] * 4.0f + tr.endpos.v.m128_f32[2];
+            G_DebugCircleEx(center2, dist * coneAngleTangent, dir, colorRed,
+                            0, duration);
+            debugBullets = g_debugBullets.integer;
+        }
+    }
+    if (((debugBullets & 1) != 0 && attacker->actor != nullptr)
+        || debugBullets >= 5)
+    {
+        Entity* v22 = G_TempEntity(start, 214);
+        v22->s.origin2.v.m128_f32[0] = tr.endpos.v.m128_f32[0];
+        v22->s.origin2.v.m128_f32[1] = tr.endpos.v.m128_f32[1];
+        v22->s.origin2.v.m128_f32[2] = tr.endpos.v.m128_f32[2];
+        if (attacker->sentient != nullptr
+            && attacker->sentient->eTeam == TEAM_AXIS)
+            v22->s.dmgFlags = 1;
+    }
+    math::Position3 startPos;
+    startPos.v.m128_f32[0] = start[0];
+    startPos.v.m128_f32[1] = start[1];
+    startPos.v.m128_f32[2] = start[2];
+    startPos.v.m128_f32[3] = 0.0f;
+    G_CheckHitTriggerDamage(attacker, &startPos, &tr.endpos, damage,
+                            sourceMod);
+    Entity* hitEnt = EntFromHandle(tr.surfaceFlags);
+    if (tr.normal.v.m128_f32[1] < 1.0f)
+    {
+        if (g_debugBullets.integer <= -2)
+        {
+            float dbgStart[3];
+            dbgStart[0] = hitEnt->r.currentOrigin.v.m128_f32[0]
+                        + hitEnt->r.mins.v.m128_f32[0];
+            dbgStart[1] = hitEnt->r.currentOrigin.v.m128_f32[1]
+                        + hitEnt->r.mins.v.m128_f32[1];
+            dbgStart[2] = hitEnt->r.currentOrigin.v.m128_f32[2]
+                        + hitEnt->r.mins.v.m128_f32[2];
+            Entity* v32 = G_TempEntity(dbgStart, 214);
+            v32->s.origin2.v.m128_f32[0] = hitEnt->r.currentOrigin.v.m128_f32[0]
+                                         + hitEnt->r.maxs.v.m128_f32[0];
+            v32->s.origin2.v.m128_f32[1] = hitEnt->r.currentOrigin.v.m128_f32[1]
+                                         + hitEnt->r.maxs.v.m128_f32[1];
+            v32->s.origin2.v.m128_f32[2] = hitEnt->r.currentOrigin.v.m128_f32[2]
+                                         + hitEnt->r.maxs.v.m128_f32[2];
+            v32->s.dmgFlags = 2;
+        }
+        float dir[3];
+        dir[0] = end[0] - start[0];
+        dir[1] = end[1] - start[1];
+        dir[2] = end[2] - start[2];
+        VectorNormalize(dir);
+        float v33 = (tr.normal.v.m128_f32[0] * dir[0]
+                     + tr.normal.v.m128_f32[1] * dir[1]
+                     + tr.normal.v.m128_f32[2] * dir[2])
+                    * -2.0f;
+        dir[0] = tr.normal.v.m128_f32[0] * v33 + dir[0];
+        dir[1] = tr.normal.v.m128_f32[1] * v33 + dir[1];
+        dir[2] = tr.normal.v.m128_f32[2] * v33 + dir[2];
+        if (((int)tr.normal.v.m128_f32[2] & 4) == 0)
+        {
+            if (hitEnt == nullptr)
+            {
+                goto hit_event;
+            }
+            sentient_s* sentient = hitEnt->sentient;
+            if (sentient == nullptr || attacker->actor == nullptr
+                || sentient->eTeam != attacker->sentient->eTeam)
+            {
+                Client* hitClient = hitEnt->client;
+                if (hitClient != nullptr
+                    || (sentient != nullptr
+                        && tr.normal.v.m128_f32[2] == 0.0f))
+                {
+                    if ((hitEnt->r.contents & 0x4000000) != 0)
+                    {
+                        float fwd[3];
+                        fwd[0] = end[0] - start[0];
+                        fwd[1] = end[1] - start[1];
+                        fwd[2] = end[2] - start[2];
+                        VectorNormalize(fwd);
+                        bool localHit = tr.shader != nullptr;
+                        math::Dir3 scratch;
+                        const math::Dir3* cdlDir =
+                            native_to_cdl_dir3(&scratch, fwd);
+                        ApplyPhysics(hitEnt, &tr.endpos, cdlDir, 20.0f,
+                                     localHit, HITLOC_TORSO_UPR);
+                    }
+                    else if (hitEnt->takedamage != 0)
+                    {
+                        if (hitClient == nullptr
+                            || G_CanPlayerBeDamagedInVehicle(hitEnt))
+                        {
+                            tr.normal.v.m128_f32[2] = (float)0x700000u;
+                        }
+                    }
+                }
+                goto hit_event;
+            }
+        }
+        math::Position3 tracerStart;
+        tracerStart.v.m128_f32[0] = start[0];
+        tracerStart.v.m128_f32[1] = start[1];
+        tracerStart.v.m128_f32[2] = start[2];
+        tracerStart.v.m128_f32[3] = 0.0f;
+        CG_EventSpawnTracer(&tracerStart, &tr.endpos,
+                            wp->pWeapInfo->index);
+        goto after_hit;
+    }
+    {
+        math::Position3 tracerStart;
+        tracerStart.v.m128_f32[0] = start[0];
+        tracerStart.v.m128_f32[1] = start[1];
+        tracerStart.v.m128_f32[2] = start[2];
+        tracerStart.v.m128_f32[3] = 0.0f;
+        CG_EventSpawnTracer(&tracerStart, &e, wp->pWeapInfo->index);
+        Entity* weaponEnt = HandleDbToEnt(weaponEntity);
+        if (weaponEnt != nullptr && weaponEnt->scr_vehicle == nullptr
+            && wp->pWeapInfo->weapClass != 17)
+        {
+            math::Position3 tmp;
+            const math::Position3* pos =
+                native_to_cdl_pos3(&tmp, (float*)end);
+            math::Dir3 zero;
+            zero.v = _mm_setzero_ps();
+            MultiplayerMgr::sInst->BulletHit(*pos, zero, 0,
+                                             (unsigned char)wp->pWeapInfo
+                                                 ->index,
+                                             nullptr);
+        }
+        goto after_hit;
+    }
+hit_event:
+    if (HandleDbToEnt(weaponEntity) != nullptr
+        && HandleDbToEnt(weaponEntity)->scr_vehicle == nullptr
+        && wp->pWeapInfo->weapClass != 17)
+    {
+        math::Dir3 normal;
+        normal.v = tr.normal.v;
+        MultiplayerMgr::sInst->BulletHit(
+            tr.endpos, normal,
+            (unsigned char)(((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F),
+            (unsigned char)wp->pWeapInfo->index, hitEnt);
+    }
+    if (hitEnt == nullptr || hitEnt->client == nullptr)
+    {
+        Entity* eventEnt = attacker;
+        if (sourceEnt != nullptr && sourceEnt->scr_vehicle == nullptr)
+            eventEnt = sourceEnt;
+        CG_BulletHitEvent(
+            eventEnt, &tr.endpos, &tr.normal.v.m128_f32[0],
+            wp->pWeapInfo->index,
+            ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F, hitEnt);
+        if (tr.partGroup != 0
+            && tr.surfaceFlags
+                   == EntityManager::sInst->mWorld->mHandle.mHandle.mVal)
+        {
+            gdDecal* decal =
+                wp->pWeapInfo->pDecals[((int)tr.normal.v.m128_f32[2] >> 20)
+                                       & 0x1F];
+            if (decal != nullptr)
+            {
+                float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+                float angle = rand() * 0.000095876727f;
+                void* tex = decal->level1_cg_texture;
+                if (tex != nullptr)
+                {
+                    bool isHighPriority = attacker->s.eType == 1;
+                    float decalRadius =
+                        (rand() * 0.000009155552842799158f + 1.0f)
+                        * decal->level1_radius;
+                    ((DynamicDecalMgr*)DynamicDecalMgr::sInst)
+                        ->Add(tex, 0.1f, true, 100, tr.endpos,
+                              *(math::Position3*)&tr.normal, decalRadius,
+                              angle, color, isHighPriority);
+                }
+            }
+        }
+    }
+after_hit:
+    if (hitEnt != nullptr && hitEnt->takedamage != 0)
+    {
+        if (wp->pWeapInfo->weapClass != WEAPCLASS_LMG
+            || (attacker->client != nullptr
+                && (attacker->client->ps.pm_flags & 0x20) != 0))
+        {
+            // fallthrough (no damage falloff for LMG in bipod state)
+        }
+        else
+        {
+            float dist1 = VectorDistance(
+                start, &tr.endpos.v.m128_f32[0]);
+            damage = (int)Damage_Falloff(
+                dist1, (float)damage,
+                (float)wp->pWeapInfo->iMinDamagePercent,
+                (float)wp->pWeapInfo->iDamageInnerRadius,
+                (float)wp->pWeapInfo->iDamageOuterRadius);
+        }
+        if (wp->pWeapInfo->weapClass != WEAPCLASS_LMG)
+        {
+            float dist2 = VectorDistance(start,
+                                         &tr.endpos.v.m128_f32[0]);
+            damage = (int)Damage_Falloff(
+                dist2, (float)damage,
+                (float)wp->pWeapInfo->iMinDamagePercent,
+                (float)wp->pWeapInfo->iDamageInnerRadius,
+                (float)wp->pWeapInfo->iDamageOuterRadius);
+        }
+        if (attacker->actor != nullptr && attacker->tagInfo != nullptr
+            && attacker->tagInfo->parent == hitEnt)
+        {
+            G_DPrintf("^3AI Shooting through vehicle\n");
+            DbLinkedHandle<EntityHandleDb, Entity> src;
+            src.mHandle.mVal = hitEnt->mHandle.mHandle.mVal;
+            Bullet_Fire_Extended(src, attacker, &tr.endpos.v.m128_f32[0],
+                                 end, damage, recursion + 1, wp,
+                                 weaponEntity, 0.0f);
+            return;
+        }
+        Client* attackerClient2 = attacker->client;
+        if (attackerClient2 != nullptr)
+        {
+            if ((attackerClient2->ps.eFlags & 0x100000) != 0
+                && attackerClient2->ps.vehPos != 0
+                && hitEnt->mHandle.mHandle.mVal
+                       == attacker->r.mOwner.mHandle.mVal)
+            {
+                damage = (int)(damage * 0.40000001f);
+            }
+            Client* hitClient = hitEnt->client;
+            if (hitClient != nullptr
+                && (attackerClient2->ps.eFlags & 0x100000) != 0
+                && (hitClient->ps.eFlags & 0x100000) != 0
+                && attackerClient2->ps.vehPos != 0
+                && hitEnt->r.mOwner.mHandle.mVal
+                       == attacker->r.mOwner.mHandle.mVal)
+            {
+                damage = (int)(damage * 0.1f);
+            }
+        }
+        if (hitEnt->client != nullptr)
+        {
+            if (hitEnt == EntFromHandle(sourceEntity.mHandle.mVal))
+            {
+                float newStart[3];
+                newStart[0] =
+                    wp->forward[0] * 8.0f + tr.endpos.v.m128_f32[0];
+                newStart[1] =
+                    wp->forward[1] * 8.0f + tr.endpos.v.m128_f32[1];
+                newStart[2] =
+                    wp->forward[2] * 8.0f + tr.endpos.v.m128_f32[2];
+                Bullet_Fire_Extended(sourceEntity, attacker, newStart, end,
+                                     damage, recursion + 1, wp, weaponEntity,
+                                     0.0f);
+                return;
+            }
+            Entity* sourceEnt2 = EntFromHandle(sourceEntity.mHandle.mVal);
+            if (mp_friendlyfire.integer != 0 || sourceEnt2 == nullptr
+                || sourceEnt2->sentient == nullptr
+                || hitEnt->sentient == nullptr || !cgGlobal.teamGame
+                || sourceEnt2->sentient->eTeam != hitEnt->sentient->eTeam)
+            {
+                CG_BulletHitClientEvent(
+                    sourceEntity, tr.endpos, wp->forward, 7,
+                    wp->pWeapInfo->index);
+                if (attacker->IsLocalPlayer()
+                    && (sourceMod == 1 || sourceMod == 2))
+                {
+                    dword_F63D1C[1580 * attacker->GetPlayerIndex()] =
+                        level.time;
+                }
+                math::Dir3 scratch;
+                const math::Dir3* cdlDir =
+                    native_to_cdl_dir3(&scratch, wp->forward);
+                MultiplayerMgr::sInst->BulletHitPlayer(
+                    hitEnt, attacker, tr.endpos, *cdlDir, 7,
+                    (unsigned char)wp->pWeapInfo->index, (short)damage,
+                    (unsigned char)dflags, (unsigned char)sourceMod,
+                    (int)tr.shader);
+            }
+        }
+        Entity* inflictor = HandleDbToEnt(weaponEntity);
+        G_Damage(hitEnt, inflictor, attacker, wp->forward,
+                 &tr.endpos.v.m128_f32[0], damage, dflags, sourceMod,
+                 (hitLocation_t)(intptr_t)tr.shader, wp->pWeapInfo->index);
+        if (hitEnt->sentient != nullptr && (dflags & 0x40) != 0
+            && damage / 2 > 0)
+        {
+            DbLinkedHandle<EntityHandleDb, Entity> src;
+            src.mHandle.mVal = hitEnt->mHandle.mHandle.mVal;
+            float newStart[3];
+            newStart[0] = tr.endpos.v.m128_f32[0];
+            newStart[1] = tr.endpos.v.m128_f32[1];
+            newStart[2] = tr.endpos.v.m128_f32[2];
+            Bullet_Fire_Extended(src, attacker, newStart, end, damage / 2,
+                                 recursion + 1, wp, weaponEntity, 0.0f);
+        }
+    }
+    char passThrough = 0;
+    if (hitEnt != nullptr)
+    {
+        ValidatePakId((TPakId)hitEnt->mModel.mPakId);
+        if (hitEnt->mModel.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)hitEnt->mModel.mPakId);
+            if ((hitEnt->mModel.mValue->contents & 0x12) != 0)
+                passThrough = 1;
+        }
+    }
+    if (((int)tr.normal.v.m128_f32[3] & 0x12) != 0 || passThrough != 0)
+    {
+        float dir[3];
+        dir[0] = end[0] - start[0];
+        dir[1] = end[1] - start[1];
+        dir[2] = end[2] - start[2];
+        VectorNormalize(dir);
+        float v62 = tr.normal.v.m128_f32[0] * dir[0]
+                  + tr.normal.v.m128_f32[1] * dir[1]
+                  + tr.normal.v.m128_f32[2] * dir[2];
+        float v63 = 0.0f;
+        if (-v62 >= 0.125f)
+            v63 = 0.25f / -v62;
+        start[0] = tr.endpos.v.m128_f32[0] + v63 * dir[0];
+        start[1] = tr.endpos.v.m128_f32[1] + v63 * dir[1];
+        start[2] = tr.endpos.v.m128_f32[2] + v63 * dir[2];
+        Bullet_Fire_Extended(sourceEntity, attacker, start, end, damage,
+                             recursion + 1, wp, weaponEntity, 0.0f);
+    }
+}

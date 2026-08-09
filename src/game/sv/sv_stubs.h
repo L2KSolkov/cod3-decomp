@@ -275,6 +275,15 @@ struct MultiplayerMgr {
     bool IsHost();                  // ?IsHost@MultiplayerMgr@@QAE_NXZ
     void SwapWeapon(int weapon, int netIndex, int clipCount, int ammoCount);  // ?SwapWeapon@MultiplayerMgr@@QAEXHHHH@Z
     void SwapKit(int playerClass, int netIndex);  // ?SwapKit@MultiplayerMgr@@QAEXHH@Z
+    void BulletHit(const math::Position3& position, const math::Dir3& normal,
+                   unsigned char surfaceType, unsigned char weapon,
+                   Entity* hitEntity);  // ?BulletHit@MultiplayerMgr@@QAEXABVPosition3@math@@ABVDir3@3@EEPAVEntity@@@Z
+    void BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
+                         const math::Position3& position,
+                         const math::Dir3& normal, unsigned char surfaceType,
+                         unsigned char weapon, short damage,
+                         unsigned char damageFlags, unsigned char mod,
+                         int hitLocation);  // ?BulletHitPlayer@MultiplayerMgr@@QAEXPAVEntity@@0ABVPosition3@math@@ABVDir3@4@EEFEEH@Z
     void MeleeHit(Entity* hitEntity, Entity* attackerEntity,
                   const math::Position3& position, const math::Dir3& normal,
                   unsigned char surfaceType, short damage, unsigned char mod,

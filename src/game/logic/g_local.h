@@ -1447,6 +1447,7 @@ enum weapSlot_t : int {
 };
 enum {
     WEAPCLASS_GRENADE = 5,  // verified vs disasm Pickup_Weapon
+    WEAPCLASS_LMG = 14,     // verified vs disasm Bullet_Fire_Extended
 };
 enum {
     AI_EV_GRENADE_PING = 0x0E,
@@ -2054,6 +2055,7 @@ extern float helmetFriction;                     // g.o @ 0xDD8214
 extern float helmetMass;                         // g.o @ 0xDD8218
 extern int   timeToAdd;                          // g.o @ 0xDD821C
 extern float decal_radius;                       // g.o @ 0xDD8204
+extern float decal_radius_0;                     // g.o @ 0xDD826C
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
 
@@ -2082,6 +2084,10 @@ struct DynamicDecalMgr {
 void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                        const float* normal, int weapon, int surfType,
                        Entity* hitEnt);  // cg.o
+void CG_BulletHitClientEvent(
+    DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
+    const math::Position3& position, const float* normal, int surfType,
+    int weapon);  // cg.o
 void CG_EventSpawnTracer(const math::Position3* pstart,
                          const math::Position3* pend, int weapon);  // cg.o
 void CG_FireWeapon(Entity* attacker, EntityState* attackerState, int event,

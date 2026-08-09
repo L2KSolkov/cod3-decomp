@@ -17,6 +17,7 @@ float radius = 30.0f;          // @ 0xDD8208 (Weapon_Revive_Test revive radius)
 float radius_1 = 30.0f;        // @ 0xDD8268 (Weapon_Melee melee range)
 float abovehead_tresh = 100.0f;  // @ 0xDD820C (Player_GetActivateEnt)
 float decal_radius = 3.0f;     // @ 0xDD8204 (bullet impact decal radius)
+float decal_radius_0 = 3.0f;   // @ 0xDD826C (Bullet_Fire_Extended decal radius)
 float helmetBounce = 0.65f;    // @ 0xDD8210 (SpawnHelmet phys data)
 float helmetFriction = 0.65f;  // @ 0xDD8214
 float helmetMass = 0.035f;     // @ 0xDD8218
