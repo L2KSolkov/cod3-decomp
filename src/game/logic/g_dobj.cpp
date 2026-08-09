@@ -506,3 +506,189 @@ void* G_GetModel(const char* modelName, TPakId pakId)
         return nullptr;
     }
 }
+
+// ============================================================================
+// DObj tracking (register/unregister/commit) + entity ref cleanup
+// ============================================================================
+
+namespace {
+void VectorAssertIndex(int idx, int mSize)
+{
+    if (idx < 0 || idx >= mSize)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+        AeAssert::gCurrentLine = 167;
+        AeAssert::gCurrentExpr = "iIndex >= 0 && iIndex < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+}
+
+void VectorRemove(ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>& v, int idx)
+{
+    if (idx + 1 < v.mSize)
+    {
+        VectorAssertIndex(idx, v.mSize);
+        VectorAssertIndex(v.mSize - 1, v.mSize);
+        v.mElements[idx] = v.mElements[v.mSize - 1];
+    }
+    if (v.mSize != 0)
+        --v.mSize;
+}
+
+void VectorPush(ae_vector<DbLinkedHandle<EntityHandleDb, Entity>>& v,
+                const DbLinkedHandle<EntityHandleDb, Entity>& h)
+{
+    v.mElements[v.mSize++] = h;
+}
+}  // namespace
+
+// ea: 0x00448B80
+void DObjHandleDb_Init(void)
+{
+    ;
+}
+
+// ea: 0x00468E30
+void register_dobj(DbLinkedHandle<EntityHandleDb, Entity> handle)
+{
+    int mSize = del_pending_dobjects.mSize;
+    for (int v2 = 0; v2 < mSize; ++v2)
+    {
+        VectorAssertIndex(v2, del_pending_dobjects.mSize);
+        if (del_pending_dobjects.mElements[v2].mHandle.mVal == handle.mHandle.mVal)
+        {
+            VectorRemove(del_pending_dobjects, v2);
+            return;
+        }
+    }
+    VectorPush(add_pending_dobjects, handle);
+}
+
+// ea: 0x00468EF0
+void unregister_dobj(DbLinkedHandle<EntityHandleDb, Entity> handle)
+{
+    int mSize = add_pending_dobjects.mSize;
+    for (int v2 = 0; v2 < mSize; ++v2)
+    {
+        VectorAssertIndex(v2, add_pending_dobjects.mSize);
+        if (add_pending_dobjects.mElements[v2].mHandle.mVal == handle.mHandle.mVal)
+        {
+            VectorRemove(add_pending_dobjects, v2);
+            return;
+        }
+    }
+    VectorPush(del_pending_dobjects, handle);
+}
+
+// ea: 0x00468FB0
+void init_dobj_trackers(void)
+{
+    // reserve(192) / reserve(192) / reserve(128) - capacity preallocation
+    dobjects.mCapacity = 192;
+    del_pending_dobjects.mCapacity = 192;
+    add_pending_dobjects.mCapacity = 128;
+}
+
+// ea: 0x00468FE0
+void DObjSetNotRenderedFlag(void)
+{
+    cdl_proftimer_dobj_anim.start();
+    int mSize = dobjects.mSize;
+    for (int i = 0; i < dobjects.mSize; ++i)
+    {
+        VectorAssertIndex(i, mSize);
+        unsigned int v2 = dobjects.mElements[i].mHandle.mVal & 0xFFF;
+        if (v2 < 0x540
+            && dobjects.mElements[i].mHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v2].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+            if (mObject != nullptr)
+            {
+                DObj* mDObj = mObject->mDObj;
+                if (mDObj != nullptr)
+                    mDObj->mFlags |= 0xFu;
+            }
+        }
+        mSize = dobjects.mSize;
+    }
+    cdl_proftimer_dobj_anim.stop();
+}
+
+// ea: 0x00477450
+void commit_dobjects(void)
+{
+    for (int i = 0; i < del_pending_dobjects.mSize; ++i)
+    {
+        unsigned int mVal = del_pending_dobjects.mElements[i].mHandle.mVal;
+        int size = dobjects.mSize;
+        for (int v1 = 0; v1 < size; ++v1)
+        {
+            VectorAssertIndex(v1, dobjects.mSize);
+            if (dobjects.mElements[v1].mHandle.mVal == mVal)
+            {
+                if (v1 + 1 < size)
+                {
+                    VectorAssertIndex(size - 1, dobjects.mSize);
+                    dobjects.mElements[v1--] = dobjects.mElements[size - 1];
+                }
+                --size;
+                if (dobjects.mSize != 0)
+                    --dobjects.mSize;
+            }
+        }
+    }
+    for (int j = 0; j < add_pending_dobjects.mSize; ++j)
+    {
+        VectorPush(dobjects, add_pending_dobjects.mElements[j]);
+    }
+    add_pending_dobjects.mSize = 0;
+    del_pending_dobjects.mSize = 0;
+}
+
+// ea: 0x00472C70
+void G_EntDetachAll(Entity* ent)
+{
+    Broc::string* mAttachModels = (Broc::string*)ent->mAttachModels;
+    for (int i = 7; i != 0; --i)
+    {
+        mAttachModels[0].mBlock = nullptr;
+        mAttachModels[1].mBlock = (Broc::string::Block*)-1;
+        mAttachModels[2].clear();
+        mAttachModels += 3;
+    }
+    ent->attachIgnoreCollision = 0;
+    G_DObjUpdate(ent, false);
+}
+
+// ea: 0x004736C0
+void G_FreeEntityRefs(Entity* ed)
+{
+    if (level.turrets != nullptr)
+    {
+        if (level.turrets->manualTarget == ed)
+            level.turrets->manualTarget = nullptr;
+        if (level.turrets->target == ed)
+            level.turrets->target = nullptr;
+        if (level.turrets->detachSentient == ed->sentient)
+            level.turrets->detachSentient = nullptr;
+    }
+    for (int i = 0; i < 32; ++i)
+    {
+        actor_s* actor = level.actors[i];
+        if (actor != nullptr && actor->iSpawnTime >= 0 && actor->pPileUpEnt == ed)
+        {
+            actor->pPileUpActor = nullptr;
+            actor->pPileUpEnt = nullptr;
+        }
+    }
+    for (int i = 0; i < 16; ++i)
+    {
+        Client* v8 = &level.clients[i];
+        if (v8 != nullptr && v8->pLookatEnt == ed)
+            v8->pLookatEnt = nullptr;
+    }
+    G_FreeVehicleRefs(ed);
+}

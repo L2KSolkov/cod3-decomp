@@ -234,6 +234,7 @@ public:
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     void Notify(HashString h, const int& d, Broc::entity* e, int* mod,
                 EHitLocation* hitloc, const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z
+    void FreeDObj(bool deleteDObjs);              // ?FreeDObj@Entity@@QAEX_N@Z (game.o)
     bool IsLocalPlayer();                            // ?IsLocalPlayer@Entity@@QBE_NXZ
     int  GetPlayerIndex();                           // ?GetPlayerIndex@Entity@@QBEHXZ
     int  IsVisible() const;                          // ?IsVisible@Entity@@QBEHXZ (game.o)

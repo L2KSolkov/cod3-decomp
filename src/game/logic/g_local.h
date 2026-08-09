@@ -19,6 +19,16 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <intrin.h>
+
+// ae_vector<T> - dynamic array (12 bytes) - verified against IDA
+template <typename T>
+struct ae_vector {
+    T*  mElements;  // +0x00
+    int mCapacity;  // +0x04
+    int mSize;      // +0x08
+};
+static_assert(sizeof(ae_vector<char>) == 0x0C, "ae_vector size mismatch");
 
 // ============================================================================
 // scr_vehicle_t - vehicle runtime state (infoIdx at +0x178 verified vs disasm)
@@ -1170,6 +1180,28 @@ void Scr_NotifyFromEnt(Entity* ent, HashString hashValue, Entity* fromEnt);
 
 // g.o data: DObj controller dispatch table @ 0xDD57C0 (anim.o provides funcs)
 extern void (*controllertable[4])(Entity* ent, int* partBits);
+
+// DObj - server-side dynamic object (minimal view; full layout in cg_local.h)
+struct DObj {
+    uint8_t      _pad0[0xE4];   // +0x00
+    unsigned int mFlags;        // +0xE4
+};
+
+// cdl_proftimer - profile timing accumulator (game.o)
+struct cdl_proftimer {
+    float    value;      // +0x00
+    uint32_t _pad[3];    // +0x04
+    uint64_t stamp;      // +0x10
+    void start() { stamp = __rdtsc(); }           // ea: 0x004A91A0 (inline)
+    void stop() { value += (float)(__rdtsc() - stamp); }  // ea: 0x004A91E0 (inline)
+};
+extern cdl_proftimer cdl_proftimer_dobj_anim;    // game.o 0x0132C318
+
+// g.o DObj tracking vectors (g_utils.cpp)
+extern ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> dobjects;            // 0x012C4D14
+extern ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> del_pending_dobjects;  // 0x012D4DC0
+extern ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> add_pending_dobjects;  // 0x012C1FA4
+void G_FreeVehicleRefs(Entity* ent);              // g.o 0x45D3A0 (g_scr_vehicle.cpp)
 
 // core.o (effect_events.cpp) - sound notify
 class EffectEventSys {

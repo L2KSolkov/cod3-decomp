@@ -375,12 +375,17 @@ struct actor_s {
     int32_t        iFollowMin;                   // +0x824
     int32_t        iFollowMax;                   // +0x828
     float          fInterval;                    // +0x82C
-    uint8_t        _pad830[0x8AC - 0x830];
+    uint8_t        _pad830[0x83C - 0x830];
+    actor_s*       pPileUpActor;                 // +0x83C
+    Entity*        pPileUpEnt;                   // +0x840
+    uint8_t        _pad844[0x8AC - 0x844];
     float          fFovDot;                      // +0x8AC
     float          fMaxSightDistSqrd;            // +0x8B0
     uint8_t        _pad8B4[0x8CC - 0x8B4];
     sentient_info_array sentientInfo;            // +0x8CC (0xC0 bytes)
-    uint8_t        _pad98C[0xA98 - 0x98C];
+    uint8_t        _pad98C[0xA84 - 0x98C];
+    int32_t        iSpawnTime;                   // +0xA84
+    uint8_t        _padA88[0xA98 - 0xA88];
     int32_t        mg42stayput;                  // +0xA98
     uint8_t        _padA9C[0xAA4 - 0xA9C];
     int16_t        iUseHintString;               // +0xAA4
@@ -397,5 +402,8 @@ static_assert(offsetof(actor_s, fFovDot) == 0x8AC, "actor_s::fFovDot offset mism
 static_assert(offsetof(actor_s, fMaxSightDistSqrd) == 0x8B0,
               "actor_s::fMaxSightDistSqrd offset mismatch");
 static_assert(offsetof(actor_s, sentientInfo) == 0x8CC, "actor_s::sentientInfo offset mismatch");
+static_assert(offsetof(actor_s, pPileUpActor) == 0x83C, "actor_s::pPileUpActor offset mismatch");
+static_assert(offsetof(actor_s, pPileUpEnt) == 0x840, "actor_s::pPileUpEnt offset mismatch");
+static_assert(offsetof(actor_s, iSpawnTime) == 0xA84, "actor_s::iSpawnTime offset mismatch");
 static_assert(offsetof(actor_s, mg42stayput) == 0xA98, "actor_s::mg42stayput offset mismatch");
 static_assert(offsetof(actor_s, iUseHintString) == 0xAA4, "actor_s::iUseHintString offset mismatch");
