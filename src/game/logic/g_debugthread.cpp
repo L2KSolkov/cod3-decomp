@@ -396,6 +396,7 @@ struct TaskHandlerImpl {
     void QuickDeactivation(DbLinkedHandle<EntityHandleDb, Entity> h);
     void DeactivateAll();
     Task* GetTaskForEntity(DbLinkedHandle<EntityHandleDb, Entity> h);
+    void Update(float deltaT, void* ftor);
 };
 
 struct TaskSysImpl2 {
@@ -516,6 +517,54 @@ Task* TaskHandlerImpl::GetTaskForEntity(
             return nullptr;
     }
     return (Task*)((char*)m_head - 0x4);
+}
+
+// ============================================================================
+// TaskHandler::Update - ea: 0x504990
+// ============================================================================
+extern Entity* EntityHandleDb_GetObject(unsigned int val);
+
+void TaskHandlerImpl::Update(float deltaT, void* ftor)
+{
+    // Apply quick-deactivation records: mark those entities' tasks.
+    DListNode* q = mQuickDeactivationList.m_head;
+    while (q != nullptr && q != &mQuickDeactivationList.m_end)
+    {
+        QuickTaskDeactivation* rec = (QuickTaskDeactivation*)q;
+        unsigned int entVal = rec->mEntHandle;
+        DListNode* next = q->m_next;
+        Entity* ent = EntityHandleDb_GetObject(entVal);
+        if (ent != nullptr)
+            ent->mFlags |= 4u;
+        mem_heap_free(rec);
+        q = next;
+    }
+    mQuickDeactivationList.m_head = &mQuickDeactivationList.m_end;
+    mQuickDeactivationList.m_size = 0;
+
+    // Run each task's Update.
+    DListNode* t = mTaskList.m_head;
+    while (t != nullptr && t != &mTaskList.m_end)
+    {
+        Task* task = (Task*)((char*)t - 0x4);
+        DListNode* next = t->m_next;
+        if (ftor != nullptr)
+        {
+            // TaskFunctor path: fn(task, entity)
+            ((void(*)(Task*, void*))ftor)(task, nullptr);
+        }
+        else
+        {
+            // Task::Update(Entity*, float)
+            typedef void (*UpdateFn)(Task*, Entity*, float);
+            void** vt = *(void***)task;
+            UpdateFn fn = (UpdateFn)vt[4];  // vtable slot 4 = Update
+            Entity* e = EntityHandleDb_GetObject(
+                task->mEntityHandle.mHandle.mVal);
+            fn(task, e, deltaT);
+        }
+        t = next;
+    }
 }
 
 // ============================================================================
