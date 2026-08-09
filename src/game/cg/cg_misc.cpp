@@ -4764,3 +4764,288 @@ void Camera::UpdateDeathCamera()
         }
     }
 }
+
+extern void InterpolatePositionSmooth(float* a1, const float* a2,
+                                      const float* a3, float a4);
+extern void InterpolateAnglesSmooth(float* a1, const float* a2,
+                                    const float* a3, float a4);
+extern float AngleNormalize360(float angle);
+
+// ea: 0x006A5E40
+void Camera::UpdateTween(math::Position3& tweenStartPos,
+                         math::Position3& tweenStartAngles)
+{
+    mTweenTime = ServerTime_sInst.mTickDelta + mTweenTime;
+    if (IsInvalidFloat(tweenStartPos.v.m128_f32[0])
+        || IsInvalidFloat(tweenStartPos.v.m128_f32[1])
+        || IsInvalidFloat(tweenStartPos.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((tweenStartPos)[0]) && !IS_NAN((tweenStartPos)[1]) "
+                  "&& !IS_NAN((tweenStartPos)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 1075);
+    }
+    if (IsInvalidFloat(tweenStartAngles.v.m128_f32[0])
+        || IsInvalidFloat(tweenStartAngles.v.m128_f32[1])
+        || IsInvalidFloat(tweenStartAngles.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((tweenStartAngles)[0]) && "
+                  "!IS_NAN((tweenStartAngles)[1]) && "
+                  "!IS_NAN((tweenStartAngles)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 1076);
+    }
+    if (mTweenDuration > mTweenTime)
+    {
+        float frac = mTweenTime / mTweenDuration;
+        Client* client =
+            EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+        unsigned int mVal = client->ps.mViewLockedEntity;
+        bool circleTween = (mTweenFlags & 2) != 0;
+        if (!circleTween)
+        {
+            if ((0x100000
+                 & EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                       ->client->ps.eFlags)
+                != 0)
+            {
+                Entity* Player =
+                    EntityManager_GetPlayer(EntityManager_sInst, mClient);
+                Entity* v24 = DbHandleToEntity(Player->r.mOwner.mHandle.mVal);
+                float px = mTweenParentPos.v.m128_f32[0];
+                float py = mTweenParentPos.v.m128_f32[1];
+                float pz = mTweenParentPos.v.m128_f32[2];
+                if (px * px + py * py + pz * pz > 0.1f)
+                {
+                    float dx = v24->r.currentOrigin.v.m128_f32[0] - px;
+                    float dy = v24->r.currentOrigin.v.m128_f32[1] - py;
+                    float dz = v24->r.currentOrigin.v.m128_f32[2] - pz;
+                    if (dx * dx + dy * dy + dz * dz < 65536.0f)
+                    {
+                        tweenStartPos.v = _mm_add_ps(
+                            tweenStartPos.v,
+                            _mm_setr_ps(dx, dy, dz, 0.0f));
+                        float a0 = AngleNormalize180(
+                                       v24->r.currentAngles.v.m128_f32[0]
+                                       - mTweenParentAngles.v.m128_f32[0])
+                                   + tweenStartAngles.v.m128_f32[0];
+                        tweenStartAngles.v.m128_f32[0] =
+                            AngleNormalize180(a0);
+                        float a1 = AngleNormalize180(
+                                       v24->r.currentAngles.v.m128_f32[1]
+                                       - mTweenParentAngles.v.m128_f32[1])
+                                   + tweenStartAngles.v.m128_f32[1];
+                        tweenStartAngles.v.m128_f32[1] =
+                            AngleNormalize360(a1);
+                        float a2 = AngleNormalize180(
+                                       v24->r.currentAngles.v.m128_f32[2]
+                                       - mTweenParentAngles.v.m128_f32[2])
+                                   + tweenStartAngles.v.m128_f32[2];
+                        tweenStartAngles.v.m128_f32[2] =
+                            AngleNormalize180(a2);
+                    }
+                }
+                mTweenParentPos.v = v24->r.currentOrigin.v;
+                mTweenParentAngles.v = v24->r.currentAngles.v;
+            }
+            if ((mTweenFlags & 1) == 0)
+            {
+                if ((mAnimFlags & 1) == 0 && client->ps.vehType != 2)
+                {
+                    // non-tank vehicle: straight forward-based smoothing
+                    float fwd[3];
+                    AnglesToForward(
+                        *(const math::Position3*)&angle[1580 * mClient],
+                        *(math::Dir3*)fwd);
+                    float start[3] = {
+                        dword_F63C70[1580 * mClient] + fwd[0] * 250.0f,
+                        dword_F63C74[1580 * mClient] + fwd[1] * 250.0f,
+                        dword_F63C78[1580 * mClient] + fwd[2] * 250.0f};
+                    InterpolatePositionSmooth(start, tweenStartPos.v.m128_f32,
+                                              start, frac);
+                    InterpolateAnglesSmooth(&angle[1580 * mClient],
+                                            tweenStartAngles.v.m128_f32,
+                                            &angle[1580 * mClient], frac);
+                    AnglesToForward(
+                        *(const math::Position3*)&angle[1580 * mClient],
+                        *(math::Dir3*)fwd);
+                    dword_F63C70[1580 * mClient] = start[0] - fwd[0] * 250.0f;
+                    dword_F63C74[1580 * mClient] = start[1] - fwd[1] * 250.0f;
+                    dword_F63C78[1580 * mClient] = start[2] - fwd[2] * 250.0f;
+                    if (mCamMode != CAM_VEHICLE_GUNNER_CROUCHED
+                        && mCamMode != CAM_VEHICLE_GUNNER)
+                    {
+                        float mins[3] = {-4.0f, -4.0f, -4.0f};
+                        float maxs[3] = {4.0f, 4.0f, 4.0f};
+                        collision_context_t ctx;
+                        memset(&ctx, 0, sizeof(ctx));
+                        ctx.__vftable =
+                            (collision_context_t_vtbl*)0x00CD8F6C;
+                        ctx.pass_entity1.mHandle.mVal =
+                            EntityManager_GetPlayer(EntityManager_sInst,
+                                                    mClient)
+                                ->mHandle.mHandle.mVal;
+                        ctx.pass_entity2.mHandle.mVal = mVal;
+                        ctx.contentmask = 17;
+                        trace_t tr;
+                        float end[3] = {dword_F63C70[1580 * mClient],
+                                        dword_F63C74[1580 * mClient],
+                                        dword_F63C78[1580 * mClient]};
+                        CG_Trace(&tr, (const math::Position3*)start,
+                                 (const math::Position3*)mins,
+                                 (const math::Position3*)maxs,
+                                 (const math::Position3*)end, &ctx);
+                        if (tr.normal.v.m128_f32[1] < 1.0f)
+                        {
+                            dword_F63C70[1580 * mClient] =
+                                tr.endpos.v.m128_f32[0];
+                            dword_F63C74[1580 * mClient] =
+                                tr.endpos.v.m128_f32[1];
+                            dword_F63C78[1580 * mClient] =
+                                tr.endpos.v.m128_f32[2];
+                        }
+                    }
+                }
+                else
+                {
+                    // tank: collision-smoothed position
+                    float mins[3] = {-15.0f, -15.0f, -15.0f};
+                    float maxs[3] = {15.0f, 15.0f, 15.0f};
+                    collision_context_t ctx;
+                    memset(&ctx, 0, sizeof(ctx));
+                    ctx.__vftable =
+                        (collision_context_t_vtbl*)0x00CD8F6C;
+                    ctx.contentmask = 0x802033;
+                    float cur[3] = {dword_F63C70[1580 * mClient],
+                                    dword_F63C74[1580 * mClient],
+                                    dword_F63C78[1580 * mClient]};
+                    float start[3];
+                    InterpolatePositionSmooth(start, tweenStartPos.v.m128_f32,
+                                              cur, frac);
+                    float end[3] = {start[0], start[1], start[2] + 1.0f};
+                    trace_t tr;
+                    CG_Trace(&tr, (const math::Position3*)start,
+                             (const math::Position3*)mins,
+                             (const math::Position3*)maxs,
+                             (const math::Position3*)end, &ctx);
+                    if (tr.normal.v.m128_f32[1] == 0.0f)
+                    {
+                        InterpolatePositionSmooth(
+                            cur, tweenStartPos.v.m128_f32, cur, frac);
+                    }
+                    else
+                    {
+                        if (tr.surfaceFlags == 0
+                            || tr.surfaceFlags
+                                   == *(int*)((char*)EntityManager_sInst + 0x44
+                                              + 0x234))
+                        {
+                            CG_Trace(&tr, (const math::Position3*)cur,
+                                     (const math::Position3*)mins,
+                                     (const math::Position3*)maxs,
+                                     (const math::Position3*)start, &ctx);
+                        }
+                        else
+                        {
+                            float pos[4] = {start[0], start[1], start[2],
+                                            start[2]};
+                            while (1)
+                            {
+                                pos[2] = pos[3] + 32.0f;
+                                CG_Trace(&tr, (const math::Position3*)pos,
+                                         (const math::Position3*)mins,
+                                         (const math::Position3*)maxs,
+                                         (const math::Position3*)start, &ctx);
+                                if (*(unsigned char*)((char*)&tr.mEntity
+                                                      + 1)
+                                    == 0)
+                                    break;
+                                pos[3] = pos[2];
+                                if ((pos[2] - start[2]) >= 512.0f)
+                                {
+                                    CG_Trace(
+                                        &tr, (const math::Position3*)cur,
+                                        (const math::Position3*)mins,
+                                        (const math::Position3*)maxs,
+                                        (const math::Position3*)&tweenStartPos,
+                                        &ctx);
+                                    break;
+                                }
+                            }
+                        }
+                        dword_F63C70[1580 * mClient] =
+                            tr.endpos.v.m128_f32[0];
+                        dword_F63C74[1580 * mClient] =
+                            tr.endpos.v.m128_f32[1];
+                        dword_F63C78[1580 * mClient] =
+                            tr.endpos.v.m128_f32[2];
+                        dword_F63C70[1580 * mClient + 3] =
+                            tr.endpos.v.m128_f32[0];
+                    }
+                }
+            }
+            if (IsInvalidFloat(angle[1580 * mClient])
+                || IsInvalidFloat(dword_F63CB4[1580 * mClient])
+                || IsInvalidFloat(dword_F63CB8[1580 * mClient]))
+            {
+                CG_ASSERT("!IS_NAN((cg[mClient].refdefViewAngles)[0]) && "
+                          "!IS_NAN((cg[mClient].refdefViewAngles)[1]) && "
+                          "!IS_NAN((cg[mClient].refdefViewAngles)[2])",
+                          "c:\\cod\\code\\game\\Camera.cpp", 1183);
+            }
+            InterpolateAnglesSmooth(&angle[1580 * mClient],
+                                    tweenStartAngles.v.m128_f32,
+                                    &angle[1580 * mClient], frac);
+        }
+        else
+        {
+            float fwd[3];
+            AnglesToForward(
+                *(const math::Position3*)&angle[1580 * mClient],
+                *(math::Dir3*)fwd);
+            float start[3] = {dword_F63C70[1580 * mClient] + fwd[0] * 250.0f,
+                              dword_F63C74[1580 * mClient] + fwd[1] * 250.0f,
+                              dword_F63C78[1580 * mClient] + fwd[2] * 250.0f};
+            InterpolatePositionSmooth(start, tweenStartPos.v.m128_f32, start,
+                                      frac);
+            InterpolateAnglesSmooth(&angle[1580 * mClient],
+                                    tweenStartAngles.v.m128_f32,
+                                    &angle[1580 * mClient], frac);
+            AnglesToForward(
+                *(const math::Position3*)&angle[1580 * mClient],
+                *(math::Dir3*)fwd);
+            dword_F63C70[1580 * mClient] = start[0] - fwd[0] * 250.0f;
+            dword_F63C74[1580 * mClient] = start[1] - fwd[1] * 250.0f;
+            dword_F63C78[1580 * mClient] = start[2] - fwd[2] * 250.0f;
+            if (mCamMode != CAM_VEHICLE_GUNNER_CROUCHED
+                && mCamMode != CAM_VEHICLE_GUNNER)
+            {
+                float mins[3] = {-4.0f, -4.0f, -4.0f};
+                float maxs[3] = {4.0f, 4.0f, 4.0f};
+                collision_context_t ctx;
+                memset(&ctx, 0, sizeof(ctx));
+                ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+                ctx.pass_entity1.mHandle.mVal =
+                    EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                        ->mHandle.mHandle.mVal;
+                ctx.pass_entity2.mHandle.mVal = mVal;
+                ctx.contentmask = 17;
+                trace_t tr;
+                float end[3] = {dword_F63C70[1580 * mClient],
+                                dword_F63C74[1580 * mClient],
+                                dword_F63C78[1580 * mClient]};
+                CG_Trace(&tr, (const math::Position3*)start,
+                         (const math::Position3*)mins,
+                         (const math::Position3*)maxs,
+                         (const math::Position3*)end, &ctx);
+                if (tr.normal.v.m128_f32[1] < 1.0f)
+                {
+                    dword_F63C70[1580 * mClient] =
+                        tr.endpos.v.m128_f32[0];
+                    dword_F63C74[1580 * mClient] =
+                        tr.endpos.v.m128_f32[1];
+                    dword_F63C78[1580 * mClient] =
+                        tr.endpos.v.m128_f32[2];
+                }
+            }
+        }
+    }
+}
