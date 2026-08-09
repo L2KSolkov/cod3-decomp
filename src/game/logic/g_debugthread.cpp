@@ -558,6 +558,48 @@ Task* TaskSys_GetTaskForEntity(unsigned int taskId,
 }
 
 // ============================================================================
+// TaskSys::CreateTaskHandle - ea: 0x50BA00
+// ============================================================================
+extern void HandleDb_AllocateTaskHandle(void* self, Task** t);
+extern void HandleDb_BindTaskObject(void* self, Handle h, Task* obj);
+
+Handle TaskSys_CreateTaskHandle(Task* t)
+{
+    if (t->mTaskHandle.mVal != 0)
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("handle already assigned"))
+            __debugbreak();
+    }
+    Task* pt = t;
+    HandleDb_AllocateTaskHandle(&TaskSysImpl2_sInst->mHandleDb, &pt);
+    t->mTaskHandle.mVal = pt->mTaskHandle.mVal;
+    HandleDb_BindTaskObject(&TaskSysImpl2_sInst->mHandleDb,
+                            t->mTaskHandle, t);
+    return t->mTaskHandle;
+}
+
+// ============================================================================
+// TaskSys::ShutDown - ea: 0x50B920
+// ============================================================================
+extern void TaskSys_DeliverTasks_glue();
+
+void TaskSys_ShutDown()
+{
+    TaskSys_DeliverTasks_glue();
+    int count = TaskSysImpl2_sInst->m_size;
+    for (int i = 0; i < count; ++i)
+    {
+        TaskHandlerImpl* handler = TaskSysImpl2_sInst->mTaskHandlers[i];
+        if (handler != nullptr)
+            handler->DeactivateAll();
+    }
+    TaskHandler_Update(HealthRegenTask_sHandler, 0.01f, nullptr);
+    TaskHandler_Update(AnimNotifyTask_sHandler, 0.01f, nullptr);
+    TaskHandler_Update(EntityDeathTask_sHandler, 0.01f, nullptr);
+}
+
+// ============================================================================
 // AnimationPlayer::nalPlayMethod dtor - ea: 0x50BB30
 // ============================================================================
 extern void* mem_heap_free_sz(void* ptr);
