@@ -344,6 +344,149 @@ Entity* Drop_Item(Entity* ent, const gitem_s* item, float angle, int novelocity)
     return LaunchItem(CurPakId(), item, vPos, angles, velocity, ent);
 }
 
+static bool s_pszTagHashInit = false;
+static unsigned int pszTag_hash;
+
+// ea: 0x00475E40
+Entity* Drop_Weapon(Entity* pEnt, int iWeaponIndex, const char* pszTag)
+{
+    gitem_s* item = &bg_itemlist[iWeaponIndex];
+    if (item->giType != IT_WEAPON)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+        AeAssert::gCurrentLine = 1235;
+        AeAssert::gCurrentExpr = "pWeapItem->giType == IT_WEAPON";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    weaponFileInfo_t* info = BG_GetInfoForWeapon(iWeaponIndex);
+    if (info->bDoNotDrop != 0 || info->type == WEAPTYPE_ITEM)
+        return nullptr;
+    if (info->slot != WEAPSLOT_PRIMARY && info->slot != WEAPSLOT_PRIMARYB)
+        return nullptr;
+    bool novelocity = false;
+    if (pEnt != nullptr && pEnt->client != nullptr)
+    {
+        int playerState = pEnt->client->pers.playerState;
+        if (playerState == 4 || playerState == 5)
+            novelocity = true;
+    }
+    Entity* pDrop = Drop_Item(pEnt, item, 0.0f, novelocity);
+    int iAmmoIndex = BG_AmmoForWeapon(iWeaponIndex);
+    int iClipIndex = BG_ClipForWeapon(iWeaponIndex);
+    int ammo = 0;
+    int clip = 0;
+    if (pEnt->client != nullptr)
+    {
+        ammo = pEnt->client->ps.ammo[iAmmoIndex];
+        pEnt->client->ps.ammo[iAmmoIndex] = 0;
+        clip = pEnt->client->ps.ammoclip[iClipIndex];
+        pEnt->client->ps.ammoclip[iClipIndex] = 0;
+        BG_TakePlayerWeapon(&pEnt->client->ps, iWeaponIndex);
+        if (pEnt->client->pers.playerClass == 2
+            && pEnt->client->ps.weaponslots[1] == iWeaponIndex
+            && pEnt->client->ps.weaponslots[9] != 0)
+        {
+            BG_TakePlayerWeapon(&pEnt->client->ps,
+                                pEnt->client->ps.weaponslots[9]);
+        }
+    }
+    else
+    {
+        BG_GetRandomAmmoCounts(&ammo, &clip, iWeaponIndex);
+    }
+    pDrop->count = ammo;
+    pDrop->count2 = clip;
+    if (ammo == 0)
+        pDrop->count = -1;
+    if (clip == 0)
+        pDrop->count2 = -1;
+    if (pszTag != nullptr)
+    {
+        if (!s_pszTagHashInit)
+        {
+            s_pszTagHashInit = true;
+            pszTag_hash = HashString::CalcHash(pszTag);
+        }
+        DObjSkelMat mat;
+        float angles[3];
+        float yaw;
+        if (G_DObjGetWorldTagMatrix(pEnt, pszTag_hash, &mat) != 0)
+        {
+            math::Position3 start;
+            start.v.m128_f32[0] = pEnt->r.currentOrigin.v.m128_f32[0]
+                                + (pEnt->r.maxs.v.m128_f32[0]
+                                   + pEnt->r.mins.v.m128_f32[0]) * 0.5f;
+            start.v.m128_f32[1] = pEnt->r.currentOrigin.v.m128_f32[1]
+                                + (pEnt->r.maxs.v.m128_f32[1]
+                                   + pEnt->r.mins.v.m128_f32[1]) * 0.5f;
+            start.v.m128_f32[2] = pEnt->r.currentOrigin.v.m128_f32[2]
+                                + (pEnt->r.maxs.v.m128_f32[2]
+                                   + pEnt->r.mins.v.m128_f32[2]) * 0.5f;
+            collision_context_t context(pEnt->mHandle, 1041);
+            trace_t trace;
+            math::Position3 tmp;
+            const math::Position3* end = native_to_cdl_pos3(&tmp, &mat.origin[0]);
+            g_TraceCapsule(&trace, start, pDrop->r.mins, pDrop->r.maxs,
+                           *end, context);
+            pDrop->s.pos.trBase[0] = trace.endpos.v.m128_f32[0];
+            pDrop->s.pos.trBase[1] = trace.endpos.v.m128_f32[1];
+            pDrop->s.pos.trBase[2] = trace.endpos.v.m128_f32[2];
+            if (IS_NAN(pDrop->r.currentOrigin.v.m128_f32[0])
+                || IS_NAN(pDrop->r.currentOrigin.v.m128_f32[1])
+                || IS_NAN(pDrop->r.currentOrigin.v.m128_f32[2]))
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+                AeAssert::gCurrentLine = 1316;
+                AeAssert::gCurrentExpr =
+                    "!IS_NAN((pDrop->r.currentOrigin)[0]) && "
+                    "!IS_NAN((pDrop->r.currentOrigin)[1]) && "
+                    "!IS_NAN((pDrop->r.currentOrigin)[2])";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                    __debugbreak();
+            }
+            pDrop->r.currentOrigin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+            pDrop->r.currentOrigin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+            pDrop->r.currentOrigin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+            pDrop->s.pos.trTime = level.time;
+            Axis4ToAngles(mat.axis, angles);
+            yaw = angles[2];
+        }
+        else
+        {
+            angles[0] = pEnt->r.currentAngles.v.m128_f32[0];
+            angles[1] = pEnt->r.currentAngles.v.m128_f32[1];
+            yaw = pEnt->r.currentAngles.v.m128_f32[2];
+        }
+        angles[2] = yaw + 90.0f;
+        G_SetAngle(pDrop, &pEnt->r.currentAngles);
+        pDrop->s.apos.trType = TR_LINEAR;
+        pDrop->s.apos.trTime = level.time;
+        pDrop->s.apos.trDelta[0] = ((rand() * 0.000061035156f) - 1.0f) * 50.0f;
+        pDrop->s.apos.trDelta[1] = ((rand() * 0.000061035156f) - 1.0f) * 40.0f;
+        pDrop->s.apos.trDelta[2] = ((rand() * 0.000061035156f) - 1.0f) * 60.0f;
+        if (IS_NAN(pDrop->s.pos.trDelta[0])
+            || IS_NAN(pDrop->s.pos.trDelta[1])
+            || IS_NAN(pDrop->s.pos.trDelta[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_items.cpp";
+            AeAssert::gCurrentLine = 1334;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((pDrop->s.pos.trDelta)[0]) && "
+                "!IS_NAN((pDrop->s.pos.trDelta)[1]) && "
+                "!IS_NAN((pDrop->s.pos.trDelta)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+    }
+    pDrop->think = THINK__G_FreeEntity;
+    pDrop->nextthink = level.time + 30000;
+    return pDrop;
+}
+
 // ea: 0x00475910
 int Pickup_Health(Entity* ent, Entity* other)
 {

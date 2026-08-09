@@ -1125,6 +1125,7 @@ bool IsSplitScreen();  // ea: 0x00693C10 (cg_misc.cpp)
 // ============================================================================
 int  BG_AmmoForWeapon(int iWeapon);
 int  BG_ClipForWeapon(int iWeapon);
+void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex);  // game2.o
 int  BG_GetNumWeapons();
 int  BG_GetAmmoClipSize(int iClipIndex);
 int  BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
@@ -1336,7 +1337,9 @@ struct weaponFileInfo_t {
     int     bNoBounce;            // +0x704
     int     bNoTumble;            // +0x708
     int     bCanMantle;           // +0x70C
-    uint8_t _pad70[0x764 - 0x710];
+    uint8_t _pad70[0x738 - 0x710];
+    int     bDoNotDrop;           // +0x738
+    uint8_t _pad73C[0x764 - 0x73C];
     int     iAltWeaponIndex;      // +0x764
     int     iShotCount;           // +0x768
     uint8_t _pad5[0x774 - 0x76C];
@@ -1395,8 +1398,13 @@ static_assert(offsetof(weaponFileInfo_t, turnSpeed) == 0x880, "weaponFileInfo_t:
 static_assert(offsetof(weaponFileInfo_t, szScript) == 0x8BC, "weaponFileInfo_t::szScript offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, slot) == 0xB4, "weaponFileInfo_t::slot offset mismatch");
 
-enum {
-    WEAPSLOT_SMOKE_GRENADE = 5,  // verified vs disasm G_ExplodeMissile
+enum weapSlot_t {
+    WEAPSLOT_PRIMARY = 1,        // verified vs disasm Drop_Weapon
+    WEAPSLOT_PRIMARYB = 2,
+    WEAPSLOT_PISTOL = 3,
+    WEAPSLOT_GRENADE = 4,
+    WEAPSLOT_SMOKE_GRENADE = 5,
+    WEAPSLOT_SPECIAL = 9,
 };
 enum {
     AI_EV_GRENADE_PING = 0x0E,
@@ -1800,6 +1808,7 @@ void  MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
 void  MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
                        float (*out)[3]);
 void  MatrixTranspose(const float (*in)[3], float (*out)[3]);
+void  Axis4ToAngles(const float (*axis)[4], float* angles);  // core.o
 void  RotatePointAroundVector(float* result, const float* axis,
                               const float* src, float angle);  // core.o
 void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
@@ -2273,7 +2282,10 @@ void  j_nullsub_54(weaponParms* wp, const float* target, float* out);  // g.o
 void  j_nullsub_47(weaponParms* wp, const float* target, float* out);  // g.o
 int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEnt,
                                          float visThreshold);  // game.o
-enum { WEAPTYPE_BULLET = 0 };
+enum {
+    WEAPTYPE_BULLET = 0,
+    WEAPTYPE_ITEM = 4,  // verified vs disasm Drop_Weapon
+};
 void  Scr_Vehicle_Init(Entity* pSelf, int msec); // g.o 0x480AC0
 void  VEH_GroundPlant(Entity* ent, int gravity, int msec);  // g.o
 struct TouchEntityData {
