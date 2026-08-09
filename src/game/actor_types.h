@@ -393,8 +393,9 @@ struct actor_s {
     uint8_t        _padA30[0xA84 - 0xA30];
     int32_t        iSpawnTime;                   // +0xA84
     uint8_t        _padA88[0xA98 - 0xA88];
-    int32_t        mg42stayput;                  // +0xA98
-    uint8_t        _padA9C[0xAA4 - 0xA9C];
+    uint8_t        mg42stayput;                  // +0xA98
+    uint8_t        useable;                      // +0xA99
+    uint8_t        _padA9A[0xAA4 - 0xA9A];
     int16_t        iUseHintString;               // +0xAA4
     int16_t        mActorIndex;                  // +0xAA6
     uint8_t        _padAA8[0xAB4 - 0xAA8];

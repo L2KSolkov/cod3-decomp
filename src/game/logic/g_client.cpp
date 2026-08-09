@@ -4,10 +4,227 @@
 
 #include "game/logic/g_local.h"
 
+#include <math.h>
+#include <stdlib.h>
 #include <string.h>
 
 // .bss @ 0xF641A8 (file-local per-client spot timer, stride 1580 ints)
 static int dword_F641A8[4 * 1580];
+
+// Player_GetActivateEnt statics (.bss @ 0xEF3F60 / 0xEF3F68)
+static unsigned int sS14_6 = 0;
+static unsigned int tag_aim_hash_1 = 0;
+static DbLinkedHandle<EntityHandleDb, Entity> touch[0x540];
+
+static int compare_use(const void* a, const void* b)
+{
+    return (int)(((const useList_t*)a)->score - ((const useList_t*)b)->score);
+}
+
+// ea: 0x00473D90
+int Player_GetActivateEnt(Entity* pEnt, useList_t* useList)
+{
+    Client* client = pEnt->client;
+    if ((sS14_6 & 1) == 0)
+    {
+        sS14_6 |= 1u;
+        memset(touch, 0, sizeof(touch));
+    }
+    float forward[3];
+    AnglesToForward(client->ps.viewangles, forward);
+    float origin[3];
+    origin[0] = pEnt->r.currentOrigin.v.m128_f32[0];
+    origin[1] = pEnt->r.currentOrigin.v.m128_f32[1];
+    origin[2] = pEnt->r.currentOrigin.v.m128_f32[2]
+              + client->ps.viewHeightCurrent;
+    math::Position3 mins;
+    math::Position3 maxs;
+    mins.v.m128_f32[0] = origin[0] - 150.0f;
+    mins.v.m128_f32[1] = origin[1] - 150.0f;
+    mins.v.m128_f32[2] = origin[2] - 96.0f;
+    maxs.v.m128_f32[0] = origin[0] + 150.0f;
+    maxs.v.m128_f32[1] = origin[1] + 150.0f;
+    maxs.v.m128_f32[2] = origin[2] + 96.0f;
+    int num = CM_AreaEntities(mins, maxs, touch, 0x540, 0x204000);
+    int curUse = 0;
+    int ignoredFullItems = 0;
+    float distToUsePoint = 0.0f;
+    int entryPoint = 0;
+    float delta[3];
+    for (int i = 0; i < num; ++i)
+    {
+        Entity* ent = HandleDbToEnt(touch[i]);
+        if (ent == nullptr || pEnt == ent)
+            continue;
+        if (ent->s.eType != 2 && (ent->r.contents & 0x200000) == 0
+            && (ent->actor == nullptr || ent->actor->useable == 0))
+            continue;
+        float center[3];
+        center[0] = (ent->r.absmax.v.m128_f32[0]
+                     + ent->r.absmin.v.m128_f32[0]) * 0.5f;
+        center[1] = (ent->r.absmax.v.m128_f32[1]
+                     + ent->r.absmin.v.m128_f32[1]) * 0.5f;
+        center[2] = (ent->r.absmax.v.m128_f32[2]
+                     + ent->r.absmin.v.m128_f32[2]) * 0.5f;
+        delta[0] = center[0] - origin[0];
+        delta[1] = center[1] - origin[1];
+        delta[2] = center[2] - origin[2];
+        if (center[2] > abovehead_tresh + pEnt->r.currentOrigin.v.m128_f32[2])
+            continue;
+        if (ent->s.eType == 14 && ent->scr_vehicle != nullptr)
+        {
+            if (!ent->scr_vehicle->CanUseVehicle(pEnt, &distToUsePoint,
+                                                 &entryPoint))
+                continue;
+            pEnt->client->mVehicleAnimRoute = entryPoint + 1;
+            if (pEnt->client->mVehicleAnimRoute < 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+                AeAssert::gCurrentLine = 321;
+                AeAssert::gCurrentExpr =
+                    "pEnt->client->mVehicleAnimRoute >= 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            pEnt->client->mVehicleEntryPoint = entryPoint;
+        }
+        else
+        {
+            float dist = sqrtf(delta[0] * delta[0] + delta[1] * delta[1]
+                               + delta[2] * delta[2]);
+            if (dist != 0.0f)
+            {
+                delta[0] /= dist;
+                delta[1] /= dist;
+                delta[2] /= dist;
+            }
+            if (dist > 100.0f)
+                continue;
+            float dot = delta[0] * forward[0] + delta[1] * forward[1]
+                      + delta[2] * forward[2];
+            if (dot <= 0.0f)
+                continue;
+            if (ent->s.eType == 14 && dot < 0.38f)
+                continue;
+            float score = (1.0f - ((dot - 0.76f) * 4.1666665f)) * 200.0f;
+            if (ent->mClassNameHash.mHash == hash_const.trigger_use.mHash)
+                score -= 200.0f;
+            if (ent->s.eType == 2)
+            {
+                if (BG_CanItemBeGrabbed(&ent->s, &pEnt->client->ps, 0) == 0)
+                {
+                    score += 10000.0f;
+                    ++ignoredFullItems;
+                }
+            }
+            if (ent->mClassNameHash.mHash == hash_const.script_model.mHash)
+                score += 5000.0f;
+            useList[curUse].ent = ent;
+            useList[curUse].score = score + distToUsePoint;
+            ++curUse;
+        }
+    }
+    qsort(useList, curUse, 8, compare_use);
+    int numValid = curUse - ignoredFullItems;
+    for (int i = 0; i < numValid; ++i)
+    {
+        Entity* ent = useList[i].ent;
+        float center[3];
+        center[0] = (ent->r.absmax.v.m128_f32[0]
+                     + ent->r.absmin.v.m128_f32[0]) * 0.5f;
+        center[1] = (ent->r.absmax.v.m128_f32[1]
+                     + ent->r.absmin.v.m128_f32[1]) * 0.5f;
+        center[2] = (ent->r.absmax.v.m128_f32[2]
+                     + ent->r.absmin.v.m128_f32[2]) * 0.5f;
+        if (ent->s.eType == 14)
+            center[2] = origin[2];
+        if (ent->s.eType == 10)
+        {
+            if ((sS14_6 & 2) == 0)
+            {
+                sS14_6 |= 2u;
+                tag_aim_hash_1 = HashString::CalcHash("tag_aim");
+            }
+            int bone = SV_DObjGetBoneIndex(ent, tag_aim_hash_1);
+            if (bone >= 0)
+            {
+                G_DObjCalcBone(ent, bone);
+                DObjSkelMat* mtx = &SV_DObjGetMatrixArray(ent)[bone];
+                if (mtx != nullptr)
+                {
+                    float axis[3][3];
+                    AnglesToAxis(&ent->r.currentAngles, axis);
+                    DObjSkelMat out;
+                    DObjSkel2MatrixMultiply43(mtx, axis, &out);
+                    center[0] = out.origin[0];
+                    center[1] = out.origin[1];
+                    center[2] = out.origin[2];
+                }
+            }
+        }
+        bool doTrace = true;
+        if (ent->mClassNameHash.mHash == hash_const.trigger_use.mHash)
+        {
+            if (ent->s.angles2.v.m128_f32[0] < 1.0f)
+            {
+                float fwd[3];
+                fwd[0] = forward[0];
+                fwd[1] = forward[1];
+                fwd[2] = 0.0f;
+                VectorNormalize(fwd);
+                float trigFwd[3];
+                float trigAngles[3] = { 0.0f,
+                                        ent->s.angles2.v.m128_f32[1],
+                                        0.0f };
+                AnglesToForward(trigAngles, trigFwd);
+                float dot1 = fwd[0] * trigFwd[0] + fwd[1] * trigFwd[1]
+                           + fwd[2] * trigFwd[2];
+                float dirTo[3];
+                dirTo[0] = delta[0];
+                dirTo[1] = delta[1];
+                dirTo[2] = 0.0f;
+                VectorNormalize(dirTo);
+                float dot2 = fwd[0] * dirTo[0] + fwd[1] * dirTo[1]
+                           + fwd[2] * dirTo[2];
+                if (!(-dot1 > ent->s.angles2.v.m128_f32[0]
+                      && ent->s.angles2.v.m128_f32[0] <= -dot2))
+                    doTrace = false;
+            }
+        }
+        if (doTrace)
+        {
+            collision_context_t context;
+            context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+            context.pass_entity1.mHandle.mVal = 0;
+            context.pass_entity2.mHandle.mVal =
+                ent->s.eType == 14 ? 0x200051 : 0x200011;
+            context.pass_owner1.mHandle.mVal = 0;
+            context.pass_owner2.mHandle.mVal = 0;
+            context.contentmask = client->ps.mClient.mHandle.mVal;
+            math::Position3 start;
+            start.v.m128_f32[0] = origin[0];
+            start.v.m128_f32[1] = origin[1];
+            start.v.m128_f32[2] = origin[2];
+            math::Position3 zero;
+            zero.v = _mm_setzero_ps();
+            math::Position3 end;
+            end.v.m128_f32[0] = center[0];
+            end.v.m128_f32[1] = center[1];
+            end.v.m128_f32[2] = center[2];
+            trace_t tr;
+            SV_Trace(&tr, &start, &zero, &zero, &end, &context, 0, 0,
+                     nullptr, 0, 0.0f);
+            Entity* trEnt = HandleDbToEnt(tr.mEntity);
+            if (tr.fraction >= 1.0f || trEnt == ent)
+                break;
+        }
+        useList[i].score += 100000.0f;
+    }
+    qsort(useList, curUse, 8, compare_use);
+    return curUse - ignoredFullItems;
+}
 
 // ea: 0x00448BB0
 bool Player_CheckFriendlyFireUse(PlayerState* /*ps*/)

@@ -689,7 +689,9 @@ struct hash_const_t {
     HashString fireSpecial;             // +0x138 (78)
     uint8_t    _pad13C[0x144 - 0x13C];
     HashString rotatedone;         // +0x144
-    uint8_t    _pad148[0x204 - 0x148];
+    uint8_t    _pad148[0x150 - 0x148];
+    HashString script_model;       // +0x150
+    uint8_t    _pad154[0x204 - 0x154];
     HashString touch;              // +0x204 (81)
     HashString trigger;            // +0x208
     HashString trigger_use;        // +0x20C
@@ -2033,6 +2035,7 @@ extern int dword_F64018[4 * 1580];               // cg.o @ 0xF64018
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);  // cg.o
 extern float radius_1;                           // g.o @ 0xDD8268
+extern float abovehead_tresh;                    // g.o @ 0xDD820C
 extern float helmetBounce;                       // g.o @ 0xDD8210
 extern float helmetFriction;                     // g.o @ 0xDD8214
 extern float helmetMass;                         // g.o @ 0xDD8218
