@@ -5,6 +5,7 @@
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 extern int currCl;
@@ -300,4 +301,231 @@ localEntity_t* CG_AllocLocalEntity()
 void CG_CrosshairPlayer(unsigned int* result)
 {
     *result = 0;
+}
+
+struct refEntity_t2 {
+    int   reType;
+    int   renderfx;
+    float lightingOrigin[3];
+    float axis[3][3];
+    float scale;
+    float origin[3];
+    float oldorigin[3];
+    void* obj;
+    void* entity;
+};
+struct trajectory_t2 {
+    int   trType;
+    int   trTime;
+    float trBase[3];
+    float trDelta[3];
+};
+struct localEntityFull {
+    localEntity_t* next;
+    localEntity_t* prev;
+    int  leFlags;
+    int  leType;
+    int  endTime;
+    float lifeRate;
+    float color[4];
+    refEntity_t2 refEntity;
+    trajectory_t2 pos;
+};
+extern int cg_railTrailTime;
+extern int cg_tracerChance;
+extern int dword_DF6ADC[6];
+extern float tracer_info_speed[6];
+extern void AxisClear(float (*axis)[3]);
+extern void VectorNormalize(float* v);
+extern float VectorDistance(const float* v1, const float* v2);
+extern void PerpendicularVector(float* dst, const float* src);
+extern void CrossProduct(const float* v1, const float* v2, float* cross);
+extern void FastSinCos(float radians, float* psin, float* pcos);
+
+// ea: 0x00699610
+void CG_RailTrail2(const float* color, const float* start, const float* end)
+{
+    if (cg_railTrailTime > 0)
+    {
+        localEntityFull* v3 = (localEntityFull*)CG_AllocLocalEntity();
+        v3->leType = 0;
+        v3->endTime = cg_railTrailTime + cgGlobal_time;
+        v3->lifeRate = 1.0f / (float)cg_railTrailTime;
+        v3->refEntity.reType = 6 /* RT_RAIL_CORE */;
+        v3->refEntity.origin[0] = start[0];
+        v3->refEntity.origin[1] = start[1];
+        v3->refEntity.origin[2] = start[2];
+        v3->refEntity.oldorigin[0] = end[0];
+        v3->refEntity.oldorigin[1] = end[1];
+        v3->refEntity.oldorigin[2] = end[2];
+        v3->color[0] = color[0];
+        v3->color[1] = color[1];
+        v3->color[2] = color[2];
+        v3->color[3] = 1.0f;
+        AxisClear(v3->refEntity.axis);
+    }
+}
+
+// ea: 0x006996D0
+void CG_RailTrail(const float* start, const float* end, float type)
+{
+    int color[4] = {0, 1065353216, 1065353216, 1065353216};
+    if (type == 0.0f)
+        color[0] = 0;
+    else
+    {
+        switch ((int)type)
+        {
+        case 1:
+            color[0] = 1065353216;
+            color[1] = 0;
+            color[2] = 0;
+            CG_RailTrail2((const float*)color, start, end);
+            return;
+        case 0x45:
+            color[0] = 1065353216;
+            color[1] = 1065353216;
+            color[2] = 0;
+            CG_RailTrail2((const float*)color, start, end);
+            return;
+        case 0x46:
+            color[0] = 0;
+            color[1] = 1065353216;
+            color[2] = 0;
+            CG_RailTrail2((const float*)color, start, end);
+            return;
+        case 0x47:
+            color[0] = 0;
+            color[1] = 0;
+            color[2] = 1065353216;
+            CG_RailTrail2((const float*)color, start, end);
+            return;
+        case 0x48:
+            color[0] = 1065353216;
+            color[1] = 1065353216;
+            color[2] = 0;
+            CG_RailTrail2((const float*)color, start, end);
+            return;
+        case 2:
+        case 3:
+            if ((int)type == 3)
+            {
+                color[0] = 1065353216;
+                color[1] = 0;
+                color[2] = 0;
+            }
+            {
+                float v1[3] = {start[0] - (start[0] - end[0]),
+                               start[1], start[2]};
+                float v2[3] = {start[0], start[1] - (start[1] - end[1]),
+                               start[2]};
+                float normal[3] = {start[0], start[1],
+                                   start[2] - (start[2] - end[2])};
+                float diff[3] = {start[0] - end[0], start[1] - end[1],
+                                 start[2] - end[2]};
+                float up[3] = {end[0] + diff[0], end[1], end[2]};
+                float right[3] = {end[0], end[1] + diff[1], end[2]};
+                float v6[3] = {end[0], end[1], end[2] + diff[2]};
+                CG_RailTrail2((const float*)color, start, v1);
+                CG_RailTrail2((const float*)color, start, v2);
+                CG_RailTrail2((const float*)color, start, normal);
+                CG_RailTrail2((const float*)color, end, up);
+                CG_RailTrail2((const float*)color, end, right);
+                CG_RailTrail2((const float*)color, end, v6);
+                CG_RailTrail2((const float*)color, v2, v6);
+                CG_RailTrail2((const float*)color, v6, v1);
+                CG_RailTrail2((const float*)color, v1, right);
+                CG_RailTrail2((const float*)color, v2, up);
+                CG_RailTrail2((const float*)color, up, normal);
+                CG_RailTrail2((const float*)color, normal, right);
+            }
+            return;
+        default:
+            break;
+        }
+        if ((int)type == 5)
+        {
+            float radius = start[0];
+            float normal[3] = {0.0f, 0.0f, 1.0f};
+            float right[3], up[3];
+            PerpendicularVector(right, normal);
+            CrossProduct(normal, right, up);
+            float v[48];
+            for (int v17 = 0; v17 < 16; ++v17)
+            {
+                float s, c;
+                FastSinCos(v17 * 0.39269909f, &s, &c);
+                v[v17 * 3 + 0] =
+                    (right[0] * (c * radius) + up[0] * (s * radius)) + end[0];
+                v[v17 * 3 + 1] =
+                    (right[1] * (c * radius) + up[1] * (s * radius)) + end[1];
+                v[v17 * 3 + 2] =
+                    (right[2] * (c * radius) + up[2] * (s * radius)) + end[2];
+            }
+            for (int i = 0; i < 16; ++i)
+                CG_RailTrail2((const float*)color, &v[i * 3],
+                              &v[3 * ((i + 1) & 0xF)]);
+        }
+    }
+}
+
+// ea: 0x0069AAE0
+void CG_SpawnTracer(const math::Position3* pstart,
+                    const math::Position3* pend, int ammo)
+{
+    float start[3] = {pstart->v.m128_f32[0], pstart->v.m128_f32[1],
+                      pstart->v.m128_f32[2]};
+    float end[3] = {pend->v.m128_f32[0], pend->v.m128_f32[1],
+                    pend->v.m128_f32[2]};
+    float dir[3] = {end[0] - start[0], end[1] - start[1],
+                    end[2] - start[2]};
+    VectorNormalize(dir);
+    if (ammo >= 6)
+        CG_ASSERT("ammo < WEAPAMMOTYPE_NUM",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 4495);
+    int v8 = dword_DF6ADC[4 * ammo];
+    end[0] = end[0] - (v8 * dir[0]);
+    end[1] = end[1] - (v8 * dir[1]);
+    end[2] = end[2] - (v8 * dir[2]);
+    v8 >>= 1;
+    start[0] = (v8 * dir[0]) + start[0];
+    start[1] = (v8 * dir[1]) + start[1];
+    start[2] = (v8 * dir[2]) + start[2];
+    float dist = VectorDistance(start, end);
+    localEntityFull* v9 = (localEntityFull*)CG_AllocLocalEntity();
+    v9->leFlags = ammo;
+    v9->leType = 2;
+    float speed = tracer_info_speed[ammo];
+    int time = cgGlobal_time;
+    v9->endTime = cgGlobal_time - (int)((dist / speed) * -1000.0f);
+    v9->pos.trType = 2 /* TR_LINEAR */;
+    v9->pos.trTime = time + 30;
+    v9->pos.trBase[0] = start[0];
+    v9->pos.trBase[1] = start[1];
+    v9->pos.trBase[2] = start[2];
+    v9->pos.trDelta[0] = speed * dir[0];
+    v9->pos.trDelta[1] = speed * dir[1];
+    v9->pos.trDelta[2] = speed * dir[2];
+}
+
+// ea: 0x0069CB80
+void CG_EventSpawnTracer(const math::Position3* pstart,
+                         const math::Position3* pend, int weapon)
+{
+    float tracerChance = *(float*)&cg_tracerChance;
+    weaponFileInfoFull* InfoForWeapon =
+        (weaponFileInfoFull*)BG_GetInfoForWeapon(weapon);
+    if (InfoForWeapon != nullptr)
+    {
+        int ammoType = InfoForWeapon->ammoType;
+        if (ammoType == 2 /* WEAPAMMOTYPE_LMG */
+            || ammoType == 3 /* WEAPAMMOTYPE_HMG */)
+            tracerChance = 0.69999999f;
+        if ((tracerChance * 32.0f) > (rand() & 0x1F))
+            CG_SpawnTracer(pstart, pend, ammoType);
+    }
+    else
+    {
+        CG_ASSERT("wp.pWeapInfo", "c:\\cod\\code\\game\\cg_event.cpp", 133);
+    }
 }

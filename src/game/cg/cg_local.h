@@ -99,6 +99,7 @@ struct weaponFileInfoFull : weaponFileInfo_t {
     int  bAnimateCamReload;  // +0x9C
     int  bAnimateCamMelee;   // +0xA0
     int  bAnimateCamFire;    // +0xA4
+    int  ammoType;           // +0xA8
     float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
 };
 
