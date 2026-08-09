@@ -1120,7 +1120,12 @@ struct BrocExports {
     void (*mCallbackDropFlag)(unsigned int);              // +0x128
     uint8_t _pad12C[0x154 - 0x12C];
     void (*mCallbackStopFollowing)();  // +0x154
-    uint8_t _pad158[0x5A4 - 0x158];
+    uint8_t _pad158[0x518 - 0x158];
+    int (*mRumble)(float lowFreqDelay, float lowFreqRumbleIntensity,
+                   float lowFreqSteadyDuration, float lowFreqRampUpTime,
+                   float lowFreqRampDownTime, float highFreqDelay,
+                   float highFreqDuration, int a8);  // +0x518 (PlayRumble)
+    uint8_t _pad51C[0x5A4 - 0x51C];
     void (*mMissionFailed)(Broc::string* msg);            // +0x5A4
     uint8_t _pad5A8[0x81C - 0x5A8];
     void (*mShellShock)(unsigned int ent, Broc::string* shock,
