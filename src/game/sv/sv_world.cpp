@@ -793,14 +793,14 @@ int SV_SightTraceToEntity(const math::Position3* start, const math::Position3* m
 // ============================================================================
 // SV_PointContents Ã¢â‚¬â€ ea: 0x523850
 // ============================================================================
-int SV_PointContents(const math::Position3* p, const collision_context_t* context) {
+int SV_PointContents(const math::Position3& p, const collision_context_t& context) {
     DbLinkedHandle<EntityHandleDb, Entity> touch[256];
     memset(touch, 0, sizeof(touch));
-    int contents = CM_PointContents(p, NULL);
-    int num = CM_AreaEntities(p, p, touch, 256, context->contentmask);
+    int contents = CM_PointContents(&p, NULL);
+    int num = CM_AreaEntities(&p, &p, touch, 256, context.contentmask);
     for (int i = 0; i < num; ++i) {
         unsigned int mVal = touch[i].mHandle.mVal;
-        if (mVal != context->pass_entity1.mHandle.mVal) {
+        if (mVal != context.pass_entity1.mHandle.mVal) {
             unsigned int v6 = mVal & 0xFFF;
             Entity* mObject = NULL;
             if (v6 < 0x540 && mVal >> 12 == (unsigned int)EntityHandleDb::sInst.mElements[v6].mKey)
@@ -809,10 +809,10 @@ int SV_PointContents(const math::Position3* p, const collision_context_t* contex
             if (bmodel == NULL)
                 bmodel = TempBoxModel(&mObject->r.mins, &mObject->r.maxs, mObject->r.contents,
                                       (mObject->r.svFlags & 0x200) != 0 ? 1 : 0);
-            contents |= CM_TransformedPointContents(p, bmodel, &mObject->r.currentOrigin, &mObject->r.currentAngles);
+            contents |= CM_TransformedPointContents(&p, bmodel, &mObject->r.currentOrigin, &mObject->r.currentAngles);
         }
     }
-    return contents & context->contentmask;
+    return contents & context.contentmask;
 }
 
 // ============================================================================

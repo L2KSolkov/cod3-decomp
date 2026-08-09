@@ -7,19 +7,19 @@
 #include <string.h>
 
 // ea: 0x004508E0
-void g_Trace(trace_t* results, const math::Position3* start, const math::Position3* mins,
-             const math::Position3* maxs, const math::Position3* end,
-             const collision_context_t* context)
+void g_Trace(trace_t* results, const math::Position3& start, const math::Position3& mins,
+             const math::Position3& maxs, const math::Position3& end,
+             const collision_context_t& context)
 {
-    SV_Trace(results, start, mins, maxs, end, context, 0, 0, nullptr, 0, 0.0f);
+    SV_Trace(results, &start, &mins, &maxs, &end, &context, 0, 0, nullptr, 0, 0.0f);
 }
 
 // ea: 0x00450910
-void g_TraceCapsule(trace_t* results, const math::Position3* start, const math::Position3* mins,
-                    const math::Position3* maxs, const math::Position3* end,
-                    const collision_context_t* context)
+void g_TraceCapsule(trace_t* results, const math::Position3& start, const math::Position3& mins,
+                    const math::Position3& maxs, const math::Position3& end,
+                    const collision_context_t& context)
 {
-    SV_Trace(results, start, mins, maxs, end, context, 1, 0, nullptr, 0, 0.0f);
+    SV_Trace(results, &start, &mins, &maxs, &end, &context, 1, 0, nullptr, 0, 0.0f);
 }
 
 // ea: 0x00450940

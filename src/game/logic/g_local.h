@@ -364,6 +364,93 @@ void G_CleanupAnimTrees();
 
 // sv.o
 void SV_SetConfigstring(int index, const char* val);
+void g_Trace(trace_t* results, const math::Position3& start, const math::Position3& mins,
+             const math::Position3& maxs, const math::Position3& end,
+             const collision_context_t& context);
+void g_TraceCapsule(trace_t* results, const math::Position3& start, const math::Position3& mins,
+                    const math::Position3& maxs, const math::Position3& end,
+                    const collision_context_t& context);
+int  SV_PointContents(const math::Position3& p, const collision_context_t& context);
+
+// ============================================================================
+// g_hudelem.cpp types/globals
+// ============================================================================
+enum he_type_t {
+    HE_TYPE_FREE = 0,
+    HE_TYPE_COUNT = 0x0F,
+};
+struct hudelem_t {
+    int   type;         // +0x00
+    int   x;            // +0x04
+    int   y;            // +0x08
+    float fontScale;    // +0x0C
+    int   font;         // +0x10
+    int   alignX;       // +0x14
+    int   alignY;       // +0x18
+    uint8_t color[4];   // +0x1C (hudelem_color_t)
+    uint8_t fromColor[4];  // +0x20
+    int   fadeStartTime;// +0x24
+    int   fadeTime;     // +0x28
+    int   label;        // +0x2C
+    int   width;        // +0x30
+    int   height;       // +0x34
+    void* mTexture;     // +0x38
+    int   fromWidth;    // +0x3C
+    int   fromHeight;   // +0x40
+    int   scaleStartTime;// +0x44
+    int   scaleTime;    // +0x48
+    int   fromX;        // +0x4C
+    int   fromY;        // +0x50
+    int   moveStartTime;// +0x54
+    int   moveTime;     // +0x58
+    int   time;         // +0x5C
+    int   duration;     // +0x60
+    float value;        // +0x64
+    int   text;         // +0x68
+    float sort;         // +0x6C
+    float SCOORD;       // +0x70
+    float TCOORD;       // +0x74
+    float angle;        // +0x78
+};
+static_assert(sizeof(hudelem_t) == 0x7C, "hudelem_t size mismatch");
+struct game_hudelem_s {
+    hudelem_t elem;  // +0x00 (0x7C bytes)
+};
+static_assert(sizeof(game_hudelem_s) == 0x7C, "game_hudelem_s size mismatch");
+extern game_hudelem_s g_hudelems[16];  // 0xEA5580
+void HudElem_SetDefaults(game_hudelem_s* hud);  // ea: 0x44AFE0 (inline COMDAT)
+void Scr_ParamError(unsigned int index, const char* error);
+
+// ============================================================================
+// g_actor_prone.cpp externs
+// ============================================================================
+struct corpseInfo_t {
+    DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x00
+    actor_prone_info_t proneInfo;                    // +0x04
+};
+static_assert(sizeof(corpseInfo_t) == 0x1C, "corpseInfo_t size mismatch");
+struct scr_data_t {
+    corpseInfo_t actorCorpseInfo[71];  // +0x000 (0x7CC bytes)
+};
+extern scr_data_t g_scr_data;  // 0xEE58D0
+extern const math::Position3 actorMaxs;  // 0xF99330
+int  G_GetActorCorpseIndex(Entity* ent);
+int  BG_ActorIsProne(actor_prone_info_t* pInfo, int iCurrentTime);
+float BG_GetActorProneFraction(actor_prone_info_t* pInfo, int iCurrentTime);
+int  BG_ActorGoalIsProne(actor_prone_info_t* pInfo);
+enum proneCheckType_t { PCT_ACTOR = 0 };
+int  BG_CheckProneValid(DbLinkedHandle<EntityHandleDb, Entity> passEntity,
+                        const math::Position3& vPos, float fSize, float fHeight, float fYaw,
+                        float* pfTorsoHeight, float* pfTorsoPitch, float* pfWaistPitch,
+                        int bAlreadyProne, int bOnGround, const math::Dir3& vGroundNormal,
+                        void (__cdecl* traceFunc)(trace_t*, const math::Position3&, const math::Position3&,
+                                                  const math::Position3&, const math::Position3&,
+                                                  const collision_context_t&),
+                        void (__cdecl* boxTraceFunc)(trace_t*, const math::Position3&, const math::Position3&,
+                                                     const math::Position3&, const math::Position3&,
+                                                     const collision_context_t&),
+                        int (__cdecl* pointcontents)(const math::Position3&, const collision_context_t&),
+                        proneCheckType_t proneCheckType, float prone_feet_dist);
 
 // ============================================================================
 // Cross-object externs

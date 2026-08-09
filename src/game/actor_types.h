@@ -88,7 +88,13 @@ typedef int32_t ai_traverse_mode_t;
 // actor_prone_info_t — prone state data (24 bytes)
 // ============================================================================
 struct actor_prone_info_t {
-    uint8_t data[24];  // placeholder — exact layout TBD
+    int   bCorpseOrientation;  // +0x00
+    int   iProneTime;          // +0x04
+    int   iProneTrans;         // +0x08
+    float fTorsoHeight;        // +0x0C
+    float fTorsoPitch;         // +0x10
+    float fWaistPitch;         // +0x14
+    // placeholder — exact layout TBD
 };
 static_assert(sizeof(actor_prone_info_t) == 0x18, "actor_prone_info_t size mismatch");
 
@@ -316,8 +322,13 @@ struct actor_s {
     int32_t        iFollowMin;                   // +0x824
     int32_t        iFollowMax;                   // +0x828
     float          fInterval;                    // +0x82C
+    uint8_t        _pad830[0xAA4 - 0x830];
+    int16_t        iUseHintString;               // +0xAA4
+    int16_t        mActorIndex;                  // +0xAA6
+    uint8_t        _padAA8[0xAB8 - 0xAA8];
+    int32_t        moveHistoryIndex;             // +0xAB8
     // Remaining members (to +0xB30)
-    uint8_t        _pad_remaining[0x300];         // +0x830 ... +0xB30
+    uint8_t        _pad_remaining[0xB30 - 0xABC];
 };
 static_assert(sizeof(actor_s) == 0xB30, "actor_s size mismatch");
 static_assert(offsetof(actor_s, pEnt) == 0x000, "actor_s::pEnt offset mismatch");
