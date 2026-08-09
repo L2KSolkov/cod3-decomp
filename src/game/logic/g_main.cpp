@@ -1356,3 +1356,139 @@ void ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity)
     SV_UnlinkEntity(v4);
     client->pers.connected = CON_DISCONNECTED;
 }
+
+// ea: 0x00485F20
+void UpdateLinkedEntities(const ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities)
+{
+    for (int i = 0; i < linkedEntities->m_size; ++i)
+    {
+        Entity* mObject = HandleDbToEnt(linkedEntities->m_elements[i]);
+        if (mObject != nullptr && mObject->client == nullptr && mObject->tagInfo != nullptr)
+            G_GeneralLink(mObject);
+    }
+}
+
+// ea: 0x004640D0
+void Svcmd_EntityList_f(void)
+{
+    Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity** end = begin + EntityHandleDb::sInst.mActiveList.m_size;
+    for (Entity** p = begin; p != end; ++p)
+    {
+        Entity* v2 = *p;
+        if (v2 != nullptr && !v2->IsLocalPlayer())
+        {
+            G_Printf("%3i: ", v2->mHandle.mHandle.mVal);
+            const char* v3 = v2->s.eType >= 0x12u
+                                 ? "WARNING !! Entity Type Unknown WARNING !!!"
+                                 : entityTypeNames[v2->s.eType];
+            G_Printf("'%s'", v3);
+            if (v2->mClassName.mBlock != nullptr && v2->mClassName.c_str() != nullptr
+                && v2->mClassName.c_str()[0] != 0)
+            {
+                G_Printf(", '%s'", v2->mClassName.c_str());
+            }
+            G_Printf("\n");
+        }
+    }
+}
+
+// ea: 0x0048F270
+void UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities,
+                    int msec)
+{
+    Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity** end = begin + EntityHandleDb::sInst.mActiveList.m_size;
+    for (Entity** p = begin; p != end; ++p)
+    {
+        Entity* v4 = *p;
+        if (v4 != nullptr)
+        {
+            if (v4->tagInfo != nullptr)
+            {
+                if (linkedEntities->m_size == 1000)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)AeAssert::JRS;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
+                    AeAssert::gCurrentLine = 3463;
+                    AeAssert::gCurrentExpr = nullptr;
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Warning("Exceeded max linked entities %d\n", 1000))
+                        __debugbreak();
+                    G_GeneralLink(v4);
+                }
+                else
+                {
+                    linkedEntities->m_elements[linkedEntities->m_size++] = v4->mHandle;
+                }
+            }
+            G_RunFrameForEntity(v4, msec);
+        }
+    }
+}
+
+// ea: 0x00461BD0
+void G_DebugSphere(const float* center, float radius, const float* color,
+                   int density, int depthTest, int duration)
+{
+    if (density > 0)
+    {
+        float step = 6.2831855f / density;
+        for (int v7 = 0; v7 < density; ++v7)
+        {
+            float radians = v7 * step;
+            float dir[3];
+            dir[1] = sinf(radians);
+            dir[0] = cosf(radians);
+            float v12[3] = { sinf(radians), cosf(radians), 0.0f };
+            G_DebugCircleEx(center, radius, v12, color, depthTest, duration);
+        }
+    }
+}
+
+// ea: 0x004677E0
+void UpdateShotProf(float deltaT)
+{
+    if (gShotProf != nullptr
+        && ShaderCommon::UpdateShotPerfTest((ShaderCommon::ShotPerfTest*)gShotProf, deltaT))
+    {
+        ae_sized_array<ae_fixed_string<512, unsigned short>, 64> results;
+        ShaderCommon::GetShotPerfResults((ShaderCommon::ShotPerfTest*)gShotProf, &results);
+        ShaderCommon::FinishShotPerfTest((ShaderCommon::ShotPerfTest*)gShotProf);
+        for (int i = 0; i < results.m_size; ++i)
+            tlPrintf("%s\n", results.m_elements[i].c_str());
+        gShotProf = nullptr;
+        gRenderCG_2D = 1;
+        Cvar_Set("statusbar", "1");
+        Cvar_Set("timerbars_on", "1");
+        nglDebug.ShowPerfInfo = nglDebug.ShowPerfInfo != 1;
+    }
+}
+
+// ea: 0x004491D0
+void G_ReduceOriginError(float* origin, float* originError, float frametime)
+{
+    float error = ((*originError * *originError) + (originError[1] * originError[1]))
+                + (originError[2] * originError[2]);
+    if (error != 0.0f)
+    {
+        float errora = 1.0f - frametime * 300.0f / sqrtf(error);
+        if (errora <= 0.0f)
+        {
+            originError[0] = 0.0f;
+            originError[1] = 0.0f;
+            originError[2] = 0.0f;
+        }
+        else
+        {
+            float v4 = *originError * errora;
+            float v5 = errora * originError[1];
+            originError[2] = errora * originError[2];
+            originError[1] = v5;
+            *originError = v4;
+            *origin += v4;
+            origin[1] += originError[1];
+            origin[2] += originError[2];
+        }
+    }
+}

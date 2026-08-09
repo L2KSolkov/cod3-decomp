@@ -735,6 +735,42 @@ vehicle_info_t* G_GetVehicleInfoName(int16_t index)
     return s_vehicleInfos[index];
 }
 
+// ea: 0x0045E9B0
+void Scr_Vehicle_Pain(Entity* pSelf, Entity* pAttacker, int /*damage*/,
+                      const float* /*point*/, int mod, const float* dir,
+                      hitLocation_t /*hitLoc*/)
+{
+    scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
+    if ((scr_vehicle == nullptr || scr_vehicle->mRBVeh == nullptr) && pAttacker != nullptr)
+    {
+        switch (mod)
+        {
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 9:
+        case 10:
+        case 17:
+        case 18:
+        case 27:
+        case 28:
+        case 32:
+        {
+            math::Position3 v8;
+            v8.v.m128_f32[0] = dir[0];
+            v8.v.m128_f32[1] = dir[1];
+            v8.v.m128_f32[2] = dir[2];
+            v8.v.m128_f32[3] = 0.0f;
+            VEH_JoltBody(pSelf, &v8, 1.0f, 0.0f, 0.0f);
+            break;
+        }
+        default:
+            return;
+        }
+    }
+}
+
 // ea: 0x0046E0B0
 bool G_IsPlayerInVehicle(Entity* player)
 {

@@ -72,6 +72,28 @@ Entity* weapon_mine_fire(Entity* ent, int weapon, weaponParms* wp)
     return v4;
 }
 
+// ea: 0x00453620
+void CalcMuzzlePoints(Entity* ent, weaponParms* wp)
+{
+    Client* client = ent->client;
+    float tmp[3];
+    tmp[0] = client->ps.viewangles[0];
+    tmp[1] = client->ps.viewangles[1];
+    tmp[2] = client->ps.viewangles[2];
+    if (EntityManager::sInst->IsLocalPlayer(ent))
+    {
+        Client* v4 = ent->client;
+        tmp[0] = v4->fGunPitch;
+        tmp[1] = v4->fGunYaw;
+    }
+    AngleVectors(tmp, wp->forward, wp->right, wp->up);
+    math::Position3 muzzlePoint;
+    CalcMuzzlePoint(ent, &muzzlePoint);
+    wp->muzzleTrace[0] = muzzlePoint.v.m128_f32[0];
+    wp->muzzleTrace[1] = muzzlePoint.v.m128_f32[1];
+    wp->muzzleTrace[2] = muzzlePoint.v.m128_f32[2];
+}
+
 // ea: 0x0044C6B0
 void Die_MineDamaged(Entity* mine)
 {

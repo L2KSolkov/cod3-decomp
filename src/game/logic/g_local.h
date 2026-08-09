@@ -1610,6 +1610,21 @@ void  G_UpdateHeadHitEnt(Entity* pSelf);             // g.o
 void  StopPhysics(Entity* e);                        // g.o
 void  Sentient_Free(sentient_s* sentient);           // mp_actors.o
 enum { CON_DISCONNECTED = 0 };
+void  UpdateLinkedEntities(const ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities);  // g.o 0x485F20
+void  Svcmd_EntityList_f(void);                      // g.o 0x4640D0
+void  Scr_Vehicle_Pain(Entity* pSelf, Entity* pAttacker, int damage, const float* point,
+                       int mod, const float* dir, hitLocation_t hitLoc);  // g.o 0x45E9B0
+void  CalcMuzzlePoints(Entity* ent, weaponParms* wp);  // g.o 0x453620
+void  UpdateEntities(ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 1000>* linkedEntities,
+                     int msec);                     // g.o 0x48F270
+void  G_DebugSphere(const float* center, float radius, const float* color,
+                    int density, int depthTest, int duration);  // g.o 0x461BD0
+void  UpdateShotProf(float deltaT);                  // g.o 0x4677E0
+void  G_ReduceOriginError(float* origin, float* originError, float frametime);  // g.o 0x4491D0
+void  G_RunFrameForEntity(Entity* ent, int msec);   // g.o
+void  VEH_JoltBody(Entity* ent, math::Position3* dir, float intensity,
+                   float speedFrac, float decel);   // g.o
+void  CalcMuzzlePoint(Entity* ent, math::Position3* muzzlePoint);  // g.o 0x4534F0
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o
