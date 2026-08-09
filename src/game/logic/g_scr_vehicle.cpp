@@ -657,6 +657,61 @@ void VEH_RotateWheels(Entity* self, vehicle_info_t* info)
     }
 }
 
+// ea: 0x0044DC50
+void VEH_StopAllEffects(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    vehicle_info_t* v2 = s_vehicleInfos[scr_vehicle->infoIdx];
+    int count = 2 * (v2->type != 1) + 4;
+    if (2 * (v2->type != 1) != -4)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            if (scr_vehicle->mWheel_ParticleEffectHandle[i].mVal != 0)
+            {
+                EffectEventStopEmitting(scr_vehicle->mWheel_ParticleEffectHandle[i].mVal);
+                scr_vehicle->mWheel_ParticleEffectHandle[i].mVal = 0;
+            }
+        }
+    }
+    if (scr_vehicle->mRumbleEffectHandle.mVal != 0)
+    {
+        EffectEventStopEmitting(scr_vehicle->mRumbleEffectHandle.mVal);
+        scr_vehicle->mRumbleEffectHandle.mVal = 0;
+    }
+    for (int i = 6; i != 0; --i)
+    {
+        if (scr_vehicle->mSoundEffectHandle[6 - i].mVal != 0)
+            EffectEventStopEmitting(scr_vehicle->mSoundEffectHandle[6 - i].mVal);
+        scr_vehicle->mSoundEffectHandle[6 - i].mVal = 0;
+    }
+}
+
+// ea: 0x0046DEA0
+void G_FreeVehicleRefs(Entity* ent)
+{
+    int i = 0;
+    if (level.MaxVehicles != 0)
+    {
+        int v1 = 0;
+        do
+        {
+            scr_vehicle_t* v2 = &s_vehicles[v1];
+            if (HandleDbToEnt(s_vehicles[v1].mEntity) != nullptr)
+            {
+                if (v2->mIdleSndEnt.mHandle.mVal == ent->mHandle.mHandle.mVal)
+                    v2->mIdleSndEnt.mHandle.mVal = 0;
+                if (v2->mEngineSndEnt.mHandle.mVal == ent->mHandle.mHandle.mVal)
+                    v2->mEngineSndEnt.mHandle.mVal = 0;
+                if (v2->mTargetEnt.mHandle.mVal == ent->mHandle.mHandle.mVal)
+                    v2->mTargetEnt.mHandle.mVal = 0;
+            }
+            ++v1;
+            ++i;
+        } while (i < level.MaxVehicles);
+    }
+}
+
 // ea: 0x0046E0B0
 bool G_IsPlayerInVehicle(Entity* player)
 {

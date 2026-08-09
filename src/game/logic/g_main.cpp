@@ -1085,3 +1085,120 @@ void DebugDumpAnims(void)
         }
     }
 }
+
+// ea: 0x0044A7A0
+void Cmd_God_f(Entity* ent)
+{
+    if (g_cheats->integer != 0)
+    {
+        if (ent->health > 0)
+        {
+            ent->flags ^= 1u;
+            const char* v5;
+            if ((ent->flags & 1) != 0)
+            {
+                v5 = "GAME_GODMODEON";
+                gGodModeEnabled = true;
+            }
+            else
+            {
+                v5 = "GAME_GODMODEOFF";
+                gGodModeEnabled = false;
+            }
+            SV_GameSendServerCommand(ent->mHandle, va("print \"%s\"", v5));
+        }
+        else
+        {
+            SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_MUSTBEALIVECOMMAND\""));
+        }
+    }
+    else
+    {
+        SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_CHEATSNOTENABLED\""));
+    }
+}
+
+// ea: 0x0044A850
+void Cmd_Notarget_f(Entity* ent)
+{
+    if (g_cheats->integer != 0)
+    {
+        if (ent->health > 0)
+        {
+            char v5 = (char)(ent->flags ^ 2);
+            ent->flags ^= 2u;
+            const char* v6;
+            if ((v5 & 2) != 0)
+            {
+                v6 = "GAME_NOTARGETON";
+                gNoTargetEnabled = true;
+            }
+            else
+            {
+                v6 = "GAME_NOTARGETOFF";
+                gNoTargetEnabled = false;
+            }
+            SV_GameSendServerCommand(ent->mHandle, va("print \"%s\"", v6));
+        }
+        else
+        {
+            SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_MUSTBEALIVECOMMAND\""));
+        }
+    }
+    else
+    {
+        SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_CHEATSNOTENABLED\""));
+    }
+}
+
+// ea: 0x00455F60
+void Cmd_GiveAll_f(Entity* ent)
+{
+    ent->client->ps.stats[2] = g_player_maxhealth.integer;
+    ent->health = g_player_maxhealth.integer;
+    level.initializing = 1;
+    for (int i = 1; i <= BG_GetNumWeapons(); ++i)
+        BG_GivePlayerWeapon(&ent->client->ps, i);
+    level.initializing = 0;
+    for (int j = 1; j <= BG_GetNumWeapons(); ++j)
+    {
+        if (Com_BitCheck(ent->client->ps.weapons, j) != 0)
+            Add_Ammo(ent, j, 998, 1);
+    }
+}
+
+// ea: 0x004570C0
+void G_DebugBox(const float* mins, const float* maxs, const float* color,
+                int depthTest, int duration, int fade)
+{
+    float v[8][3];
+    for (int i = 0; i < 8; ++i)
+    {
+        v[i][0] = (i & 1) != 0 ? maxs[0] : mins[0];
+        v[i][1] = (i & 2) != 0 ? maxs[1] : mins[1];
+        v[i][2] = (i & 4) != 0 ? maxs[2] : mins[2];
+    }
+    static const int edges[12][2] = {
+        {0,1},{1,3},{3,2},{2,0},
+        {4,5},{5,7},{7,6},{6,4},
+        {0,4},{1,5},{2,6},{3,7}
+    };
+    for (int i = 0; i < 12; ++i)
+        CL_AddDebugLine(v[edges[i][0]], v[edges[i][1]], color, depthTest, duration, 1, fade);
+}
+
+// ea: 0x00461B10
+void G_DebugBox(float* pos, float width, float r, float g, float b,
+                int duration, int fade)
+{
+    float color[4] = { r, g, b, 1.0f };
+    float mins[3];
+    float maxs[3];
+    mins[0] = pos[0] + width * 0.5f;
+    mins[1] = pos[1] + width * 0.5f;
+    mins[2] = pos[2] + width * 0.5f;
+    maxs[0] = pos[0] - width * 0.5f;
+    maxs[1] = pos[1] - width * 0.5f;
+    maxs[2] = pos[2] - width * 0.5f;
+    G_DebugBox(mins, maxs, color, 1, duration, fade);
+}

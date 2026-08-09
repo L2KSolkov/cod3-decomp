@@ -320,6 +320,8 @@ public:
     void Release(Entity* e);                    // ?Release@EntityHandleDb@@QAEXAAVEntity@@@Z
     Entity* Find(int fieldofs, unsigned short match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HG@Z
     Entity* Find(int fieldofs, const Broc::string& match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HABVstring@Broc@@@Z
+    Entity** Find(int fieldofs, const Broc::string& match, Entity** begin, Entity** end);  // ?Find@EntityHandleDb@@QBE?AVconst_iterator@?$ae_sized_array@PAVEntity@@$0BAAA@@@HVstring@Broc@@V23@1@Z
+    void Compact();                         // ?Compact@EntityHandleDb@@QAEXXZ
 };
 static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
 static_assert(offsetof(EntityHandleDb, mActiveList) == 0x2AAC, "EntityHandleDb::mActiveList offset mismatch");

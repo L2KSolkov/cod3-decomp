@@ -124,7 +124,13 @@ struct scr_vehicle_t {
     int     barrelBlocked;  // +0x318
     uint8_t _pad31C[0x330 - 0x31C];
     float   wheelPitch;     // +0x330
-    uint8_t _pad334[0x3AC - 0x334];
+    uint8_t _pad334[0x338 - 0x334];
+    DbLinkedHandle<EntityHandleDb, Entity> mTargetEnt;  // +0x338
+    uint8_t _pad33C[0x388 - 0x33C];
+    DbLinkedHandle<EntityHandleDb, Entity> mIdleSndEnt;  // +0x388
+    DbLinkedHandle<EntityHandleDb, Entity> mEngineSndEnt;  // +0x38C
+    uint8_t _pad390[0x394 - 0x390];
+    Handle  mSoundEffectHandle[6];  // +0x394
     Handle  mWheel_ParticleEffectHandle[6];  // +0x3AC (0x18 bytes)
     Handle  mRumbleEffectHandle;  // +0x3C4
     int     playersAttached;  // +0x3C8
@@ -1570,6 +1576,22 @@ extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 void  EntityManager_DeleteAllEntities(void);         // game.o
 void  SceneManager_ResetAllStaticModels(void);       // render.o
 void  AnimationPlayer_DebugDump(Entity* ent);        // anim.o
+void  Cmd_God_f(Entity* ent);                        // g.o 0x44A7A0
+void  Cmd_Notarget_f(Entity* ent);                   // g.o 0x44A850
+void  VEH_StopAllEffects(Entity* ent);               // g.o 0x44DC50
+void  G_DebugBox(const float* mins, const float* maxs, const float* color,
+                 int depthTest, int duration, int fade);  // g.o 0x4570C0
+void  G_DebugBox(float* pos, float width, float r, float g, float b,
+                 int duration, int fade);            // g.o 0x461B10
+void  Cmd_GiveAll_f(Entity* ent);                    // g.o 0x455F60
+void  hurt_touch(Entity* self, Entity* other, int bTouched);  // g.o 0x489110
+void  G_Trigger(Entity* self, Entity* other);        // g.o (g_trigger.cpp)
+void  BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o
+int   Com_BitCheck(int* array, int bitNum);          // core.o
+void  Add_Ammo(Entity* ent, int weapon, int count, int fillClip);  // g.o
+void  EntityHandleDb_Compact(void* self);            // g.o 0x454B00
+extern bool gNoTargetEnabled;                        // g.o
+extern bool gGodModeEnabled;                         // g.o (sv_stubs.h has it)
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o

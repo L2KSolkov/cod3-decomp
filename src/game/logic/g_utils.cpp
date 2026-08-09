@@ -144,6 +144,67 @@ Entity* EntityHandleDb::Find(int fieldofs, const Broc::string& match)
     return *i;
 }
 
+// ea: 0x00454BC0
+Entity** EntityHandleDb::Find(int fieldofs, const Broc::string& match,
+                              Entity** begin, Entity** end)
+{
+    Entity** m_ptr = begin;
+    for (; m_ptr != end; ++m_ptr)
+    {
+        if (*m_ptr != nullptr)
+        {
+            Broc::string s = *(Broc::string*)((char*)&(*m_ptr)->s.eType + fieldofs);
+            if (s.mBlock != nullptr
+                && s.mBlock != (Broc::string::Block*)-12
+                && s.c_str() != nullptr
+                && s.c_str()[0] != 0
+                && strcmp(s.c_str(), match.c_str()) == 0)
+            {
+                break;
+            }
+        }
+    }
+    return m_ptr;
+}
+
+// ea: 0x00454B00
+void EntityHandleDb::Compact()
+{
+    unsigned int v1 = 0;
+    if (mActiveList.m_size > 0)
+    {
+        do
+        {
+            if (v1 >= 0x1000)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            if (mActiveList.m_elements[v1] == nullptr)
+            {
+                int m_size = mActiveList.m_size;
+                if (m_size != 0)
+                    mActiveList.m_size = m_size - 1;
+                Entity* v4 = mActiveList.m_elements[mActiveList.m_size];
+                if (v4 != nullptr)
+                {
+                    v4->mEntityArrayIndex = (int16_t)v1;
+                    mActiveList.m_elements[v1] = v4;
+                }
+                else
+                {
+                    --v1;
+                }
+            }
+            ++v1;
+        } while (v1 < (unsigned int)mActiveList.m_size);
+    }
+}
+
 // ea: 0x0044A240
 int CheatsOk(Entity* ent)
 {

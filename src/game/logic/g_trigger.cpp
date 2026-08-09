@@ -4,6 +4,26 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x00489110
+void hurt_touch(Entity* self, Entity* other, int /*bTouched*/)
+{
+    if (other->takedamage != 0
+        && ((self->spawnflags & 2) == 0 || other->actor == nullptr)
+        && self->timestamp <= level.time)
+    {
+        G_Trigger(self, other);
+        int spawnflags = self->spawnflags;
+        if ((spawnflags & 0x10) != 0)
+            self->timestamp = level.time + 1000;
+        else
+            self->timestamp = level.time + 100;
+        G_Damage(other, self, self, nullptr, nullptr, self->damage,
+                 4 * (spawnflags & 8), 26, HITLOC_NONE, -1);
+        if ((self->spawnflags & 0x20) != 0)
+            self->touch = 0;
+    }
+}
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
