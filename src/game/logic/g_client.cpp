@@ -347,3 +347,155 @@ void Player_UpdateFriendlyOverlay(Entity* pEnt)
     weaponFileInfo_t* v10 = BG_GetInfoForWeapon(WeaponIndexForName);
     SV_SetConfigstring(15, va("%s", v10->szOverlayName));
 }
+
+// ea: 0x00491F10
+void ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
+                 void* isRevive)
+{
+    bool v5 = stopPhysics;
+    Client* client = ent->client;
+    client->pers.connected = 2 /* CON_CONNECTED */;
+    unsigned int physicsFlags = 0x400000 & ent->flags;
+    if (v5)
+    {
+        StopPhysics(ent);
+        if (ent->mDObj != nullptr)
+            G_DObjCalcPose(ent);
+    }
+    float spawn_origin[3] = {origin[0], origin[1], origin[2]};
+    float spawn_angles[3] = {angles[0], angles[1], angles[2]};
+    if (!v5 && !EntityManager::sInst->IsLocalPlayer(ent))
+    {
+        spawn_origin[0] = ent->r.currentOrigin.v.m128_f32[0];
+        spawn_origin[1] = ent->r.currentOrigin.v.m128_f32[1];
+        spawn_origin[2] = ent->r.currentOrigin.v.m128_f32[2];
+        spawn_angles[0] = ent->r.currentAngles.v.m128_f32[0];
+        spawn_angles[1] = ent->r.currentAngles.v.m128_f32[1];
+        spawn_angles[2] = ent->r.currentAngles.v.m128_f32[2];
+    }
+    int eFlags = ent->client->ps.eFlags;
+    XModel* saveViewmodel = client->ps.viewmodel.mValue;
+    TPakId v38 = (TPakId)client->ps.viewmodel.mPakId;
+    int v10 = ~eFlags & 8;
+    extern void Client_Clear(Client* client, bool clearPersistentAlso,
+                             bool clearWeapons);
+    Client_Clear(client, false, false);
+    if (isRevive != 0 && EntityManager::sInst->IsLocalPlayer(ent))
+    {
+        int lastWeapon = client->ps.lastWeapon;
+        client->ps.weapon = lastWeapon;
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(lastWeapon);
+        if (InfoForWeapon == nullptr
+            || (InfoForWeapon->slot != 1 /* WEAPSLOT_PRIMARY */
+                && InfoForWeapon->slot != 2 /* WEAPSLOT_PRIMARYB */))
+        {
+            int PlayerIndex = EntityManager::sInst->GetPlayerIndex(ent);
+            if (CG_SelectFirstWeaponInSlotWithLocalIndex(1, 0, PlayerIndex) == 0)
+            {
+                int v14 = EntityManager::sInst->GetPlayerIndex(ent);
+                CG_SelectFirstWeaponInSlotWithLocalIndex(1, 1, v14);
+            }
+            client->ps.weapon = cg_aWeaponSelect[EntityManager::sInst->GetPlayerIndex(ent)];
+        }
+    }
+    ent->r.mOwner.mHandle.mVal = 0;
+    g_femanager.mDontDrawHud = false;
+    int maxHealth = client->pers.maxHealth;
+    client->ps.viewmodel.mValue = saveViewmodel;
+    client->ps.viewmodel.mPakId = v38;
+    client->ps.stats[2] = maxHealth;
+    client->ps.mClient.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    client->ps.eFlags = v10 | 0x10;
+    ent->r.svFlags |= 0x208;
+    if (EntityManager::sInst->IsLocalPlayer(ent))
+    {
+        int v21 = EntityManager::sInst->GetPlayerIndex(ent);
+        cl_aADS[v21] = 1;
+        CG_ResetLowHealthOverlay(v21);
+        cl_stance_ss[v21] = 0;
+    }
+    ent->s.mGroundEntity.mHandle.mVal = 0;
+    ent->takedamage = 1;
+    ent->mClassName = str_const.player;
+    ent->mClassNameHash.mHash = HashString::CalcHash(ent->mClassName.GetBuff());
+    ent->r.contents = 0x2000000;
+    ent->clipmask = 42008593;
+    ent->die = 3;
+    ent->flags = 49152;
+    if (!stopPhysics)
+        ent->flags = physicsFlags | 0xC000;
+    UpdateEntityHash(ent);
+    ent->r.mins.v.m128_f32[0] = playerMins.v.m128_f32[0];
+    ent->r.mins.v.m128_f32[1] = playerMins.v.m128_f32[1];
+    ent->r.mins.v.m128_f32[2] = playerMins.v.m128_f32[2];
+    ent->r.maxs.v.m128_f32[0] = playerMaxs.v.m128_f32[0];
+    ent->r.maxs.v.m128_f32[1] = playerMaxs.v.m128_f32[1];
+    ent->r.maxs.v.m128_f32[2] = playerMaxs.v.m128_f32[2];
+    client->ps.mins[0] = ent->r.mins.v.m128_f32[0];
+    client->ps.mins[1] = ent->r.mins.v.m128_f32[1];
+    client->ps.mins[2] = ent->r.mins.v.m128_f32[2];
+    client->ps.maxs[0] = ent->r.maxs.v.m128_f32[0];
+    client->ps.maxs[1] = ent->r.maxs.v.m128_f32[1];
+    client->ps.maxs[2] = ent->r.maxs.v.m128_f32[2];
+    client->ps.proneViewHeight = bg_viewheight_prone.integer;
+    client->ps.crouchViewHeight = bg_viewheight_crouched.integer;
+    client->ps.standViewHeight = bg_viewheight_standing.integer;
+    client->ps.deadViewHeight = 8;
+    client->ps.sprintSpeedScale = 1.6f;
+    client->ps.viewHeightCurrent = 0.0f;
+    client->ps.viewHeightLerpPosAdj = 0.0f;
+    client->ps.proneSpeedScale = 0.15000001f;
+    client->ps.viewHeightTarget = bg_viewheight_standing.integer;
+    client->ps.viewHeightLerpTime = 0;
+    client->ps.walkSpeedScale = 0.40000001f;
+    client->ps.runSpeedScale = 1.0f;
+    client->ps.crouchSpeedScale = 0.64999998f;
+    client->ps.strafeSpeedScale = 1.0f;
+    client->ps.backSpeedScale = 1.0f;
+    client->ps.leanSpeedScale = 0.40000001f;
+    client->ps.friction = 1.0f;
+    client->ps.fatigueScale = 1.0f;
+    ent->client->ps.spectatorClient = -1;
+    client->ps.stats[0] = 0;
+    ent->health = 0;
+    G_SetOrigin(ent, spawn_origin);
+    client->ps.origin.v.m128_f32[0] = spawn_origin[0];
+    client->ps.origin.v.m128_f32[1] = spawn_origin[1];
+    client->ps.origin.v.m128_f32[2] = spawn_origin[2];
+    client->ps.pm_flags = client->ps.pm_flags & 0xFFFFF7DF | 0x800;
+    SV_GetUsercmd(client - level.clients, &ent->client->pers.cmd);
+    SetClientViewAngle(ent, spawn_angles);
+    g_LinkEntity(ent);
+    client->ps.pm_time = 100;
+    client->ps.pm_flags = client->ps.pm_flags | 0x200;
+    client->respawnTime = level.time;
+    client->latched_buttons = 0;
+    client->invulnerableEnabled = true;
+    client->prevLinkAngles[0] = 0.0f;
+    client->prevLinkAngles[1] = 0.0f;
+    client->prevLinkAngles[2] = 0.0f;
+    client->linkAnglesFrac[0] = 0.0f;
+    client->linkAnglesFrac[1] = 0.0f;
+    client->linkAnglesFrac[2] = 0.0f;
+    client->ps.commandTime = level.time - 100;
+    ent->client->pers.cmd.serverTime = level.time;
+    ClientThink(ent->mHandle);
+    BG_PlayerStateToEntityState(&client->ps, &ent->s, 1);
+    if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
+        || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 1192;
+        AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    ent->r.currentOrigin.v.m128_f32[0] = ent->client->ps.origin.v.m128_f32[0];
+    ent->r.currentOrigin.v.m128_f32[1] = ent->client->ps.origin.v.m128_f32[1];
+    ent->r.currentOrigin.v.m128_f32[2] = ent->client->ps.origin.v.m128_f32[2];
+    g_LinkEntity(ent);
+    ClientEndFrame(ent, ServerTime::sInst.mTickMSec);
+    BG_PlayerStateToEntityState(&client->ps, &ent->s, 1);
+}

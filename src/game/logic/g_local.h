@@ -535,7 +535,9 @@ struct str_const_t {
     Broc::string active;              // +0x000
     uint8_t    _pad[0xBC - 0x4];      // +0x004
     Broc::string info_player_deathmatch;  // +0xBC
-    uint8_t    _padC0[0x13C - 0xC0];  // +0xC0
+    uint8_t    _padC0[0x120 - 0xC0];  // +0xC0
+    Broc::string player;              // +0x120
+    uint8_t    _pad124[0x13C - 0x124];
     Broc::string rocket;              // +0x13C
     uint8_t    _pad140[0x148 - 0x140];
     Broc::string sound_blend;         // +0x148
@@ -803,6 +805,12 @@ void g_UnlinkEntity(Entity* ent);
 void G_FreeEntity(Entity* e, int msec);
 Entity* G_Spawn(TPakId pakId);
 void UpdateEntityHash(Entity* ent);
+void G_DObjCalcPose(Entity* ent);           // g.o
+void CG_ResetLowHealthOverlay(int client);  // cg.o
+int  CG_SelectFirstWeaponInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
+                                              int localIdx);  // cg.o
+int  CG_SelectFirstWeaponNotInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
+                                                 int localIdx);  // cg.o
 void G_RunThink(Entity* ent, int msec);
 int  G_SpawnString(unsigned int key, const char* defaultString, const char** out);
 bool G_SpawnString(unsigned int key, const char** out);
@@ -1777,6 +1785,9 @@ void  Svcmd_ListEntities_f(void);                    // g.o 0x465650
 int   ConsoleCommand(void);                          // g.o 0x470780
 void  G_GeneralLink(Entity* ent);                    // g.o 0x482B50
 void  ClientThink(DbLinkedHandle<EntityHandleDb, Entity> entityHandle);  // g.o 0x48EB30
+void  ClientSpawn(Entity* ent, float* origin, float* angles, bool stopPhysics,
+                  void* isRevive);             // g.o 0x491F10
+void  ClientEndFrame(Entity* ent, int msec);   // g.o 0x491B60
 void  G_setfog(const char* fogstring);               // g.o 0x455E80
 void  ClientDisconnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467610
 vehicle_info_t* G_GetVehicleInfoName(int16_t index); // g.o 0x44F100
