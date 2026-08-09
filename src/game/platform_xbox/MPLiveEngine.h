@@ -65,6 +65,115 @@ struct QueryInterface {
 };
 
 // ============================================================================
+// CFromIDQuery - query a session by ID (0xD0 bytes, verified)
+// ============================================================================
+#pragma pack(push, 1)
+struct XOnlineMatchSessionRecord {
+    unsigned char reserved[90];    // +0x00 (attribute parse target)
+    XNKID SessionID;               // +0x5A (90)
+    XNKEY KeyExchangeKey;          // +0x62 (98)
+    XNADDR HostAddress;            // +0x72 (114)
+    unsigned int dwPublicOpen;     // +0x96 (150)
+    unsigned int dwPrivateOpen;    // +0x9A (154)
+    unsigned int dwPublicFilled;   // +0x9E (158)
+    unsigned int dwPrivateFilled;  // +0xA2 (162)
+    unsigned int qosInfo;          // +0xA6 (166)
+};
+#pragma pack(pop)
+static_assert(sizeof(XOnlineMatchSessionRecord) == 170,
+              "XOnlineMatchSessionRecord size mismatch");
+
+struct CFromIDQueryResults {
+    unsigned char v[170];   // +0x00 (one session record)
+    unsigned int  m_dwSize; // +0xAC
+
+    XOnlineMatchSessionRecord& operator[](unsigned int i)
+    {
+        return *(XOnlineMatchSessionRecord*)&v[170 * i];
+    }
+    void Remove(unsigned int i);  // inline, ea 0x7299F0
+};
+
+class CFromIDQuery : public QueryInterface {
+public:
+    enum STATE {
+        STATE_IDLE = 0,
+        STATE_RUNNING = 1,
+        STATE_PROBING_CONNECTIVITY = 2,
+        STATE_PROBING_BANDWIDTH = 3,
+        STATE_DONE = 4,
+    };
+
+    CFromIDQueryResults Results;       // +0x04
+    const XNADDR* m_rgpXnAddr[1];      // +0xB4
+    const XNKID* m_rgpXnKid[1];        // +0xB8
+    const XNKEY* m_rgpXnKey[1];        // +0xBC
+    XNQOS* m_pXnQos;                   // +0xC0
+    STATE m_State;                     // +0xC4
+    HRESULT m_hrQuery;                 // +0xC8
+    XONLINETASK_HANDLE m_hSearchTask;  // +0xCC
+
+    CFromIDQuery();
+    ~CFromIDQuery();
+    void Cancel();
+    void Clear();
+    HRESULT Query(unsigned __int64 SessionID);
+    HRESULT Probe();
+    HRESULT Process();
+};
+static_assert(sizeof(CFromIDQuery) == 0xD0, "CFromIDQuery size mismatch");
+
+// ============================================================================
+// CDefaultQuery - matchmaking query (0x11E0 bytes, verified)
+// ============================================================================
+struct CDefaultQueryResults {
+    unsigned char v[25 * 170];  // +0x00 (25 session records)
+    unsigned int  m_dwSize;     // +0x109C
+
+    XOnlineMatchSessionRecord& operator[](unsigned int i)
+    {
+        return *(XOnlineMatchSessionRecord*)&v[170 * i];
+    }
+    void Remove(unsigned int i);  // inline, ea 0x7298C0
+};
+
+class CDefaultQuery : public QueryInterface {
+public:
+    enum STATE {
+        STATE_IDLE = 0,
+        STATE_RUNNING = 1,
+        STATE_PROBING_CONNECTIVITY = 2,
+        STATE_PROBING_BANDWIDTH = 3,
+        STATE_DONE = 4,
+    };
+
+    CDefaultQueryResults Results;       // +0x04
+    const XNADDR* m_rgpXnAddr[25];      // +0x10A4
+    const XNKID* m_rgpXnKid[25];        // +0x1108
+    const XNKEY* m_rgpXnKey[25];        // +0x116C
+    XNQOS* m_pXnQos;                    // +0x11D0
+    STATE m_State;                      // +0x11D4
+    HRESULT m_hrQuery;                  // +0x11D8
+    XONLINETASK_HANDLE m_hSearchTask;   // +0x11DC
+
+    CDefaultQuery();
+    ~CDefaultQuery();
+    void Cancel();
+    void Clear();
+    HRESULT Query(unsigned __int64 queryGameType,
+                  unsigned __int64 queryGameMap,
+                  unsigned __int64 queryGameVersion,
+                  unsigned __int64 QueryFriendlyFire,
+                  unsigned __int64 queryTeamBalancing,
+                  unsigned __int64 querySubType,
+                  unsigned __int64 queryMaxPlayers,
+                  unsigned __int64 queryMinPlayers);
+    HRESULT Probe();
+    HRESULT Process();
+};
+static_assert(sizeof(CDefaultQuery) == 0x11E0, "CDefaultQuery size mismatch");
+
+// ============================================================================
 // MP network classes (mp.o / shell.o - extern views for MPLiveEngine)
 // ============================================================================
 struct MPPlayer {

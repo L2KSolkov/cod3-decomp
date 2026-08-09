@@ -160,6 +160,49 @@ enum {
 struct LiveEngine;
 struct XHVEngine;
 
+// ============================================================================
+// XNet QoS / matchmaking result types (verified against IDA)
+// ============================================================================
+typedef struct _XNQOSINFO {
+    unsigned char bFlags;             // +0x00
+    unsigned char bReserved;          // +0x01
+    unsigned short cProbesXmit;       // +0x02
+    unsigned short cProbesRecv;       // +0x04
+    unsigned short cbData;            // +0x06
+    unsigned char* pbData;            // +0x08
+    unsigned short wRttMinInMsecs;    // +0x0C
+    unsigned short wRttMedInMsecs;    // +0x0E
+    unsigned long dwUpBitsPerSec;     // +0x10
+    unsigned long dwDnBitsPerSec;     // +0x14
+} XNQOSINFO;
+
+typedef struct _XNQOS {
+    unsigned int cxnqos;              // +0x00
+    unsigned int cxnqosPending;       // +0x04
+    XNQOSINFO axnqosinfo[1];          // +0x08
+} XNQOS;
+
+typedef struct _XONLINE_MATCH_SEARCHRESULT {
+    unsigned int dwReserved;       // +0x00
+    XNKID SessionID;               // +0x04
+    XNADDR HostAddress;            // +0x0C
+    XNKEY KeyExchangeKey;          // +0x30
+    unsigned int dwPublicOpen;     // +0x40
+    unsigned int dwPrivateOpen;    // +0x44
+    unsigned int dwPublicFilled;   // +0x48
+    unsigned int dwPrivateFilled;  // +0x4C
+    unsigned int dwNumAttributes;  // +0x50
+} _XONLINE_MATCH_SEARCHRESULT;
+
+typedef struct _XONLINE_ATTRIBUTE_SPEC {
+    unsigned int dwType;   // +0x00
+    unsigned int dwLength; // +0x04
+} _XONLINE_ATTRIBUTE_SPEC;
+
+// Matchmaking attribute specs (g.o data; used by CFromIDQuery/CDefaultQuery)
+extern _XONLINE_ATTRIBUTE_SPEC FromIDAttributeSpec[7];  // 0xD170E0
+extern _XONLINE_ATTRIBUTE_SPEC DefaultAttributeSpec[8]; // 0xD17118
+
 HRESULT __stdcall XOnlineMatchSessionCreate(
     DWORD dwPublicCurrent, DWORD dwPublicAvailable,
     DWORD dwPrivateCurrent, DWORD dwPrivateAvailable,
@@ -177,6 +220,21 @@ HRESULT __stdcall XOnlineMatchSessionGetInfo(
     XONLINETASK_HANDLE hTask, XNKID* pSessionID, XNKEY* pKeyExchangeKey);
 DWORD __stdcall XOnlineTaskContinue(XONLINETASK_HANDLE hTask);
 HRESULT __stdcall XOnlineTaskClose(XONLINETASK_HANDLE hTask);
+HRESULT __stdcall XOnlineMatchSearch(
+    DWORD dwProcedureIndex, DWORD dwNumResults, DWORD dwNumAttributes,
+    const XONLINE_ATTRIBUTE* pAttributes, DWORD dwResultsLen,
+    HANDLE hWorkEvent, XONLINETASK_HANDLE* phTask);
+HRESULT __stdcall XOnlineMatchSearchGetResults(
+    XONLINETASK_HANDLE hTask,
+    _XONLINE_MATCH_SEARCHRESULT** prgpSearchResults,
+    DWORD* pdwReturnedResults);
+HRESULT __stdcall XOnlineMatchSearchParse(
+    _XONLINE_MATCH_SEARCHRESULT* pSearchResult,
+    DWORD dwNumSessionAttributes, const void* pSessionAttributeSpec,
+    void* pQuerySession);
+HRESULT __stdcall XOnlineMatchSearchResultsLen(
+    DWORD dwNumResults, DWORD dwNumSessionAttributes,
+    const void* pSessionAttributeSpec);
 HRESULT __stdcall XOnlineMutelistGet(
     DWORD dwUserIndex, DWORD dwMutelistUserBufferCount, HANDLE hWorkEvent,
     XONLINETASK_HANDLE* phTask, XONLINE_MUTELISTUSER* pMutelistUserBuffer,
@@ -187,6 +245,12 @@ HRESULT __stdcall XOnlineMutelistGet(
 // ============================================================================
 int __stdcall XNetQosListen(const XNKID* pxnkid, BYTE* pb, DWORD cb,
                             DWORD dwBitsPerSec, DWORD dwFlags);
+int __stdcall XNetQosLookup(
+    unsigned int cxna, const XNADDR** apxna, const XNKID** apxnkid,
+    const XNKEY** apxnkey, unsigned int cina, const void* aina,
+    const DWORD* adwServiceId, unsigned int cProbes, DWORD dwBitsPerSec,
+    DWORD dwFlags, HANDLE hEvent, XNQOS** ppxnqos);
+int __stdcall XNetQosRelease(XNQOS* pxnqos);
 int __stdcall XNetRegisterKey(const XNKID* pxnkid, const XNKEY* pxnkey);
 int __stdcall XNetUnregisterKey(const XNKID* pxnkid);
 
