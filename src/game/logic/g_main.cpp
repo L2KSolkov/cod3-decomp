@@ -2352,18 +2352,11 @@ void SpectatorThink(Entity* ent, usercmd_s* ucmd)
     memset(&pm, 0, sizeof(pm));
     pm.ps = &client->ps;
     pm.cmd = *ucmd;
-    pm.trace = (void (__cdecl*)(trace_t*, const math::Position3*, const math::Position3*,
-                                const math::Position3*, const math::Position3*,
-                                const collision_context_t*))g_TraceCapsule;
-    pm.boxtrace = (void (__cdecl*)(trace_t*, const math::Position3*, const math::Position3*,
-                                   const math::Position3*, const math::Position3*,
-                                   const collision_context_t*))g_TraceCapsule;
-    pm.capsuletrace = (void (__cdecl*)(trace_t*, const math::Position3*, const math::Position3*,
-                                       const math::Position3*, const math::Position3*,
-                                       const collision_context_t*))g_TraceCapsule;
+    pm.trace = g_TraceCapsule;
+    pm.boxtrace = g_TraceCapsule;
+    pm.capsuletrace = g_TraceCapsule;
     pm.tracemask = 0x800011;
-    pm.pointcontents = (int (__cdecl*)(const math::Position3*,
-                                       const collision_context_t*))SV_PointContents;
+    pm.pointcontents = SV_PointContents;
     client->ps.pm_type = (0x100000 & client->ps.pm_flags) != 0 ? 1 : 4;
     client->ps.speed = (ent->sentient->noSpectate & 0x20) == 0 ? 400 : 0;
     Pmove(&pm, false);

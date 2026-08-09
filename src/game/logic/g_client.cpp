@@ -226,6 +226,235 @@ int Player_GetActivateEnt(Entity* pEnt, useList_t* useList)
     return curUse - ignoredFullItems;
 }
 
+// ea: 0x0048E1E0
+void ClientThink_real(Entity* ent)
+{
+    Client* client = ent->client;
+    if (client->pers.connected != 2 /* CON_CONNECTED */)
+        return;
+    usercmd_s* cmd = &client->pers.cmd;
+    if (cmd->serverTime > level.time + 200)
+        cmd->serverTime = level.time + 200;
+    if (cmd->serverTime < level.time - 1000)
+        cmd->serverTime = level.time - 1000;
+    int delta = cmd->serverTime - client->ps.commandTime;
+    if (delta < 1)
+    {
+        if (delta >= -100)
+            return;
+        client->ps.commandTime = cmd->serverTime - 100;
+    }
+    if (pmove_msec.integer < 8)
+        Cvar_Set("pmove_msec", "8");
+    else if (pmove_msec.integer > 33)
+        Cvar_Set("pmove_msec", "33");
+    if (pmove_fixed.integer != 0 || client->pers.pmoveFixed != 0)
+        cmd->serverTime = pmove_msec.integer
+                          * ((cmd->serverTime + pmove_msec.integer - 1)
+                             / pmove_msec.integer);
+    switch (client->pers.playerState)
+    {
+    case 2:
+        client->oldbuttons = client->buttons;
+        client->buttons = client->pers.cmd.buttons;
+        return;
+    case 1:
+        SpectatorThink(ent, &client->pers.cmd);
+        return;
+    case 4:
+    case 5:
+        if (Entity_IsInRagdoll(ent))
+            return;
+        break;
+    default:
+        break;
+    }
+    client->ps.pm_flags = client->bFrozen
+                              ? (client->ps.pm_flags | 0x4000)
+                              : (client->ps.pm_flags & ~0x4000);
+    if (client->noclip != 0)
+        client->ps.pm_type = 2;
+    else if (client->ufo != 0)
+        client->ps.pm_type = 3;
+    else if (client->ps.stats[0] > 0)
+        client->ps.pm_type = ent->tagInfo != nullptr;
+    else
+        client->ps.pm_type = (ent->tagInfo != nullptr) + 6;
+    int oldEventSequence = client->ps.event.eventSequence;
+    client->ps.gravity = g_gravity.integer;
+    client->ps.speed = g_speed.integer;
+    client->currentAimSpreadScale =
+        client->ps.aimSpreadScale * 0.0039215689f;
+    pmove_t pm;
+    memset(&pm, 0, 0x150);
+    pm.ps = (PlayerState*)client;
+    pm.cmd = *cmd;
+    pm.oldcmd = client->pers.oldcmd;
+    pm.tracemask = (client->pers.playerState < 6)
+                       ? ent->clipmask
+                       : 0x820011;
+    pm.debugLevel = g_debugMove.integer;
+    pm.pmove_fixed =
+        pmove_fixed.integer | client->pers.pmoveFixed;
+    pm.pmove_msec = pmove_msec.integer;
+    pm.trace = g_TraceCapsule;
+    pm.boxtrace = g_TraceCapsule;
+    pm.capsuletrace = g_TraceCapsule;
+    pm.pointcontents = SV_PointContents;
+    collision_context_t pmCtx;
+    pmCtx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    pmCtx.pass_entity1 = ent->mHandle;
+    pmCtx.pass_entity2.mHandle.mVal = 0;
+    pmCtx.pass_owner1.mHandle.mVal = 0;
+    pmCtx.pass_owner2.mHandle.mVal = 0;
+    pmCtx.contentmask = pm.tracemask;
+    client->oldOrigin.v.m128_f32[0] = client->ps.origin.v.m128_f32[0];
+    client->oldOrigin.v.m128_f32[1] = client->ps.origin.v.m128_f32[1];
+    client->oldOrigin.v.m128_f32[2] = client->ps.origin.v.m128_f32[2];
+    if (TestFPS::sInst->mTesting)
+    {
+        TestFPS::sInst->PositionCamera(&pm);
+    }
+    else if (Entity_has_zone_collision(ent)
+             || client->pers.playerState == 2
+             || client->pers.playerState == 1)
+    {
+        math::Position3 oldPos = client->ps.origin;
+        if (g_freeze_movement != 0)
+        {
+            pm.cmd.forwardmove = 0;
+            pm.cmd.rightmove = 0;
+            pm.cmd.buttons = 0;
+            pm.vehicleAngles[0] = 0.0f;
+            pm.vehicleAngles[1] = 0.0f;
+            pm.vehicleAngles[2] = 0.0f;
+        }
+        Pmove(&pm, false);
+        math::Position3 newPos = client->ps.origin;
+        bool moved = pm.vehicleAngles[0] != 0.0f
+                  || pm.vehicleAngles[1] != 0.0f
+                  || pm.vehicleAngles[2] != 0.0f;
+        if (moved)
+        {
+            if (client->ps.origin.v.m128_f32[0] == oldPos.v.m128_f32[0]
+                && client->ps.origin.v.m128_f32[1] == oldPos.v.m128_f32[1]
+                && client->ps.origin.v.m128_f32[2] == oldPos.v.m128_f32[2])
+            {
+                if (client->pers.playerState != 2)
+                    push_in_world(pm, 15.1f, pmCtx);
+            }
+        }
+        if (client->pers.playerState != 2)
+        {
+            client->ps.origin = oldPos;
+            float dx = client->ps.origin.v.m128_f32[0]
+                     - newPos.v.m128_f32[0];
+            float dy = client->ps.origin.v.m128_f32[1]
+                     - newPos.v.m128_f32[1];
+            float dz = client->ps.origin.v.m128_f32[2]
+                     - newPos.v.m128_f32[2];
+            float dist2 = dx * dx + dy * dy + dz * dz;
+            if (dist2 > radius_2 * radius_2
+                && (client->ps.eFlags & 0x100000) == 0)
+            {
+                client->ps.origin.v.m128_f32[2] += 35.0f;
+                newPos.v.m128_f32[2] += 35.0f;
+                if (tunnel_test(&pm, radius_2,
+                                &client->ps.origin.v.m128_f32[0],
+                                &newPos.v.m128_f32[0]))
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\g_active.cpp";
+                    AeAssert::gCurrentLine = 935;
+                    AeAssert::gCurrentExpr = "0";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "tunneling outside of resolve_collision\n"))
+                        __debugbreak();
+                    client->ps.origin = oldPos;
+                }
+            }
+        }
+    }
+    ent->r.svFlags = (client->ps.eFlags & 0x10) != 0
+                         ? (ent->r.svFlags | 0x200)
+                         : (ent->r.svFlags & ~0x200);
+    Entity* ground = HandleDbToEnt(client->ps.mGroundEntity);
+    if (ground != nullptr && ground->client != nullptr
+        && sqrtf(client->ps.velocity.v.m128_f32[0]
+                     * client->ps.velocity.v.m128_f32[0]
+                 + client->ps.velocity.v.m128_f32[1]
+                       * client->ps.velocity.v.m128_f32[1]
+                 + client->ps.velocity.v.m128_f32[2]
+                       * client->ps.velocity.v.m128_f32[2])
+               < 200.0f)
+    {
+        float r = random();
+        client->ps.velocity.v.m128_f32[0] += (r + r - 1.0f) * 100.0f;
+        r = random();
+        client->ps.velocity.v.m128_f32[1] += (r + r - 1.0f) * 100.0f;
+        client->ps.velocity.v.m128_f32[2] += 200.0f;
+    }
+    if (client->ps.event.eventSequence != oldEventSequence)
+        ent->r.eventTime = level.time;
+    BG_PlayerStateToEntityStateExtrapolate(&client->ps, &ent->s,
+                                           client->ps.commandTime, 1);
+    if ((client->ps.eFlags & 0x100000) == 0)
+    {
+        ent->r.currentOrigin.v.m128_f32[0] = ent->s.pos.trBase[0];
+        ent->r.currentOrigin.v.m128_f32[1] = ent->s.pos.trBase[1];
+        ent->r.currentOrigin.v.m128_f32[2] = ent->s.pos.trBase[2];
+    }
+    ent->r.mins = pm.mins;
+    ent->r.maxs = pm.maxs;
+    ClientEvents(ent, (float)oldEventSequence);
+    g_LinkEntity(ent);
+    if (client->ps.origin.v.m128_f32[0] != client->oldOrigin.v.m128_f32[0]
+        || client->ps.origin.v.m128_f32[1] != client->oldOrigin.v.m128_f32[1]
+        || client->ps.origin.v.m128_f32[2] != client->oldOrigin.v.m128_f32[2])
+    {
+        Sentient_InvalidateNearestNode(ent->sentient);
+    }
+    if (client->noclip == 0 && client->ufo == 0
+        && client->ps.pm_type < 6 && cls.state != 5 /* CA_MAP_RESTART */)
+    {
+        G_TouchTriggersAndVehicles(ent, &client->ps.origin, &pmCtx);
+    }
+    if ((client->ps.eFlags & 0x100000) != 0
+        && IsPlayerFullySeatedInVehicle(ent))
+    {
+        ent->r.currentOrigin.v.m128_f32[0] =
+            client->ps.origin.v.m128_f32[0];
+        ent->r.currentOrigin.v.m128_f32[1] =
+            client->ps.origin.v.m128_f32[1];
+        ent->r.currentOrigin.v.m128_f32[2] =
+            client->ps.origin.v.m128_f32[2];
+        ent->r.currentAngles.v.m128_f32[0] = 0.0f;
+        ent->r.currentAngles.v.m128_f32[1] =
+            client->ps.viewangles[1];
+    }
+    ClientImpacts(ent, &pm);
+    if (level.time >= client->mFootStepsSurface[1] + 500)
+        client->mFootStepsSurface[0] = level.time;
+    if (client->ps.event.eventSequence != oldEventSequence)
+        ent->r.eventTime = level.time;
+    int oldButtons = client->buttons;
+    client->oldbuttons = oldButtons;
+    client->buttons = cmd->buttons;
+    client->latched_buttons = cmd->buttons & ~oldButtons;
+    client->fGunPitch = cmd->gunPitch;
+    client->fGunYaw = cmd->gunYaw;
+    client->fGunXOfs = cmd->gunXOfs;
+    client->fGunYOfs = cmd->gunYOfs;
+    client->fGunZOfs = cmd->gunZOfs;
+    if (client->pers.playerState < 6)
+    {
+        Client_ClaimNode(ent);
+        Player_UpdateActivate(ent);
+    }
+}
+
 // ea: 0x00448BB0
 bool Player_CheckFriendlyFireUse(PlayerState* /*ps*/)
 {

@@ -498,6 +498,7 @@ struct TestFPS {
     bool mTesting;          // +0x00
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
+    void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z
 };
 
 // g_main.cpp entry / console commands
@@ -779,6 +780,11 @@ extern vmCvar_t g_vehicleDebug;        // g.o
 extern int s_newDebugLine;             // g.o
 extern int com_frameNumber;              // 0x012F0324
 extern vmCvar_t g_gravity;             // g_gravity
+extern vmCvar_t g_speed;               // g_speed
+extern vmCvar_t pmove_msec;            // pmove_msec
+extern vmCvar_t pmove_fixed;           // pmove_fixed
+extern vmCvar_t g_debugMove;           // g_debugMove
+extern float    radius_2;              // g.o @ 0xDD8260
 extern vmCvar_t g_reloading;           // g_reloading
 extern void    Scr_Error(const char* error);  // scr.o
 extern void    tlPrintf(const char* fmt, ...);  // core.o
@@ -2198,6 +2204,13 @@ void  G_RunFrame(int msec);                       // g.o 0x492600
 extern const char* s_vehicleTypeNames[6];         // g.o
 extern const char* s_vehicleSubTypeNames[9];      // g.o
 void  Pmove(pmove_t* pmove, bool isThisThePredictStep);  // game.o
+bool  tunnel_test(pmove_t* pmove, float radius, const float* p0,
+                  const float* p1);  // g.o
+void  ClientImpacts(Entity* ent, pmove_t* pmove);  // g.o
+void  Client_ClaimNode(Entity* ent);  // g.o
+void  G_TouchTriggersAndVehicles(Entity* pEnt, const math::Position3* origin,
+                                 const void* context);  // g.o
+struct player_collision_context_t;  // pmove context (opaque)
 extern void (*entinfotable[3])(Entity* ent);      // g.o
 float vectoyaw(const float* vec);                 // core.o
 struct TouchEntityData;
@@ -2303,6 +2316,8 @@ void TracePoint(const proximity_data_t& data, trace_t* results,
 bool push_in_world(math::Position3& pos, float radius,
                    const proximity_data_t& proximity_data,
                    TouchEntityData& entities);  // g.o 0x46E640
+bool push_in_world(pmove_t& pm, float radius,
+                   const collision_context_t& context);  // g.o
 void prepare_collision_objects(Entity* ent, const math::Position3* p0,
                                const math::Position3* p1, float radius,
                                int mask, proximity_data_t* proximity_data,

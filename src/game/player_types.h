@@ -217,13 +217,13 @@ struct pmove_t {
     int          pmove_fixed;                 // +0x138
     int          pmove_msec;                  // +0x13C
     // function pointers
-    void (__cdecl* trace)(struct trace_t*, const math::Position3*, const math::Position3*,
-                          const math::Position3*, const math::Position3*, const struct collision_context_t*);  // +0x140
-    void (__cdecl* boxtrace)(struct trace_t*, const math::Position3*, const math::Position3*,
-                             const math::Position3*, const math::Position3*, const struct collision_context_t*);  // +0x144
-    void (__cdecl* capsuletrace)(struct trace_t*, const math::Position3*, const math::Position3*,
-                                 const math::Position3*, const math::Position3*, const struct collision_context_t*);  // +0x148
-    int (__cdecl* pointcontents)(const math::Position3*, const struct collision_context_t*);  // +0x14C
+    void (__cdecl* trace)(struct trace_t*, const math::Position3&, const math::Position3&,
+                          const math::Position3&, const math::Position3&, const struct collision_context_t&);  // +0x140
+    void (__cdecl* boxtrace)(struct trace_t*, const math::Position3&, const math::Position3&,
+                             const math::Position3&, const math::Position3&, const struct collision_context_t&);  // +0x144
+    void (__cdecl* capsuletrace)(struct trace_t*, const math::Position3&, const math::Position3&,
+                                 const math::Position3&, const math::Position3&, const struct collision_context_t&);  // +0x148
+    int (__cdecl* pointcontents)(const math::Position3&, const struct collision_context_t&);  // +0x14C
 };
 static_assert(sizeof(pmove_t) == 0x150, "pmove_t size mismatch");
 static_assert(offsetof(pmove_t, ps) == 0x00, "pmove_t::ps offset mismatch");
