@@ -24,6 +24,7 @@ extern void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
 extern bool gTotalResetOfLevel;         // ?gTotalResetOfLevel (game2.o)
 extern const char* notSet;              // ?notSet (game2.o, "Not Set")
 extern int bg_iNumWeapons;              // ?bg_iNumWeapons (game.o)
+extern vmCvar_t g_drawSmokeGren;        // ?g_drawSmokeGren (g.o)
 
 // ============================================================================
 // _xmission_data - 0x78 (IDA verified)
@@ -166,7 +167,6 @@ bool ScriptEventHandler::ExecEvents(Entity* ent, HashString h, void* params)
 bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
                                const float* sphereOrigin, float sphereRadius)
 {
-    extern vmCvar_t g_drawSmokeGren;  // ?g_drawSmokeGren (g.o)
     struct DebugColor { float r, g, b, a; };
     extern void DebugRender_RenderLine(const math::Position3* pt1,
         const math::Position3* pt2, const DebugColor* col, float thickness);
@@ -1048,7 +1048,6 @@ void SplineMgr::UnloadBank(int pakId)
 // ============================================================================
 extern float sTime0, sTime1, sTime2, sTime3, sTime4;
 extern float sOpacity2, sOpacity3;
-extern bool g_drawSmokeGren_integer;  // vmCvar_t.integer
 extern float ClampRange(const float* in, const float* beg, const float* end);
 
 // ea: 0x4FA0E0
@@ -1159,6 +1158,60 @@ bool SmokeGrenadeMgr::EntityCanSeeEntity(const Entity* ent,
     endPoint[2] = (targEnt->r.maxs.v.m128_f32[2] * 0.5f)
         + targEnt->r.currentOrigin.v.m128_f32[2];
     return PointCanSeePoint(startPoint, endPoint, visThreshold);
+}
+
+// ============================================================================
+// SmokeGrenadeMgr::Update - ea: 0x4F9CC0
+// ============================================================================
+extern unsigned int apsEffect_IsDone(apsEffect* self);  // ?IsDone@apsEffect
+extern void apsEffect_GetBounds(apsEffect* self, apsBounds& iBounds);
+extern void DebugRender_RenderSphere(const math::Position3* pos, float radius,
+                                     const float* argb_color);
+extern void ae_vector_erase(void* self, int idx);  // ?erase@?$ae_vector@USmokeGrenadeInfo
+
+void SmokeGrenadeMgr::Update(float deltaT)
+{
+    if (deltaT == 0.0f)
+        return;
+    if (g_drawSmokeGren.integer != 0)
+    {
+        int count = mSmokeGrenadeInfoList.mSize;
+        for (int i = 0; i < count; ++i)
+        {
+            SmokeGrenadeInfo& info = mSmokeGrenadeInfoList.mElements[i];
+            apsEffect* mEffect = (apsEffect*)info.mEffect;
+            apsBounds bounds;
+            apsEffect_GetBounds(mEffect, bounds);
+            apsSphere sph = bounds.Sphere();
+            float color[4] = { 0.6f, 0.5f, 0.5f, 1.0f };
+            math::Position3 center;
+            center.v = sph.mSphere.v;
+            DebugRender_RenderSphere(&center,
+                                     sph.mSphere.v.m128_f32[3] * 0.33333334f,
+                                     color);
+        }
+    }
+    int v16 = mSmokeGrenadeInfoList.mSize;
+    int v17 = 0;
+    if (v16 > 0)
+    {
+        int v18 = 0;
+        do
+        {
+            mSmokeGrenadeInfoList.mElements[v18].mTime =
+                mSmokeGrenadeInfoList.mElements[v18].mTime + deltaT;
+            if (apsEffect_IsDone(
+                    (apsEffect*)mSmokeGrenadeInfoList.mElements[v18].mEffect)
+                != 0)
+            {
+                ae_vector_erase(&mSmokeGrenadeInfoList, v17--);
+                --v18;
+            }
+            v16 = mSmokeGrenadeInfoList.mSize;
+            ++v17;
+            ++v18;
+        } while (v17 < v16);
+    }
 }
 
 // ============================================================================
