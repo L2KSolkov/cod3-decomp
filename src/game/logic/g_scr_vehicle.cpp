@@ -893,6 +893,74 @@ void Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
     Scr_NotifyFromEnt(pSelf, hash_const.death, v16);
 }
 
+// ea: 0x0044D370
+int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType)
+{
+    if (fieldType == 8)
+    {
+        int v6 = 0;
+        while (_stricmp(pValue, s_vehicleTypeNames[v6]) != 0)
+        {
+            if (++v6 >= 6)
+                break;
+        }
+        if (v6 == 6)
+            Com_Error(ERR_DROP, "unknown vehicle type '%s'", pValue);
+        *(pStruct + 16) = (unsigned char)v6;
+        return 1;
+    }
+    if (fieldType == 9)
+    {
+        int v5 = 0;
+        while (_stricmp(pValue, s_vehicleSubTypeNames[v5]) != 0)
+        {
+            if (++v5 >= 9)
+                break;
+        }
+        if (v5 == 9)
+        {
+            Com_Error(ERR_DROP, "unknown vehicle subtype '%s'", pValue);
+            return 1;
+        }
+        *(pStruct + 17) = (unsigned char)v5;
+        return 1;
+    }
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+    AeAssert::gCurrentLine = 1002;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored())
+    {
+        if (AeAssert::Warning(va("Bad vehicle field type %i\n", fieldType)))
+            __debugbreak();
+    }
+    Com_Error(ERR_DROP, "Bad vehicle field type %i", fieldType);
+    return 0;
+}
+
+// ea: 0x0046C9E0
+void VEH_InvalidateCaches(void)
+{
+    if (level.vehicles != nullptr)
+    {
+        for (int i = 0; i < level.MaxVehicles; ++i)
+        {
+            Entity* mObject = HandleDbToEnt(level.vehicles[i].mEntity);
+            if (mObject != nullptr && mObject->proximity_data != nullptr)
+            {
+                mObject->proximity_data->lo.v.m128_f32[0] = 3.4028235e38f;
+                mObject->proximity_data->lo.v.m128_f32[1] = 3.4028235e38f;
+                mObject->proximity_data->lo.v.m128_f32[2] = 3.4028235e38f;
+                mObject->proximity_data->lo.v.m128_f32[3] = 3.4028235e38f;
+                mObject->proximity_data->hi.v.m128_f32[0] = -3.4028235e38f;
+                mObject->proximity_data->hi.v.m128_f32[1] = -3.4028235e38f;
+                mObject->proximity_data->hi.v.m128_f32[2] = -3.4028235e38f;
+                mObject->proximity_data->hi.v.m128_f32[3] = -3.4028235e38f;
+            }
+        }
+    }
+}
+
 // ea: 0x0046E0B0
 bool G_IsPlayerInVehicle(Entity* player)
 {

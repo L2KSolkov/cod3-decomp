@@ -1734,3 +1734,87 @@ void Cmd_MenuResponse_f(Entity* pEnt)
     }
     Scr_Notify(pEnt, hash_const.menuresponse, 0);
 }
+
+// ea: 0x00456400
+void LookAtKiller(Entity* self, Entity* inflictor, Entity* attacker)
+{
+    float dir[3];
+    if (attacker != nullptr && attacker != self)
+    {
+        dir[0] = attacker->r.currentOrigin.v.m128_f32[0] - self->r.currentOrigin.v.m128_f32[0];
+        dir[1] = attacker->r.currentOrigin.v.m128_f32[1] - self->r.currentOrigin.v.m128_f32[1];
+        dir[2] = attacker->r.currentOrigin.v.m128_f32[2] - self->r.currentOrigin.v.m128_f32[2];
+        self->client->ps.mKiller.mHandle.mVal = attacker->mHandle.mHandle.mVal;
+        self->client->ps.stats[1] = (int)vectoyaw(dir);
+        return;
+    }
+    if (inflictor != nullptr && inflictor != self)
+    {
+        dir[0] = inflictor->r.currentOrigin.v.m128_f32[0] - self->r.currentOrigin.v.m128_f32[0];
+        dir[1] = inflictor->r.currentOrigin.v.m128_f32[1] - self->r.currentOrigin.v.m128_f32[1];
+        dir[2] = inflictor->r.currentOrigin.v.m128_f32[2] - self->r.currentOrigin.v.m128_f32[2];
+        self->client->ps.mKiller.mHandle.mVal = inflictor->mHandle.mHandle.mVal;
+        self->client->ps.stats[1] = (int)vectoyaw(dir);
+        return;
+    }
+    self->client->ps.stats[1] = (int)self->r.currentAngles.v.m128_f32[1];
+    self->client->ps.mKiller.mHandle.mVal = 0;
+}
+
+// ea: 0x004670D0
+Entity* SelectInitialSpawnPoint(float* origin, float* angles)
+{
+    Entity* v2 = nullptr;
+    Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity** end = begin + EntityHandleDb::sInst.mActiveList.m_size;
+    for (Entity** p = begin; p != end; ++p)
+    {
+        Entity* spot = *p;
+        if (spot == nullptr)
+            continue;
+        if (spot->mClassNameHash.mHash == 0
+            || spot->mClassNameHash.mHash != hash_const.info_player_deathmatch.mHash)
+            continue;
+        v2 = spot;
+        if ((v2->spawnflags & 1) != 0)
+            break;
+    }
+    if (v2 == nullptr || SpotWouldTelefrag(&v2->r.currentOrigin))
+        return SelectSpawnPoint(vec3_origin, origin, angles);
+    origin[0] = v2->r.currentOrigin.v.m128_f32[0];
+    origin[1] = v2->r.currentOrigin.v.m128_f32[1];
+    origin[2] = v2->r.currentOrigin.v.m128_f32[2] + 9.0f;
+    angles[0] = v2->r.currentAngles.v.m128_f32[0];
+    angles[1] = v2->r.currentAngles.v.m128_f32[1];
+    angles[2] = v2->r.currentAngles.v.m128_f32[2];
+    return v2;
+}
+
+// ea: 0x00467ED0
+void ShowEntityInfo(void)
+{
+    cvar_t* result = Cvar_Get("g_entinfo", "0", 512);
+    if (result->integer != 0)
+    {
+        for (int idx = 0; idx < 0x540; ++idx)
+        {
+            Entity* Object = EntityHandleDb::sInst.mElements[idx].mObject;
+            if (Object == nullptr || Object->r.linked == 0)
+                continue;
+            uint8_t entinfo = Object->entinfo;
+            if (entinfo != 0)
+            {
+                if (entinfo >= 3u)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
+                    AeAssert::gCurrentLine = 2362;
+                    AeAssert::gCurrentExpr = "ent->entinfo > 0 && ent->entinfo < ENTINFO_MAX";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                entinfotable[Object->entinfo](Object);
+            }
+        }
+    }
+}

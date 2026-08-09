@@ -1664,6 +1664,20 @@ void  EntityHandleDb_Validate(void* self);       // g.o 0x466350
 int   SpotWouldTelefrag(const math::Position3* origin);  // g.o
 HashString hash_const_info_player_deathmatch;    // helper
 void  SV_GetConfigstring(int index, char* buffer, int bufferSize);  // sv.o
+int   VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType);  // g.o 0x44D370
+void  VEH_InvalidateCaches(void);                 // g.o 0x46C9E0
+void  LookAtKiller(Entity* self, Entity* inflictor, Entity* attacker);  // g.o 0x456400 (redecl)
+void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0
+Entity* SelectInitialSpawnPoint(float* origin, float* angles);  // g.o 0x4670D0
+void  ShowEntityInfo(void);                       // g.o 0x467ED0
+void  G_RunFrame(int msec);                       // g.o 0x492600
+extern const char* s_vehicleTypeNames[6];         // g.o
+extern const char* s_vehicleSubTypeNames[9];      // g.o
+void  Pmove(pmove_t* pmove, bool isThisThePredictStep);  // game.o
+extern void (*entinfotable[3])(Entity* ent);      // g.o
+float vectoyaw(const float* vec);                 // core.o
+struct pmove_t;                                   // opaque
+struct proximity_data_t { struct { __m128 v; } lo, hi; };  // opaque
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o

@@ -205,6 +205,35 @@ void EntityHandleDb::Compact()
     }
 }
 
+// ea: 0x00466350
+void EntityHandleDb::Validate()
+{
+    for (int idx = 0; idx < 0x540; ++idx)
+    {
+        Entity* mObject = mElements[idx].mObject;
+        if (mObject == nullptr)
+            continue;
+        bool found = false;
+        for (int i = 0; i < mActiveList.m_size; ++i)
+        {
+            if (mActiveList.m_elements[i] == mObject)
+            {
+                found = true;
+                break;
+            }
+        }
+        if (!found)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EntityHandleDb.cpp";
+            AeAssert::gCurrentLine = 85;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Assert("unable to find entity in entity list\n"))
+                __debugbreak();
+        }
+    }
+}
+
 // ea: 0x0044A240
 int CheatsOk(Entity* ent)
 {
