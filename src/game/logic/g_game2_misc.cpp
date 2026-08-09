@@ -1112,6 +1112,7 @@ public:
     void GetSpline(unsigned int name, SplinePath* splinePath);         // ea: 0x4FF6F0
     void GetSpline(const char* name, SplinePath* splinePath);          // ea: 0x5045C0
     SplineMgr();                                                       // ea: 0x504580
+    void ReverseEndianSplinePath(SplinePath* spline);                   // ea: 0x5045F0
 };
 
 extern bool AeAssert_Error(const char* fmt, ...);
@@ -1545,6 +1546,53 @@ SplineMgr::SplineMgr()
         mList[i].file = nullptr;
     }
     apsCommon::SetSplineCallback(GetSplineGroup);
+}
+
+// ============================================================================
+// SplineMgr::ReverseEndianSplinePath - ea: 0x5045F0
+// Byte-swap spline path data (floats + event arrays, -1 terminated).
+// ============================================================================
+void SplineMgr::ReverseEndianSplinePath(SplinePath* spline)
+{
+    float* mSpline = spline->mSpline;
+    do
+    {
+        // 12-byte float triple byte-swap
+        unsigned char* p = (unsigned char*)mSpline;
+        unsigned char t0 = p[0]; p[0] = p[3]; p[3] = t0;
+        unsigned char t1 = p[1]; p[1] = p[2]; p[2] = t1;
+        unsigned char t2 = p[4]; p[4] = p[7]; p[7] = t2;
+        unsigned char t3 = p[5]; p[5] = p[6]; p[6] = t3;
+        unsigned char t4 = p[8]; p[8] = p[11]; p[11] = t4;
+        unsigned char t5 = p[9]; p[9] = p[10]; p[10] = t5;
+        bool end = mSpline[0] == -1.0f && mSpline[1] == -1.0f
+            && mSpline[2] == -1.0f;
+        mSpline += 3;
+        if (end)
+            break;
+    } while (true);
+    unsigned int* mEventIndices = (unsigned int*)spline->mEventIndices;
+    do
+    {
+        unsigned char* p = (unsigned char*)mEventIndices;
+        unsigned char t0 = p[0]; p[0] = p[3]; p[3] = t0;
+        unsigned char t1 = p[1]; p[1] = p[2]; p[2] = t1;
+        int v = *mEventIndices;
+        ++mEventIndices;
+        if (v == -1)
+            break;
+    } while (true);
+    unsigned int* mEventHashes = (unsigned int*)spline->mEventHashes;
+    do
+    {
+        unsigned char* p = (unsigned char*)mEventHashes;
+        unsigned char t0 = p[0]; p[0] = p[3]; p[3] = t0;
+        unsigned char t1 = p[1]; p[1] = p[2]; p[2] = t1;
+        int v = *mEventHashes;
+        ++mEventHashes;
+        if (v == -1)
+            break;
+    } while (true);
 }
 
 // ============================================================================
