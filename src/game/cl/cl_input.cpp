@@ -5,7 +5,11 @@
 
 #include "cl_input.h"
 
+#include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include "game/cvar_types.h"
 
 // ============================================================================
 // Externs (cross-object; core.o / game.o / cg.o)
@@ -15,6 +19,30 @@ extern int com_frameTime;
 extern int frame_msec;
 extern int currCl;
 extern int dword_106000;
+extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A
+
+// ============================================================================
+// IN_Shutdown - shut down the client input system (no-op on the Xbox target)
+// ea: 0x4EBEB0 (game2.o)
+// ============================================================================
+void IN_Shutdown()
+{
+}
+
+// ============================================================================
+// RecalibrateInput - apply dead-zone threshold to a raw axis value
+// ea: 0x4EBEC0 (game2.o)
+// ============================================================================
+int RecalibrateInput(int val)
+{
+    int value = (int)joy_threshold->value;
+    int v2 = abs(val);
+    if (v2 >= value)
+        return (2 * (val >= 0 ? 1 : 0) - 1)
+            * (int)(((v2 - value) / (float)(128 - value)) * 128.0f);
+    else
+        return 0;
+}
 
 namespace AeAssert {
 extern bool gAssertsEnabled;
