@@ -375,6 +375,7 @@ add_library(cod3_game_platform_xbox STATIC
     src/game/platform_xbox/MPLiveEngine.cpp
     src/game/platform_xbox/xboxMatch.cpp
     src/game/platform_xbox/XboxLiveMenus.cpp
+    src/game/platform_xbox/xbox_main.cpp
 )
 add_library(cod3_game_nextgen STATIC
     src/game/nextgen/stubs_game.cpp

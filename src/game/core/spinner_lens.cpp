@@ -59,7 +59,6 @@ public:
     DbElement     mElements[0x540];
     static EntityHandleDb sInst;
 };
-EntityHandleDb EntityHandleDb::sInst;
 
 enum {
     kLanguageEnglish = 0,

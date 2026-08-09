@@ -69,6 +69,11 @@ static void Print(const wchar_t* strFormat, ...)
 
 extern void Com_Printf(const char* fmt, ...);
 
+// CTitleFontRenderer vtable (game_xbox.o rdata 0xD181DC) + XFONT loader
+extern void* CTitleFontRenderer_vftable;
+void XFONT_OpenTrueTypeFont(const unsigned short* pszFontFileName,
+                            unsigned int uBytes, void* pFontInfo);
+
 // ============================================================================
 // LivePlayer / LiveRemote / LiveLocal
 // ============================================================================
@@ -445,7 +450,7 @@ LiveWrapper::LiveWrapper()
     memset(commKey.ab, 0, sizeof(commKey.ab));
 }
 
-// ea: 0x725BF0
+// ea: 0x7226A0
 void LiveWrapper::SetupAsAware(void* renderDevice, const char* skinPath,
                                void* font)
 {
@@ -475,7 +480,7 @@ void LiveWrapper::SetupAsAware(void* renderDevice, const char* skinPath,
     internalMode = kAware;
 }
 
-// ea: 0x725C40
+// ea: 0x722780
 void LiveWrapper::SetupAsSession(void* renderDevice, const char* skinPath,
                                  void* font)
 {
@@ -505,6 +510,38 @@ void LiveWrapper::SetupAsSession(void* renderDevice, const char* skinPath,
                                          UIX_PROPERTY_ALLOW_GAME_INVITES, 0);
     HandleError(v15);
     internalMode = kSession;
+}
+
+// ea: 0x725BF0
+void LiveWrapper::SetupAsAware(void* renderDevice, const char* skinPath,
+                               const unsigned short* fontPath)
+{
+    void* mem = mem_heap_malloc(8);
+    void* font = nullptr;
+    if (mem != nullptr)
+    {
+        *(void**)((char*)mem + 4) = nullptr;
+        *(void**)mem = (void*)&CTitleFontRenderer_vftable;
+        font = mem;
+    }
+    XFONT_OpenTrueTypeFont(fontPath, 0x10000, (char*)font + 4);
+    SetupAsAware(renderDevice, skinPath, font);
+}
+
+// ea: 0x725C40
+void LiveWrapper::SetupAsSession(void* renderDevice, const char* skinPath,
+                                 const unsigned short* fontPath)
+{
+    void* mem = mem_heap_malloc(8);
+    void* font = nullptr;
+    if (mem != nullptr)
+    {
+        *(void**)((char*)mem + 4) = nullptr;
+        *(void**)mem = (void*)&CTitleFontRenderer_vftable;
+        font = mem;
+    }
+    XFONT_OpenTrueTypeFont(fontPath, 0x10000, (char*)font + 4);
+    SetupAsSession(renderDevice, skinPath, font);
 }
 
 // ea: 0x722B10

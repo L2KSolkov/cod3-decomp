@@ -62,7 +62,6 @@ public:
     DbElement     mElements[0x540];
     static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
 };
-EntityHandleDb EntityHandleDb::sInst;
 
 class EntityManager {
 public:

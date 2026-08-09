@@ -211,6 +211,10 @@ public:
     void SignInSilently(unsigned int serviceBitfield);
     void SetupAsAware(void* renderDevice, const char* skinPath, void* font);
     void SetupAsSession(void* renderDevice, const char* skinPath, void* font);
+    void SetupAsAware(void* renderDevice, const char* skinPath,
+                      const unsigned short* fontPath);
+    void SetupAsSession(void* renderDevice, const char* skinPath,
+                        const unsigned short* fontPath);
     bool SaveLogonState(void* savedState);
     void RetrieveLogonState(void* state, unsigned int serviceBitfield);
     void RemoteMute(unsigned int talkerPort, const XUID* listenerID,

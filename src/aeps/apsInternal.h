@@ -45,6 +45,13 @@ public:
     virtual bool GetLightInfoAtPosition(const math::Dir3& iPosition, apsLight::LightInfo& oInfo);  // ?GetLightInfoAtPosition@ApsGameClient@@UAE_NABVDir3@math@@AAULightInfo@apsLight@@@Z (render.o)
 };
 
+// ApsGameClient - the game's APS client singleton (render.o owns the full
+// class + m_client; only the static member symbol is referenced here).
+class ApsGameClient : public apsClient {
+public:
+    static ApsGameClient m_client;  // ?m_client@ApsGameClient@@0V1@A (render.o)
+};
+
 namespace apsInternal {
 
 // ============================================================================

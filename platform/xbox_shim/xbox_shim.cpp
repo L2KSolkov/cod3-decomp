@@ -18,6 +18,10 @@ void MmPersistContiguousMemory(void*, unsigned int, int) {}
 void MmGetPhysicalAddress(void*, unsigned int* out) { *out = 0; }
 unsigned int XGetTickCount(void) { return GetTickCount(); }
 
+// XGetVideoStandard - XDK xapilibd:xgetvideostandard.obj (shim).
+// Returns a display standard tag; the game only tests == 3 (PAL).
+unsigned int XGetVideoStandard(void) { return 0; }
+
 HANDLE NtCreateEvent(void) { return CreateEventA(NULL, FALSE, FALSE, NULL); }
 HANDLE PsCreateSystemThreadEx(void*, void*) { return NULL; }
 void RtlInitAnsiString(void*, const char*) {}

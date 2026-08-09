@@ -83,6 +83,9 @@ class Vector4 {
 public:
     __m128 v;
 
+    float operator[](int i) const { return v.m128_f32[i]; }
+    float& operator[](int i) { return v.m128_f32[i]; }
+
     struct Packed {
         float x, y, z, w;
     };

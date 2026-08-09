@@ -6,6 +6,7 @@
 
 level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 DebugThread g_debugThread;     // ?g_debugThread@@3VDebugThread@@A @ 0xDEB5A0
+EntityHandleDb EntityHandleDb::sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o @ 0x12BB4E8)
 void* SmokeGrenadeMgr::sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
 void* DestructibleBankManager::sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A
 void* PhysDataBankManager::sInst;      // ?sInst@PhysDataBankManager@@2PAV1@A
@@ -165,6 +166,7 @@ vmCvar_t g_bounds_height_standing; // @ 0xEA7368
 cFreeList<Entity> gEntFreeList;    // @ 0xF50D04
 
 str_const_t str_const;             // @ 0xECBD30 (runtime-filled)
+HashString hash_const_info_player_deathmatch;  // ?hash_const_info_player_deathmatch (g.o)
 
 // .rdata @ 0xCD67AE (2 bytes + NUL)
 const char defaultFileName[] = "or";

@@ -27,7 +27,6 @@ extern int gTurretState;
 extern int gTurretSoundEffectHandle;
 extern int dword_DF91F4;
 
-EntityHandleDb EntityHandleDb::sInst;
 
 struct cgs_t {
     int state;       // +0x00 (kLocalPlayerStateUnused = 0)

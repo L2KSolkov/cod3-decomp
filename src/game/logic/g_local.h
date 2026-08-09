@@ -812,10 +812,18 @@ extern void*   gShotProf;              // g.o 0x... (ShotPerfTest*)
 extern cvar_t* gStatusBar;             // core.o
 
 struct TimerRenderBars {
-    uint8_t _pad[0x48];
+    uint8_t      _pad[0x10];
+    unsigned int mTimeLo;  // +0x10 (rdtsc low at TimeGameAdvanceBegin)
+    unsigned int mTimeHi;  // +0x14 (rdtsc high)
+    uint8_t      _pad2[0x48 - 0x18];
     int mActive;   // +0x48
     static TimerRenderBars sInst;  // ?sInst@TimerRenderBars@@0V1@A (render.o 0x011EA668)
     void ToggleActive();  // ?ToggleActive@TimerRenderBars@@QAEXXZ (inline)
+    void TimeGameAdvanceBegin() {  // ea: 0x72A9D0 (inline)
+        unsigned __int64 t = __rdtsc();
+        mTimeLo = (unsigned int)t;
+        mTimeHi = (unsigned int)(t >> 32);
+    }
 };
 
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
@@ -1089,6 +1097,7 @@ float GetHeight(int bankID, float x, float y);  // ea: 0x7C0B70
 
 namespace BrocSys {
 const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
+void Init();                                 // ?Init@BrocSys@@YAXXZ (scr.o)
 void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
 int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHPBD@Z
 void UnloadScript(void* self);              // ?UnloadScript@BrocSys@@QAEXPAV1@@Z
@@ -2262,7 +2271,7 @@ void  Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
                       int damage, int mod, int weapon, const float* position,
                       const float* dir, hitLocation_t hitLoc);  // g.o 0x488BE0
 void  EntityHandleDb_Validate(void* self);       // g.o 0x466350
-HashString hash_const_info_player_deathmatch;    // helper
+extern HashString hash_const_info_player_deathmatch;  // helper (defined in g_globals.cpp)
 void  SV_GetConfigstring(int index, char* buffer, int bufferSize);  // sv.o
 int   VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType);  // g.o 0x44D370
 void  VEH_InvalidateCaches(void);                 // g.o 0x46C9E0

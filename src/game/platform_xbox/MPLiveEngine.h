@@ -15,14 +15,17 @@
 // Only the StubData fields used by game_xbox.o are declared; size 0x1BF4.
 // ============================================================================
 struct SaveGameData {
-    unsigned char _pad0[0x310];
+    unsigned char _pad0[0x108];
+    unsigned char savedState[0x204];  // +0x108 (_XONLINE_LOGON_STATE)
+    UIX_LOGON_TYPE loginMethod;       // +0x30C (_UIX_LOGON_TYPE)
     int liveState;                  // +0x310 (StubData.liveState)
     unsigned char savedInvite[0x9C];  // +0x314 (XONLINE_ACCEPTED_GAMEINVITE)
     int mControllerPort;            // +0x3B0 (StubData.mControllerPort)
     bool savedStateIsValid;         // +0x3B4
-    unsigned char _pad2[0x3BD - 0x3B5];
+    int lastLoginCode;              // +0x3B8 (HRESULT)
+    bool mReturnToMain;             // +0x3BC
     bool appearOnline;              // +0x3BD
-    unsigned char _pad3[0x3BF - 0x3BE];
+    bool mbWasInvited;              // +0x3BE
     bool mDisableSave;              // +0x3BF
     unsigned char _pad4[0x1BF4 - 0x3C0];
 };
@@ -220,6 +223,8 @@ void QueryFromID(XNKID* sessionID);  // extern mp.o
 // game_xbox.o / game2.o globals used by MPLiveEngine
 extern bool g_controllerConnectedErrorShown[];
 extern bool g_IgnoreUIXInput;
+extern int nIgnoreInputFrames;
+extern bool bUIXInputDelay;
 
 // ============================================================================
 // MPLiveEngine - LiveWrapper + matchmaking session + voice (0x4600, verified)

@@ -31,7 +31,6 @@ extern void* G_GetVehicleInfo(Entity* ent);
 extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 
-EntityHandleDb EntityHandleDb::sInst;
 
 // ea: 0x0068A3A0
 void CG_DObjUpdateInfo(DObj* obj)

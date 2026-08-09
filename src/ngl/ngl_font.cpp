@@ -36,13 +36,6 @@ tlSkipList<nglFont, tlFixedString> nglFontDirectory;
 char nglFontBuffer[0x400];
 nglFont* nglSysFont = NULL;
 
-// ngl_scene.o data (TODO: move to ngl_scene.cpp when that unit ports)
-nglScene* nglBuildScene = NULL;
-unsigned char* nglListWork = NULL;
-unsigned char* nglListWorkPos = NULL;
-int nglListWorkSize = 0;
-int nglLastListAllocWarnFrame = 0;
-
 // Skip-list key accessor (free function, used by tlSkipList<nglFont>).
 const tlFixedString* GetKey(const nglFont* f) {
     return f->FileName;
