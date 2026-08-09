@@ -442,6 +442,9 @@ extern int render;                             // g.o 0xDD725C
 extern char* g_scratchpadMem;              // 0xEA81C0
 extern int   s_numNodes;                   // 0xEA5DD0
 extern vehicle_node_t* s_nodes[];          // 0xEAEDF8
+extern const float s_invalidAngles[3];     // @ 0xDD7414 (all pi)
+extern float dword_DD7418;                 // @ 0xDD7418
+extern float dword_DD741C;                 // @ 0xDD741C
 struct vehicle_info_t;
 extern vehicle_info_t* s_vehicleInfos[];   // 0xEA7638
 extern scr_vehicle_t* s_vehicles;          // 0xEAE044
@@ -1018,6 +1021,7 @@ int  BG_GetAmmoTypeMax(int iAmmoIndex);           // game.o 0x607080
 int  BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616B70
 int  BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x621F60
 int  BG_SelectWeaponIndex(int iWeaponIndex, int client);  // game.o 0x6076E0
+int  BG_GetWeaponForInfo(void* pWeapInfo);  // game.o 0x607050
 unsigned char BG_GetWeaponIndexForName(const char* name);  // game.o 0x6073A0
 unsigned char BG_GetWeaponIndexForName(unsigned int name);  // game.o 0x607310
 int  irand(int min, int max);
@@ -1102,6 +1106,7 @@ static_assert(sizeof(cspField_t) == 0xC, "cspField_t size mismatch");
 float  AngleNormalize180(float angle);
 float  AngleNormalize360(float angle);
 float  AngleDelta(float a1, float a2);              // core.o 0x4B9CD0
+float  LerpAngle(float a1, float a2, float frac);   // core.o
 int    R_CellForPoint(const math::Position3* pos);  // render.o 0x6C52B0
 float  AngleSubtract(float a1, float a2);
 float  PitchForYawOnNormal(float fYaw, const float* vNormal);
@@ -2107,6 +2112,11 @@ bool  G_IsPlayerInVehicle(Entity* player);           // g.o 0x46E0B0
 void  Scr_Vehicle_Use(Entity* pEnt, Entity* pOther);  // g.o 0x480DA0
 vehicle_node_t* SP_create_info_vehicle_node(void);   // g.o 0x45F210
 float Scr_Vehicle_CalcSpeed(const scr_vehicle_t* pVehicle);  // g.o 0x44F3D0
+int16_t VP_GetNodeIndex(const Broc::string* name, float* origin);  // g.o 0x451950
+float VP_CalcNodeSpeed(int16_t nodeIdx);            // g.o 0x451A50
+float VP_CalcNodeLookAhead(int16_t nodeIdx);        // g.o 0x451B60
+void  VP_CalcNodeAngles(int16_t nodeIdx, float* angles);  // g.o 0x451C70
+void  G_SetupVehiclePaths(float v);                  // g.o 0x452440
 void  ClientBegin(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x467570
 extern cvar_t* g_gameskill;           // g.o (cvar_t* per sv_decl.h)
 extern vmCvar_t g_player_maxhealth;   // g.o
@@ -2115,7 +2125,7 @@ extern int cg_aWeaponSelect[4];       // cg.o
 extern int cg_aWeaponSelectTime[4];   // cg.o
 extern int cl_stance_ss[4];           // cl.o
 extern VehicleNodeAllocator g_vehicleNodeManager;  // g.o
-extern float s_invalidAngles[3];      // g.o .rdata
+extern const float s_invalidAngles[3];  // g.o .rdata
 extern float dword_DD7418;            // g.o .rdata
 extern float dword_DD741C;            // g.o .rdata
 void  BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,

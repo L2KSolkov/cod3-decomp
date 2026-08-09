@@ -756,3 +756,139 @@ Entity* fire_artillery(Entity* i_Self, float* i_StrikePoint, int i_Delay)
     G_DObjUpdate(v7, false);
     return v7;
 }
+
+// ea: 0x00481B60
+void Weapon_Artillery_Fire(Entity* ent, float spread, weaponParms* wp,
+                           float lifetime)
+{
+    float dir[3];
+    dir[0] = tan(spread * 3.1415927f * 0.0055555557f) * 16.0f;
+    gunrandom(&dir[2], &dir[1]);
+    float v5 = wp->forward[1] * 16.0f;
+    float v6 = wp->forward[0] * 16.0f;
+    float v7 = wp->forward[2] * 16.0f;
+    dir[2] = dir[2] * dir[0];
+    float v9 = (wp->right[0] * dir[2]) + v6;
+    float v10 = (wp->right[1] * dir[2]) + v5;
+    float v11 = wp->right[2] * dir[2];
+    float launchpos[3];
+    launchpos[0] = (wp->up[0] * (dir[1] * dir[0])) + v9;
+    launchpos[1] = (wp->up[1] * (dir[1] * dir[0])) + v10;
+    launchpos[2] = (wp->up[2] * (dir[1] * dir[0])) + (v11 + v7);
+    dir[1] = dir[1] * dir[0];
+    VectorNormalize(launchpos);
+    float start[3] = { wp->muzzleTrace[0], wp->muzzleTrace[1],
+                       wp->muzzleTrace[2] };
+    fire_rocket(ent, start, launchpos, lifetime)->s.pos.trType = TR_GRAVITY;
+    Client* client = ent->client;
+    if (client != nullptr)
+    {
+        client->ps.velocity.v.m128_f32[0] -= wp->forward[0] * 64.0f;
+        ent->client->ps.velocity.v.m128_f32[1] -= wp->forward[1] * 64.0f;
+        ent->client->ps.velocity.v.m128_f32[2] -= wp->forward[2] * 64.0f;
+    }
+    math::Position3 v17;
+    v17.v.m128_f32[0] = start[0];
+    v17.v.m128_f32[1] = start[1];
+    v17.v.m128_f32[2] = start[2];
+    v17.v.m128_f32[3] = 0.0f;
+    math::Dir3 v16;
+    v16.v.m128_f32[0] = launchpos[0];
+    v16.v.m128_f32[1] = launchpos[1];
+    v16.v.m128_f32[2] = launchpos[2];
+    v16.v.m128_f32[3] = 0.0f;
+    if (ent->s.eType == 14)
+    {
+        MultiplayerMgr::sInst->VehicleFireMissile(ent, ent->s.weapon, &v17, &v16);
+    }
+    else
+    {
+        MultiplayerMgr::sInst->FireMissile(ent->s.weapon, v17, v16,
+                                           MultiplayerMgr::MPEntityHandle());
+    }
+}
+
+// ea: 0x0045FE90
+void Weapon_ArtilleryStrike_Fire(Entity* ent, float spread, weaponParms* wp)
+{
+    float angle[5];
+    Bullet_Endpos(spread, &angle[2], wp, 0.0f, 0.0f);
+    if ((ent->client->ps.pm_flags & 1) == 0)
+        wp->muzzleTrace[2] += 16.0f;
+    float v9, v10, v11;
+    if (EntityManager::sInst->IsLocalPlayer(ent))
+    {
+        int v4 = 1580 * EntityManager::sInst->GetPlayerIndex(ent);
+        float v5 = wp->forward[0];
+        float v6 = wp->forward[1];
+        float v7 = wp->forward[2];
+        wp->muzzleTrace[0] = dword_F63C70[v4];
+        wp->muzzleTrace[1] = dword_F63C70[v4 + 1];
+        float v8 = dword_F63C70[v4 + 2];
+        v9 = (v5 * 8192.0f) + wp->muzzleTrace[0];
+        v10 = (v6 * 8192.0f) + wp->muzzleTrace[1];
+        wp->muzzleTrace[2] = v8;
+        v11 = (v7 * 8192.0f) + v8;
+    }
+    else
+    {
+        v11 = angle[4];
+        v10 = angle[3];
+        v9 = angle[2];
+    }
+    math::Position3 end;
+    end.v.m128_f32[0] = v9;
+    end.v.m128_f32[1] = v10;
+    end.v.m128_f32[2] = v11;
+    end.v.m128_f32[3] = 0.0f;
+    math::Position3 start;
+    start.v.m128_f32[0] = wp->muzzleTrace[0];
+    start.v.m128_f32[1] = wp->muzzleTrace[1];
+    start.v.m128_f32[2] = wp->muzzleTrace[2];
+    start.v.m128_f32[3] = 0.0f;
+    collision_context_t context;
+    context.__vftable = nullptr;
+    context.pass_entity1.mHandle.mVal = 0;
+    context.pass_entity2.mHandle.mVal = 41951283;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0x2802033;
+    math::Position3 zeroA;
+    math::Position3 zeroB;
+    zeroA.v = _mm_setzero_ps();
+    zeroB.v = _mm_setzero_ps();
+    trace_t trace;
+    SV_Trace(&trace, &start, &zeroA, &zeroB, &end, &context, 0, 1,
+             bulletPriorityMap, 1, 0.0f);
+    if (trace.fraction >= 1.0f
+        || (trace.surfaceFlags & 4) != 0)
+    {
+        int WeaponForInfo = BG_GetWeaponForInfo(wp->pWeapInfo);
+        Add_Ammo(ent, WeaponForInfo, 1, 0);
+        return;
+    }
+    float dist2 = 0.0f;
+    float dx = trace.endpos.v.m128_f32[0] - ent->r.currentOrigin.v.m128_f32[0];
+    float dy = trace.endpos.v.m128_f32[1] - ent->r.currentOrigin.v.m128_f32[1];
+    float dz = trace.endpos.v.m128_f32[2] - ent->r.currentOrigin.v.m128_f32[2];
+    dist2 = dx * dx + dy * dy + dz * dz;
+    if (dist2 <= 202500.0f)
+    {
+        int WeaponForInfo = BG_GetWeaponForInfo(wp->pWeapInfo);
+        Add_Ammo(ent, WeaponForInfo, 1, 0);
+        return;
+    }
+    int angleSeed = irand(0, 360);
+    float forward[3];
+    AnglesToForward((const float*)&angleSeed, forward);
+    weaponFileInfo_t* pWeapInfo = wp->pWeapInfo;
+    float v17 = (rand() * 0.000061035156f - 1.0f)
+                * (pWeapInfo->iProjectileRadius * 0.2f);
+    math::Position3 position;
+    position.v.m128_f32[0] = (v17 * forward[0]) + trace.endpos.v.m128_f32[0];
+    position.v.m128_f32[1] = (v17 * forward[1]) + trace.endpos.v.m128_f32[1];
+    position.v.m128_f32[2] = (v17 * forward[2]) + trace.endpos.v.m128_f32[2];
+    position.v.m128_f32[3] = 0.0f;
+    MultiplayerMgr::sInst->FireArtillery(ent, pWeapInfo->index, &position,
+                                         level.time, false);
+}

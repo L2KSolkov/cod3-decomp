@@ -109,6 +109,393 @@ void G_VehFreePathPos(vehicle_pathpos_t* vpp)
     vpp->switchNode[1].mTarget.clear();
 }
 
+// ea: 0x00451950
+int16_t VP_GetNodeIndex(const Broc::string* name, float* origin)
+{
+    if (name->mBlock == nullptr)
+        return -1;
+    const char* v3 = (const char*)&name->mBlock[1];
+    const char* v8 = v3;
+    if (name->mBlock == (Broc::string::Block*)-12 || *v3 == 0)
+        return -1;
+    int16_t i = 0;
+    if (s_numNodes <= 0)
+        return -1;
+    int v5 = 0;
+    while (1)
+    {
+        vehicle_node_t* v6 = s_nodes[v5];
+        const char* v7 = v6->mName.mBlock != nullptr
+                             ? (const char*)&v6->mName.mBlock[1]
+                             : defaultFileName;
+        if (strcmp(v7, v3) == 0
+            && (origin == nullptr
+                || (v6->origin[0] == origin[0] && v6->origin[1] == origin[1]
+                    && v6->origin[2] == origin[2])))
+            break;
+        v5 = ++i;
+        if (i >= s_numNodes)
+            return -1;
+        v3 = v8;
+    }
+    return i;
+}
+
+// ea: 0x00451A50
+float VP_CalcNodeSpeed(int16_t nodeIdx)
+{
+    vehicle_node_t* v2 = s_nodes[nodeIdx];
+    if (v2->speed >= 0.0f)
+        return v2->speed;
+    float v3 = -1.0f;
+    int v4 = (16 * v2->nextIdx) >> 18;
+    float v5 = 0.0f;
+    float v6 = 0.0f;
+    float speed = -1.0f;
+    if (v4 >= 0)
+    {
+        vehicle_node_t* v8 = s_nodes[v4];
+        int16_t v9 = 0;
+        if (s_numNodes > 0)
+        {
+            while (1)
+            {
+                v6 = v8->length + v6;
+                ++v9;
+                if (v8->speed >= 0.0f)
+                    break;
+                int v10 = (16 * v8->nextIdx) >> 18;
+                if (v10 >= 0 && v10 != nodeIdx)
+                {
+                    v8 = s_nodes[v10];
+                    if (v9 < s_numNodes)
+                        continue;
+                }
+                goto label_11;
+            }
+            speed = v8->speed;
+        }
+    }
+label_11:
+    int16_t v11 = 0;
+    if (s_numNodes > 0)
+    {
+        while (1)
+        {
+            ++v11;
+            if (v2->speed >= 0.0f)
+                break;
+            int v12 = (v2->nextIdx << 18) >> 18;
+            if (v12 >= 0 && v12 != nodeIdx)
+            {
+                float length = v2->length;
+                v2 = s_nodes[v12];
+                v5 = length + v5;
+                if (v11 < s_numNodes)
+                    continue;
+            }
+            goto label_18;
+        }
+        v3 = v2->speed;
+    }
+label_18:
+    if (speed >= 0.0f)
+    {
+        if (v3 >= 0.0f)
+        {
+            float v14 = v5 + v6;
+            if (v14 > 0.0f)
+                return ((v6 / v14) * (v3 - speed)) + speed;
+        }
+        else
+        {
+            return speed;
+        }
+    }
+    else if (v3 >= 0.0f)
+    {
+        return v3;
+    }
+    return 0.0f;
+}
+
+// ea: 0x00451B60
+float VP_CalcNodeLookAhead(int16_t nodeIdx)
+{
+    vehicle_node_t* v2 = s_nodes[nodeIdx];
+    if (v2->lookAhead >= 0.0f)
+        return v2->lookAhead;
+    float v3 = -1.0f;
+    int v4 = (16 * v2->nextIdx) >> 18;
+    float v5 = 0.0f;
+    float v6 = 0.0f;
+    float lookAhead = -1.0f;
+    if (v4 >= 0)
+    {
+        vehicle_node_t* v8 = s_nodes[v4];
+        int16_t v9 = 0;
+        if (s_numNodes > 0)
+        {
+            while (1)
+            {
+                v6 = v8->length + v6;
+                ++v9;
+                if (v8->lookAhead > 0.0f)
+                    break;
+                int v10 = (16 * v8->nextIdx) >> 18;
+                if (v10 >= 0 && v10 != nodeIdx)
+                {
+                    v8 = s_nodes[v10];
+                    if (v9 < s_numNodes)
+                        continue;
+                }
+                goto label_11;
+            }
+            lookAhead = v8->lookAhead;
+        }
+    }
+label_11:
+    int16_t v11 = 0;
+    if (s_numNodes > 0)
+    {
+        while (1)
+        {
+            ++v11;
+            if (v2->lookAhead > 0.0f)
+                break;
+            int v12 = (v2->nextIdx << 18) >> 18;
+            if (v12 >= 0 && v12 != nodeIdx)
+            {
+                float length = v2->length;
+                v2 = s_nodes[v12];
+                v5 = length + v5;
+                if (v11 < s_numNodes)
+                    continue;
+            }
+            goto label_18;
+        }
+        v3 = v2->lookAhead;
+    }
+label_18:
+    if (lookAhead >= 0.0f)
+    {
+        if (v3 >= 0.0f)
+        {
+            float v14 = v5 + v6;
+            if (v14 > 0.0f)
+                return ((v6 / v14) * (v3 - lookAhead)) + lookAhead;
+        }
+        else
+        {
+            return lookAhead;
+        }
+    }
+    else if (v3 >= 0.0f)
+    {
+        return v3;
+    }
+    return 0.0f;
+}
+
+// ea: 0x00451C70
+void VP_CalcNodeAngles(int16_t nodeIdx, float* angles)
+{
+    vehicle_node_t* v2 = s_nodes[nodeIdx];
+    if (v2->angles[0] == s_invalidAngles[0]
+        && v2->angles[1] == dword_DD7418 && v2->angles[2] == dword_DD741C)
+    {
+        int v3 = (16 * v2->nextIdx) >> 18;
+        float v4 = dword_DD741C;
+        float v5 = s_invalidAngles[0];
+        float v6 = 0.0f;
+        float prevDist = 0.0f;
+        float prevAngles = s_invalidAngles[0];
+        float v16 = dword_DD7418;
+        float v17 = dword_DD741C;
+        float nextAngles = s_invalidAngles[0];
+        float v19 = dword_DD7418;
+        float v20 = dword_DD741C;
+        if (v3 >= 0)
+        {
+            vehicle_node_t* v7 = s_nodes[v3];
+            int16_t v8 = 0;
+            if (s_numNodes > 0)
+            {
+                float v9 = 0.0f;
+                while (1)
+                {
+                    ++v8;
+                    v9 = v7->length + v9;
+                    if (v7->angles[0] != s_invalidAngles[0]
+                        || v7->angles[1] != dword_DD7418
+                        || v7->angles[2] != dword_DD741C)
+                        break;
+                    int v10 = (16 * v7->nextIdx) >> 18;
+                    if (v10 >= 0 && v10 != nodeIdx)
+                    {
+                        v7 = s_nodes[v10];
+                        if (v8 < s_numNodes)
+                            continue;
+                    }
+                    prevDist = v9;
+                    v4 = dword_DD741C;
+                    goto label_14;
+                }
+                prevDist = v9;
+                prevAngles = v7->angles[0];
+                v16 = v7->angles[1];
+                v4 = v7->angles[2];
+                v17 = v4;
+            }
+        }
+label_14:
+        int16_t v11 = 0;
+        if (s_numNodes > 0)
+        {
+            while (1)
+            {
+                ++v11;
+                if (v2->angles[0] != s_invalidAngles[0]
+                    || v2->angles[1] != dword_DD7418
+                    || v2->angles[2] != dword_DD741C)
+                    break;
+                int v12 = (v2->nextIdx << 18) >> 18;
+                if (v12 >= 0 && v12 != nodeIdx)
+                {
+                    float length = v2->length;
+                    v2 = s_nodes[v12];
+                    v6 = length + v6;
+                    if (v11 < s_numNodes)
+                        continue;
+                }
+                goto label_24;
+            }
+            v5 = v2->angles[0];
+            v19 = v2->angles[1];
+            nextAngles = v5;
+            v20 = v2->angles[2];
+        }
+label_24:
+        if (prevAngles == s_invalidAngles[0] && v16 == dword_DD7418)
+        {
+            if (v4 == dword_DD741C && v5 == s_invalidAngles[0]
+                && v19 == dword_DD7418 && v20 == dword_DD741C)
+            {
+                angles[0] = 0.0f;
+                angles[1] = 0.0f;
+                angles[2] = 0.0f;
+                return;
+            }
+            if (v4 == dword_DD741C)
+            {
+                angles[0] = v5;
+                angles[1] = v19;
+                angles[2] = v20;
+                return;
+            }
+        }
+        if (v5 == s_invalidAngles[0] && v19 == dword_DD7418 && v20 == dword_DD741C)
+        {
+            angles[0] = prevAngles;
+            angles[1] = v16;
+            angles[2] = v4;
+            return;
+        }
+        float v14 = v6 + prevDist;
+        if (v14 <= 0.0f)
+        {
+            angles[0] = 0.0f;
+            angles[1] = 0.0f;
+            angles[2] = 0.0f;
+            return;
+        }
+        float totalDist = prevDist / v14;
+        angles[0] = LerpAngle(prevAngles, nextAngles, totalDist);
+        angles[1] = LerpAngle(v16, v19, totalDist);
+        angles[2] = LerpAngle(v17, v20, totalDist);
+    }
+    else
+    {
+        angles[0] = v2->angles[0];
+        angles[1] = v2->angles[1];
+        angles[2] = v2->angles[2];
+    }
+}
+
+// ea: 0x00452440
+void G_SetupVehiclePaths(float v)
+{
+    for (int16_t i = 0; i < s_numNodes;)
+    {
+        int v2 = i;
+        vehicle_node_t* node = s_nodes[v2];
+        Broc::string* p_mName = &node->mName;
+        Broc::string::Block* mBlock = p_mName[1].mBlock;
+        if (mBlock != nullptr)
+        {
+            Broc::string::Block* v5 = mBlock + 1;
+            if (v5 != nullptr && ((char*)&v5->mBuff)[0] != 0)
+                node->nextIdx = (node->nextIdx ^ (node->nextIdx ^ VP_GetNodeIndex(p_mName + 1, nullptr)) & 0x3FFF);
+        }
+        int16_t v6 = 0;
+        if (s_numNodes > 0)
+        {
+            while (i == v6 || !(*p_mName == s_nodes[v6]->mTarget))
+            {
+                if (++v6 >= s_numNodes)
+                    goto label_12;
+            }
+            node->nextIdx = (node->nextIdx ^ (node->nextIdx ^ (v6 << 14)) & 0xFFFC000);
+        }
+label_12:
+        if ((node->nextIdx << 18) >> 18 == v2)
+            node->nextIdx |= 0x3FFF;
+        if ((16 * node->nextIdx) >> 18 == v2)
+            node->nextIdx |= 0xFFFC000;
+        ++i;
+    }
+    for (int v7 = 0; v7 < s_numNodes; ++v7)
+    {
+        vehicle_node_t* v9 = s_nodes[v7];
+        int v10 = (v9->nextIdx << 18) >> 18;
+        if (v10 >= 0)
+        {
+            v9->dir[0] = s_nodes[v10]->origin[0] - v9->origin[0];
+            v9->dir[1] = s_nodes[v10]->origin[1] - v9->origin[1];
+            float a1 = s_nodes[v10]->origin[2] - v9->origin[2];
+            v9->dir[2] = a1;
+            v9->length = VectorNormalize(v9->dir);
+            if ((v9->nextIdx & 0x30000000) == 0)
+                vectoangles(v9->dir, v9->angles);
+        }
+    }
+    for (int16_t v11 = 0; v11 < s_numNodes; ++v11)
+    {
+        vehicle_node_t* v13 = s_nodes[v11];
+        float a1 = VP_CalcNodeSpeed(v11);
+        v13->speed = a1;
+        a1 = VP_CalcNodeLookAhead(v11);
+        v13->lookAhead = a1;
+        if (a1 < 0.0f)
+            Com_Error(ERR_DROP, "%s", v13->origin);
+        if ((v13->nextIdx & 0x30000000) != 0)
+            VP_CalcNodeAngles(v11, v13->angles);
+        v13->angles[0] = AngleNormalize180(v13->angles[0]);
+        v13->angles[1] = AngleNormalize180(v13->angles[1]);
+        v13->angles[2] = AngleNormalize180(v13->angles[2]);
+        a1 = 0.0f;
+        if (v13->speed <= 0.0f || v13->lookAhead <= 0.0f)
+            v13->nextIdx |= 0x3FFF;
+        if ((v13->nextIdx & 0x2000) != 0)
+        {
+            if (v13->speed <= 0.0f)
+                v13->speed = 1.0f;
+            if (v13->lookAhead <= 0.0f)
+                v13->lookAhead = 1.0f;
+        }
+    }
+}
+
 // ea: 0x0045E900
 vehicle_info_t* G_GetVehicleInfo(Entity* ent)
 {
