@@ -5,6 +5,7 @@
 #include "game/logic/g_local.h"
 
 #include <math.h>
+#include <stdio.h>
 
 static bool s_rdirInit = false;
 static math::Position3 rdir;
@@ -622,6 +623,229 @@ bool push_in_world(math::Position3& pos, float radius,
         pos.v.m128_f32[2] = center[2] - offsets[pass];
     }
     return hit;
+}
+
+// ea: 0x00467FF0
+void G_DrawEntityBBoxes(void)
+{
+    if (g_drawEntBBoxes.integer == 0)
+        return;
+    Entity* player =
+        EntityManager::sInst->GetPlayer(currCl);
+    if (player == nullptr)
+        return;
+    const math::Position3& pOrigin = player->r.currentOrigin;
+    int radius = Cvar_Get("bboxradius", "400", 0)->integer;
+    for (int idx = 0; idx < EntityHandleDb::sInst.mActiveList.m_size; ++idx)
+    {
+        Entity* Object =
+            EntityHandleDb::sInst.mActiveList.m_elements[idx];
+        if (Object == nullptr)
+            continue;
+        float center[3];
+        center[0] = (Object->r.absmin.v.m128_f32[0]
+                     + Object->r.absmax.v.m128_f32[0]) * 0.5f;
+        center[1] = (Object->r.absmin.v.m128_f32[1]
+                     + Object->r.absmax.v.m128_f32[1]) * 0.5f;
+        center[2] = (Object->r.absmin.v.m128_f32[2]
+                     + Object->r.absmax.v.m128_f32[2]) * 0.5f;
+        float dist = VectorDistance(&pOrigin.v.m128_f32[0], center);
+        if (dist > (float)radius)
+            continue;
+        float vMins[3];
+        float vColor[3];
+        int mode = g_drawEntBBoxes.integer;
+        switch (mode)
+        {
+        case 1:
+            vMins[0] = Object->r.absmin.v.m128_f32[0];
+            vMins[1] = Object->r.absmin.v.m128_f32[1];
+            vMins[2] = Object->r.absmin.v.m128_f32[2];
+            vColor[0] = Object->r.absmax.v.m128_f32[0];
+            vColor[1] = Object->r.absmax.v.m128_f32[1];
+            vColor[2] = Object->r.absmax.v.m128_f32[2];
+            break;
+        case 2:
+            if ((Object->r.contents & 0x40000008) == 0)
+                goto draw_box;
+            vMins[0] = Object->r.absmin.v.m128_f32[0];
+            vMins[1] = Object->r.absmin.v.m128_f32[1];
+            vMins[2] = Object->r.absmin.v.m128_f32[2];
+            vColor[0] = Object->r.absmax.v.m128_f32[0];
+            vColor[1] = Object->r.absmax.v.m128_f32[1];
+            vColor[2] = Object->r.absmax.v.m128_f32[2];
+            break;
+        case 3:
+            if ((Object->r.contents & 0x40000008) == 0)
+                goto draw_box;
+            vMins[0] = Object->r.currentOrigin.v.m128_f32[0] - 4.0f;
+            vMins[1] = Object->r.currentOrigin.v.m128_f32[1] - 4.0f;
+            vMins[2] = Object->r.currentOrigin.v.m128_f32[2] - 4.0f;
+            vColor[0] = Object->r.currentOrigin.v.m128_f32[0] + 4.0f;
+            vColor[1] = Object->r.currentOrigin.v.m128_f32[1] + 4.0f;
+            vColor[2] = Object->r.currentOrigin.v.m128_f32[2] + 4.0f;
+            break;
+        case 4:
+            vMins[0] = Object->r.currentOrigin.v.m128_f32[0]
+                     + Object->r.mins.v.m128_f32[0];
+            vMins[1] = Object->r.currentOrigin.v.m128_f32[1]
+                     + Object->r.mins.v.m128_f32[1];
+            vMins[2] = Object->r.currentOrigin.v.m128_f32[2]
+                     + Object->r.mins.v.m128_f32[2];
+            vColor[0] = Object->r.currentOrigin.v.m128_f32[0]
+                      + Object->r.maxs.v.m128_f32[0];
+            vColor[1] = Object->r.currentOrigin.v.m128_f32[1]
+                      + Object->r.maxs.v.m128_f32[1];
+            vColor[2] = Object->r.currentOrigin.v.m128_f32[2]
+                      + Object->r.maxs.v.m128_f32[2];
+            break;
+        case 5:
+        {
+            if (Object->mClassName.mBlock == (Broc::string::Block*)-12)
+                continue;
+            const char* cn = Object->mClassName.GetBuff();
+            if (strcmp(cn, "script_model") != 0)
+                continue;
+            vMins[0] = Object->r.currentOrigin.v.m128_f32[0] - 4.0f;
+            vMins[1] = Object->r.currentOrigin.v.m128_f32[1] - 4.0f;
+            vMins[2] = Object->r.currentOrigin.v.m128_f32[2] - 4.0f;
+            vColor[0] = Object->r.currentOrigin.v.m128_f32[0] + 4.0f;
+            vColor[1] = Object->r.currentOrigin.v.m128_f32[1] + 4.0f;
+            vColor[2] = Object->r.currentOrigin.v.m128_f32[2] + 4.0f;
+            break;
+        }
+        default:
+            goto draw_box;
+        }
+draw_box:
+        float color[4] = { 1.0f, 0.77f, 0.77f, 1.0f };
+        float alpha = 1.0f;
+        if ((Object->r.contents & 0x40000008) != 0)
+        {
+            if (Object->activator != nullptr)
+            {
+                color[0] = 1.0f;
+                color[1] = 0.0f;
+                alpha = 0.0f;
+            }
+        }
+        float fade = 1.0f;
+        if (dist > radius * 0.33333334f)
+        {
+            fade = 1.0f - ((dist - radius * 0.33333334f)
+                           / (radius - radius * 0.33333334f));
+        }
+        color[3] = fade;
+        int mod = (int)(color[1] + color[2] + Object->targetnameHash
+                        + color[0]) % 3;
+        if (mod != 0)
+        {
+            if (mod == 1)
+            {
+                vColor[0] = 0.77f;
+                vColor[1] = 0.77f;
+                vColor[2] = 1.0f;
+            }
+            else
+            {
+                vColor[0] = 0.77f;
+                vColor[1] = 1.0f;
+                vColor[2] = 0.77f;
+            }
+        }
+        else
+        {
+            vColor[0] = 1.0f;
+            vColor[1] = 0.77f;
+            vColor[2] = 0.77f;
+        }
+        if (Object->targetname == Broc::string("checkpoint"))
+        {
+            vColor[0] = 1.0f;
+            vColor[1] = 1.0f;
+            vColor[2] = 0.0f;
+            color[3] = 1.0f;
+        }
+        float labelPos[3] = { center[0], center[1], center[2] };
+        if (!Object->mClassName.is_empty())
+        {
+            char buf[128];
+            sprintf(buf, "Classname: %s", Object->mClassName.GetBuff());
+            CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+        }
+        labelPos[2] -= 20.0f;
+        if (Object->targetname.mBlock != nullptr
+            && Object->targetname.mBlock != (Broc::string::Block*)-12
+            && !Object->targetname.is_empty())
+        {
+            char buf[128];
+            sprintf(buf, "Targetname: %s",
+                    Object->targetname.GetBuff());
+            CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+            labelPos[2] -= 20.0f;
+        }
+        if (!Object->mTarget.is_empty())
+        {
+            char buf[128];
+            sprintf(buf, "Target: %s", Object->mTarget.GetBuff());
+            CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+            labelPos[2] -= 20.0f;
+        }
+        if (!Object->mGroupName.is_empty())
+        {
+            char buf[128];
+            sprintf(buf, "GroupName: %s",
+                    Object->mGroupName.GetBuff());
+            CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+            labelPos[2] -= 20.0f;
+        }
+        if (!Object->mScriptNoteworthy.is_empty())
+        {
+            char buf[128];
+            sprintf(buf, "ScriptNoteworthy: %s",
+                    Object->mScriptNoteworthy.GetBuff());
+            CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+            labelPos[2] -= 20.0f;
+        }
+        if (Object->mModel.mValue != nullptr)
+        {
+            char buf[128];
+            sprintf(buf, "Model: %s",
+                    Object->mModel.mValue->name.mStr);
+            CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+            labelPos[2] -= 20.0f;
+        }
+        char buf[128];
+        sprintf(buf, "PAK ID: %d",
+                Object->mPakId == PAK_ID_INVALID
+                    ? (int)CurPakId()
+                    : Object->mPakId);
+        CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+        labelPos[2] -= 20.0f;
+        sprintf(buf, "Persistent Index: %d",
+                Object->mPersistentIndex);
+        CL_AddDebugString(labelPos, vColor, 2.0f, buf, 1);
+        G_DebugBox(vMins, vColor, color, g_drawEntBBoxes.integer, 0, 0);
+        if (Object->r.bmodel != nullptr)
+        {
+            float bmin[3];
+            float bmax[3];
+            bmin[0] = *(const float*)((const char*)Object->r.bmodel + 0x30)
+                    + Object->r.currentOrigin.v.m128_f32[0];
+            bmin[1] = *(const float*)((const char*)Object->r.bmodel + 0x34)
+                    + Object->r.currentOrigin.v.m128_f32[1];
+            bmin[2] = *(const float*)((const char*)Object->r.bmodel + 0x38)
+                    + Object->r.currentOrigin.v.m128_f32[2];
+            bmax[0] = *(const float*)((const char*)Object->r.bmodel + 0x40)
+                    + Object->r.currentOrigin.v.m128_f32[0];
+            bmax[1] = *(const float*)((const char*)Object->r.bmodel + 0x44)
+                    + Object->r.currentOrigin.v.m128_f32[1];
+            bmax[2] = *(const float*)((const char*)Object->r.bmodel + 0x48)
+                    + Object->r.currentOrigin.v.m128_f32[2];
+            float bcol[4] = { 1.0f, 0.4f, 0.22f, 0.22f };
+            G_DebugBox(bmin, bmax, bcol, g_drawEntBBoxes.integer, 0, 0);
+        }
+    }
 }
 
 // ea: 0x0045C5F0
