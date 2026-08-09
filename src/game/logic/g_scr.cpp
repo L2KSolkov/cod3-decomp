@@ -5,18 +5,6 @@
 #include "game/logic/g_local.h"
 
 // ============================================================================
-// BrocAPI - Broc exports (mBrocExports at +0xC50)
-// ============================================================================
-struct BrocExports {
-    uint8_t _pad[0xC50];
-    void (*mAnimInitialize)();  // +0xC50
-};
-struct BrocAPI {
-    BrocExports mBrocExports;
-};
-extern BrocAPI* gpBrocAPI;      // 0xF3ABDC
-
-// ============================================================================
 // AnimBankManager / AnimBank
 // ============================================================================
 struct AnimBank {

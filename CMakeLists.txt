@@ -284,6 +284,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_mover.cpp
     src/game/logic/g_scr.cpp
     src/game/logic/g_weapon.cpp
+    src/game/logic/g_combat.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)

@@ -21,6 +21,19 @@
 #include <stdint.h>
 
 // ============================================================================
+// scr_vehicle_t - vehicle runtime state (infoIdx at +0x178 verified vs disasm)
+// ============================================================================
+struct scr_vehicle_t {
+    void* gunnerWeapon;   // +0x00
+    void* altWeapon;      // +0x04
+    int   shooter;        // +0x08
+    uint8_t _pad0C[0x178 - 0x0C];
+    int16_t infoIdx;      // +0x178
+    uint8_t _pad17A[0x180 - 0x17A];
+};
+static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
+
+// ============================================================================
 // trRefEntity - render entity (0x104 bytes) - verified against IDA (subset)
 // ============================================================================
 struct trRefEntity {
@@ -381,6 +394,9 @@ void g_Trace(trace_t* results, const math::Position3& start, const math::Positio
 void g_TraceCapsule(trace_t* results, const math::Position3& start, const math::Position3& mins,
                     const math::Position3& maxs, const math::Position3& end,
                     const collision_context_t& context);
+void g_LocationalTrace(trace_t* results, const math::Position3* start,
+                       const math::Position3* end, const collision_context_t* context,
+                       unsigned char* priorityMap, float coneAngleTangent);
 int  SV_PointContents(const math::Position3& p, const collision_context_t& context);
 
 // ============================================================================
@@ -487,6 +503,20 @@ void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEn
 int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHPBD@Z
 }
 
+// ============================================================================
+// BrocAPI (g_scr.cpp) - artillery callback used by G_LaunchMissile
+// ============================================================================
+struct BrocExports {
+    uint8_t _pad[0xC50];
+    void (*mAnimInitialize)();  // +0xC50
+    uint8_t _padC54[0xD44 - 0xC54];
+    void (*mCallbackFireArtilleryShell)(unsigned int handle);  // +0xD44
+};
+struct BrocAPI {
+    BrocExports mBrocExports;
+};
+extern BrocAPI* gpBrocAPI;  // 0xF3ABDC
+
 // g.o data: think dispatch table (function pointers per fn_think_e)
 extern void (*thinktable[])(Entity* ent, int msec);
 
@@ -494,6 +524,8 @@ extern void (*thinktable[])(Entity* ent, int msec);
 enum {
     THINK__NULL = 0,
     THINK__G_ExplodeMissile = 8,
+    THINK__G_IncomingMissile = 0x0B,
+    THINK__G_DelayMissile = 0x0D,
     THINK__FinishSpawningItem = 6,
     THINK__G_FreeEntity = 0x0C,
     THINK__GotoPos3 = 0x0E,
@@ -523,6 +555,63 @@ void G_AddLean(Entity* ent, float* point);
 extern float delta;          // 0xDD7FE4 (mine test standoff distance)
 extern float dword_F63C70[];  // 0xF63C70 (per-client muzzle offsets)
 extern unsigned char bulletPriorityMap[];  // 0xDD55D0
+
+// ============================================================================
+// g_combat.cpp types/globals
+// ============================================================================
+struct vehicle_info_t {
+    uint8_t _pad0[0x30];            // +0x00
+    float   bulletDamage;           // +0x30
+    float   grenadeDamage;          // +0x34
+    float   mineDamage;             // +0x38
+    float   projectileDamage;       // +0x3C
+    uint8_t _pad40[0x310 - 0x40];
+};
+static_assert(sizeof(vehicle_info_t) == 0x310, "vehicle_info_t size mismatch");
+extern vehicle_info_t* s_vehicleInfos[];  // ?s_vehicleInfos@@3PAPAUvehicle_info_t@@A
+
+struct hitLoc {
+    const char* mName;  // +0x00
+};
+extern hitLoc g_hitLocs[];             // 0xDD76E0
+extern float g_fHitLocDamageMult[19];  // 0xEA5380
+extern int dword_EA53C8;               // 0xEA53C8
+
+// Forward decls for config-string parsing (full types in core_systems.h)
+struct ConfigString;
+class ConfigStringManager {
+public:
+    unsigned char mData[0x190];
+    void CallbackSearch(TPakId pakId, const char* type,
+                        void (*callback)(const char*, const ConfigString*));
+};
+extern ConfigStringManager* ConfigStringManager_sInst;
+
+// cspField_t - config-string parse field (12 bytes) - verified against IDA
+struct cspField_t {
+    const char* szName;     // +0x00
+    int         iOffset;    // +0x04
+    int         iFieldType; // +0x08
+};
+static_assert(sizeof(cspField_t) == 0xC, "cspField_t size mismatch");
+
+// externs
+float  AngleNormalize180(float angle);
+float  AngleNormalize360(float angle);
+float  AngleSubtract(float a1, float a2);
+float  PitchForYawOnNormal(float fYaw, const float* vNormal);
+void   gunrandom(float* x, float* y);
+extern float gTanAimConeSpread;
+int    Actor_CheckArmor(actor_s* pSelf, int damage, int dflags);
+int    ParseConfigStringToStruct(unsigned char* pStruct, const cspField_t* pFieldList,
+                                 int iNumFields, const ConfigString* pCfgStr,
+                                 int iMaxFieldTypes, void* parseSpecialFieldType,
+                                 void (*parseStrcpy)(unsigned char*, const char*, int));
+void   G_HitLocStrcpy(unsigned char* out, const char* in, int size);
+void   G_AddEvent(Entity* ent, int event, int eventParm);
+void   G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
+                const float* dir, const float* point, int damage, int dflags,
+                int mod, hitLocation_t hitLoc, int weapon);
 
 // ============================================================================
 // itemType_t / gitem_s - item table entry (0x34 bytes) - verified against IDA
@@ -561,11 +650,13 @@ struct weaponFileInfo_t {
     uint8_t _pad0[0x5C4];         // +0x000
     int     iProjectileSpeed;     // +0x5C4
     int     iProjectileSpeedUp;   // +0x5C8
-    uint8_t _pad1[0x6E8 - 0x5CC];
+    uint8_t _pad1[0x5F8 - 0x5CC];
+    int     iProjectileDelay;     // +0x5F8
+    uint8_t _pad2[0x6E8 - 0x5FC];
     int     bTwoHanded;           // +0x6E8
-    uint8_t _pad2[0x764 - 0x6EC];
+    uint8_t _pad3[0x764 - 0x6EC];
     int     iAltWeaponIndex;      // +0x764
-    uint8_t _pad3[0x948 - 0x768];
+    uint8_t _pad4[0x948 - 0x768];
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
 static_assert(offsetof(weaponFileInfo_t, bTwoHanded) == 0x6E8, "weaponFileInfo_t::bTwoHanded offset mismatch");
@@ -686,6 +777,10 @@ int  G_MoverPush(Entity* pusher, const float* move, const float* amove);
 void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
               const float* dir, const float* point, int damage, int dflags,
               int mod, hitLocation_t hitLoc, int weapon);
+void SentientApplyPhysicsDamage(Entity* pSelf, Entity* pInflictor, int iDamage,
+                                int iMod, const float* vPosition, const float* vDir,
+                                hitLocation_t hitLoc, int iWeapon);
+void j_nullsub_64(Entity* pGrenade, Entity* pHitEnt);
 
 // THINK table indices used by movers
 enum {

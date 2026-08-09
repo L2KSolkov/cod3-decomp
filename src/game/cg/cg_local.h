@@ -203,6 +203,8 @@ struct scr_vehicle_t {
     void* gunnerWeapon;  // +0x00
     void* altWeapon;     // +0x04
     int   shooter;       // +0x08
+    uint8_t _pad0C[0x178 - 0x0C];
+    int16_t infoIdx;     // +0x178
 };
 
 // PlayerState - subset of the fields cg.o touches (full size 0x5D0)
