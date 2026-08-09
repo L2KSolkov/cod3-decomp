@@ -2,7 +2,7 @@ source_cpp	lib	obj	class	funcs	status	notes
 shell.o		shell.o	game	1175	TODO	
 scr.o		scr.o	game	846	TODO	
 mp.o		mp.o	game	770	TODO	
-g.o		g.o	game	732	TODO	
+g.o	g.o	game	732	IN_PROGRESS	g.o porting in src/game/logic/ (158/732 non-inline funcs via // ea: markers as of 2026-08-08): g_trace, g_utils, g_dobj, g_spawn, g_active, g_trigger, g_hudelem, g_actor_prone committed
 mp_shell.o		mp_shell.o	game	680	TODO	
 game.o		game.o	game	663	TODO	
 core.o		core.o	game	541	IN_PROGRESS	Types+globals staged: core_types.h + core_systems.h + core_globals.h (35+ size/offset checks pass vs IDA); 147 core.o data symbols w/ exact VAs extracted from linker map (analysis/core_o_data.tsv); inventory+plan in analysis/; bodies blocked until decompiles fetched via ida MCP
