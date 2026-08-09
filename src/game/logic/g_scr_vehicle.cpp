@@ -5,6 +5,7 @@
 #include "game/logic/g_local.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 
 // ea: 0x00452BC0
@@ -2621,6 +2622,280 @@ void ParseVehicleConfigString(const char* name, const ConfigString* cfgstr)
     if (v9 != 0)
         G_GetHintStringIndex(&v3->mMantleHintStringIndex,
                              v3->mMantleHintString);
+}
+
+static const char* s_seatTags[11] = {
+    "tag_driver", "tag_gunner", "tag_passenger1", "tag_passenger2",
+    "tag_passenger3", "tag_passenger4", "tag_gunner", "tag_passenger1",
+    "tag_driver", "tag_gunner", "tag_passenger1",
+};
+
+// ea: 0x00490A60
+void VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
+                    int fromPos)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    Client* client = player->client;
+    vehicle_info_t* info = s_vehicleInfos[scr_vehicle->infoIdx];
+    player->invulnerability_timeout = 0;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5664;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (HandleDbToEnt(player->r.mOwner) != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5668;
+        AeAssert::gCurrentExpr = "*player->r.mOwner == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("VEH_LinkPlayer: Player already has an owner\n"))
+            __debugbreak();
+    }
+    vehicleSeat_t& seat = scr_vehicle->seats[seatIdx];
+    if (HandleDbToEnt(seat.occupant) != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 5671;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("VEH_LinkPlayer: Vehicle seat already occupied\n"))
+            __debugbreak();
+    }
+    else
+    {
+        if (seat.boneIndex < 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 5682;
+            AeAssert::gCurrentExpr = "veh->seats[seatIdx].boneIndex >= 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("VEH_LinkPlayer: Trying to use vehicle without a bone\n"))
+                __debugbreak();
+        }
+        DObjSkelMat playerMtx;
+        G_DObjGetWorldBoneIndexMatrix(ent, seat.boneIndex, &playerMtx);
+        ent->active = 2;
+        if (entryIdx != 0
+            && scr_vehicle->animMap != nullptr
+            && (scr_vehicle->GetEntryRoute(seatIdx, entryIdx - 1,
+                                           player->client->ps.ctf_has_flag != 0))
+                   >= 0
+            && (player->flags |= 0x1000000,
+                player->client->mVehicleAnimRoute =
+                    scr_vehicle->GetEntryRoute(seatIdx, entryIdx - 1,
+                                               player->client->ps.ctf_has_flag != 0),
+                scr_vehicle->SetAnimRouteStage(player, ent,
+                                               player->client->mVehicleAnimRoute,
+                                               0)))
+        {
+            client->mVehicleAnimStageAnimPlayed = -1;
+        }
+        else
+        {
+            if (fromPos != -1
+                && scr_vehicle->animMap != nullptr
+                && (scr_vehicle->GetSwitchPosRoute(
+                        seatIdx, fromPos,
+                        player->client->ps.ctf_has_flag != 0))
+                       >= 0
+                && (player->flags |= 0x1000000,
+                    player->client->mVehicleAnimRoute =
+                        scr_vehicle->GetSwitchPosRoute(
+                            seatIdx, fromPos,
+                            player->client->ps.ctf_has_flag != 0),
+                    scr_vehicle->SetAnimRouteStage(player, ent,
+                                                   player->client->mVehicleAnimRoute,
+                                                   0)))
+            {
+                client->mVehicleAnimStageAnimPlayed = -1;
+            }
+            else if (G_EntLinkToWithOffset(player, ent, s_seatTags[seatIdx],
+                                          vec3_origin, vec3_origin, false) == 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+                AeAssert::gCurrentLine = 5752;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Missing  vehicle attach tag"))
+                    __debugbreak();
+            }
+        }
+        if (scr_vehicle->mTargetEnt.mHandle.mVal == player->mHandle.mHandle.mVal)
+        {
+            scr_vehicle->hasTarget = 0;
+            scr_vehicle->mTargetEnt.mHandle.mVal = 0;
+        }
+        scr_vehicle->seats[seatIdx].occupant.mHandle.mVal =
+            player->mHandle.mHandle.mVal;
+        player->r.mOwner.mHandle.mVal = ent->mHandle.mHandle.mVal;
+        if (seatIdx == 0 || HandleDbToEnt(ent->r.mOwner) == nullptr)
+        {
+            ent->r.mOwner.mHandle.mVal = player->mHandle.mHandle.mVal;
+            ent->s.eFlags |= 0x100000;
+        }
+        client->ps.vehPos = seatIdx;
+        client->ps.vehType = info->type;
+        client->ps.vehSubType = info->subtype;
+        client->ps.eFlags = (client->ps.eFlags & 0xFFBFFFFF) | 0x300000;
+        if (EntityManager::sInst->IsLocalPlayer(player))
+        {
+            g_femanager.mDontDrawHud = false;
+            cl_aADS[EntityManager::sInst->GetPlayerIndex(player)] = 1;
+        }
+        client->ps.mViewLockedEntity.mHandle.mVal = ent->mHandle.mHandle.mVal;
+        G_DObjUpdate(player, false);
+        Scr_Notify(ent, hash_const.player_on_vehicle, 0);
+    }
+}
+
+// Local Camera view (core.o Camera; 496-byte instances)
+struct LocalCamera {
+    uint8_t _pad[0x40];
+    math::Position3 mPrevAngles;   // +0x40
+    uint8_t _pad50[0x194 - 0x50];
+    int     mVehicleCamMode;       // +0x194
+};
+static LocalCamera* CameraAt(int idx)
+{
+    return (LocalCamera*)((char*)&gCamera + idx * 496);
+}
+
+// ea: 0x0048CE20
+bool scr_vehicle_t::SetAnimRouteStage(Entity* player, Entity* ent,
+                                      int routeIdx, int stageIdx)
+{
+    vehicle_info_t* info = s_vehicleInfos[this->infoIdx];
+    Client* client = player->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 9459;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    vehicleAnimMap_t* animMap = vehicleAnimMaps[info->type];
+    if (animMap == nullptr)
+        return false;
+    vehicleAnimRoute_t* route = &animMap->routes[routeIdx];
+    if (stageIdx >= route->numStages)
+    {
+        if (route->vehPosDest >= 8 || stageIdx <= 0)
+            return false;
+        vehicleAnimMap_t* v10 = this->animMap;
+        int v11 = v10->routes[routeIdx].stages[stageIdx - 1];
+        vehicleAnimStage_t* stages = v10->stages;
+        v11 *= 16;
+        int v14 = *(int*)((char*)&stages->endTag + v11);
+        vehicleAnimStage_t* v15 = (vehicleAnimStage_t*)((char*)stages + v11);
+        int BoneIndex = SV_DObjGetBoneIndex(ent, animMap->tags[v14].hash);
+        DObjSkelMat tagMtx;
+        G_DObjGetWorldBoneIndexMatrix(ent, BoneIndex, &tagMtx);
+        SetClientOrigin(player, tagMtx.origin);
+        float angles[3];
+        AxisToAngles((const float(*)[3])tagMtx.axis, angles);
+        if (EntityManager::sInst->IsLocalPlayer(player))
+        {
+            int vehPosDest = route->vehPosDest;
+            angles[2] = 0.0f;
+            if (vehPosDest == 0 && info->type != 2)
+                angles[1] = 0.0f;
+            else if (vehPosDest != 1)
+                angles[0] = 0.0f;
+            else
+                angles[0] = 0.0f;
+            angles[0] = AngleNormalize180(angles[0]);
+            SetClientViewAngle(player, angles);
+        }
+        if (G_EntLinkToWithOffsetHash(
+                player, ent, animMap->tags[*(int*)((char*)v15 + 4)].hash,
+                vec3_origin, vec3_origin, true) == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 9497;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        return false;
+    }
+    vehicleAnimMap_t* v19 = this->animMap;
+    int v20 = v19->routes[routeIdx].stages[stageIdx];
+    vehicleAnimStage_t* v21 = v19->stages;
+    v20 *= 16;
+    int v22 = *(int*)((char*)&v21->startTag + v20);
+    vehicleAnimStage_t* v23 = (vehicleAnimStage_t*)((char*)v21 + v20);
+    if (G_EntLinkToWithOffsetHash(
+            player, ent, animMap->tags[v22].hash, vec3_origin, vec3_origin,
+            true) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 9506;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (player->client->ps.vehPos == 7)
+    {
+        sentient_s* sentient = player->sentient;
+        if (sentient != nullptr)
+        {
+            char eventStr[64];
+            if (sentient->eTeam == TEAM_ALLIES)
+                sprintf(eventStr, "TANK_ALLIES_MANTLE_%i", stageIdx);
+            else
+                sprintf(eventStr, "TANK_AXIS_MANTLE_%i", stageIdx);
+            PostEffectEventScriptCall(player, eventStr, false, PAK_ID_INVALID,
+                                     false);
+        }
+    }
+    client->mVehicleAnimRoute = routeIdx;
+    client->mVehicleAnimMoving = true;
+    client->mVehicleAnimStage = stageIdx;
+    client->mVehicleAnimStageChangeTime = level.time;
+    client->mFakerootOriginMatrixValid = false;
+    if (stageIdx == 0)
+    {
+        client->mVehicleAnimStageAnim = stageIdx;
+        client->mVehicleAnimStageAnimPlayed = -1;
+        client->mVehicleAnimGetOut = stageIdx != 0;
+        client->mVehicleAnimDisableCamera = stageIdx != 0;
+        if (EntityManager::sInst->IsLocalPlayer(player))
+        {
+            int flags = route->flags;
+            if ((flags & 1) != 0
+                && ((flags & 2) == 0
+                    || CameraAt(EntityManager::sInst->GetPlayerIndex(player))
+                               ->mVehicleCamMode == 1 /* VEH_MODE_FIRSTPERSON */))
+                client->mVehicleAnimDisableCamera = true;
+        }
+    }
+    client->mVehicleAnimMoving = true;
+    client->mVehicleAnimAngleOffset[1] = 0.0f;
+    client->mVehicleAnimAngleOffset[2] = 0.0f;
+    client->mVehicleAnimAngleOffset[0] = 0.0f;
+    client->mVehicleAnimFirstPersonCam = v23->flags & 1;
+    if ((v23->flags & 0x20) != 0)
+        this->noEntryTime = level.time + 2000;
+    if ((v23->flags & 0x40) != 0)
+        this->forceGunnerCrouchTime = level.time + 2500;
+    if (v23->flags < 0
+        && HandleDbToEnt(this->mMantleEntity) != nullptr
+        && HandleDbToEnt(this->mMantleEntity) != player)
+        this->noExitTime = level.time + 2500;
+    return true;
 }
 
 // ea: 0x0046C9E0

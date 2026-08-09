@@ -159,7 +159,7 @@ struct scr_vehicle_t {
     int     barrelBlocked;  // +0x318
     uint8_t _pad31C[0x330 - 0x31C];
     float   wheelPitch;     // +0x330
-    uint8_t _pad334[0x338 - 0x334];
+    int     hasTarget;      // +0x334
     DbLinkedHandle<EntityHandleDb, Entity> mTargetEnt;  // +0x338
     uint8_t _pad33C[0x374 - 0x33C];
     float   joltDir[2];     // +0x374
@@ -229,6 +229,8 @@ struct scr_vehicle_t {
     int   GetMantleHintStringIndex();         // ?GetMantleHintStringIndex@scr_vehicle_t@@QAEHXZ
     bool  IsOppositeTeamInVehicle(int team);  // ?IsOppositeTeamInVehicle@scr_vehicle_t@@QAE_NH@Z
     void  Mantled(Entity* player);            // ?Mantled@scr_vehicle_t@@QAEXPAVEntity@@@Z
+    bool  SetAnimRouteStage(Entity* player, Entity* ent, int routeIdx,
+                            int stageIdx);    // ?SetAnimRouteStage@scr_vehicle_t@@QAE_NPAVEntity@@0HH@Z
     bool  CanUseVehicle(Entity* player, float* distToUsePoint, int* entryPoint);  // ?CanUseVehicle@scr_vehicle_t@@QAE_NPAVEntity@@AAMAAH@Z
     bool  CanMantleVehicle(Entity* player);   // ?CanMantleVehicle@scr_vehicle_t@@QAE_NPAVEntity@@@Z
     bool  LetHatchClose();                    // ?LetHatchClose@scr_vehicle_t@@QAE_NXZ
@@ -613,9 +615,7 @@ struct hash_const_t {
     HashString trigger_mount;      // +0xB0 (44)
     uint8_t    _padB4[0xBC - 0xB4];
     HashString info_player_deathmatch;  // +0xBC (47)
-    uint8_t    _padC0[0xC4 - 0xC0];
-    HashString player_off_vehicle;      // +0xC4 (49)
-    uint8_t    _padC8[0xDC - 0xC8];
+    uint8_t    _padC0[0xDC - 0xC0];
     HashString menuresponse;            // +0xDC (55)
     uint8_t    _padE0[0xEC - 0xE0];
     HashString movedone;           // +0xEC
@@ -633,7 +633,9 @@ struct hash_const_t {
     HashString trigger_damage;     // +0x210
     uint8_t    _pad214[0x224 - 0x214];
     HashString turret_on_target;   // +0x224 (137)
-    uint8_t    _pad228[0x250 - 0x228];
+    HashString player_on_vehicle;  // +0x228 (138)
+    HashString player_off_vehicle; // +0x22C (139)
+    uint8_t    _pad230[0x250 - 0x230];
     HashString turretstatechange;  // +0x250 (148)
     HashString turretownerchange;  // +0x254 (149)
     uint8_t    _pad258[0x284 - 0x258];
@@ -1111,6 +1113,7 @@ struct cspField_t {
 };
 static_assert(sizeof(cspField_t) == 0xC, "cspField_t size mismatch");
 extern cspField_t s_vehicleFields[73];  // g.o .rdata @ 0xDD6EF0
+extern vehicleAnimMap_t* vehicleAnimMaps[6];  // g.o .data @ 0xDD6E6C
 
 // externs
 float  AngleNormalize180(float angle);
@@ -2032,6 +2035,8 @@ int   G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode);  //
 int   Cmd_FollowCycle_f(Entity* ent, int dir);   // g.o 0x4679F0
 int   SV_GetCurrentClientInfo(int clientNum, PlayerState* ps);  // sv.o
 void  VEH_RemoveVehicle(void* v);                 // phys_xboxr
+void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
+                     int fromPos);                 // g.o 0x490A60
 void  VEH_SetPosition(Entity* ent, const math::Position3* origin,
                       const math::Position3* angles,
                       const float* vel);  // g.o 0x46A370
