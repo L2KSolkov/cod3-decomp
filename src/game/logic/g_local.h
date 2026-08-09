@@ -216,6 +216,7 @@ struct scr_vehicle_t {
     uint8_t _pad560[0x568 - 0x560];
     vehicleAnimMap_t* animMap;  // +0x568
     vehicle_follow* follow;   // +0x56C
+    static int sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
 
     vehicleAnimStage_t* GetRouteStage(int routeIdx, int stage);  // ?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z
     float GetAnimSpeedScale(Client* client);  // ?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z
@@ -227,6 +228,8 @@ struct scr_vehicle_t {
     int   GetMantleHintStringIndex();         // ?GetMantleHintStringIndex@scr_vehicle_t@@QAEHXZ
     bool  IsOppositeTeamInVehicle(int team);  // ?IsOppositeTeamInVehicle@scr_vehicle_t@@QAE_NH@Z
     void  Mantled(Entity* player);            // ?Mantled@scr_vehicle_t@@QAEXPAVEntity@@@Z
+    bool  CanUseVehicle(Entity* player, float* distToUsePoint, int* entryPoint);  // ?CanUseVehicle@scr_vehicle_t@@QAE_NPAVEntity@@AAMAAH@Z
+    bool  CanMantleVehicle(Entity* player);   // ?CanMantleVehicle@scr_vehicle_t@@QAE_NPAVEntity@@@Z
     bool  LetHatchClose();                    // ?LetHatchClose@scr_vehicle_t@@QAE_NXZ
     void  AssignPhysics(Entity* player);      // ?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
     int   GetEntryRoute(int seatIdx, int entryIdx, bool hasFlag);  // ?GetEntryRoute@scr_vehicle_t@@QAEHHH_N@Z
@@ -1174,7 +1177,9 @@ struct weaponFileInfo_t {
     int     bTwoHanded;           // +0x6E8
     uint8_t _pad4[0x704 - 0x6EC];
     int     bNoBounce;            // +0x704
-    uint8_t _pad4b[0x764 - 0x708];
+    uint8_t _pad4b[0x70C - 0x708];
+    int     bCanMantle;           // +0x70C
+    uint8_t _pad70[0x764 - 0x710];
     int     iAltWeaponIndex;      // +0x764
     int     iShotCount;           // +0x768
     uint8_t _pad5[0x774 - 0x76C];
@@ -2142,8 +2147,16 @@ struct rb_extra_info {
 };
 
 // rb_vehicle (phys_xboxr) - minimal view for scr_vehicle_t::GetThrottle
+struct vehicle_rb_parameter {
+    float m_speed_max;       // +0x00
+    uint8_t _pad4[0x10 - 0x4];
+    float m_steer_speed;     // +0x10
+    uint8_t _pad14[0x58 - 0x14];
+    float m_peel_out_max_speed;  // +0x58
+};
 struct rb_vehicle {
-    uint8_t _pad[0x254];
+    uint8_t _pad[0x250];
+    vehicle_rb_parameter* m_parameter;  // +0x250
     float   m_throttle;  // +0x254
     uint8_t _pad258[0x320 - 0x258];
     struct rigid_body_constraint_wheel* m_wheels[6];  // +0x320

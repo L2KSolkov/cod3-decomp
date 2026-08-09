@@ -2020,6 +2020,172 @@ void G_UpdateVehicleTags(Entity* ent)
         scr_vehicle->mUseRadius = (maxDist + 50.0f);
 }
 
+int scr_vehicle_t::sDebugMantle;  // ?sDebugMantle@scr_vehicle_t@@2HA
+
+// ea: 0x0046F680
+bool scr_vehicle_t::CanUseVehicle(Entity* player, float* distToUsePoint,
+                                  int* entryPoint)
+{
+    if (player == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 9909;
+        AeAssert::gCurrentExpr = "player";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid pointer"))
+            __debugbreak();
+    }
+    Entity* vehicle = HandleDbToEnt(mEntity);
+    if (vehicle == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 9914;
+        AeAssert::gCurrentExpr = "vehicle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid pointer."))
+            __debugbreak();
+    }
+    float playerPos[4];
+    playerPos[0] = player->r.currentOrigin.v.m128_f32[0];
+    playerPos[1] = player->r.currentOrigin.v.m128_f32[1];
+    playerPos[2] = player->r.currentOrigin.v.m128_f32[2];
+    playerPos[3] = player->r.currentOrigin.v.m128_f32[3];
+    float vehCenter[3];
+    vehCenter[0] = (vehicle->r.absmax.v.m128_f32[0] + vehicle->r.absmin.v.m128_f32[0]) * 0.5f;
+    vehCenter[1] = (vehicle->r.absmax.v.m128_f32[1] + vehicle->r.absmin.v.m128_f32[1]) * 0.5f;
+    vehCenter[2] = (vehicle->r.absmax.v.m128_f32[2] + vehicle->r.absmin.v.m128_f32[2]) * 0.5f;
+    float dx = playerPos[0] - vehCenter[0];
+    float dy = playerPos[1] - vehCenter[1];
+    float dz = playerPos[2] - vehCenter[2];
+    float dist2 = dx * dx + dy * dy + dz * dz;
+    if (dist2 > (mUseRadius * mUseRadius))
+        return false;
+    if (!mHasEntryPoints)
+    {
+        *distToUsePoint = sqrt(dist2);
+        return true;
+    }
+    int numEntryTags = animMap != nullptr ? animMap->numEntryTags : 6;
+    float bestDist = 2500.0f;
+    int bestPoint = -1;
+    for (int i = 0; i < numEntryTags; ++i)
+    {
+        int bone = boneIndex.entryPoint[i];
+        if (bone < 0)
+            continue;
+        Client* client = player->client;
+        if (client == nullptr
+            || client->ps.ctf_has_flag == 0
+            || s_vehicleInfos[infoIdx]->type != 2
+                && (int)(sEntryPointSeatAssociation[i]) >= 2
+                && (int)(sEntryPointSeatAssociation[i]) <= 5)
+        {
+            if (s_vehicleInfos[infoIdx]->type == 2
+                || HandleDbToEnt(seats[sEntryPointSeatAssociation[i]].occupant) == nullptr)
+            {
+                DObjSkelMat tagMat;
+                G_DObjGetWorldBoneIndexMatrix(vehicle, bone, &tagMat);
+                float ex = playerPos[0] - tagMat.origin[0];
+                float ey = playerPos[1] - tagMat.origin[1];
+                float ez = playerPos[2] - tagMat.origin[2];
+                float d = ex * ex + ey * ey + ez * ez;
+                if (bestDist > d)
+                {
+                    bestDist = d;
+                    bestPoint = i;
+                }
+            }
+        }
+    }
+    if (bestPoint < 0)
+        return false;
+    *distToUsePoint = sqrt(bestDist);
+    *entryPoint = bestPoint;
+    return true;
+}
+
+// ea: 0x0046FA60
+bool scr_vehicle_t::CanMantleVehicle(Entity* player)
+{
+    if (player == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10032;
+        AeAssert::gCurrentExpr = "player";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid player"))
+            __debugbreak();
+    }
+    if (player->sentient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10033;
+        AeAssert::gCurrentExpr = "player->sentient";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Player does not have a valid sentient"))
+            __debugbreak();
+    }
+    if (s_vehicleInfos[infoIdx]->type != 2)
+        return false;
+    if (mMantleTime != 0)
+        return false;
+    if (HandleDbToEnt(seats[7].occupant) != nullptr)
+        return false;
+    Entity* vehEnt = HandleDbToEnt(mEntity);
+    if (vehEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10040;
+        AeAssert::gCurrentExpr = "*mEntity";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid entity handle in the vehicle"))
+            __debugbreak();
+    }
+    if (HandleDbToEnt(seats[1].occupant) != nullptr
+        || HandleDbToEnt(seats[6].occupant) != nullptr)
+        return false;
+    Entity* driver = HandleDbToEnt(vehEnt->r.mOwner);
+    if (driver != nullptr && driver->sentient == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10048;
+        AeAssert::gCurrentExpr = "!driver || driver->sentient";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Driver is not a sentient"))
+            __debugbreak();
+    }
+    Entity* v7 = player;
+    if (IsLocalPlayer(player))
+    {
+        int v8 = player->client->ps.weaponslots[4];
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v8);
+        if (InfoForWeapon == nullptr
+            || InfoForWeapon->bCanMantle == 0
+            || player->client->ps.ammoclip[BG_ClipForWeapon(v8)] <= 0)
+            return false;
+        v7 = player;
+    }
+    Client* client = v7->client;
+    if (client != nullptr && client->ps.ctf_has_flag != 0)
+        return false;
+    Entity* phyOwner = HandleDbToEnt(mPhysicsOwner);
+    if (phyOwner != nullptr
+        && IsLocalPlayer(phyOwner)
+        && sqrt(phys.vel.v.m128_f32[0] * phys.vel.v.m128_f32[0]
+                + phys.vel.v.m128_f32[1] * phys.vel.v.m128_f32[1]
+                + phys.vel.v.m128_f32[2] * phys.vel.v.m128_f32[2])
+               > ((rb_vehicle*)mRBVeh)->m_parameter->m_speed_max - 5.0f)
+        return false;
+    if (sDebugMantle != 0
+        || driver != nullptr
+            && (!cgGlobal.teamGame
+                || driver->sentient->eTeam != player->sentient->eTeam))
+        return true;
+    return false;
+}
+
 static float rate = 1.0f;          // @ 0xDD7FDC (g_scr_vehicle.cpp local)
 static float s_sndLerpMin = 0.1f;  // @ 0xDD7FE0 (g_scr_vehicle.cpp local)
 static scr_vehicle_t s_backup;     // @ 0xEE60A0 (bss, g_scr_vehicle.cpp local)
