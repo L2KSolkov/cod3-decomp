@@ -199,7 +199,11 @@ struct scr_vehicle_t {
 // PlayerState - subset of the fields cg.o touches (full size 0x5D0)
 struct PlayerState {
     math::Position3 origin;            // +0x00
+    math::Position3 velocity;          // +0x10
+    unsigned char bobCycle;            // +0x28
     int pm_flags;                      // +0x2C
+    int delta_angles[3];               // +0x54
+    int jumpTime;                      // +0x70
     int weaponstate;                   // +0xA8
     float fWeaponPosFrac;              // +0xAC
     unsigned char queuedReloadSoundPlayStarted;  // +0xB8

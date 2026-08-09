@@ -544,3 +544,520 @@ float SwayRand(float x, float y, float time)
 {
     return cosf(y * time * 0.0062831859f) * sinf(x * time * 0.0062831859f);
 }
+
+// ============================================================================
+// Camera (0x1F0 bytes; per-client, gCamera + 0x1F0 * client)
+// ============================================================================
+
+struct GlobalEffectNode {
+    void* vftable;        // +0x00
+    unsigned char _pad[0x20 - 0x04];
+    float glowIntensity;  // +0x20
+    int   ShockedClient;  // +0x24
+    int   mClientIndex;   // +0x28
+};
+
+enum EVehicleCameraMode {
+    VEH_MODE_FIRSTPERSON = 0,
+    VEH_MODE_CHASECAM    = 1,
+};
+
+enum ECameraModes {
+    CAM_NORMAL_FIRST = 0,
+    CAM_NORMAL_THIRD = 1,
+    CAM_VEHICLE_FIRST = 2,
+    CAM_VEHICLE_THIRD = 3,
+    CAM_TURRET = 4,
+    CAM_VEHICLE_TANK = 5,
+    CAM_VEHICLE_PASSENGER = 6,
+    CAM_VEHICLE_GUNNER = 7,
+    CAM_VEHICLE_DRIVER = 8,
+    CAM_VEHICLE_TANK_GUNNER = 9,
+    CAM_VEHICLE_ANIM = 10,
+    CAM_VEHICLE_ANIM_FIRST = 11,
+    CAM_MP_DEATH_CAMERA = 12,
+    CAM_LINKED = 13,
+    CAM_DEATH_CAMERA = 14,
+    CAM_SCENE_ANIMATED = 15,
+    CAM_INTERACTION_FREE = 16,
+    CAM_INTERACTION_LOCKED = 17,
+    CAM_TURRET_TANK = 18,
+    CAM_MP_TEAM = 19,
+    CAM_MP_DEATH_CAMERA_NO_KILLER = 20,
+    CAM_MP_DEATH_CAMERA_KILLER = 21,
+    CAM_VEHICLE_TANK_COMMANDER = 22,
+};
+
+struct RumbleEffectInstanceHandle {
+    int mVal;  // +0x00
+};
+
+struct ServerTime_s {
+    unsigned int mNumTicksElapsed;
+    int mTickMSec;
+    float mTickDelta;
+    float mTickDeltaInv;
+    float mElapsedTime;
+};
+extern ServerTime_s ServerTime_sInst;
+
+extern void* RumbleManager_Inst(int instance);
+extern void RumbleManager_Remove(void* self, RumbleEffectInstanceHandle handle);
+extern float CG_GetViewFov();
+extern unsigned int HashString_CalcHash(const char* str);
+extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
+extern void FastSinCos(float radians, float* psin, float* pcos);
+extern int _fpclass(double x);
+extern void* dword_F6A2A0[4 * 802];
+extern float angle[4 * 395];
+extern float dword_F63C70[4 * 1580];
+extern float dword_F63C74[4 * 1580];
+extern float dword_F63C78[4 * 1580];
+extern float dword_F63CB4[4 * 1580];
+extern float dword_F63CB8[4 * 1580];
+extern float dword_F63C80[4 * 1580];
+extern float dword_F63C84[4 * 1580];
+extern float dword_F63C88[4 * 1580];
+extern float dword_F641D8[4 * 1580];
+extern float dword_F641DC[4 * 1580];
+extern int dword_F64154[4 * 1580];
+extern int dword_F64158[4 * 1580];
+extern int dword_F6415C[4 * 1580];
+extern int dword_F64160[4 * 1580];
+extern int client;  // camera construction counter
+
+static bool IsInvalidFloat(float v)
+{
+    // _fpclass mask 0x297: NaN, infinity and related non-finite classes
+    return (_fpclass(v) & 0x297) != 0;
+}
+
+class Camera {
+public:
+    GlobalEffectNode mGlobalEffectNode;  // +0x00 (0x2C bytes)
+    bool mDeathRumble;                   // +0x2C
+    unsigned char _pad0[0x30 - 0x2D];
+    math::Position3 mPrevViewPos;        // +0x30
+    math::Position3 mPrevAngles;         // +0x40
+    math::Position3 mPrevViewDir;        // +0x50
+    float mPrevFOV;                      // +0x60
+    unsigned char _pad1[0x70 - 0x64];
+    math::Position3 mPrevAnimatedViewPos;    // +0x70
+    math::Position3 mPrevAnimatedAngles;     // +0x80
+    math::Position3 mVehPrevAngles;          // +0x90
+    int mVehPrevAnglesTime;                  // +0xA0
+    unsigned char _pad2[0xB0 - 0xA4];
+    math::Position3 mVehPrevOrigin;          // +0xB0
+    float mVehTimeSinceInput;                // +0xC0
+    int mVehInputState;                      // +0xC4
+    float mVehGasPressedTime;                // +0xC8
+    float mSteerYawOffset;                   // +0xCC
+    float mTankPrevious3rdFrac;              // +0xD0
+    unsigned char _pad3[0xE0 - 0xD4];
+    math::Position3 mTankRelativeAngles;     // +0xE0
+    math::Position3 mTweenStartPos;          // +0xF0
+    math::Position3 mTweenStartAngles;       // +0x100
+    float mTweenStartFOV;                    // +0x110
+    float mTweenTime;                        // +0x114
+    float mTweenDuration;                    // +0x118
+    unsigned short mTweenFlags;              // +0x11C
+    unsigned char _pad4[0x120 - 0x11E];
+    math::Position3 mTweenAnimatedStartPos;    // +0x120
+    math::Position3 mTweenAnimatedStartAngles; // +0x130
+    unsigned short mAnimFlags;                 // +0x140
+    unsigned char _pad5[0x144 - 0x142];
+    int mTagCameraIndex;                       // +0x144
+    unsigned char _pad6[0x190 - 0x148];
+    int mCamMode;                              // +0x190
+    int mVehicleCamMode;                       // +0x194
+    unsigned char _pad7[0x1B0 - 0x198];
+    math::Position3 mTweenParentPos;           // +0x1B0
+    math::Position3 mTweenParentAngles;        // +0x1C0
+    void* mShake;                              // +0x1D0
+    int mRumbleEffect;                         // +0x1D4
+    bool mDoingFadeOutIn;                      // +0x1D8
+    unsigned char _pad8[0x1DC - 0x1D9];
+    float mFadeTime;                           // +0x1DC
+    int mClient;                               // +0x1E0
+    unsigned char _pad9[0x1F0 - 0x1E4];
+
+    Camera();
+
+    float GetLastFOV();
+    bool IsTweening();
+    void StartCameraFade();
+    void Restart();
+    void StartTween(float tweenTime, bool anglesOnly);
+    void StartAnimating(float minTweenTime);
+    void StopAnimating(float minTweenTime);
+    void UpdateAnimation();
+    float UpdateFOV();
+    void Update();
+    void UpdatePostViewModels();
+
+private:
+    void SaveLastFOV();
+    void SaveLastPO();
+    void UpdateViewBob();
+    void SetPlayerAngles(float* newAngles);
+    void AdjustPlayerAngles(float* deltaAngles);
+    void UpdateFade();
+    void StopTween();
+    void EndVehicleCam();
+    void SetCameraTagIndex();
+    void StartCircleTween(float tweenTime);
+    void UpdateTween(math::Position3& tweenStartPos,
+                     math::Position3& tweenStartAngles);
+    void UpdateIntermissionCam();
+    void UpdateSceneAnimCam();
+    void UpdateReviveCam();
+    void UpdateTankCam();
+    void UpdateTankCamAngles(Entity* entity, PlayerState* ps);
+    void UpdateTankCommanderCam();
+    void UpdateMPDeathCamera();
+    void UpdateMPDeathCameraNoKiller();
+    void UpdateDeathCamera();
+    void UpdateVehicleDriverCam(float fov);
+    void UpdateVehicleDriverCamThird();
+    void UpdateVehicleDriverCamAngles(Entity* entity, PlayerState* ps);
+    void UpdateVehicleDriverCamAnglesInput(Entity* entity, PlayerState* ps);
+    void UpdateVehicleDriverCamPos(Entity* entity, PlayerState* ps, float fov);
+    void UpdateVehicleDriverSteerLookAhead(Entity* entity);
+    void UpdateVehicleAnimCam();
+    void UpdateViewPO();
+    void BeginVehicleCam();
+    math::Position3 GetVehicleViewAngles(Entity* entity, PlayerState* ps);
+    void UpdateTankShakeRumble(Entity* entity, bool enable);
+    float SetNewMode(ECameraModes newMode);
+    ECameraModes CalcCamMode();
+};
+
+static unsigned int s_tagCameraHash;
+static bool s_tagCameraHashInit;
+
+// ea: 0x0069D9C0
+Camera::Camera()
+{
+    int v1 = client;
+    *(void**)this = (void*)0x00D0F648;  // &GlobalEffect::vftable
+    mGlobalEffectNode.mClientIndex = v1;
+    mGlobalEffectNode.glowIntensity = 0.0f;
+    mGlobalEffectNode.ShockedClient = 0;
+    mDeathRumble = false;
+    memset(&mPrevViewPos, 0, sizeof(mPrevViewPos));
+    memset(&mPrevAngles, 0, sizeof(mPrevAngles));
+    mPrevFOV = 80.0f;
+    memset(&mPrevAnimatedViewPos, 0, sizeof(mPrevAnimatedViewPos));
+    memset(&mPrevAnimatedAngles, 0, sizeof(mPrevAnimatedAngles));
+    memset(&mVehPrevAngles, 0, sizeof(mVehPrevAngles));
+    mVehPrevAnglesTime = 0;
+    memset(&mVehPrevOrigin, 0, sizeof(mVehPrevOrigin));
+    mVehTimeSinceInput = 0.0f;
+    mVehInputState = 0;  // INPUT_NONE
+    mVehGasPressedTime = 0.0f;
+    mSteerYawOffset = 0.0f;
+    mTankPrevious3rdFrac = 0.0f;
+    memset(&mTankRelativeAngles, 0, sizeof(mTankRelativeAngles));
+    memset(&mTweenStartPos, 0, sizeof(mTweenStartPos));
+    memset(&mTweenStartAngles, 0, sizeof(mTweenStartAngles));
+    mTweenTime = 0.0f;
+    mTweenDuration = 0.0f;
+    mTweenFlags = 0;
+    memset(&mTweenAnimatedStartPos, 0, sizeof(mTweenAnimatedStartPos));
+    memset(&mTweenAnimatedStartAngles, 0, sizeof(mTweenAnimatedStartAngles));
+    mAnimFlags = 0;
+    mTagCameraIndex = -1;
+    mCamMode = CAM_NORMAL_FIRST;
+    mVehicleCamMode = VEH_MODE_FIRSTPERSON;
+    mShake = nullptr;
+    mRumbleEffect = 0;
+    mClient = v1;
+    mDoingFadeOutIn = false;
+    client = v1 + 1;
+}
+
+// ea: 0x0068E750
+void Camera::SaveLastFOV()
+{
+    if (mPrevViewPos.v.m128_f32[0] != 0.0f)
+        mPrevFOV = CG_GetViewFov();
+}
+
+// ea: 0x0068E770
+float Camera::GetLastFOV()
+{
+    return mPrevFOV;
+}
+
+// ea: 0x0068E780
+void Camera::SaveLastPO()
+{
+    if (mPrevViewPos.v.m128_f32[0] == 0.0f)
+    {
+        mPrevViewPos.v.m128_f32[0] = 1.0f;
+    }
+    else
+    {
+        mPrevViewPos.v.m128_f32[0] = dword_F63C70[1580 * mClient];
+        mPrevViewPos.v.m128_f32[1] = dword_F63C74[1580 * mClient];
+        mPrevViewPos.v.m128_f32[2] = dword_F63C78[1580 * mClient];
+        mPrevAngles.v.m128_f32[0] = angle[6320 * mClient];
+        mPrevAngles.v.m128_f32[1] = dword_F63CB4[1580 * mClient];
+        mPrevAngles.v.m128_f32[2] = dword_F63CB8[1580 * mClient];
+        mPrevViewDir.v.m128_f32[0] = dword_F63C80[1580 * mClient];
+        mPrevViewDir.v.m128_f32[1] = dword_F63C84[1580 * mClient];
+        mPrevViewDir.v.m128_f32[2] = dword_F63C88[1580 * mClient];
+    }
+}
+
+// ea: 0x0068EBB0
+bool Camera::IsTweening()
+{
+    return mTweenDuration > mTweenTime;
+}
+
+// ea: 0x0068EBD0
+void Camera::StopTween()
+{
+}
+
+// ea: 0x0068EB70
+void Camera::Restart()
+{
+    int mVal = mRumbleEffect;
+    mCamMode = CAM_NORMAL_FIRST;
+    mDeathRumble = false;
+    if (mVal != 0)
+    {
+        RumbleEffectInstanceHandle v4 = {mVal};
+        RumbleManager_Remove(RumbleManager_Inst(mClient), v4);
+        mRumbleEffect = 0;
+    }
+}
+
+// ea: 0x0068EA70
+void Camera::StartCameraFade()
+{
+    mFadeTime = 0.5f;
+    mDoingFadeOutIn = true;
+    int time = cgGlobal.time;
+    int v2 = 1580 * currCl;
+    dword_F64154[v2] = 1065353216;  // 1.0f
+    dword_F6415C[v2] = time - 10;
+    dword_F64160[v2] = 1;
+    if (dword_F6415C[v2] + 1 <= time)
+        dword_F64158[v2] = dword_F64154[v2];
+}
+
+// ea: 0x0068EAE0
+void Camera::UpdateFade()
+{
+    bool mDoingFadeOutIn = this->mDoingFadeOutIn;
+    mFadeTime -= ServerTime_sInst.mTickDelta;
+    if (mDoingFadeOutIn && mFadeTime <= 0.40000001f)
+    {
+        int time = cgGlobal.time;
+        int v4 = 1580 * currCl;
+        dword_F64154[v4] = 0;
+        dword_F6415C[v4] = time - 1;
+        dword_F64160[v4] = 400;
+        if (dword_F6415C[v4] + 400 <= time)
+            dword_F64158[v4] = dword_F64154[v4];
+    }
+    if (mFadeTime <= 0.0f)
+        mDoingFadeOutIn = false;
+}
+
+// ea: 0x0068F040
+void Camera::SetCameraTagIndex()
+{
+    if (mTagCameraIndex == -1)
+    {
+        const DObj* v2 = (const DObj*)dword_F6A2A0[802 * mClient];
+        if (v2 != nullptr)
+        {
+            if (!s_tagCameraHashInit)
+            {
+                s_tagCameraHashInit = true;
+                s_tagCameraHash = HashString_CalcHash("tag_camera");
+            }
+            mTagCameraIndex = DObjGetBoneIndex(v2, s_tagCameraHash);
+        }
+    }
+}
+
+// ea: 0x0068E730
+bool IsVehicleCameraFadeMode(ECameraModes mode)
+{
+    return mode >= CAM_VEHICLE_FIRST && mode <= CAM_VEHICLE_TANK_COMMANDER;
+}
+
+// ea: 0x0068E840
+void Camera::UpdateViewBob()
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    dword_F641D8[1580 * mClient] = (float)(client->ps.bobCycle & 0xFF)
+                                       * 0.024639944f
+                                   + 6.2831855f;
+    if ((client->ps.pm_flags & 0x10) != 0)
+    {
+        if (cgGlobal.time - client->ps.jumpTime >= 500)
+            *(int*)&dword_F641DC[1580 * mClient] =
+                *(int*)&client->ps.velocity.v.m128_f32[2];
+        else
+            dword_F641DC[1580 * mClient] = 0.0f;
+    }
+    else
+    {
+        dword_F641DC[1580 * mClient] =
+            sqrtf(client->ps.velocity.v.m128_f32[0]
+                      * client->ps.velocity.v.m128_f32[0]
+                  + client->ps.velocity.v.m128_f32[1]
+                        * client->ps.velocity.v.m128_f32[1]);
+    }
+}
+
+// ea: 0x0068E900
+void Camera::SetPlayerAngles(float* newAngles)
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    client->ps.delta_angles[0] +=
+        (int)((*newAngles - client->ps.viewangles[0]) * 182.04445f) & 0xFFFF;
+    client->ps.delta_angles[1] +=
+        (int)((newAngles[1] - client->ps.viewangles[1]) * 182.04445f) & 0xFFFF;
+    client->ps.delta_angles[2] +=
+        (int)((newAngles[2] - client->ps.viewangles[2]) * 182.04445f) & 0xFFFF;
+    client->ps.viewangles[0] = newAngles[0];
+    client->ps.viewangles[1] = newAngles[1];
+    client->ps.viewangles[2] = newAngles[2];
+}
+
+// ea: 0x0068E9B0
+void Camera::AdjustPlayerAngles(float* deltaAngles)
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    client->ps.delta_angles[0] += (int)(*deltaAngles * 182.04445f) & 0xFFFF;
+    client->ps.delta_angles[1] +=
+        (int)(deltaAngles[1] * 182.04445f) & 0xFFFF;
+    client->ps.delta_angles[2] +=
+        (int)(deltaAngles[2] * 182.04445f) & 0xFFFF;
+    client->ps.viewangles[0] += *deltaAngles;
+    client->ps.viewangles[1] += deltaAngles[1];
+    client->ps.viewangles[2] += deltaAngles[2];
+}
+
+// ea: 0x00698FC0
+float Camera::UpdateFOV()
+{
+    float fov = CG_GetViewFov();
+    if (mTweenDuration > mTweenTime)
+    {
+        return ((((fov - mTweenStartFOV) / mTweenDuration) * mTweenTime)
+                + mTweenStartFOV);
+    }
+    return fov;
+}
+
+// ea: 0x0069E580
+void Camera::StartAnimating(float minTweenTime)
+{
+    if ((mAnimFlags & 1) == 0)
+    {
+        SetCameraTagIndex();
+        if (mTagCameraIndex != -1)
+        {
+            mAnimFlags = (mAnimFlags | 1u) & ~4u;
+            if (minTweenTime > 0.0f
+                && minTweenTime > (mTweenDuration - mTweenTime))
+                StartTween(minTweenTime, false);
+        }
+    }
+}
+
+// ea: 0x0069E5E0
+void Camera::StopAnimating(float minTweenTime)
+{
+    if ((mAnimFlags & 1) != 0)
+    {
+        mAnimFlags &= 0xFAu;
+        if (minTweenTime > 0.0f
+            && minTweenTime > (mTweenDuration - mTweenTime))
+            StartTween(minTweenTime, false);
+    }
+}
+
+// ea: 0x0069DC00
+void Camera::StartTween(float tweenTime, bool anglesOnly)
+{
+    if (IsInvalidFloat(mPrevAngles.v.m128_f32[0])
+        || IsInvalidFloat(mPrevAngles.v.m128_f32[1])
+        || IsInvalidFloat(mPrevAngles.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((mPrevAngles)[0]) && !IS_NAN((mPrevAngles)[1]) "
+                  "&& !IS_NAN((mPrevAngles)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 1041);
+    }
+    if (IsInvalidFloat(mPrevViewPos.v.m128_f32[0])
+        || IsInvalidFloat(mPrevViewPos.v.m128_f32[1])
+        || IsInvalidFloat(mPrevViewPos.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((mPrevViewPos)[0]) && !IS_NAN((mPrevViewPos)[1]) "
+                  "&& !IS_NAN((mPrevViewPos)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 1042);
+    }
+    mTweenStartAngles.v.m128_f32[0] = mPrevAngles.v.m128_f32[0];
+    mTweenStartAngles.v.m128_f32[1] = mPrevAngles.v.m128_f32[1];
+    mTweenStartAngles.v.m128_f32[2] = mPrevAngles.v.m128_f32[2];
+    mTweenStartAngles.v.m128_f32[3] = mPrevAngles.v.m128_f32[3];
+    mTweenStartPos.v.m128_f32[0] = mPrevViewPos.v.m128_f32[0];
+    mTweenStartPos.v.m128_f32[1] = mPrevViewPos.v.m128_f32[1];
+    mTweenStartPos.v.m128_f32[2] = mPrevViewPos.v.m128_f32[2];
+    mTweenStartPos.v.m128_f32[3] = mPrevViewPos.v.m128_f32[3];
+    mTweenStartFOV = mPrevFOV;
+    mTweenDuration = tweenTime;
+    mTweenTime = 0.0f;
+    if (anglesOnly)
+        mTweenFlags = (mTweenFlags | 1u) & ~2u;
+    else
+        mTweenFlags &= 0xFCu;
+}
+
+// ea: 0x0069DDA0
+void Camera::StartCircleTween(float tweenTime)
+{
+    mTweenStartAngles.v.m128_f32[0] = mPrevAngles.v.m128_f32[0];
+    mTweenStartAngles.v.m128_f32[1] = mPrevAngles.v.m128_f32[1];
+    mTweenStartAngles.v.m128_f32[2] = mPrevAngles.v.m128_f32[2];
+    mTweenStartAngles.v.m128_f32[3] = mPrevAngles.v.m128_f32[3];
+    mTweenDuration = tweenTime;
+    mTweenTime = 0.0f;
+    mTweenStartFOV = mPrevFOV;
+
+    float sinY, cosY, sinX, cosX;
+    FastSinCos(mTweenStartAngles.v.m128_f32[1] * 0.017453292f, &sinY, &cosY);
+    FastSinCos(mTweenStartAngles.v.m128_f32[0] * 0.017453292f, &sinX, &cosX);
+    float dir[3] = {cosX * cosY, cosX * sinY, -sinX};
+    mTweenStartPos.v = mPrevViewPos.v;
+    mTweenStartPos.v = _mm_add_ps(
+        mTweenStartPos.v,
+        _mm_mul_ps(_mm_set1_ps(250.0f), _mm_loadu_ps(dir)));
+    mTweenFlags = (mTweenFlags & ~1u) | 2u;
+
+    if (IsInvalidFloat(mTweenStartPos.v.m128_f32[0])
+        || IsInvalidFloat(mTweenStartPos.v.m128_f32[1])
+        || IsInvalidFloat(mTweenStartPos.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((mTweenStartPos)[0]) && !IS_NAN((mTweenStartPos)[1]) "
+                  "&& !IS_NAN((mTweenStartPos)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 1067);
+    }
+    if (IsInvalidFloat(mTweenStartAngles.v.m128_f32[0])
+        || IsInvalidFloat(mTweenStartAngles.v.m128_f32[1])
+        || IsInvalidFloat(mTweenStartAngles.v.m128_f32[2]))
+    {
+        CG_ASSERT("!IS_NAN((mTweenStartAngles)[0]) && "
+                  "!IS_NAN((mTweenStartAngles)[1]) && "
+                  "!IS_NAN((mTweenStartAngles)[2])",
+                  "c:\\cod\\code\\game\\Camera.cpp", 1068);
+    }
+}
