@@ -946,3 +946,142 @@ void ClientBegin(DbLinkedHandle<EntityHandleDb, Entity> entity)
     origin[54] = v4->r.currentAngles.v.m128_f32[2];
     origin[9] = 5;
 }
+
+// ea: 0x00449F60
+void ChangePlayersMaxHealth(int newMaxHealth)
+{
+    int v1 = newMaxHealth;
+    if (newMaxHealth < 10)
+        v1 = 10;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    Cvar_Set("g_player_maxhealth", va("%i", v1));
+    Player->client->pers.maxHealth = (int)(g_player_maxhealth.value + 0.5f);
+    Player->client->ps.stats[2] = Player->client->pers.maxHealth;
+    Player->client->ps.stats[0] = Player->client->ps.stats[2];
+    Player->health = Player->client->ps.stats[0];
+}
+
+// ea: 0x004492B0
+void G_ReduceAnglesError(float* angles, float* anglesError, float frametime,
+                         float angleLerpRate)
+{
+    float change = frametime * angleLerpRate;
+    for (int i = 3; i != 0; --i)
+    {
+        float v9 = *anglesError;
+        if (*anglesError != 0.0f)
+        {
+            if (v9 > change)
+            {
+                *anglesError = v9 - change;
+                *angles = AngleNormalize360Accurate(*angles + (v9 - change));
+            }
+            else if (-change > *anglesError)
+            {
+                float v10 = change + *anglesError;
+                *anglesError = v10;
+                *angles = AngleNormalize360Accurate(*angles + v10);
+            }
+            else
+            {
+                *anglesError = 0.0f;
+            }
+        }
+        ++angles;
+        ++anglesError;
+    }
+}
+
+// ea: 0x00458120
+void G_CheckLoadGame(int savegame)
+{
+    Cvar_Set("g_reloading", "1");
+    if (savegame != 0)
+    {
+        PathNodeMgr::sInst->ValidateAllNodes();
+        EntityManager::sInst->DeleteAllEntities();
+        SceneManager_ResetAllStaticModels();
+        Entity::FreeAllDObjs(true);
+        G_CleanupAnimTrees();
+        HudElem_DestroyAll();
+        j_nullsub_93();
+        Entity::FreeAllDObjs(true);
+        G_CleanupAnimTrees();
+    }
+    SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), "snd_fade 1 0");
+    SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), "scr_fade 0 0 0");
+    Cvar_Set("g_reloading", "0");
+}
+
+// ea: 0x00456080
+void Cmd_LockPVS_f(void)
+{
+    char s[256];
+    gLockMeshList ^= 1u;
+    PakManager::sInst->mEnabled ^= 1u;
+    if (Cmd_Argc() == 2)
+    {
+        Cmd_ArgvBuffer(1, s, 256);
+        if (Q_stricmp(s, "flash") == 0)
+            gEnableMeshFlash = true;
+    }
+    if (gLockMeshList)
+    {
+        if (gEnableMeshFlash)
+            SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(),
+                                     "print \"PVS locked. (Flash is on)\"");
+        else
+            SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(),
+                                     "print \"PVS locked\"");
+    }
+    else
+    {
+        SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(),
+                                 "print \"PVS unlocked\"");
+    }
+}
+
+// ea: 0x00461CB0
+void G_DebugCircle(const float* center, float radius, const float* color,
+                   int depthTest, int onGround, int duration)
+{
+    float dir[3];
+    if (onGround != 0)
+    {
+        dir[0] = 0.0f;
+        dir[1] = 0.0f;
+        dir[2] = 1.0f;
+    }
+    else
+    {
+        float v6 = level.clients->ps.viewHeightCurrent + level.clients->ps.origin.v.m128_f32[2];
+        dir[0] = center[0] - level.clients->ps.origin.v.m128_f32[0];
+        dir[1] = center[1] - level.clients->ps.origin.v.m128_f32[1];
+        dir[2] = center[2] - v6;
+    }
+    G_DebugCircleEx(center, radius, dir, color, depthTest, duration);
+}
+
+// ea: 0x00468C60
+void DebugDumpAnims(void)
+{
+    if (g_dumpAnims > 0)
+    {
+        Entity* mObject = HandleDbToEnt(
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)&g_dumpAnims);
+        if (mObject != nullptr)
+            SV_DObjDisplayAnim(mObject);
+    }
+    if (MultiplayerMgr::sInst != nullptr
+        && MultiplayerMgr::sInst->mPeer != nullptr
+        && MultiplayerMgr::sInst->mPeer->GetPlayerManager() != nullptr)
+    {
+        MPPlayerManager* PlayerManager = MultiplayerMgr::sInst->mPeer->GetPlayerManager();
+        if (cg_mpDebugAnimEntity < 0x10u)
+        {
+            MPPlayer* Player = PlayerManager->GetPlayer(cg_mpDebugAnimEntity);
+            if (Player != nullptr)
+                AnimationPlayer_DebugDump(Player->GetEntity());
+        }
+    }
+}

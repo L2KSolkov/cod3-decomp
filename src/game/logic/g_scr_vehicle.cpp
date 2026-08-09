@@ -585,7 +585,79 @@ void VEH_UnlinkPlayerDropped(Entity* ent)
     Scr_Notify(ent, hash_const.player_off_vehicle, 0);
 }
 
-// ea: 0x00446E0B0
+// ea: 0x0046E150
+bool G_IsPlayerDrivingVehicle(Entity* player)
+{
+    Client* client = player->client;
+    if (client == nullptr)
+        return false;
+    int eFlags = client->ps.eFlags;
+    if ((0x100000 & eFlags) == 0 || (0x400000 & eFlags) != 0)
+        return false;
+    Entity* v3 = HandleDbToEnt(player->r.mOwner);
+    if (v3 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 7337;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        return false;
+    }
+    if (v3->scr_vehicle == nullptr)
+        return false;
+    return client->ps.vehPos == 0;
+}
+
+// ea: 0x004918E0
+void Scr_Vehicle_GetIn(Entity* vehicle, Entity* occupant, int health,
+                       unsigned int seatIdx, int entryIdx)
+{
+    unsigned int v5 = seatIdx;
+    if (seatIdx == 0)
+        vehicle->scr_vehicle->AssignPhysics(occupant);
+    VEH_LinkPlayer(vehicle, occupant, (int)v5, entryIdx, 0);
+    scr_vehicle_t* scr_vehicle = vehicle->scr_vehicle;
+    if (scr_vehicle != nullptr && s_vehicleInfos[scr_vehicle->infoIdx]->type == 2)
+        scr_vehicle->noEntryTime = level.time + 4000;
+    vehicle->health = health;
+    if (EntityManager::sInst->IsLocalPlayer(occupant))
+    {
+        unsigned int h = occupant->mHandle.mHandle.mVal;
+        vehicle->Notify(hash_const.activate, &h);
+    }
+}
+
+// ea: 0x00480CF0
+void VEH_RotateWheels(Entity* self, vehicle_info_t* info)
+{
+    scr_vehicle_t* scr_vehicle = self->scr_vehicle;
+    float trans[3] = { 0.0f, 0.0f, 0.0f };
+    float steerAngles[3] = { 0.0f, 0.0f, 0.0f };
+    int numWheels = 2 * (info->type != 1) + 4;
+    if (2 * (info->type != 1) != -4)
+    {
+        int v4 = 0;
+        int* wheel = scr_vehicle->boneIndex.wheel;
+        do
+        {
+            int v7 = *wheel;
+            if (*wheel > 0)
+            {
+                steerAngles[1] = scr_vehicle->current.mSteeringAngle;
+                steerAngles[0] = scr_vehicle->wheelPitch;
+                if (v4 != TAG_WHEEL_FRONT_LEFT && v4 != TAG_WHEEL_FRONT_RIGHT)
+                    steerAngles[1] = 0.0f;
+                G_DObjSetLocalTagInternal_0(trans, steerAngles, v7, self, 0);
+            }
+            ++v4;
+            ++wheel;
+        } while (v4 < numWheels);
+    }
+}
+
+// ea: 0x0046E0B0
 bool G_IsPlayerInVehicle(Entity* player)
 {
     Client* client = player->client;

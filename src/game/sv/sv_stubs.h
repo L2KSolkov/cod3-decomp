@@ -134,6 +134,11 @@ struct SaveGameData {
 };
 static_assert(sizeof(SaveGameData) == 7156, "SaveGameData size mismatch");
 
+// MP player / entity manager minimal views (fields used by SV_PostConnect)
+struct MPPlayer;
+struct MPPlayerManager;
+struct MPPeer;
+
 // ============================================================================
 // ServerTime — server clock (20 bytes) — verified IDA
 // ============================================================================
@@ -212,7 +217,8 @@ static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
 struct MultiplayerMgr {
     struct MPEntityHandle { int mVal; };  // +0x00 opaque
-    uint8_t _pad[0x40];
+    MPPeer* mPeer;                  // +0x00
+    uint8_t _pad[0x40 - 0x4];
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad2[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
@@ -259,13 +265,14 @@ struct CheckpointMgr {
 static_assert(sizeof(CheckpointMgr) == 8, "CheckpointMgr size mismatch (fields used)");
 
 struct PakManager {
-    uint8_t _pad[4];
+    uint8_t _pad[0x28];
+    unsigned int mEnabled;             // +0x28
     static PakManager* sInst;            // ?sInst@PakManager@@2PAV1@A
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
     bool IsUnloading(TPakId id) const;   // ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z
 };
-static_assert(sizeof(PakManager) == 4, "PakManager size mismatch (opaque)");
+static_assert(sizeof(PakManager) == 0x2C, "PakManager size mismatch (opaque)");
 
 // ============================================================================
 // InGameMenuSystem — in-game menu system (56 bytes; opaque, only is_active)
@@ -492,6 +499,7 @@ extern   void   FEManager_PlayFadeInOranScreen(void);
 struct MPPlayer {
     uint8_t _pad[4];
     int     mClientIndex;   // +0x04
+    Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
 };
 
 struct MPPlayerManager {

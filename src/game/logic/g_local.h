@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // g_local.h - game logic (g.o) shared types and globals
 // Reconstructed from IDA local types (PDB symbol data).
 // All sizes and offsets verified against IDA.
@@ -122,11 +122,23 @@ struct scr_vehicle_t {
     vehicleSeat_t seats[11];  // +0x1E0 (0x134 bytes)
     uint8_t _pad314[0x318 - 0x314];
     int     barrelBlocked;  // +0x318
-    uint8_t _pad31C[0x3AC - 0x31C];
+    uint8_t _pad31C[0x330 - 0x31C];
+    float   wheelPitch;     // +0x330
+    uint8_t _pad334[0x3AC - 0x334];
     Handle  mWheel_ParticleEffectHandle[6];  // +0x3AC (0x18 bytes)
     Handle  mRumbleEffectHandle;  // +0x3C4
     int     playersAttached;  // +0x3C8
-    uint8_t _pad3CC[0x460 - 0x3CC];
+    uint8_t _pad3CC[0x3E0 - 0x3CC];
+    struct LerpedVariables {
+        math::Position3 mBodyPosition;  // +0x00
+        math::Position3 mTurretAngles;  // +0x10
+        math::Position3 mGunnerAngles;  // +0x20
+        float mSteeringAngle;           // +0x30
+        float mHatchAngleRight;         // +0x34
+        float mHatchAngleLeft;          // +0x38
+        float _pad3C;                   // +0x3C
+    } current;                          // +0x3E0 (0x3C bytes)
+    uint8_t _pad420[0x460 - 0x420];
     struct VehicleBoneIndex {
         int player;           // +0x00
         int detach;           // +0x04
@@ -151,7 +163,9 @@ struct scr_vehicle_t {
     uint8_t _pad51C[0x554 - 0x51C];
     float   mUseRadius;       // +0x554
     uint8_t mHasEntryPoints;  // +0x558
-    uint8_t _pad559[0x568 - 0x559];
+    uint8_t _pad559[0x55C - 0x559];
+    int     noEntryTime;      // +0x55C
+    uint8_t _pad560[0x568 - 0x560];
     vehicleAnimMap_t* animMap;  // +0x568
 
     vehicleAnimStage_t* GetRouteStage(int routeIdx, int stage);  // ?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z
@@ -1530,6 +1544,32 @@ void  Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultVa
                     int flags);                      // core.o
 void  Cvar_VMSet(vmCvar_t* vmCvar, const char* value);  // core.o
 void  Cvar_SetValue(const char* var_name, float value);  // core.o
+void  G_DebugCircle(const float* center, float radius, const float* color,
+                    int depthTest, int onGround, int duration);  // g.o 0x461CB0
+void  G_DebugCircleEx(const float* center, float radius, const float* dir,
+                      const float* color, int depthTest, int duration);  // cg.o
+void  DebugDumpAnims(void);                          // g.o 0x468C60
+void  Cmd_LockPVS_f(void);                           // g.o 0x456080
+void  ChangePlayersMaxHealth(int newMaxHealth);      // g.o 0x449F60
+void  Scr_Vehicle_GetIn(Entity* vehicle, Entity* occupant, int health,
+                        unsigned int seatIdx, int entryIdx);  // g.o 0x4918E0
+void  G_ReduceAnglesError(float* angles, float* anglesError, float frametime,
+                          float angleLerpRate);      // g.o 0x4492B0
+void  G_CheckLoadGame(int savegame);                 // g.o 0x458120
+void  VEH_RotateWheels(Entity* self, vehicle_info_t* info);  // g.o 0x480CF0
+extern int g_dumpAnims;                              // g.o vmCvar
+extern int cg_mpDebugAnimEntity;                     // cg.o vmCvar
+extern int gLockMeshList;                            // g.o
+extern int gEnableMeshFlash;                         // g.o
+float AngleNormalize360Accurate(float angle);        // core.o
+void  SV_DObjDisplayAnim(Entity* entity);            // sv.o
+void  j_nullsub_93(void);                            // g.o
+int   HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
+extern int TAG_WHEEL_FRONT_LEFT;                     // g.o enum
+extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
+void  EntityManager_DeleteAllEntities(void);         // game.o
+void  SceneManager_ResetAllStaticModels(void);       // render.o
+void  AnimationPlayer_DebugDump(Entity* ent);        // anim.o
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o
