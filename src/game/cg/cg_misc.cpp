@@ -5,6 +5,7 @@
 #include "game/cg/cg_local.h"
 #include "game/game_types.h"
 
+#include <math.h>
 #include <string.h>
 
 extern int currCl;
@@ -334,4 +335,212 @@ int CG_SetFrameInterpolation()
 // ea: 0x0068A620
 void CG_SoundBlend(Entity* entity)
 {
+}
+
+extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
+                                                   const char* pszSystem);
+extern const char* CG_ConfigString(unsigned int index);
+extern const char defaultFileName[];
+
+struct game_hudelem_s {
+    struct {
+        int type;  // +0x00
+    } elem;        // +0x00
+    unsigned char _pad[0x7C - 0x04];
+};
+extern game_hudelem_s g_hudelems[16];  // 0x00EA5580
+
+struct _objectiveInfo_t {
+    _objectiveInfo_t* pChild;  // +0x00
+};
+
+struct localEntity_t {
+    void*        next;  // +0x00
+    void*        prev;  // +0x04
+    unsigned char _pad[0x40 - 0x08];
+    refEntity_t  refEntity;  // +0x40
+};
+
+extern void* EntityManager_sInst;
+extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
+extern float AngleNormalize180(float angle);
+extern vmCvar_t cg_bobAmplitudeProne;     // 0x00F5ED68
+extern vmCvar_t cg_bobAmplitudeDucked;    // 0x00F5B850
+extern vmCvar_t cg_bobAmplitudeStanding;  // 0x00F5E978
+
+// ea: 0x0068B270
+int compare_hudelems(const void* pe0, const void* pe1)
+{
+    float v2 = *(float*)((char*)*(void* const*)pe0 + 108);
+    float v3 = *(float*)((char*)*(void* const*)pe1 + 108);
+    if (v2 == -777.0f)
+        v2 = 0.0f;
+    if (v3 == -777.0f)
+        v3 = 0.0f;
+    float v4 = v2 - v3;
+    if (v4 >= 0.0f)
+        return v4 > 0.0f;
+    return -1;
+}
+
+// ea: 0x0068B300
+void CG_ClearHudElems()
+{
+    for (int i = 0; i < 16; ++i)
+        g_hudelems[i].elem.type = 0;  // HE_TYPE_FREE
+}
+
+// ea: 0x0068B380
+void CG_AddFadeRGB(localEntity_t* le)
+{
+    RE_AddRefEntityToScene(&le->refEntity, -1);
+}
+
+// ea: 0x0068B890
+const char* CG_SafeTranslateString(const char* pszReference)
+{
+    return CG_SafeTranslateString_Internal(pszReference, "cgame");
+}
+
+// ea: 0x0068B8B0
+const char* CG_SafeTranslateHudElemString(int index)
+{
+    if (index == 0)
+        return defaultFileName;
+    return CG_SafeTranslateString_Internal(CG_ConfigString(index + 660),
+                                           "hudelem");
+}
+
+// ea: 0x0068B8F0
+int CG_ExportKeyBinding(const char* pszBinding, const char** ppszKey1,
+                        const char** ppszKey2)
+{
+    return 1;
+}
+
+// ea: 0x0068BA60
+int CountObjectiveChildren(_objectiveInfo_t* pObj)
+{
+    int result = 0;
+    _objectiveInfo_t* pChild = pObj->pChild;
+    for (; pChild != nullptr; ++result)
+        pChild = pChild->pChild;
+    return result;
+}
+
+// ea: 0x0068CAB0
+void CG_ClampAngles(float* angles, const float* centerAngles,
+                    const float* minClamp, const float* maxClamp)
+{
+    float viewAngles[3] = {angles[0], angles[1], angles[2]};
+    for (int i = 0; i < 3; ++i)
+    {
+        if (minClamp[i] != 0.0f || maxClamp[i] != 0.0f)
+        {
+            float v18 = AngleNormalize180(viewAngles[i]);
+            viewAngles[i] = v18;
+            float angle = v18 - AngleNormalize180(centerAngles[i]);
+            v18 = AngleNormalize180(angle);
+            if (minClamp[i] != 0.0f)
+            {
+                if (minClamp[i] > v18)
+                {
+                    float v9 = minClamp[i] + 0.0099999998f;
+                    angles[i] = AngleNormalize180(
+                        AngleNormalize180(centerAngles[i]) + v9);
+                    continue;
+                }
+            }
+            float v10 = maxClamp[i];
+            if (v10 != 0.0f && v18 > v10)
+            {
+                float v9 = v10 - 0.0099999998f;
+                angles[i] = AngleNormalize180(
+                    AngleNormalize180(centerAngles[i]) + v9);
+            }
+        }
+    }
+}
+
+// ea: 0x0068CBD0
+void CG_ClampAngles(math::Position3* angles, const float* centerAngles,
+                    const float* minClamp, const float* maxClamp)
+{
+    float viewAngles[3] = {angles->v.m128_f32[0], angles->v.m128_f32[1],
+                           angles->v.m128_f32[2]};
+    for (int i = 0; i < 3; ++i)
+    {
+        if (minClamp[i] != 0.0f || maxClamp[i] != 0.0f)
+        {
+            float v18 = AngleNormalize180(viewAngles[i]);
+            viewAngles[i] = v18;
+            float angle = v18 - AngleNormalize180(centerAngles[i]);
+            v18 = AngleNormalize180(angle);
+            if (minClamp[i] != 0.0f)
+            {
+                if (minClamp[i] > v18)
+                {
+                    float v9 = minClamp[i] + 0.0099999998f;
+                    angles->v.m128_f32[i] = AngleNormalize180(
+                        AngleNormalize180(centerAngles[i]) + v9);
+                    continue;
+                }
+            }
+            float v10 = maxClamp[i];
+            if (v10 != 0.0f && v18 > v10)
+            {
+                float v9 = v10 - 0.0099999998f;
+                angles->v.m128_f32[i] = AngleNormalize180(
+                    AngleNormalize180(centerAngles[i]) + v9);
+            }
+        }
+    }
+}
+
+// ea: 0x0068D150
+float CG_GetVerticalBobFactor(float fCycle, float fSpeed, float fMaxAmp)
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    int viewHeightTarget = client->ps.viewHeightTarget;
+    float value;
+    if (viewHeightTarget == client->ps.proneViewHeight)
+        value = cg_bobAmplitudeProne.value;
+    else
+    {
+        value = cg_bobAmplitudeDucked.value;
+        if (viewHeightTarget != client->ps.crouchViewHeight)
+            value = cg_bobAmplitudeStanding.value;
+    }
+    float fAmplitude = value * fSpeed;
+    if (fAmplitude > fMaxAmp)
+        fAmplitude = fMaxAmp;
+    return (sinf(fCycle * 4.0f + 1.5707964f) * 0.2f
+            + sinf(fCycle + fCycle))
+           * fAmplitude * 0.75f;
+}
+
+// ea: 0x0068D1F0
+float CG_GetHorizontalBobFactor(float fCycle, float fSpeed, float fMaxAmp)
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    int viewHeightTarget = client->ps.viewHeightTarget;
+    float value;
+    if (viewHeightTarget == client->ps.proneViewHeight)
+        value = cg_bobAmplitudeProne.value;
+    else
+    {
+        value = cg_bobAmplitudeDucked.value;
+        if (viewHeightTarget != client->ps.crouchViewHeight)
+            value = cg_bobAmplitudeStanding.value;
+    }
+    float fAmplitude = value * fSpeed;
+    if (fAmplitude > fMaxAmp)
+        fAmplitude = fMaxAmp;
+    return sinf(fCycle) * fAmplitude;
+}
+
+// ea: 0x0068DB20
+float SwayRand(float x, float y, float time)
+{
+    return cosf(y * time * 0.0062831859f) * sinf(x * time * 0.0062831859f);
 }
