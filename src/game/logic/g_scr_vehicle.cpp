@@ -4456,6 +4456,93 @@ void VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
     }
 }
 
+// ea: 0x004888D0
+void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
+{
+    if (pOther->client != nullptr)
+        return;
+    actor_s* actor = pOther->actor;
+    if (actor != nullptr && actor->eSubState >= 800 && actor->eSubState <= 804)
+        return;
+    scr_vehicle_t* veh = pSelf->scr_vehicle;
+    vehicle_info_t* info = s_vehicleInfos[veh->infoIdx];
+    if ((pOther->s.eType != 1 && pOther->s.eType != 11)
+        || pOther->tagInfo != nullptr || info->collisionDamage <= 0.0f)
+        return;
+    float vel[3];
+    vel[0] = veh->phys.vel.v.m128_f32[0];
+    vel[1] = veh->phys.vel.v.m128_f32[1];
+    vel[2] = veh->phys.vel.v.m128_f32[2];
+    if (sqrtf(vel[0] * vel[0] + vel[1] * vel[1] + vel[2] * vel[2]) < 1.0f
+        && G_TestEntityPosition(pOther, pOther->r.currentOrigin) == nullptr)
+        return;
+    float delta[3];
+    delta[0] = veh->phys.origin.v.m128_f32[0] - veh->phys.prevOrigin.v.m128_f32[0];
+    delta[1] = veh->phys.origin.v.m128_f32[1] - veh->phys.prevOrigin.v.m128_f32[1];
+    delta[2] = veh->phys.origin.v.m128_f32[2] - veh->phys.prevOrigin.v.m128_f32[2];
+    math::Position3 deltaAngles;
+    AnglesSubtract(&veh->phys.angles, &veh->phys.prevAngles, &deltaAngles);
+    math::Dir3 scratch;
+    math::Dir3 moveDir;
+    const math::Dir3* dir = native_to_cdl_dir3(&scratch, delta);
+    if (VectorNormalize2(dir, &moveDir) < 0.005f)
+        return;
+    bool pushed;
+    if (pOther->actor != nullptr && pSelf->scr_vehicle != nullptr)
+    {
+        pushed = push_entity(pOther, pSelf);
+    }
+    else
+    {
+        math::Position3 amove;
+        math::Position3 move;
+        const math::Position3* pAmove =
+            native_to_cdl_pos3(&amove, &deltaAngles.v.m128_f32[0]);
+        const math::Position3* pMove = native_to_cdl_pos3(&move, delta);
+        pushed = G_TryPushingEntity(pOther, pSelf, *pMove, *pAmove) != 0;
+    }
+    if (!pushed)
+    {
+        Entity* owner = HandleDbToEnt(pSelf->r.mOwner);
+        G_Damage(pOther, pSelf, owner, &moveDir.v.m128_f32[0],
+                 &pOther->r.currentOrigin.v.m128_f32[0], 999999, 32, 20,
+                 HITLOC_NONE, -1);
+        return;
+    }
+    math::Dir3 moveDirToEnt;
+    moveDirToEnt.v.m128_f32[0] =
+        pOther->r.currentOrigin.v.m128_f32[0] - pSelf->r.currentOrigin.v.m128_f32[0];
+    moveDirToEnt.v.m128_f32[1] =
+        pOther->r.currentOrigin.v.m128_f32[1] - pSelf->r.currentOrigin.v.m128_f32[1];
+    moveDirToEnt.v.m128_f32[2] = 0.0f;
+    VectorNormalize(&moveDirToEnt);
+    float dot = moveDir.v.m128_f32[0] * moveDirToEnt.v.m128_f32[0]
+              + moveDir.v.m128_f32[1] * moveDirToEnt.v.m128_f32[1]
+              + moveDir.v.m128_f32[2] * moveDirToEnt.v.m128_f32[2];
+    if (dot < 0.8f)
+        return;
+    if (pOther->client != nullptr && (pOther->client->ps.pm_flags & 1) != 0)
+    {
+        Entity* owner = HandleDbToEnt(pSelf->r.mOwner);
+        G_Damage(pOther, pSelf, owner, &moveDir.v.m128_f32[0],
+                 &pOther->r.currentOrigin.v.m128_f32[0], 999999, 32, 20,
+                 HITLOC_NONE, -1);
+        return;
+    }
+    float speedFrac = pSelf->speed / info->collisionSpeed;
+    if (speedFrac > 1.0f)
+        speedFrac = 1.0f;
+    int damage = (int)(((dot - 0.8f) * speedFrac * 5.0000005f)
+                       * info->collisionDamage);
+    if (damage > 0)
+    {
+        Entity* owner = HandleDbToEnt(pSelf->r.mOwner);
+        G_Damage(pOther, pSelf, owner, &moveDir.v.m128_f32[0],
+                 &pOther->r.currentOrigin.v.m128_f32[0], damage, 0, 20,
+                 HITLOC_NONE, -1);
+    }
+}
+
 // ea: 0x0046CB00
 void Svcmd_VehicleList_f()
 {

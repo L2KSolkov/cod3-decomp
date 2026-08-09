@@ -1557,6 +1557,8 @@ void AxisToAngles(const float (*axis)[3], float* angles);
 void CrossProduct(const float* v1, const float* v2, float* cross);
 float VectorNormalize(float* v);
 float VectorNormalize2D(float* v);
+float VectorNormalize(math::Dir3* v);                    // core.o
+float VectorNormalize2(const math::Dir3* in, math::Dir3* out);  // core.o
 float Q_acos(float c);
 void  YawVectors(float yaw, float* forward, float* right);
 float vectosignedpitch(const float* vec);
@@ -1626,6 +1628,7 @@ void j_nullsub_83(ai_orient_t* pOrient, float fAngle);
 void Sentient_InvalidateNearestNode(sentient_s* pSelf);
 int  G_TryPushingEntity(Entity* check, Entity* pusher,
                         const math::Position3& move, const math::Position3& amove);
+bool push_entity(Entity* ent, Entity* vehicle);  // g.o 0x463A20
 Entity* G_TestEntityPosition(Entity* ent, const math::Position3& origin);
 int  G_MoverPush(Entity* pusher, const float* move, const float* amove);
 
