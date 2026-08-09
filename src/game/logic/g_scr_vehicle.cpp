@@ -1152,6 +1152,227 @@ int G_SpawnVehicle(Entity* ent, const char* typeName)
     return 1;
 }
 
+// ea: 0x0045F030
+int G_VehUpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, bool overrideSpeed,
+                       int msec, int waitNode)
+{
+    if (vpp->endOfPath != 0)
+    {
+        if (vpp->switchNode[0].mName.mBlock == nullptr
+            || vpp->switchNode[0].mName.c_str()[0] == 0)
+        {
+            return 0;
+        }
+    }
+    vehicle_path_node_t* switchNode = &vpp->switchNode[0];
+    if (switchNode->mName.mBlock != nullptr && switchNode->mName.c_str()[0] != 0)
+    {
+        int NodeIndex = VP_GetNodeIndex(&switchNode->mName, nullptr);
+        if (NodeIndex >= 0)
+        {
+            VP_CopyNode(s_nodes[NodeIndex], &vpp->switchNode[0]);
+        }
+    }
+    VP_GetLookAheadXYZ(vpp, vpp->lookPos);
+    float lookDir[3];
+    lookDir[0] = vpp->lookPos[0] - vpp->origin[0];
+    lookDir[1] = vpp->lookPos[1] - vpp->origin[1];
+    lookDir[2] = vpp->lookPos[2] - vpp->origin[2];
+    float dist = VectorNormalize(lookDir);
+    if (dist <= 0.0f)
+    {
+        vpp->endOfPath = 1;
+    }
+    else
+    {
+        vectoangles(lookDir, vpp->angles);
+        vpp->angles[0] = AngleNormalize180(vpp->angles[0]);
+        vpp->angles[1] = AngleNormalize180(vpp->angles[1]);
+        vpp->angles[2] = AngleNormalize180(vpp->angles[2]);
+        float v14 = (msec * 0.001f) * vpp->speed;
+        if (v14 > dist)
+        {
+            int next = s_nodes[vpp->nodeIdx]->nextIdx;
+            if (next >= 0 && (s_nodes[next]->nextIdx & 0x2000) == 0)
+                v14 = dist;
+        }
+        vpp->origin[0] += v14 * lookDir[0];
+        vpp->origin[1] += v14 * lookDir[1];
+        vpp->origin[2] += v14 * lookDir[2];
+        VP_UpdatePathPos(pEnt, vpp, lookDir, overrideSpeed, waitNode);
+        VP_GetAngles(vpp, vpp->angles);
+    }
+    if (switchNode->mName.mBlock != nullptr
+        && switchNode->mName.mBlock != (Broc::string::Block*)-12
+        && switchNode->mName.c_str()[0] != 0)
+    {
+        int v18 = VP_GetNodeIndex(&switchNode->mName, nullptr);
+        if (v18 >= 0)
+            VP_CopyNode(s_nodes[v18], &vpp->switchNode[1]);
+    }
+    return 0;
+}
+
+// ea: 0x00491980
+unsigned int Scr_Vehicle_SeatChange(Entity* occupant, unsigned int newSeatIdx)
+{
+    if (newSeatIdx > 0xA)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 9369;
+        AeAssert::gCurrentExpr = "newSeatIdx > VEHPOS_UNKNOWN && newSeatIdx <= VEHPOS_LAST_USABLE";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid seat index"))
+            __debugbreak();
+    }
+    Entity* mObject = HandleDbToEnt(occupant->r.mOwner);
+    if (mObject == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 9371;
+        AeAssert::gCurrentExpr = "ent";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("G_VehicleOccupantChangeSeat:  specified occupant not attached to vehicle"))
+            __debugbreak();
+        return 0;
+    }
+    int vehPos = occupant->client->ps.vehPos;
+    int fromPos = vehPos;
+    if (occupant->IsLocalPlayer())
+    {
+        int PlayerIndex = occupant->GetPlayerIndex();
+        if (InteractionController_Inst(PlayerIndex) != nullptr
+            && *(void**)InteractionController_Inst(PlayerIndex) != nullptr)
+        {
+            InteractionController_EndInteraction(InteractionController_Inst(PlayerIndex), 1);
+        }
+    }
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    if (scr_vehicle != nullptr
+        && s_vehicleInfos[scr_vehicle->infoIdx]->type == 1
+        && vehPos == 1
+        && occupant == EntityManager::sInst->GetPlayer(currCl))
+    {
+        SetClientViewAngle(occupant, mObject->r.currentAngles.v.m128_f32);
+        scr_vehicle->current.mGunnerAngles.v.m128_f32[0] = 0.0f;
+        scr_vehicle->current.mGunnerAngles.v.m128_f32[1] = 0.0f;
+        scr_vehicle->next.mGunnerAngles.v.m128_f32[0] = 0.0f;
+        scr_vehicle->next.mGunnerAngles.v.m128_f32[1] = 0.0f;
+    }
+    VEH_UnlinkPlayer(occupant, false);
+    if (newSeatIdx == 0)
+        mObject->scr_vehicle->AssignPhysics(occupant);
+    VEH_LinkPlayer(mObject, occupant, (int)newSeatIdx, 0, vehPos);
+    return newSeatIdx;
+}
+
+// ea: 0x00488ED0
+void VEH_RespawnVehicle(Entity* ent)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    VEH_StopAllEffects(ent);
+    void* mRBVeh = scr_vehicle->mRBVeh;
+    float respawn_origin[3];
+    respawn_origin[0] = scr_vehicle->respawn_origin.v.m128_f32[0];
+    respawn_origin[1] = scr_vehicle->respawn_origin.v.m128_f32[1];
+    respawn_origin[2] = scr_vehicle->respawn_origin.v.m128_f32[2];
+    float respawn_angles[3];
+    respawn_angles[0] = scr_vehicle->respawn_angles.v.m128_f32[0];
+    respawn_angles[1] = scr_vehicle->respawn_angles.v.m128_f32[1];
+    respawn_angles[2] = scr_vehicle->respawn_angles.v.m128_f32[2];
+    if (mRBVeh != nullptr)
+    {
+        VEH_RemoveVehicle(mRBVeh);
+        scr_vehicle->mRBVeh = nullptr;
+    }
+    ent->s.eFlags &= ~0x80u;
+    G_SpawnVehicle(ent, nullptr);
+    scr_vehicle->phys.origin.v.m128_f32[0] = respawn_origin[0];
+    scr_vehicle->phys.origin.v.m128_f32[1] = respawn_origin[1];
+    scr_vehicle->phys.origin.v.m128_f32[2] = respawn_origin[2];
+    scr_vehicle->phys.prevOrigin.v.m128_f32[0] = respawn_origin[0];
+    scr_vehicle->phys.prevOrigin.v.m128_f32[1] = respawn_origin[1];
+    scr_vehicle->phys.prevOrigin.v.m128_f32[2] = respawn_origin[2];
+    ent->r.currentOrigin.v.m128_f32[0] = respawn_origin[0];
+    ent->r.currentOrigin.v.m128_f32[1] = respawn_origin[1];
+    ent->r.currentOrigin.v.m128_f32[2] = respawn_origin[2];
+    scr_vehicle->phys.angles.v.m128_f32[0] = respawn_angles[0];
+    scr_vehicle->phys.angles.v.m128_f32[1] = respawn_angles[1];
+    scr_vehicle->phys.angles.v.m128_f32[2] = respawn_angles[2];
+    scr_vehicle->phys.prevAngles.v.m128_f32[0] = respawn_angles[0];
+    scr_vehicle->phys.prevAngles.v.m128_f32[1] = respawn_angles[1];
+    scr_vehicle->phys.prevAngles.v.m128_f32[2] = respawn_angles[2];
+    ent->r.currentAngles.v.m128_f32[0] = respawn_angles[0];
+    ent->r.currentAngles.v.m128_f32[1] = respawn_angles[1];
+    ent->r.currentAngles.v.m128_f32[2] = respawn_angles[2];
+    float vel[3] = { 0.0f, 0.0f, 0.0f };
+    VEH_SetPosition(ent, &scr_vehicle->phys.origin, &scr_vehicle->phys.angles, vel);
+    scr_vehicle->respawn_origin.v.m128_f32[0] = respawn_origin[0];
+    scr_vehicle->respawn_origin.v.m128_f32[1] = respawn_origin[1];
+    scr_vehicle->respawn_origin.v.m128_f32[2] = respawn_origin[2];
+    ent->rotate.v.m128_f32[0] = respawn_origin[0];
+    ent->rotate.v.m128_f32[1] = respawn_origin[1];
+    ent->rotate.v.m128_f32[2] = respawn_origin[2];
+    scr_vehicle->respawn_angles.v.m128_f32[0] = respawn_angles[0];
+    scr_vehicle->respawn_angles.v.m128_f32[1] = respawn_angles[1];
+    scr_vehicle->respawn_angles.v.m128_f32[2] = respawn_angles[2];
+}
+
+// ea: 0x00488CE0
+void SP_script_vehicle(Entity* pSelf)
+{
+    static unsigned char s_init = 0;
+    static unsigned int vehicletype_hash = 0;
+    if (!(s_init & 1))
+    {
+        s_init |= 1;
+        vehicletype_hash = HashString::CalcHash("vehicletype");
+    }
+    const char* typeName = nullptr;
+    G_SpawnString(vehicletype_hash, nullptr, &typeName);
+    if (s_numVehicleInfos <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10231;
+        AeAssert::gCurrentExpr = "s_numVehicleInfos > 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("No vehicle type files are loaded.\nDo all the vehicles in your level\nhave the \"vehicletype\" key?"))
+            __debugbreak();
+    }
+    if (typeName == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 10232;
+        AeAssert::gCurrentExpr = "typeName";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vehicletype found in level.\nDo all the vehicles in your level\nhave the \"vehicletype\" key?"))
+            __debugbreak();
+    }
+    if (G_SpawnVehicle(pSelf, typeName) != 0)
+    {
+        scr_vehicle_t* scr_vehicle = pSelf->scr_vehicle;
+        if (s_vehicleInfos[scr_vehicle->infoIdx]->type == 2)
+        {
+            VEH_Backup(pSelf);
+            if ((pSelf->flags & 0x400000) == 0)
+                VEH_SetPosition(pSelf, &scr_vehicle->phys.origin, &scr_vehicle->phys.angles,
+                                scr_vehicle->phys.vel.v.m128_f32);
+        }
+        pSelf->scr_vehicle->respawn_origin.v.m128_f32[0] = pSelf->r.currentOrigin.v.m128_f32[0];
+        pSelf->scr_vehicle->respawn_origin.v.m128_f32[1] = pSelf->r.currentOrigin.v.m128_f32[1];
+        pSelf->scr_vehicle->respawn_origin.v.m128_f32[2] = pSelf->r.currentOrigin.v.m128_f32[2];
+        pSelf->rotate.v.m128_f32[0] = pSelf->r.currentOrigin.v.m128_f32[0];
+        pSelf->rotate.v.m128_f32[1] = pSelf->r.currentOrigin.v.m128_f32[1];
+        pSelf->rotate.v.m128_f32[2] = pSelf->r.currentOrigin.v.m128_f32[2];
+        pSelf->scr_vehicle->respawn_angles.v.m128_f32[0] = pSelf->r.currentAngles.v.m128_f32[0];
+        pSelf->scr_vehicle->respawn_angles.v.m128_f32[1] = pSelf->r.currentAngles.v.m128_f32[1];
+        pSelf->scr_vehicle->respawn_angles.v.m128_f32[2] = pSelf->r.currentAngles.v.m128_f32[2];
+    }
+}
+
 // ea: 0x0044D370
 int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType)
 {

@@ -130,7 +130,8 @@ struct scr_vehicle_t {
     uint8_t _pad1A8[0x1B4 - 0x1A8];
     int     mMantleTime;  // +0x1B4
     DbLinkedHandle<EntityHandleDb, Entity> mMantleEntity;  // +0x1B8
-    uint8_t _pad1BC[0x1E0 - 0x1BC];
+    math::Position3 respawn_origin;  // +0x1C0
+    math::Position3 respawn_angles;  // +0x1D0
     vehicleSeat_t seats[11];  // +0x1E0 (0x134 bytes)
     uint8_t _pad314[0x318 - 0x314];
     int     barrelBlocked;  // +0x318
