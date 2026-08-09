@@ -1010,6 +1010,22 @@ struct ae_formatted_string_256w {
 struct PakInfoNode {
     Broc::string longName;  // +0x00
 };
+struct PakFile {
+    struct dlist_node {
+        PakFile* m_next;  // +0x00
+        PakFile* m_prev;  // +0x04
+    } m_dlist_node;      // +0x00
+    static void GetHeapUsage(PakFile* self, int* used, int* size);  // streamer.o
+    static const PakInfoNode* GetInfo(PakFile* self);  // streamer.o
+};
+struct PakDList {
+    PakFile* m_head;   // +0x00
+    PakFile* m_end;    // +0x04
+};
+extern int  apsMemory_GetPoolInfo(int nPool, int* size, int* capacity,
+                                  int* used, int* peak);  // aeps_xboxr
+extern int  PoolAllocator_GetMemRemaining(void* self);  // core.o
+extern int  PoolAllocator_GetMemSize(void* self);       // core.o
 extern int gPakHeaps_m_size;       // core.o
 extern void* gPakHeaps_elements[32];  // core.o
 extern float iMemUsed, iMemFree, memPeak;  // g.o statics
@@ -2776,6 +2792,10 @@ struct StatusBar {
     static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
     static void Init();               // ?Init@StatusBar@@YAXXZ
     static void Render();             // ?Render@StatusBar@@SAXXZ
+};
+
+struct MemGraph {
+    static void Render();             // ?Render@MemGraph@@SAXXZ
 };
 
 namespace AeStringSupport {

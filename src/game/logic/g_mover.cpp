@@ -952,6 +952,156 @@ void StatusBar::Render()
                             textScale);
 }
 
+// ea: 0x00465710
+void MemGraph::Render()
+{
+    if (gRenderMemGraph == 0)
+        return;
+    static bool sS7_12 = false;
+    if (!(sS7_12 & 1))
+    {
+        sS7_12 |= 1u;
+        spacing = barWidth + 6.0f;
+    }
+    for (int i = 0; i <= 4; ++i)
+    {
+        float x = i * MBRenderScale;
+        float col[4] = { 0.0f, 0.0f, 0.0f, 0.5f };
+        DebugRender::RenderQuad2D(left + x, 50.0f,
+                                  tickWidth + left + x,
+                                  barWidth + 50.0f, 1.0f, col);
+        float mid = x + MBRenderScale * 0.5f;
+        DebugRender::RenderQuad2D(left + mid, 50.0f,
+                                  tickWidth + left + mid,
+                                  barWidth * 0.5f + 50.0f, 1.0f, col);
+    }
+    float height = spacing + 50.0f;
+    mem_get_used_bytes(MEM_HEAP_NONE);
+    int freeBytes = mem_get_free_bytes(MEM_HEAP_NONE);
+    float freeMarker = left + freeBytes * 0.00000095367432f
+                                * MBRenderScale;
+    float usedMarker = left;
+    float txtCol[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    DebugRender::RenderText("MHeap", 15, (int)(textOffset + height),
+                            txtCol, 1.0f, fontScale);
+    float memSize = freeBytes * 0.00000095367432f;
+    float red[4] = { 1.0f, 0.0f, 0.0f, alpha };
+    float green[4] = { 0.0f, 1.0f, 0.0f, alpha };
+    if (memSize <= 10.0f)
+    {
+        DebugRender::RenderQuad2D(left, height, usedMarker,
+                                  barWidth + height, 1.0f, red);
+        DebugRender::RenderQuad2D(usedMarker, height, freeMarker,
+                                  barWidth + height, 1.0f, green);
+        height += spacing;
+    }
+    else
+    {
+        freeMarker = left + bigHeapScale * MBRenderScale * memSize;
+        DebugRender::RenderQuad2D(left, height, usedMarker,
+                                  barWidth * 2.0f + height, 1.0f, red);
+        DebugRender::RenderQuad2D(usedMarker, height, freeMarker,
+                                  barWidth * 2.0f + height, 1.0f, green);
+        height += spacing * 2.0f;
+    }
+    if (gBrocHeap != nullptr)
+    {
+        DebugRender::RenderText("BrHeap", 15,
+                                (int)(textOffset + height), txtCol, 1.0f,
+                                fontScale);
+        int size = *(int*)((char*)gBrocHeap + 0x484);
+        int used = *(int*)((char*)gBrocHeap + 0x488);
+        usedMarker = left + used * 0.00000095367432f * MBRenderScale;
+        freeMarker = usedMarker
+                   + (size - used) * 0.00000095367432f * MBRenderScale;
+        DebugRender::RenderQuad2D(left, height, usedMarker,
+                                  barWidth + height, 1.0f, red);
+        DebugRender::RenderQuad2D(usedMarker, height, freeMarker,
+                                  barWidth + height, 1.0f, green);
+        height += spacing;
+        DebugRender::RenderText("BrPool", 15,
+                                (int)(textOffset + height), txtCol, 1.0f,
+                                fontScale);
+        int remain = PoolAllocator_GetMemRemaining(gBrocPool);
+        int total = PoolAllocator_GetMemSize(gBrocPool);
+        float remainMb = remain * 0.00000095367432f;
+        usedMarker = left + remainMb * MBRenderScale;
+        freeMarker = usedMarker
+                   + (total - remain) * 0.00000095367432f * MBRenderScale;
+        DebugRender::RenderQuad2D(left, height, usedMarker,
+                                  barWidth + height, 1.0f, red);
+        DebugRender::RenderQuad2D(usedMarker, height, freeMarker,
+                                  barWidth + height, 1.0f, green);
+        height += spacing;
+    }
+    if (gApsHeap != nullptr)
+    {
+        DebugRender::RenderText("ApsHeap", 15,
+                                (int)(textOffset + height), txtCol, 1.0f,
+                                fontScale);
+        int size = *(int*)((char*)gApsHeap + 0x484);
+        int used = *(int*)((char*)gApsHeap + 0x488);
+        usedMarker = left + used * 0.00000095367432f * MBRenderScale;
+        freeMarker = usedMarker
+                   + (size - used) * 0.00000095367432f * MBRenderScale;
+        DebugRender::RenderQuad2D(left, height, usedMarker,
+                                  barWidth + height, 1.0f, red);
+        DebugRender::RenderQuad2D(usedMarker, height, freeMarker,
+                                  barWidth + height, 1.0f, green);
+        height += spacing;
+        float apsUsed = 0.0f;
+        float apsFree = 0.0f;
+        for (int i = 0; i < 100; ++i)
+        {
+            int poolSize, poolCap, poolUsed, poolPeak;
+            if (apsMemory_GetPoolInfo(i, &poolSize, &poolCap, &poolUsed,
+                                      &poolPeak) == 0)
+                break;
+            apsUsed += (float)poolUsed;
+            apsFree += (float)(poolSize - poolUsed);
+        }
+        DebugRender::RenderText("ApsPool", 15,
+                                (int)(textOffset + height), txtCol, 1.0f,
+                                fontScale);
+        usedMarker = left + apsUsed * 0.00000095367432f * MBRenderScale;
+        freeMarker = usedMarker
+                   + apsFree * 0.00000095367432f * MBRenderScale;
+        DebugRender::RenderQuad2D(left, height, usedMarker,
+                                  barWidth + height, 1.0f, red);
+        DebugRender::RenderQuad2D(usedMarker, height, freeMarker,
+                                  barWidth + height, 1.0f, green);
+        height += spacing;
+    }
+    PakFile* head = (PakFile*)PakManager::sInst->mActivePaks.m_head;
+    if (head == nullptr || head == PakManager::sInst->mActivePaks.m_end)
+        return;
+    PakFile* node = head;
+    while (node != nullptr && node != PakManager::sInst->mActivePaks.m_end)
+    {
+        int used = 0, size = 0;
+        PakFile::GetHeapUsage(node, &used, &size);
+        if (size != 0)
+        {
+            const PakInfoNode* info = PakFile::GetInfo(node);
+            const char* name = info->longName.c_str();
+            int len = (int)strlen(name);
+            DebugRender::RenderText(name + (len >= 6 ? len - 6 : 0), 15,
+                                    (int)(textOffset + height), txtCol,
+                                    1.0f, fontScale);
+            usedMarker = left + used * 0.00000095367432f * MBRenderScale;
+            freeMarker =
+                usedMarker
+                + (size - used) * 0.00000095367432f * MBRenderScale;
+            DebugRender::RenderQuad2D(left, height, usedMarker,
+                                      barWidth + height, 1.0f, red);
+            DebugRender::RenderQuad2D(usedMarker, height, freeMarker,
+                                      barWidth + height, 1.0f, green);
+            height += spacing;
+        }
+        node = node->m_dlist_node.m_next;
+    }
+}
+
 // ea: 0x0045C5F0
 void prepare_collision_objects(Entity* ent, const math::Position3* p0,
                                const math::Position3* p1, float radius,

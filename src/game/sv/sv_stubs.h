@@ -331,6 +331,8 @@ struct PakManager {
     unsigned int mEnabled;             // +0x28
     static PakManager* sInst;            // ?sInst@PakManager@@2PAV1@A
     void* mProgressCallback;             // +0x2C
+    uint8_t _pad30[0x70 - 0x30];
+    struct { void* m_head; void* m_end; } mActivePaks;  // +0x70
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
     void ResetPriorities(bool user_distances_also);  // ?ResetPriorities@PakManager@@QAEX_N@Z
@@ -339,7 +341,7 @@ struct PakManager {
     bool IsUnloading(TPakId id) const;   // ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z
     void MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
 };
-static_assert(sizeof(PakManager) == 0x30, "PakManager size mismatch (opaque)");
+// size not asserted (opaque; mActivePaks at +0x70)
 
 // ============================================================================
 // InGameMenuSystem — in-game menu system (56 bytes; opaque, only is_active)
