@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "core/tlFixedString.h"
+#include "core/PoolAllocator.h"
 
 extern void G_RmvInvalidatedNode(Entity* pEnt, int iRmv);
 extern void DObjSkelMatrixMultiply43(const DObjSkelMat* in1, const float (*in2)[3],
@@ -1534,4 +1535,258 @@ void G_DObjUpdate(Entity* ent, bool forceWeaponModel)
         }
         tagChildren = next;
     }
+}
+
+// ============================================================================
+// Entity tag linking (g.o: g_utils.cpp)
+// ============================================================================
+
+PoolAllocator* tagInfo_t::sAllocator = nullptr;  // defined by g_globals/init
+
+static tagInfo_t* AllocTagInfo(Entity* parent, Entity* ent, unsigned int tagHash,
+                               int index, bool useAngles)
+{
+    tagInfo_t* v8 = (tagInfo_t*)tagInfo_t::sAllocator->Allocate(0x70, false);
+    v8->name.mHash = tagHash;
+    v8->parent = parent;
+    v8->index = (int16_t)index;
+    v8->useAngles = useAngles ? 1 : 0;
+    v8->next = parent->tagChildren;
+    memset(v8->axis, 0, sizeof(v8->axis));
+    parent->tagChildren = ent;
+    ent->tagInfo = v8;
+    if (ent->scripted != nullptr || v8->useAngles != 0)
+    {
+        float axis[4][3];
+        G_CalcTagParentAxis(ent, axis);
+        MatrixInverseOrthogonal43(axis, v8->parentInvAxis);
+    }
+    else
+    {
+        memset(v8->parentInvAxis, 0, sizeof(v8->parentInvAxis));
+    }
+    if (ent->client != nullptr)
+    {
+        scr_vehicle_t* scr_vehicle = parent->scr_vehicle;
+        if (scr_vehicle != nullptr)
+            ++scr_vehicle->playersAttached;
+    }
+    return v8;
+}
+
+// ea: 0x0048AB20 (file-local)
+static int G_EntLinkToInternal(Entity* ent, Entity* parent, unsigned int tag_name_hash,
+                               bool useAngles)
+{
+    if (parent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 749;
+        AeAssert::gCurrentExpr = "parent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((ent->flags & 0x8000) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 751;
+        AeAssert::gCurrentExpr = "ent->flags & 0x00008000";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    G_EntUnlink(ent);
+    if (ent->tagInfo != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 755;
+        AeAssert::gCurrentExpr = "!ent->tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (parent->mDObj != nullptr)
+    {
+        int index = SV_DObjGetBoneIndex(parent, tag_name_hash);
+        if (index >= 0)
+        {
+            for (Entity* i = parent; ; i = i->tagInfo->parent)
+            {
+                if (i == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+                    AeAssert::gCurrentLine = 767;
+                    AeAssert::gCurrentExpr = "checkEnt";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                if (i == ent)
+                    break;
+                if (i->tagInfo == nullptr)
+                {
+                    AllocTagInfo(parent, ent, tag_name_hash, index, useAngles);
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+// ea: 0x0048AD50 (file-local)
+static int G_EntLinkToInternal_0(Entity* ent, Entity* parent, const char* tagName,
+                                 bool useAngles)
+{
+    if (parent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 815;
+        AeAssert::gCurrentExpr = "parent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (tagName == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 816;
+        AeAssert::gCurrentExpr = "tagName";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((ent->flags & 0x8000) == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 818;
+        AeAssert::gCurrentExpr = "ent->flags & 0x00008000";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    G_EntUnlink(ent);
+    if (ent->tagInfo != nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+        AeAssert::gCurrentLine = 822;
+        AeAssert::gCurrentExpr = "!ent->tagInfo";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int index;
+    unsigned int tagHash = 0;
+    if (tagName != nullptr && *tagName != 0)
+    {
+        if (parent->mDObj == nullptr)
+            return 0;
+        tagHash = HashString::CalcHash(tagName);
+        index = SV_DObjGetBoneIndex(parent, tagHash);
+        if (index < 0)
+            return 0;
+    }
+    else
+    {
+        index = -1;
+    }
+    for (Entity* i = parent; ; i = i->tagInfo->parent)
+    {
+        if (i == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+            AeAssert::gCurrentLine = 842;
+            AeAssert::gCurrentExpr = "checkEnt";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (i == ent)
+            break;
+        if (i->tagInfo == nullptr)
+        {
+            AllocTagInfo(parent, ent, tagHash, index, useAngles);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// ea: 0x0048AFF0
+int G_EntLinkTo(Entity* ent, Entity* parent, const char* tagName)
+{
+    int result = G_EntLinkToInternal_0(ent, parent, tagName, false);
+    if (result != 0)
+    {
+        G_CalcTagAxis(ent, 0);
+        return 1;
+    }
+    return result;
+}
+
+// ea: 0x0048B030
+int G_EntLinkTo(Entity* ent, Entity* parent, unsigned int tag_name_hash)
+{
+    int result = G_EntLinkToInternal(ent, parent, tag_name_hash, false);
+    if (result != 0)
+    {
+        G_CalcTagAxis(ent, 0);
+        return 1;
+    }
+    return result;
+}
+
+// ea: 0x0048B070
+int G_EntLinkToWithOffsetHash(Entity* ent, Entity* parent, unsigned int tag_name_hash,
+                              const float* originOffset, const float* anglesOffset,
+                              bool useAngles)
+{
+    int result = G_EntLinkToInternal(ent, parent, tag_name_hash, useAngles);
+    if (result != 0)
+    {
+        tagInfo_t* tagInfo = ent->tagInfo;
+        if (IS_NAN(anglesOffset[0]) || IS_NAN(anglesOffset[1]) || IS_NAN(anglesOffset[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+            AeAssert::gCurrentLine = 949;
+            AeAssert::gCurrentExpr = "!IS_NAN((anglesOffset)[0]) && !IS_NAN((anglesOffset)[1]) && !IS_NAN((anglesOffset)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        AnglesToAxis(anglesOffset, tagInfo->axis);
+        tagInfo->axis[3][0] = originOffset[0];
+        tagInfo->axis[3][1] = originOffset[1];
+        tagInfo->axis[3][2] = originOffset[2];
+        return 1;
+    }
+    return result;
+}
+
+// ea: 0x0048B160
+int G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
+                          const float* originOffset, const float* anglesOffset,
+                          bool useAngles)
+{
+    int result = G_EntLinkToInternal_0(ent, parent, tagName, useAngles);
+    if (result != 0)
+    {
+        tagInfo_t* tagInfo = ent->tagInfo;
+        if (IS_NAN(anglesOffset[0]) || IS_NAN(anglesOffset[1]) || IS_NAN(anglesOffset[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_utils.cpp";
+            AeAssert::gCurrentLine = 977;
+            AeAssert::gCurrentExpr = "!IS_NAN((anglesOffset)[0]) && !IS_NAN((anglesOffset)[1]) && !IS_NAN((anglesOffset)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        AnglesToAxis(anglesOffset, tagInfo->axis);
+        tagInfo->axis[3][0] = originOffset[0];
+        tagInfo->axis[3][1] = originOffset[1];
+        tagInfo->axis[3][2] = originOffset[2];
+        return 1;
+    }
+    return result;
 }

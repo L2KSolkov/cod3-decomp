@@ -30,6 +30,7 @@ struct turretInfo_t;
 struct trRefEntity;
 class XAnimTree;
 class XModel;
+class PoolAllocator;
 struct gitem_s;
 struct Curve;
 struct tagInfo_t;
@@ -71,6 +72,8 @@ struct tagInfo_t {
     int16_t    useAngles;       // +0x0E
     float      axis[4][3];      // +0x10
     float      parentInvAxis[4][3];  // +0x40
+
+    static class PoolAllocator* sAllocator;  // ?sAllocator@tagInfo_t@@2PAVPoolAllocator@@A
 };
 static_assert(sizeof(tagInfo_t) == 0x70, "tagInfo_t size mismatch");
 static_assert(offsetof(tagInfo_t, name) == 0x08, "tagInfo_t::name offset mismatch");

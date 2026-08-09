@@ -68,7 +68,9 @@ struct scr_vehicle_t {
     int16_t infoIdx;      // +0x178
     uint8_t _pad17A[0x318 - 0x17A];
     int     barrelBlocked;  // +0x318
-    uint8_t _pad31C[0x460 - 0x31C];
+    uint8_t _pad31C[0x3C8 - 0x31C];
+    int     playersAttached;  // +0x3C8
+    uint8_t _pad3CC[0x460 - 0x3CC];
     struct VehicleBoneIndex {
         int player;           // +0x00
         int detach;           // +0x04
@@ -99,6 +101,7 @@ struct scr_vehicle_t {
     vehicleAnimStage_t* GetRouteStage(int routeIdx, int stage);  // ?GetRouteStage@scr_vehicle_t@@QAEPAUvehicleAnimStage_t@@HH@Z
     float GetAnimSpeedScale(Client* client);  // ?GetAnimSpeedScale@scr_vehicle_t@@QAEMPAUClient@@@Z
     float GetThrottle();                      // ?GetThrottle@scr_vehicle_t@@QAEMXZ
+    int   GetStageAnim(Client* client);       // ?GetStageAnim@scr_vehicle_t@@QAEHPAUClient@@@Z
     void  ReleasePhysics(Entity* player);     // ?ReleasePhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z
 };
 static_assert(offsetof(scr_vehicle_t, infoIdx) == 0x178, "scr_vehicle_t::infoIdx offset mismatch");
@@ -281,6 +284,32 @@ struct vehicle_node_t {
 };
 static_assert(sizeof(vehicle_node_t) == 0x40, "vehicle_node_t size mismatch");
 
+struct vehicle_path_node_t {
+    Broc::string mName;    // +0x00
+    Broc::string mTarget;  // +0x04
+};
+
+struct vehicle_pathpos_t {
+    int16_t nodeIdx;    // +0x00
+    int16_t endOfPath;  // +0x02
+    float   frac;       // +0x04
+    float   speed;      // +0x08
+    float   lookAhead;  // +0x0C
+    float   slide;      // +0x10
+    float   origin[3];  // +0x14
+    float   angles[3];  // +0x20
+    float   lookPos[3]; // +0x2C
+    vehicle_path_node_t switchNode[2];  // +0x38
+};
+
+// debug render (g.o) - debug_sphere batch
+struct debug_sphere {
+    float x, y, z, radius;  // +0x00
+    float color[4];         // +0x10
+};
+extern ae_vector<debug_sphere> debug_spheres;  // g.o 0xED2A98
+extern int render;                             // g.o 0xDD725C
+
 extern char* g_scratchpadMem;              // 0xEA81C0
 extern int   s_numNodes;                   // 0xEA5DD0
 extern vehicle_node_t* s_nodes[];          // 0xEAEDF8
@@ -372,7 +401,9 @@ struct str_const_t {
     Broc::string active;              // +0x000
     uint8_t    _pad[0x148 - 0x4];     // +0x004
     Broc::string sound_blend;         // +0x148
-    uint8_t    _pad14C[0x1FC - 0x14C];
+    uint8_t    _pad14C[0x168 - 0x14C];
+    Broc::string spawn_intermission;  // +0x168
+    uint8_t    _pad16C[0x1FC - 0x16C];
     Broc::string tempEntity;          // +0x1FC
     uint8_t    _pad200[0x2B4 - 0x200];
 };
@@ -783,9 +814,12 @@ struct vehicle_info_t {
     float   grenadeDamage;          // +0x34
     float   mineDamage;             // +0x38
     float   projectileDamage;       // +0x3C
-    uint8_t _pad40[0x310 - 0x40];
+    uint8_t _pad40[0x50 - 0x40];
+    float   maxSpeed;               // +0x50
+    uint8_t _pad54[0x310 - 0x54];
 };
 static_assert(sizeof(vehicle_info_t) == 0x310, "vehicle_info_t size mismatch");
+static_assert(offsetof(vehicle_info_t, maxSpeed) == 0x50, "vehicle_info_t::maxSpeed offset mismatch");
 extern vehicle_info_t* s_vehicleInfos[];  // ?s_vehicleInfos@@3PAPAUvehicle_info_t@@A
 
 struct hitLoc {
@@ -1322,6 +1356,37 @@ void  CL_AddDebugString(float* xyz, float* color, float scale, const char* pszTe
                         int fromServer);                // cl.o
 void  G_FreeEntity(Entity* e, int msec);                // g.o (g_active.cpp)
 cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);  // core.o
+void  BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
+                                          PlayerState* ps);  // game.o 0x9F3A40
+void  VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx, int entryIdx,
+                     int fromPos);                          // g.o 0x87FF60
+void  G_AddPredictableEvent(Entity* ent, int event, int eventParm);   // g.o 0x4541D0
+void  VEH_SetupCollmap(Entity* ent);                        // g.o 0x44D8C0
+void  G_VehFreePathPos(vehicle_pathpos_t* vpp);             // g.o 0x452840
+void  G_DebugLine(const float* start, const float* end, const float* color,
+                  int depthTest, int duration);             // g.o 0x456FB0
+vehicle_info_t* G_GetVehicleInfo(Entity* ent);              // g.o 0x45E900
+void  VEH_PlayerInteractionEntry(Entity* vehicle);           // g.o 0x490EA0
+void  G_FreeAnimTreeInstances(void);                         // g.o 0x457F90
+void  TeleportPlayer(Entity* player, const float* origin, const float* angles);  // g.o 0x458770
+void  G_SetupSpawnPoint(Entity* pEnt);                       // g.o 0x449380
+float VEH_GetMaxSpeed(scr_vehicle_t* veh);                   // g.o 0x44F3A0
+int   G_ClientCanSpectateTeam(Entity* ent, team_t team);     // g.o 0x448FB0
+void  g_AddDebugLine(const float* start, const float* end, const float* color,
+                     int depthTest, int duration, int fadeOut);  // g.o 0x450D10
+void  ClientIntermissionThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x448F20
+void  SP_intermission(Entity* ent);                          // g.o 0x449410
+void  Cmd_SetSpawnPoint_f(void);                             // g.o 0x44AAB0
+void  G_XAnimUpdateEnt(Entity* ent);                         // g.o 0x4581C0
+void  render_sphere(const math::Position3* center, float radius, const float* color);  // g.o 0x46A250
+int   G_EntLinkTo(Entity* ent, Entity* parent, const char* tagName);      // g.o 0x48AFF0
+int   G_EntLinkTo(Entity* ent, Entity* parent, unsigned int tag_name_hash);  // g.o 0x48B030
+int   G_EntLinkToWithOffsetHash(Entity* ent, Entity* parent, unsigned int tag_name_hash,
+                                const float* originOffset, const float* anglesOffset,
+                                bool useAngles);             // g.o 0x48B070
+int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,
+                            const float* originOffset, const float* anglesOffset,
+                            bool useAngles);                 // g.o 0x48B160
 
 struct StatusBar {
     static cvar_t* sStatusBarActive;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
@@ -1334,8 +1399,21 @@ struct rb_vehicle {
     float   m_throttle;  // +0x254
 };
 
-struct EntityDeathTask {
-    struct { unsigned int mMask; } mFlags;  // +0x00 Bitmask<unsigned int>
+// Task - task system base (28 bytes) - verified against IDA
+struct Task {
+    void*       __vftable;         // +0x00
+    uint8_t     _dlist[8];         // +0x04
+    unsigned int mTaskId;          // +0x0C FourCC
+    DbLinkedHandle<EntityHandleDb, Entity> mEntityHandle;  // +0x10
+    Handle      mTaskHandle;       // +0x14
+    unsigned int mFlags;           // +0x18 Bitmask<unsigned int>
+
+    Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
+};
+static_assert(sizeof(Task) == 0x1C, "Task size mismatch");
+
+struct EntityDeathTask : Task {
+    EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // ??0EntityDeathTask@@QAE@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z
     void Update(Entity* e, float delta);    // ?Update@EntityDeathTask@@UAEXPAVEntity@@M@Z
 };
 int   G_EntLinkToWithOffset(Entity* ent, Entity* parent, const char* tagName,

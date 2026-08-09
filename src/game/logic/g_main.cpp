@@ -272,8 +272,15 @@ void EntityHandleDb::Find(int fieldOfs, const Broc::string* match,
 // ea: 0x00460660
 void EntityDeathTask::Update(Entity* e, float /*delta*/)
 {
-    if ((mFlags.mMask & 4) == 0)
+    if ((mFlags & 4) == 0)
         G_FreeEntity(e, 0);
+}
+
+// ea: 0x004541A0
+EntityDeathTask::EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h)
+    : Task(h, 0x44455448 /* 'DETH' */)
+{
+    __vftable = 0;  // patched by task registration in the original binary
 }
 
 // ea: 0x0044FCE0
@@ -286,4 +293,101 @@ int G_ResetEntryPointHintIndicies(void)
     dword_DD67C4 = -1;
     dword_DD67C8 = -1;
     return -1;
+}
+
+// ea: 0x004541D0
+void G_AddPredictableEvent(Entity* ent, int event, int eventParm)
+{
+    if (ent->client != nullptr)
+        BG_AddPredictableEventToPlayerstate(event, eventParm, &ent->client->ps);
+}
+
+// ea: 0x00456FB0
+void G_DebugLine(const float* start, const float* end, const float* color,
+                 int depthTest, int duration)
+{
+    CL_AddDebugLine(start, end, color, depthTest, duration, 1, 0);
+}
+
+// ea: 0x00450D10
+void g_AddDebugLine(const float* start, const float* end, const float* color,
+                    int depthTest, int duration, int fadeOut)
+{
+    CL_AddDebugLine(start, end, color, depthTest, duration, 1, fadeOut);
+}
+
+// ea: 0x00448F20
+void ClientIntermissionThink(Entity* ent, usercmd_s* ucmd)
+{
+    Client* client = ent->client;
+    client->oldbuttons = client->buttons;
+    client->buttons = ucmd->buttons;
+}
+
+// ea: 0x00449410
+void SP_intermission(Entity* ent)
+{
+    ent->mClassName = str_const.spawn_intermission;
+    UpdateEntityHash(ent);
+}
+
+// ea: 0x0044AAB0
+void Cmd_SetSpawnPoint_f(void)
+{
+    if (Cmd_Argc() == 2)
+    {
+        char arg[128];
+        Cmd_ArgvBuffer(1, arg, 128);
+        atoi(arg);
+    }
+}
+
+// ea: 0x004581C0
+void G_XAnimUpdateEnt(Entity* ent)
+{
+    while (ent != nullptr
+           && (ent->flags & 0x10000) == 0
+           && SV_DObjUpdateServerTime(ent, ServerTime::sInst.mTickMSec * 0.001f, true))
+    {
+        ;
+    }
+}
+
+// ea: 0x00458820 (TeleportPlayer)
+void TeleportPlayer(Entity* player, const float* origin, const float* angles)
+{
+    SetClientOrigin(player, origin);
+    SetClientViewAngle(player, angles);
+    g_LinkEntity(player);
+}
+
+// ea: 0x00449380
+void G_SetupSpawnPoint(Entity* pEnt)
+{
+    pEnt->nextthink = level.time + 200;
+    pEnt->think = THINK__G_FinishSetupSpawnPoint;
+}
+
+// ea: 0x00448FB0
+int G_ClientCanSpectateTeam(Entity* ent, team_t team)
+{
+    return ((1 << team) & ent->sentient->noSpectate) == 0;
+}
+
+// ea: 0x0046A250
+void render_sphere(const math::Position3* center, float radius, const float* color)
+{
+    if (render)
+    {
+        debug_sphere v4;
+        v4.x = center->v.m128_f32[0];
+        v4.y = center->v.m128_f32[1];
+        v4.z = center->v.m128_f32[2];
+        v4.radius = radius;
+        v4.color[0] = color[0];
+        v4.color[1] = color[1];
+        v4.color[2] = color[2];
+        v4.color[3] = color[3];
+        debug_spheres.mElements[debug_spheres.mSize++] = v4;
+    }
 }

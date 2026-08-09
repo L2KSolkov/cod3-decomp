@@ -4,6 +4,60 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x0044D8C0
+void VEH_SetupCollmap(Entity* ent)
+{
+    ent->s.brushmodel = 0;
+    SV_SetBrushModel(ent);
+    ent->r.contents = 0xA00000;
+}
+
+// ea: 0x0044F3A0
+float VEH_GetMaxSpeed(scr_vehicle_t* veh)
+{
+    rb_vehicle* mRBVeh = (rb_vehicle*)veh->mRBVeh;
+    if (mRBVeh != nullptr)
+        return *(float*)(*(void**)((char*)mRBVeh + 0x250));  // m_parameter->m_speed_max
+    return s_vehicleInfos[veh->infoIdx]->maxSpeed;
+}
+
+// ea: 0x0044F520
+int scr_vehicle_t::GetStageAnim(Client* client)
+{
+    return animMap->stages[animMap->routes[client->mVehicleAnimRoute].stages[client->mVehicleAnimStage]].animRow;
+}
+
+// ea: 0x00452840
+void G_VehFreePathPos(vehicle_pathpos_t* vpp)
+{
+    vpp->switchNode[0].mName.clear();
+    vpp->switchNode[0].mTarget.clear();
+    vpp->switchNode[1].mName.clear();
+    vpp->switchNode[1].mTarget.clear();
+}
+
+// ea: 0x0045E900
+vehicle_info_t* G_GetVehicleInfo(Entity* ent)
+{
+    if (ent != nullptr && ent->scr_vehicle != nullptr)
+        return s_vehicleInfos[ent->scr_vehicle->infoIdx];
+    return nullptr;
+}
+
+// ea: 0x00457F90
+void G_FreeAnimTreeInstances(void)
+{
+    for (int i = 0; i < 16; ++i)
+        g_scr_data.actorCorpseInfo[i].mEntity.mHandle.mVal = 0;
+}
+
+// ea: 0x00490EA0
+void VEH_PlayerInteractionEntry(Entity* vehicle)
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    VEH_LinkPlayer(vehicle, Player, 0, 0, 0);
+}
+
 // ea: 0x0044D2E0
 vehicle_info_t* VEH_GetInfo(int idx)
 {
