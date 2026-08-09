@@ -264,6 +264,8 @@ bool AnimationPlayer::nalAnimCallback::Invoke(AnimationPlayer* player)
 TestFPS::TestFPS()
 {
     memset(_pad, 0, sizeof(_pad));
+    mStats_size = 0;
+    mCells_size = 0;
     mTesting = false;
     mCellIndex = 0;
     mCurrentAngle = 0;
@@ -271,7 +273,102 @@ TestFPS::TestFPS()
     mCellY = 0;
     mZoneIndex = 0;
     mDeltaAngle = 45;
+    mDelta = 0.0f;
+    mDeltaInverse = 0.0f;
     mCurrentPositionIndex = 0;
     mPlayerHandle.mVal = 0;
     mFile = nullptr;
+}
+
+struct PerformanceStats {
+    int   mFrame;       // +0x00
+    int   mDrawn;       // +0x04
+    float mPos[3];      // +0x08
+    int   mNodes;       // +0x14
+    float mDrawMs;      // +0x18
+    float mFrameMs;     // +0x1C
+    float mTotalMs;     // +0x20
+    int   mPolys;       // +0x24
+    int   mVertices;    // +0x28
+};
+static_assert(sizeof(PerformanceStats) == 0x2C,
+              "PerformanceStats size mismatch");
+
+extern bool gUseNfl;  // ?gUseNfl (game2.o)
+extern char buffer[0x4000];  // ?buffer (game2.o)
+extern char temp[0x400];     // ?temp (game2.o)
+
+// ea: 0x4FEC80
+void TestFPS::OutputStats()
+{
+    int m_size = 0;
+    if (mStats_size != 0)
+    {
+        int length = 0;
+        char filename[256];
+        GetFilename(filename);
+        if (_stricmp(filename, mLastFile) == 0)
+        {
+            if (mFile == nullptr)
+            {
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+        }
+        else
+        {
+            if (mFile != nullptr)
+            {
+                gUseNfl = false;
+                fclose((FILE*)mFile);
+                mFile = nullptr;
+            }
+            gUseNfl = false;
+            mFile = fopen(filename, "w");
+            gUseNfl = true;
+            strcpy(mLastFile, filename);
+        }
+        memset(buffer, 0, 0x4000u);
+        buffer[0] = 0;
+        temp[0] = 0;
+        if (mFile != nullptr)
+        {
+            int count = mStats_size;
+            for (int i = 0; i < count; ++i)
+            {
+                PerformanceStats* stats =
+                    reinterpret_cast<PerformanceStats*>(_pad);
+                PerformanceStats& s = stats[i];
+                sprintf(temp,
+                        "%i, %i, %g %g %g, %i, %g, %g, %g, %i, %i, \n",
+                        s.mFrame, s.mDrawn, s.mPos[0], s.mPos[1], s.mPos[2],
+                        s.mNodes, s.mDrawMs, s.mFrameMs, s.mTotalMs,
+                        s.mPolys, s.mVertices);
+                length += (int)strlen(temp);
+                strcat(buffer, temp);
+                if (length > 14336)
+                {
+                    gUseNfl = false;
+                    fwrite(buffer, 1, length, (FILE*)mFile);
+                    memset(buffer, 0, 0x4000u);
+                    gUseNfl = true;
+                    buffer[0] = 0;
+                    length = 0;
+                }
+            }
+            gUseNfl = false;
+            fwrite(buffer, 1, length, (FILE*)mFile);
+            gUseNfl = true;
+        }
+        else
+        {
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("Couldn't open %s for writing", filename))
+                __debugbreak();
+        }
+        fflush((FILE*)mFile);
+        mStats_size = 0;
+    }
+    (void)m_size;
 }

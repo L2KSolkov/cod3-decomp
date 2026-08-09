@@ -498,9 +498,12 @@ void DebugDumpEnts(int a1, Entity* ent);   // g.o 0x450150
 
 // game2.o FPS test harness (full layout 0xAD90, verified against IDA)
 struct TestFPS {
-    unsigned char _pad[0xAC4C];       // mStats[1000] + mCells
+    unsigned char _pad[0xABE0];       // mStats[1000] data
+    int mStats_size;                  // +0xABE0 (mStats.m_size)
+    unsigned char _pad2[0xAC48 - 0xABE4];  // mCells data
+    int mCells_size;                  // +0xAC48 (mCells.m_size)
     bool mTesting;                    // +0xAC4C
-    unsigned char _pad2[0xAC64 - 0xAC50];
+    unsigned char _pad2b[0xAC64 - 0xAC50];
     int mCellIndex;                   // +0xAC64
     int mCurrentAngle;                // +0xAC68
     int mCellX;                       // +0xAC6C
@@ -510,7 +513,7 @@ struct TestFPS {
     float mDelta;                     // +0xAC7C
     float mDeltaInverse;              // +0xAC80
     int mCurrentPositionIndex;        // +0xAC84
-    unsigned char _pad3[0xAD88 - 0xAC88];
+    char mLastFile[0x100];            // +0xAC88
     Handle mPlayerHandle;             // +0xAD88
     void* mFile;                      // +0xAD8C (_iobuf*)
     static TestFPS* sInst;  // ?sInst@TestFPS@@2PAV1@A
@@ -518,6 +521,7 @@ struct TestFPS {
     ~TestFPS();             // ?~TestFPS@TestFPS@@QAE@XZ (game2.o 0x4EBFF0)
     void GetPath(char* path);  // ?GetPath@TestFPS@@AAEXPAD@Z (game2.o 0x4EC020)
     void GetFilename(char* filename);  // ?GetFilename@TestFPS@@AAEXPAD@Z (game2.o 0x4F6F70)
+    void OutputStats();  // ?OutputStats@TestFPS@@AAEXXZ (game2.o 0x4FEC80)
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z
