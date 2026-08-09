@@ -612,6 +612,354 @@ def gen_cpp():
     return "\n".join(out)
 
 
+# vehicle_info_t fields (IDA 0x310 layout) used by vehicleFuncs helpers
+VEHICLE_INFO_FIELDS = {
+    # int fields (YAHH)
+    "steerWheels": ("int", False),
+    "quadBarrel": ("int", False),
+    "spClientSeat": ("int", False),
+    "hudIndex": ("int", False),
+    "numSeats": ("int", False),
+    "health": ("int", False),
+    "vehicleAnimMatrixColumn": ("int", False),
+    "inactiveBlowupSeconds": ("int", False),
+    # float fields (YAMM)
+    "bulletDamage": ("float", False),
+    "grenadeDamage": ("float", False),
+    "mineDamage": ("float", False),
+    "projectileDamage": ("float", False),
+    "texScrollScale": ("float", False),
+    "maxSpeed": ("float", False),
+    "accel": ("float", False),
+    "rotRate": ("float", False),
+    "rotAccel": ("float", False),
+    "maxBodyPitch": ("float", False),
+    "maxBodyRoll": ("float", False),
+    "collisionDamage": ("float", False),
+    "collisionSpeed": ("float", False),
+    "suspensionTravel": ("float", False),
+    "boundsRadius": ("float", False),
+    "boundsHeight": ("float", False),
+    "boundsLength": ("float", False),
+    "turretHorizSpanLeft": ("float", False),
+    "turretHorizSpanRight": ("float", False),
+    "turretVertSpanUp": ("float", False),
+    "turretVertSpanDown": ("float", False),
+    "turretRotRate": ("float", False),
+    "turretSwirlLerpRate": ("float", False),
+    "turretSwirlPitchFactor": ("float", False),
+    "turretGunnerVertSpanUp": ("float", False),
+    "turretGunnerVertSpanDown": ("float", False),
+    "engineSndSpeed": ("float", False),
+    "cameraZOffset": ("float", False),
+    "cameraFPHeightOffset": ("float", False),
+    "cameraFPFwdOffset": ("float", False),
+    "cameraFPHeightLerp": ("float", False),
+    "cameraChaseOffsetX": ("float", False),
+    "cameraChaseOffsetY": ("float", False),
+    "cameraChaseOffsetZ": ("float", False),
+    "cameraChaseRadiusInner": ("float", False),
+    "cameraChaseRadiusOuter": ("float", False),
+    "cameraVehViewRadius": ("float", False),
+    "cameraVehViewMaxPitch": ("float", False),
+    "cameraVehViewMaxPitchDistAdj": ("float", False),
+    "cameraVehViewFwdBackRatio": ("float", False),
+    "cameraVehViewMoveInPitch": ("float", False),
+    "camLinkedPitchFactor": ("float", False),
+    "pitchBasedCamOffsetX": ("float", False),
+    "pitchBasedCamOffsetZ": ("float", False),
+    "hatchOpenAngleRight": ("float", False),
+    "hatchOpenAngleLeft": ("float", False),
+    # float-signature but int field (decompile: int v3 = texScroll + v)
+    "texScroll": ("float2int", False),      # binary: texureScroll_Function
+    "texScrollScale": ("float", False),     # binary: texureScrollScale_Function
+}
+
+# plain vehicle physics helpers: name -> vehicle_rb_parameter member
+RB_PARAM_FIELDS = {
+    "speed_max": "m_speed_max",
+    "accel_max": "m_accel_max",
+    "reverse_scale": "m_reverse_scale",
+    "steer_angle_max": "m_steer_angle_max",
+    "steer_speed": "m_steer_speed",
+    "wheel_radius": "m_wheel_radius",
+    "susp_spring_k": "m_susp_spring_k",
+    "susp_damp_k": "m_susp_damp_k",
+    "susp_adj": "m_susp_adj",
+    "susp_hard_limit": "m_susp_hard_limit",
+    "tire_fric_fwd": "m_tire_fric_fwd",
+    "tire_fric_side": "m_tire_fric_side",
+    "tire_fric_brake": "m_tire_fric_brake",
+    "tire_fric_hand_brake": "m_tire_fric_hand_brake",
+    "body_mass": "m_body_mass",
+    "mass_center_delta_x": "m_mass_center_delta_x",
+    "mass_center_delta_y": "m_mass_center_delta_y",
+    "mass_center_delta_z": "m_mass_center_delta_z",
+    "roll_stability": "m_roll_stability",
+    "roll_resistance": "m_roll_resistance",
+    "upright_strength": "m_upright_strength",
+    "tilt_fakey": "m_tilt_fakey",
+    "peel_out_max_speed": "m_peel_out_max_speed",
+    "inertia_scale_x": "m_inertia_scale_x",
+    "tire_damp_coast": "m_tire_damp_coast",
+    "tire_damp_brake": "m_tire_damp_brake",
+    "tire_damp_hand": "m_tire_damp_hand",
+}
+
+
+def gen_vehicle_header():
+    out = []
+    out.append("// ============================================================================")
+    out.append("// g_vehiclefuncs.h - vehicleFuncs + vehicle physics stat helpers (game2.o)")
+    out.append("// Layouts verified against IDA local types.")
+    out.append("// ============================================================================")
+    out.append("")
+    out.append("#pragma once")
+    out.append("")
+    out.append("#include <stddef.h>")
+    out.append("")
+    out.append("// vehicle_info_t - 0x310 (IDA verified; subset for stat helpers)")
+    out.append("struct vehicle_info_t {")
+    out.append("    char name[0x20];             // +0x00")
+    out.append("    short type;                  // +0x20")
+    out.append("    short subtype;               // +0x22")
+    out.append("    int steerWheels;             // +0x24")
+    out.append("    int texScroll;               // +0x28")
+    out.append("    int quadBarrel;              // +0x2C")
+    out.append("    float bulletDamage;          // +0x30")
+    out.append("    float grenadeDamage;         // +0x34")
+    out.append("    float mineDamage;            // +0x38")
+    out.append("    float projectileDamage;      // +0x3C")
+    out.append("    int spClientSeat;            // +0x40")
+    out.append("    int numSeats;                // +0x44")
+    out.append("    int hudIndex;                // +0x48")
+    out.append("    float texScrollScale;        // +0x4C")
+    out.append("    float maxSpeed;              // +0x50")
+    out.append("    float accel;                 // +0x54")
+    out.append("    float rotRate;               // +0x58")
+    out.append("    float rotAccel;              // +0x5C")
+    out.append("    float maxBodyPitch;          // +0x60")
+    out.append("    float maxBodyRoll;           // +0x64")
+    out.append("    float collisionDamage;       // +0x68")
+    out.append("    float collisionSpeed;        // +0x6C")
+    out.append("    float suspensionTravel;      // +0x70")
+    out.append("    float boundsRadius;          // +0x74")
+    out.append("    float boundsHeight;          // +0x78")
+    out.append("    float boundsLength;          // +0x7C")
+    out.append("    int health;                  // +0x80")
+    out.append("    unsigned char _pad84[0x164 - 0x84];")
+    out.append("    float turretHorizSpanLeft;   // +0x164")
+    out.append("    float turretHorizSpanRight;  // +0x168")
+    out.append("    float turretVertSpanUp;      // +0x16C")
+    out.append("    float turretVertSpanDown;    // +0x170")
+    out.append("    float turretRotRate;         // +0x174")
+    out.append("    float turretSwirlLerpRate;   // +0x178")
+    out.append("    float turretSwirlPitchFactor;// +0x17C")
+    out.append("    float turretGunnerVertSpanUp;   // +0x180")
+    out.append("    float turretGunnerVertSpanDown; // +0x184")
+    out.append("    float engineSndSpeed;        // +0x188")
+    out.append("    unsigned char _pad18C[0x1B0 - 0x18C];")
+    out.append("    float cameraZOffset;         // +0x1B0")
+    out.append("    float cameraFPHeightOffset;  // +0x1B4")
+    out.append("    float cameraFPFwdOffset;     // +0x1B8")
+    out.append("    float cameraFPHeightLerp;    // +0x1BC")
+    out.append("    float cameraChaseOffsetX;    // +0x1C0")
+    out.append("    float cameraChaseOffsetY;    // +0x1C4")
+    out.append("    float cameraChaseOffsetZ;    // +0x1C8")
+    out.append("    float cameraChaseRadiusInner;   // +0x1CC")
+    out.append("    float cameraChaseRadiusOuter;   // +0x1D0")
+    out.append("    float cameraVehViewRadius;      // +0x1D4")
+    out.append("    float cameraVehViewMaxPitch;    // +0x1D8")
+    out.append("    float cameraVehViewMaxPitchDistAdj;  // +0x1DC")
+    out.append("    float cameraVehViewFwdBackRatio;     // +0x1E0")
+    out.append("    float cameraVehViewMoveInPitch;     // +0x1E4")
+    out.append("    float camLinkedPitchFactor;         // +0x1E8")
+    out.append("    float pitchBasedCamOffsetX;         // +0x1EC")
+    out.append("    float pitchBasedCamOffsetZ;         // +0x1F0")
+    out.append("    unsigned char _pad1F4[0x280 - 0x1F4];")
+    out.append("    int vehicleAnimMatrixColumn;        // +0x280")
+    out.append("    unsigned char _pad284[0x2C4 - 0x284];")
+    out.append("    float hatchOpenAngleRight;   // +0x2C4")
+    out.append("    float hatchOpenAngleLeft;    // +0x2C8")
+    out.append("    unsigned char _pad2CC[0x30C - 0x2CC];")
+    out.append("    int inactiveBlowupSeconds;   // +0x30C")
+    out.append("};")
+    out.append("static_assert(sizeof(vehicle_info_t) == 0x310, "
+               '"vehicle_info_t size mismatch");')
+    out.append("")
+    out.append("vehicle_info_t* VEH_GetPlayerVehicleInfo();  // game.o")
+    out.append("")
+    out.append("namespace vehicleFuncs {")
+    for fname in VEHICLE_INFO_FIELDS:
+        ftype, _ = VEHICLE_INFO_FIELDS[fname]
+        sig = {"int": "int %s(int v);", "float": "double %s(float v);",
+               "bool": "bool %s(bool v);",
+               "float2int": "double %s(float v);"}[ftype]
+        decl_name = fname + "_Function"
+        if fname == "texScroll":
+            decl_name = "texureScroll_Function"
+        elif fname == "texScrollScale":
+            decl_name = "texureScrollScale_Function"
+        out.append(sig % decl_name)
+    out.append("} // namespace vehicleFuncs")
+    out.append("")
+    # vehicle_rb_parameter (physics) helpers
+    out.append("// vehicle_rb_parameter - 0xD0 (IDA verified; subset)")
+    out.append("struct vehicle_rb_parameter {")
+    out.append("    float m_speed_max;          // +0x00")
+    out.append("    float m_accel_max;          // +0x04")
+    out.append("    float m_reverse_scale;      // +0x08")
+    out.append("    float m_steer_angle_max;    // +0x0C")
+    out.append("    float m_steer_speed;        // +0x10")
+    out.append("    float m_wheel_radius;       // +0x14")
+    out.append("    float m_susp_spring_k;      // +0x18")
+    out.append("    float m_susp_damp_k;        // +0x1C")
+    out.append("    float m_susp_adj;           // +0x20")
+    out.append("    float m_susp_hard_limit;    // +0x24")
+    out.append("    float m_tire_fric_fwd;      // +0x28")
+    out.append("    float m_tire_fric_side;     // +0x2C")
+    out.append("    float m_tire_fric_brake;    // +0x30")
+    out.append("    float m_tire_fric_hand_brake;  // +0x34")
+    out.append("    float m_body_mass;          // +0x38")
+    out.append("    float m_mass_center_delta_x;  // +0x3C")
+    out.append("    float m_mass_center_delta_y;  // +0x40")
+    out.append("    float m_mass_center_delta_z;  // +0x44")
+    out.append("    float m_roll_stability;     // +0x48")
+    out.append("    float m_roll_resistance;    // +0x4C")
+    out.append("    float m_upright_strength;   // +0x50")
+    out.append("    float m_tilt_fakey;         // +0x54")
+    out.append("    float m_peel_out_max_speed; // +0x58")
+    out.append("    float m_inertia_scale_x;    // +0x5C")
+    out.append("    float m_tire_damp_coast;    // +0x60")
+    out.append("    float m_tire_damp_brake;    // +0x64")
+    out.append("    float m_tire_damp_hand;     // +0x68")
+    out.append("};")
+    out.append("// NOTE: subset view - only the stat fields used by the helpers;")
+    out.append("// full 0xD0 layout includes m_traction_type/m_name/bbox.")
+    out.append("")
+    out.append("struct rb_vehicle {")
+    out.append("    unsigned char _pad[0x250];      // +0x000")
+    out.append("    vehicle_rb_parameter* m_parameter;  // +0x250")
+    out.append("    void update_parms(vehicle_rb_parameter* params,"
+               " bool initialization);  // ?update_parms@rb_vehicle@@QAEXPAV"
+               "vehicle_rb_parameter@@_N@Z")
+    out.append("};")
+    out.append("rb_vehicle* GetPlayerRBVehicle();  // game2.o")
+    for fname in RB_PARAM_FIELDS:
+        out.append("double %s_Function(float f);" % fname)
+    out.append("")
+    return "\n".join(out)
+
+
+def gen_vehicle_cpp():
+    out = []
+    out.append("// ============================================================================")
+    out.append("// g_vehiclefuncs.cpp - vehicleFuncs + vehicle physics stat helpers (game2.o)")
+    out.append("// ============================================================================")
+    out.append("")
+    out.append('#include "game/logic/g_vehiclefuncs.h"')
+    out.append("")
+    out.append("namespace vehicleFuncs {")
+    out.append("")
+    for line in open(MANIFEST, encoding="utf-8"):
+        parts = line.rstrip("\n").split("\t")
+        if len(parts) < 8 or parts[0] == "ida_ea":
+            continue
+        if parts[3] != "f" or parts[5] != "game2.o":
+            continue
+        name = parts[2]
+        if not name.startswith("?") or "vehicleFuncs" not in name:
+            continue
+        fn = name.split("@")[0][1:]
+        stem = fn[:-len("_Function")] if fn.endswith("_Function") else fn
+        # binary typo aliases
+        if stem == "texureScroll":
+            stem = "texScroll"
+        if stem == "texureScrollScale":
+            stem = "texScrollScale"
+        if stem not in VEHICLE_INFO_FIELDS:
+            print("SKIP vehicle (no field):", fn)
+            continue
+        ftype, _ = VEHICLE_INFO_FIELDS[stem]
+        out.append("// ea: %s" % parts[0])
+        if ftype == "bool":
+            out.append("bool %s(bool v)" % fn)
+            out.append("{")
+            out.append("    vehicle_info_t* info = VEH_GetPlayerVehicleInfo();")
+            out.append("    if (info == nullptr)")
+            out.append("        return false;")
+            out.append("    info->%s += v ? 1 : 0;" % stem)
+            out.append("    return info->%s != 0;" % stem)
+            out.append("}")
+        elif ftype == "float2int":
+            out.append("double %s(float v)" % fn)
+            out.append("{")
+            out.append("    vehicle_info_t* info = VEH_GetPlayerVehicleInfo();")
+            out.append("    if (info == nullptr)")
+            out.append("        return 0;")
+            out.append("    int r = (int)v + info->%s;" % stem)
+            out.append("    info->%s = r;" % stem)
+            out.append("    return r;")
+            out.append("}")
+        elif ftype == "float":
+            out.append("double %s(float v)" % fn)
+            out.append("{")
+            out.append("    vehicle_info_t* info = VEH_GetPlayerVehicleInfo();")
+            out.append("    if (info == nullptr)")
+            out.append("        return 0;")
+            out.append("    float r = v + info->%s;" % stem)
+            out.append("    info->%s = r;" % stem)
+            out.append("    return r;")
+            out.append("}")
+        else:
+            out.append("int %s(int v)" % fn)
+            out.append("{")
+            out.append("    vehicle_info_t* info = VEH_GetPlayerVehicleInfo();")
+            out.append("    if (info == nullptr)")
+            out.append("        return 0;")
+            out.append("    int r = v + info->%s;" % stem)
+            out.append("    info->%s = r;" % stem)
+            out.append("    return r;")
+            out.append("}")
+        out.append("")
+    out.append("} // namespace vehicleFuncs")
+    out.append("")
+    out.append("// ============================================================================")
+    out.append("// vehicle physics stat helpers (GetPlayerRBVehicle + vehicle_rb_parameter)")
+    out.append("// ============================================================================")
+    out.append("")
+    for line in open(MANIFEST, encoding="utf-8"):
+        parts = line.rstrip("\n").split("\t")
+        if len(parts) < 8 or parts[0] == "ida_ea":
+            continue
+        if parts[3] != "f" or parts[5] != "game2.o":
+            continue
+        name = parts[2]
+        if not name.startswith("?") or "vehicleFuncs" in name:
+            continue
+        fn = name.split("@")[0][1:]
+        stem = fn[:-len("_Function")] if fn.endswith("_Function") else fn
+        if stem not in RB_PARAM_FIELDS:
+            continue
+        out.append("// ea: %s" % parts[0])
+        out.append("double %s_Function(float f)" % stem)
+        out.append("{")
+        out.append("    rb_vehicle* vehicle = GetPlayerRBVehicle();")
+        out.append("    if (vehicle == nullptr)")
+        out.append("        return 0;")
+        out.append("    vehicle_rb_parameter* params = vehicle->m_parameter;")
+        out.append("    if (params == nullptr)")
+        out.append("        return 0;")
+        out.append("    params->%s = params->%s + f;" % (RB_PARAM_FIELDS[stem],
+                                                        RB_PARAM_FIELDS[stem]))
+        out.append("    if (f != 0.0f)")
+        out.append("        vehicle->update_parms(params, false);")
+        out.append("    return params->%s;" % RB_PARAM_FIELDS[stem])
+        out.append("}")
+        out.append("")
+    return "\n".join(out)
+
+
 if __name__ == "__main__":
     with open(r"src\game\logic\g_weaponfuncs.h", "w", encoding="utf-8",
               newline="\n") as f:
@@ -619,4 +967,10 @@ if __name__ == "__main__":
     with open(r"src\game\logic\g_weaponfuncs.cpp", "w", encoding="utf-8",
               newline="\n") as f:
         f.write(gen_cpp())
-    print("generated g_weaponfuncs.h/.cpp")
+    with open(r"src\game\logic\g_vehiclefuncs.h", "w", encoding="utf-8",
+              newline="\n") as f:
+        f.write(gen_vehicle_header())
+    with open(r"src\game\logic\g_vehiclefuncs.cpp", "w", encoding="utf-8",
+              newline="\n") as f:
+        f.write(gen_vehicle_cpp())
+    print("generated weaponfuncs + vehiclefuncs")
