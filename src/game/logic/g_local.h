@@ -533,9 +533,11 @@ void EntityHandleDb_Find(unsigned int fieldOfs, T match, ae_sized_array<Entity*,
 // ============================================================================
 struct str_const_t {
     Broc::string active;              // +0x000
-    uint8_t    _pad[0xBC - 0x4];      // +0x004
+    uint8_t    _pad[0xB0 - 0x4];      // +0x004
+    Broc::string grenade;             // +0x0B0
+    uint8_t    _padB4[0xBC - 0xB4];
     Broc::string info_player_deathmatch;  // +0xBC
-    uint8_t    _padC0[0x120 - 0xC0];  // +0xC0
+    uint8_t    _padC0[0x120 - 0xC0];
     Broc::string player;              // +0x120
     uint8_t    _pad124[0x13C - 0x124];
     Broc::string rocket;              // +0x13C
@@ -564,15 +566,9 @@ struct str_const_t {
     Broc::string hq_point;                 // +0x1B4
     uint8_t    _pad1B8[0x1FC - 0x1B8];
     Broc::string tempEntity;          // +0x1FC
-    uint8_t    _pad200[0x23C - 0x200];
-    Broc::string worldspawn;          // +0x23C
-    uint8_t    _pad240[0x29C - 0x240];
-    Broc::string mine;                // +0x29C
-    uint8_t    _pad2A0[0x2B4 - 0x2A0];
+    uint8_t    _pad200[0x2B4 - 0x200];
 };
 static_assert(sizeof(str_const_t) == 0x2B4, "str_const_t size mismatch");
-static_assert(offsetof(str_const_t, worldspawn) == 0x23C,
-              "str_const_t::worldspawn offset mismatch");
 static_assert(offsetof(str_const_t, spawn_intermission) == 0x168,
               "str_const_t::spawn_intermission offset mismatch");
 static_assert(offsetof(str_const_t, spawn_sd_axis) == 0x1B0,

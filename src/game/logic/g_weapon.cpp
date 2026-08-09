@@ -623,7 +623,7 @@ Entity* fire_mine(Entity* self, float* position, float* dir, int weapon)
     v6->r.maxs.v.m128_f32[0] = iTriggerRadius;
     v6->r.maxs.v.m128_f32[1] = iTriggerRadius;
     v6->r.maxs.v.m128_f32[2] = iTriggerRadius;
-    v6->mClassName = str_const.mine;
+    v6->mClassName = "mine";
     v6->mClassNameHash.mHash = HashString::CalcHash(v6->mClassName.GetBuff());
     v6->damage = InfoForWeapon->iDamage;
     v6->methodOfDeath = 5;
@@ -1063,4 +1063,72 @@ void G_BulletFireSpread(const Entity* source, Entity* attacker, weaponParms* wp,
                              *(DbLinkedHandle<EntityHandleDb, Entity>*)&mVal,
                              coneAngleTangent);
     }
+}
+
+// ea: 0x0045FB40
+void Weapon_ItemAmmo_Fire(Entity* ent, int grenType, weaponParms* wp)
+{
+    weaponFileInfo_t* pWeapInfo = wp->pWeapInfo;
+    float iProjectileSpeedUp = (float)pWeapInfo->iProjectileSpeedUp;
+    float iProjectileSpeed = (float)pWeapInfo->iProjectileSpeed;
+    float vTossDir[3];
+    vTossDir[0] = iProjectileSpeed * wp->forward[0];
+    vTossDir[1] = iProjectileSpeed * wp->forward[1];
+    vTossDir[2] = (iProjectileSpeed * wp->forward[2]) + iProjectileSpeedUp;
+    float tossPos[3] = {vTossDir[0], vTossDir[1], vTossDir[2]};
+    VectorNormalize(tossPos);
+    Client* client = ent->client;
+    float v14 = (client->ps.velocity.v.m128_f32[0] * tossPos[0])
+                + (client->ps.velocity.v.m128_f32[1] * tossPos[1])
+                + (client->ps.velocity.v.m128_f32[2] * tossPos[2]);
+    vTossDir[0] += v14 * tossPos[0];
+    vTossDir[1] += v14 * tossPos[1];
+    vTossDir[2] += v14 * tossPos[2];
+    math::Position3 tossPos3;
+    tossPos3.v.m128_f32[0] = wp->muzzleTrace[0] + wp->forward[0] * 20.0f;
+    tossPos3.v.m128_f32[1] = wp->muzzleTrace[1] + wp->forward[1] * 20.0f;
+    tossPos3.v.m128_f32[2] = wp->muzzleTrace[2] + wp->forward[2] * 20.0f;
+    tossPos3.v.m128_f32[3] = 0.0f;
+    float maxs[3] = {-1.0f, -1.0f, 2.0f};
+    float mins[3] = {1.0f, 1.0f, 2.0f};
+    collision_context_t context;
+    context.__vftable = nullptr;
+    context.pass_entity1.mHandle.mVal = 0;
+    context.pass_entity2.mHandle.mVal = 41951377;
+    context.pass_owner1.mHandle.mVal = ent->mHandle.mHandle.mVal;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0;
+    float startZ = ent->r.currentOrigin.v.m128_f32[2]
+                   + ent->r.maxs.v.m128_f32[2];
+    if (context.contentmask > startZ - 4.0f)
+        context.contentmask = (int)(startZ - 4.0f);
+    math::Position3 start;
+    start.v.m128_f32[0] = ent->r.currentOrigin.v.m128_f32[0];
+    start.v.m128_f32[1] = ent->r.currentOrigin.v.m128_f32[1];
+    start.v.m128_f32[2] = ent->r.currentOrigin.v.m128_f32[2];
+    start.v.m128_f32[3] = 0.0f;
+    trace_t trace;
+    SV_Trace(&trace, &start, (math::Position3*)mins, (math::Position3*)maxs,
+             &tossPos3, &context, 0, 0, nullptr, 0, 0.0f);
+    math::Position3 vTossVel;
+    vTossVel.v = _mm_setzero_ps();
+    vTossVel.v.m128_f32[0] = vTossDir[0];
+    vTossVel.v.m128_f32[1] = vTossDir[1];
+    vTossVel.v.m128_f32[2] = vTossDir[2];
+    math::Position3 vTossAngles;
+    vTossAngles.v.m128_f32[0] = ent->r.currentAngles.v.m128_f32[0];
+    vTossAngles.v.m128_f32[1] = ent->r.currentAngles.v.m128_f32[1];
+    vTossAngles.v.m128_f32[2] = ent->r.currentAngles.v.m128_f32[2];
+    math::Position3 vTossOrigin;
+    vTossOrigin.v = _mm_setzero_ps();
+    vTossOrigin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+    vTossOrigin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+    vTossOrigin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+    MultiplayerMgr::MPEntityHandle v29;
+    MultiplayerMgr::sInst->GetNextDroppedItemID(&v29, 1 /* kItemTypeSupport */,
+                                                ent);
+    MultiplayerMgr::sInst->DropItem(1, &vTossOrigin,
+                                    (const math::Dir3*)&vTossAngles,
+                                    (const math::Dir3*)&vTossVel,
+                                    v29.mVal, false, -1);
 }
