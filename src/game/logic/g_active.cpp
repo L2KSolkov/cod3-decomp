@@ -367,3 +367,223 @@ void G_RunThink(Entity* ent, int msec)
         }
     }
 }
+
+// ea: 0x00474C90
+void G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
+                       TouchEntityData* tData, collision_context_t* context)
+{
+    int v24 = GetEntityTouchTriggerType(ent);
+    if (v24 == 0)
+        return;
+    int num;
+    math::Position3 mins;
+    math::Position3 maxs;
+    DbLinkedHandle<EntityHandleDb, Entity>* touch_ptr;
+    DbLinkedHandle<EntityHandleDb, Entity> entityList[64];
+    if (tData != nullptr)
+    {
+        num = tData->num;
+        mins.v.m128_f32[0] = tData->mins.v.m128_f32[0];
+        mins.v.m128_f32[1] = tData->mins.v.m128_f32[1];
+        mins.v.m128_f32[2] = tData->mins.v.m128_f32[2];
+        mins.v.m128_f32[3] = tData->mins.v.m128_f32[3];
+        maxs.v = tData->maxs.v;
+        touch_ptr = tData->touch;
+    }
+    else
+    {
+        __m128 box = _mm_set_ps(0.0f, 52.0f, 40.0f, 40.0f);
+        maxs.v = _mm_add_ps(origin->v, box);
+        mins.v = _mm_sub_ps(origin->v, box);
+        num = CM_AreaEntities(&mins, &maxs, (int*)entityList, 64, v24);
+        mins.v = _mm_add_ps(origin->v, ent->r.mins.v);
+        maxs.v = _mm_add_ps(origin->v, ent->r.maxs.v);
+        touch_ptr = entityList;
+    }
+    for (int v13 = 0; v13 < num; ++v13)
+    {
+        unsigned int v14 = touch_ptr[v13].mHandle.mVal;
+        unsigned int v15 = v14 & 0xFFF;
+        if (v15 >= 0x540)
+            continue;
+        if (v14 >> 12 != EntityHandleDb::sInst.mElements[v15].mKey)
+            continue;
+        Entity* mObject = EntityHandleDb::sInst.mElements[v15].mObject;
+        if (mObject == nullptr)
+            continue;
+        if ((v24 & mObject->r.contents) == 0)
+            continue;
+        if (mObject->touch == 0 && ent->touch == 0)
+            continue;
+        if (context->__vftable != nullptr
+            && context->__vftable->filter((collision_context_t*)context, mObject))
+            continue;
+        if (mObject->s.eType == 2)
+        {
+            Client* client = ent->client;
+            if (client != nullptr && BG_PlayerTouchesItem(&client->ps, &mObject->s, level.time))
+                goto touch;
+        }
+        else
+        {
+            bool v19;
+            if (mObject->s.eType == 3)
+            {
+                Client* v18 = ent->client;
+                if (v18 != nullptr && !BG_PlayerTouchesMine(&v18->ps, &mObject->s, level.time))
+                    continue;
+                if (ent->scr_vehicle == nullptr)
+                    goto touch;
+                v19 = !VEH_VehicleTouchesMine(ent, &mObject->s);
+            }
+            else
+            {
+                v19 = g_EntityContactCapsule(&mins, &maxs, mObject) == 0;
+            }
+            if (!v19)
+                goto touch;
+        }
+        continue;
+    touch:
+        if (Scr_IsSystemActive(1) != 0)
+        {
+            Scr_NotifyFromEnt(mObject, hash_const.touch, ent);
+            Scr_NotifyFromEnt(ent, hash_const.touch, mObject);
+        }
+        uint8_t touch = mObject->touch;
+        if (touch != 0)
+        {
+            if (touch >= 0xDu)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+                AeAssert::gCurrentLine = 410;
+                AeAssert::gCurrentExpr = "hit->touch > 0 && hit->touch < TOUCH_MAX";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            touchtable[mObject->touch](mObject, ent, 1);
+        }
+        if (ent->actor != nullptr)
+        {
+            uint8_t v21 = ent->touch;
+            if (v21 != 0)
+            {
+                if (v21 >= 0xDu)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+                    AeAssert::gCurrentLine = 416;
+                    AeAssert::gCurrentExpr = "ent->touch > 0 && ent->touch < TOUCH_MAX";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                touchtable[ent->touch](ent, mObject, 1);
+            }
+        }
+    }
+}
+
+// ea: 0x004748A0
+void G_TouchVehicles(Entity* ent, const math::Position3* origin,
+                     TouchEntityData* tData, collision_context_t* context)
+{
+    if (ent->tagInfo != nullptr)
+        return;
+    int num;
+    math::Position3 mins;
+    math::Position3 maxs;
+    DbLinkedHandle<EntityHandleDb, Entity>* touch_ptr;
+    ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 256> touch;
+    if (tData != nullptr)
+    {
+        num = tData->num;
+        mins.v.m128_f32[0] = tData->mins.v.m128_f32[0];
+        mins.v.m128_f32[1] = tData->mins.v.m128_f32[1];
+        mins.v.m128_f32[2] = tData->mins.v.m128_f32[2];
+        maxs.v.m128_f32[0] = tData->maxs.v.m128_f32[0];
+        maxs.v.m128_f32[1] = tData->maxs.v.m128_f32[1];
+        maxs.v.m128_f32[2] = tData->maxs.v.m128_f32[2];
+        for (int i = 0; i < tData->num; ++i)
+            touch[i] = tData->touch[i];
+        touch_ptr = touch.m_elements;
+    }
+    else
+    {
+        mins.v.m128_f32[0] = origin->v.m128_f32[0] - 40.0f;
+        mins.v.m128_f32[1] = origin->v.m128_f32[1] - 40.0f;
+        mins.v.m128_f32[2] = origin->v.m128_f32[2] - 52.0f;
+        maxs.v.m128_f32[0] = origin->v.m128_f32[0] + 40.0f;
+        maxs.v.m128_f32[1] = origin->v.m128_f32[1] + 40.0f;
+        maxs.v.m128_f32[2] = origin->v.m128_f32[2] + 52.0f;
+        num = CM_AreaEntities(&mins, &maxs, (int*)touch.m_elements, 256, 0x800000);
+        mins.v.m128_f32[0] = ent->r.mins.v.m128_f32[0] + origin->v.m128_f32[0];
+        mins.v.m128_f32[1] = ent->r.mins.v.m128_f32[1] + origin->v.m128_f32[1];
+        mins.v.m128_f32[2] = ent->r.mins.v.m128_f32[2] + origin->v.m128_f32[2];
+        maxs.v.m128_f32[0] = ent->r.maxs.v.m128_f32[0] + origin->v.m128_f32[0];
+        maxs.v.m128_f32[1] = ent->r.maxs.v.m128_f32[1] + origin->v.m128_f32[1];
+        maxs.v.m128_f32[2] = ent->r.maxs.v.m128_f32[2] + origin->v.m128_f32[2];
+        touch_ptr = touch.m_elements;
+    }
+    for (int v14 = 0; v14 < num; ++v14)
+    {
+        unsigned int v15 = touch_ptr[v14].mHandle.mVal & 0xFFF;
+        if (v15 >= 0x540)
+            continue;
+        if (touch_ptr[v14].mHandle.mVal >> 12
+            != EntityHandleDb::sInst.mElements[v15].mKey)
+            continue;
+        Entity* mObject = EntityHandleDb::sInst.mElements[v15].mObject;
+        if (mObject == nullptr)
+            continue;
+        if ((0x800000 & mObject->r.contents) == 0)
+            continue;
+        if (mObject->s.eType != 14)
+            continue;
+        if (mObject->r.bmodel == nullptr)
+            continue;
+        if (mObject->touch == 0 && ent->touch == 0)
+            continue;
+        if (context->__vftable != nullptr
+            && context->__vftable->filter((collision_context_t*)context, mObject))
+            continue;
+        if (g_EntityContactCapsule(&mins, &maxs, mObject) == 0)
+            continue;
+        if (Scr_IsSystemActive(1) != 0)
+        {
+            Scr_NotifyFromEnt(mObject, hash_const.touch, ent);
+            Scr_NotifyFromEnt(ent, hash_const.touch, mObject);
+        }
+        uint8_t v17 = mObject->touch;
+        if (v17 != 0)
+        {
+            if (v17 >= 0xDu)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+                AeAssert::gCurrentLine = 257;
+                AeAssert::gCurrentExpr = "hit->touch > 0 && hit->touch < TOUCH_MAX";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            touchtable[mObject->touch](mObject, ent, 1);
+        }
+        if (ent->actor != nullptr)
+        {
+            uint8_t v18 = ent->touch;
+            if (v18 != 0)
+            {
+                if (v18 >= 0xDu)
+                {
+                    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_active.cpp";
+                    AeAssert::gCurrentLine = 263;
+                    AeAssert::gCurrentExpr = "( ent->touch > 0 ) && ( ent->touch < TOUCH_MAX )";
+                    if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                touchtable[ent->touch](ent, mObject, 1);
+            }
+        }
+    }
+}

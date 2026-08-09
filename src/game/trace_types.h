@@ -43,6 +43,13 @@ static_assert(offsetof(trace_t, fraction) == 0x20, "trace_t::fraction offset mis
 // collision_context_t — collision filtering context
 // Size: 0x18 (24 bytes) — verified against IDA (vtbl + derived data)
 // ============================================================================
+struct collision_context_t;
+
+struct collision_context_t_vtbl {
+    bool (__cdecl* filter)(collision_context_t* self, Entity* ent);
+};
+
+// ============================================================================
 struct collision_context_t {
     struct collision_context_t_vtbl* __vftable;  // +0x00
     DbLinkedHandle<EntityHandleDb, Entity> pass_entity1;    // +0x04

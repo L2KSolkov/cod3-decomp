@@ -1473,8 +1473,14 @@ void Scr_Vehicle_Init(Entity* pSelf, int /*msec*/)
         math::Position3 angles = scr_vehicle->phys.angles;
         MultiplayerMgr::sInst->ApplyLocalPhysicsToVehicle(pSelf, &scr_vehicle->phys.origin,
                                                           &angles, vel);
-        int context[3] = { 0, 0, 0 };
-        G_DoTouchTriggers(pSelf, &pSelf->r.currentOrigin, nullptr, context);
+        collision_context_t context;
+        context.__vftable = nullptr;
+        context.pass_entity1.mHandle.mVal = 0;
+        context.pass_entity2.mHandle.mVal = 0;
+        context.pass_owner1.mHandle.mVal = 0;
+        context.pass_owner2.mHandle.mVal = 0;
+        context.contentmask = -1;
+        G_DoTouchTriggers(pSelf, &pSelf->r.currentOrigin, nullptr, &context);
         pSelf->think = THINK__Scr_Vehicle_Init;
         pSelf->nextthink = level.time + 1;
     }

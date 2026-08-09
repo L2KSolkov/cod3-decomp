@@ -993,6 +993,7 @@ int  BG_ClipForWeapon(int iWeapon);
 int  BG_GetNumWeapons();
 int  BG_GetAmmoClipSize(int iClipIndex);
 int  BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
+bool BG_PlayerTouchesItem(PlayerState* ps, EntityState* item, int atTime);  // game.o 0x621820
 int  irand(int min, int max);
 void G_AddLean(Entity* ent, float* point);
 extern float delta;          // 0xDD7FE4 (mine test standoff distance)
@@ -1882,6 +1883,9 @@ void  Client_Touch(Entity* pSelf, Entity* pOther);  // g.o 0x4671F0
 void  G_DebugCircle2Ex(const float* center, float radius, const float* dir,
                        const float* color, int depthTest, int duration);  // g.o 0x4572F0
 int   CM_PointContents(const math::Position3* p, void* model);  // sv.o
+int   GetEntityTouchTriggerType(Entity* pEnt);  // g.o 0x448BE0
+int   g_EntityContactCapsule(const math::Position3* mins, const math::Position3* maxs,
+                             const Entity* ent);  // g.o 0x450AC0
 int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                       int* entityList, int maxcount, int contentmask);  // sv.o (redecl)
 int   Client_GetPushed(Entity* pSelf, Entity* pOther);  // g.o
@@ -1966,8 +1970,18 @@ int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEn
 enum { WEAPTYPE_BULLET = 0 };
 void  Scr_Vehicle_Init(Entity* pSelf, int msec); // g.o 0x480AC0
 void  VEH_GroundPlant(Entity* ent, int gravity, int msec);  // g.o
-void  G_DoTouchTriggers(Entity* ent, const math::Position3* origin, void* tData,
-                        int* context);          // g.o
+struct TouchEntityData {
+    int      num;        // +0x00
+    uint8_t  _pad4[0x10 - 0x4];
+    math::Position3 mins;   // +0x10
+    math::Position3 maxs;   // +0x20
+    DbLinkedHandle<EntityHandleDb, Entity> touch[128];  // +0x30
+};
+static_assert(sizeof(TouchEntityData) == 0x230, "TouchEntityData size mismatch");
+void  G_DoTouchTriggers(Entity* ent, const math::Position3* origin,
+                        TouchEntityData* tData, collision_context_t* context);  // g.o 0x474C90
+void  G_TouchVehicles(Entity* ent, const math::Position3* origin,
+                      TouchEntityData* tData, collision_context_t* context);  // g.o 0x4748A0
 void  MultiplayerMgr_ApplyLocalPhysicsToVehicle(void* self, Entity* vehicle,
                                                 math::Position3* position,
                                                 math::Position3* angles,
