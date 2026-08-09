@@ -308,6 +308,7 @@ struct EntityManager {
     uint8_t _pad[4];
     static EntityManager* sInst;            // ?sInst@EntityManager@@2PAV1@A
     Entity* GetPlayer(int idx);             // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    bool IsLocalPlayer(Entity* entity);     // ?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z
     Entity* mPlayers[16];                   // +0x04 (player entity handles)
     Entity* mWorld;                         // +0x44
     void SwapPlayers(int eA, int eB);       // ?SwapPlayers@EntityManager@@QAEXHH@Z

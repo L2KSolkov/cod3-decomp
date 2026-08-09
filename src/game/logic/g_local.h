@@ -493,6 +493,7 @@ extern void (*thinktable[])(Entity* ent, int msec);
 // fn_think_e values used by g.o (verified via disasm)
 enum {
     THINK__NULL = 0,
+    THINK__G_ExplodeMissile = 8,
     THINK__FinishSpawningItem = 6,
     THINK__G_FreeEntity = 0x0C,
     THINK__GotoPos3 = 0x0E,
@@ -504,6 +505,24 @@ enum {
     THINK__Think_SpawnNewAutoDoorTrigger = 0x1C,
     THINK_MAX = 0x1E,
 };
+
+namespace View {
+bool IsSplitScreen();  // ea: 0x00693C10 (cg_misc.cpp)
+}
+
+// ============================================================================
+// weapon helpers (BG_* from game2.o; extern)
+// ============================================================================
+int  BG_AmmoForWeapon(int iWeapon);
+int  BG_ClipForWeapon(int iWeapon);
+int  BG_GetNumWeapons();
+int  BG_GetAmmoClipSize(int iClipIndex);
+int  BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
+int  irand(int min, int max);
+void G_AddLean(Entity* ent, float* point);
+extern float delta;          // 0xDD7FE4 (mine test standoff distance)
+extern float dword_F63C70[];  // 0xF63C70 (per-client muzzle offsets)
+extern unsigned char bulletPriorityMap[];  // 0xDD55D0
 
 // ============================================================================
 // itemType_t / gitem_s - item table entry (0x34 bytes) - verified against IDA
@@ -539,7 +558,10 @@ static_assert(offsetof(gitem_s, giType) == 0x24, "gitem_s::giType offset mismatc
 // weaponFileInfo_t - weapon definition (0x948 bytes; g.o uses a subset)
 // ============================================================================
 struct weaponFileInfo_t {
-    uint8_t _pad[0x6E8];          // +0x000
+    uint8_t _pad0[0x5C4];         // +0x000
+    int     iProjectileSpeed;     // +0x5C4
+    int     iProjectileSpeedUp;   // +0x5C8
+    uint8_t _pad1[0x6E8 - 0x5CC];
     int     bTwoHanded;           // +0x6E8
     uint8_t _pad2[0x764 - 0x6EC];
     int     iAltWeaponIndex;      // +0x764
@@ -548,6 +570,20 @@ struct weaponFileInfo_t {
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
 static_assert(offsetof(weaponFileInfo_t, bTwoHanded) == 0x6E8, "weaponFileInfo_t::bTwoHanded offset mismatch");
 static_assert(offsetof(weaponFileInfo_t, iAltWeaponIndex) == 0x764, "weaponFileInfo_t::iAltWeaponIndex offset mismatch");
+static_assert(offsetof(weaponFileInfo_t, iProjectileSpeed) == 0x5C4, "weaponFileInfo_t::iProjectileSpeed offset mismatch");
+
+// ============================================================================
+// weaponParms - weapon fire params (0x40 bytes) - verified against IDA
+// ============================================================================
+struct weaponParms {
+    float forward[3];       // +0x00
+    float right[3];         // +0x0C
+    float up[3];            // +0x18
+    float muzzleTrace[3];   // +0x24
+    float gunForward[3];    // +0x30
+    weaponFileInfo_t* pWeapInfo;  // +0x3C
+};
+static_assert(sizeof(weaponParms) == 0x40, "weaponParms size mismatch");
 
 // ============================================================================
 // g.o data
