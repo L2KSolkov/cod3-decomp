@@ -276,6 +276,89 @@ int VEH_GetVehicleInfo(const char* name)
     return v1;
 }
 
+// ea: 0x0044D4E0
+int16_t VEH_GetPlayerVehicleInfo(const char* name)
+{
+    if (name == nullptr || *name == 0)
+        return -1;
+    int16_t v1 = 0;
+    if (s_numVehicleInfos <= 0)
+        return -1;
+    while (_stricmp(name, s_vehicleInfos[v1]->name.c_str()) != 0)
+    {
+        if (++v1 >= s_numVehicleInfos)
+            return -1;
+    }
+    return v1;
+}
+
+// ea: 0x0046A370
+void VEH_SetPosition(Entity* ent, const math::Position3* origin,
+                     const math::Position3* angles, const float* vel)
+{
+    scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
+    if (ent->takedamage != 0)
+    {
+        ent->s.pos.trBase[0] = ent->r.currentOrigin.v.m128_f32[0];
+        ent->s.pos.trBase[1] = ent->r.currentOrigin.v.m128_f32[1];
+        ent->s.pos.trBase[2] = ent->r.currentOrigin.v.m128_f32[2];
+        ent->s.pos.trDelta[0] = origin->v.m128_f32[0];
+        ent->s.pos.trDelta[1] = origin->v.m128_f32[1];
+        ent->s.pos.trDelta[2] = origin->v.m128_f32[2];
+        if (IS_NAN(ent->r.currentOrigin.v.m128_f32[0])
+            || IS_NAN(ent->r.currentOrigin.v.m128_f32[1])
+            || IS_NAN(ent->r.currentOrigin.v.m128_f32[2]))
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 1292;
+            AeAssert::gCurrentExpr = "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        ent->r.currentOrigin.v.m128_f32[0] = origin->v.m128_f32[0];
+        ent->r.currentOrigin.v.m128_f32[1] = origin->v.m128_f32[1];
+        ent->r.currentOrigin.v.m128_f32[2] = origin->v.m128_f32[2];
+        ent->s.apos.trBase[0] = ent->r.currentAngles.v.m128_f32[0];
+        ent->s.apos.trBase[1] = ent->r.currentAngles.v.m128_f32[1];
+        ent->s.apos.trBase[2] = ent->r.currentAngles.v.m128_f32[2];
+        ent->s.apos.trDelta[0] = angles->v.m128_f32[0];
+        ent->s.apos.trDelta[1] = angles->v.m128_f32[1];
+        ent->s.apos.trDelta[2] = angles->v.m128_f32[2];
+        ent->r.currentAngles.v.m128_f32[0] = angles->v.m128_f32[0];
+        ent->r.currentAngles.v.m128_f32[1] = angles->v.m128_f32[1];
+        ent->r.currentAngles.v.m128_f32[2] = angles->v.m128_f32[2];
+        ent->s.pos.trType = TR_INTERPOLATE;
+        ent->s.apos.trType = TR_INTERPOLATE;
+        if (ent->takedamage != 0)
+            g_LinkEntity(ent);
+        Entity* v7 = HandleDbToEnt(scr_vehicle->mIdleSndEnt);
+        if (v7 != nullptr)
+        {
+            G_SetOrigin(v7, origin);
+            G_SetAngle(v7, angles);
+            v7->s.pos.trType = TR_INTERPOLATE;
+            v7->s.apos.trType = TR_INTERPOLATE;
+            g_LinkEntity(v7);
+        }
+        Entity* v9 = HandleDbToEnt(scr_vehicle->mEngineSndEnt);
+        if (v9 != nullptr)
+        {
+            G_SetOrigin(v9, origin);
+            G_SetAngle(v9, angles);
+            v9->s.pos.trType = TR_INTERPOLATE;
+            v9->s.apos.trType = TR_INTERPOLATE;
+            g_LinkEntity(v9);
+        }
+        if ((ent->flags & 0x20000000) != 0)
+            G_SetEntityOceanHeight(ent);
+    }
+    else
+    {
+        SV_UnlinkEntity(ent);
+    }
+}
+
 // ea: 0x0046DBF0
 void G_SetupScrVehicles(void)
 {

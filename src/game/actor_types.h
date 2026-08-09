@@ -114,7 +114,9 @@ static_assert(sizeof(ActorLookAt) == 0x3C, "ActorLookAt size mismatch");
 // actor_physics_t — actor physics state (304 bytes)
 // ============================================================================
 struct actor_physics_t {
-    uint8_t data[0x130];  // placeholder
+    uint8_t _pad[0x40];
+    int     bIsAlive;   // +0x40
+    uint8_t _pad44[0x130 - 0x44];
 };
 static_assert(sizeof(actor_physics_t) == 0x130, "actor_physics_t size mismatch");
 
@@ -366,7 +368,7 @@ struct actor_s {
     uint8_t        bDesiredUseGoalWeight;        // +0x2C5
     // pad 10 (to +0x2D0)
     uint8_t        _pad2C6[10];                  // +0x2C6
-    uint8_t        physics_data[0x130];           // +0x2D0 (actor_physics_t)
+    struct actor_physics_t Physics;              // +0x2D0 (0x130 bytes)
     uint8_t        path_data[0x410];             // +0x400 (path_t)
     float          fPathEndRadius;               // +0x810
     float          fPathEndRadiusSqrd;           // +0x814

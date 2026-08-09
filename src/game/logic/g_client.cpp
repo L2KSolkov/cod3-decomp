@@ -205,3 +205,145 @@ void G_FinishSetupSpawnPoint(Entity* pEnt, int msec)
         G_SetOrigin(pEnt, &pEnt->r.currentOrigin);
     }
 }
+
+// ea: 0x00454D00
+void Player_UpdateFriendlyOverlay(Entity* pEnt)
+{
+    Entity* pLookatEnt = pEnt->client->pLookatEnt;
+    if (pLookatEnt == nullptr)
+    {
+        SV_SetConfigstring(13, va("%s", "none"));
+        return;
+    }
+    actor_s* actor = pLookatEnt->actor;
+    if (actor == nullptr
+        || actor->Physics.bIsAlive == 0
+        || actor->mProperName.mBlock == nullptr
+        || (actor->mProperName.mBlock + 1) == nullptr
+        || ((char*)&(actor->mProperName.mBlock + 1)->mBuff)[0] == 0)
+    {
+        scr_vehicle_t* scr_vehicle = pLookatEnt->scr_vehicle;
+        if (scr_vehicle != nullptr
+            && pLookatEnt->health > 0
+            && scr_vehicle->mProperName.mBlock != nullptr
+            && (scr_vehicle->mProperName.mBlock + 1) != nullptr
+            && ((char*)&(scr_vehicle->mProperName.mBlock + 1)->mBuff)[0] != 0)
+        {
+            Broc::string::Block* mBlock = scr_vehicle->mProperName.mBlock;
+            const char* v16 = (const char*)&mBlock[1];
+            if (mBlock == nullptr)
+                v16 = defaultFileName;
+            SV_SetConfigstring(13, va("%s", v16));
+            if (pEnt->client == nullptr)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+                AeAssert::gCurrentLine = 502;
+                AeAssert::gCurrentExpr = "pEnt->client";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            if (pLookatEnt->maxHealth == 0)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+                AeAssert::gCurrentLine = 503;
+                AeAssert::gCurrentExpr = "traceEnt->maxHealth";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            float colorFraca = pLookatEnt->health / pLookatEnt->maxHealth;
+            if (colorFraca > 1.0f)
+                colorFraca = 1.0f;
+            SV_SetConfigstring(14, va("%f", colorFraca));
+            vehicle_info_t* v19 = s_vehicleInfos[pLookatEnt->scr_vehicle->infoIdx];
+            const char* nameOverlay = v19->nameOverlay;
+            if (nameOverlay[0] == 0)
+            {
+                const char* v22 = va("%s", "none");
+                SV_SetConfigstring(15, v22);
+            }
+            else
+            {
+                SV_SetConfigstring(15, va("%s", nameOverlay));
+            }
+            return;
+        }
+        if (pLookatEnt->health <= 0)
+            return;
+        Broc::string::Block* v23 = pLookatEnt->mGroupName.mBlock;
+        if (v23 == nullptr)
+            return;
+        Broc::string::Block* v24 = v23 + 1;
+        if (v24 == nullptr
+            || ((char*)&v24->mBuff)[0] == 0
+            || pLookatEnt->team.mBlock == nullptr
+            || pLookatEnt->team.GetBuff()[1] != 'l')
+            return;
+        Broc::string::Block* v25 = pLookatEnt->mGroupName.mBlock;
+        const char* v26 = v25 != nullptr ? (const char*)&v25[1] : defaultFileName;
+        SV_SetConfigstring(13, va("%s", v26));
+        if (pEnt->client == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+            AeAssert::gCurrentLine = 523;
+            AeAssert::gCurrentExpr = "pEnt->client";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        if (pLookatEnt->maxHealth == 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+            AeAssert::gCurrentLine = 524;
+            AeAssert::gCurrentExpr = "traceEnt->maxHealth";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        float colorFracb = pLookatEnt->health / pLookatEnt->maxHealth;
+        if (colorFracb > 1.0f)
+            colorFracb = 1.0f;
+        SV_SetConfigstring(14, va("%f", colorFracb));
+        weaponFileInfo_t* InfoForWeapon =
+            BG_GetInfoForWeapon((int)pLookatEnt->mHintString);
+        const char* v22;
+        if (InfoForWeapon == nullptr
+            || InfoForWeapon->szOverlayName == nullptr
+            || *InfoForWeapon->szOverlayName == 0)
+            v22 = va("%s", defaultFileName);
+        else
+            v22 = va("%s", InfoForWeapon->szOverlayName);
+        SV_SetConfigstring(15, v22);
+        return;
+    }
+    Broc::string::Block* v5 = actor->mProperName.mBlock;
+    const char* v6 = v5 != nullptr ? (const char*)&v5[1] : defaultFileName;
+    SV_SetConfigstring(13, va("%s", v6));
+    if (pEnt->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+        AeAssert::gCurrentLine = 486;
+        AeAssert::gCurrentExpr = "pEnt->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pLookatEnt->maxHealth == 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PlayerUse.cpp";
+        AeAssert::gCurrentLine = 487;
+        AeAssert::gCurrentExpr = "traceEnt->maxHealth";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float colorFrac = pLookatEnt->health / pLookatEnt->maxHealth;
+    if (colorFrac > 1.0f)
+        colorFrac = 1.0f;
+    SV_SetConfigstring(14, va("%f", colorFrac));
+    unsigned char WeaponIndexForName =
+        BG_GetWeaponIndexForName(pLookatEnt->actor->mWeaponName);
+    weaponFileInfo_t* v10 = BG_GetInfoForWeapon(WeaponIndexForName);
+    SV_SetConfigstring(15, va("%s", v10->szOverlayName));
+}

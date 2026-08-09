@@ -166,7 +166,7 @@ struct scr_vehicle_t {
     int     playEngineSound; // +0x384
     DbLinkedHandle<EntityHandleDb, Entity> mIdleSndEnt;  // +0x388
     DbLinkedHandle<EntityHandleDb, Entity> mEngineSndEnt;  // +0x38C
-    uint8_t _pad390[0x394 - 0x390];
+    Broc::string mProperName;  // +0x390
     Handle  mSoundEffectHandle[6];  // +0x394
     Handle  mWheel_ParticleEffectHandle[6];  // +0x3AC (0x18 bytes)
     Handle  mRumbleEffectHandle;  // +0x3C4
@@ -1002,6 +1002,8 @@ int  BG_GetAmmoTypeMax(int iAmmoIndex);           // game.o 0x607080
 int  BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616B70
 int  BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x621F60
 int  BG_SelectWeaponIndex(int iWeaponIndex, int client);  // game.o 0x6076E0
+unsigned char BG_GetWeaponIndexForName(const char* name);  // game.o 0x6073A0
+unsigned char BG_GetWeaponIndexForName(unsigned int name);  // game.o 0x607310
 int  irand(int min, int max);
 void G_AddLean(Entity* ent, float* point);
 extern float delta;          // 0xDD7FE4 (mine test standoff distance)
@@ -1035,7 +1037,9 @@ struct vehicle_info_t {
     float   suspensionTravel;       // +0x70
     uint8_t _pad74[0x27C - 0x74];
     int16_t mMantleHintStringIndex; // +0x27C
-    uint8_t _pad27E[0x310 - 0x27E];
+    uint8_t _pad280[0x2EC - 0x280];
+    char    nameOverlay[32];        // +0x2EC
+    int     inactiveBlowupSeconds;  // +0x30C
 };
 static_assert(sizeof(vehicle_info_t) == 0x310, "vehicle_info_t size mismatch");
 static_assert(offsetof(vehicle_info_t, maxSpeed) == 0x50, "vehicle_info_t::maxSpeed offset mismatch");
@@ -1141,7 +1145,9 @@ struct weaponFileInfo_t {
     int     index;                // +0x000
     unsigned int internalNameHash; // +0x004
     char*   szInternalName;       // +0x8
-    uint8_t _pad8[0xAC - 0xC];
+    char*   szDisplayName;        // +0xC
+    char*   szOverlayName;        // +0x10
+    uint8_t _pad14[0xAC - 0x14];
     int     type;                 // +0xAC (weapType_t; WEAPTYPE_BULLET == 0)
     int     weapClass;            // +0xB0 (weapClass_t; WEAPCLASS_TURRET == 7)
     int     slot;                 // +0xB4
@@ -1628,6 +1634,7 @@ void    Cmd_Where_f(Entity* ent);                   // g.o 0x456010
 int     Cmd_PFXStats_f(void);                       // g.o 0x44AEA0
 int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o 0x46F9F0
 vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
+int16_t VEH_GetPlayerVehicleInfo(const char* name); // g.o 0x44D4E0
 int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
 void    VEH_StopWheelEffects(Entity* ent);          // g.o 0x44DBD0
 void    VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex);  // g.o 0x45C7F0
@@ -1936,7 +1943,8 @@ int   Cmd_FollowCycle_f(Entity* ent, int dir);   // g.o 0x4679F0
 int   SV_GetCurrentClientInfo(int clientNum, PlayerState* ps);  // sv.o
 void  VEH_RemoveVehicle(void* v);                 // phys_xboxr
 void  VEH_SetPosition(Entity* ent, const math::Position3* origin,
-                      const math::Position3* angles, const float* vel);  // g.o
+                      const math::Position3* angles,
+                      const float* vel);  // g.o 0x46A370
 void  SP_script_vehicle(Entity* pSelf);          // g.o 0x488CE0
 void  VEH_Backup(Entity* ent);                   // g.o
 int   VP_GetNodeIndex(Broc::string* name, math::Position3* origin);  // g.o

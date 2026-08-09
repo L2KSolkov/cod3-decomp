@@ -1007,6 +1007,13 @@ void misc_EntInfo(Entity* pSelf)
     CL_AddDebugString(xyz, color, fInfoScale * 0.75f, v16, 1);
 }
 
+// ea: 0x0044CF00
+void G_InitObjectives()
+{
+    for (int i = 0; i < 17; ++i)
+        SV_SetConfigstring(i + 16, nullptr);
+}
+
 // ea: 0x0044B8C0
 void G_RegisterCvars(void)
 {
@@ -2823,7 +2830,7 @@ void Client_Touch(Entity* pSelf, Entity* pOther)
     {
         if (HandleDbToEnt(actor->closeEnt) == nullptr
             && actor->bDontAvoidPlayer == 0
-            && (*(int*)((char*)&actor->physics_data + 0x80) & 0x2000000) != 0)
+            && (*(int*)((char*)&actor->Physics + 0x80) & 0x2000000) != 0)
         {
             if (pOther->sentient == nullptr)
             {

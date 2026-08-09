@@ -747,6 +747,56 @@ namespace AeStringSupport {
 extern void CStrToAeStr(char* oBuff, int* oLen, int capacity, const char* src);
 }
 
+// Mirrors HandleDb<Entity,1344,SizedHandle<12,20>>::AllocateHandle (inline COMDAT)
+static unsigned int EntityHandleDb_AllocateHandle()
+{
+    unsigned int* mFreeBits = (unsigned int*)&EntityHandleDb::sInst._pad[0];
+    int index = -1;
+    for (int w = 0; w < 42; ++w)
+    {
+        unsigned int word = mFreeBits[w];
+        if (word != 0)
+        {
+            unsigned long bit;
+            _BitScanForward(&bit, word);
+            index = w * 32 + (int)bit;
+            break;
+        }
+    }
+    if (index >= 0x540)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+        AeAssert::gCurrentLine = 98;
+        AeAssert::gCurrentExpr = "nextIndex >= 0 && nextIndex < _MaxEltements";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("index out of bounds!!! ILLEGAL array access!"))
+            __debugbreak();
+    }
+    if (index != -1)
+        mFreeBits[index / 32] &= ~(1u << (index % 32));
+    unsigned int key = 0;
+    if (index >= 0)
+        key = EntityHandleDb::sInst.mElements[index].mKey;
+    return ((unsigned int)index & 0xFFF) | (key << 12);
+}
+
+// ea: 0x004737E0
+void EntityHandleDb::AssignHandle(Entity& e)
+{
+    if (e.mHandle.mHandle.mVal == 0)
+    {
+        unsigned int mVal = EntityHandleDb_AllocateHandle();
+        e.mHandle.mHandle.mVal = mVal;
+        unsigned int idx = mVal & 0xFFF;
+        EntityHandleDb::sInst.mElements[idx].mObject = &e;
+        EntityHandleDb::sInst.mActiveList.m_elements[
+            EntityHandleDb::sInst.mActiveList.m_size] = &e;
+        ++EntityHandleDb::sInst.mActiveList.m_size;
+        e.mEntityArrayIndex = (int16_t)(EntityHandleDb::sInst.mActiveList.m_size - 1);
+    }
+}
+
 // ea: 0x00482540
 void G_SetFixedLink(Entity* ent, int eAngles)
 {
