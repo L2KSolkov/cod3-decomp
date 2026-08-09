@@ -1661,7 +1661,6 @@ void  Scr_Vehicle_Die(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
                       int damage, int mod, int weapon, const float* position,
                       const float* dir, hitLocation_t hitLoc);  // g.o 0x488BE0
 void  EntityHandleDb_Validate(void* self);       // g.o 0x466350
-int   SpotWouldTelefrag(const math::Position3* origin);  // g.o
 HashString hash_const_info_player_deathmatch;    // helper
 void  SV_GetConfigstring(int index, char* buffer, int bufferSize);  // sv.o
 int   VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int fieldType);  // g.o 0x44D370
@@ -1678,6 +1677,32 @@ extern void (*entinfotable[3])(Entity* ent);      // g.o
 float vectoyaw(const float* vec);                 // core.o
 struct pmove_t;                                   // opaque
 struct proximity_data_t { struct { __m128 v; } lo, hi; };  // opaque
+void  DebugDumpEnts(int a1, Entity* e);            // g.o 0x460C50 (redecl above)
+void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0 (redecl above)
+void  G_LoadLevel(void);                           // g.o 0x468D00
+void  ClientCommand(DbLinkedHandle<EntityHandleDb, Entity> ent);  // g.o 0x4678C0
+void  G_ShutdownGame(int restart);                 // g.o 0x457FE0
+bool  SpotWouldTelefrag(const math::Position3* origin);  // g.o 0x466E00
+void  G_AddLean(Entity* ent, float* point);        // g.o 0x44A050
+void  AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac,
+                        float fViewRoll, float fLeanDist);  // game.o
+void  MemPrint(const char* fmt, ...);              // core.o
+void  DynamicDecalMgr_DestroyAllDecals(void);      // render.o
+void  SmokeGrenadeMgr_ReInitialize(void);          // game.o
+void  CG_FreeWeapons(void);                        // cg.o
+void  BG_FreeWeaponInfo(void);                     // game.o
+void  G_FreeInteractionInfo(void);                 // g.o
+int   ae_stricmpn(const char* s1, const char* s2, int n);  // core.o ae_string_support.cpp
+void  InteractionController_ClearQueue(void* self);  // cl.o
+int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
+                      int* entityList, int maxcount, int contentmask);  // sv.o
+void  cFreeList_Shutdown(void* freelist);          // core.o
+extern cFreeList<trRefEntity> gRefEntFreeList;     // g.o
+extern cFreeList<DObj> gDObjFreeList;              // g.o
+extern cFreeList<void> gDSkelFreeList;             // g.o
+extern cFreeList<void> gDSkelMaxFreeList;          // g.o
+extern cFreeList<void> gDSkel4FreeList;            // g.o
+void  G_FreeInteractionInfo(void);                 // g.o
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
 void* InteractionController_Inst(int instance);      // cl.o

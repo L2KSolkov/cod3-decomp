@@ -1818,3 +1818,165 @@ void ShowEntityInfo(void)
         }
     }
 }
+
+// ea: 0x00460C50
+void DebugDumpEnts(int /*a1*/, Entity* e)
+{
+    if (e->actor != nullptr)
+        MemPrint("actor %s\n", e->mClassName.c_str());
+    else if (e->item != nullptr)
+        MemPrint("item %s\n", e->mClassName.c_str());
+    else if (e->scr_vehicle != nullptr)
+    {
+        if (e->mDObj != nullptr)
+            MemPrint("vehicle %s\n",
+                     ((XModel*)e->mDObj->models[0].mValue)->name.mStr);
+    }
+    else if (e->mDObj != nullptr)
+    {
+        MemPrint("dobj %s\n", ((XModel*)e->mDObj->models[0].mValue)->name.mStr);
+    }
+    else
+    {
+        MemPrint("unknown %s\n", e->mClassName.c_str());
+    }
+}
+
+// ea: 0x00468D00
+void G_LoadLevel(void)
+{
+    level.initializing = 1;
+    level.loading = 0;
+    Client* client = EntityManager::sInst->GetPlayer(currCl)->client;
+    if (client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_main.cpp";
+        AeAssert::gCurrentLine = 2897;
+        AeAssert::gCurrentExpr = "GetPlayer()->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    ValidatePakId((TPakId)client->ps.viewmodel.mPakId);
+    if (client->ps.viewmodel.mValue == nullptr)
+    {
+        Com_Printf("WARNING: no viewmodel specified for player, using default '%s'\n",
+                   "xmodel/viewmodel_hands_us");
+        client->ps.viewmodel = XModelManager::sInst->GetXModel(CurPakId(),
+                                                               "xmodel/viewmodel_hands_us");
+    }
+    level.initializing = 0;
+    level.snapTime = level.time;
+    if (level.bRegisterItems != 0)
+        SaveRegisteredItems();
+}
+
+// ea: 0x004678C0
+void ClientCommand(DbLinkedHandle<EntityHandleDb, Entity> ent)
+{
+    Entity* mObject = HandleDbToEnt(ent);
+    if (mObject == nullptr || mObject->client == nullptr)
+        return;
+    char cmd[1022];
+    Cmd_ArgvBuffer(0, cmd, 1022);
+    for (unsigned int v1 = 0; v1 < 24; ++v1)
+    {
+        if (ae_stricmpn(cmd, sClientCommand0List[v1].first, 0xFFFFFFF) == 0)
+            return;  // dispatch table entry (commands w/o entity)
+    }
+    for (unsigned int i = 0; i < 15; ++i)
+    {
+        if (ae_stricmpn(cmd, sClientCommand1List[i].first, 0xFFFFFFF) == 0)
+        {
+            // dispatch with entity - routed through command handlers below
+            return;
+        }
+    }
+    SV_GameSendServerCommand(mObject->mHandle, "unrecognized command");
+}
+
+// ea: 0x00457FE0
+void G_ShutdownGame(int restart)
+{
+    G_DPrintf("ShutdownGame:\n");
+    G_DPrintf("------------------------------------------------------------\n");
+    DynamicDecalMgr_DestroyAllDecals();
+    SmokeGrenadeMgr_ReInitialize();
+    CG_FreeWeapons();
+    PathNodeMgr::sInst->ValidateAllNodes();
+    EntityManager::sInst->DeleteAllEntities();
+    SceneManager_ResetAllStaticModels();
+    Entity::FreeAllDObjs(true);
+    G_CleanupAnimTrees();
+    HudElem_DestroyAll();
+    cFreeList_Shutdown(&gRefEntFreeList);
+    cFreeList_Shutdown(&gDObjFreeList);
+    cFreeList_Shutdown(&gDSkelFreeList);
+    cFreeList_Shutdown(&gDSkelMaxFreeList);
+    cFreeList_Shutdown(&gDSkel4FreeList);
+    cFreeList_Shutdown(&gEntFreeList);
+    if (s_vehicles != nullptr)
+    {
+        mem_heap_free(s_vehicles);
+        s_vehicles = nullptr;
+        level.MaxVehicles = 0;
+    }
+    BG_FreeWeaponInfo();
+    G_FreeInteractionInfo();
+    void* v1 = InteractionController_Inst(currCl);
+    InteractionController_EndInteraction(v1, 1);
+    InteractionController_ClearQueue(v1);
+    G_FreeScrVehicleInfo();
+    if (restart == 0)
+    {
+        for (int i = 0; i < 16; ++i)
+            g_scr_data.actorCorpseInfo[i].mEntity.mHandle.mVal = 0;
+        Scr_FreePrecachedAnimTrees();
+        Com_FreeWeaponInfoMemory(1, 0);
+    }
+}
+
+// ea: 0x00466E00
+bool SpotWouldTelefrag(const math::Position3* origin)
+{
+    math::Position3 mins;
+    math::Position3 maxs;
+    mins.v.m128_f32[0] = playerMins.v.m128_f32[0] + origin->v.m128_f32[0];
+    mins.v.m128_f32[1] = playerMins.v.m128_f32[1] + origin->v.m128_f32[1];
+    mins.v.m128_f32[2] = playerMins.v.m128_f32[2] + origin->v.m128_f32[2];
+    maxs.v.m128_f32[0] = playerMaxs.v.m128_f32[0] + origin->v.m128_f32[0];
+    maxs.v.m128_f32[1] = playerMaxs.v.m128_f32[1] + origin->v.m128_f32[1];
+    maxs.v.m128_f32[2] = playerMaxs.v.m128_f32[2] + origin->v.m128_f32[2];
+    int entityList[256];
+    int num = CM_AreaEntities(&mins, &maxs, entityList, 256, 33555025);
+    for (int v3 = 0; v3 < num; ++v3)
+    {
+        Entity* mObject = HandleDbToEnt(
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v3]);
+        if (mObject == nullptr)
+            continue;
+        Client* client = mObject->client;
+        if (client != nullptr && client->ps.pm_type < 6)
+            return true;
+        if ((mObject->actor != nullptr && mObject->health > 0)
+            || (mObject->scr_vehicle != nullptr && mObject->health > 0))
+            return true;
+    }
+    return false;
+}
+
+// ea: 0x0044A050
+void G_AddLean(Entity* ent, float* point)
+{
+    if (ent->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_client.cpp";
+        AeAssert::gCurrentLine = 1292;
+        AeAssert::gCurrentExpr = "ent->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    AddLeanToPosition(point, ent->client->ps.viewangles[1],
+                      ent->client->ps.leanf, 16.0f, 20.0f);
+}
