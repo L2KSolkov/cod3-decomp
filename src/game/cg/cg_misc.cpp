@@ -3120,3 +3120,367 @@ void CG_DebugArc(const float* center, float radius, float angle0, float angle1,
                         0, 0);
     }
 }
+
+// ============================================================================
+// ADS meta-anim player (cg.o cg_misc.cpp)
+// ============================================================================
+
+struct nalAnyPoseAnim {
+    unsigned char _pad[0x30];
+    void* Skeleton;          // +0x30
+    unsigned char Flags;     // +0x34
+    float Duration;          // +0x38
+};
+
+struct tlFixedString {
+    unsigned int hash;  // +0x00
+    char str[28];       // +0x04
+};
+
+struct ADSMetaAnimData {
+    void* vftable;           // +0x00
+    tlFixedString mName;     // +0x04
+    nalAnyPoseAnim* mAnimPtr;  // +0x24
+    nalAnyPoseAnim* mRevPtr;   // +0x28
+
+    virtual int IsAnimLooping() const;
+    virtual int IsAnimTrajRelative() const;
+    virtual float GetAnimDuration() const;
+    virtual const void* GetSkeleton() const;
+    virtual void* CreateAnimInst(void* theSkel, void* theAnim);
+    virtual void DelayCreate(void** animArray, int numAnims);
+};
+
+struct ADSMetaAnimPlayer {
+    void* mMetaNalBaseAnimPtr;      // +0x00
+    ADSMetaAnimData* mADSMetaAnimDataPtr;  // +0x04
+
+    void DeleteMetaAnim();
+    void CreateMetaAnim(XAnimTree* pAnimTree);
+    int Update(XAnimTree* pAnimTree, weaponInfo_s* weaponInfo);
+};
+
+extern void* tlMemAlloc(unsigned int size, unsigned int align,
+                        unsigned int flags);
+extern void* mem_heap_malloc(unsigned int size);
+extern void mem_heap_free(void* ptr);
+extern void* MetaNalBaseAnim_Ctor(void* self);
+extern void MetaNalBaseAnim_Create(void* self, void* metaAnimData);
+extern void MetaNalBaseAnim_DelayCreate(void* self, void** animArray,
+                                        int numAnims);
+extern void XAnimEntry_Create(XAnimEntry* self);
+extern void* ADSMetaAnimInstance_Ctor(void* self, void* forwardAnim,
+                                      void* reverseAnim, void* theSkel,
+                                      float* interpValue);
+extern void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
+                                 float fadeIn, void* playMethod,
+                                 float callbackTime, void* callback,
+                                 float speed, float startTimeSec);
+extern float AnimationPlayer_GetAnimTime(void* self, void* anim);
+extern void CG_StartWeaponAnim(int weaponNum, DObj* dobj, int animIndex,
+                               float fadeInTime, float startTimeInSec,
+                               int forceRestart);
+extern float kADSAnimFadeInTime;  // 0x00DFA380
+extern char gMetaAnimPlayMethod;  // 0x00F05108
+extern char sWeaponAnimCallback;  // 0x00DF9E4C
+extern tlFixedString tlFixedString_ctor(void* self, const char* s);
+
+static XAnimEntry* AnimTreeEntry(void* pAnimTree, unsigned int index)
+{
+    void* anims = *(void**)((char*)pAnimTree + 8);
+    unsigned int mSize = *(unsigned int*)((char*)anims + 4);
+    if (index >= mSize)
+    {
+        CG_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h", 81);
+        index = 0;
+    }
+    return &((XAnimEntry*)*(void**)((char*)anims + 8))[index];
+}
+
+// ea: 0x0068F240
+int ADSMetaAnimData::IsAnimLooping() const
+{
+    if (mAnimPtr != nullptr)
+        return mAnimPtr->Flags & 1;
+    return 0;
+}
+
+// ea: 0x0068F260
+int ADSMetaAnimData::IsAnimTrajRelative() const
+{
+    return mAnimPtr == nullptr || (mAnimPtr->Flags & 2) == 0;
+}
+
+// ea: 0x0068F280
+float ADSMetaAnimData::GetAnimDuration() const
+{
+    if (mAnimPtr != nullptr)
+        return mAnimPtr->Duration;
+    return 1.0f;
+}
+
+// ea: 0x0068F2A0
+const void* ADSMetaAnimData::GetSkeleton() const
+{
+    if (mAnimPtr != nullptr)
+        return mAnimPtr->Skeleton;
+    return nullptr;
+}
+
+// ea: 0x0068F2B0
+void* ADSMetaAnimData::CreateAnimInst(void* theSkel, void* theAnim)
+{
+    void* v4 = tlMemAlloc(0x24, 8, 0);
+    if (v4 == nullptr)
+        return nullptr;
+    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    return ADSMetaAnimInstance_Ctor(v4, mAnimPtr, mRevPtr, theSkel,
+                                    &Player->client->ps.fWeaponPosFrac);
+}
+
+// ea: 0x0068F350
+void ADSMetaAnimData::DelayCreate(void** animArray, int numAnims)
+{
+    if (animArray == nullptr || numAnims != 2)
+    {
+        CG_ASSERT("animArray && numAnims == 2",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 194);
+    }
+    bool v4 = *animArray == nullptr;
+    mAnimPtr = (nalAnyPoseAnim*)*animArray;
+    mRevPtr = (nalAnyPoseAnim*)animArray[1];
+    if (v4)
+    {
+        CG_ASSERT("mAnimPtr", "c:\\cod\\code\\game\\cg_weapons.cpp", 198);
+    }
+    if (mRevPtr == nullptr)
+    {
+        CG_ASSERT("mRevPtr", "c:\\cod\\code\\game\\cg_weapons.cpp", 199);
+    }
+    tlFixedString v5;
+    tlFixedString_ctor(&v5, "ADSMetaAnim");
+    mName = v5;
+}
+
+// ea: 0x0068F490
+void ADSMetaAnimPlayer::DeleteMetaAnim()
+{
+    void* mMetaNalBaseAnimPtr = this->mMetaNalBaseAnimPtr;
+    if (mMetaNalBaseAnimPtr != nullptr)
+    {
+        (*(void(**)(void*, int))*(void**)mMetaNalBaseAnimPtr)(
+            mMetaNalBaseAnimPtr, 1);
+        this->mMetaNalBaseAnimPtr = nullptr;
+    }
+    if (mADSMetaAnimDataPtr != nullptr)
+    {
+        mem_heap_free(mADSMetaAnimDataPtr);
+        mADSMetaAnimDataPtr = nullptr;
+    }
+}
+
+// ea: 0x00699240
+void ADSMetaAnimPlayer::CreateMetaAnim(XAnimTree* pAnimTree)
+{
+    if (mMetaNalBaseAnimPtr == nullptr)
+    {
+        void* v3 = tlMemAlloc(0x44, 8, 0);
+        if (v3 != nullptr)
+            mMetaNalBaseAnimPtr = MetaNalBaseAnim_Ctor(v3);
+        else
+            mMetaNalBaseAnimPtr = nullptr;
+    }
+    if (mADSMetaAnimDataPtr == nullptr)
+    {
+        void* v5 = mem_heap_malloc(0x2C);
+        if (v5 != nullptr)
+        {
+            memset(v5, 0, 0x2C);
+            *(void**)v5 = (void*)0x00D0F4FC;  // &ADSMetaAnimData::vftable
+            ((ADSMetaAnimData*)v5)->mAnimPtr = nullptr;
+            ((ADSMetaAnimData*)v5)->mRevPtr = nullptr;
+        }
+        mADSMetaAnimDataPtr = (ADSMetaAnimData*)v5;
+    }
+    MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr, mADSMetaAnimDataPtr);
+    XAnimEntry* e23 = AnimTreeEntry(pAnimTree, 0x17);
+    if (e23->anim == nullptr)
+        XAnimEntry_Create(e23);
+    XAnimEntry* e24 = AnimTreeEntry(pAnimTree, 0x18);
+    if (e24->anim == nullptr)
+        XAnimEntry_Create(e24);
+    void* animArray[2];
+    animArray[0] = AnimTreeEntry(pAnimTree, 0x17)->anim;
+    animArray[1] = AnimTreeEntry(pAnimTree, 0x18)->anim;
+    MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr, animArray, 2);
+}
+
+// ea: 0x0069EB30
+int ADSMetaAnimPlayer::Update(XAnimTree* pAnimTree, weaponInfo_s* weaponInfo)
+{
+    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    int v5 = client->ps.weapAnim & 0xFFFFFDFF;
+    if (client->ps.weapAnim < 0 || v5 >= 24)
+    {
+        CG_ASSERT("weapAnimNum >= 0 && weapAnimNum < MAX_WP_ANIMATIONS",
+                  "c:\\cod\\code\\game\\cg_weapons.cpp", 213);
+    }
+    float fWeaponPosFrac = client->ps.fWeaponPosFrac;
+    bool v7 = fWeaponPosFrac != 0.0f && fWeaponPosFrac != 1.0f;
+    if ((v5 == 21 || v5 == 22 || v5 == 0 || v5 == 23
+         || (v5 == 4 || v5 == 7) && client->ps.weaponstate != 4)
+        && v7)
+    {
+        if (mMetaNalBaseAnimPtr == nullptr)
+        {
+            CreateMetaAnim(pAnimTree);
+            DObj* v8 = (DObj*)dword_F6A2A0[802 * currCl];
+            AnimationPlayer_Play(((DObj*)v8)->animPlayers[0],
+                                 mMetaNalBaseAnimPtr, true,
+                                 kADSAnimFadeInTime, &gMetaAnimPlayMethod,
+                                 0.0f, &sWeaponAnimCallback, 1.0f, 0.0f);
+            if (((DObj*)v8)->animPlayers[1] != 0)
+            {
+                XAnimTree* v9 = (XAnimTree*)((DObj*)v8)->tree[1];
+                if (v9 != 0)
+                {
+                    XAnimEntry* e1 = AnimTreeEntry(v9, 1);
+                    if (e1->anim == nullptr)
+                        XAnimEntry_Create(e1);
+                    void* anim = e1->anim;
+                    if (anim != nullptr)
+                    {
+                        AnimationPlayer_Play(
+                            ((DObj*)v8)->animPlayers[1], anim, true,
+                            kADSAnimFadeInTime, nullptr, 0.0f,
+                            &sWeaponAnimCallback,
+                            weaponInfo->viewModelAnimRates[1], 0.0f);
+                        return mMetaNalBaseAnimPtr != nullptr;
+                    }
+                }
+            }
+        }
+    }
+    else if (mMetaNalBaseAnimPtr != nullptr)
+    {
+        DeleteMetaAnim();
+        if (v5 != 0)
+        {
+            if (v5 == 23 && fWeaponPosFrac == 1.0f)
+                client->ps.weapAnim = (~client->ps.weapAnim & 0x200) | 0x17;
+        }
+        else if (fWeaponPosFrac == 0.0f)
+        {
+            client->ps.weapAnim = ~client->ps.weapAnim & 0x200;
+            return mMetaNalBaseAnimPtr != nullptr;
+        }
+    }
+    return mMetaNalBaseAnimPtr != nullptr;
+}
+
+// ea: 0x006994A0
+int CG_StartAnimBlend(int weaponNum, DObj* dobj, int toAnimIndex,
+                      unsigned int fromAnimIndex, float blendTime)
+{
+    if (dobj == nullptr)
+        return 0;
+    XAnimTree* v7 = (XAnimTree*)dobj->tree[0];
+    if (v7 == nullptr)
+        return 0;
+    void* anim = AnimTreeEntry(v7, fromAnimIndex)->anim;
+    void* v9 = AnimTreeEntry(v7, toAnimIndex)->anim;
+    if (anim == v9 || anim == nullptr || v9 == nullptr)
+        return 0;
+    void* v10 = dobj->animPlayers[0];
+    float v11 = 0.0f;
+    if (v10 != nullptr)
+        v11 = AnimationPlayer_GetAnimTime(v10, anim);
+    if (blendTime <= 0.0f)
+        blendTime = 0.0f;
+    CG_StartWeaponAnim(weaponNum, dobj, toAnimIndex, blendTime,
+                       ((nalAnyPoseAnim*)v9)->Duration * v11, 1);
+    return 1;
+}
+
+// ea: 0x00699560
+bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs)
+{
+    unsigned int v2 = 4;
+    while (1)
+    {
+        void* anims = *(void**)((char*)pAnimTree + 8);
+        unsigned int mSize = *(unsigned int*)((char*)anims + 4);
+        XAnimEntry* mList = *(XAnimEntry**)((char*)anims + 8);
+        unsigned int v6 = v2;
+        if (v2 >= mSize)
+        {
+            CG_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h", 81);
+            if (v2 >= mSize)
+                v6 = 0;
+        }
+        void* curAnim = *(void**)((char*)&sWeaponAnimCallback + 4);
+        if (curAnim != nullptr && mList[v6].anim == curAnim)
+            break;
+        if (++v2 >= 23)
+            return true;
+    }
+    *(int*)((char*)client_cgs + 0xD0) = -1;
+    return false;
+}
+
+// ============================================================================
+// FixupGunModelParts (cg.o cg_misc.cpp)
+// ============================================================================
+
+struct XModelPartsEntry {
+    char* mStr;           // +0x00
+    unsigned int mHash;   // +0x04
+    int mFlags;           // +0x08
+};
+
+struct XModelParts {
+    unsigned char _pad0[0x10];
+    int mHierarchySize;       // +0x10
+    XModelPartsEntry* mHierarchyList;  // +0x14
+    unsigned char _pad1[0x28 - 0x18];
+    int mMeshPtrsSize;        // +0x28
+    void** mMeshPtrsList;     // +0x2C
+};
+
+extern int _stricmp(const char* dst, const char* src);
+extern int _strnicmp(const char* dst, const char* src, size_t count);
+
+// ea: 0x00699A90
+void FixupGunModelParts(XModelParts* xmp)
+{
+    int mSize = xmp->mHierarchySize;
+    void* bulletMesh = nullptr;
+    for (int v2 = 0; v2 < mSize; ++v2)
+    {
+        unsigned int v4 = (unsigned int)v2 < (unsigned int)mSize ? v2 : 0;
+        if (_stricmp(xmp->mHierarchyList[v4].mStr, "tag_b") == 0)
+        {
+            unsigned int idx = (unsigned int)v2
+                               < (unsigned int)xmp->mMeshPtrsSize
+                                   ? v2
+                                   : 0;
+            bulletMesh = xmp->mMeshPtrsList[idx];
+        }
+    }
+    if (bulletMesh != nullptr)
+    {
+        for (int v7 = 0; v7 < mSize; ++v7)
+        {
+            unsigned int v9 = (unsigned int)v7 < (unsigned int)mSize ? v7 : 0;
+            if (_strnicmp(xmp->mHierarchyList[v9].mStr, "tag_b", 5) == 0)
+            {
+                unsigned int v10 =
+                    (unsigned int)v7 < (unsigned int)xmp->mMeshPtrsSize
+                        ? v7
+                        : 0;
+                if (xmp->mMeshPtrsList[v10] == nullptr)
+                    xmp->mMeshPtrsList[v10] = bulletMesh;
+            }
+        }
+    }
+}
