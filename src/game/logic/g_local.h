@@ -1034,8 +1034,7 @@ extern unsigned char bulletPriorityMap[];  // 0xDD55D0
 // g_combat.cpp types/globals
 // ============================================================================
 struct vehicle_info_t {
-    Broc::string name;              // +0x00
-    uint8_t _pad4[0x20 - 0x4];
+    char    name[32];               // +0x00
     int16_t type;                   // +0x20
     int16_t subtype;                // +0x22
     uint8_t _pad24[0x30 - 0x24];
@@ -1055,8 +1054,18 @@ struct vehicle_info_t {
     float   collisionDamage;        // +0x68
     float   collisionSpeed;         // +0x6C
     float   suspensionTravel;       // +0x70
-    uint8_t _pad74[0x27C - 0x74];
-    int16_t mMantleHintStringIndex; // +0x27C
+    float   boundsRadius;           // +0x74
+    float   boundsHeight;           // +0x78
+    float   boundsLength;           // +0x7C
+    int     health;                 // +0x80
+    uint8_t _pad84[0x188 - 0x84];
+    float   engineSndSpeed;         // +0x188
+    uint8_t _pad18C[0x190 - 0x18C];
+    math::Position3 mins;           // +0x190
+    math::Position3 maxs;           // +0x1A0
+    uint8_t _pad1B0[0x25C - 0x1B0];
+    char    mMantleHintString[32];  // +0x25C
+    int     mMantleHintStringIndex; // +0x27C
     uint8_t _pad280[0x2EC - 0x280];
     char    nameOverlay[32];        // +0x2EC
     int     inactiveBlowupSeconds;  // +0x30C
@@ -1101,6 +1110,7 @@ struct cspField_t {
     int         iFieldType; // +0x08
 };
 static_assert(sizeof(cspField_t) == 0xC, "cspField_t size mismatch");
+extern cspField_t s_vehicleFields[73];  // g.o .rdata @ 0xDD6EF0
 
 // externs
 float  AngleNormalize180(float angle);
@@ -1684,6 +1694,9 @@ int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
 void    VEH_StopWheelEffects(Entity* ent);          // g.o 0x44DBD0
 void    VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex);  // g.o 0x45C7F0
 void    VEH_UpdateSounds(Entity* ent, int msec);   // g.o 0x46D560
+void    VEH_Strcpy(unsigned char* pMember, const char* pKeyValue, int);  // g.o 0x44D350
+void    ParseVehicleConfigString(const char* name, const ConfigString* cfgstr);  // g.o 0x44EC90
+void    ParseVehiclePhysicsConfigString(const char* name, const ConfigString* cfgstr);  // g.o 0x463730
 void    VEH_DebugBox(const math::Position3* pos, float width, float r,
                      float g, float b);             // g.o 0x45C3A0
 extern int g_renderPFXStats;                        // game2.o

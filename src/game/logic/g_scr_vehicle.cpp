@@ -1195,7 +1195,7 @@ int VEH_GetVehicleInfo(const char* name)
     int v1 = 0;
     if (s_numVehicleInfos <= 0)
         return -1;
-    while (_stricmp(name, s_vehicleInfos[v1]->name.c_str()) != 0)
+    while (_stricmp(name, s_vehicleInfos[v1]->name) != 0)
     {
         if (++v1 >= s_numVehicleInfos)
             return -1;
@@ -1211,7 +1211,7 @@ int16_t VEH_GetPlayerVehicleInfo(const char* name)
     int16_t v1 = 0;
     if (s_numVehicleInfos <= 0)
         return -1;
-    while (_stricmp(name, s_vehicleInfos[v1]->name.c_str()) != 0)
+    while (_stricmp(name, s_vehicleInfos[v1]->name) != 0)
     {
         if (++v1 >= s_numVehicleInfos)
             return -1;
@@ -2543,6 +2543,84 @@ int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int field
     }
     Com_Error(ERR_DROP, "Bad vehicle field type %i", fieldType);
     return 0;
+}
+
+// ea: 0x0044D350
+void VEH_Strcpy(unsigned char* pMember, const char* pKeyValue, int)
+{
+    strcpy((char*)pMember, pKeyValue);
+}
+
+// ea: 0x0044EC90
+void ParseVehicleConfigString(const char* name, const ConfigString* cfgstr)
+{
+    char buf[256];
+    if (s_numVehicleInfos >= 64)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6552;
+        AeAssert::gCurrentExpr = "s_numVehicleInfos < 64";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Too many vehicles"))
+            __debugbreak();
+    }
+    if (strlen(name) > 0x20)
+    {
+        Com_sprintf(buf, 256, "Vehicle name too long(32max): %s", name);
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+        AeAssert::gCurrentLine = 6557;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(buf))
+            __debugbreak();
+    }
+    vehicle_info_t* v3 = (vehicle_info_t*)mem_heap_malloc(16, 0x310);
+    s_vehicleInfos[s_numVehicleInfos] = v3;
+    memset(v3, 0, sizeof(vehicle_info_t));
+    strcpy(v3->name, name);
+    if (ParseConfigStringToStruct((unsigned char*)v3, s_vehicleFields, 73, cfgstr,
+                                  10, VEH_ParseSpecificField,
+                                  VEH_Strcpy) != 0)
+    {
+        int health = v3->health;
+        v3->accel = v3->accel * 17.6f;
+        v3->collisionSpeed = v3->collisionSpeed * 17.6f;
+        v3->maxSpeed = v3->maxSpeed * 17.6f;
+        v3->engineSndSpeed = v3->engineSndSpeed * 17.6f;
+        if (health == 0)
+            v3->health = 1500;
+        if (v3->boundsRadius == 0.0f)
+            v3->boundsRadius = 75.0f;
+        if (v3->boundsLength == 0.0f)
+            v3->boundsLength = 300.0f;
+        if (v3->boundsRadius > 100.0f)
+        {
+            Com_sprintf(buf, 256, "Bounds radius too big for %s (MAX = %i)",
+                        name, 100);
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_scr_vehicle.cpp";
+            AeAssert::gCurrentLine = 6594;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(buf))
+                __debugbreak();
+        }
+        if (v3->boundsHeight == 0.0f)
+            v3->boundsHeight = 150.0f;
+        v3->mins.v.m128_f32[0] = -v3->boundsRadius;
+        v3->mins.v.m128_f32[1] = -v3->boundsRadius;
+        v3->mins.v.m128_f32[2] = -v3->boundsHeight * 0.5f;
+        v3->maxs.v.m128_f32[0] = v3->boundsRadius;
+        v3->maxs.v.m128_f32[1] = v3->boundsRadius;
+        v3->maxs.v.m128_f32[2] = v3->boundsHeight * 0.5f;
+        if (v3->type == 1 && v3->subtype == 0)
+            v3->subtype = 1;
+        ++s_numVehicleInfos;
+    }
+    char v9 = v3->mMantleHintString[0];
+    v3->mMantleHintStringIndex = -1;
+    if (v9 != 0)
+        G_GetHintStringIndex(&v3->mMantleHintStringIndex,
+                             v3->mMantleHintString);
 }
 
 // ea: 0x0046C9E0
