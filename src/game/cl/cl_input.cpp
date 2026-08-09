@@ -21,6 +21,26 @@ extern int currCl;
 extern int dword_106000;
 extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A
 
+// sysEvent_t / sysEventType_t (game_xbox.o GameXbox.cpp)
+enum sysEventType_t {
+    SE_NONE = 0,
+    SE_KEY = 1,
+};
+extern void Sys_QueEvent(int time, sysEventType_t type, int value, int value2,
+                         int ptrLength, void* ptr);
+
+// Minimal controller view (full implementation in input/controller.cpp).
+struct controller {
+    int locked_port;
+    bool is_locked;
+    enum ButtonIndex {
+        UPBUTTON = 0,
+        LEFTBUTTON = 3,
+    };
+    static controller* inst();
+    bool button_pressed_clear(int index, ButtonIndex btn);
+};
+
 // ============================================================================
 // IN_Shutdown - shut down the client input system (no-op on the Xbox target)
 // ea: 0x4EBEB0 (game2.o)
@@ -42,6 +62,36 @@ int RecalibrateInput(int val)
             * (int)(((v2 - value) / (float)(128 - value)) * 128.0f);
     else
         return 0;
+}
+
+// ============================================================================
+// Controller_UnlockPort - unlock the locked controller port
+// ea: 0x4EBEA0 (game2.o)
+// ============================================================================
+controller* Controller_UnlockPort()
+{
+    controller* result = controller::inst();
+    result->is_locked = false;
+    return result;
+}
+
+// ============================================================================
+// EventAllKeysReleased - clear pressed buttons and queue key-up events
+// ea: 0x4EBF20 (game2.o)
+// ============================================================================
+void EventAllKeysReleased(int controllerPort)
+{
+    controller* v1 = controller::inst();
+    for (int i = (int)controller::LEFTBUTTON; i < 16; ++i)
+        v1->button_pressed_clear(controllerPort, (controller::ButtonIndex)i);
+    Sys_QueEvent(0, SE_KEY, 27, 0, 0, nullptr);
+    Sys_QueEvent(0, SE_KEY, 9, 0, 0, nullptr);
+    Sys_QueEvent(0, SE_KEY, 156, 0, 0, nullptr);
+    Sys_QueEvent(0, SE_KEY, 157, 0, 0, nullptr);
+    Sys_QueEvent(0, SE_KEY, 155, 0, 0, nullptr);
+    Sys_QueEvent(0, SE_KEY, 154, 0, 0, nullptr);
+    for (int j = 0; j <= 15; ++j)
+        Sys_QueEvent(0, SE_KEY, j + 207, 0, 0, nullptr);
 }
 
 namespace AeAssert {
