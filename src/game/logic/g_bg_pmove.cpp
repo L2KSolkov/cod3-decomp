@@ -729,6 +729,59 @@ weaponFileInfo_t* BG_GetPlayerWeaponInfo()
     return nullptr;
 }
 
+// ea: 0x00621F60
+int BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex)
+{
+    int v3 = 1 << (iWeaponIndex & 0x1F);
+    int v11 = iWeaponIndex >> 5;
+    if ((v3 & pPS->weapons[v11]) == 0)
+        return 0;
+    weaponFileInfo_t* pWeap = BG_GetInfoForWeapon(iWeaponIndex);
+    weapSlot_t v5 = BG_IsPlayerWeaponInSlot(pPS, iWeaponIndex, 1);
+    weapSlot_t slot = v5;
+    if (v5 != WEAPSLOT_NONE)
+    {
+        if (pWeap->bSlotStackable != 0)
+        {
+            int v6 = 1;
+            if (bg_iNumWeapons >= 1)
+            {
+                while (1)
+                {
+                    weaponFileInfo_t* InfoForWeapon =
+                        BG_GetInfoForWeapon(v6);
+                    if (InfoForWeapon->bSlotStackable != 0
+                        && InfoForWeapon->slot == pWeap->slot
+                        && ((1 << (v6 & 0x1F)) & pPS->weapons[v6 >> 5]) != 0
+                        && BG_IsPlayerWeaponInSlot(pPS, v6, 1)
+                            == WEAPSLOT_NONE)
+                        break;
+                    if (++v6 > bg_iNumWeapons)
+                        goto LABEL_13;
+                }
+                pPS->weaponslots[slot] = (char)v6;
+                if (v6 <= bg_iNumWeapons)
+                    goto LABEL_15;
+            LABEL_13:
+                v5 = slot;
+            }
+        }
+        pPS->weaponslots[v5] = 0;
+    }
+LABEL_15:
+    pPS->weapons[v11] = pPS->weapons[v11] & ~v3;
+    for (int i = pWeap->iAltWeaponIndex; i != 0;
+         i = BG_GetInfoForWeapon(i)->iAltWeaponIndex)
+    {
+        int v9 = 1 << (i & 0x1F);
+        int v10 = pPS->weapons[i >> 5];
+        if ((v10 & v9) == 0)
+            break;
+        pPS->weapons[i >> 5] = ~v9 & v10;
+    }
+    return 1;
+}
+
 // ============================================================================
 // BG_GetWeaponForInfo - ea: 0x607050
 // ============================================================================
