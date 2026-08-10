@@ -983,6 +983,18 @@ extern float xstep;   // 0xDEF19C
 extern float xpos;    // 0xDEF198
 extern float xinc;    // 0xDEF194
 extern float yinc;    // 0xDEF190
+
+// Entity stats renderer globals
+struct apsEffectLocal {
+    int mFlags;  // +0x08
+};
+struct ParticleEffectLocal {
+    unsigned char _pad[0x1C];
+    apsEffectLocal* mEffect;  // +0x1C
+    unsigned short mFlags;    // +0x32
+};
+extern ae_vector<ParticleEffectLocal*> gParticleEffectList;  // ?gParticleEffectList@@3V?$ae_vector@PAVParticleEffect@@@@A (render.o 0x1346474)
+extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
 extern unsigned nslGetMaxNumVoices();      // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 extern unsigned nslGetNumVoices();         // ?nslGetNumVoices@@YAIXZ (nslCompat.o)
 extern void* nslGetVoice(unsigned int a);  // ?nslGetVoice@@YAPAUnslVoice@@I@Z (nslCompat.o)
@@ -1014,7 +1026,7 @@ extern float g_losResetTime;      // ?g_losResetTime@@3MA (game2.o)
 extern unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
 extern unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
 extern int g_fps;                 // ?g_fps@@3HA (game2.o)
-extern void IM_RenderGameEntityStats();   // ?IM_RenderGameEntityStats@@YAXXZ (game2.o)
+extern int IM_RenderGameEntityStats();    // ?IM_RenderGameEntityStats@@YAHXZ (game2.o)
 extern Entity* RenderPlayerStats();       // ?RenderPlayerStats@@YAPAVEntity@@XZ (game2.o)
 
 // PathNode / zone / audio-tick helper views (opaque owners)
@@ -2004,6 +2016,198 @@ Entity* RenderPlayerStats()
         xx += (int)xinc;
     }
     return v1;
+}
+
+// ============================================================================
+// IM_RenderGameEntityStats - ea: 0x502150
+// ============================================================================
+int IM_RenderGameEntityStats()
+{
+    char tmpstr[128];
+    float white[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    int numParticles = 0;
+    int numVis = 0;
+    for (int i = 0; i < gParticleEffectList.mSize; ++i)
+    {
+        ParticleEffectLocal* pe = gParticleEffectList.mElements[i];
+        ++numParticles;
+        if (pe != nullptr && pe->mEffect != nullptr
+            && (pe->mEffect->mFlags & 2) != 0)
+            ++numVis;
+    }
+    sprintf(tmpstr, "Num Particle Effects: %d   Vis: %d", numParticles,
+            numVis);
+    RE_Text_Paint(416.0f, 42.0f, 5, scaleScalar * 0.55f, white, tmpstr,
+                  0, 0, 0);
+    RE_Text_Paint(408.0f, 40.0f, 5, scaleScalar * 0.55f,
+                  g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+
+    int numEntities = 0;
+    int numEntitiesVisible = 0;
+    int numDrones = 0;
+    int numEntGeneral = 0;
+    int numEntActor = 0;
+    int numEntSpawner = 0;
+    int numEntCorpse = 0;
+    int numEntItem = 0;
+    int numEntMissile = 0;
+    int numEntMover = 0;
+    int numEntPortal = 0;
+    int numEntInvisible = 0;
+    int numEntScriptMover = 0;
+    int numEntSound = 0;
+    int numEntLoopFX = 0;
+    int numEntMG42 = 0;
+    int numEntVehicle = 0;
+    int numEntVehicleCorpse = 0;
+    int numEntVehicleCollmap = 0;
+    int numTriggerMultiple = 0;
+    int numTriggerOnce = 0;
+    int numTriggerLookAt = 0;
+    int numTriggerFriendlyChain = 0;
+    int numTriggerDamage = 0;
+    int numTriggerUse = 0;
+    int unknown = 0;
+
+    for (unsigned int idx = 0; idx < 0x540; ++idx)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[idx].mObject;
+        ++numEntities;
+        if (mObject == nullptr)
+            continue;
+        if ((mObject->flags & 0x2000000) != 0)
+            ++numDrones;
+        if (mObject->mDObj != nullptr
+            && (g_DOBJF_NOT_RENDERED_LAST_FRAME & mObject->mDObj->mFlags) == 0)
+            ++numEntitiesVisible;
+        switch (mObject->s.eType)
+        {
+        case 0:
+        {
+            ++numEntGeneral;
+            if (mObject->mClassName.mBlock != nullptr
+                && mObject->mClassName.mBlock->mLength != 0)
+            {
+                const char* name = (const char*)&mObject->mClassName.mBlock[1];
+                if (strcmp(name, "trigger_multiple") == 0)
+                    ++numTriggerMultiple;
+                else if (strcmp(name, "trigger_once") == 0)
+                    ++numTriggerOnce;
+                else if (strcmp(name, "trigger_lookat") == 0)
+                    ++numTriggerLookAt;
+                else if (strcmp(name, "trigger_friendlychain") == 0)
+                    ++numTriggerFriendlyChain;
+                else if (strcmp(name, "trigger_damage") == 0)
+                    ++numTriggerDamage;
+                else if (strcmp(name, "trigger_use") == 0)
+                    ++numTriggerUse;
+            }
+            break;
+        }
+        case 1:
+        case 11:
+            ++numEntActor;
+            break;
+        case 2:
+            ++numEntItem;
+            break;
+        case 3:
+            ++numEntMissile;
+            break;
+        case 4:
+            ++numEntMover;
+            break;
+        case 5:
+            ++numEntPortal;
+            break;
+        case 6:
+            ++numEntInvisible;
+            break;
+        case 7:
+            ++numEntScriptMover;
+            break;
+        case 8:
+            ++numEntSound;
+            break;
+        case 9:
+            ++numEntLoopFX;
+            break;
+        case 10:
+            ++numEntMG42;
+            break;
+        case 12:
+            ++numEntSpawner;
+            break;
+        case 13:
+            ++numEntCorpse;
+            break;
+        case 14:
+            ++numEntVehicle;
+            break;
+        case 15:
+            ++numEntVehicleCorpse;
+            break;
+        case 16:
+            ++numEntVehicleCollmap;
+            break;
+        default:
+            ++unknown;
+            break;
+        }
+    }
+
+    struct Row { const char* fmt; int val; int y; };
+    Row rows[] = {
+        { "Num Entities: %d   Vis: %d", numEntities, 70 },
+        { "Num Drones: %d", numDrones, 84 },
+        { "General: %d", numEntGeneral, 112 },
+        { "Actor: %d", numEntActor, 126 },
+        { "Spawner: %d", numEntSpawner, 140 },
+        { "Corpse: %d", numEntCorpse, 154 },
+        { "Item: %d", numEntItem, 168 },
+        { "Missile: %d", numEntMissile, 182 },
+        { "Mover: %d", numEntMover, 196 },
+        { "Portal: %d", numEntPortal, 210 },
+        { "Invisible: %d", numEntInvisible, 224 },
+        { "ScriptMover: %d", numEntScriptMover, 238 },
+        { "Sound: %d", numEntSound, 252 },
+        { "LoopFX: %d", numEntLoopFX, 266 },
+        { "MG42: %d", numEntMG42, 280 },
+        { "Vehicle: %d", numEntVehicle, 294 },
+        { "Vehicle Corpse: %d", numEntVehicleCorpse, 308 },
+        { "Vehicle Collmap: %d", numEntVehicleCollmap, 322 },
+        { "Unknown: %d", unknown, 336 },
+    };
+    for (int r = 0; r < 19; ++r)
+    {
+        sprintf(tmpstr, rows[r].fmt, rows[r].val);
+        RE_Text_Paint(416.0f, (float)(rows[r].y + 2), 5, scaleScalar * 0.55f,
+                      white, tmpstr, 0, 0, 0);
+        RE_Text_Paint(408.0f, (float)rows[r].y, 5, scaleScalar * 0.55f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+    }
+    const char* trig[] = {
+        "Triggers:", "->  Multiple %d", "->  Once %d", "->  LookAt %d",
+        "->  FriendlyChain %d", "->  Damage %d", "->  Use %d",
+    };
+    int trigVals[] = {
+        0, numTriggerMultiple, numTriggerOnce, numTriggerLookAt,
+        numTriggerFriendlyChain, numTriggerDamage, numTriggerUse,
+    };
+    int y = 350;
+    for (int r = 0; r < 7; ++r)
+    {
+        if (r == 0)
+            strcpy(tmpstr, trig[0]);
+        else
+            sprintf(tmpstr, trig[r], trigVals[r]);
+        RE_Text_Paint(416.0f, (float)(y + 2), 5, scaleScalar * 0.55f, white,
+                      tmpstr, 0, 0, 0);
+        RE_Text_Paint(408.0f, (float)y, 5, scaleScalar * 0.55f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+        y += 14;
+    }
+    return 0;
 }
 
 // ============================================================================
