@@ -1519,6 +1519,347 @@ int PM_SlideMove(int gravity)
 }
 
 // ============================================================================
+// PM_StepSlideMove - ea: 0x63F230 (bg_pmove.cpp)
+// ============================================================================
+extern void BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
+                                                PlayerState* ps);  // game.o
+extern int PM_VerifyPronePosition(const math::Position3& vFallbackOrg,
+                                  const math::Position3& vFallbackVel);
+    // game.o 0x63D2B0? (defined below)
+extern void PM_FootstepEvent(char iOldBobCycle, char iNewBobCycle,
+                             int bFootStep);  // game.o 0x63C8E0
+extern int PM_ShouldMakeFootsteps();          // game.o 0x606250
+
+// ea: 0x0063F230
+void PM_StepSlideMove(int gravity)
+{
+    PlayerState* ps = pm->ps;
+    int pm_flags = pm->ps->pm_flags;
+    math::Position3 start_o;
+    start_o.v = _mm_setzero_ps();
+    float fStepAmount = 0.0f;
+    int bHadGround = 0;
+    float fStepSize = 0.0f;
+    if ((pm_flags & 0x10) != 0)
+    {
+        ps->pm_flags = pm_flags & 0xFFFFDFFF;
+        PlayerState* v5 = pm->ps;
+        start_o.v.m128_f32[2] = 0.0f;
+        v5->fJumpOriginZ = 0.0f;
+    }
+    else
+    {
+        if (pml.groundPlane != 0)
+        {
+            start_o.v.m128_f32[2] = 1.0f;
+            goto L9;
+        }
+        start_o.v.m128_f32[2] = 0.0f;
+        if ((pm_flags & 0x2000) == 0 || ps->pm_time == 0)
+            goto L9;
+        ps->pm_flags &= ~0x2000u;
+        pm->ps->fJumpOriginZ = 0.0f;
+    }
+L9:
+    math::Position3 down_o;
+    down_o.v.m128_f32[0] = pm->ps->origin.v.m128_f32[0];
+    down_o.v.m128_f32[1] = pm->ps->origin.v.m128_f32[1];
+    down_o.v.m128_f32[2] = pm->ps->origin.v.m128_f32[2];
+    down_o.v.m128_f32[3] = pm->ps->origin.v.m128_f32[3];
+    math::Position3 down_v;
+    down_v.v = down_o.v;
+    int v7 = PM_SlideMove(gravity);
+    pmove_t* v8 = pm;
+    PlayerState* v9 = pm->ps;
+    int v10 = pm->ps->pm_flags;
+    if ((v10 & 1) != 0)
+        start_o.v.m128_f32[3] = 10.0f;
+    else
+        start_o.v.m128_f32[3] = 18.0f;
+    float v11;
+    if (v9->mGroundEntity.mHandle.mVal != 0)
+    {
+        v11 = down_o.v.m128_f32[2];
+    }
+    else
+    {
+        if ((v10 & 0x2000) != 0 && v9->pm_time != 0)
+        {
+            v9->pm_flags &= ~0x2000u;
+            pm->ps->fJumpOriginZ = 0.0f;
+            v8 = pm;
+        }
+        v11 = down_o.v.m128_f32[2];
+        float v12;
+        if (v7 != 0
+            && (v9 = v8->ps, (v8->ps->pm_flags & 0x2000) != 0)
+            && ((v12 = v9->fJumpOriginZ + 39.0f)
+                > down_o.v.m128_f32[2]))
+        {
+            start_o.v.m128_f32[3] = 18.0f;
+            if ((down_o.v.m128_f32[2] + 18.0f) > v12)
+            {
+                start_o.v.m128_f32[3] = v12 - down_o.v.m128_f32[2];
+                if ((v12 - down_o.v.m128_f32[2]) < 1.0f)
+                    return;
+            }
+            fStepAmount = 1.0f;
+        }
+        else
+        {
+            v9 = v8->ps;
+            if ((v8->ps->pm_flags & 0x10) == 0
+                || v9->velocity.v.m128_f32[2] <= 0.0f)
+                return;
+        }
+    }
+    float v13 = v9->origin.v.m128_f32[1];
+    float v14 = v9->origin.v.m128_f32[0];
+    unsigned int tracemask = v8->tracemask;
+    float v16 = v9->velocity.v.m128_f32[2];
+    down_v.v.m128_f32[0] = v14;
+    down_v.v.m128_f32[1] = v13;
+    down_v.v.m128_f32[2] = v9->origin.v.m128_f32[2];
+    down_v.v.m128_f32[3] = v9->origin.v.m128_f32[3];
+    math::Position3 down;
+    down.v.m128_f32[0] = v9->velocity.v.m128_f32[0];
+    down.v.m128_f32[1] = v9->velocity.v.m128_f32[1];
+    down.v.m128_f32[2] = v16;
+    down.v.m128_f32[3] = v9->origin.v.m128_f32[3];
+    float start_vx = v14 - down_o.v.m128_f32[0];
+    float start_vy = v13 - down_o.v.m128_f32[1];
+    collision_context_t context;
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
+    context.pass_entity1 = pm->ps->mClient;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.contentmask = tracemask;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    trace_t trace;
+    math::Position3 up;
+    math::Position3 v52;
+    math::Position3 start_v;
+    if (v7 != 0)
+    {
+        up.v.m128_f32[0] = down_o.v.m128_f32[0];
+        up.v.m128_f32[1] = down_o.v.m128_f32[1];
+        up.v.m128_f32[2] = (v11 + start_o.v.m128_f32[3]) + 1.0f;
+        PM_trace(&trace, down_v, pm->mins, pm->maxs, up, context);
+        float v18 = ((start_o.v.m128_f32[3] + 1.0f)
+                     * trace.normal.v.m128_f32[1]) - 1.0f;
+        start_o.v.m128_f32[1] = v18;
+        if (v18 >= 1.0f)
+        {
+            pm->ps->origin.v = up.v;
+            pm->ps->origin.v.m128_f32[2] = down_o.v.m128_f32[2] + v18;
+            pm->ps->velocity.v = down.v;
+            PM_SlideMove(gravity);
+            v8 = pm;
+        }
+        else
+        {
+            v8 = pm;
+            if (pm->debugLevel != 0)
+                Com_Printf("%i:not enough step room\n", c_pmove);
+            start_o.v.m128_f32[1] = 0.0f;
+        }
+    }
+    if (start_o.v.m128_f32[2] != 0.0f || start_o.v.m128_f32[1] != 0.0f)
+    {
+        v52.v = v8->ps->origin.v;
+        float flatDelta[2];
+        flatDelta[0] = v8->ps->origin.v.m128_f32[1];
+        float v21 = v8->ps->origin.v.m128_f32[2]
+            - start_o.v.m128_f32[1];
+        flatDelta[1] = v21;
+        if (start_o.v.m128_f32[2] != 0.0f)
+            flatDelta[1] = v21 - 9.0f;
+        math::Position3 end;
+        end.v.m128_f32[0] = v52.v.m128_f32[0];
+        end.v.m128_f32[1] = flatDelta[0];
+        end.v.m128_f32[2] = flatDelta[1];
+        PM_trace(&trace, v8->ps->origin, pm->mins, pm->maxs, end, context);
+        if (trace.mEntity.mHandle.mVal != 0)
+        {
+            Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+                trace.mEntity.mHandle.mVal);
+            if (mObject != nullptr && mObject->client != nullptr)
+            {
+                pm->ps->origin.v = down_v.v;
+                pm->ps->velocity.v = down.v;
+                return;
+            }
+        }
+        if (trace.normal.v.m128_f32[1] >= 1.0f)
+        {
+            if (start_o.v.m128_f32[1] != 0.0f)
+                pm->ps->origin.v.m128_f32[2] -= start_o.v.m128_f32[1];
+        }
+        else
+        {
+            pm->ps->origin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+            pm->ps->origin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+            pm->ps->origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+            PlayerState* v24 = pm->ps;
+            float v25 = trace.endpos.v.m128_f32[1]
+                    * pm->ps->velocity.v.m128_f32[0]
+                + trace.endpos.v.m128_f32[2]
+                    * pm->ps->velocity.v.m128_f32[1]
+                + trace.endpos.v.m128_f32[3]
+                    * pm->ps->velocity.v.m128_f32[2];
+            float v26 = v25 >= 0.0f ? v25 * 0.99900097f : v25 * 1.001f;
+            v24->velocity.v.m128_f32[0] -=
+                trace.endpos.v.m128_f32[1] * v26;
+            v24->velocity.v.m128_f32[1] -=
+                trace.endpos.v.m128_f32[2] * v26;
+            v24->velocity.v.m128_f32[2] -=
+                trace.endpos.v.m128_f32[3] * v26;
+        }
+        v8 = pm;
+    }
+    float v28 = fStepAmount;
+    math::Position3* p_origin = &v8->ps->origin;
+    if ((v8->ps->velocity.v.m128_f32[0] * start_vx
+         + v8->ps->velocity.v.m128_f32[1] * start_vy
+         + 0.0049999999f)
+        >= (v8->ps->velocity.v.m128_f32[1]
+                * (v8->ps->origin.v.m128_f32[1] - down_o.v.m128_f32[1])
+            + v8->ps->velocity.v.m128_f32[0]
+                * (v8->ps->origin.v.m128_f32[0] - down_o.v.m128_f32[0])))
+        goto L58;
+    if (fStepAmount == 0.0f)
+        goto L75;
+    if (p_origin->v.m128_f32[2] >= (pm->ps->fJumpOriginZ + 39.0f))
+    {
+L58:
+        p_origin->v = down_v.v;
+        pm->ps->velocity.v = down.v;
+        v8 = pm;
+        if (pm->debugLevel > 1)
+        {
+            if (v28 == 0.0f)
+                Com_Printf("%i:didn't use step results\n", c_pmove);
+            else
+                Com_Printf(
+                    "%i:didn't use jump step results because it went too high\n",
+                    c_pmove);
+            v8 = pm;
+        }
+        if (start_o.v.m128_f32[2] != 0.0f)
+        {
+            math::Position3 end;
+            end.v = v8->ps->origin.v;
+            end.v.m128_f32[2] -= 9.0f;
+            PM_trace(&trace, v8->ps->origin, pm->mins, pm->maxs, end,
+                     context);
+            if (trace.normal.v.m128_f32[1] >= 1.0f)
+                goto L66;
+            pm->ps->origin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+            pm->ps->origin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+            pm->ps->origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+            PlayerState* v29 = pm->ps;
+            float v30 = trace.endpos.v.m128_f32[1]
+                    * pm->ps->velocity.v.m128_f32[0]
+                + trace.endpos.v.m128_f32[2]
+                    * pm->ps->velocity.v.m128_f32[1]
+                + trace.endpos.v.m128_f32[3]
+                    * pm->ps->velocity.v.m128_f32[2];
+            float v31 = v30 >= 0.0f ? v30 * 0.99900097f : v30 * 1.001f;
+            v29->velocity.v.m128_f32[0] -=
+                trace.endpos.v.m128_f32[1] * v31;
+            v29->velocity.v.m128_f32[1] -=
+                trace.endpos.v.m128_f32[2] * v31;
+            v29->velocity.v.m128_f32[2] -=
+                trace.endpos.v.m128_f32[3] * v31;
+            v8 = pm;
+            if (pm->debugLevel > 1)
+                Com_Printf(
+                    "%i:did down step after not using step results\n",
+                    c_pmove);
+        }
+    }
+L66:
+    if (v28 != 0.0f)
+    {
+        if ((v8->ps->origin.v.m128_f32[2] - down_v.v.m128_f32[2]) > 0.0f)
+        {
+            fStepAmount =
+                (pm->ps->fJumpOriginZ + 39.0f)
+                - v8->ps->origin.v.m128_f32[2];
+            if (fStepAmount < 0.1f)
+            {
+                v8->ps->velocity.v.m128_f32[2] = 0.0f;
+                goto L75;
+            }
+            float v33 = sqrtf((fStepAmount + fStepAmount)
+                              * pm->ps->gravity);
+            fStepAmount = v33;
+            if (v8->ps->velocity.v.m128_f32[2] > v33)
+            {
+                if (v8->debugLevel != 0)
+                    Com_Printf("%i:adjusted jump vel: %.1f -> %.1f\n",
+                               c_pmove, v8->ps->velocity.v.m128_f32[2],
+                               fStepAmount);
+                v8->ps->velocity.v.m128_f32[2] = fStepAmount;
+                goto L75;
+            }
+        }
+    }
+L75:
+    if (start_o.v.m128_f32[2] != 0.0f
+        && v8->ps->pm_type < 6
+        && PM_VerifyPronePosition(down_v, down) != 0)
+    {
+        float v34 = pm->ps->origin.v.m128_f32[2] - down_v.v.m128_f32[2];
+        fStepAmount = v34;
+        if (fabs(v34) > 0.5f)
+        {
+            int v35 = (int)(fStepAmount + 0.5f);
+            if (v35 != 0)
+            {
+                if (pm->debugLevel != 0)
+                {
+                    if (v28 == 0.0f)
+                        Com_Printf("%i:stepped %2i\n", c_pmove, v35);
+                    else
+                        Com_Printf("%i:jump step %2i\n", c_pmove, v35);
+                }
+                if (v35 < -16)
+                    v35 = -16;
+                if (v35 > 24)
+                    v35 = 24;
+                int v36 = v35 + 128;
+                BG_AddPredictableEventToPlayerstate(168, v36, pm->ps);
+                fStepAmount = fabsf(
+                    pm->ps->origin.v.m128_f32[2] - down_o.v.m128_f32[2]);
+                float v38 = ((1.0f - (fStepAmount / start_o.v.m128_f32[3]))
+                             * 0.80000001f) + 0.19999999f;
+                pm->ps->velocity.v.m128_f32[0] *= v38;
+                pm->ps->velocity.v.m128_f32[1] *= v38;
+                pm->ps->velocity.v.m128_f32[2] *= v38;
+                int v39 = abs(v36 - 128);
+                if (v39 > 3)
+                {
+                    if (pm->ps->mGroundEntity.mHandle.mVal != 0
+                        && PM_ShouldMakeFootsteps() != 0)
+                    {
+                        int v41 = v39 / 2;
+                        if (v41 > 4)
+                            v41 = 4;
+                        char oldBob = (char)pm->ps->bobCycle;
+                        pm->ps->bobCycle =
+                            (int)(((float)v41 * 1.25f) + 7.0f)
+                            + pm->ps->bobCycle;
+                        PM_FootstepEvent(oldBob, (char)pm->ps->bobCycle,
+                                         1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ============================================================================
 // tunnel_test - ea: 0x643690 (bg_pmove.cpp)
 // ============================================================================
 extern void query_proximity_data(const math::Position3& lo,
