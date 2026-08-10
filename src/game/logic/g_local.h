@@ -293,6 +293,8 @@ struct trRefEntity {
 
     trRefEntity(int foo);    // ??0trRefEntity@@QAE@H@Z (game.o 0x6618B0)
     void* operator new(size_t s, void* p) { return p; }  // placement
+    static void* operator new(size_t s);     // ??2trRefEntity@@SAPAXI@Z (game.o 0x620240)
+    static void operator delete(void* ptr);  // ??3trRefEntity@@SAXPAX@Z (game.o 0x620250)
     void SetInSnapshot();    // ?SetInSnapshot@trRefEntity@@QAEXXZ (render.o)
     bool IsInSnapshot() const;  // ?IsInSnapshot@trRefEntity@@QBE_NXZ (render.o)
 };

@@ -1432,6 +1432,12 @@ char* Cmd_Args(int start)
     return cmd_args1;
 }
 
+// ea: 0x0061F620
+void Cmd_ArgsBuffer(char* buffer, int bufferLength)
+{
+    Q_strncpyz(buffer, Cmd_Args(1), bufferLength);
+}
+
 // ============================================================================
 // Cmd_TokenizeString2 - ea: 0x60E7E0
 // ============================================================================

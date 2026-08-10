@@ -301,6 +301,24 @@ void Entity::FreeAllDObjs(bool deleteDObjs)
 // ============================================================================
 // Entity::GetRenderEntity - ea: 0x62AF30
 // ============================================================================
+// ea: 0x00620240
+void* trRefEntity::operator new(size_t s)
+{
+    return gRefEntFreeList.Alloc();
+}
+
+// ea: 0x00620250
+void trRefEntity::operator delete(void* ptr)
+{
+    if (ptr != nullptr)
+    {
+        --gRefEntFreeList.mUsed;
+        ++gRefEntFreeList.mFree;
+        *(void**)ptr = gRefEntFreeList.mpFree;
+        gRefEntFreeList.mpFree = (trRefEntity*)ptr;
+    }
+}
+
 // ea: 0x0062AF30
 trRefEntity& Entity::GetRenderEntity()
 {
@@ -312,6 +330,60 @@ trRefEntity& Entity::GetRenderEntity()
             : nullptr;
     }
     return *this->mRenderEntity;
+}
+
+// ============================================================================
+// Entity::SetAnimDebug - ea: 0x62AFB0
+// ============================================================================
+extern void* mem_heap_malloc(unsigned int size);  // mem_lib
+extern void AeStringSupport_CStrToAeStr(char* oBuff, int* oLen,
+                                        int capacity,
+                                        const char* src);
+    // ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z
+// mAnimNameResolver lives in BrocAPI::mBrocExports at +0xC58.
+struct BrocAPI_AnimView {
+    uint8_t _pad[0xC58];
+    const char* (*mAnimNameResolver)(unsigned int);  // +0xC58
+};
+
+// ea: 0x0062AFB0
+void Entity::SetAnimDebug(const char* lastAnim)
+{
+    const char* v2 = lastAnim;
+    const char* v4 =
+        ((BrocAPI_AnimView*)gpBrocAPI)->mAnimNameResolver(
+            (unsigned int)lastAnim);
+    EntityAnimationDebug* mAnimDebug = this->mAnimDebug;
+    if (mAnimDebug != nullptr)
+    {
+        mAnimDebug->prev2lastAnimPlayed = mAnimDebug->lastAnimPlayed;
+        this->mAnimDebug->lastAnimPlayed = v2;
+        int oLen = 0;
+        char oBuff[64];
+        AeStringSupport_CStrToAeStr(oBuff, &oLen, 63, v4);
+        oBuff[63] = (char)oLen;
+        memcpy(&this->mAnimDebug->lastAnimNamed, oBuff,
+               sizeof(ae_fixed_string<64, unsigned char>));
+    }
+    else
+    {
+        EntityAnimationDebug* v6 =
+            (EntityAnimationDebug*)mem_heap_malloc(0x48);
+        if (v6 != nullptr)
+        {
+            v6->lastAnimPlayed = v2;
+            v6->prev2lastAnimPlayed = (const char*)-1;
+            int oLen = 0;
+            AeStringSupport_CStrToAeStr((char*)v6->lastAnimNamed.mBuff,
+                                        &oLen, 63, v4);
+            v6->lastAnimNamed.mLength = (unsigned char)oLen;
+            this->mAnimDebug = v6;
+        }
+        else
+        {
+            this->mAnimDebug = nullptr;
+        }
+    }
 }
 
 // ============================================================================

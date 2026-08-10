@@ -357,6 +357,24 @@ Entity* G_Spawn(TPakId pakId)
     return result;
 }
 
+// ea: 0x00620200
+void* Entity::operator new(size_t s)
+{
+    return gEntFreeList.Alloc();
+}
+
+// ea: 0x00620210
+void Entity::operator delete(void* ptr)
+{
+    if (ptr != nullptr)
+    {
+        --gEntFreeList.mUsed;
+        ++gEntFreeList.mFree;
+        *(int*)&((Entity*)ptr)->s.eType = (int)(intptr_t)gEntFreeList.mpFree;
+        gEntFreeList.mpFree = (Entity*)ptr;
+    }
+}
+
 // ea: 0x00458730
 void SP_info_notnull(Entity* self)
 {

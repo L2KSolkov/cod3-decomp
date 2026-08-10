@@ -8,6 +8,7 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#include "core/ae_fixed_string.h"
 #include <stddef.h>
 #include <stdint.h>
 
@@ -270,6 +271,13 @@ static_assert(sizeof(AttachModelInfo) == 0x0C, "AttachModelInfo size mismatch");
 
 struct EntityAnimationDebug;  // opaque — Entity::AnimationDebug
 
+// Entity::AnimationDebug - 0x48 bytes (verified vs SetAnimDebug disasm)
+struct EntityAnimationDebug {
+    const char* lastAnimPlayed;      // +0x00
+    const char* prev2lastAnimPlayed; // +0x04
+    ae_fixed_string<64, unsigned char> lastAnimNamed;  // +0x08
+};
+
 // ============================================================================
 // Entity — main game entity (1136 bytes)
 // Size: 0x470 (1136 bytes) — verified against IDA (107 members)
@@ -280,6 +288,8 @@ public:
     Entity(TPakId pakId); // ?Entity@@QAE@W4TPakId@@@Z (core.o)
     ~Entity();            // ??1Entity@@QAE@XZ (core.o)
     static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
+    static void operator delete(void* ptr);  // ??3Entity@@SAXPAX@Z (game.o 0x620210)
+    void SetAnimDebug(const char* lastAnim);  // ?SetAnimDebug@Entity@@QAEXPBD@Z (game.o 0x62AFB0)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
