@@ -7967,6 +7967,17 @@ int CM_NumClusters()
     return g_bspTree->numClusters;
 }
 
+// ============================================================================
+// CM_ClusterPVS - ea: 0x60B040 (cm_load.cpp)
+// ============================================================================
+// ea: 0x0060B040
+uint8_t* CM_ClusterPVS(int cluster)
+{
+    if (cluster >= 0 && cluster < g_bspTree->numClusters && pcm.vised != 0)
+        return &pcm.visibility[cluster * pcm.clusterBytes];
+    return pcm.visibility;
+}
+
 // ea: 0x006093D0
 void CM_ModelBounds(DCGSet* mod, math::Position3& mins,
                     math::Position3& maxs)

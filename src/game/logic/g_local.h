@@ -2758,6 +2758,7 @@ DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle);  // game.o 0x622C00
 int CM_LoadLump(int lumpnum, char** pBuf);          // game.o 0x618410
 void CM_FreeLump();                                  // game.o 0x6093B0
 int CM_NumClusters();                                // game.o 0x6093C0
+uint8_t* CM_ClusterPVS(int cluster);                 // game.o 0x60B040
 void CM_ModelBounds(DCGSet* mod, math::Position3& mins,
                     math::Position3& maxs);          // game.o 0x6093D0
 void CM_CreateStaticModel(const char* name, TPakId pakId, float*& axis,
