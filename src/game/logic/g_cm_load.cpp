@@ -8242,6 +8242,98 @@ uint8_t* CM_ClusterPVS(int cluster)
     return pcm.visibility;
 }
 
+// ============================================================================
+// CM_TraceBox - ea: 0x60BCD0 (cm_world.cpp)
+// ============================================================================
+// ea: 0x0060BCD0
+int CM_TraceBox(const math::Position3& start, const math::Position3& end,
+                const math::Position3& mins, const math::Position3& maxs,
+                float fraction)
+{
+    float bounds[3] = { mins.v.m128_f32[0], mins.v.m128_f32[1],
+                        mins.v.m128_f32[2] };
+    float sign = -1.0f;
+    float enterFrac = 0.0f;
+    float leaveFrac = fraction;
+
+    while (2)
+    {
+        if ((__fpclass(bounds[0]) & 0x297) != 0
+            || (__fpclass(bounds[1]) & 0x297) != 0
+            || (__fpclass(bounds[2]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 832;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((bounds)[0]) && !IS_NAN((bounds)[1]) && !IS_NAN((bounds)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        for (int i = 0; i < 3; ++i)
+        {
+            float v11 = end.v.m128_f32[i] - bounds[i];
+            float v12 = (start.v.m128_f32[i] - bounds[i]) * sign;
+            float v13 = v11 * sign;
+            if (v12 <= 0.0f)
+            {
+                if (v13 <= 0.0f)
+                    continue;
+                float v18 = v12 - v13;
+                if (v18 >= 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 856;
+                    AeAssert::gCurrentExpr = "dist < 0";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                if (v12 > v18 * leaveFrac)
+                {
+                    float tt = v12 / v18;
+                    bool ok = enterFrac < tt;
+                    leaveFrac = tt;
+                    if (!ok)
+                        return 1;
+                }
+                continue;
+            }
+            if (v13 > 0.0f)
+                return 1;
+            float v14 = v12 - v13;
+            if (v14 <= 0.0f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 844;
+                AeAssert::gCurrentExpr = "dist > 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            float v15 = v12 - 0.125f;
+            if (v15 > v14 * enterFrac)
+            {
+                float tt = v15 / v14;
+                bool ok = tt < leaveFrac;
+                enterFrac = tt;
+                if (!ok)
+                    return 1;
+            }
+        }
+        if (sign == 1.0f)
+            return 0;
+        sign = 1.0f;
+        bounds[0] = maxs.v.m128_f32[0];
+        bounds[1] = maxs.v.m128_f32[1];
+        bounds[2] = maxs.v.m128_f32[2];
+    }
+}
+
 // ea: 0x006093D0
 void CM_ModelBounds(DCGSet* mod, math::Position3& mins,
                     math::Position3& maxs)
