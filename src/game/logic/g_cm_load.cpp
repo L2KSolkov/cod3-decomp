@@ -65,7 +65,11 @@ struct InplaceVectorBspNode {
 struct BspTree {
     uint8_t _pad[8];
     InplaceVectorBspNode mNodes;  // +0x08
-    uint8_t _pad20[0x38 - 0x18];
+    struct {
+        int        mSize;   // +0x10
+        BspPlane*  mList;   // +0x14
+    } mPlanes;              // +0x10 (InplaceVector<BspPlane>)
+    uint8_t _pad18[0x38 - 0x18];
     struct {
         int      mSize;   // +0x38
         void*    mList;   // +0x3C
@@ -76,10 +80,16 @@ struct BspTree {
     } mAreaPortals;       // +0x40 (InplaceVector<int>)
     struct {
         int        mSize;   // +0x48
-        BspPlane*  mList;   // +0x4C
-    } mPlanes;              // +0x48 (InplaceVector<BspPlane>)
-    uint8_t _pad50[0x5C - 0x50];
-    int      floodvalid;  // +0x5C
+        void*      mList;   // +0x4C
+    } mVisibility;          // +0x48
+    int      mVised;        // +0x50
+    int      mClusterBytes; // +0x54
+    uint8_t _pad58[0x5C - 0x58];
+    int      floodvalid;    // +0x5C
+    uint8_t _pad60[0x64 - 0x60];
+    float    mins[2];       // +0x64
+    uint8_t _pad6C[0x70 - 0x6C];
+    float    maxs[2];       // +0x70
 };
 
 extern BspTree* g_bspTree;  // ?g_bspTree@@3PAVBspTree@@A (game.o 0xF743DC)
@@ -719,6 +729,79 @@ struct traceWork_t {
     float  sphere_radius;          // +0x174
     float  sphere_halfheight;      // +0x178
 };
+
+// ============================================================================
+// PartialClipMap + WorldSector (pcm)
+// ============================================================================
+struct WorldSector {
+    WorldSector* parent;      // +0x00
+    WorldSector* child0;      // +0x04
+    WorldSector* child1;      // +0x08
+    int      axis;                // +0x0C
+    float    dist;                // +0x10
+    int      contentsEntities;    // +0x14
+    int      contentsStaticModels;// +0x18
+    void*    entities;            // +0x1C
+    void*    staticModels;        // +0x20
+};
+static_assert(sizeof(WorldSector) == 0x24, "WorldSector size mismatch");
+
+struct PartialClipMap {
+    WorldSector* freeHead;        // +0x00
+    WorldSector worldSectors[1024];  // +0x04
+    WorldSector worldSectorHead;  // +0x9004
+    WorldSector dummyNode;        // +0x9028
+    uint8_t*    vised;            // +0x904C
+    int         clusterBytes;     // +0x9050
+    uint8_t*    visibility;       // +0x9054
+};
+extern PartialClipMap pcm;        // ?pcm@@3UPartialClipMap@@A (game.o)
+
+// ea: 0x006199C0
+char InitEntitiesBSP()
+{
+    pcm.freeHead = pcm.worldSectors;
+    for (unsigned int i = 0; i < 1023; ++i)
+    {
+    pcm.worldSectors[i].parent = &pcm.worldSectors[i + 1];
+        pcm.worldSectors[i].axis = 0;
+        pcm.worldSectors[i].dist = 0.0f;
+        pcm.worldSectors[i].contentsEntities = 0;
+        pcm.worldSectors[i].contentsStaticModels = 0;
+        pcm.worldSectors[i].entities = nullptr;
+        pcm.worldSectors[i].staticModels = nullptr;
+    }
+    pcm.worldSectors[1023].parent = nullptr;
+    int v2 = (g_bspTree->maxs[1] - g_bspTree->mins[1])
+        >= (g_bspTree->maxs[0] - g_bspTree->mins[0]);
+    pcm.worldSectorHead.axis = v2;
+    pcm.worldSectorHead.dist =
+        (g_bspTree->maxs[v2] + g_bspTree->mins[v2]) * 0.5f;
+    pcm.worldSectorHead.child0 = &pcm.dummyNode;
+    pcm.worldSectorHead.child1 = &pcm.dummyNode;
+    pcm.vised = (uint8_t*)g_bspTree->mVised;
+    pcm.clusterBytes = g_bspTree->mClusterBytes;
+    if (g_bspTree->mVisibility.mSize == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (AeAssert::IsIgnored())
+        {
+            pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
+            return 0;
+        }
+        if (!AeAssert::Assert("Bounds check"))
+        {
+            pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
+            return 0;
+        }
+        __debugbreak();
+    }
+    pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
+    return 0;
+}
 
 extern "C" int __fpclass(float);
 

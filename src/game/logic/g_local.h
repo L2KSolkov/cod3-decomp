@@ -2580,6 +2580,7 @@ bool collide_velocity_sphere_poly(const math::Position3& c0,
                                   const math::Position3& v2,
                                   const math::Vector4& plane,
                                   bool& insolid);  // game.o 0x61BBB0
+char InitEntitiesBSP();  // game.o 0x6199C0
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
 void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,
