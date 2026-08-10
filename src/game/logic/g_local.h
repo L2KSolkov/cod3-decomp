@@ -2553,6 +2553,11 @@ bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v1,
                          const math::Position3& v2,
                          const math::Vector4& plane);  // game.o 0x61B980
+struct traceWork_t;
+void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
+                    const math::Position3& bmax, const cdlPlane* sides,
+                    unsigned int nsides,
+                    unsigned int cflags);  // game.o 0x61CD30
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
 void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,

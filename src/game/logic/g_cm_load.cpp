@@ -693,3 +693,300 @@ bool collide_sphere_poly(const math::Position3& c, float r,
     float dz = closest.v.m128_f32[2] - c.v.m128_f32[2];
     return (r * r) > (dx * dx + dy * dy + dz * dz);
 }
+
+// ============================================================================
+// traceWork_t + TestBoxInBrush - ea: 0x61CD30 (CollisionMgr.cpp)
+// ============================================================================
+struct traceWork_t {
+    math::Position3 bounds[2];     // +0x00
+    math::Position3 end;           // +0x20
+    math::Position3 start;         // +0x30
+    math::Position3 offsets[8];    // +0x60
+    float  trace_fraction;         // +0x120
+    uint8_t _pad124[4];
+    int    trace_contents;         // +0x128
+    uint8_t _pad12C[0x13C - 0x12C];
+    uint8_t trace_allsolid;        // +0x13C
+    uint8_t trace_startsolid;      // +0x13D
+    uint8_t _pad13E[0x150 - 0x13E];
+    math::Position3 sphere_offset; // +0x150
+    uint8_t _pad160[0x170 - 0x160];
+    int    sphere_use;             // +0x170
+    float  sphere_radius;          // +0x174
+};
+
+extern "C" int __fpclass(float);
+
+// ea: 0x0061CD30
+void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
+                    const math::Position3& bmax, const cdlPlane* sides,
+                    unsigned int nsides, unsigned int cflags)
+{
+    int v7 = 0;
+    if ((__fpclass(tw->start.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(tw->start.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(tw->start.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 2101;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw->start)[0]) && !IS_NAN((tw->start)[1]) && "
+            "!IS_NAN((tw->start)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(tw->end.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(tw->end.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(tw->end.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 2102;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw->end)[0]) && !IS_NAN((tw->end)[1]) && "
+            "!IS_NAN((tw->end)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    // Box overlap check between the brush AABB and tw->bounds.
+    if (!(tw->bounds[0].v.m128_f32[0] <= bmax.v.m128_f32[0]
+          && tw->bounds[1].v.m128_f32[0] >= bmin.v.m128_f32[0]
+          && tw->bounds[0].v.m128_f32[1] <= bmax.v.m128_f32[1]
+          && tw->bounds[1].v.m128_f32[1] >= bmin.v.m128_f32[1]
+          && tw->bounds[0].v.m128_f32[2] <= bmax.v.m128_f32[2]
+          && tw->bounds[1].v.m128_f32[2] >= bmin.v.m128_f32[2]))
+        return;
+    if (tw->sphere_use != 0)
+    {
+        unsigned int v25 = 0;
+        if (nsides != 0)
+        {
+            const cdlPlane* v33 = sides;
+            do
+            {
+                float v27 = *(const float*)&v33->packed[3];
+                if ((__fpclass(v27) & 0x297) != 0)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                    AeAssert::gCurrentLine = 2115;
+                    AeAssert::gCurrentExpr = "!IS_NAN(offset)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid number!"))
+                        __debugbreak();
+                }
+                if ((__fpclass(tw->sphere_radius) & 0x297) != 0)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                    AeAssert::gCurrentLine = 2116;
+                    AeAssert::gCurrentExpr = "!IS_NAN(tw->sphere.radius)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid number!"))
+                        __debugbreak();
+                }
+                float v8 = v27 + tw->sphere_radius;
+                if ((__fpclass(v8) & 0x297) != 0)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                    AeAssert::gCurrentLine = 2120;
+                    AeAssert::gCurrentExpr = "!IS_NAN(dist)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid number!"))
+                        __debugbreak();
+                }
+                if ((__fpclass(*(const float*)&v33->packed[0]) & 0x297) != 0
+                    || (__fpclass(*(const float*)&v33->packed[1]) & 0x297)
+                        != 0
+                    || (__fpclass(*(const float*)&v33->packed[2]) & 0x297)
+                        != 0)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                    AeAssert::gCurrentLine = 2121;
+                    AeAssert::gCurrentExpr =
+                        "!IS_NAN((normal)[0]) && !IS_NAN((normal)[1]) && "
+                        "!IS_NAN((normal)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                if ((__fpclass(tw->sphere_offset.v.m128_f32[0]) & 0x297)
+                        != 0
+                    || (__fpclass(tw->sphere_offset.v.m128_f32[1]) & 0x297)
+                        != 0
+                    || (__fpclass(tw->sphere_offset.v.m128_f32[2]) & 0x297)
+                        != 0)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                    AeAssert::gCurrentLine = 2122;
+                    AeAssert::gCurrentExpr =
+                        "!IS_NAN((tw->sphere.offset)[0]) && "
+                        "!IS_NAN((tw->sphere.offset)[1]) && "
+                        "!IS_NAN((tw->sphere.offset)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                math::Position3 v9 = tw->sphere_offset;
+                float v24 = *(const float*)&v33->packed[0]
+                        * v9.v.m128_f32[0]
+                    + *(const float*)&v33->packed[1] * v9.v.m128_f32[1]
+                    + *(const float*)&v33->packed[2] * v9.v.m128_f32[2];
+                math::Position3 v11 = tw->start;
+                math::Position3 v12;
+                if (v24 <= 0.0f)
+                {
+                    v12.v.m128_f32[0] = v11.v.m128_f32[0] + v9.v.m128_f32[0];
+                    v12.v.m128_f32[1] = v11.v.m128_f32[1] + v9.v.m128_f32[1];
+                    v12.v.m128_f32[2] = v11.v.m128_f32[2] + v9.v.m128_f32[2];
+                }
+                else
+                {
+                    v12.v.m128_f32[0] = v11.v.m128_f32[0] - v9.v.m128_f32[0];
+                    v12.v.m128_f32[1] = v11.v.m128_f32[1] - v9.v.m128_f32[1];
+                    v12.v.m128_f32[2] = v11.v.m128_f32[2] - v9.v.m128_f32[2];
+                }
+                if ((__fpclass(v12.v.m128_f32[0]) & 0x297) != 0
+                    || (__fpclass(v12.v.m128_f32[1]) & 0x297) != 0
+                    || (__fpclass(v12.v.m128_f32[2]) & 0x297) != 0)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                    AeAssert::gCurrentLine = 2131;
+                    AeAssert::gCurrentExpr =
+                        "!IS_NAN((startp)[0]) && !IS_NAN((startp)[1]) && "
+                        "!IS_NAN((startp)[2])";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid vector"))
+                        __debugbreak();
+                }
+                float d1 = v12.v.m128_f32[0]
+                        * *(const float*)&v33->packed[0]
+                    + v12.v.m128_f32[1] * *(const float*)&v33->packed[1]
+                    + v12.v.m128_f32[2] * *(const float*)&v33->packed[2]
+                    - v8;
+                if ((__fpclass(d1) & 0x297) != 0)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                    AeAssert::gCurrentLine = 2133;
+                    AeAssert::gCurrentExpr = "!IS_NAN(d1)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Invalid number!"))
+                        __debugbreak();
+                }
+                if (d1 > 0.0f)
+                    return;
+                ++v25;
+                ++v33;
+            } while (v25 < nsides);
+        }
+        goto LABEL_94;
+    }
+    int v28 = 0;
+    if (nsides == 0)
+        goto LABEL_94;
+    const cdlPlane* v15 = sides;
+    while (1)
+    {
+        float v26 = *(const float*)&v15->packed[3];
+        if (*(const float*)&v15->packed[0] < 0.0f)
+            v7 = 1;
+        if (*(const float*)&v15->packed[1] < 0.0f)
+            v7 |= 2;
+        if (*(const float*)&v15->packed[2] < 0.0f)
+            v7 |= 4;
+        if ((__fpclass(v26) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 2154;
+            AeAssert::gCurrentExpr = "!IS_NAN(offset)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid number!"))
+                __debugbreak();
+        }
+        math::Position3* startp = &tw->offsets[v7];
+        if ((__fpclass(startp->v.m128_f32[0]) & 0x297) != 0
+            || (__fpclass(startp->v.m128_f32[1]) & 0x297) != 0
+            || (__fpclass(startp->v.m128_f32[2]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 2155;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((tw->offsets[signbits])[0]) && "
+                "!IS_NAN((tw->offsets[signbits])[1]) && "
+                "!IS_NAN((tw->offsets[signbits])[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        if ((__fpclass(*(const float*)&v15->packed[0]) & 0x297) != 0
+            || (__fpclass(*(const float*)&v15->packed[1]) & 0x297) != 0
+            || (__fpclass(*(const float*)&v15->packed[2]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 2156;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((normal)[0]) && !IS_NAN((normal)[1]) && "
+                "!IS_NAN((normal)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        float dist = v26
+            - (startp->v.m128_f32[0] * *(const float*)&v15->packed[0]
+               + startp->v.m128_f32[1] * *(const float*)&v15->packed[1]
+               + startp->v.m128_f32[2] * *(const float*)&v15->packed[2]);
+        if ((__fpclass(dist) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 2160;
+            AeAssert::gCurrentExpr = "!IS_NAN(dist)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid number!"))
+                __debugbreak();
+        }
+        float d1 = tw->start.v.m128_f32[0] * *(const float*)&v15->packed[0]
+            + tw->start.v.m128_f32[1] * *(const float*)&v15->packed[1]
+            + tw->start.v.m128_f32[2] * *(const float*)&v15->packed[2]
+            - dist;
+        if ((__fpclass(d1) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 2163;
+            AeAssert::gCurrentExpr = "!IS_NAN(d1)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid number!"))
+                __debugbreak();
+        }
+        if (d1 > 0.0f)
+            return;
+        ++v15;
+        if (++v28 >= (int)nsides)
+        {
+            goto LABEL_94;
+        }
+        v7 = 0;
+    }
+LABEL_94:
+    tw->trace_allsolid = 1;
+    tw->trace_startsolid = 1;
+    tw->trace_fraction = 0.0f;
+    tw->trace_contents = (int)cflags;
+}
