@@ -433,6 +433,9 @@ extern int g_numLosMisses;             // 0xEB1114
 extern const char defaultFileName[];   // 0xCD67AE ("or")
 extern const float colorRed[4];        // 0xD0155C {1,0,0,1}
 extern const float colorGreen[4];      // 0xD0156C {0,1,0,1}
+extern const float colorYellow[4];     // 0xD0159C
+extern const float colorCyan[4];       // 0xD015DC
+extern const float colorMdCyan[4];     // 0xD015FC
 extern char line[256];                 // 0xEF3448 (ConcatArgs scratch)
 extern unsigned int g_HitLocConstNames[19];  // 0xEAEAD0 (BSS, filled by ParseHitLocDmgTableEntry)
 extern const char* entityTypeNames[18];      // 0xDD7480
@@ -1108,19 +1111,24 @@ int  G_GetActorCorpseIndex(Entity* ent);
 int  BG_ActorIsProne(actor_prone_info_t* pInfo, int iCurrentTime);
 float BG_GetActorProneFraction(actor_prone_info_t* pInfo, int iCurrentTime);
 int  BG_ActorGoalIsProne(actor_prone_info_t* pInfo);
-enum proneCheckType_t { PCT_ACTOR = 0 };
+// Values verified vs disasm BG_CheckProneValid: the client water check runs
+// when proneCheckType == 0 and the trace contentmask adds 0xFFE0 when != 0.
+enum proneCheckType_t { PCT_CLIENT = 0, PCT_ACTOR = 1 };
 int  BG_CheckProneValid(DbLinkedHandle<EntityHandleDb, Entity> passEntity,
-                        const math::Position3& vPos, float fSize, float fHeight, float fYaw,
+                        const math::Position3* vPos, float fSize, float fHeight, float fYaw,
                         float* pfTorsoHeight, float* pfTorsoPitch, float* pfWaistPitch,
-                        int bAlreadyProne, int bOnGround, const math::Dir3& vGroundNormal,
-                        void (__cdecl* traceFunc)(trace_t*, const math::Position3&, const math::Position3&,
-                                                  const math::Position3&, const math::Position3&,
+                        int bAlreadyProne, int bOnGround, const math::Dir3* vGroundNormal,
+                        void (__cdecl* traceFunc)(trace_t*, const math::Position3*, const math::Position3*,
+                                                  const math::Position3*, const math::Position3*,
                                                   const collision_context_t&),
-                        void (__cdecl* boxTraceFunc)(trace_t*, const math::Position3&, const math::Position3&,
-                                                     const math::Position3&, const math::Position3&,
+                        void (__cdecl* boxTraceFunc)(trace_t*, const math::Position3*, const math::Position3*,
+                                                     const math::Position3*, const math::Position3*,
                                                      const collision_context_t&),
-                        int (__cdecl* pointcontents)(const math::Position3&, const collision_context_t&),
+                        int (__cdecl* pointcontents)(const math::Position3*, const collision_context_t&),
                         proneCheckType_t proneCheckType, float prone_feet_dist);
+int  PM_VerifyPronePosition(const math::Position3& vFallbackOrg,
+                            const math::Position3& vFallbackVel);  // game.o 0x615B50
+void PM_UpdatePronePitch();                                     // game.o 0x6156B0
 
 // ============================================================================
 // Cross-object externs
@@ -1999,6 +2007,8 @@ enum {
     ERR_LOCALIZATION = 7,
 };
 void  AngleVectors(const float* angles, float* forward, float* right, float* up);
+void  AngleVectors(const math::Position3* angles, float* forward, float* right,
+                   float* up);  // core.o q_math.cpp
 void  VectorInverse(float* v);  // core.o
 void  VectorNormalizeFast(float* v);   // core.o 0x4BDF70
 void  AnglesSubtract(const math::Position3* v1, const math::Position3* v2,
@@ -2008,6 +2018,8 @@ void  ApplyPhysics(Entity* hitEnt, const math::Position3* hitp,
                    hitLocation_t hitLoc);   // physics.o 0x70D380
 extern vmCvar_t g_debugGrenades;
 extern vmCvar_t g_debugBullets;
+extern vmCvar_t g_debugProneCheck;             // ?g_debugProneCheck (game.o)
+extern vmCvar_t g_debugProneCheckDepthCheck;   // ?g_debugProneCheckDepthCheck (game.o)
 extern vmCvar_t g_player_maxhealth;
 enum {
     kActionEI_MELEE_PLAYER_LOSING = 0x400,

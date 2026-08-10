@@ -78,9 +78,16 @@ void G_ActorEnterProne(actor_s* pActor, int iTransTime)
         Entity* pEnt = pActor->pEnt;
         math::Dir3 v7;
         v7.v = _mm_setzero_ps();
+        typedef void (__cdecl* ProneTrace)(trace_t*, const math::Position3*,
+                                           const math::Position3*,
+                                           const math::Position3*,
+                                           const math::Position3*,
+                                           const collision_context_t&);
+        typedef int (__cdecl* ProneContents)(const math::Position3*,
+                                             const collision_context_t&);
         pActor->bProneOK = BG_CheckProneValid(
             pEnt->mHandle,
-            pEnt->r.currentOrigin,
+            &pEnt->r.currentOrigin,
             actorMaxs.v.m128_f32[0],
             24.0f,
             pEnt->r.currentAngles.v.m128_f32[1],
@@ -89,10 +96,10 @@ void G_ActorEnterProne(actor_s* pActor, int iTransTime)
             &pActor->ProneInfo.fWaistPitch,
             0,
             1,
-            v7,
-            g_TraceCapsule,
-            g_Trace,
-            SV_PointContents,
+            &v7,
+            (ProneTrace)g_TraceCapsule,
+            (ProneTrace)g_Trace,
+            (ProneContents)SV_PointContents,
             PCT_ACTOR,
             45.0f);
     }

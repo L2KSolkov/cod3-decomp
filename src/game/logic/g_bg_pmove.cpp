@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // g_bg_pmove.cpp - game.o bg_pmove/bg_misc/bg_weapons helpers
 // Verified against IDA (release map offsets + 0x40C000 = VA).
 // ============================================================================
@@ -2403,4 +2403,725 @@ int BG_GetTotalAmmo(const PlayerState* pPS, int iWeaponIndex)
         goto LABEL_13;
     }
     return v2;
+}
+
+// ============================================================================
+// Prone movement checks - ea: 0x6134F0..0x615B50 (bg_misc.cpp)
+// ============================================================================
+extern float AngleNormalize180Accurate(float angle);  // core.o 0x4BFD90
+extern float vectopitch(const float* vec);            // core.o q_math.cpp
+
+// ea: 0x006134F0
+int BG_CheckProneValid(
+    DbLinkedHandle<EntityHandleDb, Entity> passEntity,
+    const math::Position3* vPos, float fSize, float fHeight, float fYaw,
+    float* pfTorsoHeight, float* pfTorsoPitch, float* pfWaistPitch,
+    int bAlreadyProne, int bOnGround, const math::Dir3* vGroundNormal,
+    void (__cdecl* traceFunc)(trace_t*, const math::Position3*,
+                              const math::Position3*, const math::Position3*,
+                              const math::Position3*, const collision_context_t&),
+    void (__cdecl* boxTraceFunc)(trace_t*, const math::Position3*,
+                                 const math::Position3*, const math::Position3*,
+                                 const math::Position3*, const collision_context_t&),
+    int (__cdecl* pointcontents)(const math::Position3*,
+                                 const collision_context_t&),
+    proneCheckType_t proneCheckType, float prone_feet_dist)
+{
+    int v17 = 0;
+    trace_t trace;
+    math::Position3 vMaxs;
+    math::Position3 vMins;
+    math::Position3 vEnd;
+    math::Position3 point;
+    float v54[3];
+    float vRight[3];
+    float vUp[3];
+    collision_context_t context;
+    float fTraceHeight;
+    float fLegsPitch;
+    float fFirstTraceDist;
+    float vForward[3];
+    float vTorsoPos[3];
+    float v69;
+    float fTorsoPitch;
+    float fPitchDiff;
+    float vDelta[3];
+    float vFeetPos[3];
+    float vWaistPos[3];
+    float angle;
+    float anglea;
+    int v31;
+    float v59;
+    float v60;
+    float v61;
+    int integer;
+    void (__cdecl* v36)(trace_t*, const math::Position3*, const math::Position3*,
+                        const math::Position3*, const math::Position3*,
+                        const collision_context_t&);
+
+    trace.surfaceFlags = 0;
+    trace.contents = 0;
+    if (traceFunc == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_misc.cpp";
+        AeAssert::gCurrentLine = 1226;
+        AeAssert::gCurrentExpr = "traceFunc != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        v17 = 0;
+    }
+    float v18 = fSize;
+    float v19 = vPos->v.m128_f32[0];
+    float v20 = 0.0f - fSize;
+    vMaxs.v.m128_f32[2] = (0.0f - fSize) + vPos->v.m128_f32[1];
+    vMaxs.v.m128_f32[3] = vPos->v.m128_f32[2];
+    vTorsoPos[0] = vPos->v.m128_f32[0] + fSize;
+    vTorsoPos[1] = fSize + vPos->v.m128_f32[1];
+    float v21 = fHeight + vPos->v.m128_f32[2];
+    vMins.v.m128_f32[3] = 0.0f - fSize;
+    vMaxs.v.m128_f32[1] = v19 + (0.0f - fSize);
+    vTorsoPos[2] = v21;
+    if (g_debugProneCheck.integer != 0)
+    {
+        G_DebugBox(&vMaxs.v.m128_f32[1], vTorsoPos, colorMdCyan,
+                   g_debugProneCheckDepthCheck.integer, 1, 0);
+        v20 = vMins.v.m128_f32[3];
+        v18 = fSize;
+        v17 = 0;
+    }
+    if (bAlreadyProne == 0)
+    {
+        if (boxTraceFunc == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_misc.cpp";
+            AeAssert::gCurrentLine = 1245;
+            AeAssert::gCurrentExpr = "boxTraceFunc != 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            v20 = vMins.v.m128_f32[3];
+            v18 = fSize;
+        }
+        vMaxs.v.m128_f32[1] = v20;
+        vMaxs.v.m128_f32[2] = v20;
+        vMaxs.v.m128_f32[3] = 0.0f;
+        vTorsoPos[2] = fHeight;
+        vEnd.v.m128_f32[1] = vPos->v.m128_f32[0];
+        vEnd.v.m128_f32[2] = vPos->v.m128_f32[1];
+        float v22 = vPos->v.m128_f32[2];
+        collision_context_t boxContext;
+        memset(&boxContext, 0, sizeof(boxContext));
+        boxContext.__vftable =
+            (collision_context_t_vtbl*)0x00CD8F6C;
+        boxContext.pass_entity1 = passEntity;
+        boxContext.contentmask =
+            0x81002F + 2 + (proneCheckType != PCT_CLIENT ? 0xFFE0 : 0);
+        point.v.m128_f32[0] = 0.0f;
+        point.v.m128_f32[1] = 0.0f;
+        vEnd.v.m128_f32[3] = v22;
+        vWaistPos[0] = vPos->v.m128_f32[0];
+        vWaistPos[1] = vPos->v.m128_f32[1];
+        float v23 = vPos->v.m128_f32[2] + 10.0f;
+        vTorsoPos[0] = v18;
+        vTorsoPos[1] = v18;
+        vWaistPos[2] = v23;
+        boxTraceFunc(&trace, (const math::Position3*)&vEnd.v.m128_f32[1],
+                     (const math::Position3*)&vMaxs.v.m128_f32[1],
+                     (const math::Position3*)vTorsoPos,
+                     (const math::Position3*)vWaistPos, boxContext);
+        if ((trace.mEntity.mHandle.mVal & 0xFF) != 0)
+            return 0;
+        v17 = 0;
+    }
+    if (proneCheckType == PCT_CLIENT && pointcontents != nullptr)
+    {
+        player_collision_context_t water_context;
+        memset(&water_context, 0, sizeof(water_context));
+        water_context.__vftable =
+            (collision_context_t_vtbl*)0x00CD8F78;
+        water_context.pass_owner2 = passEntity;
+        water_context.contentmask = 32;
+        point.v.m128_f32[0] = vPos->v.m128_f32[0];
+        point.v.m128_f32[1] = vPos->v.m128_f32[1];
+        point.v.m128_f32[2] = vPos->v.m128_f32[2] + 6.0f;
+        v17 = pointcontents(&point, water_context);
+        if (v17 != 0)
+            return 0;
+    }
+    if (bOnGround != v17
+        && (((vGroundNormal->v.m128_f32[0] * vGroundNormal->v.m128_f32[0])
+             + (vGroundNormal->v.m128_f32[1]
+                * vGroundNormal->v.m128_f32[1]))
+            + (vGroundNormal->v.m128_f32[2]
+               * vGroundNormal->v.m128_f32[2])) > 0.1f
+        && vGroundNormal->v.m128_f32[2] < 0.69999999f)
+        return 0;
+    vMaxs.v.m128_f32[1] = -6.0f;
+    vMaxs.v.m128_f32[2] = -6.0f;
+    vMaxs.v.m128_f32[3] = -6.0f;
+    vTorsoPos[0] = 6.0f;
+    vTorsoPos[1] = 6.0f;
+    vTorsoPos[2] = 6.0f;
+    vWaistPos[0] = 0.0f;
+    vWaistPos[1] = fYaw - 180.0f;
+    vWaistPos[2] = 0.0f;
+    AngleVectors((const math::Position3*)vWaistPos, &fTraceHeight, v54,
+                 vRight);
+    float v26 = vPos->v.m128_f32[0];
+    float v27 = vPos->v.m128_f32[1];
+    float v28 = vPos->v.m128_f32[2] + (fHeight - 6.0f);
+    vUp[2] = 0.0f;
+    memset(&context, 0, sizeof(context));
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    context.pass_entity1 = passEntity;
+    v59 = fHeight - 6.0f;
+    vEnd.v.m128_f32[1] = v26;
+    v60 = prone_feet_dist - 6.0f;
+    vEnd.v.m128_f32[2] = v27;
+    vEnd.v.m128_f32[3] = v28;
+    vWaistPos[0] = ((prone_feet_dist - 6.0f) * fTraceHeight) + v26;
+    vWaistPos[1] = ((prone_feet_dist - 6.0f) * fLegsPitch) + v27;
+    vWaistPos[2] = ((prone_feet_dist - 6.0f) * fFirstTraceDist) + v28;
+    context.pass_entity2.mHandle.mVal =
+        0x81002F + 2 + (proneCheckType != PCT_CLIENT ? 0xFFE0 : 0);
+    traceFunc(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos,
+              (const math::Position3*)vWaistPos, context);
+    integer = g_debugProneCheck.integer;
+    if (g_debugProneCheck.integer != 0)
+    {
+        G_DebugCircleEx(&vEnd.v.m128_f32[1], 6.0f, v54, colorMdCyan,
+                        g_debugProneCheckDepthCheck.integer, 1);
+        integer = g_debugProneCheck.integer;
+        if (g_debugProneCheck.integer != 0)
+        {
+            G_DebugCircleEx(&vEnd.v.m128_f32[1], 6.0f, vRight, colorMdCyan,
+                            g_debugProneCheckDepthCheck.integer, 1);
+            integer = g_debugProneCheck.integer;
+        }
+    }
+    if (trace.normal.v.m128_f32[1] >= 1.0f)
+    {
+        if (integer != 0)
+            G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                        colorGreen, g_debugProneCheckDepthCheck.integer, 1);
+        v31 = (int)vMins.v.m128_f32[2];
+        goto LABEL_45;
+    }
+    float v30 = (v60 * trace.normal.v.m128_f32[1]) + 6.0f;
+    if (bOnGround == 0 || (v31 = 1, v61 = v30, (fSize + 2.0f) > v30))
+    {
+        if (integer != 0)
+            G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                        colorRed, g_debugProneCheckDepthCheck.integer, 1);
+        return 0;
+    }
+    vMins.v.m128_f32[2] = (v59 * 0.69999999f) + 24.0f;
+    if (vMins.v.m128_f32[2] > v30)
+    {
+        if (integer != 0)
+            G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                        colorRed, g_debugProneCheckDepthCheck.integer, 1);
+        v69 = vWaistPos[0] - vEnd.v.m128_f32[1];
+        vWaistPos[2] = vWaistPos[2] + 22.0f;
+        v31 = 0;
+        fTorsoPitch = vWaistPos[1] - vEnd.v.m128_f32[2];
+        fPitchDiff = vWaistPos[2] - vEnd.v.m128_f32[3];
+        vMins.v.m128_f32[3] =
+            VectorNormalize2(&v69, &fTraceHeight);
+        traceFunc(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos, (const math::Position3*)vWaistPos, context);
+        integer = g_debugProneCheck.integer;
+        if (trace.normal.v.m128_f32[1] < 1.0f)
+        {
+            v31 = 1;
+            v61 = (vMins.v.m128_f32[3] * trace.normal.v.m128_f32[1]) + 6.0f;
+            if (vMins.v.m128_f32[2] > v61)
+            {
+                if (g_debugProneCheck.integer != 0)
+                {
+                    G_DebugLine(&vEnd.v.m128_f32[1],
+                                &trace.endpos.v.m128_f32[0], colorRed,
+                                g_debugProneCheckDepthCheck.integer, 1);
+                    return 0;
+                }
+                return 0;
+            }
+            goto LABEL_38;
+        }
+        if (g_debugProneCheck.integer != 0)
+            G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                        colorGreen, g_debugProneCheckDepthCheck.integer, 1);
+    LABEL_45:
+        v61 = prone_feet_dist;
+        goto LABEL_46;
+    }
+LABEL_38:
+    if (integer != 0)
+        G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                    colorYellow, g_debugProneCheckDepthCheck.integer, 1);
+LABEL_46:
+    float v39, v40, v41;
+    vDelta[0] = trace.endpos.v.m128_f32[0];
+    vDelta[1] = trace.endpos.v.m128_f32[1];
+    float v33 = (fTraceHeight * 24.0f) + vPos->v.m128_f32[0];
+    vDelta[2] = trace.endpos.v.m128_f32[2];
+    vEnd.v.m128_f32[1] = v33;
+    vWaistPos[0] = v33;
+    float v34 = (fLegsPitch * 24.0f) + vPos->v.m128_f32[1];
+    vEnd.v.m128_f32[3] = ((fFirstTraceDist * 24.0f) + vPos->v.m128_f32[2]) + v59;
+    vEnd.v.m128_f32[2] = v34;
+    vWaistPos[1] = v34;
+    vMins.v.m128_f32[2] = ((fSize * 2.5f) + v59) - 6.0f;
+    vWaistPos[2] = vEnd.v.m128_f32[3] - vMins.v.m128_f32[2];
+    traceFunc(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos,
+              (const math::Position3*)vWaistPos, context);
+    if (trace.normal.v.m128_f32[1] == 1.0f)
+    {
+        if (g_debugProneCheck.integer != 0)
+            G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                        colorRed, g_debugProneCheckDepthCheck.integer, 1);
+        goto fail;
+    }
+    if (trace.normal.v.m128_f32[2] < 0.69999999f)
+        return 0;
+    int v35 = g_debugProneCheck.integer;
+    if (g_debugProneCheck.integer != 0)
+    {
+        G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                    colorGreen, g_debugProneCheckDepthCheck.integer, 1);
+        v35 = g_debugProneCheck.integer;
+    }
+    vFeetPos[0] = trace.endpos.v.m128_f32[0];
+    vFeetPos[1] = trace.endpos.v.m128_f32[1];
+    vFeetPos[2] = trace.endpos.v.m128_f32[2];
+    if (v31 != 0)
+    {
+        if ((((vMins.v.m128_f32[2] * trace.normal.v.m128_f32[1]) + 6.0f)
+             * -0.75f)
+            > (v61 - ((vMins.v.m128_f32[2] * trace.normal.v.m128_f32[1])
+                      + 6.0f)))
+        {
+            if (v35 != 0)
+                G_DebugLine(vDelta, vFeetPos, colorRed,
+                            g_debugProneCheckDepthCheck.integer, 1);
+            goto fail;
+        }
+        if (v35 != 0)
+            G_DebugLine(vDelta, vFeetPos, colorMdCyan,
+                        g_debugProneCheckDepthCheck.integer, 1);
+        fTorsoPitch = (fLegsPitch * 6.0f) + (vDelta[1] - vFeetPos[1]);
+        v69 = (fTraceHeight * 6.0f) + (vDelta[0] - vFeetPos[0]);
+        fPitchDiff = ((fFirstTraceDist * 6.0f) + (vDelta[2] - vFeetPos[2]))
+            + 6.0f;
+        VectorNormalize(&v69);
+        v36 = traceFunc;
+        float v37 = (v60 * fTraceHeight) + vPos->v.m128_f32[0];
+        float v38 = (v60 * fLegsPitch) + vPos->v.m128_f32[1];
+        vWaistPos[2] = ((v60 - 24.0f) * fPitchDiff) + vEnd.v.m128_f32[3];
+        vWaistPos[0] = (v37 + (((v60 - 24.0f) * v69) + vEnd.v.m128_f32[1]))
+            * 0.5f;
+        vWaistPos[1] =
+            (v38 + (((v60 - 24.0f) * fTorsoPitch) + vEnd.v.m128_f32[2]))
+            * 0.5f;
+        traceFunc(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos, (const math::Position3*)vWaistPos, context);
+        if (trace.normal.v.m128_f32[1] < 1.0f)
+        {
+            if (g_debugProneCheck.integer != 0)
+                G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                            colorRed, g_debugProneCheckDepthCheck.integer, 1);
+            vEnd.v.m128_f32[1] = trace.endpos.v.m128_f32[0];
+            vEnd.v.m128_f32[2] = trace.endpos.v.m128_f32[1];
+            vEnd.v.m128_f32[3] = trace.endpos.v.m128_f32[2] + 18.0f;
+            vWaistPos[2] = vWaistPos[2] + 18.0f;
+            traceFunc(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos, (const math::Position3*)vWaistPos, context);
+            if (trace.normal.v.m128_f32[1] < 1.0f)
+                goto LABEL_71;
+        }
+        if (g_debugProneCheck.integer != 0)
+            G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                        colorGreen, g_debugProneCheckDepthCheck.integer, 1);
+        v39 = trace.endpos.v.m128_f32[0];
+        v40 = trace.endpos.v.m128_f32[1];
+        v41 = trace.endpos.v.m128_f32[2];
+        vDelta[0] = trace.endpos.v.m128_f32[0];
+        vDelta[1] = trace.endpos.v.m128_f32[1];
+        vDelta[2] = trace.endpos.v.m128_f32[2];
+    }
+    else
+    {
+        v41 = vDelta[2];
+        v40 = vDelta[1];
+        v39 = vDelta[0];
+        v36 = traceFunc;
+    }
+    vEnd.v.m128_f32[2] = v40;
+    vWaistPos[1] = v40;
+    vEnd.v.m128_f32[3] = v41;
+    vEnd.v.m128_f32[1] = v39;
+    vWaistPos[0] = v39;
+    vWaistPos[2] = v41 - (((v41 - vFeetPos[2]) * 2.0f) + fSize);
+    v36(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos,
+        (const math::Position3*)vWaistPos, context);
+    if (trace.normal.v.m128_f32[1] == 1.0f)
+        goto LABEL_71;
+    if (trace.normal.v.m128_f32[2] < 0.69999999f)
+        return 0;
+    if (g_debugProneCheck.integer != 0)
+        G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                    colorGreen, g_debugProneCheckDepthCheck.integer, 1);
+    vDelta[0] = trace.endpos.v.m128_f32[0];
+    vDelta[1] = trace.endpos.v.m128_f32[1];
+    vDelta[2] = trace.endpos.v.m128_f32[2];
+    vEnd.v.m128_f32[1] = vPos->v.m128_f32[0];
+    vEnd.v.m128_f32[2] = vPos->v.m128_f32[1];
+    vEnd.v.m128_f32[3] = vPos->v.m128_f32[2] + v59;
+    vWaistPos[0] = vPos->v.m128_f32[0];
+    vWaistPos[1] = vPos->v.m128_f32[1];
+    vWaistPos[2] = vPos->v.m128_f32[2] - (fSize * 1.5f);
+    v36(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos,
+        (const math::Position3*)vWaistPos, context);
+    if (trace.normal.v.m128_f32[1] == 1.0f)
+        goto LABEL_71;
+    if (trace.normal.v.m128_f32[2] < 0.69999999f)
+        return 0;
+    if (g_debugProneCheck.integer != 0)
+        G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0],
+                    colorGreen, g_debugProneCheckDepthCheck.integer, 1);
+    vForward[0] = trace.endpos.v.m128_f32[0];
+    fTorsoPitch = vFeetPos[1] - trace.endpos.v.m128_f32[1];
+    vForward[1] = trace.endpos.v.m128_f32[1];
+    vForward[2] = trace.endpos.v.m128_f32[2];
+    v69 = vFeetPos[0] - trace.endpos.v.m128_f32[0];
+    fPitchDiff = vFeetPos[2] - trace.endpos.v.m128_f32[2];
+    vMins.v.m128_f32[2] = vectopitch(&v69);
+    v69 = vDelta[0] - vFeetPos[0];
+    fTorsoPitch = vDelta[1] - vFeetPos[1];
+    fPitchDiff = vDelta[2] - vFeetPos[2];
+    double v44 = vectopitch(&v69);
+    v60 = (float)v44;
+    AngleSubtract(v60, vMins.v.m128_f32[2]);
+    vMins.v.m128_f32[3] = (float)v44;
+    if (v44 < -50.0 || vMins.v.m128_f32[3] > 70.0)
+    {
+        if (g_debugProneCheck.integer == 0)
+            goto fail;
+        G_DebugLine(vForward, vFeetPos, colorMagenta,
+                    g_debugProneCheckDepthCheck.integer, 1);
+        if (g_debugProneCheck.integer == 0)
+            goto fail;
+        G_DebugLine(vFeetPos, vDelta, colorMagenta,
+                    g_debugProneCheckDepthCheck.integer, 1);
+        goto fail;
+    }
+    memset(&vMaxs.v.m128_f32[1], 0, 12);
+    memset(vTorsoPos, 0, sizeof(vTorsoPos));
+    vEnd.v.m128_f32[1] = vForward[0];
+    vEnd.v.m128_f32[2] = vForward[1];
+    vEnd.v.m128_f32[3] = vForward[2] + 5.0f;
+    vWaistPos[0] = vFeetPos[0];
+    vWaistPos[1] = vFeetPos[1];
+    vWaistPos[2] = vFeetPos[2] + 5.0f;
+    v36(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos,
+        (const math::Position3*)vWaistPos, context);
+    int v45 = g_debugProneCheck.integer;
+    if (trace.normal.v.m128_f32[1] >= 1.0f)
+    {
+        if (g_debugProneCheck.integer != 0)
+            G_DebugLine(&vEnd.v.m128_f32[1], vWaistPos, colorGreen,
+                        g_debugProneCheckDepthCheck.integer, 1);
+        vEnd.v.m128_f32[1] = vWaistPos[0];
+        vEnd.v.m128_f32[2] = vWaistPos[1];
+        vEnd.v.m128_f32[3] = vWaistPos[2];
+        vWaistPos[0] = vDelta[0];
+        vWaistPos[1] = vDelta[1];
+        vWaistPos[2] = vDelta[2] + 5.0f;
+        v36(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos,
+            (const math::Position3*)vWaistPos, context);
+        v45 = g_debugProneCheck.integer;
+        if (trace.normal.v.m128_f32[1] >= 1.0f)
+        {
+            if (g_debugProneCheck.integer != 0)
+            {
+                G_DebugLine(&vEnd.v.m128_f32[1], vWaistPos, colorGreen,
+                            g_debugProneCheckDepthCheck.integer, 1);
+                if (g_debugProneCheck.integer != 0)
+                {
+                    G_DebugCircleEx(vForward, 6.0f, v54, colorMdCyan,
+                                    g_debugProneCheckDepthCheck.integer, 1);
+                    if (g_debugProneCheck.integer != 0)
+                    {
+                        G_DebugCircleEx(vForward, 6.0f, vRight, colorMdCyan,
+                                        g_debugProneCheckDepthCheck.integer,
+                                        1);
+                        if (g_debugProneCheck.integer != 0)
+                        {
+                            G_DebugCircleEx(vFeetPos, 6.0f, v54, colorMdCyan,
+                                            g_debugProneCheckDepthCheck.integer,
+                                            1);
+                            if (g_debugProneCheck.integer != 0)
+                            {
+                                G_DebugCircleEx(vFeetPos, 6.0f, vRight,
+                                                colorMdCyan,
+                                                g_debugProneCheckDepthCheck.integer,
+                                                1);
+                                if (g_debugProneCheck.integer != 0)
+                                {
+                                    G_DebugCircleEx(vDelta, 6.0f, v54,
+                                                    colorMdCyan,
+                                                    g_debugProneCheckDepthCheck.integer,
+                                                    1);
+                                    if (g_debugProneCheck.integer != 0)
+                                    {
+                                        G_DebugCircleEx(vDelta, 6.0f, vRight,
+                                                        colorMdCyan,
+                                                        g_debugProneCheckDepthCheck.integer,
+                                                        1);
+                                        if (g_debugProneCheck.integer != 0)
+                                        {
+                                            G_DebugLine(vForward, vFeetPos,
+                                                        colorCyan,
+                                                        g_debugProneCheckDepthCheck.integer,
+                                                        1);
+                                            if (g_debugProneCheck.integer
+                                                != 0)
+                                                G_DebugLine(
+                                                    vFeetPos, vDelta, colorCyan,
+                                                    g_debugProneCheckDepthCheck.integer,
+                                                    1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            float v46 = vForward[2];
+            if (pfTorsoHeight != nullptr)
+                *pfTorsoHeight = (vForward[2] - vPos->v.m128_f32[2]) - 6.0f;
+            if (pfTorsoPitch != nullptr)
+            {
+                v69 = vForward[0] - vFeetPos[0];
+                fTorsoPitch = vForward[1] - vFeetPos[1];
+                fPitchDiff = v46 - vFeetPos[2];
+                angle = vectopitch(&v69);
+                *pfTorsoPitch = AngleNormalize180(angle);
+            }
+            if (pfWaistPitch != nullptr)
+            {
+                v69 = vFeetPos[0] - vDelta[0];
+                fTorsoPitch = vFeetPos[1] - vDelta[1];
+                fPitchDiff = vFeetPos[2] - vDelta[2];
+                anglea = vectopitch(&v69);
+                *pfWaistPitch = AngleNormalize180(anglea);
+            }
+            return 1;
+        }
+    }
+    if (v45 != 0)
+        G_DebugLine(&vEnd.v.m128_f32[1], vWaistPos, colorRed,
+                    g_debugProneCheckDepthCheck.integer, 1);
+fail:
+    if (bOnGround != 0)
+        return 0;
+    if (pfTorsoHeight != nullptr)
+        *pfTorsoHeight = 0.0f;
+    if (pfTorsoPitch != nullptr)
+        *pfTorsoPitch = 0.0f;
+    if (pfWaistPitch != nullptr)
+        *pfWaistPitch = 0.0f;
+    return 1;
+LABEL_71:
+    if (g_debugProneCheck.integer != 0)
+    {
+        G_DebugLine(&vEnd.v.m128_f32[1], &trace.endpos.v.m128_f32[0], colorRed,
+                    g_debugProneCheckDepthCheck.integer, 1);
+    }
+    goto fail;
+}
+
+// ea: 0x00615B50
+int PM_VerifyPronePosition(const math::Position3& vFallbackOrg,
+                           const math::Position3& vFallbackVel)
+{
+    PlayerState* ps = pm->ps;
+    if ((pm->ps->pm_flags & 1) == 0)
+        return 1;
+    float proneDirection = ps->proneDirection;
+    math::Dir3 v9;
+    v9.v.m128_f32[0] = 0.0f;
+    v9.v.m128_f32[1] = 0.0f;
+    v9.v.m128_f32[2] = 0.69999999f;
+    v9.v.m128_f32[3] = 0.0f;
+    typedef void (__cdecl* ProneTrace)(trace_t*, const math::Position3*,
+                                       const math::Position3*, const math::Position3*,
+                                       const math::Position3*,
+                                       const collision_context_t&);
+    typedef int (__cdecl* ProneContents)(const math::Position3*,
+                                         const collision_context_t&);
+    int result = BG_CheckProneValid(
+        ps->mClient, &ps->origin, ps->maxs[0], 30.0f, proneDirection,
+        &ps->fTorsoHeight, &ps->fTorsoPitch, &ps->fWaistPitch, 1, 1,
+        &v9, (ProneTrace)pm->capsuletrace, (ProneTrace)pm->boxtrace,
+        (ProneContents)pm->pointcontents, PCT_CLIENT, 60.0f);
+    if (result == 0)
+    {
+        pm->ps->origin.v.m128_f32[0] = vFallbackOrg.v.m128_f32[0];
+        pm->ps->origin.v.m128_f32[1] = vFallbackOrg.v.m128_f32[1];
+        pm->ps->origin.v.m128_f32[2] = vFallbackOrg.v.m128_f32[2];
+        pm->ps->velocity.v.m128_f32[0] = vFallbackVel.v.m128_f32[0];
+        pm->ps->velocity.v.m128_f32[1] = vFallbackVel.v.m128_f32[1];
+        pm->ps->velocity.v.m128_f32[2] = vFallbackVel.v.m128_f32[2];
+    }
+    return result;
+}
+
+// ea: 0x006156B0
+void PM_UpdatePronePitch()
+{
+    pmove_t* v2 = pm;
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 5253;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        v2 = pm;
+    }
+    PlayerState* ps = v2->ps;
+    if ((v2->ps->pm_flags & 1) != 0)
+    {
+        if (ps->mGroundEntity.mHandle.mVal != 0)
+        {
+            if (pml.groundPlane == 0)
+                goto LABEL_22;
+            if (pml.groundTrace.normal.v.m128_f32[2] < 0.69999999f)
+            {
+                BG_AddPredictableEventToPlayerstate(166, 0, v2->ps);
+                v2 = pm;
+            }
+        }
+        else
+        {
+            typedef void (__cdecl* ProneTrace)(trace_t*, const math::Position3*,
+                                               const math::Position3*,
+                                               const math::Position3*,
+                                               const math::Position3*,
+                                               const collision_context_t&);
+            typedef int (__cdecl* ProneContents)(const math::Position3*,
+                                                 const collision_context_t&);
+            int v10 = ps->mGroundEntity.mHandle.mVal != 0;
+            float proneDirection = ps->proneDirection;
+            math::Dir3 groundNormal;
+            if (pml.groundPlane != 0)
+                groundNormal = pml.groundTrace.normal;
+            else
+            {
+                groundNormal.v.m128_f32[0] = 0.0f;
+                groundNormal.v.m128_f32[1] = 0.0f;
+                groundNormal.v.m128_f32[2] = 1.0f;
+                groundNormal.v.m128_f32[3] = 0.0f;
+            }
+            int v6 = BG_CheckProneValid(
+                ps->mClient, &ps->origin, ps->maxs[0], 30.0f, proneDirection,
+                &ps->fTorsoHeight, &ps->fTorsoPitch, &ps->fWaistPitch, 1,
+                v10, &groundNormal, (ProneTrace)v2->capsuletrace,
+                (ProneTrace)v2->boxtrace, (ProneContents)v2->pointcontents,
+                PCT_CLIENT, 60.0f);
+            v2 = pm;
+            if (v6 == 0 || pm->waterlevel != 0)
+            {
+                PlayerState* v7 = pm->ps;
+                char v12[256];
+                Cvar_VariableStringBuffer("showevents", v12, 256);
+                if (atof(v12) != 0.0)
+                    Com_Printf(
+                        "Cgame event svt %5d -> %5d: num = %20s parm %d\n",
+                        v7->commandTime, v7->event.eventSequence,
+                        pEventNamesList[166], 0);
+                v7->event.events[v7->event.eventSequence & 3] = 166;
+                v7->event.eventParms[v7->event.eventSequence++ & 3] = 0;
+                pm->ps->pm_flags |= 0x8000u;
+                v2 = pm;
+            }
+        }
+        if (pml.groundPlane != 0)
+        {
+            float pronePitch =
+                PitchForYawOnNormal(v2->ps->proneDirection,
+                                    &pml.groundTrace.normal.v.m128_f32[0]);
+            float v15 = AngleDelta(pronePitch, v2->ps->proneDirectionPitch);
+            if (v15 != 0.0f)
+            {
+                if (fabsf(v15) <= (pml.frametime * 70.0f))
+                {
+                    pm->ps->proneDirectionPitch =
+                        pm->ps->proneDirectionPitch + v15;
+                }
+                else
+                {
+                    pm->ps->proneDirectionPitch =
+                        ((1 - 2 * (v15 < 0.0f)) * (pml.frametime * 70.0f))
+                        + pm->ps->proneDirectionPitch;
+                }
+                pm->ps->proneDirectionPitch =
+                    AngleNormalize180Accurate(pm->ps->proneDirectionPitch);
+            }
+            v15 = AngleDelta(0.0f, pm->ps->proneTorsoPitch);
+            if (v15 != 0.0f)
+            {
+                if (fabsf(v15) <= (pml.frametime * 70.0f))
+                {
+                    pm->ps->proneTorsoPitch =
+                        pm->ps->proneTorsoPitch + v15;
+                }
+                else
+                {
+                    pm->ps->proneTorsoPitch =
+                        ((1 - 2 * (v15 < 0.0f)) * (pml.frametime * 70.0f))
+                        + pm->ps->proneTorsoPitch;
+                }
+                pm->ps->proneTorsoPitch =
+                    AngleNormalize180Accurate(pm->ps->proneTorsoPitch);
+            }
+            return;
+        }
+    LABEL_22:
+        float proneDirection = 0.0f;
+        float v15 = AngleDelta(proneDirection, v2->ps->proneDirectionPitch);
+        if (v15 != 0.0f)
+        {
+            if (fabsf(v15) <= (pml.frametime * 70.0f))
+            {
+                pm->ps->proneDirectionPitch =
+                    pm->ps->proneDirectionPitch + v15;
+            }
+            else
+            {
+                pm->ps->proneDirectionPitch =
+                    ((1 - 2 * (v15 < 0.0f)) * (pml.frametime * 70.0f))
+                    + pm->ps->proneDirectionPitch;
+            }
+            pm->ps->proneDirectionPitch =
+                AngleNormalize180Accurate(pm->ps->proneDirectionPitch);
+        }
+        v15 = AngleDelta(0.0f, pm->ps->proneTorsoPitch);
+        if (v15 != 0.0f)
+        {
+            if (fabsf(v15) <= (pml.frametime * 70.0f))
+            {
+                pm->ps->proneTorsoPitch = pm->ps->proneTorsoPitch + v15;
+            }
+            else
+            {
+                pm->ps->proneTorsoPitch =
+                    ((1 - 2 * (v15 < 0.0f)) * (pml.frametime * 70.0f))
+                    + pm->ps->proneTorsoPitch;
+            }
+            pm->ps->proneTorsoPitch =
+                AngleNormalize180Accurate(pm->ps->proneTorsoPitch);
+        }
+    }
 }
