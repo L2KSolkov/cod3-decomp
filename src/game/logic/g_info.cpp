@@ -208,38 +208,31 @@ int Info_Validate(const char* s)
 }
 
 // ============================================================================
-// Info_SetValueForKey / _Big - ea: 0x611170 / 0x611430
+// Info_SetValueForKey - ea: 0x611170
 // ============================================================================
-static void Info_SetValueForKeyInternal(char* s, const char* key,
-                                        const char* value, int big)
+void Info_SetValueForKey(char* s, const char* key, const char* value)
 {
     int v3 = 0;
     if (value == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
-        AeAssert::gCurrentLine = big ? 968 : 909;
+        AeAssert::gCurrentLine = 909;
         AeAssert::gCurrentExpr = "value";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
     if (strlen(s) >= 0x400)
     {
-        if (!big)
-        {
-            AeAssert::gCurrentAuthor = AeAssert::COD3;
-            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
-            AeAssert::gCurrentLine = 913;
-            AeAssert::gCurrentExpr = "0";
-            if (!AeAssert::IsIgnored()
-                && AeAssert::Assert("oversize infostring - Tell MikeA"))
-                __debugbreak();
-        }
-        else
-        {
-            Com_Error(ERR_DROP, "Info_SetValueForKey_Big: oversize infostring");
-        }
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
+        AeAssert::gCurrentLine = 913;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("oversize infostring - Tell MikeA"))
+            __debugbreak();
     }
+    char newi[1024];
     char cleanValue[1024];
     int v4 = 0;
     do
@@ -253,7 +246,7 @@ static void Info_SetValueForKeyInternal(char* s, const char* key,
             {
                 AeAssert::gCurrentAuthor = AeAssert::COD3;
                 AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
-                AeAssert::gCurrentLine = big ? 980 : 923;
+                AeAssert::gCurrentLine = 923;
                 AeAssert::gCurrentExpr = "j < 1024";
                 if (!AeAssert::IsIgnored()
                     && AeAssert::Assert("old cod assert"))
@@ -267,7 +260,7 @@ static void Info_SetValueForKeyInternal(char* s, const char* key,
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
-        AeAssert::gCurrentLine = big ? 984 : 927;
+        AeAssert::gCurrentLine = 928;
         AeAssert::gCurrentExpr = "j < 1024";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
@@ -279,36 +272,87 @@ static void Info_SetValueForKeyInternal(char* s, const char* key,
         Com_Error(ERR_DROP, "Can't use keys with a ;");
     if (strchr(key, 34) != nullptr)
         Com_Error(ERR_DROP, "Can't use keys with a \"");
-    char pkey[8192];
-    char value2[1024];
-    Info_RemoveKeyInternal(s, key, pkey, value2);
+    Info_RemoveKey(s, key);
     if (cleanValue[0] != 0)
     {
-        char newi[1024];
         Com_sprintf(newi, 1024, "\\%s\\%s", key, cleanValue);
         if (strlen(newi) + strlen(s) > 0x400)
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
-            AeAssert::gCurrentLine = big ? 1005 : 948;
+            AeAssert::gCurrentLine = 948;
             AeAssert::gCurrentExpr = "0";
             if (!AeAssert::IsIgnored()
-                && AeAssert::Assert(
-                       "String length exceeded key : Tell MikeA"))
+                && AeAssert::Assert("String length exceeded key : Tell MikeA"))
                 __debugbreak();
         }
         strcat(s, newi);
     }
 }
 
-// ea: 0x00611170
-void Info_SetValueForKey(char* s, const char* key, const char* value)
-{
-    Info_SetValueForKeyInternal(s, key, value, 0);
-}
-
-// ea: 0x00611430
+// ============================================================================
+// Info_SetValueForKey_Big - ea: 0x611430
+// ============================================================================
 void Info_SetValueForKey_Big(char* s, const char* key, const char* value)
 {
-    Info_SetValueForKeyInternal(s, key, value, 1);
+    int v3 = 0;
+    if (value == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
+        AeAssert::gCurrentLine = 968;
+        AeAssert::gCurrentExpr = "value";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (strlen(s) >= 0x400)
+        Com_Error(ERR_DROP, "Info_SetValueForKey_Big: oversize infostring");
+    char newi[1024];
+    char cleanValue[1024];
+    int v4 = 0;
+    do
+    {
+        char v5 = value[v3];
+        if (v5 == 0)
+            break;
+        if (v5 != 92 && v5 != 59 && v5 != 34)
+        {
+            if (v4 >= 1024)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
+                AeAssert::gCurrentLine = 980;
+                AeAssert::gCurrentExpr = "j < 1024";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            cleanValue[v4++] = v5;
+        }
+        ++v3;
+    } while (v3 < 1023);
+    if (v4 >= 1024)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\q_shared.cpp";
+        AeAssert::gCurrentLine = 985;
+        AeAssert::gCurrentExpr = "j < 1024";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    cleanValue[v4] = 0;
+    if (strchr(key, 92) != nullptr)
+        Com_Error(ERR_DROP, "Can't use keys with a \\");
+    if (strchr(key, 59) != nullptr)
+        Com_Error(ERR_DROP, "Can't use keys with a ;");
+    if (strchr(key, 34) != nullptr)
+        Com_Error(ERR_DROP, "Can't use keys with a \"");
+    Info_RemoveKey_Big(s, key);
+    if (cleanValue[0] != 0)
+    {
+        Com_sprintf(newi, 1024, "\\%s\\%s", key, cleanValue);
+        if (strlen(newi) + strlen(s) > 0x400)
+            Com_Error(ERR_DROP, "Info_SetValueForKey_Big: string too long");
+        strcat(s, newi);
+    }
 }
