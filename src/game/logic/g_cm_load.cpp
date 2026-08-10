@@ -467,45 +467,75 @@ enum visit_result_t {
 };
 
 struct rtree_visitor_t {
-    int objects_slot[256];   // +0x410
-    int objects_count;       // +0x414
-    int boxes_slot[128];     // +0x420
-    int boxes_count;         // +0x624
-    int brushes_slot[128];   // +0x830
-    int brushes_count;       // +0x834
-    int patches_slot[128];   // +0x840
-    int patches_count;       // +0xA44
-    CGBank* bank;            // +0xA50
+    void* __vftable;         // +0x00
+    // objects (m_buffer +0x10, m_alloc_count +0x414, m_slot_array +0x410)
+    uint8_t objects_m_buffer[0x400];  // +0x10
+    int*    objects_m_slot_array;     // +0x410
+    int     objects_m_alloc_count;    // +0x414
+    // boxes (m_buffer +0x420, m_alloc_count +0x624, m_slot_array +0x620)
+    uint8_t boxes_m_buffer[0x200];    // +0x420
+    int*    boxes_m_slot_array;       // +0x620
+    int     boxes_m_alloc_count;      // +0x624
+    // brushes (m_buffer +0x630, m_alloc_count +0x834, m_slot_array +0x830)
+    uint8_t brushes_m_buffer[0x200];  // +0x630
+    int*    brushes_m_slot_array;     // +0x830
+    int     brushes_m_alloc_count;    // +0x834
+    // patches (m_buffer +0x840, m_alloc_count +0xA44, m_slot_array +0xA40)
+    uint8_t patches_m_buffer[0x200];  // +0x840
+    int*    patches_m_slot_array;     // +0xA40
+    int     patches_m_alloc_count;    // +0xA44
+    CGBank* bank;                     // +0xA50
 
+    rtree_visitor_t(const CGBank* _bank);  // ??0rtree_visitor_t@@QAE@PBVCGBank@@@Z (game.o 0x622AE0)
     visit_result_t visit(int index);  // ?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z
     void filter_objects(int mask);    // ?filter_objects@rtree_visitor_t@@QAEXH@Z
 };
 
+// ea: 0x00622AE0
+rtree_visitor_t::rtree_visitor_t(const CGBank* _bank)
+{
+    this->__vftable = 0;
+    this->objects_m_alloc_count = 0;
+    this->objects_m_slot_array = (int*)this->objects_m_buffer;
+    this->boxes_m_alloc_count = 0;
+    this->boxes_m_slot_array = (int*)this->boxes_m_buffer;
+    this->brushes_m_alloc_count = 0;
+    this->brushes_m_slot_array = (int*)this->brushes_m_buffer;
+    this->patches_m_alloc_count = 0;
+    this->patches_m_slot_array = (int*)this->patches_m_buffer;
+    this->bank = (CGBank*)_bank;
+    this->objects_m_alloc_count = 0;
+    this->boxes_m_alloc_count = 0;
+    this->brushes_m_alloc_count = 0;
+    this->patches_m_alloc_count = 0;
+}
+
 // ea: 0x0061AAF0
 visit_result_t rtree_visitor_t::visit(int index)
 {
-    if (this->objects_count != 256)
-        this->objects_slot[this->objects_count++] = index;
+    if (this->objects_m_alloc_count != 256)
+        this->objects_m_slot_array[this->objects_m_alloc_count++] = index;
     return CONTINUE_VISITING;
 }
 
 // ea: 0x0061AB20
 void rtree_visitor_t::filter_objects(int mask)
 {
-    unsigned int nobjects = (unsigned int)this->objects_count;
+    unsigned int nobjects = (unsigned int)this->objects_m_alloc_count;
     unsigned int oi = 0;
     if (nobjects != 0)
     {
         int v3 = 0;
         while (1)
         {
-            if ((v3 < 0 || v3 >= this->objects_count)
+            if ((v3 < 0 || v3 >= this->objects_m_alloc_count)
                 && _tlAssert(
                     "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
                     108, "i >= 0 && i < m_alloc_count", ""))
                 __debugbreak();
             CGBank* bank = this->bank;
-            unsigned int index = (unsigned int)this->objects_slot[v3];
+            unsigned int index =
+                (unsigned int)this->objects_m_slot_array[v3];
             if (index >= (unsigned int)bank->objects.m_count)
             {
                 AeAssert::gCurrentAuthor = AeAssert::CD;
@@ -529,23 +559,26 @@ void rtree_visitor_t::filter_objects(int mask)
                     : 2 - (index < nboxes + (unsigned int)bank->nbrushes);
                 if (type == 1)
                 {
-                    if (this->brushes_count == 128)
+                    if (this->brushes_m_alloc_count == 128)
                         goto LABEL_28;
-                    this->brushes_slot[this->brushes_count++] = (int)index;
+                    this->brushes_m_slot_array[this->brushes_m_alloc_count++] =
+                        (int)index;
                 }
                 else
                 {
                     if (type != 0)
                     {
-                        if (this->patches_count == 128)
+                        if (this->patches_m_alloc_count == 128)
                             goto LABEL_28;
-                        this->patches_slot[this->patches_count++] = (int)index;
+                        this->patches_m_slot_array[this->patches_m_alloc_count++] =
+                            (int)index;
                     }
                     else
                     {
-                        if (this->boxes_count == 128)
+                        if (this->boxes_m_alloc_count == 128)
                             goto LABEL_28;
-                        this->boxes_slot[this->boxes_count++] = (int)index;
+                        this->boxes_m_slot_array[this->boxes_m_alloc_count++] =
+                            (int)index;
                     }
                 }
             }
