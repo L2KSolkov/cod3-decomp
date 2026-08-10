@@ -882,6 +882,54 @@ MusicMgr::MusicMgr()
     this->mCrossFadeType = 0;
 }
 
+// ============================================================================
+// SoundMediaMgr - ea: 0x603EF0..0x603F20 (SoundMediaMgr.cpp)
+// ============================================================================
+struct SoundMediaMgr {
+    SoundMediaMgr();              // ??0SoundMediaMgr@@QAE@XZ (game.o 0x603EF0)
+    ~SoundMediaMgr();             // ??1SoundMediaMgr@@QAE@XZ (game.o 0x603F00)
+    void RegisterSounds();        // ?RegisterSounds@SoundMediaMgr@@QAEXXZ (game.o 0x603F10)
+    void PlayLandingSound(Entity* entity, int surfaceType,
+                          bool damage);  // game.o 0x603F20
+};
+
+extern struct CollisionDesc {
+    math::Position3 coord;    // +0x00
+    math::Position3 normal;   // +0x10
+    int material;             // +0x20
+};
+extern Handle PostEffectEventLanding(const Entity* ent,
+                                     const CollisionDesc* col_desc);
+
+// ea: 0x00603EF0
+SoundMediaMgr::SoundMediaMgr()
+{
+}
+
+// ea: 0x00603F00
+SoundMediaMgr::~SoundMediaMgr()
+{
+}
+
+// ea: 0x00603F10
+void SoundMediaMgr::RegisterSounds()
+{
+}
+
+// ea: 0x00603F20
+void SoundMediaMgr::PlayLandingSound(Entity* entity,
+                                     int surfaceType,
+                                     bool damage)
+{
+    CollisionDesc v5;
+    v5.coord.v.m128_f32[0] = entity->s.pos.trBase[0];
+    v5.coord.v.m128_f32[1] = entity->s.pos.trBase[1];
+    v5.coord.v.m128_f32[2] = entity->s.pos.trBase[2];
+    memset(&v5.coord.v.m128_f32[3], 0, 20);
+    v5.material = surfaceType;
+    PostEffectEventLanding(entity, &v5);
+}
+
 extern float nslGetWaveParam(nslWaveID wave, int b, float c);  // nsl_xboxr
 
 static SoundDevice::Sound* SoundFromHandle(Handle h)
