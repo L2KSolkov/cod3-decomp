@@ -2591,6 +2591,10 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
                    int* lastLeaf);  // game.o 0x6194A0
 void CM_LoadMap(const char* name, int clientload, int* checksum);  // game.o 0x618390
 int CM_LoadLump(int lumpnum, char** pBuf);          // game.o 0x618410
+void CM_FreeLump();                                  // game.o 0x6093B0
+int CM_NumClusters();                                // game.o 0x6093C0
+void CM_ModelBounds(DCGSet* mod, math::Position3& mins,
+                    math::Position3& maxs);          // game.o 0x6093D0
 void CM_CreateStaticModel(const char* name, TPakId pakId, float*& axis,
                           float*& origin, float*& scale);  // game.o 0x60AF40
 void CM_TraceStaticModel(StaticModel* sm, trace_t* results,

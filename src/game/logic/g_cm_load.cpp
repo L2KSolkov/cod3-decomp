@@ -85,7 +85,7 @@ struct BspTree {
     } mVisibility;          // +0x48
     int      mVised;        // +0x50
     int      mClusterBytes; // +0x54
-    uint8_t _pad58[0x5C - 0x58];
+    int      numClusters;   // +0x58
     int      floodvalid;    // +0x5C
     uint8_t _pad60[0x64 - 0x60];
     float    mins[2];       // +0x64
@@ -3161,5 +3161,43 @@ int CM_UnlinkStaticModels(TPakId pakId, WorldSector* node)
 void CM_DestroyStaticModels(TPakId pakId)
 {
     CM_UnlinkStaticModels(pakId, &pcm.worldSectorHead);
+}
+
+// ============================================================================
+// CM_ misc query helpers (cm_load.cpp)
+// ============================================================================
+
+// ea: 0x006093B0
+void CM_FreeLump()
+{
+    mem_heap_free(com_lumpBuf);
+}
+
+// ea: 0x006093C0
+int CM_NumClusters()
+{
+    return g_bspTree->numClusters;
+}
+
+// ea: 0x006093D0
+void CM_ModelBounds(DCGSet* mod, math::Position3& mins,
+                    math::Position3& maxs)
+{
+    if (mod != nullptr)
+    {
+        if ((mins.v.m128_f32[0] == 0.0f && mins.v.m128_f32[1] == 0.0f
+             && mins.v.m128_f32[2] == 0.0f)
+            || (maxs.v.m128_f32[0] == 0.0f && maxs.v.m128_f32[1] == 0.0f
+                && maxs.v.m128_f32[2] == 0.0f))
+        {
+            mins = mod->min;
+            maxs = mod->max;
+        }
+        else
+        {
+            mins.v = _mm_min_ps(mins.v, mod->min.v);
+            maxs.v = _mm_max_ps(maxs.v, mod->max.v);
+        }
+    }
 }
 

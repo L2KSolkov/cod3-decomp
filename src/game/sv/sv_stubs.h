@@ -532,6 +532,9 @@ public:
     int  GetEntityController(Entity* entity);  // ?GetEntityController@EntityManager@@QAEHPAVEntity@@@Z (game.o)
     int  GetPlayerIndex(Entity* entity);    // ?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z (game.o)
     Entity* GetFirstLocalPlayer();          // ?GetFirstLocalPlayer@EntityManager@@QAEPAVEntity@@XZ (game.o)
+
+protected:
+    virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@EntityManager@@EAEXW4TPakId@@@Z (game.o)
 };
 static_assert(offsetof(EntityManager, mPlayers) == 0x04, "EntityManager::mPlayers offset mismatch");
 static_assert(offsetof(EntityManager, mWorld) == 0x44, "EntityManager::mWorld offset mismatch");

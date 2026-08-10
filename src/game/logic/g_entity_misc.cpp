@@ -886,6 +886,53 @@ void EntityManager::SwapPlayers(int eA, int eB)
     this->mPlayers[eB]->client->mServerClientIndex = eB;
 }
 
+extern bool gCareAboutCheckpoint;  // ?gCareAboutCheckpoint@@3_NA (game.o 0xDD74C8)
+extern TPakId CurPakId(void);      // sv.o
+
+// ea: 0x0062B0B0
+void EntityManager::UnloadBank(TPakId pakId)
+{
+    Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity* const* end = p + EntityHandleDb::sInst.mActiveList.m_size;
+    while (p != end)
+    {
+        Entity* v4 = *p;
+        if (v4 != nullptr)
+        {
+            TPakId mPakId = (TPakId)v4->mPakId;
+            if (mPakId == PAK_ID_INVALID)
+                mPakId = CurPakId();
+            if (mPakId == pakId)
+            {
+                gCareAboutCheckpoint = false;
+                G_FreeEntity(v4, 0);
+            }
+        }
+        ++p;
+    }
+}
+
+// ea: 0x0062B110
+void EntityManager::DeleteAllEntities()
+{
+    Entity* const* p = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity* const* end = p + EntityHandleDb::sInst.mActiveList.m_size;
+    while (p != end)
+    {
+        Entity* v4 = *p;
+        if (v4 != nullptr)
+        {
+            gCareAboutCheckpoint = false;
+            G_FreeEntity(v4, 0);
+        }
+        ++p;
+    }
+    EntityHandleDb::sInst.Compact();
+    for (int i = 0; i < 16; ++i)
+        this->mPlayers[i] = nullptr;
+    this->mWorld = nullptr;
+}
+
 // g.o inline COMDATs (EntityManager.h)
 // ea: 0x004A6990
 EntityManager* EntityManager::Inst()
