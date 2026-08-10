@@ -2121,6 +2121,155 @@ int SightTraceSphereThroughSphere(traceWork_t* tw,
 }
 
 // ============================================================================
+// SightTraceCapsuleThroughCapsule / BoundingBox - ea: 0x61D760 / 0x61D9C0
+// ============================================================================
+extern DCGSet* TempBoxModel(const math::Position3* mins,
+                            const math::Position3* maxs, int contents,
+                            int capsule);  // game.o
+bool collide_brush_segment(traceWork_t* tw, const math::Position3& bmin,
+                           const math::Position3& bmax,
+                           const cdlPlane* sides, unsigned int nsides);
+    // ea: 0x61B080 (defined below)
+
+// ea: 0x0061D760
+int SightTraceCapsuleThroughCapsule(traceWork_t* tw)
+{
+    math::Position3 v2 = gBoxDCGSet->min;
+    math::Position3 v3 = gBoxDCGSet->max;
+    // AABB overlap test (inflated by 1 on all axes via bounds[0]-1/bounds[1]+1)
+    if ((_mm_movemask_ps(_mm_cmplt_ps(
+             _mm_max_ps(
+                 _mm_sub_ps(
+                     v2.v,
+                     _mm_add_ps(tw->bounds[1].v, _mm_set1_ps(1.0f))),
+                 _mm_sub_ps(
+                     _mm_sub_ps(tw->bounds[0].v, _mm_set1_ps(1.0f)),
+                     v3.v)),
+             _mm_setzero_ps()))
+         & 7) != 7)
+        return 0;
+    math::Position3 v4;
+    v4.v = tw->sphere_offset.v;
+    math::Position3 v5;
+    v5.v = _mm_add_ps(tw->start.v, v4.v);
+    math::Position3 v6;
+    v6.v = _mm_sub_ps(tw->start.v, v4.v);
+    math::Position3 v7 = tw->end;
+    math::Position3 v8;
+    v8.v = _mm_add_ps(v7.v, v4.v);
+    math::Position3 v9;
+    v9.v = _mm_sub_ps(v7.v, v4.v);
+    math::Position3 center;
+    center.v = _mm_mul_ps(
+        _mm_add_ps(v2.v, v3.v), _mm_set1_ps(0.5f));
+    math::Position3 half;
+    half.v = _mm_sub_ps(v3.v, center.v);
+    float v10 = half.v.m128_f32[0] > half.v.m128_f32[2]
+        ? half.v.m128_f32[2]
+        : half.v.m128_f32[0];
+    float v11 = half.v.m128_f32[2] - v10;
+    math::Position3 top = center;
+    top.v.m128_f32[2] += v11;
+    math::Position3 bottom = center;
+    bottom.v.m128_f32[2] -= v11;
+    if (tw->start.v.m128_f32[2] + v4.v.m128_f32[2] <= top.v.m128_f32[2])
+    {
+        if (bottom.v.m128_f32[2] > tw->start.v.m128_f32[2] - v4.v.m128_f32[2])
+        {
+            if (SightTraceSphereThroughSphere(tw, v6, v9, bottom, v10) == 0)
+                return -1;
+            if (tw->delta.v.m128_f32[2] <= 0.0f)
+                return 0;
+        }
+    }
+    else
+    {
+        if (SightTraceSphereThroughSphere(tw, v5, v8, top, v10) == 0)
+            return -1;
+        if (tw->delta.v.m128_f32[2] >= 0.0f)
+            return 0;
+    }
+    if (SightTraceCylinderThroughCylinder(tw, center, v11, v10) != 0)
+    {
+        const math::Position3* p_bottom;
+        const math::Position3* v14;
+        const math::Position3* v15;
+        if (tw->end.v.m128_f32[2] <= top.v.m128_f32[2])
+        {
+            if (bottom.v.m128_f32[2] <= tw->end.v.m128_f32[2]
+                || tw->start.v.m128_f32[2] < bottom.v.m128_f32[2])
+                return 0;
+            p_bottom = &bottom;
+            v14 = &v9;
+            v15 = &v6;
+        }
+        else
+        {
+            if (top.v.m128_f32[2] < tw->start.v.m128_f32[2])
+                return 0;
+            p_bottom = &top;
+            v14 = &v8;
+            v15 = &v5;
+        }
+        if (SightTraceSphereThroughSphere(tw, *v15, *v14, *p_bottom,
+                                          v10) != 0)
+            return 0;
+    }
+    return -1;
+}
+
+// ea: 0x0061D9C0
+int SightTraceBoundingBoxThroughCapsule(traceWork_t* tw)
+{
+    math::Position3 v2 = gBoxDCGSet->max;
+    math::Position3 center;
+    center.v = _mm_mul_ps(
+        _mm_add_ps(gBoxDCGSet->min.v, v2.v), _mm_set1_ps(0.5f));
+    math::Position3 half;
+    half.v = _mm_sub_ps(v2.v, center.v);
+    tw->start.v = _mm_sub_ps(tw->start.v, center.v);
+    tw->end.v = _mm_sub_ps(tw->end.v, center.v);
+    float v5 = half.v.m128_f32[2];
+    float v6 = half.v.m128_f32[0] > v5 ? v5 : half.v.m128_f32[0];
+    tw->sphere_use = 1;
+    tw->sphere_radius = v6;
+    tw->sphere_halfheight = v5;
+    tw->sphere_offset.v.m128_f32[0] = 0.0f;
+    tw->sphere_offset.v.m128_f32[1] = 0.0f;
+    tw->sphere_offset.v.m128_f32[2] = v5 - tw->sphere_radius;
+    tw->sphere_offset.v.m128_f32[3] = 0.0f;
+    tw->sphere_radiusOffset.v.m128_f32[0] = tw->sphere_radius;
+    tw->sphere_radiusOffset.v.m128_f32[1] = tw->sphere_radius;
+    tw->sphere_radiusOffset.v.m128_f32[2] = tw->sphere_halfheight;
+    int v7 = TempBoxModelContents();
+    TempBoxModel(&tw->size[0], &tw->size[1], v7, 0);
+    cdl_object_t* m_elements =
+        (cdl_object_t*)gBoxDCGSet->objects_m_elements;
+    if (gBoxDCGSet->objects_m_count == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 77;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    math::Position3 bmin;
+    math::Position3 bmax;
+    bmax.v = _mm_add_ps(
+        _mm_setr_ps(m_elements->center[0], m_elements->center[1],
+                    m_elements->center[2], 0.0f),
+        _mm_setr_ps(m_elements->box_radius[0], m_elements->box_radius[1],
+                    m_elements->box_radius[2], 0.0f));
+    bmin.v = _mm_sub_ps(
+        _mm_setr_ps(m_elements->center[0], m_elements->center[1],
+                    m_elements->center[2], 0.0f),
+        _mm_setr_ps(m_elements->box_radius[0], m_elements->box_radius[1],
+                    m_elements->box_radius[2], 0.0f));
+    return collide_brush_segment(tw, bmin, bmax, nullptr, 0);
+}
+
+// ============================================================================
 // TraceBoundingBoxThroughCapsule - ea: 0x61C8D0
 // ============================================================================
 bool collide_brush_segment(traceWork_t* tw,
