@@ -689,3 +689,66 @@ void CameraShake::Rumble(float intensity, float duration)
     if (RumbleManager_Inst(currCl) != nullptr)
         RumbleManager_Play(RumbleManager_Inst(currCl), &rumbleEffect, 1.0f);
 }
+
+// ============================================================================
+// CameraShake::CreateCameraShakeMatrix - ea: 0x4FF130
+// Integrate each active shake instance and accumulate a camera-local matrix.
+// ============================================================================
+math::Mat43* CameraShake::CreateCameraShakeMatrix(math::Mat43* pCamLocal)
+{
+    float dt = ServerTime::sInst.mTickDelta;
+    MsaQuat viewQuat;
+    viewQuat.x = 0.0f;
+    viewQuat.y = 0.0f;
+    viewQuat.z = 0.0f;
+    viewQuat.w = 1.0f;
+    for (int i = 0; i < 5; ++i)
+    {
+        CameraShakeInstance* inst = &m_instanceData[i];
+        if (inst->m_active == 0)
+            continue;
+        CameraShakeType* ShakeType = GetShakeType(inst->m_type);
+        if (inst->m_magnitudeInc != 0.0f)
+            inst->m_magnitude = (inst->m_magnitudeInc * dt) + inst->m_magnitude;
+        if (ShakeType->m_time > 0.0f)
+        {
+            inst->m_time -= dt;
+            if (inst->m_time <= 0.0f)
+                inst->m_active = 0;
+        }
+        if (inst->m_active == 0)
+            continue;
+        math::Vector4 shakeEm;
+        shakeEm.v = _mm_setzero_ps();
+        inst->AddNoise_2D_EM(ShakeType->m_internalExternal, &shakeEm);
+        MsaQuat shakeQuat;
+        shakeQuat.ExpMapToQuaternion(shakeEm);
+        MsaQuat viewMatQuat;
+        viewMatQuat.MatrixToQuaternion(pCamLocal, nullptr);
+        MsaQuat acc;
+        // Quaternion multiply: viewQuat * shakeQuat
+        acc.x = ((viewMatQuat.w * shakeQuat.x)
+                 + (viewMatQuat.x * shakeQuat.w)
+                 + (viewMatQuat.y * shakeQuat.z))
+                - (viewMatQuat.z * shakeQuat.y);
+        acc.y = ((viewMatQuat.w * shakeQuat.y)
+                 + (viewMatQuat.y * shakeQuat.w)
+                 + (viewMatQuat.z * shakeQuat.x))
+                - (viewMatQuat.x * shakeQuat.z);
+        acc.z = ((viewMatQuat.w * shakeQuat.z)
+                 + (viewMatQuat.z * shakeQuat.w)
+                 + (viewMatQuat.x * shakeQuat.y))
+                - (viewMatQuat.y * shakeQuat.x);
+        acc.w = ((viewMatQuat.w * shakeQuat.w)
+                 - (viewMatQuat.x * shakeQuat.x)
+                 - (viewMatQuat.y * shakeQuat.y)
+                 - (viewMatQuat.z * shakeQuat.z));
+        viewQuat = acc;
+        math::Mat43 mat;
+        viewQuat.QuaternionToMatrix(nullptr, &mat);
+        pCamLocal->x = mat.x;
+        pCamLocal->y = mat.y;
+        pCamLocal->z = mat.z;
+    }
+    return pCamLocal;
+}
