@@ -1418,3 +1418,203 @@ int PM_Weapon_CheckFriendlyFireUse()
 {
     return 1;
 }
+
+// ============================================================================
+// BG_FindItemForWeapon - ea: 0x612E70
+// ============================================================================
+// ea: 0x00612E70
+const gitem_s* BG_FindItemForWeapon(int weapon)
+{
+    if (weapon < 0 || weapon > bg_iNumWeapons)
+        Com_Error(ERR_DROP,
+                  "BG_FindItemForWeapon: weapon out of range %i", weapon);
+    return &bg_itemlist[weapon];
+}
+
+// ============================================================================
+// BG_FindItem - ea: 0x612EA0
+// ============================================================================
+// ea: 0x00612EA0
+const gitem_s* BG_FindItem(const char* pickupName)
+{
+    int v1 = 1;
+    int iIndex = 1;
+    char** p_classname = &bg_itemlist[1].classname;
+    while (1)
+    {
+        if (v1 <= bg_iNumWeapons)
+        {
+            char* szInternalName =
+                BG_GetInfoForWeapon(v1)->szInternalName;
+            if (pickupName != nullptr && szInternalName != nullptr
+                && ae_stricmpn(pickupName, szInternalName, 0x7FFFFFFF) == 0)
+                return &bg_itemlist[v1];
+        }
+        else
+        {
+            const char* v5 = p_classname[6];
+            if (v5 != nullptr && pickupName != nullptr
+                && ae_stricmpn(v5, pickupName, 0x7FFFFFFF) == 0)
+                break;
+            if (*p_classname != nullptr && pickupName != nullptr
+                && ae_stricmpn(*p_classname, pickupName, 0x7FFFFFFF) == 0)
+                break;
+            v1 = iIndex;
+        }
+        ++v1;
+        p_classname += 13;
+        iIndex = v1;
+        if (p_classname >= &bg_itemlist[137].classname)
+            return nullptr;
+    }
+    return reinterpret_cast<const gitem_s*>(p_classname - 1);
+}
+
+// ============================================================================
+// BG_EvaluateTrajectory - ea: 0x613020
+// ============================================================================
+// ea: 0x00613020
+void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
+                           math::Position3& result)
+{
+    float value = g_gravity.value;
+    if (tr->trGravityOverride != 0.0f)
+        value = (float)tr->trGravityOverride;
+    switch (tr->trType)
+    {
+    case TR_STATIONARY:
+    case TR_INTERPOLATE:
+    case TR_GRAVITY_PAUSED:
+        result.v.m128_f32[0] = tr->trBase[0];
+        result.v.m128_f32[1] = tr->trBase[1];
+        result.v.m128_f32[2] = tr->trBase[2];
+        break;
+    case TR_LINEAR:
+    {
+        float v5 = (atTime - tr->trTime) * 0.001f;
+        result.v.m128_f32[0] = (tr->trDelta[0] * v5) + tr->trBase[0];
+        result.v.m128_f32[1] = (tr->trDelta[1] * v5) + tr->trBase[1];
+        result.v.m128_f32[2] = (tr->trDelta[2] * v5) + tr->trBase[2];
+        break;
+    }
+    case TR_LINEAR_STOP:
+    {
+        int trTime = tr->trTime;
+        int v8 = atTime;
+        if (atTime > trTime + tr->trDuration)
+            v8 = trTime + tr->trDuration;
+        float v9 = (v8 - trTime) * 0.001f;
+        if (v9 < 0.0f)
+            v9 = 0.0f;
+        result.v.m128_f32[0] = (tr->trDelta[0] * v9) + tr->trBase[0];
+        result.v.m128_f32[1] = (tr->trDelta[1] * v9) + tr->trBase[1];
+        result.v.m128_f32[2] = (tr->trDelta[2] * v9) + tr->trBase[2];
+        break;
+    }
+    case TR_SINE:
+    {
+        int v32 = atTime - tr->trTime;
+        float v6 =
+            sinf((float)v32 / (float)tr->trDuration * 6.2831855f);
+        result.v.m128_f32[0] = v6 * tr->trDelta[0] + tr->trBase[0];
+        result.v.m128_f32[1] = v6 * tr->trDelta[1] + tr->trBase[1];
+        result.v.m128_f32[2] = v6 * tr->trDelta[2] + tr->trBase[2];
+        break;
+    }
+    case TR_GRAVITY:
+    {
+        float v10 = (atTime - tr->trTime) * 0.001f;
+        result.v.m128_f32[0] = (tr->trDelta[0] * v10) + tr->trBase[0];
+        result.v.m128_f32[1] = (tr->trDelta[1] * v10) + tr->trBase[1];
+        result.v.m128_f32[2] = (tr->trDelta[2] * v10) + tr->trBase[2];
+        result.v.m128_f32[2] =
+            result.v.m128_f32[2] - (((v10 * v10) * value) * 0.5f);
+        break;
+    }
+    case TR_GRAVITY_LOW:
+    case TR_GRAVITY_FLOAT:
+    {
+        float v11;
+        float v12;
+        if (tr->trType == TR_GRAVITY_LOW)
+        {
+            v11 = (atTime - tr->trTime) * 0.001f;
+            v12 = (value * 0.30000001f) * v11;
+        }
+        else
+        {
+            v12 = value * 0.2f;
+            v11 = (atTime - tr->trTime) * 0.001f;
+        }
+        result.v.m128_f32[0] = (tr->trDelta[0] * v11) + tr->trBase[0];
+        result.v.m128_f32[1] = (tr->trDelta[1] * v11) + tr->trBase[1];
+        float v13 = (tr->trDelta[2] * v11) + tr->trBase[2];
+        result.v.m128_f32[2] = v13;
+        result.v.m128_f32[2] = v13 - ((v12 * v11) * 0.5f);
+        break;
+    }
+    case TR_ACCELERATE:
+    case TR_DECCELERATE:
+    {
+        int trTime = tr->trTime;
+        int trDuration = tr->trDuration;
+        int v18 = atTime;
+        if (atTime > trDuration + trTime)
+            v18 = trDuration + trTime;
+        float v32 = (v18 - trTime) * 0.001f;
+        float speed = (float)sqrt(
+            (double)(tr->trDelta[0] * tr->trDelta[0]
+                     + tr->trDelta[1] * tr->trDelta[1]
+                     + tr->trDelta[2] * tr->trDelta[2]))
+            / ((float)trDuration * 0.001f);
+        const math::Dir3 dir = native_to_cdl_dir3(tr->trDelta);
+        VectorNormalize2(&dir, (math::Dir3*)&result);
+        float v20 = ((speed * v32) * v32) * 0.5f;
+        if (tr->trType == TR_DECCELERATE)
+            v20 = -v20;
+        result.v.m128_f32[0] = (v20 * result.v.m128_f32[0])
+            + ((v32 * tr->trDelta[0]) + tr->trBase[0]);
+        result.v.m128_f32[1] = (v20 * result.v.m128_f32[1])
+            + ((v32 * tr->trDelta[1]) + tr->trBase[1]);
+        result.v.m128_f32[2] = (v20 * result.v.m128_f32[2])
+            + ((v32 * tr->trDelta[2]) + tr->trBase[2]);
+        break;
+    }
+    default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_misc.cpp";
+        AeAssert::gCurrentLine = 677;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "BG_EvaluateTrajectory: unknown trType"))
+            __debugbreak();
+        result.v.m128_f32[2] = 0.0f;
+        result.v.m128_f32[0] = 0.0f;
+        break;
+    }
+}
+
+// ============================================================================
+// PM_CanSimulateFiringWeapon - ea: 0x614700
+// ============================================================================
+// ea: 0x00614700
+bool PM_CanSimulateFiringWeapon(int iWeapon)
+{
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(iWeapon);
+    if (InfoForWeapon == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_misc.cpp";
+        AeAssert::gCurrentLine = 1764;
+        AeAssert::gCurrentExpr = "wInfo";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return InfoForWeapon->type == WEAPTYPE_BULLET
+        && InfoForWeapon->iFireDelay == 0
+        && InfoForWeapon->iFireTime <= 250
+        && InfoForWeapon->bSemiAuto == 0
+        && InfoForWeapon->bBoltAction == 0;
+}

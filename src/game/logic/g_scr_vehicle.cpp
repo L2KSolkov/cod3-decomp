@@ -6303,10 +6303,9 @@ void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
     delta[2] = veh->phys.origin.v.m128_f32[2] - veh->phys.prevOrigin.v.m128_f32[2];
     math::Position3 deltaAngles;
     AnglesSubtract(&veh->phys.angles, &veh->phys.prevAngles, &deltaAngles);
-    math::Dir3 scratch;
     math::Dir3 moveDir;
-    const math::Dir3* dir = native_to_cdl_dir3(&scratch, delta);
-    if (VectorNormalize2(dir, &moveDir) < 0.005f)
+    math::Dir3 dir = native_to_cdl_dir3(delta);
+    if (VectorNormalize2(&dir, &moveDir) < 0.005f)
         return;
     bool pushed;
     if (pOther->actor != nullptr && pSelf->scr_vehicle != nullptr)

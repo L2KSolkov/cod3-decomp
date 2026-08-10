@@ -538,7 +538,12 @@ static_assert(sizeof(FEMenuSystem) == 4, "FEMenuSystem size mismatch (opaque)");
 // GamePause — static pause helpers
 // ============================================================================
 struct GamePause {
-    static void SetAllPaused(bool paused);      // ?SetAllPaused@GamePause@@SAX_N@Z
+    struct GamePauseData {
+        bool mGamePaused[1];    // +0x00
+        GamePauseData();        // ??0GamePauseData@GamePause@@QAE@XZ (game.o 0x612680)
+    };
+    static GamePauseData mData;                 // ?mData@GamePause@@0UGamePauseData@1@A
+    static void SetAllPaused(bool paused);      // ?SetAllPaused@GamePause@@SAX_N@Z (game.o 0x612690)
     static void SetGamePaused(int client, bool paused);  // ?SetGamePaused@GamePause@@SAXH_N@Z
     static bool IsGamePaused(int client);       // ?IsGamePaused@GamePause@@SA_NH@Z
 };
@@ -571,14 +576,61 @@ struct IGOFrontEnd {
 };
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
 
-// Camera â€” camera state (0x1F0 stride) - verified vs disasm VEH_UnlinkPlayer
+// Camera â€” camera state (0x1F0 stride) - full layout from cg.o (cg_misc.cpp)
 struct Camera {
-    uint8_t _pad[0x40];
-    math::Position3 mPrevAngles;  // +0x40
-    uint8_t _pad50[0x190 - 0x50];
-    int     mCamMode;  // +0x190 (CAM_VEHICLE_FIRST == 2)
+    uint8_t _pad0[0x2C];                 // +0x00 (GlobalEffectNode)
+    bool    mDeathRumble;                // +0x2C
+    uint8_t _pad0b[0x30 - 0x2D];
+    math::Position3 mPrevViewPos;        // +0x30
+    math::Position3 mPrevAngles;         // +0x40
+    math::Position3 mPrevViewDir;        // +0x50
+    float   mPrevFOV;                    // +0x60
+    uint8_t _pad1[0x70 - 0x64];
+    math::Position3 mPrevAnimatedViewPos;    // +0x70
+    math::Position3 mPrevAnimatedAngles;     // +0x80
+    math::Position3 mVehPrevAngles;          // +0x90
+    int     mVehPrevAnglesTime;              // +0xA0
+    uint8_t _pad2[0xB0 - 0xA4];
+    math::Position3 mVehPrevOrigin;          // +0xB0
+    float   mVehTimeSinceInput;              // +0xC0
+    int     mVehInputState;                  // +0xC4
+    float   mVehGasPressedTime;              // +0xC8
+    float   mSteerYawOffset;                 // +0xCC
+    float   mTankPrevious3rdFrac;            // +0xD0
+    uint8_t _pad3[0xE0 - 0xD4];
+    math::Position3 mTankRelativeAngles;     // +0xE0
+    math::Position3 mTweenStartPos;          // +0xF0
+    math::Position3 mTweenStartAngles;       // +0x100
+    float   mTweenStartFOV;                  // +0x110
+    float   mTweenTime;                      // +0x114
+    float   mTweenDuration;                  // +0x118
+    uint16_t mTweenFlags;                    // +0x11C
+    uint8_t _pad4[0x120 - 0x11E];
+    math::Position3 mTweenAnimatedStartPos;    // +0x120
+    math::Position3 mTweenAnimatedStartAngles; // +0x130
+    uint16_t mAnimFlags;                       // +0x140
+    uint8_t _pad5[0x144 - 0x142];
+    int     mTagCameraIndex;                   // +0x144
+    uint8_t _pad6[0x150 - 0x148];
+    math::Mat43 mLastTagCamMat;                // +0x150
+    int     mCamMode;                          // +0x190 (CAM_VEHICLE_FIRST == 2)
+    int     mVehicleCamMode;                   // +0x194
+    uint8_t _pad7[0x1A0 - 0x198];
+    math::Position3 mVehCamThirdAnglesOffset;  // +0x1A0
+    math::Position3 mTweenParentPos;           // +0x1B0
+    math::Position3 mTweenParentAngles;        // +0x1C0
+    void*   mShake;                            // +0x1D0
+    int     mRumbleEffect;                     // +0x1D4
+    bool    mDoingFadeOutIn;                   // +0x1D8
+    uint8_t _pad8[0x1DC - 0x1D9];
+    float   mFadeTime;                         // +0x1DC
+    int     mClient;                           // +0x1E0
+    uint8_t _pad9[0x1F0 - 0x1E4];
     void Restart();  // ?Restart@Camera@@QAEXXZ
+    bool IsTweening();  // ?IsTweening@Camera@@QAE_NXZ (cg.o 0x68EBB0)
 };
+static_assert(sizeof(Camera) == 0x1F0, "Camera size mismatch");
+extern Camera gCamera[2];  // ?gCamera@@3PAVCamera@@A
 
 // ============================================================================
 // Memory helpers (Z_MallocInternal / Z_FreeInternal / heap)

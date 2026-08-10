@@ -1569,10 +1569,8 @@ void Weapon_Melee(Entity* ent, weaponParms* wp)
             }
             Weapon_MeleeHitShock(v58);
             int surfaceType = (tr.surfaceFlags >> 20) & 0xFFFFFF1F;
-            math::Dir3 scratch;
-            const math::Dir3* dir =
-                native_to_cdl_dir3(&scratch, wp->forward);
-            MultiplayerMgr::sInst->MeleeHit(v58, ent, tr.endpos, *dir,
+            const math::Dir3 dir = native_to_cdl_dir3(wp->forward);
+            MultiplayerMgr::sInst->MeleeHit(v58, ent, tr.endpos, dir,
                                             (unsigned char)surfaceType,
                                             (short)damage, 11, (int)tr.shader);
         }
@@ -2019,10 +2017,8 @@ void Bullet_Fire_Extended(
                         fwd[2] = end[2] - start[2];
                         VectorNormalize(fwd);
                         bool localHit = tr.shader != nullptr;
-                        math::Dir3 scratch;
-                        const math::Dir3* cdlDir =
-                            native_to_cdl_dir3(&scratch, fwd);
-                        ApplyPhysics(hitEnt, &tr.endpos, cdlDir, 20.0f,
+                        math::Dir3 cdlDir = native_to_cdl_dir3(fwd);
+                        ApplyPhysics(hitEnt, &tr.endpos, &cdlDir, 20.0f,
                                      localHit, HITLOC_TORSO_UPR);
                     }
                     else if (hitEnt->takedamage != 0)
@@ -2208,11 +2204,10 @@ after_hit:
                     dword_F63D1C[1580 * attacker->GetPlayerIndex()] =
                         level.time;
                 }
-                math::Dir3 scratch;
-                const math::Dir3* cdlDir =
-                    native_to_cdl_dir3(&scratch, wp->forward);
+                const math::Dir3 cdlDir =
+                    native_to_cdl_dir3(wp->forward);
                 MultiplayerMgr::sInst->BulletHitPlayer(
-                    hitEnt, attacker, tr.endpos, *cdlDir, 7,
+                    hitEnt, attacker, tr.endpos, cdlDir, 7,
                     (unsigned char)wp->pWeapInfo->index, (short)damage,
                     (unsigned char)dflags, (unsigned char)sourceMod,
                     (int)tr.shader);

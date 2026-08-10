@@ -191,7 +191,7 @@ extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME
 // Entity::CalcRotTranMat43 - ea: 0x611F40
 // ============================================================================
 // ea: 0x00611F40
-math::Mat43 Entity::CalcRotTranMat43()
+const math::Mat43 Entity::CalcRotTranMat43()
 {
     math::Mat43 result;
     AnglesToAxis(&this->r.currentAngles, &this->r.currentOrigin,
@@ -316,4 +316,52 @@ void Entity::SetInSnapshot()
 {
     trRefEntity& RenderEntity = GetRenderEntity();
     RenderEntity.SetInSnapshot();
+}
+
+// ============================================================================
+// Entity::IsInSnapshot - ea: 0x612280
+// ============================================================================
+// ea: 0x00612280
+bool Entity::IsInSnapshot() const
+{
+    trRefEntity* mRenderEntity = this->mRenderEntity;
+    return mRenderEntity != nullptr && mRenderEntity->IsInSnapshot();
+}
+
+// ============================================================================
+// Entity::IsCameraTweening - ea: 0x6123B0
+// ============================================================================
+// ea: 0x006123B0
+bool Entity::IsCameraTweening() const
+{
+    unsigned int PlayerIndex = (unsigned int)GetPlayerIndex();
+    if (PlayerIndex >= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 1052;
+        AeAssert::gCurrentExpr = "index >= 0 && index <= 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "IsCameraTweening has bad player index"))
+            __debugbreak();
+    }
+    return gCamera[PlayerIndex].IsTweening();
+}
+
+// ============================================================================
+// GamePause - ea: 0x612680..0x612690
+// ============================================================================
+GamePause::GamePauseData GamePause::mData;
+
+// ea: 0x00612680
+GamePause::GamePauseData::GamePauseData()
+{
+    mGamePaused[0] = false;
+}
+
+// ea: 0x00612690
+void GamePause::SetAllPaused(bool paused)
+{
+    GamePause::mData.mGamePaused[0] = paused;
 }

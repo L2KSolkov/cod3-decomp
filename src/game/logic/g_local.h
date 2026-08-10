@@ -294,6 +294,7 @@ struct trRefEntity {
     trRefEntity(int foo);    // ??0trRefEntity@@QAE@H@Z (game.o 0x6618B0)
     void* operator new(size_t s, void* p) { return p; }  // placement
     void SetInSnapshot();    // ?SetInSnapshot@trRefEntity@@QAEXXZ (render.o)
+    bool IsInSnapshot() const;  // ?IsInSnapshot@trRefEntity@@QBE_NXZ (render.o)
 };
 static_assert(sizeof(trRefEntity) == 0x104, "trRefEntity size mismatch");
 static_assert(offsetof(trRefEntity, iflIndex) == 0xFC, "trRefEntity::iflIndex offset mismatch");
@@ -1493,7 +1494,9 @@ struct weaponFileInfo_t {
     int     iDamageInnerRadius;   // +0x5E0
     int     iDamageOuterRadius;   // +0x5E4
     int     iMeleeDamage;         // +0x5E8
-    uint8_t _pad1ec[0x5F8 - 0x5EC];
+    uint8_t _pad1ec[0x5F0 - 0x5EC];
+    int     iFireDelay;           // +0x5F0
+    uint8_t _pad1f4[0x5F8 - 0x5F4];
     int     iFireTime;            // +0x5F8
     uint8_t _pad2[0x634 - 0x5FC];
     int     iFuseTime;            // +0x634
@@ -1513,7 +1516,8 @@ struct weaponFileInfo_t {
     uint8_t _pad690[0x6E8 - 0x690];
     int     bTwoHanded;           // +0x6E8
     int     bRifleBullet;         // +0x6EC
-    uint8_t _pad4[0x6F8 - 0x6F0];
+    int     bSemiAuto;            // +0x6F0
+    int     bBoltAction;          // +0x6F4
     int     bADSPositionInfo;     // +0x6F8
     uint8_t _pad6FC[0x704 - 0x6FC];
     int     bNoBounce;            // +0x704
@@ -2600,14 +2604,23 @@ void  G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Enti
 float VectorNormalize2(const float* v, float* out);  // core.o
 void  PerpendicularVector(float* dst, const float* src);  // core.o
 void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o
-void  BG_FindItemForWeapon(int weapon);           // game.o
+const gitem_s* BG_FindItemForWeapon(int weapon);  // game.o 0x612E70
+bool  PM_CanSimulateFiringWeapon(int iWeapon);    // game.o 0x614700
 void  MultiplayerMgr_IsLocalPlayer(void* self, Entity* player);  // mp.o
 void  MultiplayerMgr_DropWeapon(void* self, int weapon, int netIndex,
                                 const math::Position3* position,
                                 const math::Dir3* angles,
                                 const math::Dir3* velocity, int clipCount,
                                 int ammoCount);  // mp.o
-const math::Dir3* native_to_cdl_dir3(math::Dir3* result, const float* v);  // core.o
+const math::Dir3 native_to_cdl_dir3(const float* v);  // ?native_to_cdl_dir3@@YA?BVDir3@math@@QBM@Z (g.o inline)
+inline const math::Dir3 native_to_cdl_dir3(const float* v)
+{
+    math::Dir3 v3;
+    v3.v.m128_f32[0] = v[0];
+    v3.v.m128_f32[1] = v[1];
+    v3.v.m128_f32[2] = v[2];
+    return v3;
+}
 extern void (*touchtable[0xD])(Entity* ent, Entity* other, int bTouched);  // g.o
 enum { kItemTypeWeapons = 1 };                    // EDroppedItemTypes
 void  G_BulletFireSpread(Entity* source, Entity* attacker, weaponParms* wp,

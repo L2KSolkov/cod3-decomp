@@ -2528,8 +2528,7 @@ void TossClientItems(Entity* self)
                     native_to_cdl_pos3(&v14, v6->s.apos.trBase);
                     int count = v6->count;
                     int count2 = v6->count2;
-                    math::Dir3 v13;
-                    native_to_cdl_dir3(&v13, v6->s.pos.trDelta);
+                    math::Dir3 v13 = native_to_cdl_dir3(v6->s.pos.trDelta);
                     math::Position3 v12;
                     native_to_cdl_pos3(&v12, v6->s.pos.trBase);
                     MultiplayerMgr::sInst->DropWeapon(v3, v16.mVal, &v12, &v14,

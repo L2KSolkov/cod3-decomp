@@ -17,12 +17,15 @@
 // ============================================================================
 // ea: 0x006107E0
 int Q_isprint(int c) { return c >= 32 && c <= 126; }
+// ea: 0x00610800
 int Q_islower(int c) { return c >= 97 && c <= 122; }
 // ea: 0x00610820
 int Q_isupper(int c) { return c >= 65 && c <= 90; }
+// ea: 0x00610840
 int Q_isalpha(int c) { return (c >= 97 && c <= 122) || (c >= 65 && c <= 90); }
 // ea: 0x00610870
 int Q_isnumeric(int c) { return c >= 48 && c <= 57; }
+// ea: 0x00610890
 int Q_isalphanumeric(int c)
 {
     return (c >= 97 && c <= 122) || (c >= 65 && c <= 90)
@@ -123,7 +126,7 @@ int Q_strncmp(const char* s1, const char* s2, int n)
     return 2 * (v6 >= v7) - 1;
 }
 
-// ea: 0x00610A30
+// ea: 0x00610A80
 int Q_stricmp(const char* s1, const char* s2)
 {
     if (s1 != nullptr && s2 != nullptr)
@@ -672,6 +675,10 @@ static qint64 (*LittleLong64Ptr)(qint64);
 static float (*BigFloatPtr)(float);
 static float (*LittleFloatPtr)(float);
 
+// ea: 0x006105A0
+short BigShort(short l) { return BigShortPtr(l); }
+short LittleShort(short l) { return LittleShortPtr(l); }
+
 // ea: 0x00610610
 short ShortSwap(short l)
 {
@@ -684,6 +691,7 @@ short ShortNoSwap(short l)
     return l;
 }
 
+// ea: 0x00610640
 int LongSwap(int l)
 {
     return ((unsigned char)l << 24)
@@ -698,6 +706,7 @@ int LongNoSwap(int l)
     return l;
 }
 
+// ea: 0x00610680
 qint64 Long64Swap(qint64 ll)
 {
     qint64 r;
@@ -718,6 +727,7 @@ qint64 Long64NoSwap(qint64 ll)
     return ll;
 }
 
+// ea: 0x006106E0
 float FloatSwap(float f)
 {
     unsigned int bits;
@@ -736,13 +746,12 @@ float FloatNoSwap(float f)
     return f;
 }
 
-short BigShort(short l) { return BigShortPtr(l); }
-short LittleShort(short l) { return LittleShortPtr(l); }
 // ea: 0x006105B0
 int BigLong(int l) { return BigLongPtr(l); }
 int LittleLong(int l) { return LittleLongPtr(l); }
 // ea: 0x006105C0
 qint64 BigLong64(qint64 l) { return BigLong64Ptr(l); }
+// ea: 0x006105E0
 qint64 LittleLong64(qint64 l) { return LittleLong64Ptr(l); }
 // ea: 0x00610600
 float BigFloat(float l) { return BigFloatPtr(l); }

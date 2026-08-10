@@ -279,10 +279,12 @@ public:
     void CreateDObj(DObjModel* models, unsigned short numModels,
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)
     bool IsEnemy(Entity* ent);                   // ?IsEnemy@Entity@@QAE_NPAV1@@Z (game.o)
-    math::Mat43 CalcRotTranMat43();               // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (game.o)
+    const math::Mat43 CalcRotTranMat43();         // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (game.o)
     int IsVisible() const;                        // ?IsVisible@Entity@@QBEHXZ (game.o)
     bool IsDoingPhysics();                        // ?IsDoingPhysics@Entity@@QAE_NXZ (game.o)
     bool IsInRagdoll();                           // ?IsInRagdoll@Entity@@QAE_NXZ (game.o)
+    bool IsInSnapshot() const;                    // ?IsInSnapshot@Entity@@QBE_NXZ (game.o)
+    bool IsCameraTweening() const;                // ?IsCameraTweening@Entity@@QBE_NXZ (game.o)
     bool IsLocalPlayer() const;                   // ?IsLocalPlayer@Entity@@QBE_NXZ (game.o)
     int GetPlayerIndex() const;                   // ?GetPlayerIndex@Entity@@QBEHXZ (game.o)
     trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ (game.o)
