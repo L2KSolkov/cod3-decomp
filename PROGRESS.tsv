@@ -10,7 +10,7 @@ g.o	g.o	game	732	PORTED	g.o porting in src/game/logic/ (732/732 non-inline funcs
 
 mp_shell.o		mp_shell.o	game	680	TODO	
 
-game.o		game.o	game	663	IN_PROGRESS	+ PadAliasMgr value/press Context queries + controller shim contract + PadAliasMgr Context/desc helpers + SetAlias cmds + WriteBindings + GetDebugString + intersect_segment_aabb + CM_PointTraceToEntities context/_r (482/663 as of 2026-08-10)	bg_pmove/bg_misc/bg_weapons + q_shared/endian + MSG/Netchan/NET ported (129/663 as of 2026-08-09)
+game.o		game.o	game	663	IN_PROGRESS	+ traverse_rtree + PadAliasMgr value/press Context queries + controller shim contract + PadAliasMgr Context/desc helpers + SetAlias cmds + WriteBindings + GetDebugString + intersect_segment_aabb + CM_PointTraceToEntities context/_r (483/663 as of 2026-08-10)	bg_pmove/bg_misc/bg_weapons + q_shared/endian + MSG/Netchan/NET ported (129/663 as of 2026-08-09)
 
 core.o		core.o	game	541	IN_PROGRESS	Types+globals staged: core_types.h + core_systems.h + core_globals.h (35+ size/offset checks pass vs IDA); 147 core.o data symbols w/ exact VAs extracted from linker map (analysis/core_o_data.tsv); inventory+plan in analysis/; bodies blocked until decompiles fetched via ida MCP
 
