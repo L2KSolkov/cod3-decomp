@@ -3953,6 +3953,51 @@ bool sight_trace_sphere(traceWork_t* tw)
     }
 }
 
+// ============================================================================
+// SightTrace / PATH_SightTrace - ea: 0x6288C0 / 0x628980
+// ============================================================================
+extern cdl_proftimer cdl_proftimer_sight_trace_point;   // game.o @ 0xF44308
+extern cdl_proftimer cdl_proftimer_sight_trace_sphere;  // game.o @ 0xF3E960
+extern void Com_Memset(void* dest, int val, unsigned int count);  // core.o
+
+// ea: 0x006288C0
+bool SightTrace(traceWork_t* tw, const math::Position3& p0,
+                const math::Position3& p1)
+{
+    bool v4;
+    if (tw->isPoint != 0)
+    {
+        cdl_proftimer_sight_trace_point.start();
+        v4 = sight_trace_point(tw, p0, p1);
+        cdl_proftimer_sight_trace_point.stop();
+    }
+    else
+    {
+        cdl_proftimer_sight_trace_sphere.start();
+        v4 = sight_trace_sphere(tw);
+        cdl_proftimer_sight_trace_sphere.stop();
+    }
+    return v4;
+}
+
+// ea: 0x00628980
+int PATH_SightTrace(const math::Position3& start, const math::Position3& end)
+{
+    traceWork_t tw;
+    Com_Memset(&tw, 0, sizeof(tw));
+    tw.start.v = start.v;
+    tw.end.v = end.v;
+    tw.trace_fraction = 1.0f;
+    memset(&tw.bounds[0], 0, sizeof(tw.bounds));
+    tw.delta.v = _mm_sub_ps(end.v, start.v);
+    __m128 sq = _mm_mul_ps(tw.delta.v, tw.delta.v);
+    tw.deltaLenSqrd = sq.m128_f32[0] + sq.m128_f32[1] + sq.m128_f32[2];
+    tw.contents = 0x2800003;
+    tw.bounds[0].v = _mm_min_ps(start.v, end.v);
+    tw.bounds[1].v = _mm_max_ps(start.v, end.v);
+    return sight_trace_point(&tw, start, end) ? 1 : 0;
+}
+
 static cdl_proftimer cdl_proftimer_vsphere_poly;   // game.o @ 0xF439B8
 static cdl_proftimer cdl_proftimer_vsphere_patch;  // game.o @ 0xF3BFE0
 extern cdl_proftimer cdl_proftimer_temp0;          // game.o @ 0xF4EB18
