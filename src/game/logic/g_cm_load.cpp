@@ -54,9 +54,25 @@ struct InplaceVectorBspNode {
 struct BspTree {
     uint8_t _pad[8];
     InplaceVectorBspNode mNodes;  // +0x08
+    uint8_t _pad20[0x38 - 0x18];
+    struct {
+        int      mSize;   // +0x38
+        void*    mList;   // +0x3C
+    } mAreas;             // +0x38 (InplaceVector<BspArea>)
+    struct {
+        int      mSize;   // +0x40
+        int*     mList;   // +0x44
+    } mAreaPortals;       // +0x40 (InplaceVector<int>)
+    uint8_t _pad48[0x5C - 0x48];
+    int      floodvalid;  // +0x5C
 };
 
 extern BspTree* g_bspTree;  // ?g_bspTree@@3PAVBspTree@@A (game.o 0xF743DC)
+
+struct BspArea {
+    int floodnum;    // +0x00
+    int floodvalid;  // +0x04
+};
 
 // ============================================================================
 // leafList_s - leaf enumeration result
@@ -215,4 +231,124 @@ LABEL_2:
         nodeIndex = (unsigned int)(v6->u.node.children[v10 - 1] - v26) >> 4;
     }
     CM_StoreLeafs(ll, (int)nodeIndex);
+}
+
+// ============================================================================
+// Area flood helpers - ea: 0x619650..0x6199C0
+// ============================================================================
+inline BspArea& BspAreaAt(unsigned int index)
+{
+    if (index >= (unsigned int)g_bspTree->mAreas.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+    }
+    return ((BspArea*)g_bspTree->mAreas.mList)[index];
+}
+
+inline int& AreaPortalAt(unsigned int index)
+{
+    if (index >= (unsigned int)g_bspTree->mAreaPortals.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+    }
+    return g_bspTree->mAreaPortals.mList[index];
+}
+
+// ea: 0x00619650
+void CM_FloodArea_r(unsigned int areaNum, int floodnum)
+{
+    BspArea* v3 = &BspAreaAt(areaNum);
+    if (v3->floodvalid == g_bspTree->floodvalid)
+    {
+        if (v3->floodnum == floodnum)
+            return;
+        Com_Error(ERR_DROP, "FloodArea_r: reflooded");
+    }
+    v3->floodnum = floodnum;
+    v3->floodvalid = g_bspTree->floodvalid;
+    unsigned int v5 = 0;
+    if (g_bspTree->mAreas.mSize != 0)
+    {
+        unsigned int v6 = areaNum * (unsigned int)g_bspTree->mAreas.mSize;
+        do
+        {
+            if (AreaPortalAt(v6) > 0)
+                CM_FloodArea_r(v5, floodnum);
+            ++v5;
+            ++v6;
+        } while (v5 < (unsigned int)g_bspTree->mAreas.mSize);
+    }
+}
+
+// ea: 0x00619750
+unsigned int CM_FloodAreaConnections()
+{
+    ++g_bspTree->floodvalid;
+    int floodnum = 0;
+    unsigned int result = (unsigned int)g_bspTree->mAreas.mSize;
+    for (unsigned int v2 = 0; v2 < result; ++v2)
+    {
+        if (BspAreaAt(v2).floodvalid != g_bspTree->floodvalid)
+            CM_FloodArea_r(v2, ++floodnum);
+        result = (unsigned int)g_bspTree->mAreas.mSize;
+    }
+    return result;
+}
+
+// ea: 0x00619810
+void CM_AdjustAreaPortalState(int area1, int area2, int open)
+{
+    if ((area1 & 0x80000000) == 0 && (area2 & 0x80000000) == 0)
+    {
+        unsigned int mSize = (unsigned int)g_bspTree->mAreas.mSize;
+        if (area1 >= mSize || area2 >= mSize)
+            Com_Error(ERR_DROP, "CM_ChangeAreaPortalState: bad area number");
+        if (open != 0)
+        {
+            ++AreaPortalAt(area2 + area1 * (unsigned int)g_bspTree->mAreas.mSize);
+            ++AreaPortalAt(area1 + area2 * (unsigned int)g_bspTree->mAreas.mSize);
+            CM_FloodAreaConnections();
+        }
+        else
+        {
+            if (AreaPortalAt(area1 + area2 * (unsigned int)g_bspTree->mAreas.mSize) != 0)
+            {
+                --AreaPortalAt(area2 + area1 * (unsigned int)g_bspTree->mAreas.mSize);
+                --AreaPortalAt(area1 + area2 * (unsigned int)g_bspTree->mAreas.mSize);
+                if (AreaPortalAt(area1 + area2 * (unsigned int)g_bspTree->mAreas.mSize) < 0)
+                    Com_Error(ERR_DROP,
+                              "CM_AdjustAreaPortalState: negative reference count");
+            }
+            CM_FloodAreaConnections();
+        }
+    }
+}
+
+// ea: 0x00619910
+int CM_AreasConnected(int area1, int area2)
+{
+    if ((area1 & 0x80000000) != 0 || (area2 & 0x80000000) != 0)
+        return false;
+    unsigned int mSize = (unsigned int)g_bspTree->mAreas.mSize;
+    if (area1 >= mSize || area2 >= mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_test.cpp";
+        AeAssert::gCurrentLine = 442;
+        AeAssert::gCurrentExpr =
+            "area1 < g_bspTree->mAreas.size() && area2 < g_bspTree->mAreas.size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return BspAreaAt(area2).floodnum == BspAreaAt(area1).floodnum;
 }
