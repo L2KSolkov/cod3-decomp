@@ -534,6 +534,142 @@ L60:
 }
 
 // ============================================================================
+// PM_FootstepEvent + surface-type helpers - ea: 0x63C8E0 (bg_pmove.cpp)
+// ============================================================================
+static int PM_GroundSurfaceType()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 1069;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if ((pml.groundTrace.surfaceFlags & 0x2000) != 0)
+        return 0;
+    unsigned int v1 = (pml.groundTrace.surfaceFlags >> 20) & 0x1F;
+    if (v1 >= 0x17)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 1075;
+        AeAssert::gCurrentExpr = "iSurfType >= 0 && iSurfType < 23";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return v1;
+}
+
+static int PM_FootstepForSurface(int iPMFlags)
+{
+    int result = PM_GroundSurfaceType();
+    int v2 = result;
+    if (result != 0)
+    {
+        if ((iPMFlags & 1) != 0)
+        {
+            result += 47;
+        }
+        else if ((0x10000 & iPMFlags) != 0)
+        {
+            result += 70;
+        }
+        else
+        {
+            if ((iPMFlags & 0x80u) != 0)
+                return v2 + 24;
+            ++result;
+            if (pm->ps->leanf != 0.0f)
+                return v2 + 24;
+        }
+    }
+    return result;
+}
+
+void PM_trace(trace_t* results, const math::Position3& start,
+              const math::Position3& mins, const math::Position3& maxs,
+              const math::Position3& end,
+              const collision_context_t& context);  // ea: 0x63BCA0 (below)
+
+// ea: 0x0063C8E0
+void PM_FootstepEvent(char iOldBobCycle, char iNewBobCycle, int bFootStep)
+{
+    if (((iNewBobCycle + 64) ^ (iOldBobCycle + 64)) & 0x80u)
+    {
+        unsigned char waterlevel = pm->waterlevel;
+        if (waterlevel != 0)
+        {
+            if (waterlevel == 1 || waterlevel == 2)
+            {
+                int pm_flags = pm->ps->pm_flags;
+                if ((pm_flags & 1) != 0)
+                {
+                    PM_AddEvent(67);
+                }
+                else if ((pm_flags & 0x80u) == 0 && pm->ps->leanf == 0.0f)
+                {
+                    if ((0x10000 & pm_flags) != 0)
+                        PM_AddEvent(90);
+                    else
+                        PM_AddEvent(21);
+                }
+                else
+                {
+                    PM_AddEvent(44);
+                }
+            }
+        }
+        else
+        {
+            PlayerState* ps = pm->ps;
+            if (pm->ps->mGroundEntity.mHandle.mVal != 0)
+            {
+                int v9 = ps->pm_flags;
+                if ((v9 & 3) == 0 && bFootStep != 0)
+                    PM_AddEvent(PM_FootstepForSurface(v9));
+            }
+            else if (bFootStep != 0 && (ps->pm_flags & 0x10) != 0)
+            {
+                math::Position3 mins = pm->mins;
+                math::Position3 maxs = pm->maxs;
+                mins.v.m128_f32[0] -= 6.0f;
+                mins.v.m128_f32[1] -= 6.0f;
+                mins.v.m128_f32[2] -= 6.0f;
+                if (mins.v.m128_f32[2] < 8.0f)
+                    mins.v.m128_f32[2] = 8.0f;
+                maxs.v.m128_f32[0] += 6.0f;
+                maxs.v.m128_f32[1] += 6.0f;
+                maxs.v.m128_f32[2] += 6.0f;
+                maxs.v.m128_f32[3] = 8.0f;
+                collision_context_t context;
+                context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
+                context.pass_entity1 = pm->ps->mClient;
+                memset(&context.pass_entity2, 0, 12);
+                context.contentmask = pm->tracemask & 0xFDFE3FFF;
+                math::Position3 start;
+                start.v = pm->ps->origin.v;
+                start.v = _mm_sub_ps(
+                    start.v,
+                    _mm_mul_ps(
+                        _mm_setr_ps(pm->ps->vLadderVec[0],
+                                    pm->ps->vLadderVec[1],
+                                    pm->ps->vLadderVec[2], 0.0f),
+                        _mm_set1_ps(31.0f)));
+                trace_t tr;
+                PM_trace(&tr, start, mins, maxs, start, context);
+                int v8 = (int)(tr.normal.v.m128_f32[2] * 0x100000) >> 20
+                    & 0x1F;
+                if (tr.normal.v.m128_f32[1] == 1.0f || v8 == 0)
+                    v8 = 13;
+                PM_AddEvent(v8 + 1);
+            }
+        }
+    }
+}
+
+// ============================================================================
 // PM_trace - ea: 0x63BCA0 (bg_pmove.cpp)
 // ============================================================================
 extern void TraceSphereFull(const proximity_data_t* proximity_data,
