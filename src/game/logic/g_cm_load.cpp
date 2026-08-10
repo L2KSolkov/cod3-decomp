@@ -2855,6 +2855,45 @@ int CM_AreaEntities(const math::Position3& mins,
 }
 
 // ============================================================================
+// CM_TransformedPointContents - ea: 0x632E00 (cm_load.cpp)
+// ============================================================================
+extern void AngleVectors(const math::Position3* angles, float* forward,
+                         float* right, float* up);  // core.o
+extern int CM_PointContents(const math::Position3* p, DCGSet* model);  // game.o 0x632500
+
+// ea: 0x00632E00
+int CM_TransformedPointContents(const math::Position3& p, DCGSet* model,
+                                const math::Position3& origin,
+                                const math::Position3& angles)
+{
+    float local[3];
+    local[0] = p.v.m128_f32[0] - origin.v.m128_f32[0];
+    local[1] = p.v.m128_f32[1] - origin.v.m128_f32[1];
+    local[2] = p.v.m128_f32[2] - origin.v.m128_f32[2];
+    if (model->id != 4095
+        && (angles.v.m128_f32[0] != 0.0f
+            || angles.v.m128_f32[1] != 0.0f
+            || angles.v.m128_f32[2] != 0.0f))
+    {
+        float right[3];
+        float up[3];
+        float forward[3];
+        AngleVectors(&angles, forward, right, up);
+        float v6 = local[1];
+        float v7 = (local[2] * right[2]) + (local[1] * right[1])
+            + (local[0] * right[0]);
+        float v11 = 0.0f - ((local[2] * up[2]) + (local[1] * up[1])
+                            + (up[0] * local[0]));
+        float v8 = (local[2] * forward[2]) + (forward[1] * v6)
+            + (forward[0] * local[0]);
+        local[0] = v7;
+        local[1] = v11;
+        local[2] = v8;
+    }
+    return CM_PointContents((const math::Position3*)local, model);
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0
