@@ -2612,12 +2612,14 @@ struct CGBankManager : public AssetBankSet {
     int mCount;           // +0x0C
     CGBank* mBankArray[99];  // +0x10
     int     mIds[99];       // +0x19C (pak ids per bank slot)
+    CGBankManager();        // ??0CGBankManager@@QAE@XZ (game.o 0x6492D0)
     virtual ~CGBankManager();  // ??1CGBankManager@@UAE@XZ (game.o 0x611B70)
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
     void AddBank(TPakId pakId, CGBank* bank);   // ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z (game.o 0x61FE30)
     void UnloadBank(TPakId pakId);              // ?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FE60)
     void DecodeCGBank(const char* name, unsigned char* data, int size,
                       TPakId pakId);            // ?DecodeCGBank@CGBankManager@@QAEXPBDPAEHW4TPakId@@@Z (game.o 0x629F30)
+    void DebugRender();                          // ?DebugRender@CGBankManager@@QAEXXZ (game.o 0x646700)
 };
 
 bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,

@@ -1652,6 +1652,48 @@ const SoundDevice::Sound* SoundDevice::GetSoundForHandle(
 // CGBankManager::~CGBankManager - ea: 0x611B70
 // ============================================================================
 extern void Cmd_RemoveCommand(const char* cmd_name);  // game.o g_cmd.cpp
+extern void Cmd_AddCommand(const char* cmd_name,
+                           void (*function)());  // game.o g_cmd.cpp
+extern void* CGBankManager_vftable;   // ??_7CGBankManager@@6B@ @ 0xD0543C
+extern void ToggleRenderGeom();       // game.o 0x6119F0
+extern void ToggleGraph();            // game.o 0x611A30
+extern void ToggleRenderPerf();       // game.o 0x611A10
+extern void ZoomIn();                 // game.o 0x611A50
+extern void ZoomOut();                // game.o 0x611A70
+extern void Teleport();               // game.o 0x611A90
+extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
+extern void* DebugRender_sInst;       // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+extern void* AssetBankSet_ctor(void* self);  // streamer.o
+extern void CGBankManager_DebugRender_impl(void* self);  // 0x646700
+void* CGBankManager::sInst = nullptr;         // ?sInst@CGBankManager@@2PAV1@A @ 0xF4F438
+
+// Static bridge used by the DebugRender callback registration.
+static void CGBankManager_DebugRender_bridge()
+{
+    CGBankManager_DebugRender_impl(CGBankManager::sInst);
+}
+
+// ea: 0x006492D0
+CGBankManager::CGBankManager()
+{
+    AssetBankSet_ctor(this);
+    *(void**)this = (void*)&CGBankManager_vftable;
+    DebugRender_AddRenderer((void*)&DebugRender_sInst,
+                            CGBankManager_DebugRender_bridge);
+    this->mCount = 0;
+    for (int i = 0; i < 99; ++i)
+        this->mBankArray[i] = nullptr;
+    *(unsigned int*)((char*)this + 0x04) = 0;
+    *(float*)((char*)this + 0x08) = 0.0f;
+    *(unsigned int*)((char*)this + 0x04) &= 0xFFFFFFF8;
+    *(float*)((char*)this + 0x08) = 150.0f;
+    Cmd_AddCommand("cg", ToggleRenderGeom);
+    Cmd_AddCommand("cggraph", ToggleGraph);
+    Cmd_AddCommand("cgperf", ToggleRenderPerf);
+    Cmd_AddCommand("cgzoomin", ZoomIn);
+    Cmd_AddCommand("cgzoomout", ZoomOut);
+    Cmd_AddCommand("teleport", Teleport);
+}
 
 // ea: 0x00611B70
 CGBankManager::~CGBankManager()
