@@ -219,7 +219,7 @@ struct refimport_t2 {
     void (*FS_FCloseFile)(int);
     int (*FS_Read)(void*, int, int);
     int (*FS_Write)(const void*, int, int);
-    void* (*CM_GetPlaneNum)(int);
+    struct BspPlane* (*CM_GetPlaneNum)(int);
     short (*CG_GetGameModel)(short);
     void (*CG_DObjCalcPose)(void*, void*, int*);
     void (*AdjustFrom640)(float*, float*, float*, float*);
@@ -972,7 +972,7 @@ void CL_InitRef()
     extern void FS_FCloseFile(int);
     extern int FS_Read(void*, int, int);
     extern int FS_Write(const void*, int, int);
-    extern void* CM_GetPlaneNum(int);
+    extern struct BspPlane* CM_GetPlaneNum(int);
     extern struct cvar_t* Cvar_FindVar(const char*);
     extern int Com_SaveCvarsToBuffer(const char**, int, char*, int);
     extern int Com_LoadCvarsFromBuffer(const char**, int, const char*,

@@ -8,6 +8,17 @@
 #include <math.h>
 #include <string.h>
 
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);  // tl_xboxr
+
+// phys_memory_heap - linear frame allocator (16 bytes; verified vs IDA)
+struct phys_memory_heap {
+    char* m_buffer_start;  // +0x00
+    char* m_buffer_end;    // +0x04
+    char* m_buffer_cur;    // +0x08
+    char* m_user_start;    // +0x0C
+};
+
 // ============================================================================
 // BSP types (local views; sizes verified against disasm)
 // ============================================================================
@@ -63,7 +74,11 @@ struct BspTree {
         int      mSize;   // +0x40
         int*     mList;   // +0x44
     } mAreaPortals;       // +0x40 (InplaceVector<int>)
-    uint8_t _pad48[0x5C - 0x48];
+    struct {
+        int        mSize;   // +0x48
+        BspPlane*  mList;   // +0x4C
+    } mPlanes;              // +0x48 (InplaceVector<BspPlane>)
+    uint8_t _pad50[0x5C - 0x50];
     int      floodvalid;  // +0x5C
 };
 
@@ -351,4 +366,83 @@ int CM_AreasConnected(int area1, int area2)
             __debugbreak();
     }
     return BspAreaAt(area2).floodnum == BspAreaAt(area1).floodnum;
+}
+
+// ============================================================================
+// Plane / alloc / temp box helpers
+// ============================================================================
+extern phys_memory_heap g_cmgr_allocater;  // ?g_cmgr_allocater@@3Vphys_memory_heap@@A
+extern DCGSet* gBoxDCGSet;                 // ?gBoxDCGSet@@3PAVDCGSet@@A
+
+// ea: 0x0061A830
+BspPlane* CM_GetPlaneNum(int pi)
+{
+    if (pi < 0 || pi >= g_bspTree->mPlanes.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 1572;
+        AeAssert::gCurrentExpr = "pi >= 0 && pi < g_bspTree->mPlanes.size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return &((BspPlane*)g_bspTree->mPlanes.mList)[pi];
+}
+
+// ea: 0x0061A8A0
+math::Position3* alloc_verts()
+{
+    math::Position3* result =
+        (math::Position3*)(((intptr_t)g_cmgr_allocater.m_buffer_cur + 15)
+                           & 0xFFFFFFF0);
+    math::Position3* v1;
+    if (&result[32] > (math::Position3*)g_cmgr_allocater.m_buffer_end)
+    {
+        v1 = nullptr;
+    }
+    else
+    {
+        g_cmgr_allocater.m_buffer_cur = (char*)&result[32];
+        v1 = result;
+        if (result != nullptr)
+            return result;
+    }
+    bool v2 = !_tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 89,
+                         "addr", "phys_memory_heap overflow.");
+    result = v1;
+    if (!v2)
+        __debugbreak();
+    return result;
+}
+
+// ea: 0x006188A0
+int TempBoxModelContents()
+{
+    if (gBoxDCGSet == nullptr || gBoxDCGSet->objects_m_count != 1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_load.cpp";
+        AeAssert::gCurrentLine = 352;
+        AeAssert::gCurrentExpr = "gBoxDCGSet && gBoxDCGSet->size() == 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad gBoxDCGSet pointer."))
+            __debugbreak();
+    }
+    cdl_object_t* objects = (cdl_object_t*)gBoxDCGSet->objects_m_elements;
+    if (gBoxDCGSet->objects_m_count != 0)
+        return objects->cflags;
+    AeAssert::gCurrentAuthor = AeAssert::CD;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+    AeAssert::gCurrentLine = 77;
+    AeAssert::gCurrentExpr = "index < size()";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+        __debugbreak();
+    if (gBoxDCGSet->objects_m_count != 0)
+        return objects->cflags;
+    if (!_tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                   "index >= 0 && index < size()", "invalid index"))
+        return objects->cflags;
+    int result = objects->cflags;
+    __debugbreak();
+    return result;
 }

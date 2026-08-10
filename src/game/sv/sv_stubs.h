@@ -34,7 +34,8 @@ struct DCGSet {
     // +0x00
     uint8_t _pad0[0x08];
     int     objects_m_count;          // +0x08 (objects.m_count high word used)
-    uint8_t _pad0C[0x20 - 0x0C];
+    int     objects_m_elements;       // +0x0C
+    uint8_t _pad10[0x20 - 0x10];
     // +0x20 (ent[2])
     int     brushes_m_count;          // +0x20
     int     brushes_m_elements;       // +0x24
