@@ -2166,6 +2166,61 @@ void collide_brush_velocity_sphere(traceWork_t* tw,
 }
 
 // ============================================================================
+// TestBoundingBoxInCapsule - ea: 0x623320 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x00623320
+void TestBoundingBoxInCapsule(traceWork_t* tw)
+{
+    math::Position3 v2;
+    v2.v = gBoxDCGSet->max.v;
+    __m128 v3 = _mm_mul_ps(_mm_add_ps(gBoxDCGSet->min.v, v2.v),
+                           _mm_set1_ps(0.5f));
+    math::Position3 size[2];
+    size[0].v = _mm_sub_ps(v2.v, v3);
+    tw->start.v = _mm_sub_ps(tw->start.v, v3);
+    tw->end.v = _mm_sub_ps(tw->end.v, v3);
+    float v5 = size[0].v.m128_f32[2];
+    float v6 = size[0].v.m128_f32[0];
+    tw->sphere_use = 1;
+    if (v6 > v5)
+        v6 = v5;
+    tw->sphere_radius = v6;
+    tw->sphere_halfheight = v5;
+    tw->sphere_offset.v.m128_f32[0] = 0.0f;
+    tw->sphere_offset.v.m128_f32[1] = 0.0f;
+    tw->sphere_offset.v.m128_f32[2] = v5 - tw->sphere_radius;
+    int v7 = TempBoxModelContents();
+    TempBoxModel(&tw->size[0], &tw->size[1], v7, 0);
+    cdl_object_t* objects = (cdl_object_t*)gBoxDCGSet->objects_m_elements;
+    if (gBoxDCGSet->objects_m_count == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 77;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+        if (gBoxDCGSet->objects_m_count == 0
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+    }
+    const cdl_object_t& obj = objects[0];
+    math::Position3 bmax;
+    bmax.v = _mm_add_ps(
+        _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2], 0.0f),
+        _mm_setr_ps(obj.box_radius[0], obj.box_radius[1], obj.box_radius[2],
+                    0.0f));
+    math::Position3 bmin;
+    bmin.v = _mm_sub_ps(
+        _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2], 0.0f),
+        _mm_setr_ps(obj.box_radius[0], obj.box_radius[1], obj.box_radius[2],
+                    0.0f));
+    TestBoxInBrush(tw, bmin, bmax, nullptr, 0,
+                   (unsigned int)obj.cflags);
+}
+
+// ============================================================================
 // TestBoxInBox - ea: 0x61D5C0 (CollisionMgr.cpp)
 // ============================================================================
 // ea: 0x0061D5C0
