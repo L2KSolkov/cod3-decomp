@@ -701,18 +701,23 @@ struct traceWork_t {
     math::Position3 bounds[2];     // +0x00
     math::Position3 end;           // +0x20
     math::Position3 start;         // +0x30
+    math::Position3 size[2];       // +0x40 (mins/maxs for TempBoxModel)
     math::Position3 offsets[8];    // +0x60
+    math::Dir3 delta;              // +0xE0
+    float  deltaLenSqrd;           // +0xF0
+    uint8_t _padF4[0x120 - 0xF4];
     float  trace_fraction;         // +0x120
     uint8_t _pad124[4];
     int    trace_contents;         // +0x128
-    uint8_t _pad12C[0x13C - 0x12C];
+    float  trace_normal[3];        // +0x130
     uint8_t trace_allsolid;        // +0x13C
     uint8_t trace_startsolid;      // +0x13D
     uint8_t _pad13E[0x150 - 0x13E];
     math::Position3 sphere_offset; // +0x150
-    uint8_t _pad160[0x170 - 0x160];
+    math::Dir3 sphere_radiusOffset;// +0x160
     int    sphere_use;             // +0x170
     float  sphere_radius;          // +0x174
+    float  sphere_halfheight;      // +0x178
 };
 
 extern "C" int __fpclass(float);
@@ -989,4 +994,146 @@ LABEL_94:
     tw->trace_startsolid = 1;
     tw->trace_fraction = 0.0f;
     tw->trace_contents = (int)cflags;
+}
+
+// ============================================================================
+// TraceSphereThroughSphere - ea: 0x61C1A0
+// ============================================================================
+// ea: 0x0061C1A0
+int TraceSphereThroughSphere(traceWork_t* tw,
+                             const math::Position3& vStart,
+                             const math::Position3& vEnd,
+                             const math::Position3& vStationary,
+                             float radius)
+{
+    float v6[3] = { vStart.v.m128_f32[0] - vStationary.v.m128_f32[0],
+                    vStart.v.m128_f32[1] - vStationary.v.m128_f32[1],
+                    vStart.v.m128_f32[2] - vStationary.v.m128_f32[2] };
+    float v7 = (tw->sphere_radius + radius) * (tw->sphere_radius + radius);
+    float dist2 = v6[0] * v6[0] + v6[1] * v6[1] + v6[2] * v6[2];
+    float v9 = dist2 - v7;
+    if (v9 > 0.0f)
+    {
+        float b = tw->delta.v.m128_f32[0] * v6[0]
+            + tw->delta.v.m128_f32[1] * v6[1]
+            + tw->delta.v.m128_f32[2] * v6[2];
+        if (b >= 0.0f)
+            return 1;
+        float deltaLenSqrd = tw->deltaLenSqrd;
+        float disc = (b * b) - (deltaLenSqrd * v9);
+        if (disc < 0.0f)
+            return 1;
+        float nlen = VectorNormalize2((const math::Dir3*)v6,
+                                      (math::Dir3*)v6);
+        float sqrtdisc = sqrtf(disc);
+        float t = nlen * 0.125f / b + (-b - sqrtdisc) / deltaLenSqrd;
+        if (tw->trace_fraction <= t)
+            return 1;
+        float v17 = t;
+        if (t <= 0.0f)
+            v17 = 0.0f;
+        tw->trace_normal[0] = v6[0];
+        tw->trace_normal[1] = v6[1];
+        tw->trace_normal[2] = v6[2];
+        tw->trace_fraction = v17;
+        tw->trace_normal[0] /*w*/ = 0.0f;
+        tw->trace_contents = TempBoxModelContents();
+        return 0;
+    }
+    tw->trace_fraction = 0.0f;
+    tw->trace_startsolid = 1;
+    float len = sqrtf(dist2);
+    if (len != 0.0f)
+    {
+        tw->trace_normal[0] = v6[0] / len;
+        tw->trace_normal[1] = v6[1] / len;
+        tw->trace_normal[2] = v6[2] / len;
+    }
+    float v10[3] = { vEnd.v.m128_f32[0] - vStationary.v.m128_f32[0],
+                     vEnd.v.m128_f32[1] - vStationary.v.m128_f32[1],
+                     vEnd.v.m128_f32[2] - vStationary.v.m128_f32[2] };
+    float endDist2 = v10[0] * v10[0] + v10[1] * v10[1] + v10[2] * v10[2];
+    if (v7 >= endDist2)
+        tw->trace_allsolid = 1;
+    return 0;
+}
+
+// ============================================================================
+// TraceCylinderThroughCylinder - ea: 0x61C3D0
+// ============================================================================
+// ea: 0x0061C3D0
+int TraceCylinderThroughCylinder(traceWork_t* tw,
+                                 const math::Position3& vStationary,
+                                 float fStationaryHalfHeight, float radius)
+{
+    float v5 = tw->sphere_radius + radius;
+    float vNormal[3] = { tw->start.v.m128_f32[0] - vStationary.v.m128_f32[0],
+                         tw->start.v.m128_f32[1] - vStationary.v.m128_f32[1],
+                         tw->start.v.m128_f32[2] - vStationary.v.m128_f32[2] };
+    float v6 = (vNormal[0] * vNormal[0] + vNormal[1] * vNormal[1])
+        - (v5 * v5);
+    if (v6 <= 0.0f)
+    {
+        float v24 = (tw->sphere_halfheight - tw->sphere_radius)
+            + fStationaryHalfHeight;
+        if (vNormal[2] <= v24)
+        {
+            float v20 = 0.0f - v24;
+            if (v20 <= vNormal[2])
+            {
+                vNormal[2] = 0.0f;
+                tw->trace_fraction = 0.0f;
+                float len = sqrtf(vNormal[0] * vNormal[0]
+                                  + vNormal[1] * vNormal[1]);
+                tw->trace_startsolid = 1;
+                if (len != 0.0f)
+                {
+                    tw->trace_normal[0] = vNormal[0] / len;
+                    tw->trace_normal[1] = vNormal[1] / len;
+                }
+                tw->trace_normal[2] = 0.0f;
+                tw->trace_normal[0] /*w*/ = 0.0f;
+                tw->trace_contents = TempBoxModelContents();
+                float v15 = tw->end.v.m128_f32[2] - vStationary.v.m128_f32[2];
+                if (v24 >= v15 && v15 >= v20)
+                    tw->trace_allsolid = 1;
+                return 0;
+            }
+        }
+        return 1;
+    }
+    float b = tw->delta.v.m128_f32[0] * vNormal[0]
+        + tw->delta.v.m128_f32[1] * vNormal[1];
+    if (b >= 0.0f)
+        return 1;
+    float deltaXY = tw->delta.v.m128_f32[1] * tw->delta.v.m128_f32[1]
+        + tw->delta.v.m128_f32[0] * tw->delta.v.m128_f32[0];
+    float disc = (b * b) - (deltaXY * v6);
+    if (disc < 0.0f)
+        return 1;
+    vNormal[2] = 0.0f;
+    float nlen = VectorNormalize2((const math::Dir3*)vNormal,
+                                  (math::Dir3*)vNormal);
+    float t = nlen * 0.125f / b;
+    float t2 = (-b - sqrtf(disc)) / deltaXY + t;
+    if (tw->trace_fraction <= t2)
+        return 1;
+    float v19 = (tw->sphere_halfheight - tw->sphere_radius)
+        + fStationaryHalfHeight;
+    float v20 = (((t2 - t) * tw->delta.v.m128_f32[2])
+                 + tw->start.v.m128_f32[2]) - vStationary.v.m128_f32[2];
+    if (v20 > v19)
+        return 1;
+    if ((0.0f - v19) > v20)
+        return 1;
+    float v21 = 0.0f;
+    if (t2 > 0.0f)
+        v21 = t2;
+    tw->trace_normal[0] = vNormal[0];
+    tw->trace_normal[1] = vNormal[1];
+    tw->trace_normal[2] = vNormal[2];
+    tw->trace_fraction = v21;
+    tw->trace_normal[0] /*w*/ = 0.0f;
+    tw->trace_contents = TempBoxModelContents();
+    return 0;
 }

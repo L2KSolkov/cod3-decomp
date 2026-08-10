@@ -2558,6 +2558,15 @@ void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
                     const math::Position3& bmax, const cdlPlane* sides,
                     unsigned int nsides,
                     unsigned int cflags);  // game.o 0x61CD30
+int TraceSphereThroughSphere(traceWork_t* tw,
+                             const math::Position3& vStart,
+                             const math::Position3& vEnd,
+                             const math::Position3& vStationary,
+                             float radius);  // game.o 0x61C1A0
+int TraceCylinderThroughCylinder(traceWork_t* tw,
+                                 const math::Position3& vStationary,
+                                 float fStationaryHalfHeight,
+                                 float radius);  // game.o 0x61C3D0
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
 void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,
