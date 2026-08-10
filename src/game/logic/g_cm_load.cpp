@@ -5540,6 +5540,67 @@ bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
 }
 
 // ============================================================================
+// PM_UpdateMeleeAssistAim - ea: 0x62DE20 (bg_pmove.cpp melee assist)
+// ============================================================================
+extern vmCvar_t bg_meleeassistaspeed;  // ?bg_meleeassistaspeed@@3UvmCvar_t@@A (game.o @ 0xF441D0)
+extern void vectosignedangles(const float* vec, float* angles);  // q_math
+// ea: 0x0062DE20
+void PM_UpdateMeleeAssistAim(PlayerState* ps, int msec)
+{
+    unsigned int mVal = ps->mMeleeAssistTarget.mHandle.mVal;
+    if (mVal == 0)
+        return;
+    unsigned int idx = mVal & 0xFFF;
+    if (idx >= 0x540
+        || mVal >> 12
+            != (unsigned int)EntityHandleDb::sInst.mElements[idx].mKey)
+        return;
+    Entity* ent = EntityHandleDb::sInst.mElements[idx].mObject;
+    if (ent == nullptr)
+        return;
+
+    const float* eo = ent->r.currentOrigin.v.m128_f32;
+    float tgt[3] = { eo[0], eo[1], eo[2] };
+    float my[3] = { ps->origin.v.m128_f32[0], ps->origin.v.m128_f32[1],
+                    ps->origin.v.m128_f32[2] };
+    float dir[3] = { tgt[0] - my[0], tgt[1] - my[1], tgt[2] - my[2] };
+    VectorNormalize(dir);
+    float want[3];
+    vectosignedangles(dir, want);
+
+    float dyaw = want[1] - ps->viewangles[1];
+    float dpitch = want[2] - ps->viewangles[2];
+    float step = (float)(bg_meleeassistaspeed.integer * msec) * 0.001f;
+    float neg = -step;
+
+    while (dyaw > 180.0f)
+        dyaw -= 360.0f;
+    while (dyaw < -180.0f)
+        dyaw += 360.0f;
+    if (dyaw < neg)
+        dyaw = neg;
+    else if (dyaw > step)
+        dyaw = step;
+
+    while (dpitch > 180.0f)
+        dpitch -= 360.0f;
+    while (dpitch < -180.0f)
+        dpitch += 360.0f;
+    if (dpitch < neg)
+        dpitch = neg;
+    else if (dpitch > step)
+        dpitch = step;
+
+    float yawAdj = want[0];
+    ps->delta_angles[0] += (int)(yawAdj * 182.04445f);
+    ps->delta_angles[1] += (int)(dyaw * 182.04445f);
+    ps->delta_angles[2] += (int)(dpitch * 182.04445f);
+    ps->viewangles[0] += yawAdj;
+    ps->viewangles[1] += dyaw;
+    ps->viewangles[2] += dpitch;
+}
+
+// ============================================================================
 // TestInLeaf / SightTraceThroughLeaf - ea: 0x623D40 / 0x624070
 // (CollisionMgr.cpp DCGSet leaf sweep)
 // ============================================================================
