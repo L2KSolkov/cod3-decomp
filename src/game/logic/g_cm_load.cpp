@@ -545,3 +545,53 @@ void rtree_visitor_t::filter_objects(int mask)
         }
     }
 }
+
+// ============================================================================
+// can_place_decal - ea: 0x61A900 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x0061A900
+bool can_place_decal(const math::Position3& p, const math::Dir3& n,
+                     const math::Position3& bmin,
+                     const math::Position3& bmax, const cdlPlane* sides,
+                     unsigned int nsides, float decal_radius)
+{
+    float v18 = p.v.m128_f32[0] * n.v.m128_f32[0]
+        + p.v.m128_f32[1] * n.v.m128_f32[1]
+        + p.v.m128_f32[2] * n.v.m128_f32[2];
+    math::Dir3 axis;
+    axis.v.m128_f32[0] = -1.0f; axis.v.m128_f32[1] = 0.0f;
+    axis.v.m128_f32[2] = 0.0f; axis.v.m128_f32[3] = 0.0f;
+    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+                     0.0f - bmin.v.m128_f32[0], decal_radius))
+        return false;
+    axis.v.m128_f32[0] = 0.0f; axis.v.m128_f32[1] = -1.0f;
+    axis.v.m128_f32[2] = 0.0f;
+    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+                     0.0f - bmin.v.m128_f32[1], decal_radius))
+        return false;
+    axis.v.m128_f32[1] = 0.0f; axis.v.m128_f32[2] = -1.0f;
+    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+                     0.0f - bmin.v.m128_f32[2], decal_radius))
+        return false;
+    axis.v.m128_f32[2] = 0.0f; axis.v.m128_f32[0] = 1.0f;
+    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+                     bmax.v.m128_f32[0], decal_radius))
+        return false;
+    axis.v.m128_f32[0] = 0.0f; axis.v.m128_f32[1] = 1.0f;
+    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+                     bmax.v.m128_f32[1], decal_radius))
+        return false;
+    axis.v.m128_f32[1] = 0.0f; axis.v.m128_f32[2] = 1.0f;
+    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+                     bmax.v.m128_f32[2], decal_radius))
+        return false;
+    for (unsigned int i = 0; i < nsides; ++i)
+    {
+        float offs = *(const float*)&sides[i].packed[3];
+        if (!is_plane_ok(p, n, (unsigned int)v18,
+                         *(const math::Dir3*)&sides[i].packed[0],
+                         offs, decal_radius))
+            return false;
+    }
+    return true;
+}

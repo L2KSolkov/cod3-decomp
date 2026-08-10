@@ -2539,6 +2539,10 @@ math::Vector4 calc_normal(const math::Position3& v0, const math::Position3& v1,
 bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
                  unsigned int hitoffs, const math::Dir3& n,
                  unsigned int offs, float radius);   // game.o 0x60C020
+bool can_place_decal(const math::Position3& p, const math::Dir3& n,
+                     const math::Position3& bmin, const math::Position3& bmax,
+                     const cdlPlane* sides, unsigned int nsides,
+                     float decal_radius);  // game.o 0x61A900
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
 void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,
