@@ -583,6 +583,63 @@ void Entity::SetAlwaysRender(bool r)
 }
 
 // ============================================================================
+// Entity::FootStep - ea: 0x620C20 (Entity.cpp)
+// ============================================================================
+// ea: 0x00620C20
+void Entity::FootStep()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    Client* client = this->client;
+    if (client != nullptr
+        && this != Player
+        && (client->ps.pm_flags & 3) == 0
+        && VectorDistanceSquared2D(&Player->r.currentOrigin,
+                                   &this->r.currentOrigin) <= 1000000.0f)
+    {
+        Client* v5 = this->client;
+        trace_t trace;
+        memset(&trace, 0, sizeof(trace));
+        float v16[3];
+        math::Position3 start;
+        v16[0] = v5->ps.origin.v.m128_f32[0];
+        v16[1] = v5->ps.origin.v.m128_f32[1];
+        v16[2] = v5->ps.origin.v.m128_f32[2] + 25.0f;
+        start.v.m128_f32[0] = v5->ps.origin.v.m128_f32[0];
+        start.v.m128_f32[1] = v5->ps.origin.v.m128_f32[1];
+        start.v.m128_f32[2] = v5->ps.origin.v.m128_f32[2] - 50.0f;
+        start.v.m128_f32[3] = 0.0f;
+        unsigned int mVal = this->mHandle.mHandle.mVal;
+        collision_context_t context(
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)&mVal, 0x800011);
+        math::Position3 zero;
+        zero.v = _mm_setzero_ps();
+        trace_t results;
+        g_Trace(&results, *(const math::Position3*)v16, zero, zero, start,
+                context);
+        int v6 = (int)((unsigned int)((int)trace.normal.v.m128_f32[2]
+                                      >> 20)
+                       & 0x1F);
+        if (trace.normal.v.m128_f32[1] == 1.0f || v6 == 0)
+            v6 = 6;
+        Client* v7 = this->client;
+        int pm_flags = v7->ps.pm_flags;
+        if ((pm_flags & 1) != 0)
+        {
+            BG_AddPredictableEventToPlayerstate(v6 + 47, 0, &v7->ps);
+        }
+        else if ((pm_flags & 0x10000) != 0)
+        {
+            BG_AddPredictableEventToPlayerstate(v6 + 70, 0, &v7->ps);
+        }
+        else
+        {
+            int v10 = (pm_flags & 0x80) != 0 ? v6 + 24 : v6 + 1;
+            BG_AddPredictableEventToPlayerstate(v10, 0, &v7->ps);
+        }
+    }
+}
+
+// ============================================================================
 // Entity notify plumbing - ea: 0x62AD70..0x62AFA0 (Entity.cpp)
 // The reserved_dlist layout is verified here: m_size +0x00, m_head +0x04,
 // m_end +0x08, m_tail +0x0C; node m_next +0x00, m_prev +0x04.

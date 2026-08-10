@@ -10,6 +10,33 @@
 
 extern "C" int __fpclass(float);
 
+// ============================================================================
+// collision_context_t ctors - ea: 0x4AEFE0 / 0x4AF030 (collision_context.h)
+// ============================================================================
+// ea: 0x004AEFE0
+collision_context_t::collision_context_t()
+{
+    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    this->pass_entity1.mHandle.mVal = 0;
+    this->pass_entity2.mHandle.mVal = 0;
+    this->pass_owner1.mHandle.mVal = 0;
+    this->pass_owner2.mHandle.mVal = 0;
+    this->contentmask = -1;
+}
+
+// ea: 0x004AF030
+collision_context_t::collision_context_t(
+    DbLinkedHandle<EntityHandleDb, Entity> handle, int mask)
+{
+    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    this->pass_entity1.mHandle.mVal = 0;
+    this->pass_entity2.mHandle.mVal = 0;
+    this->pass_owner1.mHandle.mVal = 0;
+    this->pass_owner2.mHandle.mVal = 0;
+    this->pass_entity1 = handle;
+    this->contentmask = mask;
+}
+
 // ea: 0x0044AF10
 void handleDeathInvulnerability(Entity* /*ent*/, int /*a2*/, int /*a3*/)
 {
