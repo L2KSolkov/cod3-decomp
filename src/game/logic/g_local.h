@@ -1571,11 +1571,27 @@ struct weaponFileInfo_t {
     int     bNoBounce;            // +0x704
     int     bNoTumble;            // +0x708
     int     bCanMantle;           // +0x70C
-    uint8_t _pad70[0x71C - 0x710];
+    int     bSmoke;               // +0x710
+    int     bOffHand;             // +0x714
+    int     bCloth;               // +0x718
     int     bClipOnly;            // +0x71C
-    uint8_t _pad720[0x738 - 0x720];
+    int     bWideListIcon;        // +0x720
+    int     bADSFire;             // +0x724
+    int     bADSOnly;             // +0x728
+    int     bAnimateCamReload;    // +0x72C
+    int     bAnimateCamMelee;     // +0x730
+    int     bAnimateCamFire;      // +0x734
     int     bDoNotDrop;           // +0x738
-    uint8_t _pad73C[0x764 - 0x73C];
+    int     bCanSpot;             // +0x73C
+    int     bHoldToFire;          // +0x740
+    char*   szKillIcon;           // +0x744
+    int     bWideKillIcon;        // +0x748
+    int     bNoPartialReload;     // +0x74C
+    int     bSegmentedReload;     // +0x750
+    int     iReloadAmmoAdd;       // +0x754
+    int     iReloadStartAdd;      // +0x758
+    int     bSwirlControl;        // +0x75C
+    char*   szAltWeaponName;      // +0x760
     int     iAltWeaponIndex;      // +0x764
     int     iShotCount;           // +0x768
     int     iDropAmmoMin;         // +0x76C
@@ -1621,7 +1637,13 @@ struct weaponFileInfo_t {
     float   fBulletConeAngle;     // +0x8B4
     float   fAdsBulletConeAngle;  // +0x8B8
     char*   szScript;             // +0x8BC
-    uint8_t _pad10[0x8EC - 0x8C0];
+    float   fOOPosAnimLength[2];  // +0x8C0
+    float   fAnimIKOffsetTime;    // +0x8C8
+    float   fAnimIKOffsetForce;   // +0x8CC
+    float   fAnimIKOffsetDist;    // +0x8D0
+    float   fAnimIKPitchTime;     // +0x8D4
+    float   fAnimIKPitchForce;    // +0x8D8
+    uint8_t _pad10[0x8EC - 0x8DC];
     struct gdDecal* pDecals[23];  // +0x8EC
 };
 static_assert(sizeof(weaponFileInfo_t) == 0x948, "weaponFileInfo_t size mismatch");
@@ -1659,6 +1681,7 @@ enum {
     WEAPCLASS_NON_PLAYER = 9, // verified vs disasm BG_GivePlayerWeapon
     WEAPCLASS_GRENADE = 5,  // verified vs disasm Pickup_Weapon
     WEAPCLASS_LMG = 3,      // verified vs disasm Bullet_Fire_Extended / BG_IsLMGMounted
+    WEAPCLASS_SPOTTER = 8,  // verified vs disasm PM_UpdateAimDownSightLerp
 };
 enum {
     AI_EV_GRENADE_PING = 0x0E,

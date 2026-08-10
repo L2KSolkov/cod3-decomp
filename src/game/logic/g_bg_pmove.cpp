@@ -3507,3 +3507,159 @@ void PM_UpdateAimDownSightFlag()
         v16->pm_flags |= 0x20u;
     }
 }
+
+// ============================================================================
+// PM_UpdateAimDownSightLerp - ea: 0x62F670 (bg_pmove.cpp)
+// ============================================================================
+extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
+
+// ea: 0x0062F670
+void PM_UpdateAimDownSightLerp()
+{
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    if (pWeap->bADSPositionInfo == 0 && (dword_106000 & pm->ps->eFlags) == 0)
+    {
+        pm->ps->fWeaponPosFrac = 0.0f;
+        return;
+    }
+    PlayerState* ps = pm->ps;
+    int weaponstate = pm->ps->weaponstate;
+    if (weaponstate != 0 && weaponstate != 3
+        || pWeap->bBoltAction == 0
+        || ((1 << (ps->weapon & 0x1F))
+            & ps->weaponrechamber[ps->weapon >> 5]) == 0)
+    {
+        int eFlags = ps->eFlags;
+        int v4 = 0;
+        if ((eFlags & 0x6000) != 0)
+        {
+            if ((ps->pm_flags & 0x20) != 0)
+                ps->fWeaponPosFrac = 1.0f;
+            else
+                ps->fWeaponPosFrac = 0.0f;
+            return;
+        }
+        if (pWeap->bSegmentedReload != 0)
+        {
+            if (pWeap->weapClass != WEAPCLASS_LMG
+                && (weaponstate == 5 || weaponstate == 6
+                    || weaponstate == 14 || weaponstate == 7
+                    || weaponstate == 8
+                    || (weaponstate == 9 && ps->weaponTime > 0)))
+                goto LABEL_29;
+        }
+        else if ((weaponstate == 5 || weaponstate == 14)
+                 && ps->weaponTime > 0
+                 && pWeap->weapClass != WEAPCLASS_LMG)
+        {
+            goto LABEL_29;
+        }
+        if (pWeap->bRechamberWhileAds != 0 || weaponstate != 4)
+        {
+            if ((ps->pm_flags & 0x20) != 0)
+                v4 = 1;
+        LABEL_32:
+            if (pWeap->bADSFire != 0 && ps->weaponDelay != 0
+                && weaponstate == 3)
+                v4 = 1;
+            if (pWeap->weapClass == WEAPCLASS_SPOTTER)
+            {
+                if (weaponstate == 13)
+                    v4 = 0;
+                else if (weaponstate == 12)
+                    v4 = 1;
+            }
+            if ((0x10000 & ps->pm_flags) != 0)
+            {
+                v4 = 0;
+            }
+            else if (v4 != 0)
+            {
+                if (ps->fWeaponPosFrac == 1.0f)
+                    return;
+                goto LABEL_44;
+            }
+            if (ps->fWeaponPosFrac == 0.0f)
+                return;
+        LABEL_44:
+            if ((0x100000 & eFlags) != 0
+                && !BG_AllowPlayerWeaponAtVehiclePos(ps->vehType,
+                                                     ps->vehPos))
+            {
+                if (v4 != 0)
+                    ps->fWeaponPosFrac = 1.0f;
+                else
+                    ps->fWeaponPosFrac = 0.0f;
+            }
+            else
+            {
+                float fWeaponPosFrac = ps->fWeaponPosFrac;
+                if (v4 != 0)
+                {
+                    if (fWeaponPosFrac == 0.0f && PM_CanStartADSAnim())
+                    {
+                        PM_StartWeaponAnim(21);
+                        pWeap = (weaponFileInfo_t*)pml.pWeap;
+                    }
+                    pm->ps->fWeaponPosFrac =
+                        pml.msec * pWeap->fOOPosAnimLength[0]
+                        + pm->ps->fWeaponPosFrac;
+                }
+                else
+                {
+                    if (fWeaponPosFrac == 1.0f && PM_CanStartADSAnim())
+                    {
+                        PM_StartWeaponAnim(22);
+                        pWeap = (weaponFileInfo_t*)pml.pWeap;
+                    }
+                    pm->ps->fWeaponPosFrac =
+                        pm->ps->fWeaponPosFrac
+                        - (pml.msec * pWeap->fOOPosAnimLength[1]);
+                }
+            }
+            PlayerState* v6 = pm->ps;
+            if (pm->ps->fWeaponPosFrac < 1.0f)
+            {
+                if (v6->fWeaponPosFrac > 0.5f || v6->fWeaponPosFrac <= 0.0f)
+                {
+                    if (v6->fWeaponPosFrac <= 0.0f)
+                    {
+                        v6->fWeaponPosFrac = 0.0f;
+                        int v9 = pm->ps->weaponstate;
+                        if (v9 != 7 && v9 != 5 && v9 != 4 && v9 != 10
+                            && v9 != 11)
+                            PM_StartWeaponAnim(0);
+                    }
+                }
+                else if (pWeap->slot == WEAPSLOT_BINOCS
+                         && v6->weaponstate == 13)
+                {
+                    v6->weaponstate = 2;
+                    pm->ps->fWeaponPosFrac = 0.0f;
+                    PM_StartWeaponAnim(9);
+                    Entity* v7 = HandleDbToEnt(pm->ps->mClient);
+                    int PlayerIndex = v7->GetPlayerIndex();
+                    BG_SelectWeaponIndex(pm->ps->lastWeapon, PlayerIndex);
+                }
+            }
+            else
+            {
+                v6->fWeaponPosFrac = 1.0f;
+                if (pm->ps->weaponstate == 4)
+                {
+                    if (pm->cmd.weapon != 0
+                        && (pm->ps->weapAnim & 0xFFFFFDFF) != 7)
+                        PM_StartWeaponAnim(7);
+                }
+                else
+                {
+                    PM_StartWeaponAnim(23);
+                }
+            }
+            return;
+        }
+    LABEL_29:
+        v4 = 0;
+        goto LABEL_32;
+    }
+}
