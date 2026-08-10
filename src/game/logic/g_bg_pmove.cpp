@@ -969,6 +969,344 @@ done_char:
 }
 
 // ============================================================================
+// push_in_world - ea: 0x63AC30 (bg_pmove.cpp)
+// ============================================================================
+extern float threshold_0;  // ?threshold_0 (game.o)
+static TouchEntityData s_entities_2;  // ?entities_2 (game.o @ 0xF58C60)
+static int s_entities_2_init;         // $S21_3 @ 0xF58F00
+extern bool collide_sphere_brush(math::Position3& sphere_center,
+                                 float sphere_radius,
+                                 const cdl_object_t& obj,
+                                 const cdlPlane* sides, unsigned int nsides,
+                                 math::Position3& new_sphere_center);
+    // game.o 0x61E660
+extern bool collide_sphere_box(const math::Position3& sphere_center,
+                               float sphere_radius, const cdl_object_t& box,
+                               math::Position3& new_sphere_center);
+    // game.o 0x61E890
+extern bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
+                                         float sphere_radius,
+                                         const math::Position3& v0,
+                                         const math::Position3& v1,
+                                         const math::Position3& v2,
+                                         const math::Dir3& normal,
+                                         math::Position3& new_sphere_center);
+    // game.o 0x60D860
+extern math::Vector4 calc_normal(const math::Position3& v0,
+                                 const math::Position3& v1,
+                                 const math::Position3& v2);  // game.o 0x60C400
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* msg);  // core/tl_system.cpp
+extern void AnglesToAxis(const math::Position3* angles,
+                         const math::Position3* origin,
+                         math::Mat43* mat);
+    // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z (core.o)
+
+// ea: 0x0063AC30
+bool push_in_world(pmove_t& pm, float radius,
+                   const collision_context_t& context)
+{
+    PlayerState* ps = pm.ps;
+    float midZ = (pm.mins.v.m128_f32[2] + pm.maxs.v.m128_f32[2]) * 0.5f;
+    math::Position3 center;
+    center.v.m128_f32[0] = ps->origin.v.m128_f32[0];
+    center.v.m128_f32[1] = ps->origin.v.m128_f32[1];
+    center.v.m128_f32[2] = midZ + ps->origin.v.m128_f32[2];
+    center.v.m128_f32[3] = ps->origin.v.m128_f32[3];
+    if ((0x100000 & ps->eFlags) != 0)
+        return false;
+    proximity_data_t filtered;
+    Entity* self = (Entity*)EntityHandleDb_GetObject(
+        pm.ps->mClient.mHandle.mVal);
+    math::Position3 boxMin;
+    boxMin.v = _mm_sub_ps(center.v, _mm_set1_ps(radius * 2.0f));
+    boxMin.v.m128_f32[2] -= 100.0f;
+    math::Position3 boxMax;
+    boxMax.v = _mm_add_ps(center.v, _mm_set1_ps(radius * 2.0f));
+    boxMax.v.m128_f32[2] += 100.0f;
+    if (self != nullptr && self->proximity_data != nullptr
+        && (_mm_movemask_ps(_mm_cmplt_ps(
+                _mm_max_ps(
+                    _mm_sub_ps(self->proximity_data->lo.v, boxMin.v),
+                    _mm_sub_ps(boxMax.v, self->proximity_data->hi.v)),
+                _mm_setzero_ps()))
+            & 7) != 7)
+        query_proximity_data(boxMin, boxMax, *self->proximity_data);
+    filter_proximity_data(boxMin, boxMax, pm.tracemask,
+                          *self->proximity_data, filtered);
+    if ((s_entities_2_init & 1) == 0)
+    {
+        s_entities_2_init |= 1;
+        memset(s_entities_2.touch, 0, sizeof(s_entities_2.touch));
+    }
+    s_entities_2.mins = boxMin;
+    s_entities_2.maxs = boxMax;
+    s_entities_2.num = CM_AreaEntities(
+        boxMin, boxMax, s_entities_2.touch, 128, pm.tracemask);
+    float halfMaxZ = pm.maxs.v.m128_f32[2] * 0.5f;
+    float v15 = pm.maxs.v.m128_f32[2] - radius;
+    bool hit = false;
+    int step = 0;
+    do
+    {
+        math::Position3 probe;
+        probe.v.m128_f32[0] = pm.ps->origin.v.m128_f32[0];
+        probe.v.m128_f32[1] = pm.ps->origin.v.m128_f32[1];
+        float stepOff = step == 0 ? radius
+            : (step == 1 ? radius : v15);
+        probe.v.m128_f32[2] = pm.ps->origin.v.m128_f32[2] + stepOff;
+        probe.v.m128_f32[3] = pm.ps->origin.v.m128_f32[3];
+        for (int i = 0; i < s_entities_2.num; ++i)
+        {
+            Entity* ent = (Entity*)EntityHandleDb_GetObject(
+                s_entities_2.touch[i].mHandle.mVal);
+            if (ent == nullptr || ent == self)
+                continue;
+            if (context.__vftable->filter((collision_context_t*)&context,
+                                          ent))
+                continue;
+            if (ent->r.bmodel != nullptr)
+            {
+                math::Mat43 mat;
+                if ((0x800000 & ent->r.contents) == 0 || step != 0)
+                {
+                    mat = ent->CalcRotTranMat43();
+                }
+                else
+                {
+                    math::Position3 angles = ent->r.currentAngles;
+                    if (threshold_0 > fabs(angles.v.m128_f32[2]))
+                        angles.v.m128_f32[2] = 0.0f;
+                    if (threshold_0 > fabs(angles.v.m128_f32[0]))
+                        angles.v.m128_f32[0] = 0.0f;
+                    AnglesToAxis(&angles, &ent->r.currentOrigin, &mat);
+                }
+                math::Position3 localProbe;
+                localProbe.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_set1_ps(probe.v.m128_f32[0]),
+                                       mat.x.v),
+                            _mm_mul_ps(_mm_set1_ps(probe.v.m128_f32[1]),
+                                       mat.y.v)),
+                        _mm_mul_ps(_mm_set1_ps(probe.v.m128_f32[2]),
+                                   mat.z.v)),
+                    mat.w.v);
+                DCGSet* bmodel = ent->r.bmodel;
+                int nbrushes = bmodel->nbrushes;
+                for (int b = 0; b < nbrushes; ++b)
+                {
+                    unsigned int oi = b + bmodel->nboxes;
+                    if (oi >= (unsigned int)bmodel->objects_m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                    cdl_object_t obj;
+                    obj = ((cdl_object_t*)bmodel->objects_m_elements)[oi];
+                    if (b >= (unsigned int)bmodel->brushes_m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                    unsigned short* brush =
+                        &((unsigned short*)bmodel->brushes_m_elements)[2 * b];
+                    if ((obj.cflags & pm.tracemask) != 0)
+                    {
+                        unsigned int firstSide = brush[0];
+                        if (firstSide
+                                >= (unsigned int)bmodel->brush_sides_m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                89, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        hit |= collide_sphere_brush(
+                            localProbe, radius, obj,
+                            (cdlPlane*)bmodel->brush_sides_m_elements
+                                + firstSide,
+                            brush[1], localProbe);
+                    }
+                }
+                int nboxes = bmodel->nboxes;
+                for (int b = 0; b < nboxes; ++b)
+                {
+                    if (b >= (unsigned int)bmodel->objects_m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                    const cdl_object_t* obj =
+                        &((cdl_object_t*)bmodel->objects_m_elements)[b];
+                    if ((obj->cflags & pm.tracemask) != 0)
+                        hit |= collide_sphere_box(localProbe, radius, *obj,
+                                                  localProbe);
+                }
+                if (hit)
+                {
+                    probe.v = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_set1_ps(localProbe.v.m128_f32[0]),
+                                       mat.x.v),
+                            _mm_mul_ps(_mm_set1_ps(localProbe.v.m128_f32[1]),
+                                       mat.y.v)),
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_set1_ps(localProbe.v.m128_f32[2]),
+                                       mat.z.v),
+                            mat.w.v));
+                }
+            }
+            else
+            {
+                __m128 d = _mm_sub_ps(
+                    probe.v,
+                    _mm_min_ps(_mm_max_ps(probe.v, ent->r.absmin.v),
+                               ent->r.absmax.v));
+                __m128 ds = _mm_mul_ps(d, d);
+                float dist2 = ds.m128_f32[0] + ds.m128_f32[1]
+                    + ds.m128_f32[2];
+                if (dist2 >= radius * radius || dist2 <= 0.001f)
+                    continue;
+                float dist = sqrtf(dist2);
+                float push = radius - dist + 0.0099999998f;
+                probe.v = _mm_add_ps(
+                    probe.v,
+                    _mm_mul_ps(_mm_div_ps(d, _mm_set1_ps(dist)),
+                               _mm_set1_ps(push)));
+                hit = true;
+            }
+        }
+        // proximity brushes
+        for (int i = 0; i < filtered.brushes_count; ++i)
+        {
+            const proxy_obj_t& slot = filtered.brushes_slot[i];
+            CGBank* bank =
+                ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+            unsigned int oi = slot.oi;
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            cdl_object_t* obj =
+                &((cdl_object_t*)bank->objects.m_elements)[oi];
+            unsigned int brushIdx = oi - bank->nboxes;
+            if (brushIdx >= (unsigned int)bank->brushes.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            cdl_brush_t* brush =
+                &((cdl_brush_t*)bank->brushes.m_elements)[brushIdx];
+            if (brush->first_side >= (unsigned int)bank->brush_sides.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            hit |= collide_sphere_brush(
+                probe, radius, *obj,
+                (cdlPlane*)bank->brush_sides.m_elements
+                    + brush->first_side,
+                brush->num_sides, probe);
+        }
+        // proximity boxes
+        for (int i = 0; i < filtered.boxes_count; ++i)
+        {
+            const proxy_obj_t& slot = filtered.boxes_slot[i];
+            CGBank* bank =
+                ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+            unsigned int oi = slot.oi;
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            hit |= collide_sphere_box(
+                probe, radius,
+                ((cdl_object_t*)bank->objects.m_elements)[oi], probe);
+        }
+        // proximity polies
+        for (int i = 0; i < filtered.polies_count; ++i)
+        {
+            const bounded_proxy_obj_t& slot = filtered.polies_slot[i];
+            CGBank* bank =
+                ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+            unsigned int oi = slot.oi;
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            cdl_object_t* obj =
+                &((cdl_object_t*)bank->objects.m_elements)[oi];
+            unsigned int patchIdx = oi - bank->nbrushes - bank->nboxes;
+            if (patchIdx >= (unsigned int)bank->patches.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            cdl_patch_t* patch =
+                &((cdl_patch_t*)bank->patches.m_elements)[patchIdx];
+            unsigned int inds = patch->first_index + 3 * slot.ti;
+            if (inds >= (unsigned int)bank->patch_inds.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            unsigned int* pvi =
+                &((unsigned int*)bank->patch_inds.m_elements)[inds];
+            math::Position3 base;
+            base.v = _mm_add_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_mul_ps(
+                    _mm_setr_ps((float)(pvi[0] & 0x7FF),
+                                (float)((pvi[0] >> 11) & 0x7FF),
+                                (float)(pvi[0] >> 22), 0.0f),
+                    _mm_set1_ps(0.25f)));
+            math::Position3 v0 = base;
+            math::Position3 v1 = base;
+            math::Position3 v2 = base;
+            v0.v = _mm_add_ps(
+                base.v,
+                _mm_mul_ps(
+                    _mm_setr_ps((float)(pvi[1] & 0x7FF),
+                                (float)((pvi[1] >> 11) & 0x7FF),
+                                (float)(pvi[1] >> 22), 0.0f),
+                    _mm_set1_ps(0.25f)));
+            v1.v = _mm_add_ps(
+                base.v,
+                _mm_mul_ps(
+                    _mm_setr_ps((float)(pvi[2] & 0x7FF),
+                                (float)((pvi[2] >> 11) & 0x7FF),
+                                (float)(pvi[2] >> 22), 0.0f),
+                    _mm_set1_ps(0.25f)));
+            v2.v = _mm_add_ps(
+                base.v,
+                _mm_mul_ps(
+                    _mm_setr_ps((float)(pvi[3] & 0x7FF),
+                                (float)((pvi[3] >> 11) & 0x7FF),
+                                (float)(pvi[3] >> 22), 0.0f),
+                    _mm_set1_ps(0.25f)));
+            math::Vector4 n = calc_normal(v0, v1, v2);
+            math::Dir3 nd;
+            nd.v = n.v;
+            hit |= new_push_out_sphere_triangle(
+                probe, radius, v0, v1, v2, nd, probe);
+        }
+        if ((__fpclass(probe.v.m128_f32[0]) & 0x297) == 0
+            && (__fpclass(probe.v.m128_f32[1]) & 0x297) == 0
+            && (__fpclass(probe.v.m128_f32[2]) & 0x297) == 0)
+        {
+            pm.ps->origin.v = probe.v;
+            pm.ps->origin.v.m128_f32[2] -= stepOff;
+        }
+        ++step;
+    } while (step < 3);
+    return hit;
+}
+
+// ============================================================================
 // tunnel_test - ea: 0x643690 (bg_pmove.cpp)
 // ============================================================================
 extern void query_proximity_data(const math::Position3& lo,
