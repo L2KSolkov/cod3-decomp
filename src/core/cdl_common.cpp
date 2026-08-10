@@ -182,47 +182,97 @@ bool is_inside(
     if (c1 == 0.0f) return sgn3 == 0;
     return sgn3 == 1;
 }
-
 // ============================================================================
-// calc_closest — closest point on a segment (p0, p1) to point p
-// ea: 0x81DB50
+// calc_closest - closest point on a triangle (v0, v1, v2) to point p
+// ea: 0x81DB50 (verified: 4 ref args, by-value Position3 return)
 // ============================================================================
-math::Position3 calc_closest(
-    const math::Position3& p0,
-    const math::Position3& p1,
-    const math::Position3& p)
+math::Position3 calc_closest(const math::Position3& v0,
+                             const math::Position3& v1,
+                             const math::Position3& v2,
+                             const math::Position3& p)
 {
-    __m128 seg = _mm_sub_ps(p1.v, p0.v);
-    __m128 toP = _mm_sub_ps(p.v, p0.v);
-    __m128 toP1 = _mm_sub_ps(p.v, p1.v);
-
-    // Solve for projection parameter t = dot(seg, toP) / dot(seg, seg)
-    __m128 dp = _mm_mul_ps(seg, toP);
-    float segDotP = DOT3(dp);
-    __m128 dp1 = _mm_mul_ps(seg, toP1);
-    float segDotP1 = DOT3(dp1);
-
-    __m128 seg2 = _mm_mul_ps(seg, seg);
-    float segLen2 = DOT3(seg2);
-    __m128 toP2 = _mm_mul_ps(toP, toP);
-    float toPLen2 = DOT3(toP2);
-
-    if (segDotP >= 0.0f && segDotP1 <= 0.0f) {
-        // Projection is on the segment
-        float t = segDotP / segLen2;
+    float v37 = (p.v.m128_f32[0] - v0.v.m128_f32[0])
+            * (v1.v.m128_f32[0] - v0.v.m128_f32[0])
+        + (p.v.m128_f32[1] - v0.v.m128_f32[1])
+            * (v1.v.m128_f32[1] - v0.v.m128_f32[1])
+        + (p.v.m128_f32[2] - v0.v.m128_f32[2])
+            * (v1.v.m128_f32[2] - v0.v.m128_f32[2]);
+    float v33 = (p.v.m128_f32[0] - v0.v.m128_f32[0])
+            * (v0.v.m128_f32[0] - v2.v.m128_f32[0])
+        + (p.v.m128_f32[1] - v0.v.m128_f32[1])
+            * (v0.v.m128_f32[1] - v2.v.m128_f32[1])
+        + (p.v.m128_f32[2] - v0.v.m128_f32[2])
+            * (v0.v.m128_f32[2] - v2.v.m128_f32[2]);
+    if (!(v33 < 0.0f || v37 > 0.0f))
+    {
         math::Position3 result;
-        result.v = _mm_add_ps(p0.v, _mm_mul_ps(seg, _mm_shuffle_ps(
-            _mm_set_ss(t), _mm_set_ss(t), 0)));
+        result.v = v0.v;
         return result;
     }
-
-    // Clamp to nearest endpoint
+    float v32 = (v0.v.m128_f32[0] - v2.v.m128_f32[0])
+            * (v0.v.m128_f32[0] - v2.v.m128_f32[0])
+        + (v0.v.m128_f32[1] - v2.v.m128_f32[1])
+            * (v0.v.m128_f32[1] - v2.v.m128_f32[1])
+        + (v0.v.m128_f32[2] - v2.v.m128_f32[2])
+            * (v0.v.m128_f32[2] - v2.v.m128_f32[2]);
+    float v31 = v32 + v33;
+    float v36 = (v1.v.m128_f32[0] - v0.v.m128_f32[0])
+            * (v1.v.m128_f32[0] - v0.v.m128_f32[0])
+        + (v1.v.m128_f32[1] - v0.v.m128_f32[1])
+            * (v1.v.m128_f32[1] - v0.v.m128_f32[1])
+        + (v1.v.m128_f32[2] - v0.v.m128_f32[2])
+            * (v1.v.m128_f32[2] - v0.v.m128_f32[2]);
+    float x02 = (p.v.m128_f32[0] - v1.v.m128_f32[0])
+            * (v2.v.m128_f32[0] - v1.v.m128_f32[0])
+        + (p.v.m128_f32[1] - v1.v.m128_f32[1])
+            * (v2.v.m128_f32[1] - v1.v.m128_f32[1])
+        + (p.v.m128_f32[2] - v1.v.m128_f32[2])
+            * (v2.v.m128_f32[2] - v1.v.m128_f32[2]);
+    if (!(v37 < v36 || x02 > 0.0f))
+    {
+        math::Position3 result;
+        result.v = v1.v;
+        return result;
+    }
+    float v34 = (v2.v.m128_f32[0] - v1.v.m128_f32[0])
+            * (v2.v.m128_f32[0] - v1.v.m128_f32[0])
+        + (v2.v.m128_f32[1] - v1.v.m128_f32[1])
+            * (v2.v.m128_f32[1] - v1.v.m128_f32[1])
+        + (v2.v.m128_f32[2] - v1.v.m128_f32[2])
+            * (v2.v.m128_f32[2] - v1.v.m128_f32[2]);
+    if (!(x02 < v34 || v31 > 0.0f))
+    {
+        math::Position3 result;
+        result.v = v2.v;
+        return result;
+    }
     math::Position3 result;
-    toP2 = _mm_mul_ps(toP, toP);
-    toPLen2 = DOT3(toP2);
-    __m128 toP12 = _mm_mul_ps(toP1, toP1);
-    float toP1Len2 = DOT3(toP12);
-
-    result.v = (toPLen2 < toP1Len2) ? p0.v : p1.v;
+    if (v37 < 0.0f || v36 < v37)
+    {
+        if (x02 < 0.0f || v34 < x02)
+        {
+            if (v31 < 0.0f || v32 < v31)
+            {
+                result.v = p.v;
+                return result;
+            }
+            float t = v31 / v32;
+            result.v = _mm_add_ps(
+                v2.v, _mm_mul_ps(_mm_sub_ps(v0.v, v2.v),
+                                 _mm_shuffle_ps(_mm_set_ss(t), _mm_set_ss(t), 0)));
+            return result;
+        }
+        float t = x02 / v34;
+        result.v = _mm_add_ps(
+            v1.v,
+            _mm_mul_ps(_mm_sub_ps(v2.v, v1.v),
+                       _mm_shuffle_ps(_mm_set_ss(t), _mm_set_ss(t), 0)));
+        return result;
+    }
+    float t = v37 / v36;
+    result.v = _mm_add_ps(
+        v0.v,
+        _mm_mul_ps(_mm_sub_ps(v1.v, v0.v),
+                   _mm_shuffle_ps(_mm_set_ss(t), _mm_set_ss(t), 0)));
     return result;
 }

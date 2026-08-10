@@ -630,3 +630,66 @@ int TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
     }
     return 1;
 }
+
+// ============================================================================
+// collide_sphere_poly - ea: 0x61B980 (CollisionMgr.cpp)
+// ============================================================================
+extern math::Position3 calc_closest(const math::Position3& p,
+                                    const math::Position3& v0,
+                                    const math::Position3& v1,
+                                    const math::Position3& v2);  // cdl_common.o
+
+// ea: 0x0061B980
+bool collide_sphere_poly(const math::Position3& c, float r,
+                         const math::Position3& v0,
+                         const math::Position3& v1,
+                         const math::Position3& v2,
+                         const math::Vector4& plane)
+{
+    float d = plane.v.m128_f32[0] * c.v.m128_f32[0]
+        + plane.v.m128_f32[1] * c.v.m128_f32[1]
+        + plane.v.m128_f32[2] * c.v.m128_f32[2]
+        + plane.v.m128_f32[3];
+    if (fabsf(d) > r)
+        return false;
+    // Project the sphere center onto the plane.
+    math::Position3 proj;
+    proj.v.m128_f32[0] = c.v.m128_f32[0] - plane.v.m128_f32[0] * d;
+    proj.v.m128_f32[1] = c.v.m128_f32[1] - plane.v.m128_f32[1] * d;
+    proj.v.m128_f32[2] = c.v.m128_f32[2] - plane.v.m128_f32[2] * d;
+    // Barycentric edge signs: if all three are >= 0 the projection is inside.
+    float e0[3] = { v0.v.m128_f32[0] - v1.v.m128_f32[0],
+                    v0.v.m128_f32[1] - v1.v.m128_f32[1],
+                    v0.v.m128_f32[2] - v1.v.m128_f32[2] };
+    float p1[3] = { proj.v.m128_f32[0] - v1.v.m128_f32[0],
+                    proj.v.m128_f32[1] - v1.v.m128_f32[1],
+                    proj.v.m128_f32[2] - v1.v.m128_f32[2] };
+    float e1[3] = { v1.v.m128_f32[0] - v2.v.m128_f32[0],
+                    v1.v.m128_f32[1] - v2.v.m128_f32[1],
+                    v1.v.m128_f32[2] - v2.v.m128_f32[2] };
+    float p2[3] = { proj.v.m128_f32[0] - v2.v.m128_f32[0],
+                    proj.v.m128_f32[1] - v2.v.m128_f32[1],
+                    proj.v.m128_f32[2] - v2.v.m128_f32[2] };
+    float e2[3] = { v2.v.m128_f32[0] - v0.v.m128_f32[0],
+                    v2.v.m128_f32[1] - v0.v.m128_f32[1],
+                    v2.v.m128_f32[2] - v0.v.m128_f32[2] };
+    float pe[3] = { proj.v.m128_f32[0] - v0.v.m128_f32[0],
+                    proj.v.m128_f32[1] - v0.v.m128_f32[1],
+                    proj.v.m128_f32[2] - v0.v.m128_f32[2] };
+    float s0 = (e0[1] * p1[2] - e0[2] * p1[1]) * plane.v.m128_f32[0]
+        + (e0[2] * p1[0] - e0[0] * p1[2]) * plane.v.m128_f32[1]
+        + (e0[0] * p1[1] - e0[1] * p1[0]) * plane.v.m128_f32[2];
+    float s1 = (e1[1] * p2[2] - e1[2] * p2[1]) * plane.v.m128_f32[0]
+        + (e1[2] * p2[0] - e1[0] * p2[2]) * plane.v.m128_f32[1]
+        + (e1[0] * p2[1] - e1[1] * p2[0]) * plane.v.m128_f32[2];
+    float s2 = (e2[1] * pe[2] - e2[2] * pe[1]) * plane.v.m128_f32[0]
+        + (e2[2] * pe[0] - e2[0] * pe[2]) * plane.v.m128_f32[1]
+        + (e2[0] * pe[1] - e2[1] * pe[0]) * plane.v.m128_f32[2];
+    if (s0 >= 0.0f && s1 >= 0.0f && s2 >= 0.0f)
+        return true;
+    math::Position3 closest = calc_closest(proj, v0, v1, v2);
+    float dx = closest.v.m128_f32[0] - c.v.m128_f32[0];
+    float dy = closest.v.m128_f32[1] - c.v.m128_f32[1];
+    float dz = closest.v.m128_f32[2] - c.v.m128_f32[2];
+    return (r * r) > (dx * dx + dy * dy + dz * dz);
+}
