@@ -1272,11 +1272,44 @@ bool sight_trace_point_patch(const math::Position3* verts,
 // ============================================================================
 // unpack_poly - ea: 0x6292E0 (CollisionMgr.cpp)
 // ============================================================================
-// cdl_vinfo_t - patch vertex info (10 bytes) - verified against IDA
-struct cdl_vinfo_t {
-    int16_t  vbase[3];    // +0x00 (signed 1/64-scaled grid coords)
-    uint16_t first_vert;  // +0x06
-};
+// vi4 - packed vertex (3 x 11-bit + pad, 4 bytes) - verified vs IDA
+typedef unsigned int vi4;
+
+// ============================================================================
+// unpack (physics.o) - ea: 0x6FF680 (cdl_gjk.cpp / cdl_common)
+// ============================================================================
+// ea: 0x006FF680
+void unpack(const cdl_vinfo_t* vinfo, const cdl_array_t* verts,
+            math::Dir3* vert_list)
+{
+    math::Position3 base;
+    base.v.m128_f32[0] = (float)vinfo->vbase[0];
+    base.v.m128_f32[1] = (float)vinfo->vbase[1];
+    base.v.m128_f32[2] = (float)vinfo->vbase[2];
+    base.v.m128_f32[3] = 0.0f;
+    int num_verts = vinfo->num_verts;
+    unsigned int first_vert = vinfo->first_vert;
+    if (first_vert >= (unsigned int)verts->m_count
+        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                     "index >= 0 && index < size()", "invalid index"))
+        __debugbreak();
+    vi4* v5 = &((vi4*)verts->m_elements)[first_vert];
+    if (num_verts != 0)
+    {
+        math::Position3 delta;
+        delta.v.m128_f32[3] = 0.0f;
+        do
+        {
+            delta.v.m128_f32[0] = (float)(*v5 & 0x7FF) * 0.25f;
+            delta.v.m128_f32[1] = (float)((*v5 >> 11) & 0x7FF) * 0.25f;
+            delta.v.m128_f32[2] = (float)(*v5 >> 22) * 0.25f;
+            vert_list->v = _mm_add_ps(base.v, delta.v);
+            ++vert_list;
+            ++v5;
+            --num_verts;
+        } while (num_verts != 0);
+    }
+}
 
 // ea: 0x006292E0
 void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,

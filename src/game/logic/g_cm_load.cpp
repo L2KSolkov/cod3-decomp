@@ -2644,6 +2644,78 @@ DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle)
 }
 
 // ============================================================================
+// unpack (game.o) - ea: 0x622B60 (CollisionMgr.cpp)
+// ============================================================================
+extern void unpack(const cdl_vinfo_t* vinfo, const cdl_array_t* verts,
+                   math::Dir3* vert_list);  // physics.o 0x6FF680
+
+// ea: 0x00622B60
+void unpack(const CGBank* bank, unsigned int pi, math::Position3* verts)
+{
+    if (pi >= (unsigned int)bank->gjk_patches.m_count
+        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                     "index >= 0 && index < size()", "invalid index"))
+        __debugbreak();
+    cdl_vinfo_t* v3 = &((cdl_vinfo_t*)bank->gjk_patches.m_elements)[pi];
+    if (v3->num_verts >= 0x20)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 321;
+        AeAssert::gCurrentExpr = "vinfo.num_verts < 32";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("max number of verts per primitive exceeded."))
+            __debugbreak();
+    }
+    unpack(v3, &bank->patch_verts, (math::Dir3*)verts);
+}
+
+// ============================================================================
+// CM_ValidateAllWorldSectors - ea: 0x633010 / _r: 0x632F40 (cm_world.cpp)
+// ============================================================================
+// ea: 0x00632F40
+void CM_ValidateAllWorldSectors_r(WorldSector* node)
+{
+    if (node == nullptr)
+        return;
+    WorldSector* v1 = node;
+    while (1)
+    {
+        EntityShared* i = (EntityShared*)v1->entities;
+        for (; i != nullptr; i = i->nextEntityInWorldSector)
+        {
+            unsigned int v3 = i[1].svFlags & 0xFFF;
+            Entity* mObject = nullptr;
+            if (v3 < 0x540
+                && i[1].svFlags >> 12
+                    == (unsigned int)EntityHandleDb::sInst.mElements[v3].mKey)
+                mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+            if ((Entity*)((char*)i - 0xE0) != mObject)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 394;
+                AeAssert::gCurrentExpr =
+                    "check->GetEntity() == *(check->GetEntity()->GetHandle())";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bad/Deleted entity in world sector."))
+                    __debugbreak();
+            }
+        }
+        CM_ValidateAllWorldSectors_r((WorldSector*)v1->child[0]);
+        if (v1->child[1] == nullptr)
+            break;
+        v1 = (WorldSector*)v1->child[1];
+    }
+}
+
+// ea: 0x00633010
+void CM_ValidateAllWorldSectors()
+{
+    CM_ValidateAllWorldSectors_r(&pcm.worldSectorHead);
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0

@@ -2577,11 +2577,19 @@ bool TestPointInBox(const math::Position3& p, const math::Position3& bmin,
 int TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
                      const math::Position3& bmax, const cdlPlane* sides,
                      unsigned int nsides);  // game.o 0x61CC30
-struct cdl_vinfo_t;
+// cdl_vinfo_t - patch vertex info (10 bytes) - verified against IDA
+struct cdl_vinfo_t {
+    int16_t  vbase[3];    // +0x00 (signed grid coords)
+    uint16_t first_vert;  // +0x06
+    uint16_t num_verts;   // +0x08
+};
 void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
                  const unsigned char* pvi, math::Position3& v0,
                  math::Position3& v1,
                  math::Position3& v2);  // game.o 0x6292E0
+void unpack(const CGBank* bank, unsigned int pi,
+            math::Position3* verts);  // game.o 0x622B60
+void CM_ValidateAllWorldSectors();    // game.o 0x633010
 bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v0,
                          const math::Position3& v1,
