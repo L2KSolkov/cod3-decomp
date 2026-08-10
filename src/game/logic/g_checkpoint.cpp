@@ -5,11 +5,107 @@
 
 #include "game/logic/g_local.h"
 
+#include <new>
 #include <stdlib.h>
 #include <string.h>
 
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
+
+template <typename T>
+static void CheckpointVectorResize(CheckpointVector<T>* v, int iNewSize);
+
+// ============================================================================
+// CheckpointMgr ctor/dtor/ReInit - ea: 0x6220C0..0x632120
+// ============================================================================
+
+// ea: 0x006220C0
+CheckpointMgr::CheckpointMgr()
+{
+    for (int i = 0; i < 6; ++i)
+        new (&this->mWeapons[i]) Broc::string((Broc::string::Block*)nullptr);
+    this->mCurrentScriptExploded.m_size = 0;
+    for (int i = 0; i < 16; ++i)
+    {
+        this->mFriendlies[i].mOrientation[0] = 0.0f;
+        this->mFriendlies[i].mOrientation[1] = 0.0f;
+        this->mFriendlies[i].mOrientation[2] = 0.0f;
+        this->mFriendlies[i].mOrigin[0] = 0.0f;
+        this->mFriendlies[i].mOrigin[1] = 0.0f;
+        this->mFriendlies[i].mOrigin[2] = 0.0f;
+        this->mFriendlies[i].mTargetname[0] = 0;
+    }
+    new (&this->mEvent) Broc::string((Broc::string::Block*)nullptr);
+    new (&this->mCurrentMapName) Broc::string((Broc::string::Block*)nullptr);
+    this->mGameVars.mElements = nullptr;
+    this->mGameVars.mCapacity = 0;
+    this->mGameVars.mSize = 0;
+    this->mCheckpointScriptExploded.m_size = 0;
+    this->mCheckpointSaveExists = false;
+    this->mUsingCheckpoints = false;
+    this->mFriendlyCount = 0;
+    this->mTimeRemainingForHudText = 0.0f;
+    this->mCheckpointIndex = 0;
+    this->mCurrentlySavingCheckpoint = false;
+    this->mCheckpointFromStorage = false;
+    Cvar_Set("checkpoint", "0");
+    this->mPlayerHealth = 0;
+    for (int i = 0; i < 6; ++i)
+    {
+        this->mWeaponAmmo[i] = 0;
+        this->mWeaponClipAmmo[i] = 0;
+    }
+}
+
+// ea: 0x006221F0
+CheckpointMgr::~CheckpointMgr()
+{
+    if (this->mGameVars.mElements != nullptr)
+    {
+        tlMemFree(this->mGameVars.mElements);
+        this->mGameVars.mElements = nullptr;
+        this->mGameVars.mCapacity = 0;
+    }
+    this->mCurrentMapName.~string();
+    this->mEvent.~string();
+    for (int i = 0; i < 6; ++i)
+        this->mWeapons[i].~string();
+}
+
+// ea: 0x00631490
+void CheckpointMgr::ReInit()
+{
+    this->mCheckpointSaveExists = false;
+    this->mUsingCheckpoints = false;
+    this->mCheckpointFromStorage = false;
+    this->mCurrentlySavingCheckpoint = false;
+    this->mFriendlyCount = 0;
+    this->mTimeRemainingForHudText = 0.0f;
+    this->mCheckpointIndex = 0;
+    this->mEvent.clear();
+    this->mCurrentMapName.clear();
+    Cvar_Set("checkpoint", "0");
+    CheckpointVectorResize(&this->mGameVars, 0);
+    this->mPlayerHealth = 0;
+    this->weapon = 0;
+    memset(this->ammo, 0, sizeof(this->ammo));
+    memset(this->ammoclip, 0, sizeof(this->ammoclip));
+    this->weapons[0] = 0;
+    this->weapons[1] = 0;
+    this->weaponslots[0] = 0;
+    this->weaponslots[4] = 0;
+    this->weaponslots[8] = 0;
+    this->weaponrechamber[0] = 0;
+    this->weaponrechamber[1] = 0;
+    this->mCheckpointScriptExploded.m_size = 0;
+    this->mCurrentScriptExploded.m_size = 0;
+}
+
+// ea: 0x00632110
+void CheckpointMgr::ClearGameVars()
+{
+    CheckpointVectorResize(&this->mGameVars, 0);
+}
 
 // ============================================================================
 // CheckpointVector<SCheckpointGameVar> - ae_vector COMDATs (game.o inlines)
@@ -157,7 +253,7 @@ void CheckpointMgr::SetTosserValues()
 void CheckpointMgr::RestoreScriptExploders()
 {
     if (this->mUsingCheckpoints && this->mCheckpointSaveExists)
-        memcpy(this->mCurrentScriptExploded, this->mCheckpointScriptExploded,
+        memcpy(&this->mCurrentScriptExploded, &this->mCheckpointScriptExploded,
                sizeof(this->mCurrentScriptExploded));
 }
 
@@ -316,9 +412,8 @@ LABEL_6:
 // ea: 0x00622330
 bool CheckpointMgr::ExploderCheckpointExploded(int exploderId)
 {
-    unsigned short* mElements =
-        (unsigned short*)this->mCurrentScriptExploded;
-    int mSize = *(int*)(this->mCurrentScriptExploded + 0x200);
+    unsigned short* mElements = this->mCurrentScriptExploded.mElements;
+    int mSize = this->mCurrentScriptExploded.m_size;
     if (mSize == 0)
         return false;
     for (int i = 0; i < mSize; ++i)

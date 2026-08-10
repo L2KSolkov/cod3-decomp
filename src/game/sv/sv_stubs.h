@@ -457,9 +457,9 @@ struct CheckpointMgr {
     bool         mUsingCheckpoints;       // +0x00 (bool)
     uint8_t      _pad01[3];               // +0x01
     int          mPlayerHealth;           // +0x04
-    uint8_t      _pad08[0x14 - 0x08];
-    math::Position3 mOrigin;              // +0x14 (checkpoint player origin)
-    uint8_t      _pad24[0x50 - 0x24];
+    Broc::string mWeapons[6];             // +0x08
+    int          mWeaponAmmo[6];          // +0x20
+    int          mWeaponClipAmmo[6];      // +0x38
     int          ammo[92];                // +0x50 (0x170 bytes)
     int          ammoclip[92];            // +0x1C0 (0x170 bytes)
     int          weapons[2];              // +0x330
@@ -467,15 +467,30 @@ struct CheckpointMgr {
     int          weaponrechamber[2];      // +0x344
     int          weapon;                  // +0x34C
     float        mTimeRemainingForHudText;// +0x350
-    uint8_t      mCurrentScriptExploded[0x204];   // +0x358 (81 dwords)
-    uint8_t      _pad55C[0x574 - 0x55C];
+    bool         mCurrentlySavingCheckpoint;  // +0x354
+    bool         mCheckpointFromStorage;      // +0x355
+    struct ExplodedArray {
+        unsigned short mElements[256];    // +0x00
+        int            m_size;            // +0x200
+    };
+    ExplodedArray mCurrentScriptExploded; // +0x358
+    float        mPlayerOrientation[3];   // +0x55C
+    math::Position3 mOrigin;              // +0x568 (checkpoint player origin)
     bool         mCheckpointSaveExists;   // +0x574 (bool)
-    uint8_t      _pad575[0x8FC - 0x575];
+    struct SEntitySaveInfo {
+        char  mTargetname[32];            // +0x00
+        float mOrientation[3];            // +0x20
+        float mOrigin[3];                 // +0x2C
+    } mFriendlies[16];                    // +0x578
+    int          mFriendlyCount;          // +0x8F8
     Broc::string mEvent;                  // +0x8FC (Broc::string)
     Broc::string mCurrentMapName;         // +0x900 (Broc::string)
     CheckpointVector<SCheckpointGameVar> mGameVars;  // +0x904 (12 bytes)
-    uint8_t      mCheckpointScriptExploded[0x204];  // +0x910 (81 dwords)
+    ExplodedArray mCheckpointScriptExploded;        // +0x910
+    int          mCheckpointIndex;        // +0xB14
     static CheckpointMgr* sInst;          // ?sInst@CheckpointMgr@@2PAV1@A
+    CheckpointMgr();                      // ??0CheckpointMgr@@QAE@XZ (game.o 0x6220C0)
+    ~CheckpointMgr();                     // ??1CheckpointMgr@@QAE@XZ (game.o 0x6221F0)
     void ClearSavedCheckpointData();       // ?ClearSavedCheckpointData@CheckpointMgr@@QAEXXZ (game.o 0x640E60)
     void SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // ?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z
     void SetCheckpointCvar();             // ?SetCheckpointCvar@CheckpointMgr@@QAEXXZ
@@ -484,6 +499,8 @@ struct CheckpointMgr {
     void SetTosserValues();               // ?SetTosserValues@CheckpointMgr@@QAEXXZ (game.o 0x609340)
     void RestoreScriptExploders();        // ?RestoreScriptExploders@CheckpointMgr@@QAEXXZ (game.o 0x609350)
     bool Restart();                       // ?Restart@CheckpointMgr@@QAE_NXZ (game.o 0x609330)
+    void ReInit();                        // ?ReInit@CheckpointMgr@@QAEXXZ (game.o 0x631490)
+    void ClearGameVars();                 // ?ClearGameVars@CheckpointMgr@@QAEXXZ (game.o 0x632110)
     void SetEvent(const char* checkpointName);  // ?SetEvent@CheckpointMgr@@QAEXPBD@Z (game.o 0x618120)
     void RestoreLastCheckpoint();         // ?RestoreLastCheckpoint@CheckpointMgr@@QAEXXZ (game.o 0x618130)
     bool GetGameVar(unsigned int hashVarName, unsigned int* val,
