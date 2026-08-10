@@ -32,6 +32,10 @@ extern void Cmd_List_f();                          // game.o 0x60ED20
 extern void Cmd_Vstr_f();                          // game.o 0x61F550
 extern void Cmd_Echo_f();                          // game.o 0x61F590
 extern void Cmd_Wait_f();                          // game.o 0x61F280
+void SetButtonAlias();                      // game.o 0x62B1A0
+void SetStickAlias();                       // game.o 0x62B320
+void ClearAllPadAliases();                  // game.o 0x62B4A0
+void InitPadAliasCommands();                // game.o 0x62B4E0
 void Cmd_AddCommand(const char* cmd_name, void (*function)());
 
 enum ECmdFuncType { CMD = 0, INPUT_CMD = 1 };
@@ -430,6 +434,50 @@ void Cmd_Init()
     Cmd_AddCommand("vstr", Cmd_Vstr_f);
     Cmd_AddCommand("echo", Cmd_Echo_f);
     Cmd_AddCommand("wait", Cmd_Wait_f);
+}
+
+// ============================================================================
+// PadAlias command registration - ea: 0x62B4A0..0x62B4E0
+// ============================================================================
+struct PadAliasCtx {
+    int mButtonAlias[4][16];  // +0x00
+    int mStickAlias[4][2];    // +0x40
+    void Clear(int ctrlr);    // ?Clear@Context@PadAliasMgr@@QAEXH@Z (game.o 0x620EA0)
+};
+struct PadAliasMgr {
+    uint8_t _pad[4];
+    PadAliasCtx mCtx[3];      // +0x04 (3 contexts, 0x148 stride)
+    static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
+};
+PadAliasMgr* PadAliasMgr::sInst = nullptr;
+
+extern int LocalClient_ClientToPort(int client);  // cl.o
+
+// ea: 0x00620EA0
+void PadAliasCtx::Clear(int ctrlr)
+{
+    for (int v4 = 0; v4 < 16; ++v4)
+        this->mButtonAlias[ctrlr][v4] = -1;  // kPadAliasButtonInvalid
+}
+
+// ea: 0x0062B4A0
+void ClearAllPadAliases()
+{
+    PadAliasMgr* v0 = PadAliasMgr::sInst;
+    int v1 = LocalClient_ClientToPort(currCl);
+    for (int i = 3; i != 0; --i)
+    {
+        v0->mCtx[0].Clear(v1);
+        v0 = (PadAliasMgr*)((char*)v0 + 328);
+    }
+}
+
+// ea: 0x0062B4E0
+void InitPadAliasCommands()
+{
+    Cmd_AddCommand("buttonalias", SetButtonAlias);
+    Cmd_AddCommand("stickalias", SetStickAlias);
+    Cmd_AddCommand("clearallaliases", ClearAllPadAliases);
 }
 
 // ============================================================================
