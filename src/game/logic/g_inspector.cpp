@@ -980,6 +980,9 @@ extern float starty;  // 0xDEF1A8
 extern float scale;   // 0xDEF1A4
 extern float ystep;   // 0xDEF1A0
 extern float xstep;   // 0xDEF19C
+extern float xpos;    // 0xDEF198
+extern float xinc;    // 0xDEF194
+extern float yinc;    // 0xDEF190
 extern unsigned nslGetMaxNumVoices();      // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 extern unsigned nslGetNumVoices();         // ?nslGetNumVoices@@YAIXZ (nslCompat.o)
 extern void* nslGetVoice(unsigned int a);  // ?nslGetVoice@@YAPAUnslVoice@@I@Z (nslCompat.o)
@@ -1012,7 +1015,7 @@ extern unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
 extern unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
 extern int g_fps;                 // ?g_fps@@3HA (game2.o)
 extern void IM_RenderGameEntityStats();   // ?IM_RenderGameEntityStats@@YAXXZ (game2.o)
-extern void RenderPlayerStats();          // ?RenderPlayerStats@@YAXXZ (game2.o)
+extern Entity* RenderPlayerStats();       // ?RenderPlayerStats@@YAPAVEntity@@XZ (game2.o)
 
 // PathNode / zone / audio-tick helper views (opaque owners)
 class BadPathManager {
@@ -1935,6 +1938,72 @@ void InspectorManager::SetupUserMenus()
     AddItem(v2, "Cubemap ScreenShot", (void*)TakeCubeMapShot, 17);
     _INSPECTOR_MENU* v3 = AddSubMenu(nullptr, "Physics / Nano");
     AddItem(v3, "Rag Dolls on normal deaths", &g_useRagsOnNormalDeaths, 2);
+}
+
+// ============================================================================
+// RenderPlayerStats - ea: 0x4F0E10
+// Stats table renderer: 7 columns (per player slot) x rows (stat categories).
+// ============================================================================
+Entity* RenderPlayerStats()
+{
+    Entity* v1 = EntityManager::sInst->GetPlayer(currCl);
+    if (v1 == nullptr || v1->client == nullptr)
+        return v1;
+    static const int s_statCol[25] = {
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17,
+        18, 19, 20, 21, 22, 23, 24, 25
+    };
+    static const char* s_label[25] = {
+        "Time", "Wins", "Losses", "Kills", "Deaths", "VehiclesDestroyed",
+        "Suicides", "TeamKills", "Mantle", "GrenadeKills", "Supply",
+        "ArtilleryKills", "MineKills", "RifleGrenadeKills", "CTFFlagPickup",
+        "CTFFlagCapture", "SCFFlagPickup", "SCFFlagCapture", "WARAreaCapture",
+        "HQDestroy", "Spots", "WARAreaDefend", "WARAreaAssist", "SCFFlagDefend",
+        "CTFFlagDefend"
+    };
+    char tmpstr[128];
+    float white[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    int y = 50;
+    for (int r = 0; r < 25; ++r)
+    {
+        g_inspectorManager.Print((char*)s_label[r], (int)xpos, y, 0.55f);
+        int xx = 300;
+        for (int c = 0; c < 7; ++c)
+        {
+            sprintf(tmpstr, "%d", v1->client->pers.mStats[c][s_statCol[r]]);
+            RE_Text_Paint((float)(xx + 2), (float)(y + 2), 5,
+                          scaleScalar * 0.55f, white, tmpstr, 0, 0, 0);
+            RE_Text_Paint((float)xx, (float)y, 5, scaleScalar * 0.55f,
+                          g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+            xx += (int)xinc;
+        }
+        y += (int)yinc;
+    }
+    // CTFFlagReturn (stat col 27) + per-slot row
+    g_inspectorManager.Print((char*)"CTFFlagReturn", (int)xpos, y, 0.55f);
+    int xx = 300;
+    for (int c = 0; c < 7; ++c)
+    {
+        sprintf(tmpstr, "%d", v1->client->pers.mStats[c][27]);
+        RE_Text_Paint((float)(xx + 2), (float)(y + 2), 5, scaleScalar * 0.55f,
+                      white, tmpstr, 0, 0, 0);
+        RE_Text_Paint((float)xx, (float)y, 5, scaleScalar * 0.55f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+        xx += (int)xinc;
+    }
+    // Total row (stat col 28)
+    y += (int)yinc;
+    xx = 300;
+    for (int c = 0; c < 7; ++c)
+    {
+        sprintf(tmpstr, "%d", v1->client->pers.mStats[c][28]);
+        RE_Text_Paint((float)(xx + 2), (float)(y + 2), 5, scaleScalar * 0.55f,
+                      white, tmpstr, 0, 0, 0);
+        RE_Text_Paint((float)xx, (float)y, 5, scaleScalar * 0.55f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+        xx += (int)xinc;
+    }
+    return v1;
 }
 
 // ============================================================================
