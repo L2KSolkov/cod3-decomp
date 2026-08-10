@@ -680,6 +680,55 @@ weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon)
     return bg_weaponInfo[iWeapon];
 }
 
+// ea: 0x0062F1B0
+weaponFileInfo_t* BG_GetPlayerWeaponInfo()
+{
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    if ((player->client->ps.eFlags & 0x6000) != 0)
+    {
+        unsigned int mVal = player->client->ps.mViewLockedEntity.mHandle.mVal;
+        unsigned int v2 = mVal & 0xFFF;
+        if (v2 < 0x540
+            && mVal >> 12
+                == (unsigned int)EntityHandleDb::sInst.mElements[v2].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+            if (mObject != nullptr)
+                return BG_GetInfoForWeapon(mObject->s.weapon);
+        }
+    }
+    else if ((0x100000 & player->client->ps.eFlags) != 0)
+    {
+        Entity* v6 = EntityManager::sInst->GetPlayer(currCl);
+        if (v6 != nullptr)
+        {
+            Entity* mObject = HandleDbToEnt(v6->r.mOwner);
+            if (mObject != nullptr)
+            {
+                int vehPos = v6->client->ps.vehPos;
+                if (vehPos == 0)
+                    return BG_GetInfoForWeapon(mObject->s.weapon);
+                if (vehPos == 1)
+                {
+                    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+                    if (scr_vehicle != nullptr)
+                    {
+                        int gunnerWeapon = scr_vehicle->gunnerWeapon;
+                        if (gunnerWeapon > 0)
+                            return BG_GetInfoForWeapon(gunnerWeapon);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        Entity* v10 = EntityManager::sInst->GetPlayer(currCl);
+        return BG_GetInfoForWeapon(v10->client->ps.weapon);
+    }
+    return nullptr;
+}
+
 // ============================================================================
 // BG_GetWeaponForInfo - ea: 0x607050
 // ============================================================================
