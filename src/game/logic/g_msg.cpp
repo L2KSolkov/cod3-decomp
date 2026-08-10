@@ -228,8 +228,8 @@ char* MSG_ReadStringLine(msg_t* msg)
 // ============================================================================
 // Netchan_* - ea: 0x60F680..0x60F710
 // ============================================================================
-extern cvar_t* showpackets;  // ?showpackets (game.o)
-extern cvar_t* showdrop;     // ?showdrop (game.o)
+cvar_t* showpackets = nullptr;  // ?showpackets@@3PAUcvar_t@@A (game.o)
+cvar_t* showdrop = nullptr;     // ?showdrop@@3PAUcvar_t@@A (game.o)
 
 #define MAX_MSGLEN 0xC00
 struct loopback_t {
