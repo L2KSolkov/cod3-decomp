@@ -136,6 +136,105 @@ void PM_AddTouchEnt(DbLinkedHandle<EntityHandleDb, Entity> entity)
 }
 
 // ============================================================================
+// PM_trace - ea: 0x63BCA0 (bg_pmove.cpp)
+// ============================================================================
+extern void TraceSphereFull(const proximity_data_t* proximity_data,
+                            trace_t* results, const math::Position3* start,
+                            const math::Position3* mins,
+                            const math::Position3* maxs,
+                            const math::Position3* end,
+                            const collision_context_t* context);  // sv_world.cpp
+extern void filter_proximity_data(const math::Position3& lo,
+                                  const math::Position3& hi, int contents,
+                                  const proximity_data_t& in,
+                                  proximity_data_t& out);  // game.o
+extern void query_proximity_data(const math::Position3& lo,
+                                 const math::Position3& hi,
+                                 proximity_data_t& out);  // game.o
+extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
+static math::Dir3 rdir_3;   // ?rdir_3 (game.o @ 0xF58F10)
+static int s_pmtrace_init;  // $S22_2 @ 0xF58F24
+
+// ea: 0x0063BCA0
+void PM_trace(trace_t* results, const math::Position3& start,
+              const math::Position3& mins, const math::Position3& maxs,
+              const math::Position3& end,
+              const collision_context_t& context)
+{
+    Entity* ent = (Entity*)EntityHandleDb_GetObject(
+        context.pass_entity1.mHandle.mVal);
+    proximity_data_t filtered;
+    math::Position3 lo;
+    lo.v = _mm_min_ps(start.v, end.v);
+    math::Position3 hi;
+    hi.v = _mm_max_ps(start.v, end.v);
+    if (ent != nullptr && ent->proximity_data != nullptr)
+    {
+        math::Position3 size;
+        size.v = _mm_sub_ps(maxs.v,
+            _mm_mul_ps(_mm_add_ps(mins.v, maxs.v), _mm_set1_ps(0.5f)));
+        float v12 = size.v.m128_f32[0] > size.v.m128_f32[2]
+            ? size.v.m128_f32[2]
+            : size.v.m128_f32[0];
+        size.v.m128_f32[0] = v12;
+        size.v.m128_f32[1] = v12;
+        math::Position3 boxMin;
+        boxMin.v = _mm_sub_ps(lo.v, size.v);
+        math::Position3 boxMax;
+        boxMax.v = _mm_add_ps(hi.v, _mm_set1_ps(v12));
+        if ((_mm_movemask_ps(_mm_cmplt_ps(
+                 _mm_max_ps(
+                     _mm_sub_ps(ent->proximity_data->lo.v, boxMin.v),
+                     _mm_sub_ps(hi.v, ent->proximity_data->hi.v)),
+                 _mm_setzero_ps()))
+             & 7) != 7)
+        {
+            if ((s_pmtrace_init & 1) == 0)
+            {
+                s_pmtrace_init |= 1;
+                rdir_3.v = _mm_set1_ps(20.0f);
+            }
+            math::Position3 qlo = boxMin;
+            qlo.v = _mm_sub_ps(boxMin.v, rdir_3.v);
+            math::Position3 qhi = boxMax;
+            qhi.v = _mm_add_ps(boxMax.v, rdir_3.v);
+            query_proximity_data(qlo, qhi, *ent->proximity_data);
+        }
+        filter_proximity_data(lo, hi, context.contentmask,
+                              *ent->proximity_data, filtered);
+        TraceSphereFull(&filtered, results, &start, &mins, &maxs, &end,
+                        &context);
+    }
+    else
+    {
+        pm->trace(results, start, mins, maxs, end, context);
+    }
+    if (results->startsolid != 0 && (results->contents & 0x2000000) != 0)
+    {
+        PM_AddTouchEnt(results->mEntity);
+        pm->tracemask &= ~0x2000000u;
+        collision_context_t c2;
+        c2.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
+        c2.pass_entity1.mHandle.mVal = 0;
+        c2.pass_entity2.mHandle.mVal = 0;
+        c2.contentmask = context.contentmask & 0xFDFFFFFF;
+        c2.pass_owner1.mHandle.mVal = 0;
+        c2.pass_owner2.mHandle.mVal = 0;
+        if (ent != nullptr && ent->proximity_data != nullptr)
+        {
+            filter_proximity_data(lo, hi, context.contentmask & 0xFDFFFFFF,
+                                  *ent->proximity_data, filtered);
+            TraceSphereFull(&filtered, results, &start, &mins, &maxs, &end,
+                            &c2);
+        }
+        else
+        {
+            pm->trace(results, start, mins, maxs, end, c2);
+        }
+    }
+}
+
+// ============================================================================
 // Character collision resolve - ea: 0x63BF90..0x643850 (bg_pmove.cpp)
 // ============================================================================
 extern int CM_AreaEntities(const math::Position3& mins,
