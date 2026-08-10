@@ -2924,6 +2924,189 @@ void CM_PointTraceToEntities(pointtrace_t* clip,
 }
 
 // ============================================================================
+// intersect_segment_aabb - ea: 0x61EA00 (cm_world.cpp)
+// ============================================================================
+// ea: 0x0061EA00
+bool intersect_segment_aabb(const math::Position3& p0,
+                            const math::Position3& p1,
+                            const math::Position3& lo,
+                            const math::Position3& hi,
+                            const math::Position3& bmin,
+                            const math::Position3& bmax)
+{
+    if ((_mm_movemask_ps(
+             _mm_cmplt_ps(
+                 _mm_max_ps(_mm_sub_ps(bmin.v, hi.v),
+                            _mm_sub_ps(lo.v, bmax.v)),
+                 _mm_setzero_ps()))
+         & 7) == 7)
+    {
+        float v6 = 1.0f;
+        float v7 = 0.0f;
+        int v8 = 2;
+        const float* v9 = &bmin.v.m128_f32[2];
+        while (1)
+        {
+            float v10 = *v9 - p0.v.m128_f32[v8];
+            float v11 = *v9 - p1.v.m128_f32[v8];
+            if (v10 <= 0.0f)
+            {
+                if (v11 > 0.0f && v10 > (v10 - v11) * v6)
+                {
+                    v6 = v10 / (v10 - v11);
+                    if (v7 >= v6)
+                        return 0;
+                }
+            }
+            else if (v10 > (v10 - v11) * v7 + 0.125f)
+            {
+                v7 = (v10 - 0.125f) / (v10 - v11);
+                if (v7 >= v6)
+                    return 0;
+            }
+            --v8;
+            --v9;
+            if (v8 < 0)
+            {
+                const float* v12 = &bmax.v.m128_f32[2];
+                int v13 = 2;
+                while (1)
+                {
+                    float v14 = p1.v.m128_f32[v13] - *v12;
+                    float v15 = p0.v.m128_f32[v13] - *v12;
+                    if (v15 <= 0.0f)
+                    {
+                        if (v14 > 0.0f && v15 > (v15 - v14) * v6)
+                        {
+                            v6 = v15 / (v15 - v14);
+                            if (v7 >= v6)
+                                return 0;
+                        }
+                    }
+                    else if (v15 > (v15 - v14) * v7)
+                    {
+                        v7 = v15 / (v15 - v14);
+                        if (v7 >= v6)
+                            return 0;
+                    }
+                    --v13;
+                    --v12;
+                    if (v13 < 0)
+                        return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+// ============================================================================
+// CM_PointTraceToEntities (context version) - ea: 0x622790 / _r: 0x622500
+// ============================================================================
+// ea: 0x00622500
+void CM_PointTraceToEntities_r(pointtrace_t* clip, WorldSector* node,
+                               float p1f, float p2f,
+                               const math::Position3* p1,
+                               const math::Position3* p2,
+                               collision_context_t* context)
+{
+    if (p1f < clip->trace.fraction
+        && (clip->contentmask & node->contentsEntities) != 0)
+    {
+        int axis = node->axis;
+        float v9 = p1->v.m128_f32[axis] - node->dist;
+        float v10 = p2->v.m128_f32[axis] - node->dist;
+        float v17 = v9;
+        if (v9 < 0.0f || v10 < 0.0f)
+        {
+            if (v9 > 0.0f || v10 > 0.0f)
+            {
+                float frac = v9 / (v9 - v10);
+                if (frac < 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 1433;
+                    AeAssert::gCurrentExpr = "frac >= 0";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                    v9 = v17;
+                }
+                if (frac > 1.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 1434;
+                    AeAssert::gCurrentExpr = "frac <= 1.f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                    v9 = v17;
+                }
+                float midF = (p2f - p1f) * frac + p1f;
+                math::Position3 mid;
+                mid.v = _mm_add_ps(
+                    p1->v, _mm_mul_ps(_mm_sub_ps(p2->v, p1->v),
+                                      _mm_set1_ps(frac)));
+                int side = v9 < 0.0f;
+                CM_PointTraceToEntities_r(clip, (WorldSector*)node->child[side],
+                                          p1f, midF, p1, &mid, context);
+                CM_PointTraceToEntities_r(clip,
+                                          (WorldSector*)node->child[1 - side],
+                                          midF, p2f, &mid, p2, context);
+            }
+            else
+            {
+                CM_PointTraceToEntities_r(clip, (WorldSector*)node->child[1],
+                                          p1f, p2f, p1, p2, context);
+            }
+        }
+        else
+        {
+            CM_PointTraceToEntities_r(clip, (WorldSector*)node->child[0],
+                                      p1f, p2f, p1, p2, context);
+        }
+        EntityShared* entities = (EntityShared*)node->entities;
+        math::Position3 lo;
+        math::Position3 hi;
+        lo.v = _mm_min_ps(clip->start.v, clip->end.v);
+        hi.v = _mm_max_ps(clip->start.v, clip->end.v);
+        for (; entities != nullptr; entities = entities->nextEntityInWorldSector)
+        {
+            if (intersect_segment_aabb(clip->start, clip->end, lo, hi,
+                                       entities->absmin, entities->absmax)
+                && !context->__vftable->filter(
+                    context, (Entity*)((char*)entities - 0xE0)))
+            {
+                SV_PointTraceToEntity(clip, entities);
+            }
+        }
+    }
+}
+
+// ea: 0x00622790
+void CM_PointTraceToEntities(pointtrace_t* clip,
+                             const collision_context_t& context)
+{
+    if (clip->trace.fraction > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 1476;
+        AeAssert::gCurrentExpr = "clip->trace.fraction <= 1.0f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%f", clip->trace.fraction))
+            __debugbreak();
+    }
+    CM_PointTraceToEntities_r(clip, &pcm.worldSectorHead, 0.0f,
+                              clip->trace.fraction, &clip->start, &clip->end,
+                              (collision_context_t*)&context);
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0

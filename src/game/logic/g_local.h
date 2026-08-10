@@ -2599,6 +2599,14 @@ int CM_TransformedPointContents(const math::Position3& p, DCGSet* model,
                                 const math::Position3& angles);  // game.o 0x632E00
 void CM_PointTraceToEntities(pointtrace_t* clip,
                              const TouchEntityData& entities);  // game.o 0x633230
+void CM_PointTraceToEntities(pointtrace_t* clip,
+                             const collision_context_t& context);  // game.o 0x622790
+bool intersect_segment_aabb(const math::Position3& p0,
+                            const math::Position3& p1,
+                            const math::Position3& lo,
+                            const math::Position3& hi,
+                            const math::Position3& bmin,
+                            const math::Position3& bmax);  // game.o 0x61EA00
 bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v0,
                          const math::Position3& v1,
