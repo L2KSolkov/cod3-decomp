@@ -2668,6 +2668,8 @@ bool sight_trace_point(traceWork_t* tw, const math::Position3& p0,
                        const math::Position3& p1);  // game.o 0x6253B0
 bool sight_trace_sphere(traceWork_t* tw);  // game.o 0x625EA0
 bool collide_velocity_sphere(traceWork_t* tw);  // game.o 0x627250
+void PositionTest(traceWork_t* tw);  // game.o 0x633770
+void PositionTest(traceWork_t* tw, const proximity_data_t& data);  // game.o 0x633900
 void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
                     const math::Position3& bmax, const cdlPlane* sides,
                     unsigned int nsides,
