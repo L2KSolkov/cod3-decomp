@@ -2768,6 +2768,8 @@ void CM_TraceStaticModel(StaticModel* sm, trace_t* results,
                          const math::Position3& end,
                          int contentmask);  // game.o 0x618980
 void CM_LinkStaticModel(StaticModel* staticModel);  // game.o 0x60BB20
+void CM_LinkEntity(EntityShared* ent, const float* absmin,
+                   const float* absmax);  // game.o 0x60B8E0
 void CM_UnlinkEntity(EntityShared* ent);  // game.o 0x60B230
 int  CM_UnlinkStaticModels(TPakId pakId, WorldSector* node);  // game.o 0x60AF90
 void CM_DestroyStaticModels(TPakId pakId);  // game.o 0x60B020

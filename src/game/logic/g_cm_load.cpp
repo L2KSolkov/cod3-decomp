@@ -8073,6 +8073,110 @@ FOUND:
     } while (node != nullptr);
 }
 
+// ============================================================================
+// CM_LinkEntity - ea: 0x60B8E0 (cm_world.cpp)
+// ============================================================================
+// ea: 0x0060B8E0
+void CM_LinkEntity(EntityShared* ent, const float* absmin,
+                   const float* absmax)
+{
+    int contents = ent->contents;
+    if (contents == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 418;
+        AeAssert::gCurrentExpr = "contents";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    float mins[2];
+    float maxs[2];
+    WorldSector* node = &pcm.worldSectorHead;
+    for (;;)
+    {
+        mins[0] = g_bspTree->mins[0];
+        mins[1] = g_bspTree->mins[1];
+        maxs[0] = g_bspTree->maxs[0];
+        maxs[1] = g_bspTree->maxs[1];
+        for (;;)
+        {
+            float dist;
+            int axis;
+            while (1)
+            {
+                if (node == &pcm.dummyNode)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 428;
+                    AeAssert::gCurrentExpr = "node != &pcm.dummyNode";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                dist = node->dist;
+                node->contentsEntities |= contents;
+                axis = node->axis;
+                if (absmin[axis] <= dist)
+                    break;
+                mins[axis] = dist;
+                if (node->child[0] == &pcm.dummyNode)
+                    goto LABEL_21;
+                node = node->child[0];
+            }
+            if (dist <= absmax[axis])
+                break;
+            maxs[axis] = dist;
+            if (node->child[1] == &pcm.dummyNode)
+                goto LABEL_21;
+            node = node->child[1];
+        }
+        if (node == ent->worldSector
+            && (~contents & ent->linkcontents) == 0)
+        {
+            ent->linkcontents = contents;
+            ent->linkmin[0] = absmin[0];
+            ent->linkmin[1] = absmin[1];
+            ent->linkmax[0] = absmax[0];
+            ent->linkmax[1] = absmax[1];
+            return;
+        }
+    LABEL_21:
+        WorldSector* worldSector = ent->worldSector;
+        if (worldSector == nullptr)
+            break;
+        if (node == worldSector && (~contents & ent->linkcontents) == 0)
+            goto LABEL_26;
+        CM_UnlinkEntity(ent);
+    }
+    ent->worldSector = node;
+    ent->nextEntityInWorldSector = node->entities;
+    node->entities = ent;
+LABEL_26:
+    ent->linkcontents = contents;
+    ent->linkmin[0] = absmin[0];
+    ent->linkmin[1] = absmin[1];
+    ent->linkmax[0] = absmax[0];
+    ent->linkmax[1] = absmax[1];
+    CM_SortNode(node, mins, maxs);
+    EntityShared* entities = node->entities;
+    if (entities != nullptr
+        && entities == entities->nextEntityInWorldSector)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 489;
+        AeAssert::gCurrentExpr =
+            "!node || !node->entities || ( node->entities != node->entities->nextEntityInWorldSector )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("cycle in entities list"))
+            __debugbreak();
+    }
+}
+
 // ea: 0x0060AF90
 int CM_UnlinkStaticModels(TPakId pakId, WorldSector* node)
 {
