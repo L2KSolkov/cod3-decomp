@@ -60,6 +60,66 @@ parseInfo_t* Com_EndParseSession()
     return result;
 }
 
+// ============================================================================
+// Com_BeginParseSession / Com_StripFilename / Com_DefaultExtension
+// ea: 0x61FA60 / 0x61FAE0 / 0x61FB30 (q_parse.cpp)
+// ============================================================================
+extern void Q_strncpyz(char* dest, const char* src, int destsize);  // q_shared
+extern void Com_sprintf(char* dest, int size, const char* fmt, ...);  // core
+
+// ea: 0x0061FA60
+void Com_BeginParseSession(const char* filename)
+{
+    int v1 = parseInfoNum;
+    if (parseInfoNum == (ERR_LOCALIZATION | 0x8))
+    {
+        Com_Error(ERR_FATAL, "Com_BeginParseSession: session overflow");
+        v1 = parseInfoNum;
+    }
+    parseInfoNum = v1 + 1;
+    parseInfo_t* v2 = &parseInfo[v1 + 1];
+    v2->lines = 1;
+    v2->spaceDelimited = 1;
+    pi = v2;
+    v2->ungetToken = 0;
+    v2->csv = 0;
+    Q_strncpyz(v2->parseFile, filename, 128);
+}
+
+// ea: 0x0061FAE0
+void Com_StripFilename(const char* in, char* out)
+{
+    Q_strncpyz(out, in, (int)strlen(in));
+    char v2 = *out;
+    char* v3 = out;
+    char* i = out;
+    for (; v2 != 0; ++v3)
+    {
+        if (v2 == '/')
+            i = v3 + 1;
+        v2 = v3[1];
+    }
+    *i = 0;
+}
+
+// ea: 0x0061FB30
+void Com_DefaultExtension(char* path, int maxSize, const char* extension)
+{
+    int v3 = (int)strlen(path);
+    char v4 = path[v3 - 1];
+    char* i = &path[v3 - 1];
+    for (; v4 != '/'; v4 = *--i)
+    {
+        if (i == path)
+            break;
+        if (v4 == '.')
+            return;
+    }
+    char oldPath[128];
+    Q_strncpyz(oldPath, path, 128);
+    Com_sprintf(path, maxSize, "%s%s", oldPath, extension);
+}
+
 // ea: 0x0060FB60
 void Com_ResetParseSessions()
 {
