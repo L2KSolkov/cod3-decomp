@@ -8336,6 +8336,192 @@ int CM_TraceBox(const math::Position3& start, const math::Position3& end,
 }
 
 // ============================================================================
+// filter_proximity_data - ea: 0x61DC00 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x0061DC00
+void filter_proximity_data(const math::Position3& lo,
+                           const math::Position3& hi, int contents,
+                           const proximity_data_t& in,
+                           proximity_data_t& out)
+{
+    out.boxes_count = 0;
+    out.brushes_count = 0;
+    out.polies_count = 0;
+    out.lo.v = lo.v;
+    out.hi.v = hi.v;
+
+    int nbrushes = in.brushes_count;
+    for (int i = 0; i < nbrushes; ++i)
+    {
+        if ((i < 0 || i >= in.brushes_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const proxy_obj_t& slot = in.brushes_slot[i];
+        if (slot.bi >= 99)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank =
+            ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+        unsigned int oi = slot.oi;
+        if (oi >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[oi];
+        if ((obj->cflags & contents) != 0)
+        {
+            math::Position3 bmin;
+            math::Position3 bmax;
+            bmax.v = _mm_add_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            bmin.v = _mm_sub_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            if ((_mm_movemask_ps(_mm_cmplt_ps(
+                     _mm_max_ps(_mm_sub_ps(bmin.v, hi.v),
+                                _mm_sub_ps(lo.v, bmax.v)),
+                     _mm_setzero_ps()))
+                 & 7) == 7)
+            {
+                if (out.brushes_count >= 256
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        44, "m_alloc_count < m_slot_array_size",
+                        "phys_array overflow"))
+                    __debugbreak();
+                out.brushes_slot[out.brushes_count++] = slot;
+            }
+        }
+    }
+
+    int nboxes = in.boxes_count;
+    for (int i = 0; i < nboxes; ++i)
+    {
+        if ((i < 0 || i >= in.boxes_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const proxy_obj_t& slot = in.boxes_slot[i];
+        if (slot.bi >= 99)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank =
+            ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+        unsigned int oi = slot.oi;
+        if (oi >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[oi];
+        if ((obj->cflags & contents) != 0)
+        {
+            math::Position3 bmin;
+            math::Position3 bmax;
+            bmax.v = _mm_add_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            bmin.v = _mm_sub_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            if ((_mm_movemask_ps(_mm_cmplt_ps(
+                     _mm_max_ps(_mm_sub_ps(bmin.v, hi.v),
+                                _mm_sub_ps(lo.v, bmax.v)),
+                     _mm_setzero_ps()))
+                 & 7) == 7)
+            {
+                if (out.boxes_count >= 256
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        44, "m_alloc_count < m_slot_array_size",
+                        "phys_array overflow"))
+                    __debugbreak();
+                out.boxes_slot[out.boxes_count++] = slot;
+            }
+        }
+    }
+
+    int npolies = in.polies_count;
+    for (int i = 0; i < npolies; ++i)
+    {
+        if ((i < 0 || i >= in.polies_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const bounded_proxy_obj_t& slot = in.polies_slot[i];
+        if ((slot.cflags & contents) != 0)
+        {
+            math::Position3 bmin;
+            math::Position3 bmax;
+            bmin.v = _mm_setr_ps(slot.min[0], slot.min[1], slot.min[2],
+                                 0.0f);
+            bmax.v = _mm_setr_ps(slot.max[0], slot.max[1], slot.max[2],
+                                 0.0f);
+            if ((_mm_movemask_ps(_mm_cmplt_ps(
+                     _mm_max_ps(_mm_sub_ps(bmin.v, hi.v),
+                                _mm_sub_ps(lo.v, bmax.v)),
+                     _mm_setzero_ps()))
+                 & 7) == 7)
+            {
+                if (out.polies_count >= 128
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        44, "m_alloc_count < m_slot_array_size",
+                        "phys_array overflow"))
+                    __debugbreak();
+                out.polies_slot[out.polies_count++] = slot;
+            }
+        }
+    }
+}
+
+// ============================================================================
 // CM_ClipMoveToEntities - ea: 0x60BF60 (cm_world.cpp)
 // ============================================================================
 // ea: 0x0060BF60
