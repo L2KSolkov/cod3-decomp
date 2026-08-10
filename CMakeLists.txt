@@ -306,6 +306,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_comparse.cpp
     src/game/logic/g_entity_misc.cpp
     src/game/logic/g_winding.cpp
+    src/game/logic/g_cm_load.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)
