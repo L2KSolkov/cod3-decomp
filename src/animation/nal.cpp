@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include "core/math_types.h"
+#include "core/tlFixedString.h"
 
 // ============================================================================
 // Forward types (defined below)
@@ -50,6 +51,17 @@ struct nalMatrix4x4 {
     float m[4][4];
 };
 
+// nalGenericBoneHandle - bone reference (index + skeleton)
+struct nalGenericBoneHandle {
+    unsigned index;
+};
+
+// BoneName cache (game2.o data, F052F8..; 16 entries of tlFixedString)
+extern tlFixedString boneName[8];   // ?boneName@@3?AV?$tlFixedString@...@@A (game2.o)
+extern tlFixedString nalBoneNames[4][4];  // game2.o (joints: gun/hand/feet)
+extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
+    void* pose, const nalGenericBoneHandle* handle);  // ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z
+
 class nalAnimCache {
 public:
     void Release() {}
@@ -59,13 +71,6 @@ public:
     nalObject* MemAlloc(unsigned, unsigned) { return nullptr; }
     nalObject* Allocate(const nalCachedPoseInfo&, int, int, nalObject**) { return nullptr; }
     void IncreaseLOD(nalObject*, const nalCachedPoseInfo&, int, int) {}
-};
-
-// ============================================================================
-// nalGenericBoneHandle — bone reference
-// ============================================================================
-struct nalGenericBoneHandle {
-    unsigned index;
 };
 
 // ============================================================================
