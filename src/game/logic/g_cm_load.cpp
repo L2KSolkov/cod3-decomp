@@ -3113,6 +3113,113 @@ void CM_PointTraceToEntities(pointtrace_t* clip,
 }
 
 // ============================================================================
+// CM_PointSightTraceToEntities - ea: 0x622AB0 / _r: 0x622820 (cm_world.cpp)
+// ============================================================================
+extern int SV_PointSightTraceToEntity(sightpointtrace_t* clip,
+                                      EntityShared* check);  // sv.o 0x5225B0
+
+// ea: 0x00622820
+int CM_PointSightTraceToEntities_r(sightpointtrace_t* clip,
+                                   WorldSector* node, float p1f, float p2f,
+                                   const math::Position3* p1,
+                                   const math::Position3* p2,
+                                   collision_context_t* context)
+{
+    if ((clip->contentmask & node->contentsEntities) == 0)
+        return 0;
+    int axis = node->axis;
+    float v9 = p1->v.m128_f32[axis] - node->dist;
+    float v10 = p2->v.m128_f32[axis] - node->dist;
+    float v18 = v9;
+    int result;
+    if (v9 >= 0.0f && v10 >= 0.0f)
+    {
+        result = CM_PointSightTraceToEntities_r(clip,
+                                                (WorldSector*)node->child[0],
+                                                p1f, p2f, p1, p2, context);
+        if (result != 0)
+            return result;
+        goto process;
+    }
+    if (v9 <= 0.0f && v10 <= 0.0f)
+    {
+        result = CM_PointSightTraceToEntities_r(clip,
+                                                (WorldSector*)node->child[1],
+                                                p1f, p2f, p1, p2, context);
+        if (result != 0)
+            return result;
+        goto process;
+    }
+    float frac = v9 / (v9 - v10);
+    if (frac < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 1515;
+        AeAssert::gCurrentExpr = "frac >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        v9 = v18;
+    }
+    if (frac > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 1516;
+        AeAssert::gCurrentExpr = "frac <= 1.f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        v9 = v18;
+    }
+    float midF = (p2f - p1f) * frac + p1f;
+    math::Position3 mid;
+    mid.v = _mm_add_ps(p1->v, _mm_mul_ps(_mm_sub_ps(p2->v, p1->v),
+                                         _mm_set1_ps(frac)));
+    int side = v9 < 0.0f;
+    result = CM_PointSightTraceToEntities_r(clip,
+                                            (WorldSector*)node->child[side],
+                                            p1f, midF, p1, &mid, context);
+    if (result != 0)
+        return result;
+    result = CM_PointSightTraceToEntities_r(
+        clip, (WorldSector*)node->child[1 - side], midF, p2f, &mid, p2,
+        context);
+    if (result != 0)
+        return result;
+process:
+    EntityShared* entities = (EntityShared*)node->entities;
+    math::Position3 lo;
+    math::Position3 hi;
+    lo.v = _mm_min_ps(clip->start.v, clip->end.v);
+    hi.v = _mm_max_ps(clip->start.v, clip->end.v);
+    if (entities == nullptr)
+        return 0;
+    do
+    {
+        if (intersect_segment_aabb(clip->start, clip->end, lo, hi,
+                                   entities->absmin, entities->absmax)
+            && !context->__vftable->filter(
+                context, (Entity*)((char*)entities - 0xE0)))
+        {
+            result = SV_PointSightTraceToEntity(clip, entities);
+            if (result != 0)
+                return result;
+        }
+        entities = entities->nextEntityInWorldSector;
+    } while (entities != nullptr);
+    return 0;
+}
+
+// ea: 0x00622AB0
+int CM_PointSightTraceToEntities(sightpointtrace_t* clip,
+                                 const collision_context_t& context)
+{
+    return CM_PointSightTraceToEntities_r(
+        clip, &pcm.worldSectorHead, 0.0f, 1.0f, &clip->start, &clip->end,
+        (collision_context_t*)&context);
+}
+
+// ============================================================================
 // CM_PointTraceStaticModels - ea: 0x6223E0 / _r: 0x619FE0 (cm_world.cpp)
 // ============================================================================
 struct locTraceWork_t {

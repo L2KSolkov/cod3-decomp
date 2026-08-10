@@ -2601,6 +2601,8 @@ void CM_PointTraceToEntities(pointtrace_t* clip,
                              const TouchEntityData& entities);  // game.o 0x633230
 void CM_PointTraceToEntities(pointtrace_t* clip,
                              const collision_context_t& context);  // game.o 0x622790
+int CM_PointSightTraceToEntities(sightpointtrace_t* clip,
+                                 const collision_context_t& context);  // game.o 0x622AB0
 bool intersect_segment_aabb(const math::Position3& p0,
                             const math::Position3& p1,
                             const math::Position3& lo,
