@@ -88,7 +88,8 @@ struct RemainingTime {
 
 class CurveManager {
 public:
-    virtual ~CurveManager();  // vtable placeholder
+    CurveManager();            // ??0CurveManager@@QAE@XZ (game.o 0x638160)
+    virtual ~CurveManager();   // ??1CurveManager@@AAE@XZ (game.o 0x61F780)
     RemainingTime mRemainingTime[50];  // +0x04 (0x0C stride)
     struct CurveDList {
         int  m_size;  // +0x00
@@ -99,6 +100,7 @@ public:
     CurveDList mCurveList;           // +0x25C
     CurveDList mKeyEvaluators;       // +0x26C
     CurveDList mConditionEvaluators; // +0x27C
+    static CurveManager* sInst;      // ?sInst@CurveManager@@2PAV1@A @ 0xF4F430
     void Initialize();       // ?Initialize@CurveManager@@UAEXXZ
     void CleanUp();          // ?CleanUp@CurveManager@@UAEXXZ
     void DetachCurve(Curve* curve);  // ?DetachCurve@CurveManager@@QAEXPAVCurve@@@Z
@@ -113,7 +115,18 @@ public:
                                                 unsigned int));  // ?AddConditionFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z (game.o 0x629830)
     unsigned int UInt32Lookup(unsigned char* data, unsigned int key,
                               unsigned int _default);  // ?UInt32Lookup@CurveManager@@AAEIPAEII@Z
+    float EvaluateKey(unsigned int frameId, unsigned int entityHandleVal,
+                      unsigned int type, unsigned int trackId,
+                      float _default);  // ?EvaluateKey@CurveManager@@IAEMIIIIM@Z (game.o 0x6385E0)
+    float EvaluateCondition(unsigned int frameId, unsigned int entityHandleVal,
+                            unsigned int type, float min, float max,
+                            unsigned int trackId,
+                            float _default);  // ?EvaluateCondition@CurveManager@@IAEMIIIMMIM@Z (game.o 0x638650)
+    void PostEvent(unsigned int entityHandle, unsigned int hash,
+                   float value);  // ?PostEvent@CurveManager@@QAEXIIM@Z (game.o 0x6386C0)
+    void ClearEntities();  // ?ClearEntities@CurveManager@@QAEXXZ (game.o 0x6466A0)
 };
+CurveManager* CurveManager::sInst = nullptr;
 
 // ea: 0x0060F1B0
 void CurveManager::Initialize()
@@ -155,20 +168,34 @@ PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
 
 struct Curve {
     CurveNode m_dlist_node;             // +0x00
+    float mCurveParams[19];             // +0x08..+0x54 (15 zeroed by ctor)
+    unsigned int mEntityHandle;         // +0x54
+    unsigned char* mCurveData;          // +0x58
     struct EffectList {
-        int        m_size;  // +0x00
-        CurveNode* m_end;   // +0x04
-        CurveNode* m_head;  // +0x08
-        CurveNode** m_tail; // +0x0C
-    } mEffectList;                      // +0x08
-    float mTargetSpeed;                 // +0x18
-    float mCurrentSmoothing;            // +0x1C
-    float mCurrentSmoothingVelocity;    // +0x20
-    float mLastSuspensionTravelKey[6];  // +0x24
-    float mLastSuspensionTravelCond[6]; // +0x3C
+        int         m_size;  // +0x00
+        void*       m_end;   // +0x04
+        void*       m_head;  // +0x08
+        void**      m_tail;  // +0x0C
+    } mEffectList;                      // +0x5C
+    static PoolAllocator* sAllocator;   // ?sAllocator@Curve@@2PAVPoolAllocator@@A @ 0xF4EC24
 
-    Curve();  // ??0Curve@@QAE@XZ (game.o 0x6298A0)
+    Curve();   // ??0Curve@@QAE@XZ (game.o 0x6298A0)
+    ~Curve();  // ??1Curve@@QAE@XZ (game.o 0x662A00)
 };
+static_assert(sizeof(Curve) == 0x6C, "Curve size mismatch");
+PoolAllocator* Curve::sAllocator = nullptr;
+
+struct CurveEffectListElem {
+    CurveNode    m_dlist_node;   // +0x00
+    int          mInUse;         // +0x08
+    unsigned int mOwner;         // +0x0C
+    Handle       mSound;         // +0x10
+    float        mEffectParams[2];  // +0x14
+    static PoolAllocator* sAllocator;  // ?sAllocator@CurveEffectListElem@@2PAVPoolAllocator@@A @ 0xF4EC2C
+};
+static_assert(sizeof(CurveEffectListElem) == 0x1C,
+              "CurveEffectListElem size mismatch");
+PoolAllocator* CurveEffectListElem::sAllocator = nullptr;
 
 // ea: 0x00629780
 void CurveManager::AttachCurve(Curve* curve)
@@ -236,6 +263,226 @@ void CurveManager::AddConditionFunc(
     }
 }
 
+// Curve evaluator statics (CurveManager.cpp; file-static Eval* helpers)
+extern unsigned int AeHash(const char* str);  // ae_hash.cpp
+typedef float (__cdecl* CurveEvalFn)(unsigned int, unsigned int,
+                                     unsigned int, float, float,
+                                     unsigned int);
+extern float EvalVelocity(unsigned int, unsigned int, unsigned int, float,
+                          float, unsigned int);         // @ 0x637CD0
+extern float EvalRandom(unsigned int, unsigned int, unsigned int, float,
+                        float, unsigned int);           // @ 0x60F180
+extern float EvalSpringCompressionKey(unsigned int, unsigned int,
+                                      unsigned int, float, float,
+                                      unsigned int);    // @ 0x637AB0
+extern float EvalTime(unsigned int, unsigned int, unsigned int, float,
+                      float, unsigned int);             // @ 0x6379A0
+extern float EvalImpact(unsigned int, unsigned int, unsigned int, float,
+                        float, unsigned int);           // @ 0x637A30
+extern float EvalRepeatInterval(unsigned int, unsigned int, unsigned int,
+                                float, float, unsigned int);  // @ 0x60EEF0
+extern float EvalSurface(unsigned int, unsigned int, unsigned int, float,
+                         float, unsigned int);          // @ 0x637B90
+extern float EvalSpringCompressionCond(unsigned int, unsigned int,
+                                       unsigned int, float, float,
+                                       unsigned int);   // @ 0x637B20
+extern float EvalThrottle(unsigned int, unsigned int, unsigned int, float,
+                          float, unsigned int);         // @ 0x637F60
+extern float EvalThrottleChange(unsigned int, unsigned int, unsigned int,
+                                float, float, unsigned int);  // @ 0x637E50
+extern float EvalBrake(unsigned int, unsigned int, unsigned int, float,
+                       float, unsigned int);            // @ 0x60F1A0
+extern float EvalDriver(unsigned int, unsigned int, unsigned int, float,
+                        float, unsigned int);           // @ 0x638030
+extern float EvalPlayer(unsigned int, unsigned int, unsigned int, float,
+                        float, unsigned int);           // @ 0x6380C0
+extern float EvalHealth(unsigned int, unsigned int, unsigned int, float,
+                        float, unsigned int);           // @ 0x637FD0
+extern void DebugCurveRender();                         // game.o 0x60EEE0
+extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
+extern void* DebugRender_sInst;   // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+extern unsigned int s_ImpactMessage_0;  // @ 0xF50CC0
+extern void reserved_dlist_CurveEffectListElem_delete_all(
+    void* self);  // ?delete_all@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ @ 0x4284BC
+
+// ea: 0x00638160
+CurveManager::CurveManager()
+{
+    this->mCurveList.m_size = 0;
+    this->mCurveList.m_end = nullptr;
+    this->mCurveList.m_head = &this->mCurveList.m_end;
+    this->mCurveList.m_tail = &this->mCurveList.m_head;
+    this->mKeyEvaluators.m_size = 0;
+    this->mKeyEvaluators.m_end = nullptr;
+    this->mKeyEvaluators.m_head = &this->mKeyEvaluators.m_end;
+    this->mKeyEvaluators.m_tail = &this->mKeyEvaluators.m_head;
+    this->mConditionEvaluators.m_size = 0;
+    this->mConditionEvaluators.m_end = nullptr;
+    this->mConditionEvaluators.m_head = &this->mConditionEvaluators.m_end;
+    this->mConditionEvaluators.m_tail = &this->mConditionEvaluators.m_head;
+    this->AddKeyFunc(AeHash("VELOCITY"), EvalVelocity);
+    this->AddKeyFunc(AeHash("RANDOM"), EvalRandom);
+    this->AddKeyFunc(AeHash("SPRING_COMPRESSION"),
+                     EvalSpringCompressionKey);
+    this->AddKeyFunc(AeHash("TIME"), EvalTime);
+    this->AddKeyFunc(AeHash("IMPACT"), EvalImpact);
+    this->AddConditionFunc(AeHash("REPEAT_INTERVAL"), EvalRepeatInterval);
+    this->AddConditionFunc(AeHash("NONE"), EvalSurface);
+    this->AddConditionFunc(AeHash("ASPHALT"), EvalSurface);
+    this->AddConditionFunc(AeHash("BARK"), EvalSurface);
+    this->AddConditionFunc(AeHash("BRICK"), EvalSurface);
+    this->AddConditionFunc(AeHash("CARPET"), EvalSurface);
+    this->AddConditionFunc(AeHash("CLOTH"), EvalSurface);
+    this->AddConditionFunc(AeHash("CONCRETE"), EvalSurface);
+    this->AddConditionFunc(AeHash("DIRT"), EvalSurface);
+    this->AddConditionFunc(AeHash("FLESH"), EvalSurface);
+    this->AddConditionFunc(AeHash("FOLIAGE"), EvalSurface);
+    this->AddConditionFunc(AeHash("GLASS"), EvalSurface);
+    this->AddConditionFunc(AeHash("GRASS"), EvalSurface);
+    this->AddConditionFunc(AeHash("GRAVEL"), EvalSurface);
+    this->AddConditionFunc(AeHash("ICE"), EvalSurface);
+    this->AddConditionFunc(AeHash("METAL"), EvalSurface);
+    this->AddConditionFunc(AeHash("MUD"), EvalSurface);
+    this->AddConditionFunc(AeHash("PAPER"), EvalSurface);
+    this->AddConditionFunc(AeHash("PLASTER"), EvalSurface);
+    this->AddConditionFunc(AeHash("ROCK"), EvalSurface);
+    this->AddConditionFunc(AeHash("SAND"), EvalSurface);
+    this->AddConditionFunc(AeHash("SNOW"), EvalSurface);
+    this->AddConditionFunc(AeHash("WATER"), EvalSurface);
+    this->AddConditionFunc(AeHash("WOOD"), EvalSurface);
+    this->AddConditionFunc(AeHash("SPRING_COMPRESSION"),
+                           EvalSpringCompressionCond);
+    this->AddConditionFunc(AeHash("VELOCITY"), EvalVelocity);
+    this->AddConditionFunc(AeHash("THROTTLE"), EvalThrottle);
+    this->AddConditionFunc(AeHash("THROTTLE_CHANGE"), EvalThrottleChange);
+    this->AddConditionFunc(AeHash("IMPACT"), EvalImpact);
+    this->AddConditionFunc(AeHash("BRAKE"), EvalBrake);
+    this->AddConditionFunc(AeHash("DRIVER"), EvalDriver);
+    this->AddConditionFunc(AeHash("PLAYER"), EvalPlayer);
+    this->AddConditionFunc(AeHash("HEALTH"), EvalHealth);
+    DebugRender_AddRenderer(&DebugRender_sInst, DebugCurveRender);
+    RemainingTime* p = this->mRemainingTime;
+    for (int i = 50; i != 0; --i)
+    {
+        p->mTrackId = 0;
+        p->mEntityId = 0;
+        p->mRemainingTime = 0.0f;
+        ++p;
+    }
+}
+
+// ea: 0x0061F780
+CurveManager::~CurveManager()
+{
+}
+
+// ea: 0x006385E0
+float CurveManager::EvaluateKey(unsigned int frameId,
+                                unsigned int entityHandleVal,
+                                unsigned int type, unsigned int trackId,
+                                float _default)
+{
+    CurveEvalFunc* m_head =
+        (CurveEvalFunc*)this->mKeyEvaluators.m_head;
+    CurveEvalFunc* m_next =
+        m_head != nullptr ? (CurveEvalFunc*)m_head->m_next : nullptr;
+    if (m_head
+            == (CurveEvalFunc*)&this->mKeyEvaluators.m_end
+        || m_next == nullptr)
+        return _default;
+    while (type != m_head->mType || m_head->mFunc == nullptr)
+    {
+        m_head = m_next;
+        m_next = (CurveEvalFunc*)m_next->m_next;
+        if (m_next == nullptr)
+            return _default;
+    }
+    return m_head->mFunc(frameId, entityHandleVal, type, 0, 1.0f, trackId);
+}
+
+// ea: 0x00638650
+float CurveManager::EvaluateCondition(unsigned int frameId,
+                                      unsigned int entityHandleVal,
+                                      unsigned int type, float min,
+                                      float max, unsigned int trackId,
+                                      float _default)
+{
+    CurveEvalFunc* m_head =
+        (CurveEvalFunc*)this->mConditionEvaluators.m_head;
+    CurveEvalFunc* m_next =
+        m_head != nullptr ? (CurveEvalFunc*)m_head->m_next : nullptr;
+    if (m_head
+            == (CurveEvalFunc*)&this->mConditionEvaluators.m_end
+        || m_next == nullptr)
+        return _default;
+    while (type != m_head->mType || m_head->mFunc == nullptr)
+    {
+        m_head = m_next;
+        m_next = (CurveEvalFunc*)m_next->m_next;
+        if (m_next == nullptr)
+            return _default;
+    }
+    return m_head->mFunc(frameId, entityHandleVal, type, min, max, trackId);
+}
+
+// ea: 0x006386C0
+void CurveManager::PostEvent(unsigned int entityHandle, unsigned int hash,
+                             float value)
+{
+    CurveNode* m_head = (CurveNode*)this->mCurveList.m_head;
+    CurveNode* m_next =
+        m_head != nullptr ? (CurveNode*)m_head->m_next : nullptr;
+    if (m_head != (CurveNode*)&this->mCurveList.m_end
+        && m_next != nullptr)
+    {
+        unsigned int v6 = s_ImpactMessage_0;
+        do
+        {
+            Curve* curve = (Curve*)m_head;
+            if (m_head != nullptr
+                && curve->mEntityHandle == entityHandle
+                && hash == v6)
+                curve->mCurveParams[17] = value;  // +0x4C
+            m_head = m_next;
+            m_next = m_next->m_next;
+        } while (m_next != nullptr);
+    }
+}
+
+// ea: 0x006466A0
+void CurveManager::ClearEntities()
+{
+    CurveNode* node = (CurveNode*)this->mCurveList.m_head;
+    CurveNode* m_end = (CurveNode*)&this->mCurveList.m_end;
+    CurveNode* m_next =
+        node != nullptr ? (CurveNode*)node->m_next : nullptr;
+    if (node == m_end)
+    {
+        m_next = nullptr;
+        node = nullptr;
+    }
+    while (m_next != nullptr)
+    {
+        Curve* curve = (Curve*)node;
+        curve->~Curve();
+        Curve::sAllocator->Release(curve);
+        node = m_next;
+        m_next = m_next->m_next;
+    }
+    this->mCurveList.m_head = m_end;
+    this->mCurveList.m_tail = &this->mCurveList.m_head;
+    this->mCurveList.m_size = 0;
+}
+
+// ea: 0x00662A00
+Curve::~Curve()
+{
+    reserved_dlist_CurveEffectListElem_delete_all(&this->mEffectList);
+    this->mEffectList.m_size = 0;
+    this->mEffectList.m_head = &this->mEffectList.m_end;
+    this->mEffectList.m_tail = &this->mEffectList.m_head;
+}
+
 // ea: 0x006298A0
 Curve::Curve()
 {
@@ -243,16 +490,101 @@ Curve::Curve()
     this->m_dlist_node.m_prev = nullptr;
     this->mEffectList.m_size = 0;
     this->mEffectList.m_end = nullptr;
-    this->mEffectList.m_head = (CurveNode*)&this->mEffectList.m_end;
+    this->mEffectList.m_head = &this->mEffectList.m_end;
     this->mEffectList.m_tail = &this->mEffectList.m_head;
-    this->mTargetSpeed = 0.0f;
-    this->mCurrentSmoothing = 0.0f;
-    this->mCurrentSmoothingVelocity = 0.0f;
-    for (int i = 0; i < 6; ++i)
+    for (int i = 0; i < 15; ++i)
+        this->mCurveParams[i] = 0.0f;
+}
+
+// ============================================================================
+// Curve attach/detach - ea: 0x642010..0x6465B0 (CurveManager.cpp)
+// ============================================================================
+extern unsigned char* BinFileManager_Find(void* self,
+                                          const char* name);  // ?Find@BinFileManager@@QAEPAEPBD@Z
+extern void* BinFileManager_sInst;  // ?sInst@BinFileManager@@2PAV1@A @ 0xF4EC18
+extern void* EntityHandleDb_GetObject(unsigned int val);  // game.o
+
+// ea: 0x00642010
+bool AttachCurveVehicle(unsigned int entityHandleVal, char* filename,
+                        float topSpeed, float topSpeedReverse)
+{
+    unsigned char* v2 =
+        BinFileManager_Find(BinFileManager_sInst, filename);
+    Entity* mObject = (Entity*)EntityHandleDb_GetObject(entityHandleVal);
+    if (v2 == nullptr)
+        return false;
+    if (mObject == nullptr)
+        return false;
+    if (mObject->curve != nullptr)
+        return false;
+    Curve* v5 =
+        (Curve*)Curve::sAllocator->Allocate(0x6C, false);
+    if (v5 == nullptr)
+        return false;
+    Curve* v6 = new (v5) Curve();
+    Curve* v7 = v6;
+    if (v6 == nullptr)
+        return false;
+    mObject->curve = v6;
+    v6->mEntityHandle = entityHandleVal;
+    v6->mCurveData = v2;
+    reserved_dlist_CurveEffectListElem_delete_all(&v6->mEffectList);
+    CurveManager::sInst->AttachCurve(v7);
+    scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
+    if (scr_vehicle != nullptr)
     {
-        this->mLastSuspensionTravelKey[i] = 0.0f;
-        this->mLastSuspensionTravelCond[i] = 0.0f;
+        vehicle_info_t* v9 = s_vehicleInfos[scr_vehicle->infoIdx];
+        if (v9 != nullptr)
+        {
+            if (*(float*)((char*)v9 + 0x1F4) <= 0.0f)
+                *(float*)((char*)v9 + 0x1F4) = 400.0f;
+            if (*(float*)((char*)v9 + 0x1F8) >= 0.0f)
+                *(float*)((char*)v9 + 0x1F4) = -400.0f;
+        }
     }
+    return true;
+}
+
+// ea: 0x00642120
+bool AttachCurveEntity(unsigned int entityHandleVal, char* filename)
+{
+    unsigned char* v2 =
+        BinFileManager_Find(BinFileManager_sInst, filename);
+    Entity* mObject = (Entity*)EntityHandleDb_GetObject(entityHandleVal);
+    if (v2 == nullptr)
+        return false;
+    if (mObject == nullptr)
+        return false;
+    if (mObject->curve != nullptr)
+        return false;
+    Curve* v5 =
+        (Curve*)Curve::sAllocator->Allocate(0x6C, false);
+    if (v5 == nullptr)
+        return false;
+    Curve* v6 = new (v5) Curve();
+    Curve* v7 = v6;
+    if (v6 == nullptr)
+        return false;
+    mObject->curve = v6;
+    v6->mEntityHandle = entityHandleVal;
+    v6->mCurveData = v2;
+    reserved_dlist_CurveEffectListElem_delete_all(&v6->mEffectList);
+    CurveManager::sInst->AttachCurve(v7);
+    return true;
+}
+
+// ea: 0x006465B0
+bool DetachCurveEntity(unsigned int entityHandleVal)
+{
+    Entity* mObject = (Entity*)EntityHandleDb_GetObject(entityHandleVal);
+    if (mObject == nullptr)
+        return false;
+    Curve* curve = mObject->curve;
+    if (curve == nullptr)
+        return false;
+    curve->~Curve();
+    Curve::sAllocator->Release(curve);
+    return true;
 }
 
 // ea: 0x0060F200

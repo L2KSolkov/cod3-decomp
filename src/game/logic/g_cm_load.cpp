@@ -1219,6 +1219,12 @@ public:
 };
 BinFileManager* BinFileManager::sInst = nullptr;
 
+// C-style bridge for cross-TU callers (g_cmd / g_scr_vehicle)
+unsigned char* BinFileManager_Find(void* self, const char* name)
+{
+    return ((BinFileManager*)self)->Find(name);
+}
+
 // ea: 0x00608ED0
 BinFileManager::BinFileManager()
 {
