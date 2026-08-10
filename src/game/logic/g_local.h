@@ -2661,6 +2661,8 @@ bool collide_sphere_triangle(const math::Position3& sphere_center,
 void collide_sphere(const math::Position3& sphere_center, float sphere_radius,
                     math::Position3* hitp, math::Dir3* hitn,
                     int* hitc);  // game.o 0x628EB0
+bool collide_ray(const math::Position3& p0, const math::Dir3& u0,
+                 math::Dir3* normal, float* t_);  // game.o 0x628AC0
 struct traceWork_t;
 void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
                     const math::Position3& bmax, const cdlPlane* sides,

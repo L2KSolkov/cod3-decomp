@@ -2980,6 +2980,102 @@ void collide_sphere(const math::Position3& sphere_center, float sphere_radius,
 }
 
 // ============================================================================
+// collide_ray - ea: 0x628AC0 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x00628AC0
+bool collide_ray(const math::Position3& p0, const math::Dir3& u0,
+                 math::Dir3* normal, float* t_)
+{
+    cmgr_mem_ctx_t ctx;
+    math::Position3* cg_verts = alloc_verts();
+
+    math::Position3 p1;
+    p1.v = _mm_add_ps(p0.v, u0.v);
+    math::Position3 lo;
+    math::Position3 hi;
+    lo.v = _mm_min_ps(p0.v, p1.v);
+    hi.v = _mm_max_ps(p0.v, p1.v);
+    *t_ = 1.0f;
+    bool hit = false;
+
+    CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
+    for (int bi = 0; bi < mgr->mCount; ++bi)
+    {
+        if (bi > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank = mgr->mBankArray[bi];
+        if ((_mm_movemask_ps(_mm_cmplt_ps(
+                 _mm_max_ps(_mm_sub_ps(bank->min.v, hi.v),
+                            _mm_sub_ps(lo.v, bank->max.v)),
+                 _mm_setzero_ps()))
+             & 7) != 7)
+            continue;
+
+        rtree_visitor_t visitor(bank);
+        traverse_rtree(lo, hi, bank->rtree_root, visitor);
+        visitor.filter_objects(-1);
+
+        int npatches = visitor.patches_m_alloc_count;
+        for (int i = 0; i < npatches; ++i)
+        {
+            if ((i < 0 || i >= visitor.patches_m_alloc_count)
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                    108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            unsigned int index = visitor.patches_m_slot_array[i];
+            unsigned int pi = index - (unsigned int)bank->nboxes
+                - (unsigned int)bank->nbrushes;
+            unpack(bank, pi, cg_verts);
+            if (pi >= (unsigned int)bank->patches.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            cdl_patch_t* patch =
+                &((cdl_patch_t*)bank->patches.m_elements)[pi];
+            unsigned int first_index = (unsigned int)patch->first_index;
+            if (first_index >= (unsigned int)bank->patch_inds.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            const unsigned char* pvi =
+                &((const unsigned char*)bank->patch_inds.m_elements)
+                    [first_index];
+            unsigned int num_inds = (unsigned int)patch->num_inds;
+            if (num_inds == 0)
+                continue;
+            for (unsigned int k = 0; 3 * k < num_inds; ++k)
+            {
+                math::Position3 v0 = cg_verts[pvi[3 * k + 0]];
+                math::Position3 v1 = cg_verts[pvi[3 * k + 1]];
+                math::Position3 v2 = cg_verts[pvi[3 * k + 2]];
+                math::Vector4 plane = calc_normal(v0, v1, v2);
+                __m128 v32 = _mm_mul_ps(plane.v, u0.v);
+                float ndot =
+                    v32.m128_f32[0]
+                    + (v32.m128_f32[1] + v32.m128_f32[2]);
+                if (ndot < 0.0f
+                    && collide_ray_triangle(p0, u0, v0, v1, v2, *t_, t_))
+                {
+                    normal->v = plane.v;
+                    hit = true;
+                }
+            }
+        }
+    }
+    return hit;
+}
+
+// ============================================================================
 // TestInLeaf / SightTraceThroughLeaf - ea: 0x623D40 / 0x624070
 // (CollisionMgr.cpp DCGSet leaf sweep)
 // ============================================================================
