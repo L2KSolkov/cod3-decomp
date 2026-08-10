@@ -27,6 +27,7 @@ extern unsigned int BrocSys_GetEnt(const Broc::string& value, int fieldnameHash,
 extern void BrocSys_ShellShock(unsigned int entityHandleVal,
                                const Broc::string& shock, float fVal);
 extern Entity* _Return_MF_UnderCrossHair();                 // ?_Return_MF_UnderCrossHair
+extern int g_requiredIndex;   // ?g_requiredIndex@@3HA (game2.o)
 
 namespace AeAssert {
 extern bool IsIgnored();
@@ -300,5 +301,130 @@ void FN_DebugThread_Select_Target()
     {
         g_debugThread.m_active = 0;
         G_Printf("^5Cant find Entity\n");
+    }
+}
+
+// ea: 0x503840
+void FN_DebugThread_Select_Nearest()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    float vPlayerPos[3];
+    Sentient_GetOrigin(Player->sentient, vPlayerPos);
+    Entity* pClosest = nullptr;
+    float bestDist = 1000000000.0f;
+    for (unsigned int idx = 0; idx < 0x540; ++idx)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[idx].mObject;
+        if (mObject == nullptr)
+            continue;
+        if (mObject == Player || mObject->sentient == nullptr)
+            continue;
+        float dx = mObject->r.currentOrigin.v.m128_f32[0] - vPlayerPos[0];
+        float dy = mObject->r.currentOrigin.v.m128_f32[1] - vPlayerPos[1];
+        float dz = mObject->r.currentOrigin.v.m128_f32[2] - vPlayerPos[2];
+        float distSq = dx * dx + dy * dy + dz * dz;
+        if (bestDist > distSq)
+        {
+            pClosest = mObject;
+            bestDist = distSq;
+        }
+    }
+    if (pClosest != nullptr)
+    {
+        g_debugThread.m_entityHandle.mHandle.mVal =
+            pClosest->mHandle.mHandle.mVal;
+        g_debugThread.m_active = 1;
+        Broc::entity ent{g_debugThread.m_entityHandle.mHandle.mVal};
+        gpBrocAPI->mBrocExports.mAnimDebug(ent);
+    }
+}
+
+// ea: 0x5039E0
+void FN_DebugThread_Select_Nearest_Vehicle()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    float vPlayerPos[3];
+    Sentient_GetOrigin(Player->sentient, vPlayerPos);
+    Entity* v2 = nullptr;
+    float bestDist = 1000000000.0f;
+    for (unsigned int idx = 0; idx < 0x540; ++idx)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[idx].mObject;
+        if (mObject == nullptr)
+            continue;
+        if (mObject->s.eType != 14)
+            continue;
+        float dx = mObject->r.currentOrigin.v.m128_f32[0] - vPlayerPos[0];
+        float dy = mObject->r.currentOrigin.v.m128_f32[1] - vPlayerPos[1];
+        float dz = mObject->r.currentOrigin.v.m128_f32[2] - vPlayerPos[2];
+        float distSq = dx * dx + dy * dy + dz * dz;
+        if (bestDist > distSq)
+        {
+            v2 = mObject;
+            bestDist = distSq;
+        }
+    }
+    if (v2 != nullptr)
+    {
+        g_debugThread.m_entityHandle.mHandle.mVal = v2->mHandle.mHandle.mVal;
+        g_debugThread.m_active = 1;
+        Broc::entity ent{g_debugThread.m_entityHandle.mHandle.mVal};
+        gpBrocAPI->mBrocExports.mAnimDebug(ent);
+    }
+}
+
+// ea: 0x503B70
+void FN_DebugThread_Select_Nearest_Trigger()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    float vPlayerPos[3];
+    Sentient_GetOrigin(Player->sentient, vPlayerPos);
+    Entity* v2 = nullptr;
+    float bestDist = 1000000000.0f;
+    unsigned int triggerHash = HashString::CalcHash("trigger_multiple");
+    for (unsigned int idx = 0; idx < 0x540; ++idx)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[idx].mObject;
+        if (mObject == nullptr)
+            continue;
+        if (mObject->mClassNameHash.mHash != triggerHash)
+            continue;
+        float dx = mObject->r.currentOrigin.v.m128_f32[0] - vPlayerPos[0];
+        float dy = mObject->r.currentOrigin.v.m128_f32[1] - vPlayerPos[1];
+        float dz = mObject->r.currentOrigin.v.m128_f32[2] - vPlayerPos[2];
+        float distSq = dx * dx + dy * dy + dz * dz;
+        if (bestDist > distSq
+            && g_debugThread.m_entityHandle.mHandle.mVal
+                   != mObject->mHandle.mHandle.mVal)
+        {
+            v2 = mObject;
+            bestDist = distSq;
+        }
+    }
+    if (v2 != nullptr)
+    {
+        g_debugThread.m_entityHandle.mHandle.mVal = v2->mHandle.mHandle.mVal;
+        g_debugThread.m_active = 1;
+        Broc::entity ent{g_debugThread.m_entityHandle.mHandle.mVal};
+        gpBrocAPI->mBrocExports.mAnimDebug(ent);
+    }
+}
+
+// ea: 0x503D20
+void FN_DebugThread_Select_UniqueIndex()
+{
+    for (unsigned int idx = 0; idx < 0x540; ++idx)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[idx].mObject;
+        if (mObject == nullptr)
+            continue;
+        if (mObject->uniqueIndex != g_requiredIndex)
+            continue;
+        g_debugThread.m_entityHandle.mHandle.mVal =
+            mObject->mHandle.mHandle.mVal;
+        g_debugThread.m_active = 1;
+        Broc::entity ent{g_debugThread.m_entityHandle.mHandle.mVal};
+        gpBrocAPI->mBrocExports.mAnimDebug(ent);
+        return;
     }
 }

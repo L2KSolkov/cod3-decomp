@@ -819,8 +819,8 @@ extern void FN_Multiplayer_MapRestart();  // game2.o
 extern void FN_Multiplayer_Rank1();
 extern void FN_Multiplayer_Rank2();
 extern void FN_Multiplayer_Rank3();
-extern void FN_DebugThread_Select_Player();     // game2.o
-extern void FN_DebugThread_Select_Level();
+extern Entity* FN_DebugThread_Select_Player();  // game2.o
+extern EntityManager* FN_DebugThread_Select_Level();
 extern void FN_DebugThread_Select_Nearest();    // game2.o
 extern void FN_DebugThread_Select_Nearest_Trigger();  // game2.o
 extern void FN_DebugThread_Select_UniqueIndex();      // game2.o
@@ -1002,6 +1002,35 @@ extern cvar_t* joy_threshold;     // ?joy_threshold@@3PAUcvar_t@@A (game2.o)
 extern cvar_t* r_showLocationalDamage;  // ?r_showLocationalDamage@@3PAUcvar_t@@A (render.o)
 extern int SetVehicleDebugRender(int onoff);  // ?SetVehicleDebugRender@@YAHH@Z (game2.o)
 extern void IN_Init();            // ?IN_Init@@YAXXZ (game2.o)
+extern int gTakeScreenshot;       // ?gTakeScreenshot@@3HA (game2.o)
+extern void TakeCubeMapShot();    // ?TakeCubeMapShot@@YAXXZ (game2.o)
+extern char* va(const char* fmt, ...);        // ?va@@YAPADPBDZZ
+extern void Cvar_Set(const char* var_name, const char* value);  // ?Cvar_Set@@YAXPBD0@Z
+extern int Sys_Milliseconds();    // ?Sys_Milliseconds@@YAHXZ
+extern float g_losResetTime;      // ?g_losResetTime@@3MA (game2.o)
+extern unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
+extern unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
+extern int g_fps;                 // ?g_fps@@3HA (game2.o)
+extern void IM_RenderGameEntityStats();   // ?IM_RenderGameEntityStats@@YAXXZ (game2.o)
+extern void RenderPlayerStats();          // ?RenderPlayerStats@@YAXXZ (game2.o)
+
+// PathNode / zone / audio-tick helper views (opaque owners)
+class BadPathManager {
+public:
+    int mNumBadPaths;  // +0x00
+    int mTotalNum;     // +0x04
+};
+extern BadPathManager g_badPathManager;  // ?g_badPathManager@@3VBadPathManager@@A (mp_actors.o)
+struct PathNodeLevelTOC {
+    int mNodeCount;  // +0x00
+};
+extern PathNodes::PathNode* Sentient_NearestNode(sentient_s* pSelf,
+                                                 float (*vNormal)[1],
+                                                 float* fDist,
+                                                 int iPlaneCount,
+                                                 int iCheckDontLink,
+                                                 float distanceThreshold,
+                                                 int ignoreNegotiationBegin);  // ?Sentient_NearestNode@@YIPAUPathNode@PathNodes@@PAUsentient_s@@QAY01MQAMHHMH@Z (mp_actors.o)
 
 // Ocean shader debug globals (render_xboxr:cdOceanShaderDebug.o)
 extern int g_oceanDebug_Enable;            // ?g_oceanDebug_Enable@@3HA
@@ -1885,6 +1914,114 @@ void InspectorManager::AddSettingsMenus()
     AddItem(v11, "Max Tint", &g_cdSimpleAlphaDebug.mMaxTint, 9);
     AddItem(v11, "Min Alpha", &g_cdSimpleAlphaDebug.mMinAlpha, 9);
     AddItem(v11, "Max Alpha", &g_cdSimpleAlphaDebug.mMaxAlpha, 9);
+}
+
+// ============================================================================
+// InspectorManager::SetupUserMenus - ea: 0x50E1B0
+// ============================================================================
+void InspectorManager::SetupUserMenus()
+{
+    AddMultiplayerMenus();
+    AddPlayerMenus();
+    AddDesignerMenus();
+    AddSettingsMenus();
+    AddRenderMenus();
+    AddFXMenus();
+    AddCollisionMenus();
+    AddSoundMenus(this);
+    AddDebuggingMenus();
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Screen Shot");
+    AddItem(v2, "ScreenShot", &gTakeScreenshot, 2);
+    AddItem(v2, "Cubemap ScreenShot", (void*)TakeCubeMapShot, 17);
+    _INSPECTOR_MENU* v3 = AddSubMenu(nullptr, "Physics / Nano");
+    AddItem(v3, "Rag Dolls on normal deaths", &g_useRagsOnNormalDeaths, 2);
+}
+
+// ============================================================================
+// InspectorManager::UserRenderHook - ea: 0x509CA0
+// ============================================================================
+void InspectorManager::UserRenderHook()
+{
+    char string[128];
+    char tmpstr[128];
+    Cvar_Set("battlechatter_debug", va("%i", gAIBattleChatterDebug));
+    SoundDebugRender(this);
+    int v3 = 0;
+    if (g_displayPlayerPosition)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        float playerPos[3];
+        Sentient_GetOrigin(Player->sentient, playerPos);
+        sprintf(tmpstr, "Pos: %.1f  %.1f  %.1f", playerPos[0],
+                playerPos[1], playerPos[2]);
+        Print(tmpstr, 320, 50, 0.55f);
+    }
+    if (g_drawDebugLos || g_drawDebugEntityLos)
+    {
+        sprintf(tmpstr, "LOS Total: %d  LOS Hits: %d",
+                g_numLosHits + g_numLosMisses, g_numLosHits);
+        Print(tmpstr, 360, 35, 0.55f);
+        float v5 = g_losResetTime - ServerTime::sInst.mTickDelta;
+        g_losResetTime = g_losResetTime - ServerTime::sInst.mTickDelta;
+        if (g_losResetTime <= 0.0f)
+        {
+            g_losResetTime = v5 + 1.0f;
+            g_numLosHits = 0;
+            g_numLosMisses = 0;
+        }
+    }
+    int v6 = Sys_Milliseconds();
+    unsigned int v8 = v6 - g_previousSysTime;
+    bool v7 = v6 == g_previousSysTime;
+    g_previousMS = v6 - g_previousSysTime;
+    g_previousSysTime = v6;
+    if (!v7)
+    {
+        g_fps = 0x3E8 / v8;
+        if (g_renderFPS)
+        {
+            sprintf(tmpstr, "FPS: %d", 0x3E8 / v8);
+            Print(tmpstr, 450, 45, 0.55f);
+        }
+    }
+    if (g_showNumBadPaths)
+    {
+        sprintf(tmpstr, "Bad Paths: %d %d", g_badPathManager.mNumBadPaths,
+                g_badPathManager.mTotalNum);
+        Print(tmpstr, 450, 45, 0.55f);
+    }
+    if (g_showPathNodeDensity)
+    {
+        int mNodeCount = 0;
+        Entity* v10 = EntityManager::sInst->GetPlayer(currCl);
+        if (Sentient_NearestNode(v10->sentient, nullptr, nullptr, 0, 1,
+                                 192.0f, 0))
+        {
+            mNodeCount = (*(PathNodeLevelTOC**)PathNodeMgr::sInst)->mNodeCount;
+        }
+        int NumZones = StreamZoneManager::sInst->GetNumZones();
+        if (NumZones > 0)
+            v3 = NumZones * (*(PathNodeLevelTOC**)PathNodeMgr::sInst)->mNodeCount;
+        sprintf(string, "Num Nodes in Level: %d", v3);
+        float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+        RE_Text_Paint(416.0f, 412.0f, 5, scaleScalar * 0.55f, color, string,
+                      0, 0, 0);
+        RE_Text_Paint(408.0f, 410.0f, 5, scaleScalar * 0.55f, m_currentRgba,
+                      string, 0, 0, 0);
+        sprintf(string, "Num Nodes in Zone: %d", mNodeCount);
+        color[0] = 0.0f;
+        color[1] = 0.0f;
+        color[2] = 0.0f;
+        color[3] = 1.0f;
+        RE_Text_Paint(416.0f, 426.0f, 5, scaleScalar * 0.55f, color, string,
+                      0, 0, 0);
+        RE_Text_Paint(408.0f, 424.0f, 5, scaleScalar * 0.55f, m_currentRgba,
+                      string, 0, 0, 0);
+    }
+    if (g_renderGameEntityStats)
+        IM_RenderGameEntityStats();
+    if (g_displayPlayerStats)
+        RenderPlayerStats();
 }
 
 // ============================================================================

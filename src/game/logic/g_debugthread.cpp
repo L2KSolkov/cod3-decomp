@@ -4,11 +4,14 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "game/logic/g_inspector.h"
 #include "core/tlFixedString.h"
 
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+
+typedef unsigned int nslSourceID;  // nsl.cpp stub surface
 
 // ============================================================================
 // DebugThread message globals (game2.o data)
@@ -20,6 +23,132 @@ extern char* gDebugThread_Message;
 extern int gDebugThread_MessageTicks;
 extern float gDebugThread_MessageYpos;
 extern int gDebugThread_MessageAlphaMin;
+
+// SoundDevice::Sound - 0x3C, verified against IDA local type
+struct SoundDeviceSound {
+    unsigned int mSource;        // +0x00 (nslSourceID)
+    unsigned int mWave;          // +0x04 (nslWaveID)
+    bool mPaused;                // +0x08
+    bool mAutoRelease;           // +0x09
+    float mPitch;                // +0x0C
+    float mVolume;               // +0x10
+    float mMinRange;             // +0x14
+    float mMaxRange;             // +0x18
+    float mGroupVolume;          // +0x1C
+    unsigned int mEntHandle;     // +0x20 (DbLinkedHandle mVal)
+    unsigned int mHandle;        // +0x24 (DbLinkedHandle mVal)
+    const void* mPoPtr;          // +0x28
+    unsigned int mDialogNotify;  // +0x2C (HashString)
+    float mDebugPos[3];          // +0x30
+};
+static_assert(sizeof(SoundDeviceSound) == 0x3C,
+              "SoundDeviceSound size mismatch");
+
+extern DbLinkedHandle<EntityHandleDb, Entity> g_SoundOnlyPlay;  // ?g_SoundOnlyPlay@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o)
+extern vmCvar_t sound_disableAllOtherSounds;   // ?sound_disableAllOtherSounds@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t sound_showSoundStatForEntity;  // ?sound_showSoundStatForEntity@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t g_debugProneCheck;             // ?g_debugProneCheck@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t g_debugProneCheckDepthCheck;   // ?g_debugProneCheckDepthCheck@@3UvmCvar_t@@A (g.o)
+extern const char* nslGetSourceName(nslSourceID sid);   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
+extern float nslGetSourceParam(nslSourceID sid, int index, float defaultValue);  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z
+extern void nslGetSourcePosition(nslSourceID sid, float* position);  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z
+extern bool SoundDevice_Sound_IsFinished(const SoundDeviceSound* self);  // ?IsFinished@Sound@SoundDevice@@QBE_NXZ
+
+#define NSL_SOURCE_ID_INVALID ((nslSourceID)-1)
+
+// ============================================================================
+// DebugThread::DisplayEntitySound - ea: 0x4F8AB0
+// ============================================================================
+void DebugThread::DisplayEntitySound(const math::Position3* entityPos,
+                                     int xpos, int ypos, int yinc, float scale)
+{
+    if (sound_disableAllOtherSounds.integer == 1)
+        g_SoundOnlyPlay.mHandle.mVal = m_entityHandle.mHandle.mVal;
+    else
+        g_SoundOnlyPlay.mHandle.mVal = (unsigned int)-1;
+    if (sound_showSoundStatForEntity.integer != 1)
+        return;
+    char tmpstr[128];
+    for (unsigned int i = 0; i < 512; ++i)
+    {
+        SoundDeviceSound* v11 =
+            (SoundDeviceSound*)((char*)SoundDevice::sInst + i * 0x3C);
+        if (v11->mEntHandle != m_entityHandle.mHandle.mVal
+            || v11->mSource == NSL_SOURCE_ID_INVALID
+            || SoundDevice_Sound_IsFinished(v11))
+        {
+            continue;
+        }
+        float minVal = v11->mMinRange;
+        nslSourceID id = v11->mSource;
+        float maxVal = v11->mMaxRange;
+        const char* SourceName = nslGetSourceName(id);
+        int v13 = yinc + ypos;
+        sprintf(tmpstr, "Sound Name: %s ", SourceName);
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 0.8f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, xpos, v13, scale);
+        double SourceParam = nslGetSourceParam(id, 0, -1.0f);
+        int v15 = yinc + v13;
+        sprintf(tmpstr, "Sound Vol: %f ", SourceParam);
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 0.8f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, xpos, v15, scale);
+        int v16 = yinc + v15;
+        sprintf(tmpstr, "Min: %f  Max: %f", minVal, maxVal);
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 0.8f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, xpos, v16, scale);
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        float camPos = Player->r.currentOrigin.v.m128_f32[0];
+        float v23 = Player->r.currentOrigin.v.m128_f32[1];
+        float v24 = Player->r.currentOrigin.v.m128_f32[2];
+        float soundPos[3];
+        nslGetSourcePosition(id, soundPos);
+        float vDelta = camPos - soundPos[0];
+        float v29 = v23 - soundPos[1];
+        float v30 = v24 - soundPos[2];
+        int v17 = yinc + v16;
+        sprintf(tmpstr,
+                "Distance from source (2d-top down view): %f ",
+                sqrtf(v30 * v30 + v29 * v29 + vDelta * vDelta));
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 0.8f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, xpos, v17, scale);
+        ypos = yinc + v17;
+        sprintf(tmpstr,
+                "Distance from source (3d): %f ",
+                sqrtf((v23 - soundPos[1]) * (v23 - soundPos[1])
+                      + (camPos - soundPos[0]) * (camPos - soundPos[0])));
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 0.8f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, xpos, ypos, scale);
+        float vUp[3] = { 0.0f, 0.0f, 1.0f };
+        float srcZ = soundPos[2];
+        soundPos[2] = srcZ + 25.0f;
+        if (g_debugProneCheck.integer != 0)
+        {
+            G_DebugCircle2Ex(soundPos, minVal, vUp, colorGreen,
+                             g_debugProneCheckDepthCheck.integer, 1);
+        }
+        soundPos[2] = srcZ + 30.0f;
+        if (g_debugProneCheck.integer != 0)
+        {
+            G_DebugCircle2Ex(soundPos, maxVal, vUp, colorRed,
+                             g_debugProneCheckDepthCheck.integer, 1);
+        }
+    }
+}
 
 // ============================================================================
 // DebugThread::DisplayMessage - ea: 0x4F4620

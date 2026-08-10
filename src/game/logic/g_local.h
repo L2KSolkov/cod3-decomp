@@ -408,6 +408,8 @@ struct DebugThread {
     int m_displayThreads;                                   // +0x0C
     int m_active;                                           // +0x10
     void Render();   // ?Render@DebugThread@@QAEXXZ (game2.o 0x50A050)
+    void DisplayEntitySound(const math::Position3* entityPos, int xpos,
+                            int ypos, int yinc, float scale);  // ea: 0x4F8AB0
     char* DisplayMessage(char* msg, int xpos, int ypos, float r, float g,
                          float b, float scale, float alphaMin);
     void Update();   // ?Update@DebugThread@@QAEXXZ (game2.o 0x4F46A0)
