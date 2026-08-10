@@ -6,6 +6,7 @@
 #include "game/logic/g_local.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 
 // ============================================================================
@@ -423,4 +424,247 @@ void ClipWindingEpsilon(winding_t* in, float* normal, float dist,
         Com_Error(ERR_DROP, "ClipWinding: points exceeded estimate");
     if (v21->numpoints > 64 || v23->numpoints > 64)
         Com_Error(ERR_DROP, "ClipWinding: MAX_POINTS_ON_WINDING");
+}
+
+// ea: 0x00609550
+void pw(winding_t* w)
+{
+    for (int v1 = 0; v1 < w->numpoints; ++v1)
+    {
+        printf("(%5.1f, %5.1f, %5.1f)\n", w->p[v1][0], w->p[v1][1],
+               w->p[v1][2]);
+    }
+}
+
+// ea: 0x0060A2A0
+void ChopWindingInPlace(winding_t** inout, float* normal, float dist,
+                        float epsilon)
+{
+    winding_t* v4 = *inout;
+    int numpoints = (*inout)->numpoints;
+    winding_t* in = *inout;
+    float dists[68];
+    int sides[68];
+    float mid[3];
+    memset(mid, 0, sizeof(mid));
+    int v6 = 0;
+    if (numpoints > 0)
+    {
+        do
+        {
+            float v8 = (((in->p[v6][2] * normal[2])
+                         + (in->p[v6][0] * normal[0]))
+                        + (in->p[v6][1] * normal[1])) - dist;
+            dists[v6] = v8;
+            if (v8 <= epsilon)
+            {
+                if ((0.0f - epsilon) <= v8)
+                    sides[v6] = 2;
+                else
+                    sides[v6] = 1;
+            }
+            else
+            {
+                sides[v6] = 0;
+            }
+            ++*(int*)&mid[sides[v6]];
+            ++v6;
+        } while (v6 < numpoints);
+    }
+    float v9 = dists[0];
+    sides[v6] = sides[0];
+    dists[v6] = v9;
+    if (*(int*)&mid[0] == 0)
+    {
+        if (numpoints == -559030611)
+            Com_Error(ERR_FATAL, "FreeWinding: freed a freed winding");
+        v4->numpoints = -559030611;
+        --c_active_windings;
+        _Z_FreeInternal(v4);
+        *inout = nullptr;
+        return;
+    }
+    if (*(int*)&mid[1] == 0)
+        return;
+    int v10 = c_active_windings + 1;
+    bool v11 = c_active_windings + 1 <= c_peak_windings;
+    int maxpts = numpoints + 4;
+    ++c_active_windings;
+    if (!v11)
+        c_peak_windings = v10;
+    winding_t* v12 = (winding_t*)_Z_MallocInternal(12 * (numpoints + 4) + 4);
+    int v13 = 0;
+    if (v4->numpoints > 0)
+    {
+        while (1)
+        {
+            int v15 = sides[v13];
+            if (v15 == 2)
+            {
+                v12->p[v12->numpoints][0] = in->p[v13][0];
+                v12->p[v12->numpoints][1] = in->p[v13][1];
+                v12->p[v12->numpoints][2] = in->p[v13][2];
+                ++v12->numpoints;
+            }
+            else
+            {
+                if (v15 == 0)
+                {
+                    v12->p[v12->numpoints][0] = in->p[v13][0];
+                    v12->p[v12->numpoints][1] = in->p[v13][1];
+                    v12->p[v12->numpoints][2] = in->p[v13][2];
+                    ++v12->numpoints;
+                }
+                int v16 = sides[v13 + 1];
+                if (v16 == 2 || v16 == v15)
+                    goto LABEL_33;
+                float v18 = dists[v13] / (dists[v13] - dists[v13 + 1]);
+                int v17 = (v13 + 1) % in->numpoints;
+                for (int c = 0; c < 3; ++c)
+                {
+                    if (normal[c] == 1.0f)
+                        mid[c] = dist;
+                    else if (normal[c] == -1.0f)
+                        mid[c] = 0.0f - dist;
+                    else
+                        mid[c] = ((in->p[v17][c] - in->p[v13][c]) * v18)
+                            + in->p[v13][c];
+                }
+                v12->p[v12->numpoints][0] = mid[0];
+                v12->p[v12->numpoints][1] = mid[1];
+                v12->p[v12->numpoints][2] = mid[2];
+                ++v12->numpoints;
+            }
+        LABEL_33:
+            ++v13;
+            if (v13 >= in->numpoints)
+            {
+                v4 = in;
+                break;
+            }
+        }
+    }
+    if (v12->numpoints > maxpts)
+        Com_Error(ERR_DROP, "ClipWinding: points exceeded estimate");
+    if (v12->numpoints > 64)
+        Com_Error(ERR_DROP, "ClipWinding: MAX_POINTS_ON_WINDING");
+    if (v4->numpoints == -559030611)
+        Com_Error(ERR_FATAL, "FreeWinding: freed a freed winding");
+    v4->numpoints = -559030611;
+    --c_active_windings;
+    _Z_FreeInternal(v4);
+    *inout = v12;
+}
+
+// ea: 0x0060A610
+winding_t* ChopWinding(winding_t* in, float* normal, float dist)
+{
+    winding_t* v3 = in;
+    winding_t* b = nullptr;
+    ClipWindingEpsilon(in, normal, dist, 0.1f, &in, &b);
+    if (v3->numpoints == -559030611)
+        Com_Error(ERR_FATAL, "FreeWinding: freed a freed winding");
+    v3->numpoints = -559030611;
+    --c_active_windings;
+    _Z_FreeInternal(v3);
+    winding_t* v4 = b;
+    if (b != nullptr)
+    {
+        if (b->numpoints == -559030611)
+            Com_Error(ERR_FATAL, "FreeWinding: freed a freed winding");
+        v4->numpoints = -559030611;
+        --c_active_windings;
+        _Z_FreeInternal(v4);
+    }
+    return in;
+}
+
+// ea: 0x0060A6B0
+void CheckWinding(winding_t* w)
+{
+    if (w->numpoints < 3)
+        Com_Error(ERR_DROP, "CheckWinding: %i points", w->numpoints);
+    float st7_3 = WindingArea(w);
+    if (st7_3 < 1.0f)
+        Com_Error(ERR_DROP, "CheckWinding: %f area", st7_3);
+    float v2[3];
+    v2[0] = w->p[1][0] - w->p[0][0];
+    v2[1] = w->p[1][1] - w->p[0][1];
+    v2[2] = w->p[1][2] - w->p[0][2];
+    float v1[3];
+    v1[0] = w->p[2][0] - w->p[0][0];
+    v1[1] = w->p[2][1] - w->p[0][1];
+    v1[2] = w->p[2][2] - w->p[0][2];
+    float facenormal[3];
+    CrossProduct(v1, v2, facenormal);
+    VectorNormalize2(facenormal, facenormal);
+    float facedist = ((w->p[0][0] * facenormal[0])
+                      + (w->p[0][1] * facenormal[1]))
+        + (facenormal[2] * w->p[0][2]);
+    for (int i = 0; i < w->numpoints; ++i)
+    {
+        for (int j = 0; j < 3; ++j)
+        {
+            if (w->p[i][j] > 131072.0f || w->p[i][j] < -131072.0f)
+                Com_Error(ERR_DROP, "CheckFace: BUGUS_RANGE: %f", w->p[i][j]);
+        }
+        float v6 = (((w->p[i][2] * facenormal[2])
+                     + (w->p[i][1] * facenormal[1]))
+                    + (w->p[i][0] * facenormal[0])) - facedist;
+        int v7 = i + 1 == w->numpoints ? 0 : i + 1;
+        if (v6 < -0.1f || v6 > 0.1f)
+            Com_Error(ERR_DROP, "CheckWinding: point off plane");
+        float dir[3];
+        dir[0] = w->p[v7][0] - w->p[i][0];
+        dir[1] = w->p[v7][1] - w->p[i][1];
+        dir[2] = w->p[v7][2] - w->p[i][2];
+        if (sqrtf(dir[2] * dir[2] + dir[1] * dir[1] + dir[0] * dir[0]) < 0.1f)
+            Com_Error(ERR_DROP, "CheckWinding: degenerate edge");
+        float edgenormal[3];
+        CrossProduct(facenormal, dir, edgenormal);
+        VectorNormalize2(edgenormal, edgenormal);
+        float v9 = (((w->p[i][2] * edgenormal[2])
+                     + (w->p[i][1] * edgenormal[1]))
+                    + (w->p[i][0] * edgenormal[0])) + 0.1f;
+        for (int v10 = 0; v10 < w->numpoints; ++v10)
+        {
+            if (v10 != i
+                && (((w->p[v10][2] * edgenormal[2])
+                     + (w->p[v10][0] * edgenormal[0]))
+                    + (w->p[v10][1] * edgenormal[1])) > v9)
+                Com_Error(ERR_DROP, "CheckWinding: non-convex");
+        }
+    }
+}
+
+// ea: 0x0060A980
+int WindingOnPlaneSide(winding_t* w, float* normal, float dist)
+{
+    int v3 = 0;
+    int v4 = 0;
+    for (int v5 = 0; v5 < w->numpoints; ++v5)
+    {
+        float v7 = (((w->p[v5][0] * normal[0]) + (w->p[v5][2] * normal[2]))
+                    + (w->p[v5][1] * normal[1])) - dist;
+        if (v7 >= -0.1f)
+        {
+            if (v7 > 0.1f)
+            {
+                if (v4 != 0)
+                    return -2;
+                v3 = 1;
+            }
+        }
+        else
+        {
+            if (v3 != 0)
+                return -2;
+            v4 = 1;
+        }
+    }
+    if (v4 != 0)
+        return 1;
+    if (v3 != 0)
+        return 0;
+    return 2;
 }
