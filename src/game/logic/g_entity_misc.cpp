@@ -1039,6 +1039,7 @@ int AnimNotifyTask::Find(unsigned int key)
 // AudioBankMgr - ea: 0x6127D0..0x612980
 // ============================================================================
 typedef int nflFileID;  // filesystem/nfl.cpp / core_systems.h use int
+typedef int ELanguage;  // core_globals.h ABI twin (core_systems.h can't load)
 extern nslWaveID nslGetWave(const char* name);   // ?nslGetWave (nsl)
 extern void nslFreeBank(nslBankID bankID);       // ?nslFreeBank (nsl)
 extern void nflCloseFile(nflFileID file);        // filesystem/nfl.cpp
@@ -1052,18 +1053,29 @@ public:
         kUnloading = 3,   // verified vs disasm IsFinished
     };
     struct WbkEntry {
-        uint8_t   _pad0[0x2C];      // +0x00
+        uint8_t   _pad0[0x2C];      // +0x00 (name: tlFixedString, 32 bytes)
         int       state[6];         // +0x2C
         nflFileID fileID[6];        // +0x44
         nslBankID bankId[6];        // +0x5C (bankId[5] aliases next entry +0x04)
     };
     static_assert(sizeof(WbkEntry) == 0x74, "WbkEntry view size mismatch");
-    uint8_t  mAvailableWbks[0x6C0];    // +0x00 (16 * 0x6C stride)
-    uint8_t  _pad6C0[0x6C8 - 0x6C0];
+    uint8_t  _pad0[4];                 // +0x00 (vftable)
+    bool     mDoUnloadNotify;          // +0x04
+    bool     mDoLoadNotify;            // +0x05
+    uint8_t  _pad06[2];                // +0x06
+    uint8_t  mAvailableWbks[0x6C0];    // +0x08 (16 * 0x6C stride)
     int      m_size;                   // +0x6C8
     static AudioBankMgr* sInst;        // ?sInst@AudioBankMgr@@2PAV1@A
     virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
+    const char* LanguageStr(ELanguage id) const;  // ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z
+    void NotifyLoaded();               // ?NotifyLoaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9C0)
+    void NotifyUnloaded();             // ?NotifyUnloaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9F0)
+    void Update();                     // ?Update@AudioBankMgr@@QAEXXZ (game.o 0x62BA20)
+    void FinishLoading();              // ?FinishLoading@AudioBankMgr@@QAEXXZ (game.o 0x62BC40)
+    void LoadWbkInternal(WbkEntry* wbk, const char* path, ELanguage lang,
+                         bool async);  // ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z (game.o 0x62BD50)
+    void FreeWbk(const void* name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x62BE30)
 };
 AudioBankMgr* AudioBankMgr::sInst = nullptr;
 
@@ -1142,6 +1154,339 @@ bool AudioBankMgr::IsFinished() const
         }
     }
     return true;
+}
+
+// ============================================================================
+// AudioBankMgr load/notify/update - ea: 0x62B9C0..0x62C010
+// ============================================================================
+extern void codNflUpdate();                    // nfl_xboxr
+extern void nslUpdateBanks();                  // nsl_xboxr
+extern int  nslGetBankState(nslBankID bankID); // nsl_xboxr
+extern nslBankID nslLoadBank(unsigned int flags, nflFileID file,
+                             unsigned int fileOffset);  // nsl_xboxr
+extern void tlPrintf(const char* fmt, ...);    // tl_xboxr
+
+// ELanguage values (verified vs AudioBankMgr::LanguageStr disasm)
+enum {
+    kLanguageEnglish = 0,
+    kLanguageGerman = 1,
+    kLanguageFrench = 2,
+    kLanguageSpanish = 3,
+    kLanguageItalian = 4,
+    kLanguageUnlocalized = 5,
+};
+
+// ea: 0x006023F0
+const char* AudioBankMgr::LanguageStr(ELanguage id) const
+{
+    const char* result;
+    switch (id)
+    {
+    case kLanguageEnglish:
+        result = "English";
+        break;
+    case kLanguageGerman:
+        result = "German";
+        break;
+    case kLanguageFrench:
+        result = "French";
+        break;
+    case kLanguageSpanish:
+        result = "Spanish";
+        break;
+    case kLanguageItalian:
+        result = "Italian";
+        break;
+    case kLanguageUnlocalized:
+        result = "<Unlocalized>";
+        break;
+    default:
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AudioBankManager.cpp";
+        AeAssert::gCurrentLine = 63;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Unknown language id"))
+            __debugbreak();
+        result = "<unknown language id>";
+        break;
+    }
+    return result;
+}
+
+// ea: 0x0062B9C0
+void AudioBankMgr::NotifyLoaded()
+{
+    Entity* mWorld = EntityManager::sInst->mWorld;
+    if (mWorld != nullptr)
+    {
+        HashString v2;
+        v2.mHash = HashString::CalcHash("wbk_loaded");
+        mWorld->Notify(v2);
+    }
+}
+
+// ea: 0x0062B9F0
+void AudioBankMgr::NotifyUnloaded()
+{
+    Entity* mWorld = EntityManager::sInst->mWorld;
+    if (mWorld != nullptr)
+    {
+        HashString v2;
+        v2.mHash = HashString::CalcHash("wbk_unloaded");
+        mWorld->Notify(v2);
+    }
+}
+
+// ea: 0x0062BA20
+void AudioBankMgr::Update()
+{
+    codNflUpdate();
+    nslUpdateBanks();
+    if (this->mDoUnloadNotify)
+    {
+        Entity* mWorld = EntityManager::sInst->mWorld;
+        if (mWorld != nullptr)
+        {
+            HashString v3;
+            v3.mHash = HashString::CalcHash("wbk_unloaded");
+            mWorld->Notify(v3);
+        }
+    }
+    if (this->mDoLoadNotify)
+    {
+        Entity* v4 = EntityManager::sInst->mWorld;
+        if (v4 != nullptr)
+        {
+            HashString v5;
+            v5.mHash = HashString::CalcHash("wbk_loaded");
+            v4->Notify(v5);
+        }
+    }
+    int m_size = this->m_size;
+    this->mDoUnloadNotify = false;
+    this->mDoLoadNotify = false;
+    if (m_size > 0)
+    {
+        unsigned int v7 = 0;
+        unsigned int v17 = 0;
+        for (int i = 0;;)
+        {
+            if (v7 >= 0x6C0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            WbkEntry* entry =
+                (WbkEntry*)((char*)this->mAvailableWbks + v7);
+            for (int j = 6; j != 0; --j)
+            {
+                if (entry->bankId[j - 1] == NSL_BANK_ID_INVALID)
+                    continue;
+                int BankState = nslGetBankState(entry->bankId[j - 1]);
+                int state = entry->state[j - 1];
+                if (state == kLoading)
+                {
+                    if (BankState != 0)
+                    {
+                        if (BankState != -1)
+                            continue;
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\AudioBankManager.cpp";
+                        AeAssert::gCurrentLine = 131;
+                        AeAssert::gCurrentExpr = nullptr;
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Warning(
+                                "Problem loading wbk '%s'",
+                                (const char*)entry + 4))
+                            __debugbreak();
+                        nflCloseFile(entry->fileID[j - 1]);
+                        entry->state[j - 1] = kUnloaded;
+                        entry->fileID[j - 1] = (nflFileID)-1;
+                        entry->bankId[j - 1] = NSL_BANK_ID_INVALID;
+                        Entity* v10 = EntityManager::sInst->mWorld;
+                        if (v10 != nullptr)
+                        {
+                            HashString v11;
+                            v11.mHash = HashString::CalcHash("wbk_loaded");
+                            v10->Notify(v11);
+                        }
+                    }
+                    else
+                    {
+                        entry->state[j - 1] = kLoaded;
+                        Entity* v10 = EntityManager::sInst->mWorld;
+                        if (v10 != nullptr)
+                        {
+                            HashString v11;
+                            v11.mHash = HashString::CalcHash("wbk_loaded");
+                            v10->Notify(v11);
+                        }
+                    }
+                }
+                else if (state == kUnloading && BankState == -1)
+                {
+                    entry->state[j - 1] = kUnloaded;
+                    entry->bankId[j - 1] = NSL_BANK_ID_INVALID;
+                    Entity* v10 = EntityManager::sInst->mWorld;
+                    if (v10 != nullptr)
+                    {
+                        HashString v11;
+                        v11.mHash = HashString::CalcHash("wbk_unloaded");
+                        v10->Notify(v11);
+                    }
+                }
+            }
+            ++i;
+            v7 = v17 + 108;
+            v17 += 108;
+            if (i >= this->m_size)
+                break;
+        }
+    }
+}
+
+// ea: 0x0062BC40
+void AudioBankMgr::FinishLoading()
+{
+    do
+    {
+        this->Update();
+        bool v3 = true;
+        for (int i = 0; i < this->m_size; ++i)
+        {
+            const WbkEntry* entry =
+                (const WbkEntry*)((char*)this->mAvailableWbks + 108 * i);
+            for (int k = 0; k < 6; ++k)
+            {
+                if (entry->state[k] == kLoading
+                    || entry->state[k] == kUnloading)
+                    v3 = false;
+            }
+        }
+        if (v3)
+            break;
+    } while (1);
+}
+
+// ea: 0x0062BD50
+void AudioBankMgr::LoadWbkInternal(WbkEntry* wbk, const char* path,
+                                   ELanguage lang, bool async)
+{
+    if (wbk->fileID[lang] == (nflFileID)-1
+        || wbk->bankId[lang] != NSL_BANK_ID_INVALID)
+    {
+        this->mDoLoadNotify = true;
+    }
+    else
+    {
+        const char* v6 = this->LanguageStr(lang);
+        tlPrintf("[wbk] loading wbk [%s]: %s\n",
+                 (const char*)wbk + 4, v6);
+        nslBankID Bank = nslLoadBank(0, wbk->fileID[lang], 0);
+        wbk->bankId[lang] = Bank;
+        wbk->state[lang] = kLoading;
+        if (Bank == NSL_BANK_ID_INVALID)
+        {
+            this->mDoLoadNotify = true;
+            nflCloseFile(wbk->fileID[lang]);
+            wbk->fileID[lang] = (nflFileID)-1;
+            wbk->state[lang] = kUnloaded;
+        }
+        else if (!async)
+        {
+            if (nslGetBankState(Bank) == 1)
+            {
+                do
+                    this->Update();
+                while (nslGetBankState(wbk->bankId[lang]) == 1);
+            }
+            PakManager::sInst->SetSoundProgress(1.0f);
+        }
+    }
+}
+
+// ea: 0x0062BE30
+void AudioBankMgr::FreeWbk(const void* name, bool async)
+{
+    unsigned int v5 = 0;
+    int i = 0;
+    if (this->m_size > 0)
+    {
+        while (1)
+        {
+            if (v5 >= 0x6C0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            WbkEntry* entry =
+                (WbkEntry*)((char*)this->mAvailableWbks + v5);
+            // tlFixedString name compare (8 dwords = 32 bytes)
+            if (memcmp(entry, name, 32) == 0)
+            {
+                for (int lang = 6; lang != 0; --lang)
+                {
+                    int state = entry->state[lang - 1];
+                    if (state == kLoaded)
+                    {
+                        tlPrintf("[wbk] freeing wbk: %s\n",
+                                 (const char*)entry + 4);
+                        nslFreeBank(entry->bankId[lang - 1]);
+                        nflCloseFile(entry->fileID[lang - 1]);
+                        entry->state[lang - 1] = kUnloading;
+                        entry->fileID[lang - 1] = (nflFileID)-1;
+                        if (!async
+                            && nslGetBankState(entry->bankId[lang - 1]) >= 0)
+                        {
+                            do
+                                this->Update();
+                            while (nslGetBankState(
+                                       entry->bankId[lang - 1])
+                                   >= 0);
+                        }
+                    }
+                    else if (state == kLoading)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\AudioBankManager.cpp";
+                        AeAssert::gCurrentLine = 363;
+                        AeAssert::gCurrentExpr =
+                            "wbk.state[lang] != WbkEntry::kLoading";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("not handling unloading case"))
+                            __debugbreak();
+                    }
+                    this->mDoUnloadNotify = true;
+                }
+                return;
+            }
+            v5 += 108;
+            if (++i >= this->m_size)
+                break;
+        }
+    }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AudioBankManager.cpp";
+    AeAssert::gCurrentLine = 372;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("trying to free unknown wbk '%s'",
+                             (const char*)name + 4))
+        __debugbreak();
+    this->mDoUnloadNotify = true;
 }
 
 // ============================================================================
