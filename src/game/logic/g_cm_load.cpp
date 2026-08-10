@@ -18,6 +18,14 @@ struct phys_memory_heap {
     char* m_buffer_end;    // +0x04
     char* m_buffer_cur;    // +0x08
     char* m_user_start;    // +0x0C
+
+    void set_buffer(void* const start, int size, int alignment)
+    {
+        m_buffer_start = (char*)start;
+        m_buffer_end = (char*)start + size;
+        m_buffer_cur = (char*)start;
+        m_user_start = (char*)start;
+    }
 };
 
 // ============================================================================
@@ -385,6 +393,56 @@ int CM_AreasConnected(int area1, int area2)
 // ============================================================================
 extern phys_memory_heap g_cmgr_allocater;  // ?g_cmgr_allocater@@3Vphys_memory_heap@@A
 extern DCGSet* gBoxDCGSet;                 // ?gBoxDCGSet@@3PAVDCGSet@@A
+extern char cmgr_memory_buffer[0x400];     // ?cmgr_memory_buffer@@3PADA (game.o)
+extern bool tlScratchpadLocked;            // ?tlScratchpadLocked@@3_NA
+extern bool g_in_cmgr_mem_context;         // ?g_in_cmgr_mem_context@@3_NA
+
+// ============================================================================
+// cmgr_mem_ctx_t - ea: 0x65FE20 / 0x65FEF0 (CollisionMgr.cpp)
+// ============================================================================
+struct cmgr_mem_ctx_t {
+    cmgr_mem_ctx_t();
+    ~cmgr_mem_ctx_t();
+};
+
+// ea: 0x0065FE20
+cmgr_mem_ctx_t::cmgr_mem_ctx_t()
+{
+    if (g_in_cmgr_mem_context)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 171;
+        AeAssert::gCurrentExpr = "!g_in_cmgr_mem_context";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Nested collision memory context!"))
+            __debugbreak();
+    }
+    g_in_cmgr_mem_context = true;
+    if (tlScratchpadLocked
+        && _tlAssert("c:/cod/code/tl/base/include\\tl_system.h", 294,
+                     "!tlScratchpadLocked",
+                     "Scratchpad is already locked!"))
+        __debugbreak();
+    tlScratchpadLocked = true;
+    g_cmgr_allocater.set_buffer(cmgr_memory_buffer, 0x400, 1);
+}
+
+// ea: 0x0065FEF0
+cmgr_mem_ctx_t::~cmgr_mem_ctx_t()
+{
+    g_cmgr_allocater.m_buffer_start = nullptr;
+    g_cmgr_allocater.m_buffer_end = nullptr;
+    g_cmgr_allocater.m_buffer_cur = nullptr;
+    g_cmgr_allocater.m_user_start = nullptr;
+    if (!tlScratchpadLocked
+        && _tlAssert("c:/cod/code/tl/base/include\\tl_system.h", 300,
+                     "tlScratchpadLocked",
+                     "Scratchpad is already unlocked!"))
+        __debugbreak();
+    g_in_cmgr_mem_context = false;
+    tlScratchpadLocked = false;
+}
 
 // ea: 0x0061A830
 BspPlane* CM_GetPlaneNum(int pi)
