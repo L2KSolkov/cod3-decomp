@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "core/PoolAllocator.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -76,9 +77,27 @@ class CurveManager {
 public:
     virtual ~CurveManager();  // vtable placeholder
     RemainingTime mRemainingTime[50];  // +0x04 (0x0C stride)
+    struct CurveDList {
+        int  m_size;  // +0x00
+        void* m_end;  // +0x04
+        void* m_head; // +0x08
+        void** m_tail;// +0x0C
+    };
+    CurveDList mCurveList;           // +0x25C
+    CurveDList mKeyEvaluators;       // +0x26C
+    CurveDList mConditionEvaluators; // +0x27C
     void Initialize();       // ?Initialize@CurveManager@@UAEXXZ
     void CleanUp();          // ?CleanUp@CurveManager@@UAEXXZ
     void DetachCurve(Curve* curve);  // ?DetachCurve@CurveManager@@QAEXPAVCurve@@@Z
+    void AttachCurve(Curve* curve);  // ?AttachCurve@CurveManager@@QAEXPAVCurve@@@Z (game.o 0x629780)
+    void AddKeyFunc(unsigned int type,
+                    float (__cdecl* func)(unsigned int, unsigned int,
+                                          unsigned int, float, float,
+                                          unsigned int));  // ?AddKeyFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z (game.o 0x6297C0)
+    void AddConditionFunc(unsigned int type,
+                          float (__cdecl* func)(unsigned int, unsigned int,
+                                                unsigned int, float, float,
+                                                unsigned int));  // ?AddConditionFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z (game.o 0x629830)
     unsigned int UInt32Lookup(unsigned char* data, unsigned int key,
                               unsigned int _default);  // ?UInt32Lookup@CurveManager@@AAEIPAEII@Z
 };
@@ -104,6 +123,123 @@ void CurveManager::CleanUp()
 // ea: 0x0060F1F0
 void CurveManager::DetachCurve(Curve* curve)
 {
+}
+
+// Curve - curve runtime state (verified against IDA Curve ctor disasm)
+struct CurveNode {
+    CurveNode* m_next;  // +0x00
+    CurveNode* m_prev;  // +0x04
+};
+struct CurveEvalFunc {
+    CurveEvalFunc* m_next;  // +0x00
+    CurveEvalFunc* m_prev;  // +0x04
+    unsigned int mType;     // +0x08
+    float (__cdecl* mFunc)(unsigned int, unsigned int, unsigned int,
+                           float, float, unsigned int);  // +0x0C
+    static PoolAllocator* sAllocator;  // ?sAllocator@CurveEvalFunc@@2PAVPoolAllocator@@A @ 0xF4EC28
+};
+PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
+
+struct Curve {
+    CurveNode m_dlist_node;             // +0x00
+    struct EffectList {
+        int        m_size;  // +0x00
+        CurveNode* m_end;   // +0x04
+        CurveNode* m_head;  // +0x08
+        CurveNode** m_tail; // +0x0C
+    } mEffectList;                      // +0x08
+    float mTargetSpeed;                 // +0x18
+    float mCurrentSmoothing;            // +0x1C
+    float mCurrentSmoothingVelocity;    // +0x20
+    float mLastSuspensionTravelKey[6];  // +0x24
+    float mLastSuspensionTravelCond[6]; // +0x3C
+
+    Curve();  // ??0Curve@@QAE@XZ (game.o 0x6298A0)
+};
+
+// ea: 0x00629780
+void CurveManager::AttachCurve(Curve* curve)
+{
+    if (curve != nullptr)
+    {
+        curve->m_dlist_node.m_prev =
+            ((CurveNode*)this->mCurveList.m_head)->m_prev;
+        CurveNode* m_head = (CurveNode*)this->mCurveList.m_head;
+        curve->m_dlist_node.m_next = m_head;
+        m_head->m_prev = &curve->m_dlist_node;
+        this->mCurveList.m_head = &curve->m_dlist_node;
+        ++this->mCurveList.m_size;
+    }
+}
+
+// ea: 0x006297C0
+void CurveManager::AddKeyFunc(
+    unsigned int type,
+    float (__cdecl* func)(unsigned int, unsigned int, unsigned int, float,
+                          float, unsigned int))
+{
+    if (func != nullptr && type != 0)
+    {
+        CurveEvalFunc* v4 = (CurveEvalFunc*)CurveEvalFunc::sAllocator->Allocate(0x10, false);
+        if (v4 != nullptr)
+        {
+            v4->m_next = nullptr;
+            v4->m_prev = nullptr;
+        }
+        v4->mType = type;
+        v4->mFunc = func;
+        v4->m_prev = ((CurveEvalFunc*)this->mKeyEvaluators.m_head)->m_prev;
+        CurveEvalFunc* m_head = (CurveEvalFunc*)this->mKeyEvaluators.m_head;
+        v4->m_next = m_head;
+        m_head->m_prev = v4;
+        this->mKeyEvaluators.m_head = v4;
+        ++this->mKeyEvaluators.m_size;
+    }
+}
+
+// ea: 0x00629830
+void CurveManager::AddConditionFunc(
+    unsigned int type,
+    float (__cdecl* func)(unsigned int, unsigned int, unsigned int, float,
+                          float, unsigned int))
+{
+    if (func != nullptr && type != 0)
+    {
+        CurveEvalFunc* v4 = (CurveEvalFunc*)CurveEvalFunc::sAllocator->Allocate(0x10, false);
+        if (v4 != nullptr)
+        {
+            v4->m_next = nullptr;
+            v4->m_prev = nullptr;
+        }
+        v4->mType = type;
+        v4->mFunc = func;
+        v4->m_prev = ((CurveEvalFunc*)this->mConditionEvaluators.m_head)->m_prev;
+        CurveEvalFunc* m_head =
+            (CurveEvalFunc*)this->mConditionEvaluators.m_head;
+        v4->m_next = m_head;
+        m_head->m_prev = v4;
+        this->mConditionEvaluators.m_head = v4;
+        ++this->mConditionEvaluators.m_size;
+    }
+}
+
+// ea: 0x006298A0
+Curve::Curve()
+{
+    this->m_dlist_node.m_next = nullptr;
+    this->m_dlist_node.m_prev = nullptr;
+    this->mEffectList.m_size = 0;
+    this->mEffectList.m_end = nullptr;
+    this->mEffectList.m_head = (CurveNode*)&this->mEffectList.m_end;
+    this->mEffectList.m_tail = &this->mEffectList.m_head;
+    this->mTargetSpeed = 0.0f;
+    this->mCurrentSmoothing = 0.0f;
+    this->mCurrentSmoothingVelocity = 0.0f;
+    for (int i = 0; i < 6; ++i)
+    {
+        this->mLastSuspensionTravelKey[i] = 0.0f;
+        this->mLastSuspensionTravelCond[i] = 0.0f;
+    }
 }
 
 // ea: 0x0060F200
