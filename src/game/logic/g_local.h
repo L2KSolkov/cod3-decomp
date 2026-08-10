@@ -2552,6 +2552,11 @@ bool TestPointInBox(const math::Position3& p, const math::Position3& bmin,
 int TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
                      const math::Position3& bmax, const cdlPlane* sides,
                      unsigned int nsides);  // game.o 0x61CC30
+struct cdl_vinfo_t;
+void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
+                 const unsigned char* pvi, math::Position3& v0,
+                 math::Position3& v1,
+                 math::Position3& v2);  // game.o 0x6292E0
 bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v0,
                          const math::Position3& v1,
