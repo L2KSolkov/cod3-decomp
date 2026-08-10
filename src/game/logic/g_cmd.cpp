@@ -729,6 +729,34 @@ LABEL_19:
     Cbuf_SV_Execute();
 }
 
+// ea: 0x00637710
+void Cbuf_ExecuteText(int exec_when, const char* text)
+{
+    if (exec_when != 0)
+    {
+        if (exec_when == 1)
+        {
+            Cbuf_InsertText(text);
+        }
+        else if (exec_when == 2)
+        {
+            Cbuf_AddText(text);
+        }
+        else
+        {
+            Com_Error(ERR_FATAL, "EXEC_* is %i, not a known exec type");
+        }
+    }
+    else if (text != nullptr && strlen(text) != 0)
+    {
+        Cmd_ExecuteString(text);
+    }
+    else
+    {
+        Cbuf_Execute();
+    }
+}
+
 // ea: 0x00629660
 void Cmd_Exec_f()
 {

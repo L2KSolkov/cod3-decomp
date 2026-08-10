@@ -160,3 +160,62 @@ actor_prone_info_t* G_GetClientActorProneInfoFromEntHandle(DbLinkedHandle<Entity
         return nullptr;
     return &actor->ProneInfo;
 }
+
+// ============================================================================
+// BG prone queries - ea: 0x603FF0..0x604070 (bg_pmove.cpp)
+// ============================================================================
+
+// ea: 0x00603FF0
+int BG_ActorIsProne(actor_prone_info_t* pInfo, int iCurrentTime)
+{
+    int iProneTime = pInfo->iProneTime;
+    if (iProneTime == 0 || pInfo->bCorpseOrientation != 0)
+        return 0;
+    int iProneTrans = pInfo->iProneTrans;
+    if (iProneTrans != 0)
+    {
+        if (iProneTrans >= 0)
+        {
+            if (iProneTime + iProneTrans < iCurrentTime)
+                pInfo->iProneTrans = 0;
+        }
+        else if (iProneTime - iProneTrans < iCurrentTime)
+        {
+            pInfo->iProneTime = 0;
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// ea: 0x00604040
+int BG_ActorGoalIsProne(actor_prone_info_t* pInfo)
+{
+    return pInfo->iProneTime != 0
+        && pInfo->bCorpseOrientation == 0
+        && pInfo->iProneTrans >= 0;
+}
+
+// ea: 0x00604070
+float BG_GetActorProneFraction(actor_prone_info_t* pInfo, int iCurrentTime)
+{
+    int iProneTime = pInfo->iProneTime;
+    if (iProneTime == 0)
+        return 0.0f;
+    int iProneTrans = pInfo->iProneTrans;
+    if (iProneTrans == 0)
+        return 1.0f;
+    if (iProneTrans >= 0)
+    {
+        if (iProneTrans + iProneTime >= iCurrentTime)
+            return (float)(iCurrentTime - iProneTime) / (float)pInfo->iProneTrans;
+        pInfo->iProneTrans = 0;
+        return 1.0f;
+    }
+    if (iProneTime - iProneTrans < iCurrentTime)
+    {
+        pInfo->iProneTime = 0;
+        return 0.0f;
+    }
+    return 1.0f - (float)(iCurrentTime - iProneTime) / (float)(-iProneTrans);
+}
