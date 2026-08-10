@@ -2650,6 +2650,17 @@ bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v1,
                          const math::Position3& v2,
                          const math::Vector4& plane);  // game.o 0x61B980
+bool collide_sphere_triangle(const math::Position3& sphere_center,
+                             float sphere_radius,
+                             const math::Position3& v0_in,
+                             const math::Position3& v1_in,
+                             const math::Position3& v2_in,
+                             const math::Dir3& normal_in,
+                             math::Position3* hitp,
+                             math::Dir3* hitn);  // game.o 0x65BD30
+void collide_sphere(const math::Position3& sphere_center, float sphere_radius,
+                    math::Position3* hitp, math::Dir3* hitn,
+                    int* hitc);  // game.o 0x628EB0
 struct traceWork_t;
 void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
                     const math::Position3& bmax, const cdlPlane* sides,

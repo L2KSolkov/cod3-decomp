@@ -782,6 +782,10 @@ extern math::Position3 calc_closest(const math::Position3& p,
                                     const math::Position3& v0,
                                     const math::Position3& v1,
                                     const math::Position3& v2);  // cdl_common.o
+extern void traverse_rtree(const math::Position3& p0,
+                           const math::Position3& p1,
+                           const rtree_root_t& root,
+                           subdivision_visitor& visitor);  // physics.o 0x6F6620
 
 // ea: 0x0061B980
 bool collide_sphere_poly(const math::Position3& c, float r,
@@ -836,6 +840,160 @@ bool collide_sphere_poly(const math::Position3& c, float r,
     float dy = closest.v.m128_f32[1] - c.v.m128_f32[1];
     float dz = closest.v.m128_f32[2] - c.v.m128_f32[2];
     return (r * r) > (dx * dx + dy * dy + dz * dz);
+}
+
+// ============================================================================
+// collide_sphere_triangle - ea: 0x65BD30 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x0065BD30
+bool collide_sphere_triangle(const math::Position3& sphere_center,
+                             float sphere_radius,
+                             const math::Position3& v0_in,
+                             const math::Position3& v1_in,
+                             const math::Position3& v2_in,
+                             const math::Dir3& normal_in,
+                             math::Position3* hitp, math::Dir3* hitn)
+{
+    __m128 v = sphere_center.v;
+    math::Dir3 v9;
+    v9.v = _mm_sub_ps(v0_in.v, sphere_center.v);
+    __m128 v10 = _mm_mul_ps(v9.v, normal_in.v);
+    float v0_12 =
+        v10.m128_f32[0]
+        + (v10.m128_f32[1] + v10.m128_f32[2]);
+    if (v0_12 > 0.0f || (0.0f - sphere_radius) > v0_12)
+        return 0;
+
+    math::Dir3 v11;
+    math::Dir3 v12;
+    v11.v = _mm_sub_ps(v1_in.v, v);
+    v12.v = _mm_sub_ps(v2_in.v, v);
+    __m128 v13 = _mm_mul_ps(v9.v, v9.v);
+    float c0_ =
+        v13.m128_f32[0]
+        + (v13.m128_f32[1] + v13.m128_f32[2]);
+    __m128 v14 = _mm_mul_ps(v9.v, v11.v);
+    float v39 =
+        v14.m128_f32[0]
+        + (v14.m128_f32[1] + v14.m128_f32[2]);
+    __m128 v15 = _mm_mul_ps(v9.v, v12.v);
+    float c1_ =
+        v15.m128_f32[0]
+        + (v15.m128_f32[1] + v15.m128_f32[2]);
+    float v16 = v39;
+    float v17 = c0_;
+    float v18 = c1_;
+    math::Dir3* v19 = hitn;
+    if (v39 >= c0_ && c1_ >= c0_)
+    {
+        *hitn = v9;
+        goto LABEL_27;
+    }
+    __m128 v20 = _mm_mul_ps(v11.v, v11.v);
+    float nhitn_sq =
+        v20.m128_f32[0]
+        + (v20.m128_f32[1] + v20.m128_f32[2]);
+    __m128 v21 = _mm_mul_ps(v11.v, v12.v);
+    float v44 =
+        v21.m128_f32[0]
+        + (v21.m128_f32[1] + v21.m128_f32[2]);
+    v17 = nhitn_sq;
+    if (v39 >= nhitn_sq && v44 >= nhitn_sq)
+    {
+        *hitn = v11;
+        goto LABEL_27;
+    }
+    __m128 v22 = _mm_mul_ps(v12.v, v12.v);
+    float c1_a =
+        v22.m128_f32[0]
+        + (v22.m128_f32[1] + v22.m128_f32[2]);
+    v17 = c1_a;
+    if (v18 >= c1_a && v44 >= c1_a)
+    {
+        *hitn = v12;
+        goto LABEL_27;
+    }
+    float v24 = c0_;
+    if (nhitn_sq >= v39 && c0_ >= v39)
+    {
+        float v0_8 = c0_ - v39;
+        float v40 = nhitn_sq - v39;
+        if ((v44 * (c0_ - v16)) + (v18 * (nhitn_sq - v16))
+            >= ((nhitn_sq * c0_) - (v16 * v16)))
+        {
+            float v25 = 1.0f / (v0_8 + v40);
+            float v26 = v25 * v0_8;
+            v25 = v25 * v40;
+            hitn->v = _mm_add_ps(
+                _mm_mul_ps(v9.v, _mm_set1_ps(v25)),
+                _mm_mul_ps(v11.v, _mm_set1_ps(v26)));
+            goto LABEL_26;
+        }
+        v24 = c0_;
+        v17 = c1_a;
+        v18 = v44;
+    }
+    if (v17 >= v18 && v24 >= v18)
+    {
+        float v0_8a = v24 - v18;
+        float v41 = v17 - v18;
+        if ((v44 * (v24 - v18)) + (v16 * (v17 - v18))
+            >= ((c1_a * c0_) - (v18 * v18)))
+        {
+            float v27 = 1.0f / (v0_8a + v41);
+            float v28 = v27 * v0_8a;
+            v27 = v27 * v41;
+            hitn->v = _mm_add_ps(
+                _mm_mul_ps(v9.v, _mm_set1_ps(v27)),
+                _mm_mul_ps(v12.v, _mm_set1_ps(v28)));
+            goto LABEL_26;
+        }
+        v17 = c1_a;
+        v18 = v44;
+    }
+    if (v17 < v18 || nhitn_sq < v18)
+    {
+        hitp->v = _mm_add_ps(
+            sphere_center.v,
+            _mm_mul_ps(normal_in.v, _mm_set1_ps(v0_12)));
+        *hitn = normal_in;
+        return 1;
+    }
+    {
+        float v29 = v17 - v18;
+        float v30 = nhitn_sq - v44;
+        if ((v18 * (nhitn_sq - v44)) + (v16 * v29)
+            < ((v17 * nhitn_sq) - (v44 * v44)))
+        {
+            hitp->v = _mm_add_ps(
+                sphere_center.v,
+                _mm_mul_ps(normal_in.v, _mm_set1_ps(v0_12)));
+            *hitn = normal_in;
+            return 1;
+        }
+        float v31 = 1.0f / (v30 + v29);
+        float v32 = v31 * v30;
+        v31 = v31 * v29;
+        hitn->v = _mm_add_ps(
+            _mm_mul_ps(v11.v, _mm_set1_ps(v31)),
+            _mm_mul_ps(v12.v, _mm_set1_ps(v32)));
+    }
+LABEL_26:
+    {
+        __m128 v33 = _mm_mul_ps(hitn->v, hitn->v);
+        v17 = v33.m128_f32[0]
+            + (v33.m128_f32[1] + v33.m128_f32[2]);
+    }
+LABEL_27:
+    if (v17 > 0.000099999997f
+        && (sphere_radius * sphere_radius) >= v17)
+    {
+        hitp->v = _mm_add_ps(sphere_center.v, hitn->v);
+        float sq = -sqrtf(v17);
+        hitn->v = _mm_div_ps(hitn->v, _mm_set1_ps(sq));
+        return 1;
+    }
+    return 0;
 }
 
 // ============================================================================
@@ -2715,6 +2873,106 @@ void TestInLeaf(traceWork_t* tw, const CGBank* bank,
                     tw->trace_allsolid = 1;
                     tw->trace_startsolid = 1;
                     return;
+                }
+            }
+        }
+    }
+}
+
+// ============================================================================
+// collide_sphere - ea: 0x628EB0 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x00628EB0
+void collide_sphere(const math::Position3& sphere_center, float sphere_radius,
+                    math::Position3* hitp, math::Dir3* hitn, int* hitc)
+{
+    cmgr_mem_ctx_t ctx;
+    math::Position3* cg_verts = alloc_verts();
+
+    math::Position3 radius_vec;
+    radius_vec.v = _mm_setr_ps(sphere_radius, sphere_radius, sphere_radius,
+                               0.0f);
+    math::Position3 lo;
+    math::Position3 hi;
+    lo.v = _mm_sub_ps(sphere_center.v, radius_vec.v);
+    hi.v = _mm_add_ps(sphere_center.v, radius_vec.v);
+    *hitc = 0;
+
+    CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
+    for (int bi = 0; bi < mgr->mCount; ++bi)
+    {
+        if (bi > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank = mgr->mBankArray[bi];
+        if (bank == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 4205;
+            AeAssert::gCurrentExpr = "bank";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid bank"))
+                __debugbreak();
+        }
+        if ((_mm_movemask_ps(_mm_cmplt_ps(
+                 _mm_max_ps(_mm_sub_ps(bank->min.v, hi.v),
+                            _mm_sub_ps(lo.v, bank->max.v)),
+                 _mm_setzero_ps()))
+             & 7) != 7)
+            continue;
+
+        rtree_visitor_t visitor(bank);
+        traverse_rtree(lo, hi, bank->rtree_root, visitor);
+        visitor.filter_objects(-1);
+
+        int npatches = visitor.patches_m_alloc_count;
+        for (int i = 0; i < npatches; ++i)
+        {
+            if ((i < 0 || i >= visitor.patches_m_alloc_count)
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                    108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            unsigned int index = visitor.patches_m_slot_array[i];
+            unsigned int pi = index - (unsigned int)bank->nboxes
+                - (unsigned int)bank->nbrushes;
+            unpack(bank, pi, cg_verts);
+            if (pi >= (unsigned int)bank->patches.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            cdl_patch_t* patch =
+                &((cdl_patch_t*)bank->patches.m_elements)[pi];
+            unsigned int first_index = (unsigned int)patch->first_index;
+            if (first_index >= (unsigned int)bank->patch_inds.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            const unsigned char* pvi =
+                &((const unsigned char*)bank->patch_inds.m_elements)
+                    [first_index];
+            unsigned int num_inds = (unsigned int)patch->num_inds;
+            if (num_inds == 0)
+                continue;
+            for (unsigned int k = 0; 3 * k < num_inds; ++k)
+            {
+                math::Position3 v0 = cg_verts[pvi[3 * k + 0]];
+                math::Position3 v1 = cg_verts[pvi[3 * k + 1]];
+                math::Position3 v2 = cg_verts[pvi[3 * k + 2]];
+                math::Vector4 plane = calc_normal(v0, v1, v2);
+                if (collide_sphere_triangle(sphere_center, sphere_radius, v0,
+                                            v1, v2, *(const math::Dir3*)&plane,
+                                            &hitp[*hitc], &hitn[*hitc]))
+                {
+                    ++*hitc;
                 }
             }
         }
