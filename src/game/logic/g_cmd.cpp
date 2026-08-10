@@ -457,7 +457,8 @@ enum EPadAliasStick {
 // Minimal controller view (controller_xboxr). Values match the binary:
 // kPadAliasButtonIndexDesc order == controller::ButtonIndex (LEFTBUTTON=0..),
 // verified against the controller::button_value switch at 0x7E2050.
-struct controller {
+class controller {
+public:
     enum ButtonIndex {
         LEFTBUTTON = 0,
         DOWNBUTTON = 1,
@@ -480,6 +481,14 @@ struct controller {
         LEFTSTICK = 0,
         RIGHTSTICK = 1,
     };
+    static controller* inst();                              // controller_xbox.o 0x7E1D90
+    int  button_value(int i_controller_num, ButtonIndex i_button);          // 0x7E2050
+    bool button_released(int i_controller_num, ButtonIndex i_button);       // 0x7E2220
+    bool button_released_clear(int i_controller_num, ButtonIndex i_button); // 0x7E23D0
+    bool button_pressed(int i_controller_num, ButtonIndex i_button);        // 0x7E2670
+    bool button_pressed_clear(int i_controller_num, ButtonIndex i_button);  // 0x7E2810
+    void stick_value(int i_controller_num, StickIndex i_Stick,
+                     int& o_x, int& o_y);                                   // 0x7E2AB0
 };
 
 static const char* kPadAliasCtxDesc[3] = {
@@ -515,6 +524,13 @@ struct PadAliasCtx {
     void BindStick(int ctrlNum, int stickIndex, EPadAliasStick stickAlias);      // game.o 0x621050
     EPadAliasButton GetButtonAlias(int ctrlNum, controller::ButtonIndex buttonIndex);  // game.o 0x621160
     EPadAliasStick GetStickAlias(int ctrlNum, controller::StickIndex stickIndex);      // game.o 0x6211E0
+    int GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621260
+    bool IsButtonReleased(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x6212A0
+    bool IsButtonReleasedClear(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x6212F0
+    bool IsButtonPressed(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621340
+    bool IsButtonPressedClear(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621390
+    void GetStickValue(int ctrlNum, EPadAliasStick stickAlias,
+                       int& stickX, int& stickY);  // game.o 0x6213E0
 };
 static_assert(sizeof(PadAliasCtx) == 0x148, "PadAliasCtx size mismatch");
 struct PadAliasMgr {
@@ -686,6 +702,117 @@ EPadAliasStick PadAliasCtx::GetStickAlias(
             __debugbreak();
     }
     return mStickAlias[ctrlNum][stickIndex];
+}
+
+// ea: 0x00621260
+int PadAliasCtx::GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias)
+{
+    int v4 = controller::LEFTBUTTON;
+    while (1)
+    {
+        if (GetButtonAlias(ctrlNum, (controller::ButtonIndex)v4)
+            == buttonAlias)
+        {
+            int result = controller::inst()->button_value(
+                ctrlNum, (controller::ButtonIndex)v4);
+            if (result > 0)
+                return result;
+        }
+        if (++v4 >= 16)
+            return 0;
+    }
+}
+
+// ea: 0x006212A0
+bool PadAliasCtx::IsButtonReleased(int ctrlNum, EPadAliasButton buttonAlias)
+{
+    int v4 = controller::LEFTBUTTON;
+    while (1)
+    {
+        if (GetButtonAlias(ctrlNum, (controller::ButtonIndex)v4)
+            == buttonAlias)
+        {
+            if (controller::inst()->button_released(
+                    ctrlNum, (controller::ButtonIndex)v4))
+                return true;
+        }
+        if (++v4 >= 16)
+            return false;
+    }
+}
+
+// ea: 0x006212F0
+bool PadAliasCtx::IsButtonReleasedClear(int ctrlNum,
+                                        EPadAliasButton buttonAlias)
+{
+    int v4 = controller::LEFTBUTTON;
+    while (1)
+    {
+        if (GetButtonAlias(ctrlNum, (controller::ButtonIndex)v4)
+            == buttonAlias)
+        {
+            if (controller::inst()->button_released_clear(
+                    ctrlNum, (controller::ButtonIndex)v4))
+                return true;
+        }
+        if (++v4 >= 16)
+            return false;
+    }
+}
+
+// ea: 0x00621340
+bool PadAliasCtx::IsButtonPressed(int ctrlNum, EPadAliasButton buttonAlias)
+{
+    int v4 = controller::LEFTBUTTON;
+    while (1)
+    {
+        if (GetButtonAlias(ctrlNum, (controller::ButtonIndex)v4)
+            == buttonAlias)
+        {
+            if (controller::inst()->button_pressed(
+                    ctrlNum, (controller::ButtonIndex)v4))
+                return true;
+        }
+        if (++v4 >= 16)
+            return false;
+    }
+}
+
+// ea: 0x00621390
+bool PadAliasCtx::IsButtonPressedClear(int ctrlNum,
+                                       EPadAliasButton buttonAlias)
+{
+    int v4 = controller::LEFTBUTTON;
+    while (1)
+    {
+        if (GetButtonAlias(ctrlNum, (controller::ButtonIndex)v4)
+            == buttonAlias)
+        {
+            if (controller::inst()->button_pressed_clear(
+                    ctrlNum, (controller::ButtonIndex)v4))
+                return true;
+        }
+        if (++v4 >= 16)
+            return false;
+    }
+}
+
+// ea: 0x006213E0
+void PadAliasCtx::GetStickValue(int ctrlNum, EPadAliasStick stickAlias,
+                                int& stickX, int& stickY)
+{
+    stickX = 0;
+    stickY = 0;
+    for (int i = controller::LEFTSTICK; i < 2; ++i)
+    {
+        if (GetStickAlias(ctrlNum, (controller::StickIndex)i) == stickAlias)
+        {
+            controller::inst()->stick_value(ctrlNum, (controller::StickIndex)i,
+                                            stickX, stickY);
+            if (stickX != 0 || stickY != 0)
+                break;
+        }
+    }
 }
 
 // ea: 0x0062B1A0

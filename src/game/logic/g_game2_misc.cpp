@@ -1172,13 +1172,14 @@ extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
 class controller {
 public:
     enum ButtonIndex {
-        UPBUTTON = 0, DOWNBUTTON = 1, LEFTBUTTON = 2, RIGHTBUTTON = 3,
-        SQUARE = 4, CIRCLE = 5, L2 = 6, R2 = 7, L1 = 8, R1 = 9,
-        TRIANGLE = 10, R3 = 11, L3 = 12, SELECT = 13, START = 14,
+        LEFTBUTTON = 0, DOWNBUTTON = 1, RIGHTBUTTON = 2, UPBUTTON = 3,
+        SQUARE = 4, X = 5, CIRCLE = 6, TRIANGLE = 7,
+        R1 = 8, L1 = 9, R2 = 10, L2 = 11,
+        R3 = 12, L3 = 13, START = 14, SELECT = 15,
     };
     enum StickIndex {
-        LEFT_STICK = 0,
-        RIGHT_STICK = 1,
+        LEFTSTICK = 0,
+        RIGHTSTICK = 1,
     };
 
     static controller* inst();
@@ -1189,7 +1190,7 @@ public:
     int  button_value(int index, ButtonIndex btn);
     bool button_pressed(int index, ButtonIndex btn);
     bool button_released(int index, ButtonIndex btn);
-    void stick_value(int index, StickIndex stick, int* outX, int* outY);
+    void stick_value(int index, StickIndex stick, int& outX, int& outY);
 
     int  locked_port;
     bool is_locked;
@@ -1262,7 +1263,7 @@ void IN_Frame()
     stick_input:
         {
             int x, y;
-            ctl->stick_value(controller_port, controller::RIGHT_STICK, &x, &y);
+            ctl->stick_value(controller_port, controller::RIGHTSTICK, x, y);
             int value = joy_threshold->value;
             if (abs(x) >= value)
                 x = (int)((2 * (x >= 0) - 1)
@@ -1276,7 +1277,7 @@ void IN_Frame()
                 y = 0;
             CL_GamepadEvent(0, x, Sys_Milliseconds());
             CL_GamepadEvent(1, y, Sys_Milliseconds());
-            ctl->stick_value(controller_port, controller::LEFT_STICK, &x, &y);
+            ctl->stick_value(controller_port, controller::LEFTSTICK, x, y);
             if (abs(x) >= value)
                 x = (int)((2 * (x >= 0) - 1)
                           * (((float)(abs(x) - value) / (128 - value)) * 128.0f));

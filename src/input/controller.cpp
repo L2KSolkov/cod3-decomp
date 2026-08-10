@@ -26,27 +26,30 @@
 
 class controller {
 public:
+    // Values match the binary's controller::ButtonIndex (verified against the
+    // button_value switch at 0x7E2050 and kPadAliasButtonIndexDesc order).
     enum ButtonIndex {
-        UPBUTTON    = 0,
+        LEFTBUTTON  = 0,
         DOWNBUTTON  = 1,
-        LEFTBUTTON  = 2,
-        RIGHTBUTTON = 3,
+        RIGHTBUTTON = 2,
+        UPBUTTON    = 3,
         SQUARE      = 4,    // X button
-        CIRCLE      = 5,    // B button
-        L2          = 6,    // left trigger
-        R2          = 7,    // right trigger
-        L1          = 8,    // left shoulder
-        R1          = 9,    // right shoulder
-        TRIANGLE    = 10,   // Y button
-        R3          = 11,   // right stick click
-        L3          = 12,   // left stick click
-        SELECT      = 13,   // back button
+        X           = 5,    // A button
+        CIRCLE      = 6,    // B button
+        TRIANGLE    = 7,    // Y button
+        R1          = 8,    // right trigger
+        L1          = 9,    // left trigger
+        R2          = 10,   // black
+        L2          = 11,   // white
+        R3          = 12,   // right stick click
+        L3          = 13,   // left stick click
         START       = 14,   // start button
+        SELECT      = 15,   // back button
     };
 
     enum StickIndex {
-        LEFT_STICK  = 0,
-        RIGHT_STICK = 1,
+        LEFTSTICK  = 0,
+        RIGHTSTICK = 1,
     };
 
     enum RumbleIndex {
@@ -71,7 +74,7 @@ public:
     bool button_released(int index, ButtonIndex btn);
     bool button_released_clear(int index, ButtonIndex btn);
     bool any_button_pressed(int index);
-    void stick_value(int index, StickIndex stick, int* outX, int* outY);
+    void stick_value(int index, StickIndex stick, int& outX, int& outY);
 
     void rumble(int index, RumbleIndex motor, float speed);
     void stop_all_rumble();
@@ -173,16 +176,16 @@ bool controller::controller_is_connected(int index) {
 // Button mapping: Xbox XInput to PS2-style button indices
 static WORD btnToXInput(controller::ButtonIndex btn) {
     switch (btn) {
-        case controller::UPBUTTON:     return 0x0001; // XINPUT_GAMEPAD_DPAD_UP
-        case controller::DOWNBUTTON:   return 0x0002; // XINPUT_GAMEPAD_DPAD_DOWN
         case controller::LEFTBUTTON:   return 0x0004; // XINPUT_GAMEPAD_DPAD_LEFT
+        case controller::DOWNBUTTON:   return 0x0002; // XINPUT_GAMEPAD_DPAD_DOWN
         case controller::RIGHTBUTTON:  return 0x0008; // XINPUT_GAMEPAD_DPAD_RIGHT
+        case controller::UPBUTTON:     return 0x0001; // XINPUT_GAMEPAD_DPAD_UP
         case controller::START:        return 0x0010; // XINPUT_GAMEPAD_START
         case controller::SELECT:       return 0x0020; // XINPUT_GAMEPAD_BACK
-        case controller::L3:           return 0x0040; // XINPUT_GAMEPAD_LEFT_THUMB
-        case controller::R3:           return 0x0080; // XINPUT_GAMEPAD_RIGHT_THUMB
         case controller::L1:           return 0x0100; // XINPUT_GAMEPAD_LEFT_SHOULDER
         case controller::R1:           return 0x0200; // XINPUT_GAMEPAD_RIGHT_SHOULDER
+        case controller::L3:           return 0x0040; // XINPUT_GAMEPAD_LEFT_THUMB
+        case controller::R3:           return 0x0080; // XINPUT_GAMEPAD_RIGHT_THUMB
         default: return 0;
     }
 }
@@ -192,6 +195,7 @@ int controller::button_value(int index, ButtonIndex btn) {
 
     switch (btn) {
         case SQUARE:    return s_pads[index].analogButtons[2];  // X
+        case X:         return s_pads[index].analogButtons[0];  // A
         case CIRCLE:    return s_pads[index].analogButtons[1];  // B
         case TRIANGLE:  return s_pads[index].analogButtons[3];  // Y
         case L2:        return s_pads[index].analogButtons[5];  // left trigger
@@ -250,18 +254,18 @@ bool controller::any_button_pressed(int index) {
     return s_pads[index].curButtons != s_pads[index].lastButtons;
 }
 
-void controller::stick_value(int index, StickIndex stick, int* outX, int* outY) {
+void controller::stick_value(int index, StickIndex stick, int& outX, int& outY) {
     if (s_uixHandled || !s_pads[index].connected) {
-        *outX = 0; *outY = 0;
+        outX = 0; outY = 0;
         return;
     }
 
-    if (stick == LEFT_STICK) {
-        *outX = s_pads[index].thumbLX;
-        *outY = -s_pads[index].thumbLY; // invert Y
+    if (stick == LEFTSTICK) {
+        outX = s_pads[index].thumbLX;
+        outY = -s_pads[index].thumbLY; // invert Y
     } else {
-        *outX = s_pads[index].thumbRX;
-        *outY = -s_pads[index].thumbRY;
+        outX = s_pads[index].thumbRX;
+        outY = -s_pads[index].thumbRY;
     }
 }
 

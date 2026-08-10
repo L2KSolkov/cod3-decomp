@@ -32,12 +32,15 @@ extern void Sys_QueEvent(int time, sysEventType_t type, int value, int value2,
                          int ptrLength, void* ptr);
 
 // Minimal controller view (full implementation in input/controller.cpp).
-struct controller {
+class controller {
+public:
     int locked_port;
     bool is_locked;
     enum ButtonIndex {
-        UPBUTTON = 0,
-        LEFTBUTTON = 3,
+        LEFTBUTTON = 0,
+        DOWNBUTTON = 1,
+        RIGHTBUTTON = 2,
+        UPBUTTON = 3,
     };
     static controller* inst();
     bool button_pressed_clear(int index, ButtonIndex btn);
