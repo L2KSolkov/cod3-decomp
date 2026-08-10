@@ -25,7 +25,7 @@ extern void Info_SetValueForKey(char* s, const char* key, const char* value);
 extern void Info_SetValueForKey_Big(char* s, const char* key,
                                     const char* value);
 extern int Cmd_Argc();
-extern const char* Cmd_Argv(int arg);
+extern char* Cmd_Argv(int arg);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern int Q_stricmp(const char* s1, const char* s2);
 extern char* CopyStringInternal(const char* in);

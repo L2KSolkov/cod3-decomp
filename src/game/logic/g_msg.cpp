@@ -31,6 +31,7 @@ void MSG_BeginReading(msg_t* msg)
     msg->readcount = 0;
 }
 
+// ea: 0x0060F2B0
 void MSG_WriteFlag(msg_t* msg, unsigned char value)
 {
     msg->data[msg->cursize++] = value;
@@ -316,7 +317,7 @@ int NET_CompareAdrSigned(netadr_t* a, netadr_t* b)
     }
 }
 
-// ea: 0x0060F790
+// ea: 0x0060F840
 int NET_CompareAdr(netadr_t a, netadr_t b)
 {
     return NET_CompareAdrSigned(&a, &b) == 0;

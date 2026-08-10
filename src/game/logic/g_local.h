@@ -3154,6 +3154,7 @@ void    G_FinishDamage(Entity* targ, Entity* inflictor, Entity* attacker,
 // ============================================================================
 void SV_SetBrushModel(Entity* ent);
 int  Q_strcasecmp(const char* s1, const char* s2);
+char* getBuildNumber();                     // game.o 0x608FE0
 float random();
 int  Scr_IsSystemActive(unsigned char sys);
 void Scr_NotifyFromEnt(Entity* ent, HashString hashValue, Entity* fromEnt);

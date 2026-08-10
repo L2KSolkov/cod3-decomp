@@ -56,7 +56,7 @@ extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void Cmd_RemoveCommand(const char* cmd_name);
 extern int Cmd_Argc();
-extern const char* Cmd_Argv(int arg);
+extern char* Cmd_Argv(int arg);
 extern void Sys_Mkdir(const char* path);
 extern void Sys_OutOfMemError();
 extern char** Sys_ListFiles(const char* directory, const char* extension,

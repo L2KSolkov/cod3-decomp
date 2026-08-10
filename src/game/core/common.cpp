@@ -49,7 +49,7 @@ extern void Q_strcat(char* dest, int size, const char* src);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern int Q_stricmpn(const char* s1, const char* s2, int n);
 extern int Cmd_Argc();
-extern const char* Cmd_Argv(int arg);
+extern char* Cmd_Argv(int arg);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern void Cmd_TokenizeString(const char* text_in);
 extern void Cbuf_AddText(const char* text);

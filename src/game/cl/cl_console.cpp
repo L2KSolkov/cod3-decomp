@@ -19,7 +19,7 @@ extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern int Cmd_Argc();
-extern const char* Cmd_Argv(int arg);
+extern char* Cmd_Argv(int arg);
 extern int FS_FOpenFileWrite(const char* filename);
 extern void FS_Write(const void* buffer, int len, int h);
 extern void FS_FCloseFile(int f);

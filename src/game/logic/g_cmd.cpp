@@ -120,11 +120,21 @@ int Cmd_Argc()
     return cmd_argc;
 }
 
-char* Cmd_Argv(unsigned int arg)
+// ea: 0x0060E6F0
+char* Cmd_Argv(int arg)
 {
     if (arg < (unsigned int)cmd_argc)
         return cmd_argv[arg];
     return (char*)"";
+}
+
+// ea: 0x0061F5E0
+void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength)
+{
+    if (arg < (unsigned int)cmd_argc)
+        Q_strncpyz(buffer, cmd_argv[arg], bufferLength);
+    else
+        Q_strncpyz(buffer, "", bufferLength);
 }
 
 static char cmd_args1[1024];
@@ -495,6 +505,7 @@ void DebugCurveRender()
 {
 }
 
+// ea: 0x0060F250
 void Sys_Print()
 {
 }

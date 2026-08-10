@@ -5,6 +5,7 @@
 #include "game/logic/g_local.h"
 
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -18,6 +19,18 @@ extern "C" int __fpclass(float);
 extern nglDebugStruct nglDebug;  // ngl_debug.o
 extern int gRenderCG_2D;         // cg.o 0x011E86E4
 extern int g_renderGameEntityStats;  // game2.o 0x012F3E10
+
+// ============================================================================
+// getBuildNumber - ea: 0x608FE0
+// ============================================================================
+static char buf[64];  // ?buf@@3PADA (game.o data 0xF44FC8)
+
+// ea: 0x00608FE0
+char* getBuildNumber()
+{
+    sprintf(buf, "%d %s %s", 4504, "Oct  8 2006", "00:54:43");
+    return buf;
+}
 extern int Cmd_Argc(void);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);

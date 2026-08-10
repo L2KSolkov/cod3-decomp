@@ -84,7 +84,16 @@ extern int dword_F0D1F8[2];
 extern int dword_F0F1FC[2];
 extern int dword_F0F200[2];
 extern char byte_F0D1FC[];
-extern int NET_CompareAdr(const void* a, const void* b);
+// netadr_t (20 bytes; same layout as sv/server_types.h, local to avoid
+// pulling the full server type set into the cl TU)
+struct netadr_t {
+    int      type;        // +0x00
+    uint8_t  ip[4];       // +0x04
+    uint8_t  ipx[10];     // +0x08
+    uint16_t port;        // +0x12
+};
+static_assert(sizeof(netadr_t) == 0x14, "netadr_t size mismatch");
+extern int NET_CompareAdr(netadr_t a, netadr_t b);
 extern int Netchan_Process(void* chan, struct msg_t* msg);
 extern const char* NET_AdrToString(const void* a);
 extern void Com_DPrintf(const char* fmt, ...);
@@ -919,7 +928,8 @@ void CL_PacketEvent(void* from, msg_t* msg)
     }
     if (cls.state != 0)  // CA_DISCONNECTED
     {
-        if (NET_CompareAdr(from, (void*)(0xF11210 + 19528 * currCl)) != 0)
+        if (NET_CompareAdr(*(netadr_t*)from,
+                           *(netadr_t*)(0xF11210 + 19528 * currCl)) != 0)
         {
             if (Netchan_Process((void*)(0xF11208 + 19528 * currCl), msg) != 0)
             {

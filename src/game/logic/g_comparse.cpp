@@ -79,6 +79,7 @@ void Com_SetCSV(int csv)
     pi->csv = csv;
 }
 
+// ea: 0x0060FBC0
 void Com_SetParseNegativeNumbers(int negativeNumbers)
 {
     pi->negativeNumbers = negativeNumbers;

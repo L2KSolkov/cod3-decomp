@@ -9,9 +9,9 @@
 // ============================================================================
 // Handle types
 // ============================================================================
-typedef unsigned nslSourceID;
+enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
 typedef unsigned nslEmitterID;
-typedef unsigned nslWaveID;
+enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
 typedef unsigned nslWaveBankID;
 typedef unsigned nslGroupID;
 typedef unsigned nslVoiceID;
@@ -27,7 +27,12 @@ typedef unsigned nslVoiceID;
 enum nslSpeakerMode        { NSL_SPEAKER_STEREO=0, NSL_SPEAKER_5_1=1, NSL_SPEAKER_MONO=2 };
 enum nslWaveBankLoaderState{ NSL_WB_LOADING=0, NSL_WB_READY=1, NSL_WB_FAILED=2 };
 enum nslVoiceState         { NSL_VOICE_FREE=0, NSL_VOICE_PLAYING=1, NSL_VOICE_PAUSED=2 };
-enum nslSourceState        { NSL_SOURCE_STATE_INVALID=0, NSL_SOURCE_STATE_PLAYING=1 };
+// Values verified vs disasm SoundDevice::Sound::IsPlaying (compares 4/2/3/5)
+enum nslSourceState        { NSL_SOURCE_STATE_INVALID=0,
+                             NSL_SOURCE_STATE_QUEUING=2,
+                             NSL_SOURCE_STATE_QUEUED=3,
+                             NSL_SOURCE_STATE_PLAYING=4,
+                             NSL_SOURCE_STATE_PAUSED=5 };
 
 // ============================================================================
 // Forward types
@@ -62,7 +67,7 @@ bool         nslIsInitDone() { return true; }
 // nslSource — sound sources / emitters (3D positioned)
 // ============================================================================
 nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
-nslSourceID   nslNewSource(nslEmitterID, nslWaveID, unsigned flags) { return 0; }
+nslSourceID   nslNewSource(nslEmitterID, nslWaveID, unsigned flags) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
 void          nslDeleteEmitter(nslEmitterID) {}
 nslSource*    nslSourcePtr(nslSourceID) { return nullptr; }
@@ -92,6 +97,11 @@ const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@
 float         nslGetSourceParam(nslSourceID, int, float defaultValue) { return defaultValue; }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
 int           nslIsWaveStreamed(nslWaveID) { return 0; }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
 void          nslGetSourcePosition(nslSourceID, float* position) {}  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z (nslSource.o)
+int           nslGetWaveLength(nslWaveID) { return 0; }      // ?nslGetWaveLength@@YAHW4nslWaveID@@@Z
+unsigned      nslGetSourceLength(nslSourceID) { return 0; }  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
+int           nslIsWaveLooped(nslWaveID) { return 0; }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
+void          nslSetSourceEffectOn(nslSourceID) {}           // ?nslSetSourceEffectOn@@YAXW4nslSourceID@@@Z
+void          nslSetSourceEffectOff(nslSourceID) {}          // ?nslSetSourceEffectOff@@YAXW4nslSourceID@@@Z
 
 // ============================================================================
 // nslAram â€” audio RAM accounting (nslAram.o)

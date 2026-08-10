@@ -17,7 +17,7 @@
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_Error(int code, const char* fmt, ...);
 extern int Cmd_Argc();
-extern const char* Cmd_Argv(int arg);
+extern char* Cmd_Argv(int arg);
 extern char* va(const char* fmt, ...);
 extern int com_skelTimeStamp;
 extern int bCL_AllowedAllocSkel;

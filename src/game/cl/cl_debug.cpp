@@ -15,7 +15,7 @@ extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
 extern void Com_Error(int code, const char* fmt, ...);
 extern int Cmd_Argc();
-extern const char* Cmd_Argv(int arg);
+extern char* Cmd_Argv(int arg);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern void Cvar_Set(const char* var_name, const char* value);

@@ -331,7 +331,14 @@ struct SmokeGrenadeMgr {
 static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
 
 struct SoundDevice {
-    uint8_t _pad[0x7A7C];                  // +0x00
+    uint8_t _pad[0x7854];                  // +0x00
+    bool    mUpdateReverb;                 // +0x7854
+    uint8_t _pad7855[0x7858 - 0x7855];     // +0x7855
+    unsigned int mTargetReverb[14];        // +0x7858
+    unsigned int mCurrentReverb[14];       // +0x7890
+    uint8_t _pad78C8[0x7900 - 0x78C8];     // +0x78C8
+    float   mRemainingReverbBlendTime;     // +0x7900
+    uint8_t _pad7904[0x7A7C - 0x7904];     // +0x7904
     float   mDebugListenerPosition[3];      // +0x7A7C
     float   mDebugListenerForward[3];       // +0x7A88
     float   mDebugListenerUp[3];            // +0x7A94
@@ -351,9 +358,21 @@ struct SoundDevice {
         HashString mDialogNotify;// +0x2C
         Sound();                 // ??0Sound@SoundDevice@@QAE@XZ (game.o 0x612A10)
         void Reset();            // ?Reset@Sound@SoundDevice@@QAEXXZ (game.o 0x6129C0)
+        float GetPlaybackPosition() const;  // ?GetPlaybackPosition@Sound@SoundDevice@@QBEMXZ
+        void  SetReverb(bool on);           // ?SetReverb@Sound@SoundDevice@@QAEX_N@Z
+        float GetVolume() const;            // ?GetVolume@Sound@SoundDevice@@QBEMXZ
+        const char* GetSourceName() const;  // ?GetSourceName@Sound@SoundDevice@@QBEPBDXZ
+        bool  IsQueuing() const;            // ?IsQueuing@Sound@SoundDevice@@QBE_NXZ
+        bool  IsQueued() const;             // ?IsQueued@Sound@SoundDevice@@QBE_NXZ
+        bool  IsPlaying() const;            // ?IsPlaying@Sound@SoundDevice@@QBE_NXZ
+        bool  IsPaused() const;             // ?IsPaused@Sound@SoundDevice@@QBE_NXZ
+        bool  IsFinished() const;           // ?IsFinished@Sound@SoundDevice@@QBE_NXZ
+        bool  IsLooped() const;             // ?IsLooped@Sound@SoundDevice@@QBE_NXZ
+        float GetLength() const;            // ?GetLength@Sound@SoundDevice@@QBEMXZ
     };
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     nslWaveID FindWave(char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
+    float GetWaveDuration(nslWaveID wave);  // ?GetWaveDuration@SoundDevice@@QAEMW4nslWaveID@@@Z (game.o 0x6025A0)
     void SetListenerVectors(int listener, const math::Position3& position,
                             const math::Dir3& front,
                             const math::Dir3& up);  // ?SetListenerVectors@SoundDevice@@QAEXHABVPosition3@math@@ABVDir3@3@1@Z (game.o 0x612A70)

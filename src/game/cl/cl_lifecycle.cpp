@@ -19,7 +19,7 @@ extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
 extern void Cmd_RemoveCommand(const char* cmd_name);
 extern void Cmd_TokenizeString(const char* text_in);
 extern void Cmd_TokenizeString2(const char* text_in, int max_tokens);
-extern const char* Cmd_Argv(int arg);
+extern char* Cmd_Argv(int arg);
 extern int Cmd_Argc();
 extern void Cbuf_AddText(const char* text);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());

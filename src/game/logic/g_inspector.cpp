@@ -14,10 +14,13 @@
 #include <string.h>
 
 // nsl handle types (nsl.cpp stub surface)
-typedef unsigned int nslSourceID;
+enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
 enum nslSourceState {
     NSL_SOURCE_STATE_INVALID = 0,
-    NSL_SOURCE_STATE_PLAYING = 1,
+    NSL_SOURCE_STATE_QUEUING = 2,
+    NSL_SOURCE_STATE_QUEUED = 3,
+    NSL_SOURCE_STATE_PLAYING = 4,
+    NSL_SOURCE_STATE_PAUSED = 5,
 };
 
 extern nglDebugStruct nglDebug;   // ?nglDebug@@3UnglDebugStruct@@A (ngl_debug.o)

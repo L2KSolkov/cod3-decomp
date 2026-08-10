@@ -951,3 +951,525 @@ void SoundDevice::Sound::Reset()
     this->mDialogNotify.mHash = 0;
     this->mPoPtr = nullptr;
 }
+
+// ============================================================================
+// SoundDevice / Sound helpers - ea: 0x6025A0..0x6029D0 (SoundDevice.cpp)
+// ============================================================================
+enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
+enum nslSourceState {
+    NSL_SOURCE_STATE_INVALID = 0,
+    NSL_SOURCE_STATE_QUEUING = 2,
+    NSL_SOURCE_STATE_QUEUED = 3,
+    NSL_SOURCE_STATE_PLAYING = 4,
+    NSL_SOURCE_STATE_PAUSED = 5,
+};
+extern nslSourceState nslGetSourceState(nslSourceID sid);   // nsl
+extern const char* nslGetSourceName(nslSourceID sid);       // nsl
+extern float nslGetSourceParam(nslSourceID sid, int index,
+                               float defaultValue);         // nsl
+extern unsigned int nslGetSourceLength(nslSourceID sid);    // nsl
+extern int nslIsWaveLooped(nslWaveID a);                    // nsl
+extern int nslGetWaveLength(nslWaveID waveID);              // nsl
+extern void nslSetSourceEffectOn(nslSourceID sid);          // nsl
+extern void nslSetSourceEffectOff(nslSourceID sid);         // nsl
+
+// ea: 0x006025A0
+float SoundDevice::GetWaveDuration(nslWaveID wave)
+{
+    if (wave == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 255;
+        AeAssert::gCurrentExpr = "wave";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid wave ptr"))
+            __debugbreak();
+    }
+    return (float)nslGetWaveLength(wave);
+}
+
+// ea: 0x00602600
+float SoundDevice::Sound::GetPlaybackPosition() const
+{
+    return 0.0f;
+}
+
+// ea: 0x00602610
+void SoundDevice::Sound::SetReverb(bool on)
+{
+    nslSourceID mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+        goto LABEL_6;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+    AeAssert::gCurrentLine = 452;
+    AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+        __debugbreak();
+    mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+    {
+    LABEL_6:
+        if (on)
+            nslSetSourceEffectOn(mSource);
+        else
+            nslSetSourceEffectOff(mSource);
+    }
+}
+
+// ea: 0x00602690
+float SoundDevice::Sound::GetVolume() const
+{
+    if (this->mSource == -1)
+        return -2.0f;
+    return nslGetSourceParam((nslSourceID)this->mSource, 0, -1.0f);
+}
+
+// ea: 0x006026B0
+const char* SoundDevice::Sound::GetSourceName() const
+{
+    if (this->mSource == -1)
+        return nullptr;
+    return nslGetSourceName((nslSourceID)this->mSource);
+}
+
+// ea: 0x00602820
+bool SoundDevice::Sound::IsQueuing() const
+{
+    nslSourceID mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+        return nslGetSourceState(mSource) == NSL_SOURCE_STATE_QUEUING;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+    AeAssert::gCurrentLine = 708;
+    AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+        __debugbreak();
+    mSource = (nslSourceID)this->mSource;
+    return this->mSource != -1
+        && nslGetSourceState(mSource) == NSL_SOURCE_STATE_QUEUING;
+}
+
+// ea: 0x00602890
+bool SoundDevice::Sound::IsQueued() const
+{
+    nslSourceID mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+        return nslGetSourceState(mSource) == NSL_SOURCE_STATE_QUEUED;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+    AeAssert::gCurrentLine = 720;
+    AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+        __debugbreak();
+    mSource = (nslSourceID)this->mSource;
+    return this->mSource != -1
+        && nslGetSourceState(mSource) == NSL_SOURCE_STATE_QUEUED;
+}
+
+// ea: 0x00602900
+bool SoundDevice::Sound::IsPlaying() const
+{
+    if (this->mSource == -1)
+        return false;
+    nslSourceState SourceState =
+        nslGetSourceState((nslSourceID)this->mSource);
+    return SourceState == NSL_SOURCE_STATE_PLAYING
+        || SourceState == NSL_SOURCE_STATE_QUEUING
+        || SourceState == NSL_SOURCE_STATE_QUEUED
+        || SourceState == NSL_SOURCE_STATE_PAUSED;
+}
+
+// ea: 0x00602930
+bool SoundDevice::Sound::IsPaused() const
+{
+    return this->mPaused;
+}
+
+// ea: 0x00602940
+bool SoundDevice::Sound::IsFinished() const
+{
+    bool result = false;
+    if (!this->mPaused)
+    {
+        if (this->mSource == -1)
+            return true;
+        nslSourceState SourceState =
+            nslGetSourceState((nslSourceID)this->mSource);
+        if (SourceState != NSL_SOURCE_STATE_PLAYING
+            && SourceState != NSL_SOURCE_STATE_QUEUING
+            && SourceState != NSL_SOURCE_STATE_QUEUED
+            && SourceState != NSL_SOURCE_STATE_PAUSED)
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x00602980
+bool SoundDevice::Sound::IsLooped() const
+{
+    nslSourceState s = nslGetSourceState((nslSourceID)this->mSource);
+    return (this->mSource != -1
+            && (s == NSL_SOURCE_STATE_PLAYING
+                || s == NSL_SOURCE_STATE_QUEUING
+                || s == NSL_SOURCE_STATE_QUEUED
+                || s == NSL_SOURCE_STATE_PAUSED)
+            || this->mPaused)
+        && nslIsWaveLooped((nslWaveID)this->mWave) != 0;
+}
+
+// ea: 0x006029D0
+float SoundDevice::Sound::GetLength() const
+{
+    if (this->mSource == -1)
+        return 0.0f;
+    return (float)nslGetSourceLength((nslSourceID)this->mSource);
+}
+
+// ============================================================================
+// SoundDevice::SetReverb - ea: 0x602BA0 (reverb preset table, bits exact)
+// ============================================================================
+// ea: 0x00602BA0
+void SoundDevice::SetReverb(const char* preset, bool immediate)
+{
+    if (preset != nullptr && *preset != 0)
+    {
+        int _newFx[14];
+        int v3, v4, v5;
+        if (_stricmp(preset, "Preset_Alley") == 0)
+        {
+            _newFx[3] = 1069463634;
+            v3 = 1063004406;
+            _newFx[1] = -270;
+            _newFx[5] = -1204;
+            _newFx[7] = -4;
+            goto LABEL_55;
+        }
+        if (_stricmp(preset, "Preset_Arena") == 0)
+        {
+            _newFx[3] = 1088925204;
+            _newFx[4] = 1051260355;
+            _newFx[6] = 1017370378;
+            v4 = 1022739087;
+            _newFx[1] = -698;
+            _newFx[5] = -1166;
+            _newFx[7] = 16;
+            goto LABEL_56;
+        }
+        if (_stricmp(preset, "Preset_Auditorium") == 0)
+        {
+            _newFx[3] = 1082801521;
+            _newFx[4] = 1058474557;
+            _newFx[6] = 1017370378;
+            v4 = 1022739087;
+            _newFx[1] = -476;
+            _newFx[5] = -789;
+            _newFx[7] = -289;
+            goto LABEL_56;
+        }
+        if (_stricmp(preset, "Preset_Bathroom") == 0)
+        {
+            _newFx[3] = 1069463634;
+            _newFx[4] = 1057635697;
+            _newFx[6] = 1004888130;
+            _newFx[8] = 1010055512;
+            _newFx[9] = 1120403456;
+            v5 = 1114636288;
+            _newFx[0] = -1000;
+            _newFx[1] = -1200;
+            _newFx[5] = -370;
+            _newFx[7] = 1030;
+            goto LABEL_58;
+        }
+        if (_stricmp(preset, "Preset_CarpetedHallway") == 0)
+        {
+            _newFx[3] = 1050253722;
+            _newFx[4] = 1036831949;
+            _newFx[6] = 990057071;
+            v4 = 1022739087;
+            _newFx[1] = -4000;
+            _newFx[5] = -1831;
+            _newFx[7] = -1630;
+            goto LABEL_56;
+        }
+        if (_stricmp(preset, "Preset_Cave") == 0)
+        {
+            _newFx[3] = 1077558641;
+            _newFx[4] = 1067869798;
+            _newFx[6] = 1014350479;
+            v4 = 1018444120;
+            _newFx[1] = 0;
+            _newFx[5] = -602;
+            _newFx[7] = -302;
+            goto LABEL_56;
+        }
+        if (_stricmp(preset, "Preset_City") == 0)
+        {
+            _newFx[3] = 1069463634;
+            _newFx[4] = 1059816735;
+            _newFx[6] = 1004888130;
+            _newFx[8] = 1010055512;
+            _newFx[9] = 1112014848;
+            v5 = 1120403456;
+            _newFx[0] = -1000;
+            _newFx[1] = -800;
+            _newFx[5] = -2273;
+            _newFx[7] = -2217;
+            goto LABEL_58;
+        }
+        if (_stricmp(preset, "Preset_ConcertHall") == 0)
+        {
+            _newFx[3] = 1081794888;
+            _newFx[4] = 1060320051;
+            _newFx[6] = 1017370378;
+            v4 = 1022202216;
+            _newFx[1] = -500;
+            _newFx[5] = -1230;
+            _newFx[7] = -2;
+            goto LABEL_56;
+        }
+        if (_stricmp(preset, "Preset_Default2") == 0)
+        {
+            _newFx[3] = 1065353216;
+            _newFx[4] = 1056964608;
+            _newFx[6] = 1017370378;
+            _newFx[8] = 1025758986;
+            _newFx[1] = 0;
+            _newFx[9] = 1120403456;
+            _newFx[10] = 1120403456;
+            goto LABEL_60;
+        }
+        if (_stricmp(preset, "Preset_Default") == 0)
+        {
+            _newFx[3] = 1069463634;
+            _newFx[4] = 1062501089;
+            _newFx[6] = 1004888130;
+            _newFx[8] = 1010055512;
+            _newFx[0] = -1000;
+            _newFx[1] = -100;
+            _newFx[5] = -2602;
+            _newFx[7] = 200;
+            _newFx[9] = 1120403456;
+            _newFx[10] = 1120403456;
+            goto LABEL_61;
+        }
+        if (_stricmp(preset, "Preset_Forest") == 0)
+        {
+            _newFx[3] = 1069463634;
+            _newFx[4] = 1057635697;
+            _newFx[6] = 1042670420;
+            _newFx[8] = 1035221336;
+            _newFx[9] = 1117650944;
+            v5 = 1120403456;
+            _newFx[0] = -1000;
+            _newFx[1] = -3300;
+            _newFx[5] = -2560;
+            _newFx[7] = -613;
+            goto LABEL_58;
+        }
+        if (_stricmp(preset, "Preset_Generic") == 0)
+        {
+            _newFx[3] = 1069463634;
+            v3 = 1062501089;
+            _newFx[1] = -100;
+            _newFx[5] = -2602;
+            _newFx[7] = 200;
+            goto LABEL_55;
+        }
+        if (_stricmp(preset, "Preset_Hallway") == 0)
+        {
+            _newFx[3] = 1069463634;
+            v3 = 1058474557;
+            _newFx[1] = -300;
+            _newFx[5] = -1219;
+            _newFx[7] = 441;
+            goto LABEL_55;
+        }
+        if (_stricmp(preset, "Preset_Hangar") == 0)
+        {
+            _newFx[3] = 1092668621;
+            _newFx[4] = 1047233823;
+            _newFx[6] = 1017370378;
+            v4 = 1022739087;
+            _newFx[0] = -1000;
+            _newFx[1] = -1000;
+            _newFx[5] = -602;
+            _newFx[7] = 198;
+            goto LABEL_57;
+        }
+        if (_stricmp(preset, "Preset_LivingRoom") == 0)
+        {
+            _newFx[3] = 1056964608;
+            _newFx[4] = 1036831949;
+            _newFx[6] = 994352038;
+            v4 = 998445679;
+            _newFx[1] = -6000;
+            _newFx[5] = -1376;
+            _newFx[7] = -1104;
+            goto LABEL_56;
+        }
+        if (_stricmp(preset, "Preset_Mountains") == 0)
+        {
+            _newFx[3] = 1069463634;
+            _newFx[4] = 1045891645;
+            _newFx[6] = 1050253722;
+            _newFx[8] = 1036831949;
+            _newFx[9] = 1104674816;
+            v5 = 1120403456;
+            _newFx[0] = -1000;
+            _newFx[1] = -2500;
+            _newFx[5] = -2780;
+            _newFx[7] = -2014;
+            goto LABEL_58;
+        }
+        if (_stricmp(preset, "Preset_NoReverb") != 0)
+        {
+            if (_stricmp(preset, "Preset_PaddedCell") == 0)
+            {
+                _newFx[3] = 1043207291;
+                _newFx[4] = 1036831949;
+                _newFx[6] = 981668463;
+                v4 = 990057071;
+                _newFx[1] = -6000;
+                _newFx[5] = -1204;
+                _newFx[7] = 207;
+                goto LABEL_56;
+            }
+            if (_stricmp(preset, "Preset_ParkingLot") == 0)
+            {
+                _newFx[3] = 1070805811;
+                _newFx[4] = 1069547520;
+                _newFx[6] = 1006834287;
+                v4 = 1011129254;
+                _newFx[1] = 0;
+                _newFx[5] = -1363;
+                _newFx[7] = -1153;
+                goto LABEL_56;
+            }
+            if (_stricmp(preset, "Preset_Plain") == 0)
+            {
+                _newFx[3] = 1069463634;
+                _newFx[4] = 1056964608;
+                _newFx[6] = 1043811271;
+                _newFx[8] = 1036831949;
+                _newFx[9] = 1101529088;
+                v5 = 1120403456;
+                _newFx[0] = -1000;
+                _newFx[1] = -2000;
+                _newFx[5] = -2466;
+                _newFx[7] = -2514;
+                goto LABEL_58;
+            }
+            if (_stricmp(preset, "Preset_Quarry") == 0)
+                goto LABEL_43;
+            if (_stricmp(preset, "Preset_Room") == 0)
+            {
+                _newFx[3] = 1053609165;
+                _newFx[4] = 1062501089;
+                _newFx[6] = 990057071;
+                v4 = 994352038;
+                _newFx[1] = -454;
+                _newFx[5] = -1646;
+                _newFx[7] = 53;
+                goto LABEL_56;
+            }
+            if (_stricmp(preset, "Preset_SewerPipe") == 0)
+            {
+                _newFx[3] = 1077139210;
+                _newFx[4] = 1041194025;
+                _newFx[6] = 1013276738;
+                _newFx[8] = 1017907249;
+                _newFx[9] = 1117782016;
+                v5 = 1114636288;
+                _newFx[0] = -1000;
+                _newFx[1] = -1000;
+                _newFx[5] = 429;
+                _newFx[7] = 648;
+                goto LABEL_58;
+            }
+            if (_stricmp(preset, "Preset_Quarry") == 0)
+            {
+            LABEL_43:
+                _newFx[3] = 1069463634;
+                _newFx[4] = 1062501089;
+                _newFx[6] = 1031396131;
+                v4 = 1020054733;
+                _newFx[0] = -1000;
+                _newFx[1] = -1000;
+                _newFx[5] = -10000;
+                _newFx[7] = 500;
+                goto LABEL_57;
+            }
+            if (_stricmp(preset, "Preset_StoneRoom") == 0)
+            {
+                _newFx[3] = 1075042058;
+                _newFx[4] = 1059313418;
+                _newFx[6] = 1011129254;
+                v4 = 1015759766;
+                _newFx[1] = -300;
+                _newFx[5] = -711;
+                _newFx[7] = 83;
+                goto LABEL_56;
+            }
+            if (_stricmp(preset, "Preset_StoneCorridor") == 0)
+            {
+                _newFx[3] = 1076677837;
+                _newFx[4] = 1061830001;
+                _newFx[6] = 1012202996;
+                v4 = 1017370378;
+                _newFx[1] = -237;
+                _newFx[5] = -1214;
+                _newFx[7] = 395;
+                goto LABEL_56;
+            }
+            if (_stricmp(preset, "Preset_Underwater") == 0)
+            {
+                _newFx[3] = 1069463634;
+                v3 = 1036831949;
+                _newFx[1] = -4000;
+                _newFx[5] = -449;
+                _newFx[7] = 1700;
+                goto LABEL_55;
+            }
+        }
+        _newFx[1] = -10000;
+        _newFx[3] = 1065353216;
+        _newFx[4] = 1065353216;
+        _newFx[6] = 0;
+        memset(&_newFx[8], 0, 12);
+        goto LABEL_60;
+    LABEL_55:
+        _newFx[4] = v3;
+        _newFx[6] = 1004888130;
+        v4 = 1010055512;
+        goto LABEL_56;
+    LABEL_56:
+        _newFx[0] = -1000;
+        goto LABEL_57;
+    LABEL_57:
+        _newFx[8] = v4;
+        v5 = 1120403456;
+        _newFx[9] = 1120403456;
+        goto LABEL_58;
+    LABEL_58:
+        _newFx[10] = v5;
+        _newFx[12] = 25;
+        goto LABEL_62;
+    LABEL_60:
+        _newFx[0] = -10000;
+        _newFx[5] = -10000;
+        _newFx[7] = -10000;
+        goto LABEL_61;
+    LABEL_61:
+        _newFx[12] = -1;
+        goto LABEL_62;
+    LABEL_62:
+        _newFx[13] = 0;
+        _newFx[11] = 1167867904;
+        _newFx[2] = 0;
+        memcpy(this->mTargetReverb, _newFx, sizeof(this->mTargetReverb));
+        memcpy(this->mCurrentReverb, _newFx, sizeof(this->mCurrentReverb));
+        this->mUpdateReverb = true;
+        this->mRemainingReverbBlendTime = 0.0f;
+    }
+}
