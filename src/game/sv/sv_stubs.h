@@ -436,13 +436,34 @@ static_assert(sizeof(SoundDevice) == 31392, "SoundDevice size mismatch");
 // ============================================================================
 // Additional cross-object singleton managers (fields used by sv.o only)
 // ============================================================================
+// SCheckpointGameVar - checkpoint game variable (12 bytes) - verified IDA
+struct SCheckpointGameVar {
+    unsigned int mHashVarName;  // +0x00
+    unsigned int mVal;          // +0x04
+    unsigned int mDataSize;     // +0x08
+};
+
+// ae_vector<T> - dynamic array (12 bytes) - verified against IDA
+template <typename T>
+struct CheckpointVector {
+    T*  mElements;  // +0x00
+    int mCapacity;  // +0x04
+    int mSize;      // +0x08
+};
+
 struct CheckpointMgr {
     bool         mUsingCheckpoints;       // +0x00 (bool)
     uint8_t      _pad01[3];               // +0x01
     int          mPlayerHealth;           // +0x04
     uint8_t      _pad08[0x14 - 0x08];
     math::Position3 mOrigin;              // +0x14 (checkpoint player origin)
-    uint8_t      _pad24[0x350 - 0x24];
+    uint8_t      _pad24[0x50 - 0x24];
+    int          ammo[92];                // +0x50 (0x170 bytes)
+    int          ammoclip[92];            // +0x1C0 (0x170 bytes)
+    int          weapons[2];              // +0x330
+    char         weaponslots[10];         // +0x338
+    int          weaponrechamber[2];      // +0x344
+    int          weapon;                  // +0x34C
     float        mTimeRemainingForHudText;// +0x350
     uint8_t      mCurrentScriptExploded[0x204];   // +0x358 (81 dwords)
     uint8_t      _pad55C[0x574 - 0x55C];
@@ -450,10 +471,10 @@ struct CheckpointMgr {
     uint8_t      _pad575[0x8FC - 0x575];
     Broc::string mEvent;                  // +0x8FC (Broc::string)
     Broc::string mCurrentMapName;         // +0x900 (Broc::string)
-    uint8_t      _pad904[0x910 - 0x904];
+    CheckpointVector<SCheckpointGameVar> mGameVars;  // +0x904 (12 bytes)
     uint8_t      mCheckpointScriptExploded[0x204];  // +0x910 (81 dwords)
     static CheckpointMgr* sInst;          // ?sInst@CheckpointMgr@@2PAV1@A
-    void ClearSavedCheckpointData();
+    void ClearSavedCheckpointData();       // ?ClearSavedCheckpointData@CheckpointMgr@@QAEXXZ (game.o 0x640E60)
     void SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // ?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z
     void SetCheckpointCvar();             // ?SetCheckpointCvar@CheckpointMgr@@QAEXXZ
     void RestoreExplodedExploders();      // ?RestoreExplodedExploders@CheckpointMgr@@QAEXXZ
@@ -461,9 +482,19 @@ struct CheckpointMgr {
     void SetTosserValues();               // ?SetTosserValues@CheckpointMgr@@QAEXXZ (game.o 0x609340)
     void RestoreScriptExploders();        // ?RestoreScriptExploders@CheckpointMgr@@QAEXXZ (game.o 0x609350)
     bool Restart();                       // ?Restart@CheckpointMgr@@QAE_NXZ (game.o 0x609330)
+    void SetEvent(const char* checkpointName);  // ?SetEvent@CheckpointMgr@@QAEXPBD@Z (game.o 0x618120)
+    void RestoreLastCheckpoint();         // ?RestoreLastCheckpoint@CheckpointMgr@@QAEXXZ (game.o 0x618130)
+    bool GetGameVar(unsigned int hashVarName, unsigned int* val,
+                    unsigned int dataSize);  // ?GetGameVar@CheckpointMgr@@QAE_NIPAI I@Z (game.o 0x6182C0)
+    void SetGameVar(unsigned int hashVarName, unsigned int* val,
+                    unsigned int dataSize);  // ?SetGameVar@CheckpointMgr@@QAEXIPAI I@Z (game.o 0x622290)
+    bool ExploderCheckpointExploded(int exploderId);  // ?ExploderCheckpointExploded@CheckpointMgr@@QAE_NH@Z (game.o 0x622330)
+    bool PrecludeExploderPiece(const char* exploderType,
+                               int exploderId);  // ?PrecludeExploderPiece@CheckpointMgr@@QAE_NPBDH@Z (game.o 0x622370)
 };
-// size not asserted (opaque; verified fields at +0x00/+0x04/+0x350/+0x358/
-// +0x574/+0x8FC/+0x910 from checkpointmgr.cpp disasm)
+// size not asserted (opaque; verified fields at +0x00/+0x04/+0x50/+0x1C0/
+// +0x330/+0x338/+0x344/+0x34C/+0x350/+0x358/+0x574/+0x904/+0x910 from
+// checkpointmgr.cpp disasm)
 
 struct PakManager {
     uint8_t _pad[0x28];
