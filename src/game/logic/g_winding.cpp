@@ -10,6 +10,21 @@
 #include <string.h>
 
 // ============================================================================
+// proximity_data_t placement allocators - ea: 0x60BFE0..0x60C000
+// ============================================================================
+// ea: 0x0060BFE0
+void* proximity_data_t::operator new(size_t s, TPakId pakID)
+{
+    return PakManager::sInst->MemAlloc(pakID, (unsigned int)s, true);
+}
+
+// ea: 0x0060C000
+void proximity_data_t::operator delete(void* ptr, TPakId pakID)
+{
+    PakManager::sInst->MemFree(pakID, ptr, true);
+}
+
+// ============================================================================
 // winding_t - polygon winding (points * 12 bytes + 4-byte numpoints)
 // ============================================================================
 struct winding_t {

@@ -18,6 +18,8 @@ struct cmd_t {
 };
 static cmd_t cmd_text;               // ?cmd_text@@3Ucmd_t@@A (game.o)
 static unsigned char cmd_text_buf[8192];
+static cmd_t sv_cmd_text;            // ?sv_cmd_text@@3Ucmd_t@@A (game.o)
+static unsigned char sv_cmd_text_buf[8192];
 static int cmd_argc;                 // ?cmd_argc@@3HA (game.o)
 static char* cmd_argv[512];
 static char cmd_tokenized[8192];
@@ -29,7 +31,37 @@ struct BaseCmdFuncInfo {
     const char* mName;      // +0x04
     BaseCmdFuncInfo* mNext; // +0x08
     void* mFuncPtr;         // +0x0C
+    static int DoesFunctionExist(BaseCmdFuncInfo* cmd);  // ?DoesFunctionExist@BaseCmdFuncInfo@@SAHPAU1@@Z
 };
+
+// ea: 0x0060E450
+void Cbuf_Init()
+{
+    cmd_text.data = (char*)cmd_text_buf;
+    cmd_text.maxsize = 0x2000;
+    cmd_text.cmdsize = 0;
+    sv_cmd_text.data = (char*)sv_cmd_text_buf;
+    sv_cmd_text.maxsize = 0x2000;
+    sv_cmd_text.cmdsize = 0;
+}
+
+// ea: 0x0060E420
+int BaseCmdFuncInfo::DoesFunctionExist(BaseCmdFuncInfo* cmd)
+{
+    int mFuncType = cmd->mFuncType;
+    return (mFuncType == CMD && cmd[1].mNext != nullptr)
+        || (mFuncType == INPUT_CMD && cmd[1].mNext != nullptr);
+}
+
+// ea: 0x0060F230
+void Link_Init()
+{
+}
+
+// ea: 0x0060F240
+void Link_Frame()
+{
+}
 static BaseCmdFuncInfo* cmd_functions;      // ?cmd_functions (game.o)
 static BaseCmdFuncInfo* sv_cmd_functions;   // ?sv_cmd_functions (game.o)
 

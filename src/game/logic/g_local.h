@@ -2475,6 +2475,8 @@ struct proximity_data_t {
     proxy_obj_t* const* polies_slot;    // +0x1840
     int             polies_count;       // +0x1844
     uint8_t         _pad1848[0x1850 - 0x1848];
+    static void* operator new(size_t s, TPakId pakID);  // ??2proximity_data_t@@SAPAXIW4TPakId@@@Z (game.o 0x60BFE0)
+    static void operator delete(void* ptr, TPakId pakID);  // ??3proximity_data_t@@SAXPAXW4TPakId@@@Z (game.o 0x60C000)
 };
 static_assert(sizeof(proximity_data_t) == 0x1850,
               "proximity_data_t size mismatch");
