@@ -6030,6 +6030,122 @@ bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
 }
 
 // ============================================================================
+// collide_segment (triangle mesh) - ea: 0x61EB80 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x0061EB80
+bool collide_segment(const cdl_object_t& obj, const math::Dir3* vert_list,
+                     const unsigned char* index_list,
+                     unsigned short first_vert, int num_indices,
+                     const math::Position3& p0, const math::Position3& p1,
+                     float& t, math::Position3& normal, int* tid)
+{
+    math::Dir3 center;
+    center.v = _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                           0.0f);
+    __m128 delta = _mm_sub_ps(p1.v, p0.v);
+    __m128 toCenter = _mm_sub_ps(center.v, p0.v);
+    __m128 c2 = _mm_mul_ps(toCenter, toCenter);
+    float dist2 = c2.m128_f32[0] + c2.m128_f32[1] + c2.m128_f32[2];
+    float r2 = obj.sphere_radius * obj.sphere_radius;
+    if (dist2 > r2)
+    {
+        __m128 proj = _mm_mul_ps(toCenter, delta);
+        float pd = proj.m128_f32[0] + proj.m128_f32[1] + proj.m128_f32[2];
+        if (pd < 0.0f)
+            return false;
+        __m128 d2 = _mm_mul_ps(delta, delta);
+        float dl = d2.m128_f32[0] + d2.m128_f32[1] + d2.m128_f32[2];
+        float pc = pd * pd;
+        if ((dl * dist2 - pc) > (dl * r2))
+            return false;
+    }
+    bool hit = false;
+    if (num_indices % 3 != 0
+        && _tlAssert("c:\\cod\\code\\game\\CollisionMgr.cpp", 4340,
+                     "num_indices % 3 == 0", defaultFileName))
+        __debugbreak();
+    if (tid != nullptr)
+        *tid = -1;
+    if (num_indices > 0)
+    {
+        for (int i = 0; i < num_indices; i += 3)
+        {
+            math::Dir3 v0 =
+                vert_list[first_vert + index_list[i]];
+            math::Dir3 v1 =
+                vert_list[first_vert + index_list[i + 1]];
+            math::Dir3 v2 =
+                vert_list[first_vert + index_list[i + 2]];
+            math::Position3 pv0;
+            math::Position3 pv1;
+            math::Position3 pv2;
+            pv0.v = v0.v;
+            pv1.v = v1.v;
+            pv2.v = v2.v;
+            math::Vector4 n = calc_normal(pv0, pv1, pv2);
+            __m128 nd = _mm_mul_ps(delta, n.v);
+            float ndv = nd.m128_f32[0] + nd.m128_f32[1] + nd.m128_f32[2];
+            if (ndv >= 0.0f)
+                continue;
+            __m128 p0n = _mm_mul_ps(n.v, p0.v);
+            float d0 = p0n.m128_f32[0] + p0n.m128_f32[1]
+                + p0n.m128_f32[2] + n.v.m128_f32[3];
+            __m128 p1n = _mm_mul_ps(n.v, p1.v);
+            float d1 = p1n.m128_f32[0] + p1n.m128_f32[1]
+                + p1n.m128_f32[2] + n.v.m128_f32[3];
+            if (d0 * d1 >= 0.0f)
+                continue;
+            float frac = d0 / (d0 - d1);
+            if (t > frac)
+            {
+                math::Position3 p;
+                p.v = _mm_add_ps(p0.v, _mm_mul_ps(delta, _mm_set1_ps(frac)));
+                __m128 e0 = _mm_sub_ps(v0.v, v1.v);
+                __m128 e1 = _mm_sub_ps(v1.v, v2.v);
+                __m128 e2 = _mm_sub_ps(v2.v, v0.v);
+                __m128 q0 = _mm_sub_ps(p.v, v1.v);
+                __m128 q1 = _mm_sub_ps(p.v, v2.v);
+                __m128 q2 = _mm_sub_ps(p.v, v0.v);
+                __m128 c0 = _mm_sub_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(e0, e0, 0x09),
+                               _mm_shuffle_ps(q0, q0, 0x12)),
+                    _mm_mul_ps(_mm_shuffle_ps(e0, e0, 0x12),
+                               _mm_shuffle_ps(q0, q0, 0x09)));
+                float b0 = c0.m128_f32[0] + c0.m128_f32[1]
+                    + c0.m128_f32[2];
+                __m128 c1 = _mm_sub_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(e1, e1, 0x09),
+                               _mm_shuffle_ps(q1, q1, 0x12)),
+                    _mm_mul_ps(_mm_shuffle_ps(e1, e1, 0x12),
+                               _mm_shuffle_ps(q1, q1, 0x09)));
+                float b1 = c1.m128_f32[0] + c1.m128_f32[1]
+                    + c1.m128_f32[2];
+                __m128 c2x = _mm_sub_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(e2, e2, 0x09),
+                               _mm_shuffle_ps(q2, q2, 0x12)),
+                    _mm_mul_ps(_mm_shuffle_ps(e2, e2, 0x12),
+                               _mm_shuffle_ps(q2, q2, 0x09)));
+                float b2 = c2x.m128_f32[0] + c2x.m128_f32[1]
+                    + c2x.m128_f32[2];
+                float bary[3] = { b2, b0, b1 };
+                if ((_mm_movemask_ps(_mm_cmplt_ps(
+                         _mm_setr_ps(bary[0], bary[1], bary[2], 0.0f),
+                         _mm_setzero_ps()))
+                     & 7) == 0)
+                {
+                    t = frac;
+                    normal.v = n.v;
+                    hit = true;
+                    if (tid != nullptr)
+                        *tid = i;
+                }
+            }
+        }
+    }
+    return hit;
+}
+
+// ============================================================================
 // collide_segment (proximity, void) - ea: 0x6350B0 (CollisionMgr.cpp)
 // ============================================================================
 // ea: 0x006350B0
