@@ -290,6 +290,10 @@ struct trRefEntity {
     uint8_t iflIndex;        // +0xFC
     uint8_t _padFD[3];       // +0xFD
     int32_t mSnapshotId;     // +0x100
+
+    trRefEntity(int foo);    // ??0trRefEntity@@QAE@H@Z (game.o 0x6618B0)
+    void* operator new(size_t s, void* p) { return p; }  // placement
+    void SetInSnapshot();    // ?SetInSnapshot@trRefEntity@@QAEXXZ (render.o)
 };
 static_assert(sizeof(trRefEntity) == 0x104, "trRefEntity size mismatch");
 static_assert(offsetof(trRefEntity, iflIndex) == 0xFC, "trRefEntity::iflIndex offset mismatch");
@@ -590,6 +594,7 @@ public:
 
     void Init(int num);     // ?Init@?$cFreeList@...@@QAEXH@Z core.o
     void Shutdown();        // ?Shutdown@?$cFreeList@...@@QAEXXZ core.o
+    T* Alloc();             // ?Alloc@?$cFreeList@...@@QAEPA...XZ (core.o)
 };
 extern cFreeList<Entity> gEntFreeList;        // 0xF50D04
 

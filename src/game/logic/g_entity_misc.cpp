@@ -178,3 +178,142 @@ void CGBankManager::UnloadAll()
 void render_brush()
 {
 }
+
+// ============================================================================
+// Entity helpers - ea: 0x611F00..0x639170
+// ============================================================================
+extern void AnglesToAxis(const math::Position3* angles,
+                         const math::Position3* origin,
+                         math::Mat43* mat);  // core.o (3-arg variant)
+extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME (core.o)
+
+// ============================================================================
+// Entity::CalcRotTranMat43 - ea: 0x611F40
+// ============================================================================
+// ea: 0x00611F40
+math::Mat43 Entity::CalcRotTranMat43()
+{
+    math::Mat43 result;
+    AnglesToAxis(&this->r.currentAngles, &this->r.currentOrigin,
+                 &this->r.currentMat);
+    result = this->r.currentMat;
+    return result;
+}
+
+// ============================================================================
+// Entity::IsVisible - ea: 0x6122A0
+// ============================================================================
+// ea: 0x006122A0
+int Entity::IsVisible() const
+{
+    DObj* mDObj = this->mDObj;
+    return mDObj != nullptr
+        && (g_DOBJF_NOT_RENDERED_LAST_FRAME & mDObj->mFlags) == 0;
+}
+
+// ============================================================================
+// Entity::IsDoingPhysics - ea: 0x6122D0
+// ============================================================================
+// ea: 0x006122D0
+bool Entity::IsDoingPhysics()
+{
+    bool result = false;
+    if (this->client != nullptr)
+    {
+        biped_phys_info* mBPInfo = this->mBPInfo;
+        if (mBPInfo != nullptr && mBPInfo->m_bp_sys != nullptr)
+            return true;
+    }
+    return result;
+}
+
+// ============================================================================
+// Entity::IsInRagdoll - ea: 0x612300
+// ============================================================================
+// ea: 0x00612300
+bool Entity::IsInRagdoll()
+{
+    return (this->flags & 0x400000) != 0;
+}
+
+// ============================================================================
+// Entity::IsLocalPlayer - ea: 0x612310
+// ============================================================================
+// ea: 0x00612310
+bool Entity::IsLocalPlayer() const
+{
+    Client* client = this->client;
+    return client != nullptr
+        && (int)client->mServerClientIndex >= 0
+        && *(int*)((char*)&svs.clients[client->mServerClientIndex].netchan[8])
+            == 2;
+}
+
+// ============================================================================
+// Entity::GetPlayerIndex - ea: 0x612340
+// ============================================================================
+// ea: 0x00612340
+int Entity::GetPlayerIndex() const
+{
+    if (this->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 1041;
+        AeAssert::gCurrentExpr = "client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Calling GetPlayerIndex on a non-player entity"))
+            __debugbreak();
+    }
+    Client* client = this->client;
+    if (client != nullptr)
+        return client->mServerClientIndex;
+    return -1;
+}
+
+// ============================================================================
+// Entity::FreeAllDObjs - ea: 0x62A8A0
+// ============================================================================
+// ea: 0x0062A8A0
+void Entity::FreeAllDObjs(bool deleteDObjs)
+{
+    Entity** p_mActiveList = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity** v2 = &EntityHandleDb::sInst.mActiveList.m_elements[
+        EntityHandleDb::sInst.mActiveList.m_size];
+    if (v2 != p_mActiveList)
+    {
+        do
+        {
+            if (*p_mActiveList != nullptr)
+                (*p_mActiveList)->FreeDObj(deleteDObjs);
+            ++p_mActiveList;
+        } while (p_mActiveList != v2);
+    }
+}
+
+// ============================================================================
+// Entity::GetRenderEntity - ea: 0x62AF30
+// ============================================================================
+// ea: 0x0062AF30
+trRefEntity& Entity::GetRenderEntity()
+{
+    if (this->mRenderEntity == nullptr)
+    {
+        trRefEntity* v2 = gRefEntFreeList.Alloc();
+        this->mRenderEntity = v2 != nullptr
+            ? new (v2) trRefEntity(0)
+            : nullptr;
+    }
+    return *this->mRenderEntity;
+}
+
+// ============================================================================
+// Entity::SetInSnapshot - ea: 0x639170
+// ============================================================================
+// ea: 0x00639170
+void Entity::SetInSnapshot()
+{
+    trRefEntity& RenderEntity = GetRenderEntity();
+    RenderEntity.SetInSnapshot();
+}

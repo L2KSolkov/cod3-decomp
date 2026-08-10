@@ -22,7 +22,11 @@ class Entity;
 class DObj;
 struct EntityNotifySet;
 struct ScriptEventHandler;
-struct biped_phys_info;
+struct biped_system;
+struct biped_phys_info {
+    uint8_t _pad[0x568];       // +0x00
+    struct biped_system* m_bp_sys;  // +0x568
+};
 class Destructible;
 struct Client;
 struct scr_vehicle_t;
@@ -265,7 +269,6 @@ public:
     static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
-    math::Mat43 CalcRotTranMat43();              // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
     void Notify(HashString h, const int& d, Broc::entity* e, int* mod,
@@ -276,13 +279,16 @@ public:
     void CreateDObj(DObjModel* models, unsigned short numModels,
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)
     bool IsEnemy(Entity* ent);                   // ?IsEnemy@Entity@@QAE_NPAV1@@Z (game.o)
-    bool IsLocalPlayer();                            // ?IsLocalPlayer@Entity@@QBE_NXZ
-    int  GetPlayerIndex();                           // ?GetPlayerIndex@Entity@@QBEHXZ
-    int  IsVisible() const;                          // ?IsVisible@Entity@@QBEHXZ (game.o)
+    math::Mat43 CalcRotTranMat43();               // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (game.o)
+    int IsVisible() const;                        // ?IsVisible@Entity@@QBEHXZ (game.o)
+    bool IsDoingPhysics();                        // ?IsDoingPhysics@Entity@@QAE_NXZ (game.o)
+    bool IsInRagdoll();                           // ?IsInRagdoll@Entity@@QAE_NXZ (game.o)
+    bool IsLocalPlayer() const;                   // ?IsLocalPlayer@Entity@@QBE_NXZ (game.o)
+    int GetPlayerIndex() const;                   // ?GetPlayerIndex@Entity@@QBEHXZ (game.o)
+    trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ (game.o)
+    void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ (game.o)
     EntityState  s;                               // +0x000 (224 bytes)
-    void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ
     static void SetLerpOrigin(EntityState* s, const math::Position3* origin);  // ?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z
-    trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ
     EntityShared r;                               // +0x0E0 (336 bytes)
     int32_t  mPakId;                              // +0x230
     DbLinkedHandle<EntityHandleDb, Entity> mHandle;         // +0x234
