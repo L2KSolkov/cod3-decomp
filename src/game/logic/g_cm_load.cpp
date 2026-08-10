@@ -5345,6 +5345,94 @@ void collide_segment(const proximity_data_t& data,
 }
 
 // ============================================================================
+// collide_segment_poly - ea: 0x61F010 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x0061F010
+bool collide_segment_poly(const math::Position3& p0,
+                          const math::Position3& p1, cdl_poly_inl_t& poly,
+                          cdl_cinfo1& cinfo)
+{
+    if (!poly.valid)
+        return false;
+
+    const float* n = poly.n;
+    float v5 = n[3];
+    float v30 = n[0] * p0.v.m128_f32[0]
+        + n[1] * p0.v.m128_f32[1]
+        + n[2] * p0.v.m128_f32[2];
+    float v29 = n[0] * p1.v.m128_f32[0]
+        + n[1] * p1.v.m128_f32[1]
+        + n[2] * p1.v.m128_f32[2];
+    float v8 = v30 + v5;
+    float v9 = v29 + v5;
+    if (v8 <= 0.000099999997f || v9 > 0.0f)
+    {
+        poly.valid = false;
+        return 0;
+    }
+
+    // closest point on segment to the triangle plane
+    math::Position3 cp;
+    cp.v = _mm_div_ps(
+        _mm_sub_ps(_mm_mul_ps(p0.v, _mm_set1_ps(v9)),
+                   _mm_mul_ps(p1.v, _mm_set1_ps(v8))),
+        _mm_set1_ps(v9 - v8));
+
+    const float* v0 = poly.v0;
+    const float* v1 = poly.v1;
+    const float* v2 = poly.v2;
+    __m128 v16 = _mm_sub_ps(
+        _mm_setr_ps(v0[0], v0[1], v0[2], v0[3]),
+        _mm_setr_ps(v1[0], v1[1], v1[2], v1[3]));
+    __m128 v17 = _mm_sub_ps(
+        cp.v, _mm_setr_ps(v1[0], v1[1], v1[2], v1[3]));
+    __m128 v18 = _mm_sub_ps(
+        cp.v, _mm_setr_ps(v2[0], v2[1], v2[2], v2[3]));
+    __m128 v19 = _mm_sub_ps(
+        _mm_setr_ps(v1[0], v1[1], v1[2], v1[3]),
+        _mm_setr_ps(v2[0], v2[1], v2[2], v2[3]));
+    __m128 v20 = _mm_sub_ps(
+        _mm_setr_ps(v2[0], v2[1], v2[2], v2[3]),
+        _mm_setr_ps(v0[0], v0[1], v0[2], v0[3]));
+    __m128 v21 = _mm_sub_ps(
+        cp.v, _mm_setr_ps(v0[0], v0[1], v0[2], v0[3]));
+    __m128 pn = _mm_setr_ps(n[0], n[1], n[2], n[3]);
+
+    __m128 a = _mm_mul_ps(
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v16, v16, 9),
+                       _mm_shuffle_ps(v17, v17, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(v16, v16, 18),
+                       _mm_shuffle_ps(v17, v17, 9))),
+        pn);
+    float s0 = a.m128_f32[0] + (a.m128_f32[1] + a.m128_f32[2]);
+    __m128 b = _mm_mul_ps(
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v19, v19, 9),
+                       _mm_shuffle_ps(v18, v18, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(v19, v19, 18),
+                       _mm_shuffle_ps(v18, v18, 9))),
+        pn);
+    float s1 = b.m128_f32[0] + (b.m128_f32[1] + b.m128_f32[2]);
+    __m128 c = _mm_mul_ps(
+        _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v20, v20, 9),
+                       _mm_shuffle_ps(v21, v21, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(v20, v20, 18),
+                       _mm_shuffle_ps(v21, v21, 9))),
+        pn);
+    float s2 = c.m128_f32[0] + (c.m128_f32[1] + c.m128_f32[2]);
+    if (s0 < 0.0f || s1 < 0.0f || s2 < 0.0f)
+    {
+        poly.valid = false;
+        return 0;
+    }
+    cinfo.ni.v = _mm_setr_ps(n[0], n[1], n[2], n[3]);
+    cinfo.pi = cp;
+    return 1;
+}
+
+// ============================================================================
 // TestInLeaf / SightTraceThroughLeaf - ea: 0x623D40 / 0x624070
 // (CollisionMgr.cpp DCGSet leaf sweep)
 // ============================================================================

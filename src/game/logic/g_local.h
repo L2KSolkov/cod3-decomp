@@ -2243,9 +2243,9 @@ struct traceWork_t;
 struct cdl_cinfo1;
 struct cdl_poly_inl_t;
 struct cdlPlane;
-extern bool collide_segment_poly(const math::Position3& p0,
-                                 const math::Position3& p1,
-                                 void* poly, void* cinfo);  // game.o
+bool collide_segment_poly(const math::Position3& p0,
+                          const math::Position3& p1, cdl_poly_inl_t& poly,
+                          cdl_cinfo1& cinfo);  // game.o 0x61F010
 bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
                      const math::Position3& p0, const math::Position3& p1,
                      cdl_cinfo1& cinfo, int& sflags,
