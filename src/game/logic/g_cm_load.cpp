@@ -2617,6 +2617,33 @@ void TraceSphereThroughLeaf(traceWork_t* tw, const DCGSet* set)
 }
 
 // ============================================================================
+// ClipHandleToDCGSet - ea: 0x622C00 (CollisionMgr.cpp)
+// ============================================================================
+struct DCGBankManager {
+    static DCGBankManager* sInst;  // ?sInst@DCGBankManager@@2PAV1@A @ 0xF4F43C
+    const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
+};
+DCGBankManager* DCGBankManager::sInst = nullptr;
+
+// ea: 0x00622C00
+DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle)
+{
+    if (handle == 0)
+        return nullptr;
+    if (handle != 4095 && handle != 4094)
+        return (DCGSet*)DCGBankManager::sInst->GetDCGSet(pakId, handle);
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+    AeAssert::gCurrentLine = 1224;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning(
+            " COME SEE STAVRO IMMEDIATELY IF YOU GET THIS!!!! "))
+        __debugbreak();
+    return gBoxDCGSet;
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0

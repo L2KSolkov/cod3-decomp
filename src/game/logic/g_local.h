@@ -2631,6 +2631,7 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
                    const math::Position3* maxs, int* list, int listsize,
                    int* lastLeaf);  // game.o 0x6194A0
 void CM_LoadMap(const char* name, int clientload, int* checksum);  // game.o 0x618390
+DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle);  // game.o 0x622C00
 int CM_LoadLump(int lumpnum, char** pBuf);          // game.o 0x618410
 void CM_FreeLump();                                  // game.o 0x6093B0
 int CM_NumClusters();                                // game.o 0x6093C0
