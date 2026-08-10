@@ -3773,6 +3773,7 @@ bool sight_trace_sphere(traceWork_t* tw)
 
 static cdl_proftimer cdl_proftimer_vsphere_poly;   // game.o @ 0xF439B8
 static cdl_proftimer cdl_proftimer_vsphere_patch;  // game.o @ 0xF3BFE0
+extern cdl_proftimer cdl_proftimer_temp0;          // game.o @ 0xF4EB18
 
 // ============================================================================
 // collide_velocity_sphere - ea: 0x627250 (CollisionMgr.cpp)
@@ -8332,6 +8333,26 @@ int CM_TraceBox(const math::Position3& start, const math::Position3& end,
         bounds[1] = maxs.v.m128_f32[1];
         bounds[2] = maxs.v.m128_f32[2];
     }
+}
+
+// ============================================================================
+// CM_ClipMoveToEntities - ea: 0x60BF60 (cm_world.cpp)
+// ============================================================================
+// ea: 0x0060BF60
+void CM_ClipMoveToEntities(moveclip_t* clip)
+{
+    if (clip->trace.fraction > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 1251;
+        AeAssert::gCurrentExpr = "clip->trace.fraction <= 1.f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("%f", clip->trace.fraction))
+            __debugbreak();
+    }
+    cdl_proftimer_temp0.start();
+    cdl_proftimer_temp0.stop();
 }
 
 // ea: 0x006093D0
