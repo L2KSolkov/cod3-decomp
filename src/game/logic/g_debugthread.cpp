@@ -90,6 +90,45 @@ extern void RE_Text_Paint(float x, float y, int font, float scale,
 extern int mem_get_high_used_bytes(int heap_name);  // ?mem_get_high_used_bytes@@YAHW4mem_heap_type@@@Z (mem_heap)
 
 // ============================================================================
+// nalGeneric local surface (animation/nal.cpp; used by AnimationPlayer)
+// ============================================================================
+struct nalPositionOrientationLocal {
+    math::Position3 pos;    // +0x00
+    math::Dir3 orient;      // +0x10
+};
+struct nalMatrix4x4Local {
+    float m[4][4];          // +0x00
+};
+
+namespace nalGeneric {
+class nalGenericBoneHandle {
+public:
+    unsigned int index;   // +0x00
+    void* skeleton;       // +0x04
+};
+class nalGenericPose {
+public:
+    unsigned char* m_data;  // +0x00
+    unsigned int m_size;    // +0x04
+    nalGenericPose& operator=(const nalGenericPose& other);
+    nalPositionOrientationLocal GetModelPositionOrientation(
+        const nalGenericBoneHandle& handle) const;  // ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z
+};
+class nalGenericSkeleton {
+public:
+    void GetBoneHandle(nalGenericBoneHandle& handle,
+                       const tlFixedString& boneName);  // ?GetBoneHandle@nalGenericSkeleton@nalGeneric@@QBEXAAVnalGenericBoneHandle@2@ABVtlFixedString@@@Z
+};
+void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
+           const nalGenericPose& b);  // ?Blend@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z
+void BlendTorso(nalGenericPose& out, float blend, const nalGenericPose& a,
+                const nalGenericPose& b);  // ?BlendTorso@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z
+}  // namespace nalGeneric
+
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);  // ?_tlAssert@@YA_NPBDH00@Z (tl_system.o)
+
+// ============================================================================
 // DebugThread message globals (game2.o data)
 // ============================================================================
 extern float gDebugThread_MessageRGB[3];
@@ -1001,8 +1040,43 @@ public:
         virtual bool Invoke(AnimationPlayer* player);  // ea: 0x4F5F10
     };
 
+    // nalAnimState - 0x2C (IDA verified)
+    struct nalAnimState {
+        void* instance;      // +0x00
+        float speed;         // +0x04
+        float tlimit;        // +0x08
+        void* callback;      // +0x0C
+        void* play_method;   // +0x10
+        float t;             // +0x14
+        float t_prev;        // +0x18
+        float alpha;         // +0x1C
+        float maxAlpha;      // +0x20
+        float fadein_rate;   // +0x24
+        int state;           // +0x28
+
+        bool Update(AnimationPlayer* player, float delta);  // ?Update@nalAnimState@AnimationPlayer@@QAE_NPAV2@M@Z
+        void Compose(nalGeneric::nalGenericPose& pose,
+                     nalGeneric::nalGenericPose& tmpPose);  // ?Compose@nalAnimState@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@0@Z
+    };
+
+    // nalPartialAnimState - 0x44 (IDA verified)
+    struct nalPartialAnimState {
+        nalAnimState base;   // +0x00
+        unsigned int CreationAdvanceCount;  // +0x2C
+        nalPartialAnimState* next;  // +0x30
+        unsigned int mask;   // +0x34
+        float priority;      // +0x38
+        float fadeout_rate;  // +0x3C
+        int type;            // +0x40
+
+        bool Update(AnimationPlayer* player, float delta);  // ?Update@nalPartialAnimState@AnimationPlayer@@QAE_NPAV2@M@Z
+    };
+
     void Advance(float delta);  // ea: 0x4FA550
     static void DebugDump(Entity* ent);  // ea: 0x4F5D30
+    void GetPose(nalGeneric::nalGenericPose& Pose,
+                 nalGeneric::nalGenericSkeleton* Skeleton,
+                 float (*animIKGunOffset)[3]);  // ea: 0x4FA690
 };
 
 extern void* nalPlayMethod_vftable;   // ??_7nalPlayMethod@AnimationPlayer@@6B@
@@ -1544,78 +1618,47 @@ void* AnimationPlayer::nalPlayMethod::CreateInstance(void* anim, void* skeleton)
 }
 
 // ============================================================================
-// AnimationPlayer queue state views (game2.o AnimationPlayer.cpp)
-// ============================================================================
-struct nalAnimStateLocal {
-    void* instance;        // +0x00
-    float speed;           // +0x04
-    float t;               // +0x08
-    void* play_method;     // +0x0C nalPlayMethod*
-    void* callback;        // +0x10 nalAnimCallback*
-    void* next;            // +0x14
-    float weight;          // +0x18
-};
-struct nalPartialAnimStateLocal {
-    void* instance;        // +0x00
-    float alpha;           // +0x04
-    float t;               // +0x08
-    void* play_method;     // +0x0C
-    void* callback;        // +0x10
-    void* next;            // +0x14
-    int type;              // +0x18
-    int CreationAdvanceCount;  // +0x1C
-};
-struct AnimationPlayerLocal {
-    void* BackgroundPose;  // +0x00 nalGenericPose*
-    int AdvanceCount;      // +0x04
-    int QueueSize;         // +0x08
-    void* AnimStates;      // +0x0C nalAnimState*[8]
-    void* PartialAnimStates;   // +0x10
-    void* PartialAnimStatePool;  // +0x14
-};
-
-extern bool AnimationPlayer_nalPartialAnimState_Update(void* self,
-                                                       void* player,
-                                                       float delta);  // ?Update@nalPartialAnimState@AnimationPlayer@@QAE_NPAV2@M@Z (game2.o)
-extern bool AnimationPlayer_nalAnimState_Update(void* self, void* player,
-                                                float delta);  // ?Update@nalAnimState@AnimationPlayer@@QAE_NPAV2@M@Z
-extern void AnimationPlayer_nalAnimState_Compose(void* self, void* pose,
-                                                 void* tmpPose);  // ?Compose@nalAnimState@AnimationPlayer@@QAEXPAVnalGenericPose@nalGeneric@@0@Z
-
-// ============================================================================
 // AnimationPlayer::Advance - ea: 0x4FA550
 // ============================================================================
 void AnimationPlayer::Advance(float delta)
 {
-    AnimationPlayerLocal* self = (AnimationPlayerLocal*)this;
+    struct AnimationPlayerLayout {
+        void* Skeleton;             // +0x00
+        unsigned char BackgroundPose[0x10];  // +0x04
+        unsigned char tmpPose[0x10];         // +0x14
+        int QueueSize;              // +0x24
+        nalAnimState* AnimStates[3];  // +0x28
+        nalPartialAnimState* PartialAnimStates;   // +0x34
+        nalPartialAnimState* PartialAnimStatePool; // +0x38
+        unsigned int AdvanceCount;  // +0x3C
+    };
+    AnimationPlayerLayout* self = (AnimationPlayerLayout*)this;
     ++self->AdvanceCount;
-    void** p_PartialAnimStates = &self->PartialAnimStates;
-    void* PartialAnimStates = self->PartialAnimStates;
+    nalPartialAnimState** p_PartialAnimStates = &self->PartialAnimStates;
+    nalPartialAnimState* PartialAnimStates = self->PartialAnimStates;
     while (PartialAnimStates != nullptr)
     {
-        nalPartialAnimStateLocal* ps =
-            (nalPartialAnimStateLocal*)PartialAnimStates;
+        nalPartialAnimState* ps = PartialAnimStates;
         if (ps->CreationAdvanceCount != self->AdvanceCount)
         {
-            if (AnimationPlayer_nalPartialAnimState_Update(ps, this, delta))
+            if (ps->Update(this, delta))
             {
                 if (*p_PartialAnimStates != PartialAnimStates)
                 {
-                    void* cur = *p_PartialAnimStates;
+                    nalPartialAnimState* cur = *p_PartialAnimStates;
                     do
                     {
-                        p_PartialAnimStates =
-                            &((nalPartialAnimStateLocal*)cur)->next;
+                        p_PartialAnimStates = &cur->next;
                         cur = *p_PartialAnimStates;
                     } while (cur != PartialAnimStates);
                 }
                 *p_PartialAnimStates = ps->next;
-                if (ps->callback != nullptr)
-                    (*(void(**)(void*))ps->callback)(ps->callback);
-                if (ps->play_method != nullptr)
-                    (*(void(**)(void*))ps->play_method)(ps->play_method);
-                if (ps->instance != nullptr)
-                    (*(void(**)(void*, int))ps->instance)(ps->instance, 1);
+                if (ps->base.callback != nullptr)
+                    (*(void(**)(void*))ps->base.callback)(ps->base.callback);
+                if (ps->base.play_method != nullptr)
+                    (*(void(**)(void*))ps->base.play_method)(ps->base.play_method);
+                if (ps->base.instance != nullptr)
+                    (*(void(**)(void*, int))ps->base.instance)(ps->base.instance, 1);
                 ps->next = self->PartialAnimStatePool;
                 self->PartialAnimStatePool = ps;
             }
@@ -1631,9 +1674,9 @@ void AnimationPlayer::Advance(float delta)
     {
         for (;;)
         {
-            void** v10 = &((void**)self->AnimStates)[v9];
-            void* cur = *v10;
-            bool v11 = AnimationPlayer_nalAnimState_Update(cur, this, delta);
+            nalAnimState** v10 = &self->AnimStates[v9];
+            nalAnimState* cur = *v10;
+            bool v11 = cur->Update(this, delta);
             int QueueSize = self->QueueSize;
             if (v9 < QueueSize)
             {
@@ -1655,10 +1698,10 @@ void AnimationPlayer::Advance(float delta)
     int newSize = v9;
     if (v9 < self->QueueSize)
     {
-        void** deltaa = &((void**)self->AnimStates)[v9];
+        nalAnimState** deltaa = &self->AnimStates[v9];
         do
         {
-            nalAnimStateLocal* st = (nalAnimStateLocal*)*deltaa;
+            nalAnimState* st = *deltaa;
             if (st->callback != nullptr)
                 (*(void(**)(void*))st->callback)(st->callback);
             if (st->play_method != nullptr)
@@ -1671,20 +1714,6 @@ void AnimationPlayer::Advance(float delta)
     }
     self->QueueSize = newSize;
 }
-
-// ============================================================================
-// AnimationPlayer::DebugDump - ea: 0x4F5D30
-// ============================================================================
-struct nalAnimStateDebug {
-    void* instance;        // +0x00
-    float speed;           // +0x04
-    float t;               // +0x08
-    void* play_method;     // +0x0C
-    void* callback;        // +0x10
-    void* next;            // +0x14
-    int animType;          // +0x18 (2 = playing)
-    int flags;             // +0x1C
-};
 
 static const char* AnimDebugTypeString(int type)
 {
@@ -1710,44 +1739,186 @@ void AnimationPlayer::DebugDump(Entity* ent)
         return;
     float col[4] = { 1.0f, 0.5f, 0.0f, 1.0f };
     char textBuff[512];
-    AnimationPlayerLocal* self = (AnimationPlayerLocal*)v2;
+    struct APLayout {
+        void* Skeleton;             // +0x00
+        unsigned char BackgroundPose[0x10];  // +0x04
+        unsigned char tmpPose[0x10];         // +0x14
+        int QueueSize;              // +0x24
+        AnimationPlayer::nalAnimState* AnimStates[3];  // +0x28
+        AnimationPlayer::nalPartialAnimState* PartialAnimStates;   // +0x34
+        AnimationPlayer::nalPartialAnimState* PartialAnimStatePool; // +0x38
+        unsigned int AdvanceCount;  // +0x3C
+    };
+    APLayout* self = (APLayout*)v2;
     for (int v3 = self->QueueSize - 1; v3 >= 0; --v3)
     {
-        nalAnimStateDebug* st =
-            (nalAnimStateDebug*)((void**)self->AnimStates)[v3];
-        if (st->animType != 0 && st->instance != nullptr)
+        AnimationPlayer::nalAnimState* st = self->AnimStates[v3];
+        if (st->state != 0 && st->instance != nullptr)
         {
             _snprintf(textBuff, 0x200u,
                       "%d)%s L=%d a=%.2f t=%.2f",
                       v3,
                       *(const char**)(*(char**)st->instance + 16) + 12,
                       *(int*)(*(char**)st->instance + 52) & 1,
-                      *(float*)((char*)st->instance + 28),
-                      *(float*)((char*)st->instance + 20));
+                      st->alpha, st->t);
             DebugRender::RenderText(textBuff, 10, 75 + (self->QueueSize - 1 - v3) * 20,
                                     col, 0.0f, 1.125f);
         }
     }
     // Partial anim states
-    void* ps = self->PartialAnimStates;
+    AnimationPlayer::nalPartialAnimState* ps = self->PartialAnimStates;
     int y = 75 + (self->QueueSize) * 20 + 20;
     while (ps != nullptr)
     {
-        nalPartialAnimStateLocal* p = (nalPartialAnimStateLocal*)ps;
-        if (p->instance != nullptr)
+        if (ps->base.instance != nullptr)
         {
             _snprintf(textBuff, 0x200u,
                       "p%d)%s %s L=%d a=%.2f t=%.2f",
-                      (int)((char*)p - (char*)self->PartialAnimStates) / (int)sizeof(nalPartialAnimStateLocal),
-                      *(const char**)(*(char**)p->instance + 16),
-                      AnimDebugTypeString(p->type),
-                      *(int*)(*(char**)p->instance + 52) & 1,
-                      p->alpha, p->t);
+                      (int)((char*)ps - (char*)self->PartialAnimStates) / (int)sizeof(AnimationPlayer::nalPartialAnimState),
+                      *(const char**)(*(char**)ps->base.instance + 16),
+                      AnimDebugTypeString(ps->type),
+                      *(int*)(*(char**)ps->base.instance + 52) & 1,
+                      ps->base.alpha, ps->base.t);
             DebugRender::RenderText(textBuff, 10, y, col, 0.0f, 1.125f);
             y += 20;
         }
-        ps = p->next;
+        ps = ps->next;
     }
+}
+
+// ============================================================================
+// AnimationPlayer::GetPose - ea: 0x4FA690
+// Compose the current pose from the animation queue (or an active FULL
+// partial state) and export the hand/gun world matrices into animIKGunOffset.
+// NOTE: original decompile is register-ABI garbled ("local variable allocation
+// has failed"); this is a structural reconstruction from the verified layout.
+// ============================================================================
+void AnimationPlayer::GetPose(nalGeneric::nalGenericPose& Pose,
+                              nalGeneric::nalGenericSkeleton* Skeleton,
+                              float (*animIKGunOffset)[3])
+{
+    struct APLayout {
+        nalGeneric::nalGenericSkeleton* Skeleton;  // +0x00
+        nalGeneric::nalGenericPose BackgroundPose; // +0x04
+        nalGeneric::nalGenericPose tmpPose;        // +0x14
+        int QueueSize;              // +0x24
+        nalAnimState* AnimStates[3];  // +0x28
+        nalPartialAnimState* PartialAnimStates;   // +0x34
+        nalPartialAnimState* PartialAnimStatePool; // +0x38
+        unsigned int AdvanceCount;  // +0x3C
+    };
+    APLayout* self = (APLayout*)this;
+    Pose = self->BackgroundPose;
+    static tlFixedString handStr("bip01 r hand");
+    static tlFixedString gunStr("TAG_WEAPON_RIGHT");
+    nalGeneric::nalGenericBoneHandle handHandle;
+    nalGeneric::nalGenericBoneHandle gunHandle;
+    handHandle.index = 0;
+    handHandle.skeleton = nullptr;
+    gunHandle.index = 0;
+    gunHandle.skeleton = nullptr;
+    Skeleton->GetBoneHandle(handHandle, handStr);
+    Skeleton->GetBoneHandle(gunHandle, gunStr);
+
+    // Prefer an active FULL partial state (type 2) at full alpha.
+    nalPartialAnimState* active = nullptr;
+    for (nalPartialAnimState* ps = self->PartialAnimStates;
+         ps != nullptr; ps = ps->next)
+    {
+        if (ps->type == 2 && ps->base.alpha >= 1.0f)
+            active = ps;
+    }
+    bool offsetDone = false;
+    if (active == nullptr)
+    {
+        for (int i = self->QueueSize - 1; i >= 0; --i)
+        {
+            nalAnimState* st = self->AnimStates[i];
+            if (st == nullptr)
+                continue;
+            st->Compose(Pose, self->tmpPose);
+        }
+    }
+    else
+    {
+        for (nalPartialAnimState* ps = active; ps != nullptr; ps = ps->next)
+        {
+            nalAnimState* st = &ps->base;
+            st->Compose(Pose, self->tmpPose);
+            if (st->state == 0)
+                nalGeneric::BlendTorso(Pose, st->alpha, Pose, self->tmpPose);
+            else
+                nalGeneric::Blend(Pose, st->alpha, Pose, self->tmpPose);
+            st->t_prev = st->t;
+        }
+    }
+    if (animIKGunOffset != nullptr)
+    {
+        // Hand pose in world space, then expressed relative to the gun bone.
+        nalPositionOrientationLocal handPO =
+            Pose.GetModelPositionOrientation(handHandle);
+        nalPositionOrientationLocal gunPO =
+            Pose.GetModelPositionOrientation(gunHandle);
+        nalMatrix4x4Local handMat;
+        nalMatrix4x4Local gunMat;
+        memcpy(&handMat, &handPO, sizeof(nalMatrix4x4Local));
+        memcpy(&gunMat, &gunPO, sizeof(nalMatrix4x4Local));
+        // 4x4 affine inverse of gunMat (row-major; w row = 0,0,0,1)
+        nalMatrix4x4Local inv;
+        float det = 0.0f;
+        float a[3][3] = {
+            { gunMat.m[0][0], gunMat.m[0][1], gunMat.m[0][2] },
+            { gunMat.m[1][0], gunMat.m[1][1], gunMat.m[1][2] },
+            { gunMat.m[2][0], gunMat.m[2][1], gunMat.m[2][2] },
+        };
+        for (int c = 0; c < 3; ++c)
+            det += a[0][c] * (a[1][(c + 1) % 3] * a[2][(c + 2) % 3]
+                              - a[1][(c + 2) % 3] * a[2][(c + 1) % 3]);
+        if (fabsf(det) > 1e-9f)
+        {
+            float invDet = 1.0f / det;
+            for (int r = 0; r < 3; ++r)
+            {
+                for (int c = 0; c < 3; ++c)
+                {
+                    int r1 = (r + 1) % 3;
+                    int r2 = (r + 2) % 3;
+                    int c1 = (c + 1) % 3;
+                    int c2 = (c + 2) % 3;
+                    inv.m[c][r] = (a[r1][c1] * a[r2][c2]
+                                   - a[r1][c2] * a[r2][c1]) * invDet;
+                }
+            }
+            inv.m[3][0] = 0.0f;
+            inv.m[3][1] = 0.0f;
+            inv.m[3][2] = 0.0f;
+            inv.m[3][3] = 1.0f;
+            float tx = gunMat.m[3][0];
+            float ty = gunMat.m[3][1];
+            float tz = gunMat.m[3][2];
+            inv.m[0][3] = -(inv.m[0][0] * tx + inv.m[0][1] * ty
+                            + inv.m[0][2] * tz);
+            inv.m[1][3] = -(inv.m[1][0] * tx + inv.m[1][1] * ty
+                            + inv.m[1][2] * tz);
+            inv.m[2][3] = -(inv.m[2][0] * tx + inv.m[2][1] * ty
+                            + inv.m[2][2] * tz);
+            for (int r = 0; r < 4; ++r)
+            {
+                float row[4] = { handMat.m[r][0], handMat.m[r][1],
+                                 handMat.m[r][2], handMat.m[r][3] };
+                for (int c = 0; c < 4; ++c)
+                    gunMat.m[r][c] = row[0] * inv.m[0][c]
+                        + row[1] * inv.m[1][c]
+                        + row[2] * inv.m[2][c]
+                        + row[3] * inv.m[3][c];
+            }
+        }
+        for (int i = 0; i < 4; ++i)
+            for (int j = 0; j < 3; ++j)
+                animIKGunOffset[i][j] = gunMat.m[i][j];
+        offsetDone = true;
+    }
+    (void)offsetDone;
 }
 
 // ============================================================================
