@@ -2866,6 +2866,636 @@ bool SoundDevice::IsSoundReady()
 }
 
 // ============================================================================
+// SoundDevice init / bus / listener - ea: 0x6024A0..0x603EA0, 0x6397F0..
+// ============================================================================
+// nslSpeakerMode values verified vs GetOutputMode jump table + ctor (STEREO=2)
+enum nslSpeakerMode {
+    NSL_SPEAKER_MODE_MONO = 1,
+    NSL_SPEAKER_MODE_STEREO = 2,
+    NSL_SPEAKER_MODE_SURROUND = 3,
+    NSL_SPEAKER_MODE_HEADPHONES = 4,
+};
+extern void nslUpdate();                                     // nsl
+extern float nslGetBusPitch();                               // ?nslGetBusPitch@@YAMXZ
+extern float nslGetBusVolume();                              // ?nslGetBusVolume@@YAMXZ
+extern void nslSetBusPitch(unsigned int busId, float pitch); // nsl
+extern void nslSetBusVolume(unsigned int busId, float volume);// nsl
+extern void nslSetBusPitch(float pitch);                     // ?nslSetBusPitch@@YAXM@Z (master)
+extern void nslSetBusVolume(float volume);                   // ?nslSetBusVolume@@YAXM@Z (master)
+extern void nslSetBusPitchAddBus(unsigned int busId);        // nsl
+extern void nslSetBusVolumeAddBus(unsigned int busId);       // nsl
+extern void nslSetBusPitchRemoveBus(unsigned int busId);     // nsl
+extern void nslSetBusVolumeRemoveBus(unsigned int busId);    // nsl
+extern bool nslIsBusVolumeName(unsigned int busId);          // nsl
+extern void nslSetEffect(const void* fx);                    // ?nslSetEffect@@YAXPBUnslEffect@@@Z
+extern void nslDampen(float dampenLevel);                    // nsl
+extern void nslUndampen();                                   // nsl
+extern void nslSetSpeakerMode(nslSpeakerMode speakerMode);   // nsl
+extern nslSpeakerMode nslGetSpeakerMode();                   // nsl
+extern void nslSetListenerPosition(const float* pos);        // ?nslSetListenerPosition@@YAXQBM@Z
+extern void nslSetListenerOrientation(const float* a,
+                                      const float* b);       // ?nslSetListenerOrientation@@YAXQBM0@Z
+extern void AnglesToAxis(const float* angles, float (*axis)[3]);  // core.o
+extern int nslInit(const void* ip);                          // ?nslInit@@YAHPBUnslInitParams@@@Z (returns work size)
+extern unsigned char nsl_initParams[0x44];                   // ?nsl_initParams@@3UnslInitParams@@A @ 0xE4B680
+extern void nslStart(void* work);                            // ?nslStart@@YAXPAX@Z
+extern void nslExit();                                       // ?nslExit@@YAXXZ
+extern const char* nslGetWaveGroup(nslWaveID wave);          // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z
+extern float nslGetWaveParam(nslWaveID wave, int b, float c);// nsl
+extern nslSourceID nslNewSource(nslWaveID wave, int mImportance);  // ?nslNewSource@@YA?AW4nslSourceID@@W4nslWaveID@@H@Z
+extern void nslQueueSource(nslSourceID sid);                 // ?nslQueueSource@@YAXW4nslSourceID@@@Z
+extern unsigned int AeHash(const char* str);                 // ae_hash.cpp
+extern int currCl;                                           // ?currCl@@3HA @ 0xF1579C
+extern DbLinkedHandle<EntityHandleDb, Entity> g_SoundOnlyPlay;  // ?g_SoundOnlyPlay@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A @ 0xDEB5B4
+extern void DebugRender_AddRenderer(void* self, void (*fp)());  // ?AddRenderer@DebugRender@@QAEXP6AXXZ@Z (render.o)
+extern void* DebugRender_sInst;   // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+
+// ea: 0x006024A0
+nslBankID SoundDevice::SyncLoadBank(const char* filename)
+{
+    nflFileID v2 = nflOpenFile(gNflMediaId, filename);
+    if (v2 == (nflFileID)-1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 173;
+        AeAssert::gCurrentExpr = "bank_file != NFL_FILE_ID_INVALID";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("unable to open Sound bank"))
+            __debugbreak();
+        return (nslBankID)-1;
+    }
+    nslBankID Bank = nslLoadBank(0, v2, 0);
+    nslBankID v5 = Bank;
+    if (Bank == NSL_BANK_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 177;
+        AeAssert::gCurrentExpr = "bank != NSL_BANK_ID_INVALID";
+        if (AeAssert::IsIgnored()
+            || !AeAssert::Assert("unable to load Sound bank"))
+            return (nslBankID)-1;
+        __debugbreak();
+        return (nslBankID)-1;
+    }
+    int BankState = nslGetBankState(Bank);
+    bool v7 = BankState < 0;
+    if (BankState != 0)
+    {
+        while (!v7)
+        {
+            codNflUpdate();
+            nslUpdate();
+            int v8 = nslGetBankState(v5);
+            v7 = v8 < 0;
+            if (v8 == 0)
+                return v5;
+        }
+        return (nslBankID)-1;
+    }
+    return v5;
+}
+
+// ea: 0x00602B60
+void SoundDevice::DampenAllSounds(float level)
+{
+    nslDampen(level);
+}
+
+// ea: 0x00602B80
+void SoundDevice::UndampenAllSounds()
+{
+    nslUndampen();
+}
+
+// ea: 0x00602B90
+void SoundDevice::SetEnvironment(ESoundEnvironment env)
+{
+}
+
+// ea: 0x00603640
+void SoundDevice::UpdateReverb(float deltaTime)
+{
+    if (this->mUpdateReverb)
+    {
+        if (this->mRemainingReverbBlendTime <= 0.0f)
+        {
+            this->mUpdateReverb = false;
+            memcpy(this->mCurrentReverb, this->mTargetReverb,
+                   sizeof(this->mCurrentReverb));
+            nslSetEffect(this->mCurrentReverb);
+        }
+        else
+        {
+            for (int i = 0; i < 14; ++i)
+            {
+                this->mCurrentReverb[i] =
+                    (unsigned int)((float)this->mDeltaReverb[i] * deltaTime
+                                   + (float)this->mCurrentReverb[i]);
+            }
+            this->mRemainingReverbBlendTime -= deltaTime;
+            nslSetEffect(this->mCurrentReverb);
+        }
+    }
+}
+
+// ea: 0x00603820
+bool SoundDevice::BusVolumeIsName(const char* name)
+{
+    return nslIsBusVolumeName(AeHash(name));
+}
+
+// ea: 0x00603840
+void SoundDevice::BusPitchFade(const char* busName, float pitch, float time)
+{
+    unsigned int v5 = AeHash(busName);
+    this->mBusPitchRemainingTime = time;
+    float currentPitch = 1.0f / nslGetBusPitch();
+    this->mBusPitchTargetPitch = 1.0f / pitch;
+    this->mBusPitchCurrentPitch = currentPitch;
+    this->mBusPitchDeltaPitch =
+        (this->mBusPitchTargetPitch - currentPitch) / time;
+    nslSetBusPitch(v5, 1.0f / currentPitch);
+}
+
+// ea: 0x006038C0
+void SoundDevice::BusVolumeFade(const char* busName, float volume, float time)
+{
+    unsigned int v5 = AeHash(busName);
+    this->mBusVolumeRemainingTime = time;
+    float currentVolume = nslGetBusVolume();
+    this->mBusVolumeCurrentVolume = currentVolume;
+    this->mBusVolumeTargetVolume = volume;
+    this->mBusVolumeDeltaVolume = (volume - currentVolume) / time;
+    nslSetBusVolume(v5, currentVolume);
+}
+
+// ea: 0x00603920
+void SoundDevice::BusPitchAddBus(const char* busName)
+{
+    nslSetBusPitchAddBus(AeHash(busName));
+}
+
+// ea: 0x00603940
+void SoundDevice::BusVolumeAddBus(const char* busName)
+{
+    nslSetBusVolumeAddBus(AeHash(busName));
+}
+
+// ea: 0x00603960
+void SoundDevice::BusPitchRemoveBus(const char* busName)
+{
+    nslSetBusPitchRemoveBus(AeHash(busName));
+}
+
+// ea: 0x00603980
+void SoundDevice::BusVolumeRemoveBus(const char* busName)
+{
+    nslSetBusVolumeRemoveBus(AeHash(busName));
+}
+
+// ea: 0x006039A0
+void SoundDevice::UpdateBusPitchFade(float deltaTime)
+{
+    float remaining = this->mBusPitchRemainingTime;
+    if (remaining >= 0.0f)
+    {
+        float v3 = remaining - deltaTime;
+        this->mBusPitchRemainingTime = v3;
+        if (v3 >= 0.0f)
+        {
+            this->mBusPitchCurrentPitch =
+                (this->mBusPitchDeltaPitch * deltaTime)
+                + this->mBusPitchCurrentPitch;
+        }
+        else
+        {
+            this->mBusPitchRemainingTime = -1.0f;
+            this->mBusPitchCurrentPitch = this->mBusPitchTargetPitch;
+        }
+        nslSetBusPitch(1.0f / this->mBusPitchCurrentPitch);
+    }
+}
+
+// ea: 0x00603A30
+void SoundDevice::UpdateBusVolumeFade(float deltaTime)
+{
+    float remaining = this->mBusVolumeRemainingTime;
+    if (remaining >= 0.0f)
+    {
+        float v3 = remaining - deltaTime;
+        this->mBusVolumeRemainingTime = v3;
+        if (v3 >= 0.0f)
+        {
+            this->mBusVolumeCurrentVolume =
+                (this->mBusVolumeDeltaVolume * deltaTime)
+                + this->mBusVolumeCurrentVolume;
+            nslSetBusVolume(this->mBusVolumeCurrentVolume);
+        }
+        else
+        {
+            this->mBusVolumeRemainingTime = -1.0f;
+            this->mBusVolumeCurrentVolume = this->mBusVolumeTargetVolume;
+            nslSetBusVolume(this->mBusVolumeTargetVolume);
+        }
+    }
+}
+
+// ea: 0x00603AC0
+void SoundDevice::UpdateListener()
+{
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    const math::Position3& origin = player->r.currentOrigin;
+    float axis[3][3];
+    AnglesToAxis(player->r.currentAngles.v.m128_f32, axis);
+    const float* upv = axis[1];
+    const float* pv = axis[2];
+    nslSetListenerPosition(origin.v.m128_f32);
+    nslSetListenerOrientation(upv, pv);
+    this->mDebugListenerPosition[0] = origin.v.m128_f32[0];
+    this->mDebugListenerPosition[1] = origin.v.m128_f32[1];
+    this->mDebugListenerPosition[2] = origin.v.m128_f32[2];
+    this->mDebugListenerForward[0] = upv[0];
+    this->mDebugListenerForward[1] = upv[1];
+    this->mDebugListenerForward[2] = upv[2];
+    this->mDebugListenerUp[0] = pv[0];
+    this->mDebugListenerUp[1] = pv[1];
+    this->mDebugListenerUp[2] = pv[2];
+}
+
+// ea: 0x00603D90
+float SoundDevice::GetGroupVolume(const char* group) const
+{
+    const char* v2 = group;
+    if ((unsigned int)group < 0x10000)
+        v2 = "SFX";
+    if (_stricmp(v2, "SFX") != 0)
+        _stricmp(v2, "MUSIC");
+    return 1.0f;
+}
+
+// ea: 0x00603DD0
+void SoundDevice::SetOutputMode(EOutputMode mode)
+{
+    switch (mode)
+    {
+    case kMono:
+        nslSetSpeakerMode(NSL_SPEAKER_MODE_MONO);
+        break;
+    case kStereo:
+        nslSetSpeakerMode(NSL_SPEAKER_MODE_STEREO);
+        break;
+    case kHeadPhones:
+        nslSetSpeakerMode(NSL_SPEAKER_MODE_HEADPHONES);
+        break;
+    case kSurround:
+        nslSetSpeakerMode(NSL_SPEAKER_MODE_SURROUND);
+        break;
+    default:
+        return;
+    }
+}
+
+// ea: 0x00603E30
+SoundDevice::EOutputMode SoundDevice::GetOutputMode() const
+{
+    switch (nslGetSpeakerMode())
+    {
+    case NSL_SPEAKER_MODE_MONO:
+        return kMono;
+    case NSL_SPEAKER_MODE_STEREO:
+        return kStereo;
+    case NSL_SPEAKER_MODE_SURROUND:
+        return kSurround;
+    case NSL_SPEAKER_MODE_HEADPHONES:
+        return kHeadPhones;
+    default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 1680;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("invalid speaker mode"))
+            __debugbreak();
+        return kMono;
+    }
+}
+
+// ea: 0x00603EA0
+void SetSurfaceTypeSounds(nslWaveID* sounds, nslWaveID filler)
+{
+    for (int i = 0; i < 23; ++i)
+        sounds[i] = filler;
+}
+
+// ============================================================================
+// SoundDevice lifecycle / queue - ea: 0x6397F0..0x63A5A0
+// ============================================================================
+extern void* mem_heap_malloc(unsigned int size);  // mem_lib
+extern void mem_heap_free(void* ptr);             // mem_lib
+extern cvar_t* Cvar_Get(const char* var_name,
+                        const char* var_value, int flags);  // core.o
+
+// ea: 0x006397F0
+SoundDevice::SoundDevice()
+{
+    for (int i = 0; i < 512; ++i)
+        new (&this->mSounds[i]) Sound();
+    for (int i = 0; i < 16; ++i)
+    {
+        this->mCrossFadeInfo[i].mSound1.mVal = 0;
+        this->mCrossFadeInfo[i].mSound2.mVal = 0;
+    }
+    DebugRender_AddRenderer((void*)&DebugRender_sInst,
+                            &SoundDevice::SingletonDebugRender);
+    this->mNumberOfListeners = 1;
+    nslSetNumberOfListeners(1);
+    *(unsigned int*)&this->mNslParams[4] = 1;
+    *(unsigned int*)this->mNslParams = 512;
+    memcpy(this->mNslParams, nsl_initParams, sizeof(this->mNslParams));
+    void* v5 = mem_heap_malloc(nslInit(this->mNslParams));
+    this->mNslBuffer = v5;
+    if (v5 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 101;
+        AeAssert::gCurrentExpr = "mNslBuffer";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("unable to alloc NSL work buffer"))
+            __debugbreak();
+    }
+    nslStart(this->mNslBuffer);
+    nslSetSpeakerMode(NSL_SPEAKER_MODE_STEREO);
+    nslSetMasterVolume(1.0f);
+    nslSetBusVolume(0xCDCDCDCD, 1.0f);
+    nslSetBusPitch(0xCDCDCDCD, 1.0f);
+    nslUndampen();
+    this->mBusVolumeRemainingTime = -1.0f;
+    this->mBusPitchRemainingTime = -1.0f;
+    this->SetReverb("Preset_NoReverb", true);
+    this->mMainBank = NSL_BANK_ID_INVALID;
+    this->mVolScale = 1.0f;
+    this->mShowStreams = Cvar_Get("snd_showstreams", "0", 256);
+    this->mShowListenerPosition =
+        Cvar_Get("snd_showlistenerposition", "0", 256);
+    this->mShowEmitterPosition =
+        Cvar_Get("snd_showemitterposition", "0", 256);
+}
+
+// ea: 0x00646610
+SoundDevice::~SoundDevice()
+{
+    this->StopAllSounds();
+    if (this->mMainBank != NSL_BANK_ID_INVALID)
+        nslFreeBank(this->mMainBank);
+    nslExit();
+    mem_heap_free(this->mNslBuffer);
+    this->mNslBuffer = nullptr;
+    for (int i = 0; i < 512; ++i)
+        this->mSounds[i].~Sound();
+}
+
+// ea: 0x006629D0 (static)
+void SoundDevice::SingletonDebugRender()
+{
+    SoundDevice::sInst->DebugRender();
+}
+
+// ea: 0x0063A060
+int SoundDevice::GetFreeSlot()
+{
+    int v1 = 0;
+    while (this->mSounds[v1].mSource != NSL_SOURCE_ID_INVALID)
+    {
+        if (++v1 >= 0x200)
+            return -1;
+    }
+    Sound* v4 = &this->mSounds[v1];
+    if (v4->mHandle.mVal != 0)
+        SoundDevice::SoundHandleDb::sInst.ReleaseHandle(v4->mHandle);
+    Handle v6 = SoundDevice::SoundHandleDb::sInst.AllocateHandle();
+    v4->mHandle.mVal = v6.mVal;
+    SoundDevice::SoundHandleDb::sInst.BindObjectToHandle(v6, v4);
+    return v1;
+}
+
+// ea: 0x006399D0
+void SoundDevice::Sound::Queue(
+    nslWaveID wave, float vol, float pitch, float minrange, float maxrange,
+    const math::Position3* pos, const math::Dir3* vel, bool autoRelease,
+    DbLinkedHandle<EntityHandleDb, Entity> entHandle, bool mImportant)
+{
+    if ((__fpclass(vel->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(vel->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(vel->v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(pos->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(pos->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(pos->v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(vol) & 0x297) != 0
+        || (__fpclass(pitch) & 0x297) != 0
+        || (__fpclass(minrange) & 0x297) != 0
+        || (__fpclass(maxrange) & 0x297) != 0)
+    {
+        tlWarning(
+            "A NAN was passed into the sound system while trying to play %s\n",
+            nslWaveGetName(wave));
+        this->Stop();
+    }
+    else
+    {
+        bool v12 = this->mSource == NSL_SOURCE_ID_INVALID;
+        this->mWave = wave;
+        if (!v12)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+            AeAssert::gCurrentLine = 325;
+            AeAssert::gCurrentExpr = "mSource == NSL_SOURCE_ID_INVALID";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("source already in use"))
+                __debugbreak();
+        }
+        this->mAutoRelease = autoRelease;
+        nslSourceID v13 = nslNewSource(wave, mImportant);
+        this->mSource = v13;
+        if (v13 != NSL_SOURCE_ID_INVALID)
+            goto LABEL_20;
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 329;
+        AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("failed to create source"))
+            __debugbreak();
+        if (this->mSource != NSL_SOURCE_ID_INVALID)
+        {
+        LABEL_20:
+            nslQueueSource((nslSourceID)this->mSource);
+            SoundDevice* v14 = SoundDevice::sInst;
+            const char* WaveGroup = nslGetWaveGroup(wave);
+            this->mGroupVolume = v14->GetGroupVolume(WaveGroup);
+            float autoReleasea =
+                vol <= 0.0f ? nslGetWaveParam(wave, 0, 1.0f) : vol;
+            this->SetVolume(autoReleasea);
+            float autoReleaseb =
+                pitch <= 0.0f ? nslGetWaveParam(wave, 1, 1.0f) : pitch;
+            this->SetPitch(autoReleaseb);
+            float autoReleasec = maxrange <= 0.0f
+                ? nslGetWaveParam(wave, 26, 1500.0f)
+                : maxrange;
+            float mImportanta = minrange <= 0.0f
+                ? nslGetWaveParam(wave, 25, 50.0f)
+                : minrange;
+            this->SetRange(mImportanta, autoReleasec);
+            this->SetPosition(*pos);
+            this->SetVelocity(*vel);
+            nslSetSourceEffectOn((nslSourceID)this->mSource);
+            this->mEntHandle.mVal = entHandle.mHandle.mVal;
+        }
+    }
+}
+
+// ea: 0x0063A040
+void SoundDevice::Sound::SetPoPtr(const math::Mat43* poPtr)
+{
+    this->mPoPtr = (void*)poPtr;
+    this->SetPosition(poPtr->w);
+}
+
+// ea: 0x0063A0D0
+DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>
+SoundDevice::QueueSound(nslWaveID id,
+                        DbLinkedHandle<EntityHandleDb, Entity> entHandle,
+                        bool mImportant, bool autoRelease,
+                        const math::Position3& pos, const math::Dir3& vel,
+                        float vol, float pitch, float min, float max)
+{
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> result;
+    if ((__fpclass(vel.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(vol) & 0x297) != 0
+        || (__fpclass(pitch) & 0x297) != 0
+        || (__fpclass(min) & 0x297) != 0
+        || (__fpclass(max) & 0x297) != 0)
+    {
+        tlWarning(
+            "A NAN was passed into the sound system while trying to play %s\n",
+            nslWaveGetName(id));
+    }
+    else
+    {
+        int FreeSlot = this->GetFreeSlot();
+        if (FreeSlot >= 0 && id != NSL_WAVE_ID_INVALID)
+        {
+            Sound* v14 = &this->mSounds[FreeSlot];
+            v14->Queue(id, vol, pitch, min, max, &pos, &vel, autoRelease,
+                       entHandle, mImportant);
+            result.mHandle.mVal = v14->mHandle.mVal;
+            return result;
+        }
+    }
+    result.mHandle.mVal = 0;
+    return result;
+}
+
+// ea: 0x0063A5A0
+void SoundDevice::FrameAdvance(float delta)
+{
+    nslUpdate();
+    SoundDevice* v3 = this;
+    for (int i = 512; i != 0; --i)
+    {
+        bool v8 = false;
+        if (g_SoundOnlyPlay.mHandle.mVal != (unsigned int)-1)
+        {
+            if (v3->mSounds[0].mEntHandle.mVal
+                == g_SoundOnlyPlay.mHandle.mVal)
+            {
+                if (v3->mSounds[0].mSource == NSL_SOURCE_ID_INVALID)
+                    goto next;
+                if (v3->mSounds[0].mPaused
+                    || (nslGetSourceState(
+                            (nslSourceID)v3->mSounds[0].mSource)
+                        == NSL_SOURCE_STATE_PLAYING
+                        || nslGetSourceState(
+                               (nslSourceID)v3->mSounds[0].mSource)
+                            == NSL_SOURCE_STATE_QUEUING
+                        || nslGetSourceState(
+                               (nslSourceID)v3->mSounds[0].mSource)
+                            == NSL_SOURCE_STATE_QUEUED
+                        || nslGetSourceState(
+                               (nslSourceID)v3->mSounds[0].mSource)
+                            == NSL_SOURCE_STATE_PAUSED))
+                {
+                    v3->mSounds[0].Update();
+                    goto next;
+                }
+            }
+            v8 = v3->mSounds[0].mSource == NSL_SOURCE_ID_INVALID;
+            goto LABEL_33;
+        }
+        if (v3->mSounds[0].mAutoRelease)
+        {
+            if (v3->mSounds[0].mSource == NSL_SOURCE_ID_INVALID)
+                goto next;
+            if (!v3->mSounds[0].mPaused)
+            {
+                nslSourceState v5 =
+                    nslGetSourceState((nslSourceID)v3->mSounds[0].mSource);
+                if (v5 != NSL_SOURCE_STATE_PLAYING
+                    && v5 != NSL_SOURCE_STATE_QUEUING
+                    && v5 != NSL_SOURCE_STATE_QUEUED
+                    && v5 != NSL_SOURCE_STATE_PAUSED)
+                    v3->mSounds[0].Stop();
+            }
+        }
+        if (v3->mSounds[0].mSource != NSL_SOURCE_ID_INVALID)
+        {
+            if (v3->mSounds[0].mPaused
+                || (nslGetSourceState(
+                        (nslSourceID)v3->mSounds[0].mSource)
+                    == NSL_SOURCE_STATE_PLAYING
+                    || nslGetSourceState(
+                           (nslSourceID)v3->mSounds[0].mSource)
+                        == NSL_SOURCE_STATE_QUEUING
+                    || nslGetSourceState(
+                           (nslSourceID)v3->mSounds[0].mSource)
+                        == NSL_SOURCE_STATE_QUEUED
+                    || nslGetSourceState(
+                           (nslSourceID)v3->mSounds[0].mSource)
+                        == NSL_SOURCE_STATE_PAUSED))
+                v3->mSounds[0].Update();
+            if (v3->mSounds[0].mSource != NSL_SOURCE_ID_INVALID
+                && !v3->mSounds[0].mPaused)
+            {
+                nslSourceState v7 =
+                    nslGetSourceState((nslSourceID)v3->mSounds[0].mSource);
+                if (v7 != NSL_SOURCE_STATE_PLAYING
+                    && v7 != NSL_SOURCE_STATE_QUEUING
+                    && v7 != NSL_SOURCE_STATE_QUEUED)
+                {
+                    v8 = v7 == NSL_SOURCE_STATE_PAUSED;
+                LABEL_33:
+                    if (!v8)
+                        v3->mSounds[0].Stop();
+                }
+            }
+        }
+    next:
+        v3 = (SoundDevice*)((char*)v3 + 0x3C);
+    }
+    this->UpdateReverb(delta);
+    this->UpdateCrossFade(delta);
+    this->UpdateBusPitchFade(delta);
+    this->UpdateBusVolumeFade(delta);
+}
+
+// ============================================================================
 // SoundDevice::SetReverb - ea: 0x602BA0 (reverb preset table, bits exact)
 // ============================================================================
 // ea: 0x00602BA0

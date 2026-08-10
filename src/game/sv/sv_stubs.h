@@ -334,6 +334,11 @@ struct SmokeGrenadeMgr {
 };
 static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
 
+// SetEnvironment(0x602B90) is a no-op in the binary; values unverified.
+enum ESoundEnvironment {
+    kEnvironmentIndoor = 0,
+};
+
 struct SoundDevice {
     struct Sound {
         int     mSource;         // +0x00 (nslSourceID; NSL_SOURCE_ID_INVALID == -1)
@@ -375,6 +380,12 @@ struct SoundDevice {
         void SetRange(float min, float max);// ?SetRange@Sound@SoundDevice@@QAEXMM@Z (game.o 0x62C380)
         void SetPosition(const math::Position3& pos);  // ?SetPosition@Sound@SoundDevice@@QAEXABVPosition3@math@@@Z (game.o 0x62C470)
         void SetVelocity(const math::Dir3& vel);      // ?SetVelocity@Sound@SoundDevice@@QAEXABVDir3@math@@@Z (game.o 0x62C630)
+        void SetPoPtr(const math::Mat43* poPtr);      // ?SetPoPtr@Sound@SoundDevice@@QAEXPBVMat43@math@@@Z (game.o 0x63A040)
+        void Queue(nslWaveID wave, float vol, float pitch, float minrange,
+                   float maxrange, const math::Position3* pos,
+                   const math::Dir3* vel, bool autoRelease,
+                   DbLinkedHandle<EntityHandleDb, Entity> entHandle,
+                   bool mImportant);                  // ?Queue@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z (game.o 0x6399D0)
         void Update();                      // ?Update@Sound@SoundDevice@@QAEXXZ (game.o 0x62C7A0)
     };
     struct SoundHandleDb {
@@ -386,6 +397,8 @@ struct SoundDevice {
         DbElement mElements[0x200];  // +0x40
         static SoundHandleDb sInst;         // ?sInst@SoundHandleDb@SoundDevice@@0V12@A @ 0xF50D10
         void ReleaseHandle(Handle h);       // HandleDb<Sound,512,SizedHandle<12,20>>::ReleaseHandle
+        Handle AllocateHandle();            // HandleDb<Sound,512,SizedHandle<12,20>>::AllocateHandle
+        void BindObjectToHandle(Handle handle, Sound* obj);  // HandleDb<Sound,512,SizedHandle<12,20>>::BindObjectToHandle
     };
     struct CrossFadeInfo {
         Handle mSound1;         // +0x00
@@ -394,27 +407,70 @@ struct SoundDevice {
         float  mAdjustVolume2;  // +0x0C
         float  mRemainingTime;  // +0x10
     };
+    enum EOutputMode {
+        kMono = 0,
+        kStereo = 1,
+        kHeadPhones = 2,
+        kSurround = 3,
+    };
     Sound mSounds[512];              // +0x00 (0x3C stride)
     int   mNumberOfListeners;        // +0x7800
-    uint8_t _pad7804[0x7850 - 0x7804];
+    void*   mNslBuffer;              // +0x7804 (NSL work buffer)
+    uint8_t mNslParams[0x44];        // +0x7808 (nslInitParams, 0x44 bytes)
+    nslBankID mMainBank;             // +0x784C
     float mVolScale;                 // +0x7850
     bool  mUpdateReverb;             // +0x7854
     uint8_t _pad7855[0x7858 - 0x7855];
     unsigned int mTargetReverb[14];  // +0x7858
     unsigned int mCurrentReverb[14]; // +0x7890
-    uint8_t _pad78C8[0x7900 - 0x78C8];
+    unsigned int mDeltaReverb[14];   // +0x78C8 (read by UpdateReverb only)
     float mRemainingReverbBlendTime; // +0x7900
     CrossFadeInfo mCrossFadeInfo[16];// +0x7904 (16 * 20 bytes)
-    uint8_t _pad7A44[0x7A7C - 0x7A44];
+    uint8_t _pad7A44[0x7A50 - 0x7A44];
+    float mBusPitchTargetPitch;      // +0x7A50
+    float mBusPitchRemainingTime;    // +0x7A54
+    float mBusPitchDeltaPitch;       // +0x7A58
+    float mBusPitchCurrentPitch;     // +0x7A5C
+    float mBusVolumeTargetVolume;    // +0x7A60
+    float mBusVolumeRemainingTime;   // +0x7A64
+    float mBusVolumeDeltaVolume;     // +0x7A68
+    float mBusVolumeCurrentVolume;   // +0x7A6C
+    cvar_t* mShowStreams;            // +0x7A70
+    cvar_t* mShowListenerPosition;   // +0x7A74
+    cvar_t* mShowEmitterPosition;    // +0x7A78
     float mDebugListenerPosition[3];  // +0x7A7C
     float mDebugListenerForward[3];   // +0x7A88
     float mDebugListenerUp[3];        // +0x7A94
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
+    SoundDevice();                  // ??0SoundDevice@@QAE@XZ (game.o 0x6397F0)
+    ~SoundDevice();                 // ??1SoundDevice@@QAE@XZ (game.o 0x646610)
+    nslBankID SyncLoadBank(const char* filename);  // ?SyncLoadBank@SoundDevice@@AAE?AW4nslBankID@@PBD@Z (game.o 0x6024A0)
     nslWaveID FindWave(char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
     float GetWaveDuration(nslWaveID wave);  // ?GetWaveDuration@SoundDevice@@QAEMW4nslWaveID@@@Z (game.o 0x6025A0)
     void ScaleVolume(float scale);          // ?ScaleVolume@SoundDevice@@QAEXM@Z (game.o 0x602A10)
     void PauseAllSounds();                  // ?PauseAllSounds@SoundDevice@@QAEXXZ (game.o 0x602A80)
     Sound* GetSoundFromSourceId(nslSourceID id);  // ?GetSoundFromSourceId@SoundDevice@@QAEPAVSound@1@W4nslSourceID@@@Z
+    void DampenAllSounds(float level);      // ?DampenAllSounds@SoundDevice@@QAEXM@Z (game.o 0x602B60)
+    void UndampenAllSounds();               // ?UndampenAllSounds@SoundDevice@@QAEXXZ (game.o 0x602B80)
+    void SetEnvironment(ESoundEnvironment env);  // ?SetEnvironment@SoundDevice@@QAEXW4ESoundEnvironment@@@Z (game.o 0x602B90)
+    void UpdateReverb(float deltaTime);     // ?UpdateReverb@SoundDevice@@QAEXM@Z (game.o 0x603640)
+    bool BusVolumeIsName(const char* name); // ?BusVolumeIsName@SoundDevice@@QAE_NPBD@Z (game.o 0x603820)
+    void BusPitchFade(const char* busName, float pitch, float time);  // game.o 0x603840
+    void BusVolumeFade(const char* busName, float volume, float time);  // game.o 0x6038C0
+    void BusPitchAddBus(const char* busName);   // game.o 0x603920
+    void BusVolumeAddBus(const char* busName);  // game.o 0x603940
+    void BusPitchRemoveBus(const char* busName);// game.o 0x603960
+    void BusVolumeRemoveBus(const char* busName);// game.o 0x603980
+    void UpdateBusPitchFade(float deltaTime);   // game.o 0x6039A0
+    void UpdateBusVolumeFade(float deltaTime);  // game.o 0x603A30
+    void UpdateListener();                      // ?UpdateListener@SoundDevice@@AAEXXZ (game.o 0x603AC0)
+    float GetGroupVolume(const char* group) const;  // ?GetGroupVolume@SoundDevice@@QBEMPBD@Z (game.o 0x603D90)
+    void SetOutputMode(EOutputMode mode);       // game.o 0x603DD0
+    EOutputMode GetOutputMode() const;          // game.o 0x603E30
+    void DebugRender();                         // ?DebugRender@SoundDevice@@QAEXXZ (game.o 0x62CD90)
+    static void SingletonDebugRender();         // ?SingletonDebugRender@SoundDevice@@SAXXZ (game.o 0x6629D0)
+    int  GetFreeSlot();                         // ?GetFreeSlot@SoundDevice@@AAEHXZ (game.o 0x63A060)
+    void FrameAdvance(float delta);             // ?FrameAdvance@SoundDevice@@QAEXM@Z (game.o 0x63A5A0)
     Sound* GetSoundForHandle(DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle);  // game.o 0x621670
     const Sound* GetSoundForHandle(DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle) const;  // game.o 0x6216B0
     void UnpauseAllSounds();                // ?UnpauseAllSounds@SoundDevice@@QAEXXZ (game.o 0x602AE0)
@@ -436,6 +492,11 @@ struct SoundDevice {
                    bool a4, bool a5, const math::Position3& pos,
                    const math::Dir3& dir, float a8, float a9, float a10,
                    float a11);  // ?PlaySound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@PBDV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@5@MMMM@Z
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> QueueSound(
+        nslWaveID id, DbLinkedHandle<EntityHandleDb, Entity> entHandle,
+        bool mImportant, bool autoRelease, const math::Position3& pos,
+        const math::Dir3& vel, float vol, float pitch, float min,
+        float max);  // ?QueueSound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@W4nslWaveID@@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@6@MMMM@Z (game.o 0x63A0D0)
 };
 static_assert(sizeof(SoundDevice) == 31392, "SoundDevice size mismatch");
 
@@ -653,6 +714,7 @@ namespace AeAssert {
     bool IsIgnored(void);
     bool Assert(const char* fmtstring, ...);
     bool Warning(const char* fmtstring, ...);
+    bool Error(const char* fmtstring, ...);  // ?Error@AeAssert@@YA_NPBDZZ
 }
 
 // ============================================================================
