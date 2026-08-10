@@ -2444,6 +2444,179 @@ void TracePointThroughLeaf(traceWork_t* tw, const DCGSet* set)
 }
 
 // ============================================================================
+// collide_box_velocity_sphere - ea: 0x60CB80 (CollisionMgr.cpp slab sweep)
+// ============================================================================
+// ea: 0x0060CB80
+void collide_box_velocity_sphere(traceWork_t* tw,
+                                 const math::Position3& bmin,
+                                 const math::Position3& bmax)
+{
+    float v49[16];  // [0]=bound, [4]=start, [8]=end, [12]=lead normal
+    v49[8] = bmin.v.m128_f32[0];
+    v49[9] = bmin.v.m128_f32[1];
+    v49[10] = bmin.v.m128_f32[2];
+    v49[11] = bmin.v.m128_f32[3];
+    float fraction = tw->trace_fraction;
+    float v10 = -1.0f;
+    v49[4] = tw->start.v.m128_f32[0];
+    v49[5] = tw->start.v.m128_f32[1];
+    v49[6] = tw->start.v.m128_f32[2];
+    v49[7] = tw->start.v.m128_f32[3];
+    v49[0] = tw->end.v.m128_f32[0];
+    v49[1] = tw->end.v.m128_f32[1];
+    v49[2] = tw->end.v.m128_f32[2];
+    v49[3] = tw->end.v.m128_f32[3];
+    float v13 = 0.0f;
+    int v11 = 1;
+    int v12 = 0;
+    v49[12] = 0.0f;
+    v49[13] = 0.0f;
+    v49[14] = 0.0f;
+    v49[15] = 0.0f;
+    int pass = 0;
+    while (1)
+    {
+        const float* radiusOffset = tw->sphere_radiusOffset.v.m128_f32;
+        for (int i = 0; i < 3; ++i)
+        {
+            float v15 = (v49[4 + i] - v49[8 + i]) * v10 - radiusOffset[i];
+            float v16 = (v49[i] - v49[8 + i]) * v10 - radiusOffset[i];
+            if (v15 <= 0.0f)
+            {
+                if (v16 > 0.0f)
+                {
+                    float v19 = v15 - v16;
+                    v11 = 0;
+                    if (v15 > v19 * fraction)
+                    {
+                        fraction = v15 / v19;
+                        if (v13 >= v15 / v19)
+                            return;
+                    }
+                }
+            }
+            else
+            {
+                float v17 = v15 - v16;
+                if (v16 > 0.0f)
+                {
+                    if (v17 <= 0.0f || v16 >= 0.125f)
+                        return;
+                    v11 = 0;
+                }
+                float v18 = v15 - 0.125f;
+                if (v18 > v17 * v13)
+                {
+                    v13 = v18 / v17;
+                    if (v18 / v17 >= fraction)
+                        return;
+                }
+                else if (v12 == 0)
+                {
+                    v49[12] = 0.0f;
+                    v49[13] = 0.0f;
+                    v49[14] = 0.0f;
+                    v49[15] = 0.0f;
+                    v12 = 1;
+                    v49[12 + i] = v10;
+                }
+            }
+        }
+        if (pass == 0)
+        {
+            v10 = 1.0f;
+            v49[8] = bmax.v.m128_f32[0];
+            v49[9] = bmax.v.m128_f32[1];
+            v49[10] = bmax.v.m128_f32[2];
+            v49[11] = bmax.v.m128_f32[3];
+            pass = 1;
+            continue;
+        }
+        break;
+    }
+    if (v12 != 0)
+    {
+        tw->trace_fraction = v13;
+        tw->trace_normal[0] = v49[12];
+        tw->trace_normal[1] = v49[13];
+        tw->trace_normal[2] = v49[14];
+        tw->trace_normal[3] = v49[15];
+    }
+    else
+    {
+        tw->trace_startsolid = 1;
+        if (v11 != 0)
+        {
+            tw->trace_allsolid = 1;
+            tw->trace_fraction = 0.0f;
+        }
+    }
+}
+
+// ============================================================================
+// TraceSphereThroughLeaf - ea: 0x622C80 (CollisionMgr.cpp DCGSet leaf sweep)
+// ============================================================================
+// ea: 0x00622C80
+void TraceSphereThroughLeaf(traceWork_t* tw, const DCGSet* set)
+{
+    cdl_object_t* objects = (cdl_object_t*)set->objects_m_elements;
+    int nboxes = set->nboxes;
+    if (nboxes != 0)
+    {
+        for (int i = 0; i < nboxes; ++i)
+        {
+            const cdl_object_t& obj = objects[i];
+            if ((obj.cflags & tw->trace_contents) != 0)
+            {
+                math::Position3 vmin;
+                math::Position3 vmax;
+                vmax.v = _mm_add_ps(
+                    _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                                0.0f),
+                    _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                                obj.box_radius[2], 0.0f));
+                vmin.v = _mm_sub_ps(
+                    _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                                0.0f),
+                    _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                                obj.box_radius[2], 0.0f));
+                collide_box_velocity_sphere(tw, vmin, vmax);
+                if (tw->trace_fraction == 0.0f)
+                    return;
+            }
+        }
+    }
+    cdl_brush_t* brushes = (cdl_brush_t*)set->brushes_m_elements;
+    int nbrushes = set->nbrushes;
+    for (int i = 0; i < nbrushes; ++i)
+    {
+        const cdl_object_t& obj = objects[nboxes + i];
+        if ((tw->trace_contents & obj.cflags) != 0)
+        {
+            const cdl_brush_t& brush = brushes[i];
+            math::Position3 vmin;
+            math::Position3 vmax;
+            vmax.v = _mm_add_ps(
+                _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                            0.0f),
+                _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                            obj.box_radius[2], 0.0f));
+            vmin.v = _mm_sub_ps(
+                _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                            0.0f),
+                _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                            obj.box_radius[2], 0.0f));
+            cdlPlane* sides = (cdlPlane*)set->brush_sides_m_elements;
+            collide_brush_velocity_sphere(tw, vmin, vmax,
+                                          &sides[brush.first_side],
+                                          brush.num_sides);
+            if (tw->trace_fraction == 0.0f)
+                return;
+        }
+    }
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0
