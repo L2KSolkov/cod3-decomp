@@ -1562,7 +1562,7 @@ struct weaponFileInfo_t {
     int     bSemiAuto;            // +0x6F0
     int     bBoltAction;          // +0x6F4
     int     bADSPositionInfo;     // +0x6F8
-    uint8_t _pad6FC[0x700 - 0x6FC];
+    int     bRechamberWhileAds;   // +0x6FC  (disasm PM_CanStartADSAnim)
     int     bCookOffHold;         // +0x700
     int     bNoBounce;            // +0x704
     int     bNoTumble;            // +0x708
@@ -2244,7 +2244,7 @@ void  Cmd_GiveAll_f(Entity* ent);                    // g.o 0x455F60
 void  hurt_touch(Entity* self, Entity* other, int bTouched);  // g.o 0x489110
 void  G_Trigger(Entity* self, Entity* other);        // g.o (g_trigger.cpp)
 int   BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x6168A0
-int   Com_BitCheck(int* array, int bitNum);          // core.o
+int   Com_BitCheck(const int* array, int bitNum);    // core.o ?Com_BitCheck@@YAHQBHH@Z
 int   Add_Ammo(Entity* ent, int weapon, int count, int fillClip);  // g.o 0x44B1A0
 void  EntityHandleDb_Compact(void* self);            // g.o 0x454B00
 extern bool gNoTargetEnabled;                        // g.o
@@ -2657,6 +2657,11 @@ void  PerpendicularVector(float* dst, const float* src);  // core.o
 void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o
 const gitem_s* BG_FindItemForWeapon(int weapon);  // game.o 0x612E70
 bool  PM_CanSimulateFiringWeapon(int iWeapon);    // game.o 0x614700
+bool  PM_CanStartADSAnim();                       // game.o 0x617120
+int   PM_InteruptWeaponWithProneMove();           // game.o 0x6171B0
+int   PM_InteruptWeaponWithSprintMove();          // game.o 0x617250
+void  PM_StartWeaponAnim(int anim);               // game.o 0x607EC0
+void  PM_ContinueWeaponAnim(int anim);            // game.o 0x607F80
 void  BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
                             float* minSpread, float* maxSpread);  // game.o 0x615C90
 void  GetSurfaceTypeSounds(const char* pszType, nslWaveID* sounds);  // game.o 0x612DB0
@@ -2816,6 +2821,7 @@ enum {
     WEAPTYPE_GRENADE = 1,  // verified vs disasm BG_IsCookingOffGrenade
     WEAPTYPE_ITEM = 4,  // verified vs disasm Drop_Weapon
     WEAPTYPE_INTERACT = 6,  // verified vs disasm UpdateAnimRoute
+    WEAPTYPE_GAS = 5,   // verified vs disasm PM_StartWeaponAnim
 };
 void  Scr_Vehicle_Init(Entity* pSelf, int msec); // g.o 0x480AC0
 void  VEH_GroundPlant(Entity* ent, int gravity, int msec);  // g.o

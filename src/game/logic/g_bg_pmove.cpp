@@ -2406,6 +2406,123 @@ int BG_GetTotalAmmo(const PlayerState* pPS, int iWeaponIndex)
 }
 
 // ============================================================================
+// ADS / weapon interrupt helpers - ea: 0x617120..0x617250
+// ============================================================================
+
+// ea: 0x00607EC0
+void PM_StartWeaponAnim(int anim)
+{
+    pmove_t* v2 = pm;
+    if (pm->ps->pm_type < 6 && pm->cmd.weapon != 0)
+    {
+        if (pml.pWeap == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+            AeAssert::gCurrentLine = 3140;
+            AeAssert::gCurrentExpr = "pml.pWeap";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            v2 = pm;
+        }
+        if (((weaponFileInfo_t*)pml.pWeap)->type == WEAPTYPE_GAS)
+        {
+            v2->ps->weapAnim = anim;
+        }
+        else
+        {
+            if (anim == 0 && v2->ps->fWeaponPosFrac > 0.89999998f)
+                anim = 23;
+            v2->ps->weapAnim = anim | ~v2->ps->weapAnim & 0x200;
+        }
+    }
+}
+
+// ea: 0x00607F80
+void PM_ContinueWeaponAnim(int anim)
+{
+    if (pm->cmd.weapon != 0)
+    {
+        if (anim == 0 && pm->ps->fWeaponPosFrac > 0.89999998f)
+            anim = 23;
+        if ((pm->ps->weapAnim & 0xFFFFFDFF) != anim)
+            PM_StartWeaponAnim(anim);
+    }
+}
+
+// ea: 0x00617120
+bool PM_CanStartADSAnim()
+{
+    int weaponstate = pm->ps->weaponstate;
+    return weaponstate != 5
+        && weaponstate != 6
+        && weaponstate != 7
+        && weaponstate != 8
+        && weaponstate != 9
+        && weaponstate != 14
+        && weaponstate != 10
+        && weaponstate != 11
+        && weaponstate != 2
+        && weaponstate != 4
+        && weaponstate != 12
+        && weaponstate != 13
+        && (((weaponFileInfo_t*)pml.pWeap)->bRechamberWhileAds == 0
+            || ((weaponFileInfo_t*)pml.pWeap)->bBoltAction == 0
+            || Com_BitCheck(pm->ps->weaponrechamber, pm->ps->weapon) == 0);
+}
+
+// ea: 0x006171B0
+int PM_InteruptWeaponWithProneMove()
+{
+    if ((pm->ps->pm_flags & 0x20) == 0
+        || BG_GetInfoForWeapon(pm->ps->weapon)->weapClass != WEAPCLASS_LMG)
+    {
+        unsigned int weaponstate = pm->ps->weaponstate;
+        if (weaponstate <= 2
+            || weaponstate == 5
+            || weaponstate == 7
+            || weaponstate == 9
+            || weaponstate == 8
+            || weaponstate == 6
+            || weaponstate == 4)
+            return 1;
+        if (weaponstate != 3 && weaponstate != 11)
+        {
+            pm->ps->weaponTime = 0;
+            pm->ps->weaponDelay = 0;
+            pm->ps->weaponstate = 0;
+            PM_ContinueWeaponAnim(0);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// ea: 0x00617250
+int PM_InteruptWeaponWithSprintMove()
+{
+    unsigned int weaponstate = pm->ps->weaponstate;
+    if (weaponstate <= 2
+        || weaponstate == 5
+        || weaponstate == 7
+        || weaponstate == 9
+        || weaponstate == 8
+        || weaponstate == 6
+        || weaponstate == 4)
+        return 1;
+    if (weaponstate != 3 && weaponstate != 10 && weaponstate != 11)
+    {
+        pm->ps->weaponTime = 0;
+        pm->ps->weaponDelay = 0;
+        pm->ps->weaponstate = 0;
+        if (pm->cmd.weapon != 0 && (pm->ps->weapAnim & 0xFFFFFDFF) != 0xA)
+            PM_StartWeaponAnim(10);
+        return 1;
+    }
+    return 0;
+}
+
+// ============================================================================
 // Prone movement checks - ea: 0x6134F0..0x615B50 (bg_misc.cpp)
 // ============================================================================
 extern float AngleNormalize180Accurate(float angle);  // core.o 0x4BFD90
