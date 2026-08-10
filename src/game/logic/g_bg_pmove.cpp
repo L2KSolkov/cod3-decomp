@@ -1307,6 +1307,218 @@ bool push_in_world(pmove_t& pm, float radius,
 }
 
 // ============================================================================
+// PM_SlideMove - ea: 0x63E850 (bg_pmove.cpp)
+// ============================================================================
+extern float VectorNormalize2(const math::Dir3& v, math::Dir3& out);
+    // ?VectorNormalize2@@YAMABVDir3@math@@AAV12@@Z
+extern void Com_Printf(const char* fmt, ...);  // core.o
+
+// ea: 0x0063E850
+int PM_SlideMove(int gravity)
+{
+    int v2 = 0;
+    PlayerState* ps = pm->ps;
+    float orig_vx = ps->velocity.v.m128_f32[0];
+    float orig_vy = ps->velocity.v.m128_f32[1];
+    if (gravity != 0)
+    {
+        float v4 = ps->gravity * pml.frametime;
+        orig_vx = ps->velocity.v.m128_f32[0];
+        orig_vy = ps->velocity.v.m128_f32[1];
+        float v5 = ps->velocity.v.m128_f32[2] - v4;
+        ps->velocity.v.m128_f32[2] =
+            (ps->velocity.v.m128_f32[2] + v5) * 0.5f;
+        float orig_vz = v5;
+        if (pml.groundPlane != 0)
+        {
+            PlayerState* v6 = pm->ps;
+            float v7 = (v6->velocity.v.m128_f32[1]
+                            * pml.groundTrace.normal.v.m128_f32[1]
+                        + v6->velocity.v.m128_f32[2]
+                            * pml.groundTrace.normal.v.m128_f32[2])
+                + pml.groundTrace.normal.v.m128_f32[0]
+                    * v6->velocity.v.m128_f32[0];
+            float v8 = v7 >= 0.0f ? v7 * 0.99900097f : v7 * 1.001f;
+            v6->velocity.v.m128_f32[0] -=
+                v8 * pml.groundTrace.normal.v.m128_f32[0];
+            v6->velocity.v.m128_f32[1] -=
+                v8 * pml.groundTrace.normal.v.m128_f32[1];
+            v6->velocity.v.m128_f32[2] -=
+                v8 * pml.groundTrace.normal.v.m128_f32[2];
+        }
+        float frametime = pml.frametime;
+        float planes[8][3];
+        if (pml.groundPlane != 0)
+        {
+            planes[0][0] = pml.groundTrace.normal.v.m128_f32[0];
+            planes[0][1] = pml.groundTrace.normal.v.m128_f32[1];
+            planes[0][2] = pml.groundTrace.normal.v.m128_f32[2];
+            v2 = 1;
+        }
+        math::Dir3 vel;
+        vel.v = pm->ps->velocity.v;
+        VectorNormalize2(vel, *(math::Dir3*)&planes[v2]);
+        int v11 = v2 + 1;
+        collision_context_t context;
+        context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
+        context.pass_entity1 = pm->ps->mClient;
+        context.pass_entity2.mHandle.mVal = 0;
+        context.contentmask = pm->tracemask;
+        context.pass_owner1.mHandle.mVal = 0;
+        context.pass_owner2.mHandle.mVal = 0;
+        int bumpcount = 0;
+        float time_left = pml.frametime;
+        float into = 0.0f;
+        math::Dir3 clipVelocity[8];
+        math::Dir3 primal_velocity;
+        while (1)
+        {
+            math::Position3 end;
+            end.v.m128_f32[0] = (ps->velocity.v.m128_f32[0] * frametime)
+                + ps->origin.v.m128_f32[0];
+            end.v.m128_f32[1] = (ps->velocity.v.m128_f32[1] * frametime)
+                + ps->origin.v.m128_f32[1];
+            end.v.m128_f32[2] = (ps->velocity.v.m128_f32[2] * frametime)
+                + ps->origin.v.m128_f32[2];
+            end.v.m128_f32[3] = 0.0f;
+            trace_t trace;
+            PM_trace(&trace, ps->origin, pm->mins, pm->maxs, end, context);
+            if (trace.allsolid)
+            {
+                pm->ps->velocity.v.m128_f32[2] = 0.0f;
+                return true;
+            }
+            if (trace.fraction > 0.0f)
+            {
+                pm->ps->origin.v.m128_f32[0] =
+                    ps->origin.v.m128_f32[0]
+                    + (ps->velocity.v.m128_f32[0] * frametime
+                       * trace.fraction);
+                pm->ps->origin.v.m128_f32[1] =
+                    ps->origin.v.m128_f32[1]
+                    + (ps->velocity.v.m128_f32[1] * frametime
+                       * trace.fraction);
+                pm->ps->origin.v.m128_f32[2] =
+                    ps->origin.v.m128_f32[2]
+                    + (ps->velocity.v.m128_f32[2] * frametime
+                       * trace.fraction);
+            }
+            if (trace.fraction == 1.0f)
+                break;
+            PM_AddTouchEnt(trace.mEntity);
+            time_left -= trace.fraction * frametime;
+            if (v11 >= 8)
+                break;
+            int v12 = 0;
+            int found = -1;
+            for (int i = 0; i < v11; ++i)
+            {
+                if ((planes[i][0] * trace.normal.v.m128_f32[0]
+                     + planes[i][1] * trace.normal.v.m128_f32[1]
+                     + planes[i][2] * trace.normal.v.m128_f32[2])
+                    > 0.99900001f)
+                {
+                    found = i;
+                    break;
+                }
+            }
+            if (pm->debugLevel >= 2 && found >= 0)
+                Com_Printf("%i:recollided with plane normal (%.2f, %.2f, %.2f)\n",
+                           c_pmove, trace.normal.v.m128_f32[0],
+                           trace.normal.v.m128_f32[1],
+                           trace.normal.v.m128_f32[2]);
+            if (found >= 0)
+            {
+                pm->ps->velocity.v.m128_f32[0] +=
+                    trace.normal.v.m128_f32[0];
+                pm->ps->velocity.v.m128_f32[1] +=
+                    trace.normal.v.m128_f32[1];
+                pm->ps->velocity.v.m128_f32[2] +=
+                    trace.normal.v.m128_f32[2];
+            }
+            clipVelocity[v11 - 1].v = trace.normal.v;
+            ++v11;
+            int v18 = 0;
+            int impactIdx = -1;
+            float impact = 0.0f;
+            for (int i = 0; i < v11; ++i)
+            {
+                float d = planes[i][0] * ps->velocity.v.m128_f32[0]
+                    + planes[i][1] * ps->velocity.v.m128_f32[1]
+                    + planes[i][2] * ps->velocity.v.m128_f32[2];
+                if (d >= 0.1f)
+                    break;
+                impactIdx = i;
+                impact = d;
+            }
+            if (impactIdx >= 0)
+            {
+                if (-impact > pml.impactSpeed)
+                    pml.impactSpeed = -impact;
+                float d = planes[impactIdx][0] * ps->velocity.v.m128_f32[0]
+                    + planes[impactIdx][1] * ps->velocity.v.m128_f32[1]
+                    + planes[impactIdx][2] * ps->velocity.v.m128_f32[2];
+                float f = d >= 0.0f ? d * 0.99900097f : d * 1.001f;
+                math::Dir3 newVel;
+                newVel.v.m128_f32[0] =
+                    ps->velocity.v.m128_f32[0] - planes[impactIdx][0] * f;
+                newVel.v.m128_f32[1] =
+                    ps->velocity.v.m128_f32[1] - planes[impactIdx][1] * f;
+                newVel.v.m128_f32[2] =
+                    ps->velocity.v.m128_f32[2] - planes[impactIdx][2] * f;
+                float dp = planes[impactIdx][0] * orig_vx
+                    + planes[impactIdx][1] * orig_vy
+                    + planes[impactIdx][2] * (ps->velocity.v.m128_f32[2]
+                        + pml.frametime * ps->gravity);
+                float f2 = dp >= 0.0f ? dp * 0.99900097f : dp * 1.001f;
+                math::Dir3 primal;
+                primal.v.m128_f32[0] = orig_vx - planes[impactIdx][0] * f2;
+                primal.v.m128_f32[1] = orig_vy - planes[impactIdx][1] * f2;
+                primal.v.m128_f32[2] =
+                    (ps->velocity.v.m128_f32[2]
+                     + pml.frametime * ps->gravity)
+                    - planes[impactIdx][2] * f2;
+                // clip against all other planes
+                for (int i = 0; i < v11; ++i)
+                {
+                    if (i == impactIdx)
+                        continue;
+                    float dn = planes[i][0] * newVel.v.m128_f32[0]
+                        + planes[i][1] * newVel.v.m128_f32[1]
+                        + planes[i][2] * newVel.v.m128_f32[2];
+                    if (dn >= 0.1f)
+                        continue;
+                    float fn = dn >= 0.0f ? dn * 0.99900097f : dn * 1.001f;
+                    newVel.v.m128_f32[0] -= planes[i][0] * fn;
+                    newVel.v.m128_f32[1] -= planes[i][1] * fn;
+                    newVel.v.m128_f32[2] -= planes[i][2] * fn;
+                    float dpn = planes[i][0] * primal.v.m128_f32[0]
+                        + planes[i][1] * primal.v.m128_f32[1]
+                        + planes[i][2] * primal.v.m128_f32[2];
+                    float fpn = dpn >= 0.0f ? dpn * 0.99900097f
+                                            : dpn * 1.001f;
+                    primal.v.m128_f32[0] -= planes[i][0] * fpn;
+                    primal.v.m128_f32[1] -= planes[i][1] * fpn;
+                    primal.v.m128_f32[2] -= planes[i][2] * fpn;
+                }
+                ps->velocity.v.m128_f32[0] = newVel.v.m128_f32[0];
+                ps->velocity.v.m128_f32[1] = newVel.v.m128_f32[1];
+                ps->velocity.v.m128_f32[2] = newVel.v.m128_f32[2];
+            }
+            if (++bumpcount >= 4)
+                break;
+        }
+        if (pm->debugLevel >= 2)
+            Com_Printf("%i:MAX_CLIP_PLANES\n", c_pmove);
+        pm->ps->velocity.v.m128_f32[2] = 0.0f;
+        pm->ps->velocity.v.m128_f32[1] = 0.0f;
+        pm->ps->velocity.v.m128_f32[0] = 0.0f;
+        return true;
+    }
+    return false;
+}
+
+// ============================================================================
 // tunnel_test - ea: 0x643690 (bg_pmove.cpp)
 // ============================================================================
 extern void query_proximity_data(const math::Position3& lo,
