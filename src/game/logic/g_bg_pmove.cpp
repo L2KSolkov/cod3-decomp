@@ -57,6 +57,8 @@ extern void Com_Printf(const char* fmt, ...);        // ?Com_Printf (core.o)
 extern void mem_heap_free(void* ptr);                // ?mem_heap_free (mem_heap)
 extern void BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
                                                 PlayerState* ps);  // bg_misc.cpp
+extern void ProjectPointOnPlane(float* dst, const float* p,
+                                const float* normal);  // core.o q_math.cpp
 
 // ============================================================================
 // AngleClamp - ea: 0x604A90
@@ -146,7 +148,7 @@ extern void PmoveSingle(pmove_t* pmove,
 extern bool GamePause_IsGamePaused(int client);   // ?IsGamePaused@GamePause@@SA_NH@Z
 extern void PM_Weapon();                          // game.o 0x6408B0
 extern void PM_Footsteps();                       // game.o 0x63CB60
-extern void PM_LadderMove(const collision_context_t& context);  // game.o 0x6458E0
+void PM_LadderMove(const collision_context_t& context);  // game.o 0x6458E0
 extern void PM_WalkMove(const collision_context_t& context);    // game.o 0x643E40
 extern void PM_AirMove(const collision_context_t& context);     // game.o 0x643C50
 extern void PM_GroundTrace();                     // game.o 0x63C340
@@ -6681,4 +6683,335 @@ L80:
     }
     pm->trace = pm->capsuletrace;
     pm->ps->eFlags |= 0x10;
+}
+
+// ============================================================================
+// FloatSign - ea: 0x65B9E0 (game.o inline, raw sign-bit test)
+// ============================================================================
+// ea: 0x0065B9E0
+static int FloatSign(float x)
+{
+    return *(int*)&x < 0 ? -1 : 1;
+}
+
+// ============================================================================
+// PM_Jump - ea: 0x614AF0 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x00614AF0
+static void PM_Jump(float height)
+{
+    pml.groundPlane = 0;
+    pml.walking = 0;
+    pm->ps->mGroundEntity.mHandle.mVal = 0;
+    pm->ps->velocity.v.m128_f32[2] =
+        sqrtf((float)pm->ps->gravity * (height + height));
+    pm->ps->pm_flags |= 0x2008;
+    pm->ps->pm_time = 0;
+    pm->ps->fJumpOriginZ = pm->ps->origin.v.m128_f32[2];
+    MultiplayerMgr::sInst->AnimEvent(9);
+}
+
+// ============================================================================
+// PM_JumpForSurface - ea: 0x6053F0 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x006053F0
+static unsigned int PM_JumpForSurface()
+{
+    if ((pm->ps->pm_flags & 0x10) != 0)
+        return 106;
+    unsigned int result = PM_GroundSurfaceType();
+    if (result != 0)
+        result += 93;
+    return result;
+}
+
+// ============================================================================
+// PM_CheckJump - ea: 0x614B60 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x00614B60
+static int PM_CheckJump()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 1139;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pm->cmd.serverTime - pm->ps->jumpTime < 1000)
+        return 0;
+    int pm_flags = pm->ps->pm_flags;
+    if ((pm_flags & 0x800) != 0)
+        return 0;
+    int viewHeightTarget = pm->ps->viewHeightTarget;
+    if (viewHeightTarget == pm->ps->crouchViewHeight
+        || viewHeightTarget == pm->ps->proneViewHeight)
+    {
+        return 0;
+    }
+    if ((pm_flags & 0x20) != 0)
+    {
+        if (BG_GetInfoForWeapon(pm->ps->weapon)->weapClass == WEAPCLASS_LMG)
+            return 0;
+    }
+    if (pm->cmd.upmove < 10)
+        return 0;
+    if ((pm->ps->pm_flags & 8) != 0)
+    {
+        pm->cmd.upmove = 0;
+        return 0;
+    }
+    PM_Jump(39.0f);
+    if ((pm->ps->pm_flags & 0x10) != 0)
+    {
+        pm->ps->velocity.v.m128_f32[2] =
+            pm->ps->velocity.v.m128_f32[2] * 0.75f;
+        float vFlatForward[3];
+        vFlatForward[0] = pml.forward[0];
+        vFlatForward[1] = pml.forward[1];
+        vFlatForward[2] = 0.0f;
+        VectorNormalize(vFlatForward);
+        float vPushOffDir[3];
+        if ((pm->ps->vLadderVec[0] * pml.forward[0])
+                + (pm->ps->vLadderVec[2] * pml.forward[2])
+                + (pm->ps->vLadderVec[1] * pml.forward[1])
+            >= 0.0f)
+        {
+            vPushOffDir[0] = vFlatForward[0];
+            vPushOffDir[1] = vFlatForward[1];
+            vPushOffDir[2] = vFlatForward[2];
+        }
+        else
+        {
+            float v7 = (((pm->ps->vLadderVec[0] * vFlatForward[0])
+                       + (pm->ps->vLadderVec[2] * vFlatForward[2]))
+                       + (pm->ps->vLadderVec[1] * vFlatForward[1]))
+                     * -2.0f;
+            vPushOffDir[0] = (pm->ps->vLadderVec[0] * v7) + vFlatForward[0];
+            vPushOffDir[1] = (pm->ps->vLadderVec[1] * v7) + vFlatForward[1];
+            vPushOffDir[2] = (pm->ps->vLadderVec[2] * v7) + vFlatForward[2];
+            VectorNormalize(vPushOffDir);
+        }
+        pm->ps->velocity.v.m128_f32[0] = vPushOffDir[0] * 128.0f;
+        pm->ps->velocity.v.m128_f32[1] = vPushOffDir[1] * 128.0f;
+        pm->ps->pm_flags &= ~0x10;
+    }
+    int v9 = PM_JumpForSurface();
+    PM_AddEvent(v9);
+    pm->ps->aimSpreadScale = pm->ps->aimSpreadScale + 64.0f;
+    if (pm->ps->aimSpreadScale > 255.0f)
+        pm->ps->aimSpreadScale = 255.0f;
+    if ((0x10000 & pm->ps->pm_flags) != 0)
+        pm->ps->fatigueScale = pm->ps->fatigueScale - 0.33333334f;
+    if (pm->ps->fatigueScale < 0.0f)
+        pm->ps->fatigueScale = 0.0f;
+    return 1;
+}
+
+// ============================================================================
+// PM_CmdScale - ea: 0x604FA0 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x00604FA0
+static float PM_CmdScale(usercmd_s* cmd)
+{
+    int v2 = abs(cmd->forwardmove);
+    int v3 = abs(cmd->rightmove);
+    int scale = v2;
+    if (v3 > v2)
+    {
+        v2 = v3;
+        scale = v3;
+    }
+    int v4 = abs(cmd->upmove);
+    if (v4 > v2)
+    {
+        v2 = v4;
+        scale = v4;
+    }
+    if (v2 == 0)
+        return 0.0f;
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 852;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PlayerState* ps = pm->ps;
+    double forwardmove = cmd->forwardmove;
+    int pm_flags = ps->pm_flags;
+    float scalea = (float)ps->speed * (float)scale
+                 / (sqrtf((float)(cmd->rightmove * cmd->rightmove)
+                        + (float)(cmd->upmove * cmd->upmove)
+                        + (float)(forwardmove * forwardmove))
+                    * 127.0f);
+    float result;
+    if ((0x10000 & pm_flags) != 0)
+        result = scalea;
+    else if ((pm_flags & 0x80) == 0 && ps->leanf == 0.0f)
+        result = ps->runSpeedScale * scalea;
+    else
+        result = ps->walkSpeedScale * scalea;
+    if (ps->pm_type == 2)
+        result = result * 3.0f;
+    if (ps->pm_type == 3)
+        return result * 6.0f;
+    return result;
+}
+
+// ============================================================================
+// PM_Accelerate - ea: 0x604E70 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x00604E70
+static void PM_Accelerate(float* wishdir, float wishspeed, float accel)
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 787;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PlayerState* ps = pm->ps;
+    float v4 = wishspeed
+             - ((ps->velocity.v.m128_f32[1] * wishdir[1])
+              + (ps->velocity.v.m128_f32[2] * wishdir[2])
+              + (wishdir[0] * ps->velocity.v.m128_f32[0]));
+    if (v4 > 0.0f)
+    {
+        float v5 = 100.0f;
+        if (wishspeed >= 100.0f)
+            v5 = wishspeed;
+        float v6 = (pml.frametime * v5) * accel;
+        if (v6 > v4)
+            v6 = v4;
+        if (ps->mGroundEntity.mHandle.mVal != 0)
+            v6 = (1.0f / ps->friction) * v6;
+        if (v6 > v4)
+            v6 = v4;
+        ps->velocity.v.m128_f32[0] = (wishdir[0] * v6) + ps->velocity.v.m128_f32[0];
+        ps->velocity.v.m128_f32[1] = (wishdir[1] * v6) + ps->velocity.v.m128_f32[1];
+        ps->velocity.v.m128_f32[2] = (v6 * wishdir[2]) + ps->velocity.v.m128_f32[2];
+    }
+}
+
+// ============================================================================
+// PM_LadderMove - ea: 0x6458E0 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x006458E0
+void PM_LadderMove(const collision_context_t& context)
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 5659;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (PM_CheckJump() != 0)
+    {
+        PM_AirMove(context);
+        pm->ps->jumpTime = pm->cmd.serverTime;
+        return;
+    }
+    pml.forward[2] = 0.0f;
+    VectorNormalize(pml.forward);
+    pml.right[2] = 0.0f;
+    float vTempRight[3];
+    VectorNormalize2(pml.right, vTempRight);
+    ProjectPointOnPlane(pml.right, vTempRight, pm->ps->vLadderVec);
+    float fwdScale = PM_CmdScale(&pm->cmd);
+    float wishvel[3];
+    wishvel[0] = 0.0f;
+    wishvel[1] = 0.0f;
+    wishvel[2] = 0.0f;
+    if (pm->cmd.forwardmove != 0)
+        wishvel[2] = (float)pm->cmd.forwardmove * fwdScale * 0.5f;
+    pm->cmd.rightmove = 0;
+    float wishdir[3];
+    float scale = VectorNormalize2(wishvel, wishdir);
+    PM_Accelerate(wishdir, scale, 9.0f);
+    if (pm->cmd.forwardmove == 0)
+    {
+        float v3 = (float)pm->ps->gravity * pml.frametime;
+        if (pm->ps->velocity.v.m128_f32[2] <= 0.0f)
+        {
+            pm->ps->velocity.v.m128_f32[2] =
+                v3 + pm->ps->velocity.v.m128_f32[2];
+            if (pm->ps->velocity.v.m128_f32[2] > 0.0f)
+                pm->ps->velocity.v.m128_f32[2] = 0.0f;
+        }
+        else
+        {
+            pm->ps->velocity.v.m128_f32[2] =
+                pm->ps->velocity.v.m128_f32[2] - v3;
+            if (pm->ps->velocity.v.m128_f32[2] < 0.0f)
+                pm->ps->velocity.v.m128_f32[2] = 0.0f;
+        }
+    }
+    if (pm->cmd.rightmove == 0)
+    {
+        float vSideDir[2];
+        vSideDir[0] = pml.right[0];
+        vSideDir[1] = pml.right[1];
+        VectorNormalize2D(vSideDir);
+        float fSideSpeed = (pm->ps->velocity.v.m128_f32[1] * vSideDir[1])
+                         + (vSideDir[0] * pm->ps->velocity.v.m128_f32[0]);
+        if (fSideSpeed != 0.0f)
+        {
+            pm->ps->velocity.v.m128_f32[0] =
+                ((0.0f - fSideSpeed) * vSideDir[0])
+                + pm->ps->velocity.v.m128_f32[0];
+            pm->ps->velocity.v.m128_f32[1] =
+                ((0.0f - fSideSpeed) * vSideDir[1])
+                + pm->ps->velocity.v.m128_f32[1];
+            float fSpeedDrop = pml.frametime * fSideSpeed * 16.0f;
+            scale = fabsf(fSpeedDrop);
+            if (fabsf(fSideSpeed) > scale)
+            {
+                float v10;
+                if (scale >= 1.0f)
+                    v10 = fSpeedDrop;
+                else
+                    v10 = (float)FloatSign(fSpeedDrop);
+                pm->ps->velocity.v.m128_f32[0] =
+                    ((fSideSpeed - v10) * vSideDir[0])
+                    + pm->ps->velocity.v.m128_f32[0];
+                pm->ps->velocity.v.m128_f32[1] =
+                    ((fSideSpeed - v10) * vSideDir[1])
+                    + pm->ps->velocity.v.m128_f32[1];
+            }
+        }
+    }
+    if (pml.walking == 0)
+    {
+        float v12 = 0.0f
+                  - ((pm->ps->vLadderVec[1]
+                      * pm->ps->velocity.v.m128_f32[1])
+                   + (pm->ps->vLadderVec[0]
+                      * pm->ps->velocity.v.m128_f32[0]));
+        pm->ps->velocity.v.m128_f32[0] =
+            (pm->ps->vLadderVec[0] * v12) + pm->ps->velocity.v.m128_f32[0];
+        pm->ps->velocity.v.m128_f32[1] =
+            (pm->ps->vLadderVec[1] * v12) + pm->ps->velocity.v.m128_f32[1];
+        float v13 = wishvel[2] > 0.0f ? -500.0f : -250.0f;
+        pm->ps->velocity.v.m128_f32[0] =
+            (pm->ps->vLadderVec[0] * v13) + pm->ps->velocity.v.m128_f32[0];
+        pm->ps->velocity.v.m128_f32[1] =
+            (pm->ps->vLadderVec[1] * v13) + pm->ps->velocity.v.m128_f32[1];
+    }
+    PM_StepSlideMove(0);
+    int v16 = (int)AngleDelta(vectoyaw(pm->ps->vLadderVec) + 180.0f,
+                              pm->ps->viewangles[1]);
+    if (abs(v16) > 75)
+        v16 = v16 <= 0 ? 75 : -75;
+    pm->ps->movementDir = v16;
 }
