@@ -221,7 +221,7 @@ struct SoundHandleDb {
     DbElement mElements[512];
     static SoundHandleDb sInst;  // ?sInst@SoundHandleDb@SoundDevice@@0V12@A
 };
-SoundHandleDb SoundHandleDb::sInst;
+// sInst defined in game.o (g_entity_misc.cpp, VA 0xF50D10) per linker map.
 
 extern void Sound_Stop(Sound* s);
 extern void Sound_PlayQueued(Sound* s);

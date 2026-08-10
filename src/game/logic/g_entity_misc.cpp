@@ -5,6 +5,7 @@
 
 #include "game/logic/g_local.h"
 #include "core/PoolAllocator.h"
+#include "core/tlFixedString.h"
 
 #include <new>
 #include <stdio.h>
@@ -1559,12 +1560,13 @@ public:
         kUnloading = 3,   // verified vs disasm IsFinished
     };
     struct WbkEntry {
-        uint8_t   _pad0[0x2C];      // +0x00 (name: tlFixedString, 32 bytes)
-        int       state[6];         // +0x2C
-        nflFileID fileID[6];        // +0x44
-        nslBankID bankId[6];        // +0x5C (bankId[5] aliases next entry +0x04)
+        tlFixedString name;          // +0x00 (32 bytes, verified 0x621470)
+        int          pakFile;        // +0x20
+        int          state[6];       // +0x24
+        nflFileID    fileID[6];      // +0x3C
+        nslBankID    bankId[6];      // +0x54
     };
-    static_assert(sizeof(WbkEntry) == 0x74, "WbkEntry view size mismatch");
+    static_assert(sizeof(WbkEntry) == 0x6C, "WbkEntry view size mismatch");
     uint8_t  _pad0[4];                 // +0x00 (vftable)
     bool     mDoUnloadNotify;          // +0x04
     bool     mDoLoadNotify;            // +0x05
@@ -1572,6 +1574,7 @@ public:
     uint8_t  mAvailableWbks[0x6C0];    // +0x08 (16 * 0x6C stride)
     int      m_size;                   // +0x6C8
     static AudioBankMgr* sInst;        // ?sInst@AudioBankMgr@@2PAV1@A
+    AudioBankMgr();                    // ??0AudioBankMgr@@QAE@XZ (game.o 0x621440)
     virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
     const char* LanguageStr(ELanguage id) const;  // ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z
@@ -1582,8 +1585,81 @@ public:
     void LoadWbkInternal(WbkEntry* wbk, const char* path, ELanguage lang,
                          bool async);  // ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z (game.o 0x62BD50)
     void FreeWbk(const void* name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x62BE30)
+    void RegisterWbk(const tlFixedString& name, const char* path,
+                     ELanguage lang, TPakId pak);  // game.o 0x621470
 };
 AudioBankMgr* AudioBankMgr::sInst = nullptr;
+
+// ============================================================================
+// AudioBankMgr ctor / RegisterWbk - ea: 0x621440 / 0x621470
+// ============================================================================
+extern int nflOpenFile(int mediaID, const char* fileName);  // nfl_xboxr
+extern int gNflMediaId;                                     // nfl_xboxr
+extern void* AssetBankSet_ctor(void* self);                 // streamer.o
+static tlFixedString dflt;          // ?dflt@@3VtlFixedString@@A @ 0xF58C04
+static bool s_dflt_init;            // $S13_7
+
+// ea: 0x00621440
+AudioBankMgr::AudioBankMgr()
+{
+    AssetBankSet_ctor(this);
+    this->mDoUnloadNotify = false;
+    this->mDoLoadNotify = false;
+    this->m_size = 0;
+}
+
+// ea: 0x00621470
+void AudioBankMgr::RegisterWbk(const tlFixedString& name, const char* path,
+                               ELanguage lang, TPakId pak)
+{
+    if (!s_dflt_init)
+    {
+        s_dflt_init = true;
+        new (&dflt) tlFixedString("default");
+    }
+    if (name == dflt)
+        path = "sp_test\\default.wbk";
+    int fileId = nflOpenFile(gNflMediaId, path);
+    if (fileId == -1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\AudioBankManager.cpp";
+        AeAssert::gCurrentLine = 169;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Couldn't open '%s'", path))
+            __debugbreak();
+    }
+    for (int i = 0; i < this->m_size; ++i)
+    {
+        int off = 0x6C * i;
+        if (off >= 0x6C0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        WbkEntry* wbk = (WbkEntry*)((char*)this->mAvailableWbks + off);
+        if (wbk->name == name)
+        {
+            wbk->fileID[lang] = fileId;
+            return;
+        }
+    }
+    WbkEntry wbk;
+    wbk.name = name;
+    wbk.pakFile = pak;
+    memset(wbk.state, 0, sizeof(wbk.state));
+    memset(&wbk.fileID[0], 0xFF,
+           sizeof(wbk.fileID) + sizeof(wbk.bankId));
+    wbk.fileID[lang] = fileId;
+    ((WbkEntry*)this->mAvailableWbks)[this->m_size++] = wbk;
+}
 
 // ea: 0x006127D0
 AudioBankMgr::~AudioBankMgr()
