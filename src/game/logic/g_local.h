@@ -2666,6 +2666,7 @@ bool collide_ray(const math::Position3& p0, const math::Dir3& u0,
 struct traceWork_t;
 bool sight_trace_point(traceWork_t* tw, const math::Position3& p0,
                        const math::Position3& p1);  // game.o 0x6253B0
+bool sight_trace_sphere(traceWork_t* tw);  // game.o 0x625EA0
 void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
                     const math::Position3& bmax, const cdlPlane* sides,
                     unsigned int nsides,
