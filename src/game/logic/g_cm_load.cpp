@@ -886,6 +886,91 @@ int CM_LoadLump(int lumpnum, char** pBuf)
 }
 
 // ============================================================================
+// BinFileManager + DecodeBin - ea: 0x608ED0..0x608F70, 0x6180D0
+// ============================================================================
+extern unsigned int AeHash(const char* str);  // core.o
+
+struct BinFileEntry {
+    unsigned int mHash;    // +0x00
+    TPakId       mPakId;   // +0x04
+    unsigned char* mData;  // +0x08
+};
+
+class BinFileManager {
+public:
+    int mTotalFiles;         // +0x00
+    BinFileEntry mArray[256];  // +0x04
+    static BinFileManager* sInst;  // ?sInst@BinFileManager@@2PAV1@A
+
+    BinFileManager();        // ??0BinFileManager@@AAE@XZ
+    ~BinFileManager();       // ??1BinFileManager@@AAE@XZ
+    void Clear();            // ?Clear@BinFileManager@@QAEXXZ
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId);  // ?DecodeBank@BinFileManager@@QAEXPBDPAEHW4TPakId@@@Z
+    unsigned char* Find(const char* name);  // ?Find@BinFileManager@@QAEPAEPBD@Z
+};
+BinFileManager* BinFileManager::sInst = nullptr;
+
+// ea: 0x00608ED0
+BinFileManager::BinFileManager()
+{
+    this->mTotalFiles = 0;
+}
+
+// ea: 0x00608EE0
+BinFileManager::~BinFileManager()
+{
+}
+
+// ea: 0x00608EF0
+void BinFileManager::Clear()
+{
+    this->mTotalFiles = 0;
+}
+
+// ea: 0x00608F00
+void BinFileManager::DecodeBank(const char* name, unsigned char* data,
+                                int size, TPakId pakId)
+{
+    const char* v6 = name;
+    if (*name != '.')
+    {
+        do
+            v6++;
+        while (*v6 != '.');
+    }
+    // Strip the extension (name is modified in place through the original
+    // pointer; the decompile writes through v6 which aliases name).
+    char* end = const_cast<char*>(v6);
+    *end = 0;
+    this->mArray[this->mTotalFiles].mHash = AeHash(name);
+    this->mArray[this->mTotalFiles].mPakId = pakId;
+    this->mArray[this->mTotalFiles++].mData = data;
+}
+
+// ea: 0x00608F70
+unsigned char* BinFileManager::Find(const char* name)
+{
+    unsigned int nameHash = AeHash(name);
+    int v3 = 0;
+    if (this->mTotalFiles == 0)
+        return nullptr;
+    while (this->mArray[v3].mHash != nameHash
+           || !PakManager::sInst->IsLoaded(this->mArray[v3].mPakId))
+    {
+        if (++v3 >= this->mTotalFiles)
+            return nullptr;
+    }
+    return this->mArray[v3].mData;
+}
+
+// ea: 0x006180D0
+void DecodeBin(const char* name, unsigned char* data, int size, TPakId pakId)
+{
+    BinFileManager::sInst->DecodeBank(name, data, size, pakId);
+}
+
+// ============================================================================
 // GetLeaves / CM_BoxLeafnums - ea: 0x619050..0x6194A0
 // ============================================================================
 // ea: 0x00619050

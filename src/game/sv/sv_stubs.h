@@ -428,6 +428,7 @@ struct PakManager {
     struct { void* m_head; void* m_end; } mActivePaks;  // +0x70
     TPakId FindPakId(EPakType t) const;  // ?FindPakId@PakManager@@QBE?AW4TPakId@@W4EPakType@@@Z
     void* MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap);  // ?MemAlloc@PakManager@@QAEPAXW4TPakId@@I_N@Z
+    bool IsLoaded(TPakId id) const;  // ?IsLoaded@PakManager@@QBE_NW4TPakId@@@Z
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
     void ResetPriorities(bool user_distances_also);  // ?ResetPriorities@PakManager@@QAEX_N@Z
