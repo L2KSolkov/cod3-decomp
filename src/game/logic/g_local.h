@@ -530,6 +530,8 @@ struct TestFPS {
     void OutputStats();  // ?OutputStats@TestFPS@@AAEXXZ (game2.o 0x4FEC80)
     void GatherMetrics();  // ?GatherMetrics@TestFPS@@QAEXXZ (game2.o 0x501990)
     void NextPosition();   // ?NextPosition@TestFPS@@AAEXXZ (game2.o 0x501A60)
+    bool CheckForFloor(const math::Position3* position, trace_t* trace,
+                       float zMin);  // ea: 0x4F6FC0
     void Test();            // ?Test@TestFPS@@QAEXXZ
     void StopTest();        // ?StopTest@TestFPS@@QAEXXZ
     void PositionCamera(pmove_t* pm);  // ?PositionCamera@TestFPS@@QAEXPAUpmove_t@@@Z

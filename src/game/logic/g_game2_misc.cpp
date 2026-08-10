@@ -1138,6 +1138,12 @@ struct SplinePath {
     float* mSpline;       // +0x08
 };
 
+// HashGroupFile - spline group file (InplaceVector-of-vectors view)
+struct HashGroupFileLocal {
+    void* mTree;                                        // +0x00
+    InplaceVector<InplaceVector<unsigned char>*> mPtrs; // +0x04
+};
+
 class SplineMgr {
 public:
     unsigned char m_assetBase[4];      // +0x00 AssetBankSet
@@ -1153,9 +1159,81 @@ public:
     void GetSpline(const char* name, SplinePath* splinePath);          // ea: 0x5045C0
     SplineMgr();                                                       // ea: 0x504580
     void ReverseEndianSplinePath(SplinePath* spline);                   // ea: 0x5045F0
+    void ReverseEndianSplineGroupFile(HashGroupFileLocal* splineGroupFile);  // ea: 0x5046C0
+    static SplineMgr* sInst;  // ?sInst@SplineMgr@@2PAV1@A
 };
 
 extern bool AeAssert_Error(const char* fmt, ...);
+extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
+
+// ea: 0x504560
+void DecodeSplineGroup(const char* name, unsigned char* data, int size,
+                       TPakId pakId)
+{
+    SplineEntry* UnusedEntry = SplineMgr::sInst->GetUnusedEntry();
+    UnusedEntry->pakId = pakId;
+    UnusedEntry->file = data;
+    InplaceAssetBank_Fixup(data);
+}
+
+// ea: 0x5046C0
+void SplineMgr::ReverseEndianSplineGroupFile(
+    HashGroupFileLocal* splineGroupFile)
+{
+    unsigned int mSize = splineGroupFile->mPtrs.mSize;
+    for (unsigned int v4 = 0; v4 < mSize; ++v4)
+    {
+        InplaceVector<unsigned char>* v6 = splineGroupFile->mPtrs.mList[v4];
+        if (v6 == nullptr)
+            continue;
+        if (v6->mSize == 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+            AeAssert::gCurrentLine = 91;
+            AeAssert::gCurrentExpr = "index < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                __debugbreak();
+        }
+        unsigned char* mList = v6->mList;
+        // Byte-swap the three header words (tree count + two offsets)
+        for (int w = 0; w < 3; ++w)
+        {
+            unsigned char* p = mList + w * 4;
+            unsigned char t0 = p[0];
+            p[0] = p[3];
+            p[3] = t0;
+            unsigned char t1 = p[1];
+            p[1] = p[2];
+            p[2] = t1;
+        }
+        int v13 = *(int*)(mList + 4);
+        if (v13 == 0)
+            return;
+        unsigned char* v17 = mList + 12;
+        unsigned char* v18 = &v17[12 * v13];
+        for (int j = v13; j != 0; --j)
+        {
+            unsigned char* e = v17;
+            for (int w = 0; w < 3; ++w)
+            {
+                unsigned char* p = e + w * 4;
+                unsigned char t0 = p[0];
+                p[0] = p[3];
+                p[3] = t0;
+                unsigned char t1 = p[1];
+                p[1] = p[2];
+                p[2] = t1;
+            }
+            SplinePath splineData;
+            splineData.mSpline = (float*)(v18 + *(int*)(e + 0));
+            splineData.mEventIndices = v18 + *(int*)(e + 4);
+            splineData.mEventHashes = v18 + *(int*)(e + 8);
+            ReverseEndianSplinePath(&splineData);
+            v17 = e + 12;
+        }
+    }
+}
 
 // ea: 0x4F9700
 SplineEntry* SplineMgr::GetUnusedEntry()
