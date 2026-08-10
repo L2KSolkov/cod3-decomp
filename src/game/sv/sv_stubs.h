@@ -415,6 +415,8 @@ struct SoundDevice {
     void ScaleVolume(float scale);          // ?ScaleVolume@SoundDevice@@QAEXM@Z (game.o 0x602A10)
     void PauseAllSounds();                  // ?PauseAllSounds@SoundDevice@@QAEXXZ (game.o 0x602A80)
     Sound* GetSoundFromSourceId(nslSourceID id);  // ?GetSoundFromSourceId@SoundDevice@@QAEPAVSound@1@W4nslSourceID@@@Z
+    Sound* GetSoundForHandle(DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle);  // game.o 0x621670
+    const Sound* GetSoundForHandle(DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle) const;  // game.o 0x6216B0
     void UnpauseAllSounds();                // ?UnpauseAllSounds@SoundDevice@@QAEXXZ (game.o 0x602AE0)
     int GetNumberOfListeners();             // ?GetNumberOfListeners@SoundDevice@@QAEHXZ (game.o 0x602B10)
     void SetNumberOfListeners(int listeners);  // ?SetNumberOfListeners@SoundDevice@@QAEXH@Z (game.o 0x602B20)

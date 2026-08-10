@@ -1393,6 +1393,36 @@ SoundDevice::Sound::GetDebugString() const
 }
 
 // ============================================================================
+// SoundDevice::GetSoundForHandle - ea: 0x621670 / 0x6216B0
+// ============================================================================
+SoundDevice::SoundHandleDb SoundDevice::SoundHandleDb::sInst;  // @ 0xF50D10
+
+// ea: 0x00621670
+SoundDevice::Sound* SoundDevice::GetSoundForHandle(
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle)
+{
+    unsigned int v2 = handle.mHandle.mVal & 0xFFF;
+    if (v2 < 0x200
+        && handle.mHandle.mVal >> 12
+            == (unsigned int)SoundHandleDb::sInst.mElements[v2].mKey)
+        return SoundHandleDb::sInst.mElements[v2].mObject;
+    return nullptr;
+}
+
+// ea: 0x006216B0
+const SoundDevice::Sound* SoundDevice::GetSoundForHandle(
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle)
+    const
+{
+    unsigned int v2 = handle.mHandle.mVal & 0xFFF;
+    if (v2 < 0x200
+        && handle.mHandle.mVal >> 12
+            == (unsigned int)SoundHandleDb::sInst.mElements[v2].mKey)
+        return SoundHandleDb::sInst.mElements[v2].mObject;
+    return nullptr;
+}
+
+// ============================================================================
 // CGBankManager::~CGBankManager - ea: 0x611B70
 // ============================================================================
 extern void Cmd_RemoveCommand(const char* cmd_name);  // game.o g_cmd.cpp
