@@ -4635,6 +4635,35 @@ int PM_InteruptWeaponWithSprintMove()
 // ============================================================================
 extern float AngleNormalize180Accurate(float angle);  // core.o 0x4BFD90
 extern float vectopitch(const float* vec);            // core.o q_math.cpp
+extern float AngleNormalize360Accurate(float angle);  // core.o 0x4BFD90
+extern float AngleDelta(float angle1, float angle2);  // core.o q_math.cpp
+
+// ea: 0x00615200
+int BG_CheckProneTurned(
+    PlayerState* ps, int a2, float a3,
+    void (__cdecl* a4)(trace_t*, const math::Position3*,
+                       const math::Position3*, const math::Position3*,
+                       const math::Position3*, const collision_context_t&))
+{
+    float v4 = AngleDelta(a3, ps->viewangles[1]);
+    float v12 = v4;
+    float v11 = fabs(v4) * 0.0041666669f;
+    float v10 = 1.0f - v11;
+    AngleNormalize360Accurate(a3 - ((1.0f - v11) * v12));
+    v12 = v11;
+    unsigned int mVal = ps->mGroundEntity.mHandle.mVal;
+    math::Dir3 v8;
+    v8.v.m128_f32[0] = 0.0f;
+    v8.v.m128_f32[1] = 0.0f;
+    v8.v.m128_f32[2] = 0.69999999f;
+    v8.v.m128_f32[3] = 0.0f;
+    float v6 = ps->maxs[0];
+    return BG_CheckProneValid(
+        ps->mClient, &ps->origin, v6, 30.0f, v11, &ps->fTorsoHeight,
+        &ps->fTorsoPitch, &ps->fWaistPitch, 1, mVal != 0, &v8, a4,
+        nullptr, nullptr, PCT_CLIENT,
+        ((1.0f - v11) * 60.0f) + (v11 * 45.0f));
+}
 
 // ea: 0x006134F0
 int BG_CheckProneValid(
