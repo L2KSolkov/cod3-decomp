@@ -3765,3 +3765,124 @@ void PM_UpdateAimDownSightLerp()
         goto LABEL_32;
     }
 }
+
+// ============================================================================
+// PM_UpdateLean - ea: 0x621B60 (bg_pmove.cpp)
+// ============================================================================
+extern void AddLeanToPosition(float* vPosition, float fViewYaw,
+                              float fLeanFrac, float fViewRoll,
+                              float fLeanDist);  // game.o 0x61FBA0
+extern float UnGetLeanFraction(float fFrac);    // game.o 0x6116C0
+
+// ea: 0x00621B60
+void PM_UpdateLean(PlayerState* ps, usercmd_s* cmd,
+                   void (__cdecl* capsuleTrace)(
+                       trace_t*, const math::Position3*,
+                       const math::Position3*, const math::Position3*,
+                       const math::Position3*, const collision_context_t*))
+{
+    int buttons = cmd->buttons;
+    int v5 = 0;
+    if ((buttons & 0x1800) != 0)
+    {
+        int pm_flags = ps->pm_flags;
+        if ((pm_flags & 0x4000) == 0)
+        {
+            int pm_type = ps->pm_type;
+            if (pm_type < 6
+                && (ps->mGroundEntity.mHandle.mVal != 0 || pm_type == 1))
+            {
+                ps->pm_flags = pm_flags & 0xCFFFFFFF;
+                int v8 = cmd->buttons;
+                if ((v8 & 0x800) != 0)
+                    v5 = -1;
+                if ((v8 & 0x1000) != 0)
+                    ++v5;
+            }
+        }
+    }
+    if ((dword_106000 & ps->eFlags) != 0
+        || ((ps->pm_flags & 0x20) != 0
+            && BG_GetInfoForWeapon(ps->weapon)->weapClass == WEAPCLASS_LMG))
+    {
+        v5 = 0;
+    }
+    int viewHeightTarget = ps->viewHeightTarget;
+    float v10;
+    if (viewHeightTarget == ps->crouchViewHeight
+        || viewHeightTarget != ps->proneViewHeight)
+        v10 = 0.5f;
+    else
+        v10 = 0.25f;
+    float leanf = ps->leanf;
+    if (v5 != 0)
+    {
+        int v12 = ps->pm_flags;
+        if (v5 <= 0)
+        {
+            ps->pm_flags = v12 | 0x10000000;
+            if (leanf > -v10)
+                leanf -= (pml.msec * 0.0028571428f) * v10;
+            if (-v10 > leanf)
+                leanf = -v10;
+        }
+        else
+        {
+            ps->pm_flags = v12 | 0x20000000;
+            if (v10 > leanf)
+                leanf += (pml.msec * 0.0028571428f) * v10;
+            if (leanf > v10)
+                leanf = v10;
+        }
+    }
+    else if (leanf <= 0.0f)
+    {
+        if (leanf < 0.0f)
+        {
+            leanf += (pml.msec * 0.0035714286f) * v10;
+            if (leanf > 0.0f)
+                leanf = 0.0f;
+        }
+    }
+    else
+    {
+        leanf -= (pml.msec * 0.0035714286f) * v10;
+        if (leanf < 0.0f)
+            leanf = 0.0f;
+    }
+    ps->leanf = leanf;
+    if (leanf != 0.0f && ps->pm_type != 1)
+    {
+        float fViewYaw = ps->viewangles[1];
+        float v14 = ps->origin.v.m128_f32[0];
+        float v15 = ps->origin.v.m128_f32[1];
+        float LeanFraction = leanf;
+        float v22 = ps->viewHeightCurrent + ps->origin.v.m128_f32[2];
+        math::Position3 start;
+        start.v = _mm_setr_ps(v14, v15, v22, 0.0f);
+        AddLeanToPosition(start.v.m128_f32, fViewYaw,
+                          (1 - 2 * (leanf < 0.0f)), 16.0f, 20.0f);
+        math::Position3 v19;
+        math::Position3 v25;
+        v25.v = _mm_setr_ps(8.0f, 8.0f, 12.0f, 0.0f);
+        v19.v = v25.v;
+        v25.v = _mm_setr_ps(-8.0f, -8.0f, -12.0f, 0.0f);
+        player_collision_context_t context;
+        context.__vftable = nullptr;
+        context.pass_entity1.mHandle.mVal = 0;
+        context.pass_entity2.mHandle.mVal = ps->mClient.mHandle.mVal;
+        context.pass_owner1.mHandle.mVal = 0;
+        context.pass_owner2.mHandle.mVal = 0;
+        context.contentmask = 0;
+        trace_t tr;
+        capsuleTrace(&tr, &start, &v25, &v19, &start,
+                     (const collision_context_t*)&context);
+        LeanFraction = UnGetLeanFraction(tr.fraction);
+        if (fabsf(ps->leanf) > LeanFraction)
+        {
+            unsigned int v = (unsigned int)ps->leanf;
+            ps->leanf =
+                (1 - 2 * ((v & 0x80000000) != 0)) * LeanFraction;
+        }
+    }
+}
