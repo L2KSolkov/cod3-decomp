@@ -2653,15 +2653,32 @@ void TraceSphereThroughLeaf(traceWork_t* tw, const DCGSet* set)
 // ClipHandleToDCGSet - ea: 0x622C00 (CollisionMgr.cpp)
 // ============================================================================
 struct DCGBankManager {
+    void* __vftable;             // +0x00
     static DCGBankManager* sInst;  // ?sInst@DCGBankManager@@2PAV1@A @ 0xF4F43C
     const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
+    uint8_t _pad[0x18C];           // +0x04
+    void*   mBoxDCGSet;            // +0x190 (TempDCGSet)
+    ~DCGBankManager();             // ??1DCGBankManager@@UAE@XZ (game.o 0x629D90)
 };
 DCGBankManager* DCGBankManager::sInst = nullptr;
+
+extern void TempDCGSet_Dtor(void* self);     // DCGBankManager::TempDCGSet::~TempDCGSet
+extern void AssetBankSet_Dtor(void* self);   // AssetBankSet::~AssetBankSet
+
+// ea: 0x00629D90
+DCGBankManager::~DCGBankManager()
+{
+    this->__vftable = 0;
+    TempDCGSet_Dtor(&this->mBoxDCGSet);
+    AssetBankSet_Dtor(this);
+}
 
 struct GdbFileManager {
     void* __vftable;  // +0x00
     GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
     ~GdbFileManager(); // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
+    void DecodeBank(const char* name, void* data, int size, TPakId pakId,
+                    void* pakFile);  // ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z (game.o 0x629940)
 };
 
 // ea: 0x00622C00
@@ -3382,6 +3399,18 @@ GdbFileManager::GdbFileManager()
 GdbFileManager::~GdbFileManager()
 {
     this->__vftable = 0;
+}
+
+extern void InplaceAssetBank_GdbFileSet_Fixup(void* data);   // streamer.o
+extern void InplaceAssetBankSet_GdbFileBank_AddBank(void* self, TPakId pakId,
+                                                   void* data);  // streamer.o
+
+// ea: 0x00629940
+void GdbFileManager::DecodeBank(const char* name, void* data, int size,
+                                TPakId pakId, void* pakFile)
+{
+    InplaceAssetBank_GdbFileSet_Fixup(data);
+    InplaceAssetBankSet_GdbFileBank_AddBank(this, pakId, data);
 }
 
 // ============================================================================
