@@ -4057,6 +4057,7 @@ extern void TestInLeaf(traceWork_t* tw, const DCGSet* set);  // game.o
 extern bool collide_velocity_sphere(traceWork_t* tw,
                                     const proximity_data_t& data);  // game.o
 extern cdl_proftimer cdl_proftimer_trace_sphere_list;  // game.o @ 0xF3C308
+extern cdl_proftimer cdl_proftimer_trace_point_list;   // game.o @ 0xF456B0
 extern int TempBoxModelContents();                     // game.o
 extern void TestCapsuleInCapsule(traceWork_t* tw);     // game.o
 extern void TraceCapsuleThroughCapsule(traceWork_t* tw);   // game.o
@@ -4252,6 +4253,202 @@ void Trace(trace_t* results, const math::Position3& start,
     results->contents = tw.trace_contents;
     results->allsolid = tw.trace_allsolid != 0;
     results->startsolid = tw.trace_startsolid != 0;
+}
+
+// ============================================================================
+// TraceSphere / TracePoint - ea: 0x641470 / 0x641880 (CollisionMgr.cpp)
+// ============================================================================
+
+// ea: 0x00641470
+void TraceSphere(const proximity_data_t& data, trace_t* results,
+                 const math::Position3& start, const math::Position3& end,
+                 const math::Position3& mins, const math::Position3& maxs,
+                 int brushmask)
+{
+    cdl_proftimer_trace_sphere_list.start();
+    results->fraction = 1.0f;
+    traceWork_t tw;
+    Com_Memset(&tw, 0, sizeof(tw));
+    tw.trace_fraction = results->fraction;
+    __m128 center =
+        _mm_mul_ps(_mm_add_ps(mins.v, maxs.v), _mm_set1_ps(0.5f));
+    tw.bounds[0].v = _mm_sub_ps(mins.v, center);
+    tw.bounds[1].v = _mm_sub_ps(maxs.v, center);
+    __m128 v12 = _mm_add_ps(start.v, center);
+    __m128 v13 = _mm_add_ps(end.v, center);
+    tw.start.v = v12;
+    tw.end.v = v13;
+    tw.delta.v = _mm_sub_ps(v13, v12);
+    __m128 sq = _mm_mul_ps(tw.delta.v, tw.delta.v);
+    tw.deltaLenSqrd = sq.m128_f32[0] + sq.m128_f32[1] + sq.m128_f32[2];
+    tw.contents = brushmask;
+    tw.sphere_use = 1;
+    float v15 = tw.bounds[1].v.m128_f32[0] > tw.bounds[1].v.m128_f32[1]
+        ? tw.bounds[1].v.m128_f32[1]
+        : tw.bounds[1].v.m128_f32[0];
+    tw.sphere_halfheight = tw.bounds[1].v.m128_f32[1];
+    tw.sphere_radius = v15;
+    tw.sphere_offset.v.m128_f32[0] = 0.0f;
+    tw.sphere_offset.v.m128_f32[1] = 0.0f;
+    tw.sphere_offset.v.m128_f32[2] = tw.bounds[1].v.m128_f32[1] - v15;
+    tw.sphere_offset.v.m128_f32[3] = 0.0f;
+    __m128 v16 = _mm_min_ps(tw.start.v, tw.end.v);
+    __m128 v17 = _mm_max_ps(tw.start.v, tw.end.v);
+    __m128 v18 = _mm_add_ps(
+        _mm_andnot_ps(_mm_set1_ps(-0.0f), tw.sphere_offset.v),
+        _mm_set1_ps(v15));
+    tw.bounds[0].v = _mm_sub_ps(v16, v18);
+    tw.bounds[1].v = _mm_add_ps(v17, v18);
+    tw.isPoint =
+        (tw.bounds[1].v.m128_f32[2] + tw.bounds[1].v.m128_f32[1]
+         + tw.bounds[1].v.m128_f32[0]) == 0.0f;
+    bool zeroSize = start.v.m128_f32[0] == end.v.m128_f32[0]
+        && start.v.m128_f32[1] == end.v.m128_f32[1]
+        && start.v.m128_f32[2] == end.v.m128_f32[2];
+    if (zeroSize)
+        PositionTest(&tw, data);
+    else
+        collide_velocity_sphere(&tw, data);
+    math::Position3 endpos;
+    endpos.v = _mm_add_ps(
+        start.v,
+        _mm_mul_ps(tw.delta.v, _mm_set1_ps(tw.trace_fraction)));
+    if ((__fpclass(endpos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(endpos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(endpos.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1521;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw.trace.endpos)[0]) && !IS_NAN((tw.trace.endpos)[1]) && !IS_NAN((tw.trace.endpos)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(tw.trace_normal[0]) & 0x297) != 0
+        || (__fpclass(tw.trace_normal[1]) & 0x297) != 0
+        || (__fpclass(tw.trace_normal[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1522;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw.trace.normal)[0]) && !IS_NAN((tw.trace.normal)[1]) && !IS_NAN((tw.trace.normal)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(tw.trace_fraction) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1523;
+        AeAssert::gCurrentExpr = "!IS_NAN(tw.trace.fraction)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    results->endpos = endpos;
+    results->normal.v = _mm_loadu_ps(tw.trace_normal);
+    results->fraction = tw.trace_fraction;
+    results->surfaceFlags = tw.trace_surfaceFlags;
+    results->contents = tw.trace_contents;
+    results->allsolid = tw.trace_allsolid != 0;
+    results->startsolid = tw.trace_startsolid != 0;
+    cdl_proftimer_trace_sphere_list.stop();
+}
+
+// ea: 0x00641880
+void TracePoint(const proximity_data_t& data, trace_t* results,
+                const math::Position3& start, const math::Position3& end,
+                int brushmask)
+{
+    cdl_proftimer_trace_point_list.start();
+    results->fraction = 1.0f;
+    traceWork_t tw;
+    Com_Memset(&tw, 0, sizeof(tw));
+    tw.contents = brushmask;
+    tw.start.v = start.v;
+    tw.end.v = end.v;
+    tw.trace_fraction = 1.0f;
+    tw.delta.v = _mm_sub_ps(end.v, start.v);
+    __m128 sq = _mm_mul_ps(tw.delta.v, tw.delta.v);
+    tw.deltaLenSqrd = sq.m128_f32[0] + sq.m128_f32[1] + sq.m128_f32[2];
+    tw.bounds[0].v = _mm_min_ps(start.v, end.v);
+    tw.bounds[1].v = _mm_max_ps(start.v, end.v);
+    tw.isPoint = 1;
+    cdl_cinfo1 cinfo;
+    int sflags = 0;
+    int cflags = 0;
+    if (collide_segment(data, &tw, start, end, cinfo, sflags, cflags)
+        && tw.trace_fraction > sqrtf(
+            (cinfo.pi.v.m128_f32[0] - start.v.m128_f32[0])
+                * (cinfo.pi.v.m128_f32[0] - start.v.m128_f32[0])
+            + (cinfo.pi.v.m128_f32[1] - start.v.m128_f32[1])
+                * (cinfo.pi.v.m128_f32[1] - start.v.m128_f32[1])
+            + (cinfo.pi.v.m128_f32[2] - start.v.m128_f32[2])
+                * (cinfo.pi.v.m128_f32[2] - start.v.m128_f32[2]))
+            / sqrtf(tw.deltaLenSqrd))
+    {
+        tw.trace_surfaceFlags = sflags;
+        tw.trace_contents = cflags;
+        __m128 a = _mm_mul_ps(cinfo.pi.v, cinfo.ni.v);
+        float proj0 = a.m128_f32[0] + a.m128_f32[1] + a.m128_f32[2];
+        float neg = -proj0;
+        __m128 b = _mm_mul_ps(start.v, cinfo.ni.v);
+        float proj1 = b.m128_f32[0] + b.m128_f32[1] + b.m128_f32[2];
+        __m128 c = _mm_mul_ps(end.v, cinfo.ni.v);
+        float proj2 = c.m128_f32[0] + c.m128_f32[1] + c.m128_f32[2];
+        tw.trace_normal[0] = cinfo.ni.v.m128_f32[0];
+        tw.trace_normal[1] = cinfo.ni.v.m128_f32[1];
+        tw.trace_normal[2] = cinfo.ni.v.m128_f32[2];
+        tw.trace_normal[3] = cinfo.ni.v.m128_f32[3];
+        tw.trace_fraction = (proj1 + neg - 0.125f)
+            / (proj1 + neg - (proj2 + neg));
+    }
+    math::Position3 endpos;
+    endpos.v = _mm_add_ps(
+        start.v,
+        _mm_mul_ps(tw.delta.v, _mm_set1_ps(tw.trace_fraction)));
+    if ((__fpclass(endpos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(endpos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(endpos.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1590;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw.trace.endpos)[0]) && !IS_NAN((tw.trace.endpos)[1]) && !IS_NAN((tw.trace.endpos)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(tw.trace_normal[0]) & 0x297) != 0
+        || (__fpclass(tw.trace_normal[1]) & 0x297) != 0
+        || (__fpclass(tw.trace_normal[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1591;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw.trace.normal)[0]) && !IS_NAN((tw.trace.normal)[1]) && !IS_NAN((tw.trace.normal)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(tw.trace_fraction) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1592;
+        AeAssert::gCurrentExpr = "!IS_NAN(tw.trace.fraction)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    results->endpos = endpos;
+    results->normal.v = _mm_loadu_ps(tw.trace_normal);
+    results->fraction = tw.trace_fraction;
+    results->surfaceFlags = tw.trace_surfaceFlags;
+    results->contents = tw.trace_contents;
+    results->allsolid = tw.trace_allsolid != 0;
+    results->startsolid = tw.trace_startsolid != 0;
+    cdl_proftimer_trace_point_list.stop();
 }
 
 static cdl_proftimer cdl_proftimer_vsphere_poly;   // game.o @ 0xF439B8
