@@ -837,6 +837,39 @@ struct XModel {
     static int GetNumBones(XModel* model, int lodIndex);
 };
 
+// StaticModel - static world model instance (240 bytes) - verified against
+// IDA (CM_TraceStaticModel / CM_LinkStaticModel disasm)
+struct StaticModel {
+    uint8_t      _pad0[0x68];      // +0x00
+    XModel*      xmodel;           // +0x68
+    uint8_t      _pad6C[0x90 - 0x6C];
+    float        origin[3];        // +0x90
+    uint8_t      _pad9C[0xA0 - 0x9C];
+    float        absmin[3];        // +0xA0
+    float        absmax[3];        // +0xAC
+    float        invAxis[3][3];    // +0xB8
+    StaticModel* nextModel;        // +0xDC
+    TPakId       pakId;            // +0xE0
+    uint8_t      _padE4[0xF0 - 0xE4];
+};
+static_assert(sizeof(StaticModel) == 0xF0, "StaticModel size mismatch");
+static_assert(offsetof(StaticModel, xmodel) == 0x68,
+              "StaticModel::xmodel offset mismatch");
+static_assert(offsetof(StaticModel, origin) == 0x90,
+              "StaticModel::origin offset mismatch");
+static_assert(offsetof(StaticModel, invAxis) == 0xB8,
+              "StaticModel::invAxis offset mismatch");
+static_assert(offsetof(StaticModel, pakId) == 0xE0,
+              "StaticModel::pakId offset mismatch");
+
+// render.o model pose/trace entry points (referenced by CM_TraceStaticModel)
+struct DObjSkelMat;
+void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
+                       DObjSkelMat* modelParentMat);  // render.o 0x6CA670
+int  XModelTraceLine(IVPointer<XModel> model, trace_t* results,
+                     DObjSkelMat* boneMtxList, const float* localStart,
+                     const float* localEnd, int contentmask);  // render.o 0x6CB470
+
 // IVPointer operator bool / operator-> (reconstructed from IDA)
 template <typename T>
 inline bool IVPointer_IsValid(const IVPointer<T>& p) { return p.mValue != NULL; }

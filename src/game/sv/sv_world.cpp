@@ -70,7 +70,7 @@ extern void          CM_PointTraceStaticModels(trace_t* results, const math::Pos
 extern void          CM_PointTraceToEntities(pointtrace_t* clip, const collision_context_t* context);
 extern void          CM_ClipMoveToEntities(moveclip_t* clip, const collision_context_t* context);
 extern int           CM_PointSightTraceToEntities(sightpointtrace_t* clip, const collision_context_t* context);
-extern int           CM_ClipSightTraceToEntities(sightclip_t* clip, const collision_context_t* context);
+extern int           CM_ClipSightTraceToEntities(sightclip_t* clip, const collision_context_t& context);
 extern int           SightTrace(int oldHitNum, const math::Position3* start, const math::Position3* end,
                                 const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
                                 const math::Position3* origin, int brushmask, int capsule, void* sphere);
@@ -707,7 +707,7 @@ void SV_SightTrace(int* hit, const math::Position3* start, const math::Position3
             clip.start.v = _mm_add_ps(start->v, _mm_mul_ps(clip.maxs.v, _mm_set1_ps(0.5f)));
             clip.end.v = _mm_add_ps(end->v, _mm_mul_ps(clip.maxs.v, _mm_set1_ps(0.5f)));
             clip.outerSize.v = _mm_xor_ps(_mm_set1_ps(-0.0f), clip.mins.v);
-            *hit = CM_ClipSightTraceToEntities(&clip, context);
+            *hit = CM_ClipSightTraceToEntities(&clip, *context);
         }
     }
 }

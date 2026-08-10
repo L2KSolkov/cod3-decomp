@@ -5,6 +5,7 @@
 
 #include "game/logic/g_local.h"
 
+#include <malloc.h>
 #include <math.h>
 #include <string.h>
 
@@ -607,6 +608,7 @@ bool can_place_decal(const math::Position3& p, const math::Dir3& n,
     return true;
 }
 
+
 // ea: 0x0061CBD0
 bool TestPointInBox(const math::Position3& p, const math::Position3& bmin,
                     const math::Position3& bmax)
@@ -735,15 +737,14 @@ struct traceWork_t {
 // PartialClipMap + WorldSector (pcm)
 // ============================================================================
 struct WorldSector {
-    WorldSector* parent;      // +0x00
-    WorldSector* child0;      // +0x04
-    WorldSector* child1;      // +0x08
-    int      axis;                // +0x0C
-    float    dist;                // +0x10
-    int      contentsEntities;    // +0x14
-    int      contentsStaticModels;// +0x18
-    void*    entities;            // +0x1C
-    void*    staticModels;        // +0x20
+    int          axis;                  // +0x00
+    int          contentsStaticModels;  // +0x04
+    int          contentsEntities;      // +0x08
+    float        dist;                  // +0x0C
+    void*        entities;              // +0x10
+    void*        staticModels;          // +0x14
+    WorldSector* parent;                // +0x18
+    WorldSector* child[2];              // +0x1C
 };
 static_assert(sizeof(WorldSector) == 0x24, "WorldSector size mismatch");
 
@@ -779,8 +780,8 @@ char InitEntitiesBSP()
     pcm.worldSectorHead.axis = v2;
     pcm.worldSectorHead.dist =
         (g_bspTree->maxs[v2] + g_bspTree->mins[v2]) * 0.5f;
-    pcm.worldSectorHead.child0 = &pcm.dummyNode;
-    pcm.worldSectorHead.child1 = &pcm.dummyNode;
+    pcm.worldSectorHead.child[0] = &pcm.dummyNode;
+    pcm.worldSectorHead.child[1] = &pcm.dummyNode;
     pcm.vised = g_bspTree->mVised;
     pcm.clusterBytes = g_bspTree->mClusterBytes;
     if (g_bspTree->mVisibility.mSize == 0)
@@ -2312,3 +2313,472 @@ bool collide_velocity_sphere_poly(const math::Position3& c0,
             _mm_mul_ps(*(__m128*)d, _mm_set_ss(0.0f - v48)));
     return true;
 }
+
+// ============================================================================
+// Static-model tracing (cm_staticmodel.cpp / cm_world.cpp)
+// ============================================================================
+StaticModel* g_static_model;  // ?g_static_model@@3PAVStaticModel@@A (game.o)
+
+// ea: 0x0060AF40
+void CM_CreateStaticModel(const char* name, TPakId pakId, float*& axis,
+                          float*& origin, float*& scale)
+{
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_staticmodel.cpp";
+    AeAssert::gCurrentLine = 22;
+    AeAssert::gCurrentExpr = "0";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("dead code"))
+        __debugbreak();
+}
+
+// ea: 0x00618980
+void CM_TraceStaticModel(StaticModel* sm, trace_t* results,
+                         const math::Position3& start,
+                         const math::Position3& end, int contentmask)
+{
+    float fraction = results->fraction;
+    trace_t v25;
+    v25.mEntity.mHandle.mVal = 0;
+    v25.partName.mHash = 0;
+    v25.fraction = fraction;
+
+    XModel* xmodel = sm->xmodel;
+    int v10 = 0;
+    if (xmodel->lod[0] == nullptr)
+    {
+        XModelLod** lod = xmodel->lod;
+        do
+        {
+            ++lod;
+            ++v10;
+        } while (*lod == nullptr);
+    }
+    unsigned int mSize;
+    if (xmodel->lod[v10]->xmodelParts != nullptr)
+    {
+        int v12 = 0;
+        if (xmodel->lod[0] == nullptr)
+        {
+            XModelLod** v13 = xmodel->lod;
+            XModelLod* v14;
+            do
+            {
+                v14 = v13[1];
+                ++v13;
+                ++v12;
+            } while (v14 == nullptr);
+        }
+        mSize = xmodel->lod[v12]->xmodelParts->mHierarchy.mSize;
+    }
+    else
+    {
+        mSize = 0;
+    }
+    DObjSkelMat* mat = (DObjSkelMat*)_alloca(mSize << 6);
+
+    IVPointer<XModel> v21;
+    v21.mPakId = sm->pakId;
+    v21.mValue = xmodel;
+    XModelGetBasePose(v21, mat, nullptr);
+
+    float v28[3];
+    v28[0] = start.v.m128_f32[0] - sm->origin[0];
+    v28[1] = start.v.m128_f32[1] - sm->origin[1];
+    v28[2] = start.v.m128_f32[2] - sm->origin[2];
+    const float (*invAxis)[3] = sm->invAxis;
+    float v24[3];
+    MatrixTransformVector(v28, sm->invAxis, v24);
+    v28[0] = end.v.m128_f32[0] - sm->origin[0];
+    v28[1] = end.v.m128_f32[1] - sm->origin[1];
+    v28[2] = end.v.m128_f32[2] - sm->origin[2];
+    float v23[3];
+    MatrixTransformVector(v28, invAxis, v23);
+
+    IVPointer<XModel> v20;
+    v20.mPakId = sm->pakId;
+    v20.mValue = sm->xmodel;
+    if (XModelTraceLine(v20, &v25, mat, v24, v23, contentmask) >= 0)
+    {
+        g_static_model = sm;
+        float v17 = (end.v.m128_f32[0] - start.v.m128_f32[0]) * v25.fraction
+            + start.v.m128_f32[0];
+        float v18 = (end.v.m128_f32[1] - start.v.m128_f32[1]) * v25.fraction
+            + start.v.m128_f32[1];
+        float v19 = (end.v.m128_f32[2] - start.v.m128_f32[2]) * v25.fraction
+            + start.v.m128_f32[2];
+        v25.mEntity.mHandle.mVal = 0;
+        v25.endpos.v.m128_f32[0] = v17;
+        v25.endpos.v.m128_f32[1] = v18;
+        v25.endpos.v.m128_f32[2] = v19;
+        float v26[3];
+        MatrixTransposeTransformVector(v25.normal.v.m128_f32, invAxis, v26);
+        VectorNormalize(v26);
+        v25.normal.v.m128_f32[0] = v26[0];
+        v25.normal.v.m128_f32[1] = v26[1];
+        v25.normal.v.m128_f32[2] = v26[2];
+        *results = v25;
+    }
+}
+
+// ============================================================================
+// World-sector entity traversal (cm_world.cpp) - capsule + sight clip
+// ============================================================================
+
+// ea: 0x00619AF0
+void CM_CapsuleAreaEntities(TouchEntityData& entities, WorldSector* node,
+                            float p1f, float p2f,
+                            const math::Position3& p1,
+                            const math::Position3& p2, float radius,
+                            const collision_context_t& context)
+{
+    if (p1f >= 1.0f)
+        return;
+    if ((node->contentsEntities & context.contentmask) == 0)
+        return;
+
+    int axis = node->axis;
+    float v13 = p1.v.m128_f32[axis] - node->dist;
+    float v14 = p2.v.m128_f32[axis] - node->dist;
+
+    if (v13 >= radius && v14 >= radius)
+    {
+        CM_CapsuleAreaEntities(entities, node->child[0], p1f, p2f, p1, p2,
+                               radius, context);
+        goto process_entities;
+    }
+    if (-radius >= v13 && -radius >= v14)
+    {
+        CM_CapsuleAreaEntities(entities, node->child[1], p1f, p2f, p1, p2,
+                               radius, context);
+        goto process_entities;
+    }
+
+    int side;
+    float frac;
+    float frac2;
+    if (v14 > v13)
+    {
+        float invDist = 1.0f / (v13 - v14);
+        if (invDist >= 0.0f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 755;
+            AeAssert::gCurrentExpr = "invDist < 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        float t1 = v13 - radius;
+        frac2 = (v13 + radius) * invDist;
+        side = 1;
+        if (t1 >= 0.0f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 758;
+            AeAssert::gCurrentExpr = "t1 - radius < 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        frac = t1 * invDist;
+    }
+    else if (v13 > v14)
+    {
+        float invDist = 1.0f / (v13 - v14);
+        if (invDist <= 0.0f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 764;
+            AeAssert::gCurrentExpr = "invDist > 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        float t1 = v13 + radius;
+        frac2 = (v13 - radius) * invDist;
+        side = 0;
+        if (t1 <= 0.0f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 767;
+            AeAssert::gCurrentExpr = "t1 + radius > 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        frac = t1 * invDist;
+    }
+    else
+    {
+        side = 0;
+        frac2 = 0.0f;
+        frac = 1.0f;
+    }
+    if (frac < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 777;
+        AeAssert::gCurrentExpr = "frac >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (frac > 1.0f)
+        frac = 1.0f;
+
+    math::Position3 mid;
+    mid.v.m128_f32[0] = p1.v.m128_f32[0]
+        + (p2.v.m128_f32[0] - p1.v.m128_f32[0]) * frac;
+    mid.v.m128_f32[1] = p1.v.m128_f32[1]
+        + (p2.v.m128_f32[1] - p1.v.m128_f32[1]) * frac;
+    mid.v.m128_f32[2] = p1.v.m128_f32[2]
+        + (p2.v.m128_f32[2] - p1.v.m128_f32[2]) * frac;
+    float deltaF = p2f - p1f;
+    CM_CapsuleAreaEntities(entities, node->child[side], p1f,
+                           p1f + deltaF * frac, p1, mid, radius, context);
+    if (frac2 > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 786;
+        AeAssert::gCurrentExpr = "frac2 <= 1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (frac2 < 0.0f)
+        frac2 = 0.0f;
+    mid.v.m128_f32[0] = p1.v.m128_f32[0]
+        + (p2.v.m128_f32[0] - p1.v.m128_f32[0]) * frac2;
+    mid.v.m128_f32[1] = p1.v.m128_f32[1]
+        + (p2.v.m128_f32[1] - p1.v.m128_f32[1]) * frac2;
+    mid.v.m128_f32[2] = p1.v.m128_f32[2]
+        + (p2.v.m128_f32[2] - p1.v.m128_f32[2]) * frac2;
+    CM_CapsuleAreaEntities(entities, node->child[1 - side],
+                           p1f + deltaF * frac2, p2f, mid, p2, radius,
+                           context);
+
+process_entities:
+    EntityShared* v22 = (EntityShared*)node->entities;
+    if (v22 != nullptr)
+    {
+        do
+        {
+            if (v22->absmin.v.m128_f32[0] - radius
+                        < entities.maxs.v.m128_f32[0]
+                && v22->absmin.v.m128_f32[1] - radius
+                       < entities.maxs.v.m128_f32[1]
+                && v22->absmin.v.m128_f32[2] - radius
+                       < entities.maxs.v.m128_f32[2]
+                && entities.mins.v.m128_f32[0]
+                       < v22->absmax.v.m128_f32[0] + radius
+                && entities.mins.v.m128_f32[1]
+                       < v22->absmax.v.m128_f32[1] + radius
+                && entities.mins.v.m128_f32[2]
+                       < v22->absmax.v.m128_f32[2] + radius
+                && !context.__vftable->filter(
+                       const_cast<collision_context_t*>(&context),
+                       (Entity*)((char*)v22 - 0xE0)))
+            {
+                if (entities.num == 128)
+                    return;
+                entities.touch[entities.num++].mHandle.mVal =
+                    (unsigned int)v22[1].svFlags;
+            }
+            v22 = v22->nextEntityInWorldSector;
+        } while (v22 != nullptr);
+    }
+}
+
+// ea: 0x0061A320
+static int CM_ClipSightTraceToEntities_r(sightclip_t* clip, WorldSector* node,
+                                         float p1f, float p2f,
+                                         const math::Position3* p1,
+                                         const math::Position3* p2,
+                                         const collision_context_t* context)
+{
+    int result;
+    if ((clip->contentmask & node->contentsEntities) == 0)
+        return 0;
+
+    int axis = node->axis;
+    float v9 = p1->v.m128_f32[axis] - node->dist;
+    float v12 = p2->v.m128_f32[axis] - node->dist;
+    float offset = clip->outerSize.v.m128_f32[axis];
+
+    if (v9 >= offset && v12 >= offset)
+    {
+        result = CM_ClipSightTraceToEntities_r(clip, node->child[0], p1f,
+                                               p2f, p1, p2, context);
+        if (result != 0)
+            return result;
+        goto process_entities;
+    }
+    if (-offset >= v9 && -offset >= v12)
+    {
+        result = CM_ClipSightTraceToEntities_r(clip, node->child[1], p1f,
+                                               p2f, p1, p2, context);
+        if (result != 0)
+            return result;
+        goto process_entities;
+    }
+
+    int side;
+    float frac;
+    float frac2;
+    if (v12 <= v9)
+    {
+        if (v9 <= v12)
+        {
+            side = 0;
+            frac2 = 0.0f;
+            frac = 1.0f;
+        }
+        else
+        {
+            float invDist = 1.0f / (v9 - v12);
+            if (invDist <= 0.0f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 1331;
+                AeAssert::gCurrentExpr = "invDist > 0";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            float t1 = v9 + offset;
+            frac2 = (v9 - offset) * invDist;
+            side = 0;
+            if (t1 <= 0.0f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 1334;
+                AeAssert::gCurrentExpr = "t1 + offset > 0";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            frac = t1 * invDist;
+        }
+    }
+    else
+    {
+        float invDist = 1.0f / (v9 - v12);
+        if (invDist >= 0.0f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 1322;
+            AeAssert::gCurrentExpr = "invDist < 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        float t1 = v9 - offset;
+        frac2 = (v9 + offset) * invDist;
+        side = 1;
+        if (t1 >= 0.0f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 1325;
+            AeAssert::gCurrentExpr = "t1 - offset < 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        frac = t1 * invDist;
+    }
+    if (frac < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 1344;
+        AeAssert::gCurrentExpr = "frac >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (frac > 1.0f)
+        frac = 1.0f;
+
+    math::Position3 mid;
+    mid.v.m128_f32[0] = p1->v.m128_f32[0]
+        + (p2->v.m128_f32[0] - p1->v.m128_f32[0]) * frac;
+    mid.v.m128_f32[1] = p1->v.m128_f32[1]
+        + (p2->v.m128_f32[1] - p1->v.m128_f32[1]) * frac;
+    mid.v.m128_f32[2] = p1->v.m128_f32[2]
+        + (p2->v.m128_f32[2] - p1->v.m128_f32[2]) * frac;
+    float deltaF = p2f - p1f;
+    result = CM_ClipSightTraceToEntities_r(clip, node->child[side], p1f,
+                                           p1f + deltaF * frac, p1, &mid,
+                                           context);
+    if (result != 0)
+        return result;
+    if (frac2 > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 1355;
+        AeAssert::gCurrentExpr = "frac2 <= 1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (frac2 < 0.0f)
+        frac2 = 0.0f;
+    mid.v.m128_f32[0] = p1->v.m128_f32[0]
+        + (p2->v.m128_f32[0] - p1->v.m128_f32[0]) * frac2;
+    mid.v.m128_f32[1] = p1->v.m128_f32[1]
+        + (p2->v.m128_f32[1] - p1->v.m128_f32[1]) * frac2;
+    mid.v.m128_f32[2] = p1->v.m128_f32[2]
+        + (p2->v.m128_f32[2] - p1->v.m128_f32[2]) * frac2;
+    result = CM_ClipSightTraceToEntities_r(clip, node->child[1 - side],
+                                           p1f + deltaF * frac2, p2f, &mid,
+                                           p2, context);
+    if (result != 0)
+        return result;
+
+process_entities:
+    math::Position3 pmin;
+    math::Position3 pmax;
+    for (int i = 0; i < 3; ++i)
+    {
+        float lo = clip->start.v.m128_f32[i];
+        float hi = clip->end.v.m128_f32[i];
+        if (hi < lo)
+        {
+            lo = hi;
+            hi = clip->start.v.m128_f32[i];
+        }
+        pmin.v.m128_f32[i] = lo - clip->outerSize.v.m128_f32[i];
+        pmax.v.m128_f32[i] = hi + clip->outerSize.v.m128_f32[i];
+    }
+    EntityShared* entities = (EntityShared*)node->entities;
+    if (entities == nullptr)
+        return 0;
+    do
+    {
+        if (pmin.v.m128_f32[0] < entities->absmax.v.m128_f32[0]
+            && pmin.v.m128_f32[1] < entities->absmax.v.m128_f32[1]
+            && pmin.v.m128_f32[2] < entities->absmax.v.m128_f32[2]
+            && entities->absmin.v.m128_f32[0] < pmax.v.m128_f32[0]
+            && entities->absmin.v.m128_f32[1] < pmax.v.m128_f32[1]
+            && entities->absmin.v.m128_f32[2] < pmax.v.m128_f32[2]
+            && !context->__vftable->filter(
+                   const_cast<collision_context_t*>(context),
+                   (Entity*)((char*)entities - 0xE0)))
+        {
+            result = SV_ClipSightToEntity(clip, entities);
+            if (result != 0)
+                return result;
+        }
+        entities = entities->nextEntityInWorldSector;
+    } while (entities != nullptr);
+    return 0;
+}
+
+// ea: 0x0061A800
+int CM_ClipSightTraceToEntities(sightclip_t* clip,
+                                const collision_context_t& context)
+{
+    return CM_ClipSightTraceToEntities_r(clip, &pcm.worldSectorHead, 0.0f,
+                                         1.0f, &clip->start, &clip->end,
+                                         &context);
+}
+

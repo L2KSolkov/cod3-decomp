@@ -2065,6 +2065,8 @@ float VectorDistance(const float* v1, const float* v2);
 void  AnglesToAxis(const float* angles, float (*axis)[3]);
 void  MatrixInverse(const float (*in)[3], float (*out)[3]);
 void  MatrixTransformVector(const float* in1, const float (*in2)[3], float* out);
+void  MatrixTransposeTransformVector(const float* in1, const float (*in2)[3],
+                                     float* out);  // core.o
 void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
                               math::Position3* out);
 void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
@@ -2589,6 +2591,21 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
                    int* lastLeaf);  // game.o 0x6194A0
 void CM_LoadMap(const char* name, int clientload, int* checksum);  // game.o 0x618390
 int CM_LoadLump(int lumpnum, char** pBuf);          // game.o 0x618410
+void CM_CreateStaticModel(const char* name, TPakId pakId, float*& axis,
+                          float*& origin, float*& scale);  // game.o 0x60AF40
+void CM_TraceStaticModel(StaticModel* sm, trace_t* results,
+                         const math::Position3& start,
+                         const math::Position3& end,
+                         int contentmask);  // game.o 0x618980
+void CM_CapsuleAreaEntities(TouchEntityData& entities, WorldSector* node,
+                            float p1f, float p2f,
+                            const math::Position3& p1,
+                            const math::Position3& p2, float radius,
+                            const collision_context_t& context);  // game.o 0x619AF0
+int CM_ClipSightTraceToEntities(sightclip_t* clip,
+                                const collision_context_t& context);  // game.o 0x61A800
+int SV_ClipSightToEntity(sightclip_t* clip, EntityShared* check);  // sv.o 0x522450
+extern StaticModel* g_static_model;   // ?g_static_model@@3PAVStaticModel@@A (game.o)
 void DecodeBin(const char* name, unsigned char* data, int size,
                TPakId pakId);  // game.o 0x6180D0
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
