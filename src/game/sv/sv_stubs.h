@@ -311,6 +311,9 @@ struct SmokeGrenadeInfo {
     bool  bHit[4]; // +0x08
 };
 
+struct SceneEntity;  // streamer.o (opaque)
+struct SceneBank;    // streamer.o (opaque)
+
 // ae_vector<SmokeGrenadeInfo> - 12 bytes
 struct SmokeGrenadeInfoList {
     SmokeGrenadeInfo* mElements;  // +0x00
@@ -569,8 +572,12 @@ struct CheckpointMgr {
     ~CheckpointMgr();                     // ??1CheckpointMgr@@QAE@XZ (game.o 0x6221F0)
     void ClearSavedCheckpointData();       // ?ClearSavedCheckpointData@CheckpointMgr@@QAEXXZ (game.o 0x640E60)
     void SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // ?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z
+    void LoadCheckpointFromStubData();     // ?LoadCheckpointFromStubData@CheckpointMgr@@QAEXXZ (game.o 0x632120)
     void SetCheckpointCvar();             // ?SetCheckpointCvar@CheckpointMgr@@QAEXXZ
     void RestoreExplodedExploders();      // ?RestoreExplodedExploders@CheckpointMgr@@QAEXXZ
+    void RestoreSceneEntity(Entity* pEnt);  // ?RestoreSceneEntity@CheckpointMgr@@QAEXPAVEntity@@@Z (game.o 0x609010)
+    bool SceneEntityWasDeletedBeforeCheckpoint(SceneEntity* pSceneEnt,
+                                               SceneBank* pScnBank);  // ?SceneEntityWasDeletedBeforeCheckpoint@CheckpointMgr@@QAE_NPAVSceneEntity@@PAVSceneBank@@@Z (game.o 0x6180F0)
     void RestorePlayerHealth();           // ?RestorePlayerHealth@CheckpointMgr@@QAEXXZ (game.o 0x609240)
     void SetTosserValues();               // ?SetTosserValues@CheckpointMgr@@QAEXXZ (game.o 0x609340)
     void RestoreScriptExploders();        // ?RestoreScriptExploders@CheckpointMgr@@QAEXXZ (game.o 0x609350)

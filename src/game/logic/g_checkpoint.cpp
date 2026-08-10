@@ -12,6 +12,208 @@
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
 
+// PathNode / checkpoint support externs (mp_actors.o / streamer.o)
+extern void Path_RelinquishNodePermanently(
+    const PathNodes::PathNode* pNode, sentient_s* pClaimer);
+    // ?Path_RelinquishNodePermanently@@YAXPAUPathNode@PathNodes@@PAUsentient_s@@@Z
+extern void PathNodeMgr_DissociateSentient(void* self,
+                                           sentient_s* pSentient);
+    // ?DissociateSentient@PathNodeMgr@@QAEXPAUsentient_s@@@Z
+extern void* PathNodeMgr_sInst;   // ?sInst@PathNodeMgr@@2PAV1@A @ 0xF9930C
+extern const PathNodes::PathNode* PathNodes_NodeHandle_deref(
+    const PathNodes::NodeHandle* self);  // ??DNodeHandle (mp_actors.o)
+
+struct world_t {
+    uint8_t _pad[0x0C];
+    char    baseName[128];   // +0x0C (verified vs RestoreSceneEntity disasm)
+};
+extern world_t s_worldData;   // ?s_worldData@@3Uworld_t@@A (render.o)
+
+// SceneBank persistent storage accessor (streamer.o; opaque layout)
+struct SceneEntity {
+    uint8_t _pad[0x0C];
+    unsigned int m_persistent_index;  // +0x0C (verified vs disasm)
+};
+extern unsigned char* SceneBank_PersistentStorage(void* self,
+                                                  unsigned int index);
+    // InplaceVector<unsigned char>::operator[] (streamer.o)
+extern TPakId CurPakId();  // ?CurPakId@@YA?AW4TPakId@@XZ
+extern void ValidatePakId(TPakId pakId);  // ?ValidatePakId@@YAXW4TPakId@@@Z
+extern IVPointer<Destructible> DestructibleBankManager_GetDestructible(
+    void* self, TPakId pak_id, const char* name);
+    // ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z
+extern void Destructible_CheckpointExplode(Destructible* self);
+    // ?CheckpointExplode@Destructible@@QAEXXZ
+
+// Minimal Destructible view (destructible.cpp; mFlags at +0x00 verified vs
+// RestoreExplodedExploders disasm)
+struct DestructibleView {
+    struct Flags {
+        unsigned int mMask;  // +0x00
+    } mFlags;                // +0x00
+};
+
+// Checkpoint stub-save buffer (game.o .data @ 0xF317B0..0xF32ABC)
+struct CheckpointStub {
+    unsigned char  saveExists;            // +0x000 (byte_F317B0)
+    uint8_t        _pad1[3];
+    int            weapon;                // +0x004 (dword_F31AB0)
+    unsigned char  ammo[0x170];           // +0x008 (unk_F317B4)
+    unsigned char  ammoclip[0x170];       // +0x178 (unk_F31924)
+    int            weapons[2];            // +0x2E8 (dword_F31A94)
+    char           weaponslots[10];       // +0x2F0 (dword_F31A9C)
+    int            weaponrechamber[2];    // +0x2FC (dword_F31AA8)
+    int            playerHealth;          // +0x304 (dword_F31AB4)
+    float          playerOrientation[3];  // +0x308 (dword_F31AB8)
+    float          origin[3];             // +0x314 (dword_F31AC4)
+    int            friendlyCount;         // +0x320 (dword_F31E50)
+    char           checkpointName[32];    // +0x324 (byte_F31E74)
+    int            gameVarCount;          // +0x344 (dword_F31EB4)
+    SCheckpointGameVar gameVars[256];     // +0x348 (iElement)
+    int            explodedCount;         // +0xD48 (dword_F32AB8)
+    int            exploded[256];         // +0xD4C (dword_F32ABC)
+    char           eventName[32];         // +0x1144 (Destination)
+};
+static CheckpointStub* sCheckpointStub = (CheckpointStub*)0xF317B0;
+extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A
+
+// ============================================================================
+// CheckpointMenu - ea: 0x6392D0..0x639370 (checkpointmenu.cpp)
+// ============================================================================
+extern PakManager* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A @ 0xF592FC
+extern const PakInfoNode* PakManager_GetPakInfo(void* self, TPakId pakId);
+    // ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@W4TPakId@@@Z
+extern void Cvar_Set(const char* var_name, const char* value);  // core.o
+extern void DebugRender_RenderText(const char* str, int x, int y,
+                                   const float* col, float depth,
+                                   float size);  // ?RenderText@DebugRender
+extern int gCurCheckpoint;       // @ 0xF4F44C
+extern int gDebounce;            // @ 0xF4F450
+extern bool CheckpointMenu_gCheckpointMenuActive;  // @ 0xF4F454
+
+// Minimal controller view (mirrors g_cmd.cpp PadAliasMgr twin)
+class controller {
+public:
+    enum ButtonIndex {
+        LEFTBUTTON = 0,
+        DOWNBUTTON = 1,
+        RIGHTBUTTON = 2,
+        UPBUTTON = 3,
+        SQUARE = 4,
+        X = 5,
+        CIRCLE = 6,
+        TRIANGLE = 7,
+        R1 = 8,
+        L1 = 9,
+        R2 = 10,
+        L2 = 11,
+        R3 = 12,
+        L3 = 13,
+        START = 14,
+        SELECT = 15,
+    };
+    static controller* inst();                     // controller_xbox.o
+    int  button_value(int i_controller_num, ButtonIndex i_button);
+    bool is_locked;          // +0x? (locked state)
+    int  locked_port;        // +0x?
+};
+
+struct CheckpointMenu {
+    static void RestartAtCheckpoint(int num);   // ?RestartAtCheckpoint@CheckpointMenu@@YAXH@Z (game.o 0x6392D0)
+    static void RenderCheckpointMenu();         // ?RenderCheckpointMenu@CheckpointMenu@@YAXXZ (game.o 0x639370)
+};
+
+// ea: 0x006392D0
+void CheckpointMenu::RestartAtCheckpoint(int num)
+{
+    if (Cvar_Get("letterbox_enabled", "0", 0)->integer != 0)
+    {
+        Com_Printf(
+            "Wait until letterbox complete, before attempting to skip to a checkpoint.\n");
+    }
+    else
+    {
+        const PakInfoNode* PakInfo =
+            PakManager_GetPakInfo(PakManager_sInst, CurPakId());
+        if (PakInfo != nullptr)
+        {
+            const char* name =
+                PakInfo->checkPointNames.mList[(unsigned int)num].mStr;
+            Com_Printf("Menu command to restart at checkpoint %s\n", name);
+            Cvar_Set("checkpoint",
+                     PakInfo->checkPointNames.mList[(unsigned int)num].mStr);
+            CheckpointMgr::sInst->mGameVars.mSize = 0;
+        }
+    }
+}
+
+// ea: 0x00639370
+void CheckpointMenu::RenderCheckpointMenu()
+{
+    const PakInfoNode* PakInfo =
+        PakManager_GetPakInfo(PakManager_sInst, CurPakId());
+    if (PakInfo != nullptr || *(int*)0xD4 == 0)
+    {
+        if (gDebounce != 0)
+            --gDebounce;
+        unsigned int mSize = PakInfo->checkPointNames.mSize;
+        unsigned int v5 = gCurCheckpoint < 0 ? 0 : gCurCheckpoint;
+        gCurCheckpoint = (int)v5;
+        if (v5 == mSize)
+        {
+            v5 = mSize - 1;
+            gCurCheckpoint = (int)(mSize - 1);
+        }
+        const char* mStr =
+            PakInfo->checkPointNames.mList[v5].mStr;
+        char buf[256];
+        buf[0] = 0;
+        if (gCurCheckpoint > 0)
+            sprintf(buf, "<- ");
+        sprintf(buf, "%s %s ", buf, mStr);
+        if (gCurCheckpoint < (int)PakInfo->checkPointNames.mSize - 1)
+            sprintf(buf, "%s ->", buf);
+        char col[16];
+        strcpy(col, "fff?fff?fff?");
+        ((unsigned char*)col)[4] = 0;
+        *(unsigned short*)((char*)col + 4) = 16256;  // 0x3F80 (1.0f) hi
+        DebugRender_RenderText(buf, 32, 32, (const float*)col, 0.0f, 1.0f);
+        int locked_port = 0;
+        if (controller::inst()->is_locked)
+            locked_port = controller::inst()->locked_port;
+        if (gDebounce == 0)
+        {
+            if (controller::inst()->button_value(
+                    locked_port, controller::SELECT) != 0)
+            {
+                if (controller::inst()->button_value(
+                        locked_port, controller::RIGHTBUTTON) != 0)
+                {
+                    ++gCurCheckpoint;
+                    gDebounce = 7;
+                }
+                else if (controller::inst()->button_value(
+                             locked_port, controller::LEFTBUTTON) != 0)
+                {
+                    --gCurCheckpoint;
+                    gDebounce = 7;
+                }
+                else if (controller::inst()->button_value(
+                             locked_port, controller::UPBUTTON) != 0)
+                {
+                    CheckpointMenu_gCheckpointMenuActive = false;
+                    CheckpointMenu::RestartAtCheckpoint(gCurCheckpoint);
+                }
+            }
+            else
+            {
+                CheckpointMenu_gCheckpointMenuActive = false;
+            }
+        }
+    }
+}
+
+
 template <typename T>
 static void CheckpointVectorResize(CheckpointVector<T>* v, int iNewSize);
 
@@ -454,4 +656,225 @@ bool CheckpointMgr::PrecludeExploderPiece(const char* exploderType,
         && (strcmp(exploderType, "exploder_swap_out") == 0
             || strcmp(exploderType, "exploder_piece") == 0
             || strcmp(exploderType, "exploder_piece_visible") == 0);
+}
+
+// ============================================================================
+// CheckpointMgr scene restore - ea: 0x609010..0x632400 (checkpointmgr.cpp)
+// ============================================================================
+
+// ea: 0x00609010
+void CheckpointMgr::RestoreSceneEntity(Entity* pEnt)
+{
+    if (pEnt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+        AeAssert::gCurrentLine = 105;
+        AeAssert::gCurrentExpr = "pEnt";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "NULL ENTITY PASSED INTO CHECKPOINT MANAGER!!!"))
+            __debugbreak();
+    }
+    if (!this->mCheckpointSaveExists)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+        AeAssert::gCurrentLine = 106;
+        AeAssert::gCurrentExpr = "mCheckpointSaveExists";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "Trying to restore entity to checkpoint, when checkpoint has not been reached"))
+            __debugbreak();
+    }
+    const char* mapName = this->mCurrentMapName.mBlock != nullptr
+        ? (const char*)(this->mCurrentMapName.mBlock + 1)
+        : defaultFileName;
+    if (_stricmp(mapName, s_worldData.baseName) == 0)
+    {
+        Broc::string::Block* eventBlock = this->mEvent.mBlock;
+        if (eventBlock != nullptr)
+        {
+            const char* evt = (const char*)(eventBlock + 1);
+            if (evt != nullptr && *evt != 0)
+            {
+                if (pEnt->mClassName == "info_player_start")
+                {
+                    pEnt->r.currentOrigin.v.m128_f32[0] = this->mOrigin.v.m128_f32[0];
+                    pEnt->r.currentOrigin.v.m128_f32[1] = this->mOrigin.v.m128_f32[1];
+                    pEnt->r.currentOrigin.v.m128_f32[2] = this->mOrigin.v.m128_f32[2];
+                    pEnt->r.currentAngles.v.m128_f32[0] = this->mPlayerOrientation[0];
+                    pEnt->r.currentAngles.v.m128_f32[1] = this->mPlayerOrientation[1];
+                    pEnt->r.currentAngles.v.m128_f32[2] = this->mPlayerOrientation[2];
+                }
+                int v8 = 0;
+                if (this->mFriendlyCount > 0)
+                {
+                    const SEntitySaveInfo* pEnta = this->mFriendlies;
+                    while (!(pEnt->targetname == pEnta->mTargetname))
+                    {
+                        ++v8;
+                        ++pEnta;
+                        if (v8 >= this->mFriendlyCount)
+                            goto done;
+                    }
+                    pEnt->r.currentOrigin.v.m128_f32[0] = pEnta->mOrigin[0];
+                    pEnt->r.currentOrigin.v.m128_f32[1] = pEnta->mOrigin[1];
+                    pEnt->r.currentOrigin.v.m128_f32[2] = pEnta->mOrigin[2];
+                    pEnt->r.currentAngles.v.m128_f32[0] = pEnta->mOrientation[0];
+                    pEnt->r.currentAngles.v.m128_f32[1] = pEnta->mOrientation[1];
+                    pEnt->r.currentAngles.v.m128_f32[2] = pEnta->mOrientation[2];
+                }
+            done:
+                sentient_s* sentient = pEnt->sentient;
+                if (sentient != nullptr)
+                {
+                    uint16_t mValue = sentient->mClaimedNode;
+                    if (mValue != 0
+                        && mValue != 0xFFFF
+                        && PathNodes_NodeHandle_deref(
+                               (const PathNodes::NodeHandle*)
+                                   &sentient->mClaimedNode)
+                            != nullptr)
+                    {
+                        Path_RelinquishNodePermanently(
+                            PathNodes_NodeHandle_deref(
+                                (const PathNodes::NodeHandle*)
+                                    &sentient->mClaimedNode),
+                            sentient);
+                        sentient->mClaimedNode = 0;
+                    }
+                    PathNodeMgr_DissociateSentient(PathNodeMgr_sInst,
+                                                   sentient);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x006180F0
+bool CheckpointMgr::SceneEntityWasDeletedBeforeCheckpoint(
+    SceneEntity* pSceneEnt, SceneBank* pScnBank)
+{
+    return *SceneBank_PersistentStorage(
+               pScnBank, pSceneEnt->m_persistent_index)
+        < this->mCheckpointIndex;
+}
+
+// ea: 0x00632400
+void CheckpointMgr::RestoreExplodedExploders()
+{
+    if (this->mCheckpointSaveExists && this->mUsingCheckpoints)
+    {
+        unsigned short* mElements = this->mCurrentScriptExploded.mElements;
+        int mSize = this->mCurrentScriptExploded.m_size;
+        for (int i = 0; i < mSize; ++i)
+        {
+            Broc::string exploderStr((int)mElements[i]);
+            const char* name = exploderStr.mBlock != nullptr
+                ? (const char*)(exploderStr.mBlock + 1)
+                : defaultFileName;
+            IVPointer<Destructible> d =
+                DestructibleBankManager_GetDestructible(
+                    DestructibleBankManager::sInst, CurPakId(), name);
+            ValidatePakId((TPakId)d.mPakId);
+            if (d.mValue != nullptr)
+            {
+                ValidatePakId((TPakId)d.mPakId);
+                if (((DestructibleView*)d.mValue)->mFlags.mMask & 0x400000)
+                {
+                    ValidatePakId((TPakId)d.mPakId);
+                    Destructible_CheckpointExplode(d.mValue);
+                }
+            }
+            exploderStr.~string();
+        }
+    }
+}
+
+// ea: 0x00632120
+void CheckpointMgr::LoadCheckpointFromStubData()
+{
+    this->ReInit();
+    if (sCheckpointStub->saveExists != 0)
+    {
+        this->mCheckpointSaveExists = sCheckpointStub->saveExists != 0;
+        this->weapon = sCheckpointStub->weapon;
+        this->mEvent = sCheckpointStub->eventName;
+        this->mCurrentMapName = sCheckpointStub->checkpointName;
+        const char* mapName = this->mCurrentMapName.mBlock != nullptr
+            ? (const char*)(this->mCurrentMapName.mBlock + 1)
+            : defaultFileName;
+        strcpy(sCheckpointStub->checkpointName, mapName);
+        sCheckpointStub->weapon = this->weapon;
+        memcpy(this->ammo, sCheckpointStub->ammo, sizeof(this->ammo));
+        memcpy(this->ammoclip, sCheckpointStub->ammoclip,
+               sizeof(this->ammoclip));
+        this->weapons[0] = sCheckpointStub->weapons[0];
+        this->weapons[1] = sCheckpointStub->weapons[1];
+        memcpy(this->weaponslots, sCheckpointStub->weaponslots,
+               sizeof(this->weaponslots));
+        this->weaponrechamber[0] = sCheckpointStub->weaponrechamber[0];
+        this->weaponrechamber[1] = sCheckpointStub->weaponrechamber[1];
+        this->mPlayerHealth = sCheckpointStub->playerHealth;
+        this->mOrigin.v.m128_f32[0] = sCheckpointStub->origin[0];
+        this->mOrigin.v.m128_f32[1] = sCheckpointStub->origin[1];
+        this->mOrigin.v.m128_f32[2] = sCheckpointStub->origin[2];
+        this->mPlayerOrientation[0] = sCheckpointStub->playerOrientation[0];
+        this->mPlayerOrientation[1] = sCheckpointStub->playerOrientation[1];
+        this->mPlayerOrientation[2] = sCheckpointStub->playerOrientation[2];
+        this->mFriendlyCount = 0;
+        int i = 0;
+        if (sCheckpointStub->friendlyCount > 0)
+        {
+            // Friendly block lives in gSaveGameData.savedState.Data at
+            // gSaveGameData + 0x7E0, 0x38-byte stride: targetname +0x00,
+            // orientation +0x24, origin +0x2C (verified vs disasm).
+            unsigned char* src = (unsigned char*)gSaveGameData + 0x7E0;
+            for (; i < sCheckpointStub->friendlyCount; ++i)
+            {
+                strcpy(this->mFriendlies[i].mTargetname, (const char*)src);
+                this->mFriendlies[i].mOrientation[0] =
+                    *(float*)(src + 0x24);
+                this->mFriendlies[i].mOrientation[1] =
+                    *(float*)(src + 0x28);
+                this->mFriendlies[i].mOrientation[2] =
+                    *(float*)(src + 0x2C);
+                this->mFriendlies[i].mOrigin[0] = *(float*)(src + 0x2C);
+                this->mFriendlies[i].mOrigin[1] = *(float*)(src + 0x30);
+                this->mFriendlies[i].mOrigin[2] = *(float*)(src + 0x34);
+                src += 56;
+                ++this->mFriendlyCount;
+            }
+        }
+        CheckpointVectorResize(&this->mGameVars, 0);
+        int v18 = 0;
+        if (sCheckpointStub->gameVarCount > 0)
+        {
+            const SCheckpointGameVar* v19 =
+                (const SCheckpointGameVar*)sCheckpointStub->gameVars;
+            do
+            {
+                CheckpointVectorPushBack(&this->mGameVars, *v19);
+                ++v18;
+                ++v19;
+            } while (v18 < sCheckpointStub->gameVarCount);
+        }
+        int v20 = 0;
+        if (sCheckpointStub->explodedCount > 0)
+        {
+            do
+            {
+                unsigned short elt =
+                    (unsigned short)sCheckpointStub->exploded[v20];
+                this->mCheckpointScriptExploded.mElements
+                    [this->mCheckpointScriptExploded.m_size] = elt;
+                ++this->mCheckpointScriptExploded.m_size;
+                this->mCurrentScriptExploded.mElements
+                    [this->mCurrentScriptExploded.m_size] = elt;
+                ++this->mCurrentScriptExploded.m_size;
+                ++v20;
+            } while (v20 < sCheckpointStub->explodedCount);
+        }
+    }
 }

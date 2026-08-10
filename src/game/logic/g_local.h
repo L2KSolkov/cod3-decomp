@@ -1065,6 +1065,8 @@ struct ae_formatted_string_256w {
 };
 struct PakInfoNode {
     Broc::string longName;  // +0x00
+    uint8_t _pad8[0xD4 - 0x08];
+    InplaceVector<InplaceString> checkPointNames;  // +0xD4 (verified vs disasm)
 };
 struct PakFile {
     struct dlist_node {
