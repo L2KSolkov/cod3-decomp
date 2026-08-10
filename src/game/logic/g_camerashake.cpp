@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "game/logic/g_camerashake.h"
+#include "game/logic/g_local.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -28,6 +29,11 @@ extern const math::Mat43& nglGetMatrix_ViewToWorld(void* Scene);
 extern void* nglBuildScene;
 extern void StartCameraShake_glue(int type, void* worldPos, float size,
                                   float timeOverride, float nextDelay);
+extern int cgGlobal_time;             // ?cgGlobal@@3UcgGlobal_t@@A
+extern float g_ShakeTestMag;          // ?g_ShakeTestMag@@3MA (game2.o)
+extern float g_ShakeTestFreq;         // ?g_ShakeTestFreq@@3MA (game2.o)
+extern float g_ShakeTestTime;         // ?g_ShakeTestTime@@3MA (game2.o)
+extern int g_ShakeTest2d;             // ?g_ShakeTest2d@@3HA (game2.o)
 
 // ============================================================================
 // NoiseManager tables
@@ -420,6 +426,195 @@ void CameraShakeInstance::SetTargetMagnitude(float endMagnitudeScale)
 {
     m_magnitudeInc = ((endMagnitudeScale * m_magnitude) - m_magnitude)
         / g_cameraShake[currCl].GetShakeType(m_type)->m_time;
+}
+
+// ============================================================================
+// CameraShake::StartCameraShake - ea: 0x4F8FA0
+// ============================================================================
+CameraShakeInstance* CameraShake::StartCameraShake(int type,
+    math::Position3* worldPos, float size, float timeOverride, float nextDelay)
+{
+    CameraShakeType* ShakeType = GetShakeType(type);
+    if (nextDelay != -1.0f)
+        ShakeType->m_delayTimeMax = nextDelay;
+    float v9 = cgGlobal_time * 0.001f;
+    if (ShakeType->m_delayTimeMax > (v9 - ShakeType->m_lastShakeTime))
+        return nullptr;
+    ShakeType->m_lastShakeTime = v9;
+    float time = ShakeType->m_time;
+    if (timeOverride != 0.0f)
+        time = timeOverride;
+    CameraShakeInstance* NewShakeInstance;
+    if (ShakeType->m_internalExternal != 0)
+    {
+        NewShakeInstance = GetNewShakeInstance();
+        if (NewShakeInstance == nullptr)
+            return nullptr;
+        NewShakeInstance->m_magnitude = size;
+        NewShakeInstance->m_type = type;
+        NewShakeInstance->m_magnitudeInc = 0.0f;
+    }
+    else
+    {
+        if (size == 0.0f)
+            size = 1.0f;
+        NewShakeInstance = GetNewShakeInstance();
+        if (NewShakeInstance == nullptr)
+            return nullptr;
+        NewShakeInstance->m_magnitude = size;
+        NewShakeInstance->m_type = type;
+        NewShakeInstance->m_magnitudeInc = 0.0f;
+        NewShakeInstance->SetFalloff(worldPos, ShakeType->m_fallOff);
+    }
+    float scale = m_scaleCOD;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    float v13 = 1.0f;
+    if (Player == nullptr || (Player->client->ps.pm_flags & 0x20) != 0
+        || m_scaleCOD_onlyADS == 0)
+        v13 = scale;
+    NewShakeInstance->m_magnitude = NewShakeInstance->m_magnitude * v13;
+    NewShakeInstance->m_frequency = NewShakeInstance->m_frequency * v13;
+    NewShakeInstance->SetupInstance(type, time);
+    return NewShakeInstance;
+}
+
+// ============================================================================
+// CameraShakeInstance::AddNoise_2D_EM - ea: 0x4F9210
+// ============================================================================
+void CameraShakeInstance::AddNoise_2D_EM(int type3dOR2d,
+                                         math::Vector4* shakeEm)
+{
+    float m_time = this->m_time;
+    float v11 = m_magnitude;
+    float out[2];
+    if (type3dOR2d != 0)
+    {
+        if (type3dOR2d != 1)
+            return;
+        if (this->m_time != 0.0f && this->m_time < 0.1f)
+            v11 = (this->m_time * 10.0f) * m_magnitude;
+        out[1] = m_noiseFloats[1].GetValue() * v11;
+        out[0] = m_noiseFloats[0].GetValue() * v11;
+    }
+    else
+    {
+        if (this->m_time < 0.1f)
+            v11 = (this->m_time * 10.0f) * m_magnitude;
+        out[1] = m_noiseFloats[1].GetValue() * m_invDistance * v11 * m_time;
+        out[0] = m_noiseFloats[0].GetValue() * m_invDistance * v11 * m_time;
+    }
+    shakeEm->v.m128_f32[0] += out[0];
+    shakeEm->v.m128_f32[1] += out[1];
+}
+
+// ============================================================================
+// MsaQuat::ExpMapToQuaternion - ea: 0x4F9340
+// ============================================================================
+void MsaQuat::ExpMapToQuaternion(const math::Vector4& expMap)
+{
+    float v11 = sqrtf(expMap[0] * expMap[0] + expMap[1] * expMap[1]
+                      + expMap[2] * expMap[2]);
+    if (v11 == 0.0f)
+    {
+        x = 0.0f;
+        y = 0.0f;
+        z = 0.0f;
+        w = 1.0f;
+        return;
+    }
+    float half = v11 * 0.5f;
+    float s = sinf(half);
+    float c = cosf(half);
+    float vx = (expMap[0] * (1.0f / v11)) * s;
+    float vy = (expMap[1] * (1.0f / v11)) * s;
+    float vz = (expMap[2] * (1.0f / v11)) * s;
+    float len = sqrtf(c * c + vz * vz + vy * vy + vx * vx);
+    x = (1.0f / len) * vx;
+    y = (1.0f / len) * vy;
+    z = (1.0f / len) * vz;
+    w = (1.0f / len) * c;
+}
+
+// ============================================================================
+// MsaQuat::MatrixToQuaternion - ea: 0x4F94B0
+// ============================================================================
+int MsaQuat::MatrixToQuaternion(math::Mat43* mat, math::Position3* pos)
+{
+    if (pos != nullptr)
+        *pos = mat->w;
+    float mata = mat->y.v.m128_f32[1] + mat->z.v.m128_f32[2];
+    if ((mata + mat->x.v.m128_f32[0]) < 0.0f)
+    {
+        int v5 = mat->y.v.m128_f32[1] > mat->x.v.m128_f32[0];
+        if (mat->z.v.m128_f32[2] > mat->x.v.m128_f32[5 * v5])
+            v5 = 2;
+        if (v5 != 0)
+        {
+            int v6 = v5 - 1;
+            if (v6 == 1)
+            {
+                float s = sqrtf(mat->z.v.m128_f32[2]
+                                - (mat->y.v.m128_f32[1] + mat->x.v.m128_f32[0])
+                                + 1.0f);
+                float inv = 0.5f / s;
+                z = s * 0.5f;
+                x = (mat->z.v.m128_f32[0] + mat->x.v.m128_f32[2]) * inv;
+                y = (mat->z.v.m128_f32[1] + mat->y.v.m128_f32[2]) * inv;
+                w = (mat->x.v.m128_f32[1] - mat->y.v.m128_f32[0]) * inv;
+            }
+            else if (v6 == 0)
+            {
+                float s = sqrtf(mat->y.v.m128_f32[1]
+                                - (mat->x.v.m128_f32[0] + mat->z.v.m128_f32[2])
+                                + 1.0f);
+                float inv = 0.5f / s;
+                y = s * 0.5f;
+                z = (mat->z.v.m128_f32[1] + mat->y.v.m128_f32[2]) * inv;
+                x = (mat->y.v.m128_f32[0] + mat->x.v.m128_f32[1]) * inv;
+                w = (mat->z.v.m128_f32[0] - mat->x.v.m128_f32[2]) * inv;
+            }
+        }
+        else
+        {
+            float s = sqrtf(mat->x.v.m128_f32[0] - mata + 1.0f);
+            float inv = 0.5f / s;
+            x = s * 0.5f;
+            y = (mat->y.v.m128_f32[0] + mat->x.v.m128_f32[1]) * inv;
+            z = (mat->z.v.m128_f32[0] + mat->x.v.m128_f32[2]) * inv;
+            w = (mat->y.v.m128_f32[2] - mat->z.v.m128_f32[1]) * inv;
+        }
+        return fabsf(1.0f - sqrtf(x * x + y * y + z * z + w * w)) < 0.0001f;
+    }
+    float s = sqrtf((mata + mat->x.v.m128_f32[0]) + 1.0f);
+    w = s * 0.5f;
+    x = (mat->y.v.m128_f32[2] - mat->z.v.m128_f32[1]) * (0.5f / s);
+    y = (mat->z.v.m128_f32[0] - mat->x.v.m128_f32[2]) * (0.5f / s);
+    z = (mat->x.v.m128_f32[1] - mat->y.v.m128_f32[0]) * (0.5f / s);
+    return fabsf(1.0f - sqrtf(x * x + y * y + z * z + w * w)) < 0.0001f;
+}
+
+// ============================================================================
+// FN_ShakeTestFunction - ea: 0x4FEF40
+// ============================================================================
+CameraShakeInstance* FN_ShakeTestFunction()
+{
+    CameraShakeInstance* result = g_cameraShake[0].StartCameraShake(
+        (g_ShakeTest2d == 0) + 1, nullptr, 1.0f, g_ShakeTestTime, -1.0f);
+    float v2 = g_ShakeTestMag;
+    float v3 = g_ShakeTestFreq;
+    if (result == nullptr)
+        return nullptr;
+    if (g_ShakeTestMag != 0.0f)
+    {
+        result->m_noiseFloats[0].m_range = g_ShakeTestMag;
+        result->m_noiseFloats[1].m_range = v2;
+    }
+    if (v3 != 0.0f)
+    {
+        result->m_noiseFloats[0].m_freq_mult = v3;
+        result->m_noiseFloats[1].m_freq_mult = v3;
+    }
+    return result;
 }
 
 // ea: 0x4F8F70
