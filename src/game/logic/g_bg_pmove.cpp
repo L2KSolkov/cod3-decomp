@@ -2940,6 +2940,31 @@ LABEL_71:
     goto fail;
 }
 
+// ============================================================================
+// BG_CheckProne - ea: 0x6146F0 (tail-calls BG_CheckProneValid)
+// ============================================================================
+// ea: 0x006146F0
+int BG_CheckProne(
+    DbLinkedHandle<EntityHandleDb, Entity> passEntity,
+    const math::Position3* vPos, float fSize, float fHeight, float fYaw,
+    float* pfTorsoHeight, float* pfTorsoPitch, float* pfWaistPitch,
+    int bAlreadyProne, int bOnGround, const math::Dir3* vGroundNormal,
+    void (__cdecl* traceFunc)(trace_t*, const math::Position3*,
+                              const math::Position3*, const math::Position3*,
+                              const math::Position3*, const collision_context_t&),
+    void (__cdecl* boxTraceFunc)(trace_t*, const math::Position3*,
+                                 const math::Position3*, const math::Position3*,
+                                 const math::Position3*, const collision_context_t&),
+    int (__cdecl* pointcontents)(const math::Position3*,
+                                 const collision_context_t&),
+    proneCheckType_t proneCheckType, float prone_feet_dist)
+{
+    return BG_CheckProneValid(
+        passEntity, vPos, fSize, fHeight, fYaw, pfTorsoHeight, pfTorsoPitch,
+        pfWaistPitch, bAlreadyProne, bOnGround, vGroundNormal, traceFunc,
+        boxTraceFunc, pointcontents, proneCheckType, prone_feet_dist);
+}
+
 // ea: 0x00615B50
 int PM_VerifyPronePosition(const math::Position3& vFallbackOrg,
                            const math::Position3& vFallbackVel)

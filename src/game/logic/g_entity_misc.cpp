@@ -692,6 +692,63 @@ nslWaveID SoundDevice::FindWave(char* name)
 }
 
 // ============================================================================
+// SoundDevice::SetListenerVectors - ea: 0x612A70
+// ============================================================================
+extern "C" int __fpclass(float);
+extern void nslListenerSetPosition(unsigned int listenerIndex,
+                                   const float* pos);  // nsl_xboxr
+extern void nslListenerSetOrientation(unsigned int listenerIndex,
+                                      const float* frt,
+                                      const float* top);  // nsl_xboxr
+extern void tlWarning(const char* Format, ...);  // tl_xboxr
+
+// ea: 0x00612A70
+void SoundDevice::SetListenerVectors(int listener,
+                                     const math::Position3& position,
+                                     const math::Dir3& front,
+                                     const math::Dir3& up)
+{
+    if ((__fpclass(position.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(position.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(position.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(front.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(front.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(front.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(up.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(up.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(up.v.m128_f32[2]) & 0x297) != 0)
+    {
+        tlWarning(
+            "A NAN was passed into the sound system while trying to adjust "
+            "listener position\n");
+        return;
+    }
+    float upv[3];
+    upv[0] = position.v.m128_f32[0];
+    upv[1] = position.v.m128_f32[1];
+    upv[2] = position.v.m128_f32[2];
+    float fwv[3];
+    fwv[0] = front.v.m128_f32[0];
+    fwv[1] = front.v.m128_f32[1];
+    fwv[2] = front.v.m128_f32[2];
+    float v12[3];
+    v12[0] = up.v.m128_f32[0];
+    v12[1] = up.v.m128_f32[1];
+    v12[2] = up.v.m128_f32[2];
+    nslListenerSetPosition((unsigned int)listener, upv);
+    nslListenerSetOrientation((unsigned int)listener, fwv, v12);
+    this->mDebugListenerPosition[0] = position.v.m128_f32[0];
+    this->mDebugListenerPosition[1] = position.v.m128_f32[1];
+    this->mDebugListenerPosition[2] = position.v.m128_f32[2];
+    this->mDebugListenerForward[0] = front.v.m128_f32[0];
+    this->mDebugListenerForward[1] = front.v.m128_f32[1];
+    this->mDebugListenerForward[2] = front.v.m128_f32[2];
+    this->mDebugListenerUp[0] = up.v.m128_f32[0];
+    this->mDebugListenerUp[1] = up.v.m128_f32[1];
+    this->mDebugListenerUp[2] = up.v.m128_f32[2];
+}
+
+// ============================================================================
 // GetSurfaceTypeSounds - ea: 0x612DB0
 // ============================================================================
 extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o common.cpp

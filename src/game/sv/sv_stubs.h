@@ -331,7 +331,10 @@ struct SmokeGrenadeMgr {
 static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
 
 struct SoundDevice {
-    uint8_t _pad[31392];
+    uint8_t _pad[0x7A7C];                  // +0x00
+    float   mDebugListenerPosition[3];      // +0x7A7C
+    float   mDebugListenerForward[3];       // +0x7A88
+    float   mDebugListenerUp[3];            // +0x7A94
     struct Sound {
         int     mSource;         // +0x00 (nslSourceID; NSL_SOURCE_ID_INVALID == -1)
         int     mWave;           // +0x04 (nslWaveID; NSL_WAVE_ID_INVALID == -1)
@@ -351,6 +354,9 @@ struct SoundDevice {
     };
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     nslWaveID FindWave(char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
+    void SetListenerVectors(int listener, const math::Position3& position,
+                            const math::Dir3& front,
+                            const math::Dir3& up);  // ?SetListenerVectors@SoundDevice@@QAEXHABVPosition3@math@@ABVDir3@3@1@Z (game.o 0x612A70)
     void StopAllSounds();
     void SetReverb(const char* preset, bool immediate);  // ?SetReverb@SoundDevice@@QAEXPBD_N@Z (game.o 0x9F20A0)
     void PlaySound(const char* name, DbLinkedHandle<EntityHandleDb, Entity> ent,

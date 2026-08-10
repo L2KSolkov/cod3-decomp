@@ -1126,6 +1126,20 @@ int  BG_CheckProneValid(DbLinkedHandle<EntityHandleDb, Entity> passEntity,
                                                      const collision_context_t&),
                         int (__cdecl* pointcontents)(const math::Position3*, const collision_context_t&),
                         proneCheckType_t proneCheckType, float prone_feet_dist);
+int  BG_CheckProne(DbLinkedHandle<EntityHandleDb, Entity> passEntity,
+                   const math::Position3* vPos, float fSize, float fHeight,
+                   float fYaw, float* pfTorsoHeight, float* pfTorsoPitch,
+                   float* pfWaistPitch, int bAlreadyProne, int bOnGround,
+                   const math::Dir3* vGroundNormal,
+                   void (__cdecl* traceFunc)(trace_t*, const math::Position3*,
+                                             const math::Position3*, const math::Position3*,
+                                             const math::Position3*, const collision_context_t&),
+                   void (__cdecl* boxTraceFunc)(trace_t*, const math::Position3*,
+                                                const math::Position3*, const math::Position3*,
+                                                const math::Position3*, const collision_context_t&),
+                   int (__cdecl* pointcontents)(const math::Position3*,
+                                                const collision_context_t&),
+                   proneCheckType_t proneCheckType, float prone_feet_dist);  // game.o 0x6146F0
 int  PM_VerifyPronePosition(const math::Position3& vFallbackOrg,
                             const math::Position3& vFallbackVel);  // game.o 0x615B50
 void PM_UpdatePronePitch();                                     // game.o 0x6156B0
