@@ -1207,7 +1207,9 @@ struct BrocExports {
                                   hitLocation_t a9);  // +0xC90
     uint8_t _padC94[0xD44 - 0xC94];
     void (*mCallbackFireArtilleryShell)(unsigned int handle);  // +0xD44
-    uint8_t _padD48[0xD5C - 0xD48];
+    uint8_t _padD48[0xD58 - 0xD48];
+    int (*mCallbackGetSlotClipCount)(const char*, unsigned int,
+                                     unsigned int, int);  // +0xD58 (mp_loadout)
     void (*mCallbackGiveAmmoPack)(unsigned int ent, unsigned int count);  // +0xD5C
     uint8_t _padD60[0xD68 - 0xD60];
     void (*mCallbackPickupKit)(unsigned int ent, unsigned int count);  // +0xD68

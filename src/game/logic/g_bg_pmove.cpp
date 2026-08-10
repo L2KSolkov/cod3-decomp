@@ -35,6 +35,9 @@ static_assert(sizeof(pml_t) == 0xC0, "pml_t size mismatch");
 // Cross-object externs (game.o data)
 extern pmove_t* pm;          // ?pm@@3PAUpmove_t@@A (game.o)
 extern pml_t pml;            // ?pml@@3Upml_t@@A (game.o)
+extern int dword_106000;     // ?dword_106000 (EF_* flags mask, BSS)
+extern int cl_aADS[4];       // ?cl_aADS@@3PAHA (cl.o)
+extern const char* BG_GetWeaponSlotNameForIndex(int iSlot);  // game.o 0x6072B0
 extern vmCvar_t bg_nofatigue;  // ?bg_nofatigue@@3UvmCvar_t@@A (game.o)
 extern vmCvar_t g_gravity;     // ?g_gravity@@3UvmCvar_t@@A
 extern weaponFileInfo_t** bg_weaponInfo;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
@@ -3265,5 +3268,242 @@ void PM_UpdatePronePitch()
             pm->ps->proneTorsoPitch =
                 AngleNormalize180Accurate(pm->ps->proneTorsoPitch);
         }
+    }
+}
+
+// ============================================================================
+// PM_UpdatePlayerSprintingFlag - ea: 0x62F070 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x0062F070
+PlayerState* PM_UpdatePlayerSprintingFlag()
+{
+    int pm_flags = pm->ps->pm_flags;
+    pm->ps->pm_flags = pm_flags & 0xFFFEFFFF;
+    PlayerState* ps = pm->ps;
+    unsigned int v3 = 0x10000 & pm_flags;
+    if (pm->ps->pm_type < 4)
+    {
+        int buttons = pm->cmd.buttons;
+        if ((buttons & 4) != 0 && ps->fatigueScale > 0.0f
+            && (v3 != 0 || ps->fatigueScale > 0.25f)
+            && (ps->pm_flags & 3) == 0
+            && (pm->cmd.forwardmove != 0 || pm->cmd.rightmove != 0))
+        {
+            int type = ((weaponFileInfo_t*)pml.pWeap)->type;
+            if (type != 8 && (dword_106000 & ps->eFlags) == 0)
+            {
+                int weaponstate = ps->weaponstate;
+                if (weaponstate != 13
+                    && (type != WEAPTYPE_GRENADE
+                        || (((weaponFileInfo_t*)pml.pWeap)->bCookOffHold == 0
+                            || ps->grenadeTimeLeft
+                                   >= ((weaponFileInfo_t*)pml.pWeap)->iFuseTime
+                            || ps->grenadeTimeLeft == 0
+                            || Com_BitCheck(ps->weapons, ps->weapon) == 0)
+                            && (buttons & 1) == 0
+                            && weaponstate != 3))
+                {
+                    Entity* v6 = HandleDbToEnt(ps->mClient);
+                    cl_aADS[v6->GetPlayerIndex()] = 1;
+                    pm->ps->pm_flags |= 0x10000;
+                }
+            }
+        }
+    }
+    return pm->ps;
+}
+
+// ============================================================================
+// PM_MeleeAssistAccelerate - ea: 0x62DCF0 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x0062DCF0
+unsigned int PM_MeleeAssistAccelerate()
+{
+    unsigned int result = pm->ps->mMeleeAssistTarget.mHandle.mVal;
+    if (result != 0)
+    {
+        unsigned int v1 = pm->ps->mMeleeAssistTarget.mHandle.mVal & 0xFFF;
+        if (v1 < 0x540)
+        {
+            result >>= 12;
+            if (result
+                == (unsigned int)EntityHandleDb::sInst.mElements[v1].mKey)
+            {
+                Entity* target = EntityHandleDb::sInst.mElements[v1].mObject;
+                if (target != nullptr)
+                {
+                    float aimDir = target->r.currentOrigin.v.m128_f32[0]
+                        - pm->ps->origin.v.m128_f32[0];
+                    float v3 = target->r.currentOrigin.v.m128_f32[1]
+                        - pm->ps->origin.v.m128_f32[1];
+                    float v4 = target->r.currentOrigin.v.m128_f32[2]
+                        - pm->ps->origin.v.m128_f32[2];
+                    VectorNormalize(&aimDir);
+                    pm->ps->velocity.v.m128_f32[2] = 0.0f;
+                    pm->ps->velocity.v.m128_f32[1] = 0.0f;
+                    pm->ps->velocity.v.m128_f32[0] = 0.0f;
+                    pm->ps->velocity.v.m128_f32[0] =
+                        pm->ps->mMeleeAssistSpeed * aimDir
+                        + pm->ps->velocity.v.m128_f32[0];
+                    pm->ps->velocity.v.m128_f32[1] =
+                        pm->ps->mMeleeAssistSpeed * v3
+                        + pm->ps->velocity.v.m128_f32[1];
+                    pm->ps->velocity.v.m128_f32[2] =
+                        pm->ps->mMeleeAssistSpeed * v4
+                        + pm->ps->velocity.v.m128_f32[2];
+                }
+            }
+        }
+    }
+    return result;
+}
+
+// ============================================================================
+// BG_GetMaxAmmoPakAmmo - ea: 0x62DB90 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x0062DB90
+int BG_GetMaxAmmoPakAmmo(const PlayerState* pPS, int iSlot)
+{
+    int v2 = pPS->weaponslots[iSlot];
+    if (pPS->weaponslots[iSlot] == 0)
+        return 0;
+    Entity* mObject = HandleDbToEnt(pPS->mClient);
+    if (mObject->sentient == nullptr)
+        return 0;
+    int iAmmoIndex = BG_GetInfoForWeapon(v2)->iAmmoIndex;
+    int iClipIndex = BG_GetInfoForWeapon(v2)->iClipIndex;
+    BG_GetInfoForWeapon(v2);
+    int clipCount = 0;
+    if (gpBrocAPI->mBrocExports.mCallbackGetSlotClipCount != nullptr)
+    {
+        int v12 = HandleDbToEnt(pPS->mClient)->sentient->eTeam == TEAM_ALLIES;
+        unsigned int rank = HandleDbToEnt(pPS->mClient)->client->pers.rank;
+        unsigned int playerClass =
+            HandleDbToEnt(pPS->mClient)->client->pers.playerClass;
+        const char* WeaponSlotNameForIndex =
+            BG_GetWeaponSlotNameForIndex(iSlot);
+        clipCount = gpBrocAPI->mBrocExports.mCallbackGetSlotClipCount(
+            WeaponSlotNameForIndex, playerClass, rank, v12);
+    }
+    int v8 = clipCount * BG_GetAmmoClipSize(iClipIndex);
+    if (BG_GetInfoForWeapon(v2)->bClipOnly != 0)
+        return v8 - pPS->ammoclip[iClipIndex];
+    return v8 - pPS->ammoclip[iClipIndex] - pPS->ammo[iAmmoIndex];
+}
+
+// ============================================================================
+// PM_UpdateAimDownSightFlag - ea: 0x62F2F0 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x0062F2F0
+void PM_UpdateAimDownSightFlag()
+{
+    PlayerState* ps = pm->ps;
+    int pm_type = pm->ps->pm_type;
+    if (pm_type >= 6)
+        goto LABEL_40;
+    if ((pm->cmd.buttons & 8) != 0 && (dword_106000 & ps->eFlags) != 0)
+        goto LABEL_33;
+    if ((0x10000 & ps->pm_flags) != 0 || (pm->cmd.buttons & 8) == 0
+        || ((weaponFileInfo_t*)pml.pWeap)->bADSPositionInfo == 0
+        || (ps->weaponstate == 2 || ps->weaponstate == 1
+            || ps->weaponstate == 10 || ps->weaponstate == 11)
+        || (pml.groundPlane == 0 && pm_type != 1))
+    {
+    LABEL_40:
+        ps->pm_flags &= ~0x20u;
+        return;
+    }
+    if (BG_GetInfoForWeapon(ps->weapon)->weapClass == WEAPCLASS_LMG)
+    {
+        if ((pm->ps->pm_flags & 0x20) != 0)
+            return;
+        float angles[3];
+        angles[1] = pm->ps->viewangles[1];
+        angles[2] = 0.0f;
+        angles[0] = 0.0f;
+        math::Dir3 v20;
+        AnglesToForward(angles, v20.v.m128_f32);
+        if (pm->ps->serverCursorHint == 12)
+        {
+            if ((pm->ps->pm_flags & 0x20) == 0)
+            {
+                pm->ps->proneDirection = pm->ps->viewangles[1];
+            }
+            pm->ps->pm_flags |= 0x20u;
+            if (pm->ps->serverCursorHintVal != 0)
+                pm->ps->pm_flags |= 2;
+            else
+                pm->ps->pm_flags &= 0xFFFFFFFD;
+            pm->ps->pm_flags &= ~1u;
+            return;
+        }
+        if ((pm->ps->pm_flags & 1) == 0)
+        {
+            if (pm->ps->mGroundEntity.mHandle.mVal == 0)
+                goto LABEL_25;
+            v20.v = _mm_setr_ps(0.0f, 0.0f, 0.69999999f, 0.0f);
+            float fSize = pm->maxs.v.m128_f32[0];
+            float fYaw = pm->ps->viewangles[1];
+            typedef void (__cdecl* ProneTrace)(
+                trace_t*, const math::Position3*, const math::Position3*,
+                const math::Position3*, const math::Position3*,
+                const collision_context_t&);
+            typedef int (__cdecl* ProneContents)(
+                const math::Position3*, const collision_context_t&);
+            int v11 = BG_CheckProneValid(
+                pm->ps->mClient, &pm->ps->origin, fSize, 30.0f, fYaw,
+                &pm->ps->fTorsoHeight, &pm->ps->fTorsoPitch,
+                &pm->ps->fWaistPitch, false,
+                pm->ps->mGroundEntity.mHandle.mVal != 0, &v20,
+                (ProneTrace)pm->capsuletrace, (ProneTrace)pm->boxtrace,
+                (ProneContents)pm->pointcontents,
+                PCT_CLIENT, 60.0f);
+            if (v11 == 0)
+            {
+            LABEL_25:
+                if ((pm->ps->pm_flags & 1) == 0)
+                {
+                    HandleDbToEnt(pm->ps->mClient)->client->mProneBlockedTime =
+                        level.time;
+                    Entity* v13 = HandleDbToEnt(pm->ps->mClient);
+                    int PlayerIndex = v13->GetPlayerIndex();
+                    cl_aADS[PlayerIndex] = 1;
+                    pm->ps->pm_flags |= 0x8000u;
+                    if ((pm->cmd.buttons & 0x100) == 0)
+                    {
+                        if ((pm->ps->pm_flags & 2) != 0)
+                            BG_AddPredictableEventToPlayerstate(166, 0,
+                                                                pm->ps);
+                        else
+                            BG_AddPredictableEventToPlayerstate(165, 0,
+                                                                pm->ps);
+                    }
+                }
+                return;
+            }
+        }
+        if ((pm->ps->pm_flags & 0x21) == 0)
+        {
+            pm->ps->proneDirection = pm->ps->viewangles[1];
+        }
+        pm->ps->pm_flags |= 1u;
+        ps = pm->ps;
+    LABEL_33:
+        ps->pm_flags |= 0x20u;
+        return;
+    }
+    PlayerState* v16 = pm->ps;
+    if ((pm->ps->pm_flags & 1) != 0)
+    {
+        if ((pm->oldcmd.buttons & 8) == 0
+            || (pm->cmd.forwardmove == 0 && pm->cmd.rightmove == 0))
+        {
+            v16->pm_flags |= 0x20u;
+            pm->ps->pm_flags |= 0x400u;
+        }
+    }
+    else
+    {
+        v16->pm_flags |= 0x20u;
     }
 }
