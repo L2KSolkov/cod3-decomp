@@ -1211,7 +1211,8 @@ struct BrocExports {
     int (*mCallbackGetSlotClipCount)(const char*, unsigned int,
                                      unsigned int, int);  // +0xD58 (mp_loadout)
     void (*mCallbackGiveAmmoPack)(unsigned int ent, unsigned int count);  // +0xD5C
-    uint8_t _padD60[0xD68 - 0xD60];
+    int (*mCallbackCanPickupAmmoPack)(unsigned int ent);  // +0xD60
+    uint8_t _padD64[0xD68 - 0xD64];
     void (*mCallbackPickupKit)(unsigned int ent, unsigned int count);  // +0xD68
 };
 struct BrocAPI {

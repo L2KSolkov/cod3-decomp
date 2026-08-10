@@ -782,6 +782,108 @@ LABEL_15:
     return 1;
 }
 
+// ea: 0x00621820
+bool BG_PlayerTouchesItem(PlayerState* ps, EntityState* item, int atTime)
+{
+    math::Position3 v8;
+    BG_EvaluateTrajectory(&item->pos, atTime, v8);
+    float v4 = ps->origin.v.m128_f32[0] - v8.v.m128_f32[0];
+    bool result = false;
+    if (v4 <= 36.0f && v4 >= -36.0f)
+    {
+        float v5 = ps->origin.v.m128_f32[1] - v8.v.m128_f32[1];
+        if (v5 <= 36.0f && v5 >= -36.0f)
+        {
+            float v6 = ps->origin.v.m128_f32[2] - v8.v.m128_f32[2];
+            if (v6 <= 18.0f && v6 >= -88.0f)
+                return true;
+        }
+    }
+    return result;
+}
+
+// ea: 0x006218C0
+int BG_CanItemBeGrabbed(const EntityState* ent, const PlayerState* ps,
+                        int bTouched)
+{
+    unsigned short brushmodel = ent->brushmodel;
+    if (brushmodel == 0 || brushmodel >= 0x89)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_misc.cpp";
+        AeAssert::gCurrentLine = 466;
+        AeAssert::gCurrentExpr = "false";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "BG_CanItemBeGrabbed: index out of range: tell stavro"))
+            __debugbreak();
+        return 0;
+    }
+    gitem_s* v4 = &bg_itemlist[brushmodel];
+    switch (v4->giType)
+    {
+    case IT_BAD:
+        Com_Error(ERR_DROP, "IT_BAD");
+        return 0;
+    case IT_WEAPON:
+        if (BG_GetInfoForWeapon(v4->giTag)->slot == WEAPSLOT_GRENADE
+            && bTouched != 0)
+            return BG_GetMaxPickupableAmmo(ps, v4->giTag) > 0;
+        if (BG_GetInfoForWeapon(v4->giTag)->slot == WEAPSLOT_SMOKE_GRENADE
+            && bTouched != 0)
+            return BG_GetMaxPickupableAmmo(ps, v4->giTag) > 0;
+        if (BG_GetInfoForWeapon(v4->giTag)->slot == WEAPSLOT_PISTOL)
+        {
+            const char* AmmoTypeName = BG_GetAmmoTypeName(v4->giTag);
+            const char* v8 = BG_GetAmmoTypeName(ps->weaponslots[3]);
+            if (_strnicmp(v8, AmmoTypeName, (size_t)strlen(AmmoTypeName))
+                == 0)
+                return BG_GetMaxPickupableAmmo(ps, ps->weaponslots[3]) > 0;
+        }
+        {
+            int giTag = v4->giTag;
+            if (Com_BitCheck(ps->weapons, giTag) != 0)
+            {
+                if (BG_GetMaxPickupableAmmo(ps, giTag) <= 0)
+                    return 0;
+            }
+            else if (bTouched != 0)
+            {
+                return 0;
+            }
+        }
+        return 1;
+    case IT_AMMO:
+        {
+            int v10 = v4->giTag;
+            if (Com_BitCheck(ps->weapons, v10) != 0)
+            {
+                if (BG_GetMaxPickupableAmmo(ps, v10) <= 0)
+                    return 0;
+            }
+            else if (BG_WeaponIsClipOnly(v10) == 0
+                     || BG_GetMaxPickupableAmmo(ps, v4->giTag) <= 0)
+            {
+                break;
+            }
+        }
+        return 1;
+    case IT_HEALTH:
+    case IT_WEAPON_HEALTH:
+        return ps->stats[0] < ps->stats[2];
+    case IT_WEAPON_AMMO:
+        if (gpBrocAPI->mBrocExports.mCallbackCanPickupAmmoPack == nullptr)
+            return 0;
+        return gpBrocAPI->mBrocExports.mCallbackCanPickupAmmoPack(
+            ps->mClient.mHandle.mVal);
+    case IT_KIT:
+        return bTouched == 0;
+    default:
+        return 0;
+    }
+    return 0;
+}
+
 // ============================================================================
 // BG_GetWeaponForInfo - ea: 0x607050
 // ============================================================================
