@@ -304,6 +304,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_cmd.cpp
     src/game/logic/g_info.cpp
     src/game/logic/g_comparse.cpp
+    src/game/logic/g_entity_misc.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)

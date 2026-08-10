@@ -2442,7 +2442,10 @@ struct CGBank {
 static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
 struct CGBankManager {
     static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
-    CGBank* mBankArray[99];  // +0x00
+    uint8_t _pad4[8];     // +0x04 mDebugRenderMode
+    int mCount;           // +0x0C
+    CGBank* mBankArray[99];  // +0x10
+    void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
 };
 
 bool collide_sphere_brush(const float* sphere_center, float sphere_radius,
@@ -3083,14 +3086,25 @@ extern void (*controllertable[4])(Entity* ent, int* partBits);
 struct DObj {
     uint8_t      _pad0[0x70];      // +0x00
     void*        skel;             // +0x70
+    uint8_t      _pad74[0x80 - 0x74];  // +0x74 (animToModel, gameId, ignoreCollision)
     IVPointer<XModel> models[8];   // +0x80
-    uint8_t      _padC0[0xC4 - 0xC0];
+    int          mPakId;           // +0xC0 (TPakId)
     IVPointerRaw mPhysData;        // +0xC4
     uint8_t      _padCC[0xCE - 0xCC];
     unsigned char numModels;       // +0xCE
-    uint8_t      _padCF[0xE4 - 0xCF];
+    uint8_t      _padCF[0xD0 - 0xCF];
+    Entity*      mEntity;          // +0xD0
+    uint8_t      _padD4[0xE4 - 0xD4];
     unsigned int mFlags;           // +0xE4
+
+    void* operator new(size_t s);  // ??2DObj@@SAPAXI@Z (render.o)
+    void* operator new(size_t s, void* p) { return p; }  // placement
+    void operator delete(void* p); // ??3DObj@@SAXPAX@Z (render.o)
+    void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
+    DObj(int pakId);               // ??0DObj@@QAE@W4TPakId@@@Z (render.o)
+    ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
 };
+static_assert(sizeof(DObj) == 0xE8, "DObj size mismatch");
 
 extern cdl_proftimer cdl_proftimer_dobj_anim;    // game.o 0x0132C318
 

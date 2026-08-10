@@ -275,6 +275,7 @@ public:
     void FreeDObj(bool deleteDObjs);              // ?FreeDObj@Entity@@QAEX_N@Z (game.o)
     void CreateDObj(DObjModel* models, unsigned short numModels,
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)
+    bool IsEnemy(Entity* ent);                   // ?IsEnemy@Entity@@QAE_NPAV1@@Z (game.o)
     bool IsLocalPlayer();                            // ?IsLocalPlayer@Entity@@QBE_NXZ
     int  GetPlayerIndex();                           // ?GetPlayerIndex@Entity@@QBEHXZ
     int  IsVisible() const;                          // ?IsVisible@Entity@@QBEHXZ (game.o)
