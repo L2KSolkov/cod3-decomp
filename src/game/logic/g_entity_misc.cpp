@@ -196,6 +196,14 @@ extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME
 extern void XAnimClearTree(void* tree);  // ?XAnimClearTree@@YAXPAVXAnimTree@@@Z
 extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 
+// ea: 0x006389B0
+void DecodeCGBank(const char* name, unsigned char* data, int size,
+                  TPakId pakId, void* pakFile)
+{
+    ((CGBankManager*)CGBankManager::sInst)
+        ->DecodeCGBank(name, data, size, pakId);
+}
+
 // ea: 0x00639180
 void DisableAI(unsigned int handle)
 {
@@ -230,6 +238,197 @@ void DisableAI(unsigned int handle)
             && AeAssert::Assert("null entity passed to DisableAI?"))
             __debugbreak();
     }
+}
+
+// ============================================================================
+// Entity::~Entity - ea: 0x642D50 (Entity.cpp)
+// ============================================================================
+extern int Path_IsDynamicBlockingEntity(Entity* ent);  // mp_actors.o
+extern void PathNodeMgr_ConnectPathsForEntity(void* self, Entity* ent);  // mp_actors.o
+extern void* PathNodeMgr_sInst;   // ?sInst@PathNodeMgr@@2PAV1@A @ 0xF9930C
+extern void G_EntUnlinkFree(Entity* ent);           // g.o
+extern void StopPhysics(Entity* e);                 // g.o
+extern void g_UnlinkEntity(Entity* ent);            // g.o
+extern void G_DelayFreeAnimTree(void* tree);        // g.o
+extern void j_nullsub_57(actor_s* actor);           // g.o
+extern void Sentient_Free(sentient_s* sentient);    // mp_actors.o
+extern void G_FreeEntityRefs(Entity* ed);           // g.o
+extern actor_s* Actor_FirstActor(int iTeamFlags);   // mp_actors.o
+extern actor_s* Actor_NextActor(actor_s* prev, int iTeamFlags);  // mp_actors.o
+extern void j_nullsub_15(actor_s* self, Entity* other);          // g.o
+extern sentient_s* Sentient_FirstSentient(int iTeamFlags);       // mp_actors.o
+extern sentient_s* Sentient_NextSentient(sentient_s* prev, int iTeamFlags);  // mp_actors.o
+extern void Sentient_DissociateEntity(sentient_s* self, Entity* other);  // mp_actors.o
+extern void j_nullsub_77(Entity* ent);              // g.o
+extern void G_FreeTurret(Entity* self);             // g.o
+extern void G_FreeVehicle(Entity* ent);             // g.o
+extern void BrocDestroyEntity(Entity* ent);         // broc
+extern void EntityHandleDb_Release(void* self, Entity* e);  // game.o
+extern void* EntityHandleDb_sInst;  // ?sInst@EntityHandleDb@@0V1@A @ 0xECBFE8
+extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler@@0PAVPoolAllocator@@A @ 0xF049A4
+extern void ScriptEventHandler_dtor(void* self);  // game2.o
+extern void mem_heap_free(void* ptr);           // mem_lib
+extern void EntityNotifySet_dtor(void* self);   // ?~EntityNotifySet (core.o)
+extern void PakManager_MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
+extern void* EntityNotifySet_sAllocator;  // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A @ 0xF00E2C
+
+// ea: 0x00642D50
+Entity::~Entity()
+{
+    if (Path_IsDynamicBlockingEntity(this) != 0)
+        PathNodeMgr_ConnectPathsForEntity(PathNodeMgr_sInst, this);
+    if (this->disconnectedLinks != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 368;
+        AeAssert::gCurrentExpr = "!this->disconnectedLinks";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (this->scripted != nullptr)
+    {
+        mem_heap_free(this->scripted);
+        this->scripted = nullptr;
+    }
+    G_EntUnlinkFree(this);
+    while (this->tagChildren != nullptr)
+        G_EntUnlinkFree(this->tagChildren);
+    StopPhysics(this);
+    this->FreeDObj(true);
+    g_UnlinkEntity(this);
+    if (this->pAnimTree != nullptr)
+    {
+        G_DelayFreeAnimTree(this->pAnimTree);
+        this->pAnimTree = nullptr;
+    }
+    if (this->actor != nullptr)
+    {
+        j_nullsub_57(this->actor);
+        if (this->actor != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+            AeAssert::gCurrentLine = 416;
+            AeAssert::gCurrentExpr = "this->actor == 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+    }
+    if (this->sentient != nullptr)
+    {
+        Sentient_Free(this->sentient);
+        if (this->sentient != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+            AeAssert::gCurrentLine = 422;
+            AeAssert::gCurrentExpr = "this->sentient == 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        G_FreeEntityRefs(this);
+        for (actor_s* i = Actor_FirstActor(-1); i != nullptr;
+             i = Actor_NextActor(i, -1))
+            j_nullsub_15(i, this);
+        for (sentient_s* j = Sentient_FirstSentient(-1); j != nullptr;
+             j = Sentient_NextSentient(j, -1))
+            Sentient_DissociateEntity(j, this);
+    }
+    if (this->s.eType == 13)
+        j_nullsub_77(this);
+    if (this->pTurretInfo != nullptr)
+    {
+        G_FreeTurret(this);
+        if (this->pTurretInfo != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+            AeAssert::gCurrentLine = 444;
+            AeAssert::gCurrentExpr = "this->pTurretInfo == 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+    }
+    if (this->scr_vehicle != nullptr)
+    {
+        G_FreeVehicle(this);
+        if (this->scr_vehicle != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+            AeAssert::gCurrentLine = 450;
+            AeAssert::gCurrentExpr = "this->scr_vehicle == 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+    }
+    BrocDestroyEntity(this);
+    this->SetAlwaysRender(false);
+    int useCount = this->s.useCount;
+    EntityHandleDb_Release(EntityHandleDb_sInst, this);
+    TPakId mPakId = (TPakId)this->mPakId;
+    this->s.useCount = useCount + 1;
+    if (mPakId == PAK_ID_INVALID)
+        mPakId = CurPakId();
+    DObj* mDObj = this->mDObj;
+    TPakId pakId = mPakId;
+    if (mDObj != nullptr)
+    {
+        mDObj->~DObj();
+        DObj::operator delete(mDObj);
+    }
+    EntityNotifySet* mNotifySet = this->mNotifySet;
+    if (mNotifySet != nullptr)
+    {
+        EntityNotifySet_dtor(mNotifySet);
+        ((PoolAllocator*)EntityNotifySet_sAllocator)->Release(mNotifySet);
+    }
+    ScriptEventHandler* mScriptEventHandler = this->mScriptEventHandler;
+    if (mScriptEventHandler != nullptr)
+    {
+        ScriptEventHandler_dtor(mScriptEventHandler);
+        ((PoolAllocator*)ScriptEventHandler_sAllocator)
+            ->Release(mScriptEventHandler);
+    }
+    proximity_data_t* proximity_data = this->proximity_data;
+    this->mDObj = nullptr;
+    this->mNotifySet = nullptr;
+    this->mScriptEventHandler = nullptr;
+    if (proximity_data != nullptr)
+        PakManager_MemFree(pakId, proximity_data, false);
+    EntityAnimationDebug* mAnimDebug = this->mAnimDebug;
+    this->proximity_data = nullptr;
+    mem_heap_free(mAnimDebug);
+    trRefEntity* mRenderEntity = this->mRenderEntity;
+    if (mRenderEntity != nullptr)
+        *(int*)((char*)mRenderEntity + 0x100) = -1347440721;
+    trRefEntity* v11 = this->mRenderEntity;
+    if (v11 != nullptr)
+    {
+        --gRefEntFreeList.mUsed;
+        ++gRefEntFreeList.mFree;
+        *(void**)v11 = gRefEntFreeList.mpFree;
+        gRefEntFreeList.mpFree = v11;
+    }
+    this->mRenderEntity = nullptr;
+    for (int i = 0; i < 7; ++i)
+        this->mAttachModels[i].~AttachModelInfo();
+    this->mSpawnItem.~string();
+    this->team.~string();
+    this->mAnimName.~string();
+    this->mScriptNoteworthy.~string();
+    this->mGroupName.~string();
+    this->mTarget.~string();
+    this->targetname.~string();
+    this->mClassName.~string();
 }
 
 // ea: 0x00639250

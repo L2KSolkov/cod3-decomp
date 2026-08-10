@@ -7942,6 +7942,13 @@ void DecodeGDB(const char* name, void* data, int size, TPakId pakId,
                                             data);
 }
 
+// ea: 0x006387E0
+void DecodeDCGBank(const char* name, unsigned char* data, int size,
+                   TPakId pakId, void* pakFile)
+{
+    DCGBankManager::sInst->DecodeDCGBank(name, data, size, pakId);
+}
+
 // ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
