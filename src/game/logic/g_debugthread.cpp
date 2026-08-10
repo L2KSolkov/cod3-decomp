@@ -351,6 +351,8 @@ public:
         void** __vftable;       // +0x00
         virtual bool Invoke(AnimationPlayer* player);  // ea: 0x4F5F10
     };
+
+    void Advance(float delta);  // ea: 0x4FA550
 };
 
 extern void* nalPlayMethod_vftable;   // ??_7nalPlayMethod@AnimationPlayer@@6B@
@@ -889,6 +891,135 @@ void* AnimationPlayer::nalPlayMethod::CreateInstance(void* anim, void* skeleton)
     if (mNoteHandler != nullptr)
         AnimNoteHandler_ParseNoteTracks(mNoteHandler, anim);
     return instance;
+}
+
+// ============================================================================
+// AnimationPlayer queue state views (game2.o AnimationPlayer.cpp)
+// ============================================================================
+struct nalAnimStateLocal {
+    void* instance;        // +0x00
+    float speed;           // +0x04
+    float t;               // +0x08
+    void* play_method;     // +0x0C nalPlayMethod*
+    void* callback;        // +0x10 nalAnimCallback*
+    void* next;            // +0x14
+    float weight;          // +0x18
+};
+struct nalPartialAnimStateLocal {
+    void* instance;        // +0x00
+    float alpha;           // +0x04
+    float t;               // +0x08
+    void* play_method;     // +0x0C
+    void* callback;        // +0x10
+    void* next;            // +0x14
+    int type;              // +0x18
+    int CreationAdvanceCount;  // +0x1C
+};
+struct AnimationPlayerLocal {
+    void* BackgroundPose;  // +0x00 nalGenericPose*
+    int AdvanceCount;      // +0x04
+    int QueueSize;         // +0x08
+    void* AnimStates;      // +0x0C nalAnimState*[8]
+    void* PartialAnimStates;   // +0x10
+    void* PartialAnimStatePool;  // +0x14
+};
+
+extern bool AnimationPlayer_nalPartialAnimState_Update(void* self,
+                                                       void* player,
+                                                       float delta);  // ?Update@nalPartialAnimState@AnimationPlayer@@QAE_NPAV2@M@Z (game2.o)
+extern bool AnimationPlayer_nalAnimState_Update(void* self, void* player,
+                                                float delta);  // ?Update@nalAnimState@AnimationPlayer@@QAE_NPAV2@M@Z
+extern void AnimationPlayer_nalAnimState_Compose(void* self, void* pose,
+                                                 void* tmpPose);  // ?Compose@nalAnimState@AnimationPlayer@@QAEXPAVnalGenericPose@nalGeneric@@0@Z
+
+// ============================================================================
+// AnimationPlayer::Advance - ea: 0x4FA550
+// ============================================================================
+void AnimationPlayer::Advance(float delta)
+{
+    AnimationPlayerLocal* self = (AnimationPlayerLocal*)this;
+    ++self->AdvanceCount;
+    void** p_PartialAnimStates = &self->PartialAnimStates;
+    void* PartialAnimStates = self->PartialAnimStates;
+    while (PartialAnimStates != nullptr)
+    {
+        nalPartialAnimStateLocal* ps =
+            (nalPartialAnimStateLocal*)PartialAnimStates;
+        if (ps->CreationAdvanceCount != self->AdvanceCount)
+        {
+            if (AnimationPlayer_nalPartialAnimState_Update(ps, this, delta))
+            {
+                if (*p_PartialAnimStates != PartialAnimStates)
+                {
+                    void* cur = *p_PartialAnimStates;
+                    do
+                    {
+                        p_PartialAnimStates =
+                            &((nalPartialAnimStateLocal*)cur)->next;
+                        cur = *p_PartialAnimStates;
+                    } while (cur != PartialAnimStates);
+                }
+                *p_PartialAnimStates = ps->next;
+                if (ps->callback != nullptr)
+                    (*(void(**)(void*))ps->callback)(ps->callback);
+                if (ps->play_method != nullptr)
+                    (*(void(**)(void*))ps->play_method)(ps->play_method);
+                if (ps->instance != nullptr)
+                    (*(void(**)(void*, int))ps->instance)(ps->instance, 1);
+                ps->next = self->PartialAnimStatePool;
+                self->PartialAnimStatePool = ps;
+            }
+            else
+            {
+                p_PartialAnimStates = &ps->next;
+            }
+            PartialAnimStates = *p_PartialAnimStates;
+        }
+    }
+    int v9 = 0;
+    if (self->QueueSize > 0)
+    {
+        for (;;)
+        {
+            void** v10 = &((void**)self->AnimStates)[v9];
+            void* cur = *v10;
+            bool v11 = AnimationPlayer_nalAnimState_Update(cur, this, delta);
+            int QueueSize = self->QueueSize;
+            if (v9 < QueueSize)
+            {
+                do
+                {
+                    if (*v10 == cur)
+                        break;
+                    ++v9;
+                    ++v10;
+                } while (v9 < self->QueueSize);
+            }
+            if (v11 && v9 < QueueSize)
+                break;
+            if (++v9 >= self->QueueSize)
+                break;
+        }
+        ++v9;
+    }
+    int newSize = v9;
+    if (v9 < self->QueueSize)
+    {
+        void** deltaa = &((void**)self->AnimStates)[v9];
+        do
+        {
+            nalAnimStateLocal* st = (nalAnimStateLocal*)*deltaa;
+            if (st->callback != nullptr)
+                (*(void(**)(void*))st->callback)(st->callback);
+            if (st->play_method != nullptr)
+                (*(void(**)(void*))st->play_method)(st->play_method);
+            if (st->instance != nullptr)
+                (*(void(**)(void*, int))st->instance)(st->instance, 1);
+            ++v9;
+            ++deltaa;
+        } while (v9 < self->QueueSize);
+    }
+    self->QueueSize = newSize;
 }
 
 // ============================================================================
