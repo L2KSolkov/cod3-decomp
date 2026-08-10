@@ -1312,6 +1312,106 @@ void Cmd_AddInputCommand(const char* cmd_name, void (*function)(int, int))
 }
 
 // ============================================================================
+// GetCmd / Cmd_ExecuteServerString / Cmd_AddServerCommand
+// ea: 0x61F730 / 0x61F320 / 0x61F4A0
+// ============================================================================
+extern char* g_text;  // ?g_text@@3PBDB (game.o @ 0xF3C458)
+extern void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* cmd);  // game.o 0x60E5B0
+extern void Cbuf_AddServerText_f();  // game.o 0x60E5F0
+
+// ea: 0x0061F730
+const BaseCmdFuncInfo* GetCmd(const char* cmdName)
+{
+    BaseCmdFuncInfo** p_mNext = &cmd_functions;
+    if (cmd_functions == nullptr)
+        return nullptr;
+    BaseCmdFuncInfo* v2;
+    while (1)
+    {
+        v2 = *p_mNext;
+        if (*p_mNext != nullptr)
+        {
+            const char* mName = v2->mName;
+            if (cmdName != nullptr && mName != nullptr
+                && ae_stricmpn(cmdName, mName, 0x7FFFFFFF) == 0)
+                break;
+        }
+        p_mNext = &v2->mNext;
+        if (v2->mNext == nullptr)
+            return nullptr;
+    }
+    return v2;
+}
+
+// ea: 0x0061F320
+void Cmd_ExecuteServerString(const char* text)
+{
+    g_text = (char*)text;
+    Cmd_TokenizeString2(text, 0);
+    if (cmd_argc != 0)
+    {
+        BaseCmdFuncInfo** p_mNext = &sv_cmd_functions;
+        if (sv_cmd_functions != nullptr)
+        {
+            const char* v2 = cmd_argv[0];
+            BaseCmdFuncInfo* v3;
+            do
+            {
+                v3 = *p_mNext;
+                const char* mName = (*p_mNext)->mName;
+                if (v2 != nullptr && mName != nullptr)
+                {
+                    if (ae_stricmpn(v2, mName, 0x7FFFFFFF) == 0)
+                    {
+                        *p_mNext = v3->mNext;
+                        v3->mNext = sv_cmd_functions;
+                        sv_cmd_functions = v3;
+                        Cmd_CallCmdFunctionWithInputArgs(v3);
+                        return;
+                    }
+                    v2 = cmd_argv[0];
+                }
+                p_mNext = &v3->mNext;
+            } while (v3->mNext != nullptr);
+        }
+    }
+}
+
+// ea: 0x0061F4A0
+void Cmd_AddServerCommand(const char* cmd_name,
+                          void (*function)())
+{
+    Cmd_AddCommand(cmd_name, Cbuf_AddServerText_f);
+    BaseCmdFuncInfo* v2;
+    BaseCmdFuncInfo* v3;
+    if (sv_cmd_functions != nullptr)
+    {
+        v2 = sv_cmd_functions;
+        while (strcmp(cmd_name, v2->mName) != 0)
+        {
+            v2 = v2->mNext;
+            if (v2 == nullptr)
+                goto LABEL_4;
+        }
+        if (function != nullptr)
+            Com_Printf("Cmd_AddServerCommand: %s already defined\n",
+                       cmd_name);
+    }
+    else
+    {
+    LABEL_4:
+        v3 = (BaseCmdFuncInfo*)_Z_MallocInternal(16);
+        char* v4 = CopyStringInternal(cmd_name);
+        BaseCmdFuncInfo* v5 = sv_cmd_functions;
+        v3->mName = v4;
+        v3->mFuncType = CMD;
+        v3->mNext = v5;
+        v3->mFuncPtr = (void*)function;
+        sv_cmd_functions = v3;
+    }
+}
+
+// ============================================================================
 // Cmd_RemoveCommand - ea: 0x60EB50
 // ============================================================================
 // ea: 0x0060EB50
