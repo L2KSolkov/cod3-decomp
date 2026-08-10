@@ -392,6 +392,135 @@ void Entity::ExecScriptHandler(HashString h, void* params)
 }
 
 // ============================================================================
+// Entity::GetViewModelDObj / CalcAbsMat / GetRelMat
+// ea: 0x6205F0 / 0x620670 / 0x6208E0 (Entity.cpp)
+// ============================================================================
+extern int dword_F6A2A0[4 * 802];  // view-model DObj handles (game.o @ 0xF6A2A0)
+extern const math::Mat43* DObj_GetMat(void* obj, int boneIndex);  // anim
+extern serverStatic_t svs;  // sv.o
+
+// ea: 0x006205F0
+const DObj* Entity::GetViewModelDObj() const
+{
+    Client* client = this->client;
+    if (client != nullptr
+        && client->mServerClientIndex >= 0
+        && svs.clients[client->mServerClientIndex].netchan[8] == 2)
+    {
+        return (const DObj*)dword_F6A2A0[802 * client->mServerClientIndex];
+    }
+    return nullptr;
+}
+
+// ea: 0x00620630
+DObj* Entity::GetViewModelDObj()
+{
+    Client* client = this->client;
+    if (client != nullptr
+        && client->mServerClientIndex >= 0
+        && svs.clients[client->mServerClientIndex].netchan[8] == 2)
+    {
+        return (DObj*)dword_F6A2A0[802 * client->mServerClientIndex];
+    }
+    return nullptr;
+}
+
+// ea: 0x00620670
+math::Mat43 Entity::CalcAbsMat(int boneIndex)
+{
+    if (this->mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 721;
+        AeAssert::gCurrentExpr = "mDObj";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    math::Mat43 v14;
+    if (this->mDObj != nullptr)
+    {
+        const math::Mat43* Mat = DObj_GetMat(this->mDObj, boneIndex);
+        math::Dir3 v7;
+        math::Dir3 v8;
+        math::Dir3 v9;
+        v7.v = this->r.currentMat.z.v;
+        v8.v = this->r.currentMat.y.v;
+        v9.v = this->r.currentMat.x.v;
+        v14.x.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(Mat->x.v, Mat->x.v, 0), v9.v),
+                _mm_mul_ps(_mm_shuffle_ps(Mat->x.v, Mat->x.v, 85), v8.v)),
+            _mm_mul_ps(_mm_shuffle_ps(Mat->x.v, Mat->x.v, 170), v7.v));
+        v14.y.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(Mat->y.v, Mat->y.v, 0), v9.v),
+                _mm_mul_ps(_mm_shuffle_ps(Mat->y.v, Mat->y.v, 85), v8.v)),
+            _mm_mul_ps(_mm_shuffle_ps(Mat->y.v, Mat->y.v, 170), v7.v));
+        v14.z.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(Mat->z.v, Mat->z.v, 0), v9.v),
+                _mm_mul_ps(_mm_shuffle_ps(Mat->z.v, Mat->z.v, 85), v8.v)),
+            _mm_mul_ps(_mm_shuffle_ps(Mat->z.v, Mat->z.v, 170), v7.v));
+        v14.w.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(Mat->w.v, Mat->w.v, 0), v9.v),
+                _mm_mul_ps(_mm_shuffle_ps(Mat->w.v, Mat->w.v, 85), v8.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(Mat->w.v, Mat->w.v, 170), v7.v),
+                this->r.currentMat.w.v));
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 725;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "Calc bone matrix on entity with no DObj."))
+            __debugbreak();
+        v14.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        v14.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        v14.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        v14.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    }
+    return v14;
+}
+
+// ea: 0x006208E0
+math::Mat43 Entity::GetRelMat(int boneIndex)
+{
+    if (this->mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 736;
+        AeAssert::gCurrentExpr = "mDObj";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    math::Mat43 result;
+    if (this->mDObj != nullptr)
+    {
+        result = *DObj_GetMat(this->mDObj, boneIndex);
+        return result;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::JRS;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+    AeAssert::gCurrentLine = 740;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Calc bone matrix on entity with no DObj."))
+        __debugbreak();
+    result.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    result.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    result.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    result.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    return result;
+}
+
+// ============================================================================
 // Entity notify plumbing - ea: 0x62AD70..0x62AFA0 (Entity.cpp)
 // The reserved_dlist layout is verified here: m_size +0x00, m_head +0x04,
 // m_end +0x08, m_tail +0x0C; node m_next +0x00, m_prev +0x04.
