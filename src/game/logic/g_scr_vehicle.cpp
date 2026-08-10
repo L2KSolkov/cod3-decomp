@@ -5725,7 +5725,7 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
         p1.v.m128_f32[0] = end[0];
         p1.v.m128_f32[1] = end[1];
         p1.v.m128_f32[2] = end[2];
-        collide_segment(&filtered, p0, p1, &t, &sflags, &cflags, nullptr);
+        collide_segment(filtered, p0, p1, t, sflags, cflags, nullptr);
         if (t < 1.0f)
         {
             start[0] += (end[0] - start[0]) * t;

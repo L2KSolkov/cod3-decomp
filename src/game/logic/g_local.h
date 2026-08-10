@@ -2241,6 +2241,8 @@ extern float r;                                      // g.o @ 0xDD8228
 extern int VEH_GetWheelOrigin(Entity* ent);          // g.o 0x45C4B0
 struct traceWork_t;
 struct cdl_cinfo1;
+struct cdl_poly_inl_t;
+struct cdlPlane;
 extern bool collide_segment_poly(const math::Position3& p0,
                                  const math::Position3& p1,
                                  void* poly, void* cinfo);  // game.o
@@ -2248,9 +2250,21 @@ bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
                      const math::Position3& p0, const math::Position3& p1,
                      cdl_cinfo1& cinfo, int& sflags,
                      int& cflags);  // game.o 0x634620
-extern void collide_segment(const void* data, const math::Position3& p0,
-                            const math::Position3& p1, float* t, int* sflags,
-                            int* cflags, void* poly);  // game.o 0x60A290B0
+void collide_segment(const proximity_data_t& data,
+                     const math::Position3& p0, const math::Position3& p1,
+                     float& t, int& sflags, int& cflags,
+                     cdl_poly_inl_t* poly);  // game.o 0x6350B0
+bool collide_box_segment(const math::Position3& p0,
+                         const math::Position3& p1,
+                         const math::Position3& bmin,
+                         const math::Position3& bmax, float& t,
+                         math::Position3* normal);  // game.o 0x60C720
+bool collide_brush_segment(const math::Position3& p0,
+                           const math::Position3& p1,
+                           const math::Position3& bmin,
+                           const math::Position3& bmax,
+                           const cdlPlane* sides, unsigned int nsides,
+                           float& t, math::Position3* normal);  // game.o 0x61ACC0
 extern void filter_proximity_brushes(const math::Position3& lo,
                                      const math::Position3& hi, int contents,
                                      const proximity_data_t& in,
@@ -2512,6 +2526,18 @@ struct cdl_cinfo1 {
     math::Position3 pi;   // +0x10
 };
 static_assert(sizeof(cdl_cinfo1) == 0x20, "cdl_cinfo1 size mismatch");
+
+// cdl_poly_inl_t - inline triangle collision output (verified from disasm).
+// Uses float[4] (not __m128) so the struct stays 4-byte aligned at 0x48.
+struct cdl_poly_inl_t {
+    float v0[4];    // +0x00 (Position3)
+    float v1[4];    // +0x10
+    float v2[4];    // +0x20
+    float n[4];     // +0x30 (Vector4)
+    int   sflags;   // +0x40
+    bool  valid;    // +0x44
+};
+static_assert(sizeof(cdl_poly_inl_t) == 0x48, "cdl_poly_inl_t size mismatch");
 
 struct proximity_data_t {
     math::Position3 lo;              // +0x000
