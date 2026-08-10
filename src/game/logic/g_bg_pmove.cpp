@@ -136,6 +136,404 @@ void PM_AddTouchEnt(DbLinkedHandle<EntityHandleDb, Entity> entity)
 }
 
 // ============================================================================
+// Pmove / PmoveSingle - ea: 0x6464C0 / 0x645CD0 (bg_pmove.cpp)
+// ============================================================================
+extern int c_pmove;   // ?c_pmove@@3HA (game.o)
+extern void PM_CheckDuck();                       // game.o 0x644B80
+extern void PmoveSingle(pmove_t* pmove,
+                        bool isThisThePredictStep);  // game.o 0x645CD0
+extern bool GamePause_IsGamePaused(int client);   // ?IsGamePaused@GamePause@@SA_NH@Z
+extern void PM_Weapon();                          // game.o 0x6408B0
+extern void PM_Footsteps();                       // game.o 0x63CB60
+extern void PM_LadderMove(const collision_context_t& context);  // game.o 0x6458E0
+extern void PM_WalkMove(const collision_context_t& context);    // game.o 0x643E40
+extern void PM_AirMove(const collision_context_t& context);     // game.o 0x643C50
+extern void PM_GroundTrace();                     // game.o 0x63C340
+extern void PM_NoclipMove();                      // game.o 0x6055A0
+extern void PM_UFOMove();                         // game.o 0x605850
+extern void PM_DeadMove();                        // game.o 0x605420
+extern void PM_CheckLadderMove();                 // game.o 0x63DDF0
+extern void PM_FoliageSounds();                   // game.o 0x63D100
+extern void PM_WaterEvents();                     // game.o 0x606280
+extern void PM_DropTimers();                      // game.o 0x606320
+extern void PM_UpdateViewAngles(PlayerState* ps, usercmd_s* cmd,
+                                usercmd_s* oldcmd, int msec,
+                                void (*capsuleTrace)(trace_t*,
+                                                     const math::Position3&,
+                                                     const math::Position3&,
+                                                     const math::Position3&,
+                                                     const math::Position3&,
+                                                     const collision_context_t&));
+    // game.o 0x63D2B0
+extern int  PM_InteruptWeaponWithProneMove();     // game.o 0x6171B0
+extern int  PM_InteruptWeaponWithSprintMove();    // game.o 0x617250
+extern pmove_t* PM_UpdatePlayerWalkingFlag();     // game.o 0x6065B0
+extern PlayerState* PM_UpdatePlayerSprintingFlag(); // game.o 0x62F070
+extern PlayerState* PM_UpdateFatigue();           // game.o 0x606440
+extern void PM_UpdateAimDownSightFlag();          // game.o 0x62F2F0
+extern void PM_UpdateAimDownSightLerp();          // game.o 0x62F670
+extern PlayerState* PM_AdjustAimSpreadScale();    // game.o 0x608670
+
+// ea: 0x006464C0
+void Pmove(pmove_t* pmove, bool isThisThePredictStep)
+{
+    PlayerState* ps = pmove->ps;
+    if ((pmove->ps->pm_flags & 0x4000) != 0)
+    {
+        pmove->cmd.forwardmove = 0;
+        pmove->cmd.rightmove = 0;
+        pmove->cmd.upmove = 0;
+        pmove->cmd.buttons = 0;
+    }
+    int serverTime = pmove->cmd.serverTime;
+    int commandTime = ps->commandTime;
+    if (serverTime >= commandTime)
+    {
+        if (serverTime > commandTime + 1000)
+            ps->commandTime = serverTime - 1000;
+        pm = pmove;
+        pmove->numtouch = 0;
+        if ((0x100000 & pm->ps->pm_flags) != 0)
+        {
+            PM_CheckDuck();
+        }
+        else
+        {
+            PlayerState* v6 = pmove->ps;
+            while (pmove->ps->commandTime != serverTime)
+            {
+                int v7 = v6->commandTime;
+                int pmove_msec = serverTime - v7;
+                if (pmove->pmove_fixed != 0)
+                {
+                    if (pmove_msec > pmove->pmove_msec)
+                        pmove_msec = pmove->pmove_msec;
+                }
+                else if (pmove_msec > 666)
+                {
+                    pmove_msec = 666;
+                }
+                pmove->cmd.serverTime = pmove_msec + v7;
+                PmoveSingle(pmove, isThisThePredictStep);
+                v6 = pmove->ps;
+                if ((pmove->ps->pm_flags & 8) != 0)
+                    pmove->cmd.upmove = 20;
+            }
+            pm = nullptr;
+            memset(&pml, 0, sizeof(pml));
+        }
+    }
+}
+
+// ea: 0x00645CD0
+void PmoveSingle(pmove_t* pmove, bool isThisThePredictStep)
+{
+    pm = pmove;
+    ++c_pmove;
+    pmove->watertype = 0;
+    pm->waterlevel = 0;
+    if ((pm->ps->pm_flags & 0x4000) != 0
+        || GamePause_IsGamePaused(currCl)
+        || pm->ps->pm_type == 4
+        || (pm->ps->pm_flags & 0x40000000) != 0)
+    {
+        pmove->cmd.buttons &= 0x6108u;
+        pmove->cmd.forwardmove = 0;
+        pmove->cmd.rightmove = 0;
+        pmove->cmd.upmove = 0;
+    }
+    pm->ps->pm_flags &= ~0x8000u;
+    pmove_t* v4 = pm;
+    if (pm->ps->pm_type >= 6)
+    {
+        pm->tracemask &= ~0x2000000u;
+        v4 = pm;
+    }
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v4->ps->weapon);
+    pml.pWeap = InfoForWeapon;
+    if (InfoForWeapon->bHoldToFire != 0
+        && (pmove->cmd.buttons & 0x82) != 0)
+    {
+        int v6 = pmove->oldcmd.angles[2];
+        int v7 = pmove->oldcmd.angles[1];
+        pmove->cmd.buttons &= 0x8Au;
+        int v8 = pmove->oldcmd.angles[0];
+        pmove->cmd.forwardmove = 0;
+        pmove->cmd.rightmove = 0;
+        pmove->cmd.upmove = 0;
+        pmove->cmd.angles[0] = v8;
+        pmove->cmd.angles[1] = v7;
+        pmove->cmd.angles[2] = v6;
+        InfoForWeapon = (weaponFileInfo_t*)pml.pWeap;
+    }
+    PlayerState* ps = pm->ps;
+    int pm_flags = pm->ps->pm_flags;
+    if ((pm_flags & 1) == 0 || InfoForWeapon->type == WEAPTYPE_GRENADE)
+        goto L26;
+    {
+        char forwardmove = pm->cmd.forwardmove;
+        char v12 = pm->oldcmd.forwardmove;
+        if (forwardmove == v12 || fabs((float)v12) >= fabs((float)forwardmove))
+        {
+            char rightmove = pm->cmd.rightmove;
+            char v14 = pm->oldcmd.rightmove;
+            if (rightmove == v14 || fabs((float)v14) >= fabs((float)rightmove))
+            {
+                if ((pm_flags & 0x20) != 0)
+                    goto L19;
+                unsigned int weaponstate = ps->weaponstate;
+                if (weaponstate > 2 && weaponstate != 5)
+                    goto L19;
+L26:
+                ps->pm_flags &= ~0x400u;
+                goto L19;
+            }
+        }
+        if (PM_InteruptWeaponWithProneMove() != 0)
+        {
+            pm->ps->pm_flags &= ~0x400u;
+            pm->ps->pm_flags &= ~0x20u;
+        }
+    }
+L19:
+    if ((pm->ps->pm_flags & 0x10000) != 0)
+        PM_InteruptWeaponWithSprintMove();
+    PlayerState* v15 = pm->ps;
+    int viewHeightTarget = pm->ps->viewHeightTarget;
+    int stance;
+    if (viewHeightTarget == pm->ps->crouchViewHeight)
+        stance = 2;
+    else
+        stance = viewHeightTarget == v15->proneViewHeight;
+    if ((v15->pm_flags & 0x20) != 0 && stance == 1)
+    {
+        pmove->cmd.forwardmove = 0;
+        pmove->cmd.rightmove = 0;
+    }
+    if ((pm->ps->pm_flags & 0x20) != 0
+        && BG_GetInfoForWeapon(pm->ps->weapon)->weapClass == WEAPCLASS_LMG)
+    {
+        pmove->cmd.forwardmove = 0;
+        pmove->cmd.rightmove = 0;
+    }
+    pm->ps->eFlags &= ~0x200u;
+    pmove_t* v18 = pm;
+    PlayerState* v19 = pm->ps;
+    if (pm->ps->pm_type != 5 && (v19->pm_flags & 0x800) == 0)
+    {
+        int v20 = v19->weaponstate;
+        if (v20 == 0 || v20 == 3)
+        {
+            weaponFileInfo_t* v21 = BG_GetInfoForWeapon(v19->weapon);
+            v18 = pm;
+            PlayerState* v22 = pm->ps;
+            if ((pm->ps->ammoclip[v21->iClipIndex] != 0
+                 || ((v22->eFlags & 0x6000) != 0)
+                 || (0x100000 & v22->eFlags) != 0 && v22->vehPos == 1)
+                && (v22->pm_flags & 0x10000) == 0
+                && (pm->cmd.buttons & 1) != 0)
+            {
+                v22->eFlags |= 0x200u;
+                v18 = pm;
+            }
+        }
+    }
+    if (v18->ps->pm_type < 6 && (v18->cmd.buttons & 1) == 0)
+    {
+        v18->ps->pm_flags &= ~0x800u;
+        v18 = pm;
+    }
+    memset(&pml, 0, sizeof(pml));
+    int v24 = pmove->cmd.serverTime - v18->ps->commandTime;
+    pml.msec = v24;
+    if (v24 >= 1)
+    {
+        if (v24 > 200)
+            pml.msec = 200;
+    }
+    else
+    {
+        pml.msec = 1;
+    }
+    v18->ps->commandTime = pmove->cmd.serverTime;
+    memcpy(pml.previous_origin, pm->ps, sizeof(pml.previous_origin));
+    memcpy(pml.previous_velocity, &pm->ps->velocity,
+           sizeof(pml.previous_velocity));
+    pml.frametime = pml.msec * 0.001f;
+    pml.pWeap = BG_GetInfoForWeapon(pm->ps->weapon);
+    PM_AdjustAimSpreadScale();
+    PM_UpdateViewAngles(pm->ps, &pm->cmd, &pm->oldcmd, pml.msec,
+                        pm->capsuletrace);
+    AngleVectors(pm->ps->viewangles, pml.forward, pml.right, pml.up);
+    pmove_t* v26 = pm;
+    if (pm->cmd.upmove < 10)
+    {
+        pm->ps->pm_flags &= ~8u;
+        v26 = pm;
+    }
+    char v27 = v26->cmd.forwardmove;
+    if (v27 < 0)
+    {
+        PlayerState* v28 = v26->ps;
+        v28->pm_flags |= 0x40;
+        v26 = pm;
+        goto L60;
+    }
+    if (v27 > 0 || v26->cmd.rightmove != 0)
+    {
+        PlayerState* v28 = v26->ps;
+        v28->pm_flags &= ~0x40;
+        v26 = pm;
+        goto L60;
+    }
+L60:
+    if (v26->ps->pm_type >= 6)
+    {
+        v26->cmd.forwardmove = 0;
+        pm->cmd.rightmove = 0;
+        pm->cmd.upmove = 0;
+        v26 = pm;
+    }
+    if (stance == 1 && (v26->ps->pm_flags & 0x400) != 0)
+    {
+        v26->cmd.forwardmove = 0;
+        pm->cmd.rightmove = 0;
+    }
+    PlayerState* v30 = pm->ps;
+    switch (pm->ps->pm_type)
+    {
+    case 1:
+    case 7:
+        v30->pm_flags &= ~0x10u;
+        pm->ps->mGroundEntity.mHandle.mVal = 0;
+        pml.groundPlane = 0;
+        pml.walking = 0;
+        PM_UpdateAimDownSightFlag();
+        PM_UpdatePlayerWalkingFlag();
+        PM_UpdatePlayerSprintingFlag();
+        PM_CheckDuck();
+        PM_DropTimers();
+        PM_UpdateFatigue();
+        if (!isThisThePredictStep)
+            PM_Weapon();
+        PM_Footsteps();
+        break;
+    case 2:
+        v30->pm_flags &= ~0x10u;
+        PM_UpdateAimDownSightFlag();
+        PM_UpdatePlayerWalkingFlag();
+        PM_UpdatePlayerSprintingFlag();
+        PM_NoclipMove();
+        if (!isThisThePredictStep)
+            PM_Weapon();
+        PM_DropTimers();
+        PM_UpdateFatigue();
+        break;
+    case 3:
+        v30->pm_flags &= ~0x10u;
+        PM_UpdateAimDownSightFlag();
+        PM_UpdatePlayerWalkingFlag();
+        PM_UpdatePlayerSprintingFlag();
+        PM_UFOMove();
+        if (!isThisThePredictStep)
+            PM_Weapon();
+        PM_DropTimers();
+        PM_UpdateFatigue();
+        break;
+    case 4:
+        v30->pm_flags &= ~0x10u;
+        PM_UpdateAimDownSightFlag();
+        PM_UpdatePlayerWalkingFlag();
+        PM_UpdatePlayerSprintingFlag();
+        PM_CheckDuck();
+        PM_DropTimers();
+        PM_UpdateFatigue();
+        break;
+    case 5:
+        v30->pm_flags &= ~0x10u;
+        break;
+    default:
+        if ((0x106000 & v30->eFlags) != 0)
+        {
+            v30->pm_flags &= ~0x10u;
+            pm->ps->mGroundEntity.mHandle.mVal = 0;
+            pml.groundPlane = 0;
+            pml.walking = 0;
+            PM_UpdateAimDownSightFlag();
+            PM_UpdatePlayerWalkingFlag();
+            PM_UpdatePlayerSprintingFlag();
+            PM_CheckDuck();
+            PM_DropTimers();
+            PM_UpdateFatigue();
+            PM_UpdateAimDownSightLerp();
+            PM_Footsteps();
+        }
+        else
+        {
+            pml.previous_waterlevel = pmove->waterlevel;
+            PM_CheckDuck();
+            PM_GroundTrace();
+            PM_UpdateAimDownSightFlag();
+            PM_UpdatePlayerWalkingFlag();
+            PM_UpdatePlayerSprintingFlag();
+            PM_UpdatePronePitch();
+            if (pm->ps->pm_type == 6)
+                PM_DeadMove();
+            PM_CheckLadderMove();
+            PM_DropTimers();
+            PM_UpdateFatigue();
+            int tracemask = pm->tracemask;
+            collision_context_t context;
+            context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
+            context.pass_entity1 = pm->ps->mClient;
+            memset(&context.pass_entity2, 0, 12);
+            context.contentmask = tracemask;
+            if ((pm->ps->pm_flags & 0x10) != 0)
+            {
+                PM_LadderMove(context);
+            }
+            else if (pml.walking != 0)
+            {
+                PM_WalkMove(context);
+            }
+            else
+            {
+                PM_AirMove(context);
+            }
+            PM_GroundTrace();
+            PM_Footsteps();
+            if (!isThisThePredictStep)
+            {
+                PM_Weapon();
+                PM_FoliageSounds();
+            }
+            PM_WaterEvents();
+            float v33 = pm->ps->origin.v.m128_f32[1]
+                - pml.previous_origin[1];
+            float v34 = pm->ps->origin.v.m128_f32[2]
+                - pml.previous_origin[2];
+            float v35 = pm->ps->origin.v.m128_f32[0]
+                - pml.previous_origin[0];
+            float vel2 = pm->ps->velocity.v.m128_f32[1]
+                    * pm->ps->velocity.v.m128_f32[1]
+                + pm->ps->velocity.v.m128_f32[2]
+                    * pm->ps->velocity.v.m128_f32[2]
+                + pm->ps->velocity.v.m128_f32[0]
+                    * pm->ps->velocity.v.m128_f32[0];
+            float moved2 = (v34 * v34 + v33 * v33 + v35 * v35)
+                / (pml.frametime * pml.frametime);
+            if (vel2 * 0.25f > moved2)
+            {
+                pm->ps->velocity.v.m128_f32[0] = (1.0f / pml.frametime) * v35;
+                pm->ps->velocity.v.m128_f32[1] = (1.0f / pml.frametime) * v33;
+                pm->ps->velocity.v.m128_f32[2] = (1.0f / pml.frametime) * v34;
+            }
+        }
+        break;
+    }
+}
+
+// ============================================================================
 // PM_trace - ea: 0x63BCA0 (bg_pmove.cpp)
 // ============================================================================
 extern void TraceSphereFull(const proximity_data_t* proximity_data,
