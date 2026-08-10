@@ -1226,10 +1226,10 @@ void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex)
     else if (iDropAmmoMin == 0)
     {
         int v6;
-        float v13 = (float)(rand() % 0x8000) * 0.000030517578f + 1.0f;
+        float v13 = (float)rand() * 0.000030517578f + 1.0f;
         *ammo = (int)(((v13 * (BG_GetAmmoClipSize(iClipIndex) - 1)) * 0.5f)
                       + 0.5f) + 1;
-        v6 = (int)(((float)(rand() % 0x8000) * 0.000015258789f + 0.25f)
+        v6 = (int)(((float)rand() * 0.000015258789f + 0.25f)
                    * (float)*ammo + 0.5f);
         *clip = v6;
         *ammo -= v6;
@@ -1332,10 +1332,13 @@ PlayerState* PM_AdjustAimSpreadScale()
     weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
     float fHipSpreadDecayRate = pWeap->fHipSpreadDecayRate;
     float v8;
+    float v12;
+    float viewchange;
     if (fHipSpreadDecayRate == 0.0f)
     {
         v8 = 1.0f;
-        goto decay_done;
+        v12 = 0.0f;
+        goto spread_apply;
     }
     PlayerState* ps = pm->ps;
     if (pm->ps->mGroundEntity.mHandle.mVal == 0 && ps->pm_type != 1)
@@ -1358,10 +1361,10 @@ decay_ready:
     v8 = pml.frametime * fHipSpreadDecayRate;
     if (ps->fWeaponPosFrac == 1.0f)
     {
-    decay_done:
-        v8 = 0.0f;
+        v12 = 0.0f;
+        goto spread_apply;
     }
-    float viewchange = 0.0f;
+    viewchange = 0.0f;
     if (pWeap->fHipSpreadTurnAdd != 0.0f)
     {
         for (int i = 16; i < 24; i += 4)
@@ -1389,10 +1392,11 @@ decay_ready:
                 * pWeap->fHipSpreadMoveAdd + viewchange;
         }
     }
-    float v12 = (v1->ps->mGroundEntity.mHandle.mVal != 0
-                 || v1->ps->pm_type == 1)
-        ? pml.frametime * viewchange
-        : pml.frametime * ((viewchange + 1.28f) + 1.28f);
+    if (v1->ps->mGroundEntity.mHandle.mVal != 0 || v1->ps->pm_type == 1)
+        v12 = pml.frametime * viewchange;
+    else
+        v12 = pml.frametime * ((viewchange + 1.28f) + 1.28f);
+spread_apply:
     v1->ps->aimSpreadScale = ((v12 - v8) * 255.0f) + v1->ps->aimSpreadScale;
     PlayerState* result = pm->ps;
     if (pm->ps->aimSpreadScale >= 0.0f)

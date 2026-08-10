@@ -276,17 +276,18 @@ void Cmd_TokenizeString(const char* text_in)
     Cmd_TokenizeString2(text_in, 0);
 }
 
+extern char* CopyStringInternal(const char* in);  // ?CopyStringInternal (hunk_mem)
+
 // ============================================================================
-// Cmd_AddCommand / Cmd_AddInputCommand - ea: 0x60E950 / 0x60EA50
+// Cmd_AddCommand - ea: 0x60E950
 // ============================================================================
-static void Cmd_AddCommandInternal(const char* cmd_name, void* function,
-                                   int funcType)
+void Cmd_AddCommand(const char* cmd_name, void (*function)())
 {
     if (cmd_name == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cmd.cpp";
-        AeAssert::gCurrentLine = funcType == CMD ? 793 : 824;
+        AeAssert::gCurrentLine = 793;
         AeAssert::gCurrentExpr = "cmd_name";
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
@@ -298,33 +299,67 @@ static void Cmd_AddCommandInternal(const char* cmd_name, void* function,
         {
             v2 = v2->mNext;
             if (v2 == nullptr)
-                goto new_entry;
+                goto add_entry;
         }
-        if (v2->mFuncType == CMD && v2[1].mNext != nullptr
-            || v2->mFuncType == INPUT_CMD && v2[1].mNext != nullptr)
+        int mFuncType = v2->mFuncType;
+        if (mFuncType == CMD && v2[1].mNext != nullptr
+            || mFuncType == INPUT_CMD && v2[1].mNext != nullptr)
             Com_Printf("Cmd_AddCommand: %s already defined\n", cmd_name);
-        return;
     }
-new_entry:
-    BaseCmdFuncInfo* v3 = (BaseCmdFuncInfo*)_Z_MallocInternal(0x10);
-    v3->mName = (const char*)_Z_MallocInternal((unsigned int)strlen(cmd_name) + 1);
-    strcpy((char*)v3->mName, cmd_name);
-    v3->mFuncType = funcType;
-    v3[1].mNext = (BaseCmdFuncInfo*)function;
-    v3->mNext = cmd_functions;
-    cmd_functions = v3;
+    else
+    {
+    add_entry:
+        BaseCmdFuncInfo* v3 = (BaseCmdFuncInfo*)_Z_MallocInternal(16);
+        char* v4 = CopyStringInternal(cmd_name);
+        BaseCmdFuncInfo* v5 = cmd_functions;
+        v3->mName = v4;
+        v3->mFuncType = CMD;
+        v3->mNext = v5;
+        v3[1].mNext = (BaseCmdFuncInfo*)function;
+        cmd_functions = v3;
+    }
 }
 
-// ea: 0x0060E950
-void Cmd_AddCommand(const char* cmd_name, void (*function)())
-{
-    Cmd_AddCommandInternal(cmd_name, (void*)function, CMD);
-}
-
-// ea: 0x0060EA50
+// ============================================================================
+// Cmd_AddInputCommand - ea: 0x60EA50
+// ============================================================================
 void Cmd_AddInputCommand(const char* cmd_name, void (*function)(int, int))
 {
-    Cmd_AddCommandInternal(cmd_name, (void*)function, INPUT_CMD);
+    if (cmd_name == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cmd.cpp";
+        AeAssert::gCurrentLine = 824;
+        AeAssert::gCurrentExpr = "cmd_name";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    BaseCmdFuncInfo* v2 = cmd_functions;
+    if (cmd_functions != nullptr)
+    {
+        while (strcmp(cmd_name, v2->mName) != 0)
+        {
+            v2 = v2->mNext;
+            if (v2 == nullptr)
+                goto add_entry;
+        }
+        int mFuncType = v2->mFuncType;
+        if (mFuncType == CMD && v2[1].mNext != nullptr
+            || mFuncType == INPUT_CMD && v2[1].mNext != nullptr)
+            Com_Printf("Cmd_AddCommand: %s already defined\n", cmd_name);
+    }
+    else
+    {
+    add_entry:
+        BaseCmdFuncInfo* v3 = (BaseCmdFuncInfo*)_Z_MallocInternal(16);
+        char* v4 = CopyStringInternal(cmd_name);
+        BaseCmdFuncInfo* v5 = cmd_functions;
+        v3->mName = v4;
+        v3->mFuncType = INPUT_CMD;
+        v3->mNext = v5;
+        v3[1].mNext = (BaseCmdFuncInfo*)function;
+        cmd_functions = v3;
+    }
 }
 
 // ============================================================================

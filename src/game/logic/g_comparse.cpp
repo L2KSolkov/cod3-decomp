@@ -38,8 +38,8 @@ struct com_parse_mark_t {
 };
 
 static const char* const punctuation[] = {
-    "+=", "-=", "*=", "/=", "&=", "|=", "^=", "++", "--", "&&", "||",
-    "->", "<<", ">>", "<=", ">=", "==", "!=", "...", nullptr,
+    "+=", "-=", "*=", "/=", "&=", "|=", "++", "--", "&&", "||",
+    "<=", ">=", "==", "!=", nullptr,
 };
 
 // ============================================================================
@@ -51,7 +51,7 @@ parseInfo_t* Com_EndParseSession()
     int v0 = parseInfoNum;
     if (parseInfoNum == ERR_FATAL)
     {
-        Com_Error(ERR_FATAL, "Com_EndParseSession: called without begin");
+        Com_Error(ERR_FATAL, "Com_EndParseSession: session underflow");
         v0 = parseInfoNum;
     }
     parseInfoNum = v0 - 1;
@@ -219,45 +219,73 @@ static const char* SkipWhitespace(const char* data, int* hasNewLines)
     return nullptr;
 }
 
-static parseInfo_t* Com_ParseCSV(const char** data_p, int allowLineBreaks)
+// ============================================================================
+// Com_ParseCSV - ea: 0x60FF40
+// ============================================================================
+static parseInfo_t* Com_ParseCSV(char** data_p, int allowLineBreaks)
 {
-    // CSV tokenizer: quoted fields with \"" escape, commas as separators.
-    const char* v7 = *data_p;
-    int v2 = 0;
+    parseInfo_t* result = pi;
+    int v3 = 0;
+    char* v4 = *data_p;
     pi->token[0] = 0;
-    while (*v7 != 0)
+    if (allowLineBreaks != 0)
     {
-        if (*v7 == ',')
-        {
-            ++v7;
-            break;
-        }
-        if (*v7 == 10 && allowLineBreaks == 0)
-            break;
-        if (*v7 == 34)
-        {
-            ++v7;
-            while (*v7 != 34 && *v7 != 0)
-            {
-                if (*v7 == 10)
-                    ++pi->lines;
-                if (v2 < 127)
-                    pi->token[v2++] = *v7;
-                ++v7;
-            }
-            if (*v7 == 34)
-                ++v7;
-        }
-        else
-        {
-            if (v2 < 127)
-                pi->token[v2++] = *v7;
-            ++v7;
-        }
+        while (*v4 == 13 || *v4 == 10)
+            ++v4;
     }
-    pi->token[v2] = 0;
-    *data_p = v7;
-    return pi;
+    else if (*v4 == 13 || *v4 == 10)
+    {
+        return result;
+    }
+    prevTokenPos = tokenPos;
+    char v5 = *v4;
+    bool v6 = *v4 == 0;
+    tokenPos = v4;
+    if (v6)
+        goto token_done;
+    while (v5 != 44 && v5 != 10)
+    {
+        if (v5 != 13)
+        {
+            if (v5 == 34)
+            {
+                for (;;)
+                {
+                    ++v4;
+                    while (*v4 == 34)
+                    {
+                        if (v4[1] != 34)
+                            goto after_quotes;
+                        if (v3 < 127)
+                            result->token[v3++] = 34;
+                        v4 += 2;
+                    }
+                    if (v3 < 127)
+                        result->token[v3++] = *v4;
+                }
+            }
+            if (v3 < 127)
+                result->token[v3++] = v5;
+        }
+    after_quotes:
+        v5 = *++v4;
+        if (v5 == 0)
+            goto token_done;
+    }
+    if (*v4 == 0)
+    {
+    token_done:
+        *data_p = nullptr;
+        result->token[v3] = 0;
+    }
+    else
+    {
+        if (*v4 != 10)
+            ++v4;
+        *data_p = v4;
+        result->token[v3] = 0;
+    }
+    return result;
 }
 
 parseInfo_t* Com_ParseExt(const char** data_p, int allowLineBreaks)
@@ -283,7 +311,7 @@ parseInfo_t* Com_ParseExt(const char** data_p, int allowLineBreaks)
     v5->backup_lines = v5->lines;
     v5->backup_text = *data_p;
     if (v5->csv != 0)
-        return Com_ParseCSV(data_p, allowLineBreaks);
+        return Com_ParseCSV((char**)data_p, allowLineBreaks);
     const char* v7 = SkipWhitespace(v3, &hasNewLines);
     if (v7 == nullptr)
     {

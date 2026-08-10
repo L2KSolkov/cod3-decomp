@@ -117,10 +117,9 @@ void Info_NextPair(char** head, char* key, char* value)
 }
 
 // ============================================================================
-// Info_RemoveKey / Info_RemoveKey_Big - ea: 0x610F20 / 0x611030
+// Info_RemoveKey - ea: 0x610F20
 // ============================================================================
-static void Info_RemoveKeyInternal(char* s, const char* key, char* pkey,
-                                   char* value)
+void Info_RemoveKey(char* s, const char* key)
 {
     char* v2 = s;
     char v4;
@@ -129,6 +128,8 @@ static void Info_RemoveKeyInternal(char* s, const char* key, char* pkey,
     char* v8;
     int v9;
     char v10;
+    char value[1024];
+    char pkey[1024];
     if (strlen(s) >= 0x400)
         Com_Error(ERR_DROP, "Info_RemoveKey: oversize infostring");
     if (strchr(key, 92) != nullptr)
@@ -162,7 +163,7 @@ static void Info_RemoveKeyInternal(char* s, const char* key, char* pkey,
             v9 = (int)(start - v2);
             do
             {
-                char v10 = *v8;
+                v10 = *v8;
                 v8[v9] = *v8;
                 ++v8;
             } while (v10 != 0);
@@ -182,20 +183,71 @@ static void Info_RemoveKeyInternal(char* s, const char* key, char* pkey,
     }
 }
 
-// ea: 0x00610F20
-void Info_RemoveKey(char* s, const char* key)
-{
-    char value[1024];
-    char pkey[1024];
-    Info_RemoveKeyInternal(s, key, pkey, value);
-}
-
-// ea: 0x00611030
+// ============================================================================
+// Info_RemoveKey_Big - ea: 0x611030
+// ============================================================================
 void Info_RemoveKey_Big(char* s, const char* key)
 {
-    char value[1024];
+    char* v2 = s;
+    char v4;
+    char* v5;
+    char* i;
+    char* v8;
+    int v9;
+    char v10;
     char pkey[8192];
-    Info_RemoveKeyInternal(s, key, pkey, value);
+    char value[1024];
+    if (strlen(s) >= 0x400)
+        Com_Error(ERR_DROP, "Info_RemoveKey_Big: oversize infostring");
+    if (strchr(key, 92) != nullptr)
+        return;
+    for (;;)
+    {
+        bool v3 = *v2 == 92;
+        char* start = v2;
+        if (v3)
+            ++v2;
+        v4 = *v2;
+        v5 = pkey;
+        if (*v2 != 92)
+            break;
+    copy_pair:
+        char v6 = *++v2;
+        *v5 = 0;
+        i = value;
+        for (; v6 != 92; ++v2)
+        {
+            if (v6 == 0)
+                break;
+            *i = v6;
+            v6 = v2[1];
+            ++i;
+        }
+        *i = 0;
+        if (strcmp(key, pkey) == 0)
+        {
+            v8 = v2;
+            v9 = (int)(start - v2);
+            do
+            {
+                v10 = *v8;
+                v8[v9] = *v8;
+                ++v8;
+            } while (v10 != 0);
+            return;
+        }
+        if (*v2 == 0)
+            return;
+    }
+    while (v4 != 0)
+    {
+        *v5 = v4;
+        v4 = v2[1];
+        ++v5;
+        ++v2;
+        if (v4 == 92)
+            goto copy_pair;
+    }
 }
 
 // ============================================================================
@@ -267,11 +319,11 @@ void Info_SetValueForKey(char* s, const char* key, const char* value)
     }
     cleanValue[v4] = 0;
     if (strchr(key, 92) != nullptr)
-        Com_Error(ERR_DROP, "Can't use keys with a \\");
+        Com_Error(ERR_DROP, "Can't use keys with a \\nkey: '%s'\nvalue: '%s'\n", key, value);
     if (strchr(key, 59) != nullptr)
-        Com_Error(ERR_DROP, "Can't use keys with a ;");
+        Com_Error(ERR_DROP, "Can't use keys with a semicolon\nkey: '%s'\nvalue: '%s'\n", key, value);
     if (strchr(key, 34) != nullptr)
-        Com_Error(ERR_DROP, "Can't use keys with a \"");
+        Com_Error(ERR_DROP, "Can't use keys with a \"\nkey: '%s'\nvalue: '%s'\n", key, value);
     Info_RemoveKey(s, key);
     if (cleanValue[0] != 0)
     {
@@ -306,7 +358,7 @@ void Info_SetValueForKey_Big(char* s, const char* key, const char* value)
             __debugbreak();
     }
     if (strlen(s) >= 0x400)
-        Com_Error(ERR_DROP, "Info_SetValueForKey_Big: oversize infostring");
+        Com_Error(ERR_DROP, "Info_SetValueForKey: oversize infostring");
     char newi[1024];
     char cleanValue[1024];
     int v4 = 0;
@@ -342,17 +394,17 @@ void Info_SetValueForKey_Big(char* s, const char* key, const char* value)
     }
     cleanValue[v4] = 0;
     if (strchr(key, 92) != nullptr)
-        Com_Error(ERR_DROP, "Can't use keys with a \\");
+        Com_Error(ERR_DROP, "Can't use keys with a \\nkey: '%s'\nvalue: '%s'\n", key, value);
     if (strchr(key, 59) != nullptr)
-        Com_Error(ERR_DROP, "Can't use keys with a ;");
+        Com_Error(ERR_DROP, "Can't use keys with a semicolon\nkey: '%s'\nvalue: '%s'\n", key, value);
     if (strchr(key, 34) != nullptr)
-        Com_Error(ERR_DROP, "Can't use keys with a \"");
+        Com_Error(ERR_DROP, "Can't use keys with a \"\nkey: '%s'\nvalue: '%s'\n", key, value);
     Info_RemoveKey_Big(s, key);
     if (cleanValue[0] != 0)
     {
         Com_sprintf(newi, 1024, "\\%s\\%s", key, cleanValue);
         if (strlen(newi) + strlen(s) > 0x400)
-            Com_Error(ERR_DROP, "Info_SetValueForKey_Big: string too long");
+            Com_Error(ERR_DROP, "BIG Info string length exceeded\nkey: '%s'\nvalue: '%s'\nInfo string: %s\n", key, value, s);
         strcat(s, newi);
     }
 }

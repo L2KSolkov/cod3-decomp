@@ -168,7 +168,7 @@ void Q_strcat(char* dest, int size, const char* src)
 {
     int v3 = (int)strlen(dest);
     if (v3 >= size)
-        Com_Error(ERR_FATAL, "Q_strcat: already full");
+        Com_Error(ERR_FATAL, "Q_strcat: already overflowed");
     Q_strncpyz(&dest[v3], src, size - v3);
 }
 
@@ -299,7 +299,7 @@ int Q_strcasecmp(const char* s1, const char* s2)
 // ============================================================================
 // va - ea: 0x610D00 (ring of 2048-byte buffers)
 // ============================================================================
-static char va_string[2048][4];
+static char va_string[2048];
 static char va_temp_buffer[2048];
 static int index_1;
 
@@ -313,14 +313,14 @@ char* va(const char* format, ...)
     va_end(ap);
     va_temp_buffer[2047] = 0;
     if (v1 >= 0x800)
-        Com_Error(ERR_DROP, "va: string too long");
+        Com_Error(ERR_DROP, "overrun string in call to va(): Tell MikeA");
     int v2 = index_1;
     if ((index_1 + (int)v1) >= 2047)
     {
         v2 = 0;
         index_1 = 0;
     }
-    char* result = &va_string[v2][0];
+    char* result = &va_string[v2];
     memcpy(result, va_temp_buffer, v1 + 1);
     index_1 += v1 + 1;
     return result;
