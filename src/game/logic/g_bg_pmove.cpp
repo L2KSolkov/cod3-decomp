@@ -7,6 +7,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 // ============================================================================
@@ -628,4 +629,788 @@ void BG_FreeWeaponInfo()
             bg_weaponInfo[i] = nullptr;
         }
     }
+}
+
+// ============================================================================
+// Weapon/ammo info helpers (bg_weapons.cpp)
+// ============================================================================
+extern int bg_iNumWeapons;          // ?bg_iNumWeapons@@3HA (game.o)
+extern int bg_iNumAmmoTypes;        // ?bg_iNumAmmoTypes@@3HA (game.o)
+extern int bg_iNumWeapClips;        // ?bg_iNumWeapClips@@3HA (game.o)
+extern int bg_iNumSharedAmmoCaps;   // ?bg_iNumSharedAmmoCaps@@3HA (game.o)
+extern int* bg_iWeapAmmoMaxs;       // ?bg_iWeapAmmoMaxs@@3PAHA (game.o)
+extern int* bg_iWeapClipSizes;      // ?bg_iWeapClipSizes@@3PAHA (game.o)
+extern int* bg_iSharedAmmoCaps;     // ?bg_iSharedAmmoCaps@@3PAHA (game.o)
+extern const char** bg_szWeapAmmoNames;  // ?bg_szWeapAmmoNames@@3PAPBDA (game.o)
+extern const char** bg_szWeapClipNames;  // ?bg_szWeapClipNames@@3PAPBDA (game.o)
+extern bool gInfinteAmmo;           // ?gInfinteAmmo@@3_NA (game.o)
+extern int cg_aWeaponSelect[4];     // ?cg_aWeaponSelect@@3PAHA (cg.o)
+extern int cg_aWeaponSelectTime[4]; // ?cg_aWeaponSelectTime@@3PAHA (cg.o)
+extern int cl_aADS[4];              // ?cl_aADS@@3PAHA (cl.o)
+extern int cgGlobal_time;           // cgGlobal.time (cg.o)
+extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
+                                      bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z
+extern void* EffectEventSys_sInst;  // ?sInst@EffectEventSys@@2PAV1@A
+
+// game.o static weapon-slot names (recovered from .rdata, szWeapSlotNames)
+static const char* const s_szWeapSlotNames[10] = {
+    "none", "primary", "primaryb", "pistol", "grenade",
+    "smokegrenade", "interact", "binocular", "flag", "special",
+};
+
+// ============================================================================
+// BG_GetInfoForWeapon - ea: 0x606FD0
+// ============================================================================
+weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon)
+{
+    if (iWeapon < 0 || iWeapon > bg_iNumWeapons)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1468;
+        AeAssert::gCurrentExpr =
+            "(iWeapon >= 0) && (iWeapon <= bg_iNumWeapons)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return bg_weaponInfo[iWeapon];
+}
+
+// ============================================================================
+// BG_GetWeaponForInfo - ea: 0x607050
+// ============================================================================
+int BG_GetWeaponForInfo(weaponFileInfo_t* pWeapInfo)
+{
+    return pWeapInfo->index;
+}
+
+// ============================================================================
+// BG_GetNumWeapons - ea: 0x607060
+// ============================================================================
+int BG_GetNumWeapons()
+{
+    return bg_iNumWeapons;
+}
+
+// ============================================================================
+// BG_GetNumAmmoTypes - ea: 0x607070
+// ============================================================================
+int BG_GetNumAmmoTypes()
+{
+    return bg_iNumAmmoTypes;
+}
+
+// ============================================================================
+// BG_GetAmmoTypeMax - ea: 0x607080
+// ============================================================================
+int BG_GetAmmoTypeMax(int iAmmoIndex)
+{
+    if (iAmmoIndex < 0 || iAmmoIndex >= bg_iNumAmmoTypes)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1514;
+        AeAssert::gCurrentExpr =
+            "(iAmmoIndex >= 0) && (iAmmoIndex < bg_iNumAmmoTypes)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return bg_iWeapAmmoMaxs[iAmmoIndex];
+}
+
+// ============================================================================
+// BG_GetNumAmmoClips - ea: 0x6070E0
+// ============================================================================
+int BG_GetNumAmmoClips()
+{
+    return bg_iNumWeapClips;
+}
+
+// ============================================================================
+// BG_GetAmmoClipSize - ea: 0x6070F0
+// ============================================================================
+int BG_GetAmmoClipSize(int iClipIndex)
+{
+    if (iClipIndex < 0 || iClipIndex >= bg_iNumWeapClips)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1536;
+        AeAssert::gCurrentExpr =
+            "(iClipIndex >= 0) && (iClipIndex < bg_iNumWeapClips)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return bg_iWeapClipSizes[iClipIndex];
+}
+
+// ============================================================================
+// BG_GetSharedAmmoCapSize - ea: 0x607150
+// ============================================================================
+int BG_GetSharedAmmoCapSize(int iCapIndex)
+{
+    if (iCapIndex < 0 || iCapIndex >= bg_iNumSharedAmmoCaps)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1548;
+        AeAssert::gCurrentExpr =
+            "(iCapIndex >= 0) && (iCapIndex < bg_iNumSharedAmmoCaps)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return bg_iSharedAmmoCaps[iCapIndex];
+}
+
+// ============================================================================
+// BG_GetAmmoTypeName - ea: 0x6071B0
+// ============================================================================
+const char* BG_GetAmmoTypeName(int iAmmoIndex)
+{
+    if (iAmmoIndex < 0 || iAmmoIndex >= bg_iNumAmmoTypes)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1560;
+        AeAssert::gCurrentExpr =
+            "(iAmmoIndex >= 0) && (iAmmoIndex < bg_iNumAmmoTypes)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return bg_szWeapAmmoNames[iAmmoIndex];
+}
+
+// ============================================================================
+// BG_GetAmmoClipName - ea: 0x607210
+// ============================================================================
+const char* BG_GetAmmoClipName(int iClipIndex)
+{
+    if (iClipIndex < 0 || iClipIndex >= bg_iNumWeapClips)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1572;
+        AeAssert::gCurrentExpr =
+            "(iClipIndex >= 0) && (iClipIndex < bg_iNumWeapClips)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return bg_szWeapClipNames[iClipIndex];
+}
+
+// ============================================================================
+// BG_GetWeaponSlotForName - ea: 0x607270
+// ============================================================================
+int BG_GetWeaponSlotForName(const char* pszSlotName)
+{
+    int v1 = 0;
+    while (_stricmp(pszSlotName, s_szWeapSlotNames[v1]) != 0)
+    {
+        if (++v1 >= 10)
+            return 0;
+    }
+    return v1;
+}
+
+// ============================================================================
+// BG_GetWeaponSlotNameForIndex - ea: 0x6072B0
+// ============================================================================
+const char* BG_GetWeaponSlotNameForIndex(unsigned int iSlot)
+{
+    if (iSlot >= 0xA)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1647;
+        AeAssert::gCurrentExpr = "(iSlot >= 0) && (iSlot < WEAPSLOT_NUM)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    return s_szWeapSlotNames[iSlot];
+}
+
+// ============================================================================
+// BG_GetWeaponIndexForName(uint) - ea: 0x607310
+// ============================================================================
+unsigned char BG_GetWeaponIndexForName(unsigned int name)
+{
+    int v1 = bg_iNumWeapons;
+    if (bg_iNumWeapons >= 256)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1662;
+        AeAssert::gCurrentExpr = "bg_iNumWeapons < 256";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        v1 = bg_iNumWeapons;
+    }
+    int v2 = 0;
+    if (v1 < 0)
+        return 0;
+    while (name != bg_weaponInfo[v2]->internalNameHash)
+    {
+        if (++v2 > v1)
+            return 0;
+    }
+    return (unsigned char)v2;
+}
+
+// ============================================================================
+// BG_GetWeaponIndexForName(const char*) - ea: 0x6073A0
+// ============================================================================
+unsigned char BG_GetWeaponIndexForName(const char* pszName)
+{
+    if (pszName == nullptr || *pszName == 0)
+        return 0;
+    unsigned int v1 = HashString::CalcHash(pszName);
+    unsigned char WeaponIndexForName = BG_GetWeaponIndexForName(v1);
+    if (WeaponIndexForName == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1679;
+        AeAssert::gCurrentExpr = "rv != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Couldn't find weapon \"%s\"\n", pszName))
+            __debugbreak();
+    }
+    return WeaponIndexForName;
+}
+
+// ============================================================================
+// BG_GetWeaponIndexForWorldModelName - ea: 0x607420
+// ============================================================================
+unsigned char BG_GetWeaponIndexForWorldModelName(const char* pszModelName)
+{
+    int v1 = 0;
+    if (pszModelName == nullptr || *pszModelName == 0)
+        return 0;
+    if (bg_iNumWeapons >= 256)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1688;
+        AeAssert::gCurrentExpr = "bg_iNumWeapons < 256";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (bg_iNumWeapons < 0)
+        return 0;
+    while (_stricmp(pszModelName, bg_weaponInfo[v1]->szWorldModel) != 0)
+    {
+        if (++v1 > bg_iNumWeapons)
+            return 0;
+    }
+    return (unsigned char)v1;
+}
+
+// ============================================================================
+// BG_IsAimDownSightWeapon - ea: 0x6074D0
+// ============================================================================
+int BG_IsAimDownSightWeapon(int iWeapon)
+{
+    return BG_GetInfoForWeapon(iWeapon)->bADSPositionInfo;
+}
+
+// ============================================================================
+// BG_GetEmptySlotForWeapon - ea: 0x6074F0
+// ============================================================================
+weapSlot_t BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex)
+{
+    weapSlot_t result = (weapSlot_t)BG_GetInfoForWeapon(iWeaponIndex)->slot;
+    switch (result)
+    {
+    case WEAPSLOT_PRIMARY:
+    case WEAPSLOT_PRIMARYB:
+        if (pPS->weaponslots[1] != 0)
+        {
+            if (pPS->weaponslots[2] != 0)
+                goto slot_none;
+            result = WEAPSLOT_PRIMARYB;
+        }
+        else
+        {
+            result = WEAPSLOT_PRIMARY;
+        }
+        break;
+    case WEAPSLOT_PISTOL:
+    case WEAPSLOT_GRENADE:
+    case WEAPSLOT_SMOKE_GRENADE:
+    case WEAPSLOT_INTERACT:
+    case WEAPSLOT_BINOCS:
+    case WEAPSLOT_SATCHEL:
+    case WEAPSLOT_SPECIAL:
+        if (pPS->weaponslots[result] != 0)
+            goto slot_none;
+        break;
+    default:
+    slot_none:
+        result = WEAPSLOT_NONE;
+        break;
+    }
+    return result;
+}
+
+// ============================================================================
+// BG_GetStackSlotForWeapon - ea: 0x607570
+// ============================================================================
+weapSlot_t BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                                    weapSlot_t preferedSlot)
+{
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(iWeaponIndex);
+    if (InfoForWeapon->bSlotStackable == 0)
+        return WEAPSLOT_NONE;
+    weapSlot_t result = (weapSlot_t)InfoForWeapon->slot;
+    switch (result)
+    {
+    case WEAPSLOT_PRIMARY:
+    case WEAPSLOT_PRIMARYB:
+        if ((preferedSlot == WEAPSLOT_PRIMARY
+             || preferedSlot == WEAPSLOT_PRIMARYB)
+            && (pPS->weaponslots[preferedSlot] == 0
+                || BG_GetInfoForWeapon(
+                       pPS->weaponslots[preferedSlot])->bSlotStackable != 0))
+        {
+            result = preferedSlot;
+        }
+        else
+        {
+            unsigned char v6 = pPS->weaponslots[1];
+            if (v6 == 0
+                || BG_GetInfoForWeapon(v6)->bSlotStackable != 0)
+            {
+                result = WEAPSLOT_PRIMARY;
+            }
+            else
+            {
+                unsigned char v7 = pPS->weaponslots[2];
+                if (v7 != 0
+                    && BG_GetInfoForWeapon(v7)->bSlotStackable == 0)
+                    goto slot_none;
+                result = WEAPSLOT_PRIMARYB;
+            }
+        }
+        break;
+    case WEAPSLOT_PISTOL:
+    case WEAPSLOT_GRENADE:
+    case WEAPSLOT_SMOKE_GRENADE:
+    case WEAPSLOT_SATCHEL:
+    case WEAPSLOT_SPECIAL:
+    {
+        unsigned char v8 = pPS->weaponslots[result];
+        if (v8 != 0)
+        {
+            if (BG_GetInfoForWeapon(v8)->bSlotStackable == 0)
+                goto slot_none;
+            result = (weapSlot_t)InfoForWeapon->slot;
+        }
+        break;
+    }
+    default:
+    slot_none:
+        result = WEAPSLOT_NONE;
+        break;
+    }
+    return result;
+}
+
+// ============================================================================
+// BG_IsPlayerWeaponAnAlt - ea: 0x607690
+// ============================================================================
+int BG_IsPlayerWeaponAnAlt(int iWeaponIndex, int iAltIndex)
+{
+    int iAltWeaponIndex =
+        BG_GetInfoForWeapon(iWeaponIndex)->iAltWeaponIndex;
+    if (iAltWeaponIndex == 0)
+        return 0;
+    while (iAltWeaponIndex != iAltIndex)
+    {
+        if (iAltWeaponIndex != iWeaponIndex)
+        {
+            iAltWeaponIndex = BG_GetInfoForWeapon(
+                iAltWeaponIndex)->iAltWeaponIndex;
+            if (iAltWeaponIndex != 0)
+                continue;
+        }
+        return 0;
+    }
+    return 1;
+}
+
+// ============================================================================
+// BG_SelectWeaponIndex - ea: 0x6076E0
+// ============================================================================
+int BG_SelectWeaponIndex(int iWeaponIndex, int client)
+{
+    if (client != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 2293;
+        AeAssert::gCurrentExpr = "client >= 0 && client < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid client index"))
+            __debugbreak();
+    }
+    if (client != 0)
+        return 0;
+    cg_aWeaponSelectTime[0] = cgGlobal_time;
+    if (cg_aWeaponSelect[0] == iWeaponIndex)
+        return 0;
+    bool v3 = iWeaponIndex != 0
+        && iWeaponIndex == BG_GetInfoForWeapon(
+            cg_aWeaponSelect[0])->iAltWeaponIndex;
+    cg_aWeaponSelect[0] = iWeaponIndex;
+    if (!v3)
+        cl_aADS[0] = 1;
+    return 1;
+}
+
+// ============================================================================
+// BG_GetConeAngleForWeapon - ea: 0x6077B0
+// ============================================================================
+float BG_GetConeAngleForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                               int iTime, int bAds)
+{
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(iWeaponIndex);
+    float coneAngle;
+    if (bAds == 0
+        || (coneAngle = InfoForWeapon->fAdsBulletConeAngle,
+            InfoForWeapon->fAdsZoomFov < 20.0f))
+        coneAngle = InfoForWeapon->fBulletConeAngle;
+    return coneAngle * 0.017455f;
+}
+
+// ============================================================================
+// BG_GetMinSpreadForWeapon - ea: 0x607800
+// ============================================================================
+float BG_GetMinSpreadForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                               int iTime, int bAds)
+{
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(iWeaponIndex);
+    int viewHeightLerpTarget = pPS->viewHeightLerpTarget;
+    int viewHeightLerpTime = pPS->viewHeightLerpTime;
+    if (viewHeightLerpTarget == pPS->viewHeightCurrent || viewHeightLerpTime == 0)
+    {
+        int pm_flags = pPS->pm_flags;
+        if (bAds != 0)
+        {
+            if ((pm_flags & 1) != 0)
+                return InfoForWeapon->fAdsSpreadProne;
+            if ((pm_flags & 2) != 0)
+                return InfoForWeapon->fAdsSpreadDucked;
+            return InfoForWeapon->fAdsSpread;
+        }
+        if ((pm_flags & 1) != 0)
+            return InfoForWeapon->fHipSpreadProneMin;
+        if ((pm_flags & 2) != 0)
+            return InfoForWeapon->fHipSpreadDuckedMin;
+        return InfoForWeapon->fHipSpreadStandMin;
+    }
+    int v9;
+    if (viewHeightLerpTarget == pPS->proneViewHeight)
+        v9 = 400;
+    else if (viewHeightLerpTarget == pPS->crouchViewHeight)
+        v9 = pPS->viewHeightLerpDown != 0 ? 200 : 400;
+    else
+        v9 = 200;
+    float fLerpFrac = (float)(iTime - viewHeightLerpTime) / (float)v9;
+    if (fLerpFrac < 0.0f)
+        fLerpFrac = 0.0f;
+    if (fLerpFrac > 1.0f)
+        fLerpFrac = 1.0f;
+    if (bAds != 0)
+    {
+        if (viewHeightLerpTarget == pPS->proneViewHeight)
+            return (InfoForWeapon->fAdsSpreadProne
+                    - InfoForWeapon->fAdsSpreadDucked) * fLerpFrac
+                + InfoForWeapon->fAdsSpreadDucked;
+        if (viewHeightLerpTarget == pPS->standViewHeight)
+            return (InfoForWeapon->fAdsSpread
+                    - InfoForWeapon->fAdsSpreadDucked) * fLerpFrac
+                + InfoForWeapon->fAdsSpreadDucked;
+        if (pPS->viewHeightLerpDown != 0)
+            return (InfoForWeapon->fAdsSpreadDucked
+                    - InfoForWeapon->fAdsSpread) * fLerpFrac
+                + InfoForWeapon->fAdsSpread;
+        return (InfoForWeapon->fAdsSpreadDucked
+                - InfoForWeapon->fAdsSpreadProne) * fLerpFrac
+            + InfoForWeapon->fAdsSpreadProne;
+    }
+    if (viewHeightLerpTarget == pPS->proneViewHeight)
+        return (InfoForWeapon->fHipSpreadProneMin
+                - InfoForWeapon->fHipSpreadDuckedMin) * fLerpFrac
+            + InfoForWeapon->fHipSpreadDuckedMin;
+    if (viewHeightLerpTarget == pPS->standViewHeight)
+        return (InfoForWeapon->fHipSpreadStandMin
+                - InfoForWeapon->fHipSpreadDuckedMin) * fLerpFrac
+            + InfoForWeapon->fHipSpreadDuckedMin;
+    if (pPS->viewHeightLerpDown != 0)
+        return (InfoForWeapon->fHipSpreadDuckedMin
+                - InfoForWeapon->fHipSpreadStandMin) * fLerpFrac
+            + InfoForWeapon->fHipSpreadStandMin;
+    return (InfoForWeapon->fHipSpreadDuckedMin
+            - InfoForWeapon->fHipSpreadProneMin) * fLerpFrac
+        + InfoForWeapon->fHipSpreadProneMin;
+}
+
+// ============================================================================
+// BG_ClipForWeapon - ea: 0x607A10
+// ============================================================================
+int BG_ClipForWeapon(int iWeapon)
+{
+    return BG_GetInfoForWeapon(iWeapon)->iClipIndex;
+}
+
+// ============================================================================
+// BG_AmmoForWeapon - ea: 0x607A30
+// ============================================================================
+int BG_AmmoForWeapon(int iWeapon)
+{
+    return BG_GetInfoForWeapon(iWeapon)->iAmmoIndex;
+}
+
+// ============================================================================
+// BG_WeaponIsClipOnly - ea: 0x607A50
+// ============================================================================
+int BG_WeaponIsClipOnly(int iWeapon)
+{
+    return BG_GetInfoForWeapon(iWeapon)->bClipOnly;
+}
+
+// ============================================================================
+// BG_WeaponAmmo - ea: 0x607A70
+// ============================================================================
+int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon)
+{
+    int iAmmoIndex = BG_GetInfoForWeapon(iWeapon)->iAmmoIndex;
+    return pPS->ammo[iAmmoIndex]
+        + pPS->ammoclip[BG_GetInfoForWeapon(iWeapon)->iClipIndex];
+}
+
+// ============================================================================
+// BG_GetRandomAmmoCounts - ea: 0x607AB0
+// ============================================================================
+void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex)
+{
+    if (weaponIndex < 0 || weaponIndex >= bg_iNumWeapons)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 2969;
+        AeAssert::gCurrentExpr =
+            "weaponIndex >= 0 && weaponIndex < bg_iNumWeapons";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid weapon index"))
+            __debugbreak();
+    }
+    BG_GetInfoForWeapon(weaponIndex);
+    int iClipIndex = BG_GetInfoForWeapon(weaponIndex)->iClipIndex;
+    int iDropAmmoMax = BG_GetInfoForWeapon(weaponIndex)->iDropAmmoMax;
+    int iDropAmmoMin = BG_GetInfoForWeapon(weaponIndex)->iDropAmmoMin;
+    if (iDropAmmoMax < iDropAmmoMin)
+    {
+        iDropAmmoMax = iDropAmmoMin;
+        iDropAmmoMin = BG_GetInfoForWeapon(weaponIndex)->iDropAmmoMax;
+    }
+    if (iDropAmmoMax != 0)
+    {
+        if (iDropAmmoMax < 0)
+        {
+            *ammo = 0;
+            *clip = 0;
+            return;
+        }
+    }
+    else if (iDropAmmoMin == 0)
+    {
+        int v6;
+        float v13 = (float)(rand() % 0x8000) * 0.000030517578f + 1.0f;
+        *ammo = (int)(((v13 * (BG_GetAmmoClipSize(iClipIndex) - 1)) * 0.5f)
+                      + 0.5f) + 1;
+        v6 = (int)(((float)(rand() % 0x8000) * 0.000015258789f + 0.25f)
+                   * (float)*ammo + 0.5f);
+        *clip = v6;
+        *ammo -= v6;
+        return;
+    }
+    bool v7 = iDropAmmoMax == iDropAmmoMin;
+    if (iDropAmmoMax < iDropAmmoMin)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 2998;
+        AeAssert::gCurrentExpr = "iMax >= iMin";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+        v7 = iDropAmmoMax == iDropAmmoMin;
+    }
+    int v8 = v7 ? iDropAmmoMin
+                : iDropAmmoMin + rand() % (iDropAmmoMax - iDropAmmoMin);
+    *ammo = v8;
+    if (v8 > 0)
+    {
+        int AmmoClipSize = BG_GetAmmoClipSize(iClipIndex);
+        bool v10 = AmmoClipSize == 0;
+        if (AmmoClipSize < 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+            AeAssert::gCurrentLine = 3009;
+            AeAssert::gCurrentExpr = "size >= 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            v10 = AmmoClipSize == 0;
+        }
+        int v11 = v10 ? 0 : rand() % AmmoClipSize;
+        *clip = v11;
+        int v12 = *ammo;
+        if (v11 < *ammo)
+        {
+            *ammo = v12 - v11;
+        }
+        else
+        {
+            *clip = v12;
+            *ammo = 0;
+        }
+    }
+    else
+    {
+        *ammo = 0;
+        *clip = 0;
+    }
+}
+
+// ============================================================================
+// PM_WeaponUseAmmo - ea: 0x607E10
+// ============================================================================
+void PM_WeaponUseAmmo(int wp, int amount)
+{
+    int iClipIndex = BG_GetInfoForWeapon(wp)->iClipIndex;
+    int v3 = gInfinteAmmo ? 0 : amount;
+    pm->ps->ammoclip[iClipIndex] -= v3;
+}
+
+// ============================================================================
+// PM_WeaponAmmoAvailable - ea: 0x607E50
+// ============================================================================
+int PM_WeaponAmmoAvailable(int wp)
+{
+    return pm->ps->ammoclip[BG_GetInfoForWeapon(wp)->iClipIndex];
+}
+
+// ============================================================================
+// PM_WeaponClipEmpty - ea: 0x607E80
+// ============================================================================
+int PM_WeaponClipEmpty(int wp)
+{
+    return pm->ps->ammoclip[BG_GetInfoForWeapon(wp)->iClipIndex] == 0;
+}
+
+// ============================================================================
+// PM_KillQueuedReloadSound - ea: 0x6080E0
+// ============================================================================
+void PM_KillQueuedReloadSound(PlayerState* ps)
+{
+    unsigned int mVal = ps->queuedReloadSound.mVal;
+    if (mVal != 0)
+    {
+        EffectEventSys_StopEffect(EffectEventSys_sInst, mVal, false);
+        ps->queuedReloadSound.mVal = 0;
+        ps->queuedReloadSoundPlayStarted = false;
+    }
+}
+
+// ============================================================================
+// PM_AdjustAimSpreadScale - ea: 0x608670
+// ============================================================================
+PlayerState* PM_AdjustAimSpreadScale()
+{
+    pmove_t* v1 = pm;
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    float fHipSpreadDecayRate = pWeap->fHipSpreadDecayRate;
+    float v8;
+    if (fHipSpreadDecayRate == 0.0f)
+    {
+        v8 = 1.0f;
+        goto decay_done;
+    }
+    PlayerState* ps = pm->ps;
+    if (pm->ps->mGroundEntity.mHandle.mVal == 0 && ps->pm_type != 1)
+    {
+        fHipSpreadDecayRate = fHipSpreadDecayRate * 0.5f;
+        goto decay_ready;
+    }
+    int eFlags = ps->eFlags;
+    if ((eFlags & 0x40) != 0)
+    {
+        fHipSpreadDecayRate = pWeap->fHipSpreadProneDecay
+            * fHipSpreadDecayRate;
+    }
+    else if ((eFlags & 0x20) != 0)
+    {
+        fHipSpreadDecayRate = pWeap->fHipSpreadDuckedDecay
+            * fHipSpreadDecayRate;
+    }
+decay_ready:
+    v8 = pml.frametime * fHipSpreadDecayRate;
+    if (ps->fWeaponPosFrac == 1.0f)
+    {
+    decay_done:
+        v8 = 0.0f;
+    }
+    float viewchange = 0.0f;
+    if (pWeap->fHipSpreadTurnAdd != 0.0f)
+    {
+        for (int i = 16; i < 24; i += 4)
+        {
+            float a1 = AngleSubtract(*(float*)((char*)v1 + i) * 0.0054931641f,
+                                     *(float*)((char*)&v1->cmd.gunZOfs + i) * 0.0054931641f);
+            pWeap = (weaponFileInfo_t*)pml.pWeap;
+            v1 = pm;
+            a1 = fabsf(a1) * pWeap->fHipSpreadTurnAdd * 0.0099999998f
+                / pml.frametime + viewchange;
+            viewchange = a1;
+        }
+    }
+    if (pWeap->fHipSpreadMoveAdd != 0.0f)
+    {
+        char forwardmove = v1->cmd.forwardmove;
+        if (abs(v1->cmd.rightmove) > abs(forwardmove))
+        {
+            viewchange = fabsf((float)v1->cmd.rightmove * 0.0078125f)
+                * pWeap->fHipSpreadMoveAdd + viewchange;
+        }
+        else if (forwardmove != 0)
+        {
+            viewchange = fabsf((float)forwardmove * 0.0078125f)
+                * pWeap->fHipSpreadMoveAdd + viewchange;
+        }
+    }
+    float v12 = (v1->ps->mGroundEntity.mHandle.mVal != 0
+                 || v1->ps->pm_type == 1)
+        ? pml.frametime * viewchange
+        : pml.frametime * ((viewchange + 1.28f) + 1.28f);
+    v1->ps->aimSpreadScale = ((v12 - v8) * 255.0f) + v1->ps->aimSpreadScale;
+    PlayerState* result = pm->ps;
+    if (pm->ps->aimSpreadScale >= 0.0f)
+    {
+        if (result->aimSpreadScale > 255.0f)
+            result->aimSpreadScale = 255.0f;
+    }
+    else
+    {
+        result->aimSpreadScale = 0.0f;
+    }
+    return result;
+}
+
+// ============================================================================
+// PM_Weapon_CheckFriendlyFireUse - ea: 0x608AC0
+// ============================================================================
+int PM_Weapon_CheckFriendlyFireUse()
+{
+    return 1;
 }

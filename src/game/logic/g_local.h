@@ -1274,9 +1274,9 @@ int  BG_AmmoForWeapon(int iWeapon);
 int  BG_ClipForWeapon(int iWeapon);
 void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex);  // game2.o
 const char* BG_GetAmmoTypeName(int iAmmoIndex);       // game.o 0x6071B0
-int  BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x6074F0
-int  BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
-                              weapSlot_t preferedSlot);  // game.o 0x607570
+weapSlot_t BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x6074F0
+weapSlot_t BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                                    weapSlot_t preferedSlot);  // game.o 0x607570
 weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS, int iWeaponIndex,
                                    int bAnyMode);    // game.o 0x616AA0
 int  BG_CanItemBeGrabbed(const EntityState* ent, const PlayerState* ps,
@@ -1469,13 +1469,17 @@ struct weaponFileInfo_t {
     int     type;                 // +0xAC (weapType_t; WEAPTYPE_BULLET == 0)
     int     weapClass;            // +0xB0 (weapClass_t; WEAPCLASS_TURRET == 7)
     int     slot;                 // +0xB4
-    uint8_t _padB8[0xBC - 0xB8];
+    int     bSlotStackable;       // +0xB8
     int     stance;               // +0xBC (weapStance_t)
     int     ammoType;             // +0xC0 (weapAmmoType_t; WEAPAMMOTYPE_UMG == 5)
     int     pickupWithoutSelect;  // +0xC4
     uint8_t _padC8[0x598 - 0xC8];
     char*   szWorldModel;         // +0x598
-    uint8_t _pad1[0x5CC - 0x59C];
+    uint8_t _pad1[0x5B4 - 0x59C];
+    int     iAmmoIndex;           // +0x5B4
+    uint8_t _pad5B8[0x5BC - 0x5B8];
+    int     iClipIndex;           // +0x5BC
+    uint8_t _pad5C0[0x5CC - 0x5C0];
     int     iSharedAmmoCapIndex;  // +0x5CC
     uint8_t _pad1b[0x5D4 - 0x5D0];
     int     iDamage;              // +0x5D4
@@ -1488,14 +1492,31 @@ struct weaponFileInfo_t {
     int     iFireTime;            // +0x5F8
     uint8_t _pad2[0x634 - 0x5FC];
     int     iFuseTime;            // +0x634
-    uint8_t _pad2b[0x6E8 - 0x638];
+    uint8_t _pad2b[0x640 - 0x638];
+    float   fAdsZoomFov;          // +0x640
+    uint8_t _pad644[0x668 - 0x644];
+    float   fHipSpreadStandMin;   // +0x668
+    float   fHipSpreadDuckedMin;  // +0x66C
+    float   fHipSpreadProneMin;   // +0x670
+    uint8_t _pad674[0x678 - 0x674];
+    float   fHipSpreadDecayRate;  // +0x678
+    float   fHipSpreadFireAdd;    // +0x67C
+    float   fHipSpreadTurnAdd;    // +0x680
+    float   fHipSpreadMoveAdd;    // +0x684
+    float   fHipSpreadDuckedDecay;// +0x688
+    float   fHipSpreadProneDecay; // +0x68C
+    uint8_t _pad690[0x6E8 - 0x690];
     int     bTwoHanded;           // +0x6E8
     int     bRifleBullet;         // +0x6EC
-    uint8_t _pad4[0x704 - 0x6F0];
+    uint8_t _pad4[0x6F8 - 0x6F0];
+    int     bADSPositionInfo;     // +0x6F8
+    uint8_t _pad6FC[0x704 - 0x6FC];
     int     bNoBounce;            // +0x704
     int     bNoTumble;            // +0x708
     int     bCanMantle;           // +0x70C
-    uint8_t _pad70[0x738 - 0x710];
+    uint8_t _pad70[0x71C - 0x710];
+    int     bClipOnly;            // +0x71C
+    uint8_t _pad720[0x738 - 0x720];
     int     bDoNotDrop;           // +0x738
     uint8_t _pad73C[0x764 - 0x73C];
     int     iAltWeaponIndex;      // +0x764
@@ -1518,7 +1539,11 @@ struct weaponFileInfo_t {
     int     iProjectileDelay;     // +0x7AC
     int     iProjectileSpacingMin;  // +0x7B0
     int     iProjectileSpacingMax;  // +0x7B4
-    uint8_t _pad7b0[0x860 - 0x7B8];
+    uint8_t _pad7b0[0x810 - 0x7B8];
+    float   fAdsSpread;           // +0x810
+    float   fAdsSpreadDucked;     // +0x814
+    float   fAdsSpreadProne;      // +0x818
+    uint8_t _pad81C[0x860 - 0x81C];
     float   aiDamageMod;          // +0x860
     uint8_t _pad864[0x86C - 0x864];
     float   leftArc;              // +0x86C
@@ -1535,7 +1560,9 @@ struct weaponFileInfo_t {
     uint8_t _pad8a0[0x8A4 - 0x8A0];
     float   fFireHeat;            // +0x8A4
     float   fCooldownRate;        // +0x8A8
-    uint8_t _pad9b[0x8BC - 0x8AC];
+    uint8_t _pad9b[0x8B4 - 0x8AC];
+    float   fBulletConeAngle;     // +0x8B4
+    float   fAdsBulletConeAngle;  // +0x8B8
     char*   szScript;             // +0x8BC
     uint8_t _pad10[0x8EC - 0x8C0];
     struct gdDecal* pDecals[23];  // +0x8EC
@@ -1565,6 +1592,9 @@ enum weapSlot_t : int {
     WEAPSLOT_PISTOL = 3,
     WEAPSLOT_GRENADE = 4,
     WEAPSLOT_SMOKE_GRENADE = 5,
+    WEAPSLOT_INTERACT = 6,   // verified vs name table szWeapSlotNames
+    WEAPSLOT_BINOCS = 7,     // "binocular"
+    WEAPSLOT_SATCHEL = 8,    // "flag" (name table quirk)
     WEAPSLOT_SPECIAL = 9,
 };
 enum {
