@@ -2078,7 +2078,7 @@ void    Path_Init(void);                             // g.o
 void    G_SetupScrVehicles(void);                    // g.o
 void    MP_ResolveAnims(void);                       // mp.o
 void    LensFlareInit(void);                         // render.o
-void    Swap_Init(void);                             // game.o
+int     Swap_Init(void);                             // game.o
 void    Rand_Init(unsigned int seed);                // core.o
 void    HudElem_Free(game_hudelem_s* hud);           // g.o
 void    CG_ClearHudElems(void);                      // cg.o
