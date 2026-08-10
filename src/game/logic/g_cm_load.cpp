@@ -8939,6 +8939,202 @@ void filter_proximity_data(const math::Position3& lo,
 }
 
 // ============================================================================
+// filter_proximity_brushes - ea: 0x61E210 (CollisionMgr.cpp)
+// Same as filter_proximity_data but only boxes/brushes (no polies).
+// ============================================================================
+// ea: 0x0061E210
+void filter_proximity_brushes(const math::Position3& lo,
+                              const math::Position3& hi, int contents,
+                              const proximity_data_t& in,
+                              proximity_data_t& out)
+{
+    out.brushes_count = 0;
+    out.boxes_count = 0;
+
+    int nbrushes = in.brushes_count;
+    for (int i = 0; i < nbrushes; ++i)
+    {
+        if ((i < 0 || i >= in.brushes_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const proxy_obj_t& slot = in.brushes_slot[i];
+        if (slot.bi >= 99)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank =
+            ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+        unsigned int oi = slot.oi;
+        if (oi >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[oi];
+        if ((obj->cflags & contents) != 0)
+        {
+            math::Position3 bmin;
+            math::Position3 bmax;
+            bmax.v = _mm_add_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            bmin.v = _mm_sub_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            if ((_mm_movemask_ps(_mm_cmplt_ps(
+                     _mm_max_ps(_mm_sub_ps(bmin.v, hi.v),
+                                _mm_sub_ps(lo.v, bmax.v)),
+                     _mm_setzero_ps()))
+                 & 7) == 7)
+            {
+                if (out.brushes_count >= 256
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        44, "m_alloc_count < m_slot_array_size",
+                        "phys_array overflow"))
+                    __debugbreak();
+                out.brushes_slot[out.brushes_count++] = slot;
+            }
+        }
+    }
+
+    int nboxes = in.boxes_count;
+    for (int i = 0; i < nboxes; ++i)
+    {
+        if ((i < 0 || i >= in.boxes_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const proxy_obj_t& slot = in.boxes_slot[i];
+        if (slot.bi >= 99)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank =
+            ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+        unsigned int oi = slot.oi;
+        if (oi >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[oi];
+        if ((obj->cflags & contents) != 0)
+        {
+            math::Position3 bmin;
+            math::Position3 bmax;
+            bmax.v = _mm_add_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            bmin.v = _mm_sub_ps(
+                _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f),
+                _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f));
+            if ((_mm_movemask_ps(_mm_cmplt_ps(
+                     _mm_max_ps(_mm_sub_ps(bmin.v, hi.v),
+                                _mm_sub_ps(lo.v, bmax.v)),
+                     _mm_setzero_ps()))
+                 & 7) == 7)
+            {
+                if (out.boxes_count >= 256
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        44, "m_alloc_count < m_slot_array_size",
+                        "phys_array overflow"))
+                    __debugbreak();
+                out.boxes_slot[out.boxes_count++] = slot;
+            }
+        }
+    }
+}
+
+// ============================================================================
+// query_proximity_data - ea: 0x6366C0 (CollisionMgr.cpp)
+// ============================================================================
+extern cdl_proftimer cdl_proftimer_proxy_queries;  // game.o @ 0xF4EA48
+extern struct cdl_profcounter { int value; unsigned int _pad[3]; }
+    cdl_profcounter_temp0;  // game.o @ 0xF44CE8
+
+// ea: 0x006366C0
+void query_proximity_data(const math::Position3& lo,
+                          const math::Position3& hi,
+                          proximity_data_t& out)
+{
+    cdl_proftimer_proxy_queries.start();
+    ++cdl_profcounter_temp0.value;
+    out.boxes_count = 0;
+    out.brushes_count = 0;
+    out.polies_count = 0;
+    out.lo.v = lo.v;
+    out.hi.v = hi.v;
+    CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
+    for (int i = 0; i < mgr->mCount; ++i)
+    {
+        if (i > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank = mgr->mBankArray[i];
+        if ((_mm_movemask_ps(_mm_cmplt_ps(
+                 _mm_max_ps(_mm_sub_ps(bank->min.v, hi.v),
+                            _mm_sub_ps(lo.v, bank->max.v)),
+                 _mm_setzero_ps()))
+             & 7) == 7)
+        {
+            rtree_visitor_t visitor(bank);
+            traverse_rtree(lo, hi, bank->rtree_root, visitor);
+            visitor.post_process(i, out);
+        }
+    }
+    cdl_proftimer_proxy_queries.stop();
+}
+
+// ============================================================================
 // AddLeanToPosition - ea: 0x61FBA0 (g_weapon.cpp lean offset)
 // ============================================================================
 extern void AnglesToRight(const float* angles, float* right);  // q_math
