@@ -1140,7 +1140,9 @@ struct MusicMgr {
     bool IsMusicPlaying();       // ?IsMusicPlaying@MusicMgr@@QAE_NXZ (game.o 0x6217F0)
     void Play(const char* name); // ?Play@MusicMgr@@QAEXPBD@Z (game.o 0x63A890)
     void PlayIndoor(const char* name, float fadeInTime);  // ?PlayIndoor@MusicMgr@@QAEXPBDM@Z (game.o 0x63AA30)
+    static MusicMgr* sInst;      // ?sInst@MusicMgr@@2PAV1@A @ 0xF4EBE4
 };
+MusicMgr* MusicMgr::sInst = nullptr;
 
 // ea: 0x00612E30
 MusicMgr::MusicMgr()
@@ -1547,6 +1549,7 @@ SoundDevice::Sound::GetDebugString() const
 // SoundDevice::GetSoundForHandle - ea: 0x621670 / 0x6216B0
 // ============================================================================
 SoundDevice::SoundHandleDb SoundDevice::SoundHandleDb::sInst;  // @ 0xF50D10
+SoundDevice* SoundDevice::sInst = nullptr;                     // @ 0xF4EBDC
 
 // ea: 0x00621670
 SoundDevice::Sound* SoundDevice::GetSoundForHandle(
@@ -1963,6 +1966,8 @@ public:
     void LoadWbkInternal(WbkEntry* wbk, const char* path, ELanguage lang,
                          bool async);  // ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z (game.o 0x62BD50)
     void FreeWbk(const void* name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x62BE30)
+    void LoadWbk(const tlFixedString& name, bool async);  // ?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x639630)
+    virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@AudioBankMgr@@EAEXW4TPakId@@@Z (game.o 0x639550)
     void RegisterWbk(const tlFixedString& name, const char* path,
                      ELanguage lang, TPakId pak);  // game.o 0x621470
 };
@@ -2135,6 +2140,122 @@ enum {
     kLanguageItalian = 4,
     kLanguageUnlocalized = 5,
 };
+
+// PakFile/PakManager minimal views (streamer.o; mPath string at +0x0C verified
+// vs LoadWbk disasm, mSlots at +0x40 with 0x63 capacity).
+struct PakFileView {
+    uint8_t _pad[0x0C];
+    char    mPath[0x100];  // +0x0C (ae_fixed_string; string bytes at +0x0C)
+};
+struct PakManagerView {
+    uint8_t      _pad[0x40];
+    PakFileView* mSlots[0x63];  // +0x40 (100 slots)
+};
+extern PakManagerView* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A @ 0xF592FC
+extern ELanguage gLanguage;               // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4
+
+// ea: 0x00639630
+void AudioBankMgr::LoadWbk(const tlFixedString& name, bool async)
+{
+    int i = 0;
+    if (this->m_size > 0)
+    {
+        unsigned int off = 0;
+        while (1)
+        {
+            if (off >= 0x6C0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            WbkEntry* wbk = (WbkEntry*)((char*)this->mAvailableWbks + off);
+            if (wbk->name == name)
+            {
+                PakFileView* pak = nullptr;
+                if (wbk->pakFile >= 0 && wbk->pakFile < 0x63)
+                    pak = PakManager_sInst->mSlots[wbk->pakFile];
+                const char* path = (const char*)pak + 0x0C;
+                ELanguage v11 = gLanguage;
+                if (wbk->fileID[kLanguageUnlocalized] != (nflFileID)-1)
+                    this->LoadWbkInternal(wbk, path, kLanguageUnlocalized,
+                                          async);
+                if (wbk->fileID[v11] == (nflFileID)-1
+                    || (this->LoadWbkInternal(wbk, path, v11, async),
+                        wbk->fileID[v11] == (nflFileID)-1))
+                {
+                    if (wbk->fileID[kLanguageUnlocalized] == (nflFileID)-1)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\AudioBankManager.cpp";
+                        AeAssert::gCurrentLine = 286;
+                        AeAssert::gCurrentExpr = nullptr;
+                        if (AeAssert::Error(
+                                "Didn't find audio data to load!"))
+                            __debugbreak();
+                    }
+                }
+                return;
+            }
+            off += 0x6C;
+            if (++i >= this->m_size)
+                break;
+        }
+    }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\AudioBankManager.cpp";
+    AeAssert::gCurrentLine = 292;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Unknown wbk: %s", name.str))
+        __debugbreak();
+    this->mDoLoadNotify = true;
+}
+
+// ea: 0x00639550
+void AudioBankMgr::UnloadBank(TPakId pakId)
+{
+    int v2 = 0;
+    if (this->m_size > 0)
+    {
+        int v4 = 0;
+        do
+        {
+            if (v2 >= 0x10)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            WbkEntry* entry =
+                &((WbkEntry*)this->mAvailableWbks)[v4];
+            if (entry->pakFile == (int)pakId)
+            {
+                this->FreeWbk(&entry->name, false);
+                int m_size = this->m_size;
+                if (m_size > 1 && v2 < m_size)
+                    *entry =
+                        ((WbkEntry*)this->mAvailableWbks)[m_size - 1];
+                int v6 = this->m_size;
+                if (v6 != 0)
+                    this->m_size = v6 - 1;
+                --v2;
+                --v4;
+            }
+            ++v2;
+            ++v4;
+        } while (v2 < this->m_size);
+    }
+}
 
 // ea: 0x006023F0
 const char* AudioBankMgr::LanguageStr(ELanguage id) const
@@ -3554,6 +3675,93 @@ void SoundDevice::Sound::Queue(
     }
 }
 
+// ea: 0x00639CE0
+void SoundDevice::Sound::Play(
+    nslWaveID wave, float vol, float pitch, float minrange, float maxrange,
+    const math::Position3* pos, const math::Dir3* vel, bool autoRelease,
+    DbLinkedHandle<EntityHandleDb, Entity> entHandle, bool mImportant)
+{
+    if ((__fpclass(vel->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(vel->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(vel->v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(pos->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(pos->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(pos->v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(vol) & 0x297) != 0
+        || (__fpclass(pitch) & 0x297) != 0
+        || (__fpclass(minrange) & 0x297) != 0
+        || (__fpclass(maxrange) & 0x297) != 0)
+    {
+        tlWarning(
+            "A NAN was passed into the sound system while trying to play %s\n",
+            nslWaveGetName(wave));
+        this->Stop();
+        return;
+    }
+    bool v12 = this->mSource == NSL_SOURCE_ID_INVALID;
+    this->mWave = wave;
+    if (!v12)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 380;
+        AeAssert::gCurrentExpr = "mSource == NSL_SOURCE_ID_INVALID";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("source already in use"))
+            __debugbreak();
+    }
+    this->mAutoRelease = autoRelease;
+    nslSourceID v13 = nslNewSource(wave, mImportant);
+    this->mSource = v13;
+    if (v13 == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 384;
+        AeAssert::gCurrentExpr = "mSource";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Failed to play sound"))
+            __debugbreak();
+    }
+    if (!mImportant)
+    {
+        if (this->mSource == NSL_SOURCE_ID_INVALID)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+            AeAssert::gCurrentLine = 388;
+            AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Failed to create source (non player weapon sound)"))
+                __debugbreak();
+        }
+    }
+    if (this->mSource == NSL_SOURCE_ID_INVALID)
+        return;
+    SoundDevice* v14 = SoundDevice::sInst;
+    const char* WaveGroup = nslGetWaveGroup(wave);
+    this->mGroupVolume = v14->GetGroupVolume(WaveGroup);
+    float autoReleasea =
+        vol <= 0.0f ? nslGetWaveParam(wave, 0, 1.0f) : vol;
+    this->SetVolume(autoReleasea);
+    float autoReleaseb =
+        pitch <= 0.0f ? nslGetWaveParam(wave, 1, 1.0f) : pitch;
+    this->SetPitch(autoReleaseb);
+    float autoReleasec = maxrange <= 0.0f
+        ? nslGetWaveParam(wave, 26, 1500.0f)
+        : maxrange;
+    float mImportanta = minrange <= 0.0f
+        ? nslGetWaveParam(wave, 25, 50.0f)
+        : minrange;
+    this->SetRange(mImportanta, autoReleasec);
+    this->SetPosition(*pos);
+    this->SetVelocity(*vel);
+    nslSetSourceEffectOn((nslSourceID)this->mSource);
+    nslPlaySource((nslSourceID)this->mSource);
+    this->mEntHandle.mVal = entHandle.mHandle.mVal;
+}
+
 // ea: 0x0063A040
 void SoundDevice::Sound::SetPoPtr(const math::Mat43* poPtr)
 {
@@ -3596,6 +3804,87 @@ SoundDevice::QueueSound(nslWaveID id,
             result.mHandle.mVal = v14->mHandle.mVal;
             return result;
         }
+    }
+    result.mHandle.mVal = 0;
+    return result;
+}
+
+// ea: 0x0063A260
+DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>
+SoundDevice::PlaySound(nslWaveID id,
+                       DbLinkedHandle<EntityHandleDb, Entity> entHandle,
+                       bool mImportant, bool autoRelease,
+                       const math::Position3& pos, const math::Dir3& vel,
+                       float vol, float pitch, float min, float max)
+{
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> result;
+    if ((__fpclass(vel.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(vol) & 0x297) != 0
+        || (__fpclass(pitch) & 0x297) != 0
+        || (__fpclass(min) & 0x297) != 0
+        || (__fpclass(max) & 0x297) != 0)
+    {
+        tlWarning(
+            "A NAN was passed into the sound system while trying to play %s\n",
+            nslWaveGetName(id));
+    }
+    else
+    {
+        int FreeSlot = this->GetFreeSlot();
+        if (FreeSlot < 0)
+        {
+            tlWarning("increase NUM_AUDIO_SLOTS\n");
+            result.mHandle.mVal = 0;
+            return result;
+        }
+        if (id != NSL_WAVE_ID_INVALID && cls.state != CA_LOADING)
+        {
+            Sound* v15 = &this->mSounds[FreeSlot];
+            v15->Play(id, vol, pitch, min, max, &pos, &vel, autoRelease,
+                      entHandle, mImportant);
+            result.mHandle.mVal = v15->mHandle.mVal;
+            return result;
+        }
+    }
+    result.mHandle.mVal = 0;
+    return result;
+}
+
+// ea: 0x0063A420
+DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>
+SoundDevice::PlaySound(const char* name,
+                       DbLinkedHandle<EntityHandleDb, Entity> entHandle,
+                       bool mImportant, bool autoRelease,
+                       const math::Position3& pos, const math::Dir3& vel,
+                       float vol, float pitch, float min, float max)
+{
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> result;
+    if ((__fpclass(vel.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(vel.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(pos.v.m128_f32[2]) & 0x297) != 0
+        || (__fpclass(vol) & 0x297) != 0
+        || (__fpclass(pitch) & 0x297) != 0
+        || (__fpclass(min) & 0x297) != 0
+        || (__fpclass(max) & 0x297) != 0)
+    {
+        tlWarning(
+            "A NAN was passed into the sound system while trying to play %s\n",
+            name);
+    }
+    else if (name != nullptr)
+    {
+        nslWaveID Wave = this->FindWave((char*)name);
+        if (Wave != NSL_WAVE_ID_INVALID)
+            return this->PlaySound(Wave, entHandle, mImportant, autoRelease,
+                                   pos, vel, vol, pitch, min, max);
     }
     result.mHandle.mVal = 0;
     return result;
@@ -4384,6 +4673,30 @@ void SoundDevice::StopAllSoundsNotPaused()
             s->Stop();
         ++s;
     }
+}
+
+// ea: 0x006435D0
+void SoundDevice::StopAllSounds()
+{
+    for (int i = 0; i < 16; ++i)
+        this->mCrossFadeInfo[i].mRemainingTime = 0.0f;
+    SoundDevice* v4 = this;
+    for (int j = 512; j != 0; --j)
+    {
+        v4->mSounds[0].Stop();
+        v4 = (SoundDevice*)((char*)v4 + 0x3C);
+    }
+    MusicMgr* v6 = MusicMgr::sInst;
+    SoundDevice::Sound* mObject = SoundFromHandle(v6->mMusic);
+    if (mObject != nullptr)
+    {
+        mObject->Stop();
+        v6->mMusic.mVal = 0;
+    }
+    v6->mCrossFadeType = 2;
+    v6->mIndoorFadeTime = 0.0f;
+    v6->mDelayCount = 0.0f;
+    this->FrameAdvance(0.0f);
 }
 
 // ea: 0x0062CA40
