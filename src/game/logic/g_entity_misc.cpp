@@ -365,3 +365,162 @@ void GamePause::SetAllPaused(bool paused)
 {
     GamePause::mData.mGamePaused[0] = paused;
 }
+
+// ============================================================================
+// Entity::ExecScriptHandler - ea: 0x611F10
+// ============================================================================
+// ScriptEventHandler lives in g_game2_misc.cpp (game2.o port); params are
+// ScriptEventParams* in the binary, void* in the tree's game2.o port.
+struct ScriptEventHandler {
+    unsigned char m_dlist_node[8];      // +0x00
+    unsigned char mEvents[0x38];        // +0x08 (ScriptEvent mEvents[7])
+    ScriptEventHandler* mNext;          // +0x40
+    bool ExecEvents(Entity* ent, HashString h, void* params);  // game2.o 0x4F5A50
+};
+
+// ea: 0x00611F10
+void Entity::ExecScriptHandler(HashString h, void* params)
+{
+    ScriptEventHandler* mScriptEventHandler = this->mScriptEventHandler;
+    if (mScriptEventHandler != nullptr)
+        mScriptEventHandler->ExecEvents(this, h, params);
+}
+
+// ============================================================================
+// Entity::CalcOriginAnglesFromMat - ea: 0x611FE0
+// ============================================================================
+extern void Axis4ToAngles(const float (*axis)[4], float* angles);  // core.o
+
+// ea: 0x00611FE0
+void Entity::CalcOriginAnglesFromMat()
+{
+    Client* client = this->client;
+    this->s.pos.trDelta[0] = 0.0f;
+    this->s.pos.trDelta[1] = 0.0f;
+    this->s.pos.trDelta[2] = 0.0f;
+    this->s.apos.trDelta[0] = 0.0f;
+    this->s.apos.trDelta[1] = 0.0f;
+    this->s.apos.trDelta[2] = 0.0f;
+    this->s.pos.trTime = 0;
+    this->s.pos.trDuration = 0;
+    this->s.apos.trTime = 0;
+    this->s.apos.trDuration = 0;
+    if (client != nullptr)
+    {
+        this->s.apos.trBase[0] = this->r.currentAngles.v.m128_f32[0];
+        this->s.apos.trBase[1] = this->r.currentAngles.v.m128_f32[1];
+        this->s.apos.trBase[2] = this->r.currentAngles.v.m128_f32[2];
+    }
+    float tmp = this->r.currentAngles.v.m128_f32[0];
+    float v7 = this->r.currentAngles.v.m128_f32[1];
+    float v8 = this->r.currentAngles.v.m128_f32[2];
+    Axis4ToAngles((const float(*)[4])&this->r.currentMat, &tmp);
+    this->r.currentAngles.v.m128_f32[0] = tmp;
+    this->r.currentAngles.v.m128_f32[1] = v7;
+    this->r.currentAngles.v.m128_f32[2] = v8;
+    this->r.currentAngles.v.m128_f32[0] =
+        AngleNormalize180(this->r.currentAngles.v.m128_f32[0]);
+    this->r.currentOrigin.v.m128_f32[0] = this->r.currentMat.w.v.m128_f32[0];
+    this->r.currentOrigin.v.m128_f32[1] = this->r.currentMat.w.v.m128_f32[1];
+    float v3 = this->r.currentMat.w.v.m128_f32[3];
+    this->r.currentOrigin.v.m128_f32[2] = this->r.currentMat.w.v.m128_f32[2];
+    this->r.currentOrigin.v.m128_f32[3] = v3;
+    this->s.pos.trBase[0] = this->r.currentOrigin.v.m128_f32[0];
+    this->s.pos.trBase[1] = this->r.currentOrigin.v.m128_f32[1];
+    Client* v4 = this->client;
+    this->s.pos.trBase[2] = this->r.currentOrigin.v.m128_f32[2];
+    float v5 = this->r.currentAngles.v.m128_f32[0];
+    if (v4 != nullptr)
+    {
+        this->s.apos.trDelta[0] = v5;
+        this->s.apos.trDelta[1] = this->r.currentAngles.v.m128_f32[1];
+        this->s.apos.trDelta[2] = this->r.currentAngles.v.m128_f32[2];
+    }
+    else
+    {
+        this->s.apos.trBase[0] = v5;
+        this->s.apos.trBase[1] = this->r.currentAngles.v.m128_f32[1];
+        this->s.apos.trBase[2] = this->r.currentAngles.v.m128_f32[2];
+    }
+    this->s.pos.trType = TR_STATIONARY;
+    this->s.apos.trType = TR_STATIONARY;
+    if (v4 != nullptr)
+    {
+        v4->oldOrigin.v.m128_f32[0] = v4->ps.origin.v.m128_f32[0];
+        this->client->oldOrigin.v.m128_f32[1] =
+            this->client->ps.origin.v.m128_f32[1];
+        this->client->oldOrigin.v.m128_f32[2] =
+            this->client->ps.origin.v.m128_f32[2];
+        this->client->ps.origin.v.m128_f32[0] =
+            this->r.currentOrigin.v.m128_f32[0];
+        this->client->ps.origin.v.m128_f32[1] =
+            this->r.currentOrigin.v.m128_f32[1];
+        this->client->ps.origin.v.m128_f32[2] =
+            this->r.currentOrigin.v.m128_f32[2];
+    }
+    g_LinkEntity(this);
+}
+
+// ============================================================================
+// Entity::GetParentBoneIndex - ea: 0x6121A0
+// ============================================================================
+// ea: 0x006121A0
+int Entity::GetParentBoneIndex(int boneIndex)
+{
+    if (this->mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 750;
+        AeAssert::gCurrentExpr = "mDObj";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+            __debugbreak();
+    }
+    return this->mDObj->GetBoneParent(boneIndex);
+}
+
+// ============================================================================
+// Entity::GetBaseRelMat - ea: 0x612210
+// ============================================================================
+// ea: 0x00612210
+const math::Mat43::Packed& Entity::GetBaseRelMat(int boneIndex)
+{
+    if (this->mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 757;
+        AeAssert::gCurrentExpr = "mDObj";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+            __debugbreak();
+    }
+    return this->mDObj->GetBaseRelMat(boneIndex);
+}
+
+// ============================================================================
+// MusicMgr - ea: 0x612E30
+// ============================================================================
+struct MusicMgr {
+    Handle mMusic;           // +0x00
+    Handle mMusicIndoor;     // +0x04
+    float  mVolScale;        // +0x08
+    float  mOutsideScale;    // +0x0C
+    float  mIndoorScale;     // +0x10
+    float  mIndoorFadeTime;  // +0x14
+    float  mDelayCount;      // +0x18
+    int    mCrossFadeType;   // +0x1C
+    MusicMgr();              // ??0MusicMgr@@QAE@XZ
+};
+
+// ea: 0x00612E30
+MusicMgr::MusicMgr()
+{
+    this->mMusic.mVal = 0;
+    this->mMusicIndoor.mVal = 0;
+    this->mVolScale = 1.0f;
+    this->mOutsideScale = 1.0f;
+    this->mIndoorScale = 1.0f;
+    this->mIndoorFadeTime = 1.0f;
+    this->mDelayCount = 0.0f;
+    this->mCrossFadeType = 0;
+}

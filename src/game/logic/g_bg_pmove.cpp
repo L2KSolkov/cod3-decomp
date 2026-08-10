@@ -1618,3 +1618,31 @@ bool PM_CanSimulateFiringWeapon(int iWeapon)
         && InfoForWeapon->bSemiAuto == 0
         && InfoForWeapon->bBoltAction == 0;
 }
+
+// ============================================================================
+// BG_PlayerTouchesMine - ea: 0x612F60
+// ============================================================================
+// ea: 0x00612F60
+bool BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime)
+{
+    float v6[3];
+    memcpy(v6, item->pos.trBase, 12);
+    bool result = false;
+    if ((ps->eFlags & 0x100000) == 0)
+    {
+        weaponFileInfo_t* InfoForWeapon =
+            BG_GetInfoForWeapon(item->weapon);
+        if (InfoForWeapon->iTriggerRadius != 0)
+        {
+            float dx = v6[0] - ps->origin.v.m128_f32[0];
+            float dy = v6[1] - ps->origin.v.m128_f32[1];
+            float dz = v6[2] - ps->origin.v.m128_f32[2];
+            float dist2 = dx * dx + dy * dy + dz * dz;
+            if ((float)(InfoForWeapon->iTriggerRadius
+                        * InfoForWeapon->iTriggerRadius)
+                > dist2)
+                return true;
+        }
+    }
+    return result;
+}

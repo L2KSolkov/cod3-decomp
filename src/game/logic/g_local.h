@@ -1289,7 +1289,7 @@ int  BG_CanItemBeGrabbed(const EntityState* ent, const PlayerState* ps,
                          int bTouched);              // game.o 0x6278C0
 int  BG_GetNumWeapons();
 int  BG_GetAmmoClipSize(int iClipIndex);
-int  BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
+bool BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
 bool BG_PlayerTouchesItem(PlayerState* ps, EntityState* item, int atTime);  // game.o 0x621820
 int  BG_WeaponIsClipOnly(int iWeapon);            // game.o 0x607A50
 int  BG_GetAmmoTypeMax(int iAmmoIndex);           // game.o 0x607080
@@ -3121,6 +3121,8 @@ struct DObj {
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
     DObj(int pakId);               // ??0DObj@@QAE@W4TPakId@@@Z (render.o)
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
+    int GetBoneParent(int boneIndex);          // ?GetBoneParent@DObj@@QAEHH@Z (render.o)
+    const math::Mat43::Packed& GetBaseRelMat(int boneIndex);  // ?GetBaseRelMat@DObj@@QAEABUPacked@Mat43@math@@H@Z (render.o)
 };
 static_assert(sizeof(DObj) == 0xE8, "DObj size mismatch");
 
