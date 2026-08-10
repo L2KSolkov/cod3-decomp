@@ -446,3 +446,102 @@ int TempBoxModelContents()
     __debugbreak();
     return result;
 }
+
+// ============================================================================
+// rtree_visitor_t - ea: 0x61AAF0..0x61AB20
+// ============================================================================
+enum visit_result_t {
+    CONTINUE_VISITING = 0,
+};
+
+struct rtree_visitor_t {
+    int objects_slot[256];   // +0x410
+    int objects_count;       // +0x414
+    int boxes_slot[128];     // +0x420
+    int boxes_count;         // +0x624
+    int brushes_slot[128];   // +0x830
+    int brushes_count;       // +0x834
+    int patches_slot[128];   // +0x840
+    int patches_count;       // +0xA44
+    CGBank* bank;            // +0xA50
+
+    visit_result_t visit(int index);  // ?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z
+    void filter_objects(int mask);    // ?filter_objects@rtree_visitor_t@@QAEXH@Z
+};
+
+// ea: 0x0061AAF0
+visit_result_t rtree_visitor_t::visit(int index)
+{
+    if (this->objects_count != 256)
+        this->objects_slot[this->objects_count++] = index;
+    return CONTINUE_VISITING;
+}
+
+// ea: 0x0061AB20
+void rtree_visitor_t::filter_objects(int mask)
+{
+    unsigned int nobjects = (unsigned int)this->objects_count;
+    unsigned int oi = 0;
+    if (nobjects != 0)
+    {
+        int v3 = 0;
+        while (1)
+        {
+            if ((v3 < 0 || v3 >= this->objects_count)
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                    108, "i >= 0 && i < m_alloc_count", ""))
+                __debugbreak();
+            CGBank* bank = this->bank;
+            unsigned int index = (unsigned int)this->objects_slot[v3];
+            if (index >= (unsigned int)bank->objects.m_count)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::CD;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                AeAssert::gCurrentLine = 233;
+                AeAssert::gCurrentExpr = "index < size()";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+                    __debugbreak();
+                if (index >= (unsigned int)bank->objects.m_count
+                    && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                 89, "index >= 0 && index < size()",
+                                 "invalid index"))
+                    __debugbreak();
+            }
+            cdl_object_t* obj = &((cdl_object_t*)bank->objects.m_elements)[index];
+            if ((mask & obj->cflags) != 0)
+            {
+                unsigned int nboxes = (unsigned int)bank->nboxes;
+                int type = index < nboxes
+                    ? 0
+                    : 2 - (index < nboxes + (unsigned int)bank->nbrushes);
+                if (type == 1)
+                {
+                    if (this->brushes_count == 128)
+                        goto LABEL_28;
+                    this->brushes_slot[this->brushes_count++] = (int)index;
+                }
+                else
+                {
+                    if (type != 0)
+                    {
+                        if (this->patches_count == 128)
+                            goto LABEL_28;
+                        this->patches_slot[this->patches_count++] = (int)index;
+                    }
+                    else
+                    {
+                        if (this->boxes_count == 128)
+                            goto LABEL_28;
+                        this->boxes_slot[this->boxes_count++] = (int)index;
+                    }
+                }
+            }
+        LABEL_28:
+            ++oi;
+            if (oi >= nobjects)
+                return;
+            v3 = (int)oi;
+        }
+    }
+}
