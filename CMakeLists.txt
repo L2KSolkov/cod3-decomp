@@ -298,6 +298,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_camerashake.cpp
     src/game/logic/g_game2_misc.cpp
     src/game/logic/g_debugthread.cpp
+    src/game/logic/g_bg_pmove.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)
