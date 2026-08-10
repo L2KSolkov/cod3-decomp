@@ -86,6 +86,17 @@ nslVoice*     nslGetVoice(unsigned) { return nullptr; }
 nslSourceState nslGetSourceState(nslSourceID) {
     return NSL_SOURCE_STATE_INVALID;
 }
+unsigned      nslGetMaxNumVoices() { return 0; }  // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
+const char*   nslGetSourceName(nslSourceID) { return ""; }   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
+const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
+float         nslGetSourceParam(nslSourceID, int, float defaultValue) { return defaultValue; }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
+int           nslIsWaveStreamed(nslWaveID) { return 0; }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
+
+// ============================================================================
+// nslAram â€” audio RAM accounting (nslAram.o)
+// ============================================================================
+unsigned int nsl_aramSize = 0;  // ?nsl_aramSize@@3IA (nslAram.o)
+unsigned int nsl_aramFree = 0;  // ?nsl_aramFree@@3IA (nslAram.o)
 void          nslSourceSetMode(nslSourceID, unsigned) {}
 void          nslSourceSetLooping(nslSourceID, bool) {}
 void          nslSourceSetPriority(nslSourceID, unsigned) {}

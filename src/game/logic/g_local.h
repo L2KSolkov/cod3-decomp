@@ -2942,6 +2942,7 @@ struct rb_vehicle {
     uint8_t _pad284[0x320 - 0x284];
     struct rigid_body_constraint_wheel* m_wheels[8];  // +0x320
 
+    static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
     static void remove_vehicle(rb_vehicle* v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
     static void end_path(rb_vehicle* v);        // physics.o
 };

@@ -99,6 +99,16 @@ public:
     void UserRenderHook();                // ea: 0x509CA0
     void AddRenderMenus();                // ea: 0x4EC720
     void AddPhysicsMenus();               // ea: 0x4EC8A0
+    void AddAimAssistMenus(_INSPECTOR_MENU* parent);  // ea: 0x4F0C00
+    void AddCollisionMenus();             // ea: 0x4F0D40
+    void AddPlayerMenus();                // ea: 0x4F7880
+    void AddDesignerMenus();              // ea: 0x4F78F0
+    void AddFXMenus();                    // ea: 0x4F79F0
+    void AddVehicleMenus(_INSPECTOR_MENU* parent);   // ea: 0x4F7D60
+    void AddMultiplayerMenus();           // ea: 0x4F8570
+    void AddDebuggingMenus();             // ea: 0x50C420
+    void AddWeaponMenus(_INSPECTOR_MENU* parent);    // ea: 0x50C790
+    void AddSettingsMenus();              // ea: 0x50D840
 };
 static_assert(sizeof(InspectorManager) == 0x88,
               "InspectorManager size mismatch");

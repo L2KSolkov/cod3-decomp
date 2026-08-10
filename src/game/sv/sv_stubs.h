@@ -327,6 +327,7 @@ struct SoundDevice {
     uint8_t _pad[31392];
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     void StopAllSounds();
+    void SetReverb(const char* preset, bool immediate);  // ?SetReverb@SoundDevice@@QAEXPBD_N@Z (game.o 0x9F20A0)
     void PlaySound(const char* name, DbLinkedHandle<EntityHandleDb, Entity> ent,
                    bool a4, bool a5, const math::Position3& pos,
                    const math::Dir3& dir, float a8, float a9, float a10,

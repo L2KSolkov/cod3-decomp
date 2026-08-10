@@ -5,11 +5,42 @@
 
 #include "game/logic/g_inspector.h"
 #include "game/logic/g_local.h"
+#include "game/logic/g_camerashake.h"
 #include "ngl/ngl_scene.h"
+#include "ngl/nglDebug.h"
 
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+
+// nsl handle types (nsl.cpp stub surface)
+typedef unsigned int nslSourceID;
+typedef unsigned int nslWaveID;
+enum nslSourceState {
+    NSL_SOURCE_STATE_INVALID = 0,
+    NSL_SOURCE_STATE_PLAYING = 1,
+};
+
+extern nglDebugStruct nglDebug;   // ?nglDebug@@3UnglDebugStruct@@A (ngl_debug.o)
+
+// SoundOptions - effect sound toggles (core_systems.h layout, local view)
+struct SoundOptions {
+    int mFxDontPlayFootSteps;      // +0x00
+    int mFxDontPlayGearRattle;     // +0x04
+    int mFxDontPlayLanding;        // +0x08
+    int mFxDontPlayScriptCall;     // +0x0C
+    int mFxDontPlayScriptCall_Dir; // +0x10
+    int mFxDontPlayWeapon;         // +0x14
+    int mFxDontPlayBulletHit;      // +0x18
+    int mFxDontPlayGrenadeBounce;  // +0x1C
+    int mFxDontPlayProjExplode;    // +0x20
+    int mFxDontPlayVehicle;        // +0x24
+    int mFxDontPlayTurret;         // +0x28
+    int mFxDontPlayVehicleWheel;   // +0x2C
+    int mFxDontPlayLightFlash;     // +0x30
+    int mFxDontPlayMusic;          // +0x34
+};
+static_assert(sizeof(SoundOptions) == 0x38, "SoundOptions size mismatch");
 
 // Cross-object externs
 extern void* mem_heap_malloc(unsigned int size);
@@ -21,6 +52,279 @@ extern float RE_Text_Paint(float x, float y, int font, float scale,
                            int a8, int a9);  // ?RE_Text_Paint (render.o)
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);  // ?RE_Text_Width
+
+// ============================================================================
+// Stat-adjuster callbacks (g_weaponfuncs.cpp / g_vehiclefuncs.cpp)
+// ============================================================================
+namespace weaponFuncs {
+double adsAimPitch_Function(float v);
+double adsBobFactor_Function(float v);
+double adsBulletConeAngle_Function(float v);
+double adsCrosshairInFrac_Function(float v);
+double adsCrosshairOutFrac_Function(float v);
+double adsGunKickAccel_Function(float v);
+double adsGunKickPitchMax_Function(float v);
+double adsGunKickPitchMin_Function(float v);
+double adsGunKickSpeedDecay_Function(float v);
+double adsGunKickSpeedMax_Function(float v);
+double adsGunKickStaticDecay_Function(float v);
+double adsGunKickYawMax_Function(float v);
+double adsGunKickYawMin_Function(float v);
+double adsIdleAmount_Function(float v);
+double adsOverlayHeight_Function(float v);
+double adsOverlayWidth_Function(float v);
+double adsSensitivityScale_Function(float v);
+double adsSensitivityScaleMP_Function(float v);
+double adsSpread_Function(float v);
+double adsSpreadDucked_Function(float v);
+double adsSpreadDuckedMP_Function(float v);
+double adsSpreadMP_Function(float v);
+double adsSpreadProne_Function(float v);
+double adsSpreadProneMP_Function(float v);
+double adsSwayHorizScale_Function(float v);
+double adsSwayLerpSpeed_Function(float v);
+double adsSwayMaxAngle_Function(float v);
+double adsSwayPitchScale_Function(float v);
+double adsSwayVertScale_Function(float v);
+double adsSwayYawScale_Function(float v);
+double adsViewBobMult_Function(float v);
+double adsViewKickCenterSpeed_Function(float v);
+double adsViewKickPitchMax_Function(float v);
+double adsViewKickPitchMin_Function(float v);
+double adsViewKickYawMax_Function(float v);
+double adsViewKickYawMin_Function(float v);
+double adsZoomFov_Function(float v);
+double adsZoomFovMP_Function(float v);
+double adsZoomInFrac_Function(float v);
+double adsZoomOutFrac_Function(float v);
+double aiDamageMod_Function(float v);
+double aiEffectiveRange_Function(float v);
+double aiMissRange_Function(float v);
+double animIKOffsetDist_Function(float v);
+double animIKOffsetForce_Function(float v);
+double animIKOffsetTime_Function(float v);
+double animIKPitchAngle_Function(float v);
+double animIKPitchForce_Function(float v);
+double animIKPitchTime_Function(float v);
+double animIKTorsoRecoilPitchAngle_Function(float v);
+double animIKTorsoRecoilPitchForce_Function(float v);
+double animIKTorsoRecoilPitchTime_Function(float v);
+double bulletConeAngle_Function(float v);
+double duckedMoveF_Function(float v);
+double duckedMoveMinSpeed_Function(float v);
+double duckedMoveR_Function(float v);
+double duckedMoveU_Function(float v);
+double duckedOfsF_Function(float v);
+double duckedOfsR_Function(float v);
+double duckedOfsU_Function(float v);
+double gunMaxPitch_Function(float v);
+double gunMaxYaw_Function(float v);
+double hipGunKickAccel_Function(float v);
+double hipGunKickPitchMax_Function(float v);
+double hipGunKickPitchMin_Function(float v);
+double hipGunKickSpeedDecay_Function(float v);
+double hipGunKickSpeedMax_Function(float v);
+double hipGunKickStaticDecay_Function(float v);
+double hipGunKickYawMax_Function(float v);
+double hipGunKickYawMin_Function(float v);
+double hipIdleAmount_Function(float v);
+double hipReticleSidePos_Function(float v);
+double hipSpreadDecayRate_Function(float v);
+double hipSpreadDecayRateMP_Function(float v);
+double hipSpreadDuckedDecay_Function(float v);
+double hipSpreadDuckedDecayMP_Function(float v);
+double hipSpreadDuckedMin_Function(float v);
+double hipSpreadDuckedMinMP_Function(float v);
+double hipSpreadFireAdd_Function(float v);
+double hipSpreadFireAddMP_Function(float v);
+double hipSpreadMax_Function(float v);
+double hipSpreadMaxMP_Function(float v);
+double hipSpreadMoveAdd_Function(float v);
+double hipSpreadMoveAddMP_Function(float v);
+double hipSpreadProneDecay_Function(float v);
+double hipSpreadProneDecayMP_Function(float v);
+double hipSpreadProneMin_Function(float v);
+double hipSpreadProneMinMP_Function(float v);
+double hipSpreadStandMin_Function(float v);
+double hipSpreadStandMinMP_Function(float v);
+double hipSpreadTurnAdd_Function(float v);
+double hipSpreadTurnAddMP_Function(float v);
+double hipViewKickCenterSpeed_Function(float v);
+double hipViewKickPitchMax_Function(float v);
+double hipViewKickPitchMin_Function(float v);
+double hipViewKickYawMax_Function(float v);
+double hipViewKickYawMin_Function(float v);
+double moveSpeedScale_Function(float v);
+double posProneRotRate_Function(float v);
+double proneMoveF_Function(float v);
+double proneMoveMinSpeed_Function(float v);
+double proneMoveR_Function(float v);
+double proneMoveU_Function(float v);
+double proneOfsF_Function(float v);
+double proneOfsR_Function(float v);
+double proneOfsU_Function(float v);
+double proneRotMinSpeed_Function(float v);
+double proneRotP_Function(float v);
+double proneRotR_Function(float v);
+double proneRotY_Function(float v);
+double sensitivityScale_Function(float v);
+double sensitivityScaleMP_Function(float v);
+double standMoveF_Function(float v);
+double standMoveMinSpeed_Function(float v);
+double standMoveR_Function(float v);
+double standMoveU_Function(float v);
+double swayHorizScale_Function(float v);
+double swayLerpSpeed_Function(float v);
+double swayMaxAngle_Function(float v);
+double swayPitchScale_Function(float v);
+double swayShellShockScale_Function(float v);
+double swayVertScale_Function(float v);
+double swayYawScale_Function(float v);
+int adsReloadTransTime_Function(int v);
+int adsTransBlendTime_Function(int v);
+int adsTransInTime_Function(int v);
+int adsTransInTimeMP_Function(int v);
+int adsTransOutTime_Function(int v);
+int adsTransOutTimeMP_Function(int v);
+int altDropTime_Function(int v);
+int altRaiseTime_Function(int v);
+int damage_Function(int v);
+int damageInnerRadius_Function(int v);
+int damageInnerRadiusMP_Function(int v);
+int damageMP_Function(int v);
+int damageOuterRadius_Function(int v);
+int damageOuterRadiusMP_Function(int v);
+int dropTime_Function(int v);
+int explosionInnerDamage_Function(int v);
+int explosionInnerDamageMP_Function(int v);
+int explosionOuterDamage_Function(int v);
+int explosionOuterDamageMP_Function(int v);
+int explosionRadius_Function(int v);
+int explosionRadiusMP_Function(int v);
+int fireDelay_Function(int v);
+int fireDelayMP_Function(int v);
+int fireTime_Function(int v);
+int fireTimeMP_Function(int v);
+int fuseTime_Function(int v);
+int holdFireTime_Function(int v);
+int maxAmmoMP_Function(int v);
+int meleeDamage_Function(int v);
+int meleeDamageMP_Function(int v);
+int meleeDelay_Function(int v);
+int meleeDelayMP_Function(int v);
+int meleeTime_Function(int v);
+int meleeTimeMP_Function(int v);
+int minDamagePercent_Function(int v);
+int minDamagePercentMP_Function(int v);
+int projectileSpeed_Function(int v);
+int projectileSpeedUp_Function(int v);
+int raiseTime_Function(int v);
+int rechamberBoltTime_Function(int v);
+int rechamberTime_Function(int v);
+int reloadAddTime_Function(int v);
+int reloadEmptyTime_Function(int v);
+int reloadEndTime_Function(int v);
+int reloadStartAddTime_Function(int v);
+int reloadStartTime_Function(int v);
+int reloadTime_Function(int v);
+int reticleCenterSize_Function(int v);
+int reticleMinOfs_Function(int v);
+int reticleSideSize_Function(int v);
+int takedamage_Function(int v);
+int triggerRadius_Function(int v);
+}  // namespace weaponFuncs
+
+namespace vehicleFuncs {
+int steerWheels_Function(int v);
+int quadBarrel_Function(int v);
+int spClientSeat_Function(int v);
+int hudIndex_Function(int v);
+int numSeats_Function(int v);
+int health_Function(int v);
+int vehicleAnimMatrixColumn_Function(int v);
+int inactiveBlowupSeconds_Function(int v);
+double bulletDamage_Function(float v);
+double grenadeDamage_Function(float v);
+double mineDamage_Function(float v);
+double projectileDamage_Function(float v);
+double texureScrollScale_Function(float v);
+double maxSpeed_Function(float v);
+double accel_Function(float v);
+double rotRate_Function(float v);
+double rotAccel_Function(float v);
+double maxBodyPitch_Function(float v);
+double maxBodyRoll_Function(float v);
+double collisionDamage_Function(float v);
+double collisionSpeed_Function(float v);
+double suspensionTravel_Function(float v);
+double boundsRadius_Function(float v);
+double boundsHeight_Function(float v);
+double boundsLength_Function(float v);
+double turretHorizSpanLeft_Function(float v);
+double turretHorizSpanRight_Function(float v);
+double turretVertSpanUp_Function(float v);
+double turretVertSpanDown_Function(float v);
+double turretRotRate_Function(float v);
+double turretSwirlLerpRate_Function(float v);
+double turretSwirlPitchFactor_Function(float v);
+double turretGunnerVertSpanUp_Function(float v);
+double turretGunnerVertSpanDown_Function(float v);
+double engineSndSpeed_Function(float v);
+double cameraZOffset_Function(float v);
+double cameraFPHeightOffset_Function(float v);
+double cameraFPFwdOffset_Function(float v);
+double cameraFPHeightLerp_Function(float v);
+double cameraChaseOffsetX_Function(float v);
+double cameraChaseOffsetY_Function(float v);
+double cameraChaseOffsetZ_Function(float v);
+double cameraChaseRadiusInner_Function(float v);
+double cameraChaseRadiusOuter_Function(float v);
+double cameraVehViewRadius_Function(float v);
+double cameraVehViewMaxPitch_Function(float v);
+double cameraVehViewMaxPitchDistAdj_Function(float v);
+double cameraVehViewFwdBackRatio_Function(float v);
+double cameraVehViewMoveInPitch_Function(float v);
+double camLinkedPitchFactor_Function(float v);
+double pitchBasedCamOffsetX_Function(float v);
+double pitchBasedCamOffsetZ_Function(float v);
+double hatchOpenAngleRight_Function(float v);
+double hatchOpenAngleLeft_Function(float v);
+double texureScroll_Function(float v);
+double SetVehicleInertiaBox(bool setMin, int xyz, float f);
+double SetVehicleInertiaBoxMinX(float f);
+double SetVehicleInertiaBoxMaxX(float f);
+double SetVehicleInertiaBoxMinY(float f);
+double SetVehicleInertiaBoxMaxY(float f);
+double SetVehicleInertiaBoxMinZ(float f);
+double SetVehicleInertiaBoxMaxZ(float f);
+double speed_max_Function(float f);
+double accel_max_Function(float f);
+double reverse_scale_Function(float f);
+double steer_angle_max_Function(float f);
+double steer_speed_Function(float f);
+double wheel_radius_Function(float f);
+double susp_spring_k_Function(float f);
+double susp_damp_k_Function(float f);
+double susp_adj_Function(float f);
+double susp_hard_limit_Function(float f);
+double tire_fric_fwd_Function(float f);
+double tire_fric_side_Function(float f);
+double tire_fric_brake_Function(float f);
+double tire_fric_hand_brake_Function(float f);
+double body_mass_Function(float f);
+double mass_center_delta_x_Function(float f);
+double mass_center_delta_y_Function(float f);
+double mass_center_delta_z_Function(float f);
+double roll_stability_Function(float f);
+double roll_resistance_Function(float f);
+double upright_strength_Function(float f);
+double tilt_fakey_Function(float f);
+double peel_out_max_speed_Function(float f);
+double inertia_scale_x_Function(float f);
+double tire_damp_coast_Function(float f);
+double tire_damp_brake_Function(float f);
+double tire_damp_hand_Function(float f);
+}  // namespace vehicleFuncs
 
 // ShaderCommon glow state (cdGlowShader.o / render.o)
 namespace ShaderCommon {
@@ -477,6 +781,1110 @@ void InspectorManager::AddPhysicsMenus()
 {
     _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Physics / Nano");
     AddItem(v2, "Rag Dolls on normal deaths", &g_useRagsOnNormalDeaths, 2);
+}
+
+// ============================================================================
+// Add*Menus builders - ea: 0x4F0C00 .. 0x50D840
+// ============================================================================
+extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
+                        int flags);  // ?Cvar_Get@@YAPAUcvar_t@@PBD0H@Z
+extern void ToggleRenderGeom();      // ?ToggleRenderGeom@@YAXXZ (game.o)
+extern void ToggleGraph();           // ?ToggleGraph@@YAXXZ (game.o)
+extern void ToggleRenderPerf();      // ?ToggleRenderPerf@@YAXXZ (game.o)
+extern void ZoomIn();                // ?ZoomIn@@YAXXZ (game.o)
+extern void ZoomOut();               // ?ZoomOut@@YAXXZ (game.o)
+extern void FN_SelectGodMode();      // game2.o
+extern void FN_NoClip();             // game2.o
+extern void FN_PakRender();          // game2.o
+extern bool FN_NGLStatDisplay();     // game2.o
+extern void FN_ControlConfigA();     // game2.o
+extern void FN_ControlConfigB();
+extern void FN_ControlConfigC();
+extern void FN_ControlConfigD();
+extern void FN_ControlSticksDefault();
+extern void FN_ControlSticksSouthPaw();
+extern void FN_ControlSticksLegacy();
+extern void FN_ControlSticksLegacySouthPaw();
+extern bool FN_ControlInvertAim();
+extern void FN_ApplyEasyDifficultyChanges();
+extern void FN_ApplyMediumDifficultyChanges();
+extern void FN_ApplyHardDifficultyChanges();
+extern int FnReverseOptions();       // ?FnReverseOptions@@YAHXZ (game2.o)
+extern int PlayRumble();             // ?PlayRumble@@YAHXZ (game2.o)
+extern void FN_DefaultShellshockTestFunction();
+extern void FN_PainShellshockTestFunction();
+extern void FN_DeathShellshockTestFunction();
+extern void FN_CurgenMotionBlur();
+extern void FN_Multiplayer_MapRestart();  // game2.o
+extern void FN_Multiplayer_Rank1();
+extern void FN_Multiplayer_Rank2();
+extern void FN_Multiplayer_Rank3();
+extern void FN_DebugThread_Select_Player();     // game2.o
+extern void FN_DebugThread_Select_Level();
+extern void FN_DebugThread_Select_Nearest();    // game2.o
+extern void FN_DebugThread_Select_Nearest_Trigger();  // game2.o
+extern void FN_DebugThread_Select_UniqueIndex();      // game2.o
+extern void FN_DebugThread_Select_Nearest_Vehicle();  // game2.o
+extern void FN_DebugThread_Select_Target();
+extern void FN_DebugAnims_Select_Target();
+extern void FN_DumpThreadsForTarget();
+extern void FN_DumpThreadsForAll();
+extern int FN_DebugEntity_BBoxes();
+
+// Aim-assist / input tuning globals
+extern cvar_t* bg_stickyAimRender;  // ?bg_stickyAimRender@@3PAUcvar_t@@A (game.o)
+extern float gStickyBaseSlowFactorEasy;    // ?gStickyBaseSlowFactorEasy@@3MA (game.o)
+extern float gStickyBaseSlowFactorNormal;  // ?gStickyBaseSlowFactorNormal@@3MA (game.o)
+extern float gStickyBaseSlowFactorHard;    // ?gStickyBaseSlowFactorHard@@3MA (game.o)
+extern float gStickyBoxScaleEasy;          // ?gStickyBoxScaleEasy@@3MA (game.o)
+extern float gStickyBoxScaleNormal;        // ?gStickyBoxScaleNormal@@3MA (game.o)
+extern float gStickyBoxScaleHard;          // ?gStickyBoxScaleHard@@3MA (game.o)
+extern float gExtraDistanceSticky;         // ?gExtraDistanceSticky@@3MA (game.o)
+extern float gExtraStrafeSticky;           // ?gExtraStrafeSticky@@3MA (game.o)
+extern float gLookAccelRate;               // ?gLookAccelRate@@3MA (cl.o)
+extern float gMaxTurnSpeed;                // ?gMaxTurnSpeed@@3MA (cl.o)
+
+// Collision debug globals (g.o data)
+extern int gPhysicsFinder;          // ?gPhysicsFinder@@3HA (g.o)
+extern int gDebugTrace;             // ?gDebugTrace@@3HA (g.o)
+extern int gDebugLocationalTrace;   // ?gDebugLocationalTrace@@3HA (g.o)
+
+// Designer / FX debug globals (game2.o + render.o data)
+extern int g_displayPlayerPosition;  // ?g_displayPlayerPosition@@3HA (game2.o)
+extern int g_renderFPS;              // ?g_renderFPS@@3HA (game2.o)
+extern int g_showPathNodeDensity;    // ?g_showPathNodeDensity@@3HA (game2.o)
+extern int g_showCulledParticles;    // ?g_showCulledParticles@@3HA (game2.o)
+extern int gThreadedParticles;       // ?gThreadedParticles@@3HA (game2.o)
+extern int g_renderSphere;           // ?g_renderSphere@@3HA (game2.o)
+extern int g_limitVisualRange;       // ?g_limitVisualRange@@3HA (game2.o)
+extern int g_displayPlayerStats;     // ?g_displayPlayerStats@@3HA (game2.o)
+extern int g_testInt;                // ?g_testInt@@3HA (game2.o)
+extern int g_renderGameEntityStats;  // ?g_renderGameEntityStats@@3HA (game2.o)
+extern float g_tankTracks;           // ?g_tankTracks@@3MA (render.o)
+extern float g_tankWheels;           // ?g_tankWheels@@3MA (render.o)
+extern float gNearLightRadius;       // ?gNearLightRadius@@3MA (render.o)
+extern float gFarLightRadius;        // ?gFarLightRadius@@3MA (render.o)
+extern float g_myBlurValue;          // ?g_myBlurValue@@3MA (game2.o)
+extern float g_myRValue;             // ?g_myRValue@@3MA (game2.o)
+extern float g_myGValue;             // ?g_myGValue@@3MA (game2.o)
+extern float g_myBValue;             // ?g_myBValue@@3MA (game2.o)
+extern int g_blendType;              // ?g_blendType@@3HA (game2.o)
+extern float gEasyAccuracyMod;       // ?gEasyAccuracyMod@@3MA (mp_actors.o)
+extern float gNormalAccuracyMod;     // ?gNormalAccuracyMod@@3MA (mp_actors.o)
+extern float gHardAccuracyMod;       // ?gHardAccuracyMod@@3MA (mp_actors.o)
+extern int gNewEasyMaxHealth;        // game2.o
+extern int gNewMediumMaxHealth;      // game2.o
+extern int gNewHardMaxHealth;        // game2.o
+extern float gLowFreqDelay;          // ?gLowFreqDelay@@3MA (game2.o)
+extern float gLowFreqRumbleIntensity;   // game2.o
+extern float gLowFreqSteadyDuration;    // game2.o
+extern float gLowFreqRampUpTime;        // game2.o
+extern float gLowFreqRampDownTime;      // game2.o
+extern float gHighFreqDelay;            // ?gHighFreqDelay@@3MA (game2.o)
+extern float gHighFreqDuration;         // game2.o
+extern float g_objectAmbientHelper;     // ?g_objectAmbientHelper@@3MA (cg.o)
+extern float g_objectDiffuseHelper;     // ?g_objectDiffuseHelper@@3MA (cg.o)
+extern float g_ShakeTestMag;            // ?g_ShakeTestMag@@3MA (game2.o)
+extern float g_ShakeTestFreq;           // game2.o
+extern float g_ShakeTestTime;           // game2.o
+extern int g_ShakeTest2d;               // game2.o
+extern vmCvar_t cg_camerashake;         // ?cg_camerashake@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t cg_shellshockblur;      // ?cg_shellshockblur@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t cg_forceCrosshair;      // ?cg_forceCrosshair@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t g_debugBullets;         // ?g_debugBullets@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t g_debugGrenades;        // ?g_debugGrenades@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t bg_debugWeaponAnim;     // ?bg_debugWeaponAnim@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_debugWeaponState;    // ?bg_debugWeaponState@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_meleeassistrange;    // ?bg_meleeassistrange@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_meleeassistaspeed;   // ?bg_meleeassistaspeed@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_meleeassistfov;      // ?bg_meleeassistfov@@3UvmCvar_t@@A (game.o)
+extern SoundOptions gSoundOptions;      // ?gSoundOptions@@3VSoundOptions@@A
+
+// MP debug flags (mp.o statics)
+extern int MPVehicle_sDebugGeneral;        // ?sDebugGeneral@MPVehicle@@2HA (mp.o)
+extern int MPVehicle_sDebugNetworkUpdates; // ?sDebugNetworkUpdates@MPVehicle@@2HA (mp.o)
+extern int MPVehicle_sPauseNetworkUpdates; // ?sPauseNetworkUpdates@MPVehicle@@2HA (mp.o)
+extern int MPPlayer_sDebugNetworkUpdates;  // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
+extern int MPPlayer_sPauseNetworkUpdates;  // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
+extern int MPPeer_mRenderSessionInfo;      // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
+extern int MPPeer_mRenderPlayerInfo;       // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
+extern int MPPeer_mRenderDataInfo;         // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
+
+// Multiplayer / HUD cvars (g.o / cg.o vmCvar data)
+extern vmCvar_t cg_thirdPerson;          // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t cg_thirdPersonRange;     // ?cg_thirdPersonRange@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t cg_thirdPersonAngle;     // ?cg_thirdPersonAngle@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t cg_thirdPersonLock;      // ?cg_thirdPersonLock@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t mp_headIconHeight;              // ?mp_headIconHeight@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_headIconMinScreenSize;       // ?mp_headIconMinScreenSize@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_headIconDistAbovePlayer;     // ?mp_headIconDistAbovePlayer@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_headIconDistAboveVehicle;    // ?mp_headIconDistAboveVehicle@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_headIconReviveMinAlphaDist;  // ?mp_headIconReviveMinAlphaDist@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_headIconReviveMaxAlphaDist;  // ?mp_headIconReviveMaxAlphaDist@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_itemIconHeight;              // ?mp_itemIconHeight@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_itemIconMinScreenSize;       // ?mp_itemIconMinScreenSize@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_itemIconDistAboveItem;       // ?mp_itemIconDistAboveItem@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_itemIconMinAlphaDist;        // ?mp_itemIconMinAlphaDist@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_itemIconMaxAlphaDist;        // ?mp_itemIconMaxAlphaDist@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_objectiveSize;               // ?mp_objectiveSize@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_objectiveMinSize;            // ?mp_objectiveMinSize@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_objectiveMaxSize;            // ?mp_objectiveMaxSize@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_objectiveNearAlpha;          // ?mp_objectiveNearAlpha@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_objectiveNearAlphaDist;      // ?mp_objectiveNearAlphaDist@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_objectiveFarAlpha;           // ?mp_objectiveFarAlpha@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t mp_objectiveFarAlphaDist;       // ?mp_objectiveFarAlphaDist@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t hud_healthOverlay_regenPauseTime;       // ?hud_healthOverlay_regenPauseTime@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t hud_healthOverlay_pulseStart;           // ?hud_healthOverlay_pulseStart@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t hud_healthOverlay_phaseOne_pulseDuration;      // ?hud_healthOverlay_phaseOne_pulseDuration@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t hud_healthOverlay_phaseTwo_toAlphaMultiplier;  // ?hud_healthOverlay_phaseTwo_toAlphaMultiplier@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t hud_healthOverlay_phaseTwo_pulseDuration;      // ?hud_healthOverlay_phaseTwo_pulseDuration@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t hud_healthOverlay_phaseThree_toAlphaMultiplier;  // ?hud_healthOverlay_phaseThree_toAlphaMultiplier@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t hud_healthOverlay_phaseThree_pulseDuration;      // ?hud_healthOverlay_phaseThree_pulseDuration@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t hud_healthOverlay_phaseEnd_toAlpha;       // ?hud_healthOverlay_phaseEnd_toAlpha@@3UvmCvar_t@@A (cg.o)
+extern vmCvar_t hud_healthOverlay_phaseEnd_pulseDuration;  // ?hud_healthOverlay_phaseEnd_pulseDuration@@3UvmCvar_t@@A (cg.o)
+
+// Debugging / memory / AI cvars (game2.o / g.o vmCvar data)
+extern vmCvar_t memory_showStatistics;             // ?memory_showStatistics@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_reportBrocPool;             // ?memory_reportBrocPool@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_reportBrocBackupStackPool;  // ?memory_reportBrocBackupStackPool@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_displayAepsStats;           // ?memory_displayAepsStats@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_reportAepsStats;            // ?memory_reportAepsStats@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_reportCommonPool;           // ?memory_reportCommonPool@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t sound_showSoundStatForEntity;      // ?sound_showSoundStatForEntity@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t sound_disableAllOtherSounds;       // ?sound_disableAllOtherSounds@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t ai_showNearestNode;                // ?ai_showNearestNode@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t ai_showNodes;                      // ?ai_showNodes@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t ai_showNodesDist;                  // ?ai_showNodesDist@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t ai_showFriendlyChains;             // ?ai_showFriendlyChains@@3UvmCvar_t@@A (g.o)
+extern int g_showNumBadPaths;           // ?g_showNumBadPaths@@3HA (game2.o)
+extern int g_showLightGridDebugText;    // ?g_showLightGridDebugText@@3HA (game2.o)
+extern int g_LightGridDecruftifier;     // ?g_LightGridDecruftifier@@3HA (render.o)
+extern int g_showLightGridDistribution; // ?g_showLightGridDistribution@@3HA (game2.o)
+extern int g_lightGridBlueErrors;       // ?g_lightGridBlueErrors@@3HA (game2.o)
+extern int g_showWeaponRange;           // ?g_showWeaponRange@@3HA (game2.o)
+// Sound menu globals
+extern int gAIBattleChatterDebug;              // ?gAIBattleChatterDebug@@3HA (game2.o)
+extern int g_displayCurrentSounds;              // ?g_displayCurrentSounds@@3HA (game2.o)
+extern int g_displayCurrentPrioritySounds;      // ?g_displayCurrentPrioritySounds@@3HA (game2.o)
+extern int g_displayCurrentSoundStreamsOnly;    // ?g_displayCurrentSoundStreamsOnly@@3HA (game2.o)
+extern int g_useOnScreenSoundDebugging;         // ?g_useOnScreenSoundDebugging@@3HA (game2.o)
+extern int g_useOnScreenSoundPosDebugging;      // ?g_useOnScreenSoundPosDebugging@@3HA (game2.o)
+extern int g_displaySoundRamUsage;              // ?g_displaySoundRamUsage@@3HA (game2.o)
+extern vmCvar_t sound_debug;                    // ?sound_debug@@3UvmCvar_t@@A (g.o)
+extern int s_reverbPresetId;        // 0xF0497C (game2.o)
+extern int s_reverbPresetDisplay;   // 0xF04974 (game2.o)
+extern int s_lastReverbPresetId;    // 0xF04978 (game2.o)
+extern const char* s_reverbPresetStr[26];  // 0xDD9298 (game2.o)
+extern float startx;  // 0xDEF1AC
+extern float starty;  // 0xDEF1A8
+extern float scale;   // 0xDEF1A4
+extern float ystep;   // 0xDEF1A0
+extern float xstep;   // 0xDEF19C
+extern unsigned nslGetMaxNumVoices();      // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
+extern unsigned nslGetNumVoices();         // ?nslGetNumVoices@@YAIXZ (nslCompat.o)
+extern void* nslGetVoice(unsigned int a);  // ?nslGetVoice@@YAPAUnslVoice@@I@Z (nslCompat.o)
+extern nslSourceState nslGetSourceState(nslSourceID sid);  // ?nslGetSourceState@@YA?AW4nslSourceState@@W4nslSourceID@@@Z
+extern void* nslSourcePtr(nslSourceID sid);               // ?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z
+extern const char* nslGetSourceName(nslSourceID sid);  // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
+extern const char* nslGetWaveName(nslWaveID a);       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
+extern float nslGetSourceParam(nslSourceID sid, int index, float defaultValue);  // nslSource.o
+extern int nslIsWaveStreamed(nslWaveID a);            // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
+extern unsigned int nsl_aramFree;   // ?nsl_aramFree@@3IA (nslAram.o)
+extern unsigned int nsl_aramSize;   // ?nsl_aramSize@@3IA (nslAram.o)
+
+// Controller / settings cvars
+extern cvar_t* in_stickSouthPaw;  // ?in_stickSouthPaw@@3PAUcvar_t@@A (game2.o)
+extern cvar_t* in_stickLegacy;    // ?in_stickLegacy@@3PAUcvar_t@@A (game2.o)
+extern cvar_t* cl_freeze;         // ?cl_freeze@@3PAUcvar_t@@A (cl.o)
+extern cvar_t* r_showSkeletons;   // ?r_showSkeletons@@3PAUcvar_t@@A (render.o)
+extern cvar_t* cg_debugSpawnPoints;  // ?cg_debugSpawnPoints@@3PAUcvar_t@@A (game2.o)
+extern cvar_t* joy_threshold;     // ?joy_threshold@@3PAUcvar_t@@A (game2.o)
+extern cvar_t* r_showLocationalDamage;  // ?r_showLocationalDamage@@3PAUcvar_t@@A (render.o)
+extern int SetVehicleDebugRender(int onoff);  // ?SetVehicleDebugRender@@YAHH@Z (game2.o)
+extern void IN_Init();            // ?IN_Init@@YAXXZ (game2.o)
+
+// Ocean shader debug globals (render_xboxr:cdOceanShaderDebug.o)
+extern int g_oceanDebug_Enable;            // ?g_oceanDebug_Enable@@3HA
+extern int g_oceanDebug_BankID;            // ?g_oceanDebug_BankID@@3HA
+extern int g_oceanDebug_DumpSettings;      // ?g_oceanDebug_DumpSettings@@3HA
+extern int g_oceanDebug_Layer2Enable;      // ?g_oceanDebug_Layer2Enable@@3HA
+extern int g_oceanDebug_Layer3Enable;      // ?g_oceanDebug_Layer3Enable@@3HA
+extern int g_oceanDebug_LightmapEnable;    // ?g_oceanDebug_LightmapEnable@@3HA
+extern float g_oceanDebug_Layer2Alpha;     // ?g_oceanDebug_Layer2Alpha@@3MA
+extern float g_oceanDebug_Layer3Alpha;     // ?g_oceanDebug_Layer3Alpha@@3MA
+extern float g_oceanDebug_SeaLevel;        // ?g_oceanDebug_SeaLevel@@3MA
+extern float g_oceanDebug_UVScale[8];      // ?g_oceanDebug_UVScale@@3PAY01MA (2 per layer)
+extern float g_oceanDebug_UVScroll[8];     // ?g_oceanDebug_UVScroll@@3PAY01MA (2 per layer)
+extern float g_oceanDebug_Origin[8];       // ?g_oceanDebug_Origin@@3PAY01MA (2 per wave)
+extern float g_oceanDebug_Distance[4];     // ?g_oceanDebug_Distance@@3PAMA
+extern float g_oceanDebug_Heading[4];      // ?g_oceanDebug_Heading@@3PAMA
+extern float g_oceanDebug_Wavelength[4];   // ?g_oceanDebug_Wavelength@@3PAMA
+extern float g_oceanDebug_Amplitude[4];    // ?g_oceanDebug_Amplitude@@3PAMA
+extern float g_oceanDebug_Phase[4];        // ?g_oceanDebug_Phase@@3PAMA
+extern float g_oceanDebug_Timescale[4];    // ?g_oceanDebug_Timescale@@3PAMA
+
+// cdSimpleAlpha shader debug state (render_xboxr:cdSimpleAlphaDebug.o)
+struct cdSimpleAlphaDebug {
+    int mEnable;          // +0x00
+    int mBlendMode;       // +0x04
+    int mBackface;        // +0x08
+    int mEnableZPass;     // +0x0C
+    int mEnableTint;      // +0x10
+    int mEnablePulsing;   // +0x14
+    float mTint[4];       // +0x18
+    float mAlphaCutoff;   // +0x28
+    float mPulseRate;     // +0x2C
+    float mMinTint;       // +0x30
+    float mMaxTint;       // +0x34
+    float mMinAlpha;      // +0x38
+    float mMaxAlpha;      // +0x3C
+};
+static_assert(sizeof(cdSimpleAlphaDebug) == 0x40,
+              "cdSimpleAlphaDebug size mismatch");
+extern cdSimpleAlphaDebug g_cdSimpleAlphaDebug;  // ?g_cdSimpleAlphaDebug@@3UcdSimpleAlphaDebug@@A
+
+// ============================================================================
+// InspectorManager::AddAimAssistMenus - ea: 0x4F0C00
+// ============================================================================
+void InspectorManager::AddAimAssistMenus(_INSPECTOR_MENU* parent)
+{
+    _INSPECTOR_MENU* v3 = AddSubMenu(parent, "Controls/Aim Assist");
+    AddItem(v3, "Render Sicky Box", &bg_stickyAimRender->integer, 2);
+    AddItem(v3, "Sticky Easy", &gStickyBaseSlowFactorEasy, 9);
+    AddItem(v3, "Sticky Norm", &gStickyBaseSlowFactorNormal, 9);
+    AddItem(v3, "Sticky Hard", &gStickyBaseSlowFactorHard, 9);
+    AddItem(v3, "Sticky Scale Easy", &gStickyBoxScaleEasy, 0x40007);
+    AddItem(v3, "Sticky Scale Norm", &gStickyBoxScaleNormal, 0x40007);
+    AddItem(v3, "Sticky Scale Hard", &gStickyBoxScaleHard, 0x40007);
+    AddItem(v3, "Extra Distance Sticky", &gExtraDistanceSticky, 9);
+    AddItem(v3, "Extra Strafe Sticky", &gExtraStrafeSticky, 9);
+    AddItem(v3, "Aim Accel Rate", &gLookAccelRate, 0x40003);
+    AddItem(v3, "Max Turn Speed", &gMaxTurnSpeed, 0x40003);
+    AddItem(v3, "Base Sensitivity Horizontal",
+            &gSaveGameData[0].mStubData.mHorizontalSensitivity, 0x40001);
+    AddItem(v3, "Base Sensitivity Vertical",
+            &gSaveGameData[0].mStubData.mVerticalSensitivity, 0x40001);
+}
+
+// ============================================================================
+// InspectorManager::AddCollisionMenus - ea: 0x4F0D40
+// ============================================================================
+void InspectorManager::AddCollisionMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Collision");
+    AddItem(v2, "Render Collision Geometry", (void*)ToggleRenderGeom, 17);
+    AddItem(v2, "Render Performance Graph", (void*)ToggleGraph, 17);
+    AddItem(v2, "Render Performance Geometry", (void*)ToggleRenderPerf, 17);
+    AddItem(v2, "Render World", &gRenderWorld, 2);
+    AddItem(v2, "Zoom In Perf Graph", (void*)ZoomIn, 17);
+    AddItem(v2, "Zoom Out Perf Graph", (void*)ZoomOut, 17);
+    AddItem(v2, "Physics Object Finder", &gPhysicsFinder, 2);
+    AddItem(v2, "Trace", &gDebugTrace, 2);
+    AddItem(v2, "Bullet Trace", &gDebugLocationalTrace, 2);
+}
+
+// ============================================================================
+// AddSoundMenus - ea: 0x4F4860
+// ============================================================================
+void AddSoundMenus(InspectorManager* inspectorMan)
+{
+    unsigned char* mCurrentReverb = (unsigned char*)SoundDevice::sInst + 0x7890;
+    _INSPECTOR_MENU* pMenu = inspectorMan->AddSubMenu(nullptr, "Sound");
+    inspectorMan->AddItem(pMenu, "Debug Battlechatter", &gAIBattleChatterDebug, 2);
+    inspectorMan->AddItem(pMenu, "Draw Sound Overlay", &g_displayCurrentSounds, 2);
+    inspectorMan->AddItem(pMenu, "Draw Sound Priority Overlay",
+                          &g_displayCurrentPrioritySounds, 2);
+    inspectorMan->AddItem(pMenu, "Draw Streams Only",
+                          &g_displayCurrentSoundStreamsOnly, 2);
+    inspectorMan->AddItem(pMenu, "On screen sound debugging",
+                          &g_useOnScreenSoundDebugging, 2);
+    inspectorMan->AddItem(pMenu, "Positional sound debugging",
+                          &g_useOnScreenSoundPosDebugging, 2);
+    inspectorMan->AddItem(pMenu, "Script sound debugging", &sound_debug.integer, 2);
+    inspectorMan->AddItem(pMenu, "RAM Usage", &g_displaySoundRamUsage, 2);
+    _INSPECTOR_MENU* v2 = inspectorMan->AddSubMenu(pMenu, "Reverb Parameters");
+    inspectorMan->AddItem(v2, "Use Preset", &s_reverbPresetId, 0x20001);
+    inspectorMan->AddItem(v2, "Room               ", mCurrentReverb, 1);
+    inspectorMan->AddItem(v2, "Room HF            ", mCurrentReverb + 4, 1);
+    inspectorMan->AddItem(v2, "Room Rolloff Factor", mCurrentReverb + 8, 7);
+    inspectorMan->AddItem(v2, "Decay HF Ratio     ", mCurrentReverb + 16, 7);
+    inspectorMan->AddItem(v2, "Reflections        ", mCurrentReverb + 20, 1);
+    inspectorMan->AddItem(v2, "Reflections Delay  ", mCurrentReverb + 24, 7);
+    inspectorMan->AddItem(v2, "Reverb             ", mCurrentReverb + 28, 1);
+    inspectorMan->AddItem(v2, "Reverb Delay       ", mCurrentReverb + 32, 7);
+    inspectorMan->AddItem(v2, "Diffusion          ", mCurrentReverb + 36, 4);
+    inspectorMan->AddItem(v2, "Density            ", mCurrentReverb + 40, 4);
+    inspectorMan->AddItem(v2, "HF Reference       ", mCurrentReverb + 44, 4);
+    inspectorMan->AddSubMenu(pMenu, "Veh Parameters");
+}
+
+// ============================================================================
+// SoundDebugRender - ea: 0x4F4A40
+// ============================================================================
+void SoundDebugRender(InspectorManager* inspectorMan)
+{
+    char tmpstr[512];
+    int v1 = s_reverbPresetId;
+    if (s_reverbPresetId >= 26)
+    {
+        if (s_reverbPresetId >= 0)
+        {
+            v1 = 25;
+            goto preset_clamped;
+        }
+    preset_underflow:
+        v1 = 0;
+    preset_clamped:
+        s_reverbPresetId = v1;
+        goto preset_done;
+    }
+    if (s_reverbPresetId < 0)
+        goto preset_underflow;
+    if (s_reverbPresetDisplay != 0)
+    {
+        sprintf(tmpstr, "Reverb = %s", s_reverbPresetStr[s_reverbPresetId]);
+        inspectorMan->Print(tmpstr, 300, 400, 0.55f);
+        if (s_reverbPresetDisplay == 90)
+            SoundDevice::sInst->SetReverb(
+                s_reverbPresetStr[s_reverbPresetId], true);
+        --s_reverbPresetDisplay;
+        v1 = s_reverbPresetId;
+    }
+preset_done:
+    if (s_lastReverbPresetId != v1)
+    {
+        s_lastReverbPresetId = v1;
+        s_reverbPresetDisplay = 90;
+    }
+    if (g_displaySoundRamUsage != 0)
+    {
+        sprintf(tmpstr, "RAM Free %d\nRAM Used %d\nTotal RAM %d",
+                nsl_aramFree, nsl_aramSize - nsl_aramFree, nsl_aramSize);
+        inspectorMan->Print(tmpstr, 52, 400, 0.55f);
+    }
+    if (g_displayCurrentSounds != 0)
+    {
+        int xPos = (int)startx;
+        int yPos = (int)starty;
+        int count = 0;
+        nslGetMaxNumVoices();
+        unsigned int NumVoices = nslGetNumVoices();
+        unsigned int currentNumVoices = NumVoices;
+        unsigned int voicesPlaying = 0;
+        sprintf(tmpstr, "Sound Overlay (SoundDevice-AudioSlots)");
+        inspectorMan->Print(tmpstr, (int)startx, 30, 0.55f);
+        inspectorMan->m_currentRgba[0] = 1.0f;
+        inspectorMan->m_currentRgba[1] = 1.0f;
+        inspectorMan->m_currentRgba[2] = 1.0f;
+        inspectorMan->m_currentRgba[3] = 1.0f;
+        unsigned int i = 0;
+        if (NumVoices != 0)
+        {
+            do
+            {
+                unsigned char* Voice = (unsigned char*)nslGetVoice(i);
+                if (*(Voice + 0x108) != 0)
+                {
+                    nslSourceID v5 = *(nslSourceID*)(Voice + 0x114);
+                    nslWaveID v6 = *(nslWaveID*)(Voice + 0x110);
+                    nslSourceState state = nslGetSourceState(v5);
+                    nslSourcePtr(v5);
+                    const char* sourceName = nslGetSourceName(v5);
+                    nslGetWaveName(v6);
+                    nslGetSourceParam(v5, 0, -1.0f);
+                    bool v7 = nslIsWaveStreamed(v6) != 0;
+                    if (g_displayCurrentSoundStreamsOnly == 0 || v7)
+                    {
+                        if (state != NSL_SOURCE_STATE_INVALID)
+                        {
+                            sprintf(tmpstr, "%d)%s", i, sourceName);
+                            int v8 = yPos;
+                            inspectorMan->Print(tmpstr, xPos, yPos, scale);
+                            ++voicesPlaying;
+                            yPos = (int)ystep + v8;
+                            ++count;
+                        }
+                        else
+                        {
+                            sprintf(tmpstr, "%d) empty", i);
+                        }
+                        if (count == 24)
+                        {
+                            yPos = (int)starty;
+                            xPos += (int)xstep;
+                        }
+                    }
+                }
+                i++;
+            } while (i < currentNumVoices);
+        }
+        sprintf(tmpstr, "NUMBER OF VOICES PLAYING [%d]", voicesPlaying);
+        float v11[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+        int v9 = (int)startx;
+        RE_Text_Paint(startx + 2.0f, 22.0f, 5, scaleScalar * 0.55f, v11,
+                      tmpstr, 0, 0, 0);
+        RE_Text_Paint((float)v9, 20.0f, 5, scaleScalar * 0.55f,
+                      inspectorMan->m_currentRgba, tmpstr, 0, 0, 0);
+    }
+}
+
+// ============================================================================
+// InspectorManager::AddPlayerMenus - ea: 0x4F7880
+// ============================================================================
+void InspectorManager::AddPlayerMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Player Settings");
+    AddItem(v2, "God Mode", (void*)FN_SelectGodMode, 17);
+    AddItem(v2, "NoClip", (void*)FN_NoClip, 17);
+    AddItem(v2, "Player Speed", &g_speed.integer, 1);
+    AddItem(v2, "Draw Player Position", &g_displayPlayerPosition, 2);
+}
+
+// ============================================================================
+// InspectorManager::AddDesignerMenus - ea: 0x4F78F0
+// ============================================================================
+void InspectorManager::AddDesignerMenus()
+{
+    cvar_t* v2 = Cvar_Get("timescale", "1.0", 256);
+    _INSPECTOR_MENU* v3 = AddSubMenu(nullptr, "Designer Support");
+    AddItem(v3, "Draw FPS", &g_renderFPS, 2);
+    AddItem(v3, "Time Scaling", &v2->value, 0x40007);
+    AddItem(v3, "Show Path Node Number", &g_showPathNodeDensity, 2);
+    AddItem(v3, "Entity Stats", &g_renderGameEntityStats, 2);
+    AddItem(v3, "PFX Stats", &g_renderPFXStats, 2);
+    AddItem(v3, "show culled particles", &g_showCulledParticles, 2);
+    AddItem(v3, "Pak Render", (void*)FN_PakRender, 17);
+    AddItem(v3, "NGL Stat Display", (void*)FN_NGLStatDisplay, 17);
+    AddItem(v3, "Render ALL Los Calls", &g_drawDebugLos, 2);
+    AddItem(v3, "Thread Particle system", &gThreadedParticles, 2);
+}
+
+// ============================================================================
+// InspectorManager::AddFXMenus - ea: 0x4F79F0
+// ============================================================================
+void InspectorManager::AddFXMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "FX Settings/Switching");
+    _INSPECTOR_MENU* v3 = AddSubMenu(v2, "FX on/off");
+    AddItem(v3, "Don't Play Foot Steps", &gSoundOptions.mFxDontPlayFootSteps, 2);
+    AddItem(v3, "Don't Play Gear Rattle",
+            &gSoundOptions.mFxDontPlayGearRattle, 2);
+    AddItem(v3, "Don't Play Landing", &gSoundOptions.mFxDontPlayLanding, 2);
+    AddItem(v3, "Don't Play Script Call",
+            &gSoundOptions.mFxDontPlayScriptCall, 2);
+    AddItem(v3, "Don't Play Script Call(Dir)",
+            &gSoundOptions.mFxDontPlayScriptCall_Dir, 2);
+    AddItem(v3, "Don't Play Weapon", &gSoundOptions.mFxDontPlayWeapon, 2);
+    AddItem(v3, "Don't Play Bullet Hit",
+            &gSoundOptions.mFxDontPlayBulletHit, 2);
+    AddItem(v3, "Don't Play Grenade Bounce",
+            &gSoundOptions.mFxDontPlayGrenadeBounce, 2);
+    AddItem(v3, "Don't Play Proj Explode",
+            &gSoundOptions.mFxDontPlayProjExplode, 2);
+    AddItem(v3, "Don't Play Vehicle", &gSoundOptions.mFxDontPlayVehicle, 2);
+    AddItem(v3, "Don't Play Turret", &gSoundOptions.mFxDontPlayTurret, 2);
+    AddItem(v3, "Don't Play Vehicle Wheel",
+            &gSoundOptions.mFxDontPlayVehicleWheel, 2);
+    AddItem(v3, "Don't Play Light Flash",
+            &gSoundOptions.mFxDontPlayLightFlash, 2);
+    AddItem(v3, "Don't Play Music", &gSoundOptions.mFxDontPlayMusic, 2);
+    AddItem(v3, "Reverse Options", (void*)FnReverseOptions, 17);
+    _INSPECTOR_MENU* v4 = AddSubMenu(v2, "CG Settings");
+    AddItem(v4, "Camera Shake", &cg_camerashake.integer, 2);
+    AddItem(v4, "ShellShock Blur", &cg_shellshockblur.integer, 2);
+    _INSPECTOR_MENU* v5 = AddSubMenu(v2, "Motion Blur");
+    AddItem(v5, "MOTION BLUR Alpha VALUE", &g_myBlurValue, 7);
+    AddItem(v5, "MOTION BLUR Red VALUE", &g_myRValue, 7);
+    AddItem(v5, "MOTION BLUR Green VALUE", &g_myGValue, 7);
+    AddItem(v5, "MOTION BLUR Blue VALUE", &g_myBValue, 7);
+    AddItem(v5, "MOTION BLUR Blend Method", &g_blendType, 0x20001);
+    AddItem(v5, "Far Near Radius", &gNearLightRadius, 0x40007);
+    AddItem(v5, "Far Light Radius", &gFarLightRadius, 0x40007);
+    _INSPECTOR_MENU* v6 = AddSubMenu(
+        v2, "Sky Bloom and Jesus Rays (level.skybloom.csv)");
+    AddItem(v6, "Glow ON/OFF", &g_GlowEnable, 2);
+    AddItem(v6, "Glow God Rays ON/OFF", &g_GlowGodRaysEnable, 2);
+    AddItem(v6, "Glow Intensity", &g_GlowIntensity, 10);
+    AddItem(v6, "Glow Expansion", &g_GlowExpansion, 10);
+    AddItem(v6, "Glow Brightness", &g_GlowBrightness, 10);
+    AddItem(v6, "Glow Passes", &g_GlowPasses, 0x60001);
+    _INSPECTOR_MENU* v7 = AddSubMenu(v2, "Marcus");
+    AddItem(v7, "Render Spheres", &g_renderSphere, 2);
+    AddItem(v7, "Limit Visual Range", &g_limitVisualRange, 2);
+    AddItem(v7, "Tank Tracks", &g_tankTracks, 0x40007);
+    AddItem(v7, "Tank Wheels", &g_tankWheels, 0x40007);
+}
+
+// ============================================================================
+// InspectorManager::AddVehicleMenus - ea: 0x4F7D60
+// ============================================================================
+void InspectorManager::AddVehicleMenus(_INSPECTOR_MENU* parent)
+{
+    _INSPECTOR_MENU* v3 = AddSubMenu(parent, "Vehicle Settings");
+    AddItem(v3, "Debug Render All", &rb_vehicle::sRenderAllVehicles, 2);
+    AddItem(v3, "Debug Render", (void*)SetVehicleDebugRender, 22);
+    AddItem(v3, "Debug Render Entry Points",
+            &scr_vehicle_t::sRenderEntryPoints, 2);
+    AddItem(v3, "Debug Vehicle Anims", &scr_vehicle_t::sDebugAnims, 2);
+    AddItem(v3, "Debug Vehicle Mantle", &scr_vehicle_t::sDebugMantle, 2);
+    _INSPECTOR_MENU* v4 = AddSubMenu(v3, "Vehicle Physics");
+    AddItem(v4, "speed_max", (void*)vehicleFuncs::speed_max_Function, 24);
+    AddItem(v4, "accel_max", (void*)vehicleFuncs::accel_max_Function, 24);
+    AddItem(v4, "reverse_scale", (void*)vehicleFuncs::reverse_scale_Function, 24);
+    AddItem(v4, "steer_angle_max", (void*)vehicleFuncs::steer_angle_max_Function, 24);
+    AddItem(v4, "steer_speed", (void*)vehicleFuncs::steer_speed_Function, 24);
+    AddItem(v4, "wheel_radius", (void*)vehicleFuncs::wheel_radius_Function, 24);
+    AddItem(v4, "susp_spring_k", (void*)vehicleFuncs::susp_spring_k_Function, 24);
+    AddItem(v4, "susp_damp_k", (void*)vehicleFuncs::susp_damp_k_Function, 24);
+    AddItem(v4, "susp_adj", (void*)vehicleFuncs::susp_adj_Function, 24);
+    AddItem(v4, "susp_hard_limit", (void*)vehicleFuncs::susp_hard_limit_Function, 24);
+    AddItem(v4, "tire_fric_fwd", (void*)vehicleFuncs::tire_fric_fwd_Function, 24);
+    AddItem(v4, "tire_fric_side", (void*)vehicleFuncs::tire_fric_side_Function, 24);
+    AddItem(v4, "tire_fric_brake", (void*)vehicleFuncs::tire_fric_brake_Function, 24);
+    AddItem(v4, "tire_fric_hand_brake", (void*)vehicleFuncs::tire_fric_hand_brake_Function, 24);
+    AddItem(v4, "body_mass", (void*)vehicleFuncs::body_mass_Function, 24);
+    AddItem(v4, "mass_center_delta_x", (void*)vehicleFuncs::mass_center_delta_x_Function, 24);
+    AddItem(v4, "mass_center_delta_y", (void*)vehicleFuncs::mass_center_delta_y_Function, 24);
+    AddItem(v4, "mass_center_delta_z", (void*)vehicleFuncs::mass_center_delta_z_Function, 24);
+    AddItem(v4, "roll_stability", (void*)vehicleFuncs::roll_stability_Function, 24);
+    AddItem(v4, "roll_resistance", (void*)vehicleFuncs::roll_resistance_Function, 24);
+    AddItem(v4, "upright_strength", (void*)vehicleFuncs::upright_strength_Function, 24);
+    AddItem(v4, "tilt_fakey", (void*)vehicleFuncs::tilt_fakey_Function, 24);
+    AddItem(v4, "peel_out_max_speed", (void*)vehicleFuncs::peel_out_max_speed_Function, 24);
+    AddItem(v4, "inertia_scale_x", (void*)vehicleFuncs::inertia_scale_x_Function, 24);
+    AddItem(v4, "tire_damp_coast", (void*)vehicleFuncs::tire_damp_coast_Function, 24);
+    AddItem(v4, "tire_damp_brake", (void*)vehicleFuncs::tire_damp_brake_Function, 24);
+    AddItem(v4, "tire_damp_hand", (void*)vehicleFuncs::tire_damp_hand_Function, 24);
+    _INSPECTOR_MENU* v5 = AddSubMenu(v3, "Vehicle Physics2");
+    AddItem(v5, "BBoxMinX", (void*)vehicleFuncs::SetVehicleInertiaBoxMinX, 24);
+    AddItem(v5, "BBoxMinY", (void*)vehicleFuncs::SetVehicleInertiaBoxMinY, 24);
+    AddItem(v5, "BBoxMinZ", (void*)vehicleFuncs::SetVehicleInertiaBoxMinZ, 24);
+    AddItem(v5, "BBoxMaxX", (void*)vehicleFuncs::SetVehicleInertiaBoxMaxX, 24);
+    AddItem(v5, "BBoxMaxY", (void*)vehicleFuncs::SetVehicleInertiaBoxMaxY, 24);
+    AddItem(v5, "BBoxMaxZ", (void*)vehicleFuncs::SetVehicleInertiaBoxMaxZ, 24);
+    _INSPECTOR_MENU* v6 = AddSubMenu(v3, "Vehicle GDE");
+    _INSPECTOR_MENU* v7 = AddSubMenu(v6, "Misc Settings");
+    _INSPECTOR_MENU* movementMenu = AddSubMenu(v6, "Movement Settings");
+    _INSPECTOR_MENU* turretMenu = AddSubMenu(v6, "Turret Settings");
+    _INSPECTOR_MENU* v8 = AddSubMenu(v6, "Camera Settings");
+    AddItem(v7, "steerWheels", (void*)vehicleFuncs::steerWheels_Function, 23);
+    AddItem(v7, "quadBarrel", (void*)vehicleFuncs::quadBarrel_Function, 23);
+    AddItem(v7, "bulletDamage", (void*)vehicleFuncs::bulletDamage_Function, 24);
+    AddItem(v7, "grenadeDamage", (void*)vehicleFuncs::grenadeDamage_Function, 24);
+    AddItem(v7, "mineDamage", (void*)vehicleFuncs::mineDamage_Function, 24);
+    AddItem(v7, "projectileDamage", (void*)vehicleFuncs::projectileDamage_Function, 24);
+    AddItem(v7, "spClientSeat", (void*)vehicleFuncs::spClientSeat_Function, 22);
+    AddItem(v7, "hudIndex", (void*)vehicleFuncs::hudIndex_Function, 22);
+    AddItem(v7, "numSeats", (void*)vehicleFuncs::numSeats_Function, 22);
+    AddItem(v7, "health", (void*)vehicleFuncs::health_Function, 22);
+    AddItem(v7, "texureScroll", (void*)vehicleFuncs::texureScroll_Function, 24);
+    AddItem(v7, "texureScrollScale", (void*)vehicleFuncs::texureScrollScale_Function, 24);
+    AddItem(v7, "engineSndSpeed", (void*)vehicleFuncs::engineSndSpeed_Function, 24);
+    AddItem(movementMenu, "maxSpeed", (void*)vehicleFuncs::maxSpeed_Function, 24);
+    AddItem(movementMenu, "accel", (void*)vehicleFuncs::accel_Function, 24);
+    AddItem(movementMenu, "rotRate", (void*)vehicleFuncs::rotRate_Function, 24);
+    AddItem(movementMenu, "rotAccel", (void*)vehicleFuncs::rotAccel_Function, 24);
+    AddItem(movementMenu, "collisionDamage", (void*)vehicleFuncs::collisionDamage_Function, 24);
+    AddItem(movementMenu, "collisionSpeed", (void*)vehicleFuncs::collisionSpeed_Function, 24);
+    AddItem(movementMenu, "suspensionTravel", (void*)vehicleFuncs::suspensionTravel_Function, 24);
+    AddItem(movementMenu, "maxBodyPitch", (void*)vehicleFuncs::maxBodyPitch_Function, 24);
+    AddItem(movementMenu, "maxBodyRoll", (void*)vehicleFuncs::maxBodyRoll_Function, 24);
+    AddItem(movementMenu, "boundsRadius", (void*)vehicleFuncs::boundsRadius_Function, 24);
+    AddItem(movementMenu, "boundsHeight", (void*)vehicleFuncs::boundsHeight_Function, 24);
+    AddItem(movementMenu, "boundsLength", (void*)vehicleFuncs::boundsLength_Function, 24);
+    AddItem(turretMenu, "turretHorizSpanLeft", (void*)vehicleFuncs::turretHorizSpanLeft_Function, 24);
+    AddItem(turretMenu, "turretHorizSpanRight", (void*)vehicleFuncs::turretHorizSpanRight_Function, 24);
+    AddItem(turretMenu, "turretVertSpanUp", (void*)vehicleFuncs::turretVertSpanUp_Function, 24);
+    AddItem(turretMenu, "turretVertSpanDown", (void*)vehicleFuncs::turretVertSpanDown_Function, 24);
+    AddItem(turretMenu, "turretRotRate", (void*)vehicleFuncs::turretRotRate_Function, 24);
+    AddItem(turretMenu, "turretSwirlLerpRate", (void*)vehicleFuncs::turretSwirlLerpRate_Function, 24);
+    AddItem(turretMenu, "turretSwirlPitchFactor", (void*)vehicleFuncs::turretSwirlPitchFactor_Function, 24);
+    AddItem(turretMenu, "turretGunnerVertSpanUp", (void*)vehicleFuncs::turretGunnerVertSpanUp_Function, 24);
+    AddItem(turretMenu, "turretGunnerVertSpanDown", (void*)vehicleFuncs::turretGunnerVertSpanDown_Function, 24);
+    AddItem(v8, "cameraZOffset", (void*)vehicleFuncs::cameraZOffset_Function, 24);
+    AddItem(v8, "cameraFPHeightOffset", (void*)vehicleFuncs::cameraFPHeightOffset_Function, 24);
+    AddItem(v8, "cameraFPFwdOffset", (void*)vehicleFuncs::cameraFPFwdOffset_Function, 24);
+    AddItem(v8, "cameraFPHeightLerp", (void*)vehicleFuncs::cameraFPHeightLerp_Function, 24);
+    AddItem(v8, "cameraChaseOffsetX", (void*)vehicleFuncs::cameraChaseOffsetX_Function, 24);
+    AddItem(v8, "cameraChaseOffsetY", (void*)vehicleFuncs::cameraChaseOffsetY_Function, 24);
+    AddItem(v8, "cameraChaseOffsetZ", (void*)vehicleFuncs::cameraChaseOffsetZ_Function, 24);
+    AddItem(v8, "cameraChaseRadiusInner", (void*)vehicleFuncs::cameraChaseRadiusInner_Function, 24);
+    AddItem(v8, "cameraChaseRadiusOuter", (void*)vehicleFuncs::cameraChaseRadiusOuter_Function, 24);
+    AddItem(v8, "cameraVehViewRadius", (void*)vehicleFuncs::cameraVehViewRadius_Function, 24);
+    AddItem(v8, "cameraVehViewMaxPitch", (void*)vehicleFuncs::cameraVehViewMaxPitch_Function, 24);
+    AddItem(v8, "cameraVehViewMaxPitchDistAdj", (void*)vehicleFuncs::cameraVehViewMaxPitchDistAdj_Function, 24);
+    AddItem(v8, "cameraVehViewFwdBackRatio", (void*)vehicleFuncs::cameraVehViewFwdBackRatio_Function, 24);
+    AddItem(v8, "cameraVehViewMoveInPitch", (void*)vehicleFuncs::cameraVehViewMoveInPitch_Function, 24);
+    AddItem(v8, "camLinkedPitchFactor", (void*)vehicleFuncs::camLinkedPitchFactor_Function, 24);
+    AddItem(v8, "pitchBasedCamOffsetX", (void*)vehicleFuncs::pitchBasedCamOffsetX_Function, 24);
+    AddItem(v8, "pitchBasedCamOffsetZ", (void*)vehicleFuncs::pitchBasedCamOffsetZ_Function, 24);
+    AddItem(v7, "vehicleAnimMatrixColumn", (void*)vehicleFuncs::vehicleAnimMatrixColumn_Function, 22);
+    AddItem(v8, "hatchOpenAngleRight", (void*)vehicleFuncs::hatchOpenAngleRight_Function, 24);
+    AddItem(v8, "hatchOpenAngleLeft", (void*)vehicleFuncs::hatchOpenAngleLeft_Function, 24);
+    AddItem(v7, "inactiveBlowupSeconds", (void*)vehicleFuncs::inactiveBlowupSeconds_Function, 22);
+}
+
+// ============================================================================
+// InspectorManager::AddMultiplayerMenus - ea: 0x4F8570
+// ============================================================================
+void InspectorManager::AddMultiplayerMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Multi-Player");
+    _INSPECTOR_MENU* v3 = AddSubMenu(v2, "Debug Render");
+    AddItem(v3, "General Vehicle", &MPVehicle_sDebugGeneral, 2);
+    AddItem(v3, "Vehicle Network Updates", &MPVehicle_sDebugNetworkUpdates, 2);
+    AddItem(v3, "Pause Vehicle Network Updates", &MPVehicle_sPauseNetworkUpdates, 2);
+    AddItem(v3, "Player Network Updates", &MPPlayer_sDebugNetworkUpdates, 2);
+    AddItem(v3, "Pause Player Network Updates", &MPPlayer_sPauseNetworkUpdates, 2);
+    AddItem(v3, "Session Status", &MPPeer_mRenderSessionInfo, 2);
+    AddItem(v3, "Player Status", &MPPeer_mRenderPlayerInfo, 2);
+    AddItem(v3, "Data Status", &MPPeer_mRenderDataInfo, 2);
+    AddItem(v3, "Debug Anim Entity", &cg_mpDebugAnimEntity, 0x20001);
+    AddItem(v3, "Third Person Render", &cg_thirdPerson.integer, 2);
+    AddItem(v3, "Third Person Range", &cg_thirdPersonRange.value, 0x40003);
+    AddItem(v3, "Third Person Angles", &cg_thirdPersonAngle.value, 13);
+    AddItem(v3, "Third Person Lock", &cg_thirdPersonLock.integer, 2);
+    r_showSkeletons = Cvar_Get("r_showSkeletons", "0", 512);
+    AddItem(v3, "Draw Skeleton", &r_showSkeletons->integer, 2);
+    cvar_t* v4 = Cvar_Get("mp_debugrender", "0", 256);
+    AddItem(v3, "Debug Render General", &v4->integer, 2);
+    cvar_t* v5 = Cvar_Get("mp_debugrenderspawnpoints", "0", 256);
+    AddItem(v3, "Debug Spawn Points", &v5->integer, 2);
+    AddItem(v3, "Debug Stats", &g_displayPlayerStats, 2);
+    AddItem(v2, "Map Restart", (void*)FN_Multiplayer_MapRestart, 17);
+    AddItem(v2, "Rank 1", (void*)FN_Multiplayer_Rank1, 17);
+    AddItem(v2, "Rank 2", (void*)FN_Multiplayer_Rank2, 17);
+    AddItem(v2, "Rank 3", (void*)FN_Multiplayer_Rank3, 17);
+    cvar_t* v6 = Cvar_Get("mp_debug", "0", 256);
+    AddItem(v2, "Debug Script", &v6->integer, 2);
+    cg_debugSpawnPoints = Cvar_Get("cg_debugSpawnPoints", "0", 512);
+    AddItem(v2, "Test Spawn\tPoints", &cg_debugSpawnPoints->integer, 2);
+    cvar_t* v7 = Cvar_Get("ik_ADS", "0", 256);
+    AddItem(v2, "Enable IK ADS", &v7->integer, 2);
+    _INSPECTOR_MENU* v8 = AddSubMenu(v2, "Head Icons");
+    AddItem(v8, "Icon Height", &mp_headIconHeight.integer, 0x40001);
+    AddItem(v8, "Min Screen Size", &mp_headIconMinScreenSize.integer, 0x40001);
+    AddItem(v8, "Dist. Above Player", &mp_headIconDistAbovePlayer.integer, 0x40001);
+    AddItem(v8, "Dist. Above Vehicle", &mp_headIconDistAboveVehicle.integer, 0x40001);
+    AddItem(v8, "Min Alpha Distance", &mp_headIconReviveMinAlphaDist.integer, 0x40001);
+    AddItem(v8, "Max Alpha Distance", &mp_headIconReviveMaxAlphaDist.integer, 0x40001);
+    _INSPECTOR_MENU* v9 = AddSubMenu(v2, "Ammo Icons");
+    AddItem(v9, "Icon Height", &mp_itemIconHeight.integer, 0x40001);
+    AddItem(v9, "Min Screen Size", &mp_itemIconMinScreenSize.integer, 0x40001);
+    AddItem(v9, "Dist. Above Item", &mp_itemIconDistAboveItem.integer, 0x40001);
+    AddItem(v9, "Min Alpha Distance", &mp_itemIconMinAlphaDist.integer, 0x40001);
+    AddItem(v9, "Max Alpha Distance", &mp_itemIconMaxAlphaDist.integer, 0x40001);
+    _INSPECTOR_MENU* v10 = AddSubMenu(v2, "3D Objective Indicator");
+    AddItem(v10, "World Size", &mp_objectiveSize.integer, 0x40001);
+    AddItem(v10, "Min Screen Size", &mp_objectiveMinSize.integer, 0x40001);
+    AddItem(v10, "Max Screen Size", &mp_objectiveMaxSize.integer, 0x40001);
+    AddItem(v10, "Near Alpha", &mp_objectiveNearAlpha.integer, 0x40001);
+    AddItem(v10, "Near Alpha Dist", &mp_objectiveNearAlphaDist.integer, 0x40001);
+    AddItem(v10, "Far Alpha", &mp_objectiveFarAlpha.integer, 0x40001);
+    AddItem(v10, "Far Alpha Dist", &mp_objectiveFarAlphaDist.integer, 0x40001);
+    _INSPECTOR_MENU* v11 = AddSubMenu(v2, "Damage Overlay");
+    AddItem(v11, "Regen Pause Time", &hud_healthOverlay_regenPauseTime.integer, 0x40001);
+    AddItem(v11, "Pulse Start", &hud_healthOverlay_pulseStart.value, 9);
+    AddItem(v11, "Pulse One Duration", &hud_healthOverlay_phaseOne_pulseDuration.integer, 0x40001);
+    AddItem(v11, "Pulse Two Alpha Mult.", &hud_healthOverlay_phaseTwo_toAlphaMultiplier.value, 9);
+    AddItem(v11, "Pulse Two Duration", &hud_healthOverlay_phaseTwo_pulseDuration.integer, 0x40001);
+    AddItem(v11, "Pulse Three Alpha Mult.", &hud_healthOverlay_phaseThree_toAlphaMultiplier.value, 9);
+    AddItem(v11, "Pulse Three Duration", &hud_healthOverlay_phaseThree_pulseDuration.integer, 0x40001);
+    AddItem(v11, "End Alpha", &hud_healthOverlay_phaseEnd_toAlpha.value, 9);
+    AddItem(v11, "End Pulse Duration", &hud_healthOverlay_phaseEnd_pulseDuration.integer, 0x40001);
+}
+
+// ============================================================================
+// InspectorManager::AddDebuggingMenus - ea: 0x50C420
+// ============================================================================
+void InspectorManager::AddDebuggingMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Debug Stuff");
+    AddItem(v2, "Test Int", &g_testInt, 2);
+    AddItem(v2, "Test Int Scroll", &g_testInt, 0x20001);
+    AddItem(v2, "NGL Stat Display", &nglDebug, 0x20010);
+    AddItem(v2, "Lock PVS", &gLockMeshList, 2);
+    AddItem(v2, "Lock PVS Flash", &gEnableMeshFlash, 2);
+    _INSPECTOR_MENU* v3 = AddSubMenu(v2, "Memory");
+    AddItem(v3, "Display Statistics", &memory_showStatistics.integer, 2);
+    AddItem(v3, "Report gBrocPool", &memory_reportBrocPool.integer, 2);
+    AddItem(v3, "Report BackupStackPool",
+            &memory_reportBrocBackupStackPool.integer, 2);
+    AddItem(v3, "Display Aeps Stats", &memory_displayAepsStats.integer, 2);
+    AddItem(v3, "Report Aeps Stats", &memory_reportAepsStats.integer, 2);
+    AddItem(v3, "Report gCommonPool", &memory_reportCommonPool.integer, 2);
+    _INSPECTOR_MENU* v4 = AddSubMenu(v2, "Debug Entity");
+    AddItem(v4, "Debug Player", (void*)FN_DebugThread_Select_Player, 17);
+    AddItem(v4, "Debug Level", (void*)FN_DebugThread_Select_Level, 17);
+    AddItem(v4, "Debug Nearest Ent", (void*)FN_DebugThread_Select_Nearest, 17);
+    AddItem(v4, "Debug Nearest Trigger",
+            (void*)FN_DebugThread_Select_Nearest_Trigger, 17);
+    AddItem(v4, "Debug Entity UniqueIndex",
+            (void*)FN_DebugThread_Select_UniqueIndex, 17);
+    AddItem(v4, "Debug Nearest Vehicle",
+            (void*)FN_DebugThread_Select_Nearest_Vehicle, 17);
+    AddItem(v4, "Debug Target Ent", (void*)FN_DebugThread_Select_Target, 17);
+    AddItem(v4, "Debug Anims Target Ent",
+            (void*)FN_DebugAnims_Select_Target, 17);
+    AddItem(v4, "Toggle Display", &g_debugThread.m_active, 2);
+    AddItem(v4, "Toggle Threads", &g_debugThread.m_displayThreads, 2);
+    AddItem(v4, "Dump Current Threads", (void*)FN_DumpThreadsForTarget, 17);
+    AddItem(v4, "Dump All Threads", (void*)FN_DumpThreadsForAll, 17);
+    AddItem(v4, "Toggle Sound Stat", &sound_showSoundStatForEntity.integer, 2);
+    AddItem(v4, "Disable All Other Sounds", &sound_disableAllOtherSounds.integer, 2);
+    AddItem(v4, "Menu Scroll Start Index", &g_debugThread.m_menuScrollStartIndex, 0x60001);
+    AddItem(v4, "Debug Ent BBoxes", (void*)FN_DebugEntity_BBoxes, 17);
+    AddItem(v4, "Render Debug Entity Los", &g_drawDebugEntityLos, 2);
+    _INSPECTOR_MENU* v5 = AddSubMenu(v2, "Path Finding Debugging");
+    AddItem(v5, "Show Nearest Node", &ai_showNearestNode.integer, 0x40001);
+    AddItem(v5, "Show Nodes", &ai_showNodes.integer, 0x60001);
+    AddItem(v5, "Show Nodes Distance", &ai_showNodesDist.value, 0x40003);
+    AddItem(v5, "Show Friendly Chains", &ai_showFriendlyChains.integer, 0x60001);
+    AddItem(v5, "Show Num Bad Paths", &g_showNumBadPaths, 2);
+    _INSPECTOR_MENU* v6 = AddSubMenu(v2, "Light Grid Debugging");
+    AddItem(v6, "Display Debug Text", &g_showLightGridDebugText, 2);
+    AddItem(v6, "Light Grid Decruftifier", &g_LightGridDecruftifier, 2);
+    AddItem(v6, "Display Grid Distribution", &g_showLightGridDistribution, 2);
+    AddItem(v6, "Errors Have Blue Light", &g_lightGridBlueErrors, 2);
+    _INSPECTOR_MENU* v7 = AddSubMenu(v2, "Accuracy Debugging");
+    AddItem(v7, "Display Weapon Range", &g_showWeaponRange, 2);
+}
+
+// ============================================================================
+// InspectorManager::AddWeaponMenus - ea: 0x50C790
+// ============================================================================
+void InspectorManager::AddWeaponMenus(_INSPECTOR_MENU* parent)
+{
+    _INSPECTOR_MENU* parentMenu = AddSubMenu(parent, "Weapons Settings");
+    _INSPECTOR_MENU* aimMenu = AddSubMenu(parentMenu, "Aim Settings");
+    _INSPECTOR_MENU* miscMenu = AddSubMenu(parentMenu, "Misc Settings");
+    _INSPECTOR_MENU* adsMenu = AddSubMenu(parentMenu, "ADS Settings");
+    _INSPECTOR_MENU* kickMenu = AddSubMenu(parentMenu, "Kick Settings");
+    _INSPECTOR_MENU* adsKickMenu = AddSubMenu(parentMenu, "ADS Kick Settings");
+    _INSPECTOR_MENU* swayMenu = AddSubMenu(parentMenu, "Sway Settings");
+    _INSPECTOR_MENU* timingMenu = AddSubMenu(parentMenu, "Anim Timings Settings");
+    _INSPECTOR_MENU* projMenu = AddSubMenu(parentMenu, "Projectile Settings");
+    _INSPECTOR_MENU* animIKMenu = AddSubMenu(parentMenu, "AnimIK Settings");
+    _INSPECTOR_MENU* v3 = AddSubMenu(parentMenu, "Offset Settings");
+    _INSPECTOR_MENU* v4 = AddSubMenu(parentMenu, "MP Specific Settings");
+    AddItem(miscMenu, "reticleCenterSize", (void*)weaponFuncs::reticleCenterSize_Function, 22);
+    AddItem(miscMenu, "reticleSideSize", (void*)weaponFuncs::reticleSideSize_Function, 22);
+    AddItem(miscMenu, "reticleMinOfs", (void*)weaponFuncs::reticleMinOfs_Function, 22);
+    AddItem(v3, "duckedOfsF", (void*)weaponFuncs::duckedOfsF_Function, 24);
+    AddItem(v3, "duckedOfsR", (void*)weaponFuncs::duckedOfsR_Function, 24);
+    AddItem(v3, "duckedOfsU", (void*)weaponFuncs::duckedOfsU_Function, 24);
+    AddItem(v3, "proneOfsF", (void*)weaponFuncs::proneOfsF_Function, 24);
+    AddItem(v3, "proneOfsR", (void*)weaponFuncs::proneOfsR_Function, 24);
+    AddItem(v3, "proneOfsU", (void*)weaponFuncs::proneOfsU_Function, 24);
+    AddItem(v3, "standMoveF", (void*)weaponFuncs::standMoveF_Function, 24);
+    AddItem(v3, "standMoveR", (void*)weaponFuncs::standMoveR_Function, 24);
+    AddItem(v3, "standMoveU", (void*)weaponFuncs::standMoveU_Function, 24);
+    AddItem(v3, "duckedMoveF", (void*)weaponFuncs::duckedMoveF_Function, 24);
+    AddItem(v3, "duckedMoveR", (void*)weaponFuncs::duckedMoveR_Function, 24);
+    AddItem(v3, "duckedMoveU", (void*)weaponFuncs::duckedMoveU_Function, 24);
+    AddItem(v3, "proneMoveF", (void*)weaponFuncs::proneMoveF_Function, 24);
+    AddItem(v3, "proneMoveR", (void*)weaponFuncs::proneMoveR_Function, 24);
+    AddItem(v3, "proneMoveU", (void*)weaponFuncs::proneMoveU_Function, 24);
+    AddItem(v3, "proneRotP", (void*)weaponFuncs::proneRotP_Function, 24);
+    AddItem(v3, "proneRotY", (void*)weaponFuncs::proneRotY_Function, 24);
+    AddItem(v3, "proneRotR", (void*)weaponFuncs::proneRotR_Function, 24);
+    AddItem(v3, "standMoveMinSpeed", (void*)weaponFuncs::standMoveMinSpeed_Function, 24);
+    AddItem(v3, "duckedMoveMinSpeed", (void*)weaponFuncs::duckedMoveMinSpeed_Function, 24);
+    AddItem(v3, "proneMoveMinSpeed", (void*)weaponFuncs::proneMoveMinSpeed_Function, 24);
+    AddItem(v3, "posProneRotRate", (void*)weaponFuncs::posProneRotRate_Function, 24);
+    AddItem(v3, "proneRotMinSpeed", (void*)weaponFuncs::proneRotMinSpeed_Function, 24);
+    AddItem(miscMenu, "damage", (void*)weaponFuncs::damage_Function, 22);
+    AddItem(miscMenu, "meleeDamage", (void*)weaponFuncs::meleeDamage_Function, 22);
+    AddItem(miscMenu, "sensitivityScale", (void*)weaponFuncs::sensitivityScale_Function, 24);
+    AddItem(miscMenu, "damageInnerRadius", (void*)weaponFuncs::damageInnerRadius_Function, 22);
+    AddItem(miscMenu, "damageOuterRadius", (void*)weaponFuncs::damageOuterRadius_Function, 22);
+    AddItem(miscMenu, "minDamagePercent", (void*)weaponFuncs::minDamagePercent_Function, 22);
+    AddItem(timingMenu, "fireDelay", (void*)weaponFuncs::fireDelay_Function, 22);
+    AddItem(timingMenu, "meleeDelay", (void*)weaponFuncs::meleeDelay_Function, 22);
+    AddItem(timingMenu, "fireTime", (void*)weaponFuncs::fireTime_Function, 22);
+    AddItem(timingMenu, "rechamberTime", (void*)weaponFuncs::rechamberTime_Function, 22);
+    AddItem(timingMenu, "rechamberBoltTime", (void*)weaponFuncs::rechamberBoltTime_Function, 22);
+    AddItem(timingMenu, "holdFireTime", (void*)weaponFuncs::holdFireTime_Function, 22);
+    AddItem(timingMenu, "meleeTime", (void*)weaponFuncs::meleeTime_Function, 22);
+    AddItem(timingMenu, "reloadTime", (void*)weaponFuncs::reloadTime_Function, 22);
+    AddItem(timingMenu, "reloadEmptyTime", (void*)weaponFuncs::reloadEmptyTime_Function, 22);
+    AddItem(timingMenu, "reloadAddTime", (void*)weaponFuncs::reloadAddTime_Function, 22);
+    AddItem(timingMenu, "reloadStartTime", (void*)weaponFuncs::reloadStartTime_Function, 22);
+    AddItem(timingMenu, "reloadStartAddTime", (void*)weaponFuncs::reloadStartAddTime_Function, 22);
+    AddItem(timingMenu, "reloadEndTime", (void*)weaponFuncs::reloadEndTime_Function, 22);
+    AddItem(timingMenu, "dropTime", (void*)weaponFuncs::dropTime_Function, 22);
+    AddItem(timingMenu, "raiseTime", (void*)weaponFuncs::raiseTime_Function, 22);
+    AddItem(timingMenu, "altDropTime", (void*)weaponFuncs::altDropTime_Function, 22);
+    AddItem(timingMenu, "altRaiseTime", (void*)weaponFuncs::altRaiseTime_Function, 22);
+    AddItem(timingMenu, "fuseTime", (void*)weaponFuncs::fuseTime_Function, 22);
+    AddItem(miscMenu, "moveSpeedScale", (void*)weaponFuncs::moveSpeedScale_Function, 24);
+    AddItem(kickMenu, "gunMaxPitch", (void*)weaponFuncs::gunMaxPitch_Function, 24);
+    AddItem(kickMenu, "gunMaxYaw", (void*)weaponFuncs::gunMaxYaw_Function, 24);
+    AddItem(swayMenu, "swayMaxAngle", (void*)weaponFuncs::swayMaxAngle_Function, 24);
+    AddItem(swayMenu, "swayLerpSpeed", (void*)weaponFuncs::swayLerpSpeed_Function, 24);
+    AddItem(swayMenu, "swayPitchScale", (void*)weaponFuncs::swayPitchScale_Function, 24);
+    AddItem(swayMenu, "swayYawScale", (void*)weaponFuncs::swayYawScale_Function, 24);
+    AddItem(swayMenu, "swayHorizScale", (void*)weaponFuncs::swayHorizScale_Function, 24);
+    AddItem(swayMenu, "swayVertScale", (void*)weaponFuncs::swayVertScale_Function, 24);
+    AddItem(swayMenu, "swayShellShockScale", (void*)weaponFuncs::swayShellShockScale_Function, 24);
+    AddItem(swayMenu, "adsSwayMaxAngle", (void*)weaponFuncs::adsSwayMaxAngle_Function, 24);
+    AddItem(swayMenu, "adsSwayLerpSpeed", (void*)weaponFuncs::adsSwayLerpSpeed_Function, 24);
+    AddItem(swayMenu, "adsSwayPitchScale", (void*)weaponFuncs::adsSwayPitchScale_Function, 24);
+    AddItem(swayMenu, "adsSwayYawScale", (void*)weaponFuncs::adsSwayYawScale_Function, 24);
+    AddItem(swayMenu, "adsSwayHorizScale", (void*)weaponFuncs::adsSwayHorizScale_Function, 24);
+    AddItem(swayMenu, "adsSwayVertScale", (void*)weaponFuncs::adsSwayVertScale_Function, 24);
+    AddItem(projMenu, "takedamage", (void*)weaponFuncs::takedamage_Function, 22);
+    AddItem(projMenu, "explosionRadius", (void*)weaponFuncs::explosionRadius_Function, 22);
+    AddItem(projMenu, "explosionInnerDamage", (void*)weaponFuncs::explosionInnerDamage_Function, 22);
+    AddItem(projMenu, "explosionOuterDamage", (void*)weaponFuncs::explosionOuterDamage_Function, 22);
+    AddItem(projMenu, "projectileSpeed", (void*)weaponFuncs::projectileSpeed_Function, 22);
+    AddItem(projMenu, "projectileSpeedUp", (void*)weaponFuncs::projectileSpeedUp_Function, 22);
+    AddItem(projMenu, "triggerRadius", (void*)weaponFuncs::triggerRadius_Function, 22);
+    AddItem(adsMenu, "adsTransInTime", (void*)weaponFuncs::adsTransInTime_Function, 22);
+    AddItem(adsMenu, "adsTransOutTime", (void*)weaponFuncs::adsTransOutTime_Function, 22);
+    AddItem(adsMenu, "adsIdleAmount", (void*)weaponFuncs::adsIdleAmount_Function, 24);
+    AddItem(adsMenu, "adsZoomFov", (void*)weaponFuncs::adsZoomFov_Function, 24);
+    AddItem(adsMenu, "adsSensitivityScale", (void*)weaponFuncs::adsSensitivityScale_Function, 24);
+    AddItem(adsMenu, "adsZoomInFrac", (void*)weaponFuncs::adsZoomInFrac_Function, 24);
+    AddItem(adsMenu, "adsZoomOutFrac", (void*)weaponFuncs::adsZoomOutFrac_Function, 24);
+    AddItem(adsMenu, "adsOverlayWidth", (void*)weaponFuncs::adsOverlayWidth_Function, 24);
+    AddItem(adsMenu, "adsOverlayHeight", (void*)weaponFuncs::adsOverlayHeight_Function, 24);
+    AddItem(adsMenu, "adsBobFactor", (void*)weaponFuncs::adsBobFactor_Function, 24);
+    AddItem(adsMenu, "adsViewBobMult", (void*)weaponFuncs::adsViewBobMult_Function, 24);
+    AddItem(adsMenu, "adsAimPitch", (void*)weaponFuncs::adsAimPitch_Function, 24);
+    AddItem(adsMenu, "adsCrosshairInFrac", (void*)weaponFuncs::adsCrosshairInFrac_Function, 24);
+    AddItem(adsMenu, "adsCrosshairOutFrac", (void*)weaponFuncs::adsCrosshairOutFrac_Function, 24);
+    AddItem(timingMenu, "adsReloadTransTime", (void*)weaponFuncs::adsReloadTransTime_Function, 22);
+    AddItem(timingMenu, "adsTransBlendTime", (void*)weaponFuncs::adsTransBlendTime_Function, 22);
+    AddItem(adsKickMenu, "adsGunKickPitchMin", (void*)weaponFuncs::adsGunKickPitchMin_Function, 24);
+    AddItem(adsKickMenu, "adsGunKickPitchMax", (void*)weaponFuncs::adsGunKickPitchMax_Function, 24);
+    AddItem(adsKickMenu, "adsGunKickYawMin", (void*)weaponFuncs::adsGunKickYawMin_Function, 24);
+    AddItem(adsKickMenu, "adsGunKickYawMax", (void*)weaponFuncs::adsGunKickYawMax_Function, 24);
+    AddItem(adsKickMenu, "adsGunKickAccel", (void*)weaponFuncs::adsGunKickAccel_Function, 24);
+    AddItem(adsKickMenu, "adsGunKickSpeedMax", (void*)weaponFuncs::adsGunKickSpeedMax_Function, 24);
+    AddItem(adsKickMenu, "adsGunKickSpeedDecay", (void*)weaponFuncs::adsGunKickSpeedDecay_Function, 24);
+    AddItem(adsKickMenu, "adsGunKickStaticDecay", (void*)weaponFuncs::adsGunKickStaticDecay_Function, 24);
+    AddItem(adsKickMenu, "adsViewKickPitchMin", (void*)weaponFuncs::adsViewKickPitchMin_Function, 24);
+    AddItem(adsKickMenu, "adsViewKickPitchMax", (void*)weaponFuncs::adsViewKickPitchMax_Function, 24);
+    AddItem(adsKickMenu, "adsViewKickYawMin", (void*)weaponFuncs::adsViewKickYawMin_Function, 24);
+    AddItem(adsKickMenu, "adsViewKickYawMax", (void*)weaponFuncs::adsViewKickYawMax_Function, 24);
+    AddItem(adsKickMenu, "adsViewKickCenterSpeed", (void*)weaponFuncs::adsViewKickCenterSpeed_Function, 24);
+    AddItem(aimMenu, "adsSpread", (void*)weaponFuncs::adsSpread_Function, 24);
+    AddItem(aimMenu, "adsSpreadDucked", (void*)weaponFuncs::adsSpreadDucked_Function, 24);
+    AddItem(aimMenu, "adsSpreadProne", (void*)weaponFuncs::adsSpreadProne_Function, 24);
+    AddItem(aimMenu, "hipSpreadStandMin", (void*)weaponFuncs::hipSpreadStandMin_Function, 24);
+    AddItem(aimMenu, "hipSpreadDuckedMin", (void*)weaponFuncs::hipSpreadDuckedMin_Function, 24);
+    AddItem(aimMenu, "hipSpreadProneMin", (void*)weaponFuncs::hipSpreadProneMin_Function, 24);
+    AddItem(aimMenu, "hipSpreadMax", (void*)weaponFuncs::hipSpreadMax_Function, 24);
+    AddItem(aimMenu, "hipSpreadDecayRate", (void*)weaponFuncs::hipSpreadDecayRate_Function, 24);
+    AddItem(aimMenu, "hipSpreadFireAdd", (void*)weaponFuncs::hipSpreadFireAdd_Function, 24);
+    AddItem(aimMenu, "hipSpreadTurnAdd", (void*)weaponFuncs::hipSpreadTurnAdd_Function, 24);
+    AddItem(aimMenu, "hipSpreadMoveAdd", (void*)weaponFuncs::hipSpreadMoveAdd_Function, 24);
+    AddItem(aimMenu, "hipSpreadDuckedDecay", (void*)weaponFuncs::hipSpreadDuckedDecay_Function, 24);
+    AddItem(aimMenu, "hipSpreadProneDecay", (void*)weaponFuncs::hipSpreadProneDecay_Function, 24);
+    AddItem(aimMenu, "hipReticleSidePos", (void*)weaponFuncs::hipReticleSidePos_Function, 24);
+    AddItem(aimMenu, "hipIdleAmount", (void*)weaponFuncs::hipIdleAmount_Function, 24);
+    AddItem(kickMenu, "hipGunKickPitchMin", (void*)weaponFuncs::hipGunKickPitchMin_Function, 24);
+    AddItem(kickMenu, "hipGunKickPitchMax", (void*)weaponFuncs::hipGunKickPitchMax_Function, 24);
+    AddItem(kickMenu, "hipGunKickYawMin", (void*)weaponFuncs::hipGunKickYawMin_Function, 24);
+    AddItem(kickMenu, "hipGunKickYawMax", (void*)weaponFuncs::hipGunKickYawMax_Function, 24);
+    AddItem(kickMenu, "hipGunKickAccel", (void*)weaponFuncs::hipGunKickAccel_Function, 24);
+    AddItem(kickMenu, "hipGunKickSpeedMax", (void*)weaponFuncs::hipGunKickSpeedMax_Function, 24);
+    AddItem(kickMenu, "hipGunKickSpeedDecay", (void*)weaponFuncs::hipGunKickSpeedDecay_Function, 24);
+    AddItem(kickMenu, "hipGunKickStaticDecay", (void*)weaponFuncs::hipGunKickStaticDecay_Function, 24);
+    AddItem(kickMenu, "hipViewKickPitchMin", (void*)weaponFuncs::hipViewKickPitchMin_Function, 24);
+    AddItem(kickMenu, "hipViewKickPitchMax", (void*)weaponFuncs::hipViewKickPitchMax_Function, 24);
+    AddItem(kickMenu, "hipViewKickYawMin", (void*)weaponFuncs::hipViewKickYawMin_Function, 24);
+    AddItem(kickMenu, "hipViewKickYawMax", (void*)weaponFuncs::hipViewKickYawMax_Function, 24);
+    AddItem(kickMenu, "hipViewKickCenterSpeed", (void*)weaponFuncs::hipViewKickCenterSpeed_Function, 24);
+    AddItem(aimMenu, "aiEffectiveRange", (void*)weaponFuncs::aiEffectiveRange_Function, 24);
+    AddItem(aimMenu, "aiMissRange", (void*)weaponFuncs::aiMissRange_Function, 24);
+    AddItem(aimMenu, "aiDamageMod", (void*)weaponFuncs::aiDamageMod_Function, 24);
+    AddItem(aimMenu, "bulletConeAngle", (void*)weaponFuncs::bulletConeAngle_Function, 24);
+    AddItem(aimMenu, "adsBulletConeAngle", (void*)weaponFuncs::adsBulletConeAngle_Function, 24);
+    AddItem(animIKMenu, "animIKOffsetTime", (void*)weaponFuncs::animIKOffsetTime_Function, 24);
+    AddItem(animIKMenu, "animIKOffsetForce", (void*)weaponFuncs::animIKOffsetForce_Function, 24);
+    AddItem(animIKMenu, "animIKOffsetDist", (void*)weaponFuncs::animIKOffsetDist_Function, 24);
+    AddItem(animIKMenu, "animIKPitchTime", (void*)weaponFuncs::animIKPitchTime_Function, 24);
+    AddItem(animIKMenu, "animIKPitchForce", (void*)weaponFuncs::animIKPitchForce_Function, 24);
+    AddItem(animIKMenu, "animIKPitchAngle", (void*)weaponFuncs::animIKPitchAngle_Function, 24);
+    AddItem(animIKMenu, "animIKTorsoRecoilPitchTime", (void*)weaponFuncs::animIKTorsoRecoilPitchTime_Function, 24);
+    AddItem(animIKMenu, "animIKTorsoRecoilPitchForce", (void*)weaponFuncs::animIKTorsoRecoilPitchForce_Function, 24);
+    AddItem(animIKMenu, "animIKTorsoRecoilPitchAngle", (void*)weaponFuncs::animIKTorsoRecoilPitchAngle_Function, 24);
+    AddItem(v4, "damageMP", (void*)weaponFuncs::damageMP_Function, 22);
+    AddItem(v4, "meleeDamageMP", (void*)weaponFuncs::meleeDamageMP_Function, 22);
+    AddItem(v4, "damageInnerRadiusMP", (void*)weaponFuncs::damageInnerRadiusMP_Function, 22);
+    AddItem(v4, "damageOuterRadiusMP", (void*)weaponFuncs::damageOuterRadiusMP_Function, 22);
+    AddItem(v4, "minDamagePercentMP", (void*)weaponFuncs::minDamagePercentMP_Function, 22);
+    AddItem(v4, "fireDelayMP", (void*)weaponFuncs::fireDelayMP_Function, 22);
+    AddItem(v4, "meleeDelayMP", (void*)weaponFuncs::meleeDelayMP_Function, 22);
+    AddItem(v4, "fireTimeMP", (void*)weaponFuncs::fireTimeMP_Function, 22);
+    AddItem(v4, "meleeTimeMP", (void*)weaponFuncs::meleeTimeMP_Function, 22);
+    AddItem(v4, "explosionRadiusMP", (void*)weaponFuncs::explosionRadiusMP_Function, 22);
+    AddItem(v4, "explosionInnerDamageMP", (void*)weaponFuncs::explosionInnerDamageMP_Function, 22);
+    AddItem(v4, "explosionOuterDamageMP", (void*)weaponFuncs::explosionOuterDamageMP_Function, 22);
+    AddItem(v4, "maxAmmoMP", (void*)weaponFuncs::maxAmmoMP_Function, 22);
+    AddItem(v4, "sensitivityScaleMP", (void*)weaponFuncs::sensitivityScaleMP_Function, 24);
+    AddItem(v4, "adsZoomFovMP", (void*)weaponFuncs::adsZoomFovMP_Function, 24);
+    AddItem(v4, "adsTransInTimeMP", (void*)weaponFuncs::adsTransInTimeMP_Function, 22);
+    AddItem(v4, "adsTransOutTimeMP", (void*)weaponFuncs::adsTransOutTimeMP_Function, 22);
+    AddItem(v4, "adsSensitivityScaleMP", (void*)weaponFuncs::adsSensitivityScaleMP_Function, 24);
+    AddItem(v4, "adsSpreadMP", (void*)weaponFuncs::adsSpreadMP_Function, 24);
+    AddItem(v4, "adsSpreadDuckedMP", (void*)weaponFuncs::adsSpreadDuckedMP_Function, 24);
+    AddItem(v4, "adsSpreadProneMP", (void*)weaponFuncs::adsSpreadProneMP_Function, 24);
+    AddItem(v4, "hipSpreadStandMinMP", (void*)weaponFuncs::hipSpreadStandMinMP_Function, 24);
+    AddItem(v4, "hipSpreadDuckedMinMP", (void*)weaponFuncs::hipSpreadDuckedMinMP_Function, 24);
+    AddItem(v4, "hipSpreadProneMinMP", (void*)weaponFuncs::hipSpreadProneMinMP_Function, 24);
+    AddItem(v4, "hipSpreadMaxMP", (void*)weaponFuncs::hipSpreadMaxMP_Function, 24);
+    AddItem(v4, "hipSpreadDecayRateMP", (void*)weaponFuncs::hipSpreadDecayRateMP_Function, 24);
+    AddItem(v4, "hipSpreadFireAddMP", (void*)weaponFuncs::hipSpreadFireAddMP_Function, 24);
+    AddItem(v4, "hipSpreadTurnAddMP", (void*)weaponFuncs::hipSpreadTurnAddMP_Function, 24);
+    AddItem(v4, "hipSpreadMoveAddMP", (void*)weaponFuncs::hipSpreadMoveAddMP_Function, 24);
+    AddItem(v4, "hipSpreadDuckedDecayMP", (void*)weaponFuncs::hipSpreadDuckedDecayMP_Function, 24);
+    AddItem(v4, "hipSpreadProneDecayMP", (void*)weaponFuncs::hipSpreadProneDecayMP_Function, 24);
+    AddItem(parentMenu, "Draw Crosshair", &cg_forceCrosshair.integer, 2);
+    AddItem(parentMenu, "Draw Bullets", &g_debugBullets.integer, 0x60001);
+    r_showLocationalDamage = Cvar_Get("r_showLocationalDamage", "0", 512);
+    AddItem(parentMenu, "Draw Hit Boxes", &r_showLocationalDamage->integer, 0x60001);
+    bg_stickyAimRender = Cvar_Get("bg_stickyAimRender", "0", 512);
+    IN_Init();
+    joy_threshold = Cvar_Get("joy_threshold", "40", 1);
+    AddItem(parentMenu, "Draw StickyAim", &bg_stickyAimRender->integer, 0x20001);
+    AddItem(parentMenu, "Draw Weap Anim", &bg_debugWeaponAnim.integer, 2);
+    AddItem(parentMenu, "Draw Weap State", &bg_debugWeaponState.integer, 2);
+    AddItem(parentMenu, "Draw Grenades", &g_debugGrenades.integer, 2);
+    AddItem(parentMenu, "Joystick Threshold", &joy_threshold->integer, 1);
+    AddItem(parentMenu, "Melee Assist Range", &bg_meleeassistrange.integer, 0x40001);
+    AddItem(parentMenu, "Melee Assist Angular Speed",
+            &bg_meleeassistaspeed.integer, 0x40001);
+    AddItem(parentMenu, "Melee Assist FOV Min Dot Prod",
+            &bg_meleeassistfov.value, 9);
+}
+
+// ============================================================================
+// InspectorManager::AddSettingsMenus - ea: 0x50D840
+// ============================================================================
+void InspectorManager::AddSettingsMenus()
+{
+    _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Game Settings");
+    _INSPECTOR_MENU* v3 = AddSubMenu(nullptr, "Controller");
+    AddItem(v3, "Config A", (void*)FN_ControlConfigA, 17);
+    AddItem(v3, "Config B", (void*)FN_ControlConfigB, 17);
+    AddItem(v3, "Config C", (void*)FN_ControlConfigC, 17);
+    AddItem(v3, "Config D", (void*)FN_ControlConfigD, 17);
+    AddItem(v3, "Sticks Default", (void*)FN_ControlSticksDefault, 17);
+    AddItem(v3, "Sticks South Paw", (void*)FN_ControlSticksSouthPaw, 17);
+    AddItem(v3, "Sticks Legacy", (void*)FN_ControlSticksLegacy, 17);
+    AddItem(v3, "Sticks Legacy South Paw", (void*)FN_ControlSticksLegacySouthPaw, 17);
+    in_stickSouthPaw = Cvar_Get("in_stickSouthPaw", "0", 0);
+    in_stickLegacy = Cvar_Get("in_stickLegacy", "0", 0);
+    cl_freeze = Cvar_Get("cl_freeze", "0", 0);
+    AddItem(v3, "Freeze Input", &cl_freeze->integer, 2);
+    AddItem(v3, "Invert Aim", (void*)FN_ControlInvertAim, 17);
+    _INSPECTOR_MENU* v4 = AddSubMenu(v2, "Difficulty Settings");
+    AddItem(v4, "Easy Accuracy Mod %", &gEasyAccuracyMod, 0x40007);
+    AddItem(v4, "Normal Accuracy Mod %", &gNormalAccuracyMod, 0x40007);
+    AddItem(v4, "Hard Accuracy Mod %", &gHardAccuracyMod, 0x40007);
+    AddItem(v4, "New Easy Max Health", &gNewEasyMaxHealth, 1);
+    AddItem(v4, "New Medium Max Health", &gNewMediumMaxHealth, 1);
+    AddItem(v4, "New Hard Max Health", &gNewHardMaxHealth, 1);
+    AddItem(v4, "Change to Easy Difficulty", (void*)FN_ApplyEasyDifficultyChanges, 17);
+    AddItem(v4, "Change to Medium Difficulty", (void*)FN_ApplyMediumDifficultyChanges, 17);
+    AddItem(v4, "Change to Hard Difficulty", (void*)FN_ApplyHardDifficultyChanges, 17);
+    _INSPECTOR_MENU* v5 = AddSubMenu(v2, "Shake and Rumble");
+    AddItem(v5, "Low Frequency Delay", &gLowFreqDelay, 0x40007);
+    AddItem(v5, "Low Frequency Steady Duration", &gLowFreqSteadyDuration, 0x40007);
+    AddItem(v5, "Low Frequency Ramp Up Time", &gLowFreqRampUpTime, 0x40007);
+    AddItem(v5, "Low Frequency Ramp Down Time", &gLowFreqRampDownTime, 0x40007);
+    AddItem(v5, "Low Frequency Intensity", &gLowFreqRumbleIntensity, 0x40007);
+    AddItem(v5, "High Frequency Delay", &gHighFreqDelay, 0x40007);
+    AddItem(v5, "High Frequency Duration", &gHighFreqDuration, 0x40007);
+    AddItem(v5, "RUN SHAKE AND RUMBLE!!!", (void*)PlayRumble, 17);
+    AddWeaponMenus(v2);
+    AddVehicleMenus(v2);
+    AddAimAssistMenus(v2);
+    _INSPECTOR_MENU* v6 = AddSubMenu(v2, "Fog Values (Set these in script)");
+    AddItem(v6, "Fog ON/OFF", &g_FogEnable, 2);
+    AddItem(v6, "Fog Red", &g_FogRed, 9);
+    AddItem(v6, "Fog Green", &g_FogGreen, 9);
+    AddItem(v6, "Fog Blue", &g_FogBlue, 9);
+    AddItem(v6, "Fog Near", &g_FogNear, 0x40004);
+    AddItem(v6, "Fog Far", &g_FogFar, 0x40004);
+    AddItem(v6, "Fog Start", &g_FogStart, 9);
+    AddItem(v6, "Fog End", &g_FogEnd, 9);
+    cvar_t* v7 = Cvar_Get("r_LightScale", "1.0", 256);
+    AddItem(v2, "Object Ambient Colour", &g_objectAmbientHelper, 7);
+    AddItem(v2, "Object Diffuse Colour", &g_objectDiffuseHelper, 7);
+    AddItem(v2, "Entity Light Scaler", &v7->value, 0x40007);
+    _INSPECTOR_MENU* v8 = AddSubMenu(v2, "Camera Shake Testing");
+    AddItem(v8, "Shake Magnitude", &g_ShakeTestMag, 8);
+    AddItem(v8, "Shake Frequency", &g_ShakeTestFreq, 8);
+    AddItem(v8, "Shake Time", &g_ShakeTestTime, 8);
+    AddItem(v8, "Shake 2D Effect", &g_ShakeTest2d, 2);
+    AddItem(v8, "Start Shake Now", (void*)FN_ShakeTestFunction, 17);
+    AddItem(v8, "Enable Default Shellshock Effect",
+            (void*)FN_DefaultShellshockTestFunction, 17);
+    AddItem(v8, "Enable Pain Shellshock Effect",
+            (void*)FN_PainShellshockTestFunction, 17);
+    AddItem(v8, "Enable Death Shellshock Effect",
+            (void*)FN_DeathShellshockTestFunction, 17);
+    _INSPECTOR_MENU* v9 = AddSubMenu(v2, "blur effect testing");
+    AddItem(v9, "Curgen motion blur", (void*)FN_CurgenMotionBlur, 17);
+    _INSPECTOR_MENU* v10 = AddSubMenu(v2, "Ocean Config");
+    AddItem(v10, "Enable", &g_oceanDebug_Enable, 2);
+    AddItem(v10, "Bank Number", &g_oceanDebug_BankID, 0x40001);
+    AddItem(v10, "Dump Settings", &g_oceanDebug_DumpSettings, 2);
+    AddItem(v10, "Layer 2 Enable", &g_oceanDebug_Layer2Enable, 2);
+    AddItem(v10, "Layer 3 Enable", &g_oceanDebug_Layer3Enable, 2);
+    AddItem(v10, "Lightmap Enable", &g_oceanDebug_LightmapEnable, 2);
+    _INSPECTOR_MENU* pLayer = AddSubMenu(v10, "Diffuse Settings");
+    AddItem(pLayer, "U Scale", &g_oceanDebug_UVScale[0], 0x40006);
+    AddItem(pLayer, "V Scale", &g_oceanDebug_UVScale[1], 0x40006);
+    AddItem(pLayer, "U Scroll", &g_oceanDebug_UVScroll[0], 7);
+    AddItem(pLayer, "V Scroll", &g_oceanDebug_UVScroll[1], 7);
+    pLayer = AddSubMenu(v10, "Layer 2 Settings");
+    AddItem(pLayer, "U Scale", &g_oceanDebug_UVScale[2], 0x40006);
+    AddItem(pLayer, "V Scale", &g_oceanDebug_UVScale[3], 0x40006);
+    AddItem(pLayer, "U Scroll", &g_oceanDebug_UVScroll[2], 7);
+    AddItem(pLayer, "V Scroll", &g_oceanDebug_UVScroll[3], 7);
+    AddItem(pLayer, "Alpha", &g_oceanDebug_Layer2Alpha, 9);
+    pLayer = AddSubMenu(v10, "Layer 3 Settings");
+    AddItem(pLayer, "U Scale", &g_oceanDebug_UVScale[4], 0x40006);
+    AddItem(pLayer, "V Scale", &g_oceanDebug_UVScale[5], 0x40006);
+    AddItem(pLayer, "U Scroll", &g_oceanDebug_UVScroll[4], 7);
+    AddItem(pLayer, "V Scroll", &g_oceanDebug_UVScroll[5], 7);
+    AddItem(pLayer, "Alpha", &g_oceanDebug_Layer3Alpha, 9);
+    AddItem(v10, "Sea Level", &g_oceanDebug_SeaLevel, 6);
+    const char* waveMenuNames[4] = { "Wave 1", "Wave 2", "Wave 3", "Wave 4" };
+    for (int wave = 0; wave < 4; ++wave)
+    {
+        _INSPECTOR_MENU* pWave = AddSubMenu(v10, (char*)waveMenuNames[wave]);
+        AddItem(pWave, "Origin X", &g_oceanDebug_Origin[wave * 2], 4);
+        AddItem(pWave, "Origin Y", &g_oceanDebug_Origin[wave * 2 + 1], 4);
+        AddItem(pWave, "Distance", &g_oceanDebug_Distance[wave], 0x40004);
+        AddItem(pWave, "Heading", &g_oceanDebug_Heading[wave], 0x40006);
+        AddItem(pWave, "Wavelength", &g_oceanDebug_Wavelength[wave], 0x40006);
+        AddItem(pWave, "Amplitude", &g_oceanDebug_Amplitude[wave], 6);
+        AddItem(pWave, "Phase", &g_oceanDebug_Phase[wave], 9);
+        AddItem(pWave, "Timescale", &g_oceanDebug_Timescale[wave], 7);
+    }
+    _INSPECTOR_MENU* v11 = AddSubMenu(v2, "cdSimpleAlpha Config");
+    AddItem(v11, "Enable", &g_cdSimpleAlphaDebug.mEnable, 2);
+    AddItem(v11, "Blend Mode (*10)", &g_cdSimpleAlphaDebug.mBlendMode, 0x40001);
+    AddItem(v11, "Backface Culling", &g_cdSimpleAlphaDebug.mBackface, 2);
+    AddItem(v11, "Enable Sorting", &g_cdSimpleAlphaDebug.mEnableZPass, 2);
+    AddItem(v11, "Enable Tint", &g_cdSimpleAlphaDebug.mEnableTint, 2);
+    AddItem(v11, "Enable Pulsing", &g_cdSimpleAlphaDebug.mEnablePulsing, 2);
+    AddItem(v11, "Tint R", &g_cdSimpleAlphaDebug.mTint[0], 10);
+    AddItem(v11, "Tint G", &g_cdSimpleAlphaDebug.mTint[1], 10);
+    AddItem(v11, "Tint B", &g_cdSimpleAlphaDebug.mTint[2], 10);
+    AddItem(v11, "Alpha", &g_cdSimpleAlphaDebug.mTint[3], 9);
+    AddItem(v11, "Alpha Cutoff", &g_cdSimpleAlphaDebug.mAlphaCutoff, 9);
+    AddItem(v11, "Pulse Rate", &g_cdSimpleAlphaDebug.mPulseRate, 0x40007);
+    AddItem(v11, "Min Tint", &g_cdSimpleAlphaDebug.mMinTint, 9);
+    AddItem(v11, "Max Tint", &g_cdSimpleAlphaDebug.mMaxTint, 9);
+    AddItem(v11, "Min Alpha", &g_cdSimpleAlphaDebug.mMinAlpha, 9);
+    AddItem(v11, "Max Alpha", &g_cdSimpleAlphaDebug.mMaxAlpha, 9);
 }
 
 // ============================================================================
