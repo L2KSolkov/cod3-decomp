@@ -90,6 +90,7 @@ struct BspTree {
     float    mins[2];       // +0x64
     uint8_t _pad6C[0x70 - 0x6C];
     float    maxs[2];       // +0x70
+    int      checkcount;    // +0x78
 };
 
 extern BspTree* g_bspTree;  // ?g_bspTree@@3PAVBspTree@@A (game.o 0xF743DC)
@@ -801,6 +802,131 @@ char InitEntitiesBSP()
     }
     pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
     return 0;
+}
+
+// ============================================================================
+// GetLeaves / CM_BoxLeafnums - ea: 0x619050..0x6194A0
+// ============================================================================
+// ea: 0x00619050
+void GetLeaves(leafList_s* ll, unsigned int nodeIndex, float* mindist)
+{
+    BspNode* v30 = &g_bspTree->mNodes.mList[0];
+    while (1)
+    {
+        unsigned int v5 = nodeIndex;
+        if (nodeIndex >= (unsigned int)g_bspTree->mNodes.mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+            AeAssert::gCurrentLine = 81;
+            AeAssert::gCurrentExpr = "index < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                __debugbreak();
+            if (nodeIndex >= (unsigned int)g_bspTree->mNodes.mSize)
+                v5 = 0;
+        }
+        BspNode* v6 = &g_bspTree->mNodes.mList[v5];
+        if (v6->contents != 0xFFFF)
+            break;
+        const float* v7 = v6->u.node.plane->mPlane.m128_f32;
+        // Point-plane distance box (ll->bounds[0..1] around origin).
+        float dmax = 0.0f, dmin = 0.0f;
+        float v27 = v7[0] * (v7[0] < 0.0f ? ll->bounds[1].v.m128_f32[0]
+                                           : ll->bounds[0].v.m128_f32[0])
+            + v7[1] * (v7[1] < 0.0f ? ll->bounds[1].v.m128_f32[1]
+                                     : ll->bounds[0].v.m128_f32[1])
+            + v7[2] * (v7[2] < 0.0f ? ll->bounds[1].v.m128_f32[2]
+                                     : ll->bounds[0].v.m128_f32[2]);
+        float v26 = v7[0] * (v7[0] > 0.0f ? ll->bounds[1].v.m128_f32[0]
+                                           : ll->bounds[0].v.m128_f32[0])
+            + v7[1] * (v7[1] > 0.0f ? ll->bounds[1].v.m128_f32[1]
+                                     : ll->bounds[0].v.m128_f32[1])
+            + v7[2] * (v7[2] > 0.0f ? ll->bounds[1].v.m128_f32[2]
+                                     : ll->bounds[0].v.m128_f32[2]);
+        float v20 = v7[3];
+        int v21 = 0;
+        float v22 = 0.0f;
+        if (v20 <= v27)
+            v21 = 1;
+        else
+            v22 = v20 - v27;
+        if (v26 <= v20)
+            v21 |= 2;
+        else
+            v22 = v26 - v20;
+        if (v22 > 0.0f && *mindist > v22)
+            *mindist = v22;
+        if (v21 != 0)
+        {
+            if (v21 != 3)
+                goto LABEL_40;
+            GetLeaves(ll, (unsigned int)(v6->u.node.children[0] - v30) >> 4,
+                      mindist);
+            nodeIndex = (unsigned int)(v6->u.node.children[1] - v30) >> 4;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_test.cpp";
+            AeAssert::gCurrentLine = 153;
+            AeAssert::gCurrentExpr = "s != 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("illegal value for s, 0"))
+                __debugbreak();
+        LABEL_40:
+            nodeIndex = (unsigned int)(v6->u.node.children[v21 - 1] - v30) >> 4;
+        }
+    }
+    CM_StoreLeafs(ll, (int)nodeIndex);
+}
+
+// ea: 0x006194A0
+int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
+                   const math::Position3* pos, const math::Position3* mins,
+                   const math::Position3* maxs, int* list, int listsize,
+                   int* lastLeaf)
+{
+    ++g_bspTree->checkcount;
+    leafList_s ll;
+    ll.bounds[0].v = mins->v;
+    ll.bounds[1].v = maxs->v;
+    ll.count = 0;
+    ll.maxcount = listsize;
+    ll.list = list;
+    ll.overflowed = 0;
+    ll.lastLeaf = 0;
+    float v15 = cached_pos.v.m128_f32[3] - 5.0f;
+    if (v15 <= 0.0f)
+        goto LABEL_4;
+    ll.bounds[0].v = cached_pos.v;
+    float dx = cached_pos.v.m128_f32[0] - pos->v.m128_f32[0];
+    float dy = cached_pos.v.m128_f32[1] - pos->v.m128_f32[1];
+    float dz = cached_pos.v.m128_f32[2] - pos->v.m128_f32[2];
+    float dist2 = dx * dx + dy * dy + dz * dz;
+    if ((v15 * v15) <= dist2)
+    {
+    LABEL_4:
+        float mindist = 3.4028235e38f;
+        GetLeaves(&ll, 0, &mindist);
+        int result = ll.count;
+        float v21 = 0.0f;
+        if (ll.count == 1)
+            v21 = mindist;
+        cached_pos.v.m128_f32[3] = v21;
+        if (v21 > 0.0f)
+        {
+            cached_leaf = *list;
+            cached_pos.v.m128_f32[0] = pos->v.m128_f32[0];
+            cached_pos.v.m128_f32[1] = pos->v.m128_f32[1];
+            cached_pos.v.m128_f32[2] = pos->v.m128_f32[2];
+            cached_pos.v.m128_f32[3] = v21;
+        }
+        *lastLeaf = ll.lastLeaf;
+        return result;
+    }
+    CM_StoreLeafs(&ll, cached_leaf);
+    *lastLeaf = ll.lastLeaf;
+    return ll.count;
 }
 
 extern "C" int __fpclass(float);

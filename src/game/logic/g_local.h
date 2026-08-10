@@ -2581,6 +2581,12 @@ bool collide_velocity_sphere_poly(const math::Position3& c0,
                                   const math::Vector4& plane,
                                   bool& insolid);  // game.o 0x61BBB0
 char InitEntitiesBSP();  // game.o 0x6199C0
+struct leafList_s;
+void GetLeaves(leafList_s* ll, unsigned int nodeIndex, float* mindist);  // game.o 0x619050
+int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
+                   const math::Position3* pos, const math::Position3* mins,
+                   const math::Position3* maxs, int* list, int listsize,
+                   int* lastLeaf);  // game.o 0x6194A0
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
 void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,
