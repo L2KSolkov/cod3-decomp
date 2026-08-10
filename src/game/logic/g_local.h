@@ -2610,12 +2610,13 @@ struct CGBankManager : public AssetBankSet {
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
 };
 
-bool collide_sphere_brush(const float* sphere_center, float sphere_radius,
-                          const cdl_object_t* obj, const cdlPlane* sides,
-                          int nsides, float* new_sphere_center);  // game.o
-bool collide_sphere_box(const float* sphere_center, float sphere_radius,
-                        const cdl_object_t* box,
-                        float* new_sphere_center);  // game.o
+bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
+                          const cdl_object_t& obj, const cdlPlane* sides,
+                          unsigned int nsides,
+                          math::Position3& new_sphere_center);  // game.o 0x61E660
+bool collide_sphere_box(const math::Position3& sphere_center,
+                        float sphere_radius, const cdl_object_t& box,
+                        math::Position3& new_sphere_center);  // game.o 0x61E890
 bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
                                   float sphere_radius,
                                   const math::Position3& v0,

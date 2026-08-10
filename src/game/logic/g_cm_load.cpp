@@ -5433,6 +5433,113 @@ bool collide_segment_poly(const math::Position3& p0,
 }
 
 // ============================================================================
+// collide_sphere_box - ea: 0x61E890 (CollisionMgr.cpp)
+// ============================================================================
+extern float fudge_2;  // game.o @ 0xDF8D34
+// ea: 0x0061E890
+bool collide_sphere_box(const math::Position3& sphere_center,
+                        float sphere_radius, const cdl_object_t& box,
+                        math::Position3& new_sphere_center)
+{
+    float ext[3] = { box.box_radius[0], box.box_radius[1],
+                     box.box_radius[2] };
+    float center[3] = { box.center[0], box.center[1], box.center[2] };
+    float delta[3] = { sphere_center.v.m128_f32[0] - center[0],
+                       sphere_center.v.m128_f32[1] - center[1],
+                       sphere_center.v.m128_f32[2] - center[2] };
+    float dist[3] = { ext[0] + sphere_radius - fabsf(delta[0]),
+                      ext[1] + sphere_radius - fabsf(delta[1]),
+                      ext[2] + sphere_radius - fabsf(delta[2]) };
+    if (dist[0] < 0.0f)
+        return false;
+    int best = 0;
+    float bestDist = dist[0];
+    for (int i = 1; i < 3; ++i)
+    {
+        if (dist[i] < 0.0f)
+            return false;
+        if (bestDist > dist[i])
+        {
+            bestDist = dist[i];
+            best = i;
+        }
+    }
+    float push = dist[best] + fudge_2;
+    new_sphere_center = sphere_center;
+    float axis = delta[best] >= 0.0f ? push : -push;
+    new_sphere_center.v.m128_f32[best] = center[best] + axis;
+    return true;
+}
+
+// ============================================================================
+// collide_sphere_brush - ea: 0x61E660 (CollisionMgr.cpp)
+// ============================================================================
+extern float fudge_1;  // game.o @ 0xDF8D30
+// ea: 0x0061E660
+bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
+                          const cdl_object_t& obj, const cdlPlane* sides,
+                          unsigned int nsides,
+                          math::Position3& new_sphere_center)
+{
+    float ext[3] = { obj.box_radius[0], obj.box_radius[1],
+                     obj.box_radius[2] };
+    float center[3] = { obj.center[0], obj.center[1], obj.center[2] };
+    float delta[3] = { sphere_center.v.m128_f32[0] - center[0],
+                       sphere_center.v.m128_f32[1] - center[1],
+                       sphere_center.v.m128_f32[2] - center[2] };
+    float dist[3] = { ext[0] + sphere_radius - fabsf(delta[0]),
+                      ext[1] + sphere_radius - fabsf(delta[1]),
+                      ext[2] + sphere_radius - fabsf(delta[2]) };
+    if (dist[0] < 0.0f)
+        return false;
+    int best = 0;
+    float bestDist = dist[0];
+    for (int i = 1; i < 3; ++i)
+    {
+        if (dist[i] < 0.0f)
+            return false;
+        if (bestDist > dist[i])
+        {
+            bestDist = dist[i];
+            best = i;
+        }
+    }
+    int bestPlane = -1;
+    for (unsigned int i = 0; i < nsides; ++i)
+    {
+        const cdlPlane& plane = sides[i];
+        float offs = plane.packed[3];
+        float dot = plane.packed[0] * sphere_center.v.m128_f32[0]
+            + plane.packed[1] * sphere_center.v.m128_f32[1]
+            + plane.packed[2] * sphere_center.v.m128_f32[2];
+        float d = -(dot - offs - sphere_radius);
+        if (d < 0.0f)
+            return false;
+        if (bestDist > d)
+        {
+            bestDist = d;
+            bestPlane = (int)i;
+        }
+    }
+    if (bestPlane != -1)
+    {
+        const cdlPlane& plane = sides[bestPlane];
+        float push = fudge_1 + bestDist;
+        new_sphere_center.v = _mm_add_ps(
+            sphere_center.v,
+            _mm_mul_ps(_mm_setr_ps(plane.packed[0], plane.packed[1],
+                                   plane.packed[2], 0.0f),
+                       _mm_set1_ps(push)));
+        return true;
+    }
+    float push = fudge_1 + dist[best];
+    new_sphere_center = sphere_center;
+    float axis = delta[best] >= 0.0f ? push : -push;
+    new_sphere_center.v.m128_f32[best] = center[best] + axis;
+    return true;
+}
+
+// ============================================================================
 // TestInLeaf / SightTraceThroughLeaf - ea: 0x623D40 / 0x624070
 // (CollisionMgr.cpp DCGSet leaf sweep)
 // ============================================================================
