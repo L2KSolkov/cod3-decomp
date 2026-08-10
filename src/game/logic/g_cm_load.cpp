@@ -1788,3 +1788,152 @@ void collide_brush_velocity_sphere(traceWork_t* tw,
         tw->trace_fraction = 0.0f;
     }
 }
+
+// ============================================================================
+// collide_velocity_sphere_poly - ea: 0x61BBB0
+// ============================================================================
+// ea: 0x0061BBB0
+bool collide_velocity_sphere_poly(const math::Position3& c0,
+                                  math::Position3& c1,
+                                  const math::Dir3& ndir, float r,
+                                  const math::Position3& v0,
+                                  const math::Position3& v1,
+                                  const math::Position3& v2,
+                                  const math::Vector4& plane,
+                                  bool& insolid)
+{
+    insolid = false;
+    float c0c[3] = { c0.v.m128_f32[0], c0.v.m128_f32[1],
+                     c0.v.m128_f32[2] };
+    float c1c[3] = { c1.v.m128_f32[0], c1.v.m128_f32[1],
+                     c1.v.m128_f32[2] };
+    float v12[3] = { c1c[0] - c0c[0], c1c[1] - c0c[1],
+                     c1c[2] - c0c[2] };
+    float v52 = v12[0] * v12[0] + v12[1] * v12[1] + v12[2] * v12[2];
+    if (v52 < 0.0000099999997f)
+    {
+        if (collide_sphere_poly(c0, r, v0, v1, v2, plane))
+        {
+            insolid = true;
+            return true;
+        }
+        return false;
+    }
+    float pn[4] = { plane.v.m128_f32[0], plane.v.m128_f32[1],
+                    plane.v.m128_f32[2], plane.v.m128_f32[3] };
+    float d0 = pn[3]
+        + (c0c[0] * pn[0] + c0c[1] * pn[1] + c0c[2] * pn[2]);
+    float d1 = pn[3]
+        + (c1c[0] * pn[0] + c1c[1] * pn[1] + c1c[2] * pn[2]);
+    if (r >= d0 && d0 >= (pn[3] + d1))
+    {
+        if (collide_sphere_poly(c0, r, v0, v1, v2, plane))
+        {
+            insolid = true;
+            return true;
+        }
+        d0 = c0c[0] * pn[0] + c0c[1] * pn[1] + c0c[2] * pn[2] + pn[3];
+    }
+    float ndot = ndir.v.m128_f32[0] * pn[0]
+        + ndir.v.m128_f32[1] * pn[1] + ndir.v.m128_f32[2] * pn[2];
+    if (ndot >= 0.0f || (0.0f - r) >= d0)
+        return false;
+    float startp[3] = { c0c[0], c0c[1], c0c[2] };
+    math::Position3 hitp;
+    if (d0 <= 0.0f)
+    {
+        if (d0 <= (0.0f - r))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 1174;
+            AeAssert::gCurrentExpr = "d0 > -r";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+                __debugbreak();
+            d0 = c0c[0] * pn[0] + c0c[1] * pn[1] + c0c[2] * pn[2] + pn[3];
+        }
+        hitp.v.m128_f32[0] = startp[0] + pn[0] * d0;
+        hitp.v.m128_f32[1] = startp[1] + pn[1] * d0;
+        hitp.v.m128_f32[2] = startp[2] + pn[2] * d0;
+    }
+    else if (d0 <= r)
+    {
+        hitp.v.m128_f32[0] = startp[0] - pn[0] * d0;
+        hitp.v.m128_f32[1] = startp[1] - pn[1] * d0;
+        hitp.v.m128_f32[2] = startp[2] - pn[2] * d0;
+        // Edge containment test for the hit point.
+        float e0[3] = { v0.v.m128_f32[0] - v1.v.m128_f32[0],
+                        v0.v.m128_f32[1] - v1.v.m128_f32[1],
+                        v0.v.m128_f32[2] - v1.v.m128_f32[2] };
+        float p1[3] = { hitp.v.m128_f32[0] - v1.v.m128_f32[0],
+                        hitp.v.m128_f32[1] - v1.v.m128_f32[1],
+                        hitp.v.m128_f32[2] - v1.v.m128_f32[2] };
+        float e1[3] = { v1.v.m128_f32[0] - v2.v.m128_f32[0],
+                        v1.v.m128_f32[1] - v2.v.m128_f32[1],
+                        v1.v.m128_f32[2] - v2.v.m128_f32[2] };
+        float p2[3] = { hitp.v.m128_f32[0] - v2.v.m128_f32[0],
+                        hitp.v.m128_f32[1] - v2.v.m128_f32[1],
+                        hitp.v.m128_f32[2] - v2.v.m128_f32[2] };
+        float e2[3] = { v2.v.m128_f32[0] - v0.v.m128_f32[0],
+                        v2.v.m128_f32[1] - v0.v.m128_f32[1],
+                        v2.v.m128_f32[2] - v0.v.m128_f32[2] };
+        float pe[3] = { hitp.v.m128_f32[0] - v0.v.m128_f32[0],
+                        hitp.v.m128_f32[1] - v0.v.m128_f32[1],
+                        hitp.v.m128_f32[2] - v0.v.m128_f32[2] };
+        float s0 = (e0[1] * p1[2] - e0[2] * p1[1]) * pn[0]
+            + (e0[2] * p1[0] - e0[0] * p1[2]) * pn[1]
+            + (e0[0] * p1[1] - e0[1] * p1[0]) * pn[2];
+        float s1 = (e1[1] * p2[2] - e1[2] * p2[1]) * pn[0]
+            + (e1[2] * p2[0] - e1[0] * p2[2]) * pn[1]
+            + (e1[0] * p2[1] - e1[1] * p2[0]) * pn[2];
+        float s2 = (e2[1] * pe[2] - e2[2] * pe[1]) * pn[0]
+            + (e2[2] * pe[0] - e2[0] * pe[2]) * pn[1]
+            + (e2[0] * pe[1] - e2[1] * pe[0]) * pn[2];
+        if (s0 >= 0.0f && s1 >= 0.0f && s2 >= 0.0f)
+        {
+            c1.v = _mm_add_ps(
+                hitp.v,
+                _mm_mul_ps(plane.v, _mm_set_ss(r + 0.000099999997f)));
+            return true;
+        }
+    }
+    else
+    {
+        // Clamp the moving start toward the plane by r along the normal, then
+        // slide along ndir until the plane distance is 0.
+        float v26[3] = { startp[0] - pn[0] * r, startp[1] - pn[1] * r,
+                         startp[2] - pn[2] * r };
+        float v27 = v26[0] * pn[0] + v26[1] * pn[1] + v26[2] * pn[2];
+        float t = (pn[3] + v27) * (-1.0f / ndot);
+        hitp.v.m128_f32[0] = v26[0] + ndir.v.m128_f32[0] * t;
+        hitp.v.m128_f32[1] = v26[1] + ndir.v.m128_f32[1] * t;
+        hitp.v.m128_f32[2] = v26[2] + ndir.v.m128_f32[2] * t;
+    }
+    // Closest point on the triangle to hitp (projected onto the plane).
+    math::Position3 closest = calc_closest(hitp, v0, v1, v2);
+    float d[3] = { closest.v.m128_f32[0] - startp[0],
+                   closest.v.m128_f32[1] - startp[1],
+                   closest.v.m128_f32[2] - startp[2] };
+    float v52b = d[0] * d[0] + d[1] * d[1] + d[2] * d[2];
+    float w[3] = { closest.v.m128_f32[0] - c1c[0],
+                   closest.v.m128_f32[1] - c1c[1],
+                   closest.v.m128_f32[2] - c1c[2] };
+    float w2 = w[0] * w[0] + w[1] * w[1] + w[2] * w[2];
+    float b = d[0] * w[0] + d[1] * w[1] + d[2] * w[2];
+    float disc = ((r * r) - w2) * v52b + (b * b);
+    if (disc <= 0.0f)
+        return false;
+    float sqrtdisc = sqrtf(disc);
+    float v47 = -b - sqrtdisc;
+    if ((sqrtdisc - b) < 0.0f || v52b < v47
+        || ((v52b * v52b) + 0.000099999997f) <= v47)
+        return false;
+    float v48 = v47 / v52b;
+    if ((0.0f - v48) >= 0.0f)
+        c1.v = c0.v;
+    else
+        c1.v = _mm_add_ps(
+            *(__m128*)startp,
+            _mm_mul_ps(*(__m128*)d, _mm_set_ss(0.0f - v48)));
+    return true;
+}

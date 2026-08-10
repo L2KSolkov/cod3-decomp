@@ -10,7 +10,7 @@ g.o	g.o	game	732	PORTED	g.o porting in src/game/logic/ (732/732 non-inline funcs
 
 mp_shell.o		mp_shell.o	game	680	TODO	
 
-game.o		game.o	game	663	IN_PROGRESS	+ TraceCapsule/BoundingBoxThroughCapsule + TempBoxModel + collide_brush_segment/velocity_sphere (344/663 as of 2026-08-10)	bg_pmove/bg_misc/bg_weapons + q_shared/endian + MSG/Netchan/NET ported (129/663 as of 2026-08-09)
+game.o		game.o	game	663	IN_PROGRESS	+ collide_velocity_sphere_poly (345/663 as of 2026-08-10)	bg_pmove/bg_misc/bg_weapons + q_shared/endian + MSG/Netchan/NET ported (129/663 as of 2026-08-09)
 
 core.o		core.o	game	541	IN_PROGRESS	Types+globals staged: core_types.h + core_systems.h + core_globals.h (35+ size/offset checks pass vs IDA); 147 core.o data symbols w/ exact VAs extracted from linker map (analysis/core_o_data.tsv); inventory+plan in analysis/; bodies blocked until decompiles fetched via ida MCP
 
