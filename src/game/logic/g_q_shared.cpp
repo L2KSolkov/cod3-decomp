@@ -770,3 +770,140 @@ int Swap_Init()
     LittleFloatPtr = FloatNoSwap;
     return 1;
 }
+
+// ============================================================================
+// ParseConfigStringToStruct - ea: 0x629AD0 (q_shared.cpp)
+// ============================================================================
+// InplaceTree<InplaceString,InplaceString>::Find<const char*> (filesystem.o)
+extern InplaceString* InplaceTree_FindStr(const void* tree,
+                                          const char* const* key);
+
+// ea: 0x00629AD0
+int ParseConfigStringToStruct(
+    unsigned char* pStruct, const cspField_t* pFieldList, int iNumFields,
+    const ConfigString* pCfgStr, int iMaxFieldTypes,
+    int (__cdecl* parseSpecialFieldType)(unsigned char*, const char*,
+                                         const int),
+    void (__cdecl* parseStrcpy)(unsigned char*, const char*))
+{
+    int v7 = iNumFields;
+    int iField = 0;
+    if (iNumFields > 0)
+    {
+        const InplaceTree<InplaceString, InplaceString>* p_mStringMap =
+            &pCfgStr->mStringMap;
+        const int* p_iFieldType = &pFieldList->iFieldType;
+        do
+        {
+            const char* szName = *(const char**)(p_iFieldType - 2);
+            InplaceString* v10 = InplaceTree_FindStr(p_mStringMap, &szName);
+            if (v10 != nullptr)
+            {
+                const char* mStr = v10->mStr;
+                if (mStr != nullptr && *mStr != 0)
+                {
+                    int v12 = *p_iFieldType;
+                    if (*p_iFieldType >= 8)
+                    {
+                        if (iMaxFieldTypes <= 0 || v12 >= iMaxFieldTypes)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::COD3;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\q_shared.cpp";
+                            AeAssert::gCurrentLine = 1079;
+                            AeAssert::gCurrentExpr = nullptr;
+                            if (!AeAssert::IsIgnored())
+                            {
+                                const char* v15 =
+                                    va("Bad field type %i\n", *p_iFieldType);
+                                if (AeAssert::Warning(v15))
+                                    __debugbreak();
+                            }
+                            Com_Error(ERR_DROP, "Bad field type %i\n",
+                                      *p_iFieldType);
+                        }
+                        else
+                        {
+                            if (parseSpecialFieldType == nullptr)
+                            {
+                                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                                AeAssert::gCurrentFile =
+                                    "c:\\cod\\code\\game\\q_shared.cpp";
+                                AeAssert::gCurrentLine = 1073;
+                                AeAssert::gCurrentExpr =
+                                    "parseSpecialFieldType != 0";
+                                if (!AeAssert::IsIgnored()
+                                    && AeAssert::Assert("old cod assert"))
+                                    __debugbreak();
+                            }
+                            int result = parseSpecialFieldType(
+                                pStruct, mStr, *p_iFieldType);
+                            if (result == 0)
+                                return result;
+                        }
+                    }
+                    else
+                    {
+                        int offset = *(p_iFieldType - 1);
+                        switch (v12)
+                        {
+                        case 0:
+                            parseStrcpy(&pStruct[offset], mStr);
+                            break;
+                        case 1:
+                            Q_strncpyz((char*)&pStruct[offset], mStr, 256);
+                            break;
+                        case 2:
+                        case 3:
+                            Q_strncpyz((char*)&pStruct[offset], mStr, 128);
+                            break;
+                        case 4:
+                            *(int*)&pStruct[offset] = atoi(mStr);
+                            break;
+                        case 5:
+                            *(int*)&pStruct[offset] = atoi(mStr) != 0;
+                            break;
+                        case 6:
+                            *(float*)&pStruct[offset] = (float)atof(mStr);
+                            break;
+                        case 7:
+                            *(float*)&pStruct[offset] =
+                                (float)(atof(mStr) * 1000.0);
+                            break;
+                        default:
+                            AeAssert::gCurrentAuthor = AeAssert::COD3;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\q_shared.cpp";
+                            AeAssert::gCurrentExpr = nullptr;
+                            if (v12 >= 0)
+                            {
+                                AeAssert::gCurrentLine = 1067;
+                                if (!AeAssert::IsIgnored()
+                                    && AeAssert::Warning(
+                                        "ParseConfigStringToStruct is out of sync with the csParseFieldType_t enum list\n"))
+                                    __debugbreak();
+                            }
+                            else
+                            {
+                                AeAssert::gCurrentLine = 1063;
+                                if (!AeAssert::IsIgnored())
+                                {
+                                    const char* v13 = va(
+                                        "Negative field type %i given to ParseConfigStringToStruct\n",
+                                        *p_iFieldType);
+                                    if (AeAssert::Warning(v13))
+                                        __debugbreak();
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            v7 = iNumFields;
+            p_iFieldType += 3;
+            ++iField;
+        } while (iField < iNumFields);
+    }
+    return iField == v7;
+}
