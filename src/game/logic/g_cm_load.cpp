@@ -748,13 +748,14 @@ struct WorldSector {
 static_assert(sizeof(WorldSector) == 0x24, "WorldSector size mismatch");
 
 struct PartialClipMap {
-    WorldSector* freeHead;        // +0x00
-    WorldSector worldSectors[1024];  // +0x04
-    WorldSector worldSectorHead;  // +0x9004
-    WorldSector dummyNode;        // +0x9028
-    uint8_t*    vised;            // +0x904C
-    int         clusterBytes;     // +0x9050
-    uint8_t*    visibility;       // +0x9054
+    char         name[128];        // +0x00
+    int         clusterBytes;      // +0x80
+    uint8_t*    visibility;        // +0x84
+    int         vised;             // +0x88
+    WorldSector worldSectorHead;   // +0x8C
+    WorldSector* freeHead;         // +0xB0
+    WorldSector dummyNode;         // +0xB4
+    WorldSector worldSectors[1024];// +0xD8
 };
 extern PartialClipMap pcm;        // ?pcm@@3UPartialClipMap@@A (game.o)
 
@@ -780,7 +781,7 @@ char InitEntitiesBSP()
         (g_bspTree->maxs[v2] + g_bspTree->mins[v2]) * 0.5f;
     pcm.worldSectorHead.child0 = &pcm.dummyNode;
     pcm.worldSectorHead.child1 = &pcm.dummyNode;
-    pcm.vised = (uint8_t*)g_bspTree->mVised;
+    pcm.vised = g_bspTree->mVised;
     pcm.clusterBytes = g_bspTree->mClusterBytes;
     if (g_bspTree->mVisibility.mSize == 0)
     {
@@ -801,6 +802,86 @@ char InitEntitiesBSP()
         __debugbreak();
     }
     pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
+    return 0;
+}
+
+// ============================================================================
+// CM_LoadMap / CM_LoadLump - ea: 0x618390..0x618410
+// ============================================================================
+extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
+                        int flags);  // core.o
+extern void Com_DPrintf(const char* fmt, ...);  // core.o
+extern int FS_FOpenFileRead(const char* filename, int* file, int uniqueFILE);  // core.o
+extern int FS_Read(void* buffer, int len, int f);  // core.o
+extern int FS_Seek(int f, long offset, int origin);  // core.o ?FS_Seek@@YAHHJH@Z
+extern void FS_FCloseFile(int f);  // core.o
+extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+                                 const char* ctx, const char* file,
+                                 int line);  // core.o
+extern char* com_lumpBuf;  // ?com_lumpBuf@@3PADA (game.o)
+extern cvar_t* cm_noCurves;        // ?cm_noCurves@@3PAUcvar_t@@A
+extern cvar_t* cm_playerCurveClip; // ?cm_playerCurveClip@@3PAUcvar_t@@A
+
+struct dheader_t {
+    int version;
+    struct {
+        int fileofs;
+        int filelen;
+    } lumps[78];
+};
+
+// ea: 0x00618390
+void CM_LoadMap(const char* name, int clientload, int* checksum)
+{
+    if (name == nullptr || *name == 0)
+        Com_Error(ERR_DROP, "EXE_ERR_COULDNT_LOAD");
+    cm_noCurves = Cvar_Get("cm_noCurves", "0", 512);
+    cm_playerCurveClip = Cvar_Get("cm_playerCurveClip", "1", 513);
+    Com_DPrintf("CM_LoadMap( %s, %i )\n", name, clientload);
+    if (clientload == 0)
+        Q_strncpyz(pcm.name, name, 128);
+}
+
+// ea: 0x00618410
+int CM_LoadLump(int lumpnum, char** pBuf)
+{
+    if (pcm.name[0] == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_load.cpp";
+        AeAssert::gCurrentLine = 244;
+        AeAssert::gCurrentExpr = "pcm.name && pcm.name[0]";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int h = 0;
+    FS_FOpenFileRead(pcm.name, &h, 0);
+    if (h == 0)
+        Com_Error(ERR_DROP, va("EXE_ERR_COULDNT_LOAD", &pcm));
+    dheader_t header;
+    FS_Read(&header, 312, h);
+    if (header.version != 63)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_load.cpp";
+        AeAssert::gCurrentLine = 255;
+        AeAssert::gCurrentExpr = "header.version == 63";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int filelen = header.lumps[lumpnum].filelen;
+    if (filelen != 0)
+    {
+        FS_Seek(h, header.lumps[lumpnum].fileofs - 312, 0);
+        com_lumpBuf = (char*)mem_heap_malloc_ctx(
+            16, (unsigned int)filelen, "hunk",
+            "c:\\cod\\code\\game\\cm_load.cpp", 267);
+        FS_Read(com_lumpBuf, filelen, h);
+        FS_FCloseFile(h);
+        *pBuf = com_lumpBuf;
+        return filelen;
+    }
+    FS_FCloseFile(h);
     return 0;
 }
 

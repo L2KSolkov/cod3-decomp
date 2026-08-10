@@ -2587,6 +2587,8 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
                    const math::Position3* pos, const math::Position3* mins,
                    const math::Position3* maxs, int* list, int listsize,
                    int* lastLeaf);  // game.o 0x6194A0
+void CM_LoadMap(const char* name, int clientload, int* checksum);  // game.o 0x618390
+int CM_LoadLump(int lumpnum, char** pBuf);          // game.o 0x618410
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
 void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,

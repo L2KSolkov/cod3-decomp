@@ -41,7 +41,7 @@ extern void Cvar_Set(const char* var_name, const char* value);
 extern void Cvar_SetValue(const char* var_name, float value);
 extern void IN_Init();
 extern int FS_Read(void* buffer, int len, int f);
-extern void FS_Seek(int f, int offset, int origin);
+extern int FS_Seek(int f, long offset, int origin);
 extern void tlFatal(const char* fmt, ...);
 
 // ============================================================================

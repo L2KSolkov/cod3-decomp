@@ -834,7 +834,7 @@ unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f)
 }
 
 // ea: 0x004C75B0
-int FS_Seek(int f, int offset, int origin)
+int FS_Seek(int f, long offset, int origin)
 {
     FS_CheckFileSystemStarted();
     if (fsh[f].zipFile != 0)
