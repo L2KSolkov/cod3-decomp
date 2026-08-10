@@ -1141,6 +1141,81 @@ CGBankManager::~CGBankManager()
 }
 
 // ============================================================================
+// CGBankManager::AddBank / UnloadBank - ea: 0x61FE30 / 0x61FE60 (cgbank.cpp)
+// ============================================================================
+extern void j_nullsub_118(actor_s* actor);  // g.o
+extern void InvalidateParticleCollisionCaches();  // aeps_xboxr
+extern void VEH_InvalidateCaches();               // g.o
+extern void InvalidateTurretCaches();             // g.o
+
+// ea: 0x0061FE30
+void CGBankManager::AddBank(TPakId pakId, CGBank* bank)
+{
+    this->mBankArray[this->mCount] = bank;
+    this->mIds[this->mCount++] = (int)pakId;
+}
+
+// ea: 0x0061FE60
+void CGBankManager::UnloadBank(TPakId pakId)
+{
+    bool removed = false;
+    int v4 = 0;
+    if (this->mCount > 0)
+    {
+        int* mIds = this->mIds;
+        do
+        {
+            if (*mIds == (int)pakId)
+            {
+                if (v4 < this->mCount - 1)
+                {
+                    this->mBankArray[v4] =
+                        this->mBankArray[this->mCount - 1];
+                    *mIds = this->mIds[this->mCount - 1];
+                    --v4;
+                    --mIds;
+                }
+                --this->mCount;
+                removed = true;
+            }
+            ++v4;
+            ++mIds;
+        } while (v4 < this->mCount);
+        if (removed)
+        {
+            actor_s** actors = level.actors;
+            do
+            {
+                if (*actors != nullptr && (*actors)->pEnt != nullptr)
+                    j_nullsub_118(*actors);
+                ++actors;
+            } while (actors < &level.actors[32]);
+            for (int i = 0; i < 16; ++i)
+            {
+                Entity* v7 = EntityManager::sInst->mPlayers[i];
+                if (v7 != nullptr)
+                {
+                    float* lo = v7->proximity_data->lo.v.m128_f32;
+                    if (lo != nullptr)
+                    {
+                        lo[0] = 3.402823466e38f;
+                        lo[1] = 3.402823466e38f;
+                        lo[2] = 3.402823466e38f;
+                        lo[3] = 3.402823466e38f;
+                        v7->proximity_data->hi.v =
+                            _mm_xor_ps(_mm_set1_ps(-0.0f),
+                                       v7->proximity_data->lo.v);
+                    }
+                }
+            }
+            VEH_InvalidateCaches();
+            InvalidateTurretCaches();
+            InvalidateParticleCollisionCaches();
+        }
+    }
+}
+
+// ============================================================================
 // AnimNotifyTask::Find - ea: 0x612790
 // ============================================================================
 class AnimNotifyTask {

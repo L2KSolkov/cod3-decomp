@@ -2606,8 +2606,11 @@ struct CGBankManager : public AssetBankSet {
     uint8_t _pad4[8];     // +0x04 mDebugRenderMode
     int mCount;           // +0x0C
     CGBank* mBankArray[99];  // +0x10
+    int     mIds[99];       // +0x19C (pak ids per bank slot)
     virtual ~CGBankManager();  // ??1CGBankManager@@UAE@XZ (game.o 0x611B70)
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
+    void AddBank(TPakId pakId, CGBank* bank);   // ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z (game.o 0x61FE30)
+    void UnloadBank(TPakId pakId);              // ?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FE60)
 };
 
 bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
