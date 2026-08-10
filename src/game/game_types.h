@@ -310,6 +310,7 @@ public:
     DObj* GetViewModelDObj();                     // ?GetViewModelDObj@Entity@@QAEPAVDObj@@XZ (game.o 0x620630)
     math::Mat43 CalcAbsMat(int boneIndex);        // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z (game.o 0x620670)
     math::Mat43 GetRelMat(int boneIndex);         // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z (game.o 0x6208E0)
+    bool has_zone_collision() const;              // ?has_zone_collision@Entity@@QBE_NXZ (game.o 0x620BE0)
     void FootStep();                              // ?FootStep@Entity@@QAEXXZ (game.o 0x620C20)
     void AddNotify(EntityNotify* notify);          // ?AddNotify@Entity@@QAEXPAVEntityNotify@@@Z (game.o 0x62AD70)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ (game.o)

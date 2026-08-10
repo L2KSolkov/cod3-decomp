@@ -79,7 +79,12 @@ struct BspTree {
         int        mSize;   // +0x10
         BspPlane*  mList;   // +0x14
     } mPlanes;              // +0x10 (InplaceVector<BspPlane>)
-    uint8_t _pad18[0x38 - 0x18];
+    struct BspCell {
+        uint8_t _pad[0x3C];
+        void*   mMeshFile;   // +0x3C
+    };
+    InplaceVector<BspCell> mCells;  // +0x18
+    uint8_t _pad20[0x38 - 0x20];
     struct {
         int      mSize;   // +0x38
         void*    mList;   // +0x3C
@@ -104,6 +109,14 @@ struct BspTree {
 };
 
 extern BspTree* g_bspTree;  // ?g_bspTree@@3PAVBspTree@@A (game.o 0xF743DC)
+
+// helper for Entity::has_zone_collision (cross-TU)
+bool BspTree_CellHasMeshFile(int cell_index)
+{
+    if (cell_index < 0)
+        return false;
+    return g_bspTree->mCells.mList[cell_index].mMeshFile != nullptr;
+}
 
 struct BspArea {
     int floodnum;    // +0x00

@@ -640,6 +640,26 @@ void Entity::FootStep()
 }
 
 // ============================================================================
+// Entity::has_zone_collision - ea: 0x620BE0 (Entity.cpp)
+// ============================================================================
+extern bool ShouldConnectPaths();  // core.o
+extern bool BspTree_CellHasMeshFile(int cell_index);  // g_cm_load.cpp
+// ea: 0x00620BE0
+bool Entity::has_zone_collision() const
+{
+    if (ShouldConnectPaths())
+        return true;
+    int16_t cell_index = this->cell_index;
+    return cell_index >= 0 && BspTree_CellHasMeshFile(cell_index);
+}
+
+// C-style bridge for cross-TU callers (g_client / g_scr_vehicle / g_main)
+bool Entity_has_zone_collision(const void* self)
+{
+    return ((const Entity*)self)->has_zone_collision();
+}
+
+// ============================================================================
 // Entity notify plumbing - ea: 0x62AD70..0x62AFA0 (Entity.cpp)
 // The reserved_dlist layout is verified here: m_size +0x00, m_head +0x04,
 // m_end +0x08, m_tail +0x0C; node m_next +0x00, m_prev +0x04.
