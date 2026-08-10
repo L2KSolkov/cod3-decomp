@@ -10,6 +10,7 @@
 #include <string.h>
 
 extern const char* NET_AdrToString(netadr_t a);  // core.o
+static const char* netsrcString[2] = { "client", "server" };  // @ 0xDF6BB4
 
 // ============================================================================
 // MSG_* - ea: 0x60F260..0x60F650
@@ -266,7 +267,6 @@ void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport)
 // ea: 0x00629970
 int Netchan_Process(netchan_t* chan, msg_t* msg)
 {
-    static const char* netsrcString[2] = { "client", "server" };  // @ 0xDF6BB4
     unsigned char* data = msg->data;
     msg->readcount = 0;
     unsigned int seq;
@@ -301,6 +301,99 @@ int Netchan_Process(netchan_t* chan, msg_t* msg)
                    NET_AdrToString(chan->remoteAddress), v8,
                    chan->incomingSequence);
     return 0;
+}
+
+// ============================================================================
+// MSG_WriteString / Netchan_Transmit / NET_AdrToString
+// ea: 0x61F7A0 / 0x61F860 / 0x61F9A0
+// ============================================================================
+extern int BigShort(unsigned short s);  // core.o
+extern void NET_SendPacket(netsrc_t sock, unsigned int length,
+                           const void* data, netadr_t to);  // g.o
+static char s_0[64];  // ?s_0@@3PADA (game.o @ 0xF58BB8)
+
+// ea: 0x0061F7A0
+void MSG_WriteString(msg_t* msg, const char* s)
+{
+    if (s != nullptr)
+    {
+        int v2 = (int)strlen(s);
+        if (v2 < 256)
+        {
+            char string[256];
+            int v3 = 0;
+            if (v2 > 0)
+            {
+                v3 = v2;
+                memcpy(string, s, v2);
+            }
+            int cursize = msg->cursize;
+            string[v3] = 0;
+            strcpy((char*)&msg->data[cursize], string);
+            msg->cursize += v2 + 1;
+        }
+        else
+        {
+            Com_Printf("MSG_WriteString: MAX_STRING_CHARS");
+            msg->data[msg->cursize++] = 0;
+        }
+    }
+    else
+    {
+        msg->data[msg->cursize++] = 0;
+    }
+}
+
+// ea: 0x0061F860
+void Netchan_Transmit(netchan_t* chan, int length,
+                      const unsigned char* data)
+{
+    if (length > 3072)
+        Com_Error(ERR_DROP, "Netchan_Transmit: length too large");
+    if (length >= 2972)
+        Com_Error(ERR_DROP, "Netchan_Transmit: length too large for fragment");
+    int send_buf[775];
+    memset(send_buf, 0, 3084);
+    send_buf[772] = 0;
+    int outgoingSequence = chan->outgoingSequence;
+    send_buf[0] = outgoingSequence;
+    send_buf[773] = outgoingSequence;
+    int v4 = 4;
+    bool isClient = chan->sock == NS_CLIENT;
+    ++chan->outgoingSequence;
+    if (isClient)
+    {
+        *((unsigned short*)&send_buf[1]) = 0;
+        v4 = 6;
+    }
+    memcpy((unsigned char*)send_buf + v4, data, length);
+    int v6 = length + v4;
+    NET_SendPacket(chan->sock, (unsigned int)v6, send_buf,
+                   chan->remoteAddress);
+    if (showpackets->integer != 0)
+        Com_Printf("%s send %4i : s=%i ack=%i\n",
+                   netsrcString[chan->sock], v6,
+                   chan->outgoingSequence - 1, chan->incomingSequence);
+}
+
+// ea: 0x0061F9A0
+const char* NET_AdrToString(netadr_t a)
+{
+    if (a.type == NA_LOOPBACK)
+    {
+        Com_sprintf(s_0, 64, "loopback");
+        return s_0;
+    }
+    int v2 = BigShort(a.port);
+    if (a.type == NA_IP)
+        Com_sprintf(s_0, 64, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2],
+                    a.ip[3], v2);
+    else
+        Com_sprintf(s_0, 64,
+                    "%02x%02x%02x%02x.%02x%02x%02x%02x%02x%02x:%i",
+                    a.ipx[0], a.ipx[1], a.ipx[2], a.ipx[3], a.ipx[4],
+                    a.ipx[5], a.ipx[6], a.ipx[7], a.ipx[8], a.ipx[9], v2);
+    return s_0;
 }
 
 // ============================================================================
