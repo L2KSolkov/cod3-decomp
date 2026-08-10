@@ -5,6 +5,7 @@
 
 #include "game/logic/g_local.h"
 
+#include <stdio.h>
 #include <string.h>
 
 // ============================================================================
@@ -523,6 +524,191 @@ MusicMgr::MusicMgr()
     this->mIndoorFadeTime = 1.0f;
     this->mDelayCount = 0.0f;
     this->mCrossFadeType = 0;
+}
+
+// ============================================================================
+// CGBankManager::~CGBankManager - ea: 0x611B70
+// ============================================================================
+extern void Cmd_RemoveCommand(const char* cmd_name);  // game.o g_cmd.cpp
+
+// ea: 0x00611B70
+CGBankManager::~CGBankManager()
+{
+    Cmd_RemoveCommand("cg");
+    Cmd_RemoveCommand("cggraph");
+    Cmd_RemoveCommand("cgperf");
+    Cmd_RemoveCommand("cgzoomin");
+    Cmd_RemoveCommand("cgzoomout");
+    Cmd_RemoveCommand("teleport");
+}
+
+// ============================================================================
+// AnimNotifyTask::Find - ea: 0x612790
+// ============================================================================
+class AnimNotifyTask {
+    static ae_vector<unsigned int> mKeys;  // ?mKeys@AnimNotifyTask@@0V?$ae_vector@I@@A
+    static int Find(unsigned int key);     // ?Find@AnimNotifyTask@@CAHI@Z
+};
+ae_vector<unsigned int> AnimNotifyTask::mKeys;
+
+// ea: 0x00612790
+int AnimNotifyTask::Find(unsigned int key)
+{
+    unsigned int* mElements = AnimNotifyTask::mKeys.mElements;
+    unsigned int* v2 =
+        &AnimNotifyTask::mKeys.mElements[AnimNotifyTask::mKeys.mSize];
+    int result = 0;
+    if (AnimNotifyTask::mKeys.mElements == v2)
+        return -1;
+    while (*mElements != key)
+    {
+        ++mElements;
+        ++result;
+        if (mElements == v2)
+            return -1;
+    }
+    return result;
+}
+
+// ============================================================================
+// AudioBankMgr - ea: 0x6127D0..0x612980
+// ============================================================================
+typedef int nflFileID;  // filesystem/nfl.cpp / core_systems.h use int
+extern nslWaveID nslGetWave(const char* name);   // ?nslGetWave (nsl)
+extern void nslFreeBank(nslBankID bankID);       // ?nslFreeBank (nsl)
+extern void nflCloseFile(nflFileID file);        // filesystem/nfl.cpp
+
+class AudioBankMgr {
+public:
+    enum eState {
+        kUnloaded = 0,
+        kLoading = 1,     // verified vs disasm IsFinished
+        kLoaded = 2,
+        kUnloading = 3,   // verified vs disasm IsFinished
+    };
+    struct WbkEntry {
+        uint8_t   _pad0[0x2C];      // +0x00
+        int       state[6];         // +0x2C
+        nflFileID fileID[6];        // +0x44
+        nslBankID bankId[6];        // +0x5C (bankId[5] aliases next entry +0x04)
+    };
+    static_assert(sizeof(WbkEntry) == 0x74, "WbkEntry view size mismatch");
+    uint8_t  mAvailableWbks[0x6C0];    // +0x00 (16 * 0x6C stride)
+    uint8_t  _pad6C0[0x6C8 - 0x6C0];
+    int      m_size;                   // +0x6C8
+    static AudioBankMgr* sInst;        // ?sInst@AudioBankMgr@@2PAV1@A
+    virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
+    bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
+};
+AudioBankMgr* AudioBankMgr::sInst = nullptr;
+
+// ea: 0x006127D0
+AudioBankMgr::~AudioBankMgr()
+{
+    int i = 0;
+    if (this->m_size > 0)
+    {
+        unsigned int v2 = 0;
+        for (unsigned int j = 0;; v2 = j)
+        {
+            if (v2 >= 0x6C0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 154;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            WbkEntry* entry =
+                (WbkEntry*)((char*)this->mAvailableWbks + v2);
+            for (int k = 0; k < 6; ++k)
+            {
+                if (entry->bankId[k] != NSL_BANK_ID_INVALID)
+                {
+                    nslFreeBank(entry->bankId[k]);
+                    nflCloseFile(entry->fileID[k]);
+                    entry->bankId[k] = NSL_BANK_ID_INVALID;
+                    entry->fileID[k] = (nflFileID)-1;
+                }
+            }
+            bool v5 = ++i < this->m_size;
+            j += 108;
+            if (!v5)
+                break;
+        }
+    }
+}
+
+// ea: 0x006128E0
+bool AudioBankMgr::IsFinished() const
+{
+    int v2 = 0;
+    if (this->m_size > 0)
+    {
+        unsigned int v3 = 0;
+        while (1)
+        {
+            if (v3 >= 0x6C0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 148;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            const WbkEntry* entry =
+                (const WbkEntry*)((char*)this->mAvailableWbks + v3);
+            int v4 = 0;
+            do
+            {
+                if (entry->state[v4] == kLoading
+                    || entry->state[v4] == kUnloading)
+                    return false;
+                ++v4;
+            } while (v4 < 6);
+            ++v2;
+            v3 += 108;
+            if (v2 >= this->m_size)
+                break;
+        }
+    }
+    return true;
+}
+
+// ============================================================================
+// SoundDevice::FindWave - ea: 0x612980
+// ============================================================================
+// ea: 0x00612980
+nslWaveID SoundDevice::FindWave(char* name)
+{
+    nslWaveID Wave = nslGetWave(name);
+    if (AudioBankMgr::sInst->m_size > 0 && Wave == NSL_WAVE_ID_INVALID)
+        strncmp(name, "loading_", 8u);
+    return Wave;
+}
+
+// ============================================================================
+// GetSurfaceTypeSounds - ea: 0x612DB0
+// ============================================================================
+extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o common.cpp
+
+// ea: 0x00612DB0
+void GetSurfaceTypeSounds(const char* pszType, nslWaveID* sounds)
+{
+    char szAliasName[256];
+    for (int i = 0; i < 23; ++i)
+    {
+        const char* v3 = Com_SurfaceTypeToName(i);
+        sprintf(szAliasName, "%s_%s", pszType, v3);
+        nslWaveID Wave = nslGetWave(szAliasName);
+        if (AudioBankMgr::sInst->m_size > 0 && Wave == NSL_WAVE_ID_INVALID)
+            strncmp(szAliasName, "loading_", 8u);
+        sounds[i] = Wave;
+    }
 }
 
 // ============================================================================

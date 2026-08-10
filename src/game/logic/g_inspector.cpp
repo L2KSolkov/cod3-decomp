@@ -15,7 +15,6 @@
 
 // nsl handle types (nsl.cpp stub surface)
 typedef unsigned int nslSourceID;
-typedef unsigned int nslWaveID;
 enum nslSourceState {
     NSL_SOURCE_STATE_INVALID = 0,
     NSL_SOURCE_STATE_PLAYING = 1,

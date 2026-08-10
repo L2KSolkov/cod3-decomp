@@ -16,6 +16,10 @@
 // EPakType - pak type enum (global enum; kPakTypeGlobal == 0)
 enum EPakType { kPakTypeGlobal = 0 };
 
+// nsl sound types (enums in the binary; verified via W4 mangling)
+enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
+enum nslBankID : int { NSL_BANK_ID_INVALID = -1 };
+
 // ============================================================================
 // TPakId — pak archive id enum
 // ============================================================================
@@ -346,6 +350,7 @@ struct SoundDevice {
         void Reset();            // ?Reset@Sound@SoundDevice@@QAEXXZ (game.o 0x6129C0)
     };
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
+    nslWaveID FindWave(char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
     void StopAllSounds();
     void SetReverb(const char* preset, bool immediate);  // ?SetReverb@SoundDevice@@QAEXPBD_N@Z (game.o 0x9F20A0)
     void PlaySound(const char* name, DbLinkedHandle<EntityHandleDb, Entity> ent,

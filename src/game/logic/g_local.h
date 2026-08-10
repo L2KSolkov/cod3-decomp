@@ -2473,11 +2473,12 @@ struct CGBank {
     void* rtree_data;         // +0xC4
 };
 static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
-struct CGBankManager {
+struct CGBankManager : public AssetBankSet {
     static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
     uint8_t _pad4[8];     // +0x04 mDebugRenderMode
     int mCount;           // +0x0C
     CGBank* mBankArray[99];  // +0x10
+    virtual ~CGBankManager();  // ??1CGBankManager@@UAE@XZ (game.o 0x611B70)
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
 };
 
@@ -2632,6 +2633,7 @@ const gitem_s* BG_FindItemForWeapon(int weapon);  // game.o 0x612E70
 bool  PM_CanSimulateFiringWeapon(int iWeapon);    // game.o 0x614700
 void  BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
                             float* minSpread, float* maxSpread);  // game.o 0x615C90
+void  GetSurfaceTypeSounds(const char* pszType, nslWaveID* sounds);  // game.o 0x612DB0
 void  MultiplayerMgr_IsLocalPlayer(void* self, Entity* player);  // mp.o
 void  MultiplayerMgr_DropWeapon(void* self, int weapon, int netIndex,
                                 const math::Position3* position,
