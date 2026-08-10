@@ -136,6 +136,206 @@ void PM_AddTouchEnt(DbLinkedHandle<EntityHandleDb, Entity> entity)
 }
 
 // ============================================================================
+// Character collision resolve - ea: 0x63BF90..0x643850 (bg_pmove.cpp)
+// ============================================================================
+extern int CM_AreaEntities(const math::Position3& mins,
+                           const math::Position3& maxs,
+                           DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                           int maxcount, int contentmask);  // game.o
+extern float overpush;   // ?overpush (game.o)
+extern float radius_3;   // ?radius_3 (game.o)
+extern bool push_in_world(pmove_t& pm, float radius,
+                          const collision_context_t& context);  // game.o
+extern bool tunnel_test(pmove_t& pm, float radius,
+                        const math::Position3& p0,
+                        const math::Position3& p1);  // game.o
+extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
+extern "C" int __fpclass(float);  // CRT
+
+static TouchEntityData s_entities_3;  // ?entities_3 (game.o @ 0xF58F30)
+static int s_entities_3_init;         // $S23_6 @ 0xF591D0
+
+// ea: 0x0063BF90
+bool resolve_character_collisions(pmove_t& pm, float radius)
+{
+    PlayerState* ps = pm.ps;
+    bool hit = false;
+    Entity* self = (Entity*)EntityHandleDb_GetObject(
+        ps->mClient.mHandle.mVal);
+    math::Position3 lo = ps->origin;
+    math::Position3 p1;
+    p1.v = ps->origin.v;
+    p1.v.m128_f32[2] =
+        ((pm.mins.v.m128_f32[2] + pm.maxs.v.m128_f32[2]) * 0.5f)
+        + ps->origin.v.m128_f32[2];
+    __m128 v4 = _mm_set1_ps(2.0f);
+    __m128 v5 = _mm_mul_ps(_mm_set1_ps(radius), v4);
+    math::Position3 p1a = p1;
+    p1a.v = _mm_sub_ps(p1.v, v5);
+    p1a.v.m128_f32[2] -= 100.0f;
+    math::Position3 p2 = p1;
+    p2.v = _mm_add_ps(p1.v, _mm_mul_ps(_mm_set1_ps(radius), v4));
+    p2.v.m128_f32[2] += 100.0f;
+    if ((s_entities_3_init & 1) == 0)
+    {
+        s_entities_3_init |= 1;
+        memset(s_entities_3.touch, 0, sizeof(s_entities_3.touch));
+    }
+    s_entities_3.mins = p1a;
+    s_entities_3.maxs = p2;
+    s_entities_3.num = CM_AreaEntities(
+        p1a, p2, s_entities_3.touch, 128, pm.tracemask);
+    math::Position3 v9 = lo;
+    for (int v8 = 0; v8 < s_entities_3.num; ++v8)
+    {
+        Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+            s_entities_3.touch[v8].mHandle.mVal);
+        if (mObject != nullptr && mObject != self)
+        {
+            math::Position3 entOrigin = mObject->r.currentOrigin;
+            if (entOrigin.v.m128_f32[2]
+                    <= ((pm.maxs.v.m128_f32[2] + lo.v.m128_f32[2]) + 2.0f)
+                && lo.v.m128_f32[2] <= (entOrigin.v.m128_f32[2] + 72.0f))
+            {
+                __m128 v17 = _mm_sub_ps(entOrigin.v, v9.v);
+                v17.m128_f32[2] = 0.0f;
+                __m128 sq = _mm_mul_ps(v17, v17);
+                float dist2 =
+                    sq.m128_f32[0] + sq.m128_f32[1] + sq.m128_f32[2];
+                if ((radius * radius) * 4.0f > dist2)
+                {
+                    __m128 v14 = _mm_xor_ps(v17, _mm_set1_ps(-0.0f));
+                    float dist = sqrtf(dist2);
+                    __m128 v15;
+                    if (dist <= 0.0099999998f)
+                        v15 = _mm_set1_ps(1.0f);
+                    else
+                        v15 = _mm_div_ps(v14, _mm_set1_ps(dist));
+                    float pushDist = (radius * 2.0f) + overpush;
+                    hit = true;
+                    v9.v = _mm_add_ps(
+                        entOrigin.v,
+                        _mm_mul_ps(v15, _mm_set1_ps(pushDist)));
+                    lo = v9;
+                }
+            }
+        }
+    }
+    if ((__fpclass(lo.v.m128_f32[0]) & 0x297) == 0
+        && (__fpclass(lo.v.m128_f32[1]) & 0x297) == 0
+        && (__fpclass(lo.v.m128_f32[2]) & 0x297) == 0)
+        pm.ps->origin = lo;
+    return hit;
+}
+
+// ea: 0x00643850
+void resolve_collisions(const collision_context_t& context,
+                        const math::Position3& old_pos)
+{
+    int tracemask = pm->tracemask;
+    pm->tracemask = 0x2000000;
+    int v24 = tracemask;
+    int v4 = 0;
+    if (resolve_character_collisions(*pm, radius_3))
+    {
+        bool v5;
+        while (1)
+        {
+            v5 = resolve_character_collisions(*pm, radius_3);
+            if (++v4 > 4)
+                break;
+            if (!v5)
+                goto done_char;
+        }
+        if (v5)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+            AeAssert::gCurrentLine = 1381;
+            AeAssert::gCurrentExpr = "!hitb";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("stuck between ai-s"))
+                __debugbreak();
+        }
+    }
+done_char:
+    float v6 = radius_3;
+    pm->tracemask = tracemask & 0xFDFFFFFF;
+    int v7 = 0;
+    if (push_in_world(*pm, v6, context))
+    {
+        bool v8;
+        do
+        {
+            v8 = push_in_world(*pm, radius_3, context);
+            ++v7;
+        } while (v7 <= 4 && v8);
+    }
+    float v9 = old_pos.v.m128_f32[1];
+    float v10 = old_pos.v.m128_f32[2];
+    float v11 = old_pos.v.m128_f32[3];
+    math::Position3 p0;
+    p0.v.m128_f32[0] = old_pos.v.m128_f32[0];
+    p0.v.m128_f32[1] = v9;
+    p0.v.m128_f32[2] = v10;
+    p0.v.m128_f32[3] = v11;
+    math::Position3 p1;
+    p1.v = pm->ps->origin.v;
+    __m128 v16 = _mm_sub_ps(p1.v, p0.v);
+    __m128 v17 = _mm_mul_ps(v16, v16);
+    float dist2 = v17.m128_f32[0] + v17.m128_f32[1] + v17.m128_f32[2];
+    if (dist2 > (radius_3 * radius_3))
+    {
+        float v18 = (pm->maxs.v.m128_f32[2] - pm->mins.v.m128_f32[2])
+            * 0.333f;
+        p0.v.m128_f32[2] += v18;
+        p1.v.m128_f32[2] += v18;
+        if (tunnel_test(*pm, radius_3, p0, p1))
+        {
+            pm->ps->origin.v = old_pos.v;
+            if ((__fpclass(pm->ps->origin.v.m128_f32[0]) & 0x297) != 0
+                || (__fpclass(pm->ps->origin.v.m128_f32[1]) & 0x297) != 0
+                || (__fpclass(pm->ps->origin.v.m128_f32[2]) & 0x297) != 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+                AeAssert::gCurrentLine = 1405;
+                AeAssert::gCurrentExpr =
+                    "!IS_NAN((pm->ps->origin)[0]) && !IS_NAN((pm->ps->origin)[1]) && !IS_NAN((pm->ps->origin)[2])";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Invalid vector"))
+                    __debugbreak();
+            }
+        }
+        p0.v.m128_f32[2] += v18;
+        p1.v.m128_f32[2] += v18;
+        bool v20 = tunnel_test(*pm, radius_3, p0, p1);
+        if (!v20)
+        {
+            pm->tracemask = v24;
+            return;
+        }
+        pm->ps->origin.v = old_pos.v;
+        if ((__fpclass(pm->ps->origin.v.m128_f32[0]) & 0x297) == 0
+            && (__fpclass(pm->ps->origin.v.m128_f32[1]) & 0x297) == 0
+            && (__fpclass(pm->ps->origin.v.m128_f32[2]) & 0x297) == 0)
+        {
+            pm->tracemask = v24;
+            return;
+        }
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 1412;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((pm->ps->origin)[0]) && !IS_NAN((pm->ps->origin)[1]) && !IS_NAN((pm->ps->origin)[2])";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    pm->tracemask = v24;
+}
+
+// ============================================================================
 // PM_ClipVelocity - ea: 0x604C00
 // ============================================================================
 void PM_ClipVelocity(const math::Dir3* in, const math::Dir3* normal,
