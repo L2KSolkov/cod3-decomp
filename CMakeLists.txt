@@ -300,6 +300,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_debugthread.cpp
     src/game/logic/g_bg_pmove.cpp
     src/game/logic/g_q_shared.cpp
+    src/game/logic/g_msg.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)

@@ -78,13 +78,13 @@ void   FS_Restart(int checksumFeed);
 void   FS_ClearMemory(void);
 
 // net.cpp
-void   Netchan_Init(void);
+int    Netchan_Init(void);
 void   Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport);
 int    NET_IsLocalAddress(netadr_t adr);
 
 // msg.cpp
 int    MSG_ReadLong(msg_t* msg);
-int    MSG_ReadByte(msg_t* msg);
+unsigned char MSG_ReadByte(msg_t* msg);
 char*  MSG_ReadString(msg_t* msg);
 
 // vm.cpp

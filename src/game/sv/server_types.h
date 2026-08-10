@@ -21,10 +21,11 @@
 // ============================================================================
 enum netadrtype_t {
     NA_BAD = 0,
-    NA_LOOPBACK = 1,
-    NA_BOT = 2,
-    NA_IP = 3,
-    NA_BROADCAST = 4,
+    NA_BOT = 1,
+    NA_LOOPBACK = 2,   // verified vs disasm (NET_CompareBaseAdrSigned switch)
+    NA_BROADCAST = 3,
+    NA_IP = 4,
+    NA_IPX = 5,
 };
 
 // ============================================================================

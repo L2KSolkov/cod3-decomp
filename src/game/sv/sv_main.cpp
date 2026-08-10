@@ -73,7 +73,7 @@ extern void  SCR_UpdateScreen(void);
 extern void  UpdateCVars(void);
 extern void  Q_strncpyz(char* dest, const char* src, int destsize);
 extern void  Cmd_ExecuteServerString(const char* text);
-extern void  Netchan_Init(void);
+extern int   Netchan_Init(void);
 extern void  GamePause_SetAllPaused(bool paused);
 extern unsigned int nflFileExists(int mediaID, const char* filename);
 extern int   nglSetFrameLock(int flock);
