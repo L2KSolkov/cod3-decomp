@@ -92,9 +92,13 @@ public:
 // EntityNotify / EntityNotifySet
 // ============================================================================
 
+// core.o data (0xF00E28 / 0xF00E2C)
+PoolAllocator* EntityNotify::sAllocator = nullptr;
+PoolAllocator* EntityNotifySet::sAllocator = nullptr;
+
 // ea: 0x004BDAA0
 EntityNotify::EntityNotify(unsigned int hashStr,
-                           DbLinkedHandle<void, void> ent,
+                           DbLinkedHandle<EntityHandleDb, Entity> ent,
                            WaitTilOutput* param)
 {
     mStr = hashStr;

@@ -4,7 +4,9 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "core/PoolAllocator.h"
 
+#include <new>
 #include <stdio.h>
 #include <string.h>
 
@@ -385,6 +387,129 @@ void Entity::ExecScriptHandler(HashString h, void* params)
     ScriptEventHandler* mScriptEventHandler = this->mScriptEventHandler;
     if (mScriptEventHandler != nullptr)
         mScriptEventHandler->ExecEvents(this, h, params);
+}
+
+// ============================================================================
+// Entity notify plumbing - ea: 0x62AD70..0x62AFA0 (Entity.cpp)
+// The reserved_dlist layout is verified here: m_size +0x00, m_head +0x04,
+// m_end +0x08, m_tail +0x0C; node m_next +0x00, m_prev +0x04.
+// ============================================================================
+// Layout twins of core_systems.h (core_systems.h can't be included with
+// g_local.h). ctors/allocators are provided by core.o (ctor_dtor.cpp).
+struct WaitTilOutput;
+struct EntityNotify {
+    unsigned char m_dlist_node[8];   // +0x00
+    unsigned int  mStr;              // +0x08
+    DbLinkedHandle<EntityHandleDb, Entity> mOwner;  // +0x0C
+    WaitTilOutput* mParam;           // +0x10
+
+    EntityNotify(unsigned int hashStr,
+                 DbLinkedHandle<EntityHandleDb, Entity> ent,
+                 WaitTilOutput* param);  // core.o 0x4BDAA0
+    static PoolAllocator* sAllocator;    // core.o @ 0xF00E28
+};
+struct EntityNotifySet {
+    unsigned char m_dlist_node[8];   // +0x00
+    DbLinkedHandle<void, void> mEnt; // +0x08
+    unsigned char mStrings[0x10];    // +0x0C
+    unsigned char mEndOnList[0x10];  // +0x1C
+
+    EntityNotifySet(Entity* e);      // core.o 0x4C1D80
+    static PoolAllocator* sAllocator;    // core.o @ 0xF00E2C
+};
+
+struct NotifyDList {
+    int   m_size;  // +0x00
+    void* m_head;  // +0x04
+    void* m_end;   // +0x08
+    void* m_tail;  // +0x0C
+};
+struct NotifyNode {
+    NotifyNode* m_next;  // +0x00
+    NotifyNode* m_prev;  // +0x04
+};
+
+// ea: 0x0062AD70
+void Entity::AddNotify(EntityNotify* notify)
+{
+    if (this->mNotifySet == nullptr)
+    {
+        void* v3 = EntityNotifySet::sAllocator->Allocate(0x2C, false);
+        EntityNotifySet* v4 =
+            v3 != nullptr ? new (v3) EntityNotifySet(this) : nullptr;
+        this->mNotifySet = v4;
+    }
+    NotifyDList* strings =
+        (NotifyDList*)((char*)this->mNotifySet + 0x0C);
+    NotifyNode* node = (NotifyNode*)&notify->m_dlist_node;
+    node->m_next = (NotifyNode*)strings->m_end;
+    node->m_prev = (NotifyNode*)strings->m_tail;
+    ((NotifyNode*)strings->m_tail)->m_next = node;
+    strings->m_tail = node;
+    ++strings->m_size;
+}
+
+// game.o data (Entity.cpp)
+static int          sNotifyInitFlags;  // $S69_1 @ 0xF58C38
+static unsigned int footstep;          // ?footstep @ 0xF58C34
+static unsigned int step;              // ?step @ 0xF58C30
+
+// ea: 0x0062AE00
+void Entity::Notify(HashString h)
+{
+    if (h.mHash == 0)
+        return;
+    if (this->client != nullptr)
+    {
+        if ((sNotifyInitFlags & 1) == 0)
+        {
+            sNotifyInitFlags |= 1;
+            footstep = HashString::CalcHash("footstep");
+        }
+        if ((sNotifyInitFlags & 2) == 0)
+        {
+            sNotifyInitFlags |= 2;
+            step = HashString::CalcHash("step");
+        }
+        if (h.mHash == step || h.mHash == footstep)
+            this->FootStep();
+    }
+    void* v3 = EntityNotify::sAllocator->Allocate(0x14, false);
+    EntityNotify* v4 =
+        v3 != nullptr
+            ? new (v3) EntityNotify(h.mHash, this->mHandle, nullptr)
+            : nullptr;
+    NotifyDList* pending =
+        (NotifyDList*)((char*)&AeThreadManager::sInst + 0x24);
+    NotifyNode* node = (NotifyNode*)&v4->m_dlist_node;
+    node->m_next = (NotifyNode*)pending->m_end;
+    node->m_prev = (NotifyNode*)pending->m_tail;
+    ((NotifyNode*)pending->m_tail)->m_next = node;
+    pending->m_tail = node;
+    ++pending->m_size;
+    ScriptEventHandler* mScriptEventHandler = this->mScriptEventHandler;
+    if (mScriptEventHandler != nullptr)
+        mScriptEventHandler->ExecEvents(this, h, nullptr);
+}
+
+// refEntity_t - leading member of trRefEntity (+0x00) - matches cg_local.h
+struct refEntity_t {
+    int   reType;          // +0x00
+    int   renderfx;        // +0x04
+    float lightingOrigin[3]; // +0x08
+    float axis[3][3];      // +0x14
+    float scale;           // +0x38
+    float origin[3];       // +0x3C
+    float oldorigin[3];    // +0x48
+    void* obj;             // +0x54
+    Entity* entity;        // +0x58
+    void* pStaticModel;    // +0x5C
+};
+
+// ea: 0x0062AFA0
+refEntity_t& Entity::GetRefEntity()
+{
+    return (refEntity_t&)this->GetRenderEntity();
 }
 
 // ============================================================================

@@ -32,6 +32,8 @@ struct Client;
 struct scr_vehicle_t;
 struct turretInfo_t;
 struct trRefEntity;
+struct refEntity_t;
+struct EntityNotify;
 class XAnimTree;
 class XModel;
 class PoolAllocator;
@@ -292,6 +294,9 @@ public:
     bool IsLocalPlayer() const;                   // ?IsLocalPlayer@Entity@@QBE_NXZ (game.o)
     int GetPlayerIndex() const;                   // ?GetPlayerIndex@Entity@@QBEHXZ (game.o)
     trRefEntity& GetRenderEntity();               // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ (game.o)
+    refEntity_t& GetRefEntity();                  // ?GetRefEntity@Entity@@QAEAAUrefEntity_t@@XZ (game.o 0x62AFA0)
+    void FootStep();                              // ?FootStep@Entity@@QAEXXZ (game.o 0x620C20)
+    void AddNotify(EntityNotify* notify);          // ?AddNotify@Entity@@QAEXPAVEntityNotify@@@Z (game.o 0x62AD70)
     void SetInSnapshot();                         // ?SetInSnapshot@Entity@@QAEXXZ (game.o)
     EntityState  s;                               // +0x000 (224 bytes)
     static void SetLerpOrigin(EntityState* s, const math::Position3* origin);  // ?SetLerpOrigin@EntityState@@QAEXABVPosition3@math@@@Z

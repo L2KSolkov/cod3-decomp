@@ -702,15 +702,19 @@ struct WaitTilOutput {
 };
 static_assert(sizeof(WaitTilOutput) == 0xC, "WaitTilOutput size mismatch");
 
+class PoolAllocator;
+class EntityHandleDb;
+
 struct EntityNotify {
     reserved_dlist<EntityNotify>::dlist_node m_dlist_node;  // +0x00
     unsigned int mStr;        // +0x08
-    DbLinkedHandle<void, void> mOwner;  // +0x0C
+    DbLinkedHandle<EntityHandleDb, Entity> mOwner;  // +0x0C
     WaitTilOutput* mParam;    // +0x10
 
-    EntityNotify(unsigned int hashStr, DbLinkedHandle<void, void> ent,
+    EntityNotify(unsigned int hashStr, DbLinkedHandle<EntityHandleDb, Entity> ent,
                  WaitTilOutput* param);  // ea: 0x004BDAA0
     ~EntityNotify();                     // ea: 0x004B5650
+    static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotify@@0PAVPoolAllocator@@A @ 0xF00E28
 };
 static_assert(sizeof(EntityNotify) == 0x14, "EntityNotify size mismatch");
 
@@ -728,6 +732,7 @@ struct EntityNotifySet {
     int IsFinished();
     void KillEndOnThreads();
     static void UpdateList();
+    static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A @ 0xF00E2C
 };
 static_assert(sizeof(EntityNotifySet) == 0x2C, "EntityNotifySet size mismatch");
 
