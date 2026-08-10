@@ -1065,6 +1065,7 @@ struct traceWork_t {
     int    contents;               // +0xF8 (visitor filter mask)
     uint8_t isPoint;               // +0xFC
     uint8_t _padFD[0x110 - 0xFD];
+    math::Position3 trace_endpos;  // +0x100
     float  trace_normal[4];        // +0x110
     float  trace_fraction;         // +0x120
     int    trace_surfaceFlags;     // +0x124
@@ -1072,7 +1073,10 @@ struct traceWork_t {
     uint8_t _pad12C[0x13C - 0x12C];
     uint8_t trace_allsolid;        // +0x13C
     uint8_t trace_startsolid;      // +0x13D
-    uint8_t _pad13E[0x150 - 0x13E];
+    uint8_t _pad13E[0x140 - 0x13E];
+    float  trace_decal_radius;     // +0x140
+    uint8_t trace_check_decal;     // +0x144
+    uint8_t _pad145[0x150 - 0x145];
     math::Position3 sphere_offset; // +0x150
     math::Dir3 sphere_radiusOffset;// +0x160
     int    sphere_use;             // +0x170
@@ -4036,6 +4040,218 @@ int PATH_SightTrace(const math::Position3& start, const math::Position3& end)
     tw.bounds[0].v = _mm_min_ps(start.v, end.v);
     tw.bounds[1].v = _mm_max_ps(start.v, end.v);
     return sight_trace_point(&tw, start, end) ? 1 : 0;
+}
+
+// ============================================================================
+// Trace / TraceSphere / TracePoint - ea: 0x640E90..0x641880 (CollisionMgr.cpp)
+// ============================================================================
+extern void TestBoundingBoxInCapsule(traceWork_t* tw);   // game.o
+extern void PositionTest(traceWork_t* tw);               // game.o
+extern void PositionTest(traceWork_t* tw,
+                         const proximity_data_t& data);  // game.o
+extern void TraceSphereThroughLeaf(traceWork_t* tw,
+                                   const DCGSet* set);   // game.o
+extern void TracePointThroughLeaf(traceWork_t* tw,
+                                  const DCGSet* set);    // game.o
+extern void TestInLeaf(traceWork_t* tw, const DCGSet* set);  // game.o
+extern bool collide_velocity_sphere(traceWork_t* tw,
+                                    const proximity_data_t& data);  // game.o
+extern cdl_proftimer cdl_proftimer_trace_sphere_list;  // game.o @ 0xF3C308
+extern int TempBoxModelContents();                     // game.o
+extern void TestCapsuleInCapsule(traceWork_t* tw);     // game.o
+extern void TraceCapsuleThroughCapsule(traceWork_t* tw);   // game.o
+extern void TraceBoundingBoxThroughCapsule(traceWork_t* tw);// game.o
+extern void TraceThroughTree(traceWork_t* tw,
+                             const math::Position3& p0,
+                             const math::Position3& p1);  // game.o
+
+// Capsule sphere descriptor (CollisionMgr.h): offset + radius + halfheight.
+struct sphere_t {
+    math::Position3 offset;  // +0x00
+    float radius;            // +0x10
+    float halfheight;        // +0x14
+};
+
+// ea: 0x00640E90
+void Trace(trace_t* results, const math::Position3& start,
+           const math::Position3& end, const math::Position3& mins,
+           const math::Position3& maxs, DCGSet* model, int brushmask,
+           int capsule, sphere_t* sphere)
+{
+    if (sphere == nullptr)
+        results->fraction = 1.0f;
+    traceWork_t tw;
+    Com_Memset(&tw, 0, sizeof(tw));
+    tw.trace_fraction = results->fraction;
+    __m128 center =
+        _mm_mul_ps(_mm_add_ps(mins.v, maxs.v), _mm_set1_ps(0.5f));
+    tw.bounds[0].v = _mm_sub_ps(mins.v, center);
+    tw.bounds[1].v = _mm_sub_ps(maxs.v, center);
+    __m128 v15 = _mm_add_ps(start.v, center);
+    __m128 v14 = _mm_add_ps(end.v, center);
+    tw.start.v = v15;
+    tw.end.v = v14;
+    tw.delta.v = _mm_sub_ps(v14, v15);
+    __m128 sq = _mm_mul_ps(tw.delta.v, tw.delta.v);
+    tw.deltaLenSqrd = sq.m128_f32[0] + sq.m128_f32[1] + sq.m128_f32[2];
+    tw.contents = brushmask;
+    tw.trace_decal_radius = results->decal_radius;
+    tw.trace_check_decal = results->check_decal;
+    int v21;
+    float v18, v19, v20;
+    if (sphere != nullptr)
+    {
+        tw.sphere_offset.v = sphere->offset.v;
+        tw.sphere_radius = sphere->radius;
+        tw.sphere_halfheight = sphere->halfheight;
+        tw.sphere_use = 1;
+        v21 = 1;
+        v19 = tw.bounds[1].v.m128_f32[1];
+        v20 = tw.bounds[1].v.m128_f32[0];
+        v18 = tw.sphere_radius;
+    }
+    else
+    {
+        v21 = capsule;
+        tw.sphere_use = capsule;
+        v19 = tw.bounds[1].v.m128_f32[1];
+        v20 = tw.bounds[1].v.m128_f32[0];
+        v18 = tw.bounds[1].v.m128_f32[0] <= tw.bounds[1].v.m128_f32[1]
+            ? tw.bounds[1].v.m128_f32[0]
+            : tw.bounds[1].v.m128_f32[1];
+        tw.sphere_halfheight = tw.bounds[1].v.m128_f32[1];
+        tw.sphere_radius = v18;
+        tw.sphere_offset.v.m128_f32[0] = 0.0f;
+        tw.sphere_offset.v.m128_f32[1] = 0.0f;
+        tw.sphere_offset.v.m128_f32[2] = tw.bounds[1].v.m128_f32[1] - v18;
+        tw.sphere_offset.v.m128_f32[3] = 0.0f;
+    }
+    __m128 v22 = _mm_min_ps(tw.start.v, tw.end.v);
+    __m128 v23 = _mm_max_ps(tw.start.v, tw.end.v);
+    __m128 v24 = _mm_add_ps(
+        _mm_andnot_ps(_mm_set1_ps(-0.0f), tw.sphere_offset.v),
+        _mm_set1_ps(v18));
+    tw.bounds[0].v = _mm_sub_ps(v22, v24);
+    tw.bounds[1].v = _mm_add_ps(v23, v24);
+    // offsets[0..7] (+0x60) = 8 corner offsets from bounds (size[0] +0x40,
+    // size[1] +0x50): corners at (b0/b1 per axis), mirroring the original
+    // q1-style corner table. The disasm only reads +0x60/+0x70/... when
+    // capsule==0 (bounds box). Keep them as the 8 combinations.
+    for (int i = 0; i < 8; ++i)
+    {
+        tw.offsets[i].v.m128_f32[0] =
+            (i & 1) ? tw.bounds[1].v.m128_f32[0]
+                    : tw.bounds[0].v.m128_f32[0];
+        tw.offsets[i].v.m128_f32[1] =
+            (i & 2) ? tw.bounds[1].v.m128_f32[1]
+                    : tw.bounds[0].v.m128_f32[1];
+        tw.offsets[i].v.m128_f32[2] =
+            (i & 4) ? tw.bounds[1].v.m128_f32[2]
+                    : tw.bounds[0].v.m128_f32[2];
+        tw.offsets[i].v.m128_f32[3] = 0.0f;
+    }
+    bool zeroSize = start.v.m128_f32[0] == end.v.m128_f32[0]
+        && start.v.m128_f32[1] == end.v.m128_f32[1]
+        && start.v.m128_f32[2] == end.v.m128_f32[2];
+    if (zeroSize)
+    {
+        if (model != nullptr)
+        {
+            if (model->id == 4094)
+            {
+                if ((TempBoxModelContents() & brushmask) != 0)
+                {
+                    if (v21 != 0)
+                        TestCapsuleInCapsule(&tw);
+                    else
+                        TestBoundingBoxInCapsule(&tw);
+                }
+            }
+            else
+            {
+                TestInLeaf(&tw, model);
+            }
+        }
+        else
+        {
+            PositionTest(&tw);
+        }
+    }
+    else
+    {
+        tw.isPoint =
+            (tw.bounds[1].v.m128_f32[2]
+             + tw.bounds[1].v.m128_f32[1]
+             + tw.bounds[1].v.m128_f32[0]) == 0.0f;
+        if (model != nullptr)
+        {
+            if (model->id == 4094)
+            {
+                if ((TempBoxModelContents() & brushmask) != 0)
+                {
+                    if (v21 != 0)
+                        TraceCapsuleThroughCapsule(&tw);
+                    else
+                        TraceBoundingBoxThroughCapsule(&tw);
+                }
+            }
+            else if (v21 != 0)
+            {
+                TraceSphereThroughLeaf(&tw, model);
+            }
+            else
+            {
+                TracePointThroughLeaf(&tw, model);
+            }
+        }
+        else
+        {
+            TraceThroughTree(&tw, tw.start, tw.end);
+        }
+    }
+    tw.trace_endpos.v = _mm_add_ps(
+        start.v,
+        _mm_mul_ps(tw.delta.v, _mm_set1_ps(tw.trace_fraction)));
+    if ((__fpclass(tw.trace_endpos.v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(tw.trace_endpos.v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(tw.trace_endpos.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1458;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw.trace.endpos)[0]) && !IS_NAN((tw.trace.endpos)[1]) && !IS_NAN((tw.trace.endpos)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(tw.trace_normal[0]) & 0x297) != 0
+        || (__fpclass(tw.trace_normal[1]) & 0x297) != 0
+        || (__fpclass(tw.trace_normal[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1459;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((tw.trace.normal)[0]) && !IS_NAN((tw.trace.normal)[1]) && !IS_NAN((tw.trace.normal)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(tw.trace_fraction) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 1460;
+        AeAssert::gCurrentExpr = "!IS_NAN(tw.trace.fraction)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    results->endpos = tw.trace_endpos;
+    results->normal.v = _mm_loadu_ps(tw.trace_normal);
+    results->fraction = tw.trace_fraction;
+    results->surfaceFlags = tw.trace_surfaceFlags;
+    results->contents = tw.trace_contents;
+    results->allsolid = tw.trace_allsolid != 0;
+    results->startsolid = tw.trace_startsolid != 0;
 }
 
 static cdl_proftimer cdl_proftimer_vsphere_poly;   // game.o @ 0xF439B8
