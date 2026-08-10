@@ -308,6 +308,7 @@ add_library(cod3_game_logic STATIC
     src/game/logic/g_winding.cpp
     src/game/logic/g_cm_load.cpp
     src/game/logic/g_checkpoint.cpp
+    src/game/logic/g_rtree.cpp
     src/game/CallFunctor.cpp
 )
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)
