@@ -6326,13 +6326,24 @@ void DCGBankManager::DecodeDCGBank(const char* name, unsigned char* data,
     }
 }
 
+struct GdbFile {
+    void* mLayout;   // +0x00 (InplaceTree<uint,uint>*)
+    void* mRecords;  // +0x04 (InplaceVector<GdbFileSet::Value>*)
+};
+struct GdbFileSet;
+
 struct GdbFileManager {
     void* __vftable;  // +0x00
     GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
     ~GdbFileManager(); // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
     void DecodeBank(const char* name, void* data, int size, TPakId pakId,
                     void* pakFile);  // ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z (game.o 0x629940)
+    GdbFile* GetGdbFile(GdbFile* result, TPakId pakId, const char* name,
+                        const char* type);
+        // ?GetGdbFile@GdbFileManager@@QAE?AVGdbFile@@W4TPakId@@PBD1@Z (game.o 0x638750)
+    static GdbFileManager* sInst;  // ?sInst@GdbFileManager@@2PAV1@A @ 0xF4F434
 };
+GdbFileManager* GdbFileManager::sInst = nullptr;
 
 // ea: 0x00622C00
 DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle)
@@ -7303,6 +7314,61 @@ void GdbFileManager::DecodeBank(const char* name, void* data, int size,
 {
     InplaceAssetBank_GdbFileSet_Fixup(data);
     InplaceAssetBankSet_GdbFileBank_AddBank(this, pakId, data);
+}
+
+// ============================================================================
+// GdbFileManager::GetGdbFile - ea: 0x638750 + C bridge for cross-TU callers
+// ============================================================================
+extern void InplaceAssetBankSet_Find_GdbFileBank(
+    void* self, void* result, const char* pakId, const char* key,
+    int type, void* foundPakId);
+    // InplaceAssetBankSet<GdbFileBank>::Find<char const *,IVPointer<GdbFileSet>> @ 0x429A88
+extern void** InplaceTree_Find_GdbFileRecords(
+    void* self, const char* const* key);
+    // InplaceTree<InplaceString,InplaceVector<GdbFileSet::Value> const *>::Find<char const *> @ 0x41672B
+
+// ea: 0x00638750
+GdbFile* GdbFileManager::GetGdbFile(GdbFile* result, TPakId pakId,
+                                    const char* name, const char* type)
+{
+    IVPointer<GdbFileSet> xm;
+    InplaceAssetBankSet_Find_GdbFileBank(this, &xm, name, type, 0, nullptr);
+    ValidatePakId((TPakId)xm.mPakId);
+    GdbFileSet* mValue = xm.mValue;
+    if (mValue != nullptr)
+    {
+        ValidatePakId((TPakId)xm.mPakId);
+        void** v7 = InplaceTree_Find_GdbFileRecords(
+            (char*)mValue + 0x0C, &name);
+        ValidatePakId((TPakId)xm.mPakId);
+        if (v7 != nullptr)
+        {
+            result->mLayout = (char*)mValue + 0x04;
+            result->mRecords = *v7;
+            return result;
+        }
+    }
+    result->mLayout = nullptr;
+    result->mRecords = nullptr;
+    return result;
+}
+
+// C-style bridge (effect_events.cpp / common.cpp)
+extern void* GdbFileManager_sInst;  // ?sInst@GdbFileManager@@2PAV1@A
+void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId, const char* name,
+                                const char* type)
+{
+    static GdbFile s_result;
+    return ((GdbFileManager*)mgr)->GetGdbFile(&s_result, pakId, name, type);
+}
+
+// ea: 0x00638720
+void DecodeGDB(const char* name, void* data, int size, TPakId pakId,
+               void* pakFile)
+{
+    InplaceAssetBank_GdbFileSet_Fixup(data);
+    InplaceAssetBankSet_GdbFileBank_AddBank(GdbFileManager::sInst, pakId,
+                                            data);
 }
 
 // ============================================================================
