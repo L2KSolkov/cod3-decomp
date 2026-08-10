@@ -673,6 +673,8 @@ int WindingOnPlaneSide(winding_t* w, float* normal, float dist)
 // Collision math helpers (cdl / cm_trace helpers)
 // ============================================================================
 extern float thresh2;  // ?thresh2@@3MA (game.o)
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);  // tl_xboxr
 
 // ea: 0x0060C020
 bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
@@ -826,4 +828,258 @@ float point_to_segment_dist2(const math::Position3& c,
         return v4[0] * v4[0] + v4[1] * v4[1] + v4[2] * v4[2];
     }
     return v3[0] * v3[0] + v3[1] * v3[1] + v3[2] * v3[2];
+}
+
+// ea: 0x0060D2B0
+bool collide_ray_triangle(const math::Position3& p0, const math::Dir3& u0,
+                          const math::Position3& v0,
+                          const math::Position3& v1,
+                          const math::Position3& v2, float cur_t, float* t)
+{
+    if ((cur_t < 0.0f || cur_t > 1.0f)
+        && _tlAssert("c:\\cod\\code\\game\\CollisionMgr.cpp", 3792,
+                     "cur_t >= 0.0f && cur_t <= 1.0f", ""))
+        __debugbreak();
+    float e1[3], e2[3];
+    e1[0] = v1.v.m128_f32[0] - v0.v.m128_f32[0];
+    e1[1] = v1.v.m128_f32[1] - v0.v.m128_f32[1];
+    e1[2] = v1.v.m128_f32[2] - v0.v.m128_f32[2];
+    e2[0] = v2.v.m128_f32[0] - v0.v.m128_f32[0];
+    e2[1] = v2.v.m128_f32[1] - v0.v.m128_f32[1];
+    e2[2] = v2.v.m128_f32[2] - v0.v.m128_f32[2];
+    float du0[3] = { -u0.v.m128_f32[0], -u0.v.m128_f32[1],
+                     -u0.v.m128_f32[2] };
+    float cross[3];
+    cross[0] = e1[1] * e2[2] - e1[2] * e2[1];
+    cross[1] = e1[2] * e2[0] - e1[0] * e2[2];
+    cross[2] = e1[0] * e2[1] - e1[1] * e2[0];
+    float det = cross[0] * du0[0] + cross[1] * du0[1] + cross[2] * du0[2];
+    if (fabsf(det) < 0.000099999997f)
+        return false;
+    float s[3];
+    s[0] = p0.v.m128_f32[0] - v0.v.m128_f32[0];
+    s[1] = p0.v.m128_f32[1] - v0.v.m128_f32[1];
+    s[2] = p0.v.m128_f32[2] - v0.v.m128_f32[2];
+    float inv = 1.0f / det;
+    float tval = inv * (cross[0] * s[0] + cross[1] * s[1] + cross[2] * s[2]);
+    if (tval < 0.0f || tval > cur_t)
+        return false;
+    float q[3];
+    q[0] = s[1] * du0[2] - s[2] * du0[1];
+    q[1] = s[2] * du0[0] - s[0] * du0[2];
+    q[2] = s[0] * du0[1] - s[1] * du0[0];
+    float u = 0.0f - inv * (q[0] * e2[0] + q[1] * e2[1] + q[2] * e2[2]);
+    if (u < 0.0f)
+        return false;
+    float v = inv * (q[0] * e1[0] + q[1] * e1[1] + q[2] * e1[2]);
+    if (v < 0.0f || (v + u) > 1.0f)
+        return false;
+    *t = tval;
+    return true;
+}
+
+// ea: 0x0060D4A0
+bool xtest_sphere_triangle(const math::Position3& sphere_center,
+                           float sphere_radius,
+                           const math::Position3& v0,
+                           const math::Position3& v1,
+                           const math::Position3& v2,
+                           const math::Dir3& normal)
+{
+    float c[3] = { sphere_center.v.m128_f32[0],
+                   sphere_center.v.m128_f32[1],
+                   sphere_center.v.m128_f32[2] };
+    float r2 = sphere_radius * sphere_radius;
+    float n[3] = { normal.v.m128_f32[0], normal.v.m128_f32[1],
+                   normal.v.m128_f32[2] };
+    float v0c[3] = { v0.v.m128_f32[0] - c[0], v0.v.m128_f32[1] - c[1],
+                     v0.v.m128_f32[2] - c[2] };
+    float v1c[3] = { v1.v.m128_f32[0] - c[0], v1.v.m128_f32[1] - c[1],
+                     v1.v.m128_f32[2] - c[2] };
+    float v2c[3] = { v2.v.m128_f32[0] - c[0], v2.v.m128_f32[1] - c[1],
+                     v2.v.m128_f32[2] - c[2] };
+    float d = v0c[0] * n[0] + v0c[1] * n[1] + v0c[2] * n[2];
+    if (d > sphere_radius || (0.0f - sphere_radius) > d)
+        return false;
+    float c0 = v0c[0] * v0c[0] + v0c[1] * v0c[1] + v0c[2] * v0c[2];
+    float c1 = v0c[0] * v1c[0] + v0c[1] * v1c[1] + v0c[2] * v1c[2];
+    float c2 = v0c[0] * v2c[0] + v0c[1] * v2c[1] + v0c[2] * v2c[2];
+    float v43 = v1c[0] * v1c[0] + v1c[1] * v1c[1] + v1c[2] * v1c[2];
+    float cc = v1c[0] * v2c[0] + v1c[1] * v2c[1] + v1c[2] * v2c[2];
+    float v40 = v2c[0] * v2c[0] + v2c[1] * v2c[1] + v2c[2] * v2c[2];
+    if (c1 >= c0 && c2 >= c0)
+        return r2 >= c0;
+    if (c1 >= v43 && cc >= v43)
+        return r2 >= v43;
+    if (c2 >= v40 && cc >= v40)
+        return r2 >= v40;
+    float w[3] = { 0.0f, 0.0f, 0.0f };
+    if (v43 >= c1 && c0 >= c1)
+    {
+        if ((cc * (c0 - c1) + c2 * (v43 - c1)) >= (v43 * c0 - c1 * c1))
+        {
+            float t1 = c0 - c1;
+            float t2 = v43 - c1;
+            float inv = 1.0f / (t1 + t2);
+            for (int i = 0; i < 3; ++i)
+                w[i] = v0c[i] * (inv * t1) + v1c[i] * (inv * t2);
+            return r2 >= (w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+        }
+    }
+    if (v40 >= c2 && c0 >= c2)
+    {
+        if ((cc * (c0 - c2) + c1 * (v40 - c2)) >= (v40 * c0 - c2 * c2))
+        {
+            float t1 = c0 - c2;
+            float t2 = v40 - c2;
+            float inv = 1.0f / (t1 + t2);
+            for (int i = 0; i < 3; ++i)
+                w[i] = v0c[i] * (inv * t1) + v2c[i] * (inv * t2);
+            return r2 >= (w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+        }
+    }
+    if (v40 >= cc && v43 >= cc)
+    {
+        if ((c2 * (v43 - cc) + c1 * (v40 - cc)) >= (v40 * v43 - cc * cc))
+        {
+            float t1 = v40 - cc;
+            float t2 = v43 - cc;
+            float inv = 1.0f / (t1 + t2);
+            for (int i = 0; i < 3; ++i)
+                w[i] = v1c[i] * (inv * t1) + v2c[i] * (inv * t2);
+            return r2 >= (w[0] * w[0] + w[1] * w[1] + w[2] * w[2]);
+        }
+    }
+    return true;
+}
+
+// ea: 0x0060D860
+bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
+                                  float sphere_radius,
+                                  const math::Position3& v0,
+                                  const math::Position3& v1,
+                                  const math::Position3& v2,
+                                  const math::Dir3& normal,
+                                  math::Position3& new_sphere_center)
+{
+    float c[3] = { sphere_center.v.m128_f32[0],
+                   sphere_center.v.m128_f32[1],
+                   sphere_center.v.m128_f32[2] };
+    float n[3] = { normal.v.m128_f32[0], normal.v.m128_f32[1],
+                   normal.v.m128_f32[2] };
+    float v0c[3] = { v0.v.m128_f32[0] - c[0], v0.v.m128_f32[1] - c[1],
+                     v0.v.m128_f32[2] - c[2] };
+    float v1c[3] = { v1.v.m128_f32[0] - c[0], v1.v.m128_f32[1] - c[1],
+                     v1.v.m128_f32[2] - c[2] };
+    float v2c[3] = { v2.v.m128_f32[0] - c[0], v2.v.m128_f32[1] - c[1],
+                     v2.v.m128_f32[2] - c[2] };
+    float d = v0c[0] * n[0] + v0c[1] * n[1] + v0c[2] * n[2];
+    if (d > sphere_radius || (0.0f - sphere_radius) > d)
+        return false;
+    float r2 = sphere_radius * sphere_radius;
+    float nhitn_sq = v0c[0] * v0c[0] + v0c[1] * v0c[1] + v0c[2] * v0c[2];
+    float hitn_12 = v0c[0] * v1c[0] + v0c[1] * v1c[1] + v0c[2] * v1c[2];
+    float v41 = v0c[0] * v2c[0] + v0c[1] * v2c[1] + v0c[2] * v2c[2];
+    float v46 = v1c[0] * v1c[0] + v1c[1] * v1c[1] + v1c[2] * v1c[2];
+    float c0 = v1c[0] * v2c[0] + v1c[1] * v2c[1] + v1c[2] * v2c[2];
+    float v42 = v2c[0] * v2c[0] + v2c[1] * v2c[1] + v2c[2] * v2c[2];
+    float best[3] = { v0c[0], v0c[1], v0c[2] };
+    float bestsq = nhitn_sq;
+    if (!(hitn_12 >= nhitn_sq && v41 >= nhitn_sq))
+    {
+        if (hitn_12 >= v46 && c0 >= v46)
+        {
+            best[0] = v1c[0]; best[1] = v1c[1]; best[2] = v1c[2];
+            bestsq = v46;
+        }
+        else if (v41 >= v42 && c0 >= v42)
+        {
+            best[0] = v2c[0]; best[1] = v2c[1]; best[2] = v2c[2];
+            bestsq = v42;
+        }
+        else
+        {
+            float w[3];
+            if (v46 >= hitn_12 && nhitn_sq >= hitn_12)
+            {
+                if ((c0 * (nhitn_sq - hitn_12)
+                     + v41 * (v46 - hitn_12))
+                    >= (v46 * nhitn_sq - hitn_12 * hitn_12))
+                {
+                    float t1 = nhitn_sq - hitn_12;
+                    float t2 = v46 - hitn_12;
+                    float inv = 1.0f / (t1 + t2);
+                    for (int i = 0; i < 3; ++i)
+                        w[i] = v0c[i] * (inv * t1) + v1c[i] * (inv * t2);
+                    bestsq = w[0] * w[0] + w[1] * w[1] + w[2] * w[2];
+                    if (bestsq <= 0.000099999997f || r2 < bestsq || d >= 0.0f)
+                        return false;
+                    float len = sqrtf(bestsq);
+                    float k = (sphere_radius - len + 0.001f) / len;
+                    new_sphere_center.v.m128_f32[0] = c[0] - v0c[0] * k;
+                    new_sphere_center.v.m128_f32[1] = c[1] - v0c[1] * k;
+                    new_sphere_center.v.m128_f32[2] = c[2] - v0c[2] * k;
+                    return true;
+                }
+            }
+            if (v42 >= v41 && nhitn_sq >= v41)
+            {
+                if ((c0 * (nhitn_sq - v41) + hitn_12 * (v42 - v41))
+                    >= (v42 * nhitn_sq - v41 * v41))
+                {
+                    float t1 = nhitn_sq - v41;
+                    float t2 = v42 - v41;
+                    float inv = 1.0f / (t1 + t2);
+                    for (int i = 0; i < 3; ++i)
+                        w[i] = v0c[i] * (inv * t1) + v2c[i] * (inv * t2);
+                    bestsq = w[0] * w[0] + w[1] * w[1] + w[2] * w[2];
+                    if (bestsq <= 0.000099999997f || r2 < bestsq || d >= 0.0f)
+                        return false;
+                    float len = sqrtf(bestsq);
+                    float k = (sphere_radius - len + 0.001f) / len;
+                    new_sphere_center.v.m128_f32[0] = c[0] - v0c[0] * k;
+                    new_sphere_center.v.m128_f32[1] = c[1] - v0c[1] * k;
+                    new_sphere_center.v.m128_f32[2] = c[2] - v0c[2] * k;
+                    return true;
+                }
+            }
+            if (v42 >= c0 && v46 >= c0)
+            {
+                if ((v41 * (v46 - c0) + hitn_12 * (v42 - c0))
+                    >= (v42 * v46 - c0 * c0))
+                {
+                    float t1 = v42 - c0;
+                    float t2 = v46 - c0;
+                    float inv = 1.0f / (t1 + t2);
+                    for (int i = 0; i < 3; ++i)
+                        w[i] = v1c[i] * (inv * t1) + v2c[i] * (inv * t2);
+                    bestsq = w[0] * w[0] + w[1] * w[1] + w[2] * w[2];
+                    if (bestsq <= 0.000099999997f || r2 < bestsq || d >= 0.0f)
+                        return false;
+                    float len = sqrtf(bestsq);
+                    float k = (sphere_radius - len + 0.001f) / len;
+                    new_sphere_center.v.m128_f32[0] = c[0] - v1c[0] * k;
+                    new_sphere_center.v.m128_f32[1] = c[1] - v1c[1] * k;
+                    new_sphere_center.v.m128_f32[2] = c[2] - v1c[2] * k;
+                    return true;
+                }
+            }
+            // Push out along the face normal.
+            float k = (d + sphere_radius) + 0.001f;
+            new_sphere_center.v.m128_f32[0] = c[0] + n[0] * k;
+            new_sphere_center.v.m128_f32[1] = c[1] + n[1] * k;
+            new_sphere_center.v.m128_f32[2] = c[2] + n[2] * k;
+            return true;
+        }
+    }
+    if (bestsq > 0.000099999997f && r2 >= bestsq && d < 0.0f)
+    {
+        float len = sqrtf(bestsq);
+        float k = (sphere_radius - len + 0.001f) / len;
+        new_sphere_center.v.m128_f32[0] = c[0] - best[0] * k;
+        new_sphere_center.v.m128_f32[1] = c[1] - best[1] * k;
+        new_sphere_center.v.m128_f32[2] = c[2] - best[2] * k;
+        return true;
+    }
+    return false;
 }

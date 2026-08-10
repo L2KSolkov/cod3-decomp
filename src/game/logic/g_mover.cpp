@@ -491,8 +491,12 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
             if (normal[3] + dot >= 0.0f)
             {
                 if (new_push_out_sphere_triangle(
-                        &outcenter.v.m128_f32[0], radius, v0, v1, v2,
-                        normal, &outcenter.v.m128_f32[0]))
+                        *(const math::Position3*)&outcenter.v.m128_f32[0],
+                        radius, *(const math::Position3*)v0,
+                        *(const math::Position3*)v1,
+                        *(const math::Position3*)v2,
+                        *(const math::Dir3*)normal,
+                        *(math::Position3*)&outcenter.v.m128_f32[0]))
                     hit = true;
             }
         }
@@ -626,8 +630,14 @@ bool push_in_world(math::Position3& pos, float radius,
             normal[1] = nv2.v.m128_f32[1];
             normal[2] = nv2.v.m128_f32[2];
             normal[3] = nv2.v.m128_f32[3];
-            if (new_push_out_sphere_triangle(center, radius, v0, v1, v2,
-                                             normal, center))
+            if (new_push_out_sphere_triangle(
+                                             *(const math::Position3*)center,
+                                             radius,
+                                             *(const math::Position3*)v0,
+                                             *(const math::Position3*)v1,
+                                             *(const math::Position3*)v2,
+                                             *(const math::Dir3*)normal,
+                                             *(math::Position3*)center))
                 hit = true;
         }
         pos.v.m128_f32[0] = center[0];
@@ -3262,4 +3272,3 @@ label_20:
         }
     }
 }
-

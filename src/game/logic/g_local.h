@@ -2514,11 +2514,24 @@ bool collide_sphere_brush(const float* sphere_center, float sphere_radius,
 bool collide_sphere_box(const float* sphere_center, float sphere_radius,
                         const cdl_object_t* box,
                         float* new_sphere_center);  // game.o
-bool new_push_out_sphere_triangle(const float* sphere_center,
-                                  float sphere_radius, const float* v0,
-                                  const float* v1, const float* v2,
-                                  const float* normal,
-                                  float* new_sphere_center);  // game.o
+bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
+                                  float sphere_radius,
+                                  const math::Position3& v0,
+                                  const math::Position3& v1,
+                                  const math::Position3& v2,
+                                  const math::Dir3& normal,
+                                  math::Position3& new_sphere_center);  // game.o 0x60D860
+bool collide_ray_triangle(const math::Position3& p0, const math::Dir3& u0,
+                          const math::Position3& v0,
+                          const math::Position3& v1,
+                          const math::Position3& v2, float cur_t,
+                          float* t);  // game.o 0x60D2B0
+bool xtest_sphere_triangle(const math::Position3& sphere_center,
+                           float sphere_radius,
+                           const math::Position3& v0,
+                           const math::Position3& v1,
+                           const math::Position3& v2,
+                           const math::Dir3& normal);  // game.o 0x60D4A0
 math::Vector4 calc_normal(const math::Position3& v0, const math::Position3& v1,
                           const math::Position3& v2);  // game.o 0x60C400
 bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
