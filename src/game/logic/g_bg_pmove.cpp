@@ -43,6 +43,7 @@ extern vmCvar_t g_gravity;     // ?g_gravity@@3UvmCvar_t@@A
 extern weaponFileInfo_t** bg_weaponInfo;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
 extern const char** pEventNamesList;      // ?pEventNamesList@@3PAPBDA (game.o)
 extern const char* szWeapTypeNames[9];    // ?szWeapTypeNames@@3PAPBDA (game.o)
+extern Entity* GetPlayer(int idx);        // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
 
 // game.o static weapon-type names (recovered from .rdata)
 static const char* const s_szWeapTypeNames[9] = {
@@ -139,7 +140,7 @@ void PM_AddTouchEnt(DbLinkedHandle<EntityHandleDb, Entity> entity)
 // Pmove / PmoveSingle - ea: 0x6464C0 / 0x645CD0 (bg_pmove.cpp)
 // ============================================================================
 extern int c_pmove;   // ?c_pmove@@3HA (game.o)
-extern void PM_CheckDuck();                       // game.o 0x644B80
+void PM_CheckDuck();                        // game.o 0x644B80
 extern void PmoveSingle(pmove_t* pmove,
                         bool isThisThePredictStep);  // game.o 0x645CD0
 extern bool GamePause_IsGamePaused(int client);   // ?IsGamePaused@GamePause@@SA_NH@Z
@@ -5917,4 +5918,767 @@ void PM_UpdateLean(PlayerState* ps, usercmd_s* cmd,
                 (1 - 2 * ((v & 0x80000000) != 0)) * LeanFraction;
         }
     }
+}
+
+// ============================================================================
+// viewLerpWaypoint_s + PM_ViewHeightTableLerp - ea: 0x615050 (bg_pmove.cpp)
+// ============================================================================
+struct viewLerpWaypoint_s {
+    int   iFrac;        // +0x00
+    float fViewHeight;  // +0x04
+    int   iOffset;      // +0x08
+};
+static_assert(sizeof(viewLerpWaypoint_s) == 0xC, "viewLerpWaypoint_s size mismatch");
+
+// .rdata lerp tables (byte-verified against IDA 0xDF5830..0xDF5A28)
+static const viewLerpWaypoint_s viewLerp_StandCrouch[] = {
+    { 0, 60.0f, 0 }, { 1, 59.5f, 0 }, { 4, 58.5f, 0 }, { 30, 56.0f, 0 },
+    { 80, 44.0f, 0 }, { 90, 41.5f, 0 }, { 95, 40.5f, 0 }, { 100, 40.0f, 0 },
+    { -1, 0.0f, 0 },
+};
+static const viewLerpWaypoint_s viewLerp_CrouchStand[] = {
+    { 0, 40.0f, 0 }, { 5, 40.5f, 0 }, { 10, 41.5f, 0 }, { 20, 44.0f, 0 },
+    { 70, 56.0f, 0 }, { 96, 58.5f, 0 }, { 99, 59.5f, 0 }, { 100, 60.0f, 0 },
+    { -1, 0.0f, 0 },
+};
+static const viewLerpWaypoint_s viewLerp_CrouchProne[] = {
+    { 0, 40.0f, 0 }, { 11, 38.0f, 0 }, { 22, 33.0f, 0 }, { 34, 25.0f, 0 },
+    { 45, 16.0f, 0 }, { 50, 15.0f, 0 }, { 55, 16.0f, 0 }, { 70, 18.0f, 0 },
+    { 90, 17.0f, 0 }, { 100, 11.0f, 0 }, { -1, 0.0f, 0 },
+};
+static const viewLerpWaypoint_s viewLerp_ProneCrouch[] = {
+    { 0, 11.0f, 0 }, { 5, 10.0f, 0 }, { 30, 21.0f, 0 }, { 50, 25.0f, 0 },
+    { 67, 31.0f, 0 }, { 83, 34.0f, 0 }, { 100, 40.0f, 0 }, { -1, 0.0f, 0 },
+};
+
+// ea: 0x00615050
+static float PM_ViewHeightTableLerp(int iFrac, const viewLerpWaypoint_s* pTable,
+                                    float* pfPosOfs)
+{
+    if (iFrac == 0)
+    {
+        *pfPosOfs = (float)pTable->iOffset;
+        return pTable->fViewHeight;
+    }
+    if (iFrac >= 100)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2545;
+        AeAssert::gCurrentExpr = "iFrac < 100";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    const viewLerpWaypoint_s* pCurr = pTable + 1;
+    int v6 = pCurr->iFrac;
+    for (int i = 1; ; ++i)
+    {
+        if (v6 == iFrac)
+        {
+            *pfPosOfs = (float)pCurr->iOffset;
+            return pCurr->fViewHeight;
+        }
+        if (v6 > iFrac)
+            break;
+        v6 = pCurr[1].iFrac;
+        ++pCurr;
+        if (v6 == -1)
+        {
+            if (va("No encapsulating table entries found for fraction %i",
+                   iFrac) == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+                AeAssert::gCurrentLine = 2580;
+                AeAssert::gCurrentExpr =
+                    "va(\"No encapsulating table entries found for fraction %i\", iFrac)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            *pfPosOfs = (float)pTable->iOffset;
+            return pTable->fViewHeight;
+        }
+    }
+    const viewLerpWaypoint_s* pPrev = pCurr - 1;
+    if (pCurr->iFrac - pPrev->iFrac <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2567;
+        AeAssert::gCurrentExpr = "(pCurr->iFrac - pPrev->iFrac) > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float v10 = (float)(iFrac - pPrev->iFrac)
+              / (float)(pCurr->iFrac - pPrev->iFrac);
+    *pfPosOfs = (float)pPrev->iOffset
+              + (float)(pCurr->iOffset - pPrev->iOffset) * v10;
+    return pPrev->fViewHeight
+         + (pCurr->fViewHeight - pPrev->fViewHeight) * v10;
+}
+
+// ============================================================================
+// PM_ViewHeightAdjust - ea: 0x6444E0 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x006444E0
+static void PM_ViewHeightAdjust()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2644;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    PlayerState* ps = pm->ps;
+    int viewHeightTarget = ps->viewHeightTarget;
+    if (viewHeightTarget == 0 || ps->viewHeightCurrent == 0.0f)
+    {
+        if (ps->pm_type == 4)
+            ps->viewHeightCurrent = 0.0f;
+        else
+            ps->viewHeightCurrent = (float)viewHeightTarget;
+        return;
+    }
+    if (ps->viewHeightCurrent == (float)viewHeightTarget
+        && ps->viewHeightLerpTime == 0)
+    {
+        return;
+    }
+    if (viewHeightTarget != ps->proneViewHeight
+        && viewHeightTarget != ps->crouchViewHeight
+        && viewHeightTarget != ps->standViewHeight)
+    {
+        ps->viewHeightLerpTime = 0;
+        float v6 = pml.frametime * 180.0f;
+        if ((float)pm->ps->viewHeightTarget <= pm->ps->viewHeightCurrent)
+        {
+            pm->ps->viewHeightCurrent -= v6;
+            if ((float)pm->ps->viewHeightTarget
+                >= pm->ps->viewHeightCurrent)
+            {
+                pm->ps->viewHeightCurrent =
+                    (float)pm->ps->viewHeightTarget;
+            }
+        }
+        else
+        {
+            pm->ps->viewHeightCurrent += v6;
+            if (pm->ps->viewHeightCurrent
+                >= (float)pm->ps->viewHeightTarget)
+            {
+                pm->ps->viewHeightCurrent =
+                    (float)pm->ps->viewHeightTarget;
+            }
+        }
+        return;
+    }
+    if (ps->viewHeightLerpTime != 0)
+    {
+        int viewHeightLerpTarget = ps->viewHeightLerpTarget;
+        int ViewHeightLerpTime = PM_GetViewHeightLerpTime(
+            ps, viewHeightLerpTarget, ps->viewHeightLerpDown);
+        int v12 = 100 * (pm->cmd.serverTime - ps->viewHeightLerpTime)
+                / ViewHeightLerpTime;
+        int iFrac = v12;
+        if (v12 < 0)
+        {
+            iFrac = 0;
+        }
+        else if (v12 > 100)
+        {
+            iFrac = 100;
+            ps->viewHeightCurrent = (float)viewHeightLerpTarget;
+            pm->ps->viewHeightLerpTime = 0;
+            pm->ps->viewHeightLerpPosAdj = 0.0f;
+            goto L39;
+        }
+        else if (v12 == 100)
+        {
+            ps->viewHeightCurrent = (float)viewHeightLerpTarget;
+            pm->ps->viewHeightLerpTime = 0;
+            pm->ps->viewHeightLerpPosAdj = 0.0f;
+            goto L39;
+        }
+        float fNewPosOfs;
+        const viewLerpWaypoint_s* pTable;
+        if (viewHeightLerpTarget == ps->proneViewHeight)
+            pTable = viewLerp_CrouchProne;
+        else if (viewHeightLerpTarget == ps->crouchViewHeight)
+            pTable = ps->viewHeightLerpDown == 0 ? viewLerp_ProneCrouch
+                                                 : viewLerp_StandCrouch;
+        else
+            pTable = viewLerp_CrouchStand;
+        float fViewHeight =
+            PM_ViewHeightTableLerp(iFrac, pTable, &fNewPosOfs);
+        pm->ps->viewHeightCurrent = fViewHeight;
+        if (fabsf(pm->ps->viewHeightLerpPosAdj - fNewPosOfs) > 0.05f
+            && (0x100000 & pm->ps->pm_flags) == 0)
+        {
+            float vOrigVel[3];
+            vOrigVel[0] = pm->ps->velocity.v.m128_f32[0];
+            vOrigVel[1] = pm->ps->velocity.v.m128_f32[1];
+            vOrigVel[2] = pm->ps->velocity.v.m128_f32[2];
+            float v15 = fNewPosOfs - pm->ps->viewHeightLerpPosAdj;
+            if (pm->ps->mGroundEntity.mHandle.mVal == 0)
+                v15 = v15 * 0.5f;
+            float fOffset = v15 / pml.frametime;
+            float vFlatForward[3];
+            vFlatForward[0] = pml.forward[0];
+            vFlatForward[1] = pml.forward[1];
+            vFlatForward[2] = 0.0f;
+            VectorNormalize(vFlatForward);
+            pm->ps->velocity.v.m128_f32[0] = vFlatForward[0] * fOffset;
+            pm->ps->velocity.v.m128_f32[1] = vFlatForward[1] * fOffset;
+            pm->ps->velocity.v.m128_f32[2] = vFlatForward[2] * fOffset;
+            PM_StepSlideMove(1);
+            pm->ps->velocity.v.m128_f32[0] = vOrigVel[0];
+            pm->ps->velocity.v.m128_f32[1] = vOrigVel[1];
+            pm->ps->velocity.v.m128_f32[2] = vOrigVel[2];
+            pm->ps->viewHeightLerpPosAdj = fNewPosOfs;
+        }
+L39:
+        ps = pm->ps;
+        if (ps->viewHeightLerpTime != 0)
+        {
+            if (ps->viewHeightTarget == ps->viewHeightLerpTarget)
+                return;
+            if ((ps->viewHeightTarget < ps->viewHeightLerpTarget
+                 && ps->viewHeightLerpDown == 0)
+                || (ps->viewHeightTarget > ps->viewHeightLerpTarget
+                    && ps->viewHeightLerpDown != 0))
+            {
+                ps->viewHeightLerpDown ^= 1;
+                int v20 = ps->viewHeightLerpTarget;
+                if (ps->viewHeightLerpDown != 0)
+                {
+                    if (v20 == ps->standViewHeight)
+                        ps->viewHeightLerpTarget = ps->crouchViewHeight;
+                    else if (v20 == ps->crouchViewHeight)
+                        ps->viewHeightLerpTarget = ps->proneViewHeight;
+                }
+                else if (v20 == ps->proneViewHeight)
+                {
+                    ps->viewHeightLerpTarget = ps->crouchViewHeight;
+                }
+                else if (v20 == ps->crouchViewHeight)
+                {
+                    ps->viewHeightLerpTarget = ps->standViewHeight;
+                }
+                if (iFrac == 0)
+                {
+                    pm->ps->viewHeightCurrent =
+                        (float)pm->ps->viewHeightLerpTarget;
+                    pm->ps->viewHeightLerpTime = 0;
+                    pm->ps->viewHeightLerpPosAdj = 0.0f;
+                    return;
+                }
+                int LerpTime = PM_GetViewHeightLerpTime(
+                    ps, ps->viewHeightLerpTarget, ps->viewHeightLerpDown);
+                pm->ps->viewHeightLerpTime =
+                    pm->cmd.serverTime
+                    - (int)(LerpTime * (100 - iFrac) * 0.01f);
+                int v27 = ps->viewHeightLerpTarget;
+                if (v27 == ps->proneViewHeight)
+                {
+                    PM_ViewHeightTableLerp(100 - iFrac,
+                                           viewLerp_CrouchProne,
+                                           &fNewPosOfs);
+                }
+                else if (v27 == ps->crouchViewHeight)
+                {
+                    if (ps->viewHeightLerpDown == 0)
+                        PM_ViewHeightTableLerp(100 - iFrac,
+                                               viewLerp_ProneCrouch,
+                                               &fNewPosOfs);
+                    else
+                        PM_ViewHeightTableLerp(100 - iFrac,
+                                               viewLerp_StandCrouch,
+                                               &fNewPosOfs);
+                }
+                else
+                {
+                    PM_ViewHeightTableLerp(100 - iFrac,
+                                           viewLerp_CrouchStand,
+                                           &fNewPosOfs);
+                }
+                pm->ps->viewHeightLerpPosAdj = fNewPosOfs;
+            }
+            return;
+        }
+        if (ps->viewHeightCurrent == (float)ps->viewHeightTarget)
+            return;
+        ps->viewHeightLerpTime = pm->cmd.serverTime;
+        int v30 = ps->viewHeightTarget;
+        if (v30 == ps->proneViewHeight)
+        {
+            ps->viewHeightLerpDown = 1;
+            if (ps->viewHeightCurrent <= (float)ps->crouchViewHeight)
+            {
+                ps->viewHeightLerpTarget = ps->proneViewHeight;
+                return;
+            }
+        }
+        else if (v30 == ps->crouchViewHeight)
+        {
+            ps->viewHeightLerpDown = ps->viewHeightCurrent > (float)v30;
+        }
+        else
+        {
+            if (v30 != ps->standViewHeight)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+                AeAssert::gCurrentLine = 2863;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored())
+                {
+                    const char* v32 = va(
+                        "View height lerp to %i reached bad place\n",
+                        pm->ps->viewHeightTarget);
+                    if (AeAssert::Warning(v32))
+                        __debugbreak();
+                }
+                return;
+            }
+            ps->viewHeightLerpDown = 0;
+            if ((float)ps->crouchViewHeight <= ps->viewHeightCurrent)
+            {
+                ps->viewHeightLerpTarget = ps->standViewHeight;
+                return;
+            }
+        }
+        ps->viewHeightLerpTarget = ps->crouchViewHeight;
+    }
+}
+
+// ============================================================================
+// PM_CheckDuck - ea: 0x644B80 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x00644B80
+void PM_CheckDuck()
+{
+    if (pm == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_pmove.cpp";
+        AeAssert::gCurrentLine = 2888;
+        AeAssert::gCurrentExpr = "pm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+
+    player_collision_context_t context;
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
+    context.pass_entity1.mHandle.mVal = pm->ps->mClient.mHandle.mVal;
+    context.pass_entity2.mHandle.mVal = 0;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = pm->tracemask & 0xFDFFFFFF;
+
+    trace_t trace;
+    trace.mEntity.mHandle.mVal = 0;
+    trace.partName.mHash = 0;
+
+    PlayerState* ps = pm->ps;
+    int pm_flags = ps->pm_flags;
+    if ((0x100000 & pm_flags) != 0)
+    {
+        Entity* player = EntityManager::sInst->GetPlayer(currCl);
+        int spectatorClient = player->client->ps.spectatorClient;
+        if (spectatorClient < 0)
+            return;
+        PlayerState* v9 = pm->ps;
+        int spectatorFlags =
+            EntityManager::sInst->GetPlayer(spectatorClient)
+                ->client->ps.pm_flags;
+        if (pm->ps->viewHeightLerpTime != 0)
+        {
+            PM_ViewHeightAdjust();
+            return;
+        }
+        if ((spectatorFlags & 1) != 0)
+        {
+            if (v9->viewHeightTarget == v9->standViewHeight)
+                v9->viewHeightTarget = v9->crouchViewHeight;
+            else
+                v9->viewHeightTarget = v9->proneViewHeight;
+            PM_ViewHeightAdjust();
+            return;
+        }
+        if (v9->viewHeightTarget == v9->proneViewHeight)
+            v9->viewHeightTarget = v9->crouchViewHeight;
+        else if ((spectatorFlags & 2) != 0)
+            v9->viewHeightTarget = v9->crouchViewHeight;
+        else
+            v9->viewHeightTarget = v9->standViewHeight;
+        PM_ViewHeightAdjust();
+        return;
+    }
+
+    if (ps->pm_type == 4)
+    {
+        pm->mins.v.m128_f32[0] = -8.0f;
+        pm->mins.v.m128_f32[1] = -8.0f;
+        pm->mins.v.m128_f32[2] = -8.0f;
+        pm->maxs.v.m128_f32[0] = 8.0f;
+        pm->maxs.v.m128_f32[1] = 8.0f;
+        pm->maxs.v.m128_f32[2] = 16.0f;
+        pm->ps->pm_flags &= 0xFFFFFFFC;
+        if ((pm->cmd.buttons & 0x2000) != 0)
+        {
+            pm->cmd.buttons &= 0xFFFFDFFF;
+            BG_AddPredictableEventToPlayerstate(165, 0, pm->ps);
+        }
+        pm->trace = pm->capsuletrace;
+        pm->ps->eFlags |= 0x10;
+        pm->ps->viewHeightTarget = 0;
+        pm->ps->viewHeightCurrent = 0.0f;
+        return;
+    }
+
+    pm->mins.v.m128_f32[0] = ps->mins[0];
+    int bWasProne = pm_flags & 1;
+    pm->mins.v.m128_f32[1] = pm->ps->mins[1];
+    pm->maxs.v.m128_f32[0] = pm->ps->maxs[0];
+    pm->maxs.v.m128_f32[1] = pm->ps->maxs[1];
+    pm->mins.v.m128_f32[2] = pm->ps->mins[2];
+    if (pm->ps->pm_type >= 6)
+    {
+        pm->maxs.v.m128_f32[2] = ps->maxs[2];
+        pm->ps->viewHeightTarget = pm->ps->deadViewHeight;
+        pm->trace = (pm->ps->pm_flags & 1) != 0 ? pm->boxtrace
+                                                : pm->capsuletrace;
+        pm->ps->eFlags |= 0x10;
+        PM_ViewHeightAdjust();
+        return;
+    }
+    int eFlags = ps->eFlags;
+    if ((0x100000 & eFlags) != 0 && (0x400000 & eFlags) == 0)
+    {
+        pm->maxs.v.m128_f32[2] = ps->maxs[2];
+        pm->ps->viewHeightTarget = pm->ps->standViewHeight;
+        pm->cmd.buttons &= ~0x2000u;
+        pm->ps->pm_flags &= 0xFFFFFFFC;
+        BG_AddPredictableEventToPlayerstate(165, 0, pm->ps);
+        pm->trace = pm->capsuletrace;
+        pm->ps->eFlags |= 0x10;
+        PM_ViewHeightAdjust();
+        return;
+    }
+    if ((dword_106000 & eFlags) != 0)
+    {
+        if ((eFlags & 0x2000) != 0)
+        {
+            if ((eFlags & 0x4000) == 0)
+            {
+                ps->pm_flags |= 1;
+                pm->ps->pm_flags &= ~2;
+                goto L79;
+            }
+        }
+        else if ((eFlags & 0x4000) == 0)
+        {
+            goto L37;
+        }
+        if ((eFlags & 0x2000) == 0)
+        {
+            ps->pm_flags |= 2;
+            pm->ps->pm_flags &= ~1;
+            goto L79;
+        }
+L37:
+        ps->pm_flags &= 0xFFFFFFFC;
+        goto L79;
+    }
+    int v19 = ps->pm_flags;
+    if ((v19 & 0x4000) != 0)
+        goto L80;
+    if ((v19 & 0x20) != 0)
+    {
+        if (BG_GetInfoForWeapon(ps->weapon)->weapClass == WEAPCLASS_LMG)
+            goto L79;
+    }
+    if (((weaponFileInfo_t*)pml.pWeap)->bHoldToFire != 0
+        && (pm->cmd.buttons & 0x82) != 0)
+    {
+        if ((pm->ps->pm_flags & 1) == 0)
+        {
+            pm->ps->pm_flags |= 2;
+            goto L79;
+        }
+        goto L80;
+    }
+    if ((pm->ps->pm_flags & 0x10) != 0
+        && (pm->cmd.buttons & 0x6000) != 0)
+    {
+        pm->cmd.buttons &= 0xFFFF9FFF;
+        BG_AddPredictableEventToPlayerstate(165, 0, pm->ps);
+    }
+    if ((pm->cmd.buttons & 0x2000) != 0)
+    {
+        math::Dir3 groundNormal;
+        groundNormal.v.m128_f32[0] = 0.0f;
+        groundNormal.v.m128_f32[1] = 0.0f;
+        groundNormal.v.m128_f32[2] = 0.7f;
+        groundNormal.v.m128_f32[3] = 0.0f;
+        if ((pm->ps->pm_flags & 1) == 0)
+        {
+            typedef void (__cdecl* ProneTrace)(
+                trace_t*, const math::Position3*, const math::Position3*,
+                const math::Position3*, const math::Position3*,
+                const collision_context_t&);
+            typedef int (__cdecl* ProneContents)(
+                const math::Position3*, const collision_context_t&);
+            if (ps->mGroundEntity.mHandle.mVal == 0
+                || pm->waterlevel != 0
+                || BG_CheckProneValid(
+                       ps->mClient, &ps->origin,
+                       pm->maxs.v.m128_f32[0], 30.0f, ps->viewangles[1],
+                       &ps->fTorsoHeight, &ps->fTorsoPitch,
+                       &ps->fWaistPitch, 0,
+                       ps->mGroundEntity.mHandle.mVal != 0, &groundNormal,
+                       (ProneTrace)pm->capsuletrace,
+                       (ProneTrace)pm->boxtrace,
+                       (ProneContents)pm->pointcontents, PCT_CLIENT,
+                       60.0f) == 0)
+            {
+                if (pm->ps->mGroundEntity.mHandle.mVal == 0)
+                    goto L80;
+                pm->ps->pm_flags |= 0x8000;
+                if (GetPlayer(currCl) != nullptr
+                    && GetPlayer(currCl)->client != nullptr)
+                {
+                    GetPlayer(currCl)->client->mProneBlockedTime = level.time;
+                }
+                if ((pm->cmd.buttons & 0x100) != 0)
+                    goto L80;
+                if ((pm->ps->pm_flags & 2) != 0)
+                {
+                    BG_AddPredictableEventToPlayerstate(166, 0, pm->ps);
+                    goto L79;
+                }
+                BG_AddPredictableEventToPlayerstate(165, 0, pm->ps);
+                goto L79;
+            }
+        }
+        pm->ps->pm_flags |= 1;
+        pm->ps->pm_flags &= ~2;
+        goto L79;
+    }
+    if ((pm->cmd.buttons & 0x4000) != 0)
+    {
+        if ((pm->ps->pm_flags & 1) == 0)
+        {
+            pm->ps->pm_flags |= 2;
+            goto L79;
+        }
+    }
+    else
+    {
+        if ((ps->pm_flags & 1) != 0)
+        {
+            pm->maxs.v.m128_f32[2] = ps->maxs[2];
+            pm->capsuletrace(&trace, pm->ps->origin, pm->mins, pm->maxs,
+                             pm->ps->origin,
+                             context);
+            if (trace.allsolid == 0)
+            {
+                pm->ps->pm_flags &= 0xFFFFFFFC;
+                goto L79;
+            }
+            if ((pm->cmd.buttons & 0x100) != 0)
+                goto L80;
+            BG_AddPredictableEventToPlayerstate(167, 0, pm->ps);
+            goto L79;
+        }
+        if ((ps->pm_flags & 2) != 0)
+        {
+            pm->maxs.v.m128_f32[2] = ps->maxs[2];
+            pm->capsuletrace(&trace, pm->ps->origin, pm->mins, pm->maxs,
+                             pm->ps->origin,
+                             context);
+            if (trace.allsolid == 0)
+            {
+                pm->ps->pm_flags &= ~2;
+                goto L79;
+            }
+            if ((pm->cmd.buttons & 0x100) != 0)
+                goto L80;
+            BG_AddPredictableEventToPlayerstate(166, 0, pm->ps);
+            goto L79;
+        }
+        goto L80;
+    }
+    pm->maxs.v.m128_f32[2] = 50.0f;
+    pm->capsuletrace(&trace, pm->ps->origin, pm->mins, pm->maxs,
+                     pm->ps->origin, context);
+    if (trace.allsolid == 0)
+    {
+        pm->ps->pm_flags &= ~1;
+        pm->ps->pm_flags |= 2;
+        goto L79;
+    }
+    if ((pm->cmd.buttons & 0x100) == 0)
+    {
+        BG_AddPredictableEventToPlayerstate(167, 0, pm->ps);
+        goto L79;
+    }
+L79:
+L80:
+    ps = pm->ps;
+    if (ps->viewHeightLerpTime == 0)
+    {
+        if ((ps->pm_flags & 1) != 0)
+        {
+            if (ps->viewHeightTarget == ps->standViewHeight)
+            {
+                ps->viewHeightTarget = ps->crouchViewHeight;
+            }
+            else
+            {
+                if (g_debugProneCheck.integer == 2)
+                {
+                    math::Dir3 groundNormal2;
+                    groundNormal2.v.m128_f32[0] = 0.0f;
+                    groundNormal2.v.m128_f32[1] = 0.0f;
+                    groundNormal2.v.m128_f32[2] = 0.7f;
+                    groundNormal2.v.m128_f32[3] = 0.0f;
+                    typedef void (__cdecl* ProneTrace)(
+                        trace_t*, const math::Position3*,
+                        const math::Position3*, const math::Position3*,
+                        const math::Position3*, const collision_context_t&);
+                    typedef int (__cdecl* ProneContents)(
+                        const math::Position3*,
+                        const collision_context_t&);
+                    BG_CheckProneValid(
+                        ps->mClient, &ps->origin,
+                        pm->maxs.v.m128_f32[0], 30.0f, ps->viewangles[1],
+                        nullptr, nullptr, nullptr, 0,
+                        ps->mGroundEntity.mHandle.mVal != 0, &groundNormal2,
+                        (ProneTrace)pm->capsuletrace,
+                        (ProneTrace)pm->boxtrace,
+                        (ProneContents)pm->pointcontents, PCT_CLIENT,
+                        60.0f);
+                }
+                if (ps->viewHeightTarget != ps->proneViewHeight)
+                {
+                    ps->viewHeightTarget = ps->proneViewHeight;
+                    pm->ps->pm_flags |= 0x2000;
+                    pm->ps->pm_time = 1800;
+                }
+            }
+        }
+        else if (ps->viewHeightTarget == ps->proneViewHeight)
+        {
+            ps->viewHeightTarget = ps->crouchViewHeight;
+        }
+        else if ((ps->pm_flags & 2) != 0)
+        {
+            ps->viewHeightTarget = ps->crouchViewHeight;
+        }
+        else
+        {
+            ps->viewHeightTarget = ps->standViewHeight;
+        }
+    }
+    PM_ViewHeightAdjust();
+    int EffectiveStance = PM_GetEffectiveStance(pm->ps);
+    if (EffectiveStance == 1)
+    {
+        if ((ps->pm_flags & 3) != 0)
+            pm->maxs.v.m128_f32[2] = 30.0f;
+        else
+            pm->maxs.v.m128_f32[2] = ps->maxs[2];
+        pm->ps->eFlags |= 0x40;
+        pm->ps->eFlags &= ~0x20;
+    }
+    else if (EffectiveStance == 2)
+    {
+        if ((ps->pm_flags & 3) != 0)
+            pm->maxs.v.m128_f32[2] = 50.0f;
+        else
+            pm->maxs.v.m128_f32[2] = ps->maxs[2];
+        pm->ps->eFlags |= 0x20;
+        pm->ps->eFlags &= ~0x40;
+    }
+    else
+    {
+        pm->maxs.v.m128_f32[2] = ps->maxs[2];
+        pm->ps->eFlags &= ~0x60;
+    }
+    if ((pm->ps->pm_flags & 1) != 0)
+    {
+        pm->trace = pm->boxtrace;
+        pm->ps->eFlags |= 0x10;
+        if (bWasProne == 0)
+        {
+            if (pm->cmd.forwardmove != 0 || pm->cmd.rightmove != 0)
+            {
+                pm->ps->pm_flags &= ~0x400;
+                pm->ps->pm_flags &= ~0x20;
+            }
+            float startFlat[3];
+            startFlat[0] = ps->origin.v.m128_f32[0];
+            startFlat[1] = ps->origin.v.m128_f32[1];
+            startFlat[2] = ps->origin.v.m128_f32[2] + 10.0f;
+            math::Position3 startPos;
+            native_to_cdl_pos3(&startPos, startFlat);
+            pm->boxtrace(&trace, ps->origin, pm->mins, pm->maxs, startPos,
+                         context);
+            math::Position3 endPos;
+            native_to_cdl_pos3(&endPos, trace.endpos.v.m128_f32);
+            pm->boxtrace(&trace, endPos, pm->mins, pm->maxs, ps->origin,
+                         context);
+            ps->origin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
+            ps->origin.v.m128_f32[1] = trace.endpos.v.m128_f32[1];
+            ps->origin.v.m128_f32[2] = trace.endpos.v.m128_f32[2];
+            ps->proneDirection = ps->viewangles[1];
+            float downFlat[3];
+            downFlat[0] = ps->origin.v.m128_f32[0];
+            downFlat[1] = ps->origin.v.m128_f32[1];
+            downFlat[2] = ps->origin.v.m128_f32[2] - 0.25f;
+            math::Position3 downPos;
+            native_to_cdl_pos3(&downPos, downFlat);
+            pm->boxtrace(&trace, ps->origin, pm->mins, pm->maxs, downPos,
+                         context);
+            if (trace.startsolid != 0 || trace.fraction >= 1.0f)
+            {
+                pm->ps->proneDirectionPitch = 0.0f;
+            }
+            else
+            {
+                if (trace.normal.v.m128_f32[0] == 0.0f
+                    && trace.normal.v.m128_f32[1] == 0.0f
+                    && trace.normal.v.m128_f32[2] == 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\bg_pmove.cpp";
+                    AeAssert::gCurrentLine = 3448;
+                    AeAssert::gCurrentExpr =
+                        "trace.normal[0] || trace.normal[1] || trace.normal[2]";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                pm->ps->proneDirectionPitch = PitchForYawOnNormal(
+                    pm->ps->proneDirection, trace.normal.v.m128_f32);
+            }
+            float v48 = AngleDelta(pm->ps->proneDirectionPitch,
+                                   pm->ps->viewangles[0]);
+            if (v48 < -45.0f)
+                pm->ps->proneTorsoPitch = pm->ps->viewangles[0] - 45.0f;
+            else if (v48 > 45.0f)
+                pm->ps->proneTorsoPitch = pm->ps->viewangles[0] + 45.0f;
+            else
+                pm->ps->proneTorsoPitch = pm->ps->proneDirectionPitch;
+        }
+        return;
+    }
+    pm->trace = pm->capsuletrace;
+    pm->ps->eFlags |= 0x10;
 }
