@@ -661,7 +661,9 @@ struct str_const_t {
     Broc::string grenade;             // +0x0B0
     uint8_t    _padB4[0xBC - 0xB4];
     Broc::string info_player_deathmatch;  // +0xBC
-    uint8_t    _padC0[0x120 - 0xC0];
+    uint8_t    _padC0[0xF4 - 0xC0];
+    Broc::string noclass;             // +0xF4 (verified vs Entity ctor disasm)
+    uint8_t    _padF8[0x120 - 0xF8];
     Broc::string player;              // +0x120
     uint8_t    _pad124[0x13C - 0x124];
     Broc::string rocket;              // +0x13C

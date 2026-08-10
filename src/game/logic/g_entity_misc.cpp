@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+extern int g_uniqueEntityIndex;  // ?g_uniqueEntityIndex@@3HA (game.o @ 0xF4F444)
+
 // ============================================================================
 // Stat monitor (StatMon_*.cpp)
 // ============================================================================
@@ -510,6 +512,231 @@ struct refEntity_t {
 refEntity_t& Entity::GetRefEntity()
 {
     return (refEntity_t&)this->GetRenderEntity();
+}
+
+// ============================================================================
+// EntityState / EntityShared / Entity ctors - ea: 0x620280..0x62AD65
+// ============================================================================
+
+// ea: 0x00620280
+EntityShared::EntityShared()
+{
+    this->linked = 0;
+    this->svFlags = 0;
+    this->mSingleClient.mHandle.mVal = 0;
+    this->bmodel = nullptr;
+    this->mins.v = _mm_setzero_ps();
+    this->maxs.v = _mm_setzero_ps();
+    this->absmin.v = _mm_setzero_ps();
+    this->absmax.v = _mm_setzero_ps();
+    this->contents = 0;
+    this->currentOrigin.v = _mm_setzero_ps();
+    this->currentAngles.v = _mm_setzero_ps();
+    this->currentMat.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    this->currentMat.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    this->currentMat.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    this->currentMat.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    this->mOwner.mHandle.mVal = 0;
+    this->eventType = 0;
+    this->eventTime = 0;
+    this->worldSector = nullptr;
+    this->nextEntityInWorldSector = nullptr;
+    this->numClusters = 0;
+    this->lastCluster = 0;
+    this->areanum = 0;
+    this->areanum2 = 0;
+    this->linkcontents = 0;
+    for (int i = 0; i < 16; ++i)
+        this->clusternums[i] = 0;
+    this->linkmin[0] = 0.0f;
+    this->linkmin[1] = 0.0f;
+    this->linkmax[0] = 0.0f;
+    this->linkmax[1] = 0.0f;
+}
+
+// ea: 0x00620480
+EntityState::EntityState()
+{
+    this->eType = 0;
+    this->loopSound = 0;
+    this->surfType = 0;
+    this->weapon = 0;
+    this->eventParm = 0;
+    this->scale = 0;
+    this->mOtherEntity.mHandle.mVal = 0;
+    this->mGroundEntity.mHandle.mVal = 0;
+    this->eFlags = 0;
+    this->pos.trType = TR_STATIONARY;
+    this->pos.trTime = 0;
+    this->pos.trDuration = 0;
+    this->pos.trGravityOverride = 0;
+    this->pos.trBase[0] = 0.0f;
+    this->pos.trBase[1] = 0.0f;
+    this->pos.trBase[2] = 0.0f;
+    this->pos.trDelta[0] = 0.0f;
+    this->pos.trDelta[1] = 0.0f;
+    this->pos.trDelta[2] = 0.0f;
+    this->apos.trType = TR_STATIONARY;
+    this->apos.trTime = 0;
+    this->apos.trDuration = 0;
+    this->apos.trGravityOverride = 0;
+    this->apos.trBase[0] = 0.0f;
+    this->apos.trBase[1] = 0.0f;
+    this->apos.trBase[2] = 0.0f;
+    this->apos.trDelta[0] = 0.0f;
+    this->apos.trDelta[1] = 0.0f;
+    this->apos.trDelta[2] = 0.0f;
+    this->lerpOrigin.v = _mm_setzero_ps();
+    this->lerpAngles.v = _mm_setzero_ps();
+    this->origin2.v = _mm_setzero_ps();
+    this->angles2.v = _mm_setzero_ps();
+    this->constantLight = 0;
+    this->solid = 0;
+    this->eventSequence = 0;
+    this->leanf = 0.0f;
+    this->dmgFlags = 0;
+    this->useCount = 0;
+    this->eTeam = 0;
+    this->brushmodel = 0;
+    unsigned char* eventParms = this->eventParms;
+    for (int i = 4; i != 0; --i)
+    {
+        *(eventParms - 4) = 0;
+        *eventParms++ = 0;
+    }
+}
+
+// ea: 0x0062A8E0
+Entity::Entity(TPakId pakId)
+    : s(), r(),
+      mClassName((Broc::string::Block*)nullptr),
+      targetname((Broc::string::Block*)nullptr),
+      mTarget((Broc::string::Block*)nullptr),
+      mGroupName((Broc::string::Block*)nullptr),
+      mScriptNoteworthy((Broc::string::Block*)nullptr),
+      mAnimName((Broc::string::Block*)nullptr),
+      team((Broc::string::Block*)nullptr),
+      mSpawnItem((Broc::string::Block*)nullptr)
+{
+    this->mPakId = pakId;
+    this->mHandle.mHandle.mVal = 0;
+    this->mEntityArrayIndex = -1;
+    this->mDObj = nullptr;
+    this->mNotifySet = nullptr;
+    this->mScriptEventHandler = nullptr;
+    this->mBPInfo = nullptr;
+    this->mDestructible.mValue = nullptr;
+    this->mDestructible.mPakId = (unsigned int)PAK_ID_INVALID;
+    this->client = nullptr;
+    this->actor = nullptr;
+    this->sentient = nullptr;
+    this->scr_vehicle = nullptr;
+    this->pTurretInfo = nullptr;
+    this->mRenderEntity = nullptr;
+    this->pAnimTree = nullptr;
+    this->mModel.mValue = nullptr;
+    this->mModel.mPakId = (unsigned int)PAK_ID_INVALID;
+    this->modelscale = 1.0f;
+    this->mClassNameHash.mHash = 0;
+    this->targetnameHash = 0;
+    this->mTargetHash = 0;
+    this->mGroupNameHash = 0;
+    this->mHintString = 0;
+    this->physicsObject = 0;
+    this->noise_index = 0;
+    this->active = 0;
+    this->moverState = 0;
+    this->attachIgnoreCollision = 0;
+    this->takedamage = 0;
+    this->invulnerability_timeout = 0;
+    this->spawnflags = 0;
+    this->flags = 0;
+    this->mFlags = 0;
+    this->clipmask = 0;
+    this->processedFrame = 0;
+    this->parentHandle.mHandle.mVal = 0;
+    this->timestamp = 0;
+    this->angle = 0.0f;
+    this->speed = 0.0f;
+    this->closespeed = 0.0f;
+    this->gDuration = 0;
+    this->gDurationBack = 0;
+    this->nextthink = 0;
+    this->think = THINK__NULL;
+    this->reached = 0;
+    this->blocked = 0;
+    this->touch = 0;
+    this->use = 0;
+    this->pain = 0;
+    this->die = 0;
+    this->entinfo = 0;
+    this->controller = 0;
+    this->health = 0;
+    this->maxHealth = 0;
+    this->damage = 0;
+    this->methodOfDeath = 0;
+    this->splashMethodOfDeath = 0;
+    this->count = 0;
+    this->enemy = nullptr;
+    this->activator = nullptr;
+    this->teamchain = nullptr;
+    this->teammaster = nullptr;
+    this->wait = 0.0f;
+    this->random = 0.0f;
+    this->delay = 0.0f;
+    this->item = nullptr;
+    this->key = 0;
+    this->cell_index = -1;
+    this->mPersistentIndex = -1;
+    this->count2 = 0;
+    this->grenadeExplodeTime = 0;
+    this->snd_wait.notifyHash.mHash = 0;
+    this->snd_wait.soundName.mHash = 0;
+    this->curve = nullptr;
+    this->tagInfo = nullptr;
+    this->tagChildren = nullptr;
+    this->scripted = nullptr;
+    for (int i = 0; i < 7; ++i)
+        new (&this->mAttachModels[i]) AttachModelInfo();
+    this->disconnectedLinks = 0;
+    this->iDisconnectTime = 0;
+    this->currentValid = 0;
+    this->fireSndDelay = 0;
+    this->isFiring = 0;
+    this->effectLoopingFire.mVal = 0;
+    this->previousEventSequence = 0;
+    this->previousPreEventSequence = 0;
+    this->mAnimDebug = nullptr;
+    this->mBrocExtendedEntity = nullptr;
+    this->proximity_data = nullptr;
+    this->mClassNameHash.mHash = 0;
+    this->snd_wait.notifyHash.mHash = 0;
+    this->snd_wait.soundName.mHash = 0;
+    this->pos1.v = _mm_setzero_ps();
+    this->pos2.v = _mm_setzero_ps();
+    this->pos3.v = _mm_setzero_ps();
+    this->movedir.v = _mm_setzero_ps();
+    this->rotate.v = _mm_setzero_ps();
+    this->TargetAngles.v = _mm_setzero_ps();
+    this->uniqueIndex = g_uniqueEntityIndex++;
+    UpdateEntityHash(this);
+    this->mClassName = str_const.noclass;
+    HashString hs(this->mClassName);
+    this->mClassNameHash.mHash = hs.mHash;
+    this->r.mOwner.mHandle.mVal = 0;
+    this->parentHandle.mHandle.mVal = 0;
+    this->r.eventType = 0;
+    this->r.eventTime = 0;
+    this->spawnflags = 0;
+    this->r.pos_cache.v.m128_f32[3] = 0.0f;
+    this->mScriptNoteworthy.clear();
+    this->targetname.clear();
+    this->previousPreEventSequence = 0;
+    this->previousEventSequence = 0;
+    this->speed = -1.0f;
+    UpdateEntityHash(this);
+    EntityHandleDb::sInst.AssignHandle(*this);
+    this->mFlags |= 1u;
 }
 
 // ============================================================================

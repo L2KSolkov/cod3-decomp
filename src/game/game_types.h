@@ -176,6 +176,8 @@ static_assert(offsetof(trajectory_t, trDelta) == 0x18, "trajectory_t::trDelta of
 // Size: 0xE0 (224 bytes) — verified against IDA
 // ============================================================================
 struct EntityState {
+    EntityState();                            // ??0EntityState@@QAE@XZ (game.o 0x620480)
+
     uint8_t  eType;                               // +0x00
     uint8_t  loopSound;                           // +0x01
     uint8_t  surfType;                            // +0x02
@@ -214,6 +216,8 @@ static_assert(offsetof(EntityState, eFlags) == 0x10, "EntityState::eFlags offset
 // Size: 0x150 (336 bytes) — verified against IDA
 // ============================================================================
 struct EntityShared {
+    EntityShared();                           // ??0EntityShared@@QAE@XZ (game.o 0x620280)
+
     int32_t  linked;                              // +0x00
     int32_t  svFlags;                             // +0x04
     DbLinkedHandle<EntityHandleDb, Entity> mSingleClient;   // +0x08
@@ -254,6 +258,13 @@ static_assert(sizeof(EntityShared) == 0x150, "EntityShared size mismatch");
 struct AttachModelInfo {
     IVPointer<XModel> mModel;  // +0x00 (8 bytes)
     Broc::string      mTag;    // +0x08
+
+    AttachModelInfo()  // ??0AttachModelInfo@@QAE@XZ (game.o inline 0x660280)
+        : mTag((Broc::string::Block*)nullptr)
+    {
+        mModel.mValue = nullptr;
+        mModel.mPakId = (unsigned int)PAK_ID_INVALID;
+    }
 };
 static_assert(sizeof(AttachModelInfo) == 0x0C, "AttachModelInfo size mismatch");
 
