@@ -2597,6 +2597,9 @@ void CM_TraceStaticModel(StaticModel* sm, trace_t* results,
                          const math::Position3& start,
                          const math::Position3& end,
                          int contentmask);  // game.o 0x618980
+void CM_LinkStaticModel(StaticModel* staticModel);  // game.o 0x60BB20
+int  CM_UnlinkStaticModels(TPakId pakId, WorldSector* node);  // game.o 0x60AF90
+void CM_DestroyStaticModels(TPakId pakId);  // game.o 0x60B020
 void CM_CapsuleAreaEntities(TouchEntityData& entities, WorldSector* node,
                             float p1f, float p2f,
                             const math::Position3& p1,

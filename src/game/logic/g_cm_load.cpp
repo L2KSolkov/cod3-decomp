@@ -741,8 +741,8 @@ struct WorldSector {
     int          contentsStaticModels;  // +0x04
     int          contentsEntities;      // +0x08
     float        dist;                  // +0x0C
-    void*        entities;              // +0x10
-    void*        staticModels;          // +0x14
+    EntityShared* entities;             // +0x10
+    StaticModel*  staticModels;         // +0x14
     WorldSector* parent;                // +0x18
     WorldSector* child[2];              // +0x1C
 };
@@ -2558,7 +2558,7 @@ void CM_CapsuleAreaEntities(TouchEntityData& entities, WorldSector* node,
                            context);
 
 process_entities:
-    EntityShared* v22 = (EntityShared*)node->entities;
+    EntityShared* v22 = node->entities;
     if (v22 != nullptr)
     {
         do
@@ -2749,7 +2749,7 @@ process_entities:
         pmin.v.m128_f32[i] = lo - clip->outerSize.v.m128_f32[i];
         pmax.v.m128_f32[i] = hi + clip->outerSize.v.m128_f32[i];
     }
-    EntityShared* entities = (EntityShared*)node->entities;
+    EntityShared* entities = node->entities;
     if (entities == nullptr)
         return 0;
     do
@@ -2780,5 +2780,386 @@ int CM_ClipSightTraceToEntities(sightclip_t* clip,
     return CM_ClipSightTraceToEntities_r(clip, &pcm.worldSectorHead, 0.0f,
                                          1.0f, &clip->start, &clip->end,
                                          &context);
+}
+
+// ============================================================================
+// Static-model link/unlink family (cm_world.cpp)
+// ============================================================================
+
+// ea: 0x0060B080
+static WorldSector* CM_AllocWorldSector(float* mins, float* maxs)
+{
+    WorldSector* freeHead = pcm.freeHead;
+    if (pcm.freeHead == nullptr)
+        return nullptr;
+    float size[2];
+    size[0] = maxs[0] - mins[0];
+    size[1] = maxs[1] - mins[1];
+    int v5 = size[1] >= size[0];
+    if (size[v5] <= 512.0f)
+        return nullptr;
+    pcm.freeHead = pcm.freeHead->parent;
+    if (freeHead->contentsStaticModels != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 51;
+        AeAssert::gCurrentExpr = "!node->contentsStaticModels";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (freeHead->contentsEntities != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 52;
+        AeAssert::gCurrentExpr = "!node->contentsEntities";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (freeHead->entities != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 53;
+        AeAssert::gCurrentExpr = "!node->entities";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (freeHead->staticModels != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 54;
+        AeAssert::gCurrentExpr = "!node->staticModels";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    freeHead->axis = v5;
+    freeHead->dist = (mins[v5] + maxs[v5]) * 0.5f;
+    freeHead->child[0] = &pcm.dummyNode;
+    freeHead->child[1] = &pcm.dummyNode;
+    return freeHead;
+}
+
+// ea: 0x0060B5C0
+static void CM_SortNode(WorldSector* node, float* mins, float* maxs)
+{
+    int axis = node->axis;
+    float dist = node->dist;
+
+    EntityShared* prevEnt = nullptr;
+    EntityShared* ent = node->entities;
+    while (ent != nullptr)
+    {
+        if (ent->linkmin[axis] > dist)
+        {
+            WorldSector* v6 = node->child[0];
+            if (v6 == &pcm.dummyNode)
+            {
+                v6 = CM_AllocWorldSector(mins, maxs);
+                if (v6 == nullptr)
+                    return;
+                node->child[0] = v6;
+                v6->parent = node;
+            }
+            EntityShared* nextEnt = ent->nextEntityInWorldSector;
+            if (prevEnt != nullptr)
+            {
+                if (prevEnt->nextEntityInWorldSector != ent)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 258;
+                    AeAssert::gCurrentExpr =
+                        "!prevEnt || (prevEnt->nextEntityInWorldSector == ent)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+            }
+            else if (node->entities != ent)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 257;
+                AeAssert::gCurrentExpr = "prevEnt || (node->entities == ent)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            ent->worldSector = v6;
+            ent->nextEntityInWorldSector = v6->entities;
+            v6->contentsEntities |= ent->contents;
+            v6->entities = ent;
+            ent = nextEnt;
+            if (prevEnt != nullptr)
+                prevEnt->nextEntityInWorldSector = nextEnt;
+            else
+                node->entities = nextEnt;
+        }
+        else if (dist > ent->linkmax[axis])
+        {
+            WorldSector* v6 = node->child[1];
+            if (v6 == &pcm.dummyNode)
+            {
+                v6 = CM_AllocWorldSector(mins, maxs);
+                if (v6 == nullptr)
+                    return;
+                node->child[1] = v6;
+                v6->parent = node;
+            }
+            EntityShared* nextEnt = ent->nextEntityInWorldSector;
+            if (prevEnt != nullptr)
+            {
+                if (prevEnt->nextEntityInWorldSector != ent)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 258;
+                    AeAssert::gCurrentExpr =
+                        "!prevEnt || (prevEnt->nextEntityInWorldSector == ent)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+            }
+            else if (node->entities != ent)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 257;
+                AeAssert::gCurrentExpr = "prevEnt || (node->entities == ent)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            ent->worldSector = v6;
+            ent->nextEntityInWorldSector = v6->entities;
+            v6->contentsEntities |= ent->contents;
+            v6->entities = ent;
+            ent = nextEnt;
+            if (prevEnt != nullptr)
+                prevEnt->nextEntityInWorldSector = nextEnt;
+            else
+                node->entities = nextEnt;
+        }
+        else
+        {
+            prevEnt = ent;
+            ent = ent->nextEntityInWorldSector;
+        }
+    }
+
+    StaticModel* prevSm = nullptr;
+    StaticModel* sm = node->staticModels;
+    while (sm != nullptr)
+    {
+        if (sm->absmin[axis] > dist)
+        {
+            WorldSector* v12 = node->child[0];
+            if (v12 == &pcm.dummyNode)
+            {
+                v12 = CM_AllocWorldSector(mins, maxs);
+                if (v12 == nullptr)
+                    return;
+                node->child[0] = v12;
+                v12->parent = node;
+            }
+            StaticModel* nextSm = sm->nextModel;
+            if (prevSm != nullptr)
+            {
+                if (prevSm->nextModel != sm)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 314;
+                    AeAssert::gCurrentExpr =
+                        "!prevStaticModel || (prevStaticModel->nextModel == staticModel)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+            }
+            else if (node->staticModels != sm)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 313;
+                AeAssert::gCurrentExpr =
+                    "prevStaticModel || (node->staticModels == staticModel)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            sm->nextModel = v12->staticModels;
+            v12->staticModels = sm;
+            v12->contentsStaticModels |= sm->xmodel->contents;
+            sm = nextSm;
+            if (prevSm != nullptr)
+                prevSm->nextModel = nextSm;
+            else
+                node->staticModels = nextSm;
+        }
+        else if (dist > sm->absmax[axis])
+        {
+            WorldSector* v12 = node->child[1];
+            if (v12 == &pcm.dummyNode)
+            {
+                v12 = CM_AllocWorldSector(mins, maxs);
+                if (v12 == nullptr)
+                    return;
+                node->child[1] = v12;
+                v12->parent = node;
+            }
+            StaticModel* nextSm = sm->nextModel;
+            if (prevSm != nullptr)
+            {
+                if (prevSm->nextModel != sm)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 314;
+                    AeAssert::gCurrentExpr =
+                        "!prevStaticModel || (prevStaticModel->nextModel == staticModel)";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+            }
+            else if (node->staticModels != sm)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 313;
+                AeAssert::gCurrentExpr =
+                    "prevStaticModel || (node->staticModels == staticModel)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            sm->nextModel = v12->staticModels;
+            v12->staticModels = sm;
+            v12->contentsStaticModels |= sm->xmodel->contents;
+            sm = nextSm;
+            if (prevSm != nullptr)
+                prevSm->nextModel = nextSm;
+            else
+                node->staticModels = nextSm;
+        }
+        else
+        {
+            prevSm = sm;
+            sm = sm->nextModel;
+        }
+    }
+}
+
+// ea: 0x0060BB20
+void CM_LinkStaticModel(StaticModel* staticModel)
+{
+    int contents = staticModel->xmodel->contents;
+    if (contents == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 515;
+        AeAssert::gCurrentExpr = "contents";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float mins[2];
+    float maxs[2];
+    mins[0] = g_bspTree->mins[0];
+    mins[1] = g_bspTree->mins[1];
+    maxs[0] = g_bspTree->maxs[0];
+    maxs[1] = g_bspTree->maxs[1];
+    WorldSector* i = &pcm.worldSectorHead;
+    while (1)
+    {
+        float dist;
+        int axis;
+        while (1)
+        {
+            if (i == &pcm.dummyNode)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 523;
+                AeAssert::gCurrentExpr = "node != &pcm.dummyNode";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            dist = i->dist;
+            i->contentsStaticModels |= contents;
+            axis = i->axis;
+            if (staticModel->absmin[axis] <= dist)
+                break;
+            mins[axis] = dist;
+            if (i->child[0] == &pcm.dummyNode)
+                goto LABEL_16;
+            i = i->child[0];
+        }
+        if (dist <= staticModel->absmax[axis])
+            break;
+        maxs[axis] = dist;
+        if (i->child[1] == &pcm.dummyNode)
+            break;
+        i = i->child[1];
+    }
+LABEL_16:
+    staticModel->nextModel = i->staticModels;
+    i->staticModels = staticModel;
+    CM_SortNode(i, mins, maxs);
+    EntityShared* entities = (EntityShared*)i->entities;
+    if (entities != nullptr && entities == entities->nextEntityInWorldSector)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 561;
+        AeAssert::gCurrentExpr =
+            "!node || !node->entities || ( node->entities != node->entities->nextEntityInWorldSector )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("cycle in entities list"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x0060AF90
+int CM_UnlinkStaticModels(TPakId pakId, WorldSector* node)
+{
+    StaticModel* staticModels = node->staticModels;
+    node->contentsStaticModels = 0;
+    StaticModel* v3 = nullptr;
+    while (staticModels != nullptr)
+    {
+        StaticModel* nextModel = staticModels->nextModel;
+        if (staticModels->pakId == pakId)
+        {
+            if (v3 != nullptr)
+                v3->nextModel = nextModel;
+            else
+                node->staticModels = nextModel;
+        }
+        else
+        {
+            node->contentsStaticModels |= staticModels->xmodel->contents;
+            v3 = staticModels;
+        }
+        staticModels = nextModel;
+    }
+    if (node->child[0] != nullptr)
+        node->contentsStaticModels |=
+            CM_UnlinkStaticModels(pakId, node->child[0]);
+    if (node->child[1] != nullptr)
+        node->contentsStaticModels |=
+            CM_UnlinkStaticModels(pakId, node->child[1]);
+    return node->contentsStaticModels;
+}
+
+// ea: 0x0060B020
+void CM_DestroyStaticModels(TPakId pakId)
+{
+    CM_UnlinkStaticModels(pakId, &pcm.worldSectorHead);
 }
 

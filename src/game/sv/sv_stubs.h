@@ -541,7 +541,7 @@ static_assert(sizeof(EntityManager) == 0x48, "EntityManager size mismatch");
 // AeAssert — assertion system (namespace-style free functions + globals)
 // ============================================================================
 namespace AeAssert {
-    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3 };
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;  // ?gCurrentAuthor@AeAssert@@3W4ECoderId@1@A
     extern const char* gCurrentFile;  // ?gCurrentFile@AeAssert@@3PBDB
     extern int  gCurrentLine;         // ?gCurrentLine@AeAssert@@3HA
