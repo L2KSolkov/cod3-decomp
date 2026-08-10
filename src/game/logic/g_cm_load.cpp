@@ -8522,6 +8522,25 @@ void filter_proximity_data(const math::Position3& lo,
 }
 
 // ============================================================================
+// AddLeanToPosition - ea: 0x61FBA0 (g_weapon.cpp lean offset)
+// ============================================================================
+extern void AnglesToRight(const float* angles, float* right);  // q_math
+// ea: 0x0061FBA0
+void AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac,
+                       float fViewRoll, float fLeanDist)
+{
+    if (fLeanFrac == 0.0f)
+        return;
+    float fLean = (2.0f - fabsf(fLeanFrac)) * fLeanFrac;
+    float vAng[3] = { 0.0f, fViewYaw, fLean * fViewRoll };
+    float vRight[3];
+    AnglesToRight(vAng, vRight);
+    vPosition[0] += vRight[0] * (fLean * fLeanDist);
+    vPosition[1] += vRight[1] * (fLean * fLeanDist);
+    vPosition[2] += vRight[2] * (fLean * fLeanDist);
+}
+
+// ============================================================================
 // CM_ClipMoveToEntities - ea: 0x60BF60 (cm_world.cpp)
 // ============================================================================
 // ea: 0x0060BF60
