@@ -7015,3 +7015,116 @@ void PM_LadderMove(const collision_context_t& context)
         v16 = v16 <= 0 ? 75 : -75;
     pm->ps->movementDir = v16;
 }
+
+// ============================================================================
+// FindClosestVisibleBone - ea: 0x615320 (bg_misc.cpp)
+// ============================================================================
+static unsigned int spine_hash;   // ?spine_hash (game.o BSS 0xF58BB0)
+static unsigned int helmet_hash;  // ?helmet_hash (game.o BSS 0xF58BAC)
+static int s_fcvb_init;           // $S25_1 (game.o BSS 0xF58BB4)
+
+// ea: 0x00615320
+bool FindClosestVisibleBone(Entity* closestEnt,
+                            const math::Position3& playerPosition,
+                            const math::Position3& hitPosition,
+                            math::Position3& enemyOrigin)
+{
+    if ((s_fcvb_init & 1) == 0)
+    {
+        s_fcvb_init |= 1;
+        spine_hash = HashString::CalcHash("Bip01 Spine2");
+    }
+    if ((s_fcvb_init & 2) == 0)
+    {
+        s_fcvb_init |= 2;
+        helmet_hash = HashString::CalcHash("Bip01 Helmet");
+    }
+    collision_context_t context;
+    context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    context.pass_entity1.mHandle.mVal = closestEnt->mHandle.mHandle.mVal;
+    context.pass_entity2.mHandle.mVal =
+        EntityManager::sInst->GetPlayer(currCl)->mHandle.mHandle.mVal;
+    context.pass_owner1.mHandle.mVal = 0;
+    context.pass_owner2.mHandle.mVal = 0;
+    context.contentmask = 0x2803021;
+    int hit = 0;
+    math::Position3 zeroMins;
+    math::Position3 zeroMaxs;
+    zeroMins.v = _mm_setzero_ps();
+    zeroMaxs.v = _mm_setzero_ps();
+
+    DObjSkelMat spineMat;
+    bool bSpine = G_DObjGetWorldTagMatrix(closestEnt, spine_hash, &spineMat) != 0;
+    DObjSkelMat helmetMat;
+    bool bHelmet =
+        G_DObjGetWorldTagMatrix(closestEnt, helmet_hash, &helmetMat) != 0;
+    if (bSpine || bHelmet)
+    {
+        float spineDist2 = 3.4028235e38f;
+        math::Position3 spinePos;
+        math::Position3 helmetPos;
+        if (bSpine)
+        {
+            spinePos.v.m128_f32[0] = spineMat.origin[0];
+            spinePos.v.m128_f32[1] = spineMat.origin[1];
+            spinePos.v.m128_f32[2] = spineMat.origin[2];
+            spinePos.v.m128_f32[3] = spineMat.origin[3];
+            g_SightTrace(&hit, &playerPosition, &zeroMins, &zeroMaxs,
+                         &spinePos, &context);
+            if (hit != 0)
+            {
+                bSpine = false;
+            }
+            else
+            {
+                __m128 v8 = _mm_sub_ps(spinePos.v, hitPosition.v);
+                __m128 v9 = _mm_mul_ps(v8, v8);
+                spineDist2 = v9.m128_f32[0]
+                           + (v9.m128_f32[1] + v9.m128_f32[2] + v9.m128_f32[3]);
+            }
+        }
+        if (bHelmet)
+        {
+            helmetPos.v.m128_f32[0] = helmetMat.origin[0];
+            helmetPos.v.m128_f32[1] = helmetMat.origin[1];
+            helmetPos.v.m128_f32[2] = helmetMat.origin[2];
+            helmetPos.v.m128_f32[3] = helmetMat.origin[3];
+            g_SightTrace(&hit, &playerPosition, &zeroMins, &zeroMaxs,
+                         &helmetPos, &context);
+            if (hit == 0)
+            {
+                __m128 v10 = _mm_sub_ps(helmetPos.v, hitPosition.v);
+                __m128 v11 = _mm_mul_ps(v10, v10);
+                float helmetDist2 = v11.m128_f32[0]
+                                  + (v11.m128_f32[1] + v11.m128_f32[2]
+                                     + v11.m128_f32[3]);
+                if (bSpine && spineDist2 <= helmetDist2)
+                {
+                    enemyOrigin = spinePos;
+                    return true;
+                }
+                enemyOrigin = helmetPos;
+                return true;
+            }
+            if (!bSpine)
+                goto LABEL_24;
+            enemyOrigin = spinePos;
+        }
+        if (bSpine)
+            return true;
+LABEL_24:
+        enemyOrigin.v.m128_f32[2] =
+            (fabsf(closestEnt->r.absmin.v.m128_f32[2])
+             + fabsf(closestEnt->r.absmax.v.m128_f32[2]))
+            * 0.5f;
+        return false;
+    }
+    math::Position3 end;
+    g_SightTrace(&hit, &playerPosition, &zeroMins, &zeroMaxs, &end, &context);
+    if (hit == 0)
+    {
+        enemyOrigin = closestEnt->r.currentOrigin;
+        return true;
+    }
+    return false;
+}
