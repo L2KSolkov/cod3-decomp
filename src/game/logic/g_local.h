@@ -2598,6 +2598,7 @@ void TestBoxInBox(traceWork_t* tw, const math::Position3& bmin,
 void TestInLeaf(traceWork_t* tw, const DCGSet* set);  // game.o 0x623D40
 unsigned int SightTraceThroughLeaf(traceWork_t* tw,
                                    const DCGSet* set);  // game.o 0x624070
+void TracePointThroughLeaf(traceWork_t* tw, const DCGSet* set);  // game.o 0x622FD0
 void TestBoundingBoxInCapsule(traceWork_t* tw);  // game.o 0x623320
 int TraceSphereThroughSphere(traceWork_t* tw,
                              const math::Position3& vStart,

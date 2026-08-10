@@ -2382,6 +2382,68 @@ unsigned int SightTraceThroughLeaf(traceWork_t* tw, const DCGSet* set)
 }
 
 // ============================================================================
+// TracePointThroughLeaf - ea: 0x622FD0 (CollisionMgr.cpp DCGSet leaf sweep)
+// ============================================================================
+// ea: 0x00622FD0
+void TracePointThroughLeaf(traceWork_t* tw, const DCGSet* set)
+{
+    cdl_object_t* objects = (cdl_object_t*)set->objects_m_elements;
+    int nboxes = set->nboxes;
+    if (nboxes != 0)
+    {
+        for (int i = 0; i < nboxes; ++i)
+        {
+            const cdl_object_t& obj = objects[i];
+            if ((obj.cflags & tw->trace_contents) != 0)
+            {
+                math::Position3 vmin;
+                math::Position3 vmax;
+                vmax.v = _mm_add_ps(
+                    _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                                0.0f),
+                    _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                                obj.box_radius[2], 0.0f));
+                vmin.v = _mm_sub_ps(
+                    _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                                0.0f),
+                    _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                                obj.box_radius[2], 0.0f));
+                collide_box_segment(tw, vmin, vmax);
+                if (tw->trace_fraction == 0.0f)
+                    return;
+            }
+        }
+    }
+    cdl_brush_t* brushes = (cdl_brush_t*)set->brushes_m_elements;
+    int nbrushes = set->nbrushes;
+    for (int i = 0; i < nbrushes; ++i)
+    {
+        const cdl_object_t& obj = objects[nboxes + i];
+        if ((tw->trace_contents & obj.cflags) != 0)
+        {
+            const cdl_brush_t& brush = brushes[i];
+            math::Position3 vmin;
+            math::Position3 vmax;
+            vmax.v = _mm_add_ps(
+                _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                            0.0f),
+                _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                            obj.box_radius[2], 0.0f));
+            vmin.v = _mm_sub_ps(
+                _mm_setr_ps(obj.center[0], obj.center[1], obj.center[2],
+                            0.0f),
+                _mm_setr_ps(obj.box_radius[0], obj.box_radius[1],
+                            obj.box_radius[2], 0.0f));
+            cdlPlane* sides = (cdlPlane*)set->brush_sides_m_elements;
+            collide_brush_segment(tw, vmin, vmax, &sides[brush.first_side],
+                                  brush.num_sides);
+            if (tw->trace_fraction == 0.0f)
+                return;
+        }
+    }
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0
