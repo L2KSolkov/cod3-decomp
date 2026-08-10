@@ -5,6 +5,7 @@
 
 #include "game/logic/g_local.h"
 
+#include <ctype.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1698,4 +1699,406 @@ void BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
                     + InfoForWeapon->fHipSpreadDuckedMin;
     }
     *maxSpread = InfoForWeapon->fHipSpreadMax;
+}
+
+// ============================================================================
+// bg_weapons.cpp item/ammo setup - ea: 0x616040..0x6168A0
+// ============================================================================
+// game.o data globals (bg_weapons.cpp)
+extern char** bg_szSharedAmmoCapNames;  // 0xF3E7D0
+
+// ea: 0x00616040
+int BG_FillInWeaponItems()
+{
+    int v0 = 1;
+    gitem_s* v1 = &bg_itemlist[1];
+    int result = bg_iNumWeapons;
+    if (bg_iNumWeapons >= 1)
+    {
+        do
+        {
+            weaponFileInfo_t* v2 = bg_weaponInfo[v0];
+            char* szRadiantName = v2->szRadiantName;
+            v1->classname = szRadiantName;
+            v1->classname_hash = HashString::CalcHash(szRadiantName);
+            char* szPickupModel = v2->szPickupModel;
+            if (szPickupModel != nullptr && *szPickupModel != 0)
+                v1->world_model[0] = szPickupModel;
+            else
+                v1->world_model[0] = v2->szWorldModel;
+            v1->world_model[1] = nullptr;
+            v1->icon = v2->szHudIcon;
+            v1->ammoicon = v2->szAmmoIcon;
+            v1->pickup_name = v2->szDisplayName;
+            int iStartAmmo = v2->iStartAmmo;
+            v1->giTag = v0;
+            v1->quantity = iStartAmmo;
+            v1->giType = IT_WEAPON;
+            v1->giAmmoIndex = v2->iAmmoIndex;
+            result = bg_iNumWeapons;
+            v1->giClipIndex = v2->iClipIndex;
+            ++v0;
+            ++v1;
+        } while (v0 <= result);
+    }
+    if (v0 < 137)
+    {
+        int* p_giTag = &v1->giTag;
+        int v10 = 137 - v0;
+        do
+        {
+            if (*(p_giTag - 1) == IT_AMMO)
+            {
+                int j = 1;
+                if (bg_iNumWeapons >= 1)
+                {
+                    weaponFileInfo_t* v7 = nullptr;
+                    while (1)
+                    {
+                        v7 = bg_weaponInfo[j];
+                        if (ae_stricmpn((const char*)*(p_giTag - 3), v7->szInternalName,
+                                        (int)strlen(v7->szInternalName)) == 0)
+                            break;
+                        if (++j > bg_iNumWeapons)
+                        {
+                            v7 = nullptr;
+                            goto LABEL_15;
+                        }
+                    }
+                    *p_giTag = j;
+                    p_giTag[1] = v7->iAmmoIndex;
+                    p_giTag[2] = v7->iClipIndex;
+                }
+            LABEL_15:
+                if (*p_giTag == -1)
+                {
+                    Com_Printf(
+                        "^3WARNING^7: Could not find weapon for ammo item %s\n",
+                        (const char*)*(p_giTag - 3));
+                    weaponFileInfo_t* v8 = bg_weaponInfo[1];
+                    if (v8 == nullptr)
+                        v8 = *bg_weaponInfo;
+                    *p_giTag = 1;
+                    p_giTag[1] = v8->iAmmoIndex;
+                    p_giTag[2] = v8->iClipIndex;
+                }
+            }
+            p_giTag += 13;
+            result = --v10;
+        } while (v10 != 0);
+    }
+    return result;
+}
+
+// ea: 0x006161E0
+int BG_SetupAmmoIndexes()
+{
+    int i = 1;
+    if (bg_iNumWeapons >= 1)
+    {
+        int v15 = 1;
+        do
+        {
+            weaponFileInfo_t* v1 = bg_weaponInfo[v15];
+            char* szAmmoName = v1->szAmmoName;
+            if (*szAmmoName != 0)
+            {
+                char v3;
+                do
+                {
+                    *szAmmoName = (char)tolower(*szAmmoName);
+                    v3 = *++szAmmoName;
+                } while (v3 != 0);
+            }
+            int v4 = 0;
+            if (bg_iNumAmmoTypes > 0)
+            {
+                while (1)
+                {
+                    const char* v5 = bg_szWeapAmmoNames[v4];
+                    const char* v6 = v1->szAmmoName;
+                    if (v5 != nullptr && v6 != nullptr
+                        && ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
+                        break;
+                    if (++v4 >= bg_iNumAmmoTypes)
+                        goto LABEL_23;
+                }
+                int iMaxAmmo = v1->iMaxAmmo;
+                v1->iAmmoIndex = v4;
+                int iIndex = v4;
+                if (bg_iWeapAmmoMaxs[v4] != iMaxAmmo && v4 != 0)
+                {
+                    int v8 = 1;
+                    if (v15 > 1)
+                    {
+                        do
+                        {
+                            const char* v9 = bg_szWeapAmmoNames[iIndex];
+                            weaponFileInfo_t* v10 = bg_weaponInfo[v8];
+                            const char* v11 = v10->szAmmoName;
+                            if (v9 != nullptr && v11 != nullptr
+                                && ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
+                                && v10->iMaxAmmo == bg_iWeapAmmoMaxs[iIndex])
+                            {
+                                AeAssert::gCurrentAuthor = AeAssert::JRS;
+                                AeAssert::gCurrentFile =
+                                    "c:\\cod\\code\\game\\bg_weapons.cpp";
+                                AeAssert::gCurrentLine = 870;
+                                AeAssert::gCurrentExpr = nullptr;
+                                if (!AeAssert::IsIgnored()
+                                    && AeAssert::Warning(
+                                        "Max ammo mismatch for \"%s\" ammo: "
+                                        "'%s\" set it to %i, but \"%s\" "
+                                        "already set it to %i.\n",
+                                        v1->szAmmoName, v1->szInternalName,
+                                        v1->iMaxAmmo, v10->szInternalName,
+                                        v10->iMaxAmmo))
+                                    __debugbreak();
+                            }
+                            ++v8;
+                        } while (v8 < i);
+                        v4 = iIndex;
+                    }
+                }
+            }
+        LABEL_23:
+            int v12 = bg_iNumAmmoTypes;
+            if (v4 == bg_iNumAmmoTypes)
+            {
+                bg_szWeapAmmoNames[v4] = v1->szAmmoName;
+                bg_iWeapAmmoMaxs[v4] = v1->iMaxAmmo;
+                v1->iAmmoIndex = v4;
+                bg_iNumAmmoTypes = v12 + 1;
+            }
+            int result = i + 1;
+            bool v13 = ++i <= bg_iNumWeapons;
+            ++v15;
+            if (!v13)
+                return result;
+        } while (1);
+    }
+    return 1;
+}
+
+// ea: 0x006163E0
+int BG_SetupSharedAmmoIndexes()
+{
+    int result = bg_iNumWeapons;
+    for (int i = 1; i <= bg_iNumWeapons; ++i)
+    {
+        weaponFileInfo_t* v2 = bg_weaponInfo[i];
+        const char* szSharedAmmoCapName = v2->szSharedAmmoCapName;
+        v2->iSharedAmmoCapIndex = -1;
+        if (*szSharedAmmoCapName != 0)
+        {
+            Com_DPrintf("%s: %s\n", v2->szInternalName, szSharedAmmoCapName);
+            char* v4 = v2->szSharedAmmoCapName;
+            if (*v4 != 0)
+            {
+                char v5;
+                do
+                {
+                    *v4 = (char)tolower(*v4);
+                    v5 = *++v4;
+                } while (v5 != 0);
+            }
+            int v6 = bg_iNumSharedAmmoCaps;
+            bg_szSharedAmmoCapNames[bg_iNumSharedAmmoCaps] =
+                v2->szSharedAmmoCapName;
+            bg_iSharedAmmoCaps[v6] = v2->iSharedAmmoCap;
+            v2->iSharedAmmoCapIndex = v6;
+            bg_iNumSharedAmmoCaps = v6 + 1;
+        }
+        result = bg_iNumWeapons;
+    }
+    return result;
+}
+
+// ea: 0x006164A0
+int BG_SetupClipIndexes()
+{
+    int i = 1;
+    if (bg_iNumWeapons >= 1)
+    {
+        int v15 = 1;
+        do
+        {
+            weaponFileInfo_t* v1 = bg_weaponInfo[v15];
+            char* szClipName = v1->szClipName;
+            if (*szClipName != 0)
+            {
+                char v3;
+                do
+                {
+                    *szClipName = (char)tolower(*szClipName);
+                    v3 = *++szClipName;
+                } while (v3 != 0);
+            }
+            int v4 = 0;
+            if (bg_iNumWeapClips > 0)
+            {
+                while (1)
+                {
+                    const char* v5 = bg_szWeapClipNames[v4];
+                    const char* v6 = v1->szClipName;
+                    if (v5 != nullptr && v6 != nullptr
+                        && ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
+                        break;
+                    if (++v4 >= bg_iNumWeapClips)
+                        goto LABEL_23;
+                }
+                int iClipSize = v1->iClipSize;
+                v1->iClipIndex = v4;
+                int iIndex = v4;
+                if (bg_iWeapClipSizes[v4] != iClipSize && v4 != 0)
+                {
+                    int v8 = 1;
+                    if (v15 > 1)
+                    {
+                        do
+                        {
+                            const char* v9 = bg_szWeapClipNames[iIndex];
+                            weaponFileInfo_t* v10 = bg_weaponInfo[v8];
+                            const char* v11 = v10->szClipName;
+                            if (v9 != nullptr && v11 != nullptr
+                                && ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
+                                && v10->iClipSize == bg_iWeapClipSizes[iIndex])
+                            {
+                                AeAssert::gCurrentAuthor = AeAssert::JRS;
+                                AeAssert::gCurrentFile =
+                                    "c:\\cod\\code\\game\\bg_weapons.cpp";
+                                AeAssert::gCurrentLine = 1002;
+                                AeAssert::gCurrentExpr = nullptr;
+                                if (!AeAssert::IsIgnored()
+                                    && AeAssert::Warning(
+                                        "Clip Size mismatch for \"%s\" clip: "
+                                        "'%s\" set it to %i, but \"%s\" "
+                                        "already set it to %i.\n",
+                                        v1->szAmmoName, v1->szInternalName,
+                                        v1->iClipSize, v10->szInternalName,
+                                        v10->iClipSize))
+                                    __debugbreak();
+                            }
+                            ++v8;
+                        } while (v8 < i);
+                        v4 = iIndex;
+                    }
+                }
+            }
+        LABEL_23:
+            int v12 = bg_iNumWeapClips;
+            if (v4 == bg_iNumWeapClips)
+            {
+                bg_szWeapClipNames[v4] = v1->szClipName;
+                bg_iWeapClipSizes[v4] = v1->iClipSize;
+                v1->iClipIndex = v4;
+                bg_iNumWeapClips = v12 + 1;
+            }
+            int result = i + 1;
+            bool v13 = ++i <= bg_iNumWeapons;
+            ++v15;
+            if (!v13)
+                return result;
+        } while (1);
+    }
+    return 1;
+}
+
+// ea: 0x006166A0
+int compare_weaponfile_names(const void* pe1, const void* pe2)
+{
+    const char* v2 = *(const char**)pe2;
+    if (*(const char**)pe1 != nullptr && v2 != nullptr)
+        return ae_stricmpn(*(const char**)pe1, v2, 0x7FFFFFFF);
+    return -1;
+}
+
+// ea: 0x006166D0
+bool BG_IsLMGMounted(const PlayerState* ps)
+{
+    if (ps == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1429;
+        AeAssert::gCurrentExpr = "ps";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "BG_IsCookingOffGrenade: Invalid PlayerState"))
+            __debugbreak();
+    }
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ps->weapon);
+    return InfoForWeapon != nullptr
+        && InfoForWeapon->weapClass == WEAPCLASS_LMG
+        && (ps->pm_flags & 0x20) != 0;
+}
+
+// ea: 0x00616750
+bool BG_IsCookingOffGrenade(const PlayerState* ps)
+{
+    if (ps == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 1447;
+        AeAssert::gCurrentExpr = "ps";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "BG_IsCookingOffGrenade: Invalid PlayerState"))
+            __debugbreak();
+    }
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ps->weapon);
+    bool result = false;
+    if (InfoForWeapon != nullptr
+        && InfoForWeapon->type == WEAPTYPE_GRENADE
+        && InfoForWeapon->bCookOffHold != 0)
+    {
+        int grenadeTimeLeft = ps->grenadeTimeLeft;
+        if (grenadeTimeLeft != 0
+            && grenadeTimeLeft < InfoForWeapon->iFuseTime)
+            return true;
+    }
+    return result;
+}
+
+// ea: 0x006167E0
+int BG_GetAmmoTypeForName(const char* pszName)
+{
+    int v1 = 0;
+    if (bg_iNumAmmoTypes <= 0)
+    {
+    LABEL_6:
+        Com_DPrintf("Couldn't find ammo type \"%s\"\n", pszName);
+        return 0;
+    }
+    while (1)
+    {
+        const char* v2 = bg_szWeapAmmoNames[v1];
+        if (v2 != nullptr && pszName != nullptr
+            && ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
+            return v1;
+        if (++v1 >= bg_iNumAmmoTypes)
+            goto LABEL_6;
+    }
+}
+
+// ea: 0x00616840
+int BG_GetAmmoClipForName(const char* pszName)
+{
+    int v1 = 0;
+    if (bg_iNumWeapClips <= 0)
+    {
+    LABEL_6:
+        Com_DPrintf("Couldn't find ammo clip \"%s\"\n", pszName);
+        return 0;
+    }
+    while (1)
+    {
+        const char* v2 = bg_szWeapClipNames[v1];
+        if (v2 != nullptr && pszName != nullptr
+            && ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
+            return v1;
+        if (++v1 >= bg_iNumWeapClips)
+            goto LABEL_6;
+    }
 }

@@ -1289,11 +1289,23 @@ int  BG_CanItemBeGrabbed(const EntityState* ent, const PlayerState* ps,
                          int bTouched);              // game.o 0x6278C0
 int  BG_GetNumWeapons();
 int  BG_GetAmmoClipSize(int iClipIndex);
+int  BG_FillInWeaponItems();                  // game.o 0x616040
+int  BG_SetupAmmoIndexes();                   // game.o 0x6161E0
+int  BG_SetupSharedAmmoIndexes();             // game.o 0x6163E0
+int  BG_SetupClipIndexes();                   // game.o 0x6164A0
+int  compare_weaponfile_names(const void* pe1, const void* pe2);  // game.o 0x6166A0
+bool BG_IsLMGMounted(const PlayerState* ps);  // game.o 0x6166D0
+bool BG_IsCookingOffGrenade(const PlayerState* ps);  // game.o 0x616750
+int  BG_GetAmmoTypeForName(const char* pszName);    // game.o 0x6167E0
+int  BG_GetAmmoClipForName(const char* pszName);    // game.o 0x616840
 bool BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
 bool BG_PlayerTouchesItem(PlayerState* ps, EntityState* item, int atTime);  // game.o 0x621820
 int  BG_WeaponIsClipOnly(int iWeapon);            // game.o 0x607A50
 int  BG_GetAmmoTypeMax(int iAmmoIndex);           // game.o 0x607080
 int  BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616B70
+int  BG_SetPlayerWeaponForSlot(PlayerState* pPS, int iWeaponIndex);  // game.o 0x616A10
+int  BG_GetTotalAmmoReserve(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616D50
+int  BG_GetTotalAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616F10
 int  BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x621F60
 int  BG_SelectWeaponIndex(int iWeaponIndex, int client);  // game.o 0x6076E0
 int  BG_GetWeaponForInfo(void* pWeapInfo);  // game.o 0x607050
@@ -1479,15 +1491,23 @@ struct weaponFileInfo_t {
     int     stance;               // +0xBC (weapStance_t)
     int     ammoType;             // +0xC0 (weapAmmoType_t; WEAPAMMOTYPE_UMG == 5)
     int     pickupWithoutSelect;  // +0xC4
-    uint8_t _padC8[0x598 - 0xC8];
+    uint8_t _padC8[0x594 - 0xC8];
+    char*   szRadiantName;        // +0x594
     char*   szWorldModel;         // +0x598
-    uint8_t _pad1[0x5B4 - 0x59C];
+    char*   szPickupModel;        // +0x59C
+    char*   szHudIcon;            // +0x5A0
+    uint8_t _pad5A4[0x5A8 - 0x5A4];
+    char*   szAmmoIcon;           // +0x5A8
+    int     iStartAmmo;           // +0x5AC
+    char*   szAmmoName;           // +0x5B0
     int     iAmmoIndex;           // +0x5B4
-    uint8_t _pad5B8[0x5BC - 0x5B8];
+    char*   szClipName;           // +0x5B8
     int     iClipIndex;           // +0x5BC
-    uint8_t _pad5C0[0x5CC - 0x5C0];
+    int     iMaxAmmo;             // +0x5C0
+    int     iClipSize;            // +0x5C4
+    char*   szSharedAmmoCapName;  // +0x5C8
     int     iSharedAmmoCapIndex;  // +0x5CC
-    uint8_t _pad1b[0x5D4 - 0x5D0];
+    int     iSharedAmmoCap;       // +0x5D0
     int     iDamage;              // +0x5D4
     uint8_t _pad1c0[0x5DC - 0x5D8];
     int     iMinDamagePercent;    // +0x5DC
@@ -1519,7 +1539,8 @@ struct weaponFileInfo_t {
     int     bSemiAuto;            // +0x6F0
     int     bBoltAction;          // +0x6F4
     int     bADSPositionInfo;     // +0x6F8
-    uint8_t _pad6FC[0x704 - 0x6FC];
+    uint8_t _pad6FC[0x700 - 0x6FC];
+    int     bCookOffHold;         // +0x700
     int     bNoBounce;            // +0x704
     int     bNoTumble;            // +0x708
     int     bCanMantle;           // +0x70C
@@ -1608,7 +1629,7 @@ enum weapSlot_t : int {
 };
 enum {
     WEAPCLASS_GRENADE = 5,  // verified vs disasm Pickup_Weapon
-    WEAPCLASS_LMG = 14,     // verified vs disasm Bullet_Fire_Extended
+    WEAPCLASS_LMG = 3,      // verified vs disasm Bullet_Fire_Extended / BG_IsLMGMounted
 };
 enum {
     AI_EV_GRENADE_PING = 0x0E,
@@ -2193,7 +2214,7 @@ void  G_DebugBox(float* pos, float width, float r, float g, float b,
 void  Cmd_GiveAll_f(Entity* ent);                    // g.o 0x455F60
 void  hurt_touch(Entity* self, Entity* other, int bTouched);  // g.o 0x489110
 void  G_Trigger(Entity* self, Entity* other);        // g.o (g_trigger.cpp)
-void  BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o
+int   BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x6168A0
 int   Com_BitCheck(int* array, int bitNum);          // core.o
 int   Add_Ammo(Entity* ent, int weapon, int count, int fillClip);  // g.o 0x44B1A0
 void  EntityHandleDb_Compact(void* self);            // g.o 0x454B00
@@ -2761,6 +2782,7 @@ int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEn
                                          float visThreshold);  // game.o
 enum {
     WEAPTYPE_BULLET = 0,
+    WEAPTYPE_GRENADE = 1,  // verified vs disasm BG_IsCookingOffGrenade
     WEAPTYPE_ITEM = 4,  // verified vs disasm Drop_Weapon
     WEAPTYPE_INTERACT = 6,  // verified vs disasm UpdateAnimRoute
 };
