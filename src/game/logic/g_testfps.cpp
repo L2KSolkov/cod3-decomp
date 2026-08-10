@@ -8,6 +8,8 @@
 #include <float.h>
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // ============================================================================
 // StreamZone / ZoneCellDesc local views (streamer.o; TestFPS.cpp usage)
@@ -219,6 +221,144 @@ void TestFPS::NextPosition()
                                   + nb.vmax.v.m128_f32[2]) * 0.5f;
         }
     }
+}
+
+// ============================================================================
+// TestFPS::Test - ea: 0x509620
+// Start the FPS sweep: freeze the player, parse the cell list, init sweep
+// state, and take the first step.
+// ============================================================================
+extern vmCvar_t g_performanceTestDelta;      // ?g_performanceTestDelta@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t g_performanceTestDeltaAngle; // ?g_performanceTestDeltaAngle@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t g_performanceTestCell;       // ?g_performanceTestCell@@3UvmCvar_t@@A (game2.o)
+extern int FS_CreatePath(const char* path);  // ?FS_CreatePath@@YAHPBD@Z
+extern int gStartTime;                       // ?gStartTime@@3HA (game2.o)
+extern char* strtok(char* str, const char* delim);
+extern int sscanf(const char* s, const char* fmt, ...);
+
+void TestFPS::Test()
+{
+    if (mTesting)
+        return;
+    if (mFile != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+        AeAssert::gCurrentLine = 79;
+        AeAssert::gCurrentExpr = "!mFile";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    mTesting = true;
+    mCurrentPositionIndex = 0;
+    mCellIndex = 0;
+    mCellX = 0;
+    mCellY = 0;
+    mCellXDelta = 1;
+    mCurrentAngle = 0;
+    mLastFile[0] = 0;
+    mBlock = 0;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    Player->client->noclip = 1;
+    Player->client->bFrozen = 1;
+    mDeltaAngle = g_performanceTestDeltaAngle.integer;
+    mDelta = (float)g_performanceTestDelta.integer;
+    mDeltaInverse = 1.0f / mDelta;
+    int mSize = tr.world->bspTree->mCells.mSize;
+    if (mSize >= 100)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+        AeAssert::gCurrentLine = 101;
+        AeAssert::gCurrentExpr = "100 > numCells";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    mCurrentPosition.x = Player->r.currentOrigin.v.m128_f32[0];
+    mCurrentPosition.y = Player->r.currentOrigin.v.m128_f32[1];
+    mCurrentPosition.z = Player->r.currentOrigin.v.m128_f32[2];
+    char path[256];
+    sprintf(path, "c:\\cod\\assets\\levels\\%s\\stats\\", sv_mapname->string);
+    if (FS_CreatePath(path) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+        AeAssert::gCurrentLine = 110;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Could not create path %s.", path))
+            __debugbreak();
+    }
+    Cvar_Set("g_performanceTest", "1");
+    bool* cells = (bool*)&mCells_size;
+    if (g_performanceTestCell.integer >= 0)
+    {
+        for (int i = 0; i < mSize; ++i)
+            cells[i] = false;
+        char tokenBuf[128];
+        strcpy(tokenBuf, g_performanceTestCell.string);
+        char* token = strtok(tokenBuf, ",");
+        if (token == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+            AeAssert::gCurrentLine = 155;
+            AeAssert::gCurrentExpr = "token";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        while (token != nullptr)
+        {
+            char name[64], range[64];
+            int start = 0;
+            if (sscanf(token, "%s %s", name, range) == 2)
+                start = atoi(range);
+            int end = atoi(name);
+            if (start != 0)
+            {
+                if (start >= end)
+                {
+                    for (int i = 0; i <= start - end; ++i)
+                    {
+                        if (i >= mSize)
+                            break;
+                        cells[end + i] = true;
+                    }
+                }
+                else
+                {
+                    G_Printf("Invalid cell range %i %i.\n", end, start);
+                }
+            }
+            else if (end < mSize)
+            {
+                cells[end] = true;
+            }
+            else
+            {
+                G_Printf("Invalid cell index %i.\n", end);
+            }
+            token = strtok(nullptr, ",");
+        }
+        for (int i = 0; i < mSize; ++i)
+        {
+            if (cells[i])
+            {
+                mCellIndex = i;
+                break;
+            }
+        }
+    }
+    else if (mSize > 0)
+    {
+        for (int i = 0; i < mSize; ++i)
+            cells[i] = true;
+    }
+    mCurrentAngle -= mDeltaAngle;
+    mCellX = -1;
+    NextPosition();
+    gStartTime = Sys_Milliseconds();
 }
 
 // ============================================================================
