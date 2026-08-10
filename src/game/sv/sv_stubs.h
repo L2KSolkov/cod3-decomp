@@ -488,10 +488,11 @@ struct SoundDevice {
     void CrossFade(unsigned int sound1, unsigned int sound2,
                    float crossFadeTime);    // ?CrossFade@SoundDevice@@QAEXIIM@Z (game.o 0x62CBE0)
     void SetReverb(const char* preset, bool immediate);  // ?SetReverb@SoundDevice@@QAEXPBD_N@Z (game.o 0x9F20A0)
-    void PlaySound(const char* name, DbLinkedHandle<EntityHandleDb, Entity> ent,
-                   bool a4, bool a5, const math::Position3& pos,
-                   const math::Dir3& dir, float a8, float a9, float a10,
-                   float a11);  // ?PlaySound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@PBDV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@5@MMMM@Z
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> PlaySound(
+        const char* name, DbLinkedHandle<EntityHandleDb, Entity> ent,
+        bool a4, bool a5, const math::Position3& pos, const math::Dir3& dir,
+        float a8, float a9, float a10,
+        float a11);  // ?PlaySound@SoundDevice@@QAE?AV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@PBDV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@_N2ABVPosition3@math@@ABVDir3@5@MMMM@Z
     DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> QueueSound(
         nslWaveID id, DbLinkedHandle<EntityHandleDb, Entity> entHandle,
         bool mImportant, bool autoRelease, const math::Position3& pos,

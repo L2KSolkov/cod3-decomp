@@ -1132,10 +1132,14 @@ struct MusicMgr {
     float  mDelayCount;      // +0x18
     int    mCrossFadeType;   // +0x1C
     MusicMgr();              // ??0MusicMgr@@QAE@XZ
+    ~MusicMgr();             // ??1MusicMgr@@QAE@XZ (game.o 0x63A7D0)
     void ScaleVolume(float scale);  // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o 0x62D6D0)
     void Stop(const float fadeOutTime);  // ?Stop@MusicMgr@@QAEXM@Z (game.o 0x62D830)
+    void StopIndoor(float fadeOutTime);  // ?StopIndoor@MusicMgr@@QAEXM@Z (game.o 0x603FD0)
     void Update(float dt);       // ?Update@MusicMgr@@QAEXM@Z (game.o 0x62D8A0)
     bool IsMusicPlaying();       // ?IsMusicPlaying@MusicMgr@@QAE_NXZ (game.o 0x6217F0)
+    void Play(const char* name); // ?Play@MusicMgr@@QAEXPBD@Z (game.o 0x63A890)
+    void PlayIndoor(const char* name, float fadeInTime);  // ?PlayIndoor@MusicMgr@@QAEXPBDM@Z (game.o 0x63AA30)
 };
 
 // ea: 0x00612E30
@@ -1318,6 +1322,152 @@ bool MusicMgr::IsMusicPlaying()
         && mVal >> 12
             == (unsigned int)SoundDevice::SoundHandleDb::sInst.mElements[v2].mKey
         && SoundDevice::SoundHandleDb::sInst.mElements[v2].mObject != nullptr;
+}
+
+// ============================================================================
+// MusicMgr play/stop - ea: 0x603FD0..0x63AA30 (MusicMgr.cpp)
+// ============================================================================
+struct SoundOptions {
+    uint8_t _pad[0x34];
+    int mFxDontPlayMusic;  // +0x34
+};
+extern SoundOptions gSoundOptions;  // ?gSoundOptions@@3VSoundOptions@@A @ 0xF00EF0
+extern void* AudioBankMgr_sInst;  // ?sInst@AudioBankMgr@@2PAV1@A @ 0xF4EBD8 (cross-TU bridge)
+
+// ea: 0x00603FD0
+void MusicMgr::StopIndoor(float fadeOutTime)
+{
+    this->mIndoorFadeTime = fadeOutTime;
+    this->mCrossFadeType = 2;
+    this->mDelayCount = 0.0f;
+}
+
+// ea: 0x0063A7D0
+MusicMgr::~MusicMgr()
+{
+    SoundDevice::Sound* mObject = SoundFromHandle(this->mMusic);
+    if (mObject != nullptr)
+        mObject->Stop();
+    SoundDevice::Sound* v9 = SoundFromHandle(this->mMusicIndoor);
+    if (v9 != nullptr)
+        v9->Stop();
+}
+
+// ea: 0x0063A890
+void MusicMgr::Play(const char* name)
+{
+    if (gSoundOptions.mFxDontPlayMusic == 0
+        && *(int*)((char*)AudioBankMgr_sInst + 0x6C8) > 0)
+    {
+        if (name != nullptr)
+        {
+            if (SoundFromHandle(this->mMusic) != nullptr)
+                this->Stop(0.0f);
+            math::Position3 zeroPos;
+            math::Dir3 zeroDir;
+            memset(&zeroPos, 0, sizeof(zeroPos));
+            memset(&zeroDir, 0, sizeof(zeroDir));
+            DbLinkedHandle<EntityHandleDb, Entity> ent;
+            ent.mHandle.mVal = 0;
+            DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>
+                result = SoundDevice::sInst->PlaySound(
+                    name, ent, false, false, zeroPos, zeroDir,
+                    -1.0f, -1.0f, -1.0f, -1.0f);
+            this->mMusic.mVal = result.mHandle.mVal;
+            SoundDevice::Sound* v4 = SoundFromHandle(this->mMusic);
+            if (v4 != nullptr)
+            {
+                float v5 = nslGetWaveParam((nslWaveID)v4->mWave, 0, 1.0f)
+                    * this->mOutsideScale * this->mVolScale;
+                v4->SetVolume(v5);
+                return;
+            }
+            if (cls.state != CA_LOADING
+                && SoundFromHandle(this->mMusic) == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MusicMgr.cpp";
+                AeAssert::gCurrentLine = 96;
+                AeAssert::gCurrentExpr = "*mMusic";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "Music Error: Music playsound failed (%s)", name))
+                    __debugbreak();
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MusicMgr.cpp";
+            AeAssert::gCurrentLine = 75;
+            AeAssert::gCurrentExpr = "name";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Music Error: NULL music name passed to MusicMgr::Play()"))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x0063AA30
+void MusicMgr::PlayIndoor(const char* name, float fadeInTime)
+{
+    if (gSoundOptions.mFxDontPlayMusic == 0)
+    {
+        if (name != nullptr)
+        {
+            if (SoundFromHandle(this->mMusicIndoor) != nullptr)
+            {
+                this->mCrossFadeType = 2;
+                this->mIndoorFadeTime = 0.0f;
+                this->mDelayCount = 0.0f;
+            }
+            math::Position3 zeroPos;
+            math::Dir3 zeroDir;
+            memset(&zeroPos, 0, sizeof(zeroPos));
+            memset(&zeroDir, 0, sizeof(zeroDir));
+            DbLinkedHandle<EntityHandleDb, Entity> ent;
+            ent.mHandle.mVal = 0;
+            DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound>
+                result = SoundDevice::sInst->PlaySound(
+                    name, ent, false, false, zeroPos, zeroDir,
+                    -1.0f, -1.0f, -1.0f, -1.0f);
+            this->mMusicIndoor.mVal = result.mHandle.mVal;
+            if (SoundFromHandle(this->mMusicIndoor) == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MusicMgr.cpp";
+                AeAssert::gCurrentLine = 126;
+                AeAssert::gCurrentExpr = "*mMusicIndoor";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                        "Music Error: Music playsound failed (%s)", name))
+                    __debugbreak();
+            }
+            this->mIndoorScale = 0.0f;
+            this->mCrossFadeType = 1;
+            this->mIndoorFadeTime = fadeInTime;
+            SoundDevice::Sound* v11 = SoundFromHandle(this->mMusicIndoor);
+            if (v11 != nullptr)
+            {
+                float v12 =
+                    nslGetWaveParam((nslWaveID)v11->mWave, 0, 1.0f)
+                    * this->mVolScale * this->mIndoorScale;
+                v11->SetVolume(v12);
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MusicMgr.cpp";
+            AeAssert::gCurrentLine = 116;
+            AeAssert::gCurrentExpr = "name";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "Music Error: NULL music name passed to MusicMgr::Play()"))
+                __debugbreak();
+        }
+    }
 }
 
 // ============================================================================
