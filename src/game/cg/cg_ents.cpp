@@ -553,8 +553,9 @@ extern void Trace(trace_t* results, const math::Position3* start,
                   const math::Position3* end, const math::Position3* mins,
                   const math::Position3* maxs, void* model, int brushmask,
                   int capsule, void* sphere);
-extern int CM_PointContents(const math::Position3* p, void* model);
-extern int CM_TransformedPointContents(const math::Position3* p, void* model,
+struct DCGSet;
+extern int CM_PointContents(const math::Position3* p, DCGSet* model);
+extern int CM_TransformedPointContents(const math::Position3* p, DCGSet* model,
                                        const math::Position3* origin,
                                        const math::Position3* angles);
 extern void CG_ClipMoveToEntities(const math::Position3* start,

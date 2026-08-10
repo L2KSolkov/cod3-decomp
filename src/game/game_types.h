@@ -61,7 +61,7 @@ struct animscripted_t {
 struct proximity_data_t;
 struct actor_s;
 struct sentient_s;
-class DCGSet;
+struct DCGSet;
 struct WorldSector;
 class EntityHandleDb;
 

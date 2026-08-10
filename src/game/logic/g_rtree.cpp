@@ -19,16 +19,6 @@ struct rtree_node_t {
     int     offs;  // +0x0C
 };
 
-// rtree_root_t - SIMD tree root (verified from traverse_rtree disasm)
-struct rtree_root_t {
-    math::Position3 region_center;        // +0x00
-    math::Position3 region_halfsize_inv32k;  // +0x10
-    rtree_node_t*   simd_tree;            // +0x20
-    int             pad_24;               // +0x24 (unknown; TODO)
-    int             top_level_aabb_count; // +0x28
-    int             nsimd_levels;         // +0x2C
-};
-
 // subdivision_visitor is the rtree_visitor_t base (defined in g_cm_load.cpp);
 // the overlap helpers below only need the rtree_node_t layout.
 
@@ -112,11 +102,6 @@ static inline __m128 expand_pos4(const math::Position3& p)
     return _mm_shuffle_ps(p.v, _mm_shuffle_ps(_mm_set_ss(1.0f), p.v, 0xA0),
                           0x34);
 }
-
-// subdivision_visitor - vftable slot 0 is visit(int) (rtree_visitor_t::visit).
-struct subdivision_visitor {
-    virtual void visit(int cluster_offset);
-};
 
 struct simd_stack_entry {
     unsigned int offset;  // +0x00

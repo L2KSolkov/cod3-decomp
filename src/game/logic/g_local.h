@@ -2510,6 +2510,26 @@ struct proximity_data_t {
 };
 static_assert(sizeof(proximity_data_t) == 0x1850,
               "proximity_data_t size mismatch");
+// rtree traversal types (rtree.cpp / cgbank.h)
+enum visit_result_t {
+    CONTINUE_VISITING = 0,
+};
+
+struct subdivision_visitor {
+    virtual visit_result_t visit(int cluster_offset) = 0;
+};
+
+struct rtree_node_t;  // defined in g_rtree.cpp (16-byte SIMD node)
+
+struct rtree_root_t {
+    math::Position3 region_center;        // +0x00
+    math::Position3 region_halfsize_inv32k;  // +0x10
+    rtree_node_t*   simd_tree;            // +0x20
+    int             pad_24;               // +0x24 (unknown; TODO)
+    int             top_level_aabb_count; // +0x28
+    int             nsimd_levels;         // +0x2C
+};
+
 struct CGBank {
     math::Position3 min;      // +0x00
     math::Position3 max;      // +0x10
@@ -2527,8 +2547,9 @@ struct CGBank {
     cdl_array_t brush_verts;  // +0x6C
     cdl_array_t patch_inds;   // +0x74
     cdl_array_t patch_verts;  // +0x7C
-    uint8_t _pad84[0xC0 - 0x84];
-    void* rtree_data;         // +0xC4
+    uint8_t _pad84[0x90 - 0x84];
+    rtree_root_t rtree_root;  // +0x90 (traverse_rtree root; verified disasm)
+    uint8_t _padC0[0xD0 - 0xC0];
 };
 static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
 struct CGBankManager : public AssetBankSet {
@@ -2904,7 +2925,7 @@ int   G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* cro
 void  Client_Touch(Entity* pSelf, Entity* pOther);  // g.o 0x4671F0
 void  G_DebugCircle2Ex(const float* center, float radius, const float* dir,
                        const float* color, int depthTest, int duration);  // g.o 0x4572F0
-int   CM_PointContents(const math::Position3* p, void* model);  // sv.o
+int   CM_PointContents(const math::Position3* p, DCGSet* model);  // game.o 0x632500
 int   GetEntityTouchTriggerType(Entity* pEnt);  // g.o 0x448BE0
 int   g_EntityContactCapsule(const math::Position3* mins, const math::Position3* maxs,
                              const Entity* ent);  // g.o 0x450AC0

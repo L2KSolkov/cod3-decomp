@@ -520,33 +520,35 @@ int TempBoxModelContents()
 // ============================================================================
 // rtree_visitor_t - ea: 0x61AAF0..0x61AB20
 // ============================================================================
-enum visit_result_t {
-    CONTINUE_VISITING = 0,
-};
-
-struct rtree_visitor_t {
-    void* __vftable;         // +0x00
+struct rtree_visitor_t : public subdivision_visitor {
     // objects (m_buffer +0x10, m_alloc_count +0x414, m_slot_array +0x410)
+    uint8_t _pad4[0xC];               // +0x04
     uint8_t objects_m_buffer[0x400];  // +0x10
     int*    objects_m_slot_array;     // +0x410
     int     objects_m_alloc_count;    // +0x414
+    uint8_t _pad418[0x8];             // +0x418 (unknown; TODO phys_array_base tail)
     // boxes (m_buffer +0x420, m_alloc_count +0x624, m_slot_array +0x620)
     uint8_t boxes_m_buffer[0x200];    // +0x420
     int*    boxes_m_slot_array;       // +0x620
     int     boxes_m_alloc_count;      // +0x624
+    uint8_t _pad628[0x8];             // +0x628 (unknown; TODO)
     // brushes (m_buffer +0x630, m_alloc_count +0x834, m_slot_array +0x830)
     uint8_t brushes_m_buffer[0x200];  // +0x630
     int*    brushes_m_slot_array;     // +0x830
     int     brushes_m_alloc_count;    // +0x834
+    uint8_t _pad838[0x8];             // +0x838 (unknown; TODO)
     // patches (m_buffer +0x840, m_alloc_count +0xA44, m_slot_array +0xA40)
     uint8_t patches_m_buffer[0x200];  // +0x840
     int*    patches_m_slot_array;     // +0xA40
     int     patches_m_alloc_count;    // +0xA44
+    uint8_t _padA48[0x8];             // +0xA48 (unknown; TODO)
     CGBank* bank;                     // +0xA50
+    uint8_t _padA54[0xC];             // +0xA54 (tail padding to 0xA60)
 
     rtree_visitor_t(const CGBank* _bank);  // ??0rtree_visitor_t@@QAE@PBVCGBank@@@Z (game.o 0x622AE0)
-    visit_result_t visit(int index);  // ?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z
-    void filter_objects(int mask);    // ?filter_objects@rtree_visitor_t@@QAEXH@Z
+    ~rtree_visitor_t();                  // ??1rtree_visitor_t@@QAE@XZ (game.o 0x661870) - vtable guard
+    visit_result_t visit(int index) override;  // ?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z
+    void filter_objects(int mask);       // ?filter_objects@rtree_visitor_t@@QAEXH@Z
 
     static int* add_fast(int* slot, int& count, int capacity)
     {
@@ -560,6 +562,7 @@ struct rtree_visitor_t {
         return p;
     }
 };
+static_assert(sizeof(rtree_visitor_t) == 0xA60, "rtree_visitor_t size mismatch");
 
 // CGBank::get_type (cgbank.h inline 0x65FB40)
 static int CGBank_get_type(const CGBank* bank, unsigned int index)
@@ -582,7 +585,6 @@ static int CGBank_get_type(const CGBank* bank, unsigned int index)
 // ea: 0x00622AE0
 rtree_visitor_t::rtree_visitor_t(const CGBank* _bank)
 {
-    this->__vftable = 0;
     this->objects_m_alloc_count = 0;
     this->objects_m_slot_array = (int*)this->objects_m_buffer;
     this->boxes_m_alloc_count = 0;
@@ -596,6 +598,12 @@ rtree_visitor_t::rtree_visitor_t(const CGBank* _bank)
     this->boxes_m_alloc_count = 0;
     this->brushes_m_alloc_count = 0;
     this->patches_m_alloc_count = 0;
+}
+
+// ea: 0x00661870
+rtree_visitor_t::~rtree_visitor_t()
+{
+    // Binary body: mov [ecx], offset rtree_visitor_t::vftable; ret (vtable guard)
 }
 
 // ea: 0x0061AAF0
@@ -3153,7 +3161,246 @@ int CM_AreaEntities(const math::Position3& mins,
 // ============================================================================
 extern void AngleVectors(const math::Position3* angles, float* forward,
                          float* right, float* up);  // core.o
-extern int CM_PointContents(const math::Position3* p, DCGSet* model);  // game.o 0x632500
+extern void traverse_rtree(const math::Position3& p0,
+                           const math::Position3& p1,
+                           const rtree_root_t& root,
+                           subdivision_visitor& visitor);  // physics.o 0x6F6620
+
+// ============================================================================
+// CM_PointContents - ea: 0x632500 (cm_test.cpp)
+// ============================================================================
+// ea: 0x00632500
+int CM_PointContents(const math::Position3* p, DCGSet* model)
+{
+    if (g_bspTree->mNodes.mSize == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_test.cpp";
+        AeAssert::gCurrentLine = 221;
+        AeAssert::gCurrentExpr = "g_bspTree->mNodes.size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int contents = 0;
+    if (model != nullptr)
+    {
+        unsigned int nboxes = (unsigned int)model->nboxes;
+        if (nboxes != 0)
+        {
+            for (unsigned int i = 0; i < nboxes; ++i)
+            {
+                if (i >= (unsigned int)model->objects_m_count)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JSV;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                    AeAssert::gCurrentLine = 77;
+                    AeAssert::gCurrentExpr = "index < size()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(defaultFileName))
+                        __debugbreak();
+                    if (i >= (unsigned int)model->objects_m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                }
+                cdl_object_t* obj =
+                    &((cdl_object_t*)model->objects_m_elements)[i];
+                math::Position3 bmin;
+                math::Position3 bmax;
+                bmax.v = _mm_add_ps(
+                    _mm_setr_ps(obj->center[0], obj->center[1],
+                                obj->center[2], 0.0f),
+                    _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                                obj->box_radius[2], 0.0f));
+                bmin.v = _mm_sub_ps(
+                    _mm_setr_ps(obj->center[0], obj->center[1],
+                                obj->center[2], 0.0f),
+                    _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                                obj->box_radius[2], 0.0f));
+                if (TestPointInBox(*p, bmin, bmax))
+                    contents |= obj->cflags;
+            }
+        }
+        unsigned int nbrushes = (unsigned int)model->nbrushes;
+        if (nbrushes != 0)
+        {
+            for (unsigned int i = 0; i < nbrushes; ++i)
+            {
+                unsigned int obj_index = i + (unsigned int)model->nboxes;
+                if (obj_index >= (unsigned int)model->objects_m_count)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JSV;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                    AeAssert::gCurrentLine = 77;
+                    AeAssert::gCurrentExpr = "index < size()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(defaultFileName))
+                        __debugbreak();
+                    if (obj_index >= (unsigned int)model->objects_m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                }
+                cdl_object_t* obj =
+                    &((cdl_object_t*)model->objects_m_elements)[obj_index];
+                if (i >= (unsigned int)model->brushes_m_count
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                        "index >= 0 && index < size()", "invalid index"))
+                    __debugbreak();
+                cdl_brush_t* brush =
+                    &((cdl_brush_t*)model->brushes_m_elements)[i];
+                unsigned int first_side = (unsigned int)brush->first_side;
+                if (first_side >= (unsigned int)model->brush_sides_m_count
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                        "index >= 0 && index < size()", "invalid index"))
+                    __debugbreak();
+                math::Position3 bmin;
+                math::Position3 bmax;
+                bmax.v = _mm_add_ps(
+                    _mm_setr_ps(obj->center[0], obj->center[1],
+                                obj->center[2], 0.0f),
+                    _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                                obj->box_radius[2], 0.0f));
+                bmin.v = _mm_sub_ps(
+                    _mm_setr_ps(obj->center[0], obj->center[1],
+                                obj->center[2], 0.0f),
+                    _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                                obj->box_radius[2], 0.0f));
+                const cdlPlane* sides =
+                    &((const cdlPlane*)model->brush_sides_m_elements)
+                        [first_side];
+                if (TestPointInBrush(*p, bmin, bmax, sides,
+                                     (unsigned int)brush->num_sides))
+                    contents |= obj->cflags;
+            }
+            return contents;
+        }
+        return contents;
+    }
+
+    math::Position3 pos;
+    pos.v = _mm_setr_ps(p->v.m128_f32[0], p->v.m128_f32[1],
+                        p->v.m128_f32[2], 0.0f);
+    CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
+    for (int i = 0; i < mgr->mCount; ++i)
+    {
+        if (i > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        CGBank* bank = mgr->mBankArray[i];
+        if (TestPointInBox(pos, bank->min, bank->max))
+        {
+            math::Position3 lo;
+            math::Position3 hi;
+            lo.v = _mm_sub_ps(pos.v, _mm_setr_ps(1.0f, 1.0f, 1.0f, 0.0f));
+            hi.v = _mm_add_ps(pos.v, _mm_setr_ps(1.0f, 1.0f, 1.0f, 0.0f));
+            rtree_visitor_t visitor(bank);
+            traverse_rtree(lo, hi, bank->rtree_root, visitor);
+            visitor.filter_objects(-1);
+
+            int nobjects = visitor.objects_m_alloc_count;
+            for (int j = 0; j < nobjects; ++j)
+            {
+                if ((j < 0 || j >= visitor.objects_m_alloc_count)
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                    __debugbreak();
+                unsigned int index =
+                    (unsigned int)(uint16_t)visitor.objects_m_slot_array[j];
+                if (index >= (unsigned int)bank->objects.m_count)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JSV;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                    AeAssert::gCurrentLine = 233;
+                    AeAssert::gCurrentExpr = "index < size()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(defaultFileName))
+                        __debugbreak();
+                    if (index >= (unsigned int)bank->objects.m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                }
+                contents |=
+                    ((cdl_object_t*)bank->objects.m_elements)[index].cflags;
+            }
+
+            int nbrushes = visitor.brushes_m_alloc_count;
+            for (int j = 0; j < nbrushes; ++j)
+            {
+                if ((j < 0 || j >= visitor.brushes_m_alloc_count)
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                    __debugbreak();
+                unsigned int obj_index =
+                    (unsigned int)(uint16_t)visitor.brushes_m_slot_array[j];
+                if (obj_index >= (unsigned int)bank->objects.m_count)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JSV;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                    AeAssert::gCurrentLine = 233;
+                    AeAssert::gCurrentExpr = "index < size()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(defaultFileName))
+                        __debugbreak();
+                    if (obj_index >= (unsigned int)bank->objects.m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                }
+                cdl_object_t* obj =
+                    &((cdl_object_t*)bank->objects.m_elements)[obj_index];
+                unsigned int bi =
+                    obj_index - (unsigned int)bank->nboxes;
+                if (bi >= (unsigned int)bank->brushes.m_count
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                        "index >= 0 && index < size()", "invalid index"))
+                    __debugbreak();
+                cdl_brush_t* brush =
+                    &((cdl_brush_t*)bank->brushes.m_elements)[bi];
+                int num_sides = (int)brush->num_sides;
+                int side;
+                for (side = 0; side < num_sides; ++side)
+                {
+                    unsigned int side_index =
+                        (unsigned int)side + (unsigned int)brush->first_side;
+                    if (side_index >= (unsigned int)bank->brush_sides.m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                    const cdlPlane* plane =
+                        &((const cdlPlane*)bank->brush_sides.m_elements)
+                            [side_index];
+                    const float* pv = (const float*)plane->packed;
+                    float dot = pos.v.m128_f32[0] * pv[0]
+                        + pos.v.m128_f32[1] * pv[1]
+                        + pos.v.m128_f32[2] * pv[2];
+                    if (dot > pv[3])
+                        break;
+                }
+                if (side == num_sides)
+                    contents |= obj->cflags;
+            }
+        }
+    }
+    return contents;
+}
 
 // ea: 0x00632E00
 int CM_TransformedPointContents(const math::Position3& p, DCGSet* model,
