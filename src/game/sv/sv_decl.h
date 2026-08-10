@@ -122,7 +122,7 @@ const char* Com_Parse(const char** data_p);
 int    Q_strcasecmp(const char* s1, const char* s2);
 char   Q_CleanCharacter(char c);
 
-// entity/player managers
-struct LocalClient {
-    static int FirstLocalClientIndex(void);
+// entity/player managers (namespace in the binary: ?FirstLocalClientIndex@LocalClient@@YAHXZ)
+namespace LocalClient {
+    int FirstLocalClientIndex(void);       // cl.o 0x52EF80
 };

@@ -524,3 +524,149 @@ MusicMgr::MusicMgr()
     this->mDelayCount = 0.0f;
     this->mCrossFadeType = 0;
 }
+
+// ============================================================================
+// EntityManager - ea: 0x612420..0x612630 (inline COMDATs from g.o 0x4A6990)
+// ============================================================================
+extern int dword_F6A28C[];  // game.o data
+
+// ea: 0x00612420
+EntityManager::EntityManager()
+{
+    this->mWorld = nullptr;
+    for (int i = 0; i < 16; ++i)
+        this->mPlayers[i] = nullptr;
+}
+
+// ea: 0x00612470
+EntityManager::~EntityManager()
+{
+}
+
+// ea: 0x00612480
+void EntityManager::CreatePlayers()
+{
+    Entity** mPlayers = this->mPlayers;
+    if (this->mPlayers[0] == nullptr)
+    {
+        for (int i = 16; i != 0; --i)
+        {
+            TPakId PakId =
+                PakManager::sInst->FindPakId(kPakTypeGlobal);
+            *mPlayers++ = G_Spawn(PakId);
+        }
+    }
+}
+
+// ea: 0x006124C0
+void EntityManager::CreateWorld()
+{
+    if (this->mWorld != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EntityManager.cpp";
+        AeAssert::gCurrentLine = 42;
+        AeAssert::gCurrentExpr = "mWorld == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("World already created!"))
+            __debugbreak();
+    }
+    TPakId PakId =
+        PakManager::sInst->FindPakId(kPakTypeGlobal);
+    this->mWorld = G_Spawn(PakId);
+}
+
+// ea: 0x00612530
+int EntityManager::GetPlayerIndex(Entity* entity)
+{
+    int result = 0;
+    Entity** i = this->mPlayers;
+    while (entity != *i)
+    {
+        ++i;
+        if (++result >= 16)
+            return -1;
+    }
+    return result;
+}
+
+// ea: 0x00612560
+int EntityManager::GetEntityController(Entity* entity)
+{
+    Client* client = entity->client;
+    if (client == nullptr)
+        return 0;
+    int mServerClientIndex = client->mServerClientIndex;
+    if (mServerClientIndex < 0
+        || *(int*)((char*)&svs.clients[mServerClientIndex].netchan[8]) != 2)
+        return 0;
+    int v4 = 0;
+    Entity** i = this->mPlayers;
+    while (entity != *i)
+    {
+        ++i;
+        if (++v4 >= 16)
+        {
+            v4 = -1;
+            return dword_F6A28C[802 * v4];
+        }
+    }
+    return dword_F6A28C[802 * v4];
+}
+
+// ea: 0x006125C0
+bool EntityManager::IsLocalPlayer(Entity* entity)
+{
+    if (entity == nullptr)
+        return false;
+    Client* client = entity->client;
+    return client != nullptr
+        && (int)client->mServerClientIndex >= 0
+        && *(int*)((char*)&svs.clients[client->mServerClientIndex].netchan[8])
+            == 2;
+}
+
+// ea: 0x00612610
+Entity* EntityManager::GetFirstLocalPlayer()
+{
+    int LocalClientIndex = LocalClient::FirstLocalClientIndex();
+    return this->GetPlayer(LocalClientIndex);
+}
+
+// ea: 0x00612630
+void EntityManager::SwapPlayers(int eA, int eB)
+{
+    Entity* v3 = this->mPlayers[eA];
+    this->mPlayers[eA] = this->mPlayers[eB];
+    this->mPlayers[eB] = v3;
+    this->mPlayers[eA]->client->mServerClientIndex = eA;
+    this->mPlayers[eB]->client->mServerClientIndex = eB;
+}
+
+// g.o inline COMDATs (EntityManager.h)
+// ea: 0x004A6990
+EntityManager* EntityManager::Inst()
+{
+    return EntityManager::sInst;
+}
+
+// ea: 0x004A6A60
+Entity* EntityManager::GetPlayer(int idx)
+{
+    if (idx >= 16)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EntityManager.h";
+        AeAssert::gCurrentLine = 19;
+        AeAssert::gCurrentExpr = "idx<16";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+    }
+    return this->mPlayers[idx];
+}
+
+// ea: 0x004A6AE0
+Entity* EntityManager::GetWorld()
+{
+    return this->mWorld;
+}

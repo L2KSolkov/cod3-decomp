@@ -13,6 +13,9 @@
 #include "game/game_types.h"
 #include "core/ae_array.h"
 
+// EPakType - pak type enum (global enum; kPakTypeGlobal == 0)
+enum EPakType { kPakTypeGlobal = 0 };
+
 // ============================================================================
 // TPakId — pak archive id enum
 // ============================================================================
@@ -360,6 +363,7 @@ struct PakManager {
     void* mProgressCallback;             // +0x2C
     uint8_t _pad30[0x70 - 0x30];
     struct { void* m_head; void* m_end; } mActivePaks;  // +0x70
+    TPakId FindPakId(EPakType t) const;  // ?FindPakId@PakManager@@QBE?AW4TPakId@@W4EPakType@@@Z
     void FillBanks();                    // ?FillBanks@PakManager@@QAEXXZ
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
     void ResetPriorities(bool user_distances_also);  // ?ResetPriorities@PakManager@@QAEX_N@Z
@@ -440,21 +444,33 @@ static_assert(sizeof(XModelManager) == 4, "XModelManager size mismatch (opaque)"
 // ============================================================================
 // EntityManager — entity factory (opaque; only sv.o fields used)
 // ============================================================================
-struct EntityManager {
-    uint8_t _pad[4];
+struct AssetBankSet {
+    virtual ~AssetBankSet();          // ??1AssetBankSet@@UAE@XZ (streamer.o 0x675850)
+    AssetBankSet();                   // ??0AssetBankSet@@QAE@XZ (streamer.o 0x6663A0)
+};
+
+class EntityManager : public AssetBankSet {
+public:
     static EntityManager* sInst;            // ?sInst@EntityManager@@2PAV1@A
-    Entity* GetPlayer(int idx);             // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
-    bool IsLocalPlayer(Entity* entity);     // ?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z
+    EntityManager();                        // ??0EntityManager@@QAE@XZ (game.o 0x612420)
+    virtual ~EntityManager();               // ??1EntityManager@@UAE@XZ (game.o 0x612470)
+    static EntityManager* Inst();           // ?Inst@EntityManager@@SAPAV1@XZ (g.o inline)
+    Entity* GetPlayer(int idx);             // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z (g.o inline)
+    Entity* GetWorld();                     // ?GetWorld@EntityManager@@QAEPAVEntity@@XZ (g.o inline)
+    bool IsLocalPlayer(Entity* entity);     // ?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z (game.o)
     Entity* mPlayers[16];                   // +0x04 (player entity handles)
     Entity* mWorld;                         // +0x44
-    void SwapPlayers(int eA, int eB);       // ?SwapPlayers@EntityManager@@QAEXHH@Z
-    void CreatePlayers();                   // ?CreatePlayers@EntityManager@@QAEXXZ
-    void CreateWorld();                     // ?CreateWorld@EntityManager@@QAEXXZ
-    void DeleteAllEntities();               // ?DeleteAllEntities@EntityManager@@QAEXXZ
-    int  GetPlayerIndex(Entity* entity);    // ?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z
+    void SwapPlayers(int eA, int eB);       // ?SwapPlayers@EntityManager@@QAEXHH@Z (game.o)
+    void CreatePlayers();                   // ?CreatePlayers@EntityManager@@QAEXXZ (game.o)
+    void CreateWorld();                     // ?CreateWorld@EntityManager@@QAEXXZ (game.o)
+    void DeleteAllEntities();               // ?DeleteAllEntities@EntityManager@@QAEXXZ (game.o)
+    int  GetEntityController(Entity* entity);  // ?GetEntityController@EntityManager@@QAEHPAVEntity@@@Z (game.o)
+    int  GetPlayerIndex(Entity* entity);    // ?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z (game.o)
+    Entity* GetFirstLocalPlayer();          // ?GetFirstLocalPlayer@EntityManager@@QAEPAVEntity@@XZ (game.o)
 };
 static_assert(offsetof(EntityManager, mPlayers) == 0x04, "EntityManager::mPlayers offset mismatch");
 static_assert(offsetof(EntityManager, mWorld) == 0x44, "EntityManager::mWorld offset mismatch");
+static_assert(sizeof(EntityManager) == 0x48, "EntityManager size mismatch");
 
 // ============================================================================
 // AeAssert — assertion system (namespace-style free functions + globals)
