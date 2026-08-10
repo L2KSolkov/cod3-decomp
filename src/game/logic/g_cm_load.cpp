@@ -1914,6 +1914,169 @@ void TraceCapsuleThroughCapsule(traceWork_t* tw)
 }
 
 // ============================================================================
+// Sight-trace boolean primitives - ea: 0x60CD80..0x60D180
+// ============================================================================
+// These only test, returning true when a hit is possible; they do not write
+// tw->trace state (unlike the Trace* variants above).
+static float LengthSq3(__m128 v)
+{
+    __m128 s = _mm_mul_ps(v, v);
+    return s.m128_f32[0] + s.m128_f32[1] + s.m128_f32[2];
+}
+
+// ea: 0x0060CD80
+void TestCapsuleInCapsule(traceWork_t* tw)
+{
+    math::Dir3 v1;
+    v1.v = tw->sphere_offset.v;
+    math::Position3 v2 = tw->start;
+    v2.v = _mm_add_ps(tw->start.v, v1.v);
+    math::Position3 v3 = tw->start;
+    v3.v = _mm_sub_ps(tw->start.v, v1.v);
+    math::Position3 v4 = gBoxDCGSet->max;
+    math::Position3 v5;
+    v5.v = _mm_mul_ps(
+        _mm_add_ps(gBoxDCGSet->min.v, v4.v),
+        _mm_set1_ps(0.5f));
+    math::Position3 p2;
+    p2.v = _mm_sub_ps(v4.v, v5.v);
+    math::Position3 top = v5;
+    float v6 = p2.v.m128_f32[0] > p2.v.m128_f32[2]
+        ? p2.v.m128_f32[2]
+        : p2.v.m128_f32[0];
+    float v7 = p2.v.m128_f32[2] - v6;
+    float v10 = (tw->sphere_radius + v6) * (tw->sphere_radius + v6);
+    math::Position3 p1;
+    p1.v = top.v;
+    p1.v.m128_f32[2] = top.v.m128_f32[2] + v7;
+    if (v10 > LengthSq3(_mm_sub_ps(p1.v, v2.v)))
+    {
+        tw->trace_allsolid = 1;
+        tw->trace_startsolid = 1;
+        tw->trace_fraction = 0.0f;
+    }
+    if (v10 > LengthSq3(_mm_sub_ps(p1.v, v3.v)))
+    {
+        tw->trace_allsolid = 1;
+        tw->trace_startsolid = 1;
+        tw->trace_fraction = 0.0f;
+    }
+    p2.v = top.v;
+    p2.v.m128_f32[2] = top.v.m128_f32[2] - v7;
+    if (v10 > LengthSq3(_mm_sub_ps(p2.v, v2.v)))
+    {
+        tw->trace_allsolid = 1;
+        tw->trace_startsolid = 1;
+        tw->trace_fraction = 0.0f;
+    }
+    if (v10 > LengthSq3(_mm_sub_ps(p2.v, v3.v)))
+    {
+        tw->trace_allsolid = 1;
+        tw->trace_startsolid = 1;
+        tw->trace_fraction = 0.0f;
+    }
+    float v17 = tw->start.v.m128_f32[2] - top.v.m128_f32[2];
+    float v18 = (tw->sphere_halfheight + v7) - tw->sphere_radius;
+    if (v18 >= v17 && v17 >= (0.0f - v18))
+    {
+        p1.v.m128_f32[2] = 0.0f;
+        v2.v.m128_f32[2] = 0.0f;
+        if (v10 > LengthSq3(_mm_sub_ps(v2.v, p1.v)))
+        {
+            tw->trace_allsolid = 1;
+            tw->trace_startsolid = 1;
+            tw->trace_fraction = 0.0f;
+        }
+    }
+}
+
+// ea: 0x0060CFE0
+int SightTraceCylinderThroughCylinder(traceWork_t* tw,
+                                      const math::Position3& vStationary,
+                                      float fStationaryHalfHeight,
+                                      float radius)
+{
+    float vNormal[4] = {
+        tw->start.v.m128_f32[0] - vStationary.v.m128_f32[0],
+        tw->start.v.m128_f32[1] - vStationary.v.m128_f32[1],
+        tw->start.v.m128_f32[2] - vStationary.v.m128_f32[2],
+        0.0f,
+    };
+    float v5 =
+        (vNormal[1] * vNormal[1] + vNormal[0] * vNormal[0])
+        - ((tw->sphere_radius + radius) * (tw->sphere_radius + radius));
+    if (v5 > 0.0f)
+    {
+        float fA = (tw->delta.v.m128_f32[1] * vNormal[1])
+            + (tw->delta.v.m128_f32[0] * vNormal[0]);
+        if (fA < 0.0f)
+        {
+            float deltaLenSqrd = tw->deltaLenSqrd;
+            float disc = (fA * fA) - (deltaLenSqrd * v5);
+            if (disc >= 0.0f)
+            {
+                vNormal[2] = 0.0f;
+                float nlen = VectorNormalize2((const math::Dir3*)vNormal,
+                                              (math::Dir3*)vNormal);
+                float t = fA * 0.125f / nlen;
+                float hit = (-fA - sqrtf(disc)) / deltaLenSqrd + t;
+                if (tw->trace_fraction > hit)
+                {
+                    float v10 = (tw->sphere_halfheight - tw->sphere_radius)
+                        + fStationaryHalfHeight;
+                    float v11 =
+                        (((hit - t) * tw->delta.v.m128_f32[2])
+                         + tw->start.v.m128_f32[2])
+                        - vStationary.v.m128_f32[2];
+                    if (v11 <= v10 && (0.0f - v10) <= v11)
+                        return 0;
+                }
+            }
+        }
+    }
+    else
+    {
+        float v6 = (tw->sphere_halfheight - tw->sphere_radius)
+            + fStationaryHalfHeight;
+        if (vNormal[2] <= v6 && (0.0f - v6) <= vNormal[2])
+            return 0;
+    }
+    return 1;
+}
+
+// ea: 0x0060D180
+int SightTraceSphereThroughSphere(traceWork_t* tw,
+                                  const math::Position3& vStart,
+                                  const math::Position3& vEnd,
+                                  const math::Position3& vStationary,
+                                  float radius)
+{
+    float v6[4] = {
+        vStart.v.m128_f32[0] - vStationary.v.m128_f32[0],
+        vStart.v.m128_f32[1] - vStationary.v.m128_f32[1],
+        vStart.v.m128_f32[2] - vStationary.v.m128_f32[2],
+        0.0f,
+    };
+    float fA = v6[0] * v6[0] + v6[1] * v6[1] + v6[2] * v6[2];
+    float v8 = fA - ((tw->sphere_radius + radius) * (tw->sphere_radius + radius));
+    if (v8 <= 0.0f)
+        return false;
+    fA = tw->delta.v.m128_f32[0] * v6[0]
+        + tw->delta.v.m128_f32[1] * v6[1]
+        + tw->delta.v.m128_f32[2] * v6[2];
+    if (fA >= 0.0f)
+        return true;
+    float deltaLenSqrd = tw->deltaLenSqrd;
+    float disc = (fA * fA) - (deltaLenSqrd * v8);
+    if (disc < 0.0f)
+        return true;
+    float nlen = VectorNormalize2((const math::Dir3*)v6, (math::Dir3*)v6);
+    float sqrtdisc = sqrtf(disc);
+    return tw->trace_fraction
+        <= nlen * 0.125f / fA + (-fA - sqrtdisc) / deltaLenSqrd;
+}
+
+// ============================================================================
 // TraceBoundingBoxThroughCapsule - ea: 0x61C8D0
 // ============================================================================
 bool collide_brush_segment(traceWork_t* tw,
