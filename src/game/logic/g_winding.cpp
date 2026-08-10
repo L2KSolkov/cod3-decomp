@@ -36,6 +36,211 @@ extern int c_active_windings;   // ?c_active_windings@@3HA (game.o)
 extern int c_peak_windings;     // ?c_peak_windings@@3HA (game.o)
 extern void* _Z_MallocInternal(unsigned int size);  // core.o
 extern void  _Z_FreeInternal(void* ptr);            // core.o
+extern void  Com_Memcpy(void* dest, const void* src, unsigned int count);
+    // ?Com_Memcpy@@YAXPAXPBXI@Z
+winding_t* CopyWinding(winding_t* w);  // ea: 0x609880 (defined below)
+
+// cdlPlane with SIMD data access (cdl_types.h; 16 bytes)
+struct cdlPlaneView {
+    __m128 data;
+};
+
+// Minimal cdl_array<cdlPlane> view (cdl_mem.h)
+struct cdlPlaneArray {
+    int           m_count;
+    cdlPlaneView* m_elements;
+};
+
+static void clip_winding(ae_sized_array<math::Position3, 256>* winding,
+                         const cdlPlaneView* clip)
+{
+    unsigned int m_size = winding->m_size;
+    float dists[257];
+    int side[257];
+    int side_count[3] = { 0, 0, 0 };
+    for (unsigned int i = 0; i < m_size; ++i)
+    {
+        float d = (*winding)[i].v.m128_f32[0] * clip->data.m128_f32[0]
+                + (*winding)[i].v.m128_f32[1] * clip->data.m128_f32[1]
+                + (*winding)[i].v.m128_f32[2] * clip->data.m128_f32[2]
+                - clip->data.m128_f32[3];
+        dists[i] = d;
+        if (d <= 0.1f)
+        {
+            if (d >= -0.1f)
+                side[i] = 2;
+            else
+                side[i] = 1;
+        }
+        else
+            side[i] = 0;
+        ++side_count[side[i]];
+    }
+    dists[m_size] = dists[0];
+    side[m_size] = side[0];
+    if (side_count[0] != 0)
+    {
+        if (side_count[1] == 0)
+            return;  // fully inside; keep winding unchanged
+        ae_sized_array<math::Position3, 256> out;
+        out.m_size = 0;
+        for (unsigned int i = 0; i < m_size; ++i)
+        {
+            if (side[i] == 2)
+            {
+                out.push_back((*winding)[i]);
+            }
+            else
+            {
+                if (side[i] == 0)
+                    out.push_back((*winding)[i]);
+                unsigned int next = (i + 1) % m_size;
+                if (side[next] != 2 && side[next] != side[i])
+                {
+                    float frac = dists[i] / (dists[i] - dists[next]);
+                    math::Position3 p;
+                    for (int c = 0; c < 3; ++c)
+                    {
+                        if (clip->data.m128_f32[c] == 1.0f)
+                            p.v.m128_f32[c] = clip->data.m128_f32[3];
+                        else if (clip->data.m128_f32[c] == -1.0f)
+                            p.v.m128_f32[c] = -clip->data.m128_f32[3];
+                        else
+                            p.v.m128_f32[c] =
+                                ((*winding)[next].v.m128_f32[c]
+                                 - (*winding)[i].v.m128_f32[c])
+                                    * frac
+                                + (*winding)[i].v.m128_f32[c];
+                    }
+                    p.v.m128_f32[3] = 0.0f;
+                    out.push_back(p);
+                }
+            }
+        }
+        *winding = out;
+    }
+    else
+    {
+        winding->m_size = 0;
+    }
+}
+
+static void init_winding(const cdlPlaneView* plane,
+                         ae_sized_array<math::Position3, 256>* winding)
+{
+    float org[3];
+    org[0] = fabs(plane->data.m128_f32[0]);
+    org[1] = fabs(plane->data.m128_f32[1]);
+    org[2] = fabs(plane->data.m128_f32[2]);
+    float axis[3];
+    if (org[2] <= org[org[1] > org[0] ? 1 : 0])
+    {
+        axis[0] = 0.0f;
+        axis[1] = 0.0f;
+        axis[2] = 1.0f;
+    }
+    else
+    {
+        axis[0] = 1.0f;
+        axis[1] = 0.0f;
+        axis[2] = 0.0f;
+    }
+    float v16 =
+        axis[0] * plane->data.m128_f32[0]
+        + axis[1] * plane->data.m128_f32[1]
+        + axis[2] * plane->data.m128_f32[2];
+    float v8[3];
+    v8[0] = axis[0] - plane->data.m128_f32[0] * v16;
+    v8[1] = axis[1] - plane->data.m128_f32[1] * v16;
+    v8[2] = axis[2] - plane->data.m128_f32[2] * v16;
+    float len = sqrt(v8[0] * v8[0] + v8[1] * v8[1] + v8[2] * v8[2]);
+    if (len != 0.0f)
+    {
+        v8[0] /= len;
+        v8[1] /= len;
+        v8[2] /= len;
+    }
+    float v12[3];
+    v12[0] = v8[1] * plane->data.m128_f32[2]
+           - v8[2] * plane->data.m128_f32[1];
+    v12[1] = v8[2] * plane->data.m128_f32[0]
+           - v8[0] * plane->data.m128_f32[2];
+    v12[2] = v8[0] * plane->data.m128_f32[1]
+           - v8[1] * plane->data.m128_f32[0];
+    v12[0] *= 131072.0f;
+    v12[1] *= 131072.0f;
+    v12[2] *= 131072.0f;
+    math::Position3 p;
+    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+        + v8[0] * 131072.0f + v12[0];
+    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+        + v8[1] * 131072.0f + v12[1];
+    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+        + v8[2] * 131072.0f + v12[2];
+    p.v.m128_f32[3] = 0.0f;
+    winding->push_back(p);
+    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+        - v8[0] * 131072.0f + v12[0];
+    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+        - v8[1] * 131072.0f + v12[1];
+    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+        - v8[2] * 131072.0f + v12[2];
+    winding->push_back(p);
+    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+        - v8[0] * 131072.0f - v12[0];
+    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+        - v8[1] * 131072.0f - v12[1];
+    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+        - v8[2] * 131072.0f - v12[2];
+    winding->push_back(p);
+    p.v.m128_f32[0] = plane->data.m128_f32[0] * plane->data.m128_f32[3]
+        + v8[0] * 131072.0f - v12[0];
+    p.v.m128_f32[1] = plane->data.m128_f32[1] * plane->data.m128_f32[3]
+        + v8[1] * 131072.0f - v12[1];
+    p.v.m128_f32[2] = plane->data.m128_f32[2] * plane->data.m128_f32[3]
+        + v8[2] * 131072.0f - v12[2];
+    winding->push_back(p);
+}
+
+void calc_winding(const cdlPlaneArray* planes, unsigned int plane_index,
+                  ae_sized_array<math::Position3, 256>* winding)
+{
+    const cdlPlaneView* v4 = &planes->m_elements[plane_index];
+    init_winding(v4, winding);
+    int m_count = planes->m_count;
+    bool v19 = false;
+    for (unsigned int v6 = 0; v6 < (unsigned int)m_count; ++v6)
+    {
+        if (v6 == plane_index)
+        {
+            v19 = true;
+        }
+        else
+        {
+            const cdlPlaneView* v8 = &planes->m_elements[v6];
+            float v17 = v4->data.m128_f32[0] * v8->data.m128_f32[0]
+                      + v4->data.m128_f32[1] * v8->data.m128_f32[1]
+                      + v4->data.m128_f32[2] * v8->data.m128_f32[2];
+            if (v17 <= 0.99989998f
+                || fabs(v4->data.m128_f32[3] - v8->data.m128_f32[3])
+                    >= 0.001f)
+            {
+                cdlPlaneView clip;
+                clip.data = _mm_xor_ps(
+                    *(__m128*)v8, _mm_set1_ps(-0.0f));
+                clip.data.m128_f32[3] = -v8->data.m128_f32[3];
+                clip_winding(winding, &clip);
+                if (winding->m_size < 3)
+                    return;
+            }
+            else if (v19)
+            {
+                winding->m_size = 0;
+                return;
+            }
+        }
+    }
+}
 
 // ea: 0x006095A0
 winding_t* AllocWinding(int points)
@@ -95,6 +300,184 @@ void RemoveColinearPoints(winding_t* w)
         w->numpoints = nump;
         memcpy(w->p, p, 12 * nump);
     }
+}
+
+// ea: 0x0060AA40
+void AddWindingToConvexHull(winding_t* w, winding_t** hull, float* normal)
+{
+    if (*hull == nullptr)
+    {
+        *hull = CopyWinding(w);
+        return;
+    }
+    int numpoints = (*hull)->numpoints;
+    float hullPoints[128][3];
+    Com_Memcpy(hullPoints, (*hull)->p, 12 * (*hull)->numpoints);
+    int i = 0;
+    if (w->numpoints > 0)
+    {
+        float* v7 = w->p[0];
+        float* v51 = w->p[0];
+        do
+        {
+            int v8 = 0;
+            float hullDirs[128][3];
+            if (numpoints > 0)
+            {
+                int v9 = 0;
+                do
+                {
+                    int v11 = (v8 + 1) % numpoints;
+                    float dir[3];
+                    dir[0] = hullPoints[v11][0] - hullPoints[v9][0];
+                    dir[1] = hullPoints[v11][1] - hullPoints[v9][1];
+                    dir[2] = hullPoints[v11][2] - hullPoints[v9][2];
+                    VectorNormalize2(dir, dir);
+                    CrossProduct(normal, dir, hullDirs[v9]);
+                    v8 = v8 + 1;
+                    ++v9;
+                } while (v8 < numpoints);
+                v7 = v51;
+            }
+            int v12 = 0;
+            int v13 = 0;
+            int hullSide[128];
+            float newHullPoints[128][3];
+            if (numpoints > 0)
+            {
+                int v14 = 0;
+                do
+                {
+                    float v15 = v7[1] - hullPoints[v14][1];
+                    float v16 = *v7 - hullPoints[v14][0];
+                    float v17 = hullDirs[v14][2] * (v7[2] - hullPoints[v14][2]);
+                    float v18 = hullDirs[v14][1] * v15;
+                    float v19 = (v17 + v18) + (hullDirs[v14][0] * v16);
+                    if (v19 >= 0.1f)
+                        v12 = 1;
+                    hullSide[v13++] = v19 >= -0.1f;
+                    ++v14;
+                } while (v13 < numpoints);
+                if (v12 != 0)
+                {
+                    int m = 0;
+                    for (; m < numpoints; ++m)
+                    {
+                        if (hullSide[m % numpoints] == 0
+                            && hullSide[(m + 1) % numpoints] != 0)
+                            break;
+                    }
+                    if (m != numpoints)
+                    {
+                        int v21 = (m + 1) % numpoints;
+                        newHullPoints[0][0] = *v7;
+                        newHullPoints[0][1] = v7[1];
+                        newHullPoints[0][2] = v7[2];
+                        int numNew = 1;
+                        int v23 = 0;
+                        int j = v21;
+                        if (numpoints >= 4)
+                        {
+                            int v55 = v21 + 2;
+                            int v52 = ((numpoints - 4) >> 2) + 1;
+                            int k = 4 * v52;
+                            do
+                            {
+                                if (hullSide[(v55 - 2) % numpoints] == 0
+                                    || hullSide[(v55 - 1) % numpoints] == 0)
+                                {
+                                    int v27 = (v55 - 1) % numpoints;
+                                    float* copy = hullPoints[v27];
+                                    newHullPoints[numNew][0] = copy[0];
+                                    newHullPoints[numNew][1] = copy[1];
+                                    newHullPoints[numNew][2] = copy[2];
+                                    ++numNew;
+                                    if (hullSide[v27] == 0)
+                                        goto L54;
+                                }
+                                if (hullSide[v55 % numpoints] == 0)
+                                {
+                                L54:
+                                    int v28 = v55 % numpoints;
+                                    float* copy = hullPoints[v55 % numpoints];
+                                    newHullPoints[numNew][0] = copy[0];
+                                    newHullPoints[numNew][1] = copy[1];
+                                    newHullPoints[numNew][2] = copy[2];
+                                    ++numNew;
+                                    if (hullSide[v28] == 0)
+                                        goto L53;
+                                }
+                                if (hullSide[(v55 + 1) % numpoints] == 0)
+                                {
+                                L53:
+                                    int v29 = (v55 + 1) % numpoints;
+                                    float* copy = hullPoints[v29];
+                                    newHullPoints[numNew][0] = copy[0];
+                                    newHullPoints[numNew][1] = copy[1];
+                                    newHullPoints[numNew][2] = copy[2];
+                                    ++numNew;
+                                    if (hullSide[v29] == 0)
+                                        goto L33;
+                                }
+                                if (hullSide[(v55 + 2) % numpoints] == 0)
+                                {
+                                L33:
+                                    float* copy = hullPoints[(v55 + 2) % numpoints];
+                                    newHullPoints[numNew][0] = copy[0];
+                                    newHullPoints[numNew][1] = copy[1];
+                                    newHullPoints[numNew][2] = copy[2];
+                                    ++numNew;
+                                }
+                                v55 += 4;
+                                --v52;
+                            } while (v52 != 1);
+                            v23 = k;
+                            v21 = j;
+                            v7 = v51;
+                        }
+                        if (v23 < numpoints)
+                        {
+                            int v35 = v23 + v21 + 1;
+                            int v52 = numpoints - v23;
+                            do
+                            {
+                                if (hullSide[(v35 - 1) % numpoints] == 0
+                                    || hullSide[v35 % numpoints] == 0)
+                                {
+                                    float* v37 = hullPoints[v35 % numpoints];
+                                    newHullPoints[numNew][0] = v37[0];
+                                    newHullPoints[numNew][1] = v37[1];
+                                    newHullPoints[numNew][2] = v37[2];
+                                    ++numNew;
+                                }
+                                ++v35;
+                                --v52;
+                            } while (v52 != 0);
+                            v7 = v51;
+                        }
+                        numpoints = numNew;
+                        Com_Memcpy(hullPoints, newHullPoints, 12 * numNew);
+                    }
+                }
+            }
+            v7 += 3;
+            ++i;
+            v51 = v7;
+        } while (i < w->numpoints);
+    }
+    winding_t* v40 = *hull;
+    if (v40->numpoints == -559030611)
+        Com_Error(ERR_FATAL, "FreeWinding: freed a freed winding");
+    v40->numpoints = -559030611;
+    --c_active_windings;
+    _Z_FreeInternal(v40);
+    int v41 = ++c_active_windings;
+    if (c_active_windings > c_peak_windings)
+        c_peak_windings = v41;
+    winding_t* v42 = (winding_t*)_Z_MallocInternal(12 * numpoints + 4);
+    v42->numpoints = numpoints;
+    *hull = v42;
+    Com_Memcpy(v42->p, hullPoints, 12 * numpoints);
 }
 
 // ea: 0x00609750
