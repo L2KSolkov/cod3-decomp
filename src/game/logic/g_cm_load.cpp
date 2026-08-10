@@ -489,7 +489,37 @@ struct rtree_visitor_t {
     rtree_visitor_t(const CGBank* _bank);  // ??0rtree_visitor_t@@QAE@PBVCGBank@@@Z (game.o 0x622AE0)
     visit_result_t visit(int index);  // ?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z
     void filter_objects(int mask);    // ?filter_objects@rtree_visitor_t@@QAEXH@Z
+
+    static int* add_fast(int* slot, int& count, int capacity)
+    {
+        if (count >= capacity
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                         44, "m_alloc_count < m_slot_array_size",
+                         "phys_array overflow"))
+            __debugbreak();
+        int* p = &slot[count];
+        ++count;
+        return p;
+    }
 };
+
+// CGBank::get_type (cgbank.h inline 0x65FB40)
+static int CGBank_get_type(const CGBank* bank, unsigned int index)
+{
+    if (index >= (unsigned int)bank->objects.m_count)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 239;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    unsigned int nboxes = (unsigned int)bank->nboxes;
+    if (index >= nboxes)
+        return 2 - (index < nboxes + (unsigned int)bank->nbrushes);
+    return 0;
+}
 
 // ea: 0x00622AE0
 rtree_visitor_t::rtree_visitor_t(const CGBank* _bank)
@@ -514,7 +544,8 @@ rtree_visitor_t::rtree_visitor_t(const CGBank* _bank)
 visit_result_t rtree_visitor_t::visit(int index)
 {
     if (this->objects_m_alloc_count != 256)
-        this->objects_m_slot_array[this->objects_m_alloc_count++] = index;
+        *add_fast(this->objects_m_slot_array, this->objects_m_alloc_count,
+                  256) = index;
     return CONTINUE_VISITING;
 }
 
@@ -553,15 +584,13 @@ void rtree_visitor_t::filter_objects(int mask)
             cdl_object_t* obj = &((cdl_object_t*)bank->objects.m_elements)[index];
             if ((mask & obj->cflags) != 0)
             {
-                unsigned int nboxes = (unsigned int)bank->nboxes;
-                int type = index < nboxes
-                    ? 0
-                    : 2 - (index < nboxes + (unsigned int)bank->nbrushes);
+                int type = CGBank_get_type(bank, index);
                 if (type == 1)
                 {
                     if (this->brushes_m_alloc_count == 128)
                         goto LABEL_28;
-                    this->brushes_m_slot_array[this->brushes_m_alloc_count++] =
+                    *add_fast(this->brushes_m_slot_array,
+                              this->brushes_m_alloc_count, 128) =
                         (int)index;
                 }
                 else
@@ -570,14 +599,16 @@ void rtree_visitor_t::filter_objects(int mask)
                     {
                         if (this->patches_m_alloc_count == 128)
                             goto LABEL_28;
-                        this->patches_m_slot_array[this->patches_m_alloc_count++] =
+                        *add_fast(this->patches_m_slot_array,
+                                  this->patches_m_alloc_count, 128) =
                             (int)index;
                     }
                     else
                     {
                         if (this->boxes_m_alloc_count == 128)
                             goto LABEL_28;
-                        this->boxes_m_slot_array[this->boxes_m_alloc_count++] =
+                        *add_fast(this->boxes_m_slot_array,
+                                  this->boxes_m_alloc_count, 128) =
                             (int)index;
                     }
                 }
