@@ -380,6 +380,139 @@ bool tunnel_test(pmove_t& pm, float radius, const math::Position3& p0,
 }
 
 // ============================================================================
+// BG_Bullet_Endpos - ea: 0x606680 (bg_weapons.cpp)
+// ============================================================================
+extern void gunrandom(float* x, float* y);  // core.o
+
+// ea: 0x00606680
+void BG_Bullet_Endpos(float spread, float* end, weaponParms* wp)
+{
+    if ((__fpclass(spread) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 338;
+        AeAssert::gCurrentExpr = "!IS_NAN(spread)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    float fAimOffset =
+        (float)(tan(spread * 3.1415927f * 0.0055555557f) * 10000.0);
+    if ((__fpclass(fAimOffset) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 342;
+        AeAssert::gCurrentExpr = "!IS_NAN(fAimOffset)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    float r, u;
+    gunrandom(&r, &u);
+    u *= fAimOffset;
+    r *= fAimOffset;
+    if ((__fpclass(r) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 348;
+        AeAssert::gCurrentExpr = "!IS_NAN(r)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((__fpclass(u) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 349;
+        AeAssert::gCurrentExpr = "!IS_NAN(u)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((__fpclass(wp->muzzleTrace[0]) & 0x297) != 0
+        || (__fpclass(wp->muzzleTrace[1]) & 0x297) != 0
+        || (__fpclass(wp->muzzleTrace[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 350;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((wp->muzzleTrace)[0]) && !IS_NAN((wp->muzzleTrace)[1]) && !IS_NAN((wp->muzzleTrace)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(wp->forward[0]) & 0x297) != 0
+        || (__fpclass(wp->forward[1]) & 0x297) != 0
+        || (__fpclass(wp->forward[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 351;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((wp->forward)[0]) && !IS_NAN((wp->forward)[1]) && !IS_NAN((wp->forward)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(wp->right[0]) & 0x297) != 0
+        || (__fpclass(wp->right[1]) & 0x297) != 0
+        || (__fpclass(wp->right[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 352;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((wp->right)[0]) && !IS_NAN((wp->right)[1]) && !IS_NAN((wp->right)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(wp->up[0]) & 0x297) != 0
+        || (__fpclass(wp->up[1]) & 0x297) != 0
+        || (__fpclass(wp->up[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 353;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((wp->up)[0]) && !IS_NAN((wp->up)[1]) && !IS_NAN((wp->up)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    end[0] = (wp->forward[0] * 10000.0f) + wp->muzzleTrace[0];
+    end[1] = (wp->forward[1] * 10000.0f) + wp->muzzleTrace[1];
+    end[2] = (wp->forward[2] * 10000.0f) + wp->muzzleTrace[2];
+    if ((__fpclass(end[0]) & 0x297) != 0
+        || (__fpclass(end[1]) & 0x297) != 0
+        || (__fpclass(end[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 357;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((end)[0]) && !IS_NAN((end)[1]) && !IS_NAN((end)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    end[0] += wp->right[0] * r;
+    end[1] += wp->right[1] * r;
+    end[2] += wp->right[2] * r;
+    end[0] += wp->up[0] * u;
+    end[1] += wp->up[1] * u;
+    end[2] += wp->up[2] * u;
+    if ((__fpclass(end[0]) & 0x297) != 0
+        || (__fpclass(end[1]) & 0x297) != 0
+        || (__fpclass(end[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 362;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((end)[0]) && !IS_NAN((end)[1]) && !IS_NAN((end)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+}
+
+// ============================================================================
 // PM_ClipVelocity - ea: 0x604C00
 // ============================================================================
 void PM_ClipVelocity(const math::Dir3* in, const math::Dir3* normal,
