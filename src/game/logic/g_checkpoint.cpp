@@ -107,6 +107,26 @@ void CheckpointMgr::ClearGameVars()
     CheckpointVectorResize(&this->mGameVars, 0);
 }
 
+// game.o save-state globals (persisted checkpoint storage)
+extern unsigned char byte_F317B0;   // checkpoint save exists
+extern unsigned char byte_F31E54;   // checkpoint from storage
+extern int dword_F31AB4;            // player health
+extern int dword_F31E50;            // friendly count
+extern int dword_F32AB8;            // exploded exploder count
+extern int dword_F31EB4;            // game var count
+
+// ea: 0x00640E60
+void CheckpointMgr::ClearSavedCheckpointData()
+{
+    this->ReInit();
+    byte_F317B0 = 0;
+    byte_F31E54 = 0;
+    dword_F31AB4 = 0;
+    dword_F31E50 = 0;
+    dword_F32AB8 = 0;
+    dword_F31EB4 = 0;
+}
+
 // ============================================================================
 // CheckpointVector<SCheckpointGameVar> - ae_vector COMDATs (game.o inlines)
 // Verified against IDA (construct_array 0x65E970, push_back 0x660AA0,
