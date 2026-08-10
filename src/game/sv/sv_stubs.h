@@ -17,6 +17,7 @@
 enum EPakType { kPakTypeGlobal = 0 };
 
 // nsl sound types (enums in the binary; verified via W4 mangling)
+enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
 enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
 enum nslBankID : int { NSL_BANK_ID_INVALID = -1 };
 
@@ -331,17 +332,6 @@ struct SmokeGrenadeMgr {
 static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
 
 struct SoundDevice {
-    uint8_t _pad[0x7854];                  // +0x00
-    bool    mUpdateReverb;                 // +0x7854
-    uint8_t _pad7855[0x7858 - 0x7855];     // +0x7855
-    unsigned int mTargetReverb[14];        // +0x7858
-    unsigned int mCurrentReverb[14];       // +0x7890
-    uint8_t _pad78C8[0x7900 - 0x78C8];     // +0x78C8
-    float   mRemainingReverbBlendTime;     // +0x7900
-    uint8_t _pad7904[0x7A7C - 0x7904];     // +0x7904
-    float   mDebugListenerPosition[3];      // +0x7A7C
-    float   mDebugListenerForward[3];       // +0x7A88
-    float   mDebugListenerUp[3];            // +0x7A94
     struct Sound {
         int     mSource;         // +0x00 (nslSourceID; NSL_SOURCE_ID_INVALID == -1)
         int     mWave;           // +0x04 (nslWaveID; NSL_WAVE_ID_INVALID == -1)
@@ -356,6 +346,7 @@ struct SoundDevice {
         Handle  mHandle;         // +0x24
         void*   mPoPtr;          // +0x28
         HashString mDialogNotify;// +0x2C
+        uint8_t _pad30[0x3C - 0x30];  // +0x30 (stride 0x3C, verified PauseAllSounds)
         Sound();                 // ??0Sound@SoundDevice@@QAE@XZ (game.o 0x612A10)
         void Reset();            // ?Reset@Sound@SoundDevice@@QAEXXZ (game.o 0x6129C0)
         float GetPlaybackPosition() const;  // ?GetPlaybackPosition@Sound@SoundDevice@@QBEMXZ
@@ -369,10 +360,35 @@ struct SoundDevice {
         bool  IsFinished() const;           // ?IsFinished@Sound@SoundDevice@@QBE_NXZ
         bool  IsLooped() const;             // ?IsLooped@Sound@SoundDevice@@QBE_NXZ
         float GetLength() const;            // ?GetLength@Sound@SoundDevice@@QBEMXZ
+        void PlayQueued();                  // ?PlayQueued@Sound@SoundDevice@@QAEXXZ
+        void Pause();                       // ?Pause@Sound@SoundDevice@@QAEXXZ
+        void Unpause();                     // ?Unpause@Sound@SoundDevice@@QAEXXZ
+        void DampenGuard();                 // ?DampenGuard@Sound@SoundDevice@@QAEXXZ
     };
+    Sound mSounds[512];              // +0x00 (0x3C stride)
+    int   mNumberOfListeners;        // +0x7800
+    uint8_t _pad7804[0x7850 - 0x7804];
+    float mVolScale;                 // +0x7850
+    bool  mUpdateReverb;             // +0x7854
+    uint8_t _pad7855[0x7858 - 0x7855];
+    unsigned int mTargetReverb[14];  // +0x7858
+    unsigned int mCurrentReverb[14]; // +0x7890
+    uint8_t _pad78C8[0x7900 - 0x78C8];
+    float mRemainingReverbBlendTime; // +0x7900
+    uint8_t _pad7904[0x7A7C - 0x7904];
+    float mDebugListenerPosition[3];  // +0x7A7C
+    float mDebugListenerForward[3];   // +0x7A88
+    float mDebugListenerUp[3];        // +0x7A94
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     nslWaveID FindWave(char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
     float GetWaveDuration(nslWaveID wave);  // ?GetWaveDuration@SoundDevice@@QAEMW4nslWaveID@@@Z (game.o 0x6025A0)
+    void ScaleVolume(float scale);          // ?ScaleVolume@SoundDevice@@QAEXM@Z (game.o 0x602A10)
+    void PauseAllSounds();                  // ?PauseAllSounds@SoundDevice@@QAEXXZ (game.o 0x602A80)
+    Sound* GetSoundFromSourceId(nslSourceID id);  // ?GetSoundFromSourceId@SoundDevice@@QAEPAVSound@1@W4nslSourceID@@@Z
+    void UnpauseAllSounds();                // ?UnpauseAllSounds@SoundDevice@@QAEXXZ (game.o 0x602AE0)
+    int GetNumberOfListeners();             // ?GetNumberOfListeners@SoundDevice@@QAEHXZ (game.o 0x602B10)
+    void SetNumberOfListeners(int listeners);  // ?SetNumberOfListeners@SoundDevice@@QAEXH@Z (game.o 0x602B20)
+    bool IsSoundReady();                    // ?IsSoundReady@SoundDevice@@QAE_NXZ (game.o 0x602B40)
     void SetListenerVectors(int listener, const math::Position3& position,
                             const math::Dir3& front,
                             const math::Dir3& up);  // ?SetListenerVectors@SoundDevice@@QAEXHABVPosition3@math@@ABVDir3@3@1@Z (game.o 0x612A70)

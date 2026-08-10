@@ -14,7 +14,6 @@
 #include <string.h>
 
 // nsl handle types (nsl.cpp stub surface)
-enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
 enum nslSourceState {
     NSL_SOURCE_STATE_INVALID = 0,
     NSL_SOURCE_STATE_QUEUING = 2,

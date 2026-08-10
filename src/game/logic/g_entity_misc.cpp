@@ -955,7 +955,6 @@ void SoundDevice::Sound::Reset()
 // ============================================================================
 // SoundDevice / Sound helpers - ea: 0x6025A0..0x6029D0 (SoundDevice.cpp)
 // ============================================================================
-enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
 enum nslSourceState {
     NSL_SOURCE_STATE_INVALID = 0,
     NSL_SOURCE_STATE_QUEUING = 2,
@@ -972,6 +971,14 @@ extern int nslIsWaveLooped(nslWaveID a);                    // nsl
 extern int nslGetWaveLength(nslWaveID waveID);              // nsl
 extern void nslSetSourceEffectOn(nslSourceID sid);          // nsl
 extern void nslSetSourceEffectOff(nslSourceID sid);         // nsl
+extern void nslSetMasterVolume(float newVolume);            // nsl
+extern void nslPauseSource(nslSourceID sid);                // nsl
+extern void nslUnpauseSource(nslSourceID sid);              // nsl
+extern void nslPlaySource(nslSourceID sid);                 // nsl
+extern void nslDampenGuardSource(nslSourceID sid);          // nsl
+extern void nslSetNumberOfListeners(int listeners);         // nsl
+extern int nslAreAllBanksLoaded();                          // nsl
+extern int nslNumBanksInUse();                              // nsl
 
 // ea: 0x006025A0
 float SoundDevice::GetWaveDuration(nslWaveID wave)
@@ -1124,6 +1131,143 @@ float SoundDevice::Sound::GetLength() const
     if (this->mSource == -1)
         return 0.0f;
     return (float)nslGetSourceLength((nslSourceID)this->mSource);
+}
+
+// ea: 0x006026D0
+void SoundDevice::Sound::PlayQueued()
+{
+    nslSourceID mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+        goto LABEL_6;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+    AeAssert::gCurrentLine = 667;
+    AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+        __debugbreak();
+    mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+    LABEL_6:
+        nslPlaySource(mSource);
+}
+
+// ea: 0x00602730
+void SoundDevice::Sound::Pause()
+{
+    nslSourceID mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+        goto LABEL_6;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+    AeAssert::gCurrentLine = 677;
+    AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+        __debugbreak();
+    mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+    {
+    LABEL_6:
+        nslPauseSource(mSource);
+        this->mPaused = true;
+    }
+}
+
+// ea: 0x006027A0
+void SoundDevice::Sound::Unpause()
+{
+    nslSourceID mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+        goto LABEL_6;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+    AeAssert::gCurrentLine = 688;
+    AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+    if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+        __debugbreak();
+    mSource = (nslSourceID)this->mSource;
+    if (this->mSource != -1)
+    {
+    LABEL_6:
+        nslUnpauseSource(mSource);
+        this->mPaused = false;
+    }
+}
+
+// ea: 0x00602810
+void SoundDevice::Sound::DampenGuard()
+{
+    if (this->mSource != -1)
+        nslDampenGuardSource((nslSourceID)this->mSource);
+}
+
+// ============================================================================
+// SoundDevice manager methods - ea: 0x602A10..0x602B40
+// ============================================================================
+// ea: 0x00602A10
+void SoundDevice::ScaleVolume(float scale)
+{
+    this->mVolScale = scale;
+    if (scale <= 0.0f)
+        this->mVolScale = 0.0f;
+    if (this->mVolScale >= 1.0f)
+        this->mVolScale = 1.0f;
+    nslSetMasterVolume(1.0f - ((1.0f - this->mVolScale)
+                               * (1.0f - this->mVolScale)));
+}
+
+// ea: 0x00602A80
+void SoundDevice::PauseAllSounds()
+{
+    Sound* p = this->mSounds;
+    for (int i = 512; i != 0; --i)
+    {
+        if (p->mSource != -1)
+            p->Pause();
+        ++p;
+    }
+}
+
+// ea: 0x00602AB0
+SoundDevice::Sound* SoundDevice::GetSoundFromSourceId(nslSourceID id)
+{
+    int v2 = 0;
+    for (Sound* i = this->mSounds; i->mSource != (int)id; ++i)
+    {
+        if (++v2 >= 0x200)
+            return nullptr;
+    }
+    return &this->mSounds[v2];
+}
+
+// ea: 0x00602AE0
+void SoundDevice::UnpauseAllSounds()
+{
+    Sound* p = this->mSounds;
+    for (int i = 512; i != 0; --i)
+    {
+        if (p->mSource != -1)
+            p->Unpause();
+        ++p;
+    }
+}
+
+// ea: 0x00602B10
+int SoundDevice::GetNumberOfListeners()
+{
+    return this->mNumberOfListeners;
+}
+
+// ea: 0x00602B20
+void SoundDevice::SetNumberOfListeners(int listeners)
+{
+    this->mNumberOfListeners = listeners;
+    nslSetNumberOfListeners(listeners);
+}
+
+// ea: 0x00602B40
+bool SoundDevice::IsSoundReady()
+{
+    return nslAreAllBanksLoaded() != 0 && nslNumBanksInUse() >= 2;
 }
 
 // ============================================================================

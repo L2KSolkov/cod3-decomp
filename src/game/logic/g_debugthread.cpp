@@ -13,8 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef unsigned int nslSourceID;  // nsl.cpp stub surface
-
 // ============================================================================
 // DebugThread::Render support types (game2.o)
 // ============================================================================
@@ -195,7 +193,7 @@ void DebugThread::DisplayEntitySound(const math::Position3* entityPos,
             continue;
         }
         float minVal = v11->mMinRange;
-        nslSourceID id = v11->mSource;
+        nslSourceID id = (nslSourceID)v11->mSource;
         float maxVal = v11->mMaxRange;
         const char* SourceName = nslGetSourceName(id);
         int v13 = yinc + ypos;

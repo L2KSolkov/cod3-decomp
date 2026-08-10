@@ -102,6 +102,12 @@ unsigned      nslGetSourceLength(nslSourceID) { return 0; }  // ?nslGetSourceLen
 int           nslIsWaveLooped(nslWaveID) { return 0; }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
 void          nslSetSourceEffectOn(nslSourceID) {}           // ?nslSetSourceEffectOn@@YAXW4nslSourceID@@@Z
 void          nslSetSourceEffectOff(nslSourceID) {}          // ?nslSetSourceEffectOff@@YAXW4nslSourceID@@@Z
+void          nslPauseSource(nslSourceID) {}                 // ?nslPauseSource@@YAXW4nslSourceID@@@Z
+void          nslUnpauseSource(nslSourceID) {}               // ?nslUnpauseSource@@YAXW4nslSourceID@@@Z
+void          nslPlaySource(nslSourceID) {}                  // ?nslPlaySource@@YAXW4nslSourceID@@@Z
+void          nslDampenGuardSource(nslSourceID) {}           // ?nslDampenGuardSource@@YAXW4nslSourceID@@@Z
+int           nslAreAllBanksLoaded() { return 0; }           // ?nslAreAllBanksLoaded@@YAHXZ
+int           nslNumBanksInUse() { return 0; }               // ?nslNumBanksInUse@@YAHXZ
 
 // ============================================================================
 // nslAram â€” audio RAM accounting (nslAram.o)
