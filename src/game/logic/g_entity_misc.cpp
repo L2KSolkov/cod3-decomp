@@ -521,6 +521,68 @@ math::Mat43 Entity::GetRelMat(int boneIndex)
 }
 
 // ============================================================================
+// Entity::SetAlwaysRender - ea: 0x620AE0 (Entity.cpp)
+// ============================================================================
+// FLAG 0x200000 = always render (byte_200000)
+static ae_sized_array<DbLinkedHandle<EntityHandleDb, Entity>, 32>
+    g_AlwaysRenderEnts;  // ?g_AlwaysRenderEnts@@3V?$ae_sized_array@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@$0CA@@@A @ 0xDF8260
+
+// ea: 0x00620AE0
+void Entity::SetAlwaysRender(bool r)
+{
+    if (r)
+    {
+        if (this->mDObj == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+            AeAssert::gCurrentLine = 767;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Assert("No DObj on always render entity"))
+                __debugbreak();
+            return;
+        }
+        int flags = this->flags;
+        if ((0x200000 & flags) == 0)
+        {
+            this->flags = 0x200000 | flags;
+            unsigned int mVal = this->mHandle.mHandle.mVal;
+            DbLinkedHandle<EntityHandleDb, Entity> h;
+            h.mHandle.mVal = mVal;
+            g_AlwaysRenderEnts.push_back(h);
+            return;
+        }
+    }
+    if ((0x200000 & this->flags) != 0 && !r)
+    {
+        int v3 = 0;
+        unsigned int mVal = this->mHandle.mHandle.mVal;
+        if (g_AlwaysRenderEnts.m_size > 0)
+        {
+            int m_size;
+            while (1)
+            {
+                bool found =
+                    g_AlwaysRenderEnts.m_elements[v3].mHandle.mVal == mVal;
+                m_size = g_AlwaysRenderEnts.m_size;
+                if (found)
+                {
+                    if (g_AlwaysRenderEnts.m_size != 0)
+                        m_size = --g_AlwaysRenderEnts.m_size;
+                    if (v3 != m_size)
+                        break;
+                }
+                if (++v3 >= m_size)
+                    return;
+            }
+            unsigned int v7 =
+                g_AlwaysRenderEnts.m_elements[m_size].mHandle.mVal;
+            g_AlwaysRenderEnts.m_elements[v3].mHandle.mVal = v7;
+        }
+    }
+}
+
+// ============================================================================
 // Entity notify plumbing - ea: 0x62AD70..0x62AFA0 (Entity.cpp)
 // The reserved_dlist layout is verified here: m_size +0x00, m_head +0x04,
 // m_end +0x08, m_tail +0x0C; node m_next +0x00, m_prev +0x04.
