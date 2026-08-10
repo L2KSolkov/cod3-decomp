@@ -62,6 +62,70 @@ void Link_Init()
 void Link_Frame()
 {
 }
+
+// ============================================================================
+// CurveManager - ea: 0x60F1B0..0x60F200
+// ============================================================================
+struct RemainingTime {
+    int   mTrackId;       // +0x00
+    int   mEntityId;      // +0x04
+    float mRemainingTime; // +0x08
+};
+
+class CurveManager {
+public:
+    virtual ~CurveManager();  // vtable placeholder
+    RemainingTime mRemainingTime[50];  // +0x04 (0x0C stride)
+    void Initialize();       // ?Initialize@CurveManager@@UAEXXZ
+    void CleanUp();          // ?CleanUp@CurveManager@@UAEXXZ
+    void DetachCurve(Curve* curve);  // ?DetachCurve@CurveManager@@QAEXPAVCurve@@@Z
+    unsigned int UInt32Lookup(unsigned char* data, unsigned int key,
+                              unsigned int _default);  // ?UInt32Lookup@CurveManager@@AAEIPAEII@Z
+};
+
+// ea: 0x0060F1B0
+void CurveManager::Initialize()
+{
+    RemainingTime* mRemainingTime = this->mRemainingTime;
+    for (int i = 50; i != 0; --i)
+    {
+        mRemainingTime->mTrackId = 0;
+        mRemainingTime->mEntityId = 0;
+        mRemainingTime->mRemainingTime = 0.0f;
+        ++mRemainingTime;
+    }
+}
+
+// ea: 0x0060F1E0
+void CurveManager::CleanUp()
+{
+}
+
+// ea: 0x0060F1F0
+void CurveManager::DetachCurve(Curve* curve)
+{
+}
+
+// ea: 0x0060F200
+unsigned int CurveManager::UInt32Lookup(unsigned char* data, unsigned int key,
+                                        unsigned int _default)
+{
+    int v4 = 0;
+    if (*data == 0)
+        return _default;
+    unsigned char* i = data + 4;
+    unsigned int result;
+    while (1)
+    {
+        result = *(unsigned int*)(i + 4);
+        if (key == *(unsigned int*)i)
+            break;
+        if (++v4 >= *data)
+            return _default;
+        i += 8;
+    }
+    return result;
+}
 static BaseCmdFuncInfo* cmd_functions;      // ?cmd_functions (game.o)
 static BaseCmdFuncInfo* sv_cmd_functions;   // ?sv_cmd_functions (game.o)
 
