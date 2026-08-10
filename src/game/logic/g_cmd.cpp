@@ -437,27 +437,381 @@ void Cmd_Init()
 }
 
 // ============================================================================
-// PadAlias command registration - ea: 0x62B4A0..0x62B4E0
+// PadAliasMgr - vehicle/context button & stick alias tables (PadAliasMgr.cpp)
 // ============================================================================
+enum EPadAliasButton {
+    kPadAliasButtonInvalid = -1,
+    kPadAliasButtonGas = 0,
+    kPadAliasButtonReverse = 1,
+    kPadAliasButtonHandBrake = 2,
+    kPadAliasButtonAlignTurret = 3,
+    kPadAliasButtonFireCoax = 4,
+    kPadAliasButtonSwitchSeats = 5,
+};
+enum EPadAliasStick {
+    kPadAliasStickInvalid = -1,
+    kPadAliasStickVehicleSteering = 0,
+    kPadAliasStickTankSteering = 1,
+};
+
+// Minimal controller view (controller_xboxr). Values match the binary:
+// kPadAliasButtonIndexDesc order == controller::ButtonIndex (LEFTBUTTON=0..),
+// verified against the controller::button_value switch at 0x7E2050.
+struct controller {
+    enum ButtonIndex {
+        LEFTBUTTON = 0,
+        DOWNBUTTON = 1,
+        RIGHTBUTTON = 2,
+        UPBUTTON = 3,
+        SQUARE = 4,
+        X = 5,
+        CIRCLE = 6,
+        TRIANGLE = 7,
+        R1 = 8,
+        L1 = 9,
+        R2 = 10,
+        L2 = 11,
+        R3 = 12,
+        L3 = 13,
+        START = 14,
+        SELECT = 15,
+    };
+    enum StickIndex {
+        LEFTSTICK = 0,
+        RIGHTSTICK = 1,
+    };
+};
+
+static const char* kPadAliasCtxDesc[3] = {
+    "Vehicle", "VehicleTank", "OnFoot",
+};  // ?kPadAliasCtxDesc@@3PAPBDA (game.o @ 0xDF8230)
+static const char* kPadAliasButtonIndexDesc[16] = {
+    "LEFTBUTTON", "DOWNBUTTON", "RIGHTBUTTON", "UPBUTTON",
+    "SQUARE", "X", "CIRCLE", "TRIANGLE",
+    "R1", "L1", "R2", "L2",
+    "R3", "L3", "START", "SELECT",
+};  // game.o @ 0xDF81E8
+static const char* kPadAliasStickIndexDesc[2] = {
+    "LEFTSTICK", "RIGHTSTICK",
+};  // game.o @ 0xDF8228
+static const char* kPadAliasButtonAliasDesc[6] = {
+    "Gas", "Reverse", "HandBrake", "AlignTurret", "FireCoax", "SwitchSeats",
+};  // game.o @ 0xDF823C
+static const char* kPadAliasStickAliasDesc[2] = {
+    "VehicleSteering", "TankSteering",
+};  // game.o @ 0xDF8254
+
+static int GetButtonIndexFromDesc(const char* desc);    // game.o 0x6126A0
+static int GetStickIndexFromDesc(const char* desc);     // game.o 0x6126D0
+static EPadAliasButton GetButtonAliasFromDesc(const char* desc);  // game.o 0x612730
+static EPadAliasStick GetStickAliasFromDesc(const char* desc);    // game.o 0x612760
+
 struct PadAliasCtx {
-    int mButtonAlias[4][16];  // +0x00
-    int mStickAlias[4][2];    // +0x40
-    void Clear(int ctrlr);    // ?Clear@Context@PadAliasMgr@@QAEXH@Z (game.o 0x620EA0)
+    ae_sized_array<ae_sized_array<EPadAliasButton, 16>, 4> mButtonAlias;  // +0x00 (0x114)
+    ae_sized_array<ae_sized_array<EPadAliasStick, 2>, 4> mStickAlias;     // +0x114 (0x34)
+    void Clear();  // ?Clear@Context@PadAliasMgr@@QAEXXZ (game.o 0x620DD0)
+    void Clear(int ctrlr);  // ?Clear@Context@PadAliasMgr@@QAEXH@Z (game.o 0x620EA0)
+    void BindButton(int ctrlNum, int buttonIndex, EPadAliasButton buttonAlias);  // game.o 0x620F70
+    void BindStick(int ctrlNum, int stickIndex, EPadAliasStick stickAlias);      // game.o 0x621050
+    EPadAliasButton GetButtonAlias(int ctrlNum, controller::ButtonIndex buttonIndex);  // game.o 0x621160
+    EPadAliasStick GetStickAlias(int ctrlNum, controller::StickIndex stickIndex);      // game.o 0x6211E0
 };
+static_assert(sizeof(PadAliasCtx) == 0x148, "PadAliasCtx size mismatch");
 struct PadAliasMgr {
-    uint8_t _pad[4];
-    PadAliasCtx mCtx[3];      // +0x04 (3 contexts, 0x148 stride)
+    PadAliasCtx mCtx[3];      // +0x00 (3 contexts, 0x148 stride; GetCtx returns this + idx*0x148)
     static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
+    PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
+    void WriteBindings(int f);  // ?WriteBindings@PadAliasMgr@@QAEXH@Z (game.o 0x62B520)
 };
+static_assert(sizeof(PadAliasMgr) == 0x3D8, "PadAliasMgr size mismatch");
 PadAliasMgr* PadAliasMgr::sInst = nullptr;
 
 extern int LocalClient_ClientToPort(int client);  // cl.o
+extern int cvar_modifiedFlags;  // ?cvar_modifiedFlags@@3HA (core.o @ 0xEF8194)
+extern void FS_Printf(int h, const char* fmt, ...);  // filesystem
+
+// ea: 0x006126A0
+static int GetButtonIndexFromDesc(const char* desc)
+{
+    int v1 = 0;
+    while (stricmp(desc, kPadAliasButtonIndexDesc[v1]) != 0)
+    {
+        if (++v1 >= 16)
+            return -1;
+    }
+    return v1;
+}
+
+// ea: 0x006126D0
+static int GetStickIndexFromDesc(const char* desc)
+{
+    int v1 = 0;
+    while (stricmp(desc, kPadAliasStickIndexDesc[v1]) != 0)
+    {
+        if (++v1 >= 2)
+            return -1;
+    }
+    return v1;
+}
+
+// ea: 0x00612730
+static EPadAliasButton GetButtonAliasFromDesc(const char* desc)
+{
+    int v1 = 0;
+    while (stricmp(desc, kPadAliasButtonAliasDesc[v1]) != 0)
+    {
+        if (++v1 >= 6)
+            return kPadAliasButtonInvalid;
+    }
+    return (EPadAliasButton)v1;
+}
+
+// ea: 0x00612760
+static EPadAliasStick GetStickAliasFromDesc(const char* desc)
+{
+    int v1 = 0;
+    while (stricmp(desc, kPadAliasStickAliasDesc[v1]) != 0)
+    {
+        if (++v1 >= 2)
+            return kPadAliasStickInvalid;
+    }
+    return (EPadAliasStick)v1;
+}
+
+// ea: 0x00620DD0
+void PadAliasCtx::Clear()
+{
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 16; ++j)
+            mButtonAlias[i][j] = kPadAliasButtonInvalid;
+}
 
 // ea: 0x00620EA0
 void PadAliasCtx::Clear(int ctrlr)
 {
     for (int v4 = 0; v4 < 16; ++v4)
-        this->mButtonAlias[ctrlr][v4] = -1;  // kPadAliasButtonInvalid
+        mButtonAlias[ctrlr][v4] = kPadAliasButtonInvalid;
+}
+
+// ea: 0x00620F70
+void PadAliasCtx::BindButton(int ctrlNum, int buttonIndex,
+                             EPadAliasButton buttonAlias)
+{
+    if (ctrlNum < 0 || ctrlNum >= 4)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.cpp";
+        AeAssert::gCurrentLine = 344;
+        AeAssert::gCurrentExpr = "ctrlNum >= 0 && ctrlNum < MAX_CONTROLLERS";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad ctrlNum"))
+            __debugbreak();
+    }
+    if (buttonIndex < 0 || buttonIndex >= 16)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.cpp";
+        AeAssert::gCurrentLine = 345;
+        AeAssert::gCurrentExpr =
+            "buttonIndex >= 0 && buttonIndex < kPadCtrlButtonIndexCount";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad buttonIndex"))
+            __debugbreak();
+    }
+    if (buttonIndex >= 0 && buttonIndex < 16)
+    {
+        mButtonAlias[ctrlNum][buttonIndex] = buttonAlias;
+        cvar_modifiedFlags |= 1;
+    }
+}
+
+// ea: 0x00621050
+void PadAliasCtx::BindStick(int ctrlNum, int stickIndex,
+                            EPadAliasStick stickAlias)
+{
+    if (ctrlNum < 0 || ctrlNum >= 4)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.cpp";
+        AeAssert::gCurrentLine = 361;
+        AeAssert::gCurrentExpr = "ctrlNum >= 0 && ctrlNum < MAX_CONTROLLERS";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad ctrlNum"))
+            __debugbreak();
+    }
+    if (stickIndex < 0 || stickIndex >= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.cpp";
+        AeAssert::gCurrentLine = 362;
+        AeAssert::gCurrentExpr =
+            "stickIndex >= 0 && stickIndex < kPadCtrlStickIndexCount";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad stickIndex"))
+            __debugbreak();
+    }
+    if (stickIndex >= 0 && stickIndex <= 1)
+    {
+        mStickAlias[ctrlNum][stickIndex] = stickAlias;
+        int other = stickIndex != 1;
+        if (mStickAlias[ctrlNum][other] == stickAlias)
+            mStickAlias[ctrlNum][other] = kPadAliasStickInvalid;
+        cvar_modifiedFlags |= 1;
+    }
+}
+
+// ea: 0x00621160
+EPadAliasButton PadAliasCtx::GetButtonAlias(
+    int ctrlNum, controller::ButtonIndex buttonIndex)
+{
+    if (ctrlNum < 0 || ctrlNum >= 4)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.cpp";
+        AeAssert::gCurrentLine = 384;
+        AeAssert::gCurrentExpr = "ctrlNum >= 0 && ctrlNum < MAX_CONTROLLERS";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad ctrlNum"))
+            __debugbreak();
+    }
+    return mButtonAlias[ctrlNum][buttonIndex];
+}
+
+// ea: 0x006211E0
+EPadAliasStick PadAliasCtx::GetStickAlias(
+    int ctrlNum, controller::StickIndex stickIndex)
+{
+    if (ctrlNum < 0 || ctrlNum >= 4)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PadAliasMgr.cpp";
+        AeAssert::gCurrentLine = 394;
+        AeAssert::gCurrentExpr = "ctrlNum >= 0 && ctrlNum < MAX_CONTROLLERS";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad ctrlNum"))
+            __debugbreak();
+    }
+    return mStickAlias[ctrlNum][stickIndex];
+}
+
+// ea: 0x0062B1A0
+void SetButtonAlias()
+{
+    int ctrlNum = LocalClient_ClientToPort(currCl);
+    int count = cmd_argc;
+    if (cmd_argc >= 3)
+    {
+        const char* v0 = cmd_argc > 1 ? cmd_argv[1] : defaultFileName;
+        int v1 = 0;
+        while (stricmp(v0, kPadAliasCtxDesc[v1]) != 0)
+        {
+            if (++v1 >= 3)
+            {
+                const char* v2 =
+                    cmd_argc > 1 ? cmd_argv[1] : defaultFileName;
+                Com_Printf("\"%s\" isn't a valid alias context\n", v2);
+                return;
+            }
+        }
+        const char* v3 = cmd_argc > 2 ? cmd_argv[2] : defaultFileName;
+        int v5 = GetButtonIndexFromDesc(v3);
+        if (v5 == -1)
+        {
+            const char* v6 =
+                cmd_argc > 2 ? cmd_argv[2] : defaultFileName;
+            Com_Printf("\"%s\" isn't a valid button name\n", v6);
+        }
+        else if (count == 3)
+        {
+            EPadAliasButton ButtonAlias = PadAliasMgr::sInst->mCtx[v1]
+                                              .GetButtonAlias(
+                                                  ctrlNum,
+                                                  (controller::ButtonIndex)v5);
+            if (ButtonAlias != kPadAliasButtonInvalid)
+            {
+                const char* v12 = kPadAliasButtonAliasDesc[ButtonAlias];
+                const char* v8 = Cmd_Argv(2);
+                Com_Printf("\"%s\" = \"%s\"\n", v8, v12);
+            }
+        }
+        else
+        {
+            const char* v9 = Cmd_Argv(3);
+            EPadAliasButton ButtonAliasFromDesc = GetButtonAliasFromDesc(v9);
+            if (ButtonAliasFromDesc == kPadAliasButtonInvalid)
+            {
+                const char* v11 = Cmd_Argv(3);
+                Com_Printf("\"%s\" isn't a valid button alias name\n", v11);
+            }
+            else
+            {
+                PadAliasMgr::sInst->mCtx[v1].BindButton(ctrlNum, v5,
+                                                        ButtonAliasFromDesc);
+            }
+        }
+    }
+    else
+    {
+        Com_Printf("buttonalias <context> <button> [alias] : attach an alias "
+                   "to a button\n");
+    }
+}
+
+// ea: 0x0062B320
+void SetStickAlias()
+{
+    int ctrlNum = LocalClient_ClientToPort(currCl);
+    int count = cmd_argc;
+    if (cmd_argc >= 3)
+    {
+        const char* v0 = cmd_argc > 1 ? cmd_argv[1] : defaultFileName;
+        int v1 = 0;
+        while (stricmp(v0, kPadAliasCtxDesc[v1]) != 0)
+        {
+            if (++v1 >= 3)
+            {
+                const char* v2 =
+                    cmd_argc > 1 ? cmd_argv[1] : defaultFileName;
+                Com_Printf("\"%s\" isn't a valid alias context\n", v2);
+                return;
+            }
+        }
+        const char* v3 = cmd_argc > 2 ? cmd_argv[2] : defaultFileName;
+        int v5 = GetStickIndexFromDesc(v3);
+        if (v5 == -1)
+        {
+            const char* v6 =
+                cmd_argc > 2 ? cmd_argv[2] : defaultFileName;
+            Com_Printf("\"%s\" isn't a valid stick name\n", v6);
+        }
+        else if (count == 3)
+        {
+            EPadAliasStick StickAlias = PadAliasMgr::sInst->mCtx[v1]
+                                            .GetStickAlias(
+                                                ctrlNum,
+                                                (controller::StickIndex)v5);
+            if (StickAlias != kPadAliasStickInvalid)
+            {
+                const char* v12 = kPadAliasStickAliasDesc[StickAlias];
+                const char* v8 = Cmd_Argv(2);
+                Com_Printf("\"%s\" = \"%s\"\n", v8, v12);
+            }
+        }
+        else
+        {
+            const char* v9 = Cmd_Argv(3);
+            EPadAliasStick StickAliasFromDesc = GetStickAliasFromDesc(v9);
+            if (StickAliasFromDesc == kPadAliasStickInvalid)
+            {
+                const char* v11 = Cmd_Argv(3);
+                Com_Printf("\"%s\" isn't a valid stick alias name\n", v11);
+            }
+            else
+            {
+                PadAliasMgr::sInst->mCtx[v1].BindStick(ctrlNum, v5,
+                                                       StickAliasFromDesc);
+            }
+        }
+    }
+    else
+    {
+        Com_Printf("stickalias <context> <stick> [alias] : attach an alias to "
+                   "a stick\n");
+    }
 }
 
 // ea: 0x0062B4A0
@@ -478,6 +832,74 @@ void InitPadAliasCommands()
     Cmd_AddCommand("buttonalias", SetButtonAlias);
     Cmd_AddCommand("stickalias", SetStickAlias);
     Cmd_AddCommand("clearallaliases", ClearAllPadAliases);
+}
+
+// ea: 0x0062B520
+void PadAliasMgr::WriteBindings(int f)
+{
+    FS_Printf(f, "clearallaliases\n");
+    const char** v3 = kPadAliasCtxDesc;
+    PadAliasCtx* v4 = &this->mCtx[0];
+    do
+    {
+        for (int i = 0; i < 16; ++i)
+        {
+            EPadAliasButton v6 = v4->mButtonAlias[0][i];
+            if (v6 != kPadAliasButtonInvalid)
+            {
+                FS_Printf(f, "buttonalias %s %s \"%s\"\n", *v3,
+                          kPadAliasButtonIndexDesc[i],
+                          kPadAliasButtonAliasDesc[v6]);
+            }
+        }
+        for (int j = 0; j < 2; ++j)
+        {
+            EPadAliasStick v8 = v4->mStickAlias[0][j];
+            if (v8 != kPadAliasStickInvalid)
+            {
+                FS_Printf(f, "stickalias %s %s \"%s\"\n", *v3,
+                          kPadAliasStickIndexDesc[j],
+                          kPadAliasStickAliasDesc[v8]);
+            }
+        }
+        ++v3;
+        v4 = (PadAliasCtx*)((char*)v4 + 328);
+    } while (v3 < kPadAliasCtxDesc + 3);
+}
+
+// C-style bridge used by core.o Com_WriteConfigToFile (common.cpp);
+// the binary calls PadAliasMgr::WriteBindings(PadAliasMgr::sInst, f) there.
+void PadAliasMgr_WriteBindings(int f)
+{
+    PadAliasMgr::sInst->WriteBindings(f);
+}
+
+// ea: 0x006431F0
+PadAliasMgr::PadAliasMgr()
+{
+    for (int j = 0; j < 3; ++j)
+        mCtx[j].Clear();
+    for (int k = 0; k < 4; ++k)
+    {
+        mCtx[0].mButtonAlias[k][8] = kPadAliasButtonGas;
+        cvar_modifiedFlags |= 1;
+        mCtx[0].mButtonAlias[k][6] = kPadAliasButtonReverse;
+        cvar_modifiedFlags |= 1;
+        mCtx[0].mButtonAlias[k][4] = kPadAliasButtonHandBrake;
+        cvar_modifiedFlags |= 1;
+        mCtx[0].mButtonAlias[k][9] = kPadAliasButtonHandBrake;
+        cvar_modifiedFlags |= 1;
+        mCtx[0].mStickAlias[k][0] = kPadAliasStickVehicleSteering;
+        if (mCtx[0].mStickAlias[k][1] == kPadAliasStickVehicleSteering)
+            mCtx[0].mStickAlias[k][1] = kPadAliasStickInvalid;
+        cvar_modifiedFlags |= 1;
+        mCtx[1].mButtonAlias[k][9] = kPadAliasButtonAlignTurret;
+        cvar_modifiedFlags |= 1;
+        mCtx[1].mStickAlias[k][0] = kPadAliasStickVehicleSteering;
+        if (mCtx[1].mStickAlias[k][1] == kPadAliasStickVehicleSteering)
+            mCtx[1].mStickAlias[k][1] = kPadAliasStickInvalid;
+        cvar_modifiedFlags |= 1;
+    }
 }
 
 // ============================================================================
