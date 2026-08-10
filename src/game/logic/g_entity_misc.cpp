@@ -866,6 +866,7 @@ struct MusicMgr {
     void ScaleVolume(float scale);  // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o 0x62D6D0)
     void Stop(const float fadeOutTime);  // ?Stop@MusicMgr@@QAEXM@Z (game.o 0x62D830)
     void Update(float dt);       // ?Update@MusicMgr@@QAEXM@Z (game.o 0x62D8A0)
+    bool IsMusicPlaying();       // ?IsMusicPlaying@MusicMgr@@QAE_NXZ (game.o 0x6217F0)
 };
 
 // ea: 0x00612E30
@@ -989,6 +990,17 @@ void MusicMgr::Update(float dt)
             v22->SetVolume(newVolumec);
         }
     }
+}
+
+// ea: 0x006217F0
+bool MusicMgr::IsMusicPlaying()
+{
+    unsigned int mVal = this->mMusic.mVal;
+    unsigned int v2 = mVal & 0xFFF;
+    return v2 < 0x200
+        && mVal >> 12
+            == (unsigned int)SoundDevice::SoundHandleDb::sInst.mElements[v2].mKey
+        && SoundDevice::SoundHandleDb::sInst.mElements[v2].mObject != nullptr;
 }
 
 // ============================================================================
