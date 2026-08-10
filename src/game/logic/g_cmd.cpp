@@ -24,6 +24,15 @@ static unsigned char sv_cmd_text_buf[8192];
 static int cmd_argc;                 // ?cmd_argc@@3HA (game.o)
 static char* cmd_argv[512];
 static char cmd_tokenized[8192];
+static int cmd_wait;                 // ?cmd_wait@@3HA (game.o)
+
+extern void Cmd_ExecuteString(const char* text);   // game.o 0x61F640
+extern void Cbuf_SV_Execute();                     // game.o 0x61F3B0
+extern void Cmd_List_f();                          // game.o 0x60ED20
+extern void Cmd_Vstr_f();                          // game.o 0x61F550
+extern void Cmd_Echo_f();                          // game.o 0x61F590
+extern void Cmd_Wait_f();                          // game.o 0x61F280
+void Cmd_AddCommand(const char* cmd_name, void (*function)());
 
 enum ECmdFuncType { CMD = 0, INPUT_CMD = 1 };
 
@@ -270,6 +279,10 @@ extern int Com_Filter(char* filter, char* name, int casesensitive);  // core.o
 extern void ButtonMgr_ClearBinding(const BaseCmdFuncInfo* boundCmd,
                                    int clnt);  // ?ClearBinding@ButtonMgr (game2.o)
 extern void Com_Printf(const char* fmt, ...);
+extern void Com_DefaultExtension(char* path, int maxSize,
+                                 const char* extension);  // core.o
+extern int  FS_ReadFile(const char* qpath, void** buffer);  // core.o
+extern void FS_FreeFile(void* buffer);                      // core.o
 
 // ============================================================================
 // Cbuf_AddText - ea: 0x60E490
@@ -320,6 +333,103 @@ void Cbuf_InsertText(const char* text)
             && AeAssert::Assert("Cbuf_Insert overflow"))
             __debugbreak();
     }
+}
+
+// ============================================================================
+// Cbuf_Execute / Cmd_Exec_f / Cmd_Init - ea: 0x629560..0x629730
+// ============================================================================
+
+// ea: 0x00629560
+void Cbuf_Execute()
+{
+    char quote = 0;
+    if (cmd_text.cmdsize != 0)
+    {
+        while (cmd_wait == 0)
+        {
+            char* data = cmd_text.data;
+            int v2 = 0;
+            if (cmd_text.cmdsize > 0)
+            {
+                do
+                {
+                    char v3 = cmd_text.data[v2];
+                    if (v3 == '"')
+                        ++quote;
+                    if ((quote & 1) == 0 && v3 == ';')
+                        break;
+                    if (v3 == 10)
+                        break;
+                    if (v3 == 13)
+                        break;
+                    ++v2;
+                } while (v2 < cmd_text.cmdsize);
+                if (v2 >= 4095)
+                    v2 = 4095;
+            }
+            char line[4096];
+            memcpy(line, cmd_text.data, v2);
+            int cmdsize = cmd_text.cmdsize;
+            quote = 0;
+            bool wholeLine = v2 == cmd_text.cmdsize;
+            line[v2] = 0;
+            if (wholeLine)
+            {
+                cmd_text.cmdsize = 0;
+            }
+            else
+            {
+                int v6 = v2 + 1;
+                cmd_text.cmdsize = cmdsize - v6;
+                memmove(data, &data[v6], cmdsize - v6);
+            }
+            Cmd_ExecuteString(line);
+            if (cmd_text.cmdsize == 0)
+                goto LABEL_19;
+        }
+        --cmd_wait;
+    }
+LABEL_19:
+    Cbuf_SV_Execute();
+}
+
+// ea: 0x00629660
+void Cmd_Exec_f()
+{
+    if (cmd_argc == 2)
+    {
+        char filename[128];
+        Q_strncpyz(filename, cmd_argv[1], 128);
+        Com_DefaultExtension(filename, 128, ".cfg");
+        char* f = nullptr;
+        FS_ReadFile(filename, (void**)&f);
+        if (f != nullptr)
+        {
+            const char* v1 = cmd_argc > 1 ? cmd_argv[1] : defaultFileName;
+            Com_Printf("execing %s\n", v1);
+            Cbuf_InsertText(f);
+            FS_FreeFile(f);
+        }
+        else
+        {
+            const char* v0 = cmd_argc > 1 ? cmd_argv[1] : defaultFileName;
+            Com_Printf("couldn't exec %s\n", v0);
+        }
+    }
+    else
+    {
+        Com_Printf("exec <filename> : execute a script file\n");
+    }
+}
+
+// ea: 0x00629730
+void Cmd_Init()
+{
+    Cmd_AddCommand("cmdlist", Cmd_List_f);
+    Cmd_AddCommand("exec", Cmd_Exec_f);
+    Cmd_AddCommand("vstr", Cmd_Vstr_f);
+    Cmd_AddCommand("echo", Cmd_Echo_f);
+    Cmd_AddCommand("wait", Cmd_Wait_f);
 }
 
 // ============================================================================
