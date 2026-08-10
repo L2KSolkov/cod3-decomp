@@ -2574,7 +2574,7 @@ struct rtree_root_t {
     math::Position3 region_center;        // +0x00
     math::Position3 region_halfsize_inv32k;  // +0x10
     rtree_node_t*   simd_tree;            // +0x20
-    int             pad_24;               // +0x24 (unknown; TODO)
+    void*           simd_pointer_base;    // +0x24
     int             top_level_aabb_count; // +0x28
     int             nsimd_levels;         // +0x2C
 };
@@ -2598,7 +2598,8 @@ struct CGBank {
     cdl_array_t patch_verts;  // +0x7C
     uint8_t _pad84[0x90 - 0x84];
     rtree_root_t rtree_root;  // +0x90 (traverse_rtree root; verified disasm)
-    uint8_t _padC0[0xD0 - 0xC0];
+    uint8_t _padC0[0xC4 - 0xC0];
+    void*   rtree_data;       // +0xC4
 };
 static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
 struct CGBankManager : public AssetBankSet {
@@ -2611,6 +2612,8 @@ struct CGBankManager : public AssetBankSet {
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
     void AddBank(TPakId pakId, CGBank* bank);   // ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z (game.o 0x61FE30)
     void UnloadBank(TPakId pakId);              // ?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FE60)
+    void DecodeCGBank(const char* name, unsigned char* data, int size,
+                      TPakId pakId);            // ?DecodeCGBank@CGBankManager@@QAEXPBDPAEHW4TPakId@@@Z (game.o 0x629F30)
 };
 
 bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,

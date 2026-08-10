@@ -1665,6 +1665,54 @@ void CGBankManager::UnloadBank(TPakId pakId)
 }
 
 // ============================================================================
+// CGBankManager::DecodeCGBank - ea: 0x629F30 (cgbank.cpp)
+// ============================================================================
+extern void CGBank_load_inplace(CGBank* self, char* base, int* offs);
+    // ?load_inplace@CGBank@@QAEXPADAAH@Z (inplace_xboxr)
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* msg);  // core/tl_system.cpp
+
+// ea: 0x00629F30
+void CGBankManager::DecodeCGBank(const char* name, unsigned char* data,
+                                 int size, TPakId pakId)
+{
+    CGBank* bank = (CGBank*)data;
+    int offs = 0xD0;
+    CGBank_load_inplace(bank, (char*)bank, &offs);
+    if (offs != size)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.cpp";
+        AeAssert::gCurrentLine = 454;
+        AeAssert::gCurrentExpr = "offs == size";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("oops"))
+            __debugbreak();
+    }
+    this->mBankArray[this->mCount] = bank;
+    this->mIds[this->mCount++] = (int)pakId;
+    bank->rtree_root.simd_tree = (rtree_node_t*)bank->rtree_data;
+    bank->rtree_root.simd_pointer_base = nullptr;
+    unsigned int nobjects = bank->objects.m_count;
+    int v8 = 0;
+    unsigned int v9 = 0;
+    for (; v9 < nobjects; ++v8)
+    {
+        if (v9 >= bank->objects.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        cdl_object_t* m_elements = (cdl_object_t*)bank->objects.m_elements;
+        unsigned int* v12 = (unsigned int*)&m_elements[v8].cflags;
+        int cflags = *v12;
+        if ((0x1000000 & cflags) != 0)
+            *v12 = cflags & 0xFEFFFFFF;
+        if ((*v12 & 0x4000) != 0)
+            *v12 = 0x1000000 | *v12 & 0xFFFFBFFF;
+        ++v9;
+    }
+}
+
+// ============================================================================
 // AnimNotifyTask - ea: 0x602350..0x62B950 (AnimNotifyTask.cpp)
 // ============================================================================
 extern void* AnimNotifyTask_vftable;  // ??_7AnimNotifyTask@@6B@ @ 0xD03A60

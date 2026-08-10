@@ -5976,6 +5976,8 @@ struct DCGBankManager {
     void*   mBankArray[99];         // +0x194 (DCGBank* per pak)
     void AddBank(TPakId pakId, void* bank);   // ?AddBank@DCGBankManager@@AAEXW4TPakId@@PAVDCGBank@@@Z (game.o 0x61FC60)
     void UnloadBank(TPakId pakId);             // ?UnloadBank@DCGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FCD0)
+    void DecodeDCGBank(const char* name, unsigned char* data, int size,
+                       TPakId pakId);          // ?DecodeDCGBank@DCGBankManager@@QAEXPBDPAEHW4TPakId@@@Z (game.o 0x629DF0)
     ~DCGBankManager();             // ??1DCGBankManager@@UAE@XZ (game.o 0x629D90)
 };
 DCGBankManager* DCGBankManager::sInst = nullptr;
@@ -6011,6 +6013,73 @@ void DCGBankManager::AddBank(TPakId pakId, void* bank)
 void DCGBankManager::UnloadBank(TPakId pakId)
 {
     this->mBankArray[(int)pakId] = nullptr;
+}
+
+// ============================================================================
+// DCGBankManager::DecodeDCGBank - ea: 0x629DF0 (cgbank.cpp)
+// ============================================================================
+extern void DCGBank_load_inplace(void* self, char* base, int* offs);
+    // ?load_inplace@DCGBank@@QAEXPADAAH@Z (inplace_xboxr)
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* msg);  // core/tl_system.cpp
+
+// ea: 0x00629DF0
+void DCGBankManager::DecodeDCGBank(const char* name, unsigned char* data,
+                                   int size, TPakId pakId)
+{
+    int offs = 8;
+    DCGBank_load_inplace(data, (char*)data, &offs);
+    if (offs != size)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.cpp";
+        AeAssert::gCurrentLine = 149;
+        AeAssert::gCurrentExpr = "offs == size";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("oops"))
+            __debugbreak();
+    }
+    this->AddBank(pakId, data);
+    unsigned int n = *(unsigned int*)data;
+    int i = 0;
+    if (n != 0)
+    {
+        int pakIda = 0;
+        do
+        {
+            if (i >= n
+                && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                             "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            unsigned char* dcg =
+                (unsigned char*)(*(unsigned int*)(data + 4) + pakIda);
+            unsigned int objCount = *(unsigned int*)(dcg + 4);
+            unsigned int j = 0;
+            if (objCount != 0)
+            {
+                int off = 0;
+                do
+                {
+                    if (j >= objCount
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                            "index >= 0 && index < size()", "invalid index"))
+                        __debugbreak();
+                    unsigned int* el =
+                        (unsigned int*)(*(unsigned int*)(dcg + 8) + off);
+                    int v14 = *el;
+                    if ((0x1000000 & v14) != 0)
+                        *el = v14 & 0xFEFFFFFF;
+                    if ((*el & 0x4000) != 0)
+                        *el = 0x1000000 | *el & 0xFFFFBFFF;
+                    ++j;
+                    off += 0x24;
+                } while (j < *(unsigned int*)(dcg + 4));
+            }
+            n = *(unsigned int*)data;
+            ++i;
+            pakIda += 0x70;
+        } while (i < n);
+    }
 }
 
 struct GdbFileManager {
