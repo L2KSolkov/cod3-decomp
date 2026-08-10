@@ -5960,6 +5960,9 @@ struct DCGBankManager {
     const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
     uint8_t _pad[0x18C];           // +0x04
     void*   mBoxDCGSet;            // +0x190 (TempDCGSet)
+    void*   mBankArray[99];         // +0x194 (DCGBank* per pak)
+    void AddBank(TPakId pakId, void* bank);   // ?AddBank@DCGBankManager@@AAEXW4TPakId@@PAVDCGBank@@@Z (game.o 0x61FC60)
+    void UnloadBank(TPakId pakId);             // ?UnloadBank@DCGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FCD0)
     ~DCGBankManager();             // ??1DCGBankManager@@UAE@XZ (game.o 0x629D90)
 };
 DCGBankManager* DCGBankManager::sInst = nullptr;
@@ -5973,6 +5976,28 @@ DCGBankManager::~DCGBankManager()
     this->__vftable = 0;
     TempDCGSet_Dtor(&this->mBoxDCGSet);
     AssetBankSet_Dtor(this);
+}
+
+// ea: 0x0061FC60
+void DCGBankManager::AddBank(TPakId pakId, void* bank)
+{
+    if (this->mBankArray[(int)pakId] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.cpp";
+        AeAssert::gCurrentLine = 179;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("bank already loaded!"))
+            __debugbreak();
+    }
+    this->mBankArray[(int)pakId] = bank;
+}
+
+// ea: 0x0061FCD0
+void DCGBankManager::UnloadBank(TPakId pakId)
+{
+    this->mBankArray[(int)pakId] = nullptr;
 }
 
 struct GdbFileManager {
