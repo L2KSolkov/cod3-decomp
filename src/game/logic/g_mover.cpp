@@ -476,7 +476,13 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
                         (float)((i2 >> 11) & 0x7FF) * scale,
                         (float)((i2 >> 22) & 0x7FF) * scale };
         float normal[4];
-        calc_normal(normal, v0, v1, v2);
+        math::Vector4 nv = calc_normal(
+            *(const math::Position3*)v0, *(const math::Position3*)v1,
+            *(const math::Position3*)v2);
+        normal[0] = nv.v.m128_f32[0];
+        normal[1] = nv.v.m128_f32[1];
+        normal[2] = nv.v.m128_f32[2];
+        normal[3] = nv.v.m128_f32[3];
         if (fabsf(normal[2]) <= 0.7f)
         {
             float dot = normal[0] * outcenter.v.m128_f32[0]
@@ -613,7 +619,13 @@ bool push_in_world(math::Position3& pos, float radius,
                             (float)((i2 >> 11) & 0x7FF) * scale,
                             (float)((i2 >> 22) & 0x7FF) * scale };
             float normal[4];
-            calc_normal(normal, v0, v1, v2);
+            math::Vector4 nv2 = calc_normal(
+                *(const math::Position3*)v0, *(const math::Position3*)v1,
+                *(const math::Position3*)v2);
+            normal[0] = nv2.v.m128_f32[0];
+            normal[1] = nv2.v.m128_f32[1];
+            normal[2] = nv2.v.m128_f32[2];
+            normal[3] = nv2.v.m128_f32[3];
             if (new_push_out_sphere_triangle(center, radius, v0, v1, v2,
                                              normal, center))
                 hit = true;

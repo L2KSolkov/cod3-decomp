@@ -668,3 +668,162 @@ int WindingOnPlaneSide(winding_t* w, float* normal, float dist)
         return 0;
     return 2;
 }
+
+// ============================================================================
+// Collision math helpers (cdl / cm_trace helpers)
+// ============================================================================
+extern float thresh2;  // ?thresh2@@3MA (game.o)
+
+// ea: 0x0060C020
+bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
+                 unsigned int hitoffs, const math::Dir3& n,
+                 unsigned int offs, float radius)
+{
+    float dnd = (hitn.v.m128_f32[0] - n.v.m128_f32[0])
+            * (hitn.v.m128_f32[0] - n.v.m128_f32[0])
+        + (hitn.v.m128_f32[1] - n.v.m128_f32[1])
+            * (hitn.v.m128_f32[1] - n.v.m128_f32[1])
+        + (hitn.v.m128_f32[2] - n.v.m128_f32[2])
+            * (hitn.v.m128_f32[2] - n.v.m128_f32[2]);
+    if (thresh2 > dnd
+        && thresh2 > ((float)(int)hitoffs - (float)(int)offs)
+            * ((float)(int)hitoffs - (float)(int)offs))
+        return true;
+    float dotp = (hitp.v.m128_f32[0] * n.v.m128_f32[0])
+        + (hitp.v.m128_f32[1] * n.v.m128_f32[1])
+        + (hitp.v.m128_f32[2] * n.v.m128_f32[2]);
+    if (fabsf(dotp - (float)(int)offs) > radius)
+        return true;
+    float cross[3];
+    cross[0] = hitn.v.m128_f32[1] * n.v.m128_f32[2]
+        - hitn.v.m128_f32[2] * n.v.m128_f32[1];
+    cross[1] = hitn.v.m128_f32[2] * n.v.m128_f32[0]
+        - hitn.v.m128_f32[0] * n.v.m128_f32[2];
+    cross[2] = hitn.v.m128_f32[0] * n.v.m128_f32[1]
+        - hitn.v.m128_f32[1] * n.v.m128_f32[0];
+    float v20 = cross[0] * cross[0] + cross[1] * cross[1]
+        + cross[2] * cross[2];
+    if (thresh2 > v20)
+        return true;
+    // Project hitp onto the line of intersection of the two planes.
+    float t = ((hitoffs * n.v.m128_f32[0] - offs * hitn.v.m128_f32[0])
+                   * cross[0]
+               + (hitoffs * n.v.m128_f32[1] - offs * hitn.v.m128_f32[1])
+                   * cross[1]
+               + (hitoffs * n.v.m128_f32[2] - offs * hitn.v.m128_f32[2])
+                   * cross[2])
+        / v20;
+    float proj[3];
+    proj[0] = hitp.v.m128_f32[0] - t * cross[0];
+    proj[1] = hitp.v.m128_f32[1] - t * cross[1];
+    proj[2] = hitp.v.m128_f32[2] - t * cross[2];
+    float d2 = proj[0] * proj[0] + proj[1] * proj[1] + proj[2] * proj[2];
+    float along = proj[0] * cross[0] + proj[1] * cross[1]
+        + proj[2] * cross[2];
+    return (d2 - (along / v20) * (along / v20)) > (radius * radius);
+}
+
+// ea: 0x0060C250
+void RotatePoint(math::Position3& point, math::Position3* matrix)
+{
+    math::Position3 v5;
+    v5.v.m128_f32[0] = matrix[0].v.m128_f32[0] * point.v.m128_f32[0]
+        + matrix[0].v.m128_f32[1] * point.v.m128_f32[1]
+        + matrix[0].v.m128_f32[2] * point.v.m128_f32[2];
+    v5.v.m128_f32[1] = matrix[1].v.m128_f32[0] * point.v.m128_f32[0]
+        + matrix[1].v.m128_f32[1] * point.v.m128_f32[1]
+        + matrix[1].v.m128_f32[2] * point.v.m128_f32[2];
+    v5.v.m128_f32[2] = matrix[2].v.m128_f32[0] * point.v.m128_f32[0]
+        + matrix[2].v.m128_f32[1] * point.v.m128_f32[1]
+        + matrix[2].v.m128_f32[2] * point.v.m128_f32[2];
+    point.v = v5.v;
+}
+
+// ea: 0x0060C330
+void TransposeMatrix(math::Position3* matrix, math::Position3* transpose)
+{
+    for (int i = 0; i < 3; ++i)
+    {
+        transpose[i].v.m128_f32[0] = matrix[0].v.m128_f32[i];
+        transpose[i].v.m128_f32[1] = matrix[1].v.m128_f32[i];
+        transpose[i].v.m128_f32[2] = matrix[2].v.m128_f32[i];
+    }
+}
+
+// ea: 0x0060C370
+void CreateRotationMatrix(const math::Position3& angles,
+                          math::Position3* matrix)
+{
+    float mat[3][3];
+    AngleVectors(&angles, mat[0], mat[1], mat[2]);
+    VectorInverse(mat[1]);
+    matrix[0].v.m128_f32[0] = mat[0][0];
+    matrix[0].v.m128_f32[1] = mat[0][1];
+    matrix[0].v.m128_f32[2] = mat[0][2];
+    memcpy(&matrix[1], mat[1], 12);
+    memcpy(&matrix[2], mat[2], 12);
+}
+
+// ea: 0x0060C400
+math::Vector4 calc_normal(const math::Position3& v0,
+                          const math::Position3& v1,
+                          const math::Position3& v2)
+{
+    math::Vector4 result;
+    float e1[3], e2[3], n[3];
+    e1[0] = v2.v.m128_f32[0] - v0.v.m128_f32[0];
+    e1[1] = v2.v.m128_f32[1] - v0.v.m128_f32[1];
+    e1[2] = v2.v.m128_f32[2] - v0.v.m128_f32[2];
+    e2[0] = v1.v.m128_f32[0] - v0.v.m128_f32[0];
+    e2[1] = v1.v.m128_f32[1] - v0.v.m128_f32[1];
+    e2[2] = v1.v.m128_f32[2] - v0.v.m128_f32[2];
+    n[0] = e1[1] * e2[2] - e1[2] * e2[1];
+    n[1] = e1[2] * e2[0] - e1[0] * e2[2];
+    n[2] = e1[0] * e2[1] - e1[1] * e2[0];
+    float len2 = n[0] * n[0] + n[1] * n[1] + n[2] * n[2];
+    float d = 0.0f;
+    if (len2 <= 0.0000001f)
+    {
+        result.v.m128_f32[0] = 0.0f;
+        result.v.m128_f32[1] = 0.0f;
+        result.v.m128_f32[2] = 0.0f;
+        result.v.m128_f32[3] = 0.0f;
+        return result;
+    }
+    float inv = 1.0f / sqrtf(len2);
+    result.v.m128_f32[0] = n[0] * inv;
+    result.v.m128_f32[1] = n[1] * inv;
+    result.v.m128_f32[2] = n[2] * inv;
+    d = 0.0f - (result.v.m128_f32[0] * v0.v.m128_f32[0]
+                 + result.v.m128_f32[1] * v0.v.m128_f32[1]
+                 + result.v.m128_f32[2] * v0.v.m128_f32[2]);
+    result.v.m128_f32[3] = d;
+    return result;
+}
+
+// ea: 0x0060E300
+float point_to_segment_dist2(const math::Position3& c,
+                             const math::Position3& a,
+                             const math::Position3& b)
+{
+    float v3[3], v4[3], v5[3];
+    v3[0] = c.v.m128_f32[0] - a.v.m128_f32[0];
+    v3[1] = c.v.m128_f32[1] - a.v.m128_f32[1];
+    v3[2] = c.v.m128_f32[2] - a.v.m128_f32[2];
+    v4[0] = c.v.m128_f32[0] - b.v.m128_f32[0];
+    v4[1] = c.v.m128_f32[1] - b.v.m128_f32[1];
+    v4[2] = c.v.m128_f32[2] - b.v.m128_f32[2];
+    v5[0] = b.v.m128_f32[0] - a.v.m128_f32[0];
+    v5[1] = b.v.m128_f32[1] - a.v.m128_f32[1];
+    v5[2] = b.v.m128_f32[2] - a.v.m128_f32[2];
+    float v13 = v3[0] * v5[0] + v3[1] * v5[1] + v3[2] * v5[2];
+    if (v13 > 0.0f)
+    {
+        float v12 = v5[0] * v5[0] + v5[1] * v5[1] + v5[2] * v5[2];
+        if (v13 < v12)
+            return (v3[0] * v3[0] + v3[1] * v3[1] + v3[2] * v3[2])
+                - v13 / v12 * v13;
+        return v4[0] * v4[0] + v4[1] * v4[1] + v4[2] * v4[2];
+    }
+    return v3[0] * v3[0] + v3[1] * v3[1] + v3[2] * v3[2];
+}

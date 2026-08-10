@@ -2519,8 +2519,17 @@ bool new_push_out_sphere_triangle(const float* sphere_center,
                                   const float* v1, const float* v2,
                                   const float* normal,
                                   float* new_sphere_center);  // game.o
-void calc_normal(float* result, const float* v0, const float* v1,
-                 const float* v2);  // game.o
+math::Vector4 calc_normal(const math::Position3& v0, const math::Position3& v1,
+                          const math::Position3& v2);  // game.o 0x60C400
+bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
+                 unsigned int hitoffs, const math::Dir3& n,
+                 unsigned int offs, float radius);   // game.o 0x60C020
+void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
+void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
+void CreateRotationMatrix(const math::Position3& angles,
+                          math::Position3* matrix);   // game.o 0x60C370
+float point_to_segment_dist2(const math::Position3& c, const math::Position3& a,
+                             const math::Position3& b);  // game.o 0x60E300
 
 void query_proximity_data(const math::Position3& lo, const math::Position3& hi,
                           proximity_data_t& out);      // game.o 0x60A25BC0
