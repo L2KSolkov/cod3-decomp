@@ -863,6 +863,9 @@ struct MusicMgr {
     float  mDelayCount;      // +0x18
     int    mCrossFadeType;   // +0x1C
     MusicMgr();              // ??0MusicMgr@@QAE@XZ
+    void ScaleVolume(float scale);  // ?ScaleVolume@MusicMgr@@QAEXM@Z (game.o 0x62D6D0)
+    void Stop(const float fadeOutTime);  // ?Stop@MusicMgr@@QAEXM@Z (game.o 0x62D830)
+    void Update(float dt);       // ?Update@MusicMgr@@QAEXM@Z (game.o 0x62D8A0)
 };
 
 // ea: 0x00612E30
@@ -876,6 +879,116 @@ MusicMgr::MusicMgr()
     this->mIndoorFadeTime = 1.0f;
     this->mDelayCount = 0.0f;
     this->mCrossFadeType = 0;
+}
+
+extern float nslGetWaveParam(nslWaveID wave, int b, float c);  // nsl_xboxr
+
+static SoundDevice::Sound* SoundFromHandle(Handle h)
+{
+    unsigned int idx = h.mVal & 0xFFF;
+    if (idx < 0x200
+        && h.mVal >> 12 == SoundDevice::SoundHandleDb::sInst.mElements[idx].mKey)
+        return SoundDevice::SoundHandleDb::sInst.mElements[idx].mObject;
+    return nullptr;
+}
+
+// ea: 0x0062D6D0
+void MusicMgr::ScaleVolume(float scale)
+{
+    unsigned int mVal = this->mMusic.mVal;
+    this->mVolScale = scale;
+    SoundDevice::Sound* mObject = SoundFromHandle(this->mMusic);
+    if (mObject != nullptr)
+    {
+        float newVolume = nslGetWaveParam((nslWaveID)mObject->mWave, 0, 1.0f)
+            * this->mOutsideScale * this->mVolScale;
+        mObject->SetVolume(newVolume);
+    }
+    SoundDevice::Sound* v10 = SoundFromHandle(this->mMusicIndoor);
+    if (v10 != nullptr)
+    {
+        float newVolumea = nslGetWaveParam((nslWaveID)v10->mWave, 0, 1.0f)
+            * this->mIndoorScale * this->mVolScale;
+        v10->SetVolume(newVolumea);
+    }
+}
+
+// ea: 0x0062D830
+void MusicMgr::Stop(const float fadeOutTime)
+{
+    SoundDevice::Sound* mObject = SoundFromHandle(this->mMusic);
+    if (mObject != nullptr)
+    {
+        mObject->Stop();
+        this->mMusic.mVal = 0;
+    }
+}
+
+// ea: 0x0062D8A0
+void MusicMgr::Update(float dt)
+{
+    if (this->mCrossFadeType == 1)
+    {
+        float v4 = dt + this->mDelayCount;
+        float v6 = v4 / this->mIndoorFadeTime;
+        this->mDelayCount = v4;
+        this->mIndoorScale = v6;
+        this->mOutsideScale = 1.0f - v6;
+        if (v4 >= this->mIndoorFadeTime)
+        {
+            this->mIndoorScale = 1.0f;
+            this->mOutsideScale = 0.0f;
+            this->mCrossFadeType = 0;
+        }
+        SoundDevice::Sound* mObject = SoundFromHandle(this->mMusic);
+        if (mObject != nullptr)
+        {
+            float newVolume = nslGetWaveParam((nslWaveID)mObject->mWave, 0,
+                                              1.0f)
+                * this->mVolScale * this->mOutsideScale;
+            mObject->SetVolume(newVolume);
+        }
+        SoundDevice::Sound* v14 = SoundFromHandle(this->mMusicIndoor);
+        if (v14 != nullptr)
+        {
+            float newVolumea = nslGetWaveParam((nslWaveID)v14->mWave, 0, 1.0f)
+                * this->mVolScale * this->mIndoorScale;
+            v14->SetVolume(newVolumea);
+        }
+    }
+    else if (this->mCrossFadeType == 2)
+    {
+        float v15 = dt + this->mDelayCount;
+        float v16 = v15 / this->mIndoorFadeTime;
+        this->mDelayCount = v15;
+        this->mOutsideScale = v16;
+        this->mIndoorScale = 1.0f - v16;
+        if (v15 >= this->mIndoorFadeTime)
+        {
+            this->mOutsideScale = 1.0f;
+            this->mCrossFadeType = 0;
+            SoundDevice::Sound* indoor = SoundFromHandle(this->mMusicIndoor);
+            if (indoor != nullptr)
+            {
+                indoor->Stop();
+                this->mMusicIndoor.mVal = 0;
+            }
+        }
+        SoundDevice::Sound* v20 = SoundFromHandle(this->mMusic);
+        if (v20 != nullptr)
+        {
+            float newVolumeb = nslGetWaveParam((nslWaveID)v20->mWave, 0, 1.0f)
+                * this->mVolScale * this->mOutsideScale;
+            v20->SetVolume(newVolumeb);
+        }
+        SoundDevice::Sound* v22 = SoundFromHandle(this->mMusicIndoor);
+        if (v22 != nullptr)
+        {
+            float newVolumec = nslGetWaveParam((nslWaveID)v22->mWave, 0, 1.0f)
+                * this->mVolScale * this->mIndoorScale;
+            v22->SetVolume(newVolumec);
+        }
+    }
 }
 
 // ============================================================================
