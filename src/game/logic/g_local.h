@@ -1302,6 +1302,7 @@ bool BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime);
 bool BG_PlayerTouchesItem(PlayerState* ps, EntityState* item, int atTime);  // game.o 0x621820
 int  BG_WeaponIsClipOnly(int iWeapon);            // game.o 0x607A50
 int  BG_GetAmmoTypeMax(int iAmmoIndex);           // game.o 0x607080
+int  BG_GetSharedAmmoCapSize(int iCapIndex);      // game.o 0x607150
 int  BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616B70
 int  BG_SetPlayerWeaponForSlot(PlayerState* pPS, int iWeaponIndex);  // game.o 0x616A10
 int  BG_GetTotalAmmoReserve(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616D50
@@ -1628,6 +1629,8 @@ enum weapSlot_t : int {
     WEAPSLOT_SPECIAL = 9,
 };
 enum {
+    WEAPCLASS_TURRET = 7,     // verified vs disasm BG_GivePlayerWeapon
+    WEAPCLASS_NON_PLAYER = 9, // verified vs disasm BG_GivePlayerWeapon
     WEAPCLASS_GRENADE = 5,  // verified vs disasm Pickup_Weapon
     WEAPCLASS_LMG = 3,      // verified vs disasm Bullet_Fire_Extended / BG_IsLMGMounted
 };

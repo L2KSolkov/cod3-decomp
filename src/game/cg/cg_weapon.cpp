@@ -185,8 +185,9 @@ extern int BG_GetNumWeapons();
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
 extern int BG_ClipForWeapon(int iWeapon);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
-extern int BG_IsPlayerWeaponInSlot(const PlayerState* pPS, int iWeaponIndex,
-                                   int bAnyMode);
+enum weapSlot_t : int;
+extern weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS,
+                                          int iWeaponIndex, int bAnyMode);
 extern PlayerState* GetPlayerState(int idx);
 extern Entity* GetPlayer(int idx);
 extern bool TestSpecialWeapon(Entity* player, int weapon);

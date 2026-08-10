@@ -2102,3 +2102,305 @@ int BG_GetAmmoClipForName(const char* pszName)
             goto LABEL_6;
     }
 }
+
+// ============================================================================
+// BG_GivePlayerWeapon / slot + ammo queries - ea: 0x6168A0..0x617150
+// ============================================================================
+// ea: 0x006168A0
+int BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex)
+{
+    int v3 = 1 << (iWeaponIndex & 0x1F);
+    if ((v3 & pPS->weapons[iWeaponIndex >> 5]) != 0)
+        return 0;
+    weaponFileInfo_t* pWeap = BG_GetInfoForWeapon(iWeaponIndex);
+    int weapClass = pWeap->weapClass;
+    if (weapClass == WEAPCLASS_TURRET
+        || weapClass == WEAPCLASS_NON_PLAYER)
+        return 0;
+    RegisterItem(iWeaponIndex, 1);
+    int v6 = iWeaponIndex >> 5;
+    pPS->weapons[v6] = (pPS->weapons[v6] | v3);
+    int v9 = ~v3;
+    pPS->weaponrechamber[v6] = (pPS->weaponrechamber[v6] & ~v3);
+    int slot = pWeap->slot;
+    switch (slot)
+    {
+    case WEAPSLOT_PRIMARY:
+    case WEAPSLOT_PRIMARYB:
+        if (pPS->weaponslots[1] != 0)
+        {
+            if (pPS->weaponslots[2] == 0)
+                pPS->weaponslots[2] = (char)iWeaponIndex;
+        }
+        else
+        {
+            pPS->weaponslots[1] = (char)iWeaponIndex;
+        }
+        break;
+    case WEAPSLOT_PISTOL:
+    case WEAPSLOT_GRENADE:
+    case WEAPSLOT_SMOKE_GRENADE:
+    case WEAPSLOT_INTERACT:
+    case WEAPSLOT_BINOCS:
+    case WEAPSLOT_SATCHEL:
+    case WEAPSLOT_SPECIAL:
+        if (pPS->weaponslots[slot] == 0)
+            pPS->weaponslots[slot] = (char)iWeaponIndex;
+        break;
+    default:
+        break;
+    }
+    for (int i = pWeap->iAltWeaponIndex; i != 0;
+         i = BG_GetInfoForWeapon(i)->iAltWeaponIndex)
+    {
+        int iWeaponIndexa = 1 << (i & 0x1F);
+        if ((iWeaponIndexa & pPS->weapons[i >> 5]) != 0)
+            break;
+        RegisterItem(i, 1);
+        pPS->weapons[i >> 5] =
+            (pPS->weapons[i >> 5] | iWeaponIndexa);
+        pPS->weaponrechamber[v6] =
+            (pPS->weaponrechamber[v6] & v9);
+    }
+    return 1;
+}
+
+// ea: 0x00616A10
+int BG_SetPlayerWeaponForSlot(PlayerState* pPS, int slot, int iWeaponIndex)
+{
+    if (((1 << (iWeaponIndex & 0x1F)) & pPS->weapons[iWeaponIndex >> 5]) == 0)
+        return 0;
+    int v3 = BG_GetInfoForWeapon(iWeaponIndex)->slot;
+    int v4;
+    switch (v3)
+    {
+    case WEAPSLOT_PRIMARY:
+    case WEAPSLOT_PRIMARYB:
+        v4 = slot;
+        if (slot != 1 && slot != 2)
+            return 0;
+        break;
+    case WEAPSLOT_PISTOL:
+    case WEAPSLOT_GRENADE:
+    case WEAPSLOT_SMOKE_GRENADE:
+    case WEAPSLOT_SATCHEL:
+    case WEAPSLOT_SPECIAL:
+        v4 = slot;
+        if (slot != v3)
+            return 0;
+        break;
+    default:
+        return 0;
+    }
+    pPS->weaponslots[v4] = (char)iWeaponIndex;
+    return 1;
+}
+
+// ea: 0x00616AA0
+weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS,
+                                   int iWeaponIndex, int bAnyMode)
+{
+    if (((1 << (iWeaponIndex & 0x1F)) & pPS->weapons[iWeaponIndex >> 5]) == 0)
+        return WEAPSLOT_NONE;
+    int v4 = iWeaponIndex;
+    while (1)
+    {
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v4);
+        int slot = InfoForWeapon->slot;
+        weapSlot_t result;
+        switch (slot)
+        {
+        case WEAPSLOT_PRIMARY:
+        case WEAPSLOT_PRIMARYB:
+            if (pPS->weaponslots[1] == v4)
+            {
+                result = WEAPSLOT_PRIMARY;
+            }
+            else
+            {
+                if (pPS->weaponslots[2] != v4)
+                    goto LABEL_9;
+                result = WEAPSLOT_PRIMARYB;
+            }
+            break;
+        case WEAPSLOT_PISTOL:
+        case WEAPSLOT_GRENADE:
+        case WEAPSLOT_SMOKE_GRENADE:
+        case WEAPSLOT_INTERACT:
+        case WEAPSLOT_SATCHEL:
+        case WEAPSLOT_SPECIAL:
+            if (pPS->weaponslots[slot] != v4)
+            {
+            LABEL_9:
+                if (bAnyMode != 0)
+                {
+                    int iAltWeaponIndex = InfoForWeapon->iAltWeaponIndex;
+                    if (iAltWeaponIndex != 0)
+                        v4 = iAltWeaponIndex;
+                }
+                if (v4 != iWeaponIndex)
+                    continue;
+                goto LABEL_13;
+            }
+            result = (weapSlot_t)InfoForWeapon->slot;
+            break;
+        default:
+        LABEL_13:
+            result = WEAPSLOT_NONE;
+            break;
+        }
+        return result;
+    }
+}
+
+// ea: 0x00616B70
+int BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex)
+{
+    if (iWeaponIndex == 0)
+        return 0;
+    int iAmmoIndex = BG_GetInfoForWeapon(iWeaponIndex)->iAmmoIndex;
+    int iClipIndex = BG_GetInfoForWeapon(iWeaponIndex)->iClipIndex;
+    int bAmmoCounted[92];
+    int bClipCounted[92];
+    memset(bAmmoCounted, 0, sizeof(bAmmoCounted));
+    memset(bClipCounted, 0, sizeof(bClipCounted));
+    weaponFileInfo_t* pWeap = BG_GetInfoForWeapon(iWeaponIndex);
+    int iSharedAmmoCapIndex = pWeap->iSharedAmmoCapIndex;
+    if (iSharedAmmoCapIndex < 0)
+    {
+        if (BG_GetInfoForWeapon(iWeaponIndex)->bClipOnly != 0)
+            return BG_GetAmmoClipSize(iClipIndex) - pPS->ammoclip[iClipIndex];
+        return BG_GetAmmoTypeMax(iAmmoIndex) - pPS->ammo[iAmmoIndex];
+    }
+    int SharedAmmoCapSize =
+        BG_GetSharedAmmoCapSize(iSharedAmmoCapIndex);
+    int v7 = 1;
+    if (bg_iNumWeapons >= 1)
+    {
+        while (1)
+        {
+            if (((1 << (v7 & 0x1F)) & pPS->weapons[v7 >> 5]) != 0
+                && BG_GetInfoForWeapon(v7)->iSharedAmmoCapIndex
+                    == pWeap->iSharedAmmoCapIndex)
+            {
+                if (BG_GetInfoForWeapon(v7)->bClipOnly != 0)
+                {
+                    if (bClipCounted[BG_GetInfoForWeapon(v7)->iClipIndex] == 0)
+                    {
+                        bClipCounted[BG_GetInfoForWeapon(v7)->iClipIndex] = 1;
+                        int v8 = pPS->ammoclip[BG_GetInfoForWeapon(v7)->iClipIndex];
+                        SharedAmmoCapSize -= v8;
+                    }
+                }
+                else if (bAmmoCounted[BG_GetInfoForWeapon(v7)->iAmmoIndex] == 0)
+                {
+                    bAmmoCounted[BG_GetInfoForWeapon(v7)->iAmmoIndex] = 1;
+                    int v8 = pPS->ammo[BG_GetInfoForWeapon(v7)->iAmmoIndex];
+                    SharedAmmoCapSize -= v8;
+                }
+            }
+            if (++v7 > bg_iNumWeapons)
+                return SharedAmmoCapSize;
+        }
+    }
+    return SharedAmmoCapSize;
+}
+
+// ea: 0x00616D50
+int BG_GetTotalAmmoReserve(const PlayerState* pPS, int iWeaponIndex)
+{
+    int v2 = 0;
+    int iAmmoIndex = BG_GetInfoForWeapon(iWeaponIndex)->iAmmoIndex;
+    int iClipIndex = BG_GetInfoForWeapon(iWeaponIndex)->iClipIndex;
+    int bAmmoCounted[92];
+    int bClipCounted[92];
+    memset(bAmmoCounted, 0, sizeof(bAmmoCounted));
+    memset(bClipCounted, 0, sizeof(bClipCounted));
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(iWeaponIndex);
+    int iSharedAmmoCapIndex = InfoForWeapon->iSharedAmmoCapIndex;
+    weaponFileInfo_t* pWeap = InfoForWeapon;
+    if (iSharedAmmoCapIndex < 0)
+    {
+        if (BG_GetInfoForWeapon(iWeaponIndex)->bClipOnly != 0)
+            return pPS->ammoclip[iClipIndex];
+        return pPS->ammo[iAmmoIndex];
+    }
+    for (int i = 1; i <= bg_iNumWeapons; ++i)
+    {
+        if (((1 << (i & 0x1F)) & pPS->weapons[i >> 5]) == 0)
+            continue;
+        weaponFileInfo_t* v6 = BG_GetInfoForWeapon(i);
+        if (v6->iSharedAmmoCapIndex == pWeap->iSharedAmmoCapIndex)
+        {
+            if (BG_GetInfoForWeapon(i)->bClipOnly != 0)
+            {
+                if (bClipCounted[BG_GetInfoForWeapon(i)->iClipIndex] == 0)
+                {
+                    bClipCounted[BG_GetInfoForWeapon(i)->iClipIndex] = 1;
+                    v2 += pPS->ammoclip[BG_GetInfoForWeapon(i)->iClipIndex];
+                }
+            }
+            else if (bAmmoCounted[BG_GetInfoForWeapon(i)->iAmmoIndex] == 0)
+            {
+                bAmmoCounted[BG_GetInfoForWeapon(i)->iAmmoIndex] = 1;
+                v2 += pPS->ammo[BG_GetInfoForWeapon(i)->iAmmoIndex];
+            }
+        }
+    }
+    return v2;
+}
+
+// ea: 0x00616F10
+int BG_GetTotalAmmo(const PlayerState* pPS, int iWeaponIndex)
+{
+    int v2 = 0;
+    int iAmmoIndex = BG_GetInfoForWeapon(iWeaponIndex)->iAmmoIndex;
+    int iClipIndex = BG_GetInfoForWeapon(iWeaponIndex)->iClipIndex;
+    int bAmmoCounted[92];
+    int bClipCounted[92];
+    memset(bAmmoCounted, 0, sizeof(bAmmoCounted));
+    memset(bClipCounted, 0, sizeof(bClipCounted));
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(iWeaponIndex);
+    int iSharedAmmoCapIndex = InfoForWeapon->iSharedAmmoCapIndex;
+    weaponFileInfo_t* pWeap = InfoForWeapon;
+    if (iSharedAmmoCapIndex < 0)
+    {
+        if (BG_GetInfoForWeapon(iWeaponIndex)->bClipOnly != 0)
+            return pPS->ammoclip[iClipIndex];
+        return pPS->ammo[iAmmoIndex] + pPS->ammoclip[iClipIndex];
+    }
+    int v5 = 1;
+    if (bg_iNumWeapons >= 1)
+    {
+        while (1)
+        {
+            if (((1 << (v5 & 0x1F)) & pPS->weapons[v5 >> 5]) != 0)
+            {
+                weaponFileInfo_t* v6 = BG_GetInfoForWeapon(v5);
+                if (v6->iSharedAmmoCapIndex != pWeap->iSharedAmmoCapIndex)
+                    goto LABEL_13;
+                if (BG_GetInfoForWeapon(v5)->bClipOnly == 0)
+                    break;
+                if (bClipCounted[BG_GetInfoForWeapon(v5)->iClipIndex] == 0)
+                {
+                    bClipCounted[BG_GetInfoForWeapon(v5)->iClipIndex] = 1;
+                    v2 += pPS->ammoclip[BG_GetInfoForWeapon(v5)->iClipIndex];
+                }
+            }
+        LABEL_13:
+            if (++v5 > bg_iNumWeapons)
+                return v2;
+        }
+        if (bClipCounted[BG_GetInfoForWeapon(v5)->iClipIndex] == 0)
+        {
+            bClipCounted[BG_GetInfoForWeapon(v5)->iClipIndex] = 1;
+            v2 += pPS->ammoclip[BG_GetInfoForWeapon(v5)->iClipIndex];
+        }
+        if (bAmmoCounted[BG_GetInfoForWeapon(v5)->iAmmoIndex] != 0)
+            goto LABEL_13;
+        bAmmoCounted[BG_GetInfoForWeapon(v5)->iAmmoIndex] = 1;
+        v2 += pPS->ammo[BG_GetInfoForWeapon(v5)->iAmmoIndex];
+        goto LABEL_13;
+    }
+    return v2;
+}

@@ -2249,8 +2249,9 @@ extern const char* SEH_LocalizeTextMessage(const char* pszMessage,
 extern int Com_BitCheck(const int* array, int bitNum);
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
 extern int BG_GetNumWeapons();
-extern int BG_IsPlayerWeaponInSlot(const PlayerState* pPS, int iWeaponIndex,
-                                   int bAnyMode);
+enum weapSlot_t : int;
+extern weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS,
+                                          int iWeaponIndex, int bAnyMode);
 extern int BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
                                     int preferedSlot);
 extern int BG_IsPlayerWeaponAnAlt(int iWeaponIndex, int iAltIndex);

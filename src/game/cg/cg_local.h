@@ -196,7 +196,8 @@ struct scr_vehicle_t {
 };
 
 // PlayerState - subset of the fields cg.o touches (full size 0x5D0)
-struct PlayerState {
+class PlayerState {
+public:
     math::Position3 origin;            // +0x00
     math::Position3 velocity;          // +0x10
     unsigned char bobCycle;            // +0x28
