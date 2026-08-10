@@ -67,6 +67,7 @@ public:
     int  button_value(int index, ButtonIndex btn);
     bool button_pressed(int index, ButtonIndex btn);
     bool button_pressed_clear(int index, ButtonIndex btn);
+    void button_pressed_clear_all(int index);
     bool button_released(int index, ButtonIndex btn);
     bool button_released_clear(int index, ButtonIndex btn);
     bool any_button_pressed(int index);
@@ -220,6 +221,11 @@ bool controller::button_pressed_clear(int index, ButtonIndex btn) {
         return true;
     }
     return false;
+}
+
+void controller::button_pressed_clear_all(int index) {
+    for (int b = LEFTBUTTON; b < 16; ++b)
+        button_pressed_clear(index, (ButtonIndex)b);
 }
 
 bool controller::button_released(int index, ButtonIndex btn) {

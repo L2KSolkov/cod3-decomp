@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include "filesystem/apk.h"
+#include "game/logic/g_inspector.h"
 
 // ============================================================================
 // NAL surface used by AnimIK (animation/nal.cpp local views)
@@ -1160,9 +1161,168 @@ extern cvar_t* in_debugJoystick;
 extern cvar_t* joy_threshold;
 extern bool g_waitingForPress;
 extern bool g_controllerConnectedGamePaused;
-extern bool g_controllerConnectedErrorShown;
+extern bool g_controllerConnectedErrorShown[];
 extern bool g_controllerConnected[4];
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
+
+// ============================================================================
+// IN_Frame - ea: 0x501000
+// Controller poll + button dispatch (game2.o IN_Init/controller glue).
+// ============================================================================
+class controller {
+public:
+    enum ButtonIndex {
+        UPBUTTON = 0, DOWNBUTTON = 1, LEFTBUTTON = 2, RIGHTBUTTON = 3,
+        SQUARE = 4, CIRCLE = 5, L2 = 6, R2 = 7, L1 = 8, R1 = 9,
+        TRIANGLE = 10, R3 = 11, L3 = 12, SELECT = 13, START = 14,
+    };
+    enum StickIndex {
+        LEFT_STICK = 0,
+        RIGHT_STICK = 1,
+    };
+
+    static controller* inst();
+    void poll();
+    bool controller_is_connected(int index);
+    bool button_pressed_clear(int index, ButtonIndex btn);
+    void button_pressed_clear_all(int index);
+    int  button_value(int index, ButtonIndex btn);
+    bool button_pressed(int index, ButtonIndex btn);
+    bool button_released(int index, ButtonIndex btn);
+    void stick_value(int index, StickIndex stick, int* outX, int* outY);
+
+    int  locked_port;
+    bool is_locked;
+};
+extern int dword_F6A28C[4 * 802];  // client -> controller port
+extern int dword_F6A290[4 * 802];  // client -> device flags
+extern int currCl;
+extern int Sys_Milliseconds();
+extern void CL_RecallKeys();     // cl.o
+extern void CL_BackUpKeys();     // cl.o
+extern int CL_ClearKeysForAll(); // cl.o
+extern void CL_GamepadEvent(int physicalAxis, int value, int time);  // cl.o
+
+void IN_Frame()
+{
+    if (in_joystick->integer == 0)
+        return;
+    controller* ctl = controller::inst();
+    if (ctl == nullptr)
+        return;
+    ctl->poll();
+    if (ctl->is_locked)
+    {
+        int locked_port = ctl->locked_port;
+        if (!ctl->controller_is_connected(locked_port))
+        {
+            g_controllerConnected[ctl->locked_port] = false;
+            ctl->button_pressed_clear_all(ctl->locked_port);
+            CL_ClearKeysForAll();
+            currCl = NS_CLIENT;
+            return;
+        }
+        g_controllerConnected[ctl->locked_port] = true;
+    }
+    else
+    {
+        for (int j = 0; j < 4; ++j)
+            g_controllerConnected[j] = ctl->controller_is_connected(j);
+    }
+    for (int k = 0; k < 4; ++k)
+    {
+        if (!g_controllerConnected[k])
+        {
+            for (int m = controller::LEFTBUTTON; m < 16; ++m)
+                ctl->button_pressed_clear(k, (controller::ButtonIndex)m);
+        }
+    }
+    int controller_port = 0;
+    if (ctl->is_locked)
+        controller_port = ctl->locked_port;
+    if (g_controllerConnectedErrorShown[dword_F6A28C[0]])
+    {
+        currCl = NS_CLIENT;
+        return;
+    }
+    currCl = NS_CLIENT;
+    if (!ctl->is_locked)
+        controller_port = dword_F6A28C[802 * currCl];
+    CL_RecallKeys();
+    bool gamePaused = false;
+    InGameMenuSystem* v9 = g_femanager.mIGMS[currCl];
+    if (v9 != nullptr)
+    {
+        gamePaused = v9->IsSystemActive();
+        if (!gamePaused)
+            goto stick_input;
+    }
+    else
+    {
+    stick_input:
+        {
+            int x, y;
+            ctl->stick_value(controller_port, controller::RIGHT_STICK, &x, &y);
+            int value = joy_threshold->value;
+            if (abs(x) >= value)
+                x = (int)((2 * (x >= 0) - 1)
+                          * (((float)(abs(x) - value) / (128 - value)) * 128.0f));
+            else
+                x = 0;
+            if (abs(y) >= value)
+                y = (int)((2 * (y >= 0) - 1)
+                          * (((float)(abs(y) - value) / (128 - value)) * 128.0f));
+            else
+                y = 0;
+            CL_GamepadEvent(0, x, Sys_Milliseconds());
+            CL_GamepadEvent(1, y, Sys_Milliseconds());
+            ctl->stick_value(controller_port, controller::LEFT_STICK, &x, &y);
+            if (abs(x) >= value)
+                x = (int)((2 * (x >= 0) - 1)
+                          * (((float)(abs(x) - value) / (128 - value)) * 128.0f));
+            else
+                x = 0;
+            if (abs(y) >= value)
+                y = (int)((2 * (y >= 0) - 1)
+                          * (((float)(abs(y) - value) / (128 - value)) * 128.0f));
+            else
+                y = 0;
+            CL_GamepadEvent(2, x, Sys_Milliseconds());
+            CL_GamepadEvent(3, y, Sys_Milliseconds());
+        }
+    }
+    if (currCl == NS_CLIENT)
+    {
+        g_inspectorManager.ReadKeys();
+        if (g_inspectorManager.m_KEY_INSPECTOR_ONOFF != 0)
+            g_inspectorManager.m_data.active ^= 1u;
+    }
+    bool selectPressed =
+        ctl->button_value(controller_port, controller::SELECT) != 0;
+    for (int v28 = 0; v28 <= 15; ++v28)
+    {
+        if (!selectPressed || v28 == 15)
+        {
+            bool pressed = ctl->button_pressed(controller_port,
+                                               (controller::ButtonIndex)v28);
+            if (g_inspectorManager.m_data.active == 0 && pressed
+                && !gamePaused && g_femanager.inGame)
+            {
+                bool doCommands = dword_F6A290[802 * currCl] == 2;
+                ButtonMgr::mButtons[currCl][v28].Press(doCommands);
+            }
+        }
+        if (ctl->button_released(controller_port,
+                                 (controller::ButtonIndex)v28)
+            && g_femanager.inGame)
+        {
+            bool doCommands = dword_F6A290[802 * currCl] == 2;
+            ButtonMgr::mButtons[currCl][v28].Release(doCommands);
+        }
+    }
+    CL_BackUpKeys();
+    currCl = NS_CLIENT;
+}
 
 void IN_Init()
 {
@@ -1176,7 +1336,7 @@ void IN_Init()
     ButtonMgr::InitKeyBindings(0);
     g_waitingForPress = false;
     g_controllerConnectedGamePaused = false;
-    g_controllerConnectedErrorShown = false;
+    g_controllerConnectedErrorShown[0] = false;
     for (int i = 0; i < 4; ++i)
         g_controllerConnected[i] = true;
 }

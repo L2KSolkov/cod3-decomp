@@ -377,6 +377,7 @@ struct InGameMenuSystem {
     uint8_t _pad[0x34];
     bool    is_active;                   // +0x34 (FEMenuSystem field, opaque)
     uint8_t _pad2[3];                    // +0x35
+    bool IsSystemActive();               // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ
     void SetActiveMenu(int a2);          // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z
 };
 static_assert(sizeof(InGameMenuSystem) == 56, "InGameMenuSystem size mismatch (fields used)");
