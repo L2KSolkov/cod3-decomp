@@ -336,6 +336,50 @@ done_char:
 }
 
 // ============================================================================
+// tunnel_test - ea: 0x643690 (bg_pmove.cpp)
+// ============================================================================
+extern void query_proximity_data(const math::Position3& lo,
+                                 const math::Position3& hi,
+                                 proximity_data_t& out);  // game.o
+extern void filter_proximity_data(const math::Position3& lo,
+                                  const math::Position3& hi, int contents,
+                                  const proximity_data_t& in,
+                                  proximity_data_t& out);  // game.o
+extern void TracePoint(const proximity_data_t& data, trace_t* results,
+                       const math::Position3& start,
+                       const math::Position3& end,
+                       int brushmask);  // game.o
+
+// ea: 0x00643690
+bool tunnel_test(pmove_t& pm, float radius, const math::Position3& p0,
+                 const math::Position3& p1)
+{
+    Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+        pm.ps->mClient.mHandle.mVal);
+    math::Position3 lo;
+    math::Position3 hi;
+    lo.v = _mm_sub_ps(
+        _mm_min_ps(p0.v, p1.v), _mm_set1_ps(radius));
+    hi.v = _mm_add_ps(
+        _mm_max_ps(p0.v, p1.v), _mm_set1_ps(radius));
+    lo.v.m128_f32[2] -= 100.0f;
+    hi.v.m128_f32[2] += 100.0f;
+    if ((_mm_movemask_ps(_mm_cmplt_ps(
+             _mm_max_ps(_mm_sub_ps(mObject->proximity_data->lo.v, lo.v),
+                        _mm_sub_ps(hi.v, mObject->proximity_data->hi.v)),
+             _mm_setzero_ps()))
+         & 7) != 7)
+        query_proximity_data(lo, hi, *mObject->proximity_data);
+    proximity_data_t filtered;
+    filter_proximity_data(lo, hi, pm.tracemask & 0xFDFFFFFF,
+                          *mObject->proximity_data, filtered);
+    trace_t results;
+    memset(&results, 0, sizeof(results));
+    TracePoint(filtered, &results, p0, p1, pm.tracemask & 0xFDFFFFFF);
+    return results.endpos.v.m128_f32[0] < 1.0f;
+}
+
+// ============================================================================
 // PM_ClipVelocity - ea: 0x604C00
 // ============================================================================
 void PM_ClipVelocity(const math::Dir3* in, const math::Dir3* normal,
