@@ -7913,6 +7913,166 @@ LABEL_16:
     }
 }
 
+// ============================================================================
+// CM_UnlinkEntity - ea: 0x60B230 (cm_world.cpp)
+// ============================================================================
+// ea: 0x0060B230
+void CM_UnlinkEntity(EntityShared* ent)
+{
+    WorldSector* node = ent->worldSector;
+    if (node == nullptr)
+        return;
+    ent->worldSector = nullptr;
+    if (node == &pcm.dummyNode)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 115;
+        AeAssert::gCurrentExpr = "node != &pcm.dummyNode";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (ent == ent->nextEntityInWorldSector)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 117;
+        AeAssert::gCurrentExpr = "ent != ent->nextEntityInWorldSector";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Entity links to itself!"))
+            __debugbreak();
+    }
+    EntityShared* scan = node->entities;
+    if (scan == ent)
+    {
+        node->entities = ent->nextEntityInWorldSector;
+    }
+    else
+    {
+        while (scan != nullptr)
+        {
+            if (scan->nextEntityInWorldSector == ent)
+            {
+                scan->nextEntityInWorldSector = ent->nextEntityInWorldSector;
+                goto FOUND;
+            }
+            scan = scan->nextEntityInWorldSector;
+        }
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+        AeAssert::gCurrentLine = 127;
+        AeAssert::gCurrentExpr = "scan";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+FOUND:
+    for (EntityShared* i = node->entities; i != nullptr;
+         i = i->nextEntityInWorldSector)
+    {
+        if (i == ent)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 141;
+            AeAssert::gCurrentExpr = "scan != ent";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("found twice!"))
+                __debugbreak();
+        }
+    }
+    if (node->entities == nullptr)
+    {
+        while (node->staticModels == nullptr
+               && node->child[0] == &pcm.dummyNode
+               && node->child[1] == &pcm.dummyNode)
+        {
+            if (node->contentsStaticModels != 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+                AeAssert::gCurrentLine = 150;
+                AeAssert::gCurrentExpr = "!node->contentsStaticModels";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            WorldSector* parent = node->parent;
+            node->contentsEntities = 0;
+            if (parent == nullptr)
+            {
+                if (node != &pcm.worldSectorHead)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 156;
+                    AeAssert::gCurrentExpr = "node == &pcm.worldSectorHead";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                goto DONE;
+            }
+            node->parent = pcm.freeHead;
+            pcm.freeHead = node;
+            if (parent->child[0] == node)
+                parent->child[0] = &pcm.dummyNode;
+            else
+            {
+                if (parent->child[1] != node)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 169;
+                    AeAssert::gCurrentExpr = "parentNode->child[1] == node";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                parent->child[1] = &pcm.dummyNode;
+            }
+            node = parent;
+            if (parent->entities != nullptr)
+                goto DONE;
+        }
+    }
+    do
+    {
+    DONE:
+        if (node->child[0] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 180;
+            AeAssert::gCurrentExpr = "node->child[0]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("child[0] is null, unexpected"))
+                __debugbreak();
+        }
+        if (node->child[1] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_world.cpp";
+            AeAssert::gCurrentLine = 181;
+            AeAssert::gCurrentExpr = "node->child[1]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("child[1] is null, unexpected"))
+                __debugbreak();
+        }
+        int contentsEntities = 0;
+        if (node->child[0] != nullptr)
+            contentsEntities = node->child[0]->contentsEntities;
+        if (node->child[1] != nullptr)
+            contentsEntities |= node->child[1]->contentsEntities;
+        for (EntityShared* j = node->entities; j != nullptr;
+             j = j->nextEntityInWorldSector)
+            contentsEntities |= j->contents;
+        node->contentsEntities = contentsEntities;
+        node = node->parent;
+    } while (node != nullptr);
+}
+
 // ea: 0x0060AF90
 int CM_UnlinkStaticModels(TPakId pakId, WorldSector* node)
 {
