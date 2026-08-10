@@ -595,3 +595,38 @@ bool can_place_decal(const math::Position3& p, const math::Dir3& n,
     }
     return true;
 }
+
+// ea: 0x0061CBD0
+bool TestPointInBox(const math::Position3& p, const math::Position3& bmin,
+                    const math::Position3& bmax)
+{
+    return (p.v.m128_f32[0] >= bmin.v.m128_f32[0]
+            && p.v.m128_f32[1] >= bmin.v.m128_f32[1]
+            && p.v.m128_f32[2] >= bmin.v.m128_f32[2]
+            && p.v.m128_f32[0] <= bmax.v.m128_f32[0]
+            && p.v.m128_f32[1] <= bmax.v.m128_f32[1]
+            && p.v.m128_f32[2] <= bmax.v.m128_f32[2]);
+}
+
+// ea: 0x0061CC30
+int TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
+                     const math::Position3& bmax, const cdlPlane* sides,
+                     unsigned int nsides)
+{
+    if (!(p.v.m128_f32[0] >= bmin.v.m128_f32[0]
+          && p.v.m128_f32[1] >= bmin.v.m128_f32[1]
+          && p.v.m128_f32[2] >= bmin.v.m128_f32[2]
+          && p.v.m128_f32[0] <= bmax.v.m128_f32[0]
+          && p.v.m128_f32[1] <= bmax.v.m128_f32[1]
+          && p.v.m128_f32[2] <= bmax.v.m128_f32[2]))
+        return 1;
+    for (unsigned int v5 = 0; v5 < nsides; ++v5)
+    {
+        float dot = p.v.m128_f32[0] * *(const float*)&sides[v5].packed[0]
+            + p.v.m128_f32[1] * *(const float*)&sides[v5].packed[1]
+            + p.v.m128_f32[2] * *(const float*)&sides[v5].packed[2];
+        if (dot - *(const float*)&sides[v5].packed[3] >= 0.0f)
+            return 0;
+    }
+    return 1;
+}
