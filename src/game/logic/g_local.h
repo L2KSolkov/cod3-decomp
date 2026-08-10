@@ -2239,9 +2239,15 @@ extern int TAG_WHEEL_FRONT_LEFT;                     // g.o enum
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 extern float r;                                      // g.o @ 0xDD8228
 extern int VEH_GetWheelOrigin(Entity* ent);          // g.o 0x45C4B0
+struct traceWork_t;
+struct cdl_cinfo1;
 extern bool collide_segment_poly(const math::Position3& p0,
                                  const math::Position3& p1,
                                  void* poly, void* cinfo);  // game.o
+bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
+                     const math::Position3& p0, const math::Position3& p1,
+                     cdl_cinfo1& cinfo, int& sflags,
+                     int& cflags);  // game.o 0x634620
 extern void collide_segment(const void* data, const math::Position3& p0,
                             const math::Position3& p1, float* t, int* sflags,
                             int* cflags, void* poly);  // game.o 0x60A290B0
@@ -2499,6 +2505,13 @@ struct cdl_array_t {
     int   m_count;     // +0x00
     void* m_elements;  // +0x04
 };
+
+// cdl_cinfo1 - segment collision info output (0x20 bytes, ctor at 0x4AECB0)
+struct cdl_cinfo1 {
+    math::Dir3 ni;        // +0x00
+    math::Position3 pi;   // +0x10
+};
+static_assert(sizeof(cdl_cinfo1) == 0x20, "cdl_cinfo1 size mismatch");
 
 struct proximity_data_t {
     math::Position3 lo;              // +0x000

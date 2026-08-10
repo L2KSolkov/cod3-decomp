@@ -4534,6 +4534,284 @@ void PositionTest(traceWork_t* tw, const proximity_data_t& data)
 }
 
 // ============================================================================
+// collide_segment (proximity) - ea: 0x634620 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x00634620
+bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
+                     const math::Position3& p0, const math::Position3& p1,
+                     cdl_cinfo1& cinfo, int& sflags, int& cflags)
+{
+    __m128 v8 = _mm_sub_ps(p1.v, p0.v);
+    __m128 v9 = _mm_mul_ps(v8, v8);
+    float len2 = v9.m128_f32[0] + (v9.m128_f32[1] + v9.m128_f32[2]);
+    if (len2 < 0.001f || len2 > 1680999900.0f)
+        return false;
+
+    bool hit = false;
+
+    int nbrushes = data.brushes_count;
+    for (int i = 0; i < nbrushes; ++i)
+    {
+        if ((i < 0 || i >= data.brushes_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const proxy_obj_t& slot = data.brushes_slot[i];
+        CGBank* bank =
+            ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+        unsigned int oi = slot.oi;
+        if (oi >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[oi];
+        unsigned int brush_index = oi - (unsigned int)bank->nboxes;
+        if (brush_index >= (unsigned int)bank->brushes.m_count
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        cdl_brush_t* brush =
+            &((cdl_brush_t*)bank->brushes.m_elements)[brush_index];
+        unsigned int first_side = (unsigned int)brush->first_side;
+        if (first_side >= (unsigned int)bank->brush_sides.m_count
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        math::Position3 bmin;
+        math::Position3 bmax;
+        bmax.v = _mm_add_ps(
+            _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                        0.0f),
+            _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                        obj->box_radius[2], 0.0f));
+        bmin.v = _mm_sub_ps(
+            _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                        0.0f),
+            _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                        obj->box_radius[2], 0.0f));
+        if (collide_brush_segment(
+                tw, bmin, bmax,
+                &((const cdlPlane*)bank->brush_sides.m_elements)
+                    [first_side],
+                (unsigned int)brush->num_sides))
+        {
+            cinfo.ni.v = tw->trace_normal[0] != 0
+                ? _mm_setr_ps(tw->trace_normal[0], tw->trace_normal[1],
+                              tw->trace_normal[2], tw->trace_normal[3])
+                : _mm_setzero_ps();
+            cinfo.pi.v = _mm_add_ps(
+                p0.v,
+                _mm_mul_ps(_mm_sub_ps(p1.v, p0.v),
+                           _mm_set1_ps(tw->trace_fraction)));
+            sflags = obj->sflags;
+            cflags = obj->cflags;
+            hit = true;
+        }
+    }
+
+    int nboxes = data.boxes_count;
+    for (int i = 0; i < nboxes; ++i)
+    {
+        if ((i < 0 || i >= data.boxes_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const proxy_obj_t& slot = data.boxes_slot[i];
+        CGBank* bank =
+            ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+        if (bank == nullptr)
+            continue;
+        unsigned int oi = slot.oi;
+        if (oi >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[oi];
+        math::Position3 bmin;
+        math::Position3 bmax;
+        bmax.v = _mm_add_ps(
+            _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                        0.0f),
+            _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                        obj->box_radius[2], 0.0f));
+        bmin.v = _mm_sub_ps(
+            _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                        0.0f),
+            _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                        obj->box_radius[2], 0.0f));
+        if (collide_box_segment(tw, bmin, bmax))
+        {
+            cinfo.ni.v = _mm_setr_ps(tw->trace_normal[0],
+                                     tw->trace_normal[1],
+                                     tw->trace_normal[2],
+                                     tw->trace_normal[3]);
+            cinfo.pi.v = _mm_add_ps(
+                p0.v,
+                _mm_mul_ps(_mm_sub_ps(p1.v, p0.v),
+                           _mm_set1_ps(tw->trace_fraction)));
+            sflags = obj->sflags;
+            cflags = obj->cflags;
+            hit = true;
+        }
+    }
+
+    int npolies = data.polies_count;
+    for (int i = 0; i < npolies; ++i)
+    {
+        if ((i < 0 || i >= data.polies_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                114, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        const bounded_proxy_obj_t& slot = data.polies_slot[i];
+        CGBank* bank =
+            ((CGBankManager*)CGBankManager::sInst)->mBankArray[slot.bi];
+        unsigned int oi = slot.oi;
+        if (oi >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (oi >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[oi];
+        unsigned int pi =
+            oi - (unsigned int)bank->nbrushes - (unsigned int)bank->nboxes;
+        if (pi >= (unsigned int)bank->patches.m_count
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        if (pi >= (unsigned int)bank->gjk_patches.m_count
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        const cdl_vinfo_t* vinfo =
+            &((const cdl_vinfo_t*)bank->gjk_patches.m_elements)[pi];
+        unsigned int ind =
+            (unsigned int)((cdl_patch_t*)bank->patches.m_elements)[pi]
+                .first_index
+            + 3 * (unsigned int)slot.ti;
+        if (ind >= (unsigned int)bank->patch_inds.m_count
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        math::Position3 v0;
+        math::Position3 v1;
+        math::Position3 v2;
+        unpack_poly(
+            bank, vinfo,
+            &((const unsigned char*)bank->patch_inds.m_elements)[ind], v0,
+            v1, v2);
+        math::Vector4 plane = calc_normal(v0, v1, v2);
+
+        float d0 = plane.v.m128_f32[0] * p0.v.m128_f32[0]
+            + plane.v.m128_f32[1] * p0.v.m128_f32[1]
+            + plane.v.m128_f32[2] * p0.v.m128_f32[2]
+            + plane.v.m128_f32[3];
+        float d1 = plane.v.m128_f32[0] * p1.v.m128_f32[0]
+            + plane.v.m128_f32[1] * p1.v.m128_f32[1]
+            + plane.v.m128_f32[2] * p1.v.m128_f32[2]
+            + plane.v.m128_f32[3];
+        if (d0 > 0.000099999997f && d1 <= 0.0f)
+        {
+            // closest point on segment to triangle plane
+            math::Position3 cp;
+            cp.v = _mm_div_ps(
+                _mm_sub_ps(_mm_mul_ps(p0.v, _mm_set1_ps(d1)),
+                           _mm_mul_ps(p1.v, _mm_set1_ps(d0))),
+                _mm_set1_ps(d1 - d0));
+            __m128 v52 = _mm_sub_ps(p0.v, cp.v);
+            __m128 v53 = _mm_mul_ps(v52, v52);
+            float d2 =
+                v53.m128_f32[0] + (v53.m128_f32[1] + v53.m128_f32[2]);
+            if (len2 > d2)
+            {
+                // barycentric edge tests of cp against the triangle
+                __m128 v57 = _mm_sub_ps(v0.v, v1.v);
+                __m128 v56 = _mm_sub_ps(cp.v, v2.v);
+                __m128 v58 = _mm_sub_ps(v1.v, v2.v);
+                __m128 v55 = _mm_sub_ps(cp.v, v0.v);
+                __m128 v59 = _mm_sub_ps(v2.v, v0.v);
+                __m128 v54 = _mm_sub_ps(cp.v, v1.v);
+                __m128 a = _mm_mul_ps(
+                    _mm_sub_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v57, v57, 9),
+                                   _mm_shuffle_ps(v56, v56, 18)),
+                        _mm_mul_ps(_mm_shuffle_ps(v57, v57, 18),
+                                   _mm_shuffle_ps(v56, v56, 9))),
+                    plane.v);
+                float s0 = a.m128_f32[0] + (a.m128_f32[1] + a.m128_f32[2]);
+                __m128 b = _mm_mul_ps(
+                    _mm_sub_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v58, v58, 9),
+                                   _mm_shuffle_ps(v55, v55, 18)),
+                        _mm_mul_ps(_mm_shuffle_ps(v58, v58, 18),
+                                   _mm_shuffle_ps(v55, v55, 9))),
+                    plane.v);
+                float s1 = b.m128_f32[0] + (b.m128_f32[1] + b.m128_f32[2]);
+                __m128 c = _mm_mul_ps(
+                    _mm_sub_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v59, v59, 9),
+                                   _mm_shuffle_ps(v54, v54, 18)),
+                        _mm_mul_ps(_mm_shuffle_ps(v59, v59, 18),
+                                   _mm_shuffle_ps(v54, v54, 9))),
+                    plane.v);
+                float s2 = c.m128_f32[0] + (c.m128_f32[1] + c.m128_f32[2]);
+                if (s0 >= 0.0f && s1 >= 0.0f && s2 >= 0.0f)
+                {
+                    cinfo.ni.v = _mm_setr_ps(plane.v.m128_f32[0],
+                                             plane.v.m128_f32[1],
+                                             plane.v.m128_f32[2],
+                                             plane.v.m128_f32[3]);
+                    cinfo.pi = cp;
+                    sflags = obj->sflags;
+                    cflags = obj->cflags;
+                    hit = true;
+                }
+            }
+        }
+    }
+    return hit;
+}
+
+// ============================================================================
 // TestInLeaf / SightTraceThroughLeaf - ea: 0x623D40 / 0x624070
 // (CollisionMgr.cpp DCGSet leaf sweep)
 // ============================================================================
