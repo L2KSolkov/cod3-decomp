@@ -2590,6 +2590,10 @@ void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
 void unpack(const CGBank* bank, unsigned int pi,
             math::Position3* verts);  // game.o 0x622B60
 void CM_ValidateAllWorldSectors();    // game.o 0x633010
+int CM_AreaEntities(const math::Position3& mins,
+                    const math::Position3& maxs,
+                    DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                    int maxcount, int contentmask);  // game.o 0x6331A0
 bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v0,
                          const math::Position3& v1,

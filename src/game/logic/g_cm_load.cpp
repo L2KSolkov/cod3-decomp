@@ -2749,6 +2749,112 @@ void CM_ValidateAllWorldSectors()
 }
 
 // ============================================================================
+// CM_AreaEntities - ea: 0x6331A0 / _r: 0x633020 (cm_world.cpp)
+// ============================================================================
+struct areaParms_t {
+    math::Position3 mins;       // +0x00
+    math::Position3 maxs;       // +0x10
+    DbLinkedHandle<EntityHandleDb, Entity>* list;  // +0x20
+    int count;                  // +0x24
+    int maxcount;               // +0x28
+    int contentmask;            // +0x2C
+};
+
+// ea: 0x00633020
+void CM_AreaEntities_r(WorldSector* node, areaParms_t* ap)
+{
+    WorldSector* v2 = node;
+    if ((node->contentsEntities & ap->contentmask) != 0)
+    {
+        while (1)
+        {
+            EntityShared* entities = (EntityShared*)v2->entities;
+            if (entities != nullptr)
+            {
+                while (1)
+                {
+                    unsigned int v4 = entities[1].svFlags & 0xFFF;
+                    Entity* mObject = nullptr;
+                    if (v4 < 0x540
+                        && entities[1].svFlags >> 12
+                            == (unsigned int)EntityHandleDb::sInst
+                                   .mElements[v4].mKey)
+                        mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+                    if ((Entity*)((char*)entities - 0xE0) != mObject)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\cm_world.cpp";
+                        AeAssert::gCurrentLine = 663;
+                        AeAssert::gCurrentExpr =
+                            "check->GetEntity() == *(check->GetEntity()->GetHandle())";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                "Bad/Deleted entity in world sector."))
+                            __debugbreak();
+                    }
+                    if ((entities->contents & ap->contentmask) != 0
+                        && (_mm_movemask_ps(
+                                _mm_cmplt_ps(
+                                    _mm_max_ps(
+                                        _mm_sub_ps(ap->mins.v,
+                                                   entities->absmax.v),
+                                        _mm_sub_ps(entities->absmin.v,
+                                                   ap->maxs.v)),
+                                    _mm_setzero_ps()))
+                            & 7) == 7)
+                    {
+                        int count = ap->count;
+                        if (count == ap->maxcount)
+                        {
+                            Com_DPrintf("CM_AreaEntities: MAXCOUNT\n");
+                            return;
+                        }
+                        ap->list[count].mHandle.mVal =
+                            (unsigned int)entities[1].svFlags;
+                        ++ap->count;
+                    }
+                    entities = entities->nextEntityInWorldSector;
+                    if (entities == nullptr)
+                    {
+                        v2 = node;
+                        break;
+                    }
+                }
+            }
+            if (ap->maxs.v.m128_f32[v2->axis] > v2->dist)
+            {
+                CM_AreaEntities_r((WorldSector*)v2->child[0], ap);
+                v2 = node;
+            }
+            if (v2->dist <= ap->mins.v.m128_f32[v2->axis])
+                break;
+            node = (WorldSector*)v2->child[1];
+            if ((node->contentsEntities & ap->contentmask) == 0)
+                break;
+            v2 = (WorldSector*)v2->child[1];
+        }
+    }
+}
+
+// ea: 0x006331A0
+int CM_AreaEntities(const math::Position3& mins,
+                    const math::Position3& maxs,
+                    DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                    int maxcount, int contentmask)
+{
+    areaParms_t ap;
+    ap.mins.v = mins.v;
+    ap.maxs.v = maxs.v;
+    ap.list = entityList;
+    ap.count = 0;
+    ap.maxcount = maxcount;
+    ap.contentmask = contentmask;
+    CM_AreaEntities_r(&pcm.worldSectorHead, &ap);
+    return ap.count;
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0
