@@ -1083,3 +1083,173 @@ bool new_push_out_sphere_triangle(const math::Position3& sphere_center,
     }
     return false;
 }
+
+// ea: 0x0060DE10
+int trace_point_through_sphere(const math::Position3& p, const math::Dir3& ud,
+                               const math::Position3& ctr, float r, float* t,
+                               math::Position3& q)
+{
+    float v6[3];
+    v6[0] = p.v.m128_f32[0] - ctr.v.m128_f32[0];
+    v6[1] = p.v.m128_f32[1] - ctr.v.m128_f32[1];
+    v6[2] = p.v.m128_f32[2] - ctr.v.m128_f32[2];
+    float v13 = v6[0] * ud.v.m128_f32[0] + v6[1] * ud.v.m128_f32[1]
+        + v6[2] * ud.v.m128_f32[2];
+    float v9 = (v6[0] * v6[0] + v6[1] * v6[1] + v6[2] * v6[2]) - (r * r);
+    if (v9 > 0.0f && v13 > 0.0f)
+        return 0;
+    float v12 = (v13 * v13) - v9;
+    if (v12 < 0.0f)
+        return 0;
+    float v11 = -v13 - sqrtf(v12);
+    *t = v11;
+    if (v11 < 0.0f)
+        *t = 0.0f;
+    q.v.m128_f32[0] = p.v.m128_f32[0] + ud.v.m128_f32[0] * *t;
+    q.v.m128_f32[1] = p.v.m128_f32[1] + ud.v.m128_f32[1] * *t;
+    q.v.m128_f32[2] = p.v.m128_f32[2] + ud.v.m128_f32[2] * *t;
+    return 1;
+}
+
+// ea: 0x0060DF10
+bool trace_sphere_through_sphere(const math::Position3& c0, float r0,
+                                 const math::Position3& c1, float r1,
+                                 const math::Dir3& v0, float* t)
+{
+    float v14 = sqrtf(v0.v.m128_f32[0] * v0.v.m128_f32[0]
+                      + v0.v.m128_f32[1] * v0.v.m128_f32[1]
+                      + v0.v.m128_f32[2] * v0.v.m128_f32[2]);
+    if (v14 <= 0.001f)
+        return false;
+    math::Dir3 q_4;
+    q_4.v.m128_f32[0] = v0.v.m128_f32[0] / v14;
+    q_4.v.m128_f32[1] = v0.v.m128_f32[1] / v14;
+    q_4.v.m128_f32[2] = v0.v.m128_f32[2] / v14;
+    math::Position3 q;
+    return trace_point_through_sphere(c0, q_4, c1, r0 + r1, t, q) != 0
+        && v14 >= *t;
+}
+
+// ea: 0x0060DFE0
+int trace_point_through_cylinder(const math::Position3& sa,
+                                 const math::Position3& sb,
+                                 const math::Position3& p,
+                                 const math::Position3& q, float r, float* t)
+{
+    float v6[3] = { q.v.m128_f32[0] - p.v.m128_f32[0],
+                    q.v.m128_f32[1] - p.v.m128_f32[1],
+                    q.v.m128_f32[2] - p.v.m128_f32[2] };
+    float v7[3] = { sa.v.m128_f32[0] - p.v.m128_f32[0],
+                    sa.v.m128_f32[1] - p.v.m128_f32[1],
+                    sa.v.m128_f32[2] - p.v.m128_f32[2] };
+    float v8[3] = { sb.v.m128_f32[0] - sa.v.m128_f32[0],
+                    sb.v.m128_f32[1] - sa.v.m128_f32[1],
+                    sb.v.m128_f32[2] - sa.v.m128_f32[2] };
+    float v27 = v7[0] * v6[0] + v7[1] * v6[1] + v7[2] * v6[2];
+    float a = v8[0] * v6[0] + v8[1] * v6[1] + v8[2] * v6[2];
+    float v24 = v6[0] * v6[0] + v6[1] * v6[1] + v6[2] * v6[2];
+    float v12 = v27;
+    if (v27 >= 0.0f || (a + v27) >= 0.0f)
+    {
+        float v13 = v24;
+        if (v27 <= v24 || (a + v27) <= v24)
+        {
+            float b = v8[0] * v8[0] + v8[1] * v8[1] + v8[2] * v8[2];
+            float v25 = b * v24 - a * a;
+            float v28 = v7[0] * v8[0] + v7[1] * v8[1] + v7[2] * v8[2];
+            float v17 = (v7[0] * v7[0] + v7[1] * v7[1] + v7[2] * v7[2])
+                - (r * r);
+            float v18 = (v13 * v17) - (v12 * v12);
+            if (fabsf(v25) >= 0.000099999997f)
+            {
+                float v23 = (v28 * v13) - (a * v12);
+                if (((v23 * v23) - (v18 * v25)) >= 0.0f)
+                {
+                    float v26 = (-v23 - sqrtf((v23 * v23) - (v18 * v25)))
+                        / v25;
+                    *t = v26;
+                    if (v26 >= 0.0f && v26 <= 1.0f)
+                    {
+                        float v20 = (v26 * a) + v12;
+                        if (v20 >= 0.0f)
+                        {
+                            if (v20 <= v13)
+                                return 1;
+                            if (a < 0.0f)
+                            {
+                                float v22 = (v13 - v12) / a;
+                                *t = v22;
+                                if ((((((v28 - a) * 2.0f) + (v22 * b)) * v22)
+                                     + ((v13 + v17) - (v12 * 2.0f))) <= 0.0f)
+                                    return 1;
+                            }
+                        }
+                        else if (a > 0.0f)
+                        {
+                            float v21 = 0.0f - (v12 / a);
+                            *t = v21;
+                            if ((((((v21 * b) + v28) * v21) * 2.0f) + v17)
+                                <= 0.0f)
+                                return 1;
+                        }
+                    }
+                }
+            }
+            else if (v18 <= 0.0f)
+            {
+                if (v12 < 0.0f)
+                {
+                    *t = 0.0f - (v28 / b);
+                    return 1;
+                }
+                if (v12 > v13)
+                {
+                    *t = (a - v28) / b;
+                    return 1;
+                }
+                *t = 0.0f;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+// ea: 0x0060DD10
+bool sight_trace_point_patch(const math::Position3* verts,
+                             const unsigned char* inds,
+                             unsigned short ninds,
+                             const math::Position3& p0,
+                             const math::Position3& p1,
+                             const math::Dir3& dir)
+{
+    float v27[3];
+    v27[0] = 1.0f;
+    if (ninds == 0)
+        return false;
+    const unsigned char* v7 = inds + 1;
+    while (1)
+    {
+        math::Position3 v0 = verts[*(v7 - 1)];
+        math::Position3 v1 = verts[*v7];
+        math::Position3 v2 = verts[v7[1]];
+        float tri[3][3];
+        tri[0][0] = v0.v.m128_f32[0];
+        tri[0][1] = v0.v.m128_f32[1];
+        tri[0][2] = v0.v.m128_f32[2];
+        tri[1][0] = v1.v.m128_f32[0];
+        tri[1][1] = v1.v.m128_f32[1];
+        tri[1][2] = v1.v.m128_f32[2];
+        tri[2][0] = v2.v.m128_f32[0];
+        tri[2][1] = v2.v.m128_f32[1];
+        tri[2][2] = v2.v.m128_f32[2];
+        if (collide_ray_triangle(
+                p0, dir, *(const math::Position3*)tri[0],
+                *(const math::Position3*)tri[1],
+                *(const math::Position3*)tri[2], v27[0], v27))
+            return true;
+        v7 += 3;
+        if (v7 - inds >= ninds)
+            return false;
+    }
+}

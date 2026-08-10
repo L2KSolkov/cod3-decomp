@@ -2543,6 +2543,24 @@ void CreateRotationMatrix(const math::Position3& angles,
                           math::Position3* matrix);   // game.o 0x60C370
 float point_to_segment_dist2(const math::Position3& c, const math::Position3& a,
                              const math::Position3& b);  // game.o 0x60E300
+int trace_point_through_sphere(const math::Position3& p, const math::Dir3& ud,
+                               const math::Position3& ctr, float r, float* t,
+                               math::Position3& q);  // game.o 0x60DE10
+bool trace_sphere_through_sphere(const math::Position3& c0, float r0,
+                                 const math::Position3& c1, float r1,
+                                 const math::Dir3& v0,
+                                 float* t);  // game.o 0x60DF10
+int trace_point_through_cylinder(const math::Position3& sa,
+                                 const math::Position3& sb,
+                                 const math::Position3& p,
+                                 const math::Position3& q, float r,
+                                 float* t);  // game.o 0x60DFE0
+bool sight_trace_point_patch(const math::Position3* verts,
+                             const unsigned char* inds,
+                             unsigned short ninds,
+                             const math::Position3& p0,
+                             const math::Position3& p1,
+                             const math::Dir3& dir);  // game.o 0x60DD10
 
 void query_proximity_data(const math::Position3& lo, const math::Position3& hi,
                           proximity_data_t& out);      // game.o 0x60A25BC0
