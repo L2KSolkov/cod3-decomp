@@ -2658,6 +2658,12 @@ struct DCGBankManager {
 };
 DCGBankManager* DCGBankManager::sInst = nullptr;
 
+struct GdbFileManager {
+    void* __vftable;  // +0x00
+    GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
+    ~GdbFileManager(); // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
+};
+
 // ea: 0x00622C00
 DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle)
 {
@@ -3251,6 +3257,24 @@ void CM_PointTraceStaticModels(trace_t* results,
             + start.v.m128_f32[2];
         *results = v9.trace;
     }
+}
+
+// ============================================================================
+// GdbFileManager ctor/dtor - ea: 0x629920 / 0x61F790
+// ============================================================================
+extern void* InplaceAssetBankSet_GdbFileBank_ctor(void* self);  // streamer.o
+
+// ea: 0x00629920
+GdbFileManager::GdbFileManager()
+{
+    InplaceAssetBankSet_GdbFileBank_ctor(this);
+    this->__vftable = 0;
+}
+
+// ea: 0x0061F790
+GdbFileManager::~GdbFileManager()
+{
+    this->__vftable = 0;
 }
 
 // ============================================================================
