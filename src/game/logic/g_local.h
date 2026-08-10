@@ -3319,6 +3319,7 @@ class EffectEventSys {
 public:
     static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
     void SendSoundNotify(Entity* pEnt);  // ea: 0x004BCDE0
+    void SendSpecificSoundNotify(Entity* pEnt, HashString soundName);  // ?SendSpecificSoundNotify@EffectEventSys@@QAEXPAVEntity@@VHashString@@@Z
     void StopEffect(int handle, bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z
     void AdjustEffect_Scale(int handle, const char* param, float scale);  // ?AdjustEffect_Scale@EffectEventSys@@QAEXVHandle@@PBDM@Z
 };

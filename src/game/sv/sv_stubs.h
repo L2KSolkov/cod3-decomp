@@ -364,6 +364,13 @@ struct SoundDevice {
         void Pause();                       // ?Pause@Sound@SoundDevice@@QAEXXZ
         void Unpause();                     // ?Unpause@Sound@SoundDevice@@QAEXXZ
         void DampenGuard();                 // ?DampenGuard@Sound@SoundDevice@@QAEXXZ
+        ~Sound();                           // ??1Sound@SoundDevice@@QAE@XZ (game.o 0x62C020)
+        void Stop();                        // ?Stop@Sound@SoundDevice@@QAEXXZ (game.o 0x62C0D0)
+        void SetVolume(float vol);          // ?SetVolume@Sound@SoundDevice@@QAEXM@Z (game.o 0x62C210)
+    };
+    struct SoundHandleDb {
+        static SoundHandleDb sInst;         // ?sInst@SoundHandleDb@SoundDevice@@0V12@A @ 0xF50D10
+        void ReleaseHandle(Handle h);       // HandleDb<Sound,512,SizedHandle<12,20>>::ReleaseHandle
     };
     Sound mSounds[512];              // +0x00 (0x3C stride)
     int   mNumberOfListeners;        // +0x7800

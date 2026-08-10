@@ -1010,6 +1010,15 @@ enum nslSourceState {
     NSL_SOURCE_STATE_PAUSED = 5,
 };
 extern nslSourceState nslGetSourceState(nslSourceID sid);   // nsl
+extern unsigned int nslWaveGetHash(nslWaveID waveID);       // nsl
+extern void nslStopSource(nslSourceID sid);                 // nsl
+extern void nslFreeSource(nslSourceID sid);                 // nsl
+extern void nslSetSourceParam(nslSourceID sid, int index,
+                              float value);                 // nsl
+extern const char* nslWaveGetName(nslWaveID waveID);        // nsl
+extern nslSourceID g_break_on_stop;  // ?g_break_on_stop@@3W4nslSourceID@@A (game.o)
+extern void tlWarning(const char* fmt, ...);                // tl_xboxr
+extern "C" int __fpclass(float);
 extern const char* nslGetSourceName(nslSourceID sid);       // nsl
 extern float nslGetSourceParam(nslSourceID sid, int index,
                                float defaultValue);         // nsl
@@ -1664,3 +1673,114 @@ void SoundDevice::SetReverb(const char* preset, bool immediate)
         this->mRemainingReverbBlendTime = 0.0f;
     }
 }
+
+// ea: 0x0062C020
+SoundDevice::Sound::~Sound()
+{
+    nslSourceState SourceState =
+        nslGetSourceState((nslSourceID)this->mSource);
+    if (this->mSource != NSL_SOURCE_ID_INVALID
+        && (this->mPaused || SourceState == NSL_SOURCE_STATE_PLAYING
+            || SourceState == NSL_SOURCE_STATE_QUEUING
+            || SourceState == NSL_SOURCE_STATE_QUEUED
+            || SourceState == NSL_SOURCE_STATE_PAUSED))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 288;
+        AeAssert::gCurrentExpr =
+            "mSource == NSL_SOURCE_ID_INVALID || IsFinished()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("source destructed while still playing"))
+            __debugbreak();
+    }
+    unsigned int v3 = this->mEntHandle.mVal & 0xFFF;
+    if (v3 < 0x540
+        && this->mEntHandle.mVal >> 12
+            == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr && this->mDialogNotify.mHash != 0)
+            mObject->Notify(this->mDialogNotify);
+    }
+}
+
+// ea: 0x0062C0D0
+void SoundDevice::Sound::Stop()
+{
+    if (this->mSource != NSL_SOURCE_ID_INVALID)
+    {
+        nslWaveGetHash((nslWaveID)this->mWave);
+        if (this->mSource == g_break_on_stop)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+            AeAssert::gCurrentLine = 421;
+            AeAssert::gCurrentExpr = "mSource != g_break_on_stop";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("no!"))
+                __debugbreak();
+        }
+        SoundDevice::SoundHandleDb::sInst.ReleaseHandle(this->mHandle);
+        this->mHandle.mVal = 0;
+        nslStopSource((nslSourceID)this->mSource);
+        nslFreeSource((nslSourceID)this->mSource);
+        this->mSource = NSL_SOURCE_ID_INVALID;
+    }
+    unsigned int v2 = this->mEntHandle.mVal & 0xFFF;
+    if (v2 < 0x540
+        && this->mEntHandle.mVal >> 12
+            == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            HashString v4;
+            v4.mHash = nslWaveGetHash((nslWaveID)this->mWave);
+            EffectEventSys::sInst->SendSpecificSoundNotify(mObject, v4);
+            if (this->mDialogNotify.mHash != 0)
+                mObject->Notify(this->mDialogNotify);
+        }
+    }
+    this->mMinRange = 50.0f;
+    this->mPaused = false;
+    this->mDialogNotify.mHash = 0;
+    this->mPoPtr = nullptr;
+    this->mSource = NSL_SOURCE_ID_INVALID;
+    this->mWave = NSL_WAVE_ID_INVALID;
+    this->mAutoRelease = true;
+    this->mPitch = 1.0f;
+    this->mVolume = 1.0f;
+    this->mMaxRange = 1500.0f;
+    this->mGroupVolume = 1.0f;
+}
+
+// ea: 0x0062C210
+void SoundDevice::Sound::SetVolume(float vol)
+{
+    if (this->mSource == NSL_SOURCE_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 474;
+        AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+            __debugbreak();
+    }
+    if (this->mSource != NSL_SOURCE_ID_INVALID)
+    {
+        if ((__fpclass(vol) & 0x297) != 0)
+        {
+            const char* Name = nslWaveGetName((nslWaveID)this->mWave);
+            tlWarning("A NAN was passed into the sound system while trying to adjust the volume on %s\n", Name);
+            this->Stop();
+        }
+        else
+        {
+            nslSetSourceParam((nslSourceID)this->mSource, 0,
+                              this->mGroupVolume * vol);
+            this->mVolume = vol;
+        }
+    }
+}
+
+
