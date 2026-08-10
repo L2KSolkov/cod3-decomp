@@ -168,8 +168,8 @@ cFreeList<Entity> gEntFreeList;    // @ 0xF50D04
 str_const_t str_const;             // @ 0xECBD30 (runtime-filled)
 HashString hash_const_info_player_deathmatch;  // ?hash_const_info_player_deathmatch (g.o)
 
-// .rdata @ 0xCD67AE (2 bytes + NUL)
-const char defaultFileName[] = "or";
+// .rdata @ 0xCD67AE - 2 NUL bytes then "sv_cheats" (verified vs XBE bytes)
+const char defaultFileName[] = "\0\0sv_cheats";
 
 // .rdata @ 0xD0155C / 0xD0156C (verified against XBE bytes)
 extern const float colorRed[4] = { 1.0f, 0.0f, 0.0f, 1.0f };

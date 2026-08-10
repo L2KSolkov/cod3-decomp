@@ -1515,13 +1515,193 @@ void CGBankManager::UnloadBank(TPakId pakId)
 }
 
 // ============================================================================
-// AnimNotifyTask::Find - ea: 0x612790
+// AnimNotifyTask - ea: 0x602350..0x62B950 (AnimNotifyTask.cpp)
 // ============================================================================
-class AnimNotifyTask {
-    static ae_vector<unsigned int> mKeys;  // ?mKeys@AnimNotifyTask@@0V?$ae_vector@I@@A
-    static int Find(unsigned int key);     // ?Find@AnimNotifyTask@@CAHI@Z
+extern void* AnimNotifyTask_vftable;  // ??_7AnimNotifyTask@@6B@ @ 0xD03A60
+typedef void (__cdecl* AnimNotifyCallback)(Broc::entity);
+extern void ae_vector_push_back_uint(
+    ae_vector<unsigned int>* self, const unsigned int* elem);  // ?push_back@?$ae_vector@I@@QAEXABI@Z (0x41AF42)
+extern void ae_vector_push_back_funcptr(
+    ae_vector<AnimNotifyCallback>* self,
+    AnimNotifyCallback const* elem);  // ?push_back@?$ae_vector@P6AXVentity@Broc@@@Z@@QAEXABQ6AXVentity@Broc@@@Z@Z (0x42A9F1)
+
+class AnimNotifyTask : public Task {
+public:
+    AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
+                   const char* pAnimName, unsigned int killHash);
+    AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
+                   unsigned int animHash, unsigned int killHash);
+    void Update(Entity* pEnt, float deltaT);  // virtual in binary (UAEX)
+    static void RegisterFunc(const char* pKey,
+                             AnimNotifyCallback cbFunc);
+    static int Find(unsigned int key);  // ?Find@AnimNotifyTask@@CAHI@Z
+
+    unsigned int mAnimHash;        // +0x1C
+    unsigned int mNotifyKillHash;  // +0x20
+    static ae_vector<unsigned int> mKeys;   // ?mKeys@AnimNotifyTask@@0V?$ae_vector@I@@A @ 0xF4F460
+    static ae_vector<AnimNotifyCallback> mPtrs;  // @ 0xF50CA0
 };
+static_assert(sizeof(AnimNotifyTask) == 0x24, "AnimNotifyTask size mismatch");
 ae_vector<unsigned int> AnimNotifyTask::mKeys;
+ae_vector<AnimNotifyCallback> AnimNotifyTask::mPtrs;
+
+// file-scope hashes ($S12_2-guarded; .data @ 0xF58C3C..0xF58C50)
+static unsigned int donotetracksdoneHash;  // @ 0xF58C4C
+static unsigned int termHash;              // @ 0xF58C48
+static unsigned int endHash;               // @ 0xF58C44
+static unsigned int finishedHash;          // @ 0xF58C40
+static unsigned int undefinedHash;         // @ 0xF58C3C
+static int          sAnimNotifyInitFlags;  // $S12_2 @ 0xF58C50
+
+// WaitTilOutputInst1<Broc::string> (Broc): WaitTilOutput base + value string.
+// AssignData is called virtually at vtable slot 1 in the binary; bridged here
+// through the core.o shim used by EntityNotifySet::AssignScriptVariable.
+struct WaitTilOutputInst1 {
+    void*        __vftable;   // +0x00
+    void*        _dl[2];      // +0x04
+    Broc::string data;        // +0x0C
+
+    WaitTilOutputInst1(const Broc::string& d) : data(d)
+    {
+        __vftable = nullptr;
+        _dl[0] = nullptr;
+        _dl[1] = nullptr;
+    }
+    ~WaitTilOutputInst1() {}
+};
+extern void WaitTilOutput_AssignData(void* self, void* data);  // core.o
+
+// ea: 0x00602350
+AnimNotifyTask::AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
+                               const char* pAnimName, unsigned int killHash)
+    : Task(h, 0x414E4659)
+{
+    __vftable = (void*)&AnimNotifyTask_vftable;
+    mNotifyKillHash = killHash;
+    mAnimHash = HashString::CalcHash(pAnimName);
+}
+
+// ea: 0x006023C0
+AnimNotifyTask::AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
+                               unsigned int animHash, unsigned int killHash)
+    : Task(h, 0x414E4659)
+{
+    __vftable = (void*)&AnimNotifyTask_vftable;
+    mNotifyKillHash = killHash;
+    mAnimHash = animHash;
+}
+
+// ea: 0x0062B670
+void AnimNotifyTask::Update(Entity* pEnt, float deltaT)
+{
+    if ((sAnimNotifyInitFlags & 1) == 0)
+    {
+        sAnimNotifyInitFlags |= 1;
+        donotetracksdoneHash = HashString::CalcHash("donotetracksdone");
+    }
+    if ((this->mFlags & 4) == 0 && pEnt != nullptr)
+    {
+        EntityNotifySet* mNotifySet = pEnt->mNotifySet;
+        if (mNotifySet != nullptr)
+        {
+            Broc::string outString((Broc::string::Block*)nullptr);
+            WaitTilOutputInst1 outParams(outString);
+            if ((sAnimNotifyInitFlags & 2) == 0)
+            {
+                sAnimNotifyInitFlags |= 2;
+                termHash = HashString::CalcHash("killanimscript");
+            }
+            HashString chk;
+            chk.mHash = termHash;
+            if (EntityNotifySet_GetNotify(mNotifySet, chk.mHash) != nullptr
+                || (chk.mHash = this->mNotifyKillHash,
+                    EntityNotifySet_GetNotify(mNotifySet, chk.mHash)
+                        != nullptr))
+            {
+                HashString h;
+                h.mHash = donotetracksdoneHash;
+                pEnt->Notify(h);
+                this->mFlags |= 4;
+                return;
+            }
+            chk.mHash = this->mAnimHash;
+            EntityNotify* Notify =
+                (EntityNotify*)EntityNotifySet_GetNotify(mNotifySet,
+                                                         chk.mHash);
+            if (Notify != nullptr && Notify->mParam != nullptr)
+            {
+                if ((sAnimNotifyInitFlags & 4) == 0)
+                {
+                    sAnimNotifyInitFlags |= 4;
+                    endHash = HashString::CalcHash("end");
+                }
+                if ((sAnimNotifyInitFlags & 8) == 0)
+                {
+                    sAnimNotifyInitFlags |= 8;
+                    finishedHash = HashString::CalcHash("finished");
+                }
+                if ((sAnimNotifyInitFlags & 0x10) == 0)
+                {
+                    sAnimNotifyInitFlags |= 0x10;
+                    undefinedHash = HashString::CalcHash("undefined");
+                }
+                bool v9 = false;
+                WaitTilOutput_AssignData(Notify->mParam, &outParams);
+                const char* v10 =
+                    outParams.data.mBlock != nullptr
+                        ? (const char*)(outParams.data.mBlock + 1)
+                        : defaultFileName;
+                unsigned int v11 = HashString::CalcHash(v10);
+                if (v11 == endHash || v11 == finishedHash
+                    || v11 == undefinedHash)
+                    v9 = true;
+                int v12 = AnimNotifyTask::Find(v11);
+                if (v12 != -1)
+                {
+                    Broc::entity ent;
+                    ent.___u0 = pEnt->mHandle.mHandle.mVal;
+                    AnimNotifyTask::mPtrs.mElements[v12](ent);
+                    if (v9)
+                    {
+                        HashString h;
+                        h.mHash = donotetracksdoneHash;
+                        pEnt->Notify(h);
+                        this->mFlags |= 4;
+                        return;
+                    }
+                    return;
+                }
+                if (v9)
+                {
+                    HashString h;
+                    h.mHash = donotetracksdoneHash;
+                    pEnt->Notify(h);
+                    this->mFlags |= 4;
+                    return;
+                }
+            }
+        }
+    }
+    if ((this->mFlags & 4) != 0 && pEnt != nullptr)
+    {
+        HashString h;
+        h.mHash = donotetracksdoneHash;
+        pEnt->Notify(h);
+    }
+}
+
+// ea: 0x0062B950
+void AnimNotifyTask::RegisterFunc(const char* pKey,
+                                  AnimNotifyCallback cbFunc)
+{
+    unsigned int keyHash = HashString::CalcHash(pKey);
+    int index = AnimNotifyTask::Find(keyHash);
+    if (index == -1)
+    {
+        ae_vector_push_back_uint(&AnimNotifyTask::mKeys, &keyHash);
+        ae_vector_push_back_funcptr(&AnimNotifyTask::mPtrs, &cbFunc);
+    }
+}
 
 // ea: 0x00612790
 int AnimNotifyTask::Find(unsigned int key)

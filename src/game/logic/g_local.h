@@ -430,7 +430,7 @@ extern int g_drawDebugLos;             // 0xEB1108
 extern int g_drawDebugEntityLos;       // 0xEB110C
 extern int g_numLosHits;               // 0xEB1110
 extern int g_numLosMisses;             // 0xEB1114
-extern const char defaultFileName[];   // 0xCD67AE ("or")
+extern const char defaultFileName[];   // 0xCD67AE ("\0\0sv_cheats")
 extern const float colorRed[4];        // 0xD0155C {1,0,0,1}
 extern const float colorGreen[4];      // 0xD0156C {0,1,0,1}
 extern const float colorYellow[4];     // 0xD0159C
