@@ -1137,3 +1137,654 @@ int TraceCylinderThroughCylinder(traceWork_t* tw,
     tw->trace_contents = TempBoxModelContents();
     return 0;
 }
+
+// ============================================================================
+// TraceCapsuleThroughCapsule - ea: 0x61C690
+// ============================================================================
+// ea: 0x0061C690
+void TraceCapsuleThroughCapsule(traceWork_t* tw)
+{
+    // Build the stationary capsule from the temp box's min/max.
+    math::Position3 v2 = gBoxDCGSet->min;
+    math::Position3 v3 = gBoxDCGSet->max;
+    // Box overlap test with tw->bounds inflated by 1.
+    if (!(tw->bounds[0].v.m128_f32[0] - 1.0f <= v3.v.m128_f32[0]
+          && tw->bounds[1].v.m128_f32[0] + 1.0f >= v2.v.m128_f32[0]
+          && tw->bounds[0].v.m128_f32[1] - 1.0f <= v3.v.m128_f32[1]
+          && tw->bounds[1].v.m128_f32[1] + 1.0f >= v2.v.m128_f32[1]
+          && tw->bounds[0].v.m128_f32[2] - 1.0f <= v3.v.m128_f32[2]
+          && tw->bounds[1].v.m128_f32[2] + 1.0f >= v2.v.m128_f32[2]))
+        return;
+    math::Dir3 v4;
+    v4.v = tw->sphere_offset.v;
+    math::Position3 top[3];  // top[0] unused, top[1] = center (xyz), top[2] = 0
+    float topCenter[3] = { (v2.v.m128_f32[0] + v3.v.m128_f32[0]) * 0.5f,
+                           (v2.v.m128_f32[1] + v3.v.m128_f32[1]) * 0.5f,
+                           (v2.v.m128_f32[2] + v3.v.m128_f32[2]) * 0.5f };
+    float half[3] = { (v3.v.m128_f32[0] - v2.v.m128_f32[0]) * 0.5f,
+                      (v3.v.m128_f32[1] - v2.v.m128_f32[1]) * 0.5f,
+                      (v3.v.m128_f32[2] - v2.v.m128_f32[2]) * 0.5f };
+    float v10 = half[0] < half[2] ? half[0] : half[2];
+    float v11 = half[2] - v10;
+    float v18 = v11;
+    math::Position3 bottom;
+    bottom.v.m128_f32[0] = topCenter[0];
+    bottom.v.m128_f32[1] = topCenter[1];
+    bottom.v.m128_f32[2] = topCenter[2] - v11;
+    float offs = topCenter[2] + v11;
+    math::Position3 startPlus = tw->start;
+    startPlus.v.m128_f32[0] += v4.v.m128_f32[0];
+    startPlus.v.m128_f32[1] += v4.v.m128_f32[1];
+    startPlus.v.m128_f32[2] += v4.v.m128_f32[2];
+    math::Position3 startMinus = tw->start;
+    startMinus.v.m128_f32[0] -= v4.v.m128_f32[0];
+    startMinus.v.m128_f32[1] -= v4.v.m128_f32[1];
+    startMinus.v.m128_f32[2] -= v4.v.m128_f32[2];
+    math::Position3 endPlus = tw->end;
+    endPlus.v.m128_f32[0] += v4.v.m128_f32[0];
+    endPlus.v.m128_f32[1] += v4.v.m128_f32[1];
+    endPlus.v.m128_f32[2] += v4.v.m128_f32[2];
+    math::Position3 endMinus = tw->end;
+    endMinus.v.m128_f32[0] -= v4.v.m128_f32[0];
+    endMinus.v.m128_f32[1] -= v4.v.m128_f32[1];
+    endMinus.v.m128_f32[2] -= v4.v.m128_f32[2];
+    math::Position3 stationaryCenter;
+    stationaryCenter.v.m128_f32[0] = topCenter[0];
+    stationaryCenter.v.m128_f32[1] = topCenter[1];
+    stationaryCenter.v.m128_f32[2] = topCenter[2];
+    if (tw->start.v.m128_f32[2] + v4.v.m128_f32[2] > offs)
+    {
+        if (TraceSphereThroughSphere(tw, startMinus, endMinus,
+                                     stationaryCenter, v10) == 0)
+            return;
+        if (!(tw->delta.v.m128_f32[2] < 0.0f))
+            return;
+    }
+    else if (topCenter[2] - v11 > tw->start.v.m128_f32[2] - v4.v.m128_f32[2])
+    {
+        if (TraceSphereThroughSphere(tw, startPlus, endPlus, bottom, v10) == 0)
+            return;
+        if (!(tw->delta.v.m128_f32[2] > 0.0f))
+            return;
+    }
+    if (TraceCylinderThroughCylinder(tw, *(const math::Position3*)topCenter,
+                                     v18, v10) == 0)
+        return;
+    if (tw->end.v.m128_f32[2] + v4.v.m128_f32[2] > offs)
+    {
+        if (offs < tw->start.v.m128_f32[2] - v4.v.m128_f32[2])
+            return;
+        TraceSphereThroughSphere(tw, startMinus, endMinus,
+                                 stationaryCenter, v10);
+    }
+    else if (bottom.v.m128_f32[2] > tw->end.v.m128_f32[2] - v4.v.m128_f32[2]
+             && tw->start.v.m128_f32[2] + v4.v.m128_f32[2] >= bottom.v.m128_f32[2])
+    {
+        TraceSphereThroughSphere(tw, startPlus, endPlus, bottom, v10);
+    }
+}
+
+// ============================================================================
+// TraceBoundingBoxThroughCapsule - ea: 0x61C8D0
+// ============================================================================
+bool collide_brush_segment(traceWork_t* tw,
+                           const math::Position3& bmin,
+                           const math::Position3& bmax,
+                           const cdlPlane* sides, unsigned int nsides);
+void collide_brush_velocity_sphere(traceWork_t* tw,
+                                   const math::Position3& bmin,
+                                   const math::Position3& bmax,
+                                   const cdlPlane* sides,
+                                   unsigned int nsides);
+
+// ea: 0x0061C8D0
+void TraceBoundingBoxThroughCapsule(traceWork_t* tw)
+{
+    math::Position3 v2 = gBoxDCGSet->max;
+    math::Position3 v3;
+    v3.v.m128_f32[0] = (gBoxDCGSet->min.v.m128_f32[0] + v2.v.m128_f32[0])
+        * 0.5f;
+    v3.v.m128_f32[1] = (gBoxDCGSet->min.v.m128_f32[1] + v2.v.m128_f32[1])
+        * 0.5f;
+    v3.v.m128_f32[2] = (gBoxDCGSet->min.v.m128_f32[2] + v2.v.m128_f32[2])
+        * 0.5f;
+    math::Position3 size4[2];
+    size4[0].v.m128_f32[0] = v2.v.m128_f32[0] - v3.v.m128_f32[0];
+    size4[0].v.m128_f32[1] = v2.v.m128_f32[1] - v3.v.m128_f32[1];
+    size4[0].v.m128_f32[2] = v2.v.m128_f32[2] - v3.v.m128_f32[2];
+    tw->start.v = _mm_sub_ps(tw->start.v, v3.v);
+    tw->end.v = _mm_sub_ps(tw->end.v, v3.v);
+    float v5 = size4[0].v.m128_f32[2];
+    float v6 = size4[0].v.m128_f32[0];
+    tw->sphere_use = 1;
+    if (v6 > v5)
+        v6 = v5;
+    tw->sphere_radius = v6;
+    tw->sphere_halfheight = v5;
+    tw->sphere_offset.v.m128_f32[0] = 0.0f;
+    tw->sphere_offset.v.m128_f32[1] = 0.0f;
+    tw->sphere_offset.v.m128_f32[2] = v5 - tw->sphere_radius;
+    tw->sphere_radiusOffset.v.m128_f32[0] = tw->sphere_radius;
+    tw->sphere_radiusOffset.v.m128_f32[1] = tw->sphere_radius;
+    tw->sphere_radiusOffset.v.m128_f32[2] = tw->sphere_halfheight;
+    int v7 = TempBoxModelContents();
+    TempBoxModel(&tw->size[0], &tw->size[1], v7, 0);
+    if (gBoxDCGSet->objects_m_count == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::CD;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 77;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+            __debugbreak();
+        if (gBoxDCGSet->objects_m_count == 0
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+    }
+    cdl_object_t* m_elements =
+        (cdl_object_t*)gBoxDCGSet->objects_m_elements;
+    if (tw->sphere_use != 0)
+    {
+        math::Position3 center, rad;
+        center.v.m128_f32[0] = m_elements->center[0];
+        center.v.m128_f32[1] = m_elements->center[1];
+        center.v.m128_f32[2] = m_elements->center[2];
+        rad.v.m128_f32[0] = m_elements->box_radius[0];
+        rad.v.m128_f32[1] = m_elements->box_radius[1];
+        rad.v.m128_f32[2] = m_elements->box_radius[2];
+        size4[0].v = _mm_add_ps(center.v, rad.v);
+        size4[1].v = _mm_sub_ps(center.v, rad.v);
+        collide_brush_velocity_sphere(tw, size4[1], size4[0], nullptr, 0);
+    }
+    else
+    {
+        math::Position3 center, rad;
+        center.v.m128_f32[0] = m_elements->center[0];
+        center.v.m128_f32[1] = m_elements->center[1];
+        center.v.m128_f32[2] = m_elements->center[2];
+        rad.v.m128_f32[0] = m_elements->box_radius[0];
+        rad.v.m128_f32[1] = m_elements->box_radius[1];
+        rad.v.m128_f32[2] = m_elements->box_radius[2];
+        size4[0].v = _mm_add_ps(center.v, rad.v);
+        size4[1].v = _mm_sub_ps(center.v, rad.v);
+        collide_brush_segment(tw, size4[1], size4[0], nullptr, 0);
+    }
+}
+
+// ============================================================================
+// TempBoxModel - ea: 0x618670
+// ============================================================================
+// ea: 0x00618670
+DCGSet* TempBoxModel(const math::Position3* mins,
+                     const math::Position3* maxs, int contents, int capsule)
+{
+    if (gBoxDCGSet == nullptr || gBoxDCGSet->objects_m_count != 1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_load.cpp";
+        AeAssert::gCurrentLine = 334;
+        AeAssert::gCurrentExpr = "gBoxDCGSet && gBoxDCGSet->size() == 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad gBoxDCGSet pointer."))
+            __debugbreak();
+    }
+    gBoxDCGSet->min.v = mins->v;
+    gBoxDCGSet->max.v = maxs->v;
+    if (gBoxDCGSet->objects_m_count == 0
+        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                     "index >= 0 && index < size()", "invalid index"))
+        __debugbreak();
+    cdl_object_t* m_elements =
+        (cdl_object_t*)gBoxDCGSet->objects_m_elements;
+    m_elements->center[0] = (mins->v.m128_f32[0] + maxs->v.m128_f32[0])
+        * 0.5f;
+    m_elements->center[1] = (mins->v.m128_f32[1] + maxs->v.m128_f32[1])
+        * 0.5f;
+    m_elements->center[2] = (mins->v.m128_f32[2] + maxs->v.m128_f32[2])
+        * 0.5f;
+    m_elements->box_radius[0] = maxs->v.m128_f32[0] - m_elements->center[0];
+    m_elements->box_radius[1] = maxs->v.m128_f32[1] - m_elements->center[1];
+    m_elements->box_radius[2] = maxs->v.m128_f32[2] - m_elements->center[2];
+    float r2 = m_elements->box_radius[0] * m_elements->box_radius[0]
+        + m_elements->box_radius[1] * m_elements->box_radius[1]
+        + m_elements->box_radius[2] * m_elements->box_radius[2];
+    m_elements->cflags = contents;
+    m_elements->sphere_radius = sqrtf(r2);
+    gBoxDCGSet->id = 4095 - (capsule != 0);
+    return gBoxDCGSet;
+}
+
+// ============================================================================
+// collide_brush_segment - ea: 0x61B080 (CollisionMgr.cpp slab sweep)
+// ============================================================================
+// ea: 0x0061B080
+bool collide_brush_segment(traceWork_t* tw,
+                           const math::Position3& bmin,
+                           const math::Position3& bmax,
+                           const cdlPlane* sides, unsigned int nsides)
+{
+    float v49[16];  // [0]=end, [4]=start, [8]=bound, [12]=lead normal
+    v49[4] = tw->start.v.m128_f32[0];
+    v49[5] = tw->start.v.m128_f32[1];
+    v49[6] = tw->start.v.m128_f32[2];
+    v49[7] = tw->start.v.m128_f32[3];
+    v49[0] = tw->end.v.m128_f32[0];
+    v49[1] = tw->end.v.m128_f32[1];
+    v49[2] = tw->end.v.m128_f32[2];
+    v49[3] = tw->end.v.m128_f32[3];
+    v49[8] = bmin.v.m128_f32[0];
+    v49[9] = bmin.v.m128_f32[1];
+    v49[10] = bmin.v.m128_f32[2];
+    v49[11] = bmin.v.m128_f32[3];
+    float fraction = tw->trace_fraction;
+    float v9 = -1.0f;
+    float v13 = 0.0f;
+    float delta = 0.0f;
+    float v56 = fraction;
+    int d1 = 0x10000;  // HIBYTE=1, BYTE2=0
+    v49[12] = 0.0f;
+    int v14 = 0;
+    while (1)
+    {
+        float* v15 = &tw->size[1].v.m128_f32[0];
+        for (int i = 0; i < 12; i += 4)
+        {
+            float v17 = ((v49[i + 4] - v49[i + 8]) * v9) - v15[0];
+            float v18 = ((v49[i] - v49[i + 8]) * v9) - v15[0];
+            if (v17 <= 0.0f)
+            {
+                if (v18 > 0.0f)
+                {
+                    d1 &= 0xFFFF00FF;
+                    if (v17 > ((v17 - v18) * fraction))
+                    {
+                        float v22 = v17 / (v17 - v18);
+                        v56 = v22;
+                        if (v13 >= v22)
+                            return false;
+                        fraction = v22;
+                    }
+                }
+            }
+            else
+            {
+                float v19 = v17 - v18;
+                if (v18 > 0.0f)
+                {
+                    if (v19 <= 0.0f || v18 >= 0.125f)
+                        return false;
+                    d1 &= 0xFFFF00FF;
+                }
+                float v20 = v17 - 0.125f;
+                if (v20 <= (v19 * v13))
+                {
+                    if ((d1 >> 24) != 0)
+                        goto LABEL_17;
+                }
+                else
+                {
+                    float v21 = v20 / v19;
+                    delta = v21;
+                    if (v21 >= fraction)
+                        return false;
+                    v13 = v21;
+                }
+                v49[12] = 0.0f;
+                d1 |= 0x10000;
+                v49[i + 12] = v9;
+            }
+        LABEL_17:
+            v15 += 4;
+        }
+        if (v14 == 0)
+        {
+            v9 = 1.0f;
+            v49[8] = bmax.v.m128_f32[0];
+            v49[9] = bmax.v.m128_f32[1];
+            v49[10] = bmax.v.m128_f32[2];
+            v49[11] = bmax.v.m128_f32[3];
+            v14 = 1;
+            continue;
+        }
+        break;
+    }
+    unsigned int v24 = 0;
+    float v34 = 0.0f, v35 = 0.0f;
+    if (nsides != 0)
+    {
+        while (1)
+        {
+            const cdlPlane* s = sides;
+            float v53 = *(const float*)&s->packed[3];
+            int v27 = *(const float*)&s->packed[0] < 0.0f;
+            if (*(const float*)&s->packed[1] < 0.0f)
+                v27 |= 2;
+            if (*(const float*)&s->packed[2] < 0.0f)
+                v27 |= 4;
+            v49[8] = tw->offsets[v27].v.m128_f32[0];
+            v49[9] = tw->offsets[v27].v.m128_f32[1];
+            v49[10] = tw->offsets[v27].v.m128_f32[2];
+            float v52 = v49[8] * *(const float*)&s->packed[0]
+                + v49[9] * *(const float*)&s->packed[1]
+                + v49[10] * *(const float*)&s->packed[2];
+            float v51 = v49[4] * *(const float*)&s->packed[0]
+                + v49[5] * *(const float*)&s->packed[1]
+                + v49[6] * *(const float*)&s->packed[2];
+            float v50 = v49[0] * *(const float*)&s->packed[0]
+                + v49[1] * *(const float*)&s->packed[1]
+                + v49[2] * *(const float*)&s->packed[2];
+            float v32 = v51 - (v53 - v52);
+            float v33 = v50 - (v53 - v52);
+            if (v32 <= 0.0f)
+            {
+                if (v33 > 0.0f)
+                {
+                    float v39 = v32 - v33;
+                    d1 &= 0xFFFF00FF;
+                    float v54 = v32 - v33;
+                    if ((v32 - v33) >= 0.0f)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                        AeAssert::gCurrentLine = 721;
+                        AeAssert::gCurrentExpr = "delta < 0.0f";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                        v13 = delta;
+                        fraction = v56;
+                        v32 = v51 - (v53 - v52);
+                        v39 = v54;
+                    }
+                    if (v32 > (v39 * fraction))
+                    {
+                        float v40 = v32 / v39;
+                        v56 = v40;
+                        if (v13 >= v40)
+                            return false;
+                        fraction = v40;
+                    }
+                }
+                goto LABEL_45;
+            }
+            v34 = v32 - v33;
+            if (v33 > 0.0f)
+            {
+                if (v34 <= 0.0f || v33 >= 0.125f)
+                    return false;
+                d1 &= 0xFFFF00FF;
+            }
+            v35 = v32 - 0.125f;
+            if (v35 > (v34 * v13))
+                break;
+            if ((d1 >> 24) == 0)
+                goto LABEL_35;
+        LABEL_45:
+            ++v24;
+            ++sides;
+            if (v24 >= nsides)
+                goto LABEL_46;
+            continue;
+        }
+        {
+            float v36 = v35 / v34;
+            delta = v36;
+            if (v36 >= fraction)
+                return false;
+            v13 = v36;
+        }
+    LABEL_35:
+        v49[12] = *(const float*)&sides->packed[0];
+        v49[13] = *(const float*)&sides->packed[1];
+        v49[14] = *(const float*)&sides->packed[2];
+        v49[15] = *(const float*)&sides->packed[3];
+        d1 |= 0x10000;
+        goto LABEL_45;
+    }
+LABEL_46:
+    if ((d1 >> 24) != 0)
+    {
+        float v50 = v49[12] * v49[12] + v49[13] * v49[13]
+            + v49[14] * v49[14];
+        if (fabsf(sqrtf(v50) - 1.0f) >= 0.0099999998f)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+            AeAssert::gCurrentLine = 744;
+            AeAssert::gCurrentExpr = "fabsf(Abs(leadNormal) - 1.0f) < .01f";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+                __debugbreak();
+            v13 = delta;
+        }
+        tw->trace_fraction = v13;
+        tw->trace_normal[0] = v49[12];
+        tw->trace_normal[1] = v49[13];
+        tw->trace_normal[2] = v49[14];
+        return true;
+    }
+    tw->trace_startsolid = 1;
+    if ((d1 >> 8 & 0xFF) != 0)
+    {
+        tw->trace_allsolid = 1;
+        tw->trace_fraction = 0.0f;
+    }
+    return true;
+}
+
+// ============================================================================
+// collide_brush_velocity_sphere - ea: 0x61B550
+// ============================================================================
+// ea: 0x0061B550
+void collide_brush_velocity_sphere(traceWork_t* tw,
+                                   const math::Position3& bmin,
+                                   const math::Position3& bmax,
+                                   const cdlPlane* sides,
+                                   unsigned int nsides)
+{
+    float v46[16];  // [0]=offset, [4]=end, [8]=start, [12]=bound
+    v46[12] = bmin.v.m128_f32[0];
+    v46[13] = bmin.v.m128_f32[1];
+    v46[14] = bmin.v.m128_f32[2];
+    v46[15] = bmin.v.m128_f32[3];
+    v46[8] = tw->start.v.m128_f32[0];
+    v46[9] = tw->start.v.m128_f32[1];
+    v46[10] = tw->start.v.m128_f32[2];
+    v46[11] = tw->start.v.m128_f32[3];
+    float fraction = tw->trace_fraction;
+    float v10 = -1.0f;
+    v46[4] = tw->end.v.m128_f32[0];
+    v46[5] = tw->end.v.m128_f32[1];
+    v46[6] = tw->end.v.m128_f32[2];
+    v46[7] = tw->end.v.m128_f32[3];
+    v46[0] = tw->sphere_offset.v.m128_f32[0];
+    v46[1] = tw->sphere_offset.v.m128_f32[1];
+    v46[2] = tw->sphere_offset.v.m128_f32[2];
+    v46[3] = tw->sphere_offset.v.m128_f32[3];
+    float v14 = 0.0f;
+    float delta = 0.0f;
+    float v54 = fraction;
+    int d1 = 0x10000;
+    float bounds[8] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+    bounds[1] = 0.0f;
+    int v15 = 0;
+    while (1)
+    {
+        float* p_radiusOffset = &tw->sphere_radiusOffset.v.m128_f32[0];
+        for (int i = 0; i < 12; i += 4)
+        {
+            float v18 = ((v46[i + 8] - v46[i + 12]) * v10) - p_radiusOffset[0];
+            float v19 = ((v46[i + 4] - v46[i + 12]) * v10) - p_radiusOffset[0];
+            if (v18 <= 0.0f)
+            {
+                if (v19 > 0.0f)
+                {
+                    d1 &= 0xFFFF00FF;
+                    if (v18 > ((v18 - v19) * fraction))
+                    {
+                        float v23 = v18 / (v18 - v19);
+                        v54 = v23;
+                        if (v14 >= v23)
+                            return;
+                        fraction = v23;
+                    }
+                }
+            }
+            else
+            {
+                float v20 = v18 - v19;
+                if (v19 > 0.0f)
+                {
+                    if (v20 <= 0.0f || v19 >= 0.125f)
+                        return;
+                    d1 &= 0xFFFF00FF;
+                }
+                float v21 = v18 - 0.125f;
+                if (v21 <= (v20 * v14))
+                {
+                    if ((d1 >> 24) != 0)
+                        goto LABEL_17;
+                }
+                else
+                {
+                    float v22 = v21 / v20;
+                    delta = v22;
+                    if (v22 >= fraction)
+                        return;
+                    v14 = v22;
+                }
+                bounds[1] = 0.0f;
+                d1 |= 0x10000;
+                bounds[i + 1] = v10;
+            }
+        LABEL_17:
+            p_radiusOffset += 4;
+        }
+        if (v15 == 0)
+        {
+            v10 = 1.0f;
+            v46[12] = bmax.v.m128_f32[0];
+            v46[13] = bmax.v.m128_f32[1];
+            v46[14] = bmax.v.m128_f32[2];
+            v46[15] = bmax.v.m128_f32[3];
+            v15 = 1;
+            continue;
+        }
+        break;
+    }
+    float v25 = bounds[4];
+    unsigned int v51 = 0;
+    if (nsides != 0)
+    {
+        while (1)
+        {
+            const cdlPlane* s = sides;
+            float v50 = *(const float*)&s->packed[3];
+            float v28 = v50 + tw->sphere_radius;
+            float v49 = v46[0] * *(const float*)&s->packed[0]
+                + v46[1] * *(const float*)&s->packed[1]
+                + v46[2] * *(const float*)&s->packed[2];
+            float v30[3], v31[3];
+            if (v49 <= 0.0f)
+            {
+                for (int k = 0; k < 3; ++k)
+                {
+                    v30[k] = v46[8 + k] + v46[k];
+                    v31[k] = v46[4 + k] + v46[k];
+                }
+            }
+            else
+            {
+                for (int k = 0; k < 3; ++k)
+                {
+                    v30[k] = v46[8 + k] - v46[k];
+                    v31[k] = v46[4 + k] - v46[k];
+                }
+            }
+            float v48 = v30[0] * *(const float*)&s->packed[0]
+                + v30[1] * *(const float*)&s->packed[1]
+                + v30[2] * *(const float*)&s->packed[2];
+            float v34 = v48 - v28;
+            float v35 = (v31[0] * *(const float*)&s->packed[0]
+                         + v31[1] * *(const float*)&s->packed[1]
+                         + v31[2] * *(const float*)&s->packed[2]) - v28;
+            if (v34 <= 0.0f)
+            {
+                if (v35 > 0.0f)
+                {
+                    float v40 = v34 - v35;
+                    d1 &= 0xFFFF00FF;
+                    float v52 = v34 - v35;
+                    if ((v34 - v35) >= 0.0f)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\CollisionMgr.cpp";
+                        AeAssert::gCurrentLine = 982;
+                        AeAssert::gCurrentExpr = "delta < 0.0f";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                        v14 = delta;
+                        v34 = v48 - v28;
+                        v40 = v52;
+                    }
+                    if (v34 > (v40 * v54))
+                    {
+                        v54 = v34 / v40;
+                        if (v14 >= (v34 / v40))
+                            return;
+                    }
+                }
+            }
+            else
+            {
+                float v36 = v34 - v35;
+                if (v35 > 0.0f)
+                {
+                    if (v36 <= 0.0f || v35 >= 0.125f)
+                        return;
+                    d1 &= 0xFFFF00FF;
+                }
+                float v37 = v34 - 0.125f;
+                if (v37 <= (v36 * v14))
+                {
+                    if ((d1 >> 24) == 0)
+                        goto LABEL_33;
+                }
+                else
+                {
+                    float v38 = v37 / v36;
+                    delta = v38;
+                    if (v38 >= v54)
+                        return;
+                    v14 = v38;
+                LABEL_33:
+                    bounds[1] = *(const float*)&s->packed[0];
+                    bounds[2] = *(const float*)&s->packed[1];
+                    bounds[3] = *(const float*)&s->packed[2];
+                    v25 = *(const float*)&s->packed[3];
+                    d1 |= 0x10000;
+                }
+            }
+            ++sides;
+            if (++v51 >= nsides)
+                break;
+        }
+    }
+    if ((d1 >> 24) != 0)
+    {
+        tw->trace_fraction = v14;
+        tw->trace_normal[0] = bounds[1];
+        tw->trace_normal[1] = bounds[2];
+        tw->trace_normal[2] = bounds[3];
+        return;
+    }
+    tw->trace_startsolid = 1;
+    if ((d1 >> 8 & 0xFF) != 0)
+    {
+        tw->trace_allsolid = 1;
+        tw->trace_fraction = 0.0f;
+    }
+}

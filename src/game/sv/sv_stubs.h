@@ -31,12 +31,11 @@ enum nslBankID : int { NSL_BANK_ID_INVALID = -1 };
 // Full definition arrives when the collision object is ported.
 // ============================================================================
 struct DCGSet {
-    // +0x00
-    uint8_t _pad0[0x08];
+    uint8_t _pad0_[0x04];            // +0x00
+    int     id;                      // +0x04
     int     objects_m_count;          // +0x08 (objects.m_count high word used)
     int     objects_m_elements;       // +0x0C
     uint8_t _pad10[0x20 - 0x10];
-    // +0x20 (ent[2])
     int     brushes_m_count;          // +0x20
     int     brushes_m_elements;       // +0x24
     int     gjk_brushes_m_count;      // +0x28

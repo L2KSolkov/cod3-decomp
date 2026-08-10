@@ -2567,6 +2567,11 @@ int TraceCylinderThroughCylinder(traceWork_t* tw,
                                  const math::Position3& vStationary,
                                  float fStationaryHalfHeight,
                                  float radius);  // game.o 0x61C3D0
+void TraceCapsuleThroughCapsule(traceWork_t* tw);  // game.o 0x61C690
+void TraceBoundingBoxThroughCapsule(traceWork_t* tw);  // game.o 0x61C8D0
+DCGSet* TempBoxModel(const math::Position3* mins,
+                     const math::Position3* maxs, int contents,
+                     int capsule);  // game.o 0x618670
 void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
 void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,
