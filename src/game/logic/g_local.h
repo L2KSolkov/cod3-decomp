@@ -2607,6 +2607,10 @@ bool intersect_segment_aabb(const math::Position3& p0,
                             const math::Position3& hi,
                             const math::Position3& bmin,
                             const math::Position3& bmax);  // game.o 0x61EA00
+void CM_PointTraceStaticModels(trace_t* results,
+                               const math::Position3& start,
+                               const math::Position3& end,
+                               const collision_context_t& context);  // game.o 0x6223E0
 bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v0,
                          const math::Position3& v1,

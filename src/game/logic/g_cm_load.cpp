@@ -3107,6 +3107,153 @@ void CM_PointTraceToEntities(pointtrace_t* clip,
 }
 
 // ============================================================================
+// CM_PointTraceStaticModels - ea: 0x6223E0 / _r: 0x619FE0 (cm_world.cpp)
+// ============================================================================
+struct locTraceWork_t {
+    trace_t          trace;     // +0x00
+    math::Position3  start;     // +0x50
+    math::Position3  end;       // +0x60
+    int              contents;  // +0x70
+};
+
+extern int CM_TraceBox(const math::Position3* start,
+                       const math::Position3* end,
+                       const math::Position3* mins,
+                       const math::Position3* maxs,
+                       float fraction);  // sv.o
+
+// ea: 0x00619FE0
+void CM_PointTraceStaticModels_r(locTraceWork_t* tw, WorldSector* node,
+                                 float p1f, float p2f,
+                                 const math::Position3* p1,
+                                 const math::Position3* p2)
+{
+    if (p1f < tw->trace.fraction
+        && (node->contentsStaticModels & tw->contents) != 0)
+    {
+        int axis = node->axis;
+        float v8 = p1->v.m128_f32[axis] - node->dist;
+        float v9 = p2->v.m128_f32[axis] - node->dist;
+        float v20 = v8;
+        if (v8 < 0.0f || v9 < 0.0f)
+        {
+            if (v8 > 0.0f || v9 > 0.0f)
+            {
+                float v10 = v8 - v9;
+                if (v10 == 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 915;
+                    AeAssert::gCurrentExpr = "t1 - t2";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                float frac = v8 / v10;
+                if (frac < 0.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 917;
+                    AeAssert::gCurrentExpr = "frac >= 0.0f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                    v8 = v20;
+                }
+                if (frac > 1.0f)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\cm_world.cpp";
+                    AeAssert::gCurrentLine = 918;
+                    AeAssert::gCurrentExpr = "frac <= 1.0f";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                    v8 = v20;
+                }
+                float midF = (p2f - p1f) * frac + p1f;
+                math::Position3 mid;
+                mid.v = _mm_add_ps(
+                    p1->v, _mm_mul_ps(_mm_sub_ps(p2->v, p1->v),
+                                      _mm_set1_ps(frac)));
+                int side = v8 < 0.0f;
+                CM_PointTraceStaticModels_r(tw,
+                                            (WorldSector*)node->child[side],
+                                            p1f, midF, p1, &mid);
+                CM_PointTraceStaticModels_r(
+                    tw, (WorldSector*)node->child[1 - side], midF, p2f, &mid,
+                    p2);
+            }
+            else
+            {
+                CM_PointTraceStaticModels_r(tw,
+                                            (WorldSector*)node->child[1],
+                                            p1f, p2f, p1, p2);
+            }
+        }
+        else
+        {
+            CM_PointTraceStaticModels_r(tw,
+                                        (WorldSector*)node->child[0],
+                                        p1f, p2f, p1, p2);
+        }
+        StaticModel* i = (StaticModel*)node->staticModels;
+        for (; i != nullptr; i = i->nextModel)
+        {
+            if ((i->xmodel->contents & tw->contents) != 0)
+            {
+                float fraction = tw->trace.fraction;
+                math::Position3 v15;
+                math::Position3 v16;
+                v15.v = _mm_setr_ps(i->absmin[0], i->absmin[1], i->absmin[2],
+                                    0.0f);
+                v16.v = _mm_setr_ps(i->absmax[0], i->absmax[1], i->absmax[2],
+                                    0.0f);
+                if (CM_TraceBox(&tw->start, &tw->end, &v15, &v16,
+                                fraction) == 0)
+                    CM_TraceStaticModel(i, &tw->trace, tw->start, tw->end,
+                                        tw->contents);
+            }
+        }
+    }
+}
+
+// ea: 0x006223E0
+void CM_PointTraceStaticModels(trace_t* results,
+                               const math::Position3& start,
+                               const math::Position3& end,
+                               const collision_context_t& context)
+{
+    locTraceWork_t v9;
+    memset(&v9, 0, sizeof(v9));
+    int contentmask = context.contentmask;
+    v9.trace.fraction = results->fraction;
+    v9.start.v = start.v;
+    v9.end.v = end.v;
+    v9.contents = contentmask;
+    CM_PointTraceStaticModels_r(&v9, &pcm.worldSectorHead, 0.0f,
+                                v9.trace.fraction, &v9.start, &v9.end);
+    if (results->fraction > v9.trace.fraction)
+    {
+        v9.trace.endpos.v.m128_f32[0] =
+            (end.v.m128_f32[0] - start.v.m128_f32[0]) * v9.trace.fraction
+            + start.v.m128_f32[0];
+        v9.trace.endpos.v.m128_f32[1] =
+            (end.v.m128_f32[1] - start.v.m128_f32[1]) * v9.trace.fraction
+            + start.v.m128_f32[1];
+        v9.trace.endpos.v.m128_f32[2] =
+            (end.v.m128_f32[2] - start.v.m128_f32[2]) * v9.trace.fraction
+            + start.v.m128_f32[2];
+        *results = v9.trace;
+    }
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0
