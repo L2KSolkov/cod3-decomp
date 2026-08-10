@@ -670,3 +670,41 @@ Entity* EntityManager::GetWorld()
 {
     return this->mWorld;
 }
+
+// ============================================================================
+// SoundDevice::Sound - ea: 0x6129C0..0x612A10
+// ============================================================================
+// ea: 0x00612A10
+SoundDevice::Sound::Sound()
+{
+    this->mEntHandle.mVal = 0;
+    this->mHandle.mVal = 0;
+    this->mDialogNotify.mHash = 0;
+    this->mMinRange = 50.0f;
+    this->mSource = -1;
+    this->mWave = -1;
+    this->mPaused = false;
+    this->mAutoRelease = true;
+    this->mPitch = 1.0f;
+    this->mVolume = 1.0f;
+    this->mMaxRange = 1500.0f;
+    this->mGroupVolume = 1.0f;
+    this->mDialogNotify.mHash = 0;
+    this->mPoPtr = nullptr;
+}
+
+// ea: 0x006129C0
+void SoundDevice::Sound::Reset()
+{
+    this->mMinRange = 50.0f;
+    this->mSource = -1;
+    this->mWave = -1;
+    this->mPaused = false;
+    this->mAutoRelease = true;
+    this->mPitch = 1.0f;
+    this->mVolume = 1.0f;
+    this->mMaxRange = 1500.0f;
+    this->mGroupVolume = 1.0f;
+    this->mDialogNotify.mHash = 0;
+    this->mPoPtr = nullptr;
+}

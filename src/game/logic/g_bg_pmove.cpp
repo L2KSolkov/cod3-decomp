@@ -1646,3 +1646,56 @@ bool BG_PlayerTouchesMine(PlayerState* ps, EntityState* item, int atTime)
     }
     return result;
 }
+
+// ============================================================================
+// Collision context filters - ea: 0x615AF0..0x615B20
+// ============================================================================
+struct player_collision_context_t : collision_context_t {
+    virtual bool filter(Entity* ent) const;  // ?filter@player_collision_context_t@@UBE_NPAVEntity@@@Z
+};
+
+// ea: 0x00615AF0
+bool player_collision_context_t::filter(Entity* ent) const
+{
+    return ent == nullptr || (ent->mFlags & 1u) == 0;
+}
+
+struct ai_collision_context_t : collision_context_t {
+    virtual bool filter(Entity* ent) const;  // ?filter@ai_collision_context_t@@UBE_NPAVEntity@@@Z
+};
+
+// ea: 0x00615B20
+bool ai_collision_context_t::filter(Entity* ent) const
+{
+    return ent == nullptr || (ent->mFlags & 1u) == 0;
+}
+
+// ============================================================================
+// BG_GetSpreadForWeapon - ea: 0x615C90
+// ============================================================================
+// ea: 0x00615C90
+void BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
+                           float* minSpread, float* maxSpread)
+{
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(weaponIndex);
+    float viewHeightCurrent = ps->viewHeightCurrent;
+    if (viewHeightCurrent <= (float)bg_viewheight_crouched.integer)
+    {
+        *minSpread = (((viewHeightCurrent - (float)bg_viewheight_prone.integer)
+                      / ((float)bg_viewheight_crouched.integer
+                         - (float)bg_viewheight_prone.integer))
+                     * (InfoForWeapon->fHipSpreadDuckedMin
+                        - InfoForWeapon->fHipSpreadProneMin))
+                    + InfoForWeapon->fHipSpreadProneMin;
+    }
+    else
+    {
+        *minSpread = (((viewHeightCurrent - (float)bg_viewheight_crouched.integer)
+                      / ((float)bg_viewheight_standing.integer
+                         - (float)bg_viewheight_crouched.integer))
+                     * (InfoForWeapon->fHipSpreadStandMin
+                        - InfoForWeapon->fHipSpreadDuckedMin))
+                    + InfoForWeapon->fHipSpreadDuckedMin;
+    }
+    *maxSpread = InfoForWeapon->fHipSpreadMax;
+}

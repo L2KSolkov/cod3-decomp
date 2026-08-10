@@ -328,6 +328,23 @@ static_assert(sizeof(SmokeGrenadeMgr) == 0xC, "SmokeGrenadeMgr size mismatch");
 
 struct SoundDevice {
     uint8_t _pad[31392];
+    struct Sound {
+        int     mSource;         // +0x00 (nslSourceID; NSL_SOURCE_ID_INVALID == -1)
+        int     mWave;           // +0x04 (nslWaveID; NSL_WAVE_ID_INVALID == -1)
+        bool    mPaused;         // +0x08
+        bool    mAutoRelease;    // +0x09
+        float   mPitch;          // +0x0C
+        float   mVolume;         // +0x10
+        float   mMinRange;       // +0x14
+        float   mMaxRange;       // +0x18
+        float   mGroupVolume;    // +0x1C
+        Handle  mEntHandle;      // +0x20
+        Handle  mHandle;         // +0x24
+        void*   mPoPtr;          // +0x28
+        HashString mDialogNotify;// +0x2C
+        Sound();                 // ??0Sound@SoundDevice@@QAE@XZ (game.o 0x612A10)
+        void Reset();            // ?Reset@Sound@SoundDevice@@QAEXXZ (game.o 0x6129C0)
+    };
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     void StopAllSounds();
     void SetReverb(const char* preset, bool immediate);  // ?SetReverb@SoundDevice@@QAEXPBD_N@Z (game.o 0x9F20A0)

@@ -1506,7 +1506,7 @@ struct weaponFileInfo_t {
     float   fHipSpreadStandMin;   // +0x668
     float   fHipSpreadDuckedMin;  // +0x66C
     float   fHipSpreadProneMin;   // +0x670
-    uint8_t _pad674[0x678 - 0x674];
+    float   fHipSpreadMax;        // +0x674
     float   fHipSpreadDecayRate;  // +0x678
     float   fHipSpreadFireAdd;    // +0x67C
     float   fHipSpreadTurnAdd;    // +0x680
@@ -2606,6 +2606,8 @@ void  PerpendicularVector(float* dst, const float* src);  // core.o
 void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o
 const gitem_s* BG_FindItemForWeapon(int weapon);  // game.o 0x612E70
 bool  PM_CanSimulateFiringWeapon(int iWeapon);    // game.o 0x614700
+void  BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
+                            float* minSpread, float* maxSpread);  // game.o 0x615C90
 void  MultiplayerMgr_IsLocalPlayer(void* self, Entity* player);  // mp.o
 void  MultiplayerMgr_DropWeapon(void* self, int weapon, int netIndex,
                                 const math::Position3* position,
