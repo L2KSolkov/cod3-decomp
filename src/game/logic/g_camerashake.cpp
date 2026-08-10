@@ -621,3 +621,71 @@ CameraShakeInstance* FN_ShakeTestFunction()
 CameraShake::CameraShake()
 {
 }
+
+// ============================================================================
+// CameraShake::Rumble - ea: 0x4FF360
+// ============================================================================
+void CameraShake::Rumble(float intensity, float duration)
+{
+    RumbleEffect rumbleEffect;
+    rumbleEffect.mRumbleDataArray[0].enabled = true;
+    rumbleEffect.mRumbleDataArray[0].delay = 0.0f;
+    rumbleEffect.mRumbleDataArray[0].intensity = 1.0f;
+    rumbleEffect.mRumbleDataArray[0].ramp_up_duration = 0.0f;
+    rumbleEffect.mRumbleDataArray[0].steady_duration = 1.0f;
+    rumbleEffect.mRumbleDataArray[0].ramp_down_duration = 0.0f;
+    rumbleEffect.mRumbleDataArray[1].enabled = true;
+    rumbleEffect.mRumbleDataArray[1].delay = 0.0f;
+    rumbleEffect.mRumbleDataArray[1].intensity = 1.0f;
+    rumbleEffect.mRumbleDataArray[1].ramp_up_duration = 0.0f;
+    rumbleEffect.mRumbleDataArray[1].steady_duration = 1.0f;
+    rumbleEffect.mRumbleDataArray[1].ramp_down_duration = 0.0f;
+    if (intensity < 0.0f || intensity > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 103;
+        AeAssert::gCurrentExpr =
+            "new_intensity >= 0.0f && new_intensity <= 1.0f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    rumbleEffect.mRumbleDataArray[0].intensity = intensity;
+    if (duration < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 124;
+        AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    rumbleEffect.mRumbleDataArray[0].steady_duration = duration;
+    if (intensity < 0.0f || intensity > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 103;
+        AeAssert::gCurrentExpr =
+            "new_intensity >= 0.0f && new_intensity <= 1.0f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    rumbleEffect.mRumbleDataArray[1].intensity = intensity;
+    if (duration < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 124;
+        AeAssert::gCurrentExpr = "new_duration >= 0.0f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    rumbleEffect.mRumbleDataArray[1].steady_duration = duration;
+    if (RumbleManager_Inst(currCl) != nullptr)
+        RumbleManager_Play(RumbleManager_Inst(currCl), &rumbleEffect, 1.0f);
+}
