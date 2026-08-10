@@ -50,7 +50,9 @@ struct DCGSet {
     math::Position3 max;              // +0x50
     math::Position3 center;           // +0x60
     math::Position3 min;              // +0x70
-    int     nboxes;                   // +0x80
+    uint16_t nboxes;                  // +0x80
+    uint16_t nbrushes;                // +0x82
+    uint8_t  _pad84[0x8C - 0x84];
 };
 
 // ============================================================================

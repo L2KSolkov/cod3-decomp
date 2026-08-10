@@ -2569,6 +2569,12 @@ void TestBoxInBrush(traceWork_t* tw, const math::Position3& bmin,
                     const math::Position3& bmax, const cdlPlane* sides,
                     unsigned int nsides,
                     unsigned int cflags);  // game.o 0x61CD30
+void TestBoxInBox(traceWork_t* tw, const math::Position3& bmin,
+                  const math::Position3& bmax,
+                  unsigned int cflags);  // game.o 0x61D5C0
+void TestInLeaf(traceWork_t* tw, const DCGSet* set);  // game.o 0x623D40
+unsigned int SightTraceThroughLeaf(traceWork_t* tw,
+                                   const DCGSet* set);  // game.o 0x624070
 int TraceSphereThroughSphere(traceWork_t* tw,
                              const math::Position3& vStart,
                              const math::Position3& vEnd,
