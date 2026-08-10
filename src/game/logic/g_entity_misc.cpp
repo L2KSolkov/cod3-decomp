@@ -193,6 +193,65 @@ extern void AnglesToAxis(const math::Position3* angles,
                          math::Mat43* mat);  // core.o (3-arg variant)
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME (core.o)
 
+extern void XAnimClearTree(void* tree);  // ?XAnimClearTree@@YAXPAVXAnimTree@@@Z
+extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
+
+// ea: 0x00639180
+void DisableAI(unsigned int handle)
+{
+    Entity* mObject = (Entity*)EntityHandleDb_GetObject(handle);
+    if (mObject != nullptr)
+    {
+        DObj* mDObj = mObject->mDObj;
+        mObject->flags |= 0x4000000u;
+        if (mDObj != nullptr)
+        {
+            int v4 = 0;
+            unsigned char numModels = *(unsigned char*)((char*)mDObj + 0xCE);
+            if (numModels != 0)
+            {
+                do
+                {
+                    void* tree = *(void**)((char*)mDObj + 4 * v4);
+                    if (tree != nullptr)
+                        XAnimClearTree(tree);
+                    ++v4;
+                } while (v4 < numModels);
+            }
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 852;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("null entity passed to DisableAI?"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x00639250
+void EnableAI(unsigned int handle)
+{
+    Entity* mObject = (Entity*)EntityHandleDb_GetObject(handle);
+    if (mObject != nullptr)
+    {
+        mObject->flags &= ~0x4000000u;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.cpp";
+        AeAssert::gCurrentLine = 873;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("null entity passed to EnableAI?"))
+            __debugbreak();
+    }
+}
+
 // ============================================================================
 // Entity::CalcRotTranMat43 - ea: 0x611F40
 // ============================================================================
