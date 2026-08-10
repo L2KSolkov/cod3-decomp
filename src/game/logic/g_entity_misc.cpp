@@ -1015,6 +1015,10 @@ extern void nslStopSource(nslSourceID sid);                 // nsl
 extern void nslFreeSource(nslSourceID sid);                 // nsl
 extern void nslSetSourceParam(nslSourceID sid, int index,
                               float value);                 // nsl
+extern void nslSetSourcePosition(nslSourceID sid,
+                                 const float* position);    // nsl
+extern void nslSetSourceVelocity(nslSourceID sid,
+                                 const float* velocity);    // nsl
 extern const char* nslWaveGetName(nslWaveID waveID);        // nsl
 extern nslSourceID g_break_on_stop;  // ?g_break_on_stop@@3W4nslSourceID@@A (game.o)
 extern void tlWarning(const char* fmt, ...);                // tl_xboxr
@@ -1780,6 +1784,390 @@ void SoundDevice::Sound::SetVolume(float vol)
                               this->mGroupVolume * vol);
             this->mVolume = vol;
         }
+    }
+}
+
+// ea: 0x0062C2D0
+void SoundDevice::Sound::SetPitch(float pitch)
+{
+    if ((__fpclass(pitch) & 0x297) != 0)
+    {
+        const char* Name = nslWaveGetName((nslWaveID)this->mWave);
+        tlWarning("A NAN was passed into the sound system while trying to adjust the pitch on %s\n", Name);
+        this->Stop();
+    }
+    else
+    {
+        nslSourceID mSource = (nslSourceID)this->mSource;
+        if (this->mSource == NSL_SOURCE_ID_INVALID)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+            AeAssert::gCurrentLine = 528;
+            AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+                __debugbreak();
+            mSource = (nslSourceID)this->mSource;
+        }
+        if (this->mSource != NSL_SOURCE_ID_INVALID)
+        {
+            nslSetSourceParam(mSource, 1, pitch);
+            this->mPitch = pitch;
+        }
+    }
+}
+
+// ea: 0x0062C380
+void SoundDevice::Sound::SetRange(float min, float max)
+{
+    if ((__fpclass(min) & 0x297) != 0 || (__fpclass(max) & 0x297) != 0)
+    {
+        const char* Name = nslWaveGetName((nslWaveID)this->mWave);
+        tlWarning("A NAN was passed into the sound system while trying to adjust the min or max on %s\n", Name);
+        this->Stop();
+    }
+    else
+    {
+        if (this->mSource == NSL_SOURCE_ID_INVALID)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+            AeAssert::gCurrentLine = 552;
+            AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+                __debugbreak();
+        }
+        if (this->mSource != NSL_SOURCE_ID_INVALID)
+        {
+            nslSetSourceParam((nslSourceID)this->mSource, 25, min);
+            nslSetSourceParam((nslSourceID)this->mSource, 26, max);
+            this->mMinRange = min;
+            this->mMaxRange = max;
+        }
+    }
+}
+
+// ea: 0x0062C470
+void SoundDevice::Sound::SetPosition(const math::Position3& pos)
+{
+    if (this->mSource == NSL_SOURCE_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 566;
+        AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+            __debugbreak();
+    }
+    if (this->mSource != NSL_SOURCE_ID_INVALID)
+    {
+        float v5[3];
+        v5[0] = -pos.v.m128_f32[1];
+        v5[1] = pos.v.m128_f32[2];
+        v5[2] = pos.v.m128_f32[0];
+        if ((__fpclass(v5[0]) & 0x297) != 0 || (__fpclass(v5[1]) & 0x297) != 0
+            || (__fpclass(v5[2]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+            AeAssert::gCurrentLine = 574;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                    "Invalid position detected while setting sound position- this is fatal on xbox"))
+                __debugbreak();
+            this->Stop();
+        }
+        else
+        {
+            nslSetSourcePosition((nslSourceID)this->mSource, v5);
+            this->mDebugPos[0] = pos.v.m128_f32[0];
+            this->mDebugPos[1] = pos.v.m128_f32[1];
+            this->mDebugPos[2] = pos.v.m128_f32[2];
+        }
+    }
+}
+
+// ea: 0x0062C630
+void SoundDevice::Sound::SetVelocity(const math::Dir3& vel)
+{
+    if (this->mSource == NSL_SOURCE_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 590;
+        AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+            __debugbreak();
+    }
+    if (this->mSource != NSL_SOURCE_ID_INVALID)
+    {
+        float v5[3];
+        v5[0] = vel.v.m128_f32[0];
+        v5[1] = vel.v.m128_f32[1];
+        v5[2] = vel.v.m128_f32[2];
+        if ((__fpclass(v5[0]) & 0x297) != 0 || (__fpclass(v5[1]) & 0x297) != 0
+            || (__fpclass(v5[2]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+            AeAssert::gCurrentLine = 596;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                    "Invalid position detected while setting sound velocity- this is fatal on xbox"))
+                __debugbreak();
+            this->Stop();
+        }
+        else
+        {
+            nslSetSourceVelocity((nslSourceID)this->mSource, v5);
+        }
+    }
+}
+
+// ea: 0x0062C7A0
+void SoundDevice::Sound::Update()
+{
+    if (this->mSource == NSL_SOURCE_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\SoundDevice.cpp";
+        AeAssert::gCurrentLine = 614;
+        AeAssert::gCurrentExpr = "mSource != NSL_SOURCE_ID_INVALID";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid source"))
+            __debugbreak();
+    }
+    if (this->mSource != NSL_SOURCE_ID_INVALID)
+    {
+        this->SetVolume(this->mVolume);
+        this->SetPitch(this->mPitch);
+        this->SetRange(this->mMinRange, this->mMaxRange);
+        unsigned int v3 = this->mEntHandle.mVal & 0xFFF;
+        Entity* mObject = nullptr;
+        if (v3 < 0x540
+            && this->mEntHandle.mVal >> 12
+                == EntityHandleDb::sInst.mElements[v3].mKey)
+            mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        const math::Mat43* mPoPtr = (const math::Mat43*)this->mPoPtr;
+        if (mPoPtr != nullptr)
+        {
+            if ((__fpclass(mPoPtr->w.v.m128_f32[0]) & 0x297) == 0
+                && (__fpclass(mPoPtr->w.v.m128_f32[1]) & 0x297) == 0
+                && (__fpclass(mPoPtr->w.v.m128_f32[2]) & 0x297) == 0)
+            {
+                this->SetPosition(mPoPtr->w);
+                math::Dir3 zeroVel;
+                zeroVel.v = _mm_setzero_ps();
+                this->SetVelocity(zeroVel);
+                return;
+            }
+            tlWarning("A NAN was passed into the sound system update an sound position\n");
+            goto LABEL_22;
+        }
+        if (mObject != nullptr)
+        {
+            math::Position3 v10;
+            v10.v = mObject->r.currentOrigin.v;
+            if ((__fpclass(v10.v.m128_f32[0]) & 0x297) == 0
+                && (__fpclass(v10.v.m128_f32[1]) & 0x297) == 0
+                && (__fpclass(v10.v.m128_f32[2]) & 0x297) == 0)
+            {
+                this->SetPosition(v10);
+                math::Dir3 zeroVel;
+                zeroVel.v = _mm_setzero_ps();
+                this->SetVelocity(zeroVel);
+                return;
+            }
+            tlWarning("A NAN was passed into the sound system update an entity position\n");
+        LABEL_22:
+            this->Stop();
+        }
+    }
+}
+
+// ea: 0x0062C9B0
+void SoundDevice::ReleaseSound(Sound* s)
+{
+    s->Stop();
+}
+
+// ea: 0x0062C9C0
+void SoundDevice::ReleaseSound(
+    DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> s)
+{
+    unsigned int v2 = s.mHandle.mVal & 0xFFF;
+    if (v2 < 0x200
+        && s.mHandle.mVal >> 12
+            == SoundDevice::SoundHandleDb::sInst.mElements[v2].mKey
+        && SoundDevice::SoundHandleDb::sInst.mElements[v2].mObject != nullptr)
+    {
+        Sound* mObject = nullptr;
+        if ((s.mHandle.mVal & 0xFFF) < 0x200
+            && s.mHandle.mVal >> 12
+                == SoundDevice::SoundHandleDb::sInst.mElements[v2].mKey)
+            mObject = SoundDevice::SoundHandleDb::sInst.mElements[v2].mObject;
+        mObject->Stop();
+    }
+}
+
+// ea: 0x0062CA10
+void SoundDevice::StopAllSoundsNotPaused()
+{
+    Sound* s = this->mSounds;
+    for (int i = 512; i != 0; --i)
+    {
+        if (!s->mPaused)
+            s->Stop();
+        ++s;
+    }
+}
+
+// ea: 0x0062CA40
+void SoundDevice::UpdateCrossFade(float deltaTime)
+{
+    for (int i = 16; i != 0; --i)
+    {
+        CrossFadeInfo* info = &this->mCrossFadeInfo[16 - i];
+        if (info->mRemainingTime > 0.0f)
+        {
+            info->mRemainingTime -= deltaTime;
+            if (info->mRemainingTime < 0.0f)
+                info->mRemainingTime = 0.0f;
+            unsigned int v4 = info->mSound1.mVal & 0xFFF;
+            Sound* mObject = nullptr;
+            float adjustVolume1 = info->mAdjustVolume1 * deltaTime;
+            float adjustVolume2 = info->mAdjustVolume2 * deltaTime;
+            if (v4 < 0x200
+                && info->mSound1.mVal >> 12
+                    == SoundDevice::SoundHandleDb::sInst.mElements[v4].mKey)
+                mObject = SoundDevice::SoundHandleDb::sInst.mElements[v4].mObject;
+            unsigned int v8 = info->mSound2.mVal & 0xFFF;
+            Sound* v9 = nullptr;
+            if (v8 < 0x200
+                && info->mSound2.mVal >> 12
+                    == SoundDevice::SoundHandleDb::sInst.mElements[v8].mKey)
+                v9 = SoundDevice::SoundHandleDb::sInst.mElements[v8].mObject;
+            if (info->mRemainingTime <= 0.0f)
+            {
+                if (mObject != nullptr)
+                {
+                    mObject->SetVolume(0.0f);
+                    mObject->Stop();
+                }
+                if (v9 != nullptr)
+                    v9->SetVolume(1.0f);
+            }
+            else
+            {
+                if (mObject != nullptr)
+                {
+                    float v10;
+                    if (mObject->mSource == NSL_SOURCE_ID_INVALID)
+                        v10 = -2.0f;
+                    else
+                        v10 = nslGetSourceParam((nslSourceID)mObject->mSource,
+                                                0, -1.0f);
+                    float newVolume = v10 + adjustVolume1;
+                    if (newVolume < 0.0f)
+                        newVolume = 0.0f;
+                    mObject->SetVolume(newVolume);
+                }
+                if (v9 != nullptr)
+                {
+                    float v11;
+                    if (v9->mSource == NSL_SOURCE_ID_INVALID)
+                        v11 = -2.0f;
+                    else
+                        v11 = nslGetSourceParam((nslSourceID)v9->mSource, 0,
+                                                -1.0f);
+                    float v15 = v11 + adjustVolume2;
+                    if (v15 > 1.0f)
+                        v15 = 1.0f;
+                    v9->SetVolume(v15);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0062CBE0
+void SoundDevice::CrossFade(unsigned int sound1, unsigned int sound2,
+                            float crossFadeTime)
+{
+    int v4 = -1;
+    int v6 = 0;
+    CrossFadeInfo* info = this->mCrossFadeInfo;
+    while (v4 == -1)
+    {
+        if (info[0].mRemainingTime == 0.0f)
+        {
+            v4 = v6;
+            break;
+        }
+        if (info[1].mRemainingTime == 0.0f)
+        {
+            v4 = v6 + 1;
+            break;
+        }
+        if (info[2].mRemainingTime == 0.0f)
+        {
+            v4 = v6 + 2;
+            break;
+        }
+        if (info[3].mRemainingTime == 0.0f)
+        {
+            v4 = v6 + 3;
+            break;
+        }
+        if (info[4].mRemainingTime == 0.0f)
+        {
+            v4 = v6 + 4;
+            break;
+        }
+        if (info[5].mRemainingTime == 0.0f)
+        {
+            v4 = v6 + 5;
+            break;
+        }
+        if (info[6].mRemainingTime == 0.0f)
+        {
+            v4 = v6 + 6;
+            break;
+        }
+        if (info[7].mRemainingTime == 0.0f)
+            v4 = v6 + 7;
+        v6 += 8;
+        info += 8;
+        if (v6 >= 16)
+            break;
+    }
+    unsigned int v9 = sound1 & 0xFFF;
+    Sound* mObject = nullptr;
+    if (v9 < 0x200
+        && sound1 >> 12 == SoundDevice::SoundHandleDb::sInst.mElements[v9].mKey)
+        mObject = SoundDevice::SoundHandleDb::sInst.mElements[v9].mObject;
+    unsigned int v11 = sound2 & 0xFFF;
+    Sound* sound1a = nullptr;
+    if (v11 < 0x200
+        && sound2 >> 12 == SoundDevice::SoundHandleDb::sInst.mElements[v11].mKey)
+        sound1a = SoundDevice::SoundHandleDb::sInst.mElements[v11].mObject;
+    if (v4 > -1)
+    {
+        CrossFadeInfo* v12 = &this->mCrossFadeInfo[v4];
+        v12->mSound1.mVal = sound1;
+        v12->mSound2.mVal = sound2;
+        v12->mAdjustVolume1 = 0.0f;
+        v12->mAdjustVolume2 = 0.0f;
+        if (mObject != nullptr)
+            v12->mAdjustVolume1 =
+                (-1.0f / crossFadeTime) * mObject->mVolume;
+        if (sound1a != nullptr)
+        {
+            v12->mAdjustVolume2 = sound1a->mVolume / crossFadeTime;
+            sound1a->SetVolume(0.0f);
+        }
+        v12->mRemainingTime = crossFadeTime;
     }
 }
 

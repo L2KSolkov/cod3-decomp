@@ -346,7 +346,7 @@ struct SoundDevice {
         Handle  mHandle;         // +0x24
         void*   mPoPtr;          // +0x28
         HashString mDialogNotify;// +0x2C
-        uint8_t _pad30[0x3C - 0x30];  // +0x30 (stride 0x3C, verified PauseAllSounds)
+        float   mDebugPos[3];    // +0x30 (stride 0x3C, verified SetPosition)
         Sound();                 // ??0Sound@SoundDevice@@QAE@XZ (game.o 0x612A10)
         void Reset();            // ?Reset@Sound@SoundDevice@@QAEXXZ (game.o 0x6129C0)
         float GetPlaybackPosition() const;  // ?GetPlaybackPosition@Sound@SoundDevice@@QBEMXZ
@@ -367,10 +367,28 @@ struct SoundDevice {
         ~Sound();                           // ??1Sound@SoundDevice@@QAE@XZ (game.o 0x62C020)
         void Stop();                        // ?Stop@Sound@SoundDevice@@QAEXXZ (game.o 0x62C0D0)
         void SetVolume(float vol);          // ?SetVolume@Sound@SoundDevice@@QAEXM@Z (game.o 0x62C210)
+        void SetPitch(float pitch);         // ?SetPitch@Sound@SoundDevice@@QAEXM@Z (game.o 0x62C2D0)
+        void SetRange(float min, float max);// ?SetRange@Sound@SoundDevice@@QAEXMM@Z (game.o 0x62C380)
+        void SetPosition(const math::Position3& pos);  // ?SetPosition@Sound@SoundDevice@@QAEXABVPosition3@math@@@Z (game.o 0x62C470)
+        void SetVelocity(const math::Dir3& vel);      // ?SetVelocity@Sound@SoundDevice@@QAEXABVDir3@math@@@Z (game.o 0x62C630)
+        void Update();                      // ?Update@Sound@SoundDevice@@QAEXXZ (game.o 0x62C7A0)
     };
     struct SoundHandleDb {
+        struct DbElement {
+            Sound* mObject;  // +0x00
+            int    mKey;     // +0x04
+        };
+        uint8_t   _pad[0x40];
+        DbElement mElements[0x200];  // +0x40
         static SoundHandleDb sInst;         // ?sInst@SoundHandleDb@SoundDevice@@0V12@A @ 0xF50D10
         void ReleaseHandle(Handle h);       // HandleDb<Sound,512,SizedHandle<12,20>>::ReleaseHandle
+    };
+    struct CrossFadeInfo {
+        Handle mSound1;         // +0x00
+        Handle mSound2;         // +0x04
+        float  mAdjustVolume1;  // +0x08
+        float  mAdjustVolume2;  // +0x0C
+        float  mRemainingTime;  // +0x10
     };
     Sound mSounds[512];              // +0x00 (0x3C stride)
     int   mNumberOfListeners;        // +0x7800
@@ -382,7 +400,8 @@ struct SoundDevice {
     unsigned int mCurrentReverb[14]; // +0x7890
     uint8_t _pad78C8[0x7900 - 0x78C8];
     float mRemainingReverbBlendTime; // +0x7900
-    uint8_t _pad7904[0x7A7C - 0x7904];
+    CrossFadeInfo mCrossFadeInfo[16];// +0x7904 (16 * 20 bytes)
+    uint8_t _pad7A44[0x7A7C - 0x7A44];
     float mDebugListenerPosition[3];  // +0x7A7C
     float mDebugListenerForward[3];   // +0x7A88
     float mDebugListenerUp[3];        // +0x7A94
@@ -400,6 +419,12 @@ struct SoundDevice {
                             const math::Dir3& front,
                             const math::Dir3& up);  // ?SetListenerVectors@SoundDevice@@QAEXHABVPosition3@math@@ABVDir3@3@1@Z (game.o 0x612A70)
     void StopAllSounds();
+    void ReleaseSound(Sound* s);      // ?ReleaseSound@SoundDevice@@QAEXPAVSound@1@@Z (game.o 0x62C9B0)
+    void ReleaseSound(DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> s);  // ?ReleaseSound@SoundDevice@@QAEXV?$DbLinkedHandle@VSoundHandleDb@SoundDevice@@VSound@2@@@@Z (game.o 0x62C9C0)
+    void StopAllSoundsNotPaused();    // ?StopAllSoundsNotPaused@SoundDevice@@QAEXXZ (game.o 0x62CA10)
+    void UpdateCrossFade(float deltaTime);  // ?UpdateCrossFade@SoundDevice@@QAEXM@Z (game.o 0x62CA40)
+    void CrossFade(unsigned int sound1, unsigned int sound2,
+                   float crossFadeTime);    // ?CrossFade@SoundDevice@@QAEXIIM@Z (game.o 0x62CBE0)
     void SetReverb(const char* preset, bool immediate);  // ?SetReverb@SoundDevice@@QAEXPBD_N@Z (game.o 0x9F20A0)
     void PlaySound(const char* name, DbLinkedHandle<EntityHandleDb, Entity> ent,
                    bool a4, bool a5, const math::Position3& pos,
