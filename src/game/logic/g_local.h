@@ -1169,7 +1169,9 @@ struct BrocExports {
     void (*mFireTurret)(unsigned int ent, bool fire);      // +0xB70
     uint8_t _padB74[0xC50 - 0xB74];
     void (*mAnimInitialize)();  // +0xC50
-    uint8_t _padC54[0xC90 - 0xC54];
+    uint8_t _padC54[0xC58 - 0xC54];
+    const char* (*mAnimNameResolver)(unsigned int animHash);  // +0xC58 (DebugThread::Render)
+    uint8_t _padC5C[0xC90 - 0xC5C];
     void (*mCallbackPlayerDamage)(unsigned int a1, unsigned int a2, unsigned int a3,
                                   float* a4, float* a5, int a6, int a7, int a8,
                                   hitLocation_t a9);  // +0xC90

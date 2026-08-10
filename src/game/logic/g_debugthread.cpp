@@ -6,12 +6,88 @@
 #include "game/logic/g_local.h"
 #include "game/logic/g_inspector.h"
 #include "core/tlFixedString.h"
+#include "core/ae_fixed_string.h"
+#include "core/ae_array.h"
 
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 
 typedef unsigned int nslSourceID;  // nsl.cpp stub surface
+
+// ============================================================================
+// DebugThread::Render support types (game2.o)
+// ============================================================================
+struct ai_funcs_s {
+    void* pfnStart;          // +0x00
+    void* pfnFinish;         // +0x04
+    void* pfnSuspend;        // +0x08
+    void* pfnResume;         // +0x0C
+    void* pfnThink;          // +0x10
+    void* pfnInterruptPoint; // +0x14
+    void* pfnTouch;          // +0x18
+    void* pfnPain;           // +0x1C
+    void* pfnNodeClaimRevoked;   // +0x20
+    void* pfnMoveAwayRequested;  // +0x24
+    char  debugName[16];     // +0x28
+};
+extern const ai_funcs_s AIFuncTable[];  // ?AIFuncTable@@3QBUai_funcs_s@@B (mp_actors.o)
+
+struct apsStats {
+    int numActiveEffects;         // +0x00
+    int maxRequestedBlockSize;    // +0x04
+    int numActiveParticles;       // +0x08
+    int maxActiveParticles;       // +0x0C
+};
+extern void apsGetStats(apsStats& stats);  // ?apsGetStats@@YAXAAUapsStats@@@Z (render.o)
+extern bool apsGetPoolInfo(int nPool, int* size, int* capacity, int* used,
+                           int* peak);  // ?apsGetPoolInfo@@YA_NHAAH000@Z (render.o)
+extern void FX_ReportFX();               // ?FX_ReportFX@@YAXXZ (render.o)
+
+template <typename A, typename B>
+struct ae_pair {
+    A first;   // +0x00
+    B second;  // +0x04
+};
+struct ParticleEffect {
+    static ae_sized_array<ae_pair<short, short>, 256> sArray;  // ?sArray@ParticleEffect@@2V?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@A (render.o)
+};
+
+// AeThread / AeThreadManager list walk (sv_stubs.h owns AeThreadManager)
+struct AeThread {
+    void* mPrev;         // +0x00 (dlist node)
+    void* mNext;         // +0x04
+    unsigned int mOwner; // +0x08 (DbLinkedHandle mVal)
+    void* mFunctor;      // +0x0C
+    unsigned int mFlags; // +0x10 (Bitmask mVal)
+    unsigned int mHandle;// +0x14
+    unsigned char _pad18[0x44 - 0x18];
+    const char* mFuncName;  // +0x44
+    const char* mFile;      // +0x48
+    int mLine;              // +0x4C
+
+    void GetCondText(ae_fixed_string<64, unsigned char>& str);  // ?GetCondText@AeThread@@QAEXAAV?$ae_fixed_string@$0EA@E@@@Z
+};
+
+extern void DisplayPoolTotals(PoolAllocator* pool);   // g_game2_misc.cpp
+extern PoolAllocator* gCommonPoolAllocator;           // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A
+extern PoolAllocator* gAeThreadBackupStackAllocator;  // g_local.h
+extern DbLinkedHandle<EntityHandleDb, Entity> g_renderUniqueIndex;  // ?g_renderUniqueIndex@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o)
+extern vmCvar_t memory_reportBrocPool;             // ?memory_reportBrocPool@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_reportBrocBackupStackPool;  // ?memory_reportBrocBackupStackPool@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_reportCommonPool;           // ?memory_reportCommonPool@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_reportAepsStats;            // ?memory_reportAepsStats@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_displayAepsStats;           // ?memory_displayAepsStats@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t memory_showStatistics;             // ?memory_showStatistics@@3UvmCvar_t@@A (game2.o)
+extern vmCvar_t g_debugProneCheck;                 // ?g_debugProneCheck@@3UvmCvar_t@@A (g.o)
+extern vmCvar_t g_debugProneCheckDepthCheck;       // ?g_debugProneCheckDepthCheck@@3UvmCvar_t@@A (g.o)
+extern int Actor_IsSuppressed(actor_s* pSelf);     // ?Actor_IsSuppressed@@YIHPAUactor_s@@@Z (mp_actors.o)
+extern void Path_DrawDebugNode(const PathNodes::PathNode* pNode);  // ?Path_DrawDebugNode@@YAXPBUPathNode@PathNodes@@@Z (mp_actors.o)
+extern float scaleScalar;  // ?scaleScalar@@3MA (render.o)
+extern void RE_Text_Paint(float x, float y, int font, float scale,
+                          const float* color, const char* text, float a7,
+                          int a8, int a9);  // ?RE_Text_Paint (render.o)
+extern int mem_get_high_used_bytes(int heap_name);  // ?mem_get_high_used_bytes@@YAHW4mem_heap_type@@@Z (mem_heap)
 
 // ============================================================================
 // DebugThread message globals (game2.o data)
@@ -148,6 +224,579 @@ void DebugThread::DisplayEntitySound(const math::Position3* entityPos,
                              g_debugProneCheckDepthCheck.integer, 1);
         }
     }
+}
+
+// ============================================================================
+// RenderUniqueIndex - ea: 0x503FD0
+// ============================================================================
+void RenderUniqueIndex(DbLinkedHandle<EntityHandleDb, Entity> index)
+{
+    unsigned int mVal = index.mHandle.mVal;
+    unsigned int idx = mVal & 0xFFF;
+    if (idx >= 0x540
+        || mVal >> 12 != EntityHandleDb::sInst.mElements[idx].mKey
+        || EntityHandleDb::sInst.mElements[idx].mObject == nullptr)
+        return;
+    char tmpstr[128];
+    int y = 50;
+    for (unsigned int i = 0; i < 0x540; ++i)
+    {
+        Entity* Object = EntityHandleDb::sInst.mElements[i].mObject;
+        if (Object == nullptr)
+            continue;
+        if (Object->mHandle.mHandle.mVal != mVal || Object->actor == nullptr)
+            continue;
+        const char* name = "<no name>";
+        if (Object->targetname.mBlock != nullptr
+            && Object->targetname.mBlock->mLength != 0)
+            name = Object->targetname.mBlock->mBuff;
+        sprintf(tmpstr, "%s(%d)   ID:%d", name, mVal, mVal);
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 0.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, 100, y, 0.25f);
+        y += 15;
+        sprintf(tmpstr, "POS: %5.1f, %5.1f, %5.1f   YAW: %3.1f",
+                Object->r.currentOrigin.v.m128_f32[0],
+                Object->r.currentOrigin.v.m128_f32[1],
+                Object->r.currentOrigin.v.m128_f32[2],
+                Object->r.currentAngles.v.m128_f32[1]);
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 0.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, 100, y, 0.25f);
+        y += 15;
+        const char* stateName = AIFuncTable[
+            Object->actor->eState[Object->actor->iStateLevel]].debugName;
+        sprintf(tmpstr, "%s(%s)", stateName, (const char*)((char*)Object->actor + 0xB0C));
+        g_inspectorManager.m_currentRgba[0] = 1.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, 100, y, 0.25f);
+        y += 15;
+        switch (Object->actor->eAnimMode)
+        {
+        case 0: strcpy(tmpstr, "Ai Anim Move Along Path"); break;
+        case 1: strcpy(tmpstr, "Ai Anim Use Pos Deltas"); break;
+        case 2: strcpy(tmpstr, "Ai Anim Use Angle Deltas"); break;
+        case 3: strcpy(tmpstr, "Ai Anim Use Both Deltas"); break;
+        case 4: strcpy(tmpstr, "Ai Anim Use Both Deltas Noclip"); break;
+        case 5: strcpy(tmpstr, "Ai Anim Use Both Deltas NoGravity"); break;
+        case 6: strcpy(tmpstr, "Ai Anim Stationary"); break;
+        case 7: strcpy(tmpstr, "Ai Anim No Physics"); break;
+        default: strcpy(tmpstr, "Ai Anim Unknown"); break;
+        }
+        g_inspectorManager.m_currentRgba[0] = 1.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, 100, y, 0.25f);
+        y += 15;
+        if (Object->IsVisible() != 0)
+            strcpy(tmpstr, "Visible");
+        else
+            strcpy(tmpstr, "Not Visible");
+        g_inspectorManager.m_currentRgba[0] = 1.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, 100, y, 0.25f);
+        y += 15;
+        if (Object->sentient->bNearestNodeValid != 0)
+        {
+            const PathNodes::PathNode* node =
+                (*(const PathNodes::NodeHandle*)&Object->sentient->mClaimedNode).operator*();
+            if (node != nullptr)
+            {
+                sprintf(tmpstr, "NODE(%d): %d, %d, %d",
+                        node->mHandle.mValue,
+                        (int)node->mConstant.mOrigin[0],
+                        (int)node->mConstant.mOrigin[1],
+                        (int)node->mConstant.mOrigin[2]);
+                g_inspectorManager.m_currentRgba[0] = 1.0f;
+                g_inspectorManager.m_currentRgba[1] = 1.0f;
+                g_inspectorManager.m_currentRgba[2] = 1.0f;
+                g_inspectorManager.m_currentRgba[3] = 1.0f;
+                g_inspectorManager.Print(tmpstr, 100, y, 0.25f);
+                Path_DrawDebugNode(node);
+            }
+        }
+        g_drawDebugEntityLos = 1;
+        y += 15;
+        g_debugThread.m_entityHandle.mHandle.mVal =
+            Object->mHandle.mHandle.mVal;
+        float ox = Object->r.currentOrigin.v.m128_f32[0];
+        float oy = Object->r.currentOrigin.v.m128_f32[1];
+        float oz = Object->r.currentOrigin.v.m128_f32[2];
+        for (int k = 8; k != 0; --k)
+        {
+            float startPos[3] = { ox + flrand(-2.0f, 2.0f),
+                                  oy + flrand(-2.0f, 2.0f), oz };
+            float endPos[3] = { startPos[0] + flrand(-2.0f, 2.0f),
+                                startPos[1] + flrand(-2.0f, 2.0f),
+                                oz + 200.0f };
+            if (g_debugProneCheck.integer != 0)
+            {
+                G_DebugLine(startPos, endPos, colorRed,
+                            g_debugProneCheckDepthCheck.integer, 1);
+            }
+        }
+        const PathNodes::PathNode* chain =
+            (*(const PathNodes::NodeHandle*)&Object->sentient->mActualChainPos).operator*();
+        if (chain != nullptr)
+        {
+            sprintf(tmpstr, "Actual Chain: %.1f %.1f %.1f",
+                    chain->mConstant.mOrigin[0],
+                    chain->mConstant.mOrigin[1],
+                    chain->mConstant.mOrigin[2]);
+            g_inspectorManager.m_currentRgba[0] = 1.0f;
+            g_inspectorManager.m_currentRgba[1] = 1.0f;
+            g_inspectorManager.m_currentRgba[2] = 1.0f;
+            g_inspectorManager.m_currentRgba[3] = 1.0f;
+            g_inspectorManager.Print(tmpstr, 100, y, 0.25f);
+            y += 15;
+        }
+    }
+}
+
+// ============================================================================
+// DebugThread::Render - ea: 0x50A050
+// ============================================================================
+void DebugThread::Render()
+{
+    RenderUniqueIndex(g_renderUniqueIndex);
+    char tmpstr[128];
+    char textBuff[128];
+    float white[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    if (gDebugThread_MessageTicks != 0)
+    {
+        float alpha = 1.0f;
+        if (gDebugThread_MessageAlphaMin != 1.0f)
+            alpha = gDebugThread_MessageTicks * 0.0033333334f;
+        --gDebugThread_MessageTicks;
+        memcpy(g_inspectorManager.m_currentRgba, gDebugThread_MessageRGB, 12);
+        g_inspectorManager.m_currentRgba[3] = alpha;
+        g_inspectorManager.Print(
+            gDebugThread_Message, (int)gDebugThread_MessageXpos,
+            (int)gDebugThread_MessageYpos, gDebugThread_MessageScale);
+        if (gDebugThread_MessageTicks <= 0)
+            gDebugThread_Message = nullptr;
+    }
+    if (memory_reportBrocPool.integer == 1)
+        DisplayPoolTotals(gBrocPool);
+    if (memory_reportBrocBackupStackPool.integer == 1)
+        DisplayPoolTotals(gAeThreadBackupStackAllocator);
+    if (memory_reportCommonPool.integer == 1)
+        DisplayPoolTotals(gCommonPoolAllocator);
+    if (memory_reportAepsStats.integer == 1)
+    {
+        FX_ReportFX();
+        memory_reportAepsStats.integer = 0;
+    }
+    if (memory_displayAepsStats.integer == 1)
+    {
+        apsStats stats;
+        apsGetStats(stats);
+        g_inspectorManager.m_currentRgba[0] = 0.75f;
+        g_inspectorManager.m_currentRgba[1] = 0.75f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print((char*)"SIZE", 320, 48, 0.25f);
+        g_inspectorManager.Print((char*)"NUM", 400, 48, 0.25f);
+        g_inspectorManager.Print((char*)"USED", 480, 48, 0.25f);
+        g_inspectorManager.Print((char*)"PEAK", 560, 48, 0.25f);
+        int v78 = 64;
+        int v77 = 0;
+        float v76 = 0.0f;
+        int pool = 0;
+        int size, capacity, used, peak;
+        if (apsGetPoolInfo(pool, &size, &capacity, &used, &peak))
+        {
+            do
+            {
+                if ((float)size > v76)
+                    v76 = (float)size;
+                if (peak == capacity)
+                {
+                    g_inspectorManager.m_currentRgba[0] = 1.0f;
+                    g_inspectorManager.m_currentRgba[1] = 0.25f;
+                    g_inspectorManager.m_currentRgba[2] = 0.25f;
+                    g_inspectorManager.m_currentRgba[3] = 1.0f;
+                }
+                else if (peak > 80 * capacity / 100)
+                {
+                    g_inspectorManager.m_currentRgba[0] = 1.0f;
+                    g_inspectorManager.m_currentRgba[1] = 1.0f;
+                    g_inspectorManager.m_currentRgba[2] = 0.0f;
+                    g_inspectorManager.m_currentRgba[3] = 1.0f;
+                }
+                else
+                {
+                    g_inspectorManager.m_currentRgba[0] = 0.5f;
+                    g_inspectorManager.m_currentRgba[1] = 0.5f;
+                    g_inspectorManager.m_currentRgba[2] = 1.0f;
+                    g_inspectorManager.m_currentRgba[3] = 1.0f;
+                }
+                int y = v78;
+                v77 += size * capacity;
+                int vals[4] = { size, capacity, used, peak };
+                int x = 320;
+                for (int c = 0; c < 4; ++c)
+                {
+                    sprintf(tmpstr, "%d", vals[c]);
+                    RE_Text_Paint((float)(x + 2), (float)(y + 2), 5,
+                                  scaleScalar * 0.25f, white, tmpstr, 0, 0, 0);
+                    RE_Text_Paint((float)x, (float)y, 5, scaleScalar * 0.25f,
+                                  g_inspectorManager.m_currentRgba, tmpstr,
+                                  0, 0, 0);
+                    x += 80;
+                }
+                v78 += 16;
+                ++pool;
+            } while (apsGetPoolInfo(pool, &size, &capacity, &used, &peak));
+        }
+        g_inspectorManager.m_currentRgba[0] = 0.75f;
+        g_inspectorManager.m_currentRgba[1] = 0.75f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        sprintf(tmpstr, "%dKB total", (v77 + 1023) / 1024);
+        int v8 = v78;
+        RE_Text_Paint(336.0f, (float)(v8 + 2), 5, scaleScalar * 0.25f, white,
+                      tmpstr, 0, 0, 0);
+        RE_Text_Paint(320.0f, (float)v8, 5, scaleScalar * 0.25f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+        v8 += 16;
+        sprintf(tmpstr, "%d active effects", stats.numActiveEffects);
+        RE_Text_Paint(336.0f, (float)(v8 + 2), 5, scaleScalar * 0.25f, white,
+                      tmpstr, 0, 0, 0);
+        RE_Text_Paint(320.0f, (float)v8, 5, scaleScalar * 0.25f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+        int v9 = v8 + 16;
+        sprintf(tmpstr, "max requested size %d", stats.maxRequestedBlockSize);
+        RE_Text_Paint(336.0f, (float)(v9 + 2), 5, scaleScalar * 0.25f, white,
+                      tmpstr, 0, 0, 0);
+        RE_Text_Paint(320.0f, (float)v9, 5, scaleScalar * 0.25f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+        int v10 = v9 + 16;
+        sprintf(tmpstr, "%d active particles ( %d peak )",
+                stats.numActiveParticles, stats.maxActiveParticles);
+        RE_Text_Paint(336.0f, (float)(v10 + 2), 5, scaleScalar * 0.25f, white,
+                      tmpstr, 0, 0, 0);
+        RE_Text_Paint(320.0f, (float)v10, 5, scaleScalar * 0.25f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+        sprintf(tmpstr, "Particle Array (%d/%d)",
+                ParticleEffect::sArray.m_size, 256);
+        RE_Text_Paint(336.0f, (float)(v10 + 18), 5, scaleScalar * 0.25f,
+                      white, tmpstr, 0, 0, 0);
+        RE_Text_Paint(320.0f, (float)(v10 + 16), 5, scaleScalar * 0.25f,
+                      g_inspectorManager.m_currentRgba, tmpstr, 0, 0, 0);
+    }
+    if (memory_showStatistics.integer == 1)
+    {
+        g_inspectorManager.m_currentRgba[0] = 0.75f;
+        g_inspectorManager.m_currentRgba[1] = 0.75f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print((char*)"USED", 400, 250, 0.35f);
+        g_inspectorManager.Print((char*)"FREE", 475, 250, 0.35f);
+        g_inspectorManager.Print((char*)"PEAK", 550, 250, 0.35f);
+        g_inspectorManager.m_currentRgba[0] = 0.75f;
+        g_inspectorManager.m_currentRgba[1] = 0.75f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print((char*)"MEMORY", 300, 266, 0.35f);
+        int usedBytes = mem_get_used_bytes(MEM_HEAP_NONE);
+        if (usedBytes <= 0x2000000)
+        {
+            if (usedBytes > 25165824)
+            {
+                g_inspectorManager.m_currentRgba[0] = 1.0f;
+                g_inspectorManager.m_currentRgba[1] = 1.0f;
+                g_inspectorManager.m_currentRgba[2] = 0.0f;
+                g_inspectorManager.m_currentRgba[3] = 1.0f;
+            }
+            else
+            {
+                g_inspectorManager.m_currentRgba[0] = 0.5f;
+                g_inspectorManager.m_currentRgba[1] = 0.5f;
+                g_inspectorManager.m_currentRgba[2] = 1.0f;
+                g_inspectorManager.m_currentRgba[3] = 1.0f;
+            }
+        }
+        else
+        {
+            g_inspectorManager.m_currentRgba[0] = 1.0f;
+            g_inspectorManager.m_currentRgba[1] = 0.25f;
+            g_inspectorManager.m_currentRgba[2] = 0.25f;
+            g_inspectorManager.m_currentRgba[3] = 1.0f;
+        }
+        sprintf(tmpstr, "%5.2f MB", usedBytes * 0.00000095367432f);
+        g_inspectorManager.Print(tmpstr, 400, 266, 0.35f);
+        g_inspectorManager.m_currentRgba[0] = 0.5f;
+        g_inspectorManager.m_currentRgba[1] = 0.5f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        sprintf(tmpstr, "%5.2f MB",
+                mem_get_free_bytes(MEM_HEAP_NONE) * 0.00000095367432f);
+        g_inspectorManager.Print(tmpstr, 475, 266, 0.35f);
+        sprintf(tmpstr, "%5.2f MB",
+                mem_get_high_used_bytes(MEM_HEAP_NONE) * 0.00000095367432f);
+        g_inspectorManager.Print(tmpstr, 550, 266, 0.35f);
+        if (gBrocHeap != nullptr)
+        {
+            char* heap = (char*)gBrocHeap;
+            int size = *(int*)(heap + 0x484);
+            int used = *(int*)(heap + 0x488);
+            int high = *(int*)(heap + 0x48C);
+            g_inspectorManager.m_currentRgba[0] = 0.75f;
+            g_inspectorManager.m_currentRgba[1] = 0.75f;
+            g_inspectorManager.m_currentRgba[2] = 1.0f;
+            g_inspectorManager.m_currentRgba[3] = 1.0f;
+            g_inspectorManager.Print((char*)"Broc Heap", 300, 282, 0.35f);
+            g_inspectorManager.m_currentRgba[0] = 0.5f;
+            g_inspectorManager.m_currentRgba[1] = 0.5f;
+            g_inspectorManager.m_currentRgba[2] = 1.0f;
+            g_inspectorManager.m_currentRgba[3] = 1.0f;
+            sprintf(tmpstr, "%5.2f MB", used * 0.00000095367432f);
+            g_inspectorManager.Print(tmpstr, 400, 282, 0.35f);
+            sprintf(tmpstr, "%5.2f MB", (size - used) * 0.00000095367432f);
+            g_inspectorManager.Print(tmpstr, 475, 282, 0.35f);
+            sprintf(tmpstr, "%5.2f MB", high * 0.00000095367432f);
+            g_inspectorManager.Print(tmpstr, 550, 282, 0.35f);
+        }
+    }
+    // Thread / selected-entity section
+    Entity* selected = nullptr;
+    unsigned int selVal = g_debugThread.m_entityHandle.mHandle.mVal;
+    unsigned int selIdx = selVal & 0xFFF;
+    if (selIdx < 0x540
+        && selVal >> 12 == EntityHandleDb::sInst.mElements[selIdx].mKey)
+        selected = EntityHandleDb::sInst.mElements[selIdx].mObject;
+    char* mgr = (char*)&AeThreadManager::sInst;
+    void** list = (void**)(mgr + 4);          // mThreads
+    void* m_head = list[0];                   // head node pointer
+    void* m_next = m_head != nullptr
+        ? *(void**)((char*)m_head + 4) : nullptr;
+    void* endNode = (char*)list + 8;          // &mThreads.m_end
+    if (m_head == endNode)
+        m_next = nullptr;
+    int numThreads = 0;
+    float numForSelected = 0.0f;
+    void* cur = m_next;
+    while (cur != nullptr)
+    {
+        AeThread* t = (AeThread*)cur;
+        ++numThreads;
+        Entity* owner = nullptr;
+        unsigned int own = t->mOwner;
+        unsigned int oi = own & 0xFFF;
+        if (oi < 0x540
+            && own >> 12 == EntityHandleDb::sInst.mElements[oi].mKey)
+            owner = EntityHandleDb::sInst.mElements[oi].mObject;
+        if (owner == selected)
+            ++numForSelected;
+        cur = t->mNext;
+    }
+    sprintf(tmpstr, "Num Threads In Game: %d", numThreads);
+    g_inspectorManager.m_currentRgba[0] = 0.0f;
+    g_inspectorManager.m_currentRgba[1] = 1.0f;
+    g_inspectorManager.m_currentRgba[2] = 0.0f;
+    g_inspectorManager.m_currentRgba[3] = 1.0f;
+    g_inspectorManager.Print(tmpstr, 100, 50, 0.5f);
+    if (selected == nullptr)
+    {
+        sprintf(tmpstr, "Can't find Selected Entity");
+        g_inspectorManager.m_currentRgba[0] = 0.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 0.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, 100, 74, 0.5f);
+        g_SoundOnlyPlay.mHandle.mVal = (unsigned int)-1;
+        return;
+    }
+    const char* name = "<no name>";
+    if (selected->targetname.mBlock != nullptr
+        && selected->targetname.mBlock->mLength != 0)
+        name = selected->targetname.mBlock->mBuff;
+    sprintf(tmpstr, "%s(%d)   ID:%d", name,
+            selected->mHandle.mHandle.mVal, selected->uniqueIndex);
+    g_inspectorManager.m_currentRgba[0] = 0.0f;
+    g_inspectorManager.m_currentRgba[1] = 1.0f;
+    g_inspectorManager.m_currentRgba[2] = 0.0f;
+    g_inspectorManager.m_currentRgba[3] = 1.0f;
+    g_inspectorManager.Print(tmpstr, 100, 74, 0.5f);
+    float ox = selected->r.currentOrigin.v.m128_f32[0];
+    float oy = selected->r.currentOrigin.v.m128_f32[1];
+    float oz = selected->r.currentOrigin.v.m128_f32[2];
+    float yaw = selected->r.currentAngles.v.m128_f32[1];
+    sprintf(tmpstr, "POS: %5.1f, %5.1f, %5.1f   YAW: %3.1f  ",
+            ox, oy, oz, yaw);
+    g_inspectorManager.m_currentRgba[0] = 0.0f;
+    g_inspectorManager.m_currentRgba[1] = 1.0f;
+    g_inspectorManager.m_currentRgba[2] = 0.0f;
+    g_inspectorManager.m_currentRgba[3] = 1.0f;
+    g_inspectorManager.Print(tmpstr, 100, 92, 0.5f);
+    int y = 110;
+    char* actor = (char*)selected->actor;
+    if (actor != nullptr)
+    {
+        int stateIdx = *(int*)(actor + 0x24);
+        sprintf(tmpstr, "%s(%s)",
+                AIFuncTable[*(int*)(actor + 8 + 4 * stateIdx)].debugName,
+                *(const char**)(actor + 0xB0C));
+        g_inspectorManager.m_currentRgba[0] = 1.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(tmpstr, 100, 110, 0.5f);
+        textBuff[0] = 0;
+        strcat(textBuff, "AI Flags:");
+        if (*(int*)(actor + 0x864) != 0)
+            strcat(textBuff, "    pacifist");
+        if ((selected->flags & 2) != 0
+            || *(int*)((char*)selected->sentient + 56) != 0)
+            strcat(textBuff, "    ignoreme");
+        if (Actor_IsSuppressed(selected->actor) != 0)
+            strcat(textBuff, "    suppressed");
+        g_inspectorManager.m_currentRgba[0] = 1.0f;
+        g_inspectorManager.m_currentRgba[1] = 1.0f;
+        g_inspectorManager.m_currentRgba[2] = 1.0f;
+        g_inspectorManager.m_currentRgba[3] = 1.0f;
+        g_inspectorManager.Print(textBuff, 100, 128, 0.5f);
+        y = 146;
+        char* sent = (char*)selected->sentient;
+        if (*(int*)(sent + 154) != 0)
+        {
+            const PathNodes::PathNode* node =
+                (*(const PathNodes::NodeHandle*)(sent + 116)).operator*();
+            if (node != nullptr)
+            {
+                sprintf(tmpstr, "   NODE(%d): %d, %d, %d",
+                        node->mHandle.mValue,
+                        (int)node->mConstant.mOrigin[0],
+                        (int)node->mConstant.mOrigin[1],
+                        (int)node->mConstant.mOrigin[2]);
+                Path_DrawDebugNode(node);
+                g_inspectorManager.m_currentRgba[0] = 1.0f;
+                g_inspectorManager.m_currentRgba[1] = 1.0f;
+                g_inspectorManager.m_currentRgba[2] = 1.0f;
+                g_inspectorManager.m_currentRgba[3] = 1.0f;
+                g_inspectorManager.Print(tmpstr, 100, 146, 0.5f);
+                y = 164;
+            }
+        }
+        textBuff[0] = 0;
+        int sFlags = *(short*)(sent + 0x72);
+        if ((sFlags & 1) != 0)
+            strcat(textBuff, "DontProne, ");
+        if ((sFlags & 2) != 0)
+            strcat(textBuff, "DontStand, ");
+        if ((sFlags & 4) != 0)
+            strcat(textBuff, "DontCrouch, ");
+        if (textBuff[0] != 0)
+        {
+            g_inspectorManager.Print(textBuff, 100, y, 0.5f);
+            y += 18;
+        }
+        if (selected->mAnimDebug != nullptr)
+        {
+            unsigned int curHash = *(unsigned int*)selected->mAnimDebug;
+            const char* curName =
+                gpBrocAPI->mBrocExports.mAnimNameResolver(curHash);
+            sprintf(tmpstr, "CurAnim: %s", curName);
+            g_inspectorManager.m_currentRgba[0] = 0.0f;
+            g_inspectorManager.m_currentRgba[1] = 1.0f;
+            g_inspectorManager.m_currentRgba[2] = 0.0f;
+            g_inspectorManager.m_currentRgba[3] = 1.0f;
+            g_inspectorManager.Print(tmpstr, 100, y + 18, 0.5f);
+            unsigned int lastHash = *(unsigned int*)((char*)selected->mAnimDebug + 4);
+            const char* lastName =
+                gpBrocAPI->mBrocExports.mAnimNameResolver(lastHash);
+            sprintf(tmpstr, "LastAnim: %s", lastName);
+            g_inspectorManager.m_currentRgba[0] = 0.0f;
+            g_inspectorManager.m_currentRgba[1] = 0.8f;
+            g_inspectorManager.m_currentRgba[2] = 0.0f;
+            g_inspectorManager.m_currentRgba[3] = 1.0f;
+            g_inspectorManager.Print(tmpstr, 100, y + 36, 0.5f);
+        }
+    }
+    // Thread window
+    int total = (int)numForSelected;
+    int scrollStart = g_debugThread.m_menuScrollStartIndex;
+    int page = g_debugThread.m_menuMaxOnPage;
+    int dispStart = scrollStart;
+    if (total - scrollStart < page)
+    {
+        dispStart = total - page;
+        scrollStart = total - page;
+        if (total - page < 0)
+        {
+            dispStart = 0;
+            scrollStart = 0;
+        }
+    }
+    int dispEnd = dispStart + page;
+    if (dispEnd >= total)
+        dispEnd = total;
+    int line = y + 24;
+    int seen = 0;
+    cur = m_next;
+    while (cur != nullptr)
+    {
+        AeThread* t = (AeThread*)cur;
+        Entity* owner = nullptr;
+        unsigned int own = t->mOwner;
+        unsigned int oi = own & 0xFFF;
+        if (oi < 0x540
+            && own >> 12 == EntityHandleDb::sInst.mElements[oi].mKey)
+            owner = EntityHandleDb::sInst.mElements[oi].mObject;
+        if (owner == selected)
+        {
+            if (seen >= scrollStart && seen < dispEnd)
+            {
+                if (t->mFuncName != nullptr)
+                {
+                    ae_fixed_string<64, unsigned char> tStr;
+                    tStr.mBuff[52] = 0;
+                    t->GetCondText(tStr);
+                    sprintf(tmpstr, "%s ***%s***", t->mFuncName, tStr.mBuff);
+                }
+                else
+                {
+                    sprintf(tmpstr, "Unknown: Line %d, File %s",
+                            t->mLine, t->mFile);
+                }
+                if ((t->mFlags & 0x10) != 0)
+                {
+                    g_inspectorManager.m_currentRgba[0] = 0.6f;
+                    g_inspectorManager.m_currentRgba[1] = 0.6f;
+                }
+                else
+                {
+                    g_inspectorManager.m_currentRgba[0] = 1.0f;
+                    g_inspectorManager.m_currentRgba[1] = 1.0f;
+                }
+                g_inspectorManager.m_currentRgba[2] = 1.0f;
+                g_inspectorManager.m_currentRgba[3] = 1.0f;
+                g_inspectorManager.Print(tmpstr, 100, line, 0.5f);
+                line += 18;
+            }
+            ++seen;
+        }
+        cur = t->mNext;
+    }
+    sprintf(tmpstr, "Disp: %d-%d / %d", dispStart + 1, dispEnd, total);
+    g_inspectorManager.m_currentRgba[0] = 0.0f;
+    g_inspectorManager.m_currentRgba[1] = 1.0f;
+    g_inspectorManager.m_currentRgba[2] = 0.0f;
+    g_inspectorManager.m_currentRgba[3] = 1.0f;
+    g_inspectorManager.Print(tmpstr, 100, line, 0.5f);
+    float entityPos[3] = { ox, oy, oz };
+    DisplayEntitySound((const math::Position3*)entityPos, 100, line, 18, 0.5f);
+    g_SoundOnlyPlay.mHandle.mVal = (unsigned int)-1;
 }
 
 // ============================================================================

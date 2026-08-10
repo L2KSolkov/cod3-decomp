@@ -923,8 +923,12 @@ bool IS_NAN(float x);  // global (defined in Broc.cpp)
 // PathNodes namespace — AI path node handles (global scope, verified against IDA)
 // ============================================================================
 namespace PathNodes {
+struct PathNode;  // forward (defined below)
+
 struct NodeHandle {
     uint16_t mValue;  // +0x00
+
+    const PathNode* operator*() const;  // ??DNodeHandle@PathNodes@@QBEPBUPathNode@1@XZ (mp_actors.o)
 };
 
 // ============================================================================
