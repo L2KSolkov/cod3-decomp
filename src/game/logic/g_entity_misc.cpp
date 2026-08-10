@@ -1004,6 +1004,79 @@ bool MusicMgr::IsMusicPlaying()
 }
 
 // ============================================================================
+// SoundDevice::Sound::GetDebugString - ea: 0x6216F0
+// ============================================================================
+// nsl sound API declarations (shared by the SoundDevice helpers below)
+enum nslSourceState {
+    NSL_SOURCE_STATE_INVALID = 0,
+    NSL_SOURCE_STATE_QUEUING = 2,
+    NSL_SOURCE_STATE_QUEUED = 3,
+    NSL_SOURCE_STATE_PLAYING = 4,
+    NSL_SOURCE_STATE_PAUSED = 5,
+};
+extern nslSourceState nslGetSourceState(nslSourceID sid);   // nsl
+extern unsigned int nslWaveGetHash(nslWaveID waveID);       // nsl
+extern void nslStopSource(nslSourceID sid);                 // nsl
+extern void nslFreeSource(nslSourceID sid);                 // nsl
+extern void nslSetSourceParam(nslSourceID sid, int index,
+                              float value);                 // nsl
+extern void nslSetSourcePosition(nslSourceID sid,
+                                 const float* position);    // nsl
+extern void nslSetSourceVelocity(nslSourceID sid,
+                                 const float* velocity);    // nsl
+extern const char* nslWaveGetName(nslWaveID waveID);        // nsl
+extern nslSourceID g_break_on_stop;  // ?g_break_on_stop@@3W4nslSourceID@@A (game.o)
+extern void tlWarning(const char* fmt, ...);                // tl_xboxr
+extern "C" int __fpclass(float);
+extern const char* nslGetSourceName(nslSourceID sid);       // nsl
+extern float nslGetSourceParam(nslSourceID sid, int index,
+                               float defaultValue);         // nsl
+extern unsigned int nslGetSourceLength(nslSourceID sid);    // nsl
+extern int nslIsWaveLooped(nslWaveID a);                    // nsl
+extern int nslGetWaveLength(nslWaveID waveID);              // nsl
+extern void nslSetSourceEffectOn(nslSourceID sid);          // nsl
+extern void nslSetSourceEffectOff(nslSourceID sid);         // nsl
+extern void nslSetMasterVolume(float newVolume);            // nsl
+extern void nslPauseSource(nslSourceID sid);                // nsl
+extern void nslUnpauseSource(nslSourceID sid);              // nsl
+extern void nslPlaySource(nslSourceID sid);                 // nsl
+extern void nslDampenGuardSource(nslSourceID sid);          // nsl
+extern void nslSetNumberOfListeners(int listeners);         // nsl
+extern int nslAreAllBanksLoaded();                          // nsl
+extern int nslNumBanksInUse();                              // nsl
+
+// ea: 0x006216F0
+ae_fixed_string<1024, unsigned short>
+SoundDevice::Sound::GetDebugString() const
+{
+    const char* SourceName = nslGetSourceName((nslSourceID)this->mSource);
+    const char* v11 = "loop";
+    nslSourceState SourceState;
+    if (((this->mSource == NSL_SOURCE_ID_INVALID
+          || (SourceState = nslGetSourceState((nslSourceID)this->mSource))
+                 != NSL_SOURCE_STATE_PLAYING
+             && SourceState != NSL_SOURCE_STATE_QUEUING
+             && SourceState != NSL_SOURCE_STATE_QUEUED
+             && SourceState != NSL_SOURCE_STATE_PAUSED)
+         && !this->mPaused)
+        || nslIsWaveLooped((nslWaveID)this->mWave) == 0)
+    {
+        v11 = "one-shot";
+    }
+    if (SourceName == nullptr)
+        SourceName = "(unknown)";
+    unsigned int SourceLength =
+        nslGetSourceLength((nslSourceID)this->mSource);
+    float SourceParam =
+        nslGetSourceParam((nslSourceID)this->mSource, 1, -1.0f);
+    float v7 = nslGetSourceParam((nslSourceID)this->mSource, 0, -1.0f);
+    char buf[1024];
+    sprintf(buf, "%s V%.2f P%.2f L%.2f %s", SourceName, v7, SourceParam,
+            SourceLength * 0.001f, v11);
+    return ae_fixed_string<1024, unsigned short>(buf);
+}
+
+// ============================================================================
 // CGBankManager::~CGBankManager - ea: 0x611B70
 // ============================================================================
 extern void Cmd_RemoveCommand(const char* cmd_name);  // game.o g_cmd.cpp
@@ -1824,43 +1897,6 @@ void SoundDevice::Sound::Reset()
 // ============================================================================
 // SoundDevice / Sound helpers - ea: 0x6025A0..0x6029D0 (SoundDevice.cpp)
 // ============================================================================
-enum nslSourceState {
-    NSL_SOURCE_STATE_INVALID = 0,
-    NSL_SOURCE_STATE_QUEUING = 2,
-    NSL_SOURCE_STATE_QUEUED = 3,
-    NSL_SOURCE_STATE_PLAYING = 4,
-    NSL_SOURCE_STATE_PAUSED = 5,
-};
-extern nslSourceState nslGetSourceState(nslSourceID sid);   // nsl
-extern unsigned int nslWaveGetHash(nslWaveID waveID);       // nsl
-extern void nslStopSource(nslSourceID sid);                 // nsl
-extern void nslFreeSource(nslSourceID sid);                 // nsl
-extern void nslSetSourceParam(nslSourceID sid, int index,
-                              float value);                 // nsl
-extern void nslSetSourcePosition(nslSourceID sid,
-                                 const float* position);    // nsl
-extern void nslSetSourceVelocity(nslSourceID sid,
-                                 const float* velocity);    // nsl
-extern const char* nslWaveGetName(nslWaveID waveID);        // nsl
-extern nslSourceID g_break_on_stop;  // ?g_break_on_stop@@3W4nslSourceID@@A (game.o)
-extern void tlWarning(const char* fmt, ...);                // tl_xboxr
-extern "C" int __fpclass(float);
-extern const char* nslGetSourceName(nslSourceID sid);       // nsl
-extern float nslGetSourceParam(nslSourceID sid, int index,
-                               float defaultValue);         // nsl
-extern unsigned int nslGetSourceLength(nslSourceID sid);    // nsl
-extern int nslIsWaveLooped(nslWaveID a);                    // nsl
-extern int nslGetWaveLength(nslWaveID waveID);              // nsl
-extern void nslSetSourceEffectOn(nslSourceID sid);          // nsl
-extern void nslSetSourceEffectOff(nslSourceID sid);         // nsl
-extern void nslSetMasterVolume(float newVolume);            // nsl
-extern void nslPauseSource(nslSourceID sid);                // nsl
-extern void nslUnpauseSource(nslSourceID sid);              // nsl
-extern void nslPlaySource(nslSourceID sid);                 // nsl
-extern void nslDampenGuardSource(nslSourceID sid);          // nsl
-extern void nslSetNumberOfListeners(int listeners);         // nsl
-extern int nslAreAllBanksLoaded();                          // nsl
-extern int nslNumBanksInUse();                              // nsl
 
 // ea: 0x006025A0
 float SoundDevice::GetWaveDuration(nslWaveID wave)

@@ -12,6 +12,7 @@
 #include "engine/broc_types.h"
 #include "game/game_types.h"
 #include "core/ae_array.h"
+#include "core/ae_fixed_string.h"
 
 // EPakType - pak type enum (global enum; kPakTypeGlobal == 0)
 enum EPakType { kPakTypeGlobal = 0 };
@@ -362,6 +363,7 @@ struct SoundDevice {
         bool  IsFinished() const;           // ?IsFinished@Sound@SoundDevice@@QBE_NXZ
         bool  IsLooped() const;             // ?IsLooped@Sound@SoundDevice@@QBE_NXZ
         float GetLength() const;            // ?GetLength@Sound@SoundDevice@@QBEMXZ
+        ae_fixed_string<1024, unsigned short> GetDebugString() const;  // ?GetDebugString@Sound@SoundDevice@@QBE?AV?$ae_fixed_string@$0EAA@G@@XZ (game.o 0x6216F0)
         void PlayQueued();                  // ?PlayQueued@Sound@SoundDevice@@QAEXXZ
         void Pause();                       // ?Pause@Sound@SoundDevice@@QAEXXZ
         void Unpause();                     // ?Unpause@Sound@SoundDevice@@QAEXXZ
