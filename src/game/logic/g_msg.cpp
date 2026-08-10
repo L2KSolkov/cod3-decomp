@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <string.h>
 
+extern const char* NET_AdrToString(netadr_t a);  // core.o
+
 // ============================================================================
 // MSG_* - ea: 0x60F260..0x60F650
 // ============================================================================
@@ -259,6 +261,46 @@ void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport)
     chan->qport = qport;
     chan->incomingSequence = 0;
     chan->outgoingSequence = 1;
+}
+
+// ea: 0x00629970
+int Netchan_Process(netchan_t* chan, msg_t* msg)
+{
+    static const char* netsrcString[2] = { "client", "server" };  // @ 0xDF6BB4
+    unsigned char* data = msg->data;
+    msg->readcount = 0;
+    unsigned int seq;
+    ((unsigned char*)&seq)[0] = *data;
+    msg->readcount = 1;
+    ((unsigned char*)&seq)[1] = data[1];
+    msg->readcount = 2;
+    ((unsigned char*)&seq)[2] = data[2];
+    msg->readcount = 3;
+    ((unsigned char*)&seq)[3] = data[3];
+    int cursize = msg->cursize;
+    msg->readcount = 4;
+    int v8 = cursize >= 4 ? (int)seq : -1;
+    if (chan->sock == NS_SERVER)
+        msg->readcount = 6;
+    if (showpackets->integer != 0)
+        Com_Printf("%s recv %4i : s=%i\n", netsrcString[chan->sock],
+                   cursize, v8);
+    int incomingSequence = chan->incomingSequence;
+    if (v8 > incomingSequence)
+    {
+        int v12 = v8 - incomingSequence - 1;
+        chan->dropped = v12;
+        if (v12 > 0 && (showdrop->integer != 0 || showpackets->integer != 0))
+            Com_Printf("%s:Dropped %i packets at %i\n",
+                       NET_AdrToString(chan->remoteAddress), v12, v8);
+        chan->incomingSequence = v8;
+        return 1;
+    }
+    if (showdrop->integer != 0 || showpackets->integer != 0)
+        Com_Printf("%s:Out of order packet %i at %i\n",
+                   NET_AdrToString(chan->remoteAddress), v8,
+                   chan->incomingSequence);
+    return 0;
 }
 
 // ============================================================================
