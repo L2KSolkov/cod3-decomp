@@ -6,6 +6,7 @@
 #include "game/logic/g_local.h"
 
 #include <float.h>
+#include <math.h>
 #include <stdio.h>
 
 // ============================================================================
@@ -25,6 +26,21 @@ struct ZoneCellDescLocal {
 struct StreamZoneLocal {
     InplaceVector<ZoneCellDescLocal*> mCells;  // +0x00
 };
+
+// Renderer world / BSP views (render.o; verified against IDA)
+struct BspTreeLocal {
+    char _pad0[0x18];
+    InplaceVector<unsigned int> mCells;  // +0x18 InplaceVector<BspCell>
+};
+struct world_tLocal {
+    char _pad0[0x100];
+    BspTreeLocal* bspTree;  // +0x100
+};
+struct trGlobalsLocal {
+    char _pad0[0x290];
+    world_tLocal* world;  // +0x290
+};
+extern trGlobalsLocal tr;  // ?tr@@3UtrGlobals_t@@A (render.o)
 
 // ============================================================================
 // GetCellBBox - ea: 0x4F6DB0
@@ -60,6 +76,149 @@ BoundingBoxLocal GetCellBBox(int cellNum, const StreamZoneLocal* zone)
         && AeAssert::Assert("Could not locate zone for cell index %n", cellNum))
         __debugbreak();
     return result;
+}
+
+// ============================================================================
+// TestFPS::NextPosition - ea: 0x501A60
+// Sweep the current cell in a raster pattern, dropping to the floor each
+// step. Advances to the next cell when the sweep completes.
+// ============================================================================
+extern const void* StreamZoneManager_GetCellZone(void* self,
+                                                 int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@H@Z
+extern bool PakManager_IsLoaded(void* self, unsigned int id);  // ?IsLoaded@PakManager@@QBE_NW4TPakId@@@Z
+extern void* PakManager_sInst;    // ?sInst@PakManager@@2PAV1@A
+
+void TestFPS::NextPosition()
+{
+    int numCells = tr.world->bspTree->mCells.mSize;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    mPlayerHandle.mVal = Player->mHandle.mHandle.mVal;
+    const StreamZoneLocal* zone = (const StreamZoneLocal*)
+        StreamZoneManager_GetCellZone(StreamZoneManager::sInst, mCellIndex);
+    if (zone == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+        AeAssert::gCurrentLine = 427;
+        AeAssert::gCurrentExpr = "zone";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    BoundingBoxLocal bbox = GetCellBBox(mCellIndex, zone);
+    int infoNode = *(int*)((char*)zone + 36);
+    if (infoNode == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+        AeAssert::gCurrentLine = 432;
+        AeAssert::gCurrentExpr = "infoNode";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    bool IsLoaded = PakManager_IsLoaded(PakManager_sInst, *(unsigned int*)(infoNode + 180));
+    math::Position3 pos;
+    pos.v.m128_f32[0] = mCurrentPosition.x;
+    pos.v.m128_f32[1] = mCurrentPosition.y;
+    pos.v.m128_f32[2] = mCurrentPosition.z;
+    if (!IsLoaded)
+    {
+        float cx = (bbox.vmax.v.m128_f32[0] + bbox.vmin.v.m128_f32[0]) * 0.5f;
+        float cy = (bbox.vmax.v.m128_f32[1] + bbox.vmin.v.m128_f32[1]) * 0.5f;
+        if (fabsf(mCurrentPosition.x - cx) > 0.000001f
+            || fabsf(mCurrentPosition.y - cy) > 0.000001f)
+        {
+            mCurrentPosition.x = cx;
+            mCurrentPosition.y = cy;
+            return;
+        }
+    }
+    if (mCellIndex < numCells)
+    {
+        trace_t trace;
+        for (;;)
+        {
+            math::Position3 probe = pos;
+            probe.v.m128_f32[2] = pos.v.m128_f32[2] - 25.0f;
+            if (mCellX >= 0
+                && CheckForFloor(&probe, &trace,
+                                 bbox.vmin.v.m128_f32[2])
+                && R_CellForPoint(&trace.endpos) == mCellIndex)
+            {
+                mCurrentPosition.x = trace.endpos.v.m128_f32[0];
+                mCurrentPosition.y = trace.endpos.v.m128_f32[1];
+                mCurrentPosition.z = trace.endpos.v.m128_f32[2];
+                ++mCurrentPositionIndex;
+                return;
+            }
+            int cellW = (int)((bbox.vmax.v.m128_f32[0] - bbox.vmin.v.m128_f32[0])
+                              * mDeltaInverse);
+            int cellH = (int)((bbox.vmax.v.m128_f32[1] - bbox.vmin.v.m128_f32[1])
+                              * mDeltaInverse);
+            int nx = mCellX + mCellXDelta;
+            mCellX = nx;
+            if (nx >= cellW || nx < 0)
+            {
+                mCellX = mCellXDelta <= 0 ? 0 : cellW - 1;
+                mCellXDelta = -mCellXDelta;
+                ++mCellY;
+                if (mCellY >= cellH)
+                    break;
+            }
+            float px = bbox.vmin.v.m128_f32[0]
+                + (mCellX * mDelta)
+                + ((bbox.vmax.v.m128_f32[0] - bbox.vmin.v.m128_f32[0]) * 0.5f)
+                - (mCellX * mDelta);
+            float py = bbox.vmin.v.m128_f32[1]
+                + (mCellY * mDelta)
+                + ((bbox.vmax.v.m128_f32[1] - bbox.vmin.v.m128_f32[1]) * 0.5f)
+                - (mCellY * mDelta);
+            math::Position3 p2;
+            p2.v.m128_f32[0] = px;
+            p2.v.m128_f32[1] = py;
+            p2.v.m128_f32[2] = bbox.vmin.v.m128_f32[2];
+            if (CheckForFloor(&p2, &trace, bbox.vmin.v.m128_f32[2])
+                && R_CellForPoint(&trace.endpos) == mCellIndex)
+            {
+                mCurrentPosition.x = trace.endpos.v.m128_f32[0];
+                mCurrentPosition.y = trace.endpos.v.m128_f32[1];
+                mCurrentPosition.z = trace.endpos.v.m128_f32[2];
+                ++mCurrentPositionIndex;
+                return;
+            }
+            if (mCellIndex >= numCells)
+                return;
+            pos = p2;
+        }
+        mCellY = 0;
+        OutputStats();
+        ++mCellIndex;
+        while (mCellIndex < numCells
+               && !((bool*)&mCells_size)[mCellIndex - 100])
+            ++mCellIndex;
+        if (mCellIndex < numCells)
+        {
+            const StreamZoneLocal* CellZone = (const StreamZoneLocal*)
+                StreamZoneManager_GetCellZone(StreamZoneManager::sInst,
+                                              mCellIndex);
+            if (CellZone == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TestFPS.cpp";
+                AeAssert::gCurrentLine = 527;
+                AeAssert::gCurrentExpr = "zone";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+            }
+            BoundingBoxLocal nb = GetCellBBox(mCellIndex, CellZone);
+            mCurrentPosition.x = (nb.vmin.v.m128_f32[0]
+                                  + nb.vmax.v.m128_f32[0]) * 0.5f;
+            mCurrentPosition.y = (nb.vmin.v.m128_f32[1]
+                                  + nb.vmax.v.m128_f32[1]) * 0.5f;
+            mCurrentPosition.z = (nb.vmin.v.m128_f32[2]
+                                  + nb.vmax.v.m128_f32[2]) * 0.5f;
+        }
+    }
 }
 
 // ============================================================================
