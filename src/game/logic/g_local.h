@@ -2597,6 +2597,8 @@ int CM_AreaEntities(const math::Position3& mins,
 int CM_TransformedPointContents(const math::Position3& p, DCGSet* model,
                                 const math::Position3& origin,
                                 const math::Position3& angles);  // game.o 0x632E00
+void CM_PointTraceToEntities(pointtrace_t* clip,
+                             const TouchEntityData& entities);  // game.o 0x633230
 bool collide_sphere_poly(const math::Position3& c, float r,
                          const math::Position3& v0,
                          const math::Position3& v1,

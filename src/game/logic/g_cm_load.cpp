@@ -2894,6 +2894,36 @@ int CM_TransformedPointContents(const math::Position3& p, DCGSet* model,
 }
 
 // ============================================================================
+// CM_PointTraceToEntities - ea: 0x633230 (cm_world.cpp)
+// ============================================================================
+extern void SV_PointTraceToEntity(pointtrace_t* clip,
+                                  EntityShared* check);  // sv.o 0x521E10
+
+// ea: 0x00633230
+void CM_PointTraceToEntities(pointtrace_t* clip,
+                             const TouchEntityData& entities)
+{
+    int v2 = 0;
+    if (entities.num > 0)
+    {
+        const DbLinkedHandle<EntityHandleDb, Entity>* touch =
+            entities.touch;
+        do
+        {
+            unsigned int v4 = touch->mHandle.mVal & 0xFFF;
+            Entity* mObject = nullptr;
+            if (v4 < 0x540
+                && touch->mHandle.mVal >> 12
+                    == (unsigned int)EntityHandleDb::sInst.mElements[v4].mKey)
+                mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+            SV_PointTraceToEntity(clip, &mObject->r);
+            ++v2;
+            ++touch;
+        } while (v2 < entities.num);
+    }
+}
+
+// ============================================================================
 // collide_velocity_sphere_poly - ea: 0x61BBB0
 // ============================================================================
 // ea: 0x0061BBB0
