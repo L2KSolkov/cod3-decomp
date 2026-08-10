@@ -15,16 +15,20 @@
 // ============================================================================
 // Q_* character classification - ea: 0x6107E0..0x6108F0
 // ============================================================================
+// ea: 0x006107E0
 int Q_isprint(int c) { return c >= 32 && c <= 126; }
 int Q_islower(int c) { return c >= 97 && c <= 122; }
+// ea: 0x00610820
 int Q_isupper(int c) { return c >= 65 && c <= 90; }
 int Q_isalpha(int c) { return (c >= 97 && c <= 122) || (c >= 65 && c <= 90); }
+// ea: 0x00610870
 int Q_isnumeric(int c) { return c >= 48 && c <= 57; }
 int Q_isalphanumeric(int c)
 {
     return (c >= 97 && c <= 122) || (c >= 65 && c <= 90)
         || (c >= 48 && c <= 57);
 }
+// ea: 0x006108C0
 int Q_isforfilename(int c)
 {
     return (c >= 97 && c <= 122) || (c >= 65 && c <= 90)
@@ -34,6 +38,7 @@ int Q_isforfilename(int c)
 // ============================================================================
 // Q_strrchr - ea: 0x610900
 // ============================================================================
+// ea: 0x00610900
 char* Q_strrchr(char* string, char c)
 {
     char* result = string;
@@ -54,6 +59,7 @@ char* Q_strrchr(char* string, char c)
 // ============================================================================
 // Q_strncpyz - ea: 0x610930
 // ============================================================================
+// ea: 0x00610930
 void Q_strncpyz(char* dest, const char* src, int destsize)
 {
     if (src == nullptr)
@@ -90,11 +96,13 @@ void Q_strncpyz(char* dest, const char* src, int destsize)
 // ============================================================================
 // Q_stricmpn / Q_strncmp / Q_stricmp / Q_strlwr / Q_strupr / Q_strcat
 // ============================================================================
+// ea: 0x00610A30
 int Q_stricmpn(const char* s1, const char* s2, int n)
 {
     return ae_stricmpn(s1, s2, n);
 }
 
+// ea: 0x00610A40
 int Q_strncmp(const char* s1, const char* s2, int n)
 {
     int v6, v7;
@@ -115,6 +123,7 @@ int Q_strncmp(const char* s1, const char* s2, int n)
     return 2 * (v6 >= v7) - 1;
 }
 
+// ea: 0x00610A30
 int Q_stricmp(const char* s1, const char* s2)
 {
     if (s1 != nullptr && s2 != nullptr)
@@ -122,6 +131,7 @@ int Q_stricmp(const char* s1, const char* s2)
     return -1;
 }
 
+// ea: 0x00610AB0
 char* Q_strlwr(char* s1)
 {
     char* v1 = s1;
@@ -137,6 +147,7 @@ char* Q_strlwr(char* s1)
     return s1;
 }
 
+// ea: 0x00610AE0
 char* Q_strupr(char* s1)
 {
     char* v1 = s1;
@@ -152,6 +163,7 @@ char* Q_strupr(char* s1)
     return s1;
 }
 
+// ea: 0x00610B10
 void Q_strcat(char* dest, int size, const char* src)
 {
     int v3 = (int)strlen(dest);
@@ -163,6 +175,7 @@ void Q_strcat(char* dest, int size, const char* src)
 // ============================================================================
 // Q_DrawStrlen - ea: 0x610B60 (skips ^N color codes)
 // ============================================================================
+// ea: 0x00610B60
 int Q_DrawStrlen(const char* str)
 {
     const char* v1 = str;
@@ -186,6 +199,7 @@ int Q_DrawStrlen(const char* str)
 // ============================================================================
 // Q_CleanStr - ea: 0x610BA0
 // ============================================================================
+// ea: 0x00610BA0
 char* Q_CleanStr(char* string)
 {
     char* result = string;
@@ -212,6 +226,7 @@ char* Q_CleanStr(char* string)
 // ============================================================================
 // Q_CleanCharacter - ea: 0x610BF0
 // ============================================================================
+// ea: 0x00610BF0
 char Q_CleanCharacter(char cCharacter)
 {
     return cCharacter;
@@ -220,6 +235,7 @@ char Q_CleanCharacter(char cCharacter)
 // ============================================================================
 // Com_sprintf - ea: 0x610C00
 // ============================================================================
+// ea: 0x00610C00
 void Com_sprintf(char* dest, int size, const char* fmt, ...)
 {
     va_list ap;
@@ -247,6 +263,7 @@ void Com_sprintf(char* dest, int size, const char* fmt, ...)
 // ============================================================================
 // Q_strncasecmp / Q_strcasecmp - ea: 0x610C80
 // ============================================================================
+// ea: 0x00610C80
 int Q_strncasecmp(const char* s1, const char* s2, int n)
 {
     for (;;)
@@ -273,6 +290,7 @@ int Q_strncasecmp(const char* s1, const char* s2, int n)
     return -1;
 }
 
+// ea: 0x00610CE0
 int Q_strcasecmp(const char* s1, const char* s2)
 {
     return Q_strncasecmp(s1, s2, 0x7FFFFFFF);
@@ -285,6 +303,7 @@ static char va_string[2048][4];
 static char va_temp_buffer[2048];
 static int index_1;
 
+// ea: 0x00610D00
 char* va(const char* format, ...)
 {
     va_list ap;
@@ -313,6 +332,7 @@ char* va(const char* format, ...)
 static float tv_array[8][3];
 static int index_2;
 
+// ea: 0x00610D90
 float* tv(float x, float y, float z)
 {
     float* result = tv_array[index_2];
@@ -326,6 +346,7 @@ float* tv(float x, float y, float z)
 // ============================================================================
 // Com_* misc helpers
 // ============================================================================
+// ea: 0x00610470
 int ColorIndex(unsigned char c)
 {
     int result = c - 48;
@@ -334,6 +355,7 @@ int ColorIndex(unsigned char c)
     return result;
 }
 
+// ea: 0x00610490
 float Com_Clamp(float min, float max, float value)
 {
     if (min > value)
@@ -343,6 +365,7 @@ float Com_Clamp(float min, float max, float value)
     return max;
 }
 
+// ea: 0x006104C0
 char* Com_SkipPath(char* pathname)
 {
     char* v1 = pathname;
@@ -357,6 +380,7 @@ char* Com_SkipPath(char* pathname)
     return result;
 }
 
+// ea: 0x006104F0
 void Com_StripExtension(const char* in, char* out)
 {
     const char* v2 = in;
@@ -381,16 +405,19 @@ void Com_StripExtension(const char* in, char* out)
     }
 }
 
+// ea: 0x00610520
 int Com_BitCheck(const int* array, int bitNum)
 {
     return (array[bitNum >> 5] & (1 << (bitNum & 0x1F))) != 0;
 }
 
+// ea: 0x00610550
 void Com_BitSet(int* array, int bitNum)
 {
     array[bitNum >> 5] |= 1 << (bitNum & 0x1F);
 }
 
+// ea: 0x00610570
 void Com_BitClear(int* array, int bitNum)
 {
     array[bitNum >> 5] &= ~(1 << (bitNum & 0x1F));
@@ -399,6 +426,7 @@ void Com_BitClear(int* array, int bitNum)
 // ============================================================================
 // Com_Compress - ea: 0x6103D0 (strip // and /* */ comments, keep newlines)
 // ============================================================================
+// ea: 0x006103D0
 int Com_Compress(char* data_p)
 {
     char* v1 = data_p;
@@ -462,11 +490,13 @@ int Com_Compress(char* data_p)
 // ============================================================================
 // Lean fraction helpers - ea: 0x611690 / 0x6116C0
 // ============================================================================
+// ea: 0x00611690
 float GetLeanFraction(float fFrac)
 {
     return (2.0f - fabsf(fFrac)) * fFrac;
 }
 
+// ea: 0x006116C0
 float UnGetLeanFraction(float fFrac)
 {
     if (fFrac < 0.0f)
@@ -498,6 +528,7 @@ struct orientation_t {
     float axis[3][3];   // +0x0C
 };
 
+// ea: 0x00611780
 void OrientationPosToWorldPos(const orientation_t* ori, const float* pos,
                               float* out)
 {
@@ -509,6 +540,7 @@ void OrientationPosToWorldPos(const orientation_t* ori, const float* pos,
         + (ori->axis[1][2] * pos[1]) + ori->origin[2];
 }
 
+// ea: 0x00611820
 void OrientationDirToWorldDir(const orientation_t* ori, const float* dir,
                               float* out)
 {
@@ -520,6 +552,7 @@ void OrientationDirToWorldDir(const orientation_t* ori, const float* dir,
         + (ori->axis[1][2] * dir[1]);
 }
 
+// ea: 0x006118B0
 void OrientationPosFromWorldPos(const orientation_t* ori, const float* pos,
                                 float* out)
 {
@@ -534,6 +567,7 @@ void OrientationPosFromWorldPos(const orientation_t* ori, const float* pos,
         + (ori->axis[2][0] * v5);
 }
 
+// ea: 0x00611960
 void OrientationDirFromWorldDir(const orientation_t* ori, const float* dir,
                                 float* out)
 {
@@ -555,6 +589,7 @@ struct CGBankManagerLocal {
 };
 extern CGBankManagerLocal* CGBankManager_sInst;  // ?sInst@CGBankManager@@2PAV1@A
 
+// ea: 0x006119F0
 void* ToggleRenderGeom()
 {
     CGBankManagerLocal* result = CGBankManager_sInst;
@@ -562,6 +597,7 @@ void* ToggleRenderGeom()
     return result;
 }
 
+// ea: 0x00611A10
 void* ToggleRenderPerf()
 {
     CGBankManagerLocal* result = CGBankManager_sInst;
@@ -569,6 +605,7 @@ void* ToggleRenderPerf()
     return result;
 }
 
+// ea: 0x00611A30
 void* ToggleGraph()
 {
     CGBankManagerLocal* result = CGBankManager_sInst;
@@ -576,6 +613,7 @@ void* ToggleGraph()
     return result;
 }
 
+// ea: 0x00611A50
 void* ZoomIn()
 {
     CGBankManagerLocal* result = CGBankManager_sInst;
@@ -583,6 +621,7 @@ void* ZoomIn()
     return result;
 }
 
+// ea: 0x00611A70
 void* ZoomOut()
 {
     CGBankManagerLocal* result = CGBankManager_sInst;
@@ -598,6 +637,7 @@ extern char* Cmd_Argv(int arg);   // ?Cmd_Argv@@YAPADH@Z (game.o)
 extern void TeleportPlayer(Entity* player, const float* origin,
                            const float* angles);  // ?TeleportPlayer (g.o)
 
+// ea: 0x00611A90
 void Teleport()
 {
     Entity* Player = EntityManager::sInst->GetPlayer(currCl);
@@ -632,11 +672,13 @@ static qint64 (*LittleLong64Ptr)(qint64);
 static float (*BigFloatPtr)(float);
 static float (*LittleFloatPtr)(float);
 
+// ea: 0x00610610
 short ShortSwap(short l)
 {
     return (short)(((unsigned short)l << 8) | ((unsigned short)l >> 8));
 }
 
+// ea: 0x00610630
 short ShortNoSwap(short l)
 {
     return l;
@@ -650,6 +692,7 @@ int LongSwap(int l)
         | ((unsigned int)l >> 24);
 }
 
+// ea: 0x00610670
 int LongNoSwap(int l)
 {
     return l;
@@ -669,6 +712,7 @@ qint64 Long64Swap(qint64 ll)
     return r;
 }
 
+// ea: 0x006106D0
 qint64 Long64NoSwap(qint64 ll)
 {
     return ll;
@@ -686,6 +730,7 @@ float FloatSwap(float f)
     return f;
 }
 
+// ea: 0x00610710
 float FloatNoSwap(float f)
 {
     return f;
@@ -693,13 +738,17 @@ float FloatNoSwap(float f)
 
 short BigShort(short l) { return BigShortPtr(l); }
 short LittleShort(short l) { return LittleShortPtr(l); }
+// ea: 0x006105B0
 int BigLong(int l) { return BigLongPtr(l); }
 int LittleLong(int l) { return LittleLongPtr(l); }
+// ea: 0x006105C0
 qint64 BigLong64(qint64 l) { return BigLong64Ptr(l); }
 qint64 LittleLong64(qint64 l) { return LittleLong64Ptr(l); }
+// ea: 0x00610600
 float BigFloat(float l) { return BigFloatPtr(l); }
 float LittleFloat(float l) { return LittleFloatPtr(l); }
 
+// ea: 0x00610720
 int Swap_Init()
 {
     BigShortPtr = ShortSwap;

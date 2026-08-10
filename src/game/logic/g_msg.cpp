@@ -12,6 +12,7 @@
 // ============================================================================
 // MSG_* - ea: 0x60F260..0x60F650
 // ============================================================================
+// ea: 0x0060F260
 void MSG_Init(msg_t* buf, unsigned char* data, int length)
 {
     buf->overflowed = 0;
@@ -24,6 +25,7 @@ void MSG_Init(msg_t* buf, unsigned char* data, int length)
     memset(data, 0, length);
 }
 
+// ea: 0x0060F2A0
 void MSG_BeginReading(msg_t* msg)
 {
     msg->readcount = 0;
@@ -34,6 +36,7 @@ void MSG_WriteFlag(msg_t* msg, unsigned char value)
     msg->data[msg->cursize++] = value;
 }
 
+// ea: 0x0060F2D0
 int MSG_ReadFlag(msg_t* msg)
 {
     int readcount = msg->readcount;
@@ -42,22 +45,26 @@ int MSG_ReadFlag(msg_t* msg)
     return result;
 }
 
+// ea: 0x0060F2F0
 void MSG_WriteChar(msg_t* msg, unsigned char c)
 {
     msg->data[msg->cursize++] = c;
 }
 
+// ea: 0x0060F310
 void MSG_WriteByte(msg_t* msg, unsigned char c)
 {
     msg->data[msg->cursize++] = c;
 }
 
+// ea: 0x0060F330
 void MSG_WriteData(msg_t* msg, const void* data, unsigned int length)
 {
     memcpy(&msg->data[msg->cursize], data, length);
     msg->cursize += (int)length;
 }
 
+// ea: 0x0060F370
 void MSG_WriteShort(msg_t* msg, short c)
 {
     msg->data[msg->cursize] = (unsigned char)c;
@@ -67,6 +74,7 @@ void MSG_WriteShort(msg_t* msg, short c)
     ++msg->cursize;
 }
 
+// ea: 0x0060F3A0
 void MSG_WriteLong(msg_t* msg, int c)
 {
     msg->data[msg->cursize] = (unsigned char)c;
@@ -82,6 +90,7 @@ void MSG_WriteLong(msg_t* msg, int c)
     ++msg->cursize;
 }
 
+// ea: 0x0060F3F0
 void MSG_WriteFloat(msg_t* msg, float f)
 {
     unsigned int bits;
@@ -99,6 +108,7 @@ void MSG_WriteFloat(msg_t* msg, float f)
     ++msg->cursize;
 }
 
+// ea: 0x0060F450
 unsigned char MSG_ReadChar(msg_t* msg)
 {
     int readcount = msg->readcount;
@@ -110,6 +120,7 @@ unsigned char MSG_ReadChar(msg_t* msg)
     return result;
 }
 
+// ea: 0x0060F470
 unsigned char MSG_ReadByte(msg_t* msg)
 {
     int readcount = msg->readcount;
@@ -121,6 +132,7 @@ unsigned char MSG_ReadByte(msg_t* msg)
     return result;
 }
 
+// ea: 0x0060F490
 short MSG_ReadShort(msg_t* msg)
 {
     int readcount = msg->readcount;
@@ -136,6 +148,7 @@ short MSG_ReadShort(msg_t* msg)
     return c;
 }
 
+// ea: 0x0060F4D0
 int MSG_ReadLong(msg_t* msg)
 {
     unsigned char* data = msg->data;
@@ -156,6 +169,7 @@ int MSG_ReadLong(msg_t* msg)
     return -1;
 }
 
+// ea: 0x0060F520
 float MSG_ReadFloat(msg_t* msg)
 {
     unsigned char* data = msg->data;
@@ -181,6 +195,7 @@ float MSG_ReadFloat(msg_t* msg)
 static char string_0[256];
 static char string_1[256];
 
+// ea: 0x0060F580
 char* MSG_ReadString(msg_t* msg)
 {
     int readcount = msg->readcount;
@@ -195,6 +210,7 @@ char* MSG_ReadString(msg_t* msg)
     return string_0;
 }
 
+// ea: 0x0060F600
 char* MSG_ReadStringLine(msg_t* msg)
 {
     int readcount = msg->readcount;
@@ -224,6 +240,7 @@ struct loopback_t {
 };
 static loopback_t loopbacks[2];
 
+// ea: 0x0060F680
 int Netchan_Init()
 {
     showpackets = Cvar_Get("showpackets", "0", 256);
@@ -232,6 +249,7 @@ int Netchan_Init()
     return 0;
 }
 
+// ea: 0x0060F6D0
 void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport)
 {
     memset(chan, 0, 0xC30u);
@@ -245,6 +263,7 @@ void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qport)
 // ============================================================================
 // NET_* - ea: 0x60F720..0x60FB10
 // ============================================================================
+// ea: 0x0060F720
 int NET_CompareBaseAdrSigned(netadr_t* a, netadr_t* b)
 {
     netadrtype_t type = a->type;
@@ -265,6 +284,7 @@ int NET_CompareBaseAdrSigned(netadr_t* a, netadr_t* b)
     return 0;
 }
 
+// ea: 0x0060F790
 int NET_CompareAdrSigned(netadr_t* a, netadr_t* b)
 {
     netadrtype_t type = a->type;
@@ -296,16 +316,19 @@ int NET_CompareAdrSigned(netadr_t* a, netadr_t* b)
     }
 }
 
+// ea: 0x0060F790
 int NET_CompareAdr(netadr_t a, netadr_t b)
 {
     return NET_CompareAdrSigned(&a, &b) == 0;
 }
 
+// ea: 0x0060F860
 int NET_IsLocalAddress(netadr_t adr)
 {
     return adr.type == NA_LOOPBACK;
 }
 
+// ea: 0x0060F870
 int NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message)
 {
     loopback_t* v3 = &loopbacks[sock];
@@ -327,6 +350,7 @@ int NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message)
     return 1;
 }
 
+// ea: 0x0060F910
 void NET_SendLoopPacket(netsrc_t sock, unsigned int length, const void* data)
 {
     loopback_t* v3 = &loopbacks[sock ^ 1];
@@ -335,6 +359,7 @@ void NET_SendLoopPacket(netsrc_t sock, unsigned int length, const void* data)
     v3->datalen = (int)length;
 }
 
+// ea: 0x0060F950
 void NET_SendPacket(netsrc_t sock, unsigned int length, const void* data,
                     netadr_t to)
 {
@@ -355,6 +380,7 @@ void NET_SendPacket(netsrc_t sock, unsigned int length, const void* data,
     v4->datalen = (int)length;
 }
 
+// ea: 0x0060FA00
 void NET_OutOfBandPrint(netsrc_t sock, netadr_t adr, const char* format, ...)
 {
     char string[4];
@@ -373,6 +399,7 @@ void NET_OutOfBandPrint(netsrc_t sock, netadr_t adr, const char* format, ...)
     va_end(ap);
 }
 
+// ea: 0x0060FAA0
 int NET_StringToAdr(const char* s, netadr_t* a)
 {
     if (strcmp(s, "localhost") != 0)
