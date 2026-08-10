@@ -4152,6 +4152,12 @@ bool sight_trace_sphere(traceWork_t* tw)
 extern cdl_proftimer cdl_proftimer_sight_trace_point;   // game.o @ 0xF44308
 extern cdl_proftimer cdl_proftimer_sight_trace_sphere;  // game.o @ 0xF3E960
 extern void Com_Memset(void* dest, int val, unsigned int count);  // core.o
+// Capsule sphere descriptor (CollisionMgr.h): offset + radius + halfheight.
+struct sphere_t {
+    math::Position3 offset;  // +0x00
+    float radius;            // +0x10
+    float halfheight;        // +0x14
+};
 
 // ea: 0x006288C0
 bool SightTrace(traceWork_t* tw, const math::Position3& p0,
@@ -4171,6 +4177,144 @@ bool SightTrace(traceWork_t* tw, const math::Position3& p0,
         cdl_proftimer_sight_trace_sphere.stop();
     }
     return v4;
+}
+
+// ea: 0x006340A0 (DCGSet model variant, returns hit num)
+extern unsigned int SightTraceThroughLeaf(traceWork_t* tw,
+                                          const DCGSet* set);  // game.o 0x624070
+
+int SightTrace(int oldHitNum, const math::Position3* start,
+               const math::Position3* end, const math::Position3* mins,
+               const math::Position3* maxs, DCGSet* model,
+               const math::Position3* origin, int brushmask, int capsule,
+               void* sphere)
+{
+    if ((__fpclass(start->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(start->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(start->v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 2215;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((start)[0]) && !IS_NAN((start)[1]) && !IS_NAN((start)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(end->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(end->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(end->v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 2216;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((end)[0]) && !IS_NAN((end)[1]) && !IS_NAN((end)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(mins->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(mins->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(mins->v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 2217;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((mins)[0]) && !IS_NAN((mins)[1]) && !IS_NAN((mins)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((__fpclass(maxs->v.m128_f32[0]) & 0x297) != 0
+        || (__fpclass(maxs->v.m128_f32[1]) & 0x297) != 0
+        || (__fpclass(maxs->v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CollisionMgr.cpp";
+        AeAssert::gCurrentLine = 2218;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((maxs)[0]) && !IS_NAN((maxs)[1]) && !IS_NAN((maxs)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    traceWork_t tw;
+    Com_Memset(&tw, 0, sizeof(tw));
+    tw.trace_fraction = 1.0f;
+    __m128 center =
+        _mm_mul_ps(_mm_add_ps(mins->v, maxs->v), _mm_set1_ps(0.5f));
+    tw.bounds[0].v = _mm_sub_ps(mins->v, center);
+    tw.bounds[1].v = _mm_sub_ps(maxs->v, center);
+    __m128 v15 = _mm_add_ps(start->v, center);
+    __m128 v14 = _mm_add_ps(end->v, center);
+    tw.start.v = v15;
+    tw.end.v = v14;
+    tw.delta.v = _mm_sub_ps(v14, v15);
+    __m128 sq = _mm_mul_ps(tw.delta.v, tw.delta.v);
+    tw.deltaLenSqrd = sq.m128_f32[0] + sq.m128_f32[1] + sq.m128_f32[2];
+    tw.contents = brushmask;
+    float v18, v19;
+    sphere_t* sp = (sphere_t*)sphere;
+    if (sp != nullptr)
+    {
+        tw.sphere_offset.v = sp->offset.v;
+        tw.sphere_radius = sp->radius;
+        tw.sphere_halfheight = sp->halfheight;
+        tw.sphere_use = 1;
+        v18 = tw.bounds[1].v.m128_f32[1];
+        v19 = tw.bounds[1].v.m128_f32[0];
+    }
+    else
+    {
+        tw.sphere_use = capsule;
+        v18 = tw.bounds[1].v.m128_f32[1];
+        v19 = tw.bounds[1].v.m128_f32[0];
+        float v17 = tw.bounds[1].v.m128_f32[0] <= tw.bounds[1].v.m128_f32[1]
+            ? tw.bounds[1].v.m128_f32[0]
+            : tw.bounds[1].v.m128_f32[1];
+        tw.sphere_halfheight = tw.bounds[1].v.m128_f32[1];
+        tw.sphere_radius = v17;
+        tw.sphere_offset.v.m128_f32[0] = 0.0f;
+        tw.sphere_offset.v.m128_f32[1] = 0.0f;
+        tw.sphere_offset.v.m128_f32[2] = tw.bounds[1].v.m128_f32[1] - v17;
+        tw.sphere_offset.v.m128_f32[3] = 0.0f;
+    }
+    __m128 v20 = _mm_min_ps(tw.start.v, tw.end.v);
+    __m128 v21 = _mm_max_ps(tw.start.v, tw.end.v);
+    if (tw.sphere_use != 0)
+    {
+        __m128 v22 = _mm_add_ps(
+            _mm_andnot_ps(_mm_set1_ps(-0.0f), tw.sphere_offset.v),
+            _mm_set1_ps(tw.sphere_radius));
+        tw.bounds[0].v = _mm_sub_ps(v20, v22);
+        tw.bounds[1].v = _mm_add_ps(v21, v22);
+    }
+    else
+    {
+        tw.bounds[0].v = _mm_add_ps(v20, tw.bounds[0].v);
+        tw.bounds[1].v = _mm_add_ps(v21, tw.bounds[1].v);
+    }
+    for (int i = 0; i < 8; ++i)
+    {
+        tw.offsets[i].v.m128_f32[0] =
+            (i & 1) ? tw.bounds[1].v.m128_f32[0] : tw.bounds[0].v.m128_f32[0];
+        tw.offsets[i].v.m128_f32[1] =
+            (i & 2) ? tw.bounds[1].v.m128_f32[1] : tw.bounds[0].v.m128_f32[1];
+        tw.offsets[i].v.m128_f32[2] =
+            (i & 4) ? tw.bounds[1].v.m128_f32[2] : tw.bounds[0].v.m128_f32[2];
+        tw.offsets[i].v.m128_f32[3] = 0.0f;
+    }
+    tw.isPoint =
+        (tw.bounds[1].v.m128_f32[2] + tw.bounds[1].v.m128_f32[1]
+         + tw.bounds[1].v.m128_f32[0]) == 0.0f;
+    if (model == nullptr)
+        return SightTrace(&tw, tw.start, tw.end) ? 1 : 0;
+    if (model->id != 4094)
+        return (int)SightTraceThroughLeaf(&tw, model);
+    if ((TempBoxModelContents() & brushmask) == 0)
+        return 0;
+    if (tw.sphere_use != 0)
+        return SightTraceCapsuleThroughCapsule(&tw);
+    return SightTraceBoundingBoxThroughCapsule(&tw);
 }
 
 // ea: 0x00628980
@@ -4214,13 +4358,6 @@ extern void TraceBoundingBoxThroughCapsule(traceWork_t* tw);// game.o
 extern void TraceThroughTree(traceWork_t* tw,
                              const math::Position3& p0,
                              const math::Position3& p1);  // game.o
-
-// Capsule sphere descriptor (CollisionMgr.h): offset + radius + halfheight.
-struct sphere_t {
-    math::Position3 offset;  // +0x00
-    float radius;            // +0x10
-    float halfheight;        // +0x14
-};
 
 // ea: 0x00640E90
 void Trace(trace_t* results, const math::Position3& start,
