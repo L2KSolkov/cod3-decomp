@@ -706,6 +706,46 @@ void rtree_visitor_t::filter_objects(int mask)
 // ============================================================================
 // can_place_decal - ea: 0x61A900 (CollisionMgr.cpp)
 // ============================================================================
+// ea: 0x0060C510 (triangle variant: point-in-triangle + radius projection)
+bool can_place_decal(const math::Position3& p, const math::Dir3* verts,
+                     const unsigned char* inds, int tid, float decal_radius)
+{
+    const math::Dir3& v0 = verts[inds[tid]];
+    const math::Dir3& v1 = verts[inds[tid + 1]];
+    const math::Dir3& v2 = verts[inds[tid + 2]];
+    float r2 = decal_radius * decal_radius;
+
+    __m128 e0 = _mm_sub_ps(v1.v, v0.v);
+    __m128 d0 = _mm_sub_ps(p.v, v0.v);
+    __m128 m0 = _mm_mul_ps(d0, e0);
+    float a0 = m0.m128_f32[0] + m0.m128_f32[1] + m0.m128_f32[2];
+    __m128 e0s = _mm_mul_ps(e0, e0);
+    float e0l = sqrtf(e0s.m128_f32[0] + e0s.m128_f32[1] + e0s.m128_f32[2]);
+    __m128 d0s = _mm_mul_ps(d0, d0);
+    float dist0 = d0s.m128_f32[0] + d0s.m128_f32[1] + d0s.m128_f32[2];
+    bool result = r2 <= dist0 - (a0 / e0l) * (a0 / e0l);
+
+    __m128 e1 = _mm_sub_ps(v2.v, v0.v);
+    __m128 m1 = _mm_mul_ps(d0, e1);
+    float a1 = m1.m128_f32[0] + m1.m128_f32[1] + m1.m128_f32[2];
+    __m128 e1s = _mm_mul_ps(e1, e1);
+    float e1l = sqrtf(e1s.m128_f32[0] + e1s.m128_f32[1] + e1s.m128_f32[2]);
+    if (r2 > dist0 - (a1 / e1l) * (a1 / e1l))
+        result = false;
+
+    __m128 e2 = _mm_sub_ps(v2.v, v1.v);
+    __m128 d2 = _mm_sub_ps(p.v, v1.v);
+    __m128 m2 = _mm_mul_ps(d2, e2);
+    float a2 = m2.m128_f32[0] + m2.m128_f32[1] + m2.m128_f32[2];
+    __m128 e2s = _mm_mul_ps(e2, e2);
+    float e2l = sqrtf(e2s.m128_f32[0] + e2s.m128_f32[1] + e2s.m128_f32[2]);
+    __m128 d2s = _mm_mul_ps(d2, d2);
+    float dist2 = d2s.m128_f32[0] + d2s.m128_f32[1] + d2s.m128_f32[2];
+    if (r2 > dist2 - (a2 / e2l) * (a2 / e2l))
+        return false;
+    return result;
+}
+
 // ea: 0x0061A900
 bool can_place_decal(const math::Position3& p, const math::Dir3& n,
                      const math::Position3& bmin,
@@ -6199,6 +6239,79 @@ DCGBankManager* DCGBankManager::sInst = nullptr;
 extern void TempDCGSet_Dtor(void* self);     // DCGBankManager::TempDCGSet::~TempDCGSet
 extern void AssetBankSet_Dtor(void* self);   // AssetBankSet::~AssetBankSet
 extern void AssetBankSet_ctor(void* self);   // AssetBankSet::AssetBankSet
+extern const void* DCGBank_get_set(void* bank, int id);  // ?get_set@DCGBank@@QBEPBVDCGSet@@H@Z
+extern void GetPakPrerequisites(TPakId pakId,
+                                void* prereqs);  // ?GetPakPrerequisites@@YAXW4TPakId@@AAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z @ 0x64DC0
+extern void* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A @ 0xF592FC
+
+// ea: 0x0061FCF0
+const DCGSet* DCGBankManager::GetDCGSet(TPakId pakId, int handle)
+{
+    TPakId curPak = CurPakId();
+    const DCGSet* set = nullptr;
+    if (this->mBankArray[(int)pakId] != nullptr)
+    {
+        set = (const DCGSet*)DCGBank_get_set(this->mBankArray[(int)pakId],
+                                             handle);
+        if (set != nullptr)
+            goto prereq;
+    }
+    if (this->mBankArray[(int)curPak] != nullptr)
+    {
+        set = (const DCGSet*)DCGBank_get_set(this->mBankArray[(int)curPak],
+                                             handle);
+        if (set != nullptr)
+            goto prereq;
+    }
+    {
+        int globalPak = *(int*)((char*)PakManager_sInst + 0x30);
+        if (this->mBankArray[globalPak] != nullptr)
+            set = (const DCGSet*)DCGBank_get_set(
+                this->mBankArray[globalPak], handle);
+        else
+            set = nullptr;
+    }
+prereq:
+    {
+        ae_sized_array<TPakId, 32> prereqs;
+        prereqs.m_size = 0;
+        GetPakPrerequisites(pakId, &prereqs);
+        if (set == nullptr && prereqs.m_size > 0)
+        {
+            for (int v9 = 0; v9 < prereqs.m_size; ++v9)
+            {
+                if (v9 >= 0x20)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 154;
+                    AeAssert::gCurrentExpr =
+                        "idx >= 0 && idx < _CAPACITY";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                if (prereqs.m_elements[v9] != PAK_ID_INVALID)
+                {
+                    void* bank = this->mBankArray[
+                        (int)prereqs.m_elements[v9]];
+                    if (bank != nullptr)
+                    {
+                        set = (const DCGSet*)DCGBank_get_set(bank, handle);
+                        if (set != nullptr)
+                            return set;
+                    }
+                    else
+                    {
+                        set = nullptr;
+                    }
+                }
+            }
+        }
+    }
+    return set;
+}
+
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* msg);
