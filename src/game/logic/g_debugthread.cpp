@@ -353,6 +353,7 @@ public:
     };
 
     void Advance(float delta);  // ea: 0x4FA550
+    static void DebugDump(Entity* ent);  // ea: 0x4F5D30
 };
 
 extern void* nalPlayMethod_vftable;   // ??_7nalPlayMethod@AnimationPlayer@@6B@
@@ -1020,6 +1021,84 @@ void AnimationPlayer::Advance(float delta)
         } while (v9 < self->QueueSize);
     }
     self->QueueSize = newSize;
+}
+
+// ============================================================================
+// AnimationPlayer::DebugDump - ea: 0x4F5D30
+// ============================================================================
+struct nalAnimStateDebug {
+    void* instance;        // +0x00
+    float speed;           // +0x04
+    float t;               // +0x08
+    void* play_method;     // +0x0C
+    void* callback;        // +0x10
+    void* next;            // +0x14
+    int animType;          // +0x18 (2 = playing)
+    int flags;             // +0x1C
+};
+
+static const char* AnimDebugTypeString(int type)
+{
+    switch (type)
+    {
+    case 0: return "ADD";
+    case 1: return "PART";
+    case 2: return "FULL";
+    default: return "?";
+    }
+}
+
+void AnimationPlayer::DebugDump(Entity* ent)
+{
+    if (ent == nullptr)
+        return;
+    DObj* mDObj = ent->mDObj;
+    if (mDObj == nullptr)
+        return;
+    AnimationPlayer* v2 =
+        (AnimationPlayer*)(*(void***)((char*)mDObj + 0x20))[0];
+    if (v2 == nullptr)
+        return;
+    float col[4] = { 1.0f, 0.5f, 0.0f, 1.0f };
+    char textBuff[512];
+    AnimationPlayerLocal* self = (AnimationPlayerLocal*)v2;
+    for (int v3 = self->QueueSize - 1; v3 >= 0; --v3)
+    {
+        nalAnimStateDebug* st =
+            (nalAnimStateDebug*)((void**)self->AnimStates)[v3];
+        if (st->animType != 0 && st->instance != nullptr)
+        {
+            _snprintf(textBuff, 0x200u,
+                      "%d)%s L=%d a=%.2f t=%.2f",
+                      v3,
+                      *(const char**)(*(char**)st->instance + 16) + 12,
+                      *(int*)(*(char**)st->instance + 52) & 1,
+                      *(float*)((char*)st->instance + 28),
+                      *(float*)((char*)st->instance + 20));
+            DebugRender::RenderText(textBuff, 10, 75 + (self->QueueSize - 1 - v3) * 20,
+                                    col, 0.0f, 1.125f);
+        }
+    }
+    // Partial anim states
+    void* ps = self->PartialAnimStates;
+    int y = 75 + (self->QueueSize) * 20 + 20;
+    while (ps != nullptr)
+    {
+        nalPartialAnimStateLocal* p = (nalPartialAnimStateLocal*)ps;
+        if (p->instance != nullptr)
+        {
+            _snprintf(textBuff, 0x200u,
+                      "p%d)%s %s L=%d a=%.2f t=%.2f",
+                      (int)((char*)p - (char*)self->PartialAnimStates) / (int)sizeof(nalPartialAnimStateLocal),
+                      *(const char**)(*(char**)p->instance + 16),
+                      AnimDebugTypeString(p->type),
+                      *(int*)(*(char**)p->instance + 52) & 1,
+                      p->alpha, p->t);
+            DebugRender::RenderText(textBuff, 10, y, col, 0.0f, 1.125f);
+            y += 20;
+        }
+        ps = p->next;
+    }
 }
 
 // ============================================================================
