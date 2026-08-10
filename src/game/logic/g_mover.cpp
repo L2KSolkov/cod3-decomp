@@ -410,17 +410,17 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
     }
     for (int i = 0; i < proximity_data.brushes_count; ++i)
     {
-        proxy_obj_t* slot = (proxy_obj_t*)proximity_data.brushes_slot[i];
+        proxy_obj_t& slot = proximity_data.brushes_slot[i];
         CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
-                           ->mBankArray[slot->bi];
-        if (slot->oi >= (unsigned int)bank->objects.m_count
-            || slot->oi < bank->nbrushes)
+                           ->mBankArray[slot.bi];
+        if (slot.oi >= (unsigned int)bank->objects.m_count
+            || slot.oi < bank->nbrushes)
             continue;
-        int brushIdx = slot->oi - bank->nbrushes;
+        int brushIdx = slot.oi - bank->nbrushes;
         cdl_brush_t* br =
             &((cdl_brush_t*)bank->brushes.m_elements)[brushIdx];
         cdl_object_t* obj =
-            &((cdl_object_t*)bank->objects.m_elements)[slot->oi];
+            &((cdl_object_t*)bank->objects.m_elements)[slot.oi];
         if (outcenter.v.m128_f32[2]
                 - (obj->center[2] + obj->box_radius[2])
             < 9.0f)
@@ -435,13 +435,13 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
     }
     for (int i = 0; i < proximity_data.boxes_count; ++i)
     {
-        proxy_obj_t* slot = (proxy_obj_t*)proximity_data.boxes_slot[i];
+        proxy_obj_t& slot = proximity_data.boxes_slot[i];
         CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
-                           ->mBankArray[slot->bi];
-        if (slot->oi >= (unsigned int)bank->objects.m_count)
+                           ->mBankArray[slot.bi];
+        if (slot.oi >= (unsigned int)bank->objects.m_count)
             continue;
         cdl_object_t* obj =
-            &((cdl_object_t*)bank->objects.m_elements)[slot->oi];
+            &((cdl_object_t*)bank->objects.m_elements)[slot.oi];
         if (outcenter.v.m128_f32[2]
                 - (obj->center[2] + obj->box_radius[2])
             < 9.0f)
@@ -454,10 +454,10 @@ bool collide_sphere(Entity* vehicle, const proximity_data_t& proximity_data,
     const float scale = 0.25f;
     for (int i = 0; i < proximity_data.polies_count; ++i)
     {
-        proxy_obj_t* slot = (proxy_obj_t*)proximity_data.polies_slot[i];
+        bounded_proxy_obj_t& slot = proximity_data.polies_slot[i];
         CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
-                           ->mBankArray[slot->bi];
-        int patchIdx = slot->oi - bank->nbrushes - bank->nboxes;
+                           ->mBankArray[slot.bi];
+        int patchIdx = slot.oi - bank->nbrushes - bank->nboxes;
         if (patchIdx < 0 || patchIdx >= bank->patches.m_count)
             continue;
         cdl_patch_t* patch =
@@ -568,17 +568,17 @@ bool push_in_world(math::Position3& pos, float radius,
         }
         for (int i = 0; i < proximity_data.brushes_count; ++i)
         {
-            proxy_obj_t* slot = (proxy_obj_t*)proximity_data.brushes_slot[i];
+            proxy_obj_t& slot = proximity_data.brushes_slot[i];
             CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
-                               ->mBankArray[slot->bi];
-            if (slot->oi >= (unsigned int)bank->objects.m_count
-                || slot->oi < bank->nbrushes)
+                               ->mBankArray[slot.bi];
+            if (slot.oi >= (unsigned int)bank->objects.m_count
+                || slot.oi < bank->nbrushes)
                 continue;
-            int brushIdx = slot->oi - bank->nbrushes;
+            int brushIdx = slot.oi - bank->nbrushes;
             cdl_brush_t* br =
                 &((cdl_brush_t*)bank->brushes.m_elements)[brushIdx];
             cdl_object_t* obj =
-                &((cdl_object_t*)bank->objects.m_elements)[slot->oi];
+                &((cdl_object_t*)bank->objects.m_elements)[slot.oi];
             if (collide_sphere_brush(
                     center, radius, obj,
                     &((cdlPlane*)bank->brush_sides.m_elements)
@@ -588,23 +588,23 @@ bool push_in_world(math::Position3& pos, float radius,
         }
         for (int i = 0; i < proximity_data.boxes_count; ++i)
         {
-            proxy_obj_t* slot = (proxy_obj_t*)proximity_data.boxes_slot[i];
+            proxy_obj_t& slot = proximity_data.boxes_slot[i];
             CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
-                               ->mBankArray[slot->bi];
-            if (slot->oi >= (unsigned int)bank->objects.m_count)
+                               ->mBankArray[slot.bi];
+            if (slot.oi >= (unsigned int)bank->objects.m_count)
                 continue;
             cdl_object_t* obj =
-                &((cdl_object_t*)bank->objects.m_elements)[slot->oi];
+                &((cdl_object_t*)bank->objects.m_elements)[slot.oi];
             if (collide_sphere_box(center, radius, obj, center))
                 hit = true;
         }
         const float scale = 0.25f;
         for (int i = 0; i < proximity_data.polies_count; ++i)
         {
-            proxy_obj_t* slot = (proxy_obj_t*)proximity_data.polies_slot[i];
+            bounded_proxy_obj_t& slot = proximity_data.polies_slot[i];
             CGBank* bank = ((CGBankManager*)CGBankManager::sInst)
-                               ->mBankArray[slot->bi];
-            int patchIdx = slot->oi - bank->nbrushes - bank->nboxes;
+                               ->mBankArray[slot.bi];
+            int patchIdx = slot.oi - bank->nbrushes - bank->nboxes;
             if (patchIdx < 0 || patchIdx >= bank->patches.m_count)
                 continue;
             cdl_patch_t* patch =

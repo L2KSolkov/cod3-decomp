@@ -2485,6 +2485,16 @@ struct proxy_obj_t {
     uint8_t  bi;  // +0x02
     uint8_t  ti;  // +0x03
 };
+struct bounded_proxy_obj_t {
+    uint16_t oi;        // +0x00
+    uint8_t  bi;        // +0x02
+    uint8_t  ti;        // +0x03
+    float    min[3];    // +0x04
+    float    max[3];    // +0x10
+    int      cflags;    // +0x1C
+};
+static_assert(sizeof(bounded_proxy_obj_t) == 0x20,
+              "bounded_proxy_obj_t size mismatch");
 struct cdl_array_t {
     int   m_count;     // +0x00
     void* m_elements;  // +0x04
@@ -2494,15 +2504,15 @@ struct proximity_data_t {
     math::Position3 lo;              // +0x000
     math::Position3 hi;              // +0x010
     uint8_t         boxesBuf[0x400]; // +0x020 (256 * proxy_obj_t)
-    proxy_obj_t* const* boxes_slot;  // +0x420
+    proxy_obj_t*    boxes_slot;      // +0x420
     int             boxes_count;     // +0x424
     uint8_t         _pad428[0x430 - 0x428];
     uint8_t         brushesBuf[0x400];  // +0x430 (256 * proxy_obj_t)
-    proxy_obj_t* const* brushes_slot;   // +0x830
+    proxy_obj_t*    brushes_slot;       // +0x830
     int             brushes_count;      // +0x834
     uint8_t         _pad838[0x840 - 0x838];
     uint8_t         poliesBuf[0x1000];  // +0x840 (128 * bounded_proxy_obj_t)
-    proxy_obj_t* const* polies_slot;    // +0x1840
+    bounded_proxy_obj_t* polies_slot;   // +0x1840
     int             polies_count;       // +0x1844
     uint8_t         _pad1848[0x1850 - 0x1848];
     static void* operator new(size_t s, TPakId pakID);  // ??2proximity_data_t@@SAPAXIW4TPakId@@@Z (game.o 0x60BFE0)

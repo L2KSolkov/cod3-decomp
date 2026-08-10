@@ -549,6 +549,7 @@ struct rtree_visitor_t : public subdivision_visitor {
     ~rtree_visitor_t();                  // ??1rtree_visitor_t@@QAE@XZ (game.o 0x661870) - vtable guard
     visit_result_t visit(int index) override;  // ?visit@rtree_visitor_t@@UAE?AW4visit_result_t@@H@Z
     void filter_objects(int mask);       // ?filter_objects@rtree_visitor_t@@QAEXH@Z
+    void post_process(int bi, proximity_data_t& proximity_data);  // ?post_process@rtree_visitor_t@@QAEXHAAUproximity_data_t@@@Z (game.o 0x633290)
 
     static int* add_fast(int* slot, int& count, int capacity)
     {
@@ -2395,6 +2396,148 @@ void TestBoxInBox(traceWork_t* tw, const math::Position3& bmin,
         tw->trace_startsolid = 1;
         tw->trace_fraction = 0.0f;
         tw->trace_contents = (int)cflags;
+    }
+}
+
+// ============================================================================
+// post_process - ea: 0x633290 (CollisionMgr.cpp)
+// Fills proximity_data boxes/brushes/polies from the visitor's filtered lists.
+// ============================================================================
+// ea: 0x00633290
+void rtree_visitor_t::post_process(int bi, proximity_data_t& proximity_data)
+{
+    cmgr_mem_ctx_t ctx;
+    math::Position3* cg_verts = alloc_verts();
+
+    int nobjects = this->objects_m_alloc_count;
+    for (int ti = 0; ti < nobjects; ++ti)
+    {
+        if ((ti < 0 || ti >= this->objects_m_alloc_count)
+            && _tlAssert(
+                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        unsigned int index = this->objects_m_slot_array[ti];
+        CGBank* bank = this->bank;
+        if (index >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (index >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        const cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[index];
+        int type = CGBank_get_type(bank, index);
+        if (type == 1)
+        {
+            // brush
+            if (proximity_data.brushes_count != 256)
+            {
+                if (proximity_data.brushes_count >= 256
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                        44, "m_alloc_count < m_slot_array_size",
+                        "phys_array overflow"))
+                    __debugbreak();
+                int c = proximity_data.brushes_count;
+                proximity_data.brushes_count = c + 1;
+                proxy_obj_t v;
+                v.oi = (uint16_t)index;
+                v.bi = (uint8_t)bi;
+                v.ti = 0xFF;
+                proximity_data.brushes_slot[c] = v;
+            }
+        }
+        else if (type != 0)
+        {
+            // patch
+            unsigned int pi = index - (unsigned int)bank->nbrushes
+                - (unsigned int)bank->nboxes;
+            unpack(bank, pi, cg_verts);
+            if (pi >= (unsigned int)bank->patches.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            cdl_patch_t* patch =
+                &((cdl_patch_t*)bank->patches.m_elements)[pi];
+            unsigned int first_index = (unsigned int)patch->first_index;
+            if (first_index >= (unsigned int)bank->patch_inds.m_count
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                    "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            const unsigned char* pvi =
+                &((const unsigned char*)bank->patch_inds.m_elements)
+                    [first_index];
+            unsigned int num_inds = (unsigned int)patch->num_inds;
+            for (unsigned int k = 0; k < num_inds; ++k)
+            {
+                math::Position3 v0 = cg_verts[pvi[3 * k + 0]];
+                math::Position3 v1 = cg_verts[pvi[3 * k + 1]];
+                math::Position3 v2 = cg_verts[pvi[3 * k + 2]];
+                math::Position3 vmin;
+                math::Position3 vmax;
+                vmin.v = _mm_min_ps(v0.v, _mm_min_ps(v1.v, v2.v));
+                vmax.v = _mm_max_ps(v0.v, _mm_max_ps(v1.v, v2.v));
+                if ((_mm_movemask_ps(_mm_cmplt_ps(
+                         _mm_max_ps(
+                             _mm_sub_ps(vmin.v, proximity_data.hi.v),
+                             _mm_sub_ps(proximity_data.lo.v, vmax.v)),
+                         _mm_setzero_ps()))
+                     & 7) == 7)
+                {
+                    if (proximity_data.polies_count != 128)
+                    {
+                        if (proximity_data.polies_count >= 128
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                                44, "m_alloc_count < m_slot_array_size",
+                                "phys_array overflow"))
+                            __debugbreak();
+                        int c = proximity_data.polies_count;
+                        ++proximity_data.polies_count;
+                        bounded_proxy_obj_t v;
+                        v.oi = (uint16_t)index;
+                        v.bi = (uint8_t)bi;
+                        v.ti = (uint8_t)k;
+                        v.min[0] = vmin.v.m128_f32[0];
+                        v.min[1] = vmin.v.m128_f32[1];
+                        v.min[2] = vmin.v.m128_f32[2];
+                        v.max[0] = vmax.v.m128_f32[0];
+                        v.max[1] = vmax.v.m128_f32[1];
+                        v.max[2] = vmax.v.m128_f32[2];
+                        v.cflags = obj->cflags;
+                        proximity_data.polies_slot[c] = v;
+                    }
+                }
+            }
+        }
+        else if (proximity_data.boxes_count != 256)
+        {
+            // box
+            if (proximity_data.boxes_count >= 256
+                && _tlAssert(
+                    "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                    44, "m_alloc_count < m_slot_array_size",
+                    "phys_array overflow"))
+                __debugbreak();
+            int c = proximity_data.boxes_count;
+            proximity_data.boxes_count = c + 1;
+            proxy_obj_t v;
+            v.oi = (uint16_t)index;
+            v.bi = (uint8_t)bi;
+            v.ti = 0xFF;
+            proximity_data.boxes_slot[c] = v;
+        }
     }
 }
 
