@@ -32,7 +32,9 @@
 // ============================================================================
 // Enums
 // ============================================================================
-typedef unsigned nflMediaID;
+enum nflMediaID : unsigned {  // enum tag matches binary mangling W4nflMediaID
+    NFL_MEDIA_DEFAULT = 0,
+};
 typedef unsigned nflFileID;
 typedef unsigned nflRequestID;
 typedef unsigned nflStreamID;
