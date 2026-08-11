@@ -883,6 +883,27 @@ void Entity::FreeAllDObjs(bool deleteDObjs)
 // ============================================================================
 // Entity::GetRenderEntity - ea: 0x62AF30
 // ============================================================================
+// ea: 0x006618B0 (game.o)
+trRefEntity::trRefEntity(int foo)
+{
+    *(void**)((char*)this + 0x00) = nullptr;  // m_dlist_node.m_next
+    *(void**)((char*)this + 0x04) = nullptr;  // m_dlist_node.m_prev
+    memset((char*)this + 0x08, 0, 0x60);      // refEntity_t (96 bytes)
+    *(float*)((char*)this + 0x68) = 3.4028235e38f;  // mLightGrid.lastPos[0]
+    *(float*)((char*)this + 0x6C) = 3.4028235e38f;  // mLightGrid.lastPos[1]
+    *(float*)((char*)this + 0x70) = 3.4028235e38f;  // mLightGrid.lastPos[2]
+    *(unsigned char*)((char*)this + 0x74) = 1;      // mLightGrid.moved
+    *(float*)((char*)this + 0xEC) = 1.0f;           // mScale
+    *(float*)((char*)this + 0xF0) = -1.0f;          // mAlpha
+    this->mWaterHeightOffset = 0;
+    this->iflIndex = (uint8_t)-1;
+    this->mSnapshotId = 0;
+    *(float*)((char*)this + 0xDC) = 0.0f;  // lightingOrigin[0]
+    *(float*)((char*)this + 0xE0) = 0.0f;  // lightingOrigin[1]
+    *(float*)((char*)this + 0xE4) = 0.0f;  // lightingOrigin[2]
+    (void)foo;
+}
+
 // ea: 0x00620240
 void* trRefEntity::operator new(size_t s)
 {
@@ -971,6 +992,18 @@ void Entity::SetAnimDebug(int lastAnim)
 // ============================================================================
 // Entity::SetInSnapshot - ea: 0x639170
 // ============================================================================
+// ea: 0x006C0810 (render.o)
+void trRefEntity::SetInSnapshot()
+{
+    this->mSnapshotId = level.snapTime;
+}
+
+// ea: 0x006C0820 (render.o)
+bool trRefEntity::IsInSnapshot() const
+{
+    return this->mSnapshotId == level.snapTime;
+}
+
 // ea: 0x00639170
 void Entity::SetInSnapshot()
 {
