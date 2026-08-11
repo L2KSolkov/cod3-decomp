@@ -29,12 +29,88 @@ class XAnimTree;
 class DObj {
 public:
     void* tree[8];  // +0x00 XAnimTree*[8]
+    uint8_t _pad[0xC0 - 0x20];
+    int      mPakId;         // +0xC0 (TPakId)
+    uint8_t _padC4[0xCE - 0xC4];
+    unsigned char numModels; // +0xCE
+    uint8_t _padCF[0xD0 - 0xCF];
+    void*    mEntity;        // +0xD0 Entity*
 };
 
 // ea: 0x006BE190 (render.o)
 XAnimTree* DObjGetTree(DObj* obj)  // ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z
 {
     return (XAnimTree*)obj->tree[0];
+}
+
+extern void XAnimFindServerNoteTrack(XAnimTree* tree, unsigned int animIndex,
+                                     float dtime);  // anim.o 0x541CD0
+extern void XAnimUpdateServerInfoInternal(XAnimTree* tree,
+                                          unsigned int animIndex,
+                                          float dtime, bool bNotify);  // anim.o
+Entity* gGameEnt = nullptr;  // ?gGameEnt@@3PAVEntity@@A (anim.o @ 0xF25A2C)
+
+// Stubs for anim.o server-info internals (full port deferred; keeps the
+// server-side DObj update chain linkable until the XAnim internals land).
+void XAnimFindServerNoteTrack(XAnimTree* tree, unsigned int animIndex,
+                              float dtime)  // ?XAnimFindServerNoteTrack (anim.o 0x541CD0)
+{
+    (void)tree; (void)animIndex; (void)dtime;
+}
+void XAnimUpdateServerInfoInternal(XAnimTree* tree, unsigned int animIndex,
+                                   float dtime, bool bNotify)
+{
+    (void)tree; (void)animIndex; (void)dtime; (void)bNotify;
+}
+
+// ea: 0x00552C20 (anim.o)
+bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
+                          unsigned int animindex)  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z
+{
+    if (dtime < 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+        AeAssert::gCurrentLine = 2934;
+        AeAssert::gCurrentExpr = "dtime >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (obj->tree[0] == nullptr)
+        return false;
+    gGameEnt = (Entity*)obj->mEntity;
+    unsigned char numModels = obj->numModels;
+    char v10 = 0;
+    for (int v8 = 0; v8 < numModels; ++v8)
+    {
+        XAnimTree* v9 = (XAnimTree*)obj->tree[v8];
+        if (v9 != nullptr)
+        {
+            if (bNotify)
+            {
+                XAnimFindServerNoteTrack(v9, animindex, dtime);
+                if (dtime != 1.0f)
+                {
+                    float v4 = dtime * dtime + 0.001f;
+                    if (dtime >= v4)
+                    {
+                        XAnimUpdateServerInfoInternal(
+                            (XAnimTree*)obj->tree[v8], animindex, v4, true);
+                        v10 = 1;
+                    }
+                    continue;
+                }
+                XAnimUpdateServerInfoInternal(
+                    (XAnimTree*)obj->tree[v8], animindex, dtime, true);
+            }
+            else
+            {
+                XAnimUpdateServerInfoInternal(v9, animindex, dtime, false);
+            }
+            v10 = 0;
+        }
+    }
+    return v10 != 0;
 }
 class XAnimTree;
 extern void  DObjDumpInfo(DObj* obj);
