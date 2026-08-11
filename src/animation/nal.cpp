@@ -281,3 +281,160 @@ nalStreamInstance* nalStreamAnimQueueInstance(unsigned a1, int a2, int a3, int a
 // nalInitList
 // ============================================================================
 void nalInitListInit() {}
+
+// ============================================================================
+// xanim.cpp raw accessors (anim.o) - ported from disasm
+// ============================================================================
+class XAnimEntry {
+public:
+    unsigned int   hash;        // +0x00
+    unsigned short numAnims;    // +0x04
+    unsigned short parent;      // +0x06
+    void*          anim;        // +0x08 nalGeneric::nalGenericAnim*
+    void*          notify;      // +0x0C
+    int            lastAttempt; // +0x10
+    unsigned char  ucLastChosenChild;  // +0x14
+    unsigned char  _pad[3];     // +0x15
+    union {
+        struct {
+            unsigned short flags;    // +0x18
+            unsigned short children; // +0x1A
+        } s;
+    } u;                          // +0x18
+};
+
+class AnimTree {
+public:
+    void* name;               // +0x00 InplaceString
+    struct {
+        unsigned int mSize;   // +0x04
+        XAnimEntry*  mList;   // +0x08
+    } entries;
+};
+
+class XAnimTree {
+public:
+    unsigned char m_dlist_node[8];     // +0x00
+    AnimTree*     anims;               // +0x08
+    unsigned int  mOwner;              // +0x0C
+    int           mPakId;              // +0x10
+    int           mActiveAnims;        // +0x14
+    unsigned short infoArray[1];       // +0x18
+};
+
+struct XAnimInfo {
+    unsigned short notifyChild;   // +0x00
+    short          notifyIndex;   // +0x02
+    unsigned int   notifyName;    // +0x04
+    unsigned short notifyType;    // +0x08
+    unsigned short prev;          // +0x0A
+    unsigned short next;          // +0x0C
+    unsigned char  s[36];         // +0x10
+    void*          pEntity;       // +0x34
+};
+
+// ?g_info@@3PAUXAnimInfo@@A @ 0xF25AE8 (512 entries)
+XAnimInfo g_info[512];
+
+// ea: 0x5433C0
+float XAnimGetTime(XAnimTree* tree, unsigned int animIndex)
+{
+    if (tree == nullptr || tree->anims == nullptr
+        || animIndex >= tree->anims->entries.mSize)
+        return 0.0f;
+    unsigned short idx = tree->infoArray[animIndex];
+    if (idx >= 512)
+        return 0.0f;
+    return *(float*)&g_info[idx].s[0];
+}
+
+// ea: 0x543520
+float XAnimGetWeight(XAnimTree* tree, unsigned int animIndex)
+{
+    if (tree == nullptr || tree->anims == nullptr
+        || animIndex >= tree->anims->entries.mSize)
+        return 0.0f;
+    unsigned short idx = tree->infoArray[animIndex];
+    if (idx >= 512)
+        return 0.0f;
+    return *(float*)&g_info[idx].s[0x14];
+}
+
+// ea: 0x54B4C0
+int XAnimIsLooped(AnimTree* anims, unsigned int animIndex)
+{
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    if (entry->numAnims != 0)
+        return entry->u.s.flags & 1;
+    if (entry->anim == nullptr)
+        return 0;
+    return ((const unsigned char*)entry->anim)[0x34] & 1;
+}
+
+// ea: 0x544A30
+int XAnimHasTime(AnimTree* anims, unsigned int animIndex)
+{
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    if (entry->numAnims == 0)
+        return 1;
+    if ((entry->u.s.flags & 0x23) != 0)
+        return 1;
+    return 0;
+}
+
+// ea: 0x544A60
+int XAnimIsPrimitive(AnimTree* anims, unsigned int animIndex)
+{
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    return entry->numAnims == 0;
+}
+
+// ea: 0x5437D0
+int XAnimGetNumChildren(AnimTree* anims, unsigned int animIndex)
+{
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    return entry->numAnims;
+}
+
+// ea: 0x5437F0
+unsigned int XAnimGetChildAt(AnimTree* anims, unsigned int animIndex,
+                             unsigned int childIndex)
+{
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    if (childIndex >= entry->numAnims)
+        return 0;
+    return (unsigned int)entry->u.s.children + childIndex;
+}
+
+// ea: 0x549950
+float XAnimGetLength(AnimTree* anims, unsigned int animIndex)
+{
+    if (anims == nullptr)
+        return 0.0f;
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    if ((entry->u.s.flags & 0x20) != 0)
+        entry = &anims->entries.mList[entry->u.s.children
+                                      + entry->ucLastChosenChild];
+    if (entry->anim != nullptr)
+        return *(float*)((char*)entry->anim + 0x38);
+    return 0.0f;
+}
+
+// ea: 0x5454E0
+bool XAnimNotetrackExists(AnimTree* anims, unsigned int animIndex,
+                          const unsigned int& name)
+{
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    if (entry->notify == nullptr)
+        return false;
+    const unsigned char* p = (const unsigned char*)entry->notify + 4;
+    for (;;)
+    {
+        unsigned int hashed = *(const unsigned int*)p;
+        if (hashed == 0)
+            return false;
+        if (hashed == name)
+            return true;
+        p += 0xC;
+    }
+}
