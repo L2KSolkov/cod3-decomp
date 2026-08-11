@@ -17,6 +17,7 @@ unsigned int gpuHashVertexBuffer = 0xDEADBEEF;   // ?gpuHashVertexBuffer@@3IA
 unsigned int gpuHashPixelShader = 0xDEADBEEF;    // ?gpuHashPixelShader@@3IA
 unsigned int gpuHashVertexShader = 0xDEADBEEF;   // ?gpuHashVertexShader@@3IA
 unsigned int gpuHashVertexFormat = 0xDEADBEEF;   // ?gpuHashVertexFormat@@3IA
+gpuVertexFormat nglGpuPCUVVertexFmt;             // ?nglGpuPCUVVertexFmt@@3UgpuVertexFormat@@A (BSS)
 
 // ============================================================================
 // Cross-object externs
