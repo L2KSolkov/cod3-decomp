@@ -35,14 +35,15 @@ void nglProcessSection(nglMesh* Mesh, nglMeshSection* Section, apk::apkFileEntry
 void nglProcessMesh(nglMesh* Mesh, apk::apkFileEntry* Entry);
 void nglUnloadMesh(nglMesh* Mesh);
 unsigned int nglGetLOD(nglMesh* Mesh, const math::Mat43* LocalToWorld, nglScene* Scene);
-math::Mat43* nglListAddMesh_GetScaledMatrix(const math::Mat43* LocalToWorld,
-                                            nglMeshParams* MeshParams, float* MaxScale);
+math::Mat43* nglListAddMesh_GetScaledMatrix(const math::Mat43& LocalToWorld,
+                                            nglMeshParams* MeshParams,
+                                            float* MaxScale);
 nglMeshNode* nglListAddMesh_Sections(nglMesh* Mesh, nglMeshNode* MeshNode);
-nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                                   nglMeshParams* MeshParams,
                                   nglShaderParamSet* ShaderParams,
                                   void (*fn)(nglMeshNode*));
-nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                             nglMeshParams* MeshParams, nglShaderParamSet* ShaderParams,
                             void (*fn)(nglMeshNode*));
 void nglAPKMeshLoadCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void* UserData);

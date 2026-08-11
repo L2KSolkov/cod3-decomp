@@ -107,7 +107,7 @@ void nglUnlockSectionIndices() {
 // ============================================================================
 // nglLockSectionVertices â€” ea: 0x843310
 // ============================================================================
-unsigned char* nglLockSectionVertices(nglMeshSection* Section) {
+void* nglLockSectionVertices(nglMeshSection* Section) {
     int VertexOffset = Section->VertexOffset;
     return &((unsigned char*)D3DVertexBuffer_Lock2((D3DVertexBuffer*)Section->VertexBuffer, 0x20u))[VertexOffset];
 }

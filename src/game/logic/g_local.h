@@ -2924,9 +2924,10 @@ void  controller_stop_all_rumble(void* self);      // controller_xboxr
 void  EffectEventSys_StopAll(void* self);          // core.o
 void  nglWaitForRendering(void);                   // ngl.o
 void  nglSetClearFlags(unsigned int flags);        // ngl.o
-void  nglInitQuad(void* quad);                     // ngl.o
-void  nglSetQuadColor(void* quad, unsigned int color);  // ngl.o
-void  nglListAddQuad(void* quad);                  // ngl.o
+struct nglQuad;
+void  nglInitQuad(nglQuad* quad);                  // ngl.o
+void  nglSetQuadColor(nglQuad* quad, unsigned int color);  // ngl.o
+void  nglListAddQuad(nglQuad* quad);               // ngl.o
 void  nglPresent(void);                            // ngl.o
 void  SpinnerDrawFrame(bool bEndFrame);            // cg.o
 void  SpinnerReset(void);                          // cg.o

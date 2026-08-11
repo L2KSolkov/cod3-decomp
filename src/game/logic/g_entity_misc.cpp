@@ -278,11 +278,16 @@ extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
                               nglMaterial* Material, int Flags);
     // ?nglAddMeshSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAUnglMaterial@@H@Z
 extern void* nglLockSectionIndices(nglMeshSection* Section);
-extern unsigned char* nglLockSectionVertices(nglMeshSection* Section);
+extern void* nglLockSectionVertices(nglMeshSection* Section);
 extern nglMesh* auxCloseScratchMesh(nglMesh* m);  // ?auxCloseScratchMesh (ngl_aux.o)
-extern void* nglListAddMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
-                            void* MeshParams, void* ShaderParams,
-                            void (*fn)(void*));
+struct nglMeshParams;
+struct nglShaderParamSet;
+struct nglMeshNode;
+extern nglMeshNode* nglListAddMesh(nglMesh* Mesh,
+                                   const math::Mat43& LocalToWorld,
+                                   nglMeshParams* MeshParams,
+                                   nglShaderParamSet* ShaderParams,
+                                   void (*fn)(nglMeshNode*));
 extern void j_nullsub_67(nglMeshSection* Section);  // render_xboxr no-op
 extern void j_nullsub_27(nglMeshSection* Section);  // render_xboxr no-op
 struct cdlPlaneArray;
@@ -497,7 +502,7 @@ void render_brush(const math::Position3& bmin, const math::Position3& bmax,
             identity.z.v = s_posZ;
             identity.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
             nglMesh* m = auxCloseScratchMesh(mesh);
-            nglListAddMesh(m, &identity, nullptr, npolies, nullptr);
+            nglListAddMesh(m, identity, nullptr, npolies, nullptr);
         }
     }
     if (planes.m_elements != nullptr)

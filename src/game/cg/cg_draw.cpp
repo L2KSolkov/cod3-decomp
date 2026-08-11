@@ -80,22 +80,30 @@ extern cgGlobal_t cgGlobal;
 
 extern float gTracerDistScale;   // 0x00DF9DA8
 extern float tr_viewParms_zFar;  // 0x00F74F60
-extern void* auxCreateScratchMesh(int flags, int num);
+struct nglMesh;
+extern nglMesh* auxCreateScratchMesh(int flags, int num);
 extern void* nglListAlloc(unsigned int bytes, unsigned int alignment);
 extern void* cdScratchMaterial_Ctor(void* self, void* tex,
                                     unsigned int blendMode, int mapflags,
                                     bool heatHaze);
 struct gpuVertexFormat;
 struct nglMeshSection;
+struct nglMaterial;
 extern nglMeshSection* nglCreateScratchSection(int prim, int nIndices,
                                                int nVertices,
                                                gpuVertexFormat* vertexFormat);
-extern void nglAddMeshSection(void* mesh, void* section, void* material,
-                              int flags);
+extern void nglAddMeshSection(nglMesh* mesh, nglMeshSection* section,
+                              nglMaterial* material, int flags);
 extern void* nglLockSectionIndices(nglMeshSection* section);
-extern void* nglLockSectionVertices(void* section);
-extern void nglListAddMesh(void* mesh, const math::Mat43* localToWorld,
-                           void* meshParams, void* shaderParams, void* fn);
+extern void* nglLockSectionVertices(nglMeshSection* section);
+struct nglMeshParams;
+struct nglShaderParamSet;
+struct nglMeshNode;
+extern nglMeshNode* nglListAddMesh(nglMesh* mesh,
+                                   const math::Mat43& localToWorld,
+                                   nglMeshParams* meshParams,
+                                   nglShaderParamSet* shaderParams,
+                                   void (*fn)(nglMeshNode*));
 extern void* cdscratch_vertex_format;
 extern void* cgsGlobal_media_tracerShader;
 extern int dword_F6355C[4 * 1580];
@@ -209,7 +217,7 @@ extern nglScene* nglListBeginScene(nglSceneParamType paramSource);
 extern void nglSetClearFlags(unsigned int flags);
 extern void nglSetZTestEnable(bool enable);
 extern void nglSetZWriteEnable(bool enable);
-extern void nglListEndScene();
+extern nglScene* nglListEndScene();
 extern void nglSetView(float x1, float y1, float x2, float y2);
 extern void nglSetScissor(float x1, float y1, float x2, float y2);
 extern void CG_DrawCrosshair(float transScale);
@@ -1192,7 +1200,7 @@ void CG_DrawTracer(const math::Position3& _start,
     if (v17 <= 0.0f)
         v17 = 0.0f;
     float widtha = (v17 + 1.0f) * width;
-    void* mesh = auxCreateScratchMesh(0x40000, 1);
+    nglMesh* mesh = auxCreateScratchMesh(0x40000, 1);
     void* matMem = nglListAlloc(0x20, 0x10);
     void* material = nullptr;
     if (matMem != nullptr)
@@ -1203,7 +1211,7 @@ void CG_DrawTracer(const math::Position3& _start,
     nglMeshSection* section =
         nglCreateScratchSection(6, 8, 8,
                                 (gpuVertexFormat*)cdscratch_vertex_format);
-    nglAddMeshSection(mesh, section, material, 1);
+    nglAddMeshSection(mesh, section, (nglMaterial*)material, 1);
     unsigned short* indices =
         (unsigned short*)nglLockSectionIndices(section);
     float* verts = (float*)nglLockSectionVertices(section);
@@ -1251,7 +1259,7 @@ void CG_DrawTracer(const math::Position3& _start,
     identity.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
     identity.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
     identity.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
-    nglListAddMesh(mesh, &identity, nullptr, nullptr, nullptr);
+    nglListAddMesh(mesh, identity, nullptr, nullptr, nullptr);
 }
 
 // ea: 0x006A07D0

@@ -11683,11 +11683,16 @@ extern nglMeshSection* nglCreateScratchSection(
 extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
                               nglMaterial* Material, int Flags);
 extern void* nglLockSectionIndices(nglMeshSection* Section);
-extern unsigned char* nglLockSectionVertices(nglMeshSection* Section);
+extern void* nglLockSectionVertices(nglMeshSection* Section);
 extern nglMesh* auxCloseScratchMesh(nglMesh* m);
-extern void* nglListAddMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
-                            void* MeshParams, void* ShaderParams,
-                            void (*fn)(void*));
+struct nglMeshParams;
+struct nglShaderParamSet;
+struct nglMeshNode;
+extern nglMeshNode* nglListAddMesh(nglMesh* Mesh,
+                                   const math::Mat43& LocalToWorld,
+                                   nglMeshParams* MeshParams,
+                                   nglShaderParamSet* ShaderParams,
+                                   void (*fn)(nglMeshNode*));
 extern void j_nullsub_67(nglMeshSection* Section);
 extern void j_nullsub_27(nglMeshSection* Section);
 extern unsigned char* nglListWork;
@@ -11953,7 +11958,7 @@ void CGBankManager::DebugRender()
                             identity.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f,
                                                        1.0f);
                             nglMesh* m = auxCloseScratchMesh(mesh);
-                            nglListAddMesh(m, &identity, nullptr, npolies,
+                            nglListAddMesh(m, identity, nullptr, npolies,
                                            nullptr);
                         }
                         else
@@ -12255,7 +12260,7 @@ void CGBankManager::DebugRender()
                                 identity.w.v = _mm_setr_ps(0.0f, 0.0f,
                                                            0.0f, 1.0f);
                                 nglMesh* m = auxCloseScratchMesh(mesh);
-                                nglListAddMesh(m, &identity, nullptr,
+                                nglListAddMesh(m, identity, nullptr,
                                                npolies, nullptr);
                             }
                         }
@@ -12530,7 +12535,7 @@ void CGBankManager::DebugRender()
                                             0.0f, 0.0f, 0.0f, 1.0f);
                                         nglMesh* m =
                                             auxCloseScratchMesh(mesh);
-                                        nglListAddMesh(m, &identity,
+                                        nglListAddMesh(m, identity,
                                                        nullptr, npolies,
                                                        nullptr);
                                     }

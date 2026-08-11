@@ -3947,9 +3947,9 @@ int G_InitGame(int randomSeed, int restart, int savegame, int checksum)
         nglWaitForRendering();
         nglSetClearFlags(0xF3);
         char quad[0x80];
-        nglInitQuad(quad);
-        nglSetQuadColor(quad, 0xFFFFFFFF);
-        nglListAddQuad(quad);
+        nglInitQuad((nglQuad*)quad);
+        nglSetQuadColor((nglQuad*)quad, 0xFFFFFFFF);
+        nglListAddQuad((nglQuad*)quad);
         SpinnerDrawFrame(false);
         nglPresent();
     }

@@ -37,14 +37,16 @@ extern mem_heap* mem_heap_get(mem_heap_type heap_name);
 struct nglTexture;
 struct tlSystemCallbacks;
 extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);
-extern void nglInitQuad(void* quad);
+struct nglQuad;
+extern void nglInitQuad(nglQuad* quad);
 extern void nglSetClearFlags(unsigned int clearFlags);
 extern void nglPresent();
 extern void nglWaitForRendering();
-extern void* nglGetFrontBufferTex();
-extern void nglSetQuadTex(void* quad, void* tex);
-extern void nglSetQuadRect(void* quad, float x1, float y1, float x2, float y2);
-extern void nglListAddQuad(void* quad);
+extern nglTexture* nglGetFrontBufferTex();
+extern void nglSetQuadTex(nglQuad* quad, nglTexture* tex);
+extern void nglSetQuadRect(nglQuad* quad, float x1, float y1, float x2,
+                           float y2);
+extern void nglListAddQuad(nglQuad* quad);
 extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void PrintPakNames();
 extern void SpinnerDrawFrameWithLoading(bool bEndFrame);
@@ -130,15 +132,15 @@ void Script_Init()
 void SyncFrameBuffers()
 {
     unsigned char frontBuf[0x60];
-    nglInitQuad(frontBuf);
+    nglInitQuad((nglQuad*)frontBuf);
     nglSetClearFlags(0);
     nglPresent();
     nglWaitForRendering();
-    void* FrontBufferTex = nglGetFrontBufferTex();
-    nglSetQuadTex(frontBuf, FrontBufferTex);
-    nglSetQuadRect(frontBuf, 0.0f, 0.0f, 640.0f, 480.0f);
+    nglTexture* FrontBufferTex = nglGetFrontBufferTex();
+    nglSetQuadTex((nglQuad*)frontBuf, FrontBufferTex);
+    nglSetQuadRect((nglQuad*)frontBuf, 0.0f, 0.0f, 640.0f, 480.0f);
     nglSetClearFlags(0xF3u);
-    nglListAddQuad(frontBuf);
+    nglListAddQuad((nglQuad*)frontBuf);
     nglPresent();
     nglWaitForRendering();
 }

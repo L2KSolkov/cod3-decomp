@@ -35,8 +35,8 @@ void nglSetMeshSphere(nglMesh* Mesh, const math::Position3* Center, float Radius
 // ============================================================================
 // nglAddMeshSection - ea: 0x844820
 // ============================================================================
-void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section, nglMaterial* Material,
-                       unsigned int Flags) {
+void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
+                       nglMaterial* Material, int Flags) {
     unsigned int NSections = Mesh->NSections;
     unsigned int i = 0;
     if (NSections != 0) {

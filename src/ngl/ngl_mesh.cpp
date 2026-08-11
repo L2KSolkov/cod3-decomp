@@ -25,7 +25,7 @@ extern nglDebugStruct nglSyncDebug;               // ngl_debug.o
 extern nglPerfInfoStruct nglPerfInfo;             // ngl_debug.o
 extern bool nglProfileEvalShader(nglShader* Shader);  // ngl_debug.o
 extern void nglValidateMatrices(nglScene* Scene);     // ngl_scene.o
-extern void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+extern void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                              const nglMeshParams* Params);  // ngl_scenedump.o
 extern int ngliListAddMesh_GetClipResult(const math::Position3& Center, float Radius,
                                          unsigned int ParamFlags);  // ngl_dx_mesh.o
@@ -144,15 +144,15 @@ void nglUnloadMesh(nglMesh* Mesh) {
 // ============================================================================
 // nglGetLOD - ea: 0x843830
 // ============================================================================
-unsigned int nglGetLOD(nglMesh* Mesh, const math::Mat43* LocalToWorld, nglScene* Scene) {
+unsigned int nglGetLOD(nglMesh* Mesh, const math::Mat43& LocalToWorld, nglScene* Scene) {
     if (Mesh == NULL)
         return 0;
     nglValidateMatrices(Scene);
     __m128 v3 = _mm_add_ps(
-        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 0), LocalToWorld->x.v),
-                   _mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 85), LocalToWorld->y.v)),
-        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 170), LocalToWorld->z.v),
-                   LocalToWorld->w.v));
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 0), LocalToWorld.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 85), LocalToWorld.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(Mesh->Sphere.v, Mesh->Sphere.v, 170), LocalToWorld.z.v),
+                   LocalToWorld.w.v));
     __m128 v4 = _mm_add_ps(
         _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v3, v3, 0), Scene->WorldToView.x.v),
                    _mm_mul_ps(_mm_shuffle_ps(v3, v3, 85), Scene->WorldToView.y.v)),
@@ -210,7 +210,7 @@ static nglMesh* nglListAddMesh_GetLOD(nglMesh* Mesh, char LOD,
 // ============================================================================
 // nglListAddMesh_GetScaledMatrix - ea: 0x843A20
 // ============================================================================
-math::Mat43* nglListAddMesh_GetScaledMatrix(const math::Mat43* LocalToWorld,
+math::Mat43* nglListAddMesh_GetScaledMatrix(const math::Mat43& LocalToWorld,
                                             nglMeshParams* MeshParams, float* MaxScale) {
     __m128 v3 = MeshParams->Scale.v;
     __m128 v4 = _mm_andnot_ps(_mm_castsi128_ps(_mm_set1_epi32(0x80000000)), v3);
@@ -224,10 +224,10 @@ math::Mat43* nglListAddMesh_GetScaledMatrix(const math::Mat43* LocalToWorld,
     *MaxScale = v7;
     if ((nglListAddMesh_GetScaledMatrix_InitFlag & 1) == 0)
         nglListAddMesh_GetScaledMatrix_InitFlag |= 1u;
-    ScaledLocalToWorld_0.x.v = _mm_mul_ps(LocalToWorld->x.v, _mm_shuffle_ps(v3, v3, 0));
-    ScaledLocalToWorld_0.y.v = _mm_mul_ps(LocalToWorld->y.v, _mm_shuffle_ps(v3, v3, 85));
-    ScaledLocalToWorld_0.z.v = _mm_mul_ps(LocalToWorld->z.v, _mm_shuffle_ps(v3, v3, 170));
-    ScaledLocalToWorld_0.w.v = LocalToWorld->w.v;
+    ScaledLocalToWorld_0.x.v = _mm_mul_ps(LocalToWorld.x.v, _mm_shuffle_ps(v3, v3, 0));
+    ScaledLocalToWorld_0.y.v = _mm_mul_ps(LocalToWorld.y.v, _mm_shuffle_ps(v3, v3, 85));
+    ScaledLocalToWorld_0.z.v = _mm_mul_ps(LocalToWorld.z.v, _mm_shuffle_ps(v3, v3, 170));
+    ScaledLocalToWorld_0.w.v = LocalToWorld.w.v;
     return &ScaledLocalToWorld_0;
 }
 
@@ -248,7 +248,7 @@ static void TransposeFour(__m128 c0, __m128 c1, __m128 c2, __m128 c3, __m128 out
 // ============================================================================
 // nglListAddMesh_Setup - ea: 0x843C50
 // ============================================================================
-nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                                   nglMeshParams* MeshParams,
                                   nglShaderParamSet* ShaderParams,
                                   void (*fn)(nglMeshNode*)) {
@@ -258,7 +258,7 @@ nglMeshNode* nglListAddMesh_Setup(nglMesh* Mesh, const math::Mat43* LocalToWorld
                          "(Mesh->Flags & NGLMESH_PROCESSED) || (Mesh->Flags & (NGLMESH_SCRATCH_MESH|NGLMESH_STATIC))",
                          "Mesh missing NGLMESH_PROCESSED flag."))
             __debugbreak();
-        const math::Mat43* ScaledMatrix = LocalToWorld;
+        const math::Mat43* ScaledMatrix = &LocalToWorld;
         __m128 v7 = _mm_mul_ps(ScaledMatrix->x.v, ScaledMatrix->x.v);
         float v54 = v7.m128_f32[0] + (v7.m128_f32[1] + v7.m128_f32[2]);
         __m128 v8 = _mm_mul_ps(ScaledMatrix->y.v, ScaledMatrix->y.v);
@@ -385,7 +385,7 @@ nglMeshNode* nglListAddMesh_Sections(nglMesh* Mesh, nglMeshNode* MeshNode) {
 // ============================================================================
 // nglListAddMesh - ea: 0x844250
 // ============================================================================
-nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+nglMeshNode* nglListAddMesh(nglMesh* Mesh, const math::Mat43& LocalToWorld,
                             nglMeshParams* MeshParams, nglShaderParamSet* ShaderParams,
                             void (*fn)(nglMeshNode*)) {
     nglMeshNode* result = nglListAddMesh_Setup(Mesh, LocalToWorld, MeshParams, ShaderParams, fn);
