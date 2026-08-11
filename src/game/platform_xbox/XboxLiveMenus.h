@@ -200,17 +200,7 @@ extern int currCl;
 extern bool g_controllerConnectedErrorShown[];
 extern bool g_IgnoreUIXInput;
 
-namespace MPUIInterface {
-bool IsOnlineGame();
-bool InSession();
-void ExitGame();
-void QueryFromID(XNKID* sessionID);
-void Step();
-void GameListingGet(int* numGames);
-extern bool mLiveQueryActive;
-extern bool mQueryFromID;
-extern bool mIsViewableOnline;
-}
+// MPUIInterface class view lives in MPLiveEngine.h (included above).
 
 extern int cg_widescreen_integer;
 class controller {

@@ -127,8 +127,14 @@ extern bool mLiveQueryActive;
 extern bool mQueryFromID;
 extern bool mIsViewableOnline;
 extern bool mCableDisconnect;
-extern int mGameConnectionType;
+int mGameConnectionType = 1;  // namespace twin (binary's static lives in mp.o)
 enum { kGameConnectionTypeLan = 1, kGameConnectionTypeOnline = 2 };
+
+// ea: 0x0072F480 (mp.o)
+bool IsOnlineGame()  // ?IsOnlineGame@MPUIInterface@@YA_NXZ
+{
+    return mGameConnectionType == kGameConnectionTypeOnline;
+}
 }
 
 class controller { public:

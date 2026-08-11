@@ -111,7 +111,10 @@ extern int  dword_F6A290[4 * 802];
 bool gReturnToMenu;
 extern int  sv_restartedServerId;
 extern const char* const defaultFileName;
-extern int  MPUIInterface_BlockUntilNetReady(void);
+class MPUIInterface {
+public:
+    static bool BlockUntilNetReady();  // ?BlockUntilNetReady@MPUIInterface@@SA_NXZ
+};
 extern int  g_controllerConnectedErrorShown[];
 
 // cdl profilers
@@ -253,7 +256,7 @@ void SV_SpawnServer(const char* server, int savegame) {
         PakManager::sInst->SyncLoadPak((const PakInfoNode*)sLoadingScreenInfo);
         InGameMenuSystem_ActivateMenu((void*)0, 4);
     }
-    MPUIInterface_BlockUntilNetReady();
+    MPUIInterface::BlockUntilNetReady();
     char pakname[256];
     sprintf(pakname, "%s\\%s\\%s.cod", "mp", server, server);
     PakManager* pm = PakManager::sInst;

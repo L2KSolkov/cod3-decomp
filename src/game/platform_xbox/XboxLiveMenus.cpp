@@ -75,11 +75,6 @@ extern bool g_controllerConnectedErrorShown[];
 extern bool g_IgnoreUIXInput;
 FEManager g_femanager;
 int currCl;
-namespace MPUIInterface {
-bool mLiveQueryActive;
-bool mQueryFromID;
-bool mIsViewableOnline;
-}
 int cg_widescreen_integer;
 int controller::num_controllers;
 
@@ -654,9 +649,9 @@ LABEL_9:
     {
         if (!MPUIInterface::mLiveQueryActive || !MPUIInterface::mQueryFromID)
         {
-            float numGames = 0.0f;
-            MPUIInterface::GameListingGet((int*)&numGames);
-            if (numGames == 0.0f)
+            unsigned int numGames = 0;
+            MPUIInterface::GameListingGet(numGames);
+            if (numGames == 0)
             {
                 OverlayMenu::Me(0)->SetState(23);  // JOIN_FAILED
                 OverlayMenu::Me(0)->mAcceptMenu = 30;

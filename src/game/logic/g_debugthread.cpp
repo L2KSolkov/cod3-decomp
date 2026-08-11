@@ -38,8 +38,8 @@ struct apsStats {
     int maxActiveParticles;       // +0x0C
 };
 extern void apsGetStats(apsStats& stats);  // ?apsGetStats@@YAXAAUapsStats@@@Z (render.o)
-extern bool apsGetPoolInfo(int nPool, int* size, int* capacity, int* used,
-                           int* peak);  // ?apsGetPoolInfo@@YA_NHAAH000@Z (render.o)
+extern bool apsGetPoolInfo(int nPool, int& size, int& capacity, int& used,
+                           int& peak);  // ?apsGetPoolInfo@@YA_NHAAH000@Z (render.o)
 extern void FX_ReportFX();               // ?FX_ReportFX@@YAXXZ (render.o)
 
 template <typename A, typename B>
@@ -432,7 +432,7 @@ void DebugThread::Render()
         float v76 = 0.0f;
         int pool = 0;
         int size, capacity, used, peak;
-        if (apsGetPoolInfo(pool, &size, &capacity, &used, &peak))
+        if (apsGetPoolInfo(pool, size, capacity, used, peak))
         {
             do
             {
@@ -475,7 +475,7 @@ void DebugThread::Render()
                 }
                 v78 += 16;
                 ++pool;
-            } while (apsGetPoolInfo(pool, &size, &capacity, &used, &peak));
+            } while (apsGetPoolInfo(pool, size, capacity, used, peak));
         }
         g_inspectorManager.m_currentRgba[0] = 0.75f;
         g_inspectorManager.m_currentRgba[1] = 0.75f;

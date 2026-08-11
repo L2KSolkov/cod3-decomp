@@ -213,12 +213,26 @@ struct MPPlayerManager {
     void SendOthers(bdReference<bdMessage> message, bool reliable);  // extern mp.o
 };
 
-namespace MPUIInterface {
-bool IsOnlineGame();            // extern mp.o
-bool InSession();               // extern mp.o
-void ExitGame();                // extern mp.o
-void QueryFromID(XNKID* sessionID);  // extern mp.o
-}
+// MPUIInterface - class statics/methods owned by mp.o (mangled as class
+// statics: ?x@MPUIInterface@@1..., methods ?x@MPUIInterface@@SA...).
+class MPUIInterface {
+public:
+    enum EGameConnectionType : int {
+        kGameConnectionTypeLan = 1,
+        kGameConnectionTypeOnline = 2,
+    };
+    static bool IsOnlineGame();            // ?IsOnlineGame@MPUIInterface@@SA_NXZ
+    static bool InSession();               // ?InSession@MPUIInterface@@SA?B_NXZ
+    static void ExitGame();                // ?ExitGame@MPUIInterface@@SAXXZ
+    static void QueryFromID(XNKID* sessionID);  // ?QueryFromID@MPUIInterface@@SAXPAUXNKID@@@Z
+    static void Step();                    // ?Step@MPUIInterface@@SAXXZ
+    static bool GameListingGet(unsigned int& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
+    static bool mLiveQueryActive;   // ?mLiveQueryActive@MPUIInterface@@1_NA
+    static bool mQueryFromID;       // ?mQueryFromID@MPUIInterface@@1_NA
+    static bool mIsViewableOnline;  // ?mIsViewableOnline@MPUIInterface@@1_NA
+    static EGameConnectionType mGameConnectionType;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
+    static bool mInSession;         // ?mInSession@MPUIInterface@@1_NA
+};
 
 // game_xbox.o / game2.o globals used by MPLiveEngine
 extern bool g_controllerConnectedErrorShown[];

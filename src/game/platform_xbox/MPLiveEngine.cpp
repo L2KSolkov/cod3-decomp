@@ -12,6 +12,29 @@
 #include <wchar.h>
 #include <new>
 
+// MPUIInterface class statics (mp.o owns the originals; these satisfy the
+// class-static manglings for the local build).
+bool MPUIInterface::mLiveQueryActive = false;   // ?mLiveQueryActive@MPUIInterface@@1_NA
+bool MPUIInterface::mQueryFromID = false;       // ?mQueryFromID@MPUIInterface@@1_NA
+bool MPUIInterface::mIsViewableOnline = false;  // ?mIsViewableOnline@MPUIInterface@@1_NA
+MPUIInterface::EGameConnectionType MPUIInterface::mGameConnectionType =
+    MPUIInterface::kGameConnectionTypeLan;  // ?mGameConnectionType@MPUIInterface@@1W4EGameConnectionType@@A
+bool MPUIInterface::mInSession = false;    // ?mInSession@MPUIInterface@@1_NA
+
+// ea: 0x0072F480 (mp.o)
+bool MPUIInterface::IsOnlineGame()  // ?IsOnlineGame@MPUIInterface@@SA_NXZ
+{
+    return mGameConnectionType == kGameConnectionTypeOnline;
+}
+
+// ea: 0x0072FF40 (mp.o)
+bool MPUIInterface::InSession()  // ?InSession@MPUIInterface@@SA?B_NXZ
+{
+    if (mGameConnectionType == kGameConnectionTypeOnline)
+        return LiveWrapper::theWrapper->sessionState == kInSession;
+    return mInSession;
+}
+
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)
 // ============================================================================

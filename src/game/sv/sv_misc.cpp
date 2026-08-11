@@ -43,7 +43,10 @@ extern void  CGBankManager_UnloadAll(void);
 extern void  AnimBankManager_UnloadAll(void);
 extern void  LiveWrapper_ClearRemotePlayers(void* handle);
 extern void* MPLiveEngine_GetHandle(void);
-extern bool  MPUIInterface_IsOnlineGame(void);
+class MPUIInterface {
+public:
+    static bool IsOnlineGame();  // ?IsOnlineGame@MPUIInterface@@SA_NXZ
+};
 extern const math::Position3& Float4_Zero_2;
 unsigned __int64 sLastTime_0;            // ?sLastTime_0 (sv_game.cpp static)
 unsigned int _S8_40;              // ?$S8_40 (sv_game.cpp static)
@@ -276,7 +279,7 @@ void SV_SwapClients(int client1, int client2) {
 // SV_ReallyExitGame_f — ea: 0x5208F0
 // ============================================================================
 void SV_ReallyExitGame_f() {
-    if (MPUIInterface_IsOnlineGame()) {
+    if (MPUIInterface::IsOnlineGame()) {
         void* Handle = MPLiveEngine_GetHandle();
         LiveWrapper_ClearRemotePlayers(Handle);
     }

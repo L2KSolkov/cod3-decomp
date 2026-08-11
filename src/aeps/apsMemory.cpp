@@ -9,6 +9,12 @@
 //     COMDATs in the headers, emitted per codmp_xboxr.map.
 // ============================================================================
 #include "apsMemory.h"
+
+// ea: 0x006C2E60 (render.o)
+bool apsGetPoolInfo(int nPool, int& size, int& capacity, int& used, int& peak)
+{
+    return apsMemory::GetPoolInfo(nPool, size, capacity, used, peak) != 0;
+}
 #include "apsError.h"    // apsError, AEPS_VECTOR_NEW
 #include "apsDebug.h"    // apsDebug::Print/PrintWarning
 
