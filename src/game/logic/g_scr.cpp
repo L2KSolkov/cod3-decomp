@@ -4,6 +4,28 @@
 
 #include "game/logic/g_local.h"
 
+// ea: 0x005BE2B0 (scr.o)
+void UpdateEntityHash(Entity* ent)
+{
+    ent->mClassNameHash = HashString(ent->mClassName);
+    ent->mGroupNameHash = HashString::CalcHash(
+        ent->mGroupName.mBlock != nullptr ? (const char*)(ent->mGroupName.mBlock + 1)
+                                          : (const char*)&"");
+    ent->targetnameHash = HashString::CalcHash(
+        ent->targetname.mBlock != nullptr ? (const char*)(ent->targetname.mBlock + 1)
+                                          : (const char*)&"");
+    ent->mTargetHash = HashString::CalcHash(
+        ent->mTarget.mBlock != nullptr ? (const char*)(ent->mTarget.mBlock + 1)
+                                       : (const char*)&"");
+    ent->mScriptNoteworthyHash = HashString::CalcHash(
+        ent->mScriptNoteworthy.mBlock != nullptr
+            ? (const char*)(ent->mScriptNoteworthy.mBlock + 1)
+            : (const char*)&"");
+    ent->mAnimNameHash = HashString::CalcHash(
+        ent->mAnimName.mBlock != nullptr ? (const char*)(ent->mAnimName.mBlock + 1)
+                                         : (const char*)&"");
+}
+
 // ============================================================================
 // AnimBankManager / AnimBank
 // ============================================================================

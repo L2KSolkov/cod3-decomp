@@ -10,6 +10,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
+
+
 extern int currCl;
 extern int dword_F6A290[4 * 802];
 extern int dword_F6295C[4 * 1580];
@@ -29,7 +32,6 @@ enum netsrc_t {
 };
 
 extern void CL_AddCgameCommand(const char* cmdName, void (*function)());
-extern const char* CL_GetConfigStringC(int index);
 extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 extern int Q_stricmp(const char* s1, const char* s2);
@@ -209,7 +211,7 @@ char* CG_Argv(int arg)
 // ea: 0x0068B600
 int CG_StartAmbient()
 {
-    const char* ConfigString = CL_GetConfigStringC(3);
+    const char* ConfigString = CL_GetConfigString(3);
     Info_ValueForKey(ConfigString, "n");
     const char* v1 = Info_ValueForKey(ConfigString, "t");
     return atoi(v1);
@@ -292,7 +294,7 @@ void CG_RegisterItemVisuals(int itemNum)
 int CG_RegisterItems()
 {
     char items[260];
-    strcpy(items, CL_GetConfigStringC(8));
+    strcpy(items, CL_GetConfigString(8));
     unsigned char* v1 = &((unsigned char*)cg_items)[8];
     unsigned int* p_icon = &((unsigned int*)bg_itemlist)[13];
     for (int v0 = 1; v0 < 137; ++v0)
@@ -399,15 +401,15 @@ void CG_MapInit(int restart)
     CG_ParseFog();
     for (int i = 16; i < 32; ++i)
         CG_ParseObjectiveChange(i);
-    const char* ConfigString = CL_GetConfigStringC(9);
+    const char* ConfigString = CL_GetConfigString(9);
     float restarta = (float)atof(ConfigString);
     re.SetCullDist(restarta);
-    const char* v4 = CL_GetConfigStringC(11);
+    const char* v4 = CL_GetConfigString(11);
     float v5 = (float)atof(v4);
     dword_F64140[1580 * currCl] = *(int*)&v5;
     SoundDevice_StopAllSounds(SoundDevice_sInst);
     SoundDevice_FrameAdvance(SoundDevice_sInst, 0.0f);
-    const char* v7 = CL_GetConfigStringC(3);
+    const char* v7 = CL_GetConfigString(3);
     Info_ValueForKey(v7, "n");
     const char* v8 = Info_ValueForKey(v7, "t");
     atoi(v8);

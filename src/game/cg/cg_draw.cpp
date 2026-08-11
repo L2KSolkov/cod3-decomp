@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
+
+
 // Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
 class EntityManager {
 public:
@@ -33,7 +36,6 @@ extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, void* tex,
                                   float z);
 extern void trap_R_RenderScene(const void* fd);
-extern const char* CL_GetConfigStringC(int index);
 struct parseInfo_t {
     char token[128];         // +0x00
     int lines;               // +0x80
@@ -991,7 +993,7 @@ static int s_foginited;
 // ea: 0x0068DBB0
 void CG_DrawSkyBoxPortal()
 {
-    const char* ConfigString = CL_GetConfigStringC(10);
+    const char* ConfigString = CL_GetConfigString(10);
     const char* x = ConfigString;
     if (ConfigString != nullptr)
     {

@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
+
+
 // Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
 class EntityManager {
 public:
@@ -42,7 +45,6 @@ extern int dword_F61124;
 extern int dword_F61128;
 extern int dword_F6112C;
 extern int dword_F61130;
-extern const char* CL_GetConfigStringC(int index);
 extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern int Com_BitCheck(const int* const array, int bitNum);
@@ -88,7 +90,7 @@ void CG_InitLocalEntities()
 const char* CG_ConfigString(unsigned int index)
 {
     if (index < 0x400)
-        return CL_GetConfigStringC(index);
+        return CL_GetConfigString(index);
     CG_ASSERT(nullptr, "c:\\cod\\code\\game\\cg_main.cpp", 1215);
     return nullptr;
 }
@@ -128,7 +130,7 @@ int CG_CheckAmmo()
 // ea: 0x0068BB10
 void CG_ParseServerinfo()
 {
-    const char* ConfigString = CL_GetConfigStringC(0);
+    const char* ConfigString = CL_GetConfigString(0);
     const char* v1 = Info_ValueForKey(ConfigString, "mapname");
     Com_sprintf(cgsGlobal_mapname, 128, "maps/%s.bsp", v1);
 }
@@ -760,7 +762,7 @@ void CG_ConfigStringModifiedInternal(int num)
     }
     else if (num == 3)
     {
-        const char* ConfigString = CL_GetConfigStringC(3);
+        const char* ConfigString = CL_GetConfigString(3);
         Info_ValueForKey(ConfigString, "n");
         Info_ValueForKey(ConfigString, "t");
     }
@@ -787,7 +789,7 @@ void CG_ConfigStringModifiedInternal(int num)
                                 else if (num == 12)
                                 {
                                     char wind_str[128];
-                                    strcpy(wind_str, CL_GetConfigStringC(12));
+                                    strcpy(wind_str, CL_GetConfigString(12));
                                     float f[4];
                                     sscanf(wind_str, "%f %f %f %f", &f[0],
                                            &f[1], &f[2], &f[3]);

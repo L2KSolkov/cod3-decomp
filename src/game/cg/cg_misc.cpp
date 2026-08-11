@@ -11,6 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
+
+
 // Minimal view of InteractionController (full class in g_local.h).
 class InteractionController {
 public:
@@ -2759,7 +2762,6 @@ extern float VectorNormalize2(const float* v, float* out);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern char* va(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
-extern const char* CL_GetConfigStringC(int index);
 extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 
@@ -2892,7 +2894,7 @@ void CG_ClearObjective(_objectiveInfo_t* pObjective)
 // ea: 0x00697F10
 void CG_ParseCullDist()
 {
-    const char* ConfigString = CL_GetConfigStringC(9);
+    const char* ConfigString = CL_GetConfigString(9);
     float dist = (float)atof(ConfigString);
     re.SetCullDist(dist);
 }
@@ -3705,11 +3707,11 @@ void CG_Init()
     unk_F6A278[0] = (float)cgs.vidWidth * 0.0015625f;
     unk_F6A27C[0] = (float)cgs.vidHeight * 0.0020833334f;
     currCl = NS_CLIENT;
-    const char* ConfigString = CL_GetConfigStringC(2);
+    const char* ConfigString = CL_GetConfigString(2);
     if (strcmp(ConfigString, "cod-sp") != 0)
         CG_Error("Client/Server game mismatch: %s/%s", "cod-sp",
                  ConfigString);
-    const char* v3 = CL_GetConfigStringC(0);
+    const char* v3 = CL_GetConfigString(0);
     const char* v4 = Info_ValueForKey(v3, "mapname");
     Com_sprintf(cgsGlobal.mapname, 128, "maps/%s.bsp", v4);
     SCR_UpdateScreen();
@@ -3746,7 +3748,7 @@ void CG_Init()
         }
         else
         {
-            v6 = CL_GetConfigStringC(j);
+            v6 = CL_GetConfigString(j);
         }
         if (*v6 != 0)
             trap_R_RegisterShaderNoMip(v6, 5);

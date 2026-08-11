@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
+
+
 // Minimal view of InteractionController (full class in g_local.h).
 class InteractionController {
 public:
@@ -72,7 +75,6 @@ extern int cg_altTankCam;
 extern int cg_hudCompassSpringyPointers;
 extern int cg_drawGun;
 
-extern const char* CL_GetConfigStringC(int index);
 extern float AngleNormalize360(float angle);
 extern float AngleNormalize180(float angle);
 extern float AngleSubtract(float a1, float a2);
@@ -361,7 +363,7 @@ LABEL_27:
 // ea: 0x006968E0
 int CG_NorthDirectionChanged()
 {
-    const char* ConfigString = CL_GetConfigStringC(11);
+    const char* ConfigString = CL_GetConfigString(11);
     float v1 = (float)atof(ConfigString);
     int result = 6320 * currCl;
     *(float*)&dword_F64140[1580 * currCl] = v1;
