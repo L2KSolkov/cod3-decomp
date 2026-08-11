@@ -4987,16 +4987,16 @@ void BG_Bullet_Endpos(float spread, float* end, weaponParms* wp)
 // ============================================================================
 // PM_ClipVelocity - ea: 0x604C00
 // ============================================================================
-void PM_ClipVelocity(const math::Dir3* in, const math::Dir3* normal,
-                     math::Dir3* out, float overbounce)
+void PM_ClipVelocity(const math::Dir3& in, const math::Dir3& normal,
+                     math::Dir3& out, float overbounce)
 {
-    float v4 = (in->v.m128_f32[1] * normal->v.m128_f32[1])
-        + (normal->v.m128_f32[2] * in->v.m128_f32[2])
-        + (in->v.m128_f32[0] * normal->v.m128_f32[0]);
+    float v4 = (in.v.m128_f32[1] * normal.v.m128_f32[1])
+        + (normal.v.m128_f32[2] * in.v.m128_f32[2])
+        + (in.v.m128_f32[0] * normal.v.m128_f32[0]);
     float v5 = v4 >= 0.0f ? v4 / overbounce : v4 * overbounce;
-    out->v.m128_f32[0] = in->v.m128_f32[0] - (normal->v.m128_f32[0] * v5);
-    out->v.m128_f32[1] = in->v.m128_f32[1] - (normal->v.m128_f32[1] * v5);
-    out->v.m128_f32[2] = in->v.m128_f32[2] - (normal->v.m128_f32[2] * v5);
+    out.v.m128_f32[0] = in.v.m128_f32[0] - (normal.v.m128_f32[0] * v5);
+    out.v.m128_f32[1] = in.v.m128_f32[1] - (normal.v.m128_f32[1] * v5);
+    out.v.m128_f32[2] = in.v.m128_f32[2] - (normal.v.m128_f32[2] * v5);
 }
 
 // ============================================================================
@@ -5140,7 +5140,7 @@ void PM_ClearAimDownSightFlag()
 // BG_EvaluateTrajectoryDelta - ea: 0x604100
 // ============================================================================
 void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
-                                float* result)
+                                float* const result)
 {
     float value = g_gravity.value;
     if (tr->trGravityOverride != 0.0f)
@@ -5235,7 +5235,8 @@ void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
 // ============================================================================
 // BG_GetMarkDir - ea: 0x604380
 // ============================================================================
-void BG_GetMarkDir(const float* dir, const float* normal, float* out)
+void BG_GetMarkDir(const float* const dir, const float* const normal,
+                   float* const out)
 {
     float lnormal[3];
     float minDot = 0.30000001f;
@@ -5447,7 +5448,7 @@ bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos)
 // ============================================================================
 // BG_GetWeaponTypeName - ea: 0x606620
 // ============================================================================
-const char* BG_GetWeaponTypeName(int type)
+const char* BG_GetWeaponTypeName(weapType_t type)
 {
     if (type >= 9)
     {
@@ -5967,7 +5968,7 @@ int BG_IsAimDownSightWeapon(int iWeapon)
 // ============================================================================
 // BG_GetEmptySlotForWeapon - ea: 0x6074F0
 // ============================================================================
-weapSlot_t BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex)
+int BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex)
 {
     weapSlot_t result = (weapSlot_t)BG_GetInfoForWeapon(iWeaponIndex)->slot;
     switch (result)
@@ -6243,7 +6244,7 @@ int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon)
 // ============================================================================
 // BG_GetRandomAmmoCounts - ea: 0x607AB0
 // ============================================================================
-void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex)
+void BG_GetRandomAmmoCounts(int& ammo, int& clip, int weaponIndex)
 {
     if (weaponIndex < 0 || weaponIndex >= bg_iNumWeapons)
     {
@@ -6269,8 +6270,8 @@ void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex)
     {
         if (iDropAmmoMax < 0)
         {
-            *ammo = 0;
-            *clip = 0;
+            ammo = 0;
+            clip = 0;
             return;
         }
     }
@@ -6278,12 +6279,12 @@ void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex)
     {
         int v6;
         float v13 = (float)rand() * 0.000030517578f + 1.0f;
-        *ammo = (int)(((v13 * (BG_GetAmmoClipSize(iClipIndex) - 1)) * 0.5f)
-                      + 0.5f) + 1;
+        ammo = (int)(((v13 * (BG_GetAmmoClipSize(iClipIndex) - 1)) * 0.5f)
+                     + 0.5f) + 1;
         v6 = (int)(((float)rand() * 0.000015258789f + 0.25f)
-                   * (float)*ammo + 0.5f);
-        *clip = v6;
-        *ammo -= v6;
+                   * (float)ammo + 0.5f);
+        clip = v6;
+        ammo -= v6;
         return;
     }
     bool v7 = iDropAmmoMax == iDropAmmoMin;
@@ -6299,7 +6300,7 @@ void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex)
     }
     int v8 = v7 ? iDropAmmoMin
                 : iDropAmmoMin + rand() % (iDropAmmoMax - iDropAmmoMin);
-    *ammo = v8;
+    ammo = v8;
     if (v8 > 0)
     {
         int AmmoClipSize = BG_GetAmmoClipSize(iClipIndex);
@@ -6315,22 +6316,22 @@ void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex)
             v10 = AmmoClipSize == 0;
         }
         int v11 = v10 ? 0 : rand() % AmmoClipSize;
-        *clip = v11;
-        int v12 = *ammo;
-        if (v11 < *ammo)
+        clip = v11;
+        int v12 = ammo;
+        if (v11 < ammo)
         {
-            *ammo = v12 - v11;
+            ammo = v12 - v11;
         }
         else
         {
-            *clip = v12;
-            *ammo = 0;
+            clip = v12;
+            ammo = 0;
         }
     }
     else
     {
-        *ammo = 0;
-        *clip = 0;
+        ammo = 0;
+        clip = 0;
     }
 }
 

@@ -1266,7 +1266,7 @@ extern void RumbleManager_Play(void* self, void* effect,
 extern void (*thinktable[])(Entity* ent, int msec);
 
 // fn_think_e values used by g.o (verified via disasm)
-enum {
+enum weapType_t {
     THINK__NULL = 0,
     THINK__Actor_CorpseThink = 1,
     THINK__Actor_Think = 2,
@@ -1310,9 +1310,9 @@ bool IsSplitScreen();  // ea: 0x00693C10 (cg_misc.cpp)
 enum weapSlot_t : int;  // full definition below (after weaponFileInfo_t)
 int  BG_AmmoForWeapon(int iWeapon);
 int  BG_ClipForWeapon(int iWeapon);
-void BG_GetRandomAmmoCounts(int* ammo, int* clip, int weaponIndex);  // game2.o
+void BG_GetRandomAmmoCounts(int& ammo, int& clip, int weaponIndex);  // game2.o
 const char* BG_GetAmmoTypeName(int iAmmoIndex);       // game.o 0x6071B0
-weapSlot_t BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x6074F0
+int BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x6074F0
 weapSlot_t BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
                                     weapSlot_t preferedSlot);  // game.o 0x607570
 weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS, int iWeaponIndex,
@@ -1918,7 +1918,8 @@ void SP_actor(Entity* pEnt);
 void Scr_Notify(Entity* ent, HashString hashValue, int paramcount);
 Handle PostEffectEventScriptCall(Entity* ent, const char* scriptId, bool queue,
                                  TPakId pakid, bool important);
-void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime, float* result);
+void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
+                                float* const result);
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3& result);
 void AxisToAngles(const float (*axis)[3], float* angles);
 void CrossProduct(const float* v1, const float* v2, float* cross);

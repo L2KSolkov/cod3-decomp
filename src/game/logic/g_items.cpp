@@ -395,7 +395,7 @@ Entity* Drop_Weapon(Entity* pEnt, int iWeaponIndex, const char* pszTag)
     }
     else
     {
-        BG_GetRandomAmmoCounts(&ammo, &clip, iWeaponIndex);
+        BG_GetRandomAmmoCounts(ammo, clip, iWeaponIndex);
     }
     pDrop->count = ammo;
     pDrop->count2 = clip;
