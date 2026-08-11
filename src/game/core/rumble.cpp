@@ -7,6 +7,13 @@
 
 #include <string.h>
 
+// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
+struct controller {
+    int locked_port;
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
+};
+
+
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
 extern ECoderId gCurrentAuthor;
@@ -30,7 +37,6 @@ bool Assert(const char* fmt, ...);
 
 extern float ComputeIntensity(float min_distance, float max_distance,
                               float distance);
-extern void* controller_inst();
 extern void controller_stop_all_rumble(void* self);
 extern void controller_rumble(void* self, int i_controller_num, int i_motor,
                               float intensity);
@@ -98,7 +104,7 @@ RumbleManager* RumbleManager::Inst(int instance)
 // ea: 0x004BD130
 void RumbleManager::StopMotors()
 {
-    controller_stop_all_rumble(controller_inst());
+    controller_stop_all_rumble(controller::inst());
 }
 
 // ea: 0x004C5750
@@ -255,7 +261,7 @@ void RumbleManager::Reset()
         mRumbleLists[list].mRoot.mNext = nullptr;
         mRumbleLists[list].mRoot.mPrev = nullptr;
     }
-    controller_stop_all_rumble(controller_inst());
+    controller_stop_all_rumble(controller::inst());
 }
 
 // ea: 0x004CB9C0
@@ -375,7 +381,7 @@ void RumbleManager::FrameAdvance(float delta_time)
         }
         total_max_intensity = max_intensity + total_max_intensity;
         if (dword_F6A28C[802 * currCl] == 0)
-            controller_rumble(controller_inst(), 0, vibrator_id, max_intensity);
+            controller_rumble(controller::inst(), 0, vibrator_id, max_intensity);
     }
     if (total_max_intensity > 0.0f)
     {

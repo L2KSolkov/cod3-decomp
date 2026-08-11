@@ -9,6 +9,13 @@
 
 #include <string.h>
 
+// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
+struct controller {
+    int locked_port;
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
+};
+
+
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
 extern ECoderId gCurrentAuthor;
@@ -53,7 +60,6 @@ struct SoundHandleDbLocal {
     El mElements[512];
 };
 extern SoundHandleDbLocal SoundHandleDb_sInst;
-extern void* controller_inst();
 extern void controller_stop_all_rumble(void* self);
 struct tlSystemCallbacks;
 extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);
@@ -323,7 +329,7 @@ RumbleManager::RumbleManager(int client)
 // ea: 0x004CF310
 RumbleManager::~RumbleManager()
 {
-    controller_stop_all_rumble(controller_inst());
+    controller_stop_all_rumble(controller::inst());
     for (int i = 0; i < 2; ++i)
     {
         RealDList* list = (RealDList*)&mRumbleLists[i];

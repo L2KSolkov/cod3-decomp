@@ -11,6 +11,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of InteractionController (full class in g_local.h).
+class InteractionController {
+public:
+    static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+};
+
+
+// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
+struct controller {
+    int locked_port;
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
+};
+
+
 // Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
 class EntityManager {
 public:
@@ -39,7 +53,6 @@ extern void ByteToDir(unsigned int b, float* dir);
 extern void PerpendicularVector(float* dst, float* src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
-extern void* controller_inst();
 extern int controller_button_value(void* self, int i_controller_num,
                                    int i_button);
 extern int controller_button_pressed(void* self, int i_controller_num,
@@ -81,7 +94,7 @@ extern int     dword_F6355C[4 * 1580];
 // ea: 0x00687BC0
 void CG_ScoresDown_f()
 {
-    void* v0 = controller_inst();
+    void* v0 = controller::inst();
     if (controller_button_value(v0, 0, 11 /* R3 */) <= 0)
     {
         if (dword_F641D0[1580 * currCl] == 0
@@ -1421,7 +1434,7 @@ void Camera::UpdateVehicleDriverCamAnglesInput(Entity* veh, PlayerState* ps)
     int v5 = dword_F6A28C[802 * currCl];
     int prevVehInputState;
     int stickY;
-    controller_stick_value(controller_inst(), v5, 1 /* RIGHTSTICK */,
+    controller_stick_value(controller::inst(), v5, 1 /* RIGHTSTICK */,
                            &prevVehInputState, &stickY);
     prevVehInputState = RecalibrateInput(prevVehInputState);
     stickY = RecalibrateInput(stickY);
@@ -1447,13 +1460,13 @@ void Camera::UpdateVehicleDriverCamAnglesInput(Entity* veh, PlayerState* ps)
         }
         else if (mVehTimeSinceInput >= 0.30000001f)
         {
-            if (controller_button_value(controller_inst(), v5, 7 /* R2 */) != 0
-                && controller_button_value(controller_inst(), v5, 6 /* L2 */)
+            if (controller_button_value(controller::inst(), v5, 7 /* R2 */) != 0
+                && controller_button_value(controller::inst(), v5, 6 /* L2 */)
                        != 0)
                 mVehInputState = INPUT_LOOK_BACK;
-            else if (controller_button_value(controller_inst(), v5, 7) != 0)
+            else if (controller_button_value(controller::inst(), v5, 7) != 0)
                 mVehInputState = INPUT_LOOK_RIGHT;
-            else if (controller_button_value(controller_inst(), v5, 6) != 0)
+            else if (controller_button_value(controller::inst(), v5, 6) != 0)
                 mVehInputState = INPUT_LOOK_LEFT;
             else if (mVehGasPressedTime > 0.30000001f || v24 > 250000.0f
                      || mVehInputState != INPUT_STICK)
@@ -3641,7 +3654,6 @@ extern cgsGlobal_t cgsGlobal;  // 0x00F69BF8
 extern int cg_items[1];
 extern weaponInfo_s cg_weapons[1];
 extern vmCvar_t fs_debug_vm;
-extern unsigned int InteractionController_Inst(int instance);
 extern const float* InteractionController_GetHandsOrigin(void* self);
 extern const float* InteractionController_GetHandsAngles(void* self);
 extern int InteractionController_GetCameraMode(void* self);
@@ -3754,7 +3766,7 @@ void Camera::UpdatePostViewModels()
 {
     if (mCamMode == 16 || mCamMode == 18)
     {
-        void* ic = (void*)InteractionController_Inst(mClient);
+        void* ic = (void*)InteractionController::Inst(mClient);
         if ((*(unsigned char*)ic & 1) == 0)
         {
             CG_ASSERT("InteractionController::Inst(mClient)->IsFlagged("
@@ -3983,8 +3995,8 @@ void Camera::UpdateTankCommanderCam()
     mTweenStartAngles.v = _mm_add_ps(mTweenStartAngles.v,
                                      _mm_loadu_ps(delta));
     int port = dword_F6A28C[802 * mClient];
-    if (*(bool*)((char*)controller_inst() + 0x1C))  // is_locked
-        port = *(int*)((char*)controller_inst() + 0x18);  // locked_port
+    if (*(bool*)((char*)controller::inst() + 0x1C))  // is_locked
+        port = *(int*)((char*)controller::inst() + 0x18);  // locked_port
     bool v16 = PadAliasMgr_GetButtonValue(
                    (char*)PadAliasMgr_sInst + 0x148, port,
                    3 /* kPadAliasButtonAlignTurret */)
@@ -4087,8 +4099,8 @@ void Camera::UpdateTankCamAngles(Entity* veh, PlayerState* ps)
                                 ps->viewangles[1] - mPrevAngles.v.m128_f32[1],
                                 ps->viewangles[2] - mPrevAngles.v.m128_f32[2],
                                 0.0f};
-    if (*(bool*)((char*)controller_inst() + 0x1C))
-        port = *(int*)((char*)controller_inst() + 0x18);
+    if (*(bool*)((char*)controller::inst() + 0x1C))
+        port = *(int*)((char*)controller::inst() + 0x18);
     bool v9 = PadAliasMgr_GetButtonValue(
                   (char*)PadAliasMgr_sInst + 0x148, port,
                   3 /* kPadAliasButtonAlignTurret */)
@@ -4115,7 +4127,7 @@ void Camera::UpdateTankCamAngles(Entity* veh, PlayerState* ps)
 // ea: 0x006A5A10
 ECameraModes Camera::CalcCamMode()
 {
-    void* v2 = (void*)InteractionController_Inst(mClient);
+    void* v2 = (void*)InteractionController::Inst(mClient);
     int mode = InteractionController_GetCameraMode(v2);
     if (mode != -1)
         return (ECameraModes)InteractionController_GetCameraMode(v2);
@@ -4137,7 +4149,7 @@ ECameraModes Camera::CalcCamMode()
     Entity* Player = GetPlayer(mClient);
     if (!IsPlayerFullySeatedInVehicle(Player))
     {
-        void* ic = (void*)InteractionController_Inst(mClient);
+        void* ic = (void*)InteractionController::Inst(mClient);
         if (*(void**)((char*)ic + 4) != nullptr)
             InteractionController_EndInteraction(ic, 1);
         if ((client->ps.vehType != 2
@@ -4170,7 +4182,7 @@ ECameraModes Camera::CalcCamMode()
     if (client->ps.vehPos == 0)
     {
         int v16 = dword_F6A28C[802 * mClient];
-        if (controller_button_pressed(controller_inst(), v16,
+        if (controller_button_pressed(controller::inst(), v16,
                                       12 /* R3 */))
         {
             if (mVehicleCamMode != VEH_MODE_FIRSTPERSON)
@@ -4189,7 +4201,7 @@ ECameraModes Camera::CalcCamMode()
                     mVehicleCamMode =
                         mVehicleCamMode == VEH_MODE_FIRSTPERSON;
                 }
-                void* ic2 = (void*)InteractionController_Inst(mClient);
+                void* ic2 = (void*)InteractionController::Inst(mClient);
                 if (*(void**)((char*)ic2 + 4) != nullptr)
                     InteractionController_EndInteraction(ic2, 1);
             }
@@ -4209,14 +4221,14 @@ ECameraModes Camera::CalcCamMode()
                 {
                     if (mTweenTime >= mTweenDuration
                         && mCamMode == CAM_VEHICLE_FIRST
-                        && *(void**)((char*)InteractionController_Inst(mClient)
+                        && *(void**)((char*)InteractionController::Inst(mClient)
                                      + 4)
                                == nullptr)
                     {
                         void* VehicleInfo = G_GetVehicleInfo(v9);
                         int v18 = CurPakId();
                         InteractionController_StartInteraction(
-                            (void*)InteractionController_Inst(mClient), v9,
+                            (void*)InteractionController::Inst(mClient), v9,
                             (const char*)((char*)VehicleInfo + 0x284), v18);
                     }
                     return CAM_VEHICLE_FIRST;
@@ -4261,7 +4273,7 @@ void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
         int PlayerIndex = Entity_GetPlayerIndex(mObject);
         float Rotation =
             InteractionController_GetRotation(
-                (void*)InteractionController_Inst(PlayerIndex));
+                (void*)InteractionController::Inst(PlayerIndex));
         float angle = mPrevAngles.v.m128_f32[1]
                       - veh->r.currentAngles.v.m128_f32[1];
         float newViewAngles3 = Rotation * 0.028571429f;

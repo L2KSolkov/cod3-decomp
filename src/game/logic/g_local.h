@@ -3250,7 +3250,14 @@ extern cFreeList<void> gDSkel4FreeList;            // g.o
 void  G_FreeInteractionInfo(void);                 // g.o
 bool  IsPlayerFullySeatedInVehicle(Entity* player);  // cl.o
 enum { kItemTypeMines = 0 };                        // EDroppedItemTypes
-void* InteractionController_Inst(int instance);      // cl.o
+class InteractionController {
+public:
+    struct InstanceHolder {
+        InteractionController* sInst[1];  // +0x00
+    };
+    static InstanceHolder sInstHolder;  // ?sInstHolder@InteractionController@@2UInstanceHolder@1@A (g.o)
+    static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z (g.o)
+};
 float InteractionController_GetRotation(void* self); // cl.o
 void  InteractionController_EndInteraction(void* self, int wasInteracting);  // cl.o
 void  InitCvars(int restart);                        // g.o 0x44B950

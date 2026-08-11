@@ -12,6 +12,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
+struct controller {
+    int locked_port;
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
+};
+
+
 // ============================================================================
 // pml_t - pmove local state (0xC0, verified against IDA)
 // ============================================================================
@@ -443,7 +450,7 @@ void PM_Weapon_CheckForSpotting()
         && pm->ps->fWeaponPosFrac >= 0.99900001f
         && !GamePause_IsGamePaused(currCl))
     {
-        if (controller_button_pressed(controller_inst(), 0, 8))  // R1
+        if (controller_button_pressed(controller::inst(), 0, 8))  // R1
             PM_AddEvent(196);
     }
 }
@@ -1384,7 +1391,7 @@ void PM_Weapon_CheckForChangeWeapon()
     eFlags = ps->eFlags;
     if ((eFlags & 0x100000) != 0 && (eFlags & 0x400000) == 0)
     {
-        if (*(void**)((char*)InteractionController_Inst(currCl) + 4) == nullptr)
+        if (*(void**)((char*)InteractionController::Inst(currCl) + 4) == nullptr)
         {
             if (BG_AllowPlayerWeaponAtVehiclePos(pm->ps->vehType,
                                                  pm->ps->vehPos))
@@ -1402,7 +1409,7 @@ LABEL_29:
     if (v11 != pm->cmd.weapon)
     {
         if ((pm->ps->pm_flags & 0x4000) == 0 || v11 == 0
-            || *(void**)((char*)InteractionController_Inst(currCl) + 4)
+            || *(void**)((char*)InteractionController::Inst(currCl) + 4)
                 != nullptr)
         {
             v13 = pm->cmd.weapon;

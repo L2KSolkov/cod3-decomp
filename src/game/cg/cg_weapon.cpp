@@ -11,6 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of InteractionController (full class in g_local.h).
+class InteractionController {
+public:
+    static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+};
+
+
 // Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
 class EntityManager {
 public:
@@ -91,7 +98,6 @@ extern bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum);
 extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
 extern int InteractionController_CanRunWeaponAnims(void* self);
-extern void* InteractionController_Inst(int instance);
 extern void* PlayerAnimMgr_sInst;
 extern void* Entity_GetRefEntity(Entity* ent);
 extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
@@ -1142,7 +1148,7 @@ void CG_AddViewWeapon(PlayerState* ps)
                 CG_RegisterWeapon(weapon);
                 CG_CreateWeaponDObjsForClient(currCl, ps->weapon);
                 weaponInfo_s* v4 = &((weaponInfo_s*)cg_weapons)[ps->weapon];
-                void* v5 = InteractionController_Inst(currCl);
+                void* v5 = InteractionController::Inst(currCl);
                 if (InteractionController_CanRunWeaponAnims(v5) == 0
                     || PlayerAnimMgr_sInst != nullptr)
                     dword_F6A2A8[802 * currCl] = -1;
@@ -1721,7 +1727,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
             if (!GamePause_IsGamePaused(currCl))
             {
                 float deltaTa = ServerTime_sInst.mTickDelta;
-                void* v12 = InteractionController_Inst(currCl);
+                void* v12 = InteractionController::Inst(currCl);
                 InteractionController_PostPhysicsUpdate(v12, deltaTa);
             }
             CG_UpdateViewModelPosAndOrientation(parent);

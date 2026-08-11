@@ -11,6 +11,13 @@
 #include <stdio.h>
 #include <string.h>
 
+// Minimal view of InteractionController (full class in g_local.h).
+class InteractionController {
+public:
+    static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+};
+
+
 // ?cl@@3PAUclientActive_t@@A (cl.o data @ 0xDF01C0)
 clientActive_t cl[2];
 
@@ -96,7 +103,6 @@ extern void FEManager_DrawAARMenus(fe_manager_view* self);
 extern void FEManager_UpdateFrontEnd(fe_manager_view* self, float time_inc);
 extern void FEManager_UpdateAARMenus(fe_manager_view* self, float time_inc);
 extern void FEManager_UpdateInGameMenus(fe_manager_view* self, float time_inc);
-extern void* InteractionController_Inst(int instance);
 extern int InteractionController_DoRenderText(void* self, int index);
 extern void InteractionController_RenderText(void* self);
 
@@ -234,10 +240,10 @@ void SCR_DrawScreenField()
                         ASSERT("cgvm", "c:\\cod\\code\\game\\cl_scrn.cpp", 378);
                     }
                     CL_CGameRendering();
-                    void* v1 = InteractionController_Inst(currCl);
+                    void* v1 = InteractionController::Inst(currCl);
                     if (InteractionController_DoRenderText(v1, 0) != 0)
                     {
-                        void* v2 = InteractionController_Inst(currCl);
+                        void* v2 = InteractionController::Inst(currCl);
                         InteractionController_RenderText(v2);
                     }
                 }

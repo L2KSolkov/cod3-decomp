@@ -1007,7 +1007,6 @@ const BaseCmdFuncInfo* ButtonEntry::GetBoundCmdRelease()
 // ============================================================================
 // ButtonEntry::SetKeyBinding - ea: 0x4FEAA0
 // ============================================================================
-extern void* InteractionController_Inst(int instance);  // ?Inst@InteractionController
 extern int InteractionController_Press(void* self, int buttonIndex);
 extern int InteractionController_Release(void* self, int buttonIndex);
 extern void Cmd_CallCmdFunction(const BaseCmdFuncInfo* cmd, int key, int time);
@@ -1026,7 +1025,7 @@ void ButtonEntry::SetKeyBinding(unsigned char keyInfoIndex)
 void ButtonEntry::Press(bool doCommands)
 {
     int mKeyInfoIndex = this->mKeyInfoIndex;
-    void* v3 = InteractionController_Inst(currCl);
+    void* v3 = InteractionController::Inst(currCl);
     if (InteractionController_Press(v3, mKeyInfoIndex) != 0)
         return;
     if (mBoundCmdPress == nullptr)
@@ -1057,7 +1056,7 @@ bind_done:
 void ButtonEntry::Release(bool doCommands)
 {
     int mKeyInfoIndex = this->mKeyInfoIndex;
-    void* v3 = InteractionController_Inst(currCl);
+    void* v3 = InteractionController::Inst(currCl);
     if (InteractionController_Release(v3, mKeyInfoIndex) != 0)
         return;
     if (mBoundCmdRelease == nullptr)

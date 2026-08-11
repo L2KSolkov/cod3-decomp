@@ -1225,7 +1225,7 @@ void Player_UpdateCursorHints(Entity* ent)
                 }
             }
             else if (!EntityManager::sInst->IsLocalPlayer(ent)
-                     || InteractionController_Inst(
+                     || InteractionController::Inst(
                             EntityManager::sInst->GetPlayerIndex(ent)) == nullptr)
             {
                 useList_t useList[1344];

@@ -10,6 +10,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of InteractionController (full class in g_local.h).
+class InteractionController {
+public:
+    static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+};
+
+
 // Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
 class EntityManager {
 public:
@@ -1399,7 +1406,6 @@ extern float* unk_F63B30;
 extern void CG_CalculateWeaponPosition_IdleAngles(float* angles);
 extern void CG_CalculateWeaponPosition_BobMovement(float* origin);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
-extern unsigned int InteractionController_Inst(int instance);
 extern Entity* GetPlayer(int idx);
 
 struct playerEntity_t {
@@ -1912,7 +1918,7 @@ void CG_CalculateWeaponPosition_BasePosition(float* origin)
             EntityManager::sInst->GetPlayer( currCl);
         if (!IsPlayerFullySeatedInVehicle(Player)
             || ((client->ps.vehType != 1 || client->ps.vehPos != 2)
-                && (*(unsigned char*)((void*)InteractionController_Inst(
+                && (*(unsigned char*)((void*)InteractionController::Inst(
                          currCl))
                     & 0x20)
                        == 0))

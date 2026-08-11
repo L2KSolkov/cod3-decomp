@@ -9,6 +9,31 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
+struct controller {
+    int locked_port;
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
+};
+
+// ?sInstHolder@InteractionController@@2UInstanceHolder@1@A (g.o BSS @ 0xF25AE0)
+InteractionController::InstanceHolder InteractionController::sInstHolder;
+
+// ea: 0x004A81E0 (g.o inline COMDAT)
+InteractionController* InteractionController::Inst(int instance)
+{
+    if (instance != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InteractionController.h";
+        AeAssert::gCurrentLine = 26;
+        AeAssert::gCurrentExpr = "instance >= 0 && instance < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid index in multiton"))
+            __debugbreak();
+    }
+    return InteractionController::sInstHolder.sInst[instance];
+}
+
 #include "render/ShaderCommon.h"
 #include "ngl/nglDebug.h"
 #include "core/PoolAllocator.h"
@@ -2229,7 +2254,7 @@ void G_ShutdownGame(int restart)
     }
     BG_FreeWeaponInfo();
     G_FreeInteractionInfo();
-    void* v1 = InteractionController_Inst(currCl);
+    void* v1 = InteractionController::Inst(currCl);
     InteractionController_EndInteraction(v1, 1);
     InteractionController_ClearQueue(v1);
     G_FreeScrVehicleInfo();
@@ -2302,7 +2327,7 @@ void G_RunFrame(int msec)
     }
     if (g_performanceTest.integer == 0)
     {
-        void* v2 = InteractionController_Inst(currCl);
+        void* v2 = InteractionController::Inst(currCl);
         InteractionController_Update(v2, msec * 0.001f);
         UpdateAnims(msec);
     }
@@ -3971,7 +3996,7 @@ int G_InitGame(int randomSeed, int restart, int savegame, int checksum)
         {
             IGOCompassWidget_SetHideCompassStar(currCl, 0, 0);
             EffectEventSys_StopAll(EffectEventSys::sInst);
-            controller_stop_all_rumble(controller_inst());
+            controller_stop_all_rumble(controller::inst());
             CG_ClearHudElems();
             DynamicDecalMgr_DestroyAllDecals();
             WheelMarkMgr_Reset();

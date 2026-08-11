@@ -9,6 +9,13 @@
 #include <stdio.h>
 #include <string.h>
 
+// Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
+struct controller {
+    int locked_port;
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
+};
+
+
 static const __m128 sSignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
@@ -1733,10 +1740,10 @@ void Scr_Vehicle_GetOut(Entity* vehicle, Entity* occupant, int health)
     if (occupant != nullptr && occupant->IsLocalPlayer())
     {
         int PlayerIndex = occupant->GetPlayerIndex();
-        if (InteractionController_Inst(PlayerIndex) != nullptr
-            && *(void**)InteractionController_Inst(PlayerIndex) != nullptr)
+        if (InteractionController::Inst(PlayerIndex) != nullptr
+            && *(void**)InteractionController::Inst(PlayerIndex) != nullptr)
         {
-            InteractionController_EndInteraction(InteractionController_Inst(occupant->GetPlayerIndex()), 1);
+            InteractionController_EndInteraction(InteractionController::Inst(occupant->GetPlayerIndex()), 1);
         }
     }
     VEH_UnlinkPlayer(v3, true);
@@ -2424,10 +2431,10 @@ unsigned int Scr_Vehicle_SeatChange(Entity* occupant, unsigned int newSeatIdx)
     if (occupant->IsLocalPlayer())
     {
         int PlayerIndex = occupant->GetPlayerIndex();
-        if (InteractionController_Inst(PlayerIndex) != nullptr
-            && *(void**)InteractionController_Inst(PlayerIndex) != nullptr)
+        if (InteractionController::Inst(PlayerIndex) != nullptr
+            && *(void**)InteractionController::Inst(PlayerIndex) != nullptr)
         {
-            InteractionController_EndInteraction(InteractionController_Inst(PlayerIndex), 1);
+            InteractionController_EndInteraction(InteractionController::Inst(PlayerIndex), 1);
         }
     }
     scr_vehicle_t* scr_vehicle = mObject->scr_vehicle;
@@ -4365,7 +4372,7 @@ void scr_vehicle_t::UpdateAnimRoute(Entity* ent, Entity* player)
     {
         VEH_UpdateControllers(ent, 0);
         if (sDebugAnims == 0
-            || controller_button_pressed(controller_inst(), 0, 7))
+            || controller_button_pressed(controller::inst(), 0, 7))
         {
             if (EntityManager::sInst->IsLocalPlayer(player)
                 && (stage->flags & 1) != 0)
@@ -4703,13 +4710,13 @@ void VEH_UpdateControllers(Entity* entity, int msec)
         if (owner != nullptr && owner->IsLocalPlayer())
         {
             int playerIndex = owner->GetPlayerIndex();
-            void* ic = InteractionController_Inst(playerIndex);
+            void* ic = InteractionController::Inst(playerIndex);
             if (ic != nullptr && (*(unsigned char*)ic & 0x20) != 0
                 && *(int*)((char*)gCamera + playerIndex * 0x1F0 + 0x190)
                        == 2 /* CAM_VEHICLE_FIRST */)
             {
                 rotation = InteractionController_GetRotation(
-                    InteractionController_Inst(playerIndex));
+                    InteractionController::Inst(playerIndex));
             }
         }
         G_DObjSetLocalTagInternal_0(vec3_origin, steerAngles, steerBone,

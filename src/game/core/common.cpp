@@ -15,6 +15,13 @@
 #include <string.h>
 #include <time.h>
 
+// Minimal view of InteractionController (full class in g_local.h).
+class InteractionController {
+public:
+    static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+};
+
+
 extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 
 // ============================================================================
@@ -225,7 +232,6 @@ extern void FEManager_DrawControllerError(void* self);
 extern void MemoryUnitManager_Service();
 extern void SyncFrameBuffers();
 extern void InteractionController_ChangeWeaponToPending(void* inst);
-extern void* InteractionController_Inst(int instance);
 extern void StatMon_Warning(int type, int duration, const char* pszShaderName);
 extern void SetAnimCheck(int bAnimCheck);
 extern void ServerTime_Tick();
@@ -2016,7 +2022,7 @@ int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
 // ea: 0x004CFC10
 cvar_t* Com_Frame()
 {
-    void* v0 = InteractionController_Inst(currCl);
+    void* v0 = InteractionController::Inst(currCl);
     InteractionController_ChangeWeaponToPending(v0);
     Com_ControllerTest();
     int v1 = 0;
