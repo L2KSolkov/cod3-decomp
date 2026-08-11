@@ -28,10 +28,15 @@ enum TPakId : int;
 // Typedef'd as int to keep ABI size (4 bytes) without guessing values.
 // ============================================================================
 typedef int EEffectContext;      // TODO: enum values from IDA
-typedef int ECollisionMaterial;  // TODO: enum values from IDA
-typedef int EStanceType;         // TODO: enum values from IDA
-typedef int EWeaponClass;        // TODO: enum values from IDA
-typedef int EAction;             // TODO: enum values from IDA
+// Enum tags match binary manglings (W4E*); values reconstructed.
+enum ECollisionMaterial : int {
+    kCollisionMaterialMin = 0,
+    kCollisionMaterialASPHALT = 1,
+    kCollisionMaterialFLESH = 4,
+};
+enum EStanceType : int { kStanceStand = 0, kStanceCrouch = 1, kStanceProne = 2 };
+enum EWeaponClass : int { kWeaponClassNone = 0, kWeaponClassBullet = 1 };
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
 typedef int EUserBoneId;         // TODO: enum values from IDA
 enum nslWaveID : int;            // TODO: enum values from IDA
 

@@ -1706,7 +1706,9 @@ extern void CG_SpawnTracer(const math::Position3* pstart,
                            const math::Position3* pend, int ammo);
 extern void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
                            const float* vEnd);
-extern Handle PostEffectEventBulletHit(const Entity* ent, int weaponClass,
+enum EWeaponClass : int { kWeaponClassNone = 0, kWeaponClassBullet = 1 };
+extern Handle PostEffectEventBulletHit(const Entity* ent,
+                                       EWeaponClass weaponClass,
                                        const CollisionDesc& col_desc);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
@@ -1808,7 +1810,7 @@ void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
             v16.coord.v = origin->v;
             v16.normal.v = _mm_setr_ps(v17, v18, v19, 0.0f);
             v16.material = surfType;
-            PostEffectEventBulletHit(ent, ammoType, v16);
+            PostEffectEventBulletHit(ent, (EWeaponClass)ammoType, v16);
             if (entity->client->ps.vehPos != 0)
                 CG_BulletTrajectoryEffects(v21->mHandle.mHandle.mVal, origin,
                                            surfType,
@@ -1825,7 +1827,7 @@ void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
             v16.coord.v = origin->v;
             v16.normal.v = _mm_setr_ps(v17, v18, v19, 0.0f);
             v16.material = surfType;
-            PostEffectEventBulletHit(ent, ammoType, v16);
+            PostEffectEventBulletHit(ent, (EWeaponClass)ammoType, v16);
             void* scr_vehicle = entity->scr_vehicle;
             if (scr_vehicle != nullptr)
             {
@@ -1888,14 +1890,15 @@ void CG_BulletHitClientEvent(unsigned int sourceEntity,
     v14.normal.v = _mm_setr_ps(v15, v16, v17, 0.0f);
     v14.material = surfType;
     Entity* Player = EntityManager::sInst->GetPlayer( currCl);
-    PostEffectEventBulletHit(Player, ammoType, v14);
+    PostEffectEventBulletHit(Player, (EWeaponClass)ammoType, v14);
     CG_BulletTrajectoryEffects(sourceEntity, position, surfType,
                                s_barrelTags[0], weapon);
 }
 
-extern Handle PostEffectEventFootstep(const Entity* ent, int stanceType,
+enum EStanceType : int { kStanceStand = 0, kStanceCrouch = 1, kStanceProne = 2 };
+extern Handle PostEffectEventFootstep(const Entity* ent, EStanceType stanceType,
                                       const CollisionDesc& col);
-extern Handle PostEffectEventGearRattle(const Entity* ent, int stanceType,
+extern Handle PostEffectEventGearRattle(const Entity* ent, EStanceType stanceType,
                                         const CollisionDesc& col);
 extern void SoundMediaMgr_PlayLandingSound(void* self, Entity* ent,
                                            int surfaceType, bool damage);
@@ -1971,10 +1974,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         footstepPos[2] = entity->s.pos.trBase[2];
         CollisionDesc d = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, event - 1);
-        PostEffectEventFootstep(entity, 1 /* kStanceRun */, d);
+        PostEffectEventFootstep(entity, (EStanceType)1, d);
         CollisionDesc d2 = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, -1);
-        PostEffectEventGearRattle(entity, 1, d2);
+        PostEffectEventGearRattle(entity, (EStanceType)1, d2);
         return;
     }
     if (event >= 70 && event < 93)
@@ -1984,10 +1987,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         footstepPos[2] = entity->s.pos.trBase[2];
         CollisionDesc d = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, event - 70);
-        PostEffectEventFootstep(entity, 0 /* kStanceSprint */, d);
+        PostEffectEventFootstep(entity, (EStanceType)0, d);
         CollisionDesc d2 = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, -1);
-        PostEffectEventGearRattle(entity, 0, d2);
+        PostEffectEventGearRattle(entity, (EStanceType)0, d2);
         return;
     }
     if (event >= 24)
@@ -1999,10 +2002,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             footstepPos[2] = entity->s.pos.trBase[2];
             CollisionDesc d = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, event - 24);
-            PostEffectEventFootstep(entity, 2 /* kStanceWalk */, d);
+            PostEffectEventFootstep(entity, (EStanceType)2, d);
             CollisionDesc d2 = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, -1);
-            PostEffectEventGearRattle(entity, 2, d2);
+            PostEffectEventGearRattle(entity, (EStanceType)2, d2);
             return;
         }
         if (event < 70)
@@ -2012,10 +2015,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             footstepPos[2] = entity->s.pos.trBase[2];
             CollisionDesc d = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, event - 47);
-            PostEffectEventFootstep(entity, 3 /* kStanceProne */, d);
+            PostEffectEventFootstep(entity, (EStanceType)3, d);
             CollisionDesc d2 = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, -1);
-            PostEffectEventGearRattle(entity, 3, d2);
+            PostEffectEventGearRattle(entity, (EStanceType)3, d2);
             return;
         }
     }
@@ -2028,10 +2031,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         footstepPos[2] = entity->s.pos.trBase[2];
         CollisionDesc d = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, event - 93);
-        PostEffectEventFootstep(entity, 1 /* kStanceRun */, d);
+        PostEffectEventFootstep(entity, (EStanceType)1, d);
         CollisionDesc d2 = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, -1);
-        PostEffectEventGearRattle(entity, 1, d2);
+        PostEffectEventGearRattle(entity, (EStanceType)1, d2);
         return;
     }
     if (event < 139)

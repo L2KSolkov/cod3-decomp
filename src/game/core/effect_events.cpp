@@ -407,8 +407,8 @@ static void BeginScriptCallQuery(EffectEventSys* sys, const Entity* ent,
 }
 
 // ea: 0x004D1D80
-Handle PostEffectEventFootstep(const Entity* ent, int stanceType,
-                               const CollisionDesc* col_desc)
+Handle PostEffectEventFootstep(const Entity* ent, EStanceType stanceType,
+                               const CollisionDesc& col_desc)
 {
     Handle result;
     if (IsInSceneAnim() || gSoundOptions.mFxDontPlayFootSteps != 0
@@ -417,7 +417,7 @@ Handle PostEffectEventFootstep(const Entity* ent, int stanceType,
         result.mVal = 0;
         return result;
     }
-    if (col_desc->material > 0)
+    if (col_desc.material > 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
@@ -438,15 +438,15 @@ Handle PostEffectEventFootstep(const Entity* ent, int stanceType,
     BitSetAdd(cq.mSpecifiedFields, 2);
     BitSetRmv(cq.mWeakFields, 2);
     v6->SetScriptId(Broc::string(gNULLString));
-    v6->CollisionInfo(col_desc, true);
+    v6->CollisionInfo(&col_desc, true);
     v6->mCurrentQuery->mQueryType = 1;
     result = v6->ExecEffectQuery();
     return result;
 }
 
 // ea: 0x004D1EC0
-Handle PostEffectEventGearRattle(const Entity* ent, int stanceType,
-                                 const CollisionDesc* col_desc)
+Handle PostEffectEventGearRattle(const Entity* ent, EStanceType stanceType,
+                                 const CollisionDesc& col_desc)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayGearRattle != 0 || IsInSceneAnim()
@@ -466,10 +466,122 @@ Handle PostEffectEventGearRattle(const Entity* ent, int stanceType,
     BitSetRmv(cq.mWeakFields, 2);
     v6->SetScriptId(Broc::string(gNULLString));
     v6->mCurrentQuery->mFlags.mVal |= 4u;
-    memcpy(&v6->mCurrentQuery->mCollisionInfo, col_desc,
+    memcpy(&v6->mCurrentQuery->mCollisionInfo, &col_desc,
            sizeof(v6->mCurrentQuery->mCollisionInfo));
     v6->mCurrentQuery->mQueryType = 2;
     result = v6->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2C90
+Handle PostEffectEventBulletHit(const Entity* ent, EWeaponClass weaponClass,
+                                const CollisionDesc& col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayBulletHit != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc.material > kCollisionMaterialASPHALT)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 406;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    if ((ent->flags & 0x2000000) != 0)
+        ((CollisionDesc&)col_desc).material = kCollisionMaterialFLESH;
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextBulletHit;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 5;
+    BitSetAdd(cq.mSpecifiedFields, 11);
+    BitSetRmv(cq.mWeakFields, 11);
+    cq.mWEAPON_CLASS = weaponClass;
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->mCurrentQuery->mQueryType = 0;
+    v5->CollisionInfo(&col_desc, true);
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2DD0
+Handle PostEffectEventGrenadeBounce(const Entity* ent, const char* weaponType,
+                                    const CollisionDesc& col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayGrenadeBounce != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc.material > kCollisionMaterialASPHALT)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 434;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextGrenadeBounce;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 6;
+    SetWeaponIdField(cq, weaponType);
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->mCurrentQuery->mQueryType = -1;
+    v5->CollisionInfo(&col_desc, true);
+    result = v5->ExecEffectQuery();
+    return result;
+}
+
+// ea: 0x004D2F20
+Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
+                                  const CollisionDesc& col_desc)
+{
+    Handle result;
+    if (gSoundOptions.mFxDontPlayProjExplode != 0)
+    {
+        result.mVal = 0;
+        return result;
+    }
+    if (col_desc.material > kCollisionMaterialASPHALT)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
+        AeAssert::gCurrentLine = 459;
+        AeAssert::gCurrentExpr =
+            "( mat_type >= kCollisionMaterialMin && mat_type <= "
+            "kCollisionMaterialMax )";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    EffectEventSys* v5 = EffectEventSysStatics::sInst;
+    v5->BeginEffectQuery(ent, (TPakId)-1);
+    v5->mCurrentQuery->mType = kEffectContextProjExplode;
+    EffectEventSys::CachedQuery& cq = v5->mCurrentQuery->mCachedQuery;
+    BitSetAdd(cq.mSpecifiedFields, 0);
+    BitSetRmv(cq.mWeakFields, 0);
+    cq.mCONTEXT = 7;
+    SetWeaponIdField(cq, weaponType);
+    v5->SetScriptId(Broc::string(gNULLString));
+    v5->mCurrentQuery->mQueryType = -1;
+    v5->CollisionInfo(&col_desc, true);
+    result = v5->ExecEffectQuery();
     return result;
 }
 
@@ -663,7 +775,7 @@ Handle PostEffectEventScriptCall_Dir(const Entity* ent, const char* scriptId,
 
 // ea: 0x004D2780
 Handle PostEffectEventWeaponFire1st(const Entity* ent, const char* weaponType,
-                                    int weaponAction, int16_t cacheSound,
+                                    EAction weaponAction, int cacheSound,
                                     int barrel)
 {
     Handle result;
@@ -696,7 +808,7 @@ Handle PostEffectEventWeaponFire1st(const Entity* ent, const char* weaponType,
 
 // ea: 0x004D28F0
 Handle PostEffectEventWeaponFire3rd(const Entity* ent, const char* weaponType,
-                                    int weaponAction, int16_t cacheSound)
+                                    EAction weaponAction, int cacheSound)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayWeapon != 0)
@@ -803,7 +915,7 @@ Handle PostEffectEventBulletHit(const Entity* ent, int weaponClass,
             __debugbreak();
     }
     if ((ent->flags & 0x2000000) != 0)
-        col_desc->material = 7;  // kCollisionMaterialFLESH
+        col_desc->material = (ECollisionMaterial)7;  // kCollisionMaterialFLESH
     EffectEventSys* v5 = EffectEventSysStatics::sInst;
     v5->BeginEffectQuery(ent, (TPakId)-1);
     v5->mCurrentQuery->mType = kEffectContextBulletHit;

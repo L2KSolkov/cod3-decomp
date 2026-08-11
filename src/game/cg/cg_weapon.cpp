@@ -144,13 +144,14 @@ extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
 extern Handle PostEffectEventPointLightFlash(const Entity* ent,
                                              const char* weaponType,
                                              int weaponAction);
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
 extern Handle PostEffectEventWeaponFire1st(const Entity* ent,
                                            const char* weaponType,
-                                         int weaponAction, int cacheSound,
+                                         EAction weaponAction, int cacheSound,
                                          int barrel);
 extern Handle PostEffectEventWeaponFire3rd(const Entity* ent,
                                            const char* weaponType,
-                                           int weaponAction, int cacheSound);
+                                           EAction weaponAction, int cacheSound);
 extern int MultiplayerMgr_IsLocalPlayer(void* mgr, const Entity* player);
 extern void* MultiplayerMgr_sInst;
 extern int dword_F62960[4 * 1580];
@@ -1274,23 +1275,23 @@ LABEL_18:
                 if (lc)
                     PostEffectEventWeaponFire1st(
                         v6, InfoForWeapon->szInternalName,
-                        8 /* kActionWEAPON_LAST_SHOT_1ST */, -1, (int)barrel);
+                        (EAction)8 /* kActionWEAPON_LAST_SHOT_1ST */, -1, (int)barrel);
                 else
                     PostEffectEventWeaponFire3rd(
                         v6, InfoForWeapon->szInternalName,
-                        9 /* kActionWEAPON_LAST_SHOT_3RD */, -1);
+                        (EAction)9 /* kActionWEAPON_LAST_SHOT_3RD */, -1);
             }
             else if (lc)
             {
                 PostEffectEventWeaponFire1st(
                     v6, InfoForWeapon->szInternalName,
-                    10 /* kActionWEAPON_FIRE_1ST */, 0, (int)barrel);
+                    (EAction)10 /* kActionWEAPON_FIRE_1ST */, 0, (int)barrel);
             }
             else
             {
                 PostEffectEventWeaponFire3rd(
                     v6, InfoForWeapon->szInternalName,
-                    11 /* kActionWEAPON_FIRE_3RD */, 1);
+                    (EAction)11 /* kActionWEAPON_FIRE_3RD */, 1);
             }
         }
         if (!((weaponFileInfoFull*)InfoForWeapon)->bBoltAction)
