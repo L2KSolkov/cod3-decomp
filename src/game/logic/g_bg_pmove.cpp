@@ -134,7 +134,6 @@ void PM_UpdateHoldBreath();                      // game.o 0x631260
 extern void Com_BitClear(int* const array, int bitNum);  // ?Com_BitClear (core.o q_shared)
 extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
                                       bool kill);  // ?StopEffect@EffectEventSys
-extern void* EffectEventSys_sInst;  // ?sInst@EffectEventSys@@2PAV1@A
 extern Handle PostEffectEventWeaponReload(const Entity* ent,
                                           const char* weaponType,
                                           int weaponAction, bool queue);
@@ -642,7 +641,7 @@ void PM_QueueReloadSound(int action)
     {
         unsigned int mVal = pm->ps->queuedReloadSound.mVal;
         if (mVal != 0)
-            EffectEventSys_StopEffect(EffectEventSys_sInst, mVal, false);
+            EffectEventSys_StopEffect(EffectEventSys::sInst, mVal, false);
         Entity* Player = EntityManager::sInst->GetPlayer(currCl);
         weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(Player->s.weapon);
         pm->ps->queuedReloadSound =
@@ -1124,9 +1123,9 @@ int PM_SetWeaponReloadAddAmmoDelay()
 // ea: 0x00617610
 PlayerState* PM_QueuedReloadUpdate()
 {
-    void* v0 = EffectEventSys_sInst;
+    void* v0 = EffectEventSys::sInst;
     void* ActiveEffectSet = EffectEventSys_GetActiveEffectSet(
-        EffectEventSys_sInst, pm->ps->queuedReloadSound.mVal);
+        EffectEventSys::sInst, pm->ps->queuedReloadSound.mVal);
     void* v2 = ActiveEffectSet;
     bool IsQueued;
     if (ActiveEffectSet == nullptr
@@ -1163,7 +1162,7 @@ LABEL_9:
         pm->ps->queuedReloadTimer += ServerTime::sInst.mTickMSec;
         if (pm->ps->queuedReloadTimer > 300)
         {
-            EffectEventSys_StopEffect(EffectEventSys_sInst,
+            EffectEventSys_StopEffect(EffectEventSys::sInst,
                                       pm->ps->queuedReloadSound.mVal, false);
             pm->ps->queuedReloadSound.mVal = 0;
             goto LABEL_9;
@@ -5504,7 +5503,6 @@ extern int cl_aADS[4];              // ?cl_aADS@@3PAHA (cl.o)
 extern int cgGlobal_time;           // cgGlobal.time (cg.o)
 extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
                                       bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z
-extern void* EffectEventSys_sInst;  // ?sInst@EffectEventSys@@2PAV1@A
 
 // game.o static weapon-slot names (recovered from .rdata, szWeapSlotNames)
 static const char* const s_szWeapSlotNames[10] = {
@@ -6375,7 +6373,7 @@ void PM_KillQueuedReloadSound(PlayerState* ps)
     unsigned int mVal = ps->queuedReloadSound.mVal;
     if (mVal != 0)
     {
-        EffectEventSys_StopEffect(EffectEventSys_sInst, mVal, false);
+        EffectEventSys_StopEffect(EffectEventSys::sInst, mVal, false);
         ps->queuedReloadSound.mVal = 0;
         ps->queuedReloadSoundPlayStarted = false;
     }

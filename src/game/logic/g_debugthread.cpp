@@ -2114,7 +2114,6 @@ void TestFPS::GatherMetrics()
 // ============================================================================
 extern void TeleportPlayer(Entity* player, const float* origin,
                            const float* angles);
-extern PakManager* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A
 extern char tr[0x3A0];  // ?tr@@3UtrGlobals_t@@A (render.o)
 
 static int TestFPS_tr_cell_count()
@@ -2130,7 +2129,7 @@ static int TestFPS_tr_cell_count()
 
 void TestFPS::PositionCamera(pmove_t* pmove)
 {
-    PakManager_sInst->FillBanks();
+    PakManager::sInst->FillBanks();
     if (mBlock == 0)
     {
         mBlock = 1;

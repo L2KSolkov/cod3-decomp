@@ -147,7 +147,8 @@ extern void reserved_dlist_Curve_erase(void* self, void* obj);
     // ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z
 extern void reserved_dlist_CurveEffectListElem_erase(void* self, void* obj);
     // ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z
-extern void* EffectEventSys_sInst;      // ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
+// ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
+EffectEventSys* EffectEventSys::sInst = NULL;
 // nslSourceState values (verified against nsl.cpp / IDA)
 enum nslSourceState {
     NSL_SOURCE_STATE_INVALID = 0,
@@ -659,7 +660,7 @@ void CurveManager::Update(float tickDelta)
         s_S44_4 |= 4u;
         fsShakeAndRumble = AeHash("AbstractEffectShakeAndRumble");
     }
-    if (EffectEventSys_sInst == nullptr)
+    if (EffectEventSys::sInst == nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CurveManager.cpp";

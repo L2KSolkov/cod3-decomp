@@ -8515,7 +8515,6 @@ extern void AssetBankSet_ctor(void* self);   // AssetBankSet::AssetBankSet
 extern const void* DCGBank_get_set(void* bank, int id);  // ?get_set@DCGBank@@QBEPBVDCGSet@@H@Z
 extern void GetPakPrerequisites(TPakId pakId,
                                 void* prereqs);  // ?GetPakPrerequisites@@YAXW4TPakId@@AAV?$ae_sized_array@W4TPakId@@$0CA@@@@Z @ 0x64DC0
-extern void* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A @ 0xF592FC
 
 // ea: 0x0061FCF0
 const DCGSet* DCGBankManager::GetDCGSet(TPakId pakId, int handle)
@@ -8537,7 +8536,7 @@ const DCGSet* DCGBankManager::GetDCGSet(TPakId pakId, int handle)
             goto prereq;
     }
     {
-        int globalPak = *(int*)((char*)PakManager_sInst + 0x30);
+        int globalPak = *(int*)((char*)PakManager::sInst + 0x30);
         if (this->mBankArray[globalPak] != nullptr)
             set = (const DCGSet*)DCGBank_get_set(
                 this->mBankArray[globalPak], handle);
