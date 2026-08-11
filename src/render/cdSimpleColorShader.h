@@ -31,7 +31,27 @@ struct nglShaderNode : nglRenderNode {
     nglMeshNode*     MeshNode;  // +0x0C
     nglMeshSection*  Section;   // +0x10
 
-    float GetDist(const math::Mat43& WorldToView);  // ?GetDist@nglShaderNode@@QAEMABVMat43@math@@@Z (inline COMDAT, cdScratchShader.o)
+    // ea: 0x7C5CE0 (cdScratchShader.o COMDAT)
+    float GetDist(const math::Mat43& WorldToView) {
+        __m128 v4 = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(Section->Sphere.v, Section->Sphere.v, 0),
+                           MeshNode->LocalToWorld.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(Section->Sphere.v, Section->Sphere.v, 85),
+                           MeshNode->LocalToWorld.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(Section->Sphere.v, Section->Sphere.v, 170),
+                           MeshNode->LocalToWorld.z.v),
+                MeshNode->LocalToWorld.w.v));
+        return _mm_shuffle_ps(Section->Sphere.v, Section->Sphere.v, 255).m128_f32[0]
+             + _mm_add_ps(
+                   _mm_add_ps(
+                       _mm_mul_ps(_mm_shuffle_ps(v4, v4, 0), WorldToView.x.v),
+                       _mm_mul_ps(_mm_shuffle_ps(v4, v4, 85), WorldToView.y.v)),
+                   _mm_add_ps(
+                       _mm_mul_ps(_mm_shuffle_ps(v4, v4, 170), WorldToView.z.v),
+                       WorldToView.w.v)).m128_f32[2];
+    }
 };
 static_assert(sizeof(nglShaderNode) == 0x14, "nglShaderNode size mismatch");
 
