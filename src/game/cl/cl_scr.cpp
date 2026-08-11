@@ -504,7 +504,8 @@ struct GpadAxesGlob {
     int axesValues[6];
 };
 extern GpadAxesGlob gaGlobs[2];
-extern const char* virtualAxisNames[6];
+const char* virtualAxisNames[6];  // cl.o
+const char* szShotName[6];        // cl.o
 int axisSameStick[6];  // cl.o BSS
 enum { GPAD_PHYSAXIS_NONE = -1 };
 

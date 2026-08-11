@@ -76,7 +76,7 @@ struct KeyInfoEntry {
 };
 extern keyname_t keynames[];
 extern keyname_t keynames_localized[];
-extern const char* off_DEFC78[10];
+const char* off_DEFC78[10];  // cl.o
 static char tinystr[5];
 
 // ============================================================================

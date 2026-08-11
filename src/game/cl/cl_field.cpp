@@ -458,11 +458,11 @@ int gaGlobs_axes[12];  // cl.o BSS
 extern float prevDir[2][3];
 int dword_F11E4C[6];  // cl.o BSS
 int dword_F11E50[6];  // cl.o BSS
-extern float gSwirlPitchFactor;
+float gSwirlPitchFactor;
 extern unsigned int frame_msec;
 int totalTime[2];  // cl.o BSS
-extern float totalAngle[2];
-extern float sTotalTimeMax;
+float totalAngle[2];
+float sTotalTimeMax;
 extern float VectorNormalize(float* v);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
@@ -537,11 +537,11 @@ extern int dword_F6A28C;
 int gSaveGameData_mInvertAim[4];            // ?gSaveGameData_mInvertAim (game2.o)
 int gSaveGameData_mHorizontalSensitivity[4]; // ?gSaveGameData_mHorizontalSensitivity (game2.o)
 int gSaveGameData_mVerticalSensitivity[4];   // ?gSaveGameData_mVerticalSensitivity (game2.o)
-extern float accelRate;
-extern float accel_time;
-extern float accel_time_0;
-extern float accel_scale;
-extern float gMaxTurnSpeed;
+float accelRate;
+float accel_time;
+float accel_time_0;
+float accel_scale;
+float gMaxTurnSpeed;
 extern struct cvar_t* cl_mouseAccel;
 extern struct cvar_t* cl_showMouseRate;
 extern struct cvar_t* m_yaw;

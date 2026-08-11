@@ -28,9 +28,9 @@ extern void PHYS_ASSERT_UNIT(const math::Dir3& v);
 extern void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& v1, const math::Dir3& v2);
 extern const math::Dir3& Float4_SignMask_207;
 extern const math::Dir3& Float4_Zero_207;
-extern float lr;    // 0xE53F30 = 1000.0f (overlapping const array)
-extern float lr_0;  // 0xE53F34 = 1.0f
-extern float lr_1;  // 0xE53F38 = 100.0f
+float lr;    // 0xE53F30 = 1000.0f (overlapping const array)
+float lr_0;  // 0xE53F34 = 1.0f
+float lr_1;  // 0xE53F38 = 100.0f
 
 // ============================================================================
 // lerp_float â€” ea: 0x884E50

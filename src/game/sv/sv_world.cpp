@@ -41,7 +41,7 @@ extern int           SightTraceXFormed(int hitNum, const math::Position3& start,
                                        int brushmask, const math::Position3& origin, const math::Position3& angles, int capsule);
 extern const math::Position3& Float4_Zero_2;
 extern const math::Position3& Float4_One_2;
-extern float         threshold;
+float         threshold;
 extern int           loc_800000;
 
 // Collision-model helpers (unported game objects provide definitions later)

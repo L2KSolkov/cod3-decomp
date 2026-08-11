@@ -57,7 +57,9 @@ int dword_F0D1F4[2];   // cl.o BSS
 int dword_F0D1F8[2];   // cl.o BSS
 int dword_F0F1FC[2];   // cl.o BSS
 int dword_F0F200[2];   // cl.o BSS
-extern char byte_F0D1FC[];
+char** svc_strings;    // ?svc_strings@@3PAPAD (cl.o)
+char dest[128];        // cl.o BSS
+char byte_F0D1FC[4 * 19528];  // cl.o BSS (server command buffers)
 extern void CL_SystemInfoChanged();
 int dword_F6A28C;  // ?dword_F6A28C@@3HA (cl.o active port scalar)
 extern int lFirstLocalClientIndex;
@@ -104,7 +106,7 @@ extern int MSG_ReadLong(struct msg_t* msg);
 extern unsigned char MSG_ReadByte(struct msg_t* msg);
 extern char* MSG_ReadString(struct msg_t* msg);
 extern int dword_F0F204[2];
-extern char byte_F0F208[];
+char byte_F0F208[4 * 19528];  // cl.o BSS
 extern int dword_F0D1F4[2];
 extern int dword_F0D1F8[2];
 extern int dword_F0F1FC[2];
@@ -809,7 +811,6 @@ void CL_InitCGame()
         v1 = defaultFileName;
     }
     const char* v2 = Info_ValueForKey(v1, "mapname");
-    extern char dest[128];
     Com_sprintf(dest, 128, "maps/%s.bsp", v2);
     cgvm = VM_Create("cgame", CL_CgameSystemCalls);
     if (cgvm == nullptr)
@@ -879,7 +880,6 @@ void CL_ParseSnapshot(msg_t* msg)
 // ea: 0x533BD0
 void CL_ParseServerMessage(msg_t* msg)
 {
-    extern char** svc_strings;
     int integer = cl_shownet->integer;
     if (integer == 1)
     {
