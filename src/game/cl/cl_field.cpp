@@ -459,7 +459,7 @@ extern float prevDir[2][3];
 extern int dword_F11E4C[6];
 extern int dword_F11E50[6];
 extern float gSwirlPitchFactor;
-extern int frame_msec;
+extern unsigned int frame_msec;
 extern int totalTime[2];
 extern float totalAngle[2];
 extern float sTotalTimeMax;
@@ -532,7 +532,7 @@ void CLSwirlControl()
 // ============================================================================
 extern float CL_GamepadAxisValue(unsigned int virtualAxis);
 extern float CL_GamepadPhysicalAxisValue(int physicalAxis);
-extern int frame_msec;
+extern unsigned int frame_msec;
 extern int dword_F6A28C;
 extern int gSaveGameData_mInvertAim[4];
 extern int gSaveGameData_mHorizontalSensitivity[4];

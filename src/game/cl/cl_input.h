@@ -167,7 +167,7 @@ extern int cl_grenadeButtonDown_ss[2];
 extern int cl_aADS[2];
 extern int currCl;
 extern int com_frameTime;
-extern int frame_msec;
+extern unsigned int frame_msec;
 extern int dword_106000;  // EF_* flags mask used by stance checks
 
 // ============================================================================

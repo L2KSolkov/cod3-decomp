@@ -849,7 +849,7 @@ void Cmd_Where_f(Entity* ent)
             unsigned int mVal = ent->mHandle.mHandle.mVal;
             char* v3 = vtos(&client->ps.origin);
             SV_GameSendServerCommand(DbLinkedHandle<EntityHandleDb, Entity>(), va("print \"%s\"", v3));
-            strcpy(cg_drawPosition->string, vtos(&ent->client->ps.origin));
+            strcpy(cg_drawPosition.string, vtos(&ent->client->ps.origin));
         }
     }
 }
@@ -891,7 +891,7 @@ int GetFollowPlayerState(int clientNum, PlayerState* ps)
 // ea: 0x0044A390
 void Cmd_Take_f(Entity* ent)
 {
-    if (g_cheats->integer == 0)
+    if (g_cheats.integer == 0)
     {
         DbLinkedHandle<EntityHandleDb, Entity> h;
         h.mHandle.mVal = ent->mHandle.mHandle.mVal;
@@ -1217,7 +1217,7 @@ void InitCvars(int restart)
 // ea: 0x0044A9C0
 void Cmd_UFO_f(Entity* ent)
 {
-    if (g_cheats->integer != 0)
+    if (g_cheats.integer != 0)
     {
         if (ent->health > 0)
         {
@@ -1386,9 +1386,9 @@ void DebugDumpAnims(void)
         && MultiplayerMgr::sInst->mPeer->GetPlayerManager() != nullptr)
     {
         MPPlayerManager* PlayerManager = MultiplayerMgr::sInst->mPeer->GetPlayerManager();
-        if (cg_mpDebugAnimEntity < 0x10u)
+        if (cg_mpDebugAnimEntity.integer < 0x10u)
         {
-            MPPlayer* Player = PlayerManager->GetPlayer(cg_mpDebugAnimEntity);
+            MPPlayer* Player = PlayerManager->GetPlayer(cg_mpDebugAnimEntity.integer);
             if (Player != nullptr)
                 AnimationPlayer_DebugDump(Player->GetEntity());
         }
@@ -1398,7 +1398,7 @@ void DebugDumpAnims(void)
 // ea: 0x0044A7A0
 void Cmd_God_f(Entity* ent)
 {
-    if (g_cheats->integer != 0)
+    if (g_cheats.integer != 0)
     {
         if (ent->health > 0)
         {
@@ -1430,7 +1430,7 @@ void Cmd_God_f(Entity* ent)
 // ea: 0x0044A850
 void Cmd_Notarget_f(Entity* ent)
 {
-    if (g_cheats->integer != 0)
+    if (g_cheats.integer != 0)
     {
         if (ent->health > 0)
         {
@@ -1515,7 +1515,7 @@ void G_DebugBox(float* pos, float width, float r, float g, float b,
 // ea: 0x0044A900
 void Cmd_Noclip_f(Entity* ent)
 {
-    if (g_cheats->integer)
+    if (g_cheats.integer)
     {
         if (ent->health > 0)
         {
@@ -3257,7 +3257,7 @@ void Spread_Fire_Fake(Entity* attacker, float gunPitch, float gunYaw,
 // ea: 0x00461930
 void Cmd_SetViewpos_f(Entity* ent)
 {
-    if (g_cheats->integer != 0)
+    if (g_cheats.integer != 0)
     {
         if (Cmd_Argc() == 5)
         {
@@ -3395,7 +3395,7 @@ int Cmd_FollowCycle_f(Entity* ent, int dir)
 // ea: 0x0048B2F0
 void Cmd_Give_f(Entity* ent)
 {
-    if (g_cheats->integer != 0)
+    if (g_cheats.integer != 0)
     {
         if (ent->health > 0)
         {
@@ -3925,7 +3925,7 @@ int G_InitGame(int randomSeed, int restart, int savegame, int checksum)
         }
         RumbleManager_StopMotors(RumbleManager::Inst(currCl));
         Cvar_Set("timescale", "1");
-        com_timescale.value = 1.0f;
+        com_timescale->value = 1.0f;
         SmokeGrenadeMgr_ReInitialize();
         PathNodeMgr::sInst->ValidateAllNodes();
         EntityManager::sInst->DeleteAllEntities();

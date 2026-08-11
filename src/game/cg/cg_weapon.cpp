@@ -153,7 +153,10 @@ extern int dword_F64048[4 * 1580];
 extern int dword_F6404C[4 * 1580];
 extern int dword_F6355C[4 * 1580];
 extern int dword_F640A4[4 * 1580];
-extern int cg_drawGun;
+struct vmCvar_t {
+    int integer;  // +0x00
+};
+extern vmCvar_t cg_drawGun;
 extern float cg_gun_x;
 extern float cg_gun_y;
 extern float cg_gun_z;
@@ -1130,8 +1133,8 @@ void CG_AddViewWeapon(PlayerState* ps)
         && dword_F6355C[1580 * currCl] == 0)
     {
         float zoom = 0.0f;
-        if (cg_drawGun != 2
-            && (cg_drawGun == 0 || CG_GetWeapReticleZoom(&zoom) != 0))
+        if (cg_drawGun.integer != 2
+            && (cg_drawGun.integer == 0 || CG_GetWeapReticleZoom(&zoom) != 0))
             v2 = 0;
         if ((ps->eFlags & 0x6000) == 0)
         {

@@ -278,7 +278,7 @@ int dword_F64048[4 * 1580];  // cg.o BSS
 int dword_F6404C[4 * 1580];  // cg.o BSS
 extern int cg_crosshairAlpha;
 extern int cg_crosshairDynamic;
-extern int cg_drawGun;
+extern vmCvar_t cg_drawGun;
 extern vmCvar_t cg_draw2D;
 extern vmCvar_t cg_drawStatus;
 extern vmCvar_t cg_norender;
@@ -578,16 +578,16 @@ void CG_DrawScoreboard_GetTeamColor(int iTeam, float* vColor)
     }
 }
 
-extern int cg_widescreen;
-extern int cg_hudAlpha;
+extern vmCvar_t cg_widescreen;
+extern vmCvar_t cg_hudAlpha;
 extern int cg_hudCompassSize;
-extern int cg_drawPosition;
+extern vmCvar_t cg_drawPosition;
 extern int cg_drawTimer;
 extern int cg_minicon;
-extern int cg_developer;
+extern vmCvar_t cg_developer;
 extern int cg_subtitles;
 extern int cg_drawpaused;
-extern int cg_drawGun;
+extern vmCvar_t cg_drawGun;
 extern int cg_crosshairAlpha;
 extern int cg_crosshairDynamic;
 extern int dword_F641D0[4 * 1580];
@@ -690,7 +690,7 @@ void CG_DrawUpperRight()
     if (*(int*)Cvar_Get("capture_movie", "", 0) == 0)
     {
         float y = 50.0f;
-        if (cg_drawPosition != 0)
+        if (cg_drawPosition.integer != 0)
         {
             Entity* Player =
                 EntityManager::sInst->GetPlayer( currCl);
@@ -816,7 +816,7 @@ void CG_DrawFlashFade()
 void CG_DrawGameMessages()
 {
     float v0 = 50.0f;
-    if (cg_widescreen == 0)
+    if (cg_widescreen.integer == 0)
         v0 = 37.5f;
     if (dword_F641D0[1580 * currCl] == 0)
     {
@@ -875,7 +875,7 @@ void CG_DrawBoldGameMessages()
 // ea: 0x00695850
 void CG_DrawMiniConsole()
 {
-    if (cg_minicon >= 0 && (cg_developer != 0 || cg_minicon != 0))
+    if (cg_minicon >= 0 && (cg_developer.integer != 0 || cg_minicon != 0))
         j_nullsub_72(2, 4, *(float*)&cg_hudAlpha);
 }
 
@@ -992,7 +992,7 @@ extern float dword_F63C5C[4 * 1580];
 extern int cg_shellshockblur;
 extern int gSaveGameData_mCrosshair;
 extern int cg_drawpaused;
-extern int cg_drawGun;
+extern vmCvar_t cg_drawGun;
 extern void* cg_weapons;
 extern re_export_view re;
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
@@ -1458,7 +1458,7 @@ void CG_DrawCrosshair(float transScaleArg)
                                 dword_F63B8C[1580 * currCl], weapnum, color,
                                 centerX, centerY, 1.0f);
                             float v7 = fPosLerp;
-                            if (fPosLerp != 1.0f || cg_drawGun == 0)
+                            if (fPosLerp != 1.0f || cg_drawGun.integer == 0)
                             {
                                 if (fPosLerp != 0.0f)
                                 {

@@ -829,9 +829,9 @@ static_assert(sizeof(ent_field_t) == 0x10, "ent_field_t size mismatch");
 typedef EHitLocation hitLocation_t;
 
 // Cross-object externs used by g_utils.cpp (game.o / scr.o provide later)
-extern cvar_t* g_cheats;               // g_cheats
-extern cvar_t* g_developer;            // g_developer
-extern cvar_t* g_debug_sound_aliases;  // g_debug_sound_aliases
+extern vmCvar_t g_cheats;              // ?g_cheats@@3UvmCvar_t@@A
+extern vmCvar_t g_developer;           // ?g_developer@@3UvmCvar_t@@A
+extern vmCvar_t g_debug_sound_aliases; // ?g_debug_sound_aliases@@3UvmCvar_t@@A
 extern vmCvar_t g_entinfo_scale;       // ?g_entinfo_scale@@3UvmCvar_t@@A @ 0xEA5020
 extern vmCvar_t g_entinfo_maxdist;     // ?g_entinfo_maxdist@@3UvmCvar_t@@A @ 0xEAE2F0
 extern const float colorMagenta[4];    // @ 0xD015CC
@@ -2244,7 +2244,7 @@ void    VEH_DebugBox(const math::Position3* pos, float width, float r,
 extern int g_renderPFXStats;                        // game2.o
 extern int sEntryPointSeatAssociation[4];           // g.o
 extern const char* hintStrings[17];                 // g.o .rdata
-extern cvar_t* cg_drawPosition;                     // cg.o
+extern vmCvar_t cg_drawPosition;                    // ?cg_drawPosition@@3UvmCvar_t@@A
 extern char* va(const char* fmt, ...);              // core.o
 void  Use_BinaryMover(Entity* ent, Entity* other, Entity* activator);  // g.o (g_mover.cpp)
 void  G_Activate(Entity* ent, Entity* activator);   // g.o 0x48CB90
@@ -2281,7 +2281,7 @@ void  G_ReduceAnglesError(float* angles, float* anglesError, float frametime,
 void  G_CheckLoadGame(int savegame);                 // g.o 0x458120
 void  VEH_RotateWheels(Entity* self, vehicle_info_t* info);  // g.o 0x480CF0
 extern int g_dumpAnims;                              // g.o vmCvar
-extern int cg_mpDebugAnimEntity;                     // cg.o vmCvar
+extern vmCvar_t cg_mpDebugAnimEntity;                // cg.o vmCvar
 extern int gLockMeshList;                            // g.o
 extern int gEnableMeshFlash;                         // g.o
 float AngleNormalize360Accurate(float angle);        // core.o
@@ -2438,7 +2438,7 @@ extern float udelta;                             // g.o @ 0xDD81FC
 extern float fdelta;                             // g.o @ 0xDD8200
 extern vmCvar_t g_weaponAmmoPools;               // g.o
 extern vmCvar_t g_weaponRespawn;                 // g.o
-extern vmCvar_t com_timescale;                   // core.o
+extern cvar_t* com_timescale;                    // core.o
 extern int Sys_Milliseconds(void);               // core.o
 extern void level_locals_t_Clear(level_locals_t* self);  // g.o
 extern void IGOCompassWidget_SetHideCompassStar(int viewport, int active,

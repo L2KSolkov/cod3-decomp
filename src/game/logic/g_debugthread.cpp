@@ -900,8 +900,8 @@ struct HealthRegenTask : Task {
 static_assert(sizeof(HealthRegenTask) == 0x38, "HealthRegenTask size mismatch");
 
 extern void* HealthRegenTask_vftable;  // ??_7HealthRegenTask@@6B@
-extern cvar_t* HealthRegenTask_sDamageDelay;
-extern cvar_t* HealthRegenTask_sRechargeRate;
+cvar_t* HealthRegenTask_sDamageDelay;    // game2.o statics
+cvar_t* HealthRegenTask_sRechargeRate;   // game2.o statics
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
 
 // ea: 0x4F99A0

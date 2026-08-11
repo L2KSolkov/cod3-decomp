@@ -558,7 +558,7 @@ extern int dword_F6295C[4 * 1580];
 extern int dword_F62944[4 * 1580];
 extern int cg_numSolidEntities;
 extern unsigned int cg_solidEntities[1024];
-extern int cg_norender;
+extern struct vmCvar_t cg_norender;
 extern bool g_enableControllerTest;
 struct sphere_t;
 extern void Trace(trace_t* results, const math::Position3& start,
@@ -711,7 +711,7 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
     }
     cgGlobal_time = snap->serverTime;
     cgGlobal_oldTime = cgGlobal_time;
-    if (cg_norender != 0)
+    if (*(int*)&cg_norender != 0)
     {
         g_enableControllerTest = true;
         Cvar_Set("cg_norender", "0");

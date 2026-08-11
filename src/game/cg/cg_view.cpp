@@ -80,10 +80,10 @@ extern int iLastCompassTime_1;
 extern float lastChange[4];
 extern int lastVehPos[4];
 extern float color[4];
-extern int cg_fov;
+extern struct vmCvar_t cg_fov;
 extern int cg_altTankCam;
 extern int cg_hudCompassSpringyPointers;
-extern int cg_drawGun;
+extern struct vmCvar_t cg_drawGun;
 
 extern float AngleNormalize360(float angle);
 extern float AngleNormalize180(float angle);
@@ -597,7 +597,7 @@ extern vmCvar_t cg_camerashake;
 extern int cg_hudDamageIconTime;
 extern int cg_viewKickScale;
 extern int cg_viewKickMax;
-extern int cg_redFlashTime;
+extern vmCvar_t cg_redFlashTime;
 extern int dword_F64018[4 * 1580];
 extern int dword_F6401C[4 * 1580];
 extern int dword_F64020[4 * 1580];
@@ -2496,8 +2496,8 @@ extern int CG_PredictPlayerState_Internal();
 extern int CG_PointContents(const math::Position3* point,
                             collision_context_t* context);
 extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
-extern int cg_fov;
-extern int cg_widescreen;
+extern vmCvar_t cg_fov;
+extern vmCvar_t cg_widescreen;
 extern float gZoomRatio;
 extern float* gCamera;
 
@@ -2642,7 +2642,7 @@ int CG_CalcFov()
     float aspectY = dword_F63C5C[v13];
     float v14 = aspectX / tanf(y * 0.0087266462f);
     float fov_y = Atan2Approx(aspectY, v14) * 114.59155f;
-    if (cg_widescreen != 0)
+    if (cg_widescreen.integer != 0)
     {
         aspectX = aspectX * 4.0f;
         aspectY = aspectY * 3.0f;
@@ -2702,8 +2702,8 @@ extern void CG_CalcCubemapViewValues();
 extern void CG_CalcVrect(const void* window);
 extern void Camera_Update(void* self);
 extern int cgGlobal_cubemapShot;
-extern int bg_viewheight_prone;
-extern int bg_viewheight_crouched;
+extern vmCvar_t bg_viewheight_prone;
+extern vmCvar_t bg_viewheight_crouched;
 extern vmCvar_t bg_viewheight_standing;
 struct DObjSkelMat;
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
@@ -3067,9 +3067,9 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
                                     v11);
                         int eFlags = v10->s.eFlags;
                         if ((eFlags & 0x40) != 0)
-                            v15 = bg_viewheight_prone + muzzle[2];
+                            v15 = bg_viewheight_prone.integer + muzzle[2];
                         else if ((eFlags & 0x20) != 0)
-                            v15 = bg_viewheight_crouched + muzzle[2];
+                            v15 = bg_viewheight_crouched.integer + muzzle[2];
                         else
                             v15 = bg_viewheight_standing.integer + muzzle[2];
                     }

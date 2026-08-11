@@ -21,7 +21,7 @@ struct GamePause { static bool IsGamePaused(int client); };
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
 extern int com_frameTime;
-extern int frame_msec;
+extern unsigned int frame_msec;
 extern int currCl;
 extern int dword_106000;
 extern cvar_t* joy_threshold;  // ?joy_threshold@@3PAUcvar_t@@A

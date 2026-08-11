@@ -50,7 +50,7 @@ extern int com_frameTime;
 int old_com_frameTime = 0;  // ?old_com_frameTime@@3HA (cl.o @ 0xF0D1B4)
 extern int dword_F6A290[4 * 802];  // defined in effect_events.cpp (core.o)
 
-extern int frame_msec;
+unsigned int frame_msec;  // ?frame_msec@@3IA (cl.o @ 0x12FC6D4)
 extern int anykeydown;
 extern int dword_F170F8;
 extern int dword_F0D1F4[2];

@@ -299,7 +299,7 @@ void G_EntUnlink(Entity* ent)
 // ea: 0x0044A240
 int CheatsOk(Entity* ent)
 {
-    if (g_cheats->integer == 0)
+    if (g_cheats.integer == 0)
     {
         SV_GameSendServerCommand(ent->mHandle, va("print \"GAME_CHEATSNOTENABLED\""));
         return 0;
@@ -407,7 +407,7 @@ void G_DPrintf(const char* fmt, ...)
     char text[1024];
     va_list ap;
     va_start(ap, fmt);
-    if (g_developer->integer != 0)
+    if (g_developer.integer != 0)
     {
         vsprintf(text, fmt, ap);
         Com_Printf(text);
@@ -535,7 +535,7 @@ int g_UnCompressZLIB(void* dest, int* destLen, void* src, int sourceLen)
 // ea: 0x00453700
 int G_FindConfigstringIndex(const char* name, int start, int max, int create, const char* errormsg)
 {
-    if (g_debug_sound_aliases->integer == 2 && start == 161)
+    if (g_debug_sound_aliases.integer == 2 && start == 161)
     {
         for (int i = 1; i < max; ++i)
         {
@@ -556,7 +556,7 @@ int G_FindConfigstringIndex(const char* name, int start, int max, int create, co
         if (_stricmp(v8, name) == 0)
             return j;
     }
-    if (g_debug_sound_aliases->integer == 1 && start == 161)
+    if (g_debug_sound_aliases.integer == 1 && start == 161)
         G_Printf("^1SOUND ALIAS %d %s\n", j, name);
     if (create == 0)
     {
