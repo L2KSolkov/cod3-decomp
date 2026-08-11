@@ -11,7 +11,7 @@
 #include <stdlib.h>
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
-class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
 
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
@@ -77,7 +77,6 @@ extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void SoundDevice_DampenAllSounds(void* sInst, float level);
 extern void SoundDevice_StopAllSounds(void* sInst);
-extern void SoundDevice_FrameAdvance(void* sInst, float delta);
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
 extern void* GetTextureData(const char* name, int image_type,
@@ -415,7 +414,7 @@ void CG_MapInit(int restart)
     float v5 = (float)atof(v4);
     dword_F64140[1580 * currCl] = *(int*)&v5;
     SoundDevice_StopAllSounds(SoundDevice::sInst);
-    SoundDevice_FrameAdvance(SoundDevice::sInst, 0.0f);
+    SoundDevice::sInst->FrameAdvance( 0.0f);
     const char* v7 = CL_GetConfigString(3);
     Info_ValueForKey(v7, "n");
     const char* v8 = Info_ValueForKey(v7, "t");

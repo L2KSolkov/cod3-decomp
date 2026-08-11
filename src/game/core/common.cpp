@@ -23,7 +23,7 @@ struct GamePause { static bool IsGamePaused(int client); };
 
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
-class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
 
 
 struct NumBanks;
@@ -140,7 +140,6 @@ extern const char* SEH_LocalizeTextMessage(const char* pszInputBuffer,
                                           const char* pszMessageType,
                                           int errType);
 extern void SoundDevice_StopAllSounds(void* self);
-extern void SoundDevice_FrameAdvance(void* self, float delta);
 extern void AudioBankMgr_Update(void* self);
 extern void* AudioBankMgr_sInst;
 extern void codNflUpdate();
@@ -1803,7 +1802,7 @@ char Com_ControllerTest(int port)
                 FEManager_DrawControllerError(&g_femanager);
             }
             MemoryUnitManager_Service();
-            SoundDevice_FrameAdvance(SoundDevice::sInst, 0.0f);
+            SoundDevice::sInst->FrameAdvance( 0.0f);
             AudioBankMgr_Update(AudioBankMgr_sInst);
             codNflUpdate();
             return 0;

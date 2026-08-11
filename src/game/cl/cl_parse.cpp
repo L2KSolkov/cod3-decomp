@@ -9,7 +9,7 @@
 #include <string.h>
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
-class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
 
 
 // Minimal views (full classes in game/sv/sv_stubs.h / g_local.h).
@@ -83,7 +83,6 @@ extern void SCR_UpdateScreen(float screen_time_inc);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void CompleteCommand();
 extern void SoundDevice_StopAllSounds(void* self);
-extern void SoundDevice_FrameAdvance(void* self, float delta);
 extern void SoundDevice_UndampenAllSounds(void* self);
 extern struct cvar_t* cl_showSend;
 extern struct cvar_t* cl_nodelta;
@@ -687,7 +686,7 @@ void CL_MapLoading()
     float screen_time_inc = Com_GetScreenTimeDelta();
     SCR_UpdateScreen(screen_time_inc);
     SoundDevice_StopAllSounds(SoundDevice::sInst);
-    SoundDevice_FrameAdvance(SoundDevice::sInst, 0.0f);
+    SoundDevice::sInst->FrameAdvance( 0.0f);
 }
 
 // ============================================================================
@@ -1110,7 +1109,7 @@ void CL_Frame(int msec, float screen_time_inc)
         {
             cdl_proftimer_audio.start();
             codNflUpdate();
-            SoundDevice_FrameAdvance(SoundDevice::sInst, v6);
+            SoundDevice::sInst->FrameAdvance( v6);
             AudioBankMgr_Update(AudioBankMgr_sInst);
             cdl_proftimer_audio.stop();
         }

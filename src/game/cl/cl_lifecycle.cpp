@@ -9,7 +9,7 @@
 #include <string.h>
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
-class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
 
 
 // ============================================================================
@@ -75,7 +75,6 @@ extern int CL_RestoreMessageType(unsigned char* buffer, int used, int total,
 extern int ColorIndex(unsigned char c);
 extern void Con_Linefeed(int type, int duration, int flags);
 extern void SoundDevice_StopAllSounds(void* self);
-extern void SoundDevice_FrameAdvance(void* self, float delta);
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -120,7 +119,7 @@ extern Broc_string_view cls_configstrings[1024];
 int CL_ClearState()
 {
     SoundDevice_StopAllSounds(SoundDevice::sInst);
-    SoundDevice_FrameAdvance(SoundDevice::sInst, 0.0f);
+    SoundDevice::sInst->FrameAdvance( 0.0f);
     for (int i = 0; i < 1024; ++i)
     {
         if (cls_configstrings[i].mBlock != nullptr)
