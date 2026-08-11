@@ -125,8 +125,35 @@ public:
     void PostEvent(unsigned int entityHandle, unsigned int hash,
                    float value);  // ?PostEvent@CurveManager@@QAEXIIM@Z (game.o 0x6386C0)
     void ClearEntities();  // ?ClearEntities@CurveManager@@QAEXXZ (game.o 0x6466A0)
+    void Update(float tickDelta);  // ?Update@CurveManager@@QAEXM@Z (game.o 0x6421D0)
 };
 CurveManager* CurveManager::sInst = nullptr;
+
+// CurveManager.cpp file statics (verified against IDA)
+static unsigned int fsSound;            // @ 0xF59200 AeHash("AbstractEffectSound")
+static unsigned int fsParticle;         // @ 0xF591FC AeHash("AbstractEffectParticle")
+static unsigned int fsShakeAndRumble;   // @ 0xF591F8 AeHash("AbstractEffectShakeAndRumble")
+static unsigned int frameId;            // @ 0xF591F4
+static unsigned int types[2];           // @ 0xF591E8 (types[1] == dword_F591EC)
+static unsigned int s_S44_4;            // @ 0xF59204 (init flag)
+static char s_TestBuffer[2048];         // @ 0xF4EC30
+
+extern void reserved_dlist_Curve_erase(void* self, void* obj);
+    // ?erase@?$reserved_dlist@VCurve@@@@QAEXPAVCurve@@@Z
+extern void reserved_dlist_CurveEffectListElem_erase(void* self, void* obj);
+    // ?erase@?$reserved_dlist@VCurveEffectListElem@@@@QAEXPAVCurveEffectListElem@@@Z
+extern void* EffectEventSys_sInst;      // ?sInst@EffectEventSys@@2PAV1@A @ 0xF00E80
+// nslSourceState values (verified against nsl.cpp / IDA)
+enum nslSourceState {
+    NSL_SOURCE_STATE_INVALID = 0,
+    NSL_SOURCE_STATE_QUEUING = 2,
+    NSL_SOURCE_STATE_QUEUED = 3,
+    NSL_SOURCE_STATE_PLAYING = 4,
+    NSL_SOURCE_STATE_PAUSED = 5,
+};
+extern nslSourceState nslGetSourceState(nslSourceID sid);
+    // ?nslGetSourceState@@YA?AW4nslSourceState@@W4nslSourceID@@@Z (nslSource.o)
+extern int nslIsWaveLooped(nslWaveID a);  // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z (nslCompat.o)
 
 // ea: 0x0060F1B0
 void CurveManager::Initialize()
@@ -607,6 +634,682 @@ unsigned int CurveManager::UInt32Lookup(unsigned char* data, unsigned int key,
     }
     return result;
 }
+
+// ea: 0x006421D0
+void CurveManager::Update(float tickDelta)
+{
+    if ((s_S44_4 & 1) == 0)
+    {
+        s_S44_4 |= 1u;
+        fsSound = AeHash("AbstractEffectSound");
+    }
+    if ((s_S44_4 & 2) == 0)
+    {
+        s_S44_4 |= 2u;
+        fsParticle = AeHash("AbstractEffectParticle");
+    }
+    if ((s_S44_4 & 4) == 0)
+    {
+        s_S44_4 |= 4u;
+        fsShakeAndRumble = AeHash("AbstractEffectShakeAndRumble");
+    }
+    if (EffectEventSys_sInst == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\CurveManager.cpp";
+        AeAssert::gCurrentLine = 794;
+        AeAssert::gCurrentExpr = "eeSys";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float* p_mRemainingTime = &this->mRemainingTime[0].mRemainingTime;
+    for (int i = 50; i != 0; --i)
+    {
+        float v7 = *p_mRemainingTime - tickDelta;
+        *p_mRemainingTime = v7;
+        if (v7 < 0.0f)
+            *p_mRemainingTime = 0.0f;
+        p_mRemainingTime += 3;
+    }
+    s_TestBuffer[0] = 0;
+
+    Curve* v8 = (Curve*)this->mCurveList.m_head;
+    Curve* k = v8 != nullptr ? (Curve*)v8->m_dlist_node.m_next : nullptr;
+    void* curTrackOffset = nullptr;
+    if (v8 != (Curve*)&this->mCurveList.m_end && k != nullptr)
+    {
+        while (1)
+        {
+            CurveEffectListElem* v10 =
+                (CurveEffectListElem*)v8->mEffectList.m_head;
+            CurveEffectListElem* v12 = v10 != nullptr
+                ? (CurveEffectListElem*)v10->m_dlist_node.m_next : nullptr;
+            if (v10 != (CurveEffectListElem*)&v8->mEffectList.m_tail
+                && v12 != nullptr)
+            {
+                do
+                {
+                    v10->mInUse = 0;
+                    v10 = v12;
+                    v12 = (CurveEffectListElem*)v12->m_dlist_node.m_next;
+                } while (v12 != nullptr);
+            }
+            unsigned int v13 = v8->mEntityHandle;
+            unsigned int v14 = v13 & 0xFFF;
+            if (v14 < 0x540
+                && v13 >> 12 == EntityHandleDb::sInst.mElements[v14].mKey)
+                curTrackOffset = EntityHandleDb::sInst.mElements[v14].mObject;
+            if (curTrackOffset != nullptr)
+                break;
+            reserved_dlist_Curve_erase(&this->mCurveList, v8);
+            CurveEffectListElem* v107 =
+                (CurveEffectListElem*)v8->mEffectList.m_head;
+            CurveEffectListElem* v108 =
+                (CurveEffectListElem*)&v8->mEffectList.m_tail;
+            CurveEffectListElem* v109 = v107 != nullptr
+                ? (CurveEffectListElem*)v107->m_dlist_node.m_next : nullptr;
+            if (v107 == v108)
+            {
+                v109 = nullptr;
+                v107 = nullptr;
+            }
+            while (v109 != nullptr)
+            {
+                CurveEffectListElem* v110 = v107;
+                CurveEffectListElem* v111 = v109;
+                v107 = v109;
+                v109 = (CurveEffectListElem*)v109->m_dlist_node.m_next;
+                (void)v111;
+                CurveEffectListElem::sAllocator->Release(v110);
+            }
+            v8->mEffectList.m_head = &v8->mEffectList.m_end;
+            v8->mEffectList.m_tail = &v8->mEffectList.m_head;
+            Curve::sAllocator->Release(v8);
+LABEL_192:
+            v8 = k;
+            if (k != nullptr)
+            {
+                Curve* v116 = (Curve*)k->m_dlist_node.m_next;
+                k = v116;
+                if (v116 != nullptr)
+                    continue;
+            }
+            break;
+        }
+        // Processing for the curve with a live entity (v8).
+        unsigned int v18 = 12;
+        unsigned int volumeOffset;
+        unsigned int condValue;
+        unsigned int typeOffsets[2];
+        typeOffsets[1] = v8->mEntityHandle;
+        float values[2];
+        CurveEffectListElem* effectIter;
+        unsigned int stringTableOffset;
+        unsigned int eventHash;
+        unsigned int trackName = (unsigned int)(uintptr_t)v8;
+        unsigned int conditions = (unsigned int)(uintptr_t)this;
+        void* itCurve;
+        void* citer;
+        unsigned int max;
+        float min;
+        unsigned int conditionsOffset;
+        unsigned int curTrack;
+        int v147 = 0;
+        {
+            unsigned int v15 = (unsigned int)(uintptr_t)v8->mCurveData;
+            effectIter = (CurveEffectListElem*)*(unsigned int*)(v15 + 4);
+            volumeOffset = *(unsigned int*)(v15 + 8);
+            condValue = 0;
+            if (volumeOffset == 0)
+                goto LABEL_174;
+        }
+LABEL_32:
+        {
+            Curve* v19 = (Curve*)trackName;
+            unsigned int v20 = (unsigned int)(uintptr_t)v19->mCurveData;
+            unsigned int v21 = *(unsigned int*)(v20 + v18 + 4);
+            values[0] = *(float*)(v20 + v18);
+            typeOffsets[0] = v18 + 8;
+            // KeyType property
+            unsigned int keyTypeHash = AeHash("KeyType");
+            unsigned int propCount = *(unsigned int*)(v20 + v21);
+            unsigned int* v27 = (unsigned int*)(v20 + v21 + 4);
+            unsigned int v26 = 0;
+            if (propCount != 0)
+            {
+                while (1)
+                {
+                    eventHash = v27[1];
+                    if (keyTypeHash == *v27)
+                        break;
+                    v27 += 2;
+                    if (++v26 >= propCount)
+                        goto LABEL_36;
+                }
+                *(unsigned int*)&values[1] = eventHash;
+                goto LABEL_38;
+            }
+LABEL_36:
+            values[1] = 0.0f;
+LABEL_38:
+            // Event property
+            unsigned int eventHashKey = AeHash("Event");
+            unsigned int eventCount = *(unsigned int*)(v20 + v21);
+            unsigned int* v33 = (unsigned int*)(v20 + v21 + 4);
+            unsigned int v32 = 0;
+            if (eventCount != 0)
+            {
+                while (1)
+                {
+                    eventHash = v33[1];
+                    if (eventHashKey == *v33)
+                        break;
+                    v33 += 2;
+                    if (++v32 >= eventCount)
+                        goto LABEL_41;
+                }
+                curTrack = eventHash;
+                goto LABEL_43;
+            }
+LABEL_41:
+            curTrack = 0;
+LABEL_43:
+            // Conditions property
+            unsigned int condHash = AeHash("Conditions");
+            unsigned int condCount = *(unsigned int*)(v20 + v21);
+            unsigned int* v39 = (unsigned int*)(v20 + v21 + 4);
+            unsigned int v38 = 0;
+            if (condCount != 0)
+            {
+                while (1)
+                {
+                    eventHash = v39[1];
+                    if (condHash == *v39)
+                        break;
+                    v39 += 8;
+                    if (++v38 >= condCount)
+                        goto LABEL_46;
+                }
+                max = eventHash;
+                goto LABEL_48;
+            }
+LABEL_46:
+            max = 0;
+LABEL_48:
+            // Volume property
+            unsigned int volHash = AeHash("Volume");
+            unsigned int volCount = *(unsigned int*)(v20 + v21);
+            unsigned int* v45 = (unsigned int*)(v20 + v21 + 4);
+            unsigned int v44 = 0;
+            if (volCount != 0)
+            {
+                while (1)
+                {
+                    eventHash = v45[1];
+                    if (volHash == *v45)
+                        break;
+                    v45 += 8;
+                    if (++v44 >= volCount)
+                        goto LABEL_51;
+                }
+                citer = (void*)eventHash;
+                goto LABEL_53;
+            }
+LABEL_51:
+            citer = nullptr;
+LABEL_53:
+            // Pitch property
+            unsigned int pitchHash = AeHash("Pitch");
+            unsigned int pitchCount = *(unsigned int*)(v20 + v21);
+            unsigned int* v51 = (unsigned int*)(v20 + v21 + 4);
+            unsigned int v50 = 0;
+            if (pitchCount != 0)
+            {
+                while (1)
+                {
+                    eventHash = v51[1];
+                    if (pitchHash == *v51)
+                        break;
+                    v51 += 8;
+                    if (++v50 >= pitchCount)
+                        goto LABEL_56;
+                }
+                itCurve = (void*)eventHash;
+                goto LABEL_58;
+            }
+LABEL_56:
+            itCurve = nullptr;
+LABEL_58:
+            float keyValue = CurveManager::EvaluateKey(
+                frameId, *(unsigned int*)((char*)v19 + 84),
+                *(unsigned int*)&values[1], *(unsigned int*)&values[0],
+                -1.0f);
+            eventHash = *(unsigned int*)&keyValue;
+            if (keyValue < 0.0f)
+                goto LABEL_173;
+            // Condition evaluation over the condition entries.
+            unsigned int condEntries = *(unsigned int*)(v20 + max);
+            unsigned int* v56 = (unsigned int*)(v20 + max + 8);
+            CurveEvalFunc* v54 =
+                (CurveEvalFunc*)this->mConditionEvaluators.m_head;
+            bool v55 = true;
+            unsigned int v147i = 0;
+            CurveEvalFunc* v130 = v54 != nullptr
+                ? (CurveEvalFunc*)v54->m_next : nullptr;
+            if (v54
+                    != (CurveEvalFunc*)&this->mConditionEvaluators.m_end
+                && v130 != nullptr)
+            {
+                do
+                {
+                    if (!v55)
+                        goto LABEL_145;
+                    if (v147i >= condEntries)
+                        break;
+                    for (unsigned int vi = 0; vi < condEntries; ++vi)
+                    {
+                        if (!v55)
+                            break;
+                        unsigned int v58 = v56[0];
+                        stringTableOffset = v56[1];
+                        min = *(float*)&v56[2];
+                        v56 += 4;
+                        if (v58 == (unsigned int)v54->mType)
+                        {
+                            if (v54->mFunc == nullptr)
+                            {
+                                v55 = false;
+                            }
+                            else
+                            {
+                                float result = v54->mFunc(
+                                    frameId, typeOffsets[1], v58,
+                                    stringTableOffset, *(unsigned int*)&min,
+                                    *(unsigned int*)&values[0]);
+                                if (stringTableOffset > min
+                                        && stringTableOffset > result
+                                    || min >= stringTableOffset
+                                        && (stringTableOffset > result
+                                            || result > min))
+                                    v55 = false;
+                                ++v147i;
+                            }
+                        }
+                    }
+                    if (v130 == nullptr)
+                        break;
+                    v54 = v130;
+                    v130 = (CurveEvalFunc*)v130->m_next;
+                } while (v130 != nullptr);
+                if (!v55)
+                {
+LABEL_145:
+                    // Kill effects that are no longer valid for this track.
+                    CurveEffectListElem* m_prev =
+                        (CurveEffectListElem*)v8->mEffectList.m_head;
+                    CurveEffectListElem* m_next = m_prev != nullptr
+                        ? (CurveEffectListElem*)m_prev->m_dlist_node.m_next
+                        : nullptr;
+                    if (m_prev != (CurveEffectListElem*)&v8->mEffectList.m_tail
+                        && m_next != nullptr)
+                    {
+                        do
+                        {
+                            if (m_prev->mOwner == *(unsigned int*)&values[0])
+                            {
+                                unsigned int mVal = m_prev->mSound.mVal;
+                                unsigned int v99 = mVal & 0xFFF;
+                                SoundDevice::Sound* v100 = nullptr;
+                                if (v99 < 0x200
+                                    && mVal >> 12
+                                        == SoundDevice::SoundHandleDb::sInst
+                                               .mElements[v99]
+                                               .mKey)
+                                    v100 = SoundDevice::SoundHandleDb::sInst
+                                               .mElements[v99]
+                                               .mObject;
+                                bool soundPlaying =
+                                    v100 != nullptr
+                                    && ((v100->mSource
+                                             != NSL_SOURCE_ID_INVALID
+                                         && ((nslGetSourceState(
+                                                  (nslSourceID)v100->mSource)
+                                                     == NSL_SOURCE_STATE_PLAYING
+                                             || nslGetSourceState(
+                                                    (nslSourceID)v100->mSource)
+                                                    == NSL_SOURCE_STATE_QUEUING
+                                             || nslGetSourceState(
+                                                    (nslSourceID)v100->mSource)
+                                                    == NSL_SOURCE_STATE_QUEUED
+                                             || nslGetSourceState(
+                                                    (nslSourceID)v100->mSource)
+                                                    == NSL_SOURCE_STATE_PAUSED))
+                                         || v100->mPaused)
+                                        && nslIsWaveLooped(
+                                               (nslWaveID)v100->mWave) != 0);
+                                if (v100 == nullptr || soundPlaying)
+                                {
+                                    unsigned int v102 = m_prev->mSound.mVal
+                                                        & 0xFFF;
+                                    if (v102 < 0x200)
+                                    {
+                                        unsigned int v103 =
+                                            m_prev->mSound.mVal >> 12;
+                                        if (v103
+                                                == SoundDevice::SoundHandleDb::
+                                                       sInst
+                                                           .mElements[v102]
+                                                           .mKey
+                                            && SoundDevice::SoundHandleDb::
+                                                   sInst
+                                                       .mElements[v102]
+                                                       .mObject
+                                                != nullptr)
+                                        {
+                                            SoundDevice::Sound* mObject =
+                                                nullptr;
+                                            if ((m_prev->mSound.mVal & 0xFFF)
+                                                    < 0x200
+                                                && v103
+                                                    == SoundDevice::
+                                                           SoundHandleDb::
+                                                               sInst
+                                                                   .mElements
+                                                                       [v102]
+                                                                       .mKey)
+                                                mObject =
+                                                    SoundDevice::SoundHandleDb::
+                                                        sInst
+                                                            .mElements[v102]
+                                                            .mObject;
+                                            mObject->Stop();
+                                        }
+                                    }
+                                    reserved_dlist_CurveEffectListElem_erase(
+                                        &v8->mEffectList, m_prev);
+                                    CurveEffectListElem::sAllocator->Release(
+                                        m_prev);
+                                }
+                                else
+                                {
+                                    v100->SetVolume(m_prev->mEffectParams[0]);
+                                    v100->SetPitch(m_prev->mEffectParams[1]);
+                                }
+                                m_next = effectIter;
+                            }
+                            if (m_next == nullptr)
+                                break;
+                            m_prev = m_next;
+                            m_next = (CurveEffectListElem*)
+                                m_next->m_dlist_node.m_next;
+                            effectIter = m_next;
+                        } while (m_next != nullptr);
+                    }
+                    goto LABEL_173;
+                }
+            }
+            // Volume/Pitch track interpolation.
+            float tracks[2] = { -1.0f, -1.0f };
+            if ((s_S44_4 & 8) == 0)
+            {
+                s_S44_4 |= 8u;
+                types[0] = AeHash("Volume");
+                types[1] = AeHash("Pitch");
+            }
+            unsigned char* v61 = v8->mCurveData;
+            float v62 = *(float*)&eventHash;
+            unsigned int v123[2];
+            v123[0] = (unsigned int)(uintptr_t)citer;
+            v123[1] = (unsigned int)(uintptr_t)itCurve;
+            unsigned int v147t = 0;
+            do
+            {
+                unsigned int v63 = *(unsigned int*)((char*)v123 + v147t);
+                unsigned int v64 = *(unsigned int*)(v61 + v63);
+                float v65 = *(float*)(v61 + v63 + 4);
+                float v66 = *(float*)(v61 + v63 + 8);
+                unsigned int v68 = 0;
+                if (v64 == 0)
+                    goto LABEL_97;
+                float* v69 = (float*)(v61 + v63 + 4);
+                float v70;
+                float v71;
+                while (1)
+                {
+                    v70 = *v69;
+                    v71 = v69[1];
+                    if (v62 == *v69)
+                    {
+                        *(float*)((char*)tracks + v147t) = v71;
+                        goto LABEL_97;
+                    }
+                    if (v62 >= v65 && v70 > v62)
+                        break;
+                    v69 += 2;
+                    ++v68;
+                    v65 = v70;
+                    v66 = v71;
+                    if (v68 >= v64)
+                        goto LABEL_97;
+                }
+                *(float*)((char*)tracks + v147t) =
+                    (((v62 - v65) / v70) * (v71 - v66)) + v66;
+LABEL_97:
+                if (*(float*)((char*)tracks + v147t) < 0.0f)
+                    *(float*)((char*)tracks + v147t) = 1.0f;
+                if (tracks[1] < 0.0f)
+                    tracks[1] = 1.0f;
+                v147t += 4;
+            } while (v147t != 8);
+            // Update existing effects for this track.
+            CurveEffectListElem* v73 =
+                (CurveEffectListElem*)v8->mEffectList.m_head;
+            bool needNewEffect = true;
+            CurveEffectListElem* v128 = v73 != nullptr
+                ? (CurveEffectListElem*)v73->m_dlist_node.m_next : nullptr;
+            if (v73 != (CurveEffectListElem*)&v8->mEffectList.m_tail
+                && v128 != nullptr)
+            {
+                while (1)
+                {
+                    if (v73 == nullptr
+                        || v73->mOwner != *(unsigned int*)&values[0])
+                        goto LABEL_128;
+                    unsigned int v74 = v73->mSound.mVal;
+                    unsigned int v75 = v74 & 0xFFF;
+                    needNewEffect = false;
+                    v73->mInUse = 1;
+                    SoundDevice::Sound* v76 = nullptr;
+                    if (v75 < 0x200
+                        && v74 >> 12
+                            == SoundDevice::SoundHandleDb::sInst
+                                   .mElements[v75]
+                                   .mKey)
+                        v76 = SoundDevice::SoundHandleDb::sInst
+                                  .mElements[v75]
+                                  .mObject;
+                    if (v76 != nullptr)
+                    {
+                        if (v76->mSource != NSL_SOURCE_ID_INVALID)
+                        {
+                            nslSourceState v77 =
+                                nslGetSourceState((nslSourceID)v76->mSource);
+                            if (v77 == NSL_SOURCE_STATE_PLAYING
+                                || v77 == NSL_SOURCE_STATE_QUEUING
+                                || v77 == NSL_SOURCE_STATE_QUEUED
+                                || v77 == NSL_SOURCE_STATE_PAUSED)
+                            {
+                                v76->SetVolume(tracks[0]);
+                                v76->SetPitch(tracks[1]);
+                                math::Position3 pos =
+                                    *(math::Position3*)((char*)curTrackOffset
+                                                        + 336);
+                                v76->SetPosition(pos);
+                                goto LABEL_128;
+                            }
+                        }
+                        unsigned int v80 = v73->mSound.mVal & 0xFFF;
+                        if (v80 < 0x200)
+                        {
+                            unsigned int v81 = v73->mSound.mVal >> 12;
+                            if (v81
+                                    == SoundDevice::SoundHandleDb::sInst
+                                           .mElements[v80]
+                                           .mKey
+                                && SoundDevice::SoundHandleDb::sInst
+                                       .mElements[v80]
+                                       .mObject
+                                    != nullptr)
+                            {
+                                SoundDevice::Sound* v82 = nullptr;
+                                if ((v73->mSound.mVal & 0xFFFu) < 0x200
+                                    && v81
+                                        == SoundDevice::SoundHandleDb::sInst
+                                               .mElements[v80]
+                                               .mKey)
+                                    v82 = SoundDevice::SoundHandleDb::sInst
+                                              .mElements[v80]
+                                              .mObject;
+                                v82->Stop();
+                            }
+                        }
+                        reserved_dlist_CurveEffectListElem_erase(
+                            &v8->mEffectList, v73);
+                        CurveEffectListElem::sAllocator->Release(v73);
+                    }
+                    else
+                    {
+                        v73->mInUse = 0;
+                    }
+                    needNewEffect = true;
+LABEL_128:
+                    v73 = v128;
+                    if (v128 != nullptr)
+                    {
+                        v128 = (CurveEffectListElem*)
+                            v128->m_dlist_node.m_next;
+                        if (v128 != nullptr)
+                            continue;
+                    }
+                    break;
+                }
+            }
+            if (needNewEffect)
+            {
+LABEL_131:
+                unsigned int v83 = (unsigned int)(uintptr_t)v8->mCurveData;
+                unsigned int v84 =
+                    *(unsigned int*)(v83 + (uintptr_t)effectIter);
+                unsigned int v85 = 0;
+                if (v84 != 0)
+                {
+                    unsigned int* v86 =
+                        (unsigned int*)(v83 + (uintptr_t)effectIter + 4);
+                    unsigned int v87;
+                    while (1)
+                    {
+                        v87 = v86[1];
+                        if (curTrack == *v86)
+                            break;
+                        v86 += 2;
+                        if (++v85 >= v84)
+                            goto LABEL_173;
+                    }
+                    if (v87 != 0)
+                    {
+                        unsigned int v88 = v8->mEntityHandle;
+                        unsigned int v89 = v88 & 0xFFF;
+                        if (v89 < 0x540
+                            && v88 >> 12
+                                == EntityHandleDb::sInst.mElements[v89].mKey
+                            && EntityHandleDb::sInst.mElements[v89].mObject
+                                != nullptr)
+                        {
+                            math::Position3 zeroPos;
+                            math::Dir3 zeroDir;
+                            zeroPos.v = _mm_setzero_ps();
+                            zeroDir.v = _mm_setzero_ps();
+                            DbLinkedHandle<SoundDevice::SoundHandleDb,
+                                           SoundDevice::Sound>
+                                handle = SoundDevice::sInst->PlaySound(
+                                    (const char*)(v83 + v87),
+                                    DbLinkedHandle<EntityHandleDb, Entity>(),
+                                    false, false, zeroPos, zeroDir, -1.0f,
+                                    -1.0f, -1.0f, -1.0f);
+                            if (handle.mHandle.mVal != 0)
+                            {
+                                CurveEffectListElem* v91 =
+                                    (CurveEffectListElem*)
+                                        CurveEffectListElem::sAllocator
+                                            ->Allocate(0x1C, false);
+                                if (v91 != nullptr)
+                                {
+                                    v91->m_dlist_node.m_next = nullptr;
+                                    v91->m_dlist_node.m_prev = nullptr;
+                                    v91->mSound.mVal = 0;
+                                    v91->mOwner = 0;
+                                }
+                                else
+                                {
+                                    v91 = nullptr;
+                                }
+                                v91->mOwner = *(unsigned int*)&values[0];
+                                v91->mInUse = 1;
+                                v91->mSound.mVal = handle.mHandle.mVal;
+                                CurveEffectListElem* v92 =
+                                    (CurveEffectListElem*)
+                                        v8->mEffectList.m_head;
+                                v91->m_dlist_node.m_prev =
+                                    v92->m_dlist_node.m_prev;
+                                v91->m_dlist_node.m_next =
+                                    (CurveNode*)v92;
+                                v92->m_dlist_node.m_prev =
+                                    (CurveNode*)v91;
+                                v8->mEffectList.m_head = v91;
+                                ++v8->mEffectList.m_size;
+                                v91->mEffectParams[0] = tracks[0];
+                                v91->mEffectParams[1] = tracks[1];
+                            }
+                        }
+                    }
+                }
+            }
+LABEL_173:
+            if (++condValue >= volumeOffset)
+            {
+LABEL_174:
+                // Remove effects that were not kept alive this frame.
+                CurveEffectListElem* v105 =
+                    (CurveEffectListElem*)v8->mEffectList.m_head;
+                CurveEffectListElem* v106 = v105 != nullptr
+                    ? (CurveEffectListElem*)v105->m_dlist_node.m_next
+                    : nullptr;
+                if (v105
+                        != (CurveEffectListElem*)&v8->mEffectList.m_tail
+                    && v106 != nullptr)
+                {
+                    do
+                    {
+                        if (v105 != nullptr && v105->mInUse == 0)
+                        {
+                            reserved_dlist_CurveEffectListElem_erase(
+                                &v8->mEffectList, v105);
+                            CurveEffectListElem::sAllocator->Release(v105);
+                        }
+                        v105 = v106;
+                        v106 = (CurveEffectListElem*)
+                            v106->m_dlist_node.m_next;
+                    } while (v106 != nullptr);
+                }
+                goto LABEL_192;
+            }
+            v18 = typeOffsets[0];
+            goto LABEL_32;
+        }
+    }
+    ++frameId;
+}
+
 static BaseCmdFuncInfo* cmd_functions;      // ?cmd_functions (game.o)
 static BaseCmdFuncInfo* sv_cmd_functions;   // ?sv_cmd_functions (game.o)
 
