@@ -1458,7 +1458,7 @@ extern void* gCamera;
 struct XAnimTree;
 extern bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs);
 extern struct cgs_t* cgs;
-extern int fireSide;
+int fireSide;
 extern void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* info);
 extern int CG_StartAnimBlend(int weaponNum, DObj* dobj, int toAnimIndex,
                              unsigned int fromAnimIndex, float blendTime);

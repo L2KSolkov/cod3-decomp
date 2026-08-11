@@ -42,7 +42,7 @@ extern int           SightTraceXFormed(int hitNum, const math::Position3& start,
 extern const math::Position3& Float4_Zero_2;
 extern const math::Position3& Float4_One_2;
 float         threshold;
-extern int           loc_800000;
+int           loc_800000;
 
 // Collision-model helpers (unported game objects provide definitions later)
 extern void          CM_LinkEntity(EntityShared* ent,
@@ -139,12 +139,12 @@ static Entity* HandleDbDeref(const DbLinkedHandle<EntityHandleDb, Entity>& h) {
 }
 
 // sv_world.cpp statics
-extern math::Position3 actorProneLocationalMins;
-extern math::Position3 actorProneLocationalMaxs;
-extern math::Position3 actorCrouchLocationalMins;
-extern math::Position3 actorCrouchLocationalMaxs;
-extern math::Position3 actorLocationalMins;
-extern math::Position3 actorLocationalMaxs;
+math::Position3 actorProneLocationalMins;   // ?actorProneLocationalMins@@3VPosition3@math@@A (game.o)
+math::Position3 actorProneLocationalMaxs;   // ?actorProneLocationalMaxs@@3VPosition3@math@@A (game.o)
+math::Position3 actorCrouchLocationalMins;  // ?actorCrouchLocationalMins@@3VPosition3@math@@A (game.o)
+math::Position3 actorCrouchLocationalMaxs;  // ?actorCrouchLocationalMaxs@@3VPosition3@math@@A (game.o)
+math::Position3 actorLocationalMins;        // ?actorLocationalMins@@3VPosition3@math@@A (game.o)
+math::Position3 actorLocationalMaxs;        // ?actorLocationalMaxs@@3VPosition3@math@@A (game.o)
 
 // ============================================================================
 // DObjTrace_s Ã¢â‚¬â€ DObj traceline results (fields used by SV_PointTraceToEntity)

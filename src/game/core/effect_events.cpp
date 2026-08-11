@@ -166,7 +166,7 @@ extern unsigned int SoundDevice_FindWave(void* sInst, const char* name);
 extern void* AddLight(TPakId pakId, int type, math::Position3* pos, int time);
 extern void LightEffect_SetColor(void* light, float r, float g, float b,
                                  float a);
-extern bool g_indoor;  // 0x00F00E7D
+bool g_indoor;  // 0x00F00E7D
 extern const char* s_RifleIndoorSound;  // 0x00DD8A38
 extern int dword_F6355C[4 * 1580];  // per-client table (stride 1580 dwords)
 extern void* Entity_GetViewModelDObj(Entity* ent);

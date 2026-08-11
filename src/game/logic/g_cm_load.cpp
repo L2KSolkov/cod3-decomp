@@ -409,7 +409,7 @@ int CM_AreasConnected(int area1, int area2)
 // Plane / alloc / temp box helpers
 // ============================================================================
 phys_memory_heap g_cmgr_allocater;  // ?g_cmgr_allocater@@3Vphys_memory_heap@@A (game.o @ 0x13401D0)
-extern DCGSet* gBoxDCGSet;                 // ?gBoxDCGSet@@3PAVDCGSet@@A
+DCGSet* gBoxDCGSet = nullptr;              // ?gBoxDCGSet@@3PAVDCGSet@@A (g.o)
 char cmgr_memory_buffer[0x400];            // ?cmgr_memory_buffer@@3PADA (game.o)
 extern bool tlScratchpadLocked;            // ?tlScratchpadLocked@@3_NA
 bool g_in_cmgr_mem_context;         // ?g_in_cmgr_mem_context@@3_NA

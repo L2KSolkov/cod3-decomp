@@ -67,9 +67,9 @@ struct localEntity_t {
     localEntity_t* next;  // +0x00
     localEntity_t* prev;  // +0x04
 };
-extern localEntity_t* cg_localEntities[128];
-extern localEntity_t cg_activeLocalEntities;
-extern localEntity_t* cg_freeLocalEntities;
+localEntity_t* cg_localEntities[128];  // ?cg_localEntities@@3PAPAUlocalEntity_t@@A (cg.o)
+localEntity_t cg_activeLocalEntities;  // ?cg_activeLocalEntities@@3UlocalEntity_t@@A (cg.o)
+localEntity_t* cg_freeLocalEntities = nullptr;  // ?cg_freeLocalEntities@@3PAUlocalEntity_t@@A (cg.o)
 
 struct _cmd_t {
     unsigned int hVal;  // +0x00

@@ -49,7 +49,7 @@ extern int cl_aADS[4];       // ?cl_aADS@@3PAHA (cl.o)
 extern const char* BG_GetWeaponSlotNameForIndex(unsigned int iSlot);  // game.o 0x6072B0
 extern vmCvar_t bg_nofatigue;  // ?bg_nofatigue@@3UvmCvar_t@@A (game.o)
 extern vmCvar_t g_gravity;     // ?g_gravity@@3UvmCvar_t@@A
-extern weaponFileInfo_t** bg_weaponInfo;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
+weaponFileInfo_t** bg_weaponInfo = nullptr;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
 extern const char** pEventNamesList;      // ?pEventNamesList@@3PAPBDA (game.o)
 extern const char* szWeapTypeNames[9];    // ?szWeapTypeNames@@3PAPBDA (game.o)
 extern Entity* GetPlayer(int idx);        // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
@@ -137,7 +137,7 @@ extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
 extern Handle PostEffectEventWeaponReload(const Entity* ent,
                                           const char* weaponType,
                                           int weaponAction, bool queue);
-extern int bg_iNumWeapons;    // ?bg_iNumWeapons@@3HA (game.o)
+int bg_iNumWeapons;    // ?bg_iNumWeapons@@3HA (game.o)
 extern char gDisableLMGHipFire;  // game.o @ 0xF4EBFC
 extern void* EffectEventSys_GetActiveEffectSet(void* sInst,
                                                unsigned int handle);
@@ -2815,7 +2815,7 @@ LABEL_15:
 // ============================================================================
 // Pmove / PmoveSingle - ea: 0x6464C0 / 0x645CD0 (bg_pmove.cpp)
 // ============================================================================
-extern int c_pmove;   // ?c_pmove@@3HA (game.o)
+int c_pmove;   // ?c_pmove@@3HA (game.o)
 void PM_CheckDuck();                        // game.o 0x644B80
 extern void PmoveSingle(pmove_t* pmove,
                         bool isThisThePredictStep);  // game.o 0x645CD0
@@ -5483,10 +5483,10 @@ void BG_FreeWeaponInfo()
 // ============================================================================
 // Weapon/ammo info helpers (bg_weapons.cpp)
 // ============================================================================
-extern int bg_iNumWeapons;          // ?bg_iNumWeapons@@3HA (game.o)
-extern int bg_iNumAmmoTypes;        // ?bg_iNumAmmoTypes@@3HA (game.o)
-extern int bg_iNumWeapClips;        // ?bg_iNumWeapClips@@3HA (game.o)
-extern int bg_iNumSharedAmmoCaps;   // ?bg_iNumSharedAmmoCaps@@3HA (game.o)
+extern int bg_iNumWeapons;   // ?bg_iNumWeapons@@3HA (game.o)
+int bg_iNumAmmoTypes;        // ?bg_iNumAmmoTypes@@3HA (game.o)
+int bg_iNumWeapClips;        // ?bg_iNumWeapClips@@3HA (game.o)
+int bg_iNumSharedAmmoCaps;   // ?bg_iNumSharedAmmoCaps@@3HA (game.o)
 int bg_iWeapAmmoMaxs[4 * 1580];     // ?bg_iWeapAmmoMaxs@@3PAHA (game.o)
 int bg_iWeapClipSizes[4 * 1580];    // ?bg_iWeapClipSizes@@3PAHA (game.o)
 int bg_iSharedAmmoCaps[4 * 1580];   // ?bg_iSharedAmmoCaps@@3PAHA (game.o)

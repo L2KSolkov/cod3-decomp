@@ -15,7 +15,7 @@
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void  tlMemFree(void* ptr);
 
-extern int g_uniqueEntityIndex;  // ?g_uniqueEntityIndex@@3HA (game.o @ 0xF4F444)
+int g_uniqueEntityIndex;  // ?g_uniqueEntityIndex@@3HA (game.o @ 0xF4F444)
 
 // ============================================================================
 // Stat monitor (StatMon_*.cpp)
@@ -3077,7 +3077,7 @@ struct PakManagerView {
     uint8_t      _pad[0x40];
     PakFileView* mSlots[0x63];  // +0x40 (100 slots)
 };
-extern ELanguage gLanguage;               // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4
+ELanguage gLanguage;                      // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4
 
 // ea: 0x00639630
 void AudioBankMgr::LoadWbk(const tlFixedString& name, bool async)
@@ -4143,7 +4143,7 @@ extern void nslSetListenerOrientation(const float* a,
                                       const float* b);       // ?nslSetListenerOrientation@@YAXQBM0@Z
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);  // core.o
 extern int nslInit(const void* ip);                          // ?nslInit@@YAHPBUnslInitParams@@@Z (returns work size)
-extern unsigned char nsl_initParams[0x44];                   // ?nsl_initParams@@3UnslInitParams@@A @ 0xE4B680
+unsigned char nsl_initParams[0x44];                          // ?nsl_initParams (nsl.o @ 0xE4B680)
 extern void nslStart(void* work);                            // ?nslStart@@YAXPAX@Z
 extern void nslExit();                                       // ?nslExit@@YAXXZ
 extern const char* nslGetWaveGroup(nslWaveID wave);          // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z

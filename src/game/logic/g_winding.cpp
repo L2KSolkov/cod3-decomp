@@ -32,8 +32,8 @@ struct winding_t {
     float p[1][3];     // +0x04
 };
 
-extern int c_active_windings;   // ?c_active_windings@@3HA (game.o)
-extern int c_peak_windings;     // ?c_peak_windings@@3HA (game.o)
+int c_active_windings;   // ?c_active_windings@@3HA (game.o)
+int c_peak_windings;     // ?c_peak_windings@@3HA (game.o)
 extern void* _Z_MallocInternal(unsigned int size);  // core.o
 extern void  _Z_FreeInternal(void* ptr);            // core.o
 extern void  Com_Memcpy(char* dest, char* src, int count);

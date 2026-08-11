@@ -34,6 +34,8 @@ const char* gCurrentFile = "";
 int gCurrentLine = 0;
 const char* gCurrentExpr = "";
 int num_ignored_asserts = 0;
+bool gInAssert = false;        // ?gInAssert@AeAssert@@3_NA (core_xboxr:AeAssert.o)
+bool gAssertsEnabled = true;   // ?gAssertsEnabled@AeAssert@@3_NA (core_xboxr:AeAssert.o)
 
 // Ignored assert table — matches by file + line + optional expression
 struct IgnoredAssert {

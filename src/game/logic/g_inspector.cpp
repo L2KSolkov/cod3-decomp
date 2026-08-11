@@ -980,9 +980,9 @@ extern int g_useOnScreenSoundDebugging;         // ?g_useOnScreenSoundDebugging@
 extern int g_useOnScreenSoundPosDebugging;      // ?g_useOnScreenSoundPosDebugging@@3HA (game2.o)
 extern int g_displaySoundRamUsage;              // ?g_displaySoundRamUsage@@3HA (game2.o)
 extern vmCvar_t sound_debug;                    // ?sound_debug@@3UvmCvar_t@@A (g.o)
-extern int s_reverbPresetId;        // 0xF0497C (game2.o)
-extern int s_reverbPresetDisplay;   // 0xF04974 (game2.o)
-extern int s_lastReverbPresetId;    // 0xF04978 (game2.o)
+int s_reverbPresetId;        // 0xF0497C (game2.o)
+int s_reverbPresetDisplay;   // 0xF04974 (game2.o)
+int s_lastReverbPresetId;    // 0xF04978 (game2.o)
 const char* s_reverbPresetStr[26];  // ?s_reverbPresetStr (game2.o @ 0xDD9298)
 float startx;  // 0xDEF1AC
 float starty;  // 0xDEF1A8
@@ -1096,7 +1096,7 @@ struct cdSimpleAlphaDebug {
 };
 static_assert(sizeof(cdSimpleAlphaDebug) == 0x40,
               "cdSimpleAlphaDebug size mismatch");
-extern cdSimpleAlphaDebug g_cdSimpleAlphaDebug;  // ?g_cdSimpleAlphaDebug@@3UcdSimpleAlphaDebug@@A
+cdSimpleAlphaDebug g_cdSimpleAlphaDebug;  // ?g_cdSimpleAlphaDebug@@3UcdSimpleAlphaDebug@@A (render.o)
 
 // ============================================================================
 // InspectorManager::AddAimAssistMenus - ea: 0x4F0C00

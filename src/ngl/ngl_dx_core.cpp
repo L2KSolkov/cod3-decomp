@@ -82,6 +82,9 @@ const _D3DVERTEXSHADERINPUT nglGpuPCVertexElements[16] = {};    // ?nglGpuPCVert
 const _D3DVERTEXSHADERINPUT nglGpuPCUVVertexElements[16] = {};  // ?nglGpuPCUVVertexElements (ngl_gpu.o)
 const _D3DVERTEXSHADERINPUT nglGpuPUVVertexElements[16] = {};   // ?nglGpuPUVVertexElements (ngl_gpu.o)
 const _D3DVERTEXSHADERINPUT nglGpuPUV4VertexElements[16] = {};  // ?nglGpuPUV4VertexElements (ngl_gpu.o)
+gpuVertexFormat nglGpuPCVertexFmt;    // ?nglGpuPCVertexFmt (ngl_gpu.o)
+gpuVertexFormat nglGpuPUVVertexFmt;   // ?nglGpuPUVVertexFmt (ngl_gpu.o)
+gpuVertexFormat nglGpuPUV4VertexFmt;  // ?nglGpuPUV4VertexFmt (ngl_gpu.o)
 
 // ============================================================================
 // Cross-object externs

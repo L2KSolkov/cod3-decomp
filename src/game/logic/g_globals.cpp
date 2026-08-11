@@ -156,7 +156,6 @@ int iWeaponInfoSource;           // ?iWeaponInfoSource@@3HA (g.o)
 int gEnableMeshFlash;            // ?gEnableMeshFlash (g.o; _NA in binary)
 int gLockMeshList;               // ?gLockMeshList (g.o; _NA in binary)
 int gNflMediaId;                 // ?gNflMediaId (g.o; enum nflMediaID in binary)
-int gLanguage;                   // ?gLanguage (g.o; enum ELanguage in binary)
 int g_networkOwner;              // ?g_networkOwner (g.o; enum ThreadOwner in binary)
 int gTurretState;                // ?gTurretState@@3HA (g.o)
 int sEntryPointSeatAssociation[4];  // ?sEntryPointSeatAssociation@@3PAHA (g.o)
@@ -174,6 +173,11 @@ cspField_t s_vehicleFields[73];     // ?s_vehicleFields@@3PAUcspField_t@@A (g.o 
 turretInfo_t turretInfo[1];         // ?turretInfo@@3PAUturretInfo_t@@A (g.o @ 0xED9E08)
 gitem_s bg_itemlist[137];           // ?bg_itemlist@@3PAUgitem_s@@A (game.o @ 0x13413C0)
 sentient_s g_sentients[16];         // ?g_sentients@@3PAUsentient_s@@A (g.o)
+Client g_clients[16];               // ?g_clients@@3PAUClient@@A (g.o)
+CVarTable gameCvarTable[32];        // ?gameCvarTable@@3PAUCVarTable@@A (g.o @ 0x11C4CF8)
+ClientCmdPair sClientCommand0List[24];  // ?sClientCommand0List@@3PAUClientCmdPair@@A (g.o .rdata)
+ClientCmdPair sClientCommand1List[15];  // ?sClientCommand1List@@3PAUClientCmdPair@@A (g.o .rdata)
+vehicleAnimMap_t* vehicleAnimMaps[6];  // ?vehicleAnimMaps@@3PAPAUvehicleAnimMap_t@@A (g.o @ 0xDD6E6C)
 // --- bool/char/float scalar data sweep ---
 bool gNoTargetEnabled;              // ?gNoTargetEnabled@@3_NA (g.o)
 bool no_really_delete_it;           // ?no_really_delete_it@@3_NA (g.o)
@@ -196,12 +200,19 @@ float spacing;                      // ?spacing@@3MA (render.o)
 float textOffset;                   // ?textOffset@@3MA (render.o)
 float textScale;                    // ?textScale@@3MA (render.o)
 float tickWidth;                    // ?tickWidth@@3MA (render.o)
+const math::Position3 actorMaxs = {};  // ?actorMaxs@@3VPosition3@math@@B (mp_actors.o)
+const math::Position3 actorMins = {};  // ?actorMins@@3VPosition3@math@@B (mp_actors.o)
+HashString sDamageStr_0;            // ?sDamageStr_0@@3VHashString@@A (g.o)
+int gameCvarTableSize;              // ?gameCvarTableSize@@3HA (g.o)
 int dword_DD67B8;                   // ?dword_DD67B8@@3HA (g.o @ 0xDD67B8)
 int dword_DD67BC;                   // ?dword_DD67BC@@3HA (g.o @ 0xDD67BC)
 int dword_DD67C0;                   // ?dword_DD67C0@@3HA (g.o @ 0xDD67C0)
 int dword_DD67C4;                   // ?dword_DD67C4@@3HA (g.o @ 0xDD67C4)
 int dword_DD67C8;                   // ?dword_DD67C8@@3HA (g.o @ 0xDD67C8)
 int dword_EA53C8;                   // ?dword_EA53C8@@3HA (g.o @ 0xEA53C8)
+int TAG_WHEEL_FRONT_LEFT = 0;       // ?TAG_WHEEL_FRONT_LEFT@@3HA (g.o)
+int TAG_WHEEL_FRONT_RIGHT = 0;      // ?TAG_WHEEL_FRONT_RIGHT@@3HA (g.o)
+int render = 0;                     // ?render@@3HA (g.o @ 0xDD725C)
 cFreeList<trRefEntity> gRefEntFreeList;   // ?gRefEntFreeList@@3V?$cFreeList@VtrRefEntity@@@@A (g.o)
 cFreeList<DObj> gDObjFreeList;            // ?gDObjFreeList@@3V?$cFreeList@VDObj@@@@A (g.o)
 cFreeList<void> gDSkelFreeList;           // ?gDSkelFreeList@@3V?$cFreeList@X@@A (g.o)
@@ -253,6 +264,7 @@ TestFPS* TestFPS::sInst;                     // ?sInst@TestFPS@@2PAV1@A
 TimerRenderBars TimerRenderBars::sInst;      // ?sInst@TimerRenderBars@@0V1@A
 TaskSys* TaskSys::sInst;                     // ?sInst@TaskSys@@0V1@A
 void* DynamicDecalMgr::sInst;                // ?sInst@DynamicDecalMgr@@2PAV1@A
+cvar_t* StatusBar::sStatusBarActive = nullptr;  // ?sStatusBarActive@StatusBar@@3PAUcvar_t@@A
 ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;

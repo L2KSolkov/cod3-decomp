@@ -12,7 +12,6 @@ public:
     static PakManager* sInst;
 };  // ?sInst@PakManager@@2PAV1@A
 
-
 extern unsigned int AeHash(const char* str);
 extern unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key);
 extern void* InplaceAssetBank_Index(void* bank, int i);
@@ -208,9 +207,8 @@ void STBManager::DecodeBank(const char* name, unsigned char* data, int size,
 void DecodeConfigStrings(const char* name, unsigned char* data, int size,
                          TPakId pakId)
 {
-    extern void* ConfigStringManager_sInst;
     InplaceAssetBank_Fixup_ConfigString(data);
-    InplaceAssetBankSet_AddBank_ConfigString(ConfigStringManager_sInst, pakId,
+    InplaceAssetBankSet_AddBank_ConfigString(ConfigStringManager::sInst, pakId,
                                              data);
 }
 

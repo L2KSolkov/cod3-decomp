@@ -682,6 +682,7 @@ static_assert(sizeof(ConfigStringBank) == 0x1C, "ConfigStringBank size mismatch"
 
 struct ConfigStringManager {
     unsigned char mData[0x190];  // InplaceAssetBankSet<ConfigStringBank>
+    static ConfigStringManager* sInst;  // ?sInst@ConfigStringManager@@2PAV1@A (core.o @ 0x12F039C)
     void DecodeBank(const char* name, ConfigStringBank* data, int size,
                     TPakId pakId);
     ConfigStringPtr GetConfigString(TPakId pakId, const char* name,

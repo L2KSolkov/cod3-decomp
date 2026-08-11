@@ -32,10 +32,10 @@ extern int CL_ShutdownDebugData(void);
 extern void R_ShutdownDebug(void);
 extern void R_InitDebug(void);
 extern cvar_t* com_sv_running;
-extern bool gQuickStart;
+bool gQuickStart;
 extern bool gReturnToMenu;
-extern bool gIsWorkspaceMap;
-extern bool gDoNotPlayCampaignMovies;
+bool gIsWorkspaceMap;
+bool gDoNotPlayCampaignMovies;
 extern int  g_networkOwner;
 extern VehicleNodeAllocator g_vehicleNodeManager;  // ?g_vehicleNodeManager@@3VVehicleNodeAllocator@@A (g.o)
 extern int  SV_RestartGameProgs(int savegame);

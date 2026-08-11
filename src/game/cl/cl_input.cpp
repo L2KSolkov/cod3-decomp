@@ -147,9 +147,9 @@ extern bool CL_IsADS(int client);
 extern void GamePause_SetGamePaused(int client, bool paused);
 bool gGrenadeCanBePickedUp;
 bool gCookingLiveGrenade;
-extern int cl_analogStickLean_integer;
-extern int cl_freelook_integer;
-extern int cl_binocButtonDown_integer;
+int cl_analogStickLean_integer;
+int cl_freelook_integer;
+int cl_binocButtonDown_integer;
 
 struct EntityView {
     void* client;

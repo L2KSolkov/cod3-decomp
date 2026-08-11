@@ -2499,6 +2499,10 @@ extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
 extern vmCvar_t cg_fov;
 extern vmCvar_t cg_widescreen;
 float gZoomRatio;
+float maxClamp[3];    // ?maxClamp (cg.o)
+float maxClamp_0[3];  // ?maxClamp_0 (cg.o)
+float minClamp[3];    // ?minClamp (cg.o)
+float minClamp_0[3];  // ?minClamp_0 (cg.o)
 struct Camera;
 extern struct Camera* gCamera;
 

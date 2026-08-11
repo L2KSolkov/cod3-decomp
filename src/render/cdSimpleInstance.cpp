@@ -9,6 +9,8 @@
 // ============================================================================
 #include "cdSimpleInstance.h"
 
+cdSimpleInstanceShader* gCDSimpleInstanceShader = nullptr;  // ?gCDSimpleInstanceShader (render_xboxr @ 0x10DE008)
+
 #include <intrin.h>
 
 // ============================================================================

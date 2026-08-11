@@ -32,13 +32,13 @@ class nalGenericPose;
 // Cross-object externs
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern void tlMemFree(void* ptr);
-extern int default_apk_size;    // ?default_apk_size (game2.o)
-extern unsigned char default_apk[];  // ?default_apk (game2.o)
-extern unsigned char* default_pak_buf;  // ?default_pak_buf (game2.o)
-extern bool gMissionDataInitialized;    // ?gMissionDataInitialized (game2.o)
+int default_apk_size;    // ?default_apk_size (game2.o)
+unsigned char default_apk[0x40000];  // ?default_apk (game2.o)
+unsigned char* default_pak_buf = nullptr;  // ?default_pak_buf (game2.o)
+bool gMissionDataInitialized;    // ?gMissionDataInitialized (game2.o)
 extern void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
                                 void* params);  // ?BrocAddEntityThread (scr.o)
-extern bool gTotalResetOfLevel;         // ?gTotalResetOfLevel (game2.o)
+bool gTotalResetOfLevel;         // ?gTotalResetOfLevel (game2.o)
 extern const char* notSet;              // ?notSet (game2.o, "Not Set")
 extern int bg_iNumWeapons;              // ?bg_iNumWeapons (game.o)
 extern vmCvar_t g_drawSmokeGren;        // ?g_drawSmokeGren (g.o)
@@ -323,11 +323,11 @@ extern nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
     void* pose, const nalGenericBoneHandle* handle);  // ?GetModelPositionOrientation@nalGenericPose@nalGeneric@@QBE?BVnalPositionOrientation@@ABVnalGenericBoneHandle@2@@Z
 extern void Axis4_to_nalMatrix4x4(const float (*axis)[3],
                                   nalMatrix4x4* mat);  // ea: 0x4F6220
-extern tlFixedString boneName[8];        // ?boneName@@3...A (game2.o 0xF052B8)
-extern tlFixedString stru_F05318;        // game2.o bone name
-extern tlFixedString stru_F05378;        // game2.o bone name
-extern tlFixedString stru_F05398;        // game2.o bone name
-extern tlFixedString stru_F05238;        // game2.o bone name
+tlFixedString boneName[8];               // ?boneName (game2.o @ 0xF052B8)
+tlFixedString stru_F05318;               // ?stru_F05318 (game2.o bone name)
+tlFixedString stru_F05378;               // ?stru_F05378 (game2.o bone name)
+tlFixedString stru_F05398;               // ?stru_F05398 (game2.o bone name)
+tlFixedString stru_F05238;               // ?stru_F05238 (game2.o bone name)
 cvar_t* ik_ADS;                          // ?ik_ADS@@3PAUcvar_t@@A (game2.o)
 
 // ?IKenabled@@3_NA (game2.o data @ 0xDEF463, value 1)
@@ -399,8 +399,8 @@ void AnimIK::ApplyLadderClimb(Entity* ent, nalMatrix4x4* leftFootMat,
 // AnimIK::Initialize - ea: 0x4FAE50
 // Fetch joint bone handles + precompute IK arm lengths.
 // ============================================================================
-extern const tlFixedString AnimIK_BoneNames[8];   // game2.o (F052F8)
-extern const tlFixedString AnimIK_ParentNames[8]; // game2.o (F05318+)
+const tlFixedString AnimIK_BoneNames[8] = {};     // ?AnimIK_BoneNames (game2.o @ 0xF052F8)
+const tlFixedString AnimIK_ParentNames[8] = {};   // ?AnimIK_ParentNames (game2.o @ 0xF05318+)
 
 void AnimIK::Initialize()
 {
@@ -1167,8 +1167,8 @@ extern cvar_t* in_joystick;
 extern cvar_t* in_joyBallScale;
 extern cvar_t* in_debugJoystick;
 extern cvar_t* joy_threshold;
-extern bool g_waitingForPress;
-extern bool g_controllerConnectedGamePaused;
+bool g_waitingForPress;
+bool g_controllerConnectedGamePaused;
 extern bool g_controllerConnectedErrorShown[];
 extern bool g_controllerConnected[4];
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);

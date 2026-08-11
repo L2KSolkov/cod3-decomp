@@ -55,7 +55,7 @@ extern int bCL_AllowedAllocSkel;
 extern int lFirstLocalClientIndex;
 extern int lLastLocalClientIndex;
 extern int currCl;
-extern int dword_F170F8;
+int dword_F170F8;
 extern int dword_F170F0;
 extern int dword_F170FC;
 extern int dword_F170EC;
@@ -64,7 +64,7 @@ extern int time_backend;
 bool gDisableRendering;
 extern float Com_GetScreenTimeDelta();
 extern void nullsub_35();
-extern int scr_initialized;
+int scr_initialized;
 extern void Cmd_ExecuteServerString(const char* text);
 extern void CL_CGameRendering();
 extern void Con_DrawConsole();
@@ -503,7 +503,7 @@ int dword_F1336C[64];  // cl.o BSS
 struct GpadAxesGlob {
     int axesValues[6];
 };
-extern GpadAxesGlob gaGlobs[2];
+GpadAxesGlob gaGlobs[2];  // ?gaGlobs@@3PAUGpadAxesGlob@@A (cl.o)
 const char* virtualAxisNames[6];  // cl.o
 const char* szShotName[6];        // cl.o
 int axisSameStick[6];  // cl.o BSS

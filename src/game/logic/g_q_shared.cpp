@@ -590,12 +590,11 @@ struct CGBankManagerLocal {
     unsigned int mDebugRenderMode;   // +0x04 (bitmask)
     float scale;                     // +0x08 (perf graph zoom)
 };
-extern CGBankManagerLocal* CGBankManager_sInst;  // ?sInst@CGBankManager@@2PAV1@A
 
 // ea: 0x006119F0
 void* ToggleRenderGeom()
 {
-    CGBankManagerLocal* result = CGBankManager_sInst;
+    CGBankManagerLocal* result = (CGBankManagerLocal*)CGBankManager::sInst;
     result->mDebugRenderMode ^= 1u;
     return result;
 }
@@ -603,7 +602,7 @@ void* ToggleRenderGeom()
 // ea: 0x00611A10
 void* ToggleRenderPerf()
 {
-    CGBankManagerLocal* result = CGBankManager_sInst;
+    CGBankManagerLocal* result = (CGBankManagerLocal*)CGBankManager::sInst;
     result->mDebugRenderMode ^= 2u;
     return result;
 }
@@ -611,7 +610,7 @@ void* ToggleRenderPerf()
 // ea: 0x00611A30
 void* ToggleGraph()
 {
-    CGBankManagerLocal* result = CGBankManager_sInst;
+    CGBankManagerLocal* result = (CGBankManagerLocal*)CGBankManager::sInst;
     result->mDebugRenderMode ^= 4u;
     return result;
 }
@@ -619,7 +618,7 @@ void* ToggleGraph()
 // ea: 0x00611A50
 void* ZoomIn()
 {
-    CGBankManagerLocal* result = CGBankManager_sInst;
+    CGBankManagerLocal* result = (CGBankManagerLocal*)CGBankManager::sInst;
     result->scale -= 25.0f;
     return result;
 }
@@ -627,7 +626,7 @@ void* ZoomIn()
 // ea: 0x00611A70
 void* ZoomOut()
 {
-    CGBankManagerLocal* result = CGBankManager_sInst;
+    CGBankManagerLocal* result = (CGBankManagerLocal*)CGBankManager::sInst;
     result->scale += 25.0f;
     return result;
 }

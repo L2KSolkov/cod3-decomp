@@ -65,7 +65,7 @@ static_assert(sizeof(cdSimpleInstanceShader) == 0x10, "cdSimpleInstanceShader si
 extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flags);  // ?tlMemAlloc@@YAPAXIII@Z
 extern void tlMemFree(void* Ptr);                                                    // ?tlMemFree@@YAXPAX@Z
 
-extern cdSimpleInstanceShader* gCDSimpleInstanceShader;  // @0x10DE008
+extern cdSimpleInstanceShader* gCDSimpleInstanceShader;  // @0x10DE008 (defined in cdSimpleInstanceShader.cpp)
 
 void InitCDSimpleInstanceShader();   // @0x7C4C40
 void ToggleCDSimpleInstanceShader(); // @0x7C4C90

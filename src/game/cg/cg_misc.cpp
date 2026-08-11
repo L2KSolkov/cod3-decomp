@@ -2743,7 +2743,7 @@ float g;               // 0x00DFA30C
 float b_1;             // 0x00DFA308
 float a_0;             // 0x00DFA304
 extern int g_blendType;       // 0x00DD9254
-extern int fireBlendType;     // 0x00DFA300
+int fireBlendType;     // 0x00DFA300
 float YOfs;            // 0x00DFA2FC
 float XOfs;            // 0x00DFA2F8
 char buffer_0[256];    // ?buffer_0@@3PADA (cg.o @ 0x00F73890)

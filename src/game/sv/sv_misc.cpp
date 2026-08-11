@@ -45,7 +45,7 @@ extern void  LiveWrapper_ClearRemotePlayers(void* handle);
 extern void* MPLiveEngine_GetHandle(void);
 extern bool  MPUIInterface_IsOnlineGame(void);
 extern const math::Position3& Float4_Zero_2;
-extern unsigned __int64 sLastTime_0;     // ?sLastTime_0  (sv_game.cpp static)
+unsigned __int64 sLastTime_0;            // ?sLastTime_0 (sv_game.cpp static)
 unsigned int _S8_40;              // ?$S8_40 (sv_game.cpp static)
 extern int   SV_GameSystemCalls(int* args);
 extern void  CL_ParseGamestate(Broc::string* configstrings);

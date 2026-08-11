@@ -133,9 +133,9 @@ float gDebugThread_MessageRGB[3];
 float gDebugThread_MessageScale;
 float gDebugThread_MessageXpos;
 char* gDebugThread_Message;  // ?gDebugThread_Message@@3PADA (cl.o)
-extern int gDebugThread_MessageTicks;
+int gDebugThread_MessageTicks;
 float gDebugThread_MessageYpos;
-extern int gDebugThread_MessageAlphaMin;
+int gDebugThread_MessageAlphaMin;
 
 // SoundDevice::Sound - 0x3C, verified against IDA local type
 struct SoundDeviceSound {

@@ -159,16 +159,16 @@ extern void (*rd_flush)(char*);
 extern int last_time;
 extern int lastTime;
 float g_time_inc;
-extern sysEvent_t com_pushedEvents[256];
+sysEvent_t com_pushedEvents[256];  // ?com_pushedEvents@@3PAUsysEvent_t@@A (core.o)
 extern int com_pushedEventsHead;
 extern int com_pushedEventsTail;
 extern int printedWarning;
 extern int lastErrorTime;
-extern int errorCount;
+int errorCount;
 extern int time_game;
 extern int time_frontend;
 extern int time_backend;
-extern int timeClientFrame;
+int timeClientFrame;
 bool gFirstCamera;                  // ?gFirstCamera@@3_NA (cg.o)
 bool* gControllerWarningDialogIsActive;  // ?gControllerWarningDialogIsActive@@3PA_NA (game2.o @ 0x12EFB0C)
 extern int gScreenshotInProgress;
@@ -251,6 +251,8 @@ Entity* gLensLightSource = nullptr;  // ?gLensLightSource@@3PAVEntity@@A (core.o
 struct nglTexture;
 nglTexture** gLensFlareTextures = nullptr;  // ?gLensFlareTextures@@3PAPAUnglTexture@@A (core.o @ 0x12F03D0)
 RumbleManager::InstanceHolder RumbleManagerStatics::sInstHolder;  // ?sInstHolder@RumbleManagerStatics@@2UInstanceHolder@RumbleManager@@A (core.o @ 0x12F042C)
+AnimHeap* AnimHeapStatics::sInst = nullptr;           // ?sInst@AnimHeapStatics@@2PAVAnimHeap@@A (core.o @ 0x12F0398)
+DialogueManager* DialogueManagerStatics::sInst = nullptr;  // ?sInst@DialogueManagerStatics@@2PAVDialogueManager@@A (core.o @ 0x12F0374)
 fileHandleData_t* fsh = nullptr;                 // ?fsh@@3PAUfileHandleData_t@@A (core.o @ 0x12EFFB8)
 searchpath_s* fs_searchpaths = nullptr;          // ?fs_searchpaths@@3PAUsearchpath_s@@A (core.o @ 0x12F0334)
 filelist_s* fs_nonpackfilelist = nullptr;        // ?fs_nonpackfilelist@@3PAUfilelist_s@@A (core.o @ 0x12F0338)
