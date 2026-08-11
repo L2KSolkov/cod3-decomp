@@ -1250,13 +1250,14 @@ struct BinFileEntry {
 };
 
 class BinFileManager {
+private:
+    BinFileManager();        // ??0BinFileManager@@AAE@XZ
+    ~BinFileManager();       // ??1BinFileManager@@AAE@XZ
 public:
     int mTotalFiles;         // +0x00
     BinFileEntry mArray[256];  // +0x04
     static BinFileManager* sInst;  // ?sInst@BinFileManager@@2PAV1@A
 
-    BinFileManager();        // ??0BinFileManager@@AAE@XZ
-    ~BinFileManager();       // ??1BinFileManager@@AAE@XZ
     void Clear();            // ?Clear@BinFileManager@@QAEXXZ
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);  // ?DecodeBank@BinFileManager@@QAEXPBDPAEHW4TPakId@@@Z
@@ -8443,8 +8444,9 @@ void TraceSphereThroughLeaf(traceWork_t* tw, const DCGSet* set)
 // ============================================================================
 // ClipHandleToDCGSet - ea: 0x622C00 (CollisionMgr.cpp)
 // ============================================================================
-struct DCGBankManager {
-    void* __vftable;             // +0x00
+class DCGBank;
+class DCGBankManager {
+public:
     static DCGBankManager* sInst;  // ?sInst@DCGBankManager@@2PAV1@A @ 0xF4F43C
     const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
     void*   mBankArray[99];         // +0x04 (0x18C bytes; DCGBank* per pak)
@@ -8494,12 +8496,14 @@ struct DCGBankManager {
         }
     };
     TempDCGSet mBoxDCGSet;       // +0x190 (0x6C bytes)
-    void AddBank(TPakId pakId, void* bank);   // ?AddBank@DCGBankManager@@AAEXW4TPakId@@PAVDCGBank@@@Z (game.o 0x61FC60)
-    void UnloadBank(TPakId pakId);             // ?UnloadBank@DCGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FCD0)
+private:
+    void AddBank(TPakId pakId, DCGBank* bank);  // ?AddBank@DCGBankManager@@AAEXW4TPakId@@PAVDCGBank@@@Z (game.o 0x61FC60)
+    virtual void UnloadBank(TPakId pakId);      // ?UnloadBank@DCGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FCD0)
+public:
     void DecodeDCGBank(const char* name, unsigned char* data, int size,
                        TPakId pakId);          // ?DecodeDCGBank@DCGBankManager@@QAEXPBDPAEHW4TPakId@@@Z (game.o 0x629DF0)
     DCGBankManager();             // ??0DCGBankManager@@QAE@XZ (game.o 0x6388F0)
-    ~DCGBankManager();             // ??1DCGBankManager@@UAE@XZ (game.o 0x629D90)
+    virtual ~DCGBankManager();     // ??1DCGBankManager@@UAE@XZ (game.o 0x629D90)
 };
 DCGBankManager* DCGBankManager::sInst = nullptr;
 extern void AssetBankSet_Dtor(void* self);   // AssetBankSet::~AssetBankSet
@@ -8627,12 +8631,11 @@ DCGBankManager::DCGBankManager()
 // ea: 0x00629D90
 DCGBankManager::~DCGBankManager()
 {
-    this->__vftable = 0;
     AssetBankSet_Dtor(this);
 }
 
 // ea: 0x0061FC60
-void DCGBankManager::AddBank(TPakId pakId, void* bank)
+void DCGBankManager::AddBank(TPakId pakId, DCGBank* bank)
 {
     if (this->mBankArray[(int)pakId] != nullptr)
     {
@@ -8676,7 +8679,7 @@ void DCGBankManager::DecodeDCGBank(const char* name, unsigned char* data,
         if (!AeAssert::IsIgnored() && AeAssert::Assert("oops"))
             __debugbreak();
     }
-    this->AddBank(pakId, data);
+    this->AddBank(pakId, (DCGBank*)data);
     unsigned int n = *(unsigned int*)data;
     int i = 0;
     if (n != 0)
@@ -8727,10 +8730,10 @@ struct GdbFile {
 struct GdbFileSet;
 
 class GdbFileManager {
-public:
-    void* __vftable;  // +0x00
+private:
     GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
-    ~GdbFileManager(); // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
+    virtual ~GdbFileManager();  // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)
+public:
     void DecodeBank(const char* name, void* data, int size, TPakId pakId,
                     void* pakFile);  // ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z (game.o 0x629940)
     GdbFile* GetGdbFile(GdbFile* result, TPakId pakId, const char* name,
@@ -9690,13 +9693,11 @@ extern void* InplaceAssetBankSet_GdbFileBank_ctor(void* self);  // streamer.o
 GdbFileManager::GdbFileManager()
 {
     InplaceAssetBankSet_GdbFileBank_ctor(this);
-    this->__vftable = 0;
 }
 
 // ea: 0x0061F790
 GdbFileManager::~GdbFileManager()
 {
-    this->__vftable = 0;
 }
 
 extern void InplaceAssetBank_GdbFileSet_Fixup(void* data);   // streamer.o
