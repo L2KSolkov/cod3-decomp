@@ -1816,7 +1816,7 @@ struct SoundMediaMgr {
     ~SoundMediaMgr();             // ??1SoundMediaMgr@@QAE@XZ (game.o 0x603F00)
     void RegisterSounds();        // ?RegisterSounds@SoundMediaMgr@@QAEXXZ (game.o 0x603F10)
     void PlayLandingSound(Entity* entity, int surfaceType,
-                          bool damage);  // game.o 0x603F20
+                          bool damage) const;  // game.o 0x603F20 (QBE)
 };
 
 extern struct CollisionDesc {
@@ -1845,7 +1845,7 @@ void SoundMediaMgr::RegisterSounds()
 // ea: 0x00603F20
 void SoundMediaMgr::PlayLandingSound(Entity* entity,
                                      int surfaceType,
-                                     bool damage)
+                                     bool damage) const
 {
     CollisionDesc v5;
     v5.coord.v.m128_f32[0] = entity->s.pos.trBase[0];
@@ -2795,7 +2795,7 @@ int AnimNotifyTask::Find(unsigned int key)
 // AudioBankMgr - ea: 0x6127D0..0x612980
 // ============================================================================
 typedef int nflFileID;  // filesystem/nfl.cpp / core_systems.h use int
-typedef int ELanguage;  // core_globals.h ABI twin (core_systems.h can't load)
+enum ELanguage : int {};  // core_globals.h ABI twin (mangles W4ELanguage)
 extern nslWaveID nslGetWave(const char* name);   // ?nslGetWave (nsl)
 extern void nslFreeBank(nslBankID bankID);       // ?nslFreeBank (nsl)
 extern void nflCloseFile(nflFileID file);        // filesystem/nfl.cpp
@@ -2826,7 +2826,9 @@ public:
     AudioBankMgr();                    // ??0AudioBankMgr@@QAE@XZ (game.o 0x621440)
     virtual ~AudioBankMgr();           // ??1AudioBankMgr@@UAE@XZ
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
+private:
     const char* LanguageStr(ELanguage id) const;  // ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z
+public:
     void NotifyLoaded();               // ?NotifyLoaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9C0)
     void NotifyUnloaded();             // ?NotifyUnloaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9F0)
     void Update();                     // ?Update@AudioBankMgr@@QAEXXZ (game.o 0x62BA20)
@@ -3050,7 +3052,8 @@ void AudioBankMgr::LoadWbk(const tlFixedString& name, bool async)
                 const char* path = (const char*)pak + 0x0C;
                 ELanguage v11 = gLanguage;
                 if (wbk->fileID[kLanguageUnlocalized] != (nflFileID)-1)
-                    this->LoadWbkInternal(wbk, path, kLanguageUnlocalized,
+                    this->LoadWbkInternal(wbk, path,
+                                          (ELanguage)kLanguageUnlocalized,
                                           async);
                 if (wbk->fileID[v11] == (nflFileID)-1
                     || (this->LoadWbkInternal(wbk, path, v11, async),
@@ -4369,7 +4372,7 @@ SoundDevice::EOutputMode SoundDevice::GetOutputMode() const
 }
 
 // ea: 0x00603EA0
-void SetSurfaceTypeSounds(nslWaveID* sounds, nslWaveID filler)
+void SetSurfaceTypeSounds(nslWaveID* const sounds, nslWaveID filler)
 {
     for (int i = 0; i < 23; ++i)
         sounds[i] = filler;

@@ -416,6 +416,10 @@ struct SoundDevice {
         Handle AllocateHandle();            // HandleDb<Sound,512,SizedHandle<12,20>>::AllocateHandle
         void BindObjectToHandle(Handle handle, Sound* obj);  // HandleDb<Sound,512,SizedHandle<12,20>>::BindObjectToHandle
     };
+private:
+    nslBankID SyncLoadBank(const char* filename);  // ?SyncLoadBank@SoundDevice@@AAE?AW4nslBankID@@PBD@Z (game.o 0x6024A0)
+    void UpdateListener();                         // ?UpdateListener@SoundDevice@@AAEXXZ (game.o 0x603AC0)
+public:
     struct CrossFadeInfo {
         Handle mSound1;         // +0x00
         Handle mSound2;         // +0x04
@@ -460,7 +464,6 @@ struct SoundDevice {
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     SoundDevice();                  // ??0SoundDevice@@QAE@XZ (game.o 0x6397F0)
     ~SoundDevice();                 // ??1SoundDevice@@QAE@XZ (game.o 0x646610)
-    nslBankID SyncLoadBank(const char* filename);  // ?SyncLoadBank@SoundDevice@@AAE?AW4nslBankID@@PBD@Z (game.o 0x6024A0)
     nslWaveID FindWave(char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
     float GetWaveDuration(nslWaveID wave);  // ?GetWaveDuration@SoundDevice@@QAEMW4nslWaveID@@@Z (game.o 0x6025A0)
     void ScaleVolume(float scale);          // ?ScaleVolume@SoundDevice@@QAEXM@Z (game.o 0x602A10)
@@ -479,7 +482,6 @@ struct SoundDevice {
     void BusVolumeRemoveBus(const char* busName);// game.o 0x603980
     void UpdateBusPitchFade(float deltaTime);   // game.o 0x6039A0
     void UpdateBusVolumeFade(float deltaTime);  // game.o 0x603A30
-    void UpdateListener();                      // ?UpdateListener@SoundDevice@@AAEXXZ (game.o 0x603AC0)
     float GetGroupVolume(const char* group) const;  // ?GetGroupVolume@SoundDevice@@QBEMPBD@Z (game.o 0x603D90)
     void SetOutputMode(EOutputMode mode);       // game.o 0x603DD0
     EOutputMode GetOutputMode() const;          // game.o 0x603E30
