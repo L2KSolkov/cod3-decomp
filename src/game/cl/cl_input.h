@@ -40,6 +40,9 @@ static_assert(sizeof(usercmd_s) == 0x30, "usercmd_s size mismatch");
 
 // ============================================================================
 // cl[] client snapshot + usercmd state (cl.o data; fields used by input/cmd)
+// Struct tag is clientActive_t to match the binary's ?cl@@3PAUclientActive_t@@A.
+// LAYOUT-DIVERGES: this is a partial view; the real 0x18B0-byte type has
+// clSnapshot_t snap at +0 and other fields at binary offsets.
 // ============================================================================
 struct clPlayerState {
     int eFlags;
@@ -66,7 +69,7 @@ struct outPacket_t {
     int p_realtime;    // +0x08
 };
 static_assert(sizeof(outPacket_t) == 0x0C, "outPacket_t size mismatch");
-struct clSnap_t {
+struct clientActive_t {
     clSnapshot snap;
     float viewangles[3];
     bool stanceHeld;
@@ -98,7 +101,7 @@ struct clSnap_t {
     int cgameInShellshock;
     int oldServerTime;
 };
-extern clSnap_t cl[2];
+extern clientActive_t cl[2];
 
 // cl[] snapshot/entity externs used by input + usercmd code
 extern int anykeydown;

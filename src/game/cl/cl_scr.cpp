@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <string.h>
 
+// ?cl@@3PAUclientActive_t@@A (cl.o data @ 0xDF01C0)
+clientActive_t cl[2];
+
 extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 
 // ============================================================================

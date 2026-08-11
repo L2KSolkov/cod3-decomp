@@ -123,7 +123,7 @@ int CL_ClearState()
         if (cls_configstrings[i].mBlock != nullptr)
             cls_configstrings[i].mBlock = nullptr;
     }
-    memset(cl, 0, sizeof(clSnap_t) * 2);
+    memset(cl, 0, sizeof(clientActive_t) * 2);
     memset(&clc, 0, sizeof(clc));
     return 0;
 }
