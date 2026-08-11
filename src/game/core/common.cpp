@@ -325,13 +325,18 @@ struct parseInfo_t {
 extern parseInfo_t* Com_ParseOnLine(const char** data_p);
 extern void Com_SkipRestOfLine(const char** data);
 extern parseInfo_t* Com_EndParseSession();
-class controller { public:
+class controller {
 public:
+    enum ButtonIndex {
+        LEFTBUTTON = 0, DOWNBUTTON = 1, RIGHTBUTTON = 2, UPBUTTON = 3,
+        SQUARE = 4, X = 5, CIRCLE = 6, TRIANGLE = 7, R1 = 8, L1 = 9,
+        R2 = 10, L2 = 11, R3 = 12, L3 = 13, START = 14, SELECT = 15,
+    };
     static controller* inst();
     bool controller_is_connected(int index);
+    bool button_pressed_clear(int index, ButtonIndex btn);
 };
 extern int controller_num_controllers();
-extern bool controller_button_pressed_clear(int i_controller_num, int i_button);
 extern int LocalClient_ClientToPort(int client);
 extern void* STBManager_sInst;
 extern const char* STBManager_GetSTBString(void* self, const char* pszReference);
@@ -1911,7 +1916,7 @@ char Com_ControllerTest(int port)
     }
     if (!g_controllerConnectedErrorShown[port])
         return 1;
-    if (controller_button_pressed_clear(port, 5))  // R3|RIGHTBUTTON
+    if (controller::inst()->button_pressed_clear(port, (controller::ButtonIndex)5))
     {
         SoundDevice_UnpauseAllSounds(SoundDevice::sInst);
         SyncFrameBuffers();
@@ -1957,7 +1962,7 @@ bool Com_ControllerTest()
             {
                 if (g_controllerConnectedErrorShown[0])
                 {
-                    bool result = controller_button_pressed_clear(0, 5);
+                    bool result = controller::inst()->button_pressed_clear(0, (controller::ButtonIndex)5);
                     if (!result)
                         return result;
                     g_controllerConnectedErrorShown[0] = false;

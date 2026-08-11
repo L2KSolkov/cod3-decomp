@@ -69,7 +69,18 @@ extern int Sys_DirectoryHasContents(const char* dirname);
 extern int Com_SafeMode();
 extern void Com_StartupVariable(const char* match);
 extern void SEH_InitLanguage();
-extern const char* SEH_GetLanguageName(int iLanguage);
+// ea: 0x00576200 (shell.o) - g_languages table lives in shell.o .data
+const char* SEH_GetLanguageName(int iLanguage)  // ?SEH_GetLanguageName@@YAPBDH@Z
+{
+    static const char* const sLanguageNames[14] = {
+        "english", "french", "german", "italian", "spanish", "japanese",
+        "korean", "russian", "polish", "dutch", "swedish", "portuguese",
+        "turkish", "czech",
+    };
+    if (iLanguage > 0xD)
+        return sLanguageNames[0];
+    return sLanguageNames[iLanguage];
+}
 extern int SEH_GetCurrentLanguage();
 
 // Forward declarations (mutually recursive)

@@ -87,7 +87,6 @@ BoundingBoxLocal GetCellBBox(int cellNum, const StreamZoneLocal* zone)
 // ============================================================================
 extern const void* StreamZoneManager_GetCellZone(void* self,
                                                  int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@H@Z
-extern bool PakManager_IsLoaded(void* self, unsigned int id);  // ?IsLoaded@PakManager@@QBE_NW4TPakId@@@Z
 
 void TestFPS::NextPosition()
 {
@@ -116,7 +115,8 @@ void TestFPS::NextPosition()
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    bool IsLoaded = PakManager_IsLoaded(PakManager::sInst, *(unsigned int*)(infoNode + 180));
+    bool IsLoaded =
+        PakManager::sInst->IsLoaded((TPakId)*(unsigned int*)(infoNode + 180));
     math::Position3 pos;
     pos.v.m128_f32[0] = mCurrentPosition.x;
     pos.v.m128_f32[1] = mCurrentPosition.y;
