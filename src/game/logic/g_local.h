@@ -2333,7 +2333,7 @@ void  Cmd_GiveAll_f(Entity* ent);                    // g.o 0x455F60
 void  hurt_touch(Entity* self, Entity* other, int bTouched);  // g.o 0x489110
 void  G_Trigger(Entity* self, Entity* other);        // g.o (g_trigger.cpp)
 int   BG_GivePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x6168A0
-int   Com_BitCheck(const int* array, int bitNum);    // core.o ?Com_BitCheck@@YAHQBHH@Z
+int   Com_BitCheck(const int* const array, int bitNum);    // core.o ?Com_BitCheck@@YAHQBHH@Z
 int   Add_Ammo(Entity* ent, int weapon, int count, int fillClip);  // g.o 0x44B1A0
 void  EntityHandleDb_Compact(void* self);            // g.o 0x454B00
 extern bool gNoTargetEnabled;                        // g.o

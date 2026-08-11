@@ -39,7 +39,7 @@ extern const char* CL_GetConfigStringC(int index);
 extern char* Info_ValueForKey(const char* s, const char* key);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern unsigned int HashString_CalcHash(const char* str);
-extern int Com_BitCheck(const int* array, int bitNum);
+extern int Com_BitCheck(const int* const array, int bitNum);
 extern int BG_GetNumWeapons();
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
 extern int BG_AmmoForWeapon(int iWeapon);

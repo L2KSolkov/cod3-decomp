@@ -409,19 +409,19 @@ void Com_StripExtension(const char* in, char* out)
 }
 
 // ea: 0x00610520
-int Com_BitCheck(const int* array, int bitNum)
+int Com_BitCheck(const int* const array, int bitNum)
 {
     return (array[bitNum >> 5] & (1 << (bitNum & 0x1F))) != 0;
 }
 
 // ea: 0x00610550
-void Com_BitSet(int* array, int bitNum)
+void Com_BitSet(int* const array, int bitNum)
 {
     array[bitNum >> 5] |= 1 << (bitNum & 0x1F);
 }
 
 // ea: 0x00610570
-void Com_BitClear(int* array, int bitNum)
+void Com_BitClear(int* const array, int bitNum)
 {
     array[bitNum >> 5] &= ~(1 << (bitNum & 0x1F));
 }

@@ -176,7 +176,7 @@ extern void InteractionController_PostPhysicsUpdate(void* self, float deltaT);
 extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern void* EntityManager_sInst;
 extern void* EntityManager_mPlayers[16];
-extern int Com_BitCheck(const int* array, int bitNum);
+extern int Com_BitCheck(const int* const array, int bitNum);
 extern void* BG_GetInfoForWeapon(int weapon);
 extern int BG_GetWeaponIndexForName(const char* pszName);
 extern int BG_GetWeaponSlotForName(const char* pszSlotName);

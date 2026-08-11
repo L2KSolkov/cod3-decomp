@@ -124,7 +124,7 @@ void PM_Weapon_AddFiringAimSpreadScale();        // game.o 0x608A50
 int  PM_Weapon_CheckFiringAmmo();                // game.o 0x6304D0
 PlayerState* PM_Weapon_StartMeleeAssist();       // game.o 0x6402D0
 void PM_UpdateHoldBreath();                      // game.o 0x631260
-extern void Com_BitClear(int* array, int bitNum);  // ?Com_BitClear (core.o q_shared)
+extern void Com_BitClear(int* const array, int bitNum);  // ?Com_BitClear (core.o q_shared)
 extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
                                       bool kill);  // ?StopEffect@EffectEventSys
 extern void* EffectEventSys_sInst;  // ?sInst@EffectEventSys@@2PAV1@A

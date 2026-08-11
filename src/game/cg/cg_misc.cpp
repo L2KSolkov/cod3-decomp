@@ -2246,7 +2246,7 @@ extern int BG_SelectWeaponIndex(int iWeaponIndex, int client);
 extern void CG_GameMessage(const char* msg, int flags);
 extern const char* SEH_LocalizeTextMessage(const char* pszMessage,
                                            const char* pszMsgType);
-extern int Com_BitCheck(const int* array, int bitNum);
+extern int Com_BitCheck(const int* const array, int bitNum);
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
 extern int BG_GetNumWeapons();
 enum weapSlot_t : int;
