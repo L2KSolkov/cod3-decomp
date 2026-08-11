@@ -13,6 +13,14 @@
 #include <string.h>
 
 // ============================================================================
+// DebugRender singleton (render.o data @ 0xF74D20, 148-byte value).
+// The ported call sites reference the artifact `void* DebugRender_sInst`
+// (3PAXA); it points at the backing storage.
+// ============================================================================
+char g_debugRenderStorage[148];
+void* DebugRender_sInst = g_debugRenderStorage;  // ?DebugRender_sInst@@3PAXA
+
+// ============================================================================
 // Cross-object externs
 // ============================================================================
 struct nglFrustum;
