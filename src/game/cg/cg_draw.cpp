@@ -230,7 +230,7 @@ extern int View_lNumViewports;
 extern int cg_aWeaponSelect[4];
 extern int* cg_clientFrame;
 extern void FastSinCos(float radians, float* psin, float* pcos);
-extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern float g_TestForward[4];
 extern void InspectorManager_Render(void* self);
 class InspectorManager;
@@ -1678,7 +1678,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         if (cgGlobal.cubemapShot == 0)
         {
             CG_ShakeCamera(currCl);
-            AnglesToAxis(*(const math::Position3*)&angle[1580 * currCl],
+            AnglesToAxis((const float*)&angle[1580 * currCl],
                          (float(*)[3])&dword_F63C80[1580 * currCl]);
             CG_PerturbCamera();
         }

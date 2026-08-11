@@ -338,7 +338,7 @@ extern int cg_tracerChance;
 extern int dword_DF6ADC[6];
 extern float tracer_info_speed[6];
 extern void AxisClear(float (*axis)[3]);
-extern void VectorNormalize(float* v);
+extern float VectorNormalize(float* v);
 extern float VectorDistance(const float* v1, const float* v2);
 extern void PerpendicularVector(float* dst, float* src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
@@ -1518,7 +1518,8 @@ extern void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                               Entity* hitEnt);
 extern void CG_BulletHitClientEvent(unsigned int sourceEntity,
                                     const math::Position3* position,
-                                    float* const normal, int surfType,
+                                    float* const normal,
+                                    unsigned int surfType,
                                     int weapon);
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);

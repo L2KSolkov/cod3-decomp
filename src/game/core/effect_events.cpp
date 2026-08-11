@@ -129,8 +129,7 @@ extern unsigned int s_ImpactMessage;  // 0x00F00F30
 extern void* CurveManager_sInst;  // 0x00F4F430
 extern void CurveManager_PostEvent(void* self, unsigned int entityHandle,
                                    unsigned int hash, float value);
-extern void AnglesToAxis(const math::Position3& angles,
-                         const math::Position3& origin, math::Mat43& mat);
+extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern Entity* GetPlayer(int idx);
 extern int currCl;
 extern float clamp_0_to_1(float f);
@@ -504,7 +503,7 @@ Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
         angles.v.m128_f32[1] = pos->y;
         angles.v.m128_f32[2] = pos->z;
         angles.v.m128_f32[3] = 0.0f;
-        AnglesToAxis(angles, v25, *v24);
+        AnglesToAxis((const float*)&angles, (float(*)[3])&v24->x);
         EffectEventSys* v16 = EffectEventSysStatics::sInst;
         BeginScriptCallQuery(v16, ent, 3, scriptId, pakid);
         v16->SetScriptId(Broc::string(scriptId));

@@ -537,7 +537,7 @@ void CG_ScreenFade()
     }
 }
 
-extern void VectorNormalize(float* v);
+extern float VectorNormalize(float* v);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 extern void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
                            float (*out)[3]);
@@ -1354,7 +1354,7 @@ extern float vehicleOffsetRate;
 extern float vehicleOffset;
 extern float GetLeanFraction(float fFrac);
 extern void AnglesToRight(const float* angles, float* right);
-extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void AnglesToAxisF(const float* angles, float (*axis)[3]);
 extern void AxisToAngles(const float (*axis)[3], float* angles);
 extern float AngleNormalize360(float angle);

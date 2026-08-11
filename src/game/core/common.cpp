@@ -86,7 +86,7 @@ extern int FS_FOpenFileRead_Internal(const char* filename, int* file,
                                      int uniqueFILE, int streamThread);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern char* CopyStringInternal(const char* in);
 extern char* va(const char* fmt, ...);
@@ -1117,7 +1117,8 @@ void* Com_GetWeaponInfoMemory(int iSize, int* piParsed, int iSource)
     }
     else
     {
-        pWeaponInfoMemory = mem_heap_malloc_ctx(16, iSize, "hunk",
+        pWeaponInfoMemory = mem_heap_malloc_ctx((unsigned int)iSize, 16,
+                                                "hunk",
                                                 "c:\\cod\\code\\game\\common.cpp",
                                                 4192);
         memset(pWeaponInfoMemory, 0, iSize);

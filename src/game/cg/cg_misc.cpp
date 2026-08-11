@@ -1119,7 +1119,7 @@ extern float tweenTime;  // 0x00DFA37C
 struct DObjSkelMat;
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMtx);
-extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void AxisToAngles(const float (*axis)[3], float* angles);
 extern float AngleDelta(float angle1, float angle2);
 
@@ -1153,7 +1153,7 @@ void Camera::UpdateIntermissionCam()
 void Camera::UpdateViewPO()
 {
     UpdateTween(mTweenStartPos, mTweenStartAngles);
-    AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+    AnglesToAxis((const float*)&angle[1580 * mClient],
                  (float(*)[3])&dword_F63C80[1580 * mClient]);
     SaveLastPO();
 }
@@ -1742,8 +1742,7 @@ void Camera::Update()
                                              * v12;
                                 float viewAxes[9];
                                 AnglesToAxis(
-                                    *(const math::Position3*)&angle[1580
-                                                                    * mClient],
+                                    (const float*)&angle[1580 * mClient],
                                     (float(*)[3])viewAxes);
                                 dword_F63C70[1580 * mClient] +=
                                     viewAxes[0] * adjX_;
@@ -3600,7 +3599,7 @@ extern void CG_MapInit(int restart);
 extern void* SoundMediaMgr_sInst;
 extern void* GetTextureData(const char* name, int image_type,
                             const char* fromPak);
-extern void Cvar_Register(void* vmCvar, const char* varName,
+extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
                           const char* defaultValue, int flags);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern int trap_R_RegisterShaderNoMip(const char* name, int imagetype);
@@ -3772,7 +3771,7 @@ void Camera::UpdatePostViewModels()
     }
     UpdateAnimation();
     UpdateTween(mTweenStartPos, mTweenStartAngles);
-    AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+    AnglesToAxis((const float*)&angle[1580 * mClient],
                  (float(*)[3])&dword_F63C80[1580 * mClient]);
     SaveLastPO();
     SaveLastPO();
@@ -3848,10 +3847,10 @@ void Camera::UpdateTankCam()
         Entity* Player =
             EntityManager_GetPlayer(EntityManager_sInst, mClient);
         if (IsPlayerFullySeatedInVehicle(Player))
-            AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+            AnglesToAxis((const float*)&angle[1580 * mClient],
                          axis);
         else
-            AnglesToAxis(*(const math::Position3*)forward, axis);
+            AnglesToAxis((const float*)forward, axis);
         VectorNormalize(axis[0]);
         float v11 = 0.0f;
         if (IsPlayerFullySeatedInVehicle(
@@ -4077,7 +4076,7 @@ void Camera::UpdateTankCamAngles(Entity* veh, PlayerState* ps)
         AngleDelta(veh->r.currentAngles.v.m128_f32[2], 0.0f) * 0.64999998f,
         0.0f};
     float viewAxis[3][3];
-    AnglesToAxis(*(const math::Position3*)playerAxis, viewAxis);
+    AnglesToAxis((const float*)playerAxis, viewAxis);
     int port = dword_F6A28C[802 * currCl];
     float vehOffsetAngles[4] = {ps->viewangles[0] - mPrevAngles.v.m128_f32[0],
                                 ps->viewangles[1] - mPrevAngles.v.m128_f32[1],
@@ -4094,7 +4093,7 @@ void Camera::UpdateTankCamAngles(Entity* veh, PlayerState* ps)
     mTankRelativeAngles.v = _mm_add_ps(
         mTankRelativeAngles.v, _mm_loadu_ps(vehOffsetAngles));
     float vehAxis[3][3];
-    AnglesToAxis(*(const math::Position3*)&mTankRelativeAngles, vehAxis);
+    AnglesToAxis((const float*)&mTankRelativeAngles, vehAxis);
     float out[3][3];
     MatrixMultiply(vehAxis, viewAxis, out);
     float newViewAngles[3];
@@ -4247,7 +4246,7 @@ void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
         AngleDelta(veh->r.currentAngles.v.m128_f32[2], 0.0f) * 0.47999999f;
     vehAxis[2][0] =
         AngleDelta(veh->r.currentAngles.v.m128_f32[0], 0.0f);
-    AnglesToAxis(*(const math::Position3*)vehAxis[2], playerAxis);
+    AnglesToAxis((const float*)vehAxis[2], playerAxis);
     float vehOffsetAngles[4] = {0.0f, 0.0f, -90.0f, -90.0f};
     float minClamp[3] = {5.0f, 40.0f, 0.0f};
     if (ps->vehSubType == 2
@@ -4344,7 +4343,7 @@ void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
     }
     CG_ClampViewAngles(ps, vec3_origin, &vehOffsetAngles[2], minClamp);
     float viewAxis[3][3];
-    AnglesToAxis(*(const math::Position3*)ps->viewangles, viewAxis);
+    AnglesToAxis((const float*)ps->viewangles, viewAxis);
     float v30[3][3];
     MatrixMultiply(viewAxis, playerAxis, v30);
     float outAngles[3];
@@ -5376,7 +5375,7 @@ void Camera::UpdateAnimation()
             for (int i = 0; i < 16; ++i)
                 tag[i] = mat[i];
             float axis[3][3];
-            AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+            AnglesToAxis((const float*)&angle[1580 * mClient],
                          axis);
             float t[16] = {
                 axis[0][0], axis[0][1], axis[0][2], 0.0f,
@@ -5396,7 +5395,7 @@ void Camera::UpdateAnimation()
             dword_F63C70[1580 * mClient] = out[12];
             dword_F63C74[1580 * mClient] = out[13];
             dword_F63C78[1580 * mClient] = out[14];
-            AnglesToAxis(*(const math::Position3*)&angle[1580 * mClient],
+            AnglesToAxis((const float*)&angle[1580 * mClient],
                          (float(*)[3])&dword_F63C80[1580 * mClient]);
             for (int i = 0; i < 16; ++i)
                 mLastTagCamMat.x.v.m128_f32[i] = tag[i];
