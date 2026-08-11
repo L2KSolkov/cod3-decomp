@@ -19,6 +19,24 @@ struct RumbleManager {
     RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
 };
 
+// rb_vehicle_get_velocity shim (phys view; real member rb_vehicle::get_velocity)
+inline math::Dir3 rb_vehicle_get_velocity(void* self)
+{
+    math::Dir3 result;
+    result.v = _mm_setzero_ps();
+    if (self != nullptr && (*(unsigned int*)((char*)self + 0x280) & 1) == 0)
+    {
+        void* rbinf = *(void**)((char*)self + 0x274);
+        if (rbinf != nullptr)
+        {
+            void* rb = *(void**)((char*)rbinf + 0x48);
+            if (rb != nullptr)
+                result.v = *(const __m128*)((char*)rb + 0xD0);
+        }
+    }
+    return result;
+}
+
 
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
@@ -1337,7 +1355,6 @@ bool gCameraSwayOnTurrets;  // 0x00DF9D84
 extern void controller_stick_value(void* self, int index, int stick,
                                    int* outX, int* outY);
 extern int RecalibrateInput(int val);
-extern math::Dir3 rb_vehicle_get_velocity(void* self);
 extern PlayerState& GetPlayerState(int idx);
 extern void CG_OffsetFirstPersonView();
 extern void CG_OffsetThirdPersonView();

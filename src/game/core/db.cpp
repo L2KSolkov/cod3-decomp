@@ -116,9 +116,15 @@ void DbQuery::Reset()
 
 // DbFieldSet lookup + BitSet test helpers
 extern DbField* DbFieldSet_GetFieldById(DbFieldSet* self, int field_id);
-extern bool BitSet255_Test(const void* self, int v);
 extern bool BitSet64_Test(const void* self, int v);
 extern int BitSet255_TestWeak(const void* self, int v);
+
+// BitSet<255>::Test (byte-packed; helper resolving ?BitSet255_Test@@YA_NPBXH@Z)
+bool BitSet255_Test(const void* self, int v)
+{
+    const unsigned char* bits = (const unsigned char*)self;
+    return (bits[v >> 3] & (1 << (v & 7))) != 0;
+}
 
 // ea: 0x004C4660
 int DbQuery::CompareField(int colId, const char** db_value)

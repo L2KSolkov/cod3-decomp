@@ -3250,7 +3250,10 @@ float Scr_Vehicle_CalcSpeed(const scr_vehicle_t* pVehicle)
     if (mRBVeh == nullptr)
         return 0.0f;
     float v4[3];
-    rb_vehicle_get_velocity(mRBVeh, v4);
+    math::Dir3 vel = mRBVeh->get_velocity();
+    v4[0] = vel.v.m128_f32[0];
+    v4[1] = vel.v.m128_f32[1];
+    v4[2] = vel.v.m128_f32[2];
     return sqrtf(v4[0] * v4[0] + v4[1] * v4[1] + v4[2] * v4[2]);
 }
 

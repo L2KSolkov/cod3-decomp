@@ -3443,10 +3443,14 @@ struct rb_vehicle {
     uint8_t _pad[0x250];
     vehicle_rb_parameter* m_parameter;  // +0x250
     float   m_throttle;  // +0x254
-    uint8_t _pad258[0x280 - 0x258];
+    uint8_t _pad258[0x274 - 0x258];
+    void*   m_chassis_rbinf;  // +0x274 (rb_extra_info*)
+    uint8_t _pad278[0x280 - 0x278];
     unsigned int m_flags;  // +0x280
     uint8_t _pad284[0x320 - 0x284];
     struct rigid_body_constraint_wheel* m_wheels[8];  // +0x320
+
+    math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ (physics.o 0x6FC200)
 
     static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
     static void remove_vehicle(rb_vehicle* v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
@@ -3459,11 +3463,25 @@ struct rigid_body_constraint_wheel {
     uint8_t _pad14[0x30 - 0x14];
     unsigned int m_wheel_flags;  // +0x30
 };
-void rb_vehicle_get_velocity(rb_vehicle* self, float* result);        // phys_xboxr
 void rb_vehicle_unpause_physics(rb_vehicle* self);                    // phys_xboxr
 void rb_vehicle_update_from_network(rb_vehicle* self, math::Position3* position,
                                     math::Position3* angles, math::Dir3* vel,
                                     math::Dir3* aVel);                // phys_xboxr
+
+// ea: 0x006FC200 (physics.o) - rb_vehicle::get_velocity inline
+inline math::Dir3 rb_vehicle::get_velocity() const
+{
+    math::Dir3 result;
+    if ((m_flags & 1) != 0)
+    {
+        result.v = _mm_setzero_ps();
+        return result;
+    }
+    // m_chassis_rbinf->m_rb->m_t_vel (rb_extra_info +0x48 -> rigid_body +0xD0)
+    void* rb = *(void**)((char*)m_chassis_rbinf + 0x48);
+    result.v = *(const __m128*)((char*)rb + 0xD0);
+    return result;
+}
 
 // Task - task system base (28 bytes) - verified against IDA
 struct Task {
