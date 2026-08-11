@@ -146,5 +146,5 @@ void Con_Init();
 void Field_Clear(field_t* edit);
 void Field_Draw(field_t* edit, int x, int y, int showCursor);
 void Field_AdjustScroll(field_t* edit);
-unsigned char ColorIndex(unsigned char c);
+int ColorIndex(unsigned char c);
 void CL_LookupColor(unsigned char c, float* color);

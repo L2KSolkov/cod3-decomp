@@ -11,7 +11,7 @@
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern void Sys_OutOfMemError();
-extern void Com_Memset(void* dest, int val, unsigned int count);
+extern void Com_Memset(unsigned int* dest, int val, unsigned int count);
 
 // ea: 0x004BB010
 void _Z_FreeInternal(void* ptr)
@@ -25,7 +25,7 @@ void* _Z_MallocInternal(int size)
     void* v1 = mem_heap_malloc(size);
     if (v1 == nullptr && size > 0)
         Sys_OutOfMemError();
-    Com_Memset(v1, 0, size);
+    Com_Memset((unsigned int*)v1, 0, size);
     return v1;
 }
 
@@ -36,7 +36,7 @@ char* CopyStringInternal(const char* in)
     void* v2 = mem_heap_malloc(v1);
     if (v2 == nullptr && v1 > 0)
         Sys_OutOfMemError();
-    Com_Memset(v2, 0, v1);
+    Com_Memset((unsigned int*)v2, 0, v1);
     strcpy((char*)v2, in);
     return (char*)v2;
 }

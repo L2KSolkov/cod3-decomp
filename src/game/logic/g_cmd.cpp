@@ -1326,7 +1326,7 @@ extern void ButtonMgr_ClearBinding(const BaseCmdFuncInfo* boundCmd,
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DefaultExtension(char* path, int maxSize,
                                  const char* extension);  // core.o
-extern int  FS_ReadFile(const char* qpath, void** buffer);  // core.o
+extern int  FS_ReadFile(char* qpath, void** buffer);  // core.o
 extern void FS_FreeFile(void* buffer);                      // core.o
 
 // ============================================================================
@@ -2548,7 +2548,7 @@ void Cmd_AddServerCommand(const char* cmd_name,
 // Cmd_ExecuteString / Cbuf_SV_Execute - ea: 0x61F640 / 0x61F3B0
 // ============================================================================
 extern int Cvar_Command();                // core.o
-extern int CL_GameCommand();              // cl.o
+extern vm_s* CL_GameCommand();            // cl.o
 extern int SV_GameCommand();              // sv.o
 extern void CL_ForwardCommandToServer(const char* string);  // cl.o
 extern cvar_t* com_cl_running;            // core.o

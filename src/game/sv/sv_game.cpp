@@ -12,7 +12,7 @@
 // Cross-object externs
 // ============================================================================
 extern void  Q_strncpyz(char* dest, const char* src, int destsize);
-extern void  Com_Memset(void* dest, int val, unsigned int count);
+extern void  Com_Memset(unsigned int* dest, int val, unsigned int count);
 extern const usercmd_s& CL_GetCurUserCmd(int clientNum);
 extern void  CL_SetUsercmdButtonsWeapons(int buttons, int weapon);
 extern void* mem_heap_malloc_ctx(int alignment, unsigned int size, const char* ctx, const char* file, int line);

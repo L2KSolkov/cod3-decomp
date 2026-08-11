@@ -914,7 +914,7 @@ extern Camera gCamera[2];  // ?gCamera@@3PAVCamera@@A
 // ============================================================================
 // Memory helpers (Z_MallocInternal / Z_FreeInternal / heap)
 // ============================================================================
-extern void* _Z_MallocInternal(unsigned int size);
+extern void* _Z_MallocInternal(int size);
 extern void  _Z_FreeInternal(void* ptr);
 extern void* mem_heap_malloc(int alignment, unsigned int size);
 extern void  mem_heap_free(void* ptr);
@@ -946,7 +946,7 @@ extern void   SV_CheckLoadLevel(int savegame);
 extern void   SV_SendClientMessages(void);
 extern void   CL_ParseGamestate(Broc::string* configstrings);
 extern void   CL_ConnectResponse(netadr_t from);
-extern void   CL_FirstSnapshot(void);
+extern int    CL_FirstSnapshot(void);
 extern void   PathNodeMgr_InitPaths(void);
 extern int    BG_GetNumWeapons(void);
 extern void   CG_RegisterWeapon(int weaponNum);

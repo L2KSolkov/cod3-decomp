@@ -21,14 +21,14 @@ extern int  Q_stricmp(const char* s1, const char* s2);
 extern int  Q_stricmpn(const char* s1, const char* s2, int n);
 extern void Q_strcat(char* dest, int size, const char* src);
 extern char* Q_strlwr(char* s1);
-extern char* Q_strrchr(const char* string, int c);
+extern char* Q_strrchr(char* string, char c);
 extern void Cbuf_ExecuteText(int exec_when, const char* text);
 extern int  Cvar_VariableIntegerValue(const char* var_name);
-extern void Com_Memset(void* dest, int val, unsigned int count);
+extern void Com_Memset(unsigned int* dest, int val, unsigned int count);
 extern void Con_Close(void);
-extern void CL_ClearState(void);
-extern void CL_Restart(void);
-extern void CL_ShutdownDebugData(void);
+extern int CL_ClearState(void);
+extern int CL_Restart(void);
+extern int CL_ShutdownDebugData(void);
 extern void R_ShutdownDebug(void);
 extern void R_InitDebug(void);
 extern cvar_t* com_sv_running;
@@ -454,7 +454,7 @@ static cvar_t* SV_MapRestart(int savegame) {
                 _Z_FreeInternal(v4->reliableCommands.buf);
                 _Z_FreeInternal(v4->reliableCommands.commandLengths);
                 _Z_FreeInternal(v4->reliableCommands.commands);
-                Com_Memset(p_reliableCommands, 0, 4u);
+                Com_Memset((unsigned int*)p_reliableCommands, 0, 4u);
             }
             v1 += 4976;
         } while (v1 < 0x13700);

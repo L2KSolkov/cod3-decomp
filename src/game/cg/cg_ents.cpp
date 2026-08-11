@@ -36,7 +36,7 @@ extern int dword_F61130;
 extern void* EntityManager_mPlayers[16];
 extern void* EntityManager_sInst;
 extern const char* CL_GetConfigStringC(int index);
-extern char* Info_ValueForKey(const char* s, const char* key);
+extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern unsigned int HashString_CalcHash(const char* str);
 extern int Com_BitCheck(const int* const array, int bitNum);

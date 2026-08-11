@@ -2741,7 +2741,7 @@ extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern char* va(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern const char* CL_GetConfigStringC(int index);
-extern char* Info_ValueForKey(const char* s, const char* key);
+extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 
 // ea: 0x0068C920
@@ -2939,13 +2939,13 @@ void CG_ParseObjectiveChange(int iNum)
                   "c:\\cod\\code\\game\\cg_scoreboard.cpp", 656);
         va("iObjective = %i\n", v1);
     }
-    char* v4 = Info_ValueForKey(v2, "clid");
+    const char* v4 = Info_ValueForKey(v2, "clid");
     _objectiveInfo_t* v6;
     if (*v4 != 0 && (client = atoi(v4), client >= 0))
         v6 = &objectives[client][v1];
     else
         v6 = &objectives[0][v1];
-    char* v7 = Info_ValueForKey(v2, "delete");
+    const char* v7 = Info_ValueForKey(v2, "delete");
     if (*v2 == 0 || *v7 != 0)
     {
         v6->state2 = 0;
@@ -2953,7 +2953,7 @@ void CG_ParseObjectiveChange(int iNum)
     else
     {
         int v8 = v6->state2;
-        char* v9 = Info_ValueForKey(v2, "state");
+        const char* v9 = Info_ValueForKey(v2, "state");
         if (*v9 != 0)
             v6->state2 = atoi(v9);
         else
@@ -2973,12 +2973,12 @@ void CG_ParseObjectiveChange(int iNum)
     }
     if (v6->state2 != 0)
     {
-        char* v12 = Info_ValueForKey(v2, "str");
+        const char* v12 = Info_ValueForKey(v2, "str");
         if (*v12 != 0)
             Q_strncpyz(v6->szString, v12, 128);
         else
             v6->szString[0] = 0;
-        char* v13 = Info_ValueForKey(v2, "org");
+        const char* v13 = Info_ValueForKey(v2, "org");
         if (*v13 != 0)
             sscanf(v13, "%f %f %f", &v6->vOrigin[0], &v6->vOrigin[1],
                    &v6->vOrigin[2]);
@@ -2988,17 +2988,17 @@ void CG_ParseObjectiveChange(int iNum)
             v6->vOrigin[0] = 0.0f;
         }
         int v14 = v6->displayOrder;
-        char* v15 = Info_ValueForKey(v2, "ring");
+        const char* v15 = Info_ValueForKey(v2, "ring");
         int v16 = *v15 != 0 ? atoi(v15) : 0;
         v6->ring = v16;
         if (v14 != v16)
             v6->ringTime = cgGlobal.time;
-        char* v17 = Info_ValueForKey(v2, "wstate");
+        const char* v17 = Info_ValueForKey(v2, "wstate");
         if (*v17 != 0)
             v6->state = atoi(v17);
-        char* v18 = Info_ValueForKey(v2, "height");
+        const char* v18 = Info_ValueForKey(v2, "height");
         v6->height = *v18 != 0 ? (float)atof(v18) : 0.0f;
-        char* v20 = Info_ValueForKey(v2, "ent");
+        const char* v20 = Info_ValueForKey(v2, "ent");
         if (*v20 != 0)
         {
             unsigned int v21 = atoi(v20);
@@ -3017,13 +3017,13 @@ void CG_ParseObjectiveChange(int iNum)
                           "c:\\cod\\code\\game\\cg_scoreboard.cpp", 766);
             }
         }
-        char* v24 = Info_ValueForKey(v2, "pobj");
+        const char* v24 = Info_ValueForKey(v2, "pobj");
         if (v6->pParent == 0 && *v24 != 0)
         {
             int v25 = atoi(v24);
             _objectiveInfo_t* v26 =
                 client < 0 ? &objectives[0][v25] : &objectives[client][v25];
-            char* v27 = Info_ValueForKey(v2, "order");
+            const char* v27 = Info_ValueForKey(v2, "order");
             v6->displayOrder = atoi(v27);
             if (v26->pChild != nullptr)
             {

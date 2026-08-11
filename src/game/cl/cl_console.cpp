@@ -21,7 +21,7 @@ extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
 extern int FS_FOpenFileWrite(const char* filename);
-extern void FS_Write(const void* buffer, int len, int h);
+extern unsigned int FS_Write(char* buffer, unsigned int len, int h);
 extern void FS_FCloseFile(int f);
 extern void Con_OneTimeInit();
 extern void* mem_heap_malloc(unsigned int size);
@@ -178,7 +178,7 @@ void Con_Dump_f()
                         --m;
                     }
                     strcpy(&buffer[strlen(buffer)], "\n");
-                    FS_Write(buffer, (int)strlen(buffer), f);
+                    FS_Write((char*)buffer, (unsigned int)strlen(buffer), f);
                     if (++i > con.current)
                         break;
                     linewidth = con.linewidth;

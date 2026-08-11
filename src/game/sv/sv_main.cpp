@@ -14,7 +14,7 @@
 // ============================================================================
 extern void  G_RunFrame(int msec);
 extern void  Com_Shutdown(void);
-extern void  Com_EventLoop(void);
+extern unsigned int Com_EventLoop(void);
 extern void  Cbuf_AddText(const char* text);
 extern void  Cbuf_ExecuteText(int exec_when, const char* text);
 extern void  CL_SetFrametime(int frametime, int animFrametime);
@@ -43,7 +43,7 @@ extern void  CL_ShutdownAll(void);
 extern void  CL_StartLoading(void);
 extern void  CL_FlushDebugData(int fromServer);
 extern void  CL_InitCGame(void);
-extern void  CL_FirstSnapshot(void);
+extern int   CL_FirstSnapshot(void);
 extern void  CL_ConnectResponse(netadr_t from);
 extern void  SV_DirectConnect(netadr_t from);
 extern void  SV_ClientEnterWorld(client_s* client, int restart, int savegame);

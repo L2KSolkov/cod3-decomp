@@ -14,9 +14,9 @@
 // Cross-object externs
 // ============================================================================
 extern void  Q_strncpyz(char* dest, const char* src, int destsize);
-extern void  Com_Memset(void* dest, int val, unsigned int count);
+extern void  Com_Memset(unsigned int* dest, int val, unsigned int count);
 extern void  CL_Disconnect(int showMainMenu);
-extern void* _Z_MallocInternal(unsigned int size);
+extern void* _Z_MallocInternal(int size);
 extern void  _Z_FreeInternal(void* ptr);
 extern void* mem_heap_malloc(int alignment, unsigned int size);
 extern void  SV_AddServerCommand(client_s* client, const char* cmd);
@@ -169,7 +169,7 @@ void SV_FreeReliableCommandsForClient(client_s* cl) {
         _Z_FreeInternal(cl->reliableCommands.buf);
         _Z_FreeInternal(cl->reliableCommands.commandLengths);
         _Z_FreeInternal(cl->reliableCommands.commands);
-        Com_Memset(&cl->reliableCommands, 0, 4u);
+        Com_Memset((unsigned int*)&cl->reliableCommands, 0, 4u);
     }
 }
 
@@ -295,7 +295,7 @@ void SV_ClearServer() {
                 _Z_FreeInternal(v1->reliableCommands.buf);
                 _Z_FreeInternal(v1->reliableCommands.commandLengths);
                 _Z_FreeInternal(v1->reliableCommands.commands);
-                Com_Memset(p_reliableCommands, 0, 4u);
+                Com_Memset((unsigned int*)p_reliableCommands, 0, 4u);
             }
             v0 += 4976;
         } while (v0 < 0x13700);
@@ -308,7 +308,7 @@ void SV_ClearServer() {
         }
         ++configstrings;
     } while (configstrings < &sv.configstrings[1024]);
-    Com_Memset(&sv, 0, 0x1010u);
+    Com_Memset((unsigned int*)&sv, 0, 0x1010u);
     com_inServerFrame = 0;
 }
 
@@ -324,7 +324,7 @@ void SV_Startup() {
         Com_Error(1, "\x15SV_Startup: unable to allocate svs.clients");
         clients = svs.clients;
     }
-    Com_Memset(clients, 0, 0x13700);
+    Com_Memset((unsigned int*)clients, 0, 0x13700);
     svs.numSnapshotEntities = 1344;
     svs.initialized = 1;
     Cvar_Set("sv_running", "1");

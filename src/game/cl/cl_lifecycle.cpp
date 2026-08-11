@@ -25,7 +25,7 @@ extern void Cbuf_AddText(const char* text);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern void XModelEnforceExist(int bEnforce);
 extern void CL_InitRenderer();
-extern void CL_InitUI();
+extern char CL_InitUI();
 extern void Com_CvarDump(int type);
 extern void Axis_Bind_f();
 extern void Axis_Unbindall_f();
@@ -52,11 +52,11 @@ extern int Sys_Milliseconds();
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern void VM_Free(struct vm_s* vm);
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
-extern void CL_ShutdownDebugData();
+extern int CL_ShutdownDebugData();
 extern void CL_ShutdownInput();
 extern void CL_ShutdownUI();
-extern void StatMon_Reset();
-extern void CL_InitInput();
+extern int StatMon_Reset();
+extern int CL_InitInput();
 extern void CL_InitGamepadCommands();
 extern void CL_InitKeyCommands();
 extern void CL_ConfigstringModified();
@@ -68,7 +68,7 @@ extern void CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
                                     int linewidth, int color, int flags);
 extern int CL_RestoreMessageType(unsigned char* buffer, int used, int total,
                                  void* msgwnd, int type, int linewidth);
-extern unsigned char ColorIndex(unsigned char c);
+extern int ColorIndex(unsigned char c);
 extern void Con_Linefeed(int type, int duration, int flags);
 extern void SoundDevice_StopAllSounds(void* self);
 extern void SoundDevice_FrameAdvance(void* self, float delta);
@@ -229,7 +229,7 @@ void CL_ConsoleFixPosition()
                 ASSERT("con.initialized", "c:\\cod\\code\\game\\cl_console.cpp", 1270);
             }
         }
-        unsigned char v1 = ColorIndex(0x37);
+        int v1 = ColorIndex(0x37);
         CL_ConsolePrint_AddLine(PMSG_CONSOLE, "\n", 0, 0, v1, 0);
         con.display = con.current - 1;
     }
@@ -250,7 +250,7 @@ int CL_RestoreMessages(unsigned char* buffer, int bufSize)
     int v5 = CL_RestoreMessageType(buffer, v4, bufSize, &msgwnd, 0, v3);
     for (int i = 0; i < con.linewidth; ++i)
     {
-        unsigned char v7 = ColorIndex(0x37);
+        int v7 = ColorIndex(0x37);
         con.text[i + con.linewidth * (con.current % con.totallines)] =
             (short)((v7 << 8) | 0x20);
     }

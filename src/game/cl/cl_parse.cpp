@@ -51,7 +51,7 @@ extern void CL_FinishMove(usercmd_s* cmd);
 extern void CL_AddReliableCommand(const char* cmd);
 extern void Field_AdjustScroll(field_t* edit);
 extern void Field_Clear(field_t* edit);
-extern void CL_ClearState();
+extern int CL_ClearState();
 extern void CL_StartHunkUsers();
 extern void GamePause_SetAllPaused(bool paused);
 extern float Com_GetScreenTimeDelta();
@@ -71,7 +71,7 @@ extern "C" int atoi(const char* nptr);
 extern void Cvar_SetCheatState();
 extern void nullsub_16(const char* pakSums, const char* pakNames);
 extern void nullsub_34(const char* pakSums, const char* pakNames);
-extern char* Info_ValueForKey(const char* s, const char* key);
+extern const char* Info_ValueForKey(const char* s, const char* key);
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern struct vm_s* VM_Create(const char* module,
@@ -213,7 +213,7 @@ struct refimport_t2 {
     int (*Com_LoadCvarsFromBuffer)(const char**, int, const char*,
                                    const char*);
     int (*FS_FileIsInPAK)(const char*, int*);
-    int (*FS_ReadFile)(const char*, void**);
+    int (*FS_ReadFile)(char*, void**);
     void (*FS_FreeFile)(void*);
     char** (*FS_ListFiles)(const char*, const char*, int*);
     void (*FS_FreeFileList)(char**);
@@ -221,10 +221,10 @@ struct refimport_t2 {
     int (*FS_FileExists)(const char*);
     int (*FS_FOpenFileByMode)(const char*, int*, int);
     void (*FS_FCloseFile)(int);
-    int (*FS_Read)(void*, int, int);
-    int (*FS_Write)(const void*, int, int);
+    unsigned int (*FS_Read)(unsigned char*, unsigned int, int);
+    unsigned int (*FS_Write)(char*, unsigned int, int);
     class BspPlane* (*CM_GetPlaneNum)(int);
-    short (*CG_GetGameModel)(short);
+    int (*CG_GetGameModel)(short);
     void (*CG_DObjCalcPose)(void*, void*, int*);
     void (*AdjustFrom640)(float*, float*, float*, float*);
     void* (*UI_GetFontInfo)(int, float);
@@ -968,21 +968,21 @@ void CL_InitRef()
     extern void Cbuf_ExecuteText(int, const char*);
     extern void CL_RefPrintf(int, const char*, ...);
     extern int CL_ScaledMilliseconds();
-    extern int FS_ReadFile(const char*, void**);
+    extern int FS_ReadFile(char*, void**);
     extern void FS_FreeFile(void*);
     extern void FS_FreeFileList(char**);
     extern char** FS_ListFiles(const char*, const char*, int*);
     extern int FS_FileExists(const char*);
     extern int FS_FOpenFileByMode(const char*, int*, int);
     extern void FS_FCloseFile(int);
-    extern int FS_Read(void*, int, int);
-    extern int FS_Write(const void*, int, int);
+    extern unsigned int FS_Read(unsigned char*, unsigned int, int);
+    extern unsigned int FS_Write(char*, unsigned int, int);
     extern class BspPlane* CM_GetPlaneNum(int);
     extern struct cvar_t* Cvar_FindVar(const char*);
     extern int Com_SaveCvarsToBuffer(const char**, int, char*, int);
     extern int Com_LoadCvarsFromBuffer(const char**, int, const char*,
                                        const char*);
-    extern short CG_GetGameModel(short);
+    extern int CG_GetGameModel(short);
     extern void CG_DObjCalcPose(void*, void*, int*);
     extern void SCR_AdjustFrom640(float*, float*, float*, float*);
     extern void* CL_GetFontInfo(int, float);

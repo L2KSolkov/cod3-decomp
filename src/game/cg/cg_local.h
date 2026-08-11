@@ -69,7 +69,7 @@ struct re_export_view {
 
 extern re_export_view re;
 
-extern void* _Z_MallocInternal(unsigned int size);
+extern void* _Z_MallocInternal(int size);
 extern void  _Z_FreeInternal(void* ptr);
 
 // EntityHandleDb - entity handle database (full layout, verified against IDA)

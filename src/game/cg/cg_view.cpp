@@ -593,8 +593,8 @@ extern void CG_UpdateShellShockCamera(const void* parms, int time,
 extern void CL_SetUserCmdInShellshock(int shocked);
 extern char* va(const char* fmt, ...);
 extern int FS_FOpenFileByMode(const char* qpath, int* f, int mode);
-extern int FS_Write(const void* buffer, int len, int h);
-extern int FS_Read(void* buffer, int len, int f);
+extern unsigned int FS_Write(char* buffer, unsigned int len, int h);
+extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
 extern void FS_FCloseFile(int f);
 extern int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars,
                                  char* buffer, int bufsize);
@@ -602,7 +602,7 @@ extern int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
                                    const char* buffer, const char* filename);
 struct vmCvar_t;
 extern void Cvar_Update(vmCvar_t* vmCvar);
-extern void* _Z_MallocInternal(unsigned int size);
+extern void* _Z_MallocInternal(int size);
 extern void _Z_FreeInternal(void* ptr);
 extern void CG_Printf(const char* msg, ...);
 extern void RumbleManager_Play(void* mgr, void* result, const void* effect,
@@ -703,7 +703,7 @@ int CG_SaveShellShockCvars(const char* name)
     const char* v1 = va("scripts/%s.shock", name);
     if (FS_FOpenFileByMode(v1, &fh, 1 /* FS_WRITE */) < 0)
         return 0;
-    FS_Write(filebuf, (int)strlen(filebuf), fh);
+    FS_Write((char*)filebuf, (unsigned int)strlen((const char*)filebuf), fh);
     FS_FCloseFile(fh);
     return 1;
 }
@@ -854,7 +854,7 @@ int CG_LoadShellShockCvars(const char* name)
     if (v2 >= 0)
     {
         char* v5 = (char*)_Z_MallocInternal(v2 + 1);
-        FS_Read(v5, v3, fh);
+        FS_Read((unsigned char*)v5, (unsigned int)v3, fh);
         v5[v3] = 0;
         FS_FCloseFile(fh);
         int CvarsFromBuffer =

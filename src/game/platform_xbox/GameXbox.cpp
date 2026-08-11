@@ -34,13 +34,13 @@ extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern int Com_FilterPath(char* filter, char* name, int casesensitive);
 extern char* CopyStringInternal(const char* in);
-extern void* _Z_MallocInternal(unsigned int size);
+extern void* _Z_MallocInternal(int size);
 extern void _Z_FreeInternal(void* ptr);
 extern int Sys_Milliseconds();
 extern void Cvar_Set(const char* var_name, const char* value);
 extern void Cvar_SetValue(const char* var_name, float value);
 extern void IN_Init();
-extern int FS_Read(void* buffer, int len, int f);
+extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
 extern int FS_Seek(int f, long offset, int origin);
 extern void tlFatal(const char* fmt, ...);
 
@@ -379,7 +379,7 @@ void Sys_EndStreamedFile(int f)
 // ea: 0x71F560
 int Sys_StreamedRead(void* buffer, int size, int count, int f)
 {
-    return FS_Read(buffer, count * size, f);
+    return FS_Read((unsigned char*)buffer, (unsigned int)(count * size), f);
 }
 
 // ea: 0x71F580

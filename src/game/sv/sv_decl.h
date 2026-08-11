@@ -61,7 +61,7 @@ void   Com_DPrintf(const char* fmt, ...);
 void   Com_Error(int code, const char* fmt, ...);
 void   Com_sprintf(char* dest, int size, const char* fmt, ...);
 void   Com_Restart(void);
-void   Com_EventLoop(void);
+unsigned int Com_EventLoop(void);
 int    Com_Milliseconds(void);
 void   Com_InitDObj(void);
 void   Com_DefaultCvar(const char* name, const char* value, int flags);
@@ -100,7 +100,7 @@ void   CL_ConnectResponse(netadr_t from);
 void   CL_ParseGamestate(Broc::string* configstrings);
 void   CL_FlushDebugData(int fromServer);
 void   CL_InitCGame(void);
-void   CL_FirstSnapshot(void);
+int    CL_FirstSnapshot(void);
 void   CL_ParseGamestate_cmd(void);
 
 // Other helpers

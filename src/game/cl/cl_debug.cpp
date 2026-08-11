@@ -40,7 +40,7 @@ extern int dword_F170F0;
 extern int com_skelTimeStamp;
 extern int bCL_AllowedAllocSkel;
 extern struct cvar_t* cl_testAnimWeight;
-extern void* _Z_MallocInternal(unsigned int size);
+extern void* _Z_MallocInternal(int size);
 extern void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr,
                           int qport);
 extern void CL_AddReliableCommand(const char* cmd);

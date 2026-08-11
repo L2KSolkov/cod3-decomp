@@ -30,7 +30,7 @@ enum netsrc_t {
 
 extern void CL_AddCgameCommand(const char* cmdName, void (*function)());
 extern const char* CL_GetConfigStringC(int index);
-extern char* Info_ValueForKey(const char* s, const char* key);
+extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern void Com_Printf(const char* fmt, ...);

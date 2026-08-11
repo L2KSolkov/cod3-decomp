@@ -45,13 +45,13 @@ extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
                                  const char* ctx, const char* file, int line);
-extern void* _Z_MallocInternal(unsigned int size);
+extern void* _Z_MallocInternal(int size);
 extern void _Z_FreeInternal(void* ptr);
 extern char* CopyStringInternal(const char* in);
 extern char* va(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
-extern void Com_Memset(void* dest, int val, unsigned int count);
+extern void Com_Memset(unsigned int* dest, int val, unsigned int count);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void Cmd_RemoveCommand(const char* cmd_name);
@@ -1109,14 +1109,14 @@ void FS_FCloseFile(int f)
     {
         if (fsh[f].streamed != 0)
             fclose((FILE*)fsh[f].handleFiles.file.file);
-        Com_Memset(&fsh[f], 0, 0x120u);
+        Com_Memset((unsigned int*)&fsh[f], 0, 0x120u);
     }
     else
     {
         FILE* o = (FILE*)fsh[f].handleFiles.file.file;
         if (o != nullptr)
             fclose(o);
-        Com_Memset(&fsh[f], 0, 0x120u);
+        Com_Memset((unsigned int*)&fsh[f], 0, 0x120u);
     }
 }
 
@@ -1442,7 +1442,7 @@ int FS_FileCompare(const char* s1, const char* s2)
             void* buffer = v6;
             if (v6 == nullptr && v5 > 0)
                 Sys_OutOfMemError();
-            Com_Memset(v6, 0, v5);
+            Com_Memset((unsigned int*)v6, 0, v5);
             if (fread(buffer, 1, v5, v2) != (unsigned int)v5)
                 Com_Error(0, "FS_FileCompare: read failed");
             fclose(v2);
@@ -1450,7 +1450,7 @@ int FS_FileCompare(const char* s1, const char* s2)
             void* pos = v7;
             if (v7 == nullptr && len2 > 0)
                 Sys_OutOfMemError();
-            Com_Memset(v7, 0, len2);
+            Com_Memset((unsigned int*)v7, 0, len2);
             if (fread(pos, 1, len2, v3) != (unsigned int)len2)
                 Com_Error(0, "FS_FileCompare: read failed");
             fclose(v3);
@@ -1559,7 +1559,7 @@ char** FS_ListFilteredFiles(const char* path, const char* extension,
         char** v11 = (char**)mem_heap_malloc(4 * v9 + 4);
         if (v11 == nullptr && 4 * v9 + 4 > 0)
             Sys_OutOfMemError();
-        Com_Memset(v11, 0, 4 * v9 + 4);
+        Com_Memset((unsigned int*)v11, 0, 4 * v9 + 4);
         int v12 = 0;
         if (v9 > 0)
         {
@@ -1892,11 +1892,11 @@ addNew:
     searchpath_s* v11 = (searchpath_s*)mem_heap_malloc(0x14u);
     if (v11 == nullptr)
         Sys_OutOfMemError();
-    Com_Memset(v11, 0, 0x14u);
+    Com_Memset((unsigned int*)v11, 0, 0x14u);
     directory_t* v12 = (directory_t*)mem_heap_malloc(0x100u);
     if (v12 == nullptr)
         Sys_OutOfMemError();
-    Com_Memset(v12, 0, 0x100u);
+    Com_Memset((unsigned int*)v12, 0, 0x100u);
     v11->dir = v12;
     Q_strncpyz(v12->path, path, 128);
     Q_strncpyz(v11->dir->gamedir, szGameFolder, 128);

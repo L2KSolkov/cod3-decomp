@@ -67,14 +67,14 @@ extern void CL_ShutdownAll();
 extern void CL_StartHunkUsers();
 extern void CL_KeyEvent(int key, int down, unsigned int time);
 extern void CL_CharEvent(int key);
-extern void CL_MouseEvent(int dx, int dy, int time);
-extern void CL_GamepadEvent(int physicalAxis, int value, int time);
+extern void CL_MouseEvent(int dx, int dy);
+extern void CL_GamepadEvent(unsigned int physicalAxis, int value);
 extern void CL_PacketEvent(netadr_t from, msg_t* msg, int time);
 extern void SV_Shutdown();
 extern void SV_Init();
 extern void SV_Frame(int msec);
 extern void SV_PacketEvent(netadr_t from, msg_t* msg);
-extern void FS_InitFilesystem();
+extern int FS_InitFilesystem();
 extern void FS_Shutdown(int closemfp);
 extern int FS_FOpenFileWrite(const char* filename);
 extern void FS_FCloseFile(int f);
@@ -180,9 +180,19 @@ extern void Cvar_WriteVariables(int f);
 extern void Cvar_WriteDefaults(int f);
 extern void Com_BeginParseSession(const char* filename);
 extern const char* Com_Parse(const char** data_p);
-extern const char* Com_ParseOnLine(const char** data_p);
+struct parseInfo_t {
+    char token[128];         // +0x00
+    int lines;               // +0x80
+    int ungetToken;          // +0x84
+    int spaceDelimited;      // +0x88
+    int csv;                 // +0x8C
+    int negativeNumbers;     // +0x90
+    int backup_lines;        // +0x94
+    const char* backup_text; // +0x98
+};
+extern parseInfo_t* Com_ParseOnLine(const char** data_p);
 extern void Com_SkipRestOfLine(const char** data);
-extern void Com_EndParseSession();
+extern parseInfo_t* Com_EndParseSession();
 class controller {
 public:
     static controller* inst();
@@ -214,7 +224,7 @@ extern void* InteractionController_Inst(int instance);
 extern void StatMon_Warning(int type, int duration, const char* pszShaderName);
 extern void SetAnimCheck(int bAnimCheck);
 extern void ServerTime_Tick();
-extern void TaskSys_Update(void* self, float deltaT);
+extern void TaskSys_Update(float deltaT);
 extern void* TaskSys_sInst;
 extern void CurveManager_Update(void* self, float tickDelta);
 extern void* CurveManager_sInst;
@@ -223,7 +233,7 @@ extern void* DynamicDecalMgr_sInst;
 extern void SmokeGrenadeMgr_Update(void* self, float deltaT);
 extern void* SmokeGrenadeMgr_sInst;
 extern void EntityNotifySet_UpdateList();
-extern void update_trigger_notifies();
+extern int update_trigger_notifies();
 extern void subtitle_manager_frame_advance(int time_delta);
 extern void InspectorManager_Update(void* self);
 extern void* g_inspectorManager;
@@ -241,19 +251,19 @@ extern void Com_Error_f();
 extern void Com_Crash_f();
 extern void Com_Freeze_f();
 extern void Sys_Init();
-extern void Netchan_Init();
+extern int Netchan_Init();
 extern void VM_Init();
-extern void Swap_Init();
+extern int Swap_Init();
 extern void PhysInit();
 extern void PhysShutdown();
 extern void CL_InitKeyCommands();
 extern void CL_InitGamepadCommands();
-extern void CL_InitGamepadAxisBindings();
+extern int* CL_InitGamepadAxisBindings();
 extern void InitPadAliasCommands();
 extern void SEH_Init_StringEd();
 extern void SEH_UpdateLanguageInfo();
 extern void MI_ResetMapList();
-extern void CL_PreAllocStrings();
+extern int CL_PreAllocStrings();
 extern void SetupPoolAllocator();
 extern void SetupActorHeap();
 extern void init_dobj_trackers();
@@ -353,14 +363,14 @@ extern void physics_debug_render();
 extern void fx_debug_render();
 extern void TestFPS_CreateInst();
 extern void TestFPS_DeleteInst();
-extern void GlobalPakLoadCallback(float);
+extern void GlobalPakLoadCallback();
 extern void PakManager_SyncLoadPak(void* self, int pak_type, const char* path,
                                   void* num_banks);
 extern void* PakManager_GetPakInfo(void* self, const char* long_name);
 extern void PakManager_SetUserDistance(void* self, void* cpak, float dist);
 extern void AudioBankMgr_FinishLoading(void* self);
 extern void InspectorManager_Initialise(void* self);
-extern void LocalClient_InitializeClientControllers(void* self);
+extern void LocalClient_InitializeClientControllers();
 extern void WheelMarkMgr_Init();
 extern void WheelMarkMgr_Exit();
 extern void DebugRender_Init(void* self);
@@ -1576,11 +1586,11 @@ unsigned int Com_EventLoop()
             break;
         case 3u:  // SE_MOUSE
             ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1681);
-            CL_MouseEvent(key, down, ev);
+            CL_MouseEvent(key, down);
             break;
         case 4u:  // SE_JOYSTICK
             ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1691);
-            CL_GamepadEvent(key, down, ev);
+            CL_GamepadEvent((unsigned int)key, down);
             break;
         case 5u:  // SE_CONSOLE
             ASSERT("ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1695);
@@ -1962,7 +1972,7 @@ int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
                     if (++v6 >= numCvars)
                         goto unknownCvar;
                 }
-                const char* v8 = Com_ParseOnLine(p);
+                const char* v8 = Com_ParseOnLine(p)->token;
                 Cvar_Set2(cvarnames[v6], v8, 1);
                 if (bRead[v6] == 0)
                 {
@@ -2062,7 +2072,7 @@ cvar_t* Com_Frame()
     ServerTime_sInst.mTickDeltaInv = 1000.0f / v7;
     ServerTime_sInst.mTickDelta = v7 / 1000.0f;
     ServerTime_sInst.mElapsedTime += v7 / 1000.0f;
-    TaskSys_Update(TaskSys_sInst, ServerTime_sInst.mTickDelta);
+    TaskSys_Update(ServerTime_sInst.mTickDelta);
     CurveManager_Update(CurveManager_sInst, screen_time_inc);
     DynamicDecalMgr_Update(DynamicDecalMgr_sInst, screen_time_inc);
     SmokeGrenadeMgr_Update(SmokeGrenadeMgr_sInst, ServerTime_sInst.mTickDelta);
@@ -2250,7 +2260,7 @@ void Com_Init(char* commandLine)
     Cbuf_AddText("exec autoexec.cfg\n");
     if (Com_SafeMode())
         Cbuf_AddText("exec safemode.cfg\n");
-    LocalClient_InitializeClientControllers(nullptr);
+    LocalClient_InitializeClientControllers();
     Cbuf_Execute();
     int* p_mControllerPort = &((int*)gSaveGameData)[0x3B0 / 4];
     int* end = &((int*)gSaveGameData)[0x3B0 / 4] + 1789 * 4;
