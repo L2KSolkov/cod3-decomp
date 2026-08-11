@@ -23,7 +23,7 @@ extern int   com_frameNumber;
 
 // collision / math
 extern void  AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac, float fViewRoll, float fLeanDist);
-extern int   CM_PointLeafnum(const math::Position3* p);
+extern int   CM_PointLeafnum(const math::Position3& p);
 extern int   CM_LeafArea(int leafnum);
 extern int   CM_LeafCluster(int leafnum);
 extern unsigned char* CM_ClusterPVS(int cluster);
@@ -74,7 +74,7 @@ static void SV_BuildClientSnapshot(client_s* client) {
             v8.v.m128_f32[1] = v10;
             v8.v.m128_f32[2] = v11;
             v8.v.m128_f32[3] = 0.0f;
-            int v7 = CM_PointLeafnum(&v8);
+            int v7 = CM_PointLeafnum(v8);
             if (*(int*)&client->netchan[8] != 2) {
                 AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
                 AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_snapshot.cpp";
@@ -192,7 +192,7 @@ int SV_inSnapshot(const float* const origin, DbLinkedHandle<EntityHandleDb, Enti
         return 1;
     math::Position3 v18;
     const math::Position3* v6 = native_to_cdl_pos3(&v18, origin);
-    int v7 = CM_PointLeafnum(v6);
+    int v7 = CM_PointLeafnum(*v6);
     int v20 = CM_LeafArea(v7);
     int v8 = CM_LeafCluster(v7);
     unsigned __int8* v9 = CM_ClusterPVS(v8);

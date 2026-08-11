@@ -972,7 +972,7 @@ void CL_InitRef()
     extern void FS_FCloseFile(int);
     extern int FS_Read(void*, int, int);
     extern int FS_Write(const void*, int, int);
-    extern struct BspPlane* CM_GetPlaneNum(int);
+    extern class BspPlane* CM_GetPlaneNum(int);
     extern struct cvar_t* Cvar_FindVar(const char*);
     extern int Com_SaveCvarsToBuffer(const char**, int, char*, int);
     extern int Com_LoadCvarsFromBuffer(const char**, int, const char*,

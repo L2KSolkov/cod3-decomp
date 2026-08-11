@@ -2664,7 +2664,7 @@ extern void CG_OffsetFirstPersonView();
 extern void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
                                const float* minClamp,
                                const float* maxClamp);
-extern void AddLeanToPosition(float* vPosition, float fViewYaw,
+extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);
 extern void Com_DPrintf(const char* fmt, ...);

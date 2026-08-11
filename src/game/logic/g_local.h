@@ -2697,9 +2697,9 @@ bool can_place_decal(const math::Position3& p, const math::Dir3& n,
                      float decal_radius);  // game.o 0x61A900
 bool TestPointInBox(const math::Position3& p, const math::Position3& bmin,
                     const math::Position3& bmax);  // game.o 0x61CBD0
-int TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
-                     const math::Position3& bmax, const cdlPlane* sides,
-                     unsigned int nsides);  // game.o 0x61CC30
+bool TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
+                      const math::Position3& bmax, const cdlPlane* sides,
+                      unsigned int nsides);  // game.o 0x61CC30
 // cdl_vinfo_t - patch vertex info (10 bytes) - verified against IDA
 struct cdl_vinfo_t {
     int16_t  vbase[3];    // +0x00 (signed grid coords)
@@ -2785,8 +2785,8 @@ int TraceCylinderThroughCylinder(traceWork_t* tw,
                                  float radius);  // game.o 0x61C3D0
 void TraceCapsuleThroughCapsule(traceWork_t* tw);  // game.o 0x61C690
 void TraceBoundingBoxThroughCapsule(traceWork_t* tw);  // game.o 0x61C8D0
-DCGSet* TempBoxModel(const math::Position3* mins,
-                     const math::Position3* maxs, int contents,
+DCGSet* TempBoxModel(const math::Position3& mins,
+                     const math::Position3& maxs, int contents,
                      int capsule);  // game.o 0x618670
 bool collide_velocity_sphere_poly(const math::Position3& c0,
                                   math::Position3& c1,
@@ -2798,7 +2798,7 @@ bool collide_velocity_sphere_poly(const math::Position3& c0,
                                   bool& insolid);  // game.o 0x61BBB0
 void InitEntitiesBSP();  // game.o 0x6199C0
 struct leafList_s;
-void GetLeaves(leafList_s* ll, unsigned int nodeIndex, float* mindist);  // game.o 0x619050
+void GetLeaves(leafList_s* ll, int nodeIndex, float* const mindist);  // game.o 0x619050
 int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
                    const math::Position3* pos, const math::Position3* mins,
                    const math::Position3* maxs, int* list, int listsize,
@@ -2813,8 +2813,9 @@ int CM_TraceBox(const math::Position3& start, const math::Position3& end,
                 const math::Position3& mins, const math::Position3& maxs,
                 float fraction);  // game.o 0x60BCD0
 void CM_ClipMoveToEntities(moveclip_t* clip);  // game.o 0x60BF60
-void AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac,
-                       float fViewRoll, float fLeanDist);  // game.o 0x61FBA0
+void AddLeanToPosition(float* const vPosition, float fViewYaw,
+                       float fLeanFrac, float fViewRoll,
+                       float fLeanDist);  // game.o 0x61FBA0
 void CM_ModelBounds(DCGSet* mod, math::Position3& mins,
                     math::Position3& maxs);          // game.o 0x6093D0
 void CM_CreateStaticModel(const char* name, TPakId pakId, float*& axis,
@@ -2897,8 +2898,9 @@ void  ClientCommand(DbLinkedHandle<EntityHandleDb, Entity> ent);  // g.o 0x4678C
 void  G_ShutdownGame(int restart);                 // g.o 0x457FE0
 bool  SpotWouldTelefrag(const math::Position3* origin);  // g.o 0x466E00
 void  G_AddLean(Entity* ent, float* point);        // g.o 0x44A050
-void  AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac,
-                        float fViewRoll, float fLeanDist);  // game.o
+void  AddLeanToPosition(float* const vPosition, float fViewYaw,
+                        float fLeanFrac, float fViewRoll,
+                        float fLeanDist);  // game.o
 void  MemPrint(const char* fmt, ...);              // core.o
 void  DynamicDecalMgr_DestroyAllDecals(void);      // render.o
 void  SmokeGrenadeMgr_ReInitialize(void);          // game.o

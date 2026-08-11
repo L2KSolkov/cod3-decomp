@@ -79,7 +79,9 @@ extern int           SightTrace(int oldHitNum, const math::Position3* start, con
 extern int           CM_PointContents(const math::Position3* p, DCGSet* model);
 extern int           CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                                      DbLinkedHandle<EntityHandleDb, Entity>* entityList, int maxcount, int contentmask);
-extern DCGSet*       TempBoxModel(const math::Position3* mins, const math::Position3* maxs, int contents, int capsule);
+extern DCGSet*       TempBoxModel(const math::Position3& mins,
+                                  const math::Position3& maxs,
+                                  int contents, int capsule);
 extern int           CM_TransformedPointContents(const math::Position3* p, DCGSet* model,
                                                  const math::Position3* origin, const math::Position3* angles);
 extern int           DObjHasContents(const DObj* obj, int contentmask);
@@ -809,7 +811,7 @@ int SV_PointContents(const math::Position3& p, const collision_context_t& contex
                 mObject = EntityHandleDb::sInst.mElements[v6].mObject;
             DCGSet* bmodel = mObject->r.bmodel;
             if (bmodel == NULL)
-                bmodel = TempBoxModel(&mObject->r.mins, &mObject->r.maxs, mObject->r.contents,
+                bmodel = TempBoxModel(mObject->r.mins, mObject->r.maxs, mObject->r.contents,
                                       (mObject->r.svFlags & 0x200) != 0 ? 1 : 0);
             contents |= CM_TransformedPointContents(&p, bmodel, &mObject->r.currentOrigin, &mObject->r.currentAngles);
         }

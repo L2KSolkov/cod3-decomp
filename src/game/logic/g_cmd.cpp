@@ -40,7 +40,8 @@ void Cmd_AddCommand(const char* cmd_name, void (*function)());
 
 enum ECmdFuncType { CMD = 0, INPUT_CMD = 1 };
 
-struct BaseCmdFuncInfo {
+class BaseCmdFuncInfo {
+public:
     int mFuncType;          // +0x00
     const char* mName;      // +0x04
     BaseCmdFuncInfo* mNext; // +0x08
@@ -2753,7 +2754,7 @@ static bool first_time_0 = true;
 static unsigned __int64 initial_time_0;
 
 // ea: 0x0060EE40
-double Sys_Time()
+float Sys_Time()
 {
     unsigned int v0;
     unsigned int v1;
@@ -2771,8 +2772,8 @@ double Sys_Time()
         v1 = (unsigned int)initial_time_0;
     }
     unsigned __int64 now = __rdtsc();
-    return (double)(now - (((unsigned __int64)v0 << 32) | v1))
-        * 0.0000000013636364;
+    return (float)((double)(now - (((unsigned __int64)v0 << 32) | v1))
+                   * 0.0000000013636364);
 }
 
 // ============================================================================
@@ -2784,6 +2785,6 @@ void DebugCurveRender()
 }
 
 // ea: 0x0060F250
-void Sys_Print()
+void Sys_Print(const char* msg, int cmdID)
 {
 }

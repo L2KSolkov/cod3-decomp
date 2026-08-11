@@ -89,7 +89,7 @@ extern void* PlayerAnimMgr_sInst;
 extern void* Entity_GetRefEntity(Entity* ent);
 extern void CG_AddPlayerWeapon(void* parent, PlayerState* ps, Entity* entity,
                                int bDrawGun);
-extern void AddLeanToPosition(float* vPosition, float fViewYaw,
+extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);
 extern void DObjAdvanceAnimationPlayer(void* d, float deltaT);

@@ -16,7 +16,9 @@ extern void  Com_Error(int code, const char* fmt, ...);
 extern int   Com_Milliseconds(void);
 extern void  CM_AdjustAreaPortalState(int area1, int area2, int open);
 extern void  CM_UnlinkEntity(EntityShared* ent);
-extern DCGSet* TempBoxModel(const math::Position3* mins, const math::Position3* maxs, int contents, int capsule);
+extern DCGSet* TempBoxModel(const math::Position3& mins,
+                            const math::Position3& maxs,
+                            int contents, int capsule);
 extern void  TraceXFormed(trace_t* results, const math::Position3& start, const math::Position3& end,
                           const math::Position3& mins, const math::Position3& maxs, DCGSet* model,
                           int brushmask, const math::Position3& origin, const math::Position3& angles, int capsule);
@@ -319,9 +321,9 @@ DCGSet* SV_ClipHandleForEntity(const Entity* ent) {
         int contents = ent->r.contents;
         math::Position3* p_maxs = (math::Position3*)&ent->r.maxs;
         if ((ent->r.svFlags & 0x200) != 0)
-            return TempBoxModel(&ent->r.mins, p_maxs, contents, 1);
+            return TempBoxModel(ent->r.mins, *p_maxs, contents, 1);
         else
-            return TempBoxModel(&ent->r.mins, p_maxs, contents, 0);
+            return TempBoxModel(ent->r.mins, *p_maxs, contents, 0);
     }
     return result;
 }

@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // g_cm_load.cpp - game.o CM_ BSP leaf helpers (cm_load.cpp)
 // Verified against IDA (release map offsets + 0x40C000 = VA).
 // ============================================================================
@@ -37,7 +37,8 @@ struct phys_memory_heap {
 // ============================================================================
 // BSP types (local views; sizes verified against disasm)
 // ============================================================================
-struct BspPlane {
+class BspPlane {
+public:
     __m128 mPlane;   // +0x00 (normal xyz + dist w)
     void ToCPlane(cplane_s& cp)
     {
@@ -185,7 +186,7 @@ int CM_LeafArea(int leafnum)
 }
 
 // ea: 0x00618BA0
-int CM_PointLeafnum_r(const math::Position3* p, unsigned int nodeIndex)
+int CM_PointLeafnum_r(const math::Position3& p, unsigned int nodeIndex)
 {
     BspNode* v2 = &g_bspTree->mNodes.mList[0];
     BspNode* v3 = &BspNodeAt(nodeIndex);
@@ -196,13 +197,13 @@ int CM_PointLeafnum_r(const math::Position3* p, unsigned int nodeIndex)
         float v4;
         if (plane.type >= 3u)
         {
-            v4 = ((p->v.m128_f32[2] * plane.normal[2])
-                  + (p->v.m128_f32[1] * plane.normal[1]))
-                + (p->v.m128_f32[0] * plane.normal[0]);
+            v4 = ((p.v.m128_f32[2] * plane.normal[2])
+                  + (p.v.m128_f32[1] * plane.normal[1]))
+                + (p.v.m128_f32[0] * plane.normal[0]);
         }
         else
         {
-            v4 = p->v.m128_f32[plane.type];
+            v4 = p.v.m128_f32[plane.type];
         }
         if ((v4 - plane.dist) >= 0.0f)
             v3 = v3->u.node.children[0];
@@ -213,7 +214,7 @@ int CM_PointLeafnum_r(const math::Position3* p, unsigned int nodeIndex)
 }
 
 // ea: 0x00618C50
-int CM_PointLeafnum(const math::Position3* p)
+int CM_PointLeafnum(const math::Position3& p)
 {
     return CM_PointLeafnum_r(p, 0);
 }
@@ -230,7 +231,7 @@ void CM_StoreLeafs(leafList_s* ll, int nodeIndex)
 }
 
 // ea: 0x00618CB0
-void CM_BoxLeafnums_r(leafList_s* ll, unsigned int nodeIndex)
+void CM_BoxLeafnums_r(leafList_s* ll, int nodeIndex)
 {
     BspNode* v26 = &g_bspTree->mNodes.mList[0];
 LABEL_2:
@@ -319,7 +320,7 @@ inline int& AreaPortalAt(unsigned int index)
 }
 
 // ea: 0x00619650
-void CM_FloodArea_r(unsigned int areaNum, int floodnum)
+void CM_FloodArea_r(int areaNum, int floodnum)
 {
     BspArea* v3 = &BspAreaAt(areaNum);
     if (v3->floodvalid == g_bspTree->floodvalid)
@@ -809,9 +810,9 @@ bool TestPointInBox(const math::Position3& p, const math::Position3& bmin,
 }
 
 // ea: 0x0061CC30
-int TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
-                     const math::Position3& bmax, const cdlPlane* sides,
-                     unsigned int nsides)
+bool TestPointInBrush(const math::Position3& p, const math::Position3& bmin,
+                      const math::Position3& bmax, const cdlPlane* sides,
+                      unsigned int nsides)
 {
     if (!(p.v.m128_f32[0] >= bmin.v.m128_f32[0]
           && p.v.m128_f32[1] >= bmin.v.m128_f32[1]
@@ -1334,7 +1335,7 @@ void DecodeBin(const char* name, unsigned char* data, int size, TPakId pakId)
 // GetLeaves / CM_BoxLeafnums - ea: 0x619050..0x6194A0
 // ============================================================================
 // ea: 0x00619050
-void GetLeaves(leafList_s* ll, unsigned int nodeIndex, float* mindist)
+void GetLeaves(leafList_s* ll, int nodeIndex, float* const mindist)
 {
     BspNode* v30 = &g_bspTree->mNodes.mList[0];
     while (1)
@@ -2125,8 +2126,8 @@ int SightTraceSphereThroughSphere(traceWork_t* tw,
 // ============================================================================
 // SightTraceCapsuleThroughCapsule / BoundingBox - ea: 0x61D760 / 0x61D9C0
 // ============================================================================
-extern DCGSet* TempBoxModel(const math::Position3* mins,
-                            const math::Position3* maxs, int contents,
+extern DCGSet* TempBoxModel(const math::Position3& mins,
+                            const math::Position3& maxs, int contents,
                             int capsule);  // game.o
 bool collide_brush_segment(traceWork_t* tw, const math::Position3& bmin,
                            const math::Position3& bmax,
@@ -2244,7 +2245,8 @@ int SightTraceBoundingBoxThroughCapsule(traceWork_t* tw)
     tw->sphere_radiusOffset.v.m128_f32[1] = tw->sphere_radius;
     tw->sphere_radiusOffset.v.m128_f32[2] = tw->sphere_halfheight;
     int v7 = TempBoxModelContents();
-    TempBoxModel(&tw->size[0], &tw->size[1], v7, 0);
+    TempBoxModel(*(const math::Position3*)&tw->size[0],
+                 *(const math::Position3*)&tw->size[1], v7, 0);
     cdl_object_t* m_elements =
         (cdl_object_t*)gBoxDCGSet->objects_m_elements;
     if (gBoxDCGSet->objects_m_count == 0)
@@ -2315,7 +2317,8 @@ void TraceBoundingBoxThroughCapsule(traceWork_t* tw)
     tw->sphere_radiusOffset.v.m128_f32[1] = tw->sphere_radius;
     tw->sphere_radiusOffset.v.m128_f32[2] = tw->sphere_halfheight;
     int v7 = TempBoxModelContents();
-    TempBoxModel(&tw->size[0], &tw->size[1], v7, 0);
+    TempBoxModel(*(const math::Position3*)&tw->size[0],
+                 *(const math::Position3*)&tw->size[1], v7, 0);
     if (gBoxDCGSet->objects_m_count == 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::CD;
@@ -2363,8 +2366,8 @@ void TraceBoundingBoxThroughCapsule(traceWork_t* tw)
 // TempBoxModel - ea: 0x618670
 // ============================================================================
 // ea: 0x00618670
-DCGSet* TempBoxModel(const math::Position3* mins,
-                     const math::Position3* maxs, int contents, int capsule)
+DCGSet* TempBoxModel(const math::Position3& mins,
+                     const math::Position3& maxs, int contents, int capsule)
 {
     if (gBoxDCGSet == nullptr || gBoxDCGSet->objects_m_count != 1)
     {
@@ -2382,15 +2385,15 @@ DCGSet* TempBoxModel(const math::Position3* mins,
         __debugbreak();
     cdl_object_t* m_elements =
         (cdl_object_t*)gBoxDCGSet->objects_m_elements;
-    m_elements->center[0] = (mins->v.m128_f32[0] + maxs->v.m128_f32[0])
+    m_elements->center[0] = (mins.v.m128_f32[0] + maxs.v.m128_f32[0])
         * 0.5f;
-    m_elements->center[1] = (mins->v.m128_f32[1] + maxs->v.m128_f32[1])
+    m_elements->center[1] = (mins.v.m128_f32[1] + maxs.v.m128_f32[1])
         * 0.5f;
-    m_elements->center[2] = (mins->v.m128_f32[2] + maxs->v.m128_f32[2])
+    m_elements->center[2] = (mins.v.m128_f32[2] + maxs.v.m128_f32[2])
         * 0.5f;
-    m_elements->box_radius[0] = maxs->v.m128_f32[0] - m_elements->center[0];
-    m_elements->box_radius[1] = maxs->v.m128_f32[1] - m_elements->center[1];
-    m_elements->box_radius[2] = maxs->v.m128_f32[2] - m_elements->center[2];
+    m_elements->box_radius[0] = maxs.v.m128_f32[0] - m_elements->center[0];
+    m_elements->box_radius[1] = maxs.v.m128_f32[1] - m_elements->center[1];
+    m_elements->box_radius[2] = maxs.v.m128_f32[2] - m_elements->center[2];
     float r2 = m_elements->box_radius[0] * m_elements->box_radius[0]
         + m_elements->box_radius[1] * m_elements->box_radius[1]
         + m_elements->box_radius[2] * m_elements->box_radius[2];
@@ -2859,9 +2862,9 @@ void TestBoundingBoxInCapsule(traceWork_t* tw)
     tw->sphere_offset.v.m128_f32[1] = 0.0f;
     tw->sphere_offset.v.m128_f32[2] = v5 - tw->sphere_radius;
     int v7 = TempBoxModelContents();
-    TempBoxModel(&tw->size[0], &tw->size[1], v7, 0);
+    TempBoxModel(*(const math::Position3*)&tw->size[0],
+                 *(const math::Position3*)&tw->size[1], v7, 0);
     cdl_object_t* objects = (cdl_object_t*)gBoxDCGSet->objects_m_elements;
-    if (gBoxDCGSet->objects_m_count == 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::JSV;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
@@ -11541,10 +11544,11 @@ void query_proximity_data(const math::Position3& lo,
 // ============================================================================
 // AddLeanToPosition - ea: 0x61FBA0 (g_weapon.cpp lean offset)
 // ============================================================================
-extern void AnglesToRight(const float* angles, float* right);  // q_math
+extern void AnglesToRight(const float* const angles,
+                          float* const right);  // q_math
 // ea: 0x0061FBA0
-void AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac,
-                       float fViewRoll, float fLeanDist)
+void AddLeanToPosition(float* const vPosition, float fViewYaw,
+                       float fLeanFrac, float fViewRoll, float fLeanDist)
 {
     if (fLeanFrac == 0.0f)
         return;
