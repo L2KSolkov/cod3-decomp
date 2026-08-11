@@ -72,7 +72,7 @@ void   Cmd_TokenizeString(const char* text_in);
 void   Cmd_ExecuteServerString(const char* text);
 
 // fs.cpp
-int    FS_ReadFile(const char* qpath, void** buffer);
+int    FS_ReadFile(char* qpath, void** buffer);
 void   FS_Shutdown(int closemfp);
 void   FS_Restart(int checksumFeed);
 void   FS_ClearMemory(void);

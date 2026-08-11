@@ -136,7 +136,7 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
-extern void CG_WeaponSlot_f(int iSlot);
+extern bool CG_WeaponSlot_f(int iSlot);
 extern void CG_NextWeapon_f();
 extern void CG_PrevWeapon_f();
 extern bool CL_IsADS(int client);

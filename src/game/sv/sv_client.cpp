@@ -25,7 +25,7 @@ extern char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
 extern void  SV_FreeAcknowledgedReliableCommands(client_s* cl);
 extern void  SV_PreFrame(int msec);
 extern void  SV_RunFrame(int msec);
-extern void  CL_ParseGamestate(Broc::string* configstrings);
+extern void  CL_ParseGamestate(void* configstrings);
 extern void  CL_ConnectResponse(netadr_t from);
 extern void  SV_DirectConnect(netadr_t from);
 extern void  SV_SwapClients(int client1, int client2);

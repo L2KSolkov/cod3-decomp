@@ -84,7 +84,9 @@ extern void          CM_PointTraceStaticModels(trace_t* results,
                                                const math::Position3& start,
                                                const math::Position3& end,
                                                const collision_context_t& context);
-extern void          CM_PointTraceToEntities(pointtrace_t* clip, const collision_context_t* context);
+struct TouchEntityData;
+extern void          CM_PointTraceToEntities(pointtrace_t* clip,
+                                             const TouchEntityData& context);
 extern void          CM_ClipMoveToEntities(moveclip_t* clip,
                                            const collision_context_t& context);
 extern int           CM_PointSightTraceToEntities(sightpointtrace_t* clip,
@@ -584,7 +586,7 @@ void SV_Trace(trace_t* results, const math::Position3* start, const math::Positi
                 Entity* e1 = HandleDbDeref(context->pass_entity1);
                 if (e1 != NULL)
                     clip.mPassOwner.mHandle.mVal = e1->r.mOwner.mHandle.mVal;
-                CM_PointTraceToEntities(&clip, context);
+                CM_PointTraceToEntities(&clip, *(const TouchEntityData*)context);
                 *results = clip.trace;
         } else {
             if (bLocational != 0) {
@@ -1077,7 +1079,7 @@ void TracePointFull(const proximity_data_t* proximity_data, trace_t* results,
             if (e1 != NULL)
                 clip.mPassOwner.mHandle.mVal = e1->r.mOwner.mHandle.mVal;
         }
-        CM_PointTraceToEntities(&clip, context);
+        CM_PointTraceToEntities(&clip, *(const TouchEntityData*)context);
         *results = clip.trace;
         if (IS_NAN(results->fraction)) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
