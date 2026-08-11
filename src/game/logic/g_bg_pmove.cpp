@@ -272,6 +272,89 @@ int PM_Weapon_WeaponTimeAdjust()
 }
 
 // ============================================================================
+// PM_BeginWeaponDeploy - ea: 0x6082E0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006082E0
+void PM_BeginWeaponDeploy()
+{
+    int weaponstate = pm->ps->weaponstate;
+    if ((weaponstate != 13
+         || ((weaponFileInfo_t*)pml.pWeap)->weapClass != WEAPCLASS_SPOTTER)
+        && weaponstate != 12)
+    {
+        pm->ps->weaponstate = 12;
+        pm->ps->weaponTime = *(int*)((char*)pml.pWeap + 0x694);
+        PM_StartWeaponAnim(19);
+        PM_AddEvent(183);
+    }
+}
+
+// ============================================================================
+// PM_BeginWeaponBreakingdown - ea: 0x608340 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608340
+void PM_BeginWeaponBreakingdown()
+{
+    int weaponstate = pm->ps->weaponstate;
+    if ((weaponstate != 12
+         || ((weaponFileInfo_t*)pml.pWeap)->weapClass != WEAPCLASS_SPOTTER)
+        && weaponstate != 13)
+    {
+        pm->ps->weaponstate = 13;
+        pm->ps->weaponTime = *(int*)((char*)pml.pWeap + 0x698);
+        PM_StartWeaponAnim(20);
+        PM_AddEvent(184);
+    }
+}
+
+// ============================================================================
+// PM_Weapon_CheckForDeployBreakdown - ea: 0x608520 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608520
+void PM_Weapon_CheckForDeployBreakdown()
+{
+    int weapClass = ((weaponFileInfo_t*)pml.pWeap)->weapClass;
+    if (weapClass == WEAPCLASS_LMG || weapClass == WEAPCLASS_SPOTTER)
+    {
+        PlayerState* ps = pm->ps;
+        int weaponstate = pm->ps->weaponstate;
+        switch (weaponstate)
+        {
+        case 1:
+        case 2:
+        case 10:
+        case 11:
+            return;
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            if ((ps->pm_flags & 0x20) == 0)
+                break;
+            return;
+        default:
+            break;
+        }
+        if ((ps->pm_flags & 0x20) == 0
+            || ps->fWeaponPosFrac == 1.0f
+            || weaponstate == 12)
+        {
+            if ((ps->pm_flags & 0x20) == 0
+                && ps->fWeaponPosFrac != 0.0f
+                && weaponstate != 13)
+            {
+                PM_BeginWeaponBreakingdown();
+            }
+        }
+        else
+        {
+            PM_BeginWeaponDeploy();
+        }
+    }
+}
+
+// ============================================================================
 // PM_UpdateHoldBreath - ea: 0x631260 (bg_pmove.cpp)
 // ============================================================================
 // ea: 0x00631260
