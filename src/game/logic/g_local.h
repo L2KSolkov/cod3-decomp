@@ -1548,11 +1548,24 @@ struct weaponFileInfo_t {
     int     iDamageInnerRadius;   // +0x5E0
     int     iDamageOuterRadius;   // +0x5E4
     int     iMeleeDamage;         // +0x5E8
-    uint8_t _pad1ec[0x5F0 - 0x5EC];
+    int     iDamageType;          // +0x5EC
     int     iFireDelay;           // +0x5F0
-    uint8_t _pad1f4[0x5F8 - 0x5F4];
+    int     iMeleeDelay;          // +0x5F4
     int     iFireTime;            // +0x5F8
-    uint8_t _pad2[0x634 - 0x5FC];
+    int     iRechamberTime;       // +0x5FC
+    int     iRechamberBoltTime;   // +0x600
+    int     iHoldFireTime;        // +0x604
+    int     iMeleeTime;           // +0x608
+    int     iReloadTime;          // +0x60C
+    int     iReloadEmptyTime;     // +0x610
+    int     iReloadAddTime;       // +0x614
+    int     iReloadStartTime;     // +0x618
+    int     iReloadStartAddTime;  // +0x61C
+    int     iReloadEndTime;       // +0x620
+    int     iDropTime;            // +0x624
+    int     iRaiseTime;           // +0x628
+    int     iAltDropTime;         // +0x62C
+    int     iAltRaiseTime;        // +0x630
     int     iFuseTime;            // +0x634
     uint8_t _pad2b[0x640 - 0x638];
     float   fAdsZoomFov;          // +0x640
@@ -3133,6 +3146,7 @@ int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEn
 enum {
     WEAPTYPE_BULLET = 0,
     WEAPTYPE_GRENADE = 1,  // verified vs disasm BG_IsCookingOffGrenade
+    WEAPTYPE_SPOTTER = 3,  // verified vs disasm PM_Weapon_CheckForSpotting
     WEAPTYPE_ITEM = 4,  // verified vs disasm Drop_Weapon
     WEAPTYPE_INTERACT = 6,  // verified vs disasm UpdateAnimRoute
     WEAPTYPE_GAS = 5,   // verified vs disasm PM_StartWeaponAnim

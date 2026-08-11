@@ -74,6 +74,9 @@ extern float player_breath_gasp_time;   // @ 0xDF6B40
 extern float player_breath_hold_lerp;   // @ 0xDF6B44
 extern float player_breath_gasp_lerp;   // @ 0xDF6B48
 extern float player_breath_gasp_scale;  // @ 0xDF6B4C
+extern char* pszGameDll;   // ?pszGameDll@@3PADA (game.o @ 0xDF5A34)
+extern int iLastState;     // game.o @ 0xDF8C78
+extern int iLastAnim;      // game.o @ 0xDF8C7C
 extern float* dword_F63B8C[4 * 1580];   // ?dword_F63B8C (game.o @ 0xF63B8C)
 extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
     // ?DiffTrack@@YAMMMMM@Z (core.o q_math.cpp)
@@ -100,6 +103,15 @@ extern void ProjectPointOnPlane(float* dst, const float* p,
 int  PM_WeaponAmmoAvailable(int wp);  // game.o 0x607E50
 int  PM_WeaponClipEmpty(int wp);      // game.o 0x607E80
 int  PM_Weapon_FinishRechamber();     // game.o 0x607FD0
+void PM_KillQueuedReloadSound(PlayerState* ps);  // game.o 0x6080E0
+extern void Com_BitClear(int* array, int bitNum);  // ?Com_BitClear (core.o q_shared)
+extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
+                                      bool kill);  // ?StopEffect@EffectEventSys
+extern void* EffectEventSys_sInst;  // ?sInst@EffectEventSys@@2PAV1@A
+extern Handle PostEffectEventWeaponReload(const Entity* ent,
+                                          const char* weaponType,
+                                          int weaponAction, bool queue);
+extern bool GamePause_IsGamePaused(int client);  // ?IsGamePaused@GamePause@@SA_NH@Z
 
 // ============================================================================
 // AngleClamp - ea: 0x604A90
@@ -352,6 +364,666 @@ void PM_Weapon_CheckForDeployBreakdown()
             PM_BeginWeaponDeploy();
         }
     }
+}
+
+// ============================================================================
+// PM_Weapon_FinishWeaponRaise - ea: 0x6083A0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006083A0
+int PM_Weapon_FinishWeaponRaise()
+{
+    if (pm->ps->weaponstate != 1)
+        return 0;
+    pm->ps->weaponstate = 0;
+    PM_StartWeaponAnim(0);
+    return 1;
+}
+
+// ============================================================================
+// PM_Weapon_FinishWeaponDeploy - ea: 0x6083D0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006083D0
+int PM_Weapon_FinishWeaponDeploy()
+{
+    if (pm->ps->weaponstate != 12)
+        return 0;
+    pm->ps->weaponstate = 0;
+    PM_StartWeaponAnim(0);
+    return 1;
+}
+
+// ============================================================================
+// PM_Weapon_FinishWeaponBreakdown - ea: 0x608400 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608400
+int PM_Weapon_FinishWeaponBreakdown()
+{
+    if (pm->ps->weaponstate != 13)
+        return 0;
+    pm->ps->weaponstate = 0;
+    PM_StartWeaponAnim(0);
+    return 1;
+}
+
+// ============================================================================
+// PM_Weapon_CheckForSpotting - ea: 0x608AD0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608AD0
+void PM_Weapon_CheckForSpotting()
+{
+    if (((weaponFileInfo_t*)pml.pWeap)->type == WEAPTYPE_SPOTTER
+        && ((weaponFileInfo_t*)pml.pWeap)->bCanSpot != 0
+        && (pm->ps->pm_flags & 0x20) != 0
+        && pm->ps->fWeaponPosFrac >= 0.99900001f
+        && !GamePause_IsGamePaused(currCl))
+    {
+        if (controller_button_pressed(controller_inst(), 0, 8))  // R1
+            PM_AddEvent(196);
+    }
+}
+
+// ============================================================================
+// PM_Weapon_PrintWeaponState - ea: 0x608B40 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608B40
+void PM_Weapon_PrintWeaponState()
+{
+    int weaponstate = pm->ps->weaponstate;
+    if (iLastState != weaponstate)
+    {
+        Com_Printf(" %i %s_", pm->cmd.serverTime, pszGameDll);
+        iLastState = weaponstate;
+        Com_Printf("WEAP_STATE -- ");
+        switch (weaponstate)
+        {
+        case 0:
+            Com_Printf("WEAPON_READY\n");
+            break;
+        case 1:
+            Com_Printf("WEAPON_RAISING\n");
+            break;
+        case 2:
+            Com_Printf("WEAPON_DROPPING\n");
+            break;
+        case 3:
+            Com_Printf("WEAPON_FIRING\n");
+            break;
+        case 4:
+            Com_Printf("WEAPON_RECHAMBERING\n");
+            break;
+        case 5:
+            Com_Printf("WEAPON_RELOADING\n");
+            break;
+        case 6:
+            Com_Printf("WEAPON_RELOADING_INTERUPT\n");
+            break;
+        case 7:
+            Com_Printf("WEAPON_RELOAD_START\n");
+            break;
+        case 8:
+            Com_Printf("WEAPON_RELOAD_START_INTERUPT\n");
+            break;
+        case 9:
+            Com_Printf("WEAPON_RELOAD_END\n");
+            break;
+        case 10:
+            Com_Printf("WEAPON_MELEE_WINDUP\n");
+            break;
+        case 11:
+            Com_Printf("WEAPON_MELEE_RELAX\n");
+            break;
+        default:
+            Com_Printf("UNKNOWN\n");
+            break;
+        }
+    }
+}
+
+// ============================================================================
+// PM_Weapon_PrintWeaponAnim - ea: 0x608C90 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608C90
+void PM_Weapon_PrintWeaponAnim()
+{
+    unsigned int anim = pm->ps->weapAnim & 0xFFFFFDFF;
+    if (iLastAnim != anim)
+    {
+        Com_Printf(" %i %s_", pm->cmd.serverTime, pszGameDll);
+        iLastAnim = anim;
+        Com_Printf("WEAP_ANIM -- ");
+        switch (anim)
+        {
+        case 0:
+            Com_Printf("WEAP_IDLE\n");
+            break;
+        case 2:
+            Com_Printf("WEAP_ATTACK\n");
+            break;
+        case 3:
+            Com_Printf("WEAP_ATTACK_LASTSHOT\n");
+            break;
+        case 4:
+            Com_Printf("WEAP_RECHAMBER\n");
+            break;
+        case 5:
+            Com_Printf("WEAP_ADS_ATTACK\n");
+            break;
+        case 6:
+            Com_Printf("WEAP_ADS_ATTACK_LASTSHOT\n");
+            break;
+        case 7:
+            Com_Printf("WEAP_ADS_RECHAMBER\n");
+            break;
+        case 8:
+            Com_Printf("WEAP_MELEE_ATTACK\n");
+            break;
+        case 9:
+            Com_Printf("WEAP_DROP\n");
+            break;
+        case 0xA:
+            Com_Printf("WEAP_RAISE\n");
+            break;
+        case 0xB:
+            Com_Printf("WEAP_RELOAD\n");
+            break;
+        case 0xC:
+            Com_Printf("WEAP_RELOAD_EMPTY\n");
+            break;
+        case 0xD:
+            Com_Printf("WEAP_RELOAD_START\n");
+            break;
+        case 0xE:
+            Com_Printf("WEAP_RELOAD_END\n");
+            break;
+        case 0xF:
+            Com_Printf("WEAP_ALTSWITCHFROM\n");
+            break;
+        case 0x10:
+            Com_Printf("WEAP_ALTSWITCHTO\n");
+            break;
+        case 0x11:
+            Com_Printf("WEAP_HOLD_FIRE\n");
+            break;
+        case 0x12:
+            Com_Printf("WEAP_DEPLOYED\n");
+            break;
+        case 0x13:
+            Com_Printf("WEAP_DEPLOY\n");
+            break;
+        case 0x14:
+            Com_Printf("WEAP_BREAKDOWN\n");
+            break;
+        case 0x15:
+            Com_Printf("WEAP_ADS_RAISE\n");
+            break;
+        case 0x16:
+            Com_Printf("WEAP_ADS_LOWER\n");
+            break;
+        case 0x17:
+            Com_Printf("WEAP_ADS_IDLE\n");
+            break;
+        default:
+            Com_Printf("UNKNOWN\n");
+            break;
+        }
+    }
+}
+
+// ============================================================================
+// PM_Weapon_AllowReload - ea: 0x608430 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608430
+int PM_Weapon_AllowReload()
+{
+    int iClipIndex = BG_GetInfoForWeapon(pm->ps->weapon)->iClipIndex;
+    if (pm->ps->ammo[BG_GetInfoForWeapon(pm->ps->weapon)->iAmmoIndex] != 0
+        && pm->ps->ammoclip[iClipIndex] < BG_GetAmmoClipSize(iClipIndex))
+    {
+        if (((weaponFileInfo_t*)pml.pWeap)->bNoPartialReload == 0)
+            return 1;
+        if (((weaponFileInfo_t*)pml.pWeap)->iReloadAmmoAdd != 0
+            && ((weaponFileInfo_t*)pml.pWeap)->iReloadAmmoAdd
+                < BG_GetAmmoClipSize(iClipIndex))
+        {
+            if (BG_GetAmmoClipSize(iClipIndex) - pm->ps->ammoclip[iClipIndex]
+                >= ((weaponFileInfo_t*)pml.pWeap)->iReloadAmmoAdd)
+                return 1;
+        }
+        else if (pm->ps->ammoclip[iClipIndex] == 0)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// ============================================================================
+// PM_QueueReloadSound - ea: 0x608040 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608040
+void PM_QueueReloadSound(int action)
+{
+    if (action == 15 /* kActionWEAPON_RELOAD_EMPTY */
+        || pm->ps->queuedReloadSound.mVal == 0
+        || pm->ps->queuedReloadSoundPlayStarted)
+    {
+        unsigned int mVal = pm->ps->queuedReloadSound.mVal;
+        if (mVal != 0)
+            EffectEventSys_StopEffect(EffectEventSys_sInst, mVal, false);
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(Player->s.weapon);
+        pm->ps->queuedReloadSound =
+            PostEffectEventWeaponReload(Player, InfoForWeapon->szInternalName,
+                                        action, true);
+        pm->ps->queuedReloadSoundPlayStarted = false;
+    }
+}
+
+// ============================================================================
+// PM_QueuedReloadBegin - ea: 0x608200 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608200
+void PM_QueuedReloadBegin(int which)
+{
+    int v2 = 14;  // kActionWEAPON_RELOAD
+    if (which == 11 /* WEAP_RELOAD */)
+    {
+        pm->ps->reloadFromEmpty = false;
+    }
+    else if (which == 12 /* WEAP_RELOAD_EMPTY */)
+    {
+        pm->ps->reloadFromEmpty = true;
+        v2 = 15;  // kActionWEAPON_RELOAD_EMPTY
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 3502;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored() && AeAssert::Warning("Unknown reload anim!"))
+            __debugbreak();
+    }
+    PM_QueueReloadSound(v2);
+    if (pm->ps->reloadFromEmpty)
+        pm->ps->weaponTime =
+            ((weaponFileInfo_t*)pml.pWeap)->iReloadEmptyTime;
+    else
+        pm->ps->weaponTime = ((weaponFileInfo_t*)pml.pWeap)->iReloadTime;
+    pm->ps->weaponstate = 14;
+    pm->ps->queuedReloadTimer = 0;
+}
+
+// ============================================================================
+// PM_SetReloadingState - ea: 0x6177B0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006177B0
+void PM_SetReloadingState()
+{
+    int iClipIndex = BG_GetInfoForWeapon(pm->ps->weapon)->iClipIndex;
+    PlayerState* ps = pm->ps;
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    if ((pm->ps->mFlags & 4) != 0
+        && ps->ammoclip[iClipIndex] == BG_GetAmmoClipSize(iClipIndex) - 1)
+    {
+        ps->reloadFromEmpty = true;
+        PM_QueueReloadSound(15);  // kActionWEAPON_RELOAD_EMPTY
+        if (pm->ps->reloadFromEmpty)
+            pm->ps->weaponTime = pWeap->iReloadEmptyTime;
+        else
+            pm->ps->weaponTime = pWeap->iReloadTime;
+        pm->ps->weaponstate = 14;
+        pm->ps->queuedReloadTimer = 0;
+    }
+    else if (ps->ammoclip[iClipIndex] != 0
+             || pWeap->type != WEAPTYPE_BULLET
+             || pWeap->bSegmentedReload != 0)
+    {
+        ps->reloadFromEmpty = false;
+        PM_QueueReloadSound(14);  // kActionWEAPON_RELOAD
+        if (pm->ps->reloadFromEmpty)
+            pm->ps->weaponTime = pWeap->iReloadEmptyTime;
+        else
+            pm->ps->weaponTime = pWeap->iReloadTime;
+        pm->ps->weaponstate = 14;
+        pm->ps->queuedReloadTimer = 0;
+    }
+    else
+    {
+        PM_QueuedReloadBegin(12);  // WEAP_RELOAD_EMPTY
+    }
+}
+
+// ============================================================================
+// PM_ReloadClip - ea: 0x607D00 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00607D00
+int* PM_ReloadClip()
+{
+    int weaponstate = pm->ps->weaponstate;
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    if (weaponstate != 7 && weaponstate != 8
+        || pWeap->iReloadStartAdd != 0)
+    {
+        int iAmmo = BG_GetInfoForWeapon(pm->ps->weapon)->iAmmoIndex;
+        int iClipIndex = BG_GetInfoForWeapon(pm->ps->weapon)->iClipIndex;
+        int v3 = pm->ps->ammo[iAmmo];
+        int iAmmoInClip = pm->ps->ammoclip[iClipIndex];
+        int v4 = BG_GetAmmoClipSize(iClipIndex) - iAmmoInClip;
+        if (v4 > v3)
+            v4 = v3;
+        if (weaponstate == 7 || weaponstate == 8)
+        {
+            int iReloadStartAdd = pWeap->iReloadStartAdd;
+            int ammoClipSize = BG_GetAmmoClipSize(iClipIndex);
+            if (iReloadStartAdd < ammoClipSize && v4 > iReloadStartAdd)
+                v4 = iReloadStartAdd;
+            if (v4 != 0)
+            {
+                pm->ps->ammo[iAmmo] -= v4;
+                pm->ps->ammoclip[iClipIndex] += v4;
+            }
+            return &pm->ps->ammoclip[iClipIndex];
+        }
+        else
+        {
+            if (pWeap->iReloadAmmoAdd == 0)
+            {
+                if (v4 != 0)
+                {
+                    pm->ps->ammo[iAmmo] -= v4;
+                    pm->ps->ammoclip[iClipIndex] += v4;
+                    return &pm->ps->ammoclip[iClipIndex];
+                }
+                return &pWeap->index;
+            }
+            int iReloadStartAdd = pWeap->iReloadAmmoAdd;
+            int ammoClipSize = BG_GetAmmoClipSize(iClipIndex);
+            if (iReloadStartAdd < ammoClipSize && v4 > iReloadStartAdd)
+                v4 = iReloadStartAdd;
+            if (v4 != 0)
+            {
+                pm->ps->ammo[iAmmo] -= v4;
+                pm->ps->ammoclip[iClipIndex] += v4;
+            }
+            return &pm->ps->ammoclip[iClipIndex];
+        }
+    }
+    return (int*)pm->ps;
+}
+
+// ============================================================================
+// PM_Weapon_ReloadDelayedAction - ea: 0x617BC0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00617BC0
+int PM_Weapon_ReloadDelayedAction()
+{
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    if (pWeap->bBoltAction == 0
+        || ((1 << (pm->ps->weapon & 0x1F))
+            & pm->ps->weaponrechamber[pm->ps->weapon >> 5]) == 0)
+    {
+        return (int)PM_ReloadClip();
+    }
+    pm->ps->weaponrechamber[pm->ps->weapon >> 5] &=
+        ~(1 << (pm->ps->weapon & 0x1F));
+    PM_AddEvent(191);
+    PlayerState* ps = pm->ps;
+    int result = pm->ps->weaponstate;
+    if (result != 7 && result != 8 || pWeap->iReloadStartAddTime != 0)
+    {
+        int iReloadStartAddTime;
+        if (ps->weaponTime == 0)
+            return (int)PM_ReloadClip();
+        if (result == 7 || result == 8)
+        {
+            if (pWeap->iReloadStartAddTime == 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+                AeAssert::gCurrentLine = 4084;
+                AeAssert::gCurrentExpr = "pml.pWeap->iReloadStartAddTime";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("old cod assert"))
+                    __debugbreak();
+                pWeap = (weaponFileInfo_t*)pml.pWeap;
+            }
+            iReloadStartAddTime = pWeap->iReloadStartAddTime;
+            int iReloadStartTime = pWeap->iReloadStartTime;
+            if (iReloadStartAddTime >= iReloadStartTime)
+                iReloadStartAddTime = iReloadStartTime;
+        }
+        else
+        {
+            int v3 = BG_ClipForWeapon(ps->weapon);
+            pWeap = (weaponFileInfo_t*)pml.pWeap;
+            if (pm->ps->ammoclip[v3] != 0 || pWeap->type != WEAPTYPE_BULLET)
+                iReloadStartAddTime = pWeap->iReloadTime;
+            else
+                iReloadStartAddTime = pWeap->iReloadEmptyTime;
+            int iReloadStartTime = pWeap->iReloadAddTime;
+            if (iReloadStartTime != 0 && iReloadStartTime < iReloadStartAddTime)
+                iReloadStartAddTime = iReloadStartTime;
+        }
+        int iRechamberBoltTime = pWeap->iRechamberBoltTime;
+        if (iRechamberBoltTime >= iReloadStartAddTime)
+            iRechamberBoltTime = 1;
+        result = iReloadStartAddTime - iRechamberBoltTime;
+        if (result >= 1)
+        {
+            pm->ps->weaponDelay = result;
+            return result;
+        }
+        return (int)PM_ReloadClip();
+    }
+    return result;
+}
+
+// ============================================================================
+// PM_Weapon_FinishReload - ea: 0x617D50 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00617D50
+int PM_Weapon_FinishReload(int delayedAction)
+{
+    PlayerState* ps = pm->ps;
+    int weaponstate = pm->ps->weaponstate;
+    if (weaponstate != 7 && weaponstate != 8)
+    {
+        if (weaponstate == 9)
+        {
+            ps->weaponstate = 0;
+            PM_StartWeaponAnim(0);
+            if (!pm->ps->queuedReloadSoundPlayStarted)
+                PM_KillQueuedReloadSound(pm->ps);
+            return false;
+        }
+        if (weaponstate != 14 && weaponstate != 5 && weaponstate != 6)
+            return false;
+        if (delayedAction != 0)
+        {
+            PM_Weapon_ReloadDelayedAction();
+            ps = pm->ps;
+            if (pm->ps->weaponTime != 0)
+                return true;
+        }
+        else if (ps->weaponTime != 0)
+        {
+            return false;
+        }
+        Com_BitClear(ps->weaponrechamber, ps->weapon);
+        if (((weaponFileInfo_t*)pml.pWeap)->bSegmentedReload != 0)
+        {
+            if (pm->ps->weaponstate != 6)
+            {
+                if (PM_Weapon_AllowReload() != 0)
+                {
+                    PM_SetReloadingState();
+                    return true;
+                }
+            }
+            if (((weaponFileInfo_t*)pml.pWeap)->iReloadEndTime != 0)
+            {
+                pm->ps->weaponstate = 9;
+                PM_StartWeaponAnim(14);
+                pm->ps->weaponTime =
+                    ((weaponFileInfo_t*)pml.pWeap)->iReloadEndTime;
+                PM_AddEvent(179);
+                return true;
+            }
+            pm->ps->weaponstate = 0;
+        }
+        else
+        {
+            pm->ps->weaponstate = 0;
+        }
+        PM_StartWeaponAnim(0);
+        return delayedAction != 0;
+    }
+    if (delayedAction != 0)
+        PM_Weapon_ReloadDelayedAction();
+    if (pm->ps->weaponTime != 0)
+        return true;
+    if ((ps->weaponstate != 8
+         || pm->ps->ammoclip[BG_GetInfoForWeapon(ps->weapon)->iClipIndex] == 0)
+        && PM_Weapon_AllowReload() != 0)
+    {
+        PM_SetReloadingState();
+        return true;
+    }
+    pm->ps->weaponrechamber[pm->ps->weapon >> 5] &=
+        ~(1 << (pm->ps->weapon & 0x1F));
+    if (((weaponFileInfo_t*)pml.pWeap)->iReloadEndTime != 0)
+    {
+        pm->ps->weaponstate = 9;
+        PM_StartWeaponAnim(14);
+        pm->ps->weaponTime = ((weaponFileInfo_t*)pml.pWeap)->iReloadEndTime;
+        PM_AddEvent(179);
+        return true;
+    }
+    pm->ps->weaponstate = 0;
+    PM_StartWeaponAnim(0);
+    return false;
+}
+
+// ============================================================================
+// PM_Weapon_FireMelee - ea: 0x617F80 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00617F80
+PlayerState* PM_Weapon_FireMelee()
+{
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    int v0 = pWeap->iMeleeTime - pWeap->iMeleeDelay;
+    if (pm->ps->weaponTime < v0)
+        pm->ps->weaponTime = v0;
+    PM_AddEvent(193);
+    pm->ps->weaponstate = 11;
+    pm->ps->mMeleeAssistTarget.mHandle.mVal = 0;
+    if (pm->ps->mGroundEntity.mHandle.mVal != 0)
+    {
+        pm->ps->velocity.v.m128_f32[2] = 0.0f;
+        pm->ps->velocity.v.m128_f32[1] = 0.0f;
+        pm->ps->velocity.v.m128_f32[0] = 0.0f;
+    }
+    PlayerState* result = pm->ps;
+    if ((pm->ps->pm_flags & 1) != 0)
+        result->pm_flags |= 0x400u;
+    return result;
+}
+
+// ============================================================================
+// PM_Weapon_FinishMelee - ea: 0x618020 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00618020
+int PM_Weapon_FinishMelee()
+{
+    if (((weaponFileInfo_t*)pml.pWeap)->bOffHand != 0)
+        return 0;
+    PlayerState* ps = pm->ps;
+    int weaponstate = pm->ps->weaponstate;
+    if (weaponstate == 10)
+    {
+        PM_Weapon_FireMelee();
+        return 1;
+    }
+    if (weaponstate != 11)
+        return 0;
+    int v4 = 0;
+    if (pm->cmd.weapon != 0)
+    {
+        if (ps->fWeaponPosFrac > 0.89999998f)
+            v4 = 23;
+        if ((ps->weapAnim & 0xFFFFFDFF) != v4)
+            PM_StartWeaponAnim(v4);
+    }
+    pm->ps->weaponstate = 0;
+    return 1;
+}
+
+// ============================================================================
+// PM_Weapon_CheckForRechamber - ea: 0x6172F0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006172F0
+int PM_Weapon_CheckForRechamber(int delayedAction)
+{
+    PlayerState* ps = pm->ps;
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    if (pm->ps->weaponstate == 4)
+    {
+        if ((ps->pm_flags & 0x20) != 0 && pWeap->bRechamberWhileAds != 0)
+        {
+            if (pm->cmd.weapon != 0 && (ps->weapAnim & 0xFFFFFDFF) != 7)
+                PM_StartWeaponAnim(7);
+        }
+        else if (pm->cmd.weapon != 0 && (ps->weapAnim & 0xFFFFFDFF) != 4)
+        {
+            PM_StartWeaponAnim(4);
+        }
+    }
+    if (pWeap->bBoltAction == 0)
+        return 0;
+    if (((1 << (pm->ps->weapon & 0x1F))
+         & pm->ps->weaponrechamber[pm->ps->weapon >> 5]) == 0)
+        return 0;
+    if (ps->weaponstate == 4 && delayedAction != 0)
+    {
+        ps->weaponrechamber[pm->ps->weapon >> 5] &=
+            ~(1 << (pm->ps->weapon & 0x1F));
+        PM_AddEvent(191);
+        ps = pm->ps;
+        if (pm->ps->weaponTime != 0)
+            return 1;
+    }
+    else if (ps->weaponTime != 0)
+    {
+        int weaponstate = ps->weaponstate;
+        if (weaponstate == 3 || weaponstate == 4 || weaponstate == 10
+            || weaponstate == 11 || ps->weaponDelay != 0)
+            return 0;
+    }
+    int v7 = ps->weaponstate;
+    if (v7 == 4)
+    {
+        PM_Weapon_FinishRechamber();
+        return 0;
+    }
+    if (v7 == 0 && BG_GetTotalAmmo(ps, ps->weapon) != 0)
+    {
+        int v8 = 7;
+        if (pm->ps->fWeaponPosFrac <= 0.75f)
+            v8 = 4;
+        PM_StartWeaponAnim(v8);
+        pm->ps->weaponstate = 4;
+        pm->ps->weaponTime = pWeap->iRechamberTime;
+        int iRechamberBoltTime = pWeap->iRechamberBoltTime;
+        if (iRechamberBoltTime != 0 && iRechamberBoltTime < pWeap->iRechamberTime)
+            pm->ps->weaponDelay = iRechamberBoltTime;
+        else
+            pm->ps->weaponDelay = 1;
+        PM_AddEvent(190);
+        if (pWeap->weapClass != 17)
+            MultiplayerMgr::sInst->AnimEvent(14);
+    }
+    return 0;
 }
 
 // ============================================================================

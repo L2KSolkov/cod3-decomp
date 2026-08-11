@@ -37,6 +37,9 @@ float player_breath_gasp_time = 4.5f;    // @ 0xDF6B40
 float player_breath_hold_lerp = 6.0f;    // @ 0xDF6B44
 float player_breath_gasp_lerp = 4.0f;    // @ 0xDF6B48
 float player_breath_gasp_scale = 1.0f;   // @ 0xDF6B4C
+char* pszGameDll;                    // ?pszGameDll@@3PADA @ 0xDF5A34 (debug prints)
+int   iLastState;                    // @ 0xDF8C78 (PM_Weapon_PrintWeaponState)
+int   iLastAnim;                     // @ 0xDF8C7C (PM_Weapon_PrintWeaponAnim)
 float* dword_F63B8C[4 * 1580];       // ?dword_F63B8C (game.o @ 0xF63B8C)
 float emissionRate_0 = 1.0f;   // @ 0xDD8254 (vehicle gunner overheat emission rate)
 float gTanAimConeSpread;       // @ 0xEB1118 (g_weapon.cpp Bullet_Endpos scratch)
