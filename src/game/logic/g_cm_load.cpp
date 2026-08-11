@@ -6091,6 +6091,69 @@ bool collide_segment(traceWork_t* tw, const math::Position3& p0,
 }
 
 // ============================================================================
+// TraceThroughTree - ea: 0x6286E0 (CollisionMgr.cpp)
+// ============================================================================
+// cdl profile timers (cdl_base.o; declared extern - not yet ported)
+struct cdl_proftimer_local {
+    float value;
+    unsigned int _pad[3];
+};
+extern cdl_proftimer_local cdl_proftimer_collide_segment;
+extern cdl_proftimer_local cdl_proftimer_collide_sphere;
+extern void cdl_proftimer_start(cdl_proftimer_local* self);
+extern void cdl_proftimer_stop(cdl_proftimer_local* self);
+
+// ea: 0x006286E0
+void TraceThroughTree(traceWork_t* tw, const math::Position3& p0,
+                      const math::Position3& p1)
+{
+    if (tw->isPoint != 0)
+    {
+        __m128 v4 = _mm_sub_ps(p1.v, p0.v);
+        __m128 v5 = _mm_mul_ps(v4, v4);
+        float len2 = v5.m128_f32[0] + (v5.m128_f32[1] + v5.m128_f32[2]);
+        cdl_proftimer_start(&cdl_proftimer_collide_segment);
+        cdl_cinfo1 cinfo;
+        int surfaceFlags;
+        int contentFlags;
+        bool hit = collide_segment(tw, p0, p1, cinfo, surfaceFlags,
+                                   contentFlags);
+        cdl_proftimer_stop(&cdl_proftimer_collide_segment);
+        if (hit)
+        {
+            tw->trace_surfaceFlags = surfaceFlags;
+            tw->trace_contents = contentFlags;
+            __m128 v9 = _mm_sub_ps(cinfo.pi.v, p0.v);
+            __m128 v10 = _mm_mul_ps(v9, v9);
+            float dist2 = v10.m128_f32[0] + (v10.m128_f32[1] + v10.m128_f32[2]);
+            if (tw->trace_fraction > sqrtf(dist2) / sqrtf(len2))
+            {
+                __m128 npi = _mm_mul_ps(cinfo.ni.v, cinfo.pi.v);
+                float npi_dot = npi.m128_f32[0] + (npi.m128_f32[1] + npi.m128_f32[2]);
+                float v12 = 0.0f - npi_dot;
+                __m128 np0 = _mm_mul_ps(cinfo.ni.v, p0.v);
+                float np0_dot = np0.m128_f32[0] + (np0.m128_f32[1] + np0.m128_f32[2]);
+                __m128 np1 = _mm_mul_ps(cinfo.ni.v, p1.v);
+                float np1_dot = np1.m128_f32[0] + (np1.m128_f32[1] + np1.m128_f32[2]);
+                tw->trace_fraction =
+                    ((np0_dot + v12) - 0.125f)
+                    / ((np0_dot + v12) - (np1_dot + v12));
+                tw->trace_normal[0] = cinfo.ni.v.m128_f32[0];
+                tw->trace_normal[1] = cinfo.ni.v.m128_f32[1];
+                tw->trace_normal[2] = cinfo.ni.v.m128_f32[2];
+                tw->trace_normal[3] = cinfo.ni.v.m128_f32[3];
+            }
+        }
+    }
+    else
+    {
+        cdl_proftimer_start(&cdl_proftimer_collide_sphere);
+        collide_velocity_sphere(tw);
+        cdl_proftimer_stop(&cdl_proftimer_collide_sphere);
+    }
+}
+
+// ============================================================================
 // collide_brush_segment (math) - ea: 0x61ACC0 (CollisionMgr.cpp)
 // ============================================================================
 // ea: 0x0061ACC0
