@@ -69,7 +69,8 @@ class EntityHandleDb;
 // ============================================================================
 // Handle — generic object handle (4 bytes) — verified against IDA
 // ============================================================================
-struct Handle {
+class Handle {
+public:
     unsigned int mVal;  // +0x00
 };
 static_assert(sizeof(Handle) == 4, "Handle size mismatch");

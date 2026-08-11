@@ -1704,9 +1704,9 @@ extern void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
                            const float* vEnd);
 extern Handle PostEffectEventBulletHit(const Entity* ent, int weaponClass,
                                        const CollisionDesc& col_desc);
-extern Handle PostEffectEventScriptCall(Entity* ent, const char* scriptId,
-                                        bool queue, TPakId pakid,
-                                        bool important);
+extern Handle PostEffectEventScriptCall(const Entity* ent,
+                                        const char* scriptId, bool queue,
+                                        TPakId pakid, bool important);
 extern const char** s_barrelTags;
 extern const char** s_gunnerBarrelTags;
 
@@ -1889,10 +1889,10 @@ void CG_BulletHitClientEvent(unsigned int sourceEntity,
                                s_barrelTags[0], weapon);
 }
 
-extern void PostEffectEventFootstep(void* result, Entity* ent,
-                                    int stanceType, void* col);
-extern void PostEffectEventGearRattle(void* result, Entity* ent,
-                                      int stanceType, void* col);
+extern Handle PostEffectEventFootstep(const Entity* ent, int stanceType,
+                                      const CollisionDesc& col);
+extern Handle PostEffectEventGearRattle(const Entity* ent, int stanceType,
+                                        const CollisionDesc& col);
 extern void SoundMediaMgr_PlayLandingSound(void* self, Entity* ent,
                                            int surfaceType, bool damage);
 extern void* SoundMediaMgr_sInst;
@@ -1904,19 +1904,19 @@ extern int dword_F63BA8[4 * 1580];
 extern int dword_F63BAC[4 * 1580];
 extern int dword_F63BB0[4 * 1580];
 extern int dword_F63BB4[4 * 1580];
-extern void PostEffectEventWeaponReload(void* result, Entity* ent,
-                                        const char* weaponType,
-                                        int weaponAction, bool queue);
-extern void PostEffectEventWeapon(void* result, Entity* ent,
-                                  const char* weaponType, int weaponAction);
+extern Handle PostEffectEventWeaponReload(const Entity* ent,
+                                          const char* weaponType,
+                                          int weaponAction, bool queue);
+extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                                    int weaponAction);
 extern void CG_ItemPickup(int itemNum);
 extern void CG_OutOfAmmoChange();
-extern void PostEffectEventGrenadeBounce(void* result, Entity* ent,
+extern Handle PostEffectEventGrenadeBounce(const Entity* ent,
+                                           const char* weaponType,
+                                           const CollisionDesc& col_desc);
+extern Handle PostEffectEventProjExplode(const Entity* ent,
                                          const char* weaponType,
-                                         void* col_desc);
-extern void PostEffectEventProjExplode(void* result, Entity* ent,
-                                       const char* weaponType,
-                                       void* col_desc);
+                                         const CollisionDesc& col_desc);
 extern void CG_EventSpawnTracer(const math::Position3* pstart,
                                 const math::Position3* pend, int weapon);
 extern void CG_RailTrail(const float* start, const float* end, int type);
@@ -1967,10 +1967,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         footstepPos[2] = entity->s.pos.trBase[2];
         CollisionDesc d = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, event - 1);
-        PostEffectEventFootstep(nullptr, entity, 1 /* kStanceRun */, &d);
+        PostEffectEventFootstep(entity, 1 /* kStanceRun */, d);
         CollisionDesc d2 = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, -1);
-        PostEffectEventGearRattle(nullptr, entity, 1, &d2);
+        PostEffectEventGearRattle(entity, 1, d2);
         return;
     }
     if (event >= 70 && event < 93)
@@ -1980,10 +1980,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         footstepPos[2] = entity->s.pos.trBase[2];
         CollisionDesc d = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, event - 70);
-        PostEffectEventFootstep(nullptr, entity, 0 /* kStanceSprint */, &d);
+        PostEffectEventFootstep(entity, 0 /* kStanceSprint */, d);
         CollisionDesc d2 = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, -1);
-        PostEffectEventGearRattle(nullptr, entity, 0, &d2);
+        PostEffectEventGearRattle(entity, 0, d2);
         return;
     }
     if (event >= 24)
@@ -1995,10 +1995,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             footstepPos[2] = entity->s.pos.trBase[2];
             CollisionDesc d = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, event - 24);
-            PostEffectEventFootstep(nullptr, entity, 2 /* kStanceWalk */, &d);
+            PostEffectEventFootstep(entity, 2 /* kStanceWalk */, d);
             CollisionDesc d2 = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, -1);
-            PostEffectEventGearRattle(nullptr, entity, 2, &d2);
+            PostEffectEventGearRattle(entity, 2, d2);
             return;
         }
         if (event < 70)
@@ -2008,10 +2008,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             footstepPos[2] = entity->s.pos.trBase[2];
             CollisionDesc d = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, event - 47);
-            PostEffectEventFootstep(nullptr, entity, 3 /* kStanceProne */, &d);
+            PostEffectEventFootstep(entity, 3 /* kStanceProne */, d);
             CollisionDesc d2 = MakeCollisionDesc(
                 (const math::Position3*)footstepPos, zero, -1);
-            PostEffectEventGearRattle(nullptr, entity, 3, &d2);
+            PostEffectEventGearRattle(entity, 3, d2);
             return;
         }
     }
@@ -2024,10 +2024,10 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         footstepPos[2] = entity->s.pos.trBase[2];
         CollisionDesc d = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, event - 93);
-        PostEffectEventFootstep(nullptr, entity, 1 /* kStanceRun */, &d);
+        PostEffectEventFootstep(entity, 1 /* kStanceRun */, d);
         CollisionDesc d2 = MakeCollisionDesc(
             (const math::Position3*)footstepPos, zero, -1);
-        PostEffectEventGearRattle(nullptr, entity, 1, &d2);
+        PostEffectEventGearRattle(entity, 1, d2);
         return;
     }
     if (event < 139)
@@ -2129,8 +2129,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             {
                 void* InfoForWeapon =
                     (void*)BG_GetInfoForWeapon(entity->s.weapon);
-                PostEffectEventWeaponReload(
-                    nullptr, entity,
+                PostEffectEventWeaponReload(entity,
                     *(const char**)((char*)InfoForWeapon + 8),
                     0x10 /* kActionWEAPON_RELOAD_START */, false);
             }
@@ -2139,8 +2138,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             if (bPredict == 0)
             {
                 void* v28 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
-                PostEffectEventWeaponReload(
-                    nullptr, entity,
+                PostEffectEventWeaponReload(entity,
                     *(const char**)((char*)v28 + 8),
                     0x11 /* kActionWEAPON_RELOAD_END */, false);
             }
@@ -2148,7 +2146,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         case 180:
             {
                 void* v30 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
-                PostEffectEventWeapon(nullptr, entity,
+                PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v30 + 8),
                                       0x13 /* kActionWEAPON_RAISE */);
             }
@@ -2157,7 +2155,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             if (bPredict == 0)
             {
                 void* v31 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
-                PostEffectEventWeapon(nullptr, entity,
+                PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v31 + 8),
                                       0x12 /* kActionWEAPON_ALT_SWITCH */);
             }
@@ -2166,7 +2164,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             if (bPredict == 0)
             {
                 void* v32 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
-                PostEffectEventWeapon(nullptr, entity,
+                PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v32 + 8),
                                       0x15 /* kActionWEAPON_DEPLOY */);
             }
@@ -2175,7 +2173,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             if (bPredict == 0)
             {
                 void* v33 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
-                PostEffectEventWeapon(nullptr, entity,
+                PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v33 + 8),
                                       0x16 /* kActionWEAPON_BREAKDOWN */);
             }
@@ -2184,7 +2182,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             if (bPredict != 0)
             {
                 void* v34 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
-                PostEffectEventWeapon(nullptr, entity,
+                PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v34 + 8),
                                       0x0D /* kActionWEAPON_RECHAMBER */);
             }
@@ -2198,7 +2196,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             {
                 void* v35 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(
-                    nullptr, entity, *(const char**)((char*)v35 + 8),
+                    entity, *(const char**)((char*)v35 + 8),
                     0x17 /* kActionWEAPON_NOTE_TRACK_SOUND_A */);
             }
             break;
@@ -2207,7 +2205,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             {
                 void* v36 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(
-                    nullptr, entity, *(const char**)((char*)v36 + 8),
+                    entity, *(const char**)((char*)v36 + 8),
                     0x18 /* kActionWEAPON_NOTE_TRACK_SOUND_B */);
             }
             break;
@@ -2251,7 +2249,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                     *(unsigned char*)((char*)&entity->s + 5));
                 void* v43 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventGrenadeBounce(
-                    nullptr, entity, *(const char**)((char*)v43 + 8), &d);
+                    entity, *(const char**)((char*)v43 + 8), d);
             }
             break;
         case 210:
@@ -2276,7 +2274,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                     }
                     void* v51 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                     PostEffectEventProjExplode(
-                        nullptr, entity, *(const char**)((char*)v51 + 8), &d);
+                        entity, *(const char**)((char*)v51 + 8), d);
                     if (eventParm != 0)
                     {
                         entity->r.eventType |= 4u;
@@ -2306,8 +2304,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 float nrm[3] = {0.0f, 0.0f, 1.0f};
                 CollisionDesc d = MakeCollisionDesc(
                     &entity->r.currentOrigin, nrm, entity->s.surfType);
-                PostEffectEventProjExplode(nullptr, entity, "fraggrenade",
-                                           &d);
+                PostEffectEventProjExplode(entity, "fraggrenade", d);
             }
             break;
         default:

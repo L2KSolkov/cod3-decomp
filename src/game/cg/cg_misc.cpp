@@ -619,7 +619,8 @@ enum {
     INPUT_LOOK_BACK = 4,
 };
 
-struct RumbleEffectInstanceHandle {
+class RumbleEffectInstanceHandle {
+public:
     int mVal;  // +0x00
 };
 

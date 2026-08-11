@@ -235,7 +235,10 @@ struct AeThreadManager {
 static_assert(sizeof(AeThreadManager) == 2148, "AeThreadManager size mismatch");
 
 struct MultiplayerMgr {
-    struct MPEntityHandle { int mVal; };  // +0x00 opaque
+    class MPEntityHandle {
+    public:
+        int mVal;
+    };  // +0x00 opaque
     MPPeer* mPeer;                  // +0x00
     uint8_t _pad[0x40 - 0x4];
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
@@ -414,9 +417,37 @@ struct SoundDevice {
         uint8_t   _pad[0x40];
         DbElement mElements[0x200];  // +0x40
         static SoundHandleDb sInst;         // ?sInst@SoundHandleDb@SoundDevice@@0V12@A @ 0xF50D10
-        void ReleaseHandle(Handle h);       // HandleDb<Sound,512,SizedHandle<12,20>>::ReleaseHandle
-        Handle AllocateHandle();            // HandleDb<Sound,512,SizedHandle<12,20>>::AllocateHandle
-        void BindObjectToHandle(Handle handle, Sound* obj);  // HandleDb<Sound,512,SizedHandle<12,20>>::BindObjectToHandle
+        // HandleDb<Sound,512,SizedHandle<12,20>> inline methods (COMDAT in
+        // binary; ported from ea 0x6627B0/0x660710/0x661D80).
+        Handle AllocateHandle() {
+            Handle result;
+            for (int i = 0; i < 0x200; ++i) {
+                if ((_pad[i >> 3] & (1u << (i & 7))) == 0)
+                    continue;
+                _pad[i >> 3] &= (uint8_t)~(1u << (i & 7));
+                result.mVal = (unsigned int)((mElements[i].mKey << 12) | i);
+                return result;
+            }
+            result.mVal = 0xFFFFFFFFu;
+            return result;
+        }
+        void BindObjectToHandle(Handle handle, Sound* obj) {
+            unsigned int idx = handle.mVal & 0xFFF;
+            if (idx < 0x200
+                && (unsigned int)mElements[idx].mKey == (handle.mVal >> 12))
+                mElements[idx].mObject = obj;
+        }
+        void ReleaseHandle(Handle h) {
+            if (h.mVal == 0)
+                return;
+            unsigned int idx = h.mVal & 0xFFF;
+            if (idx < 0x200
+                && (unsigned int)mElements[idx].mKey == (h.mVal >> 12)) {
+                _pad[idx >> 3] |= (uint8_t)(1u << (idx & 7));
+                mElements[idx].mObject = nullptr;
+                ++mElements[idx].mKey;
+            }
+        }
     };
 private:
     nslBankID SyncLoadBank(const char* filename);  // ?SyncLoadBank@SoundDevice@@AAE?AW4nslBankID@@PBD@Z (game.o 0x6024A0)

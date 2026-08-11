@@ -18,7 +18,7 @@ extern int G_DObjSetControlTagAngles(Entity* ent, int* partBits,
                                      unsigned int tag_name_hash,
                                      float* angles);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
-struct Handle;
+class Handle;
 extern void EffectEventStopEmitting(Handle handle);
 extern int PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
                                   int action);

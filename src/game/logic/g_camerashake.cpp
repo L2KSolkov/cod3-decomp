@@ -31,7 +31,8 @@ extern nglScene* nglBuildScene;
 extern void StartCameraShake_glue(int type, void* worldPos, float size,
                                   float timeOverride, float nextDelay);
 struct RumbleEffect;
-struct RumbleEffectInstanceHandle {
+class RumbleEffectInstanceHandle {
+public:
     unsigned int mVal;
 };
 class RumbleManager {

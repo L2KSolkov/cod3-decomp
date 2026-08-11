@@ -1926,8 +1926,8 @@ weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);
 const gitem_s* BG_FindItem(const char* pickupName);
 void SP_actor(Entity* pEnt);
 void Scr_Notify(Entity* ent, HashString hashValue, unsigned int paramcount);
-Handle PostEffectEventScriptCall(Entity* ent, const char* scriptId, bool queue,
-                                 TPakId pakid, bool important);
+Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
+                                 bool queue, TPakId pakid, bool important);
 void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
                                 float* const result);
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3& result);
