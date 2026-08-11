@@ -6225,6 +6225,95 @@ int SightTraceXFormed(int hitNum, const math::Position3& start,
 }
 
 // ============================================================================
+// TraceXFormed - ea: 0x641D40 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x00641D40
+void TraceXFormed(trace_t* results, const math::Position3& start,
+                  const math::Position3& end, const math::Position3& mins,
+                  const math::Position3& maxs, DCGSet* model, int brushmask,
+                  const math::Position3& origin,
+                  const math::Position3& angles, int capsule)
+{
+    __m128 center = _mm_mul_ps(_mm_add_ps(mins.v, maxs.v),
+                               _mm_set1_ps(0.5f));
+    math::Position3 mins2;
+    mins2.v = _mm_sub_ps(mins.v, center);
+    math::Position3 maxs2;
+    maxs2.v = _mm_sub_ps(maxs.v, center);
+    math::Position3 start2;
+    start2.v = _mm_sub_ps(_mm_add_ps(start.v, center), origin.v);
+    math::Position3 end2;
+    end2.v = _mm_sub_ps(_mm_add_ps(end.v, center), origin.v);
+
+    bool hasAngles = model != nullptr && model->id != 4095
+        && (angles.v.m128_f32[0] != 0.0f
+            || angles.v.m128_f32[1] != 0.0f
+            || angles.v.m128_f32[2] != 0.0f);
+    float half = maxs2.v.m128_f32[2]
+               - (maxs2.v.m128_f32[0] <= maxs2.v.m128_f32[2]
+                      ? maxs2.v.m128_f32[0]
+                      : maxs2.v.m128_f32[2]);
+
+    trace_t localTrace;
+    localTrace.mEntity.mHandle.mVal = 0;
+    localTrace.partName.mHash = 0;
+
+    sphere_t sphere;
+    sphere.offset.v = _mm_setzero_ps();
+    sphere.radiusOffset.v = _mm_setzero_ps();
+    sphere.use = capsule;
+    sphere.radius = maxs2.v.m128_f32[0] <= maxs2.v.m128_f32[2]
+                        ? maxs2.v.m128_f32[0]
+                        : maxs2.v.m128_f32[2];
+    sphere.halfheight = maxs2.v.m128_f32[2];
+
+    float matrix[3][3];
+    if (hasAngles)
+    {
+        float forward[3];
+        float right[3];
+        float up[3];
+        AngleVectors(&angles, forward, right, up);
+        VectorInverse(right);
+        matrix[0][0] = forward[0];
+        matrix[0][1] = forward[1];
+        matrix[0][2] = forward[2];
+        matrix[1][0] = right[0];
+        matrix[1][1] = right[1];
+        matrix[1][2] = right[2];
+        matrix[2][0] = up[0];
+        matrix[2][1] = up[1];
+        matrix[2][2] = up[2];
+        RotatePoint(start2, (math::Position3*)matrix);
+        RotatePoint(end2, (math::Position3*)matrix);
+        sphere.offset.v.m128_f32[0] = forward[2] * half;
+        sphere.offset.v.m128_f32[1] = -right[2] * half;
+        sphere.offset.v.m128_f32[2] = up[2] * half;
+    }
+    else
+    {
+        sphere.offset.v.m128_f32[2] = half;
+    }
+
+    float savedFrac = results->fraction;
+    localTrace.fraction = savedFrac;
+    Trace(&localTrace, start2, end2, mins2, maxs2, model, brushmask, capsule,
+          &sphere);
+    if (hasAngles && results->fraction > savedFrac)
+    {
+        TransposeMatrix((math::Position3*)matrix,
+                        (math::Position3*)&sphere);
+        math::Dir3 normal = localTrace.normal;
+        RotatePoint((math::Position3&)normal, (math::Position3*)&sphere);
+        localTrace.normal.v = normal.v;
+    }
+    localTrace.endpos.v = _mm_add_ps(
+        start.v, _mm_mul_ps(_mm_sub_ps(end.v, start.v),
+                            _mm_set1_ps(savedFrac)));
+    *results = localTrace;
+}
+
+// ============================================================================
 // collide_velocity_sphere (proximity) - ea: 0x635B70 (CollisionMgr.cpp)
 // ============================================================================
 // ea: 0x00635B70

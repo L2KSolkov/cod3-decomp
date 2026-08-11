@@ -33,9 +33,9 @@ struct DObjTrace_s {
 
 // ============================================================================
 extern DCGSet*       SV_ClipHandleForEntity(const Entity* ent);
-extern void          TraceXFormed(trace_t* results, const math::Position3* start, const math::Position3* end,
-                                  const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
-                                  int brushmask, const math::Position3* origin, const math::Position3* angles, int capsule);
+extern void          TraceXFormed(trace_t* results, const math::Position3& start, const math::Position3& end,
+                                  const math::Position3& mins, const math::Position3& maxs, DCGSet* model,
+                                  int brushmask, const math::Position3& origin, const math::Position3& angles, int capsule);
 extern int           SightTraceXFormed(int hitNum, const math::Position3& start, const math::Position3& end,
                                        const math::Position3& mins, const math::Position3& maxs, DCGSet* model,
                                        int brushmask, const math::Position3& origin, const math::Position3& angles, int capsule);
@@ -423,9 +423,9 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                 trace_t tr;
                 memset(&tr, 0, sizeof(tr));
                 tr.fraction = clip->trace.fraction;
-                TraceXFormed(&tr, &clip->start, &clip->end, &angles, &angles,
-                             v19, clip->contentmask, &p_currentOrigin->r.currentOrigin,
-                             p_currentAngles, 0);
+                TraceXFormed(&tr, clip->start, clip->end, angles, angles,
+                             v19, clip->contentmask, p_currentOrigin->r.currentOrigin,
+                             *p_currentAngles, 0);
                 if (tr.fraction >= clip->trace.fraction) {
                     clip->trace.allsolid |= tr.allsolid;
                     clip->trace.startsolid = (unsigned char)(tr.startsolid | clip->trace.startsolid);
@@ -1202,8 +1202,8 @@ void SV_ClipMoveToEntity(moveclip_t* clip, EntityShared* check) {
             int capsule = clip->capsule;
             int contentmask = clip->contentmask;
             localTrace.fraction = clip->trace.fraction;
-            TraceXFormed(&localTrace, &clip->start, &clip->end, &clip->mins, &clip->maxs,
-                         v7, contentmask, &p_currentOrigin->r.currentOrigin, &angles, capsule);
+            TraceXFormed(&localTrace, clip->start, clip->end, clip->mins, clip->maxs,
+                         v7, contentmask, p_currentOrigin->r.currentOrigin, angles, capsule);
             if (localTrace.fraction < clip->trace.fraction) {
                 clip->trace.allsolid |= localTrace.allsolid;
                 localTrace.mEntity.mHandle.mVal = p_currentOrigin->mHandle.mHandle.mVal;

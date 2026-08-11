@@ -17,9 +17,9 @@ extern int   Com_Milliseconds(void);
 extern void  CM_AdjustAreaPortalState(int area1, int area2, int open);
 extern void  CM_UnlinkEntity(EntityShared* ent);
 extern DCGSet* TempBoxModel(const math::Position3* mins, const math::Position3* maxs, int contents, int capsule);
-extern void  TraceXFormed(trace_t* results, const math::Position3* start, const math::Position3* end,
-                          const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
-                          int brushmask, const math::Position3* origin, const math::Position3* angles, int capsule);
+extern void  TraceXFormed(trace_t* results, const math::Position3& start, const math::Position3& end,
+                          const math::Position3& mins, const math::Position3& maxs, DCGSet* model,
+                          int brushmask, const math::Position3& origin, const math::Position3& angles, int capsule);
 extern void  SCR_UpdateScreen(void);
 extern void  j_nullsub_35(void);
 static int   SV_InitGameVM(int restart, int savegame);   // ea: 0x520110
@@ -344,6 +344,6 @@ int SV_EntityContact(const math::Position3& mins, const math::Position3& maxs, c
     tr.fraction = 1.0f;
     math::Position3 v9 = Float4_Zero_2;
     math::Position3 zero = Float4_Zero_2;
-    TraceXFormed(&tr, &zero, &v9, &mins, &maxs, v5, -1, &gEnt->r.currentOrigin, &gEnt->r.currentAngles, capsule);
+    TraceXFormed(&tr, zero, v9, mins, maxs, v5, -1, gEnt->r.currentOrigin, gEnt->r.currentAngles, capsule);
     return (int)(tr.fraction < 1.0f);
 }
