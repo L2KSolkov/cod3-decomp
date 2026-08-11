@@ -26,7 +26,7 @@ extern void CL_AddDebugLine(const float* start, const float* end,
                             int fromServer, int fadeOut);
 extern void* Entity_GetRefEntity(Entity* ent);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
-extern void ByteToDir(int b, float* dir);
+extern void ByteToDir(unsigned int b, float* dir);
 extern void PerpendicularVector(float* dst, const float* src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
@@ -1318,9 +1318,10 @@ struct scr_vehicle_t;
 extern vehicle_info_t* G_GetVehicleInfo(scr_vehicle_t* scr_vehicle);
 extern void vectosignedangles(const float* vec, float* angles);
 extern void vectoangles(const float* vec, float* angles);
-extern void LerpAngle(float a1, float a2, float a3);
-extern void InterpolateAngles(float* curAngles, const float* initialAngles,
-                              const float* targetAngles, float t);
+extern float LerpAngle(float a1, float a2, float a3);
+extern void InterpolateAngles(math::Position3* curAngles,
+                              const math::Position3* initialAngles,
+                              const math::Position3* targetAngles, float t);
 extern void AnglesToForward(const math::Position3& angles,
                             math::Dir3& forward);
 extern Entity* GetPlayer(int idx);
@@ -2244,7 +2245,7 @@ extern int cg_aWeaponSelectTime[4];   // 0x00F610D8
 extern vmCvar_t cg_weaponCycleDelay;  // 0x00F5EF18
 extern void* EntityManager_mPlayers[16];
 extern bool Entity_IsLocalPlayer(const Entity* ent);
-extern int CG_WeaponSelectable(int i);
+extern bool CG_WeaponSelectable(int i);
 extern int BG_SelectWeaponIndex(int iWeaponIndex, int client);
 extern void CG_GameMessage(const char* msg, int flags);
 extern const char* SEH_LocalizeTextMessage(const char* pszMessage,
@@ -2258,7 +2259,7 @@ extern weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS,
 extern int BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
                                     weapSlot_t preferedSlot);
 extern int BG_IsPlayerWeaponAnAlt(int iWeaponIndex, int iAltIndex);
-extern void PM_KillQueuedReloadSound(PlayerState& ps);
+extern void PM_KillQueuedReloadSound(PlayerState* ps);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern void* gpBrocAPI;  // 0x00F3ABDC
@@ -2266,8 +2267,8 @@ struct weaponParms;
 extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);
 extern bool Weapon_Revive_Test(Entity* ent, weaponParms* wp,
                                Entity** traceEnt);
-extern bool Weapon_Mine_Test(Entity* ent, void* wp, math::Position3* position,
-                             math::Dir3* normal);
+extern int Weapon_Mine_Test(Entity* ent, weaponParms* wp,
+                            math::Position3* position, math::Dir3* normal);
 
 // weaponFileInfo_t extra fields (offsets verified from disassembly)
 struct weaponInfoCam {
@@ -2513,7 +2514,7 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
                     (weapSlot_t)0 /* WEAPSLOT_NONE */);
             }
             Entity* v7 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
-            PM_KillQueuedReloadSound(v7->client->ps);
+            PM_KillQueuedReloadSound(&v7->client->ps);
             if (StackSlotForWeapon != 0)
             {
                 for (int i = (StackSlotForWeapon + v3 + 8) % 9 + 1;
@@ -4353,8 +4354,10 @@ void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
     outAngles[1] = mSteerYawOffset + outAngles[1];
     if (mTweenDuration <= mTweenTime)
     {
-        InterpolateAngles(&angle[1580 * mClient], &mPrevAngles.v.m128_f32[0],
-                          outAngles, ServerTime_sInst.mTickDelta * 15.0f);
+        InterpolateAngles((math::Position3*)&angle[1580 * mClient],
+                          (const math::Position3*)&mPrevAngles.v.m128_f32[0],
+                          (const math::Position3*)outAngles,
+                          ServerTime_sInst.mTickDelta * 15.0f);
     }
     else
     {
@@ -4795,8 +4798,8 @@ void Camera::UpdateDeathCamera()
 
 extern void InterpolatePositionSmooth(float* a1, const float* a2,
                                       const float* a3, float a4);
-extern void InterpolateAnglesSmooth(float* a1, const float* a2,
-                                    const float* a3, float a4);
+extern void InterpolateAnglesSmooth(float* a1, float* a2, float* a3,
+                                    float a4);
 extern float AngleNormalize360(float angle);
 
 // ea: 0x006A5E40

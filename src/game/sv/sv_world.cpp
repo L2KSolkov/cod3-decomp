@@ -112,7 +112,7 @@ extern void          DObjGeomTraceline(const DObj* obj, const math::Position3* l
 extern void          DObjTraceline(const DObj* obj, const math::Position3* start,
                                    const math::Position3* end, unsigned char* priorityMap,
                                    struct DObjTrace_s* trace, float extraDistanceCheck);
-extern void          AnglesToAxis(const math::Position3* angles, float axis[3][3]);
+extern void          AnglesToAxis(const float* angles, float axis[3][3]);
 extern void          MatrixTransformVector(const float* in1, const float (*in2)[3], float* out);
 extern void          MatrixTransposeTransformVector43(const math::Position3& in1,
                                                       const float (*const in2)[3],
@@ -367,7 +367,8 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                 }
                 int handle = p_currentOrigin->mHandle.mHandle.mVal;
                 VM_Call(gvm, 19, &handle);
-                AnglesToAxis(&p_currentOrigin->r.currentAngles, (float(*)[3])v29);
+                AnglesToAxis((const float*)&p_currentOrigin->r.currentAngles,
+                             (float(*)[3])v29);
                 MatrixTransposeTransformVector43(clip->start,
                                                  (const float(*)[3])v29,
                                                  absmin);

@@ -2466,7 +2466,8 @@ const BaseCmdFuncInfo* GetCmd(const char* cmdName)
         {
             const char* mName = v2->mName;
             if (cmdName != nullptr && mName != nullptr
-                && ae_stricmpn(cmdName, mName, 0x7FFFFFFF) == 0)
+                && AeStringSupport::ae_stricmpn(cmdName, mName,
+                                                0x7FFFFFFF) == 0)
                 break;
         }
         p_mNext = &v2->mNext;
@@ -2494,7 +2495,8 @@ void Cmd_ExecuteServerString(const char* text)
                 const char* mName = (*p_mNext)->mName;
                 if (v2 != nullptr && mName != nullptr)
                 {
-                    if (ae_stricmpn(v2, mName, 0x7FFFFFFF) == 0)
+                    if (AeStringSupport::ae_stricmpn(v2, mName,
+                                                     0x7FFFFFFF) == 0)
                     {
                         *p_mNext = v3->mNext;
                         v3->mNext = sv_cmd_functions;
@@ -2572,7 +2574,7 @@ void Cmd_ExecuteString(const char* text)
         const char* mName = (*p_mNext)->mName;
         if (v2 != nullptr && mName != nullptr)
         {
-            if (ae_stricmpn(v2, mName, 0x7FFFFFFF) == 0)
+            if (AeStringSupport::ae_stricmpn(v2, mName, 0x7FFFFFFF) == 0)
                 break;
             v2 = cmd_argv[0];
         }

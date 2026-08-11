@@ -1205,7 +1205,7 @@ extern int Sys_Milliseconds();
 extern void CL_RecallKeys();     // cl.o
 extern void CL_BackUpKeys();     // cl.o
 extern int CL_ClearKeysForAll(); // cl.o
-extern void CL_GamepadEvent(int physicalAxis, int value, int time);  // cl.o
+extern void CL_GamepadEvent(unsigned int physicalAxis, int value);  // cl.o
 
 void IN_Frame()
 {
@@ -1278,8 +1278,8 @@ void IN_Frame()
                           * (((float)(abs(y) - value) / (128 - value)) * 128.0f));
             else
                 y = 0;
-            CL_GamepadEvent(0, x, Sys_Milliseconds());
-            CL_GamepadEvent(1, y, Sys_Milliseconds());
+            CL_GamepadEvent(0u, x);
+            CL_GamepadEvent(1u, y);
             ctl->stick_value(controller_port, controller::LEFTSTICK, x, y);
             if (abs(x) >= value)
                 x = (int)((2 * (x >= 0) - 1)
@@ -1291,8 +1291,8 @@ void IN_Frame()
                           * (((float)(abs(y) - value) / (128 - value)) * 128.0f));
             else
                 y = 0;
-            CL_GamepadEvent(2, x, Sys_Milliseconds());
-            CL_GamepadEvent(3, y, Sys_Milliseconds());
+            CL_GamepadEvent(2u, x);
+            CL_GamepadEvent(3u, y);
         }
     }
     if (currCl == NS_CLIENT)
@@ -2235,7 +2235,7 @@ int InsertDroneMaster(Entity* e, unsigned int animIndex)
 }
 
 // ea: 0x4FF910
-int RemoveDrone(Entity* e)
+int RemoveDrone(Entity* e, unsigned int animIndex)
 {
     unsigned int mVal = e->mHandle.mHandle.mVal;
     for (int i = 0; i < gDroneAEMap.m_size; ++i)
@@ -2445,8 +2445,8 @@ extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);  // ?CalcMuzzlePoint
 extern void g_LocationalTrace(trace_t* results,
                               const math::Position3* start,
                               const math::Position3* end,
-                              const void* context,
-                              const unsigned char* priorityMap,
+                              const collision_context_t* context,
+                              unsigned char* priorityMap,
                               float coneAngleTangent);
 extern unsigned char bulletPriorityMap[16];
 extern unsigned char riflePriorityMap[16];
@@ -2482,7 +2482,8 @@ Entity* _Return_MF_UnderCrossHair()
     ctx[1] = (void*)mVal;
     ctx[2] = nullptr;
     int result;
-    g_LocationalTrace((trace_t*)&result, &start, &end, ctx, v4, 0.0f);
+    g_LocationalTrace((trace_t*)&result, &start, &end,
+                      (collision_context_t*)ctx, v4, 0.0f);
 
     unsigned int hit = result;
     if (hit == EntityManager::sInst->mWorld->mHandle.mHandle.mVal || hit == 0)

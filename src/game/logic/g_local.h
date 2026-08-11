@@ -1986,7 +1986,7 @@ extern void (*thinktable[])(Entity* ent, int msec);
 // externs
 void SV_AdjustAreaPortalState(Entity* ent, int open);
 int  SV_inPVS(const math::Position3& p1, const math::Position3& p2);
-void vectoangles(const float* vec, float* angles);
+void vectoangles(float* vec, float* angles);
 float RadiusFromBounds(const math::Position3& mins, const math::Position3& maxs);
 int  CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                      DbLinkedHandle<EntityHandleDb, Entity>* entityList,
@@ -2528,7 +2528,7 @@ void  G_TouchTriggersAndVehicles(Entity* pEnt, const math::Position3* origin,
                                  const void* context);  // g.o
 struct player_collision_context_t;  // pmove context (opaque)
 extern void (*entinfotable[3])(Entity* ent);      // g.o
-float vectoyaw(const float* vec);                 // core.o
+float vectoyaw(float* vec);                       // core.o
 struct TouchEntityData;
 
 // CDL collision types (cdl_types.h / cgbank.h) - used by collide_sphere +
@@ -2933,7 +2933,9 @@ void  SpinnerReset(void);                          // cg.o
 void  CG_FreeWeapons(void);                        // cg.o
 void  BG_FreeWeaponInfo(void);                     // game.o
 void  G_FreeInteractionInfo(void);                 // g.o
+namespace AeStringSupport {
 int   ae_stricmpn(const char* s1, const char* s2, int n);  // core.o ae_string_support.cpp
+}
 void  G_RunFrame(int msec);                       // g.o 0x492600
 void  SpectatorThink(Entity* ent, usercmd_s* ucmd);  // g.o 0x4554E0
 void  Player_UpdateActivate(Entity* ent);         // g.o 0x473C40
@@ -3137,7 +3139,7 @@ void  SP_script_vehicle(Entity* pSelf);          // g.o 0x488CE0
 void  VEH_Backup(Entity* ent);                   // g.o
 int   VP_GetNodeIndex(Broc::string* name, math::Position3* origin);  // g.o
 void  VP_GetLookAheadXYZ(const vehicle_pathpos_t* vpp, float* lookXYZ);  // g.o
-void  vectoangles(const float* vec, float* angles);  // core.o
+void  vectoangles(float* vec, float* angles);  // core.o
 int   VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,
                        bool overrideSpeed, int waitNode);  // g.o
 void  VP_GetAngles(vehicle_pathpos_t* vpp, float* angles);  // g.o

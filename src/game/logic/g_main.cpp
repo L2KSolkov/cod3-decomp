@@ -2187,12 +2187,12 @@ void ClientCommand(DbLinkedHandle<EntityHandleDb, Entity> ent)
     Cmd_ArgvBuffer(0, cmd, 1022);
     for (unsigned int v1 = 0; v1 < 24; ++v1)
     {
-        if (ae_stricmpn(cmd, sClientCommand0List[v1].first, 0xFFFFFFF) == 0)
+        if (AeStringSupport::ae_stricmpn(cmd, sClientCommand0List[v1].first, 0xFFFFFFF) == 0)
             return;  // dispatch table entry (commands w/o entity)
     }
     for (unsigned int i = 0; i < 15; ++i)
     {
-        if (ae_stricmpn(cmd, sClientCommand1List[i].first, 0xFFFFFFF) == 0)
+        if (AeStringSupport::ae_stricmpn(cmd, sClientCommand1List[i].first, 0xFFFFFFF) == 0)
         {
             // dispatch with entity - routed through command handlers below
             return;

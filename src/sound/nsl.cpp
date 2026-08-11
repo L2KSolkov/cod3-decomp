@@ -54,7 +54,7 @@ typedef unsigned nflFileID;
 // ============================================================================
 // nslInit — init/shutdown
 // ============================================================================
-void         nslInit(const nslInitParams*) {}
+int          nslInit(const nslInitParams*) { return 0; }
 void         nslShutdown() {}
 nslSpeakerMode nslGetSpeakerMode() { return NSL_SPEAKER_STEREO; }
 void         nslSetSpeakerMode(nslSpeakerMode) {}
@@ -67,7 +67,7 @@ bool         nslIsInitDone() { return true; }
 // nslSource — sound sources / emitters (3D positioned)
 // ============================================================================
 nslEmitterID  nslNewEmitter(const float* pos) { return 0; }
-nslSourceID   nslNewSource(nslEmitterID, nslWaveID, unsigned flags) { return NSL_SOURCE_ID_INVALID; }
+nslSourceID   nslNewSource(nslWaveID waveID, int mImportance) { return NSL_SOURCE_ID_INVALID; }
 void          nslDeleteSource(nslSourceID) {}
 void          nslDeleteEmitter(nslEmitterID) {}
 nslSource*    nslSourcePtr(nslSourceID) { return nullptr; }

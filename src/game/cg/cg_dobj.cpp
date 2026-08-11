@@ -25,7 +25,6 @@ extern void CL_DObjCalcSkel(DObj* obj, int* partBits);
 extern void AxisCopy(const float (*in)[3], float (*out)[3]);
 extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
                                       const float (*in2)[3], DObjSkelMat* out);
-extern void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void* G_GetVehicleInfo(Entity* ent);
 extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
@@ -248,7 +247,8 @@ void CG_GetDObjOrientation(DObj* dobj, float* origin_out,
                     mEntity->r.currentOrigin.v.m128_f32[1];
                 origin_out[2] =
                     mEntity->r.currentOrigin.v.m128_f32[2];
-                AnglesToAxis(&mEntity->r.currentAngles, axis_out);
+                AnglesToAxis((const float*)&mEntity->r.currentAngles,
+                             axis_out);
             }
         }
         else
@@ -256,7 +256,7 @@ void CG_GetDObjOrientation(DObj* dobj, float* origin_out,
             origin_out[0] = mEntity->s.lerpOrigin.v.m128_f32[0];
             origin_out[1] = mEntity->s.lerpOrigin.v.m128_f32[1];
             origin_out[2] = mEntity->s.lerpOrigin.v.m128_f32[2];
-            AnglesToAxis(&mEntity->s.lerpAngles, axis_out);
+            AnglesToAxis((const float*)&mEntity->s.lerpAngles, axis_out);
         }
     }
     else

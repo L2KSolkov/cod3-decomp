@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // g_bg_pmove.cpp - game.o bg_pmove/bg_misc/bg_weapons helpers
 // Verified against IDA (release map offsets + 0x40C000 = VA).
 // ============================================================================
@@ -38,7 +38,7 @@ extern pmove_t* pm;          // ?pm@@3PAUpmove_t@@A (game.o)
 extern pml_t pml;            // ?pml@@3Upml_t@@A (game.o)
 extern int dword_106000;     // ?dword_106000 (EF_* flags mask, BSS)
 extern int cl_aADS[4];       // ?cl_aADS@@3PAHA (cl.o)
-extern const char* BG_GetWeaponSlotNameForIndex(int iSlot);  // game.o 0x6072B0
+extern const char* BG_GetWeaponSlotNameForIndex(unsigned int iSlot);  // game.o 0x6072B0
 extern vmCvar_t bg_nofatigue;  // ?bg_nofatigue@@3UvmCvar_t@@A (game.o)
 extern vmCvar_t g_gravity;     // ?g_gravity@@3UvmCvar_t@@A
 extern weaponFileInfo_t** bg_weaponInfo;  // ?bg_weaponInfo@@3PAPAUweaponFileInfo_t@@A (game.o)
@@ -4257,8 +4257,8 @@ bool push_in_world(pmove_t& pm, float radius,
 // ============================================================================
 // PM_SlideMove - ea: 0x63E850 (bg_pmove.cpp)
 // ============================================================================
-extern float VectorNormalize2(const math::Dir3& v, math::Dir3& out);
-    // ?VectorNormalize2@@YAMABVDir3@math@@AAV12@@Z
+extern float VectorNormalize2(const float* v, float* out);
+    // ?VectorNormalize2@@YAMPBMPAM@Z
 extern void Com_Printf(const char* fmt, ...);  // core.o
 
 // ea: 0x0063E850
@@ -4305,7 +4305,7 @@ int PM_SlideMove(int gravity)
         }
         math::Dir3 vel;
         vel.v = pm->ps->velocity.v;
-        VectorNormalize2(vel, *(math::Dir3*)&planes[v2]);
+        VectorNormalize2((const float*)&vel, (float*)&planes[v2]);
         int v11 = v2 + 1;
         collision_context_t context;
         context.__vftable = (collision_context_t_vtbl*)0x00CD8F78;
@@ -6496,17 +6496,17 @@ const gitem_s* BG_FindItem(const char* pickupName)
             char* szInternalName =
                 BG_GetInfoForWeapon(v1)->szInternalName;
             if (pickupName != nullptr && szInternalName != nullptr
-                && ae_stricmpn(pickupName, szInternalName, 0x7FFFFFFF) == 0)
+                && AeStringSupport::ae_stricmpn(pickupName, szInternalName, 0x7FFFFFFF) == 0)
                 return &bg_itemlist[v1];
         }
         else
         {
             const char* v5 = p_classname[6];
             if (v5 != nullptr && pickupName != nullptr
-                && ae_stricmpn(v5, pickupName, 0x7FFFFFFF) == 0)
+                && AeStringSupport::ae_stricmpn(v5, pickupName, 0x7FFFFFFF) == 0)
                 break;
             if (*p_classname != nullptr && pickupName != nullptr
-                && ae_stricmpn(*p_classname, pickupName, 0x7FFFFFFF) == 0)
+                && AeStringSupport::ae_stricmpn(*p_classname, pickupName, 0x7FFFFFFF) == 0)
                 break;
             v1 = iIndex;
         }
@@ -6617,7 +6617,7 @@ void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                      + tr->trDelta[2] * tr->trDelta[2]))
             / ((float)trDuration * 0.001f);
         const math::Dir3 dir = native_to_cdl_dir3(tr->trDelta);
-        VectorNormalize2(&dir, (math::Dir3*)&result);
+        VectorNormalize2((const float*)&dir, (float*)&result);
         float v20 = ((speed * v32) * v32) * 0.5f;
         if (tr->trType == TR_DECCELERATE)
             v20 = -v20;
@@ -6802,7 +6802,7 @@ void BG_FillInWeaponItems()
                     while (1)
                     {
                         v7 = bg_weaponInfo[j];
-                        if (ae_stricmpn((const char*)*(p_giTag - 3), v7->szInternalName,
+                        if (AeStringSupport::ae_stricmpn((const char*)*(p_giTag - 3), v7->szInternalName,
                                         (int)strlen(v7->szInternalName)) == 0)
                             break;
                         if (++j > bg_iNumWeapons)
@@ -6862,7 +6862,7 @@ void BG_SetupAmmoIndexes()
                     const char* v5 = bg_szWeapAmmoNames[v4];
                     const char* v6 = v1->szAmmoName;
                     if (v5 != nullptr && v6 != nullptr
-                        && ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
+                        && AeStringSupport::ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
                         break;
                     if (++v4 >= bg_iNumAmmoTypes)
                         goto LABEL_23;
@@ -6881,7 +6881,7 @@ void BG_SetupAmmoIndexes()
                             weaponFileInfo_t* v10 = bg_weaponInfo[v8];
                             const char* v11 = v10->szAmmoName;
                             if (v9 != nullptr && v11 != nullptr
-                                && ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
+                                && AeStringSupport::ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
                                 && v10->iMaxAmmo == bg_iWeapAmmoMaxs[iIndex])
                             {
                                 AeAssert::gCurrentAuthor = AeAssert::JRS;
@@ -6981,7 +6981,7 @@ void BG_SetupClipIndexes()
                     const char* v5 = bg_szWeapClipNames[v4];
                     const char* v6 = v1->szClipName;
                     if (v5 != nullptr && v6 != nullptr
-                        && ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
+                        && AeStringSupport::ae_stricmpn(v5, v6, 0x7FFFFFFF) == 0)
                         break;
                     if (++v4 >= bg_iNumWeapClips)
                         goto LABEL_23;
@@ -7000,7 +7000,7 @@ void BG_SetupClipIndexes()
                             weaponFileInfo_t* v10 = bg_weaponInfo[v8];
                             const char* v11 = v10->szClipName;
                             if (v9 != nullptr && v11 != nullptr
-                                && ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
+                                && AeStringSupport::ae_stricmpn(v9, v11, 0x7FFFFFFF) == 0
                                 && v10->iClipSize == bg_iWeapClipSizes[iIndex])
                             {
                                 AeAssert::gCurrentAuthor = AeAssert::JRS;
@@ -7046,7 +7046,7 @@ int compare_weaponfile_names(const void* pe1, const void* pe2)
 {
     const char* v2 = *(const char**)pe2;
     if (*(const char**)pe1 != nullptr && v2 != nullptr)
-        return ae_stricmpn(*(const char**)pe1, v2, 0x7FFFFFFF);
+        return AeStringSupport::ae_stricmpn(*(const char**)pe1, v2, 0x7FFFFFFF);
     return -1;
 }
 
@@ -7112,7 +7112,7 @@ int BG_GetAmmoTypeForName(const char* pszName)
     {
         const char* v2 = bg_szWeapAmmoNames[v1];
         if (v2 != nullptr && pszName != nullptr
-            && ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
+            && AeStringSupport::ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
             return v1;
         if (++v1 >= bg_iNumAmmoTypes)
             goto LABEL_6;
@@ -7133,7 +7133,7 @@ int BG_GetAmmoClipForName(const char* pszName)
     {
         const char* v2 = bg_szWeapClipNames[v1];
         if (v2 != nullptr && pszName != nullptr
-            && ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
+            && AeStringSupport::ae_stricmpn(v2, pszName, 0x7FFFFFFF) == 0)
             return v1;
         if (++v1 >= bg_iNumWeapClips)
             goto LABEL_6;
@@ -7814,7 +7814,7 @@ int BG_CheckProneValid(
         fTorsoPitch = vWaistPos[1] - vEnd.v.m128_f32[2];
         fPitchDiff = vWaistPos[2] - vEnd.v.m128_f32[3];
         vMins.v.m128_f32[3] =
-            VectorNormalize2(&v69, &fTraceHeight);
+            VectorNormalize2((const float*)&v69, (float*)&fTraceHeight);
         traceFunc(&trace, (const math::Position3*)&vEnd.v.m128_f32[1], (const math::Position3*)&vMaxs.v.m128_f32[1], (const math::Position3*)vTorsoPos, (const math::Position3*)vWaistPos, context);
         integer = g_debugProneCheck.integer;
         if (trace.normal.v.m128_f32[1] < 1.0f)

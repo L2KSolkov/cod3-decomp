@@ -340,7 +340,7 @@ extern float tracer_info_speed[6];
 extern void AxisClear(float (*axis)[3]);
 extern void VectorNormalize(float* v);
 extern float VectorDistance(const float* v1, const float* v2);
-extern void PerpendicularVector(float* dst, const float* src);
+extern void PerpendicularVector(float* dst, float* src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 extern void FastSinCos(float radians, float* psin, float* pcos);
 
@@ -736,7 +736,7 @@ extern int dword_F6294C[4 * 1580];
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
 extern int CurPakId();
-extern void VectorNormalize2(const float* v, float* out);
+extern float VectorNormalize2(const float* v, float* out);
 extern void PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                       bool queue, int pakid, bool important);
 extern float dword_F63C70[4 * 1580];
@@ -876,7 +876,7 @@ extern void* cg_items;
 extern void* bg_itemlist;
 extern void* Entity_GetRefEntity(Entity* ent);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
-extern void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void CG_RegisterItemVisuals(int itemNum);
 extern void CG_Error(const char* msg, ...);
@@ -902,7 +902,7 @@ void CG_Missile(Entity* entity)
             RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
             RefEntity->renderfx = v23->missileRenderfx | 0x40;
-            AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            AnglesToAxis((const float*)&entity->s.lerpAngles, RefEntity->axis);
             RefEntity->obj = mDObj;
             RefEntity->entity = entity;
             RefEntity->reType = 1;
@@ -928,7 +928,7 @@ void CG_Mover(Entity* entity)
             RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
             RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
-            AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            AnglesToAxis((const float*)&entity->s.lerpAngles, RefEntity->axis);
             RefEntity->renderfx = 64;
             RefEntity->obj = mDObj;
             RefEntity->entity = entity;
@@ -959,7 +959,7 @@ void CG_ScriptMover(Entity* entity)
                 RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
                 RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
                 RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
-                AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+                AnglesToAxis((const float*)&entity->s.lerpAngles, RefEntity->axis);
             }
             RefEntity->renderfx = 64;
             RefEntity->reType = 1;
@@ -990,7 +990,7 @@ void CG_Vehicle(Entity* entity)
                 (refEntity_t*)Entity_GetRefEntity(entity);
             memcpy(RefEntity->origin, &entity->r.currentOrigin, 12);
             memcpy(RefEntity->oldorigin, &entity->r.currentOrigin, 12);
-            AnglesToAxis(&entity->r.currentAngles, RefEntity->axis);
+            AnglesToAxis((const float*)&entity->r.currentAngles, RefEntity->axis);
             RefEntity->lightingOrigin[0] =
                 entity->r.currentOrigin.v.m128_f32[0];
             RefEntity->lightingOrigin[1] =
@@ -1028,12 +1028,12 @@ void CG_Item(Entity* entity)
                 if (((unsigned int*)bg_itemlist)[13 * brushmodel + 4]
                     == 1 /* IT_WEAPON */)
                 {
-                    AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+                    AnglesToAxis((const float*)&entity->s.lerpAngles, RefEntity->axis);
                     RefEntity->scale = 1.5f;
                 }
                 else
                 {
-                    AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+                    AnglesToAxis((const float*)&entity->s.lerpAngles, RefEntity->axis);
                 }
                 RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
                 RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
@@ -1137,7 +1137,7 @@ void CG_Actor(Entity* entity)
             RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
             RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
-            AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            AnglesToAxis((const float*)&entity->s.lerpAngles, RefEntity->axis);
             RefEntity->reType = 1;
             RefEntity->obj = mDObj;
             RefEntity->entity = entity;
@@ -1295,7 +1295,8 @@ void CG_Player(Entity* entity)
                                             }
                                         LABEL_56:
                                             AnglesToAxis(
-                                                &entity->r.currentAngles,
+                                                (const float*)&entity->r
+                                                    .currentAngles,
                                                 RefEntity->axis);
                                         LABEL_60:
                                             RefEntity->renderfx = 128;
@@ -1327,7 +1328,7 @@ void CG_Player(Entity* entity)
                                         p_currentAngles =
                                             &entity->r.currentAngles;
                                     }
-                                    AnglesToAxis(p_currentAngles,
+                                    AnglesToAxis((const float*)p_currentAngles,
                                                  RefEntity->axis);
                                     goto LABEL_60;
                                 }
@@ -1346,7 +1347,7 @@ extern void CG_DrawTracer(const math::Position3& _start,
 struct trajectory_t;
 extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                                   math::Position3& result);
-extern void VectorNormalize2(const float* v, float* out);
+extern float VectorNormalize2(const float* v, float* out);
 extern int dword_DF6ADC[6];
 extern int dword_DF6AE0[6];
 extern int dword_F6400C[4 * 1580];
@@ -1472,19 +1473,19 @@ void CG_AddPacketEntities()
     float f1 = *(float*)&dword_F63BBC[v4];
     float f2 = *(float*)&dword_F63BC0[v4];
     float a0[3] = {f0, f1, f2};
-    AnglesToAxis((const math::Position3*)a0,
+    AnglesToAxis((const float*)a0,
                  (float (*)[3])(unk_F63BC4 + v4 * 4));
     float g0 = *(float*)&dword_F63BE8[1580 * currCl];
     float g1 = *(float*)&dword_F63BEC[1580 * currCl];
     float g2 = *(float*)&dword_F63BF0[1580 * currCl];
     float a1[3] = {g0, g1, g2};
-    AnglesToAxis((const math::Position3*)a1,
+    AnglesToAxis((const float*)a1,
                  (float (*)[3])(unk_F63BF4 + 6320 * currCl));
     float h0 = *(float*)&dword_F63C18[1580 * currCl];
     float h1 = *(float*)&dword_F63C1C[1580 * currCl];
     float h2 = *(float*)&dword_F63C20[1580 * currCl];
     float a2[3] = {h0, h1, h2};
-    AnglesToAxis((const math::Position3*)a2,
+    AnglesToAxis((const float*)a2,
                  (float (*)[3])(unk_F63C24 + 6320 * currCl));
     for (int i = 0; i < count; ++i)
     {
@@ -1509,7 +1510,7 @@ extern void CG_FireWeapon(Entity* attacker, EntityState* attackerState,
 extern void CG_EjectWeaponBrass(Entity* entity, int event);
 extern void PostEffectEventWeapon(const Entity* ent, const char* weaponType,
                                   int weaponAction);
-extern void ByteToDir(int b, float* dir);
+extern void ByteToDir(unsigned int b, float* dir);
 extern void CG_BulletHitEvent(Entity* entity, math::Position3* origin,
                               float* normal, int weapon, int surfType,
                               Entity* hitEnt);

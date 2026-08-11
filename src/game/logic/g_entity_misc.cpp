@@ -285,8 +285,9 @@ extern void* nglListAddMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
                             void (*fn)(void*));
 extern void j_nullsub_67(nglMeshSection* Section);  // render_xboxr no-op
 extern void j_nullsub_27(nglMeshSection* Section);  // render_xboxr no-op
-extern void calc_winding(const cdl_array<cdlPlane>& planes, int plane_index,
-                         ae_sized_array<math::Position3, 256>& winding);
+struct cdlPlaneArray;
+extern void calc_winding(const cdlPlaneArray* planes, unsigned int plane_index,
+                         ae_sized_array<math::Position3, 256>* winding);
     // ?calc_winding (game.o 0x62A6B0)
 extern unsigned char* nglListWork;
 extern unsigned char* nglListWorkPos;
@@ -397,7 +398,8 @@ void render_brush(const math::Position3& bmin, const math::Position3& bmax,
     {
         ae_sized_array<math::Position3, 256> winding;
         winding.m_size = 0;
-        calc_winding(planes, plane_index, winding);
+        calc_winding((cdlPlaneArray*)&planes, (unsigned int)plane_index,
+                     &winding);
         int v42 = winding.m_size - 2;
         if (v42 > 0)
         {
@@ -1860,8 +1862,10 @@ extern float nslGetSourceParam(nslSourceID sid, int index,
 extern const char* nslGetSourceName(nslSourceID sid);  // nslSource.o
 extern int nslIsWaveStreamed(nslWaveID a);             // nslCompat.o
 extern int g_useOnScreenSoundDebugging;   // ?g_useOnScreenSoundDebugging@@3HA
+namespace AeStringSupport {
 extern void AeStrCopy(char* dst, int* dstLen, int dstCapacity,
                       const char* src, int srcLen);  // ae_string_support.cpp
+}
 
 static SoundDevice::Sound* SoundFromHandle(Handle h)
 {
@@ -2282,9 +2286,9 @@ void SoundDevice::DebugRender()
                         this->mSounds[k].GetDebugString();
                     ae_fixed_string<128, unsigned char> tmp;
                     int m = 0;
-                    AeStrCopy((char*)tmp.mBuff, &m, 127,
-                              (const char*)DebugString.mBuff,
-                              DebugString.mLength);
+                    AeStringSupport::AeStrCopy((char*)tmp.mBuff, &m, 127,
+                                               (const char*)DebugString.mBuff,
+                                               DebugString.mLength);
                     tmp.mLength = (unsigned char)m;
                     spu.push_back(tmp);
                 }
@@ -2294,9 +2298,9 @@ void SoundDevice::DebugRender()
                         this->mSounds[k].GetDebugString();
                     ae_fixed_string<128, unsigned char> tmp;
                     int m = 0;
-                    AeStrCopy((char*)tmp.mBuff, &m, 127,
-                              (const char*)DebugString.mBuff,
-                              DebugString.mLength);
+                    AeStringSupport::AeStrCopy((char*)tmp.mBuff, &m, 127,
+                                               (const char*)DebugString.mBuff,
+                                               DebugString.mLength);
                     tmp.mLength = (unsigned char)m;
                     streams.push_back(tmp);
                 }
@@ -2407,11 +2411,11 @@ extern void Cmd_RemoveCommand(const char* cmd_name);  // game.o g_cmd.cpp
 extern void Cmd_AddCommand(const char* cmd_name,
                            void (*function)());  // game.o g_cmd.cpp
 extern void* CGBankManager_vftable;   // ??_7CGBankManager@@6B@ @ 0xD0543C
-extern void ToggleRenderGeom();       // game.o 0x6119F0
-extern void ToggleGraph();            // game.o 0x611A30
-extern void ToggleRenderPerf();       // game.o 0x611A10
-extern void ZoomIn();                 // game.o 0x611A50
-extern void ZoomOut();                // game.o 0x611A70
+extern void* ToggleRenderGeom();      // game.o 0x6119F0
+extern void* ToggleGraph();           // game.o 0x611A30
+extern void* ToggleRenderPerf();      // game.o 0x611A10
+extern void* ZoomIn();                // game.o 0x611A50
+extern void* ZoomOut();               // game.o 0x611A70
 extern void Teleport();               // game.o 0x611A90
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
 extern void* DebugRender_sInst;       // ?sInst@DebugRender@@2V1@A @ 0xF74D20
@@ -2439,11 +2443,11 @@ CGBankManager::CGBankManager()
     *(float*)((char*)this + 0x08) = 0.0f;
     *(unsigned int*)((char*)this + 0x04) &= 0xFFFFFFF8;
     *(float*)((char*)this + 0x08) = 150.0f;
-    Cmd_AddCommand("cg", ToggleRenderGeom);
-    Cmd_AddCommand("cggraph", ToggleGraph);
-    Cmd_AddCommand("cgperf", ToggleRenderPerf);
-    Cmd_AddCommand("cgzoomin", ZoomIn);
-    Cmd_AddCommand("cgzoomout", ZoomOut);
+    Cmd_AddCommand("cg", (void (*)())ToggleRenderGeom);
+    Cmd_AddCommand("cggraph", (void (*)())ToggleGraph);
+    Cmd_AddCommand("cgperf", (void (*)())ToggleRenderPerf);
+    Cmd_AddCommand("cgzoomin", (void (*)())ZoomIn);
+    Cmd_AddCommand("cgzoomout", (void (*)())ZoomOut);
     Cmd_AddCommand("teleport", Teleport);
 }
 

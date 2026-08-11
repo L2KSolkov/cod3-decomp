@@ -63,7 +63,7 @@ extern void CG_General(Entity* entity);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void* Entity_GetRefEntity(Entity* ent);
-extern void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void SoundDevice_DampenAllSounds(void* sInst, float level);
 extern void SoundDevice_StopAllSounds(void* sInst);
 extern void SoundDevice_FrameAdvance(void* sInst, float delta);
@@ -351,7 +351,8 @@ void CG_General(Entity* entity)
             RefEntity->oldorigin[0] = entity->s.lerpOrigin.v.m128_f32[0];
             RefEntity->oldorigin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->oldorigin[2] = entity->s.lerpOrigin.v.m128_f32[2];
-            AnglesToAxis(&entity->s.lerpAngles, RefEntity->axis);
+            AnglesToAxis((const float*)&entity->s.lerpAngles,
+                         RefEntity->axis);
             RefEntity->obj = mDObj;
             RefEntity->entity = entity;
             RefEntity->reType = 1;  // RT_XMODEL
