@@ -37,7 +37,7 @@ extern void VM_Free(struct vm_s* vm);
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int com_timescale_value;
 extern int dword_F170F0;
-extern int com_skelTimeStamp;
+int com_skelTimeStamp = 0;  // ?com_skelTimeStamp@@3HA (core.o)
 extern int bCL_AllowedAllocSkel;
 extern struct cvar_t* cl_testAnimWeight;
 extern void* _Z_MallocInternal(int size);

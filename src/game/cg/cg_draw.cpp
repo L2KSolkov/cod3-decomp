@@ -19,7 +19,7 @@ public:
 
 
 extern int currCl;
-extern int cgGlobal_time;
+int cgGlobal_time = 0;  // ?cgGlobal_time@@3HA (cg.o)
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern void* cgsGlobal_media_whiteShader;
@@ -53,9 +53,9 @@ extern int dword_F63CA4[4 * 1580];
 extern int dword_F63CA8[4 * 1580];
 extern float dword_F63C60[4 * 1580];
 extern float dword_F63C64[4 * 1580];
-extern float dword_F63C70[4 * 1580];
-extern float dword_F63C74[4 * 1580];
-extern float dword_F63C78[4 * 1580];
+float dword_F63C70[4 * 1580];  // cg.o BSS
+float dword_F63C74[4 * 1580];
+float dword_F63C78[4 * 1580];
 extern float dword_F63C50[4 * 1580];
 extern float dword_F63C58[4 * 1580];
 extern float dword_F63C5C[4 * 1580];
@@ -113,7 +113,7 @@ extern nglMeshNode* nglListAddMesh(nglMesh* mesh,
                                    void (*fn)(nglMeshNode*));
 extern void* cdscratch_vertex_format;
 extern void* cgsGlobal_media_tracerShader;
-extern int dword_F6355C[4 * 1580];
+int dword_F6355C[4 * 1580];  // cg.o BSS
 extern int dword_F62948[4 * 1580];
 extern int dword_F640A4[4 * 1580];
 extern int dword_F64158[4 * 1580];
@@ -234,7 +234,7 @@ extern void CG_DrawActive(float a1);
 extern char cgsGlobal_shellshockParms[0x7C];
 extern void View_SetViewportClipping(int clientIndex);
 extern int View_lNumViewports;
-extern int cg_aWeaponSelect[4];
+int cg_aWeaponSelect[4];  // ?cg_aWeaponSelect@@3PAHA (cg.o)
 extern int* cg_clientFrame;
 extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);

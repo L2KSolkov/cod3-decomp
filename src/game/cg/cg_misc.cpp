@@ -2728,7 +2728,7 @@ extern float YOfs;            // 0x00DFA2FC
 extern float XOfs;            // 0x00DFA2F8
 extern char buffer_0[256];    // 0x00F73890
 extern _objectiveInfo_t objectives[4][17];  // 0x00F6A2B0
-extern float vec3_origin[3];
+extern const float vec3_origin[3];
 struct nglQuad;
 extern void nglInitQuad(nglQuad* quad);
 extern void nglSetQuadColor(nglQuad* quad, unsigned int c);

@@ -1826,7 +1826,7 @@ extern float minPitch;               // 0xDD822C (16.0 - tank gunner min pitch)
 extern float deltaYAWmaxs;           // 0xDD8238 (140.0)
 extern float deltaYAWmins;           // 0xDD8244 (-140.0)
 extern float gFireHeatBlur;          // 0xF616EC (cg.o global, blurred by turret fire)
-extern float vec3_origin[3];         // core.o q_math.cpp
+extern const float vec3_origin[3];   // ?vec3_origin@@3QBMB (core.o q_math.cpp)
 
 // turret family (g.o: g_misc.cpp turret block -> g_turret.cpp)
 void InvalidateTurretCaches(void);

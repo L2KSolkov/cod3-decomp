@@ -120,7 +120,7 @@ struct FEManager; extern FEManager g_femanager;
 extern int gUseNfl;
 extern int g_enableControllerTest;
 extern int g_controllerConnected[];
-extern bool g_controllerConnectedErrorShown[];
+bool g_controllerConnectedErrorShown[4];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
 extern int g_controllerConnectedGamePaused[];
 extern int logfile;
 extern int opening_qconsole;
@@ -165,6 +165,9 @@ extern cvar_t* com_speeds;
 int cvar_modifiedFlags = 0;  // ?cvar_modifiedFlags@@3HA (core.o @ 0xEF8194)
 cvar_t* com_sv_running = NULL;  // ?com_sv_running@@3PAUcvar_t@@A (core.o @ 0xEF6A90)
 extern cvar_t* com_cl_running;
+
+// ?vec3_origin@@3QBMB (core.o rdata)
+extern const float vec3_origin[3] = { 0.0f, 0.0f, 0.0f };
 extern cvar_t* cl_frameadvance;
 extern cvar_t* cl_capturemovie;
 extern cvar_t* com_journal;
