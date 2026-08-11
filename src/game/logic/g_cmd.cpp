@@ -1622,30 +1622,40 @@ static int GetStickIndexFromDesc(const char* desc);     // game.o 0x6126D0
 static EPadAliasButton GetButtonAliasFromDesc(const char* desc);  // game.o 0x612730
 static EPadAliasStick GetStickAliasFromDesc(const char* desc);    // game.o 0x612760
 
-struct PadAliasCtx {
-    ae_sized_array<ae_sized_array<EPadAliasButton, 16>, 4> mButtonAlias;  // +0x00 (0x114)
-    ae_sized_array<ae_sized_array<EPadAliasStick, 2>, 4> mStickAlias;     // +0x114 (0x34)
-    void Clear();  // ?Clear@Context@PadAliasMgr@@QAEXXZ (game.o 0x620DD0)
-    void Clear(int ctrlr);  // ?Clear@Context@PadAliasMgr@@QAEXH@Z (game.o 0x620EA0)
-    void BindButton(int ctrlNum, int buttonIndex, EPadAliasButton buttonAlias);  // game.o 0x620F70
-    void BindStick(int ctrlNum, int stickIndex, EPadAliasStick stickAlias);      // game.o 0x621050
-    EPadAliasButton GetButtonAlias(int ctrlNum, controller::ButtonIndex buttonIndex);  // game.o 0x621160
-    EPadAliasStick GetStickAlias(int ctrlNum, controller::StickIndex stickIndex);      // game.o 0x6211E0
-    int GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621260
-    bool IsButtonReleased(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x6212A0
-    bool IsButtonReleasedClear(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x6212F0
-    bool IsButtonPressed(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621340
-    bool IsButtonPressedClear(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621390
-    void GetStickValue(int ctrlNum, EPadAliasStick stickAlias,
-                       int& stickX, int& stickY);  // game.o 0x6213E0
-};
-static_assert(sizeof(PadAliasCtx) == 0x148, "PadAliasCtx size mismatch");
 struct PadAliasMgr {
-    PadAliasCtx mCtx[3];      // +0x00 (3 contexts, 0x148 stride; GetCtx returns this + idx*0x148)
+    struct Context {
+        ae_sized_array<ae_sized_array<EPadAliasButton, 16>, 4> mButtonAlias;  // +0x00 (0x114)
+        ae_sized_array<ae_sized_array<EPadAliasStick, 2>, 4> mStickAlias;     // +0x114 (0x34)
+        Context()  // ??0Context@PadAliasMgr@@QAE@XZ (game.o inline COMDAT 0x6626F0)
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                mButtonAlias.m_elements[i].m_size = 0;
+                mStickAlias.m_elements[i].m_size = 0;
+            }
+            mButtonAlias.m_size = 0;
+            mStickAlias.m_size = 0;
+        }
+        void Clear();  // ?Clear@Context@PadAliasMgr@@QAEXXZ (game.o 0x620DD0)
+        void Clear(int ctrlr);  // ?Clear@Context@PadAliasMgr@@QAEXH@Z (game.o 0x620EA0)
+        void BindButton(int ctrlNum, int buttonIndex, EPadAliasButton buttonAlias);  // game.o 0x620F70
+        void BindStick(int ctrlNum, int stickIndex, EPadAliasStick stickAlias);      // game.o 0x621050
+        EPadAliasButton GetButtonAlias(int ctrlNum, controller::ButtonIndex buttonIndex);  // game.o 0x621160
+        EPadAliasStick GetStickAlias(int ctrlNum, controller::StickIndex stickIndex);      // game.o 0x6211E0
+        int GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621260
+        bool IsButtonReleased(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x6212A0
+        bool IsButtonReleasedClear(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x6212F0
+        bool IsButtonPressed(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621340
+        bool IsButtonPressedClear(int ctrlNum, EPadAliasButton buttonAlias);  // game.o 0x621390
+        void GetStickValue(int ctrlNum, EPadAliasStick stickAlias,
+                           int& stickX, int& stickY);  // game.o 0x6213E0
+    };
+    Context mCtx[3];      // +0x00 (3 contexts, 0x148 stride; GetCtx returns this + idx*0x148)
     static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
     PadAliasMgr();            // ??0PadAliasMgr@@QAE@XZ (game.o 0x6431F0)
     void WriteBindings(int f);  // ?WriteBindings@PadAliasMgr@@QAEXH@Z (game.o 0x62B520)
 };
+static_assert(sizeof(PadAliasMgr::Context) == 0x148, "PadAliasMgr::Context size mismatch");
 static_assert(sizeof(PadAliasMgr) == 0x3D8, "PadAliasMgr size mismatch");
 PadAliasMgr* PadAliasMgr::sInst = nullptr;
 
@@ -1702,7 +1712,7 @@ static EPadAliasStick GetStickAliasFromDesc(const char* desc)
 }
 
 // ea: 0x00620DD0
-void PadAliasCtx::Clear()
+void PadAliasMgr::Context::Clear()
 {
     for (int i = 0; i < 4; ++i)
         for (int j = 0; j < 16; ++j)
@@ -1710,15 +1720,15 @@ void PadAliasCtx::Clear()
 }
 
 // ea: 0x00620EA0
-void PadAliasCtx::Clear(int ctrlr)
+void PadAliasMgr::Context::Clear(int ctrlr)
 {
     for (int v4 = 0; v4 < 16; ++v4)
         mButtonAlias[ctrlr][v4] = kPadAliasButtonInvalid;
 }
 
 // ea: 0x00620F70
-void PadAliasCtx::BindButton(int ctrlNum, int buttonIndex,
-                             EPadAliasButton buttonAlias)
+void PadAliasMgr::Context::BindButton(int ctrlNum, int buttonIndex,
+                                      EPadAliasButton buttonAlias)
 {
     if (ctrlNum < 0 || ctrlNum >= 4)
     {
@@ -1747,8 +1757,8 @@ void PadAliasCtx::BindButton(int ctrlNum, int buttonIndex,
 }
 
 // ea: 0x00621050
-void PadAliasCtx::BindStick(int ctrlNum, int stickIndex,
-                            EPadAliasStick stickAlias)
+void PadAliasMgr::Context::BindStick(int ctrlNum, int stickIndex,
+                                     EPadAliasStick stickAlias)
 {
     if (ctrlNum < 0 || ctrlNum >= 4)
     {
@@ -1780,7 +1790,7 @@ void PadAliasCtx::BindStick(int ctrlNum, int stickIndex,
 }
 
 // ea: 0x00621160
-EPadAliasButton PadAliasCtx::GetButtonAlias(
+EPadAliasButton PadAliasMgr::Context::GetButtonAlias(
     int ctrlNum, controller::ButtonIndex buttonIndex)
 {
     if (ctrlNum < 0 || ctrlNum >= 4)
@@ -1796,7 +1806,7 @@ EPadAliasButton PadAliasCtx::GetButtonAlias(
 }
 
 // ea: 0x006211E0
-EPadAliasStick PadAliasCtx::GetStickAlias(
+EPadAliasStick PadAliasMgr::Context::GetStickAlias(
     int ctrlNum, controller::StickIndex stickIndex)
 {
     if (ctrlNum < 0 || ctrlNum >= 4)
@@ -1812,7 +1822,8 @@ EPadAliasStick PadAliasCtx::GetStickAlias(
 }
 
 // ea: 0x00621260
-int PadAliasCtx::GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias)
+int PadAliasMgr::Context::GetButtonValue(int ctrlNum,
+                                         EPadAliasButton buttonAlias)
 {
     int v4 = controller::LEFTBUTTON;
     while (1)
@@ -1831,7 +1842,8 @@ int PadAliasCtx::GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias)
 }
 
 // ea: 0x006212A0
-bool PadAliasCtx::IsButtonReleased(int ctrlNum, EPadAliasButton buttonAlias)
+bool PadAliasMgr::Context::IsButtonReleased(int ctrlNum,
+                                             EPadAliasButton buttonAlias)
 {
     int v4 = controller::LEFTBUTTON;
     while (1)
@@ -1849,8 +1861,8 @@ bool PadAliasCtx::IsButtonReleased(int ctrlNum, EPadAliasButton buttonAlias)
 }
 
 // ea: 0x006212F0
-bool PadAliasCtx::IsButtonReleasedClear(int ctrlNum,
-                                        EPadAliasButton buttonAlias)
+bool PadAliasMgr::Context::IsButtonReleasedClear(int ctrlNum,
+                                                 EPadAliasButton buttonAlias)
 {
     int v4 = controller::LEFTBUTTON;
     while (1)
@@ -1868,7 +1880,8 @@ bool PadAliasCtx::IsButtonReleasedClear(int ctrlNum,
 }
 
 // ea: 0x00621340
-bool PadAliasCtx::IsButtonPressed(int ctrlNum, EPadAliasButton buttonAlias)
+bool PadAliasMgr::Context::IsButtonPressed(int ctrlNum,
+                                            EPadAliasButton buttonAlias)
 {
     int v4 = controller::LEFTBUTTON;
     while (1)
@@ -1886,8 +1899,8 @@ bool PadAliasCtx::IsButtonPressed(int ctrlNum, EPadAliasButton buttonAlias)
 }
 
 // ea: 0x00621390
-bool PadAliasCtx::IsButtonPressedClear(int ctrlNum,
-                                       EPadAliasButton buttonAlias)
+bool PadAliasMgr::Context::IsButtonPressedClear(int ctrlNum,
+                                                EPadAliasButton buttonAlias)
 {
     int v4 = controller::LEFTBUTTON;
     while (1)
@@ -1905,8 +1918,9 @@ bool PadAliasCtx::IsButtonPressedClear(int ctrlNum,
 }
 
 // ea: 0x006213E0
-void PadAliasCtx::GetStickValue(int ctrlNum, EPadAliasStick stickAlias,
-                                int& stickX, int& stickY)
+void PadAliasMgr::Context::GetStickValue(int ctrlNum,
+                                         EPadAliasStick stickAlias,
+                                         int& stickX, int& stickY)
 {
     stickX = 0;
     stickY = 0;
@@ -2073,7 +2087,7 @@ void PadAliasMgr::WriteBindings(int f)
 {
     FS_Printf(f, "clearallaliases\n");
     const char** v3 = kPadAliasCtxDesc;
-    PadAliasCtx* v4 = &this->mCtx[0];
+    PadAliasMgr::Context* v4 = &this->mCtx[0];
     do
     {
         for (int i = 0; i < 16; ++i)
@@ -2097,7 +2111,7 @@ void PadAliasMgr::WriteBindings(int f)
             }
         }
         ++v3;
-        v4 = (PadAliasCtx*)((char*)v4 + 328);
+        v4 = (PadAliasMgr::Context*)((char*)v4 + 328);
     } while (v3 < kPadAliasCtxDesc + 3);
 }
 
