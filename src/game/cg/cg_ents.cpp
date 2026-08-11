@@ -876,7 +876,6 @@ void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
 extern void* cg_weapons;
 extern void* cg_items;
 extern void* bg_itemlist;
-extern void* Entity_GetRefEntity(Entity* ent);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
@@ -896,7 +895,7 @@ void CG_Missile(Entity* entity)
         if (mDObj != nullptr)
         {
             refEntity_t* RefEntity =
-                (refEntity_t*)Entity_GetRefEntity(entity);
+                (refEntity_t*)&entity->GetRefEntity();
             RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
             RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
@@ -923,7 +922,7 @@ void CG_Mover(Entity* entity)
         if (v2 || mDObj != nullptr)
         {
             refEntity_t* RefEntity =
-                (refEntity_t*)Entity_GetRefEntity(entity);
+                (refEntity_t*)&entity->GetRefEntity();
             RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
             RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
@@ -950,7 +949,7 @@ void CG_ScriptMover(Entity* entity)
         if (v2 || mDObj != nullptr)
         {
             refEntity_t* RefEntity =
-                (refEntity_t*)Entity_GetRefEntity(entity);
+                (refEntity_t*)&entity->GetRefEntity();
             int eFlags = entity->s.eFlags;
             if ((eFlags & 0x40000000) != 0)
             {
@@ -989,7 +988,7 @@ void CG_Vehicle(Entity* entity)
         if (mDObj != nullptr)
         {
             refEntity_t* RefEntity =
-                (refEntity_t*)Entity_GetRefEntity(entity);
+                (refEntity_t*)&entity->GetRefEntity();
             memcpy(RefEntity->origin, &entity->r.currentOrigin, 12);
             memcpy(RefEntity->oldorigin, &entity->r.currentOrigin, 12);
             AnglesToAxis((const float*)&entity->r.currentAngles, RefEntity->axis);
@@ -1025,7 +1024,7 @@ void CG_Item(Entity* entity)
             if (mDObj != nullptr)
             {
                 refEntity_t* RefEntity =
-                    (refEntity_t*)Entity_GetRefEntity(entity);
+                    (refEntity_t*)&entity->GetRefEntity();
                 RefEntity->scale = 0.0f;
                 if (((unsigned int*)bg_itemlist)[13 * brushmodel + 4]
                     == 1 /* IT_WEAPON */)
@@ -1124,7 +1123,7 @@ void CG_Actor(Entity* entity)
         if (mDObj != nullptr)
         {
             refEntity_t* RefEntity =
-                (refEntity_t*)Entity_GetRefEntity(entity);
+                (refEntity_t*)&entity->GetRefEntity();
             RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
             RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
@@ -1235,8 +1234,7 @@ void CG_Player(Entity* entity)
                                         return;
                                     }
                                     refEntity_t* RefEntity =
-                                        (refEntity_t*)Entity_GetRefEntity(
-                                            entity);
+                                        (refEntity_t*)&entity->GetRefEntity();
                                     float v16 =
                                         entity->r.currentOrigin.v.m128_f32[2];
                                     float v17 =

@@ -103,7 +103,6 @@ extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
 extern int InteractionController_CanRunWeaponAnims(void* self);
 extern void* PlayerAnimMgr_sInst;
-extern void* Entity_GetRefEntity(Entity* ent);
 extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
                                Entity* entity, int bDrawGun);
 extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
@@ -1159,7 +1158,7 @@ void CG_AddViewWeapon(PlayerState* ps)
                     CG_WeaponRunXModelAnims(ps, v4);
                 Entity* Player = GetPlayer(currCl);
                 refEntity_t* RefEntity =
-                    (refEntity_t*)Entity_GetRefEntity(Player);
+                    (refEntity_t*)&Player->GetRefEntity();
                 RefEntity->renderfx = 12;
                 CG_AddPlayerWeapon(RefEntity, ps, Player, v2);
             }
@@ -1686,7 +1685,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
         CG_RegisterWeapon(weapon);
         BG_GetInfoForWeapon(weapon);
         CG_WeaponUpdateLoopingSound(entity);
-        refEntity_t* RefEntity = (refEntity_t*)Entity_GetRefEntity(entity);
+        refEntity_t* RefEntity = (refEntity_t*)&entity->GetRefEntity();
         RefEntity->lightingOrigin[0] = parent->lightingOrigin[0];
         RefEntity->lightingOrigin[1] = parent->lightingOrigin[1];
         RefEntity->lightingOrigin[2] = parent->lightingOrigin[2];

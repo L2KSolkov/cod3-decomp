@@ -56,7 +56,6 @@ extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
 extern void CL_AddDebugLine(const float* start, const float* end,
                             const float* color, int depthTest, int duration,
                             int fromServer, int fadeOut);
-extern void* Entity_GetRefEntity(Entity* ent);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void ByteToDir(unsigned int b, float* dir);
 extern void PerpendicularVector(float* dst, float* src);
@@ -302,7 +301,7 @@ void CG_LockLightingOrigin(Entity* entity, refEntity_t* ent)
     {
         if (entity->mRenderEntity != nullptr)
         {
-            refEntity_t* ref = (refEntity_t*)Entity_GetRefEntity(entity);
+            refEntity_t* ref = (refEntity_t*)&entity->GetRefEntity();
             ref->lightingOrigin[0] = 0.0f;
             ref->lightingOrigin[1] = 0.0f;
             ref->lightingOrigin[2] = 0.0f;
@@ -310,7 +309,7 @@ void CG_LockLightingOrigin(Entity* entity, refEntity_t* ent)
     }
     else
     {
-        refEntity_t* ref = (refEntity_t*)Entity_GetRefEntity(entity);
+        refEntity_t* ref = (refEntity_t*)&entity->GetRefEntity();
         if (ref->lightingOrigin[0] == 0.0f && ref->lightingOrigin[1] == 0.0f
             && ref->lightingOrigin[2] == 0.0f)
         {
@@ -328,7 +327,7 @@ void CG_LockLightingOrigin(Entity* entity, refEntity_t* ent)
 // ea: 0x0068A1B0
 void CG_Portal(Entity* entity)
 {
-    refEntity_t* RefEntity = (refEntity_t*)Entity_GetRefEntity(entity);
+    refEntity_t* RefEntity = (refEntity_t*)&entity->GetRefEntity();
     RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
     RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
     RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];

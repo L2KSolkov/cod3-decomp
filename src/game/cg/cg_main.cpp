@@ -74,7 +74,6 @@ extern void CG_LoadEntity();
 extern void CG_General(Entity* entity);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
-extern void* Entity_GetRefEntity(Entity* ent);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void SoundDevice_DampenAllSounds(void* sInst, float level);
 extern void SoundDevice_StopAllSounds(void* sInst);
@@ -354,7 +353,7 @@ void CG_General(Entity* entity)
         void* mDObj = entity->mDObj;
         if (mDObj != nullptr)
         {
-            refEntity_t* RefEntity = (refEntity_t*)Entity_GetRefEntity(entity);
+            refEntity_t* RefEntity = (refEntity_t*)&entity->GetRefEntity();
             RefEntity->origin[0] = entity->s.lerpOrigin.v.m128_f32[0];
             RefEntity->origin[1] = entity->s.lerpOrigin.v.m128_f32[1];
             RefEntity->origin[2] = entity->s.lerpOrigin.v.m128_f32[2];
