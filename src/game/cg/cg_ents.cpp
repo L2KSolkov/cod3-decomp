@@ -1351,8 +1351,8 @@ struct trajectory_t;
 extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                                   math::Position3& result);
 extern float VectorNormalize2(const float* v, float* out);
-extern int dword_DF6ADC[6];
-extern int dword_DF6AE0[6];
+int dword_DF6ADC[6];  // cg.o BSS
+int dword_DF6AE0[6];  // cg.o BSS
 extern int dword_F6400C[4 * 1580];
 extern int dword_F6413C[4 * 1580];
 extern int dword_F63BB8[4 * 1580];
@@ -1692,7 +1692,7 @@ struct CollisionDesc {
     int material;             // +0x20
 };
 
-extern int dword_DF6AE4[4 * 6];
+int dword_DF6AE4[4 * 6];  // cg.o BSS
 extern int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle,
                               char* flashTag);
 extern math::Position3 native_to_cdl_pos3(const float* v);

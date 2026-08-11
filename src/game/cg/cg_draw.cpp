@@ -374,7 +374,7 @@ extern char cgsGlobal_shellshockParms[0x7C];
 extern void View_SetViewportClipping(int clientIndex);
 extern int View_lNumViewports;
 int cg_aWeaponSelect[4];  // ?cg_aWeaponSelect@@3PAHA (cg.o)
-extern int* cg_clientFrame;
+int cg_clientFrame[4 * 1580];  // ?cg_clientFrame (cg.o)
 extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern float g_TestForward[4];
@@ -600,7 +600,7 @@ extern int dword_F64154[4 * 1580];
 extern int dword_F64158[4 * 1580];
 extern int dword_F6415C[4 * 1580];
 extern int dword_F64160[4 * 1580];
-extern int gBlackStartTime[4];
+int gBlackStartTime[4];  // ?gBlackStartTime@@3PAHA (cg.o)
 extern int lastTime_0[4];
 extern float unk_F6A284[4 * 802];
 enum msgwnd_mode_t;
@@ -990,7 +990,7 @@ extern float dword_F63C54[4 * 1580];
 extern float dword_F63C58[4 * 1580];
 extern float dword_F63C5C[4 * 1580];
 extern vmCvar_t cg_shellshockblur;
-extern int gSaveGameData_mCrosshair;
+int gSaveGameData_mCrosshair;  // ?gSaveGameData_mCrosshair@@3HA (g.o)
 extern vmCvar_t cg_drawpaused;
 extern vmCvar_t cg_drawGun;
 extern void* cg_weapons;

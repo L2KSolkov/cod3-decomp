@@ -454,13 +454,13 @@ void Field_CharEvent(field_t* edit, int ch)
 // ============================================================================
 // Swirl
 // ============================================================================
-extern int gaGlobs_axes[12];
+int gaGlobs_axes[12];  // cl.o BSS
 extern float prevDir[2][3];
-extern int dword_F11E4C[6];
-extern int dword_F11E50[6];
+int dword_F11E4C[6];  // cl.o BSS
+int dword_F11E50[6];  // cl.o BSS
 extern float gSwirlPitchFactor;
 extern unsigned int frame_msec;
-extern int totalTime[2];
+int totalTime[2];  // cl.o BSS
 extern float totalAngle[2];
 extern float sTotalTimeMax;
 extern float VectorNormalize(float* v);
@@ -534,9 +534,9 @@ extern float CL_GamepadAxisValue(unsigned int virtualAxis);
 extern float CL_GamepadPhysicalAxisValue(int physicalAxis);
 extern unsigned int frame_msec;
 extern int dword_F6A28C;
-extern int gSaveGameData_mInvertAim[4];
-extern int gSaveGameData_mHorizontalSensitivity[4];
-extern int gSaveGameData_mVerticalSensitivity[4];
+int gSaveGameData_mInvertAim[4];            // ?gSaveGameData_mInvertAim (game2.o)
+int gSaveGameData_mHorizontalSensitivity[4]; // ?gSaveGameData_mHorizontalSensitivity (game2.o)
+int gSaveGameData_mVerticalSensitivity[4];   // ?gSaveGameData_mVerticalSensitivity (game2.o)
 extern float accelRate;
 extern float accel_time;
 extern float accel_time_0;

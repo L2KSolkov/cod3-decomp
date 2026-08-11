@@ -1852,7 +1852,7 @@ extern int lNumViewports;  // 0x00F61728
 }
 extern View_Setup Setups[];         // 0x00DF9DB8
 extern View_Window Windows[];       // 0x00DF9E58
-extern int ViewSetupConfigurations[];  // 0x00D0D200
+int ViewSetupConfigurations[4];  // ?ViewSetupConfigurations (cg.o @ 0xD0D200)
 extern float scalar2View;           // 0x00DF9E44
 extern float scalar4View;           // 0x00DF9E48
 extern float unk_F6A284[4 * 802];

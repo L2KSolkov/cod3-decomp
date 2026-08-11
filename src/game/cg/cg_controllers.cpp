@@ -24,7 +24,7 @@ extern int PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
 extern float gTurretOldPITCH;
 extern float gTurretOldYAW;
 extern int gTurretState;
-extern int gTurretSoundEffectHandle;
+int gTurretSoundEffectHandle;  // ?gTurretSoundEffectHandle (cg.o)
 extern int dword_DF91F4;
 
 

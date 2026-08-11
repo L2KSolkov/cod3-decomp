@@ -53,10 +53,10 @@ extern int dword_F6A290[4 * 802];  // defined in effect_events.cpp (core.o)
 unsigned int frame_msec;  // ?frame_msec@@3IA (cl.o @ 0x12FC6D4)
 extern int anykeydown;
 extern int dword_F170F8;
-extern int dword_F0D1F4[2];
-extern int dword_F0D1F8[2];
-extern int dword_F0F1FC[2];
-extern int dword_F0F200[2];
+int dword_F0D1F4[2];   // cl.o BSS
+int dword_F0D1F8[2];   // cl.o BSS
+int dword_F0F1FC[2];   // cl.o BSS
+int dword_F0F200[2];   // cl.o BSS
 extern char byte_F0D1FC[];
 extern void CL_SystemInfoChanged();
 int dword_F6A28C;  // ?dword_F6A28C@@3HA (cl.o active port scalar)
@@ -944,7 +944,7 @@ void CL_ParseServerMessage(msg_t* msg)
 // ea: 0x534670
 void CL_PacketEvent(netadr_t from, msg_t* msg, int time)
 {
-    extern int clc_lastPacketTime[2 * 4882];
+int clc_lastPacketTime[2 * 4882];  // cl.o BSS
     clc_lastPacketTime[4882 * currCl] = dword_F170F8;
     if (msg->cursize < 4 || *(int*)msg->data == -1)
     {

@@ -84,6 +84,26 @@ int dword_F171DC = 0;  // cl.o BSS (line source)
 int dword_F171E0 = 0;  // cl.o BSS (line depth)
 int dword_F171E4 = 0;  // cl.o BSS
 char byte_F171E8 = 0;  // cl.o BSS (server string source)
+int com_timescale_value = 0;  // ?com_timescale_value@@3HA (cl.o)
+// --- plain int data sweep (cl.o family) ---
+int animFrametime;        // ?animFrametime@@3HA (cl.o)
+int anykeydown;           // ?anykeydown@@3HA (cl.o)
+int cgGlobal_frametime;   // ?cgGlobal_frametime@@3HA (cl.o)
+int key_overstrikeMode;   // ?key_overstrikeMode@@3HA (cl.o)
+int lFirstLocalClientIndex;  // ?lFirstLocalClientIndex@@3HA (cl.o)
+int lLastLocalClientIndex;   // ?lLastLocalClientIndex@@3HA (cl.o)
+int time_backend;         // ?time_backend@@3HA (cl.o)
+int time_frontend;        // ?time_frontend@@3HA (cl.o)
+int cls_state;            // ?cls_state@@3HA (cl.o)
+int client;               // ?client@@3HA (cl.o)
+int lastDraw;             // ?lastDraw@@3HA (cl.o)
+int lastTime;             // ?lastTime@@3HA (cl.o)
+int last_time;            // ?last_time@@3HA (cl.o)
+int callCount;            // ?callCount@@3HA (cl.o)
+int curListener;          // ?curListener@@3HA (cl.o)
+int iLastCompassTime_0;   // ?iLastCompassTime_0@@3HA (cl.o)
+int iLastCompassTime_1;   // ?iLastCompassTime_1@@3HA (cl.o)
+int unk_F6A28C = 0;       // ?unk_F6A28C@@3HA (cl.o)
 extern void re_LocateDebugStrings(int a1, int a2);
 extern void re_LocateDebugLines(int a1, int a2);
 extern int CL_SaveMessageType(unsigned char* buffer, int used, int total,

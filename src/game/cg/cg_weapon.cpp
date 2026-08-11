@@ -175,7 +175,7 @@ extern float dword_F64074[4 * 1580];
 extern float dword_F64078[4 * 1580];
 extern float dword_F6407C[4 * 1580];
 extern float unk_F64080[4 * 6320];
-extern int s_barrelTags[4];
+const char** s_barrelTags;  // ?s_barrelTags@@3PAPADA (game.o)
 extern float* ejectBrassCasingOrigin;
 extern int dword_F5E6BC;
 extern int dword_F5E6C0;

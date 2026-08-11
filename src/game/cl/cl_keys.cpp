@@ -59,9 +59,9 @@ extern struct cvar_t* com_timescale;
 extern struct cvar_t* cl_disable_ads;
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
-extern int dword_CE8814[64];
-extern int dword_CE8818[64];
-extern int dword_CE881C[64];
+int dword_CE8814[64];  // cl.o BSS
+int dword_CE8818[64];  // cl.o BSS
+int dword_CE881C[64];  // cl.o BSS
 
 // ============================================================================
 // Key binding data

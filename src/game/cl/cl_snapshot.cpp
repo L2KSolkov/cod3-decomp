@@ -95,7 +95,7 @@ struct clSnapshotEntry {
     playerStateSnapshot_t ps;
 };
 // Extend the cl[] view: snap.messageNum/serverTime + snapshots[] ring
-extern int cl_parseEntitiesNum[2];
+int cl_parseEntitiesNum[2];  // cl.o BSS
 extern clSnapshotEntry cl_snapshots[2][4];
 
 // ============================================================================
