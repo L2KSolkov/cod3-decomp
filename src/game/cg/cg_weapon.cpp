@@ -1449,8 +1449,8 @@ LABEL_25:
     return;
 }
 
-struct XAnimTree;
-struct DObj;
+class XAnimTree;
+class DObj;
 extern XAnimTree* DObjGetTree(DObj* obj);  // ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z (render.o 0x6BE190)
 extern int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
                                     weaponInfo_s* weaponInfo);

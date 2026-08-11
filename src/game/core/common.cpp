@@ -402,7 +402,8 @@ extern void XAnimInit();
 extern void XAnimShutdown();
 extern void SetupActorHeap();
 extern int gNflMediaId;
-extern bool nflFileExists(int mediaID, const char* filename);
+enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };
+extern bool nflFileExists(nflMediaID mediaID, const char* filename);
 extern void PakManager_CreateInst();
 extern void PakManager_DeleteInst();
 extern void BankManager_CreateInst();
@@ -2365,7 +2366,7 @@ void Com_Init(char* commandLine)
     DebugRender_AddRenderer(DebugRender_sInst, (void*)fx_debug_render);
     TestFPS_CreateInst();
     CL_PreAllocStrings();
-    if (nflFileExists(gNflMediaId, "debug.cod"))
+    if (nflFileExists((nflMediaID)gNflMediaId, "debug.cod"))
     {
         NumBanks v7;
         memset(&v7, 0, sizeof(v7));

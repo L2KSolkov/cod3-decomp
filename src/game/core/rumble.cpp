@@ -158,16 +158,6 @@ extern void* PoolAllocator_Allocate(void* allocator, unsigned int s,
 extern void PoolAllocator_Release(void* allocator, void* ptr);
 extern void* RumbleEffectInstance_sAllocator;
 
-// RumbleEffect accessors
-extern bool RumbleEffect_GetEnabled(const RumbleEffect* self, int rumbleID);
-extern float RumbleEffect_GetDelay(const RumbleEffect* self, int rumbleID);
-extern float RumbleEffect_GetIntensity(const RumbleEffect* self, int rumbleID);
-extern float RumbleEffect_GetRampUpDuration(const RumbleEffect* self,
-                                            int rumbleID);
-extern float RumbleEffect_GetSteadyDuration(const RumbleEffect* self,
-                                            int rumbleID);
-extern float RumbleEffect_GetRampDownDuration(const RumbleEffect* self,
-                                              int rumbleID);
 extern Broc::string RumbleEffect_GetNotes(const RumbleEffect* self, int rumbleID);
 extern void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle handle,
                                       float delay, float intensity,
@@ -223,7 +213,8 @@ RumbleEffectInstanceHandle RumbleManager::Play(RumbleEffect* effect,
         for (int v8 = 0; v8 < 2; ++v8)
         {
             const RumbleEffect::RumbleData& data = effect->mRumbleDataArray[v8];
-            if (data.delay > 0.0f && RumbleEffect_GetEnabled(effect, v8))
+            if (data.delay > 0.0f
+                && effect->GetEnabled((ERumbleMotorID)v8))
             {
                 void* v9 = PoolAllocator_Allocate(RumbleEffectInstance_sAllocator,
                                                   0x30u, false);
@@ -231,11 +222,13 @@ RumbleEffectInstanceHandle RumbleManager::Play(RumbleEffect* effect,
                 int looping = (data.m_flags.mVal & 2) != 0;
                 Broc::string notes = RumbleEffect_GetNotes(effect, v8);
                 RumbleEffectInstance_Ctor(
-                    v9, result, RumbleEffect_GetDelay(effect, v8), intensity,
-                    RumbleEffect_GetIntensity(effect, v8),
-                    RumbleEffect_GetRampUpDuration(effect, v8),
-                    RumbleEffect_GetSteadyDuration(effect, v8),
-                    RumbleEffect_GetRampDownDuration(effect, v8), notes, looping);
+                    v9, result,
+                    effect->GetDelay((ERumbleMotorID)v8), intensity,
+                    effect->GetIntensity((ERumbleMotorID)v8),
+                    effect->GetRampUpDuration((ERumbleMotorID)v8),
+                    effect->GetSteadyDuration((ERumbleMotorID)v8),
+                    effect->GetRampDownDuration((ERumbleMotorID)v8), notes,
+                    looping);
                 // push into mRumbleLists[v8]
                 inst->m_dlist_node.mNext = mRumbleLists[v8].mRoot.mNext;
                 inst->m_dlist_node.mPrev = mRumbleLists[v8].mRoot.mPrev;

@@ -75,7 +75,8 @@ extern void  Q_strncpyz(char* dest, const char* src, int destsize);
 extern void  Cmd_ExecuteServerString(const char* text);
 extern int   Netchan_Init(void);
 extern void  GamePause_SetAllPaused(bool paused);
-extern unsigned int nflFileExists(int mediaID, const char* filename);
+enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };
+extern unsigned int nflFileExists(nflMediaID mediaID, const char* filename);
 enum nglFrameLockType;
 extern nglFrameLockType nglSetFrameLock(nglFrameLockType flock);
 extern void  CM_LoadMap(const char* name, int clientload, int* checksum);
@@ -263,17 +264,17 @@ void SV_SpawnServer(const char* server, int savegame) {
     extern void LoadingMenuCallback(float progress);
     pm->SetProgressCallback(LoadingMenuCallback);
     const PakInfoNode* FLI = nullptr;
-    if (nflFileExists(gNflMediaId, pakname) != 0)
+    if (nflFileExists((nflMediaID)gNflMediaId, pakname) != 0)
         goto LABEL_28;
     sprintf(pakname, "%s\\%s.cod", "mp", server);
-    if (nflFileExists(gNflMediaId, pakname) != 0)
+    if (nflFileExists((nflMediaID)gNflMediaId, pakname) != 0)
         FLI = PakManager::sInst->SyncLoadFLI((EPakType)kPakTypeLevel, pakname);
     sprintf(pakname, "%s_test\\%s.cod", "mp", server);
-    if (FLI == nullptr && nflFileExists(gNflMediaId, pakname) != 0)
+    if (FLI == nullptr && nflFileExists((nflMediaID)gNflMediaId, pakname) != 0)
         FLI = PakManager::sInst->SyncLoadFLI((EPakType)kPakTypeLevel, pakname);
     sprintf(pakname, "%s_test\\%s\\%s.cod", "mp", server, server);
     if (FLI == nullptr) {
-        if (nflFileExists(gNflMediaId, pakname) == 0) {
+        if (nflFileExists((nflMediaID)gNflMediaId, pakname) == 0) {
 LABEL_29:
             gReturnToMenu = true;
             Cvar_Set("g_reloading", "1");
