@@ -1058,6 +1058,22 @@ void GamePause::SetAllPaused(bool paused)
     GamePause::mData.mGamePaused[0] = paused;
 }
 
+// ea: 0x004A9080 (g.o inline COMDAT)
+bool GamePause::IsGamePaused(int client)
+{
+    if (client != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\gamepause.h";
+        AeAssert::gCurrentLine = 12;
+        AeAssert::gCurrentExpr = "client >= 0 && client < 1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("GamePause: Invalid client"))
+            __debugbreak();
+    }
+    return GamePause::mData.mGamePaused[client];
+}
+
 // ============================================================================
 // Entity::ExecScriptHandler - ea: 0x611F10
 // ============================================================================
