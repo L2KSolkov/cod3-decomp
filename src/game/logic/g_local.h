@@ -1185,7 +1185,6 @@ float GetHeight(int bankID, float x, float y);  // ea: 0x7C0B70
 }
 
 namespace BrocSys {
-const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
 void Init();                                 // ?Init@BrocSys@@YAXXZ (scr.o)
 void TakeWeapon(Entity* pSelf, const char* pszWeaponName);  // ?TakeWeapon@BrocSys (scr.o)
 void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
@@ -3615,5 +3614,9 @@ public:
 };
 
 namespace BrocSys {
-const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
+inline const char* ConvertHashToString(int hash)  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
+{
+    (void)hash;
+    return nullptr;  // sHashStrings hash-map not ported yet
+}
 }

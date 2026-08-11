@@ -272,8 +272,13 @@ extern void Sound_SetPoPtr(Sound* s, const math::Mat43* po);
 extern void Sound_SetPitch(Sound* s, float pitch);
 extern void Sound_SetVolume(Sound* s, float vol);
 extern float nslGetWaveParam(unsigned int wave, int b, float c);
-extern bool subtitle_manager_play_subtitle(const char* tag,
-                                           const char* prefix);
+// ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o; stub
+// until subtitle_manager is ported - subtitles disabled)
+bool subtitle_manager_play_subtitle(const char* tag, const char* prefix)
+{
+    (void)tag; (void)prefix;
+    return false;
+}
 
 static Sound* SoundFromHandle(unsigned int handleVal)
 {
