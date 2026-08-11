@@ -1512,7 +1512,7 @@ void G_SetupScrVehicles(void)
             unsigned int mVal = s_vehicles[v1].mEntity.mHandle.mVal;
             if (mVal != 0)
             {
-                Entity* Entity = VEH_GetEntity(mVal);
+                Entity* Entity = EntityHandleDb::sInst.GetObject(mVal);
                 Entity->s.brushmodel = 0;
                 SV_SetBrushModel(Entity);
                 Entity->r.contents = 0xA00000;

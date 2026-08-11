@@ -61,6 +61,7 @@ struct nslVoice;
 extern unsigned int nslGetNumVoices();
 extern nslVoice* nslGetVoice(unsigned int a);
 extern nslSourceState nslGetSourceState(nslSourceID sid);
+extern const char* nslGetSourceName(nslSourceID sid);
 extern int nslIsWaveLooped(nslWaveID wave);
 
 extern PoolAllocator* ActiveEffectSet_sAllocator;  // 0x00F00E84
@@ -250,6 +251,7 @@ struct Sound {
     bool IsQueued() const;    // ?IsQueued@Sound@SoundDevice@@QBE_NXZ (game.o 0x602890)
     bool IsFinished() const;  // ?IsFinished@Sound@SoundDevice@@QBE_NXZ (game.o 0x602940)
     bool IsLooped() const;    // ?IsLooped@Sound@SoundDevice@@QBE_NXZ (game.o 0x602980)
+    const char* GetSourceName() const;  // ?GetSourceName@Sound@SoundDevice@@QBEPBDXZ
 };
 class SoundHandleDb {
 public:
@@ -264,7 +266,6 @@ public:
 
 extern void Sound_Stop(Sound* s);
 extern void Sound_PlayQueued(Sound* s);
-extern const char* Sound_GetSourceName(const Sound* s);
 extern float Sound_GetVolume(const Sound* s);
 extern float Sound_GetLength(const Sound* s);
 extern void Sound_SetPoPtr(Sound* s, const math::Mat43* po);
@@ -2869,7 +2870,7 @@ Broc::string AbstractEffectSound::GetDebugString() const
             mObject = SoundDevice::SoundHandleDb::sInst.mElements[v6].mObject;
         if (mObject != nullptr)
         {
-            SourceName = SoundDevice::Sound_GetSourceName(mObject);
+            SourceName = mObject->GetSourceName();
             vol = SoundDevice::Sound_GetVolume(mObject);
             len = SoundDevice::Sound_GetLength(mObject);
             mSource = mObject->mSource;

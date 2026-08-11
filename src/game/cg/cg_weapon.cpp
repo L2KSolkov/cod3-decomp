@@ -61,7 +61,12 @@ extern struct level_locals_t { int time; } level;
 struct sentient_s {
     int lastShotTime;  // +0x00
 };
-extern Entity* Entity_GetOwner(Entity* ent);
+// Entity_GetOwner artifact: owner DbLinkedHandle lives at +0xD0.
+Entity* Entity_GetOwner(Entity* ent)
+{
+    unsigned int val = *(unsigned int*)((char*)ent + 0xD0);
+    return EntityHandleDb::sInst.GetObject(val);
+}
 extern void AnimationPlayer_Play(void* player, void* anim, bool forceRestart,
                                  float fade_in, float callback_time,
                                  void* callback, float speed,

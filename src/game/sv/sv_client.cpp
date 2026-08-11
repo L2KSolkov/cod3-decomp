@@ -87,7 +87,7 @@ void SV_PostConnect() {
             __debugbreak();
         v6 = currCl;
     }
-    Entity* playerEnt = EntityManager_GetPlayerEntity(v6);
+    Entity* playerEnt = EntityManager::sInst->GetPlayer(v6);
     DbLinkedHandle<EntityHandleDb, Entity>* v9 = (DbLinkedHandle<EntityHandleDb, Entity>*)((char*)playerEnt + 0x234);
     client_s* v10 = &svs.clients[v6];
     v10->mEntityHandle = v9[141];

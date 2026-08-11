@@ -88,6 +88,12 @@ public:
     } mActiveList;                       // +0x2AAC (16388 bytes)
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
     void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
+    Entity* GetObject(unsigned int val) const {
+        unsigned int idx = val & 0xFFF;
+        if (idx < 0x540 && val >> 12 == (unsigned int)mElements[idx].mKey)
+            return mElements[idx].mObject;
+        return NULL;
+    }
 };
 static_assert(offsetof(EntityHandleDb, mElements) == 0xA8, "EntityHandleDb::mElements offset mismatch");
 static_assert(sizeof(EntityHandleDb) == 27312, "EntityHandleDb size mismatch");

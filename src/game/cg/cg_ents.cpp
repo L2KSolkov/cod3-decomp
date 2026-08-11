@@ -1086,7 +1086,6 @@ unsigned int head_hash_0;
 extern float VectorDistance(const float* v1, const float* v2);
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMat);
-extern Entity* GetPlayer2(int idx);
 void CG_Player(Entity* entity);
 void CG_Actor(Entity* entity);
 
@@ -1215,7 +1214,7 @@ void CG_Player(Entity* entity)
                             || !entity->IsLocalPlayer())
                                && (*(int*)((char*)gCamera + 0x1F0 * currCl + 0x194)
                                        != 1
-                                    || entity != GetPlayer2(currCl)))
+                                    || entity != EntityManager::sInst->GetPlayer(currCl)))
                 {
                 LABEL_72:
                     if (entity->sentient != nullptr)
@@ -1327,7 +1326,7 @@ void CG_Player(Entity* entity)
                                     }
                                     else
                                     {
-                                        GetPlayer2(currCl);
+                                        EntityManager::sInst->GetPlayer(currCl);
                                         entity->r.currentAngles.v.m128_f32[0] =
                                             0.0f;
                                         entity->r.currentAngles.v.m128_f32[1] =
