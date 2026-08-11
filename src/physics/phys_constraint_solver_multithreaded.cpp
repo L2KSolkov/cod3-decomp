@@ -1757,7 +1757,7 @@ void rbint::euler_integrate_pos(rigid_body* const rb, float delta_t) {
     mul_L(&v23, rb, &rb->m_a_vel);
     rb->m_mat.w.v = _mm_add_ps(rb->m_mat.w.v, _mm_mul_ps(rb->m_t_vel.v, _mm_set1_ps(delta_t)));
     math::Mat43 rot;
-    make_rotate(&rot, &rb->m_a_vel, delta_t);
+    make_rotate(&rot, rb->m_a_vel, delta_t);
     math::Mat43 out;
     out.x.v = _mm_add_ps(
         _mm_add_ps(

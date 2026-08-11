@@ -24,7 +24,6 @@ extern void PHYS_ASSERT_UNIT(const math::Dir3& v);
 extern void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& v1, const math::Dir3& v2);
 extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
 extern const math::Dir3* construct_orth_ud(const math::Dir3* result, const math::Dir3* ud);
-extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
 
 // ============================================================================
 // rigid_body_constraint_point::set â€” ea: 0x890320
@@ -253,7 +252,7 @@ void rigid_body_constraint_hinge::set(const math::Dir3& b1_r_loc, const math::Di
     this->m_b1_a2_loc.v = cross;
 
     math::Mat43 rot;
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_min);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_min);
     __m128 v33 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -265,7 +264,7 @@ void rigid_body_constraint_hinge::set(const math::Dir3& b1_r_loc, const math::Di
                          + _mm_shuffle_ps(v34, v34, 170).m128_f32[0]));
     this->m_b2_ref_min_loc.v = _mm_div_ps(v33, _mm_set1_ps(len4));
 
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_max);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_max);
     __m128 v39 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -442,7 +441,7 @@ void rigid_body_constraint_angular_actuator::outer_prolog_update(const outer_tim
 // ============================================================================
 void rigid_body_constraint_angular_actuator::inner_update(float delta_t) {
     math::Mat43 v19;
-    make_rotate(&v19, &this->m_a_vel, delta_t);
+    make_rotate(&v19, this->m_a_vel, delta_t);
     math::Dir3 v4;
     v4.v = this->m_target_mat.x.v;
     math::Dir3 v9;

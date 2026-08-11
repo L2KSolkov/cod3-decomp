@@ -21,7 +21,6 @@ extern void nuge_calc_velocities(const math::Mat43* mat0, const math::Mat43* mat
                                  float delta_t, math::Dir3* t_vel, math::Dir3* a_vel);
 extern void tlWarning(const char* Format, ...);
 extern const math::Dir3& Float4_Zero_212;
-extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
 
 bool tlScratchpadLocked = false;  // ?tlScratchpadLocked@@3_NA (tl_system.o data)
 
@@ -52,7 +51,7 @@ void calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t) {
     math::Mat43 v20;
     v20.w.v = _mm_add_ps(rb->m_mat.w.v, _mm_mul_ps(v4.v, _mm_shuffle_ps(_mm_set_ss(m_time), _mm_set_ss(m_time), 0)));
     rb->m_col_mat.w = v20.w;
-    make_rotate(&v20, &rb->m_a_vel, m_time);
+    make_rotate(&v20, rb->m_a_vel, m_time);
     __m128 v8 = v20.y.v;
     __m128 v9 = v20.x.v;
     math::Dir3 v10;

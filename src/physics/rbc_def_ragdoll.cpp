@@ -137,7 +137,7 @@ void rigid_body_constraint_ragdoll::set_snider_style(const math::Dir3& b1_axis_l
 void rigid_body_constraint_ragdoll::set_theta_min_max(const math::Dir3& b2_ref_loc,
                                                       float theta_min, float theta_max) {
     math::Mat43 rot;
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_min);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_min);
     __m128 v7 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -149,7 +149,7 @@ void rigid_body_constraint_ragdoll::set_theta_min_max(const math::Dir3& b2_ref_l
                         + _mm_shuffle_ps(v8, v8, 170).m128_f32[0]));
     this->m_b2_ref_min_loc.v = _mm_div_ps(v7, _mm_set1_ps(len));
 
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_max);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_max);
     __m128 v12 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -199,7 +199,7 @@ void rigid_body_constraint_ragdoll::set_hinge(const math::Dir3& b1_axis_loc,
     this->m_b1_a2_loc.v = v39;
 
     math::Mat43 rot;
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_min);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_min);
     __m128 v29 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -211,7 +211,7 @@ void rigid_body_constraint_ragdoll::set_hinge(const math::Dir3& b1_axis_loc,
                          + _mm_shuffle_ps(v30, v30, 170).m128_f32[0]));
     this->m_b2_ref_min_loc.v = _mm_div_ps(v29, _mm_set1_ps(len4));
 
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_max);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_max);
     __m128 v34 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -253,7 +253,7 @@ void rigid_body_constraint_ragdoll::set_swivel(const math::Dir3& b1_axis_loc,
     this->m_flags |= 8u;
 
     math::Mat43 rot;
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_min);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_min);
     __m128 v26 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -265,7 +265,7 @@ void rigid_body_constraint_ragdoll::set_swivel(const math::Dir3& b1_axis_loc,
                          + _mm_shuffle_ps(v27, v27, 170).m128_f32[0]));
     this->m_b2_ref_min_loc.v = _mm_div_ps(v26, _mm_set1_ps(len4));
 
-    make_rotate(&rot, &this->m_b2_axis_loc, theta_max);
+    make_rotate(&rot, this->m_b2_axis_loc, theta_max);
     __m128 v31 = _mm_add_ps(
         _mm_add_ps(
             _mm_mul_ps(_mm_set1_ps(b2_ref_loc.v.m128_f32[0]), rot.x.v),
@@ -356,7 +356,7 @@ void rigid_body_constraint_ragdoll::do_collision(float) {
             const math::Dir3* v10 = rbint::collide_multiply(&v19[5], this->b1,
                                                             &this->m_b1_axis_loc);
             math::Mat43 rot;
-            make_rotate(&rot, v10, &v20[2]);
+            make_rotate(&rot, *v10, v20[2]);
             v11 = _mm_add_ps(
                 _mm_add_ps(
                     _mm_mul_ps(_mm_shuffle_ps(v20[1].v, v20[1].v, 0), rot.x.v),
@@ -548,7 +548,7 @@ void rigid_body_constraint_ragdoll::setup_constraint(pulse_sum_constraint_solver
         }
         if ((this->m_flags & 0x30) != 0) {
             math::Mat43 rot;
-            make_rotate(&rot, &v37, &v40[2]);
+            make_rotate(&rot, v37, v40[2]);
             const math::Dir3* v32 = rbint::multiply(&b1_axis_4, this->b1,
                                                     &this->m_b1_ref_loc);
             math::Dir3 b1_ref;

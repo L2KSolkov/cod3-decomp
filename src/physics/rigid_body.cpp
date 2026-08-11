@@ -22,7 +22,6 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 extern const math::Dir3& Float4_Zero_208;
 extern const math::Dir3& Float4_Two_208;
 extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
-extern void SetIdentity(math::Mat43& m);
 
 namespace rbint {
 void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);

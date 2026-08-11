@@ -15,7 +15,82 @@ extern const math::Dir3& Float4_Two_212;
 extern const math::Dir3& Float4_XAxis_214;
 extern const math::Dir3& Float4_YAxis_214;
 extern const math::Dir3& Float4_ZAxis_214;
-extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
+
+// ============================================================================
+// Matrix helpers (inline COMDATs, render.o / rbc_def_ragdoll.o).
+//   SetIdentity - ea: 0x6EB220
+//   make_rotate(Mat43&, Dir3 const&, float, float) - ea: 0x6EB2F0
+//   make_rotate(Mat43*, Dir3 const&, float) - ea: 0x6EB560
+//   make_rotate(Mat43*, Dir3 const&, Dir3 const&) - ea: 0x88A4B0
+// ============================================================================
+inline void SetIdentity(math::Mat43& m) {
+    m.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    m.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    m.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    m.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+inline void make_rotate(math::Mat43& m, const math::Dir3& u, float ca, float sa) {
+    const float ux = u.v.m128_f32[0];
+    const float uy = u.v.m128_f32[1];
+    const float uz = u.v.m128_f32[2];
+    const float omc = 1.0f - ca;
+    const float ux_sa = ux * sa;
+    const float uy_ux_omc = (uy * ux) * omc;
+    const float uz_ux_omc = (uz * ux) * omc;
+    const float uz_uy_omc = (uz * uy) * omc;
+    m.x.v = _mm_setr_ps((ux * ux) * omc + ca, uz * sa + uy_ux_omc,
+                        uz_ux_omc - uy * sa, 0.0f);
+    m.y.v = _mm_setr_ps(uy_ux_omc - uz * sa, (uy * uy) * omc + ca,
+                        ux_sa + uz_uy_omc, 0.0f);
+    m.z.v = _mm_setr_ps(uy * sa + uz_ux_omc, uz_uy_omc - ux_sa,
+                        (uz * uz) * omc + ca, 0.0f);
+}
+
+inline void make_rotate(math::Mat43* mat, const math::Dir3& v, float theta_factor) {
+    const __m128 vv = v.v;
+    const __m128 vv2 = _mm_mul_ps(vv, vv);
+    const float len = sqrt(vv2.m128_f32[0]
+                           + (_mm_shuffle_ps(vv2, vv2, 85).m128_f32[0]
+                              + _mm_shuffle_ps(vv2, vv2, 170).m128_f32[0]));
+    if (len >= 1e-5f) {
+        const float angle = len * theta_factor;
+        math::Dir3 axis;
+        axis.v = _mm_mul_ps(vv, _mm_set_ps1(1.0f / len));
+        const float sa = sin(angle);
+        const float ca = cos(angle);
+        make_rotate(*mat, axis, ca, sa);
+    } else {
+        SetIdentity(*mat);
+    }
+}
+
+inline void make_rotate(math::Mat43* mat, const math::Dir3& v1,
+                        const math::Dir3& v2) {
+    const __m128 cross = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(v1.v, v1.v, 9), _mm_shuffle_ps(v2.v, v2.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(v1.v, v1.v, 18), _mm_shuffle_ps(v2.v, v2.v, 9)));
+    const __m128 cross2 = _mm_mul_ps(cross, cross);
+    const float len_sq = cross2.m128_f32[0]
+                         + (_mm_shuffle_ps(cross2, cross2, 85).m128_f32[0]
+                            + _mm_shuffle_ps(cross2, cross2, 170).m128_f32[0]);
+    if (len_sq >= 1e-5f) {
+        const __m128 dotv = _mm_mul_ps(v1.v, v2.v);
+        const float len = sqrt(len_sq);
+        const float inv_len = 1.0f / len;
+        math::Dir3 axis;
+        axis.v = _mm_mul_ps(cross, _mm_set_ps1(inv_len));
+        const float dot = dotv.m128_f32[0]
+                          + (_mm_shuffle_ps(dotv, dotv, 85).m128_f32[0]
+                             + _mm_shuffle_ps(dotv, dotv, 170).m128_f32[0]);
+        const float len2 = sqrt(dot * dot + len * len);
+        const float inv_len2 = 1.0f / len2;
+        make_rotate(*mat, axis, inv_len2 * dot, inv_len2 * len);
+    } else {
+        SetIdentity(*mat);
+    }
+}
+
 extern void orthonormalize(math::Mat43* mat);
 extern const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG;
 
@@ -1056,7 +1131,6 @@ extern physics_system* g_physics_system;  // ?g_physics_system@@3PAVphysics_syst
 extern void verify_is_in_physics_system(rigid_body_constraint_contact* rbc,
                                         rigid_body* b1_, rigid_body* b2_);
 extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
-extern void SetIdentity(math::Mat43& m);
 
 namespace rbint {
 void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
@@ -1407,7 +1481,6 @@ extern const math::Dir3& Float4_Zero_210;
 extern const math::Dir3& Float4_SignMask_210;
 extern const math::Dir3& Float4_Zero_212;
 extern const math::Dir3& Float4_Two_212;
-extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
 
 // ============================================================================
 // phys_list_condition functors (inline COMDATs, physics_system.o).
@@ -1468,9 +1541,6 @@ struct phys_list_condition_functor_has_no_constraints {
         return rb->m_constraint_count == 0;
     }
 };
-
-extern void make_rotate(math::Mat43* mat, const math::Dir3* v, float theta_factor);
-extern void make_rotate(math::Mat43* mat, const math::Dir3* v1, const math::Dir3* v2);
 
 // ============================================================================
 // Contact-manifold helpers (phys_contact_manifold.o / phys_util.o)
