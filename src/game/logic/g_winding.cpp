@@ -1080,8 +1080,8 @@ extern bool _tlAssert(const char* file, int line, const char* expr,
 
 // ea: 0x0060C020
 bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
-                 unsigned int hitoffs, const math::Dir3& n,
-                 unsigned int offs, float radius)
+                 float hitoffs, const math::Dir3& n,
+                 float offs, float radius)
 {
     float dnd = (hitn.v.m128_f32[0] - n.v.m128_f32[0])
             * (hitn.v.m128_f32[0] - n.v.m128_f32[0])
@@ -1128,7 +1128,7 @@ bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
 }
 
 // ea: 0x0060C250
-void RotatePoint(math::Position3& point, math::Position3* matrix)
+void RotatePoint(math::Position3& point, math::Position3* const matrix)
 {
     math::Position3 v5;
     v5.v.m128_f32[0] = matrix[0].v.m128_f32[0] * point.v.m128_f32[0]
@@ -1144,7 +1144,8 @@ void RotatePoint(math::Position3& point, math::Position3* matrix)
 }
 
 // ea: 0x0060C330
-void TransposeMatrix(math::Position3* matrix, math::Position3* transpose)
+void TransposeMatrix(math::Position3* const matrix,
+                     math::Position3* const transpose)
 {
     for (int i = 0; i < 3; ++i)
     {
@@ -1156,7 +1157,7 @@ void TransposeMatrix(math::Position3* matrix, math::Position3* transpose)
 
 // ea: 0x0060C370
 void CreateRotationMatrix(const math::Position3& angles,
-                          math::Position3* matrix)
+                          math::Position3* const matrix)
 {
     float mat[3][3];
     AngleVectors(&angles, mat[0], mat[1], mat[2]);

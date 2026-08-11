@@ -760,34 +760,34 @@ bool can_place_decal(const math::Position3& p, const math::Dir3& n,
     math::Dir3 axis;
     axis.v.m128_f32[0] = -1.0f; axis.v.m128_f32[1] = 0.0f;
     axis.v.m128_f32[2] = 0.0f; axis.v.m128_f32[3] = 0.0f;
-    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+    if (!is_plane_ok(p, n, v18, axis,
                      0.0f - bmin.v.m128_f32[0], decal_radius))
         return false;
     axis.v.m128_f32[0] = 0.0f; axis.v.m128_f32[1] = -1.0f;
     axis.v.m128_f32[2] = 0.0f;
-    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+    if (!is_plane_ok(p, n, v18, axis,
                      0.0f - bmin.v.m128_f32[1], decal_radius))
         return false;
     axis.v.m128_f32[1] = 0.0f; axis.v.m128_f32[2] = -1.0f;
-    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+    if (!is_plane_ok(p, n, v18, axis,
                      0.0f - bmin.v.m128_f32[2], decal_radius))
         return false;
     axis.v.m128_f32[2] = 0.0f; axis.v.m128_f32[0] = 1.0f;
-    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+    if (!is_plane_ok(p, n, v18, axis,
                      bmax.v.m128_f32[0], decal_radius))
         return false;
     axis.v.m128_f32[0] = 0.0f; axis.v.m128_f32[1] = 1.0f;
-    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+    if (!is_plane_ok(p, n, v18, axis,
                      bmax.v.m128_f32[1], decal_radius))
         return false;
     axis.v.m128_f32[1] = 0.0f; axis.v.m128_f32[2] = 1.0f;
-    if (!is_plane_ok(p, n, (unsigned int)v18, axis,
+    if (!is_plane_ok(p, n, v18, axis,
                      bmax.v.m128_f32[2], decal_radius))
         return false;
     for (unsigned int i = 0; i < nsides; ++i)
     {
         float offs = *(const float*)&sides[i].packed[3];
-        if (!is_plane_ok(p, n, (unsigned int)v18,
+        if (!is_plane_ok(p, n, v18,
                          *(const math::Dir3*)&sides[i].packed[0],
                          offs, decal_radius))
             return false;
@@ -9929,8 +9929,9 @@ bool collide_velocity_sphere_poly(const math::Position3& c0,
 StaticModel* g_static_model;  // ?g_static_model@@3PAVStaticModel@@A (game.o)
 
 // ea: 0x0060AF40
-void CM_CreateStaticModel(const char* name, TPakId pakId, float*& axis,
-                          float*& origin, float*& scale)
+void CM_CreateStaticModel(const char* name, TPakId pakId,
+                          float* const axis, float* const origin,
+                          float* const scale)
 {
     AeAssert::gCurrentAuthor = AeAssert::COD3;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cm_staticmodel.cpp";
@@ -10898,8 +10899,8 @@ FOUND:
 // CM_LinkEntity - ea: 0x60B8E0 (cm_world.cpp)
 // ============================================================================
 // ea: 0x0060B8E0
-void CM_LinkEntity(EntityShared* ent, const float* absmin,
-                   const float* absmax)
+void CM_LinkEntity(EntityShared* ent, const float* const absmin,
+                   const float* const absmax)
 {
     int contents = ent->contents;
     if (contents == 0)

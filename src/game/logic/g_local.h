@@ -2688,8 +2688,8 @@ bool xtest_sphere_triangle(const math::Position3& sphere_center,
 math::Vector4 calc_normal(const math::Position3& v0, const math::Position3& v1,
                           const math::Position3& v2);  // game.o 0x60C400
 bool is_plane_ok(const math::Position3& hitp, const math::Dir3& hitn,
-                 unsigned int hitoffs, const math::Dir3& n,
-                 unsigned int offs, float radius);   // game.o 0x60C020
+                 float hitoffs, const math::Dir3& n,
+                 float offs, float radius);   // game.o 0x60C020
 bool can_place_decal(const math::Position3& p, const math::Dir3& n,
                      const math::Position3& bmin, const math::Position3& bmax,
                      const cdlPlane* sides, unsigned int nsides,
@@ -2823,8 +2823,8 @@ void CM_TraceStaticModel(StaticModel* sm, trace_t* results,
                          const math::Position3& end,
                          int contentmask);  // game.o 0x618980
 void CM_LinkStaticModel(StaticModel* staticModel);  // game.o 0x60BB20
-void CM_LinkEntity(EntityShared* ent, const float* absmin,
-                   const float* absmax);  // game.o 0x60B8E0
+void CM_LinkEntity(EntityShared* ent, const float* const absmin,
+                   const float* const absmax);  // game.o 0x60B8E0
 void CM_UnlinkEntity(EntityShared* ent);  // game.o 0x60B230
 int  CM_UnlinkStaticModels(TPakId pakId, WorldSector* node);  // game.o 0x60AF90
 void CM_DestroyStaticModels(TPakId pakId);  // game.o 0x60B020
@@ -2839,10 +2839,11 @@ int SV_ClipSightToEntity(sightclip_t* clip, EntityShared* check);  // sv.o 0x522
 extern StaticModel* g_static_model;   // ?g_static_model@@3PAVStaticModel@@A (game.o)
 void DecodeBin(const char* name, unsigned char* data, int size,
                TPakId pakId);  // game.o 0x6180D0
-void RotatePoint(math::Position3& point, math::Position3* matrix);  // game.o 0x60C250
-void TransposeMatrix(math::Position3* matrix, math::Position3* transpose);  // game.o 0x60C330
+void RotatePoint(math::Position3& point, math::Position3* const matrix);  // game.o 0x60C250
+void TransposeMatrix(math::Position3* const matrix,
+                     math::Position3* const transpose);  // game.o 0x60C330
 void CreateRotationMatrix(const math::Position3& angles,
-                          math::Position3* matrix);   // game.o 0x60C370
+                          math::Position3* const matrix);   // game.o 0x60C370
 float point_to_segment_dist2(const math::Position3& c, const math::Position3& a,
                              const math::Position3& b);  // game.o 0x60E300
 int trace_point_through_sphere(const math::Position3& p, const math::Dir3& ud,

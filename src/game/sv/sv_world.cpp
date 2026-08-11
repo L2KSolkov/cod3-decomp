@@ -45,7 +45,9 @@ extern float         threshold;
 extern int           loc_800000;
 
 // Collision-model helpers (unported game objects provide definitions later)
-extern void          CM_LinkEntity(EntityShared* ent, const float* absmin, const float* absmax);
+extern void          CM_LinkEntity(EntityShared* ent,
+                                   const float* const absmin,
+                                   const float* const absmax);
 extern void          CM_UnlinkEntity(EntityShared* ent);
 extern int           CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
                                     const math::Position3* pos, const math::Position3* mins,
