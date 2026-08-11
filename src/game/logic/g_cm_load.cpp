@@ -4152,12 +4152,18 @@ bool sight_trace_sphere(traceWork_t* tw)
 extern cdl_proftimer cdl_proftimer_sight_trace_point;   // game.o @ 0xF44308
 extern cdl_proftimer cdl_proftimer_sight_trace_sphere;  // game.o @ 0xF3E960
 extern void Com_Memset(void* dest, int val, unsigned int count);  // core.o
-// Capsule sphere descriptor (CollisionMgr.h): offset + radius + halfheight.
+// Capsule sphere descriptor (CollisionMgr.h) - 48 bytes, verified vs the
+// 12-dword `rep movsd` in SightTrace (0x6343AB) / Trace (0x640F99):
+//   { Position3 offset; Dir3 radiusOffset; int use; float radius;
+//     float halfheight; }
 struct sphere_t {
     math::Position3 offset;  // +0x00
-    float radius;            // +0x10
-    float halfheight;        // +0x14
+    math::Dir3 radiusOffset; // +0x10
+    int    use;              // +0x20
+    float  radius;           // +0x24
+    float  halfheight;       // +0x28
 };
+static_assert(sizeof(sphere_t) == 0x30, "sphere_t size mismatch");
 
 // ea: 0x006288C0
 bool SightTrace(traceWork_t* tw, const math::Position3& p0,
@@ -4257,9 +4263,9 @@ int SightTrace(int oldHitNum, const math::Position3* start,
     if (sp != nullptr)
     {
         tw.sphere_offset.v = sp->offset.v;
+        tw.sphere_use = sp->use;
         tw.sphere_radius = sp->radius;
         tw.sphere_halfheight = sp->halfheight;
-        tw.sphere_use = 1;
         v18 = tw.bounds[1].v.m128_f32[1];
         v19 = tw.bounds[1].v.m128_f32[0];
     }
@@ -6145,6 +6151,77 @@ void TraceThroughTree(traceWork_t* tw, const math::Position3& p0,
         collide_velocity_sphere(tw);
         cdl_proftimer_collide_sphere.stop();
     }
+}
+
+// ============================================================================
+// SightTraceXFormed - ea: 0x636890 (CollisionMgr.cpp)
+// ============================================================================
+// ea: 0x00636890
+int SightTraceXFormed(int hitNum, const math::Position3& start,
+                      const math::Position3& end,
+                      const math::Position3& mins,
+                      const math::Position3& maxs, DCGSet* model,
+                      int brushmask, const math::Position3& origin,
+                      const math::Position3& angles, int capsule)
+{
+    __m128 center = _mm_mul_ps(_mm_add_ps(mins.v, maxs.v),
+                               _mm_set1_ps(0.5f));
+    math::Position3 mins2;
+    mins2.v = _mm_sub_ps(mins.v, center);
+    math::Position3 maxs2;
+    maxs2.v = _mm_sub_ps(maxs.v, center);
+    math::Position3 start2;
+    start2.v = _mm_sub_ps(_mm_add_ps(start.v, center), origin.v);
+    math::Position3 end2;
+    end2.v = _mm_sub_ps(_mm_add_ps(end.v, center), origin.v);
+
+    bool hasAngles = model != nullptr && model->id != 4095
+        && (angles.v.m128_f32[0] != 0.0f
+            || angles.v.m128_f32[1] != 0.0f
+            || angles.v.m128_f32[2] != 0.0f);
+    float half = maxs2.v.m128_f32[2]
+               - (maxs2.v.m128_f32[0] <= maxs2.v.m128_f32[2]
+                      ? maxs2.v.m128_f32[0]
+                      : maxs2.v.m128_f32[2]);
+
+    sphere_t sphere;
+    sphere.offset.v = _mm_setzero_ps();
+    sphere.radiusOffset.v = _mm_setzero_ps();
+    sphere.use = capsule;
+    sphere.radius = maxs2.v.m128_f32[0] <= maxs2.v.m128_f32[2]
+                        ? maxs2.v.m128_f32[0]
+                        : maxs2.v.m128_f32[2];
+    sphere.halfheight = maxs2.v.m128_f32[2];
+
+    if (hasAngles)
+    {
+        float forward[3];
+        float right[3];
+        float up[3];
+        AngleVectors(&angles, forward, right, up);
+        VectorInverse(right);
+        float matrix[3][3];
+        matrix[0][0] = forward[0];
+        matrix[0][1] = forward[1];
+        matrix[0][2] = forward[2];
+        matrix[1][0] = right[0];
+        matrix[1][1] = right[1];
+        matrix[1][2] = right[2];
+        matrix[2][0] = up[0];
+        matrix[2][1] = up[1];
+        matrix[2][2] = up[2];
+        RotatePoint(start2, (math::Position3*)matrix);
+        RotatePoint(end2, (math::Position3*)matrix);
+        sphere.offset.v.m128_f32[0] = forward[2] * half;
+        sphere.offset.v.m128_f32[1] = -right[2] * half;
+        sphere.offset.v.m128_f32[2] = up[2] * half;
+    }
+    else
+    {
+        sphere.offset.v.m128_f32[2] = half;
+    }
+    return SightTrace(hitNum, &start2, &end2, &mins2, &maxs2, model, &origin,
+                      brushmask, capsule, &sphere);
 }
 
 // ============================================================================

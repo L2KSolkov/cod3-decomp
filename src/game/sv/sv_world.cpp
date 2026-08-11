@@ -36,9 +36,9 @@ extern DCGSet*       SV_ClipHandleForEntity(const Entity* ent);
 extern void          TraceXFormed(trace_t* results, const math::Position3* start, const math::Position3* end,
                                   const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
                                   int brushmask, const math::Position3* origin, const math::Position3* angles, int capsule);
-extern int           SightTraceXFormed(int hitNum, const math::Position3* start, const math::Position3* end,
-                                       const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
-                                       int brushmask, const math::Position3* origin, const math::Position3* angles, int capsule);
+extern int           SightTraceXFormed(int hitNum, const math::Position3& start, const math::Position3& end,
+                                       const math::Position3& mins, const math::Position3& maxs, DCGSet* model,
+                                       int brushmask, const math::Position3& origin, const math::Position3& angles, int capsule);
 extern const math::Position3& Float4_Zero_2;
 extern const math::Position3& Float4_One_2;
 extern float         threshold;
@@ -783,8 +783,8 @@ int SV_SightTraceToEntity(const math::Position3* start, const math::Position3* m
         } else {
             p_currentAngles = &mObject->r.currentAngles;
         }
-        if (SightTraceXFormed(0, start, end, mins, maxs, v10, context->contentmask,
-                              &mObject->r.currentOrigin, p_currentAngles, capsule) != 0)
+        if (SightTraceXFormed(0, *start, *end, *mins, *maxs, v10, context->contentmask,
+                              mObject->r.currentOrigin, *p_currentAngles, capsule) != 0)
             return -1;
     }
     return 0;
@@ -1261,8 +1261,8 @@ int SV_ClipSightToEntity(sightclip_t* clip, EntityShared* check) {
     v16.v = *p_v;
     int capsule = clip->capsule;
     int contentmask = clip->contentmask;
-    return -(SightTraceXFormed(0, &clip->start, &clip->end, &clip->mins, &clip->maxs,
-                               v11, contentmask, &p_currentOrigin->r.currentOrigin, &v16, capsule) != 0);
+    return -(SightTraceXFormed(0, clip->start, clip->end, clip->mins, clip->maxs,
+                               v11, contentmask, p_currentOrigin->r.currentOrigin, v16, capsule) != 0);
 }
 
 // ============================================================================
@@ -1311,6 +1311,6 @@ int SV_PointSightTraceToEntity(sightpointtrace_t* clip, EntityShared* check) {
     math::Position3 v14;
     v14.v = Float4_Zero_2.v;
     v15.v = Float4_Zero_2.v;
-    return -(SightTraceXFormed(0, &clip->start, &clip->end, &v14, &v15,
-                               v11, contentmask, &p_currentOrigin->r.currentOrigin, &v16, 0) != 0);
+    return -(SightTraceXFormed(0, clip->start, clip->end, v14, v15,
+                               v11, contentmask, p_currentOrigin->r.currentOrigin, v16, 0) != 0);
 }
