@@ -10,6 +10,9 @@
 
 struct netchan_t;
 struct Entity;
+namespace Broc {
+struct string;
+}
 
 // ============================================================================
 // Externs (core.o / cl.o)
@@ -691,7 +694,7 @@ void CL_ParseCommandString(msg_t* msg)
 }
 
 // ea: 0x532D50
-void CL_ParseGamestate(void* configstrings)
+void CL_ParseGamestate(Broc::string* configstrings)
 {
     ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_parse.cpp", 257);
     if (cgvm != nullptr)
