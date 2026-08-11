@@ -226,7 +226,8 @@ static_assert(sizeof(FEManager) == 0x3F4, "FEManager size mismatch");
 // ============================================================================
 // Opaque singleton managers (fields used by sv.o only)
 // ============================================================================
-struct AeThreadManager {
+class AeThreadManager {
+public:
     uint8_t _pad[2148];
     static AeThreadManager sInst;   // ?sInst@AeThreadManager@@0V1@A
     void KillAllThreads();
@@ -842,7 +843,8 @@ public:
 static_assert(sizeof(PathNodeMgr) == 4, "PathNodeMgr size mismatch (opaque)");
 
 // StreamZoneManager - streaming level cell manager (opaque)
-struct StreamZoneManager {
+class StreamZoneManager {
+public:
     uint8_t _pad[0x8];
     int          mLastCellNum;      // +0x08
     math::Position3 mInitialPosition;  // +0x0C

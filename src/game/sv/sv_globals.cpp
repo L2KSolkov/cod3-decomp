@@ -18,6 +18,8 @@ cvar_t*        sv_serverid;      // ?sv_serverid@@3PAUcvar_t@@A 0x12FA784
 PakManager*    PakManager::sInst = NULL;       // ?sInst@PakManager@@2PAV1@A
 XModelManager* XModelManager::sInst = NULL;    // ?sInst@XModelManager@@2PAV1@A
 PathNodeMgr*   PathNodeMgr::sInst = NULL;      // ?sInst@PathNodeMgr@@2PAU1@A
+StreamZoneManager* StreamZoneManager::sInst = NULL;  // ?sInst@StreamZoneManager@@2PAV1@A
+AeThreadManager AeThreadManager::sInst;        // ?sInst@AeThreadManager@@0V1@A (scr.o)
 cvar_t*        sv_framerate_smoothing;  // ?sv_framerate_smoothing@@3PAUcvar_t@@A 0x12FA75C
 cvar_t*        sv_gameskill;     // ?sv_gameskill@@3PAUcvar_t@@A 0x12FA744
 int            sv_map_restart;   // ?sv_map_restart@@3HA        0x12FA748
