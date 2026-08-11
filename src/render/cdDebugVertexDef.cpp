@@ -19,6 +19,9 @@ extern bool  _tlAssert(const char* file, int line, const char* expr, const char*
 // ============================================================================
 gpuVertexFormat cddebug_vertex_format;
 
+// ?head@tlInitList@@0PAV1@A (tl_xboxr:tl_initlist.o data)
+tlInitList* tlInitList::head = nullptr;
+
 // File-local static vertex declaration (elem @0xE3C198). Initialized data:
 //   Input[0]  = { StreamIndex=0, Offset=0, Format=0x32, TessType=0, TessSource=0 }
 //   Input[1+] = { 0, 0, Format=D3DVSDT_END(2), 0, 0 }

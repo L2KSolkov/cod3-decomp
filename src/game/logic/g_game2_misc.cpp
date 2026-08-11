@@ -328,8 +328,10 @@ extern tlFixedString stru_F05318;        // game2.o bone name
 extern tlFixedString stru_F05378;        // game2.o bone name
 extern tlFixedString stru_F05398;        // game2.o bone name
 extern tlFixedString stru_F05238;        // game2.o bone name
-extern bool IKenabled;                   // ?IKenabled@@3_NA (game2.o)
 extern cvar_t* ik_ADS;                   // ?ik_ADS@@3PAUcvar_t@@A (game2.o)
+
+// ?IKenabled@@3_NA (game2.o data @ 0xDEF463, value 1)
+bool IKenabled = true;
 
 // ============================================================================
 // AnimIK::GetGunAndHandMatrix - ea: 0x4F6270
