@@ -25,6 +25,16 @@ void* PhysDataBankManager::sInst;      // ?sInst@PhysDataBankManager@@2PAV1@A
 float gStickyBoxScaleEasy = 1.25f;   // @ 0xDF5A28 (sticky aim box scale, easy)
 float gStickyBoxScaleNormal = 1.0f;  // @ 0xDF5A2C
 float gStickyBoxScaleHard = 0.85f;   // @ 0xDF5A30
+int    iGrenadeHudTweak = 900;       // @ 0xDF8E60
+int    gInteractArmsWeaponIndex;     // @ 0xF4EBF4
+float  gLastGrenadeTimeLeft;         // @ 0xF4EC08
+float  gCurrentGrenadeTimeLeft;      // @ 0xF4EC0C
+float  ratio;                        // @ 0xF4EC10
+float  player_breath_fire_delay;     // @ 0xF4EC14
+vmCvar_t bg_debugWeaponState;        // @ 0xF43070
+vmCvar_t bg_debugWeaponAnim;         // @ 0xF43A68
+vmCvar_t bg_meleeassistrange;        // @ 0xF3E988
+vmCvar_t bg_meleeassistfov;          // @ 0xF44BC8
 float gExtraDistanceSticky = 0.0f;   // @ 0xF4EBEC
 float tangent = 0.02f;               // @ 0xDF8DC4 (sticky aim cone tangent)
 float accel_slow_factor = 0.5f;      // @ 0xDF8DC8
@@ -41,7 +51,7 @@ char* pszGameDll;                    // ?pszGameDll@@3PADA @ 0xDF5A34 (debug pri
 int   iLastState;                    // @ 0xDF8C78 (PM_Weapon_PrintWeaponState)
 int   iLastAnim;                     // @ 0xDF8C7C (PM_Weapon_PrintWeaponAnim)
 char  gDisableLMGHipFire;            // @ 0xF4EBFC (LMG hip-fire toggle)
-float* dword_F63B8C[4 * 1580];       // ?dword_F63B8C (game.o @ 0xF63B8C)
+float* dword_F63B8C[4 * 6320];       // ?dword_F63B8C (game.o @ 0xF63B8C)
 float emissionRate_0 = 1.0f;   // @ 0xDD8254 (vehicle gunner overheat emission rate)
 float gTanAimConeSpread;       // @ 0xEB1118 (g_weapon.cpp Bullet_Endpos scratch)
 float max_intensity = 120.0f;  // @ 0xDD7FD4

@@ -74,10 +74,23 @@ extern float player_breath_gasp_time;   // @ 0xDF6B40
 extern float player_breath_hold_lerp;   // @ 0xDF6B44
 extern float player_breath_gasp_lerp;   // @ 0xDF6B48
 extern float player_breath_gasp_scale;  // @ 0xDF6B4C
+extern float player_breath_fire_delay;  // @ 0xF4EC14
 extern char* pszGameDll;   // ?pszGameDll@@3PADA (game.o @ 0xDF5A34)
 extern int iLastState;     // game.o @ 0xDF8C78
 extern int iLastAnim;      // game.o @ 0xDF8C7C
-extern float* dword_F63B8C[4 * 1580];   // ?dword_F63B8C (game.o @ 0xF63B8C)
+extern float* dword_F63B8C[4 * 6320];   // ?dword_F63B8C (game.o @ 0xF63B8C)
+extern vmCvar_t bg_debugWeaponState;  // game.o @ 0xF43070
+extern vmCvar_t bg_debugWeaponAnim;   // game.o @ 0xF43A68
+extern vmCvar_t bg_meleeassistrange;  // game.o @ 0xF3E988
+extern vmCvar_t bg_meleeassistfov;    // game.o @ 0xF44BC8
+extern int iGrenadeHudTweak;          // game.o @ 0xDF8E60
+extern float gCurrentGrenadeTimeLeft; // game.o @ 0xF4EC0C
+extern float gLastGrenadeTimeLeft;    // game.o @ 0xF4EC08
+extern float ratio;                   // game.o @ 0xF4EC10
+extern int gInteractArmsWeaponIndex;  // game.o @ 0xF4EBF4
+extern PlayerState* GetPlayerState(int idx);  // ?GetPlayerState@@YAAAVPlayerState@@H@Z
+extern void PM_UpdateAimDownSightLerp();      // game.o 0x62F670
+extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);  // game.o 0x607A70
 extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
     // ?DiffTrack@@YAMMMMM@Z (core.o q_math.cpp)
 extern bool FindClosestVisibleBone(Entity* closestEnt,
@@ -109,6 +122,8 @@ void PM_WeaponUseAmmo(int wp, int amount);       // game.o 0x607E10
 void PM_Weapon_SetFPSFireAnim();                 // game.o 0x6089C0
 void PM_Weapon_AddFiringAimSpreadScale();        // game.o 0x608A50
 int  PM_Weapon_CheckFiringAmmo();                // game.o 0x6304D0
+PlayerState* PM_Weapon_StartMeleeAssist();       // game.o 0x6402D0
+void PM_UpdateHoldBreath();                      // game.o 0x631260
 extern void Com_BitClear(int* array, int bitNum);  // ?Com_BitClear (core.o q_shared)
 extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
                                       bool kill);  // ?StopEffect@EffectEventSys
@@ -2017,6 +2032,706 @@ int PM_Weapon_FinishWeaponChange()
 }
 
 // ============================================================================
+// PM_Weapon_GetAmmoRequired - ea: 0x6089A0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006089A0
+int PM_Weapon_GetAmmoRequired(int iWeapon)
+{
+    return BG_GetInfoForWeapon(iWeapon)->weapClass != 16;
+}
+
+// ============================================================================
+// PM_Weapon_StartFiring - ea: 0x6308C0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006308C0
+void PM_Weapon_StartFiring(int delayedAction)
+{
+    if (pm->ps->weapon == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 4800;
+        AeAssert::gCurrentExpr = "pm->ps->weapon != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (delayedAction == 0)
+    {
+        PlayerState* ps = pm->ps;
+        if (((weaponFileInfo_t*)pml.pWeap)->type == WEAPTYPE_GRENADE)
+        {
+            if (ps->grenadeTimeLeft == 0)
+            {
+                ps->weaponDelay =
+                    ((weaponFileInfo_t*)pml.pWeap)->iHoldFireTime;
+                pm->ps->weaponTime = 0;
+                if (PM_WeaponAmmoAvailable(pm->ps->weapon) != 0)
+                {
+                    pm->ps->grenadeTimeLeft =
+                        ((weaponFileInfo_t*)pml.pWeap)->iFuseTime;
+                    PM_StartWeaponAnim(17);
+                    Entity* v2 = (Entity*)EntityHandleDb_GetObject(
+                        pm->ps->mClient.mHandle.mVal);
+                    int PlayerIndex = v2->GetPlayerIndex();
+                    g_femanager.IGO->SetFuse(
+                        (float)((weaponFileInfo_t*)pml.pWeap)->iFuseTime,
+                        (float)pm->ps->grenadeTimeLeft, PlayerIndex);
+                    PM_AddEvent(185);
+                    pm->ps->weaponDelay = 10;
+                }
+            }
+        }
+        else
+        {
+            ps->weaponDelay = ((weaponFileInfo_t*)pml.pWeap)->iFireDelay;
+            pm->ps->weaponTime = ((weaponFileInfo_t*)pml.pWeap)->iFireTime;
+            weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+            if (pWeap->bADSFire != 0)
+            {
+                pm->ps->weaponDelay =
+                    (int)((1.0f - pm->ps->fWeaponPosFrac)
+                          * (1.0f / pWeap->fOOPosAnimLength[0]));
+                pWeap = (weaponFileInfo_t*)pml.pWeap;
+            }
+            if (pWeap->bBoltAction != 0)
+            {
+                int* v5 = &pm->ps->weaponrechamber[pm->ps->weapon >> 5];
+                *v5 |= 1 << (pm->ps->weapon & 0x1F);
+            }
+        }
+        pm->ps->weaponstate = 3;
+        if ((pm->ps->pm_flags & 1) != 0)
+            pm->ps->pm_flags |= 0x400u;
+    }
+}
+
+// ============================================================================
+// PM_ShouldPrequeueReloadSound - ea: 0x608120 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608120
+bool PM_ShouldPrequeueReloadSound()
+{
+    PlayerState* ps = pm->ps;
+    if (pm->ps->queuedReloadSound.mVal != 0
+        && ps->queuedReloadSoundPlayStarted)
+        return false;
+    int v1 = pm->ps->ammoclip[
+        BG_GetInfoForWeapon(ps->weapon)->iClipIndex];
+    if (((weaponFileInfo_t*)pml.pWeap)->bNoPartialReload == 0)
+        return true;
+    int v2 = 2500;
+    if (((weaponFileInfo_t*)pml.pWeap)->bSemiAuto != 0)
+        v2 = 1000;
+    int v3 = ((weaponFileInfo_t*)pml.pWeap)->iFireDelay
+             + ((weaponFileInfo_t*)pml.pWeap)->iFireTime;
+    if (((weaponFileInfo_t*)pml.pWeap)->bBoltAction != 0)
+        v3 += ((weaponFileInfo_t*)pml.pWeap)->iRechamberTime;
+    int v4 = v3 <= 0 ? 1 : v2 / v3;
+    return v1 <= v4;
+}
+
+// ============================================================================
+// PM_UpdateReloadSoundPrequeueing - ea: 0x6081C0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006081C0
+char PM_UpdateReloadSoundPrequeueing()
+{
+    char ps = pm->ps->reloadSoundPrequeueAttempted;
+    if (ps == 0)
+    {
+        ps = PM_ShouldPrequeueReloadSound();
+        if (ps != 0)
+        {
+            PM_QueueReloadSound(14);  // kActionWEAPON_RELOAD
+            pm->ps->reloadSoundPrequeueAttempted = true;
+        }
+    }
+    return ps;
+}
+
+// ============================================================================
+// PM_HoldBreathFire - ea: 0x631140 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x00631140
+int PM_HoldBreathFire()
+{
+    Client* client = EntityManager::sInst->GetPlayer(currCl)->client;
+    unsigned int mVal = pm->ps->mClient.mHandle.mVal;
+    Entity* mObject = nullptr;
+    unsigned int v1 = mVal & 0xFFF;
+    if (v1 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v1].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+    int result = 6320 * mObject->GetPlayerIndex();
+    if (dword_F63B8C[result] != nullptr)
+    {
+        if (client->ps.fWeaponPosFrac == 1.0f)
+        {
+            unsigned int mVal2 = pm->ps->mClient.mHandle.mVal;
+            Entity* v12 = nullptr;
+            unsigned int v11 = mVal2 & 0xFFF;
+            if (v11 < 0x540
+                && mVal2 >> 12 == EntityHandleDb::sInst.mElements[v11].mKey)
+                v12 = EntityHandleDb::sInst.mElements[v11].mObject;
+            result = 6320 * v12->GetPlayerIndex();
+            if (*(int*)((char*)dword_F63B8C[result] + 1620) != 3)
+            {
+                result = client->ps.mHoldBreathTimer;
+                int v13 = (int)(player_breath_hold_time * 1000.0f);
+                if (result < v13)
+                {
+                    result -= (int)(player_breath_fire_delay * -1000.0f);
+                    client->ps.mHoldBreathTimer = result;
+                    if (result > v13)
+                        client->ps.mHoldBreathTimer = v13;
+                }
+                client->ps.mFlags &= ~2u;
+            }
+        }
+    }
+    return result;
+}
+
+// ============================================================================
+// PM_Weapon_FireWeapon - ea: 0x6400F0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006400F0
+void PM_Weapon_FireWeapon(int delayedAction)
+{
+    PlayerState* ps = pm->ps;
+    int pm_flags = pm->ps->pm_flags;
+    if ((pm_flags & 0x10000) == 0
+        && (((weaponFileInfo_t*)pml.pWeap)->bBoltAction == 0
+            || ps->fWeaponPosFrac >= 0.99000001f
+            || ps->fWeaponPosFrac <= 0.0099999998f))
+    {
+        int weapClass = ((weaponFileInfo_t*)pml.pWeap)->weapClass;
+        if ((weapClass != WEAPCLASS_SPOTTER
+             || (pm_flags & 0x20) != 0
+                 && ((weaponFileInfo_t*)pml.pWeap)->bADSFire != 0)
+            && (!gDisableLMGHipFire
+                || weapClass != WEAPCLASS_LMG
+                || (pm_flags & 0x20) != 0
+                    && ps->fWeaponPosFrac >= 0.99000001f))
+        {
+            PM_Weapon_StartFiring(delayedAction);
+            if (PM_Weapon_CheckFiringAmmo() != 0)
+            {
+                if (pm->ps->weaponDelay == 0)
+                {
+                    if (PM_WeaponAmmoAvailable(pm->ps->weapon) != -1)
+                    {
+                        PlayerState* v5 = pm->ps;
+                        if ((pm->ps->eFlags & 0x100000) == 0
+                            || BG_AllowPlayerWeaponAtVehiclePos(v5->vehType,
+                                                                v5->vehPos))
+                        {
+                            int AmmoRequired =
+                                PM_Weapon_GetAmmoRequired(v5->weapon);
+                            PM_WeaponUseAmmo(pm->ps->weapon, AmmoRequired);
+                        }
+                    }
+                    PM_UpdateReloadSoundPrequeueing();
+                    weaponFileInfo_t* pWeap =
+                        (weaponFileInfo_t*)pml.pWeap;
+                    if (pWeap->type == WEAPTYPE_GRENADE)
+                    {
+                        pm->ps->weaponTime = pWeap->iFireTime;
+                        pWeap = (weaponFileInfo_t*)pml.pWeap;
+                    }
+                    if (pWeap->type == WEAPTYPE_GAS)
+                        pm->ps->weaponTime = pWeap->iFireTime;
+                    PM_Weapon_SetFPSFireAnim();
+                    int v9;
+                    if (PM_WeaponClipEmpty(pm->ps->weapon) != 0)
+                        v9 = 189;
+                    else
+                        v9 = 186;
+                    PM_AddEvent(v9);
+                    PM_HoldBreathFire();
+                    PM_Weapon_AddFiringAimSpreadScale();
+                    PM_SwitchIfEmpty();
+                }
+            }
+            else if (((weaponFileInfo_t*)pml.pWeap)->weapClass
+                         == WEAPCLASS_SPOTTER
+                     && *(void**)((char*)gpBrocAPI + 0xD48) != nullptr)
+            {
+                Entity* Player = GetPlayer(currCl);
+                typedef void (*DenyArtillery_t)(unsigned int);
+                ((DenyArtillery_t)(*(void**)((char*)gpBrocAPI + 0xD48)))(
+                    Player->mHandle.mHandle.mVal);
+            }
+        }
+    }
+}
+
+// ============================================================================
+// PM_Weapon_CheckForMelee - ea: 0x640700 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00640700
+void PM_Weapon_CheckForMelee(int delayedAction)
+{
+    if (((weaponFileInfo_t*)pml.pWeap)->iMeleeDamage != 0)
+    {
+        PlayerState* ps = pm->ps;
+        if ((ps->eFlags & 0x100000) == 0
+            && (ps->mGroundEntity.mHandle.mVal != 0
+                || ps->velocity.v.m128_f32[2] >= -80.0f))
+        {
+            if ((ps->pm_flags & 0x20) != 0)
+            {
+                if (BG_GetInfoForWeapon(ps->weapon)->weapClass
+                    == WEAPCLASS_LMG)
+                    return;
+            }
+            if ((((weaponFileInfo_t*)pml.pWeap)->type != WEAPTYPE_GRENADE
+                 || (pm->cmd.buttons & 3) == 0
+                     && pm->ps->weaponstate != 3)
+                && delayedAction == 0)
+            {
+                PlayerState* v3 = pm->ps;
+                if (pm->ps->weaponDelay == 0
+                    || (int)(v3->weaponstate) == 5
+                    || (int)(v3->weaponstate) == 7
+                    || (int)(v3->weaponstate) == 9
+                    || (int)(v3->weaponstate) == 8
+                    || (int)(v3->weaponstate) == 6)
+                {
+                    int pm_flags = v3->pm_flags;
+                    if ((pm->cmd.buttons & 0x10) != 0)
+                    {
+                        if ((pm_flags & 0x1000) == 0)
+                        {
+                            v3->pm_flags |= 0x1000u;
+                            switch (pm->ps->weaponstate)
+                            {
+                            case 1:
+                            case 2:
+                            case 10:
+                            case 11:
+                                return;
+                            default:
+                                PM_StartWeaponAnim(8);
+                                PM_AddEvent(192);
+                                MultiplayerMgr::sInst->AnimEvent(7);
+                                if (((weaponFileInfo_t*)pml.pWeap)
+                                        ->iMeleeDelay != 0)
+                                {
+                                    PM_Weapon_StartMeleeAssist();
+                                    pm->ps->weaponTime =
+                                        ((weaponFileInfo_t*)pml.pWeap)
+                                            ->iMeleeTime;
+                                    pm->ps->weaponDelay =
+                                        ((weaponFileInfo_t*)pml.pWeap)
+                                            ->iMeleeDelay;
+                                    pm->ps->weaponstate = 10;
+                                    PM_SetProneMovementOverride();
+                                }
+                                else
+                                {
+                                    PM_Weapon_FireMelee();
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        v3->pm_flags = pm_flags & 0xFFFFEFFF;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ============================================================================
+// PM_Weapon_StartMeleeAssist - ea: 0x6402D0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006402D0
+PlayerState* PM_Weapon_StartMeleeAssist()
+{
+    PlayerState* result = pm->ps;
+    if ((pm->ps->pm_flags & 1) == 0
+        && (result->mGroundEntity.mHandle.mVal != 0
+            || result->velocity.v.m128_f32[2] >= -80.0f))
+    {
+        float checkDistance = (float)bg_meleeassistrange.integer;
+        if (checkDistance >= 0.000099999997f)
+        {
+            DbLinkedHandle<EntityHandleDb, Entity> entityList[128];
+            memset(entityList, 0, sizeof(entityList));
+            math::Position3 mins = pm->ps->origin;
+            math::Position3 maxs = pm->ps->origin;
+            math::Position3 angles;
+            angles.v.m128_f32[0] = 0.0f;
+            angles.v.m128_f32[1] = pm->ps->viewangles[1];
+            angles.v.m128_f32[2] = 0.0f;
+            angles.v.m128_f32[3] = 0.0f;
+            math::Dir3 forward;
+            AnglesToForward(&angles.v.m128_f32[0],
+                            &forward.v.m128_f32[0]);
+            mins.v.m128_f32[0] +=
+                forward.v.m128_f32[0] * checkDistance - checkDistance;
+            mins.v.m128_f32[1] +=
+                forward.v.m128_f32[1] * checkDistance - checkDistance;
+            mins.v.m128_f32[2] +=
+                forward.v.m128_f32[2] * checkDistance - checkDistance;
+            maxs.v.m128_f32[0] +=
+                forward.v.m128_f32[0] * checkDistance + checkDistance;
+            maxs.v.m128_f32[1] +=
+                forward.v.m128_f32[1] * checkDistance + checkDistance;
+            maxs.v.m128_f32[2] +=
+                forward.v.m128_f32[2] * checkDistance + checkDistance;
+            int v24 = CM_AreaEntities(mins, maxs, entityList, 128,
+                                      0x2000000);
+            math::Position3 check_center = pm->ps->origin;
+            check_center.v.m128_f32[0] +=
+                forward.v.m128_f32[0] * checkDistance;
+            check_center.v.m128_f32[1] +=
+                forward.v.m128_f32[1] * checkDistance;
+            check_center.v.m128_f32[2] +=
+                forward.v.m128_f32[2] * checkDistance;
+            float bestDotp = bg_meleeassistfov.value;
+            for (int i = 0; i < v24; ++i)
+            {
+                unsigned int v9 = entityList[i].mHandle.mVal;
+                unsigned int v10 = v9 & 0xFFF;
+                Entity* mObject = nullptr;
+                if (v10 < 0x540
+                    && v9 >> 12 == EntityHandleDb::sInst.mElements[v10].mKey)
+                    mObject = EntityHandleDb::sInst.mElements[v10].mObject;
+                if (mObject != nullptr && mObject->sentient != nullptr)
+                {
+                    PlayerState* v12 = pm->ps;
+                    unsigned int mVal = pm->ps->mClient.mHandle.mVal;
+                    Entity* v16 = nullptr;
+                    unsigned int v15 = mVal & 0xFFF;
+                    if (v15 < 0x540
+                        && mVal >> 12
+                            == EntityHandleDb::sInst.mElements[v15].mKey)
+                        v16 = EntityHandleDb::sInst.mElements[v15].mObject;
+                    if (v16 != mObject
+                        && (!cgGlobal.teamGame
+                            || v16->sentient->eTeam
+                                != mObject->sentient->eTeam)
+                        && (mObject->s.eFlags & 0x100000) == 0)
+                    {
+                        float c0 = check_center.v.m128_f32[0];
+                        float c1 = check_center.v.m128_f32[1];
+                        float c2 = check_center.v.m128_f32[2];
+                        float a0 = mObject->r.absmin.v.m128_f32[0];
+                        float a1 = mObject->r.absmin.v.m128_f32[1];
+                        float a2 = mObject->r.absmin.v.m128_f32[2];
+                        float b0 = mObject->r.absmax.v.m128_f32[0];
+                        float b1 = mObject->r.absmax.v.m128_f32[1];
+                        float b2 = mObject->r.absmax.v.m128_f32[2];
+                        float d0 = c0 - fminf(fmaxf(c0, a0), b0);
+                        float d1 = c1 - fminf(fmaxf(c1, a1), b1);
+                        float d2 = c2 - fminf(fmaxf(c2, a2), b2);
+                        float v26 = d0 * d0 + d1 * d1 + d2 * d2;
+                        float v19;
+                        {
+                            static float radius_5 = checkDistance;  // $S31_0
+                            v19 = radius_5;
+                        }
+                        if (v19 * v19 > v26)
+                        {
+                            float e0 = mObject->r.currentOrigin.v.m128_f32[0]
+                                       - v12->origin.v.m128_f32[0];
+                            float e1 = mObject->r.currentOrigin.v.m128_f32[1]
+                                       - v12->origin.v.m128_f32[1];
+                            float e2 = mObject->r.currentOrigin.v.m128_f32[2]
+                                       - v12->origin.v.m128_f32[2];
+                            float dist2 = e0 * e0 + e1 * e1 + e2 * e2;
+                            float dist = sqrtf(dist2);
+                            float dirx = e0 / dist;
+                            float diry = e1 / dist;
+                            float dirz = e2 / dist;
+                            float v22 = dirx * forward.v.m128_f32[0]
+                                        + diry * forward.v.m128_f32[1]
+                                        + dirz * forward.v.m128_f32[2];
+                            if (v22 > bestDotp)
+                            {
+                                v12->mMeleeAssistTarget.mHandle.mVal =
+                                    mObject->mHandle.mHandle.mVal;
+                                bestDotp = v22;
+                                v12->mMeleeAssistSpeed = (int16_t)(
+                                    (VectorDistance(
+                                         &mObject->r.currentOrigin
+                                              .v.m128_f32[0],
+                                         &v12->origin.v.m128_f32[0])
+                                     - (mObject->r.maxs.v.m128_f32[0]
+                                        + mObject->r.maxs.v.m128_f32[0]))
+                                    / (((weaponFileInfo_t*)pml.pWeap)
+                                           ->iMeleeDelay
+                                       * 0.001f));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
+
+// ============================================================================
+// PM_Weapon - ea: 0x6408B0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006408B0
+void PM_Weapon()
+{
+    PlayerState* ps = pm->ps;
+    int pm_flags = pm->ps->pm_flags;
+    if ((pm_flags & 0x800) == 0)
+    {
+        if (ps->pm_type < 6)
+        {
+            if ((pm_flags & 0x8000000) != 0 && ps->weaponTime == 0)
+                ps->pm_flags &= ~0x8000000u;
+            if ((pm->ps->eFlags & 0x6000) == 0)
+            {
+                if (bg_debugWeaponState.integer != 0
+                    && bg_debugWeaponState.integer != 2)
+                    PM_Weapon_PrintWeaponState();
+                if (bg_debugWeaponAnim.integer != 0
+                    && bg_debugWeaponAnim.integer != 2)
+                    PM_Weapon_PrintWeaponAnim();
+                PM_UpdateAimDownSightLerp();
+                PM_UpdateHoldBreath();
+                Entity* v2 = (Entity*)EntityHandleDb_GetObject(
+                    pm->ps->mClient.mHandle.mVal);
+                int PlayerIndex = v2->GetPlayerIndex();
+                g_femanager.IGO->SetFuse(-1.0f, -1.0f, PlayerIndex);
+                weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+                if (pWeap->type == WEAPTYPE_GRENADE)
+                {
+                    if (pWeap->bCookOffHold != 0)
+                    {
+                        int grenadeTimeLeft = pm->ps->grenadeTimeLeft;
+                        if (grenadeTimeLeft >= pWeap->iFuseTime)
+                        {
+                            pm->ps->grenadeTimeLeft = grenadeTimeLeft - 10;
+                            Entity* v6 = (Entity*)EntityHandleDb_GetObject(
+                                pm->ps->mClient.mHandle.mVal);
+                            int v7 = v6->GetPlayerIndex();
+                            g_femanager.IGO->SetFuse(
+                                (float)(pWeap->iFuseTime - iGrenadeHudTweak),
+                                (float)(pm->ps->grenadeTimeLeft
+                                        - iGrenadeHudTweak),
+                                v7);
+                            PM_AddEvent(207);
+                            pWeap = (weaponFileInfo_t*)pml.pWeap;
+                        }
+                    }
+                    gCurrentGrenadeTimeLeft =
+                        (float)(pm->ps->grenadeTimeLeft - iGrenadeHudTweak);
+                    gLastGrenadeTimeLeft =
+                        (float)(pWeap->iFuseTime - iGrenadeHudTweak);
+                    ratio = gCurrentGrenadeTimeLeft / gLastGrenadeTimeLeft;
+                    if (gCurrentGrenadeTimeLeft / gLastGrenadeTimeLeft
+                            < 0.82999998f
+                        && ratio >= 0.67f)
+                    {
+                        tlPrintf(
+                            "\n\n\n------------------------------------------------\n");
+                        tlPrintf("last grenade time left:%d\n",
+                                 (int64_t)gLastGrenadeTimeLeft);
+                        tlPrintf("current grenade time left:%d\n",
+                                 (int64_t)gCurrentGrenadeTimeLeft);
+                        pWeap = (weaponFileInfo_t*)pml.pWeap;
+                    }
+                    int v8 = pm->ps->grenadeTimeLeft;
+                    if (v8 > 0)
+                    {
+                        if (pWeap->bCookOffHold != 0 && v8 < pWeap->iFuseTime)
+                        {
+                            pm->ps->grenadeTimeLeft = v8 - pml.msec;
+                            Entity* v9 = (Entity*)EntityHandleDb_GetObject(
+                                pm->ps->mClient.mHandle.mVal);
+                            int v10 = v9->GetPlayerIndex();
+                            g_femanager.IGO->SetFuse(
+                                (float)(pWeap->iFuseTime - iGrenadeHudTweak),
+                                (float)(pm->ps->grenadeTimeLeft
+                                        - iGrenadeHudTweak),
+                                v10);
+                            pWeap = (weaponFileInfo_t*)pml.pWeap;
+                        }
+                        PlayerState* v11 = pm->ps;
+                        if (pm->ps->grenadeTimeLeft <= 0)
+                        {
+                            PM_WeaponUseAmmo(v11->weapon, 1);
+                            pm->ps->weaponDelay = 0;
+                            pm->ps->weaponTime = 1600;
+                            if (pWeap->slot == WEAPSLOT_SMOKE_GRENADE)
+                            {
+                                PM_AddEvent(186);
+                                int remain = GetPlayerState(currCl)
+                                                 ->lastWeapon;
+                                const PlayerState* vPlayerState =
+                                    GetPlayerState(currCl);
+                                if (BG_IsPlayerWeaponInSlot(
+                                        vPlayerState, remain, 1)
+                                    != WEAPSLOT_NONE)
+                                {
+                                    int remain_4 = GetPlayerState(currCl)
+                                                       ->lastWeapon;
+                                    const PlayerState* v13 =
+                                        GetPlayerState(currCl);
+                                    if (BG_WeaponAmmo(v13, remain_4) != 0)
+                                    {
+                                        Entity* v14 =
+                                            (Entity*)EntityHandleDb_GetObject(
+                                                pm->ps->mClient.mHandle.mVal);
+                                        int remain_4a = v14->GetPlayerIndex();
+                                        PlayerState* v15 =
+                                            GetPlayerState(currCl);
+                                        BG_SelectWeaponIndex(
+                                            v15->lastWeapon, remain_4a);
+                                        return;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                PM_AddEvent(222);
+                            }
+                            PM_SwitchIfEmpty();
+                            return;
+                        }
+                        if ((pm->cmd.buttons & 1) != 0)
+                        {
+                            int slot = pWeap->slot;
+                            if (slot != WEAPSLOT_GRENADE
+                                && slot != WEAPSLOT_SMOKE_GRENADE
+                                && v11->weaponDelay - pml.msec <= 0)
+                                v11->weaponDelay = pml.msec + 1;
+                        }
+                    }
+                }
+                int v17 = PM_Weapon_WeaponTimeAdjust();
+                PM_Weapon_CheckForDeployBreakdown();
+                PM_Weapon_CheckForChangeWeapon();
+                PM_Weapon_CheckForReload();
+                PM_Weapon_CheckForMelee(v17);
+                PM_Weapon_CheckForSpotting();
+                char ps2 = PM_Weapon_CheckForRechamber(v17);
+                if (ps2 == 0)
+                {
+                    pmove_t* v18 = pm;
+                    PlayerState* v19 = pm->ps;
+                    int v20 = pm->ps->pm_flags;
+                    if ((v20 & 1) != 0
+                            && (pm->cmd.forwardmove != 0
+                                || pm->cmd.rightmove != 0)
+                        || (v20 & 0x10000) != 0
+                            && (pm->cmd.forwardmove != 0
+                                || pm->cmd.rightmove != 0)
+                        || (int)(v19->weaponstate) == 10
+                        || (int)(v19->weaponstate) == 11)
+                    {
+                        v19->aimSpreadScale = 255.0f;
+                        v18 = pm;
+                    }
+                    PlayerState* v22 = v18->ps;
+                    if (v22->weaponTime < 0 || v22->weaponDelay < 0)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\bg_weapons.cpp";
+                        AeAssert::gCurrentLine = 5842;
+                        AeAssert::gCurrentExpr =
+                            "(pm->ps->weaponTime >= 0) && (pm->ps->weaponDelay >= 0)";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("old cod assert"))
+                            __debugbreak();
+                    }
+                    PM_Weapon_CheckAbortHoldToFire();
+                    if (v17 != 0
+                        || pm->ps->weaponTime == 0
+                            && pm->ps->weaponDelay == 0)
+                    {
+                        char ps3 = PM_Weapon_FinishReload(v17);
+                        if (ps3 == 0)
+                        {
+                            ps3 = PM_Weapon_FinishMelee();
+                            if (ps3 == 0)
+                            {
+                                ps3 = PM_Weapon_FinishWeaponChange();
+                                if (ps3 == 0)
+                                {
+                                    ps3 = PM_Weapon_FinishOffHandWeapons();
+                                    if (ps3 == 0)
+                                    {
+                                        ps3 = PM_Weapon_FinishWeaponRaise();
+                                        if (ps3 == 0)
+                                        {
+                                            ps3 = PM_Weapon_FinishWeaponDeploy();
+                                            if (ps3 == 0)
+                                            {
+                                                ps3 =
+                                                    PM_Weapon_FinishWeaponBreakdown();
+                                                if (ps3 == 0)
+                                                {
+                                                    ps3 =
+                                                        (char)pm->ps->weapon;
+                                                    if (ps3 != 0
+                                                        && (int)ps3
+                                                            != gInteractArmsWeaponIndex)
+                                                    {
+                                                        ps3 =
+                                                            PM_Weapon_FinishFiring(
+                                                                v17);
+                                                        if (ps3 == 0)
+                                                        {
+                                                            PM_Weapon_FireWeapon(
+                                                                v17);
+                                                            PlayerState* v23 =
+                                                                pm->ps;
+                                                            if (pm->ps
+                                                                    ->weaponTime
+                                                                        < 0
+                                                                || v23
+                                                                       ->weaponDelay
+                                                                       < 0)
+                                                            {
+                                                                AeAssert::gCurrentAuthor =
+                                                                    AeAssert::COD3;
+                                                                AeAssert::gCurrentFile =
+                                                                    "c:\\cod\\code\\game\\bg_weapons.cpp";
+                                                                AeAssert::gCurrentLine =
+                                                                    5899;
+                                                                AeAssert::gCurrentExpr =
+                                                                    "(pm->ps->weaponTime >= 0) && (pm->ps->weaponDelay >= 0)";
+                                                                if (!AeAssert::IsIgnored()
+                                                                    && AeAssert::Assert(
+                                                                        "old cod assert"))
+                                                                    __debugbreak();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            ps->weapon = 0;
+        }
+    }
+    return;
+}
+
+// ============================================================================
 // PM_UpdateHoldBreath - ea: 0x631260 (bg_pmove.cpp)
 // ============================================================================
 // ea: 0x00631260
@@ -2036,8 +2751,9 @@ void PM_UpdateHoldBreath()
     }
     Entity* mObject = (Entity*)EntityHandleDb_GetObject(
         pm->ps->mClient.mHandle.mVal);
-    float* v5 = mObject != nullptr ? dword_F63B8C[1580 * mObject->GetPlayerIndex()]
-                                   : nullptr;
+    float* v5 = mObject != nullptr
+                    ? dword_F63B8C[6320 * mObject->GetPlayerIndex()]
+                    : nullptr;
     if (v5 != nullptr)
     {
         int v6 = *(int*)(v5 + 1620 / 4);
