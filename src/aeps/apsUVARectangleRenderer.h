@@ -33,10 +33,6 @@ public:
     virtual eRenderResult Render(const apsRendererRenderInfo& iInfo);  // @0x804FD0
     virtual unsigned int GetId() const;
     virtual float GetVersion() const;
-    virtual int IsCameraFacing() const;
-    virtual void SetScreenFacingNormal(const math::Dir3& iNormal);
-    virtual float GetChanceToRemove() const;
-    virtual bool GetMeshRadius(float& oRadius) const;
     APS_DECLARE_RETRIEVE(apsUVARectangleRenderer, apsUVARenderer((APS_VTABLE_RETRIEVING_CTOR)0))};
 static_assert(sizeof(apsUVARectangleRenderer) == 0x90, "apsUVARectangleRenderer size mismatch");
 // ============================================================================

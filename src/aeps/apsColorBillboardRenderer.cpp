@@ -41,3 +41,24 @@ apsRenderer::eRenderResult apsColorBillboardRenderer::Render(const apsRendererRe
 // ============================================================================
 void apsColorBillboardNode::GetDesc(char* buf) {
 }
+
+// ============================================================================
+// apsColorBillboardRenderer::GetId - apsRegister.o COMDAT
+// ============================================================================
+unsigned int apsColorBillboardRenderer::GetId() const {
+    return 1128426594;
+}
+
+// ============================================================================
+// apsColorBillboardRenderer::GetVersion - apsRegister.o COMDAT
+// ============================================================================
+float apsColorBillboardRenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsColorBillboardRenderer::~apsColorBillboardRenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsColorBillboardRenderer::~apsColorBillboardRenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
+}

@@ -49,3 +49,24 @@ apsRenderer::eRenderResult apsRectangleRenderer::Render(const apsRendererRenderI
 // ============================================================================
 void apsRectangleNode::GetDesc(char* buf) {
 }
+
+// ============================================================================
+// apsRectangleRenderer::GetId - apsRegister.o COMDAT
+// ============================================================================
+unsigned int apsRectangleRenderer::GetId() const {
+    return 1382376308;
+}
+
+// ============================================================================
+// apsRectangleRenderer::GetVersion - apsRegister.o COMDAT
+// ============================================================================
+float apsRectangleRenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsRectangleRenderer::~apsRectangleRenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsRectangleRenderer::~apsRectangleRenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
+}

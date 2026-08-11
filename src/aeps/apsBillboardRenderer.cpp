@@ -148,7 +148,51 @@ apsRenderer::eRenderResult apsBillboardRenderer::Render(const apsRendererRenderI
 }
 
 // ============================================================================
+// apsBillboardRenderer::GetId - ea: 0x7F30D0 (apsRegister.o COMDAT)
+// ============================================================================
+unsigned int apsBillboardRenderer::GetId() const {
+    return 1114399343;
+}
+
+// ============================================================================
+// apsBillboardRenderer::GetVersion - ea: 0x7F30E0 (apsRegister.o COMDAT)
+// ============================================================================
+float apsBillboardRenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsBillboardRenderer::IsCameraFacing - ea: 0x7F30F0 (apsRegister.o COMDAT)
+// ============================================================================
+int apsBillboardRenderer::IsCameraFacing() const {
+    return mNormal.v.m128_f32[0] == 0.0f
+        && _mm_shuffle_ps(mNormal.v, mNormal.v, 85).m128_f32[0] == 0.0f
+        && _mm_shuffle_ps(mNormal.v, mNormal.v, 170).m128_f32[0] == 0.0f;
+}
+
+// ============================================================================
+// apsBillboardRenderer::SetScreenFacingNormal - ea: 0x7F3170
+// ============================================================================
+void apsBillboardRenderer::SetScreenFacingNormal(const math::Dir3& iNormal) {
+    mNormal.v = iNormal.v;
+}
+
+// ============================================================================
+// apsBillboardRenderer::GetChanceToRemove - ea: 0x7F31B0
+// ============================================================================
+float apsBillboardRenderer::GetChanceToRemove() const {
+    return mChanceToRemove;
+}
+
+// ============================================================================
 // apsBillboardNode::GetDesc — ea: 0x8048E0 (inline COMDAT)
 // ============================================================================
 void apsBillboardNode::GetDesc(char* buf) {
+}
+
+// ============================================================================
+// apsBillboardRenderer::~apsBillboardRenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsBillboardRenderer::~apsBillboardRenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
 }

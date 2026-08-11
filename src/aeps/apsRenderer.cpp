@@ -91,3 +91,25 @@ void apsRenderer::Fixup(const apsFixupParams& iFixupParams) {
         tlFatal("Didn't find vtable for renderer");
     *reinterpret_cast<void**>(this) = foundVtbl;
 }
+
+// ============================================================================
+// apsRenderer::GetChanceToRemove - ea: 0x7F3040 (apsRegister.o COMDAT)
+// ============================================================================
+float apsRenderer::GetChanceToRemove() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsRenderer::GetMeshRadius - ea: 0x7F3050 (apsRegister.o COMDAT)
+// ============================================================================
+bool apsRenderer::GetMeshRadius(float& oRadius) const {
+    (void)oRadius;
+    return false;
+}
+
+// ============================================================================
+// apsRenderer::~apsRenderer - ea: 0x7F0CD0 (apsRegister.o COMDAT)
+// ============================================================================
+apsRenderer::~apsRenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
+}

@@ -54,3 +54,24 @@ apsRenderer::eRenderResult apsUVARenderer::Render(const apsRendererRenderInfo& r
 // ============================================================================
 void apsUVANode::GetDesc(char* buf) {
 }
+
+// ============================================================================
+// apsUVARenderer::GetId - apsRegister.o COMDAT
+// ============================================================================
+unsigned int apsUVARenderer::GetId() const {
+    return 1431716178;
+}
+
+// ============================================================================
+// apsUVARenderer::GetVersion - apsRegister.o COMDAT
+// ============================================================================
+float apsUVARenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsUVARenderer::~apsUVARenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsUVARenderer::~apsUVARenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
+}

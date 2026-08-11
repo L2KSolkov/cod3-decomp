@@ -12,6 +12,7 @@
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
+
 // ============================================================================
 // apsShrimpRenderer::Init — register the vertex/pixel shaders.
 // ea: 0x8044F0
@@ -41,6 +42,34 @@ apsShrimpRenderer::apsShrimpRenderer(const apsShrimpRenderer::cArgs* args) {
     mTextureWidth = (int16_t)args->mTextureWidth;
     mTextureHeight = (int16_t)args->mTextureHeight;
     mFields = 469;
+}
+
+// ============================================================================
+// apsShrimpRenderer::GetId - ea: 0x7F3820 (apsRegister.o COMDAT)
+// ============================================================================
+unsigned int apsShrimpRenderer::GetId() const {
+    return 1399352688;
+}
+
+// ============================================================================
+// apsShrimpRenderer::GetVersion - ea: 0x7F3830 (apsRegister.o COMDAT)
+// ============================================================================
+float apsShrimpRenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsShrimpRenderer::IsCameraFacing - ea: 0x7F3840 (apsRegister.o COMDAT)
+// ============================================================================
+int apsShrimpRenderer::IsCameraFacing() const {
+    return 0;
+}
+
+// ============================================================================
+// apsShrimpRenderer::SetScreenFacingNormal - ea: 0x7F3850
+// ============================================================================
+void apsShrimpRenderer::SetScreenFacingNormal(const math::Dir3& iNormal) {
+    (void)iNormal;
 }
 
 // ============================================================================
@@ -124,4 +153,11 @@ apsRenderer::eRenderResult apsShrimpRenderer::Render(const apsRendererRenderInfo
 // apsShrimpNode::GetDesc — ea: 0x802FA0 (inline COMDAT)
 // ============================================================================
 void apsShrimpNode::GetDesc(char* buf) {
+}
+
+// ============================================================================
+// apsShrimpRenderer::~apsShrimpRenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsShrimpRenderer::~apsShrimpRenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
 }

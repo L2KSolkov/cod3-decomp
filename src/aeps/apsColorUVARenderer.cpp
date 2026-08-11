@@ -40,3 +40,24 @@ apsRenderer::eRenderResult apsColorUVARenderer::Render(const apsRendererRenderIn
 // ============================================================================
 void apsColorUVANode::GetDesc(char* buf) {
 }
+
+// ============================================================================
+// apsColorUVARenderer::GetId - apsRegister.o COMDAT
+// ============================================================================
+unsigned int apsColorUVARenderer::GetId() const {
+    return 1129666113;
+}
+
+// ============================================================================
+// apsColorUVARenderer::GetVersion - apsRegister.o COMDAT
+// ============================================================================
+float apsColorUVARenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsColorUVARenderer::~apsColorUVARenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsColorUVARenderer::~apsColorUVARenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
+}

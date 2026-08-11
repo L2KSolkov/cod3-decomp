@@ -40,3 +40,24 @@ apsRenderer::eRenderResult apsColorUVARectangleRenderer::Render(const apsRendere
 // ============================================================================
 void apsColorUVARectangleNode::GetDesc(char* buf) {
 }
+
+// ============================================================================
+// apsColorUVARectangleRenderer::GetId - apsRegister.o COMDAT
+// ============================================================================
+unsigned int apsColorUVARectangleRenderer::GetId() const {
+    return 1666537074;
+}
+
+// ============================================================================
+// apsColorUVARectangleRenderer::GetVersion - apsRegister.o COMDAT
+// ============================================================================
+float apsColorUVARectangleRenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsColorUVARectangleRenderer::~apsColorUVARectangleRenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsColorUVARectangleRenderer::~apsColorUVARectangleRenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
+}

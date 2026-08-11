@@ -13,6 +13,7 @@
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 
+
 // ============================================================================
 // apsSimpleMeshRenderer::Init — register the vertex/pixel shaders.
 // ea: 0x802920
@@ -50,6 +51,44 @@ apsSimpleMeshRenderer::apsSimpleMeshRenderer(const apsSimpleMeshRenderer::cArgs*
     mMesh = args->mMesh;
     mTexture = args->mTexture;
     mFields = 49;
+}
+
+// ============================================================================
+// apsSimpleMeshRenderer::GetId - ea: 0x7F36E0 (apsRegister.o COMDAT)
+// ============================================================================
+unsigned int apsSimpleMeshRenderer::GetId() const {
+    return 1397584744;
+}
+
+// ============================================================================
+// apsSimpleMeshRenderer::GetVersion - ea: 0x7F36F0 (apsRegister.o COMDAT)
+// ============================================================================
+float apsSimpleMeshRenderer::GetVersion() const {
+    return 1.0f;
+}
+
+// ============================================================================
+// apsSimpleMeshRenderer::IsCameraFacing - ea: 0x7F3700 (apsRegister.o COMDAT)
+// ============================================================================
+int apsSimpleMeshRenderer::IsCameraFacing() const {
+    return 0;
+}
+
+// ============================================================================
+// apsSimpleMeshRenderer::SetScreenFacingNormal - ea: 0x7F3710
+// ============================================================================
+void apsSimpleMeshRenderer::SetScreenFacingNormal(const math::Dir3& iNormal) {
+    (void)iNormal;
+}
+
+// ============================================================================
+// apsSimpleMeshRenderer::GetMeshRadius - ea: 0x7F3720
+// ============================================================================
+bool apsSimpleMeshRenderer::GetMeshRadius(float& oRadius) const {
+    if (mMesh == nullptr)
+        return false;
+    oRadius = mMesh->Sphere.v.m128_f32[3];
+    return true;
 }
 
 // ============================================================================
@@ -172,4 +211,11 @@ void apsSimpleMeshShader::AddNode(nglMeshNode* node, nglMeshSection* section, ng
 
 // apsSimpleMeshNode::GetDesc — ea: 0x8028E0
 void apsSimpleMeshNode::GetDesc(char* buf) {
+}
+
+// ============================================================================
+// apsSimpleMeshRenderer::~apsSimpleMeshRenderer - apsRegister.o COMDAT (sets base vtable)
+// ============================================================================
+apsSimpleMeshRenderer::~apsSimpleMeshRenderer() {
+    *(unsigned int*)this = 0x00D384E0;  // apsVirtualBase vtable
 }
