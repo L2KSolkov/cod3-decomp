@@ -451,3 +451,39 @@ const char* XAnimGetAnimName(AnimTree* anims, unsigned int animIndex)
         return "<unknown>";
     return (const char*)((const unsigned char*)entry->anim + 0xC);
 }
+
+// ea: 0x543680
+int XAnimHasFinished(XAnimTree* tree, unsigned int animIndex)
+{
+    if (tree->anims == nullptr || animIndex >= tree->anims->entries.mSize)
+        return 1;
+    unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex == 0)
+        return 1;
+    if (infoIndex >= 512)
+        return 1;
+    XAnimInfo* info = &g_info[infoIndex];
+    if (*(float*)&info->notifyName > *(float*)&info->notifyChild)
+        return 1;
+    if (*(float*)&info->notifyChild != 1.0f)
+        return 1;
+    if (info->notifyType > info->prev)
+        return 1;
+    return 0;
+}
+
+// ea: 0x544A80
+void XAnimSetTime(XAnimTree* tree, unsigned int animIndex, float time)
+{
+    if (tree == nullptr || tree->anims == nullptr
+        || animIndex >= tree->anims->entries.mSize)
+        return;
+    unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex == 0 || infoIndex >= 512)
+        return;
+    XAnimInfo* info = &g_info[infoIndex];
+    *(float*)&info->s[0] = time;
+    info->notifyType = 0;
+    *(float*)&info->s[4] = time;
+    info->prev = 0;
+}
