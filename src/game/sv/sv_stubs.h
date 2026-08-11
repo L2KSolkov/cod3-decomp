@@ -31,7 +31,8 @@ enum nslBankID : int { NSL_BANK_ID_INVALID = -1 };
 // offsets the disassembly reads (ent[2] = +0x20, ent[5] = +0x50, ent[6] = +0x60).
 // Full definition arrives when the collision object is ported.
 // ============================================================================
-struct DCGSet {
+class DCGSet {
+public:
     // Verified against disasm (TestInLeaf 0x623D40, TempBoxModel 0x618670,
     // CM_ModelBounds 0x6093D0, TempDCGSet ctor 0x638800): 112 bytes total.
     uint16_t nboxes;                   // +0x00
