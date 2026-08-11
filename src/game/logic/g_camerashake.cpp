@@ -24,7 +24,7 @@ extern bool Assert(const char* fmt, ...);
 
 extern int currCl;                       // ?currCl
 extern cgGlobal_t cgGlobal;              // ?cgGlobal@@3UcgGlobal_t@@A (cg.o)
-extern NoiseManager g_noise;             // ?g_noise (game2.o)
+NoiseManager g_noise;                    // ?g_noise@@3VNoiseManager@@A (game2.o)
 struct nglScene;
 extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
 extern nglScene* nglBuildScene;

@@ -228,7 +228,8 @@ struct Sound {
     unsigned int mWave;          // +0x04 nslWaveID
     HashString   mDialogNotify;  // +0x08
 };
-struct SoundHandleDb {
+class SoundHandleDb {
+public:
     struct DbElement {
         Sound*       mObject;  // +0x00
         unsigned int mKey;     // +0x04

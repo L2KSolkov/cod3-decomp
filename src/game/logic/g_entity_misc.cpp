@@ -2206,7 +2206,7 @@ extern void nslSetSourcePosition(nslSourceID sid,
 extern void nslSetSourceVelocity(nslSourceID sid,
                                  const float* velocity);    // nsl
 extern const char* nslWaveGetName(nslWaveID waveID);        // nsl
-extern nslSourceID g_break_on_stop;  // ?g_break_on_stop@@3W4nslSourceID@@A (game.o)
+nslSourceID g_break_on_stop;         // ?g_break_on_stop@@3W4nslSourceID@@A (game.o)
 extern void tlWarning(const char* fmt, ...);                // tl_xboxr
 extern "C" int __fpclass(float);
 extern const char* nslGetSourceName(nslSourceID sid);       // nsl

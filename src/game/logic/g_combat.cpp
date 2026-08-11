@@ -909,7 +909,7 @@ void ParseHitLocDmgTableEntry(const char* name, const ConfigString* cfgstr)
 // ea: 0x004563E0
 void G_ParseHitLocDmgTable()
 {
-    ConfigStringManager* v0 = ConfigStringManager_sInst;
+    ConfigStringManager* v0 = ConfigStringManager::sInst;
     TPakId v1 = CurPakId();
     v0->CallbackSearch(v1, "MPLOCDMGTABLE", ParseHitLocDmgTableEntry);
 }

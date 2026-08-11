@@ -1469,7 +1469,8 @@ struct CgWeaponSurf {
     uint8_t     _pad[0x90];
     IVPointerRaw iWorldSurfIndex;  // +0x90
 };
-extern CgWeaponSurf cg_weapons[];
+struct weaponInfo_s;
+extern weaponInfo_s* cg_weapons;  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern IVPointer<XModel> SV_XModelGet(const char* name);
 
@@ -1550,7 +1551,7 @@ void G_DObjUpdate(Entity* ent, bool forceWeaponModel)
         weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(client->ps.weapon);
         if ((InfoForWeapon->weapClass != 0x0D /* WEAPCLASS_AMMO */
              || client->ps.mAmmoDropTime + 2000 <= level.time)
-            && cg_weapons[client->ps.weapon].iWorldSurfIndex.mValue != nullptr)
+            && ((CgWeaponSurf*)cg_weapons)[client->ps.weapon].iWorldSurfIndex.mValue != nullptr)
         {
             IVPointer<XModel> svx = SV_XModelGet(InfoForWeapon->szWorldModel);
             dobjModels[1].model.mValue = svx.mValue;
@@ -1563,8 +1564,8 @@ void G_DObjUpdate(Entity* ent, bool forceWeaponModel)
     else if (forceWeaponModel)
     {
         weaponFileInfo_t* v21 = BG_GetInfoForWeapon(ent->s.weapon);
-        ValidatePakId((TPakId)cg_weapons[ent->s.weapon].iWorldSurfIndex.mPakId);
-        if (cg_weapons[ent->s.weapon].iWorldSurfIndex.mValue != nullptr)
+        ValidatePakId((TPakId)((CgWeaponSurf*)cg_weapons)[ent->s.weapon].iWorldSurfIndex.mPakId);
+        if (((CgWeaponSurf*)cg_weapons)[ent->s.weapon].iWorldSurfIndex.mValue != nullptr)
         {
             IVPointer<XModel> svx = SV_XModelGet(v21->szWorldModel);
             dobjModels[1].model.mValue = svx.mValue;

@@ -1457,7 +1457,6 @@ public:
     void CallbackSearch(TPakId pakId, const char* type,
                         void (*callback)(const char*, const ConfigString*));
 };
-extern ConfigStringManager* ConfigStringManager_sInst;
 
 // cspField_t - config-string parse field (12 bytes) - verified against IDA
 struct cspField_t {

@@ -10738,7 +10738,7 @@ void BG_ParseWeaponInfoFiles()
         s_none_hash = HashString::CalcHash("none");
     }
     inited->internalNameHash = s_none_hash;
-    ConfigStringManager* v1 = ConfigStringManager_sInst;
+    ConfigStringManager* v1 = ConfigStringManager::sInst;
     bg_iNumWeapons = 0;
     bg_iNumSharedAmmoCaps = 0;
     TPakId v2 = CurPakId();

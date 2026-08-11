@@ -67,7 +67,7 @@ extern void AnimationPlayer_Play(void* player, void* anim, bool forceRestart,
                                  void* callback, float speed,
                                  float time_in_seconds_to_start);
 extern void sWeaponAnimCallback();
-extern void* cg_weapons;          // weaponInfo_s[]
+extern weaponInfo_s* cg_weapons;  // weaponInfo_s[]
 extern int dword_F6A2A0[4 * 802];
 extern int dword_F6A2A4[4 * 802];
 extern int dword_F6A2A8[4 * 802];
@@ -1454,7 +1454,8 @@ extern int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
                                     weaponInfo_s* weaponInfo);
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
 extern void Camera_StopAnimating(void* cam, float minTweenTime);
-extern void* gCamera;
+struct Camera;
+extern struct Camera* gCamera;
 struct XAnimTree;
 extern bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs);
 extern struct cgs_t* cgs;

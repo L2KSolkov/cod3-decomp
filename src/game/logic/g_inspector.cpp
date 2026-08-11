@@ -1046,7 +1046,7 @@ public:
     int mNumBadPaths;  // +0x00
     int mTotalNum;     // +0x04
 };
-extern BadPathManager g_badPathManager;  // ?g_badPathManager@@3VBadPathManager@@A (mp_actors.o)
+BadPathManager g_badPathManager;         // ?g_badPathManager@@3VBadPathManager@@A (mp_actors.o)
 struct PathNodeLevelTOC {
     int mNodeCount;  // +0x00
 };

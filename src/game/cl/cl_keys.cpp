@@ -77,6 +77,7 @@ struct KeyInfoEntry {
 keyname_t keynames[512];           // ?keynames@@3PAUkeyname_t@@A (cl.o @ 0x11DE9D8)
 keyname_t keynames_localized[512]; // ?keynames_localized@@3PAUkeyname_t@@A (cl.o @ 0x11DEE38)
 const char* off_DEFC78[10];  // cl.o
+int re_Shutdown = 0;         // ?re_Shutdown@@3HA (cl.o)
 static char tinystr[5];
 
 // ============================================================================
