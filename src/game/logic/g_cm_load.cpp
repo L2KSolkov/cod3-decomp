@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // g_cm_load.cpp - game.o CM_ BSP leaf helpers (cm_load.cpp)
 // Verified against IDA (release map offsets + 0x40C000 = VA).
 // ============================================================================
@@ -1169,7 +1169,7 @@ extern int FS_FOpenFileRead(const char* filename, int* file, int uniqueFILE);  /
 extern int FS_Read(void* buffer, int len, int f);  // core.o
 extern int FS_Seek(int f, long offset, int origin);  // core.o ?FS_Seek@@YAHHJH@Z
 extern void FS_FCloseFile(int f);  // core.o
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file,
                                  int line);  // core.o
 extern char* com_lumpBuf;  // ?com_lumpBuf@@3PADA (game.o)
@@ -1228,7 +1228,7 @@ int CM_LoadLump(int lumpnum, char** pBuf)
     {
         FS_Seek(h, header.lumps[lumpnum].fileofs - 312, 0);
         com_lumpBuf = (char*)mem_heap_malloc_ctx(
-            16, (unsigned int)filelen, "hunk",
+            (unsigned int)filelen, 16, "hunk",
             "c:\\cod\\code\\game\\cm_load.cpp", 267);
         FS_Read(com_lumpBuf, filelen, h);
         FS_FCloseFile(h);
@@ -4155,7 +4155,7 @@ bool sight_trace_sphere(traceWork_t* tw)
 // ============================================================================
 extern cdl_proftimer cdl_proftimer_sight_trace_point;   // game.o @ 0xF44308
 extern cdl_proftimer cdl_proftimer_sight_trace_sphere;  // game.o @ 0xF3E960
-extern void Com_Memset(void* dest, int val, unsigned int count);  // core.o
+extern void Com_Memset(unsigned int* dest, int val, unsigned int count);  // core.o
 // Capsule sphere descriptor (CollisionMgr.h) - 48 bytes, verified vs the
 // 12-dword `rep movsd` in SightTrace (0x6343AB) / Trace (0x640F99):
 //   { Position3 offset; Dir3 radiusOffset; int use; float radius;
@@ -4248,7 +4248,7 @@ int SightTrace(int oldHitNum, const math::Position3* start,
             __debugbreak();
     }
     traceWork_t tw;
-    Com_Memset(&tw, 0, sizeof(tw));
+    Com_Memset((unsigned int*)&tw, 0, sizeof(tw));
     tw.trace_fraction = 1.0f;
     __m128 center =
         _mm_mul_ps(_mm_add_ps(mins->v, maxs->v), _mm_set1_ps(0.5f));
@@ -4331,7 +4331,7 @@ int SightTrace(int oldHitNum, const math::Position3* start,
 int PATH_SightTrace(const math::Position3& start, const math::Position3& end)
 {
     traceWork_t tw;
-    Com_Memset(&tw, 0, sizeof(tw));
+    Com_Memset((unsigned int*)&tw, 0, sizeof(tw));
     tw.start.v = start.v;
     tw.end.v = end.v;
     tw.trace_fraction = 1.0f;
@@ -4378,7 +4378,7 @@ void Trace(trace_t* results, const math::Position3& start,
     if (sphere == nullptr)
         results->fraction = 1.0f;
     traceWork_t tw;
-    Com_Memset(&tw, 0, sizeof(tw));
+    Com_Memset((unsigned int*)&tw, 0, sizeof(tw));
     tw.trace_fraction = results->fraction;
     __m128 center =
         _mm_mul_ps(_mm_add_ps(mins.v, maxs.v), _mm_set1_ps(0.5f));
@@ -4564,7 +4564,7 @@ void TraceSphere(const proximity_data_t& data, trace_t* results,
     cdl_proftimer_trace_sphere_list.start();
     results->fraction = 1.0f;
     traceWork_t tw;
-    Com_Memset(&tw, 0, sizeof(tw));
+    Com_Memset((unsigned int*)&tw, 0, sizeof(tw));
     tw.trace_fraction = results->fraction;
     __m128 center =
         _mm_mul_ps(_mm_add_ps(mins.v, maxs.v), _mm_set1_ps(0.5f));
@@ -4660,7 +4660,7 @@ void TracePoint(const proximity_data_t& data, trace_t* results,
     cdl_proftimer_trace_point_list.start();
     results->fraction = 1.0f;
     traceWork_t tw;
-    Com_Memset(&tw, 0, sizeof(tw));
+    Com_Memset((unsigned int*)&tw, 0, sizeof(tw));
     tw.contents = brushmask;
     tw.start.v = start.v;
     tw.end.v = end.v;
@@ -11657,7 +11657,8 @@ extern void nglGetStringDimensions(void* font, const char* text,
                                    unsigned int* width,
                                    unsigned int* height, float scaleX,
                                    float scaleY);  // ngl_xboxr
-extern void* nglSysFont;  // ?nglSysFont@@3PAVnglFont@@A (ngl_font.o)
+struct nglFont;
+extern nglFont* nglSysFont;  // ?nglSysFont@@3PAUnglFont@@A (ngl_font.o)
 extern void* nglListAlloc(unsigned int Bytes,
                           unsigned int Alignment);  // inline 0x660140
 extern void mem_heap_free(void* ptr);  // mem_heap

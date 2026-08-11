@@ -36,8 +36,8 @@ extern int c_active_windings;   // ?c_active_windings@@3HA (game.o)
 extern int c_peak_windings;     // ?c_peak_windings@@3HA (game.o)
 extern void* _Z_MallocInternal(unsigned int size);  // core.o
 extern void  _Z_FreeInternal(void* ptr);            // core.o
-extern void  Com_Memcpy(void* dest, const void* src, unsigned int count);
-    // ?Com_Memcpy@@YAXPAXPBXI@Z
+extern void  Com_Memcpy(char* dest, char* src, int count);
+    // ?Com_Memcpy@@YAXPAD0H@Z
 winding_t* CopyWinding(winding_t* w);  // ea: 0x609880 (defined below)
 
 // cdlPlane with SIMD data access (cdl_types.h; 16 bytes)
@@ -316,7 +316,8 @@ void AddWindingToConvexHull(winding_t* w, winding_t** hull,
     }
     int numpoints = (*hull)->numpoints;
     float hullPoints[128][3];
-    Com_Memcpy(hullPoints, (*hull)->p, 12 * (*hull)->numpoints);
+    Com_Memcpy((char*)hullPoints, (char*)(*hull)->p,
+               12 * (*hull)->numpoints);
     int i = 0;
     if (w->numpoints > 0)
     {
@@ -460,7 +461,8 @@ void AddWindingToConvexHull(winding_t* w, winding_t** hull,
                             v7 = v51;
                         }
                         numpoints = numNew;
-                        Com_Memcpy(hullPoints, newHullPoints, 12 * numNew);
+                        Com_Memcpy((char*)hullPoints, (char*)newHullPoints,
+                                   12 * numNew);
                     }
                 }
             }
@@ -481,7 +483,7 @@ void AddWindingToConvexHull(winding_t* w, winding_t** hull,
     winding_t* v42 = (winding_t*)_Z_MallocInternal(12 * numpoints + 4);
     v42->numpoints = numpoints;
     *hull = v42;
-    Com_Memcpy(v42->p, hullPoints, 12 * numpoints);
+    Com_Memcpy((char*)v42->p, (char*)hullPoints, 12 * numpoints);
 }
 
 // ea: 0x00609750

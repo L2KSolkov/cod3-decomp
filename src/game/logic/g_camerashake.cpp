@@ -25,8 +25,9 @@ extern bool Assert(const char* fmt, ...);
 extern int currCl;                       // ?currCl
 extern int cgGlobal_time;                // cgGlobal.time
 extern NoiseManager g_noise;             // ?g_noise (game2.o)
-extern const math::Mat43& nglGetMatrix_ViewToWorld(void* Scene);
-extern void* nglBuildScene;
+struct nglScene;
+extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
+extern nglScene* nglBuildScene;
 extern void StartCameraShake_glue(int type, void* worldPos, float size,
                                   float timeOverride, float nextDelay);
 extern int cgGlobal_time;             // ?cgGlobal@@3UcgGlobal_t@@A
@@ -334,7 +335,7 @@ void CameraShakeInstance::SetFalloff(math::Position3* worldPos, float falloff)
     if (worldPos != nullptr)
     {
         __m128 v5 = _mm_sub_ps(
-            nglGetMatrix_ViewToWorld(nglBuildScene).w.v, worldPos->v);
+            nglGetMatrix_ViewToWorld(nglBuildScene)->w.v, worldPos->v);
         __m128 v6 = _mm_mul_ps(v5, v5);
         float dist = sqrtf(v6.m128_f32[0]
                            + (v6.m128_f32[1] + v6.m128_f32[2])) * falloff;

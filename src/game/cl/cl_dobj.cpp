@@ -17,7 +17,7 @@ extern int bCL_AllowedAllocSkel;
 extern int animFrametime;
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern char* va(const char* fmt, ...);
 extern void SV_SetCheckSum(int checksum);
@@ -99,7 +99,7 @@ int CL_DObjCreateSkelForBone(DObj* obj)
     if (DObjSkelExists(obj, com_skelTimeStamp) != 0)
         return 1;
     unsigned int AllocSkelSize = DObjGetAllocSkelSize(obj);
-    char* v3 = (char*)mem_heap_malloc_ctx(16, AllocSkelSize, "hunk",
+    char* v3 = (char*)mem_heap_malloc_ctx(AllocSkelSize, 16, "hunk",
                                           "c:\\cod\\code\\game\\cl_cgame.cpp",
                                           569);
     DObjCreateSkel(obj, v3);
@@ -120,7 +120,7 @@ int CL_DObjCreateSkelForBones(DObj* obj)
     if (DObjSkelExists(obj, com_skelTimeStamp) != 0)
         return 1;
     unsigned int AllocSkelSize = DObjGetAllocSkelSize(obj);
-    char* v3 = (char*)mem_heap_malloc_ctx(16, AllocSkelSize, "hunk",
+    char* v3 = (char*)mem_heap_malloc_ctx(AllocSkelSize, 16, "hunk",
                                           "c:\\cod\\code\\game\\cl_cgame.cpp",
                                           595);
     DObjCreateSkel(obj, v3);

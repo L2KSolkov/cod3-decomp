@@ -343,7 +343,7 @@ void SV_SetExpectedHunkUsage(char* mapname) {
         void* v4 = _Z_MallocInternal(v1 + 1);
         memset(v4, 0, v3);
         char* buf = (char*)v4;
-        FS_Read(v4, v2, handle);
+        FS_Read((unsigned char*)v4, (unsigned int)v2, handle);
         FS_FCloseFile(handle);
         buftrav = buf;
         const char* v5 = Com_Parse(&buftrav);

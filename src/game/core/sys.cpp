@@ -22,7 +22,7 @@ extern void tlPrint(const char* txt);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_realloc(void* ptr, unsigned int size);
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void* mem_heap_malloc_align_heap(void* heap, unsigned int alignment,
                                        unsigned int size);
@@ -148,7 +148,7 @@ void SyncFrameBuffers()
 // ea: 0x004BBF50
 void* MT_AllocAnimTree(unsigned int size)
 {
-    return mem_heap_malloc_ctx(16, size, "hunk",
+    return mem_heap_malloc_ctx(size, 16, "hunk",
                                "c:\\cod\\code\\game\\common.cpp", 4145);
 }
 
@@ -207,7 +207,7 @@ void* TlSystemCallbacks::MemAlloc(unsigned int size, unsigned int align,
     }
     else
     {
-        result = mem_heap_malloc_ctx(align, size, nullptr, nullptr, 0);
+        result = mem_heap_malloc_ctx(size, align, nullptr, nullptr, 0);
     }
     if (result == nullptr)
         __debugbreak();

@@ -15,8 +15,9 @@
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-extern bool nglIsSphereVisible(const math::Position3& Center, float Radius,
-                               const math::Vector4* Clip);
+struct nglFrustum;
+extern bool nglIsSphereVisible(const nglFrustum* Frustum,
+                               const math::Vector4* Center, float Radius);
 extern nglMesh* nglCreateScratchMesh(unsigned int Flags, unsigned int NSections);
 extern void tlWarning(const char* Format, ...);
 extern tlSkipList<nglFont, tlFixedString>     nglFontDirectory;
@@ -164,7 +165,9 @@ int cdGetClipResult(const nglMeshSection* Section, const nglMeshNode* MeshNode,
                    _mm_mul_ps(_mm_shuffle_ps(v4.v, v4.v, 0x55), MeshNode->LocalToWorld.y.v)),
         _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v4.v, v4.v, 0xAA), v5.v),
                    MeshNode->LocalToWorld.w.v));
-    return nglIsSphereVisible(v7, v8, Scene->ClipPlanes) - 1;
+    return nglIsSphereVisible((const nglFrustum*)Scene->ClipPlanes,
+                              (const math::Vector4*)&v7, v8)
+           - 1;
 }
 
 // ============================================================================
@@ -198,7 +201,7 @@ int auxGetNBones(nglMesh* m) {
 // ============================================================================
 // auxCreateScratchMesh / auxCloseScratchMesh - ea: 0x7C2F20 / 0x7C2F30
 // ============================================================================
-nglMesh* auxCreateScratchMesh(unsigned int flags, unsigned int num) {
+nglMesh* auxCreateScratchMesh(int flags, int num) {
     return nglCreateScratchMesh(flags, num);
 }
 

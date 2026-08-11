@@ -15,7 +15,7 @@ extern void  Q_strncpyz(char* dest, const char* src, int destsize);
 extern void  Com_Memset(unsigned int* dest, int val, unsigned int count);
 extern const usercmd_s& CL_GetCurUserCmd(int clientNum);
 extern void  CL_SetUsercmdButtonsWeapons(int buttons, int weapon);
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size, const char* ctx, const char* file, int line);
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment, const char* ctx, const char* file, int line);
 extern int   com_skelTimeStamp;
 extern cvar_t* com_developer;
 extern const char* nullStr;
@@ -98,7 +98,7 @@ void SV_ShutdownGameProgs() {
 // SV_SaveWrite — ea: 0x51EBC0
 // ============================================================================
 void* SV_SaveWrite(const void* buffer, int len) {
-    void* result = mem_heap_malloc_ctx(16, len, "hunk", "c:\\cod\\code\\game\\sv_game.cpp", 622);
+    void* result = mem_heap_malloc_ctx(len, 16, "hunk", "c:\\cod\\code\\game\\sv_game.cpp", 622);
     memcpy(result, buffer, len);
     return result;
 }
@@ -141,7 +141,7 @@ bool SV_DObjCreateSkelForBone(Entity* entity, int boneIndex) {
     if (DObjSkelExists(mDObj, com_skelTimeStamp) != 0)
         return true;
     unsigned int AllocSkelSize = DObjGetAllocSkelSize(mDObj);
-    char* v4 = (char*)mem_heap_malloc_ctx(16, AllocSkelSize, "hunk", "c:\\cod\\code\\game\\sv_game.cpp", 689);
+    char* v4 = (char*)mem_heap_malloc_ctx(AllocSkelSize, 16, "hunk", "c:\\cod\\code\\game\\sv_game.cpp", 689);
     DObjCreateSkel(mDObj, v4);
     return false;
 }
@@ -163,7 +163,7 @@ bool SV_DObjCreateSkelForBones(Entity* entity) {
         if (DObjSkelExists(mDObj, com_skelTimeStamp) != 0)
             return true;
         unsigned int AllocSkelSize = DObjGetAllocSkelSize(mDObj);
-        char* v4 = (char*)mem_heap_malloc_ctx(16, AllocSkelSize, "hunk", "c:\\cod\\code\\game\\sv_game.cpp", 718);
+        char* v4 = (char*)mem_heap_malloc_ctx(AllocSkelSize, 16, "hunk", "c:\\cod\\code\\game\\sv_game.cpp", 718);
         DObjCreateSkel(mDObj, v4);
     }
     return false;

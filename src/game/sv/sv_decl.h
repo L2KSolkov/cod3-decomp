@@ -114,7 +114,7 @@ char*  ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
 
 // fs.cpp
 int    FS_FOpenFileByMode(const char* qpath, int* f, int mode);
-int    FS_Read(void* buffer, int len, int f);
+unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
 void   FS_FCloseFile(int f);
 
 // common/parse helpers

@@ -2072,14 +2072,12 @@ struct nglPerfInfoStruct {
     float RenderMS;
     float ListSubmitMS;
     float ListSendMS;
-};
-struct nglSyncPerfInfoStruct {
     int NodeCount;
     int TotalPolys;
 };
 
 extern nglPerfInfoStruct nglPerfInfo;
-extern nglSyncPerfInfoStruct nglSyncPerfInfo;
+extern nglPerfInfoStruct nglSyncPerfInfo;
 extern vmCvar_t bg_viewheight_standing;
 
 void TestFPS::GatherMetrics()

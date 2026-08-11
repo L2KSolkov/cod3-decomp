@@ -17,7 +17,7 @@ struct cvar_t;
 extern cvar_t* com_cl_running;
 extern struct vm_s { int (__cdecl* systemCall)(int*); }* gvm;
 extern int VM_Call(struct vm_s* vm, int callnum, ...);
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void nglWaitForRendering();
 extern void PakManager_ClearUserDistance(void* self, const void* cpak);
@@ -105,7 +105,7 @@ void CL_GetGlconfigUI(glconfig_t* config)
 void CL_SaveWrite(const void* buffer, unsigned int len)
 {
     ASSERT("0", "c:\\cod\\code\\game\\cl_cgame.cpp", 163);
-    memcpy(mem_heap_malloc_ctx(16, len, "hunk",
+    memcpy(mem_heap_malloc_ctx(len, 16, "hunk",
                                "c:\\cod\\code\\game\\cl_cgame.cpp", 165),
            buffer, len);
 }

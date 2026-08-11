@@ -186,7 +186,7 @@ struct PanelQuad;
 struct nglFont;
 struct ControllerDisconnectedMenu;
 
-class FEManager {
+struct FEManager {
 public:
     // +0x00 vftable (1 ptr)
     uint8_t _vftable[4];
@@ -923,7 +923,7 @@ extern void  mem_heap_free(void* ptr);
 // Cross-object globals used by sv.o
 // ============================================================================
 extern SaveGameData* gSaveGameData;   // ?gSaveGameData@@3PAUSaveGameData@@A
-extern FEManager     g_femanager;     // ?g_femanager@@3VFEManager@@A
+extern FEManager     g_femanager;     // ?g_femanager@@3UFEManager@@A
 extern bool          gQuickStart;     // ?gQuickStart@@3_NA
 extern bool          gReturnToMenu;   // ?gReturnToMenu@@3_NA
 extern cvar_t*       com_sv_running;  // ?com_sv_running@@3PAUcvar_t@@A

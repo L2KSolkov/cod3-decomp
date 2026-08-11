@@ -39,9 +39,10 @@ extern void CL_AddConsoleInfoColor(int iFirstInfo, const float* vColor);
 extern void CL_AddDeathMessageText(const char* pszString, int iForceColor);
 extern void* FEManager_GetFont(void* self, int f, float scale);
 struct FEManager; extern FEManager g_femanager;
-extern void nglGetStringDimensions(void* font, const char* text,
-                                   unsigned int* width, unsigned int* height,
-                                   float scaleX, float scaleY);
+struct nglFont;
+extern void nglGetStringDimensions(nglFont* font, unsigned int* width,
+                                   unsigned int* height, float scaleX,
+                                   float scaleY, const char* fmt, ...);
 extern bool View_IsSplitScreen();
 extern void SCR_FillRect(float x, float y, float width, float height,
                          const float* color);
@@ -879,11 +880,13 @@ void CL_DeathMessagePrint(print_msg_type_t type, const char* pszAttackerName,
         unsigned int victim_name_width;
         unsigned int dontcare;
         void* Font = FEManager_GetFont(&g_femanager, 0, 1.0f);  // FONT_GARAMOND
-        nglGetStringDimensions(Font, pszAttackerName, &attacker_name_width,
-                               &dontcare, 0.34999999f, 0.34999999f);
+        nglGetStringDimensions((nglFont*)Font, &attacker_name_width,
+                               &dontcare, 0.34999999f, 0.34999999f,
+                               pszAttackerName);
         void* v15 = FEManager_GetFont(&g_femanager, 0, 1.0f);
-        nglGetStringDimensions(v15, pszVictimName, &victim_name_width,
-                               &dontcare, 0.34999999f, 0.34999999f);
+        nglGetStringDimensions((nglFont*)v15, &victim_name_width,
+                               &dontcare, 0.34999999f, 0.34999999f,
+                               pszVictimName);
         print_msg_type_t v16;
         int v17;
         if (attacker_name_width + victim_name_width > 0xFA

@@ -38,8 +38,9 @@ extern unsigned int AeHash(const char* str);
 extern void VectorNormalize(math::Dir3* v);
 extern math::Position3 nglProjectPoint(math::Position3* result,
                                        math::Position3* in, void* scene);
-extern const math::Mat43* nglGetMatrix_ViewToWorld(void* scene);
-extern void* nglBuildScene;
+struct nglScene;
+extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* scene);
+extern nglScene* nglBuildScene;
 extern void* gpBrocAPI;
 extern unsigned int BrocAPI_GetEnt(void* api, void* nameStr, unsigned int hash,
                                    void* a3, int a4, int a5);

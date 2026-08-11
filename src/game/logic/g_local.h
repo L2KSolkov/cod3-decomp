@@ -944,7 +944,7 @@ int       XAnimGetNumChildren(AnimTree* anims, unsigned int animIndex);
 unsigned int XAnimGetChildAt(AnimTree* anims, unsigned int animIndex, unsigned int childIndex);
 const char*  XAnimGetAnimName(AnimTree* anims, unsigned int animIndex);
 void      XAnimClearTree(XAnimTree* tree);
-void      Com_XAnimFreeSmallTree(XAnimTree* animtree);
+void      Com_XAnimFreeSmallTree(void* tree);
 
 // ============================================================================
 // sv.o / anim.o DObj server helpers
@@ -1987,7 +1987,7 @@ extern void (*thinktable[])(Entity* ent, int msec);
 void SV_AdjustAreaPortalState(Entity* ent, int open);
 int  SV_inPVS(const math::Position3& p1, const math::Position3& p2);
 void vectoangles(float* vec, float* angles);
-float RadiusFromBounds(const math::Position3& mins, const math::Position3& maxs);
+float RadiusFromBounds(const math::Position3* mins, const math::Position3* maxs);
 int  CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                      DbLinkedHandle<EntityHandleDb, Entity>* entityList,
                      int maxcount, int contentmask);

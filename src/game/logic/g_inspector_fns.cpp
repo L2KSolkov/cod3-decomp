@@ -41,10 +41,10 @@ extern int gNewHardMaxHealth;
 extern vmCvar_t g_drawEntBBoxes;  // ?g_drawEntBBoxes
 
 // nglDebug struct (ngl_debug.o)
-struct ngliDebugStruct {
+struct nglDebugStruct {
     unsigned char ShowPerfInfo;  // +0x00
 };
-extern ngliDebugStruct nglDebug;  // ?nglDebug@@3UnglDebugStruct@@A
+extern nglDebugStruct nglDebug;  // ?nglDebug@@3UnglDebugStruct@@A
 
 // ============================================================================
 // Controller config callbacks

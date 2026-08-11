@@ -44,7 +44,7 @@ int cdGetClipResult(const nglMeshSection* Section, const nglMeshNode* MeshNode,
 unsigned int auxGetHash(const nglTexture* Tex);
 void         auxSetScale(nglMeshParams* dest, float x, float y, float z);
 int          auxGetNBones(nglMesh* m);
-nglMesh*     auxCreateScratchMesh(unsigned int flags, unsigned int num);
+nglMesh*     auxCreateScratchMesh(int flags, int num);
 nglMesh*     auxCloseScratchMesh(nglMesh* m);
 int          auxIsTextureAnimated(nglTexture* Tex);
 
