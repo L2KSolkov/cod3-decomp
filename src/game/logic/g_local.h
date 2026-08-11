@@ -1315,8 +1315,8 @@ int  BG_ClipForWeapon(int iWeapon);
 void BG_GetRandomAmmoCounts(int& ammo, int& clip, int weaponIndex);  // game2.o
 const char* BG_GetAmmoTypeName(int iAmmoIndex);       // game.o 0x6071B0
 int BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x6074F0
-weapSlot_t BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
-                                    weapSlot_t preferedSlot);  // game.o 0x607570
+int BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                             weapSlot_t preferedSlot);  // game.o 0x607570
 weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS, int iWeaponIndex,
                                    int bAnyMode);    // game.o 0x616AA0
 int  BG_CanItemBeGrabbed(const EntityState* ent, const PlayerState* ps,
@@ -2659,7 +2659,7 @@ public:
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
 private:
     void AddBank(TPakId pakId, CGBank* bank);   // ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z (game.o 0x61FE30)
-protected:
+private:
     virtual void UnloadBank(TPakId pakId);      // ?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FE60)
 public:
     void DecodeCGBank(const char* name, unsigned char* data, int size,
@@ -2717,7 +2717,7 @@ void unpack_poly(const CGBank* bank, const cdl_vinfo_t* vinfo,
                  const unsigned char* pvi, math::Position3& v0,
                  math::Position3& v1,
                  math::Position3& v2);  // game.o 0x6292E0
-void unpack(const CGBank* bank, unsigned int pi,
+void unpack(const CGBank& bank, unsigned int pi,
             math::Position3* verts);  // game.o 0x622B60
 void CM_ValidateAllWorldSectors();    // game.o 0x633010
 int CM_AreaEntities(const math::Position3& mins,
@@ -2807,8 +2807,8 @@ void InitEntitiesBSP();  // game.o 0x6199C0
 struct leafList_s;
 void GetLeaves(leafList_s* ll, int nodeIndex, float* const mindist);  // game.o 0x619050
 int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
-                   const math::Position3* pos, const math::Position3* mins,
-                   const math::Position3* maxs, int* list, int listsize,
+                   const math::Position3& pos, const math::Position3& mins,
+                   const math::Position3& maxs, int* list, int listsize,
                    int* lastLeaf);  // game.o 0x6194A0
 void CM_LoadMap(const char* name, int clientload, int* checksum);  // game.o 0x618390
 DCGSet* ClipHandleToDCGSet(TPakId pakId, int handle);  // game.o 0x622C00
@@ -2819,7 +2819,8 @@ uint8_t* CM_ClusterPVS(int cluster);                 // game.o 0x60B040
 int CM_TraceBox(const math::Position3& start, const math::Position3& end,
                 const math::Position3& mins, const math::Position3& maxs,
                 float fraction);  // game.o 0x60BCD0
-void CM_ClipMoveToEntities(moveclip_t* clip);  // game.o 0x60BF60
+void CM_ClipMoveToEntities(moveclip_t* clip,
+                           const collision_context_t& context);  // game.o 0x60BF60
 void AddLeanToPosition(float* const vPosition, float fViewYaw,
                        float fLeanFrac, float fViewRoll,
                        float fLeanDist);  // game.o 0x61FBA0

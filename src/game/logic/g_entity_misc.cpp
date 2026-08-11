@@ -1024,15 +1024,16 @@ void GamePause::SetAllPaused(bool paused)
 // ============================================================================
 // ScriptEventHandler lives in g_game2_misc.cpp (game2.o port); params are
 // ScriptEventParams* in the binary, void* in the tree's game2.o port.
+class ScriptEventParams;
 struct ScriptEventHandler {
     unsigned char m_dlist_node[8];      // +0x00
     unsigned char mEvents[0x38];        // +0x08 (ScriptEvent mEvents[7])
     ScriptEventHandler* mNext;          // +0x40
-    bool ExecEvents(Entity* ent, HashString h, void* params);  // game2.o 0x4F5A50
+    bool ExecEvents(Entity* ent, HashString h, ScriptEventParams* params);  // game2.o 0x4F5A50
 };
 
 // ea: 0x00611F10
-void Entity::ExecScriptHandler(HashString h, void* params)
+void Entity::ExecScriptHandler(HashString h, ScriptEventParams* params)
 {
     ScriptEventHandler* mScriptEventHandler = this->mScriptEventHandler;
     if (mScriptEventHandler != nullptr)

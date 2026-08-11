@@ -70,7 +70,8 @@ extern void          TracePoint(const proximity_data_t* data, trace_t* results,
 extern void          CM_PointTraceStaticModels(trace_t* results, const math::Position3* start,
                                                const math::Position3* end, const collision_context_t* context);
 extern void          CM_PointTraceToEntities(pointtrace_t* clip, const collision_context_t* context);
-extern void          CM_ClipMoveToEntities(moveclip_t* clip, const collision_context_t* context);
+extern void          CM_ClipMoveToEntities(moveclip_t* clip,
+                                           const collision_context_t& context);
 extern int           CM_PointSightTraceToEntities(sightpointtrace_t* clip, const collision_context_t* context);
 extern int           CM_ClipSightTraceToEntities(sightclip_t* clip, const collision_context_t& context);
 extern int           SightTrace(int oldHitNum, const math::Position3* start, const math::Position3* end,
@@ -578,7 +579,7 @@ void SV_Trace(trace_t* results, const math::Position3* start, const math::Positi
             clip.start.v = _mm_add_ps(start->v, _mm_mul_ps(clip.maxs.v, _mm_set1_ps(0.5f)));
             clip.end.v = _mm_add_ps(end->v, _mm_mul_ps(clip.maxs.v, _mm_set1_ps(0.5f)));
             clip.outerSize.v = _mm_xor_ps(_mm_set1_ps(-0.0f), clip.mins.v);
-            CM_ClipMoveToEntities(&clip, context);
+            CM_ClipMoveToEntities(&clip, *context);
             if ((unsigned int)clip.trace.partGroup > 0x12u) {
                 AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
                 AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_world.cpp";
@@ -921,7 +922,7 @@ void TraceSphereFull(const proximity_data_t* proximity_data, trace_t* results,
         clip.start.v = _mm_add_ps(start->v, _mm_mul_ps(clip.maxs.v, _mm_set1_ps(0.5f)));
         clip.end.v = _mm_add_ps(end->v, _mm_mul_ps(clip.maxs.v, _mm_set1_ps(0.5f)));
         clip.outerSize.v = _mm_xor_ps(_mm_set1_ps(-0.0f), clip.mins.v);
-        CM_ClipMoveToEntities(&clip, context);
+        CM_ClipMoveToEntities(&clip, *context);
         if ((unsigned int)clip.trace.partGroup > 0x12u) {
             AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_world.cpp";

@@ -1410,14 +1410,14 @@ void GetLeaves(leafList_s* ll, int nodeIndex, float& mindist)
 
 // ea: 0x006194A0
 int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
-                   const math::Position3* pos, const math::Position3* mins,
-                   const math::Position3* maxs, int* list, int listsize,
+                   const math::Position3& pos, const math::Position3& mins,
+                   const math::Position3& maxs, int* list, int listsize,
                    int* lastLeaf)
 {
     ++g_bspTree->checkcount;
     leafList_s ll;
-    ll.bounds[0].v = mins->v;
-    ll.bounds[1].v = maxs->v;
+    ll.bounds[0].v = mins.v;
+    ll.bounds[1].v = maxs.v;
     ll.count = 0;
     ll.maxcount = listsize;
     ll.list = list;
@@ -1427,9 +1427,9 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
     if (v15 <= 0.0f)
         goto LABEL_4;
     ll.bounds[0].v = cached_pos.v;
-    float dx = cached_pos.v.m128_f32[0] - pos->v.m128_f32[0];
-    float dy = cached_pos.v.m128_f32[1] - pos->v.m128_f32[1];
-    float dz = cached_pos.v.m128_f32[2] - pos->v.m128_f32[2];
+    float dx = cached_pos.v.m128_f32[0] - pos.v.m128_f32[0];
+    float dy = cached_pos.v.m128_f32[1] - pos.v.m128_f32[1];
+    float dz = cached_pos.v.m128_f32[2] - pos.v.m128_f32[2];
     float dist2 = dx * dx + dy * dy + dz * dz;
     if ((v15 * v15) <= dist2)
     {
@@ -1444,9 +1444,9 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
         if (v21 > 0.0f)
         {
             cached_leaf = *list;
-            cached_pos.v.m128_f32[0] = pos->v.m128_f32[0];
-            cached_pos.v.m128_f32[1] = pos->v.m128_f32[1];
-            cached_pos.v.m128_f32[2] = pos->v.m128_f32[2];
+            cached_pos.v.m128_f32[0] = pos.v.m128_f32[0];
+            cached_pos.v.m128_f32[1] = pos.v.m128_f32[1];
+            cached_pos.v.m128_f32[2] = pos.v.m128_f32[2];
             cached_pos.v.m128_f32[3] = v21;
         }
         *lastLeaf = ll.lastLeaf;
@@ -3001,7 +3001,7 @@ void rtree_visitor_t::post_process(int bi, proximity_data_t& proximity_data)
             // patch
             unsigned int pi = index - (unsigned int)bank->nbrushes
                 - (unsigned int)bank->nboxes;
-            unpack(bank, pi, cg_verts);
+            unpack(*bank, pi, cg_verts);
             if (pi >= (unsigned int)bank->patches.m_count
                 && _tlAssert(
                     "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
@@ -3223,7 +3223,7 @@ void TestInLeaf(traceWork_t* tw, const CGBank* bank,
                 (unsigned int)visitor->patches_m_slot_array[i];
             unsigned int pi = index - (unsigned int)bank->nbrushes
                 - (unsigned int)bank->nboxes;
-            unpack(bank, pi, verts);
+            unpack(*bank, pi, verts);
             if (pi >= (unsigned int)bank->patches.m_count
                 && _tlAssert(
                     "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
@@ -3324,7 +3324,7 @@ void collide_sphere(const math::Position3& sphere_center, float sphere_radius,
             unsigned int index = visitor.patches_m_slot_array[i];
             unsigned int pi = index - (unsigned int)bank->nboxes
                 - (unsigned int)bank->nbrushes;
-            unpack(bank, pi, cg_verts);
+            unpack(*bank, pi, cg_verts);
             if (pi >= (unsigned int)bank->patches.m_count
                 && _tlAssert(
                     "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
@@ -3415,7 +3415,7 @@ bool collide_ray(const math::Position3& p0, const math::Dir3& u0,
             unsigned int index = visitor.patches_m_slot_array[i];
             unsigned int pi = index - (unsigned int)bank->nboxes
                 - (unsigned int)bank->nbrushes;
-            unpack(bank, pi, cg_verts);
+            unpack(*bank, pi, cg_verts);
             if (pi >= (unsigned int)bank->patches.m_count
                 && _tlAssert(
                     "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
@@ -3670,7 +3670,7 @@ bool sight_trace_point(traceWork_t* tw, const math::Position3& p0,
                 }
                 unsigned int pi = index - (unsigned int)bank->nboxes
                     - (unsigned int)bank->nbrushes;
-                unpack(bank, pi, verts);
+                unpack(*bank, pi, verts);
                 if (pi >= (unsigned int)bank->patches.m_count
                     && _tlAssert(
                         "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
@@ -4080,7 +4080,7 @@ bool sight_trace_sphere(traceWork_t* tw)
                 }
                 unsigned int pi = index - (unsigned int)bank->nboxes
                     - (unsigned int)bank->nbrushes;
-                unpack(bank, pi, verts);
+                unpack(*bank, pi, verts);
                 if (pi >= (unsigned int)bank->patches.m_count
                     && _tlAssert(
                         "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
@@ -5136,7 +5136,7 @@ bool collide_velocity_sphere(traceWork_t* tw)
                 }
                 unsigned int pi = index - (unsigned int)bank->nboxes
                     - (unsigned int)bank->nbrushes;
-                unpack(bank, pi, cg_verts);
+                unpack(*bank, pi, cg_verts);
                 if (pi >= (unsigned int)bank->patches.m_count
                     && _tlAssert(
                         "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
@@ -6028,7 +6028,7 @@ bool collide_segment(traceWork_t* tw, const math::Position3& p0,
                     {
                         unsigned int pi = oi - (unsigned int)bank->nbrushes
                                         - (unsigned int)bank->nboxes;
-                        unpack(bank, pi, verts);
+                        unpack(*bank, pi, verts);
                         if (pi >= (unsigned int)bank->patches.m_count
                             && _tlAssert(
                                 "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
@@ -8772,13 +8772,13 @@ extern void unpack(const cdl_vinfo_t* vinfo, const cdl_array_t* verts,
                    math::Dir3* vert_list);  // physics.o 0x6FF680
 
 // ea: 0x00622B60
-void unpack(const CGBank* bank, unsigned int pi, math::Position3* verts)
+void unpack(const CGBank& bank, unsigned int pi, math::Position3* verts)
 {
-    if (pi >= (unsigned int)bank->gjk_patches.m_count
+    if (pi >= (unsigned int)bank.gjk_patches.m_count
         && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
                      "index >= 0 && index < size()", "invalid index"))
         __debugbreak();
-    cdl_vinfo_t* v3 = &((cdl_vinfo_t*)bank->gjk_patches.m_elements)[pi];
+    cdl_vinfo_t* v3 = &((cdl_vinfo_t*)bank.gjk_patches.m_elements)[pi];
     if (v3->num_verts >= 0x20)
     {
         AeAssert::gCurrentAuthor = AeAssert::JSV;
@@ -8789,7 +8789,7 @@ void unpack(const CGBank* bank, unsigned int pi, math::Position3* verts)
             && AeAssert::Assert("max number of verts per primitive exceeded."))
             __debugbreak();
     }
-    unpack(v3, &bank->patch_verts, (math::Dir3*)verts);
+    unpack(v3, &bank.patch_verts, (math::Dir3*)verts);
 }
 
 // ============================================================================
@@ -11568,7 +11568,8 @@ void AddLeanToPosition(float* const vPosition, float fViewYaw,
 // CM_ClipMoveToEntities - ea: 0x60BF60 (cm_world.cpp)
 // ============================================================================
 // ea: 0x0060BF60
-void CM_ClipMoveToEntities(moveclip_t* clip)
+void CM_ClipMoveToEntities(moveclip_t* clip,
+                           const collision_context_t& context)
 {
     if (clip->trace.fraction > 1.0f)
     {
@@ -11820,7 +11821,7 @@ void CGBankManager::DebugRender()
                     else if (type != 0)
                     {
                         int patchIndex = oi - bank->nboxes - bank->nbrushes;
-                        unpack(bank, patchIndex, cg_verts);
+                        unpack(*bank, patchIndex, cg_verts);
                         if (patchIndex >= bank->patches.m_count
                             && _tlAssert(
                                 "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
@@ -12102,7 +12103,7 @@ void CGBankManager::DebugRender()
                     {
                         int patchIndex =
                             oi - bank->nboxes - bank->nbrushes;
-                        unpack(bank, patchIndex, cg_verts);
+                        unpack(*bank, patchIndex, cg_verts);
                         if (patchIndex >= bank->patches.m_count
                             && _tlAssert(
                                 "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
@@ -12345,7 +12346,7 @@ void CGBankManager::DebugRender()
                             {
                                 int patchIndex =
                                     oi - bank->nboxes - bank->nbrushes;
-                                unpack(bank, patchIndex, cg_verts);
+                                unpack(*bank, patchIndex, cg_verts);
                                 if (patchIndex >= bank->patches.m_count
                                     && _tlAssert(
                                         "c:\\cod\\code\\tl\\cdl\\source"
@@ -12715,7 +12716,7 @@ void CGBankManager::DebugRender()
                         {
                             int patchIndex =
                                 oi - b2->nboxes - b2->nbrushes;
-                            unpack(b2, patchIndex, cg_verts);
+                            unpack(*b2, patchIndex, cg_verts);
                             if (patchIndex >= b2->patches.m_count
                                 && _tlAssert(
                                     "c:\\cod\\code\\tl\\cdl\\source"

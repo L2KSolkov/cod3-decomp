@@ -13,6 +13,8 @@
 #include "filesystem/apk.h"
 #include "game/logic/g_inspector.h"
 
+class ScriptEventParams;
+
 // ============================================================================
 // NAL surface used by AnimIK (animation/nal.cpp local views)
 // ============================================================================
@@ -111,7 +113,7 @@ struct ScriptEventHandler {
     bool AddEvent(HashString h, HashString callback);  // ea: 0x4F98D0
     bool AddEvent(HashString h, const char* callback); // ea: 0x4FF780
     bool RemoveEvent(HashString h, HashString callback);  // ea: 0x4F59F0
-    bool ExecEvents(Entity* ent, HashString h, void* params);  // ea: 0x4F5A50
+    bool ExecEvents(Entity* ent, HashString h, ScriptEventParams* params);  // ea: 0x4F5A50
 };
 static_assert(sizeof(ScriptEventHandler) == 0x44,
               "ScriptEventHandler size mismatch");
@@ -159,7 +161,8 @@ bool ScriptEventHandler::RemoveEvent(HashString h, HashString callback)
 // ============================================================================
 // ScriptEventHandler::ExecEvents - ea: 0x4F5A50
 // ============================================================================
-bool ScriptEventHandler::ExecEvents(Entity* ent, HashString h, void* params)
+bool ScriptEventHandler::ExecEvents(Entity* ent, HashString h,
+                                    ScriptEventParams* params)
 {
     bool v4 = false;
     for (int i = 7; i != 0; --i)

@@ -177,7 +177,8 @@ static_assert(offsetof(trajectory_t, trDelta) == 0x18, "trajectory_t::trDelta of
 // EntityState — network-replicated entity state (224 bytes)
 // Size: 0xE0 (224 bytes) — verified against IDA
 // ============================================================================
-struct EntityState {
+class EntityState {
+public:
     EntityState();                            // ??0EntityState@@QAE@XZ (game.o 0x620480)
 
     uint8_t  eType;                               // +0x00
@@ -304,7 +305,7 @@ public:
                     XAnimTree* tree, unsigned short gameId);  // ?CreateDObj@Entity@@QAEXPAVDObjModel@@GPAVXAnimTree@@G@Z (game.o)
     bool IsEnemy(Entity* ent);                   // ?IsEnemy@Entity@@QAE_NPAV1@@Z (game.o)
     const math::Mat43 CalcRotTranMat43();         // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (game.o)
-    void ExecScriptHandler(HashString h, void* params);  // ?ExecScriptHandler@Entity@@QAEXVHashString@@PAVScriptEventParams@@@Z (game.o)
+    void ExecScriptHandler(HashString h, class ScriptEventParams* params);  // ?ExecScriptHandler@Entity@@QAEXVHashString@@PAVScriptEventParams@@@Z (game.o)
     void CalcOriginAnglesFromMat();               // ?CalcOriginAnglesFromMat@Entity@@QAEXXZ (game.o)
     int  GetParentBoneIndex(int boneIndex);       // ?GetParentBoneIndex@Entity@@QAEHH@Z (game.o)
     const math::Mat43::Packed& GetBaseRelMat(int boneIndex);  // ?GetBaseRelMat@Entity@@QAEABUPacked@Mat43@math@@H@Z (game.o)

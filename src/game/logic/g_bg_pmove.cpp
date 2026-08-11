@@ -6006,8 +6006,8 @@ int BG_GetEmptySlotForWeapon(const PlayerState* pPS, int iWeaponIndex)
 // ============================================================================
 // BG_GetStackSlotForWeapon - ea: 0x607570
 // ============================================================================
-weapSlot_t BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
-                                    weapSlot_t preferedSlot)
+int BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                             weapSlot_t preferedSlot)
 {
     weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(iWeaponIndex);
     if (InfoForWeapon->bSlotStackable == 0)
