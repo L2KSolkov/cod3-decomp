@@ -35,7 +35,7 @@ extern int nglGetScreenHeight();
 extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void* FEManager_GetFont(void* mgr, int f);
 extern unsigned int AeHash(const char* str);
-extern void VectorNormalize(math::Dir3* v);
+extern float VectorNormalize(float* v);
 extern math::Position3 nglProjectPoint(math::Position3* result,
                                        math::Position3* in, void* scene);
 struct nglScene;
@@ -313,7 +313,7 @@ void LensFlareDraw()
     v33.v.m128_f32[0] = org[1] - v33.v.m128_f32[0];
     v33.v.m128_f32[1] = org[2] - v33.v.m128_f32[1];
     v33.v.m128_f32[2] = org[3] - v8;
-    VectorNormalize(&v33);
+    VectorNormalize((float*)&v33);
     float v10 = (cameraMtx.y.v.m128_f32[3] * v33.v.m128_f32[2])
                 + (cameraMtx.y.v.m128_f32[2] * v33.v.m128_f32[1])
                 + (cameraMtx.y.v.m128_f32[1] * v33.v.m128_f32[0]);

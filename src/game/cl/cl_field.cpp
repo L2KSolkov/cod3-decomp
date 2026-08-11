@@ -457,7 +457,7 @@ extern int frame_msec;
 extern int totalTime[2];
 extern float totalAngle[2];
 extern float sTotalTimeMax;
-extern void VectorNormalize(float* v);
+extern float VectorNormalize(float* v);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
 // ea: 0x530780

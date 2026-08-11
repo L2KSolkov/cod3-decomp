@@ -142,7 +142,8 @@ extern bool gFirstCamera;
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;
 extern float move_back_distance;
 extern int curListener;
-extern void* gSaveGameData;
+struct SaveGameData;
+extern SaveGameData* gSaveGameData;
 struct FEManager; extern FEManager g_femanager;
 extern void* nglBuildScene_RenderTarget;
 extern void* SoundDevice_sInst;
@@ -232,7 +233,8 @@ extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
 extern float g_TestForward[4];
 extern void InspectorManager_Render(void* self);
-extern void* g_inspectorManager;
+class InspectorManager;
+extern InspectorManager g_inspectorManager;
 extern int dword_F62964[4 * 1580];
 extern void CheckAndRunOverHeatBlur();
 extern void trap_R_ClearScene();
@@ -1553,7 +1555,7 @@ void CG_DrawActive(float a1)
             dword_F64168[1580 * currCl], dword_F6416C[1580 * currCl]);
         if (gRenderCG_2D != 0)
             CG_Draw2D(a1);
-        InspectorManager_Render(g_inspectorManager);
+        InspectorManager_Render(&g_inspectorManager);
     }
     else
     {

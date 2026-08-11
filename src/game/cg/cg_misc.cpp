@@ -1312,12 +1312,12 @@ extern PlayerState& GetPlayerState(int idx);
 extern void CG_OffsetFirstPersonView();
 extern void CG_OffsetThirdPersonView();
 extern void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_hash);
-extern void CG_CalcPassengerViewPos();
+extern int CG_CalcPassengerViewPos();
 extern void CG_CalcTurretViewValues();
 struct scr_vehicle_t;
 extern vehicle_info_t* G_GetVehicleInfo(scr_vehicle_t* scr_vehicle);
-extern void vectosignedangles(const float* vec, float* angles);
-extern void vectoangles(const float* vec, float* angles);
+extern void vectosignedangles(float* vec, float* angles);
+extern void vectoangles(float* vec, float* angles);
 extern float LerpAngle(float a1, float a2, float a3);
 extern void InterpolateAngles(math::Position3* curAngles,
                               const math::Position3* initialAngles,

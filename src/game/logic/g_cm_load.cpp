@@ -1166,7 +1166,7 @@ extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o
 extern void Com_DPrintf(const char* fmt, ...);  // core.o
 extern int FS_FOpenFileRead(const char* filename, int* file, int uniqueFILE);  // core.o
-extern int FS_Read(void* buffer, int len, int f);  // core.o
+extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);  // core.o
 extern int FS_Seek(int f, long offset, int origin);  // core.o ?FS_Seek@@YAHHJH@Z
 extern void FS_FCloseFile(int f);  // core.o
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
@@ -1213,7 +1213,7 @@ int CM_LoadLump(int lumpnum, char** pBuf)
     if (h == 0)
         Com_Error(ERR_DROP, va("EXE_ERR_COULDNT_LOAD", &pcm));
     dheader_t header;
-    FS_Read(&header, 312, h);
+    FS_Read((unsigned char*)&header, 312u, h);
     if (header.version != 63)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -1230,7 +1230,7 @@ int CM_LoadLump(int lumpnum, char** pBuf)
         com_lumpBuf = (char*)mem_heap_malloc_ctx(
             (unsigned int)filelen, 16, "hunk",
             "c:\\cod\\code\\game\\cm_load.cpp", 267);
-        FS_Read(com_lumpBuf, filelen, h);
+        FS_Read((unsigned char*)com_lumpBuf, (unsigned int)filelen, h);
         FS_FCloseFile(h);
         *pBuf = com_lumpBuf;
         return filelen;
@@ -11653,10 +11653,9 @@ extern void render_brush(const math::Position3& bmin,
                          const Color& color);  // game.o 0x638A10
 extern int nglGetScreenWidth();   // ngl_xboxr
 extern int nglGetScreenHeight();  // ngl_xboxr
-extern void nglGetStringDimensions(void* font, const char* text,
-                                   unsigned int* width,
+extern void nglGetStringDimensions(nglFont* font, unsigned int* width,
                                    unsigned int* height, float scaleX,
-                                   float scaleY);  // ngl_xboxr
+                                   float scaleY, const char* fmt, ...);
 struct nglFont;
 extern nglFont* nglSysFont;  // ?nglSysFont@@3PAUnglFont@@A (ngl_font.o)
 extern void* nglListAlloc(unsigned int Bytes,
@@ -12601,8 +12600,8 @@ void CGBankManager::DebugRender()
                         sprintf(buf, "%d", pls);
                         unsigned int wText = 0;
                         unsigned int hText = 0;
-                        nglGetStringDimensions(nglSysFont, buf, &wText,
-                                               &hText, fscale_0, fscale_0);
+                        nglGetStringDimensions(nglSysFont, &wText, &hText,
+                                               fscale_0, fscale_0, buf);
                         float cellCenter =
                             sample_size * scale * 0.5f;
                         float xc = l + cellCenter - wText * 0.5f;
@@ -12637,8 +12636,8 @@ void CGBankManager::DebugRender()
                                           bgcol);
                 unsigned int wFont = 0;
                 unsigned int hFont = 0;
-                nglGetStringDimensions(nglSysFont, "fGgW", &wFont, &hFont,
-                                       fscale, fscale);
+                nglGetStringDimensions(nglSysFont, &wFont, &hFont, fscale,
+                                       fscale, "fGgW");
                 sprintf(buf, "pos (%.0f,%.0f,%.0f)",
                         pos.v.m128_f32[0], pos.v.m128_f32[1],
                         pos.v.m128_f32[2]);

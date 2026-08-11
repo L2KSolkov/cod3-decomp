@@ -721,9 +721,9 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
     }
 }
 
-extern void CG_RegisterItems();
+extern int CG_RegisterItems();
 extern void CG_ParseCullDist();
-extern void CG_NorthDirectionChanged();
+extern int CG_NorthDirectionChanged();
 extern void CG_RegisterServerShader(int num);
 extern void CG_ParseObjectiveChange(int iNum);
 extern int CG_LoadShellShockCvars(const char* name);
@@ -1368,7 +1368,7 @@ extern float unk_F63BF4[4 * 6320];
 extern float unk_F63C24[4 * 6320];
 extern int dword_F63554[4 * 1580];
 extern void j_nullsub_89(void* obj, float dtime);
-extern void CL_DObjInvalidateSkels();
+extern char CL_DObjInvalidateSkels();
 extern int cg_addentities;
 extern void* TestFPS_sInst;
 extern int Entity_IsInSnapshot(Entity* ent);
@@ -1679,7 +1679,7 @@ extern void CL_GetCurrentSnapshotNumber(int* snapshotNumber,
 struct vmCvar_t;
 extern void Cvar_VMSet(vmCvar_t* vmCvar, const char* value);
 extern int G_GetServerSnapTime();
-extern void CG_SetFrameInterpolation();
+extern int CG_SetFrameInterpolation();
 
 struct vmCvar_t {
     int   integer;  // +0x00
@@ -1695,7 +1695,7 @@ struct CollisionDesc {
 
 extern int dword_DF6AE4[4 * 6];
 extern int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle,
-                              const char* flashTag);
+                              char* flashTag);
 extern math::Position3* native_to_cdl_pos3(math::Position3* result,
                                            const float* v);
 extern void CG_SpawnTracer(const math::Position3* pstart,
@@ -1727,7 +1727,7 @@ void CG_BulletTrajectoryEffects(unsigned int sourceEntity,
         && *(float*)&cg_tracerChance > 0.0f)
     {
         float muzzle[3];
-        if (CG_CalcMuzzlePoint(sourceEntity, muzzle, flashTag) != 0)
+        if (CG_CalcMuzzlePoint(sourceEntity, muzzle, (char*)flashTag) != 0)
         {
             Entity* v8 = EntityHandleDb_Get(sourceEntity);
             if (v8 != nullptr)

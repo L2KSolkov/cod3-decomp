@@ -564,7 +564,10 @@ extern int dword_F640C4[4 * 1580];
 extern int dword_F640E8[4 * 1580];
 extern int dword_F6410C[4 * 1580];
 extern int dword_F64130[4 * 1580];
-extern int cg_camerashake;
+struct vmCvar_t {
+    int integer;  // +0x00
+};
+extern vmCvar_t cg_camerashake;
 extern int cg_hudDamageIconTime;
 extern int cg_viewKickScale;
 extern int cg_viewKickMax;
@@ -872,7 +875,7 @@ int CG_LoadShellShockCvars(const char* name)
 void CG_StartShakeCamera(float p, int duration, const float* src, float radius,
                          int client)
 {
-    if (p > 0.0f && cg_camerashake != 0)
+    if (p > 0.0f && cg_camerashake.integer != 0)
     {
         float shake[9];
         shake[0] = p;                    // scale
@@ -932,7 +935,7 @@ void CG_StartShakeCamera(float p, int duration, const float* src, float radius,
 // ea: 0x00695DA0
 void CG_ShakeCamera(int client)
 {
-    if (!GamePause_IsGamePaused(currCl) && cg_camerashake != 0)
+    if (!GamePause_IsGamePaused(currCl) && cg_camerashake.integer != 0)
     {
         float scale = 0.0f;
         float sx = cgGlobal_time * 0.0016666667f;

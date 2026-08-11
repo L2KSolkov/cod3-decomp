@@ -41,7 +41,8 @@ extern void mem_heap_create(mem_heap* heap, void* start, void* end,
 extern PoolAllocator* ActiveEffectSet_sAllocator;  // 0x00F00E84
 extern int dword_F6A290[4 * 0x322];
 extern void CameraShake_StopCameraShake(void* self, void* pShake);
-extern void* g_cameraShake;
+struct CameraShake;
+extern CameraShake* g_cameraShake;
 extern void SoundDevice_ReleaseSound(void* sInst, void* s);
 extern void* SoundDevice_sInst;
 struct SoundHandleDbLocal {

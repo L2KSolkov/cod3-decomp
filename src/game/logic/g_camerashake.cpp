@@ -23,18 +23,22 @@ extern bool Assert(const char* fmt, ...);
     } while (0)
 
 extern int currCl;                       // ?currCl
-extern int cgGlobal_time;                // cgGlobal.time
+extern cgGlobal_t cgGlobal;              // ?cgGlobal@@3UcgGlobal_t@@A (cg.o)
 extern NoiseManager g_noise;             // ?g_noise (game2.o)
 struct nglScene;
 extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
 extern nglScene* nglBuildScene;
 extern void StartCameraShake_glue(int type, void* worldPos, float size,
                                   float timeOverride, float nextDelay);
-extern int cgGlobal_time;             // ?cgGlobal@@3UcgGlobal_t@@A
-extern float g_ShakeTestMag;          // ?g_ShakeTestMag@@3MA (game2.o)
-extern float g_ShakeTestFreq;         // ?g_ShakeTestFreq@@3MA (game2.o)
-extern float g_ShakeTestTime;         // ?g_ShakeTestTime@@3MA (game2.o)
-extern int g_ShakeTest2d;             // ?g_ShakeTest2d@@3HA (game2.o)
+struct RumbleEffect;
+struct RumbleEffectInstanceHandle {
+    unsigned int mVal;
+};
+class RumbleManager {
+public:
+    static RumbleManager* Inst(int instance);
+    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
+};
 
 // ============================================================================
 // NoiseManager tables
@@ -64,6 +68,11 @@ float dword_F0445C[256];
 
 CameraShake g_cameraShake[4];
 CameraShakeType shakeTable[];
+int dword_F037B8[256];   // ?dword_F037B8@@3PAHA (game2.o)
+float g_ShakeTestMag;   // ?g_ShakeTestMag@@3MA (game2.o @ 0xE05FB8)
+float g_ShakeTestFreq;  // ?g_ShakeTestFreq@@3MA (game2.o)
+float g_ShakeTestTime;  // ?g_ShakeTestTime@@3MA (game2.o)
+int   g_ShakeTest2d;    // ?g_ShakeTest2d@@3HA (game2.o)
 
 // ============================================================================
 // NoiseManager
@@ -143,7 +152,7 @@ void NoiseManager::Normalize3(float* v)
 // ea: 0x4F5820
 float NoiseManager::GetElapsedTime()
 {
-    return (float)cgGlobal_time * 0.001f;
+    return (float)cgGlobal.time * 0.001f;
 }
 
 // ea: 0x4F5830
@@ -151,7 +160,7 @@ float NoiseFloat::GetValue()
 {
     if (m_seed < 0.0f || m_seed > 16384.0f)
         m_seed = (float)(rand() % 0x4000);
-    float t = ((float)cgGlobal_time * 0.001f) * m_freq_mult + m_seed;
+    float t = ((float)cgGlobal.time * 0.001f) * m_freq_mult + m_seed;
     float n = 0.0f;
     float mult = 1.0f;
     for (unsigned int octave = 1; octave <= m_num_octaves;
@@ -438,7 +447,7 @@ CameraShakeInstance* CameraShake::StartCameraShake(int type,
     CameraShakeType* ShakeType = GetShakeType(type);
     if (nextDelay != -1.0f)
         ShakeType->m_delayTimeMax = nextDelay;
-    float v9 = cgGlobal_time * 0.001f;
+    float v9 = cgGlobal.time * 0.001f;
     if (ShakeType->m_delayTimeMax > (v9 - ShakeType->m_lastShakeTime))
         return nullptr;
     ShakeType->m_lastShakeTime = v9;
@@ -687,8 +696,8 @@ void CameraShake::Rumble(float intensity, float duration)
             __debugbreak();
     }
     rumbleEffect.mRumbleDataArray[1].steady_duration = duration;
-    if (RumbleManager_Inst(currCl) != nullptr)
-        RumbleManager_Play(RumbleManager_Inst(currCl), &rumbleEffect, 1.0f);
+    if (RumbleManager::Inst(currCl) != nullptr)
+        RumbleManager::Inst(currCl)->Play(&rumbleEffect, 1.0f);
 }
 
 // ============================================================================
