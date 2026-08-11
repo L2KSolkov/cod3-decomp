@@ -10,6 +10,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    Entity* mPlayers[16];         // +0x04
+};
+
+
 extern int currCl;
 extern int cgGlobal_time;
 extern int cgGlobal_oldTime;
@@ -56,8 +65,6 @@ extern int cg_altTankCam;
 extern int cg_hudCompassSpringyPointers;
 extern int cg_drawGun;
 
-extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
-extern void* EntityManager_sInst;
 extern const char* CL_GetConfigStringC(int index);
 extern float AngleNormalize360(float angle);
 extern float AngleNormalize180(float angle);
@@ -288,7 +295,7 @@ void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
 float CG_GetViewFov()
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     float fPosLerp = client->ps.fWeaponPosFrac;
     if (dword_F6355C[1580 * currCl] != 0 || client->ps.pm_type >= 6)
         fPosLerp = 0.0f;
@@ -1199,7 +1206,7 @@ void CG_CalculateWeaponPosition_BobOffset()
     float value = *(float*)&cg_bobWeaponMax;
     dword_F64068[1580 * currCl] = fSpeed * -1.0f;
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     int viewHeightTarget = client->ps.viewHeightTarget;
     float v4;
     if (viewHeightTarget == client->ps.proneViewHeight)
@@ -1219,7 +1226,7 @@ void CG_CalculateWeaponPosition_BobOffset()
     float v26 = *(float*)&cg_bobWeaponMax;
     dword_F6406C[1580 * currCl] = v5 * v28 * -1.0f;
     Client* v7 =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     int v8 = v7->ps.viewHeightTarget;
     float v9;
     if (v8 == v7->ps.proneViewHeight)
@@ -1244,7 +1251,7 @@ void CG_CalculateWeaponPosition_BobOffset()
     }
     dword_F64070[1580 * currCl] = v11;
     Client* v20 =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     float fWeaponPosFrac = v20->ps.fWeaponPosFrac;
     if (fWeaponPosFrac != 0.0f)
     {
@@ -1276,8 +1283,8 @@ void CG_CalculateWeaponPosition_SwayAngles(float a1, float* angles)
 void CG_CalculateWeaponPosition_IdleAngles(float* angles)
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        EntityManager::sInst->GetPlayer( currCl)->client;
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     int IsAimDownSightWeapon =
         BG_IsAimDownSightWeapon(Player->client->ps.weapon);
     int v4 = 1580 * currCl;
@@ -1334,7 +1341,6 @@ void CG_CalculateWeaponPosition_IdleAngles(float* angles)
 }
 
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
-extern void* EntityManager_mPlayers[16];
 extern int cg_gun_move_minspeed;
 extern int cg_gun_move_f;
 extern int cg_gun_move_r;
@@ -1415,10 +1421,10 @@ static playerEntity_t* GetPlayerEntity(int client)
 // ea: 0x0068FB20
 int CG_CalculateWeaponPosition_Sway()
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     void* InfoForWeapon = (void*)BG_GetInfoForWeapon(Player->client->ps.weapon);
     float fWeaponPosFrac =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.fWeaponPosFrac;
     int v5 = *(int*)&dword_F64168[1580 * currCl];
     int v6 = v5 + *(int*)&dword_F6416C[1580 * currCl] - cgGlobal_time;
@@ -1445,7 +1451,7 @@ int CG_CalculateWeaponPosition_Sway()
     float v17, v18, swayHorizScale, v20, swayVertScale2, swayMaxAngle,
         swayLerpSpeed;
     if (BG_IsAimDownSightWeapon(
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.weapon)
         != 0)
     {
@@ -1597,10 +1603,10 @@ void CG_CalculateWeaponPosition_BasePosition_movement(float* origin)
 {
     float targetPos[3];
     float fWeaponPosFrac =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.fWeaponPosFrac;
     int pm_flags =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.pm_flags;
     float base;
     if ((pm_flags & 0x10000) != 0)
@@ -1613,7 +1619,7 @@ void CG_CalculateWeaponPosition_BasePosition_movement(float* origin)
         base = dword_F63B8C[1580 * currCl][348];
     float fMin = base + *(float*)&cg_gun_move_minspeed;
     if (dword_F641DC[1580 * currCl] <= fMin
-        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        || EntityManager::sInst->GetPlayer( currCl)
                    ->client->ps.weaponstate
                == 5)
     {
@@ -1624,7 +1630,7 @@ void CG_CalculateWeaponPosition_BasePosition_movement(float* origin)
     }
     float fFactor =
         (dword_F641DC[1580 * currCl] - fMin)
-        / (*(float*)((char*)&EntityManager_GetPlayer(EntityManager_sInst,
+        / (*(float*)((char*)&EntityManager::sInst->GetPlayer(
                                                      currCl)
                           ->client->ps
                      + 0x31C)
@@ -1634,7 +1640,7 @@ void CG_CalculateWeaponPosition_BasePosition_movement(float* origin)
     else if (fFactor > 1.0f)
         fFactor = 1.0f;
     {
-        int pm = EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        int pm = EntityManager::sInst->GetPlayer( currCl)
                      ->client->ps.pm_flags;
         float v8, v9, v10;
         if ((pm & 0x10000) != 0)
@@ -1668,19 +1674,19 @@ void CG_CalculateWeaponPosition_BasePosition_movement(float* origin)
 apply:
     {
         Client* client =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+            EntityManager::sInst->GetPlayer( currCl)->client;
         float v23, v24, v25;
         if (client->ps.viewHeightTarget
-            == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            == EntityManager::sInst->GetPlayer( currCl)
                    ->client->ps.crouchViewHeight)
         {
             v23 = dword_F63B8C[1580 * currCl][327];
             v24 = dword_F63B8C[1580 * currCl][328];
             v25 = dword_F63B8C[1580 * currCl][329];
         }
-        else if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        else if (EntityManager::sInst->GetPlayer( currCl)
                          ->client->ps.viewHeightTarget
-                 == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                 == EntityManager::sInst->GetPlayer( currCl)
                         ->client->ps.proneViewHeight)
         {
             v23 = dword_F63B8C[1580 * currCl][336];
@@ -1701,11 +1707,11 @@ apply:
         if (pe->vLastMoveOrg[i] != targetPos[i])
         {
             float fWeaponPos =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                EntityManager::sInst->GetPlayer( currCl)
                     ->client->ps.viewHeightCurrent;
             float rate;
             if (fWeaponPos
-                == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                == EntityManager::sInst->GetPlayer( currCl)
                        ->client->ps.proneViewHeight)
                 rate = dword_F63B8C[1580 * currCl][346];
             else
@@ -1740,7 +1746,7 @@ apply:
         }
     }
     float fWeaponPosFrac2 =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.fWeaponPosFrac;
     if (fWeaponPosFrac2 == 0.0f)
     {
@@ -1762,7 +1768,7 @@ void CG_CalculateWeaponPosition_BasePosition_angles(float* angles)
 {
     float targetAng[3];
     int pm_flags =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.pm_flags;
     float base;
     if ((pm_flags & 1) != 0)
@@ -1773,7 +1779,7 @@ void CG_CalculateWeaponPosition_BasePosition_angles(float* angles)
         base = dword_F63B8C[1580 * currCl][354];
     float fMin = base + *(float*)&cg_gun_rot_minspeed;
     if (dword_F641DC[1580 * currCl] <= fMin
-        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        || EntityManager::sInst->GetPlayer( currCl)
                    ->client->ps.weaponstate
                == 5)
     {
@@ -1784,7 +1790,7 @@ void CG_CalculateWeaponPosition_BasePosition_angles(float* angles)
     }
     float fFactor =
         (dword_F641DC[1580 * currCl] - fMin)
-        / (*(float*)((char*)&EntityManager_GetPlayer(EntityManager_sInst,
+        / (*(float*)((char*)&EntityManager::sInst->GetPlayer(
                                                      currCl)
                           ->client->ps
                      + 0x31C)
@@ -1794,7 +1800,7 @@ void CG_CalculateWeaponPosition_BasePosition_angles(float* angles)
     else if (fFactor > 1.0f)
         fFactor = 1.0f;
     {
-        int pm = EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        int pm = EntityManager::sInst->GetPlayer( currCl)
                      ->client->ps.pm_flags;
         float v9, v10, v11;
         if ((pm & 1) != 0)
@@ -1822,7 +1828,7 @@ void CG_CalculateWeaponPosition_BasePosition_angles(float* angles)
 apply:
     {
         float fWeaponPosFracApply =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.fWeaponPosFrac;
         if (fWeaponPosFracApply != 0.0f)
         {
@@ -1838,11 +1844,11 @@ apply:
         if (pe->vLastMoveAng[i] != targetAng[i])
         {
             float fWeaponPos =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                EntityManager::sInst->GetPlayer( currCl)
                     ->client->ps.viewHeightCurrent;
             float rate;
             if (fWeaponPos
-                == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                == EntityManager::sInst->GetPlayer( currCl)
                        ->client->ps.proneViewHeight)
                 rate = dword_F63B8C[1580 * currCl][352];
             else
@@ -1877,7 +1883,7 @@ apply:
         }
     }
     float fWeaponPosFrac =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.fWeaponPosFrac;
     if (fWeaponPosFrac == 0.0f)
     {
@@ -1898,12 +1904,12 @@ apply:
 void CG_CalculateWeaponPosition_BasePosition(float* origin)
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     float v3;
     if ((0x100000 & client->ps.eFlags) != 0)
     {
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            EntityManager::sInst->GetPlayer( currCl);
         if (!IsPlayerFullySeatedInVehicle(Player)
             || ((client->ps.vehType != 1 || client->ps.vehPos != 2)
                 && (*(unsigned char*)((void*)InteractionController_Inst(
@@ -1961,11 +1967,11 @@ void CG_CalculateWeaponPosition_BaseAngles(float* angles)
 {
     float vGunAngOfs[3] = {0.0f, 0.0f, 0.0f};
     playerEntity_t* pe = GetPlayerEntity(currCl);
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) != 0)
     {
         float fWeaponPosFrac =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.fWeaponPosFrac;
         if (fWeaponPosFrac != 1.0f && fWeaponPosFrac != 0.0f)
         {
@@ -1982,11 +1988,11 @@ void CG_CalculateWeaponPosition_BaseAngles(float* angles)
             }
         }
         pe->fWeaponPosFrac =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.fWeaponPosFrac;
         vGunAngOfs[0] =
             dword_F63B8C[1580 * currCl][498]
-            * EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            * EntityManager::sInst->GetPlayer( currCl)
                   ->client->ps.fWeaponPosFrac;
     }
     CG_CalculateWeaponPosition_BasePosition_angles(vGunAngOfs);
@@ -2067,9 +2073,9 @@ int CG_CalculateWeaponPosition_GunRecoil_SingleAngle(
 void CG_CalculateWeaponPosition_GunRecoil(float* angles)
 {
     float fPosLerp =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.fWeaponPosFrac;
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) != 0)
     {
         int v2 = 1580 * currCl;
@@ -2273,11 +2279,11 @@ void CG_CalculateWeaponPosition_ToWorldAngles(float* angles)
 // ea: 0x00691C40
 void CG_CalculateWeaponPosition_SaveOffsetMovement(float* origin)
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) != 0)
     {
         float fWeaponPosFrac =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.fWeaponPosFrac;
         float v3 = 0.0f;
         int v4 = 1580 * currCl;
@@ -2308,9 +2314,9 @@ void CG_CalculateWeaponPosition_SaveOffsetMovement(float* origin)
 // ea: 0x00691D40
 void CG_CalculateWeaponPosition_SaveOffsetAngles(float* angles)
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (BG_IsAimDownSightWeapon(Player->client->ps.weapon) == 0
-        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        || EntityManager::sInst->GetPlayer( currCl)
                    ->client->ps.fWeaponPosFrac
                == 0.0f)
     {
@@ -2329,7 +2335,7 @@ void CG_CalculateWeaponPosition_SaveOffsetAngles(float* angles)
 // ea: 0x00691E00
 void CG_CalculateWeaponAngles(float* angles)
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (dword_F63B8C[1580 * currCl]
         != (float*)BG_GetInfoForWeapon(Player->client->ps.weapon))
     {
@@ -2339,12 +2345,12 @@ void CG_CalculateWeaponAngles(float* angles)
     }
     angles[1] = 0.0f;
     angles[0] = 0.0f;
-    if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+    if (EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.leanf
         != 0.0f)
     {
         float LeanFraction = GetLeanFraction(
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.leanf);
         angles[2] = angles[2] - (LeanFraction + LeanFraction);
     }
@@ -2353,7 +2359,7 @@ void CG_CalculateWeaponAngles(float* angles)
     angles[0] = *(float*)&dword_F64068[1580 * currCl] + angles[0];
     angles[1] = *(float*)&dword_F6406C[1580 * currCl] + angles[1];
     angles[2] = *(float*)&dword_F64070[1580 * currCl] + angles[2];
-    Entity* v6 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* v6 = EntityManager::sInst->GetPlayer( currCl);
     if (BG_IsAimDownSightWeapon(v6->client->ps.weapon) == 0)
     {
         angles[0] = angles[0] - *(float*)&dword_F64030[1580 * currCl];
@@ -2363,7 +2369,7 @@ void CG_CalculateWeaponAngles(float* angles)
     if (dword_F63FFC[1580 * currCl] != 0)
     {
         float fWeaponPosFrac =
-            (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            (EntityManager::sInst->GetPlayer( currCl)
                  ->client->ps.fWeaponPosFrac
              + 1.0f)
             * 0.5f;
@@ -2371,13 +2377,13 @@ void CG_CalculateWeaponAngles(float* angles)
         float fFactor = fWeaponPosFrac;
         float fReturnTime = *(float*)&cg_viewKickReturnTime * fWeaponPosFrac;
         float fWeaponPosFrac2 =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.fWeaponPosFrac;
         if (fWeaponPosFrac2 != 0.0f
             && *(int*)((float*)dword_F63B8C[1580 * currCl] + 405) != 0)
         {
             float v10 =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                EntityManager::sInst->GetPlayer( currCl)
                     ->client->ps.fWeaponPosFrac;
             fFactor = (1.0f - (v10 * 0.75f)) * fFactor;
         }
@@ -2420,7 +2426,7 @@ void CG_CalculateWeaponAngles(float* angles)
 // ea: 0x00699D10
 void CG_CalculateWeaponPosition(float* origin)
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (dword_F63B8C[1580 * currCl]
         != (float*)BG_GetInfoForWeapon(Player->client->ps.weapon))
     {
@@ -2431,19 +2437,19 @@ void CG_CalculateWeaponPosition(float* origin)
     origin[1] = 0.0f;
     origin[0] = 0.0f;
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     if (client->ps.leanf != 0.0f
         && client->ps.fWeaponPosFrac < 1.0f)
     {
         float tempAngles[3] = {0.0f, 0.0f, 0.0f};
         float LeanFraction =
-            GetLeanFraction(EntityManager_GetPlayer(EntityManager_sInst,
+            GetLeanFraction(EntityManager::sInst->GetPlayer(
                                                     currCl)
                                 ->client->ps.leanf);
         tempAngles[2] = LeanFraction * -2.0f;
         float fDist = LeanFraction;
         float fDista =
-            ((1.0f - EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            ((1.0f - EntityManager::sInst->GetPlayer( currCl)
                          ->client->ps.fWeaponPosFrac)
              * fDist)
             * 1.6f;
@@ -2576,7 +2582,7 @@ static float Atan2Approx(float y, float x)
 int CG_CalcFov()
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     float* cam = (float*)((char*)gCamera + 0x1F0 * currCl);
     float y = CG_GetViewFov();
     float v4 = y;
@@ -2728,7 +2734,7 @@ static float s_shake;
 void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     Entity* ent = DbHandleToEntityLocal(client->ps.mViewLockedEntity);
     if (!s_tagBarrelHashInit)
     {
@@ -2857,7 +2863,7 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
             v43 = ent->s.weapon;
         }
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            EntityManager::sInst->GetPlayer( currCl);
         if (*(bool*)((char*)Player->client + 0xAE8))
         {
             s_wasAnimating[currCl] = true;
@@ -2948,9 +2954,9 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
 int CG_CalcPassengerViewPos()
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        EntityManager::sInst->GetPlayer( currCl)->client;
     Entity* mObject = DbHandleToEntityLocal(client->ps.mViewLockedEntity);
-    Client* v3 = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Client* v3 = EntityManager::sInst->GetPlayer( currCl)->client;
     if (mObject->scr_vehicle == nullptr)
         CG_ASSERT("ent->scr_vehicle", "c:\\cod\\code\\game\\cg_view.cpp",
                   1421);
@@ -3002,7 +3008,7 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
             == 0)
             goto label_8;
         mObject = DbHandleToEntityLocal(entity);
-        if (mObject == EntityManager_GetPlayer(EntityManager_sInst, currCl))
+        if (mObject == EntityManager::sInst->GetPlayer( currCl))
         {
             muzzle[0] =
                 *(float*)((char*)&dword_F62960[1580 * currCl] + 16);
@@ -3097,3 +3103,4 @@ void CG_CalcViewValues(const void* window)
         CG_CalcFov();
     }
 }
+

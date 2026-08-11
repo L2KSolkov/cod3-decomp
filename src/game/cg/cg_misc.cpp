@@ -11,6 +11,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    Entity* mPlayers[16];         // +0x04
+};
+
+
 extern int currCl;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
@@ -377,8 +386,6 @@ struct localEntity_t {
     refEntity_t  refEntity;  // +0x40
 };
 
-extern void* EntityManager_sInst;
-extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern float AngleNormalize180(float angle);
 extern vmCvar_t cg_bobAmplitudeProne;     // 0x00F5ED68
 extern vmCvar_t cg_bobAmplitudeDucked;    // 0x00F5B850
@@ -516,7 +523,7 @@ void CG_ClampAngles(math::Position3* angles, const float* centerAngles,
 // ea: 0x0068D150
 float CG_GetVerticalBobFactor(float fCycle, float fSpeed, float fMaxAmp)
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Client* client = EntityManager::sInst->GetPlayer( currCl)->client;
     int viewHeightTarget = client->ps.viewHeightTarget;
     float value;
     if (viewHeightTarget == client->ps.proneViewHeight)
@@ -538,7 +545,7 @@ float CG_GetVerticalBobFactor(float fCycle, float fSpeed, float fMaxAmp)
 // ea: 0x0068D1F0
 float CG_GetHorizontalBobFactor(float fCycle, float fSpeed, float fMaxAmp)
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Client* client = EntityManager::sInst->GetPlayer( currCl)->client;
     int viewHeightTarget = client->ps.viewHeightTarget;
     float value;
     if (viewHeightTarget == client->ps.proneViewHeight)
@@ -929,7 +936,7 @@ bool IsVehicleCameraFadeMode(ECameraModes mode)
 // ea: 0x0068E840
 void Camera::UpdateViewBob()
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     dword_F641D8[1580 * mClient] = (float)(client->ps.bobCycle & 0xFF)
                                        * 0.024639944f
                                    + 6.2831855f;
@@ -954,7 +961,7 @@ void Camera::UpdateViewBob()
 // ea: 0x0068E900
 void Camera::SetPlayerAngles(float* newAngles)
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     client->ps.delta_angles[0] +=
         (int)((*newAngles - client->ps.viewangles[0]) * 182.04445f) & 0xFFFF;
     client->ps.delta_angles[1] +=
@@ -969,7 +976,7 @@ void Camera::SetPlayerAngles(float* newAngles)
 // ea: 0x0068E9B0
 void Camera::AdjustPlayerAngles(float* deltaAngles)
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     client->ps.delta_angles[0] += (int)(*deltaAngles * 182.04445f) & 0xFFFF;
     client->ps.delta_angles[1] +=
         (int)(deltaAngles[1] * 182.04445f) & 0xFFFF;
@@ -1139,7 +1146,7 @@ void Camera::EndVehicleCam()
 // ea: 0x0068E180
 void Camera::UpdateIntermissionCam()
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     dword_F63C70[1580 * mClient] = client->ps.origin.v.m128_f32[0];
     dword_F63C74[1580 * mClient] = client->ps.origin.v.m128_f32[1];
     dword_F63C78[1580 * mClient] = client->ps.origin.v.m128_f32[2];
@@ -1173,7 +1180,7 @@ math::Position3 Camera::GetVehicleViewAngles(Entity* veh, PlayerState* ps)
 // ea: 0x006A6750
 void Camera::BeginVehicleCam()
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     unsigned int v4 = client->ps.mViewLockedEntity & 0xFFF;
     Entity* mObject = nullptr;
     if (v4 < 0x540
@@ -1214,11 +1221,11 @@ void Camera::UpdateReviveCam()
         s_spineHash = HashString::CalcHash("bip01 spine1");
     }
     float tagMtx[31];
-    G_DObjGetWorldTagMatrix(EntityManager_GetPlayer(EntityManager_sInst,
+    G_DObjGetWorldTagMatrix(EntityManager::sInst->GetPlayer(
                                                     mClient),
                             s_headHash, (DObjSkelMat*)tagMtx);
     float angTagMtx[31];
-    G_DObjGetWorldTagMatrix(EntityManager_GetPlayer(EntityManager_sInst,
+    G_DObjGetWorldTagMatrix(EntityManager::sInst->GetPlayer(
                                                     mClient),
                             s_spineHash, (DObjSkelMat*)angTagMtx);
     dword_F63C70[1580 * mClient] = tagMtx[12];
@@ -1496,7 +1503,7 @@ void Camera::UpdateVehicleDriverCamAnglesInput(Entity* veh, PlayerState* ps)
 // ea: 0x006AEF30
 void Camera::UpdateVehicleDriverCam(float extra_height_offset)
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
     UpdateVehicleDriverCamAngles(mObject, &client->ps);
     UpdateVehicleDriverCamAnglesInput(mObject, &client->ps);
@@ -1545,7 +1552,7 @@ void Camera::Update()
         if (v2 == CAM_VEHICLE_THIRD)
         {
             mVehCamThirdAnglesOffset.v.m128_f32[1] =
-                EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                EntityManager::sInst->GetPlayer( mClient)
                     ->client->ps.viewangles[1];
         }
     }
@@ -2242,7 +2249,6 @@ void UpdateNumViewports()
 extern int cg_aWeaponSelect[4];       // 0x00F5D078
 extern int cg_aWeaponSelectTime[4];   // 0x00F610D8
 extern vmCvar_t cg_weaponCycleDelay;  // 0x00F5EF18
-extern void* EntityManager_mPlayers[16];
 extern bool Entity_IsLocalPlayer(const Entity* ent);
 extern bool CG_WeaponSelectable(int i);
 extern int BG_SelectWeaponIndex(int iWeaponIndex, int client);
@@ -2287,18 +2293,18 @@ struct weaponParms {
 // ea: 0x00692600
 void CG_AltWeapon_f()
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (Player && Player->client
-        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        && (EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.pm_flags
             & 0x4000)
                == 0
         && (0x80000
-            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            & EntityManager::sInst->GetPlayer( currCl)
                   ->client->ps.pm_flags)
                != 0
         && (0x106000
-            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            & EntityManager::sInst->GetPlayer( currCl)
                   ->client->ps.eFlags)
                == 0
         && cgGlobal.time - cg_aWeaponSelectTime[currCl]
@@ -2365,7 +2371,7 @@ int CG_SelectFirstWeaponInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
     {
         if (localIdx >= 16)
             CG_ASSERT("idx<16", "c:\\cod\\code\\game\\EntityManager.h", 19);
-        if (((Entity*)EntityManager_mPlayers[localIdx])->client->ps.weaponslots
+        if (((Entity*)EntityManager::sInst->mPlayers[localIdx])->client->ps.weaponslots
                     [v3]
                 != 0
             && (v3 == 1 || v3 == 2))
@@ -2374,15 +2380,15 @@ int CG_SelectFirstWeaponInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
                 CG_ASSERT("idx<16", "c:\\cod\\code\\game\\EntityManager.h",
                           19);
             if (Entity_IsLocalPlayer(
-                    (const Entity*)EntityManager_mPlayers[localIdx]))
+                    (const Entity*)EntityManager::sInst->mPlayers[localIdx]))
             {
                 if (bIgnoreEmpty == 0)
                     break;
                 Client* client =
-                    EntityManager_GetPlayer(EntityManager_sInst, localIdx)
+                    EntityManager::sInst->GetPlayer( localIdx)
                         ->client;
                 Entity* Player =
-                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                    EntityManager::sInst->GetPlayer( localIdx);
                 if (BG_WeaponAmmo(&Player->client->ps,
                                   client->ps.weaponslots[v3])
                     != 0)
@@ -2393,7 +2399,7 @@ int CG_SelectFirstWeaponInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
         if (v3 == 0 || v3 == 10)
             return 0;
     }
-    Entity* v9 = EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+    Entity* v9 = EntityManager::sInst->GetPlayer( localIdx);
     BG_SelectWeaponIndex(v9->client->ps.weaponslots[v3], localIdx);
     return 1;
 }
@@ -2425,13 +2431,13 @@ int CG_SelectFirstWeaponNotInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
             else
             {
                 Entity* Player =
-                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                    EntityManager::sInst->GetPlayer( localIdx);
                 Entity* v8 =
-                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                    EntityManager::sInst->GetPlayer( localIdx);
                 Entity* v9 =
-                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                    EntityManager::sInst->GetPlayer( localIdx);
                 Entity* v10 =
-                    EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                    EntityManager::sInst->GetPlayer( localIdx);
                 if (!Com_BitCheck(Player->client->ps.weapons, NumWeapons)
                     || BG_IsPlayerWeaponInSlot(&v8->client->ps, NumWeapons,
                                                1)
@@ -2447,7 +2453,7 @@ int CG_SelectFirstWeaponNotInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
                 else
                 {
                     Entity* v11 =
-                        EntityManager_GetPlayer(EntityManager_sInst, localIdx);
+                        EntityManager::sInst->GetPlayer( localIdx);
                     if (Entity_IsLocalPlayer(v11))
                     {
                         BG_SelectWeaponIndex(NumWeapons, localIdx);
@@ -2477,12 +2483,12 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
 {
     if (dword_F62960[1580 * currCl] != 0
         && (0x80000
-            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            & EntityManager::sInst->GetPlayer( currCl)
                   ->client->ps.pm_flags)
                != 0)
     {
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            EntityManager::sInst->GetPlayer( currCl);
         if (Entity_IsLocalPlayer(Player))
         {
             int v3;
@@ -2500,36 +2506,36 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
                 v3 = -1;
                 iWeaponLooped = BG_GetNumWeapons();
             }
-            Entity* v4 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            Entity* v4 = EntityManager::sInst->GetPlayer( currCl);
             int StackSlotForWeapon =
                 BG_IsPlayerWeaponInSlot(&v4->client->ps,
                                         cg_aWeaponSelect[currCl], 1);
             if (StackSlotForWeapon == 0 /* WEAPSLOT_NONE */)
             {
                 Entity* v6 =
-                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                    EntityManager::sInst->GetPlayer( currCl);
                 StackSlotForWeapon = BG_GetStackSlotForWeapon(
                     &v6->client->ps, cg_aWeaponSelect[currCl],
                     (weapSlot_t)0 /* WEAPSLOT_NONE */);
             }
-            Entity* v7 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            Entity* v7 = EntityManager::sInst->GetPlayer( currCl);
             PM_KillQueuedReloadSound(&v7->client->ps);
             if (StackSlotForWeapon != 0)
             {
                 for (int i = (StackSlotForWeapon + v3 + 8) % 9 + 1;
                      i != StackSlotForWeapon; i = (i + v3 + 8) % 9 + 1)
                 {
-                    if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                    if (EntityManager::sInst->GetPlayer( currCl)
                                 ->client->ps.weaponslots[i]
                             != 0
                         && (i == 1 || i == 2))
                     {
                         Client* client =
-                            EntityManager_GetPlayer(EntityManager_sInst,
+                            EntityManager::sInst->GetPlayer(
                                                     currCl)
                                 ->client;
-                        Entity* v10 = EntityManager_GetPlayer(
-                            EntityManager_sInst, currCl);
+                        Entity* v10 = EntityManager::sInst->GetPlayer(
+                            currCl);
                         if (bIgnoreEmpty == 0
                             || BG_WeaponAmmo(&v10->client->ps,
                                              client->ps.weaponslots[i])
@@ -2551,7 +2557,7 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
                         CG_SelectFirstWeaponInSlot(bNext, 0);
                 done:
                     Entity* v18 =
-                        EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                        EntityManager::sInst->GetPlayer( currCl);
                     if (!Com_BitCheck(v18->client->ps.weapons,
                                       cg_aWeaponSelect[currCl]))
                         BG_SelectWeaponIndex(0, currCl);
@@ -2568,27 +2574,27 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
                     if (v12 == iWeaponLooped)
                         break;
                     Entity* v13 =
-                        EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                        EntityManager::sInst->GetPlayer( currCl);
                     if (Com_BitCheck(v13->client->ps.weapons, v12) != 0
                         && !BG_IsPlayerWeaponAnAlt(v12,
                                                    cg_aWeaponSelect[currCl]))
                     {
                         Entity* v14 =
-                            EntityManager_GetPlayer(EntityManager_sInst,
+                            EntityManager::sInst->GetPlayer(
                                                     currCl);
                         if (BG_IsPlayerWeaponInSlot(&v14->client->ps, v12, 1)
                             == 0 /* WEAPSLOT_NONE */)
                         {
                             Entity* v15 =
-                                EntityManager_GetPlayer(EntityManager_sInst,
+                                EntityManager::sInst->GetPlayer(
                                                         currCl);
                             if (BG_GetStackSlotForWeapon(&v15->client->ps,
                                                          v12,
                                                          (weapSlot_t)0)
                                 == 0)
                             {
-                                Entity* v16 = EntityManager_GetPlayer(
-                                    EntityManager_sInst, currCl);
+                                Entity* v16 =
+                                    EntityManager::sInst->GetPlayer(currCl);
                                 if (bIgnoreEmpty == 0
                                     || BG_WeaponAmmo(&v16->client->ps, v12)
                                            != 0)
@@ -2627,29 +2633,29 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
 // ea: 0x0069A3B0
 void CG_NextWeapon_f()
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (Player != nullptr && Player->client != nullptr
-        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        && (EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.pm_flags
             & 0x4000)
                == 0
-        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        && (EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.eFlags
             & 0x6000)
                == 0)
     {
         Client* client =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
-        Entity* v2 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            EntityManager::sInst->GetPlayer( currCl)->client;
+        Entity* v2 = EntityManager::sInst->GetPlayer( currCl);
         if ((0x100000
-             & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+             & EntityManager::sInst->GetPlayer( currCl)
                    ->client->ps.eFlags)
                 == 0
             || BG_AllowPlayerWeaponAtVehiclePos(v2->client->ps.vehType,
                                                 client->ps.vehPos))
         {
             Entity* v3 =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                EntityManager::sInst->GetPlayer( currCl);
             weaponInfoCam* InfoForWeapon =
                 (weaponInfoCam*)BG_GetInfoForWeapon(v3->client->ps.weapon);
             weaponInfoCam* v5 = InfoForWeapon;
@@ -2658,7 +2664,7 @@ void CG_NextWeapon_f()
                       || (GetPlayerState(currCl).pm_flags & 0x20) == 0)
                      && v5->weapClass != 16))
                 && (0x80000
-                    & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                    & EntityManager::sInst->GetPlayer( currCl)
                           ->client->ps.pm_flags)
                        != 0
                 && cgGlobal.time - cg_aWeaponSelectTime[currCl]
@@ -2674,18 +2680,18 @@ void CG_NextWeapon_f()
 // ea: 0x0069A540
 void CG_PrevWeapon_f()
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     if (Player != nullptr && Player->client != nullptr
-        && (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        && (EntityManager::sInst->GetPlayer( currCl)
                 ->client->ps.pm_flags
             & 0x4000)
                == 0
         && (0x106000
-            & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            & EntityManager::sInst->GetPlayer( currCl)
                   ->client->ps.eFlags)
                == 0)
     {
-        Entity* v1 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        Entity* v1 = EntityManager::sInst->GetPlayer( currCl);
         weaponInfoCam* InfoForWeapon =
             (weaponInfoCam*)BG_GetInfoForWeapon(v1->client->ps.weapon);
         weaponInfoCam* v3 = InfoForWeapon;
@@ -2694,7 +2700,7 @@ void CG_PrevWeapon_f()
                   || (GetPlayerState(currCl).pm_flags & 0x20) == 0)
                  && v3->weapClass != 16))
             && (0x80000
-                & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                & EntityManager::sInst->GetPlayer( currCl)
                       ->client->ps.pm_flags)
                    != 0
             && cgGlobal.time - cg_aWeaponSelectTime[currCl]
@@ -2921,7 +2927,7 @@ void CG_PrintPerturbationPoints()
 // ea: 0x006A0370
 Entity* GetPlayerTarget()
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Client* client = EntityManager::sInst->GetPlayer( currCl)->client;
     if (client->ps.mTargetTime + 1000 <= cgGlobal.time)
         return nullptr;
     return DbHandleToEntity(client->ps.mTarget);
@@ -3258,7 +3264,7 @@ void* ADSMetaAnimData::CreateAnimInst(void* theSkel, void* theAnim)
     void* v4 = tlMemAlloc(0x24, 8, 0);
     if (v4 == nullptr)
         return nullptr;
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     return ADSMetaAnimInstance_Ctor(v4, mAnimPtr, mRevPtr, theSkel,
                                     &Player->client->ps.fWeaponPosFrac);
 }
@@ -3343,7 +3349,7 @@ void ADSMetaAnimPlayer::CreateMetaAnim(XAnimTree* pAnimTree)
 // ea: 0x0069EB30
 int ADSMetaAnimPlayer::Update(XAnimTree* pAnimTree, weaponInfo_s* weaponInfo)
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+    Client* client = EntityManager::sInst->GetPlayer( currCl)->client;
     int v5 = client->ps.weapAnim & 0xFFFFFDFF;
     if (client->ps.weapAnim < 0 || v5 >= 24)
     {
@@ -3816,7 +3822,7 @@ void Camera::UpdateVehicleDriverCamPos(Entity* veh, PlayerState* ps,
 // ea: 0x006A8690
 void Camera::UpdateTankCam()
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
     dword_F63C70[1580 * mClient] = client->ps.origin.v.m128_f32[0];
     dword_F63C74[1580 * mClient] = client->ps.origin.v.m128_f32[1];
@@ -3844,7 +3850,7 @@ void Camera::UpdateTankCam()
             mObject->r.currentAngles.v.m128_f32[3]};
         float axis[3][3];
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+            EntityManager::sInst->GetPlayer( mClient);
         if (IsPlayerFullySeatedInVehicle(Player))
             AnglesToAxis((const float*)&angle[1580 * mClient],
                          axis);
@@ -3853,7 +3859,7 @@ void Camera::UpdateTankCam()
         VectorNormalize(axis[0]);
         float v11 = 0.0f;
         if (IsPlayerFullySeatedInVehicle(
-                EntityManager_GetPlayer(EntityManager_sInst, mClient))
+                EntityManager::sInst->GetPlayer( mClient))
             && client->ps.vehPos == 0)
         {
             v11 = angle[1580 * mClient];
@@ -3891,7 +3897,7 @@ void Camera::UpdateTankCam()
                                  + v24 * axis[0][1],
                              turretPos[2] + info->turretCamOffset * axis[1][2]
                                  + v24 * axis[0][2]};
-        Entity* v31 = EntityManager_GetPlayer(EntityManager_sInst, mClient);
+        Entity* v31 = EntityManager::sInst->GetPlayer( mClient);
         float delta[4];
         if (IsPlayerFullySeatedInVehicle(v31))
         {
@@ -3916,7 +3922,7 @@ void Camera::UpdateTankCam()
         mVehPrevAngles.v = mObject->r.currentAngles.v;
         mVehPrevAnglesTime = cgGlobal.time;
         if (IsPlayerFullySeatedInVehicle(
-                EntityManager_GetPlayer(EntityManager_sInst, mClient)))
+                EntityManager::sInst->GetPlayer( mClient)))
         {
             *(float*)((char*)mObject->scr_vehicle + 0x434) =
                 AngleNormalize360(*(float*)((char*)mObject->scr_vehicle
@@ -3930,7 +3936,7 @@ void Camera::UpdateTankCam()
         memset(&ctx, 0, sizeof(ctx));
         ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
         ctx.pass_entity1.mHandle.mVal =
-            EntityManager_GetPlayer(EntityManager_sInst, mClient)->mHandle
+            EntityManager::sInst->GetPlayer( mClient)->mHandle
                 .mHandle.mVal;
         ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
         CG_Trace(&tr, (const math::Position3*)turretPos,
@@ -3952,7 +3958,7 @@ void Camera::UpdateTankCam()
 // ea: 0x006A8000
 void Camera::UpdateTankCommanderCam()
 {
-    Client* client = EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+    Client* client = EntityManager::sInst->GetPlayer( mClient)->client;
     Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
     float vehAngles[4] = {mObject->r.currentAngles.v.m128_f32[0],
                           mObject->r.currentAngles.v.m128_f32[1],
@@ -4030,7 +4036,7 @@ void Camera::UpdateTankCommanderCam()
         memset(&ctx, 0, sizeof(ctx));
         ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
         ctx.pass_entity1.mHandle.mVal =
-            EntityManager_GetPlayer(EntityManager_sInst, mClient)->mHandle
+            EntityManager::sInst->GetPlayer( mClient)->mHandle
                 .mHandle.mVal;
         ctx.pass_entity2.mHandle.mVal = mObject->mHandle.mHandle.mVal;
         trace_t tr;
@@ -4044,7 +4050,7 @@ void Camera::UpdateTankCommanderCam()
             dword_F63C78[1580 * mClient] = tr.endpos.v.m128_f32[2];
         }
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+            EntityManager::sInst->GetPlayer( mClient);
         if (!IsPlayerFullySeatedInVehicle(Player))
         {
             angle[1580 * mClient] = vehAngles[0];
@@ -4113,7 +4119,7 @@ ECameraModes Camera::CalcCamMode()
     int mode = InteractionController_GetCameraMode(v2);
     if (mode != -1)
         return (ECameraModes)InteractionController_GetCameraMode(v2);
-    if (*(int*)((char*)EntityManager_GetPlayer(EntityManager_sInst, mClient)
+    if (*(int*)((char*)EntityManager::sInst->GetPlayer( mClient)
                     ->client
                 + 0x7E8)
         != 0)
@@ -4121,7 +4127,7 @@ ECameraModes Camera::CalcCamMode()
     if (gSceneAnimCamera)
         return CAM_SCENE_ANIMATED;
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+        EntityManager::sInst->GetPlayer( mClient)->client;
     if (client->ps.pm_type == 5)
         return CAM_INTERMISSION;
     if (client->ps.eFlags < 0)
@@ -4396,7 +4402,7 @@ void Camera::UpdateVehicleDriverCamThird()
         special_tween_bool = false;
     }
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+        EntityManager::sInst->GetPlayer( mClient)->client;
     Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
     UpdateVehicleDriverCamAnglesInput(mObject, &client->ps);
     vehicle_info_full_t* v7 =
@@ -4426,7 +4432,7 @@ void Camera::UpdateVehicleDriverCamThird()
     if (mVehInputState != INPUT_NONE)
     {
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+            EntityManager::sInst->GetPlayer( mClient);
         float v17, v18;
         if (IsPlayerFullySeatedInVehicle(Player)
             || client->ps.vehPos >= 8)
@@ -4531,7 +4537,7 @@ void Camera::UpdateVehicleDriverCamThird()
 void Camera::UpdateMPDeathCameraNoKiller()
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+        EntityManager::sInst->GetPlayer( mClient)->client;
     float eye[4] = {client->ps.origin.v.m128_f32[0],
                     client->ps.origin.v.m128_f32[1],
                     client->ps.origin.v.m128_f32[2],
@@ -4596,7 +4602,7 @@ void Camera::UpdateMPDeathCameraNoKiller()
 void Camera::UpdateMPDeathCamera()
 {
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+        EntityManager::sInst->GetPlayer( mClient)->client;
     unsigned int killer = *(unsigned int*)((char*)client + 0x90);
     Entity* mObject = DbHandleToEntity(killer);
     if (mObject != nullptr)
@@ -4679,7 +4685,7 @@ void Camera::UpdateMPDeathCamera()
 // ea: 0x006A8D50
 void Camera::UpdateDeathCamera()
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, mClient);
+    Entity* Player = EntityManager::sInst->GetPlayer( mClient);
     if (Player != nullptr)
     {
         Client* client = Player->client;
@@ -4777,7 +4783,7 @@ void Camera::UpdateDeathCamera()
                                        1.0f);
                 }
                 void* mWorld =
-                    *(void**)((char*)EntityManager_sInst + 0x44);
+                    *(void**)((char*)EntityManager::sInst + 0x44);
                 unsigned int hash =
                     HashString::CalcHash("playerDeathHitGround");
                 if (mWorld != nullptr)
@@ -4827,18 +4833,18 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
     {
         float frac = mTweenTime / mTweenDuration;
         Client* client =
-            EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+            EntityManager::sInst->GetPlayer( mClient)->client;
         unsigned int mVal = client->ps.mViewLockedEntity;
         bool circleTween = (mTweenFlags & 2) != 0;
         if (!circleTween)
         {
             if ((0x100000
-                 & EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                 & EntityManager::sInst->GetPlayer( mClient)
                        ->client->ps.eFlags)
                 != 0)
             {
                 Entity* Player =
-                    EntityManager_GetPlayer(EntityManager_sInst, mClient);
+                    EntityManager::sInst->GetPlayer( mClient);
                 Entity* v24 = DbHandleToEntity(Player->r.mOwner.mHandle.mVal);
                 float px = mTweenParentPos.v.m128_f32[0];
                 float py = mTweenParentPos.v.m128_f32[1];
@@ -4910,7 +4916,7 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                         ctx.__vftable =
                             (collision_context_t_vtbl*)0x00CD8F6C;
                         ctx.pass_entity1.mHandle.mVal =
-                            EntityManager_GetPlayer(EntityManager_sInst,
+                            EntityManager::sInst->GetPlayer(
                                                     mClient)
                                 ->mHandle.mHandle.mVal;
                         ctx.pass_entity2.mHandle.mVal = mVal;
@@ -4965,7 +4971,7 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                     {
                         if (tr.surfaceFlags == 0
                             || tr.surfaceFlags
-                                   == *(int*)((char*)EntityManager_sInst + 0x44
+                                   == *(int*)((char*)EntityManager::sInst + 0x44
                                               + 0x234))
                         {
                             CG_Trace(&tr, (const math::Position3*)cur,
@@ -5054,7 +5060,7 @@ void Camera::UpdateTween(math::Position3& tweenStartPos,
                 memset(&ctx, 0, sizeof(ctx));
                 ctx.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
                 ctx.pass_entity1.mHandle.mVal =
-                    EntityManager_GetPlayer(EntityManager_sInst, mClient)
+                    EntityManager::sInst->GetPlayer( mClient)
                         ->mHandle.mHandle.mVal;
                 ctx.pass_entity2.mHandle.mVal = mVal;
                 ctx.contentmask = 17;
@@ -5087,12 +5093,12 @@ float Camera::SetNewMode(ECameraModes newMode)
         return 0.0f;
     float mpTweenTime = 0.69999999f;
     if ((0x100000
-         & EntityManager_GetPlayer(EntityManager_sInst, mClient)
+         & EntityManager::sInst->GetPlayer( mClient)
                ->client->ps.eFlags)
         != 0)
     {
         Entity* mObject = DbHandleToEntity(
-            EntityManager_GetPlayer(EntityManager_sInst, mClient)
+            EntityManager::sInst->GetPlayer( mClient)
                 ->r.mOwner.mHandle.mVal);
         mTweenParentPos.v = mObject->r.currentOrigin.v;
         mTweenParentAngles.v = mObject->r.currentAngles.v;
@@ -5103,9 +5109,9 @@ float Camera::SetNewMode(ECameraModes newMode)
         && newMode <= CAM_VEHICLE_TANK_COMMANDER)
     {
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, mClient);
+            EntityManager::sInst->GetPlayer( mClient);
         Entity* v11 = DbHandleToEntity(Player->client->ps.mViewLockedEntity);
-        void* mWorld = *(void**)((char*)EntityManager_sInst + 0x44);
+        void* mWorld = *(void**)((char*)EntityManager::sInst + 0x44);
         if (mVehicleCamMode != VEH_MODE_FIRSTPERSON)
         {
             if (mVehicleCamMode == VEH_MODE_CHASECAM)
@@ -5138,18 +5144,18 @@ float Camera::SetNewMode(ECameraModes newMode)
         }
     }
     if ((0x100000
-         & EntityManager_GetPlayer(EntityManager_sInst, mClient)
+         & EntityManager::sInst->GetPlayer( mClient)
                ->client->ps.eFlags)
         != 0)
     {
         Entity* v17 = DbHandleToEntity(
-            EntityManager_GetPlayer(EntityManager_sInst, mClient)
+            EntityManager::sInst->GetPlayer( mClient)
                 ->r.mOwner.mHandle.mVal);
         mTweenParentPos.v = v17->r.currentOrigin.v;
         mTweenParentAngles.v = v17->r.currentAngles.v;
     }
     Client* playerClient =
-        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+        EntityManager::sInst->GetPlayer( mClient)->client;
     if (playerClient->ps.vehPos == 6)
     {
         if (mVehicleCamMode == VEH_MODE_CHASECAM
@@ -5321,7 +5327,7 @@ float Camera::SetNewMode(ECameraModes newMode)
     default:
         {
             Client* v38 =
-                EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+                EntityManager::sInst->GetPlayer( mClient)->client;
             float newAngles[3] = {v38->ps.viewangles[0],
                                   v38->ps.viewangles[1], 0.0f};
             SetPlayerAngles(newAngles);
@@ -5355,7 +5361,7 @@ void Camera::UpdateAnimation()
 {
     if ((mAnimFlags & 1) != 0)
     {
-        if (EntityManager_GetPlayer(EntityManager_sInst, mClient)
+        if (EntityManager::sInst->GetPlayer( mClient)
                 ->client->ps.weapon
             > 0)
         {
@@ -5445,7 +5451,7 @@ void Camera::UpdateSceneAnimCam()
     dword_F63C60[1580 * mClient] = gSceneAnimCameraFOV;
     float origin[3] = {out[12], out[13], out[14]};
     Entity* Player =
-        EntityManager_GetPlayer(EntityManager_sInst, mClient);
+        EntityManager::sInst->GetPlayer( mClient);
     G_SetOrigin(Player, origin);
     Player->s.pos.trBase[0] = origin[0];
     Player->s.pos.trBase[1] = origin[1];
@@ -5453,7 +5459,7 @@ void Camera::UpdateSceneAnimCam()
     Player->client->ps.origin.v.m128_f32[0] = origin[0];
     Player->client->ps.origin.v.m128_f32[1] = origin[1];
     Player->client->ps.origin.v.m128_f32[2] = origin[2];
-    EntityManager_GetPlayer(EntityManager_sInst, currCl)
+    EntityManager::sInst->GetPlayer( currCl)
         ->client->ps.viewHeightCurrent = 0.0f;
 }
 
@@ -5473,7 +5479,7 @@ void Camera::UpdateVehicleAnimCam()
 {
     bool v79 = mTweenTime != 0.0f || mTweenDuration <= 0.0f;
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, mClient)->client;
+        EntityManager::sInst->GetPlayer( mClient)->client;
     Entity* mObject = DbHandleToEntity(client->ps.mViewLockedEntity);
     if (mObject != nullptr)
     {
@@ -5514,7 +5520,7 @@ void Camera::UpdateVehicleAnimCam()
             }
             float tagMtx[16];
             G_DObjGetWorldTagMatrix(
-                EntityManager_GetPlayer(EntityManager_sInst, mClient),
+                EntityManager::sInst->GetPlayer( mClient),
                 s_pelvisHash, (DObjSkelMat*)tagMtx);
             if (client->ps.vehPos == 1 || client->ps.vehPos == 2)
                 radius = Info->cameraChaseRadiusInner;
@@ -5647,11 +5653,11 @@ void Camera::UpdateVehicleAnimCam()
         }
         float headMtx[16];
         G_DObjGetWorldTagMatrix(
-            EntityManager_GetPlayer(EntityManager_sInst, mClient),
+            EntityManager::sInst->GetPlayer( mClient),
             s_animHeadHash, (DObjSkelMat*)headMtx);
         float spineMtx[16];
         G_DObjGetWorldTagMatrix(
-            EntityManager_GetPlayer(EntityManager_sInst, mClient),
+            EntityManager::sInst->GetPlayer( mClient),
             s_animSpineHash, (DObjSkelMat*)spineMtx);
         dword_F63C70[1580 * mClient] = headMtx[12];
         dword_F63C74[1580 * mClient] = headMtx[13];
@@ -5685,3 +5691,4 @@ void Camera::UpdateVehicleAnimCam()
         }
     }
 }
+

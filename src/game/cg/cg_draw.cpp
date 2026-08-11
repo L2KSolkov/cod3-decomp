@@ -9,13 +9,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    Entity* mPlayers[16];         // +0x04
+};
+
+
 extern int currCl;
 extern int cgGlobal_time;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern void* cgsGlobal_media_whiteShader;
-extern void* EntityManager_sInst;
-extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern char* va(const char* fmt, ...);
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);
@@ -263,7 +270,7 @@ float CG_DrawTimer(float y)
 // ea: 0x00688600
 Entity* CG_DrawFriendlyFire()
 {
-    return EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    return EntityManager::sInst->GetPlayer( currCl);
 }
 
 // ea: 0x00688680
@@ -410,7 +417,7 @@ void CG_DrawScoreboard_GetTeamColor(int iTeam, float* vColor)
 {
     if (iTeam == 1 || iTeam == 2)
     {
-        Entity* p = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        Entity* p = EntityManager::sInst->GetPlayer( currCl);
         if (p->sentient == nullptr || p->sentient->eTeam == iTeam)
         {
             vColor[0] = 0.25f;
@@ -548,7 +555,7 @@ void CG_DrawUpperRight()
         if (cg_drawPosition != 0)
         {
             Entity* Player =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                EntityManager::sInst->GetPlayer( currCl);
             if (Player != nullptr)
                 Cmd_Where_f(Player);
             char text[128];
@@ -565,7 +572,7 @@ void CG_DrawUpperRight()
         }
         if (cg_drawTimer != 0)
             y = CG_DrawTimer(50.0f);
-        Entity* p = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        Entity* p = EntityManager::sInst->GetPlayer( currCl);
         if (p->takedamage == 0)
         {
             float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -1269,7 +1276,7 @@ void CG_DrawCrosshair(float transScaleArg)
 {
     int color[4] = {1065353216, 1065353216, 1065353216, 0};
     float fWeaponPosFrac =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        EntityManager::sInst->GetPlayer( currCl)
             ->client->ps.fWeaponPosFrac;
     int v2 = dword_F6355C[1580 * currCl];
     float fPosLerp = fWeaponPosFrac;
@@ -1282,14 +1289,14 @@ void CG_DrawCrosshair(float transScaleArg)
         if (!GamePause_IsGamePaused(currCl))
         {
             Client* client =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+                EntityManager::sInst->GetPlayer( currCl)->client;
             if ((client->ps.eFlags & 0x6000) != 0)
             {
                 if (client->ps.mViewLockedEntity != 0)
                     CG_DrawTurretCrossHair();
             }
             else if ((0x100000
-                      & EntityManager_GetPlayer(EntityManager_sInst, currCl)
+                      & EntityManager::sInst->GetPlayer( currCl)
                             ->client->ps.eFlags)
                          == 0
                      || (client->ps.eFlags & 0x400000) != 0)
@@ -1635,7 +1642,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         CG_UpdateShellShock((shellshock_parms_t*)dword_F64164[v12],
                             dword_F64168[v12], v13);
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            EntityManager::sInst->GetPlayer( currCl);
         Client* client = Player->client;
         if (IsPlayerFullySeatedInVehicle(Player)
             || *(bool*)((char*)client + 0xAD8)
@@ -1691,7 +1698,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         if (gRenderViewWeapon != 0)
         {
             Entity* v20 =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                EntityManager::sInst->GetPlayer( currCl);
             CG_AddViewWeapon(&v20->client->ps);
         }
         gCurrentCamera = (char*)gCamera + 0x1F0 * currCl;
@@ -1762,3 +1769,4 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         curListener %= SoundDevice_GetNumberOfListeners(SoundDevice_sInst);
     }
 }
+

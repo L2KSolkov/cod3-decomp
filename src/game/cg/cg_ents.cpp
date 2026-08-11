@@ -10,6 +10,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    Entity* mPlayers[16];         // +0x04
+};
+
+
 extern int currCl;
 extern int cgGlobal_time;
 extern int dword_F62960[4 * 1580];
@@ -33,8 +42,6 @@ extern int dword_F61124;
 extern int dword_F61128;
 extern int dword_F6112C;
 extern int dword_F61130;
-extern void* EntityManager_mPlayers[16];
-extern void* EntityManager_sInst;
 extern const char* CL_GetConfigStringC(int index);
 extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
@@ -43,7 +50,6 @@ extern int BG_GetNumWeapons();
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
 extern int BG_AmmoForWeapon(int iWeapon);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
-extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern void CG_DebugBox(const float* mins, const float* maxs,
                         const float* color, int depthTest, int duration);
 extern void CG_Error(const char* msg, ...);
@@ -163,7 +169,7 @@ int CG_GetGrenadeCount()
         return 0;
     do
     {
-        if (Com_BitCheck(((Entity*)EntityManager_mPlayers[currCl])->client->ps
+        if (Com_BitCheck(((Entity*)EntityManager::sInst->mPlayers[currCl])->client->ps
                              .weapons,
                          v0) != 0
             && ((weaponFileInfoFull*)BG_GetInfoForWeapon(v0))->weapClass
@@ -172,7 +178,7 @@ int CG_GetGrenadeCount()
                    == 12 /* WEAPSLOT_GRENADE */)
         {
             Entity* Player =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                EntityManager::sInst->GetPlayer( currCl);
             grenAmmo += BG_WeaponAmmo(&Player->client->ps, v0);
         }
         ++v0;
@@ -189,7 +195,7 @@ int CG_GetSmokeGrenadeCount()
         return 0;
     do
     {
-        if (Com_BitCheck(((Entity*)EntityManager_mPlayers[currCl])->client->ps
+        if (Com_BitCheck(((Entity*)EntityManager::sInst->mPlayers[currCl])->client->ps
                              .weapons,
                          v0) != 0
             && ((weaponFileInfoFull*)BG_GetInfoForWeapon(v0))->weapClass
@@ -198,7 +204,7 @@ int CG_GetSmokeGrenadeCount()
                    == 13 /* WEAPSLOT_SMOKE_GRENADE */)
         {
             Entity* Player =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                EntityManager::sInst->GetPlayer( currCl);
             grenAmmo += BG_WeaponAmmo(&Player->client->ps, v0);
         }
         ++v0;
@@ -215,7 +221,7 @@ int CG_GetSpecialGrenadeCount()
         return 0;
     do
     {
-        if (Com_BitCheck(((Entity*)EntityManager_mPlayers[currCl])->client->ps
+        if (Com_BitCheck(((Entity*)EntityManager::sInst->mPlayers[currCl])->client->ps
                              .weapons,
                          v0) != 0
             && (((weaponFileInfoFull*)BG_GetInfoForWeapon(v0))->weapClass
@@ -226,7 +232,7 @@ int CG_GetSpecialGrenadeCount()
                    == 15 /* WEAPSLOT_SPECIAL */)
         {
             Entity* Player =
-                EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                EntityManager::sInst->GetPlayer( currCl);
             grenAmmo += BG_WeaponAmmo(&Player->client->ps, v0);
         }
         ++v0;
@@ -237,7 +243,7 @@ int CG_GetSpecialGrenadeCount()
 // ea: 0x00692C30
 bool CG_VehicleActive()
 {
-    Entity* p = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* p = EntityManager::sInst->GetPlayer( currCl);
     return p != nullptr && (p->client->ps.eFlags & 0x100000) != 0;
 }
 
@@ -1159,14 +1165,14 @@ void CG_Player(Entity* entity)
         && (dword_F6355C[1580 * currCl] != 0
             || (eFlags & 0x100000) != 0
             || *(int*)(dword_F62964[1580 * currCl] + 52) >= 6
-            || entity != EntityManager_GetPlayer(EntityManager_sInst,
+            || entity != EntityManager::sInst->GetPlayer(
                                                  currCl)))
     {
         if ((entity->s.eFlags & 0x100000) == 0)
             goto LABEL_72;
         Entity* mObject = EntityHandleDb_Get(entity->r.mOwner.mHandle.mVal);
         G_GetVehicleInfo(mObject);
-        if (entity != EntityManager_GetPlayer(EntityManager_sInst, currCl))
+        if (entity != EntityManager::sInst->GetPlayer( currCl))
             goto LABEL_31;
         if (IsPlayerFullySeatedInVehicle(entity))
         {
@@ -1190,7 +1196,7 @@ void CG_Player(Entity* entity)
                 || entity->client->ps.vehType != 2
                 || entity->client->ps.vehPos != 0)
             {
-                if (entity != EntityManager_GetPlayer(EntityManager_sInst,
+                if (entity != EntityManager::sInst->GetPlayer(
                                                       currCl)
                     || dword_F6355C[1580 * currCl] != 0
                     || !IsPlayerFullySeatedInVehicle(entity)
@@ -1646,7 +1652,7 @@ void CG_CheckPlayerstateEvents(unsigned int* ps, unsigned int* ops,
         iOldEvents[3] = ops[4];
     }
     Entity* Player =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        EntityManager::sInst->GetPlayer( currCl);
     int v8 = ps[0] - 4;
     if (v8 != ps[0])
     {
@@ -1732,14 +1738,14 @@ void CG_BulletTrajectoryEffects(unsigned int sourceEntity,
             Entity* v8 = EntityHandleDb_Get(sourceEntity);
             if (v8 != nullptr)
             {
-                if (v8 != EntityManager_GetPlayer(EntityManager_sInst,
+                if (v8 != EntityManager::sInst->GetPlayer(
                                                   currCl)
                     && (*(int*)(dword_F62960[1580 * currCl] + 60)
                         & 0x180000)
                            == 0
-                    || (EntityManager_GetPlayer(EntityManager_sInst, currCl),
+                    || (EntityManager::sInst->GetPlayer( currCl),
                         EntityHandleDb_Get(sourceEntity)
-                            != EntityManager_GetPlayer(EntityManager_sInst,
+                            != EntityManager::sInst->GetPlayer(
                                                        currCl)))
                 {
                     void* InfoForWeapon =
@@ -1764,7 +1770,7 @@ void CG_BulletTrajectoryEffects(unsigned int sourceEntity,
                 if (EntityHandleDb_Get(sourceEntity) != v8)
                     CG_ASSERT("*sourceEntity == entity",
                               "c:\\cod\\code\\game\\cg_weapons.cpp", 4771);
-                if (v8 != EntityManager_GetPlayer(EntityManager_sInst,
+                if (v8 != EntityManager::sInst->GetPlayer(
                                                   currCl))
                     CG_WhizbySound(sourceEntity, muzzle,
                                    position->v.m128_f32);
@@ -1874,7 +1880,7 @@ void CG_BulletHitClientEvent(unsigned int sourceEntity,
     int ammoType = *(int*)((char*)BG_GetInfoForWeapon(weapon) + 0xA8);
     Entity* mObject = EntityHandleDb_Get(sourceEntity);
     if (mObject != nullptr && mObject->client != nullptr
-        && EntityManager_IsLocalPlayer(EntityManager_sInst, mObject))
+        && EntityManager_IsLocalPlayer(EntityManager::sInst, mObject))
     {
         PostEffectEventScriptCall(mObject, "PLAYER_HIT_SUCCESS", false,
                                   (TPakId)0 /* PAK_ID_INVALID */, false);
@@ -1883,7 +1889,7 @@ void CG_BulletHitClientEvent(unsigned int sourceEntity,
     v14.coord.v = position->v;
     v14.normal.v = _mm_setr_ps(v15, v16, v17, 0.0f);
     v14.material = surfType;
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     PostEffectEventBulletHit(Player, ammoType, v14);
     CG_BulletTrajectoryEffects(sourceEntity, position, surfType,
                                s_barrelTags[0], weapon);
@@ -2404,7 +2410,7 @@ void CG_EntityPreEvent(Entity* entity, int event)
     case 186:
     case 187:
     case 189:
-        if (EntityManager_IsLocalPlayer(EntityManager_sInst, entity))
+        if (EntityManager_IsLocalPlayer(EntityManager::sInst, entity))
             goto fire_weapon;
         if (entity->s.eType == 14)
         {
@@ -2592,3 +2598,4 @@ int CG_ProcessSnapshots()
     }
     return ServerSnapTime;
 }
+

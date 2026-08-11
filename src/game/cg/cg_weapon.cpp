@@ -11,6 +11,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of EntityManager (full class in game/sv/sv_stubs.h).
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+    Entity* mPlayers[16];         // +0x04
+};
+
+
 extern int currCl;
 extern int level_time;
 extern float* dword_F63B8C[4 * 1580];
@@ -48,7 +57,6 @@ extern void* cg_weapons;          // weaponInfo_s[]
 extern int dword_F6A2A0[4 * 802];
 extern int dword_F6A2A4[4 * 802];
 extern int dword_F6A2A8[4 * 802];
-extern void* EntityManager_mPlayers[16];
 extern void* sADSMetaAnimPlayer;
 extern void DObjFree(void* obj, int bClearTree);
 extern void* DObj_GetTree(void* obj);
@@ -174,9 +182,6 @@ extern void* tr_viewModelInfo_mWeaponOrigin;
 extern unsigned int tagHashInit;
 extern void InteractionController_PostPhysicsUpdate(void* self, float deltaT);
 
-extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
-extern void* EntityManager_sInst;
-extern void* EntityManager_mPlayers[16];
 extern int Com_BitCheck(const int* const array, int bitNum);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern unsigned char BG_GetWeaponIndexForName(const char* pszName);
@@ -239,7 +244,7 @@ static char buffer_0[256];
 // ea: 0x00687F40
 bool CG_GetWeapReticleZoom(float* pfZoom)
 {
-    Entity* player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* player = EntityManager::sInst->GetPlayer( currCl);
     float fWeaponPosFrac = player->client->ps.fWeaponPosFrac;
     *pfZoom = 0.0f;
     float* v2 = dword_F63B8C[1580 * currCl];
@@ -430,20 +435,20 @@ void CG_OffsetLMG(float i_XOffset)
 // ea: 0x006925C0
 bool CG_WeaponSelectable(int i)
 {
-    Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* Player = EntityManager::sInst->GetPlayer( currCl);
     return Com_BitCheck(Player->client->ps.weapons, i) != 0;
 }
 
 // ea: 0x00692710
 int CG_Weapon_f()
 {
-    Entity* result = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* result = EntityManager::sInst->GetPlayer( currCl);
     if (result != 0 && *(int*)((char*)result + 596) != 0)
     {
-        Client* client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+        Client* client = EntityManager::sInst->GetPlayer( currCl)->client;
         if ((client->ps.pm_flags & 0x4000) == 0)
         {
-            client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+            client = EntityManager::sInst->GetPlayer( currCl)->client;
             if ((client->ps.eFlags & 0x100000) == 0)
             {
                 Cmd_ArgvBuffer(1, buffer_0, 256);
@@ -463,7 +468,7 @@ int CG_Weapon_f()
 // ea: 0x00693730
 int CG_WeaponFireRecoil()
 {
-    Entity* p = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* p = EntityManager::sInst->GetPlayer( currCl);
     float fPosLerp = p->client->ps.fWeaponPosFrac;
     float* info = dword_F63B8C[1580 * currCl];
     float fPitchKick, v2;
@@ -598,13 +603,13 @@ Client* CG_WeaponSlot_f()
     if (dword_F62960[1580 * currCl] != 0)
     {
         Client* client =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+            EntityManager::sInst->GetPlayer( currCl)->client;
         if ((client->ps.pm_flags & 0x4000) == 0)
         {
-            client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+            client = EntityManager::sInst->GetPlayer( currCl)->client;
             if ((client->ps.eFlags & 0x100000) == 0)
             {
-                client = EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
+                client = EntityManager::sInst->GetPlayer( currCl)->client;
                 if ((client->ps.pm_flags & 0x80000) != 0)
                 {
                     if (cgGlobal_frametime - cg_aWeaponSelectTime[currCl]
@@ -637,21 +642,21 @@ Client* CG_WeaponSlot_f()
 bool CG_WeaponSlot_f(int iSlot)
 {
     if (dword_F62960[1580 * currCl] == 0
-        || (EntityManager_GetPlayer(EntityManager_sInst, currCl)->client->ps
+        || (EntityManager::sInst->GetPlayer( currCl)->client->ps
                 .pm_flags
             & 0x4000) != 0)
     {
         return false;
     }
     Client* client =
-        EntityManager_GetPlayer(EntityManager_sInst, currCl)->client;
-    Entity* p = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        EntityManager::sInst->GetPlayer( currCl)->client;
+    Entity* p = EntityManager::sInst->GetPlayer( currCl);
     bool result = BG_AllowPlayerWeaponAtVehiclePos(p->client->ps.vehType,
                                                    client->ps.vehPos);
     if ((client->ps.eFlags & 0x106000) == 0 || result)
     {
         Entity* Player =
-            EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            EntityManager::sInst->GetPlayer( currCl);
         weaponFileInfoFull* InfoForWeapon = (weaponFileInfoFull*)BG_GetInfoForWeapon(
             Player->client->ps.weapon);
         weaponFileInfoFull* v6 = InfoForWeapon;
@@ -719,7 +724,7 @@ void CG_OutOfAmmoChange()
             while (true)
             {
                 Entity* Player =
-                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                    EntityManager::sInst->GetPlayer( currCl);
                 if (Com_BitCheck(Player->client->ps.weapons, v0) != 0)
                 {
                     weaponFileInfoFull* w =
@@ -729,7 +734,7 @@ void CG_OutOfAmmoChange()
                         && w->slot == (int)info[180])
                     {
                         Entity* v2 =
-                            EntityManager_GetPlayer(EntityManager_sInst,
+                            EntityManager::sInst->GetPlayer(
                                                     currCl);
                         if (BG_WeaponAmmo(&v2->client->ps, v0) != 0)
                             break;
@@ -743,7 +748,7 @@ void CG_OutOfAmmoChange()
         }
     LABEL_10:
         {
-            Entity* v3 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+            Entity* v3 = EntityManager::sInst->GetPlayer( currCl);
             if (BG_IsPlayerWeaponInSlot(&v3->client->ps,
                                         (int)*dword_F63B8C[1580 * currCl],
                                         1) != 0)
@@ -754,17 +759,17 @@ void CG_OutOfAmmoChange()
                 while (true)
                 {
                     v6 = iSlotPreferenceOrder[iNewSlot];
-                    if (EntityManager_mPlayers[currCl] != nullptr
-                        && ((Entity*)EntityManager_mPlayers[currCl])
+                    if (EntityManager::sInst->mPlayers[currCl] != nullptr
+                        && ((Entity*)EntityManager::sInst->mPlayers[currCl])
                                    ->client->ps.weaponslots[v6]
                                != 0
                         && (v6 == 1 || v6 == 2))
                     {
                         Client* client =
-                            EntityManager_GetPlayer(EntityManager_sInst,
+                            EntityManager::sInst->GetPlayer(
                                                     currCl)->client;
                         Entity* v9 =
-                            EntityManager_GetPlayer(EntityManager_sInst,
+                            EntityManager::sInst->GetPlayer(
                                                     currCl);
                         if (BG_WeaponAmmo(&v9->client->ps,
                                           client->ps.weaponslots[v6]) != 0)
@@ -774,29 +779,29 @@ void CG_OutOfAmmoChange()
                         goto LABEL_21;
                 }
                 Entity* v23 =
-                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                    EntityManager::sInst->GetPlayer( currCl);
                 BG_SelectWeaponIndex(v23->client->ps.weaponslots[v6], currCl);
             }
             else
             {
             LABEL_21:
                 {
-                    Entity* v12 = (Entity*)EntityManager_mPlayers[currCl];
+                    Entity* v12 = (Entity*)EntityManager::sInst->mPlayers[currCl];
                     Client* v14 = v12->client;
                     if (BG_IsPlayerWeaponInSlot(
-                            &((Entity*)EntityManager_mPlayers[currCl])
+                            &((Entity*)EntityManager::sInst->mPlayers[currCl])
                                  ->client->ps,
                             v14->ps.lastWeapon, 1) != 0)
                     {
                         Client* v19 =
-                            ((Entity*)EntityManager_mPlayers[currCl])->client;
+                            ((Entity*)EntityManager::sInst->mPlayers[currCl])->client;
                         if (BG_WeaponAmmo(
-                                &((Entity*)EntityManager_mPlayers[currCl])
+                                &((Entity*)EntityManager::sInst->mPlayers[currCl])
                                      ->client->ps,
                                 v19->ps.lastWeapon) != 0)
                         {
-                            Entity* v22 = EntityManager_GetPlayer(
-                                EntityManager_sInst, currCl);
+                            Entity* v22 = EntityManager::sInst->GetPlayer(
+                                currCl);
                             BG_SelectWeaponIndex(
                                 v22->client->ps.lastWeapon, currCl);
                         }
@@ -821,7 +826,7 @@ int CG_HoldBreathUpdate()
     int v2 = currCl;
     if (dword_F641E8[1580 * currCl] > 0)
         dword_F641E8[1580 * currCl] -= cgGlobal_frametime;
-    Entity* player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* player = EntityManager::sInst->GetPlayer( currCl);
     bool holding = (player->client->ps.mFlags & 2) != 0;
     int result;
     if (!holding)
@@ -837,7 +842,7 @@ int CG_HoldBreathUpdate()
             if (v4 > dword_F641E4[v3])
             {
                 Entity* v8 =
-                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                    EntityManager::sInst->GetPlayer( currCl);
                 PostEffectEventScriptCall(v8, "BREATH_HOLD_HEART_BEAT", false,
                                           (TPakId)-1, false);
             }
@@ -852,7 +857,7 @@ int CG_HoldBreathUpdate()
             else
             {
                 Entity* v5 =
-                    EntityManager_GetPlayer(EntityManager_sInst, currCl);
+                    EntityManager::sInst->GetPlayer( currCl);
                 PostEffectEventScriptCall(v5, "BREATH_HOLD_BREATH_IN", false,
                                           (TPakId)-1, false);
                 float v6 = player_breath_snd_delay * 1000.0f;
@@ -877,7 +882,7 @@ int CG_HoldBreathUpdate()
                 if (dword_F641E8[1580 * v2] <= 0)
                 {
                     Entity* Player =
-                        EntityManager_GetPlayer(EntityManager_sInst, v2);
+                        EntityManager::sInst->GetPlayer( v2);
                     PostEffectEventScriptCall(Player,
                                               "BREATH_HOLD_BREATH_OUT", false,
                                               (TPakId)-1, false);
@@ -889,7 +894,7 @@ int CG_HoldBreathUpdate()
             else
             {
                 Entity* v12 =
-                    EntityManager_GetPlayer(EntityManager_sInst, v2);
+                    EntityManager::sInst->GetPlayer( v2);
                 PostEffectEventScriptCall(v12, "BREATH_HOLD_GASP", false,
                                           (TPakId)-1, false);
                 v2 = currCl;
@@ -921,7 +926,7 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
         math::Position3 origin;
         int ViewModelTagMatrix;
         if (entity
-            == EntityManager_GetPlayer(EntityManager_sInst, currCl))
+            == EntityManager::sInst->GetPlayer( currCl))
         {
             void* v4 = (void*)dword_F6A2A0[802 * currCl];
             if (v4 == nullptr)
@@ -1045,7 +1050,7 @@ void CG_CreateWeaponDObjsForClient(int client, int weapon)
 // ea: 0x006AA8A0
 void CG_UpdateHandViewmodels(const char* handModel)
 {
-    Entity* player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+    Entity* player = EntityManager::sInst->GetPlayer( currCl);
     int weapon = player->client->ps.weapon;
     if (strcmp(((weaponInfo_s*)cg_weapons)[weapon].handModel, handModel) != 0)
         CG_ChangeViewmodelDobj(currCl, handModel);
@@ -1054,7 +1059,7 @@ void CG_UpdateHandViewmodels(const char* handModel)
 // ea: 0x006AA5B0
 void CG_ChangeViewmodelDobj(int client, const char* handModel)
 {
-    Entity* player = EntityManager_GetPlayer(EntityManager_sInst, client);
+    Entity* player = EntityManager::sInst->GetPlayer( client);
     int weapon = player->client->ps.weapon;
     if (weapon != 0)
     {
@@ -1214,12 +1219,12 @@ LABEL_18:
             CG_WeaponIKAddToFireQueue(attacker, weapon);
         }
         int lc = 0;
-        if (v6 == EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        if (v6 == EntityManager::sInst->GetPlayer( currCl)
             && (GetPlayerState(currCl)->pm_flags & 0x180000) != 0)
         {
             CG_WeaponFireRecoil();
         }
-        Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
+        Entity* Player = EntityManager::sInst->GetPlayer( currCl);
         if (v6 == Player
             || (Player->tagInfo != nullptr && Player->tagInfo->parent == v6))
             lc = 1;
@@ -1468,7 +1473,7 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
     if (weaponstate == 5
             && ps->weaponTime - *(int*)((char*)InfoForWeapon + 0x3C4) > 0
         || weaponstate == 14
-        || EntityManager_GetPlayer(EntityManager_sInst, currCl)
+        || EntityManager::sInst->GetPlayer( currCl)
                    ->client->ps.fWeaponPosFrac
                < 0.1f)
     {
@@ -1649,7 +1654,7 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
             Com_Printf("CG_WeaponRunXModelAnims: Unknown weapon animation %i\n",
                        ps->weapAnim & 0xFFFFFDFF);
         L177920:
-            if (EntityManager_GetPlayer(EntityManager_sInst, currCl)
+            if (EntityManager::sInst->GetPlayer( currCl)
                     ->client->ps.queuedReloadSoundPlayStarted)
             {
                 PM_KillQueuedReloadSound(GetPlayerState(currCl));
@@ -1947,3 +1952,4 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
 LABEL_90:
     return false;
 }
+
