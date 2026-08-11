@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // effect_events.cpp - EffectEventSys / ActiveEffectSet + effect free functions
 // (core.o EffectEvents.cpp family)
 // ============================================================================
@@ -7,6 +7,20 @@
 #include "game/core/core_globals.h"
 #include "core/PoolAllocator.h"
 #include "aeps/apsEffect.h"
+
+// Minimal view of PakManager (full class in game/sv/sv_stubs.h).
+class PakManager {
+public:
+    static PakManager* sInst;
+    TPakId GetGlobalPakId() const;
+    const PakInfoNode* GetPakInfo(TPakId pakId) const;
+};  // ?sInst@PakManager@@2PAV1@A
+
+// Full view of PakInfoNode for GetPakInfo() results (core_systems.h fwd).
+struct PakInfoNode {
+    Broc::string longName;  // +0x00
+};
+
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -117,7 +131,6 @@ extern void Scr_Notify(Entity* ent, HashString hashValue,
                        unsigned int paramcount);
 extern int g_debug_sync_queries;  // 0x00F00E78
 extern TPakId CurPakId();
-extern void* PakManager_sInst;
 extern unsigned int AeHash(const char* str);
 extern int FX_RegisterEffect(const char* name);
 extern bool IsInSceneAnim();
@@ -3633,7 +3646,7 @@ void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
                                      DbTable* type,
                                      ae_sized_array<const DbTable*, 16>* tables)
 {
-    TPakId mGlobalPakId = PakManager_GetGlobalPakId(PakManager_sInst);
+    TPakId mGlobalPakId = PakManager::sInst->GetGlobalPakId();
     TPakId foundPakId = mGlobalPakId;
     void* triggers = DbTablesetMgr_Find(DbTablesetMgr_sInst, mGlobalPakId,
                                         type->mName, &foundPakId);
@@ -4164,8 +4177,8 @@ int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
 {
     int count = -1;
     char buf[256];
-    const char* longName =
-        PakManager_GetPakLongName(PakManager_sInst, CurPakId());
+        const char* longName =
+        PakManager::sInst->GetPakInfo(CurPakId())->longName.c_str();
     strcpy(buf, longName);
     strcat(buf, ".fx");
     ae_sized_array<const DbTable*, 16> event_tables;

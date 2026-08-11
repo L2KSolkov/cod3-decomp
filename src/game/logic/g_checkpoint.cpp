@@ -19,7 +19,6 @@ extern void Path_RelinquishNodePermanently(
 extern void PathNodeMgr_DissociateSentient(void* self,
                                            sentient_s* pSentient);
     // ?DissociateSentient@PathNodeMgr@@QAEXPAUsentient_s@@@Z
-extern void* PathNodeMgr_sInst;   // ?sInst@PathNodeMgr@@2PAV1@A @ 0xF9930C
 extern const PathNodes::PathNode* PathNodes_NodeHandle_deref(
     const PathNodes::NodeHandle* self);  // ??DNodeHandle (mp_actors.o)
 
@@ -99,7 +98,6 @@ extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
 // ============================================================================
 // CheckpointMenu - ea: 0x6392D0..0x639370 (checkpointmenu.cpp)
 // ============================================================================
-extern PakManager* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A @ 0xF592FC
 extern const PakInfoNode* PakManager_GetPakInfo(void* self, TPakId pakId);
     // ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@W4TPakId@@@Z
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
@@ -151,7 +149,7 @@ void RestartAtCheckpoint(int num)
     else
     {
         const PakInfoNode* PakInfo =
-            PakManager_GetPakInfo(PakManager_sInst, CurPakId());
+            PakManager::sInst->GetPakInfo(CurPakId());
         if (PakInfo != nullptr)
         {
             const char* name =
@@ -530,7 +528,7 @@ namespace CheckpointMenu {
 void RenderCheckpointMenu()
 {
     const PakInfoNode* PakInfo =
-        PakManager_GetPakInfo(PakManager_sInst, CurPakId());
+        PakManager::sInst->GetPakInfo(CurPakId());
     if (PakInfo != nullptr || *(int*)0xD4 == 0)
     {
         if (gDebounce != 0)
@@ -1124,7 +1122,7 @@ void CheckpointMgr::RestoreSceneEntity(Entity* pEnt)
                             sentient);
                         sentient->mClaimedNode = 0;
                     }
-                    PathNodeMgr_DissociateSentient(PathNodeMgr_sInst,
+                    PathNodeMgr_DissociateSentient(PathNodeMgr::sInst,
                                                    sentient);
                 }
             }

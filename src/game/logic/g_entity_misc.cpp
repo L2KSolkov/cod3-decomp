@@ -569,7 +569,6 @@ void DisableAI(unsigned int handle)
 // ============================================================================
 extern int Path_IsDynamicBlockingEntity(Entity* ent);  // mp_actors.o
 extern void PathNodeMgr_ConnectPathsForEntity(void* self, Entity* ent);  // mp_actors.o
-extern void* PathNodeMgr_sInst;   // ?sInst@PathNodeMgr@@2PAV1@A @ 0xF9930C
 extern void G_EntUnlinkFree(Entity* ent);           // g.o
 extern void StopPhysics(Entity* e);                 // g.o
 extern void g_UnlinkEntity(Entity* ent);            // g.o
@@ -600,7 +599,7 @@ extern void* EntityNotifySet_sAllocator;  // ?sAllocator@EntityNotifySet@@0PAVPo
 Entity::~Entity()
 {
     if (Path_IsDynamicBlockingEntity(this) != 0)
-        PathNodeMgr_ConnectPathsForEntity(PathNodeMgr_sInst, this);
+        PathNodeMgr_ConnectPathsForEntity(PathNodeMgr::sInst, this);
     if (this->disconnectedLinks != 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -3063,7 +3062,6 @@ struct PakManagerView {
     uint8_t      _pad[0x40];
     PakFileView* mSlots[0x63];  // +0x40 (100 slots)
 };
-extern PakManagerView* PakManager_sInst;  // ?sInst@PakManager@@2PAV1@A @ 0xF592FC
 extern ELanguage gLanguage;               // ?gLanguage@@3W4ELanguage@@A @ 0xF00EA4
 
 // ea: 0x00639630
@@ -3090,7 +3088,7 @@ void AudioBankMgr::LoadWbk(const tlFixedString& name, bool async)
             {
                 PakFileView* pak = nullptr;
                 if (wbk->pakFile >= 0 && wbk->pakFile < 0x63)
-                    pak = PakManager_sInst->mSlots[wbk->pakFile];
+                    pak = ((PakManagerView*)PakManager::sInst)->mSlots[wbk->pakFile];
                 const char* path = (const char*)pak + 0x0C;
                 ELanguage v11 = gLanguage;
                 if (wbk->fileID[kLanguageUnlocalized] != (nflFileID)-1)

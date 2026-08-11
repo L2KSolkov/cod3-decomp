@@ -15,6 +15,18 @@
 #include <string.h>
 #include <time.h>
 
+struct NumBanks;
+
+// Minimal view of PakManager (full class in game/sv/sv_stubs.h).
+class PakManager {
+public:
+    static PakManager* sInst;
+    const PakInfoNode* GetPakInfo(const char* long_name) const;
+    void SetUserDistance(const PakInfoNode* cpak, float dist);
+    TPakId SyncLoadPak(EPakType t, const char* path, NumBanks banks);
+};  // ?sInst@PakManager@@2PAV1@A
+
+
 // Minimal view of InteractionController (full class in g_local.h).
 class InteractionController {
 public:
@@ -286,7 +298,6 @@ extern int gNflMediaId;
 extern bool nflFileExists(int mediaID, const char* filename);
 extern void PakManager_CreateInst();
 extern void PakManager_DeleteInst();
-extern void* PakManager_sInst;
 extern void BankManager_CreateInst();
 extern void BankManager_DeleteInst();
 extern void InstanceBankMgr_CreateInst();
@@ -469,7 +480,8 @@ extern struct ServerTime_s {
 } ServerTime_sInst;
 
 // NumBanks (pak loading)
-struct NumBanks {
+class NumBanks {
+public:
     float v[2];
 };
 
@@ -2247,12 +2259,12 @@ void Com_Init(char* commandLine)
     {
         NumBanks v7;
         memset(&v7, 0, sizeof(v7));
-        PakManager_SyncLoadPak(PakManager_sInst, -1, "debug.cod", &v7);
+        PakManager::sInst->SyncLoadPak((EPakType)-1, "debug.cod", v7);
     }
     NumBanks v7;
     memset(&v7, 0, sizeof(v7));
-    PakManager_SyncLoadPak(PakManager_sInst, 0, "mp\\global.cod", &v7);
-    void* PakInfo = PakManager_GetPakInfo(PakManager_sInst, "MPAnimation");
+    PakManager::sInst->SyncLoadPak((EPakType)0, "mp\\global.cod", v7);
+    void* PakInfo = (void*)PakManager::sInst->GetPakInfo("MPAnimation");
     if (!PakInfo)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -2262,8 +2274,10 @@ void Com_Init(char* commandLine)
         if (AeAssert::Error("Unknown anim pak (perhaps rebuild global pak?)"))
             __debugbreak();
     }
-    PakManager_SetUserDistance(PakManager_sInst, PakInfo, 0.0f);
-    PakManager_SyncLoadPak(PakManager_sInst, 0, nullptr, nullptr);
+    PakManager::sInst->SetUserDistance((const PakInfoNode*)PakInfo, 0.0f);
+    NumBanks zero_banks;
+    memset(&zero_banks, 0, sizeof(zero_banks));
+    PakManager::sInst->SyncLoadPak((EPakType)0, nullptr, zero_banks);
     DebugRender_Init(DebugRender_sInst);
     WheelMarkMgr_Init();
     AudioBankMgr_FinishLoading(AudioBankMgr_sInst);

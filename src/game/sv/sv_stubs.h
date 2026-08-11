@@ -641,7 +641,14 @@ struct CheckpointMgr {
 // +0x330/+0x338/+0x344/+0x34C/+0x350/+0x358/+0x574/+0x904/+0x910 from
 // checkpointmgr.cpp disasm)
 
-struct PakManager {
+struct PakInfoNode;
+class NumBanks {
+public:
+    float v[2];
+};
+
+class PakManager {
+public:
     uint8_t _pad[0x28];
     unsigned int mEnabled;             // +0x28
     static PakManager* sInst;            // ?sInst@PakManager@@2PAV1@A
@@ -655,10 +662,23 @@ struct PakManager {
     void UnloadAll();                    // ?UnloadAll@PakManager@@QAEXXZ
     void SetSoundProgress(float t);      // ?SetSoundProgress@PakManager@@QAEXM@Z (streamer.o 0x665710)
     void ResetPriorities(bool user_distances_also);  // ?ResetPriorities@PakManager@@QAEX_N@Z
-    void SetUserDistance(const void* cpak, float dist);  // ?SetUserDistance@PakManager@@QAEXPBUPakInfoNode@@M@Z
-    const void* GetPakInfo(TPakId pakId);  // ?GetPakInfo@PakManager@@QAEPBUPakInfoNode@@W4TPakId@@@Z
+    void SetUserDistance(const PakInfoNode* cpak, float dist);  // ?SetUserDistance@PakManager@@QAEXPBUPakInfoNode@@M@Z
+    const PakInfoNode* GetPakInfo(TPakId pakId) const;  // ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@W4TPakId@@@Z
+    const PakInfoNode* GetPakInfo(const char* long_name) const;  // ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@PBD@Z
     bool IsUnloading(TPakId id) const;   // ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z
     void MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
+    TPakId GetGlobalPakId() const;       // ?GetGlobalPakId@PakManager@@QBE?AW4TPakId@@XZ (core.o)
+    TPakId GetTopContext() const;        // ?GetTopContext@PakManager@@QBE?AW4TPakId@@XZ (streamer.o)
+    void* MemAlign(TPakId id, unsigned int align, unsigned int size);  // ?MemAlign@PakManager@@QAEPAXW4TPakId@@II@Z
+    void PushContext(TPakId id);         // ?PushContext@PakManager@@QAEXW4TPakId@@@Z (streamer.o)
+    TPakId PopContext();                 // ?PopContext@PakManager@@QAE?AW4TPakId@@XZ (streamer.o)
+    void Update(bool calledFromMovie);   // ?Update@PakManager@@QAEX_N@Z (streamer.o)
+    const PakInfoNode* SyncLoadFLI(EPakType t, const char* path);  // ?SyncLoadFLI@PakManager@@QAEPBUPakInfoNode@@W4EPakType@@PBD@Z
+    TPakId SyncLoadPak(const PakInfoNode* cpak);  // ?SyncLoadPak@PakManager@@QAE?AW4TPakId@@PBUPakInfoNode@@@Z
+    TPakId SyncLoadPak(EPakType t, const char* path, NumBanks banks);  // ?SyncLoadPak@PakManager@@QAE?AW4TPakId@@W4EPakType@@PBDVNumBanks@@@Z
+    void SyncUnloadPak(TPakId id);       // ?SyncUnloadPak@PakManager@@QAEXW4TPakId@@@Z
+    void ClearUserDistance(const PakInfoNode* cpak);  // ?ClearUserDistance@PakManager@@QAEXPBUPakInfoNode@@@Z
+    void SetProgressCallback(void (*cb)(float));  // ?SetProgressCallback@PakManager@@QAEXP6AXM@Z@Z
 };
 // size not asserted (opaque; mActivePaks at +0x70)
 
@@ -798,7 +818,8 @@ enum EGamePhase {
     GAME_PHASE_FRONTEND = 2,
 };
 
-struct PathNodeMgr {
+class PathNodeMgr {
+public:
     uint8_t _pad[4];
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
     void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ

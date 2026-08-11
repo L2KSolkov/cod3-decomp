@@ -984,7 +984,8 @@ static_assert(sizeof(DialogueManager) == 0x190, "DialogueManager size mismatch")
 // Size: 0x114 (276 bytes) - verified against IDA. Nested apk/nfl/pak types are
 // forward-declared; members touching them stay opaque until those objects port.
 // ============================================================================
-typedef int EPakType;     // TODO: enum values from IDA
+// Binary mangles EPakType as W4 (enum), not H (int typedef).
+enum EPakType { kPakTypeGlobal = 0 };
 typedef int nflFileID;    // TODO: enum/type from IDA
 typedef int TRequestId;   // TODO: type from IDA
 struct PakInfoNode;

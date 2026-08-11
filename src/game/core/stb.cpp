@@ -6,6 +6,13 @@
 
 #include <string.h>
 
+// Minimal view of PakManager (full class in game/sv/sv_stubs.h).
+class PakManager {
+public:
+    static PakManager* sInst;
+};  // ?sInst@PakManager@@2PAV1@A
+
+
 extern unsigned int AeHash(const char* str);
 extern unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key);
 extern void* InplaceAssetBank_Index(void* bank, int i);
@@ -18,7 +25,6 @@ extern void InplaceAssetBankSet_Find_DbTableset(void* self, void* result,
                                                 TPakId pakId, const char* key,
                                                 void* formal, void* foundPakId);
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
-extern void* PakManager_sInst;
 extern int PakManager_GetPakFile(void* self, TPakId pakId);
 
 // STBManager layout: mBankArray = StringTableBank*[99]

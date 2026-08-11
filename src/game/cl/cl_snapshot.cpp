@@ -10,6 +10,18 @@
 
 #include <string.h>
 
+struct PakInfoNode;
+
+// Minimal views (full classes in game/sv/sv_stubs.h / g_local.h).
+class PakManager {
+public:
+    static PakManager* sInst;
+    void ClearUserDistance(const PakInfoNode* cpak);
+    void SyncUnloadPak(TPakId id);
+};  // ?sInst@PakManager@@2PAV1@A
+class EffectEventSys { public: static EffectEventSys* sInst; };  // ?sInst@EffectEventSys@@2PAV1@A
+
+
 extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 
 // ============================================================================
@@ -26,7 +38,6 @@ extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
 extern void nglWaitForRendering();
 extern void PakManager_ClearUserDistance(void* self, const void* cpak);
 extern void PakManager_SyncUnloadPak(void* self, int id);
-extern void* PakManager_sInst;
 extern const void* sLoadingScreenInfo;
 extern void GamePause_SetAllPaused(bool paused);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
@@ -152,9 +163,9 @@ int CL_FirstSnapshot()
         ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_cgame.cpp", 1828);
     }
     nglWaitForRendering();
-    PakManager_ClearUserDistance(PakManager_sInst, sLoadingScreenInfo);
+    PakManager::sInst->ClearUserDistance((const PakInfoNode*)sLoadingScreenInfo);
     if (PAK_ID_INVALID != *(int*)sLoadingScreenInfo)
-        PakManager_SyncUnloadPak(PakManager_sInst, *(int*)sLoadingScreenInfo);
+        PakManager::sInst->SyncUnloadPak((TPakId)*(int*)sLoadingScreenInfo);
     GamePause_SetAllPaused(false);
     extern void* g_femanager_IGMS_cur();
     extern void g_femanager_IGO_Update(int);

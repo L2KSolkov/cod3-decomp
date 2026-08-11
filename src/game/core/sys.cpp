@@ -12,6 +12,15 @@
 #include <string.h>
 #include <intrin.h>
 
+// Minimal view of PakManager (full class in game/sv/sv_stubs.h).
+class PakManager {
+public:
+    static PakManager* sInst;
+    TPakId GetTopContext() const;
+    void* MemAlign(TPakId id, unsigned int align, unsigned int size);
+};  // ?sInst@PakManager@@2PAV1@A
+
+
 extern void Com_Printf(const char* fmt, ...);
 enum print_msg_type_t;
 extern void CL_ConsolePrint(print_msg_type_t type, const char* txt,
@@ -51,7 +60,6 @@ extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void PrintPakNames();
 extern void SpinnerDrawFrameWithLoading(bool bEndFrame);
 extern int gLensAlphaAmount;
-extern void* PakManager_sInst;
 extern int PakManager_GetTopContext(void* self);
 extern void* PakManager_MemAlign(void* self, int id, unsigned int align,
                                  unsigned int size);
@@ -190,10 +198,10 @@ void* TlSystemCallbacks::MemAlloc(unsigned int size, unsigned int align,
                                   unsigned int flags)
 {
     if ((flags & 0x2000) == 0 && sLockAllocsToPakHeap
-        && PakManager_sInst != nullptr)
+        && PakManager::sInst != nullptr)
     {
-        int TopContext = PakManager_GetTopContext(PakManager_sInst);
-        return PakManager_MemAlign(PakManager_sInst, TopContext, align, size);
+        int TopContext = PakManager::sInst->GetTopContext();
+        return PakManager::sInst->MemAlign((TPakId)TopContext, align, size);
     }
     void* result;
     if (flags != 0)
@@ -217,15 +225,15 @@ void* TlSystemCallbacks::MemAlloc(unsigned int size, unsigned int align,
 // ea: 0x004BD520
 void TlSystemCallbacks::MemFree(void* ptr)
 {
-    void* v1 = PakManager_sInst;
-    if (PakManager_sInst == nullptr
-        || PakManager_GetTopContext(PakManager_sInst) == PAK_ID_INVALID)
+    void* v1 = PakManager::sInst;
+    if (PakManager::sInst == nullptr
+        || PakManager::sInst->GetTopContext() == PAK_ID_INVALID)
     {
         mem_heap_free(ptr);
     }
     else
     {
-        int TopContext = PakManager_GetTopContext(v1);
+        int TopContext = ((PakManager*)v1)->GetTopContext();
         PakManager_MemFree(v1, TopContext, ptr, false);
     }
 }

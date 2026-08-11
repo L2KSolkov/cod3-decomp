@@ -8,6 +8,15 @@
 
 #include <string.h>
 
+// Minimal views (full classes in game/sv/sv_stubs.h / g_local.h).
+class PakManager {
+public:
+    static PakManager* sInst;
+    void Update(bool calledFromMovie);
+};  // ?sInst@PakManager@@2PAV1@A
+class EffectEventSys { public: static EffectEventSys* sInst; };  // ?sInst@EffectEventSys@@2PAV1@A
+
+
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 struct RumbleManager {
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
@@ -118,11 +127,9 @@ extern void codNflUpdate();
 extern void AudioBankMgr_Update(void* self);
 extern void* AudioBankMgr_sInst;
 extern void PakManager_Update(void* self, bool calledFromMovie);
-extern void* PakManager_sInst;
 extern void MusicMgr_Update(void* self, float dt);
 extern void* MusicMgr_sInst;
 extern void EffectEventSys_FrameAdvance(void* self, float delta);
-extern void* EffectEventSys_sInst;
 extern void SceneManager_UpdateEffects(void* self, float delta_t);
 extern void* SceneManager_sInst;
 extern void EntityHandleDb_Compact(void* self);
@@ -1148,13 +1155,13 @@ void CL_Frame(int msec, float screen_time_inc)
         if (currCl == lFirstLocalClientIndex)
         {
             cdl_proftimer_pak_mgr.start();
-            PakManager_Update(PakManager_sInst, false);
+            PakManager::sInst->Update(false);
             cdl_proftimer_pak_mgr.stop();
             cdl_proftimer_music_mgr.start();
             MusicMgr_Update(MusicMgr_sInst, v6);
             cdl_proftimer_music_mgr.stop();
             cdl_proftimer_effect_sys.start();
-            EffectEventSys_FrameAdvance(EffectEventSys_sInst, v6);
+            EffectEventSys_FrameAdvance(EffectEventSys::sInst, v6);
             cdl_proftimer_effect_sys.stop();
         }
         cdl_proftimer_rumble_mgr.start();

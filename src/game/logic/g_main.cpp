@@ -3956,7 +3956,7 @@ int G_InitGame(int randomSeed, int restart, int savegame, int checksum)
         PakManager::sInst->ResetPriorities(true);
         SceneManager::sInst->RestartPersistentArray();
         StreamZoneManager::sInst->CheckpointRestart();
-        const void* pakInfo =
+        const PakInfoNode* pakInfo =
             PakManager::sInst->GetPakInfo(CurPakId());
         PakManager::sInst->SetUserDistance(pakInfo, 0.0f);
         gCamera[0].Restart();

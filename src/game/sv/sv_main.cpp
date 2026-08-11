@@ -86,16 +86,6 @@ extern void  g_SpawnServer_Unused(void);
 struct PakInfoNode {
     int pakId;
 };
-extern PakManager* PakManager_sInst(void);
-extern const PakInfoNode* PakManager_SyncLoadFLI(PakManager* self, int pak_type,
-                                                 const char* path);
-extern int  PakManager_SyncLoadPak(PakManager* self, const PakInfoNode* cpak);
-extern void PakManager_SetUserDistance(PakManager* self,
-                                       const PakInfoNode* cpak, float dist);
-extern void PakManager_PushContext(PakManager* self, int pakId);
-extern void PakManager_PopContext(PakManager* self);
-extern void PakManager_FillBanks(PakManager* self);
-extern void PakManager_UnloadAll(PakManager* self);
 
 // Entity / anim / fx managers
 extern void EntityManager_CreateWorld(void* self);
@@ -247,33 +237,32 @@ void SV_SpawnServer(const char* server, int savegame) {
     SCR_UpdateScreen();
     if (g_bspTree != 0) {
         EffectEventSys_StopAll((void*)0);
-        PakManager_UnloadAll(PakManager_sInst());
+        PakManager::sInst->UnloadAll();
         g_bspTree = 0;
         g_ScrFiles = 0;
         FX_TermFX();
         PathNodeMgr_CleanUpManager((void*)0);
         CGBankManager_UnloadAll((void*)0);
         AnimBankManager_UnloadAll((void*)0);
-        PakManager_SetUserDistance(PakManager_sInst(), sLoadingScreenInfo, 0.0f);
-        PakManager_SyncLoadPak(PakManager_sInst(), sLoadingScreenInfo);
+        PakManager::sInst->SetUserDistance((const PakInfoNode*)sLoadingScreenInfo, 0.0f);
+        PakManager::sInst->SyncLoadPak((const PakInfoNode*)sLoadingScreenInfo);
         InGameMenuSystem_ActivateMenu((void*)0, 4);
     }
     MPUIInterface_BlockUntilNetReady();
     char pakname[256];
     sprintf(pakname, "%s\\%s\\%s.cod", "mp", server, server);
-    PakManager* pm = PakManager_sInst();
+    PakManager* pm = PakManager::sInst;
     extern void LoadingMenuCallback(float progress);
-    extern void PakManager_SetProgressCallback(PakManager* self, void (*cb)(float));
-    PakManager_SetProgressCallback(pm, LoadingMenuCallback);
+    pm->SetProgressCallback(LoadingMenuCallback);
     const PakInfoNode* FLI = nullptr;
     if (nflFileExists(gNflMediaId, pakname) != 0)
         goto LABEL_28;
     sprintf(pakname, "%s\\%s.cod", "mp", server);
     if (nflFileExists(gNflMediaId, pakname) != 0)
-        FLI = PakManager_SyncLoadFLI(PakManager_sInst(), kPakTypeLevel, pakname);
+        FLI = PakManager::sInst->SyncLoadFLI((EPakType)kPakTypeLevel, pakname);
     sprintf(pakname, "%s_test\\%s.cod", "mp", server);
     if (FLI == nullptr && nflFileExists(gNflMediaId, pakname) != 0)
-        FLI = PakManager_SyncLoadFLI(PakManager_sInst(), kPakTypeLevel, pakname);
+        FLI = PakManager::sInst->SyncLoadFLI((EPakType)kPakTypeLevel, pakname);
     sprintf(pakname, "%s_test\\%s\\%s.cod", "mp", server, server);
     if (FLI == nullptr) {
         if (nflFileExists(gNflMediaId, pakname) == 0) {
@@ -284,21 +273,21 @@ LABEL_29:
             goto LABEL_30;
         }
 LABEL_28:
-        FLI = PakManager_SyncLoadFLI(PakManager_sInst(), kPakTypeLevel, pakname);
+        FLI = PakManager::sInst->SyncLoadFLI((EPakType)kPakTypeLevel, pakname);
         if (FLI != nullptr)
             goto LABEL_30;
         goto LABEL_29;
     }
 LABEL_30:
     nglFrameLockType v9 = nglSetFrameLock((nglFrameLockType)2);
-    PakManager_SyncLoadPak(PakManager_sInst(), FLI);
+    PakManager::sInst->SyncLoadPak(FLI);
     CM_LoadMap(server, 0, &sv.checksum);
-    PakManager_FillBanks(PakManager_sInst());
+    PakManager::sInst->FillBanks();
     nglSetFrameLock(v9);
     AudioBankMgr_FinishLoading((void*)0);
     if (FLI != nullptr) {
-        PakManager_PushContext(PakManager_sInst(), FLI->pakId);
-        PakManager_PopContext(PakManager_sInst());
+        PakManager::sInst->PushContext((TPakId)FLI->pakId);
+        PakManager::sInst->PopContext();
     }
     SCR_UpdateScreen();
     gvm = VM_Create("game", (int(__cdecl*)(int*))SV_GameSystemCalls);
@@ -308,7 +297,7 @@ LABEL_30:
     VM_Call(gvm, 0, Com_Milliseconds(), 0, savegame, sv.checksum);
     for (int v11 = 0; v11 < 0x13700; v11 += 4976)
         svs.clients[v11 / 0x1370].mEntityHandle.mHandle.mVal = 0;
-    PakManager_SetProgressCallback(PakManager_sInst(), nullptr);
+    PakManager::sInst->SetProgressCallback(NULL);
     FEManager_UpdateLoadingMenu((void*)0, 0.85000002f);
     SCR_UpdateScreen();
     com_time = 0;
