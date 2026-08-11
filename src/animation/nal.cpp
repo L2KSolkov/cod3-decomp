@@ -7,6 +7,27 @@
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 
+// AeAssert contract (definitions in core/ae_assert.cpp)
+namespace AeAssert {
+enum ECoderId { COD3 = 0 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
+#define XANIM_ASSERT(expr, file, line, msg)                                 \
+    do {                                                                    \
+        AeAssert::gCurrentAuthor = AeAssert::COD3;                          \
+        AeAssert::gCurrentFile = (file);                                    \
+        AeAssert::gCurrentLine = (line);                                    \
+        AeAssert::gCurrentExpr = (expr);                                    \
+        if (!AeAssert::IsIgnored() && AeAssert::Assert((msg)))              \
+            __debugbreak();                                                 \
+    } while (0)
+
 // ============================================================================
 // Forward types (defined below)
 // ============================================================================
@@ -486,4 +507,402 @@ void XAnimSetTime(XAnimTree* tree, unsigned int animIndex, float time)
     info->notifyType = 0;
     *(float*)&info->s[4] = time;
     info->prev = 0;
+}
+
+// ============================================================================
+// InplaceVector<XAnimEntry>::operator[] (COMDAT, ../ae/inplace/InplaceVector.h:81)
+// ============================================================================
+static XAnimEntry* AnimTreeEntryAt(AnimTree* anims, unsigned int index)
+{
+    if (index >= anims->entries.mSize)
+    {
+        XANIM_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h", 81,
+                     "Bounds check");
+        index = 0;
+    }
+    return &anims->entries.mList[index];
+}
+
+// ea: 0x53E390
+AnimTree* XAnimGetAnims(XAnimTree* tree)
+{
+    return tree->anims;
+}
+
+// ea: 0x543950
+static char XAnimHasEffectiveParentWeight(XAnimTree* tree,
+                                          unsigned int animIndex)
+{
+    if (animIndex == 0)
+        return 1;
+    for (;;)
+    {
+        AnimTree* anims = tree->anims;
+        unsigned int mSize = anims->entries.mSize;
+        if (animIndex >= mSize)
+        {
+            XANIM_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h",
+                         81, "Bounds check");
+            if (animIndex >= mSize)
+                animIndex = 0;
+        }
+        animIndex = anims->entries.mList[animIndex].parent;
+        if (animIndex >= tree->anims->entries.mSize)
+        {
+            XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                         "c:\\cod\\code\\game\\xanim.cpp", 4506,
+                         "old cod assert");
+        }
+        unsigned short infoIndex = tree->infoArray[animIndex];
+        if (infoIndex == 0)
+        {
+            XANIM_ASSERT("infoIndex", "c:\\cod\\code\\game\\xanim.cpp",
+                         4508, "old cod assert");
+        }
+        if (infoIndex >= 0x200)
+        {
+            XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                         4510, "old cod assert");
+        }
+        if (*(float*)&g_info[infoIndex].s[20] == 0.0f)
+            return 0;
+        if (animIndex == 0)
+            return 1;
+    }
+}
+
+// ea: 0x543AE0
+static char XAnimHasEffectiveChildWeight(XAnimTree* tree,
+                                         unsigned int animIndex)
+{
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp",
+                     4532, "old cod assert");
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+    {
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4533,
+                     "old cod assert");
+    }
+    unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex == 0)
+        return 0;
+    if (infoIndex >= 0x200)
+    {
+        XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                     4539, "old cod assert");
+    }
+    if (*(float*)&g_info[infoIndex].s[20] == 0.0f)
+        return 0;
+    XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+    int numAnims = entry->numAnims;
+    if (entry->numAnims != 0)
+    {
+        int i = 0;
+        while (!XAnimHasEffectiveChildWeight(
+                   tree, (unsigned int)i + entry->u.s.children))
+        {
+            if (++i >= numAnims)
+                return 0;
+        }
+    }
+    return 1;
+}
+
+// ea: 0x543C70
+void XAnimClearGoalWeight(XAnimTree* tree, unsigned int animIndex,
+                          float blendTime)
+{
+    if (blendTime != 0.0f && blendTime < 0.001f)
+    {
+        XANIM_ASSERT("!blendTime || blendTime >= 0.001f",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4575,
+                     "old cod assert");
+    }
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp",
+                     4576, "old cod assert");
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+    {
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4577,
+                     "old cod assert");
+    }
+    unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex != 0)
+    {
+        if (infoIndex >= 0x200)
+        {
+            XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                         4583, "old cod assert");
+        }
+        XAnimInfo* info = &g_info[infoIndex];
+        if (XAnimHasEffectiveParentWeight(tree, animIndex)
+            && XAnimHasEffectiveChildWeight(tree, animIndex))
+        {
+            if (*(float*)&info->s[16] == 0.0f)
+            {
+                if (*(float*)&info->s[12] <= blendTime)
+                    goto clear_notify;
+            }
+            else
+            {
+                *(float*)&info->s[16] = 0.0f;
+            }
+            *(float*)&info->s[12] = blendTime;
+        }
+        else
+        {
+            *(float*)&info->s[16] = 0.0f;
+            *(float*)&info->s[12] = 0.0f;
+        }
+    clear_notify:
+        if (info->notifyName != 0)
+            info->notifyName = 0;
+        info->notifyIndex = -1;
+    }
+}
+
+// ea: 0x54ACE0
+static void XAnimClearTreeGoalWeights_r(XAnimTree* tree,
+                                        unsigned int animIndex,
+                                        float blendTime)
+{
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp",
+                     4613, "old cod assert");
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+    {
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4614,
+                     "old cod assert");
+    }
+    if (tree->infoArray[animIndex] != 0)
+    {
+        XAnimClearGoalWeight(tree, animIndex, blendTime);
+        XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+        if ((AnimTreeEntryAt(tree->anims, animIndex)->u.s.flags & 0x20) == 0)
+        {
+            int i = 0;
+            int numAnims = entry->numAnims;
+            if (entry->numAnims != 0)
+            {
+                do
+                {
+                    XAnimClearTreeGoalWeights_r(
+                        tree, (unsigned int)i + entry->u.s.children,
+                        blendTime);
+                    ++i;
+                } while (i < numAnims);
+            }
+        }
+    }
+}
+
+// ea: 0x54ADF0
+void XAnimClearTreeGoalWeights(XAnimTree* tree, unsigned int animIndex,
+                               float blendTime)
+{
+    if (blendTime < 0.001f)
+        blendTime = 0.0f;
+    XAnimClearTreeGoalWeights_r(tree, animIndex, blendTime);
+}
+
+// ea: 0x54AE10
+void XAnimClearTreeGoalWeightsStrict(XAnimTree* tree, unsigned int animIndex,
+                                     float blendTime)
+{
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp",
+                     4657, "old cod assert");
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+    {
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4658,
+                     "old cod assert");
+    }
+    if (blendTime < 0.001f)
+        blendTime = 0.0f;
+    XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+    int numAnims = entry->numAnims;
+    int i = 0;
+    if (entry->numAnims != 0)
+    {
+        do
+        {
+            XAnimClearTreeGoalWeights_r(
+                tree, (unsigned int)i + entry->u.s.children, blendTime);
+            ++i;
+        } while (i < numAnims);
+    }
+}
+
+// ea: 0x5446E0
+static void XAnimSetAnimRateInternal(XAnimTree* tree, unsigned int animIndex,
+                                     float rate)
+{
+    if (tree == nullptr)
+    {
+        XANIM_ASSERT("tree", "c:\\cod\\code\\game\\xanim.cpp", 5060,
+                     "old cod assert");
+    }
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp",
+                     5061, "old cod assert");
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+    {
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5062,
+                     "old cod assert");
+    }
+    if (rate < 0.0f)
+    {
+        XANIM_ASSERT("rate >= 0", "c:\\cod\\code\\game\\xanim.cpp", 5063,
+                     "old cod assert");
+    }
+    unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex == 0)
+    {
+        XANIM_ASSERT("infoIndex", "c:\\cod\\code\\game\\xanim.cpp", 5066,
+                     "old cod assert");
+    }
+    if (infoIndex >= 0x200)
+    {
+        XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                     5067, "old cod assert");
+    }
+    *(float*)&g_info[infoIndex].s[24] = rate;
+}
+
+// ea: 0x5454C0
+void XAnimSetAnimRate(XAnimTree* tree, unsigned int animIndex, float rate)
+{
+    XAnimSetAnimRateInternal(tree, animIndex, rate);
+}
+
+// TODO: PakHeapContext real port (streamer.o;
+//       ??0PakHeapContext@@QAE@W4TPakId@@_N@Z @ 0x66B040). Minimal placeholder
+//       so XAnimFreeInfo's heap-scoped release call compiles.
+struct PakHeapContext {
+    PakHeapContext(int pakId, bool once)
+    {
+        (void)pakId;
+        (void)once;
+    }
+    ~PakHeapContext() {}
+};
+
+// ea: 0x53E150
+void XAnimFreeInfo(XAnimTree* tree, unsigned short infoIndex)
+{
+    if (infoIndex >= 0x200)
+    {
+        XANIM_ASSERT("infoIndex < 512", "c:\\cod\\code\\game\\xanim.cpp",
+                     489, "old cod assert");
+    }
+    XAnimInfo* info = &g_info[infoIndex];
+    if (*(void**)&info->s[28] != nullptr)
+    {
+        PakHeapContext ctx(tree->mPakId, false);
+        void* obj = *(void**)&info->s[28];
+        if (obj != nullptr)
+        {
+            void** vtbl = *(void***)obj;
+            ((void (__thiscall*)(void*, int))vtbl[0])(obj, 1);
+        }
+        *(void**)&info->s[28] = nullptr;
+    }
+    info->prev = 0;
+    info->next = g_info[0].next;
+    g_info[g_info[0].next].prev = infoIndex;
+    g_info[0].next = infoIndex;
+    if (tree->mActiveAnims == 0)
+    {
+        XANIM_ASSERT("tree->mActiveAnims", "c:\\cod\\code\\game\\xanim.cpp",
+                     505,
+                     "freed an XAnimInfo from a tree that had none?");
+    }
+    --tree->mActiveAnims;
+}
+
+// ea: 0x5441E0
+static void XAnimClearTreeWeights(XAnimTree* tree, unsigned int animIndex)
+{
+    if (tree == nullptr)
+    {
+        XANIM_ASSERT("tree", "c:\\cod\\code\\game\\xanim.cpp", 4814,
+                     "old cod assert");
+    }
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp",
+                     4815, "old cod assert");
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+    {
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4816,
+                     "old cod assert");
+    }
+    unsigned short infoIndex = tree->infoArray[animIndex];
+    if (infoIndex != 0)
+    {
+        XAnimEntry* entry = AnimTreeEntryAt(tree->anims, animIndex);
+        int numAnims = entry->numAnims;
+        int i = 0;
+        if (entry->numAnims != 0)
+        {
+            do
+            {
+                XAnimClearTreeWeights(tree,
+                                      (unsigned int)i + entry->u.s.children);
+                ++i;
+            } while (i < numAnims);
+        }
+        XAnimFreeInfo(tree, infoIndex);
+        if (animIndex >= tree->anims->entries.mSize)
+        {
+            XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                         "c:\\cod\\code\\game\\xanim.cpp", 4828,
+                         "old cod assert");
+        }
+        tree->infoArray[animIndex] = 0;
+    }
+}
+
+// ea: 0x544370
+void XAnimClearTree(XAnimTree* tree)
+{
+    XAnimClearTreeWeights(tree, 0);
+    if (tree->mActiveAnims != 0)
+    {
+        XANIM_ASSERT("!tree->mActiveAnims",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4839,
+                     "XAnimClearTreeWeights failed to clear all playing anims?");
+    }
+    if (tree->infoArray[0] != 0)
+    {
+        XANIM_ASSERT("!tree->infoArray[0]", "c:\\cod\\code\\game\\xanim.cpp",
+                     4842, "old cod assert");
+    }
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp",
+                     4843, "old cod assert");
+    }
+    if (tree->anims->entries.mSize == 0)
+    {
+        XANIM_ASSERT("size", "c:\\cod\\code\\game\\xanim.cpp", 4846,
+                     "old cod assert");
+    }
 }

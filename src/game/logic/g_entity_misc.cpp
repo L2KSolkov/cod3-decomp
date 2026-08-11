@@ -517,7 +517,7 @@ extern void AnglesToAxis(const math::Position3* angles,
                          math::Mat43* mat);  // core.o (3-arg variant)
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME (core.o)
 
-extern void XAnimClearTree(void* tree);  // ?XAnimClearTree@@YAXPAVXAnimTree@@@Z
+extern void XAnimClearTree(XAnimTree* tree);  // ?XAnimClearTree@@YAXPAVXAnimTree@@@Z
 extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 
 // ea: 0x006389B0
@@ -546,7 +546,7 @@ void DisableAI(unsigned int handle)
                 {
                     void* tree = *(void**)((char*)mDObj + 4 * v4);
                     if (tree != nullptr)
-                        XAnimClearTree(tree);
+                        XAnimClearTree((XAnimTree*)tree);
                     ++v4;
                 } while (v4 < numModels);
             }
