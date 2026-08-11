@@ -7,6 +7,65 @@
 // ?gpBrocAPI@@3PAUBrocAPI@@A (scr.o data @ 0xF3ABDC, BSS)
 BrocAPI* gpBrocAPI = NULL;
 
+// ?currentVM@@3PAUvm_s@@A (scr.o data @ 0xF3AC04)
+vm_s* currentVM = NULL;
+
+// ea: 0x005C1DE0
+int VM_Call(vm_s* vm, int callnum, ...)
+{
+    if (vm == NULL)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\vm.cpp";
+        AeAssert::gCurrentLine = 320;
+        AeAssert::gCurrentExpr = "vm";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    vm_s* oldVM = currentVM;
+    int (*entryPoint)(int, ...) = vm->entryPoint;
+    currentVM = vm;
+    if (entryPoint == NULL)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\vm.cpp";
+        AeAssert::gCurrentLine = 326;
+        AeAssert::gCurrentExpr = "vm->entryPoint";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int args[16];
+    int* p_callnum = &callnum;
+    unsigned int v4 = 0;
+    do
+    {
+        args[v4++] = p_callnum[1];
+        ++p_callnum;
+    } while (v4 < 0x10);
+    int result = entryPoint(callnum, args[0], args[1], args[2], args[3],
+                            args[4], args[5], args[6], args[7], args[8],
+                            args[9], args[10], args[11], args[12], args[13],
+                            args[14], args[15]);
+    currentVM = oldVM;
+    return result;
+}
+
+// ea: 0x005C1D30
+void VM_Free(vm_s* vm)
+{
+    if (vm->dllHandle == NULL)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\vm.cpp";
+        AeAssert::gCurrentLine = 255;
+        AeAssert::gCurrentExpr = "vm->dllHandle";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    memset(vm, 0, 0x8C);
+    currentVM = NULL;
+}
+
 // ea: 0x005BE2B0 (scr.o)
 void UpdateEntityHash(Entity* ent)
 {
