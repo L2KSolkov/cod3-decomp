@@ -532,8 +532,8 @@ struct orientation_t {
 };
 
 // ea: 0x00611780
-void OrientationPosToWorldPos(const orientation_t* ori, const float* pos,
-                              float* out)
+void OrientationPosToWorldPos(const orientation_t* ori,
+                              const float* const pos, float* const out)
 {
     out[0] = (ori->axis[2][0] * pos[2]) + (ori->axis[0][0] * pos[0])
         + (ori->axis[1][0] * pos[1]) + ori->origin[0];
@@ -544,8 +544,8 @@ void OrientationPosToWorldPos(const orientation_t* ori, const float* pos,
 }
 
 // ea: 0x00611820
-void OrientationDirToWorldDir(const orientation_t* ori, const float* dir,
-                              float* out)
+void OrientationDirToWorldDir(const orientation_t* ori,
+                              const float* const dir, float* const out)
 {
     out[0] = (ori->axis[2][0] * dir[2]) + (ori->axis[0][0] * dir[0])
         + (ori->axis[1][0] * dir[1]);
@@ -556,8 +556,8 @@ void OrientationDirToWorldDir(const orientation_t* ori, const float* dir,
 }
 
 // ea: 0x006118B0
-void OrientationPosFromWorldPos(const orientation_t* ori, const float* pos,
-                                float* out)
+void OrientationPosFromWorldPos(const orientation_t* ori,
+                                const float* const pos, float* const out)
 {
     float v3 = pos[1] - ori->origin[1];
     float v4 = pos[2] - ori->origin[2];
@@ -571,8 +571,8 @@ void OrientationPosFromWorldPos(const orientation_t* ori, const float* pos,
 }
 
 // ea: 0x00611960
-void OrientationDirFromWorldDir(const orientation_t* ori, const float* dir,
-                                float* out)
+void OrientationDirFromWorldDir(const orientation_t* ori,
+                                const float* const dir, float* const out)
 {
     out[0] = (ori->axis[0][2] * dir[2]) + (ori->axis[0][0] * dir[0])
         + (ori->axis[0][1] * dir[1]);

@@ -76,9 +76,9 @@ const char* Info_ValueForKey(const char* s, const char* key)
 // Info_NextPair - ea: 0x610EC0
 // ============================================================================
 // ea: 0x00610EC0
-void Info_NextPair(char** head, char* key, char* value)
+void Info_NextPair(const char** head, char* key, char* value)
 {
-    char* v3 = *head;
+    const char* v3 = *head;
     if (**head == 92)
         ++v3;
     char* i = key;
