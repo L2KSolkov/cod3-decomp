@@ -3542,7 +3542,7 @@ void PM_trace(trace_t* results, const math::Position3& start,
               const collision_context_t& context);  // ea: 0x63BCA0 (below)
 
 // ea: 0x0063C8E0
-void PM_FootstepEvent(char iOldBobCycle, char iNewBobCycle, int bFootStep)
+void PM_FootstepEvent(int iOldBobCycle, int iNewBobCycle, int bFootStep)
 {
     if (((iNewBobCycle + 64) ^ (iOldBobCycle + 64)) & 0x80u)
     {
@@ -4474,7 +4474,7 @@ extern void BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
 extern int PM_VerifyPronePosition(const math::Position3& vFallbackOrg,
                                   const math::Position3& vFallbackVel);
     // game.o 0x63D2B0? (defined below)
-extern void PM_FootstepEvent(char iOldBobCycle, char iNewBobCycle,
+extern void PM_FootstepEvent(int iOldBobCycle, int iNewBobCycle,
                              int bFootStep);  // game.o 0x63C8E0
 extern int PM_ShouldMakeFootsteps();          // game.o 0x606250
 
@@ -4798,8 +4798,7 @@ L75:
                         pm->ps->bobCycle =
                             (int)(((float)v41 * 1.25f) + 7.0f)
                             + pm->ps->bobCycle;
-                        PM_FootstepEvent(oldBob, (char)pm->ps->bobCycle,
-                                         1);
+                        PM_FootstepEvent(oldBob, pm->ps->bobCycle, 1);
                     }
                 }
             }
@@ -4857,7 +4856,7 @@ bool tunnel_test(pmove_t& pm, float radius, const math::Position3& p0,
 extern void gunrandom(float* x, float* y);  // core.o
 
 // ea: 0x00606680
-void BG_Bullet_Endpos(float spread, float* end, weaponParms* wp)
+void BG_Bullet_Endpos(float spread, float* const end, weaponParms* wp)
 {
     if ((__fpclass(spread) & 0x297) != 0)
     {
@@ -5326,7 +5325,7 @@ void BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
 // ============================================================================
 // BG_PlayerStateToEntityState - ea: 0x604680
 // ============================================================================
-void BG_PlayerStateToEntityState(PlayerState* ps, EntityState* s)
+void BG_PlayerStateToEntityState(PlayerState* ps, EntityState* s, int snap)
 {
     s->eType = 1;
     s->pos.trType = TR_INTERPOLATE;
@@ -5380,7 +5379,7 @@ void BG_PlayerStateToEntityState(PlayerState* ps, EntityState* s)
 // BG_PlayerStateToEntityStateExtrapolate - ea: 0x604860
 // ============================================================================
 void BG_PlayerStateToEntityStateExtrapolate(PlayerState* ps, EntityState* s,
-                                            int time)
+                                            int time, int snap)
 {
     s->pos.trType = TR_LINEAR_STOP;
     memcpy(s->pos.trBase, ps, sizeof(s->pos.trBase));
