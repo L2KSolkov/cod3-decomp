@@ -293,7 +293,9 @@ float move_back_distance;
 extern int curListener;
 struct SaveGameData;
 extern SaveGameData* gSaveGameData;
-struct FEManager; extern FEManager g_femanager;
+struct FEManager { public: bool mDontDrawHud; };  // minimal view (+0x3C)
+extern FEManager g_femanager;
+int unk_F6A2AC[4 * 3208];  // cg.o BSS
 void* nglBuildScene_RenderTarget = nullptr;  // ngl.o
 void* gCurrentCamera;  // ?gCurrentCamera (cg.o Camera* artifact)
 extern struct Camera* gCamera;
@@ -357,8 +359,8 @@ extern void CG_DrawReticleCenter(void* weapDef, int weapIndex, int* color,
 extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float centerX, float centerY,
                                 float transScale);
-extern bool CG_AllowedToDrawCrosshair();
 extern int CG_ForceDebugCrosshair();
+
 enum nglSceneParamType;
 struct nglScene;
 extern nglScene* nglListBeginScene(nglSceneParamType paramSource);
@@ -998,6 +1000,33 @@ extern weaponInfo_s* cg_weapons;
 extern refexport_t re;
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern PlayerState* GetPlayerState(int idx);
+
+// ea: 0x00688490 (cg.o)
+bool CG_AllowedToDrawCrosshair()  // ?CG_AllowedToDrawCrosshair@@YA_NXZ
+{
+    if (EntityManager::sInst->GetPlayer(currCl)->client->ps.weapon == 0)
+    {
+        g_femanager.mDontDrawHud = false;
+        return false;
+    }
+    if (unk_F6A2AC[3208 * currCl] == 0
+        || dword_F6A28C[802 * currCl] != 0
+        || !gSaveGameData_mCrosshair
+        || g_femanager.mDontDrawHud
+        || (GamePause::IsGamePaused(currCl) && cg_drawpaused.integer != 0))
+    {
+        return false;
+    }
+    int weaponState = GetPlayerState(currCl)->weaponstate;
+    if (weaponState == 10 || weaponState == 11 || weaponState == 5
+        || weaponState == 14 || weaponState == 1 || weaponState == 2)
+        return false;
+    float* v1 = dword_F63B8C[1580 * currCl];
+    int v2 = *(int*)((char*)v1 + 176);
+    if (v2 == 5 && *(int*)((char*)v1 + 180) != 1)
+        return false;
+    return v2 != 15 && v2 != 16;
+}
 extern float* CG_FadeColor(int startMsec, int totalMsec, int fadeMsec);
 extern void CG_FillRect(float x, float y, float width, float height,
                         const float* color, float z);
