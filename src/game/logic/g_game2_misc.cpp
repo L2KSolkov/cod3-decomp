@@ -2422,7 +2422,7 @@ void stat_StatDamageEvent(Entity* pSelf, Entity* pInflictor, Entity* pAttacker,
 // ============================================================================
 // FN_DebugAnims_Select_Target - ea: 0x50B6F0
 // ============================================================================
-extern int g_dumpAnims;  // ?g_dumpAnims (g.o vmCvar)
+extern vmCvar_t g_dumpAnims;  // ?g_dumpAnims (g.o vmCvar)
 extern Entity* _Return_MF_UnderCrossHair();  // game2.o 0x503E30
 
 void FN_DebugAnims_Select_Target()
@@ -2430,12 +2430,12 @@ void FN_DebugAnims_Select_Target()
     Entity* v0 = _Return_MF_UnderCrossHair();
     if (v0 != nullptr)
     {
-        g_dumpAnims = v0->mHandle.mHandle.mVal;
+        g_dumpAnims.integer = v0->mHandle.mHandle.mVal;
         G_Printf("^5Entity found\n");
     }
     else
     {
-        g_dumpAnims = 0;
+        g_dumpAnims.integer = 0;
         G_Printf("^5Cant find Entity\n");
     }
 }

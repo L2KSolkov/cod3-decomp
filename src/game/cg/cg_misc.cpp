@@ -3657,7 +3657,7 @@ struct cgsGlobal_t {
     } media;
 };
 extern cgsGlobal_t cgsGlobal;  // 0x00F69BF8
-extern int cg_items[1];
+extern void* cg_items;
 extern weaponInfo_s cg_weapons[1];
 extern vmCvar_t fs_debug_vm;
 extern const float* InteractionController_GetHandsOrigin(void* self);

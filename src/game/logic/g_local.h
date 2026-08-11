@@ -2280,7 +2280,7 @@ void  G_ReduceAnglesError(float* angles, float* anglesError, float frametime,
                           float angleLerpRate);      // g.o 0x4492B0
 void  G_CheckLoadGame(int savegame);                 // g.o 0x458120
 void  VEH_RotateWheels(Entity* self, vehicle_info_t* info);  // g.o 0x480CF0
-extern int g_dumpAnims;                              // g.o vmCvar
+extern vmCvar_t g_dumpAnims;                         // ?g_dumpAnims@@3UvmCvar_t@@A
 extern vmCvar_t cg_mpDebugAnimEntity;                // cg.o vmCvar
 extern int gLockMeshList;                            // g.o
 extern int gEnableMeshFlash;                         // g.o
@@ -2988,7 +2988,7 @@ void  Player_ActivateHoldCmd(Entity* ent);        // g.o
 void  MultiplayerMgr_SpreadFire(void* self, Entity* player, float gunPitch,
                                 float gunYaw, float* weaponPosition, int weapon,
                                 float spread, float coneAngleTangent, int seed);  // mp.o
-extern int g_listEntity;                          // g.o
+extern vmCvar_t g_listEntity;                      // ?g_listEntity@@3UvmCvar_t@@A
 extern vmCvar_t g_performanceTest;                // g.o
 extern cdl_proftimer cdl_proftimer_ent_actors;    // game.o
 extern cdl_proftimer cdl_proftimer_dobj_anim;     // game.o
@@ -3012,7 +3012,7 @@ void TaskHandler_Update(TaskHandler* h, float deltaT, TaskFunctor* ftor);
 void AnimQueue_ExecuteMatrixQueue(void);
 void AnimQueue_ClearMatrixQueue(void);
 void DObjUpdateLod(Entity* e);
-extern int gCurrentCamera;                        // g.o
+extern void* gCurrentCamera;                      // g.o
 extern Camera gCamera[];                          // g.o (stride 0x1F0)
 void  InteractionController_Update(void* self, float deltaT);  // cl.o
 void  PlayerAnimMgr_Update(float deltaT);          // game.o

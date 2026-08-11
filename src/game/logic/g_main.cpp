@@ -1374,10 +1374,10 @@ void G_DebugCircle(const float* center, float radius, const float* color,
 // ea: 0x00468C60
 void DebugDumpAnims(void)
 {
-    if (g_dumpAnims > 0)
+    if (g_dumpAnims.integer > 0)
     {
         Entity* mObject = HandleDbToEnt(
-            *(DbLinkedHandle<EntityHandleDb, Entity>*)&g_dumpAnims);
+            *(DbLinkedHandle<EntityHandleDb, Entity>*)&g_dumpAnims.integer);
         if (mObject != nullptr)
             SV_DObjDisplayAnim(mObject);
     }
@@ -2359,7 +2359,7 @@ void G_RunFrame(int msec)
             Entity* v6 = EntityManager::sInst->mPlayers[v1];
             if (v6->sentient != nullptr)
             {
-                gCurrentCamera = v6->IsLocalPlayer() ? 1 : 0;
+                gCurrentCamera = (void*)(v6->IsLocalPlayer() ? 1 : 0);
                 ClientEndFrame(v6, msec);
             }
         }
@@ -2369,7 +2369,7 @@ void G_RunFrame(int msec)
     Path_DrawDebug();
     G_DrawVehiclePaths();
     G_DrawEntityBBoxes();
-    if (g_listEntity != 0)
+    if (g_listEntity.integer != 0)
     {
         Entity** begin = EntityHandleDb::sInst.mActiveList.m_elements;
         Entity** end = begin + EntityHandleDb::sInst.mActiveList.m_size;

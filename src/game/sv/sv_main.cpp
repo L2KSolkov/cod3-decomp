@@ -99,8 +99,9 @@ extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 extern void FEManager_UpdateLoadingMenu(void* self, float percentDone);
 
 extern int  gNflMediaId;
-extern int  g_bspTree;
-extern int  g_ScrFiles;
+extern struct BspTree* g_bspTree;
+class GroupFile;
+GroupFile* g_ScrFiles;  // ?g_ScrFiles@@3PAVGroupFile@@A (game.o)
 extern const PakInfoNode* sLoadingScreenInfo;
 extern int  dword_F6A290[4 * 802];
 extern bool gReturnToMenu;
@@ -235,11 +236,11 @@ void SV_SpawnServer(const char* server, int savegame) {
     for (int i = 0; i < 1024; ++i)
         sv.configstrings[i] = defaultFileName;
     SCR_UpdateScreen();
-    if (g_bspTree != 0) {
+    if (g_bspTree != nullptr) {
         EffectEventSys_StopAll((void*)0);
         PakManager::sInst->UnloadAll();
-        g_bspTree = 0;
-        g_ScrFiles = 0;
+        g_bspTree = nullptr;
+        g_ScrFiles = nullptr;
         FX_TermFX();
         PathNodeMgr_CleanUpManager((void*)0);
         CGBankManager_UnloadAll((void*)0);

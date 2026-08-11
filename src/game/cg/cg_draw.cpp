@@ -276,8 +276,8 @@ int dword_F64040[4 * 1580];  // cg.o BSS
 int dword_F64044[4 * 1580];  // cg.o BSS
 int dword_F64048[4 * 1580];  // cg.o BSS
 int dword_F6404C[4 * 1580];  // cg.o BSS
-extern int cg_crosshairAlpha;
-extern int cg_crosshairDynamic;
+extern vmCvar_t cg_crosshairAlpha;
+extern vmCvar_t cg_crosshairDynamic;
 extern vmCvar_t cg_drawGun;
 extern vmCvar_t cg_draw2D;
 extern vmCvar_t cg_drawStatus;
@@ -294,7 +294,7 @@ struct SaveGameData;
 extern SaveGameData* gSaveGameData;
 struct FEManager; extern FEManager g_femanager;
 extern void* nglBuildScene_RenderTarget;
-extern void* gCurrentCamera;
+void* gCurrentCamera;  // ?gCurrentCamera (cg.o Camera* artifact)
 extern void* gCamera;
 extern void Camera_Update(void* self);
 extern void Camera_UpdatePostViewModels(void* self);
@@ -580,16 +580,16 @@ void CG_DrawScoreboard_GetTeamColor(int iTeam, float* vColor)
 
 extern vmCvar_t cg_widescreen;
 extern vmCvar_t cg_hudAlpha;
-extern int cg_hudCompassSize;
+extern vmCvar_t cg_hudCompassSize;
 extern vmCvar_t cg_drawPosition;
-extern int cg_drawTimer;
-extern int cg_minicon;
+extern vmCvar_t cg_drawTimer;
+extern vmCvar_t cg_minicon;
 extern vmCvar_t cg_developer;
-extern int cg_subtitles;
-extern int cg_drawpaused;
+extern vmCvar_t cg_subtitles;
+extern vmCvar_t cg_drawpaused;
 extern vmCvar_t cg_drawGun;
-extern int cg_crosshairAlpha;
-extern int cg_crosshairDynamic;
+extern vmCvar_t cg_crosshairAlpha;
+extern vmCvar_t cg_crosshairDynamic;
 extern int dword_F641D0[4 * 1580];
 extern int dword_F641D4[4 * 1580];
 extern float color[4];
@@ -708,7 +708,7 @@ void CG_DrawUpperRight()
             trap_R_Text_Paint(50.0f, 64.0f, 4, 0.66666669f, color, text,
                               16.0f, 0, 3);
         }
-        if (cg_drawTimer != 0)
+        if (cg_drawTimer.integer != 0)
             y = CG_DrawTimer(50.0f);
         Entity* p = EntityManager::sInst->GetPlayer( currCl);
         if (p->takedamage == 0)
@@ -875,14 +875,14 @@ void CG_DrawBoldGameMessages()
 // ea: 0x00695850
 void CG_DrawMiniConsole()
 {
-    if (cg_minicon >= 0 && (cg_developer.integer != 0 || cg_minicon != 0))
+    if (cg_minicon.integer >= 0 && (cg_developer.integer != 0 || cg_minicon.integer != 0))
         j_nullsub_72(2, 4, *(float*)&cg_hudAlpha);
 }
 
 // ea: 0x00695880
 void CG_DrawSubtitles()
 {
-    if (cg_subtitles != 0)
+    if (cg_subtitles.integer != 0)
         j_nullsub_121(123, 399, *(float*)&cg_hudAlpha, 0);
 }
 
@@ -931,7 +931,7 @@ void CG_DrawGameScreenFade()
 // ea: 0x00696000
 void CG_DrawPaused()
 {
-    if (GamePause::IsGamePaused(currCl) && cg_drawpaused != 0)
+    if (GamePause::IsGamePaused(currCl) && cg_drawpaused.integer != 0)
     {
         const char* v0 = CG_SafeTranslateString_Internal("CGAME_PAUSED",
                                                          "cgame");
@@ -989,9 +989,9 @@ extern float dword_F63C50[4 * 1580];
 extern float dword_F63C54[4 * 1580];
 extern float dword_F63C58[4 * 1580];
 extern float dword_F63C5C[4 * 1580];
-extern int cg_shellshockblur;
+extern vmCvar_t cg_shellshockblur;
 extern int gSaveGameData_mCrosshair;
-extern int cg_drawpaused;
+extern vmCvar_t cg_drawpaused;
 extern vmCvar_t cg_drawGun;
 extern void* cg_weapons;
 extern re_export_view re;
@@ -1021,7 +1021,7 @@ void CG_DrawObjectives()
 // ea: 0x0068BAA0
 int CG_DrawScoreboard()
 {
-    if ((GamePause::IsGamePaused(currCl) && cg_drawpaused != 0)
+    if ((GamePause::IsGamePaused(currCl) && cg_drawpaused.integer != 0)
         || dword_F63584[1580 * currCl] >= 6
         || dword_F641D0[1580 * currCl] == 0)
     {
@@ -1037,7 +1037,7 @@ int CG_DrawScoreboard()
 int CG_DrawShellShockSavedScreenBlend(const void* parms, int start,
                                       int duration)
 {
-    if (cg_shellshockblur == 0)
+    if (cg_shellshockblur.integer == 0)
         return 1;
     if (start != 0 && duration > 0 && duration + start - cgGlobal_time > 0)
     {
@@ -1056,7 +1056,7 @@ void CG_DrawTurretCrossHair()
     float value = 0.0f;
     char v0 = *(char*)&dword_F6A2AC[3208 * currCl];
     if (v0 != 0
-        && (!GamePause::IsGamePaused(currCl) || cg_drawpaused == 0)
+        && (!GamePause::IsGamePaused(currCl) || cg_drawpaused.integer == 0)
         && dword_F6355C[1580 * currCl] == 0
         && dword_F6A28C[802 * currCl] == 0
         && gSaveGameData_mCrosshair)
@@ -1413,7 +1413,7 @@ void CG_DrawCrosshair(float transScaleArg)
     if (v2 == 0)
     {
         float value = *(float*)&cg_crosshairAlpha;
-        color[3] = cg_crosshairAlpha;
+        color[3] = (float)cg_crosshairAlpha.integer;
         if (!GamePause::IsGamePaused(currCl))
         {
             Client* client =
@@ -1476,7 +1476,7 @@ void CG_DrawCrosshair(float transScaleArg)
                                 }
                                 else
                                 {
-                                    if (cg_crosshairDynamic == 0)
+                                    if (cg_crosshairDynamic.integer == 0)
                                     {
                                         centerX = 0.0f;
                                         centerY = fTransShift;

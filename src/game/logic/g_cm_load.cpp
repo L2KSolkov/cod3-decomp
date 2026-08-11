@@ -114,7 +114,7 @@ struct BspTree {
     int      checkcount;    // +0x78
 };
 
-extern BspTree* g_bspTree;  // ?g_bspTree@@3PAVBspTree@@A (game.o 0xF743DC)
+struct BspTree* g_bspTree;  // ?g_bspTree (game.o 0xF743DC)
 
 // helper for Entity::has_zone_collision (cross-TU)
 bool BspTree_CellHasMeshFile(int cell_index)
@@ -12799,4 +12799,3 @@ void CGBankManager::DebugRender()
         }
     }
 }
-

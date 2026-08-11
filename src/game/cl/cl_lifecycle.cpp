@@ -41,7 +41,7 @@ extern void Field_CharEvent(field_t* edit, int ch);
 extern int dword_F170E0;
 extern int dword_F170E8;
 extern int atoi(const char* nptr);
-extern int com_sv_running;
+extern struct cvar_t* com_sv_running;
 extern struct cvar_t* com_cl_running;
 extern int dword_F0F200[2];
 extern int dword_F0F204[2];
@@ -206,7 +206,7 @@ int CL_GetServerCommand(int serverCommandNumber)
     }
     if (strcmp(v2, "clientLevelShot") == 0)
     {
-        if (com_sv_running == 0)
+        if (com_sv_running == nullptr)
             return 0;
         Con_Close();
         Cbuf_AddText("wait ; wait ; wait ; wait ; screenshot levelshot\n");

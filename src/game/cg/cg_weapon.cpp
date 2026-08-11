@@ -52,7 +52,10 @@ float dword_F63C80[4 * 1580];  // cg.o BSS
 float dword_F63C84[4 * 1580];  // cg.o BSS
 float dword_F63C88[4 * 1580];  // cg.o BSS
 int cg_aWeaponSelectTime[4];   // ?cg_aWeaponSelectTime@@3PAHA (cg.o)
-extern int cg_weaponCycleDelay;
+struct vmCvar_t {
+    int integer;  // +0x00
+};
+extern vmCvar_t cg_weaponCycleDelay;
 extern int cgGlobal_frametime;
 extern struct level_locals_t { int time; } level;
 struct sentient_s {
@@ -153,9 +156,6 @@ extern int dword_F64048[4 * 1580];
 extern int dword_F6404C[4 * 1580];
 extern int dword_F6355C[4 * 1580];
 extern int dword_F640A4[4 * 1580];
-struct vmCvar_t {
-    int integer;  // +0x00
-};
 extern vmCvar_t cg_drawGun;
 extern float cg_gun_x;
 extern float cg_gun_y;
@@ -624,7 +624,7 @@ Client* CG_WeaponSlot_f()
                 if ((client->ps.pm_flags & 0x80000) != 0)
                 {
                     if (cgGlobal_frametime - cg_aWeaponSelectTime[currCl]
-                        >= cg_weaponCycleDelay)
+                           >= cg_weaponCycleDelay.integer)
                     {
                         cg_aWeaponSelectTime[currCl] = cgGlobal_frametime;
                         const char* v1 = CG_Argv(1);
@@ -680,7 +680,7 @@ bool CG_WeaponSlot_f(int iSlot)
             return false;
         }
         if (cgGlobal_time - cg_aWeaponSelectTime[currCl]
-            < cg_weaponCycleDelay)
+                          < cg_weaponCycleDelay.integer)
             return false;
         cg_aWeaponSelectTime[currCl] = cgGlobal_time;
         if (iSlot <= 0 || iSlot >= 10)

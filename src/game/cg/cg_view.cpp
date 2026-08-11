@@ -80,9 +80,12 @@ extern int iLastCompassTime_1;
 extern float lastChange[4];
 extern int lastVehPos[4];
 extern float color[4];
+struct vmCvar_t {
+    int integer;  // +0x00
+};
 extern struct vmCvar_t cg_fov;
-extern int cg_altTankCam;
-extern int cg_hudCompassSpringyPointers;
+extern vmCvar_t cg_altTankCam;
+extern vmCvar_t cg_hudCompassSpringyPointers;
 extern struct vmCvar_t cg_drawGun;
 
 extern float AngleNormalize360(float angle);
@@ -326,7 +329,7 @@ float CG_GetViewFov()
     bool vehicleBlocked = (client->ps.eFlags & 0x106000) != 0
                           && !BG_AllowPlayerWeaponAtVehiclePos(
                                  client->ps.vehType, client->ps.vehPos);
-    if (!(cg_altTankCam != 0 && client->ps.vehType == 2
+    if (!(cg_altTankCam.integer != 0 && client->ps.vehType == 2
           && (client->ps.eFlags & 0x106000) == 0)
         && vehicleBlocked)
     {
@@ -383,7 +386,7 @@ int CG_NorthDirectionChanged()
 // ea: 0x00696910
 void CG_UpdateCompPointerOrientation(float a1)
 {
-    if (cg_hudCompassSpringyPointers == 0)
+    if (cg_hudCompassSpringyPointers.integer == 0)
     {
         *(float*)&dword_F6414C[1580 * currCl] =
             *(float*)&dword_F63CB4[1580 * currCl];
@@ -590,13 +593,10 @@ extern int dword_F640C4[4 * 1580];
 extern int dword_F640E8[4 * 1580];
 extern int dword_F6410C[4 * 1580];
 extern int dword_F64130[4 * 1580];
-struct vmCvar_t {
-    int integer;  // +0x00
-};
 extern vmCvar_t cg_camerashake;
-extern int cg_hudDamageIconTime;
-extern int cg_viewKickScale;
-extern int cg_viewKickMax;
+extern vmCvar_t cg_hudDamageIconTime;
+extern vmCvar_t cg_viewKickScale;
+extern vmCvar_t cg_viewKickMax;
 extern vmCvar_t cg_redFlashTime;
 extern int dword_F64018[4 * 1580];
 extern int dword_F6401C[4 * 1580];
@@ -639,32 +639,32 @@ extern void AxisCopy(const float (*in)[3], float (*out)[3]);
 extern int dword_F62960[4 * 1580];
 extern const char** cg_shock_cvar_names;
 extern void** cg_shock_cvar_ptrs;
-extern int cg_shock_viewKickFadeTime;
-extern int cg_shock_viewKickPeriod;
-extern int cg_shock_viewKickRadius;
-extern int cg_shock_sound;
-extern int cg_shock_soundFadeInTime;
-extern int cg_shock_soundFadeOutTime;
-extern int cg_shock_soundLoopFadeTime;
-extern int cg_shock_soundLoopEndDelay;
-extern int cg_shock_soundRoomType;
-extern int cg_shock_soundWetLevel;
-extern int cg_shock_soundModEndDelay;
-extern int cg_shock_volume_auto;
-extern int cg_shock_volume_menu;
-extern int cg_shock_volume_weapon;
-extern int cg_shock_volume_voice;
-extern int cg_shock_volume_item;
-extern int cg_shock_volume_body;
-extern int cg_shock_volume_local;
-extern int cg_shock_volume_music;
-extern int cg_shock_volume_announcer;
-extern int cg_shock_volume_shellshock;
-extern int cg_shock_mouse;
-extern int cg_shock_mouse_fadeTime;
-extern int cg_shock_mouse_maxpitchspeed;
-extern int cg_shock_mouse_maxyawspeed;
-extern int cg_shock_mouse_sensitivityscale;
+extern vmCvar_t cg_shock_viewKickFadeTime;
+extern vmCvar_t cg_shock_viewKickPeriod;
+extern vmCvar_t cg_shock_viewKickRadius;
+extern vmCvar_t cg_shock_sound;
+extern vmCvar_t cg_shock_soundFadeInTime;
+extern vmCvar_t cg_shock_soundFadeOutTime;
+extern vmCvar_t cg_shock_soundLoopFadeTime;
+extern vmCvar_t cg_shock_soundLoopEndDelay;
+extern vmCvar_t cg_shock_soundRoomType;
+extern vmCvar_t cg_shock_soundWetLevel;
+extern vmCvar_t cg_shock_soundModEndDelay;
+extern vmCvar_t cg_shock_volume_auto;
+extern vmCvar_t cg_shock_volume_menu;
+extern vmCvar_t cg_shock_volume_weapon;
+extern vmCvar_t cg_shock_volume_voice;
+extern vmCvar_t cg_shock_volume_item;
+extern vmCvar_t cg_shock_volume_body;
+extern vmCvar_t cg_shock_volume_local;
+extern vmCvar_t cg_shock_volume_music;
+extern vmCvar_t cg_shock_volume_announcer;
+extern vmCvar_t cg_shock_volume_shellshock;
+extern vmCvar_t cg_shock_mouse;
+extern vmCvar_t cg_shock_mouse_fadeTime;
+extern vmCvar_t cg_shock_mouse_maxpitchspeed;
+extern vmCvar_t cg_shock_mouse_maxyawspeed;
+extern vmCvar_t cg_shock_mouse_sensitivityscale;
 
 struct shellshock_parms_t {
     struct {
@@ -1066,7 +1066,7 @@ void CG_DamageFeedback(int yawByte, int pitchByte, float damage)
             v15 += 12;
             v16 += 3;
         } while (v15 < 96);
-        int integer = cg_hudDamageIconTime;
+    int integer = cg_hudDamageIconTime.integer;
         v6 = 1580 * currCl;
         int v18 = 3 * (int)damageIcon;
         dword_F63F9C[v18 + v7] = *(int*)((char*)&dword_F62960[v7] + 4);
@@ -1163,13 +1163,13 @@ extern float dword_F63CC[4 * 1580];
 extern int dword_F64164[4 * 1580];
 extern int dword_F64168[4 * 1580];
 extern int dword_F6416C[4 * 1580];
-extern int cg_bobWeaponLag;
-extern int cg_bobWeaponAmplitude;
-extern int cg_bobWeaponMax;
-extern int cg_bobWeaponRollAmplitude;
-extern int cg_bobAmplitudeProne;
-extern int cg_bobAmplitudeDucked;
-extern int cg_bobAmplitudeStanding;
+extern vmCvar_t cg_bobWeaponLag;
+extern vmCvar_t cg_bobWeaponAmplitude;
+extern vmCvar_t cg_bobWeaponMax;
+extern vmCvar_t cg_bobWeaponRollAmplitude;
+extern vmCvar_t cg_bobAmplitudeProne;
+extern vmCvar_t cg_bobAmplitudeDucked;
+extern vmCvar_t cg_bobAmplitudeStanding;
 extern int cgGlobal_frametime;
 extern float CG_GetVerticalBobFactor(float a1, float a2, float a3);
 extern float CG_GetHorizontalBobFactor(float a1, float a2, float a3);
@@ -1357,21 +1357,21 @@ void CG_CalculateWeaponPosition_IdleAngles(float* angles)
 }
 
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
-extern int cg_gun_move_minspeed;
-extern int cg_gun_move_f;
-extern int cg_gun_move_r;
-extern int cg_gun_move_u;
-extern int cg_gun_move_rate;
-extern int cg_gun_ofs_f;
-extern int cg_gun_ofs_r;
-extern int cg_gun_ofs_u;
-extern int cg_gun_rot_minspeed;
-extern int cg_gun_rot_y;
-extern int cg_gun_rot_p;
-extern int cg_gun_rot_r;
-extern int cg_gun_rot_rate;
-extern int cg_viewKickDeflectTime;
-extern int cg_viewKickReturnTime;
+extern vmCvar_t cg_gun_move_minspeed;
+extern vmCvar_t cg_gun_move_f;
+extern vmCvar_t cg_gun_move_r;
+extern vmCvar_t cg_gun_move_u;
+extern vmCvar_t cg_gun_move_rate;
+extern vmCvar_t cg_gun_ofs_f;
+extern vmCvar_t cg_gun_ofs_r;
+extern vmCvar_t cg_gun_ofs_u;
+extern vmCvar_t cg_gun_rot_minspeed;
+extern vmCvar_t cg_gun_rot_y;
+extern vmCvar_t cg_gun_rot_p;
+extern vmCvar_t cg_gun_rot_r;
+extern vmCvar_t cg_gun_rot_rate;
+extern vmCvar_t cg_viewKickDeflectTime;
+extern vmCvar_t cg_viewKickReturnTime;
 extern float vehicleOffsetRate;
 extern float vehicleOffset;
 extern float GetLeanFraction(float fFrac);

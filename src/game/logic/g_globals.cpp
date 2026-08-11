@@ -77,6 +77,8 @@ vmCvar_t sound_debug;               // ?sound_debug@@3UvmCvar_t@@A (g.o @ 0x129D
 vmCvar_t g_cheats;                  // ?g_cheats@@3UvmCvar_t@@A (g.o @ 0x129B668)
 vmCvar_t g_developer;               // ?g_developer@@3UvmCvar_t@@A (g.o @ 0x129BB78)
 vmCvar_t g_debug_sound_aliases;     // ?g_debug_sound_aliases@@3UvmCvar_t@@A (g.o @ 0x129B308)
+vmCvar_t g_dumpAnims;               // ?g_dumpAnims@@3UvmCvar_t@@A (g.o @ 0x12957F8)
+vmCvar_t g_listEntity;              // ?g_listEntity@@3UvmCvar_t@@A (g.o @ 0x129B428)
 ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;

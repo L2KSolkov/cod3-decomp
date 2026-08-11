@@ -344,8 +344,12 @@ struct localEntityFull {
     refEntity_t2 refEntity;
     trajectory_t2 pos;
 };
-extern int cg_railTrailTime;
-extern int cg_tracerChance;
+struct vmCvar_t {
+    int   integer;  // +0x00
+    float value;    // +0x04
+};
+extern vmCvar_t cg_railTrailTime;
+extern vmCvar_t cg_tracerChance;
 extern int dword_DF6ADC[6];
 extern float tracer_info_speed[6];
 extern void AxisClear(float (*axis)[3]);
@@ -358,12 +362,12 @@ extern void FastSinCos(float radians, float* psin, float* pcos);
 // ea: 0x00699610
 void CG_RailTrail2(const float* color, const float* start, const float* end)
 {
-    if (cg_railTrailTime > 0)
+    if (cg_railTrailTime.integer > 0)
     {
         localEntityFull* v3 = (localEntityFull*)CG_AllocLocalEntity();
         v3->leType = 0;
-        v3->endTime = cg_railTrailTime + cgGlobal_time;
-        v3->lifeRate = 1.0f / (float)cg_railTrailTime;
+        v3->endTime = cg_railTrailTime.integer + cgGlobal_time;
+        v3->lifeRate = 1.0f / (float)cg_railTrailTime.integer;
         v3->refEntity.reType = 6 /* RT_RAIL_CORE */;
         v3->refEntity.origin[0] = start[0];
         v3->refEntity.origin[1] = start[1];
@@ -1366,7 +1370,7 @@ extern float unk_F63C24[4 * 6320];
 extern int dword_F63554[4 * 1580];
 extern void j_nullsub_89(void* obj, float dtime);
 extern char CL_DObjInvalidateSkels();
-extern int cg_addentities;
+extern vmCvar_t cg_addentities;
 extern void* TestFPS_sInst;
 extern int Entity_IsInSnapshot(Entity* ent);
 extern void CG_CalcEntityLerpPositions(Entity* cent);
@@ -1491,7 +1495,7 @@ void CG_AddPacketEntities()
         Entity* v9 = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
                                  + 4 * i);
         if (v9 != nullptr && Entity_IsInSnapshot(v9)
-            && TestFPS_sInst == nullptr && cg_addentities != 0
+            && TestFPS_sInst == nullptr && cg_addentities.integer != 0
             && v9->s.eType < 0x12u)
         {
             CG_CalcEntityLerpPositions(v9);
@@ -1500,7 +1504,7 @@ void CG_AddPacketEntities()
     }
 }
 
-extern int cg_debugEvents;
+extern vmCvar_t cg_debugEvents;
 extern void CG_Printf(const char* msg, ...);
 extern void CG_EntityEvent(Entity* entity, int event, int bPredict);
 extern void CG_EntityPreEvent(Entity* entity, int event);
@@ -1680,10 +1684,6 @@ extern void Cvar_VMSet(vmCvar_t* vmCvar, const char* value);
 extern int G_GetServerSnapTime();
 extern int CG_SetFrameInterpolation();
 
-struct vmCvar_t {
-    int   integer;  // +0x00
-    float value;    // +0x04
-};
 extern vmCvar_t fs_debug_vm;
 
 struct CollisionDesc {
@@ -1938,12 +1938,12 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
 {
     if (event == 0)
     {
-        if (cg_debugEvents != 0)
+        if (cg_debugEvents.integer != 0)
             CG_Printf("CG_EntityEvent:ZERO EVENT\n");
         return;
     }
     int eventParm = entity->s.eventParm;
-    if (cg_debugEvents != 0)
+    if (cg_debugEvents.integer != 0)
         CG_Printf("ent:0x%08x  event:%3i ", entity->mHandle.mHandle.mVal,
                   event);
     if (event <= 0)
@@ -1951,7 +1951,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
     if (event >= 223)
         CG_ASSERT("event < EV_MAX_EVENTS",
                   "c:\\cod\\code\\game\\cg_event.cpp", 176);
-    if (cg_debugEvents != 0)
+    if (cg_debugEvents.integer != 0)
         CG_Printf("CG_EntityEvent:%s\n", pEventNamesList[event]);
     unsigned int clientHandle = entity->mHandle.mHandle.mVal;
     float footstepPos[3];
@@ -2391,7 +2391,7 @@ void CG_EntityPreEvent(Entity* entity, int event)
     if (event >= 223)
         CG_ASSERT("event < EV_MAX_EVENTS",
                   "c:\\cod\\code\\game\\cg_event.cpp", 754);
-    if (cg_debugEvents != 0)
+    if (cg_debugEvents.integer != 0)
     {
         CG_Printf("ent:0x%08x  preevent:%3i CG_EntityPreEvent:%s\n",
                   entity->mHandle.mHandle.mVal, event,
