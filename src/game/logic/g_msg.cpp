@@ -307,7 +307,7 @@ int Netchan_Process(netchan_t* chan, msg_t* msg)
 // MSG_WriteString / Netchan_Transmit / NET_AdrToString
 // ea: 0x61F7A0 / 0x61F860 / 0x61F9A0
 // ============================================================================
-extern int BigShort(unsigned short s);  // core.o
+extern short BigShort(short s);  // ?BigShort@@YAFF@Z (game.o)
 extern void NET_SendPacket(netsrc_t sock, int length,
                            const void* data, netadr_t to);  // g.o
 static char s_0[64];  // ?s_0@@3PADA (game.o @ 0xF58BB8)
