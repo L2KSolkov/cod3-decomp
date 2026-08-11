@@ -7,6 +7,7 @@
 #pragma once
 
 class Color {
+public:
     float r;  // +0x00
     float g;  // +0x04
     float b;  // +0x08

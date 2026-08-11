@@ -4,11 +4,15 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "core/color.h"
 
 #include <intrin.h>
 #include <malloc.h>
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
+#include <utility>
+#include <vector>
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);  // tl_xboxr
@@ -11578,6 +11582,1195 @@ void CM_ModelBounds(DCGSet* mod, math::Position3& mins,
         {
             mins.v = _mm_min_ps(mins.v, mod->min.v);
             maxs.v = _mm_max_ps(maxs.v, mod->max.v);
+        }
+    }
+}
+
+// ============================================================================
+// CGBankManager::DebugRender - ea: 0x646700 (cgbank.cpp)
+// ============================================================================
+// File statics (verified against IDA)
+static bool          render_tmp;    // @ 0xDF8E98
+static float         nlen;          // @ 0xDF8E90
+static bool          render_normal; // @ 0xF592C0
+static unsigned int  dword_F592BC;  // @ 0xF592BC (min/max_thresh init flag)
+static std::pair<int, int> min_thresh;  // @ 0xF592B0
+static std::pair<int, int> max_thresh;  // @ 0xF592A4
+static int           sample_size;   // @ 0xDF8E8C
+static float         rr;            // @ 0xDF8E88
+static float         rr_0;          // @ 0xDF8E94
+static float         basex;         // @ 0xDF8E80
+static float         basey;         // @ 0xDF8E84
+static float         offs;          // @ 0xDF8E7C
+static float         fscale;        // @ 0xDF8E68
+static float         psize;         // @ 0xDF8E6C
+static float         statsbasex;    // @ 0xDF8E74
+static float         statsbasey;    // @ 0xDF8E70
+static float         fscale_0;      // @ 0xDF8E78
+static char          buf[128];      // @ 0xF59208
+
+// debug_brush twin of g_entity_misc.cpp (same layout; game.o data type)
+struct DebugColor {
+    float r, g, b, a;
+};
+struct cdlBrushView {
+    uint8_t _pad[0x60];
+};
+struct debug_brush {
+    const cdlBrushView* brush;  // +0x00
+    math::Mat43        mat;     // +0x10
+    DebugColor         color;   // +0x50
+};
+static_assert(sizeof(debug_brush) == 0x60, "debug_brush size mismatch");
+
+// Render-layer externs (shared with g_entity_misc.cpp render_brush port)
+extern ae_vector<debug_brush> debug_brushes;
+    // ?debug_brushes@@3V?$ae_vector@Udebug_brush@@@@A (game.o)
+extern void render_brush(const math::Position3& bmin,
+                         const math::Position3& bmax, const cdlPlane* sides,
+                         unsigned int nsides,
+                         const Color& color);  // game.o 0x638A10
+extern int nglGetScreenWidth();   // ngl_xboxr
+extern int nglGetScreenHeight();  // ngl_xboxr
+extern void nglGetStringDimensions(void* font, const char* text,
+                                   unsigned int* width,
+                                   unsigned int* height, float scaleX,
+                                   float scaleY);  // ngl_xboxr
+extern void* nglSysFont;  // ?nglSysFont@@3PAVnglFont@@A (ngl_font.o)
+extern void* nglListAlloc(unsigned int Bytes,
+                          unsigned int Alignment);  // inline 0x660140
+extern void mem_heap_free(void* ptr);  // mem_heap
+
+// Minimal ngl type views (full definitions in ngl_dx_gpu.h)
+struct nglShaderParamSet {
+    unsigned char mData[4];
+    static unsigned int NumParams;
+};
+struct gpuVertexFormat {
+    int          VertexSize;
+    const void*  Elements;
+    void*        VertexDeclaration;
+};
+struct nglMeshSection;
+struct nglMesh;
+struct nglMaterial;
+extern gpuVertexFormat cddebug_vertex_format;
+extern void setup_color(const Color& i_col, nglShaderParamSet& o_params);
+extern nglMesh* auxCreateScratchMesh(int flags, int num);
+extern nglMeshSection* nglCreateScratchSection(
+    int Prim, int NIndices, int NVertices, gpuVertexFormat* VertexFormat);
+extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
+                              nglMaterial* Material, int Flags);
+extern void* nglLockSectionIndices(nglMeshSection* Section);
+extern unsigned char* nglLockSectionVertices(nglMeshSection* Section);
+extern nglMesh* auxCloseScratchMesh(nglMesh* m);
+extern void* nglListAddMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+                            void* MeshParams, void* ShaderParams,
+                            void (*fn)(void*));
+extern void j_nullsub_67(nglMeshSection* Section);
+extern void j_nullsub_27(nglMeshSection* Section);
+extern unsigned char* nglListWork;
+extern unsigned char* nglListWorkPos;
+extern int nglListWorkSize;
+extern int nglLastListAllocWarnFrame;
+extern int nglFrame;
+extern void tlFatal(const char* fmt, ...);
+extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+extern int printf(const char* fmt, ...);
+
+// ea: 0x00646700
+void CGBankManager::DebugRender()
+{
+    cmgr_mem_ctx_t ctx;
+    math::Position3* cg_verts = alloc_verts();
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player == nullptr)
+        return;
+    math::Position3 pos = Player->r.currentOrigin;
+    nglGetScreenWidth();
+    float nbanks = (float)nglGetScreenHeight();
+    if (render_tmp)
+    {
+        for (int i = 0; i < debug_brushes.mSize; ++i)
+            debug_brushes.mElements[i];
+    }
+    debug_brushes.mSize = 0;  // resize(0)
+
+    if ((this->mDebugRenderMode & 1) != 0)
+    {
+        CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
+        for (int bi = 0; bi < mgr->mCount; ++bi)
+        {
+            if (bi > 0x62)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 31;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            CGBank* bank = mgr->mBankArray[bi];
+            if (bank == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.cpp";
+                AeAssert::gCurrentLine = 723;
+                AeAssert::gCurrentExpr = "bank";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("invalid bank"))
+                    __debugbreak();
+            }
+            if ((_mm_movemask_ps(_mm_cmplt_ps(bank->min.v, pos.v)) & 7) == 7
+                && (_mm_movemask_ps(_mm_cmplt_ps(pos.v, bank->max.v)) & 7)
+                    == 7)
+            {
+                for (int oi = 0; oi < bank->objects.m_count; ++oi)
+                {
+                    if (oi >= bank->objects.m_count)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::JSV;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\cgbank.h";
+                        AeAssert::gCurrentLine = 233;
+                        AeAssert::gCurrentExpr = "index < size()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(defaultFileName))
+                            __debugbreak();
+                    }
+                    if (oi >= bank->objects.m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                            89, "index >= 0 && index < size()",
+                            "invalid index"))
+                        __debugbreak();
+                    cdl_object_t* obj =
+                        &((cdl_object_t*)bank->objects.m_elements)[oi];
+                    // Debug color packed into the object index bytes.
+                    float colorR =
+                        (float)((uintptr_t)obj & 0xFF) * 0.0040000002f;
+                    float colorG =
+                        (float)(((uintptr_t)obj >> 4) & 0xFF)
+                        * 0.0040000002f;
+                    float colorB =
+                        (float)(((uintptr_t)obj >> 8) & 0xFF)
+                        * 0.0040000002f;
+                    math::Position3 center;
+                    center.v.m128_f32[0] = obj->center[0];
+                    center.v.m128_f32[1] = obj->center[1];
+                    center.v.m128_f32[2] = obj->center[2];
+                    center.v.m128_f32[3] = 0.0f;
+                    math::Position3 boxr;
+                    boxr.v.m128_f32[0] = obj->box_radius[0];
+                    boxr.v.m128_f32[1] = obj->box_radius[1];
+                    boxr.v.m128_f32[2] = obj->box_radius[2];
+                    boxr.v.m128_f32[3] = 0.0f;
+                    int type = CGBank_get_type(bank, oi);
+                    if (type == 1)
+                    {
+                        int brushIndex = oi - bank->nboxes;
+                        if (brushIndex >= bank->brushes.m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        cdl_brush_t* brush =
+                            &((cdl_brush_t*)bank->brushes.m_elements)
+                                [brushIndex];
+                        int first_side = brush->first_side;
+                        if (first_side >= bank->brush_sides.m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        math::Position3 bmax;
+                        bmax.v = _mm_add_ps(center.v, boxr.v);
+                        math::Position3 bmin;
+                        bmin.v = _mm_sub_ps(center.v, boxr.v);
+                        Color color(colorR, colorG, colorB, 1.0f);
+                        render_brush(
+                            bmin, bmax,
+                            &((cdlPlane*)bank->brush_sides.m_elements)
+                                [first_side],
+                            brush->num_sides, color);
+                    }
+                    else if (type != 0)
+                    {
+                        int patchIndex = oi - bank->nboxes - bank->nbrushes;
+                        unpack(bank, patchIndex, cg_verts);
+                        if (patchIndex >= bank->patches.m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        cdl_patch_t* patch =
+                            &((cdl_patch_t*)bank->patches.m_elements)
+                                [patchIndex];
+                        unsigned int first_index = patch->first_index;
+                        unsigned int num_inds = patch->num_inds;
+                        if (first_index >= bank->patch_inds.m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        if (num_inds != 0)
+                        {
+                            int tris = num_inds / 3;
+                            int nVertices = 3 * tris;
+                            int nIndices = 5 * tris - 2;
+                            nglMesh* mesh =
+                                auxCreateScratchMesh(0x40000, 1);
+                            nglMeshSection* section =
+                                nglCreateScratchSection(
+                                    6, nIndices, nVertices,
+                                    &cddebug_vertex_format);
+                            nglAddMeshSection(
+                                mesh, section,
+                                *(nglMaterial**)((char*)&DebugRender_sInst
+                                                 + 0xC),
+                                1);
+                            unsigned short* indices =
+                                (unsigned short*)nglLockSectionIndices(
+                                    section);
+                            float* verts =
+                                (float*)nglLockSectionVertices(section);
+                            unsigned char* inds =
+                                (unsigned char*)bank->patch_inds.m_elements
+                                + first_index;
+                            int v = 0;
+                            for (int t = 0; t < tris; ++t)
+                            {
+                                math::Position3 va = cg_verts[inds[3 * t + 0]];
+                                math::Position3 vb = cg_verts[inds[3 * t + 1]];
+                                math::Position3 vc = cg_verts[inds[3 * t + 2]];
+                                if (v > 0)
+                                {
+                                    indices[0] = (unsigned short)(v - 1);
+                                    indices[1] = (unsigned short)v;
+                                    indices += 2;
+                                }
+                                verts[0] = va.v.m128_f32[0];
+                                verts[1] = va.v.m128_f32[1];
+                                verts[2] = va.v.m128_f32[2];
+                                indices[0] = (unsigned short)v;
+                                verts[3] = vb.v.m128_f32[0];
+                                verts[4] = vb.v.m128_f32[1];
+                                verts[5] = vb.v.m128_f32[2];
+                                indices[1] = (unsigned short)(v + 1);
+                                verts[6] = vc.v.m128_f32[0];
+                                verts[7] = vc.v.m128_f32[1];
+                                verts[8] = vc.v.m128_f32[2];
+                                indices[2] = (unsigned short)(v + 2);
+                                indices += 3;
+                                verts += 9;
+                                v += 3;
+                                j_nullsub_67(section);
+                                j_nullsub_27(section);
+                                if (render_normal)
+                                {
+                                    math::Vector4 plane =
+                                        calc_normal(va, vb, vc);
+                                    math::Position3 center;
+                                    center.v = _mm_mul_ps(
+                                        _mm_add_ps(
+                                            _mm_add_ps(va.v, vb.v), vc.v),
+                                        _mm_set1_ps(0.33333334f));
+                                    math::Position3 end;
+                                    end.v = _mm_add_ps(
+                                        center.v,
+                                        _mm_mul_ps(plane.v,
+                                                   _mm_set1_ps(nlen)));
+                                    float ncol[4] = { 1.0f, 0.0f, 0.0f,
+                                                      1.0f };
+                                    DebugRender::RenderLine(
+                                        &center, &end, ncol, 5.0f);
+                                }
+                            }
+                            unsigned char* v58 =
+                                (unsigned char*)(~7
+                                                 & ((uintptr_t)nglListWorkPos
+                                                    + 7));
+                            unsigned int v59 =
+                                4 * nglShaderParamSet::NumParams + 8;
+                            if (v58 + v59 <= nglListWork + nglListWorkSize)
+                            {
+                                nglListWorkPos = v58 + v59;
+                            }
+                            else
+                            {
+                                if (nglLastListAllocWarnFrame != nglFrame)
+                                {
+                                    tlFatal(
+                                        "Render list allocation overflow. "
+                                        "Reserved = %d Requested = %d "
+                                        "Free = %d.\n",
+                                        nglListWorkSize,
+                                        4 * nglShaderParamSet::NumParams + 8,
+                                        nglListWork + nglListWorkSize - v58);
+                                    nglLastListAllocWarnFrame = nglFrame;
+                                }
+                                v58 = nullptr;
+                            }
+                            nglShaderParamSet* npolies =
+                                (nglShaderParamSet*)v58;
+                            *(unsigned int*)v58 = 0;
+                            *(unsigned int*)(v58 + 4) = 0;
+                            Color pcol((float)v, colorG, colorB, 1.0f);
+                            setup_color(pcol, *npolies);
+                            math::Mat43 identity;
+                            identity.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f,
+                                                       0.0f);
+                            identity.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f,
+                                                       0.0f);
+                            identity.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f,
+                                                       0.0f);
+                            identity.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f,
+                                                       1.0f);
+                            nglMesh* m = auxCloseScratchMesh(mesh);
+                            nglListAddMesh(m, &identity, nullptr, npolies,
+                                           nullptr);
+                        }
+                        else
+                        {
+                            Color boxcol(colorR, colorG, colorB, 1.0f);
+                            math::Position3 bmax;
+                            bmax.v = _mm_add_ps(center.v, boxr.v);
+                            math::Position3 bmin;
+                            bmin.v = _mm_sub_ps(center.v, boxr.v);
+                            DebugRender::RenderBox(&bmin, &bmax, &boxcol.r);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if ((this->mDebugRenderMode & 6) != 0)
+    {
+        CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
+        int bankCount = mgr->mCount;
+        float ext = 5.0f;
+        math::Position3 pmin;
+        pmin.v = _mm_sub_ps(pos.v, _mm_set1_ps(ext));
+        math::Position3 pmax;
+        pmax.v = _mm_add_ps(pos.v, _mm_set1_ps(ext));
+        int bestCount = -1;
+        int bestBank = -1;
+        for (int bi = 0; bi < bankCount; ++bi)
+        {
+            if (bi > 0x62)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 31;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            CGBank* bank = mgr->mBankArray[bi];
+            if ((_mm_movemask_ps(_mm_cmplt_ps(
+                     _mm_max_ps(
+                         _mm_sub_ps(bank->rtree_root.region_center.v,
+                                    pmax.v),
+                         _mm_sub_ps(
+                             pmin.v,
+                             bank->rtree_root.region_halfsize_inv32k.v)),
+                     _mm_setzero_ps()))
+                 & 7)
+                == 7)
+            {
+                rtree_visitor_t visitor(bank);
+                traverse_rtree(pmin, pmax, bank->rtree_root, visitor);
+                if (visitor.objects_m_alloc_count > bestCount)
+                {
+                    bestCount = visitor.objects_m_alloc_count;
+                    bestBank = bi;
+                }
+            }
+        }
+        if (bestBank != -1)
+        {
+            if ((dword_F592BC & 1) == 0)
+            {
+                dword_F592BC |= 1u;
+                min_thresh = std::make_pair(5, 40);
+            }
+            if ((dword_F592BC & 2) == 0)
+            {
+                dword_F592BC |= 2u;
+                max_thresh = std::make_pair(20, 100);
+            }
+            if (bestBank > 0x62)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 31;
+                AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+            }
+            CGBank* bank = mgr->mBankArray[bestBank];
+            math::Position3 mn = bank->min;
+            math::Position3 mx = bank->max;
+            math::Position3 extents;
+            extents.v = _mm_sub_ps(mx.v, mn.v);
+            int x = (sample_size + (int)extents.v.m128_f32[0]) / sample_size;
+            int y = (sample_size + (int)extents.v.m128_f32[1]) / sample_size;
+            std::vector<std::pair<int, int>> grid(x * y);
+            for (int oi = 0; oi < bank->objects.m_count; ++oi)
+            {
+                if (oi >= bank->objects.m_count)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JSV;
+                    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                    AeAssert::gCurrentLine = 233;
+                    AeAssert::gCurrentExpr = "index < size()";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(defaultFileName))
+                        __debugbreak();
+                }
+                if (oi >= bank->objects.m_count
+                    && _tlAssert(
+                        "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                        "index >= 0 && index < size()", "invalid index"))
+                    __debugbreak();
+                cdl_object_t* obj =
+                    &((cdl_object_t*)bank->objects.m_elements)[oi];
+                int type = CGBank_get_type(bank, oi);
+                if (type != 0)
+                {
+                    if (type == 1)
+                    {
+                        math::Position3 center;
+                        center.v.m128_f32[0] = obj->center[0];
+                        center.v.m128_f32[1] = obj->center[1];
+                        center.v.m128_f32[2] = obj->center[2];
+                        math::Position3 boxr;
+                        boxr.v.m128_f32[0] = obj->box_radius[0];
+                        boxr.v.m128_f32[1] = obj->box_radius[1];
+                        boxr.v.m128_f32[2] = obj->box_radius[2];
+                        math::Position3 mins;
+                        mins.v = _mm_max_ps(
+                            _mm_sub_ps(center.v, boxr.v), mn.v);
+                        math::Position3 maxs;
+                        maxs.v = _mm_max_ps(
+                            _mm_add_ps(center.v, boxr.v), mn.v);
+                        int col0 = (int)(mins.v.m128_f32[0] / sample_size);
+                        int col1 = (int)(maxs.v.m128_f32[0] / sample_size);
+                        int row0 = (int)(mins.v.m128_f32[1] / sample_size);
+                        int row1 = (int)(maxs.v.m128_f32[1] / sample_size);
+                        for (int c = col0; c <= col1; ++c)
+                        {
+                            if (c >= x)
+                                break;
+                            for (int r = row0; r <= row1; ++r)
+                            {
+                                if (r >= y)
+                                    break;
+                                ++grid[c + x * r].first;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int patchIndex =
+                            oi - bank->nboxes - bank->nbrushes;
+                        unpack(bank, patchIndex, cg_verts);
+                        if (patchIndex >= bank->patches.m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        cdl_patch_t* patch =
+                            &((cdl_patch_t*)bank->patches.m_elements)
+                                [patchIndex];
+                        unsigned int first_index = patch->first_index;
+                        unsigned int num_inds = patch->num_inds;
+                        if (first_index >= bank->patch_inds.m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        if (num_inds != 0)
+                        {
+                            unsigned char* inds =
+                                (unsigned char*)bank->patch_inds.m_elements
+                                + first_index;
+                            int tris = (num_inds - 1) / 3 + 1;
+                            for (int t = 0; t < tris; ++t)
+                            {
+                                math::Position3 va = cg_verts[inds[3 * t + 0]];
+                                math::Position3 vb = cg_verts[inds[3 * t + 1]];
+                                math::Position3 vc = cg_verts[inds[3 * t + 2]];
+                                math::Position3 lo;
+                                lo.v = _mm_min_ps(
+                                    _mm_min_ps(va.v, vb.v), vc.v);
+                                math::Position3 hi;
+                                hi.v = _mm_max_ps(
+                                    _mm_max_ps(va.v, vb.v), vc.v);
+                                int col0 = (int)(lo.v.m128_f32[0]
+                                                 / sample_size);
+                                int col1 = (int)(hi.v.m128_f32[0]
+                                                 / sample_size);
+                                int row0 = (int)(lo.v.m128_f32[1]
+                                                 / sample_size);
+                                int row1 = (int)(hi.v.m128_f32[1]
+                                                 / sample_size);
+                                int density = 0;
+                                for (int c = col0; c <= col1; ++c)
+                                {
+                                    if (c >= x)
+                                        break;
+                                    for (int r = row0; r <= row1; ++r)
+                                    {
+                                        if (r >= y)
+                                            break;
+                                        int v = grid[c + x * r].second;
+                                        if (density < v)
+                                            density = v;
+                                        ++grid[c + x * r].second;
+                                    }
+                                }
+                                printf("[%s:%d] JIV STUB\n",
+                                       "c:\\cod\\code\\game\\cgbank.cpp",
+                                       964);
+                                nglMesh* mesh =
+                                    auxCreateScratchMesh(0x40000, 1);
+                                nglMeshSection* section =
+                                    nglCreateScratchSection(
+                                        6, 3, 3, &cddebug_vertex_format);
+                                nglAddMeshSection(
+                                    mesh, section,
+                                    *(nglMaterial**)((char*)&DebugRender_sInst
+                                                     + 0xC),
+                                    1);
+                                unsigned short* indices =
+                                    (unsigned short*)nglLockSectionIndices(
+                                        section);
+                                float* verts =
+                                    (float*)nglLockSectionVertices(section);
+                                verts[0] = va.v.m128_f32[0];
+                                verts[1] = va.v.m128_f32[1];
+                                verts[2] = va.v.m128_f32[2];
+                                indices[0] = 0;
+                                verts[3] = vb.v.m128_f32[0];
+                                verts[4] = vb.v.m128_f32[1];
+                                verts[5] = vb.v.m128_f32[2];
+                                indices[1] = 1;
+                                verts[6] = vc.v.m128_f32[0];
+                                verts[7] = vc.v.m128_f32[1];
+                                verts[8] = vc.v.m128_f32[2];
+                                indices[2] = 2;
+                                j_nullsub_67(section);
+                                j_nullsub_27(section);
+                                unsigned char* v156 =
+                                    (unsigned char*)(~7
+                                                     & ((uintptr_t)
+                                                            nglListWorkPos
+                                                        + 7));
+                                unsigned int v157 =
+                                    4 * nglShaderParamSet::NumParams + 8;
+                                if (v156 + v157
+                                    <= nglListWork + nglListWorkSize)
+                                {
+                                    nglListWorkPos = v156 + v157;
+                                }
+                                else
+                                {
+                                    if (nglLastListAllocWarnFrame
+                                        != nglFrame)
+                                    {
+                                        tlFatal(
+                                            "Render list allocation "
+                                            "overflow. Reserved = %d "
+                                            "Requested = %d Free = %d.\n",
+                                            nglListWorkSize,
+                                            4 * nglShaderParamSet::NumParams
+                                                + 8,
+                                            nglListWork + nglListWorkSize
+                                                - v156);
+                                        nglLastListAllocWarnFrame =
+                                            nglFrame;
+                                    }
+                                    v156 = nullptr;
+                                }
+                                nglShaderParamSet* npolies =
+                                    (nglShaderParamSet*)v156;
+                                *(unsigned int*)v156 = 0;
+                                *(unsigned int*)(v156 + 4) = 0;
+                                int second = density;
+                                if (second > max_thresh.second)
+                                    second = max_thresh.second;
+                                Color pcol;
+                                if (second >= min_thresh.second)
+                                {
+                                    pcol = Color(
+                                        (float)second
+                                            / (float)max_thresh.second,
+                                        0.0f, 0.0f, 1.0f);
+                                }
+                                else
+                                {
+                                    pcol = Color(0.75f, 0.75f, 0.75f,
+                                                 1.0f);
+                                }
+                                setup_color(pcol, *npolies);
+                                math::Mat43 identity;
+                                identity.x.v = _mm_setr_ps(1.0f, 0.0f,
+                                                           0.0f, 0.0f);
+                                identity.y.v = _mm_setr_ps(0.0f, 1.0f,
+                                                           0.0f, 0.0f);
+                                identity.z.v = _mm_setr_ps(0.0f, 0.0f,
+                                                           1.0f, 0.0f);
+                                identity.w.v = _mm_setr_ps(0.0f, 0.0f,
+                                                           0.0f, 1.0f);
+                                nglMesh* m = auxCloseScratchMesh(mesh);
+                                nglListAddMesh(m, &identity, nullptr,
+                                               npolies, nullptr);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ((this->mDebugRenderMode & 2) != 0)
+            {
+                for (int oi = 0; oi < bank->objects.m_count; ++oi)
+                {
+                    if (oi >= bank->objects.m_count)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::JSV;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\cgbank.h";
+                        AeAssert::gCurrentLine = 233;
+                        AeAssert::gCurrentExpr = "index < size()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(defaultFileName))
+                            __debugbreak();
+                    }
+                    if (oi >= bank->objects.m_count
+                        && _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                            89, "index >= 0 && index < size()",
+                            "invalid index"))
+                        __debugbreak();
+                    cdl_object_t* obj =
+                        &((cdl_object_t*)bank->objects.m_elements)[oi];
+                    int type = CGBank_get_type(bank, oi);
+                    if (type != 0)
+                    {
+                        math::Position3 center;
+                        center.v.m128_f32[0] = obj->center[0];
+                        center.v.m128_f32[1] = obj->center[1];
+                        center.v.m128_f32[2] = obj->center[2];
+                        math::Position3 boxr;
+                        boxr.v.m128_f32[0] = obj->box_radius[0];
+                        boxr.v.m128_f32[1] = obj->box_radius[1];
+                        boxr.v.m128_f32[2] = obj->box_radius[2];
+                        math::Position3 bmax;
+                        bmax.v = _mm_add_ps(center.v, boxr.v);
+                        math::Position3 bmin;
+                        bmin.v = _mm_sub_ps(center.v, boxr.v);
+                        math::Position3 clamped;
+                        clamped.v = _mm_max_ps(
+                            _mm_min_ps(pos.v, bmax.v), bmin.v);
+                        math::Position3 d;
+                        d.v = _mm_sub_ps(clamped.v, pos.v);
+                        float dist2 =
+                            d.v.m128_f32[0] * d.v.m128_f32[0]
+                            + d.v.m128_f32[1] * d.v.m128_f32[1]
+                            + d.v.m128_f32[2] * d.v.m128_f32[2];
+                        if (dist2 <= rr * rr)
+                        {
+                            if (type == 1)
+                            {
+                                int brushIndex = oi - bank->nboxes;
+                                if (brushIndex >= bank->brushes.m_count
+                                    && _tlAssert(
+                                        "c:\\cod\\code\\tl\\cdl\\source"
+                                        "\\cdl_mem.h",
+                                        91, "index >= 0 && index < size()",
+                                        "invalid index"))
+                                    __debugbreak();
+                                cdl_brush_t* brush =
+                                    &((cdl_brush_t*)bank->brushes
+                                          .m_elements)[brushIndex];
+                                int first_side = brush->first_side;
+                                if (first_side
+                                        >= bank->brush_sides.m_count
+                                    && _tlAssert(
+                                        "c:\\cod\\code\\tl\\cdl\\source"
+                                        "\\cdl_mem.h",
+                                        91,
+                                        "index >= 0 && index < size()",
+                                        "invalid index"))
+                                    __debugbreak();
+                                Color color(0.75f, 0.75f, 0.75f, 1.0f);
+                                render_brush(
+                                    bmin, bmax,
+                                    &((cdlPlane*)bank->brush_sides
+                                          .m_elements)[first_side],
+                                    brush->num_sides, color);
+                            }
+                            else
+                            {
+                                int patchIndex =
+                                    oi - bank->nboxes - bank->nbrushes;
+                                unpack(bank, patchIndex, cg_verts);
+                                if (patchIndex >= bank->patches.m_count
+                                    && _tlAssert(
+                                        "c:\\cod\\code\\tl\\cdl\\source"
+                                        "\\cdl_mem.h",
+                                        91,
+                                        "index >= 0 && index < size()",
+                                        "invalid index"))
+                                    __debugbreak();
+                                cdl_patch_t* patch =
+                                    &((cdl_patch_t*)bank->patches
+                                          .m_elements)[patchIndex];
+                                unsigned int first_index =
+                                    patch->first_index;
+                                unsigned int num_inds = patch->num_inds;
+                                if (first_index >= bank->patch_inds.m_count
+                                    && _tlAssert(
+                                        "c:\\cod\\code\\tl\\cdl\\source"
+                                        "\\cdl_mem.h",
+                                        91,
+                                        "index >= 0 && index < size()",
+                                        "invalid index"))
+                                    __debugbreak();
+                                if (num_inds != 0)
+                                {
+                                    unsigned char* inds =
+                                        (unsigned char*)
+                                            bank->patch_inds.m_elements
+                                        + first_index;
+                                    int tris = (num_inds - 1) / 3 + 1;
+                                    for (int t = 0; t < tris; ++t)
+                                    {
+                                        math::Position3 va =
+                                            cg_verts[inds[3 * t + 0]];
+                                        math::Position3 vb =
+                                            cg_verts[inds[3 * t + 1]];
+                                        math::Position3 vc =
+                                            cg_verts[inds[3 * t + 2]];
+                                        math::Position3 lo;
+                                        lo.v = _mm_min_ps(
+                                            _mm_min_ps(va.v, vb.v), vc.v);
+                                        math::Position3 hi;
+                                        hi.v = _mm_max_ps(
+                                            _mm_max_ps(va.v, vb.v), vc.v);
+                                        int col0 =
+                                            (int)(lo.v.m128_f32[0]
+                                                  / sample_size);
+                                        int col1 =
+                                            (int)(hi.v.m128_f32[0]
+                                                  / sample_size);
+                                        int row0 =
+                                            (int)(lo.v.m128_f32[1]
+                                                  / sample_size);
+                                        int row1 =
+                                            (int)(hi.v.m128_f32[1]
+                                                  / sample_size);
+                                        int density = 0;
+                                        for (int c = col0; c <= col1; ++c)
+                                        {
+                                            if (c >= x)
+                                                break;
+                                            for (int r = row0; r <= row1;
+                                                 ++r)
+                                            {
+                                                if (r >= y)
+                                                    break;
+                                                int v =
+                                                    grid[c + x * r].second;
+                                                if (density < v)
+                                                    density = v;
+                                            }
+                                        }
+                                        printf("[%s:%d] JIV STUB\n",
+                                               "c:\\cod\\code\\game"
+                                               "\\cgbank.cpp",
+                                               964);
+                                        nglMesh* mesh =
+                                            auxCreateScratchMesh(0x40000,
+                                                                 1);
+                                        nglMeshSection* section =
+                                            nglCreateScratchSection(
+                                                6, 3, 3,
+                                                &cddebug_vertex_format);
+                                        nglAddMeshSection(
+                                            mesh, section,
+                                            *(nglMaterial**)(
+                                                (char*)&DebugRender_sInst
+                                                + 0xC),
+                                            1);
+                                        unsigned short* indices =
+                                            (unsigned short*)
+                                                nglLockSectionIndices(
+                                                    section);
+                                        float* verts =
+                                            (float*)
+                                                nglLockSectionVertices(
+                                                    section);
+                                        verts[0] = va.v.m128_f32[0];
+                                        verts[1] = va.v.m128_f32[1];
+                                        verts[2] = va.v.m128_f32[2];
+                                        indices[0] = 0;
+                                        verts[3] = vb.v.m128_f32[0];
+                                        verts[4] = vb.v.m128_f32[1];
+                                        verts[5] = vb.v.m128_f32[2];
+                                        indices[1] = 1;
+                                        verts[6] = vc.v.m128_f32[0];
+                                        verts[7] = vc.v.m128_f32[1];
+                                        verts[8] = vc.v.m128_f32[2];
+                                        indices[2] = 2;
+                                        j_nullsub_67(section);
+                                        j_nullsub_27(section);
+                                        unsigned char* v156 =
+                                            (unsigned char*)(~7
+                                                             & ((uintptr_t)
+                                                                    nglListWorkPos
+                                                                + 7));
+                                        unsigned int v157 =
+                                            4
+                                                * nglShaderParamSet::
+                                                      NumParams
+                                            + 8;
+                                        if (v156 + v157
+                                            <= nglListWork
+                                                   + nglListWorkSize)
+                                        {
+                                            nglListWorkPos = v156 + v157;
+                                        }
+                                        else
+                                        {
+                                            if (nglLastListAllocWarnFrame
+                                                != nglFrame)
+                                            {
+                                                tlFatal(
+                                                    "Render list "
+                                                    "allocation overflow. "
+                                                    "Reserved = %d "
+                                                    "Requested = %d "
+                                                    "Free = %d.\n",
+                                                    nglListWorkSize,
+                                                    4
+                                                        * nglShaderParamSet::
+                                                              NumParams
+                                                        + 8,
+                                                    nglListWork
+                                                            + nglListWorkSize
+                                                        - v156);
+                                                nglLastListAllocWarnFrame =
+                                                    nglFrame;
+                                            }
+                                            v156 = nullptr;
+                                        }
+                                        nglShaderParamSet* npolies =
+                                            (nglShaderParamSet*)v156;
+                                        *(unsigned int*)v156 = 0;
+                                        *(unsigned int*)(v156 + 4) = 0;
+                                        int second = density;
+                                        if (second > max_thresh.second)
+                                            second = max_thresh.second;
+                                        Color pcol;
+                                        if (second >= min_thresh.second)
+                                        {
+                                            pcol = Color(
+                                                (float)second
+                                                    / (float)max_thresh
+                                                          .second,
+                                                0.0f, 0.0f, 1.0f);
+                                        }
+                                        else
+                                        {
+                                            pcol = Color(0.75f, 0.75f,
+                                                         0.75f, 1.0f);
+                                        }
+                                        setup_color(pcol, *npolies);
+                                        math::Mat43 identity;
+                                        identity.x.v = _mm_setr_ps(
+                                            1.0f, 0.0f, 0.0f, 0.0f);
+                                        identity.y.v = _mm_setr_ps(
+                                            0.0f, 1.0f, 0.0f, 0.0f);
+                                        identity.z.v = _mm_setr_ps(
+                                            0.0f, 0.0f, 1.0f, 0.0f);
+                                        identity.w.v = _mm_setr_ps(
+                                            0.0f, 0.0f, 0.0f, 1.0f);
+                                        nglMesh* m =
+                                            auxCloseScratchMesh(mesh);
+                                        nglListAddMesh(m, &identity,
+                                                       nullptr, npolies,
+                                                       nullptr);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ((this->mDebugRenderMode & 4) != 0)
+            {
+                float scale = (float)nbanks / (this->scale * 41.0f);
+                int polies = 0;
+                for (int w = 0; w < x; ++w)
+                {
+                    for (int h = 0; h < y; ++h)
+                    {
+                        int brushes = grid[w + x * h].first;
+                        int pls = grid[w + x * h].second;
+                        float density =
+                            brushes <= max_thresh.first
+                                ? (float)brushes / (float)max_thresh.first
+                                : 1.0f;
+                        float den2 =
+                            pls <= max_thresh.second
+                                ? (float)pls / (float)max_thresh.second
+                                : 1.0f;
+                        if (den2 <= density)
+                            den2 = density;
+                        float col[4];
+                        if (brushes >= min_thresh.first
+                            || pls >= min_thresh.second)
+                        {
+                            col[0] = den2;
+                            col[1] = 0.0f;
+                            col[2] = 0.0f;
+                            col[3] = 0.60000002f;
+                        }
+                        else
+                        {
+                            col[0] = 0.75f;
+                            col[1] = 0.75f;
+                            col[2] = 1.0f;
+                            col[3] = 0.6f;
+                        }
+                        float l = basex
+                                  + ((float)(bank->min.v.m128_f32[0]
+                                             + sample_size * w)
+                                     - pos.v.m128_f32[0])
+                                        * scale;
+                        float t = basey
+                                  + ((float)(bank->min.v.m128_f32[1]
+                                             + sample_size * h)
+                                     - pos.v.m128_f32[1])
+                                        * scale;
+                        float r = l + sample_size * scale;
+                        float b = t + sample_size * scale;
+                        DebugRender::RenderQuad2D(l + offs, t + offs,
+                                                  r - offs, b - offs, 1.0f,
+                                                  col);
+                        sprintf(buf, "%d", pls);
+                        unsigned int wText = 0;
+                        unsigned int hText = 0;
+                        nglGetStringDimensions(nglSysFont, buf, &wText,
+                                               &hText, fscale_0, fscale_0);
+                        float cellCenter =
+                            sample_size * scale * 0.5f;
+                        float xc = l + cellCenter - wText * 0.5f;
+                        float yc = t + cellCenter - hText * 0.5f;
+                        float xr = wText + xc;
+                        if (statsbasex - 20.0f > xr
+                            || yc > statsbasey + 120.0f)
+                        {
+                            float wcol[4] = { 0.98039216f, 0.98039216f,
+                                              0.98039216f, 1.0f };
+                            DebugRender::RenderText(
+                                buf, (int)xc,
+                                (int)(yc - (float)(hText >> 1)), wcol,
+                                0.0f, fscale_0);
+                            sprintf(buf, "%d", brushes);
+                            DebugRender::RenderText(
+                                buf, (int)xc,
+                                (int)(yc + (float)(hText >> 1)), wcol,
+                                0.0f, fscale_0);
+                        }
+                    }
+                }
+                float linecol[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
+                DebugRender::RenderQuad2D(basex, basey,
+                                          psize + basex, basey - psize,
+                                          1.0f, linecol);
+                float bgcol[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+                DebugRender::RenderQuad2D(statsbasex - 10.0f,
+                                          statsbasey - 10.0f,
+                                          statsbasex + 200.0f,
+                                          statsbasey + 110.0f, 1.0f,
+                                          bgcol);
+                unsigned int wFont = 0;
+                unsigned int hFont = 0;
+                nglGetStringDimensions(nglSysFont, "fGgW", &wFont, &hFont,
+                                       fscale, fscale);
+                sprintf(buf, "pos (%.0f,%.0f,%.0f)",
+                        pos.v.m128_f32[0], pos.v.m128_f32[1],
+                        pos.v.m128_f32[2]);
+                float wcol[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+                DebugRender::RenderText(buf, (int)statsbasex,
+                                        (int)statsbasey, wcol, 0.0f,
+                                        fscale);
+                int brushes = 0;
+                int triCount = 0;
+                math::Position3 boxMin;
+                boxMin.v = _mm_sub_ps(pos.v, _mm_set1_ps(
+                    (float)(sample_size / 2)));
+                math::Position3 boxMax;
+                boxMax.v = _mm_add_ps(pos.v, _mm_set1_ps(
+                    (float)(sample_size / 2)));
+                for (int bi = 0; bi < bankCount; ++bi)
+                {
+                    if (bi > 0x62)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                        AeAssert::gCurrentLine = 31;
+                        AeAssert::gCurrentExpr =
+                            "idx >= 0 && idx < _SIZE";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("out of bounds"))
+                            __debugbreak();
+                    }
+                    CGBank* b2 = mgr->mBankArray[bi];
+                    for (int oi = 0; oi < b2->objects.m_count; ++oi)
+                    {
+                        if (oi >= b2->objects.m_count)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::JSV;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\cgbank.h";
+                            AeAssert::gCurrentLine = 233;
+                            AeAssert::gCurrentExpr = "index < size()";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert(defaultFileName))
+                                __debugbreak();
+                        }
+                        if (oi >= b2->objects.m_count
+                            && _tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                89, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                        cdl_object_t* obj =
+                            &((cdl_object_t*)b2->objects.m_elements)[oi];
+                        int type = CGBank_get_type(b2, oi);
+                        if (type == 1)
+                        {
+                            math::Position3 center;
+                            center.v.m128_f32[0] = obj->center[0];
+                            center.v.m128_f32[1] = obj->center[1];
+                            center.v.m128_f32[2] = obj->center[2];
+                            math::Position3 boxr;
+                            boxr.v.m128_f32[0] = obj->box_radius[0];
+                            boxr.v.m128_f32[1] = obj->box_radius[1];
+                            boxr.v.m128_f32[2] = obj->box_radius[2];
+                            math::Position3 bmax;
+                            bmax.v = _mm_add_ps(center.v, boxr.v);
+                            math::Position3 bmin;
+                            bmin.v = _mm_sub_ps(center.v, boxr.v);
+                            if (bmin.v.m128_f32[0]
+                                        <= boxMax.v.m128_f32[0]
+                                    && bmin.v.m128_f32[1]
+                                        <= boxMax.v.m128_f32[1]
+                                    && bmin.v.m128_f32[2]
+                                        <= boxMax.v.m128_f32[2]
+                                    && bmax.v.m128_f32[0]
+                                        >= boxMin.v.m128_f32[0]
+                                    && bmax.v.m128_f32[1]
+                                        >= boxMin.v.m128_f32[1]
+                                    && bmax.v.m128_f32[2]
+                                        >= boxMin.v.m128_f32[2])
+                                ++brushes;
+                        }
+                        else if (type == 2)
+                        {
+                            int patchIndex =
+                                oi - b2->nboxes - b2->nbrushes;
+                            unpack(b2, patchIndex, cg_verts);
+                            if (patchIndex >= b2->patches.m_count
+                                && _tlAssert(
+                                    "c:\\cod\\code\\tl\\cdl\\source"
+                                    "\\cdl_mem.h",
+                                    91, "index >= 0 && index < size()",
+                                    "invalid index"))
+                                __debugbreak();
+                            cdl_patch_t* patch =
+                                &((cdl_patch_t*)b2->patches.m_elements)
+                                    [patchIndex];
+                            unsigned int first_index = patch->first_index;
+                            unsigned int num_inds = patch->num_inds;
+                            if (first_index >= b2->patch_inds.m_count
+                                && _tlAssert(
+                                    "c:\\cod\\code\\tl\\cdl\\source"
+                                    "\\cdl_mem.h",
+                                    91, "index >= 0 && index < size()",
+                                    "invalid index"))
+                                __debugbreak();
+                            if (num_inds != 0)
+                            {
+                                unsigned char* inds =
+                                    (unsigned char*)b2->patch_inds
+                                        .m_elements
+                                    + first_index;
+                                int tris = (num_inds - 1) / 3 + 1;
+                                for (int t = 0; t < tris; ++t)
+                                {
+                                    math::Position3 va =
+                                        cg_verts[inds[3 * t + 0]];
+                                    math::Position3 vb =
+                                        cg_verts[inds[3 * t + 1]];
+                                    math::Position3 vc =
+                                        cg_verts[inds[3 * t + 2]];
+                                    math::Position3 lo;
+                                    lo.v = _mm_min_ps(
+                                        _mm_min_ps(va.v, vb.v), vc.v);
+                                    math::Position3 hi;
+                                    hi.v = _mm_max_ps(
+                                        _mm_max_ps(va.v, vb.v), vc.v);
+                                    if (lo.v.m128_f32[0]
+                                                <= boxMax.v.m128_f32[0]
+                                            && lo.v.m128_f32[1]
+                                                <= boxMax.v.m128_f32[1]
+                                            && hi.v.m128_f32[0]
+                                                >= boxMin.v.m128_f32[0]
+                                            && hi.v.m128_f32[1]
+                                                >= boxMin.v.m128_f32[1])
+                                        ++triCount;
+                                }
+                            }
+                        }
+                    }
+                }
+                sprintf(buf, "brushes: %d", brushes);
+                DebugRender::RenderText(
+                    buf, (int)statsbasex,
+                    (int)statsbasey + (int)hFont, wcol, 0.0f, fscale);
+                sprintf(buf, "polies: %d", triCount);
+                DebugRender::RenderText(
+                    buf, (int)statsbasex,
+                    (int)statsbasey + 2 * (int)hFont, wcol, 0.0f, fscale);
+                sprintf(buf, "box size(units): %d", sample_size);
+                DebugRender::RenderText(
+                    buf, (int)statsbasex,
+                    (int)statsbasey + 3 * (int)hFont, wcol, 0.0f, fscale);
+                sprintf(buf, "brush limit: %d", max_thresh.first);
+                DebugRender::RenderText(
+                    buf, (int)statsbasex,
+                    (int)statsbasey + 4 * (int)hFont, wcol, 0.0f, fscale);
+                sprintf(buf, "polies limit: %d", max_thresh.second);
+                DebugRender::RenderText(
+                    buf, (int)statsbasex,
+                    (int)statsbasey + 5 * (int)hFont, wcol, 0.0f, fscale);
+            }
         }
     }
 }

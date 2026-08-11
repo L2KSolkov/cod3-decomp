@@ -2643,8 +2643,9 @@ struct CGBank {
 static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
 struct CGBankManager : public AssetBankSet {
     static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
-    uint8_t _pad4[8];     // +0x04 mDebugRenderMode
-    int mCount;           // +0x0C
+    unsigned int mDebugRenderMode;  // +0x04 (bitmask; verified vs DebugRender)
+    float        scale;             // +0x08 (perf graph zoom; verified vs ZoomIn)
+    int mCount;                     // +0x0C
     CGBank* mBankArray[99];  // +0x10
     int     mIds[99];       // +0x19C (pak ids per bank slot)
     CGBankManager();        // ??0CGBankManager@@QAE@XZ (game.o 0x6492D0)

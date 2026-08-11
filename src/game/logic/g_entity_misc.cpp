@@ -217,7 +217,7 @@ static debug_brush* debug_brush_ctor(debug_brush* self,
     return self;
 }
 
-static ae_vector<debug_brush> s_debug_brushes;  // ?debug_brushes (game.o)
+ae_vector<debug_brush> debug_brushes;  // ?debug_brushes@@3V?$ae_vector@Udebug_brush@@@@A (game.o)
 
 // ============================================================================
 // render_brush (cdlBrush + Mat43 + Color) - ea: 0x6389D0
@@ -228,23 +228,23 @@ void render_brush(const cdlBrushView& brush, const math::Mat43& mat,
 {
     debug_brush db;
     debug_brush_ctor(&db, &brush, &mat, &color);
-    if (s_debug_brushes.mSize >= s_debug_brushes.mCapacity)
+    if (debug_brushes.mSize >= debug_brushes.mCapacity)
     {
         // grow (ae_vector growth: capacity * 2)
-        int newCap = s_debug_brushes.mCapacity == 0
+        int newCap = debug_brushes.mCapacity == 0
             ? 4
-            : s_debug_brushes.mCapacity * 2;
+            : debug_brushes.mCapacity * 2;
         debug_brush* nb = (debug_brush*)tlMemAlloc(
             newCap * sizeof(debug_brush), 8, 0);
-        for (int i = 0; i < s_debug_brushes.mSize; ++i)
-            nb[i] = s_debug_brushes.mElements[i];
-        if (s_debug_brushes.mElements != nullptr)
-            tlMemFree(s_debug_brushes.mElements);
-        s_debug_brushes.mElements = nb;
-        s_debug_brushes.mCapacity = newCap;
+        for (int i = 0; i < debug_brushes.mSize; ++i)
+            nb[i] = debug_brushes.mElements[i];
+        if (debug_brushes.mElements != nullptr)
+            tlMemFree(debug_brushes.mElements);
+        debug_brushes.mElements = nb;
+        debug_brushes.mCapacity = newCap;
     }
-    s_debug_brushes.mElements[s_debug_brushes.mSize] = db;
-    ++s_debug_brushes.mSize;
+    debug_brushes.mElements[debug_brushes.mSize] = db;
+    ++debug_brushes.mSize;
 }
 
 // ============================================================================
