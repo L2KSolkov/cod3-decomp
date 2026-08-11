@@ -16,6 +16,7 @@
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);  // tl_xboxr
+extern void tlMemFree(void* ptr);  // tl_xboxr
 
 // phys_memory_heap - linear frame allocator (16 bytes; verified vs IDA)
 struct phys_memory_heap {
@@ -8451,7 +8452,52 @@ struct DCGBankManager {
     static DCGBankManager* sInst;  // ?sInst@DCGBankManager@@2PAV1@A @ 0xF4F43C
     const DCGSet* GetDCGSet(TPakId pakId, int handle);  // ?GetDCGSet@DCGBankManager@@QBEPBVDCGSet@@W4TPakId@@H@Z
     void*   mBankArray[99];         // +0x04 (0x18C bytes; DCGBank* per pak)
-    void*   mBoxDCGSet;            // +0x190 (TempDCGSet, 0x6C bytes)
+    struct TempDCGSet {
+        uint16_t nboxes;          // +0x00
+        uint16_t nbrushes;        // +0x02
+        int      objects_m_count;      // +0x04
+        void*    objects_m_elements;   // +0x08
+        int      brushes_m_count;      // +0x0C
+        void*    brushes_m_elements;   // +0x10
+        int      gjk_brushes_m_count;  // +0x14
+        void*    gjk_brushes_m_elements; // +0x18
+        int      brush_sides_m_count;  // +0x1C
+        void*    brush_sides_m_elements; // +0x20
+        int      brush_verts_m_count;  // +0x24
+        void*    brush_verts_m_elements; // +0x28
+        uint8_t  _pad2C[0x30 - 0x2C];
+        math::Position3 min;      // +0x30
+        math::Position3 max;      // +0x40
+        math::Position3 center;   // +0x50
+        float    radius;          // +0x60
+        float    radius2;         // +0x64
+        int      id;              // +0x68
+        TempDCGSet();   // ??0TempDCGSet@DCGBankManager@@QAE@XZ (game.o 0x638800)
+        ~TempDCGSet()   // ??1TempDCGSet@DCGBankManager@@QAE@XZ (inline COMDAT 0x661AB0)
+        {
+            if (this->brush_verts_m_elements != nullptr)
+                tlMemFree(this->brush_verts_m_elements);
+            this->brush_verts_m_elements = nullptr;
+            this->brush_verts_m_count = 0;
+            if (this->brush_sides_m_elements != nullptr)
+                tlMemFree(this->brush_sides_m_elements);
+            this->brush_sides_m_elements = nullptr;
+            this->brush_sides_m_count = 0;
+            if (this->gjk_brushes_m_elements != nullptr)
+                tlMemFree(this->gjk_brushes_m_elements);
+            this->gjk_brushes_m_elements = nullptr;
+            this->gjk_brushes_m_count = 0;
+            if (this->brushes_m_elements != nullptr)
+                tlMemFree(this->brushes_m_elements);
+            this->brushes_m_elements = nullptr;
+            this->brushes_m_count = 0;
+            if (this->objects_m_elements != nullptr)
+                tlMemFree(this->objects_m_elements);
+            this->objects_m_elements = nullptr;
+            this->objects_m_count = 0;
+        }
+    };
+    TempDCGSet mBoxDCGSet;       // +0x190 (0x6C bytes)
     void AddBank(TPakId pakId, void* bank);   // ?AddBank@DCGBankManager@@AAEXW4TPakId@@PAVDCGBank@@@Z (game.o 0x61FC60)
     void UnloadBank(TPakId pakId);             // ?UnloadBank@DCGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FCD0)
     void DecodeDCGBank(const char* name, unsigned char* data, int size,
@@ -8460,8 +8506,6 @@ struct DCGBankManager {
     ~DCGBankManager();             // ??1DCGBankManager@@UAE@XZ (game.o 0x629D90)
 };
 DCGBankManager* DCGBankManager::sInst = nullptr;
-
-extern void TempDCGSet_Dtor(void* self);     // DCGBankManager::TempDCGSet::~TempDCGSet
 extern void AssetBankSet_Dtor(void* self);   // AssetBankSet::~AssetBankSet
 extern void AssetBankSet_ctor(void* self);   // AssetBankSet::AssetBankSet
 extern const void* DCGBank_get_set(void* bank, int id);  // ?get_set@DCGBank@@QBEPBVDCGSet@@H@Z
@@ -8541,72 +8585,44 @@ extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* msg);
 
-// TempDCGSet embedded in DCGBankManager at +0x190. Offsets verified vs
-// TempDCGSet ctor disasm (0x638800) and TestCapsuleInCapsule (min +0x30,
-// max +0x40).
-struct TempDCGSet {
-    uint16_t nboxes;          // +0x00
-    uint16_t nbrushes;        // +0x02
-    int      objects_m_count;      // +0x04
-    void*    objects_m_elements;   // +0x08
-    int      brushes_m_count;      // +0x0C
-    void*    brushes_m_elements;   // +0x10
-    int      gjk_brushes_m_count;  // +0x14
-    void*    gjk_brushes_m_elements; // +0x18
-    int      brush_sides_m_count;  // +0x1C
-    void*    brush_sides_m_elements; // +0x20
-    int      brush_verts_m_count;  // +0x24
-    void*    brush_verts_m_elements; // +0x28
-    uint8_t  _pad2C[0x30 - 0x2C];
-    math::Position3 min;      // +0x30
-    math::Position3 max;      // +0x40
-    math::Position3 center;   // +0x50
-    float    radius;          // +0x60
-    float    radius2;         // +0x64
-    int      id;              // +0x68
-};
-
 // ea: 0x00638800
-void* TempDCGSet_ctor(void* self)
+DCGBankManager::TempDCGSet::TempDCGSet()
 {
-    TempDCGSet* s = (TempDCGSet*)self;
-    s->nboxes = 1;
-    s->nbrushes = 0;
-    s->objects_m_count = 0;
-    s->objects_m_elements = nullptr;
+    this->nboxes = 1;
+    this->nbrushes = 0;
+    this->objects_m_count = 0;
+    this->objects_m_elements = nullptr;
     void* v2 = tlMemAlloc(0x24, 4, 0);
-    s->objects_m_elements = v2;
+    this->objects_m_elements = v2;
     if (v2 != nullptr)
     {
-        s->objects_m_count = 1;
+        this->objects_m_count = 1;
     }
     else if (_tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 61,
                        "0", "cdl_mem_pool overflow."))
     {
         __debugbreak();
     }
-    s->brushes_m_count = 0;
-    s->brushes_m_elements = nullptr;
-    s->gjk_brushes_m_count = 0;
-    s->gjk_brushes_m_elements = nullptr;
-    s->brush_sides_m_count = 0;
-    s->brush_sides_m_elements = nullptr;
-    s->brush_verts_m_count = 0;
-    s->brush_verts_m_elements = nullptr;
-    memset(&s->center, 0, sizeof(s->center));
-    memset(&s->min, 0, sizeof(s->min));
-    memset(&s->max, 0, sizeof(s->max));
-    s->id = 0;
-    s->radius = 0.0f;
-    s->radius2 = 0.0f;
-    return self;
+    this->brushes_m_count = 0;
+    this->brushes_m_elements = nullptr;
+    this->gjk_brushes_m_count = 0;
+    this->gjk_brushes_m_elements = nullptr;
+    this->brush_sides_m_count = 0;
+    this->brush_sides_m_elements = nullptr;
+    this->brush_verts_m_count = 0;
+    this->brush_verts_m_elements = nullptr;
+    memset(&this->center, 0, sizeof(this->center));
+    memset(&this->min, 0, sizeof(this->min));
+    memset(&this->max, 0, sizeof(this->max));
+    this->id = 0;
+    this->radius = 0.0f;
+    this->radius2 = 0.0f;
 }
 
 // ea: 0x006388F0
 DCGBankManager::DCGBankManager()
 {
     AssetBankSet_ctor(this);
-    TempDCGSet_ctor(&this->mBoxDCGSet);
     for (int i = 0; i < 99; ++i)
         this->mBankArray[i] = nullptr;
     gBoxDCGSet = (DCGSet*)&this->mBoxDCGSet;
@@ -8616,7 +8632,6 @@ DCGBankManager::DCGBankManager()
 DCGBankManager::~DCGBankManager()
 {
     this->__vftable = 0;
-    TempDCGSet_Dtor(&this->mBoxDCGSet);
     AssetBankSet_Dtor(this);
 }
 
