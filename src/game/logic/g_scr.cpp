@@ -158,8 +158,8 @@ struct saveField_t {
 };
 static_assert(sizeof(saveField_t) == 0x8, "saveField_t size mismatch");
 
-extern saveField_t sentientFields[];
-extern saveField_t actorFields[];
+saveField_t sentientFields[128];  // ?sentientFields@@3PAUsaveField_t@@A (mp_actors.o)
+saveField_t actorFields[128];     // ?actorFields@@3PAUsaveField_t@@A (mp_actors.o)
 extern int g_xanim_num;                 // 0xF3A778
 extern unsigned char sConstsLoaded;     // 0xEF357B
 const char* gHashStringTblTxt[173];  // ?gHashStringTblTxt (scr.o @ 0xDD6488)

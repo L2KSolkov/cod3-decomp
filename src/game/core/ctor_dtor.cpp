@@ -62,7 +62,7 @@ struct SoundHandleDbLocal {
     };
     El mElements[512];
 };
-extern SoundHandleDbLocal SoundHandleDb_sInst;
+SoundHandleDbLocal SoundHandleDb_sInst;  // ?SoundHandleDb_sInst (core.o)
 extern void controller_stop_all_rumble(void* self);
 struct tlSystemCallbacks;
 extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);

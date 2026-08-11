@@ -177,10 +177,10 @@ struct entity_view2 {
 };
 extern entity_view2* EntityManager_GetPlayer(void* inst, int idx);
 void* EntityManager_sInst;  // ?EntityManager_sInst (cl.o artifact PAXA)
-struct trGlobals_view {
+struct trGlobals_t {
     void* world;
 };
-extern trGlobals_view tr;
+extern trGlobals_t tr;
 
 struct cdl_proftimer_cls {
     float value;
@@ -202,7 +202,7 @@ extern cdl_proftimer_cls cdl_proftimer_entities;
 struct Broc_string_view2 {
     void* mBlock;
 };
-extern Broc_string_view2 cls_configstrings[1024];
+Broc_string_view2 cls_configstrings[1024];  // cl.o BSS (Broc::string[1024])
 
 // snapshot ring (cl_snapshot.cpp view)
 struct clSnapshotEntry2 {
@@ -306,7 +306,7 @@ struct refexport_t2 {
     void (*Text_PaintWithCursor)(float, float, int, float, const float*,
                                  const char*, int, char, float, int, int);
 };
-extern refexport_t2 re2;
+refexport_t2 re2;  // ?re2@@3Urefexport_t2@@A (cl.o)
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

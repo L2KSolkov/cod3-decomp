@@ -246,8 +246,15 @@ cvar_t* r_showLocationalDamage;  // ?r_showLocationalDamage@@3PAUcvar_t@@A (rend
 cvar_t* r_showSkeletons;         // ?r_showSkeletons@@3PAUcvar_t@@A (render.o @ 0x13638B8)
 void* pWeaponInfoMemory = nullptr;   // ?pWeaponInfoMemory@@3PAXA (core.o @ 0x12F0364)
 void* gApsHeap = nullptr;            // ?gApsHeap@@3PAVae_heap@@A (render.o @ 0x1363940)
+ae_heap* gActorHeap = nullptr;       // ?gActorHeap@@3PAVae_heap@@A (core.o @ 0x12F035C)
 struct nglTexture;
 nglTexture** gLensFlareTextures = nullptr;  // ?gLensFlareTextures@@3PAPAUnglTexture@@A (core.o @ 0x12F03D0)
+RumbleManager::InstanceHolder RumbleManagerStatics::sInstHolder;  // ?sInstHolder@RumbleManagerStatics@@2UInstanceHolder@RumbleManager@@A (core.o @ 0x12F042C)
+fileHandleData_t* fsh = nullptr;                 // ?fsh@@3PAUfileHandleData_t@@A (core.o @ 0x12EFFB8)
+searchpath_s* fs_searchpaths = nullptr;          // ?fs_searchpaths@@3PAUsearchpath_s@@A (core.o @ 0x12F0334)
+filelist_s* fs_nonpackfilelist = nullptr;        // ?fs_nonpackfilelist@@3PAUfilelist_s@@A (core.o @ 0x12F0338)
+searchpath_s* fs_memorysearchpaths = nullptr;    // ?fs_memorysearchpaths@@3PAUsearchpath_s@@A (core.o @ 0x12F033C)
+filelist_s* fs_memorynonpackfilelist = nullptr;  // ?fs_memorynonpackfilelist@@3PAUfilelist_s@@A (core.o @ 0x12F0340)
 // --- plain int data sweep (core.o family) ---
 int com_journalDataFile;     // ?com_journalDataFile@@3HA (core.o @ 0x12E5F78)
 int com_fileAccessed;        // ?com_fileAccessed@@3HA (core.o @ 0x12E6520)
@@ -515,7 +522,7 @@ extern const char* sBuildId;
 extern void tlPrintf(const char* fmt, ...);
 
 // Renderer export (refexport_t from cl_scr.cpp re_api2 pattern)
-struct re_export_view {
+struct refexport_t {
     void (*Shutdown)(int);
     void (*BeginRegistration)(void*);
     void* (*RegisterModel)(void* result, const char*, int, int);
@@ -566,7 +573,7 @@ struct re_export_view {
     void (*Text_PaintWithCursor)(float, float, int, float, const float*,
                                  const char*, int, char, float, int, int);
 };
-extern re_export_view re;
+refexport_t re;  // ?re@@3Urefexport_t@@A (cl.o @ 0x12FC150)
 
 // ServerTime singleton
 extern struct ServerTime_s {

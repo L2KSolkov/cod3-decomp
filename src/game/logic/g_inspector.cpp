@@ -25,7 +25,8 @@ enum nslSourceState {
 extern nglDebugStruct nglDebug;   // ?nglDebug@@3UnglDebugStruct@@A (ngl_debug.o)
 
 // SoundOptions - effect sound toggles (core_systems.h layout, local view)
-struct SoundOptions {
+class SoundOptions {
+public:
     int mFxDontPlayFootSteps;      // +0x00
     int mFxDontPlayGearRattle;     // +0x04
     int mFxDontPlayLanding;        // +0x08

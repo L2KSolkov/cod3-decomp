@@ -15,7 +15,7 @@ struct DObj;
 
 // Renderer export table (refexport_t; matches the layout used by core.o
 // common.cpp's re_export_view and cl_parse.cpp's refexport_t2)
-struct re_export_view {
+struct refexport_t {
     void (*Shutdown)(int);
     void (*BeginRegistration)(void*);
     void* (*RegisterModel)(void* result, const char*, int, int);
@@ -67,7 +67,7 @@ struct re_export_view {
                                  const char*, int, char, float, int, int);
 };
 
-extern re_export_view re;
+extern refexport_t re;
 
 extern void* _Z_MallocInternal(int size);
 extern void  _Z_FreeInternal(void* ptr);

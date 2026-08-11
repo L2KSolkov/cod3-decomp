@@ -74,7 +74,7 @@ extern localEntity_t* cg_freeLocalEntities;
 struct _cmd_t {
     unsigned int hVal;  // +0x00
 };
-extern _cmd_t gCG_ServerCommands[16];
+_cmd_t gCG_ServerCommands[16];  // ?gCG_ServerCommands@@3PAU_cmd_t@@A (cg.o @ 0x13505E0)
 
 extern const float colorRed[4];
 
@@ -880,7 +880,7 @@ void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
 
 extern void* cg_weapons;
 extern void* cg_items;
-extern void* bg_itemlist;
+extern struct gitem_s* bg_itemlist;
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);

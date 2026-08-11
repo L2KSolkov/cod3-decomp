@@ -100,16 +100,16 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 // clc state (cl.o data; 0x4C48 bytes)
 // ============================================================================
-struct clc_t {
+struct clientConnection_t {
     unsigned char data[0x4C48];
 };
-extern clc_t clc;
+clientConnection_t clc[2];  // ?clc@@3PAUclientConnection_t@@A (cl.o @ 0x12FC6F0)
 
 // cls.configstrings - Broc::string[1024] (the "servername" field aliases it)
-struct Broc_string_view {
+struct Broc_string_view2 {
     void* mBlock;
 };
-extern Broc_string_view cls_configstrings[1024];
+extern Broc_string_view2 cls_configstrings[1024];
 
 // ============================================================================
 // Lifecycle

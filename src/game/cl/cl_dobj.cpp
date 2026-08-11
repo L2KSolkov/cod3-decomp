@@ -59,7 +59,7 @@ extern void j_nullsub_82(DObj* obj, int* partBits);
 // ============================================================================
 // Renderer syscall externs (re.*)
 // ============================================================================
-struct re_api {
+struct refexport_t {
     int LoadWorld(const char* name, int* checksum);
     int RegisterShader(int a1, int a2);
     int RegisterShaderNoMip(int a1, int a2);
@@ -78,7 +78,7 @@ struct re_api {
     void DrawStretchPic(float a1, float a2, float a3, float a4, float a5,
                         float a6, float a7, float a8, int a9);
 };
-extern re_api re;
+extern refexport_t re;
 
 // ============================================================================
 // DObj / anim wrappers

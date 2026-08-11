@@ -408,7 +408,7 @@ int CM_AreasConnected(int area1, int area2)
 // ============================================================================
 // Plane / alloc / temp box helpers
 // ============================================================================
-extern phys_memory_heap g_cmgr_allocater;  // ?g_cmgr_allocater@@3Vphys_memory_heap@@A
+phys_memory_heap g_cmgr_allocater;  // ?g_cmgr_allocater@@3Vphys_memory_heap@@A (game.o @ 0x13401D0)
 extern DCGSet* gBoxDCGSet;                 // ?gBoxDCGSet@@3PAVDCGSet@@A
 char cmgr_memory_buffer[0x400];            // ?cmgr_memory_buffer@@3PADA (game.o)
 extern bool tlScratchpadLocked;            // ?tlScratchpadLocked@@3_NA
@@ -1112,7 +1112,7 @@ struct PartialClipMap {
     WorldSector dummyNode;         // +0xB4
     WorldSector worldSectors[1024];// +0xD8
 };
-extern PartialClipMap pcm;        // ?pcm@@3UPartialClipMap@@A (game.o)
+PartialClipMap pcm;               // ?pcm@@3UPartialClipMap@@A (game.o @ 0x1334E68)
 
 // ea: 0x006199C0
 void InitEntitiesBSP()

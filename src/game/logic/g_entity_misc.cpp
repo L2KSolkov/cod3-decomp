@@ -2040,7 +2040,8 @@ bool MusicMgr::IsMusicPlaying()
 // ============================================================================
 // MusicMgr play/stop - ea: 0x603FD0..0x63AA30 (MusicMgr.cpp)
 // ============================================================================
-struct SoundOptions {
+class SoundOptions {
+public:
     uint8_t _pad[0x34];
     int mFxDontPlayMusic;  // +0x34
 };

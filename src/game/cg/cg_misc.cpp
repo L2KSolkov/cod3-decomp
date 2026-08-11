@@ -1848,10 +1848,10 @@ struct View_Setup {
 };
 
 namespace View {
-extern int lNumViewports;  // 0x00F61728
+int lNumViewports = 0;  // ?lNumViewports@View@@3HA (cg.o @ 0xF61728)
 }
-extern View_Setup Setups[];         // 0x00DF9DB8
-extern View_Window Windows[];       // 0x00DF9E58
+View_Setup Setups[8];               // ?Setups@@3PAUView_Setup@@A (cg.o @ 0xDF9DB8)
+View_Window Windows[8];             // ?Windows@@3PAUView_Window@@A (cg.o @ 0xDF9E58)
 int ViewSetupConfigurations[4];  // ?ViewSetupConfigurations (cg.o @ 0xD0D200)
 float scalar2View;           // 0x00DF9E44
 float scalar4View;           // 0x00DF9E48
@@ -3657,7 +3657,7 @@ struct cgsGlobal_t {
         void* friendlyFireShader; // +0x584
     } media;
 };
-extern cgsGlobal_t cgsGlobal;  // 0x00F69BF8
+cgsGlobal_t cgsGlobal;         // ?cgsGlobal@@3UcgsGlobal_t@@A (cg.o @ 0x13590F8)
 extern void* cg_items;
 extern weaponInfo_s cg_weapons[1];
 extern vmCvar_t fs_debug_vm;

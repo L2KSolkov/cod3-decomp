@@ -43,7 +43,7 @@ static_assert(sizeof(pml_t) == 0xC0, "pml_t size mismatch");
 
 // Cross-object externs (game.o data)
 extern pmove_t* pm;          // ?pm@@3PAUpmove_t@@A (game.o)
-extern pml_t pml;            // ?pml@@3Upml_t@@A (game.o)
+pml_t pml;                   // ?pml@@3Upml_t@@A (game.o)
 extern int dword_106000;     // ?dword_106000 (EF_* flags mask, BSS)
 extern int cl_aADS[4];       // ?cl_aADS@@3PAHA (cl.o)
 extern const char* BG_GetWeaponSlotNameForIndex(unsigned int iSlot);  // game.o 0x6072B0

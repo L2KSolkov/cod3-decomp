@@ -9,6 +9,8 @@
 // ============================================================================
 #include "cdGlassShader.h"
 
+nglTexture* gProjShadowTex = nullptr;  // ?gProjShadowTex@@3PAUnglTexture@@A (render.o @ 0x1363930)
+
 #include <intrin.h>
 
 // Shader global pointer definitions

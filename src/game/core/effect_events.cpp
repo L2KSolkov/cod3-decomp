@@ -203,7 +203,7 @@ struct SoundDeviceInst {
 };
 
 // ?sInst@SoundDevice@@2PAV1@A (typed view; defined in g_entity_misc.cpp)
-extern SoundDeviceInst* SoundDevice_sInst;
+SoundDeviceInst* SoundDevice_sInst = nullptr;  // ?SoundDevice_sInst (core.o)
 
 CameraShake* g_cameraShake = nullptr;
 int dword_F6A290[4 * 0x322];

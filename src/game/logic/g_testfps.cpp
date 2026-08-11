@@ -38,11 +38,11 @@ struct world_tLocal {
     char _pad0[0x100];
     BspTreeLocal* bspTree;  // +0x100
 };
-struct trGlobalsLocal {
+struct trGlobals_t {
     char _pad0[0x290];
     world_tLocal* world;  // +0x290
 };
-extern trGlobalsLocal tr;  // ?tr@@3UtrGlobals_t@@A (render.o)
+trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A (render.o @ 0x13642D0)
 
 // ============================================================================
 // GetCellBBox - ea: 0x4F6DB0

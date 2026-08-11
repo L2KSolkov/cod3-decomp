@@ -222,12 +222,13 @@ void Key_GetBindingBuf(int keynum, char* buf, int buflen)
 // Field editing
 // ============================================================================
 extern int key_overstrikeMode;
-extern struct re_api3 {
+struct refexport_t {
     void Text_PaintWithCursor(float a1, float a2, int a3, float a4,
                               const float* a5, const char* a6, int a7,
                               int a8, float a9, int a10, int a11);
     int Text_Width(const char* a1, int a2, float a3, float a4, int a5);
-} re;
+};
+extern refexport_t re;
 extern int SEH_PrintStrlen(const char* string);
 
 // ea: 0x5315B0

@@ -57,7 +57,7 @@ extern char* va(const char* fmt, ...);
 extern const char* SEH_StringEd_GetString(const char* pszReference);
 
 // re renderer externs (console text painting)
-struct re_console_api {
+struct refexport_t {
     void SetColor(const float* color);
     void DrawStretchPic(float a1, float a2, float a3, float a4, float a5,
                         float a6, float a7, float a8, int a9);
@@ -68,7 +68,7 @@ struct re_console_api {
     void Text_Paint(float a1, float a2, int a3, float a4, const float* a5,
                     const char* a6, float a7, int a8, int a9);
 };
-extern re_console_api re;
+extern refexport_t re;
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

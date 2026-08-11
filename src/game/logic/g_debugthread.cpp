@@ -29,7 +29,7 @@ struct ai_funcs_s {
     void* pfnMoveAwayRequested;  // +0x24
     char  debugName[16];     // +0x28
 };
-extern const ai_funcs_s AIFuncTable[];  // ?AIFuncTable@@3QBUai_funcs_s@@B (mp_actors.o)
+const ai_funcs_s AIFuncTable[32] = {};  // ?AIFuncTable@@3QBUai_funcs_s@@B (mp_actors.o)
 
 struct apsStats {
     int numActiveEffects;         // +0x00
@@ -1257,7 +1257,7 @@ struct TaskSysImpl2 {
     static TaskSysImpl2* sInst;          // ?sInst@TaskSys@@0V1@A
 };
 
-extern TaskSysImpl2* TaskSysImpl2_sInst;
+TaskSysImpl2* TaskSysImpl2_sInst = nullptr;  // ?TaskSysImpl2_sInst (game2.o)
 extern void ae_sized_array_push_back_handler(TaskSysImpl2* self,
                                              TaskHandlerImpl* const* elt);
 extern void* mem_heap_malloc_sz(unsigned int size);
@@ -1429,9 +1429,9 @@ void TaskSys_ReleaseTask(Task* t)
 // ============================================================================
 // TaskSys::Update - ea: 0x50B8E0
 // ============================================================================
-extern TaskHandlerImpl* HealthRegenTask_sHandler;
-extern TaskHandlerImpl* AnimNotifyTask_sHandler;
-extern TaskHandlerImpl* EntityDeathTask_sHandler;
+TaskHandlerImpl* HealthRegenTask_sHandler = nullptr;  // ?HealthRegenTask_sHandler (game2.o)
+TaskHandlerImpl* AnimNotifyTask_sHandler = nullptr;   // ?AnimNotifyTask_sHandler (game2.o)
+TaskHandlerImpl* EntityDeathTask_sHandler = nullptr;  // ?EntityDeathTask_sHandler (game2.o)
 extern void TaskHandler_Update(TaskHandlerImpl* self, float deltaT,
                                void* ftor);
 extern TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id);

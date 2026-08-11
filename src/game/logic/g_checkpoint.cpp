@@ -26,7 +26,7 @@ struct world_t {
     uint8_t _pad[0x0C];
     char    baseName[128];   // +0x0C (verified vs RestoreSceneEntity disasm)
 };
-extern world_t s_worldData;   // ?s_worldData@@3Uworld_t@@A (render.o)
+world_t s_worldData;          // ?s_worldData@@3Uworld_t@@A (render.o @ 0x1364098)
 
 // SceneBank persistent storage accessor (streamer.o; opaque layout)
 struct SceneEntity {

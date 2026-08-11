@@ -68,7 +68,7 @@ float dword_F04458[256];
 float dword_F0445C[256];
 
 CameraShake g_cameraShake[4];
-CameraShakeType shakeTable[];
+CameraShakeType shakeTable[32];  // ?shakeTable@@3PAVCameraShakeType@@A (game2.o @ 0x11C8800)
 int dword_F037B8[256];   // ?dword_F037B8@@3PAHA (game2.o)
 float g_ShakeTestMag;   // ?g_ShakeTestMag@@3MA (game2.o @ 0xE05FB8)
 float g_ShakeTestFreq;  // ?g_ShakeTestFreq@@3MA (game2.o)

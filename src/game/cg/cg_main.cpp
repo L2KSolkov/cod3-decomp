@@ -81,7 +81,7 @@ extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
 extern void* GetTextureData(const char* name, int image_type,
                             const char* fromPak);
-extern void* bg_itemlist;      // gitem_s[]
+extern struct gitem_s* bg_itemlist;  // gitem_s[]
 void* cg_items;                // itemInfo_t[] (artifact)
 extern void* cgCvarTable;      // cvarTable_t[170]
 extern void* cvarTable;        // cvarTable_t[170]
@@ -89,7 +89,7 @@ extern void* cvarTable;        // cvarTable_t[170]
 struct cg_t {
     unsigned char data[0x18B0];
 };
-extern cg_t* cg;  // 0x00F62940
+cg_t* cg = nullptr;  // ?cg@@3PAUcg_t@@A (cg.o @ 0x1351E40)
 
 struct vmCvar_t {
     int integer;  // +0x00

@@ -74,8 +74,8 @@ struct KeyInfoEntry {
     char* mBoundCmdName;
     void SetBinding(const char* boundCmdName);
 };
-extern keyname_t keynames[];
-extern keyname_t keynames_localized[];
+keyname_t keynames[512];           // ?keynames@@3PAUkeyname_t@@A (cl.o @ 0x11DE9D8)
+keyname_t keynames_localized[512]; // ?keynames_localized@@3PAUkeyname_t@@A (cl.o @ 0x11DEE38)
 const char* off_DEFC78[10];  // cl.o
 static char tinystr[5];
 

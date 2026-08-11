@@ -373,7 +373,7 @@ extern void CG_Draw2D(float a2);
 extern void CG_DrawActive(float a1);
 extern char cgsGlobal_shellshockParms[0x7C];
 extern void View_SetViewportClipping(int clientIndex);
-extern int View_lNumViewports;
+namespace View { extern int lNumViewports; }
 int cg_aWeaponSelect[4];  // ?cg_aWeaponSelect@@3PAHA (cg.o)
 int cg_clientFrame[4 * 1580];  // ?cg_clientFrame (cg.o)
 extern void FastSinCos(float radians, float* psin, float* pcos);
@@ -995,7 +995,7 @@ int gSaveGameData_mCrosshair;  // ?gSaveGameData_mCrosshair@@3HA (g.o)
 extern vmCvar_t cg_drawpaused;
 extern vmCvar_t cg_drawGun;
 extern void* cg_weapons;
-extern re_export_view re;
+extern refexport_t re;
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern PlayerState* GetPlayerState(int idx);
 extern float* CG_FadeColor(int startMsec, int totalMsec, int fadeMsec);
@@ -1862,7 +1862,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         g_DOBJF_NOT_RENDERED_LAST_FRAME *= 2;
         nglListBeginScene((nglSceneParamType)0);
         nglSetClearFlags(0);
-        CG_DrawViewportFrames(View_lNumViewports);
+        CG_DrawViewportFrames(View::lNumViewports);
         nglListEndScene();
         int v25 = 1580 * currCl;
         float sinYaw, cosYaw;

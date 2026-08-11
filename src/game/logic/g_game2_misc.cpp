@@ -55,9 +55,9 @@ struct _xmission_data {
 };
 static_assert(sizeof(_xmission_data) == 0x78, "_xmission_data size mismatch");
 
-extern _xmission_data gXMissionData[];  // ?gXMissionData (game2.o)
-extern _xmission_data* gMissionData;      // ?gMissionData (game2.o)
-extern _xmission_data gTempMissionData;   // ?gTempMissionData (game2.o)
+_xmission_data gXMissionData[32];         // ?gXMissionData@@3PAU_xmission_data@@A (game2.o @ 0x11D99F0)
+_xmission_data* gMissionData = nullptr;   // ?gMissionData@@3PAU_xmission_data@@A (game2.o @ 0x12F3EC0)
+_xmission_data gTempMissionData;          // ?gTempMissionData@@3U_xmission_data@@A (game2.o @ 0x12F2820)
 
 // ============================================================================
 // Mission stats enums/types (stat_support.cpp)
@@ -83,7 +83,7 @@ struct _weapon_category {
     _weapon_name* weapons;  // +0x00
 };
 
-extern _weapon_category gWeaponCategories[];  // ?gWeaponCategories (game2.o)
+_weapon_category gWeaponCategories[64];       // ?gWeaponCategories@@3PAU_weapon_category@@A (game2.o @ 0x11DA9F8)
 
 #define STAT_ASSERT(which)                                                  \
     do {                                                                    \
@@ -1457,7 +1457,8 @@ bool ScriptEventHandler::AddEvent(HashString h, HashString callback)
 // FnReverseOptions - flip all effect-sound toggles
 // ea: 0x4F4510
 // ============================================================================
-struct SoundOptions {
+class SoundOptions {
+public:
     int mFxDontPlayFootSteps;     // +0x00
     int mFxDontPlayGearRattle;    // +0x04
     int mFxDontPlayLanding;       // +0x08

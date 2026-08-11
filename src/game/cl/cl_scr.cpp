@@ -106,7 +106,7 @@ struct fe_manager_view {
     fe_menusys_view** mIGMS;
     fe_menusys_view* mAARS;
 };
-extern fe_manager_view g_femanager_fe;
+fe_manager_view g_femanager_fe;  // ?g_femanager_fe (game.o)
 extern void FEManager_DrawInGameMenus(fe_manager_view* self);
 extern void FEManager_DrawFrontEnd(fe_manager_view* self);
 extern void FEManager_DrawAARMenus(fe_manager_view* self);
@@ -117,7 +117,7 @@ extern int InteractionController_DoRenderText(void* self, int index);
 extern void InteractionController_RenderText(void* self);
 
 // re renderer externs
-struct re_api2 {
+struct refexport_t {
     void Text_Paint(float a1, float a2, int a3, float a4, const float* a5,
                     const char* a6, float a7, int a8, int a9);
     void Text_ConsolePaint(float a1, float a2, int a3, float a4,
@@ -133,7 +133,7 @@ struct re_api2 {
     void BeginFrame();
     void EndFrame(void* a, void* b);
 };
-extern re_api2 re;
+extern refexport_t re;
 
 // ============================================================================
 // SCR_* screen helpers
