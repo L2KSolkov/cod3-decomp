@@ -428,7 +428,8 @@ Entity* Drop_Weapon(Entity* pEnt, int iWeaponIndex, const char* pszTag)
             collision_context_t context(pEnt->mHandle, 1041);
             trace_t trace;
             math::Position3 tmp;
-            const math::Position3* end = native_to_cdl_pos3(&tmp, &mat.origin[0]);
+            tmp = native_to_cdl_pos3(&mat.origin[0]);
+            const math::Position3* end = &tmp;
             g_TraceCapsule(&trace, start, pDrop->r.mins, pDrop->r.maxs,
                            *end, context);
             pDrop->s.pos.trBase[0] = trace.endpos.v.m128_f32[0];

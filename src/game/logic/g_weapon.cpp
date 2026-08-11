@@ -2054,8 +2054,8 @@ void Bullet_Fire_Extended(
             && wp->pWeapInfo->weapClass != 17)
         {
             math::Position3 tmp;
-            const math::Position3* pos =
-                native_to_cdl_pos3(&tmp, (float*)end);
+            tmp = native_to_cdl_pos3((float*)end);
+            const math::Position3* pos = &tmp;
             math::Dir3 zero;
             zero.v = _mm_setzero_ps();
             MultiplayerMgr::sInst->BulletHit(*pos, zero, 0,

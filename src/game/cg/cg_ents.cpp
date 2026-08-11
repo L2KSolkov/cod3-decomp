@@ -1702,8 +1702,7 @@ struct CollisionDesc {
 extern int dword_DF6AE4[4 * 6];
 extern int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle,
                               char* flashTag);
-extern math::Position3* native_to_cdl_pos3(math::Position3* result,
-                                           const float* v);
+extern math::Position3 native_to_cdl_pos3(const float* v);
 extern void CG_SpawnTracer(const math::Position3* pstart,
                            const math::Position3* pend, int ammo);
 extern void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
@@ -1763,7 +1762,7 @@ void CG_BulletTrajectoryEffects(unsigned int sourceEntity,
                     if ((*(float*)&v16 * 100.0f) > (float)(rand() % 100))
                     {
                         math::Position3 v14;
-                        native_to_cdl_pos3(&v14, muzzle);
+                        v14 = native_to_cdl_pos3(muzzle);
                         CG_SpawnTracer(&v14, position, ammoType);
                     }
                 }
@@ -2237,7 +2236,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
             {
                 int weapon = entity->s.weapon;
                 math::Position3 v76;
-                native_to_cdl_pos3(&v76, entity->s.pos.trBase);
+                v76 = native_to_cdl_pos3(entity->s.pos.trBase);
                 CG_EventSpawnTracer(&v76, &entity->s.origin2, weapon);
             }
             break;

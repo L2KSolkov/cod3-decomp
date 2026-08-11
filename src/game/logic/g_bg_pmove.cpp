@@ -9562,11 +9562,11 @@ L80:
             startFlat[1] = ps->origin.v.m128_f32[1];
             startFlat[2] = ps->origin.v.m128_f32[2] + 10.0f;
             math::Position3 startPos;
-            native_to_cdl_pos3(&startPos, startFlat);
+            startPos = native_to_cdl_pos3(startFlat);
             pm->boxtrace(&trace, ps->origin, pm->mins, pm->maxs, startPos,
                          context);
             math::Position3 endPos;
-            native_to_cdl_pos3(&endPos, trace.endpos.v.m128_f32);
+            endPos = native_to_cdl_pos3(trace.endpos.v.m128_f32);
             pm->boxtrace(&trace, endPos, pm->mins, pm->maxs, ps->origin,
                          context);
             ps->origin.v.m128_f32[0] = trace.endpos.v.m128_f32[0];
@@ -9578,7 +9578,7 @@ L80:
             downFlat[1] = ps->origin.v.m128_f32[1];
             downFlat[2] = ps->origin.v.m128_f32[2] - 0.25f;
             math::Position3 downPos;
-            native_to_cdl_pos3(&downPos, downFlat);
+            downPos = native_to_cdl_pos3(downFlat);
             pm->boxtrace(&trace, ps->origin, pm->mins, pm->maxs, downPos,
                          context);
             if (trace.startsolid != 0 || trace.fraction >= 1.0f)

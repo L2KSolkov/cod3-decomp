@@ -1902,7 +1902,7 @@ float Actor_CanSeePointEx(actor_s* pSelf, const float* vPoint, float fFovDot,
                           DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity);  // mp_actors.o
 bool G_IsPlayerDrivingVehicle(Entity* player);
 float VectorDistanceSquared2D(const math::Position3* p1, const math::Position3* p2);
-const math::Position3* native_to_cdl_pos3(math::Position3* result, const float* v);
+math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
 void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
                                  Entity* ent, int a5);
 

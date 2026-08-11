@@ -1142,7 +1142,8 @@ int turret_aimat_Sentient_Internal(Entity* self, sentient_s* pEnemy, int bShoot,
         if (pTurretInfo->turret_flags & 8)
         {
             math::Position3 v20;
-            const math::Position3* v19 = native_to_cdl_pos3(&v20, pTurretInfo->missTarget);
+            v20 = native_to_cdl_pos3(pTurretInfo->missTarget);
+            const math::Position3* v19 = &v20;
             if (turret_aimat_vector(self, v19, bShoot, desiredAngles) != 0)
                 return 1;
         }

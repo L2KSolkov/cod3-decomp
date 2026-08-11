@@ -30,7 +30,7 @@ extern int   CM_LeafArea(int leafnum);
 extern int   CM_LeafCluster(int leafnum);
 extern unsigned char* CM_ClusterPVS(int cluster);
 extern int   CM_AreasConnected(int area1, int area2);
-extern const math::Position3* native_to_cdl_pos3(math::Position3* result, const float* v);
+extern math::Position3 native_to_cdl_pos3(const float* v);
 
 // ============================================================================
 // SV_WriteSnapshotToClient — ea: 0x51F990 (static)
@@ -193,7 +193,8 @@ int SV_inSnapshot(const float* const origin, DbLinkedHandle<EntityHandleDb, Enti
     if ((svFlags & 0x20) != 0 || mObject->r.eventTime != 0 || mObject->r.numClusters == 0)
         return 1;
     math::Position3 v18;
-    const math::Position3* v6 = native_to_cdl_pos3(&v18, origin);
+    v18 = native_to_cdl_pos3(origin);
+    const math::Position3* v6 = &v18;
     int v7 = CM_PointLeafnum(*v6);
     int v20 = CM_LeafArea(v7);
     int v8 = CM_LeafCluster(v7);

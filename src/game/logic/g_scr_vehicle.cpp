@@ -95,6 +95,32 @@ struct phys_static_memory_pool {
 // (physics.o data)
 phys_static_memory_pool<vehicle_rb_parameter, 10> g_vehicle_rb_parameters;
 
+// ea: 0x004AF1C0 (g.o inline COMDAT)
+math::Position3 native_to_cdl_pos3(const float* v)
+{
+    math::Position3 result;
+    result.v = _mm_setr_ps(v[0], v[1], v[2], 0.0f);
+    return result;
+}
+
+// ea: 0x004A7920 (g.o inline COMDAT)
+bool IsPlayerFullySeatedInVehicle(Entity* player)
+{
+    if (player == nullptr || player->client == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\g_local.h";
+        AeAssert::gCurrentLine = 627;
+        AeAssert::gCurrentExpr = "player && player->client";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Invalid player entity"))
+            __debugbreak();
+    }
+    Client* client = player->client;
+    return (client->ps.eFlags & 0x100000) == 0
+        || (!client->mVehicleAnimMoving && client->ps.vehPos < 8u);
+}
+
 // ?s_vehicleInfos@@3PAPAUvehicle_info_t@@A (g.o data @ 0xEA7638, 64 pointers)
 vehicle_info_t* s_vehicleInfos[64] = {};
 
@@ -6485,9 +6511,10 @@ void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
     {
         math::Position3 amove;
         math::Position3 move;
-        const math::Position3* pAmove =
-            native_to_cdl_pos3(&amove, &deltaAngles.v.m128_f32[0]);
-        const math::Position3* pMove = native_to_cdl_pos3(&move, delta);
+        amove = native_to_cdl_pos3(&deltaAngles.v.m128_f32[0]);
+        move = native_to_cdl_pos3(delta);
+        const math::Position3* pAmove = &amove;
+        const math::Position3* pMove = &move;
         pushed = G_TryPushingEntity(pOther, pSelf, *pMove, *pAmove) != 0;
     }
     if (!pushed)
@@ -6735,8 +6762,8 @@ void VEH_UpdatePath(Entity* ent, int msec)
         if (g_vehicleDebug.integer != 0)
         {
             math::Position3 tmp;
-            const math::Position3* pos =
-                native_to_cdl_pos3(&tmp, scr_vehicle->pathPos.lookPos);
+            tmp = native_to_cdl_pos3(scr_vehicle->pathPos.lookPos);
+            const math::Position3* pos = &tmp;
             VEH_DebugBox(pos, 8.0f, 0.0f, 1.0f, 1.0f);
         }
         float invMsec = 1.0f / (msec * 0.001f);

@@ -2561,12 +2561,12 @@ void TossClientItems(Entity* self)
                     MultiplayerMgr::MPEntityHandle v16;
                     MultiplayerMgr::sInst->RegisterDroppedItem(1, v5, self, 0);
                     math::Position3 v14;
-                    native_to_cdl_pos3(&v14, v6->s.apos.trBase);
+                    v14 = native_to_cdl_pos3(v6->s.apos.trBase);
                     int count = v6->count;
                     int count2 = v6->count2;
                     math::Dir3 v13 = native_to_cdl_dir3(v6->s.pos.trDelta);
                     math::Position3 v12;
-                    native_to_cdl_pos3(&v12, v6->s.pos.trBase);
+                    v12 = native_to_cdl_pos3(v6->s.pos.trBase);
                     MultiplayerMgr::sInst->DropWeapon(v3, v16.mVal, &v12, &v14,
                                                       &v13, count2, count);
                 }
