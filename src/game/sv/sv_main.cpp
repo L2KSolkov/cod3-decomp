@@ -112,7 +112,7 @@ extern int  gNflMediaId;
 extern int  g_bspTree;
 extern int  g_ScrFiles;
 extern const PakInfoNode* sLoadingScreenInfo;
-extern int  unk_F6A290;
+extern int  dword_F6A290[4 * 802];
 extern bool gReturnToMenu;
 extern int  sv_restartedServerId;
 extern const char* const defaultFileName;
@@ -231,7 +231,7 @@ void SV_SpawnServer(const char* server, int savegame) {
     Netchan_Init();
     netadr_t from;
     from.type = NA_BOT;
-    if (unk_F6A290 == 2) {
+    if (dword_F6A290[0] == 2) {
         netadr_t v20;
         v20.type = (netadrtype_t)2;
         memset(v20.ipx, 0, 12);
@@ -340,7 +340,7 @@ LABEL_30:
     FEManager_UpdateLoadingMenu((void*)0, 1.0f);
     SCR_UpdateScreen();
     PathNodeMgr_InitPaths((void*)0);
-    if (unk_F6A290 == 2) {
+    if (dword_F6A290[0] == 2) {
         currCl = NS_CLIENT;
         UpdateCVars();
         client_s* v17 = &svs.clients[currCl];

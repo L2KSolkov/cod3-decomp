@@ -249,7 +249,7 @@ void SV_SendClientMessages() {
     if (svs.clients != NULL) {
         VM_Call(gvm, 22);
         netsrc_t v0 = (netsrc_t)currCl;
-        if (svs.clients->state != 0 && unk_F6A290 == 2) {
+        if (svs.clients->state != 0 && dword_F6A290[0] == 2) {
             currCl = NS_CLIENT;
             SV_SendClientSnapshot(svs.clients);
         }

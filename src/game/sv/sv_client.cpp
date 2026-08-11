@@ -76,7 +76,7 @@ void SV_PostConnect() {
     CL_ConnectResponse(v12);
     cls.state = CA_ACTIVE;
     int v6 = currCl;
-    unk_F6A290 = 2;
+    dword_F6A290[0] = 2;
     dword_F641E0[1580 * v6] = -1;
     if (v6 >= 16) {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;

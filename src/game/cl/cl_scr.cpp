@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <string.h>
 
+extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
+
 // ============================================================================
 // Externs
 // ============================================================================
@@ -42,7 +44,6 @@ extern bool gDisableRendering;
 extern float Com_GetScreenTimeDelta();
 extern void nullsub_35();
 extern int scr_initialized;
-extern int unk_F6A290;
 extern void Cmd_ExecuteServerString(const char* text);
 extern void CL_CGameRendering();
 extern void Con_DrawConsole();
@@ -223,7 +224,7 @@ void SCR_DrawScreenField()
             }
             else if (cls.state == 2)  // CA_ACTIVE
             {
-                if (*(&unk_F6A290 + 802 * v0) == 2)
+                if (*(&dword_F6A290[0] + 802 * v0) == 2)
                 {
                     if (cgvm == nullptr)
                     {

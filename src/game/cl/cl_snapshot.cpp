@@ -10,6 +10,8 @@
 
 #include <string.h>
 
+extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
+
 // ============================================================================
 // Externs
 // ============================================================================
@@ -28,7 +30,6 @@ extern void* PakManager_sInst;
 extern const void* sLoadingScreenInfo;
 extern void GamePause_SetAllPaused(bool paused);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
-extern int unk_F6A290;
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -159,7 +160,7 @@ int CL_FirstSnapshot()
     extern void g_femanager_IGO_Update(int);
     if (g_femanager_IGMS_cur() != nullptr)
         g_femanager_IGO_Update(0);
-    if (unk_F6A290 == 2)
+    if (dword_F6A290[0] == 2)
         InGameMenuSystem_ActivateMenu((void*)0, 12);
     cls.state = 2;  // CA_ACTIVE
     cl[0].serverTime = com_time;

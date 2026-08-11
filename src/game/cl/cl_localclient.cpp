@@ -8,6 +8,8 @@
 
 #include <string.h>
 
+extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
+
 struct netchan_t;
 
 // ============================================================================
@@ -21,7 +23,6 @@ extern void Netchan_Transmit(netchan_t* chan, int length,
 extern int Netchan_Process(netchan_t* chan, struct msg_t* msg);
 extern void _Z_FreeInternal(void* ptr);
 extern struct cvar_t* cl_shownet;
-extern int unk_F6A290;   // dev/retail flag (2 = dev)
 extern int unk_F6A28C;   // primary controller port
 extern int dword_F6A28C; // active port
 
@@ -98,7 +99,7 @@ void LocalClient_SetNumLocalClients(int num)
 // ea: 0x52EFC0
 int LocalClient_GetNumLocalClientsByState(int state)
 {
-    return unk_F6A290 == state;
+    return dword_F6A290[0] == state;
 }
 
 // ea: 0x52EFE0
@@ -119,7 +120,7 @@ int LocalClient_PortToClient()
 int LocalClient_PortIsState(int port, int state)
 {
     (void)port;
-    return unk_F6A290 == state;
+    return dword_F6A290[0] == state;
 }
 
 // ea: 0x52F040
@@ -153,7 +154,7 @@ void LocalClient_UpdatePlayerPorts(int fixedPort)
         availCont[dword_F6A28C] = -1;
     if (fixedPort < 0 || (availCont[fixedPort] = -1, fixedPort != 0))
     {
-        if (unk_F6A290 == 0)
+        if (dword_F6A290[0] == 0)
         {
             int v1 = 0;
             while (availCont[v1] != 1)
@@ -170,7 +171,7 @@ void LocalClient_UpdatePlayerPorts(int fixedPort)
 // ea: 0x52F0F0
 int LocalClient_ConfigureLocalClients()
 {
-    lNumLocalClients = unk_F6A290 == 2;
+    lNumLocalClients = dword_F6A290[0] == 2;
     memset(kbss, 0, sizeof(kbss));
     memset(kb, 0, sizeof(kb));
     cl_stance_ss[0] = 0;

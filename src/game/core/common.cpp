@@ -15,6 +15,8 @@
 #include <string.h>
 #include <time.h>
 
+extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
+
 // ============================================================================
 // Minimal network/message types (server_types.h full version in sv/)
 // ============================================================================
@@ -141,7 +143,6 @@ extern int time_backend;
 extern int timeClientFrame;
 extern int gFirstCamera;
 extern int gScreenshotInProgress;
-extern int unk_F6A290;
 int com_frameTime = 0;   // ?com_frameTime@@3HA (core.o @ 0xEF2828)
 extern int com_frameNumber;
 extern float g_screendelta;
@@ -1616,7 +1617,7 @@ unsigned int Com_EventLoop()
                 }
                 else
                 {
-                    if (unk_F6A290 == 2)
+                    if (dword_F6A290[0] == 2)
                     {
                         currCl = NS_CLIENT;
                         CL_PacketEvent(evFrom, &buf, ev);
@@ -1648,7 +1649,7 @@ unsigned int Com_EventLoop()
     {
         ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1635);
     }
-    if (unk_F6A290)
+    if (dword_F6A290[0])
     {
         currCl = NS_CLIENT;
         while (NET_GetLoopPacket(NS_CLIENT, &evFrom, &buf))
@@ -1887,7 +1888,7 @@ void Com_CheckControllerUnplugged(bool signedIn, int client)
             }
         }
     }
-    else if (*(&unk_F6A290 + 802 * client) == 2
+    else if (*(&dword_F6A290[0] + 802 * client) == 2
              && !g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)])
     {
         g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)] = true;
@@ -2090,7 +2091,7 @@ cvar_t* Com_Frame()
     if (!gUseControllerLagFix)
     {
         int v8 = currCl;
-        if (unk_F6A290 == 2)
+        if (dword_F6A290[0] == 2)
         {
             currCl = NS_CLIENT;
             SendClientThinkMsg();
@@ -2104,15 +2105,15 @@ cvar_t* Com_Frame()
     g_screendelta = screen_time_inca;
     gFirstCamera = 1;
     g_DOBJF_NOT_RENDERED_LAST_FRAME = 1;
-    if (unk_F6A290)
+    if (dword_F6A290[0])
     {
-        v10 = unk_F6A290 == 2;
+        v10 = dword_F6A290[0] == 2;
         v9 = 0;
     }
     SoundDevice_SetNumberOfListeners(SoundDevice_sInst, v10);
     LocalClient_SetFirstLocalClientIndex(v9);
     LocalClient_SetLastLocalClientIndex(0);
-    if (unk_F6A290)
+    if (dword_F6A290[0])
     {
         currCl = NS_CLIENT;
         CL_RecallKeys();
@@ -2154,7 +2155,7 @@ void Com_Init(char* commandLine)
 {
     tlPrintf("\n--BUILDID: %s--\n\n", sBuildId);
     gQuickStart = 0;
-    unk_F6A290 = 2;
+    dword_F6A290[0] = 2;
     SetupPoolAllocator();
     init_dobj_trackers();
     SetupActorHeap();

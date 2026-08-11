@@ -965,7 +965,7 @@ extern bool          gDoNotPlayCampaignMovies; // ?gDoNotPlayCampaignMovies@@3_N
 extern int           g_networkOwner;  // ?g_networkOwner@@3W4EThreadOwner@@A
 extern const char* const defaultFileName;  // ?defaultFileName
 extern void          mem_heap_free(void* ptr);
-extern int           unk_F6A290;      // Xbox dev/retail flag
+extern int           dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 
 // ============================================================================
 // Cross-object functions used by sv.o
@@ -1017,7 +1017,7 @@ extern MultiplayerMgr2* MultiplayerMgr2_sInst(void);
 extern EntityManager*   EntityManager_sInst(void);
 extern int              currCl;      // ?currCl@@3HA
 extern bool             gExitGame;   // ?gExitGame@@3_NA
-extern int              unk_F6A290;  // Xbox dev/retail flag
+extern int              dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 extern int              dword_F641E0[];
 
 // ============================================================================

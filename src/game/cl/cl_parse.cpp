@@ -29,6 +29,8 @@ extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
 extern const char* const defaultFileName;
 extern int com_frameTime;
 int old_com_frameTime = 0;  // ?old_com_frameTime@@3HA (cl.o @ 0xF0D1B4)
+extern int dword_F6A290[4 * 802];  // defined in effect_events.cpp (core.o)
+
 extern int frame_msec;
 extern int anykeydown;
 extern int dword_F170F8;
@@ -133,7 +135,6 @@ extern int dword_F170FC;
 extern int dword_F170EC;
 extern int lFirstLocalClientIndex;
 extern int lLastLocalClientIndex;
-extern int unk_F6A290;
 extern struct cvar_t* cl_avidemo;
 extern struct cvar_t* cl_forceavidemo;
 extern struct cvar_t* com_timescale;
@@ -1070,12 +1071,12 @@ void CL_Frame(int msec, float screen_time_inc)
             dword_F170FC = v4;
             dword_F170F8 += dword_F170F0;
         }
-        if (*(&unk_F6A290 + 802 * currCl) == 2 && cls.state == 2)
+        if (*(&dword_F6A290[0] + 802 * currCl) == 2 && cls.state == 2)
         {
             CL_CreateNewCommands();
             CL_WritePacket();
         }
-        if (gUseControllerLagFix && *(&unk_F6A290 + 802 * currCl) == 2)
+        if (gUseControllerLagFix && *(&dword_F6A290[0] + 802 * currCl) == 2)
             SendClientThinkMsg();
         if (cls.state == 2)
         {

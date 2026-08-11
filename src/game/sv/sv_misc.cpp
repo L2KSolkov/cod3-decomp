@@ -287,7 +287,7 @@ void SV_ReallyExitGame_f() {
     g_femanager.inGame = false;
     g_femanager.IGO_active = false;
     MultiplayerMgr::sInst->ExitLevel();
-    if (unk_F6A290 == 2) {
+    if (dword_F6A290[0] == 2) {
         currCl = NS_CLIENT;
         SCR_UpdateScreen();
     }

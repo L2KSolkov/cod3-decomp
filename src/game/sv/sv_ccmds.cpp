@@ -459,7 +459,7 @@ static cvar_t* SV_MapRestart(int savegame) {
             v1 += 4976;
         } while (v1 < 0x13700);
         Netchan_Init();
-        if (unk_F6A290 == 2) {
+        if (dword_F6A290[0] == 2) {
             netadr_t v7;
             *((int*)&v7) = 2;
             memset(v7.ipx, 0, 12);
@@ -475,7 +475,7 @@ static cvar_t* SV_MapRestart(int savegame) {
             Cvar_Set("cg_norender", "1");
         PathNodeMgr::sInst->InitPaths();
         CL_Restart();
-        if (unk_F6A290 == 2) {
+        if (dword_F6A290[0] == 2) {
             client_s* clients = svs.clients;
             SV_ClientEnterWorld(svs.clients, 1, savegame);
             clients->gamestateMessageNum = *(int*)&clients->netchan[36];
