@@ -186,7 +186,7 @@ int CM_LeafArea(int leafnum)
 }
 
 // ea: 0x00618BA0
-int CM_PointLeafnum_r(const math::Position3& p, unsigned int nodeIndex)
+int CM_PointLeafnum_r(const math::Position3& p, int nodeIndex)
 {
     BspNode* v2 = &g_bspTree->mNodes.mList[0];
     BspNode* v3 = &BspNodeAt(nodeIndex);
@@ -1335,7 +1335,7 @@ void DecodeBin(const char* name, unsigned char* data, int size, TPakId pakId)
 // GetLeaves / CM_BoxLeafnums - ea: 0x619050..0x6194A0
 // ============================================================================
 // ea: 0x00619050
-void GetLeaves(leafList_s* ll, int nodeIndex, float* const mindist)
+void GetLeaves(leafList_s* ll, int nodeIndex, float& mindist)
 {
     BspNode* v30 = &g_bspTree->mNodes.mList[0];
     while (1)
@@ -1381,13 +1381,13 @@ void GetLeaves(leafList_s* ll, int nodeIndex, float* const mindist)
             v21 |= 2;
         else
             v22 = v26 - v20;
-        if (v22 > 0.0f && *mindist > v22)
-            *mindist = v22;
+        if (v22 > 0.0f && mindist > v22)
+            mindist = v22;
         if (v21 != 0)
         {
             if (v21 != 3)
                 goto LABEL_40;
-            GetLeaves(ll, (unsigned int)(v6->u.node.children[0] - v30) >> 4,
+            GetLeaves(ll, (int)((v6->u.node.children[0] - v30) >> 4),
                       mindist);
             nodeIndex = (unsigned int)(v6->u.node.children[1] - v30) >> 4;
         }
@@ -1434,7 +1434,7 @@ int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
     {
     LABEL_4:
         float mindist = 3.4028235e38f;
-        GetLeaves(&ll, 0, &mindist);
+        GetLeaves(&ll, 0, mindist);
         int result = ll.count;
         float v21 = 0.0f;
         if (ll.count == 1)
