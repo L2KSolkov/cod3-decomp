@@ -308,7 +308,7 @@ int Netchan_Process(netchan_t* chan, msg_t* msg)
 // ea: 0x61F7A0 / 0x61F860 / 0x61F9A0
 // ============================================================================
 extern int BigShort(unsigned short s);  // core.o
-extern void NET_SendPacket(netsrc_t sock, unsigned int length,
+extern void NET_SendPacket(netsrc_t sock, int length,
                            const void* data, netadr_t to);  // g.o
 static char s_0[64];  // ?s_0@@3PADA (game.o @ 0xF58BB8)
 
@@ -368,7 +368,7 @@ void Netchan_Transmit(netchan_t* chan, int length,
     }
     memcpy((unsigned char*)send_buf + v4, data, length);
     int v6 = length + v4;
-    NET_SendPacket(chan->sock, (unsigned int)v6, send_buf,
+    NET_SendPacket(chan->sock, v6, send_buf,
                    chan->remoteAddress);
     if (showpackets->integer != 0)
         Com_Printf("%s send %4i : s=%i ack=%i\n",
@@ -487,7 +487,8 @@ int NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from, msg_t* net_message)
 }
 
 // ea: 0x0060F910
-void NET_SendLoopPacket(netsrc_t sock, unsigned int length, const void* data)
+void NET_SendLoopPacket(netsrc_t sock, int length, const void* data,
+                        netadr_t to)
 {
     loopback_t* v3 = &loopbacks[sock ^ 1];
     ++v3->send;
@@ -496,7 +497,7 @@ void NET_SendLoopPacket(netsrc_t sock, unsigned int length, const void* data)
 }
 
 // ea: 0x0060F950
-void NET_SendPacket(netsrc_t sock, unsigned int length, const void* data,
+void NET_SendPacket(netsrc_t sock, int length, const void* data,
                     netadr_t to)
 {
     if (showpackets->integer != 0 && *(const int*)data == -1)

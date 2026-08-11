@@ -725,7 +725,7 @@ public:
     int  GetPlayerIndex(Entity* entity);    // ?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z (game.o)
     Entity* GetFirstLocalPlayer();          // ?GetFirstLocalPlayer@EntityManager@@QAEPAVEntity@@XZ (game.o)
 
-protected:
+private:
     virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@EntityManager@@EAEXW4TPakId@@@Z (game.o)
 };
 static_assert(offsetof(EntityManager, mPlayers) == 0x04, "EntityManager::mPlayers offset mismatch");
