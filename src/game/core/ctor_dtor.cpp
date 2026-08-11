@@ -9,6 +9,10 @@
 
 #include <string.h>
 
+// Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
+class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+
+
 // Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
 struct controller {
     int locked_port;
@@ -51,7 +55,6 @@ extern void CameraShake_StopCameraShake(void* self, void* pShake);
 struct CameraShake;
 extern CameraShake* g_cameraShake;
 extern void SoundDevice_ReleaseSound(void* sInst, void* s);
-extern void* SoundDevice_sInst;
 struct SoundHandleDbLocal {
     struct El {
         void* mObject;  // +0x00
@@ -383,7 +386,7 @@ AbstractEffectSound::~AbstractEffectSound()
     if (v3 < 0x200 && mVal >> 12 == SoundHandleDb_sInst.mElements[v3].mKey
         && SoundHandleDb_sInst.mElements[v3].mObject != nullptr)
     {
-        SoundDevice_ReleaseSound(SoundDevice_sInst,
+        SoundDevice_ReleaseSound(SoundDevice::sInst,
                                  SoundHandleDb_sInst.mElements[v3].mObject);
     }
     mEffectNameHashStr = 0;

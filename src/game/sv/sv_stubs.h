@@ -353,7 +353,8 @@ enum ESoundEnvironment {
     kEnvironmentIndoor = 0,
 };
 
-struct SoundDevice {
+class SoundDevice {
+public:
     class Sound {
     public:
         int     mSource;         // +0x00 (nslSourceID; NSL_SOURCE_ID_INVALID == -1)

@@ -201,6 +201,8 @@ extern float Sound_GetStartingVolume(void* sound);
 struct SoundDeviceInst {
     float mVolScale;  // +0x00 (name-accessed)
 };
+
+// ?sInst@SoundDevice@@2PAV1@A (typed view; defined in g_entity_misc.cpp)
 extern SoundDeviceInst* SoundDevice_sInst;
 
 CameraShake* g_cameraShake = nullptr;

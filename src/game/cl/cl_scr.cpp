@@ -11,6 +11,10 @@
 #include <stdio.h>
 #include <string.h>
 
+// Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
+class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+
+
 // Minimal view of InteractionController (full class in g_local.h).
 class InteractionController {
 public:
@@ -65,7 +69,6 @@ extern void Cmd_ExecuteServerString(const char* text);
 extern void CL_CGameRendering();
 extern void Con_DrawConsole();
 extern void SoundDevice_UndampenAllSounds(void* self);
-extern void* SoundDevice_sInst;
 extern void Cvar_Set(const char* var_name, const char* value);
 struct glconfig_t;
 extern void CL_GetGlconfig(glconfig_t* glconfig);
@@ -263,7 +266,7 @@ void SCR_DrawScreenField()
         else
         {
             cls.keyCatchers = 2;
-            SoundDevice_UndampenAllSounds(SoundDevice_sInst);
+            SoundDevice_UndampenAllSounds(SoundDevice::sInst);
             Cvar_Set("g_reloading", "0");
         }
         if (g_femanager_fe.mAARS != nullptr

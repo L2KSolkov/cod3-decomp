@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
+class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+
+
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
 
@@ -155,7 +159,6 @@ struct SaveGameData;
 extern SaveGameData* gSaveGameData;
 struct FEManager; extern FEManager g_femanager;
 extern void* nglBuildScene_RenderTarget;
-extern void* SoundDevice_sInst;
 extern void* gCurrentCamera;
 extern void* gCamera;
 extern void Camera_Update(void* self);
@@ -1765,10 +1768,10 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         g_TestForward[0] = dword_F63C70[1580 * currCl] + testFwd[0] * 10.0f;
         g_TestForward[1] = dword_F63C74[1580 * currCl] + testFwd[1] * 10.0f;
         g_TestForward[2] = dword_F63C78[1580 * currCl] + testFwd[2] * 10.0f;
-        SoundDevice_SetListenerVectors(SoundDevice_sInst, curListener,
+        SoundDevice_SetListenerVectors(SoundDevice::sInst, curListener,
                                        listenerPos, front, up);
         ++curListener;
-        curListener %= SoundDevice_GetNumberOfListeners(SoundDevice_sInst);
+        curListener %= SoundDevice_GetNumberOfListeners(SoundDevice::sInst);
     }
 }
 

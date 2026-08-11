@@ -10,6 +10,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
+class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+
+
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
 
@@ -576,7 +580,6 @@ extern void CG_ClipMoveToEntities(const math::Position3* start,
 extern void CG_DamageFeedback(int yawByte, int pitchByte, float damage);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern void SoundDevice_UnpauseAllSounds(void* sInst);
-extern void* SoundDevice_sInst;
 extern int Key_GetCatcher();
 extern void Key_SetCatcher(int catcher);
 extern void* EntityHandleDb_mActiveList;
@@ -722,7 +725,7 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
     {
         g_enableControllerTest = true;
         Cvar_Set("cg_norender", "0");
-        SoundDevice_UnpauseAllSounds(SoundDevice_sInst);
+        SoundDevice_UnpauseAllSounds(SoundDevice::sInst);
         int Catcher = Key_GetCatcher();
         Key_SetCatcher(Catcher & 0xFFFFFFFD);
     }

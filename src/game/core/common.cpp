@@ -15,6 +15,10 @@
 #include <string.h>
 #include <time.h>
 
+// Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
+class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+
+
 struct NumBanks;
 
 // Minimal view of PakManager (full class in game/sv/sv_stubs.h).
@@ -130,7 +134,6 @@ extern const char* SEH_LocalizeTextMessage(const char* pszInputBuffer,
                                           int errType);
 extern void SoundDevice_StopAllSounds(void* self);
 extern void SoundDevice_FrameAdvance(void* self, float delta);
-extern void* SoundDevice_sInst;
 extern void AudioBankMgr_Update(void* self);
 extern void* AudioBankMgr_sInst;
 extern void codNflUpdate();
@@ -1771,7 +1774,7 @@ char Com_ControllerTest(int port)
         {
             if (!g_controllerConnectedErrorShown[port])
             {
-                SoundDevice_PauseAllSounds(SoundDevice_sInst);
+                SoundDevice_PauseAllSounds(SoundDevice::sInst);
                 g_controllerConnectedGamePaused[port] =
                     v1 == 0 && GamePause_IsGamePaused(0);
                 if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
@@ -1791,7 +1794,7 @@ char Com_ControllerTest(int port)
                 FEManager_DrawControllerError(&g_femanager);
             }
             MemoryUnitManager_Service();
-            SoundDevice_FrameAdvance(SoundDevice_sInst, 0.0f);
+            SoundDevice_FrameAdvance(SoundDevice::sInst, 0.0f);
             AudioBankMgr_Update(AudioBankMgr_sInst);
             codNflUpdate();
             return 0;
@@ -1802,7 +1805,7 @@ char Com_ControllerTest(int port)
         return 1;
     if (controller_button_pressed_clear(port, 5))  // R3|RIGHTBUTTON
     {
-        SoundDevice_UnpauseAllSounds(SoundDevice_sInst);
+        SoundDevice_UnpauseAllSounds(SoundDevice::sInst);
         SyncFrameBuffers();
         if (v1 == 0)
             GamePause_SetGamePaused(0, g_controllerConnectedGamePaused[port]);
@@ -2131,7 +2134,7 @@ cvar_t* Com_Frame()
         v10 = dword_F6A290[0] == 2;
         v9 = 0;
     }
-    SoundDevice_SetNumberOfListeners(SoundDevice_sInst, v10);
+    SoundDevice_SetNumberOfListeners(SoundDevice::sInst, v10);
     LocalClient_SetFirstLocalClientIndex(v9);
     LocalClient_SetLastLocalClientIndex(0);
     if (dword_F6A290[0])

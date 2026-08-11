@@ -8,6 +8,10 @@
 
 #include <string.h>
 
+// Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
+class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+
+
 // Minimal views (full classes in game/sv/sv_stubs.h / g_local.h).
 class PakManager {
 public:
@@ -81,7 +85,6 @@ extern void CompleteCommand();
 extern void SoundDevice_StopAllSounds(void* self);
 extern void SoundDevice_FrameAdvance(void* self, float delta);
 extern void SoundDevice_UndampenAllSounds(void* self);
-extern void* SoundDevice_sInst;
 extern struct cvar_t* cl_showSend;
 extern struct cvar_t* cl_nodelta;
 extern struct cvar_t* cl_debugMove;
@@ -680,8 +683,8 @@ void CL_MapLoading()
     cls.state = 1;  // CA_LOADING
     float screen_time_inc = Com_GetScreenTimeDelta();
     SCR_UpdateScreen(screen_time_inc);
-    SoundDevice_StopAllSounds(SoundDevice_sInst);
-    SoundDevice_FrameAdvance(SoundDevice_sInst, 0.0f);
+    SoundDevice_StopAllSounds(SoundDevice::sInst);
+    SoundDevice_FrameAdvance(SoundDevice::sInst, 0.0f);
 }
 
 // ============================================================================
@@ -1056,9 +1059,9 @@ void CL_Frame(int msec, float screen_time_inc)
         else if (cls.state == 0 && (cls.keyCatchers & 2) == 0
                  && com_sv_running->integer == 0)
         {
-            SoundDevice_StopAllSounds(SoundDevice_sInst);
+            SoundDevice_StopAllSounds(SoundDevice::sInst);
             cls.keyCatchers = 2;
-            SoundDevice_UndampenAllSounds(SoundDevice_sInst);
+            SoundDevice_UndampenAllSounds(SoundDevice::sInst);
             Cvar_Set("g_reloading", "0");
         }
         int integer = cl_avidemo->integer;
@@ -1104,7 +1107,7 @@ void CL_Frame(int msec, float screen_time_inc)
         {
             cdl_proftimer_audio.start();
             codNflUpdate();
-            SoundDevice_FrameAdvance(SoundDevice_sInst, v6);
+            SoundDevice_FrameAdvance(SoundDevice::sInst, v6);
             AudioBankMgr_Update(AudioBankMgr_sInst);
             cdl_proftimer_audio.stop();
         }
