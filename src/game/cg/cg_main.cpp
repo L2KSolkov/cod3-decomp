@@ -51,14 +51,14 @@ extern void CG_RegisterServerShader(int num);
 extern void CG_RegisterWeapon(int weaponNum);
 extern void CG_FreeWeapons();
 extern void CG_ConfigStringModifiedInternal(int num);
-extern void CG_StartShakeCamera(float* p, int duration, int* src, int radius,
-                                int client);
+extern void CG_StartShakeCamera(float p, int duration, const float* src,
+                                float radius, int client);
 extern void CG_DrawActiveFrame(int serverTime, int demoPlayback,
                                int cubemapShot, int cubemapSize,
                                int animFrametime);
 extern void CG_DObjCalcPose(Entity* entity, void* obj, int* partBits);
-extern void CG_SaveEntity(void* entity);
-extern void CG_LoadEntity(void* entity);
+extern void CG_SaveEntity();
+extern void CG_LoadEntity();
 extern void CG_General(Entity* entity);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
@@ -467,7 +467,8 @@ int cg_vmMain(int command, int arg0, void* arg1, int* arg2, int arg3,
         result = 0;
         break;
     case 11:
-        CG_StartShakeCamera((float*)arg0, (int)arg1, arg2, arg3, currCl);
+        CG_StartShakeCamera(*(float*)&arg0, (int)arg1, (const float*)arg2,
+                            *(float*)&arg3, currCl);
         result = 0;
         break;
     case 12:
@@ -492,11 +493,11 @@ int cg_vmMain(int command, int arg0, void* arg1, int* arg2, int arg3,
         result = 0;
         break;
     case 22:
-        CG_SaveEntity((void*)arg0);
+        CG_SaveEntity();
         result = 0;
         break;
     case 23:
-        CG_LoadEntity((void*)arg0);
+        CG_LoadEntity();
         result = 0;
         break;
     default:

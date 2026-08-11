@@ -16,12 +16,13 @@ extern unsigned int SEH_ReadCharFromString(const char** ppsText,
 enum print_msg_type_t;
 extern void CL_ConsolePrint(print_msg_type_t type, const char* txt,
                             int duration, int linewidth, int flags);
-extern void CL_DeathMessagePrint(int type, const char* pszAttackerName,
-                                 const float* vAttackerColor,
+extern void CL_DeathMessagePrint(print_msg_type_t type,
+                                 const char* pszAttackerName,
+                                 float* vAttackerColor,
                                  const char* pszVictimName,
-                                 const float* vVictimColor,
+                                 float* vVictimColor,
                                  const char* pszIconShader, float fIconWidth,
-                                 float fIconHeight, const float* vIconColor,
+                                 float fIconHeight, float* vIconColor,
                                  int iDuration);
 extern void CG_DrawScoreboard_GetTeamColor(int iTeam, float* vColor);
 extern bool Entity_IsLocalPlayer(const Entity* ent);
@@ -275,7 +276,8 @@ void CG_Obituary(Entity* target, Entity* attacker, int parm)
             vAttackerColor[2] = 0.390625f;
         }
     }
-    CL_DeathMessagePrint(3 /* PMSG_GAME */, attackerName, vAttackerColor,
+    CL_DeathMessagePrint((print_msg_type_t)3 /* PMSG_GAME */, attackerName,
+                         vAttackerColor,
                          targetName, vVictimColor, szKillIcon,
                          fIconWidth * 1.25f, 2.125f, vIconColor, 0);
 }

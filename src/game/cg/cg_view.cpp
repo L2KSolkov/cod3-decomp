@@ -600,7 +600,7 @@ extern unsigned int FS_Write(char* buffer, unsigned int len, int h);
 extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
 extern void FS_FCloseFile(int f);
 extern int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars,
-                                 char* buffer, int bufsize);
+                                 char* buffer, unsigned int bufsize);
 extern int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
                                    const char* buffer, const char* filename);
 struct vmCvar_t;
@@ -2474,7 +2474,7 @@ extern void CG_InterpolateEntityOrigin(Entity* cent);
 extern void CG_InterpolateEntityAngles(Entity* cent);
 extern int CG_PredictPlayerState_Internal();
 extern int CG_PointContents(const math::Position3* point,
-                            const collision_context_t* context);
+                            collision_context_t* context);
 extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
 extern int cg_fov;
 extern int cg_widescreen;
@@ -2673,10 +2673,10 @@ extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);
 extern void Com_DPrintf(const char* fmt, ...);
-extern void G_DObjSetLocalTag(Entity* ent, int* partBits,
-                              unsigned int tag_name_hash,
-                              const float* trans, const float* angles,
-                              bool relative);
+extern int G_DObjSetLocalTag(Entity* ent, int* partBits,
+                             unsigned int tag_name_hash,
+                             const float* trans, const float* angles,
+                             bool relative);
 extern float flrand(float min, float max);
 extern void CG_CalcCubemapViewValues();
 extern void CG_CalcVrect(const void* window);
