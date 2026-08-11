@@ -2704,7 +2704,7 @@ extern void Camera_Update(void* self);
 extern int cgGlobal_cubemapShot;
 extern int bg_viewheight_prone;
 extern int bg_viewheight_crouched;
-extern int bg_viewheight_standing;
+extern vmCvar_t bg_viewheight_standing;
 struct DObjSkelMat;
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMtx);
@@ -3071,7 +3071,7 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
                         else if ((eFlags & 0x20) != 0)
                             v15 = bg_viewheight_crouched + muzzle[2];
                         else
-                            v15 = bg_viewheight_standing + muzzle[2];
+                            v15 = bg_viewheight_standing.integer + muzzle[2];
                     }
                     else
                     {

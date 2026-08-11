@@ -7,6 +7,9 @@
 #include "game/core/core_systems.h"
 #include "game/core/core_globals.h"
 
+// ?gSoundOptions@@3VSoundOptions@@A (core.o @ 0xF00EF0)
+SoundOptions gSoundOptions;
+
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>

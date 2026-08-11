@@ -30,6 +30,17 @@ collision_context_t::collision_context_t()
     this->contentmask = -1;
 }
 
+// ea: 0x004AF0C0
+collision_context_t::collision_context_t(int mask)
+{
+    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    this->pass_entity1.mHandle.mVal = 0;
+    this->pass_entity2.mHandle.mVal = 0;
+    this->pass_owner1.mHandle.mVal = 0;
+    this->pass_owner2.mHandle.mVal = 0;
+    this->contentmask = mask;
+}
+
 // ea: 0x004AF030
 collision_context_t::collision_context_t(
     DbLinkedHandle<EntityHandleDb, Entity> handle, int mask)

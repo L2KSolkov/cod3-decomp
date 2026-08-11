@@ -1076,7 +1076,8 @@ static_assert(offsetof(filelist_s, numfiles) == 0x80,
 // SoundOptions - effect sound toggles (56 bytes)
 // Size: 0x38 (56 bytes) - verified against IDA
 // ============================================================================
-struct SoundOptions {
+class SoundOptions {
+public:
     int mFxDontPlayFootSteps;     // +0x00
     int mFxDontPlayGearRattle;    // +0x04
     int mFxDontPlayLanding;       // +0x08

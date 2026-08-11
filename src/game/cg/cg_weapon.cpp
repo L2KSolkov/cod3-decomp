@@ -44,7 +44,7 @@ extern int dword_F64060[4 * 1580];
 extern void* sADSMetaAnimPlayer;
 extern int dword_F69BF4;
 float FOCUS_DISTANCE = 1.0f;  // ?FOCUS_DISTANCE@@3MA
-extern float angle[4 * 395];
+float angle[4 * 395];  // cg.o BSS
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
 extern float dword_F63C78[4 * 1580];

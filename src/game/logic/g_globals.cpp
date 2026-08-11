@@ -11,6 +11,7 @@ cgGlobal_t cgGlobal;           // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
 game_hudelem_s g_hudelems[16];  // ?g_hudelems@@3PAUgame_hudelem_s@@A @ 0xEA5580
 scr_data_t g_scr_data;          // ?g_scr_data@@3Uscr_data_t@@A @ 0xEE58D0
 int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
+vmCvar_t bg_viewheight_standing;   // ?bg_viewheight_standing@@3UvmCvar_t@@A (game.o)
 ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;
