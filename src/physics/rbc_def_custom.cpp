@@ -125,11 +125,11 @@ void rigid_body_constraint_custom_path::setup_constraint(pulse_sum_constraint_so
     rigid_body* b1 = this->b1;
     math::Dir3 v33;
     math::Dir3 b1_r;
-    rbint::multiply(&v33, b1, &this->b1_r_loc);
+    v33 = rbint::multiply(b1, this->b1_r_loc);
 
     math::Dir3 b2_r_4[2];
     memset(b2_r_4, 0, sizeof(b2_r_4));
-    rbint::multiply(&b1_r, this->b2, (const math::Dir3*)b2_r_4);
+    b1_r = rbint::multiply(this->b2, *(const math::Dir3*)b2_r_4);
 
     if (this->m_urb == NULL &&
         _tlAssert("source/rbc_def_custom.cpp", 137, "m_urb", "")) {

@@ -49,8 +49,10 @@ void rigid_body_constraint_point::setup_constraint(pulse_sum_constraint_solver* 
                                                    float delta_t) {
     math::Dir3 v10;
     math::Dir3 v9;
-    const math::Dir3* v7 = rbint::multiply(&v10, this->b2, &this->m_b2_r_loc);
-    const math::Dir3* v5 = rbint::multiply(&v9, this->b1, &this->m_b1_r_loc);
+    v10 = rbint::multiply(this->b2, this->m_b2_r_loc);
+    const math::Dir3* v7 = &v10;
+    v9 = rbint::multiply(this->b1, this->m_b1_r_loc);
+    const math::Dir3* v5 = &v9;
     psys->create_point(this->b1, v5, this->b2, v7, this->m_ps_cache_list, delta_t);
 }
 
@@ -109,10 +111,10 @@ void rigid_body_constraint_distance::setup_constraint(pulse_sum_constraint_solve
 
         math::Dir3 b2_r;
         math::Dir3 v29[4];
-        rbint::multiply(&b2_r, this->b1, &this->m_b1_r_loc);
-        rbint::multiply(&v29[3], this->b2, &this->m_b2_r_loc);
-        rbint::add_pos(&v29[2], this->b1, &b2_r);
-        rbint::add_pos(v29, this->b2, &v29[3]);
+        b2_r = rbint::multiply(this->b1, this->m_b1_r_loc);
+        v29[3] = rbint::multiply(this->b2, this->m_b2_r_loc);
+        v29[2] = rbint::add_pos(this->b1, b2_r);
+        v29[0] = rbint::add_pos(this->b2, v29[3]);
         __m128 v5 = _mm_sub_ps(v29[0].v, v29[2].v);
         __m128 v6 = _mm_mul_ps(v5, v5);
         float dist_sq = v6.m128_f32[0]
@@ -182,13 +184,13 @@ void rigid_body_constraint_distance::setup_constraint(pulse_sum_constraint_solve
                     math::Dir3 zero;
                     zero.v = Float4_Zero_213.v;
                     if ((this->m_flags & 2) != 0) {
-                        const math::Dir3* sp = rbint::sub_pos(&v29[2], this->b1, v29);
-                        b1_r.v = sp->v;
+                        v29[2] = rbint::sub_pos(this->b1, v29[0]);
+                        b1_r.v = v29[2].v;
                         b2_r2.v = v29[3].v;
                     } else {
                         b1_r.v = b2_r.v;
-                        const math::Dir3* sp = rbint::sub_pos(v29, this->b2, &v29[2]);
-                        b2_r2.v = sp->v;
+                        v29[0] = rbint::sub_pos(this->b2, v29[2]);
+                        b2_r2.v = v29[0].v;
                     }
                     psn3->set(this->b1, &b1_r, this->b2, &b2_r2, &dir,
                               &this->m_ps_cache_list[2], &zero);
@@ -298,9 +300,9 @@ void rigid_body_constraint_hinge::do_collision(float) {
         return;
     }
     math::Dir3 v17[5];
-    rbint::collide_multiply(&v17[3], this->b1, &this->m_b1_ref_loc);
-    rbint::collide_multiply(&v17[2], this->b2, &this->m_b2_ref_min_loc);
-    rbint::collide_multiply(&v17[1], this->b2, &this->m_b2_ref_max_loc);
+    v17[3] = rbint::collide_multiply(this->b1, this->m_b1_ref_loc);
+    v17[2] = rbint::collide_multiply(this->b2, this->m_b2_ref_min_loc);
+    v17[1] = rbint::collide_multiply(this->b2, this->m_b2_ref_max_loc);
     unsigned int v5 = this->m_flags;
     unsigned int v9;
     if ((v5 & 8) != 0) {
@@ -320,7 +322,7 @@ void rigid_body_constraint_hinge::do_collision(float) {
         }
         v9 = v5 & 0xFFFFFFFE;
     } else {
-        rbint::collide_multiply(v17, this->b2, &this->m_b2_axis_loc);
+        v17[0] = rbint::collide_multiply(this->b2, this->m_b2_axis_loc);
         __m128 v10 = v17[3].v;
         __m128 v11 = _mm_shuffle_ps(v10, v10, 18);
         __m128 v12 = _mm_shuffle_ps(v10, v10, 9);
@@ -364,13 +366,17 @@ void rigid_body_constraint_hinge::setup_constraint(pulse_sum_constraint_solver* 
     math::Dir3 b2_ref_max_4;
     math::Dir3 v21;
     math::Dir3 b1_axis_4[2];
-    const math::Dir3* v16 = rbint::multiply(&v19, this->b2, &this->m_b2_r_loc);
-    const math::Dir3* v5 = rbint::multiply(&b2_ref_max_4, this->b1, &this->m_b1_r_loc);
+    v19 = rbint::multiply(this->b2, this->m_b2_r_loc);
+    const math::Dir3* v16 = &v19;
+    b2_ref_max_4 = rbint::multiply(this->b1, this->m_b1_r_loc);
+    const math::Dir3* v5 = &b2_ref_max_4;
     psys->create_point(this->b1, v5, this->b2, v16, this->m_ps_cache, delta_t);
-    rbint::multiply(&v21, this->b1, &this->m_b1_axis_loc);
-    rbint::multiply(&b1_axis_4[1], this->b2, &this->m_b2_axis_loc);
-    const math::Dir3* v17 = rbint::multiply(b1_axis_4, this->b1, &this->m_b1_a2_loc);
-    const math::Dir3* v6 = rbint::multiply(&v19, this->b1, &this->m_b1_a1_loc);
+    v21 = rbint::multiply(this->b1, this->m_b1_axis_loc);
+    b1_axis_4[1] = rbint::multiply(this->b2, this->m_b2_axis_loc);
+    b1_axis_4[0] = rbint::multiply(this->b1, this->m_b1_a2_loc);
+    const math::Dir3* v17 = &b1_axis_4[0];
+    v19 = rbint::multiply(this->b1, this->m_b1_a1_loc);
+    const math::Dir3* v6 = &v19;
     psys->create_hinge(this->b1, &v21, this->b2, &b1_axis_4[1], v6, v17,
                        &this->m_ps_cache[4], delta_t);
     if (this->m_damp_k > 0.0000099999997f) {
@@ -387,9 +393,9 @@ void rigid_body_constraint_hinge::setup_constraint(pulse_sum_constraint_solver* 
         v9->m_pulse_sum_max = v10;
     }
     if ((this->m_flags & 3) != 0) {
-        rbint::multiply(b1_axis_4, this->b1, &this->m_b1_ref_loc);
+        b1_axis_4[0] = rbint::multiply(this->b1, this->m_b1_ref_loc);
         if ((this->m_flags & 1) != 0) {
-            rbint::multiply(&v19, this->b2, &this->m_b2_ref_min_loc);
+            v19 = rbint::multiply(this->b2, this->m_b2_ref_min_loc);
             b2_ref_max_4.v = _mm_xor_ps(Float4_SignMask_213.v, b1_axis_4[1].v);
             pulse_sum_angular* v13 = psys->create_pulse_sum_angular(
                 this->b1, b1_axis_4, this->b2, &v19, &b2_ref_max_4,
@@ -399,7 +405,7 @@ void rigid_body_constraint_hinge::setup_constraint(pulse_sum_constraint_solver* 
             v13->setup_vel_uni_standard(delta_t, 5.0f);
         }
         if ((this->m_flags & 2) != 0) {
-            rbint::multiply(&v19, this->b2, &this->m_b2_ref_max_loc);
+            v19 = rbint::multiply(this->b2, this->m_b2_ref_max_loc);
             pulse_sum_angular* pa = psys->create_pulse_sum_angular(
                 this->b1, b1_axis_4, this->b2, &v19, &b1_axis_4[1],
                 &this->m_ps_cache[7]);

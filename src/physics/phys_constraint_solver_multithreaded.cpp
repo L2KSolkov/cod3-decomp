@@ -19,12 +19,6 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 extern void PHYS_ASSERT_UNIT(const math::Dir3* v);
 extern const math::Dir3& Float4_SignMask_214;
 
-namespace rbint {
-const math::Dir3* multiply(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
-const math::Dir3* add_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
-const math::Dir3* gtv(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
-}
-
 // ============================================================================
 // phys_constraint_solver_multithreaded::init / shutdown - ea: 0x8932B0/0x8932C0
 // ============================================================================
@@ -188,9 +182,11 @@ check_flags:
         } else {
             m_b2 = NULL;
             math::Dir3 v25;
-            set_object_vel(rbint::gtv(&v25, b2, b2_r));
+            v25 = rbint::gtv(b2, *b2_r);
+            set_object_vel(&v25);
             math::Dir3 v24;
-            set_object_col_pt(rbint::add_pos(&v24, b2, b2_r));
+            v24 = rbint::add_pos(b2, *b2_r);
+            set_object_col_pt(&v24);
         }
         m_ud.v = ud->v;
     } else {
@@ -198,9 +194,11 @@ check_flags:
         m_b1_r.v = b2_r->v;
         m_b2 = NULL;
         math::Dir3 v24;
-        set_object_vel(rbint::gtv(&v24, v10, b1_r));
+        v24 = rbint::gtv(v10, *b1_r);
+        set_object_vel(&v24);
         math::Dir3 v25;
-        set_object_col_pt(rbint::add_pos(&v25, b1, b1_r));
+        v25 = rbint::add_pos(b1, *b1_r);
+        set_object_col_pt(&v25);
         m_ud.v = _mm_xor_ps(Float4_SignMask_214.v, ud->v);
     }
     m_pulse_sum_cache = ps_cache;
@@ -382,9 +380,11 @@ void pulse_sum_point::set(rigid_body* const b1, const math::Dir3* b1_r,
     } else {
         m_b2 = NULL;
         math::Dir3 v14;
-        set_object_vel(rbint::gtv(&v14, b2, b2_r));
+        v14 = rbint::gtv(b2, *b2_r);
+        set_object_vel(&v14);
         math::Dir3 v13;
-        set_object_col_pt(rbint::add_pos(&v13, b2, b2_r));
+        v13 = rbint::add_pos(b2, *b2_r);
+        set_object_col_pt(&v13);
     }
     m_pulse_sum_cache = ps_cache;
     calc_abs();
@@ -722,9 +722,10 @@ void pulse_sum_contact::set(rigid_body* const b1, rigid_body* const b2,
         do {
             psc_cpi* v12 = m_list_cpi + b2_idx;
             math::Dir3 v26;
-            v12->m_b1_r.v = rbint::multiply(&v26, b1, v33)->v;
+            v26 = rbint::multiply(b1, *v33);
+            v12->m_b1_r.v = v26.v;
             math::Dir3 v30;
-            rbint::multiply(&v30, b2, m_list_b2_r_loc);
+            v30 = rbint::multiply(b2, *m_list_b2_r_loc);
             if (m_b2 != NULL) {
                 v12->m_b2_r = v30;
             } else {

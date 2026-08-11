@@ -331,10 +331,10 @@ void rigid_body_constraint_ragdoll::do_collision(float) {
     if ((m_flags & 0x80u) == 0) {
         math::Dir3 v19[6];
         math::Dir3 v20[4];
-        rbint::collide_multiply(&v19[4], this->b2, &this->m_b2_ref_min_loc);
-        rbint::collide_multiply(v20, this->b2, &this->m_b2_ref_max_loc);
-        rbint::collide_multiply(&v20[2], this->b2, &this->m_b2_axis_loc);
-        rbint::collide_multiply(&v20[1], this->b1, &this->m_b1_ref_loc);
+        v19[4] = rbint::collide_multiply(this->b2, this->m_b2_ref_min_loc);
+        v20[0] = rbint::collide_multiply(this->b2, this->m_b2_ref_max_loc);
+        v20[2] = rbint::collide_multiply(this->b2, this->m_b2_axis_loc);
+        v20[1] = rbint::collide_multiply(this->b1, this->m_b1_ref_loc);
         __m128 v11;
         if ((this->m_flags & 8) != 0) {
             int v6 = 0;
@@ -342,8 +342,9 @@ void rigid_body_constraint_ragdoll::do_collision(float) {
                 int count = this->m_joint_limits_count;
                 int idx = 0;
                 do {
-                    const math::Dir3* v7 = rbint::collide_multiply(
-                        &v19[5], this->b1, &this->m_joint_limits[idx].m_b1_ud_loc);
+                    v19[5] = rbint::collide_multiply(
+                        this->b1, this->m_joint_limits[idx].m_b1_ud_loc);
+                    const math::Dir3* v7 = &v19[5];
                     __m128 v8 = _mm_mul_ps(v20[2].v, v7->v);
                     float dot = v8.m128_f32[0]
                                 + (_mm_shuffle_ps(v8, v8, 85).m128_f32[0]
@@ -353,8 +354,8 @@ void rigid_body_constraint_ragdoll::do_collision(float) {
                     ++idx;
                 } while (v6 < count);
             }
-            const math::Dir3* v10 = rbint::collide_multiply(&v19[5], this->b1,
-                                                            &this->m_b1_axis_loc);
+            v19[5] = rbint::collide_multiply(this->b1, this->m_b1_axis_loc);
+            const math::Dir3* v10 = &v19[5];
             math::Mat43 rot;
             make_rotate(&rot, *v10, v20[2]);
             v11 = _mm_add_ps(
@@ -415,7 +416,7 @@ void rigid_body_constraint_ragdoll::setup_hinge(pulse_sum_constraint_solver* psy
                                                 const math::Dir3& b2_axis, float delta_t) {
     math::Dir3 v11;
     if ((this->m_flags & 0x10) != 0) {
-        rbint::multiply(&v11, this->b2, &this->m_b2_ref_min_loc);
+        v11 = rbint::multiply(this->b2, this->m_b2_ref_min_loc);
         math::Dir3 ud;
         ud.v = _mm_xor_ps(Float4_SignMask_210.v, b2_axis.v);
         pulse_sum_angular* v7 = psys->create_pulse_sum_angular(
@@ -425,7 +426,7 @@ void rigid_body_constraint_ragdoll::setup_hinge(pulse_sum_constraint_solver* psy
         v7->setup_vel_uni_standard(delta_t, 5.0f);
     }
     if ((this->m_flags & 0x20) != 0) {
-        rbint::multiply(&v11, this->b2, &this->m_b2_ref_max_loc);
+        v11 = rbint::multiply(this->b2, this->m_b2_ref_max_loc);
         pulse_sum_angular* pa = psys->create_pulse_sum_angular(
             this->b1, &b1_ref, this->b2, &v11, &b2_axis, &this->m_ps_cache_list[7]);
         pa->m_pulse_sum_min = -10000000.0f;
@@ -441,12 +442,14 @@ void rigid_body_constraint_ragdoll::setup_constraint(pulse_sum_constraint_solver
                                                      float delta_t) {
     math::Dir3 v40[4];
     math::Dir3 b1_axis_4;
-    const math::Dir3* v34 = rbint::multiply(v40, this->b2, &this->m_b2_r_loc);
-    const math::Dir3* v5 = rbint::multiply(&b1_axis_4, this->b1, &this->m_b1_r_loc);
+    v40[0] = rbint::multiply(this->b2, this->m_b2_r_loc);
+    const math::Dir3* v34 = &v40[0];
+    b1_axis_4 = rbint::multiply(this->b1, this->m_b1_r_loc);
+    const math::Dir3* v5 = &b1_axis_4;
     psys->create_point(this->b1, v5, this->b2, v34, this->m_ps_cache_list, delta_t);
     math::Dir3 v37;
-    rbint::multiply(&v37, this->b1, &this->m_b1_axis_loc);
-    rbint::multiply(&v40[2], this->b2, &this->m_b2_axis_loc);
+    v37 = rbint::multiply(this->b1, this->m_b1_axis_loc);
+    v40[2] = rbint::multiply(this->b2, this->m_b2_axis_loc);
 
     if ((this->m_flags & 0x40) != 0) {
         rigid_body* b1 = this->b1;
@@ -487,12 +490,15 @@ void rigid_body_constraint_ragdoll::setup_constraint(pulse_sum_constraint_solver
         }
     }
     if ((this->m_flags & 4) != 0) {
-        const math::Dir3* v35 = rbint::multiply(v40, this->b1, &this->m_b1_a2_loc);
-        const math::Dir3* v15 = rbint::multiply(&b1_axis_4, this->b1, &this->m_b1_a1_loc);
+        v40[0] = rbint::multiply(this->b1, this->m_b1_a2_loc);
+        const math::Dir3* v35 = &v40[0];
+        b1_axis_4 = rbint::multiply(this->b1, this->m_b1_a1_loc);
+        const math::Dir3* v15 = &b1_axis_4;
         psys->create_hinge(this->b1, &v37, this->b2, &v40[2], v15, v35,
                            &this->m_ps_cache_list[4], delta_t);
         if ((this->m_flags & 0x30) != 0) {
-            const math::Dir3* v16 = rbint::multiply(v40, this->b1, &this->m_b1_ref_loc);
+            v40[0] = rbint::multiply(this->b1, this->m_b1_ref_loc);
+            const math::Dir3* v16 = &v40[0];
             this->setup_hinge(psys, *v16, v40[2], delta_t);
         }
     }
@@ -508,7 +514,7 @@ void rigid_body_constraint_ragdoll::setup_constraint(pulse_sum_constraint_solver
                     __debugbreak();
                 }
                 if (((1 << idx) & this->m_flags) != 0) {
-                    rbint::multiply(v40, this->b1, &this->m_joint_limits[idx].m_b1_ud_loc);
+                    v40[0] = rbint::multiply(this->b1, this->m_joint_limits[idx].m_b1_ud_loc);
                     __m128 v21 = _mm_mul_ps(v40[2].v, v40[0].v);
                     float dot = v21.m128_f32[0]
                                 + (_mm_shuffle_ps(v21, v21, 85).m128_f32[0]
@@ -549,8 +555,8 @@ void rigid_body_constraint_ragdoll::setup_constraint(pulse_sum_constraint_solver
         if ((this->m_flags & 0x30) != 0) {
             math::Mat43 rot;
             make_rotate(&rot, v37, v40[2]);
-            const math::Dir3* v32 = rbint::multiply(&b1_axis_4, this->b1,
-                                                    &this->m_b1_ref_loc);
+            b1_axis_4 = rbint::multiply(this->b1, this->m_b1_ref_loc);
+            const math::Dir3* v32 = &b1_axis_4;
             math::Dir3 b1_ref;
             b1_ref.v = _mm_add_ps(
                 _mm_add_ps(

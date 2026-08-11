@@ -1199,45 +1199,45 @@ extern void verify_is_in_physics_system(rigid_body_constraint_contact* rbc,
                                         rigid_body* b1_, rigid_body* b2_);
 extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
 
-namespace rbint {
-void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
-math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb, const math::Dir3* t);
+class rbint {
+public:
+static void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
 
 // get_pulse_sum_node - ea: 0x8924A0
-inline pulse_sum_node* get_pulse_sum_node(const rigid_body* rb) {
+static inline pulse_sum_node* get_pulse_sum_node(const rigid_body* rb) {
     return rb->m_node;
 }
 
 // verify_pulse_sum_node - ea: 0x8925F0
-inline unsigned int verify_pulse_sum_node(rigid_body* const rb) {
+static inline unsigned int verify_pulse_sum_node(rigid_body* const rb) {
     if (rb->m_node != NULL)
         return (rb->m_flags & 0x30) == 0;
     return rb->m_flags & 0x30;
 }
 
 // add_vel - ea: 0x8924B0
-inline void add_vel(rigid_body* rb, const math::Dir3* t, const math::Dir3* a) {
+static inline void add_vel(rigid_body* rb, const math::Dir3* t, const math::Dir3* a) {
     rb->m_t_vel.v = _mm_add_ps(rb->m_t_vel.v, t->v);
     rb->m_a_vel.v = _mm_add_ps(rb->m_a_vel.v, a->v);
 }
 
 // get_last_t_vel / get_last_a_vel - ea: 0x892620 / 0x892630
-inline const math::Dir3* get_last_t_vel(rigid_body* rb) { return &rb->m_last_t_vel; }
-inline const math::Dir3* get_last_a_vel(rigid_body* rb) { return &rb->m_last_a_vel; }
+static inline const math::Dir3* get_last_t_vel(rigid_body* rb) { return &rb->m_last_t_vel; }
+static inline const math::Dir3* get_last_a_vel(rigid_body* rb) { return &rb->m_last_a_vel; }
 
 // gtv - ea: 0x8955A0
-inline const math::Dir3* gtv(const math::Dir3* result, rigid_body* const b,
-                             const math::Dir3* r) {
-    ((math::Dir3*)result)->v = _mm_add_ps(
+static inline const math::Dir3 gtv(rigid_body* const b, const math::Dir3& r) {
+    math::Dir3 result;
+    result.v = _mm_add_ps(
         b->m_t_vel.v,
         _mm_sub_ps(
-            _mm_mul_ps(_mm_shuffle_ps(b->m_a_vel.v, b->m_a_vel.v, 9), _mm_shuffle_ps(r->v, r->v, 18)),
-            _mm_mul_ps(_mm_shuffle_ps(b->m_a_vel.v, b->m_a_vel.v, 18), _mm_shuffle_ps(r->v, r->v, 9))));
+            _mm_mul_ps(_mm_shuffle_ps(b->m_a_vel.v, b->m_a_vel.v, 9), _mm_shuffle_ps(r.v, r.v, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(b->m_a_vel.v, b->m_a_vel.v, 18), _mm_shuffle_ps(r.v, r.v, 9))));
     return result;
 }
 
 // inv_L (3-arg) - ea: 0x894FE0
-inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
+static inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
                                const math::Dir3* t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 19,
@@ -1252,7 +1252,7 @@ inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
 }
 
 // inv_L (4-arg) - ea: 0x895080
-inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
+static inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
                                const math::Dir3* t, float delta_t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 30,
@@ -1269,7 +1269,7 @@ inline const math::Dir3* inv_L(const math::Dir3* result, const rigid_body* rb,
 }
 
 // mul_inv_L - ea: 0x895130
-inline const math::Dir3* mul_inv_L(const math::Dir3* result, const rigid_body* rb,
+static inline const math::Dir3* mul_inv_L(const math::Dir3* result, const rigid_body* rb,
                                    const math::Dir3* t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:/cod/code/tl/physics/include\\rigid_body_internal.h", 41,
@@ -1297,7 +1297,7 @@ inline const math::Dir3* mul_inv_L(const math::Dir3* result, const rigid_body* r
 }
 
 // euler_integrate_velocity - ea: 0x895350
-inline void euler_integrate_velocity(rigid_body* const rb, float delta_t) {
+static inline void euler_integrate_velocity(rigid_body* const rb, float delta_t) {
     float inv_mass_dt = rb->m_inv_mass * delta_t;
     math::Dir3 v4;
     v4.v = rb->m_force_sum.v;
@@ -1311,10 +1311,10 @@ inline void euler_integrate_velocity(rigid_body* const rb, float delta_t) {
 }
 
 // euler_integrate_pos - ea: 0x895410
-inline void euler_integrate_pos(rigid_body* const rb, float delta_t);
+static inline void euler_integrate_pos(rigid_body* const rb, float delta_t);
 
 // update_stability - ea: 0x892500
-inline void update_stability(rigid_body* const rb, float delta_t) {
+static inline void update_stability(rigid_body* const rb, float delta_t) {
     __m128 v3 = _mm_mul_ps(rb->m_t_vel.v, rb->m_t_vel.v);
     float v8 = v3.m128_f32[0] + _mm_shuffle_ps(v3, v3, 85).m128_f32[0] +
                _mm_shuffle_ps(v3, v3, 170).m128_f32[0];
@@ -1337,13 +1337,13 @@ inline void update_stability(rigid_body* const rb, float delta_t) {
 }
 
 // setup_constraint - ea: 0x897870
-inline void setup_constraint(rigid_body* rb, pulse_sum_node* psn);
+static inline void setup_constraint(rigid_body* rb, pulse_sum_node* psn);
 
 // substep - ea: 0x895210
-inline void substep(user_rigid_body* rb, float delta_t);
+static inline void substep(user_rigid_body* rb, float delta_t);
 
 // prolog_frame_advance (rigid_body) - ea: 0x88EBC0
-inline void prolog_frame_advance(rigid_body* rb, const outer_time* outside_delta_t) {
+static inline void prolog_frame_advance(rigid_body* rb, const outer_time* outside_delta_t) {
     float m_time = rb->m_time_scale.m_time * outside_delta_t->m_time;
     float avel_sq = rb->m_a_vel.v.m128_f32[0] * rb->m_a_vel.v.m128_f32[0] +
                     rb->m_a_vel.v.m128_f32[1] * rb->m_a_vel.v.m128_f32[1] +
@@ -1370,7 +1370,7 @@ inline void prolog_frame_advance(rigid_body* rb, const outer_time* outside_delta
 }
 
 // prolog_frame_advance (user_rigid_body) - ea: 0x88B130
-inline void prolog_frame_advance(user_rigid_body* rb, const outer_time* outside_delta_t) {
+static inline void prolog_frame_advance(user_rigid_body* rb, const outer_time* outside_delta_t) {
     if ((rb->m_flags & 0x20) == 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 120,
                   "rb->is_user_rigid_body()", ""))
@@ -1385,7 +1385,7 @@ inline void prolog_frame_advance(user_rigid_body* rb, const outer_time* outside_
 }
 
 // take_next_step - ea: 0x88B1C0
-inline void take_next_step(user_rigid_body* rb, const outer_time*) {
+static inline void take_next_step(user_rigid_body* rb, const outer_time*) {
     if ((rb->m_flags & 0x20) == 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 147,
                   "rb->is_user_rigid_body()", ""))
@@ -1398,7 +1398,7 @@ inline void take_next_step(user_rigid_body* rb, const outer_time*) {
 }
 
 // take_last_step - ea: 0x88B2A0
-inline void take_last_step(user_rigid_body* rb, const outer_time*) {
+static inline void take_last_step(user_rigid_body* rb, const outer_time*) {
     if ((rb->m_flags & 0x20) == 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 154,
                   "rb->is_user_rigid_body()", ""))
@@ -1411,13 +1411,13 @@ inline void take_last_step(user_rigid_body* rb, const outer_time*) {
 }
 
 // epilog_frame_advance - ea: 0x88B380
-inline void epilog_frame_advance(rigid_body* const rb) {
+static inline void epilog_frame_advance(rigid_body* const rb) {
     rb->m_force_sum.v = Float4_Zero_212.v;
     rb->m_torque_sum.v = Float4_Zero_212.v;
 }
 
 // mul_L - ea: 0x88E8F0
-inline math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb,
+static inline math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb,
                          const math::Dir3* t) {
     if ((~(rb->m_flags >> 6) & 1) == 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 76,
@@ -1449,10 +1449,10 @@ inline math::Dir3* mul_L(math::Dir3* result, const rigid_body* rb,
 }
 
 // calc_col_mat (user_rigid_body) - ea: 0x88E9F0
-inline void calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t);
+static inline void calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t);
 
 // get_dictator - ea: 0x87E9A0
-inline const math::Mat43* get_dictator(const user_rigid_body* rb) {
+static inline const math::Mat43* get_dictator(const user_rigid_body* rb) {
     if ((rb->m_flags & 0x20) != 0)
         return rb->m_dictator;
     bool v1 = !_tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 114,
@@ -1464,32 +1464,84 @@ inline const math::Mat43* get_dictator(const user_rigid_body* rb) {
 }
 
 // constraint_info_reset - ea: 0x87E9E0
-inline void constraint_info_reset(rigid_body* rb) {
+static inline void constraint_info_reset(rigid_body* rb) {
     rb->m_constraint_count = 0;
     rb->m_contact_count = 0;
 }
 
 // increment_constraint_count - ea: 0x87EA00
-inline void increment_constraint_count(rigid_body* rb) {
+static inline void increment_constraint_count(rigid_body* rb) {
     ++rb->m_constraint_count;
 }
 
 // increment_contact_count - ea: 0x87EA10
-inline void increment_contact_count(rigid_body* rb, int c) {
+static inline void increment_contact_count(rigid_body* rb, int c) {
     rb->m_contact_count += c;
 }
+
+// multiply - ea: 0x885DD0 (rbc_def_vehicle.o COMDAT)
+static const math::Dir3 multiply(rigid_body* b, const math::Dir3& r) {
+    if ((~(b->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 248,
+                  "b->debug_flag_is_not_in_collision()", ""))
+        __debugbreak();
+    math::Dir3 result;
+    result.v = _mm_add_ps(_mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(r.v, r.v, 0), b->m_mat.x.v),
+                                   _mm_mul_ps(_mm_shuffle_ps(r.v, r.v, 85), b->m_mat.y.v)),
+                           _mm_mul_ps(_mm_shuffle_ps(r.v, r.v, 170), b->m_mat.z.v));
+    return result;
 }
+
+// collide_multiply - ea: 0x885ED0 (rbc_def_vehicle.o COMDAT)
+static const math::Dir3 collide_multiply(rigid_body* b, const math::Dir3& r) {
+    if ((b->m_flags & 0x50) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 336,
+                  "b->debug_flag_is_in_collision()", ""))
+        __debugbreak();
+    math::Dir3 result;
+    result.v = _mm_add_ps(_mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(r.v, r.v, 0), b->m_col_mat.x.v),
+                                   _mm_mul_ps(_mm_shuffle_ps(r.v, r.v, 85), b->m_col_mat.y.v)),
+                           _mm_mul_ps(_mm_shuffle_ps(r.v, r.v, 170), b->m_col_mat.z.v));
+    return result;
+}
+
+// add_pos - ea: 0x885E60 (rbc_def_vehicle.o COMDAT)
+static const math::Dir3 add_pos(rigid_body* b, const math::Dir3& r) {
+    if ((~(b->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 270,
+                  "b->debug_flag_is_not_in_collision()", ""))
+        __debugbreak();
+    math::Dir3 result;
+    result.v = _mm_add_ps(b->m_mat.w.v, r.v);
+    return result;
+}
+
+// collide_add_pos - ea: 0x885F60 (rbc_def_vehicle.o COMDAT)
+static const math::Dir3 collide_add_pos(rigid_body* b, const math::Dir3& r) {
+    if ((b->m_flags & 0x50) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 358,
+                  "b->debug_flag_is_in_collision()", ""))
+        __debugbreak();
+    math::Dir3 result;
+    result.v = _mm_add_ps(b->m_col_mat.w.v, r.v);
+    return result;
+}
+
+// sub_pos - ea: 0x891AA0 (rbc_def_generic.o COMDAT)
+static const math::Dir3 sub_pos(rigid_body* b, const math::Dir3& p) {
+    if ((~(b->m_flags >> 6) & 1) == 0 &&
+        _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 281,
+                  "b->debug_flag_is_not_in_collision()", ""))
+        __debugbreak();
+    math::Dir3 result;
+    result.v = _mm_sub_ps(p.v, b->m_mat.w.v);
+    return result;
+}
+};
 
 // ============================================================================
 // rbint — rigid-body intrinsic math (methods in phys_util.o, unresolved)
 // ============================================================================
-namespace rbint {
-const math::Dir3* multiply(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
-const math::Dir3* collide_multiply(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
-const math::Dir3* add_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
-const math::Dir3* collide_add_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* r);
-const math::Dir3* sub_pos(const math::Dir3* result, rigid_body* b, const math::Dir3* p);
-}
 
 // ============================================================================
 // rbcint â€” constraint base helpers (get_time_scale in rbc_def_generic.o)

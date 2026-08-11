@@ -46,8 +46,44 @@ extern const math::Dir3& Float4_Zero_208;
 extern const math::Dir3& Float4_Two_208;
 extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
 
-namespace rbint {
-void calc_col_mat(rigid_body* rb, const outer_time* outside_delta_t);
+// ea: 0x886F80 (rigid_body.o COMDAT)
+void rbint::calc_col_mat(rigid_body* const rb, const outer_time* outside_delta_t)
+{
+    float m_time = rb->m_time_scale.m_time * outside_delta_t->m_time;
+    __m128 dt = _mm_shuffle_ps(_mm_set_ss(m_time), _mm_set_ss(m_time), 0);
+    __m128 v8;
+    if ((signed int)rb->m_flags >= 0)
+    {
+        v8 = _mm_mul_ps(rb->m_t_vel.v, dt);
+    }
+    else
+    {
+        __m128 inv = _mm_mul_ps(rb->m_force_sum.v,
+                                _mm_shuffle_ps(_mm_set_ss(rb->m_inv_mass * m_time),
+                                               _mm_set_ss(rb->m_inv_mass * m_time), 0));
+        v8 = _mm_mul_ps(_mm_add_ps(rb->m_t_vel.v, inv), dt);
+    }
+    rb->m_col_mat.w.v = _mm_add_ps(rb->m_mat.w.v, v8);
+    math::Mat43 rot;
+    make_rotate(&rot, rb->m_a_vel, m_time);
+    __m128 rx = rot.x.v;
+    __m128 ry = rot.y.v;
+    __m128 rz = rot.z.v;
+    __m128 v14 = rb->m_mat.x.v;
+    __m128 v15 = rb->m_mat.y.v;
+    __m128 v16 = rb->m_mat.z.v;
+    rb->m_col_mat.x.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v14, v14, 0), rx),
+                   _mm_mul_ps(_mm_shuffle_ps(v14, v14, 85), ry)),
+        _mm_mul_ps(_mm_shuffle_ps(v14, v14, 170), rz));
+    rb->m_col_mat.y.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v15, v15, 0), rx),
+                   _mm_mul_ps(_mm_shuffle_ps(v15, v15, 85), ry)),
+        _mm_mul_ps(_mm_shuffle_ps(v15, v15, 170), rz));
+    rb->m_col_mat.z.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v16, v16, 0), rx),
+                   _mm_mul_ps(_mm_shuffle_ps(v16, v16, 85), ry)),
+        _mm_mul_ps(_mm_shuffle_ps(v16, v16, 170), rz));
 }
 
 // ============================================================================

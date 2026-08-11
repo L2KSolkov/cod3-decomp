@@ -34,9 +34,8 @@ void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1,
                      float delta_t, math::Dir3* t_vel, math::Dir3* a_vel);
 }
 
-namespace rbint {
 // calc_col_mat (user_rigid_body) - ea: 0x88E9F0
-void calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t) {
+void rbint::calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t) {
     if ((rb->m_flags & 0x20) == 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body_internal.h", 128,
                   "rb->is_user_rigid_body()", ""))
@@ -77,7 +76,6 @@ void calc_col_mat(user_rigid_body* rb, const outer_time* outside_delta_t) {
         v16);
     rb->m_col_mat.y = v20.z;
     rb->m_col_mat.z.v = v20.w.v;
-}
 }
 
 // ============================================================================
