@@ -8,6 +8,15 @@ level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 SaveGameData* gSaveGameData;   // ?gSaveGameData@@3PAUSaveGameData@@A @ 0xF312F0
 cvar_t* g_gameskill;           // ?g_gameskill@@3PAUcvar_t@@A (g.o)
 cgGlobal_t cgGlobal;           // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
+ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
+struct ServerTime_s {
+    unsigned int mNumTicksElapsed;
+    int          mTickMSec;
+    float        mTickDelta;
+    float        mTickDeltaInv;
+    float        mElapsedTime;
+};
+ServerTime_s ServerTime_sInst;  // ?ServerTime_sInst@@3UServerTime_s@@A (common)
 DebugThread g_debugThread;     // ?g_debugThread@@3VDebugThread@@A @ 0xDEB5A0
 EntityHandleDb EntityHandleDb::sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o @ 0x12BB4E8)
 void* SmokeGrenadeMgr::sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
