@@ -117,7 +117,7 @@ int  PM_WeaponAmmoAvailable(int wp);  // game.o 0x607E50
 int  PM_WeaponClipEmpty(int wp);      // game.o 0x607E80
 int  PM_Weapon_FinishRechamber();     // game.o 0x607FD0
 void PM_KillQueuedReloadSound(PlayerState* ps);  // game.o 0x6080E0
-PlayerState* PM_SetProneMovementOverride();      // game.o 0x606590
+void PM_SetProneMovementOverride();              // game.o 0x606590
 void PM_WeaponUseAmmo(int wp, int amount);       // game.o 0x607E10
 void PM_Weapon_SetFPSFireAnim();                 // game.o 0x6089C0
 void PM_Weapon_AddFiringAimSpreadScale();        // game.o 0x608A50
@@ -2837,12 +2837,12 @@ void PM_UpdateViewAngles(
     // game.o 0x63D2B0
 extern int  PM_InteruptWeaponWithProneMove();     // game.o 0x6171B0
 extern int  PM_InteruptWeaponWithSprintMove();    // game.o 0x617250
-extern pmove_t* PM_UpdatePlayerWalkingFlag();     // game.o 0x6065B0
-extern PlayerState* PM_UpdatePlayerSprintingFlag(); // game.o 0x62F070
-extern PlayerState* PM_UpdateFatigue();           // game.o 0x606440
+extern void PM_UpdatePlayerWalkingFlag();         // game.o 0x6065B0
+extern void PM_UpdatePlayerSprintingFlag();       // game.o 0x62F070
+extern void PM_UpdateFatigue();                   // game.o 0x606440
 extern void PM_UpdateAimDownSightFlag();          // game.o 0x62F2F0
 extern void PM_UpdateAimDownSightLerp();          // game.o 0x62F670
-extern PlayerState* PM_AdjustAimSpreadScale();    // game.o 0x608670
+extern void PM_AdjustAimSpreadScale();            // game.o 0x608670
 
 // ea: 0x006464C0
 void Pmove(pmove_t* pmove, bool isThisThePredictStep)
@@ -5033,7 +5033,7 @@ int PM_ShouldMakeFootsteps()
 // ============================================================================
 // PM_PlayFatigueSound - ea: 0x6063E0
 // ============================================================================
-PlayerState* PM_PlayFatigueSound()
+void PM_PlayFatigueSound()
 {
     PlayerState* result = pm->ps;
     if ((0x20000 & pm->ps->pm_flags) != 0)
@@ -5052,13 +5052,12 @@ PlayerState* PM_PlayFatigueSound()
         if (iFatigueSoundTime > 0 && iFatigueSoundTime + 1700 < pm->cmd.serverTime)
             result->iFatigueSoundTime = 0;
     }
-    return result;
 }
 
 // ============================================================================
 // PM_UpdateFatigue - ea: 0x606440
 // ============================================================================
-PlayerState* PM_UpdateFatigue()
+void PM_UpdateFatigue()
 {
     PlayerState* result = pm->ps;
     if ((0x10000 & pm->ps->pm_flags) == 0)
@@ -5066,7 +5065,7 @@ PlayerState* PM_UpdateFatigue()
         if ((pm->cmd.buttons & 4) == 0)
         {
             if (pm->cmd.serverTime < result->lastSprintTime + 1000)
-                return result;
+                return;
             result->fatigueScale =
                 (pml.msec * 0.001f * 0.16666667f) + result->fatigueScale;
             if (pm->ps->fatigueScale >= 1.0f)
@@ -5077,7 +5076,8 @@ PlayerState* PM_UpdateFatigue()
                     pm->ps->pm_flags = pm_flags & 0xFFFDFFFF;
             }
         }
-        return PM_PlayFatigueSound();
+        PM_PlayFatigueSound();
+        return;
     }
     if (result->pm_type != 2 && bg_nofatigue.integer == 0)
     {
@@ -5093,53 +5093,47 @@ PlayerState* PM_UpdateFatigue()
         if (pm->ps->fatigueScale < 0.0f)
             result->fatigueScale = 0.0f;
     }
-    return result;
 }
 
 // ============================================================================
 // PM_SetProneMovementOverride - ea: 0x606590
 // ============================================================================
-PlayerState* PM_SetProneMovementOverride()
+void PM_SetProneMovementOverride()
 {
     PlayerState* result = pm->ps;
     if ((pm->ps->pm_flags & 1) != 0)
         result->pm_flags |= 0x400u;
-    return result;
 }
 
 // ============================================================================
 // PM_UpdatePlayerWalkingFlag - ea: 0x6065B0
 // ============================================================================
-pmove_t* PM_UpdatePlayerWalkingFlag()
+void PM_UpdatePlayerWalkingFlag()
 {
     pm->ps->pm_flags &= ~0x80u;
-    pmove_t* result = pm;
     PlayerState* ps = pm->ps;
     if (pm->ps->pm_type < 6 && (pm->cmd.buttons & 8) != 0)
     {
-        result = (pmove_t*)ps->pm_flags;
-        if (((unsigned int)result & 1) == 0 && ((unsigned int)result & 0x20) != 0
+        int pm_flags = ps->pm_flags;
+        if ((pm_flags & 1) == 0 && (pm_flags & 0x20) != 0
             && (0x100000 & ps->eFlags) == 0
-            && (0x10000 & (unsigned int)result) == 0)
+            && (0x10000 & pm_flags) == 0)
         {
-            result = (pmove_t*)ps->weaponstate;
-            if ((unsigned int)result != 5 && (unsigned int)result != 7
-                && (unsigned int)result != 9 && (unsigned int)result != 8
-                && (unsigned int)result != 6)
+            int weaponstate = ps->weaponstate;
+            if (weaponstate != 5 && weaponstate != 7
+                && weaponstate != 9 && weaponstate != 8
+                && weaponstate != 6)
                 ps->pm_flags |= 0x80u;
         }
     }
-    return result;
 }
 
 // ============================================================================
 // PM_ClearAimDownSightFlag - ea: 0x607A00
 // ============================================================================
-PlayerState* PM_ClearAimDownSightFlag()
+void PM_ClearAimDownSightFlag()
 {
-    PlayerState* result = pm->ps;
     pm->ps->pm_flags &= ~0x20u;
-    return result;
 }
 
 // ============================================================================
@@ -6383,7 +6377,7 @@ void PM_KillQueuedReloadSound(PlayerState* ps)
 // ============================================================================
 // PM_AdjustAimSpreadScale - ea: 0x608670
 // ============================================================================
-PlayerState* PM_AdjustAimSpreadScale()
+void PM_AdjustAimSpreadScale()
 {
     pmove_t* v1 = pm;
     weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
@@ -6455,17 +6449,15 @@ decay_ready:
         v12 = pml.frametime * ((viewchange + 1.28f) + 1.28f);
 spread_apply:
     v1->ps->aimSpreadScale = ((v12 - v8) * 255.0f) + v1->ps->aimSpreadScale;
-    PlayerState* result = pm->ps;
     if (pm->ps->aimSpreadScale >= 0.0f)
     {
-        if (result->aimSpreadScale > 255.0f)
-            result->aimSpreadScale = 255.0f;
+        if (pm->ps->aimSpreadScale > 255.0f)
+            pm->ps->aimSpreadScale = 255.0f;
     }
     else
     {
-        result->aimSpreadScale = 0.0f;
+        pm->ps->aimSpreadScale = 0.0f;
     }
-    return result;
 }
 
 // ============================================================================
@@ -8360,7 +8352,7 @@ void PM_UpdatePronePitch()
 // PM_UpdatePlayerSprintingFlag - ea: 0x62F070 (bg_pmove.cpp)
 // ============================================================================
 // ea: 0x0062F070
-PlayerState* PM_UpdatePlayerSprintingFlag()
+void PM_UpdatePlayerSprintingFlag()
 {
     int pm_flags = pm->ps->pm_flags;
     pm->ps->pm_flags = pm_flags & 0xFFFEFFFF;
@@ -8395,7 +8387,6 @@ PlayerState* PM_UpdatePlayerSprintingFlag()
             }
         }
     }
-    return pm->ps;
 }
 
 // ============================================================================
