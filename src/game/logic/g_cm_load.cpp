@@ -345,18 +345,15 @@ void CM_FloodArea_r(unsigned int areaNum, int floodnum)
 }
 
 // ea: 0x00619750
-unsigned int CM_FloodAreaConnections()
+void CM_FloodAreaConnections()
 {
     ++g_bspTree->floodvalid;
     int floodnum = 0;
-    unsigned int result = (unsigned int)g_bspTree->mAreas.mSize;
-    for (unsigned int v2 = 0; v2 < result; ++v2)
+    for (unsigned int v2 = 0; v2 < (unsigned int)g_bspTree->mAreas.mSize; ++v2)
     {
         if (BspAreaAt(v2).floodvalid != g_bspTree->floodvalid)
             CM_FloodArea_r(v2, ++floodnum);
-        result = (unsigned int)g_bspTree->mAreas.mSize;
     }
-    return result;
 }
 
 // ea: 0x00619810
@@ -1117,7 +1114,7 @@ struct PartialClipMap {
 extern PartialClipMap pcm;        // ?pcm@@3UPartialClipMap@@A (game.o)
 
 // ea: 0x006199C0
-char InitEntitiesBSP()
+void InitEntitiesBSP()
 {
     pcm.freeHead = pcm.worldSectors;
     for (unsigned int i = 0; i < 1023; ++i)
@@ -1149,17 +1146,16 @@ char InitEntitiesBSP()
         if (AeAssert::IsIgnored())
         {
             pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
-            return 0;
+            return;
         }
         if (!AeAssert::Assert("Bounds check"))
         {
             pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
-            return 0;
+            return;
         }
         __debugbreak();
     }
     pcm.visibility = (uint8_t*)g_bspTree->mVisibility.mList;
-    return 0;
 }
 
 // ============================================================================

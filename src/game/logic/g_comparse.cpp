@@ -178,17 +178,14 @@ void Com_ScriptWarning(const char* msg, ...)
 // Com_UngetToken / GetLastTokenPos - ea: 0x60FC90 / 0x60FEC0
 // ============================================================================
 // ea: 0x0060FC90
-parseInfo_t* Com_UngetToken()
+void Com_UngetToken()
 {
-    parseInfo_t* result = pi;
     if (pi->ungetToken != 0)
     {
         Com_ScriptError("UngetToken called twice");
-        result = pi;
     }
     tokenPos = prevTokenPos;
     pi->ungetToken = 1;
-    return result;
 }
 
 // ea: 0x0060FEC0

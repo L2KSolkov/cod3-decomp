@@ -6756,11 +6756,10 @@ void BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
 extern char** bg_szSharedAmmoCapNames;  // 0xF3E7D0
 
 // ea: 0x00616040
-int BG_FillInWeaponItems()
+void BG_FillInWeaponItems()
 {
     int v0 = 1;
     gitem_s* v1 = &bg_itemlist[1];
-    int result = bg_iNumWeapons;
     if (bg_iNumWeapons >= 1)
     {
         do
@@ -6783,11 +6782,10 @@ int BG_FillInWeaponItems()
             v1->quantity = iStartAmmo;
             v1->giType = IT_WEAPON;
             v1->giAmmoIndex = v2->iAmmoIndex;
-            result = bg_iNumWeapons;
             v1->giClipIndex = v2->iClipIndex;
             ++v0;
             ++v1;
-        } while (v0 <= result);
+        } while (v0 <= bg_iNumWeapons);
     }
     if (v0 < 137)
     {
@@ -6832,14 +6830,12 @@ int BG_FillInWeaponItems()
                 }
             }
             p_giTag += 13;
-            result = --v10;
         } while (v10 != 0);
     }
-    return result;
 }
 
 // ea: 0x006161E0
-int BG_SetupAmmoIndexes()
+void BG_SetupAmmoIndexes()
 {
     int i = 1;
     if (bg_iNumWeapons >= 1)
@@ -6918,20 +6914,17 @@ int BG_SetupAmmoIndexes()
                 v1->iAmmoIndex = v4;
                 bg_iNumAmmoTypes = v12 + 1;
             }
-            int result = i + 1;
             bool v13 = ++i <= bg_iNumWeapons;
             ++v15;
             if (!v13)
-                return result;
+                return;
         } while (1);
     }
-    return 1;
 }
 
 // ea: 0x006163E0
-int BG_SetupSharedAmmoIndexes()
+void BG_SetupSharedAmmoIndexes()
 {
-    int result = bg_iNumWeapons;
     for (int i = 1; i <= bg_iNumWeapons; ++i)
     {
         weaponFileInfo_t* v2 = bg_weaponInfo[i];
@@ -6957,13 +6950,11 @@ int BG_SetupSharedAmmoIndexes()
             v2->iSharedAmmoCapIndex = v6;
             bg_iNumSharedAmmoCaps = v6 + 1;
         }
-        result = bg_iNumWeapons;
     }
-    return result;
 }
 
 // ea: 0x006164A0
-int BG_SetupClipIndexes()
+void BG_SetupClipIndexes()
 {
     int i = 1;
     if (bg_iNumWeapons >= 1)
@@ -7042,14 +7033,12 @@ int BG_SetupClipIndexes()
                 v1->iClipIndex = v4;
                 bg_iNumWeapClips = v12 + 1;
             }
-            int result = i + 1;
             bool v13 = ++i <= bg_iNumWeapons;
             ++v15;
             if (!v13)
-                return result;
+                return;
         } while (1);
     }
-    return 1;
 }
 
 // ea: 0x006166A0
@@ -8393,7 +8382,7 @@ void PM_UpdatePlayerSprintingFlag()
 // PM_MeleeAssistAccelerate - ea: 0x62DCF0 (bg_pmove.cpp)
 // ============================================================================
 // ea: 0x0062DCF0
-unsigned int PM_MeleeAssistAccelerate()
+void PM_MeleeAssistAccelerate()
 {
     unsigned int result = pm->ps->mMeleeAssistTarget.mHandle.mVal;
     if (result != 0)
@@ -8431,7 +8420,6 @@ unsigned int PM_MeleeAssistAccelerate()
             }
         }
     }
-    return result;
 }
 
 // ============================================================================

@@ -1321,10 +1321,10 @@ int  BG_CanItemBeGrabbed(const EntityState* ent, const PlayerState* ps,
                          int bTouched);              // game.o 0x6278C0
 int  BG_GetNumWeapons();
 int  BG_GetAmmoClipSize(int iClipIndex);
-int  BG_FillInWeaponItems();                  // game.o 0x616040
-int  BG_SetupAmmoIndexes();                   // game.o 0x6161E0
-int  BG_SetupSharedAmmoIndexes();             // game.o 0x6163E0
-int  BG_SetupClipIndexes();                   // game.o 0x6164A0
+void BG_FillInWeaponItems();                  // game.o 0x616040
+void BG_SetupAmmoIndexes();                   // game.o 0x6161E0
+void BG_SetupSharedAmmoIndexes();             // game.o 0x6163E0
+void BG_SetupClipIndexes();                   // game.o 0x6164A0
 int  compare_weaponfile_names(const void* pe1, const void* pe2);  // game.o 0x6166A0
 bool BG_IsLMGMounted(const PlayerState* ps);  // game.o 0x6166D0
 bool BG_IsCookingOffGrenade(const PlayerState* ps);  // game.o 0x616750
@@ -2794,7 +2794,7 @@ bool collide_velocity_sphere_poly(const math::Position3& c0,
                                   const math::Position3& v2,
                                   const math::Vector4& plane,
                                   bool& insolid);  // game.o 0x61BBB0
-char InitEntitiesBSP();  // game.o 0x6199C0
+void InitEntitiesBSP();  // game.o 0x6199C0
 struct leafList_s;
 void GetLeaves(leafList_s* ll, unsigned int nodeIndex, float* mindist);  // game.o 0x619050
 int CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
