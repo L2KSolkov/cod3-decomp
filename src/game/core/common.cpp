@@ -376,7 +376,10 @@ extern void InitLights();
 extern void TimerRenderBars_Init(void* self);
 extern void* TimerRenderBars_sInst;
 extern void EntityHandleDb_Init(void* self);
-extern void* EntityHandleDb_sInst;
+class EntityHandleDb {
+public:
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o)
+};
 extern void StatusBar_Init(void* self);
 extern void FEManager_InitDialogMenuSystem(void* self);
 extern void FEManager_LoadInGameMenus(void* self);
@@ -2247,7 +2250,7 @@ void Com_Init(char* commandLine)
     InitLights();
     gDoNotPlayCampaignMovies = 0;
     TimerRenderBars_Init(TimerRenderBars_sInst);
-    EntityHandleDb_Init(EntityHandleDb_sInst);
+    EntityHandleDb_Init(&EntityHandleDb::sInst);
     StatusBar_Init(nullptr);
     FEManager_InitDialogMenuSystem(&g_femanager);
     FEManager_LoadInGameMenus(&g_femanager);

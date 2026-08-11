@@ -584,21 +584,11 @@ extern int Key_GetCatcher();
 extern void Key_SetCatcher(int catcher);
 extern void* EntityHandleDb_mActiveList;
 extern char cgsGlobal_shellshockParms[0x7C];
-class EntityHandleDbLocal;
-class EntityHandleDbLocal {
-public:
-    struct DbElement {
-        Entity* mObject;
-        int mKey;
-    };
-    DbElement mElements[0x540];
-};
-extern EntityHandleDbLocal EntityHandleDb_sInst;
 static Entity* EntityHandleDb_Get(unsigned int handleVal)
 {
     unsigned int v = handleVal & 0xFFF;
-    if (v < 0x540 && handleVal >> 12 == EntityHandleDb_sInst.mElements[v].mKey)
-        return EntityHandleDb_sInst.mElements[v].mObject;
+    if (v < 0x540 && handleVal >> 12 == EntityHandleDb::sInst.mElements[v].mKey)
+        return EntityHandleDb::sInst.mElements[v].mObject;
     return nullptr;
 }
 extern int cgGlobal_oldTime;
@@ -646,9 +636,9 @@ int CG_PointContents(const math::Position3* point,
         unsigned int v4 = cg_solidEntities[i] & 0xFFF;
         if (v4 < 0x540
             && cg_solidEntities[i] >> 12
-                   == EntityHandleDb_sInst.mElements[v4].mKey)
+                   == EntityHandleDb::sInst.mElements[v4].mKey)
         {
-            Entity* mObject = EntityHandleDb_sInst.mElements[v4].mObject;
+            Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
             if (mObject != nullptr && mObject->s.solid == 0xFFFFFF
                 && mObject->r.bmodel != nullptr)
             {
@@ -677,10 +667,10 @@ void CG_BuildSolidList()
     cg_numSolidEntities = 0;
     if (v0 == 0)
         CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_predict.cpp", 47);
-    int count = *(int*)((char*)&EntityHandleDb_sInst + 0x2AB0);
+    int count = *(int*)((char*)&EntityHandleDb::sInst + 0x2AB0);
     for (int i = 0; i < count; ++i)
     {
-        Entity* ent = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+        Entity* ent = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
                                   + 4 * i);
         if (ent != nullptr)
         {
@@ -711,10 +701,10 @@ void CG_SetInitialSnapshot(snapshot_t* snap)
     dword_F6295C[v1] = 1;
     dword_F62960[v1] = (int)snap;
     dword_F62944[v1] = *(int*)((char*)snap + 0xA0);
-    int count = *(int*)((char*)&EntityHandleDb_sInst + 0x2AB0);
+    int count = *(int*)((char*)&EntityHandleDb::sInst + 0x2AB0);
     for (int i = 0; i < count; ++i)
     {
-        Entity* ent = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+        Entity* ent = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
                                   + 4 * i);
         if (ent != nullptr)
             ent->currentValid = 0;
@@ -1458,10 +1448,10 @@ void CG_AddLocalEntities()
 void CG_AddPacketEntities()
 {
     CL_DObjInvalidateSkels();
-    int count = *(int*)((char*)&EntityHandleDb_sInst + 0x2AB0);
+    int count = *(int*)((char*)&EntityHandleDb::sInst + 0x2AB0);
     for (int i = 0; i < count; ++i)
     {
-        Entity* ent = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+        Entity* ent = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
                                   + 4 * i);
         if (ent != nullptr && ent->mDObj != nullptr)
             j_nullsub_89(ent->mDObj, dword_F63554[1580 * currCl] * 0.001f);
@@ -1500,7 +1490,7 @@ void CG_AddPacketEntities()
                  (float (*)[3])(unk_F63C24 + 6320 * currCl));
     for (int i = 0; i < count; ++i)
     {
-        Entity* v9 = *(Entity**)((char*)&EntityHandleDb_sInst + 0x2AB4
+        Entity* v9 = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
                                  + 4 * i);
         if (v9 != nullptr && Entity_IsInSnapshot(v9)
             && TestFPS_sInst == nullptr && cg_addentities != 0
@@ -2602,4 +2592,3 @@ int CG_ProcessSnapshots()
     }
     return ServerSnapTime;
 }
-

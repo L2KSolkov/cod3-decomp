@@ -870,23 +870,13 @@ extern void CG_FillRect(float x, float y, float width, float height,
 extern void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
 extern void trap_R_SetColor(const float* rgba);
 extern void CG_GetCenterOfScreen(float* x, float* y);
-class EntityHandleDbLocal2;
-class EntityHandleDbLocal2 {
-public:
-    struct DbElement {
-        Entity* mObject;
-        int mKey;
-    };
-    DbElement mElements[0x540];
-};
-extern EntityHandleDbLocal2 EntityHandleDb_sInst2;
 static Entity* EntityHandleDb_Get2(unsigned int handleVal)
 {
     unsigned int v = handleVal & 0xFFF;
     if (v < 0x540
         && handleVal >> 12
-               == EntityHandleDb_sInst2.mElements[v].mKey)
-        return EntityHandleDb_sInst2.mElements[v].mObject;
+               == EntityHandleDb::sInst.mElements[v].mKey)
+        return EntityHandleDb::sInst.mElements[v].mObject;
     return nullptr;
 }
 
@@ -1774,4 +1764,3 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         curListener %= SoundDevice_GetNumberOfListeners(SoundDevice::sInst);
     }
 }
-

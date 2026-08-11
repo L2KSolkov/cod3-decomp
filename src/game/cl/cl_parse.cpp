@@ -136,7 +136,10 @@ extern void EffectEventSys_FrameAdvance(void* self, float delta);
 extern void SceneManager_UpdateEffects(void* self, float delta_t);
 extern void* SceneManager_sInst;
 extern void EntityHandleDb_Compact(void* self);
-extern void* EntityHandleDb_sInst;
+class EntityHandleDb {
+public:
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o)
+};
 extern void StreamZoneManager_Update(void* self, int cellNum,
                                      const float* pos, bool forceReset);
 extern void* StreamZoneManager_sInst;
@@ -1179,7 +1182,7 @@ void CL_Frame(int msec, float screen_time_inc)
         if (currCl == lLastLocalClientIndex)
         {
             cdl_proftimer_entities.start();
-            EntityHandleDb_Compact(EntityHandleDb_sInst);
+            EntityHandleDb_Compact(&EntityHandleDb::sInst);
             cdl_proftimer_entities.stop();
         }
         if (v14)
