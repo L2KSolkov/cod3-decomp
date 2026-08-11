@@ -53,29 +53,48 @@ struct DestructibleView {
     } mFlags;                // +0x00
 };
 
-// Checkpoint stub-save buffer (game.o .data @ 0xF317B0..0xF32ABC)
+// Checkpoint stub-save buffer (game.o .data @ 0xF317B0..0xF32ABC).
+// Offsets verified against disasm of SaveCheckpoint (0x631560) /
+// LoadCheckpointFromStubData (0x632120).
 struct CheckpointStub {
     unsigned char  saveExists;            // +0x000 (byte_F317B0)
     uint8_t        _pad1[3];
-    int            weapon;                // +0x004 (dword_F31AB0)
-    unsigned char  ammo[0x170];           // +0x008 (unk_F317B4)
-    unsigned char  ammoclip[0x170];       // +0x178 (unk_F31924)
-    int            weapons[2];            // +0x2E8 (dword_F31A94)
-    char           weaponslots[10];       // +0x2F0 (dword_F31A9C)
-    int            weaponrechamber[2];    // +0x2FC (dword_F31AA8)
+    int            ammo[92];              // +0x004 (unk_F317B4, 0x170)
+    int            ammoclip[92];          // +0x174 (unk_F31924, 0x170)
+    int            weapons[2];            // +0x2E4 (dword_F31A94/A98)
+    char           weaponslots[12];       // +0x2EC (dword_F31A9C/AA0, word_F31AA4)
+    int            weaponrechamber[2];    // +0x2F8 (dword_F31AA8/AAC)
+    int            weapon;                // +0x300 (dword_F31AB0)
     int            playerHealth;          // +0x304 (dword_F31AB4)
-    float          playerOrientation[3];  // +0x308 (dword_F31AB8)
-    float          origin[3];             // +0x314 (dword_F31AC4)
-    int            friendlyCount;         // +0x320 (dword_F31E50)
-    char           checkpointName[32];    // +0x324 (byte_F31E74)
-    int            gameVarCount;          // +0x344 (dword_F31EB4)
-    SCheckpointGameVar gameVars[256];     // +0x348 (iElement)
-    int            explodedCount;         // +0xD48 (dword_F32AB8)
-    int            exploded[256];         // +0xD4C (dword_F32ABC)
-    char           eventName[32];         // +0x1144 (Destination)
+    float          playerOrientation[3];  // +0x308 (dword_F31AB8/ABC/AC0)
+    float          origin[3];             // +0x314 (dword_F31AC4/AC8/ACC)
+    uint8_t        _pad320[0x380];
+    int            friendlyCount;         // +0x6A0 (dword_F31E50)
+    uint8_t        _pad6A4[0x20];
+    char           checkpointName[32];    // +0x6C4 (byte_F31E74)
+    char           eventName[32];         // +0x6E4 (Destination)
+    int            gameVarCount;          // +0x704 (dword_F31EB4)
+    SCheckpointGameVar gameVars[256];     // +0x708 (iElement)
+    int            explodedCount;         // +0xB08 (dword_F32AB8)
+    int            exploded[256];         // +0xB0C (dword_F32ABC)
 };
+static_assert(sizeof(CheckpointStub) == 0x170C, "CheckpointStub size mismatch");
 static CheckpointStub* sCheckpointStub = (CheckpointStub*)0xF317B0;
 extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A
+
+// Broc runtime API (gpBrocAPI -> BrocAPI struct; mGetEnt at +0x94).
+// g_local.h's minimal BrocAPI lacks mGetEnt, so call the entry via the
+// exported function pointer address.
+typedef unsigned int (__cdecl* BrocGetEntFn)(
+    const Broc::string*, int, unsigned int*, int, int);
+static BrocGetEntFn BrocAPI_mGetEnt()
+{
+    return *(BrocGetEntFn*)((char*)gpBrocAPI + 0x94);
+}
+extern int G_GetActorFriendlyIndex(Entity* entity);
+    // ?G_GetActorFriendlyIndex@@YAHPAVEntity@@@Z
+extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
+extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
 
 // ============================================================================
 // CheckpointMenu - ea: 0x6392D0..0x639370 (checkpointmenu.cpp)
@@ -144,6 +163,366 @@ void CheckpointMenu::RestartAtCheckpoint(int num)
                      PakInfo->checkPointNames.mList[(unsigned int)num].mStr);
             CheckpointMgr::sInst->mGameVars.mSize = 0;
         }
+    }
+}
+
+// ============================================================================
+// CheckpointMgr::SaveCheckpoint - ea: 0x631560 (checkpointmgr.cpp)
+// ============================================================================
+// ea: 0x00631560
+void CheckpointMgr::SaveCheckpoint(const char* checkpointName,
+                                   bool calledFromScript)
+{
+    if (Cvar_Get("letterbox_enabled", "0", 0)->integer != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+        AeAssert::gCurrentLine = 475;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error(
+                " SAVE CHECKPOINT CANNOT OCCUR DURING LETTERBOX "))
+            __debugbreak();
+        return;
+    }
+    if (checkpointName == nullptr || *checkpointName == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+        AeAssert::gCurrentLine = 482;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && !AeAssert::Warning(
+                "CHECKPOINT NAME SPECIFIED is either null or empty"))
+            goto LABEL_101;
+        __debugbreak();
+        goto LABEL_101;
+    }
+    Broc::string::Block* mBlock = this->mEvent.mBlock;
+    if (mBlock != nullptr && (Broc::string::Block*)mBlock + 1 != nullptr
+        && *((char*)((Broc::string::Block*)mBlock + 1)) != 0
+        && Broc::operator==(this->mEvent, checkpointName))
+    {
+        Com_Printf("Checkpoint <%s> already reached, just letting you know\n",
+                   checkpointName);
+        return;
+    }
+    Entity* scriptOrigin = nullptr;
+    if (!calledFromScript)
+    {
+        Broc::string v42(checkpointName);
+        unsigned int v7 = BrocAPI_mGetEnt()(
+            &v42, HashString::CalcHash("targetname"), nullptr, 0, 0);
+        v42.~string();
+        scriptOrigin = (Entity*)EntityHandleDb_GetObject(v7);
+        if (scriptOrigin == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+            AeAssert::gCurrentLine = 508;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && !AeAssert::Warning(
+                    "NO RESTART SCRIPT_ORIGIN ATTACHED TO CHECK POINT"))
+                goto LABEL_101;
+            __debugbreak();
+            goto LABEL_101;
+        }
+        if (scriptOrigin->mScriptNoteworthy.mBlock == nullptr
+            || scriptOrigin->mScriptNoteworthy.is_empty())
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+            AeAssert::gCurrentLine = 518;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && !AeAssert::Warning(
+                    "Invalid checkpoint name stored in script_noteworthy pair "
+                    "on script origin"))
+                goto LABEL_101;
+            __debugbreak();
+            goto LABEL_101;
+        }
+        if (Broc::operator==(this->mEvent,
+                             scriptOrigin->mScriptNoteworthy))
+        {
+            const char* v10 =
+                scriptOrigin->mScriptNoteworthy.mBlock != nullptr
+                    ? (const char*)(
+                          scriptOrigin->mScriptNoteworthy.mBlock + 1)
+                    : defaultFileName;
+            Com_Printf(
+                "Checkpoint <%s> already reached, just letting you know\n",
+                v10);
+            return;
+        }
+        this->mEvent = scriptOrigin->mScriptNoteworthy;
+        this->mCurrentMapName = s_worldData.baseName;
+        this->mPlayerOrientation[0] = 0.0f;
+        this->mPlayerOrientation[1] =
+            scriptOrigin->r.currentAngles.v.m128_f32[1];
+        this->mPlayerOrientation[2] = 0.0f;
+        this->mOrigin.v.m128_f32[0] =
+            scriptOrigin->r.currentOrigin.v.m128_f32[0];
+        this->mOrigin.v.m128_f32[1] =
+            scriptOrigin->r.currentOrigin.v.m128_f32[1];
+        this->mOrigin.v.m128_f32[2] =
+            scriptOrigin->r.currentOrigin.v.m128_f32[2];
+        goto LABEL_31;
+    }
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        this->mCurrentMapName = s_worldData.baseName;
+        this->mEvent = checkpointName;
+        this->mPlayerOrientation[0] =
+            Player->r.currentAngles.v.m128_f32[0];
+        this->mPlayerOrientation[1] =
+            Player->r.currentAngles.v.m128_f32[1];
+        this->mPlayerOrientation[2] =
+            Player->r.currentAngles.v.m128_f32[2];
+        this->mOrigin.v.m128_f32[0] =
+            Player->r.currentOrigin.v.m128_f32[0];
+        this->mOrigin.v.m128_f32[1] =
+            Player->r.currentOrigin.v.m128_f32[1];
+        this->mOrigin.v.m128_f32[2] =
+            Player->r.currentOrigin.v.m128_f32[2];
+        goto LABEL_31;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+    AeAssert::gCurrentLine = 550;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && !AeAssert::Warning(
+            "No player found while trying to save checkpoint"))
+        goto LABEL_101;
+    __debugbreak();
+LABEL_101:
+    Com_Printf("INVALID CHECKPOINT - PROGRESS NOT SAVED");
+    return;
+
+LABEL_31:
+    Client* client = GetPlayer(currCl)->client;
+    if (client->ps.stats[0] <= client->ps.stats[2]
+        && client->ps.stats[0] != 0)
+    {
+        this->mPlayerHealth = client->ps.stats[0];
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+        AeAssert::gCurrentLine = 574;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                "CRS - CURRENT HEALTH GREATER THAN MAX HEALTH - CAPPING "
+                "HEALTH AUTOMATICALLY, PLAYER PROBABLY HAS MAGIC BULLET "
+                "SHIELD ON"))
+            __debugbreak();
+        this->mPlayerHealth = client->ps.stats[2];
+    }
+    Com_Printf("blah blah Checkpoint Reached.\n");
+    if (this->mPlayerHealth == 0)
+        this->mPlayerHealth = client->ps.stats[2];
+    Client* v14 = GetPlayer(currCl)->client;
+    memcpy(this->ammo, v14->ps.ammo, sizeof(this->ammo));
+    memcpy(this->ammoclip, v14->ps.ammoclip, sizeof(this->ammoclip));
+    memcpy(this->weaponslots, v14->ps.weaponslots,
+           sizeof(this->weaponslots));
+    this->weaponrechamber[0] = v14->ps.weaponrechamber[0];
+    this->weaponrechamber[1] = v14->ps.weaponrechamber[1];
+    if (BG_GetInfoForWeapon(v14->ps.weapon)->weapClass != WEAPCLASS_GRENADE)
+    {
+        this->weapon = v14->ps.weapon;
+    }
+    else if (BG_GetInfoForWeapon(v14->ps.lastWeapon)
+                 ->weapClass != WEAPCLASS_GRENADE)
+    {
+        this->weapon = v14->ps.lastWeapon;
+    }
+    else
+    {
+        this->weapon = 0;
+    }
+    this->mCheckpointSaveExists = 1;
+    ++this->mCheckpointIndex;
+    InplaceVector<unsigned char>* mPersistantStorage =
+        SceneManager::sInst->mPersistantStorage;
+    if (mPersistantStorage != nullptr)
+    {
+        for (unsigned int i = 0; i < mPersistantStorage->mSize; ++i)
+        {
+            if ((*mPersistantStorage)[i] == 1)
+                (*mPersistantStorage)[i] = 2;
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\checkpointmgr.cpp";
+        AeAssert::gCurrentLine = 623;
+        AeAssert::gCurrentExpr = "persistantStorage";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no persistant storage!"))
+            __debugbreak();
+    }
+    memcpy(&this->mCheckpointScriptExploded, &this->mCurrentScriptExploded,
+           sizeof(this->mCheckpointScriptExploded));
+    this->mFriendlyCount = 0;
+    Entity** itCur = EntityHandleDb::sInst.mActiveList.m_elements;
+    Entity** itEnd = itCur + EntityHandleDb::sInst.mActiveList.m_size;
+    if (itCur != itEnd)
+    {
+        do
+        {
+            Entity* v22 = *itCur;
+            if (v22 != nullptr && v22->s.eType == 11
+                && G_GetActorFriendlyIndex(v22) >= 0)
+            {
+                Broc::string::Block* v23 = v22->targetname.mBlock;
+                if (v23 != nullptr && v23->mLength != 0)
+                {
+                    int mFriendlyCount = this->mFriendlyCount;
+                    if (mFriendlyCount >= 16)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\checkpointmgr.cpp";
+                        AeAssert::gCurrentLine = 661;
+                        AeAssert::gCurrentExpr = "0";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                "Friendlies to save exceeded max count of "
+                                "%d",
+                                16))
+                            __debugbreak();
+                        break;
+                    }
+                    this->mFriendlies[mFriendlyCount].mOrigin[0] =
+                        v22->r.currentOrigin.v.m128_f32[0];
+                    this->mFriendlies[mFriendlyCount].mOrigin[1] =
+                        v22->r.currentOrigin.v.m128_f32[1];
+                    this->mFriendlies[mFriendlyCount].mOrigin[2] =
+                        v22->r.currentOrigin.v.m128_f32[2];
+                    this->mFriendlies[mFriendlyCount].mOrientation[0] =
+                        v22->r.currentAngles.v.m128_f32[0];
+                    this->mFriendlies[mFriendlyCount].mOrientation[1] =
+                        v22->r.currentAngles.v.m128_f32[1];
+                    this->mFriendlies[mFriendlyCount].mOrientation[2] =
+                        v22->r.currentAngles.v.m128_f32[2];
+                    const char* v26 = v22->targetname.mBlock != nullptr
+                        ? (const char*)(v22->targetname.mBlock + 1)
+                        : defaultFileName;
+                    strcpy(this->mFriendlies[mFriendlyCount].mTargetname,
+                           v26);
+                    this->mFriendlyCount++;
+                }
+                else
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\checkpointmgr.cpp";
+                    AeAssert::gCurrentLine = 654;
+                    AeAssert::gCurrentExpr = nullptr;
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Warning(
+                            "Friendly doesn't have a targetname, so his "
+                            "position can't be saved.  Tell Stavro right "
+                            "away!  He's very interested in this kind of "
+                            "thing."))
+                        __debugbreak();
+                }
+            }
+            ++itCur;
+        } while (itCur != itEnd);
+    }
+    sCheckpointStub->saveExists = 1;
+    strncpy(sCheckpointStub->eventName, checkpointName, 31);
+    strncpy(sCheckpointStub->checkpointName, s_worldData.baseName, 31);
+    sCheckpointStub->weapon = this->weapon;
+    memcpy(sCheckpointStub->ammo, v14->ps.ammo, 0x170);
+    memcpy(sCheckpointStub->ammoclip, v14->ps.ammoclip, 0x170);
+    sCheckpointStub->weapons[0] = v14->ps.weapons[0];
+    sCheckpointStub->weapons[1] = v14->ps.weapons[1];
+    memcpy(sCheckpointStub->weaponslots, v14->ps.weaponslots, 10);
+    sCheckpointStub->weaponrechamber[0] = v14->ps.weaponrechamber[0];
+    sCheckpointStub->weaponrechamber[1] = v14->ps.weaponrechamber[1];
+    sCheckpointStub->playerHealth = this->mPlayerHealth;
+    sCheckpointStub->origin[0] = this->mOrigin.v.m128_f32[0];
+    sCheckpointStub->origin[1] = this->mOrigin.v.m128_f32[1];
+    sCheckpointStub->origin[2] = this->mOrigin.v.m128_f32[2];
+    sCheckpointStub->playerOrientation[0] = this->mPlayerOrientation[0];
+    sCheckpointStub->playerOrientation[1] = this->mPlayerOrientation[1];
+    sCheckpointStub->playerOrientation[2] = this->mPlayerOrientation[2];
+    sCheckpointStub->friendlyCount = this->mFriendlyCount;
+    sCheckpointStub->explodedCount = 0;
+    int v34 = 0;
+    unsigned short* pExploded = this->mCurrentScriptExploded.mElements;
+    int nExploded = this->mCurrentScriptExploded.m_size;
+    if (pExploded != pExploded + nExploded)
+    {
+        while (1)
+        {
+            if (v34 >= 256)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\checkpointmgr.cpp";
+                AeAssert::gCurrentLine = 715;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error("Wankery!! Tell Stavro!"))
+                    __debugbreak();
+            }
+            else
+            {
+                sCheckpointStub->exploded[sCheckpointStub->explodedCount] =
+                    pExploded[0];
+                ++sCheckpointStub->explodedCount;
+            }
+            ++pExploded;
+            if (pExploded == pExploded + nExploded)
+                break;
+            v34 = sCheckpointStub->explodedCount;
+        }
+    }
+    int v37 = 0;
+    for (sCheckpointStub->gameVarCount = 0;
+         v37 < this->mGameVars.mSize;
+         sCheckpointStub->gameVarCount = v37)
+    {
+        if (v37 >= 256)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\checkpointmgr.cpp";
+            AeAssert::gCurrentLine = 728;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error("Wankery!! Tell Stavro!"))
+                __debugbreak();
+        }
+        else
+        {
+            if (v37 < 0 || v37 >= this->mGameVars.mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_vector.h";
+                AeAssert::gCurrentLine = 167;
+                AeAssert::gCurrentExpr =
+                    "iIndex >= 0 && iIndex < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("out of bounds"))
+                    __debugbreak();
+                v37 = sCheckpointStub->gameVarCount;
+            }
+            const SCheckpointGameVar* v39 =
+                &this->mGameVars.mElements[v37];
+            sCheckpointStub->gameVars[v37].mHashVarName =
+                v39->mHashVarName;
+            sCheckpointStub->gameVars[v37].mVal = v39->mVal;
+            sCheckpointStub->gameVars[v37].mDataSize = v39->mDataSize;
+        }
+        v37 = sCheckpointStub->gameVarCount + 1;
     }
 }
 
@@ -829,17 +1208,17 @@ void CheckpointMgr::LoadCheckpointFromStubData()
         {
             // Friendly block lives in gSaveGameData.savedState.Data at
             // gSaveGameData + 0x7E0, 0x38-byte stride: targetname +0x00,
-            // orientation +0x24, origin +0x2C (verified vs disasm).
+            // orientation +0x20, origin +0x2C (verified vs disasm).
             unsigned char* src = (unsigned char*)gSaveGameData + 0x7E0;
             for (; i < sCheckpointStub->friendlyCount; ++i)
             {
                 strcpy(this->mFriendlies[i].mTargetname, (const char*)src);
                 this->mFriendlies[i].mOrientation[0] =
-                    *(float*)(src + 0x24);
+                    *(float*)(src + 0x20);
                 this->mFriendlies[i].mOrientation[1] =
-                    *(float*)(src + 0x28);
+                    *(float*)(src + 0x24);
                 this->mFriendlies[i].mOrientation[2] =
-                    *(float*)(src + 0x2C);
+                    *(float*)(src + 0x28);
                 this->mFriendlies[i].mOrigin[0] = *(float*)(src + 0x2C);
                 this->mFriendlies[i].mOrigin[1] = *(float*)(src + 0x30);
                 this->mFriendlies[i].mOrigin[2] = *(float*)(src + 0x34);
