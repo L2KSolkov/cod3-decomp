@@ -11,6 +11,32 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdWorldBlendShader* gCDWorldBlendShader = nullptr;  // ?gCDWorldBlendShader@@3PAVcdWorldBlendShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdWorldBlendRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdWorldBlendProjectedRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdWorldBlendPixel {
+    unsigned long* PS[2][2] = {};
+    unsigned int const* PShaderTable[2][2] = {};
+}
+namespace cdWorldBlendProjectedPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+namespace cdWorldBlendSolidColorPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // InitCDWorldBlendShader — allocate the shader and link into the init list.
 // ea: 0x7DD2A0

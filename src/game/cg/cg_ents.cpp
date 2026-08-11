@@ -25,6 +25,7 @@ public:
     Entity* mPlayers[16];         // +0x04
 };
 
+struct Camera;
 
 extern int currCl;
 extern int cgGlobal_time;
@@ -561,7 +562,7 @@ struct snapshot_t {
 extern int dword_F6295C[4 * 1580];
 extern int dword_F62944[4 * 1580];
 extern int cg_numSolidEntities;
-extern unsigned int cg_solidEntities[1024];
+unsigned int cg_solidEntities[1024];  // cg.o BSS
 extern struct vmCvar_t cg_norender;
 extern bool g_enableControllerTest;
 struct sphere_t;
@@ -586,7 +587,7 @@ extern void Cvar_Set(const char* var_name, const char* value);
 extern void SoundDevice_UnpauseAllSounds(void* sInst);
 extern int Key_GetCatcher();
 extern void Key_SetCatcher(int catcher);
-extern void* EntityHandleDb_mActiveList;
+void* EntityHandleDb_mActiveList = nullptr;  // cg.o BSS artifact
 char cgsGlobal_shellshockParms[0x7C];  // cg.o BSS
 static Entity* EntityHandleDb_Get(unsigned int handleVal)
 {
@@ -1074,7 +1075,7 @@ extern int level_time;
 extern int dword_F62964[4 * 1580];
 extern int dword_F6355C[4 * 1580];
 extern float dword_F63C70[4 * 1580];
-extern float* gCamera;
+extern struct Camera* gCamera;
 extern int dword_180000;
 extern unsigned int head_hash_0;
 extern float VectorDistance(const float* v1, const float* v2);
@@ -1206,7 +1207,7 @@ void CG_Player(Entity* entity)
                         || ((entity->client->ps.vehPos != 6
                              && entity->client->ps.vehPos != 1)
                             || !entity->IsLocalPlayer())
-                               && (*(int*)((char*)&gCamera[currCl] + 0x194)
+                               && (*(int*)((char*)gCamera + 0x1F0 * currCl + 0x194)
                                        != 1
                                    || entity != GetPlayer2(currCl))))
                 {

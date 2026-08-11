@@ -12,6 +12,19 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdScratchShader* gCDScratchShader = nullptr;  // ?gCDScratchShader@@3PAVcdScratchShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdScratchShaderVertex {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+}
+namespace cdScratchShaderPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+
 // ============================================================================
 // cdScratchMaterial::cdScratchMaterial — bind texture + blend + shader.
 // ea: 0x7C5660

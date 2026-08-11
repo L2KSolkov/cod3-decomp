@@ -12,6 +12,23 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdSimpleAlphaShader* gCDSimpleAlphaShader = nullptr;  // ?gCDSimpleAlphaShader@@3PAVcdSimpleAlphaShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdSimpleAlphaRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdSimpleAlphaPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+namespace cdSimpleAlphaPixel_Fullbright {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;

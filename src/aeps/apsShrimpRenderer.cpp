@@ -9,6 +9,12 @@
 #include "apsShrimpRenderer.h"
 #include "apsInternal.h"
 
+// APS shader static data definitions (aeps_xboxr)
+unsigned int* apsShrimpRender::VS = nullptr;
+const unsigned int** apsShrimpRender::VShaderTable = nullptr;
+unsigned int** apsShrimpRenderPixel::PS = nullptr;
+const unsigned int** apsShrimpRenderPixel::PShaderTable = nullptr;
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

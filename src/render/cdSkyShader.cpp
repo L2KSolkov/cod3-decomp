@@ -10,6 +10,21 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdSkyShader* gCDSkyShader = nullptr;  // ?gCDSkyShader@@3PAVcdSkyShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdSkyShaderRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdSkyShaderPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // InitCDSkyShader — allocate the shader and link into the init list.
 // ea: 0x7E0EA0

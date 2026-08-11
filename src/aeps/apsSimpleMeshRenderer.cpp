@@ -10,6 +10,12 @@
 #include "apsSimpleMeshRenderer.h"
 #include "ngl/ngl_dx_gpu.h"
 
+// APS shader static data definitions (aeps_xboxr)
+unsigned int* apsSimpleMeshRender::VS = nullptr;
+const unsigned int** apsSimpleMeshRender::VShaderTable = nullptr;
+unsigned int** apsSimpleMeshRenderPixel::PS = nullptr;
+const unsigned int** apsSimpleMeshRenderPixel::PShaderTable = nullptr;
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

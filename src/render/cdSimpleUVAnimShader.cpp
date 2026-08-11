@@ -12,6 +12,26 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdSimpleUVAnimShader* gCDSimpleUVAnimShader = nullptr;  // ?gCDSimpleUVAnimShader@@3PAVcdSimpleUVAnimShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdSimpleUVAnimRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdSimpleUVAnimPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+namespace cdSimpleUVAnimFullbrightPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;

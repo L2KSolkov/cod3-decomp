@@ -66,14 +66,14 @@ extern void* PakManager_MemAlign(void* self, int id, unsigned int align,
 extern void PakManager_MemFree(void* self, int id, void* ptr,
                                bool bUseActorHeap);
 extern int g_bDObjInited;
-extern void* sSpinnerFrames[8];
-extern void* dword_F00EB0;
-extern void* dword_F00EB4;
-extern void* dword_F00EB8;
-extern void* dword_F00EBC;
-extern void* dword_F00EC0;
-extern void* dword_F00EC4;
-extern void* dword_F00EC8;
+void* sSpinnerFrames[8];   // ?sSpinnerFrames@@3PAPAUnglTexture@@A (core.o)
+void* dword_F00EB0;        // core.o BSS
+void* dword_F00EB4;        // core.o BSS
+void* dword_F00EB8;        // core.o BSS
+void* dword_F00EBC;        // core.o BSS
+void* dword_F00EC0;        // core.o BSS
+void* dword_F00EC4;        // core.o BSS
+void* dword_F00EC8;        // core.o BSS
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

@@ -12,6 +12,23 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdGunSightSpecularShader* gCDGunSightSpecularShader = nullptr;  // ?gCDGunSightSpecularShader@@3PAVcdGunSightSpecularShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdGunSightSpecularRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdGunSightSpecularPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+namespace cdGunSightSpecularFullbrightPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;

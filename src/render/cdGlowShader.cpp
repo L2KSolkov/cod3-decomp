@@ -12,6 +12,36 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdGlowShader* gCDGlowShader = nullptr;  // ?gCDGlowShader@@3PAVcdGlowShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdGlowRender1 {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdGlowRender4 {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdGlowShrink {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+namespace cdGlowBlur {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+namespace cdGlowApply {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // Globals
 // ============================================================================

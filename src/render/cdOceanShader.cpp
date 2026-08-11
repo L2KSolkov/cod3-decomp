@@ -17,6 +17,25 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdOceanShader* gCDOceanShader = nullptr;  // ?gCDOceanShader@@3PAVcdOceanShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdOceanRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdOceanPixel {
+    unsigned long* PS[2][2][2] = {};
+    unsigned int const* PShaderTable[2][2][2] = {};
+}
+namespace cdOceanPixel_Fullbright {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+    unsigned long* Shader = nullptr;
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;

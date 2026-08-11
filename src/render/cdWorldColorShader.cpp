@@ -11,6 +11,9 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdWorldColorShader* gCDWorldColorShader = nullptr;  // ?gCDWorldColorShader@@3PAVcdWorldColorShader@@A
+
 // ============================================================================
 // cdWorldColorShader::Register — ea: 0x7D9E30 (empty)
 // ============================================================================

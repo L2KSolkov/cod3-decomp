@@ -549,7 +549,7 @@ extern struct cvar_t* m_pitch;
 extern int IsPlayerFullySeatedInVehicle(void* player);
 extern int Entity_IsCameraTweening(void* entity);
 extern void* EntityManager_GetPlayer3(void* inst, int idx);
-extern void* EntityManager_sInst3;
+void* EntityManager_sInst3 = nullptr;  // cl.o artifact (EntityManager*)
 extern char ClampChar(int i);
 
 // ea: 0x530AE0

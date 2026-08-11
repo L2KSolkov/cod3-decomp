@@ -28,12 +28,13 @@ public:
     Entity* mPlayers[16];         // +0x04
 };
 
+struct Camera;
 
 extern int currCl;
 int cgGlobal_time = 0;  // ?cgGlobal_time@@3HA (cg.o)
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
-extern void* cgsGlobal_media_whiteShader;
+extern void* cgsGlobal_media_whiteShader;  // defined in g_globals.cpp
 extern char* va(const char* fmt, ...);
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);
@@ -252,7 +253,7 @@ extern nglMeshNode* nglListAddMesh(nglMesh* mesh,
                                    nglMeshParams* meshParams,
                                    nglShaderParamSet* shaderParams,
                                    void (*fn)(nglMeshNode*));
-extern void* cdscratch_vertex_format;
+extern void* cdscratch_vertex_format;  // defined in g_globals.cpp
 extern void* cgsGlobal_media_tracerShader;
 int dword_F6355C[4 * 1580];  // cg.o BSS
 extern int dword_F62948[4 * 1580];
@@ -293,9 +294,9 @@ extern int curListener;
 struct SaveGameData;
 extern SaveGameData* gSaveGameData;
 struct FEManager; extern FEManager g_femanager;
-extern void* nglBuildScene_RenderTarget;
+void* nglBuildScene_RenderTarget = nullptr;  // ngl.o
 void* gCurrentCamera;  // ?gCurrentCamera (cg.o Camera* artifact)
-extern void* gCamera;
+extern struct Camera* gCamera;
 extern void Camera_Update(void* self);
 extern void Camera_UpdatePostViewModels(void* self);
 extern int LocalClient_FirstLocalClientIndex();

@@ -11,6 +11,26 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdCharShader* gCDCharShader = nullptr;  // ?gCDCharShader@@3PAVcdCharShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdCharShaderRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdCharPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+namespace cdCharFullbrightPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // InitCDCharShader — allocate the shader and link into the init list.
 // ea: 0x7D2B70

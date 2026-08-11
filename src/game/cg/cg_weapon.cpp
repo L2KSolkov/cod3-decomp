@@ -41,7 +41,7 @@ extern int dword_F64028[4 * 1580];
 extern int dword_F6402C[4 * 1580];
 extern int dword_F6405C[4 * 1580];
 extern int dword_F64060[4 * 1580];
-extern void* sADSMetaAnimPlayer;
+void* sADSMetaAnimPlayer = nullptr;  // cg.o artifact (MetaAnimPlayer*)
 extern int dword_F69BF4;
 float FOCUS_DISTANCE = 1.0f;  // ?FOCUS_DISTANCE@@3MA
 float angle[4 * 395];  // cg.o BSS
@@ -105,7 +105,7 @@ extern bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum);
 extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
 extern int InteractionController_CanRunWeaponAnims(void* self);
-extern void* PlayerAnimMgr_sInst;
+void* PlayerAnimMgr_sInst = nullptr;  // cg.o artifact (PlayerAnimMgr*)
 extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
                                Entity* entity, int bDrawGun);
 extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
@@ -189,7 +189,7 @@ struct ServerTime_s {
 extern ServerTime_s ServerTime_sInst;
 float tr_viewModelInfo_mWeaponScale[4];
 extern int tr_viewModelInfo_mWeaponOrigin_used;
-extern void* tr_viewModelInfo_mWeaponOrigin;
+void* tr_viewModelInfo_mWeaponOrigin = nullptr;  // cg.o artifact
 extern unsigned int tagHashInit;
 extern void InteractionController_PostPhysicsUpdate(void* self, float deltaT);
 
@@ -1457,7 +1457,7 @@ extern void Camera_StopAnimating(void* cam, float minTweenTime);
 extern void* gCamera;
 struct XAnimTree;
 extern bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs);
-extern void* cgs;
+extern struct cgs_t* cgs;
 extern int fireSide;
 extern void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* info);
 extern int CG_StartAnimBlend(int weaponNum, DObj* dobj, int toAnimIndex,

@@ -12,6 +12,24 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdDecalShader* gCDDecalShader = nullptr;  // ?gCDDecalShader@@3PAVcdDecalShader@@A
+cdDecalShader* g_cdDecalShader = nullptr;  // ?g_cdDecalShader@@3PAVcdDecalShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdDecalRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+}
+namespace cdDecalPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+namespace cdDecalFullbrightPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;

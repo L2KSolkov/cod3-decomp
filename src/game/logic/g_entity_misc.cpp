@@ -586,7 +586,6 @@ extern void G_FreeTurret(Entity* self);             // g.o
 extern void G_FreeVehicle(Entity* ent);             // g.o
 extern void BrocDestroyEntity(Entity* ent);         // broc
 extern void EntityHandleDb_Release(void* self, Entity* e);  // game.o
-extern void* EntityHandleDb_sInst;  // ?sInst@EntityHandleDb@@0V1@A @ 0xECBFE8
 extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler@@0PAVPoolAllocator@@A @ 0xF049A4
 extern void ScriptEventHandler_dtor(void* self);  // game2.o
 extern void mem_heap_free(void* ptr);           // mem_lib
@@ -695,7 +694,7 @@ Entity::~Entity()
     BrocDestroyEntity(this);
     this->SetAlwaysRender(false);
     int useCount = this->s.useCount;
-    EntityHandleDb_Release(EntityHandleDb_sInst, this);
+    EntityHandleDb_Release(&EntityHandleDb::sInst, this);
     TPakId mPakId = (TPakId)this->mPakId;
     this->s.useCount = useCount + 1;
     if (mPakId == PAK_ID_INVALID)
@@ -2462,7 +2461,7 @@ const SoundDevice::Sound* SoundDevice::GetSoundForHandle(
 extern void Cmd_RemoveCommand(const char* cmd_name);  // game.o g_cmd.cpp
 extern void Cmd_AddCommand(const char* cmd_name,
                            void (*function)());  // game.o g_cmd.cpp
-extern void* CGBankManager_vftable;   // ??_7CGBankManager@@6B@ @ 0xD0543C
+void* CGBankManager_vftable = nullptr;   // ??_7CGBankManager@@6B@ @ 0xD0543C
 extern void* ToggleRenderGeom();      // game.o 0x6119F0
 extern void* ToggleGraph();           // game.o 0x611A30
 extern void* ToggleRenderPerf();      // game.o 0x611A10

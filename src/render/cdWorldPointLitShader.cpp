@@ -11,6 +11,32 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdWorldPointLitShader* gCDWorldPointLitShader = nullptr;  // ?gCDWorldPointLitShader@@3PAVcdWorldPointLitShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdWorldPointLitRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdWorldPointLitProjectedRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdWorldPointLitPixel {
+    unsigned long* PS[2][2] = {};
+    unsigned int const* PShaderTable[2][2] = {};
+}
+namespace cdWorldPointLitProjectedPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+namespace cdWorldPointLitSolidColorPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // InitCDWorldPointLitShader — allocate the shader and link into the init list.
 // ea: 0x7DBB00

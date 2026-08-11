@@ -11,6 +11,27 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdPrelitShader* gCDPrelitShader = nullptr;  // ?gCDPrelitShader@@3PAVcdPrelitShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdPrelitRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+}
+namespace cdPrelitPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+namespace cdPrelitFullbrightPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+namespace cdPrelitSolidColorPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+
 // ============================================================================
 // InitCDPrelitShader — allocate the shader and link into the init list.
 // ea: 0x7D3590

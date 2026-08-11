@@ -8,6 +8,47 @@
 #include "cdl_types.h"
 #include <math.h>
 
+// CDL profiler globals (cdl_xboxr:cdl_common.o) - debug timing data
+struct cdl_proftimer {
+    float value;
+    unsigned int _pad[3];
+    void start();
+    void stop();
+};
+struct cdl_proftimer_cls {
+    float value;
+    unsigned int _pad[3];
+    void start();
+    void stop();
+};
+struct cdl_profcounter {
+    int value;
+    unsigned int _pad[3];
+};
+void cdl_proftimer_cls::start() {}
+void cdl_proftimer_cls::stop() {}
+cdl_proftimer cdl_proftimer_vmcalls;              // ?cdl_proftimer_vmcalls@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_cl_msgs;              // ?cdl_proftimer_cl_msgs@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_cvar;                 // ?cdl_proftimer_cvar@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_dobj_anim;            // ?cdl_proftimer_dobj_anim@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_ent_actors;           // ?cdl_proftimer_ent_actors@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_proxy_queries;        // ?cdl_proftimer_proxy_queries@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_sight_trace_point;    // ?cdl_proftimer_sight_trace_point@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_sight_trace_sphere;   // ?cdl_proftimer_sight_trace_sphere@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_temp0;                // ?cdl_proftimer_temp0@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_trace_point_list;     // ?cdl_proftimer_trace_point_list@@3Ucdl_proftimer@@A
+cdl_proftimer cdl_proftimer_trace_sphere_list;    // ?cdl_proftimer_trace_sphere_list@@3Ucdl_proftimer@@A
+cdl_proftimer_cls cdl_proftimer_draw;             // ?cdl_proftimer_draw@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_audio;            // ?cdl_proftimer_audio@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_streaming;        // ?cdl_proftimer_streaming@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_pak_mgr;          // ?cdl_proftimer_pak_mgr@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_music_mgr;        // ?cdl_proftimer_music_mgr@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_effect_sys;       // ?cdl_proftimer_effect_sys@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_rumble_mgr;       // ?cdl_proftimer_rumble_mgr@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_scn_effect;       // ?cdl_proftimer_scn_effect@@3Ucdl_proftimer_cls@@A
+cdl_proftimer_cls cdl_proftimer_entities;         // ?cdl_proftimer_entities@@3Ucdl_proftimer_cls@@A
+cdl_profcounter cdl_profcounter_temp0;            // ?cdl_profcounter_temp0@@3Ucdl_profcounter@@A
+
 // External assert
 extern bool _tlAssert(const char* file, int line, const char* cond, const char* msg);
 

@@ -11,6 +11,9 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdSimpleColorShader* gCDSimpleColorShader = nullptr;  // ?gCDSimpleColorShader@@3PAVcdSimpleColorShader@@A
+
 // ============================================================================
 // cdSimpleColorShader::Register — ea: 0x7D5F80 (empty)
 // ============================================================================

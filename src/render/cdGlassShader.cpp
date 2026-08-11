@@ -11,6 +11,23 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdGlassShader* gCDGlassShader = nullptr;  // ?gCDGlassShader@@3PAVcdGlassShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdGlassRender {
+    unsigned long VS[2][2] = {};
+    unsigned int const* VShaderTable[2][2] = {};
+}
+namespace cdGlassPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+namespace cdGlassSolidColorPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+
 // ============================================================================
 // InitCDGlassShader — allocate the shader and link into the init list.
 // ea: 0x7CFF90

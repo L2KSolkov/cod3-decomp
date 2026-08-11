@@ -11,7 +11,7 @@ extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
                                  const char* ctx, const char* file, int line);
 extern void mem_heap_free_ctx(void* heap, void* ptr);
 extern int gPakHeaps_m_size;
-extern void* gPakHeaps_elements[32];
+void* gPakHeaps_elements[32];  // ?gPakHeaps_elements (core.o)
 
 // AnimHeap.mHeap is a mem_heap (0x49C bytes); expose minimal ops.
 extern void* mem_heap_alloc(void* heap, unsigned int alignment,

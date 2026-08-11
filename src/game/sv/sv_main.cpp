@@ -104,6 +104,7 @@ class GroupFile;
 GroupFile* g_ScrFiles;  // ?g_ScrFiles@@3PAVGroupFile@@A (game.o)
 CheckpointMgr* CheckpointMgr::sInst;  // ?sInst@CheckpointMgr@@2PAV1@A (game.o @ 0x133E11C)
 SceneManager* SceneManager::sInst;    // ?sInst@SceneManager@@2PAV1@A (streamer.o @ 0x1348808)
+Camera gCamera[8];                    // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0, stride 0x1F0)
 extern const PakInfoNode* sLoadingScreenInfo;
 extern int  dword_F6A290[4 * 802];
 extern bool gReturnToMenu;

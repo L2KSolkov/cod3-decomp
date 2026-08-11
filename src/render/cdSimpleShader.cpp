@@ -12,6 +12,9 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdSimpleShader* gCDSimpleShader = nullptr;  // ?gCDSimpleShader@@3PAVcdSimpleShader@@A
+
 // ============================================================================
 // cdSimpleShaderMat::cdSimpleShaderMat — bind the texture + shader.
 // ea: 0x7D6390

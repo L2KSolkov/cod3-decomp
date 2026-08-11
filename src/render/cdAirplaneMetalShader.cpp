@@ -11,6 +11,23 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdAirplaneMetalShader* gCDAirplaneMetalShader = nullptr;  // ?gCDAirplaneMetalShader@@3PAVcdAirplaneMetalShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdAirplaneMetalRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+}
+namespace cdAirplaneMetalPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+namespace cdAirplaneMetalSolidColorPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+}
+
 // ============================================================================
 // InitCDAirplaneMetalShader — allocate the shader and link into the init list.
 // ea: 0x7D4130

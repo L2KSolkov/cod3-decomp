@@ -638,7 +638,7 @@ extern void RumbleManager_Play(void* mgr, void* result, const void* effect,
 extern void AxisCopy(const float (*in)[3], float (*out)[3]);
 extern int dword_F62960[4 * 1580];
 const char** cg_shock_cvar_names;  // ?cg_shock_cvar_names (cg.o)
-extern void** cg_shock_cvar_ptrs;
+void** cg_shock_cvar_ptrs = nullptr;  // cg.o (vmCvar_t*[])
 extern vmCvar_t cg_shock_viewKickFadeTime;
 extern vmCvar_t cg_shock_viewKickPeriod;
 extern vmCvar_t cg_shock_viewKickRadius;
@@ -2499,7 +2499,8 @@ extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
 extern vmCvar_t cg_fov;
 extern vmCvar_t cg_widescreen;
 float gZoomRatio;
-extern float* gCamera;
+struct Camera;
+extern struct Camera* gCamera;
 
 // ea: 0x006A1900
 void CG_CalcEntityLerpPositions(Entity* cent)

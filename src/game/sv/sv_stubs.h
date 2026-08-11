@@ -971,7 +971,7 @@ struct Camera {
     bool IsTweening();  // ?IsTweening@Camera@@QAE_NXZ (cg.o 0x68EBB0)
 };
 static_assert(sizeof(Camera) == 0x1F0, "Camera size mismatch");
-extern Camera gCamera[2];  // ?gCamera@@3PAVCamera@@A
+extern Camera gCamera[8];  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0, stride 0x1F0)
 
 // ============================================================================
 // Memory helpers (Z_MallocInternal / Z_FreeInternal / heap)

@@ -12,6 +12,27 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdBackgroundShader* gCDBackgroundShader = nullptr;  // ?gCDBackgroundShader@@3PAVcdBackgroundShader@@A
+cdBackgroundShader* g_cdBackgroundShader = nullptr;  // ?g_cdBackgroundShader@@3PAVcdBackgroundShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdBackgroundRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdBackgroundPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+namespace cdBackgroundFullbrightPixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+
 namespace AeAssert {
     enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
     extern ECoderId gCurrentAuthor;

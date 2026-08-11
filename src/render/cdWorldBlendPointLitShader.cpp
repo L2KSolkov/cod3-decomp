@@ -11,6 +11,32 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdWorldBlendPointLitShader* gCDWorldBlendPointLitShader = nullptr;  // ?gCDWorldBlendPointLitShader@@3PAVcdWorldBlendPointLitShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdWorldBlendPointLitRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdWorldBlendPointLitProjectedRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdWorldBlendPointLitPixel {
+    unsigned long* PS[2][2] = {};
+    unsigned int const* PShaderTable[2][2] = {};
+}
+namespace cdWorldBlendPointLitProjectedPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+namespace cdWorldBlendPointLitSolidColorPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // InitCDWorldBlendPointLitShader — allocate the shader and link the init list.
 // ea: 0x7DA260

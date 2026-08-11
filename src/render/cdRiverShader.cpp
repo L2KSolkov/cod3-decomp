@@ -17,6 +17,25 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdRiverShader* gCDRiverShader = nullptr;  // ?gCDRiverShader@@3PAVcdRiverShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdRiverRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdRiverPixel {
+    unsigned long* PS[2][2][2] = {};
+    unsigned int const* PShaderTable[2][2][2] = {};
+}
+namespace cdRiverPixel_Fullbright {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // cdRiverShaderMat::cdRiverShaderMat — delegate to the ocean material ctor.
 // ea: 0x7D6BC0

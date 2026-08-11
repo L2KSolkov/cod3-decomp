@@ -9,6 +9,18 @@
 
 #include <intrin.h>
 
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdHeatHazeRender {
+    unsigned long* VS = nullptr;
+    unsigned int const** VShaderTable = nullptr;
+    unsigned long Shader = 0;
+}
+namespace cdHeatHazePixel {
+    unsigned long** PS = nullptr;
+    unsigned int const** PShaderTable = nullptr;
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // File-local state (cdHeatHazeShader.o)
 // ============================================================================

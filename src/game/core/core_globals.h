@@ -139,7 +139,8 @@ extern int      gLensAlphaAmount;      // 0x012F03E8
 // ============================================================================
 extern void*  sSpinnerFrames[];        // 0x012F03AC (nglTexture*[])
 extern int    sLastSpinnerFrame;       // 0x012F03CC
-extern void*  gLensFlareTextures[];    // 0x012F03D0 (nglTexture*[])
+struct nglTexture;
+extern nglTexture** gLensFlareTextures;  // 0x012F03D0 (nglTexture*[])
 
 // class statics declared here for the singleton holder pattern (verified VAs)
 namespace EffectEventSysStatics {

@@ -8,6 +8,12 @@
 // ============================================================================
 #include "apsUVARectangleRenderer.h"
 
+// APS shader static data definitions (aeps_xboxr)
+unsigned int* apsUVARectangleRender::VS = nullptr;
+const unsigned int** apsUVARectangleRender::VShaderTable = nullptr;
+unsigned int** apsUVARectangleRenderPixel::PS = nullptr;
+const unsigned int** apsUVARectangleRenderPixel::PShaderTable = nullptr;
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

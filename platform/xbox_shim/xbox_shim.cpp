@@ -23,6 +23,7 @@ unsigned int XGetTickCount(void) { return GetTickCount(); }
 unsigned int D3D__DirtyFlags = 0;       // _D3D__DirtyFlags
 unsigned int D3D__TextureState[4][32];  // _D3D__TextureState
 unsigned int D3D__RenderState[4];       // _D3D__RenderState
+unsigned int DTE[4];                    // _DTE (0xCD6DE4 pushbuffer encodes)
 unsigned int dword_40304 = 0;           // D3D render-state slot alias
 unsigned int dword_BC2CFC = 0;          // D3D state alias
 _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;  // cdGlowShader.o (BSS)

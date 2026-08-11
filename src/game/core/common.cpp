@@ -244,6 +244,10 @@ cvar_t* m_pitch;                 // ?m_pitch@@3PAUcvar_t@@A (cl.o @ 0x12FC4F0)
 cvar_t* m_yaw;                   // ?m_yaw@@3PAUcvar_t@@A (cl.o @ 0x12FC4E4)
 cvar_t* r_showLocationalDamage;  // ?r_showLocationalDamage@@3PAUcvar_t@@A (render.o @ 0x13636DC)
 cvar_t* r_showSkeletons;         // ?r_showSkeletons@@3PAUcvar_t@@A (render.o @ 0x13638B8)
+void* pWeaponInfoMemory = nullptr;   // ?pWeaponInfoMemory@@3PAXA (core.o @ 0x12F0364)
+void* gApsHeap = nullptr;            // ?gApsHeap@@3PAVae_heap@@A (render.o @ 0x1363940)
+struct nglTexture;
+nglTexture** gLensFlareTextures = nullptr;  // ?gLensFlareTextures@@3PAPAUnglTexture@@A (core.o @ 0x12F03D0)
 // --- plain int data sweep (core.o family) ---
 int com_journalDataFile;     // ?com_journalDataFile@@3HA (core.o @ 0x12E5F78)
 int com_fileAccessed;        // ?com_fileAccessed@@3HA (core.o @ 0x12E6520)

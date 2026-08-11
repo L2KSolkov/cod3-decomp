@@ -59,6 +59,7 @@ int dword_F0F1FC[2];   // cl.o BSS
 int dword_F0F200[2];   // cl.o BSS
 char** svc_strings;    // ?svc_strings@@3PAPAD (cl.o)
 char dest[128];        // cl.o BSS
+void* EntityManager_sInst5 = nullptr;  // cl.o artifact (EntityManager*)
 char byte_F0D1FC[4 * 19528];  // cl.o BSS (server command buffers)
 extern void CL_SystemInfoChanged();
 int dword_F6A28C;  // ?dword_F6A28C@@3HA (cl.o active port scalar)

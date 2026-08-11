@@ -8,6 +8,12 @@
 // ============================================================================
 #include "apsColorRectangleRenderer.h"
 
+// APS shader static data definitions (aeps_xboxr)
+unsigned int* apsColorRectangleRender::VS = nullptr;
+const unsigned int** apsColorRectangleRender::VShaderTable = nullptr;
+unsigned int** apsColorRectangleRenderPixel::PS = nullptr;
+const unsigned int** apsColorRectangleRenderPixel::PShaderTable = nullptr;
+
 // ============================================================================
 // apsColorRectangleRenderer::apsColorRectangleRenderer — construct: run base
 // billboard ctor, then override mFields (color supported).

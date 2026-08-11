@@ -45,7 +45,7 @@ struct EntityView2 {
     ClientEntityView* client;
 };
 extern EntityView2* EntityManager_GetPlayer2(void* inst, int idx);
-extern void* EntityManager_sInst2;
+void* EntityManager_sInst2 = nullptr;  // cl.o artifact (EntityManager*)
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

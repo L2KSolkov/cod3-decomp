@@ -8,6 +8,12 @@
 // ============================================================================
 #include "apsColorUVARenderer.h"
 
+// APS shader static data definitions (aeps_xboxr)
+unsigned int* apsColorUVARender::VS = nullptr;
+const unsigned int** apsColorUVARender::VShaderTable = nullptr;
+unsigned int** apsColorUVARenderPixel::PS = nullptr;
+const unsigned int** apsColorUVARenderPixel::PShaderTable = nullptr;
+
 // ============================================================================
 // apsColorUVARenderer::apsColorUVARenderer — construct: run base UVA ctor,
 // then override mFields (color supported).

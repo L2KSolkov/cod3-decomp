@@ -8,6 +8,12 @@
 // ============================================================================
 #include "apsColorBillboardRenderer.h"
 
+// APS shader static data definitions (aeps_xboxr)
+unsigned int* apsColorBillboardRender::VS = nullptr;
+const unsigned int** apsColorBillboardRender::VShaderTable = nullptr;
+unsigned int** apsColorBillboardRenderPixel::PS = nullptr;
+const unsigned int** apsColorBillboardRenderPixel::PShaderTable = nullptr;
+
 // ============================================================================
 // apsColorBillboardRenderer::apsColorBillboardRenderer — construct: run the
 // base billboard ctor, then override mFields (color supported).

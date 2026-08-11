@@ -14,6 +14,17 @@
 #include <new>
 #include <string.h>
 
+// ShaderCommon shared statics (render_xboxr:ShaderCommon.o)
+namespace ShaderCommon {
+int   gGlowEnable = 0;      // ?gGlowEnable@ShaderCommon@@3HA
+int   gGlowPasses = 0;      // ?gGlowPasses@ShaderCommon@@3HA
+bool  gGlowGodRays = false; // ?gGlowGodRays@ShaderCommon@@3_NA
+float gGlowIntensity = 0.0f;   // ?gGlowIntensity@ShaderCommon@@3MA
+float gGlowBrighten = 0.0f;    // ?gGlowBrighten@ShaderCommon@@3MA
+float gGlowExpansion = 0.0f;   // ?gGlowExpansion@ShaderCommon@@3MA
+}
+int nglShader_NextID = 0;   // ?nglShader_NextID@@3HA
+
 // ============================================================================
 // Cross-object externs (shader Init/Setup/Render/Toggle functions).
 // ============================================================================

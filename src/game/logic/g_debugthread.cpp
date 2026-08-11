@@ -1074,7 +1074,7 @@ public:
                  float (*animIKGunOffset)[3]);  // ea: 0x4FA690
 };
 
-extern void* nalPlayMethod_vftable;   // ??_7nalPlayMethod@AnimationPlayer@@6B@
+void* nalPlayMethod_vftable = nullptr;   // ??_7nalPlayMethod@AnimationPlayer@@6B@
 extern void* mem_heap_malloc(unsigned int size);
 
 // ea: 0x4FA500
@@ -1150,7 +1150,7 @@ struct MetaNalBaseAnim {
 };
 static_assert(sizeof(MetaNalBaseAnim) == 0x44, "MetaNalBaseAnim size mismatch");
 
-extern void* MetaNalBaseAnim_vftable;  // ??_7MetaNalBaseAnim@@6B@
+void* MetaNalBaseAnim_vftable = nullptr;  // ??_7MetaNalBaseAnim@@6B@
 
 typedef void* (*GetAnimNameFn)(void* self);
 typedef int (*IsAnimLoopingFn)(void* self);

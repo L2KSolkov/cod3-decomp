@@ -8,6 +8,12 @@
 // ============================================================================
 #include "apsUVARenderer.h"
 
+// APS shader static data definitions (aeps_xboxr)
+unsigned int* apsUVARender::VS = nullptr;
+const unsigned int** apsUVARender::VShaderTable = nullptr;
+unsigned int** apsUVARenderPixel::PS = nullptr;
+const unsigned int** apsUVARenderPixel::PShaderTable = nullptr;
+
 // tl_system.o (tl_xboxr, ported)
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
 

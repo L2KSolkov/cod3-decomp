@@ -11,6 +11,32 @@
 
 #include <intrin.h>
 
+// Shader global pointer definitions
+cdWorldShader* gCDWorldShader = nullptr;  // ?gCDWorldShader@@3PAVcdWorldShader@@A
+
+// Shader static data definitions (render_xboxr cd*Shader.o)
+namespace cdWorldRender {
+    unsigned long VS[4][2] = {};
+    unsigned int const* VShaderTable[4][2] = {};
+}
+namespace cdWorldProjectedRender {
+    unsigned long VS[2] = {};
+    unsigned int const* VShaderTable[2] = {};
+}
+namespace cdWorldPixel {
+    unsigned long* PS[2][2][2] = {};
+    unsigned int const* PShaderTable[2][2][2] = {};
+}
+namespace cdWorldProjectedPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+}
+namespace cdWorldSolidColorPixel {
+    unsigned long* PS[2] = {};
+    unsigned int const* PShaderTable[2] = {};
+    unsigned long* Shader = nullptr;
+}
+
 // ============================================================================
 // cdWorldRender::RegisterShader — register the 4 world vertex shaders.
 // ea: 0x7DFFE0 (inline COMDAT)

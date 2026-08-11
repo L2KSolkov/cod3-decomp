@@ -10,6 +10,7 @@
 #include "ngl/ngl_dx_core.h"
 #include "ngl/ngl_dx_quad.h"
 #include "ngl/ngl_dx_gpu.h"
+#include "ngl/ngl_gpu_debug.h"
 #include "ngl/nglTexture.h"
 #include "ngl/nglDebug.h"
 #include "ngl/ngl_dx_fsaa.h"
@@ -23,6 +24,59 @@
 #include <intrin.h>
 #include <stdio.h>
 #include <string.h>
+
+// Shader static data definitions (ngl_xboxr)
+unsigned int nglGpuQuadPCVertexShader::Shader = 0;     // ?Shader@nglGpuQuadPCVertexShader@@3KA
+unsigned int nglGpuQuadPCUVVertexShader::Shader = 0;   // ?Shader@nglGpuQuadPCUVVertexShader@@3KA
+unsigned int nglGpuQuadPUVVertexShader::Shader = 0;    // ?Shader@nglGpuQuadPUVVertexShader@@3KA
+unsigned int nglGpuQuadPUV4VertexShader::Shader = 0;   // ?Shader@nglGpuQuadPUV4VertexShader@@3KA
+unsigned int nglGpuQuadPUVMatColVertexShader::Shader = 0;  // ?Shader@nglGpuQuadPUVMatColVertexShader@@3KA
+unsigned int nglGpuDebugVertexShader::Shader = 0;      // ?Shader@nglGpuDebugVertexShader@@3KA
+unsigned int* nglGpuColPixelShader::Shader = nullptr;  // ?Shader@nglGpuColPixelShader@@3PAKA
+unsigned int* nglGpuTexPixelShader::Shader = nullptr;  // ?Shader@nglGpuTexPixelShader@@3PAKA
+unsigned int* nglGpuTexColPixelShader::Shader = nullptr;  // ?Shader@nglGpuTexColPixelShader@@3PAKA
+unsigned int* nglGpuFilterPixelShader::Shader = nullptr;  // ?Shader@nglGpuFilterPixelShader@@3PAKA
+unsigned int* nglGpuZFogPixelShader::Shader = nullptr;    // ?Shader@nglGpuZFogPixelShader@@3PAKA
+unsigned int* nglGpuDebugPixelShader::Shader = nullptr;   // ?Shader@nglGpuDebugPixelShader@@3PAKA
+unsigned int* nglDOFPixelShader::Shader = nullptr;        // ?Shader@nglDOFPixelShader@@3PAKA
+unsigned int* nglGlowShaderPixelFX::Shader = nullptr;     // ?Shader@nglGlowShaderPixelFX@@3PAKA
+unsigned int* nglGlowShaderPixelPreFX::Shader = nullptr;  // ?Shader@nglGlowShaderPixelPreFX@@3PAKA
+unsigned int* nglGlowShaderPixelPostFX::Shader = nullptr; // ?Shader@nglGlowShaderPixelPostFX@@3PAKA
+unsigned int* nglGpuQuadPCVertexShader::VS = nullptr;
+unsigned int* nglGpuQuadPCUVVertexShader::VS = nullptr;
+unsigned int* nglGpuQuadPUVVertexShader::VS = nullptr;
+unsigned int* nglGpuQuadPUV4VertexShader::VS = nullptr;
+unsigned int* nglGpuQuadPUVMatColVertexShader::VS = nullptr;
+unsigned int* nglGpuDebugVertexShader::VS = nullptr;
+unsigned int** nglGpuColPixelShader::PS = nullptr;
+unsigned int** nglGpuTexPixelShader::PS = nullptr;
+unsigned int** nglGpuTexColPixelShader::PS = nullptr;
+unsigned int** nglGpuFilterPixelShader::PS = nullptr;
+unsigned int** nglGpuZFogPixelShader::PS = nullptr;
+unsigned int** nglGpuDebugPixelShader::PS = nullptr;
+unsigned int** nglDOFPixelShader::PS = nullptr;
+unsigned int** nglGlowShaderPixelFX::PS = nullptr;
+unsigned int** nglGlowShaderPixelPreFX::PS = nullptr;
+unsigned int** nglGlowShaderPixelPostFX::PS = nullptr;
+const unsigned int** nglGpuQuadPCVertexShader::VShaderTable = nullptr;
+const unsigned int** nglGpuQuadPCUVVertexShader::VShaderTable = nullptr;
+const unsigned int** nglGpuQuadPUVVertexShader::VShaderTable = nullptr;
+const unsigned int** nglGpuQuadPUV4VertexShader::VShaderTable = nullptr;
+const unsigned int** nglGpuQuadPUVMatColVertexShader::VShaderTable = nullptr;
+const unsigned int** nglGpuDebugVertexShader::VShaderTable = nullptr;
+const unsigned int** nglGpuColPixelShader::PShaderTable = nullptr;
+const unsigned int** nglGpuTexPixelShader::PShaderTable = nullptr;
+const unsigned int** nglGpuTexColPixelShader::PShaderTable = nullptr;
+const unsigned int** nglGpuFilterPixelShader::PShaderTable = nullptr;
+const unsigned int** nglGpuZFogPixelShader::PShaderTable = nullptr;
+const unsigned int** nglGpuDebugPixelShader::PShaderTable = nullptr;
+const unsigned int** nglDOFPixelShader::PShaderTable = nullptr;
+const unsigned int** nglGlowShaderPixelFX::PShaderTable = nullptr;
+const unsigned int** nglGlowShaderPixelPreFX::PShaderTable = nullptr;
+const unsigned int** nglGlowShaderPixelPostFX::PShaderTable = nullptr;
+unsigned int nglShaderParamSet::NumParams = 0;   // ?NumParams@nglShaderParamSet@@2IA
+unsigned int nglSceneParamSet::NumParams = 0;    // ?NumParams@nglSceneParamSet@@2IA
+unsigned int gpuHashIndexBuffer = 0;             // ?gpuHashIndexBuffer@@3IA
 
 // ============================================================================
 // Cross-object externs

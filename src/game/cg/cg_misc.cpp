@@ -3613,6 +3613,7 @@ extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
 extern void Axis4ToAngles(const float (*axis)[4], float* angles);
 extern void CG_InitConsoleCommands();
 struct glconfig_t;
+struct glconfig_t;
 extern void CL_GetGlconfig(glconfig_t* glconfig);
 extern void CG_Error(const char* msg, ...);
 extern void SCR_UpdateScreen();
@@ -3627,7 +3628,7 @@ extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
                           const char* defaultValue, int flags);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern int trap_R_RegisterShaderNoMip(const char* name, int imagetype);
-extern void* off_DF9208[];
+void* off_DF9208[64];  // cg.o data
 extern void* SoundMediaMgr_j_nullsub_91(void* self);
 enum netsrc_t {
     NS_CLIENT = 0,
@@ -3639,12 +3640,12 @@ extern void CG_Trace(trace_t* result, const math::Position3* start,
                      const math::Position3* end,
                      const collision_context_t* context);
 
-struct glconfig_t {
+struct cgs_t {
     unsigned char _pad[0x84];
     int vidWidth;   // +0x84
     int vidHeight;  // +0x88
 };
-extern glconfig_t cgs;  // 0x00F6A1D8
+extern struct cgs_t* cgs;  // ?cgs@@3PAUcgs_t@@A
 
 struct cgsGlobal_t {
     char mapname[128];  // +0x00
@@ -3707,9 +3708,9 @@ void CG_Init()
     if (fs_debug_vm.integer == 2)
         Cvar_Set("fs_debug", "0");
     CG_InitConsoleCommands();
-    CL_GetGlconfig(&cgs);
-    unk_F6A278[0] = (float)cgs.vidWidth * 0.0015625f;
-    unk_F6A27C[0] = (float)cgs.vidHeight * 0.0020833334f;
+    CL_GetGlconfig((glconfig_t*)cgs);
+    unk_F6A278[0] = (float)cgs->vidWidth * 0.0015625f;
+    unk_F6A27C[0] = (float)cgs->vidHeight * 0.0020833334f;
     currCl = NS_CLIENT;
     const char* ConfigString = CL_GetConfigString(2);
     if (strcmp(ConfigString, "cod-sp") != 0)
