@@ -192,42 +192,37 @@ void render_brush()
 // ============================================================================
 // debug_brush + debug_brushes (game.o CollisionMgr debug rendering)
 // ============================================================================
-struct cdlBrushView {
+class cdlBrush {
+public:
     uint8_t _pad[0x60];  // opaque (cdlBrush); debug_brush stores the pointer
 };
-struct DebugColor {
-    float r, g, b, a;
-};
 struct debug_brush {
-    const cdlBrushView* brush;  // +0x00
+    const cdlBrush* brush;      // +0x00
     math::Mat43        mat;     // +0x10
-    DebugColor         color;   // +0x50
+    Color              color;   // +0x50
+    debug_brush(const cdlBrush& _brush, const math::Mat43& _mat,
+                const Color& _color)
+        : brush(&_brush), mat(_mat), color(_color)
+    {
+    }
 };
 static_assert(sizeof(debug_brush) == 0x60, "debug_brush size mismatch");
 
-// ea: 0x0065C4E0 (COMDAT inline)
-static debug_brush* debug_brush_ctor(debug_brush* self,
-                                     const cdlBrushView* _brush,
-                                     const math::Mat43* _mat,
-                                     const DebugColor* _color)
-{
-    self->brush = _brush;
-    self->mat = *_mat;
-    self->color = *_color;
-    return self;
-}
-
 ae_vector<debug_brush> debug_brushes;  // ?debug_brushes@@3V?$ae_vector@Udebug_brush@@@@A (game.o)
+
+// ea: 0x00611C10 (empty stub)
+void render_brush(const debug_brush& dbrush)
+{
+}
 
 // ============================================================================
 // render_brush (cdlBrush + Mat43 + Color) - ea: 0x6389D0
 // ============================================================================
 // ea: 0x006389D0
-void render_brush(const cdlBrushView& brush, const math::Mat43& mat,
-                  const DebugColor& color)
+void render_brush(const cdlBrush& brush, const math::Mat43& mat,
+                  const Color& color)
 {
-    debug_brush db;
-    debug_brush_ctor(&db, &brush, &mat, &color);
+    debug_brush db(brush, mat, color);
     if (debug_brushes.mSize >= debug_brushes.mCapacity)
     {
         // grow (ae_vector growth: capacity * 2)
@@ -2600,10 +2595,12 @@ public:
                    const char* pAnimName, unsigned int killHash);
     AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
                    unsigned int animHash, unsigned int killHash);
-    void Update(Entity* pEnt, float deltaT);  // virtual in binary (UAEX)
+    virtual void Update(Entity* pEnt, float deltaT);  // virtual in binary (UAEX)
     static void RegisterFunc(const char* pKey,
                              AnimNotifyCallback cbFunc);
+private:
     static int Find(unsigned int key);  // ?Find@AnimNotifyTask@@CAHI@Z
+public:
 
     unsigned int mAnimHash;        // +0x1C
     unsigned int mNotifyKillHash;  // +0x20
@@ -2645,7 +2642,6 @@ AnimNotifyTask::AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
                                const char* pAnimName, unsigned int killHash)
     : Task(h, 0x414E4659)
 {
-    __vftable = (void*)&AnimNotifyTask_vftable;
     mNotifyKillHash = killHash;
     mAnimHash = HashString::CalcHash(pAnimName);
 }
@@ -2655,7 +2651,6 @@ AnimNotifyTask::AnimNotifyTask(DbLinkedHandle<EntityHandleDb, Entity> h,
                                unsigned int animHash, unsigned int killHash)
     : Task(h, 0x414E4659)
 {
-    __vftable = (void*)&AnimNotifyTask_vftable;
     mNotifyKillHash = killHash;
     mAnimHash = animHash;
 }
@@ -3445,7 +3440,7 @@ void AudioBankMgr::FreeWbk(const void* name, bool async)
 // SoundDevice::FindWave - ea: 0x612980
 // ============================================================================
 // ea: 0x00612980
-nslWaveID SoundDevice::FindWave(char* name)
+nslWaveID SoundDevice::FindWave(const char* name)
 {
     nslWaveID Wave = nslGetWave(name);
     if (AudioBankMgr::sInst->m_size > 0 && Wave == NSL_WAVE_ID_INVALID)
@@ -3516,7 +3511,8 @@ void SoundDevice::SetListenerVectors(int listener,
 extern const char* Com_SurfaceTypeToName(int iTypeIndex);  // core.o common.cpp
 
 // ea: 0x00612DB0
-void GetSurfaceTypeSounds(const char* pszType, nslWaveID* sounds)
+void GetSurfaceTypeSounds(const char* pszType,
+                          nslWaveID* const sounds)
 {
     char szAliasName[256];
     for (int i = 0; i < 23; ++i)
@@ -4752,7 +4748,7 @@ SoundDevice::PlaySound(const char* name,
     }
     else if (name != nullptr)
     {
-        nslWaveID Wave = this->FindWave((char*)name);
+        nslWaveID Wave = this->FindWave(name);
         if (Wave != NSL_WAVE_ID_INVALID)
             return this->PlaySound(Wave, entHandle, mImportant, autoRelease,
                                    pos, vel, vol, pitch, min, max);

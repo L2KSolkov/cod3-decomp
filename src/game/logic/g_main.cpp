@@ -298,7 +298,6 @@ void EntityDeathTask::Update(Entity* e, float /*delta*/)
 EntityDeathTask::EntityDeathTask(DbLinkedHandle<EntityHandleDb, Entity> h)
     : Task(h, 0x44455448 /* 'DETH' */)
 {
-    __vftable = 0;  // patched by task registration in the original binary
 }
 
 // ea: 0x0044FCE0

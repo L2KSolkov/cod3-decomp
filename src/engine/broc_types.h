@@ -142,7 +142,8 @@ COD3_STATIC_ASSERT_32BIT(sizeof(vector) == 12, "Broc::vector size mismatch");
 // ============================================================================
 // Broc::entity — script entity handle (4 bytes)
 // ============================================================================
-struct entity {
+class entity {
+public:
     unsigned int ___u0;  // +0x00
 
     void UndefineEEField(unsigned int key);

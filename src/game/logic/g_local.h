@@ -3425,7 +3425,6 @@ void rb_vehicle_update_from_network(rb_vehicle* self, math::Position3* position,
 
 // Task - task system base (28 bytes) - verified against IDA
 struct Task {
-    void*       __vftable;         // +0x00
     uint8_t     _dlist[8];         // +0x04
     unsigned int mTaskId;          // +0x0C FourCC
     DbLinkedHandle<EntityHandleDb, Entity> mEntityHandle;  // +0x10
@@ -3434,6 +3433,7 @@ struct Task {
 
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, unsigned int idTask);  // game.o
     Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o 0x4F9970
+    virtual ~Task();  // ??1Task@@UAE@XZ (game2.o)
     static class PoolAllocator* sAllocator;  // ?sAllocator@Task@@2PAVPoolAllocator@@A @ 0x012F3EA8
 };
 static_assert(sizeof(Task) == 0x1C, "Task size mismatch");

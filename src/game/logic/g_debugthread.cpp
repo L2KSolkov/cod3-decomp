@@ -867,7 +867,6 @@ extern void* Task_vftable;  // ??_7Task@@6B@
 // ea: 0x4F9940
 Task::Task(DbLinkedHandle<EntityHandleDb, Entity> handle, unsigned int idTask)
 {
-    __vftable = (void*)&Task_vftable;
     memset(_dlist, 0, 8);
     mTaskId = idTask;
     mEntityHandle = handle;
@@ -878,7 +877,6 @@ Task::Task(DbLinkedHandle<EntityHandleDb, Entity> handle, unsigned int idTask)
 // ea: 0x4F9970
 Task::Task(DbLinkedHandle<EntityHandleDb, Entity> handle, int idTask)
 {
-    __vftable = (void*)&Task_vftable;
     memset(_dlist, 0, 8);
     mTaskId = (unsigned int)idTask;
     mEntityHandle = handle;
@@ -911,7 +909,6 @@ HealthRegenTask::HealthRegenTask(DbLinkedHandle<EntityHandleDb, Entity> h,
                                  float damageDelay, float rechargeRate)
     : Task(h, 1213351758)
 {
-    __vftable = (void*)&HealthRegenTask_vftable;
     mTimeSinceDamage = 0.0f;
     mHealthDelta = 0.0f;
     mVeryHurt = false;
