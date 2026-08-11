@@ -1597,6 +1597,13 @@ void SoundMediaMgr::PlayLandingSound(Entity* entity,
 }
 
 extern float nslGetWaveParam(nslWaveID wave, int b, float c);  // nsl_xboxr
+extern float nslGetSourceParam(nslSourceID sid, int index,
+                               float defaultValue);  // nslSource.o
+extern const char* nslGetSourceName(nslSourceID sid);  // nslSource.o
+extern int nslIsWaveStreamed(nslWaveID a);             // nslCompat.o
+extern int g_useOnScreenSoundDebugging;   // ?g_useOnScreenSoundDebugging@@3HA
+extern void AeStrCopy(char* dst, int* dstLen, int dstCapacity,
+                      const char* src, int srcLen);  // ae_string_support.cpp
 
 static SoundDevice::Sound* SoundFromHandle(Handle h)
 {
@@ -1938,6 +1945,174 @@ SoundDevice::Sound::GetDebugString() const
 
 // ============================================================================
 // SoundDevice::GetSoundForHandle - ea: 0x621670 / 0x6216B0
+// ea: 0x0062CD90
+void SoundDevice::DebugRender()
+{
+    static cvar_t* debug_bg = Cvar_Get("debug_bg", "0", 256);
+    if (debug_bg->integer != 0)
+    {
+        MusicMgr* v3 = MusicMgr::sInst;
+        unsigned int v4 = v3->mMusic.mVal & 0xFFF;
+        if (v4 < 0x200
+            && v3->mMusic.mVal >> 12
+                == SoundDevice::SoundHandleDb::sInst.mElements[v4].mKey
+            && SoundDevice::SoundHandleDb::sInst.mElements[v4].mObject
+                != nullptr)
+        {
+            float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
+            SoundDevice::Sound* mObject =
+                SoundDevice::SoundHandleDb::sInst.mElements[v4].mObject;
+            nslSourceID mSource = (nslSourceID)mObject->mSource;
+            float param;
+            if (mSource == NSL_SOURCE_ID_INVALID)
+                param = -1073741824.0f;
+            else
+                param = nslGetSourceParam(mSource, 0, -1.0f);
+            const char* SourceName = mSource == NSL_SOURCE_ID_INVALID
+                                         ? nullptr
+                                         : nslGetSourceName(mSource);
+            DebugRender::RenderText(va("ext: %s %1.2f", SourceName, param),
+                                    10, 70, col, 0.0f, 1.0f);
+        }
+        else
+        {
+            float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
+            DebugRender::RenderText("ext: <no ext music>", 10, 70, col,
+                                    0.0f, 1.0f);
+        }
+        MusicMgr* v13 = MusicMgr::sInst;
+        unsigned int v14 = v13->mMusicIndoor.mVal & 0xFFF;
+        if (v14 < 0x200
+            && v13->mMusicIndoor.mVal >> 12
+                == SoundDevice::SoundHandleDb::sInst.mElements[v14].mKey
+            && SoundDevice::SoundHandleDb::sInst.mElements[v14].mObject
+                != nullptr)
+        {
+            float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
+            SoundDevice::Sound* v16 =
+                SoundDevice::SoundHandleDb::sInst.mElements[v14].mObject;
+            nslSourceID v17 = (nslSourceID)v16->mSource;
+            float param;
+            if (v17 == NSL_SOURCE_ID_INVALID)
+                param = -1073741824.0f;
+            else
+                param = nslGetSourceParam(v17, 0, -1.0f);
+            const char* v22 = v17 == NSL_SOURCE_ID_INVALID
+                                  ? nullptr
+                                  : nslGetSourceName(v17);
+            DebugRender::RenderText(va("int: %s %1.2f", v22, param),
+                                    10, 85, col, 0.0f, 1.0f);
+        }
+        else
+        {
+            float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
+            DebugRender::RenderText("int: <no int music>", 10, 85, col,
+                                    0.0f, 1.0f);
+        }
+    }
+    if (g_useOnScreenSoundDebugging != 0)
+    {
+        ae_sized_array<ae_fixed_string<128, unsigned char>, 64> spu;
+        ae_sized_array<ae_fixed_string<128, unsigned char>, 64> streams;
+        for (int k = 0; k < 512; ++k)
+        {
+            if (this->mSounds[k].mSource != NSL_SOURCE_ID_INVALID)
+            {
+                if (nslIsWaveStreamed((nslWaveID)this->mSounds[k].mWave) != 0)
+                {
+                    ae_fixed_string<1024, unsigned short> DebugString =
+                        this->mSounds[k].GetDebugString();
+                    ae_fixed_string<128, unsigned char> tmp;
+                    int m = 0;
+                    AeStrCopy((char*)tmp.mBuff, &m, 127,
+                              (const char*)DebugString.mBuff,
+                              DebugString.mLength);
+                    tmp.mLength = (unsigned char)m;
+                    spu.push_back(tmp);
+                }
+                else
+                {
+                    ae_fixed_string<1024, unsigned short> DebugString =
+                        this->mSounds[k].GetDebugString();
+                    ae_fixed_string<128, unsigned char> tmp;
+                    int m = 0;
+                    AeStrCopy((char*)tmp.mBuff, &m, 127,
+                              (const char*)DebugString.mBuff,
+                              DebugString.mLength);
+                    tmp.mLength = (unsigned char)m;
+                    streams.push_back(tmp);
+                }
+            }
+        }
+        float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
+        DebugRender::RenderText("Active sounds", 10, 20, col, 0.0f, 1.0f);
+        int v33 = 32;
+        for (unsigned int i = 0; i < (unsigned int)streams.size(); ++i)
+        {
+            float cola[4] = { 1.0f, 0.25f, 0.25f, 0.25f };
+            DebugRender::RenderText((const char*)streams[i].mBuff, 10, v33,
+                                    cola, 0.0f, 1.0f);
+            v33 += 12;
+        }
+        for (unsigned int j = 0; j < (unsigned int)spu.size(); ++j)
+        {
+            float colb[4] = { 0.25f, 1.0f, 0.25f, 0.25f };
+            DebugRender::RenderText((const char*)spu[j].mBuff, 10, v33, colb,
+                                    0.0f, 1.0f);
+            v33 += 12;
+        }
+        int streamed = 0;
+        for (int m = 0; m < 512; ++m)
+        {
+            if (this->mSounds[m].mSource != NSL_SOURCE_ID_INVALID
+                && nslIsWaveStreamed((nslWaveID)this->mSounds[m].mWave) != 0)
+                ++streamed;
+        }
+        if (streamed > 3 && this->mShowStreams->integer == 0)
+        {
+            char buf[128];
+            sprintf(buf, "Warning: %i streamed sounds", streamed);
+            float colc[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+            DebugRender::RenderText(buf, 10, 20, colc, 0.0f, 1.0f);
+        }
+        for (int m = 0; m < 512; ++m)
+        {
+            if (this->mSounds[m].mSource != -1)
+            {
+                math::Position3 pos;
+                pos.v.m128_f32[0] = this->mSounds[m].mDebugPos[0];
+                pos.v.m128_f32[1] = this->mSounds[m].mDebugPos[1];
+                pos.v.m128_f32[2] = this->mSounds[m].mDebugPos[2];
+                pos.v.m128_f32[3] = 0.0f;
+                float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+                ae_fixed_string<1024, unsigned short> ds =
+                    this->mSounds[m].GetDebugString();
+                DebugRender::RenderText3D(&pos, white, 1.0f,
+                                          (const char*)ds.mBuff);
+            }
+        }
+        {
+            math::Position3 pos;
+            pos.v.m128_f32[0] = this->mDebugListenerPosition[0];
+            pos.v.m128_f32[1] = this->mDebugListenerPosition[1];
+            pos.v.m128_f32[2] = this->mDebugListenerPosition[2];
+            pos.v.m128_f32[3] = 0.0f;
+            math::Position3 fwdEnd = pos;
+            fwdEnd.v.m128_f32[0] += this->mDebugListenerForward[0] * 10.0f;
+            fwdEnd.v.m128_f32[1] += this->mDebugListenerForward[1] * 10.0f;
+            fwdEnd.v.m128_f32[2] += this->mDebugListenerForward[2] * 10.0f;
+            float colf[4] = { 1.0f, 1.0f, 0.0f, 0.5f };
+            DebugRender::RenderLine(&pos, &fwdEnd, colf, 0.05f);
+            math::Position3 upEnd = pos;
+            upEnd.v.m128_f32[0] += this->mDebugListenerUp[0] * 10.0f;
+            upEnd.v.m128_f32[1] += this->mDebugListenerUp[1] * 10.0f;
+            upEnd.v.m128_f32[2] += this->mDebugListenerUp[2] * 10.0f;
+            float colu[4] = { 0.0f, 1.0f, 1.0f, 0.5f };
+            DebugRender::RenderLine(&pos, &upEnd, colu, 0.05f);
+        }
+    }
+}
+
 // ============================================================================
 SoundDevice::SoundHandleDb SoundDevice::SoundHandleDb::sInst;  // @ 0xF50D10
 SoundDevice* SoundDevice::sInst = nullptr;                     // @ 0xF4EBDC

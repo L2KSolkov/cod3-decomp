@@ -35,6 +35,7 @@ vmCvar_t bg_debugWeaponState;        // @ 0xF43070
 vmCvar_t bg_debugWeaponAnim;         // @ 0xF43A68
 vmCvar_t bg_meleeassistrange;        // @ 0xF3E988
 vmCvar_t bg_meleeassistfov;          // @ 0xF44BC8
+int      g_useOnScreenSoundDebugging;  // ?g_useOnScreenSoundDebugging@@3HA @ 0xF04994
 float gExtraDistanceSticky = 0.0f;   // @ 0xF4EBEC
 float tangent = 0.02f;               // @ 0xDF8DC4 (sticky aim cone tangent)
 float accel_slow_factor = 0.5f;      // @ 0xDF8DC8

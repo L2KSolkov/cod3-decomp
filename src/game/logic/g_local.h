@@ -2108,6 +2108,10 @@ void RenderQuad2D(float l, float t, float r, float b, float z,
                   const float* col);  // render.o
 void RenderText(const char* str, int x, int y, const float* col,
                 float depth, float size);  // render.o
+void RenderText3D(const math::Position3* wpos, const float* col,
+                  float scale, const char* format, ...);  // render.o
+void RenderLine(const math::Position3* pt1, const math::Position3* pt2,
+                const float* col, float thickness);  // render.o
 }
 void  G_MissileTrace(trace_t* results, const math::Position3* start,
                      const math::Position3* end,
