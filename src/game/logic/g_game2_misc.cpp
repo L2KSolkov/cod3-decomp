@@ -1573,7 +1573,6 @@ public:
     static SplineMgr* sInst;  // ?sInst@SplineMgr@@2PAV1@A
 };
 
-extern bool AeAssert_Error(const char* fmt, ...);
 extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
 
 // ea: 0x504560
@@ -1653,7 +1652,7 @@ SplineEntry* SplineMgr::GetUnusedEntry()
         if (mList[i].pakId == -1)
             return &mList[i];
     }
-    if (!AeAssert::IsIgnored() && AeAssert_Error("Too many spline files loaded"))
+    if (!AeAssert::IsIgnored() && AeAssert::Error("Too many spline files loaded"))
         __debugbreak();
     return nullptr;
 }

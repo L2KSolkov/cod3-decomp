@@ -939,9 +939,9 @@ trRefEntity& Entity::GetRenderEntity()
 // Entity::SetAnimDebug - ea: 0x62AFB0
 // ============================================================================
 extern void* mem_heap_malloc(unsigned int size);  // mem_lib
-extern void AeStringSupport_CStrToAeStr(char* oBuff, int* oLen,
-                                        int capacity,
-                                        const char* src);
+extern void AeStringSupport::CStrToAeStr(char* oBuff, int* oLen,
+                                         int capacity,
+                                         const char* src);
     // ?CStrToAeStr@AeStringSupport@@YAXPADAAHHPBD@Z
 // mAnimNameResolver lives in BrocAPI::mBrocExports at +0xC58.
 struct BrocAPI_AnimView {
@@ -963,7 +963,7 @@ void Entity::SetAnimDebug(int lastAnim)
         this->mAnimDebug->lastAnimPlayed = v2;
         int oLen = 0;
         char oBuff[64];
-        AeStringSupport_CStrToAeStr(oBuff, &oLen, 63, v4);
+        AeStringSupport::CStrToAeStr(oBuff, &oLen, 63, v4);
         oBuff[63] = (char)oLen;
         memcpy(&this->mAnimDebug->lastAnimNamed, oBuff,
                sizeof(ae_fixed_string<64, unsigned char>));
@@ -977,8 +977,8 @@ void Entity::SetAnimDebug(int lastAnim)
             v6->lastAnimPlayed = v2;
             v6->prev2lastAnimPlayed = (const char*)-1;
             int oLen = 0;
-            AeStringSupport_CStrToAeStr((char*)v6->lastAnimNamed.mBuff,
-                                        &oLen, 63, v4);
+            AeStringSupport::CStrToAeStr((char*)v6->lastAnimNamed.mBuff,
+                                         &oLen, 63, v4);
             v6->lastAnimNamed.mLength = (unsigned char)oLen;
             this->mAnimDebug = v6;
         }
