@@ -173,6 +173,16 @@ hitLoc g_hitLocs[64];               // ?g_hitLocs@@3PAUhitLoc@@A (g.o @ 0xDD76E0
 cspField_t s_vehicleFields[73];     // ?s_vehicleFields@@3PAUcspField_t@@A (g.o @ 0xDD6EF0)
 turretInfo_t turretInfo[1];         // ?turretInfo@@3PAUturretInfo_t@@A (g.o @ 0xED9E08)
 gitem_s bg_itemlist[137];           // ?bg_itemlist@@3PAUgitem_s@@A (game.o @ 0x13413C0)
+cFreeList<trRefEntity> gRefEntFreeList;   // ?gRefEntFreeList@@3V?$cFreeList@VtrRefEntity@@@@A (g.o)
+cFreeList<DObj> gDObjFreeList;            // ?gDObjFreeList@@3V?$cFreeList@VDObj@@@@A (g.o)
+cFreeList<void> gDSkelFreeList;           // ?gDSkelFreeList@@3V?$cFreeList@X@@A (g.o)
+cFreeList<void> gDSkelMaxFreeList;        // ?gDSkelMaxFreeList@@3V?$cFreeList@X@@A (g.o)
+cFreeList<void> gDSkel4FreeList;          // ?gDSkel4FreeList@@3V?$cFreeList@X@@A (g.o)
+ae_vector<debug_sphere> debug_spheres;    // ?debug_spheres@@3V?$ae_vector@Udebug_sphere@@@@A (g.o @ 0xED2A98)
+ae_vector<debug_aabb> debug_aabbs;        // ?debug_aabbs@@3V?$ae_vector@Udebug_aabb@@@@A (g.o)
+ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> dobjects;             // 0x12C4D14
+ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> del_pending_dobjects; // 0x12D4DC0
+ae_vector<DbLinkedHandle<EntityHandleDb, Entity>> add_pending_dobjects; // 0x12C1FA4
 const char* hintStrings[17];        // ?hintStrings (g.o .rdata)
 const char* s_vehicleTypeNames[6];  // ?s_vehicleTypeNames (g.o)
 const char* s_vehicleSubTypeNames[9];  // ?s_vehicleSubTypeNames (g.o)

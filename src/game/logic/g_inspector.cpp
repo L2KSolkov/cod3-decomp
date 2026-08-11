@@ -1002,7 +1002,7 @@ struct ParticleEffectLocal {
     apsEffectLocal* mEffect;  // +0x1C
     unsigned short mFlags;    // +0x32
 };
-extern ae_vector<ParticleEffectLocal*> gParticleEffectList;  // ?gParticleEffectList@@3V?$ae_vector@PAVParticleEffect@@@@A (render.o 0x1346474)
+ae_vector<ParticleEffectLocal*> gParticleEffectList;  // ?gParticleEffectList@@3V?$ae_vector@PAVParticleEffect@@@@A (render.o @ 0x1346474)
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
 extern unsigned nslGetMaxNumVoices();      // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 extern unsigned nslGetNumVoices();         // ?nslGetNumVoices@@YAIXZ (nslCompat.o)

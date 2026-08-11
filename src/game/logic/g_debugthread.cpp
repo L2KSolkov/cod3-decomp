@@ -70,7 +70,7 @@ struct AeThread {
 extern void DisplayPoolTotals(PoolAllocator* pool);   // g_game2_misc.cpp
 extern PoolAllocator* gCommonPoolAllocator;           // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A
 extern PoolAllocator* gAeThreadBackupStackAllocator;  // g_local.h
-extern DbLinkedHandle<EntityHandleDb, Entity> g_renderUniqueIndex;  // ?g_renderUniqueIndex@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o)
+DbLinkedHandle<EntityHandleDb, Entity> g_renderUniqueIndex;  // ?g_renderUniqueIndex@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o)
 extern vmCvar_t memory_reportBrocPool;             // ?memory_reportBrocPool@@3UvmCvar_t@@A (game2.o)
 extern vmCvar_t memory_reportBrocBackupStackPool;  // ?memory_reportBrocBackupStackPool@@3UvmCvar_t@@A (game2.o)
 extern vmCvar_t memory_reportCommonPool;           // ?memory_reportCommonPool@@3UvmCvar_t@@A (game2.o)
@@ -157,7 +157,7 @@ struct SoundDeviceSound {
 static_assert(sizeof(SoundDeviceSound) == 0x3C,
               "SoundDeviceSound size mismatch");
 
-extern DbLinkedHandle<EntityHandleDb, Entity> g_SoundOnlyPlay;  // ?g_SoundOnlyPlay@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o)
+DbLinkedHandle<EntityHandleDb, Entity> g_SoundOnlyPlay;  // ?g_SoundOnlyPlay@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o @ 0xDEB5B4)
 extern vmCvar_t sound_disableAllOtherSounds;   // ?sound_disableAllOtherSounds@@3UvmCvar_t@@A (game2.o)
 extern vmCvar_t sound_showSoundStatForEntity;  // ?sound_showSoundStatForEntity@@3UvmCvar_t@@A (game2.o)
 extern vmCvar_t g_debugProneCheck;             // ?g_debugProneCheck@@3UvmCvar_t@@A (g.o)
