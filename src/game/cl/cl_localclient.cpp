@@ -8,14 +8,17 @@
 
 #include <string.h>
 
+struct netchan_t;
+
 // ============================================================================
 // Externs
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void MSG_WriteByte(struct msg_t* msg, int c);
-extern void Netchan_Transmit(void* chan, int length, const unsigned char* data);
-extern int Netchan_Process(void* chan, struct msg_t* msg);
+extern void Netchan_Transmit(netchan_t* chan, int length,
+                             const unsigned char* data);
+extern int Netchan_Process(netchan_t* chan, struct msg_t* msg);
 extern void _Z_FreeInternal(void* ptr);
 extern struct cvar_t* cl_shownet;
 extern int unk_F6A290;   // dev/retail flag (2 = dev)
@@ -244,14 +247,14 @@ int CL_ShutdownDebugData()
 }
 
 // ea: 0x52D9D0
-void CL_Netchan_Transmit(void* chan, struct msg_t* msg)
+void CL_Netchan_Transmit(netchan_t* chan, struct msg_t* msg)
 {
     MSG_WriteByte(msg, 3);
     Netchan_Transmit(chan, msg->cursize, msg->data);
 }
 
 // ea: 0x52DA00
-int CL_Netchan_Process(void* chan, struct msg_t* msg)
+int CL_Netchan_Process(netchan_t* chan, struct msg_t* msg)
 {
     return Netchan_Process(chan, msg);
 }

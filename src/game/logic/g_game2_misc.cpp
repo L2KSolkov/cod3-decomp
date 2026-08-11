@@ -917,7 +917,7 @@ char stat_SetMissionToTrack(const char* mission_name)
 // ============================================================================
 // ButtonEntry - key binding entry (0xC, IDA verified)
 // ============================================================================
-struct BaseCmdFuncInfo;
+class BaseCmdFuncInfo;
 
 struct ButtonEntry {
     unsigned char mKeyInfoIndex;         // +0x00
@@ -1005,7 +1005,7 @@ extern void* InteractionController_Inst(int instance);  // ?Inst@InteractionCont
 extern int InteractionController_Press(void* self, int buttonIndex);
 extern int InteractionController_Release(void* self, int buttonIndex);
 extern void Cmd_CallCmdFunction(const BaseCmdFuncInfo* cmd, int key, int time);
-extern void CL_KeyEvent(int key, bool down, unsigned int time);
+extern void CL_KeyEvent(int key, int down, unsigned int time);
 
 void ButtonEntry::SetKeyBinding(unsigned char keyInfoIndex)
 {

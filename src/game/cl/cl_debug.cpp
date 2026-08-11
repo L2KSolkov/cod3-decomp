@@ -8,6 +8,18 @@
 
 #include <string.h>
 
+struct netchan_t;
+enum netsrc_t {
+    NS_CLIENT = 0,
+    NS_SERVER = 1,
+};
+struct netadr_t {
+    int type;
+    unsigned char ip[4];
+    unsigned char ipx[10];
+    unsigned short port;
+};
+
 // ============================================================================
 // Externs
 // ============================================================================
@@ -29,14 +41,9 @@ extern int com_skelTimeStamp;
 extern int bCL_AllowedAllocSkel;
 extern struct cvar_t* cl_testAnimWeight;
 extern void* _Z_MallocInternal(unsigned int size);
-extern void Netchan_Setup(int sock, void* chan, void* adr, int qport);
+extern void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr,
+                          int qport);
 extern void CL_AddReliableCommand(const char* cmd);
-
-// netadr_t (client network address)
-struct netadr_t {
-    int type;
-    unsigned char ipx[12];
-};
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -138,7 +145,9 @@ void CL_ConnectResponse(netadr_t from)
     {
         ASSERT("com_cl_running->integer", "c:\\cod\\code\\game\\cl_main.cpp", 609);
     }
-    Netchan_Setup(currCl, (void*)((char*)0xF11208 + 19528 * currCl), &from, currCl);
+    Netchan_Setup((netsrc_t)currCl,
+                  (netchan_t*)((char*)0xF11208 + 19528 * currCl), from,
+                  currCl);
     cls.state = 4 * (cgvm != nullptr) + 1;
 }
 

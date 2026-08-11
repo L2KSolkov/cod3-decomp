@@ -31,6 +31,10 @@ struct netadr_t {
     unsigned char ipx[10];
     unsigned short port;
 };
+enum netsrc_t {
+    NS_CLIENT = 0,
+    NS_SERVER = 1,
+};
 
 // ============================================================================
 // Externs
@@ -65,7 +69,7 @@ extern void CL_KeyEvent(int key, int down, unsigned int time);
 extern void CL_CharEvent(int key);
 extern void CL_MouseEvent(int dx, int dy, int time);
 extern void CL_GamepadEvent(int physicalAxis, int value, int time);
-extern void CL_PacketEvent(void* from, msg_t* msg, int time);
+extern void CL_PacketEvent(netadr_t from, msg_t* msg, int time);
 extern void SV_Shutdown();
 extern void SV_Init();
 extern void SV_Frame(int msec);
@@ -88,7 +92,8 @@ extern char* CopyStringInternal(const char* in);
 extern char* va(const char* fmt, ...);
 extern int Sys_Milliseconds();
 extern sysEvent_t* Sys_GetEvent(sysEvent_t* result);
-extern int NET_GetLoopPacket(int sock, void* net_from, msg_t* net_message);
+extern int NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from,
+                             msg_t* net_message);
 extern void* _copyDWord(void* dest, int constant, unsigned int count);
 extern void Com_DefaultExtension(char* path, int maxSize,
                                  const char* extension);
@@ -166,8 +171,6 @@ extern int com_numConsoleLines;
 extern int com_argc;
 extern char** com_argv;
 extern int currCl;
-extern int NS_CLIENT;
-extern int NS_SERVER;
 extern void CL_ConsolePrint(int type, const char* txt, int duration,
                             int linewidth, int flags);
 extern void Key_WriteBindings(int f);
@@ -1545,7 +1548,7 @@ unsigned int Com_EventLoop()
     unsigned char bufData[3072];
     sysEvent_t result;
     msg_t buf;
-    void* evFrom = nullptr;
+    netadr_t evFrom;
     MSG_Init(&buf, bufData, 3072);
     sysEvent_t* Event = Com_GetEvent(&result);
     unsigned int v1 = Event->evType;
@@ -1584,7 +1587,7 @@ unsigned int Com_EventLoop()
             break;
         case 6u:  // SE_PACKET
             ASSERT("ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1701);
-            memcpy(&evFrom, v4, sizeof(void*));
+            memcpy(&evFrom, v4, sizeof(netadr_t));
             buf.cursize = (int)v3 - 20;
             if ((int)(v3 - 20) <= buf.maxsize)
             {
@@ -1592,14 +1595,14 @@ unsigned int Com_EventLoop()
                 mem_heap_free(v4);
                 if (com_sv_running->integer)
                 {
-                    Com_RunAndTimeServerPacket((netadr_t*)&evFrom, &buf);
+                    Com_RunAndTimeServerPacket(&evFrom, &buf);
                 }
                 else
                 {
                     if (unk_F6A290 == 2)
                     {
                         currCl = NS_CLIENT;
-                        CL_PacketEvent(&evFrom, &buf, ev);
+                        CL_PacketEvent(evFrom, &buf, ev);
                     }
                     currCl = NS_CLIENT;
                 }
@@ -1632,13 +1635,13 @@ unsigned int Com_EventLoop()
     {
         currCl = NS_CLIENT;
         while (NET_GetLoopPacket(NS_CLIENT, &evFrom, &buf))
-            CL_PacketEvent(&evFrom, &buf, ev);
+            CL_PacketEvent(evFrom, &buf, ev);
     }
     currCl = NS_CLIENT;
     while (NET_GetLoopPacket(NS_SERVER, &evFrom, &buf))
     {
         if (com_sv_running->integer)
-            Com_RunAndTimeServerPacket((netadr_t*)&evFrom, &buf);
+            Com_RunAndTimeServerPacket(&evFrom, &buf);
     }
     return ev;
 }

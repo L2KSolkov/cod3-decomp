@@ -8,6 +8,8 @@
 
 #include <string.h>
 
+struct netchan_t;
+
 // ============================================================================
 // Externs (core.o / cl.o)
 // ============================================================================
@@ -38,7 +40,8 @@ extern void MSG_Init(struct msg_t* msg, unsigned char* data, int length);
 extern void MSG_WriteLong(struct msg_t* msg, int c);
 extern void MSG_WriteByte(struct msg_t* msg, int c);
 extern void MSG_WriteString(struct msg_t* msg, const char* s);
-extern void Netchan_Transmit(void* chan, int length, const unsigned char* data);
+extern void Netchan_Transmit(netchan_t* chan, int length,
+                             const unsigned char* data);
 extern void CL_AdjustAngles();
 extern void CL_CmdButtons(usercmd_s* cmd);
 extern void CL_KeyMove(usercmd_s* cmd);
@@ -63,7 +66,7 @@ extern struct cvar_t* cl_nodelta;
 extern struct cvar_t* cl_debugMove;
 extern int com_time;
 extern int Sys_Milliseconds();
-extern int atoi(const char* nptr);
+extern "C" int atoi(const char* nptr);
 extern void Cvar_SetCheatState();
 extern void nullsub_16(const char* pakSums, const char* pakNames);
 extern void nullsub_34(const char* pakSums, const char* pakNames);
@@ -75,8 +78,8 @@ extern struct vm_s* VM_Create(const char* module,
 extern int CL_CgameSystemCalls(int* args);
 extern void tlPrintf(const char* fmt, ...);
 extern int MSG_ReadLong(struct msg_t* msg);
-extern int MSG_ReadByte(struct msg_t* msg);
-extern const char* MSG_ReadString(struct msg_t* msg);
+extern unsigned char MSG_ReadByte(struct msg_t* msg);
+extern char* MSG_ReadString(struct msg_t* msg);
 extern int dword_F0F204[2];
 extern char byte_F0F208[];
 extern int dword_F0D1F4[2];
@@ -94,10 +97,10 @@ struct netadr_t {
 };
 static_assert(sizeof(netadr_t) == 0x14, "netadr_t size mismatch");
 extern int NET_CompareAdr(netadr_t a, netadr_t b);
-extern int Netchan_Process(void* chan, struct msg_t* msg);
-extern const char* NET_AdrToString(const void* a);
+extern int Netchan_Process(netchan_t* chan, struct msg_t* msg);
+extern const char* NET_AdrToString(netadr_t a);
 extern void Com_DPrintf(const char* fmt, ...);
-extern void CL_Netchan_Transmit(void* chan, struct msg_t* msg);
+extern void CL_Netchan_Transmit(netchan_t* chan, struct msg_t* msg);
 extern void SendClientThinkMsg();
 extern void codNflUpdate();
 extern void AudioBankMgr_Update(void* self);
@@ -403,7 +406,7 @@ void CL_WritePacket()
         if (cl_showSend->integer != 0)
             Com_Printf("%i ", buf.cursize);
         MSG_WriteByte(&buf, 3);
-        Netchan_Transmit((void*)((char*)0xF11208 + 19528 * currCl),
+        Netchan_Transmit((netchan_t*)((char*)0xF11208 + 19528 * currCl),
                          buf.cursize, buf.data);
     }
 }
@@ -917,7 +920,7 @@ void CL_ParseServerMessage(msg_t* msg)
 }
 
 // ea: 0x534670
-void CL_PacketEvent(void* from, msg_t* msg)
+void CL_PacketEvent(netadr_t from, msg_t* msg, int time)
 {
     extern int clc_lastPacketTime[2 * 4882];
     clc_lastPacketTime[4882 * currCl] = dword_F170F8;
@@ -928,10 +931,11 @@ void CL_PacketEvent(void* from, msg_t* msg)
     }
     if (cls.state != 0)  // CA_DISCONNECTED
     {
-        if (NET_CompareAdr(*(netadr_t*)from,
+        if (NET_CompareAdr(from,
                            *(netadr_t*)(0xF11210 + 19528 * currCl)) != 0)
         {
-            if (Netchan_Process((void*)(0xF11208 + 19528 * currCl), msg) != 0)
+            if (Netchan_Process((netchan_t*)(0xF11208 + 19528 * currCl),
+                                msg) != 0)
             {
                 int v4 = 4882 * currCl;
                 int v5 = dword_F170F8;

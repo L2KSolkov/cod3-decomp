@@ -56,7 +56,7 @@ void MSG_WriteChar(msg_t* msg, int c)
 }
 
 // ea: 0x0060F310
-void MSG_WriteByte(msg_t* msg, unsigned char c)
+void MSG_WriteByte(msg_t* msg, int c)
 {
     msg->data[msg->cursize++] = c;
 }

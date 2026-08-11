@@ -3591,7 +3591,10 @@ extern void Cvar_Set(const char* var_name, const char* value);
 extern int trap_R_RegisterShaderNoMip(const char* name, int imagetype);
 extern void* off_DF9208[];
 extern void* SoundMediaMgr_j_nullsub_91(void* self);
-extern int NS_CLIENT;
+enum netsrc_t {
+    NS_CLIENT = 0,
+    NS_SERVER = 1,
+};
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern void CG_Trace(trace_t* result, const math::Position3* start,
                      const math::Position3* mins, const math::Position3* maxs,

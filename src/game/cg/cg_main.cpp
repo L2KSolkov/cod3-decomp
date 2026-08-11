@@ -23,7 +23,10 @@ extern int dword_F641E4;
 extern int dword_F641E8;
 extern int dword_F641E0[2];
 extern int dword_F641EC;
-extern int NS_CLIENT;
+enum netsrc_t {
+    NS_CLIENT = 0,
+    NS_SERVER = 1,
+};
 
 extern void CL_AddCgameCommand(const char* cmdName, void (*function)());
 extern const char* CL_GetConfigStringC(int index);
