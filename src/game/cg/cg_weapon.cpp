@@ -1449,7 +1449,9 @@ LABEL_25:
     return;
 }
 
-extern void* DObjGetTree(void* obj);
+struct XAnimTree;
+struct DObj;
+extern XAnimTree* DObjGetTree(DObj* obj);  // ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z (render.o 0x6BE190)
 extern int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
                                     weaponInfo_s* weaponInfo);
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
@@ -1474,7 +1476,7 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
         CG_ASSERT("0", "c:\\cod\\code\\game\\cg_weapons.cpp", 456);
         return;
     }
-    void* Tree = DObjGetTree(v3);
+    void* Tree = DObjGetTree((DObj*)v3);
     DObj* v5 = (DObj*)dword_F6A2A0[802 * currCl];
     weaponFileInfo_t* InfoForWeapon =
         (weaponFileInfo_t*)BG_GetInfoForWeapon(ps->weapon);

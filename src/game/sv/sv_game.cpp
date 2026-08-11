@@ -24,6 +24,19 @@ extern const char* nullStr;
 class DObj;
 struct DObjSkelMat;
 class XAnimTree;
+
+// Minimal DObj view with tree[] (full class in g_local.h/cg_local.h)
+class DObj {
+public:
+    void* tree[8];  // +0x00 XAnimTree*[8]
+};
+
+// ea: 0x006BE190 (render.o)
+XAnimTree* DObjGetTree(DObj* obj)  // ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z
+{
+    return (XAnimTree*)obj->tree[0];
+}
+class XAnimTree;
 extern void  DObjDumpInfo(DObj* obj);
 extern int   DObjSkelExists(DObj* obj, int timeStamp);
 extern int   DObjSkelExistsConst(DObj* obj, int timeStamp);

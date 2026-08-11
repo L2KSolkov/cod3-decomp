@@ -49,11 +49,19 @@ bool Error(const char* fmt, ...);
 
 // nsl voice enumeration (stub env; game reads srcId at +0x114)
 enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
-enum nslSourceState { NSL_SOURCE_STATE_INVALID = 0 };
+enum nslWaveID : int { NSL_WAVE_ID_INVALID = -1 };
+enum nslSourceState {
+    NSL_SOURCE_STATE_INVALID = 0,
+    NSL_SOURCE_STATE_PLAYING = 1,
+    NSL_SOURCE_STATE_QUEUING = 2,
+    NSL_SOURCE_STATE_QUEUED = 3,
+    NSL_SOURCE_STATE_PAUSED = 4,
+};
 struct nslVoice;
 extern unsigned int nslGetNumVoices();
 extern nslVoice* nslGetVoice(unsigned int a);
 extern nslSourceState nslGetSourceState(nslSourceID sid);
+extern int nslIsWaveLooped(nslWaveID wave);
 
 extern PoolAllocator* ActiveEffectSet_sAllocator;  // 0x00F00E84
 
@@ -225,8 +233,23 @@ struct SndWait {
 namespace SoundDevice {
 struct Sound {
     int          mSource;        // +0x00 nslSourceID (-1 = invalid)
-    unsigned int mWave;          // +0x04 nslWaveID
-    HashString   mDialogNotify;  // +0x08
+    int          mWave;          // +0x04 nslWaveID
+    bool         mPaused;        // +0x08
+    bool         mAutoRelease;   // +0x09
+    float        mPitch;         // +0x0C
+    float        mVolume;        // +0x10
+    float        mMinRange;      // +0x14
+    float        mMaxRange;      // +0x18
+    float        mGroupVolume;   // +0x1C
+    Handle       mEntHandle;     // +0x20
+    Handle       mHandle;        // +0x24
+    void*        mPoPtr;         // +0x28
+    HashString   mDialogNotify;  // +0x2C
+    float        mDebugPos[3];   // +0x30
+
+    bool IsQueued() const;    // ?IsQueued@Sound@SoundDevice@@QBE_NXZ (game.o 0x602890)
+    bool IsFinished() const;  // ?IsFinished@Sound@SoundDevice@@QBE_NXZ (game.o 0x602940)
+    bool IsLooped() const;    // ?IsLooped@Sound@SoundDevice@@QBE_NXZ (game.o 0x602980)
 };
 class SoundHandleDb {
 public:
@@ -241,9 +264,6 @@ public:
 
 extern void Sound_Stop(Sound* s);
 extern void Sound_PlayQueued(Sound* s);
-extern bool Sound_IsQueued(const Sound* s);
-extern bool Sound_IsLooped(const Sound* s);
-extern bool Sound_IsFinished(const Sound* s);
 extern const char* Sound_GetSourceName(const Sound* s);
 extern float Sound_GetVolume(const Sound* s);
 extern float Sound_GetLength(const Sound* s);
@@ -2692,7 +2712,7 @@ bool AbstractEffectSound::IsQueued() const
         SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
     if (mObject == nullptr)
         return true;
-    return SoundDevice::Sound_IsQueued(mObject);
+    return mObject->IsQueued();
 }
 
 // ea: 0x004CD120
@@ -2717,7 +2737,7 @@ bool AbstractEffectSound::IsFinished()
         SoundDevice::SoundFromHandle(this->mSound.mHandle.mVal);
     if (mSound == nullptr)
         return true;
-    return SoundDevice::Sound_IsFinished(mSound);
+    return mSound->IsFinished();
 }
 
 // ea: 0x004CD1B0
@@ -2729,7 +2749,7 @@ bool AbstractEffectSound::IsLooping() const
         SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
     if (mObject == nullptr)
         return false;
-    return SoundDevice::Sound_IsLooped(mObject);
+    return mObject->IsLooped();
 }
 
 // ea: 0x004CD230
@@ -2777,7 +2797,7 @@ void AbstractEffectSound::PlayQueuedEffect()
                 && AeAssert::Assert("The sound has not been queued!!!!!"))
                 __debugbreak();
         }
-        if (SoundDevice::Sound_IsQueued(mObject))
+        if (mObject->IsQueued())
         {
             SoundDevice::Sound_PlayQueued(
                 SoundDevice::SoundFromHandle(mSound.mHandle.mVal));
@@ -2863,7 +2883,7 @@ Broc::string AbstractEffectSound::GetDebugString() const
         }
         SoundDevice::Sound* v13 =
             SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
-        char v14 = (v13 != nullptr && !SoundDevice::Sound_IsLooped(v13))
+        char v14 = (v13 != nullptr && !v13->IsLooped())
                        ? 'L'
                        : ' ';
         ae_formatted_string<128, unsigned char> v17(
@@ -3181,7 +3201,7 @@ LABEL_117:
     }
     SoundDevice::Sound* v46 =
         SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
-    if (v46 != nullptr && SoundDevice::Sound_IsLooped(v46))
+    if (v46 != nullptr && v46->IsLooped())
         mCodeFlags.mVal |= 0x20u;
     if (SoundDevice::SoundFromHandle(mSound.mHandle.mVal) != nullptr)
     {
@@ -3209,11 +3229,11 @@ LABEL_124:
     }
     SoundDevice::Sound* v52 =
         SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
-    if (v52 != nullptr && !SoundDevice::Sound_IsFinished(v52))
+    if (v52 != nullptr && !v52->IsFinished())
     {
         SoundDevice::Sound* v53 =
             SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
-        if (SoundDevice::Sound_IsQueued(v53)
+        if (v53->IsQueued()
             && AbstractEffectGetOwner(this) != nullptr)
         {
             EffectEventSysStatics::sInst->SendSoundNotify(
@@ -4034,7 +4054,7 @@ AbstractEffectSound::AbstractEffectSound(TPakId pakId,
                 mSoundParams.mNameRef))
             __debugbreak();
     }
-    mWaveHdl = SoundDevice_FindWave(SoundDevice_sInst, mSoundParams.mNameRef);
+    mWaveHdl = (nslWaveID)SoundDevice_FindWave(SoundDevice_sInst, mSoundParams.mNameRef);
     unsigned int mVal = mSoundParams.mEnt.mHandle.mVal;
     unsigned int v11 = mVal & 0xFFF;
     if (v11 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v11].mKey

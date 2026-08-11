@@ -8,6 +8,25 @@
 #include "core/tlFixedString.h"
 #include "engine/broc_types.h"
 
+// Scene-anim list (anim.o) - opaque entries
+class SceneAnimInfo;
+template <typename T>
+struct reserved_dlist {
+    struct dlist_node {
+        dlist_node* mPrev;  // +0x00
+        dlist_node* mNext;  // +0x04
+    };
+    dlist_node* m_head;  // +0x00
+    dlist_node* m_end;   // +0x08
+};
+reserved_dlist<SceneAnimInfo> gSceneAnimList;  // ?gSceneAnimList@@3V?$reserved_dlist@VSceneAnimInfo@@@@A (anim.o @ 0xDF2ACC)
+
+// ea: 0x00543930
+bool IsInSceneAnim()  // ?IsInSceneAnim@@YA_NXZ (anim.o)
+{
+    return gSceneAnimList.m_head != gSceneAnimList.m_end;
+}
+
 // AeAssert contract (definitions in core/ae_assert.cpp)
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

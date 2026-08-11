@@ -137,25 +137,8 @@ int gDebugThread_MessageTicks;
 float gDebugThread_MessageYpos;
 int gDebugThread_MessageAlphaMin;
 
-// SoundDevice::Sound - 0x3C, verified against IDA local type
-struct SoundDeviceSound {
-    unsigned int mSource;        // +0x00 (nslSourceID)
-    unsigned int mWave;          // +0x04 (nslWaveID)
-    bool mPaused;                // +0x08
-    bool mAutoRelease;           // +0x09
-    float mPitch;                // +0x0C
-    float mVolume;               // +0x10
-    float mMinRange;             // +0x14
-    float mMaxRange;             // +0x18
-    float mGroupVolume;          // +0x1C
-    unsigned int mEntHandle;     // +0x20 (DbLinkedHandle mVal)
-    unsigned int mHandle;        // +0x24 (DbLinkedHandle mVal)
-    const void* mPoPtr;          // +0x28
-    unsigned int mDialogNotify;  // +0x2C (HashString)
-    float mDebugPos[3];          // +0x30
-};
-static_assert(sizeof(SoundDeviceSound) == 0x3C,
-              "SoundDeviceSound size mismatch");
+// SoundDevice::Sound (full view in sv_stubs.h, 0x3C) - IsFinished ported at
+// ea 0x602940 in effect_events.cpp.
 
 DbLinkedHandle<EntityHandleDb, Entity> g_SoundOnlyPlay;  // ?g_SoundOnlyPlay@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A (game2.o @ 0xDEB5B4)
 extern vmCvar_t sound_disableAllOtherSounds;   // ?sound_disableAllOtherSounds@@3UvmCvar_t@@A (game2.o)
@@ -165,7 +148,6 @@ extern vmCvar_t g_debugProneCheckDepthCheck;   // ?g_debugProneCheckDepthCheck@@
 extern const char* nslGetSourceName(nslSourceID sid);   // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 extern float nslGetSourceParam(nslSourceID sid, int index, float defaultValue);  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z
 extern void nslGetSourcePosition(nslSourceID sid, float* position);  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z
-extern bool SoundDevice_Sound_IsFinished(const SoundDeviceSound* self);  // ?IsFinished@Sound@SoundDevice@@QBE_NXZ
 
 #define NSL_SOURCE_ID_INVALID ((nslSourceID)-1)
 
@@ -184,11 +166,11 @@ void DebugThread::DisplayEntitySound(const math::Position3* entityPos,
     char tmpstr[128];
     for (unsigned int i = 0; i < 512; ++i)
     {
-        SoundDeviceSound* v11 =
-            (SoundDeviceSound*)((char*)SoundDevice::sInst + i * 0x3C);
-        if (v11->mEntHandle != m_entityHandle.mHandle.mVal
+        SoundDevice::Sound* v11 =
+            (SoundDevice::Sound*)((char*)SoundDevice::sInst + i * 0x3C);
+        if (v11->mEntHandle.mVal != m_entityHandle.mHandle.mVal
             || v11->mSource == NSL_SOURCE_ID_INVALID
-            || SoundDevice_Sound_IsFinished(v11))
+            || v11->IsFinished())
         {
             continue;
         }

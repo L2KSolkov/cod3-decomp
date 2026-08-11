@@ -33,7 +33,7 @@ typedef int EStanceType;         // TODO: enum values from IDA
 typedef int EWeaponClass;        // TODO: enum values from IDA
 typedef int EAction;             // TODO: enum values from IDA
 typedef int EUserBoneId;         // TODO: enum values from IDA
-typedef int nslWaveID;           // TODO: enum values from IDA
+enum nslWaveID : int;            // TODO: enum values from IDA
 
 struct ParticleEffect;
 struct apsEffect;

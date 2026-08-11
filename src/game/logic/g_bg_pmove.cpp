@@ -141,7 +141,10 @@ int bg_iNumWeapons;    // ?bg_iNumWeapons@@3HA (game.o)
 extern char gDisableLMGHipFire;  // game.o @ 0xF4EBFC
 extern void* EffectEventSys_GetActiveEffectSet(void* sInst,
                                                unsigned int handle);
-extern bool ActiveEffectSet_IsQueued(void* self);
+class ActiveEffectSet {
+public:
+    bool IsQueued() const;  // ?IsQueued@ActiveEffectSet@@QBE_NXZ (core.o 0x4C0C50)
+};
 extern void EffectEventSys_PlayQueuedEffect(void* sInst, unsigned int handle);
 
 // ============================================================================
@@ -1123,12 +1126,12 @@ int PM_SetWeaponReloadAddAmmoDelay()
 PlayerState* PM_QueuedReloadUpdate()
 {
     void* v0 = EffectEventSys::sInst;
-    void* ActiveEffectSet = EffectEventSys_GetActiveEffectSet(
+    void* set = EffectEventSys_GetActiveEffectSet(
         EffectEventSys::sInst, pm->ps->queuedReloadSound.mVal);
-    void* v2 = ActiveEffectSet;
+    void* v2 = set;
     bool IsQueued;
-    if (ActiveEffectSet == nullptr
-        || (IsQueued = ActiveEffectSet_IsQueued(ActiveEffectSet)))
+    if (set == nullptr
+        || (IsQueued = ((ActiveEffectSet*)set)->IsQueued()))
         IsQueued = true;
     if (v2 != nullptr)
     {
