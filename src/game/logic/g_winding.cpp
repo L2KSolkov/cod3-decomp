@@ -306,7 +306,8 @@ void RemoveColinearPoints(winding_t* w)
 }
 
 // ea: 0x0060AA40
-void AddWindingToConvexHull(winding_t* w, winding_t** hull, float* normal)
+void AddWindingToConvexHull(winding_t* w, winding_t** hull,
+                            float* const normal)
 {
     if (*hull == nullptr)
     {
@@ -484,7 +485,7 @@ void AddWindingToConvexHull(winding_t* w, winding_t** hull, float* normal)
 }
 
 // ea: 0x00609750
-void WindingPlane(winding_t* w, float* normal, float* dist)
+void WindingPlane(winding_t* w, float* const normal, float* const dist)
 {
     float v1[3];
     v1[0] = w->p[1][0] - w->p[0][0];
@@ -526,7 +527,7 @@ float WindingArea(winding_t* w)
 }
 
 // ea: 0x006098F0
-void WindingBounds(winding_t* w, float* mins, float* maxs)
+void WindingBounds(winding_t* w, float* const mins, float* const maxs)
 {
     mins[2] = 131072.0f;
     mins[1] = 131072.0f;
@@ -555,7 +556,7 @@ void WindingBounds(winding_t* w, float* mins, float* maxs)
 }
 
 // ea: 0x006099B0
-void WindingCenter(winding_t* w, float* center)
+void WindingCenter(winding_t* w, float* const center)
 {
     center[0] = 0.0f;
     center[1] = 0.0f;
@@ -573,7 +574,7 @@ void WindingCenter(winding_t* w, float* center)
 }
 
 // ea: 0x00609A60
-winding_t* BaseWindingForPlane(const float* normal, float dist)
+winding_t* BaseWindingForPlane(const float* const normal, float dist)
 {
     int v3 = -1;
     float max = -131072.0f;
@@ -690,7 +691,7 @@ winding_t* ReverseWinding(winding_t* w)
 }
 
 // ea: 0x00609E80
-void ClipWindingEpsilon(winding_t* in, float* normal, float dist,
+void ClipWindingEpsilon(winding_t* in, float* const normal, float dist,
                         float epsilon, winding_t** front, winding_t** back)
 {
     int numpoints = in->numpoints;
@@ -838,7 +839,7 @@ void pw(winding_t* w)
 }
 
 // ea: 0x0060A2A0
-void ChopWindingInPlace(winding_t** inout, float* normal, float dist,
+void ChopWindingInPlace(winding_t** inout, float* const normal, float dist,
                         float epsilon)
 {
     winding_t* v4 = *inout;
@@ -958,7 +959,7 @@ void ChopWindingInPlace(winding_t** inout, float* normal, float dist,
 }
 
 // ea: 0x0060A610
-winding_t* ChopWinding(winding_t* in, float* normal, float dist)
+winding_t* ChopWinding(winding_t* in, float* const normal, float dist)
 {
     winding_t* v3 = in;
     winding_t* b = nullptr;
@@ -1039,7 +1040,7 @@ void CheckWinding(winding_t* w)
 }
 
 // ea: 0x0060A980
-int WindingOnPlaneSide(winding_t* w, float* normal, float dist)
+int WindingOnPlaneSide(winding_t* w, float* const normal, float dist)
 {
     int v3 = 0;
     int v4 = 0;
