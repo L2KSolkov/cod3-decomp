@@ -6,6 +6,7 @@
 #include <cstdint>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
+#include "engine/broc_types.h"
 
 // AeAssert contract (definitions in core/ae_assert.cpp)
 namespace AeAssert {
@@ -356,6 +357,18 @@ struct XAnimInfo {
 
 // ?g_info@@3PAUXAnimInfo@@A @ 0xF25AE8 (512 entries)
 XAnimInfo g_info[512];
+
+// Mirrors game2.o AnimIK (0x7C bytes; full definition in g_game2_misc.cpp).
+// Only `initialized` is touched by xanim.cpp.
+class AnimIK {
+public:
+    char _pad[0x50];
+    int  initialized;
+};
+extern AnimIK AnimIKGlobal;  // ?AnimIKGlobal@@3VAnimIK@@A (game2.o data)
+
+// ?gEnd@@3Vstring@Broc@@A (anim.o data @ 0xF2CAF4)
+Broc::string gEnd;
 
 // ea: 0x5433C0
 float XAnimGetTime(XAnimTree* tree, unsigned int animIndex)
@@ -905,4 +918,29 @@ void XAnimClearTree(XAnimTree* tree)
         XANIM_ASSERT("size", "c:\\cod\\code\\game\\xanim.cpp", 4846,
                      "old cod assert");
     }
+}
+
+// ea: 0x53E030
+void XAnimInit()
+{
+    for (unsigned int i = 0; i < 512; ++i)
+    {
+        unsigned int v0 = i + 1;
+        g_info[i].prev = (unsigned short)((v0 + 510) % 512);
+        g_info[i].next = (unsigned short)(v0 % 512);
+    }
+    *(float*)&g_info[0].s[0] = 0.0f;
+    *(float*)&g_info[0].s[4] = 0.0f;
+    *(unsigned short*)&g_info[0].s[8] = 0;
+    *(unsigned short*)&g_info[0].s[10] = 0;
+    AnimIKGlobal.initialized = 0;
+    gEnd = "end";
+}
+
+// ea: 0x53E0B0
+void XAnimShutdown()
+{
+    if (gEnd.mBlock != nullptr && gEnd.mBlock != (Broc::string::Block*)-12
+        && gEnd.mBlock->mBuff[0] != 0)
+        gEnd.clear();
 }

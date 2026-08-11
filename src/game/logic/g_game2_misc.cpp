@@ -254,7 +254,8 @@ void nalMatrix4x4_to_Axis4(nalMatrix4x4* mat, float (*axis)[3])
 // ============================================================================
 // AnimIK - IK state (0x7C, IDA verified; ctor/dtor only here)
 // ============================================================================
-struct AnimIK {
+class AnimIK {
+public:
     float ikJoints[0x50 / 4];       // +0x00 AnimIKJointVars_t[4]
     int initialized;                // +0x50
     void* pose;                     // +0x54
@@ -297,6 +298,9 @@ struct AnimIK {
                 nalGenericPose* inPose);               // ea: 0x50BBC0
 };
 static_assert(sizeof(AnimIK) == 0x7C, "AnimIK size mismatch");
+
+// ?AnimIKGlobal@@3VAnimIK@@A (game2.o data @ 0xF05660)
+AnimIK AnimIKGlobal;
 
 // ea: 0x4F60A0
 AnimIK::AnimIK()
