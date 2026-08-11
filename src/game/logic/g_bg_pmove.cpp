@@ -69,6 +69,14 @@ extern float boundingMin;           // ?boundingMin (game.o @ 0xDF8DD4)
 extern float depthScale;            // ?depthScale (game.o @ 0xDF8DD8)
 extern cvar_t* bg_stickyAimRender;  // ?bg_stickyAimRender@@3PAUcvar_t@@A (game.o)
 extern cgGlobal_t cgGlobal;         // ?cgGlobal@@3UcgGlobal_t@@A (cg.o)
+extern float player_breath_hold_time;   // @ 0xDF6B3C
+extern float player_breath_gasp_time;   // @ 0xDF6B40
+extern float player_breath_hold_lerp;   // @ 0xDF6B44
+extern float player_breath_gasp_lerp;   // @ 0xDF6B48
+extern float player_breath_gasp_scale;  // @ 0xDF6B4C
+extern float* dword_F63B8C[4 * 1580];   // ?dword_F63B8C (game.o @ 0xF63B8C)
+extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
+    // ?DiffTrack@@YAMMMMM@Z (core.o q_math.cpp)
 extern bool FindClosestVisibleBone(Entity* closestEnt,
                                    const math::Position3& playerPosition,
                                    const math::Position3& hitPosition,
@@ -165,6 +173,81 @@ void PM_AddTouchEnt(DbLinkedHandle<EntityHandleDb, Entity> entity)
             ++pm->numtouch;
             return;
         }
+    }
+}
+
+// ============================================================================
+// PM_UpdateHoldBreath - ea: 0x631260 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x00631260
+void PM_UpdateHoldBreath()
+{
+    float deltaT = ServerTime::sInst.mTickDelta;
+    int v0 = (int)(ServerTime::sInst.mTickDelta * 1000.0f);
+    Client* client = EntityManager::sInst->GetPlayer(currCl)->client;
+    int v2 = (int)(player_breath_hold_time * 1000.0f);
+    int targetScale = (int)(player_breath_gasp_time * 1000.0f);
+    if (v2 <= 0)
+    {
+        client->ps.mFlags &= ~2u;
+        client->ps.mHoldBreathScale = 1.0f;
+        client->ps.mHoldBreathTimer = 0;
+        return;
+    }
+    Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+        pm->ps->mClient.mHandle.mVal);
+    float* v5 = mObject != nullptr ? dword_F63B8C[1580 * mObject->GetPlayerIndex()]
+                                   : nullptr;
+    if (v5 != nullptr)
+    {
+        int v6 = *(int*)(v5 + 1620 / 4);
+        if (client->ps.fWeaponPosFrac == 1.0f
+            && (v6 == 3 || v6 == 2)
+            && (client->ps.mFlags & 1) != 0)
+        {
+            if (client->ps.mHoldBreathTimer != 0)
+                goto LABEL_15;
+            client->ps.mFlags |= 2u;
+        }
+        else
+        {
+            client->ps.mFlags &= 0xFFFFFFFD;
+        }
+LABEL_15:
+        int mHoldBreathTimer = client->ps.mHoldBreathTimer;
+        if ((client->ps.mFlags & 2) != 0)
+            client->ps.mHoldBreathTimer = v0 + mHoldBreathTimer;
+        else
+            client->ps.mHoldBreathTimer = mHoldBreathTimer - v0;
+        if (client->ps.mHoldBreathTimer < 0)
+            client->ps.mHoldBreathTimer = 0;
+        if ((client->ps.mFlags & 2) != 0
+            && client->ps.mHoldBreathTimer > v2)
+        {
+            client->ps.mHoldBreathTimer = v2 + targetScale;
+            client->ps.mFlags &= ~2u;
+        }
+        float v10;
+        float targetScalea;
+        if ((client->ps.mFlags & 2) != 0)
+        {
+            targetScalea = 0.0f;
+            v10 = player_breath_hold_lerp;
+        }
+        else
+        {
+            v10 = player_breath_gasp_lerp;
+            targetScalea =
+                ((float)client->ps.mHoldBreathTimer
+                 / (float)(v2 + targetScale))
+                    * (player_breath_gasp_scale - 1.0f)
+                + 1.0f;
+        }
+        float targetScaleb =
+            (targetScalea - 1.0f) * client->ps.fWeaponPosFrac + 1.0f;
+        client->ps.mHoldBreathScale =
+            DiffTrack(targetScaleb, client->ps.mHoldBreathScale, v10,
+                      deltaT);
     }
 }
 

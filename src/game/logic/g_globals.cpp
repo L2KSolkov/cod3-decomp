@@ -32,6 +32,12 @@ float clostDist = 0.7f;              // @ 0xDF8DCC
 float xy = 15.0f;                    // @ 0xDF8DD0
 float boundingMin = 24.0f;           // @ 0xDF8DD4
 float depthScale = 150.0f;           // @ 0xDF8DD8
+float player_breath_hold_time = 3.0f;    // @ 0xDF6B3C (breath hold seconds)
+float player_breath_gasp_time = 4.5f;    // @ 0xDF6B40
+float player_breath_hold_lerp = 6.0f;    // @ 0xDF6B44
+float player_breath_gasp_lerp = 4.0f;    // @ 0xDF6B48
+float player_breath_gasp_scale = 1.0f;   // @ 0xDF6B4C
+float* dword_F63B8C[4 * 1580];       // ?dword_F63B8C (game.o @ 0xF63B8C)
 float emissionRate_0 = 1.0f;   // @ 0xDD8254 (vehicle gunner overheat emission rate)
 float gTanAimConeSpread;       // @ 0xEB1118 (g_weapon.cpp Bullet_Endpos scratch)
 float max_intensity = 120.0f;  // @ 0xDD7FD4
