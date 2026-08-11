@@ -902,14 +902,21 @@ extern vmCvar_t bg_meleeassistfov;      // ?bg_meleeassistfov@@3UvmCvar_t@@A (ga
 extern SoundOptions gSoundOptions;      // ?gSoundOptions@@3VSoundOptions@@A
 
 // MP debug flags (mp.o statics)
-extern int MPVehicle_sDebugGeneral;        // ?sDebugGeneral@MPVehicle@@2HA (mp.o)
-extern int MPVehicle_sDebugNetworkUpdates; // ?sDebugNetworkUpdates@MPVehicle@@2HA (mp.o)
-extern int MPVehicle_sPauseNetworkUpdates; // ?sPauseNetworkUpdates@MPVehicle@@2HA (mp.o)
-extern int MPPlayer_sDebugNetworkUpdates;  // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
-extern int MPPlayer_sPauseNetworkUpdates;  // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
-extern int MPPeer_mRenderSessionInfo;      // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
-extern int MPPeer_mRenderPlayerInfo;       // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
-extern int MPPeer_mRenderDataInfo;         // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
+// mp.o debug-tweak statics (MPPlayer/MPPeer classes in game/sv/sv_stubs.h)
+struct MPVehicle {
+    static int sDebugGeneral;          // ?sDebugGeneral@MPVehicle@@2HA
+    static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPVehicle@@2HA
+    static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPVehicle@@2HA
+};
+
+int MPPlayer::sDebugNetworkUpdates = 0;
+int MPPlayer::sPauseNetworkUpdates = 0;
+int MPPeer::mRenderDataInfo = 1;
+int MPPeer::mRenderPlayerInfo = 0;
+int MPPeer::mRenderSessionInfo = 0;
+int MPVehicle::sDebugGeneral = 0;
+int MPVehicle::sDebugNetworkUpdates = 0;
+int MPVehicle::sPauseNetworkUpdates = 0;
 
 // Multiplayer / HUD cvars (g.o / cg.o vmCvar data)
 extern vmCvar_t cg_thirdPerson;          // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o)
@@ -1478,14 +1485,14 @@ void InspectorManager::AddMultiplayerMenus()
 {
     _INSPECTOR_MENU* v2 = AddSubMenu(nullptr, "Multi-Player");
     _INSPECTOR_MENU* v3 = AddSubMenu(v2, "Debug Render");
-    AddItem(v3, "General Vehicle", &MPVehicle_sDebugGeneral, 2);
-    AddItem(v3, "Vehicle Network Updates", &MPVehicle_sDebugNetworkUpdates, 2);
-    AddItem(v3, "Pause Vehicle Network Updates", &MPVehicle_sPauseNetworkUpdates, 2);
-    AddItem(v3, "Player Network Updates", &MPPlayer_sDebugNetworkUpdates, 2);
-    AddItem(v3, "Pause Player Network Updates", &MPPlayer_sPauseNetworkUpdates, 2);
-    AddItem(v3, "Session Status", &MPPeer_mRenderSessionInfo, 2);
-    AddItem(v3, "Player Status", &MPPeer_mRenderPlayerInfo, 2);
-    AddItem(v3, "Data Status", &MPPeer_mRenderDataInfo, 2);
+    AddItem(v3, "General Vehicle", &MPVehicle::sDebugGeneral, 2);
+    AddItem(v3, "Vehicle Network Updates", &MPVehicle::sDebugNetworkUpdates, 2);
+    AddItem(v3, "Pause Vehicle Network Updates", &MPVehicle::sPauseNetworkUpdates, 2);
+    AddItem(v3, "Player Network Updates", &MPPlayer::sDebugNetworkUpdates, 2);
+    AddItem(v3, "Pause Player Network Updates", &MPPlayer::sPauseNetworkUpdates, 2);
+    AddItem(v3, "Session Status", &MPPeer::mRenderSessionInfo, 2);
+    AddItem(v3, "Player Status", &MPPeer::mRenderPlayerInfo, 2);
+    AddItem(v3, "Data Status", &MPPeer::mRenderDataInfo, 2);
     AddItem(v3, "Debug Anim Entity", &cg_mpDebugAnimEntity, 0x20001);
     AddItem(v3, "Third Person Render", &cg_thirdPerson.integer, 2);
     AddItem(v3, "Third Person Range", &cg_thirdPersonRange.value, 0x40003);

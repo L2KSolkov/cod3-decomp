@@ -992,6 +992,9 @@ struct MPPlayer {
     uint8_t _pad[4];
     int     mClientIndex;   // +0x04
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
+
+    static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
+    static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
 };
 
 struct MPPlayerManager {
@@ -1000,6 +1003,10 @@ struct MPPlayerManager {
 
 struct MPPeer {
     MPPlayerManager* GetPlayerManager();
+
+    static int mRenderDataInfo;        // ?mRenderDataInfo@MPPeer@@2HA (mp.o)
+    static int mRenderPlayerInfo;      // ?mRenderPlayerInfo@MPPeer@@2HA (mp.o)
+    static int mRenderSessionInfo;     // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
 };
 
 struct MultiplayerMgr2 {

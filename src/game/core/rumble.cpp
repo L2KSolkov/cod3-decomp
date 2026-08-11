@@ -38,7 +38,14 @@ extern int currCl;
 extern int level_time;
 extern void* EntityManager_sInst;
 extern void* EntityManager_GetPlayer(void* inst, int idx);
-extern bool GamePause_mData_mGamePaused[];
+// Minimal view of GamePause (full class in game/sv/sv_stubs.h; mData defined
+// in g_entity_misc.cpp).
+struct GamePause {
+    struct GamePauseData {
+        bool mGamePaused[1];  // +0x00
+    };
+    static GamePauseData mData;  // ?mData@GamePause@@0UGamePauseData@1@A
+};
 extern int cls_state;
 extern int dword_F6A28C[];
 extern int gSaveGameData_mVibration[];
@@ -360,7 +367,7 @@ void RumbleManager::FrameAdvance(float delta_time)
         {
             ASSERT("client >= 0 && client < 1", "c:\\cod\\code\\game\\GamePause.h", 12);
         }
-        if (GamePause_mData_mGamePaused[mClient]
+        if (GamePause::mData.mGamePaused[mClient]
             || !gSaveGameData_mVibration[7156 * mClient]
             || cls_state == 5)
         {

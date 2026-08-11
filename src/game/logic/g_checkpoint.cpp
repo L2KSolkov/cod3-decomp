@@ -108,7 +108,6 @@ extern void DebugRender_RenderText(const char* str, int x, int y,
                                    float size);  // ?RenderText@DebugRender
 extern int gCurCheckpoint;       // @ 0xF4F44C
 extern int gDebounce;            // @ 0xF4F450
-extern bool CheckpointMenu_gCheckpointMenuActive;  // @ 0xF4F454
 
 // Minimal controller view (mirrors g_cmd.cpp PadAliasMgr twin)
 class controller {
@@ -139,6 +138,9 @@ public:
 
 // ea: 0x006392D0
 namespace CheckpointMenu {
+// ?gCheckpointMenuActive@CheckpointMenu@@3_NA (game.o data @ 0xF4F454)
+bool gCheckpointMenuActive = false;
+
 void RestartAtCheckpoint(int num)
 {
     if (Cvar_Get("letterbox_enabled", "0", 0)->integer != 0)
@@ -578,13 +580,13 @@ void RenderCheckpointMenu()
                 else if (controller::inst()->button_value(
                              locked_port, controller::UPBUTTON) != 0)
                 {
-                    CheckpointMenu_gCheckpointMenuActive = false;
+                    gCheckpointMenuActive = false;
                     RestartAtCheckpoint(gCurCheckpoint);
                 }
             }
             else
             {
-                CheckpointMenu_gCheckpointMenuActive = false;
+                gCheckpointMenuActive = false;
             }
         }
     }
