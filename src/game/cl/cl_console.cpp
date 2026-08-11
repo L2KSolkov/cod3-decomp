@@ -49,7 +49,7 @@ extern void SCR_FillRect(float x, float y, float width, float height,
 extern void SCR_DrawSmallChar(int x, int y, int ch);
 extern void CL_LookupColor(unsigned char c, float* color);
 extern void Field_Draw(field_t* edit, int x, int y, int showCursor);
-extern int dword_F13324;
+int dword_F13324;  // ?dword_F13324@@3HA (cl.o)
 extern int dword_CE8814[64];
 extern int dword_CE8818[64];
 extern int dword_CE881C[64];

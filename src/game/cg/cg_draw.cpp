@@ -59,8 +59,8 @@ extern float CG_GetViewFov();
 extern void CG_Error(const char* msg, ...);
 extern int CG_DrawSingleHudElem(void* elem);
 extern int compare_hudelems(const void* pe0, const void* pe1);
-extern int dword_F63CA4[4 * 1580];
-extern int dword_F63CA8[4 * 1580];
+int dword_F63CA4[4 * 1580];  // cg.o BSS
+int dword_F63CA8[4 * 1580];  // cg.o BSS
 float dword_F63C60[4 * 1580];  // cg.o BSS
 float dword_F63C58[4 * 1580];  // cg.o BSS
 float dword_F63C5C[4 * 1580];  // cg.o BSS
@@ -71,13 +71,135 @@ float dword_F63CB4[4 * 1580];  // cg.o BSS
 int dword_F63BAC[4 * 1580];    // cg.o BSS
 int dword_F63BB4[4 * 1580];    // cg.o BSS
 int dword_F64018[4 * 1580];    // cg.o BSS
-extern float dword_F63C64[4 * 1580];
+float dword_F63C64[4 * 1580];  // cg.o BSS
 float dword_F63C70[4 * 1580];  // cg.o BSS
 float dword_F63C74[4 * 1580];
 float dword_F63C78[4 * 1580];
-extern float dword_F63C50[4 * 1580];
-extern float dword_F63C58[4 * 1580];
-extern float dword_F63C5C[4 * 1580];
+float dword_F63C50[4 * 1580];  // cg.o BSS
+// --- cg.o BSS sweep (anonymous .bss region 0xF62940-0xF64200) ---
+float dword_F63C54[4 * 1580];  // cg.o BSS
+float dword_F63CB8[4 * 1580];  // cg.o BSS
+float dword_F63CF0[4 * 1580];  // cg.o BSS
+float dword_F63B70[4 * 1580];  // cg.o BSS
+float dword_F63BB0[4 * 1580];  // cg.o BSS
+float dword_F63CC0[4 * 1580];
+float dword_F63CC4[4 * 1580];
+float dword_F63CC8[4 * 1580];
+float dword_F63CD0[4 * 1580];
+float dword_F63CD4[4 * 1580];
+float dword_F63CE4[4 * 1580];
+float dword_F63CE8[4 * 1580];
+float dword_F63F34[4 * 1580];
+float dword_F63F38[4 * 1580];
+float dword_F63F3C[4 * 1580];
+float dword_F63F40[4 * 1580];
+float dword_F63F44[4 * 1580];
+float dword_F63F48[4 * 1580];
+float dword_F63F4C[4 * 1580];
+float dword_F63F50[4 * 1580];
+float dword_F63F54[4 * 1580];
+float dword_F63F58[4 * 1580];
+float dword_F63550[4 * 1580];
+float dword_F64068[4 * 1580];
+float dword_F6406C[4 * 1580];
+float dword_F64070[4 * 1580];
+float dword_F64074[4 * 1580];
+float dword_F64078[4 * 1580];
+float dword_F6407C[4 * 1580];
+float dword_F641D8[4 * 1580];
+float dword_F641DC[4 * 1580];
+float unk_F63BC4[4 * 1580 * 4];
+float unk_F63BF4[4 * 6320];
+float unk_F63C24[4 * 6320];
+float unk_F64080[4 * 6320];
+float unk_F640A8[4 * 6320];
+float unk_F6A278[4 * 802];
+float unk_F6A27C[4 * 802];
+float unk_F6A284[4 * 802];
+float unk_F6A288[4 * 802];
+int dword_F62944[4 * 1580];
+int dword_F62948[4 * 1580];
+int dword_F6294C[4 * 1580];
+int dword_F62954[4 * 1580];
+int dword_F62958[4 * 1580];
+int dword_F63554[4 * 1580];
+int dword_F63584[4 * 1580];
+int dword_F63B34[4 * 1580];
+int dword_F63BA4[4 * 1580];
+int dword_F63BA8[4 * 1580];
+int dword_F63BB8[4 * 1580];
+int dword_F63BBC[4 * 1580];
+int dword_F63BC0[4 * 1580];
+int dword_F63BE8[4 * 1580];
+int dword_F63BEC[4 * 1580];
+int dword_F63BF0[4 * 1580];
+int dword_F63C18[4 * 1580];
+int dword_F63C1C[4 * 1580];
+int dword_F63C20[4 * 1580];
+int dword_F63CF4[4 * 1580];
+int dword_F63D1C[4 * 1580];
+int dword_F63F9C[4 * 1580 * 3];
+int dword_F63FA0[4 * 1580 * 3];
+int dword_F63FA8[4 * 1580 * 3];
+int dword_F63FFC[4 * 1580];
+int dword_F6400C[4 * 1580];
+int dword_F6401C[4 * 1580];
+int dword_F64020[4 * 1580];
+int dword_F64024[4 * 1580];
+int dword_F64028[4 * 1580];
+int dword_F6402C[4 * 1580];
+int dword_F64030[4 * 1580];
+int dword_F64034[4 * 1580];
+int dword_F64038[4 * 1580];
+int dword_F64050[4 * 1580];
+int dword_F64054[4 * 1580];
+int dword_F64058[4 * 1580];
+int dword_F6405C[4 * 1580];
+int dword_F64060[4 * 1580];
+int dword_F640A4[4 * 1580];
+int dword_F640C4[4 * 1580];
+int dword_F640E8[4 * 1580];
+int dword_F6410C[4 * 1580];
+int dword_F64130[4 * 1580];
+int dword_F64138[4 * 1580];
+int dword_F6413C[4 * 1580];
+int dword_F64140[4 * 1580];
+int dword_F64144[4 * 1580];
+int dword_F64148[4 * 1580];
+int dword_F6414C[4 * 1580];
+int dword_F64150[4 * 1580];
+int dword_F64154[4 * 1580];
+int dword_F64158[4 * 1580];
+int dword_F6415C[4 * 1580];
+int dword_F64160[4 * 1580];
+int dword_F64164[4 * 1580];
+int dword_F64168[4 * 1580];
+int dword_F6416C[4 * 1580];
+int dword_F64174[4 * 1580];
+int dword_F64178[4 * 1580];
+int dword_F6417C[4 * 1580];
+int dword_F64180[4 * 1580];
+int dword_F64184[4 * 1580];
+int dword_F64188[4 * 1580];
+int dword_F6418C[4 * 1580];
+int dword_F64190[4 * 1580];
+int dword_F641B0[4 * 1580];
+int dword_F641B8[4 * 1580];
+int dword_F641BC[4 * 1580];
+int dword_F641C8[4 * 1580];
+int dword_F641CC[4 * 1580];
+int dword_F641D0[4 * 1580];
+int dword_F641D4[4 * 1580];
+int dword_F641E4[4 * 1580];
+int dword_F641E8[4 * 1580];
+int dword_F641EC[4 * 1580];
+int dword_F6A2A0[4 * 802];
+int dword_F6A2A4[4 * 802];
+int dword_F6A2A8[4 * 802];
+int dword_F6A2AC[4 * 3208];
+unsigned char byte_F64194[4 * 6320];
+unsigned char byte_F641C0[4 * 6320];
+unsigned char unk_F6A294[4 * 3208];
 struct game_hudelem_s {
     struct {
         int type;  // +0x00
@@ -149,11 +271,11 @@ extern int dword_F63CA8[4 * 1580];
 extern float dword_F63C60[4 * 1580];
 extern float dword_F63C64[4 * 1580];
 extern float* dword_F63B8C[4 * 1580];
-extern float dword_F6403C[4 * 1580];
-extern float dword_F64040[4 * 1580];
-extern float dword_F64044[4 * 1580];
-extern float dword_F64048[4 * 1580];
-extern float dword_F6404C[4 * 1580];
+int dword_F6403C[4 * 1580];  // cg.o BSS
+int dword_F64040[4 * 1580];  // cg.o BSS
+int dword_F64044[4 * 1580];  // cg.o BSS
+int dword_F64048[4 * 1580];  // cg.o BSS
+int dword_F6404C[4 * 1580];  // cg.o BSS
 extern int cg_crosshairAlpha;
 extern int cg_crosshairDynamic;
 extern int cg_drawGun;

@@ -24,10 +24,10 @@ extern char ClampChar(int i);
 extern int dword_F12110;     // mlook active
 int dword_F170F0 = 0;  // cl.o BSS @ 0xF170F0 (base turn speed)
 float Deltas[4][5];  // ?Deltas@@3PAY04MA (cl.o BSS @ 0xF128C0)
-extern int dword_F133C4[20]; // delta accumulation
-extern int dword_F133C8[20];
-extern int dword_F133CC[20];
-extern int dword_F133D0[20];
+int dword_F133C4[20];  // cl.o BSS (delta accumulation)
+int dword_F133C8[20];  // cl.o BSS
+int dword_F133CC[20];  // cl.o BSS
+int dword_F133D0[20];  // cl.o BSS
 extern struct cvar_t* cl_anglespeedkey;
 extern struct cvar_t* cl_yawspeed;
 extern struct cvar_t* cl_pitchspeed;

@@ -666,7 +666,7 @@ extern float CG_GetViewFov();
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern void FastSinCos(float radians, float* psin, float* pcos);
 extern int _fpclass(double x);
-extern void* dword_F6A2A0[4 * 802];
+extern int dword_F6A2A0[4 * 802];
 extern float angle[4 * 395];
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
@@ -5392,7 +5392,7 @@ void Camera::UpdateAnimation()
             if ((mAnimFlags & 4) != 0)
                 mat = &mLastTagCamMat.x.v.m128_f32[0];
             else
-                mat = DObjGetMat(dword_F6A2A0[802 * mClient],
+                mat = DObjGetMat((void*)dword_F6A2A0[802 * mClient],
                                  mTagCameraIndex);
             float tag[16];
             for (int i = 0; i < 16; ++i)

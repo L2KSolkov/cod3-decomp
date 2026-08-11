@@ -73,16 +73,17 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 int dword_F170E0 = 0;  // cl.o BSS
 int dword_F171C0 = 0;  // cl.o BSS
-extern int dword_F171C4;        // string count
-extern int dword_F171C8;        // debug string buffer
-extern int dword_F171CC;        // string source
-extern int dword_F171D0;        // line capacity
-extern int dword_F171D4;        // line count
-extern int ptr;                 // line buffer
-extern int dword_F171DC;        // line source
-extern int dword_F171E0;        // line depth
+int dword_F171B8 = 0;  // cl.o BSS
+int dword_F171C4 = 0;  // cl.o BSS (string count)
+int dword_F171C8 = 0;  // cl.o BSS (debug string buffer)
+int dword_F171CC = 0;  // cl.o BSS (string source)
+int dword_F171D0 = 0;  // cl.o BSS (line capacity)
+int dword_F171D4 = 0;  // cl.o BSS (line count)
+int ptr = 0;           // cl.o BSS (line buffer)
+int dword_F171DC = 0;  // cl.o BSS (line source)
+int dword_F171E0 = 0;  // cl.o BSS (line depth)
 int dword_F171E4 = 0;  // cl.o BSS
-extern char byte_F171E8;        // server string source
+char byte_F171E8 = 0;  // cl.o BSS (server string source)
 extern void re_LocateDebugStrings(int a1, int a2);
 extern void re_LocateDebugLines(int a1, int a2);
 extern int CL_SaveMessageType(unsigned char* buffer, int used, int total,

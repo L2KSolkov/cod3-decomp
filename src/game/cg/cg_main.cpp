@@ -32,10 +32,10 @@ extern int dword_F64140[4 * 1580];
 extern int dword_F63BB4[4 * 1580];
 extern int dword_F63BAC[4 * 1580];
 extern int dword_F63CF4[4 * 1580];
-extern int dword_F641E4;
-extern int dword_F641E8;
+int dword_F641E4;  // ?dword_F641E4@@3HA (cg.o scalar)
+int dword_F641E8;  // ?dword_F641E8@@3HA (cg.o scalar)
 extern int dword_F641E0[2];
-extern int dword_F641EC;
+int dword_F641EC;  // ?dword_F641EC@@3HA (cg.o scalar)
 enum netsrc_t {
     NS_CLIENT = 0,
     NS_SERVER = 1,
@@ -94,7 +94,26 @@ extern cg_t* cg;  // 0x00F62940
 struct vmCvar_t {
     int integer;  // +0x00
 };
-extern vmCvar_t cg_thirdPerson;
+vmCvar_t cg_thirdPerson;               // ?cg_thirdPerson@@3UvmCvar_t@@A (cg.o @ 0x134B400)
+vmCvar_t cg_thirdPersonLock;           // ?cg_thirdPersonLock@@3UvmCvar_t@@A (cg.o @ 0x134A8D0)
+vmCvar_t cg_thirdPersonRange;          // ?cg_thirdPersonRange@@3UvmCvar_t@@A (cg.o @ 0x134E6E8)
+vmCvar_t cg_thirdPersonAngle;          // ?cg_thirdPersonAngle@@3UvmCvar_t@@A (cg.o @ 0x1350908)
+vmCvar_t cg_widescreen;                // ?cg_widescreen@@3UvmCvar_t@@A (cg.o @ 0x134C188)
+vmCvar_t cg_norender;                  // ?cg_norender@@3UvmCvar_t@@A (cg.o @ 0x134E148)
+vmCvar_t cg_redFlashTime;              // ?cg_redFlashTime@@3UvmCvar_t@@A (cg.o @ 0x134B9A8)
+vmCvar_t cg_camerashake;               // ?cg_camerashake@@3UvmCvar_t@@A (cg.o @ 0x134CC40)
+vmCvar_t cg_drawGun;                   // ?cg_drawGun@@3UvmCvar_t@@A (cg.o @ 0x134CE80)
+vmCvar_t cg_mpDebugAnimEntity;         // ?cg_mpDebugAnimEntity@@3UvmCvar_t@@A (cg.o @ 0x134C850)
+vmCvar_t hud_healthOverlay_pulseStart;                 // ?hud_healthOverlay_pulseStart@@3UvmCvar_t@@A (cg.o @ 0x134BBE8)
+vmCvar_t hud_healthOverlay_phaseOne_pulseDuration;     // ?hud_healthOverlay_phaseOne_pulseDuration@@3UvmCvar_t@@A (cg.o @ 0x134EFD0)
+vmCvar_t hud_healthOverlay_phaseTwo_toAlphaMultiplier; // ?hud_healthOverlay_phaseTwo_toAlphaMultiplier@@3UvmCvar_t@@A (cg.o @ 0x134B1C0)
+vmCvar_t hud_healthOverlay_phaseTwo_pulseDuration;     // ?hud_healthOverlay_phaseTwo_pulseDuration@@3UvmCvar_t@@A (cg.o @ 0x134EB70)
+vmCvar_t hud_healthOverlay_phaseThree_toAlphaMultiplier; // ?hud_healthOverlay_phaseThree_toAlphaMultiplier@@3UvmCvar_t@@A (cg.o @ 0x1350278)
+vmCvar_t hud_healthOverlay_phaseThree_pulseDuration;     // ?hud_healthOverlay_phaseThree_pulseDuration@@3UvmCvar_t@@A (cg.o @ 0x1350428)
+vmCvar_t hud_healthOverlay_phaseEnd_toAlpha;             // ?hud_healthOverlay_phaseEnd_toAlpha@@3UvmCvar_t@@A (cg.o @ 0x134F758)
+vmCvar_t hud_healthOverlay_phaseEnd_pulseDuration;       // ?hud_healthOverlay_phaseEnd_pulseDuration@@3UvmCvar_t@@A (cg.o @ 0x134CD60)
+vmCvar_t hud_healthOverlay_regenPauseTime;               // ?hud_healthOverlay_regenPauseTime@@3UvmCvar_t@@A (cg.o @ 0x134E388)
+vmCvar_t fs_debug_vm;                  // ?fs_debug_vm@@3UvmCvar_t@@A (cg.o @ 0x134FB48)
 
 struct cgGlobal_t {
     int time;

@@ -498,8 +498,8 @@ void GetClipboardDataUI(char* buf)
 // ============================================================================
 // Gamepad
 // ============================================================================
-extern int dword_F13368[64];
-extern int dword_F1336C[64];
+int dword_F13368[64];  // cl.o BSS
+int dword_F1336C[64];  // cl.o BSS
 struct GpadAxesGlob {
     int axesValues[6];
 };

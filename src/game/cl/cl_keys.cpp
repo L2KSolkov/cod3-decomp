@@ -39,14 +39,14 @@ extern char byte_F0D1FC[];
 extern int dword_F171D0;
 extern int dword_F171C0;
 extern int dword_F171C4;
-extern void* dword_F171C8;
-extern void* dword_F171CC;
-extern void* ptr;
-extern void* dword_F171DC;
-extern void* dword_F171E0;
+void* dword_F171C8 = nullptr;  // cl.o BSS (debug string buffer)
+void* dword_F171CC = nullptr;  // cl.o BSS (string source)
+void* ptr = nullptr;           // cl.o BSS (line buffer)
+void* dword_F171DC = nullptr;  // cl.o BSS (line source)
+void* dword_F171E0 = nullptr;  // cl.o BSS (line depth)
 extern int dword_F171E4;
 extern int dword_F171D4;
-extern int dword_F17118;
+int dword_F17118;  // ?dword_F17118@@3HA (cl.o)
 extern int dword_F171B8;
 extern int dword_F171BC;
 extern int dword_F170F0;

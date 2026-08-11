@@ -62,7 +62,7 @@ extern float dword_F63CB4[4 * 1580];
 extern float* dword_F63B8C[4 * 1580];
 extern int dword_F63B34[4 * 1580];
 extern int dword_F6355C[4 * 1580];
-extern float dword_F62964[4 * 1580];
+extern int dword_F62964[4 * 1580];
 extern float dword_F63F34[4 * 1580];
 extern float dword_F63F38[4 * 1580];
 extern float dword_F63F3C[4 * 1580];
@@ -636,7 +636,7 @@ extern void CG_Printf(const char* msg, ...);
 extern void RumbleManager_Play(void* mgr, void* result, const void* effect,
                                float intensity);
 extern void AxisCopy(const float (*in)[3], float (*out)[3]);
-extern float dword_F62960[4 * 1580];
+extern int dword_F62960[4 * 1580];
 extern const char** cg_shock_cvar_names;
 extern void** cg_shock_cvar_ptrs;
 extern int cg_shock_viewKickFadeTime;
@@ -1146,8 +1146,8 @@ void CG_DamageFeedback(int yawByte, int pitchByte, float damage)
     }
 }
 
-extern int dword_F641D8[4 * 1580];
-extern int dword_F641DC[4 * 1580];
+extern float dword_F641D8[4 * 1580];
+extern float dword_F641DC[4 * 1580];
 extern float dword_F64068[4 * 1580];
 extern float dword_F6406C[4 * 1580];
 extern float dword_F64070[4 * 1580];
@@ -1160,9 +1160,9 @@ extern float dword_F63CD4[4 * 1580];
 extern float dword_F63CE4[4 * 1580];
 extern float dword_F63CE8[4 * 1580];
 extern float dword_F63CC[4 * 1580];
-extern float dword_F64164[4 * 1580];
-extern float dword_F64168[4 * 1580];
-extern float dword_F6416C[4 * 1580];
+extern int dword_F64164[4 * 1580];
+extern int dword_F64168[4 * 1580];
+extern int dword_F6416C[4 * 1580];
 extern int cg_bobWeaponLag;
 extern int cg_bobWeaponAmplitude;
 extern int cg_bobWeaponMax;
@@ -1411,7 +1411,7 @@ extern void CG_AdjustPositionForMover(const math::Position3* in,
 struct trajectory_t;
 extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                                   math::Position3& result);
-extern float* unk_F63B30;
+float* unk_F63B30 = nullptr;  // ?unk_F63B30 (cg.o) playerEntity stream base
 extern void CG_CalculateWeaponPosition_IdleAngles(float* angles);
 extern void CG_CalculateWeaponPosition_BobMovement(float* origin);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);

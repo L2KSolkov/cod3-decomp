@@ -78,7 +78,7 @@ struct snapshot_t {
     int serverTime;
     playerStateSnapshot_t ps;
 };
-extern glconfig_t unk_F17118;
+glconfig_t unk_F17118;  // ?unk_F17118@@3Uglconfig_t@@A (cl.o)
 
 // cl[] snapshot fields
 struct clSnapshotFields {

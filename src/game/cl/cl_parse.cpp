@@ -59,7 +59,7 @@ extern int dword_F0F1FC[2];
 extern int dword_F0F200[2];
 extern char byte_F0D1FC[];
 extern void CL_SystemInfoChanged();
-extern int dword_F6A28C;
+int dword_F6A28C;  // ?dword_F6A28C@@3HA (cl.o active port scalar)
 extern int lFirstLocalClientIndex;
 extern void MSG_Init(struct msg_t* msg, unsigned char* data, int length);
 extern void MSG_WriteLong(struct msg_t* msg, int c);

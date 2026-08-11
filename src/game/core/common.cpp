@@ -186,7 +186,7 @@ extern cvar_t* com_developer;
 extern cvar_t* com_developer_script;
 extern cvar_t* com_logfile;
 extern cvar_t* com_statmon;
-extern cvar_t* com_timescale;
+cvar_t* com_timescale;  // ?com_timescale@@3PAUcvar_t@@A (core.o @ 0x12E5F84)
 extern cvar_t* com_fixedtime;
 extern cvar_t* com_viewlog;
 extern cvar_t* com_speeds;

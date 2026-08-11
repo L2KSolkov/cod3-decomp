@@ -1900,7 +1900,7 @@ extern vmCvar_t cg_stanceTemp;
 extern vmCvar_t cg_nopredict;
 extern int dword_F63BA8[4 * 1580];
 extern int dword_F63BAC[4 * 1580];
-extern int dword_F63BB0[4 * 1580];
+extern float dword_F63BB0[4 * 1580];
 extern int dword_F63BB4[4 * 1580];
 extern Handle PostEffectEventWeaponReload(const Entity* ent,
                                           const char* weaponType,
