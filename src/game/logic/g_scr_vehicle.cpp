@@ -10,8 +10,13 @@
 #include <string.h>
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
+class RumbleEffectInstanceHandle {
+public:
+    int mVal;  // +0x00
+};
 struct RumbleManager {
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
 };
 
 
@@ -4608,8 +4613,7 @@ void VEH_FireGunnerWeapon(Entity* ent, int msec)
                                                   0.2f);
                         playIntensity = 0.5f;
                     }
-                    RumbleManager_Play(RumbleManager::Inst(client), &effect,
-                                       playIntensity);
+                    RumbleManager::Inst(client)->Play(&effect, playIntensity);
                 }
             }
         }

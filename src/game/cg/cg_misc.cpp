@@ -12,8 +12,11 @@
 #include <string.h>
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleEffect;
+class RumbleEffectInstanceHandle;
 struct RumbleManager {
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
 };
 
 
@@ -3602,8 +3605,6 @@ extern void RumbleEffect_Ctor(void* self);
 extern void RumbleEffect_SetIntensity(void* self, int rumbleID,
                                       float new_intensity);
 extern void RumbleEffect_SetNotes(void* self, int rumbleID, void* notes);
-extern RumbleEffectInstanceHandle RumbleManager_Play(void* self, void* effect,
-                                                     float intensity);
 extern const char* gTankRumbleNotes;  // 0x00DF9D80
 extern void BrocString_ctor(void* self, const char* s);
 extern void BrocString_dtor(void* self);
@@ -4798,8 +4799,7 @@ void Camera::UpdateDeathCamera()
                     effect.mRumbleDataArray[1].delay = 0.0f;
                     effect.mRumbleDataArray[1].ramp_up_duration = 0.2f;
                     effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
-                    RumbleManager_Play(RumbleManager::Inst(currCl), &effect,
-                                       1.0f);
+                    RumbleManager::Inst(currCl)->Play((RumbleEffect*)&effect, 1.0f);
                 }
                 void* mWorld =
                     *(void**)((char*)EntityManager::sInst + 0x44);
@@ -5258,7 +5258,7 @@ float Camera::SetNewMode(ECameraModes newMode)
             RumbleEffect_SetNotes(&effect, 1, notes);
             BrocString_dtor(notes);
             RumbleEffectInstanceHandle h =
-                RumbleManager_Play(RumbleManager::Inst(mClient), &effect, 0.0f);
+                RumbleManager::Inst(mClient)->Play((RumbleEffect*)&effect, 0.0f);
             mRumbleEffect = h.mVal;
             Client* client = GetPlayer(mClient)->client;
             float newAngles[3] = {client->ps.viewangles[0],

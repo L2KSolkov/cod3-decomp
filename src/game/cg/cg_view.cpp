@@ -15,8 +15,14 @@ struct GamePause { static bool IsGamePaused(int client); };
 
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleEffect;
+class RumbleEffectInstanceHandle {
+public:
+    int mVal;  // +0x00
+};
 struct RumbleManager {
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
 };
 
 
@@ -633,8 +639,6 @@ extern void Cvar_Update(vmCvar_t* vmCvar);
 extern void* _Z_MallocInternal(int size);
 extern void _Z_FreeInternal(void* ptr);
 extern void CG_Printf(const char* msg, ...);
-extern void RumbleManager_Play(void* mgr, void* result, const void* effect,
-                               float intensity);
 extern void AxisCopy(const float (*in)[3], float (*out)[3]);
 extern int dword_F62960[4 * 1580];
 const char** cg_shock_cvar_names;  // ?cg_shock_cvar_names (cg.o)
@@ -1138,11 +1142,10 @@ void CG_DamageFeedback(int yawByte, int pitchByte, float damage)
     rumbleEffect.mRumbleDataArray[0].steady_duration = yawa;
     rumbleEffect.mRumbleDataArray[1].intensity = damage;
     rumbleEffect.mRumbleDataArray[1].steady_duration = yawa;
-    void* v25 = RumbleManager::Inst(currCl);
+    RumbleManager* v25 = RumbleManager::Inst(currCl);
     if (v25 != nullptr)
     {
-        float result;
-        RumbleManager_Play(v25, &result, &rumbleEffect, 1.0f);
+        v25->Play((RumbleEffect*)&rumbleEffect, 1.0f);
     }
 }
 
