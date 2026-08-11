@@ -131,7 +131,7 @@ extern int mGameConnectionType;
 enum { kGameConnectionTypeLan = 1, kGameConnectionTypeOnline = 2 };
 }
 
-struct controller {
+class controller { public:
     bool* accepting_input_from_controller;
     int locked_port;
     bool is_locked;

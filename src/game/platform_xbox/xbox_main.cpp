@@ -118,7 +118,7 @@ extern mem_heap* mem_heap_set_current(mem_heap_type type);
 
 // controller - minimal view (input/controller.cpp owns inst(); locked_port
 // matches the ported layout used by XboxLiveMenus.cpp).
-struct controller {
+class controller { public:
     int locked_port;
     static controller* inst();
 };

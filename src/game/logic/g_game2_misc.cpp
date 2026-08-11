@@ -1177,7 +1177,7 @@ extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
 // IN_Frame - ea: 0x501000
 // Controller poll + button dispatch (game2.o IN_Init/controller glue).
 // ============================================================================
-class controller {
+class controller { public:
 public:
     enum ButtonIndex {
         LEFTBUTTON = 0, DOWNBUTTON = 1, RIGHTBUTTON = 2, UPBUTTON = 3,

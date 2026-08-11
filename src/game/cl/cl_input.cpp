@@ -36,7 +36,7 @@ extern void Sys_QueEvent(int time, sysEventType_t type, int value, int value2,
                          int ptrLength, void* ptr);
 
 // Minimal controller view (full implementation in input/controller.cpp).
-class controller {
+class controller { public:
 public:
     int locked_port;
     bool is_locked;

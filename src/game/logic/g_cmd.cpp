@@ -1570,7 +1570,7 @@ enum EPadAliasStick {
 // Minimal controller view (controller_xboxr). Values match the binary:
 // kPadAliasButtonIndexDesc order == controller::ButtonIndex (LEFTBUTTON=0..),
 // verified against the controller::button_value switch at 0x7E2050.
-class controller {
+class controller { public:
 public:
     enum ButtonIndex {
         LEFTBUTTON = 0,

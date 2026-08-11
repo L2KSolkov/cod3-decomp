@@ -213,7 +213,8 @@ extern bool mIsViewableOnline;
 }
 
 extern int cg_widescreen_integer;
-struct controller {
+class controller {
+public:
     int locked_port;
     static controller* inst();
     static int num_controllers;

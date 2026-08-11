@@ -8,7 +8,7 @@
 #include <string.h>
 
 // Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
-struct controller {
+class controller { public:
     int locked_port;
     static controller* inst();  // ?inst@controller@@SAPAV1@XZ (controller_xbox.o)
 };

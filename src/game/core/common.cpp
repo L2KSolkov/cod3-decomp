@@ -227,7 +227,7 @@ struct parseInfo_t {
 extern parseInfo_t* Com_ParseOnLine(const char** data_p);
 extern void Com_SkipRestOfLine(const char** data);
 extern parseInfo_t* Com_EndParseSession();
-class controller {
+class controller { public:
 public:
     static controller* inst();
     bool controller_is_connected(int index);

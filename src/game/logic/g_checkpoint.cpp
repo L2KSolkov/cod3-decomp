@@ -107,7 +107,7 @@ extern int gCurCheckpoint;       // @ 0xF4F44C
 extern int gDebounce;            // @ 0xF4F450
 
 // Minimal controller view (mirrors g_cmd.cpp PadAliasMgr twin)
-class controller {
+class controller { public:
 public:
     enum ButtonIndex {
         LEFTBUTTON = 0,

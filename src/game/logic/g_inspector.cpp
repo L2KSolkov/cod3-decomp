@@ -375,7 +375,7 @@ InspectorManager g_inspectorManager;  // ?g_inspectorManager (game2.o)
 
 // Minimal controller view (full implementation in input/controller.cpp).
 // ButtonIndex values verified against ReadKeys disassembly.
-struct controller {
+class controller { public:
     enum ButtonIndex {
         LEFTBUTTON = 0,
         DOWNBUTTON = 1,
