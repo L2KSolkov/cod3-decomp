@@ -839,7 +839,9 @@ struct VehicleNodeAllocator {
 // IGOFrontEnd — in-game overlay front end
 // ============================================================================
 struct IGOFrontEnd {
-    uint8_t _pad[168];
+    uint8_t _pad0[0x14];
+    void*   ammoWidget[4];   // +0x14 (IGOAmmoWidget*, indexed by client)
+    uint8_t _pad24[0xA8 - 0x24];
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
     void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
     void AddActiveGrenade(const Entity* grenade);  // ?AddActiveGrenade@IGOFrontEnd@@QAEXPBVEntity@@@Z

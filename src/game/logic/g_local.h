@@ -1335,7 +1335,8 @@ int  BG_WeaponIsClipOnly(int iWeapon);            // game.o 0x607A50
 int  BG_GetAmmoTypeMax(int iAmmoIndex);           // game.o 0x607080
 int  BG_GetSharedAmmoCapSize(int iCapIndex);      // game.o 0x607150
 int  BG_GetMaxPickupableAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616B70
-int  BG_SetPlayerWeaponForSlot(PlayerState* pPS, int iWeaponIndex);  // game.o 0x616A10
+int  BG_SetPlayerWeaponForSlot(PlayerState* pPS, int slot,
+                               int iWeaponIndex);  // game.o 0x616A10
 int  BG_GetTotalAmmoReserve(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616D50
 int  BG_GetTotalAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616F10
 int  BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x621F60
@@ -1697,11 +1698,17 @@ enum weapSlot_t : int {
     WEAPSLOT_SPECIAL = 9,
 };
 enum {
+    WEAPCLASS_RIFLE = 0,  // verified vs disasm PM_BeginWeaponReload
     WEAPCLASS_TURRET = 7,     // verified vs disasm BG_GivePlayerWeapon
     WEAPCLASS_NON_PLAYER = 9, // verified vs disasm BG_GivePlayerWeapon
     WEAPCLASS_GRENADE = 5,  // verified vs disasm Pickup_Weapon
     WEAPCLASS_LMG = 3,      // verified vs disasm Bullet_Fire_Extended / BG_IsLMGMounted
     WEAPCLASS_SPOTTER = 8,  // verified vs disasm PM_UpdateAimDownSightLerp
+    WEAPCLASS_SNIPER = 10,  // verified vs disasm PM_BeginWeaponReload
+    WEAPCLASS_REVIVE = 11,  // verified vs disasm PM_BeginWeaponChange
+};
+enum {
+    WEAPAMMOTYPE_SMG = 0,  // verified vs disasm PM_BeginWeaponChange
 };
 enum {
     AI_EV_GRENADE_PING = 0x0E,
@@ -3146,6 +3153,7 @@ int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEn
 enum {
     WEAPTYPE_BULLET = 0,
     WEAPTYPE_GRENADE = 1,  // verified vs disasm BG_IsCookingOffGrenade
+    WEAPTYPE_PROJECTILE = 2,  // verified vs disasm PM_BeginWeaponChange
     WEAPTYPE_SPOTTER = 3,  // verified vs disasm PM_Weapon_CheckForSpotting
     WEAPTYPE_ITEM = 4,  // verified vs disasm Drop_Weapon
     WEAPTYPE_INTERACT = 6,  // verified vs disasm UpdateAnimRoute
