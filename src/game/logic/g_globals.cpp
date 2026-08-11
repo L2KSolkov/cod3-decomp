@@ -167,6 +167,11 @@ int dword_F037C0[256];              // ?dword_F037C0@@3PAHA (g.o)
 int dword_F037C4[256];              // ?dword_F037C4@@3PAHA (g.o)
 int g_doShellShock[16];             // ?g_doShellShock@@3PAHA (g.o)
 int dword_186A0;                    // ?dword_186A0@@3HA (game.o)
+const char* hintStrings[17];        // ?hintStrings (g.o .rdata)
+const char* s_vehicleTypeNames[6];  // ?s_vehicleTypeNames (g.o)
+const char* s_vehicleSubTypeNames[9];  // ?s_vehicleSubTypeNames (g.o)
+const char* sEntryPointHintText[6];    // ?sEntryPointHintText (g.o)
+char* g_scratchpadMem;              // ?g_scratchpadMem@@3PADA (game.o @ 0xEA81C0)
 ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;

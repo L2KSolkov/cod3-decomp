@@ -73,7 +73,7 @@ extern cvar_t* com_timescale;         // 0x012E5F84
 extern int     time_backend;          // 0x012E5F88
 extern cvar_t* com_sv_running;        // 0x012E5F90
 extern bool    gIsWorkspaceMap;       // 0x012E5F94
-extern char**  com_consoleLines;      // 0x012E5F98
+extern char*   com_consoleLines[128]; // 0x012E5F98
 extern bool    gDoNotPlayCampaignMovies;  // 0x012E6418
 extern _iobuf* debuglogfile;          // 0x012E641C
 extern int     com_fileAccessed;      // 0x012E6520

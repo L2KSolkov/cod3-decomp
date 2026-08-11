@@ -410,7 +410,7 @@ int CM_AreasConnected(int area1, int area2)
 // ============================================================================
 extern phys_memory_heap g_cmgr_allocater;  // ?g_cmgr_allocater@@3Vphys_memory_heap@@A
 extern DCGSet* gBoxDCGSet;                 // ?gBoxDCGSet@@3PAVDCGSet@@A
-extern char cmgr_memory_buffer[0x400];     // ?cmgr_memory_buffer@@3PADA (game.o)
+char cmgr_memory_buffer[0x400];            // ?cmgr_memory_buffer@@3PADA (game.o)
 extern bool tlScratchpadLocked;            // ?tlScratchpadLocked@@3_NA
 extern bool g_in_cmgr_mem_context;         // ?g_in_cmgr_mem_context@@3_NA
 
@@ -1172,7 +1172,7 @@ extern void FS_FCloseFile(int f);  // core.o
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file,
                                  int line);  // core.o
-extern char* com_lumpBuf;  // ?com_lumpBuf@@3PADA (game.o)
+char* com_lumpBuf;  // ?com_lumpBuf@@3PADA (game.o)
 extern cvar_t* cm_noCurves;        // ?cm_noCurves@@3PAUcvar_t@@A
 extern cvar_t* cm_playerCurveClip; // ?cm_playerCurveClip@@3PAUcvar_t@@A
 
@@ -7930,7 +7930,7 @@ bool collide_segment_poly(const math::Position3& p0,
 // ============================================================================
 // collide_sphere_box - ea: 0x61E890 (CollisionMgr.cpp)
 // ============================================================================
-extern float fudge_2;  // game.o @ 0xDF8D34
+float fudge_2;  // game.o @ 0xDF8D34
 // ea: 0x0061E890
 bool collide_sphere_box(const math::Position3& sphere_center,
                         float sphere_radius, const cdl_object_t& box,
@@ -7969,7 +7969,7 @@ bool collide_sphere_box(const math::Position3& sphere_center,
 // ============================================================================
 // collide_sphere_brush - ea: 0x61E660 (CollisionMgr.cpp)
 // ============================================================================
-extern float fudge_1;  // game.o @ 0xDF8D30
+float fudge_1;  // game.o @ 0xDF8D30
 // ea: 0x0061E660
 bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
                           const cdl_object_t& obj, const cdlPlane* sides,

@@ -161,7 +161,7 @@ extern saveField_t sentientFields[];
 extern saveField_t actorFields[];
 extern int g_xanim_num;                 // 0xF3A778
 extern unsigned char sConstsLoaded;     // 0xEF357B
-extern const char* gHashStringTblTxt[173];  // 0xDD6488
+const char* gHashStringTblTxt[173];  // ?gHashStringTblTxt (scr.o @ 0xDD6488)
 extern void Scr_FreePrecachedAnimTrees();
 extern void GScr_LoadScriptsAndAnimsForEntities();
 extern void Scr_PrecacheAnimTrees(void* (*Alloc)(int), bool restart);

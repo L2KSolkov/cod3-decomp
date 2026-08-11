@@ -226,8 +226,8 @@ struct cgGlobal_t {
 };
 extern cgGlobal_t cgGlobal;
 
-extern float gTracerDistScale;   // 0x00DF9DA8
-extern float tr_viewParms_zFar;  // 0x00F74F60
+float gTracerDistScale;   // 0x00DF9DA8
+float tr_viewParms_zFar;  // 0x00F74F60
 struct nglMesh;
 extern nglMesh* auxCreateScratchMesh(int flags, int num);
 extern void* nglListAlloc(unsigned int bytes, unsigned int alignment);
@@ -288,7 +288,7 @@ extern int gRenderCG_2D;
 extern int gRenderViewWeapon;
 extern bool gFirstCamera;
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;
-extern float move_back_distance;
+float move_back_distance;
 extern int curListener;
 struct SaveGameData;
 extern SaveGameData* gSaveGameData;
@@ -377,7 +377,7 @@ int cg_aWeaponSelect[4];  // ?cg_aWeaponSelect@@3PAHA (cg.o)
 int cg_clientFrame[4 * 1580];  // ?cg_clientFrame (cg.o)
 extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
-extern float g_TestForward[4];
+float g_TestForward[4];
 extern void InspectorManager_Render(void* self);
 class InspectorManager;
 extern InspectorManager g_inspectorManager;
@@ -592,7 +592,7 @@ extern vmCvar_t cg_crosshairAlpha;
 extern vmCvar_t cg_crosshairDynamic;
 extern int dword_F641D0[4 * 1580];
 extern int dword_F641D4[4 * 1580];
-extern float color[4];
+float color[4];
 extern int dword_F6400C[4 * 1580];
 extern int dword_F62960[4 * 1580];
 int dword_F6295C[4 * 1580];  // cg.o BSS
@@ -626,7 +626,7 @@ extern void* cgsGlobal_media_tracerShader;
 extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void re_DrawQuadPic(const float* verts, const float* texCoords,
                            void* tex);
-extern float* vST;
+float* vST;
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);
 extern void Cmd_Where_f(Entity* ent);

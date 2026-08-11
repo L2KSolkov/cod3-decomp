@@ -1675,8 +1675,8 @@ void SplineMgr::UnloadBank(int pakId)
 // ============================================================================
 // SmokeGrenadeMgr visibility helpers
 // ============================================================================
-extern float sTime0, sTime1, sTime2, sTime3, sTime4;
-extern float sOpacity2, sOpacity3;
+float sTime0, sTime1, sTime2, sTime3, sTime4;
+float sOpacity2, sOpacity3;
 
 // ea: 0x4FA0E0
 float SmokeGrenadeMgr::CalcOpacity(const SmokeGrenadeInfo& info) const

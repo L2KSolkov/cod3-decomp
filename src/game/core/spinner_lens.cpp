@@ -49,10 +49,10 @@ extern void* dword_F00ED4;
 extern void* dword_F00ED8;
 extern void* dword_F00EDC;
 extern void* dword_F00EE0;
-extern float l;
-extern float t;
-extern float r_0;
-extern float b_0;
+float l;
+float t;
+float r_0;
+float b_0;
 struct FEManager; extern FEManager g_femanager;
 
 class EntityHandleDb {

@@ -2448,7 +2448,7 @@ void Cmd_AddInputCommand(const char* cmd_name, void (*function)(int, int))
 // GetCmd / Cmd_ExecuteServerString / Cmd_AddServerCommand
 // ea: 0x61F730 / 0x61F320 / 0x61F4A0
 // ============================================================================
-extern char* g_text;  // ?g_text@@3PBDB (game.o @ 0xF3C458)
+char* g_text;  // ?g_text@@3PBDB (game.o @ 0xF3C458)
 extern void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* cmd);  // game.o 0x60E5B0
 extern void Cbuf_AddServerText_f();  // game.o 0x60E5F0
 

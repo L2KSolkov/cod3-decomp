@@ -60,7 +60,7 @@ extern void CG_DebugBox(const float* mins, const float* maxs,
                         const float* color, int depthTest, int duration);
 extern void CG_Error(const char* msg, ...);
 extern void HelmetController(Entity* owner);
-extern char cgsGlobal_mapname[128];
+char cgsGlobal_mapname[128];  // cg.o BSS
 
 struct localEntity_t {
     localEntity_t* next;  // +0x00
@@ -351,7 +351,7 @@ struct vmCvar_t {
 extern vmCvar_t cg_railTrailTime;
 extern vmCvar_t cg_tracerChance;
 extern int dword_DF6ADC[6];
-extern float tracer_info_speed[6];
+float tracer_info_speed[6];
 extern void AxisClear(float (*axis)[3]);
 extern float VectorNormalize(float* v);
 extern float VectorDistance(const float* v1, const float* v2);
@@ -587,7 +587,7 @@ extern void SoundDevice_UnpauseAllSounds(void* sInst);
 extern int Key_GetCatcher();
 extern void Key_SetCatcher(int catcher);
 extern void* EntityHandleDb_mActiveList;
-extern char cgsGlobal_shellshockParms[0x7C];
+char cgsGlobal_shellshockParms[0x7C];  // cg.o BSS
 static Entity* EntityHandleDb_Get(unsigned int handleVal)
 {
     unsigned int v = handleVal & 0xFFF;
@@ -747,7 +747,7 @@ extern Handle PostEffectEventScriptCall(const Entity* ent,
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
 extern float dword_F63C78[4 * 1580];
-extern float* gCamera_mLastTagCamMat_w;
+float* gCamera_mLastTagCamMat_w;
 
 // ea: 0x006A34D0
 void CG_ConfigStringModifiedInternal(int num)
@@ -1526,7 +1526,7 @@ extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);
 extern int EntityManager_IsLocalPlayer(void* mgr, Entity* entity);
 extern int dword_F63BA4[4 * 1580];
-extern const char** pEventNamesList;
+const char** pEventNamesList;  // ?pEventNamesList (cl.o)
 
 // ea: 0x006AD640
 void CG_CheckEvents(Entity* entity)
@@ -1706,7 +1706,7 @@ extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
                                         TPakId pakid, bool important);
 extern const char** s_barrelTags;
-extern const char** s_gunnerBarrelTags;
+const char** s_gunnerBarrelTags;  // ?s_gunnerBarrelTags (game.o)
 
 // ea: 0x006ABAA0
 void CG_BulletTrajectoryEffects(unsigned int sourceEntity,

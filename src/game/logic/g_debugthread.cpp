@@ -81,7 +81,7 @@ extern vmCvar_t g_debugProneCheck;                 // ?g_debugProneCheck@@3UvmCv
 extern vmCvar_t g_debugProneCheckDepthCheck;       // ?g_debugProneCheckDepthCheck@@3UvmCvar_t@@A (g.o)
 extern int Actor_IsSuppressed(actor_s* pSelf);     // ?Actor_IsSuppressed@@YIHPAUactor_s@@@Z (mp_actors.o)
 extern void Path_DrawDebugNode(const PathNodes::PathNode* pNode);  // ?Path_DrawDebugNode@@YAXPBUPathNode@PathNodes@@@Z (mp_actors.o)
-extern float scaleScalar;  // ?scaleScalar@@3MA (render.o)
+float scaleScalar;  // ?scaleScalar@@3MA (render.o)
 extern void RE_Text_Paint(float x, float y, int font, float scale,
                           const float* color, const char* text, float a7,
                           int a8, int a9);  // ?RE_Text_Paint (render.o)
@@ -129,12 +129,12 @@ extern bool _tlAssert(const char* file, int line, const char* expr,
 // ============================================================================
 // DebugThread message globals (game2.o data)
 // ============================================================================
-extern float gDebugThread_MessageRGB[3];
-extern float gDebugThread_MessageScale;
-extern float gDebugThread_MessageXpos;
-extern char* gDebugThread_Message;
+float gDebugThread_MessageRGB[3];
+float gDebugThread_MessageScale;
+float gDebugThread_MessageXpos;
+char* gDebugThread_Message;  // ?gDebugThread_Message@@3PADA (cl.o)
 extern int gDebugThread_MessageTicks;
-extern float gDebugThread_MessageYpos;
+float gDebugThread_MessageYpos;
 extern int gDebugThread_MessageAlphaMin;
 
 // SoundDevice::Sound - 0x3C, verified against IDA local type
@@ -1953,8 +1953,8 @@ static_assert(sizeof(PerformanceStats) == 0x2C,
               "PerformanceStats size mismatch");
 
 extern bool gUseNfl;  // ?gUseNfl (game2.o)
-extern char buffer[0x4000];  // ?buffer (game2.o)
-extern char temp[0x400];     // ?temp (game2.o)
+char buffer[0x4000];  // ?buffer (game2.o)
+char temp[0x400];     // ?temp (game2.o)
 
 // ea: 0x4FEC80
 void TestFPS::OutputStats()
@@ -2113,7 +2113,7 @@ void TestFPS::GatherMetrics()
 // ============================================================================
 extern void TeleportPlayer(Entity* player, const float* origin,
                            const float* angles);
-extern char tr[0x3A0];  // ?tr@@3UtrGlobals_t@@A (render.o)
+char tr[0x3A0];  // ?tr@@3UtrGlobals_t@@A (render.o)
 
 static int TestFPS_tr_cell_count()
 {

@@ -605,12 +605,12 @@ extern int dword_F63FFC[4 * 1580];
 extern int dword_F63F9C[4 * 1580 * 3];
 extern int dword_F63FA0[4 * 1580 * 3];
 extern int dword_F63FA8[4 * 1580 * 3];
-extern float sRumIntensityMin;
-extern float sRumIntensityMax;
-extern float sRumIntensityFactor;
-extern float sRumTimeMin;
-extern float sRumTimeMax;
-extern float sRumTimeFactor;
+float sRumIntensityMin;
+float sRumIntensityMax;
+float sRumIntensityFactor;
+float sRumTimeMin;
+float sRumTimeMax;
+float sRumTimeFactor;
 extern void AnglesToForward(const float* const angles, float* const forward);
 extern int CG_UpdateCameraShake(void* shake, int client);
 extern void CG_EndShellShock(const void* parms, int time);
@@ -637,7 +637,7 @@ extern void RumbleManager_Play(void* mgr, void* result, const void* effect,
                                float intensity);
 extern void AxisCopy(const float (*in)[3], float (*out)[3]);
 extern int dword_F62960[4 * 1580];
-extern const char** cg_shock_cvar_names;
+const char** cg_shock_cvar_names;  // ?cg_shock_cvar_names (cg.o)
 extern void** cg_shock_cvar_ptrs;
 extern vmCvar_t cg_shock_viewKickFadeTime;
 extern vmCvar_t cg_shock_viewKickPeriod;
@@ -1177,7 +1177,7 @@ extern void AngleVectors(const float* angles, float* forward, float* right,
                          float* up);
 extern void AnglesSubtract(const math::Position3* v1,
                            const math::Position3* v2, math::Position3* v3);
-extern float ServerTime_mTickDelta;
+float ServerTime_mTickDelta;
 extern int BG_IsAimDownSightWeapon(int iWeapon);
 extern float AngleSubtract(float a1, float a2);
 
@@ -1372,8 +1372,8 @@ extern vmCvar_t cg_gun_rot_r;
 extern vmCvar_t cg_gun_rot_rate;
 extern vmCvar_t cg_viewKickDeflectTime;
 extern vmCvar_t cg_viewKickReturnTime;
-extern float vehicleOffsetRate;
-extern float vehicleOffset;
+float vehicleOffsetRate;
+float vehicleOffset;
 extern float GetLeanFraction(float fFrac);
 extern void AnglesToRight(const float* const angles, float* const right);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
@@ -2498,7 +2498,7 @@ extern int CG_PointContents(const math::Position3* point,
 extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
 extern vmCvar_t cg_fov;
 extern vmCvar_t cg_widescreen;
-extern float gZoomRatio;
+float gZoomRatio;
 extern float* gCamera;
 
 // ea: 0x006A1900
@@ -3118,4 +3118,3 @@ void CG_CalcViewValues(const void* window)
         CG_CalcFov();
     }
 }
-

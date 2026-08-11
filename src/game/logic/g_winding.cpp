@@ -1076,7 +1076,7 @@ int WindingOnPlaneSide(winding_t* w, float* const normal, float dist)
 // ============================================================================
 // Collision math helpers (cdl / cm_trace helpers)
 // ============================================================================
-extern float thresh2;  // ?thresh2@@3MA (game.o)
+float thresh2;  // ?thresh2@@3MA (game.o)
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);  // tl_xboxr
 

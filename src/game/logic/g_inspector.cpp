@@ -834,15 +834,15 @@ extern int FN_DebugEntity_BBoxes();
 
 // Aim-assist / input tuning globals
 extern cvar_t* bg_stickyAimRender;  // ?bg_stickyAimRender@@3PAUcvar_t@@A (game.o)
-extern float gStickyBaseSlowFactorEasy;    // ?gStickyBaseSlowFactorEasy@@3MA (game.o)
-extern float gStickyBaseSlowFactorNormal;  // ?gStickyBaseSlowFactorNormal@@3MA (game.o)
-extern float gStickyBaseSlowFactorHard;    // ?gStickyBaseSlowFactorHard@@3MA (game.o)
+float gStickyBaseSlowFactorEasy;    // ?gStickyBaseSlowFactorEasy@@3MA (game.o)
+float gStickyBaseSlowFactorNormal;  // ?gStickyBaseSlowFactorNormal@@3MA (game.o)
+float gStickyBaseSlowFactorHard;    // ?gStickyBaseSlowFactorHard@@3MA (game.o)
 extern float gStickyBoxScaleEasy;          // ?gStickyBoxScaleEasy@@3MA (game.o)
 extern float gStickyBoxScaleNormal;        // ?gStickyBoxScaleNormal@@3MA (game.o)
 extern float gStickyBoxScaleHard;          // ?gStickyBoxScaleHard@@3MA (game.o)
 extern float gExtraDistanceSticky;         // ?gExtraDistanceSticky@@3MA (game.o)
-extern float gExtraStrafeSticky;           // ?gExtraStrafeSticky@@3MA (game.o)
-extern float gLookAccelRate;               // ?gLookAccelRate@@3MA (cl.o)
+float gExtraStrafeSticky;           // ?gExtraStrafeSticky@@3MA (game.o)
+float gLookAccelRate;               // ?gLookAccelRate@@3MA (cl.o)
 extern float gMaxTurnSpeed;                // ?gMaxTurnSpeed@@3MA (cl.o)
 
 // Collision debug globals (g.o data)
@@ -861,30 +861,30 @@ extern int g_limitVisualRange;       // ?g_limitVisualRange@@3HA (game2.o)
 extern int g_displayPlayerStats;     // ?g_displayPlayerStats@@3HA (game2.o)
 extern int g_testInt;                // ?g_testInt@@3HA (game2.o)
 extern int g_renderGameEntityStats;  // ?g_renderGameEntityStats@@3HA (game2.o)
-extern float g_tankTracks;           // ?g_tankTracks@@3MA (render.o)
-extern float g_tankWheels;           // ?g_tankWheels@@3MA (render.o)
-extern float gNearLightRadius;       // ?gNearLightRadius@@3MA (render.o)
-extern float gFarLightRadius;        // ?gFarLightRadius@@3MA (render.o)
-extern float g_myBlurValue;          // ?g_myBlurValue@@3MA (game2.o)
-extern float g_myRValue;             // ?g_myRValue@@3MA (game2.o)
-extern float g_myGValue;             // ?g_myGValue@@3MA (game2.o)
-extern float g_myBValue;             // ?g_myBValue@@3MA (game2.o)
+float g_tankTracks;           // ?g_tankTracks@@3MA (render.o)
+float g_tankWheels;           // ?g_tankWheels@@3MA (render.o)
+float gNearLightRadius;       // ?gNearLightRadius@@3MA (render.o)
+float gFarLightRadius;        // ?gFarLightRadius@@3MA (render.o)
+float g_myBlurValue;          // ?g_myBlurValue@@3MA (game2.o)
+float g_myRValue;             // ?g_myRValue@@3MA (game2.o)
+float g_myGValue;             // ?g_myGValue@@3MA (game2.o)
+float g_myBValue;             // ?g_myBValue@@3MA (game2.o)
 extern int g_blendType;              // ?g_blendType@@3HA (game2.o)
-extern float gEasyAccuracyMod;       // ?gEasyAccuracyMod@@3MA (mp_actors.o)
-extern float gNormalAccuracyMod;     // ?gNormalAccuracyMod@@3MA (mp_actors.o)
-extern float gHardAccuracyMod;       // ?gHardAccuracyMod@@3MA (mp_actors.o)
+float gEasyAccuracyMod;       // ?gEasyAccuracyMod@@3MA (mp_actors.o)
+float gNormalAccuracyMod;     // ?gNormalAccuracyMod@@3MA (mp_actors.o)
+float gHardAccuracyMod;       // ?gHardAccuracyMod@@3MA (mp_actors.o)
 extern int gNewEasyMaxHealth;        // game2.o
 extern int gNewMediumMaxHealth;      // game2.o
 extern int gNewHardMaxHealth;        // game2.o
-extern float gLowFreqDelay;          // ?gLowFreqDelay@@3MA (game2.o)
-extern float gLowFreqRumbleIntensity;   // game2.o
-extern float gLowFreqSteadyDuration;    // game2.o
-extern float gLowFreqRampUpTime;        // game2.o
-extern float gLowFreqRampDownTime;      // game2.o
-extern float gHighFreqDelay;            // ?gHighFreqDelay@@3MA (game2.o)
-extern float gHighFreqDuration;         // game2.o
-extern float g_objectAmbientHelper;     // ?g_objectAmbientHelper@@3MA (cg.o)
-extern float g_objectDiffuseHelper;     // ?g_objectDiffuseHelper@@3MA (cg.o)
+float gLowFreqDelay;          // ?gLowFreqDelay@@3MA (game2.o)
+float gLowFreqRumbleIntensity;   // game2.o
+float gLowFreqSteadyDuration;    // game2.o
+float gLowFreqRampUpTime;        // game2.o
+float gLowFreqRampDownTime;      // game2.o
+float gHighFreqDelay;            // ?gHighFreqDelay@@3MA (game2.o)
+float gHighFreqDuration;         // game2.o
+float g_objectAmbientHelper;     // ?g_objectAmbientHelper@@3MA (cg.o)
+float g_objectDiffuseHelper;     // ?g_objectDiffuseHelper@@3MA (cg.o)
 extern float g_ShakeTestMag;            // ?g_ShakeTestMag@@3MA (game2.o)
 extern float g_ShakeTestFreq;           // game2.o
 extern float g_ShakeTestTime;           // game2.o
@@ -982,15 +982,15 @@ extern vmCvar_t sound_debug;                    // ?sound_debug@@3UvmCvar_t@@A (
 extern int s_reverbPresetId;        // 0xF0497C (game2.o)
 extern int s_reverbPresetDisplay;   // 0xF04974 (game2.o)
 extern int s_lastReverbPresetId;    // 0xF04978 (game2.o)
-extern const char* s_reverbPresetStr[26];  // 0xDD9298 (game2.o)
-extern float startx;  // 0xDEF1AC
-extern float starty;  // 0xDEF1A8
-extern float scale;   // 0xDEF1A4
-extern float ystep;   // 0xDEF1A0
-extern float xstep;   // 0xDEF19C
-extern float xpos;    // 0xDEF198
-extern float xinc;    // 0xDEF194
-extern float yinc;    // 0xDEF190
+const char* s_reverbPresetStr[26];  // ?s_reverbPresetStr (game2.o @ 0xDD9298)
+float startx;  // 0xDEF1AC
+float starty;  // 0xDEF1A8
+float scale;   // 0xDEF1A4
+float ystep;   // 0xDEF1A0
+float xstep;   // 0xDEF19C
+float xpos;    // 0xDEF198
+float xinc;    // 0xDEF194
+float yinc;    // 0xDEF190
 
 // Entity stats renderer globals
 struct apsEffectLocal {
@@ -1032,7 +1032,7 @@ extern void TakeCubeMapShot();    // ?TakeCubeMapShot@@YAXXZ (game2.o)
 extern char* va(const char* fmt, ...);        // ?va@@YAPADPBDZZ
 extern void Cvar_Set(const char* var_name, const char* value);  // ?Cvar_Set@@YAXPBD0@Z
 extern int Sys_Milliseconds();    // ?Sys_Milliseconds@@YAHXZ
-extern float g_losResetTime;      // ?g_losResetTime@@3MA (game2.o)
+float g_losResetTime;      // ?g_losResetTime@@3MA (game2.o)
 extern unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
 extern unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
 extern int g_fps;                 // ?g_fps@@3HA (game2.o)
@@ -1064,18 +1064,18 @@ extern int g_oceanDebug_DumpSettings;      // ?g_oceanDebug_DumpSettings@@3HA
 extern int g_oceanDebug_Layer2Enable;      // ?g_oceanDebug_Layer2Enable@@3HA
 extern int g_oceanDebug_Layer3Enable;      // ?g_oceanDebug_Layer3Enable@@3HA
 extern int g_oceanDebug_LightmapEnable;    // ?g_oceanDebug_LightmapEnable@@3HA
-extern float g_oceanDebug_Layer2Alpha;     // ?g_oceanDebug_Layer2Alpha@@3MA
-extern float g_oceanDebug_Layer3Alpha;     // ?g_oceanDebug_Layer3Alpha@@3MA
-extern float g_oceanDebug_SeaLevel;        // ?g_oceanDebug_SeaLevel@@3MA
-extern float g_oceanDebug_UVScale[8];      // ?g_oceanDebug_UVScale@@3PAY01MA (2 per layer)
-extern float g_oceanDebug_UVScroll[8];     // ?g_oceanDebug_UVScroll@@3PAY01MA (2 per layer)
-extern float g_oceanDebug_Origin[8];       // ?g_oceanDebug_Origin@@3PAY01MA (2 per wave)
-extern float g_oceanDebug_Distance[4];     // ?g_oceanDebug_Distance@@3PAMA
-extern float g_oceanDebug_Heading[4];      // ?g_oceanDebug_Heading@@3PAMA
-extern float g_oceanDebug_Wavelength[4];   // ?g_oceanDebug_Wavelength@@3PAMA
-extern float g_oceanDebug_Amplitude[4];    // ?g_oceanDebug_Amplitude@@3PAMA
-extern float g_oceanDebug_Phase[4];        // ?g_oceanDebug_Phase@@3PAMA
-extern float g_oceanDebug_Timescale[4];    // ?g_oceanDebug_Timescale@@3PAMA
+float g_oceanDebug_Layer2Alpha;     // ?g_oceanDebug_Layer2Alpha@@3MA
+float g_oceanDebug_Layer3Alpha;     // ?g_oceanDebug_Layer3Alpha@@3MA
+float g_oceanDebug_SeaLevel;        // ?g_oceanDebug_SeaLevel@@3MA
+float g_oceanDebug_UVScale[8];      // ?g_oceanDebug_UVScale@@3PAY01MA (2 per layer)
+float g_oceanDebug_UVScroll[8];     // ?g_oceanDebug_UVScroll@@3PAY01MA (2 per layer)
+float g_oceanDebug_Origin[8];       // ?g_oceanDebug_Origin@@3PAY01MA (2 per wave)
+float g_oceanDebug_Distance[4];     // ?g_oceanDebug_Distance@@3PAMA
+float g_oceanDebug_Heading[4];      // ?g_oceanDebug_Heading@@3PAMA
+float g_oceanDebug_Wavelength[4];   // ?g_oceanDebug_Wavelength@@3PAMA
+float g_oceanDebug_Amplitude[4];    // ?g_oceanDebug_Amplitude@@3PAMA
+float g_oceanDebug_Phase[4];        // ?g_oceanDebug_Phase@@3PAMA
+float g_oceanDebug_Timescale[4];    // ?g_oceanDebug_Timescale@@3PAMA
 
 // cdSimpleAlpha shader debug state (render_xboxr:cdSimpleAlphaDebug.o)
 struct cdSimpleAlphaDebug {

@@ -145,20 +145,20 @@ extern void* AudioBankMgr_sInst;
 extern void codNflUpdate();
 extern void SyncFrameBuffers();
 struct FEManager; extern FEManager g_femanager;
-extern int gUseNfl;
-extern int g_enableControllerTest;
-extern int g_controllerConnected[];
+bool gUseNfl;                       // ?gUseNfl@@3_NA (core.o)
+bool g_enableControllerTest;        // ?g_enableControllerTest@@3_NA (game2.o)
+bool g_controllerConnected[4];      // ?g_controllerConnected@@3PA_NA (game2.o)
 bool g_controllerConnectedErrorShown[4];  // ?g_controllerConnectedErrorShown@@3PA_NA (game2.o)
-extern int g_controllerConnectedGamePaused[];
+bool g_controllerConnectedGamePaused[4];  // ?g_controllerConnectedGamePaused@@3PA_NA (game2.o)
 extern int logfile;
 extern int opening_qconsole;
 extern int com_safemode;
-extern char* rd_buffer;
+char* rd_buffer;  // ?rd_buffer@@3PADA (core.o)
 extern int rd_buffersize;
 extern void (*rd_flush)(char*);
 extern int last_time;
 extern int lastTime;
-extern float g_time_inc;
+float g_time_inc;
 extern sysEvent_t com_pushedEvents[256];
 extern int com_pushedEventsHead;
 extern int com_pushedEventsTail;
@@ -169,13 +169,14 @@ extern int time_game;
 extern int time_frontend;
 extern int time_backend;
 extern int timeClientFrame;
-extern int gFirstCamera;
+bool gFirstCamera;                  // ?gFirstCamera@@3_NA (cg.o)
+bool* gControllerWarningDialogIsActive;  // ?gControllerWarningDialogIsActive@@3PA_NA (game2.o @ 0x12EFB0C)
 extern int gScreenshotInProgress;
 int com_frameTime = 0;   // ?com_frameTime@@3HA (core.o @ 0xEF2828)
 int com_frameNumber = 0;  // ?com_frameNumber@@3HA (core.o)
-extern float g_screendelta;
+float g_screendelta;
 extern int g_bDObjInited;
-extern char* surfaceTypeNames[23];
+char* surfaceTypeNames[23];  // ?surfaceTypeNames (core.o)
 extern int com_fullyInitialized;
 extern int com_fileAccessed;
 extern int com_journalFile;
@@ -265,6 +266,10 @@ int printedWarning;          // ?printedWarning@@3HA (core.o)
 int lastErrorTime;           // ?lastErrorTime@@3HA (core.o)
 int rd_buffersize;           // ?rd_buffersize@@3HA (core.o)
 int cmd_argc;                // ?cmd_argc@@3HA (core.o)
+char* fs_gamedir;            // ?fs_gamedir@@3PADA (core.o @ 0x12E5ED0)
+char* fs_bsp_gamedir;        // ?fs_bsp_gamedir@@3PADA (core.o @ 0x12E64A0)
+char* lastValidBase;         // ?lastValidBase@@3PADA (core.o @ 0x12E6600)
+char* lastValidGame;         // ?lastValidGame@@3PADA (core.o @ 0x12EFF30)
 extern cvar_t* com_fixedtime;
 extern cvar_t* com_viewlog;
 extern cvar_t* com_speeds;
@@ -277,7 +282,7 @@ extern const float vec3_origin[3] = { 0.0f, 0.0f, 0.0f };
 extern cvar_t* cl_frameadvance;
 extern cvar_t* cl_capturemovie;
 extern cvar_t* com_journal;
-extern char** com_consoleLines;
+char* com_consoleLines[128];  // ?com_consoleLines@@3PAPAD (core.o @ 0x12E5F98)
 extern int com_numConsoleLines;
 extern int com_argc;
 extern char** com_argv;
@@ -494,7 +499,7 @@ extern void MSG_Init(msg_t* msg, unsigned char* data, int length);
 extern int generateHashValue(const char* fname);
 extern void Cvar_AddCommands();
 extern void FS_ShutdownSearchPaths(searchpath_s* p);
-extern char* com_errorMessage;
+char* com_errorMessage;  // ?com_errorMessage@@3PADA (core.o)
 extern int com_errorEntered;
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;
 extern int timeBeforeEvents;

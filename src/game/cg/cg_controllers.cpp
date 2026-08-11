@@ -21,8 +21,8 @@ class Handle;
 extern void EffectEventStopEmitting(Handle handle);
 extern int PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
                                   int action);
-extern float gTurretOldPITCH;
-extern float gTurretOldYAW;
+float gTurretOldPITCH;
+float gTurretOldYAW;
 extern int gTurretState;
 int gTurretSoundEffectHandle;  // ?gTurretSoundEffectHandle (cg.o)
 extern int dword_DF91F4;

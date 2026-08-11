@@ -1138,10 +1138,10 @@ extern void CameraShakeInstance_SetTime(CameraShakeInstance* self, float time);
 extern void CameraShakeInstance_OverrideSettings(CameraShakeInstance* self,
                                                  float frequency,
                                                  float movement);
-extern float rumbleFullIntensity;
+float rumbleFullIntensity;
 extern void RumbleManager_SetIntensity(void* self, int handle,
                                        float intensity);
-extern float tweenTime;  // 0x00DFA37C
+float tweenTime;  // 0x00DFA37C
 struct DObjSkelMat;
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMtx);
@@ -1328,7 +1328,7 @@ struct vehicle_info_t {
     float pitchBasedCamOffsetZ;  // +0x1F0
 };
 
-extern float maxAngle;  // 0x00DFA294
+float maxAngle;  // 0x00DFA294
 extern bool special_tween_bool;  // 0x00F6171D
 extern bool gCameraSwayOnTurrets;  // 0x00DF9D84
 extern void controller_stick_value(void* self, int index, int stick,
@@ -1853,8 +1853,8 @@ extern int lNumViewports;  // 0x00F61728
 extern View_Setup Setups[];         // 0x00DF9DB8
 extern View_Window Windows[];       // 0x00DF9E58
 int ViewSetupConfigurations[4];  // ?ViewSetupConfigurations (cg.o @ 0xD0D200)
-extern float scalar2View;           // 0x00DF9E44
-extern float scalar4View;           // 0x00DF9E48
+float scalar2View;           // 0x00DF9E44
+float scalar4View;           // 0x00DF9E48
 extern float unk_F6A284[4 * 802];
 extern float unk_F6A288[4 * 802];
 extern int dword_F6A290[4 * 802];
@@ -2736,17 +2736,17 @@ void CG_PrevWeapon_f()
 // Misc draw/parse/debug helpers (cg.o cg_misc.cpp)
 // ============================================================================
 
-extern float gFireHeatBlur;   // 0x00F616EC
-extern float maxBlurScale;    // 0x00DFA314
-extern float r_1;             // 0x00DFA310
-extern float g;               // 0x00DFA30C
-extern float b_1;             // 0x00DFA308
-extern float a_0;             // 0x00DFA304
+float gFireHeatBlur;   // 0x00F616EC
+float maxBlurScale;    // 0x00DFA314
+float r_1;             // 0x00DFA310
+float g;               // 0x00DFA30C
+float b_1;             // 0x00DFA308
+float a_0;             // 0x00DFA304
 extern int g_blendType;       // 0x00DD9254
 extern int fireBlendType;     // 0x00DFA300
-extern float YOfs;            // 0x00DFA2FC
-extern float XOfs;            // 0x00DFA2F8
-extern char buffer_0[256];    // 0x00F73890
+float YOfs;            // 0x00DFA2FC
+float XOfs;            // 0x00DFA2F8
+char buffer_0[256];    // ?buffer_0@@3PADA (cg.o @ 0x00F73890)
 extern _objectiveInfo_t objectives[4][17];  // 0x00F6A2B0
 extern const float vec3_origin[3];
 struct nglQuad;
@@ -3230,7 +3230,7 @@ extern float AnimationPlayer_GetAnimTime(void* self, void* anim);
 extern void CG_StartWeaponAnim(int weaponNum, DObj* dobj, int animIndex,
                                float fadeInTime, float startTimeInSec,
                                int forceRestart);
-extern float kADSAnimFadeInTime;  // 0x00DFA380
+float kADSAnimFadeInTime;  // 0x00DFA380
 extern char gMetaAnimPlayMethod;  // 0x00F05108
 extern char sWeaponAnimCallback;  // 0x00DF9E4C
 extern tlFixedString tlFixedString_ctor(void* self, const char* s);
@@ -3574,11 +3574,11 @@ extern int PadAliasMgr_GetButtonValue(void* self, int ctrlNum,
 extern void* PadAliasMgr_sInst;  // 0x00F4F458
 extern int g_vehicle_button_threshold;  // 0x00E01F04
 extern vmCvar_t g_vehControlMode;       // 0x00EADD48
-extern float gTankDriverAnglesFrac;     // 0x00D0D1E0
+float gTankDriverAnglesFrac;     // 0x00D0D1E0
 extern unsigned char unk_F6A294[4 * 3208];
 extern vmCvar_t cg_thirdPersonRange;    // 0x00F5F1E8
 extern vmCvar_t cg_redFlashTime;        // 0x00F5C4A8
-extern float the_rate;                  // 0x00DFA3E8
+float the_rate;                  // 0x00DFA3E8
 extern int dword_F64018[4 * 1580];
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);
@@ -5431,7 +5431,7 @@ void Camera::UpdateAnimation()
     }
 }
 
-extern float gSceneAnimCameraFOV;  // 0x00F258F0
+float gSceneAnimCameraFOV;  // 0x00F258F0
 extern void* gSceneAnimCameraPO;   // 0x00F25AB0
 extern float dword_F63C60[4 * 1580];
 extern float dword_F63C8C[4 * 1580];
@@ -5709,4 +5709,3 @@ void Camera::UpdateVehicleAnimCam()
         }
     }
 }
-

@@ -3726,8 +3726,8 @@ extern int CM_AreaEntities(const math::Position3& mins,
                            const math::Position3& maxs,
                            DbLinkedHandle<EntityHandleDb, Entity>* entityList,
                            int maxcount, int contentmask);  // game.o
-extern float overpush;   // ?overpush (game.o)
-extern float radius_3;   // ?radius_3 (game.o)
+float overpush;   // ?overpush (game.o)
+float radius_3;   // ?radius_3 (game.o)
 extern bool push_in_world(pmove_t& pm, float radius,
                           const collision_context_t& context);  // game.o
 extern bool tunnel_test(pmove_t& pm, float radius,
@@ -3921,7 +3921,7 @@ done_char:
 // ============================================================================
 // push_in_world - ea: 0x63AC30 (bg_pmove.cpp)
 // ============================================================================
-extern float threshold_0;  // ?threshold_0 (game.o)
+float threshold_0;  // ?threshold_0 (game.o)
 static TouchEntityData s_entities_2;  // ?entities_2 (game.o @ 0xF58C60)
 static int s_entities_2_init;         // $S21_3 @ 0xF58F00
 extern bool collide_sphere_brush(math::Position3& sphere_center,
@@ -5490,8 +5490,8 @@ extern int bg_iNumSharedAmmoCaps;   // ?bg_iNumSharedAmmoCaps@@3HA (game.o)
 int bg_iWeapAmmoMaxs[4 * 1580];     // ?bg_iWeapAmmoMaxs@@3PAHA (game.o)
 int bg_iWeapClipSizes[4 * 1580];    // ?bg_iWeapClipSizes@@3PAHA (game.o)
 int bg_iSharedAmmoCaps[4 * 1580];   // ?bg_iSharedAmmoCaps@@3PAHA (game.o)
-extern const char** bg_szWeapAmmoNames;  // ?bg_szWeapAmmoNames@@3PAPBDA (game.o)
-extern const char** bg_szWeapClipNames;  // ?bg_szWeapClipNames@@3PAPBDA (game.o)
+const char* bg_szWeapAmmoNames[92];  // ?bg_szWeapAmmoNames@@3PAPBDA (game.o)
+const char* bg_szWeapClipNames[92];  // ?bg_szWeapClipNames@@3PAPBDA (game.o)
 extern bool gInfinteAmmo;           // ?gInfinteAmmo@@3_NA (game.o)
 extern int cg_aWeaponSelect[4];     // ?cg_aWeaponSelect@@3PAHA (cg.o)
 extern int cg_aWeaponSelectTime[4]; // ?cg_aWeaponSelectTime@@3PAHA (cg.o)
@@ -6754,7 +6754,7 @@ void BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
 // bg_weapons.cpp item/ammo setup - ea: 0x616040..0x6168A0
 // ============================================================================
 // game.o data globals (bg_weapons.cpp)
-extern char** bg_szSharedAmmoCapNames;  // 0xF3E7D0
+char* bg_szSharedAmmoCapNames[92];  // ?bg_szSharedAmmoCapNames (game.o @ 0xF3E7D0)
 
 // ea: 0x00616040
 void BG_FillInWeaponItems()

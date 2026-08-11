@@ -157,9 +157,9 @@ extern int dword_F6404C[4 * 1580];
 extern int dword_F6355C[4 * 1580];
 extern int dword_F640A4[4 * 1580];
 extern vmCvar_t cg_drawGun;
-extern float cg_gun_x;
-extern float cg_gun_y;
-extern float cg_gun_z;
+float cg_gun_x;
+float cg_gun_y;
+float cg_gun_z;
 extern float angle[4 * 395];
 extern float dword_F63CB4[4 * 1580];
 extern float dword_F63C80[4 * 1580];
@@ -176,7 +176,7 @@ extern float dword_F64078[4 * 1580];
 extern float dword_F6407C[4 * 1580];
 extern float unk_F64080[4 * 6320];
 const char** s_barrelTags;  // ?s_barrelTags@@3PAPADA (game.o)
-extern float* ejectBrassCasingOrigin;
+float* ejectBrassCasingOrigin;
 extern int dword_F5E6BC;
 extern int dword_F5E6C0;
 extern unsigned int tagHash;
@@ -187,7 +187,7 @@ struct ServerTime_s {
     float mTickDelta;
 };
 extern ServerTime_s ServerTime_sInst;
-extern float tr_viewModelInfo_mWeaponScale[4];
+float tr_viewModelInfo_mWeaponScale[4];
 extern int tr_viewModelInfo_mWeaponOrigin_used;
 extern void* tr_viewModelInfo_mWeaponOrigin;
 extern unsigned int tagHashInit;
@@ -226,8 +226,8 @@ extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
                                         TPakId pakid, bool important);
 extern float player_breath_hold_time;
-extern float player_breath_snd_delay;
-extern float player_breath_snd_lerp;
+float player_breath_snd_delay;
+float player_breath_snd_lerp;
 extern int cgGlobal_time;
 extern int dword_F641E8[4 * 1580];
 extern int dword_F641E0[4 * 1580];
@@ -250,7 +250,7 @@ extern void AngleVectors(const math::Position3* angles, float* forward,
 struct weaponInfo_s;
 struct DObj;
 
-static char buffer_0[256];
+extern char buffer_0[256];
 
 // ea: 0x00687F40
 bool CG_GetWeapReticleZoom(float* pfZoom)
@@ -1963,4 +1963,3 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
 LABEL_90:
     return false;
 }
-
