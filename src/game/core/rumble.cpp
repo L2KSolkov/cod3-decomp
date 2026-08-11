@@ -3,6 +3,7 @@
 // ============================================================================
 
 #include "game/core/core_systems.h"
+
 #include "game/core/core_globals.h"
 
 #include <string.h>
@@ -38,6 +39,22 @@ bool Assert(const char* fmt, ...);
 extern float ComputeIntensity(float min_distance, float max_distance,
                               float distance);
 extern void controller_stop_all_rumble(void* self);
+
+// ea: 0x004DE110 (core.o)
+bool RumbleEffect::GetEnabled(ERumbleMotorID rumbleID) const
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 42;
+        AeAssert::gCurrentExpr = "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return mRumbleDataArray[rumbleID].enabled;
+}
 extern void controller_rumble(void* self, int i_controller_num, int i_motor,
                               float intensity);
 extern int currCl;

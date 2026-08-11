@@ -43,7 +43,7 @@ struct nglFont;
 extern void nglGetStringDimensions(nglFont* font, unsigned int* width,
                                    unsigned int* height, float scaleX,
                                    float scaleY, const char* fmt, ...);
-extern bool View_IsSplitScreen();
+namespace View { bool IsSplitScreen(); }  // ?IsSplitScreen@View@@YA_NXZ
 extern void SCR_FillRect(float x, float y, float width, float height,
                          const float* color);
 extern void SCR_DrawSmallChar(int x, int y, int ch);
@@ -890,7 +890,7 @@ void CL_DeathMessagePrint(print_msg_type_t type, const char* pszAttackerName,
         print_msg_type_t v16;
         int v17;
         if (attacker_name_width + victim_name_width > 0xFA
-            || View_IsSplitScreen())
+            || View::IsSplitScreen())
         {
             Con_Linefeed(type, v10, 0);
             CL_AddConsoleInfoColor(10, vVictimColor);

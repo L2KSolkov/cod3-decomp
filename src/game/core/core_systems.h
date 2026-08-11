@@ -272,6 +272,7 @@ static_assert(sizeof(AbstractEffectLight) == 0x44,
 // AbstractEffectShakeAndRumble - camera shake + rumble effect (112 bytes)
 // Size: 0x70 (112 bytes) - verified against IDA
 // ============================================================================
+enum ERumbleMotorID;
 class RumbleEffectInstanceHandle {
 public:
     int mVal;  // +0x00
@@ -533,6 +534,7 @@ struct RumbleEffect {
     RumbleData mRumbleDataArray[2];  // +0x00
 
     RumbleEffect() {}
+    bool GetEnabled(ERumbleMotorID rumbleID) const;  // ?GetEnabled@RumbleEffect@@QBE_NW4ERumbleMotorID@@@Z (core.o 0x4DE110)
 };
 static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 

@@ -1070,7 +1070,12 @@ extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern int AnimationPlayer_IsPartialIdle(void* player, bool checkLooping);
 extern int Entity_GetPlayerIndex(Entity* ent);
-extern bool Camera_IsTweening(void* cam);
+struct CameraView {
+    uint8_t _pad[0x118];
+    float mTweenTime;      // +0x114
+    float mTweenDuration;  // +0x118
+    bool IsTweening();     // ?IsTweening@Camera@@QAE_NXZ (cg.o 0x68EBB0)
+};
 extern int level_time;
 extern int dword_F62964[4 * 1580];
 extern int dword_F6355C[4 * 1580];
@@ -1195,21 +1200,22 @@ void CG_Player(Entity* entity)
                 || entity->client->ps.vehType != 2
                 || entity->client->ps.vehPos != 0)
             {
+                bool camTweening =
+                    ((CameraView*)((char*)gCamera
+                                   + 0x1F0 * Entity_GetPlayerIndex(entity)))
+                        ->IsTweening();
                 if (entity != EntityManager::sInst->GetPlayer(
                                                       currCl)
                     || dword_F6355C[1580 * currCl] != 0
                     || !IsPlayerFullySeatedInVehicle(entity)
                     || entity->client->ps.vehType != 2
-                    || (Camera_IsTweening(
-                            &((char*)gCamera)[0x1F0
-                                              * Entity_GetPlayerIndex(
-                                                  entity)])
+                    || camTweening
                         || ((entity->client->ps.vehPos != 6
                              && entity->client->ps.vehPos != 1)
                             || !entity->IsLocalPlayer())
                                && (*(int*)((char*)gCamera + 0x1F0 * currCl + 0x194)
                                        != 1
-                                   || entity != GetPlayer2(currCl))))
+                                    || entity != GetPlayer2(currCl)))
                 {
                 LABEL_72:
                     if (entity->sentient != nullptr)

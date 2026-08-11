@@ -1252,6 +1252,7 @@ enum ERumbleMotorID {
     kRumbleLEFT = 0,
     kRumbleRIGHT = 1,
     kRumbleMax = 1,
+    kRumbleCount = 2,
 };
 struct RumbleEffect {
     struct RumbleData {
