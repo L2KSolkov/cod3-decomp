@@ -932,7 +932,7 @@ extern bool          gNoClipEnabled;  // ?gNoClipEnabled@@3_NA
 extern bool          gIsWorkspaceMap; // ?gIsWorkspaceMap@@3_NA
 extern bool          gDoNotPlayCampaignMovies; // ?gDoNotPlayCampaignMovies@@3_NA
 extern int           g_networkOwner;  // ?g_networkOwner@@3W4EThreadOwner@@A
-extern const char    defaultFileName[];  // ?defaultFileName
+extern const char* const defaultFileName;  // ?defaultFileName
 extern void          mem_heap_free(void* ptr);
 extern int           unk_F6A290;      // Xbox dev/retail flag
 

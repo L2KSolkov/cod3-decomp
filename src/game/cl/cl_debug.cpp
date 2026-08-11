@@ -41,6 +41,8 @@ extern int com_skelTimeStamp;
 extern int bCL_AllowedAllocSkel;
 extern struct cvar_t* cl_testAnimWeight;
 extern void* _Z_MallocInternal(int size);
+struct FEManager;
+extern FEManager g_femanager;
 extern void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr,
                           int qport);
 extern void CL_AddReliableCommand(const char* cmd);
@@ -161,7 +163,6 @@ int CG_GetGameModel(short modelindex)
 void* CL_GetFontInfo(int font, float scale)
 {
     extern void* FEManager_GetFont(void* self, int f, float scale);
-    extern void* g_femanager;
     return FEManager_GetFont(&g_femanager, font, scale);
 }
 

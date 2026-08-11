@@ -15,7 +15,7 @@ extern int currCl;
 extern float unk_F6A278[4 * 802];
 extern float unk_F6A27C[4 * 802];
 extern void* cgsGlobal_media_whiteShader;
-extern void* g_femanager;
+struct FEManager; extern FEManager g_femanager;
 
 extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
@@ -79,7 +79,7 @@ void CG_ScoresDown_f()
             && byte_F64194[6320 * currCl] == 0)
         {
             dword_F641D0[1580 * currCl] = 1;
-            void* IGMS = FEManager_GetIGMS(g_femanager, currCl);
+            void* IGMS = FEManager_GetIGMS(&g_femanager, currCl);
             InGameMenuSystem_ActivateMenu(IGMS, 10);
             dword_F641D4[1580 * currCl] = cgGlobal.time;
         }
@@ -346,7 +346,7 @@ void CG_SoundBlend(Entity* entity)
 extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
                                                    const char* pszSystem);
 extern const char* CG_ConfigString(unsigned int index);
-extern const char defaultFileName[];
+extern const char* const defaultFileName;
 
 struct game_hudelem_s {
     struct {
@@ -2205,13 +2205,13 @@ void SetNumViewports(int num)
     if (num <= lNumViewports)
     {
         lNumViewports = num + 1;
-        FEManager_UpdateSplitScreen(g_femanager);
+        FEManager_UpdateSplitScreen(&g_femanager);
         --lNumViewports;
     }
     else
     {
         lNumViewports = num;
-        FEManager_UpdateSplitScreen(g_femanager);
+        FEManager_UpdateSplitScreen(&g_femanager);
     }
 }
 
@@ -2224,13 +2224,13 @@ void UpdateNumViewports()
     if (v1 <= lNumViewports)
     {
         lNumViewports = v1 + 1;
-        FEManager_UpdateSplitScreen(g_femanager);
+        FEManager_UpdateSplitScreen(&g_femanager);
         --lNumViewports;
     }
     else
     {
         lNumViewports = v1;
-        FEManager_UpdateSplitScreen(g_femanager);
+        FEManager_UpdateSplitScreen(&g_femanager);
     }
 }
 

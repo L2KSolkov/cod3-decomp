@@ -82,8 +82,8 @@ void ToggleCDSimplePrelitShader() {
 // ============================================================================
 void cdSimplePrelitShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdSimplePrelitRender::VS, cdSimplePrelitRender::VShaderTable[0]);
-    nglDxRegisterPShader(cdSimplePrelitPixel::PS, cdSimplePrelitPixel::PShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdSimplePrelitRender::VS, cdSimplePrelitRender::VShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdSimplePrelitPixel::PS, cdSimplePrelitPixel::PShaderTable[0]);
 }
 
 // ============================================================================

@@ -79,9 +79,9 @@ void ToggleCDPropellerShader() {
 // ============================================================================
 void cdPropellerShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdPropellerRender::VS, cdPropellerRender::VShaderTable[0]);
-    nglDxRegisterPShader(cdPropellerPixel::PS, cdPropellerPixel::PShaderTable[0]);
-    nglDxRegisterPShader(cdPropellerFullbrightPixel::PS, cdPropellerFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdPropellerRender::VS, cdPropellerRender::VShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdPropellerPixel::PS, cdPropellerPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdPropellerFullbrightPixel::PS, cdPropellerFullbrightPixel::PShaderTable[0]);
 }
 
 // ============================================================================

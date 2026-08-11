@@ -1439,14 +1439,15 @@ void VEH_StopWheelEffects(Entity* ent)
         {
             if (scr_vehicle->mWheel_ParticleEffectHandle[i].mVal != 0)
             {
-                EffectEventStopEmitting(scr_vehicle->mWheel_ParticleEffectHandle[i].mVal);
+                EffectEventStopEmitting(
+                    scr_vehicle->mWheel_ParticleEffectHandle[i]);
                 scr_vehicle->mWheel_ParticleEffectHandle[i].mVal = 0;
             }
         }
     }
     if (scr_vehicle->mRumbleEffectHandle.mVal != 0)
     {
-        EffectEventStopEmitting(scr_vehicle->mRumbleEffectHandle.mVal);
+        EffectEventStopEmitting(scr_vehicle->mRumbleEffectHandle);
         scr_vehicle->mRumbleEffectHandle.mVal = 0;
     }
 }
@@ -1688,20 +1689,21 @@ void VEH_StopAllEffects(Entity* ent)
         {
             if (scr_vehicle->mWheel_ParticleEffectHandle[i].mVal != 0)
             {
-                EffectEventStopEmitting(scr_vehicle->mWheel_ParticleEffectHandle[i].mVal);
+                EffectEventStopEmitting(
+                    scr_vehicle->mWheel_ParticleEffectHandle[i]);
                 scr_vehicle->mWheel_ParticleEffectHandle[i].mVal = 0;
             }
         }
     }
     if (scr_vehicle->mRumbleEffectHandle.mVal != 0)
     {
-        EffectEventStopEmitting(scr_vehicle->mRumbleEffectHandle.mVal);
+        EffectEventStopEmitting(scr_vehicle->mRumbleEffectHandle);
         scr_vehicle->mRumbleEffectHandle.mVal = 0;
     }
     for (int i = 6; i != 0; --i)
     {
         if (scr_vehicle->mSoundEffectHandle[6 - i].mVal != 0)
-            EffectEventStopEmitting(scr_vehicle->mSoundEffectHandle[6 - i].mVal);
+            EffectEventStopEmitting(scr_vehicle->mSoundEffectHandle[6 - i]);
         scr_vehicle->mSoundEffectHandle[6 - i].mVal = 0;
     }
 }
@@ -3496,7 +3498,7 @@ bool scr_vehicle_t::CanMantleVehicle(Entity* player)
             __debugbreak();
     }
     Entity* v7 = player;
-    if (IsLocalPlayer(player))
+    if (player->IsLocalPlayer())
     {
         int v8 = player->client->ps.weaponslots[4];
         weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v8);
@@ -5624,14 +5626,13 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
         {
             if (veh->mWheel_ParticleEffectHandle[i].mVal != 0)
             {
-                EffectEventStopEmitting(
-                    veh->mWheel_ParticleEffectHandle[i].mVal);
+                EffectEventStopEmitting(veh->mWheel_ParticleEffectHandle[i]);
                 veh->mWheel_ParticleEffectHandle[i].mVal = 0;
             }
         }
         if (veh->mRumbleEffectHandle.mVal != 0)
         {
-            EffectEventStopEmitting(veh->mRumbleEffectHandle.mVal);
+            EffectEventStopEmitting(veh->mRumbleEffectHandle);
             veh->mRumbleEffectHandle.mVal = 0;
         }
         return;
@@ -5914,7 +5915,7 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
     }
     else if (veh->mRumbleEffectHandle.mVal != 0)
     {
-        EffectEventStopEmitting(veh->mRumbleEffectHandle.mVal);
+        EffectEventStopEmitting(veh->mRumbleEffectHandle);
         veh->mRumbleEffectHandle.mVal = 0;
     }
 }
@@ -6703,7 +6704,8 @@ void VEH_UpdateWheelParticleEffects(Entity* ent, int wheelIndex)
     else
     {
         if (scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex].mVal != 0)
-            EffectEventStopEmitting(scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex].mVal);
+            EffectEventStopEmitting(
+                scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex]);
         scr_vehicle->mWheel_ParticleEffectHandle[wheelIndex].mVal = 0;
     }
 }

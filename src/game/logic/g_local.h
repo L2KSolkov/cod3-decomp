@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // g_local.h - game logic (g.o) shared types and globals
 // Reconstructed from IDA local types (PDB symbol data).
 // All sizes and offsets verified against IDA.
@@ -433,7 +433,7 @@ extern int g_drawDebugLos;             // 0xEB1108
 extern int g_drawDebugEntityLos;       // 0xEB110C
 extern int g_numLosHits;               // 0xEB1110
 extern int g_numLosMisses;             // 0xEB1114
-extern const char defaultFileName[];   // 0xCD67AE ("\0\0sv_cheats")
+extern const char* const defaultFileName;   // 0xCD67AE ("\0\0sv_cheats")
 extern const float colorRed[4];        // 0xD0155C {1,0,0,1}
 extern const float colorGreen[4];      // 0xD0156C {0,1,0,1}
 extern const float colorYellow[4];     // 0xD0159C
@@ -2072,7 +2072,7 @@ struct CollisionDesc;
 Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
                                   const CollisionDesc* col_desc);  // core.o
 void  EffectEventKill(Handle effect);
-int   EffectEventStopEmitting(int effectId);
+void  EffectEventStopEmitting(Handle effectId);
 void  EffectEventAdjustEffect_Scale(Handle effect, const char* param,
                                     float scale);   // core.o 0x4CB8E0
 void  Com_Error(int code, const char* fmt, ...);
@@ -3018,7 +3018,7 @@ void  G_DebugCircleEx(const float* center, float radius, const float* dir,
                       const float* color, int depthTest, int duration);  // g.o 0x457170
 void  G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* touchents);  // g.o 0x474710
 float VectorNormalize2(const float* v, float* out);  // core.o
-void  PerpendicularVector(float* dst, const float* src);  // core.o
+void  PerpendicularVector(float* dst, float* src);  // core.o
 void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o
 const gitem_s* BG_FindItemForWeapon(int weapon);  // game.o 0x612E70
 bool  PM_CanSimulateFiringWeapon(int iWeapon);    // game.o 0x614700

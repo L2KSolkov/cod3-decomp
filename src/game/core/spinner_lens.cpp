@@ -51,7 +51,7 @@ extern float l;
 extern float t;
 extern float r_0;
 extern float b_0;
-extern void* g_femanager;
+struct FEManager; extern FEManager g_femanager;
 
 class EntityHandleDb {
 public:

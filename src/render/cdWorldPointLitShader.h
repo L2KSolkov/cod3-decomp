@@ -72,8 +72,8 @@ namespace cdWorldPointLitSolidColorPixel {
 // ============================================================================
 // Externs
 // ============================================================================
-extern void nglDxRegisterVShader(unsigned long* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
-extern void nglDxRegisterPShader(unsigned long** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);  // ngl_dx_shader.o
+extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);  // ngl_dx_shader.o
 extern int cdGetClipResult(const nglMeshSection* Section, const nglMeshNode* MeshNode, nglScene* Scene);
 extern nglTexture* nglDefaultTex;  // ?nglDefaultTex@@3PAUnglTexture@@A (ngl_texture.o)
 

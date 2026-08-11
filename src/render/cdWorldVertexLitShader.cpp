@@ -79,11 +79,11 @@ void ToggleCDWorldVertexLitShader() {
 // ============================================================================
 void cdWorldVertexLitShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdWorldVertexLitRender::VS, cdWorldVertexLitRender::VShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdWorldVertexLitRender::VS, cdWorldVertexLitRender::VShaderTable[0]);
     cdWorldVertexLitRender::Shader = cdWorldVertexLitRender::VS[0];
-    nglDxRegisterPShader(cdWorldVertexLitPixel::PS, cdWorldVertexLitPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdWorldVertexLitPixel::PS, cdWorldVertexLitPixel::PShaderTable[0]);
     cdWorldVertexLitPixel::Shader = cdWorldVertexLitPixel::PS[0];
-    nglDxRegisterPShader(cdWorldVertexLitFullbrightPixel::PS, cdWorldVertexLitFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdWorldVertexLitFullbrightPixel::PS, cdWorldVertexLitFullbrightPixel::PShaderTable[0]);
     cdWorldVertexLitFullbrightPixel::Shader = cdWorldVertexLitFullbrightPixel::PS[0];
 }
 

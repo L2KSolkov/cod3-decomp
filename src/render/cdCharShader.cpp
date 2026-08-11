@@ -48,11 +48,11 @@ void ToggleCDCharShader() {
 // ============================================================================
 void cdCharShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdCharShaderRender::VS, cdCharShaderRender::VShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdCharShaderRender::VS, cdCharShaderRender::VShaderTable[0]);
     cdCharShaderRender::Shader = cdCharShaderRender::VS[0];
-    nglDxRegisterPShader(cdCharPixel::PS, cdCharPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdCharPixel::PS, cdCharPixel::PShaderTable[0]);
     cdCharPixel::Shader = cdCharPixel::PS[0];
-    nglDxRegisterPShader(cdCharFullbrightPixel::PS, cdCharFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdCharFullbrightPixel::PS, cdCharFullbrightPixel::PShaderTable[0]);
     cdCharFullbrightPixel::Shader = cdCharFullbrightPixel::PS[0];
 }
 

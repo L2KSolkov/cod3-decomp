@@ -46,18 +46,18 @@ void ToggleCDWorldBlendShader() {
 void cdWorldBlendShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader(&cdWorldBlendRender::VS[v0], cdWorldBlendRender::VShaderTable[v0]);
+        nglDxRegisterVShader((unsigned int*)&cdWorldBlendRender::VS[v0], cdWorldBlendRender::VShaderTable[v0]);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader(&cdWorldBlendProjectedRender::VS[v0], cdWorldBlendProjectedRender::VShaderTable[v0]);
+        nglDxRegisterVShader((unsigned int*)&cdWorldBlendProjectedRender::VS[v0], cdWorldBlendProjectedRender::VShaderTable[v0]);
     }
     for (int v0 = 0, i = 4; i != 0; --i, ++v0) {
-        nglDxRegisterPShader(&cdWorldBlendPixel::PS[0][v0], cdWorldBlendPixel::PShaderTable[0][v0]);
+        nglDxRegisterPShader((unsigned int**)&cdWorldBlendPixel::PS[0][v0], cdWorldBlendPixel::PShaderTable[0][v0]);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader(&cdWorldBlendProjectedPixel::PS[v0], cdWorldBlendProjectedPixel::PShaderTable[v0]);
+        nglDxRegisterPShader((unsigned int**)&cdWorldBlendProjectedPixel::PS[v0], cdWorldBlendProjectedPixel::PShaderTable[v0]);
     }
-    nglDxRegisterPShader(cdWorldBlendSolidColorPixel::PS, cdWorldBlendSolidColorPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdWorldBlendSolidColorPixel::PS, cdWorldBlendSolidColorPixel::PShaderTable[0]);
     cdWorldBlendSolidColorPixel::Shader = cdWorldBlendSolidColorPixel::PS[0];
 }
 

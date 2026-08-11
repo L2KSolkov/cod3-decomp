@@ -85,10 +85,10 @@ void ToggleCDDynamicDecalShader() {
 void cdDynamicDecalShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader(&cdDynamicDecalRender::VS[v0], cdDynamicDecalRender::VShaderTable[v0]);
+        nglDxRegisterVShader((unsigned int*)&cdDynamicDecalRender::VS[v0], cdDynamicDecalRender::VShaderTable[v0]);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader(&cdDynamicDecalPixel::PS[v0], cdDynamicDecalPixel::PShaderTable[v0]);
+        nglDxRegisterPShader((unsigned int**)&cdDynamicDecalPixel::PS[v0], cdDynamicDecalPixel::PShaderTable[v0]);
     }
 }
 

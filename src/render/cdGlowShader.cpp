@@ -44,15 +44,15 @@ void InitCDGlowShader() {
         v0 = NULL;
     }
     gCDGlowShader = v0;
-    nglDxRegisterVShader(cdGlowRender1::VS, cdGlowRender1::VShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdGlowRender1::VS, cdGlowRender1::VShaderTable[0]);
     cdGlowRender1::Shader = cdGlowRender1::VS[0];
-    nglDxRegisterVShader(cdGlowRender4::VS, cdGlowRender4::VShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdGlowRender4::VS, cdGlowRender4::VShaderTable[0]);
     cdGlowRender4::Shader = cdGlowRender4::VS[0];
-    nglDxRegisterPShader(cdGlowShrink::PS, cdGlowShrink::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdGlowShrink::PS, cdGlowShrink::PShaderTable[0]);
     cdGlowShrink::Shader = cdGlowShrink::PS[0];
-    nglDxRegisterPShader(cdGlowBlur::PS, cdGlowBlur::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdGlowBlur::PS, cdGlowBlur::PShaderTable[0]);
     cdGlowBlur::Shader = cdGlowBlur::PS[0];
-    nglDxRegisterPShader(cdGlowApply::PS, cdGlowApply::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdGlowApply::PS, cdGlowApply::PShaderTable[0]);
     cdGlowApply::Shader = cdGlowApply::PS[0];
 }
 

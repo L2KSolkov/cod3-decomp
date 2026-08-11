@@ -23,7 +23,7 @@ extern void Cmd_AddInputCommand(const char* cmd_name, void (*function)(int, int)
 extern void Cvar_Set(const char* var_name, const char* value);
 extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
-extern const char defaultFileName[];
+extern const char* const defaultFileName;
 extern int com_frameTime;
 extern int old_com_frameTime;
 extern int frame_msec;

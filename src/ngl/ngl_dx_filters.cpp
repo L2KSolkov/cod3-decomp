@@ -20,7 +20,7 @@
 // ============================================================================
 extern nglScene* nglBuildScene;                       // ngl_scene.o
 extern nglDisplayModeType nglDisplayMode;             // ngl_internal.o
-extern nglTexture* nglDepthBufferTex;                 // ngl_dx_tex_create.o
+extern nglTexture nglDepthBufferTex;                  // ngl_dx_tex_create.o
 extern nglTexture* nglGetBackBufferTex();             // ngl_dx_texture.o
 extern nglDxRenderState nglDxState;                   // ngl_dx_state.o
 extern nglDxTexCacheClass nglDxTexCache;              // ngl_dx_texture.o
@@ -158,7 +158,7 @@ void nglSetFiltersTexSizes() {
 void nglUpdateFilterTextures() {
     XGSetTextureHeader(nglDisplayMode.Width, nglDisplayMode.Height,
                        1, 0, D3DFMT_LIN_A8R8G8B8, 0, &nglDxFilters::D3DZTex,
-                       (void*)((D3DResource*)nglDepthBufferTex->RenderTarget)->Data,
+                       (void*)((D3DResource*)nglDepthBufferTex.RenderTarget)->Data,
                        4 * nglDisplayMode.Width);
     nglDxFilters::ZBufferTex.Texture = &nglDxFilters::D3DZTex;
 }
@@ -181,7 +181,7 @@ void nglCreateFilterTextures(unsigned int FilterTexWidth, unsigned int FilterTex
                                                     (int)FilterTexHeight, 0, 1);
     XGSetTextureHeader(nglDisplayMode.Width, nglDisplayMode.Height, 1, 0,
                        D3DFMT_LIN_A8R8G8B8, 0, &nglDxFilters::D3DZTex,
-                       (void*)((D3DResource*)nglDepthBufferTex->RenderTarget)->Data,
+                       (void*)((D3DResource*)nglDepthBufferTex.RenderTarget)->Data,
                        4 * nglDisplayMode.Width);
     nglDxFilters::ZBufferTex.Texture = &nglDxFilters::D3DZTex;
 }

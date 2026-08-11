@@ -46,12 +46,12 @@ void ToggleCDGlassShader() {
 void cdGlassShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 4; i != 0; --i, ++v0) {
-        nglDxRegisterVShader(&cdGlassRender::VS[0][v0], cdGlassRender::VShaderTable[0][v0]);
+        nglDxRegisterVShader((unsigned int*)&cdGlassRender::VS[0][v0], cdGlassRender::VShaderTable[0][v0]);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader(&cdGlassPixel::PS[v0], cdGlassPixel::PShaderTable[v0]);
+        nglDxRegisterPShader((unsigned int**)&cdGlassPixel::PS[v0], cdGlassPixel::PShaderTable[v0]);
     }
-    nglDxRegisterPShader(cdGlassSolidColorPixel::PS, cdGlassSolidColorPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdGlassSolidColorPixel::PS, cdGlassSolidColorPixel::PShaderTable[0]);
 }
 
 // ============================================================================

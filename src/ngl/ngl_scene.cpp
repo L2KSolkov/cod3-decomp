@@ -55,7 +55,8 @@ extern void ngliSetupBeginScene(nglScene* Scene);
 extern void ngliListInit();
 extern void ngliListSend();
 extern void ngliSetDefaultSceneParams();
-extern void ngliGetDeviceMatrix(math::Mat44* result, nglTexture* RenderTarget);
+extern math::Mat44* ngliGetDeviceMatrix(math::Mat44* result,
+                                        nglTexture* RenderTarget);
 extern void ngliRenderSceneNode(void* Data);
 extern void nglSceneDumpCamera(const math::Mat43* WorldToView);
 

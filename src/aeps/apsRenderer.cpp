@@ -62,7 +62,11 @@ unsigned int apsRenderer::SphereIsVisible(const apsSphere& iSphere, nglScene* iS
     center.v.m128_f32[2] = iSphere.mSphere.v.m128_f32[2];
     center.v.m128_f32[3] = 0.0f;
     const nglSceneView* scene = reinterpret_cast<const nglSceneView*>(iScene);
-    return nglIsSphereVisible(center, iSphere.mSphere.v.m128_f32[3], scene->ClipPlanes) ? 1 : 0;
+    return nglIsSphereVisible((const nglFrustum*)scene->ClipPlanes,
+                              (const math::Vector4*)&center,
+                              iSphere.mSphere.v.m128_f32[3])
+               ? 1
+               : 0;
 }
 
 // ============================================================================

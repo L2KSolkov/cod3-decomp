@@ -82,11 +82,11 @@ void ToggleCDBackgroundShader() {
 // ============================================================================
 void cdBackgroundShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdBackgroundRender::VS, cdBackgroundRender::VShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdBackgroundRender::VS, cdBackgroundRender::VShaderTable[0]);
     cdBackgroundRender::Shader = cdBackgroundRender::VS[0];
-    nglDxRegisterPShader(cdBackgroundPixel::PS, cdBackgroundPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdBackgroundPixel::PS, cdBackgroundPixel::PShaderTable[0]);
     cdBackgroundPixel::Shader = cdBackgroundPixel::PS[0];
-    nglDxRegisterPShader(cdBackgroundFullbrightPixel::PS, cdBackgroundFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdBackgroundFullbrightPixel::PS, cdBackgroundFullbrightPixel::PShaderTable[0]);
     cdBackgroundFullbrightPixel::Shader = cdBackgroundFullbrightPixel::PS[0];
 }
 

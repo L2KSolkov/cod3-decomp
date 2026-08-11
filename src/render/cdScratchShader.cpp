@@ -41,8 +41,8 @@ void ToggleCDScratchShader() {
 // ============================================================================
 void cdScratchShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdScratchShaderVertex::VS, cdScratchShaderVertex::VShaderTable[0]);
-    nglDxRegisterPShader(cdScratchShaderPixel::PS, cdScratchShaderPixel::PShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdScratchShaderVertex::VS, cdScratchShaderVertex::VShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdScratchShaderPixel::PS, cdScratchShaderPixel::PShaderTable[0]);
 }
 
 // ============================================================================

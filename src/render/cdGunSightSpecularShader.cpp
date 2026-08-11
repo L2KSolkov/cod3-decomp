@@ -85,10 +85,10 @@ void ToggleCDGunSightSpecularShader() {
 void cdGunSightSpecularShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader(&cdGunSightSpecularRender::VS[v0], cdGunSightSpecularRender::VShaderTable[v0]);
+        nglDxRegisterVShader((unsigned int*)&cdGunSightSpecularRender::VS[v0], cdGunSightSpecularRender::VShaderTable[v0]);
     }
-    nglDxRegisterPShader(cdGunSightSpecularPixel::PS, cdGunSightSpecularPixel::PShaderTable[0]);
-    nglDxRegisterPShader(cdGunSightSpecularFullbrightPixel::PS, cdGunSightSpecularFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdGunSightSpecularPixel::PS, cdGunSightSpecularPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdGunSightSpecularFullbrightPixel::PS, cdGunSightSpecularFullbrightPixel::PShaderTable[0]);
 }
 
 // ============================================================================

@@ -44,8 +44,8 @@ void ToggleCDSkyShader() {
 // ============================================================================
 void cdSkyShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdSkyShaderRender::VS, cdSkyShaderRender::VShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdSkyShaderRender::VS, cdSkyShaderRender::VShaderTable[0]);
     cdSkyShaderRender::Shader = cdSkyShaderRender::VS[0];
-    nglDxRegisterPShader(cdSkyShaderPixel::PS, cdSkyShaderPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdSkyShaderPixel::PS, cdSkyShaderPixel::PShaderTable[0]);
     cdSkyShaderPixel::Shader = cdSkyShaderPixel::PS[0];
 }

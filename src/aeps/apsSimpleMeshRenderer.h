@@ -97,12 +97,12 @@ extern void nglDxInitPShader(const unsigned int* Microcode);
 struct apsSimpleMeshRender {
     static unsigned int* VS;                  // ?VS@apsSimpleMeshRender@@3PAKA
     static const unsigned int** VShaderTable; // ?VShaderTable@apsSimpleMeshRender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(VS, VShaderTable[0]); }   // ea: 0x8028F0
+    static void RegisterVShader() { nglDxRegisterVShader((unsigned int*)VS, VShaderTable[0]); }   // ea: 0x8028F0
 };
 struct apsSimpleMeshRenderPixel {
     static unsigned int** PS;                 // ?PS@apsSimpleMeshRenderPixel@@3PAPAKA
     static const unsigned int** PShaderTable; // ?PShaderTable@apsSimpleMeshRenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(PS, PShaderTable[0]); }   // ea: 0x802910
+    static void RegisterPShader() { nglDxRegisterPShader((unsigned int**)PS, PShaderTable[0]); }   // ea: 0x802910
     static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x8029A0
 };
 

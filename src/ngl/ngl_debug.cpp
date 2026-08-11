@@ -33,8 +33,12 @@ extern void nglValidateMatrices(nglScene* Scene);            // ngl_scene.o
 extern float nglGetVBlankMS();                               // ngl_internal.o
 extern int nglGetScreenWidth();                              // ngl_internal.o
 extern int nglGetScreenHeight();                             // ngl_internal.o
-extern math::Position3 nglProjectPoint(const math::Position3& In, nglScene* Scene);
-extern math::Position3 nglUnprojectPoint(const math::Position3& In, nglScene* Scene);
+extern math::Position3* nglProjectPoint(math::Position3* result,
+                                        const math::Position3* In,
+                                        nglScene* Scene);
+extern math::Position3* nglUnprojectPoint(math::Position3* result,
+                                          const math::Position3* In,
+                                          nglScene* Scene);
 
 struct nglFont;
 extern nglFont* nglSysFont;                                  // ngl_font.o
@@ -741,7 +745,8 @@ void nglDebugAddLabel(const math::Position3* Pos, unsigned int Color,
     vsprintf(Work, Label, va);
     va_end(va);
 
-    math::Position3 ScreenPos = nglProjectPoint(*Pos, nglBuildScene);
+    math::Position3 ScreenPos;
+    nglProjectPoint(&ScreenPos, Pos, nglBuildScene);
     float ScreenHeight = (float)nglGetScreenHeight();
     float ScreenWidth = (float)nglGetScreenWidth();
 
@@ -775,7 +780,8 @@ void nglDebugAddLabel(const math::Position3* Pos, unsigned int Color,
     ry /= rl;
     math::Position3 TextPos = ScreenPos;
     TextPos.v = _mm_add_ps(TextPos.v, _mm_mul_ps(_mm_setr_ps(rx, ry, 0.0f, 0.0f), _mm_set1_ps(40.0f)));
-    math::Position3 Unproj = nglUnprojectPoint(TextPos, nglBuildScene);
+    math::Position3 Unproj;
+    nglUnprojectPoint(&Unproj, &TextPos, nglBuildScene);
     nglDebugAddRay(&Unproj, Pos, Color);
 
     unsigned int tw, th;

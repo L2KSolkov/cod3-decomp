@@ -55,12 +55,12 @@ static_assert(sizeof(apsUVARenderer) == 0x90, "apsUVARenderer size mismatch");
 struct apsUVARender {
     static unsigned int* VS;                  // ?VS@apsUVARender@@3PAKA
     static const unsigned int** VShaderTable; // ?VShaderTable@apsUVARender@@3PAPBIA
-    static void RegisterVShader() { nglDxRegisterVShader(VS, VShaderTable[0]); }   // ea: 0x805930
+    static void RegisterVShader() { nglDxRegisterVShader((unsigned int*)VS, VShaderTable[0]); }   // ea: 0x805930
 };
 struct apsUVARenderPixel {
     static unsigned int** PS;                 // ?PS@apsUVARenderPixel@@3PAPAKA
     static const unsigned int** PShaderTable; // ?PShaderTable@apsUVARenderPixel@@3PAPBIA
-    static void RegisterPShader() { nglDxRegisterPShader(PS, PShaderTable[0]); }   // ea: 0x805950
+    static void RegisterPShader() { nglDxRegisterPShader((unsigned int**)PS, PShaderTable[0]); }   // ea: 0x805950
     static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x805970
 };
 #endif // COD3_AEPS_APSUVARENDERER_H

@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // cg_draw.cpp - 2D draw helpers (cg.o cg_draw.cpp)
 // ============================================================================
 
@@ -143,7 +143,7 @@ extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;
 extern float move_back_distance;
 extern int curListener;
 extern void* gSaveGameData;
-extern void* g_femanager;
+struct FEManager; extern FEManager g_femanager;
 extern void* nglBuildScene_RenderTarget;
 extern void* SoundDevice_sInst;
 extern void* gCurrentCamera;
@@ -1391,7 +1391,7 @@ void CG_DrawCrosshair(float transScaleArg)
                     }
                     else
                     {
-                        void* IGO = *(void**)((char*)g_femanager + 0x14);
+                        void* IGO = *(void**)((char*)&g_femanager + 0x14);
                         if (IGO == nullptr)
                             goto label_18;
                         void* widget =
@@ -1436,12 +1436,12 @@ void CG_Draw2D(float a2)
     int v2 = currCl;
     int port = dword_F6A28C[802 * currCl];
     if (port == 0 && *(unsigned char*)((char*)gSaveGameData + 0x3A)
-        && !*(bool*)((char*)g_femanager + 0x3C))
+        && !*(bool*)((char*)&g_femanager + 0x3C))
     {
-        FEManager_InGameMenusActive(g_femanager, currCl);
+        FEManager_InGameMenusActive(&g_femanager, currCl);
         v2 = currCl;
     }
-    if (!FEManager_InGameMenusActive(g_femanager, v2))
+    if (!FEManager_InGameMenusActive(&g_femanager, v2))
     {
         CG_ScreenFade();
         CG_DrawFlashDamage();
@@ -1466,8 +1466,8 @@ void CG_Draw2D(float a2)
                     CG_DrawCrosshair(a2);
                     if (dword_F6A28C[802 * currCl] == 0
                         && *(unsigned char*)((char*)gSaveGameData + 0x3A)
-                        && !*(bool*)((char*)g_femanager + 0x3C)
-                        && !FEManager_InGameMenusActive(g_femanager, currCl))
+                        && !*(bool*)((char*)&g_femanager + 0x3C)
+                        && !FEManager_InGameMenusActive(&g_femanager, currCl))
                     {
                         CG_DrawFriendlyFire();
                     }
@@ -1488,14 +1488,14 @@ void CG_Draw2D(float a2)
                     CG_DrawCrosshair(a2);
                     if (dword_F6A28C[802 * currCl] == 0
                         && *(unsigned char*)((char*)gSaveGameData + 0x3A)
-                        && !*(bool*)((char*)g_femanager + 0x3C)
-                        && !FEManager_InGameMenusActive(g_femanager, currCl))
+                        && !*(bool*)((char*)&g_femanager + 0x3C)
+                        && !FEManager_InGameMenusActive(&g_femanager, currCl))
                     {
                         CG_DrawFriendlyFire();
                     }
                 }
             }
-            if (!FEManager_InGameMenusActive(g_femanager, currCl))
+            if (!FEManager_InGameMenusActive(&g_femanager, currCl))
                 CheckAndRunOverHeatBlur();
         }
         CG_DrawPerformanceWarnings();
@@ -1510,7 +1510,7 @@ void CG_Draw2D(float a2)
         dword_F64158[1580 * currCl] = 1065353216;
         if (*(float*)&v9 < 1.0f)
             gStillDrawMenus = true;
-        FEManager_DrawIGO(g_femanager, currCl);
+        FEManager_DrawIGO(&g_femanager, currCl);
         if (*(float*)&v9 < 1.0f)
             gStillDrawMenus = false;
         dword_F64158[1580 * currCl] = v9;
@@ -1526,7 +1526,7 @@ void CG_Draw2D(float a2)
     dword_F64158[1580 * currCl] = 1065353216;
     if (*(float*)&v5 < 1.0f)
         gStillDrawMenus = true;
-    FEManager_DrawIGO(g_femanager, currCl);
+    FEManager_DrawIGO(&g_femanager, currCl);
     if (*(float*)&v5 < 1.0f)
         gStillDrawMenus = false;
     dword_F64158[1580 * currCl] = v5;

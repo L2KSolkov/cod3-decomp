@@ -82,11 +82,11 @@ void ToggleCDSimpleUVAnimShader() {
 // ============================================================================
 void cdSimpleUVAnimShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdSimpleUVAnimRender::VS, cdSimpleUVAnimRender::VShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdSimpleUVAnimRender::VS, cdSimpleUVAnimRender::VShaderTable[0]);
     cdSimpleUVAnimRender::Shader = cdSimpleUVAnimRender::VS[0];
-    nglDxRegisterPShader(cdSimpleUVAnimPixel::PS, cdSimpleUVAnimPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdSimpleUVAnimPixel::PS, cdSimpleUVAnimPixel::PShaderTable[0]);
     cdSimpleUVAnimPixel::Shader = cdSimpleUVAnimPixel::PS[0];
-    nglDxRegisterPShader(cdSimpleUVAnimFullbrightPixel::PS, cdSimpleUVAnimFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdSimpleUVAnimFullbrightPixel::PS, cdSimpleUVAnimFullbrightPixel::PShaderTable[0]);
     cdSimpleUVAnimFullbrightPixel::Shader = cdSimpleUVAnimFullbrightPixel::PS[0];
 }
 

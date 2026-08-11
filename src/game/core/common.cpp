@@ -114,7 +114,7 @@ extern void AudioBankMgr_Update(void* self);
 extern void* AudioBankMgr_sInst;
 extern void codNflUpdate();
 extern void SyncFrameBuffers();
-extern void* g_femanager;
+struct FEManager; extern FEManager g_femanager;
 extern int gUseNfl;
 extern int g_enableControllerTest;
 extern int g_controllerConnected[];
@@ -1740,20 +1740,20 @@ char Com_ControllerTest(int port)
     int v1 = LocalClient_ClientToPort(port);
     if (!g_controllerConnected[port])
     {
-        if (g_femanager != nullptr
-            && *(void**)((char*)g_femanager + 0x18) != nullptr)  // ControllerDisconnected
+        if (&g_femanager != nullptr
+            && *(void**)((char*)&g_femanager + 0x18) != nullptr)  // ControllerDisconnected
         {
             if (!g_controllerConnectedErrorShown[port])
             {
                 SoundDevice_PauseAllSounds(SoundDevice_sInst);
                 g_controllerConnectedGamePaused[port] =
                     v1 == 0 && GamePause_IsGamePaused(0);
-                if (*(bool*)((char*)g_femanager + 0x36))  // inGame
+                if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
                 {
-                    void* IGMS = FEManager_GetIGMS(g_femanager, currCl);
+                    void* IGMS = FEManager_GetIGMS(&g_femanager, currCl);
                     if (IGMS != nullptr && !InGameMenuSystem_IsSystemActive(IGMS))
                     {
-                        void* v3 = FEManager_GetIGMS(g_femanager, v1);
+                        void* v3 = FEManager_GetIGMS(&g_femanager, v1);
                         InGameMenuSystem_ActivatePauseMenu(v3);
                     }
                 }
@@ -1762,7 +1762,7 @@ char Com_ControllerTest(int port)
                     GamePause_SetGamePaused(0, true);
                 }
                 g_controllerConnectedErrorShown[port] = true;
-                FEManager_DrawControllerError(g_femanager);
+                FEManager_DrawControllerError(&g_femanager);
             }
             MemoryUnitManager_Service();
             SoundDevice_FrameAdvance(SoundDevice_sInst, 0.0f);
@@ -1814,7 +1814,7 @@ bool Com_ControllerTest()
             Com_ControllerTest(*(int*)controller::inst());  // locked_port
             return true;
         }
-        if (!*(bool*)((char*)g_femanager + 0x36))  // !inGame
+        if (!*(bool*)((char*)&g_femanager + 0x36))  // !inGame
         {
             if (Com_AnyControllerConnected())
             {
@@ -1827,11 +1827,11 @@ bool Com_ControllerTest()
                     SyncFrameBuffers();
                 }
             }
-            else if (g_femanager != nullptr
-                     && *(void**)((char*)g_femanager + 0x18) != nullptr)
+            else if (&g_femanager != nullptr
+                     && *(void**)((char*)&g_femanager + 0x18) != nullptr)
             {
                 g_controllerConnectedErrorShown[0] = true;
-                FEManager_DrawControllerError(g_femanager);
+                FEManager_DrawControllerError(&g_femanager);
                 return true;
             }
         }
@@ -1852,13 +1852,13 @@ void Com_ControllerWarningDialog(bool activate, int client)
         char newString[512];
         sprintf(newString, "%s %d %s", STBString,
                 *(int*)controller::inst() + 1, v3);
-        void* DMS = FEManager_GetDMS(g_femanager, client);
+        void* DMS = FEManager_GetDMS(&g_femanager, client);
         DialogMenuSystem_BringUp(DMS, newString, false, false, "", true);
         DialogMenuSystem_CloseDialog(DMS);
     }
     else
     {
-        void* v11 = FEManager_GetDMS(g_femanager, client);
+        void* v11 = FEManager_GetDMS(&g_femanager, client);
         DialogMenuSystem_CloseDialog(v11);
     }
 }
@@ -1878,7 +1878,7 @@ void Com_CheckControllerUnplugged(bool signedIn, int client)
             if (!signedIn)
             {
                 gControllerWarningDialogIsActive[0] = false;
-                void* DMS = FEManager_GetDMS(g_femanager, 0);
+                void* DMS = FEManager_GetDMS(&g_femanager, 0);
                 DialogMenuSystem_CloseDialog(DMS);
             }
         }
@@ -1887,9 +1887,9 @@ void Com_CheckControllerUnplugged(bool signedIn, int client)
              && !g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)])
     {
         g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)] = true;
-        if (*(bool*)((char*)g_femanager + 0x36))  // inGame
+        if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
         {
-            void* IGMS = FEManager_GetIGMS(g_femanager, client);
+            void* IGMS = FEManager_GetIGMS(&g_femanager, client);
             InGameMenuSystem_ActivatePauseMenu(IGMS);
         }
         else
@@ -2080,7 +2080,7 @@ cvar_t* Com_Frame()
     update_trigger_notifies();
     subtitle_manager_frame_advance(v7);
     SV_Frame(v7);
-    if (*(bool*)((char*)g_femanager + 0x36))  // inGame
+    if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
         InspectorManager_Update(g_inspectorManager);
     Com_EventLoop();
     if (!gUseControllerLagFix)
@@ -2220,9 +2220,9 @@ void Com_Init(char* commandLine)
     TimerRenderBars_Init(TimerRenderBars_sInst);
     EntityHandleDb_Init(EntityHandleDb_sInst);
     StatusBar_Init(nullptr);
-    FEManager_InitDialogMenuSystem(g_femanager);
-    FEManager_LoadInGameMenus(g_femanager);
-    FEManager_InitIGO(g_femanager);
+    FEManager_InitDialogMenuSystem(&g_femanager);
+    FEManager_LoadInGameMenus(&g_femanager);
+    FEManager_InitIGO(&g_femanager);
     DebugRender_AddRenderer(DebugRender_sInst, (void*)DebugDumpAnims);
     DebugRender_AddRenderer(DebugRender_sInst, (void*)rb_vehicle_debug_render_all);
     DebugRender_AddRenderer(DebugRender_sInst, (void*)physics_debug_render);

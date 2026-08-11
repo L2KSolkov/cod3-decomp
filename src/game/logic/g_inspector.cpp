@@ -789,11 +789,11 @@ void InspectorManager::AddPhysicsMenus()
 // ============================================================================
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // ?Cvar_Get@@YAPAUcvar_t@@PBD0H@Z
-extern void ToggleRenderGeom();      // ?ToggleRenderGeom@@YAXXZ (game.o)
-extern void ToggleGraph();           // ?ToggleGraph@@YAXXZ (game.o)
-extern void ToggleRenderPerf();      // ?ToggleRenderPerf@@YAXXZ (game.o)
-extern void ZoomIn();                // ?ZoomIn@@YAXXZ (game.o)
-extern void ZoomOut();               // ?ZoomOut@@YAXXZ (game.o)
+extern void* ToggleRenderGeom();     // ?ToggleRenderGeom@@YAPAXXZ (game.o)
+extern void* ToggleGraph();          // ?ToggleGraph@@YAPAXXZ (game.o)
+extern void* ToggleRenderPerf();     // ?ToggleRenderPerf@@YAPAXXZ (game.o)
+extern void* ZoomIn();               // ?ZoomIn@@YAPAXXZ (game.o)
+extern void* ZoomOut();              // ?ZoomOut@@YAPAXXZ (game.o)
 extern void FN_SelectGodMode();      // game2.o
 extern void FN_NoClip();             // game2.o
 extern void FN_PakRender();          // game2.o
@@ -817,9 +817,9 @@ extern void FN_PainShellshockTestFunction();
 extern void FN_DeathShellshockTestFunction();
 extern void FN_CurgenMotionBlur();
 extern void FN_Multiplayer_MapRestart();  // game2.o
-extern void FN_Multiplayer_Rank1();
-extern void FN_Multiplayer_Rank2();
-extern void FN_Multiplayer_Rank3();
+extern Entity* FN_Multiplayer_Rank1();
+extern Entity* FN_Multiplayer_Rank2();
+extern Client* FN_Multiplayer_Rank3();
 extern Entity* FN_DebugThread_Select_Player();  // game2.o
 extern EntityManager* FN_DebugThread_Select_Level();
 extern void FN_DebugThread_Select_Nearest();    // game2.o

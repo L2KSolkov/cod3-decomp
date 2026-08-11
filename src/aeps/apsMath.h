@@ -207,8 +207,9 @@ inline math::Dir3 operator-(const math::Dir3& a, float b) {
 } // namespace math
 
 // render.o (non-inline): sphere-vs-frustum test, 6 clip planes. Unresolved here.
-bool nglIsSphereVisible(const math::Position3& Center, float Radius,
-                        const math::Vector4* Clip);
+struct nglFrustum;
+bool nglIsSphereVisible(const nglFrustum* Frustum, const math::Vector4* Center,
+                        float Radius);
 
 inline math::Dir3 apsVector3_Zero() {
     math::Dir3 result;

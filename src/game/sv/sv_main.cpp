@@ -115,7 +115,7 @@ extern const PakInfoNode* sLoadingScreenInfo;
 extern int  unk_F6A290;
 extern bool gReturnToMenu;
 extern int  sv_restartedServerId;
-extern const char defaultFileName[];
+extern const char* const defaultFileName;
 extern int  MPUIInterface_BlockUntilNetReady(void);
 extern int  g_controllerConnectedErrorShown[];
 

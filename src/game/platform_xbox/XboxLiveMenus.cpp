@@ -87,7 +87,7 @@ extern void tlPrintf(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern void Cvar_SetValue(const char* var_name, float value);
-extern char defaultFileName[];
+extern const char* const defaultFileName;
 extern bool gSkipFrontEnd;
 extern bool gSkipMovies;
 extern void D3DDevice_SetVertexShader(unsigned int Handle);
@@ -99,11 +99,12 @@ extern void D3DDevice_SetVertexShaderConstant1Fast(int Register,
                                                    void* pConstantData);
 extern void D3DDevice_SetShaderConstantMode(int Mode);
 extern void nglDxUnbindTexStages();
-extern void nglDxCheckErrorD3D(unsigned int dwErrCode, const char* a2, int a3);
+extern int nglDxCheckErrorD3D(int dwErrCode, const char* a2,
+                              unsigned int a3);
 struct nglDxRenderState {
     static void Init(void* self);
 };
-extern unsigned char nglDxState[0x10];
+extern nglDxRenderState nglDxState;
 extern void nglDxInitShaders(bool RegisterShaders);
 
 struct LocalClient {

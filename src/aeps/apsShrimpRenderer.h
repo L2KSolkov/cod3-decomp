@@ -127,14 +127,14 @@ struct apsShrimpRender {
     static unsigned int* VS;                  // ?VS@apsShrimpRender@@3PAKA
     static const unsigned int** VShaderTable; // ?VShaderTable@apsShrimpRender@@3PAPBIA
 
-    static void RegisterVShader() { nglDxRegisterVShader(VS, VShaderTable[0]); }   // ea: 0x804470
+    static void RegisterVShader() { nglDxRegisterVShader((unsigned int*)VS, VShaderTable[0]); }   // ea: 0x804470
 };
 
 struct apsShrimpRenderPixel {
     static unsigned int** PS;                 // ?PS@apsShrimpRenderPixel@@3PAPAKA
     static const unsigned int** PShaderTable; // ?PShaderTable@apsShrimpRenderPixel@@3PAPBIA
 
-    static void RegisterPShader() { nglDxRegisterPShader(PS, PShaderTable[0]); }   // ea: 0x804490
+    static void RegisterPShader() { nglDxRegisterPShader((unsigned int**)PS, PShaderTable[0]); }   // ea: 0x804490
     static void InitPShader() { nglDxInitPShader(PShaderTable[0]); }              // ea: 0x8044B0
 };
 

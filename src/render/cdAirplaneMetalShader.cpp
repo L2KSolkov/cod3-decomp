@@ -45,9 +45,9 @@ void ToggleCDAirplaneMetalShader() {
 // ============================================================================
 void cdAirplaneMetalShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdAirplaneMetalRender::VS, cdAirplaneMetalRender::VShaderTable[0]);
-    nglDxRegisterPShader(cdAirplaneMetalPixel::PS, cdAirplaneMetalPixel::PShaderTable[0]);
-    nglDxRegisterPShader(cdAirplaneMetalSolidColorPixel::PS, cdAirplaneMetalSolidColorPixel::PShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdAirplaneMetalRender::VS, cdAirplaneMetalRender::VShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdAirplaneMetalPixel::PS, cdAirplaneMetalPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdAirplaneMetalSolidColorPixel::PS, cdAirplaneMetalSolidColorPixel::PShaderTable[0]);
 }
 
 // ============================================================================

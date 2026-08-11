@@ -82,9 +82,9 @@ void ToggleCDDecalShader() {
 // ============================================================================
 void cdDecalShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader(cdDecalRender::VS, cdDecalRender::VShaderTable[0]);
-    nglDxRegisterPShader(cdDecalPixel::PS, cdDecalPixel::PShaderTable[0]);
-    nglDxRegisterPShader(cdDecalFullbrightPixel::PS, cdDecalFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterVShader((unsigned int*)cdDecalRender::VS, cdDecalRender::VShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdDecalPixel::PS, cdDecalPixel::PShaderTable[0]);
+    nglDxRegisterPShader((unsigned int**)cdDecalFullbrightPixel::PS, cdDecalFullbrightPixel::PShaderTable[0]);
 }
 
 // ============================================================================

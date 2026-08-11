@@ -10,6 +10,8 @@
 //     unresolved until those objects are ported (/FORCE:UNRESOLVED).
 //   - Statics and globals owned by apsGroup.o are defined here.
 // ============================================================================
+
+struct nglFrustum;
 #include "apsGroup.h"
 #include "apsMath.h"
 #include "apsCommon.h"
@@ -521,7 +523,8 @@ void apsGroup::TestVisibility() {
             dist /= viewPort->mProjectionX;
         if (dist < 0.0f)
             dist = 0.0f;
-        if (nglIsSphereVisible(center, smallDist, viewPort->mClipPlanes)) {
+        if (nglIsSphereVisible((const nglFrustum*)viewPort->mClipPlanes,
+                               (const math::Vector4*)&center, smallDist)) {
             mFlags = mFlags | 8;
             if (dist < FLT_MAX) {
                 mBoundSphereDistanceFromCamera = dist;
