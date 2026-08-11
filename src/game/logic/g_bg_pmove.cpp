@@ -177,6 +177,23 @@ void PM_AddTouchEnt(DbLinkedHandle<EntityHandleDb, Entity> entity)
 }
 
 // ============================================================================
+// PM_SwitchIfEmpty - ea: 0x6085D0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006085D0
+void PM_SwitchIfEmpty()
+{
+    if (BG_GetInfoForWeapon(pm->ps->weapon)->bClipOnly != 0
+        && ((weaponFileInfo_t*)pml.pWeap)->weapClass != WEAPCLASS_SPOTTER
+        && pm->ps->ammoclip[BG_GetInfoForWeapon(pm->ps->weapon)->iClipIndex]
+               == 0
+        && pm->ps->ammo[BG_GetInfoForWeapon(pm->ps->weapon)->iAmmoIndex]
+               == 0)
+    {
+        PM_AddEvent(174);
+    }
+}
+
+// ============================================================================
 // PM_UpdateHoldBreath - ea: 0x631260 (bg_pmove.cpp)
 // ============================================================================
 // ea: 0x00631260
