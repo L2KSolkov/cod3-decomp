@@ -35,7 +35,7 @@ void MSG_BeginReading(msg_t* msg)
 }
 
 // ea: 0x0060F2B0
-void MSG_WriteFlag(msg_t* msg, unsigned char value)
+void MSG_WriteFlag(msg_t* msg, int value)
 {
     msg->data[msg->cursize++] = value;
 }
@@ -50,7 +50,7 @@ int MSG_ReadFlag(msg_t* msg)
 }
 
 // ea: 0x0060F2F0
-void MSG_WriteChar(msg_t* msg, unsigned char c)
+void MSG_WriteChar(msg_t* msg, int c)
 {
     msg->data[msg->cursize++] = c;
 }
@@ -62,14 +62,14 @@ void MSG_WriteByte(msg_t* msg, unsigned char c)
 }
 
 // ea: 0x0060F330
-void MSG_WriteData(msg_t* msg, const void* data, unsigned int length)
+void MSG_WriteData(msg_t* msg, const void* data, int length)
 {
     memcpy(&msg->data[msg->cursize], data, length);
     msg->cursize += (int)length;
 }
 
 // ea: 0x0060F370
-void MSG_WriteShort(msg_t* msg, short c)
+void MSG_WriteShort(msg_t* msg, int c)
 {
     msg->data[msg->cursize] = (unsigned char)c;
     int v3 = msg->cursize + 1;
@@ -113,7 +113,7 @@ void MSG_WriteFloat(msg_t* msg, float f)
 }
 
 // ea: 0x0060F450
-unsigned char MSG_ReadChar(msg_t* msg)
+char MSG_ReadChar(msg_t* msg)
 {
     int readcount = msg->readcount;
     unsigned char result = msg->data[readcount];
