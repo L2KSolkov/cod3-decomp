@@ -8,6 +8,9 @@ level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 SaveGameData* gSaveGameData;   // ?gSaveGameData@@3PAUSaveGameData@@A @ 0xF312F0
 cvar_t* g_gameskill;           // ?g_gameskill@@3PAUcvar_t@@A (g.o)
 cgGlobal_t cgGlobal;           // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
+game_hudelem_s g_hudelems[16];  // ?g_hudelems@@3PAUgame_hudelem_s@@A @ 0xEA5580
+scr_data_t g_scr_data;          // ?g_scr_data@@3Uscr_data_t@@A @ 0xEE58D0
+int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
 ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;
