@@ -160,14 +160,12 @@ extern void PM_CheckLadderMove();                 // game.o 0x63DDF0
 extern void PM_FoliageSounds();                   // game.o 0x63D100
 extern void PM_WaterEvents();                     // game.o 0x606280
 extern void PM_DropTimers();                      // game.o 0x606320
-extern void PM_UpdateViewAngles(PlayerState* ps, usercmd_s* cmd,
-                                usercmd_s* oldcmd, int msec,
-                                void (*capsuleTrace)(trace_t*,
-                                                     const math::Position3&,
-                                                     const math::Position3&,
-                                                     const math::Position3&,
-                                                     const math::Position3&,
-                                                     const collision_context_t&));
+void PM_UpdateViewAngles(
+    PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd, int msec,
+    void (__cdecl* capsuleTrace)(trace_t*, const math::Position3&,
+                                 const math::Position3&, const math::Position3&,
+                                 const math::Position3&,
+                                 const collision_context_t&));
     // game.o 0x63D2B0
 extern int  PM_InteruptWeaponWithProneMove();     // game.o 0x6171B0
 extern int  PM_InteruptWeaponWithSprintMove();    // game.o 0x617250
@@ -4641,6 +4639,11 @@ extern float AngleNormalize180Accurate(float angle);  // core.o 0x4BFD90
 extern float vectopitch(const float* vec);            // core.o q_math.cpp
 extern float AngleNormalize360Accurate(float angle);  // core.o 0x4BFD90
 extern float AngleDelta(float angle1, float angle2);  // core.o q_math.cpp
+extern vmCvar_t bg_prone_yawcap;   // ?bg_prone_yawcap@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_lmg_yawcap;     // ?bg_lmg_yawcap@@3UvmCvar_t@@A (game.o)
+extern vmCvar_t bg_ladder_yawcap;  // ?bg_ladder_yawcap@@3UvmCvar_t@@A (game.o)
+extern void PM_UpdateStickyAim(PlayerState* ps, usercmd_s* cmd,
+                               usercmd_s* oldcmd);  // game.o 0x62E070
 
 // ea: 0x00615200
 int BG_CheckProneTurned(
@@ -4650,11 +4653,9 @@ int BG_CheckProneTurned(
                        const math::Position3*, const collision_context_t&))
 {
     float v4 = AngleDelta(a3, ps->viewangles[1]);
-    float v12 = v4;
     float v11 = fabs(v4) * 0.0041666669f;
     float v10 = 1.0f - v11;
-    AngleNormalize360Accurate(a3 - ((1.0f - v11) * v12));
-    v12 = v11;
+    float v12 = AngleNormalize360Accurate(a3 - (v10 * v4));
     unsigned int mVal = ps->mGroundEntity.mHandle.mVal;
     math::Dir3 v8;
     v8.v.m128_f32[0] = 0.0f;
@@ -4663,7 +4664,7 @@ int BG_CheckProneTurned(
     v8.v.m128_f32[3] = 0.0f;
     float v6 = ps->maxs[0];
     return BG_CheckProneValid(
-        ps->mClient, &ps->origin, v6, 30.0f, v11, &ps->fTorsoHeight,
+        ps->mClient, &ps->origin, v6, 30.0f, v12, &ps->fTorsoHeight,
         &ps->fTorsoPitch, &ps->fWaistPitch, 1, mVal != 0, &v8, a4,
         nullptr, nullptr, PCT_CLIENT,
         ((1.0f - v11) * 60.0f) + (v11 * 45.0f));
@@ -8026,4 +8027,354 @@ void BG_SetupWeaponInfo()
     BG_SetupWeaponAlts();
     BG_SetupUseHintStrings();
     Com_DPrintf("----------------------\n");
+}
+
+// ============================================================================
+// PM_UpdateViewAngles - ea: 0x63D2B0 (bg_pmove.cpp)
+// ============================================================================
+static const float s_colorWhite[4] = { 1.0f, 1.0f, 1.0f, 1.0f };  // colorWhite
+
+// ea: 0x0063D2B0
+void PM_UpdateViewAngles(
+    PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd, int msec,
+    void (__cdecl* capsuleTrace)(trace_t*, const math::Position3&,
+                                 const math::Position3&, const math::Position3&,
+                                 const math::Position3&,
+                                 const collision_context_t&))
+{
+    math::Dir3 groundNormal;
+    groundNormal.v = _mm_setr_ps(0.0f, 0.0f, 0.7f, 0.0f);
+    typedef void (__cdecl* ProneTracePtr)(
+        trace_t*, const math::Position3*, const math::Position3*,
+        const math::Position3*, const math::Position3*,
+        const collision_context_t&);
+    ProneTracePtr proneTrace = (ProneTracePtr)capsuleTrace;
+    if (ps->pm_type == 4)
+        return;
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    int eFlags = player->s.eFlags;
+    if (((eFlags & 0x100000) == 0 || IsPlayerFullySeatedInVehicle(player))
+        && (pml.pWeap == nullptr
+            || ((weaponFileInfo_t*)pml.pWeap)->type != 7))
+    {
+        int pm_type = ps->pm_type;
+        if (pm_type != 5)
+        {
+            if (pm_type >= 6)
+            {
+                PM_UpdateLean(
+                    ps, cmd,
+                    (void (__cdecl*)(trace_t*, const math::Position3*,
+                                     const math::Position3*,
+                                     const math::Position3*,
+                                     const math::Position3*,
+                                     const collision_context_t*))capsuleTrace);
+                return;
+            }
+            int v10 = (int16_t)((int16_t)ps->delta_angles[0]
+                                + (int16_t)cmd->angles[0]);
+            float oldYaw = ps->viewangles[1];
+            if (v10 > 14500)
+            {
+                ps->delta_angles[0] = 14500 - cmd->angles[0];
+                v10 = 14500;
+            }
+            else if (v10 < -14500)
+            {
+                ps->delta_angles[0] = -14500 - cmd->angles[0];
+                v10 = -14500;
+            }
+            ps->viewangles[0] = (float)v10 * 0.0054931641f;
+            ps->viewangles[1] =
+                (float)(int16_t)((int16_t)ps->delta_angles[1]
+                                 + (int16_t)cmd->angles[1])
+                * 0.0054931641f;
+            ps->viewangles[2] =
+                (float)(int16_t)((int16_t)ps->delta_angles[2]
+                                 + (int16_t)cmd->angles[2])
+                * 0.0054931641f;
+            float oldYaw2 = ps->viewangles[1];
+
+            if ((0x100000 & ps->eFlags) != 0)
+            {
+                if (pm != nullptr
+                    && (pm->vehicleViewClamp[0] != 0.0f
+                        || pm->vehicleViewClamp[1] != 0.0f
+                        || pm->vehicleViewClamp[2] != 0.0f))
+                {
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        if (fabsf(pm->vehicleViewClamp[i]) >= 1.0f)
+                        {
+                            float fLadderFacing =
+                                AngleDelta(pm->vehicleAngles[i],
+                                           ps->viewangles[i]);
+                            if (fabsf(fLadderFacing)
+                                > fabsf(pm->vehicleViewClamp[i]))
+                            {
+                                float v16 =
+                                    fLadderFacing <= pm->vehicleViewClamp[i]
+                                        ? pm->vehicleViewClamp[i]
+                                              + fLadderFacing
+                                        : fLadderFacing
+                                              - pm->vehicleViewClamp[i];
+                                ps->delta_angles[i] +=
+                                    (int)(v16 * 182.04445f) & 0xFFFF;
+                                float v18 =
+                                    v16 <= 0.0f
+                                        ? pm->vehicleAngles[i]
+                                              + pm->vehicleViewClamp[i]
+                                        : pm->vehicleAngles[i]
+                                              - pm->vehicleViewClamp[i];
+                                ps->viewangles[i] =
+                                    AngleNormalize360Accurate(v18);
+                            }
+                        }
+                    }
+                }
+            }
+            else if ((ps->pm_flags & 0x10) != 0
+                     && ps->mGroundEntity.mHandle.mVal == 0
+                     && bg_ladder_yawcap.integer != 0)
+            {
+                float ladderYaw = vectoyaw(ps->vLadderVec) + 180.0f;
+                float fLadderFacing =
+                    AngleDelta(ladderYaw, ps->viewangles[1]);
+                float cap = (float)bg_ladder_yawcap.integer;
+                if (fLadderFacing > cap || -cap > fLadderFacing)
+                {
+                    float v23 = fLadderFacing <= cap
+                                    ? cap + fLadderFacing
+                                    : fLadderFacing - cap;
+                    ps->delta_angles[1] +=
+                        (int)(v23 * 182.04445f) & 0xFFFF;
+                    ps->viewangles[1] = AngleNormalize360Accurate(
+                        v23 <= 0.0f ? ladderYaw - cap : ladderYaw + cap);
+                }
+            }
+
+            if ((dword_106000 & ps->eFlags) == 0)
+            {
+                int pm_flags = ps->pm_flags;
+                if ((pm_flags & 1) != 0
+                    || (pm_flags & 0x20) != 0
+                        && BG_GetInfoForWeapon(ps->weapon)->weapClass
+                               == WEAPCLASS_LMG)
+                {
+                    float fLadderFacing =
+                        AngleDelta(ps->proneDirection, ps->viewangles[1]);
+                    int weapon = ps->weapon;
+                    float yawcap = (float)bg_prone_yawcap.integer;
+                    if (BG_GetInfoForWeapon(weapon)->weapClass
+                        == WEAPCLASS_LMG)
+                    {
+                        yawcap = (float)bg_lmg_yawcap.integer;
+                    }
+                    int bProneBlocked = 0;
+                    if (g_debugProneCheck.integer != 0)
+                    {
+                        float vForward[3];
+                        vForward[0] = ps->origin.v.m128_f32[0];
+                        vForward[1] = ps->origin.v.m128_f32[1];
+                        vForward[2] =
+                            (float)ps->proneViewHeight
+                            + ps->origin.v.m128_f32[2];
+                        float vEnd[3];
+                        AnglesToForward(ps->viewangles, vEnd);
+                        float end2[3];
+                        end2[0] = vEnd[0] * 18.0f + vForward[0];
+                        end2[1] = vEnd[1] * 18.0f + vForward[1];
+                        end2[2] = vEnd[2] * 18.0f + vForward[2];
+                        G_DebugLine(vForward, end2, s_colorWhite, 1, 1);
+                        G_DebugArc(vForward, 16.0f,
+                                   ps->proneDirection
+                                       - bg_prone_yawcap.value,
+                                   ps->proneDirection
+                                       + bg_prone_yawcap.value,
+                                   s_colorWhite, 1, 1);
+                    }
+                    if ((ps->pm_flags & 1) != 0
+                        && (BG_GetInfoForWeapon(ps->weapon)->weapClass
+                                != WEAPCLASS_LMG
+                            || (ps->pm_flags & 0x20) == 0)
+                        && (fLadderFacing > (yawcap - 5.0f)
+                            || (0.0f - (yawcap - 5.0f)) > fLadderFacing
+                            || (cmd->forwardmove != 0 || cmd->rightmove != 0)
+                                && fLadderFacing != 0.0f))
+                    {
+                        float v27 = (float)msec * 0.001f * 55.0f;
+                        float yaw_cap;
+                        if (v27 <= fabsf(fLadderFacing))
+                            yaw_cap = fLadderFacing <= 0.0f
+                                          ? ps->proneDirection + v27
+                                          : ps->proneDirection - v27;
+                        else
+                            yaw_cap = ps->viewangles[1];
+                        int bRetry = 1;
+                        if (BG_CheckProneTurned(ps, 0, yaw_cap, proneTrace))
+                        {
+                            goto LABEL_71;
+                        }
+                        while (bRetry)
+                        {
+                            fLadderFacing =
+                                AngleDelta(ps->proneDirection, yaw_cap);
+                            float v32;
+                            if (fabsf(fLadderFacing) <= 1.0f)
+                            {
+                                bRetry = 0;
+                                bProneBlocked = 1;
+                                v32 = fLadderFacing;
+                            }
+                            else
+                            {
+                                bRetry = 1;
+                                v32 = fLadderFacing <= 0.0f ? -1.0f : 1.0f;
+                            }
+                            yaw_cap =
+                                AngleNormalize360Accurate(yaw_cap + v32);
+                            if (BG_CheckProneTurned(ps, 0, yaw_cap,
+                                                    proneTrace))
+                            {
+                                goto LABEL_71;
+                            }
+                        }
+                        goto LABEL_72;
+LABEL_71:
+                        if (BG_CheckProneValid(
+                                ps->mClient, &ps->origin, ps->maxs[0],
+                                30.0f, ps->viewangles[1], nullptr, nullptr,
+                                nullptr, 1,
+                                ps->mGroundEntity.mHandle.mVal != 0,
+                                &groundNormal, proneTrace, nullptr,
+                                nullptr, PCT_CLIENT, 45.0f) != 0
+                            && BG_CheckProneValid(
+                                   ps->mClient, &ps->origin, ps->maxs[0],
+                                   30.0f, yaw_cap, nullptr, nullptr,
+                                   nullptr, 1,
+                                   ps->mGroundEntity.mHandle.mVal != 0,
+                                   &groundNormal, proneTrace, nullptr,
+                                   nullptr, PCT_CLIENT, 45.0f) != 0)
+                        {
+                            ps->proneDirection = yaw_cap;
+                        }
+                        else
+                        {
+                            bProneBlocked = 1;
+                        }
+LABEL_72:
+                        ;
+                    }
+                    fLadderFacing =
+                        AngleDelta(ps->proneDirection, ps->viewangles[1]);
+                    if (fLadderFacing != 0.0f && (ps->pm_flags & 1) != 0
+                        && BG_GetInfoForWeapon(ps->weapon)->weapClass
+                               != WEAPCLASS_LMG)
+                    {
+                        float yaw_cap = ps->proneDirection;
+                        int bRetry = 1;
+                        while (1)
+                        {
+                            int v38 = BG_CheckProneValid(
+                                ps->mClient, &ps->origin, ps->maxs[0],
+                                30.0f, yaw_cap, nullptr, nullptr, nullptr,
+                                1, ps->mGroundEntity.mHandle.mVal != 0,
+                                &groundNormal, proneTrace, nullptr,
+                                nullptr, PCT_CLIENT, 45.0f);
+                            if (v38 != 0
+                                && BG_CheckProneTurned(ps, 0, yaw_cap,
+                                                       proneTrace))
+                            {
+                                ps->proneDirection = yaw_cap;
+                                goto LABEL_92;
+                            }
+                            if (bRetry == 0)
+                                goto LABEL_92;
+                            float v39;
+                            if (fabsf(fLadderFacing) <= 1.0f)
+                            {
+                                bRetry = 0;
+                                v39 = fLadderFacing;
+                            }
+                            else
+                            {
+                                bRetry = 1;
+                                v39 = fLadderFacing <= 0.0f ? -1.0f : 1.0f;
+                            }
+                            ps->delta_angles[1] +=
+                                (int)(v39 * 182.04445f) & 0xFFFF;
+                            ps->viewangles[1] = AngleNormalize360Accurate(
+                                ps->viewangles[1] + v39);
+                            fLadderFacing = AngleDelta(
+                                ps->proneDirection, ps->viewangles[1]);
+                            bProneBlocked = 1;
+                            if (v38 == 0)
+                            {
+                                yaw_cap = AngleNormalize360Accurate(
+                                    yaw_cap + fLadderFacing);
+                            }
+                        }
+                    }
+LABEL_92:
+                    if (bProneBlocked != 0)
+                        player->client->mProneBlockedTime = level.time;
+                    if (fLadderFacing > yawcap || -yawcap > fLadderFacing)
+                    {
+                        float v44 = fLadderFacing <= yawcap
+                                        ? yawcap + fLadderFacing
+                                        : fLadderFacing - yawcap;
+                        ps->delta_angles[1] +=
+                            (int)(v44 * 182.04445f) & 0xFFFF;
+                        ps->viewangles[1] = AngleNormalize360Accurate(
+                            v44 <= 0.0f
+                                ? ps->proneDirection + yawcap
+                                : ps->proneDirection - yawcap);
+                    }
+                    if (bProneBlocked != 0)
+                    {
+                        ps->pm_flags |= 0x8000;
+                        float v48 = AngleDelta(oldYaw, ps->viewangles[1]);
+                        if (fabsf(v48) <= 1.0f)
+                        {
+                            float v49 =
+                                AngleDelta(oldYaw2, ps->viewangles[1]);
+                            if (v49 * v48 > 0.0f)
+                            {
+                                float v50 = v48 * 0.98000002f;
+                                ps->viewangles[1] =
+                                    AngleNormalize360Accurate(
+                                        ps->viewangles[1] + v50);
+                                ps->delta_angles[1] +=
+                                    (int)(v50 * 182.04445f) & 0xFFFF;
+                            }
+                        }
+                    }
+                    fLadderFacing =
+                        AngleDelta(ps->proneTorsoPitch, ps->viewangles[0]);
+                    if (fLadderFacing > 45.0f || fLadderFacing < -45.0f)
+                    {
+                        float v51 = fLadderFacing <= 45.0f
+                                        ? fLadderFacing + 45.0f
+                                        : fLadderFacing - 45.0f;
+                        ps->delta_angles[0] +=
+                            (int)(v51 * 182.04445f) & 0xFFFF;
+                        ps->viewangles[0] = AngleNormalize180Accurate(
+                            v51 <= 0.0f
+                                ? ps->proneTorsoPitch + 45.0f
+                                : ps->proneTorsoPitch - 45.0f);
+                    }
+                }
+            }
+            PM_UpdateStickyAim(ps, cmd, oldcmd);
+            PM_UpdateMeleeAssistAim(ps, msec);
+            if (ps->pm_type != 3 && ps->pm_type != 2 && ps->pm_type != 4)
+                PM_UpdateLean(
+                    ps, cmd,
+                    (void (__cdecl*)(trace_t*, const math::Position3*,
+                                     const math::Position3*,
+                                     const math::Position3*,
+                                     const math::Position3*,
+                                     const collision_context_t*))capsuleTrace);
+        }
+    }
 }
