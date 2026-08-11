@@ -21,6 +21,8 @@ static void SV_WriteSnapshotToClient(client_s* client, msg_t* msg);  // ea: 0x51
 static void SV_AddEntitiesVisibleFromPoint(int leafnum, DbLinkedHandle<EntityHandleDb, Entity> clientHandle);
 extern int   com_frameNumber;
 
+int dword_F641E0[4 * 1580];  // sv.o BSS @ 0xF641E0
+
 // collision / math
 extern void  AddLeanToPosition(float* const vPosition, float fViewYaw,
                                float fLeanFrac, float fViewRoll,

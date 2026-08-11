@@ -31,7 +31,7 @@ extern int currCl;
 extern int level_time;
 extern float* dword_F63B8C[4 * 1580];
 extern int dword_F63B34[4 * 1580];
-extern int dword_F62960[4 * 1580];
+int dword_F62960[4 * 1580];  // cg.o BSS
 extern int dword_F64024[4 * 1580];
 extern int dword_F64028[4 * 1580];
 extern int dword_F6402C[4 * 1580];
@@ -44,10 +44,10 @@ extern float angle[4 * 395];
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
 extern float dword_F63C78[4 * 1580];
-extern float dword_F63C80[4 * 1580];
-extern float dword_F63C84[4 * 1580];
-extern float dword_F63C88[4 * 1580];
-extern int cg_aWeaponSelectTime[4];
+float dword_F63C80[4 * 1580];  // cg.o BSS
+float dword_F63C84[4 * 1580];  // cg.o BSS
+float dword_F63C88[4 * 1580];  // cg.o BSS
+int cg_aWeaponSelectTime[4];   // ?cg_aWeaponSelectTime@@3PAHA (cg.o)
 extern int cg_weaponCycleDelay;
 extern int cgGlobal_frametime;
 extern struct level_locals_t { int time; } level;

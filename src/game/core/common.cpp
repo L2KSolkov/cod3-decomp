@@ -166,7 +166,7 @@ extern int timeClientFrame;
 extern int gFirstCamera;
 extern int gScreenshotInProgress;
 int com_frameTime = 0;   // ?com_frameTime@@3HA (core.o @ 0xEF2828)
-extern int com_frameNumber;
+int com_frameNumber = 0;  // ?com_frameNumber@@3HA (core.o)
 extern float g_screendelta;
 extern int g_bDObjInited;
 extern char* surfaceTypeNames[23];
