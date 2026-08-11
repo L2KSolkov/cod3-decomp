@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <string.h>
 
+extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);
+extern void  tlMemFree(void* ptr);
+
 extern int g_uniqueEntityIndex;  // ?g_uniqueEntityIndex@@3HA (game.o @ 0xF4F444)
 
 // ============================================================================
@@ -183,6 +186,64 @@ void CGBankManager::UnloadAll()
 // ea: 0x00611C10
 void render_brush()
 {
+}
+
+// ============================================================================
+// debug_brush + debug_brushes (game.o CollisionMgr debug rendering)
+// ============================================================================
+struct cdlBrushView {
+    uint8_t _pad[0x60];  // opaque (cdlBrush); debug_brush stores the pointer
+};
+struct DebugColor {
+    float r, g, b, a;
+};
+struct debug_brush {
+    const cdlBrushView* brush;  // +0x00
+    math::Mat43        mat;     // +0x10
+    DebugColor         color;   // +0x50
+};
+static_assert(sizeof(debug_brush) == 0x60, "debug_brush size mismatch");
+
+// ea: 0x0065C4E0 (COMDAT inline)
+static debug_brush* debug_brush_ctor(debug_brush* self,
+                                     const cdlBrushView* _brush,
+                                     const math::Mat43* _mat,
+                                     const DebugColor* _color)
+{
+    self->brush = _brush;
+    self->mat = *_mat;
+    self->color = *_color;
+    return self;
+}
+
+static ae_vector<debug_brush> s_debug_brushes;  // ?debug_brushes (game.o)
+
+// ============================================================================
+// render_brush (cdlBrush + Mat43 + Color) - ea: 0x6389D0
+// ============================================================================
+// ea: 0x006389D0
+void render_brush(const cdlBrushView& brush, const math::Mat43& mat,
+                  const DebugColor& color)
+{
+    debug_brush db;
+    debug_brush_ctor(&db, &brush, &mat, &color);
+    if (s_debug_brushes.mSize >= s_debug_brushes.mCapacity)
+    {
+        // grow (ae_vector growth: capacity * 2)
+        int newCap = s_debug_brushes.mCapacity == 0
+            ? 4
+            : s_debug_brushes.mCapacity * 2;
+        debug_brush* nb = (debug_brush*)tlMemAlloc(
+            newCap * sizeof(debug_brush), 8, 0);
+        for (int i = 0; i < s_debug_brushes.mSize; ++i)
+            nb[i] = s_debug_brushes.mElements[i];
+        if (s_debug_brushes.mElements != nullptr)
+            tlMemFree(s_debug_brushes.mElements);
+        s_debug_brushes.mElements = nb;
+        s_debug_brushes.mCapacity = newCap;
+    }
+    s_debug_brushes.mElements[s_debug_brushes.mSize] = db;
+    ++s_debug_brushes.mSize;
 }
 
 // ============================================================================
@@ -5218,5 +5279,3 @@ void SoundDevice::CrossFade(unsigned int sound1, unsigned int sound2,
         v12->mRemainingTime = crossFadeTime;
     }
 }
-
-
