@@ -2393,7 +2393,7 @@ void  G_DebugSphere(const float* center, float radius, const float* color,
 void  UpdateShotProf(float deltaT);                  // g.o 0x4677E0
 void  G_ReduceOriginError(float* origin, float* originError, float frametime);  // g.o 0x4491D0
 void  G_RunFrameForEntity(Entity* ent, int msec);   // g.o
-void  VEH_JoltBody(Entity* ent, math::Position3* dir, float intensity,
+void  VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
                    float speedFrac, float decel);   // g.o
 void  CalcMuzzlePoint(Entity* ent, math::Position3* muzzlePoint);  // g.o 0x4534F0
 void  G_DebugAxis(const math::Mat43* mat, unsigned int length, int duration);  // g.o 0x456FE0

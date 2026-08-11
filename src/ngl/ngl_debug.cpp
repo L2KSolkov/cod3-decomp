@@ -185,7 +185,8 @@ void nglAveragePerfInfo(unsigned int Frames) {
 // Shader profiler
 // ============================================================================
 // tlInstanceBank (tl_xboxr:tl_instbank.o, size 0x14; Instance = 0x2C).
-struct tlInstanceBank {
+class tlInstanceBank {
+public:
     struct Instance {
         unsigned char pad[0x20];   // +0x00 (Key/skip-list links)
         void*        Value;        // +0x20
