@@ -5359,7 +5359,14 @@ float Camera::SetNewMode(ECameraModes newMode)
     return mpTweenTime;
 }
 
-extern const float* DObjGetMat(void* dobj, int boneIndex);
+// ea: 0x006BE320 (render.o) - DObj::GetMat; skel at +0x70, mat stride 0x40
+const float* DObjGetMat(void* dobj, int boneIndex)  // ?DObjGetMat@@YAPBMPAXH@Z artifact
+{
+    if (dobj == nullptr)
+        return nullptr;
+    void* skel = *(void**)((char*)dobj + 0x70);
+    return (const float*)((char*)skel + 0x40 * boneIndex);
+}
 
 static void MatrixMultiply4x4(const float* a, const float* b, float* out)
 {

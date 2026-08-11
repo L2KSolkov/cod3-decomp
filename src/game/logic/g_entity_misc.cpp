@@ -1098,7 +1098,14 @@ void Entity::ExecScriptHandler(HashString h, ScriptEventParams* params)
 // ea: 0x6205F0 / 0x620670 / 0x6208E0 (Entity.cpp)
 // ============================================================================
 extern int dword_F6A2A0[4 * 802];  // view-model DObj handles (game.o @ 0xF6A2A0)
-extern const math::Mat43* DObj_GetMat(void* obj, int boneIndex);  // anim
+// ea: 0x006BE320 (render.o) - DObj::GetMat inline; skel at +0x70, mat stride 0x40
+const math::Mat43* DObj_GetMat(void* obj, int boneIndex)  // ?DObj_GetMat@@YAPBVMat43@math@@PAXH@Z
+{
+    if (obj == nullptr)
+        return nullptr;
+    void* skel = *(void**)((char*)obj + 0x70);
+    return (const math::Mat43*)((char*)skel + 0x40 * boneIndex);
+}
 extern serverStatic_t svs;  // sv.o
 
 // ea: 0x006205F0

@@ -126,7 +126,7 @@ extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
                                       DObjSkelMat* out);
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
-extern void* DObj_GetMat(void* obj, int boneIndex);
+extern const math::Mat43* DObj_GetMat(void* obj, int boneIndex);
 extern int CG_HoldBreathUpdate();
 extern void CG_WeaponUpdateLoopingSound(Entity* entity);
 extern void CG_WeaponIKAddToFireQueue(Entity* attacker, int weapon);
@@ -1778,7 +1778,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
                         }
                         int BoneIndex = DObjGetBoneIndex(v19, tagHash);
                         if (BoneIndex != -1)
-                            tr_viewModelInfo_mWeaponOrigin = DObj_GetMat(v19, BoneIndex);
+                            tr_viewModelInfo_mWeaponOrigin = (void*)DObj_GetMat(v19, BoneIndex);
                     }
                 }
                 RE_AddViewModelToScene(RefEntity);
