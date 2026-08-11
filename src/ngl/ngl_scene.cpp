@@ -60,8 +60,6 @@ extern math::Mat44* ngliGetDeviceMatrix(math::Mat44* result,
 extern void ngliRenderSceneNode(void* Data);
 extern void nglSceneDumpCamera(const math::Mat43* WorldToView);
 
-// math::SinCos<3,0,3,0> (inline COMDAT) - reconstructed: compute sin/cos of radians.
-extern void mathSinCos_Vector4(math::Vector4* result, const math::Vector4* radians);
 
 // ngl_sort helpers (ngl_scene.o inline COMDATs).
 struct nglOpaqueCompare { int dummy; };
@@ -846,7 +844,6 @@ void nglPresent() {
 // ============================================================================
 // nglCalculateMatrices - ea: 0x83B900
 // ============================================================================
-extern void mathSinCos_Vector4(math::Vector4* result, const math::Vector4* radians);
 
 static math::Mat44* ViewportToWorldImpl(math::Mat44* result, nglScene* Scene) {
     float vx = Scene->View.x.v.m128_f32[0];
@@ -941,8 +938,9 @@ void nglCalculateMatrices(nglScene* Scene) {
     Scene->sy2p = sy2p;
     if (Scene->ProjType == NGLPROJ_PERSPECTIVE) {
         float fovr = Scene->FOV * 0.0087266462f;
-        math::Vector4 SinCos;
-        mathSinCos_Vector4(&SinCos, (const math::Vector4*)&_mm_set1_ps(fovr));
+        math::Vector4 SinCos =
+            math::SinCos<3, 0, 3, 0>(
+                *(const math::Vector4*)&_mm_set1_ps(fovr));
         float tanv = SinCos.v.m128_f32[0] / SinCos.v.m128_f32[1];
         float asp = Scene->AspectRatio;
         float h2 = asp * tanv;

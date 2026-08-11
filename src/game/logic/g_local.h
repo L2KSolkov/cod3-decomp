@@ -1175,7 +1175,7 @@ TPakId CurPakId();
 bool ShouldConnectPaths();
 void SV_UnlinkEntity(Entity* gEnt);
 void mem_heap_free(void* ptr);
-void AnglesToForward(const float* angles, float* forward);
+void AnglesToForward(const float* const angles, float* const forward);
 int  Q_stricmp(const char* s1, const char* s2);
 void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int eTeam);
 float VectorDistanceSquared(const float* p1, const float* p2);
@@ -3111,7 +3111,7 @@ sentient_s* Sentient_Alloc(void);                // mp_actors.o
 void  Client_Clear(void* client, bool clearPersistentAlso, bool clearWeapons);  // game.o
 Entity* fire_grenade(Entity* self, float* start, float* dir,
                      int grenadeWPID, int time);  // g.o
-void  AnglesToUp(const float* angles, float* up); // core.o
+void  AnglesToUp(const float* const angles, float* const up); // core.o
 void  bdRandom_setSeed(void* self, unsigned int seed);  // bd
 unsigned int bdRandom_nextUInt(void* self);       // bd
 void  j_nullsub_87(void* self);                   // g.o

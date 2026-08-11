@@ -585,7 +585,7 @@ extern float sRumIntensityFactor;
 extern float sRumTimeMin;
 extern float sRumTimeMax;
 extern float sRumTimeFactor;
-extern void AnglesToForward(const float* angles, float* forward);
+extern void AnglesToForward(const float* const angles, float* const forward);
 extern int GamePause_IsGamePaused(int client);
 extern int CG_UpdateCameraShake(void* shake, int client);
 extern void CG_EndShellShock(const void* parms, int time);
@@ -1353,9 +1353,8 @@ extern int cg_viewKickReturnTime;
 extern float vehicleOffsetRate;
 extern float vehicleOffset;
 extern float GetLeanFraction(float fFrac);
-extern void AnglesToRight(const float* angles, float* right);
+extern void AnglesToRight(const float* const angles, float* const right);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
-extern void AnglesToAxisF(const float* angles, float (*axis)[3]);
 extern void AxisToAngles(const float (*axis)[3], float* angles);
 extern float AngleNormalize360(float angle);
 extern float AngleNormalize180(float angle);
@@ -2265,8 +2264,8 @@ void CG_CalculateWeaponPosition_ToWorldPosition(float* origin)
 void CG_CalculateWeaponPosition_ToWorldAngles(float* angles)
 {
     float vAxis[3][3], vAxis2[3][3], vAxis3[3][3];
-    AnglesToAxisF(angles, vAxis);
-    AnglesToAxisF(&angle[1580 * currCl], vAxis2);
+    AnglesToAxis(angles, vAxis);
+    AnglesToAxis(&angle[1580 * currCl], vAxis2);
     MatrixMultiply(vAxis, vAxis2, vAxis3);
     AxisToAngles(vAxis3, angles);
 }

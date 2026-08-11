@@ -160,4 +160,133 @@ struct Quaternion {
 };
 static_assert(sizeof(Quaternion) == 0x10, "Quaternion size mismatch");
 
+// ============================================================================
+// com_math.h helpers (inline COMDATs; g.o / scr.o / streamer.o)
+//   SinCos<3,0,3,0>          - ea: 0x4AE920
+//   FastSinCos               - ea: 0x4B01F0
+//   AnglesToForward(float*)  - ea: 0x4B02A0
+//   AnglesToForward(Pos3)    - ea: 0x4B03A0
+//   AnglesToUp               - ea: 0x4B0440
+//   AnglesToRight            - ea: 0x5EE650
+// Function-only AeAssert contract (no enum here: other headers declare it).
+// ============================================================================
+
+// Per-lane sin/cos of radians. Lane i computes sin when arg i != 0 (phase
+// +3pi/2) and cos when arg i == 0. Only <3,0,3,0> exists in the binary.
+template <int A, int B, int C, int D>
+inline Vector4 SinCos(const Vector4& radians)
+{
+    const __m128 sign_mask = _mm_set1_ps(-0.0f);
+    const __m128 shift = _mm_setr_ps(A ? 4.7123880f : 0.0f,
+                                     B ? 4.7123880f : 0.0f,
+                                     C ? 4.7123880f : 0.0f,
+                                     D ? 4.7123880f : 0.0f);
+    // Folded range reduction: t = -|x + shift| / (2pi), y = |frac(t)-0.5|-0.25.
+    __m128 t = _mm_mul_ps(
+        _mm_xor_ps(sign_mask,
+                   _mm_andnot_ps(sign_mask, _mm_add_ps(radians.v, shift))),
+        _mm_set1_ps(0.15915494f));
+    __m128 y = _mm_sub_ps(
+        _mm_andnot_ps(
+            sign_mask,
+            _mm_sub_ps(_mm_sub_ps(_mm_add_ps(_mm_sub_ps(t, _mm_set1_ps(12582912.0f)),
+                                             _mm_set1_ps(12582912.0f)),
+                                  t),
+                       _mm_set1_ps(0.5f))),
+        _mm_set1_ps(0.25f));
+    __m128 y2 = _mm_mul_ps(y, y);
+    __m128 y3 = _mm_mul_ps(y, y2);
+    __m128 y4 = _mm_mul_ps(y2, y2);
+    __m128 y5 = _mm_mul_ps(y, y4);
+    __m128 y7 = _mm_mul_ps(y3, y4);
+    __m128 y9 = _mm_mul_ps(y5, y4);
+    Vector4 result;
+    result.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(y9, _mm_set1_ps(39.710659f)),
+                           _mm_mul_ps(y7, _mm_set1_ps(-76.574959f))),
+                _mm_mul_ps(y5, _mm_set1_ps(81.602226f))),
+            _mm_mul_ps(y3, _mm_set1_ps(-41.341675f))),
+        _mm_mul_ps(y, _mm_set1_ps(6.2831850f)));
+    return result;
+}
+
 } // namespace math
+
+namespace AeAssert {
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
+// ea: 0x4B01F0
+inline void FastSinCos(float radians, float* psin, float* pcos)
+{
+    math::Vector4 in;
+    in.v = _mm_setr_ps(radians, radians, radians, 0.0f);
+    math::Vector4 r = math::SinCos<3, 0, 3, 0>(in);
+    *psin = r.v.m128_f32[0];
+    *pcos = r.v.m128_f32[1];
+}
+
+// ea: 0x4B02A0
+inline void AnglesToForward(const float* const angles,
+                            float* const forward)
+{
+    if (forward == nullptr)
+    {
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float sy, cy, sp, cp;
+    FastSinCos(angles[1] * 0.017453292f, &sy, &cy);
+    FastSinCos(angles[0] * 0.017453292f, &sp, &cp);
+    forward[0] = cp * cy;
+    forward[1] = cp * sy;
+    forward[2] = -sp;
+}
+
+// ea: 0x4B03A0
+inline void AnglesToForward(const math::Position3& angles,
+                            math::Dir3& forward)
+{
+    float sy, cy, sp, cp;
+    FastSinCos(angles.v.m128_f32[1] * 0.017453292f, &sy, &cy);
+    FastSinCos(angles.v.m128_f32[0] * 0.017453292f, &sp, &cp);
+    forward.v.m128_f32[0] = cp * cy;
+    forward.v.m128_f32[1] = cp * sy;
+    forward.v.m128_f32[2] = -sp;
+}
+
+// ea: 0x4B0440
+inline void AnglesToUp(const float* const angles, float* const up)
+{
+    if (up == nullptr)
+    {
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float sp, cp, sr, cr;
+    FastSinCos(angles[0] * 0.017453292f, &sp, &cp);
+    FastSinCos(angles[2] * 0.017453292f, &sr, &cr);
+    up[0] = cr * sp;
+    up[1] = -sr;
+    up[2] = cr * cp;
+}
+
+// ea: 0x5EE650
+inline void AnglesToRight(const float* const angles,
+                          float* const right)
+{
+    if (right == nullptr)
+    {
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    float sy, cy, sr, cr;
+    FastSinCos(angles[1] * 0.017453292f, &sy, &cy);
+    FastSinCos(angles[2] * 0.017453292f, &sr, &cr);
+    right[0] = cr * sy;
+    right[1] = -cr * cy;
+    right[2] = -sr;
+}
