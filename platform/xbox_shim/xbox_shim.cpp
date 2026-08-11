@@ -18,6 +18,13 @@ void MmPersistContiguousMemory(void*, unsigned int, int) {}
 void MmGetPhysicalAddress(void*, unsigned int* out) { *out = 0; }
 unsigned int XGetTickCount(void) { return GetTickCount(); }
 
+// D3D state globals (d3d8d:globals.obj) - the Win32 shim owns these.
+unsigned int D3D__DirtyFlags = 0;       // _D3D__DirtyFlags
+unsigned int D3D__TextureState[8][8];   // _D3D__TextureState
+unsigned int D3D__RenderState[32];      // _D3D__RenderState
+unsigned int dword_40304 = 0;           // D3D render-state slot alias
+unsigned int dword_BC2CFC = 0;          // D3D state alias
+
 // XGetVideoStandard - XDK xapilibd:xgetvideostandard.obj (shim).
 // Returns a display standard tag; the game only tests == 3 (PAL).
 unsigned int XGetVideoStandard(void) { return 0; }

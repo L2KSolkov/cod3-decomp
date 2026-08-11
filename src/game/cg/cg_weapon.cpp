@@ -82,7 +82,7 @@ extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
 extern void ValidatePakId(int pakId);
-extern int CurPakId();
+extern TPakId CurPakId();
 extern void* AnimBankManager_GetBank(void* mgr, int pakId);
 extern void* AnimBankManager_sInst;
 extern void* AnimBank_GetAnimTree(void* bank, const char* name);

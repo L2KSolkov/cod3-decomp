@@ -735,7 +735,7 @@ extern int CL_GetServerCommand(int serverCommandNumber);
 extern int dword_F6294C[4 * 1580];
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
-extern int CurPakId();
+extern TPakId CurPakId();
 extern float VectorNormalize2(const float* v, float* out);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,

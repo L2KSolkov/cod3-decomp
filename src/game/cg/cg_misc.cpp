@@ -3670,7 +3670,7 @@ extern float InteractionController_GetRotation(void* self);
 extern int Entity_GetPlayerIndex(const Entity* self);
 extern bool gSceneAnimCamera;  // 0x00F258F6
 extern vmCvar_t cg_altTankCam;  // 0x00F5BC30
-extern int CurPakId();
+extern TPakId CurPakId();
 extern vehicle_info_t* G_GetVehicleInfo(Entity* veh);
 extern void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
                                const float* minClamp, const float* maxClamp);
