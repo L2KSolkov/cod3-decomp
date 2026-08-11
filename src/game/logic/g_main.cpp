@@ -3875,8 +3875,7 @@ void G_Animscripted(Entity* ent, const float* origin, const float* angles,
 }
 
 // ea: 0x00476AE0
-int G_InitGame(int brocSys, unsigned int randomSeed, int restart,
-               int savegame, int a5)
+int G_InitGame(int randomSeed, int restart, int savegame, int checksum)
 {
     g_gameIsStartingUp = 1;
     if (restart != 0)
@@ -3922,7 +3921,7 @@ int G_InitGame(int brocSys, unsigned int randomSeed, int restart,
         SceneManager::sInst->ResetAllStaticModels();
         EntityManager::sInst->CreateWorld();
         EntityManager::sInst->CreatePlayers();
-        BrocSys::UnloadScript((void*)brocSys);
+        BrocSys::UnloadScript();
         PakManager::sInst->ResetPriorities(true);
         SceneManager::sInst->RestartPersistentArray();
         StreamZoneManager::sInst->CheckpointRestart();
@@ -3993,7 +3992,7 @@ skip_fill:
     int loadScripts;
     if (restart == 0)
     {
-        BrocSys::LoadScript((void*)brocSys);
+        BrocSys::LoadScript();
         Cvar_Set("cl_restartdeath", "0");
         loadScripts = 0;
     }

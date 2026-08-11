@@ -1180,8 +1180,8 @@ void Init();                                 // ?Init@BrocSys@@YAXXZ (scr.o)
 void TakeWeapon(Entity* pSelf, const char* pszWeaponName);  // ?TakeWeapon@BrocSys (scr.o)
 void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
 int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHPBD@Z
-void UnloadScript(void* self);              // ?UnloadScript@BrocSys@@QAEXPAV1@@Z
-void LoadScript(void* self);                // ?LoadScript@BrocSys@@QAEXPAV1@@Z
+void UnloadScript();                        // ?UnloadScript@BrocSys@@YAXXZ
+void LoadScript();                          // ?LoadScript@BrocSys@@YAXXZ
 }
 
 // ============================================================================
@@ -2216,7 +2216,7 @@ void    HudElem_Free(game_hudelem_s* hud);           // g.o
 void    CG_ClearHudElems(void);                      // cg.o
 void    WheelMarkMgr_Reset(void);                    // render.o
 void    FX_InitFX(void);                             // fx.o
-void    GlobalPakLoadCallback(int progress);         // g.o
+void    GlobalPakLoadCallback(float progress);       // core.o
 int     R_CellForPoint(const float* pos);            // render.o
 extern int g_gameIsStartingUp;                       // g.o
 extern int g_freeze_movement;                        // g.o

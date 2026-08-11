@@ -363,7 +363,7 @@ extern void physics_debug_render();
 extern void fx_debug_render();
 extern void TestFPS_CreateInst();
 extern void TestFPS_DeleteInst();
-extern void GlobalPakLoadCallback();
+extern void GlobalPakLoadCallback(float progress);
 extern void PakManager_SyncLoadPak(void* self, int pak_type, const char* path,
                                   void* num_banks);
 extern void* PakManager_GetPakInfo(void* self, const char* long_name);

@@ -286,7 +286,7 @@ void SpinnerReset()
 }
 
 // ea: 0x004C9D70
-void GlobalPakLoadCallback()
+void GlobalPakLoadCallback(float progress)
 {
     static unsigned long long sLastTime = 0;
     unsigned long long v0 = sLastTime ? sLastTime : __rdtsc();
