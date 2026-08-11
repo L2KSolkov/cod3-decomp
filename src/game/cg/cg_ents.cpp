@@ -1513,12 +1513,13 @@ extern void CG_EjectWeaponBrass(Entity* entity, int event);
 extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
                                     int weaponAction);
 extern void ByteToDir(unsigned int b, float* dir);
-extern void CG_BulletHitEvent(Entity* entity, math::Position3* origin,
-                              float* normal, int weapon, int surfType,
+extern void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
+                              float* const normal, int weapon, int surfType,
                               Entity* hitEnt);
 extern void CG_BulletHitClientEvent(unsigned int sourceEntity,
-                                    math::Position3* position, float* normal,
-                                    int surfType, int weapon);
+                                    const math::Position3* position,
+                                    float* const normal, int surfType,
+                                    int weapon);
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);
 extern int EntityManager_IsLocalPlayer(void* mgr, Entity* entity);
@@ -1919,7 +1920,7 @@ extern Handle PostEffectEventProjExplode(const Entity* ent,
                                          const CollisionDesc& col_desc);
 extern void CG_EventSpawnTracer(const math::Position3* pstart,
                                 const math::Position3* pend, int weapon);
-extern void CG_RailTrail(const float* start, const float* end, int type);
+extern void CG_RailTrail(const float* start, const float* end, float type);
 extern void VEH_NetAltWeaponStatus(Entity* ent, int status);
 extern vmCvar_t bg_fallDamageMaxHeight;
 extern vmCvar_t bg_fallDamageMinHeight;

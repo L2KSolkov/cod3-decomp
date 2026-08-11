@@ -2460,13 +2460,13 @@ struct DynamicDecalMgr {
              float radius, float angle, const float* color,
              bool isHighPriority);  // ?Add@DynamicDecalMgr@@QAEXPAUnglTexture@@M_NHABVPosition3@math@@2MMABVColor@@1@Z
 };
-void CG_BulletHitEvent(Entity* entity, const math::Position3& origin,
+void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                        float* const normal, int weapon, int surfType,
                        Entity* hitEnt);  // cg.o
-void CG_BulletHitClientEvent(
-    DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
-    const math::Position3& position, const float* const normal, int surfType,
-    int weapon);  // cg.o
+void CG_BulletHitClientEvent(unsigned int sourceEntity,
+                             const math::Position3* position,
+                             float* const normal, unsigned int surfType,
+                             int weapon);  // cg.o
 void CG_EventSpawnTracer(const math::Position3* pstart,
                          const math::Position3* pend, int weapon);  // cg.o
 void CG_FireWeapon(Entity* attacker, EntityState* attackerState, int event,
