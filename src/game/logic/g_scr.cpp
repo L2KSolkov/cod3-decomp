@@ -4,6 +4,9 @@
 
 #include "game/logic/g_local.h"
 
+// ?gpBrocAPI@@3PAUBrocAPI@@A (scr.o data @ 0xF3ABDC, BSS)
+BrocAPI* gpBrocAPI = NULL;
+
 // ea: 0x005BE2B0 (scr.o)
 void UpdateEntityHash(Entity* ent)
 {

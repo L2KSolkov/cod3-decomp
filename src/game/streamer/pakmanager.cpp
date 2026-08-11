@@ -62,7 +62,9 @@ public:
     TPakId mCurrentPakId;             // +0x24
     uint8_t _pad28[0x30 - 0x28];
     TPakId mGlobalPakId;              // +0x30
-    uint8_t _pad34[0x40 - 0x34];
+    uint8_t _pad34[0x38 - 0x34];
+    TPakId mLevelPakId;               // +0x38
+    uint8_t _pad3C[0x40 - 0x3C];
     PakFile* mSlots[99];              // +0x40
     uint8_t _pad1CC[0x364 - (0x40 + 99 * 4)];
     void (*mProgressCallback)(float); // +0x364
@@ -212,4 +214,28 @@ void PakManager::SetSoundProgress(float t)
     void (*cb)(float) = mProgressCallback;
     if (cb != NULL)
         cb(((1.0f - sWbkPercentage) - sBrocPercentage) + (sWbkPercentage * t));
+}
+
+// ============================================================================
+// Free functions (streamer.o)
+// ============================================================================
+
+// ea: 0x665400
+TPakId CurPakId()
+{
+    return PakManager::sInst->mLevelPakId;
+}
+
+// ea: 0x6653A0
+void ValidatePakId(TPakId pakId)
+{
+    if (pakId != PAK_ID_INVALID && PakManager::sInst->mSlots[pakId] == NULL)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 236;
+        AeAssert::gCurrentExpr = NULL;
+        if (!AeAssert::IsIgnored() && AeAssert::Warning("bad/old pak id"))
+            __debugbreak();
+    }
 }
