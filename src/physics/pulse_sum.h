@@ -9,6 +9,7 @@
 #include "physics/phys_types.h"
 #include <intrin.h>
 #include <math.h>
+#include <new>
 
 extern const math::Dir3& Float4_Zero_212;
 extern const math::Dir3& Float4_Two_212;
@@ -1126,6 +1127,72 @@ void phys_heap_memory_pool<T>::destroy() {
     m_alloc_list = NULL;
     m_alloc_count = 0;
 }
+
+// ============================================================================
+// phys_static_memory_pool<T,N> - fixed inline-slot pool
+// (phys_memory_pool_base.inc). Layout verified for <vehicle_rb_parameter,10>:
+// slots inline at +0x00, then m_alloc_list[N], m_index_array[N],
+// m_slot_array, m_alloc_count (total N*sizeof(T) + N*8 + 8).
+// COMDATs in physics.o: add @0x717420, operator[] @0x717480,
+// get_count @0x7174F0, reset_buffer @0x717CF0, call_destructors @0x717CE0,
+// ctor @0x71AFD0, dtor @0x71B000.
+// ============================================================================
+template <typename T, int N>
+struct phys_static_memory_pool {
+    T   m_slots[N];        // +0x00
+    T*  m_alloc_list[N];   // +N*sizeof(T)
+    int m_index_array[N];  // +N*sizeof(T)+N*4
+    T*  m_slot_array;      // +N*sizeof(T)+N*8
+    int m_alloc_count;     // +N*sizeof(T)+N*8+4
+
+    phys_static_memory_pool()
+    {
+        m_slot_array = (T*)this;
+        m_alloc_count = 0;
+        reset_buffer();
+    }
+    ~phys_static_memory_pool() {}
+
+    void reset_buffer()
+    {
+        for (int i = 0; i < N; ++i)
+        {
+            m_index_array[i] = i;
+            m_alloc_list[i] = m_slot_array + i;
+        }
+        m_alloc_count = 0;
+    }
+
+    void call_destructors() {}
+
+    T* add(bool no_error, const char* error_msg)
+    {
+        int count = m_alloc_count;
+        if (count < N)
+        {
+            T* result = m_alloc_list[count];
+            m_alloc_count = count + 1;
+            if (result != NULL)
+                new (result) T;
+            return result;
+        }
+        if (!no_error)
+            tlFatal(error_msg);
+        return NULL;
+    }
+
+    T& operator[](int i)
+    {
+        if ((i < 0 || i >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                   178, "i >= 0 && i < m_alloc_count", ""))
+            __debugbreak();
+        return *m_alloc_list[i];
+    }
+
+    int get_count() const { return m_alloc_count; }
+};
 
 extern physics_system* g_physics_system;  // ?g_physics_system@@3PAVphysics_system@@A
 extern void verify_is_in_physics_system(rigid_body_constraint_contact* rbc,

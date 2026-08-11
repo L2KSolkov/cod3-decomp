@@ -5,10 +5,161 @@
 #include "game/logic/g_local.h"
 
 #include <math.h>
+#include <new>
 #include <stdio.h>
 #include <string.h>
 
 static const __m128 sSignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
+
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);
+extern void tlFatal(const char* Format, ...);
+
+// ============================================================================
+// phys_static_memory_pool<T,N> - fixed inline-slot pool
+// (phys_memory_pool_base.inc). Layout verified for <vehicle_rb_parameter,10>:
+// slots inline at +0x00, then m_alloc_list[N], m_index_array[N],
+// m_slot_array, m_alloc_count. COMDATs in physics.o: add @0x717420,
+// operator[] @0x717480, get_count @0x7174F0, reset_buffer @0x717CF0,
+// call_destructors @0x717CE0, ctor @0x71AFD0, dtor @0x71B000.
+// ============================================================================
+template <typename T, int N>
+struct phys_static_memory_pool {
+    T   m_slots[N];        // +0x00
+    T*  m_alloc_list[N];   // +N*sizeof(T)
+    int m_index_array[N];  // +N*sizeof(T)+N*4
+    T*  m_slot_array;      // +N*sizeof(T)+N*8
+    int m_alloc_count;     // +N*sizeof(T)+N*8+4
+
+    phys_static_memory_pool()
+    {
+        m_slot_array = (T*)this;
+        m_alloc_count = 0;
+        reset_buffer();
+    }
+    ~phys_static_memory_pool() {}
+
+    void reset_buffer()
+    {
+        for (int i = 0; i < N; ++i)
+        {
+            m_index_array[i] = i;
+            m_alloc_list[i] = m_slot_array + i;
+        }
+        m_alloc_count = 0;
+    }
+
+    void call_destructors() {}
+
+    T* add(bool no_error, const char* error_msg)
+    {
+        int count = m_alloc_count;
+        if (count < N)
+        {
+            T* result = m_alloc_list[count];
+            m_alloc_count = count + 1;
+            if (result != NULL)
+                new (result) T;
+            return result;
+        }
+        if (!no_error)
+            tlFatal(error_msg);
+        return NULL;
+    }
+
+    T& operator[](int i)
+    {
+        if ((i < 0 || i >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                   178, "i >= 0 && i < m_alloc_count", ""))
+            __debugbreak();
+        return *m_alloc_list[i];
+    }
+
+    int get_count() const { return m_alloc_count; }
+};
+
+// ============================================================================
+// vehicle_rb_parameter (physics.o vehicle physics config pool)
+// ============================================================================
+
+// ?g_vehicle_rb_parameters@@3V?$phys_static_memory_pool@Vvehicle_rb_parameter@@$09@@A
+// (physics.o data)
+phys_static_memory_pool<vehicle_rb_parameter, 10> g_vehicle_rb_parameters;
+
+// ea: 0x6F46B0 (physics.o)
+vehicle_rb_parameter::vehicle_rb_parameter()
+{
+    m_speed_max = 1500.0f;
+    m_accel_max = 600.0f;
+    m_reverse_scale = 0.80000001f;
+    m_susp_hard_limit = 23.0f;
+    m_steer_angle_max = 0.60000002f;
+    m_tire_fric_fwd = 2.5f;
+    m_steer_speed = 5.0f;
+    m_susp_damp_k = 1.0f;
+    m_tire_fric_side = 2.3f;
+    m_tire_fric_brake = 2.3f;
+    m_body_mass = 1.0f;
+    m_inertia_scale_x = 1.0f;
+    m_wheel_radius = 15.0f;
+    m_upright_strength = 50.0f;
+    m_tire_damp_coast = 10.0f;
+    m_susp_spring_k = 20.0f;
+    m_roll_stability = 20.0f;
+    m_tilt_fakey = 0.25f;
+    m_tire_damp_hand = 10000.0f;
+    m_susp_adj = 0.0f;
+    m_tire_fric_hand_brake = 0.0f;
+    m_mass_center_delta_x = 0.0f;
+    m_mass_center_delta_y = 0.0f;
+    m_mass_center_delta_z = 0.0f;
+    m_roll_resistance = 100.0f;
+    m_peel_out_max_speed = 150.0f;
+    m_tire_damp_brake = 100.0f;
+    m_traction_type = TRACTION_TYPE_ALL_WD;
+    m_bbox_min.v = _mm_setzero_ps();
+    m_bbox_max.v = _mm_setzero_ps();
+}
+
+// ea: 0x6FBFB0 (physics.o)
+vehicle_rb_parameter* vehicle_rb_parameter::AddRBVehParameter(const char* name)
+{
+    vehicle_rb_parameter* result = g_vehicle_rb_parameters.add(
+        false, "phys memory pool add overflow.");
+    strcpy(result->m_name, name);
+    return result;
+}
+
+// ea: 0x6FBFE0 (physics.o)
+vehicle_rb_parameter* vehicle_rb_parameter::GetRBVehParameter(const char* name)
+{
+    int m_alloc_count = g_vehicle_rb_parameters.m_alloc_count;
+    int i = 0;
+    if (m_alloc_count <= 0)
+        return nullptr;
+    while (1)
+    {
+        if ((i < 0 || i >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                   178, "i >= 0 && i < m_alloc_count", ""))
+            __debugbreak();
+        if (_stricmp(g_vehicle_rb_parameters.m_alloc_list[i]->m_name,
+                     name) == 0)
+            break;
+        m_alloc_count = g_vehicle_rb_parameters.m_alloc_count;
+        if (++i >= g_vehicle_rb_parameters.m_alloc_count)
+            return nullptr;
+    }
+    if ((i < 0 || i >= g_vehicle_rb_parameters.m_alloc_count)
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+               178, "i >= 0 && i < m_alloc_count", ""))
+        __debugbreak();
+    return g_vehicle_rb_parameters.m_alloc_list[i];
+}
 
 struct clientActive_t {
     uint8_t _pad[0x638];

@@ -3420,6 +3420,7 @@ struct vehicle_rb_parameter {
     math::Position3 m_bbox_min;   // +0xB0
     math::Position3 m_bbox_max;   // +0xC0
 
+    vehicle_rb_parameter();  // ??0vehicle_rb_parameter@@QAE@XZ (physics.o)
     static vehicle_rb_parameter* GetRBVehParameter(const char* name);  // physics.o
     static vehicle_rb_parameter* AddRBVehParameter(const char* name);  // physics.o
 };
