@@ -23,7 +23,7 @@ extern int dword_F6405C[4 * 1580];
 extern int dword_F64060[4 * 1580];
 extern void* sADSMetaAnimPlayer;
 extern int dword_F69BF4;
-extern float FOCUS_DISTANCE;
+float FOCUS_DISTANCE = 1.0f;  // ?FOCUS_DISTANCE@@3MA
 extern float angle[4 * 395];
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
@@ -64,7 +64,6 @@ extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
 extern void ValidatePakId(int pakId);
 extern int CurPakId();
-extern int PAK_ID_MIN;
 extern void* AnimBankManager_GetBank(void* mgr, int pakId);
 extern void* AnimBankManager_sInst;
 extern void* AnimBank_GetAnimTree(void* bank, const char* name);

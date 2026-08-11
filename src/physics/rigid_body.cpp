@@ -16,6 +16,29 @@
 #include <intrin.h>
 
 // ============================================================================
+// SSE constants (rdata COMDATs; referenced across the physics lib)
+// ============================================================================
+static const math::Dir3 c_Float4_Zero = { _mm_setzero_ps() };
+static const math::Dir3 c_Float4_Two = { _mm_set1_ps(2.0f) };
+static const math::Dir3 c_Float4_SignMask = { _mm_set1_ps(-0.0f) };
+static const math::Position3 c_Float4_ZeroPos = { _mm_setzero_ps() };
+static const math::Position3 c_Float4_OnePos = { _mm_set1_ps(1.0f) };
+const math::Dir3& Float4_Zero_206 = c_Float4_Zero;
+const math::Dir3& Float4_Zero_207 = c_Float4_Zero;
+const math::Dir3& Float4_Zero_208 = c_Float4_Zero;
+const math::Dir3& Float4_Zero_210 = c_Float4_Zero;
+const math::Dir3& Float4_Zero_212 = c_Float4_Zero;
+const math::Dir3& Float4_Zero_213 = c_Float4_Zero;
+const math::Dir3& Float4_Two_208 = c_Float4_Two;
+const math::Dir3& Float4_Two_212 = c_Float4_Two;
+const math::Dir3& Float4_SignMask_207 = c_Float4_SignMask;
+const math::Dir3& Float4_SignMask_210 = c_Float4_SignMask;
+const math::Dir3& Float4_SignMask_213 = c_Float4_SignMask;
+const math::Dir3& Float4_SignMask_214 = c_Float4_SignMask;
+const math::Position3& Float4_Zero_2 = c_Float4_ZeroPos;
+const math::Position3& Float4_One_2 = c_Float4_OnePos;
+
+// ============================================================================
 // Cross-object externs
 // ============================================================================
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);

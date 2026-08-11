@@ -17,6 +17,7 @@
 // ============================================================================
 enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 #define PAK_ID_INVALID ((TPakId)-1)
+#define PAK_ID_MIN ((TPakId)0)
 
 // Forward declarations
 class Entity;

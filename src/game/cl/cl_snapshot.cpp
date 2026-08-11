@@ -6,6 +6,8 @@
 #include "cl_input.h"
 #include "cl_console.h"
 
+#include "game/game_types.h"
+
 #include <string.h>
 
 // ============================================================================
@@ -24,7 +26,6 @@ extern void PakManager_ClearUserDistance(void* self, const void* cpak);
 extern void PakManager_SyncUnloadPak(void* self, int id);
 extern void* PakManager_sInst;
 extern const void* sLoadingScreenInfo;
-extern int PAK_ID_INVALID;
 extern void GamePause_SetAllPaused(bool paused);
 extern void InGameMenuSystem_ActivateMenu(void* self, int menu);
 extern int unk_F6A290;

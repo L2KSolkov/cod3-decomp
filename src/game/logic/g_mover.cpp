@@ -13,6 +13,8 @@ static bool sS129 = false;
 static math::Position3 rdir_0;
 static const __m128 sSignMask = { -0.0f, -0.0f, -0.0f, -0.0f };
 
+float MBRenderScale = 150.0f;  // ?MBRenderScale@@3MA (render.o)
+
 // ea: 0x00463A20
 bool push_entity(Entity* ent, Entity* vehicle)
 {

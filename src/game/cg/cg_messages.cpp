@@ -49,7 +49,7 @@ extern vmCvar_t cg_gameBoldMessageWidth; // 0x00F60408
 
 extern float gGameMessageFadeOutTime;  // 0x00F61704
 extern Broc::string gGameMessage;      // 0x00F62930
-extern float MAXSCREENMESSAGETIME_1;
+float MAXSCREENMESSAGETIME_1 = 3.0f;  // ?MAXSCREENMESSAGETIME_1@@3MA
 
 // Per-client center-print state (stride 6320 bytes)
 static char    sCenterText[4][6320];
