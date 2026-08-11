@@ -6,7 +6,7 @@
 
 #pragma once
 
-struct Color {
+class Color {
     float r;  // +0x00
     float g;  // +0x04
     float b;  // +0x08

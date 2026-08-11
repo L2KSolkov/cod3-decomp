@@ -5,6 +5,7 @@
 
 #include "game/logic/g_local.h"
 #include "core/PoolAllocator.h"
+#include "core/color.h"
 #include "core/tlFixedString.h"
 
 #include <new>
@@ -244,6 +245,265 @@ void render_brush(const cdlBrushView& brush, const math::Mat43& mat,
     }
     s_debug_brushes.mElements[s_debug_brushes.mSize] = db;
     ++s_debug_brushes.mSize;
+}
+
+// ============================================================================
+// render_brush (plane set) - ea: 0x638A10
+// Render-layer externs used by the debug brush/box drawing.
+// ============================================================================
+struct nglShaderParamSet {
+    unsigned char mData[4];  // minimal (4 bytes; full type in ngl_dx_gpu.h)
+    static unsigned int NumParams;  // ?NumParams@nglShaderParamSet@@2IA (ngl_params.o)
+};
+struct gpuVertexFormat {
+    int      VertexSize;         // +0x00
+    const void* Elements;        // +0x04
+    void*    VertexDeclaration;  // +0x08
+};
+struct nglMeshSection;
+struct nglMesh;
+struct nglMaterial;
+template <typename T>
+struct cdl_array {
+    int m_count;     // +0x00
+    T*   m_elements; // +0x04
+    void resize(unsigned int n);  // ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z
+};
+
+extern gpuVertexFormat cddebug_vertex_format;
+    // ?cddebug_vertex_format@@3UgpuVertexFormat@@A (render_xboxr)
+extern void setup_color(const Color& i_col, nglShaderParamSet& o_params);
+    // ?setup_color@@YAXABVColor@@AAUnglShaderParamSet@@@Z (render.o)
+extern nglMesh* auxCreateScratchMesh(int flags, int num);  // ?auxCreateScratchMesh (ngl_aux.o)
+extern nglMeshSection* nglCreateScratchSection(
+    int Prim, int NIndices, int NVertices, gpuVertexFormat* VertexFormat);
+    // ?nglCreateScratchSection (ngl_dx_gpu.h)
+extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
+                              nglMaterial* Material, int Flags);
+    // ?nglAddMeshSection@@YAXPAUnglMesh@@PAUnglMeshSection@@PAUnglMaterial@@H@Z
+extern void* nglLockSectionIndices(nglMeshSection* Section);
+extern unsigned char* nglLockSectionVertices(nglMeshSection* Section);
+extern nglMesh* auxCloseScratchMesh(nglMesh* m);  // ?auxCloseScratchMesh (ngl_aux.o)
+extern void* nglListAddMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
+                            void* MeshParams, void* ShaderParams,
+                            void (*fn)(void*));
+extern void j_nullsub_67(nglMeshSection* Section);  // render_xboxr no-op
+extern void j_nullsub_27(nglMeshSection* Section);  // render_xboxr no-op
+extern void calc_winding(const cdl_array<cdlPlane>& planes, int plane_index,
+                         ae_sized_array<math::Position3, 256>& winding);
+    // ?calc_winding (game.o 0x62A6B0)
+extern unsigned char* nglListWork;
+extern unsigned char* nglListWorkPos;
+extern int nglListWorkSize;
+extern int nglLastListAllocWarnFrame;
+extern int nglFrame;
+extern void tlFatal(const char* fmt, ...);   // tl_system.o
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);     // tl_system.o
+extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+
+// ea: 0x00638A10
+void render_brush(const math::Position3& bmin, const math::Position3& bmax,
+                  const cdlPlane* sides, unsigned int nsides,
+                  const Color& color)
+{
+    cdl_array<cdlPlane> planes;
+    planes.m_count = 0;
+    planes.m_elements = nullptr;
+    planes.resize(nsides + 6);
+    if (nsides != 0)
+    {
+        for (unsigned int v6 = 0; v6 < nsides; ++v6)
+        {
+            if (v6 >= planes.m_count
+                && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                             "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+            planes.m_elements[v6] = sides[v6];
+        }
+    }
+    // Six box planes (bounding box) appended after the side planes.
+    static const __m128 s_negX = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    static const __m128 s_negY = _mm_setr_ps(0.0f, -1.0f, 0.0f, 0.0f);
+    static const __m128 s_negZ = _mm_setr_ps(0.0f, 0.0f, -1.0f, 0.0f);
+    static const __m128 s_posX = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    static const __m128 s_posY = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    static const __m128 s_posZ = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    {
+        if (nsides >= planes.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        {
+            float d = 0.0f - bmin.v.m128_f32[0];
+            planes.m_elements[nsides].packed[0] = s_negX.m128_i32[0];
+            planes.m_elements[nsides].packed[1] = s_negX.m128_i32[1];
+            planes.m_elements[nsides].packed[2] = s_negX.m128_i32[2];
+            planes.m_elements[nsides].packed[3] = *(int*)&d;
+        }
+        if (nsides + 1 >= planes.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        {
+            float d = 0.0f - bmin.v.m128_f32[1];
+            planes.m_elements[nsides + 1].packed[0] = s_negY.m128_i32[0];
+            planes.m_elements[nsides + 1].packed[1] = s_negY.m128_i32[1];
+            planes.m_elements[nsides + 1].packed[2] = s_negY.m128_i32[2];
+            planes.m_elements[nsides + 1].packed[3] = *(int*)&d;
+        }
+        if (nsides + 2 >= planes.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        {
+            float d = 0.0f - bmin.v.m128_f32[2];
+            planes.m_elements[nsides + 2].packed[0] = s_negZ.m128_i32[0];
+            planes.m_elements[nsides + 2].packed[1] = s_negZ.m128_i32[1];
+            planes.m_elements[nsides + 2].packed[2] = s_negZ.m128_i32[2];
+            planes.m_elements[nsides + 2].packed[3] = *(int*)&d;
+        }
+        if (nsides + 3 >= planes.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        {
+            float d = bmax.v.m128_f32[0];
+            planes.m_elements[nsides + 3].packed[0] = s_posX.m128_i32[0];
+            planes.m_elements[nsides + 3].packed[1] = s_posX.m128_i32[1];
+            planes.m_elements[nsides + 3].packed[2] = s_posX.m128_i32[2];
+            planes.m_elements[nsides + 3].packed[3] = *(int*)&d;
+        }
+        if (nsides + 4 >= planes.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        {
+            float d = bmax.v.m128_f32[1];
+            planes.m_elements[nsides + 4].packed[0] = s_posY.m128_i32[0];
+            planes.m_elements[nsides + 4].packed[1] = s_posY.m128_i32[1];
+            planes.m_elements[nsides + 4].packed[2] = s_posY.m128_i32[2];
+            planes.m_elements[nsides + 4].packed[3] = *(int*)&d;
+        }
+        if (nsides + 5 >= planes.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        {
+            float d = bmax.v.m128_f32[2];
+            planes.m_elements[nsides + 5].packed[0] = s_posZ.m128_i32[0];
+            planes.m_elements[nsides + 5].packed[1] = s_posZ.m128_i32[1];
+            planes.m_elements[nsides + 5].packed[2] = s_posZ.m128_i32[2];
+            planes.m_elements[nsides + 5].packed[3] = *(int*)&d;
+        }
+    }
+    for (int plane_index = 0; plane_index < planes.m_count; ++plane_index)
+    {
+        ae_sized_array<math::Position3, 256> winding;
+        winding.m_size = 0;
+        calc_winding(planes, plane_index, winding);
+        int v42 = winding.m_size - 2;
+        if (v42 > 0)
+        {
+            int nVertices = 3 * v42;
+            int nIndices = 5 * v42 - 2;
+            nglMesh* mesh = auxCreateScratchMesh(0x40000, 1);
+            nglMeshSection* section = nglCreateScratchSection(
+                6, nIndices, nVertices, &cddebug_vertex_format);
+            nglAddMeshSection(
+                mesh, section,
+                *(nglMaterial**)((char*)&DebugRender_sInst + 0xC), 1);
+            unsigned short* indices =
+                (unsigned short*)nglLockSectionIndices(section);
+            float* vertices = (float*)nglLockSectionVertices(section);
+            int v48 = 0;
+            for (int i = 2; i < winding.m_size; ++i)
+            {
+                if (i - 1 >= 0x100)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 154;
+                    AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                float prevX = winding[i - 1].v.m128_f32[0];
+                float prevY = winding[i - 1].v.m128_f32[1];
+                float prevZ = winding[i - 1].v.m128_f32[2];
+                float curX = winding[i].v.m128_f32[0];
+                float curY = winding[i].v.m128_f32[1];
+                float curZ = winding[i].v.m128_f32[2];
+                if (i >= 0x100)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 154;
+                    AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                if (v48 > 0)
+                {
+                    indices[0] = (unsigned short)(v48 - 1);
+                    indices[1] = (unsigned short)v48;
+                    indices += 2;
+                }
+                vertices[0] = winding[0].v.m128_f32[0];
+                vertices[1] = winding[0].v.m128_f32[1];
+                vertices[2] = winding[0].v.m128_f32[2];
+                indices[0] = (unsigned short)v48;
+                vertices[3] = curX;
+                vertices[4] = curY;
+                vertices[5] = curZ;
+                indices[1] = (unsigned short)(v48 + 1);
+                vertices[6] = prevX;
+                vertices[7] = prevY;
+                vertices[8] = prevZ;
+                indices[2] = (unsigned short)(v48 + 2);
+                indices += 3;
+                vertices += 9;
+                v48 += 3;
+                j_nullsub_67(section);
+                j_nullsub_27(section);
+            }
+            unsigned char* v58 = (unsigned char*)(
+                ~7 & ((uintptr_t)nglListWorkPos + 7));
+            unsigned int v59 = 4 * nglShaderParamSet::NumParams + 8;
+            if (v58 + v59 <= nglListWork + nglListWorkSize)
+            {
+                nglListWorkPos = v58 + v59;
+            }
+            else
+            {
+                if (nglLastListAllocWarnFrame != nglFrame)
+                {
+                    tlFatal(
+                        "Render list allocation overflow. Reserved = %d "
+                        "Requested = %d Free = %d.\n",
+                        nglListWorkSize, 4 * nglShaderParamSet::NumParams + 8,
+                        nglListWork + nglListWorkSize - v58);
+                    nglLastListAllocWarnFrame = nglFrame;
+                }
+                v58 = nullptr;
+            }
+            nglShaderParamSet* npolies = (nglShaderParamSet*)v58;
+            *(unsigned int*)v58 = 0;
+            *(unsigned int*)(v58 + 4) = 0;
+            setup_color(color, *npolies);
+            math::Mat43 identity;
+            identity.x.v = s_posX;
+            identity.y.v = s_posY;
+            identity.z.v = s_posZ;
+            identity.w.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+            nglMesh* m = auxCloseScratchMesh(mesh);
+            nglListAddMesh(m, &identity, nullptr, npolies, nullptr);
+        }
+    }
+    if (planes.m_elements != nullptr)
+        tlMemFree(planes.m_elements);
 }
 
 // ============================================================================
