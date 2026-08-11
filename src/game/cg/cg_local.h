@@ -145,12 +145,21 @@ struct XAnimEntry {
     void* notify;             // +0x0C
     int   lastAttempt;        // +0x10
     unsigned char ucLastChosenChild;  // +0x14
+    unsigned char _pad[3];    // +0x15
+    union {
+        struct {
+            unsigned short flags;    // +0x18
+            unsigned short children; // +0x1A
+        } s;
+    } u;                      // +0x18
 };
 
 struct AnimTree {
     void* name;               // +0x00 InplaceString
-    XAnimEntry entries[2];    // +0x04 InplaceVector<XAnimEntry>
-    int entriesSize;          // +0x38
+    struct {
+        unsigned int mSize;   // +0x04
+        XAnimEntry*  mList;   // +0x08
+    } entries;
 };
 
 struct weaponInfo_s {
