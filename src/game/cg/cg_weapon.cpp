@@ -70,8 +70,8 @@ extern void* AnimBankManager_sInst;
 extern void* AnimBank_GetAnimTree(void* bank, const char* name);
 extern void* cdGetAnim(unsigned int hash);
 extern void* XAnimCreateTree(void* ent, void* anims);
-extern void* XAnimIsLooped(void* anims, unsigned int animIndex);
-extern void* XAnimGetLength(void* anims, unsigned int animIndex);
+extern int XAnimIsLooped(AnimTree* anims, unsigned int animIndex);
+extern float XAnimGetLength(AnimTree* anims, unsigned int animIndex);
 extern void Com_Error(int code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void* GetTextureData(const char* name, int image_type,
@@ -1345,8 +1345,8 @@ void CG_RegisterWeapon(int weaponNum)
             v1->viewModelAnimRates[14] = 0.0f;
             v1->viewModelAnimRates[15] = 0.0f;
             v1->viewModelAnimRates[16] = 0.0f;
-            XAnimIsLooped(AnimTree, 0x17);
-            XAnimIsLooped(AnimTree, 0x18);
+            XAnimIsLooped((struct AnimTree*)AnimTree, 0x17);
+            XAnimIsLooped((struct AnimTree*)AnimTree, 0x18);
         }
         if (szWorldModel[0])
         {
@@ -1936,8 +1936,8 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
     if (mainTree == nullptr)
         CG_ASSERT("pAnimTree", "c:\\cod\\code\\game\\cg_weapons.cpp", 1050);
     dobjModels[0].animTree = (XAnimTree*)mainTree;
-    XAnimIsLooped(pAnims, 0x17);
-    XAnimIsLooped(pAnims, 0x18);
+    XAnimIsLooped((struct AnimTree*)pAnims, 0x17);
+    XAnimIsLooped((struct AnimTree*)pAnims, 0x18);
     DObjCreate(dobjModels, v8, mainTree, dobj, 0);
     dword_F6A2A0[802 * currCl] = (int)dobj;
     if (strlen(szHandXModel) >= 0x18)

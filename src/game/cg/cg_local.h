@@ -154,7 +154,8 @@ struct XAnimEntry {
     } u;                      // +0x18
 };
 
-struct AnimTree {
+class AnimTree {
+public:
     void* name;               // +0x00 InplaceString
     struct {
         unsigned int mSize;   // +0x04
