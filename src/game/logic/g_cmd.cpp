@@ -87,9 +87,10 @@ struct RemainingTime {
 };
 
 class CurveManager {
-public:
+private:
     CurveManager();            // ??0CurveManager@@QAE@XZ (game.o 0x638160)
-    virtual ~CurveManager();   // ??1CurveManager@@AAE@XZ (game.o 0x61F780)
+    ~CurveManager();           // ??1CurveManager@@AAE@XZ (game.o 0x61F780)
+public:
     RemainingTime mRemainingTime[50];  // +0x04 (0x0C stride)
     struct CurveDList {
         int  m_size;  // +0x00
@@ -101,8 +102,8 @@ public:
     CurveDList mKeyEvaluators;       // +0x26C
     CurveDList mConditionEvaluators; // +0x27C
     static CurveManager* sInst;      // ?sInst@CurveManager@@2PAV1@A @ 0xF4F430
-    void Initialize();       // ?Initialize@CurveManager@@UAEXXZ
-    void CleanUp();          // ?CleanUp@CurveManager@@UAEXXZ
+    virtual void Initialize();  // ?Initialize@CurveManager@@UAEXXZ
+    virtual void CleanUp();     // ?CleanUp@CurveManager@@UAEXXZ
     void DetachCurve(Curve* curve);  // ?DetachCurve@CurveManager@@QAEXPAVCurve@@@Z
     void AttachCurve(Curve* curve);  // ?AttachCurve@CurveManager@@QAEXPAVCurve@@@Z (game.o 0x629780)
     void AddKeyFunc(unsigned int type,
@@ -113,8 +114,10 @@ public:
                           float (__cdecl* func)(unsigned int, unsigned int,
                                                 unsigned int, float, float,
                                                 unsigned int));  // ?AddConditionFunc@CurveManager@@QAEXIP6AMIIIMMI@Z@Z (game.o 0x629830)
+private:
     unsigned int UInt32Lookup(unsigned char* data, unsigned int key,
                               unsigned int _default);  // ?UInt32Lookup@CurveManager@@AAEIPAEII@Z
+protected:
     float EvaluateKey(unsigned int frameId, unsigned int entityHandleVal,
                       unsigned int type, unsigned int trackId,
                       float _default);  // ?EvaluateKey@CurveManager@@IAEMIIIIM@Z (game.o 0x6385E0)
@@ -122,6 +125,7 @@ public:
                             unsigned int type, float min, float max,
                             unsigned int trackId,
                             float _default);  // ?EvaluateCondition@CurveManager@@IAEMIIIMMIM@Z (game.o 0x638650)
+public:
     void PostEvent(unsigned int entityHandle, unsigned int hash,
                    float value);  // ?PostEvent@CurveManager@@QAEXIIM@Z (game.o 0x6386C0)
     void ClearEntities();  // ?ClearEntities@CurveManager@@QAEXXZ (game.o 0x6466A0)
@@ -193,7 +197,8 @@ struct CurveEvalFunc {
 };
 PoolAllocator* CurveEvalFunc::sAllocator = nullptr;
 
-struct Curve {
+class Curve {
+public:
     CurveNode m_dlist_node;             // +0x00
     float mCurveParams[19];             // +0x08..+0x54 (15 zeroed by ctor)
     unsigned int mEntityHandle;         // +0x54
