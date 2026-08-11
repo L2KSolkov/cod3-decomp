@@ -7305,7 +7305,8 @@ struct GdbFile {
 };
 struct GdbFileSet;
 
-struct GdbFileManager {
+class GdbFileManager {
+public:
     void* __vftable;  // +0x00
     GdbFileManager();  // ??0GdbFileManager@@AAE@XZ (game.o 0x629920)
     ~GdbFileManager(); // ??1GdbFileManager@@EAE@XZ (game.o 0x61F790)

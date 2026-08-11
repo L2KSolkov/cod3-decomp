@@ -1466,11 +1466,13 @@ int    G_IsVehicleImmune(Entity* ent, int mod);
 float  Damage_Falloff(float fDistance, float fDamage, float fMinDamagePercent,
                       int iInnerRadius, int iOuterRadius);
 int    G_BounceMissile(Entity* ent, trace_t* trace);
-int    ParseConfigStringToStruct(unsigned char* pStruct, const cspField_t* pFieldList,
-                                 int iNumFields, const ConfigString* pCfgStr,
-                                 int iMaxFieldTypes, void* parseSpecialFieldType,
-                                 void (*parseStrcpy)(unsigned char*, const char*, int));
-void   G_HitLocStrcpy(unsigned char* out, const char* in, int size);
+int    ParseConfigStringToStruct(
+           unsigned char* pStruct, const cspField_t* pFieldList,
+           int iNumFields, const ConfigString* pCfgStr, int iMaxFieldTypes,
+           int (__cdecl* parseSpecialFieldType)(unsigned char*, const char*,
+                                                int),
+           void (__cdecl* parseStrcpy)(unsigned char*, const char*));
+void   G_HitLocStrcpy(unsigned char* out, const char* in);
 void   G_AddEvent(Entity* ent, int event, int eventParm);
 void   G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                 const float* dir, const float* point, int damage, int dflags,

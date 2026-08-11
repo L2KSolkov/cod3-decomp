@@ -2555,7 +2555,7 @@ int VEH_ParseSpecificField(unsigned char* pStruct, const char* pValue, int field
 }
 
 // ea: 0x0044D350
-void VEH_Strcpy(unsigned char* pMember, const char* pKeyValue, int)
+void VEH_Strcpy(unsigned char* pMember, const char* pKeyValue)
 {
     strcpy((char*)pMember, pKeyValue);
 }

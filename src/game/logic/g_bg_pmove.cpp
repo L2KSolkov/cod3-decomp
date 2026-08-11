@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "core/tlFixedString.h"
 
 #include <ctype.h>
 #include <math.h>
@@ -7127,4 +7128,663 @@ LABEL_24:
         return true;
     }
     return false;
+}
+
+// ============================================================================
+// bg_weapons.cpp config-string parsing (game.o)
+// ============================================================================
+extern char emptyString;                    // game.o BSS 0xF4EBFD
+extern int  gInteractArmsWeaponIndex;       // ?gInteractArmsWeaponIndex@@3HA (game.o)
+extern void* mem_heap_malloc(unsigned int size);  // ?mem_heap_malloc (mem_heap)
+struct nglTexture;
+extern nglTexture* cdGetTexture(TPakId pakId, const tlFixedString& name);
+    // ?cdGetTexture@@YAPAUnglTexture@@W4TPakId@@ABVtlFixedString@@@Z (streamer.o)
+
+// game.o static name tables (recovered from .rdata 0xDF5A5C..0xDF5B28)
+static const char* const s_szWeapClassNames[18] = {
+    "rifle", "mg", "smg", "lmg", "pistol", "grenade", "rocketlauncher",
+    "turret", "spotter", "non-player", "sniper", "revive", "health",
+    "ammo", "interact", "mine", "flag", "spread",
+};
+static const char* const s_szWeapAmmoTypeNames[6] = {
+    "smg", "pistol", "rifle", "lmg", "hmg", "umg",
+};
+static const char* const s_szWeapOverlayReticleNames[5] = {
+    "none", "crosshair", "FG42", "Springfield", "Gewehr43",
+};
+static const char* const s_szWeapStanceNames[3] = {
+    "stand", "duck", "prone",
+};
+static const char* const s_szProjectileExplosionNames[9] = {
+    "grenade", "smoke", "rocket", "molotov", "artillery", "mortar",
+    "tank", "b17", "none",
+};
+
+// material_names - decal-suffix table (.rdata 0xDF8DF0, null terminated)
+static const char* const material_names[24] = {
+    "NONE", "BARK", "BRICK", "CARPET", "CLOTH", "CONCRETE", "DIRT",
+    "FLESH", "FOLIAGE", "GLASS", "GRASS", "GRAVEL", "ICE", "METAL",
+    "MUD", "PAPER", "PLASTER", "ROCK", "SAND", "SNOW", "WATER", "WOOD",
+    "ASPHALT", nullptr,
+};
+
+// weaponInfoFields - bg_weapons.cpp cspField_t table (334 entries, .rdata 0xDF5B30)
+static const cspField_t weaponInfoFields[334] = {
+    { "displayName", 12, 0 },
+    { "AIOverlayDescription", 16, 0 },
+    { "modeName", 168, 0 },
+    { "gunModel", 20, 0 },
+    { "handModel", 24, 0 },
+    { "attach1Model", 28, 0 },
+    { "attach2Model", 32, 0 },
+    { "attach3Model", 36, 0 },
+    { "attach4Model", 40, 0 },
+    { "attach5Model", 44, 0 },
+    { "attach1Tag", 48, 0 },
+    { "attach2Tag", 52, 0 },
+    { "attach3Tag", 56, 0 },
+    { "attach4Tag", 60, 0 },
+    { "attach5Tag", 64, 0 },
+    { "idleAnim", 72, 0 },
+    { "emptyIdleAnim", 76, 0 },
+    { "adsIdleAnim", 80, 0 },
+    { "fireAnim", 84, 0 },
+    { "holdFireAnim", 88, 0 },
+    { "lastShotAnim", 92, 0 },
+    { "rechamberAnim", 96, 0 },
+    { "meleeAnim", 100, 0 },
+    { "reloadAnim", 104, 0 },
+    { "reloadEmptyAnim", 108, 0 },
+    { "reloadStartAnim", 112, 0 },
+    { "reloadEndAnim", 116, 0 },
+    { "raiseAnim", 120, 0 },
+    { "dropAnim", 124, 0 },
+    { "altRaiseAnim", 128, 0 },
+    { "altDropAnim", 132, 0 },
+    { "adsFireAnim", 136, 0 },
+    { "adsLastShotAnim", 140, 0 },
+    { "adsRechamberAnim", 144, 0 },
+    { "lmgDeployedAnim", 148, 0 },
+    { "lmgDeployAnim", 152, 0 },
+    { "lmgBreakdownAnim", 156, 0 },
+    { "adsUpAnim", 160, 0 },
+    { "adsDownAnim", 164, 0 },
+    { "script", 2236, 0 },
+    { "weaponType", 172, 8 },
+    { "weaponClass", 176, 9 },
+    { "weaponSlot", 180, 12 },
+    { "slotStackable", 184, 5 },
+    { "ammoType", 192, 10 },
+    { "pickupWithoutSelect", 196, 5 },
+    { "reticleCenter", 1240, 0 },
+    { "reticleSide", 1244, 0 },
+    { "reticleCenterSize", 1248, 4 },
+    { "reticleSideSize", 1252, 4 },
+    { "reticleMinOfs", 1256, 4 },
+    { "sprintMoveF", 1260, 6 },
+    { "sprintMoveR", 1264, 6 },
+    { "sprintMoveU", 1268, 6 },
+    { "duckedOfsF", 1308, 6 },
+    { "duckedOfsR", 1312, 6 },
+    { "duckedOfsU", 1316, 6 },
+    { "proneOfsF", 1344, 6 },
+    { "proneOfsR", 1348, 6 },
+    { "proneOfsU", 1352, 6 },
+    { "standMoveF", 1284, 6 },
+    { "standMoveR", 1288, 6 },
+    { "standMoveU", 1292, 6 },
+    { "duckedMoveF", 1320, 6 },
+    { "duckedMoveR", 1324, 6 },
+    { "duckedMoveU", 1328, 6 },
+    { "proneMoveF", 1356, 6 },
+    { "proneMoveR", 1360, 6 },
+    { "proneMoveU", 1364, 6 },
+    { "sprintRotP", 1272, 6 },
+    { "sprintRotY", 1276, 6 },
+    { "sprintRotR", 1280, 6 },
+    { "standRotP", 1296, 6 },
+    { "standRotY", 1300, 6 },
+    { "standRotR", 1304, 6 },
+    { "duckedRotP", 1332, 6 },
+    { "duckedRotY", 1336, 6 },
+    { "duckedRotR", 1340, 6 },
+    { "proneRotP", 1368, 6 },
+    { "proneRotY", 1372, 6 },
+    { "proneRotR", 1376, 6 },
+    { "posMoveRate", 1380, 6 },
+    { "posProneMoveRate", 1384, 6 },
+    { "sprintMoveMinSpeed", 1388, 6 },
+    { "standMoveMinSpeed", 1392, 6 },
+    { "duckedMoveMinSpeed", 1396, 6 },
+    { "proneMoveMinSpeed", 1400, 6 },
+    { "posRotRate", 1404, 6 },
+    { "posProneRotRate", 1408, 6 },
+    { "standRotMinSpeed", 1416, 6 },
+    { "duckedRotMinSpeed", 1420, 6 },
+    { "proneRotMinSpeed", 1424, 6 },
+    { "radiantName", 1428, 0 },
+    { "worldModel", 1432, 0 },
+    { "pickupModel", 1436, 0 },
+    { "hudIcon", 1440, 0 },
+    { "modeIcon", 1444, 0 },
+    { "ammoIcon", 1448, 0 },
+    { "startAmmo", 1452, 4 },
+    { "ammoName", 1456, 0 },
+    { "clipName", 1464, 0 },
+    { "maxAmmo", 1472, 4 },
+    { "clipSize", 1476, 4 },
+    { "sharedAmmoCapName", 1480, 0 },
+    { "sharedAmmoCap", 1488, 4 },
+    { "damage", 1492, 4 },
+    { "meleeDamage", 1512, 4 },
+    { "sensitivityScale", 1592, 6 },
+    { "damageInnerRadius", 1504, 4 },
+    { "damageOuterRadius", 1508, 4 },
+    { "minDamagePercent", 1500, 4 },
+    { "fireDelay", 1520, 7 },
+    { "meleeDelay", 1524, 7 },
+    { "fireTime", 1528, 7 },
+    { "rechamberTime", 1532, 7 },
+    { "rechamberBoltTime", 1536, 7 },
+    { "holdFireTime", 1540, 7 },
+    { "meleeTime", 1544, 7 },
+    { "reloadTime", 1548, 7 },
+    { "reloadEmptyTime", 1552, 7 },
+    { "reloadAddTime", 1556, 7 },
+    { "reloadStartTime", 1560, 7 },
+    { "reloadStartAddTime", 1564, 7 },
+    { "reloadEndTime", 1568, 7 },
+    { "dropTime", 1572, 7 },
+    { "raiseTime", 1576, 7 },
+    { "altDropTime", 1580, 7 },
+    { "altRaiseTime", 1584, 7 },
+    { "fuseTime", 1588, 7 },
+    { "moveSpeedScale", 1596, 6 },
+    { "idleCrouchFactor", 1700, 6 },
+    { "idleProneFactor", 1704, 6 },
+    { "gunMaxPitch", 1708, 6 },
+    { "gunMaxYaw", 1712, 6 },
+    { "swayMaxAngle", 1716, 6 },
+    { "swayLerpSpeed", 1720, 6 },
+    { "swayPitchScale", 1724, 6 },
+    { "swayYawScale", 1728, 6 },
+    { "swayHorizScale", 1732, 6 },
+    { "swayVertScale", 1736, 6 },
+    { "swayShellShockScale", 1740, 6 },
+    { "adsSwayMaxAngle", 1744, 6 },
+    { "adsSwayLerpSpeed", 1748, 6 },
+    { "adsSwayPitchScale", 1752, 6 },
+    { "adsSwayYawScale", 1756, 6 },
+    { "adsSwayHorizScale", 1760, 6 },
+    { "adsSwayVertScale", 1764, 6 },
+    { "rifleBullet", 1772, 5 },
+    { "twoHanded", 1768, 5 },
+    { "semiAuto", 1776, 5 },
+    { "boltAction", 1780, 5 },
+    { "aimDownSight", 1784, 5 },
+    { "rechamberWhileAds", 1788, 5 },
+    { "clipOnly", 1820, 5 },
+    { "cookOffHold", 1792, 5 },
+    { "noBounce", 1796, 5 },
+    { "noTumble", 1800, 5 },
+    { "canMantle", 1804, 5 },
+    { "smoke", 1808, 5 },
+    { "offHand", 1812, 5 },
+    { "cloth", 1816, 5 },
+    { "wideListIcon", 1824, 5 },
+    { "adsFire", 1828, 5 },
+    { "adsOnly", 1832, 5 },
+    { "animateCamReload", 1836, 5 },
+    { "animateCamMelee", 1840, 5 },
+    { "animateCamFire", 1844, 5 },
+    { "doNotDrop", 1848, 5 },
+    { "canSpot", 1852, 5 },
+    { "holdToFire", 1856, 5 },
+    { "killIcon", 1860, 0 },
+    { "wideKillIcon", 1864, 5 },
+    { "noPartialReload", 1868, 5 },
+    { "segmentedReload", 1872, 5 },
+    { "reloadAmmoAdd", 1876, 4 },
+    { "reloadStartAdd", 1880, 4 },
+    { "altWeapon", 1888, 0 },
+    { "shotCount", 1896, 4 },
+    { "dropAmmoMin", 1900, 4 },
+    { "dropAmmoMax", 1904, 4 },
+    { "takedamage", 1496, 4 },
+    { "explosionRadius", 1912, 4 },
+    { "explosionInnerDamage", 1916, 4 },
+    { "explosionOuterDamage", 1920, 4 },
+    { "projectileSpeed", 1924, 4 },
+    { "projectileSpeedUp", 1928, 4 },
+    { "projectileModel", 1932, 0 },
+    { "projExplosionType", 1936, 14 },
+    { "projExplosionEffect", 1940, 0 },
+    { "projExplosionSound", 1944, 0 },
+    { "projImpactExplode", 1948, 5 },
+    { "triggerRadius", 1908, 4 },
+    { "lobWeapon", 1952, 5 },
+    { "projectileDLight", 1976, 4 },
+    { "projectileRed", 1980, 6 },
+    { "projectileGreen", 1984, 6 },
+    { "projectileBlue", 1988, 6 },
+    { "projectileRadius", 1960, 4 },
+    { "projectileCount", 1956, 4 },
+    { "projectileDelay", 1964, 4 },
+    { "projectileSpacingMin", 1968, 4 },
+    { "projectileSpacingMax", 1972, 4 },
+    { "adsTransInTime", 1684, 7 },
+    { "adsTransOutTime", 1688, 7 },
+    { "adsIdleAmount", 1692, 6 },
+    { "adsZoomFov", 1600, 6 },
+    { "adsSensitivityScale", 1604, 6 },
+    { "adsZoomInFrac", 1608, 6 },
+    { "adsZoomOutFrac", 1612, 6 },
+    { "adsOverlayShader", 1616, 0 },
+    { "adsOverlayReticle", 1620, 11 },
+    { "adsOverlayWidth", 1624, 6 },
+    { "adsOverlayHeight", 1628, 6 },
+    { "adsBobFactor", 1632, 6 },
+    { "adsViewBobMult", 1636, 6 },
+    { "adsAimPitch", 1992, 6 },
+    { "adsCrosshairInFrac", 1996, 6 },
+    { "adsCrosshairOutFrac", 2000, 6 },
+    { "adsReloadTransTime", 2148, 7 },
+    { "adsTransBlendTime", 2152, 7 },
+    { "adsGunKickPitchMin", 2004, 6 },
+    { "adsGunKickPitchMax", 2008, 6 },
+    { "adsGunKickYawMin", 2012, 6 },
+    { "adsGunKickYawMax", 2016, 6 },
+    { "adsGunKickAccel", 2020, 6 },
+    { "adsGunKickSpeedMax", 2024, 6 },
+    { "adsGunKickSpeedDecay", 2028, 6 },
+    { "adsGunKickStaticDecay", 2032, 6 },
+    { "adsViewKickPitchMin", 2036, 6 },
+    { "adsViewKickPitchMax", 2040, 6 },
+    { "adsViewKickYawMin", 2044, 6 },
+    { "adsViewKickYawMax", 2048, 6 },
+    { "adsViewKickCenterSpeed", 2052, 6 },
+    { "adsSpread", 2064, 6 },
+    { "adsSpreadDucked", 2068, 6 },
+    { "adsSpreadProne", 2072, 6 },
+    { "hipSpreadStandMin", 1640, 6 },
+    { "hipSpreadDuckedMin", 1644, 6 },
+    { "hipSpreadProneMin", 1648, 6 },
+    { "hipSpreadMax", 1652, 6 },
+    { "hipSpreadDecayRate", 1656, 6 },
+    { "hipSpreadFireAdd", 1660, 6 },
+    { "hipSpreadTurnAdd", 1664, 6 },
+    { "hipSpreadMoveAdd", 1668, 6 },
+    { "hipSpreadDuckedDecay", 1672, 6 },
+    { "hipSpreadProneDecay", 1676, 6 },
+    { "hipReticleSidePos", 1680, 6 },
+    { "hipIdleAmount", 1696, 6 },
+    { "hipGunKickPitchMin", 2076, 6 },
+    { "hipGunKickPitchMax", 2080, 6 },
+    { "hipGunKickYawMin", 2084, 6 },
+    { "hipGunKickYawMax", 2088, 6 },
+    { "hipGunKickAccel", 2092, 6 },
+    { "hipGunKickSpeedMax", 2096, 6 },
+    { "hipGunKickSpeedDecay", 2100, 6 },
+    { "hipGunKickStaticDecay", 2104, 6 },
+    { "hipViewKickPitchMin", 2108, 6 },
+    { "hipViewKickPitchMax", 2112, 6 },
+    { "hipViewKickYawMin", 2116, 6 },
+    { "hipViewKickYawMax", 2120, 6 },
+    { "hipViewKickCenterSpeed", 2124, 6 },
+    { "leftArc", 2156, 6 },
+    { "rightArc", 2160, 6 },
+    { "topArc", 2164, 6 },
+    { "bottomArc", 2168, 6 },
+    { "accuracy", 2172, 6 },
+    { "vertTurnSpeed", 2176, 6 },
+    { "horTurnSpeed", 2180, 6 },
+    { "convergenceTime", 2184, 6 },
+    { "maxRange", 2188, 6 },
+    { "animHorRotateInc", 2192, 6 },
+    { "playerPositionDist", 2196, 6 },
+    { "stance", 188, 13 },
+    { "useHintString", 2200, 0 },
+    { "turretFov", 2208, 6 },
+    { "turretAdsFov", 1600, 6 },
+    { "minSpread", 1640, 6 },
+    { "maxSpread", 1652, 6 },
+    { "horizViewJitter", 2220, 6 },
+    { "vertViewJitter", 2224, 6 },
+    { "fireHeat", 2212, 6 },
+    { "cooldownRate", 2216, 6 },
+    { "aiEffectiveRange", 2136, 6 },
+    { "aiMissRange", 2140, 6 },
+    { "aiDamageMod", 2144, 6 },
+    { "bulletConeAngle", 2228, 6 },
+    { "adsBulletConeAngle", 2232, 6 },
+    { "animIKOffsetTime", 2248, 6 },
+    { "animIKOffsetForce", 2252, 6 },
+    { "animIKOffsetDist", 2256, 6 },
+    { "animIKPitchTime", 2260, 6 },
+    { "animIKPitchForce", 2264, 6 },
+    { "animIKPitchAngle", 2268, 6 },
+    { "animIKTorsoRecoilPitchTime", 2272, 6 },
+    { "animIKTorsoRecoilPitchForce", 2276, 6 },
+    { "animIKTorsoRecoilPitchAngle", 2280, 6 },
+    { "swirlControl", 1884, 5 },
+    { "playerForwardOffset", 1344, 6 },
+    { "playerRightOffset", 1348, 6 },
+    { "playerUpOffset", 1352, 6 },
+    { "damageMP", 1492, 4 },
+    { "meleeDamageMP", 1512, 4 },
+    { "damageInnerRadiusMP", 1504, 4 },
+    { "damageOuterRadiusMP", 1508, 4 },
+    { "minDamagePercentMP", 1500, 4 },
+    { "fireDelayMP", 1520, 7 },
+    { "meleeDelayMP", 1524, 7 },
+    { "fireTimeMP", 1528, 7 },
+    { "meleeTimeMP", 1544, 7 },
+    { "explosionRadiusMP", 1912, 4 },
+    { "explosionInnerDamageMP", 1916, 4 },
+    { "explosionOuterDamageMP", 1920, 4 },
+    { "weaponSlotMP", 180, 12 },
+    { "maxAmmoMP", 1472, 4 },
+    { "sensitivityScaleMP", 1592, 6 },
+    { "adsZoomFovMP", 1600, 6 },
+    { "adsTransInTimeMP", 1684, 7 },
+    { "adsTransOutTimeMP", 1688, 7 },
+    { "adsSensitivityScaleMP", 1604, 6 },
+    { "adsSpreadMP", 2064, 6 },
+    { "adsSpreadDuckedMP", 2068, 6 },
+    { "adsSpreadProneMP", 2072, 6 },
+    { "hipSpreadStandMinMP", 1640, 6 },
+    { "hipSpreadDuckedMinMP", 1644, 6 },
+    { "hipSpreadProneMinMP", 1648, 6 },
+    { "hipSpreadMaxMP", 1652, 6 },
+    { "hipSpreadDecayRateMP", 1656, 6 },
+    { "hipSpreadFireAddMP", 1660, 6 },
+    { "hipSpreadTurnAddMP", 1664, 6 },
+    { "hipSpreadMoveAddMP", 1668, 6 },
+    { "hipSpreadDuckedDecayMP", 1672, 6 },
+    { "hipSpreadProneDecayMP", 1676, 6 },
+    { "lmgDeployAnimMP", 152, 0 },
+    { "lmgBreakdownAnimMP", 156, 0 },
+};
+
+// GdbFile result holder (mirrors g_cm_load.cpp TU-local struct)
+struct GdbFile {
+    void* mLayout;    // +0x00 (InplaceTree<uint,uint>*)
+    void* mRecords;   // +0x04 (InplaceVector<GdbFileSet::Value>*)
+};
+class GdbFileManager {
+public:
+    static GdbFileManager* sInst;  // ?sInst@GdbFileManager@@2PAV1@A @ 0xF4F434
+    GdbFile* GetGdbFile(GdbFile* result, TPakId pakId, const char* name,
+                        const char* type);  // game.o 0x638750
+};
+
+// ============================================================================
+// InitWeaponInfo - ea: 0x621ED0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00621ED0
+static weaponFileInfo_t* InitWeaponInfo(int index, const cspField_t* pFieldList,
+                                        int iNumFields)
+{
+    void* v3 = mem_heap_malloc(0x948u);
+    weaponFileInfo_t* v4 = nullptr;
+    if (v3 != nullptr)
+    {
+        // match-array segment tails zeroed before the full memset
+        *(int*)((char*)v3 + 0x1C8) = 0;
+        *(int*)((char*)v3 + 0x2CC) = 0;
+        *(int*)((char*)v3 + 0x3D0) = 0;
+        *(int*)((char*)v3 + 0x4D4) = 0;
+        v4 = (weaponFileInfo_t*)v3;
+    }
+    memset(v4, 0, sizeof(weaponFileInfo_t));
+    bg_weaponInfo[index] = v4;
+    v4->index = index;
+    v4->szInternalName = &emptyString;
+    v4->internalNameHash = HashString::CalcHash(defaultFileName);
+    if (iNumFields > 0)
+    {
+        const int* p_iOffset = &pFieldList->iOffset;
+        for (int i = iNumFields; i != 0; --i)
+        {
+            if (p_iOffset[1] == 0)
+                *(char**)((char*)v4 + p_iOffset[0]) = &emptyString;
+            p_iOffset += 3;
+        }
+    }
+    return v4;
+}
+
+// ============================================================================
+// SetConfigString2 - ea: 0x606C10 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00606C10
+static void SetConfigString2(unsigned char* pMember, const char* pszKeyValue)
+{
+    if (*pszKeyValue != 0)
+        *(const char**)pMember = pszKeyValue;
+    else
+        *(const char**)pMember = &emptyString;
+}
+
+// ============================================================================
+// BG_ParseWeaponInfoSpecificFieldType - ea: 0x615D50 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00615D50
+static int BG_ParseWeaponInfoSpecificFieldType(unsigned char* pStruct,
+                                               const char* pValue,
+                                               int iFieldType)
+{
+    const char* szInternalName = *(const char**)(pStruct + 8);
+    switch (iFieldType)
+    {
+    case 8:
+    {
+        int v3 = 0;
+        while (_stricmp(pValue, s_szWeapTypeNames[v3]) != 0)
+        {
+            if (++v3 >= 9)
+                break;
+        }
+        *(int*)(pStruct + 0xAC) = v3;
+        if (v3 == 9)
+            Com_Error(ERR_DROP, "Unknown weapon type \"%s\" in \"%s\"\n",
+                      pValue, szInternalName);
+        return 1;
+    }
+    case 9:
+    {
+        int v5 = 0;
+        while (_stricmp(pValue, s_szWeapClassNames[v5]) != 0)
+        {
+            if (++v5 >= 18)
+                break;
+        }
+        *(int*)(pStruct + 0xB0) = v5;
+        if (v5 == 18)
+            Com_Error(ERR_DROP, "Unknown weapon class \"%s\" in \"%s\"\n",
+                      pValue, szInternalName);
+        return 1;
+    }
+    case 10:
+    {
+        int v6 = 0;
+        while (_stricmp(pValue, s_szWeapAmmoTypeNames[v6]) != 0)
+        {
+            if (++v6 >= 6)
+                break;
+        }
+        *(int*)(pStruct + 0xC0) = v6;
+        if (v6 == 6)
+            Com_Error(ERR_DROP, "Unknown ammo type \"%s\" in \"%s\"\n",
+                      pValue, szInternalName);
+        return 1;
+    }
+    case 11:
+    {
+        int v7 = 0;
+        while (_stricmp(pValue, s_szWeapOverlayReticleNames[v7]) != 0)
+        {
+            if (++v7 >= 5)
+                break;
+        }
+        *(int*)(pStruct + 0x654) = v7;
+        if (v7 == 5)
+            Com_Error(ERR_DROP,
+                      "Unknown weapon overlay reticle \"%s\" in \"%s\"\n",
+                      pValue, szInternalName);
+        return 1;
+    }
+    case 12:
+    {
+        int v8 = 0;
+        while (_stricmp(pValue, s_szWeapSlotNames[v8]) != 0)
+        {
+            if (++v8 >= 10)
+                break;
+        }
+        *(int*)(pStruct + 0xB4) = v8;
+        if (v8 == 10)
+            Com_Error(ERR_DROP, "Unknown weapon slot \"%s\" in \"%s\"\n",
+                      pValue, szInternalName);
+        return 1;
+    }
+    case 13:
+    {
+        int v9 = 0;
+        while (_stricmp(pValue, s_szWeapStanceNames[v9]) != 0)
+        {
+            if (++v9 >= 3)
+                break;
+        }
+        *(int*)(pStruct + 0xBC) = v9;
+        if (v9 == 3)
+            Com_Error(ERR_DROP, "Unknown weapon stance \"%s\" in \"%s\"\n",
+                      pValue, szInternalName);
+        return 1;
+    }
+    case 14:
+    {
+        int v10 = 0;
+        while (_stricmp(pValue, s_szProjectileExplosionNames[v10]) != 0)
+        {
+            if (++v10 >= 9)
+                break;
+        }
+        *(int*)(pStruct + 0x790) = v10;
+        if (v10 == 9)
+            Com_Error(ERR_DROP,
+                      "Unknown projectile explosion \"%s\" in \"%s\"\n",
+                      pValue, szInternalName);
+        return 1;
+    }
+    default:
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 487;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            const char* v11 = va("Bad field type %i in %s\n", iFieldType,
+                                 szInternalName);
+            if (AeAssert::Warning(v11))
+                __debugbreak();
+        }
+        Com_Error(ERR_DROP, "Bad field type %i in %s\n", iFieldType,
+                  szInternalName);
+        return 0;
+    }
+}
+
+// ============================================================================
+// ParseWeaponConfigString - ea: 0x63FD00 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x0063FD00
+void ParseWeaponConfigString(const char* name, const ConfigString* cfgstr)
+{
+    if (bg_iNumWeapons >= 92)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 572;
+        AeAssert::gCurrentExpr = "bg_iNumWeapons < (92)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Exceeded maximum weapons"))
+            __debugbreak();
+    }
+    ++bg_iNumWeapons;
+    weaponFileInfo_t* inited =
+        InitWeaponInfo(bg_iNumWeapons, weaponInfoFields, 334);
+    weaponFileInfo_t* pWeap = inited;
+    if (*name == 0)
+        inited->szInternalName = &emptyString;
+    else
+        inited->szInternalName = (char*)name;
+    inited->internalNameHash = HashString::CalcHash(name);
+    if (ParseConfigStringToStruct(
+            (unsigned char*)inited, weaponInfoFields, 334, cfgstr, 15,
+            BG_ParseWeaponInfoSpecificFieldType, SetConfigString2) != 0)
+    {
+        weaponFileInfo_t* v4 = bg_weaponInfo[bg_iNumWeapons];
+        char* szGunXModel = *(char**)((char*)v4 + 0x14);
+        if (v4->type == WEAPTYPE_INTERACT && szGunXModel[0] == 0)
+        {
+            gInteractArmsWeaponIndex = bg_iNumWeapons;
+        }
+    }
+    else
+    {
+        bg_weaponInfo[bg_iNumWeapons--] = nullptr;
+    }
+    TPakId pakId = CurPakId();
+    const char* const* namea = material_names;
+    void** pDecals = (void**)((char*)pWeap + 0x8EC);
+    char buf[512];
+    while (namea < &material_names[23])
+    {
+        sprintf(buf, "%s_%s", pWeap->szInternalName, *namea);
+        *pDecals = 0;
+        GdbFile gdb;
+        GdbFileManager::sInst->GetGdbFile(&gdb, pakId, buf, "decal");
+        void* records = gdb.mRecords;
+        if (records != nullptr)
+        {
+            if (*(unsigned int*)records == 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                AeAssert::gCurrentLine = 81;
+                AeAssert::gCurrentExpr = "index < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            void** mList = *(void***)((char*)records + 4);
+            if (mList[1] != nullptr)
+            {
+                tlFixedString v15((const char*)mList[1]);
+                mList[1] = cdGetTexture(pakId, v15);
+            }
+            if (mList[4] != nullptr)
+            {
+                tlFixedString v13((const char*)mList[4]);
+                mList[4] = cdGetTexture(pakId, v13);
+            }
+            if (mList[7] != nullptr)
+            {
+                tlFixedString v14((const char*)mList[7]);
+                mList[7] = cdGetTexture(pakId, v14);
+            }
+            *pDecals = mList;
+        }
+        else
+        {
+            GdbFile gdb2;
+            GdbFileManager::sInst->GetGdbFile(&gdb2, pakId, "m1garand_wood",
+                                              "decal");
+            if (gdb2.mRecords != nullptr)
+                *pDecals = *(void***)((char*)gdb2.mRecords + 4);
+        }
+        ++pDecals;
+        ++namea;
+    }
 }
