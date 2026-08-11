@@ -151,6 +151,7 @@ int Com_GetCurrentParseLine()
     return pi->lines;
 }
 
+// ea: 0x0060FBF0
 void Com_ScriptError(const char* msg, ...)
 {
     char string[32000];

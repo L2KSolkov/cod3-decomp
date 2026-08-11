@@ -51,6 +51,7 @@ struct cdlPlaneArray {
     cdlPlaneView* m_elements;
 };
 
+// ea: 0x0062A040
 static void clip_winding(ae_sized_array<math::Position3, 256>* winding,
                          const cdlPlaneView* clip)
 {
@@ -125,6 +126,7 @@ static void clip_winding(ae_sized_array<math::Position3, 256>* winding,
     }
 }
 
+// ea: 0x00620010
 static void init_winding(const cdlPlaneView* plane,
                          ae_sized_array<math::Position3, 256>* winding)
 {
@@ -202,6 +204,7 @@ static void init_winding(const cdlPlaneView* plane,
     winding->push_back(p);
 }
 
+// ea: 0x0062A6B0
 void calc_winding(const cdlPlaneArray* planes, unsigned int plane_index,
                   ae_sized_array<math::Position3, 256>* winding)
 {
