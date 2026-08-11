@@ -21,7 +21,6 @@ extern void Cmd_Noclip_f(Entity* ent);                      // g.o
 extern void G_Printf(const char* fmt, ...);                 // g.o
 extern void CG_MotionBlur_Begin(float level, float plateauTime,
                                 float fadeTime);            // ?Begin@CG_MotionBlur
-extern unsigned int HashString_CalcHash(const char* str);   // ?CalcHash@HashString
 extern unsigned int BrocSys_GetEnt(const Broc::string& value, int fieldnameHash,
                                    unsigned int* array, int capacity, int flags);
 extern void BrocSys_ShellShock(unsigned int entityHandleVal,
@@ -265,7 +264,7 @@ EntityManager* FN_DebugThread_Select_Level()
 // ea: 0x503780
 void FN_DebugThread_Select_EntityName(char* hashName, char* entityName)
 {
-    int v2 = (int)HashString_CalcHash(hashName);
+    int v2 = (int)HashString::CalcHash(hashName);
     Broc::string value(entityName);
     unsigned int ent = BrocSys_GetEnt(value, v2, nullptr, 0, 0);
     unsigned int v4 = ent & 0xFFF;

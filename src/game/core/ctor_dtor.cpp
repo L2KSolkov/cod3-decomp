@@ -268,6 +268,12 @@ HashString::HashString(Broc::string& str)
         mHash = AeHash("");
 }
 
+// ea: 0x004BD6B0
+unsigned int HashString::CalcHash(const char* str)
+{
+    return AeHash(str);
+}
+
 // ============================================================================
 // AnimHeap
 // ============================================================================

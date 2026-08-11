@@ -636,7 +636,6 @@ extern ServerTime_s ServerTime_sInst;
 extern void* RumbleManager_Inst(int instance);
 extern void RumbleManager_Remove(void* self, RumbleEffectInstanceHandle handle);
 extern float CG_GetViewFov();
-extern unsigned int HashString_CalcHash(const char* str);
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern void FastSinCos(float radians, float* psin, float* pcos);
 extern int _fpclass(double x);
@@ -914,7 +913,7 @@ void Camera::SetCameraTagIndex()
             if (!s_tagCameraHashInit)
             {
                 s_tagCameraHashInit = true;
-                s_tagCameraHash = HashString_CalcHash("tag_camera");
+                s_tagCameraHash = HashString::CalcHash("tag_camera");
             }
             mTagCameraIndex = DObjGetBoneIndex(v2, s_tagCameraHash);
         }
@@ -1207,12 +1206,12 @@ void Camera::UpdateReviveCam()
     if (!s_headHashInit)
     {
         s_headHashInit = true;
-        s_headHash = HashString_CalcHash("bip01 head");
+        s_headHash = HashString::CalcHash("bip01 head");
     }
     if (!s_spineHashInit)
     {
         s_spineHashInit = true;
-        s_spineHash = HashString_CalcHash("bip01 spine1");
+        s_spineHash = HashString::CalcHash("bip01 spine1");
     }
     float tagMtx[31];
     G_DObjGetWorldTagMatrix(EntityManager_GetPlayer(EntityManager_sInst,
@@ -1553,12 +1552,12 @@ void Camera::Update()
     if (!s_tagGunnerBarrelHashInit)
     {
         s_tagGunnerBarrelHashInit = true;
-        s_tagGunnerBarrelHash = HashString_CalcHash("tag_gunner_barrel");
+        s_tagGunnerBarrelHash = HashString::CalcHash("tag_gunner_barrel");
     }
     if (!s_tagBarrelHashInit)
     {
         s_tagBarrelHashInit = true;
-        s_tagBarrelHash = HashString_CalcHash("tag_barrel");
+        s_tagBarrelHash = HashString::CalcHash("tag_barrel");
     }
     unsigned int v3 = s_tagGunnerBarrelHash;
     switch (newMode)
@@ -3785,12 +3784,12 @@ void Camera::UpdateVehicleDriverCamPos(Entity* veh, PlayerState* ps,
     if (!s_tagDriverHashInit)
     {
         s_tagDriverHashInit = true;
-        s_tagDriverHash = HashString_CalcHash("tag_driver");
+        s_tagDriverHash = HashString::CalcHash("tag_driver");
     }
     float tagMtx[16];
     if (G_DObjGetWorldTagMatrix(veh, s_tagDriverHash,
                                 (DObjSkelMat*)tagMtx) == 0)
-        G_DObjGetWorldTagMatrix(veh, HashString_CalcHash("tag_body"),
+        G_DObjGetWorldTagMatrix(veh, HashString::CalcHash("tag_body"),
                                 (DObjSkelMat*)tagMtx);
     float height = ((vehicle_info_full_t*)Info)->cameraFPHeightOffset
                    + extra_height_offset;
@@ -3828,7 +3827,7 @@ void Camera::UpdateTankCam()
     if (!s_tagTurretHashInit)
     {
         s_tagTurretHashInit = true;
-        s_tagTurretHash = HashString_CalcHash("tag_turret");
+        s_tagTurretHash = HashString::CalcHash("tag_turret");
     }
     float tagMtx[16];
     if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash,
@@ -4000,7 +3999,7 @@ void Camera::UpdateTankCommanderCam()
     if (!s_tagTurretHashInit)
     {
         s_tagTurretHashInit = true;
-        s_tagTurretHash = HashString_CalcHash("tag_turret");
+        s_tagTurretHash = HashString::CalcHash("tag_turret");
     }
     float tagMtx[16];
     if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash,
@@ -4780,7 +4779,7 @@ void Camera::UpdateDeathCamera()
                 void* mWorld =
                     *(void**)((char*)EntityManager_sInst + 0x44);
                 unsigned int hash =
-                    HashString_CalcHash("playerDeathHitGround");
+                    HashString::CalcHash("playerDeathHitGround");
                 if (mWorld != nullptr)
                     Entity_Notify(mWorld, hash);
             }
@@ -5511,7 +5510,7 @@ void Camera::UpdateVehicleAnimCam()
             if (!s_pelvisHashInit)
             {
                 s_pelvisHashInit = true;
-                s_pelvisHash = HashString_CalcHash("bip01 pelvis");
+                s_pelvisHash = HashString::CalcHash("bip01 pelvis");
             }
             float tagMtx[16];
             G_DObjGetWorldTagMatrix(
@@ -5538,7 +5537,7 @@ void Camera::UpdateVehicleAnimCam()
                     if (!s_bodyHashInit)
                     {
                         s_bodyHashInit = true;
-                        s_bodyHash = HashString_CalcHash("tag_body");
+                        s_bodyHash = HashString::CalcHash("tag_body");
                     }
                     float bodyMtx[16];
                     G_DObjGetWorldTagMatrix(mObject, s_bodyHash,
@@ -5639,12 +5638,12 @@ void Camera::UpdateVehicleAnimCam()
         if (!s_animHeadHashInit)
         {
             s_animHeadHashInit = true;
-            s_animHeadHash = HashString_CalcHash("bip01 head");
+            s_animHeadHash = HashString::CalcHash("bip01 head");
         }
         if (!s_animSpineHashInit)
         {
             s_animSpineHashInit = true;
-            s_animSpineHash = HashString_CalcHash("bip01 spine1");
+            s_animSpineHash = HashString::CalcHash("bip01 spine1");
         }
         float headMtx[16];
         G_DObjGetWorldTagMatrix(

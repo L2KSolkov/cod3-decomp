@@ -163,7 +163,6 @@ extern int dword_F5E6BC;
 extern int dword_F5E6C0;
 extern unsigned int tagHash;
 extern unsigned int tag_brass_hash;
-extern unsigned int HashString_CalcHash(const char* str);
 extern void CG_ChangeViewmodelDobj(int client, const char* handModel);
 extern void CG_RegisterWeapon(int weaponNum);
 struct ServerTime_s {
@@ -221,7 +220,6 @@ extern int dword_F641E4[4 * 1580];
 extern int dword_F641EC[4 * 1580];
 extern int dword_F6A2A0[4 * 802];
 extern unsigned int tag_flash_hash;
-extern unsigned int HashString_CalcHash(const char* str);
 extern void DObjFree(void* obj, int bClearTree);
 extern void mem_heap_free(void* ptr);
 extern void DObj_Dtor(void* obj);
@@ -914,7 +912,7 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
     if ((sTagFlashInit & 1) == 0)
     {
         sTagFlashInit |= 1u;
-        tag_flash_hash = HashString_CalcHash("tag_flash");
+        tag_flash_hash = HashString::CalcHash("tag_flash");
     }
     int fireSndDelay = entity->fireSndDelay;
     if (fireSndDelay > 0)
@@ -1758,7 +1756,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
                         if ((tagHashInit & 1) == 0)
                         {
                             tagHashInit |= 1u;
-                            tagHash = HashString_CalcHash("tag_weapon");
+                            tagHash = HashString::CalcHash("tag_weapon");
                         }
                         int BoneIndex = DObjGetBoneIndex(v19, tagHash);
                         if (BoneIndex != -1)
@@ -1776,7 +1774,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
             if ((tagHashInit & 2) == 0)
             {
                 tagHashInit |= 2u;
-                tag_brass_hash = HashString_CalcHash("tag_brass");
+                tag_brass_hash = HashString::CalcHash("tag_brass");
             }
             int v22 = DObjGetBoneIndex((DObj*)dword_F6A2A0[802 * currCl],
                                        tag_brass_hash);

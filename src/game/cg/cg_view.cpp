@@ -2691,7 +2691,6 @@ extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
                                           DObjSkelMat* tagMtx);
 struct vehicle_info_t;
 extern vehicle_info_t* VEH_GetInfo(int idx);
-extern unsigned int HashString_CalcHash(const char* str);
 
 static Entity* DbHandleToEntityLocal(unsigned int handle)
 {
@@ -2734,7 +2733,7 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
     if (!s_tagBarrelHashInit)
     {
         s_tagBarrelHashInit = true;
-        s_tagBarrelHash = HashString_CalcHash("tag_barrel");
+        s_tagBarrelHash = HashString::CalcHash("tag_barrel");
     }
     if (ent == nullptr)
     {
@@ -2755,7 +2754,7 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
         if (!s_tagPlayerHashInit)
         {
             s_tagPlayerHashInit = true;
-            s_tagPlayerHash = HashString_CalcHash("tag_player");
+            s_tagPlayerHash = HashString::CalcHash("tag_player");
         }
         if (G_DObjGetWorldTagMatrix(ent, s_tagPlayerHash,
                                     (DObjSkelMat*)tagMtx) == 0)
@@ -2916,7 +2915,7 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
             if (!s_tagAimHashInit)
             {
                 s_tagAimHashInit = true;
-                s_tagAimHash = HashString_CalcHash("tag_aim");
+                s_tagAimHash = HashString::CalcHash("tag_aim");
             }
             unsigned int v64 = ent->pTurretInfo == nullptr
                                    ? tag_gunner_barrel_hash
@@ -3024,7 +3023,7 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
             if (v10 != nullptr)
             {
                 const char* v11 = flashTag;
-                unsigned int flash_tag_hash = HashString_CalcHash(flashTag);
+                unsigned int flash_tag_hash = HashString::CalcHash(flashTag);
                 float tagMat[16];
                 if (G_DObjGetWorldTagMatrix(v10, flash_tag_hash,
                                             (DObjSkelMat*)tagMat)
@@ -3062,7 +3061,7 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
                         {
                             s_gunnerFlashHashInit = true;
                             s_gunnerFlashHash =
-                                HashString_CalcHash("tag_gunner_flash");
+                                HashString::CalcHash("tag_gunner_flash");
                         }
                         v16 = s_gunnerFlashHash;
                         float tagMat2[16];

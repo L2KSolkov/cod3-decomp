@@ -11,7 +11,6 @@
 extern int currCl;
 extern int dword_F6A28C[4 * 802];
 extern int dword_F6A290[4 * 802];
-extern unsigned int HashString_CalcHash(const char* str);
 extern int SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
 extern DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
 extern int G_DObjSetControlTagAngles(Entity* ent, int* partBits,
@@ -68,7 +67,7 @@ void HelmetController(Entity* owner)
         if ((sHelmetInit & 1) == 0)
         {
             sHelmetInit |= 1u;
-            helmetHash_0 = HashString_CalcHash("Bip01 Helmet");
+            helmetHash_0 = HashString::CalcHash("Bip01 Helmet");
         }
         int BoneIndex = SV_DObjGetBoneIndex(owner, helmetHash_0);
         if (BoneIndex >= 0)
@@ -199,24 +198,24 @@ LABEL_23:
     if ((sTurretTagInit & 1) == 0)
     {
         sTurretTagInit |= 1u;
-        tag_aim_hash_4 = HashString_CalcHash("tag_aim");
+        tag_aim_hash_4 = HashString::CalcHash("tag_aim");
     }
     if ((sTurretTagInit & 2) == 0)
     {
         sTurretTagInit |= 2u;
-        tag_aim_animated_hash_0 = HashString_CalcHash("tag_aim_animated");
+        tag_aim_animated_hash_0 = HashString::CalcHash("tag_aim_animated");
     }
     if ((sTurretTagInit & 4) == 0)
     {
         sTurretTagInit |= 4u;
         tag_aim_animatedY_hash_0 =
-            HashString_CalcHash("tag_aim_animatedY");
+            HashString::CalcHash("tag_aim_animatedY");
     }
     if ((sTurretTagInit & 8) == 0)
     {
         sTurretTagInit |= 8u;
         tag_aim_animatedP_hash_0 =
-            HashString_CalcHash("tag_aim_animatedP");
+            HashString::CalcHash("tag_aim_animatedP");
     }
     G_DObjSetControlTagAngles(entity, partBits, tag_aim_hash_4, angles);
     G_DObjSetControlTagAngles(entity, partBits, tag_aim_animated_hash_0,

@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // sv_world.cpp â€” server world collision (sv_world.cpp of sv.o)
 // ============================================================================
 
@@ -121,7 +121,6 @@ extern void          MatrixTransposeTransformVector43(const math::Position3& in1
                                                       math::Position3& out);
 extern int           VM_Call(vm_s* vm, int callnum, ...);
 extern void          ValidatePakId(TPakId pakId);
-extern unsigned int  HashString_CalcHash(const char* str);
 extern TPakId        CurPakId(void);
 extern DCGSet*       ClipHandleToDCGSet(TPakId pakId, int handle);
 extern void          CM_ModelBounds(DCGSet* model, math::Position3& mins, math::Position3& maxs);
@@ -1128,7 +1127,7 @@ void SV_SetBrushModel(Entity* gEnt) {
         if (*(void**)((char*)gEnt->mModel.mValue + 0x48) == nullptr)
             return;
         ValidatePakId((TPakId)gEnt->mModel.mPakId);
-        h = (int)HashString_CalcHash(
+        h = (int)HashString::CalcHash(
             *(const char**)((char*)gEnt->mModel.mValue + 0x48));
     }
     if (h == 0) {

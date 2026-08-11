@@ -38,7 +38,6 @@ extern void* EntityManager_sInst;
 extern const char* CL_GetConfigStringC(int index);
 extern const char* Info_ValueForKey(const char* s, const char* key);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
-extern unsigned int HashString_CalcHash(const char* str);
 extern int Com_BitCheck(const int* const array, int bitNum);
 extern int BG_GetNumWeapons();
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
@@ -132,27 +131,27 @@ void CG_ParseServerinfo()
 void CG_InitServerCommandHashVals()
 {
     memset(gCG_ServerCommands, 0, sizeof(gCG_ServerCommands));
-    gCG_ServerCommands[0].hVal = HashString_CalcHash("startCam");
-    dword_F610E4 = HashString_CalcHash("stopCam");
-    dword_F610E8 = HashString_CalcHash("cp");
-    dword_F610EC = HashString_CalcHash("cs");
-    dword_F610F0 = HashString_CalcHash("print");
-    dword_F610F4 = HashString_CalcHash("gm");
-    dword_F610F8 = HashString_CalcHash("gmb");
-    dword_F610FC = HashString_CalcHash("object_update");
-    dword_F61100 = HashString_CalcHash("object_complete");
-    dword_F61104 = HashString_CalcHash("opendeadscreen");
-    dword_F61108 = HashString_CalcHash("openvictoryscreen");
-    dword_F6110C = HashString_CalcHash("clientLevelShot");
-    dword_F61110 = HashString_CalcHash("saveshot");
-    dword_F61114 = HashString_CalcHash("mu_play");
-    dword_F61118 = HashString_CalcHash("mu_stop");
-    dword_F6111C = HashString_CalcHash("snd_fade");
-    dword_F61120 = HashString_CalcHash("scr_fade");
-    dword_F61124 = HashString_CalcHash("fog");
-    dword_F61128 = HashString_CalcHash("ls");
-    dword_F6112C = HashString_CalcHash("popupopen");
-    dword_F61130 = HashString_CalcHash("popupclose");
+    gCG_ServerCommands[0].hVal = HashString::CalcHash("startCam");
+    dword_F610E4 = HashString::CalcHash("stopCam");
+    dword_F610E8 = HashString::CalcHash("cp");
+    dword_F610EC = HashString::CalcHash("cs");
+    dword_F610F0 = HashString::CalcHash("print");
+    dword_F610F4 = HashString::CalcHash("gm");
+    dword_F610F8 = HashString::CalcHash("gmb");
+    dword_F610FC = HashString::CalcHash("object_update");
+    dword_F61100 = HashString::CalcHash("object_complete");
+    dword_F61104 = HashString::CalcHash("opendeadscreen");
+    dword_F61108 = HashString::CalcHash("openvictoryscreen");
+    dword_F6110C = HashString::CalcHash("clientLevelShot");
+    dword_F61110 = HashString::CalcHash("saveshot");
+    dword_F61114 = HashString::CalcHash("mu_play");
+    dword_F61118 = HashString::CalcHash("mu_stop");
+    dword_F6111C = HashString::CalcHash("snd_fade");
+    dword_F61120 = HashString::CalcHash("scr_fade");
+    dword_F61124 = HashString::CalcHash("fog");
+    dword_F61128 = HashString::CalcHash("ls");
+    dword_F6112C = HashString::CalcHash("popupopen");
+    dword_F61130 = HashString::CalcHash("popupclose");
 }
 
 // ea: 0x006927D0
@@ -1074,7 +1073,6 @@ extern float dword_F63C70[4 * 1580];
 extern float* gCamera;
 extern int dword_180000;
 extern unsigned int head_hash_0;
-extern unsigned int HashString_CalcHash(const char* str);
 extern float VectorDistance(const float* v1, const float* v2);
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMat);
@@ -1179,7 +1177,7 @@ void CG_Player(Entity* entity)
         if ((sHeadHashInit & 1) == 0)
         {
             sHeadHashInit |= 1u;
-            head_hash_0 = HashString_CalcHash("bip01 head");
+            head_hash_0 = HashString::CalcHash("bip01 head");
         }
         float tagMtx[31];
         G_DObjGetWorldTagMatrix(entity, head_hash_0, (DObjSkelMat*)tagMtx);
