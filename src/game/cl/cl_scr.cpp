@@ -21,6 +21,13 @@ public:
 // ?cl@@3PAUclientActive_t@@A (cl.o data @ 0xDF01C0)
 clientActive_t cl[2];
 
+// ?cgvm@@3PAUvm_s@@A (cl.o data @ 0xF1577C)
+struct vm_s;
+vm_s* cgvm = NULL;
+
+// Xbox per-client controller port table (BSS @ 0xF6A28C; unnamed in binary)
+int dword_F6A28C[4 * 802];
+
 extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 
 // ============================================================================

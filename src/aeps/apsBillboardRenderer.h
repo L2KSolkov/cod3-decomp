@@ -107,7 +107,6 @@ public:
     virtual int IsCameraFacing() const;
     virtual void SetScreenFacingNormal(const math::Dir3& iNormal);
     virtual float GetChanceToRemove() const;
-    virtual bool GetMeshRadius(float& oRadius) const;
     // Inline template (emitted in this object): DefaultRender<Renderer,Node>
     // ea: 0x8061A0 (apsBillboardRenderer/apsBillboardNode instantiation)
     template <typename RendererT, typename NodeT>

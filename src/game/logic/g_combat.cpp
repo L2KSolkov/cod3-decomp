@@ -8,6 +8,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleManager {
+    static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+};
+
+
 extern "C" int __fpclass(float);
 
 // ============================================================================
@@ -343,7 +349,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                 dword_F64018[1580 * mServerClientIndex] =
                     (int)(cgGlobal.time + cg_redFlashTime.value);
             }
-            void* rumbleMgr = RumbleManager_Inst(mServerClientIndex);
+            void* rumbleMgr = RumbleManager::Inst(mServerClientIndex);
             if (rumbleMgr != nullptr)
             {
                 RumbleEffect effect;
@@ -376,7 +382,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                 dword_F64018[1580 * mServerClientIndex] =
                     (int)(cgGlobal.time + cg_redFlashTime.value);
             }
-            void* rumbleMgr = RumbleManager_Inst(mServerClientIndex);
+            void* rumbleMgr = RumbleManager::Inst(mServerClientIndex);
             if (rumbleMgr != nullptr)
             {
                 RumbleEffect effect;

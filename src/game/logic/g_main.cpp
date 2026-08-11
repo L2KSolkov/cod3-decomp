@@ -38,6 +38,12 @@ InteractionController* InteractionController::Inst(int instance)
 #include "ngl/nglDebug.h"
 #include "core/PoolAllocator.h"
 
+// Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleManager {
+    static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+};
+
+
 extern PoolAllocator* gCommonPoolAllocator;  // core.o 0x012EFF18
 extern "C" int __fpclass(float);
 
@@ -3916,7 +3922,7 @@ int G_InitGame(int randomSeed, int restart, int savegame, int checksum)
                 && AeAssert::Assert("Invalid index in multiton"))
                 __debugbreak();
         }
-        RumbleManager_StopMotors(RumbleManager_Inst(currCl));
+        RumbleManager_StopMotors(RumbleManager::Inst(currCl));
         Cvar_Set("timescale", "1");
         com_timescale.value = 1.0f;
         SmokeGrenadeMgr_ReInitialize();

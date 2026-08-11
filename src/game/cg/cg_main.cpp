@@ -10,6 +10,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleManager {
+    static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+};
+
+
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
 
@@ -72,7 +78,6 @@ extern void SoundDevice_FrameAdvance(void* sInst, float delta);
 extern void* SoundDevice_sInst;
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
-extern void* RumbleManager_Inst(int instance);
 extern void* GetTextureData(const char* name, int image_type,
                             const char* fromPak);
 extern void* bg_itemlist;      // gitem_s[]
@@ -384,7 +389,7 @@ void CG_Shutdown()
     CG_FreeWeapons();
     Com_FreeWeaponInfoMemory(2, 0);
     memset(cg, 0, sizeof(cg_t));
-    void* v0 = RumbleManager_Inst(currCl);
+    void* v0 = RumbleManager::Inst(currCl);
     RumbleManager_Reset(v0);
 }
 

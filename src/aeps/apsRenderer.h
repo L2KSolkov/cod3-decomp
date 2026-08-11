@@ -71,8 +71,8 @@ public:
     virtual float GetVersion() const = 0;                               // slot 3
     virtual int IsCameraFacing() const = 0;                             // slot 4
     virtual void SetScreenFacingNormal(const math::Dir3& iNormal) = 0;  // slot 5
-    virtual float GetChanceToRemove() const = 0;                        // slot 6
-    virtual bool GetMeshRadius(float& oRadius) const = 0;               // slot 7
+    virtual float GetChanceToRemove() const;                            // slot 6
+    virtual bool GetMeshRadius(float& oRadius) const;                   // slot 7
 
     // apsRenderer.o (non-inline):
     void AddNode(apsRenderNode* iNode, float iDist);

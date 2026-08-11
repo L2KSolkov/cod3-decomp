@@ -8,6 +8,12 @@
 
 #include <string.h>
 
+// Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleManager {
+    static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+};
+
+
 struct netchan_t;
 struct Entity;
 namespace Broc {
@@ -125,7 +131,6 @@ extern void StreamZoneManager_Update(void* self, int cellNum,
                                      const float* pos, bool forceReset);
 extern void* StreamZoneManager_sInst;
 extern void RumbleManager_FrameAdvance(void* self, float delta_time);
-extern void* RumbleManager_Inst(int instance);
 extern int R_CellForPoint(const float* pos);
 extern void Con_RunConsole();
 extern bool gUseControllerLagFix;
@@ -1153,7 +1158,7 @@ void CL_Frame(int msec, float screen_time_inc)
             cdl_proftimer_effect_sys.stop();
         }
         cdl_proftimer_rumble_mgr.start();
-        RumbleManager_FrameAdvance(RumbleManager_Inst(currCl), v6);
+        RumbleManager_FrameAdvance(RumbleManager::Inst(currCl), v6);
         cdl_proftimer_rumble_mgr.stop();
         if (v14)
         {

@@ -10,6 +10,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleManager {
+    static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+};
+
+
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
 
@@ -626,8 +632,6 @@ extern void _Z_FreeInternal(void* ptr);
 extern void CG_Printf(const char* msg, ...);
 extern void RumbleManager_Play(void* mgr, void* result, const void* effect,
                                float intensity);
-extern void* RumbleManager_Inst(int instance);
-extern void* RumbleManager_sInstHolder;
 extern void AxisCopy(const float (*in)[3], float (*out)[3]);
 extern float dword_F62960[4 * 1580];
 extern const char** cg_shock_cvar_names;
@@ -1131,8 +1135,8 @@ void CG_DamageFeedback(int yawByte, int pitchByte, float damage)
     rumbleEffect.mRumbleDataArray[0].steady_duration = yawa;
     rumbleEffect.mRumbleDataArray[1].intensity = damage;
     rumbleEffect.mRumbleDataArray[1].steady_duration = yawa;
-    void* v25 = RumbleManager_Inst(currCl);
-    if (RumbleManager_sInstHolder != nullptr && v25 != nullptr)
+    void* v25 = RumbleManager::Inst(currCl);
+    if (v25 != nullptr)
     {
         float result;
         RumbleManager_Play(v25, &result, &rumbleEffect, 1.0f);

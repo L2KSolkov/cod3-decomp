@@ -9,6 +9,12 @@
 #include <stdio.h>
 #include <string.h>
 
+// Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleManager {
+    static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+};
+
+
 // Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
 struct controller {
     int locked_port;
@@ -4577,7 +4583,7 @@ void VEH_FireGunnerWeapon(Entity* ent, int msec)
                 && EntityManager::sInst->IsLocalPlayer(occupant))
             {
                 int client = occupant->client->mServerClientIndex;
-                if (RumbleManager_Inst(client) != nullptr)
+                if (RumbleManager::Inst(client) != nullptr)
                 {
                     RumbleEffect effect;
                     effect.mRumbleDataArray[0].enabled = true;
@@ -4602,7 +4608,7 @@ void VEH_FireGunnerWeapon(Entity* ent, int msec)
                                                   0.2f);
                         playIntensity = 0.5f;
                     }
-                    RumbleManager_Play(RumbleManager_Inst(client), &effect,
+                    RumbleManager_Play(RumbleManager::Inst(client), &effect,
                                        playIntensity);
                 }
             }

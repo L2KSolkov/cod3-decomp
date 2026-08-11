@@ -11,6 +11,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of RumbleManager (full class in core/core_systems.h).
+struct RumbleManager {
+    static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
+};
+
+
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
 
 
@@ -656,7 +662,6 @@ struct ServerTime_s {
 };
 extern ServerTime_s ServerTime_sInst;
 
-extern void* RumbleManager_Inst(int instance);
 extern void RumbleManager_Remove(void* self, RumbleEffectInstanceHandle handle);
 extern float CG_GetViewFov();
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
@@ -887,7 +892,7 @@ void Camera::Restart()
     if (mVal != 0)
     {
         RumbleEffectInstanceHandle v4 = {mVal};
-        RumbleManager_Remove(RumbleManager_Inst(mClient), v4);
+        RumbleManager_Remove(RumbleManager::Inst(mClient), v4);
         mRumbleEffect = 0;
     }
 }
@@ -1309,7 +1314,7 @@ void Camera::UpdateTankShakeRumble(Entity* veh, bool firstPerson)
         }
         rumbleIntensity = 0.0f;
     set_intensity:
-        RumbleManager_SetIntensity(RumbleManager_Inst(mClient), mRumbleEffect,
+        RumbleManager_SetIntensity(RumbleManager::Inst(mClient), mRumbleEffect,
                                    rumbleIntensity);
     }
 }
@@ -4779,7 +4784,7 @@ void Camera::UpdateDeathCamera()
                                     currCl);
                 dword_F64018[1580 * currCl] =
                     cgGlobal.time + (int)cg_redFlashTime.value;
-                if (RumbleManager_Inst(currCl) != nullptr)
+                if (RumbleManager::Inst(currCl) != nullptr)
                 {
                     RumbleEffect_local effect;
                     RumbleEffect_Ctor(&effect);
@@ -4793,7 +4798,7 @@ void Camera::UpdateDeathCamera()
                     effect.mRumbleDataArray[1].delay = 0.0f;
                     effect.mRumbleDataArray[1].ramp_up_duration = 0.2f;
                     effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
-                    RumbleManager_Play(RumbleManager_Inst(currCl), &effect,
+                    RumbleManager_Play(RumbleManager::Inst(currCl), &effect,
                                        1.0f);
                 }
                 void* mWorld =
@@ -5191,7 +5196,7 @@ float Camera::SetNewMode(ECameraModes newMode)
         if (mRumbleEffect != 0)
         {
             RumbleEffectInstanceHandle handle = {mRumbleEffect};
-            RumbleManager_Remove(RumbleManager_Inst(mClient), handle);
+            RumbleManager_Remove(RumbleManager::Inst(mClient), handle);
             mRumbleEffect = 0;
         }
         break;
@@ -5253,7 +5258,7 @@ float Camera::SetNewMode(ECameraModes newMode)
             RumbleEffect_SetNotes(&effect, 1, notes);
             BrocString_dtor(notes);
             RumbleEffectInstanceHandle h =
-                RumbleManager_Play(RumbleManager_Inst(mClient), &effect, 0.0f);
+                RumbleManager_Play(RumbleManager::Inst(mClient), &effect, 0.0f);
             mRumbleEffect = h.mVal;
             Client* client = GetPlayer(mClient)->client;
             float newAngles[3] = {client->ps.viewangles[0],
