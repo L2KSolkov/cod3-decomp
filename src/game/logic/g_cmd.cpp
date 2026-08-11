@@ -786,6 +786,50 @@ void Cmd_Exec_f()
     }
 }
 
+// ea: 0x0061F280
+void Cmd_Wait_f()
+{
+    if (cmd_argc == 2)
+        cmd_wait = atoi(cmd_argv[1]);
+    else
+        cmd_wait = 1;
+}
+
+extern char* Cvar_VariableString(const char* var_name);  // core.o ?Cvar_VariableString@@YAPADPBD@Z
+
+// ea: 0x0061F550
+void Cmd_Vstr_f()
+{
+    if (cmd_argc == 2)
+    {
+        const char* v0 = Cvar_VariableString(cmd_argv[1]);
+        const char* v1 = va("%s\n", v0);
+        Cbuf_InsertText(v1);
+    }
+    else
+    {
+        Com_Printf("vstr <variablename> : execute a variable command\n");
+    }
+}
+
+// ea: 0x0061F590
+void Cmd_Echo_f()
+{
+    int v0 = 1;
+    if (cmd_argc > 1)
+    {
+        do
+        {
+            const char* v2 = defaultFileName;
+            if (v0 < cmd_argc)
+                v2 = cmd_argv[v0];
+            Com_Printf("%s ", v2);
+            ++v0;
+        } while (v0 < cmd_argc);
+    }
+    Com_Printf("\n");
+}
+
 // ea: 0x00629730
 void Cmd_Init()
 {
