@@ -130,7 +130,8 @@ struct IVPointerRaw {
     void* mValue;  // +0x00
     int   mPakId;  // +0x04
 };
-struct DObjModel {
+class DObjModel {
+public:
     IVPointerRaw  model;            // +0x00
     Broc::string      boneName;         // +0x08
     int               ignoreCollision;  // +0x0C
@@ -289,7 +290,7 @@ public:
     ~Entity();            // ??1Entity@@QAE@XZ (core.o)
     static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
     static void operator delete(void* ptr);  // ??3Entity@@SAXPAX@Z (game.o 0x620210)
-    void SetAnimDebug(const char* lastAnim);  // ?SetAnimDebug@Entity@@QAEXPBD@Z (game.o 0x62AFB0)
+    void SetAnimDebug(int lastAnim);  // ?SetAnimDebug@Entity@@QAEXH@Z (game.o 0x62AFB0)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z

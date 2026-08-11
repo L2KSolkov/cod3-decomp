@@ -32,7 +32,8 @@ struct string;
 // ============================================================================
 // HashString — global hashed string (4 bytes) — verified against IDA
 // ============================================================================
-struct HashString {
+class HashString {
+public:
     unsigned int mHash;  // +0x00
     HashString() : mHash(0) {}
     HashString(Broc::string& str);  // ea: 0x004C1450

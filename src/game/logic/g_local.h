@@ -283,7 +283,8 @@ void RespawnItem(Entity* ent);
 // ============================================================================
 // trRefEntity - render entity (0x104 bytes) - verified against IDA (subset)
 // ============================================================================
-struct trRefEntity {
+class trRefEntity {
+public:
     uint8_t _pad[0xF4];      // +0x00
     int16_t mWaterHeightOffset;  // +0xF4
     uint8_t _padF6[0xFC - 0xF6];

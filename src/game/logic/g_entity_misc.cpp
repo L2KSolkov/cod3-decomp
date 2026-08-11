@@ -926,9 +926,9 @@ struct BrocAPI_AnimView {
 };
 
 // ea: 0x0062AFB0
-void Entity::SetAnimDebug(const char* lastAnim)
+void Entity::SetAnimDebug(int lastAnim)
 {
-    const char* v2 = lastAnim;
+    const char* v2 = (const char*)(uintptr_t)lastAnim;
     const char* v4 =
         ((BrocAPI_AnimView*)gpBrocAPI)->mAnimNameResolver(
             (unsigned int)lastAnim);
