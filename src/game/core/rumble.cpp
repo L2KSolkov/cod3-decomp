@@ -55,6 +55,86 @@ bool RumbleEffect::GetEnabled(ERumbleMotorID rumbleID) const
     }
     return mRumbleDataArray[rumbleID].enabled;
 }
+
+// ea: 0x004DE090
+float RumbleEffect::GetDelay(ERumbleMotorID rumbleID) const
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return mRumbleDataArray[rumbleID].delay;
+}
+
+// ea: 0x004DE190
+float RumbleEffect::GetIntensity(ERumbleMotorID rumbleID) const
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return mRumbleDataArray[rumbleID].intensity;
+}
+
+// ea: 0x004DE210
+float RumbleEffect::GetRampDownDuration(ERumbleMotorID rumbleID) const
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return mRumbleDataArray[rumbleID].ramp_down_duration;
+}
+
+// ea: 0x004DE290
+float RumbleEffect::GetRampUpDuration(ERumbleMotorID rumbleID) const
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return mRumbleDataArray[rumbleID].ramp_up_duration;
+}
+
+// ea: 0x004DE310
+float RumbleEffect::GetSteadyDuration(ERumbleMotorID rumbleID) const
+{
+    if (rumbleID >= (ERumbleMotorID)2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RumbleEffect.h";
+        AeAssert::gCurrentLine = 36;
+        AeAssert::gCurrentExpr = "( rumbleID >= kRumbleMin && rumbleID <= kRumbleMax )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("value not in enum range"))
+            __debugbreak();
+    }
+    return mRumbleDataArray[rumbleID].steady_duration;
+}
 extern void controller_rumble(void* self, int i_controller_num, int i_motor,
                               float intensity);
 extern int currCl;
