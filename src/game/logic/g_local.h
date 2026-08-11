@@ -2249,9 +2249,16 @@ struct traceWork_t;
 struct cdl_cinfo1;
 struct cdl_poly_inl_t;
 struct cdlPlane;
+struct cdl_object_t;
 bool collide_segment_poly(const math::Position3& p0,
                           const math::Position3& p1, cdl_poly_inl_t& poly,
                           cdl_cinfo1& cinfo);  // game.o 0x61F010
+bool collide_segment(const cdl_object_t& obj, const math::Dir3* vert_list,
+                     const unsigned char* index_list,
+                     unsigned short first_vert, int num_indices,
+                     const math::Position3& p0, const math::Position3& p1,
+                     float& t, math::Position3& normal,
+                     int* tid);  // game.o 0x61EB80
 bool collide_segment(const proximity_data_t& data, traceWork_t* tw,
                      const math::Position3& p0, const math::Position3& p1,
                      cdl_cinfo1& cinfo, int& sflags,
@@ -2528,8 +2535,8 @@ struct cdl_array_t {
 
 // cdl_cinfo1 - segment collision info output (0x20 bytes, ctor at 0x4AECB0)
 struct cdl_cinfo1 {
-    math::Dir3 ni;        // +0x00
-    math::Position3 pi;   // +0x10
+    math::Position3 pi;   // +0x00 (hit point; verified vs disasm collide_segment)
+    math::Dir3 ni;        // +0x10 (hit normal)
 };
 static_assert(sizeof(cdl_cinfo1) == 0x20, "cdl_cinfo1 size mismatch");
 
