@@ -408,7 +408,7 @@ extern void XAnimShutdown();
 extern void SetupActorHeap();
 extern int gNflMediaId;
 enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };
-extern bool nflFileExists(nflMediaID mediaID, const char* filename);
+extern unsigned int nflFileExists(nflMediaID mediaID, const char* filename);
 extern void PakManager_CreateInst();
 extern void PakManager_DeleteInst();
 extern void BankManager_CreateInst();

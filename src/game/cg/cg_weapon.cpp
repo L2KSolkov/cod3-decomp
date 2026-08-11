@@ -220,7 +220,7 @@ extern char* CG_Argv(int arg);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 extern int CG_DObjGetViewModelTagMatrix(void* obj, unsigned int tag_name_hash,
                                         void* tagMat);
-struct DObj;
+class DObj;
 extern int CG_DObjGetWorldTagMatrix(Entity* entity, DObj* obj,
                                     unsigned int tag_name_hash,
                                     DObjSkelMat* tagMat);
@@ -254,7 +254,7 @@ extern void AngleVectors(const math::Position3* angles, float* forward,
                          float* right, float* up);
 
 struct weaponInfo_s;
-struct DObj;
+class DObj;
 
 extern char buffer_0[256];
 
