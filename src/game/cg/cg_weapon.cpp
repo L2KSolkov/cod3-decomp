@@ -80,7 +80,7 @@ extern char* va(const char* fmt, ...);
 extern const char* SEH_StringEd_GetString(const char* pszReference);
 extern void* bg_itemlist;
 extern void CG_RegisterItemVisuals(int itemNum);
-extern bool CG_SetupViewModelDObj(void* dobj, int weaponNum);
+extern bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum);
 extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
 extern int InteractionController_CanRunWeaponAnims(void* self);
@@ -166,7 +166,10 @@ extern unsigned int tag_brass_hash;
 extern unsigned int HashString_CalcHash(const char* str);
 extern void CG_ChangeViewmodelDobj(int client, const char* handModel);
 extern void CG_RegisterWeapon(int weaponNum);
-extern struct ServerTime_t { float mTickDelta; } ServerTime_sInst;
+struct ServerTime_s {
+    float mTickDelta;
+};
+extern ServerTime_s ServerTime_sInst;
 extern float tr_viewModelInfo_mWeaponScale[4];
 extern int tr_viewModelInfo_mWeaponOrigin_used;
 extern void* tr_viewModelInfo_mWeaponOrigin;
@@ -1038,7 +1041,7 @@ void CG_CreateWeaponDObjsForClient(int client, int weapon)
         v6 = nullptr;
     }
     dword_F6A2A0[802 * client] = (int)v6;
-    if (CG_SetupViewModelDObj(v6, weapon))
+    if (CG_SetupViewModelDObj((DObj*)v6, weapon))
         dword_F6A2A4[802 * client] = weapon;
 }
 
@@ -1439,12 +1442,13 @@ extern int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
 extern void Camera_StopAnimating(void* cam, float minTweenTime);
 extern void* gCamera;
-extern int CanInterrupt(void* pAnimTree, void* client_cgs);
+struct XAnimTree;
+extern bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs);
 extern void* cgs;
 extern int fireSide;
 extern void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* info);
 extern int CG_StartAnimBlend(int weaponNum, DObj* dobj, int toAnimIndex,
-                             int fromAnimIndex, float blendTime);
+                             unsigned int fromAnimIndex, float blendTime);
 extern void PM_KillQueuedReloadSound(PlayerState* ps);
 
 // ea: 0x0069ED70
@@ -1506,7 +1510,8 @@ void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon)
         {
         case 0u:
         case 0x17u:
-            if (CanInterrupt(Tree, (char*)cgs + currCl) && playingADSAnim == 0)
+            if (CanInterrupt((XAnimTree*)Tree, (char*)cgs + currCl)
+                && playingADSAnim == 0)
             {
                 unsigned int v11 = dword_F6A2A8[802 * currCl] & 0xFFFFFDFF;
                 float fadeInTimea = 0.0f;
@@ -1811,7 +1816,8 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
     }
 }
 
-extern void FixupGunModelParts(void* xmp);
+struct XModelParts;
+extern void FixupGunModelParts(XModelParts* xmp);
 extern void* XModelParts_GetAnimDef(void* parts);
 extern int XAnimEntry_Create(XAnimEntry* self);
 
@@ -1877,7 +1883,7 @@ bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum)
             if (parts && XModelParts_GetAnimDef(parts))
             {
                 ValidatePakId(dobjModels[1].model.mPakId);
-                FixupGunModelParts(parts);
+                FixupGunModelParts((XModelParts*)parts);
                 v57 = true;
             }
         }

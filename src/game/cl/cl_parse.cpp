@@ -209,7 +209,7 @@ struct refimport_t2 {
     int (*Cmd_Argc)();
     char* (*Cmd_Argv)(int);
     void (*Cmd_ExecuteText)(int, const char*);
-    int (*Com_SaveCvarsToBuffer)(const char**, int, char*, int);
+    int (*Com_SaveCvarsToBuffer)(const char**, int, char*, unsigned int);
     int (*Com_LoadCvarsFromBuffer)(const char**, int, const char*,
                                    const char*);
     int (*FS_FileIsInPAK)(const char*, int*);
@@ -979,7 +979,7 @@ void CL_InitRef()
     extern unsigned int FS_Write(char*, unsigned int, int);
     extern class BspPlane* CM_GetPlaneNum(int);
     extern struct cvar_t* Cvar_FindVar(const char*);
-    extern int Com_SaveCvarsToBuffer(const char**, int, char*, int);
+    extern int Com_SaveCvarsToBuffer(const char**, int, char*, unsigned int);
     extern int Com_LoadCvarsFromBuffer(const char**, int, const char*,
                                        const char*);
     extern int CG_GetGameModel(short);
