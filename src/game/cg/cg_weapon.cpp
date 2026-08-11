@@ -11,6 +11,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of GamePause (full class in game/sv/sv_stubs.h).
+struct GamePause { static bool IsGamePaused(int client); };
+
+
 // Minimal view of InteractionController (full class in g_local.h).
 class InteractionController {
 public:
@@ -121,7 +125,6 @@ extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
 extern void* DObj_GetMat(void* obj, int boneIndex);
-extern int GamePause_IsGamePaused(int client);
 extern int CG_HoldBreathUpdate();
 extern void CG_WeaponUpdateLoopingSound(Entity* entity);
 extern void CG_WeaponIKAddToFireQueue(Entity* attacker, int weapon);
@@ -1724,7 +1727,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
             memset(partBits, 255, sizeof(partBits));
             DObjCalcAnim((void*)dword_F6A2A0[802 * currCl], -1);
             j_nullsub_82((void*)dword_F6A2A0[802 * currCl], partBits);
-            if (!GamePause_IsGamePaused(currCl))
+            if (!GamePause::IsGamePaused(currCl))
             {
                 float deltaTa = ServerTime_sInst.mTickDelta;
                 void* v12 = InteractionController::Inst(currCl);

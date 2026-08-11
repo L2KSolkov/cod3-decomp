@@ -10,6 +10,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of GamePause (full class in game/sv/sv_stubs.h).
+struct GamePause { static bool IsGamePaused(int client); };
+
+
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 struct RumbleManager {
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
@@ -608,7 +612,6 @@ extern float sRumTimeMin;
 extern float sRumTimeMax;
 extern float sRumTimeFactor;
 extern void AnglesToForward(const float* const angles, float* const forward);
-extern int GamePause_IsGamePaused(int client);
 extern int CG_UpdateCameraShake(void* shake, int client);
 extern void CG_EndShellShock(const void* parms, int time);
 extern void CG_UpdateShellShockSound(const void* parms);
@@ -955,7 +958,7 @@ void CG_StartShakeCamera(float p, int duration, const float* src, float radius,
 // ea: 0x00695DA0
 void CG_ShakeCamera(int client)
 {
-    if (!GamePause_IsGamePaused(currCl) && cg_camerashake.integer != 0)
+    if (!GamePause::IsGamePaused(currCl) && cg_camerashake.integer != 0)
     {
         float scale = 0.0f;
         float sx = cgGlobal_time * 0.0016666667f;

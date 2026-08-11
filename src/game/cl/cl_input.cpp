@@ -12,6 +12,10 @@
 #include "game/cvar_types.h"
 #include "game/platform_xbox/MPLiveEngine.h"
 
+// Minimal view of GamePause (full class in game/sv/sv_stubs.h).
+struct GamePause { static bool IsGamePaused(int client); };
+
+
 // ============================================================================
 // Externs (cross-object; core.o / game.o / cg.o)
 // ============================================================================
@@ -141,7 +145,6 @@ extern void CG_NextWeapon_f();
 extern void CG_PrevWeapon_f();
 extern bool CL_IsADS(int client);
 extern void GamePause_SetGamePaused(int client, bool paused);
-extern bool GamePause_IsGamePaused(int client);
 extern bool gGrenadeCanBePickedUp;
 extern bool gCookingLiveGrenade;
 extern int cl_analogStickLean_integer;
@@ -675,7 +678,7 @@ void IN_EnableAsserts()
 // ea: 0x52B510
 void IN_TogglePaused()
 {
-    bool IsGamePaused = GamePause_IsGamePaused(currCl);
+    bool IsGamePaused = GamePause::IsGamePaused(currCl);
     GamePause_SetGamePaused(currCl, !IsGamePaused);
 }
 

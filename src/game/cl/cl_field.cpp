@@ -12,6 +12,10 @@
 #include <math.h>
 #include <string.h>
 
+// Minimal view of GamePause (full class in game/sv/sv_stubs.h).
+struct GamePause { static bool IsGamePaused(int client); };
+
+
 // ============================================================================
 // Externs
 // ============================================================================
@@ -544,7 +548,6 @@ extern struct cvar_t* m_yaw;
 extern struct cvar_t* m_pitch;
 extern int IsPlayerFullySeatedInVehicle(void* player);
 extern int Entity_IsCameraTweening(void* entity);
-extern bool GamePause_IsGamePaused(int client);
 extern void* EntityManager_GetPlayer3(void* inst, int idx);
 extern void* EntityManager_sInst3;
 extern char ClampChar(int i);
@@ -640,7 +643,7 @@ LABEL_40:
     if ((EntityManager_GetPlayer3(EntityManager_sInst3, v6) != nullptr
          && (IsPlayerFullySeatedInVehicle(EntityManager_GetPlayer3(EntityManager_sInst3, currCl))
              || Entity_IsCameraTweening((void*)currCl)))
-        || GamePause_IsGamePaused(currCl))
+        || GamePause::IsGamePaused(currCl))
     {
         v17 = 0.0f;
         v18 = 0.0f;

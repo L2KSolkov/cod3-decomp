@@ -11856,7 +11856,7 @@ void CGBankManager::DebugRender()
                                     &cddebug_vertex_format);
                             nglAddMeshSection(
                                 mesh, section,
-                                *(nglMaterial**)((char*)&DebugRender_sInst
+                                *(nglMaterial**)((char*)DebugRender_sInst
                                                  + 0xC),
                                 1);
                             unsigned short* indices =
@@ -12175,7 +12175,7 @@ void CGBankManager::DebugRender()
                                         6, 3, 3, &cddebug_vertex_format);
                                 nglAddMeshSection(
                                     mesh, section,
-                                    *(nglMaterial**)((char*)&DebugRender_sInst
+                                    *(nglMaterial**)((char*)DebugRender_sInst
                                                      + 0xC),
                                     1);
                                 unsigned short* indices =
@@ -12436,7 +12436,7 @@ void CGBankManager::DebugRender()
                                         nglAddMeshSection(
                                             mesh, section,
                                             *(nglMaterial**)(
-                                                (char*)&DebugRender_sInst
+                                                (char*)DebugRender_sInst
                                                 + 0xC),
                                             1);
                                         unsigned short* indices =

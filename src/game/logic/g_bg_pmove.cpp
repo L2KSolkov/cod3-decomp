@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 // Minimal view of controller (full class in game/platform_xbox/XboxLiveMenus.h).
 struct controller {
     int locked_port;
@@ -137,7 +138,6 @@ extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
 extern Handle PostEffectEventWeaponReload(const Entity* ent,
                                           const char* weaponType,
                                           int weaponAction, bool queue);
-extern bool GamePause_IsGamePaused(int client);  // ?IsGamePaused@GamePause@@SA_NH@Z
 extern int bg_iNumWeapons;    // ?bg_iNumWeapons@@3HA (game.o)
 extern char gDisableLMGHipFire;  // game.o @ 0xF4EBFC
 extern void* EffectEventSys_GetActiveEffectSet(void* sInst,
@@ -447,7 +447,7 @@ void PM_Weapon_CheckForSpotting()
         && ((weaponFileInfo_t*)pml.pWeap)->bCanSpot != 0
         && (pm->ps->pm_flags & 0x20) != 0
         && pm->ps->fWeaponPosFrac >= 0.99900001f
-        && !GamePause_IsGamePaused(currCl))
+        && !GamePause::IsGamePaused(currCl))
     {
         if (controller_button_pressed(controller::inst(), 0, 8))  // R1
             PM_AddEvent(196);
@@ -2820,7 +2820,6 @@ extern int c_pmove;   // ?c_pmove@@3HA (game.o)
 void PM_CheckDuck();                        // game.o 0x644B80
 extern void PmoveSingle(pmove_t* pmove,
                         bool isThisThePredictStep);  // game.o 0x645CD0
-extern bool GamePause_IsGamePaused(int client);   // ?IsGamePaused@GamePause@@SA_NH@Z
 extern void PM_Weapon();                          // game.o 0x6408B0
 extern void PM_Footsteps();                       // game.o 0x63CB60
 void PM_LadderMove(const collision_context_t& context);  // game.o 0x6458E0
@@ -3187,7 +3186,7 @@ void PmoveSingle(pmove_t* pmove, bool isThisThePredictStep)
     pmove->watertype = 0;
     pm->waterlevel = 0;
     if ((pm->ps->pm_flags & 0x4000) != 0
-        || GamePause_IsGamePaused(currCl)
+        || GamePause::IsGamePaused(currCl)
         || pm->ps->pm_type == 4
         || (pm->ps->pm_flags & 0x40000000) != 0)
     {

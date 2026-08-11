@@ -15,6 +15,10 @@
 #include <string.h>
 #include <time.h>
 
+// Minimal view of GamePause (full class in game/sv/sv_stubs.h).
+struct GamePause { static bool IsGamePaused(int client); };
+
+
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
 
@@ -239,7 +243,6 @@ extern void* FEManager_GetIGMS(void* self, int client);
 extern void InGameMenuSystem_ActivatePauseMenu(void* self);
 extern bool InGameMenuSystem_IsSystemActive(void* self);
 extern void GamePause_SetGamePaused(int client, bool paused);
-extern bool GamePause_IsGamePaused(int client);
 extern void GamePause_SetAllPaused(bool paused);
 extern void SoundDevice_PauseAllSounds(void* self);
 extern void SoundDevice_UnpauseAllSounds(void* self);
@@ -385,7 +388,7 @@ extern void FEManager_InitDialogMenuSystem(void* self);
 extern void FEManager_LoadInGameMenus(void* self);
 extern void FEManager_InitIGO(void* self);
 extern void DebugRender_AddRenderer(void* self, void* fp);
-extern void* DebugRender_sInst;
+extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
 extern void DebugDumpAnims();
 extern void rb_vehicle_debug_render_all();
 extern void physics_debug_render();
@@ -1779,7 +1782,7 @@ char Com_ControllerTest(int port)
             {
                 SoundDevice_PauseAllSounds(SoundDevice::sInst);
                 g_controllerConnectedGamePaused[port] =
-                    v1 == 0 && GamePause_IsGamePaused(0);
+                    v1 == 0 && GamePause::IsGamePaused(0);
                 if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
                 {
                     void* IGMS = FEManager_GetIGMS(&g_femanager, currCl);

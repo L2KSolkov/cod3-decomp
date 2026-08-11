@@ -415,7 +415,7 @@ void render_brush(const math::Position3& bmin, const math::Position3& bmax,
                 6, nIndices, nVertices, &cddebug_vertex_format);
             nglAddMeshSection(
                 mesh, section,
-                *(nglMaterial**)((char*)&DebugRender_sInst + 0xC), 1);
+                *(nglMaterial**)((char*)DebugRender_sInst + 0xC), 1);
             unsigned short* indices =
                 (unsigned short*)nglLockSectionIndices(section);
             float* vertices = (float*)nglLockSectionVertices(section);
@@ -2455,7 +2455,7 @@ extern void* ZoomIn();                // game.o 0x611A50
 extern void* ZoomOut();               // game.o 0x611A70
 extern void Teleport();               // game.o 0x611A90
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
-extern void* DebugRender_sInst;       // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
 extern void* AssetBankSet_ctor(void* self);  // streamer.o
 extern void CGBankManager_DebugRender_impl(void* self);  // 0x646700
 void* CGBankManager::sInst = nullptr;         // ?sInst@CGBankManager@@2PAV1@A @ 0xF4F438
@@ -2471,7 +2471,7 @@ CGBankManager::CGBankManager()
 {
     AssetBankSet_ctor(this);
     *(void**)this = (void*)&CGBankManager_vftable;
-    DebugRender_AddRenderer((void*)&DebugRender_sInst,
+    DebugRender_AddRenderer(DebugRender_sInst,
                             CGBankManager_DebugRender_bridge);
     this->mCount = 0;
     for (int i = 0; i < 99; ++i)
@@ -4139,7 +4139,7 @@ extern unsigned int AeHash(const char* str);                 // ae_hash.cpp
 extern int currCl;                                           // ?currCl@@3HA @ 0xF1579C
 extern DbLinkedHandle<EntityHandleDb, Entity> g_SoundOnlyPlay;  // ?g_SoundOnlyPlay@@3V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@A @ 0xDEB5B4
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // ?AddRenderer@DebugRender@@QAEXP6AXXZ@Z (render.o)
-extern void* DebugRender_sInst;   // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
 
 // ea: 0x006024A0
 nslBankID SoundDevice::SyncLoadBank(const char* filename)
@@ -4437,7 +4437,7 @@ SoundDevice::SoundDevice()
         this->mCrossFadeInfo[i].mSound1.mVal = 0;
         this->mCrossFadeInfo[i].mSound2.mVal = 0;
     }
-    DebugRender_AddRenderer((void*)&DebugRender_sInst,
+    DebugRender_AddRenderer(DebugRender_sInst,
                             &SoundDevice::SingletonDebugRender);
     this->mNumberOfListeners = 1;
     nslSetNumberOfListeners(1);

@@ -9,6 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Minimal view of GamePause (full class in game/sv/sv_stubs.h).
+struct GamePause { static bool IsGamePaused(int client); };
+
+
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
 class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
 
@@ -199,7 +203,6 @@ extern void CG_DrawDamageDirectionIndicators();
 extern void CG_DrawPlayerLowHealthOverlay();
 extern void CG_DrawCenterString();
 extern void CG_ScreenFade();
-extern int GamePause_IsGamePaused(int client);
 extern Entity* GetPlayer(int idx);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
@@ -482,7 +485,6 @@ extern void SpinnerDrawFrame(bool bEndFrame);
 extern int Sys_Milliseconds();
 struct statmonitor_s;
 extern void StatMon_GetStatsArray(const statmonitor_s** stats, int* count);
-extern int GamePause_IsGamePaused(int client);
 extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
                                                    const char* pszSystem);
 extern int trap_R_Text_Height(int font, float scale);
@@ -798,7 +800,7 @@ void CG_DrawGameScreenFade()
 // ea: 0x00696000
 void CG_DrawPaused()
 {
-    if (GamePause_IsGamePaused(currCl) && cg_drawpaused != 0)
+    if (GamePause::IsGamePaused(currCl) && cg_drawpaused != 0)
     {
         const char* v0 = CG_SafeTranslateString_Internal("CGAME_PAUSED",
                                                          "cgame");
@@ -888,7 +890,7 @@ void CG_DrawObjectives()
 // ea: 0x0068BAA0
 int CG_DrawScoreboard()
 {
-    if ((GamePause_IsGamePaused(currCl) && cg_drawpaused != 0)
+    if ((GamePause::IsGamePaused(currCl) && cg_drawpaused != 0)
         || dword_F63584[1580 * currCl] >= 6
         || dword_F641D0[1580 * currCl] == 0)
     {
@@ -923,7 +925,7 @@ void CG_DrawTurretCrossHair()
     float value = 0.0f;
     char v0 = *(char*)&dword_F6A2AC[3208 * currCl];
     if (v0 != 0
-        && (!GamePause_IsGamePaused(currCl) || cg_drawpaused == 0)
+        && (!GamePause::IsGamePaused(currCl) || cg_drawpaused == 0)
         && dword_F6355C[1580 * currCl] == 0
         && dword_F6A28C[802 * currCl] == 0
         && gSaveGameData_mCrosshair)
@@ -1281,7 +1283,7 @@ void CG_DrawCrosshair(float transScaleArg)
     {
         float value = *(float*)&cg_crosshairAlpha;
         color[3] = cg_crosshairAlpha;
-        if (!GamePause_IsGamePaused(currCl))
+        if (!GamePause::IsGamePaused(currCl))
         {
             Client* client =
                 EntityManager::sInst->GetPlayer( currCl)->client;
