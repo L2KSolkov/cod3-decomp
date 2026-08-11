@@ -3513,7 +3513,7 @@ bool scr_vehicle_t::CanMantleVehicle(Entity* player)
         return false;
     Entity* phyOwner = HandleDbToEnt(mPhysicsOwner);
     if (phyOwner != nullptr
-        && IsLocalPlayer(phyOwner)
+        && phyOwner->IsLocalPlayer()
         && sqrt(phys.vel.v.m128_f32[0] * phys.vel.v.m128_f32[0]
                 + phys.vel.v.m128_f32[1] * phys.vel.v.m128_f32[1]
                 + phys.vel.v.m128_f32[2] * phys.vel.v.m128_f32[2])
@@ -4296,7 +4296,7 @@ void scr_vehicle_t::UpdateAnimRoute(Entity* ent, Entity* player)
     if (client->mVehicleAnimGetOut && info->type == 2
         && client->mVehicleAnimStage <= 4)
     {
-        if (IsLocalPlayer(player))
+        if (player->IsLocalPlayer())
         {
             MultiplayerMgr::sInst->GetOutOfVehicle(
                 ent, player->client->ps.vehPos);
