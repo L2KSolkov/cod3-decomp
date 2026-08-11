@@ -1169,6 +1169,7 @@ float GetHeight(int bankID, float x, float y);  // ea: 0x7C0B70
 namespace BrocSys {
 const char* ConvertHashToString(int hash);  // ?ConvertHashToString@BrocSys@@YAPBDH@Z
 void Init();                                 // ?Init@BrocSys@@YAXXZ (scr.o)
+void TakeWeapon(Entity* pSelf, const char* pszWeaponName);  // ?TakeWeapon@BrocSys (scr.o)
 void CopyExtendedEntity(const Entity* source, Entity* dest);  // ?CopyExtendedEntity@BrocSys@@YAXPBVEntity@@PAV2@@Z
 int  RegisterHashString(const char* txt);   // ?RegisterHashString@BrocSys@@YAHPBD@Z
 void UnloadScript(void* self);              // ?UnloadScript@BrocSys@@QAEXPAV1@@Z
@@ -1706,6 +1707,7 @@ enum {
     WEAPCLASS_SPOTTER = 8,  // verified vs disasm PM_UpdateAimDownSightLerp
     WEAPCLASS_SNIPER = 10,  // verified vs disasm PM_BeginWeaponReload
     WEAPCLASS_REVIVE = 11,  // verified vs disasm PM_BeginWeaponChange
+    WEAPCLASS_NUM = 15,     // verified vs disasm PM_Weapon_FinishWeaponChange
 };
 enum {
     WEAPAMMOTYPE_SMG = 0,  // verified vs disasm PM_BeginWeaponChange

@@ -105,6 +105,10 @@ int  PM_WeaponClipEmpty(int wp);      // game.o 0x607E80
 int  PM_Weapon_FinishRechamber();     // game.o 0x607FD0
 void PM_KillQueuedReloadSound(PlayerState* ps);  // game.o 0x6080E0
 PlayerState* PM_SetProneMovementOverride();      // game.o 0x606590
+void PM_WeaponUseAmmo(int wp, int amount);       // game.o 0x607E10
+void PM_Weapon_SetFPSFireAnim();                 // game.o 0x6089C0
+void PM_Weapon_AddFiringAimSpreadScale();        // game.o 0x608A50
+int  PM_Weapon_CheckFiringAmmo();                // game.o 0x6304D0
 extern void Com_BitClear(int* array, int bitNum);  // ?Com_BitClear (core.o q_shared)
 extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
                                       bool kill);  // ?StopEffect@EffectEventSys
@@ -1498,6 +1502,518 @@ void PM_Weapon_CheckForReload()
             }
         }
     }
+}
+
+// ============================================================================
+// PM_Weapon_SetFPSFireAnim - ea: 0x6089C0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006089C0
+void PM_Weapon_SetFPSFireAnim()
+{
+    PlayerState* ps = pm->ps;
+    if (pm->ps->fWeaponPosFrac <= 0.99000001f)
+    {
+        if (ps->fWeaponPosFrac < 0.0099999998f)
+        {
+            weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ps->weapon);
+            PM_StartWeaponAnim(3 - (pm->ps->ammoclip[InfoForWeapon->iClipIndex] != 0));
+        }
+    }
+    else
+    {
+        weaponFileInfo_t* v1 = BG_GetInfoForWeapon(ps->weapon);
+        PM_StartWeaponAnim(6 - (pm->ps->ammoclip[v1->iClipIndex] != 0));
+    }
+}
+
+// ============================================================================
+// PM_Weapon_AddFiringAimSpreadScale - ea: 0x608A50 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00608A50
+void PM_Weapon_AddFiringAimSpreadScale()
+{
+    if (pm->ps->fWeaponPosFrac != 1.0f)
+    {
+        pm->ps->aimSpreadScale =
+            ((weaponFileInfo_t*)pml.pWeap)->fHipSpreadFireAdd * 255.0f
+            + pm->ps->aimSpreadScale;
+        if (pm->ps->aimSpreadScale > 255.0f)
+            pm->ps->aimSpreadScale = 255.0f;
+    }
+}
+
+// ============================================================================
+// PM_Weapon_CheckFiringAmmo - ea: 0x6304D0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006304D0
+int PM_Weapon_CheckFiringAmmo()
+{
+    if (pm->ps->weapon == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 4681;
+        AeAssert::gCurrentExpr = "pm->ps->weapon != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int v0 = BG_GetInfoForWeapon(pm->ps->weapon)->weapClass != 16;
+    if (v0 <= pm->ps->ammoclip[
+            BG_GetInfoForWeapon(pm->ps->weapon)->iClipIndex])
+        return 1;
+    if (v0 <= pm->ps->ammo[
+            BG_GetInfoForWeapon(pm->ps->weapon)->iAmmoIndex])
+    {
+        PM_BeginWeaponReload();
+    }
+    else
+    {
+        if (((weaponFileInfo_t*)pml.pWeap)->weapClass != WEAPCLASS_SPOTTER)
+            PM_AddEvent(174);
+        if (((weaponFileInfo_t*)pml.pWeap)->bOffHand == 0)
+        {
+            int v1 = 0;
+            if (pm->cmd.weapon != 0)
+            {
+                if (pm->ps->fWeaponPosFrac > 0.89999998f)
+                    v1 = 23;
+                if ((pm->ps->weapAnim & 0xFFFFFDFF) != v1)
+                    PM_StartWeaponAnim(v1);
+            }
+            pm->ps->weaponTime += 500;
+        }
+    }
+    pm->ps->weaponrechamber[pm->ps->weapon >> 5] &=
+        ~(1 << (pm->ps->weapon & 0x1F));
+    return 0;
+}
+
+// ============================================================================
+// PM_Weapon_CheckAbortHoldToFire - ea: 0x630AD0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00630AD0
+char PM_Weapon_CheckAbortHoldToFire()
+{
+    if (((weaponFileInfo_t*)pml.pWeap)->bHoldToFire == 0)
+        return 0;
+    int slot = ((weaponFileInfo_t*)pml.pWeap)->slot;
+    bool v1 = false;
+    if (slot == WEAPSLOT_GRENADE || slot == WEAPSLOT_SMOKE_GRENADE)
+        v1 = (pm->cmd.buttons & 2) != 0;
+    if (slot == WEAPSLOT_SPECIAL)
+        v1 = (pm->cmd.buttons & 0x80) != 0;
+    if (v1 || pm->ps->weaponstate != 3)
+        return 0;
+    pm->ps->weaponTime = 0;
+    if (BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 5111;
+        AeAssert::gCurrentExpr =
+            "!BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("don't switch back to an off hand weapon."))
+            __debugbreak();
+    }
+    Entity* v2 = (Entity*)EntityHandleDb_GetObject(
+        pm->ps->mClient.mHandle.mVal);
+    int PlayerIndex = v2->GetPlayerIndex();
+    BG_SelectWeaponIndex(pm->ps->lastWeapon, PlayerIndex);
+    pm->ps->weaponstate = 0;
+    Entity* v4 = (Entity*)EntityHandleDb_GetObject(
+        pm->ps->mClient.mHandle.mVal);
+    int v5 = v4->GetPlayerIndex();
+    g_femanager.IGO->SetFuse(-1.0f, -1.0f, v5);
+    if (((weaponFileInfo_t*)pml.pWeap)->type == WEAPTYPE_GRENADE)
+        pm->ps->grenadeTimeLeft = 0;
+    return 1;
+}
+
+// ============================================================================
+// PM_Weapon_FinishOffHandWeapons - ea: 0x630C30 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00630C30
+char PM_Weapon_FinishOffHandWeapons()
+{
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    if (pWeap->bOffHand == 0)
+        return 0;
+    int slot = pWeap->slot;
+    bool v3 = false;
+    pmove_t* v4 = pm;
+    if (slot == WEAPSLOT_GRENADE || slot == WEAPSLOT_SMOKE_GRENADE)
+        v3 = (pm->cmd.buttons & 2) != 0;
+    if (slot == WEAPSLOT_SPECIAL)
+        v3 = (pm->cmd.buttons & 0x80) != 0;
+    if (v3 && (pm->ps->pm_flags & 0x10000) != 0)
+    {
+        if (BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+            AeAssert::gCurrentLine = 5164;
+            AeAssert::gCurrentExpr =
+                "!BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "don't switch back to an off hand weapon."))
+                __debugbreak();
+        }
+        Entity* v5 = (Entity*)EntityHandleDb_GetObject(
+            pm->ps->mClient.mHandle.mVal);
+        int PlayerIndex = v5->GetPlayerIndex();
+        BG_SelectWeaponIndex(pm->ps->lastWeapon, PlayerIndex);
+        return 0;
+    }
+    int bHoldToFire = pWeap->bHoldToFire;
+    if (bHoldToFire != 0 && !v3)
+    {
+        pm->ps->weaponTime = 0;
+        if (BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+            AeAssert::gCurrentLine = 5196;
+            AeAssert::gCurrentExpr =
+                "!BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "don't switch back to an off hand weapon."))
+                __debugbreak();
+        }
+        Entity* v8 = (Entity*)EntityHandleDb_GetObject(
+            pm->ps->mClient.mHandle.mVal);
+        int v9 = v8->GetPlayerIndex();
+        BG_SelectWeaponIndex(pm->ps->lastWeapon, v9);
+        pm->ps->weaponstate = 0;
+        Entity* v10 = (Entity*)EntityHandleDb_GetObject(
+            pm->ps->mClient.mHandle.mVal);
+        int v11 = v10->GetPlayerIndex();
+        g_femanager.IGO->SetFuse(-1.0f, -1.0f, v11);
+        if (pWeap->type == WEAPTYPE_GRENADE)
+            pm->ps->grenadeTimeLeft = 0;
+        return 1;
+    }
+    PlayerState* ps = pm->ps;
+    int weaponstate = pm->ps->weaponstate;
+    if (weaponstate == 1)
+    {
+        if (!v3 || bHoldToFire != 0)
+        {
+            if (pWeap->type == WEAPTYPE_GRENADE)
+            {
+                ps->grenadeTimeLeft = 0;
+                pWeap = (weaponFileInfo_t*)pml.pWeap;
+                v4 = pm;
+            }
+            v4->ps->weaponDelay = pWeap->iFireDelay;
+            pm->ps->weaponTime = pWeap->iFireTime;
+            pm->ps->weaponstate = 3;
+            PM_Weapon_SetFPSFireAnim();
+            if (pWeap->weapClass == WEAPCLASS_GRENADE)
+                MultiplayerMgr::sInst->AnimEvent(19);
+        }
+        else if (pWeap->bCookOffHold != 0
+                 && PM_WeaponAmmoAvailable(ps->weapon) != 0
+                 && pm->ps->grenadeTimeLeft == 0)
+        {
+            pm->ps->grenadeTimeLeft = pWeap->iFuseTime;
+            PM_AddEvent(185);
+            pm->ps->weaponDelay = pWeap->iHoldFireTime;
+            pm->ps->weaponTime = 0;
+            pm->ps->weaponstate = 15;
+            return 1;
+        }
+        return 1;
+    }
+    if (weaponstate == 15 && pWeap->type == WEAPTYPE_GRENADE)
+    {
+        if (!v3)
+        {
+            ps->weaponDelay = pWeap->iFireDelay;
+            pm->ps->weaponTime = pWeap->iFireTime;
+            pm->ps->weaponstate = 3;
+            PM_Weapon_SetFPSFireAnim();
+            MultiplayerMgr::sInst->AnimEvent(19);
+            return 1;
+        }
+        return 1;
+    }
+    if (weaponstate == 3)
+    {
+        if (ps->weaponDelay <= 0)
+        {
+            PM_WeaponUseAmmo(ps->weapon, 1);
+            PM_AddEvent(186);
+            PM_Weapon_AddFiringAimSpreadScale();
+            pm->ps->weaponstate = 11;
+        }
+        return 1;
+    }
+    if (weaponstate == 11 && ps->weaponTime <= 0)
+    {
+        ps->weaponDelay = pWeap->iFireTime;
+        pm->ps->weaponTime = 0;
+        if (PM_Weapon_CheckFiringAmmo() == 0)
+            BG_TakePlayerWeapon(pm->ps, pm->ps->weapon);
+        if (BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+            AeAssert::gCurrentLine = 5317;
+            AeAssert::gCurrentExpr =
+                "!BG_GetInfoForWeapon(pm->ps->lastWeapon)->bOffHand";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                    "don't switch back to an off hand weapon."))
+                __debugbreak();
+        }
+        Entity* v14 = (Entity*)EntityHandleDb_GetObject(
+            pm->ps->mClient.mHandle.mVal);
+        int v15 = v14->GetPlayerIndex();
+        BG_SelectWeaponIndex(pm->ps->lastWeapon, v15);
+        pm->ps->weaponstate = 0;
+        Entity* v16 = (Entity*)EntityHandleDb_GetObject(
+            pm->ps->mClient.mHandle.mVal);
+        int v17 = v16->GetPlayerIndex();
+        g_femanager.IGO->SetFuse(-1.0f, -1.0f, v17);
+        if (pWeap->type == WEAPTYPE_GRENADE)
+            pm->ps->grenadeTimeLeft = 0;
+        return 1;
+    }
+    return 0;
+}
+
+// ============================================================================
+// PM_Weapon_FinishFiring - ea: 0x630670 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00630670
+int PM_Weapon_FinishFiring(int delayedAction)
+{
+    weaponFileInfo_t* pWeap = (weaponFileInfo_t*)pml.pWeap;
+    pmove_t* v2 = pm;
+    int buttons = pm->cmd.buttons;
+    int v6;
+    if (((buttons & 1) != 0
+         || (weapSlot_t)pWeap->slot == WEAPSLOT_GRENADE
+         || (weapSlot_t)pWeap->slot == WEAPSLOT_SMOKE_GRENADE
+         || pWeap->type != WEAPTYPE_GRENADE
+         || pWeap->bCookOffHold == 0
+         || pm->ps->grenadeTimeLeft >= pWeap->iFuseTime
+         || pm->ps->grenadeTimeLeft == 0)
+        && ((v6 = buttons & 2) != 0
+            || (weapSlot_t)pWeap->slot != WEAPSLOT_GRENADE
+                && (weapSlot_t)pWeap->slot != WEAPSLOT_SMOKE_GRENADE
+            || pWeap->type != WEAPTYPE_GRENADE
+            || pWeap->bCookOffHold == 0
+            || pm->ps->grenadeTimeLeft >= pWeap->iFuseTime
+            || pm->ps->grenadeTimeLeft == 0))
+    {
+        if ((pm->cmd.buttons & 1) == 0)
+        {
+            int slot = pWeap->slot;
+            if (slot != WEAPSLOT_GRENADE && slot != WEAPSLOT_SMOKE_GRENADE
+                && (slot != WEAPSLOT_SPECIAL || pWeap->type != WEAPTYPE_GRENADE)
+                && delayedAction == 0)
+            {
+                if (pm->ps->weaponstate == 3)
+                {
+                    PM_ContinueWeaponAnim(0);
+                    v2 = pm;
+                }
+                v2->ps->weaponstate = 0;
+                return 1;
+            }
+        }
+        if (v6 == 0)
+        {
+            int v11 = pWeap->slot;
+            if ((v11 == WEAPSLOT_GRENADE || v11 == WEAPSLOT_SMOKE_GRENADE
+                 || v11 == WEAPSLOT_SPECIAL
+                     && pWeap->type == WEAPTYPE_GRENADE)
+                && delayedAction == 0)
+            {
+                PlayerState* ps = pm->ps;
+                if ((pm->ps->pm_flags & 0x10000) == 0)
+                {
+                    if (ps->weaponstate == 3)
+                    {
+                        int v13 = 0;
+                        if (pm->cmd.weapon != 0)
+                        {
+                            if (ps->fWeaponPosFrac > 0.89999998f)
+                                v13 = 23;
+                            if ((ps->weapAnim & 0xFFFFFDFF) != v13)
+                            {
+                                PM_StartWeaponAnim(v13);
+                                v2 = pm;
+                                pWeap = (weaponFileInfo_t*)pml.pWeap;
+                            }
+                        }
+                    }
+                    v2->ps->weaponDelay = pWeap->iFireTime;
+                    pm->ps->weaponTime = 0;
+                    if (PM_Weapon_CheckFiringAmmo() == 0)
+                        BG_TakePlayerWeapon(pm->ps, pm->ps->weapon);
+                    Entity* v14 = (Entity*)EntityHandleDb_GetObject(
+                        pm->ps->mClient.mHandle.mVal);
+                    int PlayerIndex = v14->GetPlayerIndex();
+                    BG_SelectWeaponIndex(pm->ps->lastWeapon, PlayerIndex);
+                    pm->ps->weaponstate = 0;
+                    if (pWeap->type == WEAPTYPE_GRENADE)
+                    {
+                        Entity* v16 = (Entity*)EntityHandleDb_GetObject(
+                            pm->ps->mClient.mHandle.mVal);
+                        int v17 = v16->GetPlayerIndex();
+                        g_femanager.IGO->SetFuse(-1.0f, -1.0f, v17);
+                    }
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+// ============================================================================
+// PM_Weapon_FinishWeaponChange - ea: 0x62FC20 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x0062FC20
+int PM_Weapon_FinishWeaponChange()
+{
+    pmove_t* v0 = pm;
+    PlayerState* ps = pm->ps;
+    if (pm->ps->weaponstate != 2)
+        return 0;
+    int weapon;
+    char v2 = ps->weaponslots[8];
+    if (v2 != 0)
+    {
+        weapon = v2;
+    }
+    else
+    {
+        int pm_flags = ps->pm_flags;
+        if ((pm_flags & 0x10) != 0
+            || ((1 << (pm->cmd.weapon & 0x1F))
+                & ps->weapons[pm->cmd.weapon >> 5]) == 0
+            || (pm_flags & 0x800000) != 0
+            || ((ps->eFlags & 0x100000) != 0
+                && (ps->eFlags & 0x400000) == 0
+                && !BG_AllowPlayerWeaponAtVehiclePos(ps->vehType, ps->vehPos)
+                && (pm->cmd.weapon == 0
+                    || pm->cmd.weapon >= bg_iNumWeapons
+                    || BG_GetInfoForWeapon(pm->cmd.weapon)->type
+                        != WEAPTYPE_INTERACT))
+            || pm->cmd.weapon < 0
+            || pm->cmd.weapon > bg_iNumWeapons)
+        {
+            weapon = 0;
+        }
+        else
+        {
+            weapon = pm->cmd.weapon;
+        }
+    }
+    PlayerState* v8 = v0->ps;
+    if (((1 << (weapon & 0x1F)) & v0->ps->weapons[weapon >> 5]) == 0)
+        weapon = 0;
+    int v9 = v8->weapon;
+    v8->weapon = weapon;
+    if (pm->ps->weapon != weapon)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\bg_weapons.cpp";
+        AeAssert::gCurrentLine = 3841;
+        AeAssert::gCurrentExpr = "pm->ps->weapon == newweapon";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    pml.pWeap = BG_GetInfoForWeapon(pm->ps->weapon);
+    if (v9 == weapon)
+    {
+        pm->ps->weaponstate = 0;
+        PM_StartWeaponAnim(0);
+        return 1;
+    }
+    if (BG_GetInfoForWeapon(v9)->slot == WEAPSLOT_BINOCS)
+    {
+        Entity* Player =
+            EntityManager::sInst->GetPlayer(currCl);
+        BrocSys::TakeWeapon(Player, "binoculars_offhand");
+    }
+    if (v9 != 0)
+    {
+        if (BG_GetInfoForWeapon(v9)->type != WEAPTYPE_INTERACT
+            && BG_GetInfoForWeapon(v9)->slot != WEAPSLOT_BINOCS
+            && BG_GetInfoForWeapon(v9)->weapClass != WEAPCLASS_GRENADE
+            && BG_GetInfoForWeapon(v9)->slot != WEAPSLOT_SPECIAL
+            && BG_GetInfoForWeapon(v9)->slot != WEAPSLOT_SATCHEL)
+        {
+            pm->ps->lastWeapon = v9;
+        }
+        pm->ps->weaponstate = 1;
+        if ((pm->ps->pm_flags & 1) != 0)
+            pm->ps->pm_flags |= 0x400u;
+        if (BG_GetInfoForWeapon(v9)->slot == WEAPSLOT_BINOCS
+            || BG_GetInfoForWeapon(weapon)->weapClass == WEAPCLASS_LMG)
+        {
+            pm->ps->fWeaponPosFrac = 0.0f;
+        }
+        if (weapon != 0
+            && weapon == BG_GetInfoForWeapon(v9)->iAltWeaponIndex)
+        {
+            pm->ps->weaponTime =
+                BG_GetInfoForWeapon(weapon)->iAltRaiseTime;
+        }
+        else
+        {
+            PM_AddEvent(180);
+            pm->ps->weaponTime = BG_GetInfoForWeapon(weapon)->iRaiseTime;
+        }
+        Entity* v12 = (Entity*)EntityHandleDb_GetObject(
+            pm->ps->mClient.mHandle.mVal);
+        G_DObjUpdate(v12, false);
+        if (weapon != 0
+            && weapon == BG_GetInfoForWeapon(v9)->iAltWeaponIndex)
+        {
+            if (pm->ps->aimSpreadScale < 128.0f)
+                pm->ps->aimSpreadScale = 128.0f;
+            PM_StartWeaponAnim(16);
+        }
+        else
+        {
+            pm->ps->aimSpreadScale = 255.0f;
+            PM_StartWeaponAnim(10);
+            int weapClass = ((weaponFileInfo_t*)pml.pWeap)->weapClass;
+            if (weapClass == WEAPCLASS_GRENADE
+                && ((weaponFileInfo_t*)pml.pWeap)->bOffHand != 0)
+            {
+                MultiplayerMgr::sInst->AnimEvent(18);
+            }
+            else if (weapClass == 16)
+            {
+                MultiplayerMgr::sInst->AnimEvent(21);
+            }
+            else if (weapClass == WEAPCLASS_NUM)
+            {
+                MultiplayerMgr::sInst->AnimEvent(22);
+            }
+        }
+        if (((weaponFileInfo_t*)pml.pWeap)->weapClass != WEAPCLASS_REVIVE)
+            return 1;
+        MultiplayerMgr::sInst->AnimEvent(0);
+        return 1;
+    }
+    pm->ps->weaponstate = 1;
+    pm->ps->weaponTime = BG_GetInfoForWeapon(weapon)->iRaiseTime;
+    pm->ps->aimSpreadScale = 255.0f;
+    PM_StartWeaponAnim(10);
+    if ((pm->ps->pm_flags & 1) == 0)
+        return 1;
+    pm->ps->pm_flags |= 0x400u;
+    return 1;
 }
 
 // ============================================================================
