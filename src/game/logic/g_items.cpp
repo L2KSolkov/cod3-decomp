@@ -1122,7 +1122,8 @@ void Touch_Item(Entity* ent, Entity* other, int bTouched)
 }
 
 // ea: 0x004750B0
-Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir)
+Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir,
+                    float iDamage)
 {
     if (EntityManager::sInst->GetPlayer(currCl) == self)
         return nullptr;

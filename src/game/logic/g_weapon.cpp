@@ -1010,9 +1010,9 @@ launcher:
 }
 
 // ea: 0x0048D730
-void G_BulletFireSpread(const Entity* source, Entity* attacker, weaponParms* wp,
-                        int damage, float spread, Entity* weaponEnt,
-                        float coneAngleTangent, unsigned int seed)
+void G_BulletFireSpread(const Entity* source, Entity* attacker,
+                        const weaponParms* wp, int damage, float spread,
+                        Entity* weaponEnt, float coneAngleTangent, int seed)
 {
     if (source == nullptr)
     {

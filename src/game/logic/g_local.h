@@ -2247,7 +2247,7 @@ Entity* SelectNearestDeathmatchSpawnPoint(const float* from);  // g.o 0x850D30
 Entity* SelectRandomDeathmatchSpawnPoint(void);     // g.o 0x856440
 Entity* SelectSpawnPoint(const float* avoidPoint, float* origin, float* angles);  // g.o 0x467040
 void  VEH_UnlinkPlayerDropped(Entity* ent);         // g.o 0x4807D0
-Entity* fire_mine(Entity* self, const float* position, const float* dir, int weapon);  // g.o 0x86A5E0
+Entity* fire_mine(Entity* self, float* position, float* dir, int weapon);  // g.o 0x86A5E0
 Entity* weapon_mine_fire(Entity* ent, int weapon, weaponParms* wp);  // g.o 0x4818A0
 extern int cg_deadscreen_backdrop;    // cg.o vmCvar_t
 extern int cg_deadscreen_levelname;   // cg.o
@@ -2945,9 +2945,10 @@ void  Bullet_Fire(Entity* attacker, float spread, int damage, weaponParms* wp,
                   Entity* weaponEnt, float coneAngleTangent);  // g.o 0x48D980
 void  Weapon_ItemHealth_Fire(Entity* ent, int grenType, weaponParms* wp);  // g.o 0x45F630
 void  Weapon_ItemAmmo_Fire(Entity* ent, int grenType, weaponParms* wp);    // g.o 0x45FB40
-void  G_BulletFireSpread(const Entity* source, Entity* attacker, weaponParms* wp,
-                         int damage, float spread, Entity* weaponEnt,
-                         float coneAngleTangent, unsigned int seed);  // g.o 0x48D730
+void  G_BulletFireSpread(const Entity* source, Entity* attacker,
+                         const weaponParms* wp, int damage, float spread,
+                         Entity* weaponEnt, float coneAngleTangent,
+                         int seed);  // g.o 0x48D730
 void  Weapon_Melee(Entity* ent, weaponParms* wp);  // g.o 0x4891C0
 void  FireWeaponMelee(Entity* ent);                // g.o 0x48AA50
 void  FireWeapon(Entity* ent);                     // g.o 0x48DAE0
@@ -3048,8 +3049,8 @@ void  G_BulletFireSpread(Entity* source, Entity* attacker, weaponParms* wp,
                          int damage, float spread, Entity* weaponEnt,
                          float coneAngleTangent, int seed);  // g.o
 void  Bullet_Fire_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
-                           Entity* attacker, const float* start, const float* end,
-                           int damage, int recursion, weaponParms* wp,
+                           Entity* attacker, float* start, const float* end,
+                           int damage, int recursion, const weaponParms* wp,
                            DbLinkedHandle<EntityHandleDb, Entity> weaponEntity,
                            float coneAngleTangent);  // g.o 0x48D980 (same family)
 float scr_vehicle_t_GetAverageWheelSpeed(scr_vehicle_t* veh);  // g.o 0x46F4F0
@@ -3095,7 +3096,7 @@ void  G_AddInvalidatedNode(Entity* pEnt, PathNodes::PathNode* pNode);  // g.o 0x
 void  Sentient_Clean(sentient_s* sentient);      // mp_actors.o
 sentient_s* Sentient_Alloc(void);                // mp_actors.o
 void  Client_Clear(void* client, bool clearPersistentAlso, bool clearWeapons);  // game.o
-Entity* fire_grenade(Entity* self, const float* start, const float* dir,
+Entity* fire_grenade(Entity* self, float* start, float* dir,
                      int grenadeWPID, int time);  // g.o
 void  AnglesToUp(const float* angles, float* up); // core.o
 void  bdRandom_setSeed(void* self, unsigned int seed);  // bd
@@ -3106,8 +3107,8 @@ extern float delta_0;                             // g.o
 int   Client_GetPushed(Entity* pSelf, Entity* pOther);  // g.o
 struct bdRandomState { unsigned int v[4]; };      // opaque
 PathNodes::PathNode* HandleDbToNode(PathNodes::NodeHandle h);  // helper
-void  Bullet_Endpos(float spread, float* end, weaponParms* wp, float randomA,
-                    float randomB);               // g.o overload
+float Bullet_Endpos(float spread, float* end, const weaponParms* wp,
+                    float randomA, float randomB);  // g.o overload
 int   G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode);  // g.o (g_dobj.cpp)
 int   Cmd_FollowCycle_f(Entity* ent, int dir);   // g.o 0x4679F0
 int   SV_GetCurrentClientInfo(int clientNum, PlayerState* ps);  // sv.o
@@ -3169,11 +3170,11 @@ bool  G_GetTankIndex(DbLinkedHandle<EntityHandleDb, Entity> entity, int* index,
 bool  IsVehicleSpotted(Entity* vehicle);         // g.o
 void  Weapon_RocketLauncher_Fire(Entity* ent, float spread, weaponParms* wp,
                                  float lifetime, bool explode);  // g.o 0x481930
-Entity* fire_rocket(Entity* self, const float* start, const float* dir, float lifetime);  // g.o
+Entity* fire_rocket(Entity* self, float* start, float* dir, float lifetime);  // g.o
 void  gunrandom(float* x, float* y);             // core.o
 void  Weapon_ArtilleryStrike_Launch(Entity* ent, weaponParms* wp, float* center,
                                     unsigned int seed);  // g.o 0x481E00
-void  fire_artillery(Entity* i_Self, const float* i_StrikePoint, int i_Delay);  // g.o
+Entity* fire_artillery(Entity* i_Self, float* i_StrikePoint, int i_Delay);  // g.o
 void  j_nullsub_54(weaponParms* wp, const float* target, float* out);  // g.o
 void  j_nullsub_47(weaponParms* wp, const float* target, float* out);  // g.o
 int   SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent, Entity* targEnt,
@@ -3333,7 +3334,7 @@ bool  Weapon_Revive_Test(Entity* ent, weaponParms* wp,
 void  Weapon_Revive(Entity* ent, int grenType, weaponParms* wp);     // g.o 0x4720E0
 float Bullet_Endpos(float spread, float* end, const weaponParms* wp);  // g.o 0x... (g_combat.cpp)
 void  Bullet_Fire_Fake_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
-                                Entity* attacker, const float* start, const float* end,
+                                Entity* attacker, float* start, const float* end,
                                 int damage, int recursion, weaponParms* wp,
                                 DbLinkedHandle<EntityHandleDb, Entity> weaponEntity,
                                 float coneAngleTangent);            // g.o 0x4712A0
@@ -3510,7 +3511,8 @@ extern void (*paintable[6])(Entity* ent, Entity* other, int damage, const float*
 extern void (*dietable[8])(Entity* self, Entity* inflictor, Entity* attacker,
                            int damage, int mod, int weapon, const float* point,
                            const float* dir, hitLocation_t hitLoc);
-Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir, int iDamage);
+Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir,
+                    float iDamage);
 void    G_FinishDamage(Entity* targ, Entity* inflictor, Entity* attacker,
                        const float* dir, const float* point, int damage, int mod,
                        int weapon, hitLocation_t hitLoc);
