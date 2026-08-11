@@ -359,7 +359,7 @@ int ColorIndex(unsigned char c)
 }
 
 // ea: 0x00610490
-float Com_Clamp(float min, float max, float value)
+const float Com_Clamp(float min, float max, float value)
 {
     if (min > value)
         return min;

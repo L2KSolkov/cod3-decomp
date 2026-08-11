@@ -1035,7 +1035,8 @@ struct XModel {
 
 // StaticModel - static world model instance (240 bytes) - verified against
 // IDA (CM_TraceStaticModel / CM_LinkStaticModel disasm)
-struct StaticModel {
+class StaticModel {
+public:
     uint8_t      _pad0[0x68];      // +0x00
     XModel*      xmodel;           // +0x68
     uint8_t      _pad6C[0x90 - 0x6C];
