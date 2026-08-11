@@ -97,6 +97,9 @@ extern void BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
                                                 PlayerState* ps);  // bg_misc.cpp
 extern void ProjectPointOnPlane(float* dst, const float* p,
                                 const float* normal);  // core.o q_math.cpp
+int  PM_WeaponAmmoAvailable(int wp);  // game.o 0x607E50
+int  PM_WeaponClipEmpty(int wp);      // game.o 0x607E80
+int  PM_Weapon_FinishRechamber();     // game.o 0x607FD0
 
 // ============================================================================
 // AngleClamp - ea: 0x604A90
@@ -132,6 +135,7 @@ void PM_AddEvent(int newEvent)
     }
     BG_AddPredictableEventToPlayerstate(newEvent, 0, pm->ps);
 }
+
 
 // ============================================================================
 // PM_AddTouchEnt - ea: 0x604B60
@@ -191,6 +195,80 @@ void PM_SwitchIfEmpty()
     {
         PM_AddEvent(174);
     }
+}
+
+// ============================================================================
+// PM_Weapon_FinishRechamber - ea: 0x607FD0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00607FD0
+int PM_Weapon_FinishRechamber()
+{
+    int result = 0;
+    PlayerState* ps = pm->ps;
+    if (pm->cmd.weapon != 0)
+    {
+        if (ps->fWeaponPosFrac > 0.89999998f)
+            result = 23;
+        if ((ps->weapAnim & 0xFFFFFDFF) == result)
+        {
+            result = (int)pm->ps;
+        }
+        else
+        {
+            PM_StartWeaponAnim(result);
+            result = (int)pm;
+        }
+        pm->ps->weaponstate = 0;
+    }
+    else
+    {
+        ps->weaponstate = 0;
+    }
+    return result;
+}
+
+// ============================================================================
+// PM_Weapon_WeaponTimeAdjust - ea: 0x6088A0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x006088A0
+int PM_Weapon_WeaponTimeAdjust()
+{
+    if (pm->ps->weaponTime != 0)
+    {
+        pm->ps->weaponTime -= pml.msec;
+        if (pm->ps->weaponTime <= 0)
+        {
+            if (((weaponFileInfo_t*)pml.pWeap)->bSemiAuto != 0
+                && (pm->cmd.buttons & 1) != 0
+                && pm->ps->weapon == pm->cmd.weapon
+                && PM_WeaponAmmoAvailable(pm->ps->weapon) != 0)
+            {
+                pm->ps->weaponTime = 1;
+                int weaponstate = pm->ps->weaponstate;
+                if (weaponstate == 4)
+                {
+                    PM_Weapon_FinishRechamber();
+                }
+                else if (weaponstate == 3 || weaponstate == 10
+                         || weaponstate == 11)
+                {
+                    PM_ContinueWeaponAnim(0);
+                    pm->ps->weaponstate = 0;
+                }
+            }
+            else
+            {
+                pm->ps->weaponTime = 0;
+            }
+        }
+    }
+    if (pm->ps->weaponDelay == 0)
+        return 0;
+    pm->ps->weaponDelay -= pml.msec;
+    if (pm->ps->weaponDelay > 0)
+        return 0;
+    pm->ps->weaponDelay = 0;
+    return 1;
 }
 
 // ============================================================================
