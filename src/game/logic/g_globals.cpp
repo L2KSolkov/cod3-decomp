@@ -6,11 +6,23 @@
 
 level_locals_t level;          // ?level@@3Ulevel_locals_t@@A @ 0xEC9650
 SaveGameData* gSaveGameData;   // ?gSaveGameData@@3PAUSaveGameData@@A @ 0xF312F0
+cvar_t* g_gameskill;           // ?g_gameskill@@3PAUcvar_t@@A (g.o)
+cgGlobal_t cgGlobal;           // ?cgGlobal@@3UcgGlobal_t@@A @ 0xF5FE30
 DebugThread g_debugThread;     // ?g_debugThread@@3VDebugThread@@A @ 0xDEB5A0
 EntityHandleDb EntityHandleDb::sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o @ 0x12BB4E8)
 void* SmokeGrenadeMgr::sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
 void* DestructibleBankManager::sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A
 void* PhysDataBankManager::sInst;      // ?sInst@PhysDataBankManager@@2PAV1@A
+float gStickyBoxScaleEasy = 1.25f;   // @ 0xDF5A28 (sticky aim box scale, easy)
+float gStickyBoxScaleNormal = 1.0f;  // @ 0xDF5A2C
+float gStickyBoxScaleHard = 0.85f;   // @ 0xDF5A30
+float gExtraDistanceSticky = 0.0f;   // @ 0xF4EBEC
+float tangent = 0.02f;               // @ 0xDF8DC4 (sticky aim cone tangent)
+float accel_slow_factor = 0.5f;      // @ 0xDF8DC8
+float clostDist = 0.7f;              // @ 0xDF8DCC
+float xy = 15.0f;                    // @ 0xDF8DD0
+float boundingMin = 24.0f;           // @ 0xDF8DD4
+float depthScale = 150.0f;           // @ 0xDF8DD8
 float emissionRate_0 = 1.0f;   // @ 0xDD8254 (vehicle gunner overheat emission rate)
 float gTanAimConeSpread;       // @ 0xEB1118 (g_weapon.cpp Bullet_Endpos scratch)
 float max_intensity = 120.0f;  // @ 0xDD7FD4

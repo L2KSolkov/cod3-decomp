@@ -45,6 +45,35 @@ extern weaponFileInfo_t** bg_weaponInfo;  // ?bg_weaponInfo@@3PAPAUweaponFileInf
 extern const char** pEventNamesList;      // ?pEventNamesList@@3PAPBDA (game.o)
 extern const char* szWeapTypeNames[9];    // ?szWeapTypeNames@@3PAPBDA (game.o)
 extern Entity* GetPlayer(int idx);        // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
+extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
+extern int LocalClient_ClientToPort(int client);  // ?ClientToPort@LocalClient@@YAHH@Z
+extern bool CL_IsADS(int client);                // ?CL_IsADS@@YA_NH@Z
+extern float CL_GamepadAxisValue(unsigned int virtualAxis);  // cl.o
+extern float intersect(const math::Position3& po, const math::Dir3& pn,
+                       const math::Position3& ro, const math::Dir3& rd);
+    // ?intersect@@YAMABVPosition3@math@@ABVDir3@2@01@Z (cdl_base)
+extern void g_AddDebugString(const float* xyz, const float* color, float scale,
+                             const char* pszText);  // ?g_AddDebugString (g_main)
+extern void vectosignedangles(const float* vec, float* angles);  // core.o
+extern serverStatic_t svs;  // ?svs@@3UserverStatic_t@@A (sv.o)
+extern cvar_t* g_gameskill; // g.o
+extern float gStickyBoxScaleEasy;   // ?gStickyBoxScaleEasy@@3MA (game.o)
+extern float gStickyBoxScaleNormal; // ?gStickyBoxScaleNormal@@3MA (game.o)
+extern float gStickyBoxScaleHard;   // ?gStickyBoxScaleHard@@3MA (game.o)
+extern float gExtraDistanceSticky;  // ?gExtraDistanceSticky@@3MA (game.o)
+extern float tangent;               // ?tangent (game.o @ 0xDF8DC4)
+extern float accel_slow_factor;     // ?accel_slow_factor (game.o @ 0xDF8DC8)
+extern float clostDist;             // ?clostDist (game.o @ 0xDF8DCC)
+extern float xy;                    // ?xy (game.o @ 0xDF8DD0)
+extern float boundingMin;           // ?boundingMin (game.o @ 0xDF8DD4)
+extern float depthScale;            // ?depthScale (game.o @ 0xDF8DD8)
+extern cvar_t* bg_stickyAimRender;  // ?bg_stickyAimRender@@3PAUcvar_t@@A (game.o)
+extern cgGlobal_t cgGlobal;         // ?cgGlobal@@3UcgGlobal_t@@A (cg.o)
+extern bool FindClosestVisibleBone(Entity* closestEnt,
+                                   const math::Position3& playerPosition,
+                                   const math::Position3& hitPosition,
+                                   math::Position3& enemyOrigin);
+    // game.o 0x615320
 
 // game.o static weapon-type names (recovered from .rdata)
 static const char* const s_szWeapTypeNames[9] = {
@@ -225,6 +254,284 @@ void Pmove(pmove_t* pmove, bool isThisThePredictStep)
             memset(&pml, 0, sizeof(pml));
         }
     }
+}
+
+// ============================================================================
+// PM_UpdateStickyAim - ea: 0x62E070 (bg_pmove.cpp)
+// ============================================================================
+// ea: 0x0062E070
+void PM_UpdateStickyAim(PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd)
+{
+    float distAwayFromTargetXY = 3.4028235e38f;
+    float distToPlane = 0.0f;
+    bool bSlowFactor = false;
+    float fLastDist = 0.0f;
+
+    float boxScale;
+    if (g_gameskill->integer == 0)
+        boxScale = gStickyBoxScaleEasy;
+    else if (g_gameskill->integer == 2)
+        boxScale = gStickyBoxScaleHard;
+    else
+        boxScale = gStickyBoxScaleNormal;
+
+    // playerPosition (eye pos) + view forward
+    math::Position3 playerPos;
+    playerPos.v = _mm_setr_ps(ps->origin.v.m128_f32[0],
+                              ps->origin.v.m128_f32[1],
+                              ps->viewHeightCurrent
+                                  + ps->origin.v.m128_f32[2],
+                              0.0f);
+    float forward[3];
+    AnglesToForward(ps->viewangles, forward);
+    math::Dir3 viewDir;
+    viewDir.v = _mm_setr_ps(forward[0], forward[1], forward[2], 0.0f);
+
+    Entity* selfEnt = (Entity*)EntityHandleDb_GetObject(
+        ps->mClient.mHandle.mVal);
+    if (selfEnt == nullptr || selfEnt->client == nullptr)
+        return;
+    weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ps->weapon);
+
+    Entity* selfEnt2 = (Entity*)EntityHandleDb_GetObject(
+        ps->mClient.mHandle.mVal);
+    int playerIndex = selfEnt2->GetPlayerIndex();
+    bool bStickyAim =
+        gSaveGameData[LocalClient_ClientToPort(playerIndex)]
+            .mStubData.mStickyAim;
+    if (InfoForWeapon != nullptr
+        && (InfoForWeapon->weapClass == WEAPCLASS_SPOTTER
+            || InfoForWeapon->weapClass == 16))
+    {
+        bStickyAim = false;
+    }
+    Entity* selfEnt3 = (Entity*)EntityHandleDb_GetObject(
+        ps->mClient.mHandle.mVal);
+    if (InfoForWeapon->weapClass == 10  // WEAPCLASS_SNIPER (verified vs disasm)
+        && CL_IsADS(selfEnt3->GetPlayerIndex()))
+    {
+        bStickyAim = false;
+    }
+
+    Entity* selfEnt4 = (Entity*)EntityHandleDb_GetObject(
+        ps->mClient.mHandle.mVal);
+    Entity* pPlayer = selfEnt4;
+
+    for (int clientIdx = 0;
+         clientIdx < 0x13700;
+         clientIdx += 0x1370)
+    {
+        client_s* cl = (client_s*)((char*)svs.clients + clientIdx);
+        if (cl->state == 0)
+            continue;
+        unsigned int handle = cl->mEntityHandle.mHandle.mVal;
+        Entity* ent = (Entity*)EntityHandleDb_GetObject(handle);
+        if (ent == nullptr || ent == pPlayer)
+            continue;
+        if (cgGlobal.teamGame
+            && ent->sentient != nullptr && pPlayer->sentient != nullptr
+            && ent->sentient->eTeam
+                   == *(int*)((char*)pPlayer->sentient + 4))
+        {
+            continue;
+        }
+        Client* client = ent->client;
+        if (client == nullptr || client->pers.playerState != 3
+            || (0x100000 & client->ps.eFlags) != 0
+            || (0x400000 & ent->flags) != 0)
+        {
+            continue;
+        }
+
+        math::Position3 enemyPos;
+        enemyPos.v = _mm_setr_ps(ent->r.currentOrigin.v.m128_f32[0],
+                                 ent->r.currentOrigin.v.m128_f32[1],
+                                 ent->r.currentOrigin.v.m128_f32[2] + 40.0f,
+                                 0.0f);
+        __m128 delta = _mm_sub_ps(playerPos.v, enemyPos.v);
+        __m128 d2 = _mm_mul_ps(delta, delta);
+        float dist = sqrtf(d2.m128_f32[0] + d2.m128_f32[1]
+                           + d2.m128_f32[2]);
+        math::Dir3 toTarget;
+        toTarget.v = _mm_div_ps(delta, _mm_set1_ps(dist));
+        if (dist >= -0.1f && dist <= 0.1f)
+            return;
+
+        float t = intersect(enemyPos, toTarget, playerPos, viewDir);
+        if (t > 0.0f)
+        {
+            __m128 proj = _mm_mul_ps(viewDir.v,
+                                     _mm_xor_ps(toTarget.v,
+                                                _mm_set1_ps(-0.0f)));
+            float dot = proj.m128_f32[0] + proj.m128_f32[1]
+                      + proj.m128_f32[2];
+            if (dot > 0.92f)
+            {
+                math::Position3 hitPos;
+                hitPos.v = _mm_add_ps(
+                    playerPos.v, _mm_mul_ps(viewDir.v, _mm_set1_ps(t)));
+                math::Position3 enemyOrigin;
+                if (FindClosestVisibleBone(ent, playerPos, hitPos,
+                                           enemyOrigin)
+                    && SmokeGrenadeMgr::sInst
+                        && ((SmokeGrenadeMgr*)SmokeGrenadeMgr::sInst)
+                               ->EntityCanSeeEntity(pPlayer, ent, 0.4f))
+                {
+                    __m128 v25 = _mm_sub_ps(hitPos.v,
+                                            ent->r.currentOrigin.v);
+                    float dz = v25.m128_f32[2];
+                    __m128 flat = v25;
+                    flat.m128_f32[2] = 0.0f;
+                    __m128 f2 = _mm_mul_ps(flat, flat);
+                    float distXY = sqrtf(f2.m128_f32[0] + f2.m128_f32[1]
+                                         + f2.m128_f32[2]);
+                    float depth = dist / depthScale;
+                    if (depth < 0.0f)
+                        depth = 0.0f;
+                    else if (depth > 12.0f)
+                        depth = 12.0f;
+
+                    float boxHalf = depth * boxScale;
+                    float boxLow = ((boxHalf * 2.0f) + 1.0f) * -2.0f;
+                    float boxHigh;
+                    if (ent->actor != nullptr
+                        || (ent->flags & 0x2000000) != 0
+                        || ent->client != nullptr)
+                    {
+                        boxHigh = (depth + 1.0f) * xy;
+                    }
+                    else
+                    {
+                        float maxs = ent->r.maxs.v.m128_f32[0]
+                                <= ent->r.maxs.v.m128_f32[1]
+                            ? ent->r.maxs.v.m128_f32[1]
+                            : ent->r.maxs.v.m128_f32[0];
+                        if (maxs <= boundingMin)
+                            boxHigh = boundingMin;
+                        else
+                        {
+                            boxHigh = maxs + boundingMin;
+                            boxLow = -boxHigh;
+                        }
+                    }
+                    if ((ent->client->ps.pm_flags & 1) != 0)
+                        boxHigh = 30.0f;
+                    else if ((ent->client->ps.pm_flags & 2) != 0)
+                        boxHigh = 60.0f;
+                    boxHigh = ((boxHalf * 0.15f) + 1.0f) * boxHigh;
+                    float v40 = boxHigh * boxScale;
+                    if (boxHigh > dz && dz > boxLow && v40 > distXY)
+                    {
+                        distAwayFromTargetXY = t;
+                        bSlowFactor = true;
+                        distToPlane = (float)(intptr_t)ent;
+                    }
+                }
+            }
+        }
+    }
+
+    if (ps->prevTargetPointValid != 0)
+    {
+        unsigned int handle = ps->currentTargetHandle.mHandle.mVal;
+        Entity* target = (Entity*)EntityHandleDb_GetObject(handle);
+        if (target == nullptr)
+            goto LABEL_113;
+        if (!bSlowFactor || !bStickyAim)
+            goto LABEL_113;
+        Entity* entA = (Entity*)EntityHandleDb_GetObject(handle);
+        Entity* entB = (Entity*)EntityHandleDb_GetObject(handle);
+        Entity* entC = (Entity*)EntityHandleDb_GetObject(handle);
+        math::Position3 targetPos;
+        targetPos.v = _mm_setr_ps(entC->r.currentOrigin.v.m128_f32[0],
+                                  entA->r.currentOrigin.v.m128_f32[1],
+                                  entB->r.currentOrigin.v.m128_f32[2],
+                                  0.0f);
+        math::Position3 relPt;
+        relPt.v = _mm_setr_ps(ps->prevTargetRelPt[0],
+                              ps->prevTargetRelPt[1],
+                              ps->prevTargetRelPt[2], 0.0f);
+        math::Position3 pt;
+        pt.v = _mm_add_ps(targetPos.v, relPt.v);
+        __m128 d = _mm_sub_ps(pt.v, playerPos.v);
+        float fDistance = 0.6f;
+        if (distAwayFromTargetXY > 200.0f)
+        {
+            if (distAwayFromTargetXY <= 750.0f)
+                fDistance = ((distAwayFromTargetXY - 200.0f)
+                             * gExtraDistanceSticky)
+                            * 0.0018181818f
+                          + 0.6f;
+            else
+                fDistance = gExtraDistanceSticky + 0.6f;
+        }
+        if (fLastDist > clostDist)
+        {
+            fDistance = fDistance
+                      - (((fLastDist - clostDist) * fDistance)
+                         / (1.0f - clostDist));
+        }
+        if (cmd->rightmove != 0)
+            fDistance += 0.1f;
+        if (fabsf(CL_GamepadAxisValue(3)) > 0.95f)
+            fDistance *= accel_slow_factor;
+        math::Position3 aimPos;
+        aimPos.v = _mm_add_ps(
+            playerPos.v, _mm_mul_ps(d, _mm_set1_ps(fDistance)));
+        __m128 a2 = _mm_sub_ps(aimPos.v, playerPos.v);
+        __m128 s2 = _mm_mul_ps(a2, a2);
+        float len = sqrtf(s2.m128_f32[0] + s2.m128_f32[1]
+                          + s2.m128_f32[2]);
+        math::Dir3 aimDir;
+        aimDir.v = _mm_div_ps(a2, _mm_set1_ps(len));
+        if (cmd->angles[1] != oldcmd->angles[1]
+            || cmd->angles[0] != oldcmd->angles[0]
+            || cmd->forwardmove != 0
+            || cmd->rightmove != 0
+            || (ps->fWeaponPosFrac > 0.0f && ps->fWeaponPosFrac < 1.0f))
+        {
+            float angles[3];
+            vectosignedangles(aimDir.v.m128_f32, angles);
+            ps->delta_angles[0] +=
+                (int)((angles[0] - ps->viewangles[0]) * 182.04445f);
+            ps->delta_angles[1] +=
+                (int)((angles[1] - ps->viewangles[1]) * 182.04445f);
+            ps->delta_angles[2] +=
+                (int)((angles[2] - ps->viewangles[2]) * 182.04445f);
+            ps->viewangles[0] = angles[0];
+            ps->viewangles[1] = angles[1];
+            ps->viewangles[2] = angles[2];
+        }
+        if (bSlowFactor)
+        {
+            if (distAwayFromTargetXY > 130.0f)
+            {
+                ps->prevTargetPointValid = 1;
+                ps->currentTargetHandle.mHandle.mVal =
+                    ((Entity*)(intptr_t)distToPlane)->mHandle.mHandle.mVal;
+                math::Position3 tpos;
+                tpos.v = _mm_setr_ps(
+                    ((Entity*)(intptr_t)distToPlane)
+                        ->r.currentOrigin.v.m128_f32[0],
+                    ((Entity*)(intptr_t)distToPlane)
+                        ->r.currentOrigin.v.m128_f32[1],
+                    ((Entity*)(intptr_t)distToPlane)
+                        ->r.currentOrigin.v.m128_f32[2],
+                    0.0f);
+                __m128 v71 = _mm_sub_ps(aimPos.v, tpos.v);
+                ps->prevTargetRelPt[0] = v71.m128_f32[0];
+                ps->prevTargetRelPt[1] = v71.m128_f32[1];
+                ps->prevTargetRelPt[2] = v71.m128_f32[2];
+                ps->mClosestStickyAimDistance = distAwayFromTargetXY;
+                goto LABEL_118;
+            }
+        }
+        ps->prevTargetPointValid = 0;
+LABEL_118:
+        ;
+    }
+LABEL_113:
+    return;
 }
 
 // ea: 0x00645CD0
