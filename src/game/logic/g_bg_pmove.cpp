@@ -7139,6 +7139,8 @@ extern void* mem_heap_malloc(unsigned int size);  // ?mem_heap_malloc (mem_heap)
 struct nglTexture;
 extern nglTexture* cdGetTexture(TPakId pakId, const tlFixedString& name);
     // ?cdGetTexture@@YAPAUnglTexture@@W4TPakId@@ABVtlFixedString@@@Z (streamer.o)
+extern void* Com_GetWeaponInfoMemory(int iSize, int* piParsed);
+    // ?Com_GetWeaponInfoMemory@@YAPAXHPAH@Z (g_weapon.cpp wrapper)
 
 // game.o static name tables (recovered from .rdata 0xDF5A5C..0xDF5B28)
 static const char* const s_szWeapClassNames[18] = {
@@ -7787,4 +7789,241 @@ void ParseWeaponConfigString(const char* name, const ConfigString* cfgstr)
         ++pDecals;
         ++namea;
     }
+}
+
+// ============================================================================
+// BG_ParseWeaponInfoFiles - ea: 0x63FF60 (bg_weapons.cpp)
+// ============================================================================
+static unsigned int s_none_hash;  // none_hash (game.o BSS 0xF591D4)
+static int s_bgpw_init;           // $S30_3 (game.o BSS 0xF591D8)
+
+// ea: 0x0063FF60
+void BG_ParseWeaponInfoFiles()
+{
+    weaponFileInfo_t* inited = InitWeaponInfo(0, weaponInfoFields, 334);
+    if ("none"[0] != 0)
+        inited->szInternalName = (char*)"none";
+    else
+        inited->szInternalName = &emptyString;
+    if ((s_bgpw_init & 1) == 0)
+    {
+        s_bgpw_init |= 1;
+        s_none_hash = HashString::CalcHash("none");
+    }
+    inited->internalNameHash = s_none_hash;
+    ConfigStringManager* v1 = ConfigStringManager_sInst;
+    bg_iNumWeapons = 0;
+    bg_iNumSharedAmmoCaps = 0;
+    TPakId v2 = CurPakId();
+    v1->CallbackSearch(v2, "WEAPONFILE", ParseWeaponConfigString);
+}
+
+// ============================================================================
+// BG_SetupTransitionTimes - ea: 0x606C30 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00606C30
+int BG_SetupTransitionTimes()
+{
+    int result = bg_iNumWeapons;
+    int v1 = 1;
+    if (bg_iNumWeapons >= 1)
+    {
+        weaponFileInfo_t** v2 = bg_weaponInfo;
+        do
+        {
+            weaponFileInfo_t* v3 = v2[v1];
+            int iAdsTransInTime = *(int*)((char*)v3 + 0x694);
+            if (iAdsTransInTime <= 0)
+                v3->fOOPosAnimLength[0] = 0.0033333334f;
+            else
+                v3->fOOPosAnimLength[0] = 1.0f / (float)iAdsTransInTime;
+            int iAdsTransOutTime = *(int*)((char*)v3 + 0x698);
+            if (iAdsTransOutTime <= 0)
+                v3->fOOPosAnimLength[1] = 0.0020000001f;
+            else
+                v3->fOOPosAnimLength[1] = 1.0f / (float)iAdsTransOutTime;
+            result = bg_iNumWeapons;
+            ++v1;
+        } while (v1 <= bg_iNumWeapons);
+    }
+    return result;
+}
+
+// ============================================================================
+// BG_SetupWeaponAlts - ea: 0x606CC0 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00606CC0
+int BG_SetupWeaponAlts()
+{
+    int v0 = bg_iNumWeapons;
+    weaponFileInfo_t** v1 = bg_weaponInfo;
+    for (int j = 1; j <= bg_iNumWeapons; ++j)
+    {
+        v1[j]->iAltWeaponIndex = 0;
+        v0 = bg_iNumWeapons;
+    }
+    int result = 1;
+    int i = 1;
+    if (v0 >= 1)
+    {
+        while (1)
+        {
+            weaponFileInfo_t* v4 = v1[result];
+            weaponFileInfo_t* pWeap = v4;
+            if (v4->iAltWeaponIndex == 0 && v4->szAltWeaponName[0] != 0
+                && v4->iAltWeaponIndex == 0)
+            {
+                int* p_iAltWeaponIndex = &v4->iAltWeaponIndex;
+                while (1)
+                {
+                    int v5 = 1;
+                    if (v0 >= 1)
+                    {
+                        weaponFileInfo_t* v6;
+                        while (1)
+                        {
+                            v6 = bg_weaponInfo[v5];
+                            if (_stricmp(v4->szAltWeaponName,
+                                         v6->szInternalName) == 0)
+                            {
+                                break;
+                            }
+                            if (++v5 > bg_iNumWeapons)
+                                goto LABEL_23;
+                        }
+                        int slot = v4->slot;
+                        *p_iAltWeaponIndex = v5;
+                        if (slot != v6->slot)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::JRS;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\bg_weapons.cpp";
+                            AeAssert::gCurrentLine = 1063;
+                            AeAssert::gCurrentExpr = nullptr;
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Warning(
+                                    "weapon '%s' does not have same "
+                                    "weaponSlot setting as its alt weapon "
+                                    "'%s'",
+                                    v4->szInternalName, v6->szInternalName))
+                                __debugbreak();
+                        }
+                        if (v4->bSlotStackable != v6->bSlotStackable)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::JRS;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\bg_weapons.cpp";
+                            AeAssert::gCurrentLine = 1067;
+                            AeAssert::gCurrentExpr = nullptr;
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Warning(
+                                    "weapon '%s' does not have same "
+                                    "slotStackable setting as its alt weapon "
+                                    "'%s'",
+                                    v4->szInternalName, v6->szInternalName))
+                                __debugbreak();
+                        }
+                    }
+                LABEL_23:
+                    if (*p_iAltWeaponIndex == 0)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::JRS;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\bg_weapons.cpp";
+                        AeAssert::gCurrentLine = 1074;
+                        AeAssert::gCurrentExpr = nullptr;
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Warning(
+                                "could not find altWeapon '%s' for weapon "
+                                "'%s'",
+                                v4->szAltWeaponName, v4->szInternalName))
+                            __debugbreak();
+                    }
+                    v4 = bg_weaponInfo[v5];
+                    p_iAltWeaponIndex = &v4->iAltWeaponIndex;
+                    if (v4->iAltWeaponIndex != 0)
+                        break;
+                    v0 = bg_iNumWeapons;
+                }
+                if (v4 != pWeap)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JRS;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\bg_weapons.cpp";
+                    AeAssert::gCurrentLine = 1078;
+                    AeAssert::gCurrentExpr = nullptr;
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Warning(
+                            "weapon '%s' has a bad altWeapon '%s'",
+                            pWeap->szInternalName, pWeap->szAltWeaponName))
+                        __debugbreak();
+                }
+            }
+            v0 = bg_iNumWeapons;
+            result = ++i;
+            if (i > bg_iNumWeapons)
+                break;
+            v1 = bg_weaponInfo;
+        }
+    }
+    return result;
+}
+
+// ============================================================================
+// BG_SetupUseHintStrings - ea: 0x606F30 (bg_weapons.cpp)
+// ============================================================================
+// ea: 0x00606F30
+int BG_SetupUseHintStrings()
+{
+    int result = bg_iNumWeapons;
+    for (int i = 1; i <= bg_iNumWeapons; ++i)
+    {
+        weaponFileInfo_t* v2 = bg_weaponInfo[i];
+        if (v2->szUseHintString[0] != 0
+            && G_GetHintStringIndex(&v2->iUseHintStringIndex,
+                                    v2->szUseHintString) == 0)
+        {
+            Com_Error(ERR_DROP,
+                      "Too many different hintstring values on weapons. "
+                      "Max allowed is %i different strings",
+                      32);
+        }
+        result = bg_iNumWeapons;
+    }
+    return result;
+}
+
+// ============================================================================
+// BG_SetupWeaponInfo - ea: 0x640020 (bg_weapons.cpp)
+// ============================================================================
+static int s_bgswi_init;  // init_0 (game.o BSS 0xF591DC)
+
+// ea: 0x00640020
+void BG_SetupWeaponInfo()
+{
+    s_bgswi_init = 1;
+    Com_DPrintf("----------------------\n");
+    Com_DPrintf("Game: BG_SetupWeaponInfo\n");
+    int iArraySource = 0;
+    bg_weaponInfo = (weaponFileInfo_t**)Com_GetWeaponInfoMemory(
+        368, &iArraySource);
+    if (bg_weaponInfo == nullptr)
+        Com_Error(ERR_DROP, "Could not allocate weapon info array");
+    memset(bg_szWeapAmmoNames, 0, 368);
+    memset(bg_szWeapClipNames, 0, 368);
+    bg_iWeapAmmoMaxs[0] = 0;
+    bg_szWeapAmmoNames[0] = "none";
+    bg_iNumAmmoTypes = 1;
+    bg_iWeapClipSizes[0] = 0;
+    bg_szWeapClipNames[0] = "none";
+    bg_iNumWeapClips = 1;
+    BG_ParseWeaponInfoFiles();
+    BG_SetupTransitionTimes();
+    BG_SetupAmmoIndexes();
+    BG_SetupSharedAmmoIndexes();
+    BG_SetupClipIndexes();
+    BG_FillInWeaponItems();
+    BG_SetupWeaponAlts();
+    BG_SetupUseHintStrings();
+    Com_DPrintf("----------------------\n");
 }
