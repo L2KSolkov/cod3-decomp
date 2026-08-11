@@ -1326,7 +1326,8 @@ unsigned char* BinFileManager::Find(const char* name)
 }
 
 // ea: 0x006180D0
-void DecodeBin(const char* name, unsigned char* data, int size, TPakId pakId)
+void DecodeBin(const char* name, unsigned char* data, int size, TPakId pakId,
+               PakFile* pakFile)
 {
     BinFileManager::sInst->DecodeBank(name, data, size, pakId);
 }
@@ -9763,7 +9764,7 @@ void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId, const char* name,
 
 // ea: 0x00638720
 void DecodeGDB(const char* name, void* data, int size, TPakId pakId,
-               void* pakFile)
+               PakFile* pakFile)
 {
     InplaceAssetBank_GdbFileSet_Fixup(data);
     InplaceAssetBankSet_GdbFileBank_AddBank(GdbFileManager::sInst, pakId,
@@ -9772,7 +9773,7 @@ void DecodeGDB(const char* name, void* data, int size, TPakId pakId,
 
 // ea: 0x006387E0
 void DecodeDCGBank(const char* name, unsigned char* data, int size,
-                   TPakId pakId, void* pakFile)
+                   TPakId pakId, PakFile* pakFile)
 {
     DCGBankManager::sInst->DecodeDCGBank(name, data, size, pakId);
 }

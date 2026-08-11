@@ -169,7 +169,8 @@ bool Entity::IsEnemy(Entity* ent)
 // DecodeStub - ea: 0x611B60
 // ============================================================================
 // ea: 0x00611B60
-void DecodeStub()
+void DecodeStub(const char* name, unsigned char* data, int size,
+                TPakId pakId, PakFile* pakFile)
 {
 }
 
@@ -514,7 +515,7 @@ extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 
 // ea: 0x006389B0
 void DecodeCGBank(const char* name, unsigned char* data, int size,
-                  TPakId pakId, void* pakFile)
+                  TPakId pakId, PakFile* pakFile)
 {
     ((CGBankManager*)CGBankManager::sInst)
         ->DecodeCGBank(name, data, size, pakId);
@@ -1314,7 +1315,8 @@ bool Entity_has_zone_collision(const void* self)
 // Layout twins of core_systems.h (core_systems.h can't be included with
 // g_local.h). ctors/allocators are provided by core.o (ctor_dtor.cpp).
 struct WaitTilOutput;
-struct EntityNotify {
+class EntityNotify {
+public:
     unsigned char m_dlist_node[8];   // +0x00
     unsigned int  mStr;              // +0x08
     DbLinkedHandle<EntityHandleDb, Entity> mOwner;  // +0x0C
@@ -2823,16 +2825,18 @@ public:
     bool IsFinished() const;           // ?IsFinished@AudioBankMgr@@QBE_NXZ
 private:
     const char* LanguageStr(ELanguage id) const;  // ?LanguageStr@AudioBankMgr@@ABEPBDW4ELanguage@@@Z
-public:
     void NotifyLoaded();               // ?NotifyLoaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9C0)
     void NotifyUnloaded();             // ?NotifyUnloaded@AudioBankMgr@@AAEXXZ (game.o 0x62B9F0)
+public:
     void Update();                     // ?Update@AudioBankMgr@@QAEXXZ (game.o 0x62BA20)
     void FinishLoading();              // ?FinishLoading@AudioBankMgr@@QAEXXZ (game.o 0x62BC40)
     void LoadWbkInternal(WbkEntry* wbk, const char* path, ELanguage lang,
                          bool async);  // ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z (game.o 0x62BD50)
-    void FreeWbk(const void* name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x62BE30)
+    void FreeWbk(const tlFixedString& name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x62BE30)
     void LoadWbk(const tlFixedString& name, bool async);  // ?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x639630)
+protected:
     virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@AudioBankMgr@@EAEXW4TPakId@@@Z (game.o 0x639550)
+public:
     void RegisterWbk(const tlFixedString& name, const char* path,
                      ELanguage lang, TPakId pak);  // game.o 0x621470
 };
@@ -3106,7 +3110,7 @@ void AudioBankMgr::UnloadBank(TPakId pakId)
                 &((WbkEntry*)this->mAvailableWbks)[v4];
             if (entry->pakFile == (int)pakId)
             {
-                this->FreeWbk(&entry->name, false);
+                this->FreeWbk(entry->name, false);
                 int m_size = this->m_size;
                 if (m_size > 1 && v2 < m_size)
                     *entry =
@@ -3360,7 +3364,7 @@ void AudioBankMgr::LoadWbkInternal(WbkEntry* wbk, const char* path,
 }
 
 // ea: 0x0062BE30
-void AudioBankMgr::FreeWbk(const void* name, bool async)
+void AudioBankMgr::FreeWbk(const tlFixedString& name, bool async)
 {
     unsigned int v5 = 0;
     int i = 0;
@@ -3381,7 +3385,7 @@ void AudioBankMgr::FreeWbk(const void* name, bool async)
             WbkEntry* entry =
                 (WbkEntry*)((char*)this->mAvailableWbks + v5);
             // tlFixedString name compare (8 dwords = 32 bytes)
-            if (memcmp(entry, name, 32) == 0)
+            if (memcmp(entry, &name, 32) == 0)
             {
                 for (int lang = 6; lang != 0; --lang)
                 {
@@ -3431,7 +3435,7 @@ void AudioBankMgr::FreeWbk(const void* name, bool async)
     AeAssert::gCurrentExpr = nullptr;
     if (!AeAssert::IsIgnored()
         && AeAssert::Warning("trying to free unknown wbk '%s'",
-                             (const char*)name + 4))
+                             (const char*)&name + 4))
         __debugbreak();
     this->mDoUnloadNotify = true;
 }

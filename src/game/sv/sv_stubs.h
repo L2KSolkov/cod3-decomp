@@ -351,7 +351,8 @@ enum ESoundEnvironment {
 };
 
 struct SoundDevice {
-    struct Sound {
+    class Sound {
+    public:
         int     mSource;         // +0x00 (nslSourceID; NSL_SOURCE_ID_INVALID == -1)
         int     mWave;           // +0x04 (nslWaveID; NSL_WAVE_ID_INVALID == -1)
         bool    mPaused;         // +0x08
@@ -404,7 +405,8 @@ struct SoundDevice {
                   bool mImportant);                    // ?Play@Sound@SoundDevice@@QAEXW4nslWaveID@@MMMMABVPosition3@math@@ABVDir3@5@_NV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@3@Z (game.o 0x639CE0)
         void Update();                      // ?Update@Sound@SoundDevice@@QAEXXZ (game.o 0x62C7A0)
     };
-    struct SoundHandleDb {
+    class SoundHandleDb {
+    public:
         struct DbElement {
             Sound* mObject;  // +0x00
             int    mKey;     // +0x04
@@ -419,6 +421,7 @@ struct SoundDevice {
 private:
     nslBankID SyncLoadBank(const char* filename);  // ?SyncLoadBank@SoundDevice@@AAE?AW4nslBankID@@PBD@Z (game.o 0x6024A0)
     void UpdateListener();                         // ?UpdateListener@SoundDevice@@AAEXXZ (game.o 0x603AC0)
+    int  GetFreeSlot();                            // ?GetFreeSlot@SoundDevice@@AAEHXZ (game.o 0x63A060)
 public:
     struct CrossFadeInfo {
         Handle mSound1;         // +0x00
@@ -464,7 +467,7 @@ public:
     static SoundDevice* sInst;      // ?sInst@SoundDevice@@2PAV1@A
     SoundDevice();                  // ??0SoundDevice@@QAE@XZ (game.o 0x6397F0)
     ~SoundDevice();                 // ??1SoundDevice@@QAE@XZ (game.o 0x646610)
-    nslWaveID FindWave(char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
+    nslWaveID FindWave(const char* name);  // ?FindWave@SoundDevice@@QAE?AW4nslWaveID@@PBD@Z (game.o 0x612980)
     float GetWaveDuration(nslWaveID wave);  // ?GetWaveDuration@SoundDevice@@QAEMW4nslWaveID@@@Z (game.o 0x6025A0)
     void ScaleVolume(float scale);          // ?ScaleVolume@SoundDevice@@QAEXM@Z (game.o 0x602A10)
     void PauseAllSounds();                  // ?PauseAllSounds@SoundDevice@@QAEXXZ (game.o 0x602A80)
@@ -487,7 +490,6 @@ public:
     EOutputMode GetOutputMode() const;          // game.o 0x603E30
     void DebugRender();                         // ?DebugRender@SoundDevice@@QAEXXZ (game.o 0x62CD90)
     static void SingletonDebugRender();         // ?SingletonDebugRender@SoundDevice@@SAXXZ (game.o 0x6629D0)
-    int  GetFreeSlot();                         // ?GetFreeSlot@SoundDevice@@AAEHXZ (game.o 0x63A060)
     void FrameAdvance(float delta);             // ?FrameAdvance@SoundDevice@@QAEXM@Z (game.o 0x63A5A0)
     Sound* GetSoundForHandle(DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle);  // game.o 0x621670
     const Sound* GetSoundForHandle(DbLinkedHandle<SoundDevice::SoundHandleDb, SoundDevice::Sound> handle) const;  // game.o 0x6216B0

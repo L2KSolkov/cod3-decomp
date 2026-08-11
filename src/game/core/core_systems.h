@@ -705,7 +705,8 @@ static_assert(sizeof(WaitTilOutput) == 0xC, "WaitTilOutput size mismatch");
 class PoolAllocator;
 class EntityHandleDb;
 
-struct EntityNotify {
+class EntityNotify {
+public:
     reserved_dlist<EntityNotify>::dlist_node m_dlist_node;  // +0x00
     unsigned int mStr;        // +0x08
     DbLinkedHandle<EntityHandleDb, Entity> mOwner;  // +0x0C
@@ -987,7 +988,8 @@ typedef int TRequestId;   // TODO: type from IDA
 struct PakInfoNode;
 struct PakHeader;
 
-struct PakFile {
+class PakFile {
+public:
     reserved_dlist<PakFile>::dlist_node m_dlist_node;  // +0x00
     const char* mCurrDecodeFile;      // +0x08
     unsigned char mPath[0x40];        // +0x0C ae_fixed_string<64,unsigned char>

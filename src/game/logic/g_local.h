@@ -1071,7 +1071,8 @@ struct PakInfoNode {
     uint8_t _pad8[0xD4 - 0x08];
     InplaceVector<InplaceString> checkPointNames;  // +0xD4 (verified vs disasm)
 };
-struct PakFile {
+class PakFile {
+public:
     struct dlist_node {
         PakFile* m_next;  // +0x00
         PakFile* m_prev;  // +0x04
@@ -3010,7 +3011,8 @@ void  PM_StartWeaponAnim(int anim);               // game.o 0x607EC0
 void  PM_ContinueWeaponAnim(int anim);            // game.o 0x607F80
 void  BG_GetSpreadForWeapon(const PlayerState* ps, int weaponIndex,
                             float* minSpread, float* maxSpread);  // game.o 0x615C90
-void  GetSurfaceTypeSounds(const char* pszType, nslWaveID* sounds);  // game.o 0x612DB0
+void  GetSurfaceTypeSounds(const char* pszType,
+                           nslWaveID* const sounds);  // game.o 0x612DB0
 void  MultiplayerMgr_IsLocalPlayer(void* self, Entity* player);  // mp.o
 void  MultiplayerMgr_DropWeapon(void* self, int weapon, int netIndex,
                                 const math::Position3* position,
@@ -3511,7 +3513,8 @@ void Scr_NotifyFromEnt(Entity* ent, HashString hashValue, Entity* fromEnt);
 extern void (*controllertable[4])(Entity* ent, int* partBits);
 
 // DObj - server-side dynamic object (minimal view; full layout in cg_local.h)
-struct DObj {
+class DObj {
+public:
     uint8_t      _pad0[0x70];      // +0x00
     void*        skel;             // +0x70
     uint8_t      _pad74[0x80 - 0x74];  // +0x74 (animToModel, gameId, ignoreCollision)
