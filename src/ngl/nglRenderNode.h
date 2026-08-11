@@ -85,11 +85,6 @@ inline void nglListAddNode_Opaque(nglRenderNode* Node, unsigned int Hash) {
     ++nglBuildScene->OpaqueListCount;
 }
 
-inline void nglListAddNode_Translucent(nglRenderNode* Node, float Dist) {
-    Node->SortDist = Dist;
-    Node->Next = nglBuildScene->TransRenderList;
-    nglBuildScene->TransRenderList = Node;
-    ++nglBuildScene->TransListCount;
-}
+void nglListAddNode_Translucent(nglRenderNode* Node, float Dist);  // ngl_scene.cpp
 
 #endif // COD3_NGL_NGL_RENDER_NODE_H
