@@ -43,7 +43,7 @@ extern cvar_t* Cvar_Set2(const char* var_name, const char* value, int force);
 extern void Cbuf_AddText(const char* text);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
-extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
+extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
 extern void* _Z_MallocInternal(int size);
 extern void _Z_FreeInternal(void* ptr);
@@ -975,7 +975,7 @@ int FS_ReadFile(char* qpath, void** buffer)
             if (buffer)
             {
                 ++fs_loadStack;
-                void* v11 = mem_heap_malloc_ctx(16, v9 + 1, "fs",
+                void* v11 = mem_heap_malloc_ctx(v9 + 1, 16, "fs",
                                                 "c:\\cod\\code\\game\\com_files.cpp", 1857);
                 *buffer = v11;
                 FS_Read((unsigned char*)v11, len, v10);
@@ -1030,7 +1030,7 @@ int FS_ReadFile(char* qpath, void** buffer)
     {
         if (buffer)
         {
-            void* v6 = mem_heap_malloc_ctx(16, len + 1, "fs",
+            void* v6 = mem_heap_malloc_ctx(len + 1, 16, "fs",
                                            "c:\\cod\\code\\game\\com_files.cpp", 1796);
             *buffer = v6;
             int v8 = FS_Read((unsigned char*)v6, len, com_journalDataFile);

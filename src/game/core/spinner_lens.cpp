@@ -36,9 +36,10 @@ extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void* FEManager_GetFont(void* mgr, int f);
 extern unsigned int AeHash(const char* str);
 extern float VectorNormalize(float* v);
-extern math::Position3 nglProjectPoint(math::Position3* result,
-                                       math::Position3* in, void* scene);
 struct nglScene;
+extern math::Position3* nglProjectPoint(math::Position3* result,
+                                        const math::Position3* in,
+                                        nglScene* scene);
 extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* scene);
 extern nglScene* nglBuildScene;
 extern void* gpBrocAPI;

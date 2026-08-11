@@ -62,7 +62,7 @@ extern void Cbuf_Init();
 extern void Cmd_Init();
 extern void CL_Shutdown();
 extern void CL_Init();
-extern void CL_Disconnect(int showMainMenu);
+extern void CL_Disconnect();
 extern void CL_ShutdownAll();
 extern void CL_StartHunkUsers();
 extern void CL_KeyEvent(int key, int down, unsigned int time);
@@ -235,8 +235,9 @@ extern void* SmokeGrenadeMgr_sInst;
 extern void EntityNotifySet_UpdateList();
 extern int update_trigger_notifies();
 extern void subtitle_manager_frame_advance(int time_delta);
-extern void InspectorManager_Update(void* self);
-extern void* g_inspectorManager;
+class InspectorManager;
+extern void InspectorManager_Update(InspectorManager* self);
+extern InspectorManager g_inspectorManager;
 extern void SendClientThinkMsg();
 extern void LocalClient_SetFirstLocalClientIndex(int index);
 extern void LocalClient_SetLastLocalClientIndex(int index);
@@ -369,13 +370,14 @@ extern void PakManager_SyncLoadPak(void* self, int pak_type, const char* path,
 extern void* PakManager_GetPakInfo(void* self, const char* long_name);
 extern void PakManager_SetUserDistance(void* self, void* cpak, float dist);
 extern void AudioBankMgr_FinishLoading(void* self);
-extern void InspectorManager_Initialise(void* self);
+extern void InspectorManager_Initialise(InspectorManager* self);
 extern void LocalClient_InitializeClientControllers();
 extern void WheelMarkMgr_Init();
 extern void WheelMarkMgr_Exit();
 extern void DebugRender_Init(void* self);
 extern void StubData_ApplyStubOptions(void* self);
-extern void* gSaveGameData;
+struct SaveGameData;
+extern SaveGameData* gSaveGameData;
 extern void Com_ControllerWarningDialog(bool activate, int client);
 extern void MSG_Init(msg_t* msg, unsigned char* data, int length);
 extern int generateHashValue(const char* fname);
@@ -2081,7 +2083,7 @@ cvar_t* Com_Frame()
     subtitle_manager_frame_advance(v7);
     SV_Frame(v7);
     if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
-        InspectorManager_Update(g_inspectorManager);
+        InspectorManager_Update(&g_inspectorManager);
     Com_EventLoop();
     if (!gUseControllerLagFix)
     {
@@ -2254,7 +2256,7 @@ void Com_Init(char* commandLine)
     WheelMarkMgr_Init();
     AudioBankMgr_FinishLoading(AudioBankMgr_sInst);
     Com_InitJournaling();
-    InspectorManager_Initialise(g_inspectorManager);
+    InspectorManager_Initialise(&g_inspectorManager);
     Cbuf_AddText("exec language.cfg\n");
     Cbuf_AddText("exec bro.cfg\n");
     Cbuf_AddText("exec autoexec.cfg\n");
@@ -2392,7 +2394,7 @@ void Com_Shutdown()
         gActorHeap = nullptr;
     }
     PhysShutdown();
-    CL_Disconnect(1);
+    CL_Disconnect();
     CL_ShutdownAll();
     SV_Shutdown();
     CL_StartHunkUsers();
