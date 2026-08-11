@@ -88,6 +88,13 @@ struct phys_static_memory_pool {
 // (physics.o data)
 phys_static_memory_pool<vehicle_rb_parameter, 10> g_vehicle_rb_parameters;
 
+// g.o / physics.o vehicle data
+vmCvar_t g_vehicleDebug;         // ?g_vehicleDebug@@3UvmCvar_t@@A (g.o)
+vmCvar_t g_vehicleDrawPath;      // ?g_vehicleDrawPath@@3UvmCvar_t@@A (g.o)
+VehicleNodeAllocator g_vehicleNodeManager;  // ?g_vehicleNodeManager@@3VVehicleNodeAllocator@@A (g.o)
+int g_vehicle_button_threshold = -1;        // ?g_vehicle_button_threshold@@3HA (physics.o)
+int rb_vehicle::sRenderAllVehicles = -1;    // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
+
 // ea: 0x6F46B0 (physics.o)
 vehicle_rb_parameter::vehicle_rb_parameter()
 {
