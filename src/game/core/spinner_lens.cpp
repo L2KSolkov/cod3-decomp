@@ -12,7 +12,8 @@
 extern void nglInitQuad(void* quad);
 extern void nglSetQuadRect(void* quad, float x1, float y1, float x2, float y2);
 extern void nglSetQuadColor(void* quad, unsigned int c);
-extern void nglSetQuadZ(void* quad, float z);
+struct nglQuad;
+extern void nglSetQuadZ(nglQuad* quad, float z);
 extern void nglSetQuadBlend(void* quad, unsigned int blend);
 extern void nglSetQuadTex(void* quad, void* tex);
 extern void nglListAddQuad(void* quad);
@@ -28,7 +29,8 @@ extern void nglWaitForRendering();
 extern void nglPresent();
 extern int nglGetScreenWidth();
 extern int nglGetScreenHeight();
-extern void* nglGetTexture(void* fileName);
+struct nglTexture;
+extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void* FEManager_GetFont(void* mgr, int f);
 extern unsigned int AeHash(const char* str);
 extern void VectorNormalize(math::Dir3* v);
@@ -84,7 +86,7 @@ void SpinnerDrawLoading()
     nglInitQuad(loadImage);
     nglSetQuadRect(loadImage, 0.0f, 0.0f, 640.0f, 480.0f);
     nglSetQuadColor(loadImage, 0x96000000);
-    nglSetQuadZ(loadImage, 300.0f);
+    nglSetQuadZ((nglQuad*)loadImage, 300.0f);
     nglSetQuadBlend(loadImage, 0x64CF8600);
     void* Font = FEManager_GetFont(&g_femanager, 0);
     if (Font != nullptr)
@@ -232,15 +234,15 @@ void LensFlareInit()
     if (mObject != nullptr)
     {
         tlFixedString FileName("dynamiclight");
-        gLensFlareTextures[0] = nglGetTexture(&FileName);
+        gLensFlareTextures[0] = nglGetTexture(FileName);
         tlFixedString v8("lensflare1");
-        dword_F00ED4 = nglGetTexture(&v8);
+        dword_F00ED4 = nglGetTexture(v8);
         tlFixedString v7("lensflare2");
-        dword_F00ED8 = nglGetTexture(&v7);
+        dword_F00ED8 = nglGetTexture(v7);
         tlFixedString v6("lensflare3");
-        dword_F00EDC = nglGetTexture(&v6);
+        dword_F00EDC = nglGetTexture(v6);
         tlFixedString v4("lensflare4");
-        dword_F00EE0 = nglGetTexture(&v4);
+        dword_F00EE0 = nglGetTexture(v4);
     }
 }
 

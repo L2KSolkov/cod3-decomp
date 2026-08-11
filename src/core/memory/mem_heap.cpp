@@ -115,8 +115,18 @@ int mem_heap_create(void* start, void* end, mem_heap* out) {
     return 0;
 }
 
-void mem_heap_create(mem_heap* heap, void* start, void* cur_left, void* cur_right) {
-    mem_heap_init(heap, start, cur_left, cur_right);
+void mem_heap_create(mem_heap* heap, void* start, void* end,
+                     mem_heap* reserve) {
+    memset(heap, 0, 0x49C);
+    heap->start = start;
+    heap->end = end;
+    heap->cur_left = start;
+    heap->cur_right = end;
+    heap->size = (unsigned)((uintptr_t)end - (uintptr_t)start);
+    heap->used_byte = 0;
+    heap->high_used_byte = 0;
+    heap->reserve = reserve;
+    heap->total_allocs = 0;
 }
 
 // ============================================================================
@@ -184,11 +194,15 @@ void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
     return ptr;
 }
 
-void* mem_heap_malloc(unsigned size, int flags) {
+void* mem_heap_malloc_flags(unsigned size, int flags) {
     return mem_heap_malloc(s_current_heap, size, flags);
 }
 
 void* mem_heap_malloc(unsigned size) {
+    return mem_heap_malloc(s_current_heap, size, 0);
+}
+
+void* mem_heap_malloc(int alignment, unsigned size) {
     return mem_heap_malloc(s_current_heap, size, 0);
 }
 
@@ -447,7 +461,7 @@ void mem_heap_free_private(void* ptr) {
 // mem_heap_malloc_ctx — allocate with context tracking
 // ea: 0x7BB990
 void* mem_heap_malloc_ctx(unsigned size, int flags, const char* file, const char* func, int line) {
-    return mem_heap_malloc(size, flags);
+    return mem_heap_malloc_flags(size, flags);
 }
 
 // mem_heap_free_check_reserve — check if freeing from reserve heap

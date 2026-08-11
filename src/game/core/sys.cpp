@@ -13,8 +13,9 @@
 #include <intrin.h>
 
 extern void Com_Printf(const char* fmt, ...);
-extern void CL_ConsolePrint(int type, const char* txt, int duration,
-                            int linewidth, int flags);
+enum print_msg_type_t;
+extern void CL_ConsolePrint(print_msg_type_t type, const char* txt,
+                            int duration, int linewidth, int flags);
 extern cvar_t* cl_noprint;
 extern void tlPrintf(const char* fmt, ...);
 extern void tlPrint(const char* txt);
@@ -25,7 +26,15 @@ extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
                                  const char* ctx, const char* file, int line);
 extern void* mem_heap_malloc_align_heap(void* heap, unsigned int alignment,
                                        unsigned int size);
-extern void* mem_heap_get(int heap_name);
+enum mem_heap_type {
+    MEM_HEAP_MAIN    = 0,
+    MEM_HEAP_DEBUG   = 1,
+    MEM_HEAP_COMBINE = 2,
+    MEM_HEAP_NONE    = 3,
+};
+struct mem_heap;
+extern mem_heap* mem_heap_get(mem_heap_type heap_name);
+struct nglTexture;
 struct tlSystemCallbacks;
 extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);
 extern void nglInitQuad(void* quad);
@@ -36,7 +45,7 @@ extern void* nglGetFrontBufferTex();
 extern void nglSetQuadTex(void* quad, void* tex);
 extern void nglSetQuadRect(void* quad, float x1, float y1, float x2, float y2);
 extern void nglListAddQuad(void* quad);
-extern void* nglGetTexture(tlFixedString* fileName);
+extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void PrintPakNames();
 extern void SpinnerDrawFrameWithLoading(bool bEndFrame);
 extern int gLensAlphaAmount;
@@ -46,8 +55,6 @@ extern void* PakManager_MemAlign(void* self, int id, unsigned int align,
                                  unsigned int size);
 extern void PakManager_MemFree(void* self, int id, void* ptr,
                                bool bUseActorHeap);
-extern int MEM_HEAP_COMBINE;
-extern int MEM_HEAP_MAIN;
 extern int g_bDObjInited;
 extern void* sSpinnerFrames[8];
 extern void* dword_F00EB0;
@@ -96,7 +103,7 @@ void Printf(int dest, const char* fmt, ...)
     if ((dest & 1) != 0 && cl_noprint != nullptr && cl_noprint->integer == 0)
         tlPrintf("%s", txtBuf);
     if ((dest & 2) != 0)
-        CL_ConsolePrint(0, txtBuf, 0, 0, 0);
+        CL_ConsolePrint((print_msg_type_t)0, txtBuf, 0, 0, 0);
 }
 
 // ea: 0x004BB5A0
@@ -257,16 +264,16 @@ void TlSystemCallbacks::DebugPrint(char* txt)
 void* SpinnerInit()
 {
     tlFixedString FileName("spinner_a");
-    sSpinnerFrames[0] = nglGetTexture(&FileName);
+    sSpinnerFrames[0] = nglGetTexture(FileName);
     dword_F00EB0 = sSpinnerFrames[0];
     tlFixedString v3("spinner_b");
-    dword_F00EB4 = nglGetTexture(&v3);
+    dword_F00EB4 = nglGetTexture(v3);
     dword_F00EB8 = dword_F00EB4;
     tlFixedString v2("spinner_c");
-    dword_F00EBC = nglGetTexture(&v2);
+    dword_F00EBC = nglGetTexture(v2);
     dword_F00EC0 = dword_F00EBC;
     tlFixedString v1("spinner_d");
-    void* result = nglGetTexture(&v1);
+    void* result = nglGetTexture(v1);
     dword_F00EC4 = result;
     dword_F00EC8 = result;
     return result;

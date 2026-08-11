@@ -13,11 +13,11 @@ extern int dword_F6A28C[4 * 802];
 extern int dword_F6A290[4 * 802];
 extern unsigned int HashString_CalcHash(const char* str);
 extern int SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
-extern void* SV_DObjGetMatrixArray(Entity* entity);
+extern DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
 extern int G_DObjSetControlTagAngles(Entity* ent, int* partBits,
                                      unsigned int tag_name_hash,
                                      float* angles);
-extern void* BG_GetInfoForWeapon(int weapon);
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern int EffectEventStopEmitting(int handle);
 extern int PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
                                   int action);

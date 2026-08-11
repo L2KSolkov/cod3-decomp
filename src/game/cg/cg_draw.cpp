@@ -75,11 +75,14 @@ extern void* nglListAlloc(unsigned int bytes, unsigned int alignment);
 extern void* cdScratchMaterial_Ctor(void* self, void* tex,
                                     unsigned int blendMode, int mapflags,
                                     bool heatHaze);
-extern void* nglCreateScratchSection(int prim, int nIndices, int nVertices,
-                                     void* vertexFormat);
+struct gpuVertexFormat;
+struct nglMeshSection;
+extern nglMeshSection* nglCreateScratchSection(int prim, int nIndices,
+                                               int nVertices,
+                                               gpuVertexFormat* vertexFormat);
 extern void nglAddMeshSection(void* mesh, void* section, void* material,
                               int flags);
-extern void* nglLockSectionIndices(void* section);
+extern void* nglLockSectionIndices(nglMeshSection* section);
 extern void* nglLockSectionVertices(void* section);
 extern void nglListAddMesh(void* mesh, const math::Mat43* localToWorld,
                            void* meshParams, void* shaderParams, void* fn);
@@ -134,7 +137,9 @@ extern int G_GetServerSnapTime();
 extern void CG_UpdateCvars();
 extern void CG_ProcessSnapshots();
 extern void CG_PredictPlayerState_Internal();
-extern void CG_UpdateShellShock(const void* parms, int start, int duration);
+struct shellshock_parms_t;
+extern void CG_UpdateShellShock(const shellshock_parms_t* parms, int start,
+                                int duration);
 extern void CG_CalcCubemapViewValues();
 extern void CG_CalcVrect(const void* window);
 extern void CG_CalcFov();
@@ -156,7 +161,8 @@ extern int SoundDevice_GetNumberOfListeners(void* self);
 extern void subtitle_manager_render();
 extern bool FEManager_InGameMenusActive(void* self, int client);
 extern void FEManager_DrawIGO(void* self, int client);
-extern void* Cvar_Get(const char* name, const char* value, int flags);
+struct cvar_t;
+extern cvar_t* Cvar_Get(const char* name, const char* value, int flags);
 extern void CG_DrawFlashDamage();
 extern void CG_DrawDamageDirectionIndicators();
 extern void CG_DrawPlayerLowHealthOverlay();
@@ -166,7 +172,7 @@ extern int GamePause_IsGamePaused(int client);
 extern Entity* GetPlayer(int idx);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
-extern int BG_GetWeaponForInfo(void* pWeapInfo);
+extern int BG_GetWeaponForInfo(weaponFileInfo_t* pWeapInfo);
 extern void CG_DrawWeapReticle();
 extern void CG_CalcCrosshairColor(float alpha, int* color);
 extern void CG_CalcCrosshairPosition(float* pfX, float* pfY);
@@ -187,7 +193,9 @@ extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float transScale);
 extern bool CG_AllowedToDrawCrosshair();
 extern int CG_ForceDebugCrosshair();
-extern void nglListBeginScene(int paramSource);
+enum nglSceneParamType;
+struct nglScene;
+extern nglScene* nglListBeginScene(nglSceneParamType paramSource);
 extern void nglSetClearFlags(unsigned int flags);
 extern void nglSetZTestEnable(bool enable);
 extern void nglSetZWriteEnable(bool enable);
@@ -429,15 +437,19 @@ extern int dword_F64160[4 * 1580];
 extern int gBlackStartTime[4];
 extern int lastTime_0[4];
 extern float unk_F6A284[4 * 802];
-extern void Con_DrawNotify(int iXPos, int iYPos, float fAlpha, int eMode);
-extern void Con_DrawBoldMessages(int iXPos, int iYPos, float fAlpha, int eMode);
+enum msgwnd_mode_t;
+extern void Con_DrawNotify(int iXPos, int iYPos, float fAlpha,
+                           msgwnd_mode_t eMode);
+extern void Con_DrawBoldMessages(int iXPos, int iYPos, float fAlpha,
+                                 msgwnd_mode_t eMode);
 extern void j_nullsub_72(int iXPos, int iYPos, float fAlpha);
 extern void j_nullsub_121(int iXPos, int iYPos, float fAlpha, int eMode);
 extern void CG_FillRect(float x, float y, float width, float height,
-                        float* color, float z);
+                        const float* color, float z);
 extern void SpinnerDrawFrame(bool bEndFrame);
 extern int Sys_Milliseconds();
-extern void StatMon_GetStatsArray(void** stats, int* count);
+struct statmonitor_s;
+extern void StatMon_GetStatsArray(const statmonitor_s** stats, int* count);
 extern int GamePause_IsGamePaused(int client);
 extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
                                                    const char* pszSystem);
@@ -450,7 +462,8 @@ extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void re_DrawQuadPic(const float* verts, const float* texCoords,
                            void* tex);
 extern float* vST;
-extern void* Cvar_Get(const char* var_name, const char* var_value, int flags);
+extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
+                        int flags);
 extern void Cmd_Where_f(Entity* ent);
 extern int dword_F641D0[4 * 1580];
 extern int dword_F641D4[4 * 1580];
@@ -647,7 +660,8 @@ void CG_DrawGameMessages()
                                          * 115.0f))
                               - 20.0f)
                              + 0.5f),
-                       *(float*)&cg_hudAlpha, 0 /* MWM_BOTTOMUP */);
+                       *(float*)&cg_hudAlpha,
+                       (msgwnd_mode_t)0 /* MWM_BOTTOMUP */);
         return;
     }
     int v1 = dword_F641D4[1580 * currCl];
@@ -665,7 +679,7 @@ void CG_DrawGameMessages()
                                          * 115.0f))
                               - 20.0f)
                              + 0.5f),
-                       v3 * *(float*)&cg_hudAlpha, 0);
+                       v3 * *(float*)&cg_hudAlpha, (msgwnd_mode_t)0);
     }
 }
 
@@ -674,7 +688,8 @@ void CG_DrawBoldGameMessages()
 {
     if (dword_F641D0[1580 * currCl] == 0)
     {
-        Con_DrawBoldMessages(320, 180, *(float*)&cg_hudAlpha, 1);
+        Con_DrawBoldMessages(320, 180, *(float*)&cg_hudAlpha,
+                             (msgwnd_mode_t)1);
         return;
     }
     int v0 = dword_F641D4[1580 * currCl];
@@ -687,7 +702,8 @@ void CG_DrawBoldGameMessages()
         color[0] = 1.0f;
         color[1] = 1.0f;
         color[2] = 1.0f;
-        Con_DrawBoldMessages(320, 180, v2 * *(float*)&cg_hudAlpha, 1);
+        Con_DrawBoldMessages(320, 180, v2 * *(float*)&cg_hudAlpha,
+                             (msgwnd_mode_t)1);
     }
 }
 
@@ -709,14 +725,14 @@ void CG_DrawSubtitles()
 int CG_DrawPerformanceWarnings()
 {
     int v0 = Sys_Milliseconds();
-    void* stats;
+    const statmonitor_s* stats;
     int statCount;
     StatMon_GetStatsArray(&stats, &statCount);
     float x = 2.0f;
     float y = 200.0f;
     for (int v2 = 0; v2 < statCount; ++v2)
     {
-        int* p = (int*)stats + 3 * v2;
+        const int* p = (const int*)stats + 3 * v2;
         if (p[2] >= v0)
         {
             trap_R_DrawStretchPic(unk_F6A278[802 * currCl] * x,
@@ -814,11 +830,11 @@ extern int cg_drawpaused;
 extern int cg_drawGun;
 extern void* cg_weapons;
 extern re_export_view re;
-extern void* BG_GetInfoForWeapon(int weapon);
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern PlayerState* GetPlayerState(int idx);
 extern float* CG_FadeColor(int startMsec, int totalMsec, int fadeMsec);
 extern void CG_FillRect(float x, float y, float width, float height,
-                        float* color, float z);
+                        const float* color, float z);
 extern void CG_AdjustFrom640(float* x, float* y, float* w, float* h);
 extern void trap_R_SetColor(const float* rgba);
 extern void CG_GetCenterOfScreen(float* x, float* y);
@@ -1174,8 +1190,9 @@ void CG_DrawTracer(const math::Position3& _start,
         material = cdScratchMaterial_Ctor(matMem, cgsGlobal_media_tracerShader,
                                           0x64078600u, 2, false);
     }
-    void* section = nglCreateScratchSection(6, 8, 8,
-                                            cdscratch_vertex_format);
+    nglMeshSection* section =
+        nglCreateScratchSection(6, 8, 8,
+                                (gpuVertexFormat*)cdscratch_vertex_format);
     nglAddMeshSection(mesh, section, material, 1);
     unsigned short* indices =
         (unsigned short*)nglLockSectionIndices(section);
@@ -1269,7 +1286,8 @@ void CG_DrawCrosshair(float transScaleArg)
                 {
                 label_21:
                     int weapnum =
-                        BG_GetWeaponForInfo(dword_F63B8C[1580 * currCl]);
+                        BG_GetWeaponForInfo(
+                            (weaponFileInfo_t*)dword_F63B8C[1580 * currCl]);
                     if (!CG_ForceDebugCrosshair())
                     {
                         CG_DrawWeapReticle();
@@ -1391,7 +1409,7 @@ void CG_Draw2D(float a2)
     if (dword_F62948[1580 * currCl] != 0
         || cgGlobal.cubemapShot != 0 /* CUBEMAPSHOT_NONE */)
         return;
-    nglListBeginScene(0 /* NGLSCENE_PARENT */);
+    nglListBeginScene((nglSceneParamType)0 /* NGLSCENE_PARENT */);
     nglSetClearFlags(0);
     nglSetZTestEnable(false);
     nglSetZWriteEnable(false);
@@ -1478,7 +1496,7 @@ void CG_Draw2D(float a2)
         if (*(float*)&v9 < 1.0f)
             gStillDrawMenus = false;
         dword_F64158[1580 * currCl] = v9;
-        nglListBeginScene(0);
+        nglListBeginScene((nglSceneParamType)0);
         nglSetClearFlags(0);
         nglSetZTestEnable(false);
         nglSetZWriteEnable(false);
@@ -1594,7 +1612,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
             v13 = dword_F64190[v12];
         }
         dword_F6416C[v12] = v13;
-        CG_UpdateShellShock((void*)dword_F64164[v12],
+        CG_UpdateShellShock((shellshock_parms_t*)dword_F64164[v12],
                             dword_F64168[v12], v13);
         Entity* Player =
             EntityManager_GetPlayer(EntityManager_sInst, currCl);
@@ -1612,7 +1630,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         nglSetView(-1.0f, -1.0f, 1.0f, 1.0f);
         nglSetScissor(-1.0f, -1.0f, 1.0f, 1.0f);
         nglSetClearFlags(0);
-        nglListBeginScene(0);
+        nglListBeginScene((nglSceneParamType)0);
         nglSetClearFlags(0);
         View_SetViewportClipping(currCl);
         if (cubemapShot != 0)
@@ -1686,7 +1704,7 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         R_ToggleSmpFrame();
         gFirstCamera = false;
         g_DOBJF_NOT_RENDERED_LAST_FRAME *= 2;
-        nglListBeginScene(0);
+        nglListBeginScene((nglSceneParamType)0);
         nglSetClearFlags(0);
         CG_DrawViewportFrames(View_lNumViewports);
         nglListEndScene();

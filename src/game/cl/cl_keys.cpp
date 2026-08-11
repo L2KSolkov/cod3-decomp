@@ -20,7 +20,7 @@ extern void Com_DPrintf(const char* fmt, ...);
 extern void Com_Error(int code, const char* fmt, ...);
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
-extern const char* Cmd_Args(int start);
+extern char* Cmd_Args(int start);
 extern void CL_AddReliableCommand(const char* cmd);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern int Q_isnumeric(int c);

@@ -39,7 +39,7 @@ extern searchpath_s* fs_memorysearchpaths;
 extern filelist_s* fs_memorynonpackfilelist;
 extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
-extern void Cvar_Set2(const char* var_name, const char* value, int force);
+extern cvar_t* Cvar_Set2(const char* var_name, const char* value, int force);
 extern void Cbuf_AddText(const char* text);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
@@ -60,11 +60,11 @@ extern char* Cmd_Argv(int arg);
 extern void Sys_Mkdir(const char* path);
 extern void Sys_OutOfMemError();
 extern char** Sys_ListFiles(const char* directory, const char* extension,
-                            const char* filter, int* numfiles, int wantsubs);
+                            char* filter, int* numfiles, int wantsubs);
 extern void Sys_FreeFileList(char** list);
-extern const char* Sys_DefaultCDPath();
-extern const char* Sys_DefaultInstallPath();
-extern const char* Sys_DefaultHomePath();
+extern char* Sys_DefaultCDPath();
+extern char* Sys_DefaultInstallPath();
+extern char* Sys_DefaultHomePath();
 extern int Sys_DirectoryHasContents(const char* dirname);
 extern int Com_SafeMode();
 extern void Com_StartupVariable(const char* match);

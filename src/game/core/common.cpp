@@ -91,7 +91,7 @@ extern void* mem_heap_malloc_ctx(int alignment, unsigned int size,
 extern char* CopyStringInternal(const char* in);
 extern char* va(const char* fmt, ...);
 extern int Sys_Milliseconds();
-extern sysEvent_t* Sys_GetEvent(sysEvent_t* result);
+extern sysEvent_t Sys_GetEvent();
 extern int NET_GetLoopPacket(netsrc_t sock, netadr_t* net_from,
                              msg_t* net_message);
 extern void* _copyDWord(void* dest, int constant, unsigned int count);
@@ -171,8 +171,9 @@ extern int com_numConsoleLines;
 extern int com_argc;
 extern char** com_argv;
 extern int currCl;
-extern void CL_ConsolePrint(int type, const char* txt, int duration,
-                            int linewidth, int flags);
+enum print_msg_type_t;
+extern void CL_ConsolePrint(print_msg_type_t type, const char* txt,
+                            int duration, int linewidth, int flags);
 extern void Key_WriteBindings(int f);
 extern void PadAliasMgr_WriteBindings(int f);
 extern void Cvar_WriteVariables(int f);
@@ -182,9 +183,12 @@ extern const char* Com_Parse(const char** data_p);
 extern const char* Com_ParseOnLine(const char** data_p);
 extern void Com_SkipRestOfLine(const char** data);
 extern void Com_EndParseSession();
-extern void* controller_inst();
+class controller {
+public:
+    static controller* inst();
+    bool controller_is_connected(int index);
+};
 extern int controller_num_controllers();
-extern int controller_is_connected(int i_Num);
 extern bool controller_button_pressed_clear(int i_controller_num, int i_button);
 extern int LocalClient_ClientToPort(int client);
 extern void* STBManager_sInst;
@@ -810,7 +814,7 @@ void Com_PrintMessage(int type, const char* msg)
     }
     else if (type != 4)
     {
-        CL_ConsolePrint(type, msg, 0, 0, 0);
+        CL_ConsolePrint((print_msg_type_t)type, msg, 0, 0, 0);
         printf("%s", msg);
     }
 }
@@ -835,7 +839,7 @@ void Com_Printf(const char* fmt, ...)
     }
     else
     {
-        CL_ConsolePrint(0, msg, 0, 0, 0);
+        CL_ConsolePrint((print_msg_type_t)0, msg, 0, 0, 0);
         printf("%s", msg);
     }
 }
@@ -1140,7 +1144,7 @@ bool Com_ControllerValid(int controller_port)
 {
     if (g_controllerConnectedErrorShown[controller_port])
         return false;
-    return controller_is_connected(controller_port);
+    return controller::inst()->controller_is_connected(controller_port);
 }
 
 // ea: 0x004BCB80
@@ -1335,15 +1339,14 @@ sysEvent_t* Com_GetRealEvent(sysEvent_t* result)
     }
     else
     {
-        sysEvent_t v8;
-        sysEvent_t* Event = Sys_GetEvent(&v8);
-        ev = Event->evTime;
-        evType = Event->evType;
-        evValue = Event->evValue;
-        evValue2 = Event->evValue2;
-        unsigned int evPtrLength = Event->evPtrLength;
+        sysEvent_t Event = Sys_GetEvent();
+        ev = Event.evTime;
+        evType = Event.evType;
+        evValue = Event.evValue;
+        evValue2 = Event.evValue2;
+        unsigned int evPtrLength = Event.evPtrLength;
         size = evPtrLength;
-        buffer = Event->evPtr;
+        buffer = Event.evPtr;
         if (com_journal->integer == 1)
         {
             if (FS_Write((char*)&ev, 24, com_journalFile) != 24)
@@ -1777,14 +1780,14 @@ char Com_AnyControllerConnected()
 {
     int v0 = controller_num_controllers();
     int v1 = 0;
-    controller_inst();
+    controller::inst();
     if (v0 <= 0)
         return 0;
     while (!g_controllerConnected[v1])
     {
         int v2 = controller_num_controllers();
         ++v1;
-        controller_inst();
+        controller::inst();
         if (v1 >= v2)
             return 0;
     }
@@ -1796,9 +1799,9 @@ bool Com_ControllerTest()
 {
     if (g_enableControllerTest)
     {
-        if (*(bool*)((char*)controller_inst() + 8))  // is_locked
+        if (*(bool*)((char*)controller::inst() + 8))  // is_locked
         {
-            Com_ControllerTest(*(int*)controller_inst());  // locked_port
+            Com_ControllerTest(*(int*)controller::inst());  // locked_port
             return true;
         }
         if (!*(bool*)((char*)g_femanager + 0x36))  // !inGame
@@ -1838,7 +1841,7 @@ void Com_ControllerWarningDialog(bool activate, int client)
             STBManager_sInst, "CGAME_XBOX_CONTROLLER_DISCONNECTED2");
         char newString[512];
         sprintf(newString, "%s %d %s", STBString,
-                *(int*)controller_inst() + 1, v3);
+                *(int*)controller::inst() + 1, v3);
         void* DMS = FEManager_GetDMS(g_femanager, client);
         DialogMenuSystem_BringUp(DMS, newString, false, false, "", true);
         DialogMenuSystem_CloseDialog(DMS);
@@ -1858,7 +1861,8 @@ void Com_CheckControllerUnplugged(bool signedIn, int client)
         if (!g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)]
                 && gControllerWarningDialogIsActive[LocalClient_ClientToPort(client)]
             || g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)]
-                && controller_is_connected(LocalClient_ClientToPort(client)))
+                && controller::inst()->controller_is_connected(
+                    LocalClient_ClientToPort(client)))
         {
             g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)] = false;
             if (!signedIn)
@@ -2160,7 +2164,7 @@ void Com_Init(char* commandLine)
     SEH_Init_StringEd();
     SEH_UpdateLanguageInfo();
     MI_ResetMapList();
-    controller_inst();
+    controller::inst();
     PakManager_CreateInst();
     BankManager_CreateInst();
     InstanceBankMgr_CreateInst();

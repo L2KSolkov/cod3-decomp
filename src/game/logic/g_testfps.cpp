@@ -231,7 +231,7 @@ void TestFPS::NextPosition()
 extern vmCvar_t g_performanceTestDelta;      // ?g_performanceTestDelta@@3UvmCvar_t@@A (game2.o)
 extern vmCvar_t g_performanceTestDeltaAngle; // ?g_performanceTestDeltaAngle@@3UvmCvar_t@@A (game2.o)
 extern vmCvar_t g_performanceTestCell;       // ?g_performanceTestCell@@3UvmCvar_t@@A (game2.o)
-extern int FS_CreatePath(const char* path);  // ?FS_CreatePath@@YAHPBD@Z
+extern int FS_CreatePath(char* path);  // ?FS_CreatePath@@YAHPAD@Z
 extern int gStartTime;                       // ?gStartTime@@3HA (game2.o)
 extern char* strtok(char* str, const char* delim);
 extern int sscanf(const char* s, const char* fmt, ...);

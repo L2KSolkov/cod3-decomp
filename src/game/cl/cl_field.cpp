@@ -162,7 +162,7 @@ void Key_Bind_f()
         else
         {
             // Cmd_Args(2) joined with spaces
-            extern const char* Cmd_Args(int start);
+            extern char* Cmd_Args(int start);
             KeyInfo::SetBinding(v2, currCl, Cmd_Args(2));
         }
     }

@@ -36,7 +36,7 @@ extern int   com_frameNumber;
 
 // SV_SpawnServer externs (cross-object; core.o / game.o / filesystem)
 extern char* va(const char* fmt, ...);
-extern void  SV_SetExpectedHunkUsage(const char* mapname);
+extern void  SV_SetExpectedHunkUsage(char* mapname);
 extern void  XModelEnforceExist(int bEnforce);
 extern void  CL_MapLoading(void);
 extern void  CL_ShutdownAll(void);
@@ -49,7 +49,7 @@ extern void  SV_DirectConnect(netadr_t from);
 extern void  SV_ClientEnterWorld(client_s* client, int restart, int savegame);
 extern void  SV_CheckLoadLevel(int savegame);
 extern void  SV_SendClientMessages(void);
-extern void  SV_GameSystemCalls(int* args);
+extern int   SV_GameSystemCalls(int* args);
 extern void  SV_Startup(void);
 extern void  SV_ClearServer(void);
 extern void  SV_RunFrame(int msec);
@@ -76,7 +76,8 @@ extern void  Cmd_ExecuteServerString(const char* text);
 extern int   Netchan_Init(void);
 extern void  GamePause_SetAllPaused(bool paused);
 extern unsigned int nflFileExists(int mediaID, const char* filename);
-extern int   nglSetFrameLock(int flock);
+enum nglFrameLockType;
+extern nglFrameLockType nglSetFrameLock(nglFrameLockType flock);
 extern void  CM_LoadMap(const char* name, int clientload, int* checksum);
 extern void  FX_TermFX(void);
 extern void  g_SpawnServer_Unused(void);
@@ -289,7 +290,7 @@ LABEL_28:
         goto LABEL_29;
     }
 LABEL_30:
-    int v9 = nglSetFrameLock(2);
+    nglFrameLockType v9 = nglSetFrameLock((nglFrameLockType)2);
     PakManager_SyncLoadPak(PakManager_sInst(), FLI);
     CM_LoadMap(server, 0, &sv.checksum);
     PakManager_FillBanks(PakManager_sInst());

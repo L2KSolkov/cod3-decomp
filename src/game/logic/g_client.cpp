@@ -359,9 +359,10 @@ void ClientThink_real(Entity* ent)
             {
                 client->ps.origin.v.m128_f32[2] += 35.0f;
                 newPos.v.m128_f32[2] += 35.0f;
-                if (tunnel_test(&pm, radius_2,
-                                &client->ps.origin.v.m128_f32[0],
-                                &newPos.v.m128_f32[0]))
+                if (tunnel_test(pm, radius_2,
+                                *(math::Position3*)
+                                    &client->ps.origin.v.m128_f32[0],
+                                *(math::Position3*)&newPos.v.m128_f32[0]))
                 {
                     AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
                     AeAssert::gCurrentFile =

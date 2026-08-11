@@ -35,7 +35,9 @@ bool Assert(const char* fmt, ...);
 extern unsigned int AeHash(const char* str);
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
-extern void mem_heap_create(void* heap, void* start, void* end, void* reserve);
+struct mem_heap;
+extern void mem_heap_create(mem_heap* heap, void* start, void* end,
+                            mem_heap* reserve);
 extern PoolAllocator* ActiveEffectSet_sAllocator;  // 0x00F00E84
 extern int dword_F6A290[4 * 0x322];
 extern void CameraShake_StopCameraShake(void* self, void* pShake);
@@ -52,7 +54,8 @@ struct SoundHandleDbLocal {
 extern SoundHandleDbLocal SoundHandleDb_sInst;
 extern void* controller_inst();
 extern void controller_stop_all_rumble(void* self);
-extern void tlSetSystemCallbacks(const void* callbacks);
+struct tlSystemCallbacks;
+extern void tlSetSystemCallbacks(const tlSystemCallbacks* callbacks);
 extern void* AssetBankSet_ctor(void* self);
 extern void AssetBankSet_dtor(void* self);
 extern void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self);
@@ -272,7 +275,8 @@ HashString::HashString(Broc::string& str)
 AnimHeap::AnimHeap()
 {
     mBlock = mem_heap_malloc(0x100000);
-    mem_heap_create(&mHeap, mBlock, (char*)mBlock + 0x100000, nullptr);
+    mem_heap_create((mem_heap*)mHeap, mBlock, (char*)mBlock + 0x100000,
+                    nullptr);
     AnimHeapStatics::sInst = this;
 }
 
@@ -565,5 +569,5 @@ TlSystemCallbacks::TlSystemCallbacks()
         (void* (*)(void*, unsigned int, unsigned int, unsigned int))MemRealloc;
     mTlCallbacks.FinalPrint = nullptr;
     mTlCallbacks.LinkConnected = (bool (*)())LinkConnected;
-    tlSetSystemCallbacks(this);
+    tlSetSystemCallbacks((const tlSystemCallbacks*)this);
 }

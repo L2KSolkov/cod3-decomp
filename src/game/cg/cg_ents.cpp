@@ -43,7 +43,7 @@ extern int Com_BitCheck(const int* const array, int bitNum);
 extern int BG_GetNumWeapons();
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);
 extern int BG_AmmoForWeapon(int iWeapon);
-extern void* BG_GetInfoForWeapon(int weapon);
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern void CG_DebugBox(const float* mins, const float* maxs,
                         const float* color, int depthTest, int duration);
@@ -549,15 +549,17 @@ extern int cg_numSolidEntities;
 extern unsigned int cg_solidEntities[1024];
 extern int cg_norender;
 extern bool g_enableControllerTest;
-extern void Trace(trace_t* results, const math::Position3* start,
-                  const math::Position3* end, const math::Position3* mins,
-                  const math::Position3* maxs, void* model, int brushmask,
-                  int capsule, void* sphere);
+struct sphere_t;
+extern void Trace(trace_t* results, const math::Position3& start,
+                  const math::Position3& end, const math::Position3& mins,
+                  const math::Position3& maxs, DCGSet* model, int brushmask,
+                  int capsule, const sphere_t* sphere);
 class DCGSet;
 extern int CM_PointContents(const math::Position3& p, DCGSet* model);
-extern int CM_TransformedPointContents(const math::Position3* p, DCGSet* model,
-                                       const math::Position3* origin,
-                                       const math::Position3* angles);
+extern int CM_TransformedPointContents(const math::Position3& p,
+                                       DCGSet* model,
+                                       const math::Position3& origin,
+                                       const math::Position3& angles);
 extern void CG_ClipMoveToEntities(const math::Position3* start,
                                   const math::Position3* mins,
                                   const math::Position3* maxs,
@@ -600,7 +602,7 @@ void CG_Trace(trace_t* result, const math::Position3* start,
     int contentmask = context->contentmask;
     trace_t v9;
     memset(&v9, 0, sizeof(v9));
-    Trace(&v9, start, end, mins, maxs, nullptr, contentmask, 0, nullptr);
+    Trace(&v9, *start, *end, *mins, *maxs, nullptr, contentmask, 0, nullptr);
     v9.mEntity =
         v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
     CG_ClipMoveToEntities(start, mins, maxs, end, context, 0, &v9);
@@ -617,7 +619,7 @@ void CG_TraceCapsule(trace_t* result, const math::Position3* start,
     int contentmask = context->contentmask;
     trace_t v9;
     memset(&v9, 0, sizeof(v9));
-    Trace(&v9, start, end, mins, maxs, nullptr, contentmask, 0, nullptr);
+    Trace(&v9, *start, *end, *mins, *maxs, nullptr, contentmask, 0, nullptr);
     v9.mEntity =
         v9.fraction == 1.0f ? 0 : (unsigned int)EntityHandleDb_mActiveList;
     CG_ClipMoveToEntities(start, mins, maxs, end, context, 1, &v9);
@@ -641,8 +643,8 @@ int CG_PointContents(const math::Position3* point,
                 && mObject->r.bmodel != nullptr)
             {
                 v17 |= CM_TransformedPointContents(
-                    point, mObject->r.bmodel, &mObject->s.lerpOrigin,
-                    &mObject->s.lerpAngles);
+                    *point, mObject->r.bmodel, mObject->s.lerpOrigin,
+                    mObject->s.lerpAngles);
             }
         }
     }
@@ -725,7 +727,8 @@ extern void CG_NorthDirectionChanged();
 extern void CG_RegisterServerShader(int num);
 extern void CG_ParseObjectiveChange(int iNum);
 extern int CG_LoadShellShockCvars(const char* name);
-extern void CG_SetShellShockParmsFromCvars(void* parms);
+struct shellshock_parms_t;
+extern void CG_SetShellShockParmsFromCvars(shellshock_parms_t* parms);
 extern void CG_CheckOpenWaitingScriptMenu();
 extern void CG_ServerCommand();
 extern int CL_GetServerCommand(int serverCommandNumber);
@@ -803,7 +806,8 @@ void CG_ConfigStringModifiedInternal(int num)
                 {
                     if (CG_LoadShellShockCvars(v2) != 0)
                         CG_SetShellShockParmsFromCvars(
-                            (char*)cgsGlobal_shellshockParms + (num - 561));
+                            (shellshock_parms_t*)((char*)
+                                cgsGlobal_shellshockParms + (num - 561)));
                 }
             }
         }
@@ -873,7 +877,7 @@ extern void* bg_itemlist;
 extern void* Entity_GetRefEntity(Entity* ent);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
-extern void CG_LockLightingOrigin(Entity* ent, void* refEnt);
+extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void CG_RegisterItemVisuals(int itemNum);
 extern void CG_Error(const char* msg, ...);
 extern int BG_GetNumWeapons();
@@ -1053,7 +1057,9 @@ extern void CG_General(Entity* entity);
 extern void CG_Portal(Entity* entity);
 extern void CG_mg42(Entity* entity);
 extern void CG_WeaponUpdateLoopingSound(Entity* entity);
-extern void G_GetVehicleInfo(Entity* ent);
+struct vehicle_info_t;
+struct DObjSkelMat;
+extern vehicle_info_t* G_GetVehicleInfo(Entity* ent);
 extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern int AnimationPlayer_IsPartialIdle(void* player, bool checkLooping);
@@ -1070,7 +1076,7 @@ extern unsigned int head_hash_0;
 extern unsigned int HashString_CalcHash(const char* str);
 extern float VectorDistance(const float* v1, const float* v2);
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
-                                   float* tagMat);
+                                   DObjSkelMat* tagMat);
 extern Entity* GetPlayer2(int idx);
 void CG_Player(Entity* entity);
 void CG_Actor(Entity* entity);
@@ -1175,7 +1181,7 @@ void CG_Player(Entity* entity)
             head_hash_0 = HashString_CalcHash("bip01 head");
         }
         float tagMtx[31];
-        G_DObjGetWorldTagMatrix(entity, head_hash_0, tagMtx);
+        G_DObjGetWorldTagMatrix(entity, head_hash_0, (DObjSkelMat*)tagMtx);
         float v6 = entity->client->ps.vehType != 2 ? 64.0f : 26.0f;
         if (v6 <= VectorDistance(&tagMtx[12],
                                  &dword_F63C70[1580 * currCl]))
@@ -1336,10 +1342,11 @@ void CG_Player(Entity* entity)
 }
 
 extern void CG_AddScaleFade(void* le);
-extern void CG_DrawTracer(const math::Position3* _start,
-                          const math::Position3* _finish, float width);
-extern void BG_EvaluateTrajectory(const void* tr, int atTime,
-                                  math::Position3* result);
+extern void CG_DrawTracer(const math::Position3& _start,
+                          const math::Position3& _finish, float width);
+struct trajectory_t;
+extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
+                                  math::Position3& result);
 extern void VectorNormalize2(const float* v, float* out);
 extern int dword_DF6ADC[6];
 extern int dword_DF6AE0[6];
@@ -1375,14 +1382,16 @@ void CG_AddMovingTracer(void* le)
     dir[1] = v3;
     dir[2] = 0.0f;
     math::Position3 end;
-    BG_EvaluateTrajectory(&((localEntityFull*)le)->pos, cgGlobal_time, &end);
+    BG_EvaluateTrajectory((const trajectory_t*)
+                              &((localEntityFull*)le)->pos,
+                          cgGlobal_time, end);
     float v6[3];
     VectorNormalize2(((localEntityFull*)le)->pos.trDelta, v6);
     float v4[3];
     v4[0] = (v6[0] * dir[1]) + end.v.m128_f32[0];
     v4[1] = (v6[1] * dir[1]) + end.v.m128_f32[1];
     v4[2] = (v6[2] * dir[1]) + end.v.m128_f32[2];
-    CG_DrawTracer(&end, (math::Position3*)v4, dir[0]);
+    CG_DrawTracer(end, *(math::Position3*)v4, dir[0]);
 }
 
 // ea: 0x006A1C80
@@ -1662,11 +1671,11 @@ extern int dword_F62954[4 * 1580];
 extern int* dword_F62958;
 extern void* CG_ReadNextSnapshot();
 extern void CG_SetNextSnap(void* snap);
-extern void CG_SetInitialSnapshot(void* snap);
 extern void CG_TransitionSnapshot();
 extern void CL_GetCurrentSnapshotNumber(int* snapshotNumber,
                                         int* serverTime);
-extern void Cvar_VMSet(void* vmCvar, const char* value);
+struct vmCvar_t;
+extern void Cvar_VMSet(vmCvar_t* vmCvar, const char* value);
 extern int G_GetServerSnapTime();
 extern void CG_SetFrameInterpolation();
 
@@ -2358,10 +2367,10 @@ void CG_AdjustPositionForMover(const math::Position3* in, unsigned int mover,
         return;
     }
     math::Position3 fromPos, fromAngles, toPos, toAngles;
-    BG_EvaluateTrajectory(&mObject->s.pos, fromTime, &fromPos);
-    BG_EvaluateTrajectory(&mObject->s.apos, fromTime, &fromAngles);
-    BG_EvaluateTrajectory(&mObject->s.pos, toTime, &toPos);
-    BG_EvaluateTrajectory(&mObject->s.apos, toTime, &toAngles);
+    BG_EvaluateTrajectory(&mObject->s.pos, fromTime, fromPos);
+    BG_EvaluateTrajectory(&mObject->s.apos, fromTime, fromAngles);
+    BG_EvaluateTrajectory(&mObject->s.pos, toTime, toPos);
+    BG_EvaluateTrajectory(&mObject->s.apos, toTime, toAngles);
     out->v.m128_f32[0] = in->v.m128_f32[0]
                          + (toPos.v.m128_f32[0] - fromPos.v.m128_f32[0]);
     out->v.m128_f32[1] = in->v.m128_f32[1]
@@ -2544,7 +2553,7 @@ int CG_ProcessSnapshots()
     {
         void* v4 = CG_ReadNextSnapshot();
         CG_ASSERT("snap", "c:\\cod\\code\\game\\cg_snapshot.cpp", 378);
-        CG_SetInitialSnapshot(v4);
+        CG_SetInitialSnapshot((snapshot_t*)v4);
         CG_SetNextSnap(v4);
         CG_ASSERT("cg[currCl].snap",
                   "c:\\cod\\code\\game\\cg_snapshot.cpp", 385);

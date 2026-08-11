@@ -2331,7 +2331,7 @@ void ReturnToPos1Rotate(Entity* ent)
     MatchTeam(ent, MOVER_2TO1ROTATE, level.time);
     Entity* v1 = EntityHandleDb::sInst.Find(640, hash_const.player);
     if (v1 != nullptr)
-        SV_inPVS(&v1->r.currentOrigin, &ent->r.currentOrigin);
+        SV_inPVS(v1->r.currentOrigin, ent->r.currentOrigin);
 }
 
 // ea: 0x00462BA0
@@ -2488,7 +2488,7 @@ disconnect2:
 label_54:
     Entity* v9 = EntityHandleDb::sInst.Find(640, hash_const.player);
     if (v9 != nullptr)
-        SV_inPVS(&v9->r.currentOrigin, &ent->r.currentOrigin);
+        SV_inPVS(v9->r.currentOrigin, ent->r.currentOrigin);
     ent->flags &= ~0x100u;
     if (ent->teammaster == ent || ent->teammaster == nullptr)
         SV_AdjustAreaPortalState(ent, 0);

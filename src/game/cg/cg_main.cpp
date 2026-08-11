@@ -34,11 +34,12 @@ extern char* Info_ValueForKey(const char* s, const char* key);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern void Com_Printf(const char* fmt, ...);
-extern void Cvar_Register(void* vmCvar, const char* varName,
+struct vmCvar_t;
+extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
                           const char* defaultValue, int flags);
-extern void Cvar_Update(void* vmCvar);
+extern void Cvar_Update(vmCvar_t* vmCvar);
 extern void Cvar_Set(const char* var_name, const char* value);
-extern void Cvar_VMSet(void* vmCvar, const char* value);
+extern void Cvar_VMSet(vmCvar_t* vmCvar, const char* value);
 extern void Com_Error(int code, const char* fmt, ...);
 extern void CG_Init();
 extern void CG_InitServerCommandHashVals();
@@ -59,7 +60,7 @@ extern void CG_DObjCalcPose(Entity* entity, void* obj, int* partBits);
 extern void CG_SaveEntity(void* entity);
 extern void CG_LoadEntity(void* entity);
 extern void CG_General(Entity* entity);
-extern void CG_LockLightingOrigin(Entity* ent, void* refEnt);
+extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void* Entity_GetRefEntity(Entity* ent);
 extern void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
@@ -85,7 +86,7 @@ extern cg_t* cg;  // 0x00F62940
 struct vmCvar_t {
     int integer;  // +0x00
 };
-extern vmCvar_t* cg_thirdPerson;
+extern vmCvar_t cg_thirdPerson;
 
 struct cgGlobal_t {
     int time;
@@ -150,8 +151,8 @@ void CG_RegisterCvars()
     {
         // cvar table rows: { vmCvar*, name, defaultValue, flags }
         void** row = &((void**)cgCvarTable)[4 * i];
-        Cvar_Register(row[0], (const char*)row[1], (const char*)row[2],
-                      (int)row[3]);
+        Cvar_Register((vmCvar_t*)row[0], (const char*)row[1],
+                      (const char*)row[2], (int)row[3]);
     }
 }
 
@@ -165,7 +166,7 @@ int CG_UpdateCvars()
         if (row != nullptr)
         {
             if (row[0] != nullptr)
-                Cvar_Update(row[0]);
+                Cvar_Update((vmCvar_t*)row[0]);
         }
         else
         {

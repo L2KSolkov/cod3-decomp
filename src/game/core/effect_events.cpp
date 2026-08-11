@@ -34,7 +34,7 @@ bool Error(const char* fmt, ...);
     } while (0)
 
 // nsl voice enumeration (stub env; game reads srcId at +0x114)
-typedef unsigned int nslSourceID;
+enum nslSourceID : int { NSL_SOURCE_ID_INVALID = -1 };
 enum nslSourceState { NSL_SOURCE_STATE_INVALID = 0 };
 struct nslVoice;
 extern unsigned int nslGetNumVoices();
@@ -174,7 +174,8 @@ extern void nglMatrixCreateXYZ(math::Mat43* mat, math::Dir3* rot,
                                math::Position3* trans);
 extern void SmokeGrenadeMgr_AddSmokeGrenade(void* mgr, void* info);
 extern void* SmokeGrenadeMgr_sInst;
-extern void* BG_GetInfoForWeapon(int weapon);
+struct weaponFileInfo_t;
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern int g_scr_data_debris_bro_func;
 extern unsigned int SoundDevice_PlaySound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,

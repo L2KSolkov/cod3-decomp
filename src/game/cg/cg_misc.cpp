@@ -1115,8 +1115,9 @@ extern float rumbleFullIntensity;
 extern void RumbleManager_SetIntensity(void* self, int handle,
                                        float intensity);
 extern float tweenTime;  // 0x00DFA37C
+struct DObjSkelMat;
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
-                                   float* tagMtx);
+                                   DObjSkelMat* tagMtx);
 extern void AnglesToAxis(const math::Position3& angles, float (*axis)[3]);
 extern void AxisToAngles(const float (*axis)[3], float* angles);
 extern float AngleDelta(float angle1, float angle2);
@@ -1215,11 +1216,11 @@ void Camera::UpdateReviveCam()
     float tagMtx[31];
     G_DObjGetWorldTagMatrix(EntityManager_GetPlayer(EntityManager_sInst,
                                                     mClient),
-                            s_headHash, tagMtx);
+                            s_headHash, (DObjSkelMat*)tagMtx);
     float angTagMtx[31];
     G_DObjGetWorldTagMatrix(EntityManager_GetPlayer(EntityManager_sInst,
                                                     mClient),
-                            s_spineHash, angTagMtx);
+                            s_spineHash, (DObjSkelMat*)angTagMtx);
     dword_F63C70[1580 * mClient] = tagMtx[12];
     dword_F63C74[1580 * mClient] = tagMtx[13];
     dword_F63C78[1580 * mClient] = tagMtx[14];
@@ -1313,7 +1314,8 @@ extern void CG_OffsetThirdPersonView();
 extern void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_hash);
 extern void CG_CalcPassengerViewPos();
 extern void CG_CalcTurretViewValues();
-extern void* G_GetVehicleInfo(void* scr_vehicle);
+struct scr_vehicle_t;
+extern vehicle_info_t* G_GetVehicleInfo(scr_vehicle_t* scr_vehicle);
 extern void vectosignedangles(const float* vec, float* angles);
 extern void vectoangles(const float* vec, float* angles);
 extern void LerpAngle(float a1, float a2, float a3);
@@ -1711,7 +1713,8 @@ void Camera::Update()
                         if (scr_vehicle != nullptr)
                         {
                             vehicle_info_t* VehicleInfo =
-                                (vehicle_info_t*)G_GetVehicleInfo(scr_vehicle);
+                                G_GetVehicleInfo(
+                                    (scr_vehicle_t*)scr_vehicle);
                             angle[1580 * mClient] =
                                 VehicleInfo->camLinkedPitchFactor
                                 * angle[1580 * mClient];
@@ -2253,14 +2256,16 @@ enum weapSlot_t : int;
 extern weapSlot_t BG_IsPlayerWeaponInSlot(const PlayerState* pPS,
                                           int iWeaponIndex, int bAnyMode);
 extern int BG_GetStackSlotForWeapon(const PlayerState* pPS, int iWeaponIndex,
-                                    int preferedSlot);
+                                    weapSlot_t preferedSlot);
 extern int BG_IsPlayerWeaponAnAlt(int iWeaponIndex, int iAltIndex);
 extern void PM_KillQueuedReloadSound(PlayerState& ps);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
-extern void* BG_GetInfoForWeapon(int weapon);
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern void* gpBrocAPI;  // 0x00F3ABDC
-extern void CalcMuzzlePoints(Entity* ent, void* wp);
-extern bool Weapon_Revive_Test(Entity* ent, void* wp, Entity** traceEnt);
+struct weaponParms;
+extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);
+extern bool Weapon_Revive_Test(Entity* ent, weaponParms* wp,
+                               Entity** traceEnt);
 extern bool Weapon_Mine_Test(Entity* ent, void* wp, math::Position3* position,
                              math::Dir3* normal);
 
@@ -2431,7 +2436,7 @@ int CG_SelectFirstWeaponNotInSlotWithLocalIndex(int bNext, int bIgnoreEmpty,
                     || BG_IsPlayerWeaponInSlot(&v8->client->ps, NumWeapons,
                                                1)
                     || BG_GetStackSlotForWeapon(&v9->client->ps, NumWeapons,
-                                                0)
+                                                (weapSlot_t)0)
                     || (bIgnoreEmpty
                         && !BG_WeaponAmmo(&v10->client->ps, NumWeapons)))
                 {
@@ -2505,7 +2510,7 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
                     EntityManager_GetPlayer(EntityManager_sInst, currCl);
                 StackSlotForWeapon = BG_GetStackSlotForWeapon(
                     &v6->client->ps, cg_aWeaponSelect[currCl],
-                    0 /* WEAPSLOT_NONE */);
+                    (weapSlot_t)0 /* WEAPSLOT_NONE */);
             }
             Entity* v7 = EntityManager_GetPlayer(EntityManager_sInst, currCl);
             PM_KillQueuedReloadSound(v7->client->ps);
@@ -2578,7 +2583,8 @@ void CG_CycleWeap(int bNext, int bIgnoreEmpty)
                                 EntityManager_GetPlayer(EntityManager_sInst,
                                                         currCl);
                             if (BG_GetStackSlotForWeapon(&v15->client->ps,
-                                                         v12, 0)
+                                                         v12,
+                                                         (weapSlot_t)0)
                                 == 0)
                             {
                                 Entity* v16 = EntityManager_GetPlayer(
@@ -2717,15 +2723,18 @@ extern float XOfs;            // 0x00DFA2F8
 extern char buffer_0[256];    // 0x00F73890
 extern _objectiveInfo_t objectives[4][17];  // 0x00F6A2B0
 extern float vec3_origin[3];
-extern void nglInitQuad(void* quad);
-extern void nglSetQuadColor(void* quad, unsigned int c);
-extern void nglSetQuadBlend(void* quad, unsigned int blend);
+struct nglQuad;
+extern void nglInitQuad(nglQuad* quad);
+extern void nglSetQuadColor(nglQuad* quad, unsigned int c);
+extern void nglSetQuadBlend(nglQuad* quad, unsigned int blend);
 extern int nglGetScreenHeight();
 extern int nglGetScreenWidth();
-extern void nglSetQuadRect(void* quad, float x1, float y1, float x2, float y2);
-extern void* nglGetFrontBufferTex();
-extern void nglSetQuadTex(void* quad, void* tex);
-extern void nglListAddQuad(void* quad);
+extern void nglSetQuadRect(nglQuad* quad, float x1, float y1, float x2,
+                           float y2);
+struct nglTexture;
+extern nglTexture* nglGetFrontBufferTex();
+extern void nglSetQuadTex(nglQuad* quad, nglTexture* tex);
+extern void nglListAddQuad(nglQuad* quad);
 extern void CG_PerturbationPoint(const float* prev, float* out, float mindist);
 extern float VectorNormalize2(const float* v, float* out);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
@@ -2776,9 +2785,9 @@ void CheckAndRunOverHeatBlur()
         unsigned char q[0x60];
         memset(q, 0, sizeof(q));
         void* quad = q;
-        nglInitQuad(quad);
+        nglInitQuad((nglQuad*)quad);
         int v2 = alpha;
-        nglSetQuadColor(quad,
+        nglSetQuadColor((nglQuad*)quad,
                         (unsigned int)((alpha << 24) | (r << 16)
                                        | (green << 8) | blue));
         int blendconvert[7];
@@ -2789,12 +2798,14 @@ void CheckAndRunOverHeatBlur()
         blendconvert[3] = 1678214656;
         blendconvert[4] = 1678215936;
         blendconvert[6] = v2 | 0x86068600;
-        nglSetQuadBlend(quad, (unsigned int)blendconvert[fireBlendType]);
+        nglSetQuadBlend((nglQuad*)quad,
+                        (unsigned int)blendconvert[fireBlendType]);
         float y2 = (float)nglGetScreenHeight() + YOfs;
         int ScreenWidth = nglGetScreenWidth();
-        nglSetQuadRect(quad, XOfs, YOfs, (float)ScreenWidth + XOfs, y2);
-        nglSetQuadTex(quad, nglGetFrontBufferTex());
-        nglListAddQuad(quad);
+        nglSetQuadRect((nglQuad*)quad, XOfs, YOfs,
+                       (float)ScreenWidth + XOfs, y2);
+        nglSetQuadTex((nglQuad*)quad, nglGetFrontBufferTex());
+        nglListAddQuad((nglQuad*)quad);
     }
 }
 
@@ -3527,7 +3538,7 @@ struct vehicle_info_full_t {
     float pitchBasedCamOffsetZ;  // +0x1F0
 };
 
-extern void* VEH_GetInfo(int idx);
+extern vehicle_info_t* VEH_GetInfo(int idx);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern float VectorNormalize(float* v);
 extern void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
@@ -3571,11 +3582,13 @@ extern RumbleEffectInstanceHandle RumbleManager_Play(void* self, void* effect,
 extern const char* gTankRumbleNotes;  // 0x00DF9D80
 extern void BrocString_ctor(void* self, const char* s);
 extern void BrocString_dtor(void* self);
+struct DObjSkelMat;
 extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
-                                          void* tagMat);
+                                          DObjSkelMat* tagMat);
 extern void Axis4ToAngles(const float (*axis)[4], float* angles);
 extern void CG_InitConsoleCommands();
-extern void CL_GetGlconfig(void* glconfig);
+struct glconfig_t;
+extern void CL_GetGlconfig(glconfig_t* glconfig);
 extern void CG_Error(const char* msg, ...);
 extern void SCR_UpdateScreen();
 extern void trap_R_ClearScene();
@@ -3634,7 +3647,7 @@ extern int Entity_GetPlayerIndex(const Entity* self);
 extern bool gSceneAnimCamera;  // 0x00F258F6
 extern vmCvar_t cg_altTankCam;  // 0x00F5BC30
 extern int CurPakId();
-extern void* G_GetVehicleInfoEntity(Entity* veh);
+extern vehicle_info_t* G_GetVehicleInfo(Entity* veh);
 extern void CG_ClampViewAngles(PlayerState* ps, const float* centerAngles,
                                const float* minClamp, const float* maxClamp);
 
@@ -3663,8 +3676,9 @@ void CG_Init()
     for (int i = 170; i != 0; --i)
     {
         void** row = &off_DF9208[4 * i - 2];
-        Cvar_Register(row[0], (const char*)row[1], (const char*)row[2],
-                      (int)row[3]);
+                        Cvar_Register((vmCvar_t*)row[0],
+                                      (const char*)row[1],
+                                      (const char*)row[2], (int)row[3]);
     }
     if (fs_debug_vm.integer == 2)
         Cvar_Set("fs_debug", "0");
@@ -3773,8 +3787,10 @@ void Camera::UpdateVehicleDriverCamPos(Entity* veh, PlayerState* ps,
         s_tagDriverHash = HashString_CalcHash("tag_driver");
     }
     float tagMtx[16];
-    if (G_DObjGetWorldTagMatrix(veh, s_tagDriverHash, tagMtx) == 0)
-        G_DObjGetWorldTagMatrix(veh, HashString_CalcHash("tag_body"), tagMtx);
+    if (G_DObjGetWorldTagMatrix(veh, s_tagDriverHash,
+                                (DObjSkelMat*)tagMtx) == 0)
+        G_DObjGetWorldTagMatrix(veh, HashString_CalcHash("tag_body"),
+                                (DObjSkelMat*)tagMtx);
     float height = ((vehicle_info_full_t*)Info)->cameraFPHeightOffset
                    + extra_height_offset;
     height = (height - s_prevCamHeight)
@@ -3814,7 +3830,8 @@ void Camera::UpdateTankCam()
         s_tagTurretHash = HashString_CalcHash("tag_turret");
     }
     float tagMtx[16];
-    if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash, tagMtx) != 0)
+    if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash,
+                                (DObjSkelMat*)tagMtx) != 0)
     {
         vehicle_info_full_t* info =
             (vehicle_info_full_t*)VEH_GetInfo(
@@ -3985,7 +4002,8 @@ void Camera::UpdateTankCommanderCam()
         s_tagTurretHash = HashString_CalcHash("tag_turret");
     }
     float tagMtx[16];
-    if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash, tagMtx) != 0)
+    if (G_DObjGetWorldTagMatrix(mObject, s_tagTurretHash,
+                                (DObjSkelMat*)tagMtx) != 0)
     {
         vehicle_info_full_t* info =
             (vehicle_info_full_t*)VEH_GetInfo(
@@ -4189,8 +4207,7 @@ ECameraModes Camera::CalcCamMode()
                                      + 4)
                                == nullptr)
                     {
-                        void* VehicleInfo =
-                            G_GetVehicleInfoEntity(v9);
+                        void* VehicleInfo = G_GetVehicleInfo(v9);
                         int v18 = CurPakId();
                         InteractionController_StartInteraction(
                             (void*)InteractionController_Inst(mClient), v9,
@@ -5280,7 +5297,8 @@ float Camera::SetNewMode(ECameraModes newMode)
                                   "c:\\cod\\code\\game\\Camera.cpp", 866);
                     }
                     float boneMtx[16];
-                    G_DObjGetWorldBoneIndexMatrix(v34, barrel, boneMtx);
+                    G_DObjGetWorldBoneIndexMatrix(
+                        v34, barrel, (DObjSkelMat*)boneMtx);
                     float newAngles[3];
                     Axis4ToAngles((const float(*)[4])boneMtx, newAngles);
                     newAngles[0] = AngleNormalize180(newAngles[0]);
@@ -5495,7 +5513,7 @@ void Camera::UpdateVehicleAnimCam()
             float tagMtx[16];
             G_DObjGetWorldTagMatrix(
                 EntityManager_GetPlayer(EntityManager_sInst, mClient),
-                s_pelvisHash, tagMtx);
+                s_pelvisHash, (DObjSkelMat*)tagMtx);
             if (client->ps.vehPos == 1 || client->ps.vehPos == 2)
                 radius = Info->cameraChaseRadiusInner;
             float delta[3] = {
@@ -5520,7 +5538,8 @@ void Camera::UpdateVehicleAnimCam()
                         s_bodyHash = HashString_CalcHash("tag_body");
                     }
                     float bodyMtx[16];
-                    G_DObjGetWorldTagMatrix(mObject, s_bodyHash, bodyMtx);
+                    G_DObjGetWorldTagMatrix(mObject, s_bodyHash,
+                                            (DObjSkelMat*)bodyMtx);
                     float combined[3] = {
                         startOffset[0] + bodyMtx[12] * 2.0f,
                         startOffset[1] + bodyMtx[13] * 2.0f,
@@ -5627,11 +5646,11 @@ void Camera::UpdateVehicleAnimCam()
         float headMtx[16];
         G_DObjGetWorldTagMatrix(
             EntityManager_GetPlayer(EntityManager_sInst, mClient),
-            s_animHeadHash, headMtx);
+            s_animHeadHash, (DObjSkelMat*)headMtx);
         float spineMtx[16];
         G_DObjGetWorldTagMatrix(
             EntityManager_GetPlayer(EntityManager_sInst, mClient),
-            s_animSpineHash, spineMtx);
+            s_animSpineHash, (DObjSkelMat*)spineMtx);
         dword_F63C70[1580 * mClient] = headMtx[12];
         dword_F63C74[1580 * mClient] = headMtx[13];
         dword_F63C78[1580 * mClient] = headMtx[14];

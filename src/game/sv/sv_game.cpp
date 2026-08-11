@@ -13,7 +13,7 @@
 // ============================================================================
 extern void  Q_strncpyz(char* dest, const char* src, int destsize);
 extern void  Com_Memset(void* dest, int val, unsigned int count);
-extern char* CL_GetCurUserCmd(unsigned int clientNum);
+extern const usercmd_s& CL_GetCurUserCmd(int clientNum);
 extern void  CL_SetUsercmdButtonsWeapons(int buttons, int weapon);
 extern void* mem_heap_malloc_ctx(int alignment, unsigned int size, const char* ctx, const char* file, int line);
 extern int   com_skelTimeStamp;
@@ -339,7 +339,7 @@ void SV_LocateGameData(Entity* entities, int numEntities, int sizeofEntity, Play
 void SV_GetUsercmd(int clientNum, usercmd_s* cmd) {
     if (clientNum >= 0x10)
         Com_Error(2, "\x15SV_GetUsercmd: bad clientNum:%i", clientNum);
-    *cmd = *(usercmd_s*)CL_GetCurUserCmd(clientNum);
+    *cmd = CL_GetCurUserCmd(clientNum);
 }
 
 // ============================================================================

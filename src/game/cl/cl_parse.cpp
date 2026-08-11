@@ -222,7 +222,7 @@ struct refimport_t2 {
     void (*FS_FCloseFile)(int);
     int (*FS_Read)(void*, int, int);
     int (*FS_Write)(const void*, int, int);
-    struct BspPlane* (*CM_GetPlaneNum)(int);
+    class BspPlane* (*CM_GetPlaneNum)(int);
     short (*CG_GetGameModel)(short);
     void (*CG_DObjCalcPose)(void*, void*, int*);
     void (*AdjustFrom640)(float*, float*, float*, float*);

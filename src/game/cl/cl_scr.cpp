@@ -49,7 +49,8 @@ extern void Con_DrawConsole();
 extern void SoundDevice_UndampenAllSounds(void* self);
 extern void* SoundDevice_sInst;
 extern void Cvar_Set(const char* var_name, const char* value);
-extern void CL_GetGlconfig(void* glconfig);
+struct glconfig_t;
+extern void CL_GetGlconfig(glconfig_t* glconfig);
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

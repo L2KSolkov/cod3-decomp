@@ -998,9 +998,11 @@ extern ae_vector<ParticleEffectLocal*> gParticleEffectList;  // ?gParticleEffect
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME@@3HA (core.o)
 extern unsigned nslGetMaxNumVoices();      // ?nslGetMaxNumVoices@@YAIXZ (nslCompat.o)
 extern unsigned nslGetNumVoices();         // ?nslGetNumVoices@@YAIXZ (nslCompat.o)
-extern void* nslGetVoice(unsigned int a);  // ?nslGetVoice@@YAPAUnslVoice@@I@Z (nslCompat.o)
+struct nslVoice;
+extern nslVoice* nslGetVoice(unsigned int a);  // ?nslGetVoice@@YAPAUnslVoice@@I@Z (nslCompat.o)
 extern nslSourceState nslGetSourceState(nslSourceID sid);  // ?nslGetSourceState@@YA?AW4nslSourceState@@W4nslSourceID@@@Z
-extern void* nslSourcePtr(nslSourceID sid);               // ?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z
+struct nslSource;
+extern nslSource* nslSourcePtr(nslSourceID sid);         // ?nslSourcePtr@@YAPAUnslSource@@W4nslSourceID@@@Z
 extern const char* nslGetSourceName(nslSourceID sid);  // ?nslGetSourceName@@YAPBDW4nslSourceID@@@Z (nslSource.o)
 extern const char* nslGetWaveName(nslWaveID a);       // ?nslGetWaveName@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
 extern float nslGetSourceParam(nslSourceID sid, int index, float defaultValue);  // nslSource.o

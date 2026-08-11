@@ -32,7 +32,7 @@ extern char* CopyStringInternal(const char* in);
 extern void mem_heap_free(void* ptr);
 extern char* va(const char* fmt, ...);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
-extern int FS_Printf(int h, const char* fmt, ...);
+extern void FS_Printf(int h, const char* fmt, ...);
 
 // Forward declarations
 cvar_t* Cvar_Set2(const char* var_name, const char* value, int force);

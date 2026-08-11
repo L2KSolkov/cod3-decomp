@@ -836,9 +836,14 @@ extern vmCvar_t pmove_msec;            // pmove_msec
 extern vmCvar_t pmove_fixed;           // pmove_fixed
 extern vmCvar_t g_debugMove;           // g_debugMove
 extern float    radius_2;              // g.o @ 0xDD8260
-extern int    mem_get_used_bytes(int heap_name);   // mem_heap
-extern int    mem_get_free_bytes(int heap_name);   // mem_heap
-extern int    MEM_HEAP_NONE;                        // mem_heap
+enum mem_heap_type {
+    MEM_HEAP_MAIN    = 0,
+    MEM_HEAP_DEBUG   = 1,
+    MEM_HEAP_COMBINE = 2,
+    MEM_HEAP_NONE    = 3,
+};
+extern int    mem_get_used_bytes(mem_heap_type heap_name);   // mem_heap
+extern int    mem_get_free_bytes(mem_heap_type heap_name);   // mem_heap
 extern float  mainLWM;                              // g.o
 extern float  brocLWM;                              // g.o
 extern void*  gBrocHeap;                            // core.o
@@ -1344,11 +1349,12 @@ int  BG_GetTotalAmmoReserve(const PlayerState* pPS, int iWeaponIndex);  // game.
 int  BG_GetTotalAmmo(const PlayerState* pPS, int iWeaponIndex);  // game.o 0x616F10
 int  BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);  // game.o 0x621F60
 int  BG_SelectWeaponIndex(int iWeaponIndex, int client);  // game.o 0x6076E0
-int  BG_GetWeaponForInfo(void* pWeapInfo);  // game.o 0x607050
-float BG_GetMinSpreadForWeapon(PlayerState* pPS, int iWeaponIndex, int iTime,
-                               bool bAds);   // game.o
-float BG_GetConeAngleForWeapon(PlayerState* pPS, int iWeaponIndex, int iTime,
-                               bool bAds);   // game.o
+struct weaponFileInfo_t;
+int  BG_GetWeaponForInfo(weaponFileInfo_t* pWeapInfo);  // game.o 0x607050
+float BG_GetMinSpreadForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                               int iTime, int bAds);   // game.o
+float BG_GetConeAngleForWeapon(const PlayerState* pPS, int iWeaponIndex,
+                               int iTime, int bAds);   // game.o
 unsigned char BG_GetWeaponIndexForName(const char* name);  // game.o 0x6073A0
 unsigned char BG_GetWeaponIndexForName(unsigned int name);  // game.o 0x607310
 bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);  // game.o 0x604A60
@@ -1918,7 +1924,7 @@ int  Pickup_Kit(Entity* ent, Entity* other, int bTouched);           // g.o 0x44
 weaponFileInfo_t* BG_GetInfoForWeapon(int iWeapon);
 const gitem_s* BG_FindItem(const char* pickupName);
 void SP_actor(Entity* pEnt);
-void Scr_Notify(Entity* ent, HashString hashValue, int paramcount);
+void Scr_Notify(Entity* ent, HashString hashValue, unsigned int paramcount);
 Handle PostEffectEventScriptCall(Entity* ent, const char* scriptId, bool queue,
                                  TPakId pakid, bool important);
 void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
@@ -1978,7 +1984,7 @@ extern void (*thinktable[])(Entity* ent, int msec);
 
 // externs
 void SV_AdjustAreaPortalState(Entity* ent, int open);
-int  SV_inPVS(const math::Position3* p1, const math::Position3* p2);
+int  SV_inPVS(const math::Position3& p1, const math::Position3& p2);
 void vectoangles(const float* vec, float* angles);
 float RadiusFromBounds(const math::Position3& mins, const math::Position3& maxs);
 int  CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
@@ -2204,7 +2210,7 @@ void    G_SetupScrVehicles(void);                    // g.o
 void    MP_ResolveAnims(void);                       // mp.o
 void    LensFlareInit(void);                         // render.o
 int     Swap_Init(void);                             // game.o
-void    Rand_Init(unsigned int seed);                // core.o
+void    Rand_Init(int seed);                // core.o
 void    HudElem_Free(game_hudelem_s* hud);           // g.o
 void    CG_ClearHudElems(void);                      // cg.o
 void    WheelMarkMgr_Reset(void);                    // render.o
@@ -2513,8 +2519,9 @@ void  G_RunFrame(int msec);                       // g.o 0x492600
 extern const char* s_vehicleTypeNames[6];         // g.o
 extern const char* s_vehicleSubTypeNames[9];      // g.o
 void  Pmove(pmove_t* pmove, bool isThisThePredictStep);  // game.o
-bool  tunnel_test(pmove_t* pmove, float radius, const float* p0,
-                  const float* p1);  // g.o
+bool  tunnel_test(pmove_t& pmove, float radius,
+                  const math::Position3& p0,
+                  const math::Position3& p1);  // g.o
 void  ClientImpacts(Entity* ent, pmove_t* pmove);  // g.o
 void  Client_ClaimNode(Entity* ent);  // g.o
 void  G_TouchTriggersAndVehicles(Entity* pEnt, const math::Position3* origin,
@@ -3071,8 +3078,9 @@ int   CM_PointContents(const math::Position3& p, DCGSet* model);  // game.o 0x63
 int   GetEntityTouchTriggerType(Entity* pEnt);  // g.o 0x448BE0
 int   g_EntityContactCapsule(const math::Position3* mins, const math::Position3* maxs,
                              const Entity* ent);  // g.o 0x450AC0
-int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
-                      int* entityList, int maxcount, int contentmask);  // sv.o (redecl)
+int   CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
+                      DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                      int maxcount, int contentmask);  // game.o 0x6331A0
 int   Client_GetPushed(Entity* pSelf, Entity* pOther);  // g.o
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o (redecl)
 char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x4673B0
@@ -3217,8 +3225,9 @@ extern unsigned int s_seatTagHashes[6];          // g.o @ 0xEE631C
 bool  Entity_has_zone_collision(const void* self);  // game.o
 float VectorDistance(const float* v1, const float* v2);  // core.o
 void  InteractionController_ClearQueue(void* self);  // cl.o
-int   CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
-                      int* entityList, int maxcount, int contentmask);  // sv.o
+int   CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
+                      DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                      int maxcount, int contentmask);  // game.o 0x6331A0
 void  cFreeList_Shutdown(void* freelist);          // core.o
 extern cFreeList<trRefEntity> gRefEntFreeList;     // g.o
 extern cFreeList<DObj> gDObjFreeList;              // g.o
@@ -3320,7 +3329,8 @@ extern bool no_really_delete_it;      // g.o
 extern int dword_186A0;               // game.o
 extern vmCvar_t mp_gametype;          // mp.o ?mp_gametype@@3UvmCvar_t@@A
 void  VehicleNodeAllocator_Initialize(void* self);             // g.o 0x452BC0
-bool  Weapon_Revive_Test(Entity* ent, void* wp, Entity** traceEnt);  // g.o 0x... (used by cg)
+bool  Weapon_Revive_Test(Entity* ent, weaponParms* wp,
+                         Entity** traceEnt);  // g.o (used by cg)
 void  Weapon_Revive(Entity* ent, int grenType, weaponParms* wp);     // g.o 0x4720E0
 float Bullet_Endpos(float spread, float* end, const weaponParms* wp);  // g.o 0x... (g_combat.cpp)
 void  Bullet_Fire_Fake_Extended(DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,

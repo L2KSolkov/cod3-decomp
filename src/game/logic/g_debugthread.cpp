@@ -85,7 +85,7 @@ extern float scaleScalar;  // ?scaleScalar@@3MA (render.o)
 extern void RE_Text_Paint(float x, float y, int font, float scale,
                           const float* color, const char* text, float a7,
                           int a8, int a9);  // ?RE_Text_Paint (render.o)
-extern int mem_get_high_used_bytes(int heap_name);  // ?mem_get_high_used_bytes@@YAHW4mem_heap_type@@@Z (mem_heap)
+extern int mem_get_high_used_bytes(mem_heap_type heap_name);  // ?mem_get_high_used_bytes@@YAHW4mem_heap_type@@@Z (mem_heap)
 
 // ============================================================================
 // nalGeneric local surface (animation/nal.cpp; used by AnimationPlayer)

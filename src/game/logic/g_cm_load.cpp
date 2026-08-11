@@ -9551,10 +9551,10 @@ struct locTraceWork_t {
     int              contents;  // +0x70
 };
 
-extern int CM_TraceBox(const math::Position3* start,
-                       const math::Position3* end,
-                       const math::Position3* mins,
-                       const math::Position3* maxs,
+extern int CM_TraceBox(const math::Position3& start,
+                       const math::Position3& end,
+                       const math::Position3& mins,
+                       const math::Position3& maxs,
                        float fraction);  // sv.o
 
 // ea: 0x00619FE0
@@ -9649,7 +9649,7 @@ void CM_PointTraceStaticModels_r(locTraceWork_t* tw, WorldSector* node,
                                     0.0f);
                 v16.v = _mm_setr_ps(i->absmax[0], i->absmax[1], i->absmax[2],
                                     0.0f);
-                if (CM_TraceBox(&tw->start, &tw->end, &v15, &v16,
+                if (CM_TraceBox(tw->start, tw->end, v15, v16,
                                 fraction) == 0)
                     CM_TraceStaticModel(i, &tw->trace, tw->start, tw->end,
                                         tw->contents);

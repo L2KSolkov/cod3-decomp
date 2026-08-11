@@ -49,42 +49,62 @@ extern void          CM_LinkEntity(EntityShared* ent,
                                    const float* const absmin,
                                    const float* const absmax);
 extern void          CM_UnlinkEntity(EntityShared* ent);
+struct sphere_t;
 extern int           CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
-                                    const math::Position3* pos, const math::Position3* mins,
-                                    const math::Position3* maxs, int* list, int listsize, int* lastLeaf);
+                                    const math::Position3& pos,
+                                    const math::Position3& mins,
+                                    const math::Position3& maxs, int* list,
+                                    int listsize, int* lastLeaf);
 extern int           CM_LeafArea(int leafnum);
 extern int           CM_LeafCluster(int leafnum);
 extern int           R_CellForPoint(const math::Position3* pos);
 extern float         RadiusFromBounds(const math::Position3* mins, const math::Position3* maxs);
 extern void          DObjGetBounds(const DObj* obj, math::Position3& mins, math::Position3& maxs);
-extern int           CM_TraceBox(const math::Position3* start, const math::Position3* end,
-                                 const math::Position3* mins, const math::Position3* maxs, float fraction);
-extern void          Trace(trace_t* results, const math::Position3* start, const math::Position3* end,
-                           const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
-                           int brushmask, int capsule, const void* sphere);
-extern void          TraceSphere(const proximity_data_t* data, trace_t* results,
-                                 const math::Position3* start, const math::Position3* end,
-                                 const math::Position3* mins, const math::Position3* maxs, int brushmask);
-extern void          TracePoint(const proximity_data_t* data, trace_t* results,
-                                const math::Position3* start, const math::Position3* end, int brushmask);
-extern void          CM_PointTraceStaticModels(trace_t* results, const math::Position3* start,
-                                               const math::Position3* end, const collision_context_t* context);
+extern int           CM_TraceBox(const math::Position3& start,
+                                 const math::Position3& end,
+                                 const math::Position3& mins,
+                                 const math::Position3& maxs, float fraction);
+extern void          Trace(trace_t* results, const math::Position3& start,
+                           const math::Position3& end,
+                           const math::Position3& mins,
+                           const math::Position3& maxs, DCGSet* model,
+                           int brushmask, int capsule,
+                           const sphere_t* sphere);
+extern void          TraceSphere(const proximity_data_t& data,
+                                 trace_t* results,
+                                 const math::Position3& start,
+                                 const math::Position3& end,
+                                 const math::Position3& mins,
+                                 const math::Position3& maxs, int brushmask);
+extern void          TracePoint(const proximity_data_t& data,
+                                trace_t* results,
+                                const math::Position3& start,
+                                const math::Position3& end, int brushmask);
+extern void          CM_PointTraceStaticModels(trace_t* results,
+                                               const math::Position3& start,
+                                               const math::Position3& end,
+                                               const collision_context_t& context);
 extern void          CM_PointTraceToEntities(pointtrace_t* clip, const collision_context_t* context);
 extern void          CM_ClipMoveToEntities(moveclip_t* clip,
                                            const collision_context_t& context);
-extern int           CM_PointSightTraceToEntities(sightpointtrace_t* clip, const collision_context_t* context);
+extern int           CM_PointSightTraceToEntities(sightpointtrace_t* clip,
+                                                  const collision_context_t& context);
 extern int           CM_ClipSightTraceToEntities(sightclip_t* clip, const collision_context_t& context);
 extern int           SightTrace(int oldHitNum, const math::Position3* start, const math::Position3* end,
                                 const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
                                 const math::Position3* origin, int brushmask, int capsule, void* sphere);
 extern int           CM_PointContents(const math::Position3& p, DCGSet* model);
-extern int           CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
-                                     DbLinkedHandle<EntityHandleDb, Entity>* entityList, int maxcount, int contentmask);
+extern int           CM_AreaEntities(const math::Position3& mins,
+                                     const math::Position3& maxs,
+                                     DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                                     int maxcount, int contentmask);
 extern DCGSet*       TempBoxModel(const math::Position3& mins,
                                   const math::Position3& maxs,
                                   int contents, int capsule);
-extern int           CM_TransformedPointContents(const math::Position3* p, DCGSet* model,
-                                                 const math::Position3* origin, const math::Position3* angles);
+extern int           CM_TransformedPointContents(const math::Position3& p,
+                                                 DCGSet* model,
+                                                 const math::Position3& origin,
+                                                 const math::Position3& angles);
 extern int           DObjHasContents(const DObj* obj, int contentmask);
 extern void          DObjGeomTraceline(const DObj* obj, const math::Position3* localStart,
                                        const math::Position3* localEnd, int contentmask,
@@ -94,8 +114,9 @@ extern void          DObjTraceline(const DObj* obj, const math::Position3* start
                                    struct DObjTrace_s* trace, float extraDistanceCheck);
 extern void          AnglesToAxis(const math::Position3* angles, float axis[3][3]);
 extern void          MatrixTransformVector(const float* in1, const float (*in2)[3], float* out);
-extern void          MatrixTransposeTransformVector43(const math::Position3* in1, const float (*in2)[3],
-                                                      math::Position3* out);
+extern void          MatrixTransposeTransformVector43(const math::Position3& in1,
+                                                      const float (*const in2)[3],
+                                                      math::Position3& out);
 extern int           VM_Call(vm_s* vm, int callnum, ...);
 extern void          ValidatePakId(TPakId pakId);
 extern unsigned int  HashString_CalcHash(const char* str);
@@ -221,8 +242,9 @@ void SV_LinkEntity(Entity* gEnt) {
         gEnt->r.areanum2 = -1;
         int leafs[128];
         int lastLeaf = 0;
-        int v19 = CM_BoxLeafnums(gEnt->r.pos_cache, gEnt->r.lastLeaf, p_currentOrigin,
-                                 &gEnt->r.absmin, &gEnt->r.absmax, leafs, 128, &lastLeaf);
+        int v19 = CM_BoxLeafnums(gEnt->r.pos_cache, gEnt->r.lastLeaf,
+                                 *p_currentOrigin, gEnt->r.absmin,
+                                 gEnt->r.absmax, leafs, 128, &lastLeaf);
         if (v19 != 0) {
             for (int i = 0; i < v19; ++i) {
                 int v20 = CM_LeafArea(leafs[i]);
@@ -339,14 +361,19 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                     absmax.v.m128_f32[0] = actorLocationalMaxs.v.m128_f32[0] + v27.v.m128_f32[0];
                     absmax.v.m128_f32[1] = actorLocationalMaxs.v.m128_f32[1] + v27.v.m128_f32[1];
                     absmax.v.m128_f32[2] = actorLocationalMaxs.v.m128_f32[2] + v27.v.m128_f32[2];
-                    if (CM_TraceBox(&clip->start, &clip->end, &absmin, &absmax, clip->trace.fraction) != 0)
+                    if (CM_TraceBox(clip->start, clip->end, absmin, absmax,
+                                    clip->trace.fraction) != 0)
                         return;
                 }
                 int handle = p_currentOrigin->mHandle.mHandle.mVal;
                 VM_Call(gvm, 19, &handle);
                 AnglesToAxis(&p_currentOrigin->r.currentAngles, (float(*)[3])v29);
-                MatrixTransposeTransformVector43(&clip->start, (const float(*)[3])v29, &absmin);
-                MatrixTransposeTransformVector43(&clip->end, (const float(*)[3])v29, &absmax);
+                MatrixTransposeTransformVector43(clip->start,
+                                                 (const float(*)[3])v29,
+                                                 absmin);
+                MatrixTransposeTransformVector43(clip->end,
+                                                 (const float(*)[3])v29,
+                                                 absmax);
                 float v35 = 0.0f;
                 if (clip->mAngleTangent > 0.0f)
                     v35 = sqrtf(absmin.v.m128_f32[0] * absmin.v.m128_f32[0]
@@ -371,7 +398,8 @@ void SV_PointTraceToEntity(pointtrace_t* clip, EntityShared* check) {
                         }
                     }
                     if (!found) {
-                        if (CM_TraceBox(&absmin, &absmax, &absmin, &absmax, clip->trace.fraction) != 0)
+                        if (CM_TraceBox(absmin, absmax, absmin, absmax,
+                                        clip->trace.fraction) != 0)
                             return;
                     }
                     DObjGeomTraceline(mDObj, &absmin, &absmax, clip->contentmask, &objTrace, v35);
@@ -495,7 +523,8 @@ void SV_Trace(trace_t* results, const math::Position3* start, const math::Positi
     memset(&tr, 0, sizeof(tr));
     tr.decal_radius = results->decal_radius;
     tr.check_decal = results->check_decal;
-    Trace(&tr, start, end, mins, maxs, NULL, context->contentmask, capsule, NULL);
+    Trace(&tr, *start, *end, *mins, *maxs, NULL, context->contentmask,
+          capsule, NULL);
     if (tr.fraction == 1.0f) {
         tr.mEntity.mHandle.mVal = 0;
     } else {
@@ -533,7 +562,7 @@ void SV_Trace(trace_t* results, const math::Position3* start, const math::Positi
         }
     } else {
         if (staticmodels != 0) {
-            CM_PointTraceStaticModels(&tr, start, end, context);
+            CM_PointTraceStaticModels(&tr, *start, *end, *context);
             if (tr.fraction < 1.0f) {
                 tr.mEntity.mHandle.mVal = EntityManager::sInst->mWorld->mHandle.mHandle.mVal;
             }
@@ -691,7 +720,7 @@ void SV_SightTrace(int* hit, const math::Position3* start, const math::Position3
             Entity* e2 = HandleDbDeref(context->pass_entity2);
             if (e2 != NULL)
                 clip.mPassOwner2.mHandle.mVal = e2->r.mOwner.mHandle.mVal;
-            *hit = CM_PointSightTraceToEntities(&clip, context);
+            *hit = CM_PointSightTraceToEntities(&clip, *context);
         } else {
             sightclip_t clip;
             memset(&clip, 0, sizeof(clip));
@@ -802,7 +831,7 @@ int SV_PointContents(const math::Position3& p, const collision_context_t& contex
     DbLinkedHandle<EntityHandleDb, Entity> touch[256];
     memset(touch, 0, sizeof(touch));
     int contents = CM_PointContents(p, NULL);
-    int num = CM_AreaEntities(&p, &p, touch, 256, context.contentmask);
+    int num = CM_AreaEntities(p, p, touch, 256, context.contentmask);
     for (int i = 0; i < num; ++i) {
         unsigned int mVal = touch[i].mHandle.mVal;
         if (mVal != context.pass_entity1.mHandle.mVal) {
@@ -814,7 +843,8 @@ int SV_PointContents(const math::Position3& p, const collision_context_t& contex
             if (bmodel == NULL)
                 bmodel = TempBoxModel(mObject->r.mins, mObject->r.maxs, mObject->r.contents,
                                       (mObject->r.svFlags & 0x200) != 0 ? 1 : 0);
-            contents |= CM_TransformedPointContents(&p, bmodel, &mObject->r.currentOrigin, &mObject->r.currentAngles);
+            contents |= CM_TransformedPointContents(
+                p, bmodel, mObject->r.currentOrigin, mObject->r.currentAngles);
         }
     }
     return contents & context.contentmask;
@@ -869,7 +899,8 @@ void TraceSphereFull(const proximity_data_t* proximity_data, trace_t* results,
     }
     trace_t tr;
     memset(&tr, 0, sizeof(tr));
-    TraceSphere(proximity_data, &tr, start, end, mins, maxs, context->contentmask);
+    TraceSphere(*proximity_data, &tr, *start, *end, *mins, *maxs,
+                context->contentmask);
     if (tr.fraction == 1.0f) {
         tr.mEntity.mHandle.mVal = 0;
     } else {
@@ -995,7 +1026,7 @@ void TracePointFull(const proximity_data_t* proximity_data, trace_t* results,
     }
     trace_t tr;
     memset(&tr, 0, sizeof(tr));
-    TracePoint(proximity_data, &tr, start, end, context->contentmask);
+    TracePoint(*proximity_data, &tr, *start, *end, context->contentmask);
     if (tr.fraction == 1.0f) {
         tr.mEntity.mHandle.mVal = 0;
     } else {

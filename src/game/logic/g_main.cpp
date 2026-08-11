@@ -2253,12 +2253,11 @@ bool SpotWouldTelefrag(const math::Position3* origin)
     maxs.v.m128_f32[0] = playerMaxs.v.m128_f32[0] + origin->v.m128_f32[0];
     maxs.v.m128_f32[1] = playerMaxs.v.m128_f32[1] + origin->v.m128_f32[1];
     maxs.v.m128_f32[2] = playerMaxs.v.m128_f32[2] + origin->v.m128_f32[2];
-    int entityList[256];
-    int num = CM_AreaEntities(&mins, &maxs, entityList, 256, 33555025);
+    DbLinkedHandle<EntityHandleDb, Entity> entityList[256];
+    int num = CM_AreaEntities(mins, maxs, entityList, 256, 33555025);
     for (int v3 = 0; v3 < num; ++v3)
     {
-        Entity* mObject = HandleDbToEnt(
-            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v3]);
+        Entity* mObject = HandleDbToEnt(entityList[v3]);
         if (mObject == nullptr)
             continue;
         Client* client = mObject->client;
@@ -2812,12 +2811,11 @@ void G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
     math::Position3 maxs;
     mins.v = _mm_min_ps(vStart->v, vEnd->v);
     maxs.v = _mm_max_ps(vStart->v, vEnd->v);
-    int entityList[256];
-    int iNum = CM_AreaEntities(&mins, &maxs, entityList, 256, 0x400000);
+    DbLinkedHandle<EntityHandleDb, Entity> entityList[256];
+    int iNum = CM_AreaEntities(mins, maxs, entityList, 256, 0x400000);
     for (int v7 = 0; v7 < iNum; ++v7)
     {
-        Entity* mObject = HandleDbToEnt(
-            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v7]);
+        Entity* mObject = HandleDbToEnt(entityList[v7]);
         if (mObject != nullptr
             && mObject->takedamage != 0
             && mObject->mClassNameHash.mHash == hash_const.trigger_damage.mHash)
@@ -2847,12 +2845,11 @@ void G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vSta
     math::Position3 mins, maxs;
     mins.v = _mm_min_ps(vStart->v, vEnd->v);
     maxs.v = _mm_max_ps(vStart->v, vEnd->v);
-    int entityList[1344];
-    int iNum = CM_AreaEntities(&mins, &maxs, entityList, 1344, 0x400000);
+    DbLinkedHandle<EntityHandleDb, Entity> entityList[1344];
+    int iNum = CM_AreaEntities(mins, maxs, entityList, 1344, 0x400000);
     for (int v7 = 0; v7 < iNum; ++v7)
     {
-        Entity* mObject = HandleDbToEnt(
-            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v7]);
+        Entity* mObject = HandleDbToEnt(entityList[v7]);
         if (mObject != nullptr
             && mObject->takedamage != 0
             && mObject->mClassNameHash.mHash == hash_const.trigger_damage.mHash
@@ -2892,18 +2889,17 @@ int G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* crouc
     }
     if ((0x1000000 & contents) != 0)
         return 1;
-    int entityList[256];
+    DbLinkedHandle<EntityHandleDb, Entity> entityList[256];
     float v12[3] = { vStart[0] - 0.1f, vStart[1] - 0.1f, vStart[2] - 0.1f };
     math::Position3 vMins;
     vMins.v.m128_f32[0] = vStart[0] + 0.1f;
     vMins.v.m128_f32[1] = vStart[1] + 0.1f;
     vMins.v.m128_f32[2] = vStart[2] + 0.1f;
-    int v5 = CM_AreaEntities((const math::Position3*)v12, &vMins, entityList, 256,
+    int v5 = CM_AreaEntities(*(math::Position3*)v12, vMins, entityList, 256,
                              1094713352);
     for (int v6 = 0; v6 < v5; ++v6)
     {
-        Entity* mObject = HandleDbToEnt(
-            *(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v6]);
+        Entity* mObject = HandleDbToEnt(entityList[v6]);
         if (mObject == nullptr)
             continue;
         if (mObject->actor == nullptr)

@@ -446,7 +446,7 @@ bool Weapon_Revive_Test(Entity* ent, weaponParms* wp, Entity** traceEnt)
     wp->muzzleTrace[0] = muzzle.v.m128_f32[0];
     wp->muzzleTrace[1] = muzzle.v.m128_f32[1];
     wp->muzzleTrace[2] = muzzle.v.m128_f32[2];
-    int entityList[128];
+    DbLinkedHandle<EntityHandleDb, Entity> entityList[128];
     math::Position3 mins;
     math::Position3 maxs;
     mins.v.m128_f32[0] = ent->r.absmin.v.m128_f32[0] + wp->forward[0] * 30.0f - 20.0f;
@@ -455,7 +455,7 @@ bool Weapon_Revive_Test(Entity* ent, weaponParms* wp, Entity** traceEnt)
     maxs.v.m128_f32[0] = ent->r.absmax.v.m128_f32[0] + wp->forward[0] * 30.0f + 20.0f;
     maxs.v.m128_f32[1] = ent->r.absmax.v.m128_f32[1] + wp->forward[1] * 30.0f + 20.0f;
     maxs.v.m128_f32[2] = ent->r.absmax.v.m128_f32[2] + wp->forward[2] * 30.0f + 20.0f;
-    int v35 = CM_AreaEntities(&mins, &maxs, entityList, 128, 0x4000000);
+    int v35 = CM_AreaEntities(mins, maxs, entityList, 128, 0x4000000);
     math::Position3 probe;
     probe.v.m128_f32[0] = wp->forward[0] * 45.0f + wp->muzzleTrace[0];
     probe.v.m128_f32[1] = wp->forward[1] * 45.0f + wp->muzzleTrace[1];
@@ -463,7 +463,7 @@ bool Weapon_Revive_Test(Entity* ent, weaponParms* wp, Entity** traceEnt)
     Entity* found = nullptr;
     for (int v20 = 0; v20 < v35; ++v20)
     {
-        Entity* mObject = HandleDbToEnt(*(DbLinkedHandle<EntityHandleDb, Entity>*)&entityList[v20]);
+        Entity* mObject = HandleDbToEnt(entityList[v20]);
         if (mObject == nullptr)
             continue;
         if ((mObject->client == nullptr && mObject->actor == nullptr) || ent == mObject)

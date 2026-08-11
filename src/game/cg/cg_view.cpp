@@ -65,14 +65,14 @@ extern float AngleSubtract(float a1, float a2);
 extern void CL_SetViewAnglesAxis(int axis, float angle);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern int BG_IsAimDownSightWeapon(int iWeapon);
-extern void* BG_GetPlayerWeaponInfo();
+extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
 extern void CG_DrawGameScreenFade();
 extern void trap_R_SetColor(const float* rgba);
 extern void trap_R_DrawStretchPic(float x, float y, float w, float h, float s1,
                                   float t1, float s2, float t2, void* tex,
                                   float z);
 extern void CG_FillRect(float x, float y, float width, float height,
-                        float* color, float z);
+                        const float* color, float z);
 extern void* cgsGlobal_media_whiteShader;
 
 // ea: 0x00688620
@@ -600,7 +600,8 @@ extern int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars,
                                  char* buffer, int bufsize);
 extern int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
                                    const char* buffer, const char* filename);
-extern void Cvar_Update(void* vmCvar);
+struct vmCvar_t;
+extern void Cvar_Update(vmCvar_t* vmCvar);
 extern void* _Z_MallocInternal(unsigned int size);
 extern void _Z_FreeInternal(void* ptr);
 extern void CG_Printf(const char* msg, ...);
@@ -860,7 +861,7 @@ int CG_LoadShellShockCvars(const char* name)
             Com_LoadCvarsFromBuffer(cg_shock_cvar_names, 26, v5, v1);
         _Z_FreeInternal(v5);
         for (unsigned int i = 0; i < 26; ++i)
-            Cvar_Update(cg_shock_cvar_ptrs[i]);
+            Cvar_Update((vmCvar_t*)cg_shock_cvar_ptrs[i]);
         return CvarsFromBuffer;
     }
     CG_Printf("^1couldn't open '%s'\n", v1);
@@ -1329,7 +1330,7 @@ void CG_CalculateWeaponPosition_IdleAngles(float* angles)
                 + angles[0];
 }
 
-extern void* BG_GetInfoForWeapon(int weapon);
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern void* EntityManager_mPlayers[16];
 extern int cg_gun_move_minspeed;
 extern int cg_gun_move_f;
@@ -1383,8 +1384,9 @@ extern void CG_AdjustPositionForMover(const math::Position3* in,
                                       unsigned int mover, int fromTime,
                                       int toTime, math::Position3* out,
                                       float* outDeltaAngles);
-extern void BG_EvaluateTrajectory(const void* tr, int atTime,
-                                  math::Position3* result);
+struct trajectory_t;
+extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
+                                  math::Position3& result);
 extern float* unk_F63B30;
 extern void CG_CalculateWeaponPosition_IdleAngles(float* angles);
 extern void CG_CalculateWeaponPosition_BobMovement(float* origin);
@@ -2470,7 +2472,7 @@ extern void CG_InterpolateEntityAngles(Entity* cent);
 extern int CG_PredictPlayerState_Internal();
 extern int CG_PointContents(const math::Position3* point,
                             const collision_context_t* context);
-extern void* BG_GetPlayerWeaponInfo();
+extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();
 extern int cg_fov;
 extern int cg_widescreen;
 extern float gZoomRatio;
@@ -2488,7 +2490,7 @@ void CG_CalcEntityLerpPositions(Entity* cent)
         else
         {
             math::Position3 v6;
-            BG_EvaluateTrajectory(&cent->s.pos, cgGlobal_time, &v6);
+    BG_EvaluateTrajectory(&cent->s.pos, cgGlobal_time, v6);
             cent->s.lerpOrigin.v = v6.v;
             if (!Entity_IsLocalPlayer(cent))
             {
@@ -2518,7 +2520,7 @@ void CG_CalcEntityLerpPositions(Entity* cent)
         else
         {
             math::Position3 v6;
-            BG_EvaluateTrajectory(&cent->s.apos, cgGlobal_time, &v6);
+    BG_EvaluateTrajectory(&cent->s.apos, cgGlobal_time, v6);
             cent->s.lerpAngles.v = v6.v;
         }
     }
@@ -2680,11 +2682,13 @@ extern int cgGlobal_cubemapShot;
 extern int bg_viewheight_prone;
 extern int bg_viewheight_crouched;
 extern int bg_viewheight_standing;
+struct DObjSkelMat;
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
-                                   float* tagMtx);
+                                   DObjSkelMat* tagMtx);
 extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
-                                          float* tagMtx);
-extern void* VEH_GetInfo(int idx);
+                                          DObjSkelMat* tagMtx);
+struct vehicle_info_t;
+extern vehicle_info_t* VEH_GetInfo(int idx);
 extern unsigned int HashString_CalcHash(const char* str);
 
 static Entity* DbHandleToEntityLocal(unsigned int handle)
@@ -2743,14 +2747,16 @@ void CG_CalcGunnerViewPos(bool crouched, unsigned int tag_gunner_barrel_hash)
         return;
     }
     float tagMtx[16];
-    if (G_DObjGetWorldTagMatrix(ent, tag_gunner_barrel_hash, tagMtx) == 0)
+    if (G_DObjGetWorldTagMatrix(ent, tag_gunner_barrel_hash,
+                                (DObjSkelMat*)tagMtx) == 0)
     {
         if (!s_tagPlayerHashInit)
         {
             s_tagPlayerHashInit = true;
             s_tagPlayerHash = HashString_CalcHash("tag_player");
         }
-        if (G_DObjGetWorldTagMatrix(ent, s_tagPlayerHash, tagMtx) == 0)
+        if (G_DObjGetWorldTagMatrix(ent, s_tagPlayerHash,
+                                    (DObjSkelMat*)tagMtx) == 0)
             return;
     }
     int v7 = 1580 * currCl;
@@ -2951,7 +2957,7 @@ int CG_CalcPassengerViewPos()
     int v4 = G_DObjGetWorldBoneIndexMatrix(
         mObject,
         *(int*)((char*)mObject->scr_vehicle + 0x10 + 12 * client->ps.vehPos),
-        tagMtx);
+        (DObjSkelMat*)tagMtx);
     if (v4 != 0)
     {
         int v5 = 1580 * currCl;
@@ -3018,7 +3024,8 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
                 const char* v11 = flashTag;
                 unsigned int flash_tag_hash = HashString_CalcHash(flashTag);
                 float tagMat[16];
-                if (G_DObjGetWorldTagMatrix(v10, flash_tag_hash, tagMat)
+                if (G_DObjGetWorldTagMatrix(v10, flash_tag_hash,
+                                            (DObjSkelMat*)tagMat)
                     != 0)
                 {
                     muzzle[0] = tagMat[12];
@@ -3058,7 +3065,8 @@ int CG_CalcMuzzlePoint(unsigned int entity, float* muzzle, char* flashTag)
                         v16 = s_gunnerFlashHash;
                         float tagMat2[16];
                         if (flash_tag_hash == v16
-                            || G_DObjGetWorldTagMatrix(v10, v16, tagMat2)
+                            || G_DObjGetWorldTagMatrix(
+                                   v10, v16, (DObjSkelMat*)tagMat2)
                                    == 0)
                             return 1;
                         muzzle[0] = tagMat2[12];

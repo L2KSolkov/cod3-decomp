@@ -87,8 +87,8 @@ extern int InteractionController_CanRunWeaponAnims(void* self);
 extern void* InteractionController_Inst(int instance);
 extern void* PlayerAnimMgr_sInst;
 extern void* Entity_GetRefEntity(Entity* ent);
-extern void CG_AddPlayerWeapon(void* parent, PlayerState* ps, Entity* entity,
-                               int bDrawGun);
+extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
+                               Entity* entity, int bDrawGun);
 extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);
@@ -177,8 +177,8 @@ extern Entity* EntityManager_GetPlayer(void* mgr, int idx);
 extern void* EntityManager_sInst;
 extern void* EntityManager_mPlayers[16];
 extern int Com_BitCheck(const int* const array, int bitNum);
-extern void* BG_GetInfoForWeapon(int weapon);
-extern int BG_GetWeaponIndexForName(const char* pszName);
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
+extern unsigned char BG_GetWeaponIndexForName(const char* pszName);
 extern int BG_GetWeaponSlotForName(const char* pszSlotName);
 extern int BG_SelectWeaponIndex(int iWeaponIndex, int client);
 extern int BG_GetNumWeapons();
@@ -197,11 +197,13 @@ extern char* CG_Argv(int arg);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
 extern int CG_DObjGetViewModelTagMatrix(void* obj, unsigned int tag_name_hash,
                                         void* tagMat);
-extern int CG_DObjGetWorldTagMatrix(Entity* entity, void* obj,
+struct DObj;
+extern int CG_DObjGetWorldTagMatrix(Entity* entity, DObj* obj,
                                     unsigned int tag_name_hash,
-                                    void* tagMat);
-extern void BG_EvaluateTrajectory(const void* tr, int atTime,
-                                  math::Position3* result);
+                                    DObjSkelMat* tagMat);
+struct trajectory_t;
+extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
+                                  math::Position3& result);
 extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
 extern void PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                       bool queue, int pakid, bool important);
@@ -932,8 +934,9 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
             if (mDObj == nullptr)
                 goto LABEL_11;
             ViewModelTagMatrix =
-                CG_DObjGetWorldTagMatrix(entity, mDObj, tag_flash_hash,
-                                         &tagMtx);
+                CG_DObjGetWorldTagMatrix(entity, (DObj*)mDObj,
+                                         tag_flash_hash,
+                                         (DObjSkelMat*)&tagMtx);
         }
         if (ViewModelTagMatrix != 0)
         {
@@ -943,7 +946,7 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
         }
     LABEL_11:
         BG_EvaluateTrajectory(&entity->s.pos, cgGlobal_time,
-                              (math::Position3*)&tagMtx.origin[1]);
+                              *(math::Position3*)&tagMtx.origin[1]);
     LABEL_12:
         int weapon = entity->s.weapon;
         if (entity->fireSndDelay <= 0)

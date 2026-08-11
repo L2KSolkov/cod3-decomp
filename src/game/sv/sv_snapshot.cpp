@@ -22,7 +22,9 @@ static void SV_AddEntitiesVisibleFromPoint(int leafnum, DbLinkedHandle<EntityHan
 extern int   com_frameNumber;
 
 // collision / math
-extern void  AddLeanToPosition(float* vPosition, float fViewYaw, float fLeanFrac, float fViewRoll, float fLeanDist);
+extern void  AddLeanToPosition(float* const vPosition, float fViewYaw,
+                               float fLeanFrac, float fViewRoll,
+                               float fLeanDist);
 extern int   CM_PointLeafnum(const math::Position3& p);
 extern int   CM_LeafArea(int leafnum);
 extern int   CM_LeafCluster(int leafnum);

@@ -13,8 +13,9 @@ extern const char* SEH_LocalizeTextMessage(const char* pszMessage,
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern unsigned int SEH_ReadCharFromString(const char** ppsText,
                                            int* pbIsTrailingPunctuation);
-extern void CL_ConsolePrint(int type, const char* txt, int duration,
-                            int linewidth, int flags);
+enum print_msg_type_t;
+extern void CL_ConsolePrint(print_msg_type_t type, const char* txt,
+                            int duration, int linewidth, int flags);
 extern void CL_DeathMessagePrint(int type, const char* pszAttackerName,
                                  const float* vAttackerColor,
                                  const char* pszVictimName,
@@ -27,7 +28,7 @@ extern bool Entity_IsLocalPlayer(const Entity* ent);
 extern const char* MultiplayerMgr_GetPlayerName(void* mgr,
                                                 const Entity* player);
 extern void* MultiplayerMgr_sInst;
-extern void* BG_GetInfoForWeapon(int weapon);
+extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 
 struct sentient_s {
     int eTeam;  // +0x00
@@ -135,14 +136,14 @@ void CG_ObjMessage(const char* msg)
 // ea: 0x0068B540
 void CG_GameMessage(const char* msg, int flags)
 {
-    CL_ConsolePrint(3 /* PMSG_GAME */, msg, 0,
+    CL_ConsolePrint((print_msg_type_t)3 /* PMSG_GAME */, msg, 0,
                     cg_gameMessageWidth.integer, flags);
 }
 
 // ea: 0x0068B560
 void CG_BoldGameMessage(const char* msg)
 {
-    CL_ConsolePrint(4 /* PMSG_BOLDGAME */, msg, 0,
+    CL_ConsolePrint((print_msg_type_t)4 /* PMSG_BOLDGAME */, msg, 0,
                     cg_gameBoldMessageWidth.integer, 0);
 }
 
