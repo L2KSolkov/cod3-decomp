@@ -485,7 +485,7 @@ void AddWindingToConvexHull(winding_t* w, winding_t** hull,
 }
 
 // ea: 0x00609750
-void WindingPlane(winding_t* w, float* const normal, float* const dist)
+void WindingPlane(winding_t* w, float* const normal, float* dist)
 {
     float v1[3];
     v1[0] = w->p[1][0] - w->p[0][0];
@@ -574,7 +574,7 @@ void WindingCenter(winding_t* w, float* const center)
 }
 
 // ea: 0x00609A60
-winding_t* BaseWindingForPlane(const float* const normal, float dist)
+winding_t* BaseWindingForPlane(float* const normal, float dist)
 {
     int v3 = -1;
     float max = -131072.0f;
