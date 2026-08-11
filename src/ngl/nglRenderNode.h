@@ -59,21 +59,9 @@ public:
 static_assert(sizeof(nglRenderNode) == 0xC, "nglRenderNode size mismatch");
 
 // ============================================================================
-// Render list allocation - ea: 0x660140
+// Render list allocation - ea: 0x660140 (defined in ngl_scene.cpp)
 // ============================================================================
-inline void* nglListAlloc(unsigned int Bytes, unsigned int Alignment) {
-    unsigned char* result = (unsigned char*)(~(Alignment - 1) & ((uintptr_t)nglListWorkPos + Alignment - 1));
-    if (result + Bytes <= nglListWork + nglListWorkSize) {
-        nglListWorkPos = result + Bytes;
-        return result;
-    }
-    if (nglLastListAllocWarnFrame != nglFrame) {
-        tlFatal("Render list allocation overflow. Reserved = %d Requested = %d Free = %d.\n",
-                nglListWorkSize, Bytes, (int)(nglListWork + nglListWorkSize - result));
-        nglLastListAllocWarnFrame = nglFrame;
-    }
-    return NULL;
-}
+void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);
 
 // ============================================================================
 // List insertion - ea: 0x7C5B40 / 0x7C5B70 / 0x7C5BA0 / 0x7C5BE0

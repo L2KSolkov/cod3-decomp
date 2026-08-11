@@ -21,7 +21,6 @@
 // Cross-object externs
 // ============================================================================
 extern nglDebugStruct nglSyncDebug;                    // ngl_debug.o
-extern void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);
 class nglRenderNode;
 extern void nglListAddNode(nglRenderNode* Node);
 extern nglTexture* nglGetFrontBufferTex();             // ngl_dx_texture.o
@@ -43,6 +42,31 @@ extern void tlFatal(const char* fmt, ...);
 extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flags);
 extern void tlMemFree(void* Ptr);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);
+extern int nglFrame;  // ?nglFrame@@3HA (ngl_internal.o)
+
+// ea: 0x660140 (game.o inline COMDAT)
+void* nglListAlloc(unsigned int Bytes, unsigned int Alignment)
+{
+    char* result = (char*)((~(Alignment - 1))
+                           & (uintptr_t)&nglListWorkPos[Alignment - 1]);
+    if (result + Bytes <= (char*)nglListWork + nglListWorkSize)
+    {
+        nglListWorkPos = (unsigned char*)result + Bytes;
+    }
+    else
+    {
+        if (nglLastListAllocWarnFrame != nglFrame)
+        {
+            tlFatal(
+                "Render list allocation overflow. Reserved = %d Requested = %d Free = %d.\n",
+                nglListWorkSize, Bytes,
+                (int)(((char*)nglListWork + nglListWorkSize) - result));
+            nglLastListAllocWarnFrame = nglFrame;
+        }
+        return nullptr;
+    }
+    return result;
+}
 
 // ngli* helpers (ngl_dx_scene.o, ported later).
 extern void ngliSetRenderTarget(nglTexture* Tex);
