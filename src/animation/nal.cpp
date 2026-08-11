@@ -438,3 +438,16 @@ bool XAnimNotetrackExists(AnimTree* anims, unsigned int animIndex,
         p += 0xC;
     }
 }
+
+// ea: 0x549B30
+const char* XAnimGetAnimName(AnimTree* anims, unsigned int animIndex)
+{
+    XAnimEntry* entry = &anims->entries.mList[animIndex];
+    if (entry->numAnims != 0)
+        return "<non-leaf anim>";
+    // XAnimEntry::Create would resolve a null anim (needs cdGetAnim +
+    // ParseNoteTracks); without it, a null anim reports unknown.
+    if (entry->anim == nullptr)
+        return "<unknown>";
+    return (const char*)((const unsigned char*)entry->anim + 0xC);
+}
