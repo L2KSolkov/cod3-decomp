@@ -13,6 +13,8 @@
 #include "core/tlFixedString.h"
 
 #include <cstddef>
+
+struct jqBatch;
 #include <intrin.h>
 
 struct nglMaterial;
@@ -102,7 +104,7 @@ extern nglMeshSection* nglCreateSectionCopy(nglMeshSection* Section);
 extern void tlFatal(const char* Format, ...);
 extern void nglSceneDumpEnd(void);
 extern void nglRenderDebug(void);
-extern void nglListSendBatch(void* pBatch);
+extern void nglListSendBatch(jqBatch* pBatch);
 extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);
 extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);
 extern nglScene* nglRootBuildScene;

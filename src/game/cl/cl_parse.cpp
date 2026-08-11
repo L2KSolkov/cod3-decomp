@@ -9,6 +9,7 @@
 #include <string.h>
 
 struct netchan_t;
+struct Entity;
 
 // ============================================================================
 // Externs (core.o / cl.o)
@@ -1121,8 +1122,10 @@ void CL_Frame(int msec, float screen_time_inc)
                                 EntityManager_sInst, currCl)
                                 ->client
                             + 0x550);
-                extern entity_view2* GetPlayer(int idx);
-                float* v9 = GetPlayer(spectatorClient)->r.currentOrigin.v;
+                extern Entity* GetPlayer(int idx);
+                float* v9 =
+                    ((entity_view2*)GetPlayer(spectatorClient))
+                        ->r.currentOrigin.v;
                 v12[0] = v9[0];
                 v12[1] = v9[1];
                 v12[2] = v9[2];

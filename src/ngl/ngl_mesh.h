@@ -49,7 +49,7 @@ void nglAPKMeshLoadCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void* 
 void nglAPKMeshDeleteCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void* UserData);
 void nglAPKMaterialLoadCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void* UserData);
 void nglAPKMaterialDeleteCallback(apk::apkFile* File, apk::apkFileEntry* Entry, void* UserData);
-int nglMeshInit();
+void nglMeshInit();
 nglMesh* nglGetMesh(const tlFixedString* Name, bool Warn);
 nglMaterial* nglGetMaterial(const tlFixedString* Name, bool Warn);
 

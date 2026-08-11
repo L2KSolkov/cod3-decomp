@@ -1806,7 +1806,7 @@ Client* G_IsVehicleUsable(Entity* ent, Entity* player, bool speedCheck)
         }
         vehicle_info_t* VehicleInfo = G_GetVehicleInfo(ent);
         scr_vehicle_t* scr_vehicle = ent->scr_vehicle;
-        bool canUse = CanMantleVehicle(scr_vehicle, player)
+        bool canUse = scr_vehicle->CanMantleVehicle(player)
                       || (scr_vehicle->playersAttached < VehicleInfo->numSeats
                           && (VehicleInfo->type != 2
                               || player->sentient == nullptr
@@ -6018,7 +6018,7 @@ void Scr_Vehicle_Think(Entity* pSelf, int msec)
             }
             else
             {
-                UpdateAnimRoute(veh, pSelf, occupant);
+                veh->UpdateAnimRoute(pSelf, occupant);
             }
         }
         if (info->type == 2)

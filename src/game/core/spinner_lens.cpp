@@ -9,18 +9,21 @@
 #include <math.h>
 #include <string.h>
 
-extern void nglInitQuad(void* quad);
-extern void nglSetQuadRect(void* quad, float x1, float y1, float x2, float y2);
-extern void nglSetQuadColor(void* quad, unsigned int c);
 struct nglQuad;
+struct nglTexture;
+extern void nglInitQuad(nglQuad* quad);
+extern void nglSetQuadRect(nglQuad* quad, float x1, float y1, float x2,
+                           float y2);
+extern void nglSetQuadColor(nglQuad* quad, unsigned int c);
 extern void nglSetQuadZ(nglQuad* quad, float z);
-extern void nglSetQuadBlend(void* quad, unsigned int blend);
-extern void nglSetQuadTex(void* quad, void* tex);
-extern void nglListAddQuad(void* quad);
-extern void nglListAddString(void* font, const char* text, float x, float y,
-                             float z, unsigned int color, float scaleX,
-                             float scaleY);
-extern void nglGetStringDimensions(void* font, unsigned int* width,
+extern void nglSetQuadBlend(nglQuad* quad, unsigned int blend);
+extern void nglSetQuadTex(nglQuad* quad, nglTexture* tex);
+extern void nglListAddQuad(nglQuad* quad);
+struct nglFont;
+extern void nglListAddString(nglFont* font, const char* text, float x,
+                             float y, float z, unsigned int color,
+                             float scaleX, float scaleY);
+extern void nglGetStringDimensions(nglFont* font, unsigned int* width,
                                    unsigned int* height, float scaleX,
                                    float scaleY, const char* fmt, ...);
 extern void nglSetClearFlags(unsigned int clearFlags);
@@ -29,7 +32,6 @@ extern void nglWaitForRendering();
 extern void nglPresent();
 extern int nglGetScreenWidth();
 extern int nglGetScreenHeight();
-struct nglTexture;
 extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void* FEManager_GetFont(void* mgr, int f);
 extern unsigned int AeHash(const char* str);
@@ -83,23 +85,23 @@ void SpinnerDrawLoading()
     default: break;
     }
     unsigned char loadImage[0x60];
-    nglInitQuad(loadImage);
-    nglSetQuadRect(loadImage, 0.0f, 0.0f, 640.0f, 480.0f);
-    nglSetQuadColor(loadImage, 0x96000000);
+    nglInitQuad((nglQuad*)loadImage);
+    nglSetQuadRect((nglQuad*)loadImage, 0.0f, 0.0f, 640.0f, 480.0f);
+    nglSetQuadColor((nglQuad*)loadImage, 0x96000000);
     nglSetQuadZ((nglQuad*)loadImage, 300.0f);
-    nglSetQuadBlend(loadImage, 0x64CF8600);
+    nglSetQuadBlend((nglQuad*)loadImage, 0x64CF8600);
     void* Font = FEManager_GetFont(&g_femanager, 0);
     if (Font != nullptr)
     {
         unsigned int x, y;
-        nglGetStringDimensions(Font, &x, &y, 0.5f, 0.5f, v0);
+        nglGetStringDimensions((nglFont*)Font, &x, &y, 0.5f, 0.5f, v0);
         x = 535 - x;
         for (int i = 2; i != 0; --i)
         {
             nglSetClearFlags(3u);
-            nglListAddQuad(loadImage);
-            nglListAddString(Font, v0, (float)x, 425.0f, 0.0f, 0xFFB18E5D,
-                             0.5f, 0.5f);
+            nglListAddQuad((nglQuad*)loadImage);
+            nglListAddString((nglFont*)Font, v0, (float)x, 425.0f, 0.0f,
+                             0xFFB18E5D, 0.5f, 0.5f);
         }
     }
 }
@@ -108,11 +110,12 @@ void SpinnerDrawLoading()
 void SpinnerDraw()
 {
     unsigned char q[0x60];
-    nglInitQuad(q);
-    nglSetQuadRect(q, l, t, r_0, b_0);
-    nglSetQuadTex(q, sSpinnerFrames[sLastSpinnerFrame]);
-    nglSetQuadBlend(q, 0x64CF8600);
-    nglListAddQuad(q);
+    nglInitQuad((nglQuad*)q);
+    nglSetQuadRect((nglQuad*)q, l, t, r_0, b_0);
+    nglSetQuadTex((nglQuad*)q,
+                  (nglTexture*)sSpinnerFrames[sLastSpinnerFrame]);
+    nglSetQuadBlend((nglQuad*)q, 0x64CF8600);
+    nglListAddQuad((nglQuad*)q);
 }
 
 static unsigned long long sSpinnerLast1 = 0;
@@ -157,11 +160,12 @@ void SpinnerDrawFrame(bool bEndFrame)
             nglSetZWriteEnable(false);
         }
         unsigned char quad[0x60];
-        nglInitQuad(quad);
-        nglSetQuadRect(quad, l, t, r_0, b_0);
-        nglSetQuadTex(quad, sSpinnerFrames[sLastSpinnerFrame]);
-        nglSetQuadBlend(quad, 0x64CF8600);
-        nglListAddQuad(quad);
+        nglInitQuad((nglQuad*)quad);
+        nglSetQuadRect((nglQuad*)quad, l, t, r_0, b_0);
+        nglSetQuadTex((nglQuad*)quad,
+                      (nglTexture*)sSpinnerFrames[sLastSpinnerFrame]);
+        nglSetQuadBlend((nglQuad*)quad, 0x64CF8600);
+        nglListAddQuad((nglQuad*)quad);
         if (bEndFrame)
             nglPresent();
     }
@@ -210,11 +214,12 @@ void SpinnerDrawFrameWithLoading(bool bEndFrame)
         }
         SpinnerDrawLoading();
         unsigned char quad[0x60];
-        nglInitQuad(quad);
-        nglSetQuadRect(quad, l, t, r_0, b_0);
-        nglSetQuadTex(quad, sSpinnerFrames[sLastSpinnerFrame]);
-        nglSetQuadBlend(quad, 0x64CF8600);
-        nglListAddQuad(quad);
+        nglInitQuad((nglQuad*)quad);
+        nglSetQuadRect((nglQuad*)quad, l, t, r_0, b_0);
+        nglSetQuadTex((nglQuad*)quad,
+                      (nglTexture*)sSpinnerFrames[sLastSpinnerFrame]);
+        nglSetQuadBlend((nglQuad*)quad, 0x64CF8600);
+        nglListAddQuad((nglQuad*)quad);
         if (bEndFrame)
             nglPresent();
     }
@@ -345,12 +350,14 @@ void LensFlareDraw()
         float y1 = (org[2] - v15) + ((float)v14 * v33.v.m128_f32[1]) * v13;
         float y2 = (v15 + org[2]) + ((float)v14 * v33.v.m128_f32[1]) * v13;
         unsigned char quad[0x60];
-        nglInitQuad(quad);
-        nglSetQuadRect(quad, x1, y1, x2, y2);
-        nglSetQuadTex(quad, gLensFlareTextures[v14]);
-        nglSetQuadColor(quad, 0xFFFFFF | (gLensAlphaAmount << 24));
-        nglSetQuadBlend(quad, 0x64078600);
-        nglListAddQuad(quad);
+        nglInitQuad((nglQuad*)quad);
+        nglSetQuadRect((nglQuad*)quad, x1, y1, x2, y2);
+        nglSetQuadTex((nglQuad*)quad,
+                      (nglTexture*)gLensFlareTextures[v14]);
+        nglSetQuadColor((nglQuad*)quad,
+                        0xFFFFFF | (gLensAlphaAmount << 24));
+        nglSetQuadBlend((nglQuad*)quad, 0x64078600);
+        nglListAddQuad((nglQuad*)quad);
         v13 = v32;
     }
 }

@@ -1065,7 +1065,6 @@ extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern int AnimationPlayer_IsPartialIdle(void* player, bool checkLooping);
 extern int Entity_GetPlayerIndex(Entity* ent);
 extern bool Camera_IsTweening(void* cam);
-extern bool IsLocalPlayer(Entity* ent);
 extern int level_time;
 extern int dword_F62964[4 * 1580];
 extern int dword_F6355C[4 * 1580];
@@ -1202,7 +1201,7 @@ void CG_Player(Entity* entity)
                                                   entity)])
                         || ((entity->client->ps.vehPos != 6
                              && entity->client->ps.vehPos != 1)
-                            || !IsLocalPlayer(entity))
+                            || !entity->IsLocalPlayer())
                                && (*(int*)((char*)&gCamera[currCl] + 0x194)
                                        != 1
                                    || entity != GetPlayer2(currCl))))
@@ -2413,7 +2412,7 @@ void CG_EntityPreEvent(Entity* entity, int event)
         {
             Entity* v4 =
                 EntityHandleDb_Get(entity->r.mOwner.mHandle.mVal);
-            if (v4 != nullptr && IsLocalPlayer(v4))
+            if (v4 != nullptr && v4->IsLocalPlayer())
                 goto fire_weapon;
         }
         break;

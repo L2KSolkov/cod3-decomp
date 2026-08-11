@@ -12,10 +12,15 @@
 #include "core/tlFixedString.h"
 #include "core/PoolAllocator.h"
 
-extern void G_RmvInvalidatedNode(Entity* pEnt, int iRmv);
 extern void DObjSkelMatrixMultiply43(const DObjSkelMat* in1, const float (*in2)[3],
                                      float (*out)[3]);
 extern void DObjUpdateChildren(DObj* obj, int boneIndex);  // render.o 0xABB990
+
+// ea: 0x4A6AF0
+Entity* GetPlayer(int idx)
+{
+    return EntityManager::sInst->GetPlayer(idx);
+}
 
 // ea: 0x0044A190
 int G_FindInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode)
@@ -116,7 +121,7 @@ void UpdateAnims(int msec)
                 DObjUpdateLod(mObject);
                 if ((mObject->flags & 0x10000) == 0
                     || (mObject->mFlags & 0x10) != 0)
-                    CG_DoControllers(mObject, nullptr);
+                    CG_DoControllers(mObject);
             }
         }
         mSize = dobjects.mSize;
@@ -519,6 +524,7 @@ void G_CleanupAnimTrees()
 }
 
 // ea: 0x00455DF0
+static void G_RmvInvalidatedNodeRemove(Entity* pEnt, int iRmv);
 void G_RmvInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode)
 {
     if (pEnt == nullptr || pEnt->client == nullptr || pNode == nullptr)
@@ -534,7 +540,20 @@ void G_RmvInvalidatedNode(Entity* pEnt, const PathNodes::PathNode* pNode)
     {
         int InvalidatedNode = G_FindInvalidatedNode(pEnt, pNode);
         if (InvalidatedNode >= 0)
-            G_RmvInvalidatedNode(pEnt, InvalidatedNode);
+            G_RmvInvalidatedNodeRemove(pEnt, InvalidatedNode);
+    }
+}
+
+// ea: 0x44A0D0 (static helper; shift-down remove by index)
+static void G_RmvInvalidatedNodeRemove(Entity* pEnt, int iRmv)
+{
+    if (pEnt != nullptr && pEnt->client != nullptr && iRmv >= 0
+        && iRmv < pEnt->client->mInvalidatedNodeNum)
+    {
+        Client* client = pEnt->client;
+        for (int i = iRmv + 1; i < client->mInvalidatedNodeNum; ++i)
+            client->mInvalidatedNode[i - 1] = client->mInvalidatedNode[i];
+        --client->mInvalidatedNodeNum;
     }
 }
 

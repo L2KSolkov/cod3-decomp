@@ -953,8 +953,9 @@ bool      SV_DObjUpdateServerTime(Entity* entity, float dtime, bool bNotify);
 bool      SV_DObjCreateSkelForBones(Entity* entity);
 bool      SV_DObjCreateSkelForBone(Entity* entity, int boneIndex);
 void      SV_DObjCalcAnim(Entity* entity, int iPhase);
-void      SV_DObjCalcSkel(Entity* entity, int* partBits);
-void      SV_DObjGetHierarchyBits(Entity* entity, int boneIndex, int* partBits);
+void      SV_DObjCalcSkel(Entity* entity, int* const partBits);
+void      SV_DObjGetHierarchyBits(Entity* entity, int boneIndex,
+                                  int* const partBits);
 DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
 int       SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
 void      AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
@@ -2487,7 +2488,6 @@ struct debug_aabb {
     float color[4];        // +0x20
 };
 extern ae_vector<debug_aabb> debug_aabbs;        // g.o
-bool  CanMantleVehicle(scr_vehicle_t* veh, Entity* player);  // g.o
 void  G_DelayFreeAnimTree(XAnimTree* tree);      // g.o (g_dobj.cpp)
 void  commit_dobjects(void);                     // g.o (g_dobj.cpp)
 void  DObjSetNotRenderedFlag(void);              // g.o (g_dobj.cpp)
@@ -2961,7 +2961,7 @@ void  UpdateRigidBody(float delta_t);             // g.o
 void  ClientEndFrame(Entity* ent, int msec);      // g.o
 
 // cg.o / anim.o cross-object
-void  CG_DoControllers(Entity* entity, int* partBits);
+void  CG_DoControllers(Entity* entity);
 void  VEH_UpdateControllers(Entity* entity, int msec);
 void  Path_DrawDebug(void);                       // g.o
 void  G_DrawVehiclePaths(void);                   // g.o
@@ -3129,7 +3129,6 @@ void  Scr_Vehicle_Think(Entity* pSelf, int msec); // g.o 0x490ED0
 void  VEH_UpdatePath(Entity* ent, int msec);     // g.o 0x47F8B0
 void  VEH_UpdateOverHeat(Entity* self, int msec);// g.o 0x47F630
 void  ChiefMammalInChargeOfVehicleDamageAndPushOut(Entity* pSelf);  // g.o 0x488420
-void  UpdateAnimRoute(scr_vehicle_t* veh, Entity* ent, Entity* player);  // g.o 0x48D200
 void  VEH_SetPosition(Entity* ent, const math::Position3* origin,
                       const math::Position3* angles,
                       const float* vel);  // g.o 0x46A370

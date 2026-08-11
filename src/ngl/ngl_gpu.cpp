@@ -18,7 +18,8 @@
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* msg);
 extern void nglSceneDumpEnd(void);
 extern void nglRenderDebug(void);
-extern void nglListSendBatch(void* pBatch);
+struct jqBatch;
+extern void nglListSendBatch(jqBatch* pBatch);
 extern void tlFatal(const char* Format, ...);
 
 extern nglDebugStruct nglDebug;   // ngl_debug.o (data)

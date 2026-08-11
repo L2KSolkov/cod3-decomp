@@ -30,7 +30,7 @@ extern void nglSceneDumpMesh(nglMesh* Mesh, const math::Mat43* LocalToWorld,
 extern int ngliListAddMesh_GetClipResult(const math::Position3& Center, float Radius,
                                          unsigned int ParamFlags);  // ngl_dx_mesh.o
 extern void ngliWaitForResource(void);            // ngl_dx_core.o
-extern int nglMorphInit();                        // ngl_morph.o
+extern void nglMorphInit();                        // ngl_morph.o
 extern void* nglListAlloc(unsigned int Bytes, unsigned int Alignment);  // nglRenderNode.h
 extern void* nglEmptyParamSet;                    // ngl_params.o
 extern void tlWarning(const char* fmt, ...);
@@ -440,7 +440,7 @@ void nglAPKMaterialDeleteCallback(apk::apkFile* File, apk::apkFileEntry* Entry, 
 // ============================================================================
 // nglMeshInit - ea: 0x844420
 // ============================================================================
-int nglMeshInit() {
+void nglMeshInit() {
     apk::apkRegisterFileType(0x4853454Du, 2, nglAPKMeshLoadCallback,
                              nglAPKMeshDeleteCallback, NULL);
     apk::apkRegisterFileType(0x54414Du, 2, nglAPKMaterialLoadCallback,
@@ -466,7 +466,7 @@ int nglMeshInit() {
         && _tlAssert("src/ngl_mesh.cpp", 86, "nglSceneParamSet::NumParams <= 64",
                      "Too many scene parameters registered."))
         __debugbreak();
-    return nglMorphInit();
+    nglMorphInit();
 }
 
 // ============================================================================

@@ -198,12 +198,18 @@ float         nslGroupGetVolume(nslGroupID) { return 1.0f; }
 // nslMaster — master bus
 // ============================================================================
 nslGroup*     nslMasterGetGroup() { return nullptr; }
+float         nslBusVolume = 1.0f;  // ?nslBusVolume@@3MA @ 0xE4B674
+float         nslBusPitch = 1.0f;   // ?nslBusPitch@@3MA @ 0xE4B678
 void          nslSetBusVolume(unsigned, float) {}
+void          nslSetBusVolume(float volume) { nslBusVolume = volume; }
+float         nslGetBusVolume() { return nslBusVolume; }
 float         nslGetBusVolume(unsigned) { return 1.0f; }
 bool          nslIsBusVolumeName(unsigned) { return false; }
 const char*   nslGetBusName(unsigned) { return ""; }
 unsigned      nslGetBusIndex(const char*) { return 0; }
 void          nslSetBusPitch(unsigned, float) {}
+void          nslSetBusPitch(float pitch) { nslBusPitch = pitch; }
+float         nslGetBusPitch() { return nslBusPitch; }
 void          nslSetBusFilter(unsigned, unsigned, float) {}
 void          nslSetBusReverb(unsigned, float) {}
 void          nslSetMasterVolume(float) {}
