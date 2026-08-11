@@ -27,7 +27,7 @@ extern void CL_AddDebugLine(const float* start, const float* end,
 extern void* Entity_GetRefEntity(Entity* ent);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
 extern void ByteToDir(unsigned int b, float* dir);
-extern void PerpendicularVector(float* dst, const float* src);
+extern void PerpendicularVector(float* dst, float* src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
 extern void* controller_inst();

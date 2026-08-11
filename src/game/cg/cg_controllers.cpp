@@ -18,7 +18,8 @@ extern int G_DObjSetControlTagAngles(Entity* ent, int* partBits,
                                      unsigned int tag_name_hash,
                                      float* angles);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
-extern int EffectEventStopEmitting(int handle);
+struct Handle;
+extern void EffectEventStopEmitting(Handle handle);
 extern int PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
                                   int action);
 extern float gTurretOldPITCH;
@@ -146,7 +147,8 @@ void CG_mg42_DoControllers(Entity* entity, bool playerTurret)
             LABEL_18:
                 if (gTurretSoundEffectHandle != -1)
                 {
-                    EffectEventStopEmitting(gTurretSoundEffectHandle);
+                    EffectEventStopEmitting(
+                        *(Handle*)&gTurretSoundEffectHandle);
                     gTurretSoundEffectHandle = -1;
                 }
                 if (dword_DF91F4 != -1)
@@ -163,7 +165,8 @@ void CG_mg42_DoControllers(Entity* entity, bool playerTurret)
             LABEL_31:
                 if (gTurretSoundEffectHandle != -1)
                 {
-                    EffectEventStopEmitting(gTurretSoundEffectHandle);
+                    EffectEventStopEmitting(
+                        *(Handle*)&gTurretSoundEffectHandle);
                     gTurretSoundEffectHandle = -1;
                 }
                 if (dword_DF91F4 == -1)

@@ -142,7 +142,7 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
             {
                 if (client->ps.pm_type >= 6)
                     return;
-                if (!IsLocalPlayer(targ))
+                if (!targ->IsLocalPlayer())
                 {
                     int v14 = 0;
                     Entity* v15;
@@ -173,7 +173,7 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                     }
                     if (mod == 32)
                     {
-                        if (IsLocalPlayer(targ))
+                        if (targ->IsLocalPlayer())
                             MultiplayerMgr::sInst->PlayerDamage(targ, attacker, pos, norm,
                                                                 v14, (float)damage, 0x20u,
                                                                 dflags, hitLoc);
@@ -200,7 +200,7 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                     {
                         if (!attacker->IsLocalPlayer() && mod != 5 && mod != 6)
                             return;
-                        if (!IsLocalPlayer(targ))
+                        if (!targ->IsLocalPlayer())
                         {
                             MultiplayerMgr::sInst->PlayerDamage(targ, attacker, pos, norm,
                                                                 v14, (float)damage, (unsigned char)mod,
@@ -209,7 +209,7 @@ void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
                         }
                     }
                 }
-                if (!IsLocalPlayer(targ)
+                if (!targ->IsLocalPlayer()
                     || (G_IsPlayerInVehicle(targ)
                         && IsPlayerFullySeatedInVehicle(targ)
                         && (mod == 4 || mod == 8 || mod == 10 || mod == 6 || mod == 14

@@ -1724,7 +1724,7 @@ void Bullet_Fire_Fake_Extended(
             if (mObject == nullptr)
             {
                 int surfType = ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F;
-                CG_BulletHitEvent(attacker, &tr.endpos,
+                CG_BulletHitEvent(attacker, tr.endpos,
                                   &tr.normal.v.m128_f32[0],
                                   wp->pWeapInfo->index, surfType, mObject);
                 if (tr.partGroup != 0
@@ -1769,7 +1769,7 @@ void Bullet_Fire_Fake_Extended(
                     }
                     int surfType =
                         ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F;
-                    CG_BulletHitEvent(attacker, &tr.endpos,
+                    CG_BulletHitEvent(attacker, tr.endpos,
                                       &tr.normal.v.m128_f32[0],
                                       wp->pWeapInfo->index, surfType,
                                       mObject);
@@ -2083,7 +2083,7 @@ hit_event:
         if (sourceEnt != nullptr && sourceEnt->scr_vehicle == nullptr)
             eventEnt = sourceEnt;
         CG_BulletHitEvent(
-            eventEnt, &tr.endpos, &tr.normal.v.m128_f32[0],
+            eventEnt, tr.endpos, &tr.normal.v.m128_f32[0],
             wp->pWeapInfo->index,
             ((int)tr.normal.v.m128_f32[2] >> 20) & 0x1F, hitEnt);
         if (tr.partGroup != 0

@@ -2007,7 +2007,7 @@ void Sentient_InvalidateNearestNode(sentient_s* pSelf);
 int  G_TryPushingEntity(Entity* check, Entity* pusher,
                         const math::Position3& move, const math::Position3& amove);
 bool push_entity(Entity* ent, Entity* vehicle);  // g.o 0x463A20
-Entity* G_TestEntityPosition(Entity* ent, const math::Position3& origin);
+Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin);
 int  G_MoverPush(Entity* pusher, const float* move, const float* amove);
 
 // g_combat.cpp (unported; declared for g_mover callers)
@@ -2151,7 +2151,7 @@ void  Axis4ToAngles(const float (*axis)[4], float* angles);  // core.o
 float vectosignedyaw(float* vec);                 // core.o
 void  YawToAxis(float yaw, float (*axis)[3]);     // core.o
 XAnimTree* GScr_GetEntAnimTree(Entity* ent);      // g_scr.cpp
-void  RotatePointAroundVector(float* result, const float* axis,
+void  RotatePointAroundVector(float* result, float* axis,
                               const float* src, float angle);  // core.o
 void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
 void  VEH_UpdateControllers(Entity* entity, int msec);  // g.o 0x46DE90
@@ -2460,17 +2460,17 @@ struct DynamicDecalMgr {
              float radius, float angle, const float* color,
              bool isHighPriority);  // ?Add@DynamicDecalMgr@@QAEXPAUnglTexture@@M_NHABVPosition3@math@@2MMABVColor@@1@Z
 };
-void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
-                       const float* normal, int weapon, int surfType,
+void CG_BulletHitEvent(Entity* entity, const math::Position3& origin,
+                       float* const normal, int weapon, int surfType,
                        Entity* hitEnt);  // cg.o
 void CG_BulletHitClientEvent(
     DbLinkedHandle<EntityHandleDb, Entity> sourceEntity,
-    const math::Position3& position, const float* normal, int surfType,
+    const math::Position3& position, const float* const normal, int surfType,
     int weapon);  // cg.o
 void CG_EventSpawnTracer(const math::Position3* pstart,
                          const math::Position3* pend, int weapon);  // cg.o
 void CG_FireWeapon(Entity* attacker, EntityState* attackerState, int event,
-                   int barrel, int inWeapon);  // cg.o
+                   unsigned int inWeapon);  // cg.o ?CG_FireWeapon@@YAXPAVEntity@@PAVEntityState@@HI@Z
 void* controller_inst();                                   // controller_xboxr
 int  controller_button_pressed(void* self, int i_controller_num,
                                int i_button);              // controller_xboxr
@@ -3137,7 +3137,7 @@ void  VEH_SetPosition(Entity* ent, const math::Position3* origin,
                       const float* vel);  // g.o 0x46A370
 void  SP_script_vehicle(Entity* pSelf);          // g.o 0x488CE0
 void  VEH_Backup(Entity* ent);                   // g.o
-int   VP_GetNodeIndex(Broc::string* name, math::Position3* origin);  // g.o
+int16_t VP_GetNodeIndex(const Broc::string* name, float* origin);  // g.o ?VP_GetNodeIndex@@YAFPBUstring@Broc@@PAM@Z
 void  VP_GetLookAheadXYZ(const vehicle_pathpos_t* vpp, float* lookXYZ);  // g.o
 void  vectoangles(float* vec, float* angles);  // core.o
 int   VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,

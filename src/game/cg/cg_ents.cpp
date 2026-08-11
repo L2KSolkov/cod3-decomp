@@ -737,8 +737,9 @@ extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
 extern int CurPakId();
 extern float VectorNormalize2(const float* v, float* out);
-extern void PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
-                                      bool queue, int pakid, bool important);
+extern Handle PostEffectEventScriptCall(const Entity* ent,
+                                        const char* scriptId, bool queue,
+                                        TPakId pakid, bool important);
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
 extern float dword_F63C78[4 * 1580];
@@ -866,7 +867,8 @@ void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
             Entity* v7 = EntityHandleDb_Get(sourceEntity);
             if (v7 == nullptr)
                 CG_ASSERT("cent", "c:\\cod\\code\\game\\cg_weapons.cpp", 4472);
-            PostEffectEventScriptCall(v7, "WhizBySound", false, -1, false);
+            PostEffectEventScriptCall(v7, "WhizBySound", false,
+                                      (TPakId)-1, false);
         }
     }
 }
@@ -1508,8 +1510,8 @@ extern void CG_EntityPreEvent(Entity* entity, int event);
 extern void CG_FireWeapon(Entity* attacker, EntityState* attackerState,
                           int event, unsigned int barrel);
 extern void CG_EjectWeaponBrass(Entity* entity, int event);
-extern void PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                                  int weaponAction);
+extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                                    int weaponAction);
 extern void ByteToDir(unsigned int b, float* dir);
 extern void CG_BulletHitEvent(Entity* entity, math::Position3* origin,
                               float* normal, int weapon, int surfType,
@@ -1700,11 +1702,11 @@ extern void CG_SpawnTracer(const math::Position3* pstart,
                            const math::Position3* pend, int ammo);
 extern void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
                            const float* vEnd);
-extern void PostEffectEventBulletHit(void* result, Entity* ent,
-                                     int weaponClass, void* col_desc);
-extern void PostEffectEventScriptCall(void* result, Entity* ent,
-                                      const char* scriptId, bool queue,
-                                      int pakid, bool important);
+extern Handle PostEffectEventBulletHit(const Entity* ent, int weaponClass,
+                                       const CollisionDesc& col_desc);
+extern Handle PostEffectEventScriptCall(Entity* ent, const char* scriptId,
+                                        bool queue, TPakId pakid,
+                                        bool important);
 extern const char** s_barrelTags;
 extern const char** s_gunnerBarrelTags;
 
@@ -1802,7 +1804,7 @@ void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
             v16.coord.v = origin->v;
             v16.normal.v = _mm_setr_ps(v17, v18, v19, 0.0f);
             v16.material = surfType;
-            PostEffectEventBulletHit(nullptr, ent, ammoType, &v16);
+            PostEffectEventBulletHit(ent, ammoType, v16);
             if (entity->client->ps.vehPos != 0)
                 CG_BulletTrajectoryEffects(v21->mHandle.mHandle.mVal, origin,
                                            surfType,
@@ -1819,7 +1821,7 @@ void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
             v16.coord.v = origin->v;
             v16.normal.v = _mm_setr_ps(v17, v18, v19, 0.0f);
             v16.material = surfType;
-            PostEffectEventBulletHit(nullptr, ent, ammoType, &v16);
+            PostEffectEventBulletHit(ent, ammoType, v16);
             void* scr_vehicle = entity->scr_vehicle;
             if (scr_vehicle != nullptr)
             {
@@ -1874,15 +1876,15 @@ void CG_BulletHitClientEvent(unsigned int sourceEntity,
     if (mObject != nullptr && mObject->client != nullptr
         && EntityManager_IsLocalPlayer(EntityManager_sInst, mObject))
     {
-        PostEffectEventScriptCall(nullptr, mObject, "PLAYER_HIT_SUCCESS",
-                                  false, 0 /* PAK_ID_INVALID */, false);
+        PostEffectEventScriptCall(mObject, "PLAYER_HIT_SUCCESS", false,
+                                  (TPakId)0 /* PAK_ID_INVALID */, false);
     }
     CollisionDesc v14;
     v14.coord.v = position->v;
     v14.normal.v = _mm_setr_ps(v15, v16, v17, 0.0f);
     v14.material = surfType;
     Entity* Player = EntityManager_GetPlayer(EntityManager_sInst, currCl);
-    PostEffectEventBulletHit(nullptr, Player, ammoType, &v14);
+    PostEffectEventBulletHit(Player, ammoType, v14);
     CG_BulletTrajectoryEffects(sourceEntity, position, surfType,
                                s_barrelTags[0], weapon);
 }
@@ -2049,8 +2051,8 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
         {
         case 162:
             if (bPredict == 0)
-                PostEffectEventScriptCall(nullptr, entity, "Body_Bushes",
-                                          false, 0, false);
+                PostEffectEventScriptCall(entity, "Body_Bushes", false,
+                                          (TPakId)0, false);
             break;
         case 165:
             if (cg_stanceTemp.integer == 0)
@@ -2103,13 +2105,11 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 if (eventParm != 0 && eventParm < 137)
                 {
                     if (event == 171)
-                        PostEffectEventScriptCall(nullptr, entity,
-                                                  "WEAPON_PICKUP", false, 0,
-                                                  false);
+                        PostEffectEventScriptCall(entity, "WEAPON_PICKUP",
+                                                  false, (TPakId)0, false);
                     else if (event == 173)
-                        PostEffectEventScriptCall(nullptr, entity,
-                                                  "AMMO_PICKUP", false, 0,
-                                                  false);
+                        PostEffectEventScriptCall(entity, "AMMO_PICKUP", false,
+                                                  (TPakId)0, false);
                     Entity* v26 =
                         EntityHandleDb_Get(clientHandle);
                     if (v26 == GetPlayer(currCl))

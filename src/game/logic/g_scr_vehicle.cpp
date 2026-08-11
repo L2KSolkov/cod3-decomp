@@ -4373,7 +4373,7 @@ void VEH_FireGunnerWeapon(Entity* ent, int msec)
             Bullet_Fire_Fake(gunner != nullptr ? gunner : ent, 0.0f, damage,
                              &wp, ent, 0.0f);
         }
-        CG_FireWeapon(attacker, &attacker->s, 187, 0, 0);
+        CG_FireWeapon(attacker, &attacker->s, 187, 0);
         for (int i = 0; i < 11; ++i)
         {
             Entity* occupant = HandleDbToEnt(veh->seats[i].occupant);
@@ -6295,7 +6295,7 @@ void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
     vel[1] = veh->phys.vel.v.m128_f32[1];
     vel[2] = veh->phys.vel.v.m128_f32[2];
     if (sqrtf(vel[0] * vel[0] + vel[1] * vel[1] + vel[2] * vel[2]) < 1.0f
-        && G_TestEntityPosition(pOther, pOther->r.currentOrigin) == nullptr)
+        && G_TestEntityPosition(pOther, &pOther->r.currentOrigin) == nullptr)
         return;
     float delta[3];
     delta[0] = veh->phys.origin.v.m128_f32[0] - veh->phys.prevOrigin.v.m128_f32[0];

@@ -223,7 +223,7 @@ int G_TryPushingEntity(Entity* check, Entity* pusher,
     testPos.v.m128_f32[0] = x;
     testPos.v.m128_f32[1] = y;
     testPos.v.m128_f32[2] = z;
-    if (G_TestEntityPosition(check, testPos) == nullptr)
+    if (G_TestEntityPosition(check, &testPos) == nullptr)
     {
         if (check->s.mGroundEntity.mHandle.mVal
             != pusher->mHandle.mHandle.mVal)
@@ -267,7 +267,7 @@ int G_TryPushingEntity(Entity* check, Entity* pusher,
                     tp.v.m128_f32[0] = tx;
                     tp.v.m128_f32[1] = ty;
                     tp.v.m128_f32[2] = tz;
-                    if (G_TestEntityPosition(check, tp) == nullptr)
+                    if (G_TestEntityPosition(check, &tp) == nullptr)
                     {
                         x = tx;
                         y = ty;
@@ -322,7 +322,7 @@ pushed:
     ++pushed_p;
     return 1;
 still_blocked:
-    if (G_TestEntityPosition(check, check->r.currentOrigin) != nullptr)
+    if (G_TestEntityPosition(check, &check->r.currentOrigin) != nullptr)
         return 0;
     check->s.mGroundEntity.mHandle.mVal = 0;
     return 1;
@@ -3038,7 +3038,9 @@ int G_MoverPush(Entity* pusher, const float* move, const float* amove)
                     && maxs.v.m128_f32[0] < mObject->r.absmax.v.m128_f32[0]
                     && maxs.v.m128_f32[1] < mObject->r.absmax.v.m128_f32[1]
                     && maxs.v.m128_f32[2] < mObject->r.absmax.v.m128_f32[2]
-                    && G_TestEntityPosition(mObject, mObject->r.currentOrigin) == pusher)))
+                    && G_TestEntityPosition(mObject,
+                                            &mObject->r.currentOrigin)
+                           == pusher)))
         {
             moveList[listed++] = entityList[i];
         }

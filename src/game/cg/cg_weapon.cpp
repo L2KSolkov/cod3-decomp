@@ -116,18 +116,18 @@ extern int CG_WeaponFireRecoil();
 extern void CG_WeaponFlash(Entity* entity, int weaponNum,
                            const math::Position3* origin, int bViewFlash);
 extern void CG_EjectWeaponBrass(Entity* entity, int event);
-extern void PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                                  int weaponAction);
-extern void PostEffectEventPointLightFlash(const Entity* ent,
+extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                                    int weaponAction);
+extern Handle PostEffectEventPointLightFlash(const Entity* ent,
+                                             const char* weaponType,
+                                             int weaponAction);
+extern Handle PostEffectEventWeaponFire1st(const Entity* ent,
                                            const char* weaponType,
-                                           int weaponAction);
-extern void PostEffectEventWeaponFire1st(const Entity* ent,
-                                         const char* weaponType,
                                          int weaponAction, int cacheSound,
                                          int barrel);
-extern void PostEffectEventWeaponFire3rd(const Entity* ent,
-                                         const char* weaponType,
-                                         int weaponAction, int cacheSound);
+extern Handle PostEffectEventWeaponFire3rd(const Entity* ent,
+                                           const char* weaponType,
+                                           int weaponAction, int cacheSound);
 extern int MultiplayerMgr_IsLocalPlayer(void* mgr, const Entity* player);
 extern void* MultiplayerMgr_sInst;
 extern int dword_F62960[4 * 1580];
@@ -205,8 +205,9 @@ struct trajectory_t;
 extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                                   math::Position3& result);
 extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
-extern void PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
-                                      bool queue, int pakid, bool important);
+extern Handle PostEffectEventScriptCall(const Entity* ent,
+                                        const char* scriptId, bool queue,
+                                        TPakId pakid, bool important);
 extern float player_breath_hold_time;
 extern float player_breath_snd_delay;
 extern float player_breath_snd_lerp;
@@ -222,11 +223,11 @@ extern void DObjFree(void* obj, int bClearTree);
 extern void mem_heap_free(void* ptr);
 extern void DObj_Dtor(void* obj);
 extern void DObj_OpDelete(void* obj);
-extern void PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                                  int weaponAction);
-extern void PostEffectEventPointLightFlash(const Entity* ent,
-                                           const char* weaponType,
-                                           int weaponAction);
+extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                                    int weaponAction);
+extern Handle PostEffectEventPointLightFlash(const Entity* ent,
+                                             const char* weaponType,
+                                             int weaponAction);
 extern void AngleVectors(const math::Position3* angles, float* forward,
                          float* right, float* up);
 
@@ -838,7 +839,7 @@ int CG_HoldBreathUpdate()
                 Entity* v8 =
                     EntityManager_GetPlayer(EntityManager_sInst, currCl);
                 PostEffectEventScriptCall(v8, "BREATH_HOLD_HEART_BEAT", false,
-                                          -1, false);
+                                          (TPakId)-1, false);
             }
         }
         else
@@ -853,7 +854,7 @@ int CG_HoldBreathUpdate()
                 Entity* v5 =
                     EntityManager_GetPlayer(EntityManager_sInst, currCl);
                 PostEffectEventScriptCall(v5, "BREATH_HOLD_BREATH_IN", false,
-                                          -1, false);
+                                          (TPakId)-1, false);
                 float v6 = player_breath_snd_delay * 1000.0f;
                 int v7 = 1580 * currCl;
                 dword_F641E4[v7] = 2;
@@ -879,7 +880,7 @@ int CG_HoldBreathUpdate()
                         EntityManager_GetPlayer(EntityManager_sInst, v2);
                     PostEffectEventScriptCall(Player,
                                               "BREATH_HOLD_BREATH_OUT", false,
-                                              -1, false);
+                                              (TPakId)-1, false);
                     v2 = currCl;
                     dword_F641E8[1580 * currCl] =
                         (int)(player_breath_snd_delay * 1000.0f);
@@ -889,8 +890,8 @@ int CG_HoldBreathUpdate()
             {
                 Entity* v12 =
                     EntityManager_GetPlayer(EntityManager_sInst, v2);
-                PostEffectEventScriptCall(v12, "BREATH_HOLD_GASP", false, -1,
-                                          false);
+                PostEffectEventScriptCall(v12, "BREATH_HOLD_GASP", false,
+                                          (TPakId)-1, false);
                 v2 = currCl;
             }
         }

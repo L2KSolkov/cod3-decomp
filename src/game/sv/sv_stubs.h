@@ -1084,10 +1084,14 @@ enum clientStateCA_t {
     CA_LOADING = 2,
 };
 
-struct clientStatic_t {
-    int state;  // +0x00 (clientStateCA_t)
+struct cls_t {
+    int keyCatchers;
+    int state;
+    int endgamemenu;
+    int cddialog;
+    int servername[1024 + 32];
 };
 
-extern clientStatic_t cls;  // ?cls@@3UclientStatic_t@@A
+extern cls_t cls;  // ?cls@@3Ucls_t@@A
 extern int   EntityManager_GetNumPlayers(void);
 extern Entity* EntityManager_GetPlayerEntity(int idx);
