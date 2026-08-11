@@ -42,7 +42,7 @@ extern math::Position3* nglProjectPoint(math::Position3* result,
                                         nglScene* scene);
 extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* scene);
 extern nglScene* nglBuildScene;
-extern void* gpBrocAPI;
+void* gpBrocAPI;  // ?gpBrocAPI (scr.o artifact PAXA)
 extern unsigned int BrocAPI_GetEnt(void* api, void* nameStr, unsigned int hash,
                                    void* a3, int a4, int a5);
 extern void* dword_F00ED4;

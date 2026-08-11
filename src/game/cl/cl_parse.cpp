@@ -175,7 +175,7 @@ struct entity_view2 {
     void* client;
 };
 extern entity_view2* EntityManager_GetPlayer(void* inst, int idx);
-extern void* EntityManager_sInst;
+void* EntityManager_sInst;  // ?EntityManager_sInst (cl.o artifact PAXA)
 struct trGlobals_view {
     void* world;
 };

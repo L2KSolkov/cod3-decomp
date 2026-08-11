@@ -1573,6 +1573,7 @@ public:
 };
 
 extern void InplaceAssetBank_Fixup(void* data);  // inplace_xboxr (spline bank)
+SplineMgr* SplineMgr::sInst;  // ?sInst@SplineMgr@@2PAV1@A (game2.o @ 0x12F3EA0)
 
 // ea: 0x504560
 void DecodeSplineGroup(const char* name, unsigned char* data, int size,

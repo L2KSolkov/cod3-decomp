@@ -172,6 +172,42 @@ const char* s_vehicleTypeNames[6];  // ?s_vehicleTypeNames (g.o)
 const char* s_vehicleSubTypeNames[9];  // ?s_vehicleSubTypeNames (g.o)
 const char* sEntryPointHintText[6];    // ?sEntryPointHintText (g.o)
 char* g_scratchpadMem;              // ?g_scratchpadMem@@3PADA (game.o @ 0xEA81C0)
+// --- sInst / singleton data sweep ---
+void* AudioBankMgr_sInst;        // cl.o artifact (PAXA)
+void* AnimBankManager_sInst;
+void* CurveManager_sInst;
+void* MultiplayerMgr_sInst;
+void* SmokeGrenadeMgr_sInst;
+void* SoundMediaMgr_sInst;
+void* MusicMgr_sInst;
+void* PadAliasMgr_sInst;
+void* STBManager_sInst;
+void* GdbFileManager_sInst;
+void* BinFileManager_sInst;
+void* DbTablesetMgr_sInst;
+void* DynamicDecalMgr_sInst;
+void* SceneManager_sInst;
+void* StreamZoneManager_sInst;
+void* TestFPS_sInst;
+void* TimerRenderBars_sInst;
+void* ScriptEventHandler_sAllocator;
+void* EntityNotifySet_sAllocator;
+void* RumbleEffectInstance_sAllocator;
+void* CTitleFontRenderer_vftable;
+void* cgCvarTable;
+void* cvarTable;
+void* cgsGlobal_media_whiteShader;
+void* cgsGlobal_media_tracerShader;
+void* cdscratch_vertex_format;
+void* gShotProf;                 // ?gShotProf (g.o)
+void* gBrocHeap;                 // ?gBrocHeap@@3PAVae_heap@@A (scr.o)
+PoolAllocator* gBrocPool;                    // ?gBrocPool@@3PAVPoolAllocator@@A (scr.o @ 0x132A0E4)
+PoolAllocator* gAeThreadBackupStackAllocator;  // ?gAeThreadBackupStackAllocator@@3PAVPoolAllocator@@A (core.o)
+ConfigStringManager* ConfigStringManager::sInst;  // ?sInst@ConfigStringManager@@0PAV1@A
+TestFPS* TestFPS::sInst;                     // ?sInst@TestFPS@@2PAV1@A
+TimerRenderBars TimerRenderBars::sInst;      // ?sInst@TimerRenderBars@@0V1@A
+TaskSys* TaskSys::sInst;                     // ?sInst@TaskSys@@0V1@A
+void* DynamicDecalMgr::sInst;                // ?sInst@DynamicDecalMgr@@2PAV1@A
 ServerTime ServerTime::sInst;  // ?sInst@ServerTime@@0V1@A (game.o)
 struct ServerTime_s {
     unsigned int mNumTicksElapsed;

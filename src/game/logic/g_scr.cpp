@@ -143,6 +143,7 @@ public:
     static AnimBankManager* sInst;  // 0xF25A34
     AnimBank* GetBank(TPakId pakId);
 };
+AnimBankManager* AnimBankManager::sInst;  // ?sInst@AnimBankManager@@2PAV1@A (anim.o @ 0x1314F34)
 
 // ============================================================================
 // saveField_t - script save fields (8 bytes) - verified against IDA
