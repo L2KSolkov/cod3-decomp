@@ -88,6 +88,9 @@ struct phys_static_memory_pool {
 // (physics.o data)
 phys_static_memory_pool<vehicle_rb_parameter, 10> g_vehicle_rb_parameters;
 
+// ?s_vehicleInfos@@3PAPAUvehicle_info_t@@A (g.o data @ 0xEA7638, 64 pointers)
+vehicle_info_t* s_vehicleInfos[64] = {};
+
 // g.o / physics.o vehicle data
 vmCvar_t g_vehicleDebug;         // ?g_vehicleDebug@@3UvmCvar_t@@A (g.o)
 vmCvar_t g_vehicleDrawPath;      // ?g_vehicleDrawPath@@3UvmCvar_t@@A (g.o)

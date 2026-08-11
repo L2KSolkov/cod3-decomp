@@ -142,7 +142,7 @@ extern int timeClientFrame;
 extern int gFirstCamera;
 extern int gScreenshotInProgress;
 extern int unk_F6A290;
-extern int com_frameTime;
+int com_frameTime = 0;   // ?com_frameTime@@3HA (core.o @ 0xEF2828)
 extern int com_frameNumber;
 extern float g_screendelta;
 extern int g_bDObjInited;
@@ -161,7 +161,8 @@ extern cvar_t* com_timescale;
 extern cvar_t* com_fixedtime;
 extern cvar_t* com_viewlog;
 extern cvar_t* com_speeds;
-extern cvar_t* com_sv_running;
+int cvar_modifiedFlags = 0;  // ?cvar_modifiedFlags@@3HA (core.o @ 0xEF8194)
+cvar_t* com_sv_running = NULL;  // ?com_sv_running@@3PAUcvar_t@@A (core.o @ 0xEF6A90)
 extern cvar_t* com_cl_running;
 extern cvar_t* cl_frameadvance;
 extern cvar_t* cl_capturemovie;

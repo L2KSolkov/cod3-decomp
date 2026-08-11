@@ -28,7 +28,7 @@ extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
 extern const char* const defaultFileName;
 extern int com_frameTime;
-extern int old_com_frameTime;
+int old_com_frameTime = 0;  // ?old_com_frameTime@@3HA (cl.o @ 0xF0D1B4)
 extern int frame_msec;
 extern int anykeydown;
 extern int dword_F170F8;

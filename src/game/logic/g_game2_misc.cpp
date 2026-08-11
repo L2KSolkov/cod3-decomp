@@ -2453,8 +2453,15 @@ extern void g_LocationalTrace(trace_t* results,
                               const collision_context_t* context,
                               unsigned char* priorityMap,
                               float coneAngleTangent);
-extern unsigned char bulletPriorityMap[16];
-extern unsigned char riflePriorityMap[16];
+// ?bulletPriorityMap@@3PAEA / ?riflePriorityMap@@3PAEA (g.o @ 0xDD55D0)
+unsigned char bulletPriorityMap[20] = {
+    1, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    3, 3, 3, 3, 3, 3, 3, 3, 0, 0,
+};
+unsigned char riflePriorityMap[20] = {
+    1, 9, 9, 9, 8, 7, 6, 6, 6, 6,
+    5, 5, 4, 4, 4, 4, 3, 3, 0, 0,
+};
 extern void* collision_context_vftable;  // ??_7collision_context_t@@6B@
 
 Entity* _Return_MF_UnderCrossHair()
