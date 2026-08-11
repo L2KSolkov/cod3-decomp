@@ -137,13 +137,9 @@ public:
     int  locked_port;        // +0x?
 };
 
-struct CheckpointMenu {
-    static void RestartAtCheckpoint(int num);   // ?RestartAtCheckpoint@CheckpointMenu@@YAXH@Z (game.o 0x6392D0)
-    static void RenderCheckpointMenu();         // ?RenderCheckpointMenu@CheckpointMenu@@YAXXZ (game.o 0x639370)
-};
-
 // ea: 0x006392D0
-void CheckpointMenu::RestartAtCheckpoint(int num)
+namespace CheckpointMenu {
+void RestartAtCheckpoint(int num)
 {
     if (Cvar_Get("letterbox_enabled", "0", 0)->integer != 0)
     {
@@ -165,6 +161,7 @@ void CheckpointMenu::RestartAtCheckpoint(int num)
         }
     }
 }
+}  // namespace CheckpointMenu
 
 // ============================================================================
 // CheckpointMgr::SaveCheckpoint - ea: 0x631560 (checkpointmgr.cpp)
@@ -527,7 +524,8 @@ LABEL_31:
 }
 
 // ea: 0x00639370
-void CheckpointMenu::RenderCheckpointMenu()
+namespace CheckpointMenu {
+void RenderCheckpointMenu()
 {
     const PakInfoNode* PakInfo =
         PakManager_GetPakInfo(PakManager_sInst, CurPakId());
@@ -581,7 +579,7 @@ void CheckpointMenu::RenderCheckpointMenu()
                              locked_port, controller::UPBUTTON) != 0)
                 {
                     CheckpointMenu_gCheckpointMenuActive = false;
-                    CheckpointMenu::RestartAtCheckpoint(gCurCheckpoint);
+                    RestartAtCheckpoint(gCurCheckpoint);
                 }
             }
             else
@@ -591,6 +589,7 @@ void CheckpointMenu::RenderCheckpointMenu()
         }
     }
 }
+}  // namespace CheckpointMenu
 
 
 template <typename T>

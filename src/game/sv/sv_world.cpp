@@ -76,7 +76,7 @@ extern int           CM_ClipSightTraceToEntities(sightclip_t* clip, const collis
 extern int           SightTrace(int oldHitNum, const math::Position3* start, const math::Position3* end,
                                 const math::Position3* mins, const math::Position3* maxs, DCGSet* model,
                                 const math::Position3* origin, int brushmask, int capsule, void* sphere);
-extern int           CM_PointContents(const math::Position3* p, DCGSet* model);
+extern int           CM_PointContents(const math::Position3& p, DCGSet* model);
 extern int           CM_AreaEntities(const math::Position3* mins, const math::Position3* maxs,
                                      DbLinkedHandle<EntityHandleDb, Entity>* entityList, int maxcount, int contentmask);
 extern DCGSet*       TempBoxModel(const math::Position3& mins,
@@ -800,7 +800,7 @@ int SV_SightTraceToEntity(const math::Position3* start, const math::Position3* m
 int SV_PointContents(const math::Position3& p, const collision_context_t& context) {
     DbLinkedHandle<EntityHandleDb, Entity> touch[256];
     memset(touch, 0, sizeof(touch));
-    int contents = CM_PointContents(&p, NULL);
+    int contents = CM_PointContents(p, NULL);
     int num = CM_AreaEntities(&p, &p, touch, 256, context.contentmask);
     for (int i = 0; i < num; ++i) {
         unsigned int mVal = touch[i].mHandle.mVal;

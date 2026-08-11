@@ -660,7 +660,8 @@ static_assert(sizeof(DbQueryResults) == 0x20C, "DbQueryResults size mismatch");
 // ============================================================================
 // ConfigString types (core.o configstring.cpp)
 // ============================================================================
-struct ConfigString {
+class ConfigString {
+public:
     InplaceString mName;          // +0x00
     unsigned int  mNumKeyValues;  // +0x04
     unsigned char mStringMap[8];  // +0x08 (InplaceTree<InplaceString,InplaceString>)

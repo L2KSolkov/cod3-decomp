@@ -4190,8 +4190,8 @@ bool SightTrace(traceWork_t* tw, const math::Position3& p0,
 }
 
 // ea: 0x006340A0 (DCGSet model variant, returns hit num)
-extern unsigned int SightTraceThroughLeaf(traceWork_t* tw,
-                                          const DCGSet* set);  // game.o 0x624070
+extern int SightTraceThroughLeaf(traceWork_t* tw,
+                                 const DCGSet* set);  // game.o 0x624070
 
 int SightTrace(int oldHitNum, const math::Position3* start,
                const math::Position3* end, const math::Position3* mins,
@@ -8157,7 +8157,7 @@ void TestInLeaf(traceWork_t* tw, const DCGSet* set)
 }
 
 // ea: 0x00624070
-unsigned int SightTraceThroughLeaf(traceWork_t* tw, const DCGSet* set)
+int SightTraceThroughLeaf(traceWork_t* tw, const DCGSet* set)
 {
     if (set == nullptr)
         return 0;
@@ -8727,7 +8727,8 @@ void DCGBankManager::DecodeDCGBank(const char* name, unsigned char* data,
     }
 }
 
-struct GdbFile {
+class GdbFile {
+public:
     void* mLayout;   // +0x00 (InplaceTree<uint,uint>*)
     void* mRecords;  // +0x04 (InplaceVector<GdbFileSet::Value>*)
 };
@@ -8740,8 +8741,7 @@ private:
 public:
     void DecodeBank(const char* name, void* data, int size, TPakId pakId,
                     void* pakFile);  // ?DecodeBank@GdbFileManager@@QAEXPBDPAEHW4TPakId@@PAVPakFile@@@Z (game.o 0x629940)
-    GdbFile* GetGdbFile(GdbFile* result, TPakId pakId, const char* name,
-                        const char* type);
+    GdbFile GetGdbFile(TPakId pakId, const char* name, const char* type);
         // ?GetGdbFile@GdbFileManager@@QAE?AVGdbFile@@W4TPakId@@PBD1@Z (game.o 0x638750)
     static GdbFileManager* sInst;  // ?sInst@GdbFileManager@@2PAV1@A @ 0xF4F434
 };
@@ -8957,7 +8957,7 @@ extern void traverse_rtree(const math::Position3& p0,
 // CM_PointContents - ea: 0x632500 (cm_test.cpp)
 // ============================================================================
 // ea: 0x00632500
-int CM_PointContents(const math::Position3* p, DCGSet* model)
+int CM_PointContents(const math::Position3& p, DCGSet* model)
 {
     if (g_bspTree->mNodes.mSize == 0)
     {
@@ -9005,7 +9005,7 @@ int CM_PointContents(const math::Position3* p, DCGSet* model)
                                 obj->center[2], 0.0f),
                     _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
                                 obj->box_radius[2], 0.0f));
-                if (TestPointInBox(*p, bmin, bmax))
+                if (TestPointInBox(p, bmin, bmax))
                     contents |= obj->cflags;
             }
         }
@@ -9060,7 +9060,7 @@ int CM_PointContents(const math::Position3* p, DCGSet* model)
                 const cdlPlane* sides =
                     &((const cdlPlane*)model->brush_sides_m_elements)
                         [first_side];
-                if (TestPointInBrush(*p, bmin, bmax, sides,
+                if (TestPointInBrush(p, bmin, bmax, sides,
                                      (unsigned int)brush->num_sides))
                     contents |= obj->cflags;
             }
@@ -9070,8 +9070,8 @@ int CM_PointContents(const math::Position3* p, DCGSet* model)
     }
 
     math::Position3 pos;
-    pos.v = _mm_setr_ps(p->v.m128_f32[0], p->v.m128_f32[1],
-                        p->v.m128_f32[2], 0.0f);
+    pos.v = _mm_setr_ps(p.v.m128_f32[0], p.v.m128_f32[1],
+                        p.v.m128_f32[2], 0.0f);
     CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
     for (int i = 0; i < mgr->mCount; ++i)
     {
@@ -9218,7 +9218,7 @@ int CM_TransformedPointContents(const math::Position3& p, DCGSet* model,
         local[1] = v11;
         local[2] = v8;
     }
-    return CM_PointContents((const math::Position3*)local, model);
+    return CM_PointContents(*(const math::Position3*)local, model);
 }
 
 // ============================================================================
@@ -9728,9 +9728,10 @@ extern void** InplaceTree_Find_GdbFileRecords(
     // InplaceTree<InplaceString,InplaceVector<GdbFileSet::Value> const *>::Find<char const *> @ 0x41672B
 
 // ea: 0x00638750
-GdbFile* GdbFileManager::GetGdbFile(GdbFile* result, TPakId pakId,
-                                    const char* name, const char* type)
+GdbFile GdbFileManager::GetGdbFile(TPakId pakId, const char* name,
+                                   const char* type)
 {
+    GdbFile result;
     IVPointer<GdbFileSet> xm;
     InplaceAssetBankSet_Find_GdbFileBank(this, &xm, name, type, 0, nullptr);
     ValidatePakId((TPakId)xm.mPakId);
@@ -9743,13 +9744,13 @@ GdbFile* GdbFileManager::GetGdbFile(GdbFile* result, TPakId pakId,
         ValidatePakId((TPakId)xm.mPakId);
         if (v7 != nullptr)
         {
-            result->mLayout = (char*)mValue + 0x04;
-            result->mRecords = *v7;
+            result.mLayout = (char*)mValue + 0x04;
+            result.mRecords = *v7;
             return result;
         }
     }
-    result->mLayout = nullptr;
-    result->mRecords = nullptr;
+    result.mLayout = nullptr;
+    result.mRecords = nullptr;
     return result;
 }
 
@@ -9759,11 +9760,12 @@ void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId, const char* name,
                                 const char* type)
 {
     static GdbFile s_result;
-    return ((GdbFileManager*)mgr)->GetGdbFile(&s_result, pakId, name, type);
+    s_result = ((GdbFileManager*)mgr)->GetGdbFile(pakId, name, type);
+    return &s_result;
 }
 
 // ea: 0x00638720
-void DecodeGDB(const char* name, void* data, int size, TPakId pakId,
+void DecodeGDB(const char* name, unsigned char* data, int size, TPakId pakId,
                PakFile* pakFile)
 {
     InplaceAssetBank_GdbFileSet_Fixup(data);

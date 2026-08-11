@@ -2834,7 +2834,7 @@ public:
                          bool async);  // ?LoadWbkInternal@AudioBankMgr@@AAEXAAUWbkEntry@1@PBDW4ELanguage@@_N@Z (game.o 0x62BD50)
     void FreeWbk(const tlFixedString& name, bool async);  // ?FreeWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x62BE30)
     void LoadWbk(const tlFixedString& name, bool async);  // ?LoadWbk@AudioBankMgr@@QAEXABVtlFixedString@@_N@Z (game.o 0x639630)
-protected:
+private:
     virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@AudioBankMgr@@EAEXW4TPakId@@@Z (game.o 0x639550)
 public:
     void RegisterWbk(const tlFixedString& name, const char* path,

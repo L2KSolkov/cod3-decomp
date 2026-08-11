@@ -1426,7 +1426,8 @@ inline Entity* HandleDbToEnt(const DbLinkedHandle<EntityHandleDb, Entity>& h) {
 }
 
 // Forward decls for config-string parsing (full types in core_systems.h)
-struct ConfigString {
+class ConfigString {
+public:
     InplaceString mName;          // +0x00
     unsigned int  mNumKeyValues;  // +0x04
     InplaceTree<InplaceString, InplaceString> mStringMap;  // +0x08
@@ -2621,7 +2622,8 @@ struct rtree_root_t {
     int             nsimd_levels;         // +0x2C
 };
 
-struct CGBank {
+class CGBank {
+public:
     math::Position3 min;      // +0x00
     math::Position3 max;      // +0x10
     math::Position3 center;   // +0x20
@@ -2644,7 +2646,8 @@ struct CGBank {
     void*   rtree_data;       // +0xC4
 };
 static_assert(sizeof(CGBank) == 0xD0, "CGBank size mismatch");
-struct CGBankManager : public AssetBankSet {
+class CGBankManager : public AssetBankSet {
+public:
     static void* sInst;  // ?sInst@CGBankManager@@2PAV1@A
     unsigned int mDebugRenderMode;  // +0x04 (bitmask; verified vs DebugRender)
     float        scale;             // +0x08 (perf graph zoom; verified vs ZoomIn)
@@ -2654,8 +2657,11 @@ struct CGBankManager : public AssetBankSet {
     CGBankManager();        // ??0CGBankManager@@QAE@XZ (game.o 0x6492D0)
     virtual ~CGBankManager();  // ??1CGBankManager@@UAE@XZ (game.o 0x611B70)
     void UnloadAll();     // ?UnloadAll@CGBankManager@@QAEXXZ (game.o)
+private:
     void AddBank(TPakId pakId, CGBank* bank);   // ?AddBank@CGBankManager@@AAEXW4TPakId@@PAVCGBank@@@Z (game.o 0x61FE30)
-    void UnloadBank(TPakId pakId);              // ?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FE60)
+protected:
+    virtual void UnloadBank(TPakId pakId);      // ?UnloadBank@CGBankManager@@EAEXW4TPakId@@@Z (game.o 0x61FE60)
+public:
     void DecodeCGBank(const char* name, unsigned char* data, int size,
                       TPakId pakId);            // ?DecodeCGBank@CGBankManager@@QAEXPBDPAEHW4TPakId@@@Z (game.o 0x629F30)
     void DebugRender();                          // ?DebugRender@CGBankManager@@QAEXXZ (game.o 0x646700)
@@ -2770,8 +2776,8 @@ void TestBoxInBox(traceWork_t* tw, const math::Position3& bmin,
                   const math::Position3& bmax,
                   unsigned int cflags);  // game.o 0x61D5C0
 void TestInLeaf(traceWork_t* tw, const DCGSet* set);  // game.o 0x623D40
-unsigned int SightTraceThroughLeaf(traceWork_t* tw,
-                                   const DCGSet* set);  // game.o 0x624070
+int SightTraceThroughLeaf(traceWork_t* tw,
+                          const DCGSet* set);  // game.o 0x624070
 void TracePointThroughLeaf(traceWork_t* tw, const DCGSet* set);  // game.o 0x622FD0
 void TraceSphereThroughLeaf(traceWork_t* tw, const DCGSet* set);  // game.o 0x622C80
 void TestBoundingBoxInCapsule(traceWork_t* tw);  // game.o 0x623320
@@ -3060,7 +3066,7 @@ int   G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* cro
 void  Client_Touch(Entity* pSelf, Entity* pOther);  // g.o 0x4671F0
 void  G_DebugCircle2Ex(const float* center, float radius, const float* dir,
                        const float* color, int depthTest, int duration);  // g.o 0x4572F0
-int   CM_PointContents(const math::Position3* p, DCGSet* model);  // game.o 0x632500
+int   CM_PointContents(const math::Position3& p, DCGSet* model);  // game.o 0x632500
 int   GetEntityTouchTriggerType(Entity* pEnt);  // g.o 0x448BE0
 int   g_EntityContactCapsule(const math::Position3* mins, const math::Position3* maxs,
                              const Entity* ent);  // g.o 0x450AC0

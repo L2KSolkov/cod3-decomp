@@ -554,7 +554,7 @@ extern void Trace(trace_t* results, const math::Position3* start,
                   const math::Position3* maxs, void* model, int brushmask,
                   int capsule, void* sphere);
 class DCGSet;
-extern int CM_PointContents(const math::Position3* p, DCGSet* model);
+extern int CM_PointContents(const math::Position3& p, DCGSet* model);
 extern int CM_TransformedPointContents(const math::Position3* p, DCGSet* model,
                                        const math::Position3* origin,
                                        const math::Position3* angles);
@@ -628,7 +628,7 @@ void CG_TraceCapsule(trace_t* result, const math::Position3* start,
 int CG_PointContents(const math::Position3* point,
                      collision_context_t* context)
 {
-    int v17 = CM_PointContents(point, nullptr);
+    int v17 = CM_PointContents(*point, nullptr);
     for (int i = 0; i < cg_numSolidEntities; ++i)
     {
         unsigned int v4 = cg_solidEntities[i] & 0xFFF;

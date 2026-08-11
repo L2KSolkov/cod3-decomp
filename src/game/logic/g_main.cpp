@@ -2883,7 +2883,7 @@ int G_CheckPointInsideTriggerMount(Entity* pActivator, float* vStart, int* crouc
     p.v.m128_f32[0] = vStart[0];
     p.v.m128_f32[1] = vStart[1];
     p.v.m128_f32[2] = vStart[2];
-    int contents = CM_PointContents(&p, nullptr);
+    int contents = CM_PointContents(p, nullptr);
     if ((0x400000 & contents) != 0)
     {
         if (crouch != nullptr)

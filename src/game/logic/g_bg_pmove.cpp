@@ -10442,8 +10442,8 @@ struct GdbFile {
 class GdbFileManager {
 public:
     static GdbFileManager* sInst;  // ?sInst@GdbFileManager@@2PAV1@A @ 0xF4F434
-    GdbFile* GetGdbFile(GdbFile* result, TPakId pakId, const char* name,
-                        const char* type);  // game.o 0x638750
+    GdbFile GetGdbFile(TPakId pakId, const char* name,
+                       const char* type);  // game.o 0x638750
 };
 
 // ============================================================================
@@ -10672,7 +10672,7 @@ void ParseWeaponConfigString(const char* name, const ConfigString* cfgstr)
         sprintf(buf, "%s_%s", pWeap->szInternalName, *namea);
         *pDecals = 0;
         GdbFile gdb;
-        GdbFileManager::sInst->GetGdbFile(&gdb, pakId, buf, "decal");
+        gdb = GdbFileManager::sInst->GetGdbFile(pakId, buf, "decal");
         void* records = gdb.mRecords;
         if (records != nullptr)
         {
@@ -10707,8 +10707,8 @@ void ParseWeaponConfigString(const char* name, const ConfigString* cfgstr)
         else
         {
             GdbFile gdb2;
-            GdbFileManager::sInst->GetGdbFile(&gdb2, pakId, "m1garand_wood",
-                                              "decal");
+            gdb2 = GdbFileManager::sInst->GetGdbFile(pakId, "m1garand_wood",
+                                                     "decal");
             if (gdb2.mRecords != nullptr)
                 *pDecals = *(void***)((char*)gdb2.mRecords + 4);
         }
