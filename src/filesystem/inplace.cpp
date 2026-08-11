@@ -9,7 +9,8 @@
 
 // Forward
 namespace AeAssert {
-    extern int gCurrentAuthor;
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    extern ECoderId gCurrentAuthor;
     extern const char* gCurrentFile;
     extern int gCurrentLine;
     extern const char* gCurrentExpr;
@@ -69,7 +70,7 @@ void PtrFixupTable::Fixup(const void* basePtr) {
     mList = (uint32_t*)((uint8_t*)mList + (uintptr_t)basePtr);
 
     if (mSize >= 10000000) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PtrFixupTable.cpp";
         AeAssert::gCurrentLine = 36;
         AeAssert::gCurrentExpr = "mSize < 10000000";
@@ -79,7 +80,7 @@ void PtrFixupTable::Fixup(const void* basePtr) {
 
     int nextBits = (int)*mList;
     if (nextBits >= 20) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PtrFixupTable.cpp";
         AeAssert::gCurrentLine = 48;
         AeAssert::gCurrentExpr = "nNextBits < 20";
@@ -90,7 +91,7 @@ void PtrFixupTable::Fixup(const void* basePtr) {
     for (uint32_t i = 1; i < mSize; ++i) {
         uint32_t val = mList[i];
         if (val >= 0x5000000) {
-            AeAssert::gCurrentAuthor = 0;
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "PtrFixupTable.cpp";
             AeAssert::gCurrentLine = 53;
             AeAssert::gCurrentExpr = "val < 0x5000000";
@@ -110,7 +111,7 @@ static int   isInit_0 = 0;
 
 char* GetNullBuffer(int size) {
     if (size > 32) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "InplaceTree.cpp";
         AeAssert::gCurrentLine = 14;
         AeAssert::gCurrentExpr = nullptr;

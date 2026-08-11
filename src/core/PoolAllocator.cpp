@@ -23,7 +23,8 @@ extern void  mem_heap_free(void* ptr);
 
 // AE assertion system (extern — defined in ae_assert.cpp)
 namespace AeAssert {
-    extern int   gCurrentAuthor;
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    extern ECoderId gCurrentAuthor;
     extern const char* gCurrentFile;
     extern int   gCurrentLine;
     extern const char* gCurrentExpr;
@@ -58,7 +59,7 @@ PoolAllocator::BlockPool::BlockPool(
     // Alignment check
     unsigned int remainder = entrySize % mAlignment;
     if (remainder) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PoolAllocator.cpp";
         AeAssert::gCurrentLine = 33;
         AeAssert::gCurrentExpr = 0;
@@ -128,7 +129,7 @@ PoolAllocator::BlockPool::Block* PoolAllocator::BlockPool::Pop() {
 
     // Assert: mNumRemaining <= mCapacity
     if (newRemaining > mCapacity) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PoolAllocator.cpp";
         AeAssert::gCurrentLine = 137;
         AeAssert::gCurrentExpr = "mNumRemaining <= mCapacity";
@@ -152,7 +153,7 @@ PoolAllocator::BlockPool::Block* PoolAllocator::BlockPool::Pop() {
 void PoolAllocator::BlockPool::Push(Block* ptr) {
     // Validate pointer is within this pool's block range
     if ((char*)ptr < mBlockPtr || (char*)ptr > (mBlockPtr + mCapacity * mEntrySize)) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PoolAllocator.cpp";
         AeAssert::gCurrentLine = 157;
         AeAssert::gCurrentExpr =
@@ -169,7 +170,7 @@ void PoolAllocator::BlockPool::Push(Block* ptr) {
     mNumRemaining = newRemaining;
 
     if (newRemaining > mCapacity) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "PoolAllocator.cpp";
         AeAssert::gCurrentLine = 183;
         AeAssert::gCurrentExpr = "mNumRemaining <= mCapacity";
@@ -202,7 +203,7 @@ PoolAllocator::PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList, unsi
 
         // Assert: pools must be sorted by block size ascending
         if (cfg.blockSize <= sizeLastPool) {
-            AeAssert::gCurrentAuthor = 0;
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "PoolAllocator.cpp";
             AeAssert::gCurrentLine = 272;
             AeAssert::gCurrentExpr = "cfg.blockSize > size_last_pool";
@@ -224,7 +225,7 @@ PoolAllocator::PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList, unsi
             mPoolArray.m_elements[mPoolArray.m_size] = pool;
             ++mPoolArray.m_size;
         } else {
-            AeAssert::gCurrentAuthor = 0;
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "c:/cod/code/ae\\core/ae_array.h";
             AeAssert::gCurrentLine = 174;
             AeAssert::gCurrentExpr = "m_size < _CAPACITY";
@@ -238,7 +239,7 @@ PoolAllocator::PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList, unsi
             mPoolSizes.m_elements[mPoolSizes.m_size] = (short)cfg.blockSize;
             ++mPoolSizes.m_size;
         } else {
-            AeAssert::gCurrentAuthor = 0;
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
             AeAssert::gCurrentFile = "c:/cod/code/ae\\core/ae_array.h";
             AeAssert::gCurrentLine = 174;
             AeAssert::gCurrentExpr = "m_size < _CAPACITY";

@@ -17,8 +17,19 @@
 
 namespace AeAssert {
 
+// Matches the binary's enum-typed global (?gCurrentAuthor@AeAssert@@3W4ECoderId@1@A,
+// core_xboxr:AeAssert.o) - declaring/defining as `int` mangles to 3HA and
+// leaves every reference unresolved.
+enum ECoderId {
+    COD3 = 0,
+    ARO = 1,
+    CD = 2,
+    JRS = 3,
+    JSV = 10,
+};
+
 // Global state
-int gCurrentAuthor = 0;
+ECoderId gCurrentAuthor = COD3;
 const char* gCurrentFile = "";
 int gCurrentLine = 0;
 const char* gCurrentExpr = "";

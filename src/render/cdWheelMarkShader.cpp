@@ -14,7 +14,8 @@
 #include <intrin.h>
 
 namespace AeAssert {
-    extern int   gCurrentAuthor;
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    extern ECoderId gCurrentAuthor;
     extern const char* gCurrentFile;
     extern int   gCurrentLine;
     extern const char* gCurrentExpr;
@@ -33,7 +34,7 @@ cdWheelMarkShaderMat::cdWheelMarkShaderMat() {
         this->Shader = v2;
         return;
     }
-    AeAssert::gCurrentAuthor = 0;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "cdWheelMarkShader.cpp";
     AeAssert::gCurrentLine = 20;
     AeAssert::gCurrentExpr = "gCDWheelMarkShader";

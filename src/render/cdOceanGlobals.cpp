@@ -17,7 +17,8 @@
 #include <intrin.h>
 
 namespace AeAssert {
-    extern int   gCurrentAuthor;
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    extern ECoderId gCurrentAuthor;
     extern const char* gCurrentFile;
     extern int   gCurrentLine;
     extern const char* gCurrentExpr;
@@ -63,7 +64,7 @@ void WaveBank::SetDefaults() {
 // ============================================================================
 void SetSeaLevel(int bank, float seaLevel) {
     if (bank >= 4) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
         AeAssert::gCurrentLine = 14;
         AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
@@ -79,7 +80,7 @@ void SetSeaLevel(int bank, float seaLevel) {
 // ============================================================================
 void SetWaveHeading(int bank, int wave, float heading) {
     if (bank >= 4) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
         AeAssert::gCurrentLine = 98;
         AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
@@ -95,7 +96,7 @@ void SetWaveHeading(int bank, int wave, float heading) {
 // ============================================================================
 void SetWaveDistance(int bank, int wave, float distance) {
     if (bank >= 4) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
         AeAssert::gCurrentLine = 104;
         AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
@@ -111,7 +112,7 @@ void SetWaveDistance(int bank, int wave, float distance) {
 // ============================================================================
 void SetWaveWavelength(int bank, int wave, float wavelength) {
     if (bank >= 4) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
         AeAssert::gCurrentLine = 110;
         AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
@@ -127,7 +128,7 @@ void SetWaveWavelength(int bank, int wave, float wavelength) {
 // ============================================================================
 void SetWaveAmplitude(int bank, int wave, float amplitude) {
     if (bank >= 4) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
         AeAssert::gCurrentLine = 116;
         AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
@@ -143,7 +144,7 @@ void SetWaveAmplitude(int bank, int wave, float amplitude) {
 // ============================================================================
 void SetWavePhase(int bank, int wave, float phase) {
     if (bank >= 4) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
         AeAssert::gCurrentLine = 122;
         AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";
@@ -159,7 +160,7 @@ void SetWavePhase(int bank, int wave, float phase) {
 // ============================================================================
 void SetWaveTimescale(int bank, int wave, float timescale) {
     if (bank >= 4) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "cdOceanGlobals.cpp";
         AeAssert::gCurrentLine = 128;
         AeAssert::gCurrentExpr = "(bank >= 0) && (bank < NUM_BANKS)";

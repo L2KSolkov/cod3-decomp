@@ -290,3 +290,21 @@ inline void AnglesToRight(const float* const angles,
     right[1] = -cr * cy;
     right[2] = -sr;
 }
+
+// ea: 0x51A630 (game2.o COMDAT) - c:\cod\code\game\com_math.h:682
+// Binary assert: "beg <= end" with message "Beg must be less than end."
+template <typename T>
+inline T ClampRange(const T& in, const T& beg, const T& end)
+{
+    if (end < beg)
+    {
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Beg must be less than end."))
+            __debugbreak();
+    }
+    if (beg > in)
+        return beg;
+    if (in <= end)
+        return in;
+    return end;
+}

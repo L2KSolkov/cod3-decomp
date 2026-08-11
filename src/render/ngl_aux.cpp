@@ -33,10 +33,11 @@ const tlFixedString* GetKey(const nglTexture* t);
 const tlFixedString* GetKey(const nglFont* f);
 
 namespace AeAssert {
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
 extern int gCurrentLine;
 extern const char* gCurrentFile;
 extern const char* gCurrentExpr;
-extern int gCurrentAuthor;
+extern ECoderId gCurrentAuthor;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 }
@@ -110,7 +111,7 @@ void* nglMeshAllocFnStub(unsigned int a, unsigned int b, unsigned int c) {
     (void)a;
     (void)b;
     (void)c;
-    AeAssert::gCurrentAuthor = 0;
+    AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
     AeAssert::gCurrentFile = "ngl_aux.cpp";
     AeAssert::gCurrentLine = 7;
     AeAssert::gCurrentExpr = "0";

@@ -6,6 +6,8 @@
 #include "cl_input.h"
 #include "cl_console.h"
 
+#include "core/math_types.h"
+
 #include <ctype.h>
 #include <math.h>
 #include <string.h>
@@ -546,7 +548,6 @@ extern bool GamePause_IsGamePaused(int client);
 extern void* EntityManager_GetPlayer3(void* inst, int idx);
 extern void* EntityManager_sInst3;
 extern char ClampChar(int i);
-template <typename T> T ClampRange(T* in, T* beg, T* end);
 
 // ea: 0x530AE0
 void CL_GamepadMove(usercmd_s* cmd)
@@ -610,7 +611,7 @@ void CL_GamepadMove(usercmd_s* cmd)
         float v10 = (yaw == 0.0f && v5 == 0.0f) ? -accelSensitivityY : accelSensitivityY;
         cl[currCl].cgameCurrentAimAccel += v10;
         float zero = 0.0f;
-        v11 = ClampRange(&cl[v9].cgameCurrentAimAccel, &zero, &accel_time_0);
+        v11 = ClampRange(cl[v9].cgameCurrentAimAccel, zero, accel_time_0);
         moveScale = v11;
         v12 = (moveScale / accel_time_0) * accel_scale;
     }
@@ -624,7 +625,7 @@ void CL_GamepadMove(usercmd_s* cmd)
         float v14 = (yaw == 0.0f && v5 == 0.0f) ? -accelSensitivityY : accelSensitivityY;
         cl[currCl].cgameCurrentAimAccel += v14;
         float zero = 0.0f;
-        v11 = ClampRange(&cl[v9].cgameCurrentAimAccel, &zero, &accel_time);
+        v11 = ClampRange(cl[v9].cgameCurrentAimAccel, zero, accel_time);
         moveScale = v11;
         v12 = moveScale / accel_time;
     }

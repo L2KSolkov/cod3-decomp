@@ -1677,7 +1677,6 @@ void SplineMgr::UnloadBank(int pakId)
 // ============================================================================
 extern float sTime0, sTime1, sTime2, sTime3, sTime4;
 extern float sOpacity2, sOpacity3;
-extern float ClampRange(const float* in, const float* beg, const float* end);
 
 // ea: 0x4FA0E0
 float SmokeGrenadeMgr::CalcOpacity(const SmokeGrenadeInfo& info) const
@@ -1690,7 +1689,7 @@ float SmokeGrenadeMgr::CalcOpacity(const SmokeGrenadeInfo& info) const
         float in = (v2 - sTime0) / (sTime1 - sTime0);
         float beg = 0.0f;
         float end = 1.0f;
-        return ClampRange(&in, &beg, &end);
+        return ClampRange(in, beg, end);
     }
     if (sTime2 > v2)
         return 1.0f;
@@ -1699,13 +1698,13 @@ float SmokeGrenadeMgr::CalcOpacity(const SmokeGrenadeInfo& info) const
         float in = (v2 - sTime2) / (sTime3 - sTime2);
         float beg = 0.0f;
         float end = 1.0f;
-        float v4 = ClampRange(&in, &beg, &end);
+        float v4 = ClampRange(in, beg, end);
         return (1.0f - v4) * sOpacity2 + sOpacity3 * v4;
     }
     float beg = (v2 - sTime3) / (sTime4 - sTime3);
     float in = 0.0f;
     float end = 1.0f;
-    return (1.0f - ClampRange(&beg, &in, &end)) * sOpacity3;
+    return (1.0f - ClampRange(beg, in, end)) * sOpacity3;
 }
 
 // ============================================================================

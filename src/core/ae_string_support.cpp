@@ -16,7 +16,8 @@
 
 // Forward
 namespace AeAssert {
-    extern int   gCurrentAuthor;
+    enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10 };
+    extern ECoderId gCurrentAuthor;
     extern const char* gCurrentFile;
     extern int   gCurrentLine;
     extern const char* gCurrentExpr;
@@ -52,7 +53,7 @@ int ae_stricmpn(const char* s1, const char* s2, int n) {
 bool StrStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff, int rhsLen) {
     // Assert: both buffers are 4-byte aligned
     if (((uintptr_t)lhsBuff & 3) != 0) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "ae_fixed_string.cpp";
         AeAssert::gCurrentLine = 57;
         AeAssert::gCurrentExpr = "!((size_t)lhsBuff & 0x3)";
@@ -60,7 +61,7 @@ bool StrStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff, int rhsLen)
             COD3_BREAK();
     }
     if (((uintptr_t)rhsBuff & 3) != 0) {
-        AeAssert::gCurrentAuthor = 0;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "ae_fixed_string.cpp";
         AeAssert::gCurrentLine = 58;
         AeAssert::gCurrentExpr = "!((size_t)rhsBuff & 0x3)";
