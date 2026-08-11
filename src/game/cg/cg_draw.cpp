@@ -994,7 +994,7 @@ extern vmCvar_t cg_shellshockblur;
 int gSaveGameData_mCrosshair;  // ?gSaveGameData_mCrosshair@@3HA (g.o)
 extern vmCvar_t cg_drawpaused;
 extern vmCvar_t cg_drawGun;
-extern void* cg_weapons;
+extern weaponInfo_s* cg_weapons;
 extern refexport_t re;
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 extern PlayerState* GetPlayerState(int idx);

@@ -167,10 +167,10 @@ struct nglGpuQuadPUVMatColVertexShader {
     static const unsigned int** VShaderTable;
 };
 
-extern const _D3DVERTEXSHADERINPUT* nglGpuPCVertexElements;
-extern const _D3DVERTEXSHADERINPUT* nglGpuPUVVertexElements;
-extern const _D3DVERTEXSHADERINPUT* nglGpuPCUVVertexElements;
-extern const _D3DVERTEXSHADERINPUT* nglGpuPUV4VertexElements;
+extern const _D3DVERTEXSHADERINPUT nglGpuPCVertexElements[];
+extern const _D3DVERTEXSHADERINPUT nglGpuPUVVertexElements[];
+extern const _D3DVERTEXSHADERINPUT nglGpuPCUVVertexElements[];
+extern const _D3DVERTEXSHADERINPUT nglGpuPUV4VertexElements[];
 extern gpuVertexFormat nglGpuPUV4VertexFmt;
 
 // ============================================================================

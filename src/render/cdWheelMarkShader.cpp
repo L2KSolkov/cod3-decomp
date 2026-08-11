@@ -11,6 +11,8 @@
 // ============================================================================
 #include "cdWheelMarkShader.h"
 
+const _D3DVERTEXSHADERINPUT cdWheelMarkVertexElements[16] = {};  // ?cdWheelMarkVertexElements (render_xboxr @ 0xE3C7A0)
+
 #include <intrin.h>
 
 // Shader global pointer definitions

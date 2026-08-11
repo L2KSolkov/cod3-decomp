@@ -21,9 +21,9 @@ extern int nglListWorkSize;                           // ngl_scene.o
 extern int nglScratchIndexBufferSize;                 // ngl_gpu_meshedit.o
 extern int nglScratchVertexBufferSize;                // ngl_gpu_meshedit.o
 extern D3DIndexBuffer* nglScratchIndexBufferA;        // ngl_gpu_meshedit.o
-extern D3DIndexBuffer* nglScratchIndexBufferB;        // ngl_gpu_meshedit.o
+D3DIndexBuffer* nglScratchIndexBufferB = nullptr;     // ?nglScratchIndexBufferB (ngl_gpu_meshedit.o)
 extern D3DVertexBuffer* nglScratchVertexBufferA;      // ngl_gpu_meshedit.o
-extern D3DVertexBuffer* nglScratchVertexBufferB;      // ngl_gpu_meshedit.o
+D3DVertexBuffer* nglScratchVertexBufferB = nullptr;   // ?nglScratchVertexBufferB (ngl_gpu_meshedit.o)
 extern void* tlMemAlloc(unsigned int Size, unsigned int Align, unsigned int Flags);
 extern void tlMemFree(void* Ptr);
 extern bool _tlAssert(const char* file, int line, const char* expr, const char* desc);

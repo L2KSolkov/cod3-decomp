@@ -24,6 +24,52 @@ unsigned int D3D__DirtyFlags = 0;       // _D3D__DirtyFlags
 unsigned int D3D__TextureState[4][32];  // _D3D__TextureState
 unsigned int D3D__RenderState[4];       // _D3D__RenderState
 unsigned int DTE[4];                    // _DTE (0xCD6DE4 pushbuffer encodes)
+// D3D render-state register IDs / cache slots (XDK .rdata/.data, shim data)
+unsigned int dword_40260 = 0;
+unsigned int dword_40300 = 0;
+unsigned int dword_4033C = 0;
+unsigned int dword_40340 = 0;
+unsigned int dword_40344 = 0;
+unsigned int dword_40348 = 0;
+unsigned int dword_4034C = 0;
+unsigned int dword_40350 = 0;
+unsigned int dword_40354 = 0;
+unsigned int dword_40358 = 0;
+unsigned int dword_4035C = 0;
+unsigned int dword_40364 = 0;
+unsigned int dword_4036C = 0;
+unsigned int dword_40378 = 0;
+unsigned int dword_40A60 = 0;
+unsigned int dword_40A64 = 0;
+unsigned int dword_40A80 = 0;
+unsigned int dword_40A84 = 0;
+unsigned int dword_40AC0 = 0;
+unsigned int dword_40AC4 = 0;
+unsigned int dword_417FC = 0;
+unsigned int dword_BC2C14 = 0;
+unsigned int dword_BC2C38 = 0;
+unsigned int dword_BC2C3C = 0;
+unsigned int dword_BC2C58 = 0;
+unsigned int dword_BC2C5C = 0;
+unsigned int dword_BC2C98 = 0;
+unsigned int dword_BC2C9C = 0;
+unsigned int dword_BC2CF4 = 0;
+unsigned int dword_BC2CF8 = 0;
+unsigned int dword_BC2D00 = 0;
+unsigned int dword_BC2D04 = 0;
+unsigned int dword_BC2D08 = 0;
+unsigned int dword_BC2D0C = 0;
+unsigned int dword_BC2D10 = 0;
+unsigned int dword_BC2D1C = 0;
+unsigned int dword_BC2D24 = 0;
+unsigned int dword_BC2D28 = 0;
+unsigned int dword_BC2D30 = 0;
+unsigned int dword_BC2D38 = 0;
+unsigned int dword_BC2D3C = 0;
+unsigned int dword_BC2D80 = 0;
+unsigned int dword_BC2DAC = 0;
+unsigned int dword_BC2E0C = 0;
+unsigned int dword_BC2E50 = 0;
 unsigned int dword_40304 = 0;           // D3D render-state slot alias
 unsigned int dword_BC2CFC = 0;          // D3D state alias
 _D3DVERTEXATTRIBUTEFORMAT gpuSetVertexShaderInputs;  // cdGlowShader.o (BSS)

@@ -878,7 +878,7 @@ void CG_WhizbySound(unsigned int sourceEntity, const float* vStart,
     }
 }
 
-extern void* cg_weapons;
+extern weaponInfo_s* cg_weapons;
 extern void* cg_items;
 extern struct gitem_s* bg_itemlist;
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);

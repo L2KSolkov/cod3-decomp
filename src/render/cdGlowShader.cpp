@@ -10,6 +10,8 @@
 // ============================================================================
 #include "cdGlowShader.h"
 
+const _D3DVERTEXSHADERINPUT gGlowVertexElements[16] = {};  // ?gGlowVertexElements (render_xboxr @ 0xE3BB78)
+
 #include <intrin.h>
 
 // Shader global pointer definitions

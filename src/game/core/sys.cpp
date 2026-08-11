@@ -74,6 +74,10 @@ void* dword_F00EBC;        // core.o BSS
 void* dword_F00EC0;        // core.o BSS
 void* dword_F00EC4;        // core.o BSS
 void* dword_F00EC8;        // core.o BSS
+void* dword_F00ED4;        // core.o BSS
+void* dword_F00ED8;        // core.o BSS
+void* dword_F00EDC;        // core.o BSS
+void* dword_F00EE0;        // core.o BSS
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };

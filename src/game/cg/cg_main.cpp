@@ -83,6 +83,7 @@ extern void* GetTextureData(const char* name, int image_type,
                             const char* fromPak);
 extern struct gitem_s* bg_itemlist;  // gitem_s[]
 void* cg_items;                // itemInfo_t[] (artifact)
+weaponInfo_s* cg_weapons = nullptr;  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)
 extern void* cgCvarTable;      // cvarTable_t[170]
 extern void* cvarTable;        // cvarTable_t[170]
 

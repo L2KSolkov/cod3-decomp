@@ -43,8 +43,8 @@ extern void tlPrintf(const char* fmt, ...);
 class nglRenderNode;
 extern void nglBeginRenderNode(nglRenderNode* Head);
 extern void nglAdvanceRenderNode();
-extern nglRenderNode* nglCurRenderNode;
-extern nglRenderNode* nglRenderListEndNode;
+nglRenderNode* nglCurRenderNode = nullptr;      // ?nglCurRenderNode@@3PAVnglRenderNode@@A (ngl.o)
+nglRenderNode* nglRenderListEndNode = nullptr;  // ?nglRenderListEndNode@@3PAVnglRenderNode@@A (ngl.o)
 extern int nglSceneRecursion;
 
 // vtable slot 1 = Render (slot 0 = dtor).

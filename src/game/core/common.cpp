@@ -247,6 +247,7 @@ cvar_t* r_showSkeletons;         // ?r_showSkeletons@@3PAUcvar_t@@A (render.o @ 
 void* pWeaponInfoMemory = nullptr;   // ?pWeaponInfoMemory@@3PAXA (core.o @ 0x12F0364)
 void* gApsHeap = nullptr;            // ?gApsHeap@@3PAVae_heap@@A (render.o @ 0x1363940)
 ae_heap* gActorHeap = nullptr;       // ?gActorHeap@@3PAVae_heap@@A (core.o @ 0x12F035C)
+Entity* gLensLightSource = nullptr;  // ?gLensLightSource@@3PAVEntity@@A (core.o @ 0x12F03E4)
 struct nglTexture;
 nglTexture** gLensFlareTextures = nullptr;  // ?gLensFlareTextures@@3PAPAUnglTexture@@A (core.o @ 0x12F03D0)
 RumbleManager::InstanceHolder RumbleManagerStatics::sInstHolder;  // ?sInstHolder@RumbleManagerStatics@@2UInstanceHolder@RumbleManager@@A (core.o @ 0x12F042C)

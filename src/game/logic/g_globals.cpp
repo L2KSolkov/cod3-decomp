@@ -173,6 +173,7 @@ hitLoc g_hitLocs[64];               // ?g_hitLocs@@3PAUhitLoc@@A (g.o @ 0xDD76E0
 cspField_t s_vehicleFields[73];     // ?s_vehicleFields@@3PAUcspField_t@@A (g.o @ 0xDD6EF0)
 turretInfo_t turretInfo[1];         // ?turretInfo@@3PAUturretInfo_t@@A (g.o @ 0xED9E08)
 gitem_s bg_itemlist[137];           // ?bg_itemlist@@3PAUgitem_s@@A (game.o @ 0x13413C0)
+sentient_s g_sentients[16];         // ?g_sentients@@3PAUsentient_s@@A (g.o)
 cFreeList<trRefEntity> gRefEntFreeList;   // ?gRefEntFreeList@@3V?$cFreeList@VtrRefEntity@@@@A (g.o)
 cFreeList<DObj> gDObjFreeList;            // ?gDObjFreeList@@3V?$cFreeList@VDObj@@@@A (g.o)
 cFreeList<void> gDSkelFreeList;           // ?gDSkelFreeList@@3V?$cFreeList@X@@A (g.o)

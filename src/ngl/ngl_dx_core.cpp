@@ -77,6 +77,11 @@ const unsigned int** nglGlowShaderPixelPostFX::PShaderTable = nullptr;
 unsigned int nglShaderParamSet::NumParams = 0;   // ?NumParams@nglShaderParamSet@@2IA
 unsigned int nglSceneParamSet::NumParams = 0;    // ?NumParams@nglSceneParamSet@@2IA
 unsigned int gpuHashIndexBuffer = 0;             // ?gpuHashIndexBuffer@@3IA
+void* nglEmptyParamSet = nullptr;                // ?nglEmptyParamSet@@3PAXA (ngl_params.o @ 0x1241D70)
+const _D3DVERTEXSHADERINPUT nglGpuPCVertexElements[16] = {};    // ?nglGpuPCVertexElements (ngl_gpu.o)
+const _D3DVERTEXSHADERINPUT nglGpuPCUVVertexElements[16] = {};  // ?nglGpuPCUVVertexElements (ngl_gpu.o)
+const _D3DVERTEXSHADERINPUT nglGpuPUVVertexElements[16] = {};   // ?nglGpuPUVVertexElements (ngl_gpu.o)
+const _D3DVERTEXSHADERINPUT nglGpuPUV4VertexElements[16] = {};  // ?nglGpuPUV4VertexElements (ngl_gpu.o)
 
 // ============================================================================
 // Cross-object externs
