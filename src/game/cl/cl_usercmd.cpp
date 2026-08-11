@@ -16,7 +16,7 @@ extern void Com_Error(int code, const char* fmt, ...);
 extern int com_frameTime;
 extern int frame_msec;
 extern int currCl;
-extern int dword_106000;
+int dword_106000 = 0;  // cl.o BSS (EF_* flags mask)
 extern int anykeydown;
 extern bool CL_IsADS(int client);
 extern int CL_StanceButtonUpdate();

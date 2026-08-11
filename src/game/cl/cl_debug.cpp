@@ -38,7 +38,7 @@ extern struct vm_s { int (__cdecl* systemCall)(int*); }* cgvm;
 extern int com_timescale_value;
 extern int dword_F170F0;
 int com_skelTimeStamp = 0;  // ?com_skelTimeStamp@@3HA (core.o)
-extern int bCL_AllowedAllocSkel;
+int bCL_AllowedAllocSkel = 0;  // cl.o BSS
 extern struct cvar_t* cl_testAnimWeight;
 extern void* _Z_MallocInternal(int size);
 struct FEManager;
@@ -71,8 +71,8 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 // Debug-data globals (cl.o)
 // ============================================================================
-extern int dword_F170E0;        // debug enabled
-extern int dword_F171C0;        // string capacity
+int dword_F170E0 = 0;  // cl.o BSS
+int dword_F171C0 = 0;  // cl.o BSS
 extern int dword_F171C4;        // string count
 extern int dword_F171C8;        // debug string buffer
 extern int dword_F171CC;        // string source
@@ -81,7 +81,7 @@ extern int dword_F171D4;        // line count
 extern int ptr;                 // line buffer
 extern int dword_F171DC;        // line source
 extern int dword_F171E0;        // line depth
-extern int dword_F171E4;        // line duration
+int dword_F171E4 = 0;  // cl.o BSS
 extern char byte_F171E8;        // server string source
 extern void re_LocateDebugStrings(int a1, int a2);
 extern void re_LocateDebugLines(int a1, int a2);

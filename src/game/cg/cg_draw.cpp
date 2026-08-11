@@ -61,7 +61,16 @@ extern int CG_DrawSingleHudElem(void* elem);
 extern int compare_hudelems(const void* pe0, const void* pe1);
 extern int dword_F63CA4[4 * 1580];
 extern int dword_F63CA8[4 * 1580];
-extern float dword_F63C60[4 * 1580];
+float dword_F63C60[4 * 1580];  // cg.o BSS
+float dword_F63C58[4 * 1580];  // cg.o BSS
+float dword_F63C5C[4 * 1580];  // cg.o BSS
+float dword_F63C8C[4 * 1580];  // cg.o BSS
+float dword_F63C90[4 * 1580];  // cg.o BSS
+float dword_F63C94[4 * 1580];  // cg.o BSS
+float dword_F63CB4[4 * 1580];  // cg.o BSS
+int dword_F63BAC[4 * 1580];    // cg.o BSS
+int dword_F63BB4[4 * 1580];    // cg.o BSS
+int dword_F64018[4 * 1580];    // cg.o BSS
 extern float dword_F63C64[4 * 1580];
 float dword_F63C70[4 * 1580];  // cg.o BSS
 float dword_F63C74[4 * 1580];
@@ -250,16 +259,16 @@ extern float g_TestForward[4];
 extern void InspectorManager_Render(void* self);
 class InspectorManager;
 extern InspectorManager g_inspectorManager;
-extern int dword_F62964[4 * 1580];
+int dword_F62964[4 * 1580];  // cg.o BSS
 extern void CheckAndRunOverHeatBlur();
 extern void trap_R_ClearScene();
 extern float angle[4 * 395];
 extern float dword_F63C80[4 * 1580];
 extern float dword_F63C84[4 * 1580];
 extern float dword_F63C88[4 * 1580];
-extern float dword_F63C98[4 * 1580];
-extern float dword_F63C9C[4 * 1580];
-extern float dword_F63CA0[4 * 1580];
+float dword_F63C98[4 * 1580];  // cg.o BSS
+float dword_F63C9C[4 * 1580];  // cg.o BSS
+float dword_F63CA0[4 * 1580];  // cg.o BSS
 
 
 // ea: 0x00687CB0
@@ -464,7 +473,7 @@ extern int dword_F641D4[4 * 1580];
 extern float color[4];
 extern int dword_F6400C[4 * 1580];
 extern int dword_F62960[4 * 1580];
-extern int dword_F6295C[4 * 1580];
+int dword_F6295C[4 * 1580];  // cg.o BSS
 extern int dword_F64154[4 * 1580];
 extern int dword_F64158[4 * 1580];
 extern int dword_F6415C[4 * 1580];
