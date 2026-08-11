@@ -37,6 +37,21 @@ collision_context_t::collision_context_t(
     this->contentmask = mask;
 }
 
+// ea: 0x004AF070
+collision_context_t::collision_context_t(
+    DbLinkedHandle<EntityHandleDb, Entity> handle1,
+    DbLinkedHandle<EntityHandleDb, Entity> handle2, int mask)
+{
+    this->__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
+    this->pass_entity1.mHandle.mVal = 0;
+    this->pass_entity2.mHandle.mVal = 0;
+    this->pass_owner1.mHandle.mVal = 0;
+    this->pass_owner2.mHandle.mVal = 0;
+    this->pass_entity1 = handle1;
+    this->pass_entity2 = handle2;
+    this->contentmask = mask;
+}
+
 // ea: 0x0044AF10
 void handleDeathInvulnerability(Entity* /*ent*/, int /*a2*/, int /*a3*/)
 {
