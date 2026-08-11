@@ -412,7 +412,7 @@ phys_memory_heap g_cmgr_allocater;  // ?g_cmgr_allocater@@3Vphys_memory_heap@@A 
 extern DCGSet* gBoxDCGSet;                 // ?gBoxDCGSet@@3PAVDCGSet@@A
 char cmgr_memory_buffer[0x400];            // ?cmgr_memory_buffer@@3PADA (game.o)
 extern bool tlScratchpadLocked;            // ?tlScratchpadLocked@@3_NA
-extern bool g_in_cmgr_mem_context;         // ?g_in_cmgr_mem_context@@3_NA
+bool g_in_cmgr_mem_context;         // ?g_in_cmgr_mem_context@@3_NA
 
 // ============================================================================
 // cmgr_mem_ctx_t - ea: 0x65FE20 / 0x65FEF0 (CollisionMgr.cpp)

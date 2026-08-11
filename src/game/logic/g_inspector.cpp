@@ -1034,8 +1034,8 @@ extern char* va(const char* fmt, ...);        // ?va@@YAPADPBDZZ
 extern void Cvar_Set(const char* var_name, const char* value);  // ?Cvar_Set@@YAXPBD0@Z
 extern int Sys_Milliseconds();    // ?Sys_Milliseconds@@YAHXZ
 float g_losResetTime;      // ?g_losResetTime@@3MA (game2.o)
-extern unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
-extern unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
+unsigned int g_previousSysTime;  // ?g_previousSysTime@@3IA (game2.o)
+unsigned int g_previousMS;       // ?g_previousMS@@3IA (game2.o)
 extern int g_fps;                 // ?g_fps@@3HA (game2.o)
 extern int IM_RenderGameEntityStats();    // ?IM_RenderGameEntityStats@@YAHXZ (game2.o)
 extern Entity* RenderPlayerStats();       // ?RenderPlayerStats@@YAPAVEntity@@XZ (game2.o)

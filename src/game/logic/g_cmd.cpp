@@ -335,7 +335,7 @@ extern float EvalHealth(unsigned int, unsigned int, unsigned int, float,
 extern void DebugCurveRender();                         // game.o 0x60EEE0
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
 extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
-extern unsigned int s_ImpactMessage_0;  // @ 0xF50CC0
+unsigned int s_ImpactMessage_0;  // @ 0xF50CC0
 extern void reserved_dlist_CurveEffectListElem_delete_all(
     void* self);  // ?delete_all@?$reserved_dlist@VCurveEffectListElem@@@@QAEXXZ @ 0x4284BC
 

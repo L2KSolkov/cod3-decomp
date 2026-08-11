@@ -107,7 +107,7 @@ SceneManager* SceneManager::sInst;    // ?sInst@SceneManager@@2PAV1@A (streamer.
 Camera gCamera[8];                    // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0, stride 0x1F0)
 extern const PakInfoNode* sLoadingScreenInfo;
 extern int  dword_F6A290[4 * 802];
-extern bool gReturnToMenu;
+bool gReturnToMenu;
 extern int  sv_restartedServerId;
 extern const char* const defaultFileName;
 extern int  MPUIInterface_BlockUntilNetReady(void);

@@ -1329,8 +1329,8 @@ struct vehicle_info_t {
 };
 
 float maxAngle;  // 0x00DFA294
-extern bool special_tween_bool;  // 0x00F6171D
-extern bool gCameraSwayOnTurrets;  // 0x00DF9D84
+bool special_tween_bool;  // 0x00F6171D
+bool gCameraSwayOnTurrets;  // 0x00DF9D84
 extern void controller_stick_value(void* self, int index, int stick,
                                    int* outX, int* outY);
 extern int RecalibrateInput(int val);
@@ -3231,8 +3231,8 @@ extern void CG_StartWeaponAnim(int weaponNum, DObj* dobj, int animIndex,
                                float fadeInTime, float startTimeInSec,
                                int forceRestart);
 float kADSAnimFadeInTime;  // 0x00DFA380
-extern char gMetaAnimPlayMethod;  // 0x00F05108
-extern char sWeaponAnimCallback;  // 0x00DF9E4C
+char gMetaAnimPlayMethod;  // 0x00F05108
+char sWeaponAnimCallback;  // 0x00DF9E4C
 extern tlFixedString tlFixedString_ctor(void* self, const char* s);
 
 static XAnimEntry* AnimTreeEntry(void* pAnimTree, unsigned int index)
@@ -3669,7 +3669,7 @@ extern int InteractionController_StartInteraction(void* self, Entity* interactab
                                                   const char* name, int curPakId);
 extern float InteractionController_GetRotation(void* self);
 extern int Entity_GetPlayerIndex(const Entity* self);
-extern bool gSceneAnimCamera;  // 0x00F258F6
+bool gSceneAnimCamera;  // 0x00F258F6
 extern vmCvar_t cg_altTankCam;  // 0x00F5BC30
 extern TPakId CurPakId();
 extern vehicle_info_t* G_GetVehicleInfo(Entity* veh);

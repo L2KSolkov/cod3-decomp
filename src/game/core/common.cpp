@@ -256,6 +256,7 @@ searchpath_s* fs_searchpaths = nullptr;          // ?fs_searchpaths@@3PAUsearchp
 filelist_s* fs_nonpackfilelist = nullptr;        // ?fs_nonpackfilelist@@3PAUfilelist_s@@A (core.o @ 0x12F0338)
 searchpath_s* fs_memorysearchpaths = nullptr;    // ?fs_memorysearchpaths@@3PAUsearchpath_s@@A (core.o @ 0x12F033C)
 filelist_s* fs_memorynonpackfilelist = nullptr;  // ?fs_memorynonpackfilelist@@3PAUfilelist_s@@A (core.o @ 0x12F0340)
+float gLensScaleAmount;          // ?gLensScaleAmount@@3MA (core.o @ 0x11C7FF8)
 // --- plain int data sweep (core.o family) ---
 int com_journalDataFile;     // ?com_journalDataFile@@3HA (core.o @ 0x12E5F78)
 int com_fileAccessed;        // ?com_fileAccessed@@3HA (core.o @ 0x12E6520)

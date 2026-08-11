@@ -41,7 +41,7 @@ public:
 
 extern int currCl;
 extern int cgGlobal_time;
-extern int cgGlobal_oldTime;
+int cgGlobal_oldTime;
 extern int dword_F64140[4 * 1580];
 extern int dword_F64144[4 * 1580];
 extern int dword_F64148[4 * 1580];
@@ -2702,7 +2702,7 @@ extern float flrand(float min, float max);
 extern void CG_CalcCubemapViewValues();
 extern void CG_CalcVrect(const void* window);
 extern void Camera_Update(void* self);
-extern int cgGlobal_cubemapShot;
+int cgGlobal_cubemapShot;
 extern vmCvar_t bg_viewheight_prone;
 extern vmCvar_t bg_viewheight_crouched;
 extern vmCvar_t bg_viewheight_standing;

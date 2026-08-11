@@ -284,7 +284,7 @@ extern vmCvar_t cg_draw2D;
 extern vmCvar_t cg_drawStatus;
 extern vmCvar_t cg_norender;
 extern vmCvar_t cg_thirdPerson;
-extern bool gStillDrawMenus;
+bool gStillDrawMenus;
 extern int gRenderCG_2D;
 extern int gRenderViewWeapon;
 extern bool gFirstCamera;
@@ -602,7 +602,7 @@ extern int dword_F64158[4 * 1580];
 extern int dword_F6415C[4 * 1580];
 extern int dword_F64160[4 * 1580];
 int gBlackStartTime[4];  // ?gBlackStartTime@@3PAHA (cg.o)
-extern int lastTime_0[4];
+int lastTime_0[4];
 extern float unk_F6A284[4 * 802];
 enum msgwnd_mode_t;
 extern void Con_DrawNotify(int iXPos, int iYPos, float fAlpha,

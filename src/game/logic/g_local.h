@@ -2259,10 +2259,10 @@ Entity* SelectSpawnPoint(const float* avoidPoint, float* origin, float* angles);
 void  VEH_UnlinkPlayerDropped(Entity* ent);         // g.o 0x4807D0
 Entity* fire_mine(Entity* self, float* position, float* dir, int weapon);  // g.o 0x86A5E0
 Entity* weapon_mine_fire(Entity* ent, int weapon, weaponParms* wp);  // g.o 0x4818A0
-extern int cg_deadscreen_backdrop;    // cg.o vmCvar_t
-extern int cg_deadscreen_levelname;   // cg.o
-extern int cg_victoryscreen_backdrop; // cg.o
-extern int cg_victoryscreen_levelname;// cg.o
+extern vmCvar_t cg_deadscreen_backdrop;    // ?cg_deadscreen_backdrop@@3UvmCvar_t@@A
+extern vmCvar_t cg_deadscreen_levelname;   // ?cg_deadscreen_levelname@@3UvmCvar_t@@A
+extern vmCvar_t cg_victoryscreen_backdrop; // ?cg_victoryscreen_backdrop@@3UvmCvar_t@@A
+extern vmCvar_t cg_victoryscreen_levelname;// ?cg_victoryscreen_levelname@@3UvmCvar_t@@A
 void  Cvar_Register(vmCvar_t* vmCvar, const char* varName, const char* defaultValue,
                     int flags);                      // core.o
 void  Cvar_VMSet(vmCvar_t* vmCvar, const char* value);  // core.o

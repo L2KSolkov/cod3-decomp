@@ -25,7 +25,7 @@ float gTurretOldPITCH;
 float gTurretOldYAW;
 extern int gTurretState;
 int gTurretSoundEffectHandle;  // ?gTurretSoundEffectHandle (cg.o)
-extern int dword_DF91F4;
+int dword_DF91F4;
 
 
 struct cgs_t {

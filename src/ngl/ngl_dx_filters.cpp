@@ -56,7 +56,7 @@ extern unsigned int dword_40358;
 extern unsigned int dword_4035C;
 extern unsigned int dword_417FC;
 extern unsigned int dword_40260;
-extern unsigned int dword_40264;
+unsigned int dword_40264;
 extern unsigned int dword_40A60;
 extern unsigned int dword_40A64;
 extern unsigned int dword_40A80;
@@ -74,8 +74,8 @@ extern unsigned int dword_BC2D04;
 extern unsigned int dword_BC2CF8;
 
 // XDK pixel-shader input encodings.
-extern unsigned int byte_C800C9;
-extern unsigned int loc_CA00CB;
+unsigned int byte_C800C9;
+unsigned int loc_CA00CB;
 
 // ============================================================================
 // D3DXCOLOR::operator unsigned long (d3dx8d) - replicated inline: clamp each

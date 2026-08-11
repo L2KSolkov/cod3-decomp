@@ -687,12 +687,12 @@ void CheckpointMgr::ClearGameVars()
 }
 
 // game.o save-state globals (persisted checkpoint storage)
-extern unsigned char byte_F317B0;   // checkpoint save exists
-extern unsigned char byte_F31E54;   // checkpoint from storage
-extern int dword_F31AB4;            // player health
-extern int dword_F31E50;            // friendly count
-extern int dword_F32AB8;            // exploded exploder count
-extern int dword_F31EB4;            // game var count
+unsigned char byte_F317B0;   // checkpoint save exists
+unsigned char byte_F31E54;   // checkpoint from storage
+int dword_F31AB4;            // player health
+int dword_F31E50;            // friendly count
+int dword_F32AB8;            // exploded exploder count
+int dword_F31EB4;            // game var count
 
 // ea: 0x00640E60
 void CheckpointMgr::ClearSavedCheckpointData()

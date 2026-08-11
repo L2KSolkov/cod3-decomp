@@ -61,7 +61,7 @@ extern int dword_F170FC;
 extern int dword_F170EC;
 extern int time_frontend;
 extern int time_backend;
-extern bool gDisableRendering;
+bool gDisableRendering;
 extern float Com_GetScreenTimeDelta();
 extern void nullsub_35();
 extern int scr_initialized;

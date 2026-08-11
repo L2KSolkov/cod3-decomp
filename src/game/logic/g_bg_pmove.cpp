@@ -5492,7 +5492,7 @@ int bg_iWeapClipSizes[4 * 1580];    // ?bg_iWeapClipSizes@@3PAHA (game.o)
 int bg_iSharedAmmoCaps[4 * 1580];   // ?bg_iSharedAmmoCaps@@3PAHA (game.o)
 const char* bg_szWeapAmmoNames[92];  // ?bg_szWeapAmmoNames@@3PAPBDA (game.o)
 const char* bg_szWeapClipNames[92];  // ?bg_szWeapClipNames@@3PAPBDA (game.o)
-extern bool gInfinteAmmo;           // ?gInfinteAmmo@@3_NA (game.o)
+bool gInfinteAmmo;           // ?gInfinteAmmo@@3_NA (game.o)
 extern int cg_aWeaponSelect[4];     // ?cg_aWeaponSelect@@3PAHA (cg.o)
 extern int cg_aWeaponSelectTime[4]; // ?cg_aWeaponSelectTime@@3PAHA (cg.o)
 extern int cl_aADS[4];              // ?cl_aADS@@3PAHA (cl.o)
@@ -10060,7 +10060,7 @@ LABEL_24:
 // ============================================================================
 // bg_weapons.cpp config-string parsing (game.o)
 // ============================================================================
-extern char emptyString;                    // game.o BSS 0xF4EBFD
+char emptyString;                    // game.o BSS 0xF4EBFD
 extern int  gInteractArmsWeaponIndex;       // ?gInteractArmsWeaponIndex@@3HA (game.o)
 extern void* mem_heap_malloc(unsigned int size);  // ?mem_heap_malloc (mem_heap)
 struct nglTexture;

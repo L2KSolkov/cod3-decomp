@@ -21,7 +21,7 @@ extern int anykeydown;
 extern bool CL_IsADS(int client);
 extern int CL_StanceButtonUpdate();
 extern char ClampChar(int i);
-extern int dword_F12110;     // mlook active
+int dword_F12110;     // mlook active
 int dword_F170F0 = 0;  // cl.o BSS @ 0xF170F0 (base turn speed)
 float Deltas[4][5];  // ?Deltas@@3PAY04MA (cl.o BSS @ 0xF128C0)
 int dword_F133C4[20];  // cl.o BSS (delta accumulation)

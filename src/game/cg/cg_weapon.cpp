@@ -42,7 +42,7 @@ extern int dword_F6402C[4 * 1580];
 extern int dword_F6405C[4 * 1580];
 extern int dword_F64060[4 * 1580];
 void* sADSMetaAnimPlayer = nullptr;  // cg.o artifact (MetaAnimPlayer*)
-extern int dword_F69BF4;
+int dword_F69BF4;
 float FOCUS_DISTANCE = 1.0f;  // ?FOCUS_DISTANCE@@3MA
 float angle[4 * 395];  // cg.o BSS
 extern float dword_F63C70[4 * 1580];
@@ -177,10 +177,10 @@ extern float dword_F6407C[4 * 1580];
 extern float unk_F64080[4 * 6320];
 const char** s_barrelTags;  // ?s_barrelTags@@3PAPADA (game.o)
 float* ejectBrassCasingOrigin;
-extern int dword_F5E6BC;
-extern int dword_F5E6C0;
-extern unsigned int tagHash;
-extern unsigned int tag_brass_hash;
+int dword_F5E6BC;
+int dword_F5E6C0;
+unsigned int tagHash;
+unsigned int tag_brass_hash;
 extern void CG_ChangeViewmodelDobj(int client, const char* handModel);
 extern void CG_RegisterWeapon(int weaponNum);
 struct ServerTime_s {
@@ -190,7 +190,7 @@ extern ServerTime_s ServerTime_sInst;
 float tr_viewModelInfo_mWeaponScale[4];
 extern int tr_viewModelInfo_mWeaponOrigin_used;
 void* tr_viewModelInfo_mWeaponOrigin = nullptr;  // cg.o artifact
-extern unsigned int tagHashInit;
+unsigned int tagHashInit;
 extern void InteractionController_PostPhysicsUpdate(void* self, float deltaT);
 
 extern int Com_BitCheck(const int* const array, int bitNum);
@@ -234,7 +234,7 @@ extern int dword_F641E0[4 * 1580];
 extern int dword_F641E4[4 * 1580];
 extern int dword_F641EC[4 * 1580];
 extern int dword_F6A2A0[4 * 802];
-extern unsigned int tag_flash_hash;
+unsigned int tag_flash_hash;
 extern void DObjFree(void* obj, int bClearTree);
 extern void mem_heap_free(void* ptr);
 extern void DObj_Dtor(void* obj);
