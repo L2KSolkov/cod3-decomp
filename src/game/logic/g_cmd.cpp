@@ -536,7 +536,6 @@ Curve::Curve()
 extern unsigned char* BinFileManager_Find(void* self,
                                           const char* name);  // ?Find@BinFileManager@@QAEPAEPBD@Z
 extern void* BinFileManager_sInst;  // ?sInst@BinFileManager@@2PAV1@A @ 0xF4EC18
-extern void* EntityHandleDb_GetObject(unsigned int val);  // game.o
 
 // ea: 0x00642010
 bool AttachCurveVehicle(unsigned int entityHandleVal, char* filename,
@@ -544,7 +543,7 @@ bool AttachCurveVehicle(unsigned int entityHandleVal, char* filename,
 {
     unsigned char* v2 =
         BinFileManager_Find(BinFileManager_sInst, filename);
-    Entity* mObject = (Entity*)EntityHandleDb_GetObject(entityHandleVal);
+    Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(entityHandleVal);
     if (v2 == nullptr)
         return false;
     if (mObject == nullptr)
@@ -584,7 +583,7 @@ bool AttachCurveEntity(unsigned int entityHandleVal, char* filename)
 {
     unsigned char* v2 =
         BinFileManager_Find(BinFileManager_sInst, filename);
-    Entity* mObject = (Entity*)EntityHandleDb_GetObject(entityHandleVal);
+    Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(entityHandleVal);
     if (v2 == nullptr)
         return false;
     if (mObject == nullptr)
@@ -610,7 +609,7 @@ bool AttachCurveEntity(unsigned int entityHandleVal, char* filename)
 // ea: 0x006465B0
 bool DetachCurveEntity(unsigned int entityHandleVal)
 {
-    Entity* mObject = (Entity*)EntityHandleDb_GetObject(entityHandleVal);
+    Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(entityHandleVal);
     if (mObject == nullptr)
         return false;
     Curve* curve = mObject->curve;

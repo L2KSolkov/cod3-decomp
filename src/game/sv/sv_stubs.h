@@ -721,6 +721,13 @@ public:
     static EntityHandleDb sInst;         // ?sInst@EntityHandleDb@@0V1@A
     void Init();                         // ?Init@EntityHandleDb@@QAEXXZ
     void AssignHandle(Entity& e);        // ?AssignHandle@EntityHandleDb@@QAEXAAVEntity@@@Z
+    // Inline handle lookup (used at every call site in the binary)
+    Entity* GetObject(unsigned int val) const {
+        unsigned int idx = val & 0xFFF;
+        if (idx < 0x540 && val >> 12 == (unsigned int)mElements[idx].mKey)
+            return mElements[idx].mObject;
+        return NULL;
+    }
     Entity* Find(int fieldofs, HashString match);  // ?Find@EntityHandleDb@@QBEPAVEntity@@HVHashString@@@Z
     void Find(int fieldOfs, unsigned short match, ae_sized_array<Entity*, 4096>* results);  // ?Find@EntityHandleDb@@QBEXGAAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z
     void Find(int fieldOfs, HashString match, ae_sized_array<Entity*, 4096>* results);      // ?Find@EntityHandleDb@@QBEXVHashString@@AAV?$ae_sized_array@PAVEntity@@$0BAAA@@@@Z

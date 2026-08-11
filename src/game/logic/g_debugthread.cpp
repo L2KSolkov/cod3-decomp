@@ -1372,7 +1372,6 @@ Task* TaskHandlerImpl::GetTaskForEntity(
 // ============================================================================
 // TaskHandler::Update - ea: 0x504990
 // ============================================================================
-extern Entity* EntityHandleDb_GetObject(unsigned int val);
 
 void TaskHandlerImpl::Update(float deltaT, void* ftor)
 {
@@ -1383,7 +1382,7 @@ void TaskHandlerImpl::Update(float deltaT, void* ftor)
         QuickTaskDeactivation* rec = (QuickTaskDeactivation*)q;
         unsigned int entVal = rec->mEntHandle;
         DListNode* next = q->m_next;
-        Entity* ent = EntityHandleDb_GetObject(entVal);
+        Entity* ent = EntityHandleDb::sInst.GetObject(entVal);
         if (ent != nullptr)
             ent->mFlags |= 4u;
         mem_heap_free(rec);
@@ -1409,7 +1408,7 @@ void TaskHandlerImpl::Update(float deltaT, void* ftor)
             typedef void (*UpdateFn)(Task*, Entity*, float);
             void** vt = *(void***)task;
             UpdateFn fn = (UpdateFn)vt[4];  // vtable slot 4 = Update
-            Entity* e = EntityHandleDb_GetObject(
+            Entity* e = EntityHandleDb::sInst.GetObject(
                 task->mEntityHandle.mHandle.mVal);
             fn(task, e, deltaT);
         }

@@ -92,7 +92,6 @@ static BrocGetEntFn BrocAPI_mGetEnt()
 }
 extern int G_GetActorFriendlyIndex(Entity* entity);
     // ?G_GetActorFriendlyIndex@@YAHPAVEntity@@@Z
-extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
 
 // ============================================================================
@@ -210,7 +209,7 @@ void CheckpointMgr::SaveCheckpoint(const char* checkpointName,
         unsigned int v7 = BrocAPI_mGetEnt()(
             &v42, HashString::CalcHash("targetname"), nullptr, 0, 0);
         v42.~string();
-        scriptOrigin = (Entity*)EntityHandleDb_GetObject(v7);
+        scriptOrigin = (Entity*)EntityHandleDb::sInst.GetObject(v7);
         if (scriptOrigin == nullptr)
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;

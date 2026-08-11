@@ -53,7 +53,6 @@ extern weaponFileInfo_t** bg_weaponInfo;  // ?bg_weaponInfo@@3PAPAUweaponFileInf
 extern const char** pEventNamesList;      // ?pEventNamesList@@3PAPBDA (game.o)
 extern const char* szWeapTypeNames[9];    // ?szWeapTypeNames@@3PAPBDA (game.o)
 extern Entity* GetPlayer(int idx);        // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
-extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 extern int LocalClient_ClientToPort(int client);  // ?ClientToPort@LocalClient@@YAHH@Z
 extern bool CL_IsADS(int client);                // ?CL_IsADS@@YA_NH@Z
 extern float CL_GamepadAxisValue(unsigned int virtualAxis);  // cl.o
@@ -1395,7 +1394,7 @@ void PM_Weapon_CheckForChangeWeapon()
             if (BG_AllowPlayerWeaponAtVehiclePos(pm->ps->vehType,
                                                  pm->ps->vehPos))
             {
-                Entity* player = (Entity*)EntityHandleDb_GetObject(
+                Entity* player = (Entity*)EntityHandleDb::sInst.GetObject(
                     pm->ps->mClient.mHandle.mVal);
                 if (IsPlayerFullySeatedInVehicle(player))
                     goto LABEL_29;
@@ -1637,12 +1636,12 @@ char PM_Weapon_CheckAbortHoldToFire()
             && AeAssert::Assert("don't switch back to an off hand weapon."))
             __debugbreak();
     }
-    Entity* v2 = (Entity*)EntityHandleDb_GetObject(
+    Entity* v2 = (Entity*)EntityHandleDb::sInst.GetObject(
         pm->ps->mClient.mHandle.mVal);
     int PlayerIndex = v2->GetPlayerIndex();
     BG_SelectWeaponIndex(pm->ps->lastWeapon, PlayerIndex);
     pm->ps->weaponstate = 0;
-    Entity* v4 = (Entity*)EntityHandleDb_GetObject(
+    Entity* v4 = (Entity*)EntityHandleDb::sInst.GetObject(
         pm->ps->mClient.mHandle.mVal);
     int v5 = v4->GetPlayerIndex();
     g_femanager.IGO->SetFuse(-1.0f, -1.0f, v5);
@@ -1681,7 +1680,7 @@ char PM_Weapon_FinishOffHandWeapons()
                     "don't switch back to an off hand weapon."))
                 __debugbreak();
         }
-        Entity* v5 = (Entity*)EntityHandleDb_GetObject(
+        Entity* v5 = (Entity*)EntityHandleDb::sInst.GetObject(
             pm->ps->mClient.mHandle.mVal);
         int PlayerIndex = v5->GetPlayerIndex();
         BG_SelectWeaponIndex(pm->ps->lastWeapon, PlayerIndex);
@@ -1703,12 +1702,12 @@ char PM_Weapon_FinishOffHandWeapons()
                     "don't switch back to an off hand weapon."))
                 __debugbreak();
         }
-        Entity* v8 = (Entity*)EntityHandleDb_GetObject(
+        Entity* v8 = (Entity*)EntityHandleDb::sInst.GetObject(
             pm->ps->mClient.mHandle.mVal);
         int v9 = v8->GetPlayerIndex();
         BG_SelectWeaponIndex(pm->ps->lastWeapon, v9);
         pm->ps->weaponstate = 0;
-        Entity* v10 = (Entity*)EntityHandleDb_GetObject(
+        Entity* v10 = (Entity*)EntityHandleDb::sInst.GetObject(
             pm->ps->mClient.mHandle.mVal);
         int v11 = v10->GetPlayerIndex();
         g_femanager.IGO->SetFuse(-1.0f, -1.0f, v11);
@@ -1790,12 +1789,12 @@ char PM_Weapon_FinishOffHandWeapons()
                     "don't switch back to an off hand weapon."))
                 __debugbreak();
         }
-        Entity* v14 = (Entity*)EntityHandleDb_GetObject(
+        Entity* v14 = (Entity*)EntityHandleDb::sInst.GetObject(
             pm->ps->mClient.mHandle.mVal);
         int v15 = v14->GetPlayerIndex();
         BG_SelectWeaponIndex(pm->ps->lastWeapon, v15);
         pm->ps->weaponstate = 0;
-        Entity* v16 = (Entity*)EntityHandleDb_GetObject(
+        Entity* v16 = (Entity*)EntityHandleDb::sInst.GetObject(
             pm->ps->mClient.mHandle.mVal);
         int v17 = v16->GetPlayerIndex();
         g_femanager.IGO->SetFuse(-1.0f, -1.0f, v17);
@@ -1877,14 +1876,14 @@ int PM_Weapon_FinishFiring(int delayedAction)
                     pm->ps->weaponTime = 0;
                     if (PM_Weapon_CheckFiringAmmo() == 0)
                         BG_TakePlayerWeapon(pm->ps, pm->ps->weapon);
-                    Entity* v14 = (Entity*)EntityHandleDb_GetObject(
+                    Entity* v14 = (Entity*)EntityHandleDb::sInst.GetObject(
                         pm->ps->mClient.mHandle.mVal);
                     int PlayerIndex = v14->GetPlayerIndex();
                     BG_SelectWeaponIndex(pm->ps->lastWeapon, PlayerIndex);
                     pm->ps->weaponstate = 0;
                     if (pWeap->type == WEAPTYPE_GRENADE)
                     {
-                        Entity* v16 = (Entity*)EntityHandleDb_GetObject(
+                        Entity* v16 = (Entity*)EntityHandleDb::sInst.GetObject(
                             pm->ps->mClient.mHandle.mVal);
                         int v17 = v16->GetPlayerIndex();
                         g_femanager.IGO->SetFuse(-1.0f, -1.0f, v17);
@@ -1993,7 +1992,7 @@ int PM_Weapon_FinishWeaponChange()
             PM_AddEvent(180);
             pm->ps->weaponTime = BG_GetInfoForWeapon(weapon)->iRaiseTime;
         }
-        Entity* v12 = (Entity*)EntityHandleDb_GetObject(
+        Entity* v12 = (Entity*)EntityHandleDb::sInst.GetObject(
             pm->ps->mClient.mHandle.mVal);
         G_DObjUpdate(v12, false);
         if (weapon != 0
@@ -2076,7 +2075,7 @@ void PM_Weapon_StartFiring(int delayedAction)
                     pm->ps->grenadeTimeLeft =
                         ((weaponFileInfo_t*)pml.pWeap)->iFuseTime;
                     PM_StartWeaponAnim(17);
-                    Entity* v2 = (Entity*)EntityHandleDb_GetObject(
+                    Entity* v2 = (Entity*)EntityHandleDb::sInst.GetObject(
                         pm->ps->mClient.mHandle.mVal);
                     int PlayerIndex = v2->GetPlayerIndex();
                     g_femanager.IGO->SetFuse(
@@ -2507,7 +2506,7 @@ void PM_Weapon()
                     PM_Weapon_PrintWeaponAnim();
                 PM_UpdateAimDownSightLerp();
                 PM_UpdateHoldBreath();
-                Entity* v2 = (Entity*)EntityHandleDb_GetObject(
+                Entity* v2 = (Entity*)EntityHandleDb::sInst.GetObject(
                     pm->ps->mClient.mHandle.mVal);
                 int PlayerIndex = v2->GetPlayerIndex();
                 g_femanager.IGO->SetFuse(-1.0f, -1.0f, PlayerIndex);
@@ -2520,7 +2519,7 @@ void PM_Weapon()
                         if (grenadeTimeLeft >= pWeap->iFuseTime)
                         {
                             pm->ps->grenadeTimeLeft = grenadeTimeLeft - 10;
-                            Entity* v6 = (Entity*)EntityHandleDb_GetObject(
+                            Entity* v6 = (Entity*)EntityHandleDb::sInst.GetObject(
                                 pm->ps->mClient.mHandle.mVal);
                             int v7 = v6->GetPlayerIndex();
                             g_femanager.IGO->SetFuse(
@@ -2555,7 +2554,7 @@ void PM_Weapon()
                         if (pWeap->bCookOffHold != 0 && v8 < pWeap->iFuseTime)
                         {
                             pm->ps->grenadeTimeLeft = v8 - pml.msec;
-                            Entity* v9 = (Entity*)EntityHandleDb_GetObject(
+                            Entity* v9 = (Entity*)EntityHandleDb::sInst.GetObject(
                                 pm->ps->mClient.mHandle.mVal);
                             int v10 = v9->GetPlayerIndex();
                             g_femanager.IGO->SetFuse(
@@ -2589,7 +2588,7 @@ void PM_Weapon()
                                     if (BG_WeaponAmmo(v13, remain_4) != 0)
                                     {
                                         Entity* v14 =
-                                            (Entity*)EntityHandleDb_GetObject(
+                                            (Entity*)EntityHandleDb::sInst.GetObject(
                                                 pm->ps->mClient.mHandle.mVal);
                                         int remain_4a = v14->GetPlayerIndex();
                                         PlayerState* v15 =
@@ -2755,7 +2754,7 @@ void PM_UpdateHoldBreath()
         client->ps.mHoldBreathTimer = 0;
         return;
     }
-    Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+    Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(
         pm->ps->mClient.mHandle.mVal);
     float* v5 = mObject != nullptr
                     ? dword_F63B8C[6320 * mObject->GetPlayerIndex()]
@@ -2931,13 +2930,13 @@ void PM_UpdateStickyAim(PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd)
     math::Dir3 viewDir;
     viewDir.v = _mm_setr_ps(forward[0], forward[1], forward[2], 0.0f);
 
-    Entity* selfEnt = (Entity*)EntityHandleDb_GetObject(
+    Entity* selfEnt = (Entity*)EntityHandleDb::sInst.GetObject(
         ps->mClient.mHandle.mVal);
     if (selfEnt == nullptr || selfEnt->client == nullptr)
         return;
     weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ps->weapon);
 
-    Entity* selfEnt2 = (Entity*)EntityHandleDb_GetObject(
+    Entity* selfEnt2 = (Entity*)EntityHandleDb::sInst.GetObject(
         ps->mClient.mHandle.mVal);
     int playerIndex = selfEnt2->GetPlayerIndex();
     bool bStickyAim =
@@ -2949,7 +2948,7 @@ void PM_UpdateStickyAim(PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd)
     {
         bStickyAim = false;
     }
-    Entity* selfEnt3 = (Entity*)EntityHandleDb_GetObject(
+    Entity* selfEnt3 = (Entity*)EntityHandleDb::sInst.GetObject(
         ps->mClient.mHandle.mVal);
     if (InfoForWeapon->weapClass == 10  // WEAPCLASS_SNIPER (verified vs disasm)
         && CL_IsADS(selfEnt3->GetPlayerIndex()))
@@ -2957,7 +2956,7 @@ void PM_UpdateStickyAim(PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd)
         bStickyAim = false;
     }
 
-    Entity* selfEnt4 = (Entity*)EntityHandleDb_GetObject(
+    Entity* selfEnt4 = (Entity*)EntityHandleDb::sInst.GetObject(
         ps->mClient.mHandle.mVal);
     Entity* pPlayer = selfEnt4;
 
@@ -2969,7 +2968,7 @@ void PM_UpdateStickyAim(PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd)
         if (cl->state == 0)
             continue;
         unsigned int handle = cl->mEntityHandle.mHandle.mVal;
-        Entity* ent = (Entity*)EntityHandleDb_GetObject(handle);
+        Entity* ent = (Entity*)EntityHandleDb::sInst.GetObject(handle);
         if (ent == nullptr || ent == pPlayer)
             continue;
         if (cgGlobal.teamGame
@@ -3078,14 +3077,14 @@ void PM_UpdateStickyAim(PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd)
     if (ps->prevTargetPointValid != 0)
     {
         unsigned int handle = ps->currentTargetHandle.mHandle.mVal;
-        Entity* target = (Entity*)EntityHandleDb_GetObject(handle);
+        Entity* target = (Entity*)EntityHandleDb::sInst.GetObject(handle);
         if (target == nullptr)
             goto LABEL_113;
         if (!bSlowFactor || !bStickyAim)
             goto LABEL_113;
-        Entity* entA = (Entity*)EntityHandleDb_GetObject(handle);
-        Entity* entB = (Entity*)EntityHandleDb_GetObject(handle);
-        Entity* entC = (Entity*)EntityHandleDb_GetObject(handle);
+        Entity* entA = (Entity*)EntityHandleDb::sInst.GetObject(handle);
+        Entity* entB = (Entity*)EntityHandleDb::sInst.GetObject(handle);
+        Entity* entC = (Entity*)EntityHandleDb::sInst.GetObject(handle);
         math::Position3 targetPos;
         targetPos.v = _mm_setr_ps(entC->r.currentOrigin.v.m128_f32[0],
                                   entA->r.currentOrigin.v.m128_f32[1],
@@ -3638,7 +3637,6 @@ extern void filter_proximity_data(const math::Position3& lo,
 extern void query_proximity_data(const math::Position3& lo,
                                  const math::Position3& hi,
                                  proximity_data_t& out);  // game.o
-extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 static math::Dir3 rdir_3;   // ?rdir_3 (game.o @ 0xF58F10)
 static int s_pmtrace_init;  // $S22_2 @ 0xF58F24
 
@@ -3648,7 +3646,7 @@ void PM_trace(trace_t* results, const math::Position3& start,
               const math::Position3& end,
               const collision_context_t& context)
 {
-    Entity* ent = (Entity*)EntityHandleDb_GetObject(
+    Entity* ent = (Entity*)EntityHandleDb::sInst.GetObject(
         context.pass_entity1.mHandle.mVal);
     proximity_data_t filtered;
     math::Position3 lo;
@@ -3735,7 +3733,6 @@ extern bool push_in_world(pmove_t& pm, float radius,
 extern bool tunnel_test(pmove_t& pm, float radius,
                         const math::Position3& p0,
                         const math::Position3& p1);  // game.o
-extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 extern "C" int __fpclass(float);  // CRT
 
 static TouchEntityData s_entities_3;  // ?entities_3 (game.o @ 0xF58F30)
@@ -3746,7 +3743,7 @@ bool resolve_character_collisions(pmove_t& pm, float radius)
 {
     PlayerState* ps = pm.ps;
     bool hit = false;
-    Entity* self = (Entity*)EntityHandleDb_GetObject(
+    Entity* self = (Entity*)EntityHandleDb::sInst.GetObject(
         ps->mClient.mHandle.mVal);
     math::Position3 lo = ps->origin;
     math::Position3 p1;
@@ -3774,7 +3771,7 @@ bool resolve_character_collisions(pmove_t& pm, float radius)
     math::Position3 v9 = lo;
     for (int v8 = 0; v8 < s_entities_3.num; ++v8)
     {
-        Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+        Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(
             s_entities_3.touch[v8].mHandle.mVal);
         if (mObject != nullptr && mObject != self)
         {
@@ -3969,7 +3966,7 @@ bool push_in_world(pmove_t& pm, float radius,
     if ((0x100000 & ps->eFlags) != 0)
         return false;
     proximity_data_t filtered;
-    Entity* self = (Entity*)EntityHandleDb_GetObject(
+    Entity* self = (Entity*)EntityHandleDb::sInst.GetObject(
         pm.ps->mClient.mHandle.mVal);
     math::Position3 boxMin;
     boxMin.v = _mm_sub_ps(center.v, _mm_set1_ps(radius * 2.0f));
@@ -4011,7 +4008,7 @@ bool push_in_world(pmove_t& pm, float radius,
         probe.v.m128_f32[3] = pm.ps->origin.v.m128_f32[3];
         for (int i = 0; i < s_entities_2.num; ++i)
         {
-            Entity* ent = (Entity*)EntityHandleDb_GetObject(
+            Entity* ent = (Entity*)EntityHandleDb::sInst.GetObject(
                 s_entities_2.touch[i].mHandle.mVal);
             if (ent == nullptr || ent == self)
                 continue;
@@ -4634,7 +4631,7 @@ L9:
         PM_trace(&trace, v8->ps->origin, pm->mins, pm->maxs, end, context);
         if (trace.mEntity.mHandle.mVal != 0)
         {
-            Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+            Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(
                 trace.mEntity.mHandle.mVal);
             if (mObject != nullptr && mObject->client != nullptr)
             {
@@ -4830,7 +4827,7 @@ extern void TracePoint(const proximity_data_t& data, trace_t* results,
 bool tunnel_test(pmove_t& pm, float radius, const math::Position3& p0,
                  const math::Position3& p1)
 {
-    Entity* mObject = (Entity*)EntityHandleDb_GetObject(
+    Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(
         pm.ps->mClient.mHandle.mVal);
     math::Position3 lo;
     math::Position3 hi;

@@ -518,7 +518,6 @@ extern void AnglesToAxis(const math::Position3* angles,
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME (core.o)
 
 extern void XAnimClearTree(XAnimTree* tree);  // ?XAnimClearTree@@YAXPAVXAnimTree@@@Z
-extern Entity* EntityHandleDb_GetObject(unsigned int val);  // game.o
 
 // ea: 0x006389B0
 void DecodeCGBank(const char* name, unsigned char* data, int size,
@@ -531,7 +530,7 @@ void DecodeCGBank(const char* name, unsigned char* data, int size,
 // ea: 0x00639180
 void DisableAI(unsigned int handle)
 {
-    Entity* mObject = (Entity*)EntityHandleDb_GetObject(handle);
+    Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(handle);
     if (mObject != nullptr)
     {
         DObj* mDObj = mObject->mDObj;
@@ -757,7 +756,7 @@ Entity::~Entity()
 // ea: 0x00639250
 void EnableAI(unsigned int handle)
 {
-    Entity* mObject = (Entity*)EntityHandleDb_GetObject(handle);
+    Entity* mObject = (Entity*)EntityHandleDb::sInst.GetObject(handle);
     if (mObject != nullptr)
     {
         mObject->flags &= ~0x4000000u;
