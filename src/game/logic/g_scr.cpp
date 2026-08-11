@@ -10,6 +10,50 @@ BrocAPI* gpBrocAPI = NULL;
 // ?currentVM@@3PAUvm_s@@A (scr.o data @ 0xF3AC04)
 vm_s* currentVM = NULL;
 
+// ea: 0x0077D020 (mp_actors.o)
+void __fastcall Sentient_GetOrigin(sentient_s* pSelf, float* const vOriginOut)
+{
+    if (pSelf == NULL)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 246;
+        AeAssert::gCurrentExpr = "pSelf";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt == NULL)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 247;
+        AeAssert::gCurrentExpr = "pSelf->pEnt";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (pSelf->pEnt->actor == NULL && pSelf->pEnt->client == NULL)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 248;
+        AeAssert::gCurrentExpr = "pSelf->pEnt->actor || pSelf->pEnt->client";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (vOriginOut == NULL)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sentient.cpp";
+        AeAssert::gCurrentLine = 249;
+        AeAssert::gCurrentExpr = "vOriginOut";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    vOriginOut[0] = pSelf->pEnt->r.currentOrigin.v.m128_f32[0];
+    vOriginOut[1] = pSelf->pEnt->r.currentOrigin.v.m128_f32[1];
+    vOriginOut[2] = pSelf->pEnt->r.currentOrigin.v.m128_f32[2];
+}
+
 // ea: 0x005C1DE0
 int VM_Call(vm_s* vm, int callnum, ...)
 {

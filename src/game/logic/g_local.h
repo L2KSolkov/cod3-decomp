@@ -1888,7 +1888,7 @@ void SpectatorClientEndFrame(Entity* ent);     // g.o 0x456B00
 unsigned char BG_GetWeaponIndexForName(const char* pszName);
 void Sentient_GetEyePosition(sentient_s* pSelf, float* vEyePosOut);      // mp_actors.o
 void Sentient_GetEyePosition(sentient_s* pSelf, math::Position3& vEyePosOut);  // mp_actors.o
-void Sentient_GetOrigin(sentient_s* pSelf, float* vOriginOut);           // mp_actors.o
+void __fastcall Sentient_GetOrigin(sentient_s* pSelf, float* const vOriginOut); // ?Sentient_GetOrigin@@YIXPAUsentient_s@@QAM@Z (mp_actors.o)
 void Sentient_UpdateActualChainPos(sentient_s* pSelf);                   // mp_actors.o
 void G_SetClientContents(Entity* pEnt);                                  // g.o
 void P_DamageFeedback(Entity* player);                                   // g.o
