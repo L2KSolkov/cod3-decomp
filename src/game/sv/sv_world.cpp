@@ -1076,89 +1076,68 @@ void TracePointFull(const proximity_data_t* proximity_data, trace_t* results,
 // ============================================================================
 // SV_SetBrushModel Ã¢â‚¬â€ ea: 0x524DA0
 // ============================================================================
-void SV_SetBrushModel(DCGSet* ent) {
-    if (ent[5].brush_verts_m_count == 0) {
-        unsigned short m_count_high = (unsigned short)(ent->objects_m_count >> 16);
-        int h;
-        if (m_count_high != 0) {
-            h = m_count_high;
-        } else {
-            ValidatePakId((TPakId)(int)ent[5].max.v.m128_f32[1]);
-            if ((int)ent[5].max.v.m128_f32[0] == 0)
-                return;
-            ValidatePakId((TPakId)(int)ent[5].max.v.m128_f32[1]);
-            if (*(int*)((int)ent[5].max.v.m128_f32[0] + 72) == 0)
-                return;
-            ValidatePakId((TPakId)(int)ent[5].max.v.m128_f32[1]);
-            h = (int)HashString_CalcHash(*(const char**)((int)ent[5].max.v.m128_f32[0] + 72));
-        }
-        if (h == 0) {
-            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
-            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_game.cpp";
-            AeAssert::gCurrentLine = 84;
-            AeAssert::gCurrentExpr = "h";
-            const char* v6;
-            Broc::string::Block* v4 = *(Broc::string::Block**)((int)ent[5].center.v.m128_f32[1]);
-            if (v4 != NULL && v4->mLength != 0)
-                v6 = (const char*)(v4 + 1);
-            else
-                v6 = "Unknown";
-            if (!AeAssert::IsIgnored() && AeAssert::Assert("Found script brush model without a collidable brush targetname %s.", v6))
-                __debugbreak();
-        }
-        TPakId v7 = (TPakId)(int)ent[5].nboxes;
-        if (v7 == PAK_ID_INVALID)
-            v7 = CurPakId();
-        DCGSet* v8 = ClipHandleToDCGSet(v7, h);
-        DCGSet* mod = v8;
-        if (v8 == NULL) {
-            ValidatePakId((TPakId)(int)ent[5].max.v.m128_f32[1]);
-            if ((int)ent[5].max.v.m128_f32[0] != 0) {
-                ValidatePakId((TPakId)(int)ent[5].max.v.m128_f32[1]);
-                const char* name = *(const char**)((int)ent[5].max.v.m128_f32[0] + 72);
-                if (strlen(name) > 7) {
-                    ValidatePakId((TPakId)(int)ent[5].max.v.m128_f32[1]);
-                    int v9 = atoi(name + 7);
-                    TPakId v10 = (TPakId)(int)ent[5].nboxes;
-                    if (v10 == PAK_ID_INVALID)
-                        v10 = CurPakId();
-                    mod = ClipHandleToDCGSet(v10, v9);
-                    v8 = mod;
-                }
-            }
-        }
-        if (ent[5].brush_verts_m_count == 0) {
-            math::Position3 mins;
-            math::Position3 maxs;
-            CM_ModelBounds(mod, mins, maxs);
-            ent[2].brushes_m_elements = (int)mins.v.m128_f32[0];
-            ent[2].gjk_brushes_m_count = (int)mins.v.m128_f32[0];
-            ent[2].gjk_brushes_m_elements = (int)mins.v.m128_f32[0];
-            ent[2].brush_sides_m_elements = (int)maxs.v.m128_f32[0];
-            ent[2].brush_verts_m_count = (int)maxs.v.m128_f32[0];
-            ent[2].brush_verts_m_elements = (int)maxs.v.m128_f32[0];
-            if (h == 0) {
-                ent[2].brushes_m_elements = -1063256064;
-                ent[2].gjk_brushes_m_count = -1063256064;
-                ent[2].gjk_brushes_m_elements = -1063256064;
-                ent[2].brush_sides_m_elements = 1084227584;
-                ent[2].brush_verts_m_count = 1084227584;
-                ent[2].brush_verts_m_elements = 1084227584;
-            }
-            v8 = mod;
-        }
-        if (((int)ent[5].min.v.m128_f32[0] == 0 && (loc_800000 & ent[6].brush_verts_m_count) == 0)
-            || ent[2].brushes_m_count == 0) {
-            ent[2].brushes_m_count = (int)v8;
-            int contents;
-            if (v8 != NULL)
-                contents = DCGSet_get_contents(v8);
-            else
-                contents = 0;
-            ent[2].radius2 = (float)contents;
-            SV_LinkEntity((Entity*)ent);
+void SV_SetBrushModel(Entity* gEnt) {
+    if (gEnt->client != nullptr)
+        return;
+    int h;
+    if (gEnt->s.brushmodel != 0) {
+        h = gEnt->s.brushmodel;
+    } else {
+        if (gEnt->mModel.mValue == nullptr)
+            return;
+        ValidatePakId((TPakId)gEnt->mModel.mPakId);
+        if (*(void**)((char*)gEnt->mModel.mValue + 0x48) == nullptr)
+            return;
+        ValidatePakId((TPakId)gEnt->mModel.mPakId);
+        h = (int)HashString_CalcHash(
+            *(const char**)((char*)gEnt->mModel.mValue + 0x48));
+    }
+    if (h == 0) {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_game.cpp";
+        AeAssert::gCurrentLine = 0x54;
+        AeAssert::gCurrentExpr = "h";
+        const char* v6 = "Unknown";
+        if (gEnt->targetname.mBlock != nullptr
+            && *(uint16_t*)((char*)gEnt->targetname.mBlock + 6) != 0)
+            v6 = (const char*)gEnt->targetname.mBlock + 0x0C;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                "Found script brush model without a collidable brush "
+                "targetname %s.",
+                v6))
+            __debugbreak();
+    }
+    TPakId pakId = gEnt->mPakId != -1 ? (TPakId)gEnt->mPakId : CurPakId();
+    DCGSet* mod = ClipHandleToDCGSet(pakId, h);
+    if (mod == nullptr && gEnt->mModel.mValue != nullptr) {
+        ValidatePakId((TPakId)gEnt->mModel.mPakId);
+        const char* name =
+            *(const char**)((char*)gEnt->mModel.mValue + 0x48);
+        if (name != nullptr && strlen(name) > 7) {
+        ValidatePakId((TPakId)gEnt->mModel.mPakId);
+            int v9 = atoi(name + 7);
+            TPakId v10 =
+                gEnt->mPakId != -1 ? (TPakId)gEnt->mPakId : CurPakId();
+            mod = ClipHandleToDCGSet(v10, v9);
         }
     }
+    if (gEnt->client == nullptr) {
+        if (mod != nullptr)
+            CM_ModelBounds(mod, gEnt->r.mins, gEnt->r.maxs);
+        if (h == 0) {
+            gEnt->r.mins.v = _mm_set1_ps(-5.0f);
+            gEnt->r.maxs.v = _mm_set1_ps(5.0f);
+        }
+    }
+    if (gEnt->scr_vehicle != nullptr || (gEnt->flags & 0x400000) != 0) {
+        if (gEnt->r.bmodel != nullptr)
+            return;
+    }
+    gEnt->r.bmodel = mod;
+    int contents = mod != nullptr ? DCGSet_get_contents(mod) : 0;
+    gEnt->r.contents = contents;
+    SV_LinkEntity(gEnt);
 }
 
 // ============================================================================

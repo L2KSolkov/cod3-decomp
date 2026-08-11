@@ -32,29 +32,36 @@ enum nslBankID : int { NSL_BANK_ID_INVALID = -1 };
 // Full definition arrives when the collision object is ported.
 // ============================================================================
 struct DCGSet {
-    uint8_t _pad0_[0x04];            // +0x00
-    int     id;                      // +0x04
-    int     objects_m_count;          // +0x08 (objects.m_count high word used)
-    int     objects_m_elements;       // +0x0C
-    uint8_t _pad10[0x20 - 0x10];
-    int     brushes_m_count;          // +0x20
-    int     brushes_m_elements;       // +0x24
-    int     gjk_brushes_m_count;      // +0x28
-    int     gjk_brushes_m_elements;   // +0x2C
-    int     brush_sides_m_count;      // +0x30
-    int     brush_sides_m_elements;   // +0x34
-    int     brush_verts_m_count;      // +0x38
-    int     brush_verts_m_elements;   // +0x3C
-    float   radius2;                  // +0x40
-    uint8_t _pad44[0x50 - 0x44];
-    // +0x50 (ent[5])
-    math::Position3 max;              // +0x50
-    math::Position3 center;           // +0x60
-    math::Position3 min;              // +0x70
-    uint16_t nboxes;                  // +0x80
-    uint16_t nbrushes;                // +0x82
-    uint8_t  _pad84[0x8C - 0x84];
+    // Verified against disasm (TestInLeaf 0x623D40, TempBoxModel 0x618670,
+    // CM_ModelBounds 0x6093D0, TempDCGSet ctor 0x638800): 112 bytes total.
+    uint16_t nboxes;                   // +0x00
+    uint16_t nbrushes;                 // +0x02
+    int      objects_m_count;          // +0x04
+    void*    objects_m_elements;       // +0x08
+    int      brushes_m_count;          // +0x0C
+    void*    brushes_m_elements;       // +0x10
+    int      gjk_brushes_m_count;      // +0x14
+    void*    gjk_brushes_m_elements;   // +0x18
+    int      brush_sides_m_count;      // +0x1C
+    void*    brush_sides_m_elements;   // +0x20
+    int      brush_verts_m_count;      // +0x24
+    void*    brush_verts_m_elements;   // +0x28
+    uint32_t _2C;                      // +0x2C
+    math::Position3 min;               // +0x30
+    math::Position3 max;               // +0x40
+    math::Position3 center;            // +0x50
+    float    f60;                      // +0x60
+    float    f64;                      // +0x64
+    int      id;                       // +0x68
+    int      _6C;                      // +0x6C
+
+    int get_contents() const;          // ?get_contents@DCGSet@@QBEHXZ
 };
+static_assert(sizeof(DCGSet) == 0x70, "DCGSet size mismatch");
+static_assert(offsetof(DCGSet, objects_m_count) == 0x04, "DCGSet::objects offset");
+static_assert(offsetof(DCGSet, min) == 0x30, "DCGSet::min offset");
+static_assert(offsetof(DCGSet, max) == 0x40, "DCGSet::max offset");
+static_assert(offsetof(DCGSet, id) == 0x68, "DCGSet::id offset");
 
 // ============================================================================
 // StubData — per-controller MP save/profile data (1216 bytes) — verified IDA
