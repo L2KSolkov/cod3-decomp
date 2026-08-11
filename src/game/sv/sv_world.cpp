@@ -69,7 +69,7 @@ extern void          Trace(trace_t* results, const math::Position3& start,
                            const math::Position3& mins,
                            const math::Position3& maxs, DCGSet* model,
                            int brushmask, int capsule,
-                           const sphere_t* sphere);
+                           sphere_t* sphere);
 extern void          TraceSphere(const proximity_data_t& data,
                                  trace_t* results,
                                  const math::Position3& start,
