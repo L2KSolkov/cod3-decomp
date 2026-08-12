@@ -8,6 +8,8 @@
 
 #include <string.h>
 
+class DObj;
+
 // ============================================================================
 // Externs
 // ============================================================================
@@ -49,10 +51,10 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 // DObj externs (core engine)
 // ============================================================================
-class DObj;
 extern int DObjSkelExists(DObj* obj, int timeStamp);
 extern int DObjSkelExistsConst(DObj* obj, int timeStamp);
 extern unsigned int DObjGetAllocSkelSize(DObj* obj);
+
 extern void DObjCreateSkel(DObj* obj, char* buf);
 extern void j_nullsub_82(DObj* obj, int* partBits);
 

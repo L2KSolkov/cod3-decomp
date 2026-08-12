@@ -49,7 +49,14 @@ extern void AxisCopy(const float (*in)[3], float (*out)[3]);
 extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
                                       const float (*in2)[3], DObjSkelMat* out);
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);
-extern void* G_GetVehicleInfo(Entity* ent);
+extern struct vehicle_info_t* s_vehicleInfos[];  // ?s_vehicleInfos@@3PAPAUvehicle_info_t@@A (g.o @ 0xEA7638)
+// ea: 0x0045E900 (g.o)
+void* G_GetVehicleInfo(Entity* ent)  // ?G_GetVehicleInfo@@YAPAUvehicle_info_t@@PAVEntity@@@Z
+{
+    if (ent != nullptr && ent->scr_vehicle != nullptr)
+        return (void*)s_vehicleInfos[ent->scr_vehicle->infoIdx];
+    return nullptr;
+}
 extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 
