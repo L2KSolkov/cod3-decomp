@@ -133,6 +133,37 @@ void BlendTorso(nalGenericPose& out, float blend, const nalGenericPose& a,
                 const nalGenericPose& b);  // ?BlendTorso@nalGeneric@@YAXAAVnalGenericPose@1@MABV21@1@Z
 }  // namespace nalGeneric
 
+// nalGeneric stubs (animation/nal.cpp; port later)
+namespace nalGeneric {
+nalGenericPose& nalGenericPose::operator=(const nalGenericPose& other)
+{
+    (void)other;
+    return *this;
+}
+nalPositionOrientationLocal nalGenericPose::GetModelPositionOrientation(
+    const nalGenericBoneHandle& handle) const
+{
+    (void)handle;
+    nalPositionOrientationLocal r = {};
+    return r;
+}
+void nalGenericSkeleton::GetBoneHandle(nalGenericBoneHandle& handle,
+                                       const tlFixedString& boneName)
+{
+    (void)handle; (void)boneName;
+}
+void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
+           const nalGenericPose& b)
+{
+    (void)out; (void)blend; (void)a; (void)b;
+}
+void BlendTorso(nalGenericPose& out, float blend, const nalGenericPose& a,
+                const nalGenericPose& b)
+{
+    (void)out; (void)blend; (void)a; (void)b;
+}
+}
+
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);  // ?_tlAssert@@YA_NPBDH00@Z (tl_system.o)
 

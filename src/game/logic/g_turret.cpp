@@ -1804,7 +1804,8 @@ void turret_think(Entity* self, int msec)
             pTurretInfo->overheating = false;
             if (pTurretInfo->overheatEffect.mVal != 0)
             {
-                EffectEventSys::sInst->StopEffect(pTurretInfo->overheatEffect.mVal, false);
+                EffectEventSys::sInst->StopEffect(
+                    Handle{pTurretInfo->overheatEffect.mVal}, false);
                 pTurretInfo->overheatEffect.mVal = 0;
             }
         }
@@ -1815,8 +1816,9 @@ void turret_think(Entity* self, int msec)
         PostEffectEventWeapon(self, InfoForWeapon->szInternalName, kActionWEAPON_PICKUP_FULL);
         Scr_Notify(self, hash_const.overheated, 0);
         if (pTurretInfo->overheatEffect.mVal != 0)
-            EffectEventSys::sInst->AdjustEffect_Scale(pTurretInfo->overheatEffect.mVal,
-                                                      "EmissionRate", 200.0f);
+            EffectEventSys::sInst->AdjustEffect_Scale(
+                Handle{pTurretInfo->overheatEffect.mVal},
+                "EmissionRate", 200.0f);
     }
     float heat = pTurretInfo->heat;
     if (heat <= 0.0f)
@@ -1827,7 +1829,8 @@ void turret_think(Entity* self, int msec)
     {
         if (pTurretInfo->overheatEffect.mVal != 0)
         {
-            EffectEventSys::sInst->StopEffect(pTurretInfo->overheatEffect.mVal, false);
+            EffectEventSys::sInst->StopEffect(
+                Handle{pTurretInfo->overheatEffect.mVal}, false);
             pTurretInfo->overheatEffect.mVal = 0;
         }
     }
@@ -1839,8 +1842,9 @@ void turret_think(Entity* self, int msec)
                 self, InfoForWeapon->szInternalName, kActionWEAPON_LAST_SHOT_EJECT_FULL);
         }
         float scalea = (pTurretInfo->heat - 0.25f) * 1.333333333333333f * emissionRate;
-        EffectEventSys::sInst->AdjustEffect_Scale(pTurretInfo->overheatEffect.mVal,
-                                                  "EmissionRate", scalea);
+        EffectEventSys::sInst->AdjustEffect_Scale(
+            Handle{pTurretInfo->overheatEffect.mVal},
+            "EmissionRate", scalea);
     }
     Entity* mObject = HandleDbToEnt(self->r.mOwner);
     if (mObject != nullptr && mObject->client != nullptr)

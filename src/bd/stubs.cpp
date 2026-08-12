@@ -73,6 +73,17 @@ bool bdBitBuffer::readBits(void* data, unsigned int bitCount)
     return true;
 }
 
+// bdMemory (bdCore:bdMemory.obj; stubs - real impl delegates to malloc hooks)
+void* bdMemory::allocate(unsigned int size)
+{
+    (void)size;
+    return nullptr;
+}
+void bdMemory::deallocate(void* p)
+{
+    (void)p;
+}
+
 #define COD3_UNIMPLEMENTED(lib) \
     fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
 

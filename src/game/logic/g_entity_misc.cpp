@@ -1654,6 +1654,10 @@ void Path_RelinquishNodePermanently(const PathNodes::PathNode* pNode,
 {
     (void)pNode; (void)pSentient;
 }
+void AnimationPlayer_DebugDump(Entity* ent)
+{
+    (void)ent;
+}
 
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {

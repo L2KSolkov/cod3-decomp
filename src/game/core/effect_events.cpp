@@ -382,6 +382,29 @@ static unsigned int RandNext()
     return (holdrand >> 16) & 0x7FFF;
 }
 
+// EffectEventSys free artifacts (core.o surface; stubs)
+void EffectEventSys_StopAll(void* self)
+{
+    (void)self;
+}
+void EffectEventSys_StopEffect(void* self, unsigned int handle, bool kill)
+{
+    (void)self; (void)handle; (void)kill;
+}
+void* EffectEventSys_GetActiveEffectSet(void* self, unsigned int handle)
+{
+    (void)self; (void)handle;
+    return nullptr;
+}
+void EffectEventSys_FrameAdvance(void* self, float delta)
+{
+    (void)self; (void)delta;
+}
+void EffectEventSys_PlayQueuedEffect(void* self, unsigned int handle)
+{
+    (void)self; (void)handle;
+}
+
 // ============================================================================
 // GDB event + particle params surfaces (name-accessed fields)
 // ============================================================================

@@ -68,9 +68,27 @@ Entity* Entity_GetOwner(Entity* ent)
     return EntityHandleDb::sInst.GetObject(val);
 }
 extern void AnimationPlayer_Play(void* player, void* anim, bool forceRestart,
-                                 float fade_in, float callback_time,
-                                 void* callback, float speed,
-                                 float time_in_seconds_to_start);
+float fade_in, float callback_time,
+void* callback, float speed,
+float time_in_seconds_to_start);
+void AnimationPlayer_Play(void* player, void* anim, bool forceRestart,
+                          float fade_in, float callback_time,
+                          void* callback, float speed,
+                          float time_in_seconds_to_start)
+{
+    (void)player; (void)anim; (void)forceRestart; (void)fade_in;
+    (void)callback_time; (void)callback; (void)speed;
+    (void)time_in_seconds_to_start;
+}
+void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
+                          float fadeIn, void* playMethod,
+                          float callbackTime, void* callback, float speed,
+                          float startTimeSec)
+{
+    (void)self; (void)anim; (void)forceRestart; (void)fadeIn;
+    (void)playMethod; (void)callbackTime; (void)callback; (void)speed;
+    (void)startTimeSec;
+}
 extern void sWeaponAnimCallback();
 extern weaponInfo_s* cg_weapons;  // weaponInfo_s[]
 extern int dword_F6A2A0[4 * 802];
@@ -85,7 +103,11 @@ extern void DObj_Dtor(void* obj);
 extern void DObj_OpDelete(void* obj);
 extern void DObjCreate(DObjModel* models, int numModels, void* tree,
                        void* dobj, int gameId);
-extern void DObjCreateAnimationPlayer(void* obj, int modelIndex);
+extern void DObjCreateAnimationPlayer(DObj* obj, int modelIndex);
+void DObjCreateAnimationPlayer(DObj* obj, int modelIndex)
+{
+    (void)obj; (void)modelIndex;
+}
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
@@ -122,7 +144,11 @@ extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
 extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanFrac, float fViewRoll,
                               float fLeanDist);
-extern void DObjAdvanceAnimationPlayer(void* d, float deltaT);
+extern void DObjAdvanceAnimationPlayer(DObj* d, float deltaT);
+void DObjAdvanceAnimationPlayer(DObj* d, float deltaT)
+{
+    (void)d; (void)deltaT;
+}
 extern void DObjInitServerTime(void* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
                                  unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
@@ -1733,7 +1759,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
                 ps->viewHeightCurrent + v10;
             AddLeanToPosition(RefEntity->lightingOrigin, ps->viewangles[1],
                               ps->leanf, 16.0f, 20.0f);
-            DObjAdvanceAnimationPlayer((void*)dword_F6A2A0[802 * currCl],
+            DObjAdvanceAnimationPlayer((DObj*)dword_F6A2A0[802 * currCl],
                                        cgGlobal_frametime * 0.001f);
             DObjInitServerTime((void*)dword_F6A2A0[802 * currCl],
                                cgGlobal_frametime * 0.001f);
