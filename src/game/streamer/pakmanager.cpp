@@ -47,8 +47,31 @@ struct ae_sized_array {
 // PakHeader (streamer.o PakFile.h; 48 bytes)
 struct PakHeader {
     struct Section {
-        uint8_t _pad[0x0E];
-        uint16_t numFiles;  // +0x0E
+        char      name[8];     // +0x00
+        int       sectionId;   // +0x08
+        uint16_t  numBanks;    // +0x0C
+        uint16_t  numFiles;    // +0x0E
+        void*     banks;       // +0x10 (Section::Bank*)
+        void*     files;       // +0x14 (Section::File*)
+    };
+
+    struct File {
+        const char* shortName;   // +0x00
+        const char* longName;    // +0x04
+        unsigned int fileSize;   // +0x08
+        unsigned int bankIndex;  // +0x0C
+        unsigned int bankOffset; // +0x10
+    };
+
+    struct Bank {
+        unsigned int fileOffset;    // +0x00
+        unsigned int size;          // +0x04
+        unsigned int capacity;      // +0x08
+        unsigned int flags;         // +0x0C
+        unsigned int compressedSize; // +0x10
+        int          requestId;     // +0x14
+        unsigned char* memptr;      // +0x18
+        unsigned int   memsize;     // +0x1C
     };
 
     unsigned int id;             // +0x00
@@ -116,9 +139,12 @@ public:
     uint8_t      _pad90[0xE8 - 0x90];   // mApkFiles/mCloseHandle/mOnlyLoadHeader/mHeapList/mPrereqHeaps
     unsigned int mCurrentFile;          // +0xE8
     unsigned char* mCurrentFilePtr;     // +0xEC
-    uint8_t      _padF0[0xFC - 0xF0];   // mCurrentApk/mCurrentApkFileEntry/mCurrentApkFileTypeEntry
+    void*        mCurrentApk;           // +0xF0
+    void*        mCurrentApkFileEntry;  // +0xF4
+    void*        mCurrentApkFileTypeEntry;  // +0xF8
     EState       mState;                // +0xFC
     ELoadingState mLoadingState;        // +0x100
+    enum ELoadingStateAll { LOADING_DONE = 3 };
     uint8_t      _pad104[0x110 - 0x104];  // mLooseFiles
     LoadStats*   mLoadStats;            // +0x110
 
@@ -140,6 +166,8 @@ public:
     bool IsCancelOk() const;
     // ea: 0x664C40
     void CopyHeader();
+    // ea: 0x664CD0
+    void DetermineNextFile();
     // ea: 0x664E50
     const PakInfoNode* GetInfo();
     // ea: 0x664E80
@@ -651,6 +679,70 @@ void PakFile::CopyHeader()
     mHeaderBuffer = (unsigned char*)copy;
     mHeader = copy;
     copy->FixUp(true, 0);
+}
+
+// ea: 0x664CD0
+void PakFile::DetermineNextFile()
+{
+    if (mDefaultSectionIdx == -1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 1261;
+        AeAssert::gCurrentExpr = "mDefaultSectionIdx != -1";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no default section!"))
+            __debugbreak();
+    }
+    PakHeader::Section* sections = mHeader->sections;
+    PakHeader::Section& sec = sections[mDefaultSectionIdx];
+    mCurrentFilePtr = nullptr;
+    mCurrentApk = nullptr;
+    mCurrentApkFileEntry = nullptr;
+    mCurrentApkFileTypeEntry = nullptr;
+    unsigned int mCurrentFile = this->mCurrentFile;
+    if (mCurrentFile == sec.numFiles)
+    {
+        mLoadingState = (ELoadingState)LOADING_DONE;
+        return;
+    }
+    PakHeader::File* file =
+        &((PakHeader::File*)sec.files)[mCurrentFile];
+    unsigned int bankIdx = file->bankIndex;
+    if (bankIdx >= sec.numBanks)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 1280;
+        AeAssert::gCurrentExpr = "bankIdx >= 0 && bankIdx < mHeader->sections[mDefaultSectionIdx].numBanks";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("bank idx out of bounds!"))
+            __debugbreak();
+    }
+    PakHeader::Bank* banks = (PakHeader::Bank*)sec.banks;
+    PakHeader::Bank& bank = banks[bankIdx];
+    if ((bank.flags & 0x80) == 0)
+    {
+        mCurrentFilePtr = &bank.memptr[file->bankOffset];
+    }
+    else if ((bank.flags & 0x40000) != 0)
+    {
+        // apk-embedded bank: file type entry inside the apk file.
+        void* apk = (void*)((char*)bank.memptr + 8);
+        mCurrentApk = apk;
+        unsigned int offset = file->bankOffset;
+        unsigned int nSections = *(unsigned int*)((char*)apk + 8);
+        void* fileTypes = *(void**)((char*)apk + 0x10);
+        mCurrentApkFileTypeEntry =
+            (void*)((char*)fileTypes + 4 * (nSections + 5) * (offset >> 16));
+        unsigned int firstEntry =
+            *(unsigned int*)((char*)mCurrentApkFileTypeEntry + 0x10);
+        mCurrentApkFileEntry =
+            (void*)((char*)firstEntry
+                    + 4 * offset * (*(int*)((char*)mCurrentApkFileTypeEntry
+                                            + 8)
+                                    + 1));
+    }
 }
 
 // ea: 0x664E50
