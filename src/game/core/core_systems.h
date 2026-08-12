@@ -551,7 +551,8 @@ struct RumbleEffect {
 };
 static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 
-struct RumbleManager {
+class RumbleManager {
+public:
     static void CreateInst();  // ?CreateInst@RumbleManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@RumbleManager@@SAXXZ (core.o)
     struct InstanceHolder;

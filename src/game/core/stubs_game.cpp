@@ -4,6 +4,8 @@
 
 #include <stdio.h>
 
+enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
+
 #define COD3_UNIMPLEMENTED(lib) \
     fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
 
@@ -43,7 +45,12 @@ class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
 class SmokeGrenadeMgr { public: static void CreateInst(); };
 class CGBankManager { public: static void CreateInst(); static void DeleteInst(); };
 class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
-class AnimBankManager { public: static void CreateInst(); };
+struct AnimBank;
+class AnimBankManager {
+public:
+    static void CreateInst();
+    AnimBank* GetBank(TPakId pak_id);  // ?GetBank@AnimBankManager@@QAEPAUAnimBank@@W4TPakId@@@Z
+};
 class RumbleManager { public: static void CreateInst(); static void DeleteInst(); };
 class InteractionController { public: static void CreateInst(); static void DeleteInst(); };
 class BinFileManager { public: static void CreateInst(); static void DeleteInst(); };
@@ -110,6 +117,29 @@ void CGBankManager::DeleteInst() {}
 void DCGBankManager::CreateInst() {}
 void DCGBankManager::DeleteInst() {}
 void AnimBankManager::CreateInst() {}
+AnimBank* AnimBankManager::GetBank(TPakId pak_id)
+{
+    (void)pak_id;
+    return nullptr;
+}
+void* AnimBankManager_GetBank(void* self, TPakId pak_id)
+{
+    (void)self; (void)pak_id;
+    return nullptr;
+}
+void* AnimBankManager_GetBank(void* self, int pak_id)
+{
+    (void)self; (void)pak_id;
+    return nullptr;
+}
+void AnimBankManager_UnloadAll(void* self)
+{
+    (void)self;
+}
+void AnimBankManager_UnloadAll()
+{
+    // stub
+}
 void RumbleManager::CreateInst() {}
 void RumbleManager::DeleteInst() {}
 void InteractionController::CreateInst() {}

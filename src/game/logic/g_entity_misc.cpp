@@ -1091,6 +1091,13 @@ bool GamePause::IsGamePaused(int client)
     return GamePause::mData.mGamePaused[client];
 }
 
+// ea: 0x6126A0
+void GamePause::SetGamePaused(int client, bool paused)
+{
+    (void)client;
+    GamePause::mData.mGamePaused[0] = paused;
+}
+
 // ============================================================================
 // Entity::ExecScriptHandler - ea: 0x611F10
 // ============================================================================
