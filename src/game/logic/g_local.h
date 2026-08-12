@@ -609,9 +609,10 @@ public:
     int mUsed;   // +0x04
     T*  mpFree;  // +0x08
 
-    void Init(int num);     // ?Init@?$cFreeList@...@@QAEXH@Z core.o
-    void Shutdown();        // ?Shutdown@?$cFreeList@...@@QAEXXZ core.o
-    T* Alloc();             // ?Alloc@?$cFreeList@...@@QAEPA...XZ (core.o)
+    // core.o template members; stub bodies until the pool allocator is ported
+    void Init(int num) { (void)num; }
+    void Shutdown() {}
+    T* Alloc() { return nullptr; }
 };
 extern cFreeList<Entity> gEntFreeList;        // 0xF50D04
 

@@ -2620,6 +2620,48 @@ bool AbstractEffect::IsFinishedFading()
     return (mCodeFlags.mVal & 1) != 0 && mFadeTime < 0.001f;
 }
 
+// AbstractEffect virtuals (aeps.o; stubs until effect runtime is ported)
+void AbstractEffect::SetPoPtr(math::Mat43* po)
+{
+    mPoPtr = po;
+}
+bool AbstractEffect::IsQueued() const
+{
+    return false;
+}
+bool AbstractEffect::IsLooping() const
+{
+    return false;
+}
+void AbstractEffect::AdjustEffect_Scale(const char* param, float scale)
+{
+    (void)param; (void)scale;
+}
+void AbstractEffect::FastForward(float deltaT)
+{
+    (void)deltaT;
+}
+void AbstractEffect::PlayQueuedEffect()
+{
+    // stub
+}
+void AbstractEffect::StartFadeOut(float time)
+{
+    (void)time;
+}
+void AbstractEffect::FrameAdvance(float deltaT)
+{
+    (void)deltaT;
+}
+void AbstractEffect::StopEffect()
+{
+    // stub
+}
+Broc::string AbstractEffect::GetDebugString() const
+{
+    return Broc::string((Broc::string::Block*)nullptr);
+}
+
 // ea: 0x004CDC90
 bool AbstractEffectParticle::IsFinished()
 {

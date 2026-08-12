@@ -1490,6 +1490,30 @@ void Entity::Notify(HashString h)
         mScriptEventHandler->ExecEvents(this, h, nullptr);
 }
 
+// Entity::Notify overloads (game.o; stubs, port later)
+void Entity::Notify(HashString h, unsigned int* e)
+{
+    (void)h; (void)e;
+}
+void Entity::Notify(HashString h, const int& d, Broc::entity* e, int* mod,
+                    EHitLocation* hitloc, const float* hit_normal)
+{
+    (void)h; (void)d; (void)e; (void)mod; (void)hitloc; (void)hit_normal;
+}
+void Entity::Notify(HashString h, const int& d, const Broc::entity& e,
+                    const int& mod, const int& hitloc)
+{
+    (void)h; (void)d; (void)e; (void)mod; (void)hitloc;
+}
+void Entity::SetLerpOrigin(EntityState* s, const math::Position3* origin)
+{
+    (void)s; (void)origin;
+}
+void cFreeList_Shutdown(void* freelist)
+{
+    (void)freelist;
+}
+
 // refEntity_t - leading member of trRefEntity (+0x00) - matches cg_local.h
 struct refEntity_t {
     int   reType;          // +0x00

@@ -31,6 +31,28 @@ void IGOFrontEnd::UpdateAfterWeaponsLoaded()
     // stub
 }
 
+// PathNodeMgr stubs (mp_actors.o / path.o; ported later)
+void PathNodeMgr::InitPaths() {}
+void PathNodeMgr::ValidateAllNodes() {}
+void PathNodeMgr::SetCoverNodeStatus(Broc::string* name, int inValid)
+{
+    (void)name; (void)inValid;
+}
+void PathNodeMgr::AttachSentientToChainNode(sentient_s* pSentient,
+                                            Broc::string* targetname)
+{
+    (void)pSentient; (void)targetname;
+}
+void PathNodeMgr::ConnectPathsForEntity(Entity* ent) { (void)ent; }
+void PathNodeMgr::DisconnectPathsForEntity(Entity* ent) { (void)ent; }
+void PathNodeMgr::NodeList() {}
+void PathNodeMgr::CheckpointResetNodes() {}
+
+// SceneManager stubs (streamer.o; ported later)
+void SceneManager::ResetAllStaticModels() {}
+void SceneManager::RestartPersistentArray() {}
+void SceneManager::InstanceEntities() {}
+
 // ============================================================================
 // Cross-object externs
 // ============================================================================

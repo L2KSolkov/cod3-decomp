@@ -287,6 +287,7 @@ struct kuju_sTime {
 
 struct MPPlayerManager {
     MPPlayer* GetLocalPlayer(int nLocalPlayer);  // extern mp.o
+    MPPlayer* GetPlayer(int id);                 // extern mp.o
     MPPlayer* GetPlayer(unsigned char id);       // extern mp.o
     MPPlayerSet allPlayers();                    // extern mp.o
     void Send(bdReference<bdMessage> message, MPPlayerSet players,

@@ -324,6 +324,44 @@ void MultiplayerMgr::MeleeHit(Entity* hitEntity, Entity* attackerEntity,
     (void)surfaceType; (void)damage; (void)mod; (void)hitLocation;
 }
 
+// MPPlayerManager / MPPlayerSet stubs (mp.o; ported later)
+MPPlayer* MPPlayerManager::GetLocalPlayer(int nLocalPlayer)
+{
+    (void)nLocalPlayer;
+    return nullptr;
+}
+MPPlayer* MPPlayerManager::GetPlayer(int id)
+{
+    (void)id;
+    return nullptr;
+}
+MPPlayer* MPPlayerManager::GetPlayer(unsigned char id)
+{
+    (void)id;
+    return nullptr;
+}
+MPPlayerSet MPPlayerManager::allPlayers()
+{
+    return MPPlayerSet(0);
+}
+void MPPlayerManager::Send(bdReference<bdMessage> message, MPPlayerSet players,
+                           bool reliable)
+{
+    (void)message; (void)players; (void)reliable;
+}
+void MPPlayerManager::SendOthers(bdReference<bdMessage> message, bool reliable)
+{
+    (void)message; (void)reliable;
+}
+unsigned int MPPlayerSet::lowestPlayerIndex() const
+{
+    return 0;
+}
+unsigned int MPPlayerSet::highestPlayerIndex() const
+{
+    return 0;
+}
+
 // ============================================================================
 // MPLiveEngine
 // ============================================================================
