@@ -3181,10 +3181,6 @@ void phys_collision_allocater_ballistic_reinit()
     prop_system_collision_prolog();
 }
 
-// stub until collision_memory_prolog (0x702CB0) is ported
-void collision_memory_prolog()
-{
-}
 // prop_phys_collision (physics.o; static collision pass helpers)
 struct prop_phys_collision {
     static void get_all_collisions();  // ?get_all_collisions@prop_phys_collision@@SAXXZ
@@ -3305,6 +3301,77 @@ int   g_list_prop_collide_callback_count = 0;       // ?g_list_prop_collide_call
 phys_inplace_avl_tree<rigid_body_pair_key, prop_collide_callback>*
     g_prop_collide_callback_database = nullptr;  // ?g_prop_collide_callback_database@@3V?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@A
 extern bool tlScratchpadLocked;  // ?tlScratchpadLocked@@3_NA (tl_system.o)
+void* contact_point_info_get_cpi_allocater();  // physics.o helper
+
+// ea: 0x702CB0
+void collision_memory_prolog()
+{
+    if (tlScratchpadLocked
+        && _tlAssert("c:/cod/code/tl/base/include\\tl_system.h", 294,
+                     "!tlScratchpadLocked",
+                     "Scratchpad is already locked!"))
+        __debugbreak();
+    tlScratchpadLocked = true;
+    g_collision_memory_allocater.m_list_memory_buffer[0].set_buffer(
+        g_physics_memory_buffer, 0, 1);  // dword_12AC0 (.textbss = 0)
+    g_collision_memory_allocater.m_num_buffers = 1;
+    g_collision_memory_allocater.m_high_buffer_count = 1;
+    g_gjk_info = (phys_gjk_info*)
+        g_collision_memory_allocater.allocate(
+            816, 16, false, "phys_collision_allocater overflow.");
+    void* v0 = g_collision_memory_allocater.allocate(
+        4416, 16, false, "phys_collision_allocater overflow.");
+    phys_contact_manifold_process* v1 = nullptr;
+    if (v0 != nullptr)
+        v1 = new (v0) phys_contact_manifold_process;
+    g_cman_process = v1;
+    g_cman_process->m_cpi_allocater =
+        (phys_memory_heap*)contact_point_info_get_cpi_allocater();
+    g_list_phys_collide_data = (phys_collide_data*)
+        g_collision_memory_allocater.allocate(
+            84, 4, false, "phys_collision_allocater overflow.");
+    gjk_geom_database* v2 = (gjk_geom_database*)
+        g_collision_memory_allocater.allocate(
+            28, 4, false, "phys_collision_allocater overflow.");
+    if (v2 != nullptr)
+        v2->m_tree_root = nullptr;
+    else
+        v2 = nullptr;
+    g_gjk_geom_database = v2;
+    physics_colgeom_visitor* v3 = (physics_colgeom_visitor*)
+        g_collision_memory_allocater.allocate(
+            2064, 4, false, "phys_collision_allocater overflow.");
+    g_physics_colgeom_visitor = v3;
+    g_phys_touch_entity_data = (TouchEntityData*)
+        g_collision_memory_allocater.allocate(
+            560, 16, false, "phys_collision_allocater overflow.");
+    g_list_prop_collide_callback = (prop_collide_callback*)
+        g_collision_memory_allocater.allocate(
+            2800, 4, false, "phys_collision_allocater overflow.");
+    gjk_geom_database* v4 = g_gjk_geom_database;
+    v4->m_tree_root = nullptr;
+    v4->m_terrain_count = 0;
+    v4->m_entity_count = 0;
+    v4->m_actor_count = 0;
+    v4->m_patch_count = 0;
+    v4->m_brush_count = 0;
+    v4->m_aabb_count = 0;
+    g_list_prop_collide_callback_count = 0;
+    if (g_prop_collide_callback_database != nullptr)
+        g_prop_collide_callback_database->m_tree_root = nullptr;
+    for (int i = 0; i < g_collision_memory_allocater.m_num_buffers; ++i)
+        g_collision_memory_allocater.m_list_memory_buffer[i].m_user_start =
+            g_collision_memory_allocater.m_list_memory_buffer[i].m_buffer_cur;
+}
+
+void* contact_point_info_get_cpi_allocater()
+{
+    return nullptr;
+}
+// ?phys_contact_manifold_process@@QAE@XZ ctor stub until the manifold is ported
+phys_contact_manifold_process::phys_contact_manifold_process()
+{
+}
 
 // ea: 0x6F30F0
 TouchEntityData* generate_local_entities_list(const math::Dir3& aabb_mn,

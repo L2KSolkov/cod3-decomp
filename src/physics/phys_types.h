@@ -808,6 +808,7 @@ static_assert(offsetof(phys_contact_manifold, m_feature_hitp) == 0x00, "manifold
 // Size: 0x1140 (4416 bytes) â€” verified against IDA
 // ============================================================================
 struct phys_contact_manifold_process {
+    phys_contact_manifold_process();  // ea: 0x88E1C0
     struct bridge {
         math::Dir3 m_intersection_p;                    // +0x00
         contact_manifold_mesh_point** m_left_i;         // +0x10
