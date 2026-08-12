@@ -40,6 +40,7 @@ extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
 }
 
 namespace nuge {
@@ -83,6 +84,11 @@ class biped_phys_info;
 struct phys_gjk_geom_list;
 struct trajectory_t;
 void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
+enum hitLocation_t;
+int GetPhysBoneID(hitLocation_t id);
+void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
+                  const math::Dir3& hitd, float force, bool local_hitp,
+                  hitLocation_t hitLoc);
 enum phys_bones {
     rb_torso = 0,
     rb_head = 1,
@@ -116,6 +122,7 @@ class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
     Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z (g.o inline)
+    Entity* mWorld;               // +0x44
 };
 struct sentient_s {
     uint8_t _pad[0x38];
@@ -124,6 +131,10 @@ struct sentient_s {
 struct actor_s {
     uint8_t _pad[0x310];
     int     bIsAlive;  // +0x310 (Physics.bIsAlive)
+};
+void G_EntUnlink(Entity* ent);  // g.o
+struct tagInfoLocal {  // tagInfo_t subset (parent +0x00)
+    void* parent;
 };
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
@@ -861,7 +872,8 @@ struct refEntity {  // EntityShared subset
     uint8_t _pad2BC[0x2C4 - 0x2BC];
     int32_t  flags;              // +0x2C4
     unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
-    uint8_t _pad2CC[0x348 - 0x2CC];
+    uint8_t _pad2CC[0x344 - 0x2CC];
+    void* tagInfo;               // +0x344 (tagInfo_t*)
     int32_t nextthink;           // +0x348
     int32_t think;               // +0x34C (fn_think_e)
     uint8_t _pad350[0x355 - 0x350];
@@ -873,12 +885,19 @@ struct refEntity {  // EntityShared subset
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
     const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (game.o)
+    void set_bp_info(biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
 };
 
 // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o; stub until render.o is ported)
 void DObjGetBasePose(DObj* obj)
 {
     (void)obj;
+}
+
+// ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o; stub until ported)
+void Entity::set_bp_info(biped_phys_info* bpInfo)
+{
+    mBPInfo = bpInfo;
 }
 
 // Camera (cg.o view; minimal local copy for evaluate_effect_priority)
@@ -1675,6 +1694,8 @@ bool is_entity_stable(Entity* e);                  // ?is_entity_stable@rb_prop_
     void frame_advance(float delta_t);                 // ?frame_advance@rb_prop_system@@YAXM@Z
     void remove_entity(Entity* e);                     // ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z
     rigid_body* add_entity(Entity* e, float mass, float fric);  // ?add_entity@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@MM@Z
+    void hit_entity(Entity* e, const math::Position3& hitp,
+                    const math::Dir3& hitd, float fmag, float tmag);  // ?hit_entity@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@ABVDir3@4@MM@Z
 }
 
 // ea: 0x6FEAD0
@@ -1728,6 +1749,14 @@ rigid_body* rb_prop_system::add_entity(Entity* e, float mass, float fric)
     (void)mass;
     (void)fric;
     return nullptr;
+}
+
+// stub until rb_prop_system::hit_entity (0x6FE9B0) is ported
+void rb_prop_system::hit_entity(Entity* e, const math::Position3& hitp,
+                                const math::Dir3& hitd, float fmag,
+                                float tmag)
+{
+    (void)e; (void)hitp; (void)hitd; (void)fmag; (void)tmag;
 }
 
 // ea: 0x6FE8D0
@@ -2520,6 +2549,10 @@ public:
     void remove_rigid_body(phys_bones rb_id);  // ?remove_rigid_body@biped_system@@QAEXW4phys_bones@@@Z
     void create_bps(Entity* owner, int flags);  // ?create_bps@biped_system@@QAEXPAVEntity@@H@Z
     void epilog_frame_advance(Entity* owner, float delta_t);  // ?epilog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
+    void apply_pulse_to_bone(phys_bones bone_id, const math::Dir3& pulse);  // ?apply_pulse_to_bone@biped_system@@QAEXW4phys_bones@@ABVDir3@math@@@Z
+    void apply_pulse_to_bone(phys_bones bone_id, const math::Position3& hitp,
+                             const math::Dir3& pulse,
+                             float torque_mult);  // ?apply_pulse_to_bone@biped_system@@QAEXW4phys_bones@@ABVPosition3@math@@ABVDir3@4@M@Z
 private:
     void initialize_members();  // ?initialize_members@biped_system@@AAEXXZ
     void create_system(biped_phys_info* bp_info);  // ?create_system@biped_system@@AAEXPAVbiped_phys_info@@@Z
@@ -2561,11 +2594,15 @@ public:
     static void prolog_frame_advance_all(float delta_t);  // ?prolog_frame_advance_all@biped_phys_info@@SAXM@Z
     static void epilog_frame_advance_all(float delta_t);  // ?epilog_frame_advance_all@biped_phys_info@@SAXM@Z
     void epilog_frame_advance(float delta_t);  // ?epilog_frame_advance@biped_phys_info@@QAEXM@Z
+    void create_bp_sys(int flags);  // ?create_bp_sys@biped_phys_info@@QAEXH@Z
 private:
     void reset_bone_vel_info(float delta_t);   // ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z
     void update_bone_vel_info(float delta_t);  // ?update_bone_vel_info@biped_phys_info@@AAEXM@Z
     bool setup(Entity* owner);                 // ?setup@biped_phys_info@@AAE_NPAVEntity@@@Z
     friend biped_phys_info* create_biped_phys_info(Entity* owner);
+    friend void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
+                             const math::Dir3& hitd, float force,
+                             bool local_hitp, ::hitLocation_t hitLoc);
 public:
     void update_vel_matrices();                // ?update_vel_matrices@biped_phys_info@@QAEXXZ
     void prolog_frame_advance(float delta_t);  // ?prolog_frame_advance@biped_phys_info@@QAEXM@Z
@@ -2777,12 +2814,37 @@ void biped_phys_info::epilog_frame_advance(float delta_t)
     }
 }
 
+// stubs until biped_system pulse internals are ported (physics.o inline
+// 0xAE18B0 / 0xAE19D0)
+void biped_system::apply_pulse_to_bone(phys_bones bone_id,
+                                       const math::Dir3& pulse)
+{
+    (void)bone_id;
+    (void)pulse;
+}
+void biped_system::apply_pulse_to_bone(phys_bones bone_id,
+                                       const math::Position3& hitp,
+                                       const math::Dir3& pulse,
+                                       float torque_mult)
+{
+    (void)bone_id;
+    (void)hitp;
+    (void)pulse;
+    (void)torque_mult;
+}
+
 // ea: 0x70D210
 void biped_phys_info::epilog_frame_advance_all(float delta_t)
 {
     int count = g_list_biped_phys_info.m_alloc_count;
     for (int i = 0; i < count; ++i)
         g_list_biped_phys_info.m_alloc_list[i]->epilog_frame_advance(delta_t);
+}
+
+// stub until biped_phys_info::create_bp_sys (0x70B190) is ported
+void biped_phys_info::create_bp_sys(int flags)
+{
+    (void)flags;
 }
 
 // ea: 0x6FF7F0
@@ -3593,6 +3655,192 @@ unsigned int get_gjk_geom_id(Entity* ent)
         __debugbreak();
     // Binary: ent + v2 (Entity stride 0x470); object id encoded as address.
     return (unsigned int)((char*)ent + v2 * 0x470);
+}
+
+// ea: 0x70D380
+void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
+                  const math::Dir3& hitd, float force, bool local_hitp,
+                  hitLocation_t hitLoc)
+{
+    if ((hitp.v.m128_f32[0] != hitp.v.m128_f32[0])
+        || (hitp.v.m128_f32[1] != hitp.v.m128_f32[1])
+        || (hitp.v.m128_f32[2] != hitp.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.cpp";
+        AeAssert::gCurrentLine = 51;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((hitp)[0]) && !IS_NAN((hitp)[1]) && !IS_NAN((hitp)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((hitd.v.m128_f32[0] != hitd.v.m128_f32[0])
+        || (hitd.v.m128_f32[1] != hitd.v.m128_f32[1])
+        || (hitd.v.m128_f32[2] != hitd.v.m128_f32[2]))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.cpp";
+        AeAssert::gCurrentLine = 52;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((hitd)[0]) && !IS_NAN((hitd)[1]) && !IS_NAN((hitd)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if (force != force)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.cpp";
+        AeAssert::gCurrentLine = 53;
+        AeAssert::gCurrentExpr = "!IS_NAN(force)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if (hitEnt == nullptr || hitEnt == EntityManager::sInst->mWorld
+        || hitEnt->mDObj == nullptr)
+        return;
+    if ((hitEnt->flags & 0x2000000) != 0
+        || (hitEnt->r.contents & 0x8000) != 0)
+    {
+        biped_phys_info* bp = create_biped_phys_info(hitEnt);
+        hitEnt->set_bp_info(bp);
+    }
+    if (hitEnt->mBPInfo != nullptr)
+    {
+        phys_bones PhysBoneID = (phys_bones)GetPhysBoneID(hitLoc);
+        if (hitEnt->mBPInfo->m_bp_sys != nullptr)
+        {
+            math::Dir3 pulse;
+            pulse.v = _mm_mul_ps(hitd.v, _mm_set1_ps(force));
+            if (fabs(hitp.v.m128_f32[0]) >= 0.000099999997f
+                || fabs(hitp.v.m128_f32[1]) >= 0.000099999997f
+                || fabs(hitp.v.m128_f32[2]) >= 0.000099999997f)
+                hitEnt->mBPInfo->m_bp_sys->apply_pulse_to_bone(
+                    PhysBoneID, hitp, pulse, 1.0f);
+            else
+                hitEnt->mBPInfo->m_bp_sys->apply_pulse_to_bone(PhysBoneID,
+                                                               pulse);
+            return;
+        }
+        if (g_list_biped_system.m_alloc_count < 16
+            && phys_sys::available_slots_rigid_body() >= 10)
+        {
+            hitEnt->mBPInfo->create_bp_sys(0);
+            if (hitEnt->tagInfo != nullptr
+                && ((tagInfoLocal*)hitEnt->tagInfo)->parent != nullptr)
+                G_EntUnlink(hitEnt);
+            if (hitEnt->actor != nullptr || (hitEnt->flags & 0x2000000) != 0)
+                KillEntity(hitEnt);
+            math::Dir3 pulse;
+            pulse.v = _mm_mul_ps(hitd.v, _mm_set1_ps(force));
+            if (fabs(hitp.v.m128_f32[0]) >= 0.000099999997f
+                || fabs(hitp.v.m128_f32[1]) >= 0.000099999997f
+                || fabs(hitp.v.m128_f32[2]) >= 0.000099999997f)
+                hitEnt->mBPInfo->m_bp_sys->apply_pulse_to_bone(
+                    PhysBoneID, hitp, pulse, 1.0f);
+            else
+                hitEnt->mBPInfo->m_bp_sys->apply_pulse_to_bone(PhysBoneID,
+                                                               pulse);
+            return;
+        }
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.cpp";
+        AeAssert::gCurrentLine = 99;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "Failed to create ragdoll.  Already at max ragdolls %d.",
+                   16))
+            __debugbreak();
+        if ((hitEnt->flags & 0x2000000) != 0)
+            KillEntity(hitEnt);
+        return;
+    }
+    if (hitEnt->scr_vehicle != nullptr)
+    {
+        rb_vehicle* mRBVeh =
+            (rb_vehicle*)((scr_vehicle_t*)hitEnt->scr_vehicle)->mRBVeh;
+        if (mRBVeh != nullptr)
+            mRBVeh->unpause_physics();
+    }
+    if ((hitEnt->flags & 0x400000) != 0)
+    {
+        if (fabs(hitp.v.m128_f32[0]) >= 0.000099999997f
+            || fabs(hitp.v.m128_f32[1]) >= 0.000099999997f
+            || fabs(hitp.v.m128_f32[2]) >= 0.000099999997f)
+        {
+            if (local_hitp)
+            {
+                rigid_body* entity_rb =
+                    (rigid_body*)rb_prop_system::get_entity_rb(hitEnt);
+                math::Mat43 mat = entity_rb->m_mat;
+                math::Position3 world_hitp;
+                world_hitp.v = _mm_add_ps(
+                    _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(hitp.v, hitp.v, 0),
+                                          mat.x.v),
+                               _mm_mul_ps(_mm_shuffle_ps(hitp.v, hitp.v, 85),
+                                          mat.y.v)),
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(hitp.v, hitp.v, 170),
+                                   mat.z.v),
+                        mat.w.v));
+                rb_prop_system::hit_entity(hitEnt, world_hitp, hitd, force,
+                                           1.0f);
+            }
+            else
+            {
+                rb_prop_system::hit_entity(hitEnt, hitp, hitd, force, 1.0f);
+            }
+        }
+        else
+        {
+            rigid_body* v15 =
+                (rigid_body*)rb_prop_system::get_entity_rb(hitEnt);
+            math::Position3 v22;
+            v22.v = v15->m_mat.w.v;
+            rb_prop_system::hit_entity(hitEnt, v22, hitd, force, 1.0f);
+        }
+        return;
+    }
+    if (hitEnt->scr_vehicle == nullptr)
+        rb_prop_system::add_entity(hitEnt, -1.0f, -1.0f);
+    if ((hitEnt->flags & 0x400000) != 0)
+    {
+        if (fabs(hitp.v.m128_f32[0]) >= 0.000099999997f
+            || fabs(hitp.v.m128_f32[1]) >= 0.000099999997f
+            || fabs(hitp.v.m128_f32[2]) >= 0.000099999997f)
+        {
+            if (local_hitp)
+            {
+                rigid_body* entity_rb =
+                    (rigid_body*)rb_prop_system::get_entity_rb(hitEnt);
+                math::Mat43 mat = entity_rb->m_mat;
+                math::Position3 world_hitp;
+                world_hitp.v = _mm_add_ps(
+                    _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(hitp.v, hitp.v, 0),
+                                          mat.x.v),
+                               _mm_mul_ps(_mm_shuffle_ps(hitp.v, hitp.v, 85),
+                                          mat.y.v)),
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(hitp.v, hitp.v, 170),
+                                   mat.z.v),
+                        mat.w.v));
+                rb_prop_system::hit_entity(hitEnt, world_hitp, hitd, force,
+                                           1.0f);
+            }
+            else
+            {
+                rb_prop_system::hit_entity(hitEnt, hitp, hitd, force, 1.0f);
+            }
+        }
+        else
+        {
+            rigid_body* v15 =
+                (rigid_body*)rb_prop_system::get_entity_rb(hitEnt);
+            math::Position3 v22;
+            v22.v = v15->m_mat.w.v;
+            rb_prop_system::hit_entity(hitEnt, v22, hitd, force, 1.0f);
+        }
+    }
 }
 
 // ea: 0x7096E0
