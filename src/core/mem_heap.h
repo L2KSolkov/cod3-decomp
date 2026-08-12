@@ -5,4 +5,5 @@
 #pragma once
 
 void* mem_heap_malloc(unsigned int size);
+void* mem_heap_malloc(int alignment, unsigned int size);
 void mem_heap_free(void* ptr);

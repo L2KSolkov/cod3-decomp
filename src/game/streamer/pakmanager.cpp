@@ -9,6 +9,8 @@
 #include <string.h>
 #include <windows.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "core/mem_heap.h"
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1 };
@@ -25,7 +27,11 @@ bool Error(const char* fmt, ...);
 enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 #define PAK_ID_INVALID ((TPakId)-1)
 #define PAK_ID_MIN ((TPakId)0)
-enum EPakType { kPakTypeGlobal = 0 };
+enum EPakType {
+    kPakTypeGlobal = 0,
+    kPakTypeFrontEnd = 1,
+    kPakTypeCount = 2,
+};
 class NumBanks {
 public:
     unsigned int mNumBanks;
@@ -37,10 +43,86 @@ struct ae_sized_array {
     int m_size;       // +N*sizeof(T)
 };
 
+// PakHeader (streamer.o PakFile.h; 48 bytes)
+struct PakHeader {
+    struct Section {
+        uint8_t _pad[0x0E];
+        uint16_t numFiles;  // +0x0E
+    };
+
+    unsigned int id;             // +0x00
+    float        version;        // +0x04
+    Section*     sections;       // +0x08
+    unsigned int numSections;    // +0x0C
+    unsigned int persistentSize; // +0x10
+    unsigned int headerShortSize; // +0x14
+    unsigned int headerLongSize; // +0x18
+    char         packedBy[16];   // +0x1C
+    unsigned int packedInfo;     // +0x2C
+
+    void FixDown();  // ?FixDown@PakHeader@@QAEXXZ (streamer.o 0x666F40; stub)
+    void FixUp(bool persistentFixup, int doByteSwap);  // ?FixUp@PakHeader@@QAEXXZ (streamer.o; stub)
+};
+
+// LoadStats (streamer.o PakFile.h; 32 bytes)
+struct LoadStats {
+    uint64_t totalStart;   // +0x00
+    float    total;        // +0x08
+    uint64_t readStart;    // +0x10
+    float    readTotal;    // +0x18
+};
+
+// nfl (nfl_xboxr) request state/id enums
+enum nflRequestState {
+    NFL_REQUEST_STATE_INVALID = -1,
+    NFL_REQUEST_STATE_COMPLETED = 0,
+    NFL_REQUEST_STATE_CANCELED = 1,
+    NFL_REQUEST_STATE_TIMEOUT = 2,
+    NFL_REQUEST_STATE_ERROR = 3,
+    NFL_REQUEST_STATE_ACTIVE = 4,
+};
+typedef unsigned int nflRequestID;
+typedef int nflFileID;
+#define NFL_REQUEST_ID_INVALID ((nflRequestID)-1)
+// nfl.cpp defines nflRequestState as unsigned; match its mangled symbol
+extern unsigned int nflGetRequestState(unsigned int requestID);
+
+struct PakInfoNode;
+
+// PakFile (streamer.o PakFile.h; 276 bytes, verified IDA)
 class PakFile {
 public:
-    uint8_t _pad[0xFC];
-    int mState;  // +0xFC PakFile::EState (0 = loaded, 1 = loading, 2 = unloading)
+    enum EState { LOADED = 0, LOADING = 1, UNLOADING = 2 };
+    enum ELoadingState { LOADING_HEADER = 0, LOADING_DATA = 2 };
+
+    struct TRequestId {
+        nflRequestID nflId;  // +0x00
+    };
+
+    uint8_t      _pad0[0x08];           // m_dlist_node
+    const char*  mCurrDecodeFile;       // +0x08
+    uint8_t      _pad0C[0x4C - 0x0C];   // mPath (64)
+    EPakType     mPakType;              // +0x4C
+    unsigned int mFilesize;             // +0x50
+    nflFileID    mFileId;               // +0x54
+    uint8_t      _pad58[0x78 - 0x58];   // mBankAlloc/mSerializedAlloc
+    TPakId       mPakId;                // +0x78
+    const PakInfoNode* mPakInfo;        // +0x7C
+    PakHeader*   mHeader;               // +0x80
+    int          mDefaultSectionIdx;    // +0x84
+    unsigned char* mHeaderBuffer;       // +0x88
+    TRequestId   mHeaderRequestId;      // +0x8C
+    uint8_t      _pad90[0xE8 - 0x90];   // mApkFiles/mCloseHandle/mOnlyLoadHeader/mHeapList/mPrereqHeaps
+    unsigned int mCurrentFile;          // +0xE8
+    unsigned char* mCurrentFilePtr;     // +0xEC
+    uint8_t      _padF0[0xFC - 0xF0];   // mCurrentApk/mCurrentApkFileEntry/mCurrentApkFileTypeEntry
+    EState       mState;                // +0xFC
+    ELoadingState mLoadingState;        // +0x100
+    uint8_t      _pad104[0x110 - 0x104];  // mLooseFiles
+    LoadStats*   mLoadStats;            // +0x110
+
+    static unsigned char* sHeaderBuffer;  // ?sHeaderBuffer@PakFile@@0PAEA
+    static bool sHeaderBufferUsed;        // ?sHeaderBufferUsed@PakFile@@0_NA
 
     // ?MemAlloc@PakFile@@QAEPAXII_N@Z (streamer.o 0x671F10; stub)
     void* MemAlloc(unsigned int align, unsigned int size, bool search_prereqs)
@@ -48,7 +130,28 @@ public:
         (void)align; (void)search_prereqs;
         return malloc(size ? size : 1);
     }
+
+    // ea: 0x664B90
+    float GetLoadTime() const;
+    // ea: 0x664BC0
+    float GetProgress() const;
+    // ea: 0x664C30
+    bool IsCancelOk() const;
+    // ea: 0x664C40
+    void CopyHeader();
+    // ea: 0x664E50
+    const PakInfoNode* GetInfo();
+    // ea: 0x664E80
+    void ValidateRange(void* data);
+    // ea: 0x664EC0
+    bool IsRequestValid(TRequestId* req) const;
+    // ea: 0x664EE0
+    void SetRequestInvalid(TRequestId* req) const;
+    // ea: 0x664EF0
+    bool IsRequestDone(TRequestId* requestId) const;
 };
+
+struct PakInfoNode;
 
 struct PakInfoNode {
     uint8_t _pad[0xBC];
@@ -88,6 +191,7 @@ public:
     TThreadedPakContextStack mContextStack[1];  // +0x4398
 
     static PakManager* sInst;          // ?sInst@PakManager@@2PAV1@A (sv_globals.cpp)
+    int mDebugRenderMode;              // +0x00 (first member; TogglePakRender)
     static unsigned int sComputeDistanceKey;  // ?sComputeDistanceKey@PakManager@@0IA
     static float sBrocPercentage;      // ?sBrocPercentage@PakManager@@0MA
     static float sWbkPercentage;       // ?sWbkPercentage@PakManager@@0MA
@@ -148,6 +252,31 @@ public:
     // - ea: 0x665960 (stub)
     const PakInfoNode* GetPakInfo(const char* long_name) const;
 };
+
+// InstanceBankMgr (streamer.o; mEntries[99] @ +0x34)
+class InstanceBankMgr {
+public:
+    uint8_t _pad[0x34];
+    void*   mEntries[99];  // +0x34 (InstanceBankSet*[99])
+
+    void ReleaseInstanceBank(TPakId pakId);  // ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z
+};
+
+// ae_heap (core_xboxr; vtable+4 = Malloc(unsigned size, int align))
+class ae_heap {
+public:
+    void** __vftable;  // +0x00
+    void* Malloc(unsigned int size, int alignment);
+};
+extern ae_heap* gActorHeap;  // ?gActorHeap@@3PAVae_heap@@A @ 0xF00E5C
+
+// Cross-object stubs (ae_heap core_xboxr; ported with core)
+void* ae_heap::Malloc(unsigned int size, int alignment)
+{
+    (void)size; (void)alignment;
+    return nullptr;
+}
+ae_heap* gActorHeap = nullptr;
 
 // ea: 0x8A39E0 (core.o inline)
 void PakManager::CreateInst()
@@ -380,4 +509,267 @@ void ValidatePakId(TPakId pakId)
         if (!AeAssert::IsIgnored() && AeAssert::Warning("bad/old pak id"))
             __debugbreak();
     }
+}
+
+// ============================================================================
+// PakFile small accessors (streamer.o PakFile.cpp)
+// ============================================================================
+
+unsigned char* PakFile::sHeaderBuffer = nullptr;
+bool PakFile::sHeaderBufferUsed = false;
+
+// ea: 0x664B90
+float PakFile::GetLoadTime() const
+{
+    LoadStats* mLoadStats = this->mLoadStats;
+    if (mLoadStats != nullptr)
+        return mLoadStats->total;
+    return 0.0f;
+}
+
+// streamer.o PakHeader helpers (cross-object; stub until PakHeader ports)
+void PakHeader::FixDown() {}
+void PakHeader::FixUp(bool persistentFixup, int doByteSwap)
+{
+    (void)persistentFixup; (void)doByteSwap;
+}
+
+// ea: 0x664BC0
+float PakFile::GetProgress() const
+{
+    if (mState != LOADING)
+        return 1.0f;
+    if (mLoadingState == LOADING_DATA)
+        return (float)mCurrentFile
+               / mHeader->sections[mDefaultSectionIdx].numFiles;
+    return 0.0f;
+}
+
+// ea: 0x664C30
+bool PakFile::IsCancelOk() const
+{
+    return mLoadingState == LOADING_DATA;
+}
+
+// ea: 0x664C40
+void PakFile::CopyHeader()
+{
+    PakHeader* copy;
+    if (mPakType == kPakTypeFrontEnd)
+        copy = (PakHeader*)gActorHeap->Malloc(mHeader->persistentSize, 4);
+    else
+        copy = (PakHeader*)mem_heap_malloc(mHeader->persistentSize);
+    mHeader->FixDown();
+    memcpy(copy, mHeader, mHeader->persistentSize);
+    sHeaderBufferUsed = false;
+    mHeaderBuffer = (unsigned char*)copy;
+    mHeader = copy;
+    copy->FixUp(true, 0);
+}
+
+// ea: 0x664E50
+const PakInfoNode* PakFile::GetInfo()
+{
+    if (mPakType == kPakTypeCount)
+        return nullptr;
+    if (mPakInfo == nullptr)
+        mPakInfo = PakManager::sInst->GetPakInfo(mPakId);
+    return mPakInfo;
+}
+
+// ea: 0x664E80
+void PakFile::ValidateRange(void* data)
+{
+    (void)data;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+    AeAssert::gCurrentLine = 1821;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("trying to free data not inside bank!"))
+        __debugbreak();
+}
+
+// ea: 0x664EC0
+bool PakFile::IsRequestValid(TRequestId* req) const
+{
+    return req->nflId != NFL_REQUEST_ID_INVALID;
+}
+
+// ea: 0x664EE0
+void PakFile::SetRequestInvalid(TRequestId* req) const
+{
+    req->nflId = NFL_REQUEST_ID_INVALID;
+}
+
+// ea: 0x664EF0
+bool PakFile::IsRequestDone(TRequestId* requestId) const
+{
+    int RequestState = (int)nflGetRequestState(requestId->nflId);
+    switch ((nflRequestState)RequestState)
+    {
+    case NFL_REQUEST_STATE_INVALID:
+    case NFL_REQUEST_STATE_COMPLETED:
+        break;
+    case NFL_REQUEST_STATE_CANCELED:
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 2391;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("nfl request was cancelled"))
+            __debugbreak();
+        break;
+    case NFL_REQUEST_STATE_TIMEOUT:
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 2394;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("nfl request was timeout"))
+            __debugbreak();
+        break;
+    case NFL_REQUEST_STATE_ERROR:
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 2397;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("nfl request was error"))
+            __debugbreak();
+        break;
+    default:
+        if (RequestState != NFL_REQUEST_STATE_ACTIVE)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+            AeAssert::gCurrentLine = 2400;
+            AeAssert::gCurrentExpr = "request_state == NFL_REQUEST_STATE_ACTIVE";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("sanity check"))
+                __debugbreak();
+        }
+        break;
+    }
+    return RequestState == NFL_REQUEST_STATE_INVALID;
+}
+
+// ============================================================================
+// Free streamer helpers (streamer.o)
+// ============================================================================
+
+// ea: 0x664000
+const char* GetFileExt(const char* name)
+{
+    const char* result = name;
+    if (*name != 0)
+    {
+        do
+            ++result;
+        while (*result != 0);
+    }
+    if (*result != '.')
+    {
+        do
+        {
+            if (result <= name)
+                break;
+            --result;
+        } while (*result != '.');
+    }
+    return result;
+}
+
+// ea: 0x665080
+unsigned char* stream_alloc(int size, bool aram)
+{
+    if (size == 0)
+        return nullptr;
+    if (size <= 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 64;
+        AeAssert::gCurrentExpr = "size > 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("invalid size"))
+            __debugbreak();
+    }
+    if (aram)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 66;
+        AeAssert::gCurrentExpr = "!aram";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("attempting to allocate from aram!"))
+            __debugbreak();
+    }
+    void* v4 = mem_heap_malloc(4096, size);
+    if (v4 == nullptr)
+    {
+        char msg_buff[128];
+        sprintf(msg_buff, "stream_alloc: out of memory! %d", size);
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 121;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error(msg_buff))
+            __debugbreak();
+    }
+    return (unsigned char*)v4;
+}
+
+// ea: 0x6651A0
+void stream_free(unsigned char* ptr)
+{
+    if (PakFile::sHeaderBuffer == ptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 133;
+        AeAssert::gCurrentExpr = "PakFile::sHeaderBuffer != ptr";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("trying to free reserved buffer"))
+            __debugbreak();
+    }
+    if (ptr != nullptr)
+        mem_heap_free(ptr);
+}
+
+// ea: 0x6652B0 / 0x665320 / 0x665330 / 0x665340 (empty no-ops)
+void DecodeGrassInfo(const char* name, unsigned char* data, int size,
+                     TPakId pakId)
+{
+    (void)name; (void)data; (void)size; (void)pakId;
+}
+void DecodeSPT(const char* name, unsigned char* data, int size, TPakId pakId)
+{
+    (void)name; (void)data; (void)size; (void)pakId;
+}
+void DecodeWIND(const char* name, unsigned char* data, int size, TPakId pakId)
+{
+    (void)name; (void)data; (void)size; (void)pakId;
+}
+void DecodeSEED(const char* name, unsigned char* data, int size, TPakId pakId)
+{
+    (void)name; (void)data; (void)size; (void)pakId;
+}
+
+// ea: 0x665350
+void InstanceBankMgr::ReleaseInstanceBank(TPakId pakId)
+{
+    if (pakId >= 0 && pakId < 99)
+        mEntries[pakId] = nullptr;
+}
+
+// ea: 0x665370
+PakManager* TogglePakRender()
+{
+    PakManager::sInst->mDebugRenderMode ^= 1;
+    return PakManager::sInst;
+}
+
+// ea: 0x665390
+unsigned long PakGetThreadId()
+{
+    return GetCurrentThreadId();
 }
