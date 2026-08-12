@@ -38,9 +38,17 @@ extern unsigned char* SceneBank_PersistentStorage(void* self,
     // InplaceVector<unsigned char>::operator[] (streamer.o)
 extern TPakId CurPakId();  // ?CurPakId@@YA?AW4TPakId@@XZ
 extern void ValidatePakId(TPakId pakId);  // ?ValidatePakId@@YAXW4TPakId@@@Z
-extern IVPointer<Destructible> DestructibleBankManager_GetDestructible(
-    void* self, TPakId pak_id, const char* name);
-    // ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z
+// ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z
+// (physics.o 0x705CD0; InplaceAssetBankSet::Find not ported yet)
+IVPointer<Destructible> DestructibleBankManager_GetDestructible(
+    void* self, TPakId pak_id, const char* name)
+{
+    (void)self; (void)pak_id; (void)name;
+    IVPointer<Destructible> d;
+    d.mValue = nullptr;
+    d.mPakId = pak_id;
+    return d;
+}
 extern void Destructible_CheckpointExplode(Destructible* self);
     // ?CheckpointExplode@Destructible@@QAEXXZ
 
