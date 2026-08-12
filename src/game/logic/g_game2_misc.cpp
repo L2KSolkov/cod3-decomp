@@ -1807,6 +1807,10 @@ extern void apsEffect_GetBounds(apsEffect* self, apsBounds& iBounds);
 extern void DebugRender_RenderSphere(const math::Position3* pos, float radius,
                                      const float* argb_color);
 extern void ae_vector_erase(void* self, int idx);  // ?erase@?$ae_vector@USmokeGrenadeInfo
+void ae_vector_erase(void* self, int idx)
+{
+    (void)self; (void)idx;
+}
 
 void SmokeGrenadeMgr::Update(float deltaT)
 {
@@ -2199,6 +2203,11 @@ struct DroneAEMap {
 DroneAEMap gDroneAEMap;  // ?gDroneAEMap@@3V?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@A (game2.o @ 0x12F45E0)
 extern void ae_vector_push_back_handle(DroneHandleVec* self,
     const DbLinkedHandle<EntityHandleDb, Entity>* elem);
+void ae_vector_push_back_handle(DroneHandleVec* self,
+                                const DbLinkedHandle<EntityHandleDb, Entity>* elem)
+{
+    (void)self; (void)elem;
+}
 extern void ae_sized_array_push_back_pair(DroneAEMap* self,
     ae_pair<unsigned int, DroneHandleVec*>* const* elt);
 extern void* mem_heap_malloc_sz(unsigned int size);
@@ -2521,6 +2530,11 @@ Entity* _Return_MF_UnderCrossHair()
 // SmokeGrenadeMgr::AddSmokeGrenade - ea: 0x4FFBD0
 // ============================================================================
 extern void ae_vector_push_back_smoke(DroneHandleVec* self, const SmokeGrenadeInfo* elem);
+void ae_vector_push_back_smoke(DroneHandleVec* self,
+                               const SmokeGrenadeInfo* elem)
+{
+    (void)self; (void)elem;
+}
 
 void SmokeGrenadeMgr::AddSmokeGrenade(const SmokeGrenadeInfo* smokeGrenInfo)
 {

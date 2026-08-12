@@ -14,7 +14,12 @@ struct GamePause { static bool IsGamePaused(int client); };
 
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
-class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice@@2PAV1@A
+class SoundDevice {
+public:
+    static SoundDevice* sInst;  // ?sInst@SoundDevice@@2PAV1@A
+    void SetListenerVectors(int listener, const math::Position3& position,
+                            const math::Dir3& front, const math::Dir3& up);
+};
 
 
 extern const char* CL_GetConfigString(int index);  // ?CL_GetConfigString@@YAPBDH@Z (cl.o)
@@ -327,10 +332,6 @@ extern void CL_SetUserCmdAimValues(float gunPitch, float gunYaw,
                                    float gunZOfs);
 extern void R_ToggleSmpFrame();
 extern void CG_DrawViewportFrames(int numViewports);
-extern void SoundDevice_SetListenerVectors(void* self, int listener,
-                                           const float* position,
-                                           const float* front,
-                                           const float* up);
 // ?GetNumberOfListeners@SoundDevice@@QAEHXZ (game.o 0x602B10; stub)
 int SoundDevice_GetNumberOfListeners(void* self)
 {
@@ -1946,8 +1947,9 @@ void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
         g_TestForward[0] = dword_F63C70[1580 * currCl] + testFwd[0] * 10.0f;
         g_TestForward[1] = dword_F63C74[1580 * currCl] + testFwd[1] * 10.0f;
         g_TestForward[2] = dword_F63C78[1580 * currCl] + testFwd[2] * 10.0f;
-        SoundDevice_SetListenerVectors(SoundDevice::sInst, curListener,
-                                       listenerPos, front, up);
+        SoundDevice::sInst->SetListenerVectors(
+            curListener, *(const math::Position3*)listenerPos,
+            *(const math::Dir3*)front, *(const math::Dir3*)up);
         ++curListener;
         curListener %= SoundDevice_GetNumberOfListeners(SoundDevice::sInst);
     }

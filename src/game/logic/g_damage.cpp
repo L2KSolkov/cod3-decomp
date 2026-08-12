@@ -397,7 +397,7 @@ label_121:
                     if (v35 > damageForceMax)
                         v35 = damageForceMax;
                     ValidatePakId((TPakId)targ->mDestructible.mPakId);
-                    Destructible::DoDamage(mValue, targ, v35, &pos, (const float*)&norm, mod, false);
+                    mValue->DoDamage(targ, (float)v35, pos, norm, mod, false);
                 }
                 int v36 = targ->health - v32;
                 targ->health = v36;
@@ -1291,4 +1291,15 @@ label_88:
         G_AddEvent(ent, 206, v29);
         ent->s.scale = (trace->surfaceFlags >> 20) & 0x1F;
     }
+}
+
+// Destructible::DoDamage (physics.o; stub, port later)
+bool Destructible::DoDamage(Entity* ent, float damage,
+                            const math::Position3& hitp,
+                            const math::Dir3& hitd, int meansOfDeath,
+                            bool scriptExplode)
+{
+    (void)ent; (void)damage; (void)hitp; (void)hitd;
+    (void)meansOfDeath; (void)scriptExplode;
+    return false;
 }

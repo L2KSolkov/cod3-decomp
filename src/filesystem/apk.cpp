@@ -33,6 +33,19 @@ bool _tlAssert(const char* file, int line, const char* cond, const char* msg)
     (void)file; (void)line; (void)cond; (void)msg;
     return false;
 }
+void* tlMemAlloc(uint32_t size, uint32_t align, uint32_t flags)
+{
+    (void)size; (void)align; (void)flags;
+    return nullptr;
+}
+void tlMemFree(void* ptr)
+{
+    (void)ptr;
+}
+void tlWarning(const char* fmt, ...)
+{
+    (void)fmt;
+}
 }  // namespace apk
 
 // ============================================================================

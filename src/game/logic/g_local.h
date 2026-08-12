@@ -3576,9 +3576,9 @@ public:
     int           mPakId;   // +0x04
 };
 struct Destructible {
-    static void DoDamage(Destructible* self, Entity* ent, int damage,
-                         const math::Position3* hitp, const float* hitd,
-                         int meansOfDeath, bool scriptExplode);
+    bool DoDamage(Entity* ent, float damage, const math::Position3& hitp,
+                  const math::Dir3& hitd, int meansOfDeath,
+                  bool scriptExplode);  // ?DoDamage@Destructible@@QAE_NPAVEntity@@MABVPosition3@math@@ABVDir3@4@H_N@Z
     static void Initialize(Destructible* self, Entity* ent, bool reInit);
 };
 

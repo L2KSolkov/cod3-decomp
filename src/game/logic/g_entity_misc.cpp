@@ -1514,6 +1514,40 @@ void cFreeList_Shutdown(void* freelist)
     (void)freelist;
 }
 
+void ae_vector_push_back_uint(ae_vector<unsigned int>* self,
+                              const unsigned int* elem)
+{
+    (void)self; (void)elem;
+}
+void ae_vector_push_back_funcptr(
+    ae_vector<void (__cdecl*)(Broc::entity)>* self,
+    void (__cdecl* const* elem)(Broc::entity))
+{
+    (void)self; (void)elem;
+}
+// DObj::GetBaseRelMat (render.o; stub)
+const math::Mat43::Packed& DObj::GetBaseRelMat(int boneIndex)
+{
+    (void)boneIndex;
+    static math::Mat43::Packed zero = {};
+    return zero;
+}
+void CGBankManager_DebugRender_impl(void* self)
+{
+    (void)self;
+}
+// DynamicDecalMgr::Add (render.o; stub - artifact signature matches the
+// void* view in g_local.h until the nglTexture/Color types are wired)
+void DynamicDecalMgr::Add(void* texture, float zBias, bool alphaBlend,
+                          int maxNum, const math::Position3& pos,
+                          const math::Position3& normal, float radius,
+                          float angle, const float* color, bool isHighPriority)
+{
+    (void)texture; (void)zBias; (void)alphaBlend; (void)maxNum;
+    (void)pos; (void)normal; (void)radius; (void)angle; (void)color;
+    (void)isHighPriority;
+}
+
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {
 void Init() {}
