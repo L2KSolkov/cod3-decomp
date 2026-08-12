@@ -141,6 +141,11 @@ extern int currCl;
 extern int level_time;
 extern void* EntityManager_sInst;
 extern void* EntityManager_GetPlayer(void* inst, int idx);
+void* EntityManager_GetPlayer(void* inst, int idx)
+{
+    (void)inst; (void)idx;
+    return nullptr;
+}
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h; mData defined
 // in g_entity_misc.cpp).
 struct GamePause {
@@ -167,6 +172,39 @@ extern void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle han
                                       float ramp_down_duration,
                                       Broc::string rumble_notes, int looping);
 extern void RumbleEffectInstance_Dtor(void* self);
+
+// RumbleEffect / pool artifacts (core.o; stubs, port later)
+void* PoolAllocator_Allocate(void* allocator, unsigned int s,
+                             bool forceHeapAlloc)
+{
+    (void)allocator; (void)s; (void)forceHeapAlloc;
+    return nullptr;
+}
+void PoolAllocator_Release(void* allocator, void* ptr)
+{
+    (void)allocator; (void)ptr;
+}
+Broc::string RumbleEffect_GetNotes(const RumbleEffect* self, int rumbleID)
+{
+    (void)self; (void)rumbleID;
+    return Broc::string((Broc::string::Block*)nullptr);
+}
+void RumbleEffectInstance_Ctor(void* self, RumbleEffectInstanceHandle handle,
+                               float delay, float intensity,
+                               float base_intensity,
+                               float ramp_up_duration,
+                               float steady_duration,
+                               float ramp_down_duration,
+                               Broc::string rumble_notes, int looping)
+{
+    (void)self; (void)handle; (void)delay; (void)intensity;
+    (void)base_intensity; (void)ramp_up_duration; (void)steady_duration;
+    (void)ramp_down_duration; (void)rumble_notes; (void)looping;
+}
+void RumbleEffectInstance_Dtor(void* self)
+{
+    (void)self;
+}
 
 // ea: 0x004BD110
 RumbleEffectInstanceHandle RumbleManager::BumpHandle()

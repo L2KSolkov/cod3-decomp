@@ -1869,6 +1869,55 @@ void GamePause_SetAllPaused(bool paused)
     GamePause::SetAllPaused(paused);
 }
 
+// EntityManager_GetPlayer* artifacts (cl.o/cg.o surface; stubs, port later).
+// Distinct manglings by return tag; each maps to EntityManager::GetPlayer.
+struct entity_view2 {
+    struct { float v[4]; } currentOrigin;
+    void* client;
+};
+struct EntityView {
+    void* client;
+};
+struct EntityView2 {
+    void* client;
+};
+struct EntityView5 {
+    void* client;
+};
+EntityView2* EntityManager_GetPlayer2(void* inst, int idx)
+{
+    (void)inst; (void)idx;
+    return nullptr;
+}
+void* EntityManager_GetPlayer3(void* inst, int idx)
+{
+    (void)inst; (void)idx;
+    return nullptr;
+}
+EntityView5* EntityManager_GetPlayer5(void* inst, int idx)
+{
+    (void)inst; (void)idx;
+    return nullptr;
+}
+
+// shell.o / render.o helpers (stubs, port later)
+unsigned int SEH_ReadCharFromString(const char** pszPointer, int* advanced)
+{
+    (void)pszPointer; (void)advanced;
+    return 0;
+}
+const char* CG_SafeTranslateString_Internal(const char* string,
+                                            const char* defaultString)
+{
+    (void)string; (void)defaultString;
+    return "";
+}
+void* XModelParts_GetAnimDef(void* self)
+{
+    (void)self;
+    return nullptr;
+}
+
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {
 void Init() {}

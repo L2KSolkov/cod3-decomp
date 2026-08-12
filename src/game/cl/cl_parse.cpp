@@ -181,6 +181,11 @@ struct entity_view2 {
     void* client;
 };
 extern entity_view2* EntityManager_GetPlayer(void* inst, int idx);
+entity_view2* EntityManager_GetPlayer(void* inst, int idx)
+{
+    (void)inst; (void)idx;
+    return nullptr;
+}
 void* EntityManager_sInst;  // ?EntityManager_sInst (cl.o artifact PAXA)
 struct trGlobals_t {
     void* world;
@@ -218,7 +223,7 @@ struct clSnapshotEntry2 {
     int parseEntitiesNum;
     unsigned char ps[1024];
 };
-extern clSnapshotEntry2 cl_snapshots[2][4];
+clSnapshotEntry2 cl_snapshots[2][4];  // ?cl_snapshots@@3PAY03UclSnapshotEntry2@@A (cl.o)
 
 // Renderer export/import interfaces (cl.o cl_main.cpp)
 struct refimport_t2 {

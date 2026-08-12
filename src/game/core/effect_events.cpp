@@ -238,6 +238,32 @@ extern unsigned int SoundDevice_QueueSound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,
     const math::Position3* pos, const math::Position3* dir, float volume,
     float pitch, float minRange, float maxRange);
+// SoundDevice free artifacts (sound.o surface; stubs, port later)
+unsigned int SoundDevice_FindWave(void* sInst, const char* name)
+{
+    (void)sInst; (void)name;
+    return (unsigned int)-1;
+}
+unsigned int SoundDevice_PlaySound(
+    unsigned int wave, unsigned int entHandle, bool important, int a5,
+    const math::Position3* pos, const math::Position3* dir, float volume,
+    float pitch, float minRange, float maxRange)
+{
+    (void)wave; (void)entHandle; (void)important; (void)a5;
+    (void)pos; (void)dir; (void)volume; (void)pitch;
+    (void)minRange; (void)maxRange;
+    return 0;
+}
+unsigned int SoundDevice_QueueSound(
+    unsigned int wave, unsigned int entHandle, bool important, int a5,
+    const math::Position3* pos, const math::Position3* dir, float volume,
+    float pitch, float minRange, float maxRange)
+{
+    (void)wave; (void)entHandle; (void)important; (void)a5;
+    (void)pos; (void)dir; (void)volume; (void)pitch;
+    (void)minRange; (void)maxRange;
+    return 0;
+}
 // ?Sound_GetStartingVolume@@YAMPAX@Z artifact (sound.o; stub)
 float Sound_GetStartingVolume(void* sound)
 {

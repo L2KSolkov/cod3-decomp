@@ -78,6 +78,16 @@ void movie_manager::load_and_play_movie(const char* movie_name,
 void movie_manager::frame_advance() {}
 void movie_manager::render() {}
 
+// AeThreadManager (core.o; stubs, port later)
+void AeThreadManager::Execute(float deltaT)
+{
+    (void)deltaT;
+}
+void AeThreadManager::KillAllThreads()
+{
+    // stub
+}
+
 // ============================================================================
 // Cross-object externs
 // ============================================================================

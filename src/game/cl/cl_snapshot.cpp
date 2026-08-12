@@ -98,7 +98,7 @@ struct clSnapshotEntry {
 };
 // Extend the cl[] view: snap.messageNum/serverTime + snapshots[] ring
 int cl_parseEntitiesNum[2];  // cl.o BSS
-extern clSnapshotEntry cl_snapshots[2][4];
+clSnapshotEntry cl_snapshots[2][4];  // ?cl_snapshots@@3PAY03UclSnapshotEntry@@A (cl.o)
 
 // ============================================================================
 // Snapshot getters

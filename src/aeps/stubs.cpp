@@ -39,3 +39,45 @@ apsSphere apsBounds::Sphere() const
     return s;
 }
 apsClient::~apsClient() {}
+bool apsClient::GetLightInfoAtPosition(const math::Dir3& iPosition,
+                                       apsLight::LightInfo& oInfo)
+{
+    (void)iPosition; (void)oInfo;
+    return false;
+}
+
+// apsEffect / apsCommon free artifacts (render.o; stubs, port later)
+#include "apsEffect.h"
+#include "apsCommon.h"
+struct apsStats {
+    int numActiveEffects;       // +0x00
+    int maxRequestedBlockSize;  // +0x04
+    int numActiveParticles;     // +0x08
+    int maxActiveParticles;     // +0x0C
+};
+unsigned int apsEffect_IsDone(apsEffect* self)
+{
+    (void)self;
+    return 1;
+}
+void apsEffect_GetBounds(apsEffect* self, apsBounds& iBounds)
+{
+    (void)self; (void)iBounds;
+}
+void apsGetStats(apsStats& stats)
+{
+    (void)stats;
+}
+void apsInitParticleMemory(int memSize, bool bBigBuffers)
+{
+    (void)memSize; (void)bBigBuffers;
+}
+void* apsMemAlloc(unsigned int size, unsigned int align, unsigned int flags)
+{
+    (void)size; (void)align; (void)flags;
+    return nullptr;
+}
+void apsMemFree(void* ptr)
+{
+    (void)ptr;
+}

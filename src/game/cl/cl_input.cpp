@@ -155,6 +155,11 @@ struct EntityView {
     void* client;
 };
 extern EntityView* EntityManager_GetPlayer(void* inst, int idx);
+EntityView* EntityManager_GetPlayer(void* inst, int idx)
+{
+    (void)inst; (void)idx;
+    return nullptr;
+}
 extern void* EntityManager_sInst;
 
 // ============================================================================
