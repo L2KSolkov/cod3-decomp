@@ -14,6 +14,17 @@ extern void InplaceAssetBankSet_Find_ConfigString(void* self,
                                                  ConfigStringPtr* result,
                                                  TPakId pakId, const char* key,
                                                  void* formal, void* foundPakId);
+// ?InplaceAssetBank_Fixup_ConfigString@@YAXPAUConfigStringBank@@@Z (stub)
+void InplaceAssetBank_Fixup_ConfigString(ConfigStringBank* data)
+{
+    (void)data;
+}
+// ?InplaceAssetBankSet_AddBank_ConfigString@@YAXPAXW4TPakId@@PAUConfigStringBank@@@Z (stub)
+void InplaceAssetBankSet_AddBank_ConfigString(void* self, TPakId pakId,
+                                              ConfigStringBank* bank)
+{
+    (void)self; (void)pakId; (void)bank;
+}
 extern void InplaceAssetBankSet_PredicateSearch_ConfigString(
     void* self, ConfigStringPtr* result, TPakId pakId, void* op, void* formal);
 

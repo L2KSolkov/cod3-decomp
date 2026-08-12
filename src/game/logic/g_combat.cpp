@@ -13,7 +13,8 @@ class RumbleEffectInstanceHandle {
 public:
     int mVal;  // +0x00
 };
-struct RumbleManager {
+class RumbleManager {
+public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
     RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
 };

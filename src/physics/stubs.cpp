@@ -91,3 +91,11 @@ void pulse_sum_constraint_solver::create_hinge(
     (void)b1; (void)b1_axis; (void)b2; (void)b2_axis; (void)a1; (void)a2;
     (void)ps_cache; (void)delta_t;
 }
+
+// construct_orth_ud (rbc_def_ragdoll.o inline; stub)
+const math::Dir3 construct_orth_ud(const math::Dir3& v, const math::Dir3& ud)
+{
+    (void)v; (void)ud;
+    math::Dir3 r = {};
+    return r;
+}

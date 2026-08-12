@@ -47,7 +47,8 @@ InteractionController* InteractionController::Inst(int instance)
 
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
-struct RumbleManager {
+class RumbleManager {
+public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
 };
 

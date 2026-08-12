@@ -96,6 +96,11 @@ extern float gLastGrenadeTimeLeft;    // game.o @ 0xF4EC08
 extern float ratio;                   // game.o @ 0xF4EC10
 extern int gInteractArmsWeaponIndex;  // game.o @ 0xF4EBF4
 extern PlayerState* GetPlayerState(int idx);  // ?GetPlayerState@@YAAAVPlayerState@@H@Z
+PlayerState* GetPlayerState(int idx)  // ?GetPlayerState@@YAPAVPlayerState@@H@Z (stub)
+{
+    (void)idx;
+    return nullptr;
+}
 extern void PM_UpdateAimDownSightLerp();      // game.o 0x62F670
 extern int BG_WeaponAmmo(const PlayerState* pPS, int iWeapon);  // game.o 0x607A70
 extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
@@ -2835,6 +2840,18 @@ extern void PM_CheckLadderMove();                 // game.o 0x63DDF0
 extern void PM_FoliageSounds();                   // game.o 0x63D100
 extern void PM_WaterEvents();                     // game.o 0x606280
 extern void PM_DropTimers();                      // game.o 0x606320
+// PM move-mode stubs (game.o; port later)
+void PM_Footsteps() {}
+void PM_WalkMove(const collision_context_t& context) { (void)context; }
+void PM_AirMove(const collision_context_t& context) { (void)context; }
+void PM_GroundTrace() {}
+void PM_NoclipMove() {}
+void PM_UFOMove() {}
+void PM_DeadMove() {}
+void PM_CheckLadderMove() {}
+void PM_FoliageSounds() {}
+void PM_WaterEvents() {}
+void PM_DropTimers() {}
 void PM_UpdateViewAngles(
     PlayerState* ps, usercmd_s* cmd, usercmd_s* oldcmd, int msec,
     void (__cdecl* capsuleTrace)(trace_t*, const math::Position3&,

@@ -33,8 +33,7 @@ struct STBManager {
     const StringTableEntry* GetSTBEntry(TPakId pakId, unsigned int hash);
     const StringTableEntry* GetSTBEntry(unsigned int hash);
     const StringTableEntry* GetSTBEntry(const char* pszReference);
-    const char* GetSTBString(const char* pszReference) const;
-    char* GetSTBString(const char* pszReference);
+    const char* GetSTBString(const char* pszReference);  // ?GetSTBString@STBManager@@QAEPBDPBD@Z
     char* GetSTBString(unsigned int hash);
     char* GetSTBString(TPakId pakId, unsigned int hash);
     unsigned int GetSTBFlags(const char* pszReference);
@@ -43,7 +42,36 @@ struct STBManager {
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
 };
-extern STBManager* STBManager_sInst;
+// ?STBManager_sInst@@3PAUSTBManager@@A (core.o)
+STBManager* STBManager_sInst = nullptr;
+// ?sInst@ConfigStringManager@@2PAU1@A (core.o)
+ConfigStringManager* ConfigStringManager::sInst = nullptr;
+// streamer.o helpers (stubs, port later)
+unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key)
+{
+    (void)tree; (void)key;
+    return nullptr;
+}
+void* InplaceAssetBank_Index(void* bank, int i)
+{
+    (void)bank; (void)i;
+    return nullptr;
+}
+void PtrFixupTable_Fixup(void* self, void* basePtr)
+{
+    (void)self; (void)basePtr;
+}
+void InplaceAssetBankSet_AddBank_DbTableset(void* self, TPakId pak, void* bank)
+{
+    (void)self; (void)pak; (void)bank;
+}
+void InplaceAssetBankSet_Find_DbTableset(void* self, void* result,
+                                        TPakId pakId, const char* key,
+                                        void* formal, void* foundPakId)
+{
+    (void)self; (void)result; (void)pakId; (void)key;
+    (void)formal; (void)foundPakId;
+}
 
 // ea: 0x004C5D00
 const StringTableEntry* STBManager::GetSTBEntry(TPakId pakId, unsigned int hash)
@@ -92,10 +120,10 @@ const StringTableEntry* STBManager::GetSTBEntry(const char* pszReference)
 }
 
 // ea: 0x004C5E30
-char* STBManager::GetSTBString(const char* pszReference)
+const char* STBManager::GetSTBString(const char* pszReference)
 {
     if (pszReference == nullptr)
-        return (char*)"NO STRING";
+        return "NO STRING";
     char buf[512];
     strcpy(buf, pszReference);
     char* v2 = buf + strlen(buf);
@@ -105,19 +133,12 @@ char* STBManager::GetSTBString(const char* pszReference)
     {
         STBEntry = STBManager_sInst->GetSTBEntry(AeHash(pszReference));
         if (STBEntry == nullptr)
-            return (char*)pszReference;
+            return pszReference;
     }
     char* result = STBEntry->mLoc.mStr;
     if (result == nullptr)
-        return (char*)"NO STRING";
+        return "NO STRING";
     return result;
-}
-
-// ?GetSTBString@STBManager@@QBEPBDPBD@Z (core.o; stub)
-const char* STBManager::GetSTBString(const char* pszReference) const
-{
-    (void)pszReference;
-    return nullptr;
 }
 
 // ea: 0x004C5EF0

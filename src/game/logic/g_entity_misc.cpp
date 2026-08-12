@@ -1950,7 +1950,7 @@ nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
 }
 void nalGenericSkeleton_GetBoneHandle(void* skeleton,
                                       nalGenericBoneHandle* handle,
-                                      const tlFixedString& boneName)
+                                      const tlFixedString* boneName)
 {
     (void)skeleton; (void)handle; (void)boneName;
 }
@@ -2004,15 +2004,13 @@ void* MetaNalBaseAnim_Ctor(void* self)
     (void)self;
     return nullptr;
 }
-void* MetaNalBaseAnim_Create(void* self, void* anim)
+void MetaNalBaseAnim_Create(void* self, void* anim)
 {
     (void)self; (void)anim;
-    return nullptr;
 }
-void* MetaNalBaseAnim_DelayCreate(void* self, void** anims, int count)
+void MetaNalBaseAnim_DelayCreate(void* self, void** anims, int count)
 {
     (void)self; (void)anims; (void)count;
-    return nullptr;
 }
 void* RE_RegisterModel(void* result, const char* name, int pakId, int imagetype)
 {
@@ -2033,19 +2031,13 @@ void Axis4_to_nalMatrix4x4(const float (*axis)[3], nalMatrix4x4* mat)
 {
     (void)axis; (void)mat;
 }
-void* BrocString_ctor(void* self, const char* s)
+void BrocString_ctor(void* self, const char* s)
 {
     (void)self; (void)s;
-    return nullptr;
 }
 void BrocString_dtor(void* self)
 {
     (void)self;
-}
-tlFixedString tlFixedString_ctor(void* self, const char* s)
-{
-    (void)self;
-    return tlFixedString(s);
 }
 nglTexture* cdGetTexture(TPakId pakId, const tlFixedString& name)
 {
@@ -2069,6 +2061,911 @@ TaskHandler* AnimationUpdateTask_sHandler()
 }
 TaskHandler* XAnimUpdateTask_sHandler()
 {
+    return nullptr;
+}
+
+// ============================================================================
+// Free-function stubs (various libs; port later)
+// ============================================================================
+struct _objectiveInfo_t;
+_objectiveInfo_t (*objectives)[17] = nullptr;  // ?objectives@@3PAY0BB@U_objectiveInfo_t@@A
+struct KeyInfoEntry;
+KeyInfoEntry (*gKeyInfoMKeys)[256] = nullptr;  // ?gKeyInfoMKeys@@3PAY0BAA@UKeyInfoEntry@@A
+struct KeyInfoEntry3;
+KeyInfoEntry3 (*KeyInfo_mKeys)[256] = nullptr;  // ?KeyInfo_mKeys@@3PAY0BAA@UKeyInfoEntry3@@A
+struct PakInfoNode;
+extern struct PakInfoNode const* sLoadingScreenInfo = nullptr;
+unsigned int (*_D3D__TextureState)[1] = nullptr;  // ?_D3D__TextureState@@3PAY00IA
+void (__cdecl* gpBrocAPI_mCallbackQuitGame)() = nullptr;
+void (__cdecl* rd_flush)(char*) = nullptr;
+// Entity function tables (g.o; declared extern in g_local.h)
+void (*gSpawnFuncs[53])(Entity* ent);
+void (*thinktable[64])(Entity* ent, int msec);
+void (*entinfotable[3])(Entity* ent);
+void (*touchtable[0xD])(Entity* ent, Entity* other, int bTouched);
+void (*usetable[0xE])(Entity* ent, Entity* other, Entity* activator);
+void (*paintable[6])(Entity* ent, Entity* other, int damage,
+                     const float* point, int mod, const float* dir,
+                     hitLocation_t hitLoc);
+void (*dietable[8])(Entity* self, Entity* inflictor, Entity* attacker,
+                    int damage, int mod, int weapon, const float* point,
+                    const float* dir, hitLocation_t hitLoc);
+void (*controllertable[4])(Entity* ent, int* partBits);
+
+struct GdbFile {
+    int dummy;
+};
+struct GdbFileManager {
+    static void CreateInst();
+    static void DeleteInst();
+    GdbFile GetGdbFile(TPakId pak_id, const char* name, const char* type);
+};
+GdbFile GdbFileManager::GetGdbFile(TPakId pak_id, const char* name,
+                                   const char* type)
+{
+    (void)pak_id; (void)name; (void)type;
+    GdbFile r = {};
+    return r;
+}
+AssetBankSet::~AssetBankSet() {}
+void Client::Clear(bool a, bool b) { (void)a; (void)b; }
+void Client_Clear(Client* c, bool a, bool b) { (void)c; (void)a; (void)b; }
+void Client_Clear(void* c, bool a, bool b) { (void)c; (void)a; (void)b; }
+
+struct Task;
+void TaskSys::PostTask(Task* t) { (void)t; }
+void TaskSys_PostTask_glue(Task* t) { (void)t; }
+void TaskSys_DeliverTasks_glue() {}
+
+struct rigid_body {
+    void add_force(const math::Dir3& f);
+};
+void rigid_body::add_force(const math::Dir3& f) { (void)f; }
+struct rigid_body_constraint_ragdoll {
+    void set_joint_limit_active(unsigned int a, bool b);
+};
+void rigid_body_constraint_ragdoll::set_joint_limit_active(unsigned int a,
+                                                           bool b)
+{
+    (void)a; (void)b;
+}
+struct rigid_body_constraint_contact;
+struct rigid_body_constraint;
+struct outer_time;
+namespace rbcint {
+const outer_time* get_time_scale(rigid_body_constraint* c);
+}
+const outer_time* rbcint::get_time_scale(rigid_body_constraint* c)
+{
+    (void)c;
+    return nullptr;
+}
+void verify_is_in_physics_system(rigid_body_constraint_contact* a,
+                                 rigid_body* b, rigid_body* c)
+{
+    (void)a; (void)b; (void)c;
+}
+
+struct actor_s;
+actor_s* Actor_FirstActor(int a) { (void)a; return nullptr; }
+actor_s* Actor_NextActor(actor_s* a, int b) { (void)a; (void)b; return nullptr; }
+struct biped_phys_info;
+biped_phys_info* create_biped_phys_info(Entity* e)
+{
+    (void)e;
+    return nullptr;
+}
+void destroy_biped_phys_info(biped_phys_info* b) { (void)b; }
+void Entity_set_bp_info(Entity* e, biped_phys_info* b) { (void)e; (void)b; }
+
+struct CameraShake;
+struct CameraShakeInstance;
+CameraShakeInstance* CameraShake_StartCameraShake(CameraShake* self, int a,
+                                                  math::Position3* b, float c,
+                                                  float d, float e)
+{
+    (void)self; (void)a; (void)b; (void)c; (void)d; (void)e;
+    return nullptr;
+}
+void CameraShake_StopCameraShake(CameraShake* self, CameraShakeInstance* inst)
+{
+    (void)self; (void)inst;
+}
+void CameraShake_StopCameraShake(void* self, void* inst)
+{
+    (void)self; (void)inst;
+}
+void CameraShakeInstance_OverrideSettings(CameraShakeInstance* self, float a,
+                                          float b)
+{
+    (void)self; (void)a; (void)b;
+}
+void CameraShakeInstance_SetTime(CameraShakeInstance* self, float a)
+{
+    (void)self; (void)a;
+}
+
+struct DbTable;
+DbTable* DbTableSet_GetTable(void* self, const char* name)
+{
+    (void)self; (void)name;
+    return nullptr;
+}
+struct InplaceString;
+InplaceString* InplaceTree_FindStr(const void* tree, const char* const* key)
+{
+    (void)tree; (void)key;
+    return nullptr;
+}
+struct DbRow;
+const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row, int col)
+{
+    (void)row; (void)col;
+    return nullptr;
+}
+
+struct sentient_s;
+sentient_s* Sentient_Alloc() { return nullptr; }
+sentient_s* Sentient_FirstSentient(int a) { (void)a; return nullptr; }
+sentient_s* Sentient_NextSentient(sentient_s* s, int a)
+{
+    (void)s; (void)a;
+    return nullptr;
+}
+void Sentient_Clean(sentient_s* s) { (void)s; }
+void Sentient_DissociateEntity(sentient_s* s, Entity* e) { (void)s; (void)e; }
+void Sentient_Free(sentient_s* s) { (void)s; }
+void Sentient_GetEyePosition(sentient_s* s, math::Position3& p)
+{
+    (void)s; (void)p;
+}
+void Sentient_GetEyePosition(sentient_s* s, float* p) { (void)s; (void)p; }
+void Sentient_InvalidateNearestNode(sentient_s* s) { (void)s; }
+void Sentient_UpdateActualChainPos(sentient_s* s) { (void)s; }
+
+struct SplineGroup;
+SplineGroup* SplineGroup_GetPath(void* self)
+{
+    (void)self;
+    return nullptr;
+}
+
+struct TaskHandlerImpl;
+Task* HandleDb_GetTask(void* self, Handle h)
+{
+    (void)self; (void)h;
+    return nullptr;
+}
+Task* TaskHandler_GetTaskForEntity(TaskHandlerImpl* self,
+                                   DbLinkedHandle<EntityHandleDb, Entity> h)
+{
+    (void)self; (void)h;
+    return nullptr;
+}
+TaskHandlerImpl* TaskSys_LookupHandler(unsigned int id)
+{
+    (void)id;
+    return nullptr;
+}
+void HandleDb_AllocateTaskHandle(void* self, Task** t) { (void)self; (void)t; }
+void HandleDb_BindTaskObject(void* self, Handle h, Task* t)
+{
+    (void)self; (void)h; (void)t;
+}
+void HandleDb_ReleaseTaskHandle(void* self, Handle h) { (void)self; (void)h; }
+
+struct vm_s;
+vm_s* VM_Create(const char* name, int (*entry)(int*))
+{
+    (void)name; (void)entry;
+    return nullptr;
+}
+void VM_Init() {}
+unsigned char* SceneBank_PersistentStorage(void* self, unsigned int a)
+{
+    (void)self; (void)a;
+    return nullptr;
+}
+
+struct bdRandom;
+unsigned int bdRandom_nextUInt(void* self)
+{
+    (void)self;
+    return 0;
+}
+void bdRandom_setSeed(void* self, unsigned int seed) { (void)self; (void)seed; }
+
+namespace BrocHelper {
+unsigned int (*GetBroFuncByName(const char* name, bool a))(void*)
+{
+    (void)name; (void)a;
+    return nullptr;
+}
+}
+unsigned int BrocAPI_GetEnt(void* a, void* b, unsigned int c, void* d, int e,
+                            int f)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
+    return 0;
+}
+unsigned int BrocSys_GetEnt(const Broc::string& a, int b, unsigned int* c,
+                            int d, int e)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e;
+    return 0;
+}
+unsigned int InplaceTree_Find(void* tree, const unsigned int* key)
+{
+    (void)tree; (void)key;
+    return 0;
+}
+
+void* AddLight(TPakId pakId, int type, math::Position3* pos, int time)
+{
+    (void)pakId; (void)type; (void)pos; (void)time;
+    return nullptr;
+}
+void RemoveLight(void* light) { (void)light; }
+void* FX_PlayEffect(TPakId pakId, int id, math::Mat43* mat, void* boltObjHandle,
+                    unsigned int boltEntHandle, int boltBoneIndex,
+                    bool boltAttchedToEnt)
+{
+    (void)pakId; (void)id; (void)mat; (void)boltObjHandle;
+    (void)boltEntHandle; (void)boltBoneIndex; (void)boltAttchedToEnt;
+    return nullptr;
+}
+void* FX_PlayEffectID(TPakId pakId, int id, math::Position3* org,
+                      const float* fwd)
+{
+    (void)pakId; (void)id; (void)org; (void)fwd;
+    return nullptr;
+}
+void* FX_PlayEntityEffectID(TPakId pakId, int id, math::Position3* org,
+                            void* axis, void* boltObjHandle,
+                            unsigned int boltEntHandle, int boltBoneIndex,
+                            bool boltAttchedToEnt)
+{
+    (void)pakId; (void)id; (void)org; (void)axis; (void)boltObjHandle;
+    (void)boltEntHandle; (void)boltBoneIndex; (void)boltAttchedToEnt;
+    return nullptr;
+}
+void* FX_PlaySimpleEffectID(TPakId pakId, int id, math::Position3* org)
+{
+    (void)pakId; (void)id; (void)org;
+    return nullptr;
+}
+void FX_ClearFX() {}
+void FX_InitFX() {}
+void FX_ReportFX() {}
+void FX_TermFX() {}
+void fx_debug_render() {}
+void* GetRefAPI(int version, void* ri)
+{
+    (void)version; (void)ri;
+    return nullptr;
+}
+
+void* AssetBankSet_ctor(void* self)
+{
+    (void)self;
+    return nullptr;
+}
+void AssetBankSet_Dtor(void* self) { (void)self; }
+void* InplaceAssetBankSet_ConfigStringBank_ctor(void* self)
+{
+    (void)self;
+    return nullptr;
+}
+void* InplaceAssetBankSet_GdbFileBank_ctor(void* self)
+{
+    (void)self;
+    return nullptr;
+}
+void* InplaceAssetBankSet_StringTableBank_ctor(void* self)
+{
+    (void)self;
+    return nullptr;
+}
+void* mem_heap_alloc(void* heap, unsigned int align, unsigned int size)
+{
+    (void)heap; (void)align; (void)size;
+    return nullptr;
+}
+void* mem_heap_malloc_align_heap(void* heap, unsigned int align,
+                                 unsigned int size)
+{
+    (void)heap; (void)align; (void)size;
+    return nullptr;
+}
+void* mem_heap_malloc_sz(unsigned int size)
+{
+    return mem_heap_malloc(size);
+}
+void mem_heap_release(void* heap, void* ptr) { (void)heap; (void)ptr; }
+void* MPLiveEngine_GetHandle() { return nullptr; }
+void* ShaderCommon_StartShotPerfTest() { return nullptr; }
+void* COD3_mem_alloc(unsigned int a, unsigned int b)
+{
+    (void)a; (void)b;
+    return nullptr;
+}
+void COD3_mem_free(void* p) { (void)p; }
+void absolutely_fatal_irrecoverable_error_infinite_loop()
+{
+    for (;;) __debugbreak();
+}
+void AdvanceSceneAnims(float a) { (void)a; }
+void AnimNoteHandler_Advance(void* self, float a) { (void)self; (void)a; }
+void AnimNoteHandler_ParseNoteTracks(void* self, void* a)
+{
+    (void)self; (void)a;
+}
+void AnimQueue_ClearMatrixQueue() {}
+void AnimQueue_ExecuteMatrixQueue() {}
+void ApplyControllerButtonConfig(int a) { (void)a; }
+void ApplyControllerStickConfig(int a) { (void)a; }
+void ApplyPhysics(Entity* e, const math::Position3* a, const math::Dir3* b,
+                  float c, bool d, EHitLocation e2)
+{
+    (void)e; (void)a; (void)b; (void)c; (void)d; (void)e2;
+}
+void AudioBankMgr_FinishLoading(void* self) { (void)self; }
+void AudioBankMgr_Update(void* self) { (void)self; }
+void Axis_Bind_f() {}
+void Axis_Unbindall_f() {}
+void BrocAddEntityThread(Entity* e, unsigned int a, void* b)
+{
+    (void)e; (void)a; (void)b;
+}
+void BrocDestroyEntity(Entity* e) { (void)e; }
+void BrocSys_ShellShock(unsigned int a, const Broc::string& b, float c)
+{
+    (void)a; (void)b; (void)c;
+}
+void ButtonMgr_UpdateBinding(int a, int b) { (void)a; (void)b; }
+void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData)
+{
+    (void)ent; (void)physData;
+}
+void Camera_StartAnimating(void* self, float a) { (void)self; (void)a; }
+void Camera_StopAnimating(void* self, float a) { (void)self; (void)a; }
+void Camera_Update(void* self) { (void)self; }
+void Camera_UpdatePostViewModels(void* self) { (void)self; }
+struct CGBank;
+void CGBank_load_inplace(CGBank* bank, char* data, int* size)
+{
+    (void)bank; (void)data; (void)size;
+}
+void DCGBank_load_inplace(void* bank, char* data, int* size)
+{
+    (void)bank; (void)data; (void)size;
+}
+void CGBankManager_UnloadAll(void* self) { (void)self; }
+void CGBankManager_UnloadAll() {}
+void CL_AddConsoleInfoColor(int a, const float* b) { (void)a; (void)b; }
+void CL_AddDeathMessageText(const char* a, int b) { (void)a; (void)b; }
+void Client_ClaimNode(Entity* e) { (void)e; }
+void ClientImpacts(Entity* e, struct pmove_t* pm) { (void)e; (void)pm; }
+class BaseCmdFuncInfo;
+void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* c) { (void)c; }
+void codNflUpdate() {}
+void Com_CleanupSkeletons() {}
+void Com_Crash_f() {}
+void Com_Error_f() {}
+void Com_Freeze_f() {}
+void CompleteCommand() {}
+struct msgwnd_t;
+enum msgwnd_mode_t;
+void Con_DrawMessageWindow(msgwnd_t* w, int a, int b, float c, msgwnd_mode_t m)
+{
+    (void)w; (void)a; (void)b; (void)c; (void)m;
+}
+void Con_OneTimeInit() {}
+void Con_UpdateMessageWindowLine(msgwnd_t* w, int a, int b, int c)
+{
+    (void)w; (void)a; (void)b; (void)c;
+}
+void controller_rumble(void* self, int a, int b, float c)
+{
+    (void)self; (void)a; (void)b; (void)c;
+}
+void controller_stick_value(void* self, int a, int b, int* c, int* d)
+{
+    (void)self; (void)a; (void)b; (void)c; (void)d;
+}
+void controller_stop_all_rumble(void* self) { (void)self; }
+void CurveManager_PostEvent(void* self, unsigned int a, unsigned int b, float c)
+{
+    (void)self; (void)a; (void)b; (void)c;
+}
+void CurveManager_Update(void* self, float a) { (void)self; (void)a; }
+void D3DDevice_SetIndices(void* a, int b) { (void)a; (void)b; }
+void D3DDevice_SetPixelShaderProgram(void* a) { (void)a; }
+void D3DDevice_SetVertexShader(unsigned int a) { (void)a; }
+void D3DDevice_SetVertexShaderInputDirect(void* a, int b, void* c)
+{
+    (void)a; (void)b; (void)c;
+}
+void Destructible_CheckpointExplode(Destructible* d) { (void)d; }
+void DialogMenuSystem_BringUp(void* self, const char* a, bool b, bool c,
+                              const char* d, bool e)
+{
+    (void)self; (void)a; (void)b; (void)c; (void)d; (void)e;
+}
+void DialogMenuSystem_CloseDialog(void* self) { (void)self; }
+void DObjCalcAnim(DObj* obj, int a) { (void)obj; (void)a; }
+void DObjCalcAnim(void* obj, int a) { (void)obj; (void)a; }
+void DObjCreate(DObjModel* models, int numModels, void* tree, void* out,
+                int gameId)
+{
+    (void)models; (void)numModels; (void)tree; (void)out; (void)gameId;
+}
+void DObjCreate(DObjModel* models, unsigned short numModels, XAnimTree* tree,
+                DObj* out, unsigned short gameId)
+{
+    (void)models; (void)numModels; (void)tree; (void)out; (void)gameId;
+}
+void DObjCreateSkel(DObj* obj, char* a) { (void)obj; (void)a; }
+void DObjDisplayAnim(DObj* obj) { (void)obj; }
+void DObjDisplayAnim3D(int a, DObj* obj, float* b, int c)
+{
+    (void)a; (void)obj; (void)b; (void)c;
+}
+void DObjDumpInfo(DObj* obj) { (void)obj; }
+void DObjFree(void* obj, int a) { (void)obj; (void)a; }
+struct DObjTrace_s;
+void DObjGeomTraceline(const DObj* obj, const math::Position3* a,
+                       const math::Position3* b, int c, DObjTrace_s* d,
+                       float e)
+{
+    (void)obj; (void)a; (void)b; (void)c; (void)d; (void)e;
+}
+void DObjGetBounds(const DObj* obj, math::Position3& a, math::Position3& b)
+{
+    (void)obj; (void)a; (void)b;
+}
+void DObjGetHierarchyBits(DObj* obj, int a, int* b)
+{
+    (void)obj; (void)a; (void)b;
+}
+void DObjInitServerTime(DObj* obj, float a) { (void)obj; (void)a; }
+void DObjInitServerTime(void* obj, float a) { (void)obj; (void)a; }
+void DObjTraceline(const DObj* obj, const math::Position3* a,
+                   const math::Position3* b, unsigned char* c, DObjTrace_s* d,
+                   float e)
+{
+    (void)obj; (void)a; (void)b; (void)c; (void)d; (void)e;
+}
+void DObjUpdateChildren(DObj* obj, int a) { (void)obj; (void)a; }
+void DObjUpdateLod(Entity* e) { (void)e; }
+void DynamicDecalMgr_DestroyAllDecals() {}
+void DynamicDecalMgr_Update(void* self, float a) { (void)self; (void)a; }
+void Entity_Notify(Entity* e, unsigned int a) { (void)e; (void)a; }
+void Entity_Notify(void* e, unsigned int a) { (void)e; (void)a; }
+void EntityHandleDb_Compact(void* self) { (void)self; }
+void EntityHandleDb_Init(void* self) { (void)self; }
+void EntityHandleDb_Release(void* self, Entity* e) { (void)self; (void)e; }
+template <typename T>
+void EntityHandleDb_Find(unsigned int a, T b,
+                         ae_sized_array<Entity*, 4096>& out)
+{
+    (void)a; (void)b; (void)out;
+}
+void EntityManager_CreateWorld() {}
+void EntityNotifySet_dtor(void* self) { (void)self; }
+void EntityNotifySet_UpdateList() {}
+void* EntityNotifySet_GetNotify(void* self, unsigned int a)
+{
+    (void)self; (void)a;
+    return nullptr;
+}
+void** InplaceTree_Find_GdbFileRecords(void* tree, const char* const* key)
+{
+    (void)tree; (void)key;
+    return nullptr;
+}
+
+template void EntityHandleDb_Find<HashString>(
+    unsigned int, HashString, ae_sized_array<Entity*, 4096>&);
+template void EntityHandleDb_Find<Broc::string>(
+    unsigned int, Broc::string, ae_sized_array<Entity*, 4096>&);
+template void EntityHandleDb_Find<unsigned short>(
+    unsigned int, unsigned short, ae_sized_array<Entity*, 4096>&);
+
+struct fe_manager_view;
+void* FEManager_GetDMS(void* self, int client)
+{
+    (void)self; (void)client;
+    return nullptr;
+}
+void* FEManager_GetFont(void* self, int a)
+{
+    (void)self; (void)a;
+    return nullptr;
+}
+void* FEManager_GetFont(void* self, int a, float b)
+{
+    (void)self; (void)a; (void)b;
+    return nullptr;
+}
+void* FEManager_GetIGMS(void* self, int client)
+{
+    (void)self; (void)client;
+    return nullptr;
+}
+void FEManager_DrawAARMenus(fe_manager_view* self) { (void)self; }
+void FEManager_DrawControllerError(void* self) { (void)self; }
+void FEManager_DrawFrontEnd(fe_manager_view* self) { (void)self; }
+void FEManager_DrawIGO(void* self, int a) { (void)self; (void)a; }
+void FEManager_DrawInGameMenus(fe_manager_view* self) { (void)self; }
+void FEManager_InitDialogMenuSystem(void* self) { (void)self; }
+void FEManager_InitIGO(void* self) { (void)self; }
+void FEManager_LoadInGameMenus(void* self) { (void)self; }
+void FEManager_PlayFadeInOranScreen() {}
+void FEManager_UpdateAARMenus(fe_manager_view* self, float a)
+{
+    (void)self; (void)a;
+}
+void FEManager_UpdateFrontEnd(fe_manager_view* self, float a)
+{
+    (void)self; (void)a;
+}
+void FEManager_UpdateInGameMenus(fe_manager_view* self, float a)
+{
+    (void)self; (void)a;
+}
+void FEManager_UpdateLoadingMenu(void* self, float a) { (void)self; (void)a; }
+void FEManager_UpdateSplitScreen(void* self) { (void)self; }
+void g_femanager_IGO_Update(int a) { (void)a; }
+void G_FreeInteractionInfo() {}
+void G_InitSentients() {}
+void G_RunFrameForEntity(Entity* e, int a) { (void)e; (void)a; }
+void G_TouchTriggersAndVehicles(Entity* e, const math::Position3* a,
+                                const void* b)
+{
+    (void)e; (void)a; (void)b;
+}
+void gDObjFreeList_Init(int a) { (void)a; }
+void gDSkel4FreeList_Init(int a) { (void)a; }
+void gDSkelFreeList_Init(int a) { (void)a; }
+void gDSkelMaxFreeList_Init(int a) { (void)a; }
+void gEntFreeList_Init(int a) { (void)a; }
+void gRefEntFreeList_Init(int a) { (void)a; }
+struct weaponFileInfo_t;
+void GetADSLerpTimeRemaining(PlayerState* ps, weaponFileInfo_t* wi)
+{
+    (void)ps; (void)wi;
+}
+void GetPakPrerequisites(TPakId a, void* b) { (void)a; (void)b; }
+void GlowCallback(void* a) { (void)a; }
+void gpuSetVertexShader(const unsigned int* a) { (void)a; }
+void GScr_LoadScriptsAndAnimsForEntities() {}
+struct game_hudelem_s;
+void HudElem_SetDefaults(game_hudelem_s* h) { (void)h; }
+void IGO_Update(void* self, float a) { (void)self; (void)a; }
+void IGOCompassWidget_SetHideCompassStar(int a, int b, int c)
+{
+    (void)a; (void)b; (void)c;
+}
+void InGameMenuSystem_ActivateMenu(void* self, int a) { (void)self; (void)a; }
+void InGameMenuSystem_ActivatePauseMenu(void* self) { (void)self; }
+void InitCDAepsShader() {}
+void InitLights() {}
+void InplaceAssetBank_Fixup(void* self) { (void)self; }
+struct ConfigStringBank;
+void InplaceAssetBank_Fixup_ConfigString(void* b) { (void)b; }
+void InplaceAssetBank_GdbFileSet_Fixup(void* self) { (void)self; }
+void InplaceAssetBankSet_AddBank_ConfigString(void* self, TPakId pak,
+                                              void* bank)
+{
+    (void)self; (void)pak; (void)bank;
+}
+struct ConfigStringPtr;
+void InplaceAssetBankSet_Find_ConfigString(void* self, ConfigStringPtr* out,
+                                           TPakId pak, const char* name,
+                                           void* a, void* b)
+{
+    (void)self; (void)out; (void)pak; (void)name; (void)a; (void)b;
+}
+void InplaceAssetBankSet_Find_GdbFileBank(void* self, void* out,
+                                          const char* a, const char* b, int c,
+                                          void* d)
+{
+    (void)self; (void)out; (void)a; (void)b; (void)c; (void)d;
+}
+void InplaceAssetBankSet_GdbFileBank_AddBank(void* self, TPakId pak, void* b)
+{
+    (void)self; (void)pak; (void)b;
+}
+void InplaceAssetBankSet_PredicateSearch_ConfigString(void* self,
+                                                      ConfigStringPtr* out,
+                                                      TPakId pak, void* a,
+                                                      void* b)
+{
+    (void)self; (void)out; (void)pak; (void)a; (void)b;
+}
+class InspectorManager;
+void InspectorManager_Initialise(InspectorManager* self) { (void)self; }
+void InspectorManager_Render(void* self) { (void)self; }
+void InspectorManager_Update(InspectorManager* self) { (void)self; }
+void InteractionController_ClearQueue(void* self) { (void)self; }
+void InteractionController_Update(void* self, float a) { (void)self; (void)a; }
+void InvalidateParticleCollisionCaches() {}
+struct phys_constraint_solver_multithreaded_list_constraint_solver;
+struct physics_system;
+void list_constraint_solver_process(
+    phys_constraint_solver_multithreaded_list_constraint_solver* self,
+    physics_system* sys, int a)
+{
+    (void)self; (void)sys; (void)a;
+}
+void LiveWrapper_ClearRemotePlayers(void* self) { (void)self; }
+void MemoryUnitManager_Service() {}
+void MemPrint(const char* fmt, ...) { (void)fmt; }
+void MI_ResetMapList() {}
+void MP_ResolveAnims() {}
+void MusicMgr_Update(void* self, float a) { (void)self; (void)a; }
+void nflCloseFile(int a) { (void)a; }
+class nglRenderNode;
+void nglAdvanceRenderNode() {}
+void nglBeginRenderNode(nglRenderNode* n) { (void)n; }
+void nglDxUnbindVertexBuffer() {}
+void ngliExitList() {}
+struct nglMeshSection;
+void ngliUnloadSection(nglMeshSection* s) { (void)s; }
+void nglListAddNode(nglRenderNode* n) { (void)n; }
+void nglListAddNode_Opaque(nglRenderNode* n, unsigned int a)
+{
+    (void)n; (void)a;
+}
+void nglListAddNode_Translucent(nglRenderNode* n) { (void)n; }
+void nglSortList_Impl(nglRenderNode** a, int b) { (void)a; (void)b; }
+void nullsub_16(const char* a, const char* b) { (void)a; (void)b; }
+void nullsub_34(const char* a, const char* b) { (void)a; (void)b; }
+void nullsub_35() {}
+void orthonormalize(math::Mat43* m) { (void)m; }
+void PathNodeMgr_CleanUpManager(void* self) { (void)self; }
+void PathNodeMgr_ConnectPathsForEntity(void* self, Entity* e)
+{
+    (void)self; (void)e;
+}
+void PathNodeMgr_DissociateSentient(void* self, sentient_s* s)
+{
+    (void)self; (void)s;
+}
+void PathNodeMgr_InitPaths(void* self) { (void)self; }
+void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& a, const math::Dir3& b)
+{
+    (void)a; (void)b;
+}
+void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m) { (void)m; }
+void PHYS_ASSERT_UNIT(const math::Dir3& a) { (void)a; }
+void PHYS_ASSERT_UNIT(const math::Dir3* a) { (void)a; }
+void physics_debug_render() {}
+void PhysInit() {}
+void PhysShutdown() {}
+void Player_ActivateHoldCmd(Entity* e) { (void)e; }
+void PlayerAnimMgr_Update(float a) { (void)a; }
+void PrintPakNames() {}
+void R_InitDebug() {}
+void R_ShutdownDebug() {}
+void R_ToggleSmpFrame() {}
+void RE_AddRefEntityToScene(void* a, int b) { (void)a; (void)b; }
+void RE_AddViewModelToScene(void* a) { (void)a; }
+void re_BeginRegistration(int* a) { (void)a; }
+void re_DebugLines(int a) { (void)a; }
+void re_DebugStrings(int a) { (void)a; }
+void re_DrawQuadPic(const float* a, const float* b, void* c)
+{
+    (void)a; (void)b; (void)c;
+}
+void re_EndRegistration() {}
+void re_LocateDebugLines(int a, int b) { (void)a; (void)b; }
+void re_LocateDebugStrings(int a, int b) { (void)a; (void)b; }
+void RE_SetViewModelInfoIndex(int a) { (void)a; }
+void re_ShutdownFn(int a) { (void)a; }
+void RenderCDHeatHazeShader() {}
+void reserved_dlist_Curve_erase(void* a, void* b) { (void)a; (void)b; }
+void reserved_dlist_CurveEffectListElem_delete_all(void* a) { (void)a; }
+void reserved_dlist_CurveEffectListElem_erase(void* a, void* b)
+{
+    (void)a; (void)b;
+}
+void RumbleEffect_Ctor(void* self) { (void)self; }
+void RumbleEffect_SetIntensity(void* self, int a, float b)
+{
+    (void)self; (void)a; (void)b;
+}
+void RumbleEffect_SetNotes(void* self, int a, void* b)
+{
+    (void)self; (void)a; (void)b;
+}
+void SceneManager_UpdateEffects(void* self, float a) { (void)self; (void)a; }
+void Scr_Error(const char* a) { (void)a; }
+void Scr_FreePrecachedAnimTrees() {}
+void Scr_ParamError(unsigned int a, const char* b) { (void)a; (void)b; }
+void Scr_PrecacheAnimTrees(void* (*cb)(int), bool a) { (void)cb; (void)a; }
+void Scr_PrecacheAnimTrees(void* (*cb)(void*, unsigned int), int a)
+{
+    (void)cb; (void)a;
+}
+void ScriptEventHandler_dtor(void* self) { (void)self; }
+void SEH_Init_StringEd() {}
+void SEH_InitLanguage() {}
+void SEH_UpdateLanguageInfo() {}
+void SetAnimCheck(int a) { (void)a; }
+struct nglShaderParamSet;
+struct Color;
+void setup_color(const Color& c, nglShaderParamSet& p) { (void)c; (void)p; }
+void SetupActorHeap() {}
+void SetupCDHeatHazeShader() {}
+void SetupPoolAllocator() {}
+void SoundDevice_DampenAllSounds(void* self, float a) { (void)self; (void)a; }
+void SoundDevice_PauseAllSounds(void* self) { (void)self; }
+void SoundDevice_ReleaseSound(void* self, void* s) { (void)self; (void)s; }
+void SoundDevice_SetNumberOfListeners(void* self, int a) { (void)self; (void)a; }
+void SoundDevice_StopAllSounds(void* self) { (void)self; }
+void SoundDevice_UndampenAllSounds(void* self) { (void)self; }
+void SoundDevice_UnpauseAllSounds(void* self) { (void)self; }
+void SoundMediaMgr_PlayLandingSound(void* self, Entity* e, int a, bool b)
+{
+    (void)self; (void)e; (void)a; (void)b;
+}
+void SP_actor(Entity* e) { (void)e; }
+void StartupNfl(const char* a) { (void)a; }
+void StatusBar_Init(void* self) { (void)self; }
+void StopPhysics(Entity* e) { (void)e; }
+void StreamZoneManager_Update(void* self, int a, const float* b, bool c)
+{
+    (void)self; (void)a; (void)b; (void)c;
+}
+void StubData_ApplyStubOptions(void* a) { (void)a; }
+void subtitle_manager_frame_advance(int a) { (void)a; }
+void subtitle_manager_render() {}
+void sWeaponAnimCallback() {}
+void TaskHandler_Update(TaskHandler* h, float a, TaskFunctor* f)
+{
+    (void)h; (void)a; (void)f;
+}
+void TaskHandler_Update(TaskHandlerImpl* h, float a, void* f)
+{
+    (void)h; (void)a; (void)f;
+}
+void TimerRenderBars_Init(void* self) { (void)self; }
+void TogglePakRender() {}
+void trap_R_ClearScene() {}
+void trap_R_DrawStretchPic(float a, float b, float c, float d, float e,
+                           float f, float g, float h, void* i, float j)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e;
+    (void)f; (void)g; (void)h; (void)i; (void)j;
+}
+void trap_R_RenderScene(const void* a) { (void)a; }
+void trap_R_SetColor(const float* a) { (void)a; }
+void trap_R_Text_Paint(float a, float b, int c, float d, const float* e,
+                       const char* f, float g, int h, int i)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e;
+    (void)f; (void)g; (void)h; (void)i;
+}
+void UpdateRigidBody(float a) { (void)a; }
+void UpdateWheelMarks(Entity* e, int a, bool b, const math::Position3& c,
+                      const math::Dir3& d)
+{
+    (void)e; (void)a; (void)b; (void)c; (void)d;
+}
+void ValidatePakId(int a) { (void)a; }
+void View_SetViewportClipping(int a) { (void)a; }
+void WaitTilOutput_AssignData(void* a, void* b) { (void)a; (void)b; }
+void Weapon_MeleeHitShock(Entity* e) { (void)e; }
+void WheelMarkMgr_Exit() {}
+void WheelMarkMgr_Init() {}
+void WheelMarkMgr_Reset() {}
+struct XAnimTree;
+struct XAnimEntry;
+void XAnimCalcAbsDelta(XAnimTree* t, unsigned int a, float* b, float* c)
+{
+    (void)t; (void)a; (void)b; (void)c;
+}
+void XAnimEntry_Create(XAnimEntry* e) { (void)e; }
+void XAnimFreeTree(void* t) { (void)t; }
+void XAnimGetAbsDelta(AnimTree* t, unsigned int a, float* b, float* c, float d)
+{
+    (void)t; (void)a; (void)b; (void)c; (void)d;
+}
+void XAnimGetRelDelta(AnimTree* t, unsigned int a, float* b, float* c,
+                      float d, float e)
+{
+    (void)t; (void)a; (void)b; (void)c; (void)d; (void)e;
+}
+void XAnimSetCompleteGoalWeight(XAnimTree* t, unsigned int a, float b, float c,
+                                float d, unsigned int e, unsigned int f,
+                                void* g)
+{
+    (void)t; (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g;
+}
+void XFONT_OpenTrueTypeFont(const unsigned short* a, unsigned int b, void* c)
+{
+    (void)a; (void)b; (void)c;
+}
+void XModelEnforceExist(int a) { (void)a; }
+void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* a,
+                       DObjSkelMat* b)
+{
+    (void)model; (void)a; (void)b;
+}
+const void* DCGBank_get_set(void* self, int a)
+{
+    (void)self; (void)a;
+    return nullptr;
+}
+const void* StreamZoneManager_GetCellZone(void* self, int a)
+{
+    (void)self; (void)a;
+    return nullptr;
+}
+
+struct searchpath_s;
+void FS_ShutdownSearchPaths(searchpath_s* sp) { (void)sp; }
+struct weaponParms;
+void G_BulletFireSpread(Entity* a, Entity* b, weaponParms* wp, int c, float d,
+                        Entity* e, float f, int g)
+{
+    (void)a; (void)b; (void)wp; (void)c; (void)d; (void)e; (void)f; (void)g;
+}
+void AssetBankSet_dtor(void* self) { (void)self; }
+void SceneManager_ResetAllStaticModels() {}
+void ae_sized_array_push_back_handler(struct TaskSysImpl2* self,
+                                      struct TaskHandlerImpl* const* elem)
+{
+    (void)self; (void)elem;
+}
+struct DroneAEMap;
+struct DroneHandleVec;
+template <typename K, typename V> struct ae_pair;
+void ae_sized_array_push_back_pair(
+    DroneAEMap* self, ae_pair<unsigned int, DroneHandleVec*>* const* elt)
+{
+    (void)self; (void)elt;
+}
+
+void* ADSMetaAnimInstance_Ctor(void* self, void* a, void* b, void* c,
+                               float* d)
+{
+    (void)self; (void)a; (void)b; (void)c; (void)d;
+    return nullptr;
+}
+void* AnimBank_GetAnimTree(void* self, const char* name)
+{
+    (void)self; (void)name;
+    return nullptr;
+}
+void* cdGetAnim(unsigned int a)
+{
+    (void)a;
+    return nullptr;
+}
+void* cdScratchMaterial_Ctor(void* self, void* a, unsigned int b, int c,
+                             bool d)
+{
+    (void)self; (void)a; (void)b; (void)c; (void)d;
+    return nullptr;
+}
+void* DbTablesetMgr_Find(void* self, TPakId pak, const char* name,
+                         TPakId* foundPak)
+{
+    (void)self; (void)pak; (void)name; (void)foundPak;
+    return nullptr;
+}
+struct nglMesh;
+struct nglMeshParams;
+struct nglShaderParamSet;
+struct nglMeshNode;
+nglMeshNode* nglListAddMesh(nglMesh* mesh, const math::Mat43& m,
+                            nglMeshParams* mp, nglShaderParamSet* sp,
+                            void (*fn)(nglMeshNode*))
+{
+    (void)mesh; (void)m; (void)mp; (void)sp; (void)fn;
     return nullptr;
 }
 

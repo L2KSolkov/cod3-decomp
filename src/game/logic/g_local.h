@@ -3451,7 +3451,8 @@ enum traction_type_e {
 };
 
 // vehicle_rb_parameter (phys_xboxr) - verified against IDA (size 0xD0)
-struct vehicle_rb_parameter {
+class vehicle_rb_parameter {
+public:
     float m_speed_max;            // +0x00
     float m_accel_max;            // +0x04
     float m_reverse_scale;        // +0x08
@@ -3512,7 +3513,7 @@ struct rb_vehicle {
     static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
     static void remove_vehicle(rb_vehicle* v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
     static void end_path(rb_vehicle* v);        // physics.o
-    static void update_parms(vehicle_rb_parameter* p, bool from_network);  // physics.o
+    void update_parms(vehicle_rb_parameter* p, bool from_network);  // physics.o ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z
 };
 
 struct rigid_body_constraint_wheel {

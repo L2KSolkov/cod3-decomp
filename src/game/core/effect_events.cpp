@@ -361,11 +361,6 @@ void Sound_SetVolume(Sound* s, float vol)
 {
     (void)s; (void)vol;
 }
-void* GdbVector_At(void* vec, unsigned int index)
-{
-    (void)vec; (void)index;
-    return nullptr;
-}
 // ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o; stub
 // until subtitle_manager is ported - subtitles disabled)
 bool subtitle_manager_play_subtitle(const char* tag, const char* prefix)
@@ -383,6 +378,13 @@ static Sound* SoundFromHandle(unsigned int handleVal)
     return nullptr;
 }
 }  // namespace SoundDevice
+
+// ?GdbVector_At@@YAPAXPAXI@Z (streamer.o; stub)
+void* GdbVector_At(void* vec, unsigned int index)
+{
+    (void)vec; (void)index;
+    return nullptr;
+}
 
 // Effect context / query type constants (placeholder values from disasm)
 enum {

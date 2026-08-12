@@ -22,13 +22,20 @@ class EffectEventSys { public: static EffectEventSys* sInst; };  // ?sInst@Effec
 
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
-struct RumbleManager {
+class RumbleManager {
+public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
 };
 
 
 struct netchan_t;
 struct Entity;
+// ?GetPlayer@@YAPAUEntity@@H@Z (cl.o artifact; struct-tag variant)
+Entity* GetPlayer(int idx)
+{
+    (void)idx;
+    return nullptr;
+}
 namespace Broc {
 struct string;
 }

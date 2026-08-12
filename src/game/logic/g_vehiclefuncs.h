@@ -136,7 +136,8 @@ double texureScroll_Function(float v);
 } // namespace vehicleFuncs
 
 // vehicle_rb_parameter - 0xD0 (IDA verified; subset)
-struct vehicle_rb_parameter {
+class vehicle_rb_parameter {
+public:
     float m_speed_max;          // +0x00
     float m_accel_max;          // +0x04
     float m_reverse_scale;      // +0x08

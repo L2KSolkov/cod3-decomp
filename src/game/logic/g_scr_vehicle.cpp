@@ -39,12 +39,34 @@ void rb_vehicle_update_from_network(rb_vehicle* self,
     (void)self; (void)position; (void)angles; (void)vel; (void)aVel;
 }
 
+// VEH_* free artifacts (g.o; stubs, port later)
+struct scr_vehicle_t;
+void VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, short a)
+{
+    (void)ent; (void)veh; (void)a;
+}
+void VEH_InitVehicle(scr_vehicle_t* veh) { (void)veh; }
+void VEH_RemoveVehicle(void* veh) { (void)veh; }
+void VEH_UpdateAim(Entity* e) { (void)e; }
+void VEH_UpdateAltWeapon(Entity* e, int a) { (void)e; (void)a; }
+void VEH_UpdateClient(Entity* e, int a) { (void)e; (void)a; }
+void VEH_UpdateFollow(Entity* e) { (void)e; }
+void VEH_UpdateGunnerWeapon(Entity* e) { (void)e; }
+void VEH_UpdateHatch(Entity* e, int a) { (void)e; (void)a; }
+void VEH_UpdateParticlesRBVeh(Entity* e) { (void)e; }
+void VEH_UpdateShaderTime(Entity* e) { (void)e; }
+void VEH_UpdateSounds(Entity* e, int a) { (void)e; (void)a; }
+void VEH_UpdateSteering(Entity* e) { (void)e; }
+void VEH_UpdateWeapon(Entity* e) { (void)e; }
+void VEH_VerifyPosition(Entity* e) { (void)e; }
+
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 class RumbleEffectInstanceHandle {
 public:
     int mVal;  // +0x00
 };
-struct RumbleManager {
+class RumbleManager {
+public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
     RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
 };

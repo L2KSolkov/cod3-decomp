@@ -155,6 +155,13 @@ void DynamicDecalMgr::DeleteInst() {}
 void TestFPS::CreateInst() {}
 void TestFPS::DeleteInst() {}
 
+// ?AssetBankSet_ctor@@YAXPAX@Z (core.o; stub - void-return variant used by
+// DCGBankManager ctor; the void* variant lives in g_entity_misc.cpp)
+void AssetBankSet_ctor(void* self)
+{
+    (void)self;
+}
+
 // j_nullsub_N no-op stubs. IDA-invented names for linker thunks that jump to
 // nullsubs (do-nothing functions); binary semantics are exactly no-ops.
 class Entity;

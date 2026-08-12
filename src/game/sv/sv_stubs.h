@@ -820,11 +820,11 @@ namespace AeAssert {
 // ============================================================================
 // movie_manager — static movie helpers
 // ============================================================================
-struct movie_manager {
-    static void load_and_play_movie(const char* movie_name, const char* sound_name);
-    static void frame_advance();       // ?frame_advance@movie_manager@@SAXXZ
-    static void render();              // ?render@movie_manager@@SAXXZ
-};
+namespace movie_manager {
+    void load_and_play_movie(const char* movie_name, const char* sound_name);
+    void frame_advance();       // ?frame_advance@movie_manager@@YAXXZ
+    void render();              // ?render@movie_manager@@YAXXZ
+}
 
 // ============================================================================
 // Misc enums / constants

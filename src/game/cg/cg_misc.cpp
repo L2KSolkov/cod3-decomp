@@ -14,7 +14,8 @@
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 struct RumbleEffect;
 class RumbleEffectInstanceHandle;
-struct RumbleManager {
+class RumbleManager {
+public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
     RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
 };
@@ -3219,6 +3220,14 @@ struct tlFixedString {
     unsigned int hash;  // +0x00
     char str[28];       // +0x04
 };
+
+// ?tlFixedString_ctor@@YA?AUtlFixedString@@PAXPBD@Z (stub; local struct tag)
+tlFixedString tlFixedString_ctor(void* self, const char* s)
+{
+    (void)self; (void)s;
+    tlFixedString r = {};
+    return r;
+}
 
 struct ADSMetaAnimData {
     void* vftable;           // +0x00

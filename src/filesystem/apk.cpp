@@ -21,7 +21,6 @@ extern void  tlWarning(const char* fmt, ...);
 extern void* tlMemAlloc(uint32_t size, uint32_t align, uint32_t flags);
 extern void  tlMemFree(void* ptr);
 
-namespace apk {
 // apk_xboxr stubs (mangled as namespace members: ?tlReadFile@apk@@YA_NPBD0PAXII@Z)
 bool tlReadFile(const char* path, void* buf, uint32_t size, uint32_t offset)
 {
@@ -46,7 +45,6 @@ void tlWarning(const char* fmt, ...)
 {
     (void)fmt;
 }
-}  // namespace apk
 
 // ============================================================================
 // apkRegisterFileType
