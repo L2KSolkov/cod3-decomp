@@ -9,6 +9,7 @@
 #include <intrin.h>
 #include <math.h>
 #include <new>
+#include <stdio.h>
 #include <string.h>
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
@@ -66,11 +67,30 @@ public:
 
 void merge_spheres(const math::Position3& c1, float r1, math::Position3* c2,
                    float* r2);
-class Color;
+// Color (core/color.h view; RGBA float, 16 bytes)
+class Color {
+public:
+    float r;  // +0x00
+    float g;  // +0x04
+    float b;  // +0x08
+    float a;  // +0x0C
+
+    Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) {}
+    Color(float _r, float _g, float _b, float _a)
+        : r(_r), g(_g), b(_b), a(_a) {}
+};
 class DebugRender {
 public:
     static DebugRender sInst;
     static void RenderAxis(const math::Mat43& mat, float length, float width);
+    static void RenderText(const char* str, int x, int y, const Color& col,
+                           float depth, float size);  // render.o 0xAAC7D0
+    static void RenderLine(const math::Position3& pt1,
+                           const math::Position3& pt2, const Color& col,
+                           float thickness);  // render.o 0xAC7AB0
+    static void RenderCone(const math::Position3& pos, const math::Dir3& dir,
+                           float angle, float length,
+                           const Color& col);  // render.o 0xAC51C0
     void AddRenderer(void (*fp)());  // ?AddRenderer@DebugRender@@QAEXP6AXXZ@Z
 };
 // ?sInst@DebugRender@@2V1@A (physics.o data @ 0xF74D20)
@@ -5748,6 +5768,8 @@ public:
     void prolog_frame_advance(Entity* owner, float delta_t);  // ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
     void debug_render();  // ?debug_render@biped_system@@QAEXXZ
     void render_joint(int joint_id, Bitmask<unsigned int> render_flags);  // ?render_joint@biped_system@@QAEXHV?$Bitmask@I@@@Z
+    void render_single_joint(const rigid_body_constraint_ragdoll* joint,
+                             Bitmask<unsigned int> render_flags);  // ?render_single_joint@biped_system@@QAEXPBVrigid_body_constraint_ragdoll@@V?$Bitmask@I@@@Z
     void setup_initial_gjk_cache(unsigned int geom_id,
                                  const math::Dir3& separation_direction);  // ?setup_initial_gjk_cache@biped_system@@QAEXIABVDir3@math@@@Z
     void destroy_bps(Entity* owner);  // ?destroy_bps@biped_system@@QAEXPAVEntity@@@Z
@@ -6405,6 +6427,326 @@ void biped_system::render_joint(int joint_id,
 {
     (void)joint_id;
     (void)render_flags;
+}
+
+// phys_make_rotate (physics.o inline COMDAT 0x30A480; stub until ported)
+void phys_make_rotate(math::Mat43* mat, const math::Dir3& v1,
+                      const math::Dir3& v2)
+{
+    (void)mat; (void)v1; (void)v2;
+}
+
+// ea: 0x6FAD30
+void biped_system::render_single_joint(
+    const rigid_body_constraint_ragdoll* joint,
+    Bitmask<unsigned int> render_flags)
+{
+    if (joint == nullptr)
+        return;
+    rigid_body* b1 = joint->b1;
+    rigid_body* b2 = joint->b2;
+    unsigned int m_flags = joint->m_flags;
+    Color joint_limit_axis(0.5f, 1.0f, 1.0f, 1.0f);
+    Color white(0.5f, 0.0f, 1.0f, 0.0f);
+    Color red(0.5f, 0.0f, 0.0f, 1.0f);
+    Color cone_axis(1.0f, 1.0f, 1.0f, 0.0f);
+    Color joint_axis(0.5f, 0.0f, 0.0f, 1.0f);
+    int label_x = 420;
+    if ((m_flags & 4) != 0)
+    {
+        if ((render_flags.mMask & 1) == 0)
+            goto LABEL_31;
+        DebugRender::RenderText("Hinge", 420, 442, joint_limit_axis, 0.0f,
+                                1.0f);
+        math::Position3 joint_pos;
+        joint_pos.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_r_loc.v,
+                                   joint->m_b1_r_loc.v, 0),
+                    b1->get_mat().x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_r_loc.v,
+                                   joint->m_b1_r_loc.v, 85),
+                    b1->get_mat().y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_r_loc.v,
+                                   joint->m_b1_r_loc.v, 170),
+                    b1->get_mat().z.v),
+                b1->get_mat().w.v));
+        math::Position3 end_pt;
+        __m128 v8 = joint->m_b2_ref_min_loc.v;
+        const math::Mat43& mat = b2->get_mat();
+        __m128 v9 = _mm_mul_ps(_mm_shuffle_ps(v8, v8, 170), mat.z.v);
+        __m128 v11 = _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v8, v8, 0), mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(v8, v8, 85), mat.y.v));
+        __m128 len9 = _mm_set1_ps(9.0f);
+        end_pt.v =
+            _mm_add_ps(joint_pos.v, _mm_mul_ps(_mm_add_ps(v11, v9), len9));
+        if ((joint->m_flags & 0x10) == 0)
+        {
+            DebugRender::RenderLine(joint_pos, end_pt, white, 0.69999999f);
+        }
+        else
+        {
+            label_x = 510;
+            DebugRender::RenderText("Min", 510, 442, joint_axis, 0.0f, 1.0f);
+            DebugRender::RenderLine(joint_pos, end_pt, joint_axis,
+                                    0.69999999f);
+        }
+        const math::Mat43& mat2 = b2->get_mat();
+        __m128 v8b = joint->m_b2_ref_max_loc.v;
+        end_pt.v = _mm_add_ps(
+            joint_pos.v,
+            _mm_mul_ps(
+                _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v8b, v8b, 0), mat2.x.v),
+                        _mm_mul_ps(_mm_shuffle_ps(v8b, v8b, 85),
+                                   mat2.y.v)),
+                    _mm_mul_ps(_mm_shuffle_ps(v8b, v8b, 170), mat2.z.v)),
+                len9));
+        if ((joint->m_flags & 0x20) == 0)
+        {
+            DebugRender::RenderLine(joint_pos, end_pt, white, 0.69999999f);
+        }
+        else
+        {
+            DebugRender::RenderText("MAX", label_x + 90, 442, joint_axis,
+                                    0.0f, 1.0f);
+            DebugRender::RenderLine(joint_pos, end_pt, joint_axis,
+                                    0.69999999f);
+        }
+        const math::Mat43& mat3 = b1->get_mat();
+        __m128 v8c = joint->m_b1_ref_loc.v;
+        end_pt.v = _mm_add_ps(
+            joint_pos.v,
+            _mm_mul_ps(
+                _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v8c, v8c, 0), mat3.x.v),
+                        _mm_mul_ps(_mm_shuffle_ps(v8c, v8c, 85),
+                                   mat3.y.v)),
+                    _mm_mul_ps(_mm_shuffle_ps(v8c, v8c, 170), mat3.z.v)),
+                len9));
+        DebugRender::RenderLine(joint_pos, end_pt, cone_axis, 0.69999999f);
+    }
+    else if ((m_flags & 8) != 0)
+    {
+        DebugRender::RenderText("Swivel", 420, 442, joint_limit_axis, 0.0f,
+                                1.0f);
+        label_x = 510;
+        const math::Mat43& mat4 = b1->get_mat();
+        math::Dir3 axis1;
+        axis1.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_axis_loc.v,
+                                   joint->m_b1_axis_loc.v, 0),
+                    mat4.x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_axis_loc.v,
+                                   joint->m_b1_axis_loc.v, 85),
+                    mat4.y.v)),
+            _mm_mul_ps(
+                _mm_shuffle_ps(joint->m_b1_axis_loc.v,
+                               joint->m_b1_axis_loc.v, 170),
+                mat4.z.v));
+        const math::Mat43& mat5 = b2->get_mat();
+        math::Dir3 axis2;
+        axis2.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b2_axis_loc.v,
+                                   joint->m_b2_axis_loc.v, 0),
+                    mat5.x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b2_axis_loc.v,
+                                   joint->m_b2_axis_loc.v, 85),
+                    mat5.y.v)),
+            _mm_mul_ps(
+                _mm_shuffle_ps(joint->m_b2_axis_loc.v,
+                               joint->m_b2_axis_loc.v, 170),
+                mat5.z.v));
+        math::Position3 joint_pos;
+        joint_pos.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_r_loc.v,
+                                   joint->m_b1_r_loc.v, 0),
+                    b1->get_mat().x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_r_loc.v,
+                                   joint->m_b1_r_loc.v, 85),
+                    b1->get_mat().y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_r_loc.v,
+                                   joint->m_b1_r_loc.v, 170),
+                    b1->get_mat().z.v),
+                b1->get_mat().w.v));
+        if ((render_flags.mMask & 2) != 0)
+        {
+            if (joint->m_joint_limits_count > 0)
+            {
+                math::Position3 end_pt;
+                end_pt.v = _mm_add_ps(
+                    joint_pos.v,
+                    _mm_mul_ps(axis2.v, _mm_set1_ps(9.0f)));
+                DebugRender::RenderLine(joint_pos, end_pt, joint_limit_axis,
+                                        0.69999999f);
+            }
+            int limit_count = joint->m_joint_limits_count;
+            for (int i = 0; i < limit_count; ++i)
+            {
+                Color limit_col(0.0f, 0.0f, 1.0f, 0.5f);
+                if (joint->get_joint_limit_active(i) != 0)
+                {
+                    limit_col = joint_limit_axis;
+                }
+                if ((~(b1->m_flags >> 6) & 1) == 0
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                           79, "debug_flag_is_not_in_collision()",
+                           defaultFileName))
+                    __debugbreak();
+                math::Dir3 limit_axis;
+                limit_axis.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(joint->m_joint_limits[i]
+                                               .m_b1_ud_loc.v,
+                                           joint->m_joint_limits[i]
+                                               .m_b1_ud_loc.v,
+                                           0),
+                            b1->get_mat().x.v),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(joint->m_joint_limits[i]
+                                               .m_b1_ud_loc.v,
+                                           joint->m_joint_limits[i]
+                                               .m_b1_ud_loc.v,
+                                           85),
+                            b1->get_mat().y.v)),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(joint->m_joint_limits[i].m_b1_ud_loc.v,
+                                       joint->m_joint_limits[i].m_b1_ud_loc.v,
+                                       170),
+                        b1->get_mat().z.v));
+                math::Position3 end_pt;
+                end_pt.v = _mm_add_ps(
+                    joint_pos.v, _mm_mul_ps(limit_axis.v, _mm_set1_ps(9.0f)));
+                DebugRender::RenderLine(joint_pos, end_pt, limit_col,
+                                        0.69999999f);
+                float angle = acosf(
+                    joint->m_joint_limits[i].m_b1_ud_limit_co_);
+                DebugRender::RenderCone(joint_pos, limit_axis, angle, 9.0f,
+                                        limit_col);
+                char buf[32];
+                sprintf(buf, "%d",
+                        (int)(acosf(joint->m_joint_limits[i]
+                                        .m_b1_ud_limit_co_)
+                              * 180.0f * 0.31830987f));
+                DebugRender::RenderText(buf, label_x, 442, limit_col, 0.0f,
+                                        1.0f);
+                label_x += 40;
+            }
+        }
+        if ((render_flags.mMask & 1) != 0)
+        {
+            math::Mat43 rot;
+            phys_make_rotate(&rot, axis1, axis2);
+            const math::Mat43& mat6 = b1->get_mat();
+            __m128 v22 = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(joint->m_b1_ref_loc.v,
+                                       joint->m_b1_ref_loc.v, 0),
+                        mat6.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(joint->m_b1_ref_loc.v,
+                                       joint->m_b1_ref_loc.v, 85),
+                        mat6.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b1_ref_loc.v,
+                                   joint->m_b1_ref_loc.v, 170),
+                    mat6.z.v));
+            math::Dir3 ref1;
+            ref1.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v22, v22, 0), rot.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(v22, v22, 85), rot.y.v)),
+                _mm_mul_ps(_mm_shuffle_ps(v22, v22, 170), rot.z.v));
+            const math::Mat43& mat7 = b2->get_mat();
+            math::Dir3 ref_min;
+            ref_min.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(joint->m_b2_ref_min_loc.v,
+                                       joint->m_b2_ref_min_loc.v, 0),
+                        mat7.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(joint->m_b2_ref_min_loc.v,
+                                       joint->m_b2_ref_min_loc.v, 85),
+                        mat7.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b2_ref_min_loc.v,
+                                   joint->m_b2_ref_min_loc.v, 170),
+                    mat7.z.v));
+            const math::Mat43& mat8 = b2->get_mat();
+            math::Dir3 ref_max;
+            ref_max.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(joint->m_b2_ref_max_loc.v,
+                                       joint->m_b2_ref_max_loc.v, 0),
+                        mat8.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(joint->m_b2_ref_max_loc.v,
+                                       joint->m_b2_ref_max_loc.v, 85),
+                        mat8.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(joint->m_b2_ref_max_loc.v,
+                                   joint->m_b2_ref_max_loc.v, 170),
+                    mat8.z.v));
+            __m128 len9b = _mm_set1_ps(9.0f);
+            math::Position3 end_pt;
+            end_pt.v = _mm_add_ps(joint_pos.v, _mm_mul_ps(ref1.v, len9b));
+            DebugRender::RenderLine(joint_pos, end_pt, cone_axis,
+                                    0.69999999f);
+            end_pt.v = _mm_add_ps(joint_pos.v, _mm_mul_ps(ref_min.v, len9b));
+            if ((joint->m_flags & 0x10) != 0)
+            {
+                DebugRender::RenderText("MIN", label_x, 442, joint_axis, 0.0f,
+                                        1.0f);
+                DebugRender::RenderLine(joint_pos, end_pt, joint_axis,
+                                        0.69999999f);
+                label_x += 40;
+            }
+            else
+            {
+                DebugRender::RenderLine(joint_pos, end_pt, white,
+                                        0.69999999f);
+            }
+            end_pt.v = _mm_add_ps(joint_pos.v, _mm_mul_ps(ref_max.v, len9b));
+            if ((joint->m_flags & 0x20) != 0)
+            {
+                DebugRender::RenderText("MAX", label_x, 442, joint_axis, 0.0f,
+                                        1.0f);
+                DebugRender::RenderLine(joint_pos, end_pt, joint_axis,
+                                        0.69999999f);
+                goto LABEL_31;
+            }
+            DebugRender::RenderLine(joint_pos, end_pt, white, 0.69999999f);
+        }
+    }
+LABEL_31:
+    if ((render_flags.mMask & 4) != 0)
+    {
+        render_single_rigid_body(b1);
+        render_single_rigid_body(b2);
+    }
 }
 
 // ea: 0x6FAA40

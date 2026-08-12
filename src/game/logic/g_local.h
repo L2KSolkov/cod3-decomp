@@ -2183,6 +2183,9 @@ public:
     static void RenderLine(const math::Position3& pt1,
                            const math::Position3& pt2, const Color& col,
                            float thickness);  // render.o 0xAC7AB0
+    static void RenderCone(const math::Position3& pos, const math::Dir3& dir,
+                           float angle, float length,
+                           const Color& col);  // render.o 0xAC51C0
     static void RenderAxis(const math::Mat43& mat, float length,
                            float width);  // render.o 0xAC8870
 };

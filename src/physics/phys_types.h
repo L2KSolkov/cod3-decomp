@@ -433,7 +433,10 @@ static_assert(sizeof(ragdoll_joint_limit_info) == 0x20, "ragdoll_joint_limit_inf
 // rigid_body_constraint_ragdoll — ragdoll constraint (336 bytes)
 // Size: 0x150 (336 bytes) — verified against IDA
 // ============================================================================
-struct rigid_body_constraint_ragdoll : rigid_body_constraint {
+// class tag (V) required: binary manglings use PAV/PBV (e.g.
+// ?create_rbc_ragdoll@phys_sys@@SAPAVrigid_body_constraint_ragdoll@@...)
+class rigid_body_constraint_ragdoll : public rigid_body_constraint {
+public:
     math::Dir3      m_b1_r_loc;       // +0x10
     math::Dir3      m_b2_r_loc;       // +0x20
     unsigned int    m_flags;          // +0x30
@@ -474,6 +477,11 @@ struct rigid_body_constraint_ragdoll : rigid_body_constraint {
                      const math::Dir3& b2_axis, float delta_t);
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
     void set_joint_limit_active(unsigned int f, bool b);
+    // get_joint_limit_active - ea: 0x6E5060 (inline COMDAT)
+    const unsigned int get_joint_limit_active(unsigned int f) const
+    {
+        return (m_flags >> (6 + f)) & 1;
+    }
 };
 static_assert(sizeof(rigid_body_constraint_ragdoll) == 0x150, "rigid_body_constraint_ragdoll size mismatch");
 static_assert(offsetof(rigid_body_constraint_ragdoll, m_b1_axis_loc) == 0x90, "ragdoll::m_b1_axis_loc offset mismatch");

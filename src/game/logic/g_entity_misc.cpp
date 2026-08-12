@@ -1569,6 +1569,12 @@ void DebugRender::RenderLine(const math::Position3& pt1,
 {
     (void)pt1; (void)pt2; (void)color; (void)thickness;
 }
+void DebugRender::RenderCone(const math::Position3& pos,
+                             const math::Dir3& dir, float angle,
+                             float length, const Color& color)
+{
+    (void)pos; (void)dir; (void)angle; (void)length; (void)color;
+}
 void DebugRender::RenderQuad2D(float x, float y, float w, float h, float z,
                                const Color& color)
 {
