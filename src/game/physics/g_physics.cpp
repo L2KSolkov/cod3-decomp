@@ -52,6 +52,7 @@ void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
 void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
                   math::Mat43& mat);  // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z
 void AnglesToAxis(const float* angles, float (*axis)[3]);  // ?AnglesToAxis@@YAXPBMPAY02M@Z
+void SetIdentity(math::Mat43& m);  // inline COMDAT (pulse_sum.h; ea: 0x6E4D00)
 
 class PakManager {
 public:
@@ -86,7 +87,11 @@ class Entity;
 struct rb_extra_info;
 class rb_vehicle;
 class DObj;
+class PakFile;
 class rigid_body;
+rigid_body_constraint_custom_path* path_constraint_create(
+    Entity* veh);  // ?path_constraint_create@@YAPAVrigid_body_constraint_custom_path@@PAVEntity@@@Z
+extern bool g_in_physics_collision_callback;
 class biped_phys_info;
 struct phys_gjk_geom_list;
 class phys_gjk_geom_cod_base;
@@ -433,16 +438,23 @@ public:
         const char* name);  // ?GetRBVehParameter@vehicle_rb_parameter@@SAPAV1@PBD@Z
 };
 
-// RBVehicleController (physics.o RBVehicleController.cpp)
+// RBVehicleController (physics.o RBVehicleController.cpp). 64-byte layout
+// verified from IDA (mVehicleController at rb_vehicle +0x2D0).
 class RBVehicleController {
 public:
     math::Position3 m_script_goal_position;  // +0x00
     float m_script_goal_radius;              // +0x10
     float m_script_goal_speed;               // +0x14
+    float m_stuck_time;                      // +0x18
+    math::Position3 m_stuck_position;        // +0x20
+    float m_hold_controls_time;              // +0x30
 
     void SetScriptTarget(rb_vehicle& rbveh, const math::Position3& goal_position,
                          float goal_radius, float goal_speed);  // ?SetScriptTarget@RBVehicleController@@QAEXAAVrb_vehicle@@ABVPosition3@math@@MM@Z
     void UpdateControls(rb_vehicle& rbveh);  // ?UpdateControls@RBVehicleController@@QAEXAAVrb_vehicle@@@Z
+
+private:
+    void UpdateJump(rb_vehicle& rbveh);  // ?UpdateJump@RBVehicleController@@AAEXAAVrb_vehicle@@@Z
 };
 
 // rb_vehicle (physics.o RBVehicle.cpp). Layout verified against the ctor
@@ -470,7 +482,7 @@ public:
     Bitmask<unsigned int> m_flags;               // +0x280
     uint8_t _pad284[0x290 - 0x284];
     math::Mat43 m_prev_rb_mat;                   // +0x290 (teleport writes w at +0x2C0)
-    uint8_t _pad2D0[0x310 - 0x2D0];
+    RBVehicleController mVehicleController;       // +0x2D0 (64 bytes)
     float m_fake_rpm;                            // +0x310
     int   m_num_colliding_wheels;                // +0x314
     float m_current_side_fric_scale;             // +0x318
@@ -491,7 +503,6 @@ public:
     float m_steer_front_back_length;             // +0x380
     int   m_state_flags;                         // +0x384
     void* m_vci;                                 // +0x388
-    RBVehicleController mVehicleController;       // +0x390
 
     rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
     void init(Entity* owner, vehicle_rb_parameter* parameter);  // ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z
@@ -516,6 +527,8 @@ public:
     void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
     void unpause_physics();       // ?unpause_physics@rb_vehicle@@QAEXXZ
+    void start_physics();         // ?start_physics@rb_vehicle@@QAEXXZ
+    void start_path(int attach_mode);  // ?start_path@rb_vehicle@@QAEXH@Z
     void set_brake(float braking);    // ?set_brake@rb_vehicle@@QAEXM@Z (inline)
     void set_throttle(float throttle);  // ?set_throttle@rb_vehicle@@QAEXM@Z (inline)
     void set_steer_factor(float steer_factor);  // ?set_steer_factor@rb_vehicle@@QAEXM@Z (inline)
@@ -578,6 +591,9 @@ public:
 };
 
 template <typename T, int N> class phys_static_memory_pool;
+// ?g_list_rb_extra_info@@3V?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@A
+// (physics.o data @ 0xE2A000; definition in the pool section below)
+extern phys_static_memory_pool<rb_extra_info, 35> g_list_rb_extra_info;
 // ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A
 // (physics.o data @ 0xE2B8F0)
 extern phys_static_memory_pool<rb_vehicle, 10> g_rb_vehicle_list;
@@ -1018,7 +1034,9 @@ struct refEntity {  // EntityShared subset
     void* actor;                 // +0x258 (actor_s*)
     void* sentient;              // +0x25C (sentient_s*)
     void* scr_vehicle;           // +0x260 (scr_vehicle_t*)
-    uint8_t _pad264[0x2B0 - 0x264];
+    uint8_t _pad264[0x28C - 0x264];
+    Broc::string mTarget;        // +0x28C (path node target name)
+    uint8_t _pad290[0x2B0 - 0x290];
     uint8_t physicsObject;       // +0x2B0
     uint8_t _pad2B1[0x2B8 - 0x2B1];
     int32_t takedamage;          // +0x2B8
@@ -1290,6 +1308,12 @@ void RBVehicleController::SetScriptTarget(
 
 // stub until RBVehicleController::UpdateControls (0x70C530) is ported
 void RBVehicleController::UpdateControls(rb_vehicle& rbveh)
+{
+    (void)rbveh;
+}
+
+// ea: 0x6F5B50
+void RBVehicleController::UpdateJump(rb_vehicle& rbveh)
 {
     (void)rbveh;
 }
@@ -1717,6 +1741,90 @@ void rb_vehicle::pause_physics(bool shutdown)
     (void)shutdown;
 }
 
+// ea: 0x708E30
+void rb_vehicle::start_physics()
+{
+    math::Mat43 v21;
+    v21 = m_owner->CalcRotTranMat43();
+    unsigned int v3 = m_flags.mMask & 0xFFFFFFFC;
+    m_flags.mMask &= ~1u;
+    m_flags.mMask = v3;
+    _set_default_pose_wheels_only();
+    if (m_owner->r.bmodel == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.cpp";
+        AeAssert::gCurrentLine = 207;
+        AeAssert::gCurrentExpr = "m_owner->r.bmodel";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "Can not create a vehicle without a collmap"))
+            __debugbreak();
+    }
+    Entity* m_owner_ = m_owner;
+    // bmodel is a collmap (DCGSet); nboxes lives at +0x30 (bbox min/max).
+    struct collmap_view {
+        uint8_t _pad0[0x30];
+        float nboxes[32];  // +0x30
+    };
+    float* p_nboxes = ((collmap_view*)m_owner_->r.bmodel)->nboxes;
+    float* v6 = p_nboxes + 12;
+    math::Position3 v23;
+    v23.v.m128_f32[0] = p_nboxes[12];
+    float v7 = p_nboxes[13];
+    p_nboxes += 16;
+    v23.v.m128_f32[1] = v7;
+    float v8 = v6[2];
+    v23.v.m128_f32[3] = v6[3];
+    math::Position3 v22;
+    v22.v.m128_f32[0] = *p_nboxes;
+    v22.v.m128_f32[1] = p_nboxes[1];
+    float v9 = p_nboxes[2];
+    v22.v.m128_f32[3] = p_nboxes[3];
+    DObj* mDObj = m_owner_->mDObj;
+    v23.v.m128_f32[2] = v8;
+    v22.v.m128_f32[2] = v9;
+    if (mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.cpp";
+        AeAssert::gCurrentLine = 212;
+        AeAssert::gCurrentExpr = "m_owner->GetDObj()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Physics entity with no DObj."))
+            __debugbreak();
+    }
+    __m128 v = v22.v;
+    __m128 half = _mm_set1_ps(0.5f);
+    v22.v = _mm_mul_ps(_mm_add_ps(v22.v, v23.v), half);
+    __m128 v13 = _mm_mul_ps(_mm_sub_ps(v, v23.v), half);
+    __m128 v14 = _mm_mul_ps(v13, v13);
+    float v24 = v14.m128_f32[0]
+        + (v14.m128_f32[1] + v14.m128_f32[2]);
+    SetIdentity(v21);
+    v21.w.v = _mm_xor_ps(_mm_set1_ps(-0.0f), v22.v);
+    rb_extra_info* v15 =
+        g_list_rb_extra_info.add(false, "phys memory pool add overflow.");
+    float bs_radius = sqrtf(v24);
+    rb_extra_info* v17 = v15;
+    m_chassis_rbinf = v15;
+    rigid_body* rb = phys_sys::create_rigid_body(false);
+    v17->set(m_owner, rb, v21, bs_radius, v22);
+    v17->m_priority = 2;
+    int v19 = v17->m_flags.mMask | 8;
+    v17->m_flags.mMask = v19;
+    v17->m_flags.mMask = v19 | 0x10;
+    v17->evaluate_effect_priority();
+    m_chassis_rbinf->m_rb_vehicle = this;
+    update_parms(m_parameter, true);
+    m_owner->flags |= 0x400000;
+    m_flags.mMask |= 4u;
+    if (g_in_physics_collision_callback)
+        v17->collision_prolog();
+    m_owner->Notify(hash_const.physicsstart);
+    mVehicleController.m_stuck_time = 0.0f;
+}
+
 // stub until rb_vehicle::_update_unpause (0x709090) is ported
 void rb_vehicle::_update_unpause()
 {
@@ -1729,6 +1837,64 @@ void rb_vehicle::unpause_physics()
     {
         m_flags.mMask |= 2u;
         _update_unpause();
+    }
+}
+
+// ea: 0x70C0A0
+void rb_vehicle::start_path(int attach_mode)
+{
+    unsigned int v4 = m_flags.mMask & 0xFFFFFDF7;
+    m_flags.mMask &= ~8u;
+    m_flags.mMask = v4;
+    m_flags.mMask = v4 & 0xFFFFFEFF;
+    if (attach_mode != 0)
+    {
+        unsigned int v19 = m_flags.mMask | 0x200;
+        unsigned char mMask = (unsigned char)m_flags.mMask;
+        m_flags.mMask = v19;
+        if ((mMask & 1) != 0)
+        {
+            m_flags.mMask = v19 | 2;
+            _update_unpause();
+        }
+    }
+    else
+    {
+        pause_physics(false);
+        unsigned int v5 = m_flags.mMask | 0x100;
+        unsigned char v6 = (unsigned char)m_flags.mMask;
+        m_flags.mMask = v5;
+        if ((v6 & 1) == 0
+            || (m_flags.mMask = v5 | 2, _update_unpause(),
+                (m_flags.mMask & 1) == 0))
+        {
+            scr_vehicle_t* scr_vehicle = (scr_vehicle_t*)m_owner->scr_vehicle;
+            math::Position3 pos;
+            math::Position3 angles;
+            pos.v = _mm_setr_ps(scr_vehicle->pathPos.origin[0],
+                                scr_vehicle->pathPos.origin[1],
+                                scr_vehicle->pathPos.origin[2], 0.0f);
+            angles.v = _mm_setr_ps(scr_vehicle->pathPos.angles[0],
+                                   scr_vehicle->pathPos.angles[1],
+                                   scr_vehicle->pathPos.angles[2], 0.0f);
+            AnglesToAxis(angles, pos, m_prev_rb_mat);
+            math::Mat43& mat = m_chassis_rbinf->m_rb->dangerous_get_mat();
+            memcpy(&mat, &m_prev_rb_mat, sizeof(math::Mat43));
+            if (m_vpc == nullptr)
+            {
+                m_vpc = path_constraint_create(m_owner);
+                for (int w = 0; w < 8; ++w)
+                {
+                    rigid_body_constraint_wheel* wheel =
+                        (rigid_body_constraint_wheel*)m_wheels[w];
+                    if (wheel != nullptr)
+                    {
+                        wheel->m_fwd_fric_k = 0.0099999998f;
+                        wheel->m_side_fric_k = 0.0099999998f;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -2262,6 +2428,20 @@ rigid_body* add_entity(Entity* e, float mass, float fric);  // ?add_entity@rb_pr
 void hit_entity(Entity* e, const math::Position3& hitp,
                 const math::Dir3& hitd, float fmag, float tmag);  // ?hit_entity@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@ABVDir3@4@MM@Z
 static bool frame_advance_flag();
+void add_environmental_point_constraint(Entity* e,
+                                        const math::Position3& ent_r_loc,
+                                        const math::Position3& abs_coord);  // ?add_environmental_point_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@1@Z
+void add_environmental_dist_constraint(Entity* e,
+                                       const math::Position3& ent_r_loc,
+                                       const math::Position3& abs_coord,
+                                       float min_dist, float max_dist);  // ?add_environmental_dist_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@1MM@Z
+void add_entity_dist_constraint(Entity* e1, const math::Position3& e1_loc_pt,
+                                Entity* e2, const math::Position3& e2_loc_pt,
+                                float min_dist, float max_dist);  // ?add_entity_dist_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@01MM@Z
+void add_entity_point_constraint(Entity* e1,
+                                 const math::Position3& e1_loc_pt,
+                                 Entity* e2,
+                                 const math::Position3& e2_loc_pt);  // ?add_entity_point_constraint@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@01@Z
 }
 
 // ea: 0x6FEAD0
@@ -2306,6 +2486,61 @@ bool rb_prop_system::is_entity_stable(Entity* e)
 rigid_body* rb_prop_system::get_associated_rigid_body(Entity* e)
 {
     return const_cast<rigid_body*>(get_entity_rb(e));
+}
+
+// ea: 0x706D10
+void rb_prop_system::add_environmental_point_constraint(
+    Entity* e, const math::Position3& ent_r_loc,
+    const math::Position3& abs_coord)
+{
+    rigid_body* entity_rb = (rigid_body*)get_entity_rb(e);
+    if (entity_rb != nullptr)
+    {
+        math::Dir3 b2_r_loc;
+        math::Dir3 b1_r_loc;
+        b2_r_loc.v = abs_coord.v;
+        b1_r_loc.v = ent_r_loc.v;
+        rigid_body_constraint_point* rbc_point = phys_sys::create_rbc_point(
+            entity_rb, phys_sys::get_environment_rigid_body(), false);
+        rbc_point->set(b1_r_loc, b2_r_loc);
+    }
+}
+
+// ea: 0x707010
+void rb_prop_system::add_environmental_dist_constraint(
+    Entity* e, const math::Position3& ent_r_loc,
+    const math::Position3& abs_coord, float min_dist, float max_dist)
+{
+    rigid_body* entity_rb = (rigid_body*)get_entity_rb(e);
+    if (entity_rb != nullptr)
+    {
+        math::Dir3 b2_r_loc;
+        math::Dir3 b1_r_loc;
+        b2_r_loc.v = abs_coord.v;
+        b1_r_loc.v = ent_r_loc.v;
+        rigid_body_constraint_distance* rbc_dist = phys_sys::create_rbc_dist(
+            entity_rb, phys_sys::get_environment_rigid_body(), false);
+        rbc_dist->set(b1_r_loc, b2_r_loc, min_dist, max_dist);
+    }
+}
+
+// ea: 0x707080
+void rb_prop_system::add_entity_dist_constraint(
+    Entity* e1, const math::Position3& e1_loc_pt, Entity* e2,
+    const math::Position3& e2_loc_pt, float min_dist, float max_dist)
+{
+    rigid_body* entity_rb = (rigid_body*)get_entity_rb(e1);
+    rigid_body* v8 = (rigid_body*)get_entity_rb(e2);
+    if (entity_rb != nullptr && v8 != nullptr)
+    {
+        math::Dir3 b2_r_loc;
+        math::Dir3 b1_r_loc;
+        b2_r_loc.v = e2_loc_pt.v;
+        b1_r_loc.v = e1_loc_pt.v;
+        rigid_body_constraint_distance* rbc_dist =
+            phys_sys::create_rbc_dist(entity_rb, v8, false);
+        rbc_dist->set(b1_r_loc, b2_r_loc, min_dist, max_dist);
+    }
 }
 
 // stub until rb_prop_system::add_entity (0x706150) is ported
@@ -3243,6 +3478,12 @@ void prop_phys_collision::get_all_collisions()
         }
     }
 }
+
+// ea: 0x70C8C0
+void prop_system_collision_process()
+{
+    prop_phys_collision::get_all_collisions();
+}
 // stubs until collide_terrain/collide_entities (0x709B10/0x70A330) are ported
 void prop_phys_collision::collide_terrain(rb_extra_info* rb_inf)
 {
@@ -3793,6 +4034,8 @@ public:
     void prolog_frame_advance(Entity* owner, float delta_t);  // ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
     void debug_render();  // ?debug_render@biped_system@@QAEXXZ
     void render_joint(int joint_id, Bitmask<unsigned int> render_flags);  // ?render_joint@biped_system@@QAEXHV?$Bitmask@I@@@Z
+    void setup_initial_gjk_cache(unsigned int geom_id,
+                                 const math::Dir3& separation_direction);  // ?setup_initial_gjk_cache@biped_system@@QAEXIABVDir3@math@@@Z
     void destroy_bps(Entity* owner);  // ?destroy_bps@biped_system@@QAEXPAVEntity@@@Z
     void recreate_bps(Entity* owner, int flags);  // ?recreate_bps@biped_system@@QAEXPAVEntity@@H@Z
     void remove_rigid_body(phys_bones rb_id);  // ?remove_rigid_body@biped_system@@QAEXW4phys_bones@@@Z
@@ -4832,6 +5075,15 @@ void MoveGravity(Entity* pEnt, const float* const vVel, float fTotalTime)
     g_LinkEntity(pEnt);
 }
 
+// PathNodeMgr (mp_actors.o / path.o view; class tag V matches the binary
+// manglings ?sInst@PathNodeMgr@@2PAV1@A / ?SetCoverNodeStatus@PathNodeMgr@@
+// QAEXABVstring@Broc@@H@Z; sInst defined in sv_globals.cpp)
+class PathNodeMgr {
+public:
+    static PathNodeMgr* sInst;
+    void SetCoverNodeStatus(const Broc::string& name, int inValid);
+};
+
 // Destructible (physics.o; minimal view for the DeletePiece family)
 class Destructible {
 public:
@@ -4840,7 +5092,15 @@ public:
                     const math::Position3& hitp,
                     const math::Position3& trajectory,
                     bool useRealPhysics);  // ?ThrowPiece@Destructible@@QAEXPAVEntity@@MABVPosition3@math@@1_N@Z
+    static void InvalidateCoverNode(Entity* ent);  // ?InvalidateCoverNode@Destructible@@SAXPAVEntity@@@Z
 };
+
+// ea: 0x6F64B0
+void Destructible::InvalidateCoverNode(Entity* ent)
+{
+    if (ent->mTarget.mBlock != nullptr)
+        PathNodeMgr::sInst->SetCoverNodeStatus(ent->mTarget, 1);
+}
 
 // ea: 0x6F6470
 void Destructible::DeletePiece(Entity* ent)
@@ -4882,6 +5142,83 @@ void Destructible::ThrowPiece(Entity* entPiece, float force,
             BrocSys::Mover_RotateSpeed(entPiece, rotpos, 10.0f, 0.0f, 0.0f);
         }
     }
+}
+
+// ============================================================================
+// PhysDataBankManager / DestructibleBankManager DecodeBank family (physics.o
+// RBPhysData.cpp / RBDestructible.cpp). The InplaceAssetBank<> Fixup and
+// InplaceAssetBankSet<> AddBank calls are template instantiations from
+// inplace.o/streamer.o; local C-name helpers stand in until those templates
+// are ported (same pattern as ConfigStringManager::DecodeBank).
+// ============================================================================
+class PhysDataBank;
+class DestructibleBank;
+class PhysDataBankManager {
+public:
+    static PhysDataBankManager* sInst;  // ?sInst@PhysDataBankManager@@2PAV1@A (g_globals.cpp)
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);  // ?DecodeBank@PhysDataBankManager@@QAEXPBDPAEHW4TPakId@@@Z
+};
+class DestructibleBankManager {
+public:
+    static DestructibleBankManager* sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A (g_globals.cpp)
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);  // ?DecodeBank@DestructibleBankManager@@QAEXPBDPAEHW4TPakId@@@Z
+};
+
+// InplaceAssetBank<PhysData,InplaceTree<InplaceString,unsigned int>>::Fixup
+// @ 0x410B14 / InplaceAssetBankSet<PhysDataBank>::AddBank @ 0x42E4F2 (stubs)
+void InplaceAssetBank_Fixup_PhysData(void* data) { (void)data; }
+void InplaceAssetBankSet_AddBank_PhysDataBank(void* self, TPakId pakId,
+                                              void* data)
+{
+    (void)self; (void)pakId; (void)data;
+}
+// InplaceAssetBank<Destructible,InplaceTree<InplaceString,unsigned int>>::
+// Fixup @ 0x41FF92 / InplaceAssetBankSet<DestructibleBank>::AddBank @ 0x42F447
+void InplaceAssetBank_Fixup_Destructible(void* data) { (void)data; }
+void InplaceAssetBankSet_AddBank_DestructibleBank(void* self, TPakId pakId,
+                                                  void* data)
+{
+    (void)self; (void)pakId; (void)data;
+}
+
+// ea: 0x6FE870
+void PhysDataBankManager::DecodeBank(const char* name, unsigned char* data,
+                                     int size, TPakId pak_id)
+{
+    (void)name; (void)size;
+    InplaceAssetBank_Fixup_PhysData(data);
+    InplaceAssetBankSet_AddBank_PhysDataBank(this, pak_id, data);
+}
+
+// ea: 0x702C80
+void DestructibleBankManager::DecodeBank(const char* name, unsigned char* data,
+                                         int size, TPakId pak_id)
+{
+    (void)name; (void)size;
+    InplaceAssetBank_Fixup_Destructible(data);
+    InplaceAssetBankSet_AddBank_DestructibleBank(this, pak_id, data);
+}
+
+// ea: 0x7031B0
+void DecodePhysData(const char* name, unsigned char* data, int size,
+                    TPakId pakId, PakFile* pakFile)
+{
+    (void)name; (void)size; (void)pakFile;
+    PhysDataBankManager* v4 = PhysDataBankManager::sInst;
+    InplaceAssetBank_Fixup_PhysData(data);
+    InplaceAssetBankSet_AddBank_PhysDataBank(v4, pakId, data);
+}
+
+// ea: 0x705CA0
+void DecodeDestructible(const char* name, unsigned char* data, int size,
+                        TPakId pakId, PakFile* pakFile)
+{
+    (void)name; (void)size; (void)pakFile;
+    DestructibleBankManager* v4 = DestructibleBankManager::sInst;
+    InplaceAssetBank_Fixup_Destructible(data);
+    InplaceAssetBankSet_AddBank_DestructibleBank(v4, pakId, data);
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
@@ -5189,6 +5526,43 @@ void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
     }
 }
 
+// ?_Return_MF_UnderCrossHair@@YAPAVEntity@@XZ (game2.o 0x503E30)
+extern Entity* _Return_MF_UnderCrossHair();
+
+// ea: 0x70EF20
+void FN_HangEntity()
+{
+    Entity* v1 = _Return_MF_UnderCrossHair();
+    if (v1 != nullptr)
+    {
+        math::Position3 worldPt;
+        math::Dir3 hitd;
+        hitd.v = _mm_setzero_ps();
+        worldPt.v = v1->r.currentMat.w.v;
+        ApplyPhysics(v1, worldPt, hitd, 1.0f, false, HITLOC_TORSO_UPR);
+        biped_system* m_bp_sys = v1->mBPInfo->m_bp_sys;
+        if (m_bp_sys != nullptr)
+        {
+            if (m_bp_sys->m_list_rigid_body.m_alloc_count <= 1
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            rigid_body* v5 = m_bp_sys->m_list_rigid_body.m_slot_array[1];
+            if (v5 != nullptr)
+            {
+                math::Dir3 zero_loc;
+                zero_loc.v = _mm_setzero_ps();
+                rigid_body_constraint_point* rbc_point =
+                    phys_sys::create_rbc_point(
+                        v5, phys_sys::get_environment_rigid_body(), false);
+                rbc_point->set(zero_loc,
+                               reinterpret_cast<const math::Dir3&>(worldPt));
+            }
+        }
+    }
+}
+
 // ea: 0x7096E0
 void SetAVel(Entity* e)
 {
@@ -5429,6 +5803,53 @@ public:
     void init_tunnel_test(math::Position3& center_pos);  // ?init_tunnel_test@rigid_body_sphere_list@@QAEXAAVPosition3@math@@@Z
     void set(rigid_body* const owner);  // ?set@rigid_body_sphere_list@@QAEXQAVrigid_body@@@Z
 };
+
+// ea: 0x708C80
+void biped_system::setup_initial_gjk_cache(
+    unsigned int geom_id, const math::Dir3& separation_direction)
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        rigid_body_sphere_list** m_alloc_list =
+            m_collision_callback.m_rb_colgeom_alloc_list;
+        rigid_body_sphere_list** v6 =
+            &m_alloc_list[m_collision_callback.m_rb_colgeom_count];
+        rigid_body_sphere_list* v7;
+        if (v6 == m_alloc_list)
+        {
+            v7 = nullptr;
+            goto LABEL_7;
+        }
+        while ((*m_alloc_list)->m_rb_id != i)
+        {
+            if (v6 == ++m_alloc_list)
+            {
+                v7 = nullptr;
+                goto LABEL_7;
+            }
+        }
+        v7 = *m_alloc_list;
+        if (*m_alloc_list == nullptr)
+            goto LABEL_7;
+        goto LABEL_9;
+    LABEL_7:
+        if (_tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 1301, "rbsl",
+                      defaultFileName))
+            __debugbreak();
+    LABEL_9:
+        phys_gjk_cache_info* gjk_cache_info =
+            g_phys_gjk_cache_system.get_gjk_cache_info(
+                (unsigned int)v7->m_gjk_geom.m_geom_id, geom_id, true);
+        if (gjk_cache_info != nullptr)
+        {
+            int v9 = gjk_cache_info->m_flags | 4;
+            gjk_cache_info->m_flags = v9;
+            gjk_cache_info->m_support_dir.v = separation_direction.v;
+            gjk_cache_info->m_flags = v9 & 0xFFFFFFF7;
+        }
+    }
+}
+
 void rigid_body_sphere_list::calc_bounding_sphere()
 {
     if (m_alloc_count <= 0

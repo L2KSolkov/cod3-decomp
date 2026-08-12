@@ -34,12 +34,12 @@ void IGOFrontEnd::UpdateAfterWeaponsLoaded()
 // PathNodeMgr stubs (mp_actors.o / path.o; ported later)
 void PathNodeMgr::InitPaths() {}
 void PathNodeMgr::ValidateAllNodes() {}
-void PathNodeMgr::SetCoverNodeStatus(Broc::string* name, int inValid)
+void PathNodeMgr::SetCoverNodeStatus(const Broc::string& name, int inValid)
 {
     (void)name; (void)inValid;
 }
 void PathNodeMgr::AttachSentientToChainNode(sentient_s* pSentient,
-                                            Broc::string* targetname)
+                                            const Broc::string& targetname)
 {
     (void)pSentient; (void)targetname;
 }

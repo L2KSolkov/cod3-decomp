@@ -301,8 +301,8 @@ ServerTime_s ServerTime_sInst;  // ?ServerTime_sInst@@3UServerTime_s@@A (common)
 DebugThread g_debugThread;     // ?g_debugThread@@3VDebugThread@@A @ 0xDEB5A0
 EntityHandleDb EntityHandleDb::sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o @ 0x12BB4E8)
 void* SmokeGrenadeMgr::sInst;  // ?sInst@SmokeGrenadeMgr@@2PAV1@A @ 0xF049B4
-void* DestructibleBankManager::sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A
-void* PhysDataBankManager::sInst;      // ?sInst@PhysDataBankManager@@2PAV1@A
+DestructibleBankManager* DestructibleBankManager::sInst = NULL;  // ?sInst@DestructibleBankManager@@2PAV1@A
+PhysDataBankManager* PhysDataBankManager::sInst = NULL;          // ?sInst@PhysDataBankManager@@2PAV1@A
 float gStickyBoxScaleEasy = 1.25f;   // @ 0xDF5A28 (sticky aim box scale, easy)
 float gStickyBoxScaleNormal = 1.0f;  // @ 0xDF5A2C
 float gStickyBoxScaleHard = 0.85f;   // @ 0xDF5A30

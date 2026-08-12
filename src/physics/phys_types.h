@@ -309,6 +309,10 @@ public:
              int stable_min_contact_count);
     void update_col_mat();
 
+    // get_mat / dangerous_get_mat - ea: 0x6E4D00 / 0x6E4D50 (inline COMDATs)
+    const math::Mat43& get_mat() const { return m_mat; }  // ?get_mat@rigid_body@@QBEABVMat43@math@@XZ
+    math::Mat43& dangerous_get_mat() { return m_mat; }    // ?dangerous_get_mat@rigid_body@@QAEAAVMat43@math@@XZ
+
     rigid_body() {}  // ea: 0x880C60
     rigid_body& operator=(const rigid_body& other);  // ea: 0x892160
 

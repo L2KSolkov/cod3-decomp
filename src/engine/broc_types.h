@@ -26,7 +26,7 @@ struct HashStr {
 COD3_STATIC_ASSERT_32BIT(sizeof(HashStr) == 4, "HashStr size mismatch");
 
 namespace Broc {
-struct string;
+class string;
 }
 
 // ============================================================================
@@ -169,7 +169,8 @@ inline bool operator!=(const entity& lhs, const entity& rhs) {
 //   +0x06: mLength (u16)    — string length
 //   +0x08: mRefCount (i16)  — reference count
 // ============================================================================
-struct string {
+class string {
+public:
     struct Block {
         char*          mBuff;       // +0x00
         unsigned short mBlockSize;  // +0x04

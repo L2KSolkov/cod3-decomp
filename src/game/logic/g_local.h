@@ -3600,12 +3600,14 @@ struct PhysData {
     void*         mConstraints;   // +0x10 (InplaceVector<PhysConstraint>)
 };
 static_assert(sizeof(PhysData) == 0x14, "PhysData size mismatch");
-struct DestructibleBankManager {
-    static void* sInst;
+class DestructibleBankManager {
+public:
+    static DestructibleBankManager* sInst;
     IVPointer<Destructible> GetDestructible(TPakId pak_id, const char* name);
 };
-struct PhysDataBankManager {
-    static void* sInst;
+class PhysDataBankManager {
+public:
+    static PhysDataBankManager* sInst;
     IVPointer<PhysData> GetPhysData(TPakId pak_id, const char* name);
 };
 void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData);  // physics.o 0x7030B0

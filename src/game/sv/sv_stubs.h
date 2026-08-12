@@ -847,8 +847,9 @@ public:
     static PathNodeMgr* sInst;           // ?sInst@PathNodeMgr@@2PAV1@A
     void InitPaths();                    // ?InitPaths@PathNodeMgr@@QAEXXZ
     void ValidateAllNodes();             // ?ValidateAllNodes@PathNodeMgr@@QAEXXZ
-    void SetCoverNodeStatus(Broc::string* name, int inValid);  // ?SetCoverNodeStatus@PathNodeMgr@@QAEXPBVstring@Broc@@H@Z
-    void AttachSentientToChainNode(sentient_s* pSentient, Broc::string* targetname);
+    void SetCoverNodeStatus(const Broc::string& name, int inValid);  // ?SetCoverNodeStatus@PathNodeMgr@@QAEXABVstring@Broc@@H@Z
+    void AttachSentientToChainNode(sentient_s* pSentient,
+                                   const Broc::string& targetname);  // ?AttachSentientToChainNode@PathNodeMgr@@QAEXPAUsentient_s@@ABVstring@Broc@@@Z
     void ConnectPathsForEntity(Entity* ent);     // ?ConnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void DisconnectPathsForEntity(Entity* ent);  // ?DisconnectPathsForEntity@PathNodeMgr@@QAEXPAVEntity@@@Z
     void NodeList();                     // ?NodeList@PathNodeMgr@@QAEXXZ

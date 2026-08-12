@@ -463,7 +463,8 @@ void Touch_FriendlyChain(Entity* self, Entity* other)
         if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
             __debugbreak();
     }
-    PathNodeMgr::sInst->AttachSentientToChainNode(other->sentient, &self->mTarget);
+    PathNodeMgr::sInst->AttachSentientToChainNode(other->sentient,
+                                                  self->mTarget);
     G_Trigger(self, other);
 }
 

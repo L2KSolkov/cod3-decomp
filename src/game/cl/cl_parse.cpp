@@ -37,7 +37,7 @@ Entity* GetPlayer(int idx)
     return nullptr;
 }
 namespace Broc {
-struct string;
+class string;
 }
 
 // ============================================================================
