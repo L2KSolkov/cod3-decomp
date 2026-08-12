@@ -133,6 +133,26 @@ void phys_collision_allocater::free_buffers()
     }
 }
 
+// ?g_ragdoll_mass_scale@@3MA (physics.o data @ 0xE01E50)
+float g_ragdoll_mass_scale = 1.0f;
+
+// ea: 0x6F4570
+double get_joint_damp_k(int rb_bone_id)
+{
+    float v1 = g_ragdoll_mass_scale * 25.0f;
+    switch (rb_bone_id)
+    {
+    case 3:
+    case 5:
+        return v1 * 0.5;
+    case 7:
+    case 9:
+        return v1 * 0.80000001f;
+    default:
+        return v1;
+    }
+}
+
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
 // COD2-derived enum tag, distinct from Broc's EHitLocation which lives in
 // broc_types.h and shares enumerator names).
