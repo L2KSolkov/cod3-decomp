@@ -1678,7 +1678,8 @@ void ClientEndFrame(Entity* ent, int msec)
                  + ent->client->ps.viewHeightCurrent;
     G_AddLean(ent, viewPos);
     ent->client->ps.iCompassFriendInfo =
-        G_GetNonPVSFriendlyInfo(viewPos, ent->client->hLastCompassFriendlyInfoEnt.mHandle.mVal);
+        G_GetNonPVSFriendlyInfo(viewPos,
+            ent->client->hLastCompassFriendlyInfoEnt.mHandle.mVal);
     if (ent->client->ps.iCompassFriendInfo != 0)
     {
         Entity* actor = G_GetFriendlyIndexActor(ent->client->ps.iCompassFriendInfo & 0x3F);

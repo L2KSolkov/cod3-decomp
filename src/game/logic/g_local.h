@@ -1911,7 +1911,12 @@ void __fastcall Sentient_GetOrigin(sentient_s* pSelf, float* const vOriginOut); 
 void Sentient_UpdateActualChainPos(sentient_s* pSelf);                   // mp_actors.o
 void G_SetClientContents(Entity* pEnt);                                  // g.o
 void P_DamageFeedback(Entity* player);                                   // g.o
-int  G_GetNonPVSFriendlyInfo(const float* vPosition, int iOldInfo);      // g.o
+// ?G_GetNonPVSFriendlyInfo@@YAHQAMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z (mp_actors.o 0x77CA30; stub)
+inline int G_GetNonPVSFriendlyInfo(const float* vPosition, int iOldInfo)
+{
+    (void)vPosition; (void)iOldInfo;
+    return 0;
+}
 Entity* G_GetFriendlyIndexActor(int iFriendlyIndex);                     // g.o
 team_t Sentient_EnemyTeam(team_t eTeam);
 sentient_s* Sentient_FirstSentient(int iTeamFlags);

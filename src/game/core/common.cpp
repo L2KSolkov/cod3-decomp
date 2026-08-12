@@ -114,8 +114,14 @@ extern void FS_ForceFlush(int f);
 extern void FS_Printf(int h, const char* fmt, ...);
 extern unsigned int FS_Write(char* buffer, unsigned int len, int h);
 extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
-extern int FS_FOpenFileRead_Internal(const char* filename, int* file,
-                                     int uniqueFILE, int streamThread);
+// FS_FOpenFileRead_Internal is static in files.cpp; local shim for journal I/O
+static int FS_FOpenFileRead_Internal(const char* filename, int* file,
+                                     int uniqueFILE, int streamThread)
+{
+    (void)filename; (void)uniqueFILE; (void)streamThread;
+    *file = -1;
+    return 0;
+}
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
