@@ -6,6 +6,18 @@
 
 #include "XboxLiveMenus.h"
 
+// FEText getters (shell.o FEText.cpp family; manglings ?GetX@FEText@@QAEMXZ etc.)
+float FEText::GetX()      { return xy.x; }
+float FEText::GetY()      { return xy.y; }
+float FEText::GetScaleX() { return scale.x; }
+font_index FEText::GetFont() { return font; }
+void FEText::SetAlpha(int a)        { (void)a; }
+void FEText::SetColorMenuItem(unsigned int normal, unsigned int selected) { (void)normal; (void)selected; }
+void FEText::SetText(const char* s, int a3) { (void)s; (void)a3; }
+void FEText::SetShown(bool shown)   { (void)shown; }
+unsigned int FEText::GetColor()     { return *(unsigned int*)&color1; }
+unsigned int FEText::GetUnselectedColor() { return *(unsigned int*)&color_unselected; }
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
