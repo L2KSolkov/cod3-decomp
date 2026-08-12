@@ -240,6 +240,7 @@ public:
     public:
         int numBones;  // +0x00 (minimal view for copy/write_skeleton)
         const math::Mat43& GetMat(int boneIndex);
+        int GetBoneIndex(const char* name);  // ?GetBoneIndex@DObj@@QBEHPBD@Z
     };
     DObj* mDObj;  // +0x00
 };
@@ -248,6 +249,11 @@ const math::Mat43& Entity::DObj::GetMat(int boneIndex)
     (void)boneIndex;
     static math::Mat43 zero = {};
     return zero;
+}
+int Entity::DObj::GetBoneIndex(const char* name)
+{
+    (void)name;
+    return -1;
 }
 
 struct phys_anim_bone_array {
@@ -291,6 +297,42 @@ biped_phys_info::biped_phys_info()
     m_render_flags = 0;
     m_owner = nullptr;
     m_bp_sys = nullptr;
+}
+
+// USER_BONE_ID_* globals (physics.o data @ 0xE01EA8..0xE01EDC)
+int USER_BONE_ID_PELVIS = -1;
+int USER_BONE_ID_HEAD = -1;
+int USER_BONE_ID_LEFT_UPPERARM = -1;
+int USER_BONE_ID_LEFT_FOREARM = -1;
+int USER_BONE_ID_LEFT_HAND = -1;
+int USER_BONE_ID_RIGHT_UPPERARM = -1;
+int USER_BONE_ID_RIGHT_FOREARM = -1;
+int USER_BONE_ID_RIGHT_HAND = -1;
+int USER_BONE_ID_LEFT_THIGH = -1;
+int USER_BONE_ID_LEFT_CALF = -1;
+int USER_BONE_ID_LEFT_FOOT = -1;
+int USER_BONE_ID_RIGHT_THIGH = -1;
+int USER_BONE_ID_RIGHT_CALF = -1;
+int USER_BONE_ID_RIGHT_FOOT = -1;
+
+// ea: 0x6F43F0
+void setup_user_bone_ids(Entity* owner)
+{
+    Entity::DObj* mDObj = owner->mDObj;
+    USER_BONE_ID_PELVIS = mDObj->GetBoneIndex("Bip01 Pelvis");
+    USER_BONE_ID_HEAD = mDObj->GetBoneIndex("Bip01 Head");
+    USER_BONE_ID_LEFT_UPPERARM = mDObj->GetBoneIndex("Bip01 L UpperArm");
+    USER_BONE_ID_LEFT_FOREARM = mDObj->GetBoneIndex("Bip01 L Forearm");
+    USER_BONE_ID_LEFT_HAND = mDObj->GetBoneIndex("Bip01 L Hand");
+    USER_BONE_ID_RIGHT_UPPERARM = mDObj->GetBoneIndex("Bip01 R UpperArm");
+    USER_BONE_ID_RIGHT_FOREARM = mDObj->GetBoneIndex("Bip01 R Forearm");
+    USER_BONE_ID_RIGHT_HAND = mDObj->GetBoneIndex("Bip01 R Hand");
+    USER_BONE_ID_LEFT_THIGH = mDObj->GetBoneIndex("Bip01 L Thigh");
+    USER_BONE_ID_LEFT_CALF = mDObj->GetBoneIndex("Bip01 L Calf");
+    USER_BONE_ID_LEFT_FOOT = mDObj->GetBoneIndex("Bip01 L Foot");
+    USER_BONE_ID_RIGHT_THIGH = mDObj->GetBoneIndex("Bip01 R Thigh");
+    USER_BONE_ID_RIGHT_CALF = mDObj->GetBoneIndex("Bip01 R Calf");
+    USER_BONE_ID_RIGHT_FOOT = mDObj->GetBoneIndex("Bip01 R Foot");
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
