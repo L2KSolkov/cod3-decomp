@@ -2495,7 +2495,11 @@ void CG_CalculateWeaponPosition(float* origin)
 
 extern void CG_InterpolateEntityOrigin(Entity* cent);
 extern void CG_InterpolateEntityAngles(Entity* cent);
-extern int CG_PredictPlayerState_Internal();
+// CG_PredictPlayerState_Internal artifact (cg.o; stub)
+int CG_PredictPlayerState_Internal()
+{
+    return 0;
+}
 extern int CG_PointContents(const math::Position3* point,
                             collision_context_t* context);
 extern weaponFileInfo_t* BG_GetPlayerWeaponInfo();

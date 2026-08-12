@@ -58,7 +58,12 @@ struct parseInfo_t {
 extern parseInfo_t* Com_ParseOnLine(const char** data);
 extern float CG_GetViewFov();
 extern void CG_Error(const char* msg, ...);
-extern int CG_DrawSingleHudElem(void* elem);
+// CG_DrawSingleHudElem artifact (cg.o; stub)
+int CG_DrawSingleHudElem(void* elem)
+{
+    (void)elem;
+    return 0;
+}
 extern int compare_hudelems(const void* pe0, const void* pe1);
 int dword_F63CA4[4 * 1580];  // cg.o BSS
 int dword_F63CA8[4 * 1580];  // cg.o BSS
@@ -305,7 +310,7 @@ extern int LocalClient_FirstLocalClientIndex();
 extern int G_GetServerSnapTime();
 extern int CG_UpdateCvars();
 extern int CG_ProcessSnapshots();
-extern void CG_PredictPlayerState_Internal();
+extern int CG_PredictPlayerState_Internal();  // defined in cg_view.cpp
 struct shellshock_parms_t;
 extern void CG_UpdateShellShock(const shellshock_parms_t* parms, int start,
                                 int duration);
@@ -365,7 +370,11 @@ extern void CG_DrawReticleCenter(void* weapDef, int weapIndex, int* color,
 extern void CG_DrawReticleSides(void* weapDef, int weapIndex, int* baseColor,
                                 float centerX, float centerY,
                                 float transScale);
-extern int CG_ForceDebugCrosshair();
+// CG_ForceDebugCrosshair artifact (cg.o; stub)
+int CG_ForceDebugCrosshair()
+{
+    return 0;
+}
 
 enum nglSceneParamType;
 struct nglScene;

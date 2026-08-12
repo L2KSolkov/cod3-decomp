@@ -1469,8 +1469,13 @@ LABEL_25:
 class XAnimTree;
 class DObj;
 extern XAnimTree* DObjGetTree(DObj* obj);  // ?DObjGetTree@@YAPAVXAnimTree@@PAVDObj@@@Z (render.o 0x6BE190)
-extern int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
-                                    weaponInfo_s* weaponInfo);
+// ADSMetaAnimPlayer_Update artifact (cg.o; stub)
+int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
+                             weaponInfo_s* weaponInfo)
+{
+    (void)self; (void)pAnimTree; (void)weaponInfo;
+    return 0;
+}
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
 extern void Camera_StopAnimating(void* cam, float minTweenTime);
 struct Camera;
