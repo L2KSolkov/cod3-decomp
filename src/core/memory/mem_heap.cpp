@@ -194,6 +194,11 @@ void* mem_heap_malloc(mem_heap* heap, unsigned size, int flags) {
     return ptr;
 }
 
+void* mem_heap_malloc(mem_heap* heap, int alignment, unsigned size) {
+    (void)alignment;
+    return mem_heap_malloc(heap, size, 0);
+}
+
 void* mem_heap_malloc_flags(unsigned size, int flags) {
     return mem_heap_malloc(s_current_heap, size, flags);
 }

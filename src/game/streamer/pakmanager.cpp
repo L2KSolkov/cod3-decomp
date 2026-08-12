@@ -18,6 +18,36 @@
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
 
+// mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
+struct mem_heap {
+    char*  start;      // +0x00
+    char*  end;        // +0x04
+    uint8_t _pad8[0x484 - 0x08];
+    unsigned int size;      // +0x484
+    unsigned int used_byte; // +0x488
+};
+
+template <typename T, int N>
+struct ae_array {
+    T   m_elements[N];  // +0x00
+    int m_size;         // +N*sizeof(T)
+};
+
+template <typename T, int N>
+T& ae_array_get(ae_array<T, N>& a, int idx)
+{
+    if (idx >= N)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 154;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return a.m_elements[idx];
+}
+
 // Color (core/color.h view; RGBA float)
 class Color {
 public:
@@ -55,6 +85,7 @@ extern nflState nflGetState();
 extern unsigned int nflReadFile(nflFileID file, unsigned offset, void* buf,
                                 unsigned size);
 #define NFL_STATE_ERROR 2
+extern void mem_break();  // mem_heap.cpp
 
 // FEManager (shell.o; DrawDiscError only)
 class FEManager {
@@ -188,7 +219,10 @@ public:
     int          mDefaultSectionIdx;    // +0x84
     unsigned char* mHeaderBuffer;       // +0x88
     TRequestId   mHeaderRequestId;      // +0x8C
-    uint8_t      _pad90[0xE8 - 0x90];   // mApkFiles/mCloseHandle/mOnlyLoadHeader/mHeapList/mPrereqHeaps
+    uint8_t      _pad90[0xA0 - 0x90];   // mApkFiles/mCloseHandle/mOnlyLoadHeader
+    ae_array<mem_heap*, 12> mHeapList;  // +0xA0
+    ae_array<PakFile*, 4>   mPrereqHeaps;  // +0xD4
+    uint8_t      _padE4[0xE8 - 0xE4];
     unsigned int mCurrentFile;          // +0xE8
     unsigned char* mCurrentFilePtr;     // +0xEC
     void*        mCurrentApk;           // +0xF0
@@ -204,11 +238,11 @@ public:
     static bool sHeaderBufferUsed;        // ?sHeaderBufferUsed@PakFile@@0_NA
 
     // ?MemAlloc@PakFile@@QAEPAXII_N@Z (streamer.o 0x671F10; stub)
-    void* MemAlloc(unsigned int align, unsigned int size, bool search_prereqs)
-    {
-        (void)align; (void)search_prereqs;
-        return malloc(size ? size : 1);
-    }
+    void* MemAlloc(unsigned int align, unsigned int size, bool search_prereqs);
+    // ea: 0x666110
+    bool MemFree(void* ptr, bool search_prereqs);
+    // ea: 0x6661D0
+    bool IsInPakHeap(void* pPtr);
 
     // ea: 0x664B90
     float GetLoadTime() const;
@@ -708,6 +742,105 @@ void cdDeleteTextureCallback(apk::apkFile* File, apk::apkFileEntry* Entry)
         }
         ngliUnloadTexture(File, Entry);
     }
+}
+
+// ea: 0x665FE0
+void* PakFile::MemAlloc(unsigned int align, unsigned int size,
+                        bool search_prereqs)
+{
+    unsigned int v4 = size;
+    if (size == (unsigned int)-1)
+        v4 = 1024;
+    if (mState == (EState)3
+        || (mState == (EState)2 && mLoadingState != (ELoadingState)4))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 2028;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("Trying to allocate from unloading pakfile!"))
+            __debugbreak();
+        mem_break();
+        return nullptr;
+    }
+    int v7 = 0;
+    if (mHeapList.m_size <= 0)
+        goto LABEL_10;
+    while (1)
+    {
+        mem_heap* v8 = ae_array_get(mHeapList, v7);
+        if (v4 + v8->used_byte < v8->size)
+        {
+            void* result = mem_heap_malloc(v8, align, v4);
+            if (result != nullptr)
+                return result;
+        }
+        if (++v7 >= mHeapList.m_size)
+            goto LABEL_10;
+    }
+LABEL_10:
+    if (search_prereqs && mPrereqHeaps.m_size > 0)
+    {
+        for (int v10 = 0; v10 < mPrereqHeaps.m_size; ++v10)
+        {
+            PakFile* v12 = ae_array_get(mPrereqHeaps, v10);
+            void* result =
+                v12->MemAlloc(align, v4, true);
+            if (result != nullptr)
+                return result;
+        }
+    }
+    return nullptr;
+}
+
+// ea: 0x666110
+bool PakFile::MemFree(void* ptr, bool search_prereqs)
+{
+    if (ptr == nullptr)
+        return true;
+    int v5 = 0;
+    mem_heap* v6 = nullptr;
+    if (mHeapList.m_size <= 0)
+        goto LABEL_8;
+    while (1)
+    {
+        v6 = ae_array_get(mHeapList, v5);
+        if (v6 != nullptr && ptr >= v6->start && ptr < v6->end)
+            break;
+        if (++v5 >= mHeapList.m_size)
+            goto LABEL_8;
+    }
+    mem_heap_free(v6, ptr);
+    return true;
+LABEL_8:
+    if (!search_prereqs)
+        return false;
+    if (mPrereqHeaps.m_size <= 0)
+        return false;
+    for (int v7 = 0; v7 < mPrereqHeaps.m_size; ++v7)
+    {
+        PakFile* v9 = ae_array_get(mPrereqHeaps, v7);
+        if (v9->MemFree(ptr, true))
+            return true;
+    }
+    return false;
+}
+
+// ea: 0x6661D0
+bool PakFile::IsInPakHeap(void* pPtr)
+{
+    unsigned int v3 = 0;
+    if (mHeapList.m_size <= 0)
+        return false;
+    while (1)
+    {
+        mem_heap* v4 = ae_array_get(mHeapList, (int)v3);
+        if (pPtr >= v4->start && pPtr < v4->end)
+            break;
+        if (++v3 >= (unsigned int)mHeapList.m_size)
+            return false;
+    }
+    return true;
 }
 
 // ea: 0x665960
