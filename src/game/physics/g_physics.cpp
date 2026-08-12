@@ -89,6 +89,7 @@ class rigid_body;
 class biped_phys_info;
 struct phys_gjk_geom_list;
 struct trajectory_t;
+class DCGSet;
 void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
 enum hitLocation_t;
 int GetPhysBoneID(hitLocation_t id);
@@ -116,6 +117,58 @@ void G_DObjUpdate(Entity* ent, bool forceWeaponModel);  // game2.o
 void g_LinkEntity(Entity* ent);  // g.o
 void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o
 void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o
+void phys_full_inv_multiply_mat(math::Mat43& dest_m,
+                                const math::Mat43& left_m,
+                                const math::Mat43& right_m);  // physics.o inline
+static const __m128 Float4_SignMask_12 = { -0.0f, -0.0f, -0.0f, -0.0f };
+// ea: 0x7187C0 - dest = inverse(left) * right (left is orthonormal: transpose)
+void phys_full_inv_multiply_mat(math::Mat43& dest_m,
+                                const math::Mat43& left_m,
+                                const math::Mat43& right_m)
+{
+    __m128 v3 = left_m.z.v;
+    __m128 v4 = left_m.y.v;
+    __m128 v5 = _mm_shuffle_ps(left_m.x.v, v4, 68);
+    __m128 v6 =
+        _mm_shuffle_ps(_mm_shuffle_ps(left_m.x.v, v4, 238), v3, 168);
+    __m128 v7 = right_m.y.v;
+    dest_m.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(right_m.x.v, right_m.x.v, 0),
+                       _mm_shuffle_ps(v5, v3, 136)),
+            _mm_mul_ps(_mm_shuffle_ps(right_m.x.v, right_m.x.v, 85),
+                       _mm_shuffle_ps(v5, v3, 221))),
+        _mm_mul_ps(_mm_shuffle_ps(right_m.x.v, right_m.x.v, 170), v6));
+    dest_m.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v7, v7, 0), _mm_shuffle_ps(v5, v3, 136)),
+            _mm_mul_ps(_mm_shuffle_ps(v7, v7, 85),
+                       _mm_shuffle_ps(v5, v3, 221))),
+        _mm_mul_ps(_mm_shuffle_ps(v7, v7, 170), v6));
+    __m128 v11 = right_m.z.v;
+    dest_m.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v11, v11, 0),
+                       _mm_shuffle_ps(v5, v3, 136)),
+            _mm_mul_ps(_mm_shuffle_ps(v11, v11, 85),
+                       _mm_shuffle_ps(v5, v3, 221))),
+        _mm_mul_ps(_mm_shuffle_ps(v11, v11, 170), v6));
+    __m128 v15 = _mm_shuffle_ps(v5, v3, 136);
+    __m128 v16 = _mm_shuffle_ps(v5, v3, 221);
+    __m128 v17 = _mm_xor_ps(
+        Float4_SignMask_12,
+        _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(left_m.w.v, left_m.w.v, 0),
+                                  v15),
+                       _mm_mul_ps(_mm_shuffle_ps(left_m.w.v, left_m.w.v, 85),
+                                  v16)),
+            _mm_mul_ps(_mm_shuffle_ps(left_m.w.v, left_m.w.v, 170), v6)));
+    __m128 v18 = right_m.w.v;
+    dest_m.w.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v18, v18, 0), v15),
+                   _mm_mul_ps(_mm_shuffle_ps(v18, v18, 85), v16)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v18, v18, 170), v6), v17));
+}
 TPakId CurPakId();  // ?CurPakId@@YA?AW4TPakId@@XZ (streamer.o)
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                            math::Position3& result);  // g.o
@@ -407,6 +460,9 @@ public:
                              const math::Position3& angles,
                              const math::Dir3& vel,
                              const math::Dir3& aVel);  // ?update_from_network@rb_vehicle@@QAEXABVPosition3@math@@0ABVDir3@3@1@Z
+    void update_from_scene_anim(const math::Position3& position,
+                                const math::Position3& angles,
+                                const math::Dir3& vel);  // ?update_from_scene_anim@rb_vehicle@@QAEXABVPosition3@math@@0ABVDir3@3@@Z
     math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ
     math::Dir3 get_angular_velocity() const;  // ?get_angular_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ
     math::Position3 get_rb_position() const;  // ?get_rb_position@rb_vehicle@@QBE?AVPosition3@math@@XZ
@@ -1597,6 +1653,60 @@ void rb_vehicle::update_from_network(const math::Position3& position,
     }
 }
 
+// DCGSet (sv_stubs.h view; local copy - objects array + aabb)
+class DCGSet {
+public:
+    int   objects_m_count;     // +0x04
+    void* objects_m_elements;  // +0x08
+    uint8_t _pad0C[0x30 - 0x0C];
+    math::Position3 min;       // +0x30
+    math::Position3 max;       // +0x40
+};
+
+// ea: 0x6FD850
+void rb_vehicle::update_from_scene_anim(const math::Position3& position,
+                                        const math::Position3& angles,
+                                        const math::Dir3& vel)
+{
+    G_SetOrigin(m_owner, &position);
+    G_SetAngle(m_owner, &angles);
+    m_owner->CalcRotTranMat43();
+    rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
+    if (m_chassis_rbinf != nullptr)
+    {
+        rigid_body* m_rb = m_chassis_rbinf->m_rb;
+        if ((~(m_rb->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         85, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        m_chassis_rbinf->m_rb->m_t_vel.v = vel.v;
+        phys_full_inv_multiply_mat(m_rb->m_mat,
+                                   m_chassis_rbinf->m_transform,
+                                   m_chassis_rbinf->m_ent->r.currentMat);
+    }
+    else
+    {
+        // no chassis: encode the DCGSet aabb into m_prev_rb_mat rows
+        DCGSet* bmodel = (DCGSet*)m_owner->r.bmodel;
+        float mn[4], mx[4];
+        mn[0] = bmodel->min.v.m128_f32[0];
+        mn[1] = bmodel->min.v.m128_f32[1];
+        mn[2] = bmodel->min.v.m128_f32[2];
+        mn[3] = bmodel->min.v.m128_f32[3];
+        mx[0] = bmodel->max.v.m128_f32[0];
+        mx[1] = bmodel->max.v.m128_f32[1];
+        mx[2] = bmodel->max.v.m128_f32[2];
+        mx[3] = bmodel->max.v.m128_f32[3];
+        m_prev_rb_mat.x.v = _mm_setr_ps(mx[0], mx[1], mx[2], mx[3]);
+        m_prev_rb_mat.y.v = _mm_setr_ps(mn[0], mn[1], mn[2], mn[3]);
+        m_prev_rb_mat.z.v = _mm_setzero_ps();
+        m_prev_rb_mat.w.v = _mm_mul_ps(
+            _mm_add_ps(m_prev_rb_mat.x.v, m_prev_rb_mat.y.v),
+            _mm_set1_ps(0.5f));
+    }
+}
+
 // ea: 0x70C350
 void rb_vehicle::teleport(const Broc::vector& vSpawnPos,
                           const Broc::vector* vAngles)
@@ -1875,9 +1985,6 @@ void phys_full_multiply_mat(math::Mat43& dest, const math::Mat43& left,
         _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(right.w.v, right.w.v, 170), v3),
                    left.w.v));
 }
-
-// Float4_SignMask_12 (.rdata @ 0xD143B0; 0x80000000 x4)
-static const __m128 Float4_SignMask_12 = { -0.0f, -0.0f, -0.0f, -0.0f };
 
 // ea: 0x71A240 (inline COMDAT)
 void full_inverse(math::Mat43& dest, const math::Mat43& source)
@@ -3720,13 +3827,6 @@ void KillEntity(Entity* e)
     }
 }
 
-// DCGSet (sv_stubs.h view; local copy - objects array only)
-class DCGSet {
-public:
-    int   objects_m_count;     // +0x04
-    void* objects_m_elements;  // +0x08
-};
-
 // cdl_object_t (g_local.h view; local copy - cflags at +0x00)
 struct cdl_object_t {
     int   cflags;        // +0x00
@@ -3760,8 +3860,7 @@ unsigned int get_gjk_geom_id(Entity* ent)
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
             AeAssert::gCurrentLine = 77;
             AeAssert::gCurrentExpr = "index < size()";
-            if (!AeAssert::IsIgnored()
-                && AeAssert::Assert(defaultFileName))
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
                 __debugbreak();
             if (v2 >= (unsigned int)bmodel->objects_m_count
                 && _tlAssert(
