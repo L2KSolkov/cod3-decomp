@@ -562,6 +562,22 @@ Entity* G_Spawn(TPakId pakId);  // ?G_Spawn@@YAPAVEntity@@W4TPakId@@@Z (g.o)
 int G_CallSpawnEntity(Entity* ent);  // ?G_CallSpawnEntity@@YAHPAVEntity@@@Z (g.o)
 void SV_SetBrushModel(Entity* ent);  // ?SV_SetBrushModel@@YAXPAVEntity@@@Z (sv.o)
 void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData);  // ?CalculatePhysData@@YAXPAVEntity@@V?$IVPointer@VPhysData@@@@@Z
+void CalculatePhysData(Entity* ent, float& mass, float& friction,
+                       float& bounce);  // ?CalculatePhysData@@YAXPAVEntity@@AAM11@Z
+// infoSurfaceProperties (game.o data @ 0xDF8130)
+struct infoSurfProperty_t {
+    float density;   // +0x00
+    float friction;  // +0x04
+};
+// ?infoSurfaceProperties@@3PAUinfoSurfProperty_t@@A (game.o data @ 0xDF8130)
+infoSurfProperty_t infoSurfaceProperties[23] = {
+    {0.2f, 0.8f}, {0.8f, 1.0f}, {1.0f, 0.9f}, {0.1f, 0.9f},
+    {0.8f, 1.0f}, {0.3f, 0.8f}, {1.0f, 0.5f}, {0.1f, 1.0f},
+    {0.1f, 1.0f}, {0.2f, 0.7f}, {0.2f, 0.6f}, {0.2f, 0.1f},
+    {0.3f, 1.0f}, {0.4f, 0.6f}, {0.1f, 0.9f}, {0.2f, 1.0f},
+    {0.5f, 1.0f}, {0.1f, 0.7f}, {0.2f, 0.4f}, {1.0f, 0.4f},
+    {0.3f, 0.9f}, {0.5f, 1.0f}, {0.2f, 0.5f},
+};
 // BrocAPI view (broc_types.h; gpBrocAPI tag must stay U for the mangling)
 struct BrocAPI;
 extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A (Broc.o @ 0xF3ABDC)
@@ -9054,6 +9070,80 @@ Entity* SpawnBrokenPiece(Entity* owner, const char* classname,
         return v12;
     }
     return (Entity*)result;
+}
+
+// ea: 0x702EA0
+void CalculatePhysData(Entity* ent, float& mass, float& friction,
+                       float& bounce)
+{
+    if (ent != nullptr)
+    {
+        DObj* mDObj = ent->mDObj;
+        if (mDObj != nullptr)
+        {
+            void** model0 = (void**)mDObj->models;
+            TPakId mPakId = (TPakId)(uintptr_t)model0[1];
+            XModelLocal* mValue = (XModelLocal*)model0[0];
+            ValidatePakId(mPakId);
+            if (mValue != nullptr && ent->r.bmodel != nullptr)
+            {
+                ValidatePakId(mPakId);
+                __m128 mins = ((math::Position3*)mValue)->v;
+                ValidatePakId(mPakId);
+                __m128 maxs =
+                    ((math::Position3*)((char*)mValue + 0x10))->v;
+                __m128 v7 = _mm_sub_ps(maxs, mins);
+                float v17 =
+                    ((v7.m128_f32[2] + v7.m128_f32[1]) + v7.m128_f32[0])
+                    * 0.333f;
+                ValidatePakId(mPakId);
+                unsigned int mSize = *(unsigned int*)((char*)mValue + 0x38);
+                void** p_collSurfs =
+                    *(void***)((char*)mValue + 0x3C);
+                int surfFlags;
+                if (mSize != 0)
+                {
+                    ValidatePakId(mPakId);
+                    surfFlags = *(int*)p_collSurfs[0];
+                }
+                else
+                {
+                    DCGSet* bmodel = (DCGSet*)ent->r.bmodel;
+                    unsigned int m_count =
+                        *(unsigned int*)((char*)bmodel + 0x40);
+                    void* p_objects = *(void**)((char*)bmodel + 0x44);
+                    if (m_count == 0
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                               91, "index >= 0 && index < size()",
+                               "invalid index"))
+                        __debugbreak();
+                    surfFlags = ((cdl_object_t*)p_objects)->sflags;
+                }
+                mass = 0.050000001f;
+                friction = 0.2f;
+                bounce = 0.25f;
+                if (surfFlags != 0)
+                {
+                    int v14 = ((surfFlags >> 20) & 0x1F) - 1;
+                    if (v14 > -1)
+                    {
+                        mass = (infoSurfaceProperties[v14].density
+                                * 0.0099999998f)
+                            * v17;
+                        friction = infoSurfaceProperties[v14].friction;
+                        bounce = 0.25f;
+                    }
+                }
+            }
+            else
+            {
+                mass = 0.1f;
+                friction = 0.2f;
+                bounce = 0.25f;
+            }
+        }
+    }
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
