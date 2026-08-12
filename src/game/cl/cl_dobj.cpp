@@ -92,8 +92,9 @@ void CL_DObjCalcAnim()
 }
 
 // ea: 0x528970
-int CL_DObjCreateSkelForBone(DObj* obj)
+int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex)
 {
+    (void)boneIndex;
     if (obj == nullptr)
     {
         ASSERT("obj", "c:\\cod\\code\\game\\cl_cgame.cpp", 561);
@@ -109,8 +110,9 @@ int CL_DObjCreateSkelForBone(DObj* obj)
 }
 
 // ea: 0x528A10
-int CL_DObjCreateSkelForBones(DObj* obj)
+int CL_DObjCreateSkelForBones(DObj* obj, int* boneMask)
 {
+    (void)boneMask;
     if (bCL_AllowedAllocSkel == 0)
     {
         ASSERT("bCL_AllowedAllocSkel", "c:\\cod\\code\\game\\cl_cgame.cpp", 586);
