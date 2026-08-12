@@ -15,6 +15,9 @@
 // effect_events / core_systems views
 class Entity;
 class Handle;
+namespace rb_prop_system {
+void remove_entity(Entity* e);  // ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z
+}
 typedef int EEffectContext;
 enum ECollisionMaterial : int {
     kCollisionMaterialMin = 0,
@@ -2828,10 +2831,58 @@ void rb_vehicle::end_path()
     }
 }
 
-// stub until rb_vehicle::pause_physics (0x700D50) is ported
+// EffectEventSys (core.o; ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z)
+class EffectEventSys {
+public:
+    static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A
+    void StopEffect(Handle handle, bool kill);
+};
+
+// ea: 0x700D50
 void rb_vehicle::pause_physics(bool shutdown)
 {
-    (void)shutdown;
+    if ((m_flags.mMask & 1) == 0)
+    {
+        if (!shutdown)
+        {
+            m_owner->Notify(hash_const.physicsdone);
+            m_prev_rb_mat = m_chassis_rbinf->m_rb->get_mat();
+            remove_wheels();
+            if (m_orientation_constraint != nullptr)
+                phys_sys::destroy(m_orientation_constraint);
+            m_orientation_constraint = nullptr;
+        }
+        if (m_vpc != nullptr)
+        {
+            path_constraint_destroy(m_vpc);
+            m_vpc = nullptr;
+        }
+        scr_vehicle_t* scr_vehicle = (scr_vehicle_t*)m_owner->scr_vehicle;
+        scr_vehicle->phys.vel.v.m128_f32[2] = 0.0f;
+        scr_vehicle->phys.vel.v.m128_f32[1] = 0.0f;
+        scr_vehicle->phys.vel.v.m128_f32[0] = 0.0f;
+        scr_vehicle->phys.rotVel.v.m128_f32[2] = 0.0f;
+        scr_vehicle->phys.rotVel.v.m128_f32[1] = 0.0f;
+        scr_vehicle->phys.rotVel.v.m128_f32[0] = 0.0f;
+        m_flags.mMask |= 1u;
+        rb_prop_system::remove_entity(m_owner);
+        m_chassis_rbinf = nullptr;
+        m_owner->flags &= ~0x400000u;
+        m_owner->speed = 0.0f;
+        for (int i = 0; i < 4; ++i)
+        {
+            if (m_wheel_effects[i].mVal != 0)
+            {
+                EffectEventSys::sInst->StopEffect(m_wheel_effects[i], false);
+                m_wheel_effects[i].mVal = 0;
+            }
+        }
+        if (m_exhaust_effect.mVal != 0)
+        {
+            EffectEventSys::sInst->StopEffect(m_exhaust_effect, false);
+            m_exhaust_effect.mVal = 0;
+        }
+    }
 }
 
 // ea: 0x708E30
@@ -6921,10 +6972,92 @@ void phys_anim_bone_array::copy_back_bones(Entity* owner)
     }
 }
 
-// stub until phys_anim_bone_array internals are ported (physics.o 0x6F8EF0)
+// ea: 0x6F8EF0
 void phys_anim_bone_array::remove_rigid_body(int rb_index)
 {
-    (void)rb_index;
+    int m_alloc_count = m_list_phys_anim_bone.m_alloc_count;
+    int v3 = -1;
+    int v4 = 0;
+    int bone_array_index = -1;
+    if (m_list_phys_anim_bone.m_alloc_count > 0)
+    {
+        int v5 = 0;
+        while (v3 == -1)
+        {
+            if (v5 < 0 || v4 >= m_alloc_count)
+            {
+                bool v6 = !_tlAssert(
+                    "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                    108, "i >= 0 && i < m_alloc_count", defaultFileName);
+                m_alloc_count = m_list_phys_anim_bone.m_alloc_count;
+                if (!v6)
+                    __debugbreak();
+            }
+            if (m_list_phys_anim_bone.m_slot_array[v5].m_rb_index
+                == rb_index)
+            {
+                bone_array_index = v4;
+                v3 = v4;
+            }
+            ++v4;
+            ++v5;
+            if (v4 >= m_alloc_count)
+            {
+                if (v3 == -1)
+                    return;
+                break;
+            }
+        }
+        if ((v3 < 0 || v3 >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        int v7 = v3;
+        m_list_phys_anim_bone.m_slot_array[v3].m_rb_index = -1;
+        int v8 = m_list_phys_anim_bone.m_alloc_count;
+        int v9 = 0;
+        if (m_list_phys_anim_bone.m_alloc_count > 0)
+        {
+            int v10 = 0;
+            do
+            {
+                if ((v10 < 0 || v9 >= v8)
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                           108, "i >= 0 && i < m_alloc_count",
+                           defaultFileName))
+                    __debugbreak();
+                if (m_list_phys_anim_bone.m_slot_array[v10]
+                        .m_rb_parent_index
+                    == rb_index)
+                {
+                    if ((bone_array_index < 0
+                         || bone_array_index
+                                >= m_list_phys_anim_bone.m_alloc_count)
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                               108, "i >= 0 && i < m_alloc_count",
+                               defaultFileName))
+                        __debugbreak();
+                    if ((v10 < 0
+                         || v9 >= m_list_phys_anim_bone.m_alloc_count)
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                               108, "i >= 0 && i < m_alloc_count",
+                               defaultFileName))
+                        __debugbreak();
+                    m_list_phys_anim_bone.m_slot_array[v10]
+                        .m_rb_parent_index =
+                        m_list_phys_anim_bone.m_slot_array[v7]
+                            .m_rb_parent_index;
+                }
+                v8 = m_list_phys_anim_bone.m_alloc_count;
+                ++v9;
+                ++v10;
+            } while (v9 < m_list_phys_anim_bone.m_alloc_count);
+        }
+    }
 }
 
 // stub until biped_system internals are ported (physics.o inline 0x719FA0)
