@@ -32,7 +32,7 @@ cl.o		cl.o	game	313	PORTED	cl_input (99) + cl_console core+draw/print (26) + cl_
 
 streamer.o		streamer.o	game	268	TODO	
 
-physics.o		physics.o	game	224	IN_PROGRESS	PhysShutdown + GetPhysBoneID + path_constraint_destroy + merge_spheres + calc_bounding_sphere + collision_epilog + render_single_rigid_body + phys_collision_allocater allocate/free_buffers + get_joint_damp_k (10/224; g_physics.cpp)
+physics.o		physics.o	game	224	IN_PROGRESS	PhysShutdown + GetPhysBoneID + path_constraint_destroy + merge_spheres + calc_bounding_sphere + collision_epilog + render_single_rigid_body + phys_collision_allocater allocate/free_buffers + get_joint_damp_k + capsule/callback set (12/224; g_physics.cpp)
 
 game_xbox.o		game_xbox.o	game	210	PORTED	GameXbox.cpp Sys_* (31) + XboxLive.cpp (85) + MPLiveEngine.cpp (26) + MPPlayerSet header (2) + XboxLiveMenus.cpp (46: XboxLiveOptionsMenu + InGameLiveOptionsMenu classes, ShowNotificationIcon, Xbox_LaunchInfo, RenderUIX) = 210/210; FEMenu/UIListBox/PanelFile/DialogMenu bases extern (shell.o/core.o provide); HandleError Com_Printf fix; XLive APIs stubbed via /FORCE
 

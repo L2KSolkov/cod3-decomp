@@ -153,6 +153,39 @@ double get_joint_damp_k(int rb_bone_id)
     }
 }
 
+// rb_collision_capsule (physics.o; inline getters 0xAE1810..0xAE1830)
+struct rb_collision_capsule {
+    math::Position3 m_p1_loc;  // +0x00
+    math::Position3 m_p2_loc;  // +0x10
+    float           m_r;       // +0x20
+
+    void set(const math::Position3& p1_loc, const math::Position3& p2_loc,
+             float r);  // ?set@rb_collision_capsule@@QAEXABVPosition3@math@@0M@Z
+};
+
+// ea: 0x6F4650
+void rb_collision_capsule::set(const math::Position3& p1_loc,
+                               const math::Position3& p2_loc, float r)
+{
+    m_p1_loc.v = p1_loc.v;
+    m_p2_loc.v = p2_loc.v;
+    m_r = r;
+}
+
+// ragdoll_collision_callback (physics.o)
+class Entity;
+struct ragdoll_collision_callback {
+    Entity* m_owner;  // +0x00
+
+    void set(Entity* const owner);  // ?set@ragdoll_collision_callback@@QAEXQAVEntity@@@Z
+};
+
+// ea: 0x6F46A0
+void ragdoll_collision_callback::set(Entity* const owner)
+{
+    m_owner = owner;
+}
+
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
 // COD2-derived enum tag, distinct from Broc's EHitLocation which lives in
 // broc_types.h and shares enumerator names).
