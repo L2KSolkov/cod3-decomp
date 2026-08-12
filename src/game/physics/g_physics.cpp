@@ -6,6 +6,7 @@
 #include "physics/physics_system.h"
 #include <intrin.h>
 #include <math.h>
+#include <string.h>
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
@@ -184,6 +185,48 @@ struct ragdoll_collision_callback {
 void ragdoll_collision_callback::set(Entity* const owner)
 {
     m_owner = owner;
+}
+
+// phys_anim_bone_array (physics.o; static helpers)
+class Entity {
+public:
+    class DObj {
+    public:
+        int numBones;  // +0x00 (minimal view for copy/write_skeleton)
+        const math::Mat43& GetMat(int boneIndex);
+    };
+    DObj* mDObj;  // +0x00
+};
+const math::Mat43& Entity::DObj::GetMat(int boneIndex)
+{
+    (void)boneIndex;
+    static math::Mat43 zero = {};
+    return zero;
+}
+
+struct phys_anim_bone_array {
+    static void copy_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
+    static void write_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
+};
+
+// ea: 0x6F4120
+void phys_anim_bone_array::copy_skeleton(Entity* owner,
+                                         math::Mat43* const skeleton_pose)
+{
+    int bone_count = owner->mDObj->numBones;
+    for (int i = 0; i < bone_count; ++i)
+        memcpy(&skeleton_pose[i], &owner->mDObj->GetMat(i),
+               sizeof(math::Mat43));
+}
+
+// ea: 0x6F41F0
+void phys_anim_bone_array::write_skeleton(Entity* owner,
+                                          math::Mat43* const skeleton_pose)
+{
+    int bone_count = owner->mDObj->numBones;
+    for (int i = 0; i < bone_count; ++i)
+        memcpy(&const_cast<math::Mat43&>(owner->mDObj->GetMat(i)),
+               &skeleton_pose[i], sizeof(math::Mat43));
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
