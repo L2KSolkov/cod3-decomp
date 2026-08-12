@@ -361,6 +361,8 @@ public:
     void reset_to_user_start(); // ?reset_to_user_start@phys_collision_allocater@@QAEXXZ
     int  get_warning_level();   // ?get_warning_level@phys_collision_allocater@@QAEHXZ
     void reset_warning_level(); // ?reset_warning_level@phys_collision_allocater@@QAEXXZ
+    void* allocate(int size, int alignment, bool no_error,
+                   const char* error_msg);  // ?allocate@phys_collision_allocater@@QAEPAXHH_NPBD@Z
 };
 
 // ea: 0x6F2FF0
@@ -450,6 +452,39 @@ void phys_collision_allocater::reset_warning_level()
     m_out_of_memory = false;
     m_high_buffer_count = 0;
 }
+
+// ea: 0x719180 (inline COMDAT)
+void* phys_collision_allocater::allocate(int size, int alignment, bool no_error,
+                                         const char* error_msg)
+{
+    (void)no_error;
+    (void)error_msg;
+    for (int i = 0; i < m_num_buffers; ++i)
+    {
+        if (size <= 0
+            && _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 59,
+                         "size > 0", defaultFileName))
+            __debugbreak();
+        char* cur = m_list_memory_buffer[i].m_buffer_cur;
+        char* result = (char*)((~(alignment - 1))
+                               & (intptr_t)(cur + alignment - 1));
+        if (result + size <= m_list_memory_buffer[i].m_buffer_end)
+        {
+            m_list_memory_buffer[i].m_buffer_cur = result + size;
+            if (result != nullptr)
+                return result;
+        }
+    }
+    if (m_num_buffers >= 5)
+        return nullptr;
+    allocate_buffer();
+    return m_list_memory_buffer[m_num_buffers - 1].allocate_no_error(size,
+                                                                     alignment);
+}
+
+// ?g_collision_memory_allocater@@3Vphys_collision_allocater@@A
+// (physics.o data @ 0xF8BDD0)
+phys_collision_allocater g_collision_memory_allocater;
 
 // ?g_ragdoll_mass_scale@@3MA (physics.o data @ 0xE01E50)
 float g_ragdoll_mass_scale = 1.0f;
@@ -822,10 +857,54 @@ rigid_body* rb_prop_system::get_associated_rigid_body(Entity* e)
     return const_cast<rigid_body*>(get_entity_rb(e));
 }
 
-// wheel_collision_info (physics.o vehicle_collision.cpp; minimal view)
+// wheel_collision_info (physics.o vehicle_collision.cpp). Layout from setup
+// (0x6F6C20) + vehicle_collision_info::setup (0x6FE630) disassembly: m_p0
+// +0x00, m_p1 +0x10, m_aabb_mn +0x20, m_aabb_mx +0x30, m_t +0x50,
+// m_surface_flags +0x54, m_did_hit +0x58, m_hit_rb +0x5C, m_rbc_wheel +0x60.
 struct wheel_collision_info {
+    math::Dir3 m_p0;            // +0x00
+    math::Dir3 m_p1;            // +0x10
+    math::Dir3 m_aabb_mn;       // +0x20
+    math::Dir3 m_aabb_mx;       // +0x30
+    uint8_t    _pad40[0x50 - 0x40];
+    float      m_t;             // +0x50
+    int        m_surface_flags; // +0x54
+    bool       m_did_hit;       // +0x58
+    rigid_body* m_hit_rb;       // +0x5C
+    rigid_body_constraint_wheel* m_rbc_wheel;  // +0x60
+
+    void setup(rigid_body* rb, rigid_body_constraint_wheel* rbc_wheel);  // ?setup@wheel_collision_info@@QAEXPAVrigid_body@@PAVrigid_body_constraint_wheel@@@Z
     void process(rb_extra_info* rb_inf, int wheel_i);  // ?process@wheel_collision_info@@QAEXPAVrb_extra_info@@H@Z
 };
+
+// phys_gjk_geom_list (physics.o; aabb fields used by vehicle_collision_info)
+struct phys_gjk_geom_list {
+    math::Dir3 m_aabb_mn;  // +0x00
+    math::Dir3 m_aabb_mx;  // +0x10
+};
+
+// ea: 0x6F6C20
+void wheel_collision_info::setup(rigid_body* rb,
+                                 rigid_body_constraint_wheel* rbc_wheel)
+{
+    if (rbc_wheel == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\vehicle_collision.cpp", 5,
+                     "rbc_wheel", defaultFileName))
+        __debugbreak();
+    m_rbc_wheel = rbc_wheel;
+    if ((rb->m_flags & 0x50) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+                     "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+    m_rbc_wheel->get_wheel_collide_segment(rb->m_col_mat, &m_p0, &m_p1);
+    m_aabb_mn.v = _mm_min_ps(m_p0.v, m_p1.v);
+    m_aabb_mx.v = _mm_max_ps(m_p0.v, m_p1.v);
+    m_t = 1.0f;
+    m_surface_flags = 0;
+    m_did_hit = false;
+    m_hit_rb = nullptr;
+}
+
 // stub until wheel_collision_info::process (0x6FE3A0) is ported
 void wheel_collision_info::process(rb_extra_info* rb_inf, int wheel_i)
 {
@@ -833,13 +912,89 @@ void wheel_collision_info::process(rb_extra_info* rb_inf, int wheel_i)
     (void)wheel_i;
 }
 
+// stub until rigid_body_constraint_wheel internals are ported (0x884FE0)
+void rigid_body_constraint_wheel::get_wheel_collide_segment(
+    const math::Mat43& b1_mat, math::Dir3* const p0,
+    math::Dir3* const p1) const
+{
+    (void)b1_mat;
+    (void)p0;
+    (void)p1;
+}
+
 // vehicle_collision_info (physics.o vehicle_collision.cpp)
-struct vehicle_collision_info {
+class vehicle_collision_info {
+public:
     wheel_collision_info* m_list_wheel_collision_info;  // +0x00
     int m_list_wheel_collision_info_count;              // +0x04
 
+    void setup(rb_extra_info* rb_inf);  // ?setup@vehicle_collision_info@@QAEXPAVrb_extra_info@@@Z
     void process(rb_extra_info* rb_inf);  // ?process@vehicle_collision_info@@QAEXPAVrb_extra_info@@@Z
 };
+
+// ea: 0x6FE630
+void vehicle_collision_info::setup(rb_extra_info* rb_inf)
+{
+    if (rb_inf->m_rb_vehicle == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\vehicle_collision.cpp", 66,
+                     "rb_inf->m_rb_vehicle", defaultFileName))
+        __debugbreak();
+    if ((m_list_wheel_collision_info_count <= 0
+         || m_list_wheel_collision_info_count > 8)
+        && _tlAssert(
+               "c:\\cod\\code\\game\\vehicle_collision.cpp", 67,
+               "m_list_wheel_collision_info_count > 0 && m_list_wheel_collision_info_count <= MAX_WHEELS",
+               defaultFileName))
+        __debugbreak();
+    if (rb_inf->m_rb_vehicle->m_vci != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\vehicle_collision.cpp", 68,
+                     "rb_inf->m_rb_vehicle->m_vci == NULL", defaultFileName))
+        __debugbreak();
+    rb_inf->m_rb_vehicle->m_vci = this;
+    rigid_body* rb = rb_inf->m_rb;
+    phys_gjk_geom_list* m_gjk_geom_list =
+        (phys_gjk_geom_list*)rb_inf->m_gjk_geom_list;
+    for (int i = 0; i < m_list_wheel_collision_info_count; ++i)
+    {
+        wheel_collision_info* v5 = &m_list_wheel_collision_info[i];
+        v5->setup(rb,
+                  (rigid_body_constraint_wheel*)rb_inf->m_rb_vehicle->m_wheels[i]);
+        m_gjk_geom_list->m_aabb_mn.v = _mm_min_ps(
+            m_gjk_geom_list->m_aabb_mn.v, v5->m_aabb_mn.v);
+        m_gjk_geom_list->m_aabb_mx.v = _mm_max_ps(
+            m_gjk_geom_list->m_aabb_mx.v, v5->m_aabb_mx.v);
+    }
+}
+
+// ea: 0x6FE7B0
+vehicle_collision_info* create_vehicle_collision_info(rb_extra_info* rb_inf)
+{
+    if (rb_inf->m_rb_vehicle == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\vehicle_collision.cpp", 90,
+                     "rb_inf->m_rb_vehicle", defaultFileName))
+        __debugbreak();
+    int v1 = 0;
+    while (v1 < 8 && rb_inf->m_rb_vehicle->m_wheels[v1] != nullptr)
+        ++v1;
+    if ((v1 <= 0 || v1 > 8)
+        && _tlAssert("c:\\cod\\code\\game\\vehicle_collision.cpp", 92,
+                     "wheel_count > 0 && wheel_count <= MAX_WHEELS",
+                     defaultFileName))
+        __debugbreak();
+    vehicle_collision_info* v3 = (vehicle_collision_info*)
+        g_collision_memory_allocater.allocate(
+            8, 4, false, "phys_collision_allocater overflow.");
+    if (v3 == nullptr)
+        return nullptr;
+    v3->m_list_wheel_collision_info = (wheel_collision_info*)
+        g_collision_memory_allocater.allocate(
+            112 * v1, 16, false, "phys_collision_allocater overflow.");
+    if (v3->m_list_wheel_collision_info == nullptr)
+        return nullptr;
+    v3->m_list_wheel_collision_info_count = v1;
+    v3->setup(rb_inf);
+    return v3;
+}
 
 // ea: 0x6FE770
 void vehicle_collision_info::process(rb_extra_info* rb_inf)

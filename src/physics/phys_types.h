@@ -539,7 +539,9 @@ static_assert(offsetof(rigid_body_constraint_angular_actuator, m_target_mat) == 
 // rigid_body_constraint_wheel — vehicle wheel constraint (224 bytes)
 // Size: 0xE0 (224 bytes) — verified against IDA
 // ============================================================================
-struct rigid_body_constraint_wheel : rigid_body_constraint {
+// class tag (V) required for PAV manglings in vehicle_collision.cpp symbols
+class rigid_body_constraint_wheel : public rigid_body_constraint {
+public:
     math::Dir3      m_b2_hitp_loc;             // +0x10
     math::Dir3      m_b2_hitn_loc;             // +0x20
     math::Dir3      m_b1_wheel_center_loc;     // +0x30
@@ -579,6 +581,8 @@ struct rigid_body_constraint_wheel : rigid_body_constraint {
     void set_wheel_state_braking(float braking_factor_k);
     void set_no_collision();
     void set_collision(rigid_body* rb, const math::Dir3* hitp_loc, const math::Dir3* hitn_loc);
+    void get_wheel_collide_segment(const math::Mat43& b1_mat, math::Dir3* const p0,
+                                   math::Dir3* const p1) const;  // 0x884FE0
     void set(const math::Dir3* wheel_center_loc, const math::Dir3* suspension_dir_loc,
              const math::Dir3* wheel_axis_loc, float wheel_radius, float fwd_fric_k,
              float side_fric_k, float suspension_stiffness_k, float suspension_damp_k,
