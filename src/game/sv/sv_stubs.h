@@ -694,6 +694,16 @@ struct InGameMenuSystem {
     bool IsSystemActive();               // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ
     void SetActiveMenu(int a2);          // ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z
 };
+// ?IsSystemActive@InGameMenuSystem@@QAE_NXZ (shell.o; stub)
+inline bool InGameMenuSystem::IsSystemActive()
+{
+    return is_active;
+}
+// ?SetActiveMenu@InGameMenuSystem@@QAEXH@Z (shell.o; stub)
+inline void InGameMenuSystem::SetActiveMenu(int a2)
+{
+    (void)a2;
+}
 static_assert(sizeof(InGameMenuSystem) == 56, "InGameMenuSystem size mismatch (fields used)");
 
 
@@ -855,6 +865,11 @@ public:
     void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
     const void* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
 };
+// ?GetNumZones@StreamZoneManager@@QBEHXZ (streamer.o; stub)
+inline int StreamZoneManager::GetNumZones() const
+{
+    return 0;
+}
 
 // ============================================================================
 // SceneManager â€” scene/static-model manager (opaque)
@@ -1027,6 +1042,11 @@ struct MPPlayer {
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)
 };
+// ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ (mp.o; stub)
+inline Entity* MPPlayer::GetEntity()
+{
+    return nullptr;
+}
 
 struct MPPlayerManager {
     MPPlayer* GetPlayer(int id);

@@ -195,6 +195,7 @@ struct MultiplayerMgr {
     bool mRankedGame;              // +0x35
     bool mLinkCheckEnabled;        // +0x40
     bool IsHost();                 // ?IsHost@MultiplayerMgr@@QAE_NXZ
+    int  GetDroppedItemType(int itemType);  // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z
     static MultiplayerMgr* sInst;  // mp.o data
     static void Step(MultiplayerMgr* self, int earlyOutInterval,
                      bool fromThread, bool a_bFromGame);

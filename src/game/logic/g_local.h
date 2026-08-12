@@ -3646,7 +3646,12 @@ public:
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
     DObj(int pakId);               // ??0DObj@@QAE@H@Z (render.o)
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
-    int GetBoneParent(int boneIndex);          // ?GetBoneParent@DObj@@QAEHH@Z (render.o)
+    // ?GetBoneParent@DObj@@QAEHH@Z (render.o; stub)
+    int GetBoneParent(int boneIndex)
+    {
+        (void)boneIndex;
+        return -1;
+    }
     const math::Mat43::Packed& GetBaseRelMat(int boneIndex);  // ?GetBaseRelMat@DObj@@QAEABUPacked@Mat43@math@@H@Z (render.o)
 };
 static_assert(sizeof(DObj) == 0xE8, "DObj size mismatch");
