@@ -1181,7 +1181,12 @@ void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int eTeam);
 float VectorDistanceSquared(const float* p1, const float* p2);
 
 namespace cdOceanGlobals {
-float GetHeight(int bankID, float x, float y);  // ea: 0x7C0B70
+// ea: 0x007C0B70 (render_xboxr:cdOceanGlobals.o)
+inline float GetHeight(int bankID, float x, float y)  // ?GetHeight@cdOceanGlobals@@YAMHMM@Z
+{
+    (void)bankID; (void)x; (void)y;
+    return 0.0f;
+}
 }
 
 namespace BrocSys {

@@ -175,7 +175,13 @@ extern TPakId PakManager_GetGlobalPakId(void* mgr);
 extern const char* PakManager_GetPakLongName(void* mgr, TPakId pakId);
 extern const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row,
                                                          int id);
-extern const float* DbRow_GetFieldValuePtrFloat(const DbRow* row, int id);
+// ?DbRow_GetFieldValuePtrFloat@@YAPBMPBUDbRow@@H@Z artifact (core.o db.cpp;
+// DbRow field lookup not ported yet)
+const float* DbRow_GetFieldValuePtrFloat(const DbRow* row, int id)
+{
+    (void)row; (void)id;
+    return nullptr;
+}
 // ?DialogueManager_GetDialogue@@YAPBDPAXI@Z artifact (real member in
 // DialogueManager::GetDialogue, core.o 0x4C55B0; InplaceTree not ported yet)
 const char* DialogueManager_GetDialogue(void* mgr, unsigned int hash)

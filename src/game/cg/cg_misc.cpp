@@ -3680,8 +3680,20 @@ cgsGlobal_t cgsGlobal;         // ?cgsGlobal@@3UcgsGlobal_t@@A (cg.o @ 0x13590F8
 extern void* cg_items;
 extern weaponInfo_s cg_weapons[1];
 extern vmCvar_t fs_debug_vm;
-extern const float* InteractionController_GetHandsOrigin(void* self);
-extern const float* InteractionController_GetHandsAngles(void* self);
+// InteractionController member artifacts (real members are GetHandsOrigin/
+// GetHandsAngles; IC instance not ported yet - return zero vectors)
+const float* InteractionController_GetHandsOrigin(void* self)
+{
+    (void)self;
+    static const float zero[3] = { 0.0f, 0.0f, 0.0f };
+    return zero;
+}
+const float* InteractionController_GetHandsAngles(void* self)
+{
+    (void)self;
+    static const float zero[3] = { 0.0f, 0.0f, 0.0f };
+    return zero;
+}
 extern int InteractionController_GetCameraMode(void* self);
 extern void InteractionController_EndInteraction(void* self, int wasInteracting);
 extern int InteractionController_StartInteraction(void* self, Entity* interactable,
