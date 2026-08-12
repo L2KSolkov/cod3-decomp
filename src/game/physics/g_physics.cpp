@@ -229,6 +229,24 @@ void phys_anim_bone_array::write_skeleton(Entity* owner,
                &skeleton_pose[i], sizeof(math::Mat43));
 }
 
+// biped_phys_info (physics.o RBRagdoll.cpp); ctor only - the full layout is
+// mapped incrementally as the family is ported.
+struct biped_phys_info {
+    unsigned int m_render_flags;  // +0x00 (Bitmask mMask)
+    Entity*      m_owner;         // +0x04
+    void*        m_bp_sys;        // +0x08 (biped_system*)
+
+    biped_phys_info();  // ??0biped_phys_info@@QAE@XZ
+};
+
+// ea: 0x6F71C0
+biped_phys_info::biped_phys_info()
+{
+    m_render_flags = 0;
+    m_owner = nullptr;
+    m_bp_sys = nullptr;
+}
+
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
 // COD2-derived enum tag, distinct from Broc's EHitLocation which lives in
 // broc_types.h and shares enumerator names).
