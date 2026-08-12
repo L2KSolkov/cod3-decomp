@@ -47,6 +47,32 @@ bool bdBitBuffer::getTypeCheck() const
     return m_typeChecked;
 }
 
+// bdBitBuffer IO primitives (bdCore:bdBitBuffer.obj). Stubs; port from IDA
+// (writeBits ea 0x89BCF0). Note: the binary keeps writeDataType/readDataType
+// private (IAE mangling); the public QAE forms here satisfy the reconstructed
+// callers until the typed-writer API is ported.
+void bdBitBuffer::writeBits(const void* data, unsigned int bitCount)
+{
+    (void)data; (void)bitCount;
+}
+
+void bdBitBuffer::writeDataType(bdBitBufferDataType type)
+{
+    (void)type;
+}
+
+bool bdBitBuffer::readDataType(bdBitBufferDataType type)
+{
+    (void)type;
+    return true;
+}
+
+bool bdBitBuffer::readBits(void* data, unsigned int bitCount)
+{
+    (void)data; (void)bitCount;
+    return true;
+}
+
 #define COD3_UNIMPLEMENTED(lib) \
     fprintf(stderr, "COD3 UNIMPLEMENTED: %s\n", lib)
 
