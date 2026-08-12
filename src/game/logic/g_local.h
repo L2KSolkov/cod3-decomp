@@ -2247,7 +2247,8 @@ int     G_EntryPointSeatAssociation(Entity* vehicle, int entryPosition);  // g.o
 vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
 int16_t VEH_GetPlayerVehicleInfo(const char* name); // g.o 0x44D4E0
 int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
-int     G_InitialParseInteractionInfo(void);         // g.o
+// anim.o ?G_InitialParseInteractionInfo@@YAXXZ (stub; port later)
+inline void G_InitialParseInteractionInfo(void) {}
 void    G_InitSentients(void);                       // g.o
 void    GScr_LoadScriptsAndAnimsForEntities(void);   // g.o
 unsigned char GScr_LoadConsts(void);                 // g.o

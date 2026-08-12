@@ -222,11 +222,57 @@ void Key_GetBindingBuf(int keynum, char* buf, int buflen)
 // Field editing
 // ============================================================================
 extern int key_overstrikeMode;
+// Pointer table matching core/common.cpp's `re` layout (cl.o re_export).
 struct refexport_t {
-    void Text_PaintWithCursor(float a1, float a2, int a3, float a4,
-                              const float* a5, const char* a6, int a7,
-                              int a8, float a9, int a10, int a11);
-    int Text_Width(const char* a1, int a2, float a3, float a4, int a5);
+    void (*Shutdown)(int);
+    void (*BeginRegistration)(void*);
+    void* (*RegisterModel)(void* result, const char*, int, int);
+    int (*RegisterShader)(const char*, int);
+    int (*RegisterShaderNoMip)(const char*, int);
+    void (*LoadWorld)(const char*, int*);
+    void (*SetFXImageMemory)(int);
+    int (*GetFXImageMemory)();
+    int (*GetImageMemory)();
+    float (*GetFarPlaneDist)();
+    void (*EndRegistration)();
+    void (*ClearScene)();
+    void (*AddPolyToScene)(void*, int, const void*);
+    void (*AddLightToScene)(const float*, float, float, float, float);
+    void (*SetCullDist)(float);
+    void (*SetFog)(int, int, int, float, float, float, float);
+    void (*RenderScene)(const void*);
+    void (*ClearFlares)();
+    void (*SetColor)(const float*);
+    void (*DrawStretchPic)(float, float, float, float, float, float, float,
+                           float, void*);
+    void (*DrawStretchPicGradient)(float, float, float, float, float, float,
+                                   float, float, void*, const float*, int);
+    void (*DrawStretchPicRotate)(float, float, float, float, float, float,
+                                 float, float, float, void*);
+    void (*DrawQuadPic)(const float (*)[2], const float (*)[2], void*);
+    void (*DrawStretchRaw)(int, int, int, int, int, int,
+                           const unsigned char*, int, int);
+    void (*UploadCinematic)(int, int, int, int, const unsigned char*, int, int);
+    void (*BeginFrame)();
+    void (*EndFrame)(int*, int*);
+    void (*SaveScreen)();
+    void (*TrackStatistics)(void*);
+    int (*PickShader)(const float*, const float*, char*, char*, char*, int);
+    void (*ResetImageAllocations)();
+    void (*FreeImageAllocations)();
+    void (*CubemapShot)(const char*, int, int, float, float);
+    void (*CubemapWaterShot)(const char*, int, int, float*, float*);
+    void (*LocateDebugStrings)(void*, int);
+    void (*LocateDebugLines)(void*, int);
+    int (*Text_Width)(const char*, int, float, float, int);
+    int (*Text_Height)(int, float);
+    void (*Text_Paint)(float, float, int, float, const float*, const char*,
+                       float, int, int);
+    int (*Text_ConsoleWidth)(const short*, int, float, float, int);
+    void (*Text_ConsolePaint)(float, float, int, float, const float*,
+                              const short*, float, int, int);
+    void (*Text_PaintWithCursor)(float, float, int, float, const float*,
+                                 const char*, int, char, float, int, int);
 };
 extern refexport_t re;
 // ?SEH_PrintStrlen@@YAHPBD@Z (shell.o 0x581200; stub)
@@ -551,7 +597,7 @@ extern struct cvar_t* cl_mouseAccel;
 extern struct cvar_t* cl_showMouseRate;
 extern struct cvar_t* m_yaw;
 extern struct cvar_t* m_pitch;
-extern int IsPlayerFullySeatedInVehicle(void* player);
+extern bool IsPlayerFullySeatedInVehicle(class Entity* player);
 class Entity {
 public:
     bool IsCameraTweening() const;  // ?IsCameraTweening@Entity@@QBE_NXZ
@@ -654,7 +700,7 @@ LABEL_40:
     float v17;
     float v18;
     if ((EntityManager_GetPlayer3(EntityManager_sInst3, v6) != nullptr
-         && (IsPlayerFullySeatedInVehicle(EntityManager_GetPlayer3(EntityManager_sInst3, currCl))
+         && (IsPlayerFullySeatedInVehicle((Entity*)EntityManager_GetPlayer3(EntityManager_sInst3, currCl))
              || EntityManager::sInst->GetPlayer(currCl)->IsCameraTweening()))
         || GamePause::IsGamePaused(currCl))
     {

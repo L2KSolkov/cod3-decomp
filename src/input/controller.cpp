@@ -69,6 +69,8 @@ public:
 
     int  button_value(int index, ButtonIndex btn);
     bool button_pressed(int index, ButtonIndex btn);
+    int  button_value(ButtonIndex btn, int* p_controller);   // controller.o
+    bool button_pressed(ButtonIndex btn, int* p_controller); // controller.o
     bool button_pressed_clear(int index, ButtonIndex btn);
     void button_pressed_clear_all(int index);
     bool button_released(int index, ButtonIndex btn);
@@ -214,6 +216,53 @@ bool controller::button_pressed(int index, ButtonIndex btn) {
     bool now  = (s_pads[index].curButtons & mask) != 0;
     bool prev = (s_pads[index].lastButtons & mask) != 0;
     return now && !prev;
+}
+
+// ea: 0x7E2CA0 (controller.o) - highest value across accepting controllers
+int controller::button_value(ButtonIndex btn, int* p_controller)
+{
+    if (is_locked)
+    {
+        if (p_controller != nullptr)
+            *p_controller = locked_port;
+        return button_value(locked_port, btn);
+    }
+    int best = 0;
+    for (int i = 0; i < MAX_CONTROLLERS; ++i)
+    {
+        if (!s_pads[i].connected)
+            continue;
+        int v = button_value(i, btn);
+        if (v > best)
+        {
+            best = v;
+            if (p_controller != nullptr)
+                *p_controller = i;
+        }
+    }
+    return best;
+}
+
+// ea: 0x7E2E20 (controller.o)
+bool controller::button_pressed(ButtonIndex btn, int* p_controller)
+{
+    if (is_locked)
+    {
+        if (p_controller != nullptr)
+            *p_controller = locked_port;
+        return button_pressed(locked_port, btn);
+    }
+    bool any = false;
+    for (int i = 0; i < MAX_CONTROLLERS; ++i)
+    {
+        if (!s_pads[i].connected)
+            continue;
+        bool v = button_pressed(i, btn);
+        if (v && !any && p_controller != nullptr)
+            *p_controller = i;
+        any = any || v;
+    }
+    return any;
 }
 
 bool controller::button_pressed_clear(int index, ButtonIndex btn) {

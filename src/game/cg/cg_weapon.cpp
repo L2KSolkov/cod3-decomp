@@ -229,12 +229,12 @@ extern void CG_CycleWeap(int bNext, int bIgnoreEmpty);
 extern void CG_Error(const char* msg, ...);
 extern char* CG_Argv(int arg);
 extern void Cmd_ArgvBuffer(int arg, char* buffer, int bufferLength);
-extern int CG_DObjGetViewModelTagMatrix(void* obj, unsigned int tag_name_hash,
-                                        void* tagMat);
 class DObj;
-extern int CG_DObjGetWorldTagMatrix(Entity* entity, DObj* obj,
-                                    unsigned int tag_name_hash,
-                                    DObjSkelMat* tagMat);
+extern int CG_DObjGetViewModelTagMatrix(DObj* obj, unsigned int tag_name_hash,
+                                        DObjSkelMat* tagMat);
+extern const DObjSkelMat* CG_DObjGetWorldTagMatrix(
+    Entity* entity, DObj* obj, unsigned int tag_name_hash,
+    DObjSkelMat* tagMat);
 struct trajectory_t;
 extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                                   math::Position3& result);
@@ -960,7 +960,8 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
             if (v4 == nullptr)
                 goto LABEL_11;
             ViewModelTagMatrix =
-                CG_DObjGetViewModelTagMatrix(v4, tag_flash_hash, &tagMtx);
+                CG_DObjGetViewModelTagMatrix((DObj*)v4, tag_flash_hash,
+                                             &tagMtx);
         }
         else
         {
@@ -970,7 +971,7 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
             ViewModelTagMatrix =
                 CG_DObjGetWorldTagMatrix(entity, (DObj*)mDObj,
                                          tag_flash_hash,
-                                         (DObjSkelMat*)&tagMtx);
+                                         (DObjSkelMat*)&tagMtx) != nullptr;
         }
         if (ViewModelTagMatrix != 0)
         {

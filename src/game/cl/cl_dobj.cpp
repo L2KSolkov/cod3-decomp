@@ -61,24 +61,57 @@ extern void j_nullsub_82(DObj* obj, int* partBits);
 // ============================================================================
 // Renderer syscall externs (re.*)
 // ============================================================================
+// Pointer table matching core/common.cpp's `re` layout (cl.o re_export).
 struct refexport_t {
-    int LoadWorld(const char* name, int* checksum);
-    int RegisterShader(int a1, int a2);
-    int RegisterShaderNoMip(int a1, int a2);
-    int Text_Width(int a1, int a2, float a3, float a4, int a5);
-    int Text_Height(int a1, float a2);
-    void Text_Paint(float a1, float a2, int a3, float a4, int a5, int a6,
-                    float a7, int a8, int a9);
-    void Text_PaintWithCursor(float a1, float a2, int a3, float a4, int a5,
-                              int a6, int a7, float a8, float a9, int a10,
-                              int a11);
-    void ClearScene();
-    void AddPolyToScene(int a1, int a2, int a3);
-    void AddLightToScene(int a1, float a2, float a3, float a4, float a5);
-    void RenderScene(int a1);
-    void SetColor(int a1);
-    void DrawStretchPic(float a1, float a2, float a3, float a4, float a5,
-                        float a6, float a7, float a8, int a9);
+    void (*Shutdown)(int);
+    void (*BeginRegistration)(void*);
+    void* (*RegisterModel)(void* result, const char*, int, int);
+    int (*RegisterShader)(const char*, int);
+    int (*RegisterShaderNoMip)(const char*, int);
+    void (*LoadWorld)(const char*, int*);
+    void (*SetFXImageMemory)(int);
+    int (*GetFXImageMemory)();
+    int (*GetImageMemory)();
+    float (*GetFarPlaneDist)();
+    void (*EndRegistration)();
+    void (*ClearScene)();
+    void (*AddPolyToScene)(void*, int, const void*);
+    void (*AddLightToScene)(const float*, float, float, float, float);
+    void (*SetCullDist)(float);
+    void (*SetFog)(int, int, int, float, float, float, float);
+    void (*RenderScene)(const void*);
+    void (*ClearFlares)();
+    void (*SetColor)(const float*);
+    void (*DrawStretchPic)(float, float, float, float, float, float, float,
+                           float, void*);
+    void (*DrawStretchPicGradient)(float, float, float, float, float, float,
+                                   float, float, void*, const float*, int);
+    void (*DrawStretchPicRotate)(float, float, float, float, float, float,
+                                 float, float, float, void*);
+    void (*DrawQuadPic)(const float (*)[2], const float (*)[2], void*);
+    void (*DrawStretchRaw)(int, int, int, int, int, int,
+                           const unsigned char*, int, int);
+    void (*UploadCinematic)(int, int, int, int, const unsigned char*, int, int);
+    void (*BeginFrame)();
+    void (*EndFrame)(int*, int*);
+    void (*SaveScreen)();
+    void (*TrackStatistics)(void*);
+    int (*PickShader)(const float*, const float*, char*, char*, char*, int);
+    void (*ResetImageAllocations)();
+    void (*FreeImageAllocations)();
+    void (*CubemapShot)(const char*, int, int, float, float);
+    void (*CubemapWaterShot)(const char*, int, int, float*, float*);
+    void (*LocateDebugStrings)(void*, int);
+    void (*LocateDebugLines)(void*, int);
+    int (*Text_Width)(const char*, int, float, float, int);
+    int (*Text_Height)(int, float);
+    void (*Text_Paint)(float, float, int, float, const float*, const char*,
+                       float, int, int);
+    int (*Text_ConsoleWidth)(const short*, int, float, float, int);
+    void (*Text_ConsolePaint)(float, float, int, float, const float*,
+                              const short*, float, int, int);
+    void (*Text_PaintWithCursor)(float, float, int, float, const float*,
+                                 const char*, int, char, float, int, int);
 };
 extern refexport_t re;
 
@@ -189,25 +222,27 @@ int CL_CgameSystemCalls(int* args)
     switch (*args)
     {
     case '.':
-        result = re.RegisterShader(args[1], args[2]);
+        result = re.RegisterShader((const char*)args[1], args[2]);
         break;
     case '1':
-        result = re.Text_Width(args[1], args[2], *(float*)(args + 3), 0.0f,
-                               args[4]);
+        result = re.Text_Width((const char*)args[1], args[2],
+                               *(float*)(args + 3), 0.0f, args[4]);
         break;
     case '2':
         result = re.Text_Height(args[1], *(float*)(args + 2));
         break;
     case '3':
         re.Text_Paint(*(float*)(args + 1), *(float*)(args + 2), args[3],
-                      *(float*)(args + 4), args[5], args[6],
+                      *(float*)(args + 4), (const float*)args[5],
+                      (const char*)args[6],
                       *(float*)(args + 7), args[8], args[9]);
         result = 0;
         break;
     case '4':
         re.Text_PaintWithCursor(*(float*)(args + 1), *(float*)(args + 2),
-                                args[3], *(float*)(args + 4), args[5],
-                                args[6], args[7], *(float*)(args + 8),
+                                args[3], *(float*)(args + 4),
+                                (const float*)args[5], (const char*)args[6],
+                                args[7], (char)*(float*)(args + 8),
                                 0.0f, args[9], args[10]);
         result = 0;
         break;
@@ -216,31 +251,33 @@ int CL_CgameSystemCalls(int* args)
         result = 0;
         break;
     case '=':
-        re.AddPolyToScene(args[1], args[2], args[3]);
+        re.AddPolyToScene((void*)args[1], args[2], (const void*)args[3]);
         result = 0;
         break;
     case '>':
-        re.AddLightToScene(args[1], *(float*)(args + 2), *(float*)(args + 3),
-                           *(float*)(args + 4), *(float*)(args + 5));
+        re.AddLightToScene((const float*)args[1], *(float*)(args + 2),
+                           *(float*)(args + 3), *(float*)(args + 4),
+                           *(float*)(args + 5));
         result = 0;
         break;
     case 'B':
-        re.RenderScene(args[1]);
+        re.RenderScene((const void*)args[1]);
         result = 0;
         break;
     case 'E':
-        re.SetColor(args[1]);
+        re.SetColor((const float*)args[1]);
         result = 0;
         break;
     case 'F':
         re.DrawStretchPic(*(float*)(args + 1), *(float*)(args + 2),
                           *(float*)(args + 3), *(float*)(args + 4),
                           *(float*)(args + 5), *(float*)(args + 6),
-                          *(float*)(args + 7), *(float*)(args + 8), args[9]);
+                          *(float*)(args + 7), *(float*)(args + 8),
+                          (void*)args[9]);
         result = 0;
         break;
     case 'T':
-        result = re.RegisterShaderNoMip(args[1], args[2]);
+        result = re.RegisterShaderNoMip((const char*)args[1], args[2]);
         break;
     default:
         if (va("Bad cgame system trap: %i", *args) == nullptr)
