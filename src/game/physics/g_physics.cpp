@@ -103,8 +103,28 @@ class phys_gjk_geom_cod_base;
 struct trajectory_t;
 class PhysData {
 public:
-    uint8_t _pad0[0x08];
-    float   mBounce;  // +0x08
+    uint8_t mName[4];   // +0x00 (InplaceString)
+    float   mMass;      // +0x04
+    float   mBounce;    // +0x08
+    float   mFric;      // +0x0C
+    void*   mConstraints;  // +0x10 (InplaceVector<PhysConstraint>)
+};
+
+// InplaceVector<T> (ae/inplace/InplaceVector.h view; 8 bytes)
+template <typename T>
+struct InplaceVector {
+    T*           mList;  // +0x00
+    unsigned int mSize;  // +0x04
+};
+
+// PhysConstraint (physics.o RBPhysData.h view; 40 bytes, IDA ordinal)
+struct PhysConstraint {
+    float mMinAngle;   // +0x00
+    float mMaxAngle;   // +0x04
+    float mDist;       // +0x08
+    float mDamp;       // +0x0C
+    float mOrigin[3];  // +0x10
+    float mAngles[3];  // +0x1C
 };
 
 // IVPointer<T> (game_types.h view; class tag V matches the binary manglings)
@@ -5902,6 +5922,234 @@ void rb_prop_system::frame_advance(float delta_t)
     }
 }
 
+// ea: 0x7035B0
+void SetupConstraints(rb_extra_info* rb_inf)
+{
+    rigid_body* m_rb = rb_inf->m_rb;
+    DObj* mDObj = rb_inf->m_ent->mDObj;
+    TPakId mPakId = (TPakId)mDObj->mPhysDataPakId;
+    PhysData* phys_data = (PhysData*)mDObj->mPhysDataValue;
+    ValidatePakId(mPakId);
+    if (phys_data != nullptr)
+    {
+        ValidatePakId(mPakId);
+        InplaceVector<PhysConstraint>* maxAngle =
+            (InplaceVector<PhysConstraint>*)&phys_data->mConstraints;
+        if (maxAngle->mSize == 2)
+        {
+            ValidatePakId(mPakId);
+            float mDist = maxAngle->mList[0].mDist;
+            ValidatePakId(mPakId);
+            if (maxAngle->mList[1].mDist > mDist)
+                mDist = maxAngle->mList[1].mDist;
+            if (mDist > 0.0f)
+            {
+                rigid_body_constraint_distance* rbc_dist =
+                    phys_sys::create_rbc_dist(
+                        m_rb, phys_sys::get_environment_rigid_body(), true);
+                if (rbc_dist == nullptr)
+                    return;
+                ValidatePakId(mPakId);
+                PhysConstraint* max_con = &maxAngle->mList[0];
+                ValidatePakId(mPakId);
+                PhysConstraint* v7 = &maxAngle->mList[1];
+                if (max_con->mDist != mDist)
+                {
+                    ValidatePakId(mPakId);
+                    max_con = &maxAngle->mList[1];
+                    ValidatePakId(mPakId);
+                    v7 = &maxAngle->mList[0];
+                }
+                math::Dir3 origin_dir;
+                origin_dir.v = _mm_setr_ps(v7->mOrigin[0], v7->mOrigin[1],
+                                           v7->mOrigin[2], 0.0f);
+                const math::Mat43& mat = m_rb->get_mat();
+                math::Dir3 b1_r_loc;
+                b1_r_loc.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(origin_dir.v,
+                                                  origin_dir.v, 0),
+                                   mat.x.v),
+                        _mm_mul_ps(_mm_shuffle_ps(origin_dir.v,
+                                                  origin_dir.v, 85),
+                                   mat.y.v)),
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(origin_dir.v,
+                                                  origin_dir.v, 170),
+                                   mat.z.v),
+                        mat.w.v));
+                math::Dir3 b2_r_loc;
+                b2_r_loc.v = _mm_setr_ps(max_con->mOrigin[0],
+                                         max_con->mOrigin[1],
+                                         max_con->mOrigin[2], 0.0f);
+                rbc_dist->set(b1_r_loc, b2_r_loc, 0.0f, mDist);
+                m_rb->m_flags |= 0x100u;
+                return;
+            }
+            rigid_body_constraint_hinge* rbc_hinge =
+                phys_sys::create_rbc_hinge(
+                    m_rb, phys_sys::get_environment_rigid_body(), true);
+            if (rbc_hinge == nullptr)
+                return;
+            ValidatePakId(mPakId);
+            PhysConstraint* c0 = &maxAngle->mList[0];
+            math::Position3 p1;
+            p1.v = _mm_setr_ps(c0->mOrigin[0], c0->mOrigin[1],
+                               c0->mOrigin[2], 0.0f);
+            ValidatePakId(mPakId);
+            PhysConstraint* c1 = &maxAngle->mList[1];
+            math::Position3 p2;
+            p2.v = _mm_setr_ps(c1->mOrigin[0], c1->mOrigin[1],
+                               c1->mOrigin[2], 0.0f);
+            ValidatePakId(mPakId);
+            float theta_min = maxAngle->mList[0].mMinAngle;
+            ValidatePakId(mPakId);
+            float theta_max = maxAngle->mList[0].mMaxAngle;
+            math::Dir3 axis;
+            __m128 d = _mm_sub_ps(p2.v, p1.v);
+            __m128 d2 = _mm_mul_ps(d, d);
+            float len =
+                d2.m128_f32[0] + (d2.m128_f32[1] + d2.m128_f32[2]);
+            len = sqrtf(len);
+            axis.v = _mm_div_ps(d, _mm_set1_ps(len));
+            const math::Mat43& mat = m_rb->get_mat();
+            __m128 x = mat.x.v, y = mat.y.v, z = mat.z.v, w = mat.w.v;
+            __m128 v11 = _mm_shuffle_ps(x, y, 68);
+            __m128 v12 = _mm_shuffle_ps(v11, z, 221);
+            __m128 v13 = _mm_shuffle_ps(v11, z, 136);
+            __m128 v15 =
+                _mm_shuffle_ps(_mm_shuffle_ps(x, y, 238), z, 168);
+            math::Dir3 b1_r_loc;
+            b1_r_loc.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(p1.v, p1.v, 0), v13),
+                    _mm_mul_ps(_mm_shuffle_ps(p1.v, p1.v, 85), v12)),
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(p1.v, p1.v, 170), v15),
+                    _mm_xor_ps(
+                        Float4_SignMask_12,
+                        _mm_add_ps(
+                            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(w, w, 0),
+                                                  v13),
+                                       _mm_mul_ps(_mm_shuffle_ps(w, w, 85),
+                                                  v12)),
+                            _mm_mul_ps(_mm_shuffle_ps(w, w, 170), v15)))));
+            math::Dir3 b1_axis_loc;
+            b1_axis_loc.v = _mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(axis.v, axis.v, 0),
+                                      v13),
+                           _mm_mul_ps(_mm_shuffle_ps(axis.v, axis.v, 85),
+                                      v12)),
+                _mm_mul_ps(_mm_shuffle_ps(axis.v, axis.v, 170), v15));
+            ValidatePakId(mPakId);
+            math::Position3 angles;
+            angles.v = _mm_setr_ps(maxAngle->mList[0].mAngles[0],
+                                   maxAngle->mList[0].mAngles[1],
+                                   maxAngle->mList[0].mAngles[2], 0.0f);
+            math::Dir3 fwd;
+            AnglesToForward(angles, fwd);
+            __m128 v32 = axis.v;
+            __m128 v33 = _mm_shuffle_ps(v32, v32, 18);
+            __m128 v34 = _mm_shuffle_ps(v32, v32, 9);
+            __m128 v36 = _mm_sub_ps(
+                _mm_mul_ps(v34, _mm_shuffle_ps(fwd.v, fwd.v, 18)),
+                _mm_mul_ps(v33, _mm_shuffle_ps(fwd.v, fwd.v, 9)));
+            __m128 v38 = _mm_sub_ps(
+                _mm_mul_ps(v34, _mm_shuffle_ps(v36, v36, 18)),
+                _mm_mul_ps(v33, _mm_shuffle_ps(v36, v36, 9)));
+            __m128 v39 = _mm_shuffle_ps(x, y, 68);
+            __m128 v40 = _mm_shuffle_ps(v39, z, 221);
+            __m128 v41 = _mm_shuffle_ps(v39, z, 136);
+            __m128 v42 = _mm_mul_ps(
+                _mm_shuffle_ps(v38, v38, 170),
+                _mm_shuffle_ps(_mm_shuffle_ps(x, y, 238), z, 168));
+            __m128 v43 = _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v38, v38, 0), v41),
+                _mm_mul_ps(_mm_shuffle_ps(v38, v38, 85), v40));
+            math::Dir3 b1_ref_loc;
+            b1_ref_loc.v = _mm_add_ps(v43, v42);
+            math::Dir3 b2_axis_loc;
+            b2_axis_loc.v = axis.v;
+            math::Dir3 b2_ref_loc;
+            b2_ref_loc.v = v38;
+            __m128 inv_inertia = m_rb->m_inv_inertia.v;
+            __m128 rcp = _mm_rcp_ps(inv_inertia);
+            __m128 v46 = _mm_mul_ps(
+                _mm_mul_ps(
+                    b1_axis_loc.v,
+                    _mm_mul_ps(
+                        _mm_sub_ps(_mm_set1_ps(2.0f),
+                                   _mm_mul_ps(rcp, inv_inertia)),
+                        rcp)),
+                b1_axis_loc.v);
+            float damp =
+                v46.m128_f32[0] + (v46.m128_f32[1] + v46.m128_f32[2]);
+            ValidatePakId(mPakId);
+            damp = damp * maxAngle->mList[0].mDamp;
+            rbc_hinge->set(b1_r_loc, reinterpret_cast<const math::Dir3&>(p1),
+                           b1_axis_loc, b2_axis_loc,
+                           b1_ref_loc, b2_ref_loc,
+                           (theta_min * 3.1415927f) * 0.0055555557f,
+                           (theta_max * 3.1415927f) * 0.0055555557f, damp);
+            if (theta_max < 179.0f && theta_min > -179.0f)
+            {
+                rbc_hinge->m_flags |= 8u;
+                rb_inf->m_flags.mMask &= ~1u;
+                m_rb->m_flags |= 0x100u;
+                return;
+            }
+            rbc_hinge->m_flags |= 4u;
+        }
+        else
+        {
+            for (int i = 0; i < (int)maxAngle->mSize; ++i)
+            {
+                ValidatePakId(mPakId);
+                PhysConstraint* c = &maxAngle->mList[i];
+                math::Position3 origin;
+                origin.v = _mm_setr_ps(c->mOrigin[0], c->mOrigin[1],
+                                       c->mOrigin[2], 0.0f);
+                const math::Mat43& mat = m_rb->get_mat();
+                __m128 v52 = mat.x.v, v51 = mat.y.v, v53 = mat.z.v;
+                __m128 v57 = mat.w.v;
+                __m128 v55 = _mm_shuffle_ps(v52, v51, 68);
+                __m128 v56 = _mm_shuffle_ps(v52, v51, 238);
+                __m128 v59 = _mm_shuffle_ps(v55, v53, 221);
+                __m128 v60 = _mm_shuffle_ps(v55, v53, 136);
+                __m128 v61 = _mm_shuffle_ps(v56, v53, 168);
+                math::Dir3 world;
+                world.v = _mm_add_ps(
+                    _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(origin.v,
+                                                         origin.v, 0),
+                                          v60),
+                               _mm_mul_ps(_mm_shuffle_ps(origin.v,
+                                                         origin.v, 85),
+                                          v59)),
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(origin.v, origin.v, 170),
+                                   v61),
+                        _mm_xor_ps(
+                            Float4_SignMask_12,
+                            _mm_add_ps(
+                                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v57,
+                                                                     v57, 0),
+                                                      v60),
+                                           _mm_mul_ps(_mm_shuffle_ps(v57,
+                                                                     v57, 85),
+                                                      v59)),
+                                _mm_mul_ps(_mm_shuffle_ps(v57, v57, 170),
+                                           v61)))));
+                rigid_body_constraint_point* rbc_point =
+                    phys_sys::create_rbc_point(
+                        m_rb, phys_sys::get_environment_rigid_body(), true);
+                if (rbc_point != nullptr)
+                    rbc_point->set(world,
+                                   reinterpret_cast<const math::Dir3&>(origin));
+            }
+        }
+    }
+}
+
 // ea: 0x70D250
 void UpdateRigidBody(float delta_t)
 {
@@ -7068,13 +7316,6 @@ class PathNodeMgr {
 public:
     static PathNodeMgr* sInst;
     void SetCoverNodeStatus(const Broc::string& name, int inValid);
-};
-
-// InplaceVector<T> (ae/inplace/InplaceVector.h view; 8 bytes)
-template <typename T>
-struct InplaceVector {
-    T*           mList;  // +0x00
-    unsigned int mSize;  // +0x04
 };
 
 // Destructible (physics.o RBDestructible.cpp; 196 bytes, IDA ordinal).
