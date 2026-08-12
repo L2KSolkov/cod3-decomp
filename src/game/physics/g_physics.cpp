@@ -172,6 +172,57 @@ struct ragdoll_collision_callback {
     rigid_body_sphere_list* add_colgeom(int rb_id);  // ?add_colgeom@ragdoll_collision_callback@@QAEPAVrigid_body_sphere_list@@H@Z
 };
 
+// bone_mass_info (physics.o RBRagdoll.cpp; 464 bytes). Fields written by set
+// (0x6F42C0) with verified offsets.
+class bone_mass_info {
+public:
+    int   m_b1;           // +0x00
+    int   m_b2;           // +0x04
+    float m_percent;      // +0x08
+    uint8_t _pad0C[0x10 - 0x0C];
+    math::Position3 m_b1_adjust_p2_loc;  // +0x10
+    uint8_t _pad20[0x30 - 0x20];
+    float m_p1_radius;    // +0x30
+    float m_p2_radius;    // +0x34
+    int   m_collision_sphere_count;  // +0x38
+    uint8_t _pad3C[0x64 - 0x3C];
+    math::Position3 m_p1; // +0x64
+    math::Position3 m_p2; // +0x74
+    math::Position3 m_com;  // +0x84
+    math::Position3 m_capsule_p1;  // +0x94
+    math::Position3 m_capsule_p2;  // +0xA4
+    float m_mass;         // +0xB4
+    uint8_t _padB8[0xD0 - 0xB8];
+    float m_inertia_sphere_radius;  // +0xD0
+    float m_friction_k;   // +0xD4
+    int   m_rb_id;        // +0xD8
+    uint8_t _padDC[0xE0 - 0xDC];
+    int   m_rb_parent_id; // +0xE0
+    uint8_t _padE4[0xEC - 0xE4];
+    int   m_joint_type;   // +0xEC
+    float m_theta_min;    // +0xF0
+    float m_theta_max;    // +0xF4
+    uint8_t _padF8[0x120 - 0xF8];
+    math::Dir3 m_rb_parent_axis_loc;  // +0x120
+    math::Dir3 m_rb_axis_loc;         // +0x130
+    math::Dir3 m_rb_parent_ref_loc;   // +0x140
+    math::Dir3 m_rb_ref_loc;          // +0x150
+
+    enum joint_type_e {
+        JOINT_TYPE_NONE = 0,
+    };
+
+    void set(int b1, int b2, float p1_radius, float p2_radius, float percent,
+             const math::Position3& b1_adjust_p2_loc,
+             int collision_sphere_count, float mass,
+             float inertia_sphere_radius, float friction_k, int rb_id,
+             int rb_parent_id, joint_type_e joint_type, float theta_min,
+             float theta_max, const math::Dir3& rb_parent_axis_loc,
+             const math::Dir3& rb_axis_loc,
+             const math::Dir3& rb_parent_ref_loc,
+             const math::Dir3& rb_ref_loc, float power);  // ?set@bone_mass_info@@QAEXHHMMMABVPosition3@math@@HMMMHHW4joint_type_e@1@MMABVDir3@3@222M@Z
+};
+
 // HashString (broc_types.h view; local copy - 4 bytes)
 class HashString {
 public:
@@ -2475,6 +2526,7 @@ private:
     void rdbi_calc_bone_mat_from_rb();  // ?rdbi_calc_bone_mat_from_rb@biped_system@@AAEXXZ
     void update_stability(float delta_t);  // ?update_stability@biped_system@@AAEXM@Z
     void setup_physics(Entity* owner);     // ?setup_physics@biped_system@@AAEXPAVEntity@@@Z
+    void remove_system();  // ?remove_system@biped_system@@AAEXXZ
     friend class biped_phys_info;
 };
 
@@ -2920,6 +2972,23 @@ void biped_system::create_bps(Entity* owner, int flags)
     m_is_stable = false;
     m_stable_timer = 0.0f;
     owner->Notify(hash_const.physicsstart);
+}
+
+// ea: 0x6FA800
+void biped_system::remove_system()
+{
+    rb_ragdoll_model::remove_all_user_rigid_body();
+    int count = m_list_rigid_body.m_alloc_count;
+    for (int i = 0; i < 10; ++i)
+    {
+        if ((i < 0 || i >= count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        if (m_list_rigid_body.m_slot_array[i] != nullptr)
+            phys_sys::destroy(m_list_rigid_body.m_slot_array[i]);
+    }
 }
 
 // ea: 0x6FACB0
@@ -4098,6 +4167,38 @@ void ragdoll_collision_callback::get_all_collisions()
 // stub until ragdoll_collision_callback internals are ported (0x700910)
 void ragdoll_collision_callback::process_environment_collision_events()
 {
+}
+
+// ea: 0x6F42C0
+void bone_mass_info::set(
+    int b1, int b2, float p1_radius, float p2_radius, float percent,
+    const math::Position3& b1_adjust_p2_loc, int collision_sphere_count,
+    float mass, float inertia_sphere_radius, float friction_k, int rb_id,
+    int rb_parent_id, joint_type_e joint_type, float theta_min,
+    float theta_max, const math::Dir3& rb_parent_axis_loc,
+    const math::Dir3& rb_axis_loc, const math::Dir3& rb_parent_ref_loc,
+    const math::Dir3& rb_ref_loc, float power)
+{
+    (void)power;
+    m_b1 = b1;
+    m_p1_radius = p1_radius;
+    m_b2 = b2;
+    m_p2_radius = p2_radius;
+    m_percent = percent;
+    m_b1_adjust_p2_loc.v = b1_adjust_p2_loc.v;
+    m_collision_sphere_count = collision_sphere_count;
+    m_rb_parent_id = rb_parent_id;
+    m_mass = mass;
+    m_inertia_sphere_radius = inertia_sphere_radius;
+    m_rb_id = rb_id;
+    m_friction_k = friction_k;
+    m_joint_type = joint_type;
+    m_theta_min = theta_min;
+    m_theta_max = theta_max;
+    m_rb_parent_axis_loc.v = rb_parent_axis_loc.v;
+    m_rb_axis_loc.v = rb_axis_loc.v;
+    m_rb_parent_ref_loc.v = rb_parent_ref_loc.v;
+    m_rb_ref_loc.v = rb_ref_loc.v;
 }
 
 // ea: 0x716760 (physics.o; RBRagdollCollision.cpp)
