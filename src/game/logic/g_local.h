@@ -2100,7 +2100,12 @@ int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,
 unsigned char DirToByte(const float* dir);
 void Weapon_MeleeHitShock(Entity* traceEnt);                  // g.o 0x464AC0
 bool Actor_IsMeleeInteractable(const actor_s* pSelf);         // mp_actors.o
-int  CheckActorInteraction(Entity& ent, const char* interactionName);  // mp_actors.o
+// ?CheckActorInteraction@@YAHAAVEntity@@PBD@Z (anim.o 0x556E50; stub)
+inline int CheckActorInteraction(Entity& ent, const char* interactionName)
+{
+    (void)ent; (void)interactionName;
+    return 1;
+}
 int   G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
 int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
 void  j_nullsub_120(Entity* pGrenade);
