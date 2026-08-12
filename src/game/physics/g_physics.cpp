@@ -80,6 +80,7 @@ class DObj;
 class rigid_body;
 class biped_phys_info;
 struct phys_gjk_geom_list;
+struct trajectory_t;
 void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
 enum phys_bones {
     rb_torso = 0,
@@ -95,6 +96,19 @@ enum phys_bones {
     num_rb_phys_bones = 10,
 };
 void HelmetController(Entity* owner);  // ?HelmetController@@YAXPAVEntity@@@Z (cg.o)
+enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
+#define PAK_ID_INVALID ((TPakId)-1)
+void G_SetModel(Entity* ent, const char* modelName, TPakId pakId, int ngIndex);  // game2.o
+void G_DObjUpdate(Entity* ent, bool forceWeaponModel);  // game2.o
+void g_LinkEntity(Entity* ent);  // g.o
+TPakId CurPakId();  // ?CurPakId@@YA?AW4TPakId@@XZ (streamer.o)
+void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
+                           math::Position3& result);  // g.o
+struct level_locals_t {
+    uint8_t _pad0[0x9C];
+    int     time;  // +0x9C
+};
+extern level_locals_t level;  // ?level@@3Ulevel_locals_t@@A
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
     PROP_PRIORITY_MEDIUM = 1,
@@ -650,19 +664,37 @@ int DObj::GetBoneIndex(const char* name) const
 }
 
 // Entity (game_types.h view; local minimal copy - cannot include game_types.h)
+// trajectory_t (game_types.h view; local copy - 40 bytes)
+struct trajectory_t {
+    int   trType;         // +0x00 (trType_t)
+    int32_t trTime;       // +0x04
+    int32_t trDuration;   // +0x08
+    float trBase[3];      // +0x0C
+    float trDelta[3];     // +0x18
+    int32_t trGravityOverride;  // +0x24
+};
 class Entity {
 public:
-    struct refEntity {
-        uint8_t        _pad0[0x70];
+    struct refEntity {  // EntityShared subset
+        uint8_t        _pad0[0x04];
+        int32_t        svFlags;      // +0x04
+        uint8_t        _pad08[0x64 - 0x08];
+        int32_t        contents;     // +0x64
+        uint8_t        _pad68[0x70 - 0x68];
         math::Position3 currentOrigin;  // +0x70
         math::Position3 currentAngles;  // +0x80
         math::Mat43     currentMat;     // +0x90
     };
 
-    uint8_t _pad0[0xE0];
+    uint8_t _pad0[0x10];
+    int32_t eFlags;              // +0x10 (EntityState)
+    trajectory_t tr;             // +0x14
+    uint8_t _pad3C[0xE0 - 0x3C];
     refEntity r;                 // +0xE0 (r.currentOrigin +0x150, currentAngles +0x160,
                                  //  currentMat +0x170)
-    uint8_t _pad140[0x23C - (0xE0 + sizeof(refEntity))];
+    uint8_t _pad140[0x230 - (0xE0 + sizeof(refEntity))];
+    int32_t mPakId;              // +0x230
+    uint8_t _pad234[0x23C - 0x234];
     DObj* mDObj;                 // +0x23C
     uint8_t _pad240[0x248 - 0x240];
     biped_phys_info* mBPInfo;    // +0x248
@@ -674,6 +706,9 @@ public:
     uint8_t _pad2B1[0x2C4 - 0x2B1];
     int32_t  flags;              // +0x2C4
     unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
+    uint8_t _pad2CC[0x348 - 0x2CC];
+    int32_t nextthink;           // +0x348
+    int32_t think;               // +0x34C (fn_think_e)
 
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
@@ -2334,6 +2369,81 @@ void StopPhysics(Entity* e)
         {
             rb_prop_system::remove_entity(e);
         }
+    }
+}
+
+// ea: 0x6F5B00
+int RecalibrateInputCustom(int val, int threshold)
+{
+    int eax = val < 0 ? -val : val;
+    if (eax < threshold)
+        return 0;
+    eax -= threshold;
+    float scale = (float)eax / (float)(0x80 - threshold) * 128.0f;
+    int result = (int)scale;
+    int sign = val >= 0 ? 1 : -1;  // ecx = (val>=0) + (val>=0) - 1
+    return result * sign;
+}
+
+// ea: 0x6F6300
+void SetModel(Entity* pEnt, const char* modelName)
+{
+    TPakId mPakId = (TPakId)pEnt->mPakId;
+    if (mPakId == PAK_ID_INVALID)
+        mPakId = CurPakId();
+    G_SetModel(pEnt, modelName, mPakId, 0);
+    G_DObjUpdate(pEnt, false);
+    pEnt->r.svFlags |= 0x18;
+    pEnt->r.contents |= 0x2080;
+    g_LinkEntity(pEnt);
+}
+
+// ea: 0x6F6360
+void MoveGravity(Entity* pEnt, const float* const vVel, float fTotalTime)
+{
+    trajectory_t* tr = &pEnt->tr;
+    tr->trType = 5;  // TR_GRAVITY
+    tr->trTime = level.time;
+    tr->trDuration = (int)(fTotalTime * 1000.0f);
+    tr->trBase[0] = pEnt->r.currentOrigin.v.m128_f32[0];
+    tr->trBase[1] = pEnt->r.currentOrigin.v.m128_f32[1];
+    tr->trBase[2] = pEnt->r.currentOrigin.v.m128_f32[2];
+    tr->trDelta[0] = vVel[0];
+    tr->trDelta[1] = vVel[1];
+    tr->trDelta[2] = vVel[2];
+    if ((tr->trDelta[0] != tr->trDelta[0])
+        || (tr->trDelta[1] != tr->trDelta[1])
+        || (tr->trDelta[2] != tr->trDelta[2]))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Destructible.cpp";
+        AeAssert::gCurrentLine = 111;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((pTr->trDelta)[0]) && !IS_NAN((pTr->trDelta)[1]) && !IS_NAN((pTr->trDelta)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    math::Position3 result;
+    BG_EvaluateTrajectory(tr, level.time, result);
+    g_LinkEntity(pEnt);
+}
+
+// Destructible (physics.o; minimal view for the DeletePiece family)
+class Destructible {
+public:
+    void DeletePiece(Entity* ent);  // ?DeletePiece@Destructible@@QAEXPAVEntity@@@Z
+};
+
+// ea: 0x6F6470
+void Destructible::DeletePiece(Entity* ent)
+{
+    if (ent != nullptr)
+    {
+        ent->eFlags |= 0x80;
+        ent->flags |= 0x400;
+        ent->r.contents &= ~1;
+        ent->think = 0x0C;
+        ent->nextthink = level.time + 1;
     }
 }
 
