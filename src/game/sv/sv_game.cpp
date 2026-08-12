@@ -116,9 +116,10 @@ class XAnimTree;
 extern void  DObjDumpInfo(DObj* obj);
 extern int   DObjSkelExists(DObj* obj, int timeStamp);
 extern int   DObjSkelExistsConst(DObj* obj, int timeStamp);
-extern int   DObjGetAllocSkelSize(DObj* obj);
+extern unsigned int DObjGetAllocSkelSize(DObj* obj);  // ?DObjGetAllocSkelSize@@YAIPAVDObj@@@Z
 extern void  DObjCreateSkel(DObj* obj, char* buf);
-extern int   DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify, int animindex);
+extern bool  DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
+                                  unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
 extern void  DObjInitServerTime(DObj* d, float dtime);
 extern void  DObjGetHierarchyBits(DObj* obj, int boneIndex, int* partBits);
 extern void  DObjCalcAnim(DObj* obj, int iPhase);
@@ -137,7 +138,7 @@ struct fileData_s {
     void (*mem_heap_free)(fileData_s*);  // +0x08
 };
 extern fileData_s* FS_GetDataForFile(const char* path, const char* filename, const char* extension);
-extern int  CurPakId(void);
+extern TPakId CurPakId(void);  // ?CurPakId@@YA?AW4TPakId@@XZ
 extern void SV_SendServerCommand(client_s* cl, const char* fmt, ...);
 
 // ============================================================================
@@ -197,7 +198,7 @@ void* SV_SaveWrite(const void* buffer, int len) {
 // ============================================================================
 IVPointer<XModel> SV_XModelGet(const char* name) {
     XModelManager* v2 = XModelManager::sInst;
-    int v3 = CurPakId();
+    int v3 = (int)CurPakId();
     return v2->GetXModel((TPakId)v3, name);
 }
 
