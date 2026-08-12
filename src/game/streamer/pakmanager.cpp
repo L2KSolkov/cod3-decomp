@@ -30,7 +30,8 @@ enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 enum EPakType {
     kPakTypeGlobal = 0,
     kPakTypeFrontEnd = 1,
-    kPakTypeCount = 2,
+    kPakTypeAnimation = 2,
+    kPakTypeCount = 10,
 };
 class NumBanks {
 public:
@@ -154,9 +155,18 @@ public:
 struct PakInfoNode;
 
 struct PakInfoNode {
-    uint8_t _pad[0xBC];
-    float distance;       // +0xBC
-    float userDistance;   // +0xC0
+    EPakType    pakType;        // +0x00
+    void*       longName;       // +0x04
+    void*       path;           // +0x08
+    uint8_t     _pad0C[0xB4 - 0x0C];
+    TPakId      pakId;          // +0xB4
+    unsigned int refCount;      // +0xB8
+    float       distance;       // +0xBC
+    float       userDistance;   // +0xC0
+    unsigned int mapColor;      // +0xC4
+    float       computedDistance;  // +0xC8
+    unsigned int visited;       // +0xCC
+    uint8_t     _padD0[0xE0 - 0xD0];
 };
 
 class PakManager {
@@ -218,6 +228,8 @@ public:
     bool IsUnloading(TPakId id) const;
     // - ea: 0x665710
     void SetSoundProgress(float t);
+    // - ea: 0x665570
+    float GetDistance(PakInfoNode* node) const;
     // - ea: 0x6655C0 (stub until PakFile/BankManager land)
     TPakId FindPakId(EPakType t) const;
     // - ea: 0x671ED0 (stub: real impl walks mActivePaks and calls
@@ -261,6 +273,80 @@ public:
 
     void ReleaseInstanceBank(TPakId pakId);  // ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z
 };
+
+// Manager DecodeBank stubs (cross-object: core.o / render.o / mp_actors.o)
+class XModelManager {
+public:
+    static XModelManager* sInst;  // defined in sv_globals.cpp
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);
+};
+class XModelPartsManager {
+public:
+    static XModelPartsManager* sInst;
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);
+};
+class AITypeManager {
+public:
+    static AITypeManager* sInst;
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);
+};
+class PathNodeMgr {
+public:
+    static PathNodeMgr* sInst;  // defined in sv_globals.cpp
+    void DecodeLevelBank(const char* name, unsigned char* data, int size,
+                         TPakId pakId);
+    void DecodeZoneBank(const char* name, unsigned char* data, int size,
+                        TPakId pakId);
+};
+class DbTablesetMgr {
+public:
+    static DbTablesetMgr* sInst;
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId);
+};
+class LightGridMgr {
+public:
+    static LightGridMgr* sInst;
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId);
+};
+class STBManager {
+public:
+    static STBManager* sInst;
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);  // core.o 0x4C6070 (stb.cpp)
+};
+
+XModelPartsManager* XModelPartsManager::sInst = nullptr;
+AITypeManager* AITypeManager::sInst = nullptr;
+DbTablesetMgr* DbTablesetMgr::sInst = nullptr;
+LightGridMgr* LightGridMgr::sInst = nullptr;
+STBManager* STBManager::sInst = nullptr;
+
+void XModelManager::DecodeBank(const char* name, unsigned char* data,
+                               int size, TPakId pak_id)
+{ (void)name; (void)data; (void)size; (void)pak_id; }
+void XModelPartsManager::DecodeBank(const char* name, unsigned char* data,
+                                    int size, TPakId pak_id)
+{ (void)name; (void)data; (void)size; (void)pak_id; }
+void AITypeManager::DecodeBank(const char* name, unsigned char* data,
+                               int size, TPakId pak_id)
+{ (void)name; (void)data; (void)size; (void)pak_id; }
+void PathNodeMgr::DecodeLevelBank(const char* name, unsigned char* data,
+                                  int size, TPakId pakId)
+{ (void)name; (void)data; (void)size; (void)pakId; }
+void PathNodeMgr::DecodeZoneBank(const char* name, unsigned char* data,
+                                 int size, TPakId pakId)
+{ (void)name; (void)data; (void)size; (void)pakId; }
+void DbTablesetMgr::DecodeBank(const char* name, unsigned char* data,
+                               int size, TPakId pakId)
+{ (void)name; (void)data; (void)size; (void)pakId; }
+void LightGridMgr::DecodeBank(const char* name, unsigned char* data,
+                              int size, TPakId pakId)
+{ (void)name; (void)data; (void)size; (void)pakId; }
 
 // ae_heap (core_xboxr; vtable+4 = Malloc(unsigned size, int align))
 class ae_heap {
@@ -754,6 +840,60 @@ void DecodeSEED(const char* name, unsigned char* data, int size, TPakId pakId)
     (void)name; (void)data; (void)size; (void)pakId;
 }
 
+// ea: 0x665210
+void DecodeDB(const char* name, unsigned char* data, int size, TPakId pakId)
+{
+    DbTablesetMgr::sInst->DecodeBank(name, data, size, pakId);
+}
+
+// ea: 0x665230
+void DecodeXModelBank(const char* name, unsigned char* data, int size,
+                      TPakId pakId)
+{
+    XModelManager::sInst->DecodeBank(name, data, size, pakId);
+}
+
+// ea: 0x665250
+void DecodeXModelPartsBank(const char* name, unsigned char* data, int size,
+                           TPakId pakId)
+{
+    XModelPartsManager::sInst->DecodeBank(name, data, size, pakId);
+}
+
+// ea: 0x665270
+void DecodeAITypeBank(const char* name, unsigned char* data, int size,
+                      TPakId pakId)
+{
+    AITypeManager::sInst->DecodeBank(name, data, size, pakId);
+}
+
+// ea: 0x665290
+void DecodeLightGrid(const char* name, unsigned char* data, int size,
+                     TPakId pakId)
+{
+    LightGridMgr::sInst->DecodeBank(name, data, size, pakId);
+}
+
+// ea: 0x6652C0
+void DecodeLevelPath(const char* name, unsigned char* data, int size,
+                     TPakId pakId)
+{
+    PathNodeMgr::sInst->DecodeLevelBank(name, data, size, pakId);
+}
+
+// ea: 0x6652E0
+void DecodeZonePath(const char* name, unsigned char* data, int size,
+                    TPakId pakId)
+{
+    PathNodeMgr::sInst->DecodeZoneBank(name, data, size, pakId);
+}
+
+// ea: 0x665300
+void DecodeSTB(const char* name, unsigned char* data, int size, TPakId pakId)
+{
+    STBManager::sInst->DecodeBank(name, data, size, pakId);
+}
+
 // ea: 0x665350
 void InstanceBankMgr::ReleaseInstanceBank(TPakId pakId)
 {
@@ -772,4 +912,45 @@ PakManager* TogglePakRender()
 unsigned long PakGetThreadId()
 {
     return GetCurrentThreadId();
+}
+
+// ea: 0x665570
+float PakManager::GetDistance(PakInfoNode* node) const
+{
+    if (node->visited == sComputeDistanceKey)
+        return node->computedDistance;
+    float userDistance = node->userDistance;
+    if (userDistance == 3.4028235e38f)
+        userDistance = node->distance;
+    EPakType pakType = node->pakType;
+    bool is_unloadable = pakType >= kPakTypeGlobal
+                         && (pakType <= kPakTypeAnimation
+                             || pakType == kPakTypeCount);
+    float distance = userDistance;
+    if (is_unloadable && node->pakId == PAK_ID_INVALID)
+        return 3.4028235e38f;
+    if (node->userDistance == -1.0f
+        || (node->distance == -1.0f && node->userDistance == 3.4028235e38f))
+    {
+        if (is_unloadable)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 1797;
+            AeAssert::gCurrentExpr = "is_unloadable_type(node->pakType)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "global/hero shouldn't have -1 user distance!"))
+                __debugbreak();
+        }
+        return 3.4028235e38f;
+    }
+    if (is_unloadable && node->pakId != PAK_ID_INVALID)
+    {
+        userDistance = 0.0f;
+        distance = 0.0f;
+    }
+    node->visited = sComputeDistanceKey;
+    node->computedDistance = userDistance;
+    return distance;
 }
