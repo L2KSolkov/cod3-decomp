@@ -3452,7 +3452,13 @@ extern void SubStr(char* oBuff, int* oLen, const char* src, int begin,
 
 
 struct rb_extra_info {
-    void* m_rb;  // +0x00 rb_vehicle*
+    void* m_rb;              // +0x00 rb_vehicle*
+    uint8_t _pad04[0x40 - 0x04];
+    void* m_gjk_geom_list;   // +0x40
+    uint8_t _pad44[0x54 - 0x44];
+    struct rb_vehicle* m_rb_vehicle;  // +0x54
+
+    void collision_epilog();  // ?collision_epilog@rb_extra_info@@QAEXXZ (physics.o)
 };
 
 enum traction_type_e {
@@ -3518,6 +3524,8 @@ struct rb_vehicle {
     unsigned int m_flags;  // +0x280
     uint8_t _pad284[0x320 - 0x284];
     struct rigid_body_constraint_wheel* m_wheels[8];  // +0x320
+    uint8_t _pad320[0x388 - 0x320];
+    void*   m_vci;  // +0x388 (vehicle_collision_info*)
 
     math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ (physics.o 0x6FC200)
 

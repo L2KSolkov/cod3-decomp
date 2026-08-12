@@ -255,7 +255,8 @@ static_assert(sizeof(rb_inplace_partition_node) == 0x40, "rb_inplace_partition_n
 // rigid_body — rigid body physics object (432 bytes)
 // Size: 0x1B0 (432 bytes) — verified against IDA
 // ============================================================================
-struct rigid_body {
+class rigid_body {
+public:
     math::Mat43  m_mat;                       // +0x000 — world transform
     math::Mat43  m_col_mat;                   // +0x040 — collision transform
     math::Mat33  m_world_inv_inertia;         // +0x080 — world-space inverse inertia

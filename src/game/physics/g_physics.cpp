@@ -12,6 +12,47 @@ extern bool _tlAssert(const char* file, int line, const char* expr,
 extern const char* const defaultFileName;
 void merge_spheres(const math::Position3& c1, float r1, math::Position3* c2,
                    float* r2);
+class Color;
+class DebugRender {
+public:
+    static void RenderAxis(const math::Mat43& mat, float length, float width);
+};
+struct rb_vehicle {
+    uint8_t _pad[0x388];
+    void*   m_vci;  // +0x388
+};
+struct rb_extra_info {
+    void* m_rb;              // +0x00
+    uint8_t _pad04[0x40 - 0x04];
+    void* m_gjk_geom_list;   // +0x40
+    uint8_t _pad44[0x54 - 0x44];
+    rb_vehicle* m_rb_vehicle;  // +0x54
+    void collision_epilog();
+};
+class rigid_body;
+void render_single_rigid_body(rigid_body* const rb);
+
+// ea: 0x6F2FD0
+void rb_extra_info::collision_epilog()
+{
+    m_gjk_geom_list = nullptr;
+    if (m_rb_vehicle != nullptr)
+        m_rb_vehicle->m_vci = nullptr;
+}
+
+// ea: 0x6F4600
+void render_single_rigid_body(class rigid_body* const rb)
+{
+    if (rb != nullptr)
+    {
+        if ((~(rb->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        DebugRender::RenderAxis(rb->m_mat, 6.0f, 0.050000001f);
+    }
+}
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
 // COD2-derived enum tag, distinct from Broc's EHitLocation which lives in

@@ -2106,7 +2106,8 @@ void TaskSys::PostTask(Task* t) { (void)t; }
 void TaskSys_PostTask_glue(Task* t) { (void)t; }
 void TaskSys_DeliverTasks_glue() {}
 
-struct rigid_body {
+class rigid_body {
+public:
     void add_force(const math::Dir3& f);
 };
 void rigid_body::add_force(const math::Dir3& f) { (void)f; }
@@ -2130,7 +2131,7 @@ const outer_time* rbcint::get_time_scale(rigid_body_constraint* c)
     return nullptr;
 }
 void verify_is_in_physics_system(rigid_body_constraint_contact* a,
-                                 rigid_body* b, rigid_body* c)
+                                 class rigid_body* b, class rigid_body* c)
 {
     (void)a; (void)b; (void)c;
 }
