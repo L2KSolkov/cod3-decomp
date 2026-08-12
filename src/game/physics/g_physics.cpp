@@ -196,6 +196,9 @@ class vehicle_rb_parameter {
 public:
     uint8_t _pad0[0x58];
     float   m_peel_out_max_speed;  // +0x58
+
+    static vehicle_rb_parameter* GetRBVehParameter(
+        const char* name);  // ?GetRBVehParameter@vehicle_rb_parameter@@SAPAV1@PBD@Z
 };
 
 // rb_vehicle (physics.o RBVehicle.cpp). Layout verified against the ctor
@@ -226,11 +229,31 @@ public:
     uint8_t _pad318[0x320 - 0x318];
     void* m_wheels[8];                           // +0x320 (rigid_body_constraint_wheel*)
     int   m_wheel_count;                         // +0x340
-    uint8_t _pad344[0x388 - 0x344];
+    float m_desired_speed_factor;                // +0x344
+    float m_acceleration_factor;                 // +0x348
+    float m_power_braking_factor;                // +0x34C
+    float m_braking_factor;                      // +0x350
+    float m_coasting_factor;                     // +0x354
+    float m_reference_wheel_radius;              // +0x358
+    float m_steer_current_angle;                 // +0x35C
+    float m_steer_max_angle;                     // +0x360
+    float m_steer_speed;                         // +0x364
+    uint8_t _pad368[0x370 - 0x368];
+    math::Dir3 m_steer_front_pt_loc;             // +0x370
+    float m_steer_front_back_length;             // +0x380
+    int   m_state_flags;                         // +0x384
     void* m_vci;                                 // +0x388
 
     rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
     void init(Entity* owner, vehicle_rb_parameter* parameter);  // ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z
+    void set(float power_braking_factor, float braking_factor,
+             float desired_speed_factor, float acceleration_factor,
+             float coasting_factor, float reference_wheel_radius,
+             float steer_max_angle, float steer_speed,
+             const math::Dir3& steer_front_pt_loc,
+             float steer_front_back_length);  // ?set@rb_vehicle@@QAEXMMMMMMMMABVDir3@math@@M@Z
+    void switch_parms(bool firstPerson);  // ?switch_parms@rb_vehicle@@QAEX_N@Z
+    void update_parms(vehicle_rb_parameter* params, bool initialization);  // g_scr_vehicle.cpp
     static int get_num_rb_vehicles();  // ?get_num_rb_vehicles@rb_vehicle@@SAHXZ
     static rb_vehicle* get_vehicle(int i);  // ?get_vehicle@rb_vehicle@@SAPAV1@H@Z
     static rb_vehicle* add_vehicle();       // ?add_vehicle@rb_vehicle@@SAPAV1@XZ
@@ -239,6 +262,7 @@ public:
     bool is_peeling_out() const;  // ?is_peeling_out@rb_vehicle@@QBE_NXZ
     void set_default_pose();      // ?set_default_pose@rb_vehicle@@QAEXXZ
     void cleanup_path();          // ?cleanup_path@rb_vehicle@@QAEXXZ
+    void remove_wheels();         // ?remove_wheels@rb_vehicle@@QAEXXZ
     void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
     void unpause_physics();       // ?unpause_physics@rb_vehicle@@QAEXXZ
@@ -907,6 +931,9 @@ enum wheel_effect_state_e {
 struct vehicle_info_t {
     uint8_t _pad0[0x20];
     short   type;  // +0x20
+    uint8_t _pad22[0x21C - 0x22];
+    char    vehiclePhysicsParms[32];  // +0x21C
+    char    vehiclePhysicsParmsThird[32];  // +0x23C
 };
 vehicle_info_t* VEH_GetInfo(int idx);  // ?VEH_GetInfo@@YAPAUvehicle_info_t@@H@Z (g.o)
 
@@ -981,6 +1008,87 @@ void rb_vehicle::init(Entity* owner, vehicle_rb_parameter* parameter)
 // stub until rb_vehicle::_align_wheels (0x6F4830) is ported
 void rb_vehicle::_align_wheels()
 {
+}
+
+// ea: 0x6F4F50
+void rb_vehicle::remove_wheels()
+{
+    for (int i = 0; i < 8; ++i)
+    {
+        if (m_wheels[i] != nullptr)
+            m_wheels[i] = nullptr;
+    }
+    m_wheel_count = 0;
+}
+
+// ea: 0x6F4FD0
+void rb_vehicle::set(float power_braking_factor, float braking_factor,
+                     float desired_speed_factor, float acceleration_factor,
+                     float coasting_factor, float reference_wheel_radius,
+                     float steer_max_angle, float steer_speed,
+                     const math::Dir3& steer_front_pt_loc,
+                     float steer_front_back_length)
+{
+    m_power_braking_factor = power_braking_factor;
+    m_braking_factor = braking_factor;
+    m_desired_speed_factor = desired_speed_factor;
+    m_acceleration_factor = acceleration_factor;
+    m_coasting_factor = coasting_factor;
+    m_reference_wheel_radius = reference_wheel_radius;
+    m_steer_max_angle = steer_max_angle;
+    m_steer_speed = steer_speed;
+    m_steer_front_pt_loc.v = steer_front_pt_loc.v;
+    m_steer_front_back_length = steer_front_back_length;
+    m_steer_factor = 0.0f;
+    m_steer_current_angle = 0.0f;
+    m_state_flags = 0;
+    m_forward_vel = 0.0f;
+}
+
+// ea: 0x704F00
+void rb_vehicle::switch_parms(bool firstPerson)
+{
+    vehicle_info_t* Info = VEH_GetInfo(((scr_vehicle_t*)m_owner->scr_vehicle)->infoIdx);
+    if (Info == nullptr)
+        return;
+    if (!firstPerson || Info->vehiclePhysicsParms[0] == 0)
+    {
+        if (Info->vehiclePhysicsParmsThird[0] == 0)
+            return;
+        vehicle_rb_parameter* RBVehParameter =
+            vehicle_rb_parameter::GetRBVehParameter(
+                Info->vehiclePhysicsParmsThird);
+        if (RBVehParameter == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.cpp";
+            AeAssert::gCurrentLine = 380;
+            AeAssert::gCurrentExpr = "parms";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Failed to find vehicle physics settings for %s",
+                       Info->vehiclePhysicsParmsThird))
+                __debugbreak();
+            return;
+        }
+        update_parms(RBVehParameter, false);
+        return;
+    }
+    vehicle_rb_parameter* RBVehParameter =
+        vehicle_rb_parameter::GetRBVehParameter(Info->vehiclePhysicsParms);
+    if (RBVehParameter != nullptr)
+    {
+        update_parms(RBVehParameter, false);
+        return;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.cpp";
+    AeAssert::gCurrentLine = 375;
+    AeAssert::gCurrentExpr = "parms";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("Failed to find vehicle physics settings for %s",
+                            Info->vehiclePhysicsParms))
+        __debugbreak();
 }
 
 // ea: 0x6FCD90
