@@ -1024,7 +1024,13 @@ struct scr_vehicle_t {
     scr_vehicle_path_view pathPos;  // +0x00
     uint8_t _pad[0x178 - sizeof(scr_vehicle_path_view)];
     int16_t infoIdx;                // +0x178
-    uint8_t _pad17A[0x518 - 0x17A];
+    uint8_t _pad17A[0x250 - 0x17A];
+    struct {
+        float vel[4];         // +0x250 (phys.vel)
+        float rotVel[4];      // +0x260
+        int   wheelSurfType[4];  // +0x270
+    } phys;
+    uint8_t _pad280[0x518 - 0x280];
     void*   mRBVeh;                 // +0x518 rb_vehicle*
 };
 
@@ -1713,7 +1719,7 @@ struct wheel_collision_info {
     math::Dir3 m_p1;            // +0x10
     math::Dir3 m_aabb_mn;       // +0x20
     math::Dir3 m_aabb_mx;       // +0x30
-    uint8_t    _pad40[0x50 - 0x40];
+    math::Dir3 m_normal;        // +0x40
     float      m_t;             // +0x50
     int        m_surface_flags; // +0x54
     bool       m_did_hit;       // +0x58
@@ -1794,11 +1800,92 @@ void wheel_collision_info::setup(rigid_body* rb,
     m_hit_rb = nullptr;
 }
 
-// stub until wheel_collision_info::process (0x6FE3A0) is ported
+// ?wheel_surface_type_fric@@... surface friction table (physics.o data
+// @ 0xDF812C; float[32] of per-surface friction multipliers)
+static const float s_wheel_surface_fric[32] = {
+    0.0f, 0.8f, 1.0f, 0.9f, 0.9f, 1.0f, 0.8f, 0.5f,
+    1.0f, 1.0f, 0.7f, 0.6f, 0.1f, 1.0f, 0.6f, 0.9f,
+    1.0f, 1.0f, 0.7f, 0.4f, 0.4f, 0.9f, 1.0f, 0.5f,
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+};
+
+// ea: 0x6FE3A0
 void wheel_collision_info::process(rb_extra_info* rb_inf, int wheel_i)
 {
-    (void)rb_inf;
-    (void)wheel_i;
+    if (m_did_hit)
+    {
+        if (m_hit_rb == nullptr
+            && _tlAssert("c:\\cod\\code\\game\\vehicle_collision.cpp", 30,
+                         "m_hit_rb", defaultFileName))
+            __debugbreak();
+        rigid_body* m_hit_rb = this->m_hit_rb;
+        math::Dir3 v27;
+        v27.v = _mm_add_ps(
+            _mm_mul_ps(m_p0.v, _mm_set1_ps(1.0f - m_t)),
+            _mm_mul_ps(m_p1.v, _mm_set1_ps(m_t)));
+        if ((m_hit_rb->m_flags & 0x10) == 0)
+        {
+            if ((m_hit_rb->m_flags & 0x50) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                       109, "debug_flag_is_in_collision()", defaultFileName))
+                __debugbreak();
+            // world -> body-local transform (transpose of m_col_mat)
+            math::Mat43 mm = m_hit_rb->m_col_mat;
+            math::Dir3 local;
+            for (int i = 0; i < 3; ++i)
+            {
+                float row[4];
+                row[0] = mm.x.v.m128_f32[i];
+                row[1] = mm.y.v.m128_f32[i];
+                row[2] = mm.z.v.m128_f32[i];
+                row[3] = mm.w.v.m128_f32[i];
+                local.v.m128_f32[i] = row[0] * v27.v.m128_f32[0]
+                                      + row[1] * v27.v.m128_f32[1]
+                                      + row[2] * v27.v.m128_f32[2] + row[3];
+            }
+            v27.v = local.v;
+            rigid_body* v16 = m_hit_rb;
+            if ((v16->m_flags & 0x50) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                       109, "debug_flag_is_in_collision()", defaultFileName))
+                __debugbreak();
+            // rotate m_normal by the hit rb's col_mat
+            math::Mat43 m = v16->m_col_mat;
+            __m128 n = m_normal.v;
+            m_normal.v = _mm_add_ps(
+                _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(n, n, 0), m.x.v),
+                           _mm_mul_ps(_mm_shuffle_ps(n, n, 85), m.y.v)),
+                _mm_mul_ps(_mm_shuffle_ps(n, n, 170), m.z.v));
+        }
+        rigid_body_constraint_wheel* m_rbc_wheel = this->m_rbc_wheel;
+        rigid_body* v25 = m_hit_rb;
+        math::Dir3 v26;
+        v26.v = m_normal.v;
+        m_rbc_wheel->set_collision(v25, &v27, &v26);
+        int m_surface_flags = this->m_surface_flags;
+        float v21 = 1.0f;
+        if (m_surface_flags != 0)
+        {
+            int v22 = (m_surface_flags >> 20) & 0x1F;
+            v21 = s_wheel_surface_fric[v22];
+            ((scr_vehicle_t*)rb_inf->m_ent->scr_vehicle)
+                ->phys.wheelSurfType[wheel_i] = v22;
+        }
+        rb_vehicle* m_rb_vehicle = rb_inf->m_rb_vehicle;
+        float m_current_fwd_fric_scale =
+            m_rb_vehicle->m_current_fwd_fric_scale;
+        m_rbc_wheel->m_side_fric_k =
+            m_rb_vehicle->m_current_side_fric_scale * v21;
+        m_rbc_wheel->m_fwd_fric_k = m_current_fwd_fric_scale * v21;
+    }
+    else
+    {
+        ((scr_vehicle_t*)rb_inf->m_ent->scr_vehicle)
+            ->phys.wheelSurfType[wheel_i] = 0;
+        m_rbc_wheel->set_no_collision();
+    }
 }
 
 // stub until rigid_body_constraint_wheel internals are ported (0x884FE0)
