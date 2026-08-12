@@ -194,7 +194,14 @@ public:
 // vehicle_rb_parameter (physics.o; minimal view for rb_vehicle methods)
 class vehicle_rb_parameter {
 public:
-    uint8_t _pad0[0x58];
+    uint8_t _pad0[0x18];
+    float   m_susp_spring_k;      // +0x18
+    uint8_t _pad1C[0x28 - 0x1C];
+    float   m_tire_fric_fwd;      // +0x28
+    float   m_tire_fric_side;     // +0x2C
+    float   m_tire_fric_brake;    // +0x30
+    float   m_tire_fric_hand_brake;  // +0x34
+    uint8_t _pad38[0x58 - 0x38];
     float   m_peel_out_max_speed;  // +0x58
 
     static vehicle_rb_parameter* GetRBVehParameter(
@@ -213,7 +220,7 @@ public:
     vehicle_rb_parameter* m_parameter;           // +0x250
     float m_throttle;                            // +0x254
     float m_brake;                               // +0x258
-    uint8_t _pad25C[0x260 - 0x25C];
+    float m_hand_brake;                          // +0x25C
     float m_script_brake;                        // +0x260
     float m_steer_factor;                        // +0x264
     float m_forward_vel;                         // +0x268
@@ -226,7 +233,8 @@ public:
     uint8_t _pad284[0x310 - 0x284];
     float m_fake_rpm;                            // +0x310
     int   m_num_colliding_wheels;                // +0x314
-    uint8_t _pad318[0x320 - 0x318];
+    float m_current_side_fric_scale;             // +0x318
+    float m_current_fwd_fric_scale;              // +0x31C
     void* m_wheels[8];                           // +0x320 (rigid_body_constraint_wheel*)
     int   m_wheel_count;                         // +0x340
     float m_desired_speed_factor;                // +0x344
@@ -254,6 +262,7 @@ public:
              float steer_front_back_length);  // ?set@rb_vehicle@@QAEXMMMMMMMMABVDir3@math@@M@Z
     void switch_parms(bool firstPerson);  // ?switch_parms@rb_vehicle@@QAEX_N@Z
     void update_parms(vehicle_rb_parameter* params, bool initialization);  // g_scr_vehicle.cpp
+    void update_braking_and_acceleration(float delta_t);  // ?update_braking_and_acceleration@rb_vehicle@@QAEXM@Z
     static int get_num_rb_vehicles();  // ?get_num_rb_vehicles@rb_vehicle@@SAHXZ
     static rb_vehicle* get_vehicle(int i);  // ?get_vehicle@rb_vehicle@@SAPAV1@H@Z
     static rb_vehicle* add_vehicle();       // ?add_vehicle@rb_vehicle@@SAPAV1@XZ
@@ -276,6 +285,9 @@ private:
     void _update_epilog(float delta_t);  // ?_update_epilog@rb_vehicle@@AAEXM@Z
     void _update_unpause();       // ?_update_unpause@rb_vehicle@@AAEXXZ
     void _align_wheels();         // ?_align_wheels@rb_vehicle@@AAEXXZ
+    float _calc_initial_susp_spring_k(
+        rigid_body_constraint_wheel* wheel_constraint);  // ?_calc_initial_susp_spring_k@rb_vehicle@@AAEMPAVrigid_body_constraint_wheel@@@Z
+    void _update_friction(float delta_t);  // ?_update_friction@rb_vehicle@@AAEXM@Z
 };
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
@@ -299,6 +311,9 @@ public:
     void evaluate_effect_priority();   // ?evaluate_effect_priority@rb_extra_info@@QAEXXZ
     phys_gjk_geom_list* try_collision_prolog();  // ?try_collision_prolog@rb_extra_info@@QAEPAVphys_gjk_geom_list@@XZ
     void collision_prolog();  // ?collision_prolog@rb_extra_info@@QAEXXZ
+    void set(Entity* const ent, rigid_body* const rb,
+             const math::Mat43& transform, float bs_radius,
+             const math::Position3& bs_center_loc);  // ?set@rb_extra_info@@QAEXQAVEntity@@QAVrigid_body@@ABVMat43@math@@MABVPosition3@5@@Z
 };
 
 template <typename T, int N> class phys_static_memory_pool;
@@ -936,6 +951,10 @@ struct vehicle_info_t {
     char    vehiclePhysicsParmsThird[32];  // +0x23C
 };
 vehicle_info_t* VEH_GetInfo(int idx);  // ?VEH_GetInfo@@YAPAUvehicle_info_t@@H@Z (g.o)
+// ?g_vehicle_gravity_multiplier@@3MA (physics.o data @ 0xE01EE0)
+float g_vehicle_gravity_multiplier = 1.5f;  // 0x3FC00000
+// ?hand_brake_friction_time@@3MA (physics.o data @ 0xE36AC4)
+float hand_brake_friction_time = 0.3f;      // 0x3E99999A
 
 // scr_vehicle_t (g_local.h view; pathPos + infoIdx + mRBVeh)
 struct scr_vehicle_path_view {
@@ -1008,6 +1027,126 @@ void rb_vehicle::init(Entity* owner, vehicle_rb_parameter* parameter)
 // stub until rb_vehicle::_align_wheels (0x6F4830) is ported
 void rb_vehicle::_align_wheels()
 {
+}
+
+// ea: 0x6F4A30
+float rb_vehicle::_calc_initial_susp_spring_k(
+    rigid_body_constraint_wheel* wheel_constraint)
+{
+    float v2 = (float)(fabs(wheel_constraint->m_b1_wheel_center_loc
+                                .v.m128_f32[0])
+                       / m_steer_front_back_length);
+    float v5 = v2;
+    if (v2 < 0.0f)
+        v5 = 0.0f;
+    else if (v5 > 1.0f)
+        v5 = 1.0f;
+    return (1.0f - v5 + 1.0f - v5) * m_parameter->m_susp_spring_k
+           * g_vehicle_gravity_multiplier;
+}
+
+// ea: 0x6F5780
+void rb_vehicle::update_braking_and_acceleration(float delta_t)
+{
+    (void)delta_t;
+    for (int i = 0; i < 8; ++i)
+    {
+        rigid_body_constraint_wheel* v5 =
+            (rigid_body_constraint_wheel*)m_wheels[i];
+        if (v5 != nullptr)
+        {
+            if ((m_state_flags & 1) != 0 && (v5->m_wheel_flags & 0x20) != 0)
+            {
+                v5->set_wheel_state_braking(m_power_braking_factor);
+            }
+            else if ((m_state_flags & 2) != 0
+                     && (v5->m_wheel_flags & 0x40) != 0)
+            {
+                v5->set_wheel_state_braking(m_braking_factor);
+            }
+            else if ((m_state_flags & 4) != 0
+                     && (v5->m_wheel_flags & 0x10) != 0)
+            {
+                v5->set_wheel_state_accelerating(
+                    m_desired_speed_factor / m_reference_wheel_radius,
+                    m_acceleration_factor);
+            }
+            else if ((m_state_flags & 8) != 0
+                     && (v5->m_wheel_flags & 0x10) != 0)
+            {
+                v5->set_wheel_state_accelerating(
+                    0.0f - (m_desired_speed_factor
+                            / m_reference_wheel_radius),
+                    m_acceleration_factor);
+            }
+            else if ((m_state_flags & 0x10) != 0)
+            {
+                v5->set_wheel_state_braking(m_coasting_factor);
+            }
+            else
+            {
+                v5->set_wheel_state_braking(0.0f);
+            }
+        }
+    }
+}
+
+// ea: 0x6FCB70
+void rb_vehicle::_update_friction(float delta_t)
+{
+    if ((m_flags.mMask & 0x100) == 0)
+    {
+        m_hand_brake_friction_time = m_hand_brake_friction_time - delta_t;
+        if (m_hand_brake > 0.1f
+            && m_parameter->m_tire_fric_hand_brake > 0.0f)
+            m_hand_brake_friction_time = hand_brake_friction_time;
+        rigid_body* m_rb = m_chassis_rbinf->m_rb;
+        if ((~(m_rb->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        float v9 = _mm_shuffle_ps(m_rb->m_mat.z.v, m_rb->m_mat.z.v, 170)
+                       .m128_f32[0];
+        float v4 = 1.0f;
+        if (v9 < 0.94999999f)
+        {
+            v4 = v9 * 0.7368421f;
+            if (v4 < 0.15000001f)
+                v4 = 0.15000001f;
+            else if (v4 > 1.0f)
+                v4 = 1.0f;
+        }
+        if ((m_flags.mMask & 0x100) != 0)
+        {
+            m_current_side_fric_scale = 0.0f;
+            m_current_fwd_fric_scale = 0.0f;
+            return;
+        }
+        if (m_brake > 0.1f)
+        {
+            float v6 = m_parameter->m_tire_fric_brake * v4;
+            m_current_side_fric_scale = v6;
+            m_current_fwd_fric_scale = v6;
+            return;
+        }
+        if (m_hand_brake_friction_time <= 0.0f)
+        {
+            m_current_side_fric_scale =
+                m_parameter->m_tire_fric_side * v4;
+        }
+        else
+        {
+            float v7 = m_parameter->m_tire_fric_hand_brake * v4;
+            m_current_side_fric_scale = v7;
+            if (fabs(m_throttle) <= 0.1f)
+            {
+                m_current_fwd_fric_scale = v7;
+                return;
+            }
+        }
+        m_current_fwd_fric_scale = m_parameter->m_tire_fric_fwd * v4;
+    }
 }
 
 // ea: 0x6F4F50
@@ -1459,6 +1598,25 @@ void rb_extra_info::collision_prolog()
         && _tlAssert("c:\\cod\\code\\game\\RBPropSys.cpp", 175,
                      "m_rb_vehicle->m_vci", defaultFileName))
         __debugbreak();
+}
+
+// ea: 0x6F6DA0
+void rb_extra_info::set(Entity* const ent, rigid_body* const rb,
+                        const math::Mat43& transform, float bs_radius,
+                        const math::Position3& bs_center_loc)
+{
+    (void)bs_radius;
+    (void)bs_center_loc;
+    m_ent = ent;
+    m_rb = rb;
+    m_cg_mesh_mat = &ent->r.currentMat;
+    m_gjk_geom_list = nullptr;
+    memcpy(&m_transform, &transform, sizeof(math::Mat43));
+    m_rb_vehicle = nullptr;
+    m_flags.mMask |= 1u;
+    m_flags.mMask |= 2u;
+    m_flags.mMask |= 4u;
+    m_time_since_last_event = 0.0f;
 }
 
 // ea: 0x6F6C20
