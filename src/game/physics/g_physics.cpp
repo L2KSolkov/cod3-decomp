@@ -89,6 +89,7 @@ class DObj;
 class rigid_body;
 class biped_phys_info;
 struct phys_gjk_geom_list;
+class phys_gjk_geom_cod_base;
 struct trajectory_t;
 class DCGSet;
 void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
@@ -2717,18 +2718,201 @@ void vehicle_collision_info::process(rb_extra_info* rb_inf)
     }
 }
 
-// gjk_geom_database (physics.o; minimal view for ballistic reinit)
-struct gjk_geom_database {
-    void* m_tree_root;      // +0x00 (m_ggi_search_tree.m_tree_root)
+// gjk_geom_database (physics.o; RBPropSys/collision tree). Members with
+// verified manglings.
+struct gjk_geom_info {
+    void* m_geom_id;      // +0x00
+    void* m_gjk_geom;     // +0x04
+    void* m_avl_left;     // +0x08
+    void* m_avl_right;    // +0x0C
+    int   m_avl_balance;  // +0x10
+};
+class gjk_geom_database {
+public:
+    gjk_geom_info* m_tree_root;  // +0x00 (m_ggi_search_tree.m_tree_root)
     int   m_terrain_count;  // +0x04
     int   m_entity_count;   // +0x08
     int   m_actor_count;    // +0x0C
     int   m_patch_count;    // +0x10
     int   m_brush_count;    // +0x14
     int   m_aabb_count;     // +0x18
+
+    phys_gjk_geom_list* create_gjk_geom(Entity* ent);  // ?create_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@@Z
+    phys_gjk_geom_cod_base* create_actor_gjk_geom(Entity* ent);  // ?create_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@@Z
+    gjk_geom_info* add_to_sorted_list(void* gjk_geom, unsigned int geom_id);  // ?add_to_sorted_list@gjk_geom_database@@QAEPAUgjk_geom_info@1@PAXI@Z
+    phys_gjk_geom_list* try_get_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?try_get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@PBVMat43@math@@@Z
+    phys_gjk_geom_cod_base* try_get_actor_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?try_get_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@PBVMat43@math@@@Z
+    phys_gjk_geom_list* get_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@PBVMat43@math@@@Z
+    phys_gjk_geom_cod_base* get_actor_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?get_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@PBVMat43@math@@@Z
 };
 // ?g_gjk_geom_database@@3PAUgjk_geom_database@@A (physics.o data @ 0xF79488)
 gjk_geom_database* g_gjk_geom_database = nullptr;
+
+void comp_aabb_stub(void* geom, const math::Mat43* xform)
+{
+    (void)geom;
+    (void)xform;
+}
+
+// ea: 0x703DC0
+gjk_geom_info* gjk_geom_database::add_to_sorted_list(void* gjk_geom,
+                                                     unsigned int geom_id)
+{
+    gjk_geom_info* result = (gjk_geom_info*)
+        g_collision_memory_allocater.allocate(
+            20, 4, false, "phys_collision_allocater overflow.");
+    gjk_geom_info* v5 = result;
+    if (result != nullptr)
+    {
+        result->m_geom_id = (void*)(uintptr_t)geom_id;
+        result->m_gjk_geom = gjk_geom;
+        // phys_inplace_avl_tree<unsigned int, gjk_geom_info>::add
+        // (stub: append as root leaf)
+        result->m_avl_left = nullptr;
+        result->m_avl_right = nullptr;
+        result->m_avl_balance = 0;
+        if (m_tree_root == nullptr)
+            m_tree_root = result;
+        else
+        {
+            gjk_geom_info* n = m_tree_root;
+            for (;;)
+            {
+                if ((uintptr_t)geom_id < (uintptr_t)n->m_geom_id)
+                {
+                    if (n->m_avl_left == nullptr)
+                    {
+                        n->m_avl_left = result;
+                        break;
+                    }
+                    n = (gjk_geom_info*)n->m_avl_left;
+                }
+                else
+                {
+                    if (n->m_avl_right == nullptr)
+                    {
+                        n->m_avl_right = result;
+                        break;
+                    }
+                    n = (gjk_geom_info*)n->m_avl_right;
+                }
+            }
+        }
+    }
+    return v5;
+}
+
+// stubs for the gjk_geom creation + aabb
+phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
+{
+    (void)ent;
+    return nullptr;
+}
+phys_gjk_geom_cod_base* gjk_geom_database::create_actor_gjk_geom(Entity* ent)
+{
+    (void)ent;
+    return nullptr;
+}
+
+// ea: 0x703E70
+phys_gjk_geom_list* gjk_geom_database::try_get_gjk_geom(
+    Entity* ent, const math::Mat43* cg_to_world_xform)
+{
+    gjk_geom_info* i = m_tree_root;
+    for (; i != nullptr;
+         i = ent >= i->m_geom_id
+                 ? (gjk_geom_info*)i->m_avl_right
+                 : (gjk_geom_info*)i->m_avl_left)
+    {
+        if (ent == i->m_geom_id)
+            break;
+    }
+    gjk_geom_info* v6 = i;
+    if (i == nullptr)
+    {
+        phys_gjk_geom_list* gjk_geom = create_gjk_geom(ent);
+        phys_gjk_geom_list* v8 = gjk_geom;
+        if (gjk_geom == nullptr)
+            return nullptr;
+        v6 = add_to_sorted_list(gjk_geom, (unsigned int)(uintptr_t)ent);
+        if (v6 == nullptr)
+            return nullptr;
+        if (cg_to_world_xform != nullptr)
+            comp_aabb_stub(v8, cg_to_world_xform);
+    }
+    return (phys_gjk_geom_list*)v6->m_gjk_geom;
+}
+
+// ea: 0x703EF0
+phys_gjk_geom_cod_base* gjk_geom_database::try_get_actor_gjk_geom(
+    Entity* ent, const math::Mat43* cg_to_world_xform)
+{
+    gjk_geom_info* i = m_tree_root;
+    for (; i != nullptr;
+         i = ent >= i->m_geom_id
+                 ? (gjk_geom_info*)i->m_avl_right
+                 : (gjk_geom_info*)i->m_avl_left)
+    {
+        if (ent == i->m_geom_id)
+            break;
+    }
+    gjk_geom_info* v6 = i;
+    if (i == nullptr)
+    {
+        phys_gjk_geom_cod_base* actor_gjk_geom = create_actor_gjk_geom(ent);
+        phys_gjk_geom_cod_base* v8 = actor_gjk_geom;
+        if (actor_gjk_geom == nullptr)
+            return nullptr;
+        v6 = add_to_sorted_list(actor_gjk_geom,
+                                (unsigned int)(uintptr_t)ent);
+        if (v6 == nullptr)
+            return nullptr;
+        if (cg_to_world_xform != nullptr)
+            comp_aabb_stub(v8, cg_to_world_xform);
+    }
+    return (phys_gjk_geom_cod_base*)v6->m_gjk_geom;
+}
+
+// ea: 0x703FE0
+phys_gjk_geom_list* gjk_geom_database::get_gjk_geom(
+    Entity* ent, const math::Mat43* cg_to_world_xform)
+{
+    phys_gjk_geom_list* result = try_get_gjk_geom(ent, cg_to_world_xform);
+    if (result == nullptr)
+    {
+        phys_collision_allocater_ballistic_reinit();
+        result = try_get_gjk_geom(ent, cg_to_world_xform);
+        if (result == nullptr)
+        {
+            if (!_tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 296,
+                           "gjk_geom_list", defaultFileName))
+                __debugbreak();
+            result = nullptr;
+        }
+    }
+    return result;
+}
+
+// ea: 0x704040
+phys_gjk_geom_cod_base* gjk_geom_database::get_actor_gjk_geom(
+    Entity* ent, const math::Mat43* cg_to_world_xform)
+{
+    phys_gjk_geom_cod_base* result =
+        try_get_actor_gjk_geom(ent, cg_to_world_xform);
+    if (result == nullptr)
+    {
+        phys_collision_allocater_ballistic_reinit();
+        result = try_get_actor_gjk_geom(ent, cg_to_world_xform);
+        if (result == nullptr)
+        {
+            if (!_tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 308,
+                           "gjk_geom", defaultFileName))
+                __debugbreak();
+            result = nullptr;
+        }
+    }
+    return result;
+}
 
 // ?g_in_physics_collision_callback@@3_NA (physics.o data @ 0xF79475)
 bool g_in_physics_collision_callback = false;
