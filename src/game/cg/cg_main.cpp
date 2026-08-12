@@ -221,6 +221,7 @@ static const consoleCommand_t sCommandsList[] = {
 
 static char buffer_0[256];
 static int (*syscall_)(int, ...) = nullptr;
+int (*syscall)(int, ...) = nullptr;  // ?syscall@@3P6AHHZZA (cg.o @ 0xDF9D70)
 
 // ea: 0x0068C860
 void cg_dllEntry(int (*syscallptr)(int, ...))

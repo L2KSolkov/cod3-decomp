@@ -456,7 +456,7 @@ void Field_CharEvent(field_t* edit, int ch)
 // Swirl
 // ============================================================================
 int gaGlobs_axes[12];  // cl.o BSS
-extern float prevDir[2][3];
+float prevDir[2][3];  // ?prevDir@@3PAY02MA (cl.o BSS)
 int dword_F11E4C[6];  // cl.o BSS
 int dword_F11E50[6];  // cl.o BSS
 float gSwirlPitchFactor;

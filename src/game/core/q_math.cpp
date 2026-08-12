@@ -7,6 +7,10 @@
 #include "game/core/core_systems.h"
 #include "game/core/core_globals.h"
 
+// ?bytedirs@@3PAY02MA (core.o @ 0x11C7790) - 162 precomputed byte->dir vectors
+static float s_bytedirs[162][3];
+float (*bytedirs)[3] = s_bytedirs;  // filled at runtime by table init
+
 #include <math.h>
 #include <string.h>
 

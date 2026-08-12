@@ -2061,7 +2061,7 @@ void SplineMgr::GetSpline(const char* name, SplinePath* splinePath)
 // ============================================================================
 // SplineMgr::SplineMgr - ea: 0x504580
 // ============================================================================
-extern float* (*GetSplineGroup)(unsigned int);  // ?GetSplineGroup (game2.o)
+float* (*GetSplineGroup)(unsigned int) = nullptr;  // ?GetSplineGroup (game2.o)
 #include "aeps/apsCommon.h"
 
 SplineMgr::SplineMgr()
