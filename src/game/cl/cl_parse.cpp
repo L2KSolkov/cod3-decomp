@@ -865,11 +865,12 @@ void CL_ParseSnapshot(msg_t* msg)
     *(int*)&v5[4] = MSG_ReadByte(msg);               // snapFlags
     *(int*)&v5[0] = 1;                               // valid
     {
-        extern struct EntityView5 { void* client; }*
-            EntityManager_GetPlayer5(void* inst, int idx);
+        extern void* EntityManager_GetPlayer5(void* inst, int idx);
+        struct EntityView5 { void* client; };
         extern void* EntityManager_sInst5;
         struct EntityView5* Player =
-            EntityManager_GetPlayer5(EntityManager_sInst5, currCl);
+            (EntityView5*)EntityManager_GetPlayer5(EntityManager_sInst5,
+                                                   currCl);
         if (Player != nullptr && Player->client != nullptr)
             memcpy(&v5[32], Player->client, 0x5D0);
     }

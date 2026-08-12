@@ -4,6 +4,7 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+#include "core/tlFixedString.h"
 
 // ??0DObj@@QAE@H@Z (render.o) - minimal ctor; skel/matrices initialized by
 // DObjCreateSkel at alloc time in the real engine.
@@ -1894,7 +1895,7 @@ void* EntityManager_GetPlayer3(void* inst, int idx)
     (void)inst; (void)idx;
     return nullptr;
 }
-EntityView5* EntityManager_GetPlayer5(void* inst, int idx)
+void* EntityManager_GetPlayer5(void* inst, int idx)
 {
     (void)inst; (void)idx;
     return nullptr;
@@ -1915,6 +1916,159 @@ const char* CG_SafeTranslateString_Internal(const char* string,
 void* XModelParts_GetAnimDef(void* self)
 {
     (void)self;
+    return nullptr;
+}
+
+// DObj / anim free artifacts (render.o/anim.o surface; stubs, port later)
+struct DObjSkelMat;
+struct nalMatrix4x4;
+struct nalGenericBoneHandle {
+    unsigned int index;   // +0x00
+    void* skeleton;       // +0x04
+};
+struct nalPositionOrientation {
+    float m_data[8];  // opaque
+};
+class AnimTree;
+DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex)
+{
+    (void)obj; (void)modelIndex;
+    return nullptr;
+}
+math::Quaternion nalQuaternionFromMatrix(const math::Mat44& m)
+{
+    (void)m;
+    math::Quaternion q = {};
+    return q;
+}
+nalPositionOrientation nalGenericPose_GetModelPositionOrientation(
+    void* pose, const nalGenericBoneHandle* handle)
+{
+    (void)pose; (void)handle;
+    nalPositionOrientation r = {};
+    return r;
+}
+void nalGenericSkeleton_GetBoneHandle(void* skeleton,
+                                      nalGenericBoneHandle* handle,
+                                      const tlFixedString& boneName)
+{
+    (void)skeleton; (void)handle; (void)boneName;
+}
+void* nalGenericAnim_CreateInstance(void* anim, void* skeleton)
+{
+    (void)anim; (void)skeleton;
+    return nullptr;
+}
+void* DObj_GetTree(void* obj)
+{
+    (void)obj;
+    return nullptr;
+}
+void* DObj_New(unsigned int size)
+{
+    return mem_heap_malloc(size);
+}
+void DObj_Ctor(void* obj, int pakId)
+{
+    (void)obj; (void)pakId;
+}
+void DObj_Dtor(void* obj)
+{
+    (void)obj;
+}
+void DObj_OpDelete(void* obj)
+{
+    (void)obj;
+}
+void* Entity_GetViewModelDObj(Entity* ent)
+{
+    (void)ent;
+    return nullptr;
+}
+void* g_femanager_IGMS_cur()
+{
+    return nullptr;
+}
+void* Hunk_AllocXAnimCreate(int size)
+{
+    (void)size;
+    return nullptr;
+}
+void* Hunk_AllocXAnimCreate(void* a, unsigned int b)
+{
+    (void)a; (void)b;
+    return nullptr;
+}
+void* MetaNalBaseAnim_Ctor(void* self)
+{
+    (void)self;
+    return nullptr;
+}
+void* MetaNalBaseAnim_Create(void* self, void* anim)
+{
+    (void)self; (void)anim;
+    return nullptr;
+}
+void* MetaNalBaseAnim_DelayCreate(void* self, void** anims, int count)
+{
+    (void)self; (void)anims; (void)count;
+    return nullptr;
+}
+void* RE_RegisterModel(void* result, const char* name, int pakId, int imagetype)
+{
+    (void)result; (void)name; (void)pakId; (void)imagetype;
+    return nullptr;
+}
+void* XAnimCreateTree(Entity* ent, AnimTree* anims)
+{
+    (void)ent; (void)anims;
+    return nullptr;
+}
+void* XAnimCreateTree(void* ent, void* anims)
+{
+    (void)ent; (void)anims;
+    return nullptr;
+}
+void Axis4_to_nalMatrix4x4(const float (*axis)[3], nalMatrix4x4* mat)
+{
+    (void)axis; (void)mat;
+}
+void* BrocString_ctor(void* self, const char* s)
+{
+    (void)self; (void)s;
+    return nullptr;
+}
+void BrocString_dtor(void* self)
+{
+    (void)self;
+}
+tlFixedString tlFixedString_ctor(void* self, const char* s)
+{
+    (void)self;
+    return tlFixedString(s);
+}
+nglTexture* cdGetTexture(TPakId pakId, const tlFixedString& name)
+{
+    (void)pakId; (void)name;
+    return nullptr;
+}
+void CL_CubemapShotUsage() {}
+void SmokeGrenadeMgr_AddSmokeGrenade(void* mgr, void* info)
+{
+    (void)mgr; (void)info;
+}
+void SmokeGrenadeMgr_ReInitialize() {}
+void SmokeGrenadeMgr_Update(void* self, float deltaT)
+{
+    (void)self; (void)deltaT;
+}
+struct TaskHandler;
+TaskHandler* AnimationUpdateTask_sHandler()
+{
+    return nullptr;
+}
+TaskHandler* XAnimUpdateTask_sHandler()
+{
     return nullptr;
 }
 

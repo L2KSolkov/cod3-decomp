@@ -1374,6 +1374,10 @@ extern void _Z_FreeInternal(void* ptr);             // ?_Z_FreeInternal (hunk_me
 extern int Com_Filter(char* filter, char* name, int casesensitive);  // core.o
 extern void ButtonMgr_ClearBinding(const BaseCmdFuncInfo* boundCmd,
                                    int clnt);  // ?ClearBinding@ButtonMgr (game2.o)
+void ButtonMgr_ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt)
+{
+    (void)boundCmd; (void)clnt;
+}
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DefaultExtension(char* path, int maxSize,
                                  const char* extension);  // core.o
@@ -2502,6 +2506,10 @@ void Cmd_AddInputCommand(const char* cmd_name, void (*function)(int, int))
 char* g_text;  // ?g_text@@3PBDB (game.o @ 0xF3C458)
 extern void Cmd_CallCmdFunctionWithInputArgs(BaseCmdFuncInfo* cmd);  // game.o 0x60E5B0
 extern void Cbuf_AddServerText_f();  // game.o 0x60E5F0
+void Cbuf_AddServerText_f()
+{
+    // stub
+}
 
 // ea: 0x0061F730
 const BaseCmdFuncInfo* GetCmd(const char* cmdName)

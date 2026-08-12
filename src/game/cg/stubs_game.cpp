@@ -10,3 +10,82 @@
 void __cod3_stub_game_cg(void) {
     COD3_UNIMPLEMENTED("game_cg");
 }
+
+// cg.o function stubs (ported later)
+#include "game/game_types.h"
+#include "game/trace_types.h"
+
+void* CG_ReadNextSnapshot() { return nullptr; }
+void CG_AddScaleFade(void* a) { (void)a; }
+void CG_CalcCrosshairColor(float a, int* b) { (void)a; (void)b; }
+void CG_CalcCrosshairPosition(float* a, float* b) { (void)a; (void)b; }
+void CG_CalcCubemapViewValues() {}
+void CG_CalcTurretViewValues() {}
+void CG_CalcVrect(const void* a) { (void)a; }
+void CG_CheckOpenWaitingScriptMenu() {}
+void CG_ClipMoveToEntities(const math::Position3* start,
+                           const math::Position3* mins,
+                           const math::Position3* maxs,
+                           const math::Position3* end,
+                           const collision_context_t* context, int a6,
+                           trace_t* a7)
+{
+    (void)start; (void)mins; (void)maxs; (void)end;
+    (void)context; (void)a6; (void)a7;
+}
+void CG_DObjCalcPose(Entity* a, void* b, int* c) { (void)a; (void)b; (void)c; }
+void CG_DObjCalcPose(void* a, void* b, int* c) { (void)a; (void)b; (void)c; }
+void CG_DrawAdsAimIndicator(void* a, int b, int* c, float d, float e, float f)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
+}
+void CG_DrawCenterString() {}
+void CG_DrawDamageDirectionIndicators() {}
+void CG_DrawFlashDamage() {}
+void CG_DrawPlayerLowHealthOverlay() {}
+void CG_DrawReticleCenter(void* a, int b, int* c, float d, float e, float f)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
+}
+void CG_DrawReticleHitIndicator(void* a, int b, int* c, float d, float e,
+                                float f)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
+}
+void CG_DrawReticleName(int* a) { (void)a; }
+void CG_DrawReticleSides(void* a, int b, int* c, float d, float e, float f)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f;
+}
+void CG_DrawWeapReticle() {}
+void CG_EndShellShock(const void* a, int b) { (void)a; (void)b; }
+void CG_InterpolateEntityAngles(Entity* e) { (void)e; }
+void CG_InterpolateEntityOrigin(Entity* e) { (void)e; }
+void CG_ItemPickup(int a) { (void)a; }
+void CG_mg42(Entity* e) { (void)e; }
+void CG_MotionBlur_Begin(float a, float b, float c) { (void)a; (void)b; (void)c; }
+void CG_OffsetFirstPersonView() {}
+void CG_OffsetThirdPersonView() {}
+void CG_PerturbationPoint(const float* a, float* b, float c)
+{
+    (void)a; (void)b; (void)c;
+}
+void CG_RegisterGraphics() {}
+void CG_RegisterServerShader(int a) { (void)a; }
+void CG_ServerCommand() {}
+void CG_SetNextSnap(void* a) { (void)a; }
+void CG_TransitionSnapshot() {}
+void CG_TransitionToAds(void* a, float b, float* c, float* d)
+{
+    (void)a; (void)b; (void)c; (void)d;
+}
+void CG_UpdateShellShockCamera(const void* a, int b, int c)
+{
+    (void)a; (void)b; (void)c;
+}
+void CG_UpdateShellShockMouse(const void* a, int b, int c)
+{
+    (void)a; (void)b; (void)c;
+}
+void CG_UpdateShellShockSound(const void* a) { (void)a; }
+void CG_UpdateViewModelPosAndOrientation(void* a) { (void)a; }
