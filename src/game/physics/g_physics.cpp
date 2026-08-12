@@ -528,7 +528,8 @@ float tweaker = 11.0f;                 // 0xE36B24
 extern int dword_F6A28C[4 * 802];
 
 bool IsLocalPlayer(Entity* entity);  // ?IsLocalPlayer@@YA_NPAVEntity@@@Z (g.o)
-bool IsPlayerFullySeatedInVehicle(Entity* player);  // ?IsPlayerFullySeatedInVehicle@@YA_NPAVEntity@@@Z (g.o)
+    bool IsPlayerFullySeatedInVehicle(Entity* player);  // ?IsPlayerFullySeatedInVehicle@@YA_NPAVEntity@@@Z (g.o)
+bool Entity_has_zone_collision(const void* self);  // game.o C bridge
 int RecalibrateInput(int val);  // ?RecalibrateInput@@YAHH@Z (cl.o)
 extern int g_vehicle_button_threshold;  // ?g_vehicle_button_threshold@@3HA (physics.o @ 0xE01F04)
 float vectoyaw(float* vec);  // ?vectoyaw@@YAMPAM@Z (core.o)
@@ -1326,6 +1327,7 @@ struct refEntity {  // EntityShared subset
     int GetParentBoneIndex(int boneIndex);  // ?GetParentBoneIndex@Entity@@QAEHH@Z (game.o)
     const math::Mat43::Packed& GetBaseRelMat(
         int boneIndex);  // ?GetBaseRelMat@Entity@@QAEABUPacked@Mat43@math@@H@Z (game.o)
+    // ?has_zone_collision@Entity@@QAE_NXZ (game.o) - call the C bridge
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (game.o)
     void set_bp_info(biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
     void CalcOriginAnglesFromMat();  // ?CalcOriginAnglesFromMat@Entity@@QAEXXZ (game.o)
@@ -1762,7 +1764,9 @@ struct scr_vehicle_t {
         uint8_t      overheating;   // +0x19
         uint8_t      firing;        // +0x1A
     } seats[11];                    // +0x1E0
-    uint8_t _pad314[0x3E0 - 0x314];
+    uint8_t _pad314[0x3C8 - 0x314];
+    int     playersAttached;        // +0x3C8
+    uint8_t _pad3CC[0x3E0 - 0x3CC];
     struct {  // scr_vehicle_t::LerpedVariables (64 bytes)
         math::Position3 mBodyPosition;  // +0x00
         math::Position3 mTurretAngles;  // +0x10
@@ -2969,9 +2973,63 @@ void rb_vehicle::start_physics()
     mVehicleController.m_stuck_time = 0.0f;
 }
 
-// stub until rb_vehicle::_update_unpause (0x709090) is ported
+// ea: 0x709090
 void rb_vehicle::_update_unpause()
 {
+    int playersAttached = ((scr_vehicle_t*)m_owner->scr_vehicle)
+                              ->playersAttached;
+    unsigned int mMask = m_flags.mMask;
+    bool v4 = playersAttached != 0;
+    unsigned int v5 = playersAttached != 0 ? (mMask | 0x80)
+                                            : (mMask & 0xFFFFFF7F);
+    m_flags.mMask = v5;
+    bool v6 = (v5 & 8) != 0 || (v5 & 0x100) != 0 || (v5 & 0x200) != 0;
+    bool v7 = v6 || m_owner->flags < 0;
+    rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
+    bool v9 = v7 || v4;
+    if (m_chassis_rbinf != nullptr)
+    {
+        rigid_body* m_rb = m_chassis_rbinf->m_rb;
+        unsigned int m_flags = m_rb->m_flags;
+        m_rb->m_flags = v9 ? (m_flags | 0x100) : (m_flags & 0xFFFFFEFF);
+    }
+    if ((m_flags.mMask & 1) != 0)
+    {
+        if (v9)
+        {
+            m_flags.mMask |= 2u;
+            goto LABEL_22;
+        }
+    }
+    else if (v9)
+    {
+        goto LABEL_22;
+    }
+    if ((m_flags.mMask & 1) == 0
+        && ((m_chassis_rbinf->m_rb->m_flags & 8) != 0
+            || !Entity_has_zone_collision(m_owner)))
+    {
+        pause_physics(false);
+    }
+LABEL_22:
+    if ((m_flags.mMask & 2) != 0)
+    {
+        if (g_rb_vehicle_list.m_alloc_count > 10)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.cpp";
+            AeAssert::gCurrentLine = 361;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Warning: Too many vehicles in physics. Can't unpause yet!"))
+                __debugbreak();
+        }
+        else
+        {
+            start_physics();
+        }
+    }
 }
 
 // ea: 0x70C080
