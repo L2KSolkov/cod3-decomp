@@ -2380,10 +2380,6 @@ void* COD3_mem_alloc(unsigned int a, unsigned int b)
     return nullptr;
 }
 void COD3_mem_free(void* p) { (void)p; }
-void absolutely_fatal_irrecoverable_error_infinite_loop()
-{
-    for (;;) __debugbreak();
-}
 void AdvanceSceneAnims(float a) { (void)a; }
 void AnimNoteHandler_Advance(void* self, float a) { (void)self; (void)a; }
 void AnimNoteHandler_ParseNoteTracks(void* self, void* a)

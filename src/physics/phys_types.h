@@ -287,7 +287,21 @@ public:
 
     void add_force(const math::Dir3& force);
     void add_force(const math::Dir3& force, const math::Dir3& point, float torque_mult);
-    void add_torque(const math::Dir3& torque);  // inline COMDAT (rb_ragdoll_model.o)
+    void add_torque(const math::Dir3& torque)  // inline COMDAT 0x87C6F0 (rb_ragdoll_model.o)
+    {
+        if ((torque.v.m128_f32[0] != torque.v.m128_f32[0]
+             || torque.v.m128_f32[1] != torque.v.m128_f32[1]
+             || torque.v.m128_f32[2] != torque.v.m128_f32[2])
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 154,
+                         "(torque.GetX() == torque.GetX() && torque.GetY() == torque.GetY() && torque.GetZ() == torque.GetZ())",
+                         "invalid vector"))
+            __debugbreak();
+        if ((~(m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 155,
+                         "debug_flag_is_not_in_collision()", defaultFileName))
+            __debugbreak();
+        m_torque_sum.v = _mm_add_ps(m_torque_sum.v, torque.v);
+    }
     void set_mass(float mass);
     void set_inertia(const math::Dir3& inertia);
     void set(float mass, const math::Dir3& inertia, const math::Mat43& mat,

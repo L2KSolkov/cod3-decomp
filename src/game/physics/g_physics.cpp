@@ -4,8 +4,10 @@
 // ============================================================================
 
 #include "physics/physics_system.h"
+#include "physics/rb_ragdoll_model.h"
 #include <intrin.h>
 #include <math.h>
+#include <new>
 #include <string.h>
 
 extern bool _tlAssert(const char* file, int line, const char* expr,
@@ -45,10 +47,66 @@ class DebugRender {
 public:
     static void RenderAxis(const math::Mat43& mat, float length, float width);
 };
-struct rb_vehicle {
-    int     m_num_colliding_wheels;  // +0x00
-    uint8_t _pad[0x388 - 0x04];
-    void*   m_vci;  // +0x388
+
+class Entity;
+struct rb_extra_info;
+class DObj;
+void DObjGetBasePose(DObj* obj);  // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o)
+void path_constraint_destroy(class rigid_body_constraint_custom_path* vpc);
+
+// Handle (game_types.h view; local copy)
+class Handle {
+public:
+    unsigned int mVal;  // +0x00
+};
+
+template <typename T>
+struct Bitmask {
+    T mMask;  // +0x00
+};
+
+// vehicle_rb_parameter (physics.o; minimal view for rb_vehicle methods)
+class vehicle_rb_parameter {
+public:
+    uint8_t _pad0[0x58];
+    float   m_peel_out_max_speed;  // +0x58
+};
+
+// rb_vehicle (physics.o RBVehicle.cpp). Layout verified against the ctor
+// (0x6FC080) + is_peeling_out (0x6F4AD0) + path_constraint_update (0x6F5B60)
+// disassembly. class tag (V) required for pool/param manglings.
+class rb_vehicle {
+public:
+    Handle m_wheel_effects[4];       // +0x10
+    Handle m_exhaust_effect;         // +0x20
+    uint8_t _pad24[0x250 - 0x24];
+    vehicle_rb_parameter* m_parameter;           // +0x250
+    float m_throttle;                            // +0x254
+    uint8_t _pad258[0x260 - 0x258];
+    float m_script_brake;                        // +0x260
+    uint8_t _pad264[0x268 - 0x264];
+    float m_forward_vel;                         // +0x268
+    float m_hand_brake_friction_time;            // +0x26C
+    Entity* m_owner;                             // +0x270
+    rb_extra_info* m_chassis_rbinf;              // +0x274
+    rigid_body_constraint_custom_orientation* m_orientation_constraint;  // +0x278
+    rigid_body_constraint_custom_path* m_vpc;    // +0x27C
+    Bitmask<unsigned int> m_flags;               // +0x280
+    uint8_t _pad284[0x310 - 0x284];
+    float m_fake_rpm;                            // +0x310
+    int   m_num_colliding_wheels;                // +0x314
+    uint8_t _pad318[0x320 - 0x318];
+    void* m_wheels[8];                           // +0x320 (rigid_body_constraint_wheel*)
+    int   m_wheel_count;                         // +0x340
+    uint8_t _pad344[0x388 - 0x344];
+    void* m_vci;                                 // +0x388
+
+    rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
+    static int get_num_rb_vehicles();  // ?get_num_rb_vehicles@rb_vehicle@@SAHXZ
+    math::Position3 process_hitp(const math::Position3& hitp);  // ?process_hitp@rb_vehicle@@QAE?AVPosition3@math@@ABV23@@Z
+    bool is_peeling_out() const;  // ?is_peeling_out@rb_vehicle@@QBE_NXZ
+    void set_default_pose();      // ?set_default_pose@rb_vehicle@@QAEXXZ
+    void cleanup_path();          // ?cleanup_path@rb_vehicle@@QAEXXZ
 };
 struct rb_extra_info {
     void* m_rb;              // +0x00
@@ -58,6 +116,132 @@ struct rb_extra_info {
     rb_vehicle* m_rb_vehicle;  // +0x54
     void collision_epilog();
 };
+
+template <typename T, int N> class phys_static_memory_pool;
+// ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A
+// (physics.o data @ 0xE2B8F0)
+extern phys_static_memory_pool<rb_vehicle, 10> g_rb_vehicle_list;
+
+// ============================================================================
+// phys_static_memory_pool<T,N> - fixed inline-slot pool (local copy of the
+// pulse_sum.h template, declared class to match the binary's V-tag globals,
+// e.g. ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A).
+// remove/is_member ported from COMDATs 0x71B100 / 0x717FC0.
+// ============================================================================
+template <typename T, int N>
+class phys_static_memory_pool {
+public:
+    T   m_slots[N];        // +0x00
+    T*  m_alloc_list[N];   // +N*sizeof(T)
+    int m_index_array[N];  // +N*sizeof(T)+N*4
+    T*  m_slot_array;      // +N*sizeof(T)+N*8
+    int m_alloc_count;     // +N*sizeof(T)+N*8+4
+
+    phys_static_memory_pool()
+    {
+        m_slot_array = (T*)this;
+        m_alloc_count = 0;
+        reset_buffer();
+    }
+    ~phys_static_memory_pool() {}
+
+    void reset_buffer()
+    {
+        for (int i = 0; i < N; ++i)
+        {
+            m_index_array[i] = i;
+            m_alloc_list[i] = m_slot_array + i;
+        }
+        m_alloc_count = 0;
+    }
+
+    void call_destructors() {}
+
+    T* add(bool no_error, const char* error_msg)
+    {
+        int count = m_alloc_count;
+        if (count < N)
+        {
+            T* result = m_alloc_list[count];
+            m_alloc_count = count + 1;
+            if (result != NULL)
+                new (result) T;
+            return result;
+        }
+        if (!no_error)
+            tlFatal(error_msg);
+        return NULL;
+    }
+
+    bool is_member(const T* data) const
+    {
+        int v2 = (int)((const char*)data - (const char*)m_slot_array);
+        if (v2 % (int)sizeof(T) == 0)
+        {
+            int v3 = v2 / (int)sizeof(T);
+            if (v3 >= 0 && v3 < N)
+            {
+                int v4 = m_index_array[v3];
+                if (v4 >= 0 && v4 < m_alloc_count)
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    void remove(T* data)
+    {
+        if (data != nullptr)
+        {
+            if (!is_member(data))
+                tlFatal("phys_memory_pool: trying to delete an invalid pointer");
+            if (!is_member(data)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                       61, "is_member(data)",
+                       "phys_memory_pool: trying to delete an invalid pointer"))
+                __debugbreak();
+            if (m_alloc_count <= 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                       62, "m_alloc_count > 0",
+                       "phys_memory_pool: trying to delete an invalid pointer"))
+                __debugbreak();
+            int v3 = (int)(data - m_slot_array);
+            int v4 = m_index_array[v3];
+            if ((v4 < 0 || v4 >= m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                       67, "alloc_index >= 0 && alloc_index < m_alloc_count",
+                       "phys_memory_pool: trying to delete an invalid pointer"))
+                __debugbreak();
+            if (v4 >= 0)
+            {
+                int count = m_alloc_count;
+                if (v4 < count)
+                {
+                    if (count > 1)
+                    {
+                        int  last = count - 1;
+                        m_alloc_count = last;
+                        T*  last_data = m_alloc_list[last];
+                        T*  v8 = m_alloc_list[v4];
+                        int slot_of_last = (int)(last_data - m_slot_array);
+                        m_alloc_list[v4] = last_data;
+                        m_alloc_list[last] = v8;
+                        m_index_array[v3] = last;
+                        m_index_array[slot_of_last] = v4;
+                    }
+                    else
+                    {
+                        reset_buffer();
+                    }
+                }
+            }
+        }
+    }
+};
+
 class rigid_body;
 void render_single_rigid_body(rigid_body* const rb);
 
@@ -243,30 +427,125 @@ void ragdoll_collision_callback::set(Entity* const owner)
     m_owner = owner;
 }
 
-// phys_anim_bone_array (physics.o; static helpers)
-class Entity {
+// DObj (render.o; local stub view). copy_skeleton disasm reads numBones at
+// +0xCF; GetMat/GetBoneIndex are render.o symbols (?GetMat@DObj@@QAEABVMat43@
+// math@@H@Z / ?GetBoneIndex@DObj@@QBEHPBD@Z) - stub until render.o is ported.
+class DObj {
 public:
-    class DObj {
-    public:
-        int numBones;  // +0x00 (minimal view for copy/write_skeleton)
-        const math::Mat43& GetMat(int boneIndex);
-        int GetBoneIndex(const char* name);  // ?GetBoneIndex@DObj@@QBEHPBD@Z
-    };
-    DObj* mDObj;  // +0x00
-    math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
-    math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
-    const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
+    uint8_t _pad0[0xCF];
+    unsigned char numBones;  // +0xCF
+
+    const math::Mat43& GetMat(int boneIndex);
+    int GetBoneIndex(const char* name) const;
 };
-const math::Mat43& Entity::DObj::GetMat(int boneIndex)
+const math::Mat43& DObj::GetMat(int boneIndex)
 {
     (void)boneIndex;
     static math::Mat43 zero = {};
     return zero;
 }
-int Entity::DObj::GetBoneIndex(const char* name)
+int DObj::GetBoneIndex(const char* name) const
 {
     (void)name;
     return -1;
+}
+
+// Entity (game_types.h view; local minimal copy - cannot include game_types.h)
+class Entity {
+public:
+    uint8_t _pad0[0x23C];
+    DObj* mDObj;  // +0x23C
+    math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
+    math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
+    const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
+};
+
+// ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o; stub until render.o is ported)
+void DObjGetBasePose(DObj* obj)
+{
+    (void)obj;
+}
+
+// ea: 0x6FC080
+rb_vehicle::rb_vehicle()
+{
+    m_wheel_effects[0].mVal = 0;
+    m_wheel_effects[1].mVal = 0;
+    m_wheel_effects[2].mVal = 0;
+    m_wheel_effects[3].mVal = 0;
+    m_exhaust_effect.mVal = 0;
+    m_parameter = nullptr;
+    m_script_brake = 0.0f;
+    m_hand_brake_friction_time = 0.0f;
+    m_owner = nullptr;
+    m_orientation_constraint = nullptr;
+    m_vpc = nullptr;
+    m_flags.mMask = 0;
+    m_fake_rpm = 0.0f;
+    m_vci = nullptr;
+    m_flags.mMask |= 1;
+    m_flags.mMask |= 2;
+    m_flags.mMask &= 0xFFFFFFFB;
+    m_wheels[0] = nullptr;
+    m_wheels[1] = nullptr;
+    m_wheels[2] = nullptr;
+    m_wheels[3] = nullptr;
+    m_wheels[4] = nullptr;
+    m_wheels[5] = nullptr;
+    m_wheels[6] = nullptr;
+    m_wheels[7] = nullptr;
+    m_wheel_count = 0;
+}
+
+// ea: 0x6FCDE0
+int rb_vehicle::get_num_rb_vehicles()
+{
+    return g_rb_vehicle_list.m_alloc_count;
+}
+
+// ea: 0x6F4A00
+math::Position3 rb_vehicle::process_hitp(const math::Position3& hitp)
+{
+    (void)hitp;
+    math::Position3 result;
+    result.v = _mm_setzero_ps();  // Float4_Zero_12
+    return result;
+}
+
+// ea: 0x6F4AD0
+bool rb_vehicle::is_peeling_out() const
+{
+    return m_throttle > 0.89999998f
+        && m_parameter->m_peel_out_max_speed > m_forward_vel;
+}
+
+// ea: 0x6F4F30
+void rb_vehicle::set_default_pose()
+{
+    DObjGetBasePose(m_owner->mDObj);
+}
+
+// ea: 0x6FCD60
+void rb_vehicle::cleanup_path()
+{
+    if (m_vpc != nullptr)
+    {
+        path_constraint_destroy(m_vpc);
+        m_vpc = nullptr;
+    }
+}
+
+// ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A
+// (physics.o data @ 0xE2B8F0)
+phys_static_memory_pool<rb_vehicle, 10> g_rb_vehicle_list;
+
+// ea: 0x6F6AC0 - fatal trap; x_0 is an unnamed physics.o data global
+// (0xF916B8) referenced only from here.
+static volatile unsigned int x_0 = 0;
+void absolutely_fatal_irrecoverable_error_infinite_loop()
+{
+    for (;;)
+        ++x_0;
 }
 
 struct phys_anim_bone_array {
@@ -294,12 +573,32 @@ void phys_anim_bone_array::write_skeleton(Entity* owner,
                &skeleton_pose[i], sizeof(math::Mat43));
 }
 
+// biped_system (physics.o RBRagdoll.cpp) - rb_ragdoll_model subclass.
+// Offsets from create_system (0x6F44F0, m_bp_info +0x2040) and
+// initialize_members (0x6F4500, m_stable_timer +0x2048, m_is_stable +0x204C).
+class biped_phys_info;
+class biped_system : public rb_ragdoll_model {
+public:
+    uint8_t _pad130[0x2040 - 0x130];
+    biped_phys_info* m_bp_info;   // +0x2040
+    float            m_stable_timer;  // +0x2048
+    bool             m_is_stable;     // +0x204C
+
+    void prolog_frame_advance(Entity* owner, float delta_t);  // ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
+    void debug_render();  // ?debug_render@biped_system@@QAEXXZ
+private:
+    void initialize_members();  // ?initialize_members@biped_system@@AAEXXZ
+    void create_system(biped_phys_info* bp_info);  // ?create_system@biped_system@@AAEXPAVbiped_phys_info@@@Z
+};
+
 // biped_phys_info (physics.o RBRagdoll.cpp); ctor only - the full layout is
-// mapped incrementally as the family is ported.
-struct biped_phys_info {
+// mapped incrementally as the family is ported. class tag (V) required for
+// pool/param manglings.
+class biped_phys_info {
+public:
     unsigned int   m_render_flags;  // +0x00 (Bitmask mMask)
     Entity*        m_owner;         // +0x04
-    void*          m_bp_sys;        // +0x08 (biped_system*)
+    biped_system*  m_bp_sys;        // +0x08
     math::Mat43    m_cur_mat[10];   // +0x0C
     uint8_t        _pad28C[0x2A0 - 0x28C];
     math::Mat43    m_last_mat[10];  // +0x2A0
@@ -349,7 +648,7 @@ int USER_BONE_ID_RIGHT_FOOT = -1;
 // ea: 0x6F43F0
 void setup_user_bone_ids(Entity* owner)
 {
-    Entity::DObj* mDObj = owner->mDObj;
+    DObj* mDObj = owner->mDObj;
     USER_BONE_ID_PELVIS = mDObj->GetBoneIndex("Bip01 Pelvis");
     USER_BONE_ID_HEAD = mDObj->GetBoneIndex("Bip01 Head");
     USER_BONE_ID_LEFT_UPPERARM = mDObj->GetBoneIndex("Bip01 L UpperArm");
@@ -449,15 +748,6 @@ void biped_phys_info::update_bone_vel_info(float delta_t)
     m_cur_angles.v = _mm_loadu_ps(curAngles);
 }
 
-// rb_ragdoll_model (physics.o)
-struct rb_ragdoll_model {
-    void update_ballistic_target();  // ?update_ballistic_target@rb_ragdoll_model@@QAEXXZ
-};
-void rb_ragdoll_model::update_ballistic_target()
-{
-    // stub until rb_ragdoll_model internals are ported
-}
-
 // ea: 0x6F7620
 void biped_phys_info::prolog_frame_advance(float delta_t)
 {
@@ -468,7 +758,35 @@ void biped_phys_info::prolog_frame_advance(float delta_t)
     m_owner->CalcRotTranMat43();
     update_bone_vel_info(delta_t);
     if (m_bp_sys != nullptr)
-        ((rb_ragdoll_model*)m_bp_sys)->update_ballistic_target();
+        m_bp_sys->update_ballistic_target();
+}
+
+// ea: 0x6F45F0
+void biped_system::debug_render()
+{
+}
+
+// ea: 0x6F44F0
+void biped_system::create_system(biped_phys_info* bp_info)
+{
+    m_bp_info = bp_info;
+}
+
+// ea: 0x6F4500
+void biped_system::initialize_members()
+{
+    rb_ragdoll_model::reset_stability();
+    rb_ragdoll_model::reset_ballistic_target();
+    m_is_stable = false;
+    m_stable_timer = 0.0f;
+}
+
+// ea: 0x6F45E0
+void biped_system::prolog_frame_advance(Entity* owner, float delta_t)
+{
+    (void)owner;
+    (void)delta_t;
+    rb_ragdoll_model::update_ballistic_target();
 }
 
 // USER_BONE_ID name table (physics.o .rdata; 8 entries)
