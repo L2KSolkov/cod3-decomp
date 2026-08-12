@@ -578,7 +578,12 @@ void DisableAI(unsigned int handle)
 // ============================================================================
 // Entity::~Entity - ea: 0x642D50 (Entity.cpp)
 // ============================================================================
-extern int Path_IsDynamicBlockingEntity(Entity* ent);  // mp_actors.o
+// ?Path_IsDynamicBlockingEntity@@YAHPAVEntity@@@Z (mp_actors.o; stub)
+int Path_IsDynamicBlockingEntity(Entity* ent)
+{
+    (void)ent;
+    return 0;
+}
 extern void PathNodeMgr_ConnectPathsForEntity(void* self, Entity* ent);  // mp_actors.o
 extern void G_EntUnlinkFree(Entity* ent);           // g.o
 extern void StopPhysics(Entity* e);                 // g.o

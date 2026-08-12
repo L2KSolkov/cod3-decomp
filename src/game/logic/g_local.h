@@ -2326,7 +2326,12 @@ int   HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
 extern int TAG_WHEEL_FRONT_LEFT;                     // g.o enum
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum
 extern float r;                                      // g.o @ 0xDD8228
-extern int VEH_GetWheelOrigin(Entity* ent);          // g.o 0x45C4B0
+// ?VEH_GetWheelOrigin@@YAHPAVEntity@@@Z (g.o 0x45C4B0; stub)
+inline int VEH_GetWheelOrigin(Entity* ent)
+{
+    (void)ent;
+    return 0;
+}
 struct traceWork_t;
 struct cdl_cinfo1;
 struct cdl_poly_inl_t;
@@ -3018,7 +3023,12 @@ void  G_DrawEntityBBoxes(void);                   // g.o
 void  G_BulletFireSpread(Entity* source, Entity* attacker, weaponParms* wp,
                          int damage, float spread, Entity* weaponEnt,
                          float coneAngleTangent, int seed);  // g.o
-int   Player_ActivateCmd(Entity* ent);            // g.o
+// ?Player_ActivateCmd@@YAHPAVEntity@@@Z (g.o; stub)
+inline int Player_ActivateCmd(Entity* ent)
+{
+    (void)ent;
+    return 0;
+}
 void  Player_ActivateHoldCmd(Entity* ent);        // g.o
 void  MultiplayerMgr_SpreadFire(void* self, Entity* player, float gunPitch,
                                 float gunYaw, float* weaponPosition, int weapon,
@@ -3130,7 +3140,12 @@ int   g_EntityContactCapsule(const math::Position3* mins, const math::Position3*
 int   CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                       DbLinkedHandle<EntityHandleDb, Entity>* entityList,
                       int maxcount, int contentmask);  // game.o 0x6331A0
-int   Client_GetPushed(Entity* pSelf, Entity* pOther);  // g.o
+// ?Client_GetPushed@@YAHPAVEntity@@0@Z (g.o; stub)
+inline int Client_GetPushed(Entity* pSelf, Entity* pOther)
+{
+    (void)pSelf; (void)pOther;
+    return 0;
+}
 void  VEH_InitEntity(Entity* ent, scr_vehicle_t* veh, int16_t infoIdx);  // g.o (redecl)
 char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);  // g.o 0x4673B0
 Entity* G_TestEntityPosition(Entity* ent, const math::Position3* origin);  // g.o 0x4698C0
