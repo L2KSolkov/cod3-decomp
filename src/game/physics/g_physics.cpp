@@ -761,10 +761,12 @@ struct trajectory_t {
 };
 class Entity {
 public:
-    struct refEntity {  // EntityShared subset
+struct refEntity {  // EntityShared subset
         uint8_t        _pad0[0x04];
         int32_t        svFlags;      // +0x04
-        uint8_t        _pad08[0x64 - 0x08];
+        uint8_t        _pad08[0x0C - 0x08];
+        void*          bmodel;       // +0x0C (DCGSet*)
+        uint8_t        _pad10[0x64 - 0x10];
         int32_t        contents;     // +0x64
         uint8_t        _pad68[0x70 - 0x68];
         math::Position3 currentOrigin;  // +0x70
@@ -2474,10 +2476,31 @@ void biped_phys_info::prolog_frame_advance_all(float delta_t)
         g_list_biped_phys_info.m_alloc_list[i]->prolog_frame_advance(delta_t);
 }
 
-// stub until biped_phys_info::epilog_frame_advance (0x70D160) is ported
+// ea: 0x70D160
 void biped_phys_info::epilog_frame_advance(float delta_t)
 {
-    (void)delta_t;
+    biped_system* m_bp_sys = this->m_bp_sys;
+    if (m_bp_sys != nullptr)
+    {
+        m_bp_sys->epilog_frame_advance(m_owner, delta_t);
+        if (m_bp_sys->m_is_stable
+            || m_owner->r.currentOrigin.v.m128_f32[2] < -60000.0f)
+        {
+            if (m_owner->actor != nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JRS;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBRagdoll.cpp";
+                AeAssert::gCurrentLine = 205;
+                AeAssert::gCurrentExpr = "!m_owner->actor";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "Ragdoll physics done but actor still alive."))
+                    __debugbreak();
+            }
+            m_owner->Notify(hash_const.physicsdone);
+            destroy_bp_sys(false);
+        }
+    }
 }
 
 // ea: 0x70D210
@@ -3215,6 +3238,70 @@ void KillEntity(Entity* e)
         e->takedamage = 1;
         e->health = -1;
     }
+}
+
+// DCGSet (sv_stubs.h view; local copy - objects array only)
+class DCGSet {
+public:
+    int   objects_m_count;     // +0x04
+    void* objects_m_elements;  // +0x08
+};
+
+// cdl_object_t (g_local.h view; local copy - cflags at +0x00)
+struct cdl_object_t {
+    int   cflags;        // +0x00
+    int   sflags;        // +0x04
+    float center[3];     // +0x08
+    float box_radius[3]; // +0x14
+    float sphere_radius; // +0x20
+};
+
+// ea: 0x6FE160
+unsigned int get_gjk_geom_id(Entity* ent)
+{
+    if (ent == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBSimpleAPI.cpp", 36, "ent",
+                     defaultFileName))
+        __debugbreak();
+    DCGSet* bmodel = (DCGSet*)ent->r.bmodel;
+    if (bmodel == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBSimpleAPI.cpp", 38, "dcg",
+                     defaultFileName))
+        __debugbreak();
+    unsigned int v2 = 0;
+    unsigned int nobjects = bmodel->objects_m_count;
+    if (nobjects == 0)
+        return 0;
+    while (1)
+    {
+        if (v2 >= (unsigned int)bmodel->objects_m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 77;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (v2 >= (unsigned int)bmodel->objects_m_count
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                       "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bmodel->objects_m_elements)[v2];
+        if ((obj->cflags & 0x241) != 0)
+            break;
+        if (++v2 >= nobjects)
+            return 0;
+    }
+    if (v2 >= 0x470
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.h", 283,
+                     "object_id < sizeof(Entity)", defaultFileName))
+        __debugbreak();
+    // Binary: ent + v2 (Entity stride 0x470); object id encoded as address.
+    return (unsigned int)((char*)ent + v2 * 0x470);
 }
 
 // ea: 0x7096E0
