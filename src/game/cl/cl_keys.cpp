@@ -18,6 +18,7 @@
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
 extern void Com_Error(int code, const char* fmt, ...);
+struct nglTexture;  // render.o
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
 extern char* Cmd_Args(int start);
@@ -396,11 +397,11 @@ void CL_ShutdownRef()
 void CL_InitRenderer()
 {
     extern void re_BeginRegistration(int*);
-    extern int GetTextureData(const char* name, int image_type,
-                              const char* fromPak);
+    extern nglTexture* GetTextureData(const char* name, int image_type,
+                                      const char* fromPak);
     re_BeginRegistration(&dword_F17118);
-    dword_F171B8 = GetTextureData("nglWhite", 0, "mp_frontEnd");
-    dword_F171BC = GetTextureData("console", 0, "mp_frontEnd");
+    dword_F171B8 = (int)GetTextureData("nglWhite", 0, "mp_frontEnd");
+    dword_F171BC = (int)GetTextureData("console", 0, "mp_frontEnd");
     g_consoleField.charWidth = (float)g_console_char_width;
     g_console_field_width = (int)((float)dword_F1719C - 32.0f);
     g_consoleField.widthInPixels = (int)((float)dword_F1719C - 32.0f);

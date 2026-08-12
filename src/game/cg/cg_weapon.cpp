@@ -100,8 +100,9 @@ extern int XAnimIsLooped(AnimTree* anims, unsigned int animIndex);
 extern float XAnimGetLength(AnimTree* anims, unsigned int animIndex);
 extern void Com_Error(int code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
-extern void* GetTextureData(const char* name, int image_type,
-                            const char* fromPak);
+struct nglTexture;
+extern nglTexture* GetTextureData(const char* name, int image_type,
+                                  const char* fromPak);
 extern char* va(const char* fmt, ...);
 extern const char* SEH_StringEd_GetString(const char* pszReference);
 extern struct gitem_s* bg_itemlist;

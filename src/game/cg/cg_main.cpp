@@ -79,8 +79,9 @@ extern void SoundDevice_DampenAllSounds(void* sInst, float level);
 extern void SoundDevice_StopAllSounds(void* sInst);
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);
 extern void RumbleManager_Reset(void* mgr);
-extern void* GetTextureData(const char* name, int image_type,
-                            const char* fromPak);
+struct nglTexture;
+extern nglTexture* GetTextureData(const char* name, int image_type,
+                                  const char* fromPak);
 extern struct gitem_s* bg_itemlist;  // gitem_s[]
 void* cg_items;                // itemInfo_t[] (artifact)
 weaponInfo_s* cg_weapons = nullptr;  // ?cg_weapons@@3PAUweaponInfo_s@@A (cg.o)

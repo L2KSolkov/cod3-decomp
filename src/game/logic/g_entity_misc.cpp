@@ -40,8 +40,9 @@ static statmonitor_s stats[64];   // 0xF3C100 (game.o data)
 static int statCount;             // 0xF3C300 (game.o data)
 extern cvar_t* com_statmon;       // ?com_statmon@@3PAUcvar_t@@A (core.o)
 extern int dword_F170E0;          // game.o data
-extern void* GetTextureData(const char* name, int image_type,
-                            const char* fromPak);  // ?GetTextureData (render.o)
+struct nglTexture;
+extern nglTexture* GetTextureData(const char* name, int image_type,
+                                  const char* fromPak);  // render.o 0x6B2000
 extern int Sys_Milliseconds();    // ?Sys_Milliseconds@@YAHXZ
 
 // ============================================================================

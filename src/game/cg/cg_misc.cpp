@@ -3662,8 +3662,9 @@ extern void LoadWorld(const char* name);
 extern void CG_RegisterGraphics();
 extern void CG_MapInit(int restart);
 extern void* SoundMediaMgr_sInst;
-extern void* GetTextureData(const char* name, int image_type,
-                            const char* fromPak);
+struct nglTexture;
+extern nglTexture* GetTextureData(const char* name, int image_type,
+                                  const char* fromPak);
 extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
                           const char* defaultValue, int flags);
 extern void Cvar_Set(const char* var_name, const char* value);
