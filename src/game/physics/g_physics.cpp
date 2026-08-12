@@ -84,6 +84,7 @@ static void DebugRender_RenderLine(const math::Position3& pt1,
 
 class Entity;
 struct rb_extra_info;
+class rb_vehicle;
 class DObj;
 class rigid_body;
 class biped_phys_info;
@@ -178,6 +179,13 @@ struct level_locals_t {
 };
 extern level_locals_t level;  // ?level@@3Ulevel_locals_t@@A
 extern int gPhysicsFinder;  // ?gPhysicsFinder@@3HA (g.o)
+// ?low_end_speed@@3MA / ?percent_to_give@@3MA (physics.o data @ 0xE36B2C/0xE36B28)
+float low_end_speed = 300.0f;    // 0x43960000
+float percent_to_give = 1.5f;    // 0x3FC00000
+struct vmCvar_t {
+    int integer;  // +0x00 (minimal)
+};
+extern vmCvar_t g_speed;  // ?g_speed@@3UvmCvar_t@@A (g.o)
 // MultiplayerMgr (core.o view; ApplyLocalPhysicsToVehicle only)
 class MultiplayerMgr {
 public:
@@ -218,6 +226,8 @@ enum EPropPriority {
 };
 void DObjGetBasePose(DObj* obj);  // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o)
 void path_constraint_destroy(class rigid_body_constraint_custom_path* vpc);
+void path_constraint_update(rigid_body_constraint_custom_path* vpc,
+                            Entity* veh);  // 0x6F5B60
 
 // Handle (game_types.h view; local copy)
 class Handle {
@@ -367,23 +377,49 @@ public:
 // vehicle_rb_parameter (physics.o; minimal view for rb_vehicle methods)
 class vehicle_rb_parameter {
 public:
-    uint8_t _pad0[0x18];
+    float   m_speed_max;          // +0x00
+    float   m_accel_max;          // +0x04
+    float   m_reverse_scale;      // +0x08
+    float   m_steer_angle_max;    // +0x0C
+    float   m_steer_speed;        // +0x10
+    float   m_wheel_radius;       // +0x14
     float   m_susp_spring_k;      // +0x18
-    float   m_tilt_fakey;         // +0x1C
-    uint8_t _pad20[0x28 - 0x20];
+    float   m_susp_damp_k;        // +0x1C
+    float   m_susp_adj;           // +0x20
+    float   m_susp_hard_limit;    // +0x24
     float   m_tire_fric_fwd;      // +0x28
     float   m_tire_fric_side;     // +0x2C
     float   m_tire_fric_brake;    // +0x30
     float   m_tire_fric_hand_brake;  // +0x34
     float   m_body_mass;          // +0x38
-    uint8_t _pad3C[0x50 - 0x3C];
+    float   m_mass_center_delta_x;  // +0x3C
+    float   m_mass_center_delta_y;  // +0x40
+    float   m_mass_center_delta_z;  // +0x44
+    float   m_roll_stability;     // +0x48
+    float   m_roll_resistance;    // +0x4C
     float   m_upright_strength;   // +0x50
-    float   m_roll_resistance;    // +0x54
+    float   m_tilt_fakey;         // +0x54
     float   m_peel_out_max_speed;  // +0x58
-    float   m_speed_max;          // +0x5C
+    float   m_inertia_scale_x;    // +0x5C
+    float   m_tire_damp_coast;    // +0x60
+    float   m_tire_damp_brake;    // +0x64
+    float   m_tire_damp_hand;     // +0x68
+    int     m_traction_type;      // +0x6C
 
     static vehicle_rb_parameter* GetRBVehParameter(
         const char* name);  // ?GetRBVehParameter@vehicle_rb_parameter@@SAPAV1@PBD@Z
+};
+
+// RBVehicleController (physics.o RBVehicleController.cpp)
+class RBVehicleController {
+public:
+    math::Position3 m_script_goal_position;  // +0x00
+    float m_script_goal_radius;              // +0x10
+    float m_script_goal_speed;               // +0x14
+
+    void SetScriptTarget(rb_vehicle& rbveh, const math::Position3& goal_position,
+                         float goal_radius, float goal_speed);  // ?SetScriptTarget@RBVehicleController@@QAEXAAVrb_vehicle@@ABVPosition3@math@@MM@Z
+    void UpdateControls(rb_vehicle& rbveh);  // ?UpdateControls@RBVehicleController@@QAEXAAVrb_vehicle@@@Z
 };
 
 // rb_vehicle (physics.o RBVehicle.cpp). Layout verified against the ctor
@@ -432,6 +468,7 @@ public:
     float m_steer_front_back_length;             // +0x380
     int   m_state_flags;                         // +0x384
     void* m_vci;                                 // +0x388
+    RBVehicleController mVehicleController;       // +0x390
 
     rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
     void init(Entity* owner, vehicle_rb_parameter* parameter);  // ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z
@@ -480,7 +517,10 @@ private:
         rigid_body_constraint_wheel* wheel_constraint);  // ?_calc_initial_susp_spring_k@rb_vehicle@@AAEMPAVrigid_body_constraint_wheel@@@Z
     void _update_friction(float delta_t);  // ?_update_friction@rb_vehicle@@AAEXM@Z
     void _update_fakey_stuff(float delta_t);  // ?_update_fakey_stuff@rb_vehicle@@AAEXM@Z
+    void _update_orientation_constraint();  // ?_update_orientation_constraint@rb_vehicle@@AAEXXZ
+    void update_steering(float delta_t);  // ?update_steering@rb_vehicle@@QAEXM@Z
 };
+
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
 // (0x705F90) disassembly + IDA local type field order.
@@ -1189,18 +1229,6 @@ struct scr_vehicle_t {
     void*   mRBVeh;                 // +0x518 rb_vehicle*
 };
 
-// RBVehicleController (physics.o RBVehicleController.cpp; minimal view for the
-// script-target methods)
-class RBVehicleController {
-public:
-    math::Position3 m_script_goal_position;  // +0x00
-    float m_script_goal_radius;              // +0x10
-    float m_script_goal_speed;               // +0x14
-
-    void SetScriptTarget(rb_vehicle& rbveh, const math::Position3& goal_position,
-                         float goal_radius, float goal_speed);  // ?SetScriptTarget@RBVehicleController@@QAEXAAVrb_vehicle@@ABVPosition3@math@@MM@Z
-};
-
 // ea: 0x6FE100
 void RBVehicleController::SetScriptTarget(
     rb_vehicle& rbveh, const math::Position3& goal_position, float goal_radius,
@@ -1217,6 +1245,12 @@ void RBVehicleController::SetScriptTarget(
     m_script_goal_radius = v5;
     m_script_goal_speed = goal_speed;
     rbveh.m_flags.mMask |= 8u;
+}
+
+// stub until RBVehicleController::UpdateControls (0x70C530) is ported
+void RBVehicleController::UpdateControls(rb_vehicle& rbveh)
+{
+    (void)rbveh;
 }
 
 // ea: 0x6FC140
@@ -1450,6 +1484,17 @@ void rb_vehicle::_update_fakey_stuff(float delta_t)
     if (!v17)
         v25 = rpm_target;
     m_fake_rpm = (((v25 - m_fake_rpm) * delta_t) * 5.0f) + m_fake_rpm;
+}
+
+// stub until rb_vehicle::_update_orientation_constraint (0x6FC490) is ported
+void rb_vehicle::_update_orientation_constraint()
+{
+}
+
+// stub until rb_vehicle::update_steering (0x6F50A0) is ported
+void rb_vehicle::update_steering(float delta_t)
+{
+    (void)delta_t;
 }
 
 // ea: 0x6F4F50
@@ -1788,10 +1833,167 @@ math::Dir3 rb_vehicle::get_rb_angles() const
     return angles;
 }
 
-// stub until rb_vehicle::_update_prolog (0x70CA40) is ported
+// ea: 0x70CA40
 void rb_vehicle::_update_prolog(float delta_t)
 {
-    (void)delta_t;
+    mVehicleController.UpdateControls(*this);
+    unsigned int m_state_flags = this->m_state_flags;
+    if (m_throttle <= 0.0f)
+        m_state_flags &= ~4u;
+    else
+        m_state_flags |= 4u;
+    if (m_hand_brake <= 0.0f)
+        m_state_flags &= ~1u;
+    else
+        m_state_flags |= 1u;
+    this->m_state_flags = m_state_flags;
+
+    vehicle_rb_parameter* m_parameter = this->m_parameter;
+    float m_accel_max = m_parameter->m_accel_max;
+    float m_speed_max = m_parameter->m_speed_max;
+    if (g_speed.integer > 300)
+    {
+        m_speed_max = m_parameter->m_speed_max * 4.0f;
+        m_accel_max = m_parameter->m_accel_max * 4.0f;
+    }
+    float v17;
+    if ((m_flags.mMask & 0x20) != 0)
+    {
+        int v9 = 0;
+        for (int i = 0; i < 8; ++i)
+        {
+            rigid_body_constraint_wheel* w =
+                (rigid_body_constraint_wheel*)m_wheels[i];
+            if (w != nullptr && (w->m_wheel_flags & 1) != 0)
+                ++v9;
+        }
+        if (v9 <= 1)
+            v9 = 2;
+        v17 = fabs(m_throttle) * (6.0f / v9) * m_accel_max;
+        if (m_throttle >= 0.0f)
+            goto accel_done;
+    }
+    else
+    {
+        v17 = fabs(m_throttle) * m_accel_max;
+        if (m_throttle >= 0.0f)
+            goto accel_done;
+    }
+    v17 = m_parameter->m_reverse_scale * v17;
+    m_speed_max = m_parameter->m_reverse_scale * m_speed_max;
+accel_done:
+    rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
+    if (m_chassis_rbinf != nullptr)
+    {
+        rigid_body* m_rb = m_chassis_rbinf->m_rb;
+        if ((~(m_rb->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        float v20 =
+            _mm_shuffle_ps(m_rb->m_mat.x.v, m_rb->m_mat.x.v, 170)
+                .m128_f32[0]
+            * 2.5f;
+        float v36;
+        if (v20 >= -1.0f)
+        {
+            v36 = 1.0f;
+            if (v20 <= 1.0f)
+                v36 = v20;
+        }
+        else
+        {
+            v36 = -1.0f;
+        }
+        float v21 = (1.0f - fabs(m_steer_factor)) * m_throttle * v36;
+        float v22;
+        if (v21 >= 0.0f)
+        {
+            v22 = v21;
+            if (v22 > 1.0f)
+                v22 = 1.0f;
+        }
+        else
+        {
+            v22 = 0.0f;
+        }
+        v17 = (m_parameter->m_accel_max * v22) + v17;
+    }
+    if ((m_flags.mMask & 1) == 0)
+    {
+        float v23 = fabs(m_forward_vel);
+        if (low_end_speed > v23)
+            v17 = (((1.0f - (v23 / low_end_speed)) * percent_to_give) + 1.0f)
+                  * v17;
+    }
+    float v24 = v17;
+    if (v17 <= 2.0f)
+        v24 = 2.0f;
+    m_acceleration_factor = v24;
+    m_desired_speed_factor = m_speed_max;
+    if (m_hand_brake > 0.0f || m_throttle > 0.0f)
+        m_state_flags &= ~0x10u;
+    else
+        m_state_flags |= 0x10u;
+    if (m_brake <= 0.0f)
+        m_state_flags &= ~2u;
+    else
+        m_state_flags |= 2u;
+    m_state_flags &= ~8u;
+    if (m_parameter->m_traction_type == 2)  // TRACTION_TYPE_ALL_WD
+    {
+        if (m_hand_brake > 0.0f)
+            v17 = v17 * 2.0f;
+        if (v17 <= 2.0f)
+            v17 = 2.0f;
+        m_acceleration_factor = v17;
+    }
+    if (m_chassis_rbinf != nullptr)
+    {
+        rigid_body* v29 = m_chassis_rbinf->m_rb;
+        if ((~(v29->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        __m128 v31 = _mm_mul_ps(m_chassis_rbinf->m_rb->m_t_vel.v,
+                                v29->m_mat.x.v);
+        float v32 = v31.m128_f32[0]
+                    + (_mm_shuffle_ps(v31, v31, 85).m128_f32[0]
+                       + _mm_shuffle_ps(v31, v31, 170).m128_f32[0]);
+        m_forward_vel = v32;
+        if (m_throttle >= 0.0f)
+        {
+            if (m_throttle > 0.0f
+                && (0.0f - m_parameter->m_peel_out_max_speed) > v32)
+                m_state_flags |= 2u;
+        }
+        else if (v32 <= 10.0f || m_num_colliding_wheels <= 1)
+        {
+            m_state_flags |= 8u;
+        }
+        else
+        {
+            m_state_flags |= 2u;
+        }
+    }
+    else
+    {
+        m_forward_vel = 0.0f;
+    }
+    if (m_script_brake > 0.0f)
+        m_state_flags |= 2u;
+    if ((m_flags.mMask & 1) == 0)
+    {
+        update_braking_and_acceleration(delta_t);
+        update_steering(delta_t);
+        _update_fakey_stuff(delta_t);
+        _update_friction(delta_t);
+        _update_orientation_constraint();
+        if (m_vpc != nullptr)
+            path_constraint_update(m_vpc, m_owner);
+    }
 }
 
 // stub until rb_vehicle::_update_epilog (0x7091E0) is ported
