@@ -610,6 +610,44 @@ void LightGridMgr::DecodeBank(const char* name, unsigned char* data,
                               int size, TPakId pakId)
 { (void)name; (void)data; (void)size; (void)pakId; }
 
+// ZoneOverrideBrushSet / ZoneBoundaryBank (streamer.o views;
+// mToggleableOverrideBoxes +0x3C, mNumToggleableOverrideBoxesHit +0x50)
+class ZoneOverrideBrushSet;
+
+// InplaceVector<T> (ae/inplace/InplaceVector.h; full definition in
+// game/game_types.h) - minimal view used by SetTopOverrideBrushSet
+template <typename T>
+struct InplaceVector {
+    unsigned int mSize;  // +0x00
+    T*           mList;  // +0x04
+};
+
+// Bounds-checked InplaceVector access (InplaceVector.h:81, inlined in release)
+template <typename T>
+static T& InplaceVectorAt(InplaceVector<T>& vec, unsigned int index)
+{
+    if (index >= vec.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+    }
+    if (index >= vec.mSize)
+        index = 0;
+    return vec.mList[index];
+}
+
+class ZoneBoundaryBank {
+public:
+    uint8_t _pad[0x3C];
+    InplaceVector<const ZoneOverrideBrushSet*> mToggleableOverrideBoxes;  // +0x3C
+    uint8_t _pad44[0x50 - 0x44];
+    int     mNumToggleableOverrideBoxesHit;  // +0x50
+};
+
 // StreamZoneManager (streamer.o; mDebugRenderMode +0x190, mInitialPosition +0x1A0)
 class StreamZoneManager {
 public:
@@ -623,6 +661,9 @@ public:
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
     void OnUnloaded(TPakId pakId);  // ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z
+private:
+    void SetTopOverrideBrushSet(ZoneBoundaryBank* bank,
+                                ZoneOverrideBrushSet* zob);  // ?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
 };
 
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
@@ -812,6 +853,75 @@ void StreamZoneManager::SetInitialPosition(const math::Position3& pos)
 void StreamZoneManager::OnUnloaded(TPakId pakId)
 {
     (void)pakId;
+}
+
+// ea: 0x666FE0
+void StreamZoneManager::SetTopOverrideBrushSet(ZoneBoundaryBank* bank,
+                                               ZoneOverrideBrushSet* zob)
+{
+    InplaceVector<const ZoneOverrideBrushSet*>& boxes =
+        bank->mToggleableOverrideBoxes;
+    unsigned int mSize;
+
+    if (bank->mNumToggleableOverrideBoxesHit == 0
+        || InplaceVectorAt(boxes,
+                           bank->mNumToggleableOverrideBoxesHit - 1) != zob)
+    {
+        int v6 = 0;
+        if (bank->mNumToggleableOverrideBoxesHit <= 0)
+            goto not_in_hit_region;
+
+        while (InplaceVectorAt(boxes, v6) != zob)
+        {
+            if (++v6 >= bank->mNumToggleableOverrideBoxesHit)
+                goto not_in_hit_region;
+        }
+        if (v6 < bank->mNumToggleableOverrideBoxesHit - 1)
+        {
+            do
+            {
+                const ZoneOverrideBrushSet* v13 =
+                    InplaceVectorAt(boxes, v6 + 1);
+                InplaceVectorAt(boxes, v6++) = v13;
+            } while (v6 < bank->mNumToggleableOverrideBoxesHit - 1);
+        }
+        InplaceVectorAt(boxes, bank->mNumToggleableOverrideBoxesHit - 1) = zob;
+        return;
+
+    not_in_hit_region:
+        unsigned int v7 = bank->mNumToggleableOverrideBoxesHit;
+        mSize = boxes.mSize;
+        if (v7 >= mSize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+            AeAssert::gCurrentLine = 344;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored() && AeAssert::Warning("box not in list?"))
+                __debugbreak();
+            return;
+        }
+        for (;;)
+        {
+            if (InplaceVectorAt(boxes, v7) == zob)
+                break;
+            if (++v7 >= mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+                AeAssert::gCurrentLine = 344;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored() && AeAssert::Warning("box not in list?"))
+                    __debugbreak();
+                return;
+            }
+        }
+        const ZoneOverrideBrushSet* displaced =
+            InplaceVectorAt(boxes, bank->mNumToggleableOverrideBoxesHit);
+        InplaceVectorAt(boxes, v7) = displaced;
+        InplaceVectorAt(boxes, bank->mNumToggleableOverrideBoxesHit) = zob;
+        ++bank->mNumToggleableOverrideBoxesHit;
+    }
 }
 
 // ea: 0x665A10
