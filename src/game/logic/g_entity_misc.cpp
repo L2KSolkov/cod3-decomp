@@ -1548,6 +1548,68 @@ void DynamicDecalMgr::Add(void* texture, float zBias, bool alphaBlend,
     (void)isHighPriority;
 }
 
+// DebugRender helpers (render.o; stubs, port later)
+namespace DebugRender {
+void RenderBox(const math::Position3* mins, const math::Position3* maxs,
+               const float* color)
+{
+    (void)mins; (void)maxs; (void)color;
+}
+void RenderLine(const math::Position3* pt1, const math::Position3* pt2,
+                const float* color, float thickness)
+{
+    (void)pt1; (void)pt2; (void)color; (void)thickness;
+}
+void RenderQuad2D(float x, float y, float w, float h, float z,
+                  const float* color)
+{
+    (void)x; (void)y; (void)w; (void)h; (void)z; (void)color;
+}
+void RenderSphere(const math::Position3* pos, float radius,
+                  const float* argb_color)
+{
+    (void)pos; (void)radius; (void)argb_color;
+}
+void RenderText(const char* text, int x, int y, const float* color,
+                float scaleX, float scaleY)
+{
+    (void)text; (void)x; (void)y; (void)color; (void)scaleX; (void)scaleY;
+}
+void RenderText3D(const math::Position3* pos, const float* color, float scale,
+                  const char* text, ...)
+{
+    (void)pos; (void)color; (void)scale; (void)text;
+}
+}
+void DebugRender_RenderLine(const math::Position3* pt1,
+                            const math::Position3* pt2, const float* color,
+                            float thickness)
+{
+    (void)pt1; (void)pt2; (void)color; (void)thickness;
+}
+void DebugRender_RenderSphere(const math::Position3* pos, float radius,
+                              const float* argb_color)
+{
+    (void)pos; (void)radius; (void)argb_color;
+}
+void DebugRender_RenderText(const char* text, int x, int y,
+                            const float* color, float scaleX, float scaleY)
+{
+    (void)text; (void)x; (void)y; (void)color; (void)scaleX; (void)scaleY;
+}
+void DebugRender_AddRenderer(void* self, void (*fp)())
+{
+    (void)self; (void)fp;
+}
+void DebugRender_AddRenderer(void* self, void* fp)
+{
+    (void)self; (void)fp;
+}
+void DebugRender_Init(void* self)
+{
+    (void)self;
+}
+
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {
 void Init() {}
