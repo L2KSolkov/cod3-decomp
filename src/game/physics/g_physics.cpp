@@ -72,6 +72,19 @@ class DObj;
 class rigid_body;
 class biped_phys_info;
 struct phys_gjk_geom_list;
+enum phys_bones {
+    rb_torso = 0,
+    rb_head = 1,
+    rb_left_up_arm = 2,
+    rb_left_low_arm = 3,
+    rb_right_up_arm = 4,
+    rb_right_low_arm = 5,
+    rb_left_thigh = 6,
+    rb_left_calf = 7,
+    rb_right_thigh = 8,
+    rb_right_calf = 9,
+    num_rb_phys_bones = 10,
+};
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
     PROP_PRIORITY_MEDIUM = 1,
@@ -173,6 +186,11 @@ public:
     void cleanup_path();          // ?cleanup_path@rb_vehicle@@QAEXXZ
     void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
+    static void frame_prolog_all_systems(float delta_t);  // ?frame_prolog_all_systems@rb_vehicle@@SAXM@Z
+    static void frame_epilog_all_systems(float delta_t);  // ?frame_epilog_all_systems@rb_vehicle@@SAXM@Z
+private:
+    void _update_prolog(float delta_t);  // ?_update_prolog@rb_vehicle@@AAEXM@Z
+    void _update_epilog(float delta_t);  // ?_update_epilog@rb_vehicle@@AAEXM@Z
 };
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
@@ -535,6 +553,7 @@ struct ragdoll_collision_callback {
     void set(Entity* const owner);  // ?set@ragdoll_collision_callback@@QAEXQAVEntity@@@Z
     void get_all_collisions();  // ?get_all_collisions@ragdoll_collision_callback@@QAEXXZ
     void process_environment_collision_events();  // ?process_environment_collision_events@ragdoll_collision_callback@@QAEXXZ
+    void remove_colgeom(int rb_id);  // ?remove_colgeom@ragdoll_collision_callback@@QAEXH@Z
 };
 
 // ea: 0x6F46A0
@@ -551,6 +570,12 @@ void ragdoll_collision_callback::get_all_collisions()
 // stub until ragdoll_collision_callback internals are ported (0x700910)
 void ragdoll_collision_callback::process_environment_collision_events()
 {
+}
+
+// stub until ragdoll_collision_callback internals are ported (0x708DC0)
+void ragdoll_collision_callback::remove_colgeom(int rb_id)
+{
+    (void)rb_id;
 }
 
 // DObj (render.o; local stub view). copy_skeleton disasm reads numBones at
@@ -815,6 +840,34 @@ void rb_vehicle::end_path()
 void rb_vehicle::pause_physics(bool shutdown)
 {
     (void)shutdown;
+}
+
+// stub until rb_vehicle::_update_prolog (0x70CA40) is ported
+void rb_vehicle::_update_prolog(float delta_t)
+{
+    (void)delta_t;
+}
+
+// stub until rb_vehicle::_update_epilog (0x7091E0) is ported
+void rb_vehicle::_update_epilog(float delta_t)
+{
+    (void)delta_t;
+}
+
+// ea: 0x70CF60
+void rb_vehicle::frame_prolog_all_systems(float delta_t)
+{
+    int count = g_rb_vehicle_list.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_rb_vehicle_list.m_alloc_list[i]->_update_prolog(delta_t);
+}
+
+// ea: 0x7096A0
+void rb_vehicle::frame_epilog_all_systems(float delta_t)
+{
+    int count = g_rb_vehicle_list.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_rb_vehicle_list.m_alloc_list[i]->_update_epilog(delta_t);
 }
 
 // rb_prop_system free helpers (physics.o RBPropSys.cpp; namespace in binary)
@@ -1150,6 +1203,7 @@ struct phys_anim_bone_array {
     static void copy_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
     static void write_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
     void copy_back_bones(Entity* owner);  // ?copy_back_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z
+    void remove_rigid_body(int rb_index);  // ?remove_rigid_body@phys_anim_bone_array@@QAEXH@Z
 };
 
 // ea: 0x6F4120
@@ -1192,6 +1246,7 @@ public:
     void render_joint(int joint_id, Bitmask<unsigned int> render_flags);  // ?render_joint@biped_system@@QAEXHV?$Bitmask@I@@@Z
     void destroy_bps(Entity* owner);  // ?destroy_bps@biped_system@@QAEXPAVEntity@@@Z
     void recreate_bps(Entity* owner, int flags);  // ?recreate_bps@biped_system@@QAEXPAVEntity@@H@Z
+    void remove_rigid_body(phys_bones rb_id);  // ?remove_rigid_body@biped_system@@QAEXW4phys_bones@@@Z
 private:
     void initialize_members();  // ?initialize_members@biped_system@@AAEXXZ
     void create_system(biped_phys_info* bp_info);  // ?create_system@biped_system@@AAEXPAVbiped_phys_info@@@Z
@@ -1227,6 +1282,9 @@ public:
     void destroy_bp_sys(bool tween_pos);  // ?destroy_bp_sys@biped_phys_info@@QAEX_N@Z
     void debug_render();  // ?debug_render@biped_phys_info@@QAEXXZ
     static void debug_render_all();  // ?debug_render_all@biped_phys_info@@SAXXZ
+    static void prolog_frame_advance_all(float delta_t);  // ?prolog_frame_advance_all@biped_phys_info@@SAXM@Z
+    static void epilog_frame_advance_all(float delta_t);  // ?epilog_frame_advance_all@biped_phys_info@@SAXM@Z
+    void epilog_frame_advance(float delta_t);  // ?epilog_frame_advance@biped_phys_info@@QAEXM@Z
 private:
     void reset_bone_vel_info(float delta_t);   // ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z
     void update_bone_vel_info(float delta_t);  // ?update_bone_vel_info@biped_phys_info@@AAEXM@Z
@@ -1340,6 +1398,28 @@ void biped_phys_info::debug_render_all()
         g_list_biped_phys_info.m_alloc_list[i]->debug_render();
 }
 
+// ea: 0x6FF7B0
+void biped_phys_info::prolog_frame_advance_all(float delta_t)
+{
+    int count = g_list_biped_phys_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_list_biped_phys_info.m_alloc_list[i]->prolog_frame_advance(delta_t);
+}
+
+// stub until biped_phys_info::epilog_frame_advance (0x70D160) is ported
+void biped_phys_info::epilog_frame_advance(float delta_t)
+{
+    (void)delta_t;
+}
+
+// ea: 0x70D210
+void biped_phys_info::epilog_frame_advance_all(float delta_t)
+{
+    int count = g_list_biped_phys_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_list_biped_phys_info.m_alloc_list[i]->epilog_frame_advance(delta_t);
+}
+
 // ea: 0x6FF7F0
 void biped_phys_info::debug_render()
 {
@@ -1364,6 +1444,12 @@ void biped_phys_info::debug_render()
 void phys_anim_bone_array::copy_back_bones(Entity* owner)
 {
     (void)owner;
+}
+
+// stub until phys_anim_bone_array internals are ported (physics.o 0x6F8EF0)
+void phys_anim_bone_array::remove_rigid_body(int rb_index)
+{
+    (void)rb_index;
 }
 
 // stub until biped_system internals are ported (physics.o inline 0x719FA0)
@@ -1396,6 +1482,14 @@ void biped_system::recreate_bps(Entity* owner, int flags)
     rb_ragdoll_model::reset_ballistic_target();
     m_is_stable = false;
     m_stable_timer = 0.0f;
+}
+
+// ea: 0x70B2D0
+void biped_system::remove_rigid_body(phys_bones rb_id)
+{
+    bp_bone_array.remove_rigid_body(rb_id);
+    m_collision_callback.remove_colgeom(rb_id);
+    rb_ragdoll_model::remove_rigid_body(rb_id);
 }
 
 // USER_BONE_ID_* globals (physics.o data @ 0xE01EA8..0xE01EDC)
