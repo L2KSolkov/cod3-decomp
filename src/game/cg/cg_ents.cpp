@@ -23,6 +23,7 @@ public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
     Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
     Entity* mPlayers[16];         // +0x04
+    bool IsLocalPlayer(Entity* entity);  // ?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z
 };
 
 struct Camera;
@@ -1377,7 +1378,6 @@ extern void j_nullsub_89(void* obj, float dtime);
 extern char CL_DObjInvalidateSkels();
 extern vmCvar_t cg_addentities;
 extern void* TestFPS_sInst;
-extern int Entity_IsInSnapshot(Entity* ent);
 extern void CG_CalcEntityLerpPositions(Entity* cent);
 
 // ea: 0x006A1BC0
@@ -1499,7 +1499,7 @@ void CG_AddPacketEntities()
     {
         Entity* v9 = *(Entity**)((char*)&EntityHandleDb::sInst + 0x2AB4
                                  + 4 * i);
-        if (v9 != nullptr && Entity_IsInSnapshot(v9)
+        if (v9 != nullptr && v9->IsInSnapshot()
             && TestFPS_sInst == nullptr && cg_addentities.integer != 0
             && v9->s.eType < 0x12u)
         {
@@ -1529,7 +1529,6 @@ extern void CG_BulletHitClientEvent(unsigned int sourceEntity,
                                     int weapon);
 extern void CG_StartShakeCamera(float p, int duration, const float* src,
                                 float radius, int client);
-extern int EntityManager_IsLocalPlayer(void* mgr, Entity* entity);
 extern int dword_F63BA4[4 * 1580];
 const char** pEventNamesList;  // ?pEventNamesList (cl.o)
 
@@ -1879,7 +1878,7 @@ void CG_BulletHitClientEvent(unsigned int sourceEntity,
     int ammoType = *(int*)((char*)BG_GetInfoForWeapon(weapon) + 0xA8);
     Entity* mObject = EntityHandleDb_Get(sourceEntity);
     if (mObject != nullptr && mObject->client != nullptr
-        && EntityManager_IsLocalPlayer(EntityManager::sInst, mObject))
+        && EntityManager::sInst->IsLocalPlayer(mObject))
     {
         PostEffectEventScriptCall(mObject, "PLAYER_HIT_SUCCESS", false,
                                   (TPakId)0 /* PAK_ID_INVALID */, false);
@@ -2410,7 +2409,7 @@ void CG_EntityPreEvent(Entity* entity, int event)
     case 186:
     case 187:
     case 189:
-        if (EntityManager_IsLocalPlayer(EntityManager::sInst, entity))
+        if (EntityManager::sInst->IsLocalPlayer(entity))
             goto fire_weapon;
         if (entity->s.eType == 14)
         {

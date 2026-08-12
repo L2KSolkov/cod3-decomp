@@ -152,8 +152,11 @@ extern Handle PostEffectEventWeaponFire1st(const Entity* ent,
 extern Handle PostEffectEventWeaponFire3rd(const Entity* ent,
                                            const char* weaponType,
                                            EAction weaponAction, int cacheSound);
-extern int MultiplayerMgr_IsLocalPlayer(void* mgr, const Entity* player);
 extern void* MultiplayerMgr_sInst;
+class MultiplayerMgr {
+public:
+    bool IsLocalPlayer(const Entity* player);  // ?IsLocalPlayer@MultiplayerMgr@@QAE_NPAVEntity@@@Z
+};
 extern int dword_F62960[4 * 1580];
 extern int dword_F6403C[4 * 1580];
 extern int dword_F64040[4 * 1580];
@@ -1248,7 +1251,7 @@ LABEL_18:
         if (level.time < v6->invulnerability_timeout)
         {
             v6->invulnerability_timeout = 0;
-            MultiplayerMgr_IsLocalPlayer(MultiplayerMgr_sInst, v6);
+            ((MultiplayerMgr*)MultiplayerMgr_sInst)->IsLocalPlayer(v6);
         }
         if ((int)attackerState < 0x12)
         {

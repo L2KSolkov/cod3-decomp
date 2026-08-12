@@ -548,7 +548,15 @@ extern struct cvar_t* cl_showMouseRate;
 extern struct cvar_t* m_yaw;
 extern struct cvar_t* m_pitch;
 extern int IsPlayerFullySeatedInVehicle(void* player);
-extern int Entity_IsCameraTweening(void* entity);
+class Entity {
+public:
+    bool IsCameraTweening() const;  // ?IsCameraTweening@Entity@@QBE_NXZ
+};
+class EntityManager {
+public:
+    static EntityManager* sInst;
+    Entity* GetPlayer(int idx);
+};
 extern void* EntityManager_GetPlayer3(void* inst, int idx);
 void* EntityManager_sInst3 = nullptr;  // cl.o artifact (EntityManager*)
 extern char ClampChar(int i);
@@ -643,7 +651,7 @@ LABEL_40:
     float v18;
     if ((EntityManager_GetPlayer3(EntityManager_sInst3, v6) != nullptr
          && (IsPlayerFullySeatedInVehicle(EntityManager_GetPlayer3(EntityManager_sInst3, currCl))
-             || Entity_IsCameraTweening((void*)currCl)))
+             || EntityManager::sInst->GetPlayer(currCl)->IsCameraTweening()))
         || GamePause::IsGamePaused(currCl))
     {
         v17 = 0.0f;
