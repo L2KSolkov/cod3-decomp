@@ -50,6 +50,7 @@ void calc_velocities(const math::Mat43& mat0, const math::Mat43& mat1,
 void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
 void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
                   math::Mat43& mat);  // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z
+void AnglesToAxis(const float* angles, float (*axis)[3]);  // ?AnglesToAxis@@YAXPBMPAY02M@Z
 
 class PakManager {
 public:
@@ -101,6 +102,8 @@ enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 void G_SetModel(Entity* ent, const char* modelName, TPakId pakId, int ngIndex);  // game2.o
 void G_DObjUpdate(Entity* ent, bool forceWeaponModel);  // game2.o
 void g_LinkEntity(Entity* ent);  // g.o
+void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o
+void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o
 TPakId CurPakId();  // ?CurPakId@@YA?AW4TPakId@@XZ (streamer.o)
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                            math::Position3& result);  // g.o
@@ -311,6 +314,10 @@ public:
     void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
     void unpause_physics();       // ?unpause_physics@rb_vehicle@@QAEXXZ
+    void update_from_network(const math::Position3& position,
+                             const math::Position3& angles,
+                             const math::Dir3& vel,
+                             const math::Dir3& aVel);  // ?update_from_network@rb_vehicle@@QAEXABVPosition3@math@@0ABVDir3@3@1@Z
     math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ
     math::Dir3 get_angular_velocity() const;  // ?get_angular_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ
     math::Position3 get_rb_position() const;  // ?get_rb_position@rb_vehicle@@QBE?AVPosition3@math@@XZ
@@ -1361,6 +1368,45 @@ math::Dir3 rb_vehicle::get_velocity() const
     else
         result.v = m_chassis_rbinf->m_rb->m_t_vel.v;
     return result;
+}
+
+// ea: 0x6F5860
+void rb_vehicle::update_from_network(const math::Position3& position,
+                                     const math::Position3& angles,
+                                     const math::Dir3& vel,
+                                     const math::Dir3& aVel)
+{
+    G_SetOrigin(m_owner, &position);
+    G_SetAngle(m_owner, &angles);
+    m_owner->CalcRotTranMat43();
+    rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
+    if (m_chassis_rbinf != nullptr)
+    {
+        rigid_body* m_rb = m_chassis_rbinf->m_rb;
+        if ((~(m_rb->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         85, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        m_rb->m_t_vel.v = vel.v;
+        m_rb->m_a_vel.v = aVel.v;
+        float axis[3][3];
+        AnglesToAxis(&angles.v.m128_f32[0], axis);
+        m_rb->m_mat.x.v = _mm_setr_ps(axis[0][0], axis[0][1], axis[0][2], 0.0f);
+        m_rb->m_mat.y.v = _mm_setr_ps(axis[1][0], axis[1][1], axis[1][2], 0.0f);
+        m_rb->m_mat.z.v = _mm_setr_ps(axis[2][0], axis[2][1], axis[2][2], 0.0f);
+        // chassis offset from rb origin (rb_extra_info +0x30 = m_transform.w)
+        __m128 chassis_offset = m_chassis_rbinf->m_transform.w.v;
+        math::Position3 predicted;
+        predicted.v = _mm_sub_ps(position.v, chassis_offset);
+        __m128 diff = _mm_sub_ps(m_rb->m_mat.w.v, predicted.v);
+        __m128 d2 = _mm_mul_ps(diff, diff);
+        float dist_sq = d2.m128_f32[0]
+                        + (_mm_shuffle_ps(d2, d2, 85).m128_f32[0]
+                           + _mm_shuffle_ps(d2, d2, 170).m128_f32[0]);
+        if (sqrtf(dist_sq) > 2.0f)
+            m_rb->m_mat.w.v = predicted.v;
+    }
 }
 
 // ea: 0x70C350
