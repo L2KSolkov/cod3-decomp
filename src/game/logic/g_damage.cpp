@@ -864,16 +864,16 @@ void G_RunMissile(Entity* ent, int msec)
         weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(ent->s.weapon);
         // debug rendering (RGBA color = 1.0 alpha)
         float col[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        DebugRender::RenderSphere(&ent->r.currentOrigin,
+        DebugRender::RenderSphere(ent->r.currentOrigin,
                                   (1.0f - ((float)(g_player_maxhealth.integer - ent->health)
                                             / (float)g_player_maxhealth.integer)) * 1.0f,
-                                  col);
+                                  Color(col[0], col[1], col[2], col[3]));
         if (InfoForWeapon->iExplosionRadius != 0)
         {
             float col2[4] = { 1.0f, 0.0f, 0.1f, 1.0f };
-            DebugRender::RenderBox(&ent->r.absmin, &ent->r.absmax, col2);
+            DebugRender::RenderBox(ent->r.absmin, ent->r.absmax, Color(col2[0], col2[1], col2[2], col2[3]));
             float col3[4] = { 1.0f, 0.0f, 0.30000001f, 1.0f };
-            DebugRender::RenderSphere(&ent->r.currentOrigin, (float)InfoForWeapon->iExplosionRadius, col3);
+            DebugRender::RenderSphere(ent->r.currentOrigin, (float)InfoForWeapon->iExplosionRadius, Color(col3[0], col3[1], col3[2], col3[3]));
         }
     }
     if (ent->methodOfDeath == 3)

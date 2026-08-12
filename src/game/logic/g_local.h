@@ -15,6 +15,7 @@
 #include "game/sv/sv_decl.h"
 #include "game/sv/sv_stubs.h"
 #include "game/core/core_types.h"
+#include "core/color.h"
 #include "engine/broc_types.h"
 
 #include <stddef.h>
@@ -2163,18 +2164,28 @@ void  G_GrenadeTouchTriggerDamage(Entity* pActivator, const math::Position3* vSt
 Entity* G_TempEntity(const float* origin, int event);
 void  G_MissileImpact(Entity* ent, trace_t* trace, const float* dir, const float* vOldOrigin);
 extern Entity* g_path_owner;
-namespace DebugRender {
-void RenderSphere(const math::Position3* pos, float radius, const float* argb_color);
-void RenderBox(const math::Position3* bmin, const math::Position3* bmax, const float* col);
-void RenderQuad2D(float l, float t, float r, float b, float z,
-                  const float* col);  // render.o
-void RenderText(const char* str, int x, int y, const float* col,
-                float depth, float size);  // render.o
-void RenderText3D(const math::Position3* wpos, const float* col,
-                  float scale, const char* format, ...);  // render.o
-void RenderLine(const math::Position3* pt1, const math::Position3* pt2,
-                const float* col, float thickness);  // render.o
-}
+// DebugRender - render.o class with static draw helpers (binary mangling
+// ?RenderX@DebugRender@@SAX...; takes math::Position3 const& + global Color).
+class DebugRender {
+public:
+    static void RenderSphere(const math::Position3& pos, float radius,
+                             const Color& color);  // render.o 0xAC3FF0
+    static void RenderBox(const math::Position3& bmin,
+                          const math::Position3& bmax,
+                          const Color& col);  // render.o 0xAC4A60
+    static void RenderQuad2D(float l, float t, float r, float b, float z,
+                             const Color& col);  // render.o 0xAAC730
+    static void RenderText(const char* str, int x, int y, const Color& col,
+                           float depth, float size);  // render.o 0xAAC7D0
+    static void RenderText3D(const math::Position3& wpos, const Color& col,
+                             float scale, const char* format,
+                             ...);  // render.o 0xAB36C0
+    static void RenderLine(const math::Position3& pt1,
+                           const math::Position3& pt2, const Color& col,
+                           float thickness);  // render.o 0xAC7AB0
+    static void RenderAxis(const math::Mat43& mat, float length,
+                           float width);  // render.o 0xAC8870
+};
 void  G_MissileTrace(trace_t* results, const math::Position3* start,
                      const math::Position3* end,
                      DbLinkedHandle<EntityHandleDb, Entity> passEntity,

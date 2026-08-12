@@ -11913,7 +11913,7 @@ void CGBankManager::DebugRender()
                                     float ncol[4] = { 1.0f, 0.0f, 0.0f,
                                                       1.0f };
                                     DebugRender::RenderLine(
-                                        &center, &end, ncol, 5.0f);
+                                        center, end, Color(ncol[0], ncol[1], ncol[2], ncol[3]), 5.0f);
                                 }
                             }
                             unsigned char* v58 =
@@ -11967,7 +11967,7 @@ void CGBankManager::DebugRender()
                             bmax.v = _mm_add_ps(center.v, boxr.v);
                             math::Position3 bmin;
                             bmin.v = _mm_sub_ps(center.v, boxr.v);
-                            DebugRender::RenderBox(&bmin, &bmax, &boxcol.r);
+                            DebugRender::RenderBox(bmin, bmax, boxcol);
                         }
                     }
                 }
@@ -12595,7 +12595,7 @@ void CGBankManager::DebugRender()
                         float b = t + sample_size * scale;
                         DebugRender::RenderQuad2D(l + offs, t + offs,
                                                   r - offs, b - offs, 1.0f,
-                                                  col);
+                                                  Color(col[0], col[1], col[2], col[3]));
                         sprintf(buf, "%d", pls);
                         unsigned int wText = 0;
                         unsigned int hText = 0;
@@ -12613,12 +12613,12 @@ void CGBankManager::DebugRender()
                                               0.98039216f, 1.0f };
                             DebugRender::RenderText(
                                 buf, (int)xc,
-                                (int)(yc - (float)(hText >> 1)), wcol,
+                                (int)(yc - (float)(hText >> 1)), Color(wcol[0], wcol[1], wcol[2], wcol[3]),
                                 0.0f, fscale_0);
                             sprintf(buf, "%d", brushes);
                             DebugRender::RenderText(
                                 buf, (int)xc,
-                                (int)(yc + (float)(hText >> 1)), wcol,
+                                (int)(yc + (float)(hText >> 1)), Color(wcol[0], wcol[1], wcol[2], wcol[3]),
                                 0.0f, fscale_0);
                         }
                     }
@@ -12626,13 +12626,13 @@ void CGBankManager::DebugRender()
                 float linecol[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
                 DebugRender::RenderQuad2D(basex, basey,
                                           psize + basex, basey - psize,
-                                          1.0f, linecol);
+                                          1.0f, Color(linecol[0], linecol[1], linecol[2], linecol[3]));
                 float bgcol[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
                 DebugRender::RenderQuad2D(statsbasex - 10.0f,
                                           statsbasey - 10.0f,
                                           statsbasex + 200.0f,
                                           statsbasey + 110.0f, 1.0f,
-                                          bgcol);
+                                          Color(bgcol[0], bgcol[1], bgcol[2], bgcol[3]));
                 unsigned int wFont = 0;
                 unsigned int hFont = 0;
                 nglGetStringDimensions(nglSysFont, &wFont, &hFont, fscale,
@@ -12642,7 +12642,7 @@ void CGBankManager::DebugRender()
                         pos.v.m128_f32[2]);
                 float wcol[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
                 DebugRender::RenderText(buf, (int)statsbasex,
-                                        (int)statsbasey, wcol, 0.0f,
+                                        (int)statsbasey, Color(wcol[0], wcol[1], wcol[2], wcol[3]), 0.0f,
                                         fscale);
                 int brushes = 0;
                 int triCount = 0;
@@ -12778,23 +12778,27 @@ void CGBankManager::DebugRender()
                 sprintf(buf, "brushes: %d", brushes);
                 DebugRender::RenderText(
                     buf, (int)statsbasex,
-                    (int)statsbasey + (int)hFont, wcol, 0.0f, fscale);
+                    (int)statsbasey + (int)hFont, Color(wcol[0], wcol[1], wcol[2], wcol[3]), 0.0f, fscale);
                 sprintf(buf, "polies: %d", triCount);
                 DebugRender::RenderText(
                     buf, (int)statsbasex,
-                    (int)statsbasey + 2 * (int)hFont, wcol, 0.0f, fscale);
+                    (int)statsbasey + 2 * (int)hFont, Color(wcol[0], wcol[1], wcol[2], wcol[3]), 0.0f,
+                    fscale);
                 sprintf(buf, "box size(units): %d", sample_size);
                 DebugRender::RenderText(
                     buf, (int)statsbasex,
-                    (int)statsbasey + 3 * (int)hFont, wcol, 0.0f, fscale);
+                    (int)statsbasey + 3 * (int)hFont, Color(wcol[0], wcol[1], wcol[2], wcol[3]), 0.0f,
+                    fscale);
                 sprintf(buf, "brush limit: %d", max_thresh.first);
                 DebugRender::RenderText(
                     buf, (int)statsbasex,
-                    (int)statsbasey + 4 * (int)hFont, wcol, 0.0f, fscale);
+                    (int)statsbasey + 4 * (int)hFont, Color(wcol[0], wcol[1], wcol[2], wcol[3]), 0.0f,
+                    fscale);
                 sprintf(buf, "polies limit: %d", max_thresh.second);
                 DebugRender::RenderText(
                     buf, (int)statsbasex,
-                    (int)statsbasey + 5 * (int)hFont, wcol, 0.0f, fscale);
+                    (int)statsbasey + 5 * (int)hFont, Color(wcol[0], wcol[1], wcol[2], wcol[3]), 0.0f,
+                    fscale);
             }
         }
     }

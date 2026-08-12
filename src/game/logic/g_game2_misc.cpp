@@ -187,8 +187,6 @@ bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
                                const float* sphereOrigin, float sphereRadius)
 {
     struct DebugColor { float r, g, b, a; };
-    extern void DebugRender_RenderLine(const math::Position3* pt1,
-        const math::Position3* pt2, const float* col, float thickness);
     extern float VectorNormalize(float* v);  // ?VectorNormalize (g.o)
 
     if (g_drawSmokeGren.integer == 2)
@@ -202,7 +200,8 @@ bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
         p2.v.m128_f32[0] = endPoint[0];
         p2.v.m128_f32[1] = endPoint[1];
         p2.v.m128_f32[2] = endPoint[2];
-        DebugRender_RenderLine(&p1, &p2, (const float*)&col, 5.0f);
+        DebugRender::RenderLine(p1, p2,
+                                Color(col.r, col.g, col.b, col.a), 5.0f);
     }
     float segDir[3];
     segDir[0] = endPoint[0] - startPoint[0];
@@ -1804,8 +1803,6 @@ bool SmokeGrenadeMgr::EntityCanSeeEntity(const Entity* ent,
 // ============================================================================
 extern unsigned int apsEffect_IsDone(apsEffect* self);  // ?IsDone@apsEffect
 extern void apsEffect_GetBounds(apsEffect* self, apsBounds& iBounds);
-extern void DebugRender_RenderSphere(const math::Position3* pos, float radius,
-                                     const float* argb_color);
 extern void ae_vector_erase(void* self, int idx);  // ?erase@?$ae_vector@USmokeGrenadeInfo
 void ae_vector_erase(void* self, int idx)
 {
@@ -1829,9 +1826,9 @@ void SmokeGrenadeMgr::Update(float deltaT)
             float color[4] = { 0.6f, 0.5f, 0.5f, 1.0f };
             math::Position3 center;
             center.v = sph.mSphere.v;
-            DebugRender_RenderSphere(&center,
-                                     sph.mSphere.v.m128_f32[3] * 0.33333334f,
-                                     color);
+            DebugRender::RenderSphere(
+                center, sph.mSphere.v.m128_f32[3] * 0.33333334f,
+                Color(color[0], color[1], color[2], color[3]));
         }
     }
     int v16 = mSmokeGrenadeInfoList.mSize;

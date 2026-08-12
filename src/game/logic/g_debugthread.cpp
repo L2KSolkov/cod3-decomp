@@ -1805,7 +1805,7 @@ void AnimationPlayer::DebugDump(Entity* ent)
                       *(int*)(*(char**)st->instance + 52) & 1,
                       st->alpha, st->t);
             DebugRender::RenderText(textBuff, 10, 75 + (self->QueueSize - 1 - v3) * 20,
-                                    col, 0.0f, 1.125f);
+                                    Color(col[0], col[1], col[2], col[3]), 0.0f, 1.125f);
         }
     }
     // Partial anim states
@@ -1822,7 +1822,7 @@ void AnimationPlayer::DebugDump(Entity* ent)
                       AnimDebugTypeString(ps->type),
                       *(int*)(*(char**)ps->base.instance + 52) & 1,
                       ps->base.alpha, ps->base.t);
-            DebugRender::RenderText(textBuff, 10, y, col, 0.0f, 1.125f);
+            DebugRender::RenderText(textBuff, 10, y, Color(col[0], col[1], col[2], col[3]), 0.0f, 1.125f);
             y += 20;
         }
         ps = ps->next;

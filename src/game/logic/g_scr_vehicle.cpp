@@ -6643,15 +6643,15 @@ void scr_vehicle_t::DebugRender()
             pos.v.m128_f32[2] = mat.origin[2];
             pos.v.m128_f32[3] = 0.0f;
             float red[] = { 1.0f, 0.0f, 0.0f, 1.0f };
-            DebugRender::RenderSphere(&pos, 3.0f, red);
+            DebugRender::RenderSphere(pos, 3.0f, Color(red[0], red[1], red[2], red[3]));
             float blue[] = { 0.0f, 0.0f, 1.0f, 0.1f };
-            DebugRender::RenderSphere(&pos, 50.0f, blue);
+            DebugRender::RenderSphere(pos, 50.0f, Color(blue[0], blue[1], blue[2], blue[3]));
         }
         ++entryPoint;
     }
     Entity* ent = HandleDbToEnt(mEntity);
     float yellow[] = { 1.0f, 1.0f, 0.0f, 0.1f };
-    DebugRender::RenderSphere(&ent->r.currentOrigin, mUseRadius, yellow);
+    DebugRender::RenderSphere(ent->r.currentOrigin, mUseRadius, Color(yellow[0], yellow[1], yellow[2], yellow[3]));
     if (s_vehicleInfos[infoIdx]->type == 2)
     {
         int seatBone = seats[7].boneIndex;
@@ -6666,7 +6666,7 @@ void scr_vehicle_t::DebugRender()
             pos.v.m128_f32[2] = mat.origin[2];
             pos.v.m128_f32[3] = 0.0f;
             float white[] = { 1.0f, 0.0f, 0.0f, 1.0f };
-            DebugRender::RenderSphere(&pos, 5.0f, white);
+            DebugRender::RenderSphere(pos, 5.0f, Color(white[0], white[1], white[2], white[3]));
         }
     }
 }

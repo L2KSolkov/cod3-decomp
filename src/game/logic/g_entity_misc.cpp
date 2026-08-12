@@ -1558,53 +1558,42 @@ void DynamicDecalMgr::Add(void* texture, float zBias, bool alphaBlend,
 }
 
 // DebugRender helpers (render.o; stubs, port later)
-namespace DebugRender {
-void RenderBox(const math::Position3* mins, const math::Position3* maxs,
-               const float* color)
+void DebugRender::RenderBox(const math::Position3& mins,
+                            const math::Position3& maxs, const Color& color)
 {
     (void)mins; (void)maxs; (void)color;
 }
-void RenderLine(const math::Position3* pt1, const math::Position3* pt2,
-                const float* color, float thickness)
+void DebugRender::RenderLine(const math::Position3& pt1,
+                             const math::Position3& pt2, const Color& color,
+                             float thickness)
 {
     (void)pt1; (void)pt2; (void)color; (void)thickness;
 }
-void RenderQuad2D(float x, float y, float w, float h, float z,
-                  const float* color)
+void DebugRender::RenderQuad2D(float x, float y, float w, float h, float z,
+                               const Color& color)
 {
     (void)x; (void)y; (void)w; (void)h; (void)z; (void)color;
 }
-void RenderSphere(const math::Position3* pos, float radius,
-                  const float* argb_color)
+void DebugRender::RenderSphere(const math::Position3& pos, float radius,
+                               const Color& color)
 {
-    (void)pos; (void)radius; (void)argb_color;
+    (void)pos; (void)radius; (void)color;
 }
-void RenderText(const char* text, int x, int y, const float* color,
-                float scaleX, float scaleY)
+void DebugRender::RenderText(const char* text, int x, int y,
+                             const Color& color, float scaleX, float scaleY)
 {
     (void)text; (void)x; (void)y; (void)color; (void)scaleX; (void)scaleY;
 }
-void RenderText3D(const math::Position3* pos, const float* color, float scale,
-                  const char* text, ...)
+void DebugRender::RenderText3D(const math::Position3& pos,
+                               const Color& color, float scale,
+                               const char* text, ...)
 {
     (void)pos; (void)color; (void)scale; (void)text;
 }
-}
-void DebugRender_RenderLine(const math::Position3* pt1,
-                            const math::Position3* pt2, const float* color,
-                            float thickness)
+void DebugRender::RenderAxis(const math::Mat43& mat, float length,
+                             float width)
 {
-    (void)pt1; (void)pt2; (void)color; (void)thickness;
-}
-void DebugRender_RenderSphere(const math::Position3* pos, float radius,
-                              const float* argb_color)
-{
-    (void)pos; (void)radius; (void)argb_color;
-}
-void DebugRender_RenderText(const char* text, int x, int y,
-                            const float* color, float scaleX, float scaleY)
-{
-    (void)text; (void)x; (void)y; (void)color; (void)scaleX; (void)scaleY;
+    (void)mat; (void)length; (void)width;
 }
 void DebugRender_AddRenderer(void* self, void (*fp)())
 {
@@ -3804,12 +3793,12 @@ void SoundDevice::DebugRender()
                                          ? nullptr
                                          : nslGetSourceName(mSource);
             DebugRender::RenderText(va("ext: %s %1.2f", SourceName, param),
-                                    10, 70, col, 0.0f, 1.0f);
+                                    10, 70, Color(col[0], col[1], col[2], col[3]), 0.0f, 1.0f);
         }
         else
         {
             float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
-            DebugRender::RenderText("ext: <no ext music>", 10, 70, col,
+            DebugRender::RenderText("ext: <no ext music>", 10, 70, Color(col[0], col[1], col[2], col[3]),
                                     0.0f, 1.0f);
         }
         MusicMgr* v13 = MusicMgr::sInst;
@@ -3833,12 +3822,12 @@ void SoundDevice::DebugRender()
                                   ? nullptr
                                   : nslGetSourceName(v17);
             DebugRender::RenderText(va("int: %s %1.2f", v22, param),
-                                    10, 85, col, 0.0f, 1.0f);
+                                    10, 85, Color(col[0], col[1], col[2], col[3]), 0.0f, 1.0f);
         }
         else
         {
             float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
-            DebugRender::RenderText("int: <no int music>", 10, 85, col,
+            DebugRender::RenderText("int: <no int music>", 10, 85, Color(col[0], col[1], col[2], col[3]),
                                     0.0f, 1.0f);
         }
     }
@@ -3877,19 +3866,19 @@ void SoundDevice::DebugRender()
             }
         }
         float col[4] = { 0.25f, 0.25f, 1.0f, 1.0f };
-        DebugRender::RenderText("Active sounds", 10, 20, col, 0.0f, 1.0f);
+        DebugRender::RenderText("Active sounds", 10, 20, Color(col[0], col[1], col[2], col[3]), 0.0f, 1.0f);
         int v33 = 32;
         for (unsigned int i = 0; i < (unsigned int)streams.size(); ++i)
         {
             float cola[4] = { 1.0f, 0.25f, 0.25f, 0.25f };
             DebugRender::RenderText((const char*)streams[i].mBuff, 10, v33,
-                                    cola, 0.0f, 1.0f);
+                                    Color(cola[0], cola[1], cola[2], cola[3]), 0.0f, 1.0f);
             v33 += 12;
         }
         for (unsigned int j = 0; j < (unsigned int)spu.size(); ++j)
         {
             float colb[4] = { 0.25f, 1.0f, 0.25f, 0.25f };
-            DebugRender::RenderText((const char*)spu[j].mBuff, 10, v33, colb,
+            DebugRender::RenderText((const char*)spu[j].mBuff, 10, v33, Color(colb[0], colb[1], colb[2], colb[3]),
                                     0.0f, 1.0f);
             v33 += 12;
         }
@@ -3905,7 +3894,7 @@ void SoundDevice::DebugRender()
             char buf[128];
             sprintf(buf, "Warning: %i streamed sounds", streamed);
             float colc[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-            DebugRender::RenderText(buf, 10, 20, colc, 0.0f, 1.0f);
+            DebugRender::RenderText(buf, 10, 20, Color(colc[0], colc[1], colc[2], colc[3]), 0.0f, 1.0f);
         }
         for (int m = 0; m < 512; ++m)
         {
@@ -3919,7 +3908,7 @@ void SoundDevice::DebugRender()
                 float white[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
                 ae_fixed_string<1024, unsigned short> ds =
                     this->mSounds[m].GetDebugString();
-                DebugRender::RenderText3D(&pos, white, 1.0f,
+                DebugRender::RenderText3D(pos, Color(white[0], white[1], white[2], white[3]), 1.0f,
                                           (const char*)ds.mBuff);
             }
         }
@@ -3934,13 +3923,13 @@ void SoundDevice::DebugRender()
             fwdEnd.v.m128_f32[1] += this->mDebugListenerForward[1] * 10.0f;
             fwdEnd.v.m128_f32[2] += this->mDebugListenerForward[2] * 10.0f;
             float colf[4] = { 1.0f, 1.0f, 0.0f, 0.5f };
-            DebugRender::RenderLine(&pos, &fwdEnd, colf, 0.05f);
+            DebugRender::RenderLine(pos, fwdEnd, Color(colf[0], colf[1], colf[2], colf[3]), 0.05f);
             math::Position3 upEnd = pos;
             upEnd.v.m128_f32[0] += this->mDebugListenerUp[0] * 10.0f;
             upEnd.v.m128_f32[1] += this->mDebugListenerUp[1] * 10.0f;
             upEnd.v.m128_f32[2] += this->mDebugListenerUp[2] * 10.0f;
             float colu[4] = { 0.0f, 1.0f, 1.0f, 0.5f };
-            DebugRender::RenderLine(&pos, &upEnd, colu, 0.05f);
+            DebugRender::RenderLine(pos, upEnd, Color(colu[0], colu[1], colu[2], colu[3]), 0.05f);
         }
     }
 }

@@ -1975,15 +1975,21 @@ void debug_render()
         pos.v.m128_f32[1] = debug_spheres.mElements[v2].y;
         pos.v.m128_f32[2] = debug_spheres.mElements[v2].z;
         pos.v.m128_f32[3] = 0.0f;
-        DebugRender::RenderSphere(&pos, debug_spheres.mElements[v2].radius,
-                                  debug_spheres.mElements[v2].color);
+        DebugRender::RenderSphere(pos, debug_spheres.mElements[v2].radius,
+                                  Color(debug_spheres.mElements[v2].color[0],
+                                        debug_spheres.mElements[v2].color[1],
+                                        debug_spheres.mElements[v2].color[2],
+                                        debug_spheres.mElements[v2].color[3]));
     }
     debug_spheres.mSize = 0;
     for (int v6 = 0; v6 < debug_aabbs.mSize; ++v6)
     {
-        DebugRender::RenderBox(&debug_aabbs.mElements[v6].bmin,
-                               &debug_aabbs.mElements[v6].bmax,
-                               debug_aabbs.mElements[v6].color);
+        DebugRender::RenderBox(debug_aabbs.mElements[v6].bmin,
+                               debug_aabbs.mElements[v6].bmax,
+                               Color(debug_aabbs.mElements[v6].color[0],
+                                     debug_aabbs.mElements[v6].color[1],
+                                     debug_aabbs.mElements[v6].color[2],
+                                     debug_aabbs.mElements[v6].color[3]));
     }
     debug_aabbs.mSize = 0;
 }

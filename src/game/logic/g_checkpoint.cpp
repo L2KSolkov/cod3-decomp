@@ -112,9 +112,6 @@ extern Entity* GetPlayer(int idx);  // ?GetPlayer@@YAPAVEntity@@H@Z (g.o)
 extern const PakInfoNode* PakManager_GetPakInfo(void* self, TPakId pakId);
     // ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@W4TPakId@@@Z
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
-extern void DebugRender_RenderText(const char* str, int x, int y,
-                                   const float* col, float depth,
-                                   float size);  // ?RenderText@DebugRender
 extern int gCurCheckpoint;       // @ 0xF4F44C
 extern int gDebounce;            // @ 0xF4F450
 
@@ -565,7 +562,11 @@ void RenderCheckpointMenu()
         strcpy(col, "fff?fff?fff?");
         ((unsigned char*)col)[4] = 0;
         *(unsigned short*)((char*)col + 4) = 16256;  // 0x3F80 (1.0f) hi
-        DebugRender_RenderText(buf, 32, 32, (const float*)col, 0.0f, 1.0f);
+        DebugRender::RenderText(
+            buf, 32, 32,
+            Color(*(const float*)(col + 0), *(const float*)(col + 4),
+                  *(const float*)(col + 8), *(const float*)(col + 12)),
+            0.0f, 1.0f);
         int locked_port = 0;
         if (controller::inst()->is_locked)
             locked_port = controller::inst()->locked_port;
