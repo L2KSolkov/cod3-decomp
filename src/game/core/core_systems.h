@@ -380,6 +380,8 @@ static_assert(sizeof(HandleDb) == 0x1044, "HandleDb size mismatch");
 // Size: 0xA380 - verified against IDA
 // ============================================================================
 struct EffectEventSys {
+    static void CreateInst();  // ?CreateInst@EffectEventSys@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@EffectEventSys@@SAXXZ (core.o)
     struct CachedQuery {
         BitSet<49>    mSpecifiedFields;  // +0x000
         BitSet<49>    mWeakFields;       // +0x008
@@ -550,6 +552,8 @@ struct RumbleEffect {
 static_assert(sizeof(RumbleEffect) == 0x40, "RumbleEffect size mismatch");
 
 struct RumbleManager {
+    static void CreateInst();  // ?CreateInst@RumbleManager@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@RumbleManager@@SAXXZ (core.o)
     struct InstanceHolder;
     static RumbleManager* Inst(int instance);  // ea: 0x004A9DA0
     RumbleEffectInstanceHandle mNextHandle;            // +0x00
@@ -694,6 +698,8 @@ struct ConfigStringBank {
 static_assert(sizeof(ConfigStringBank) == 0x1C, "ConfigStringBank size mismatch");
 
 struct ConfigStringManager {
+    static void CreateInst();  // ?CreateInst@ConfigStringManager@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@ConfigStringManager@@SAXXZ (core.o)
     unsigned char mData[0x190];  // InplaceAssetBankSet<ConfigStringBank>
     static ConfigStringManager* sInst;  // ?sInst@ConfigStringManager@@2PAV1@A (core.o @ 0x12F039C)
     void DecodeBank(const char* name, ConfigStringBank* data, int size,
@@ -967,6 +973,8 @@ struct AssetBankSet {
 static_assert(sizeof(AssetBankSet) == 0x4, "AssetBankSet size mismatch");
 
 struct CtrlIcon {
+    static void CreateInst();  // ?CreateInst@CtrlIcon@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@CtrlIcon@@SAXXZ (core.o)
     char mScratchBuffer[2048];  // +0x00
     bool ContainsIconTag(const char* text);
     CtrlIcon* TranslateIconTag(const char* text);
@@ -983,6 +991,8 @@ struct DialogueBank {
 static_assert(sizeof(DialogueBank) == 0x1C, "DialogueBank size mismatch");
 
 struct DialogueManager : AssetBankSet {
+    static void CreateInst();  // ?CreateInst@DialogueManager@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@DialogueManager@@SAXXZ (core.o)
     DialogueBank* mBanks[99];  // +0x04 ae_array<DialogueBank*,99>
     void UnloadBank(TPakId pakId);
     void DecodeDialogueBank(const char* name, DialogueBank* data, int size,

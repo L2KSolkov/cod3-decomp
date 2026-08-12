@@ -50,6 +50,8 @@ struct PakInfoNode {
 
 class PakManager {
 public:
+    static void CreateInst();  // ?CreateInst@PakManager@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@PakManager@@SAXXZ (core.o)
     struct TThreadedPakContextStack {
         uint32_t key;            // +0x00 thread id
         TPakId stack[128];       // +0x04
@@ -110,11 +112,41 @@ public:
     TPakId SyncLoadPak(EPakType t, const char* path, NumBanks banks);
     // - ea: 0x665D10 (stub)
     TPakId SyncLoadPak(const PakInfoNode* cpak);
+    // - ea: 0x665480 (stub until PakFile/BankManager land)
+    void* MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap);
+    // - ea: 0x6654D0 (stub)
+    void MemFree(TPakId id, void* ptr, bool bUseActorHeap);
+    // - ea: 0x665520 (stub)
+    void* MemAlign(TPakId id, unsigned int align, unsigned int size);
+    // - ea: 0x6656E0 (stub)
+    void FillBanks();
+    // - ea: 0x6656C0 (stub)
+    void UnloadAll();
+    // - ea: 0x665760 (stub)
+    void ResetPriorities(bool user_distances_also);
+    // - ea: 0x665670 (stub)
+    void SyncUnloadPak(TPakId id);
+    // - ea: 0x665880 (stub)
+    void Update(bool calledFromMovie);
+    // - ea: 0x665B90 (stub)
+    const PakInfoNode* SyncLoadFLI(EPakType t, const char* path);
     // - ea: 0x665900 (stub)
     const PakInfoNode* GetPakInfo(TPakId pakId) const;
     // - ea: 0x665960 (stub)
     const PakInfoNode* GetPakInfo(const char* long_name) const;
 };
+
+// ea: 0x8A39E0 (core.o inline)
+void PakManager::CreateInst()
+{
+    // stub: sInst = new PakManager
+}
+
+// ea: 0x8D4D40 (core.o inline)
+void PakManager::DeleteInst()
+{
+    // stub
+}
 
 unsigned int PakManager::sComputeDistanceKey = 1;
 float PakManager::sBrocPercentage = 0.1f;
@@ -255,6 +287,49 @@ const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
 {
     (void)long_name;
     return nullptr;
+}
+void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
+{
+    (void)id; (void)size; (void)bUseActorHeap;
+    return nullptr;
+}
+void PakManager::MemFree(TPakId id, void* ptr, bool bUseActorHeap)
+{
+    (void)id; (void)ptr; (void)bUseActorHeap;
+}
+void* PakManager::MemAlign(TPakId id, unsigned int align, unsigned int size)
+{
+    (void)id; (void)align; (void)size;
+    return nullptr;
+}
+void PakManager::FillBanks()
+{
+    // stub
+}
+void PakManager::UnloadAll()
+{
+    // stub
+}
+void PakManager::ResetPriorities(bool user_distances_also)
+{
+    (void)user_distances_also;
+}
+void PakManager::SyncUnloadPak(TPakId id)
+{
+    (void)id;
+}
+void PakManager::Update(bool calledFromMovie)
+{
+    (void)calledFromMovie;
+}
+const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
+{
+    (void)t; (void)path;
+    return nullptr;
+}
+void PakManager_MemFree(TPakId id, void* ptr, bool bUseActorHeap)
+{
+    (void)id; (void)ptr; (void)bUseActorHeap;
 }
 
 // ============================================================================

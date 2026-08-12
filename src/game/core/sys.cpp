@@ -18,6 +18,7 @@ public:
     static PakManager* sInst;
     TPakId GetTopContext() const;
     void* MemAlign(TPakId id, unsigned int align, unsigned int size);
+    void MemFree(TPakId id, void* ptr, bool bUseActorHeap);
 };  // ?sInst@PakManager@@2PAV1@A
 
 
@@ -60,11 +61,6 @@ extern nglTexture* nglGetTexture(const tlFixedString& fileName);
 extern void PrintPakNames();
 extern void SpinnerDrawFrameWithLoading(bool bEndFrame);
 extern int gLensAlphaAmount;
-extern int PakManager_GetTopContext(void* self);
-extern void* PakManager_MemAlign(void* self, int id, unsigned int align,
-                                 unsigned int size);
-extern void PakManager_MemFree(void* self, int id, void* ptr,
-                               bool bUseActorHeap);
 extern int g_bDObjInited;
 void* sSpinnerFrames[8];   // ?sSpinnerFrames@@3PAPAUnglTexture@@A (core.o)
 void* dword_F00EB0;        // core.o BSS
@@ -238,7 +234,7 @@ void TlSystemCallbacks::MemFree(void* ptr)
     else
     {
         int TopContext = ((PakManager*)v1)->GetTopContext();
-        PakManager_MemFree(v1, TopContext, ptr, false);
+        PakManager::sInst->MemFree((TPakId)TopContext, ptr, false);
     }
 }
 

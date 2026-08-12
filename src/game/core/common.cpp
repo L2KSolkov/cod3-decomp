@@ -23,7 +23,13 @@ struct GamePause { static bool IsGamePaused(int client); };
 
 
 // Minimal view of SoundDevice (full class in game/sv/sv_stubs.h).
-class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float delta); };
+class SoundDevice {
+public:
+    static SoundDevice* sInst;
+    void FrameAdvance(float delta);
+    static void CreateInst();  // ?CreateInst@SoundDevice@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@SoundDevice@@SAXXZ (core.o)
+};
 
 
 struct NumBanks;
@@ -35,6 +41,8 @@ public:
     const PakInfoNode* GetPakInfo(const char* long_name) const;
     void SetUserDistance(const PakInfoNode* cpak, float dist);
     TPakId SyncLoadPak(EPakType t, const char* path, NumBanks banks);
+    static void CreateInst();  // ?CreateInst@PakManager@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@PakManager@@SAXXZ (core.o)
 };  // ?sInst@PakManager@@2PAV1@A
 
 
@@ -42,6 +50,8 @@ public:
 class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+    static void CreateInst();  // ?CreateInst@InteractionController@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@InteractionController@@SAXXZ (core.o)
 };
 
 
@@ -438,83 +448,38 @@ extern void SetupActorHeap();
 extern int gNflMediaId;
 enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };
 extern unsigned int nflFileExists(nflMediaID mediaID, const char* filename);
-extern void PakManager_CreateInst();
-extern void PakManager_DeleteInst();
-extern void BankManager_CreateInst();
-extern void BankManager_DeleteInst();
-extern void InstanceBankMgr_CreateInst();
-extern void InstanceBankMgr_DeleteInst();
-extern void LightGridMgr_CreateInst();
-extern void LightGridMgr_DeleteInst();
-extern void XModelManager_CreateInst();
-extern void XModelManager_DeleteInst();
-extern void XModelPartsManager_CreateInst();
-extern void XModelPartsManager_DeleteInst();
-extern void DestructibleBankManager_CreateInst();
-extern void DestructibleBankManager_DeleteInst();
-extern void PhysDataBankManager_CreateInst();
-extern void PhysDataBankManager_DeleteInst();
-extern void AITypeManager_CreateInst();
-extern void AITypeManager_DeleteInst();
-extern void SoundDevice_CreateInst();
-extern void SoundDevice_DeleteInst();
-extern void AudioBankMgr_CreateInst();
-extern void AudioBankMgr_DeleteInst();
-extern void SoundMediaMgr_CreateInst();
-extern void SoundMediaMgr_DeleteInst();
-extern void MusicMgr_CreateInst();
-extern void MusicMgr_DeleteInst();
-extern void StreamZoneManager_CreateInst();
-extern void StreamZoneManager_DeleteInst();
-extern void DbTablesetMgr_CreateInst();
-extern void DbTablesetMgr_DeleteInst();
-extern void EffectEventSys_CreateInst();
-extern void EffectEventSys_DeleteInst();
-extern void GdbFileManager_CreateInst();
-extern void GdbFileManager_DeleteInst();
-extern void DialogueManager_CreateInst();
-extern void DialogueManager_DeleteInst();
-extern void EntityManager_CreateInst();
-extern void EntityManager_DeleteInst();
-extern void SceneManager_CreateInst();
-extern void SceneManager_DeleteInst();
-extern void ConfigStringManager_CreateInst();
-extern void ConfigStringManager_DeleteInst();
-extern void PathNodeMgr_CreateInst();
-extern void PathNodeMgr_DeleteInst();
-extern void STBManager_CreateInst();
-extern void STBManager_DeleteInst();
-extern void CtrlIcon_CreateInst();
-extern void CtrlIcon_DeleteInst();
-extern void MultiplayerMgr_CreateInst();
-extern void MultiplayerMgr_DeleteInst();
-extern void CheckpointMgr_CreateInst();
-extern void CheckpointMgr_DeleteInst();
-extern void SplineMgr_CreateInst();
-extern void SplineMgr_DeleteInst();
-extern void SmokeGrenadeMgr_CreateInst();
-extern void SmokeGrenadeMgr_DeleteInst();
-extern void CGBankManager_CreateInst();
-extern void CGBankManager_DeleteInst();
-extern void DCGBankManager_CreateInst();
-extern void DCGBankManager_DeleteInst();
-extern void AnimBankManager_CreateInst();
-extern void RumbleManager_CreateInst();
-extern void RumbleManager_DeleteInst();
-void InteractionController_CreateInst()
-{
-}
-void InteractionController_DeleteInst()
-{
-}
-extern void BinFileManager_CreateInst();
-extern void BinFileManager_DeleteInst();
-extern void CurveManager_CreateInst();
-extern void CurveManager_DeleteInst();
-extern void PlayerAnimMgr_CreateInst();
-extern void PlayerAnimMgr_DeleteInst();
-extern void DynamicDecalMgr_CreateInst();
-extern void DynamicDecalMgr_DeleteInst();
+// Minimal singleton views (real symbols are static members, core.o; stub
+// definitions live in stubs_game.cpp until the classes are ported).
+class BankManager { public: static void CreateInst(); static void DeleteInst(); };
+class InstanceBankMgr { public: static void CreateInst(); static void DeleteInst(); };
+class LightGridMgr { public: static void CreateInst(); static void DeleteInst(); };
+class XModelManager { public: static void CreateInst(); static void DeleteInst(); };
+class XModelPartsManager { public: static void CreateInst(); static void DeleteInst(); };
+class DestructibleBankManager { public: static void CreateInst(); static void DeleteInst(); };
+class PhysDataBankManager { public: static void CreateInst(); static void DeleteInst(); };
+class AITypeManager { public: static void CreateInst(); static void DeleteInst(); };
+class AudioBankMgr { public: static void CreateInst(); static void DeleteInst(); };
+class SoundMediaMgr { public: static void CreateInst(); static void DeleteInst(); };
+class MusicMgr { public: static void CreateInst(); static void DeleteInst(); };
+class DbTablesetMgr { public: static void CreateInst(); static void DeleteInst(); };
+class GdbFileManager { public: static void CreateInst(); static void DeleteInst(); };
+class EntityManager { public: static void CreateInst(); static void DeleteInst(); };
+class SceneManager { public: static void CreateInst(); static void DeleteInst(); };
+class PathNodeMgr { public: static void CreateInst(); static void DeleteInst(); };
+class STBManager { public: static void CreateInst(); static void DeleteInst(); };
+class MultiplayerMgr { public: static void CreateInst(); static void DeleteInst(); };
+class CheckpointMgr { public: static void CreateInst(); static void DeleteInst(); };
+class SplineMgr { public: static void CreateInst(); static void DeleteInst(); };
+class SmokeGrenadeMgr { public: static void CreateInst(); };
+class CGBankManager { public: static void CreateInst(); static void DeleteInst(); };
+class DCGBankManager { public: static void CreateInst(); static void DeleteInst(); };
+class AnimBankManager { public: static void CreateInst(); };
+class StreamZoneManager { public: static void CreateInst(); static void DeleteInst(); };
+class BinFileManager { public: static void CreateInst(); static void DeleteInst(); };
+class CurveManager { public: static void CreateInst(); static void DeleteInst(); };
+class PlayerAnimMgr { public: static void CreateInst(); static void DeleteInst(); };
+class DynamicDecalMgr { public: static void CreateInst(); static void DeleteInst(); };
+class TestFPS { public: static void CreateInst(); static void DeleteInst(); };
 extern void InitLights();
 extern void TimerRenderBars_Init(void* self);
 extern void* TimerRenderBars_sInst;
@@ -533,8 +498,6 @@ extern void DebugDumpAnims();
 extern void rb_vehicle_debug_render_all();
 extern void physics_debug_render();
 extern void fx_debug_render();
-extern void TestFPS_CreateInst();
-extern void TestFPS_DeleteInst();
 extern void GlobalPakLoadCallback(float progress);
 extern void PakManager_SyncLoadPak(void* self, int pak_type, const char* path,
                                   void* num_banks);
@@ -2350,46 +2313,46 @@ void Com_Init(char* commandLine)
     SEH_UpdateLanguageInfo();
     MI_ResetMapList();
     controller::inst();
-    PakManager_CreateInst();
-    BankManager_CreateInst();
-    InstanceBankMgr_CreateInst();
-    LightGridMgr_CreateInst();
-    XModelManager_CreateInst();
-    XModelPartsManager_CreateInst();
-    DestructibleBankManager_CreateInst();
-    PhysDataBankManager_CreateInst();
-    AITypeManager_CreateInst();
-    SoundDevice_CreateInst();
-    AudioBankMgr_CreateInst();
-    SoundMediaMgr_CreateInst();
-    MusicMgr_CreateInst();
-    StreamZoneManager_CreateInst();
-    DbTablesetMgr_CreateInst();
-    EffectEventSys_CreateInst();
-    GdbFileManager_CreateInst();
-    DialogueManager_CreateInst();
-    EntityManager_CreateInst();
-    SceneManager_CreateInst();
-    ConfigStringManager_CreateInst();
-    PathNodeMgr_CreateInst();
-    STBManager_CreateInst();
-    CtrlIcon_CreateInst();
-    MultiplayerMgr_CreateInst();
-    CheckpointMgr_CreateInst();
-    SplineMgr_CreateInst();
-    SmokeGrenadeMgr_CreateInst();
+    PakManager::CreateInst();
+    BankManager::CreateInst();
+    InstanceBankMgr::CreateInst();
+    LightGridMgr::CreateInst();
+    XModelManager::CreateInst();
+    XModelPartsManager::CreateInst();
+    DestructibleBankManager::CreateInst();
+    PhysDataBankManager::CreateInst();
+    AITypeManager::CreateInst();
+    SoundDevice::CreateInst();
+    AudioBankMgr::CreateInst();
+    SoundMediaMgr::CreateInst();
+    MusicMgr::CreateInst();
+    StreamZoneManager::CreateInst();
+    DbTablesetMgr::CreateInst();
+    EffectEventSys::CreateInst();
+    GdbFileManager::CreateInst();
+    DialogueManager::CreateInst();
+    EntityManager::CreateInst();
+    SceneManager::CreateInst();
+    ConfigStringManager::CreateInst();
+    PathNodeMgr::CreateInst();
+    STBManager::CreateInst();
+    CtrlIcon::CreateInst();
+    MultiplayerMgr::CreateInst();
+    CheckpointMgr::CreateInst();
+    SplineMgr::CreateInst();
+    SmokeGrenadeMgr::CreateInst();
     _controlfp(0x300u, 0x300u);
     _controlfp(0, 0);
     PhysInit();
-    CGBankManager_CreateInst();
-    DCGBankManager_CreateInst();
-    AnimBankManager_CreateInst();
-    RumbleManager_CreateInst();
-    InteractionController_CreateInst();
-    BinFileManager_CreateInst();
-    CurveManager_CreateInst();
-    PlayerAnimMgr_CreateInst();
-    DynamicDecalMgr_CreateInst();
+    CGBankManager::CreateInst();
+    DCGBankManager::CreateInst();
+    AnimBankManager::CreateInst();
+    RumbleManager::CreateInst();
+    InteractionController::CreateInst();
+    BinFileManager::CreateInst();
+    CurveManager::CreateInst();
+    PlayerAnimMgr::CreateInst();
+    DynamicDecalMgr::CreateInst();
     InitLights();
     gDoNotPlayCampaignMovies = 0;
     TimerRenderBars_Init(TimerRenderBars_sInst);
@@ -2402,7 +2365,7 @@ void Com_Init(char* commandLine)
     DebugRender_AddRenderer(DebugRender_sInst, (void*)rb_vehicle_debug_render_all);
     DebugRender_AddRenderer(DebugRender_sInst, (void*)physics_debug_render);
     DebugRender_AddRenderer(DebugRender_sInst, (void*)fx_debug_render);
-    TestFPS_CreateInst();
+    TestFPS::CreateInst();
     CL_PreAllocStrings();
     if (nflFileExists((nflMediaID)gNflMediaId, "debug.cod"))
     {
@@ -2527,42 +2490,42 @@ void Com_Init(char* commandLine)
 void Com_Shutdown()
 {
     WheelMarkMgr_Exit();
-    TestFPS_DeleteInst();
-    MultiplayerMgr_DeleteInst();
-    PlayerAnimMgr_DeleteInst();
-    InteractionController_DeleteInst();
-    BinFileManager_DeleteInst();
-    CurveManager_DeleteInst();
-    CtrlIcon_DeleteInst();
-    CheckpointMgr_DeleteInst();
-    SplineMgr_DeleteInst();
-    STBManager_DeleteInst();
-    PathNodeMgr_DeleteInst();
-    ConfigStringManager_DeleteInst();
-    EntityManager_DeleteInst();
-    SceneManager_DeleteInst();
-    CGBankManager_DeleteInst();
-    DCGBankManager_DeleteInst();
-    DialogueManager_DeleteInst();
-    EffectEventSys_DeleteInst();
-    GdbFileManager_DeleteInst();
-    DbTablesetMgr_DeleteInst();
-    StreamZoneManager_DeleteInst();
-    MusicMgr_DeleteInst();
-    SoundMediaMgr_DeleteInst();
-    AudioBankMgr_DeleteInst();
-    SoundDevice_DeleteInst();
-    XModelPartsManager_DeleteInst();
-    XModelManager_DeleteInst();
-    DestructibleBankManager_DeleteInst();
-    PhysDataBankManager_DeleteInst();
-    AITypeManager_DeleteInst();
-    LightGridMgr_DeleteInst();
-    InstanceBankMgr_DeleteInst();
-    BankManager_DeleteInst();
-    PakManager_DeleteInst();
-    RumbleManager_DeleteInst();
-    DynamicDecalMgr_DeleteInst();
+    TestFPS::DeleteInst();
+    MultiplayerMgr::DeleteInst();
+    PlayerAnimMgr::DeleteInst();
+    InteractionController::DeleteInst();
+    BinFileManager::DeleteInst();
+    CurveManager::DeleteInst();
+    CtrlIcon::DeleteInst();
+    CheckpointMgr::DeleteInst();
+    SplineMgr::DeleteInst();
+    STBManager::DeleteInst();
+    PathNodeMgr::DeleteInst();
+    ConfigStringManager::DeleteInst();
+    EntityManager::DeleteInst();
+    SceneManager::DeleteInst();
+    CGBankManager::DeleteInst();
+    DCGBankManager::DeleteInst();
+    DialogueManager::DeleteInst();
+    EffectEventSys::DeleteInst();
+    GdbFileManager::DeleteInst();
+    DbTablesetMgr::DeleteInst();
+    StreamZoneManager::DeleteInst();
+    MusicMgr::DeleteInst();
+    SoundMediaMgr::DeleteInst();
+    AudioBankMgr::DeleteInst();
+    SoundDevice::DeleteInst();
+    XModelPartsManager::DeleteInst();
+    XModelManager::DeleteInst();
+    DestructibleBankManager::DeleteInst();
+    PhysDataBankManager::DeleteInst();
+    AITypeManager::DeleteInst();
+    LightGridMgr::DeleteInst();
+    InstanceBankMgr::DeleteInst();
+    BankManager::DeleteInst();
+    PakManager::DeleteInst();
+    RumbleManager::DeleteInst();
+    DynamicDecalMgr::DeleteInst();
     if (gActorHeap != nullptr)
     {
         ((void(__thiscall**)(void*, int))gActorHeap)[0](gActorHeap, 1);

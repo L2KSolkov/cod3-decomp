@@ -1104,6 +1104,26 @@ bool AnimationPlayer::nalAnimCallback::Invoke(AnimationPlayer* player)
     return true;
 }
 
+// ea: 0x4F5F10 area - nalAnimState/nalPartialAnimState members (stubs)
+bool AnimationPlayer::nalAnimState::Update(AnimationPlayer* player, float delta)
+{
+    (void)player; (void)delta;
+    return false;
+}
+
+void AnimationPlayer::nalAnimState::Compose(nalGeneric::nalGenericPose& pose,
+                                            nalGeneric::nalGenericPose& tmpPose)
+{
+    (void)pose; (void)tmpPose;
+}
+
+bool AnimationPlayer::nalPartialAnimState::Update(AnimationPlayer* player,
+                                                  float delta)
+{
+    (void)player; (void)delta;
+    return false;
+}
+
 // ============================================================================
 // MetaNalBaseAnim - meta-animation wrapper (0x44, IDA verified)
 // ============================================================================
