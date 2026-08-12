@@ -665,6 +665,8 @@ public:
     void SetSoundProgress(float t);      // ?SetSoundProgress@PakManager@@QAEXM@Z (streamer.o 0x665710)
     void ResetPriorities(bool user_distances_also);  // ?ResetPriorities@PakManager@@QAEX_N@Z
     void SetUserDistance(const PakInfoNode* cpak, float dist);  // ?SetUserDistance@PakManager@@QAEXPBUPakInfoNode@@M@Z
+    void* CrazyTempMemBorrow(unsigned int align, unsigned int size);  // ?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z (streamer.o)
+    void  CrazyTempMemGiveBack(void* ptr);  // ?CrazyTempMemGiveBack@PakManager@@QAEXPAX@Z (streamer.o)
     const PakInfoNode* GetPakInfo(TPakId pakId) const;  // ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@W4TPakId@@@Z
     const PakInfoNode* GetPakInfo(const char* long_name) const;  // ?GetPakInfo@PakManager@@QBEPBUPakInfoNode@@PBD@Z
     bool IsUnloading(TPakId id) const;   // ?IsUnloading@PakManager@@QBE_NW4TPakId@@@Z

@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <windows.h>
+#include <stdlib.h>
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1 };
@@ -40,6 +41,13 @@ class PakFile {
 public:
     uint8_t _pad[0xFC];
     int mState;  // +0xFC PakFile::EState (0 = loaded, 1 = loading, 2 = unloading)
+
+    // ?MemAlloc@PakFile@@QAEPAXII_N@Z (streamer.o 0x671F10; stub)
+    void* MemAlloc(unsigned int align, unsigned int size, bool search_prereqs)
+    {
+        (void)align; (void)search_prereqs;
+        return malloc(size ? size : 1);
+    }
 };
 
 struct PakInfoNode {
@@ -108,6 +116,11 @@ public:
     void SetSoundProgress(float t);
     // - ea: 0x6655C0 (stub until PakFile/BankManager land)
     TPakId FindPakId(EPakType t) const;
+    // - ea: 0x671ED0 (stub: real impl walks mActivePaks and calls
+    // PakFile::MemAlloc; the active-pak list is not ported yet)
+    void* CrazyTempMemBorrow(unsigned int align, unsigned int size);
+    // - ea: 0x671F30 (stub)
+    void  CrazyTempMemGiveBack(void* ptr);
     // - ea: 0x665B70 (stub)
     TPakId SyncLoadPak(EPakType t, const char* path, NumBanks banks);
     // - ea: 0x665D10 (stub)
@@ -260,6 +273,19 @@ void PakManager::SetSoundProgress(float t)
     void (*cb)(float) = mProgressCallback;
     if (cb != NULL)
         cb(((1.0f - sWbkPercentage) - sBrocPercentage) + (sWbkPercentage * t));
+}
+
+// ?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z (streamer.o; stub)
+void* PakManager::CrazyTempMemBorrow(unsigned int align, unsigned int size)
+{
+    (void)align;
+    return malloc(size ? size : 1);
+}
+
+// ?CrazyTempMemGiveBack@PakManager@@QAEXPAX@Z (streamer.o; stub)
+void PakManager::CrazyTempMemGiveBack(void* ptr)
+{
+    free(ptr);
 }
 
 // Stubs for PakManager members that need PakFile/BankManager/InplaceTree.

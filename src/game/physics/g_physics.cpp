@@ -10,6 +10,24 @@
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
 extern const char* const defaultFileName;
+
+namespace AeAssert {
+enum ECoderId { COD3 = 0, ARO = 1 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+}
+
+class PakManager {
+public:
+    static PakManager* sInst;
+    void* CrazyTempMemBorrow(unsigned int align, unsigned int size);
+    void  CrazyTempMemGiveBack(void* ptr);
+};
+
 void merge_spheres(const math::Position3& c1, float r1, math::Position3* c2,
                    float* r2);
 class Color;
@@ -51,6 +69,67 @@ void render_single_rigid_body(class rigid_body* const rb)
                          defaultFileName))
             __debugbreak();
         DebugRender::RenderAxis(rb->m_mat, 6.0f, 0.050000001f);
+    }
+}
+
+// phys_collision_allocater (physics.o RBCollision.cpp; private members)
+class phys_collision_allocater {
+public:
+    phys_memory_heap m_list_memory_buffer[5];  // +0x00 (0x10 stride)
+    int              m_num_buffers;            // +0x50
+    int              m_high_buffer_count;      // +0x54
+    bool             m_out_of_memory;          // +0x58
+
+private:
+    void allocate_buffer();  // ?allocate_buffer@phys_collision_allocater@@AAEXXZ
+    void free_buffers();     // ?free_buffers@phys_collision_allocater@@AAEXXZ
+};
+
+// ea: 0x6F2FF0
+void phys_collision_allocater::allocate_buffer()
+{
+    if (m_num_buffers >= 5
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 69,
+                     "m_num_buffers < MAX_BUFFERS", defaultFileName))
+        __debugbreak();
+    void* v2 = PakManager::sInst->CrazyTempMemBorrow(4u, 0x5000u);
+    if (v2 != nullptr)
+    {
+        int m_num_buffers = this->m_num_buffers;
+        phys_memory_heap* v4 = &m_list_memory_buffer[m_num_buffers];
+        this->m_num_buffers = m_num_buffers + 1;
+        v4->set_buffer((char*)v2, 0x5000, 4);
+        v4->m_user_start = v4->m_buffer_cur;
+        int v5 = this->m_num_buffers;
+        if (v5 > m_high_buffer_count)
+            m_high_buffer_count = v5;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBCollision.cpp";
+        AeAssert::gCurrentLine = 73;
+        AeAssert::gCurrentExpr = "ptr";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Ran out of physics memory"))
+            __debugbreak();
+        m_out_of_memory = true;
+    }
+}
+
+// ea: 0x6F30B0
+void phys_collision_allocater::free_buffers()
+{
+    int v2 = 1;
+    if (m_num_buffers > 1)
+    {
+        phys_memory_heap* v3 = &m_list_memory_buffer[1];
+        do
+        {
+            PakManager::sInst->CrazyTempMemGiveBack(v3->m_buffer_start);
+            ++v2;
+            ++v3;
+        } while (v2 < m_num_buffers);
     }
 }
 
