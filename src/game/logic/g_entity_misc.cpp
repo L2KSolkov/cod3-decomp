@@ -2743,7 +2743,6 @@ void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& a, const math::Dir3& b)
     (void)a; (void)b;
 }
 void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m) { (void)m; }
-void PHYS_ASSERT_UNIT(const math::Dir3& a) { (void)a; }
 void PHYS_ASSERT_UNIT(const math::Dir3* a) { (void)a; }
 void physics_debug_render() {}
 void Player_ActivateHoldCmd(Entity* e) { (void)e; }

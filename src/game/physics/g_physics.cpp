@@ -4574,14 +4574,57 @@ void wheel_collision_info::process(rb_extra_info* rb_inf, int wheel_i)
     }
 }
 
-// stub until rigid_body_constraint_wheel internals are ported (0x884FE0)
+// ea: 0x884FE0
 void rigid_body_constraint_wheel::get_wheel_collide_segment(
     const math::Mat43& b1_mat, math::Dir3* const p0,
     math::Dir3* const p1) const
 {
-    (void)b1_mat;
-    (void)p0;
-    (void)p1;
+    if (((unsigned int)p0 & 0xF) != 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 365,
+               "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", defaultFileName))
+        __debugbreak();
+    if (((unsigned int)p1 & 0xF) != 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 365,
+               "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", defaultFileName))
+        __debugbreak();
+    __m128 v5 = b1_mat.z.v;
+    __m128 v6 = b1_mat.y.v;
+    __m128 v7 = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(
+                _mm_shuffle_ps(m_b1_wheel_center_loc.v,
+                               m_b1_wheel_center_loc.v, 0),
+                b1_mat.x.v),
+            _mm_mul_ps(
+                _mm_shuffle_ps(m_b1_wheel_center_loc.v,
+                               m_b1_wheel_center_loc.v, 85),
+                v6)),
+        _mm_add_ps(
+            _mm_mul_ps(
+                _mm_shuffle_ps(m_b1_wheel_center_loc.v,
+                               m_b1_wheel_center_loc.v, 170),
+                v5),
+            b1_mat.w.v));
+    __m128 v8 = _mm_mul_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(m_b1_suspension_dir_loc.v,
+                                   m_b1_suspension_dir_loc.v, 0),
+                    b1_mat.x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(m_b1_suspension_dir_loc.v,
+                                   m_b1_suspension_dir_loc.v, 85),
+                    v6)),
+            _mm_mul_ps(
+                _mm_shuffle_ps(m_b1_suspension_dir_loc.v,
+                               m_b1_suspension_dir_loc.v, 170),
+                v5)),
+        _mm_set1_ps(m_wheel_radius));
+    p0->v = _mm_sub_ps(v7, v8);
+    p1->v = _mm_add_ps(v7, v8);
 }
 
 // vehicle_collision_info (physics.o vehicle_collision.cpp)
@@ -10859,16 +10902,241 @@ public:
     void do_test(void* const col_resp_group);  // ?do_test@rb_capsule_pair@@QAEXQAX@Z
 };
 
-// stub until rigid_body_constraint_contact::add_point_list is ported
+// ea: 0x718AF0
+void* phys_memory_heap::allocate(int size, int alignment, bool no_error,
+                                 const char* error_msg)
+{
+    if (size <= 0
+        && _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 73,
+                     "size > 0", defaultFileName))
+        __debugbreak();
+    char* result =
+        (char*)((~(alignment - 1))
+                & (intptr_t)&m_buffer_cur[alignment - 1]);
+    if (&result[size] > m_buffer_end)
+    {
+        if (!no_error
+            && _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 82,
+                         "0", error_msg))
+            __debugbreak();
+        return nullptr;
+    }
+    m_buffer_cur = &result[size];
+    return result;
+}
+
+// ea: 0x6F1180
+void contact_point_info::set(float fric_coef, float bounce_coef,
+                             float max_restitution_vel,
+                             bool no_overflow_error)
+{
+    m_bounce_coef = bounce_coef;
+    m_flags = 0;
+    m_fric_coef = fric_coef;
+    m_max_restitution_vel = max_restitution_vel;
+    m_flags = no_overflow_error ? 2 : 0;
+    if (fric_coef < 0.0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+               100, "m_fric_coef >= 0.0f", defaultFileName))
+        __debugbreak();
+    if ((m_bounce_coef > 1.0 || m_bounce_coef < 0.0)
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+               101, "m_bounce_coef <= 1.0f && m_bounce_coef >= 0.0f",
+               defaultFileName))
+        __debugbreak();
+}
+
+// ea: 0x718F20
+contact_point_info* contact_point_info::create_cpi(
+    int point_pair_count, bool no_error, phys_memory_heap* allocater)
+{
+    if (point_pair_count <= 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+               117, "point_pair_count > 0", defaultFileName))
+        __debugbreak();
+    contact_point_info* v3 = (contact_point_info*)allocater->allocate(
+        (point_pair_count << 6) + 80, 16, no_error,
+        "contact_point_info buffer overflow");
+    if (v3 == nullptr)
+        return v3;
+    v3->m_list_b1_r_loc = (math::Dir3*)(v3 + 1);
+    v3->m_list_b2_r_loc = v3->m_list_b1_r_loc + point_pair_count;
+    v3->m_list_pulse_sum_cache_info =
+        (pulse_sum_cache_info*)(v3->m_list_b2_r_loc + point_pair_count);
+    v3->m_point_pair_count = point_pair_count;
+    if (allocater->m_buffer_cur
+        == (char*)(v3->m_list_pulse_sum_cache_info
+                   + 2 * point_pair_count))
+        return v3;
+    if (_tlAssert(
+            "c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+            127,
+            "allocater->get_buffer_cur() == (char *)(cpi->m_list_pulse_sum_cache_info + point_pair_count)",
+            defaultFileName))
+        __debugbreak();
+    return v3;
+}
+
+// ea: 0x718D90
+void contact_point_info::get_closest_psc(
+    const math::Dir3& normal, const math::Dir3& b1_r_loc,
+    const math::Dir3& b2_r_loc, float* closest_error,
+    const pulse_sum_cache_info** closest_psc) const
+{
+    __m128 v7 = _mm_sub_ps(normal.v, m_normal.v);
+    __m128 v8 = _mm_mul_ps(v7, v7);
+    float v17 =
+        v8.m128_f32[0]
+        + (_mm_shuffle_ps(v8, v8, 85).m128_f32[0]
+           + _mm_shuffle_ps(v8, v8, 170).m128_f32[0]);
+    math::Dir3* m_list_b1_r_loc = this->m_list_b1_r_loc;
+    math::Dir3* m_list_b2_r_loc = this->m_list_b2_r_loc;
+    int v18 = 0;
+    if (m_point_pair_count > 0)
+    {
+        int v19 = 0;
+        do
+        {
+            __m128 v11 = _mm_sub_ps(m_list_b1_r_loc->v, b1_r_loc.v);
+            __m128 v12 = _mm_mul_ps(v11, v11);
+            float v16 =
+                v12.m128_f32[0]
+                + (_mm_shuffle_ps(v12, v12, 85).m128_f32[0]
+                   + _mm_shuffle_ps(v12, v12, 170).m128_f32[0]);
+            __m128 v13 = _mm_sub_ps(m_list_b2_r_loc->v, b2_r_loc.v);
+            __m128 v14 = _mm_mul_ps(v13, v13);
+            float v15 =
+                (v14.m128_f32[0]
+                 + (_mm_shuffle_ps(v14, v14, 85).m128_f32[0]
+                    + _mm_shuffle_ps(v14, v14, 170).m128_f32[0]))
+                + v16 + v17;
+            if (*closest_error > v15)
+            {
+                *closest_error = v15;
+                *closest_psc = &m_list_pulse_sum_cache_info[v19];
+            }
+            ++v18;
+            v19 += 2;
+            ++m_list_b1_r_loc;
+            ++m_list_b2_r_loc;
+        } while (v18 < m_point_pair_count);
+    }
+}
+
+// ea: 0x71BA70
+void contact_point_info::set_closest_cached_psc(
+    const contact_point_info* cached_cpi, const math::Dir3& normal,
+    const math::Dir3& b1_r_loc, const math::Dir3& b2_r_loc,
+    pulse_sum_cache_info* psc)
+{
+    const contact_point_info* v5 = cached_cpi;
+    const pulse_sum_cache_info* closest_psc = nullptr;
+    float closest_error = 10000000.0f;
+    if (cached_cpi != nullptr)
+    {
+        do
+        {
+            v5->get_closest_psc(normal, b1_r_loc, b2_r_loc, &closest_error,
+                                &closest_psc);
+            v5 = v5->m_next_link;
+        } while (v5 != nullptr);
+    }
+    if (closest_psc != nullptr)
+    {
+        memcpy(psc, closest_psc, 0x20u);
+    }
+    else
+    {
+        if (psc != nullptr)
+        {
+            psc->m_ps_cache_list[0].m_visit_key = -1;
+            psc->m_ps_cache_list[1].m_visit_key = -1;
+            psc[1].m_ps_cache_list[0].m_visit_key = -1;
+        }
+    }
+}
+
+// ea: 0x718A10
+void PHYS_ASSERT_UNIT(const math::Dir3& v)
+{
+    __m128 v1 = _mm_mul_ps(v.v, v.v);
+    if (fabs(sqrtf(v1.m128_f32[0]
+                   + (_mm_shuffle_ps(v1, v1, 85).m128_f32[0]
+                      + _mm_shuffle_ps(v1, v1, 170).m128_f32[0]))
+             - 1.0)
+            >= 0.001
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 341,
+                     "fabsf(nv - 1.0f) < 0.001f", defaultFileName))
+        __debugbreak();
+}
+
+// ea: 0x71BB10
 void rigid_body_constraint_contact::add_point_list(
     rigid_body* b1_, rigid_body* b2_, const math::Dir3* list_b1_r_loc,
     const math::Dir3* list_b2_r_loc, int num_points,
     const math::Dir3& normal_, float fric_coef, float bounce_coef,
     float max_restitution_vel, bool no_overflow_error)
 {
-    (void)b1_; (void)b2_; (void)list_b1_r_loc; (void)list_b2_r_loc;
-    (void)num_points; (void)normal_; (void)fric_coef; (void)bounce_coef;
-    (void)max_restitution_vel; (void)no_overflow_error;
+    if (((unsigned int)list_b1_r_loc & 0xF) != 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 365,
+               "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", defaultFileName))
+        __debugbreak();
+    if (((unsigned int)list_b2_r_loc & 0xF) != 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 365,
+               "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", defaultFileName))
+        __debugbreak();
+    verify_constraint(b1_, b2_);
+    phys_memory_heap* cpi_allocater = contact_point_info::get_cpi_allocater();
+    contact_point_info* cpi = contact_point_info::create_cpi(
+        num_points, no_overflow_error, cpi_allocater);
+    if (cpi != nullptr)
+    {
+        cpi->m_next_link = m_list_contact_point_info_buffer_1.m_first;
+        m_list_contact_point_info_buffer_1.m_first = cpi;
+        cpi->set(fric_coef, bounce_coef, max_restitution_vel,
+                 no_overflow_error);
+        if (b1 == b1_)
+        {
+            cpi->m_normal.v = normal_.v;
+            PHYS_ASSERT_UNIT(cpi->m_normal);
+        }
+        else
+        {
+            cpi->m_normal.v = _mm_xor_ps(Float4_SignMask_12, normal_.v);
+            PHYS_ASSERT_UNIT(cpi->m_normal);
+            const math::Dir3* v14 = list_b1_r_loc;
+            list_b1_r_loc = list_b2_r_loc;
+            list_b2_r_loc = v14;
+        }
+        if (cpi->m_point_pair_count != num_points
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\rbc_defs\\rbc_def_contact.h",
+                   241, "cpi->m_point_pair_count == num_points",
+                   defaultFileName))
+            __debugbreak();
+        contact_point_info::pulse_sum_cache_info* m_list_pulse_sum_cache_info =
+            cpi->m_list_pulse_sum_cache_info;
+        math::Dir3* last_psci_i = cpi->m_list_b1_r_loc;
+        math::Dir3* m_list_b2_r_loc = cpi->m_list_b2_r_loc;
+        for (contact_point_info::pulse_sum_cache_info* i =
+                 &m_list_pulse_sum_cache_info[2 * cpi->m_point_pair_count];
+             m_list_pulse_sum_cache_info != i; ++list_b2_r_loc)
+        {
+            last_psci_i->v = list_b1_r_loc->v;
+            m_list_b2_r_loc->v = list_b2_r_loc->v;
+            contact_point_info::set_closest_cached_psc(
+                m_list_contact_point_info_buffer_2.m_first, cpi->m_normal,
+                *last_psci_i++, *m_list_b2_r_loc++,
+                m_list_pulse_sum_cache_info);
+            m_list_pulse_sum_cache_info += 2;
+            ++list_b1_r_loc;
+        }
+    }
 }
 
 // world -> body-local transform (transpose rows of m_col_mat)

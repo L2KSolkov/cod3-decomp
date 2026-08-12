@@ -164,6 +164,10 @@ struct phys_memory_heap {
     char* m_buffer_cur;    // +0x08
     char* m_user_start;    // +0x0C
 
+    // allocate - ea: 0x718AF0 (inline COMDAT, physics.o)
+    void* allocate(int size, int alignment, bool no_error,
+                   const char* error_msg);
+
     void* fast_align_start(int alignment, const char* error_msg);
 
     // allocate_no_error - ea: 0x65FC20 (inline COMDAT, game.o)
@@ -726,7 +730,8 @@ static_assert(sizeof(rigid_body_constraint_custom_path) == 0x80, "rigid_body_con
 // contact_point_info — solver contact point (80 bytes)
 // Size: 0x50 (80 bytes) — verified against IDA
 // ============================================================================
-struct contact_point_info {
+class contact_point_info {
+public:
     struct pulse_sum_cache_info {
         pulse_sum_cache m_ps_cache_list[2];   // +0x00
     };
@@ -746,6 +751,23 @@ struct contact_point_info {
     uint8_t     _pad44[12];               // +0x44
 
     static phys_memory_heap* get_cpi_allocater();
+
+    // set - ea: 0x6F1180 (physics.o inline COMDAT)
+    void set(float fric_coef, float bounce_coef, float max_restitution_vel,
+             bool no_overflow_error);
+    // create_cpi - ea: 0x718F20 (physics.o inline COMDAT)
+    static contact_point_info* create_cpi(int point_pair_count, bool no_error,
+                                          phys_memory_heap* allocater);
+    // get_closest_psc - ea: 0x718D90 (physics.o inline COMDAT)
+    void get_closest_psc(const math::Dir3& normal, const math::Dir3& b1_r_loc,
+                         const math::Dir3& b2_r_loc, float* closest_error,
+                         const pulse_sum_cache_info** closest_psc) const;
+    // set_closest_cached_psc - ea: 0x71BA70 (physics.o inline COMDAT)
+    static void set_closest_cached_psc(const contact_point_info* cached_cpi,
+                                       const math::Dir3& normal,
+                                       const math::Dir3& b1_r_loc,
+                                       const math::Dir3& b2_r_loc,
+                                       pulse_sum_cache_info* psc);
 };
 static_assert(sizeof(contact_point_info) == 0x50, "contact_point_info size mismatch");
 static_assert(offsetof(contact_point_info, m_normal) == 0x00, "contact_point_info::m_normal offset mismatch");
