@@ -75,6 +75,12 @@ void DebugRender::AddRenderer(void (*fp)())
 {
     (void)fp;
 }
+static void DebugRender_RenderLine(const math::Position3& pt1,
+                                   const math::Position3& pt2,
+                                   const float* color, float thickness)
+{
+    (void)pt1; (void)pt2; (void)color; (void)thickness;
+}
 
 class Entity;
 struct rb_extra_info;
@@ -118,6 +124,22 @@ struct level_locals_t {
     int     time;  // +0x9C
 };
 extern level_locals_t level;  // ?level@@3Ulevel_locals_t@@A
+extern int gPhysicsFinder;  // ?gPhysicsFinder@@3HA (g.o)
+// MultiplayerMgr (core.o view; ApplyLocalPhysicsToVehicle only)
+class MultiplayerMgr {
+public:
+    static MultiplayerMgr* sInst;  // ?sInst@MultiplayerMgr@@2PAV1@A
+    void ApplyLocalPhysicsToVehicle(Entity* vehicle, math::Mat43* mat,
+                                    math::Dir3* velocity);
+};
+// stub until MultiplayerMgr internals are ported (core.o)
+void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
+                                                math::Mat43* mat,
+                                                math::Dir3* velocity)
+{
+    (void)vehicle; (void)mat; (void)velocity;
+}
+MultiplayerMgr* MultiplayerMgr::sInst = nullptr;
 class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
@@ -886,6 +908,7 @@ struct refEntity {  // EntityShared subset
     const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (game.o)
     void set_bp_info(biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
+    void CalcOriginAnglesFromMat();  // ?CalcOriginAnglesFromMat@Entity@@QAEXXZ (game.o)
 };
 
 // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o; stub until render.o is ported)
@@ -2652,10 +2675,91 @@ void RBAdvanceDebug(float delta_t)
     (void)delta_t;
 }
 
-// stub until rb_prop_system::frame_advance (0x7032B0) is ported
+// ea: 0x7032B0
 void rb_prop_system::frame_advance(float delta_t)
 {
-    (void)delta_t;
+    rb_extra_info* m_next = nullptr;
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+    {
+        rb_extra_info* v3 = g_list_rb_extra_info.m_alloc_list[i];
+        if (v3->m_ent == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+            AeAssert::gCurrentLine = 193;
+            AeAssert::gCurrentExpr = "rb_inf->m_ent";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+        }
+        Entity* m_ent = v3->m_ent;
+        if (m_ent->scr_vehicle != nullptr)
+        {
+            rigid_body* m_rb = v3->m_rb;
+            if ((~(m_rb->m_flags >> 6) & 1) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 79,
+                       "debug_flag_is_not_in_collision()", defaultFileName))
+                __debugbreak();
+            math::Mat43 v12;
+            phys_full_multiply_mat(v12, m_rb->m_mat, v3->m_transform);
+            MultiplayerMgr::sInst->ApplyLocalPhysicsToVehicle(
+                m_ent, &v12, &m_rb->m_t_vel);
+        }
+        else if (m_ent->flags >= 0)
+        {
+            rigid_body* v6 = v3->m_rb;
+            if ((~(v6->m_flags >> 6) & 1) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 79,
+                       "debug_flag_is_not_in_collision()", defaultFileName))
+                __debugbreak();
+            phys_full_multiply_mat(m_ent->r.currentMat, v6->m_mat,
+                                   v3->m_transform);
+            m_ent->CalcOriginAnglesFromMat();
+        }
+        if (gPhysicsFinder != 0)
+        {
+            rigid_body* v7 = v3->m_rb;
+            if ((~(v7->m_flags >> 6) & 1) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 79,
+                       "debug_flag_is_not_in_collision()", defaultFileName))
+                __debugbreak();
+            math::Position3 pt1;
+            pt1.v = v7->m_mat.w.v;
+            math::Position3 pt2;
+            pt2.v = _mm_add_ps(
+                pt1.v, _mm_setr_ps(0.0f, 0.0f, 3000.0f, 0.0f));
+            float col[4] = {1.0f, 1.0f, 0.0f, 1.0f};
+            DebugRender_RenderLine(pt1, pt2, col, 5.0f);
+        }
+        if (v3->m_priority != 0)
+        {
+            v3->m_time_since_last_event =
+                v3->m_time_since_last_event + delta_t;
+            if (v3->m_time_since_last_event > 2.0f)
+                v3->evaluate_effect_priority();
+        }
+        if (m_ent->scr_vehicle == nullptr)
+        {
+            rigid_body* v10 = v3->m_rb;
+            if ((v10->m_flags & 8) != 0
+                || _mm_shuffle_ps(v10->m_mat.w.v, v10->m_mat.w.v, 170)
+                           .m128_f32[0]
+                       < -10000.0f)
+            {
+                v3->m_next = m_next;
+                m_next = v3;
+            }
+        }
+    }
+    for (rb_extra_info* v11 = m_next; v11 != nullptr;
+         v11 = (rb_extra_info*)v11->m_next)
+    {
+        v11->m_ent->Notify(hash_const.physicsdone);
+        rb_prop_system::remove_entity(v11->m_ent);
+    }
 }
 
 // ea: 0x70D250
