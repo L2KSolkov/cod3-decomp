@@ -98,6 +98,11 @@ bool Assert(const char* fmt, ...);
 struct fe_menusys_view {
     bool IsSystemActive();
 };
+// ?IsSystemActive@InGameMenuSystem@@QAE_NXZ family (shell.o; stub)
+bool fe_menusys_view::IsSystemActive()
+{
+    return false;
+}
 struct fe_manager_view {
     void* IGO;
     fe_menusys_view* fems;

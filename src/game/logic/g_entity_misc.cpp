@@ -2922,7 +2922,7 @@ AudioBankMgr* AudioBankMgr::sInst = nullptr;
 // AudioBankMgr ctor / RegisterWbk - ea: 0x621440 / 0x621470
 // ============================================================================
 extern enum nflMediaID : unsigned;
-extern nflFileID nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YAIW4nflMediaID@@PBD@Z
+extern unsigned int nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YAIW4nflMediaID@@PBD@Z
 extern int gNflMediaId;                                     // nfl_xboxr
 extern void* AssetBankSet_ctor(void* self);                 // streamer.o
 static tlFixedString dflt;          // ?dflt@@3VtlFixedString@@A @ 0xF58C04
@@ -2948,7 +2948,7 @@ void AudioBankMgr::RegisterWbk(const tlFixedString& name, const char* path,
     }
     if (name == dflt)
         path = "sp_test\\default.wbk";
-    nflFileID fileId = nflOpenFile((nflMediaID)gNflMediaId, path);
+    unsigned int fileId = nflOpenFile((nflMediaID)gNflMediaId, path);
     if (fileId == -1)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -4180,7 +4180,7 @@ extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
 // ea: 0x006024A0
 nslBankID SoundDevice::SyncLoadBank(const char* filename)
 {
-    nflFileID v2 = nflOpenFile((nflMediaID)gNflMediaId, filename);
+    nflFileID v2 = (nflFileID)nflOpenFile((nflMediaID)gNflMediaId, filename);
     if (v2 == (nflFileID)-1)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
