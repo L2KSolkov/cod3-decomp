@@ -23,7 +23,8 @@ extern bool _tlAssert(const char* file, int line, const char* expr, const char* 
 extern void PHYS_ASSERT_UNIT(const math::Dir3& v);
 extern void PHYS_ASSERT_ORTHOGONAL(const math::Dir3& v1, const math::Dir3& v2);
 extern void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m);
-extern const math::Dir3* construct_orth_ud(const math::Dir3* result, const math::Dir3* ud);
+extern const math::Dir3 construct_orth_ud(const math::Dir3& v,
+                                          const math::Dir3& ud);
 
 // ============================================================================
 // rigid_body_constraint_point::set â€” ea: 0x890320
@@ -244,8 +245,8 @@ void rigid_body_constraint_hinge::set(const math::Dir3& b1_r_loc, const math::Di
     this->m_b1_ref_loc.v = _mm_div_ps(v23, _mm_set1_ps(len3));
 
     math::Dir3 a1;
-    const math::Dir3* v28 = construct_orth_ud(&a1, &this->m_b1_axis_loc);
-    this->m_b1_a1_loc.v = v28->v;
+    const math::Dir3 v28 = construct_orth_ud(a1, this->m_b1_axis_loc);
+    this->m_b1_a1_loc.v = v28.v;
     __m128 cross = _mm_sub_ps(
         _mm_mul_ps(_mm_shuffle_ps(this->m_b1_axis_loc.v, this->m_b1_axis_loc.v, 9),
                    _mm_shuffle_ps(this->m_b1_a1_loc.v, this->m_b1_a1_loc.v, 18)),

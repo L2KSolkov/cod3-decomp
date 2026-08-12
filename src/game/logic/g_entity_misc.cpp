@@ -1658,6 +1658,90 @@ void AnimationPlayer_DebugDump(Entity* ent)
 {
     (void)ent;
 }
+int curFrame_0 = 0;  // ?curFrame_0@@3HA (game.o @ 0xDF8DE0)
+
+// g.o / shell.o / render.o / scr.o stubs (port later)
+PlayerState& GetPlayerState(int idx)
+{
+    (void)idx;
+    static PlayerState dummy = {};
+    return dummy;
+}
+bool Entity_IsInRagdoll(Entity* ent)
+{
+    (void)ent;
+    return false;
+}
+bool Entity_IsLocalPlayer(const Entity* ent)
+{
+    (void)ent;
+    return false;
+}
+AnimTree* Scr_GetAnims(int index)
+{
+    (void)index;
+    return nullptr;
+}
+AnimTree* Scr_GetAnimTreeByName(const char* treename)
+{
+    (void)treename;
+    return nullptr;
+}
+int Scr_IsSystemActive(unsigned char sys)
+{
+    (void)sys;
+    return 0;
+}
+const char* SEH_StringEd_GetString(const char* pszReference)
+{
+    (void)pszReference;
+    return "";
+}
+int SEH_GetCurrentLanguage()
+{
+    return 0;
+}
+int RE_Text_Width(const char* text, int font, float scaleX, float scaleY,
+                  int style)
+{
+    (void)text; (void)font; (void)scaleX; (void)scaleY; (void)style;
+    return 0;
+}
+int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash)
+{
+    (void)obj; (void)boneNameHash;
+    return -1;
+}
+team_t Sentient_EnemyTeam(team_t eTeam)
+{
+    (void)eTeam;
+    return (team_t)0;
+}
+int R_CellForPoint(const math::Position3* pos)
+{
+    (void)pos;
+    return 0;
+}
+int R_CellForPoint(const float* pos)
+{
+    (void)pos;
+    return 0;
+}
+float random()
+{
+    return 0.0f;
+}
+int controller_button_pressed(void* self, int i_controller_num, int i_button)
+{
+    (void)self; (void)i_controller_num; (void)i_button;
+    return 0;
+}
+int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
+                                       Entity* targEnt, float visThreshold)
+{
+    (void)self; (void)ent; (void)targEnt; (void)visThreshold;
+    return 0;
+}
 
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {

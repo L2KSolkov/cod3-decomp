@@ -13,3 +13,10 @@
 void __cod3_stub_broc(void) {
     COD3_UNIMPLEMENTED("broc");
 }
+
+// Broc::string::is_empty (mp_util_wad.o; stub)
+#include "engine/broc_types.h"
+bool Broc::string::is_empty() const
+{
+    return true;
+}

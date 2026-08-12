@@ -22,3 +22,20 @@ bool apsShrimpRenderer::GetMeshRadius(float& oRadius) const
     (void)oRadius;
     return false;
 }
+
+// apsRenderNode / apsSimpleMeshRenderer / apsBounds / apsClient (stubs)
+#include "apsRenderNode.h"
+#include "apsGroup.h"
+#include "apsSimpleMeshRenderer.h"
+#include "apsInternal.h"
+void apsRenderNode::Render() {}
+float apsSimpleMeshRenderer::GetChanceToRemove() const
+{
+    return 0.0f;
+}
+apsSphere apsBounds::Sphere() const
+{
+    apsSphere s = {};
+    return s;
+}
+apsClient::~apsClient() {}

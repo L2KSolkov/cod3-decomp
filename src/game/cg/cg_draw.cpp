@@ -1025,7 +1025,7 @@ extern vmCvar_t cg_drawGun;
 extern weaponInfo_s* cg_weapons;
 extern refexport_t re;
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
-extern PlayerState* GetPlayerState(int idx);
+extern PlayerState& GetPlayerState(int idx);
 
 // ea: 0x00688490 (cg.o)
 bool CG_AllowedToDrawCrosshair()  // ?CG_AllowedToDrawCrosshair@@YA_NXZ
@@ -1043,7 +1043,7 @@ bool CG_AllowedToDrawCrosshair()  // ?CG_AllowedToDrawCrosshair@@YA_NXZ
     {
         return false;
     }
-    int weaponState = GetPlayerState(currCl)->weaponstate;
+    int weaponState = GetPlayerState(currCl).weaponstate;
     if (weaponState == 10 || weaponState == 11 || weaponState == 5
         || weaponState == 14 || weaponState == 1 || weaponState == 2)
         return false;
@@ -1117,7 +1117,7 @@ void CG_DrawTurretCrossHair()
         && dword_F6A28C[802 * currCl] == 0
         && gSaveGameData_mCrosshair)
     {
-        PlayerState* ps = GetPlayerState(currCl);
+        PlayerState* ps = &GetPlayerState(currCl);
         Entity* v2 = EntityHandleDb_Get2(ps->mViewLockedEntity);
         if (v2 != nullptr && v2->s.eType == 10)
         {
@@ -1566,11 +1566,11 @@ void CG_DrawCrosshair(float transScaleArg)
                     color[1] = 0;
                     color[2] = 0;
                     color[3] = 1036831949;  // 0.6f
-                    if (GetPlayerState(currCl)->vehType == 1
-                        || (GetPlayerState(currCl)->vehType == 2
-                            && GetPlayerState(currCl)->vehPos == 1))
+                    if (GetPlayerState(currCl).vehType == 1
+                        || (GetPlayerState(currCl).vehType == 2
+                            && GetPlayerState(currCl).vehPos == 1))
                     {
-                        if (GetPlayerState(currCl)->vehPos != 0)
+                        if (GetPlayerState(currCl).vehPos != 0)
                         {
                             float x = -10.0f;
                             float y = 0.0f;

@@ -33,6 +33,7 @@ struct STBManager {
     const StringTableEntry* GetSTBEntry(TPakId pakId, unsigned int hash);
     const StringTableEntry* GetSTBEntry(unsigned int hash);
     const StringTableEntry* GetSTBEntry(const char* pszReference);
+    const char* GetSTBString(const char* pszReference) const;
     char* GetSTBString(const char* pszReference);
     char* GetSTBString(unsigned int hash);
     char* GetSTBString(TPakId pakId, unsigned int hash);
@@ -110,6 +111,13 @@ char* STBManager::GetSTBString(const char* pszReference)
     if (result == nullptr)
         return (char*)"NO STRING";
     return result;
+}
+
+// ?GetSTBString@STBManager@@QBEPBDPBD@Z (core.o; stub)
+const char* STBManager::GetSTBString(const char* pszReference) const
+{
+    (void)pszReference;
+    return nullptr;
 }
 
 // ea: 0x004C5EF0

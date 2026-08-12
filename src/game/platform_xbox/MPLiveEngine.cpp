@@ -384,6 +384,10 @@ unsigned int MPPlayerSet::highestPlayerIndex() const
 {
     return 0;
 }
+MPPlayerManager* MPPeer::GetPlayerManager()
+{
+    return nullptr;
+}
 
 // ============================================================================
 // MPLiveEngine
