@@ -3371,9 +3371,21 @@ struct rb_collision_sphere {
     math::Position3 m_center_loc;  // +0x00
     float           m_radius;      // +0x10
 };
-// phys_gjk_geom_ragdoll_1 (physics.o; minimal view for sphere-list set/init)
+// phys_gjk_geom_ragdoll_1 (physics.o; 128 bytes; derives from phys_gjk_geom
+// which has vtable +0x00, m_geom_id +0x30, m_next_geom +0x34)
 class phys_gjk_geom_ragdoll_1 {
 public:
+    void*          __vftable;   // +0x00
+    uint8_t        _pad4[0x30 - 0x04];
+    void*          m_geom_id;   // +0x30
+    void*          m_next_geom; // +0x34
+    uint8_t        _pad38[0x40 - 0x38];
+    math::Dir3     m_list_center[3];  // +0x40
+    math::Position3 m_center;         // +0x60
+    float          m_list_radius[2];  // +0x70
+    float          m_geom_radius;     // +0x78
+    int            m_count;           // +0x7C
+
     void init(rigid_body_sphere_list* cg);  // ?init@phys_gjk_geom_ragdoll_1@@QAEXPAVrigid_body_sphere_list@@@Z
 };
 
@@ -3400,9 +3412,8 @@ public:
     rigid_body*    m_owner;  // +0xE8
     int            m_rb_id;  // +0xEC
     phys_gjk_geom_ragdoll_1 m_gjk_geom;  // +0xF0
-    uint8_t        _padF0[0x120 - 0xF0 - sizeof(phys_gjk_geom_ragdoll_1)];
-    rigid_body_sphere_list* m_geom_id;  // +0x120 (m_gjk_geom.m_geom_id)
-    void*          m_next_geom;  // +0x124
+    math::Dir3     m_total_aabb_mn;  // +0x170
+    math::Dir3     m_total_aabb_mx;  // +0x180
 
 private:
     void calc_bounding_sphere();  // ?calc_bounding_sphere@rigid_body_sphere_list@@AAEXXZ
@@ -3450,10 +3461,52 @@ void rigid_body_sphere_list::init_tunnel_test(math::Position3& center_pos)
     }
 }
 
-// stub until phys_gjk_geom_ragdoll_1::init (0x7007A0) is ported
+// ea: 0x7007A0
 void phys_gjk_geom_ragdoll_1::init(rigid_body_sphere_list* cg)
 {
-    (void)cg;
+    m_center.v = cg->m_bounding_sphere_center_loc.v;
+    m_count = 0;
+    rb_collision_sphere* p = cg->m_slot_array;
+    rb_collision_sphere* end = &cg->m_slot_array[cg->m_alloc_count];
+    for (; p != end; ++m_count)
+    {
+        if (m_count > 2)
+        {
+            if (!_tlAssert(
+                    "c:\\cod\\code\\game\\RBRagdollCollision.cpp", 588,
+                    "m_count <= 2", defaultFileName))
+                __debugbreak();
+        }
+        m_list_center[m_count].v = p->m_center_loc.v;
+        m_list_radius[m_count] = p->m_radius;
+        ++p;
+    }
+    if (m_count == 2)
+    {
+        if (m_list_radius[0] > m_list_radius[1])
+        {
+            math::Dir3 tmp_center = m_list_center[0];
+            m_list_center[0] = m_list_center[1];
+            m_list_center[1] = tmp_center;
+            float tmp_r = m_list_radius[0];
+            m_list_radius[0] = m_list_radius[1];
+            m_list_radius[1] = tmp_r;
+        }
+    }
+    m_geom_radius = m_list_radius[0];
+    m_list_radius[0] = 0.0f;
+    if (m_count == 2)
+    {
+        if (m_list_radius[1] < 0.0f
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdollCollision.cpp", 609,
+                         "m_list_radius[0] <= m_list_radius[1]",
+                         defaultFileName))
+            __debugbreak();
+        float v9 = m_list_radius[1] - m_geom_radius;
+        if (v9 < 0.0f)
+            v9 = 0.0f;
+        m_list_radius[1] = v9;
+    }
 }
 
 // ea: 0x704A50
@@ -3462,8 +3515,8 @@ void rigid_body_sphere_list::set(rigid_body* const owner)
     m_owner = owner;
     calc_bounding_sphere();
     m_gjk_geom.init(this);
-    m_geom_id = this;
-    m_next_geom = nullptr;
+    m_gjk_geom.m_geom_id = this;
+    m_gjk_geom.m_next_geom = nullptr;
     m_tunnel_test_active_counter = 0;
 }
 
