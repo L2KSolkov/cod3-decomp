@@ -414,6 +414,7 @@ public:
     void reset_warning_level(); // ?reset_warning_level@phys_collision_allocater@@QAEXXZ
     void* allocate(int size, int alignment, bool no_error,
                    const char* error_msg);  // ?allocate@phys_collision_allocater@@QAEPAXHH_NPBD@Z
+    void nullify_buffer();  // ?nullify_buffer@phys_collision_allocater@@QAEXXZ
 };
 
 // ea: 0x6F2FF0
@@ -531,6 +532,22 @@ void* phys_collision_allocater::allocate(int size, int alignment, bool no_error,
     allocate_buffer();
     return m_list_memory_buffer[m_num_buffers - 1].allocate_no_error(size,
                                                                      alignment);
+}
+
+// ea: 0x7190F0 (inline COMDAT)
+void phys_collision_allocater::nullify_buffer()
+{
+    for (int i = 1; i < m_num_buffers; ++i)
+        PakManager::sInst->CrazyTempMemGiveBack(
+            m_list_memory_buffer[i].m_buffer_start);
+    for (int i = 0; i < 5; ++i)
+    {
+        m_list_memory_buffer[i].m_buffer_start = nullptr;
+        m_list_memory_buffer[i].m_buffer_end = nullptr;
+        m_list_memory_buffer[i].m_buffer_cur = nullptr;
+        m_list_memory_buffer[i].m_user_start = nullptr;
+    }
+    m_num_buffers = 0;
 }
 
 // ?g_collision_memory_allocater@@3Vphys_collision_allocater@@A
@@ -1436,13 +1453,54 @@ void prop_phys_collision::get_all_collisions()
 void process_prop_collide_callbacks()
 {
 }
-// stub until collision_memory_epilog (0x6F6D20) is ported
-void collision_memory_epilog()
-{
-}
-
 void do_all_biped_system_collision_callback();  // 0x70C8D0
 void do_all_biped_system_process_collision_events();  // 0x704A10
+
+// Collision-memory globals (physics.o data @ 0xF7947C..0xF79498). Typed to
+// match the binary V/U-tag manglings.
+class phys_gjk_info;
+class phys_contact_manifold_process;
+class TouchEntityData;
+struct physics_colgeom_visitor;
+class prop_collide_callback;
+template <typename K, typename V> class phys_inplace_avl_tree;
+template <typename K, typename V>
+class phys_inplace_avl_tree {
+public:
+    void* m_tree_root;  // +0x00
+};
+phys_gjk_info* g_gjk_info = nullptr;                         // ?g_gjk_info@@3PAVphys_gjk_info@@A
+phys_contact_manifold_process* g_cman_process = nullptr;     // ?g_cman_process@@3PAVphys_contact_manifold_process@@A
+phys_collide_data* g_list_phys_collide_data = nullptr;       // ?g_list_phys_collide_data@@3PAVphys_collide_data@@A
+physics_colgeom_visitor* g_physics_colgeom_visitor = nullptr;  // ?g_physics_colgeom_visitor@@3PAUphysics_colgeom_visitor@@A
+TouchEntityData* g_phys_touch_entity_data = nullptr;         // ?g_phys_touch_entity_data@@3PAVTouchEntityData@@A
+prop_collide_callback* g_list_prop_collide_callback = nullptr;  // ?g_list_prop_collide_callback@@3PAVprop_collide_callback@@A
+int   g_list_prop_collide_callback_count = 0;       // ?g_list_prop_collide_callback_count@@3HA
+phys_inplace_avl_tree<rigid_body_pair_key, prop_collide_callback>*
+    g_prop_collide_callback_database = nullptr;  // ?g_prop_collide_callback_database@@3V?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@A
+extern bool tlScratchpadLocked;  // ?tlScratchpadLocked@@3_NA (tl_system.o)
+
+// ea: 0x6F6D20
+void collision_memory_epilog()
+{
+    g_gjk_info = nullptr;
+    g_cman_process = nullptr;
+    g_list_phys_collide_data = nullptr;
+    g_gjk_geom_database = nullptr;
+    g_physics_colgeom_visitor = nullptr;
+    g_phys_touch_entity_data = nullptr;
+    g_list_prop_collide_callback = nullptr;
+    g_collision_memory_allocater.nullify_buffer();
+    if (!tlScratchpadLocked
+        && _tlAssert("c:/cod/code/tl/base/include\\tl_system.h", 300,
+                     "tlScratchpadLocked",
+                     "Scratchpad is already unlocked!"))
+        __debugbreak();
+    tlScratchpadLocked = false;
+    g_list_prop_collide_callback_count = 0;
+    if (g_prop_collide_callback_database != nullptr)
+        g_prop_collide_callback_database->m_tree_root = nullptr;
+}
 
 // ea: 0x70CFA0
 void physics_collision_callback()

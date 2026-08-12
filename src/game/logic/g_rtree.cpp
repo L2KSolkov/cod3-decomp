@@ -19,6 +19,17 @@ struct rtree_node_t {
     int     offs;  // +0x0C
 };
 
+// ea: 0x006F64E0
+void rtree_root_t::init()
+{
+    region_halfsize_inv32k.v = _mm_setr_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    region_center.v = _mm_setzero_ps();
+    simd_tree = nullptr;
+    simd_pointer_base = nullptr;
+    nsimd_levels = 0;
+    top_level_aabb_count = 0;
+}
+
 // subdivision_visitor is the rtree_visitor_t base (defined in g_cm_load.cpp);
 // the overlap helpers below only need the rtree_node_t layout.
 

@@ -2695,6 +2695,8 @@ struct rtree_root_t {
     void*           simd_pointer_base;    // +0x24
     int             top_level_aabb_count; // +0x28
     int             nsimd_levels;         // +0x2C
+
+    void init();  // ?init@rtree_root_t@@QAEXXZ (physics.o 0x6F64E0)
 };
 
 class CGBank {
