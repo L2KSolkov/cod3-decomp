@@ -312,6 +312,7 @@ struct biped_phys_info {
 private:
     void reset_bone_vel_info(float delta_t);   // ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z
     void update_bone_vel_info(float delta_t);  // ?update_bone_vel_info@biped_phys_info@@AAEXM@Z
+    bool setup(Entity* owner);                 // ?setup@biped_phys_info@@AAE_NPAVEntity@@@Z
 public:
     void prolog_frame_advance(float delta_t);  // ?prolog_frame_advance@biped_phys_info@@QAEXM@Z
 };
@@ -463,6 +464,56 @@ void biped_phys_info::prolog_frame_advance(float delta_t)
     update_bone_vel_info(delta_t);
     if (m_bp_sys != nullptr)
         ((rb_ragdoll_model*)m_bp_sys)->update_ballistic_target();
+}
+
+// USER_BONE_ID name table (physics.o .rdata; 8 entries)
+static const char* const s_user_bone_names[8] = {
+    "Bip01 Head",        // USER_BONE_ID_HEAD
+    "Bip01 L UpperArm",  // USER_BONE_ID_LEFT_UPPERARM
+    "Bip01 L Forearm",   // USER_BONE_ID_LEFT_FOREARM
+    "Bip01 R UpperArm",  // USER_BONE_ID_RIGHT_UPPERARM
+    "Bip01 R Forearm",   // USER_BONE_ID_RIGHT_FOREARM
+    "Bip01 L Thigh",     // USER_BONE_ID_LEFT_THIGH
+    "Bip01 L Calf",      // USER_BONE_ID_LEFT_CALF
+    "Bip01 R Thigh",     // USER_BONE_ID_RIGHT_THIGH
+};
+
+// ea: 0x6F71E0
+bool biped_phys_info::setup(Entity* owner)
+{
+    m_owner = owner;
+    m_delta_t = 0.033333335f;
+    owner->CalcRotTranMat43();
+    bool success = true;
+    for (int i = 0; i < 8; ++i)
+    {
+        int BoneIndex = m_owner->mDObj->GetBoneIndex(s_user_bone_names[i]);
+        m_bone[i] = (int16_t)BoneIndex;
+        if (BoneIndex >= 0)
+        {
+            math::Mat43 mat = m_owner->CalcAbsMat(BoneIndex);
+            memcpy(&m_last_mat[i], &mat, sizeof(math::Mat43));
+            memcpy(&m_cur_mat[i], &mat, sizeof(math::Mat43));
+        }
+        else
+        {
+            math::Mat43 ident = {};
+            ident.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+            ident.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+            ident.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+            ident.w.v = _mm_setzero_ps();
+            memcpy(&m_last_mat[i], &ident, sizeof(math::Mat43));
+            memcpy(&m_cur_mat[i], &ident, sizeof(math::Mat43));
+            success = false;
+        }
+    }
+    const float* curOrigin = (const float*)((const char*)m_owner + 0x150);
+    m_cur_origin.v = _mm_loadu_ps(curOrigin);
+    const float* curAngles = (const float*)((const char*)m_owner + 0x160);
+    m_cur_angles.v = _mm_loadu_ps(curAngles);
+    m_last_origin.v = m_cur_origin.v;
+    m_last_angles.v = m_cur_angles.v;
+    return success;
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
