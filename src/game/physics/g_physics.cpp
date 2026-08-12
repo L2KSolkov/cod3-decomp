@@ -52,6 +52,7 @@ class Entity;
 struct rb_extra_info;
 class DObj;
 class rigid_body;
+class biped_phys_info;
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
     PROP_PRIORITY_MEDIUM = 1,
@@ -66,9 +67,44 @@ public:
     unsigned int mVal;  // +0x00
 };
 
+// Bitmask<T> (ae/core/bitmask.h). Add/Rmv are inline COMDATs (g.o 0x4ACC30 /
+// 0x4ACCC0). class tag (V) required for V?$Bitmask@I@@ manglings.
 template <typename T>
-struct Bitmask {
+class Bitmask {
+public:
     T mMask;  // +0x00
+
+    void Add(int b)  // ?Add@?$Bitmask@I@@QAEXH@Z
+    {
+        if (b >= 0x20)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
+            AeAssert::gCurrentLine = 77;
+            AeAssert::gCurrentExpr =
+                "b >= 0 && b < (int32)(sizeof(_T) * 8)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        mMask |= (T)(1 << b);
+    }
+
+    void Rmv(int b)  // ?Rmv@?$Bitmask@I@@QAEXH@Z
+    {
+        if (b >= 0x20)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/bitmask.h";
+            AeAssert::gCurrentLine = 83;
+            AeAssert::gCurrentExpr =
+                "b >= 0 && b < (int32)(sizeof(_T) * 8)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        mMask &= (T)~(1 << b);
+    }
 };
 
 // vehicle_rb_parameter (physics.o; minimal view for rb_vehicle methods)
@@ -482,7 +518,11 @@ public:
                                  //  currentMat +0x170)
     uint8_t _pad140[0x23C - (0xE0 + sizeof(refEntity))];
     DObj* mDObj;                 // +0x23C
-    uint8_t _pad240[0x2C8 - 0x240];
+    uint8_t _pad240[0x248 - 0x240];
+    biped_phys_info* mBPInfo;    // +0x248
+    uint8_t _pad24C[0x2B0 - 0x24C];
+    uint8_t physicsObject;       // +0x2B0
+    uint8_t _pad2B1[0x2C8 - 0x2B1];
     unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
 
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
@@ -665,6 +705,7 @@ void absolutely_fatal_irrecoverable_error_infinite_loop()
 struct phys_anim_bone_array {
     static void copy_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
     static void write_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
+    void copy_back_bones(Entity* owner);  // ?copy_back_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z
 };
 
 // ea: 0x6F4120
@@ -693,54 +734,178 @@ void phys_anim_bone_array::write_skeleton(Entity* owner,
 class biped_phys_info;
 class biped_system : public rb_ragdoll_model {
 public:
-    uint8_t _pad130[0x2040 - 0x130];
+    phys_anim_bone_array bp_bone_array;  // +0x130
+    uint8_t _pad131[0x2040 - 0x130 - sizeof(phys_anim_bone_array)];
     biped_phys_info* m_bp_info;   // +0x2040
     float            m_stable_timer;  // +0x2048
     bool             m_is_stable;     // +0x204C
 
     void prolog_frame_advance(Entity* owner, float delta_t);  // ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
     void debug_render();  // ?debug_render@biped_system@@QAEXXZ
+    void render_joint(int joint_id, Bitmask<unsigned int> render_flags);  // ?render_joint@biped_system@@QAEXHV?$Bitmask@I@@@Z
 private:
     void initialize_members();  // ?initialize_members@biped_system@@AAEXXZ
     void create_system(biped_phys_info* bp_info);  // ?create_system@biped_system@@AAEXPAVbiped_phys_info@@@Z
+    void rdbi_calc_bone_mat_from_rb();  // ?rdbi_calc_bone_mat_from_rb@biped_system@@AAEXXZ
+    friend class biped_phys_info;
 };
 
-// biped_phys_info (physics.o RBRagdoll.cpp); ctor only - the full layout is
-// mapped incrementally as the family is ported. class tag (V) required for
-// pool/param manglings.
+// biped_phys_info (physics.o RBRagdoll.cpp). Layout verified against ctor
+// (0x6F71C0), destroy_bp_sys (0x70D080), debug_render (0x6FF7F0) and
+// update_bone_vel_info (0x6F3EB0) disassembly: m_owner +0x00, m_cur_mat
+// +0x10, m_last_mat +0x290, m_bone +0x550, m_delta_t +0x564, m_bp_sys +0x568,
+// m_current_debug_joint +0x56C, m_render_flags +0x570. class tag (V).
 class biped_phys_info {
 public:
-    unsigned int   m_render_flags;  // +0x00 (Bitmask mMask)
-    Entity*        m_owner;         // +0x04
-    biped_system*  m_bp_sys;        // +0x08
-    math::Mat43    m_cur_mat[10];   // +0x0C
-    uint8_t        _pad28C[0x2A0 - 0x28C];
-    math::Mat43    m_last_mat[10];  // +0x2A0
+    Entity*        m_owner;         // +0x00
+    uint8_t        _pad04[0x10 - 0x04];  // align 16
+    math::Mat43    m_cur_mat[10];   // +0x10
+    math::Mat43    m_last_mat[10];  // +0x290
     math::Position3 m_cur_angles;    // +0x510
     math::Position3 m_cur_origin;    // +0x520
     math::Position3 m_last_angles;   // +0x530
     math::Position3 m_last_origin;   // +0x540
     int16_t      m_bone[10];         // +0x550
     float        m_delta_t;          // +0x564
+    biped_system* m_bp_sys;          // +0x568
+    int          m_current_debug_joint;  // +0x56C
+    Bitmask<unsigned int> m_render_flags;  // +0x570
 
     biped_phys_info();  // ??0biped_phys_info@@QAE@XZ
+    ~biped_phys_info();  // ??1biped_phys_info@@QAE@XZ
     void get_cur_vel(int rb_id, const math::Position3& com,
                      math::Dir3* cur_tvel, math::Dir3* cur_avel);
+    void destroy_bp_sys(bool tween_pos);  // ?destroy_bp_sys@biped_phys_info@@QAEX_N@Z
+    void debug_render();  // ?debug_render@biped_phys_info@@QAEXXZ
+    static void debug_render_all();  // ?debug_render_all@biped_phys_info@@SAXXZ
 private:
     void reset_bone_vel_info(float delta_t);   // ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z
     void update_bone_vel_info(float delta_t);  // ?update_bone_vel_info@biped_phys_info@@AAEXM@Z
     bool setup(Entity* owner);                 // ?setup@biped_phys_info@@AAE_NPAVEntity@@@Z
+    friend biped_phys_info* create_biped_phys_info(Entity* owner);
 public:
     void update_vel_matrices();                // ?update_vel_matrices@biped_phys_info@@QAEXXZ
     void prolog_frame_advance(float delta_t);  // ?prolog_frame_advance@biped_phys_info@@QAEXM@Z
 };
 
+biped_phys_info* create_biped_phys_info(Entity* owner);  // ?create_biped_phys_info@@YAPAVbiped_phys_info@@PAVEntity@@@Z
+void destroy_biped_phys_info(biped_phys_info* bp_info);  // ?destroy_biped_phys_info@@YAXPAVbiped_phys_info@@@Z
+
 // ea: 0x6F71C0
 biped_phys_info::biped_phys_info()
 {
-    m_render_flags = 0;
+    m_render_flags.mMask = 0;
     m_owner = nullptr;
     m_bp_sys = nullptr;
+}
+
+// ?g_list_biped_phys_info@@3V?$phys_static_memory_pool@Vbiped_phys_info@@$0BA@@@A
+// (physics.o data @ 0xE040E0)
+phys_static_memory_pool<biped_phys_info, 16> g_list_biped_phys_info;
+// ?g_list_biped_system@@3V?$phys_static_memory_pool@Vbiped_system@@$0BA@@@A
+// (physics.o data @ 0xE09970)
+phys_static_memory_pool<biped_system, 16> g_list_biped_system;
+
+// ?gRenderFlags@@3PAHA / ?gJoints@@3PAHA (game2.o data @ 0x012F3EF0/0x012F3EC8)
+// Debug render arrays; binary initializes both pointers to -1 (disabled).
+int* gRenderFlags = (int*)-1;
+int* gJoints = (int*)-1;
+
+// ea: 0x70D140
+biped_phys_info::~biped_phys_info()
+{
+    if (m_bp_sys != nullptr)
+        destroy_bp_sys(false);
+}
+
+// ea: 0x70D080
+void biped_phys_info::destroy_bp_sys(bool tween_pos)
+{
+    (void)tween_pos;
+    biped_system* m_bp_sys_ = m_bp_sys;
+    if (m_bp_sys_ != nullptr)
+    {
+        Entity* m_owner_ = m_owner;
+        m_bp_sys_->rdbi_calc_bone_mat_from_rb();
+        m_bp_sys_->bp_bone_array.copy_back_bones(m_owner_);
+        g_list_biped_system.remove(m_bp_sys_);
+        m_bp_sys = nullptr;
+        m_owner_->physicsObject = 0;
+    }
+}
+
+// ea: 0x70D350
+void destroy_biped_phys_info(biped_phys_info* bp_info)
+{
+    if (bp_info->m_bp_sys != nullptr)
+        bp_info->destroy_bp_sys(false);
+    g_list_biped_phys_info.remove(bp_info);
+}
+
+// ea: 0x70D300
+biped_phys_info* create_biped_phys_info(Entity* owner)
+{
+    biped_phys_info* mBPInfo = owner->mBPInfo;
+    if (mBPInfo == nullptr)
+    {
+        mBPInfo = g_list_biped_phys_info.add(
+            true, "phys memory pool add overflow.");
+        if (mBPInfo == nullptr)
+            return nullptr;
+    }
+    if (!mBPInfo->setup(owner))
+    {
+        g_list_biped_phys_info.remove(mBPInfo);
+        return nullptr;
+    }
+    return mBPInfo;
+}
+
+// ea: 0x7049E0
+void biped_phys_info::debug_render_all()
+{
+    int count = g_list_biped_phys_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_list_biped_phys_info.m_alloc_list[i]->debug_render();
+}
+
+// ea: 0x6FF7F0
+void biped_phys_info::debug_render()
+{
+    if (m_bp_sys != nullptr)
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+            if (gRenderFlags[i] != 0)
+                m_render_flags.Add(i);
+            else
+                m_render_flags.Rmv(i);
+        }
+        for (int i = 0; i < 10; ++i)
+        {
+            if (gJoints[i] != 0)
+                m_bp_sys->render_joint(i, m_render_flags);
+        }
+    }
+}
+
+// stub until phys_anim_bone_array internals are ported (physics.o 0x6F76A0)
+void phys_anim_bone_array::copy_back_bones(Entity* owner)
+{
+    (void)owner;
+}
+
+// stub until biped_system internals are ported (physics.o inline 0x719FA0)
+void biped_system::rdbi_calc_bone_mat_from_rb()
+{
+}
+
+// stub until biped_system internals are ported (physics.o 0x6FB610)
+void biped_system::render_joint(int joint_id,
+                                Bitmask<unsigned int> render_flags)
+{
+    (void)joint_id;
+    (void)render_flags;
 }
 
 // USER_BONE_ID_* globals (physics.o data @ 0xE01EA8..0xE01EDC)
