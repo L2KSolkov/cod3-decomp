@@ -69,6 +69,7 @@ class ApsGameClient : public apsClient {
 public:
     static ApsGameClient m_client;  // ?m_client@ApsGameClient@@0V1@A (render.o)
 };
+ApsGameClient ApsGameClient::m_client;  // ?m_client@ApsGameClient@@0V1@A (render.o)
 
 // ============================================================================
 // Cross-object externs (already ported / still stubbed via /FORCE:UNRESOLVED)

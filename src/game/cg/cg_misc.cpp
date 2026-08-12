@@ -5457,7 +5457,7 @@ void Camera::UpdateAnimation()
 }
 
 float gSceneAnimCameraFOV;  // 0x00F258F0
-extern void* gSceneAnimCameraPO;   // 0x00F25AB0
+void* gSceneAnimCameraPO = nullptr;  // ?gSceneAnimCameraPO (anim.o @ 0x1314FB0)
 extern float dword_F63C60[4 * 1580];
 extern float dword_F63C8C[4 * 1580];
 extern float dword_F63C90[4 * 1580];

@@ -2187,7 +2187,7 @@ struct DroneAEMap {
     int m_size;   // +0x20
 };
 
-extern DroneAEMap gDroneAEMap;  // ?gDroneAEMap (game2.o)
+DroneAEMap gDroneAEMap;  // ?gDroneAEMap@@3V?$ae_sized_array@PAV?$ae_pair@IPAV?$ae_vector@V?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@@@@$07@@A (game2.o @ 0x12F45E0)
 extern void ae_vector_push_back_handle(DroneHandleVec* self,
     const DbLinkedHandle<EntityHandleDb, Entity>* elem);
 extern void ae_sized_array_push_back_pair(DroneAEMap* self,
