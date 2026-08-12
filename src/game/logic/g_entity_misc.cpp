@@ -1742,6 +1742,7 @@ int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
 }
 
 // LocalClient namespace (cl.o; stubs, port later)
+extern int LocalClient_PortToValidClient(int port);  // cl.o C bridge
 namespace LocalClient {
 int FirstLocalClientIndex()
 {
@@ -1752,9 +1753,20 @@ int ClientToPort(int client)
     (void)client;
     return 0;
 }
+// ?PortToValidClient@LocalClient@@YAHH@Z (cl.o)
+int PortToValidClient(int port)
+{
+    return LocalClient_PortToValidClient(port);
+}
 void SetFirstLocalClientIndex(int index) { (void)index; }
 void SetLastLocalClientIndex(int index) { (void)index; }
 void InitializeClientControllers() {}
+}
+
+// ea: 0x4A6B70 (g.o inline COMDAT)
+bool IsLocalPlayer(Entity* entity)
+{
+    return EntityManager::sInst->IsLocalPlayer(entity);
 }
 
 // XModelManager / DestructibleBankManager / PhysDataBankManager accessors

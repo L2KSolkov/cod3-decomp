@@ -232,6 +232,8 @@ class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
     Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z (g.o inline)
+    bool IsLocalPlayer(Entity* entity);   // ?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z (game.o)
+    int  GetPlayerIndex(Entity* entity);  // ?GetPlayerIndex@EntityManager@@QAEHPAVEntity@@@Z (game.o)
     Entity* mWorld;               // +0x44
 };
 struct sentient_s {
@@ -370,13 +372,84 @@ public:
 
 // hash_const_t (g_local.h view; local copy - only physics fields used)
 struct hash_const_t {
-    uint8_t    _pad[0x114];
+    uint8_t    _pad[0xA8];
+    HashString goal;          // +0xA8
+    uint8_t    _padAC[0x114 - 0xAC];
     HashString physicsdone;   // +0x114
     HashString physicsstart;  // +0x118
     HashString flipped;       // +0x11C
 };
 // ?hash_const@@3Uhash_const_t@@A (g.o data @ 0xED2AB0)
 extern hash_const_t hash_const;
+
+// PadAliasMgr (game.o PadAliasMgr.cpp view; class tag V matches
+// ?sInst@PadAliasMgr@@2PAV1@A). sInst + Context methods defined in g_cmd.cpp.
+enum EPadAliasButton {
+    kPadAliasButtonInvalid = -1,
+    kPadAliasButtonGas = 0,
+    kPadAliasButtonReverse = 1,
+    kPadAliasButtonHandBrake = 2,
+    kPadAliasButtonAlignTurret = 3,
+    kPadAliasButtonFireCoax = 4,
+    kPadAliasButtonSwitchSeats = 5,
+};
+enum EPadAliasStick {
+    kPadAliasStickInvalid = -1,
+    kPadAliasStickVehicleSteering = 0,
+    kPadAliasStickTankSteering = 1,
+};
+class PadAliasMgr {
+public:
+    struct Context {
+        int  GetButtonValue(int ctrlNum, EPadAliasButton buttonAlias);  // ?GetButtonValue@Context@PadAliasMgr@@QAEHHW4EPadAliasButton@@@Z
+        void GetStickValue(int ctrlNum, EPadAliasStick stickAlias,
+                           int& stickX, int& stickY);  // ?GetStickValue@Context@PadAliasMgr@@QAEXHW4EPadAliasStick@@AAH1@Z
+    };
+    Context mCtx[3];            // +0x00 (0x148 stride)
+    static PadAliasMgr* sInst;  // ?sInst@PadAliasMgr@@2PAV1@A @ 0xF4F458
+};
+
+// ServerTime (core.o view; class tag V + public static match repo mangling
+// ?sInst@ServerTime@@2V1@A). Definition in g_globals.cpp.
+class ServerTime {
+public:
+    unsigned int mNumTicksElapsed;  // +0x00
+    int          mTickMSec;         // +0x04
+    float        mTickDelta;        // +0x08
+    float        mTickDeltaInv;     // +0x0C
+    float        mElapsedTime;      // +0x10
+    static ServerTime sInst;
+};
+
+// GamePause (cg.o / game.o; ?IsGamePaused@GamePause@@SA_NH@Z, defined in
+// g_entity_misc.cpp)
+struct GamePause {
+    static bool IsGamePaused(int client);
+};
+
+namespace LocalClient {
+int PortToValidClient(int port);  // ?PortToValidClient@LocalClient@@YAHH@Z (cl.o)
+}
+
+// physics.o data globals (RBVehicleController.cpp; addresses from IDA)
+float hand_brake_min_speed = 300.0f;   // 0xE36ACC
+float steer_velocity = 400.0f;         // 0xE36AD0
+float thresh = 2.0f;                   // 0xE36AD4
+float steer_reduce_frac = 0.5f;        // 0xE36AD8
+float vehicleDeadZone_0 = 40.0f;       // 0xE36B04
+float tweaker = 11.0f;                 // 0xE36B24
+
+// per-client controller port array (cl.o ?dword_F6A28C@@3HA @ 0xF6A28C; the
+// tank/strafe flag byte lives 8 bytes into each 3208-byte record)
+extern int dword_F6A28C[4 * 802];
+
+bool IsLocalPlayer(Entity* entity);  // ?IsLocalPlayer@@YA_NPAVEntity@@@Z (g.o)
+bool IsPlayerFullySeatedInVehicle(Entity* player);  // ?IsPlayerFullySeatedInVehicle@@YA_NPAVEntity@@@Z (g.o)
+int RecalibrateInput(int val);  // ?RecalibrateInput@@YAHH@Z (cl.o)
+extern int g_vehicle_button_threshold;  // ?g_vehicle_button_threshold@@3HA (physics.o @ 0xE01F04)
+float vectoyaw(float* vec);  // ?vectoyaw@@YAMPAM@Z (core.o)
+float AngleNormalize180Accurate(float angle);  // ?AngleNormalize180Accurate@@YAMM@Z (core.o)
+void Axis4ToAngles(const float (*axis)[4], float* angles);  // ?Axis4ToAngles@@YAXPAY03$$CBMPAM@Z (core.o)
 
 // Bitmask<T> (ae/core/bitmask.h). Add/Rmv are inline COMDATs (g.o 0x4ACC30 /
 // 0x4ACCC0). class tag (V) required for V?$Bitmask@I@@ manglings.
@@ -471,6 +544,14 @@ public:
 
 private:
     void UpdateJump(rb_vehicle& rbveh);  // ?UpdateJump@RBVehicleController@@AAEXAAVrb_vehicle@@@Z
+    void UpdateControlsDefault(rb_vehicle& rbveh, int controller_port);  // ?UpdateControlsDefault@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z
+    void UpdateControlsStrafeMode(rb_vehicle& rbveh, int client_controller);  // ?UpdateControlsStrafeMode@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z
+    void UpdateControlsTankStrafeMode(rb_vehicle& rbveh, int controller_port);  // ?UpdateControlsTankStrafeMode@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z
+    void UpdateControlsTank(rb_vehicle& rbveh, int controller_port);  // ?UpdateControlsTank@RBVehicleController@@AAEXAAVrb_vehicle@@H@Z
+    void UpdateVehicleInputs(rb_vehicle& rbveh, float target_yaw,
+                             float target_accel,
+                             float forward_preference);  // ?UpdateVehicleInputs@RBVehicleController@@AAEXAAVrb_vehicle@@MMM@Z
+    void UpdateScriptVehicleControl(rb_vehicle& rbveh);  // ?UpdateScriptVehicleControl@RBVehicleController@@AAEXAAVrb_vehicle@@@Z
 };
 
 // rb_vehicle (physics.o RBVehicle.cpp). Layout verified against the ctor
@@ -547,6 +628,7 @@ public:
     void start_path(int attach_mode);  // ?start_path@rb_vehicle@@QAEXH@Z
     void set_brake(float braking);    // ?set_brake@rb_vehicle@@QAEXM@Z (inline)
     void set_throttle(float throttle);  // ?set_throttle@rb_vehicle@@QAEXM@Z (inline)
+    void set_hand_brake(float braking);  // ?set_hand_brake@rb_vehicle@@QAEXM@Z (inline)
     void set_steer_factor(float steer_factor);  // ?set_steer_factor@rb_vehicle@@QAEXM@Z (inline)
     void update_from_network(const math::Position3& position,
                              const math::Position3& angles,
@@ -1048,7 +1130,8 @@ struct refEntity {  // EntityShared subset
     DObj* mDObj;                 // +0x23C
     uint8_t _pad240[0x248 - 0x240];
     biped_phys_info* mBPInfo;    // +0x248
-    uint8_t _pad24C[0x25C - 0x24C];
+    uint8_t _pad24C[0x254 - 0x24C];
+    void* client;                // +0x254 (Client*; ps.viewangles +0xD0)
     void* actor;                 // +0x258 (actor_s*)
     void* sentient;              // +0x25C (sentient_s*)
     void* scr_vehicle;           // +0x260 (scr_vehicle_t*)
@@ -1084,6 +1167,21 @@ struct refEntity {  // EntityShared subset
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (game.o)
     void set_bp_info(biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
     void CalcOriginAnglesFromMat();  // ?CalcOriginAnglesFromMat@Entity@@QAEXXZ (game.o)
+    bool IsLocalPlayer() const;  // ?IsLocalPlayer@Entity@@QBE_NXZ (game.o)
+    int  GetPlayerIndex() const; // ?GetPlayerIndex@Entity@@QBEHXZ (game.o)
+};
+
+// EntityHandleDb (g.o view; mElements +0xA8, 0x540 entries). Defined early
+// because RBVehicleController::UpdateControls resolves seat occupant handles.
+struct EntityHandleDbDbElement {
+    Entity* mObject;  // +0x00
+    int     mKey;     // +0x04
+};
+class EntityHandleDb {
+public:
+    uint8_t _pad[0xA8];  // +0x00 (incl. mFreeIndices BitSet<1344>)
+    EntityHandleDbDbElement mElements[0x540];  // +0xA8
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o)
 };
 
 // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o; stub until render.o is ported)
@@ -1242,12 +1340,21 @@ void bone_mass_info::calc_stuff(Entity* const owner)
     }
 }
 
-// Camera (cg.o view; minimal local copy for evaluate_effect_priority)
+// Camera (cg.o view; minimal local copy; mVehicleCamMode +0x194 verified from
+// UpdateControls disasm: cmp dword ptr [eax+194h], 2/3)
+enum EVehicleCameraMode {
+    VEH_MODE_FIRSTPERSON = 0,
+    VEH_MODE_CHASECAM = 1,
+    VEH_MODE_HLO = 2,
+    VEH_MODE_STRAFE = 3,
+};
 struct Camera {
     uint8_t         _pad0[0x30];
     math::Position3 mPrevViewPos;  // +0x30
     math::Position3 mPrevAngles;   // +0x40
     math::Position3 mPrevViewDir;  // +0x50
+    uint8_t         _pad60[0x194 - 0x60];
+    EVehicleCameraMode mVehicleCamMode;  // +0x194
 };
 extern Camera gCamera[8];  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0)
 extern int currCl;         // ?currCl@@3HA (cg.o)
@@ -1482,7 +1589,17 @@ struct scr_vehicle_t {
     int16_t waitNode;              // +0x17A
     float   waitSpeed;             // +0x17C
     uint8_t _pad180[0x1E0 - 0x180];
-    uint8_t seats[0x134];          // +0x1E0 (11 * 28)
+    struct {                        // 28-byte seat (IDA ordinal 4882)
+        int          flags;         // +0x00
+        unsigned int occupant;      // +0x04 (DbLinkedHandle mVal)
+        int          boneIndex;     // +0x08
+        int          weapon;        // +0x0C
+        float        heat;          // +0x10
+        unsigned int overheatEffect;  // +0x14 (Handle)
+        uint8_t      gunMounted;    // +0x18
+        uint8_t      overheating;   // +0x19
+        uint8_t      firing;        // +0x1A
+    } seats[11];                    // +0x1E0
     uint8_t _pad314[0x3E0 - 0x314];
     struct {  // scr_vehicle_t::LerpedVariables (64 bytes)
         math::Position3 mBodyPosition;  // +0x00
@@ -1523,16 +1640,600 @@ void RBVehicleController::SetScriptTarget(
     rbveh.m_flags.mMask |= 8u;
 }
 
-// stub until RBVehicleController::UpdateControls (0x70C530) is ported
-void RBVehicleController::UpdateControls(rb_vehicle& rbveh)
-{
-    (void)rbveh;
-}
-
 // ea: 0x6F5B50
 void RBVehicleController::UpdateJump(rb_vehicle& rbveh)
 {
     (void)rbveh;
+}
+
+// ea: 0x6FDD20
+void RBVehicleController::UpdateControlsDefault(rb_vehicle& rbveh,
+                                                int controller_port)
+{
+    rb_vehicle* v3 = &rbveh;
+    int v4 = controller_port;
+    rbveh.m_coasting_factor = rbveh.m_parameter->m_tire_damp_coast;
+    int stickY, stickX;
+    PadAliasMgr::sInst->mCtx[0].GetStickValue(
+        v4, kPadAliasStickVehicleSteering, stickX, stickY);
+    stickX = RecalibrateInput(stickX);
+    float in = -(stickX * 0.0078125f);
+    v3->m_steer_factor = ClampRange(in, -1.0f, 1.0f);
+    int ButtonValue = PadAliasMgr::sInst->mCtx[0].GetButtonValue(
+        v4, kPadAliasButtonGas);
+    if (ButtonValue <= 150)
+    {
+        if (ButtonValue == 0)
+        {
+            if (PadAliasMgr::sInst->mCtx[0].GetButtonValue(
+                    v4, kPadAliasButtonReverse) != 0)
+                v3->set_throttle(-1.0f);
+            else
+                v3->set_throttle(0.0f);
+            goto LABEL_8;
+        }
+    }
+    else
+    {
+        ButtonValue = 255;
+    }
+    v3->set_throttle(ButtonValue * 0.0039215689f);
+LABEL_8:
+    if (PadAliasMgr::sInst->mCtx[0].GetButtonValue(v4,
+                                                   kPadAliasButtonHandBrake)
+        <= g_vehicle_button_threshold)
+        v3->set_hand_brake(0.0f);
+    else
+        v3->set_hand_brake(1.0f);
+    v3->set_brake(0.0f);
+}
+
+// ea: 0x702580
+void RBVehicleController::UpdateControlsStrafeMode(rb_vehicle& rbveh,
+                                                   int client_controller)
+{
+    float input_yaw = 0.0f;
+    int valid = LocalClient::PortToValidClient(client_controller);
+    Entity* Player = EntityManager::sInst->GetPlayer(valid);
+    Entity* v6 = Player;
+    if (Player != nullptr)
+        input_yaw = ((float*)((char*)Player->client + 0xD0))[1];
+    int move, stickY;
+    PadAliasMgr::sInst->mCtx[0].GetStickValue(
+        client_controller, kPadAliasStickVehicleSteering, move, stickY);
+    int v7;
+    if (v6 != nullptr && v6->IsLocalPlayer()
+        && gCamera[v6->GetPlayerIndex()].mVehicleCamMode == VEH_MODE_HLO)
+    {
+        v7 = 0;
+        move = 0;
+    }
+    else
+    {
+        v7 = move;
+    }
+    float vec;
+    float v8 = fabs((float)stickY);
+    if (vehicleDeadZone_0 <= v8)
+    {
+        int v10 = stickY <= 0 ? ((stickY >= 0) - 1) : 1;
+        vec = ((v8 - vehicleDeadZone_0) / (128.0f - vehicleDeadZone_0)) * v10;
+    }
+    else
+    {
+        vec = 0.0f;
+    }
+    float v11 = fabs((float)move);
+    float v17;
+    if (vehicleDeadZone_0 <= v11)
+    {
+        int v12 = v7 <= 0 ? ((v7 >= 0) - 1) : 1;
+        v17 = ((v11 - vehicleDeadZone_0) / (128.0f - vehicleDeadZone_0)) * v12;
+    }
+    else
+    {
+        v17 = 0.0f;
+    }
+    float input = sqrtf(v17 * v17 + vec * vec);
+    if (input > 1.0f)
+        input = 1.0f;
+    input_yaw = vectoyaw(&vec) + input_yaw + 180.0f;
+    UpdateVehicleInputs(rbveh, input_yaw, input, -vec);
+}
+
+// ea: 0x702730
+void RBVehicleController::UpdateControlsTankStrafeMode(rb_vehicle& rbveh,
+                                                       int controller_port)
+{
+    UpdateControlsStrafeMode(rbveh, controller_port);
+}
+
+// ea: 0x6FDE40
+void RBVehicleController::UpdateControlsTank(rb_vehicle& rbveh,
+                                             int controller_port)
+{
+    rbveh.m_coasting_factor = rbveh.m_parameter->m_tire_damp_coast;
+    int y, x;
+    PadAliasMgr::sInst->mCtx[1].GetStickValue(
+        controller_port, kPadAliasStickVehicleSteering, x, y);
+    x = RecalibrateInput(x);
+    int v5 = RecalibrateInput(y);
+    y = v5;
+    float target_yaw = 0.0f;
+    float input_dist = sqrtf((float)(y * y + x * x));
+    float v6 = 0.0f;
+    int input_dista;
+    if (input_dist == 0.0f)
+    {
+        input_dista = 0;
+    }
+    else
+    {
+        v6 = x / input_dist;
+        target_yaw = v6;
+        if (v6 > 0.0f)
+            input_dista = 1;
+        else
+        {
+            input_dista = -1;
+            if (v6 >= 0.0f)
+                input_dista = 0;
+        }
+    }
+    float v7 = -(target_yaw * target_yaw * input_dista);
+    float v8;
+    if (fabs(v7) >= 0.98000002f)
+        v8 = v7;
+    else
+        v8 = steer_reduce_frac * v7;
+    float v9 = ((v5 * 0.007751938f) * (v5 * 0.007751938f))
+        + ((((x * 0.25f) * v6) * 0.007751938f)
+           * (((x * 0.25f) * v6) * 0.007751938f));
+    float v10;
+    if (v9 == 0.0f)
+    {
+        v10 = 0.0f;
+    }
+    else
+    {
+        v10 = v9 / sqrtf(v9);
+    }
+    if (v5 > 0)
+    {
+        v10 = v10 * -1.0f;
+    }
+    if (rbveh.m_forward_vel < 0.0f && v10 >= 0.0f)
+        v8 = 0.0f;
+    rbveh.m_steer_factor = ClampRange(v8, -1.0f, 1.0f);
+    rbveh.set_throttle(v10);
+    rbveh.set_hand_brake(0.0f);
+    rbveh.set_brake(0.0f);
+    rb_extra_info* m_chassis_rbinf = rbveh.m_chassis_rbinf;
+    if (m_chassis_rbinf != nullptr
+        && PadAliasMgr::sInst->mCtx[1].GetButtonValue(
+               controller_port, kPadAliasButtonAlignTurret)
+               > g_vehicle_button_threshold)
+    {
+        const math::Mat43* mat = &m_chassis_rbinf->m_rb->get_mat();
+        float rb_angles[3];
+        Axis4ToAngles((const float(*)[4])mat, rb_angles);
+        AngleNormalize180Accurate(
+            gCamera[controller_port].mPrevAngles.v.m128_f32[1]
+            - m_chassis_rbinf->m_ent->r.currentAngles.v.m128_f32[1]);
+        float v15 = rbveh.m_steer_factor - rb_angles[1];
+        AngleNormalize180Accurate(v15);
+        float v14 = 1.0f;
+        float input_distb = 1.0f;
+        if (rbveh.m_throttle > 0.94999999f)
+        {
+            v14 = 0.15000001f;
+            input_distb = 0.15000001f;
+        }
+        float target_yawb = rbveh.m_steer_factor;
+        if (target_yawb > thresh)
+        {
+            rbveh.set_steer_factor(input_distb);
+            rbveh.set_throttle(1.0f);
+            return;
+        }
+        if ((0.0f - thresh) > target_yawb)
+        {
+            rbveh.set_steer_factor(0.0f - v14);
+            rbveh.set_throttle(1.0f);
+            return;
+        }
+        rbveh.set_steer_factor(0.0f);
+    }
+}
+
+// ea: 0x6FDA20
+void RBVehicleController::UpdateVehicleInputs(rb_vehicle& rbveh,
+                                              float target_yaw,
+                                              float target_accel,
+                                              float forward_preference)
+{
+    float v6 = 0.0f;
+    float delta_yaw = 0.0f;
+    if (target_accel != 0.0f && (rbveh.m_flags.mMask & 1) == 0)
+    {
+        const math::Mat43& mat = rbveh.m_chassis_rbinf->m_rb->get_mat();
+        float ang[3];
+        Axis4ToAngles((const float(*)[4])&mat, ang);
+        float v8 = target_yaw - ang[1];
+        delta_yaw = AngleNormalize180Accurate(v8);
+        v6 = delta_yaw;
+    }
+    if ((rbveh.m_flags.mMask & 0x20) == 0)
+        rbveh.m_coasting_factor = rbveh.m_parameter->m_tire_damp_coast * 3.0f;
+    int v9 = 0;
+    char v28 = 0;
+    float v10;
+    if (fabs(delta_yaw) <= forward_preference * 45.0f + 135.0f)
+    {
+        v10 = 1.0f;
+    }
+    else
+    {
+        if (v6 <= 0.0f)
+        {
+            if (v6 < 0.0f)
+                v9 = -1;
+        }
+        else
+        {
+            v9 = 1;
+        }
+        delta_yaw = v6 - (v9 * 180.0f);
+        v10 = -1.0f;
+        v28 = 1;
+    }
+    rbveh.set_throttle(v10 * target_accel);
+    float m_forward_vel = rbveh.m_forward_vel;
+    math::Dir3 velocity;
+    float vel_len_sq = 0.0f;
+    if (target_accel == 0.0f
+        || (m_forward_vel <= 5.0f || v28 == 0)
+               && (m_forward_vel >= -5.0f || v28 != 0))
+    {
+        rbveh.set_brake(0.0f);
+    }
+    else
+    {
+        velocity = rbveh.get_velocity();
+        __m128 v13 = _mm_mul_ps(velocity.v, velocity.v);
+        vel_len_sq =
+            v13.m128_f32[0] + (v13.m128_f32[1] + v13.m128_f32[2]);
+        float v14 = 0.0f;
+        if (vel_len_sq <= (steer_velocity * steer_velocity))
+            v14 = delta_yaw;
+        delta_yaw = v14 * -1.0f;
+        rbveh.set_brake(1.0f);
+    }
+    float v15 = 0.0f;
+    if (delta_yaw <= 0.0f)
+    {
+        if (delta_yaw < 0.0f)
+            v15 = -1.0f;
+    }
+    else
+    {
+        v15 = 1.0f;
+    }
+    float v16 = v28 == 0 ? 1.0f : -1.0f;
+    bool v17 = (rbveh.m_flags.mMask & 0x20) == 0;
+    float v18 = v16 * v15;
+    float v19 = v17 ? 30.0f : 100.0f;
+    delta_yaw = fabs(delta_yaw);
+    if (v19 > delta_yaw)
+        v18 = (delta_yaw / v19) * v18;
+    rbveh.m_steer_factor = ClampRange(v18, -1.0f, 1.0f);
+    if (delta_yaw <= 60.0f)
+    {
+        rbveh.set_hand_brake(0.0f);
+    }
+    else
+    {
+        velocity = rbveh.get_velocity();
+        __m128 v22 = _mm_mul_ps(velocity.v, velocity.v);
+        float v24 =
+            v22.m128_f32[0] + (v22.m128_f32[1] + v22.m128_f32[2]);
+        if (v24 <= (hand_brake_min_speed * hand_brake_min_speed))
+            rbveh.set_hand_brake(0.0f);
+        else
+            rbveh.set_hand_brake(1.0f);
+    }
+}
+
+// ea: 0x702060
+void RBVehicleController::UpdateScriptVehicleControl(rb_vehicle& rbveh)
+{
+    Entity* m_owner = rbveh.m_owner;
+    math::Position3 currentOrigin = m_owner->r.currentOrigin;
+    __m128 v6 = _mm_sub_ps(m_script_goal_position.v, currentOrigin.v);
+    math::Dir3 to_goal;
+    to_goal.v = _mm_shuffle_ps(
+        v6, _mm_shuffle_ps(_mm_setzero_ps(), v6, 240), 196);
+    __m128 v8 = _mm_mul_ps(to_goal.v, to_goal.v);
+    float goal_speed =
+        sqrtf(v8.m128_f32[0] + (v8.m128_f32[1] + v8.m128_f32[2]));
+    float yaw_deg;
+    if (goal_speed <= 0.0f)
+    {
+        yaw_deg = 0.0f;
+    }
+    else
+    {
+        to_goal.v = _mm_div_ps(to_goal.v, _mm_set1_ps(goal_speed));
+        float v26 = fabs(to_goal.v.m128_f32[0]);
+        float owner = fabs(to_goal.v.m128_f32[1]);
+        float v10;
+        if (0.0f == owner + v26)
+        {
+            v10 = 0.0f;
+        }
+        else
+        {
+            float v25 = 1.0f
+                / sqrtf(to_goal.v.m128_f32[1] * to_goal.v.m128_f32[1]
+                        + to_goal.v.m128_f32[0] * to_goal.v.m128_f32[0]);
+            if (owner <= v26)
+            {
+                float v13 = v25 * owner;
+                if ((v25 * owner) >= 0.5f)
+                {
+                    float ownerd = sqrtf(fabs((1.0f - v13) * 0.5f));
+                    v10 = ((((((((ownerd * ownerd) * ownerd)
+                                * (ownerd * ownerd))
+                               * (ownerd * ownerd))
+                              * -0.1079625f)
+                             - ((((ownerd * ownerd) * ownerd)
+                                 * (ownerd * ownerd))
+                                * 0.15000001f))
+                            - (((ownerd * ownerd) * ownerd)
+                               * 0.33333331f))
+                           - (ownerd * 2.0f))
+                        + 1.570796f;
+                }
+                else
+                {
+                    v10 = (((((((v13 * v13) * v13) * (v13 * v13))
+                              * (v13 * v13))
+                             * 0.053981241f)
+                            + ((((v13 * v13) * v13) * (v13 * v13))
+                               * 0.075000003f))
+                           + (((v13 * v13) * v13) * 0.1666667f))
+                        + v13;
+                }
+            }
+            else
+            {
+                float v11 = v25 * v26;
+                float v12;
+                if ((v25 * v26) >= 0.5f)
+                {
+                    float ownerc = sqrtf(fabs((1.0f - v11) * 0.5f));
+                    v12 = ((((((((ownerc * ownerc) * ownerc)
+                                * (ownerc * ownerc))
+                               * (ownerc * ownerc))
+                              * -0.1079625f)
+                             - ((((ownerc * ownerc) * ownerc)
+                                 * (ownerc * ownerc))
+                                * 0.15000001f))
+                            - (((ownerc * ownerc) * ownerc)
+                               * 0.33333331f))
+                           - (ownerc * 2.0f))
+                        + 1.570796f;
+                }
+                else
+                {
+                    v12 = (((((((v11 * v11) * v11) * (v11 * v11))
+                              * (v11 * v11))
+                             * 0.053981241f)
+                            + ((((v11 * v11) * v11) * (v11 * v11))
+                               * 0.075000003f))
+                           + (((v11 * v11) * v11) * 0.1666667f))
+                        + v11;
+                }
+                v10 = 1.5707964f - v12;
+            }
+            if (to_goal.v.m128_f32[0] < 0.0f)
+                v10 = 3.1415927f - v10;
+            if (to_goal.v.m128_f32[1] < 0.0f)
+                v10 = 0.0f - v10;
+        }
+        float v14 = v10 * 57.295776f;
+        yaw_deg = v14;
+        if (v14 < 0.0f)
+            yaw_deg = v14 + 360.0f;
+    }
+    __m128 v16 =
+        _mm_mul_ps(m_owner->r.currentMat.y.v, to_goal.v);
+    float v17 = fabs(v16.m128_f32[0]
+                     + (v16.m128_f32[1] + v16.m128_f32[2]));
+    __m128 v18 = _mm_sub_ps(currentOrigin.v, m_stuck_position.v);
+    __m128 v19 = _mm_mul_ps(v18, v18);
+    if ((v19.m128_f32[0] + (v19.m128_f32[1] + v19.m128_f32[2])) < 25.0f
+        || m_stuck_time < 0.0f)
+    {
+        m_stuck_time = m_stuck_time + ServerTime::sInst.mTickDelta;
+    }
+    else
+    {
+        m_stuck_position.v = m_owner->r.currentOrigin.v;
+        m_stuck_time = 0.0f;
+    }
+    if (m_stuck_time > 3.0f)
+        m_stuck_time = -0.75f;
+    float v27;
+    if (((rbveh.m_flags.mMask & 0x20) != 0 || (v27 = v17) <= 0.80000001f
+         || goal_speed >= 400.0f)
+        && m_stuck_time >= 0.0f)
+    {
+        UpdateVehicleInputs(rbveh, yaw_deg, 1.0f, 0.0f);
+    }
+    else
+    {
+        UpdateVehicleInputs(rbveh, yaw_deg + 180.0f, 1.0f, -1.6f);
+    }
+    vehicle_rb_parameter* m_parameter = rbveh.m_parameter;
+    float v21 = m_parameter->m_speed_max * m_script_goal_speed;
+    float v22 = v21 + 10.0f;
+    float ownerb = fabs(rbveh.m_forward_vel);
+    if ((rbveh.m_flags.mMask & 0x200) != 0)
+    {
+        if (ownerb <= v21)
+            return;
+        goto LABEL_34;
+    }
+    if (m_script_goal_radius <= goal_speed)
+    {
+        bool v23;
+        if (goal_speed >= 1000.0f)
+        {
+            if (ownerb <= v22)
+                return;
+            v23 = ownerb <= 300.0f;
+        }
+        else
+        {
+            if (ownerb <= v22)
+                return;
+            if (ownerb > ((m_parameter->m_speed_max - v22) * (goal_speed * 0.001f)) + v22)
+            {
+            LABEL_34:
+                rbveh.set_throttle(0.0f);
+            LABEL_35:
+                rbveh.set_hand_brake(1.0f);
+                return;
+            }
+            v23 = ownerb <= 300.0f;
+        }
+        if (!v23)
+            rbveh.set_throttle(0.0f);
+    }
+    else
+    {
+        if (m_script_goal_speed == 0.0f)
+        {
+            rbveh.set_throttle(0.0f);
+            v22 = v21 + 10.0f;
+        }
+        if (v22 < ownerb)
+            goto LABEL_35;
+        m_owner->Notify(hash_const.goal);
+        rbveh.m_flags.mMask &= ~8u;
+    }
+}
+
+// ea: 0x70C530
+void RBVehicleController::UpdateControls(rb_vehicle& rbveh)
+{
+    scr_vehicle_t* scr_vehicle = (scr_vehicle_t*)rbveh.m_owner->scr_vehicle;
+    unsigned int mVal = scr_vehicle->seats[0].occupant;
+    unsigned int v5 = mVal & 0xFFF;
+    Entity* occupant = nullptr;
+    if (v5 < 0x540 && mVal >> 12 == EntityHandleDb::sInst.mElements[v5].mKey)
+        occupant = EntityHandleDb::sInst.mElements[v5].mObject;
+    int PlayerIndex = EntityManager::sInst->GetPlayerIndex(occupant);
+    if (PlayerIndex >= 0)
+    {
+        if (!EntityManager::sInst->IsLocalPlayer(occupant))
+            return;
+        m_hold_controls_time = 1.0f;
+        if (GamePause::IsGamePaused(PlayerIndex))
+            return;
+        unsigned int mMask = rbveh.m_flags.mMask;
+        if ((mMask & 0x100) != 0)
+        {
+            if ((mMask & 1) != 0)
+            {
+                rbveh.start_path(0);
+                return;
+            }
+            scr_vehicle = (scr_vehicle_t*)rbveh.m_owner->scr_vehicle;
+            rbveh.set_steer_factor(
+                ((scr_vehicle->next.mSteeringAngle * 3.1415927f)
+                 * 0.0055555557f)
+                * tweaker);
+            goto LABEL_38;
+        }
+        if ((mMask & 0x200) == 0 || (rbveh.m_flags.mMask & 1) != 0)
+        {
+            if ((mMask & 8) == 0)
+            {
+                if (!IsLocalPlayer(occupant)
+                    || !IsPlayerFullySeatedInVehicle(occupant))
+                {
+                    if (occupant != nullptr)
+                        return;
+                    rbveh.set_steer_factor(0.0f);
+                    goto LABEL_38;
+                }
+                if ((rbveh.m_flags.mMask & 0x20) != 0)
+                {
+                    if (((char*)&dword_F6A28C[802 * PlayerIndex])[8] != 0)
+                        UpdateControlsTank(rbveh,
+                                           dword_F6A28C[802 * PlayerIndex]);
+                    else
+                        UpdateControlsStrafeMode(
+                            rbveh, dword_F6A28C[802 * PlayerIndex]);
+                    vehicle_rb_parameter* m_parameter = rbveh.m_parameter;
+                    if ((rbveh.m_forward_vel > m_parameter->m_speed_max
+                         && rbveh.m_throttle > 0.0f)
+                        || ((0.0f - m_parameter->m_speed_max)
+                                > rbveh.m_forward_vel
+                            && rbveh.m_throttle < 0.0f))
+                    {
+                        rbveh.set_throttle(0.0f);
+                    }
+                }
+                else if (occupant->IsLocalPlayer()
+                         && (gCamera[occupant->GetPlayerIndex()]
+                                     .mVehicleCamMode
+                                 == VEH_MODE_HLO
+                             || gCamera[occupant->GetPlayerIndex()]
+                                        .mVehicleCamMode
+                                    == VEH_MODE_STRAFE))
+                {
+                    UpdateControlsStrafeMode(
+                        rbveh, dword_F6A28C[802 * PlayerIndex]);
+                }
+                else
+                {
+                    UpdateControlsDefault(rbveh,
+                                          dword_F6A28C[802 * PlayerIndex]);
+                }
+                return;
+            }
+        }
+        else
+        {
+            scr_vehicle = (scr_vehicle_t*)rbveh.m_owner->scr_vehicle;
+            math::Position3 v11;
+            v11.v = _mm_setr_ps(scr_vehicle->pathPos.lookPos[0],
+                                scr_vehicle->pathPos.lookPos[1],
+                                scr_vehicle->pathPos.lookPos[2], 0.0f);
+            m_script_goal_position.v = v11.v;
+            m_script_goal_radius = 5.0f;
+            m_script_goal_speed =
+                scr_vehicle->pathPos.speed / rbveh.m_parameter->m_speed_max;
+        }
+        UpdateScriptVehicleControl(rbveh);
+        return;
+    }
+    if (m_hold_controls_time <= 0.0f)
+    {
+        float zero = 0.0f;
+        rbveh.m_steer_factor = ClampRange(zero, -1.0f, 1.0f);
+    LABEL_38:
+        rbveh.set_throttle(0.0f);
+        rbveh.set_hand_brake(0.0f);
+        return;
+    }
+    float v6 = m_hold_controls_time - ServerTime::sInst.mTickDelta;
+    m_hold_controls_time = v6;
+    if (v6 < 0.0f)
+        m_hold_controls_time = 0.0f;
 }
 
 // ea: 0x6FC140
@@ -2156,6 +2857,21 @@ void rb_vehicle::set_throttle(float throttle)
             __debugbreak();
     }
     m_throttle = throttle;
+}
+
+// ea: 0x6E69B0 (inline COMDAT)
+void rb_vehicle::set_hand_brake(float braking)
+{
+    if (braking < 0.0f || braking > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.h";
+        AeAssert::gCurrentLine = 382;
+        AeAssert::gCurrentExpr = "braking>= 0.0f && braking<= 1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Out of range"))
+            __debugbreak();
+    }
+    m_hand_brake = braking;
 }
 
 // ea: 0x71A0D0 (inline COMDAT)
@@ -3862,17 +4578,6 @@ void do_all_biped_system_process_collision_events();  // 0x704A10
 class phys_gjk_info;
 class phys_contact_manifold_process;
 class TouchEntityData;
-class EntityHandleDb;
-struct EntityHandleDbDbElement {
-    Entity* mObject;  // +0x00
-    int     mKey;     // +0x04
-};
-class EntityHandleDb {
-public:
-    uint8_t _pad[0xA8];  // +0x00 (incl. mFreeIndices BitSet<1344>)
-    EntityHandleDbDbElement mElements[0x540];  // +0xA8
-    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
-};
 template <typename Db, typename T>
 class DbLinkedHandle {
 public:

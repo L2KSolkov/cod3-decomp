@@ -1683,7 +1683,9 @@ static int GetStickIndexFromDesc(const char* desc);     // game.o 0x6126D0
 static EPadAliasButton GetButtonAliasFromDesc(const char* desc);  // game.o 0x612730
 static EPadAliasStick GetStickAliasFromDesc(const char* desc);    // game.o 0x612760
 
-struct PadAliasMgr {
+// class tag (V) required: binary mangling ?sInst@PadAliasMgr@@2PAV1@A
+class PadAliasMgr {
+public:
     struct Context {
         ae_sized_array<ae_sized_array<EPadAliasButton, 16>, 4> mButtonAlias;  // +0x00 (0x114)
         ae_sized_array<ae_sized_array<EPadAliasStick, 2>, 4> mStickAlias;     // +0x114 (0x34)
