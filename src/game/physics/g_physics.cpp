@@ -463,6 +463,26 @@ extern int g_vehicle_button_threshold;  // ?g_vehicle_button_threshold@@3HA (phy
 float vectoyaw(float* vec);  // ?vectoyaw@@YAMPAM@Z (core.o)
 float AngleNormalize180Accurate(float angle);  // ?AngleNormalize180Accurate@@YAMM@Z (core.o)
 void Axis4ToAngles(const float (*axis)[4], float* angles);  // ?Axis4ToAngles@@YAXPAY03$$CBMPAM@Z (core.o)
+// game.o raw segment collide helpers (g_cm_load.cpp)
+struct cdlPlane { int packed[4]; };  // 16 bytes
+struct cdl_object_t;
+bool collide_segment(const cdl_object_t& obj, const math::Dir3* vert_list,
+                     const unsigned char* index_list,
+                     unsigned short first_vert, int num_indices,
+                     const math::Position3& p0, const math::Position3& p1,
+                     float& t, math::Position3& normal,
+                     int* tid);  // game.o 0x61EB80
+bool collide_box_segment(const math::Position3& p0,
+                         const math::Position3& p1,
+                         const math::Position3& bmin,
+                         const math::Position3& bmax, float& t,
+                         math::Position3* normal);  // game.o 0x60C720
+bool collide_brush_segment(const math::Position3& p0,
+                           const math::Position3& p1,
+                           const math::Position3& bmin,
+                           const math::Position3& bmax,
+                           const cdlPlane* sides, unsigned int nsides,
+                           float& t, math::Position3* normal);  // game.o 0x61ACC0
 void* G_GetModel(const char* modelName, TPakId pakId);  // ?G_GetModel@@YAPAXPBDW4TPakId@@@Z (g.o)
 Entity* G_Spawn(TPakId pakId);  // ?G_Spawn@@YAPAVEntity@@W4TPakId@@@Z (g.o)
 int G_CallSpawnEntity(Entity* ent);  // ?G_CallSpawnEntity@@YAHPAVEntity@@@Z (g.o)
@@ -4088,6 +4108,109 @@ struct cdl_object_t {
     float box_radius[3]; // +0x14
     float sphere_radius; // +0x20
 };
+class CGBank;
+// phys_gjk_geom_cod_base (phys_gjk.h view; 64 bytes, IDA ordinal). Base of
+// all cod geometry; m_aabb_mn +0x10, m_aabb_mx +0x20, m_geom_id +0x30,
+// m_next_geom +0x34, m_dcg +0x38, m_dcg_index +0x3C.
+class phys_gjk_geom_cod_base {
+public:
+    void*         __vftable;   // +0x00
+    uint8_t       _pad4[0x10 - 0x04];
+    math::Dir3    m_aabb_mn;   // +0x10
+    math::Dir3    m_aabb_mx;   // +0x20
+    void*         m_geom_id;   // +0x30
+    phys_gjk_geom_cod_base* m_next_geom;  // +0x34
+    DCGSet*       m_dcg;       // +0x38
+    int           m_dcg_index; // +0x3C
+};
+
+// phys_gjk_geom_aabb / phys_gjk_geom_vert_list factory stubs
+// (?create@phys_gjk_geom_aabb@@SAPAV1@ABVDir3@math@@0@Z /
+//  ?create@phys_gjk_geom_vert_list@@SAPAV1@HPAVDCGSet@@H@Z; phys_xboxr
+// phys_gjk.o helpers, port later).
+class phys_gjk_geom_aabb : public phys_gjk_geom_cod_base {
+public:
+    math::Dir3 m_center_local;  // +0x40
+    math::Dir3 m_dims;          // +0x50
+    static phys_gjk_geom_aabb* create(const math::Dir3& center,
+                                      const math::Dir3& dims);
+};
+class phys_gjk_geom_vert_list : public phys_gjk_geom_cod_base {
+public:
+    math::Dir3* m_vert_list;  // +0x40
+    int         m_vert_list_count;  // +0x44
+    static phys_gjk_geom_vert_list* create(int num_verts, DCGSet* dcg,
+                                           int dcg_index);
+};
+phys_gjk_geom_aabb* phys_gjk_geom_aabb::create(const math::Dir3& center,
+                                               const math::Dir3& dims)
+{
+    (void)center; (void)dims;
+    return nullptr;
+}
+phys_gjk_geom_vert_list* phys_gjk_geom_vert_list::create(int num_verts,
+                                                         DCGSet* dcg,
+                                                         int dcg_index)
+{
+    (void)num_verts; (void)dcg; (void)dcg_index;
+    return nullptr;
+}
+void* phys_gjk_geom_list_create()
+{
+    return nullptr;
+}
+
+// cdl_vinfo_t / cdl_array<vi4> minimal views for unpack
+struct cdl_vinfo_t {
+    float vbase[3];       // +0x00 (x/y/z)
+    int   num_verts;      // +0x0C
+    int   first_vert;     // +0x10
+};
+struct vi4 {
+    int v;  // +0x00
+};
+template <typename T>
+class cdl_array {
+public:
+    int   m_count;      // +0x00
+    T*    m_elements;   // +0x04
+};
+
+// ea: 0x6FF680
+void unpack(const cdl_vinfo_t& vinfo, const cdl_array<vi4>& verts,
+            math::Dir3* vert_list)
+{
+    math::Position3 base;
+    base.v = _mm_setr_ps(vinfo.vbase[0], vinfo.vbase[1], vinfo.vbase[2],
+                         0.0f);
+    int num_verts = vinfo.num_verts;
+    unsigned int first_vert = vinfo.first_vert;
+    if (first_vert >= (unsigned int)verts.m_count
+        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                     "index >= 0 && index < size()", "invalid index"))
+        __debugbreak();
+    vi4* v5 = &verts.m_elements[first_vert];
+    if (num_verts != 0)
+    {
+        do
+        {
+            math::Position3 q;
+            q.v = _mm_setr_ps((float)((v5->v & 0x7FF) * 0.25f),
+                              (float)(((v5->v >> 11) & 0x7FF) * 0.25f),
+                              (float)((v5->v >> 22) * 0.25f), 0.0f);
+            vert_list->v = _mm_add_ps(base.v, q.v);
+            ++vert_list;
+            ++v5;
+            --num_verts;
+        } while (num_verts != 0);
+    }
+}
+unsigned int make_unique_id(Entity* ent, unsigned int object_id)
+{
+    return (unsigned int)(uintptr_t)ent + object_id;
+}
+
+// ea: 0x6FEDB0
 class gjk_geom_database {
 public:
     gjk_geom_info* m_tree_root;  // +0x00 (m_ggi_search_tree.m_tree_root)
@@ -4099,11 +4222,17 @@ public:
     int   m_aabb_count;     // +0x18
 
     phys_gjk_geom_list* create_gjk_geom(Entity* ent);  // ?create_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@@Z
+    phys_gjk_geom_cod_base* create_gjk_geom(const cdl_object_t* obj, int index,
+                                            CGBank* bank);  // ?create_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PBUcdl_object_t@@HPAVCGBank@@@Z
     phys_gjk_geom_cod_base* create_actor_gjk_geom(Entity* ent);  // ?create_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@@Z
     gjk_geom_info* add_to_sorted_list(void* gjk_geom, unsigned int geom_id);  // ?add_to_sorted_list@gjk_geom_database@@QAEPAUgjk_geom_info@1@PAXI@Z
+    phys_gjk_geom_cod_base* try_get_gjk_geom(const cdl_object_t* obj, int index,
+                                             CGBank* bank);  // ?try_get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PBUcdl_object_t@@HPAVCGBank@@@Z
     phys_gjk_geom_list* try_get_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?try_get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@PBVMat43@math@@@Z
     phys_gjk_geom_cod_base* try_get_actor_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?try_get_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@PBVMat43@math@@@Z
     phys_gjk_geom_list* get_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_list@@PAVEntity@@PBVMat43@math@@@Z
+    phys_gjk_geom_cod_base* get_gjk_geom(const cdl_object_t* obj, int index,
+                                         CGBank* bank);  // ?get_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PBUcdl_object_t@@HPAVCGBank@@@Z
     phys_gjk_geom_cod_base* get_actor_gjk_geom(Entity* ent, const math::Mat43* cg_to_world_xform);  // ?get_actor_gjk_geom@gjk_geom_database@@QAEPAVphys_gjk_geom_cod_base@@PAVEntity@@PBVMat43@math@@@Z
 };
 // ?g_gjk_geom_database@@3PAUgjk_geom_database@@A (physics.o data @ 0xF79488)
@@ -4163,73 +4292,6 @@ gjk_geom_info* gjk_geom_database::add_to_sorted_list(void* gjk_geom,
     return v5;
 }
 
-// geometry factory stubs (phys_gjk_geom_* create helpers; port later)
-void* phys_gjk_geom_aabb_create(const math::Dir3* center,
-                                const math::Dir3* dims)
-{
-    (void)center; (void)dims;
-    return nullptr;
-}
-void* phys_gjk_geom_vert_list_create(int num_verts, void* dcg, int dcg_index)
-{
-    (void)num_verts; (void)dcg; (void)dcg_index;
-    return nullptr;
-}
-void* phys_gjk_geom_list_create()
-{
-    return nullptr;
-}
-// cdl_vinfo_t / cdl_array<vi4> minimal views for unpack
-struct cdl_vinfo_t {
-    float vbase[3];       // +0x00 (x/y/z)
-    int   num_verts;      // +0x0C
-    int   first_vert;     // +0x10
-};
-struct vi4 {
-    int v;  // +0x00
-};
-template <typename T>
-class cdl_array {
-public:
-    int   m_count;      // +0x00
-    T*    m_elements;   // +0x04
-};
-
-// ea: 0x6FF680
-void unpack(const cdl_vinfo_t& vinfo, const cdl_array<vi4>& verts,
-            math::Dir3* vert_list)
-{
-    math::Position3 base;
-    base.v = _mm_setr_ps(vinfo.vbase[0], vinfo.vbase[1], vinfo.vbase[2],
-                         0.0f);
-    int num_verts = vinfo.num_verts;
-    unsigned int first_vert = vinfo.first_vert;
-    if (first_vert >= (unsigned int)verts.m_count
-        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
-                     "index >= 0 && index < size()", "invalid index"))
-        __debugbreak();
-    vi4* v5 = &verts.m_elements[first_vert];
-    if (num_verts != 0)
-    {
-        do
-        {
-            math::Position3 q;
-            q.v = _mm_setr_ps((float)((v5->v & 0x7FF) * 0.25f),
-                              (float)(((v5->v >> 11) & 0x7FF) * 0.25f),
-                              (float)((v5->v >> 22) * 0.25f), 0.0f);
-            vert_list->v = _mm_add_ps(base.v, q.v);
-            ++vert_list;
-            ++v5;
-            --num_verts;
-        } while (num_verts != 0);
-    }
-}
-unsigned int make_unique_id(Entity* ent, unsigned int object_id)
-{
-    return (unsigned int)(uintptr_t)ent + object_id;
-}
-
-// ea: 0x6FEDB0
 phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
 {
     if (ent == nullptr
@@ -4280,8 +4342,7 @@ phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
                 {
                     ++m_brush_count;
                     // brush: vert-list geometry
-                    v12 = phys_gjk_geom_vert_list_create(
-                        0, bmodel, (int)v7);
+                    v12 = phys_gjk_geom_vert_list::create(0, bmodel, (int)v7);
                 }
                 else
                 {
@@ -4292,13 +4353,15 @@ phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
                     dims.v = _mm_setr_ps(obj->box_radius[0],
                                          obj->box_radius[1],
                                          obj->box_radius[2], 0.0f);
-                    v12 = phys_gjk_geom_aabb_create(&center, &dims);
+                    v12 = phys_gjk_geom_aabb::create(center, dims);
                 }
                 if (v12 == nullptr)
                     return nullptr;
-                *((unsigned int*)v12 + 0) =
-                    make_unique_id(ent, (unsigned int)gjk_geom_list);
-                *((void**)v12 + 1) = v20->m_first_geom;
+                ((phys_gjk_geom_cod_base*)v12)->m_geom_id =
+                    (void*)(uintptr_t)make_unique_id(
+                        ent, (unsigned int)gjk_geom_list);
+                ((phys_gjk_geom_cod_base*)v12)->m_next_geom =
+                    (phys_gjk_geom_cod_base*)v20->m_first_geom;
                 v20->m_first_geom = v12;
             }
             gjk_geom_list = (char*)gjk_geom_list + 1;
@@ -4319,11 +4382,11 @@ phys_gjk_geom_cod_base* gjk_geom_database::create_actor_gjk_geom(Entity* ent)
                           _mm_set1_ps(0.5f));
     dims.v = _mm_sub_ps(absmax.v, center.v);
     phys_gjk_geom_cod_base* result =
-        (phys_gjk_geom_cod_base*)phys_gjk_geom_aabb_create(&center, &dims);
+        phys_gjk_geom_aabb::create(center, dims);
     if (result != nullptr)
     {
-        *((void**)result + 0) = ent;  // m_geom_id
-        *((void**)result + 1) = nullptr;  // m_next_geom
+        result->m_geom_id = ent;
+        result->m_next_geom = nullptr;
     }
     return result;
 }
@@ -4678,12 +4741,163 @@ struct rtree_root_t {
     int             nsimd_levels;         // +0x2C
 };
 
-// CGBank (g_local.h view; rtree_root only)
+// cdl_array_t (cdl_mem.h view; 8 bytes)
+struct cdl_array_t {
+    int   m_count;     // +0x00
+    void* m_elements;  // +0x04
+};
+
+// CGBank (g_local.h view; full layout, IDA ordinal - get_type cgbank.h inline
+// 0x65FB40: 0=box, 1=brush, 2=patch)
 class CGBank {
 public:
-    uint8_t _pad0[0x90];
+    math::Position3 min;      // +0x00
+    math::Position3 max;      // +0x10
+    math::Position3 center;   // +0x20
+    float radius;             // +0x30
+    float radius2;            // +0x34
+    uint16_t nboxes;          // +0x38
+    uint16_t nbrushes;        // +0x3A
+    cdl_array_t objects;      // +0x3C
+    cdl_array_t brushes;      // +0x44
+    cdl_array_t gjk_brushes;  // +0x4C
+    cdl_array_t patches;      // +0x54
+    cdl_array_t gjk_patches;  // +0x5C
+    cdl_array_t brush_sides;  // +0x64
+    cdl_array_t brush_verts;  // +0x6C
+    cdl_array_t patch_inds;   // +0x74
+    cdl_array_t patch_verts;  // +0x7C
+    uint8_t _pad84[0x90 - 0x84];
     rtree_root_t rtree_root;  // +0x90
+
+    int get_type(unsigned int index) const;  // ?get_type@CGBank@@QBEHI@Z
 };
+
+// ea: 0x6FEB10
+phys_gjk_geom_cod_base* gjk_geom_database::create_gjk_geom(
+    const cdl_object_t* obj, int index, CGBank* bank)
+{
+    int m_terrain_count = this->m_terrain_count;
+    this->m_terrain_count = m_terrain_count + 1;
+    int type = bank->get_type(index);
+    phys_gjk_geom_cod_base* result;
+    if (type == 1)
+    {
+        ++m_brush_count;
+        unsigned int m_count = bank->gjk_brushes.m_count;
+        int v9 = index - bank->nboxes;
+        if (v9 >= (int)m_count)
+        {
+            bool v10 = !_tlAssert(
+                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                "index >= 0 && index < size()", "invalid index");
+            if (!v10)
+                __debugbreak();
+        }
+        cdl_vinfo_t* m_elements = (cdl_vinfo_t*)bank->gjk_brushes.m_elements;
+        cdl_array<vi4>* p_brush_verts = (cdl_array<vi4>*)&bank->brush_verts;
+        goto LABEL_13;
+    }
+    if (type == 2)
+    {
+        ++m_patch_count;
+        unsigned int v13 = bank->gjk_patches.m_count;
+        int v9 = index - bank->nbrushes - bank->nboxes;
+        if (v9 >= (int)v13)
+        {
+            bool v10 = !_tlAssert(
+                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                "index >= 0 && index < size()", "invalid index");
+            if (!v10)
+                __debugbreak();
+        }
+        cdl_vinfo_t* m_elements = (cdl_vinfo_t*)bank->gjk_patches.m_elements;
+        cdl_array<vi4>* p_brush_verts = (cdl_array<vi4>*)&bank->patch_verts;
+    LABEL_13:
+        int num_verts = m_elements[v9].num_verts;
+        cdl_vinfo_t* vinfo = &m_elements[v9];
+        phys_gjk_geom_vert_list* v14 =
+            phys_gjk_geom_vert_list::create(num_verts, nullptr, 0);
+        if (v14 == nullptr)
+            return nullptr;
+        unpack(*vinfo, *p_brush_verts, v14->m_vert_list);
+        result = v14;
+    }
+    else
+    {
+        ++m_aabb_count;
+        math::Dir3 v22, v21;
+        v22.v = _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                            0.0f);
+        v21.v = _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                            obj->box_radius[2], 0.0f);
+        result = phys_gjk_geom_aabb::create(v22, v21);
+        if (result == nullptr)
+            return nullptr;
+    }
+    result->m_geom_id = (void*)obj;
+    result->m_next_geom = nullptr;
+    math::Dir3 v22, v23;
+    v22.v = _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2],
+                        0.0f);
+    v23.v = _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                        obj->box_radius[2], 0.0f);
+    __m128 v18 = _mm_add_ps(v22.v, v23.v);
+    result->m_aabb_mn.v = _mm_sub_ps(v23.v, v22.v);
+    result->m_aabb_mx.v = v18;
+    return result;
+}
+
+// ea: 0x703E10
+phys_gjk_geom_cod_base* gjk_geom_database::try_get_gjk_geom(
+    const cdl_object_t* obj, int index, CGBank* bank)
+{
+    gjk_geom_info* m_tree_root = this->m_tree_root;
+    if (this->m_tree_root != nullptr)
+    {
+        do
+        {
+            void* m_geom_id = m_tree_root->m_geom_id;
+            if (obj == (const cdl_object_t*)m_geom_id)
+                break;
+            m_tree_root = (gjk_geom_info*)(obj >= (const cdl_object_t*)m_geom_id
+                                               ? m_tree_root->m_avl_right
+                                               : m_tree_root->m_avl_left);
+        } while (m_tree_root != nullptr);
+        if (m_tree_root != nullptr)
+            return (phys_gjk_geom_cod_base*)m_tree_root->m_gjk_geom;
+    }
+    phys_gjk_geom_cod_base* gjk_geom = create_gjk_geom(obj, index, bank);
+    if (gjk_geom != nullptr
+        && (m_tree_root =
+                add_to_sorted_list(gjk_geom, (unsigned int)obj)) != nullptr)
+    {
+        return (phys_gjk_geom_cod_base*)m_tree_root->m_gjk_geom;
+    }
+    return nullptr;
+}
+
+// ea: 0x703F70
+phys_gjk_geom_cod_base* gjk_geom_database::get_gjk_geom(
+    const cdl_object_t* obj, int index, CGBank* bank)
+{
+    phys_gjk_geom_cod_base* result = try_get_gjk_geom(obj, index, bank);
+    if (result == nullptr)
+    {
+        phys_collision_allocater_ballistic_reinit();
+        result = try_get_gjk_geom(obj, index, bank);
+        if (result == nullptr)
+        {
+            bool v6 = !_tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 284,
+                                 "gjk_geom", defaultFileName);
+            result = nullptr;
+            if (!v6)
+                __debugbreak();
+        }
+    }
+    return result;
+}
+
 
 // CGBankManager (g_local.h view; minimal - sInst is port-local void*)
 class CGBankManager {
@@ -4696,13 +4910,35 @@ public:
 
 // physics_colgeom_visitor (physics.o; subclass of subdivision_visitor)
 struct physics_colgeom_visitor : subdivision_visitor {
-    uint8_t _pad4[0x804 - 0x04];
+    struct object_info {
+        CGBank* m_bank;   // +0x00
+        int     m_index;  // +0x04
+    };
+    object_info m_object_list[256];  // +0x04
     int     m_object_list_count;  // +0x804
     CGBank* m_cur_bank;           // +0x808
     int     m_mask;               // +0x80C
 
     visit_result_t visit(int cluster_offset);  // physics.o inline 0xB08E20
 };
+
+// ea: 0x65FB40 (cgbank.h inline)
+int CGBank::get_type(unsigned int index) const
+{
+    if (index >= (unsigned int)objects.m_count)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 239;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    unsigned int nboxes = (unsigned int)this->nboxes;
+    if (index >= nboxes)
+        return 2 - (index < nboxes + (unsigned int)nbrushes);
+    return 0;
+}
 
 // stub until physics_colgeom_visitor::visit (0xB08E20) is ported
 visit_result_t physics_colgeom_visitor::visit(int cluster_offset)
@@ -4999,6 +5235,156 @@ physics_colgeom_visitor* generate_local_primitive_list(
                        *g_physics_colgeom_visitor);
     }
     return g_physics_colgeom_visitor;
+}
+
+// ea: 0x704A90
+bool collide_ray_object_list(physics_colgeom_visitor* visitor,
+                             const math::Dir3& aabb_mn,
+                             const math::Dir3& aabb_mx,
+                             const math::Dir3& p0, const math::Dir3& p1,
+                             float* t_)
+{
+    *t_ = 1.0f;
+    bool did_hit = false;
+    int m_object_list_count = visitor->m_object_list_count;
+    if (m_object_list_count > 0)
+    {
+        for (int obj_inf_i = 0; obj_inf_i < m_object_list_count; ++obj_inf_i)
+        {
+            CGBank* m_bank = visitor->m_object_list[obj_inf_i].m_bank;
+            int index = visitor->m_object_list[obj_inf_i].m_index;
+            if ((unsigned int)index >= (unsigned int)m_bank->objects.m_count)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                AeAssert::gCurrentLine = 233;
+                AeAssert::gCurrentExpr = "index < size()";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+                if ((unsigned int)index
+                        >= (unsigned int)m_bank->objects.m_count
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                           "index >= 0 && index < size()", "invalid index"))
+                    __debugbreak();
+            }
+            cdl_object_t* obj =
+                &((cdl_object_t*)m_bank->objects.m_elements)[index];
+            int type = m_bank->get_type(index);
+            math::Dir3 v15, v16;
+            v15.v = _mm_setr_ps(obj->center[0] - obj->box_radius[0],
+                                obj->center[1] - obj->box_radius[1],
+                                obj->center[2] - obj->box_radius[2], 0.0f);
+            v16.v = _mm_setr_ps(obj->center[0] + obj->box_radius[0],
+                                obj->center[1] + obj->box_radius[1],
+                                obj->center[2] + obj->box_radius[2], 0.0f);
+            __m128 v17 = _mm_cmplt_ps(
+                _mm_max_ps(_mm_sub_ps(v15.v, aabb_mx.v),
+                           _mm_sub_ps(aabb_mn.v, v16.v)),
+                _mm_setzero_ps());
+            if ((_mm_movemask_ps(v17) & 7) == 7)
+            {
+                bool hit;
+                math::Position3 normal;
+                normal.v = _mm_setzero_ps();
+                if (type == 1)
+                {
+                    int brush_idx = index - m_bank->nboxes;
+                    if ((unsigned int)brush_idx
+                        >= (unsigned int)m_bank->brushes.m_count)
+                    {
+                        bool v19 = _tlAssert(
+                            "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 91,
+                            "index >= 0 && index < size()", "invalid index");
+                        if (v19)
+                            __debugbreak();
+                    }
+                    unsigned char* brush =
+                        &((unsigned char*)m_bank->brushes.m_elements)
+                             [brush_idx * 8];
+                    unsigned int first_side = *(unsigned short*)brush;
+                    unsigned int nsides = *(unsigned short*)(brush + 2);
+                    if (first_side
+                        >= (unsigned int)m_bank->brush_sides.m_count)
+                    {
+                        if (_tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                    }
+                    math::Position3 p0p, p1p, bmin, bmax;
+                    p0p.v = p0.v;
+                    p1p.v = p1.v;
+                    bmin.v = v15.v;
+                    bmax.v = v16.v;
+                    hit = collide_brush_segment(
+                        p0p, p1p, bmin, bmax,
+                        (const cdlPlane*)m_bank->brush_sides.m_elements
+                            + first_side,
+                        nsides, *t_, &normal);
+                }
+                else if (type == 2)
+                {
+                    int patch_idx = index - m_bank->nbrushes - m_bank->nboxes;
+                    if ((unsigned int)patch_idx
+                        >= (unsigned int)m_bank->patches.m_count)
+                    {
+                        if (!_tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                    }
+                    unsigned short* patch =
+                        &((unsigned short*)m_bank->patches.m_elements)
+                             [patch_idx * 2];
+                    unsigned int first_index = patch[0];
+                    unsigned int num_indices = patch[1];
+                    if ((unsigned int)patch_idx
+                        >= (unsigned int)m_bank->gjk_patches.m_count)
+                    {
+                        if (_tlAssert(
+                                "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                91, "index >= 0 && index < size()",
+                                "invalid index"))
+                            __debugbreak();
+                    }
+                    phys_gjk_geom_cod_base* gjk_geom =
+                        g_gjk_geom_database->get_gjk_geom(obj, index, m_bank);
+                    if (gjk_geom != nullptr)
+                    {
+                        math::Position3 p0p, p1p;
+                        p0p.v = p0.v;
+                        p1p.v = p1.v;
+                        hit = collide_segment(
+                            *obj,
+                            ((phys_gjk_geom_vert_list*)gjk_geom)->m_vert_list,
+                            (const unsigned char*)m_bank->patch_inds
+                                    .m_elements
+                                + first_index,
+                            0, (int)num_indices, p0p, p1p, *t_, normal,
+                            nullptr);
+                        did_hit |= hit;
+                    }
+                    continue;
+                }
+                else
+                {
+                    math::Position3 p0p, p1p, bmin, bmax;
+                    p0p.v = p0.v;
+                    p1p.v = p1.v;
+                    bmin.v = v15.v;
+                    bmax.v = v16.v;
+                    hit = collide_box_segment(p0p, p1p, bmin, bmax, *t_,
+                                              &normal);
+                }
+                did_hit |= hit;
+            }
+        }
+    }
+    return did_hit;
 }
 
 // ea: 0x6F6D20
