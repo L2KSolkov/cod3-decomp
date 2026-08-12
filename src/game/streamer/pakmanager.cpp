@@ -1112,6 +1112,123 @@ void PakManager::RegisterPakUnloaded(PakInfoNode* pak)
     }
 }
 
+// ea: 0x666DF0
+void* PakManager::MemAlign(TPakId id, unsigned int align,
+                           unsigned int size)
+{
+    if (id == PAK_ID_INVALID)
+        return mem_heap_malloc((int)align, size);
+    if (sInst->mSlots[id] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 2617;
+        AeAssert::gCurrentExpr = "PakManager::Inst()->IsValid( id )";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("bad pak id for MemAlign"))
+            __debugbreak();
+    }
+    PakFile* v5 = id > 0x62 ? nullptr : mSlots[id];
+    void* result = v5->MemAlloc(align, size, true);
+    if (result == nullptr)
+        return mem_heap_malloc((int)align, size);
+    return result;
+}
+
+// ea: 0x666E90
+void PakManager::MemFree(TPakId id, void* ptr, bool bUseActorHeap)
+{
+    (void)bUseActorHeap;
+    if (id != PAK_ID_INVALID)
+    {
+        if (sInst->mSlots[id] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 2640;
+            AeAssert::gCurrentExpr = "PakManager::Inst()->IsValid( id )";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("bad pak id for free"))
+                __debugbreak();
+        }
+        PakFile* v5 = id > 0x62 ? nullptr : mSlots[id];
+        if (!v5->MemFree(ptr, true))
+            mem_heap_free(ptr);
+    }
+    else
+    {
+        mem_heap_free(ptr);
+    }
+}
+
+// ============================================================================
+// StartupNfl (streamer.o 0x666F50) - binary nfl API view
+// ============================================================================
+struct nflInitParamsBin {
+    unsigned int maxFiles;     // +0x00
+    unsigned int maxStreams;   // +0x04
+    unsigned int maxRequests;  // +0x08
+    unsigned int bufferMode;   // +0x0C
+    unsigned int threadMode;   // +0x10
+};
+struct nflMediaAlignmentsBin {
+    unsigned int mediaAlignment;        // +0x00
+    unsigned int memoryAlignment;       // +0x04
+    unsigned int transferSizeAlignment; // +0x08
+};
+
+enum {
+    NFL_BUFFER_MODE_UNALIGNED = 0,
+    NFL_THREAD_MODE_SINGLE = 0,
+};
+extern unsigned int nflInit(nflInitParamsBin* ip);  // nfl_common.o
+extern void nflStart(void* work);
+extern void nflGetMediaAlignments(unsigned int mediaID,
+                                  nflMediaAlignmentsBin* ma);
+extern unsigned int gNflMediaId;  // ?gNflMediaId@@3IA
+void* gNflMemAlloc = nullptr;     // ?gNflMemAlloc@@3PAXA
+unsigned int gNflAlignment = 0;   // ?gNflAlignment@@3IA
+unsigned int gNflMediaId = 0;
+
+unsigned int nflInit(nflInitParamsBin* ip)
+{
+    (void)ip;
+    return 4096;
+}
+void nflGetMediaAlignments(unsigned int mediaID, nflMediaAlignmentsBin* ma)
+{
+    (void)mediaID;
+    ma->mediaAlignment = 0;
+    ma->memoryAlignment = 0;
+    ma->transferSizeAlignment = 0;
+}
+
+// ea: 0x666F50
+void StartupNfl()
+{
+    nflInitParamsBin v2;
+    v2.maxFiles = 128;
+    v2.maxRequests = 128;
+    v2.maxStreams = 1;
+    v2.bufferMode = NFL_BUFFER_MODE_UNALIGNED;
+    v2.threadMode = NFL_THREAD_MODE_SINGLE;
+    unsigned int v0 = nflInit(&v2);
+    gNflMemAlloc = mem_heap_malloc(v0);
+    nflStart(gNflMemAlloc);
+    nflMediaAlignmentsBin mediaAlignments;
+    nflGetMediaAlignments(gNflMediaId, &mediaAlignments);
+    unsigned int mediaAlignment = mediaAlignments.mediaAlignment;
+    if (mediaAlignments.mediaAlignment <= mediaAlignments.memoryAlignment)
+        mediaAlignment = mediaAlignments.memoryAlignment;
+    if (mediaAlignment <= mediaAlignments.transferSizeAlignment)
+        gNflAlignment = mediaAlignments.transferSizeAlignment;
+    else if (mediaAlignments.mediaAlignment
+             <= mediaAlignments.memoryAlignment)
+        gNflAlignment = mediaAlignments.memoryAlignment;
+    else
+        gNflAlignment = mediaAlignments.mediaAlignment;
+}
+
 // ea: 0x665960
 void ToggleZoneGraph()
 {
@@ -1216,15 +1333,6 @@ const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
 void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
 {
     (void)id; (void)size; (void)bUseActorHeap;
-    return nullptr;
-}
-void PakManager::MemFree(TPakId id, void* ptr, bool bUseActorHeap)
-{
-    (void)id; (void)ptr; (void)bUseActorHeap;
-}
-void* PakManager::MemAlign(TPakId id, unsigned int align, unsigned int size)
-{
-    (void)id; (void)align; (void)size;
     return nullptr;
 }
 void PakManager::FillBanks()
