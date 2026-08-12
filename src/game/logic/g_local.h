@@ -1480,7 +1480,12 @@ float  AngleSubtract(float a1, float a2);
 float  PitchForYawOnNormal(float fYaw, const float* vNormal);
 void   gunrandom(float* x, float* y);
 extern float gTanAimConeSpread;
-int    Actor_CheckArmor(actor_s* pSelf, int damage, int dflags);
+// ?Actor_CheckArmor@@YAHPAUactor_s@@HH@Z (mp_actors.o 0x77BE90)
+inline int Actor_CheckArmor(actor_s* pSelf, int damage, int dflags)
+{
+    (void)pSelf; (void)damage; (void)dflags;
+    return 0;
+}
 int    CheckArmor(Entity* ent, int damage, int dflags);
 int    LogAccuracyHit(Entity* target, Entity* attacker);
 int    G_IsVehicleImmune(Entity* ent, int mod);
@@ -1959,7 +1964,12 @@ void  vectosignedangles(float* vec, float* angles);
 void  G_DObjCalcBone(Entity* ent, int boneIndex);
 bool  G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex, DObjSkelMat* tagMat);
 void  RegisterItem(unsigned int iItemIndex, int bUpdateCS);
-int   Actor_IsUsingTurret(actor_s* pSelf);
+// ?Actor_IsUsingTurret@@YIHPAUactor_s@@@Z (mp_actors.o 0x77C9F0)
+inline int Actor_IsUsingTurret(actor_s* pSelf)
+{
+    (void)pSelf;
+    return 0;
+}
 void j_nullsub_74(Entity* pSelf, int bLerp);
 bool Entity_has_zone_collision(const void* self);
 

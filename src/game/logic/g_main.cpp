@@ -4,6 +4,13 @@
 
 #include "game/logic/g_local.h"
 
+// ?AnimBank_anims_mSize@@YAHPAX@Z artifact (anim.o; returns bank anim count)
+int AnimBank_anims_mSize(void* bank)
+{
+    (void)bank;
+    return 0;
+}
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -4097,7 +4104,6 @@ skip_fill:
         gpBrocAPI->mBrocExports.mAnimInitialize();
         extern void* AnimBankManager_sInst;  // ?sInst@AnimBankManager@@2PAV1@A
         extern void* AnimBankManager_GetBank(void* self, TPakId pakId);
-        extern int AnimBank_anims_mSize(void* bank);
         g_xanim_num =
             AnimBank_anims_mSize(AnimBankManager_GetBank(
                 AnimBankManager_sInst, (TPakId)kPakTypeLevel));

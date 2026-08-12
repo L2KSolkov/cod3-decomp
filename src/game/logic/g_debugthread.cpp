@@ -80,7 +80,11 @@ extern vmCvar_t memory_displayAepsStats;           // ?memory_displayAepsStats@@
 extern vmCvar_t memory_showStatistics;             // ?memory_showStatistics@@3UvmCvar_t@@A (game2.o)
 extern vmCvar_t g_debugProneCheck;                 // ?g_debugProneCheck@@3UvmCvar_t@@A (g.o)
 extern vmCvar_t g_debugProneCheckDepthCheck;       // ?g_debugProneCheckDepthCheck@@3UvmCvar_t@@A (g.o)
-extern int Actor_IsSuppressed(actor_s* pSelf);     // ?Actor_IsSuppressed@@YIHPAUactor_s@@@Z (mp_actors.o)
+int Actor_IsSuppressed(actor_s* pSelf)  // ?Actor_IsSuppressed@@YIHPAUactor_s@@@Z (mp_actors.o 0x77C6A0)
+{
+    (void)pSelf;
+    return 0;
+}
 extern void Path_DrawDebugNode(const PathNodes::PathNode* pNode);  // ?Path_DrawDebugNode@@YAXPBUPathNode@PathNodes@@@Z (mp_actors.o)
 float scaleScalar;  // ?scaleScalar@@3MA (render.o)
 extern void RE_Text_Paint(float x, float y, int font, float scale,
