@@ -12,6 +12,30 @@
 #include <stdio.h>
 #include <string.h>
 
+// effect_events / core_systems views
+class Entity;
+class Handle;
+typedef int EEffectContext;
+enum ECollisionMaterial : int {
+    kCollisionMaterialMin = 0,
+    kCollisionMaterialASPHALT = 1,
+    kCollisionMaterialNONE = 2,
+    kCollisionMaterialFLESH = 4,
+};
+struct SimpleCollisionDesc {
+    math::Position3 coord;   // +0x00
+    math::Position3 normal;  // +0x10
+};
+struct CollisionDesc {
+    SimpleCollisionDesc simple;  // +0x00
+    ECollisionMaterial material; // +0x20
+};
+Handle PostEffectEventPhysicsImpact(const Entity* ent, int myColMat,
+                                    const CollisionDesc* col_desc,
+                                    float intensity);  // effect_events.cpp
+Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir,
+                    float iDamage);  // g.o
+
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
 extern const char* const defaultFileName;
@@ -3893,6 +3917,32 @@ public:
     math::Dir3 m_aabb_mn;  // +0x00
     math::Dir3 m_aabb_mx;  // +0x10
     void* m_first_geom;    // +0x20
+
+    phys_gjk_geom_list() {}  // ??0phys_gjk_geom_list@@QAE@XZ (no-op)
+    // ea: 0x6F1EC0 - walk the geometry list, call each geom's virtual
+    // comp_aabb (vtable+0x10), union the per-geom AABBs.
+    void comp_aabb(const math::Mat43& cg_to_world_xform)
+    {
+        for (void* g = m_first_geom; g != nullptr;
+             g = *(void**)((char*)g + 0x34))
+        {
+            void** vtable = *(void***)g;
+            ((void (*)(void*, const math::Mat43&))vtable[4])(
+                g, cg_to_world_xform);
+            if (g == m_first_geom)
+            {
+                m_aabb_mn.v = ((math::Dir3*)((char*)g + 0x10))->v;
+                m_aabb_mx.v = ((math::Dir3*)((char*)g + 0x20))->v;
+            }
+            else
+            {
+                m_aabb_mn.v = _mm_min_ps(
+                    m_aabb_mn.v, ((math::Dir3*)((char*)g + 0x10))->v);
+                m_aabb_mx.v = _mm_max_ps(
+                    m_aabb_mx.v, ((math::Dir3*)((char*)g + 0x20))->v);
+            }
+        }
+    }
 };
 
 class DCGSet;
@@ -3900,12 +3950,6 @@ bool dcg_type_is_brush(DCGSet* dcg, unsigned int index)
 {
     (void)dcg; (void)index;
     return false;
-}
-
-// stub until try_collision_prolog (0x705F90) is ported
-phys_gjk_geom_list* rb_extra_info::try_collision_prolog()
-{
-    return nullptr;
 }
 
 // ea: 0x7060E0
@@ -4341,6 +4385,52 @@ void comp_aabb_stub(void* geom, const math::Mat43* xform)
 {
     (void)geom;
     (void)xform;
+}
+
+// ea: 0x705F90
+phys_gjk_geom_list* rb_extra_info::try_collision_prolog()
+{
+    if (m_ent == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 149;
+        AeAssert::gCurrentExpr = "m_ent";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    rigid_body* m_rb = this->m_rb;
+    if ((m_rb->m_flags & 0x50) == 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+               "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+    phys_full_multiply_mat(*m_cg_mesh_mat, m_rb->m_col_mat, m_transform);
+    if (m_gjk_geom_list != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBPropSys.cpp", 153,
+                     "m_gjk_geom_list == NULL", defaultFileName))
+        __debugbreak();
+    if (m_ent == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBPropSys.cpp", 154, "m_ent",
+                     defaultFileName))
+        __debugbreak();
+    phys_gjk_geom_list* gjk_geom =
+        g_gjk_geom_database->try_get_gjk_geom(m_ent, nullptr);
+    m_gjk_geom_list = gjk_geom;
+    if (gjk_geom == nullptr)
+        return nullptr;
+    gjk_geom->comp_aabb(*m_cg_mesh_mat);
+    rb_vehicle* m_rb_vehicle = this->m_rb_vehicle;
+    if (m_rb_vehicle == nullptr)
+        return (phys_gjk_geom_list*)m_gjk_geom_list;
+    if (m_rb_vehicle->m_vci != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBPropSys.cpp", 160,
+                     "m_rb_vehicle->m_vci == NULL", defaultFileName))
+        __debugbreak();
+    create_vehicle_collision_info(this);
+    if (m_rb_vehicle->m_vci != nullptr)
+        return (phys_gjk_geom_list*)m_gjk_geom_list;
+    return nullptr;
 }
 
 // ea: 0x703DC0
@@ -6628,10 +6718,137 @@ void biped_phys_info::debug_render()
     }
 }
 
-// stub until phys_anim_bone_array internals are ported (physics.o 0x6F76A0)
+// ea: 0x6F76A0
 void phys_anim_bone_array::copy_back_bones(Entity* owner)
 {
-    (void)owner;
+    if ((int)owner->mDObj->numBones
+        > m_list_phys_anim_bone.m_alloc_count)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBRagdoll.cpp";
+        AeAssert::gCurrentLine = 404;
+        AeAssert::gCurrentExpr =
+            "owner->GetDObj()->GetNumBones() <= m_list_phys_anim_bone.get_count()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    int numBones = owner->mDObj->numBones;
+    int m_alloc_count = numBones;
+    if (numBones > m_list_phys_anim_bone.m_alloc_count)
+    {
+        m_alloc_count = m_list_phys_anim_bone.m_alloc_count;
+        numBones = m_list_phys_anim_bone.m_alloc_count;
+    }
+    int parentBoneIndex = 0;
+    if (numBones > 0)
+    {
+        for (;;)
+        {
+            int BoneParent = owner->mDObj->GetBoneParent(parentBoneIndex);
+            if ((parentBoneIndex < 0
+                 || parentBoneIndex
+                        >= m_list_phys_anim_bone.m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            phys_anim_bone* bone =
+                &m_list_phys_anim_bone.m_slot_array[parentBoneIndex];
+            if (bone->m_rb_index == -1)
+            {
+                const math::Mat43& Mat = owner->mDObj->GetMat(BoneParent);
+                math::Mat43 out;
+                out.x.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.x.v,
+                                           bone->mat_loc.x.v, 0),
+                            Mat.x.v),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.x.v,
+                                           bone->mat_loc.x.v, 85),
+                            Mat.y.v)),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bone->mat_loc.x.v,
+                                       bone->mat_loc.x.v, 170),
+                        Mat.z.v));
+                out.y.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.y.v,
+                                           bone->mat_loc.y.v, 0),
+                            Mat.x.v),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.y.v,
+                                           bone->mat_loc.y.v, 85),
+                            Mat.y.v)),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bone->mat_loc.y.v,
+                                       bone->mat_loc.y.v, 170),
+                        Mat.z.v));
+                out.z.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.z.v,
+                                           bone->mat_loc.z.v, 0),
+                            Mat.x.v),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.z.v,
+                                           bone->mat_loc.z.v, 85),
+                            Mat.y.v)),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bone->mat_loc.z.v,
+                                       bone->mat_loc.z.v, 170),
+                        Mat.z.v));
+                out.w.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.w.v,
+                                           bone->mat_loc.w.v, 0),
+                            Mat.x.v),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.w.v,
+                                           bone->mat_loc.w.v, 85),
+                            Mat.y.v)),
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.w.v,
+                                           bone->mat_loc.w.v, 170),
+                            Mat.z.v),
+                        Mat.w.v));
+                math::Mat43& dst = const_cast<math::Mat43&>(
+                    owner->mDObj->GetMat(parentBoneIndex));
+                dst = out;
+            }
+            else if (bone->m_rb_index != 0)
+            {
+                const math::Mat43& v6 = owner->mDObj->GetMat(BoneParent);
+                math::Position3 w;
+                w.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.w.v,
+                                           bone->mat_loc.w.v, 0),
+                            v6.x.v),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.w.v,
+                                           bone->mat_loc.w.v, 85),
+                            v6.y.v)),
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(bone->mat_loc.w.v,
+                                           bone->mat_loc.w.v, 170),
+                            v6.z.v),
+                        v6.w.v));
+                math::Mat43& dst = const_cast<math::Mat43&>(
+                    owner->mDObj->GetMat(parentBoneIndex));
+                dst.w.v = w.v;
+            }
+            ++parentBoneIndex;
+            if (parentBoneIndex >= m_alloc_count)
+                return;
+        }
+    }
 }
 
 // stub until phys_anim_bone_array internals are ported (physics.o 0x6F8EF0)
@@ -9706,9 +9923,145 @@ void ragdoll_collision_callback::collide_terrain()
     }
 }
 
-// stub until ragdoll_collision_callback internals are ported (0x700910)
+// ea: 0x700910
 void ragdoll_collision_callback::process_environment_collision_events()
 {
+    if (m_rb_colgeom_count <= 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+               178, "i >= 0 && i < m_alloc_count", defaultFileName))
+        __debugbreak();
+    if (m_rb_colgeom_alloc_list[0]->m_rb_id != 0
+        && _tlAssert(
+               "c:\\cod\\code\\game\\RBRagdollCollision.cpp", 888,
+               "m_rb_colgeom[rb_torso].m_rb_id == rb_torso",
+               defaultFileName))
+        __debugbreak();
+    if (m_rb_colgeom_count <= 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+               178, "i >= 0 && i < m_alloc_count", defaultFileName))
+        __debugbreak();
+    rigid_body* torso_rb = m_rb_colgeom_alloc_list[0]->m_owner;
+    rigid_body_constraint_contact* rbc_contact = phys_sys::get_rbc_contact(
+        torso_rb, phys_sys::get_environment_rigid_body());
+    if (rbc_contact != nullptr)
+    {
+        if (torso_rb != rbc_contact->b1
+            && _tlAssert(
+                   "c:\\cod\\code\\game\\RBRagdollCollision.cpp", 893,
+                   "rigid_body_torso == rbc_contact_torso_environment->get_b1()",
+                   defaultFileName))
+            __debugbreak();
+        const contact_point_info* max_intensity_cpi = nullptr;
+        float max_intensity = 0.0f;
+        for (const contact_point_info* cpi =
+                 rbc_contact->m_list_contact_point_info_buffer_1.m_first;
+             cpi != nullptr; cpi = cpi->m_next_link)
+        {
+            if (cpi->m_point_pair_count <= 0
+                && _tlAssert(
+                       "c:\\cod\\code\\game\\RBRagdollCollision.cpp", 900,
+                       "cpi.m_point_pair_count > 0", defaultFileName))
+                __debugbreak();
+            __m128 v9 = _mm_mul_ps(cpi->m_normal.v, torso_rb->m_t_vel.v);
+            float intensity =
+                v9.m128_f32[0] + (v9.m128_f32[1] + v9.m128_f32[2]);
+            if (intensity > max_intensity)
+            {
+                max_intensity = intensity;
+                max_intensity_cpi = cpi;
+            }
+        }
+        if (max_intensity > 50.0f)
+        {
+            if (max_intensity_cpi == nullptr
+                && _tlAssert(
+                       "c:\\cod\\code\\game\\RBRagdollCollision.cpp", 910,
+                       "max_intensity_cpi", defaultFileName))
+                __debugbreak();
+            CollisionDesc col_desc;
+            col_desc.simple.coord.v = max_intensity_cpi->m_list_b2_r_loc->v;
+            col_desc.simple.normal.v =
+                _mm_xor_ps(Float4_SignMask_12, max_intensity_cpi->m_normal.v);
+            col_desc.material = (ECollisionMaterial)kCollisionMaterialNONE;
+            PostEffectEventPhysicsImpact(m_owner, kCollisionMaterialFLESH,
+                                         &col_desc, max_intensity);
+        }
+    }
+
+    if ((m_owner->mFlags & 0x10) == 0)
+    {
+        if (m_rb_colgeom_count <= 1
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                   178, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        if (m_rb_colgeom_alloc_list[1]->m_rb_id != 1
+            && _tlAssert(
+                   "c:\\cod\\code\\game\\RBRagdollCollision.cpp", 917,
+                   "m_rb_colgeom[rb_head].m_rb_id == rb_head",
+                   defaultFileName))
+            __debugbreak();
+        if (m_rb_colgeom_count <= 1
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                   178, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        rigid_body* v12 = m_rb_colgeom_alloc_list[1]->m_owner;
+        rigid_body_constraint_contact* v14 = phys_sys::get_rbc_contact(
+            v12, phys_sys::get_environment_rigid_body());
+        if (v14 != nullptr)
+        {
+            if (v12 != v14->b1
+                && _tlAssert(
+                       "c:\\cod\\code\\game\\RBRagdollCollision.cpp", 922,
+                       "rigid_body_head == rbc_contact_head_environment->get_b1()",
+                       defaultFileName))
+                __debugbreak();
+            const contact_point_info* max_intensity_cpi = nullptr;
+            float max_intensity = 0.0f;
+            for (const contact_point_info* cpi =
+                     v14->m_list_contact_point_info_buffer_1.m_first;
+                 cpi != nullptr; cpi = cpi->m_next_link)
+            {
+                if (cpi->m_point_pair_count <= 0
+                    && _tlAssert(
+                           "c:\\cod\\code\\game\\RBRagdollCollision.cpp",
+                           929, "cpi.m_point_pair_count > 0",
+                           defaultFileName))
+                    __debugbreak();
+                __m128 v18 =
+                    _mm_mul_ps(cpi->m_normal.v, torso_rb->m_t_vel.v);
+                float intensity =
+                    v18.m128_f32[0] + (v18.m128_f32[1] + v18.m128_f32[2]);
+                if (intensity > max_intensity)
+                {
+                    max_intensity = intensity;
+                    max_intensity_cpi = cpi;
+                }
+            }
+            if (max_intensity > 50.0f)
+            {
+                if (max_intensity_cpi == nullptr
+                    && _tlAssert(
+                           "c:\\cod\\code\\game\\RBRagdollCollision.cpp",
+                           939, "max_intensity_cpi", defaultFileName))
+                    __debugbreak();
+                if (rand() % 100 <= 10)
+                {
+                    if (SpawnHelmet(
+                            m_owner,
+                            max_intensity_cpi->m_list_b2_r_loc->v.m128_f32,
+                            _mm_xor_ps(Float4_SignMask_12,
+                                       max_intensity_cpi->m_normal.v)
+                                .m128_f32,
+                            25.0f) != nullptr)
+                        m_owner->mFlags |= 0x10u;
+                }
+            }
+        }
+    }
 }
 
 // ea: 0x6F42C0
