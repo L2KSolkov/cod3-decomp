@@ -2834,10 +2834,126 @@ void rb_vehicle::_update_orientation_constraint()
     }
 }
 
-// stub until rb_vehicle::update_steering (0x6F50A0) is ported
+// ?gWheelAxisLoc@@3VDir3@math@@A (physics.o data @ 0xF8D380; runtime-filled,
+// binary bytes are 0xFFFFFFFF = NaN)
+math::Dir3 gWheelAxisLoc = { _mm_castsi128_ps(_mm_set1_epi32(-1)) };
+
+// ea: 0x6F50A0
 void rb_vehicle::update_steering(float delta_t)
 {
-    (void)delta_t;
+    float m_steer_factor = this->m_steer_factor;
+    if (m_steer_factor > 1.0f)
+        m_steer_factor = 1.0f;
+    else if (m_steer_factor < -1.0f)
+        m_steer_factor = -1.0f;
+    float v4 = m_steer_speed * delta_t;
+    float v5 = (m_steer_max_angle * m_steer_factor) - m_steer_current_angle;
+    if (v5 <= v4)
+    {
+        if ((0.0f - v4) > v5)
+            v5 = 0.0f - v4;
+    }
+    else
+    {
+        v5 = m_steer_speed * delta_t;
+    }
+    m_steer_current_angle += v5;
+    if (fabs(m_steer_current_angle) <= 0.0049999999f)
+    {
+        for (int i = 0; i < 8; ++i)
+        {
+            rigid_body_constraint_wheel* w =
+                (rigid_body_constraint_wheel*)m_wheels[i];
+            if (w != nullptr)
+            {
+                w->m_b1_wheel_axis_loc.v = gWheelAxisLoc.v;
+                w->m_turning_radius_ratio_max_speed = 1.0f;
+                w->m_turning_radius_ratio_accel = 1.0f;
+            }
+        }
+    }
+    else
+    {
+        bool v17 = true;
+        if (m_wheels[0] != nullptr)
+            v17 = (((rigid_body_constraint_wheel*)m_wheels[0])->m_wheel_flags
+                   & 8)
+                  != 0;
+        for (int i = 1; i < 7; ++i)
+        {
+            if (m_wheels[i] != nullptr
+                && (((rigid_body_constraint_wheel*)m_wheels[i])->m_wheel_flags
+                    & 8)
+                       == 0)
+                v17 = false;
+        }
+        float v25, v26;
+        if ((m_wheels[7] == nullptr
+             || (((rigid_body_constraint_wheel*)m_wheels[7])->m_wheel_flags
+                 & 8)
+                    != 0)
+            && v17)
+        {
+            v25 = m_steer_front_back_length * -0.5f;
+            v26 = m_steer_front_back_length / tanf(m_steer_current_angle)
+                  * 0.5f;
+        }
+        else
+        {
+            v25 = 0.0f - m_steer_front_back_length;
+            v26 = m_steer_front_back_length / tanf(m_steer_current_angle);
+        }
+        __m128 offset = _mm_setr_ps(v25, v26, 0.0f, 0.0f);
+        float nwheel_axis = sqrtf(v25 * v25 + v26 * v26);
+        __m128 v31 = _mm_add_ps(m_steer_front_pt_loc.v, offset);
+        float wheel_ratios[8] = {};
+        int num_accel_wheels = 0;
+        float accel_sum = 0.0f;
+        for (int v72 = 0; v72 < 8; ++v72)
+        {
+            rigid_body_constraint_wheel* w =
+                (rigid_body_constraint_wheel*)m_wheels[v72];
+            if (w != nullptr)
+            {
+                __m128 diff = _mm_sub_ps(v31, w->m_b1_wheel_center_loc.v);
+                __m128 d2 = _mm_mul_ps(diff, diff);
+                float dist = sqrtf(d2.m128_f32[0]
+                                   + (d2.m128_f32[1] + d2.m128_f32[2]));
+                if ((w->m_wheel_flags & 8) != 0)
+                {
+                    float sign =
+                        m_steer_current_angle < 0.0f ? -1.0f : 1.0f;
+                    if (dist <= 0.001f)
+                    {
+                        w->m_b1_wheel_axis_loc.v = gWheelAxisLoc.v;
+                    }
+                    else
+                    {
+                        w->m_b1_wheel_axis_loc.v =
+                            _mm_mul_ps(diff, _mm_set1_ps(sign / dist));
+                    }
+                }
+                float ratio = dist / nwheel_axis;
+                if ((w->m_wheel_flags & 0x10) != 0)
+                {
+                    ++num_accel_wheels;
+                    wheel_ratios[v72] = ratio;
+                    accel_sum += ratio;
+                }
+            }
+        }
+        float scale = (float)num_accel_wheels / accel_sum;
+        for (int i = 0; i < 8; ++i)
+        {
+            rigid_body_constraint_wheel* w =
+                (rigid_body_constraint_wheel*)m_wheels[i];
+            if (w != nullptr)
+            {
+                w->m_turning_radius_ratio_max_speed = wheel_ratios[i];
+                w->m_turning_radius_ratio_accel = wheel_ratios[i] * scale;
+            }
+        }
+    }
 }
 
 // stubs until the wheel-effect/tread/wheel-matrix internals are ported
