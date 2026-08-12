@@ -980,7 +980,10 @@ struct refEntity {  // EntityShared subset
         int32_t        svFlags;      // +0x04
         uint8_t        _pad08[0x0C - 0x08];
         void*          bmodel;       // +0x0C (DCGSet*)
-        uint8_t        _pad10[0x64 - 0x10];
+        uint8_t        _pad10[0x30 - 0x10];
+        math::Position3 absmin;      // +0x30
+        math::Position3 absmax;      // +0x40
+        uint8_t        _pad50[0x64 - 0x50];
         int32_t        contents;     // +0x64
         uint8_t        _pad68[0x70 - 0x68];
         math::Position3 currentOrigin;  // +0x70
@@ -2468,7 +2471,15 @@ class phys_gjk_geom_list {
 public:
     math::Dir3 m_aabb_mn;  // +0x00
     math::Dir3 m_aabb_mx;  // +0x10
+    void* m_first_geom;    // +0x20
 };
+
+class DCGSet;
+bool dcg_type_is_brush(DCGSet* dcg, unsigned int index)
+{
+    (void)dcg; (void)index;
+    return false;
+}
 
 // stub until try_collision_prolog (0x705F90) is ported
 phys_gjk_geom_list* rb_extra_info::try_collision_prolog()
@@ -2727,6 +2738,14 @@ struct gjk_geom_info {
     void* m_avl_right;    // +0x0C
     int   m_avl_balance;  // +0x10
 };
+// cdl_object_t (g_local.h view; local copy - cflags + aabb)
+struct cdl_object_t {
+    int   cflags;        // +0x00
+    int   sflags;        // +0x04
+    float center[3];     // +0x08
+    float box_radius[3]; // +0x14
+    float sphere_radius; // +0x20
+};
 class gjk_geom_database {
 public:
     gjk_geom_info* m_tree_root;  // +0x00 (m_ggi_search_tree.m_tree_root)
@@ -2802,16 +2821,128 @@ gjk_geom_info* gjk_geom_database::add_to_sorted_list(void* gjk_geom,
     return v5;
 }
 
-// stubs for the gjk_geom creation + aabb
-phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
+// geometry factory stubs (phys_gjk_geom_* create helpers; port later)
+void* phys_gjk_geom_aabb_create(const math::Dir3* center,
+                                const math::Dir3* dims)
 {
-    (void)ent;
+    (void)center; (void)dims;
     return nullptr;
 }
+void* phys_gjk_geom_vert_list_create(int num_verts, void* dcg, int dcg_index)
+{
+    (void)num_verts; (void)dcg; (void)dcg_index;
+    return nullptr;
+}
+void* phys_gjk_geom_list_create()
+{
+    return nullptr;
+}
+void unpack_vinfo(void* vinfo, void* verts, void* vert_list)
+{
+    (void)vinfo; (void)verts; (void)vert_list;
+}
+unsigned int make_unique_id(Entity* ent, unsigned int object_id)
+{
+    return (unsigned int)(uintptr_t)ent + object_id;
+}
+
+// ea: 0x6FEDB0
+phys_gjk_geom_list* gjk_geom_database::create_gjk_geom(Entity* ent)
+{
+    if (ent == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 165, "ent",
+                     defaultFileName))
+        __debugbreak();
+    DCGSet* bmodel = (DCGSet*)ent->r.bmodel;
+    if (bmodel == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 167, "dcg",
+                     defaultFileName))
+        __debugbreak();
+    unsigned int m_count = bmodel->objects_m_count;
+    ++m_entity_count;
+    phys_gjk_geom_list* result =
+        (phys_gjk_geom_list*)phys_gjk_geom_list_create();
+    phys_gjk_geom_list* v20 = result;
+    if (result == nullptr)
+        return nullptr;
+    result->m_first_geom = nullptr;
+    void* gjk_geom_list = nullptr;
+    if (m_count != 0)
+    {
+        do
+        {
+            unsigned int v7 = (unsigned int)gjk_geom_list;
+            if (v7 >= bmodel->objects_m_count)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                AeAssert::gCurrentLine = 77;
+                AeAssert::gCurrentExpr = "index < size()";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+                if (v7 >= bmodel->objects_m_count
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                           "index >= 0 && index < size()", "invalid index"))
+                    __debugbreak();
+            }
+            cdl_object_t* objarr =
+                (cdl_object_t*)bmodel->objects_m_elements;
+            cdl_object_t* obj = &objarr[v7];
+            if ((obj->cflags & 0x241) != 0)
+            {
+                void* v12;
+                if (dcg_type_is_brush(bmodel, v7))
+                {
+                    ++m_brush_count;
+                    // brush: vert-list geometry
+                    v12 = phys_gjk_geom_vert_list_create(
+                        0, bmodel, (int)v7);
+                }
+                else
+                {
+                    ++m_aabb_count;
+                    math::Dir3 center, dims;
+                    center.v = _mm_setr_ps(obj->center[0], obj->center[1],
+                                           obj->center[2], 0.0f);
+                    dims.v = _mm_setr_ps(obj->box_radius[0],
+                                         obj->box_radius[1],
+                                         obj->box_radius[2], 0.0f);
+                    v12 = phys_gjk_geom_aabb_create(&center, &dims);
+                }
+                if (v12 == nullptr)
+                    return nullptr;
+                *((unsigned int*)v12 + 0) =
+                    make_unique_id(ent, (unsigned int)gjk_geom_list);
+                *((void**)v12 + 1) = v20->m_first_geom;
+                v20->m_first_geom = v12;
+            }
+            gjk_geom_list = (char*)gjk_geom_list + 1;
+        } while ((unsigned int)gjk_geom_list < m_count);
+    }
+    return v20;
+}
+
+// ea: 0x6FF020
 phys_gjk_geom_cod_base* gjk_geom_database::create_actor_gjk_geom(Entity* ent)
 {
-    (void)ent;
-    return nullptr;
+    ++m_actor_count;
+    ++m_aabb_count;
+    math::Position3 absmin = ent->r.absmin;
+    math::Position3 absmax = ent->r.absmax;
+    math::Dir3 center, dims;
+    center.v = _mm_mul_ps(_mm_add_ps(absmin.v, absmax.v),
+                          _mm_set1_ps(0.5f));
+    dims.v = _mm_sub_ps(absmax.v, center.v);
+    phys_gjk_geom_cod_base* result =
+        (phys_gjk_geom_cod_base*)phys_gjk_geom_aabb_create(&center, &dims);
+    if (result != nullptr)
+    {
+        *((void**)result + 0) = ent;  // m_geom_id
+        *((void**)result + 1) = nullptr;  // m_next_geom
+    }
+    return result;
 }
 
 // ea: 0x703E70
@@ -4460,15 +4591,6 @@ void KillEntity(Entity* e)
         e->health = -1;
     }
 }
-
-// cdl_object_t (g_local.h view; local copy - cflags at +0x00)
-struct cdl_object_t {
-    int   cflags;        // +0x00
-    int   sflags;        // +0x04
-    float center[3];     // +0x08
-    float box_radius[3]; // +0x14
-    float sphere_radius; // +0x20
-};
 
 // ea: 0x6FE160
 unsigned int get_gjk_geom_id(Entity* ent)
