@@ -203,14 +203,16 @@ public:
 // disassembly. class tag (V) required for pool/param manglings.
 class rb_vehicle {
 public:
+    int    m_wheel_effect_state[4];  // +0x00 (wheel_effect_state_e)
     Handle m_wheel_effects[4];       // +0x10
     Handle m_exhaust_effect;         // +0x20
     uint8_t _pad24[0x250 - 0x24];
     vehicle_rb_parameter* m_parameter;           // +0x250
     float m_throttle;                            // +0x254
-    uint8_t _pad258[0x260 - 0x258];
+    float m_brake;                               // +0x258
+    uint8_t _pad25C[0x260 - 0x25C];
     float m_script_brake;                        // +0x260
-    uint8_t _pad264[0x268 - 0x264];
+    float m_steer_factor;                        // +0x264
     float m_forward_vel;                         // +0x268
     float m_hand_brake_friction_time;            // +0x26C
     Entity* m_owner;                             // +0x270
@@ -228,6 +230,7 @@ public:
     void* m_vci;                                 // +0x388
 
     rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
+    void init(Entity* owner, vehicle_rb_parameter* parameter);  // ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z
     static int get_num_rb_vehicles();  // ?get_num_rb_vehicles@rb_vehicle@@SAHXZ
     static rb_vehicle* get_vehicle(int i);  // ?get_vehicle@rb_vehicle@@SAPAV1@H@Z
     static rb_vehicle* add_vehicle();       // ?add_vehicle@rb_vehicle@@SAPAV1@XZ
@@ -248,6 +251,7 @@ private:
     void _update_prolog(float delta_t);  // ?_update_prolog@rb_vehicle@@AAEXM@Z
     void _update_epilog(float delta_t);  // ?_update_epilog@rb_vehicle@@AAEXM@Z
     void _update_unpause();       // ?_update_unpause@rb_vehicle@@AAEXXZ
+    void _align_wheels();         // ?_align_wheels@rb_vehicle@@AAEXXZ
 };
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
@@ -893,6 +897,90 @@ void rb_vehicle::cleanup_path()
         path_constraint_destroy(m_vpc);
         m_vpc = nullptr;
     }
+}
+
+// wheel_effect_state_e (physics.o RBVehicle.cpp)
+enum wheel_effect_state_e {
+    WHEEL_STATE_AIRBORN = 1,
+};
+// vehicle_info_t (g_vehiclefuncs.h view; type +0x20)
+struct vehicle_info_t {
+    uint8_t _pad0[0x20];
+    short   type;  // +0x20
+};
+vehicle_info_t* VEH_GetInfo(int idx);  // ?VEH_GetInfo@@YAPAUvehicle_info_t@@H@Z (g.o)
+
+// scr_vehicle_t (g_local.h view; pathPos + infoIdx + mRBVeh)
+struct scr_vehicle_path_view {
+    float origin[3];   // +0x00
+    float angles[3];   // +0x10
+};
+struct scr_vehicle_t {
+    scr_vehicle_path_view pathPos;  // +0x00
+    uint8_t _pad[0x178 - sizeof(scr_vehicle_path_view)];
+    int16_t infoIdx;                // +0x178
+    uint8_t _pad17A[0x518 - 0x17A];
+    void*   mRBVeh;                 // +0x518 rb_vehicle*
+};
+
+// RBVehicleController (physics.o RBVehicleController.cpp; minimal view for the
+// script-target methods)
+class RBVehicleController {
+public:
+    math::Position3 m_script_goal_position;  // +0x00
+    float m_script_goal_radius;              // +0x10
+    float m_script_goal_speed;               // +0x14
+
+    void SetScriptTarget(rb_vehicle& rbveh, const math::Position3& goal_position,
+                         float goal_radius, float goal_speed);  // ?SetScriptTarget@RBVehicleController@@QAEXAAVrb_vehicle@@ABVPosition3@math@@MM@Z
+};
+
+// ea: 0x6FE100
+void RBVehicleController::SetScriptTarget(
+    rb_vehicle& rbveh, const math::Position3& goal_position, float goal_radius,
+    float goal_speed)
+{
+    float v5 = 5.0f;
+    m_script_goal_position.v = goal_position.v;
+    if (goal_radius >= 5.0f)
+    {
+        v5 = 5000.0f;
+        if (goal_radius <= 5000.0f)
+            v5 = goal_radius;
+    }
+    m_script_goal_radius = v5;
+    m_script_goal_speed = goal_speed;
+    rbveh.m_flags.mMask |= 8u;
+}
+
+// ea: 0x6FC140
+void rb_vehicle::init(Entity* owner, vehicle_rb_parameter* parameter)
+{
+    m_parameter = parameter;
+    m_owner = owner;
+    m_brake = 0.0f;
+    m_throttle = 0.0f;
+    m_steer_factor = 0.0f;
+    m_forward_vel = 0.0f;
+    m_script_brake = 0.0f;
+    DObjGetBasePose(owner->mDObj);
+    _align_wheels();
+    if (VEH_GetInfo(((scr_vehicle_t*)owner->scr_vehicle)->infoIdx)->type == 2)
+        m_flags.mMask |= 0x20u;
+    m_wheel_effect_state[0] = WHEEL_STATE_AIRBORN;
+    m_wheel_effects[0].mVal = 0;
+    m_wheel_effect_state[1] = WHEEL_STATE_AIRBORN;
+    m_wheel_effects[1].mVal = 0;
+    m_wheel_effect_state[2] = WHEEL_STATE_AIRBORN;
+    m_wheel_effects[2].mVal = 0;
+    m_wheel_effect_state[3] = WHEEL_STATE_AIRBORN;
+    m_wheel_effects[3].mVal = 0;
+    m_exhaust_effect.mVal = 0;
+}
+
+// stub until rb_vehicle::_align_wheels (0x6F4830) is ported
+void rb_vehicle::_align_wheels()
+{
 }
 
 // ea: 0x6FCD90
@@ -2402,16 +2490,6 @@ void biped_phys_info::update_vel_matrices()
     }
 }
 
-// scr_vehicle_t pathPos view (g.o; minimal for path_constraint_*)
-struct scr_vehicle_path_view {
-    float origin[3];   // +0x00
-    float angles[3];   // +0x10
-};
-struct scr_vehicle_t {
-    scr_vehicle_path_view pathPos;  // +0x00
-    uint8_t _pad[0x518 - sizeof(scr_vehicle_path_view)];
-    void*   mRBVeh;                 // +0x518 rb_vehicle*
-};
 struct entity_path_view {
     scr_vehicle_t* scr_vehicle;  // +0x00
 };
