@@ -11,6 +11,13 @@
 #include <string.h>
 #include <new>
 
+// ?0phys_proftimer_callbacks@@QAE@XZ (phys_xboxr 0x88B050)
+phys_proftimer_callbacks::phys_proftimer_callbacks()
+{
+    proftimer_start = nullptr;
+    proftimer_stop = nullptr;
+}
+
 // ============================================================================
 // Cross-object externs
 // ============================================================================

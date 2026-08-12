@@ -103,6 +103,12 @@ static MPLiveEngineVftableInit s_mpLiveEngineVftableInit;
 
 MultiplayerMgr* MultiplayerMgr::sInst;
 
+// ?IsHost@MultiplayerMgr@@QAE_NXZ (mp.o 0xB24D80; stub)
+bool MultiplayerMgr::IsHost()
+{
+    return true;
+}
+
 // ============================================================================
 // MPLiveEngine
 // ============================================================================

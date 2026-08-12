@@ -1074,7 +1074,10 @@ struct CameraView {
     uint8_t _pad[0x118];
     float mTweenTime;      // +0x114
     float mTweenDuration;  // +0x118
-    bool IsTweening();     // ?IsTweening@Camera@@QAE_NXZ (cg.o 0x68EBB0)
+    bool IsTweening()      // ?IsTweening@Camera@@QAE_NXZ (cg.o 0x68EBB0)
+    {
+        return mTweenDuration > mTweenTime;
+    }
 };
 extern int level_time;
 extern int dword_F62964[4 * 1580];

@@ -194,6 +194,7 @@ struct MultiplayerMgr {
     MPPeer* mPeer;                 // +0x00
     bool mRankedGame;              // +0x35
     bool mLinkCheckEnabled;        // +0x40
+    bool IsHost();                 // ?IsHost@MultiplayerMgr@@QAE_NXZ
     static MultiplayerMgr* sInst;  // mp.o data
     static void Step(MultiplayerMgr* self, int earlyOutInterval,
                      bool fromThread, bool a_bFromGame);
