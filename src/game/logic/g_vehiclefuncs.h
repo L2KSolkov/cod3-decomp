@@ -171,7 +171,8 @@ public:
 };
 static_assert(sizeof(vehicle_rb_parameter) == 0xD0, "vehicle_rb_parameter size mismatch");
 
-struct rb_vehicle {
+class rb_vehicle {
+public:
     unsigned char _pad[0x250];      // +0x000
     vehicle_rb_parameter* m_parameter;  // +0x250
     unsigned char _pad254[0x280 - 0x254];

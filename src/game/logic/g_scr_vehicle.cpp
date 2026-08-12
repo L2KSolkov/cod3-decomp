@@ -9,21 +9,26 @@
 #include <stdio.h>
 #include <string.h>
 
-// rb_vehicle statics + free helpers (physics.o; stubs, port later)
-void rb_vehicle::remove_vehicle(rb_vehicle* v)
-{
-    (void)v;
-}
-void rb_vehicle::end_path(rb_vehicle* v)
-{
-    (void)v;
-}
+// rb_vehicle statics + free helpers (physics.o; ported in g_physics.cpp)
 void rb_vehicle::update_parms(vehicle_rb_parameter* p, bool from_network)
 {
     (void)p; (void)from_network;
 }
+
+// ea: 0x705010 (physics.o)
 rb_vehicle* GetPlayerRBVehicle()
 {
+    unsigned int mVal = EntityManager::sInst->GetPlayer(currCl)
+                            ->client->ps.mViewLockedEntity.mHandle.mVal;
+    unsigned int v1 = mVal & 0xFFF;
+    if (v1 < 0x540
+        && (mVal >> 12)
+               == (unsigned int)EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
+            return (rb_vehicle*)mObject->scr_vehicle->mRBVeh;
+    }
     return nullptr;
 }
 void rb_vehicle_debug_render_all() {}
@@ -6873,7 +6878,7 @@ void VEH_UpdatePath(Entity* ent, int msec)
         Scr_Notify(ent, hash_const.reached_end_node, 0);
         rb_vehicle* mRBVeh = (rb_vehicle*)scr_vehicle->mRBVeh;
         if (mRBVeh != nullptr && (mRBVeh->m_flags & 0x200) != 0)
-            rb_vehicle::end_path(mRBVeh);
+            mRBVeh->end_path();
     }
     float speedFrac = ent->speed / info->engineSndSpeed;
     if (speedFrac < 0.0f)

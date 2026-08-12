@@ -3514,7 +3514,9 @@ struct vehicleVarConfig_t {
     unsigned int offset; // +0x04
 };
 extern vehicleVarConfig_t sVehicleVarConfig[27];  // g.o @ 0xDD7608
-struct rb_vehicle {
+// rb_vehicle is a class in the binary (QAV1/PAV1 manglings); shared view.
+class rb_vehicle {
+public:
     uint8_t _pad[0x250];
     vehicle_rb_parameter* m_parameter;  // +0x250
     float   m_throttle;  // +0x254
@@ -3530,8 +3532,8 @@ struct rb_vehicle {
     math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ (physics.o 0x6FC200)
 
     static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
-    static void remove_vehicle(rb_vehicle* v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
-    static void end_path(rb_vehicle* v);        // physics.o
+    static void remove_vehicle(rb_vehicle* const v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
+    void end_path();                            // physics.o ?end_path@rb_vehicle@@QAEXXZ
     void update_parms(vehicle_rb_parameter* p, bool from_network);  // physics.o ?update_parms@rb_vehicle@@QAEXPAVvehicle_rb_parameter@@_N@Z
 };
 

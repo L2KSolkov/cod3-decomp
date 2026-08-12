@@ -15,7 +15,25 @@ extern bool _tlAssert(const char* file, int line, const char* expr,
 extern const char* const defaultFileName;
 
 namespace AeAssert {
-enum ECoderId { COD3 = 0, ARO = 1 };
+// Binary enum (IDA: ARO=0, CD=1, JRS=2, MJK=3, MJU=4, MM=5, TPB=6, SLB=7,
+// AC=8, JSV=9, DK=10, PL=11, DL=12). COD3 is a local alias for ARO used by
+// earlier ports.
+enum ECoderId {
+    ARO = 0,
+    CD = 1,
+    JRS = 2,
+    MJK = 3,
+    MJU = 4,
+    MM = 5,
+    TPB = 6,
+    SLB = 7,
+    AC = 8,
+    JSV = 9,
+    DK = 10,
+    PL = 11,
+    DL = 12,
+    COD3 = ARO,
+};
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -145,10 +163,15 @@ public:
 
     rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
     static int get_num_rb_vehicles();  // ?get_num_rb_vehicles@rb_vehicle@@SAHXZ
+    static rb_vehicle* get_vehicle(int i);  // ?get_vehicle@rb_vehicle@@SAPAV1@H@Z
+    static rb_vehicle* add_vehicle();       // ?add_vehicle@rb_vehicle@@SAPAV1@XZ
+    static void remove_vehicle(rb_vehicle* const v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z
     math::Position3 process_hitp(const math::Position3& hitp);  // ?process_hitp@rb_vehicle@@QAE?AVPosition3@math@@ABV23@@Z
     bool is_peeling_out() const;  // ?is_peeling_out@rb_vehicle@@QBE_NXZ
     void set_default_pose();      // ?set_default_pose@rb_vehicle@@QAEXXZ
     void cleanup_path();          // ?cleanup_path@rb_vehicle@@QAEXXZ
+    void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
+    void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
 };
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
@@ -689,6 +712,61 @@ void rb_vehicle::cleanup_path()
     }
 }
 
+// ea: 0x6FCD90
+rb_vehicle* rb_vehicle::get_vehicle(int i)
+{
+    if (i >= 0 && i < g_rb_vehicle_list.m_alloc_count)
+        return g_rb_vehicle_list.m_alloc_list[i];
+    if (!_tlAssert(
+            "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+            178, "i >= 0 && i < m_alloc_count", defaultFileName))
+        __debugbreak();
+    return g_rb_vehicle_list.m_alloc_list[i];
+}
+
+// ea: 0x701AC0
+rb_vehicle* rb_vehicle::add_vehicle()
+{
+    rb_vehicle* v0 = g_rb_vehicle_list.add(
+        true, "phys memory pool add overflow.");
+    if (v0 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.cpp";
+        AeAssert::gCurrentLine = 1310;
+        AeAssert::gCurrentExpr = "vehicle";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Failed to add a new rb_vehicle."))
+            __debugbreak();
+    }
+    return v0;
+}
+
+// ea: 0x701B20
+void rb_vehicle::remove_vehicle(rb_vehicle* const v)
+{
+    v->pause_physics(true);
+    g_rb_vehicle_list.remove(v);
+}
+
+// ea: 0x701A70
+void rb_vehicle::end_path()
+{
+    m_flags.mMask &= ~0x100u;
+    m_flags.mMask &= ~0x200u;
+    if (m_vpc != nullptr)
+    {
+        path_constraint_destroy(m_vpc);
+        m_vpc = nullptr;
+    }
+}
+
+// stub until rb_vehicle::pause_physics (0x700D50) is ported
+void rb_vehicle::pause_physics(bool shutdown)
+{
+    (void)shutdown;
+}
+
 // ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A
 // (physics.o data @ 0xE2B8F0)
 phys_static_memory_pool<rb_vehicle, 10> g_rb_vehicle_list;
@@ -737,12 +815,15 @@ public:
     phys_anim_bone_array bp_bone_array;  // +0x130
     uint8_t _pad131[0x2040 - 0x130 - sizeof(phys_anim_bone_array)];
     biped_phys_info* m_bp_info;   // +0x2040
+    int              m_flags;         // +0x2044
     float            m_stable_timer;  // +0x2048
     bool             m_is_stable;     // +0x204C
 
     void prolog_frame_advance(Entity* owner, float delta_t);  // ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
     void debug_render();  // ?debug_render@biped_system@@QAEXXZ
     void render_joint(int joint_id, Bitmask<unsigned int> render_flags);  // ?render_joint@biped_system@@QAEXHV?$Bitmask@I@@@Z
+    void destroy_bps(Entity* owner);  // ?destroy_bps@biped_system@@QAEXPAVEntity@@@Z
+    void recreate_bps(Entity* owner, int flags);  // ?recreate_bps@biped_system@@QAEXPAVEntity@@H@Z
 private:
     void initialize_members();  // ?initialize_members@biped_system@@AAEXXZ
     void create_system(biped_phys_info* bp_info);  // ?create_system@biped_system@@AAEXPAVbiped_phys_info@@@Z
@@ -906,6 +987,25 @@ void biped_system::render_joint(int joint_id,
 {
     (void)joint_id;
     (void)render_flags;
+}
+
+// ea: 0x6FAA40
+void biped_system::destroy_bps(Entity* owner)
+{
+    rdbi_calc_bone_mat_from_rb();
+    bp_bone_array.copy_back_bones(owner);
+}
+
+// ea: 0x6F4530
+void biped_system::recreate_bps(Entity* owner, int flags)
+{
+    (void)owner;
+    m_flags = flags;
+    rb_ragdoll_model::remove_all_user_rigid_body();
+    rb_ragdoll_model::reset_stability();
+    rb_ragdoll_model::reset_ballistic_target();
+    m_is_stable = false;
+    m_stable_timer = 0.0f;
 }
 
 // USER_BONE_ID_* globals (physics.o data @ 0xE01EA8..0xE01EDC)
