@@ -9,6 +9,28 @@
 #include <stdlib.h>
 #include <intrin.h>
 
+// shell.o IGOFrontEnd stubs (real impls in shell.o; ported later)
+void IGOFrontEnd::SetTutorialText(int ref, int viewport)
+{
+    (void)ref; (void)viewport;
+}
+void IGOFrontEnd::SetFuse(float total, float remain, int client)
+{
+    (void)total; (void)remain; (void)client;
+}
+void IGOFrontEnd::AddActiveGrenade(const Entity* grenade)
+{
+    (void)grenade;
+}
+void IGOFrontEnd::SetHUDType(hud_type ht, int viewport)
+{
+    (void)ht; (void)viewport;
+}
+void IGOFrontEnd::UpdateAfterWeaponsLoaded()
+{
+    // stub
+}
+
 // ============================================================================
 // Cross-object externs
 // ============================================================================

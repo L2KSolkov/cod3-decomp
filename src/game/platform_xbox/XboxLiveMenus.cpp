@@ -26,6 +26,114 @@ int FEMenuSystem::GetCurrentClient()
     return 0;
 }
 
+// shell.o FE base stubs (ported later)
+FEMenu::FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve,
+               int flg)
+{
+    (void)menuSystem; (void)num; (void)x; (void)y; (void)mve; (void)flg;
+}
+FEMenu::~FEMenu() {}
+void FEMenu::Draw() {}
+void FEMenu::Update(float time_inc) { (void)time_inc; }
+void FEMenu::OnActivate() {}
+void FEMenu::Cleanup() {}
+void FEMenu::ClearAllButtons() {}
+void FEMenu::Left() {}
+void FEMenu::Right() {}
+void FEMenu::Up(int a2) { (void)a2; }
+void FEMenu::Down(int a2) { (void)a2; }
+void FEMenu::SetHigh(int a2, int a3, bool a4)
+{
+    (void)a2; (void)a3; (void)a4;
+}
+void FEMenuEntry::SetString(const char* s) { (void)s; }
+void FEMenuEntry::SetEnabled(bool e) { (void)e; }
+void FEMenuSystem::AddOverlay(int a2) { (void)a2; }
+void FEMenuSystem::ReturnToPreviousMenu(int a2) { (void)a2; }
+FEMultiLineText::FEMultiLineText(font_index f, float x1, float y1, float z1,
+                                 panel_layer layer, float s, int horizJust,
+                                 int vertJust, color32 col)
+{
+    (void)f; (void)x1; (void)y1; (void)z1; (void)layer; (void)s;
+    (void)horizJust; (void)vertJust; (void)col;
+}
+void FEMultiLineText::Draw() {}
+void FEMultiLineText::SetTextBoxNoLocalize(const char* s, int a3, int a4)
+{
+    (void)s; (void)a3; (void)a4;
+}
+void FEMultiLineText::UpdateForSplitScreen(int viewport, int old_viewport)
+{
+    (void)viewport; (void)old_viewport;
+}
+void FEMultiLineText::UpdateForWidescreen(bool widescreen)
+{
+    (void)widescreen;
+}
+void FEMultiLineText::SetNumLines(int n) { (void)n; }
+void FEMultiLineText::SetText(const char* s) { (void)s; }
+UIListBox::~UIListBox() {}
+void UIListBox::OnUp(int a2) { (void)a2; }
+void UIListBox::OnDown(int a2) { (void)a2; }
+void UIListBox::SelectLine(int line) { (void)line; }
+void UIListBox::Update(float time_inc) { (void)time_inc; }
+void UIListBox::SetItem(int row, int column, FEText* text, int state)
+{
+    (void)row; (void)column; (void)text; (void)state;
+}
+void UIListBox::SetText(int row, int column, const char* text)
+{
+    (void)row; (void)column; (void)text;
+}
+void UIListBox::SetAllColumnsSelectable(bool selectable)
+{
+    (void)selectable;
+}
+void UIListBox::Refresh() {}
+void UIListBox::RemoveAllItems() {}
+void UIListBoxCtorThunk(UIListBox* self, int visibleRows, int visibleColumns,
+                        int maxDataRows, bool bIsWrapping)
+{
+    (void)self; (void)visibleRows; (void)visibleColumns;
+    (void)maxDataRows; (void)bIsWrapping;
+}
+void DialogMenuSystem::BringUp(const char* t, bool type_ok, bool type_yn,
+                               const char* title_unloc, bool layer1)
+{
+    (void)t; (void)type_ok; (void)type_yn; (void)title_unloc; (void)layer1;
+}
+void DialogMenuSystem::AddOption(const char* t, bool (*responseFunc)(int))
+{
+    (void)t; (void)responseFunc;
+}
+void DialogMenuSystem::HighlightOption(int index) { (void)index; }
+void DialogMenuSystem::Reformat(bool vertical) { (void)vertical; }
+DialogMenu* DialogMenuSystem::GetLayer(bool layer1)
+{
+    (void)layer1;
+    return nullptr;
+}
+void DialogMenu::AddOption(const char* t, bool (*responseFunc)(int))
+{
+    (void)t; (void)responseFunc;
+}
+void DialogMenu::Reformat(bool vertical, int viewport)
+{
+    (void)vertical; (void)viewport;
+}
+InGameMenuSystem* FEManager::GetIGMS(int client)
+{
+    (void)client;
+    return nullptr;
+}
+DialogMenuSystem* FEManager::GetDMS(int client)
+{
+    (void)client;
+    return nullptr;
+}
+void FEManager::DrawDiscError() {}
+void FEManager::UpdateLoadingMenu(float percentDone) { (void)percentDone; }
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>

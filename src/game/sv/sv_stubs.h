@@ -920,6 +920,8 @@ struct VehicleNodeAllocator {
 // ============================================================================
 // IGOFrontEnd — in-game overlay front end
 // ============================================================================
+enum hud_type { kHudTypeNone = 0 };  // full enumerator set from IDA TBD
+
 struct IGOFrontEnd {
     uint8_t _pad0[0x14];
     void*   ammoWidget[4];   // +0x14 (IGOAmmoWidget*, indexed by client)
@@ -927,7 +929,7 @@ struct IGOFrontEnd {
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
     void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
     void AddActiveGrenade(const Entity* grenade);  // ?AddActiveGrenade@IGOFrontEnd@@QAEXPBVEntity@@@Z
-    void SetHUDType(int ht, int viewport);  // ?SetHUDType@IGOFrontEnd@@QAEXW4hud_type@@H@Z
+    void SetHUDType(hud_type ht, int viewport);  // ?SetHUDType@IGOFrontEnd@@QAEXW4hud_type@@H@Z
     void UpdateAfterWeaponsLoaded();  // ?UpdateAfterWeaponsLoaded@IGOFrontEnd@@QAEXXZ
 };
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");

@@ -194,6 +194,8 @@ struct FEManager {
     struct AARMenuSystemView { FEMenu** menus; }* mAARS;
     InGameMenuSystem* GetIGMS(int client);
     DialogMenuSystem* GetDMS(int client);
+    void DrawDiscError();                     // ?DrawDiscError@FEManager@@QAEXXZ
+    void UpdateLoadingMenu(float percentDone);  // ?UpdateLoadingMenu@FEManager@@QAEXM@Z
 };
 extern FEManager g_femanager;
 extern int currCl;

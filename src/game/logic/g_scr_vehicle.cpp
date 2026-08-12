@@ -4934,7 +4934,7 @@ void VEH_UnlinkPlayer(Entity* player, bool setOrigin)
     if (EntityManager::sInst->IsLocalPlayer(player))
         SetClientOrigin(player, origin);
     if (info->type == 2)
-        g_femanager.IGO->SetHUDType(0, currCl);
+        g_femanager.IGO->SetHUDType((hud_type)0, currCl);
     if (bWasLocalPlayer && EntityManager::sInst->IsLocalPlayer(player))
     {
         float fwd[3];
