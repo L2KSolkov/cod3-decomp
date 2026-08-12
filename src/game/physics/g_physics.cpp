@@ -5,6 +5,7 @@
 
 #include "physics/physics_system.h"
 #include "physics/rb_ragdoll_model.h"
+#include "core/tlFixedString.h"
 #include <float.h>
 #include <intrin.h>
 #include <math.h>
@@ -95,6 +96,7 @@ extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 bool Warning(const char* fmt, ...);
+bool Error(const char* fmt, ...);
 }
 
 namespace nuge {
@@ -1419,6 +1421,7 @@ public:
     const math::Mat43& GetMat(int boneIndex);
     int GetBoneIndex(const char* name) const;
     int GetBoneIndexInternal(unsigned int nameHash) const;  // ?GetBoneIndexInternal@DObj@@QBEHI@Z (render.o)
+    int GetHighLOD();  // ?GetHighLOD@DObj@@QAEHXZ (physics.o inline 0x71C360)
     int GetBoneParent(int boneIndex);  // ?GetBoneParent@DObj@@QAEHH@Z (render.o; stub)
 };
 const math::Mat43& DObj::GetMat(int boneIndex)
@@ -1435,6 +1438,132 @@ int DObj::GetBoneIndex(const char* name) const
 int DObj::GetBoneIndexInternal(unsigned int nameHash) const
 {
     (void)nameHash;
+    return -1;
+}
+
+// nalGeneric (nal_generic.o / nal_init.o; minimal views for setup_physics).
+// Cross-object stubs - the real nal library is ported separately.
+namespace nalGeneric {
+class nalGenericPose;
+class nalGenericSkeleton;
+class nalGenericAnim;
+class nalGenericInstance;
+struct nalMatrix4x4 { float m[4][4]; };
+
+class nalGenericPose {
+public:
+    uint8_t _pad[0x8];
+    void*   PoseData;      // +0x08
+    bool    AllocedData;   // +0x0C
+
+    nalGenericPose(const nalGenericSkeleton* skel, int flags);  // 0x86E660 (stub)
+    ~nalGenericPose();                                          // 0x868D80 (stub)
+};
+
+class nalGenericSkeleton {
+public:
+    void* __vftable;  // +0x00
+    uint8_t _pad4[0xC8 - 0x04];
+    nalGenericPose DefaultPose;  // +0xC8
+    static void* vtbl_ptr;       // ?vtbl_ptr@nalGenericSkeleton@nalGeneric@@2PAXA @ 0x10E6D04
+
+    void GetBoneMatrices(const nalGenericPose& pose, nalMatrix4x4* matrices,
+                         int lod);  // 0x869500 (stub)
+};
+void* nalGenericSkeleton::vtbl_ptr = nullptr;
+
+class nalGenericAnim {
+public:
+    void* __vftable;  // +0x00
+    uint8_t _pad4[0x30 - 0x04];
+    nalGenericSkeleton* Skeleton;  // +0x30 (nalAnimClass<nalAnyPose>::Skeleton)
+
+    nalGenericInstance* CreateInstance(nalGenericSkeleton* skeleton);  // 0x518430 (stub)
+};
+
+class nalGenericInstance {
+public:
+    void* __vftable;  // +0x00
+    uint8_t _pad4[0x0C - 0x04];
+    nalGenericSkeleton* Skeleton;  // +0x0C
+
+    // GetPose - ea: 0x71A210 (physics.o inline COMDAT)
+    void GetPose(int index, nalGenericPose& pose, int lod);
+    // 4-arg nal_generic.o callee (0x86DFC0; cross-object stub)
+    void GetPose(int index, nalGenericPose& pose,
+                 const nalGenericPose& defaultPose, int lod);
+};
+
+class nalAnyPose {};
+template <typename T> class nalAnimClass {};
+}
+
+// cdGetAnim (streamer.o 0x677BE0; cross-object stub)
+nalGeneric::nalAnimClass<nalGeneric::nalAnyPose>*
+cdGetAnim(TPakId pakId, const tlFixedString& name);
+
+// physics.o data @ 0xF91704 / 0xF91708 / 0xF9170C (RBRagdoll.cpp statics)
+nalGeneric::nalGenericInstance* inst = nullptr;
+nalGeneric::nalGenericAnim* anim = nullptr;
+int S45_1_guard = 0;
+
+// Cross-object nal stubs (correct manglings; bodies ported with nal library)
+nalGeneric::nalGenericPose::nalGenericPose(const nalGenericSkeleton* skel,
+                                          int flags)
+{
+    (void)skel; (void)flags;
+}
+nalGeneric::nalGenericPose::~nalGenericPose() {}
+void nalGeneric::nalGenericSkeleton::GetBoneMatrices(
+    const nalGenericPose& pose, nalMatrix4x4* matrices, int lod)
+{
+    (void)pose; (void)matrices; (void)lod;
+}
+nalGeneric::nalGenericInstance* nalGeneric::nalGenericAnim::CreateInstance(
+    nalGenericSkeleton* skeleton)
+{
+    (void)skeleton;
+    return nullptr;
+}
+void nalGeneric::nalGenericInstance::GetPose(
+    int index, nalGenericPose& pose, const nalGenericPose& defaultPose,
+    int lod)
+{
+    (void)index; (void)pose; (void)defaultPose; (void)lod;
+}
+nalGeneric::nalAnimClass<nalGeneric::nalAnyPose>*
+cdGetAnim(TPakId pakId, const tlFixedString& name)
+{
+    (void)pakId; (void)name;
+    return nullptr;
+}
+
+// ea: 0x71A210 (physics.o inline COMDAT)
+void nalGeneric::nalGenericInstance::GetPose(int index,
+                                             nalGenericPose& pose, int lod)
+{
+    GetPose(index, pose, Skeleton->DefaultPose, lod);
+}
+
+// ea: 0x71C360 (physics.o inline COMDAT)
+int DObj::GetHighLOD()
+{
+    int v2 = 0;
+    void** model_slot = (void**)((char*)models + 0);
+    ValidatePakId((TPakId)(uintptr_t)model_slot[1]);
+    XModelLocal* mValue = (XModelLocal*)model_slot[0];
+    for (int i = 9; i < 14; ++i)
+    {
+        if (((unsigned int*)mValue)[i] != 0)
+            return v2;
+        ++v2;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DObj.h";
+    AeAssert::gCurrentLine = 242;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("unable to find low lod"))
+        __debugbreak();
     return -1;
 }
 
@@ -8635,7 +8764,7 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
 // XBoneHierarchy view (12 bytes: mName +0, mNameHash +4, mParentIndex +8)
 // Inverse-multiply helper matching DObjMatriceModelToLocal's SSE: the parent
 // rotation is transposed (orthonormal => inverse) and each row of bone is
-// dotted with its columns; the translation row is (bone.w - parent.w) Ã‚Â· cols.
+// dotted with its columns; the translation row is (bone.w - parent.w) Ãƒâ€šÃ‚Â· cols.
 static void InverseMultiplyLocal(const math::Mat43& parent, math::Mat43& bone)
 {
     __m128 x = parent.x.v, y = parent.y.v, z = parent.z.v, w = parent.w.v;
@@ -9795,6 +9924,16 @@ struct client_bone_info {
     Entity*     m_ent;           // +0x40
     int         m_bone_index;    // +0x44
     int         m_rb_index;      // +0x48
+
+    // set - ea: 0x719EE0 (physics.o inline COMDAT)
+    void set(const math::Mat43& bone_mat_loc, Entity* const ent,
+             int bone_index, int rb_index)
+    {
+        m_bone_mat_loc = bone_mat_loc;
+        m_ent = ent;
+        m_bone_index = bone_index;
+        m_rb_index = rb_index;
+    }
 };
 static_assert(sizeof(client_bone_info) == 0x50,
               "client_bone_info size mismatch");
@@ -10238,12 +10377,6 @@ void biped_system::remove_rigid_body(phys_bones rb_id)
     rb_ragdoll_model::remove_rigid_body(rb_id);
 }
 
-// stub until biped_system::setup_physics (0x707180) is ported
-void biped_system::setup_physics(Entity* owner)
-{
-    (void)owner;
-}
-
 // ?PHYSICS_GRAVITY_SCALE_1@@3MB (physics.o data @ 0xE01F08)
 float PHYSICS_GRAVITY_SCALE_1 = 42.5f;
 
@@ -10351,6 +10484,19 @@ static const __m128 Float4_SinCoefs_12 =
 static const math::Dir3 Float4_XAxis_12 = {
     _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f)
 };
+static const math::Dir3 Float4_YAxis_12 = {
+    _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f)
+};
+static const math::Dir3 Float4_ZAxis_12 = {
+    _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f)
+};
+
+// IS_BAD_NUMBER (physics.o inline 0x716350)
+bool IS_BAD_NUMBER(float x)
+{
+    return ((*(unsigned int*)&x) & 0x7F800000) == 0x7F800000
+           || x != x || fabs(x) > 1000000.0f;
+}
 
 // ea: 0x6F79B0
 void phys_anim_bone_array::copy_back_tween(Entity* owner, float t_)
@@ -14422,4 +14568,605 @@ void prop_phys_collision::collide_entities(rb_extra_info* rb_inf)
         }
     NEXT_ENTITY:;
     }
+}
+
+// ea: 0x707180
+void biped_system::setup_physics(Entity* owner)
+{
+    biped_phys_info* mBPInfo = owner->mBPInfo;
+    if (mBPInfo == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 1079,
+                     "owner->get_bp_info()", defaultFileName))
+        __debugbreak();
+    owner->CalcRotTranMat43();
+    float ox = owner->r.currentOrigin.v.m128_f32[0];
+    float oy = owner->r.currentOrigin.v.m128_f32[1];
+    float oz = owner->r.currentOrigin.v.m128_f32[2];
+    if (IS_BAD_NUMBER(ox) || IS_BAD_NUMBER(oy) || IS_BAD_NUMBER(oz))
+    {
+        if (_tlAssert(
+                "c:\\cod\\code\\game\\RBRagdoll.cpp", 1083,
+                "!IS_BAD_NUMBER((owner->r.currentOrigin)[0]) && !IS_BAD_NUMBER((owner->r.currentOrigin)[1]) && !IS_BAD_NUMBER((owner->r.currentOrigin)[2])",
+                "Invalid vector"))
+            __debugbreak();
+    }
+    m_collision_callback.m_owner = owner;
+    math::Mat43 skeleton_pose[10];
+    phys_anim_bone_array::copy_skeleton(owner, skeleton_pose);
+    bp_bone_array.copy_tween_start(owner);
+
+    if ((S45_1_guard & 1) == 0)
+    {
+        S45_1_guard |= 1;
+        tlFixedString name("Ragdoll");
+        anim = (nalGeneric::nalGenericAnim*)cdGetAnim(CurPakId(), name);
+    }
+    nalGeneric::nalGenericAnim* Anim = anim;
+    if (Anim != nullptr)
+    {
+        nalGeneric::nalGenericSkeleton* Skeleton = Anim->Skeleton;
+        if (Skeleton != nullptr
+            && Skeleton->__vftable
+                   != (void*)nalGeneric::nalGenericSkeleton::vtbl_ptr)
+            Skeleton = nullptr;
+        if ((S45_1_guard & 2) == 0)
+        {
+            S45_1_guard |= 2;
+            inst = Anim->CreateInstance(nullptr);
+        }
+        nalGeneric::nalGenericPose pose(Skeleton, 0);
+        int HighLOD = owner->mDObj->GetHighLOD();
+        inst->GetPose(0, pose, HighLOD);
+        Skeleton->GetBoneMatrices(
+            pose, (nalGeneric::nalMatrix4x4*)((char*)owner->mDObj->skel + 0x30),
+            HighLOD);
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBRagdoll.cpp";
+        AeAssert::gCurrentLine = 1109;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning(
+                   "You need to add ragdoll.txtanim to your pakfile"))
+            __debugbreak();
+        DObjGetBasePose(owner->mDObj);
+    }
+    bp_bone_array.attach_physics_bones(owner);
+    setup_bone_mass_info(owner);
+    m_bp_info->update_vel_matrices();
+    set_max_rb_index(10);
+
+    // Per-bone rigid bodies. The decompile walks m_bone_mass_info[i].m_com by
+    // 29 Position3 (= 464 = sizeof(bone_mass_info)) and reads the fields by
+    // relative offset.
+    for (int i = 0; i < 10; ++i)
+    {
+        bone_mass_info& bmi = m_bone_mass_info[i];
+        rigid_body* v14 = add_rigid_body(bmi.m_rb_id);
+        math::Dir3 t_vel, a_vel;
+        m_bp_info->get_cur_vel(bmi.m_rb_id, bmi.m_com, &t_vel, &a_vel);
+        math::Mat43 abs_mat = owner->CalcAbsMat(bmi.m_rb_bone);
+        math::Mat43 identity;
+        SetIdentity(identity);
+        math::Position3 com_world;
+        com_world.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(bmi.m_com.v, bmi.m_com.v, 0),
+                           abs_mat.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(bmi.m_com.v, bmi.m_com.v, 0x55),
+                           abs_mat.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(bmi.m_com.v, bmi.m_com.v, 0xAA),
+                           abs_mat.z.v),
+                abs_mat.w.v));
+        (void)com_world;
+        if (IS_BAD_NUMBER(bmi.m_com.v.m128_f32[0])
+            || IS_BAD_NUMBER(bmi.m_com.v.m128_f32[1])
+            || IS_BAD_NUMBER(bmi.m_com.v.m128_f32[2]))
+        {
+            if (_tlAssert(
+                    "c:\\cod\\code\\game\\RBRagdoll.cpp", 1142,
+                    "!IS_BAD_NUMBER((bmi.m_com)[0]) && !IS_BAD_NUMBER((bmi.m_com)[1]) && !IS_BAD_NUMBER((bmi.m_com)[2])",
+                    "Invalid vector"))
+                __debugbreak();
+        }
+        if (IS_BAD_NUMBER(t_vel.v.m128_f32[0])
+            || IS_BAD_NUMBER(t_vel.v.m128_f32[1])
+            || IS_BAD_NUMBER(t_vel.v.m128_f32[2]))
+        {
+            if (_tlAssert(
+                    "c:\\cod\\code\\game\\RBRagdoll.cpp", 1143,
+                    "!IS_BAD_NUMBER((t_vel)[0]) && !IS_BAD_NUMBER((t_vel)[1]) && !IS_BAD_NUMBER((t_vel)[2])",
+                    "Invalid vector"))
+                __debugbreak();
+        }
+        if (IS_BAD_NUMBER(a_vel.v.m128_f32[0])
+            || IS_BAD_NUMBER(a_vel.v.m128_f32[1])
+            || IS_BAD_NUMBER(a_vel.v.m128_f32[2]))
+        {
+            if (_tlAssert(
+                    "c:\\cod\\code\\game\\RBRagdoll.cpp", 1144,
+                    "!IS_BAD_NUMBER((a_vel)[0]) && !IS_BAD_NUMBER((a_vel)[1]) && !IS_BAD_NUMBER((a_vel)[2])",
+                    "Invalid vector"))
+                __debugbreak();
+        }
+        v14->set(bmi.m_mass,
+                 *reinterpret_cast<const math::Dir3*>(&bmi.m_inertia),
+                 identity, t_vel, a_vel,
+                 bmi.m_friction_k, 0);
+        v14->m_flags |= 2u;
+        v14->set_gravity_dir(PHYSICS_GRAVITY_DIRECTION_3);
+        math::Mat43 bone_mat_loc;
+        phys_full_inv_multiply_mat(bone_mat_loc, identity, abs_mat);
+        if (bmi.m_rb_id >= 10
+            && _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 374,
+                         "i >= 0 && i < size", defaultFileName))
+            __debugbreak();
+        ((client_bone_info*)((char*)this + 0x1D20))[bmi.m_rb_id].set(
+            bone_mat_loc, owner, bmi.m_rb_bone, bmi.m_rb_id);
+    }
+
+    // Joints.
+    for (int i = 0; i < 10; ++i)
+    {
+        bone_mass_info& bmi = m_bone_mass_info[i];
+        if (bmi.m_rb_id == 0)
+            continue;
+        if (bmi.m_rb_parent_id < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 1164,
+                         "bmi.m_rb_parent_id >= 0", defaultFileName))
+            __debugbreak();
+        if (bmi.m_rb_id < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 1165,
+                         "bmi.m_rb_id >= 0", defaultFileName))
+            __debugbreak();
+        if (bmi.m_rb_parent_bone < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 1166,
+                         "bmi.m_rb_parent_bone >= NULL", defaultFileName))
+            __debugbreak();
+        if (bmi.m_rb_bone < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 1167,
+                         "bmi.m_rb_bone >= NULL", defaultFileName))
+            __debugbreak();
+        rigid_body_constraint_ragdoll* joint =
+            add_joint(bmi.m_rb_parent_id, bmi.m_rb_id);
+        if ((bmi.m_rb_parent_id < 0
+             || bmi.m_rb_parent_id >= m_list_rigid_body.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        rigid_body* v24 = m_list_rigid_body.m_slot_array[bmi.m_rb_parent_id];
+        if ((bmi.m_rb_id < 0 || bmi.m_rb_id >= m_list_rigid_body.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        rigid_body* rb_child = m_list_rigid_body.m_slot_array[bmi.m_rb_id];
+        math::Mat43 parent_mat = owner->CalcAbsMat(bmi.m_rb_parent_bone);
+        math::Mat43 child_mat = owner->CalcAbsMat(bmi.m_rb_bone);
+
+        // World pivots from the bone mass pivots, then into the child rb frame.
+        math::Position3 parent_pivot_world;
+        parent_pivot_world.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_parent_pivot_loc.v,
+                                   bmi.m_rb_parent_pivot_loc.v, 0),
+                    parent_mat.x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_parent_pivot_loc.v,
+                                   bmi.m_rb_parent_pivot_loc.v, 0x55),
+                    parent_mat.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_parent_pivot_loc.v,
+                                   bmi.m_rb_parent_pivot_loc.v, 0xAA),
+                    parent_mat.z.v),
+                parent_mat.w.v));
+        math::Position3 child_pivot_world;
+        child_pivot_world.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_pivot_loc.v,
+                                   bmi.m_rb_pivot_loc.v, 0),
+                    child_mat.x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_pivot_loc.v,
+                                   bmi.m_rb_pivot_loc.v, 0x55),
+                    child_mat.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_pivot_loc.v,
+                                   bmi.m_rb_pivot_loc.v, 0xAA),
+                    child_mat.z.v),
+                child_mat.w.v));
+        // world -> child rb local (transpose of rb mat)
+        __m128 wp = _mm_sub_ps(parent_pivot_world.v, rb_child->m_mat.w.v);
+        math::Dir3 local_parent_pivot;
+        local_parent_pivot.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(wp, wp, 0), rb_child->m_mat.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(wp, wp, 0x55),
+                           rb_child->m_mat.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(wp, wp, 0xAA), rb_child->m_mat.z.v));
+        __m128 wp2 = _mm_sub_ps(child_pivot_world.v, rb_child->m_mat.w.v);
+        math::Dir3 local_child_pivot;
+        local_child_pivot.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(wp2, wp2, 0), rb_child->m_mat.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(wp2, wp2, 0x55),
+                           rb_child->m_mat.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(wp2, wp2, 0xAA), rb_child->m_mat.z.v));
+        joint->set(local_parent_pivot, local_child_pivot);
+        if (bmi.m_damp_k > 0.000001f)
+            joint->set_damp_k(bmi.m_damp_k);
+        if (bmi.m_joint_type == 1)
+        {
+            math::Dir3 axis_b;
+            axis_b.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_axis_loc.v,
+                                       bmi.m_rb_axis_loc.v, 0),
+                        child_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_axis_loc.v,
+                                       bmi.m_rb_axis_loc.v, 0x55),
+                        child_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_axis_loc.v,
+                                   bmi.m_rb_axis_loc.v, 0xAA),
+                    child_mat.z.v));
+            math::Dir3 axis_p;
+            axis_p.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_axis_loc.v,
+                                       bmi.m_rb_parent_axis_loc.v, 0),
+                        parent_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_axis_loc.v,
+                                       bmi.m_rb_parent_axis_loc.v, 0x55),
+                        parent_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_parent_axis_loc.v,
+                                   bmi.m_rb_parent_axis_loc.v, 0xAA),
+                    parent_mat.z.v));
+            math::Dir3 ref_b;
+            ref_b.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_ref_loc.v,
+                                       bmi.m_rb_ref_loc.v, 0),
+                        child_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_ref_loc.v,
+                                       bmi.m_rb_ref_loc.v, 0x55),
+                        child_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_ref_loc.v,
+                                   bmi.m_rb_ref_loc.v, 0xAA),
+                    child_mat.z.v));
+            math::Dir3 ref_p;
+            ref_p.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_ref_loc.v,
+                                       bmi.m_rb_parent_ref_loc.v, 0),
+                        parent_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_ref_loc.v,
+                                       bmi.m_rb_parent_ref_loc.v, 0x55),
+                        parent_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_parent_ref_loc.v,
+                                   bmi.m_rb_parent_ref_loc.v, 0xAA),
+                    parent_mat.z.v));
+            joint->set_hinge(axis_p, ref_p, ref_b, axis_b, bmi.m_theta_min,
+                             bmi.m_theta_max);
+        }
+        else if (bmi.m_joint_type == 2)
+        {
+            math::Dir3 axis_b;
+            axis_b.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_axis_loc.v,
+                                       bmi.m_rb_axis_loc.v, 0),
+                        child_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_axis_loc.v,
+                                       bmi.m_rb_axis_loc.v, 0x55),
+                        child_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_axis_loc.v,
+                                   bmi.m_rb_axis_loc.v, 0xAA),
+                    child_mat.z.v));
+            math::Dir3 axis_p;
+            axis_p.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_axis_loc.v,
+                                       bmi.m_rb_parent_axis_loc.v, 0),
+                        parent_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_axis_loc.v,
+                                       bmi.m_rb_parent_axis_loc.v, 0x55),
+                        parent_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_parent_axis_loc.v,
+                                   bmi.m_rb_parent_axis_loc.v, 0xAA),
+                    parent_mat.z.v));
+            math::Dir3 ref_b;
+            ref_b.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_ref_loc.v,
+                                       bmi.m_rb_ref_loc.v, 0),
+                        child_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_ref_loc.v,
+                                       bmi.m_rb_ref_loc.v, 0x55),
+                        child_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_ref_loc.v,
+                                   bmi.m_rb_ref_loc.v, 0xAA),
+                    child_mat.z.v));
+            math::Dir3 ref_p;
+            ref_p.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_ref_loc.v,
+                                       bmi.m_rb_parent_ref_loc.v, 0),
+                        parent_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_rb_parent_ref_loc.v,
+                                       bmi.m_rb_parent_ref_loc.v, 0x55),
+                        parent_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_rb_parent_ref_loc.v,
+                                   bmi.m_rb_parent_ref_loc.v, 0xAA),
+                    parent_mat.z.v));
+            joint->set_swivel(axis_p, ref_p, ref_b, axis_b, bmi.m_theta_min,
+                              bmi.m_theta_max);
+        }
+        for (int j = 0; j < bmi.m_joint_limit_count; ++j)
+        {
+            math::Dir3 limit_axis_world;
+            limit_axis_world.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_joint_limit_axis[j].v,
+                                       bmi.m_joint_limit_axis[j].v, 0),
+                        child_mat.x.v),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(bmi.m_joint_limit_axis[j].v,
+                                       bmi.m_joint_limit_axis[j].v, 0x55),
+                        child_mat.y.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(bmi.m_joint_limit_axis[j].v,
+                                   bmi.m_joint_limit_axis[j].v, 0xAA),
+                    child_mat.z.v));
+            joint->add_joint_limit(limit_axis_world,
+                                   bmi.m_joint_limit_angle[j]);
+        }
+    }
+
+    // Collision geometry per bone.
+    for (int i = 0; i < 10; ++i)
+    {
+        bone_mass_info& bmi = m_bone_mass_info[i];
+        int rb_id = bmi.m_rb_id;
+        if ((rb_id < 0 || rb_id >= m_list_rigid_body.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        rigid_body* rb = m_list_rigid_body.m_slot_array[rb_id];
+        rigid_body_sphere_list* colgeom =
+            m_collision_callback.get_colgeom(rb_id);
+        if (colgeom == nullptr)
+        {
+            colgeom = m_collision_callback.add_colgeom(rb_id);
+            if (colgeom == nullptr)
+            {
+                tlFatal("phys memory pool add overflow.");
+                mem_break();
+                continue;
+            }
+        }
+        colgeom->set(rb);
+        // capsule (bone-mass capsule in rb frame)
+        colgeom->m_capsule.set(bmi.m_capsule_p1, bmi.m_capsule_p2,
+                               bmi.m_capsule_radius);
+        colgeom->set(rb);
+        colgeom->m_rb_id = bmi.m_rb_id;
+        colgeom->m_gjk_geom.init(colgeom);
+        colgeom->m_tunnel_test_radius = 0.0f;
+        colgeom->m_tunnel_test_active_counter = 0;
+        colgeom->m_tunnel_test_last_pos.v = _mm_setzero_ps();
+        // spheres from the capsule endpoints (max 2)
+        rb_collision_sphere* spheres = colgeom->m_slot_array;
+        int n = bmi.m_collision_sphere_count;
+        if (n <= 1)
+            n = 1;
+        else
+            n = 2;
+        colgeom->m_alloc_count = n;
+        spheres[0].m_center_loc.v = bmi.m_capsule_p1.v;
+        spheres[0].m_radius = bmi.m_p1_radius;
+        if (n == 2)
+        {
+            spheres[1].m_center_loc.v = bmi.m_capsule_p2.v;
+            spheres[1].m_radius = bmi.m_p2_radius;
+        }
+    }
+
+    // Capsule pairs (bone pairings from the binary).
+    {
+        rigid_body_sphere_list* cg9 = m_collision_callback.get_colgeom(9);
+        rigid_body_sphere_list* cg7 = m_collision_callback.get_colgeom(7);
+        if (m_collision_callback.m_rb_cp_count < 7)
+        {
+            rb_capsule_pair* cp =
+                m_collision_callback.m_rb_cp_alloc_list
+                    [m_collision_callback.m_rb_cp_count++];
+            if (cp != nullptr)
+            {
+                cp->m_b2_cg = cg9;
+                cp->m_b1_cg = cg7;
+            }
+        }
+        else
+        {
+            tlFatal("phys memory pool add overflow.");
+        }
+    }
+    {
+        rigid_body_sphere_list* cg8 = m_collision_callback.get_colgeom(8);
+        rigid_body_sphere_list* cg7 = m_collision_callback.get_colgeom(7);
+        if (m_collision_callback.m_rb_cp_count < 7)
+        {
+            rb_capsule_pair* cp =
+                m_collision_callback.m_rb_cp_alloc_list
+                    [m_collision_callback.m_rb_cp_count++];
+            if (cp != nullptr)
+            {
+                cp->m_b2_cg = cg8;
+                cp->m_b1_cg = cg7;
+            }
+        }
+        else
+        {
+            tlFatal("phys memory pool add overflow.");
+        }
+    }
+    {
+        rigid_body_sphere_list* cg6 = m_collision_callback.get_colgeom(6);
+        rigid_body_sphere_list* cg9 = m_collision_callback.get_colgeom(9);
+        if (m_collision_callback.m_rb_cp_count < 7)
+        {
+            rb_capsule_pair* cp =
+                m_collision_callback.m_rb_cp_alloc_list
+                    [m_collision_callback.m_rb_cp_count++];
+            if (cp != nullptr)
+            {
+                cp->m_b2_cg = cg6;
+                cp->m_b1_cg = cg9;
+            }
+        }
+        else
+        {
+            tlFatal("phys memory pool add overflow.");
+        }
+    }
+    {
+        rigid_body_sphere_list* cg0 = m_collision_callback.get_colgeom(0);
+        rigid_body_sphere_list* cg3 = m_collision_callback.get_colgeom(3);
+        if (m_collision_callback.m_rb_cp_count < 7)
+        {
+            rb_capsule_pair* cp =
+                m_collision_callback.m_rb_cp_alloc_list
+                    [m_collision_callback.m_rb_cp_count++];
+            if (cp != nullptr)
+            {
+                cp->m_b2_cg = cg0;
+                cp->m_b1_cg = cg3;
+            }
+        }
+        else
+        {
+            tlFatal("phys memory pool add overflow.");
+        }
+    }
+    {
+        rigid_body_sphere_list* cg5 = m_collision_callback.get_colgeom(5);
+        rigid_body_sphere_list* cg0 = m_collision_callback.get_colgeom(0);
+        if (m_collision_callback.m_rb_cp_count < 7)
+        {
+            rb_capsule_pair* cp =
+                m_collision_callback.m_rb_cp_alloc_list
+                    [m_collision_callback.m_rb_cp_count++];
+            if (cp != nullptr)
+            {
+                cp->m_b2_cg = cg5;
+                cp->m_b1_cg = cg0;
+            }
+        }
+        else
+        {
+            tlFatal("phys memory pool add overflow.");
+        }
+    }
+    {
+        rigid_body_sphere_list* cg6 = m_collision_callback.get_colgeom(6);
+        rigid_body_sphere_list* cg3 = m_collision_callback.get_colgeom(3);
+        if (m_collision_callback.m_rb_cp_count < 7)
+        {
+            rb_capsule_pair* cp =
+                m_collision_callback.m_rb_cp_alloc_list
+                    [m_collision_callback.m_rb_cp_count++];
+            if (cp != nullptr)
+            {
+                cp->m_b2_cg = cg6;
+                cp->m_b1_cg = cg3;
+            }
+        }
+        else
+        {
+            tlFatal("phys memory pool add overflow.");
+        }
+    }
+    {
+        rigid_body_sphere_list* cg8 = m_collision_callback.get_colgeom(8);
+        rigid_body_sphere_list* cg5 = m_collision_callback.get_colgeom(5);
+        if (m_collision_callback.m_rb_cp_count < 7)
+        {
+            rb_capsule_pair* cp =
+                m_collision_callback.m_rb_cp_alloc_list
+                    [m_collision_callback.m_rb_cp_count++];
+            if (cp != nullptr)
+            {
+                cp->m_b2_cg = cg8;
+                cp->m_b1_cg = cg5;
+            }
+        }
+        else
+        {
+            tlFatal("phys memory pool add overflow.");
+        }
+    }
+
+    phys_anim_bone_array::write_skeleton(owner, skeleton_pose);
+    for (int i = 0; i < 10; ++i)
+    {
+        client_bone_info& cbi =
+            ((client_bone_info*)((char*)this + 0x1D20))[i];
+        rigid_body* rigid_body = get_rigid_body(cbi.m_rb_index);
+        calc_rb_mat_from_bone(cbi.m_ent, cbi.m_bone_index, rigid_body,
+                              cbi.m_bone_mat_loc);
+    }
+    pull_joints_together();
+    if (g_in_physics_collision_callback)
+    {
+        for (int j = 0; j < 10; ++j)
+        {
+            rigid_body* v203 = get_rigid_body(j);
+            v203->update_col_mat();
+        }
+    }
+    math::Dir3 tunnel_center;
+    tunnel_center.v = _mm_setr_ps(0.0f, 0.0f, 65.0f, 0.0f);
+    for (int k = 0; k < 10; ++k)
+    {
+        math::Position3 center;
+        center.v = _mm_add_ps(owner->r.currentOrigin.v, tunnel_center.v);
+        rigid_body_sphere_list* v206 = m_collision_callback.get_colgeom(k);
+        if (v206 != nullptr)
+            v206->init_tunnel_test(center);
+    }
+    set_gravity_multiplier(1.0f * PHYSICS_GRAVITY_SCALE_1);
 }

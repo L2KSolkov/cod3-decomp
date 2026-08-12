@@ -92,6 +92,16 @@ public:
     void set_ballistic_target(const math::Dir3* target);
     int  get_rigid_body_id(const rigid_body* const rb);
     rigid_body* add_rigid_body(int rb_id);
+    // get_rigid_body - ea: 0x718CB0 (physics.o inline COMDAT)
+    rigid_body* get_rigid_body(int rb_id)
+    {
+        if ((rb_id < 0 || rb_id >= m_list_rigid_body.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        return m_list_rigid_body.m_slot_array[rb_id];
+    }
     rigid_body_constraint_ragdoll* add_joint(int rb_parent_id, int rb_id);
     rigid_body_constraint_angular_actuator* add_actuator(int rb_parent_id, int rb_id);
     void remove_actuator(int rb_id);
