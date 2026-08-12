@@ -1690,12 +1690,13 @@ namespace rb_prop_system {
 const rigid_body* get_entity_rb(Entity* e);        // ?get_entity_rb@rb_prop_system@@YAPBVrigid_body@@PAVEntity@@@Z
 bool entity_in_system(Entity* e);                  // ?entity_in_system@rb_prop_system@@YA_NPAVEntity@@@Z
 bool is_entity_stable(Entity* e);                  // ?is_entity_stable@rb_prop_system@@YA_NPAVEntity@@@Z
-    rigid_body* get_associated_rigid_body(Entity* e);  // ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z
-    void frame_advance(float delta_t);                 // ?frame_advance@rb_prop_system@@YAXM@Z
-    void remove_entity(Entity* e);                     // ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z
-    rigid_body* add_entity(Entity* e, float mass, float fric);  // ?add_entity@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@MM@Z
-    void hit_entity(Entity* e, const math::Position3& hitp,
-                    const math::Dir3& hitd, float fmag, float tmag);  // ?hit_entity@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@ABVDir3@4@MM@Z
+rigid_body* get_associated_rigid_body(Entity* e);  // ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z
+void frame_advance(float delta_t);                 // ?frame_advance@rb_prop_system@@YAXM@Z
+void remove_entity(Entity* e);                     // ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z
+rigid_body* add_entity(Entity* e, float mass, float fric);  // ?add_entity@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@MM@Z
+void hit_entity(Entity* e, const math::Position3& hitp,
+                const math::Dir3& hitd, float fmag, float tmag);  // ?hit_entity@rb_prop_system@@YAXPAVEntity@@ABVPosition3@math@@ABVDir3@4@MM@Z
+static bool frame_advance_flag();
 }
 
 // ea: 0x6FEAD0
@@ -1751,12 +1752,27 @@ rigid_body* rb_prop_system::add_entity(Entity* e, float mass, float fric)
     return nullptr;
 }
 
-// stub until rb_prop_system::hit_entity (0x6FE9B0) is ported
+// ea: 0x6FE9B0
 void rb_prop_system::hit_entity(Entity* e, const math::Position3& hitp,
                                 const math::Dir3& hitd, float fmag,
                                 float tmag)
 {
-    (void)e; (void)hitp; (void)hitd; (void)fmag; (void)tmag;
+    if (!rb_prop_system::frame_advance_flag())
+    {
+        math::Dir3 force;
+        force.v = _mm_mul_ps(hitd.v, _mm_set1_ps(fmag));
+        int count = g_list_rb_extra_info.m_alloc_count;
+        for (int i = 0; i < count; ++i)
+        {
+            rb_extra_info* inf = g_list_rb_extra_info.m_alloc_list[i];
+            if (inf->m_ent == e)
+            {
+                math::Dir3 pt;
+                pt.v = hitp.v;
+                inf->m_rb->add_force(force, pt, tmag);
+            }
+        }
+    }
 }
 
 // ea: 0x6FE8D0
@@ -2171,6 +2187,13 @@ gjk_geom_database* g_gjk_geom_database = nullptr;
 bool g_in_physics_collision_callback = false;
 // ?gPhysicsFrameAdvance@@3_NA (physics.o data @ 0xF79474)
 bool gPhysicsFrameAdvance = false;
+namespace rb_prop_system {
+// lookup helper for the global (used by hit_entity)
+static bool frame_advance_flag()
+{
+    return ::gPhysicsFrameAdvance;
+}
+}
 // ?g_physics_memory_buffer@@3PADA (physics.o data @ 0xF79478)
 char* g_physics_memory_buffer = nullptr;
 
