@@ -302,36 +302,87 @@ extern unsigned int AeHash(const char* str);  // ae_hash.cpp
 typedef float (__cdecl* CurveEvalFn)(unsigned int, unsigned int,
                                      unsigned int, float, float,
                                      unsigned int);
-extern float EvalVelocity(unsigned int, unsigned int, unsigned int, float,
-                          float, unsigned int);         // @ 0x637CD0
-extern float EvalRandom(unsigned int, unsigned int, unsigned int, float,
-                        float, unsigned int);           // @ 0x60F180
-extern float EvalSpringCompressionKey(unsigned int, unsigned int,
-                                      unsigned int, float, float,
-                                      unsigned int);    // @ 0x637AB0
-extern float EvalTime(unsigned int, unsigned int, unsigned int, float,
-                      float, unsigned int);             // @ 0x6379A0
-extern float EvalImpact(unsigned int, unsigned int, unsigned int, float,
-                        float, unsigned int);           // @ 0x637A30
-extern float EvalRepeatInterval(unsigned int, unsigned int, unsigned int,
-                                float, float, unsigned int);  // @ 0x60EEF0
-extern float EvalSurface(unsigned int, unsigned int, unsigned int, float,
-                         float, unsigned int);          // @ 0x637B90
-extern float EvalSpringCompressionCond(unsigned int, unsigned int,
-                                       unsigned int, float, float,
-                                       unsigned int);   // @ 0x637B20
-extern float EvalThrottle(unsigned int, unsigned int, unsigned int, float,
-                          float, unsigned int);         // @ 0x637F60
-extern float EvalThrottleChange(unsigned int, unsigned int, unsigned int,
-                                float, float, unsigned int);  // @ 0x637E50
-extern float EvalBrake(unsigned int, unsigned int, unsigned int, float,
-                       float, unsigned int);            // @ 0x60F1A0
-extern float EvalDriver(unsigned int, unsigned int, unsigned int, float,
-                        float, unsigned int);           // @ 0x638030
-extern float EvalPlayer(unsigned int, unsigned int, unsigned int, float,
-                        float, unsigned int);           // @ 0x6380C0
-extern float EvalHealth(unsigned int, unsigned int, unsigned int, float,
-                        float, unsigned int);           // @ 0x637FD0
+// Curve evaluators (game.o CurveManager.cpp; all take
+// frameId, entityHandleVal, type, min, max [, trackId])
+// ea: 0x0060F180
+float EvalRandom(unsigned int, unsigned int, unsigned int, float,
+                 float, unsigned int)  // ?EvalRandom@@YAMIIIMMI@Z
+{
+    return rand() * 0.000030518509f;
+}
+
+// ea: 0x006379A0
+float EvalTime(unsigned int frameId, unsigned int entityHandleVal,
+               unsigned int, float min, float max, unsigned int)
+{
+    unsigned int v5 = entityHandleVal & 0xFFF;
+    if (v5 >= 0x540
+        || entityHandleVal >> 12
+               != EntityHandleDb::sInst.mElements[v5].mKey)
+    {
+        return min - 1.0f;
+    }
+    Entity* mObject = EntityHandleDb::sInst.mElements[v5].mObject;
+    if (mObject == nullptr || mObject->curve == nullptr)
+        return min - 1.0f;
+    float time = (float)(frameId % 0x12C) * 0.0033333334f;
+    if (time < min || max < time)
+        return min - 1.0f;
+    return time;
+}
+
+// ea: 0x00637A30
+float EvalImpact(unsigned int frameId, unsigned int entityHandleVal,
+                 unsigned int, float min, float, unsigned int)
+{
+    unsigned int v4 = entityHandleVal & 0xFFF;
+    if (v4 >= 0x540
+        || entityHandleVal >> 12
+               != EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        return min - 1.0f;
+    }
+    Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+    if (mObject == nullptr || mObject->curve == nullptr)
+        return min - 1.0f;
+    extern int curFrame_0;  // ?curFrame_0@@3HA (game.o @ 0xDF8DE0)
+    if (curFrame_0 != (int)frameId)
+    {
+        float mImpactIntensity = *(float*)((char*)mObject->curve + 0x5C);
+        curFrame_0 = frameId;
+        *(float*)((char*)mObject->curve + 0x60) = 0.0f;
+        if (mImpactIntensity > 0.0f)
+        {
+            *(float*)((char*)mObject->curve + 0x60) = mImpactIntensity;
+            *(float*)((char*)mObject->curve + 0x5C) = 0.0f;
+        }
+    }
+    return *(float*)((char*)mObject->curve + 0x60);
+}
+
+// Remaining curve evaluators (full ports deferred; stub to keep linking)
+float EvalVelocity(unsigned int, unsigned int, unsigned int, float,
+                   float, unsigned int) { return 0.0f; }
+float EvalSpringCompressionKey(unsigned int, unsigned int, unsigned int,
+                               float, float, unsigned int) { return 0.0f; }
+float EvalRepeatInterval(unsigned int, unsigned int, unsigned int, float,
+                         float, unsigned int) { return 0.0f; }
+float EvalSurface(unsigned int, unsigned int, unsigned int, float,
+                  float, unsigned int) { return 0.0f; }
+float EvalSpringCompressionCond(unsigned int, unsigned int, unsigned int,
+                                float, float, unsigned int) { return 0.0f; }
+float EvalThrottle(unsigned int, unsigned int, unsigned int, float,
+                   float, unsigned int) { return 0.0f; }
+float EvalThrottleChange(unsigned int, unsigned int, unsigned int, float,
+                         float, unsigned int) { return 0.0f; }
+float EvalBrake(unsigned int, unsigned int, unsigned int, float,
+                float, unsigned int) { return 0.0f; }
+float EvalDriver(unsigned int, unsigned int, unsigned int, float,
+                 float, unsigned int) { return 0.0f; }
+float EvalPlayer(unsigned int, unsigned int, unsigned int, float,
+                 float, unsigned int) { return 0.0f; }
+float EvalHealth(unsigned int, unsigned int, unsigned int, float,
+                 float, unsigned int) { return 0.0f; }
 extern void DebugCurveRender();                         // game.o 0x60EEE0
 extern void DebugRender_AddRenderer(void* self, void (*fp)());  // render.o
 extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
