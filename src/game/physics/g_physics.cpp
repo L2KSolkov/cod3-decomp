@@ -330,6 +330,7 @@ struct hash_const_t {
     uint8_t    _pad[0x114];
     HashString physicsdone;   // +0x114
     HashString physicsstart;  // +0x118
+    HashString flipped;       // +0x11C
 };
 // ?hash_const@@3Uhash_const_t@@A (g.o data @ 0xED2AB0)
 extern hash_const_t hash_const;
@@ -519,6 +520,9 @@ private:
     void _update_fakey_stuff(float delta_t);  // ?_update_fakey_stuff@rb_vehicle@@AAEXM@Z
     void _update_orientation_constraint();  // ?_update_orientation_constraint@rb_vehicle@@AAEXXZ
     void update_steering(float delta_t);  // ?update_steering@rb_vehicle@@QAEXM@Z
+    void _update_wheel_effects(float delta_t);  // ?_update_wheel_effects@rb_vehicle@@AAEXM@Z
+    void calc_tread_matrices();  // ?calc_tread_matrices@rb_vehicle@@QAEXXZ
+    void get_wheel_matrix(int i, math::Mat43* mat) const;  // ?get_wheel_matrix@rb_vehicle@@QBEXHPAVMat43@math@@@Z
 };
 
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
@@ -998,6 +1002,7 @@ struct refEntity {  // EntityShared subset
     uint8_t  die;                // +0x355
     uint8_t  _pad356[3];
     int32_t  health;             // +0x358
+    float    speed;              // +0x35C (verified from _update_epilog)
 
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
@@ -1224,8 +1229,13 @@ struct scr_vehicle_t {
         float vel[4];         // +0x250 (phys.vel)
         float rotVel[4];      // +0x260
         int   wheelSurfType[4];  // +0x270
+        float origin[4];      // +0x280
+        float angles[4];      // +0x290
     } phys;
-    uint8_t _pad280[0x518 - 0x280];
+    struct {
+        float mSteeringAngle;  // +0x2A0
+    } current, next;
+    uint8_t _pad2AC[0x518 - 0x2AC];
     void*   mRBVeh;                 // +0x518 rb_vehicle*
 };
 
@@ -1486,15 +1496,58 @@ void rb_vehicle::_update_fakey_stuff(float delta_t)
     m_fake_rpm = (((v25 - m_fake_rpm) * delta_t) * 5.0f) + m_fake_rpm;
 }
 
-// stub until rb_vehicle::_update_orientation_constraint (0x6FC490) is ported
+// ea: 0x6FC490
 void rb_vehicle::_update_orientation_constraint()
 {
+    if (m_orientation_constraint == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicle.cpp", 760,
+                     "m_orientation_constraint", defaultFileName))
+        __debugbreak();
+    if (m_chassis_rbinf == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicle.cpp", 761,
+                     "m_chassis_rbinf", defaultFileName))
+        __debugbreak();
+    if (m_chassis_rbinf->m_rb == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicle.cpp", 762,
+                     "m_chassis_rbinf->m_rb", defaultFileName))
+        __debugbreak();
+    unsigned int mMask = m_flags.mMask;
+    bool v3 =
+        ((mMask & 8) != 0 || (mMask & 0x80) != 0 || (mMask & 0x100) != 0
+         || (mMask & 0x200) != 0)
+        && m_owner->health > 0 && (mMask & 0x400) == 0;
+    if (m_num_colliding_wheels != 0
+        || m_chassis_rbinf->m_rb->m_contact_count != 0)
+    {
+        m_orientation_constraint->m_active = v3;
+        m_orientation_constraint->m_no_orientation_correction = false;
+    }
+    else
+    {
+        m_orientation_constraint->m_active = v3;
+        m_orientation_constraint->m_no_orientation_correction = true;
+    }
 }
 
 // stub until rb_vehicle::update_steering (0x6F50A0) is ported
 void rb_vehicle::update_steering(float delta_t)
 {
     (void)delta_t;
+}
+
+// stubs until the wheel-effect/tread/wheel-matrix internals are ported
+// (0x705070 / 0x6FC5B0 / 0x701B70)
+void rb_vehicle::_update_wheel_effects(float delta_t)
+{
+    (void)delta_t;
+}
+void rb_vehicle::calc_tread_matrices()
+{
+}
+void rb_vehicle::get_wheel_matrix(int i, math::Mat43* mat) const
+{
+    (void)i;
+    (void)mat;
 }
 
 // ea: 0x6F4F50
@@ -1996,10 +2049,115 @@ accel_done:
     }
 }
 
-// stub until rb_vehicle::_update_epilog (0x7091E0) is ported
+// ea: 0x7091E0
 void rb_vehicle::_update_epilog(float delta_t)
 {
-    (void)delta_t;
+    _update_unpause();
+    _update_wheel_effects(delta_t);
+    if ((m_flags.mMask & 1) != 0)
+    {
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel[2] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel[1] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel[0] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel[2] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel[1] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel[0] = 0.0f;
+        m_owner->speed = 0.0f;
+        return;
+    }
+    if ((m_flags.mMask & 0x20) != 0)
+    {
+        calc_tread_matrices();
+    }
+    else
+    {
+        for (int i = 0; i < 8; ++i)
+        {
+            int bone = m_wheel_bone_indices[i];
+            if ((bone & 0x80000000) == 0
+                && m_owner->mDObj->numBones >= bone)
+            {
+                math::Mat43 mat;
+                get_wheel_matrix(i, &mat);
+                phys_full_inv_multiply_mat(mat,
+                                           m_chassis_rbinf->m_transform,
+                                           mat);
+                math::Mat43& dst = const_cast<math::Mat43&>(
+                    m_owner->mDObj->GetMat(bone));
+                memcpy(&dst, &mat, sizeof(math::Mat43));
+            }
+        }
+    }
+    scr_vehicle_t* sv = (scr_vehicle_t*)m_owner->scr_vehicle;
+    sv->phys.vel[0] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[0];
+    sv->phys.vel[1] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[1];
+    sv->phys.vel[2] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[2];
+    sv->phys.vel[3] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[3];
+    sv->phys.rotVel[0] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[0];
+    sv->phys.rotVel[1] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[1];
+    sv->phys.rotVel[2] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[2];
+    sv->phys.rotVel[3] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[3];
+    if ((m_flags.mMask & 0x100) == 0)
+    {
+        rigid_body* m_rb = m_chassis_rbinf->m_rb;
+        if ((~(m_rb->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        sv->phys.origin[0] = m_rb->m_mat.w.v.m128_f32[0];
+        sv->phys.origin[1] = m_rb->m_mat.w.v.m128_f32[1];
+        sv->phys.origin[2] = m_rb->m_mat.w.v.m128_f32[2];
+        sv->phys.origin[3] = m_rb->m_mat.w.v.m128_f32[3];
+        sv->phys.angles[0] = m_owner->r.currentAngles.v.m128_f32[0];
+        sv->phys.angles[1] = m_owner->r.currentAngles.v.m128_f32[1];
+        sv->phys.angles[2] = m_owner->r.currentAngles.v.m128_f32[2];
+        sv->phys.angles[3] = m_owner->r.currentAngles.v.m128_f32[3];
+        sv->current.mSteeringAngle =
+            (m_steer_current_angle * 180.0f) * 0.31830987f;
+        sv->next.mSteeringAngle =
+            (m_steer_current_angle * 180.0f) * 0.31830987f;
+        if ((m_flags.mMask & 0x200) == 0)
+        {
+            rigid_body* v20 = m_chassis_rbinf->m_rb;
+            m_owner->speed = sqrtf(
+                v20->m_t_vel.v.m128_f32[0] * v20->m_t_vel.v.m128_f32[0]
+                + v20->m_t_vel.v.m128_f32[1] * v20->m_t_vel.v.m128_f32[1]
+                + v20->m_t_vel.v.m128_f32[2] * v20->m_t_vel.v.m128_f32[2]);
+        }
+    }
+    if ((m_flags.mMask & 0x200) != 0)
+    {
+        rigid_body* v21 = m_chassis_rbinf->m_rb;
+        if ((~(v21->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        sv->mRBVeh = (void*)(int)v21->m_mat.w.v.m128_f32[0];
+        rigid_body* v23 = m_chassis_rbinf->m_rb;
+        if ((~(v23->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        sv->mRBVeh = (void*)(int)v23->m_mat.w.v.m128_f32[1];
+        rigid_body* v24 = m_chassis_rbinf->m_rb;
+        if ((~(v24->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         79, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        sv->mRBVeh = (void*)(int)v24->m_mat.w.v.m128_f32[2];
+    }
+    if ((m_chassis_rbinf->m_rb->m_flags & 4) != 0)
+    {
+        float z = _mm_shuffle_ps(m_owner->r.currentMat.z.v,
+                                 m_owner->r.currentMat.z.v, 170)
+                      .m128_f32[0];
+        if (z < 0.34999999f)
+            m_owner->Notify(hash_const.flipped);
+    }
 }
 
 // ea: 0x70CF60
