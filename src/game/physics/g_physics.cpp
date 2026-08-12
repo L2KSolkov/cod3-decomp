@@ -346,6 +346,7 @@ struct ragdoll_collision_callback {
 
     void set(Entity* const owner);  // ?set@ragdoll_collision_callback@@QAEXQAVEntity@@@Z
     void get_all_collisions();  // ?get_all_collisions@ragdoll_collision_callback@@QAEXXZ
+    void collide_terrain();  // ?collide_terrain@ragdoll_collision_callback@@QAEXXZ
     void process_environment_collision_events();  // ?process_environment_collision_events@ragdoll_collision_callback@@QAEXXZ
     void remove_colgeom(int rb_id);  // ?remove_colgeom@ragdoll_collision_callback@@QAEXH@Z
     rigid_body_sphere_list* get_colgeom(int rb_id);  // ?get_colgeom@ragdoll_collision_callback@@QAEPAVrigid_body_sphere_list@@H@Z
@@ -8667,6 +8668,9 @@ public:
 private:
     void calc_bounding_sphere();  // ?calc_bounding_sphere@rigid_body_sphere_list@@AAEXXZ
 public:
+    void calc_total_aabb();  // ?calc_total_aabb@rigid_body_sphere_list@@QAEXXZ (physics.o inline 0xB09930; stub)
+    void tunnel_test_prolog(physics_colgeom_visitor* visitor);  // ?tunnel_test_prolog@rigid_body_sphere_list@@QAEXPAUphysics_colgeom_visitor@@@Z (inline 0xB0D0F0; stub)
+    void update_colgeom();  // ?update_colgeom@rigid_body_sphere_list@@QAEXXZ (inline 0xB0B950; stub)
     void init_tunnel_test(math::Position3& center_pos);  // ?init_tunnel_test@rigid_body_sphere_list@@QAEXAAVPosition3@math@@@Z
     void set(rigid_body* const owner);  // ?set@rigid_body_sphere_list@@QAEXQAVrigid_body@@@Z
 };
@@ -8847,6 +8851,24 @@ void rigid_body_sphere_list::set(rigid_body* const owner)
     m_gjk_geom.m_geom_id = this;
     m_gjk_geom.m_next_geom = nullptr;
     m_tunnel_test_active_counter = 0;
+}
+
+// physics.o inline COMDATs (rigid_body_sphere_list helpers; stubs until the
+// sphere-collision pass is reconstructed from disasm)
+void rigid_body_sphere_list::calc_total_aabb() {}
+void rigid_body_sphere_list::tunnel_test_prolog(
+    physics_colgeom_visitor* visitor)
+{
+    (void)visitor;
+}
+void rigid_body_sphere_list::update_colgeom() {}
+
+// ?add_active_eps_aabb@@YAXPAVDir3@math@@0@Z (physics.o inline 0xAE1580;
+// expands the AABB by the active-eps pad; stub)
+void add_active_eps_aabb(math::Dir3* aabb_mn, math::Dir3* aabb_mx)
+{
+    (void)aabb_mn;
+    (void)aabb_mx;
 }
 
 // rb_capsule_pair (physics.o; m_b1_cg/m_b2_cg)
@@ -9206,6 +9228,137 @@ void ragdoll_collision_callback::set(Entity* const owner)
 // stub until ragdoll_collision_callback internals are ported (0x70BD00)
 void ragdoll_collision_callback::get_all_collisions()
 {
+}
+
+// ragdoll_collision_callback::collide_terrain - ea: 0x70B300
+//
+// Gathers the ragdoll sphere-list AABBs, expands by the active-eps pad,
+// generates the local primitive (terrain) list and runs GJK collide requests
+// for each terrain object against the first sphere-list geometry.
+void ragdoll_collision_callback::collide_terrain()
+{
+    math::Dir3 aabb_mn, aabb_mx;
+    bool first = true;
+    for (int i = 0; i < m_rb_colgeom_count; ++i)
+    {
+        rigid_body_sphere_list* rbsl = m_rb_colgeom_alloc_list[i];
+        rbsl->calc_total_aabb();
+        if (first)
+        {
+            aabb_mn.v = rbsl->m_total_aabb_mn.v;
+            aabb_mx.v = rbsl->m_total_aabb_mx.v;
+            first = false;
+        }
+        else
+        {
+            aabb_mn.v = _mm_min_ps(aabb_mn.v, rbsl->m_total_aabb_mn.v);
+            aabb_mx.v = _mm_max_ps(aabb_mx.v, rbsl->m_total_aabb_mx.v);
+        }
+    }
+    add_active_eps_aabb(&aabb_mn, &aabb_mx);
+    physics_colgeom_visitor* g1 =
+        generate_local_primitive_list(aabb_mn, aabb_mx, 65);
+    for (int i = 0; i < m_rb_colgeom_count; ++i)
+    {
+        rigid_body_sphere_list* rbsl = m_rb_colgeom_alloc_list[i];
+        rbsl->tunnel_test_prolog(g1);
+        rbsl->update_colgeom();
+        if ((rbsl->m_owner->m_flags & 0x50) == 0
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+                   "debug_flag_is_in_collision()", defaultFileName))
+            __debugbreak();
+        rbsl->m_gjk_geom.comp_aabb(rbsl->m_owner->m_col_mat);
+    }
+    environment_rigid_body* ent_i = phys_sys::get_environment_rigid_body();
+    if ((ent_i->m_flags & 0x50) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+                     "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+
+    // The ragdoll-side geometry/body (first sphere-list) for the GJK pair.
+    rigid_body* b2w = nullptr;
+    phys_gjk_geom_cod_base* ragdoll_geom = nullptr;
+    if (m_rb_colgeom_count > 0)
+    {
+        b2w = m_rb_colgeom_alloc_list[0]->m_owner;
+        ragdoll_geom =
+            (phys_gjk_geom_cod_base*)&m_rb_colgeom_alloc_list[0]->m_gjk_geom;
+    }
+    int object_count = g1->m_object_list_count;
+    for (int obj_inf_i = 0; obj_inf_i < object_count; ++obj_inf_i)
+    {
+        CGBank* bank = g1->m_object_list[obj_inf_i].m_bank;
+        int index = g1->m_object_list[obj_inf_i].m_index;
+        if ((unsigned int)index >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[index];
+        bank->get_type(index);
+        math::Dir3 b2_mn, b2_mx;
+        b2_mn.v = _mm_setr_ps(obj->center[0] - obj->box_radius[0],
+                              obj->center[1] - obj->box_radius[1],
+                              obj->center[2] - obj->box_radius[2], 0.0f);
+        b2_mx.v = _mm_setr_ps(obj->center[0] + obj->box_radius[0],
+                              obj->center[1] + obj->box_radius[1],
+                              obj->center[2] + obj->box_radius[2], 0.0f);
+        if (!are_potentially_colliding(
+                &ragdoll_geom->m_aabb_mn, &ragdoll_geom->m_aabb_mx, &b2_mn,
+                &b2_mx))
+            continue;
+        phys_gjk_geom_cod_base* m_gjk_geom = nullptr;
+        if (ragdoll_geom == nullptr || b2w == nullptr)
+            continue;
+        m_gjk_geom = g_gjk_geom_database->get_gjk_geom(obj, index, bank);
+        if (m_gjk_geom == nullptr)
+            continue;
+        if ((ent_i->m_flags & 0x50) == 0
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+                   "debug_flag_is_in_collision()", defaultFileName))
+            __debugbreak();
+        phys_collide_data* v40 = g_list_phys_collide_data;
+        float fric_coef = b2w->m_fric_coef;
+        v40->gjk_cg1 = (const phys_gjk_geom*)ragdoll_geom;
+        v40->gjk_cg2 = (const phys_gjk_geom*)m_gjk_geom;
+        v40->cg1_to_world_xform = &b2w->m_col_mat;
+        v40->cg2_to_world_xform = &ent_i->m_col_mat;
+        v40->cg1_to_rb1_xform = &b2w->m_col_mat;
+        v40->rb2_to_world_xform = &ent_i->m_col_mat;
+        v40->rb1 = b2w;
+        v40->rb2 = ent_i;
+        v40->gjk_ci = nullptr;
+        v40->pcd_callback = nullptr;
+        v40->gjk_info = g_gjk_info;
+        v40->id1 = (unsigned int)ragdoll_geom->m_geom_id;
+        v40->fric_coef = fric_coef;
+        v40->id2 = (unsigned int)m_gjk_geom->m_geom_id;
+        v40->bounce_coef = 0.5f;
+        v40->cman_process = g_cman_process;
+        v40->no_overflow_error = false;
+        v40->solver_priority = 1;
+        v40->gjk_ci = g_phys_gjk_cache_system.get_gjk_cache_info(
+            v40->id1, v40->id2, true);
+        if (phys_collide_do_gjk_collide_stub(v40->gjk_info, v40,
+                                             3.4000001f))
+        {
+            void* pcd_callback = v40->pcd_callback;
+            if (pcd_callback == nullptr
+                || (*(int (**)(void*, void*))pcd_callback)(pcd_callback,
+                                                            v40) != 0)
+            {
+                if (v40->cman_process != nullptr)
+                    v40->cman_process->process(v40);
+            }
+        }
+    }
 }
 
 // stub until ragdoll_collision_callback internals are ported (0x700910)

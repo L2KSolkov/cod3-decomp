@@ -68,3 +68,10 @@ const math::Dir3 calc_feature_normal(phys_contact_manifold* cman, const math::Di
     result.v.m128_f32[3] = *(float*)((char*)&normal_12 + 4);
     return result;
 }
+
+// ?process@phys_contact_manifold_process@@QAEXPAVphys_collide_data@@@Z
+// (ea: 0x878C10, 2678B; stub until the manifold processing infra is ported)
+void phys_contact_manifold_process::process(phys_collide_data* d)
+{
+    (void)d;
+}
