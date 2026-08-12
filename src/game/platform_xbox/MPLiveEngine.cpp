@@ -142,6 +142,188 @@ void MultiplayerMgr::GetNextDroppedItemID(void* result, int itemType,
     (void)result; (void)itemType; (void)owner;
 }
 
+void MultiplayerMgr::DropHotJoiningPlayers()
+{
+    // stub
+}
+
+// mp.o member stubs (real logic lives in mp.o; ported later).
+void MultiplayerMgr::ExitLevel() {}
+void MultiplayerMgr::StartDevServer() {}
+void MultiplayerMgr::MapRestart() {}
+void MultiplayerMgr::SpotEntity(Entity* ent) { (void)ent; }
+void MultiplayerMgr::PlayerDamage(Entity* h, Entity* a,
+                                  const math::Position3& p,
+                                  const math::Dir3& n, int w, float d,
+                                  unsigned char m, int df, EHitLocation hl)
+{
+    (void)h; (void)a; (void)p; (void)n; (void)w; (void)d; (void)m;
+    (void)df; (void)hl;
+}
+void MultiplayerMgr::VehicleDamage(Entity* h, Entity* a,
+                                   const math::Position3& p,
+                                   const math::Dir3& n, float d, int w,
+                                   unsigned char m, int df)
+{
+    (void)h; (void)a; (void)p; (void)n; (void)d; (void)w; (void)m; (void)df;
+}
+void MultiplayerMgr::VehicleDeath(Entity* h, Entity* k, int w, int m)
+{
+    (void)h; (void)k; (void)w; (void)m;
+}
+void MultiplayerMgr::ProjectileExplosion(Entity* p, int w,
+                                         const math::Position3& pos,
+                                         const math::Dir3& n,
+                                         unsigned char st, Entity* o)
+{
+    (void)p; (void)w; (void)pos; (void)n; (void)st; (void)o;
+}
+void MultiplayerMgr::PlayerDead(Entity* p, Entity* inf, Entity* atk, int dmg,
+                                int mod, int w, const float* pos,
+                                const float* dir, int hl)
+{
+    (void)p; (void)inf; (void)atk; (void)dmg; (void)mod; (void)w;
+    (void)pos; (void)dir; (void)hl;
+}
+void MultiplayerMgr::AttemptToRevivePlayer(Entity* player, Entity* medic)
+{
+    (void)player; (void)medic;
+}
+void MultiplayerMgr::FireMissile(int weapon, const math::Position3& position,
+                                 const math::Dir3& dir,
+                                 MultiplayerMgr::MPEntityHandle handle)
+{
+    (void)weapon; (void)position; (void)dir; (void)handle.mVal;
+}
+void MultiplayerMgr::Step(int earlyOutInterval, bool fromThread,
+                          bool a_bFromGame)
+{
+    (void)earlyOutInterval; (void)fromThread; (void)a_bFromGame;
+}
+bool MultiplayerMgr::IsLocalPlayer(Entity* player)
+{
+    (void)player;
+    return false;
+}
+bool MultiplayerMgr::IsLocalPlayer(const Entity* player)
+{
+    (void)player;
+    return false;
+}
+void MultiplayerMgr::DropWeapon(int weapon, int netIndex,
+                                const math::Position3* position,
+                                const math::Position3* angles,
+                                const math::Dir3* velocity, int clipCount,
+                                int ammoCount)
+{
+    (void)weapon; (void)netIndex; (void)position; (void)angles;
+    (void)velocity; (void)clipCount; (void)ammoCount;
+}
+void MultiplayerMgr::SpreadFire(Entity* player, float gunPitch, float gunYaw,
+                                float* weaponPosition, int weapon,
+                                float spread, float coneAngleTangent, int seed)
+{
+    (void)player; (void)gunPitch; (void)gunYaw; (void)weaponPosition;
+    (void)weapon; (void)spread; (void)coneAngleTangent; (void)seed;
+}
+void MultiplayerMgr::PickupItem(int netIndex, int itemType, Entity* player,
+                                bool scriptFrom)
+{
+    (void)netIndex; (void)itemType; (void)player; (void)scriptFrom;
+}
+void MultiplayerMgr::DropItem(int itemType, const math::Position3* position,
+                              const math::Dir3* angles,
+                              const math::Dir3* velocity, int netIndex,
+                              bool scriptFrom, int typeIndex)
+{
+    (void)itemType; (void)position; (void)angles; (void)velocity;
+    (void)netIndex; (void)scriptFrom; (void)typeIndex;
+}
+void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
+                                                math::Position3* position,
+                                                math::Position3* angles,
+                                                float* velocity)
+{
+    (void)vehicle; (void)position; (void)angles; (void)velocity;
+}
+void MultiplayerMgr::AttemptToGetInVehicle(Entity* vehicle, Entity* player,
+                                           int seatIdx, int entryIdx)
+{
+    (void)vehicle; (void)player; (void)seatIdx; (void)entryIdx;
+}
+void MultiplayerMgr::AttemptVehicleSeatChange(Entity* vehicle, Entity* player,
+                                              int newSeatIdx)
+{
+    (void)vehicle; (void)player; (void)newSeatIdx;
+}
+void MultiplayerMgr::GetOutOfVehicle(Entity* vehicle, int seatIdx)
+{
+    (void)vehicle; (void)seatIdx;
+}
+void MultiplayerMgr::VehicleFireMissile(Entity* vehEnt, int weapon,
+                                        const math::Position3* position,
+                                        const math::Dir3* dir)
+{
+    (void)vehEnt; (void)weapon; (void)position; (void)dir;
+}
+void MultiplayerMgr::FireArtillery(Entity* attacker, int weapon,
+                                   const math::Position3* position, int seed,
+                                   bool fire)
+{
+    (void)attacker; (void)weapon; (void)position; (void)seed; (void)fire;
+}
+void MultiplayerMgr::VehicleMantled(Entity* vehicle, Entity* killer)
+{
+    (void)vehicle; (void)killer;
+}
+void MultiplayerMgr::AnimEvent(int animEvent)
+{
+    (void)animEvent;
+}
+void MultiplayerMgr::SwapWeapon(int weapon, int netIndex, int clipCount,
+                                int ammoCount)
+{
+    (void)weapon; (void)netIndex; (void)clipCount; (void)ammoCount;
+}
+void MultiplayerMgr::SwapKit(int playerClass, int netIndex)
+{
+    (void)playerClass; (void)netIndex;
+}
+void MultiplayerMgr::SetPlayerPos(const Entity* player, float* pos)
+{
+    (void)player; (void)pos;
+}
+void MultiplayerMgr::LevelLoaded() {}
+void MultiplayerMgr::BulletHit(const math::Position3& position,
+                               const math::Dir3& normal,
+                               unsigned char surfaceType, unsigned char weapon,
+                               Entity* hitEntity)
+{
+    (void)position; (void)normal; (void)surfaceType; (void)weapon;
+    (void)hitEntity;
+}
+void MultiplayerMgr::BulletHitPlayer(Entity* hitEntity, Entity* attackerEntity,
+                                     const math::Position3& position,
+                                     const math::Dir3& normal,
+                                     unsigned char surfaceType,
+                                     unsigned char weapon, short damage,
+                                     unsigned char damageFlags,
+                                     unsigned char mod, int hitLocation)
+{
+    (void)hitEntity; (void)attackerEntity; (void)position; (void)normal;
+    (void)surfaceType; (void)weapon; (void)damage; (void)damageFlags;
+    (void)mod; (void)hitLocation;
+}
+void MultiplayerMgr::MeleeHit(Entity* hitEntity, Entity* attackerEntity,
+                              const math::Position3& position,
+                              const math::Dir3& normal,
+                              unsigned char surfaceType, short damage,
+                              unsigned char mod, int hitLocation)
+{
+    (void)hitEntity; (void)attackerEntity; (void)position; (void)normal;
+    (void)surfaceType; (void)damage; (void)mod; (void)hitLocation;
+}
+
 // ============================================================================
 // MPLiveEngine
 // ============================================================================

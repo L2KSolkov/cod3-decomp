@@ -1060,11 +1060,6 @@ struct MPPeer {
     static int mRenderSessionInfo;     // ?mRenderSessionInfo@MPPeer@@2HA (mp.o)
 };
 
-struct MultiplayerMgr2 {
-    MPPeer* mPeer;
-};
-
-extern MultiplayerMgr2* MultiplayerMgr2_sInst(void);
 extern EntityManager*   EntityManager_sInst(void);
 extern int              currCl;      // ?currCl@@3HA
 extern bool             gExitGame;   // ?gExitGame@@3_NA

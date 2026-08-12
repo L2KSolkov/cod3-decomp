@@ -23,6 +23,12 @@ extern void Netchan_Transmit(netchan_t* chan, int length,
 extern int Netchan_Process(netchan_t* chan, struct msg_t* msg);
 extern void _Z_FreeInternal(void* ptr);
 extern struct cvar_t* cl_shownet;
+
+// Minimal view (mp.o); sInst symbol ?sInst@MultiplayerMgr@@2PAV1@A
+struct MultiplayerMgr {
+    static MultiplayerMgr* sInst;
+    void DropHotJoiningPlayers();
+};
 extern int unk_F6A28C;   // primary controller port
 extern int dword_F6A28C; // active port
 
@@ -184,8 +190,7 @@ int LocalClient_ConfigureLocalClients()
 bool LocalClient_QuitClientOutOfGame(int client)
 {
     (void)client;
-    extern void MultiplayerMgr_DropHotJoiningPlayers(void* self);
-    MultiplayerMgr_DropHotJoiningPlayers((void*)0);
+    MultiplayerMgr::sInst->DropHotJoiningPlayers();
     extern void (*gpBrocAPI_mCallbackQuitGame)();
     void (*mCallbackQuitGame)() = gpBrocAPI_mCallbackQuitGame;
     if (mCallbackQuitGame != nullptr)

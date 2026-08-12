@@ -61,7 +61,8 @@ void SV_PostConnect() {
         EntityManager::sInst->SwapPlayers(v1, currCl);
         SV_SwapClients(v1, currCl);
         for (int i = 0; i < 16; ++i) {
-            MPPlayerManager* PlayerManager = MultiplayerMgr2_sInst()->mPeer->GetPlayerManager();
+            MPPlayerManager* PlayerManager =
+                MultiplayerMgr::sInst->mPeer->GetPlayerManager();
             MPPlayer* player = PlayerManager->GetPlayer(i);
             if (player != NULL && player->mClientIndex == currCl)
                 player->mClientIndex = v1;
