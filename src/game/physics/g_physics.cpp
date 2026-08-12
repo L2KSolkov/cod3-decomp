@@ -843,6 +843,95 @@ private:
     void get_wheel_matrix(int i, math::Mat43* mat) const;  // ?get_wheel_matrix@rb_vehicle@@QBEXHPAVMat43@math@@@Z
 };
 
+// XBoneHierarchy / XModelParts partial views (render.o types; XModelParts
+// mTransforms is InplaceVector<Mat43::Packed> at +0x00, mHierarchy at +0x10).
+struct XBoneHierarchyLocal {
+    uint8_t      _pad0[4];
+    unsigned int mNameHash;  // +0x04
+    int          mParentIndex;  // +0x08
+};
+struct XModelPartsLocal {
+    InplaceVector<math::Mat43::Packed> mTransforms;  // +0x00
+    uint8_t               _pad08[0x10 - 0x08];
+    unsigned int          mHierarchySize;  // +0x10
+    XBoneHierarchyLocal*  mHierarchy;      // +0x14
+};
+
+// physics.o hash globals (data @ 0xF8C0B0 / 0xF8C0B4; -1 until the hash system
+// fills them at startup)
+unsigned int g_tag_left_tread_hash = 0xFFFFFFFF;      // ?g_tag_left_tread_hash@@3IA
+unsigned int g_tag_steeringwheel_hash = 0xFFFFFFFF;   // ?g_tag_steeringwheel_hash@@3IA
+
+// InplaceVector<Mat43::Packed>::operator[] (g.o inline COMDAT 0x4AC980)
+static inline math::Mat43::Packed& iv_packed_at(
+    InplaceVector<math::Mat43::Packed>* v, unsigned int index)
+{
+    unsigned int v2 = index;
+    if (index >= v->mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+        if (index >= v->mSize)
+            v2 = 0;
+    }
+    return v->mList[v2];
+}
+
+// XModelParts::GetBoneIndex(uint nameHash) (render.o inline COMDAT 0x6EB6C0)
+static inline unsigned int xmodel_parts_get_bone_index(
+    XModelPartsLocal* this_, unsigned int nameHash)
+{
+    if (this_->mHierarchySize == 0)
+        return -1;
+    unsigned int v3 = 0;
+    while (1)
+    {
+        unsigned int v4 = v3;
+        if (v3 >= this_->mHierarchySize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+            AeAssert::gCurrentLine = 81;
+            AeAssert::gCurrentExpr = "index < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                __debugbreak();
+            if (v3 >= this_->mHierarchySize)
+                v4 = 0;
+        }
+        if (this_->mHierarchy[v4].mNameHash == 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\XModelParts.h";
+            AeAssert::gCurrentLine = 203;
+            AeAssert::gCurrentExpr = "mHierarchy[i].mNameHash != 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Uninitialized part being used?"))
+                __debugbreak();
+        }
+        unsigned int v5 = v3;
+        if (v3 >= this_->mHierarchySize)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+            AeAssert::gCurrentLine = 81;
+            AeAssert::gCurrentExpr = "index < mSize";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                __debugbreak();
+            if (v3 >= this_->mHierarchySize)
+                v5 = 0;
+        }
+        if (this_->mHierarchy[v5].mNameHash == nameHash)
+            break;
+        if (++v3 >= this_->mHierarchySize)
+            return -1;
+    }
+    return v3;
+}
+
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
 // (0x705F90) disassembly + IDA local type field order.
@@ -1254,7 +1343,8 @@ class DObj {
 public:
     uint8_t _pad0[0x60];
     unsigned char modelParents[8];  // +0x60
-    uint8_t _pad68[0x80 - 0x68];
+    void*   skel;                   // +0x70 (DSkel*)
+    uint8_t _pad74[0x80 - 0x74];
     void*   models[8];              // +0x80 (IVPointer<XModel>[8]: value/pakId pairs)
     uint8_t _padA0[0xC0 - 0xA0];
     int     mPakId;            // +0xC0
@@ -1740,7 +1830,8 @@ enum wheel_effect_state_e {
 struct vehicle_info_t {
     uint8_t _pad0[0x20];
     short   type;  // +0x20
-    uint8_t _pad22[0x21C - 0x22];
+    short   subtype;  // +0x22
+    uint8_t _pad24[0x21C - 0x24];
     char    vehiclePhysicsParms[32];  // +0x21C
     char    vehiclePhysicsParmsThird[32];  // +0x23C
 };
@@ -2747,13 +2838,133 @@ void rb_vehicle::_update_wheel_effects(float delta_t)
 {
     (void)delta_t;
 }
+// stub until calc_tread_matrices (0x6FC5B0) is ported
 void rb_vehicle::calc_tread_matrices()
 {
 }
+
+// ea: 0x701B70
 void rb_vehicle::get_wheel_matrix(int i, math::Mat43* mat) const
 {
-    (void)i;
-    (void)mat;
+    rigid_body_constraint_wheel* v5 =
+        (rigid_body_constraint_wheel*)m_wheels[i];
+    float sin, cos;
+    FastSinCos(v5->m_wheel_pos, &sin, &cos);
+    __m128 susp = v5->m_b1_suspension_dir_loc.v;
+    __m128 axis = v5->m_b1_wheel_axis_loc.v;
+    __m128 cross = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(axis, axis, 9),
+                   _mm_shuffle_ps(susp, susp, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(axis, axis, 18),
+                   _mm_shuffle_ps(susp, susp, 9)));
+    mat->y.v = axis;
+    mat->z.v = _mm_add_ps(_mm_mul_ps(susp, _mm_set1_ps(cos)),
+                          _mm_mul_ps(cross, _mm_set1_ps(sin)));
+    mat->x.v = _mm_sub_ps(_mm_mul_ps(cross, _mm_set1_ps(cos)),
+                          _mm_mul_ps(susp, _mm_set1_ps(sin)));
+    if (i != 0
+        || VEH_GetInfo(((scr_vehicle_t*)m_owner->scr_vehicle)->infoIdx)
+                   ->subtype
+               != 2)
+    {
+        mat->w.v = _mm_sub_ps(
+            v5->m_b1_wheel_center_loc.v,
+            _mm_mul_ps(v5->m_b1_suspension_dir_loc.v,
+                       _mm_set1_ps(v5->m_wheel_displaced_center_dist)));
+    }
+    else
+    {
+        // Steering-wheel subtype: wheel 0 is anchored to the steering wheel
+        // bone. The center comes from the base-pose bone matrices (lowered by
+        // the suspension adjustment), transformed into the animated steering
+        // bone frame and then into rb space by the chassis m_transform.
+        void** model_slot = (void**)((char*)m_owner->mDObj->models + 0);
+        ValidatePakId((TPakId)(uintptr_t)model_slot[1]);
+        XModelLocal* mValue = (XModelLocal*)model_slot[0];
+        XModelLodLocal* lod = mValue->lod[0];
+        int v27 = 0;
+        if (lod == nullptr)
+        {
+            do
+            {
+                lod = mValue->lod[++v27];
+            } while (lod == nullptr);
+        }
+        XModelPartsLocal* parts =
+            (XModelPartsLocal*)lod->xmodelParts;
+        unsigned int steeringBone =
+            xmodel_parts_get_bone_index(parts, g_tag_steeringwheel_hash);
+        math::Mat43::Packed* wheel0Base =
+            &iv_packed_at(&parts->mTransforms,
+                          (unsigned int)m_wheel_bone_indices[0]);
+        math::Mat43::Packed* steerBase =
+            &iv_packed_at(&parts->mTransforms, steeringBone);
+
+        __m128 lwc = _mm_setr_ps(wheel0Base->w.x, wheel0Base->w.y,
+                                 wheel0Base->w.z - m_parameter->m_susp_adj,
+                                 0.0f);
+        __m128 xr = _mm_setr_ps(steerBase->x.x, steerBase->x.y,
+                                steerBase->x.z, 0.0f);
+        __m128 yr = _mm_setr_ps(steerBase->y.x, steerBase->y.y,
+                                steerBase->y.z, 0.0f);
+        __m128 zr = _mm_setr_ps(steerBase->z.x, steerBase->z.y,
+                                steerBase->z.z, 0.0f);
+        __m128 wr = _mm_setr_ps(steerBase->w.x, steerBase->w.y,
+                                steerBase->w.z, 0.0f);
+        // Transposed columns of the steering bone base pose. The binary's
+        // shuffle sequence (0x88/0xA8/0xDD) reuses the z-row's z component in
+        // lane 2 of column 0 and lane 0 of column 2 - preserved verbatim.
+        __m128 v0 = _mm_shuffle_ps(xr, yr, 0x44);  // [x0,x1,y0,y1]
+        __m128 v3 = _mm_shuffle_ps(xr, yr, 0xEE);  // [x2,0,y2,0]
+        __m128 v2 = v0;
+        __m128 col1 = _mm_shuffle_ps(v0, zr, 0xDD);   // [x1,y1,z1,0]
+        __m128 col2 = _mm_shuffle_ps(v3, zr, 0xA8);   // [x2,y2,z2,z2]
+        __m128 col0 = _mm_shuffle_ps(v2, zr, 0x88);   // [x0,y0,z2,z2]
+        __m128 w0 = _mm_shuffle_ps(wr, wr, 0);
+        __m128 w1 = _mm_shuffle_ps(wr, wr, 0x55);
+        __m128 w2 = _mm_shuffle_ps(wr, wr, 0xAA);
+        __m128 s = _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(w0, col0), _mm_mul_ps(w1, col1)),
+            _mm_mul_ps(w2, col2));
+        __m128 pos = _mm_add_ps(
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(lwc, lwc, 0), col0),
+                       _mm_mul_ps(_mm_shuffle_ps(lwc, lwc, 0x55), col1)),
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(lwc, lwc, 0xAA), col2),
+                       _mm_xor_ps(Float4_SignMask_12, s)));
+        math::Position3 model_pos;  // toPosition3 (0x6F0AE0) - 16-byte copy
+        model_pos.v = pos;
+
+        // Animated steering wheel bone matrix (DSkel.mat[steeringBone]).
+        DObjSkelMat* skelMat =
+            (DObjSkelMat*)((char*)m_owner->mDObj->skel + 0x30
+                           + steeringBone * 0x40);
+        __m128 sx = _mm_load_ps(skelMat->axis[0]);
+        __m128 sy = _mm_load_ps(skelMat->axis[1]);
+        __m128 sz = _mm_load_ps(skelMat->axis[2]);
+        __m128 sw = _mm_load_ps(skelMat->origin);
+        float displaced = ((rigid_body_constraint_wheel*)m_wheels[0])
+                              ->m_wheel_displaced_center_dist;
+        __m128 rb_pos = _mm_add_ps(
+            _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(model_pos.v, model_pos.v, 0), sx),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(model_pos.v, model_pos.v, 0x55), sy)),
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(model_pos.v, model_pos.v, 0xAA), sz),
+                    sw)),
+            _mm_mul_ps(sz, _mm_set1_ps(displaced)));
+        const math::Mat43& T = m_chassis_rbinf->m_transform;
+        mat->w.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(rb_pos, rb_pos, 0), T.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(rb_pos, rb_pos, 0x55), T.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(rb_pos, rb_pos, 0xAA), T.z.v),
+                T.w.v));
+    }
 }
 
 // ea: 0x6F4F50
@@ -7403,17 +7614,6 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
 
 // DObjMatriceModelToLocal (0x6FF860) - disasm-driven reconstruction
 // XBoneHierarchy view (12 bytes: mName +0, mNameHash +4, mParentIndex +8)
-struct XBoneHierarchyLocal {
-    uint8_t _pad[8];
-    int     mParentIndex;  // +0x08
-};
-// XModelParts partial (mHierarchy InplaceVector {mSize,mList} at +0x10)
-struct XModelPartsLocal {
-    uint8_t               _pad[0x10];
-    unsigned int          mHierarchySize;  // +0x10
-    XBoneHierarchyLocal*  mHierarchy;      // +0x14
-};
-
 // Inverse-multiply helper matching DObjMatriceModelToLocal's SSE: the parent
 // rotation is transposed (orthonormal => inverse) and each row of bone is
 // dotted with its columns; the translation row is (bone.w - parent.w) · cols.
