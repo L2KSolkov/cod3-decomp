@@ -17,6 +17,14 @@ void FEText::SetText(const char* s, int a3) { (void)s; (void)a3; }
 void FEText::SetShown(bool shown)   { (void)shown; }
 unsigned int FEText::GetColor()     { return *(unsigned int*)&color1; }
 unsigned int FEText::GetUnselectedColor() { return *(unsigned int*)&color_unselected; }
+int DialogMenuSystem::GetActiveMenu()
+{
+    return 0;
+}
+int FEMenuSystem::GetCurrentClient()
+{
+    return 0;
+}
 
 #include <stdarg.h>
 #include <stdio.h>

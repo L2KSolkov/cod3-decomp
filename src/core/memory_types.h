@@ -40,5 +40,18 @@ struct cFreeList {
     T*           mpFree;  // +0x00
     int          mUsed;   // +0x04
     int          mFree;   // +0x08
+
+    // ?Alloc@?$cFreeList@VEntity@@@@QAEPAVEntity@@XZ etc. (core.o)
+    T* Alloc()
+    {
+        T* p = mpFree;
+        if (p != nullptr)
+        {
+            mpFree = *(T**)p;
+            ++mUsed;
+            --mFree;
+        }
+        return p;
+    }
 };
 static_assert(sizeof(cFreeList<char>) == 0x0C, "cFreeList size mismatch");
