@@ -1832,6 +1832,11 @@ struct scr_vehicle_t {
     uint8_t boneIndex[120];             // +0x460
     uint8_t _pad4D8[0x518 - 0x4D8];
     void*   mRBVeh;                     // +0x518 (legacy local-view field)
+
+    // ?CollisionDamage@scr_vehicle_t@@QAEXPAVEntity@@ABVPosition3@math@@1M@Z
+    // (g.o; g_scr_vehicle.cpp defines the pointer-arg variant)
+    void CollisionDamage(Entity* ent, const math::Position3* pos,
+                         const math::Position3* dir, float intensity);
 };
 
 // ea: 0x6FE100
@@ -5941,10 +5946,7 @@ void phys_collide_do_gjk_collide_and_contact_manifold(phys_collide_data* d)
     }
 }
 
-// stub until process_prop_collide_callbacks (0x702740) is ported
-void process_prop_collide_callbacks()
-{
-}
+void process_prop_collide_callbacks();  // 0x702740
 void do_all_biped_system_collision_callback();  // 0x70C8D0
 void do_all_biped_system_process_collision_events();  // 0x704A10
 
@@ -6514,6 +6516,165 @@ void create_prop_collide_callback(rb_extra_info* rb_inf, int surfaceFlags,
         v4->m_avl_key.m_b1 = key.m_b1;
         v4->m_avl_key.m_b2 = key.m_b2;
         g_prop_collide_callback_database.add(key, v4);
+    }
+}
+
+// ea: 0x702740
+void process_prop_collide_callbacks()
+{
+    int count = g_list_prop_collide_callback_count;
+    if (count > 0)
+    {
+        prop_collide_callback* p = g_list_prop_collide_callback;
+        int i = 0;
+        for (int processed = 0; processed < count; ++processed, ++p)
+        {
+            if (i >= 20)
+                return;
+            rigid_body_constraint_contact* v3 =
+                ((phys_inplace_avl_tree<rigid_body_pair_key,
+                                        rigid_body_constraint_contact>*)
+                     ((char*)g_physics_system + 0x1E4))
+                    ->find(p->m_avl_key);
+            if (v3 != nullptr)
+            {
+                rigid_body* b2 = v3->b2;
+                rigid_body* b1 = v3->b1;
+                __m128 rel_vel = _mm_sub_ps(b1->m_t_vel.v, b2->m_t_vel.v);
+                float intensity = 0.0f;
+                contact_point_info* d = nullptr;
+                for (contact_point_info* m_first =
+                         v3->m_list_contact_point_info_buffer_1.m_first;
+                     m_first != nullptr; m_first = m_first->m_next_link)
+                {
+                    if (m_first->m_point_pair_count <= 0
+                        && _tlAssert(
+                               "c:\\cod\\code\\game\\RBCollisionCallback.cpp",
+                               77, "cpi.m_point_pair_count > 0",
+                               defaultFileName))
+                        __debugbreak();
+                    __m128 v9 = _mm_mul_ps(m_first->m_normal.v, rel_vel);
+                    float dot =
+                        v9.m128_f32[0]
+                        + (_mm_shuffle_ps(v9, v9, 85).m128_f32[0]
+                           + _mm_shuffle_ps(v9, v9, 170).m128_f32[0]);
+                    if (dot > intensity)
+                    {
+                        intensity = dot;
+                        d = m_first;
+                    }
+                }
+                if (d != nullptr && intensity > 50.0f)
+                {
+                    if (d == nullptr
+                        && _tlAssert(
+                               "c:\\cod\\code\\game\\RBCollisionCallback.cpp",
+                               87, "max_intensity_cpi", defaultFileName))
+                        __debugbreak();
+                    rigid_body* v10 = v3->b2;
+                    ++i;
+                    if ((v10->m_flags & 0x50) == 0
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                               109, "debug_flag_is_in_collision()",
+                               defaultFileName))
+                        __debugbreak();
+                    __m128 local_hit = d->m_list_b2_r_loc->v;
+                    __m128 world_hit = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(local_hit, local_hit, 0),
+                                v10->m_col_mat.x.v),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(local_hit, local_hit, 85),
+                                v10->m_col_mat.y.v)),
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(local_hit, local_hit, 170),
+                                v10->m_col_mat.z.v),
+                            v10->m_col_mat.w.v));
+                    __m128 normal;
+                    if (v3->b1 == p->m_rb_inf->m_rb)
+                        normal =
+                            _mm_xor_ps(Float4_SignMask_12, d->m_normal.v);
+                    else
+                        normal = d->m_normal.v;
+                    p->m_rb_inf->m_time_since_last_event = 0.0f;
+                    DCGSet* m_dcg = (DCGSet*)p->m_rb_inf->m_ent->r.bmodel;
+                    unsigned int material_index =
+                        ((unsigned int)p->mHitSurfaceFlags >> 20) & 0x1F;
+                    if (m_dcg->objects_m_count == 0)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::DK;
+                        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+                        AeAssert::gCurrentLine = 77;
+                        AeAssert::gCurrentExpr = "index < size()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(defaultFileName))
+                            __debugbreak();
+                        if (m_dcg->objects_m_count == 0
+                            && _tlAssert(
+                                   "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                                   89, "index >= 0 && index < size()",
+                                   "invalid index"))
+                            __debugbreak();
+                    }
+                    int material =
+                        (((cdl_object_t*)m_dcg->objects_m_elements)[0].sflags
+                         >> 20)
+                        & 0x1F;
+                    int col_material = 0;
+                    if (material == 2)
+                        col_material = 17;  // kCollisionMaterialFLESH
+                    float scaled = intensity * 0.002f;
+                    if (scaled < 0.0f)
+                        scaled = 0.0f;
+                    else if (scaled > 1.0f)
+                        scaled = 1.0f;
+                    math::Position3 coord;
+                    coord.v = world_hit;
+                    math::Dir3 normal_v;
+                    normal_v.v = normal;
+                    CollisionDesc col_desc;
+                    col_desc.simple.coord.v = coord.v;
+                    col_desc.simple.normal.v = normal_v.v;
+                    col_desc.material = (ECollisionMaterial)material_index;
+                    PostEffectEventPhysicsImpact(p->m_rb_inf->m_ent,
+                                                 col_material, &col_desc,
+                                                 scaled);
+
+                    float v = intensity * 0.001f;
+                    if (v > 0.0f && (v > 1.0f || v > 0.3f))
+                    {
+                        if (v > 1.0f)
+                            v = 1.0f;
+                        scr_vehicle_t* sv =
+                            (scr_vehicle_t*)p->m_rb_inf->m_ent->scr_vehicle;
+                        if (sv != nullptr)
+                        {
+                            float dot =
+                                normal_v.v.m128_f32[0] * sv->phys.vel.v.m128_f32[0]
+                                + normal_v.v.m128_f32[1]
+                                      * sv->phys.vel.v.m128_f32[1]
+                                + normal_v.v.m128_f32[2]
+                                      * sv->phys.vel.v.m128_f32[2];
+                            float scale;
+                            if (dot > 0.0f)
+                                scale = 1.0f;
+                            else
+                            {
+                                float s2 = 1.0f - dot;
+                                scale = (s2 > 2.0f) ? 2.0f : s2;
+                            }
+                            math::Position3 pos;
+                            pos.v = world_hit;
+                            sv->CollisionDamage(p->m_rb_inf->m_ent, &pos,
+                                &coord, v / scale);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
