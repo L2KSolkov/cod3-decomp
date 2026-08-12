@@ -49,9 +49,9 @@ extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern level_locals_t level;
 extern float scaleScalar;  // ?scaleScalar (render.o)
-extern float RE_Text_Paint(float x, float y, int font, float scale,
-                           const float* color, const char* text, float a7,
-                           int a8, int a9);  // ?RE_Text_Paint (render.o)
+extern void RE_Text_Paint(float x, float y, int font, float scale,
+                          const float* color, const char* text, float a7,
+                          int a8, int a9);  // ?RE_Text_Paint@@YAXMMHMQBMPBDMHH@Z (render.o)
 extern int RE_Text_Width(const char* text, int font, float scale,
                          float charWidth, int limit);  // ?RE_Text_Width
 

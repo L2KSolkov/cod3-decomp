@@ -18,6 +18,7 @@
 
 #include <cmath>
 
+namespace apsMath {
 // ?FloatRand@apsMath@@YAMMM@Z (apsEffect.o; pseudo-random float in [min,max])
 float FloatRand(float min, float max)
 {
@@ -25,6 +26,7 @@ float FloatRand(float min, float max)
         return min;
     return min + (max - min) * ((float)rand() / (float)RAND_MAX);
 }
+}  // namespace apsMath
 
 namespace math {
 

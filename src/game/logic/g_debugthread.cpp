@@ -87,7 +87,7 @@ int Actor_IsSuppressed(actor_s* pSelf)  // ?Actor_IsSuppressed@@YIHPAUactor_s@@@
 }
 extern void Path_DrawDebugNode(const PathNodes::PathNode* pNode);  // ?Path_DrawDebugNode@@YAXPBUPathNode@PathNodes@@@Z (mp_actors.o)
 float scaleScalar;  // ?scaleScalar@@3MA (render.o)
-// ?RE_Text_Paint@@YAMMMMMPBM0MH@Z (render.o; text renderer not ported yet)
+// ?RE_Text_Paint@@YAXMMHMQBMPBDMHH@Z (render.o; text renderer not ported yet)
 void RE_Text_Paint(float x, float y, int font, float scale,
                    const float* color, const char* text, float a7,
                    int a8, int a9)
