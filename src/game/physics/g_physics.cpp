@@ -118,6 +118,19 @@ void G_DObjUpdate(Entity* ent, bool forceWeaponModel);  // game2.o
 void g_LinkEntity(Entity* ent);  // g.o
 void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o
 void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o
+namespace BrocSys {
+void Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
+                       float fTotalTime, float fAccelTime,
+                       float fDecelTime);  // ?Mover_RotateSpeed@BrocSys@@YAXPAVEntity@@ABVPosition3@math@@MMM@Z
+}
+// stub until scr.o Mover_RotateSpeed is ported
+void BrocSys::Mover_RotateSpeed(Entity* pEnt, const math::Position3& vRotSpeed,
+                                float fTotalTime, float fAccelTime,
+                                float fDecelTime)
+{
+    (void)pEnt; (void)vRotSpeed; (void)fTotalTime; (void)fAccelTime;
+    (void)fDecelTime;
+}
 void phys_full_inv_multiply_mat(math::Mat43& dest_m,
                                 const math::Mat43& left_m,
                                 const math::Mat43& right_m);  // physics.o inline
@@ -4144,6 +4157,10 @@ void MoveGravity(Entity* pEnt, const float* const vVel, float fTotalTime)
 class Destructible {
 public:
     void DeletePiece(Entity* ent);  // ?DeletePiece@Destructible@@QAEXPAVEntity@@@Z
+    void ThrowPiece(Entity* entPiece, float force,
+                    const math::Position3& hitp,
+                    const math::Position3& trajectory,
+                    bool useRealPhysics);  // ?ThrowPiece@Destructible@@QAEXPAVEntity@@MABVPosition3@math@@1_N@Z
 };
 
 // ea: 0x6F6470
@@ -4156,6 +4173,35 @@ void Destructible::DeletePiece(Entity* ent)
         ent->r.contents &= ~1;
         ent->think = 0x0C;
         ent->nextthink = level.time + 1;
+    }
+}
+
+// ea: 0x70D870
+void Destructible::ThrowPiece(Entity* entPiece, float force,
+                              const math::Position3& hitp,
+                              const math::Position3& trajectory,
+                              bool useRealPhysics)
+{
+    if (entPiece != nullptr)
+    {
+        if (useRealPhysics)
+        {
+            math::Dir3 v7;
+            v7.v = trajectory.v;
+            ApplyPhysics(entPiece, hitp, v7, force, false,
+                         (hitLocation_t)4);  // HITLOC_TORSO_UPR
+        }
+        else
+        {
+            math::Dir3 v7;
+            v7.v = _mm_mul_ps(trajectory.v, _mm_set1_ps(force));
+            MoveGravity(entPiece, &v7.v.m128_f32[0], 10.0f);
+            math::Dir3 rot;
+            rot.v = _mm_mul_ps(trajectory.v, _mm_set1_ps(0.5f));
+            math::Position3 rotpos;
+            rotpos.v = rot.v;
+            BrocSys::Mover_RotateSpeed(entPiece, rotpos, 10.0f, 0.0f, 0.0f);
+        }
     }
 }
 
