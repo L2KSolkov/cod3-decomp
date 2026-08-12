@@ -1879,8 +1879,9 @@ extern float unk_F6A284[4 * 802];
 extern float unk_F6A288[4 * 802];
 extern int dword_F6A290[4 * 802];
 extern vmCvar_t cg_widescreen;      // 0x00F5CC88
-extern float get_screensafe_left();
-extern float get_screensafe_top();
+// ea: 0x00565C80 / 0x00565CA0 (shell.o)
+float get_screensafe_left() { return 50.0f; }  // ?get_screensafe_left@@YAMXZ
+float get_screensafe_top() { return 40.0f; }    // ?get_screensafe_top@@YAMXZ
 extern void tlPrintf(const char* fmt, ...);
 extern void FEManager_UpdateSplitScreen(void* self);
 extern void nglSetView(float x1, float y1, float x2, float y2);

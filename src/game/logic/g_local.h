@@ -1896,9 +1896,15 @@ Entity* G_GetFriendlyIndexActor(int iFriendlyIndex);                     // g.o
 team_t Sentient_EnemyTeam(team_t eTeam);
 sentient_s* Sentient_FirstSentient(int iTeamFlags);
 sentient_s* Sentient_NextSentient(sentient_s* pPrevSentient, int iTeamFlags);
-float Actor_CanSeePointEx(actor_s* pSelf, const float* vPoint, float fFovDot,
-                          float fMaxDistSqrd,
-                          DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity);  // mp_actors.o
+// ?Actor_CanSeePointEx@@YIMPAUactor_s@@QBMMMV?$DbLinkedHandle@VEntityHandleDb@@VEntity@@@@@Z (mp_actors.o 0x77BFD0)
+inline float Actor_CanSeePointEx(
+    actor_s* pSelf, const float* vPoint, float fFovDot, float fMaxDistSqrd,
+    DbLinkedHandle<EntityHandleDb, Entity> ignoreEntity)
+{
+    (void)pSelf; (void)vPoint; (void)fFovDot; (void)fMaxDistSqrd;
+    (void)ignoreEntity;
+    return 0.0f;
+}
 bool G_IsPlayerDrivingVehicle(Entity* player);
 float VectorDistanceSquared2D(const math::Position3* p1, const math::Position3* p2);
 math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
