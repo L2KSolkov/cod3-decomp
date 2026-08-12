@@ -222,7 +222,12 @@ extern unsigned int SoundDevice_QueueSound(
     unsigned int wave, unsigned int entHandle, bool important, int a5,
     const math::Position3* pos, const math::Position3* dir, float volume,
     float pitch, float minRange, float maxRange);
-extern float Sound_GetStartingVolume(void* sound);
+// ?Sound_GetStartingVolume@@YAMPAX@Z artifact (sound.o; stub)
+float Sound_GetStartingVolume(void* sound)
+{
+    (void)sound;
+    return 1.0f;
+}
 struct SoundDeviceInst {
     float mVolScale;  // +0x00 (name-accessed)
 };
@@ -247,6 +252,8 @@ struct SndWait {
 // ============================================================================
 // SoundDevice surface (sound.o; opaque, only the fields the effects touch)
 // ============================================================================
+extern float nslGetWaveParam(nslWaveID wave, int b, float c);  // nslCompat.o
+extern int nslGetWaveLength(nslWaveID wave);                   // nslCompat.o
 namespace SoundDevice {
 struct Sound {
     int          mSource;        // +0x00 nslSourceID (-1 = invalid)
@@ -282,12 +289,17 @@ public:
 
 extern void Sound_Stop(Sound* s);
 extern void Sound_PlayQueued(Sound* s);
-extern float Sound_GetVolume(const Sound* s);
-extern float Sound_GetLength(const Sound* s);
+float Sound_GetVolume(const Sound* s)  // artifact shim -> nslGetWaveParam(0)
+{
+    return nslGetWaveParam((nslWaveID)s->mWave, 0, 1.0f);
+}
+float Sound_GetLength(const Sound* s)  // artifact shim
+{
+    return (float)nslGetWaveLength((nslWaveID)s->mWave);
+}
 extern void Sound_SetPoPtr(Sound* s, const math::Mat43* po);
 extern void Sound_SetPitch(Sound* s, float pitch);
 extern void Sound_SetVolume(Sound* s, float vol);
-extern float nslGetWaveParam(unsigned int wave, int b, float c);
 // ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o; stub
 // until subtitle_manager is ported - subtitles disabled)
 bool subtitle_manager_play_subtitle(const char* tag, const char* prefix)
@@ -2897,7 +2909,7 @@ void AbstractEffectSound::AdjustEffect_Scale(const char* param, float scale)
         {
             SoundDevice::Sound* v8 =
                 SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
-            float pitch = SoundDevice::nslGetWaveParam(v8->mWave, 1, 1.0f);
+            float pitch = nslGetWaveParam((nslWaveID)v8->mWave, 1, 1.0f);
             pitch = pitch * scale;
             SoundDevice::Sound_SetPitch(
                 SoundDevice::SoundFromHandle(mSound.mHandle.mVal), pitch);
@@ -2906,7 +2918,7 @@ void AbstractEffectSound::AdjustEffect_Scale(const char* param, float scale)
         {
             SoundDevice::Sound* v9 =
                 SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
-            float volume = SoundDevice::nslGetWaveParam(v9->mWave, 0, 1.0f);
+            float volume = nslGetWaveParam((nslWaveID)v9->mWave, 0, 1.0f);
             volume = volume * scale;
             SoundDevice::Sound_SetVolume(
                 SoundDevice::SoundFromHandle(mSound.mHandle.mVal), volume);
@@ -3057,8 +3069,8 @@ void AbstractEffectSound::FrameAdvance(float delta_t)
         SoundDevice::SoundFromHandle(mSound.mHandle.mVal);
     if (mObject != nullptr)
     {
-        maxRange = SoundDevice::nslGetWaveParam(mObject->mWave, 26, 1.0f);
-        minRange = SoundDevice::nslGetWaveParam(mObject->mWave, 25, 1.0f);
+        maxRange = nslGetWaveParam((nslWaveID)mObject->mWave, 26, 1.0f);
+        minRange = nslGetWaveParam((nslWaveID)mObject->mWave, 25, 1.0f);
     }
     mDelayCount = mDelayCount + delta_t;
     ++mCountSinceStarted;
@@ -3164,7 +3176,7 @@ void AbstractEffectSound::FrameAdvance(float delta_t)
     }
     mFinalPitch = mSoundParams.mPitch;
     if (mWaveHdl == (unsigned int)-1
-        || SoundDevice::nslGetWaveParam(mWaveHdl, 0, 1.0f) == 0.0f)
+        || nslGetWaveParam((nslWaveID)mWaveHdl, 0, 1.0f) == 0.0f)
         goto LABEL_69;
     if ((mCodeFlags.mVal & 0x10) != 0)
     {
