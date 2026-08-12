@@ -3389,13 +3389,6 @@ public:
     void init(rigid_body_sphere_list* cg);  // ?init@phys_gjk_geom_ragdoll_1@@QAEXPAVrigid_body_sphere_list@@@Z
 };
 
-// rb_capsule_pair (physics.o; m_b1_cg/m_b2_cg)
-class rb_capsule_pair {
-public:
-    rigid_body_sphere_list* m_b1_cg;  // +0x00
-    rigid_body_sphere_list* m_b2_cg;  // +0x04
-};
-
 class rigid_body_sphere_list {
 public:
     uint8_t        _pad0[0x40];
@@ -3519,6 +3512,92 @@ void rigid_body_sphere_list::set(rigid_body* const owner)
     m_gjk_geom.m_geom_id = this;
     m_gjk_geom.m_next_geom = nullptr;
     m_tunnel_test_active_counter = 0;
+}
+
+// rb_capsule_pair (physics.o; m_b1_cg/m_b2_cg)
+class rb_capsule_pair {
+public:
+    rigid_body_sphere_list* m_b1_cg;  // +0x00
+    rigid_body_sphere_list* m_b2_cg;  // +0x04
+
+    void do_test(void* const col_resp_group);  // ?do_test@rb_capsule_pair@@QAEXQAX@Z
+};
+
+// stub until rigid_body_constraint_contact::add_point_list is ported
+void rigid_body_constraint_contact::add_point_list(
+    rigid_body* b1_, rigid_body* b2_, const math::Dir3* list_b1_r_loc,
+    const math::Dir3* list_b2_r_loc, int num_points,
+    const math::Dir3& normal_, float fric_coef, float bounce_coef,
+    float max_restitution_vel, bool no_overflow_error)
+{
+    (void)b1_; (void)b2_; (void)list_b1_r_loc; (void)list_b2_r_loc;
+    (void)num_points; (void)normal_; (void)fric_coef; (void)bounce_coef;
+    (void)max_restitution_vel; (void)no_overflow_error;
+}
+
+// world -> body-local transform (transpose rows of m_col_mat)
+static inline math::Dir3 world_to_local(const rigid_body* rb,
+                                        const math::Position3& p)
+{
+    math::Mat43 m = rb->m_col_mat;
+    math::Dir3 r;
+    for (int i = 0; i < 3; ++i)
+    {
+        float row[4];
+        row[0] = m.x.v.m128_f32[i];
+        row[1] = m.y.v.m128_f32[i];
+        row[2] = m.z.v.m128_f32[i];
+        row[3] = m.w.v.m128_f32[i];
+        r.v.m128_f32[i] = row[0] * p.v.m128_f32[0]
+                          + row[1] * p.v.m128_f32[1]
+                          + row[2] * p.v.m128_f32[2] + row[3];
+    }
+    r.v.m128_f32[3] = 0.0f;
+    return r;
+}
+
+bool collide_crapsule_crapsule(const math::Position3& a1,
+                               const math::Position3& a2, float r1,
+                               const math::Position3& b1,
+                               const math::Position3& b2, float r2,
+                               math::Position3* p1, math::Position3* p2,
+                               math::Dir3* normal);  // 0x6FB740
+
+// ea: 0x7004D0
+void rb_capsule_pair::do_test(void* const col_resp_group)
+{
+    (void)col_resp_group;
+    math::Position3 p1_world, p2_world;
+    math::Dir3 normal;
+    if (collide_crapsule_crapsule(
+            m_b1_cg->m_capsule.m_p1, m_b1_cg->m_capsule.m_p2,
+            m_b1_cg->m_capsule.m_r, m_b2_cg->m_capsule.m_p1,
+            m_b2_cg->m_capsule.m_p2, m_b2_cg->m_capsule.m_r, &p1_world,
+            &p2_world, &normal))
+    {
+        rigid_body_constraint_contact* rbc_contact =
+            phys_sys::create_rbc_contact(m_b1_cg->m_owner,
+                                         m_b2_cg->m_owner, false);
+        if (rbc_contact != nullptr)
+        {
+            rigid_body* b1 = m_b1_cg->m_owner;
+            rigid_body* b2 = m_b2_cg->m_owner;
+            if ((b1->m_flags & 0x50) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                       109, "debug_flag_is_in_collision()", defaultFileName))
+                __debugbreak();
+            if ((b2->m_flags & 0x50) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                       109, "debug_flag_is_in_collision()", defaultFileName))
+                __debugbreak();
+            math::Dir3 b1_r = world_to_local(b1, p1_world);
+            math::Dir3 b2_r = world_to_local(b2, p2_world);
+            rbc_contact->add_point_list(b1, b2, &b1_r, &b2_r, 1, normal,
+                                        0.0f, 0.0f, 3400.0f, false);
+        }
+    }
 }
 
 void mem_break();  // mem_heap.cpp

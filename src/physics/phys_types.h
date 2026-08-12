@@ -749,6 +749,12 @@ struct rigid_body_constraint_contact : rigid_body_constraint {
 
     void verify_constraint(rigid_body* b1_, rigid_body* b2_);
     void setup_constraint(pulse_sum_constraint_solver* psys, float delta_t);
+    void add_point_list(rigid_body* b1_, rigid_body* b2_,
+                        const math::Dir3* list_b1_r_loc,
+                        const math::Dir3* list_b2_r_loc, int num_points,
+                        const math::Dir3& normal_, float fric_coef,
+                        float bounce_coef, float max_restitution_vel,
+                        bool no_overflow_error);  // 0x8816A0
     ~rigid_body_constraint_contact();
 };
 static_assert(sizeof(rigid_body_constraint_contact) == 0x2C, "rigid_body_constraint_contact size mismatch");
