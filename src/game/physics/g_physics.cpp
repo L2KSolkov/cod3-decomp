@@ -857,10 +857,12 @@ struct XModelPartsLocal {
     XBoneHierarchyLocal*  mHierarchy;      // +0x14
 };
 
-// physics.o hash globals (data @ 0xF8C0B0 / 0xF8C0B4; -1 until the hash system
-// fills them at startup)
-unsigned int g_tag_left_tread_hash = 0xFFFFFFFF;      // ?g_tag_left_tread_hash@@3IA
-unsigned int g_tag_steeringwheel_hash = 0xFFFFFFFF;   // ?g_tag_steeringwheel_hash@@3IA
+// physics.o hash globals (-1 until the hash system fills them at startup)
+unsigned int g_tag_left_tread_hash = 0xFFFFFFFF;      // @ 0xF7B084
+unsigned int g_tag_right_tread_hash = 0xFFFFFFFF;     // @ 0xF8C0B0
+unsigned int g_tag_steeringwheel_hash = 0xFFFFFFFF;   // @ 0xF8C0B4
+unsigned int g_tag_left_gear_hash = 0xFFFFFFFF;       // @ 0xF8D620
+unsigned int g_tag_right_gear_hash = 0xFFFFFFFF;      // @ 0xF8C140
 
 // InplaceVector<Mat43::Packed>::operator[] (g.o inline COMDAT 0x4AC980)
 static inline math::Mat43::Packed& iv_packed_at(
@@ -1356,6 +1358,7 @@ public:
 
     const math::Mat43& GetMat(int boneIndex);
     int GetBoneIndex(const char* name) const;
+    int GetBoneIndexInternal(unsigned int nameHash) const;  // ?GetBoneIndexInternal@DObj@@QBEHI@Z (render.o)
     int GetBoneParent(int boneIndex);  // ?GetBoneParent@DObj@@QAEHH@Z (render.o; stub)
 };
 const math::Mat43& DObj::GetMat(int boneIndex)
@@ -1367,6 +1370,11 @@ const math::Mat43& DObj::GetMat(int boneIndex)
 int DObj::GetBoneIndex(const char* name) const
 {
     (void)name;
+    return -1;
+}
+int DObj::GetBoneIndexInternal(unsigned int nameHash) const
+{
+    (void)nameHash;
     return -1;
 }
 
@@ -2838,9 +2846,127 @@ void rb_vehicle::_update_wheel_effects(float delta_t)
 {
     (void)delta_t;
 }
-// stub until calc_tread_matrices (0x6FC5B0) is ported
+// ea: 0x6FC5B0
 void rb_vehicle::calc_tread_matrices()
 {
+    // Left side wheels: 2 (front), 4 (rear), 0 (mid). The tread matrix is the
+    // dir/cross basis built from the mid->front wheel axis plus the average
+    // suspension height, transformed into model space and written back into
+    // the tread and gear bones.
+    rigid_body_constraint_wheel* w2 =
+        (rigid_body_constraint_wheel*)m_wheels[2];
+    rigid_body_constraint_wheel* w4 =
+        (rigid_body_constraint_wheel*)m_wheels[4];
+    rigid_body_constraint_wheel* w0 =
+        (rigid_body_constraint_wheel*)m_wheels[0];
+    __m128 posFront = _mm_sub_ps(
+        w2->m_b1_wheel_center_loc.v,
+        _mm_mul_ps(w2->m_b1_suspension_dir_loc.v,
+                   _mm_set1_ps(w2->m_wheel_displaced_center_dist)));
+    __m128 posRear = _mm_sub_ps(
+        w4->m_b1_wheel_center_loc.v,
+        _mm_mul_ps(w4->m_b1_suspension_dir_loc.v,
+                   _mm_set1_ps(w4->m_wheel_displaced_center_dist)));
+    __m128 posMid = _mm_sub_ps(
+        w0->m_b1_wheel_center_loc.v,
+        _mm_mul_ps(w0->m_b1_suspension_dir_loc.v,
+                   _mm_set1_ps(w0->m_wheel_displaced_center_dist)));
+    int leftTread =
+        m_owner->mDObj->GetBoneIndexInternal(g_tag_left_tread_hash);
+    if (leftTread < 0)
+        return;
+    {
+        math::Mat43* mat =
+            (math::Mat43*)&m_owner->mDObj->GetMat(leftTread);
+        __m128 delta = _mm_sub_ps(posMid, posFront);
+        __m128 d2 = _mm_mul_ps(delta, delta);
+        float len_sq =
+            d2.m128_f32[0]
+            + (_mm_shuffle_ps(d2, d2, 85).m128_f32[0]
+               + _mm_shuffle_ps(d2, d2, 170).m128_f32[0]);
+        __m128 dir = _mm_div_ps(delta, _mm_set1_ps(sqrtf(len_sq)));
+        __m128 y = mat->y.v;
+        __m128 cross = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(dir, dir, 9),
+                       _mm_shuffle_ps(y, y, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(dir, dir, 18),
+                       _mm_shuffle_ps(y, y, 9)));
+        float zAvg =
+            ((_mm_shuffle_ps(posMid, posMid, 0xAA).m128_f32[0]
+              + _mm_shuffle_ps(posRear, posRear, 0xAA).m128_f32[0]
+              + _mm_shuffle_ps(posFront, posFront, 0xAA).m128_f32[0])
+             * 0.33333334f)
+            - m_parameter->m_wheel_radius;
+        __m128 pt = _mm_setr_ps(posRear.m128_f32[0], posRear.m128_f32[1],
+                                zAvg, zAvg);
+        math::Mat43 m;
+        m.x.v = dir;
+        m.y.v = y;
+        m.z.v = cross;
+        m.w.v = pt;
+        phys_full_inv_multiply_mat(m, m_chassis_rbinf->m_transform, m);
+        *mat = m;
+        int leftGear =
+            m_owner->mDObj->GetBoneIndexInternal(g_tag_left_gear_hash);
+        *(math::Mat43*)&m_owner->mDObj->GetMat(leftGear) = m;
+    }
+
+    // Right side mirrors with wheels 3 (front), 5 (rear), 1 (mid).
+    rigid_body_constraint_wheel* w3 =
+        (rigid_body_constraint_wheel*)m_wheels[3];
+    rigid_body_constraint_wheel* w5 =
+        (rigid_body_constraint_wheel*)m_wheels[5];
+    rigid_body_constraint_wheel* w1 =
+        (rigid_body_constraint_wheel*)m_wheels[1];
+    __m128 rPosFront = _mm_sub_ps(
+        w3->m_b1_wheel_center_loc.v,
+        _mm_mul_ps(w3->m_b1_suspension_dir_loc.v,
+                   _mm_set1_ps(w3->m_wheel_displaced_center_dist)));
+    __m128 rPosRear = _mm_sub_ps(
+        w5->m_b1_wheel_center_loc.v,
+        _mm_mul_ps(w5->m_b1_suspension_dir_loc.v,
+                   _mm_set1_ps(w5->m_wheel_displaced_center_dist)));
+    __m128 rPosMid = _mm_sub_ps(
+        w1->m_b1_wheel_center_loc.v,
+        _mm_mul_ps(w1->m_b1_suspension_dir_loc.v,
+                   _mm_set1_ps(w1->m_wheel_displaced_center_dist)));
+    int rightTread =
+        m_owner->mDObj->GetBoneIndexInternal(g_tag_right_tread_hash);
+    {
+        math::Mat43* mat =
+            (math::Mat43*)&m_owner->mDObj->GetMat(rightTread);
+        __m128 delta = _mm_sub_ps(rPosMid, rPosFront);
+        __m128 d2 = _mm_mul_ps(delta, delta);
+        float len_sq =
+            d2.m128_f32[0]
+            + (_mm_shuffle_ps(d2, d2, 85).m128_f32[0]
+               + _mm_shuffle_ps(d2, d2, 170).m128_f32[0]);
+        __m128 dir = _mm_div_ps(delta, _mm_set1_ps(sqrtf(len_sq)));
+        __m128 y = mat->y.v;
+        __m128 cross = _mm_sub_ps(
+            _mm_mul_ps(_mm_shuffle_ps(dir, dir, 9),
+                       _mm_shuffle_ps(y, y, 18)),
+            _mm_mul_ps(_mm_shuffle_ps(dir, dir, 18),
+                       _mm_shuffle_ps(y, y, 9)));
+        float zAvg =
+            ((_mm_shuffle_ps(rPosMid, rPosMid, 0xAA).m128_f32[0]
+              + _mm_shuffle_ps(rPosRear, rPosRear, 0xAA).m128_f32[0]
+              + _mm_shuffle_ps(rPosFront, rPosFront, 0xAA).m128_f32[0])
+             * 0.33333334f)
+            - m_parameter->m_wheel_radius;
+        __m128 pt = _mm_setr_ps(rPosRear.m128_f32[0], rPosRear.m128_f32[1],
+                                zAvg, zAvg);
+        math::Mat43 m;
+        m.x.v = dir;
+        m.y.v = y;
+        m.z.v = cross;
+        m.w.v = pt;
+        phys_full_inv_multiply_mat(m, m_chassis_rbinf->m_transform, m);
+        *mat = m;
+        int rightGear =
+            m_owner->mDObj->GetBoneIndexInternal(g_tag_right_gear_hash);
+        *(math::Mat43*)&m_owner->mDObj->GetMat(rightGear) = m;
+    }
 }
 
 // ea: 0x701B70
