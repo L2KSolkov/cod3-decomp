@@ -167,7 +167,7 @@ public:
 FEManager g_femanager;
 
 namespace AeAssert {
-enum ECoderId { COD3 = 0, ARO = 1 };
+enum ECoderId { COD3 = 0, ARO = 1, AC = 9 };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -649,6 +649,8 @@ void LightGridMgr::DecodeBank(const char* name, unsigned char* data,
 // ZoneOverrideBrushSet / ZoneBoundaryBank (streamer.o views;
 // mToggleableOverrideBoxes +0x3C, mNumToggleableOverrideBoxesHit +0x50)
 class ZoneOverrideBrushSet;
+class StreamZone;
+class ZoneCellDesc;
 
 // InplaceVector<T> (ae/inplace/InplaceVector.h; full definition in
 // game/game_types.h) - minimal view used by SetTopOverrideBrushSet
@@ -678,16 +680,35 @@ static T& InplaceVectorAt(InplaceVector<T>& vec, unsigned int index)
 
 class ZoneBoundaryBank {
 public:
-    uint8_t _pad[0x3C];
+    uint8_t _pad[0x10];
+    InplaceVector<const StreamZone*> mPtrs;  // +0x10 (InplaceAssetBank base)
+    uint8_t _pad18[0x1C - 0x18];
+    InplaceVector<const ZoneCellDesc*> mCells;  // +0x1C
+    uint8_t _pad20[0x3C - 0x20];
     InplaceVector<const ZoneOverrideBrushSet*> mToggleableOverrideBoxes;  // +0x3C
-    uint8_t _pad44[0x50 - 0x44];
+    int     mNextBank;             // +0x44
+    uint8_t _pad48[0x50 - 0x48];
     int     mNumToggleableOverrideBoxesHit;  // +0x50
+};
+
+// StreamZone (streamer.o view; mPakInfo +0x24)
+class StreamZone {
+public:
+    uint8_t _pad[0x24];
+    const PakInfoNode* mPakInfo;  // +0x24
+};
+
+// ZoneCellDesc (streamer.o view; mZone +0x2C)
+class ZoneCellDesc {
+public:
+    uint8_t _pad[0x2C];
+    const StreamZone* mZone;  // +0x2C
 };
 
 // StreamZoneManager (streamer.o; mDebugRenderMode +0x190, mInitialPosition +0x1A0)
 class StreamZoneManager {
 public:
-    uint8_t _pad[0x190];
+    ae_array<ZoneBoundaryBank*, 99> mBankArray;  // +0x00
     struct {
         unsigned int mEnabled : 1;  // bit 0
         float zoneGraphScale;       // +0x194
@@ -695,11 +716,20 @@ public:
     math::Position3 mInitialPosition;  // +0x1A0
     uint8_t _pad1AC[0x1C0 - 0x1AC];
     int     mInitialCell;           // +0x1C0
+    int     mLastCellNum;           // +0x1C4
+    int     mLastListSize;          // +0x1C8
+    int     mFirstBank;             // +0x1CC
 
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
     void SetInitialCell(int cell);  // ?SetInitialCell@StreamZoneManager@@QAEXH@Z
     void OnUnloaded(TPakId pakId);  // ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z
+    int GetNumZones() const;        // ?GetNumZones@StreamZoneManager@@QBEHXZ
+    const StreamZone* GetZoneByIndex(unsigned int index) const;  // ?GetZoneByIndex@StreamZoneManager@@QBEPBVStreamZone@@I@Z
+    const StreamZone* FindZone(TPakId pakId) const;  // ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@W4TPakId@@@Z
+    const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
+    const StreamZone* GetCellZone(unsigned int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@I@Z
+    void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
 private:
     void SetTopOverrideBrushSet(ZoneBoundaryBank* bank,
                                 ZoneOverrideBrushSet* zob);  // ?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
@@ -906,6 +936,184 @@ void StreamZoneManager::OnUnloaded(TPakId pakId)
 void StreamZoneManager::SetInitialCell(int cell)
 {
     mInitialCell = cell;
+}
+
+// ae_array<ZoneBoundaryBank*,99>::operator[] const (../ae/core/ae_array.h:25)
+static ZoneBoundaryBank* ZoneBankAt(const StreamZoneManager& szm, int idx)
+{
+    if (idx > 0x62)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 25;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return szm.mBankArray.m_elements[idx];
+}
+
+// ae_array<ZoneBoundaryBank*,99>::operator[] (../ae/core/ae_array.h:31)
+static ZoneBoundaryBank*& ZoneBankRef(StreamZoneManager& szm, unsigned int idx)
+{
+    if (idx > 0x62)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 31;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return szm.mBankArray.m_elements[idx];
+}
+
+// InplaceVector<const T*>::operator[] const (../ae/inplace/InplaceVector.h:91)
+template <typename T>
+static const T& InplaceVectorAtConst(const InplaceVector<T>& vec,
+                                     unsigned int index)
+{
+    if (index >= vec.mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 91;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+            __debugbreak();
+        if (index >= vec.mSize)
+            index = 0;
+    }
+    return vec.mList[index];
+}
+
+// ea: 0x6672B0
+void StreamZoneManager::CheckpointRestart()
+{
+    for (unsigned int i = mFirstBank; i != -1;
+         i = mBankArray.m_elements[i]->mNextBank)
+    {
+        ZoneBankRef(*this, i)->mNumToggleableOverrideBoxesHit = 0;
+    }
+}
+
+// ea: 0x667380
+const PakInfoNode* StreamZoneManager::GetCellPakInfo(int cellIndex)
+{
+    if (mFirstBank == -1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+        AeAssert::gCurrentLine = 467;
+        AeAssert::gCurrentExpr = "mFirstBank!=-1";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("sanity check"))
+            __debugbreak();
+    }
+    if (cellIndex < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+        AeAssert::gCurrentLine = 468;
+        AeAssert::gCurrentExpr = "cellIndex >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("sanity check"))
+            __debugbreak();
+    }
+    ZoneBoundaryBank* bank = ZoneBankRef(*this, mFirstBank);
+    const ZoneCellDesc* cell =
+        InplaceVectorAt(bank->mCells, (unsigned int)cellIndex);
+    return cell->mZone->mPakInfo;
+}
+
+// ea: 0x667450
+const StreamZone* StreamZoneManager::GetCellZone(unsigned int cellIndex)
+{
+    if (mFirstBank == -1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+        AeAssert::gCurrentLine = 482;
+        AeAssert::gCurrentExpr = "mFirstBank!=-1";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("sanity check"))
+            __debugbreak();
+    }
+    ZoneBoundaryBank* bank = ZoneBankRef(*this, mFirstBank);
+    const ZoneCellDesc* cell =
+        InplaceVectorAt(bank->mCells, cellIndex);
+    return cell->mZone;
+}
+
+// ea: 0x6688C0
+const StreamZone* StreamZoneManager::FindZone(TPakId pakId) const
+{
+    unsigned int mFirstBank = (unsigned int)this->mFirstBank;
+    if (mFirstBank == (unsigned int)-1)
+        return nullptr;
+
+    for (;;)
+    {
+        ZoneBoundaryBank* v5 = ZoneBankAt(*this, mFirstBank);
+        unsigned int v8 = mFirstBank;
+        if (v5->mPtrs.mSize != 0)
+        {
+            unsigned int v4 = 0;
+            for (;;)
+            {
+                const StreamZone* result =
+                    InplaceVectorAtConst(v5->mPtrs, v4);
+                if (result->mPakInfo->pakId == pakId)
+                    return result;
+                if (++v4 >= v5->mPtrs.mSize)
+                    break;
+            }
+        }
+        int i = ZoneBankAt(*this, v8)->mNextBank;
+        if (i == -1)
+            return nullptr;
+        mFirstBank = (unsigned int)i;
+    }
+}
+
+// ea: 0x668A30
+const StreamZone* StreamZoneManager::GetZoneByIndex(
+    unsigned int index) const
+{
+    ZoneBoundaryBank* v2 = ZoneBankAt(*this, PakManager::sInst->mLevelPakId);
+    if (v2 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+        AeAssert::gCurrentLine = 821;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("unable to get Zone, ZBB may not be loaded"))
+            __debugbreak();
+    }
+    unsigned int mSize = v2->mPtrs.mSize;
+    if (index >= mSize)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::AC;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+        AeAssert::gCurrentLine = 823;
+        AeAssert::gCurrentExpr = "index < bank->GetNumZones()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid zone index."))
+            __debugbreak();
+    }
+    return InplaceVectorAtConst(v2->mPtrs, index);
+}
+
+// ea: 0x668AE0
+int StreamZoneManager::GetNumZones() const
+{
+    ZoneBoundaryBank* v1 = ZoneBankAt(*this, PakManager::sInst->mLevelPakId);
+    if (v1 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+        AeAssert::gCurrentLine = 833;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("unable to get Zone, ZBB may not be loaded"))
+            __debugbreak();
+    }
+    return v1->mPtrs.mSize;
 }
 
 // ea: 0x666FE0

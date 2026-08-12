@@ -868,14 +868,8 @@ public:
     int GetNumZones() const;        // ?GetNumZones@StreamZoneManager@@QBEHXZ
     void Update(int cellNum, const math::Position3* pos, bool forceReset);  // ?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z
     void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
-    const void* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
+    const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
 };
-// ?GetNumZones@StreamZoneManager@@QBEHXZ (streamer.o; stub)
-inline int StreamZoneManager::GetNumZones() const
-{
-    return 0;
-}
-
 // ============================================================================
 // SceneManager â€” scene/static-model manager (opaque)
 // ============================================================================

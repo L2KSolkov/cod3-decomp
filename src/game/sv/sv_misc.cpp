@@ -59,15 +59,6 @@ void StreamZoneManager::Update(int cellNum, const math::Position3* pos,
 {
     (void)cellNum; (void)pos; (void)forceReset;
 }
-void StreamZoneManager::CheckpointRestart()
-{
-    // stub
-}
-const void* StreamZoneManager::GetCellPakInfo(int cellIndex)
-{
-    (void)cellIndex;
-    return nullptr;
-}
 
 // movie_manager stubs (shell.o; port later)
 void movie_manager::load_and_play_movie(const char* movie_name,
