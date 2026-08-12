@@ -22,6 +22,12 @@ bool IsIgnored();
 bool Assert(const char* fmt, ...);
 }
 
+namespace nuge {
+void calc_velocities(const math::Mat43& mat0, const math::Mat43& mat1,
+                     const math::Dir3& center_offset_loc, float delta_t,
+                     math::Dir3* t_vel, math::Dir3* a_vel);
+}
+
 class PakManager {
 public:
     static PakManager* sInst;
@@ -287,8 +293,17 @@ struct biped_phys_info {
     unsigned int m_render_flags;  // +0x00 (Bitmask mMask)
     Entity*      m_owner;         // +0x04
     void*        m_bp_sys;        // +0x08 (biped_system*)
+    uint8_t      _pad0C[0x510 - 0x0C];
+    math::Position3 m_cur_angles;    // +0x510
+    math::Position3 m_cur_origin;    // +0x520
+    math::Position3 m_last_angles;   // +0x530
+    math::Position3 m_last_origin;   // +0x540
+    int16_t      m_bone[10];         // +0x550
+    float        m_delta_t;          // +0x564
 
     biped_phys_info();  // ??0biped_phys_info@@QAE@XZ
+    void get_cur_vel(int rb_id, const math::Position3& com,
+                     math::Dir3* cur_tvel, math::Dir3* cur_avel);
 };
 
 // ea: 0x6F71C0
@@ -333,6 +348,42 @@ void setup_user_bone_ids(Entity* owner)
     USER_BONE_ID_RIGHT_THIGH = mDObj->GetBoneIndex("Bip01 R Thigh");
     USER_BONE_ID_RIGHT_CALF = mDObj->GetBoneIndex("Bip01 R Calf");
     USER_BONE_ID_RIGHT_FOOT = mDObj->GetBoneIndex("Bip01 R Foot");
+}
+
+// ?g_cur_mat@@3PAVMat43@math@@A / ?g_last_mat@@3PAVMat43@math@@A (physics.o)
+math::Mat43 g_cur_mat[10];
+math::Mat43 g_last_mat[10];
+
+// ea: 0x6F3AF0
+void biped_phys_info::get_cur_vel(int rb_id, const math::Position3& com,
+                                  math::Dir3* cur_tvel, math::Dir3* cur_avel)
+{
+    float m_delta_t = this->m_delta_t;
+    math::Dir3 v12;
+    v12.v = com.v;
+    nuge::calc_velocities(g_last_mat[rb_id], g_cur_mat[rb_id], v12,
+                          m_delta_t, cur_tvel, cur_avel);
+    // velocity sanity asserts + 10.0 clamp (RBRagdoll.cpp:262-263)
+    if ((cur_tvel->v.m128_f32[0] > 1000000.0f
+         || cur_tvel->v.m128_f32[1] > 1000000.0f
+         || cur_tvel->v.m128_f32[2] > 1000000.0f)
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 262,
+                     "!IS_BAD_NUMBER((tv)[0]) && !IS_BAD_NUMBER((tv)[1]) && !IS_BAD_NUMBER((tv)[2])",
+                     "Invalid vector"))
+        __debugbreak();
+    if ((cur_avel->v.m128_f32[0] > 1000000.0f
+         || cur_avel->v.m128_f32[1] > 1000000.0f
+         || cur_avel->v.m128_f32[2] > 1000000.0f)
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 263,
+                     "!IS_BAD_NUMBER((av)[0]) && !IS_BAD_NUMBER((av)[1]) && !IS_BAD_NUMBER((av)[2])",
+                     "Invalid vector"))
+        __debugbreak();
+    __m128 v = cur_tvel->v;
+    if (_mm_shuffle_ps(v, v, 170).m128_f32[0] > 10.0f)
+    {
+        v.m128_f32[2] = 10.0f;
+        cur_tvel->v = v;
+    }
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the

@@ -334,8 +334,8 @@ void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1, float del
 // ============================================================================
 // calc_velocities (6-arg) Ã¢â‚¬â€ ea: 0x884360
 // ============================================================================
-void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1,
-                     const math::Dir3* center_offset_loc, float delta_t,
+void calc_velocities(const math::Mat43& mat0, const math::Mat43& mat1,
+                     const math::Dir3& center_offset_loc, float delta_t,
                      math::Dir3* t_vel, math::Dir3* a_vel) {
     if (((unsigned int)t_vel & 0xF) != 0 &&
         _tlAssert("c:\\cod\\code\\tl\\physics\\include\\phys_math.h", 365,
@@ -347,12 +347,12 @@ void calc_velocities(const math::Mat43* mat0, const math::Mat43* mat1,
                   "uint(v) % PHYS_ALIGNOF(phys_vec3) == 0", "")) {
         __debugbreak();
     }
-    calc_velocities(mat0, mat1, delta_t, t_vel, a_vel);
+    calc_velocities(&mat0, &mat1, delta_t, t_vel, a_vel);
     __m128 v6 = _mm_add_ps(
         _mm_add_ps(
-            _mm_mul_ps(_mm_set1_ps(center_offset_loc->v.m128_f32[0]), mat1->x.v),
-            _mm_mul_ps(_mm_set1_ps(center_offset_loc->v.m128_f32[1]), mat1->y.v)),
-        _mm_mul_ps(_mm_set1_ps(center_offset_loc->v.m128_f32[2]), mat1->z.v));
+            _mm_mul_ps(_mm_set1_ps(center_offset_loc.v.m128_f32[0]), mat1.x.v),
+            _mm_mul_ps(_mm_set1_ps(center_offset_loc.v.m128_f32[1]), mat1.y.v)),
+        _mm_mul_ps(_mm_set1_ps(center_offset_loc.v.m128_f32[2]), mat1.z.v));
     t_vel->v = _mm_add_ps(
         t_vel->v,
         _mm_sub_ps(
