@@ -2170,6 +2170,9 @@ class DebugRender {
 public:
     static void RenderSphere(const math::Position3& pos, float radius,
                              const Color& color);  // render.o 0xAC3FF0
+    static void RenderLineBox(const math::Mat43& LToW,
+                              const math::DiagMat33& size,
+                              const Color& col);  // render.o 0xAC6700
     static void RenderBox(const math::Position3& bmin,
                           const math::Position3& bmax,
                           const Color& col);  // render.o 0xAC4A60

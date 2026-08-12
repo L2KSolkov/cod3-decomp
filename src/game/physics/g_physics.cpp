@@ -112,6 +112,11 @@ class DebugRender {
 public:
     static DebugRender sInst;
     static void RenderAxis(const math::Mat43& mat, float length, float width);
+    static void RenderSphere(const math::Position3& pos, float radius,
+                             const Color& col);  // render.o 0xAC63A0
+    static void RenderLineBox(const math::Mat43& LToW,
+                              const math::DiagMat33& size,
+                              const Color& col);  // render.o 0xAC6700
     static void RenderText(const char* str, int x, int y, const Color& col,
                            float depth, float size);  // render.o 0xAAC7D0
     static void RenderLine(const math::Position3& pt1,
@@ -702,6 +707,9 @@ public:
     float   m_tire_damp_brake;    // +0x64
     float   m_tire_damp_hand;     // +0x68
     int     m_traction_type;      // +0x6C
+    uint8_t _pad70[0xB0 - 0x70];
+    math::Position3 m_bbox_min;   // +0xB0
+    math::Position3 m_bbox_max;   // +0xC0
 
     static vehicle_rb_parameter* GetRBVehParameter(
         const char* name);  // ?GetRBVehParameter@vehicle_rb_parameter@@SAPAV1@PBD@Z
@@ -780,6 +788,8 @@ public:
     float m_steer_front_back_length;             // +0x380
     int   m_state_flags;                         // +0x384
     void* m_vci;                                 // +0x388
+
+    static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA
 
     rb_vehicle();  // ??0rb_vehicle@@QAE@XZ
     void init(Entity* owner, vehicle_rb_parameter* parameter);  // ?init@rb_vehicle@@QAEXPAVEntity@@PAVvehicle_rb_parameter@@@Z
@@ -863,6 +873,17 @@ unsigned int g_tag_right_tread_hash = 0xFFFFFFFF;     // @ 0xF8C0B0
 unsigned int g_tag_steeringwheel_hash = 0xFFFFFFFF;   // @ 0xF8C0B4
 unsigned int g_tag_left_gear_hash = 0xFFFFFFFF;       // @ 0xF8D620
 unsigned int g_tag_right_gear_hash = 0xFFFFFFFF;      // @ 0xF8C140
+
+// ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o data @ 0xF794B4; the owning
+// definition lives in g_scr_vehicle.cpp)
+// ?sphere_size@@3MA (physics.o data @ 0xE36AC8; 0x40A00000 = 5.0)
+float sphere_size = 5.0f;
+// ?colorWhite@@3QBMB (render.o data @ 0xD0161C; {1,1,1,1})
+static const float colorWhite[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+// G_DebugCircleEx (game.o 0x457170; ported in g_main.cpp)
+void G_DebugCircleEx(const float* center, float radius, const float* dir,
+                     const float* color, int depthTest, int duration);
 
 // InplaceVector<Mat43::Packed>::operator[] (g.o inline COMDAT 0x4AC980)
 static inline math::Mat43::Packed& iv_packed_at(
@@ -3612,9 +3633,224 @@ void rb_vehicle::debug_render_all()
         g_rb_vehicle_list.m_alloc_list[i]->debug_render();
 }
 
-// stub until rb_vehicle::debug_render (0x6FCDF0) is ported
+// ea: 0x6FCDF0
 void rb_vehicle::debug_render()
 {
+    if (sRenderAllVehicles != 0 || (m_flags.mMask & 0x10) != 0)
+    {
+        rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
+        if (m_chassis_rbinf != nullptr)
+        {
+            rigid_body* m_rb = m_chassis_rbinf->m_rb;
+            if ((~(m_rb->m_flags >> 6) & 1) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                       79, "debug_flag_is_not_in_collision()",
+                       defaultFileName))
+                __debugbreak();
+            math::Position3 rb_pos;
+            rb_pos.v = m_rb->m_mat.w.v;
+            DebugRender::RenderSphere(
+                rb_pos, 10.0f,
+                Color(1.0f, 1.0f, 0.0f, 1.0f));  // yellow-white
+
+            vehicle_rb_parameter* m_parameter = this->m_parameter;
+            if (m_parameter->m_bbox_min.v.m128_f32[0] != 0.0f)
+            {
+                // bbox center/size from min/max, translated by origin
+                __m128 bmin = m_parameter->m_bbox_min.v;
+                __m128 bmax = m_parameter->m_bbox_max.v;
+                __m128 size = _mm_sub_ps(bmax, bmin);
+                __m128 center = _mm_mul_ps(
+                    _mm_add_ps(bmax, bmin), _mm_set1_ps(0.5f));
+                math::Mat43 transform;  // SetIdentity (0x6E4D00)
+                SetIdentity(transform);
+                transform.w.v = center;
+                math::Position3 origin = m_owner->r.currentOrigin;
+                math::Mat43 basis;  // dir basis scaled by 0.9
+                basis.x.v = _mm_mul_ps(transform.x.v, _mm_set1_ps(0.9f));
+                basis.y.v = _mm_mul_ps(transform.y.v, _mm_set1_ps(0.9f));
+                basis.z.v = _mm_mul_ps(transform.z.v, _mm_set1_ps(0.9f));
+                basis.w.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(origin.v, origin.v, 0),
+                                transform.x.v),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(origin.v, origin.v, 0x55),
+                                transform.y.v)),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(origin.v, origin.v, 0xAA),
+                            transform.z.v)),
+                    transform.w.v);
+                basis.w.v = _mm_add_ps(basis.w.v, _mm_setr_ps(0.0f, 10.0f,
+                                                              0.0f, 0.0f));
+                math::DiagMat33 dsize;
+                dsize.v = size;
+                dsize.v = _mm_mul_ps(dsize.v, _mm_set1_ps(0.9f));
+                dsize.v = _mm_mul_ps(
+                    dsize.v,
+                    _mm_setr_ps(m_parameter->m_inertia_scale_x, 1.0f, 1.0f,
+                                0.0f));
+                DebugRender::RenderLineBox(
+                    basis, dsize, Color(0.0f, 1.0f, 0.0f, 1.0f));
+            }
+
+            for (int w = 0; w < 8; ++w)
+            {
+                rigid_body_constraint_wheel* v21 =
+                    (rigid_body_constraint_wheel*)m_wheels[w];
+                Color wheel_col(0.0f, 1.0f, 0.0f, 1.0f);
+                Color sphere_col(1.0f, 1.0f, 1.0f, 1.0f);
+                if (v21 != nullptr)
+                {
+                    rigid_body* b1 = v21->b1;
+                    float wheel_radius = v21->m_wheel_radius;
+                    if ((~(b1->m_flags >> 6) & 1) == 0
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                               79, "debug_flag_is_not_in_collision()",
+                               defaultFileName))
+                        __debugbreak();
+
+                    // wheel center displaced by suspension
+                    math::Position3 center;
+                    center.v = _mm_sub_ps(
+                        v21->m_b1_wheel_center_loc.v,
+                        _mm_mul_ps(
+                            v21->m_b1_suspension_dir_loc.v,
+                            _mm_set1_ps(v21->m_wheel_displaced_center_dist)));
+                    // to rb world
+                    center.v = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(center.v, center.v, 0),
+                                b1->m_mat.x.v),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(center.v, center.v, 0x55),
+                                b1->m_mat.y.v)),
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(center.v, center.v, 0xAA),
+                                b1->m_mat.z.v),
+                            b1->m_mat.w.v));
+
+                    // hit point (b2_hitp_loc)
+                    math::Position3 hitp;
+                    hitp.v = v21->m_b2_hitp_loc.v;
+                    if ((~(b1->m_flags >> 6) & 1) == 0
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                               79, "debug_flag_is_not_in_collision()",
+                               defaultFileName))
+                        __debugbreak();
+                    // hitp offset along suspension by roll stability
+                    __m128 susp = v21->m_b1_suspension_dir_loc.v;
+                    __m128 s_world = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(susp, susp, 0),
+                                       b1->m_mat.x.v),
+                            _mm_mul_ps(_mm_shuffle_ps(susp, susp, 0x55),
+                                       b1->m_mat.y.v)),
+                        _mm_mul_ps(_mm_shuffle_ps(susp, susp, 0xAA),
+                                   b1->m_mat.z.v));
+                    math::Position3 hit_pos;
+                    hit_pos.v = _mm_sub_ps(
+                        hitp.v,
+                        _mm_mul_ps(s_world,
+                                   _mm_set1_ps(v21->m_roll_stability_factor)));
+                    if ((v21->m_wheel_flags & 1) != 0)
+                        wheel_col = Color(1.0f, 1.0f, 0.0f, 1.0f);
+                    if ((v21->m_wheel_flags & 4) != 0)
+                        wheel_col = Color(1.0f, 0.0f, 0.0f, 1.0f);
+
+                    // hard limit point
+                    __m128 lim = _mm_sub_ps(
+                        v21->m_b1_wheel_center_loc.v,
+                        _mm_mul_ps(
+                            susp,
+                            _mm_set1_ps(v21->m_hard_limit_dist
+                                        + wheel_radius)));
+                    if ((~(b1->m_flags >> 6) & 1) == 0
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                               79, "debug_flag_is_not_in_collision()",
+                               defaultFileName))
+                        __debugbreak();
+                    math::Position3 limit_world;
+                    limit_world.v = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(lim, lim, 0),
+                                       b1->m_mat.x.v),
+                            _mm_mul_ps(_mm_shuffle_ps(lim, lim, 0x55),
+                                       b1->m_mat.y.v)),
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(lim, lim, 0xAA),
+                                       b1->m_mat.z.v),
+                            b1->m_mat.w.v));
+                    bool has_contact = (v21->m_wheel_flags & 2) == 0;
+                    Color contact_col = has_contact
+                                            ? Color(0.0f, 1.0f, 0.0f, 1.0f)
+                                            : Color(1.0f, 0.0f, 0.0f, 1.0f);
+                    DebugRender::RenderSphere(limit_world, sphere_size,
+                                              contact_col);
+                    DebugRender::RenderSphere(hitp, sphere_size,
+                                              Color(1.0f, 0.0f, 0.0f, 1.0f));
+                    DebugRender::RenderSphere(hit_pos, sphere_size,
+                                              Color(0.0f, 1.0f, 1.0f, 1.0f));
+                    DebugRender::RenderSphere(center, wheel_radius, wheel_col);
+
+                    if ((m_flags.mMask & 0x20) != 0)
+                    {
+                        if ((~(b1->m_flags >> 6) & 1) == 0
+                            && _tlAssert(
+                                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                                   79, "debug_flag_is_not_in_collision()",
+                                   defaultFileName))
+                            __debugbreak();
+                        math::Dir3 axis_world;
+                        axis_world.v = _mm_add_ps(
+                            _mm_add_ps(
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(
+                                        v21->m_b1_wheel_axis_loc.v,
+                                        v21->m_b1_wheel_axis_loc.v, 0),
+                                    b1->m_mat.x.v),
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(
+                                        v21->m_b1_wheel_axis_loc.v,
+                                        v21->m_b1_wheel_axis_loc.v, 0x55),
+                                    b1->m_mat.y.v)),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(
+                                    v21->m_b1_wheel_axis_loc.v,
+                                    v21->m_b1_wheel_axis_loc.v, 0xAA),
+                                b1->m_mat.z.v));
+                        G_DebugCircleEx(
+                            &center.v.m128_f32[0], wheel_radius,
+                            &axis_world.v.m128_f32[0], colorWhite, 0, 0);
+                        int leftTread = m_owner->mDObj->GetBoneIndexInternal(
+                            g_tag_left_tread_hash);
+                        math::Mat43 left_mat = m_owner->CalcAbsMat(leftTread);
+                        DebugRender::RenderAxis(left_mat, 50.0f, 1.0f);
+                        int rightTread = m_owner->mDObj->GetBoneIndexInternal(
+                            g_tag_right_tread_hash);
+                        math::Mat43 right_mat = m_owner->CalcAbsMat(rightTread);
+                        DebugRender::RenderAxis(right_mat, 50.0f, 1.0f);
+                    }
+
+                    float hitp_z = hit_pos.v.m128_f32[2];
+                    float center_z = center.v.m128_f32[2];
+                    Color line_col(0.0f, 1.0f, 1.0f, 1.0f);
+                    if (hitp_z > center_z - 5.0f)
+                        line_col = Color(1.0f, 0.0f, 0.0f, 1.0f);
+                    DebugRender::RenderLine(center, hit_pos, line_col,
+                                            0.050000001f);
+                }
+            }
+        }
+    }
 }
 
 // ea: 0x6F2910 (inline COMDAT)

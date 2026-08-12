@@ -1585,6 +1585,12 @@ void DebugRender::RenderSphere(const math::Position3& pos, float radius,
 {
     (void)pos; (void)radius; (void)color;
 }
+void DebugRender::RenderLineBox(const math::Mat43& LToW,
+                                const math::DiagMat33& size,
+                                const Color& color)
+{
+    (void)LToW; (void)size; (void)color;
+}
 void DebugRender::RenderText(const char* text, int x, int y,
                              const Color& color, float scaleX, float scaleY)
 {
