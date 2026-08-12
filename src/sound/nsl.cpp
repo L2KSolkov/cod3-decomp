@@ -49,7 +49,7 @@ struct nslListener {};
 struct nslWaveName {};
 struct nslDriverParams {};
 struct nslWaveBankLoader {};
-typedef unsigned nflFileID;
+enum nflFileID : unsigned { NFL_FILE_ID_INVALID = (unsigned)-1 };
 
 // ============================================================================
 // nslInit — init/shutdown
@@ -97,6 +97,10 @@ const char*   nslGetWaveName(nslWaveID) { return ""; }       // ?nslGetWaveName@
 const char*   nslWaveGetName(nslWaveID) { return ""; }       // ?nslWaveGetName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
 const char*   nslWaveGetGroupName(nslWaveID) { return ""; }  // ?nslWaveGetGroupName@@YAPBDW4nslWaveID@@@Z (nslWaveBank.o)
 const char*   nslGetWaveGroup(nslWaveID) { return ""; }      // ?nslGetWaveGroup@@YAPBDW4nslWaveID@@@Z (nslCompat.o)
+enum nslBankID : unsigned { NSL_BANK_ID_INVALID = (unsigned)-1 };
+nslBankID      nslLoadBank(unsigned int, int, unsigned int) { return NSL_BANK_ID_INVALID; }  // ?nslLoadBank@@YA?AW4nslBankID@@HII@Z
+nslWaveID      nslGetWave(const char*) { return NSL_WAVE_ID_INVALID; }                  // ?nslGetWave@@YA?AW4nslWaveID@@PBD@Z
+float          nslGetWaveParam(nslWaveID, int, float defaultValue) { return defaultValue; }  // ?nslGetWaveParam@@YAMW4nslWaveID@@HM@Z
 float         nslGetSourceParam(nslSourceID, int, float defaultValue) { return defaultValue; }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
 int           nslIsWaveStreamed(nslWaveID) { return 0; }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
 void          nslGetSourcePosition(nslSourceID, float* position) {}  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z (nslSource.o)
