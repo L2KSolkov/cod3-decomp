@@ -707,7 +707,9 @@ struct str_const_t {
     Broc::string hq_point;                 // +0x1B4
     uint8_t    _pad1B8[0x1FC - 0x1B8];
     Broc::string tempEntity;          // +0x1FC
-    uint8_t    _pad200[0x298 - 0x200];
+    uint8_t    _pad200[0x23C - 0x200];
+    Broc::string worldspawn;          // +0x23C
+    uint8_t    _pad240[0x298 - 0x240];
     Broc::string smoke_grenade;       // +0x298
     uint8_t    _pad29C[0x2B4 - 0x29C];
 };
@@ -724,6 +726,8 @@ static_assert(offsetof(str_const_t, hq_point) == 0x1B4,
               "str_const_t::hq_point offset mismatch");
 static_assert(offsetof(str_const_t, info_player_deathmatch) == 0xBC,
               "str_const_t::info_player_deathmatch offset mismatch");
+static_assert(offsetof(str_const_t, worldspawn) == 0x23C,
+              "str_const_t::worldspawn offset mismatch");
 extern str_const_t str_const;         // 0xECBD30
 
 // ============================================================================

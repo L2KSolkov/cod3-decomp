@@ -17,6 +17,45 @@
 #include "filesystem/apk.h"
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
+#include "engine/broc_types.h"
+
+// WorldSpawn (SceneEntity base + key-value strings; streamer.o)
+struct WorldSpawn {
+    uint8_t _pad[0xE4];
+    struct InplaceString {
+        const char* mStr;
+    };
+    InplaceString ambienttrack;  // +0xE4
+    InplaceString message;       // +0xE8
+    InplaceString gravity;       // +0xEC
+    InplaceString northyaw;      // +0xF0
+};
+
+extern void SV_SetConfigstring(int index, const char* val);  // sv.o
+extern void Cvar_Set(const char* var_name, const char* value);  // core.o
+class Entity;  // game_types.h
+extern void UpdateEntityHash(Entity* ent);  // ?UpdateEntityHash@@YAXPAVEntity@@@Z (g_scr.cpp)
+
+// Entity minimal view (mClassName +0x27C, mClassNameHash +0x280)
+struct EntityMin {
+    uint8_t _pad[0x27C];
+    Broc::string mClassName;   // +0x27C
+    HashString mClassNameHash; // +0x280
+};
+
+// Minimal str_const_t view (full type in game/logic/g_local.h).
+// worldspawn at +0x23C verified against IDA str_const_t member list.
+struct str_const_t {
+    uint8_t _pad[0x23C];
+    Broc::string worldspawn;  // +0x23C
+};
+extern str_const_t str_const;  // ?str_const@@3Ustr_const_t@@A @ 0xECBD30 (g_globals.cpp)
+
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (effect_events.cpp)
+    EntityMin* mWorld;            // +0x44
+};
 
 // mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
 struct mem_heap {
@@ -598,7 +637,7 @@ public:
 
     void ToggleSceneFX(float dist);  // ?ToggleSceneFX@SceneManager@@QAEXM@Z
     void ToggleRenderEnts();         // ?ToggleRenderEnts@SceneManager@@QAEXXZ
-    void ProcessWorldSpawn(const void* worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
+    void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
 
 // ae_heap (core_xboxr; vtable+4 = Malloc(unsigned size, int align))
@@ -798,6 +837,27 @@ void SceneManager::ToggleSceneFX(float dist)
 void SceneManager::ToggleRenderEnts()
 {
     mDebugRenderEnts = !mDebugRenderEnts;
+}
+
+// ea: 0x665AB0
+void SceneManager::ProcessWorldSpawn(const WorldSpawn& worldspawn)
+{
+    mWorldSpawn = (void*)&worldspawn;
+    SV_SetConfigstring(2, "cod-sp");
+    SV_SetConfigstring(3, worldspawn.ambienttrack.mStr);
+    SV_SetConfigstring(4, worldspawn.message.mStr);
+    const char* mStr = worldspawn.gravity.mStr;
+    if (mStr == nullptr)
+        mStr = "800";
+    Cvar_Set("g_gravity", mStr);
+    const char* v4 = worldspawn.northyaw.mStr;
+    if (v4 == nullptr)
+        v4 = "0";
+    SV_SetConfigstring(11, v4);
+    EntityMin* mWorld = EntityManager::sInst->mWorld;
+    mWorld->mClassName = str_const.worldspawn;
+    mWorld->mClassNameHash = HashString(mWorld->mClassName);
+    UpdateEntityHash(reinterpret_cast<Entity*>(mWorld));
 }
 
 // apk texture helpers (ngl/streamer)

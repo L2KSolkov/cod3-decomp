@@ -34,4 +34,10 @@ __pycache__/
 *.pyc
 venv/
 
+# Local tool/agent settings
+.claude/
+
+# Scratch/scratchpad
+tmp_gds.txt
+
 *.i64
