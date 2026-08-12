@@ -494,6 +494,9 @@ public:
     void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
     void unpause_physics();       // ?unpause_physics@rb_vehicle@@QAEXXZ
+    void set_brake(float braking);    // ?set_brake@rb_vehicle@@QAEXM@Z (inline)
+    void set_throttle(float throttle);  // ?set_throttle@rb_vehicle@@QAEXM@Z (inline)
+    void set_steer_factor(float steer_factor);  // ?set_steer_factor@rb_vehicle@@QAEXM@Z (inline)
     void update_from_network(const math::Position3& position,
                              const math::Position3& angles,
                              const math::Dir3& vel,
@@ -1699,6 +1702,47 @@ void rb_vehicle::unpause_physics()
         m_flags.mMask |= 2u;
         _update_unpause();
     }
+}
+
+// ea: 0x6F2910 (inline COMDAT)
+void rb_vehicle::set_brake(float braking)
+{
+    if (braking < 0.0f || braking > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.h";
+        AeAssert::gCurrentLine = 376;
+        AeAssert::gCurrentExpr = "braking>= 0.0f && braking<= 1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Out of range"))
+            __debugbreak();
+    }
+    m_brake = braking;
+}
+
+// ea: 0x6F2A50 (inline COMDAT)
+void rb_vehicle::set_throttle(float throttle)
+{
+    if (throttle < -1.0f || throttle > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBVehicle.h";
+        AeAssert::gCurrentLine = 388;
+        AeAssert::gCurrentExpr = "throttle>= -1.0f && throttle<= 1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Out of range"))
+            __debugbreak();
+    }
+    m_throttle = throttle;
+}
+
+// ea: 0x71A0D0 (inline COMDAT)
+void rb_vehicle::set_steer_factor(float steer_factor)
+{
+    float beg = -1.0f, end = 1.0f;
+    if (steer_factor < beg)
+        steer_factor = beg;
+    else if (steer_factor > end)
+        steer_factor = end;
+    m_steer_factor = steer_factor;
 }
 
 // ea: 0x6FC200
