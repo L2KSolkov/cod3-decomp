@@ -9787,9 +9787,119 @@ void ragdoll_collision_callback::set(Entity* const owner)
     m_owner = owner;
 }
 
-// stub until ragdoll_collision_callback internals are ported (0x70BD00)
+// ?m_current_owner@@3PAVEntity@@A (physics.o data @ 0x13689AC)
+Entity* m_current_owner = nullptr;
+
+// ea: 0x70BD00
 void ragdoll_collision_callback::get_all_collisions()
 {
+    m_current_owner = m_owner;
+    collide_terrain();
+
+    math::Dir3 aabb_mn, aabb_mx;
+    bool first = true;
+    for (int i = 0; i < m_rb_colgeom_count; ++i)
+    {
+        rigid_body_sphere_list* rbsl = m_rb_colgeom_alloc_list[i];
+        if (first)
+        {
+            aabb_mn.v = rbsl->m_gjk_geom.m_aabb_mn.v;
+            aabb_mx.v = rbsl->m_gjk_geom.m_aabb_mx.v;
+            first = false;
+        }
+        else
+        {
+            aabb_mn.v = _mm_min_ps(aabb_mn.v, rbsl->m_gjk_geom.m_aabb_mn.v);
+            aabb_mx.v = _mm_max_ps(aabb_mx.v, rbsl->m_gjk_geom.m_aabb_mx.v);
+        }
+    }
+    for (int i = 0; i < m_rb_cp_count; ++i)
+        m_rb_cp_alloc_list[i]->do_test(m_owner);
+
+    environment_rigid_body* env = phys_sys::get_environment_rigid_body();
+    if ((env->m_flags & 0x50) == 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+               "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+    const math::Mat43* env_col_mat = &env->m_col_mat;
+
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int ri = 0; ri < count; ++ri)
+    {
+        rb_extra_info* rb_inf = g_list_rb_extra_info.m_alloc_list[ri];
+        phys_gjk_geom_list* geom_list =
+            (phys_gjk_geom_list*)rb_inf->m_gjk_geom_list;
+        if (geom_list == nullptr)
+            continue;
+        if (!are_potentially_colliding(
+                &aabb_mn, &aabb_mx, &geom_list->m_aabb_mn,
+                &geom_list->m_aabb_mx))
+            continue;
+        for (int ci = 0; ci < m_rb_colgeom_count; ++ci)
+        {
+            rigid_body_sphere_list* rbsl = m_rb_colgeom_alloc_list[ci];
+            rigid_body* rbsl_rb = rbsl->m_owner;
+            for (void* g = geom_list->m_first_geom; g != nullptr;
+                 g = *(void**)((char*)g + 0x34))
+            {
+                if (!are_potentially_colliding(
+                        &rbsl->m_gjk_geom.m_aabb_mn,
+                        &rbsl->m_gjk_geom.m_aabb_mx,
+                        (math::Dir3*)((char*)g + 0x10),
+                        (math::Dir3*)((char*)g + 0x20)))
+                    continue;
+                float fric_coef = rbsl_rb->m_fric_coef;
+                rigid_body* rb2 = rb_inf->m_rb;
+                if ((rb2->m_flags & 0x50) == 0
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                           109, "debug_flag_is_in_collision()",
+                           defaultFileName))
+                    __debugbreak();
+                if ((rbsl_rb->m_flags & 0x50) == 0
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                           109, "debug_flag_is_in_collision()",
+                           defaultFileName))
+                    __debugbreak();
+                phys_collide_data* v23 = g_list_phys_collide_data;
+                v23->gjk_cg1 = (const phys_gjk_geom*)&rbsl->m_gjk_geom;
+                v23->gjk_cg2 = (const phys_gjk_geom*)g;
+                v23->cg1_to_world_xform = &rbsl_rb->m_col_mat;
+                v23->cg2_to_world_xform = rb_inf->m_cg_mesh_mat;
+                v23->cg1_to_rb1_xform = env_col_mat;
+                v23->rb2_to_world_xform = &rb2->m_col_mat;
+                v23->rb1 = rbsl_rb;
+                v23->rb2 = rb2;
+                v23->gjk_ci = nullptr;
+                v23->pcd_callback = nullptr;
+                v23->gjk_info = g_gjk_info;
+                v23->cman_process = g_cman_process;
+                v23->id1 = (unsigned int)rbsl->m_gjk_geom.m_geom_id;
+                v23->fric_coef = fric_coef;
+                v23->id2 = *(unsigned int*)((char*)g + 0x30);
+                v23->bounce_coef = 0.5f;
+                v23->no_overflow_error = false;
+                v23->solver_priority = 0;
+                v23->gjk_ci = g_phys_gjk_cache_system.get_gjk_cache_info(
+                    v23->id1, v23->id2, true);
+                if (phys_collide_do_gjk_collide_stub(v23->gjk_info, v23,
+                                                     3.4000001f))
+                {
+                    void* pcd_callback = v23->pcd_callback;
+                    if (pcd_callback == nullptr
+                        || (*(int (**)(void*, void*))pcd_callback)(
+                               pcd_callback, v23) != 0)
+                    {
+                        if (v23->cman_process != nullptr)
+                            v23->cman_process->process(v23);
+                    }
+                }
+            }
+        }
+    }
+    m_current_owner = nullptr;
 }
 
 // ragdoll_collision_callback::collide_terrain - ea: 0x70B300
