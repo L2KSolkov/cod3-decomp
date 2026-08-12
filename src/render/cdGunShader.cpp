@@ -103,12 +103,12 @@ void ToggleCDGunShader() {
 // ============================================================================
 void cdGunShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdGunRender::VS, cdGunRender::VShaderTable[0]);
-    cdGunRender::Shader = cdGunRender::VS[0];
-    nglDxRegisterPShader((unsigned int**)cdGunPixel::PS, cdGunPixel::PShaderTable[0]);
-    cdGunPixel::Shader = cdGunPixel::PS[0];
-    nglDxRegisterPShader((unsigned int**)cdGunFullbrightPixel::PS, cdGunFullbrightPixel::PShaderTable[0]);
-    cdGunFullbrightPixel::Shader = cdGunFullbrightPixel::PS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdGunRender::VS, cdGunRender::VShaderTable, 0);
+    cdGunRender::Shader = cdGunRender::VS != nullptr ? cdGunRender::VS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdGunPixel::PS, cdGunPixel::PShaderTable, 0);
+    cdGunPixel::Shader = cdGunPixel::PS != nullptr ? cdGunPixel::PS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdGunFullbrightPixel::PS, cdGunFullbrightPixel::PShaderTable, 0);
+    cdGunFullbrightPixel::Shader = cdGunFullbrightPixel::PS != nullptr ? cdGunFullbrightPixel::PS[0] : 0;
 }
 
 // ============================================================================

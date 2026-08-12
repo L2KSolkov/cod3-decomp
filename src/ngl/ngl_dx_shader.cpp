@@ -31,10 +31,14 @@ static __m128 BonesArray_3[3 * 48 + 1];   // 0x10E6060
 // nglDxRegisterVShader / nglDxRegisterPShader
 // ============================================================================
 void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode) {
+    if (VS == nullptr)
+        return;  // shader microcode not ported yet (Phase 6)
     *VS = (unsigned int)Microcode;
 }
 
 void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode) {
+    if (PS == nullptr)
+        return;  // shader microcode not ported yet (Phase 6)
     *PS = (unsigned int*)Microcode;
 }
 
@@ -214,14 +218,27 @@ void nglDxSetupVShaderLights(int VSReg, nglMeshNode* MeshNode) {
 // nglDxRegisterInternalShaders - ea: 0x84E910
 // ============================================================================
 void nglDxRegisterInternalShaders() {
-    nglDOFPixelShader::PS[0] = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
-    nglDOFPixelShader::Shader = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
-    nglGlowShaderPixelPreFX::PS[0] = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
-    nglGlowShaderPixelPreFX::Shader = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
-    nglGlowShaderPixelFX::PS[0] = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
-    nglGlowShaderPixelFX::Shader = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
-    nglGlowShaderPixelPostFX::PS[0] = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
-    nglGlowShaderPixelPostFX::Shader = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
+    // microcode tables are null until Phase 6; skip rather than deref null
+    if (nglDOFPixelShader::PShaderTable != nullptr)
+    {
+        nglDOFPixelShader::PS[0] = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
+        nglDOFPixelShader::Shader = (unsigned int*)nglDOFPixelShader::PShaderTable[0];
+    }
+    if (nglGlowShaderPixelPreFX::PShaderTable != nullptr)
+    {
+        nglGlowShaderPixelPreFX::PS[0] = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
+        nglGlowShaderPixelPreFX::Shader = (unsigned int*)nglGlowShaderPixelPreFX::PShaderTable[0];
+    }
+    if (nglGlowShaderPixelFX::PShaderTable != nullptr)
+    {
+        nglGlowShaderPixelFX::PS[0] = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
+        nglGlowShaderPixelFX::Shader = (unsigned int*)nglGlowShaderPixelFX::PShaderTable[0];
+    }
+    if (nglGlowShaderPixelPostFX::PShaderTable != nullptr)
+    {
+        nglGlowShaderPixelPostFX::PS[0] = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
+        nglGlowShaderPixelPostFX::Shader = (unsigned int*)nglGlowShaderPixelPostFX::PShaderTable[0];
+    }
 }
 
 // ============================================================================

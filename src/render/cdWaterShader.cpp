@@ -98,9 +98,9 @@ void ToggleCDWaterShader() {
 // ============================================================================
 void cdWaterShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdWaterRender::VS, cdWaterRender::VShaderTable[0]);
-    nglDxRegisterPShader((unsigned int**)cdWaterPixel::PS, cdWaterPixel::PShaderTable[0]);
-    nglDxRegisterPShader((unsigned int**)cdWaterFullbrightPixel::PS, cdWaterFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterVShaderSafe((unsigned int*)cdWaterRender::VS, cdWaterRender::VShaderTable, 0);
+    nglDxRegisterPShaderSafe((unsigned int**)cdWaterPixel::PS, cdWaterPixel::PShaderTable, 0);
+    nglDxRegisterPShaderSafe((unsigned int**)cdWaterFullbrightPixel::PS, cdWaterFullbrightPixel::PShaderTable, 0);
 }
 
 // ============================================================================

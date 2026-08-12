@@ -72,19 +72,19 @@ void ToggleCDWorldPointLitShader() {
 void cdWorldPointLitShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdWorldPointLitRender::VS[v0], cdWorldPointLitRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdWorldPointLitRender::VS[v0], cdWorldPointLitRender::VShaderTable, v0);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdWorldPointLitProjectedRender::VS[v0], cdWorldPointLitProjectedRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdWorldPointLitProjectedRender::VS[v0], cdWorldPointLitProjectedRender::VShaderTable, v0);
     }
     for (int v0 = 0, i = 4; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdWorldPointLitPixel::PS[0][v0], cdWorldPointLitPixel::PShaderTable[0][v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdWorldPointLitPixel::PS[0][v0], cdWorldPointLitPixel::PShaderTable[0], v0);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdWorldPointLitProjectedPixel::PS[v0], cdWorldPointLitProjectedPixel::PShaderTable[v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdWorldPointLitProjectedPixel::PS[v0], cdWorldPointLitProjectedPixel::PShaderTable, v0);
     }
-    nglDxRegisterPShader((unsigned int**)cdWorldPointLitSolidColorPixel::PS, cdWorldPointLitSolidColorPixel::PShaderTable[0]);
-    cdWorldPointLitSolidColorPixel::Shader = cdWorldPointLitSolidColorPixel::PS[0];
+    nglDxRegisterPShaderSafe((unsigned int**)cdWorldPointLitSolidColorPixel::PS, cdWorldPointLitSolidColorPixel::PShaderTable, 0);
+    cdWorldPointLitSolidColorPixel::Shader = cdWorldPointLitSolidColorPixel::PS != nullptr ? cdWorldPointLitSolidColorPixel::PS[0] : 0;
 }
 
 // ============================================================================

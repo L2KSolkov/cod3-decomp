@@ -43,7 +43,7 @@ namespace cdWorldSolidColorPixel {
 // ============================================================================
 inline void cdWorldRender_RegisterShader() {
     for (int v0 = 0, i = 4; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdWorldRender::VS[0][v0], cdWorldRender::VShaderTable[0][v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdWorldRender::VS[0][v0], cdWorldRender::VShaderTable[0], v0);
     }
 }
 
@@ -53,7 +53,7 @@ inline void cdWorldRender_RegisterShader() {
 // ============================================================================
 inline void cdWorldProjectedRender_RegisterShader() {
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdWorldProjectedRender::VS[v0], cdWorldProjectedRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdWorldProjectedRender::VS[v0], cdWorldProjectedRender::VShaderTable, v0);
     }
 }
 
@@ -63,7 +63,7 @@ inline void cdWorldProjectedRender_RegisterShader() {
 // ============================================================================
 inline void cdWorldPixel_RegisterShader() {
     for (int v0 = 0, i = 8; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdWorldPixel::PS[0][0][v0], cdWorldPixel::PShaderTable[0][0][v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdWorldPixel::PS[0][0][v0], cdWorldPixel::PShaderTable[0][0], v0);
     }
 }
 
@@ -73,7 +73,7 @@ inline void cdWorldPixel_RegisterShader() {
 // ============================================================================
 inline void cdWorldProjectedPixel_RegisterShader() {
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdWorldProjectedPixel::PS[v0], cdWorldProjectedPixel::PShaderTable[v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdWorldProjectedPixel::PS[v0], cdWorldProjectedPixel::PShaderTable, v0);
     }
 }
 
@@ -118,8 +118,8 @@ void cdWorldShader::Register() {
     cdWorldProjectedRender_RegisterShader();
     cdWorldPixel_RegisterShader();
     cdWorldProjectedPixel_RegisterShader();
-    nglDxRegisterPShader((unsigned int**)cdWorldSolidColorPixel::PS, cdWorldSolidColorPixel::PShaderTable[0]);
-    cdWorldSolidColorPixel::Shader = cdWorldSolidColorPixel::PS[0];
+    nglDxRegisterPShaderSafe((unsigned int**)cdWorldSolidColorPixel::PS, cdWorldSolidColorPixel::PShaderTable, 0);
+    cdWorldSolidColorPixel::Shader = cdWorldSolidColorPixel::PS != nullptr ? cdWorldSolidColorPixel::PS[0] : 0;
 }
 
 // ============================================================================

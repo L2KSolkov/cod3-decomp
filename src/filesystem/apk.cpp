@@ -8,6 +8,7 @@
 #include <cstring>
 #include <cstdio>
 #include <cstdint>
+#include <cstdlib>
 
 namespace apk {
 
@@ -34,12 +35,12 @@ bool _tlAssert(const char* file, int line, const char* cond, const char* msg)
 }
 void* tlMemAlloc(uint32_t size, uint32_t align, uint32_t flags)
 {
-    (void)size; (void)align; (void)flags;
-    return nullptr;
+    (void)align; (void)flags;
+    return malloc(size ? size : 1);
 }
 void tlMemFree(void* ptr)
 {
-    (void)ptr;
+    free(ptr);
 }
 void tlWarning(const char* fmt, ...)
 {

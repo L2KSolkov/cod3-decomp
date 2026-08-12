@@ -99,13 +99,13 @@ void ToggleCDSimpleAlphaShader() {
 void cdSimpleAlphaShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdSimpleAlphaRender::VS[v0], cdSimpleAlphaRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdSimpleAlphaRender::VS[v0], cdSimpleAlphaRender::VShaderTable, v0);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdSimpleAlphaPixel::PS[v0], cdSimpleAlphaPixel::PShaderTable[v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdSimpleAlphaPixel::PS[v0], cdSimpleAlphaPixel::PShaderTable, v0);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdSimpleAlphaPixel_Fullbright::PS[v0], cdSimpleAlphaPixel_Fullbright::PShaderTable[v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdSimpleAlphaPixel_Fullbright::PS[v0], cdSimpleAlphaPixel_Fullbright::PShaderTable, v0);
     }
 }
 

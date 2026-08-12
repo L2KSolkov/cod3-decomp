@@ -117,10 +117,10 @@ void ToggleCDFlagShader() {
 // ============================================================================
 void cdFlagShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdFlagVertex::VS, cdFlagVertex::VShaderTable[0]);
-    cdFlagVertex::Shader = cdFlagVertex::VS[0];
-    nglDxRegisterPShader((unsigned int**)cdFlagPixel::PS, cdFlagPixel::PShaderTable[0]);
-    cdFlagPixel::Shader = cdFlagPixel::PS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdFlagVertex::VS, cdFlagVertex::VShaderTable, 0);
+    cdFlagVertex::Shader = cdFlagVertex::VS != nullptr ? cdFlagVertex::VS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdFlagPixel::PS, cdFlagPixel::PShaderTable, 0);
+    cdFlagPixel::Shader = cdFlagPixel::PS != nullptr ? cdFlagPixel::PS[0] : 0;
 }
 
 // ============================================================================

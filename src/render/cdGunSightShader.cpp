@@ -97,9 +97,9 @@ void ToggleCDGunSightShader() {
 // ============================================================================
 void cdGunSightShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdGunSightRender::VS, cdGunSightRender::VShaderTable[0]);
-    nglDxRegisterPShader((unsigned int**)cdGunSightPixel::PS, cdGunSightPixel::PShaderTable[0]);
-    nglDxRegisterPShader((unsigned int**)cdGunSightFullbrightPixel::PS, cdGunSightFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterVShaderSafe((unsigned int*)cdGunSightRender::VS, cdGunSightRender::VShaderTable, 0);
+    nglDxRegisterPShaderSafe((unsigned int**)cdGunSightPixel::PS, cdGunSightPixel::PShaderTable, 0);
+    nglDxRegisterPShaderSafe((unsigned int**)cdGunSightFullbrightPixel::PS, cdGunSightFullbrightPixel::PShaderTable, 0);
 }
 
 // ============================================================================

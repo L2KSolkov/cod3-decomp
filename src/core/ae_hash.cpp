@@ -4,14 +4,7 @@
 // ============================================================================
 
 #include <stdint.h>
-
-// Forward declaration — real implementation in tlFixedString
-struct tlFixedString {
-    unsigned int hash;
-    // ... rest of type TBD
-
-    tlFixedString(const char* str);
-};
+#include "core/tlFixedString.h"
 
 unsigned int AeHash(const char* str) {
     if (!str) return 0;

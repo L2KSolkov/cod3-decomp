@@ -114,10 +114,10 @@ void InitCDWheelMarkVertexDefBuilder() {
 // ============================================================================
 void cdWheelMarkShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdWheelMarkShaderVertex::VS, cdWheelMarkShaderVertex::VShaderTable[0]);
-    cdWheelMarkShaderVertex::Shader = cdWheelMarkShaderVertex::VS[0];
-    nglDxRegisterPShader((unsigned int**)cdWheelMarkShaderPixel::PS, cdWheelMarkShaderPixel::PShaderTable[0]);
-    cdWheelMarkShaderPixel::Shader = cdWheelMarkShaderPixel::PS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdWheelMarkShaderVertex::VS, cdWheelMarkShaderVertex::VShaderTable, 0);
+    cdWheelMarkShaderVertex::Shader = cdWheelMarkShaderVertex::VS != nullptr ? cdWheelMarkShaderVertex::VS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdWheelMarkShaderPixel::PS, cdWheelMarkShaderPixel::PShaderTable, 0);
+    cdWheelMarkShaderPixel::Shader = cdWheelMarkShaderPixel::PS != nullptr ? cdWheelMarkShaderPixel::PS[0] : 0;
 }
 
 // ============================================================================

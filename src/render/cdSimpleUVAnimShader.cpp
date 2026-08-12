@@ -103,12 +103,12 @@ void ToggleCDSimpleUVAnimShader() {
 // ============================================================================
 void cdSimpleUVAnimShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdSimpleUVAnimRender::VS, cdSimpleUVAnimRender::VShaderTable[0]);
-    cdSimpleUVAnimRender::Shader = cdSimpleUVAnimRender::VS[0];
-    nglDxRegisterPShader((unsigned int**)cdSimpleUVAnimPixel::PS, cdSimpleUVAnimPixel::PShaderTable[0]);
-    cdSimpleUVAnimPixel::Shader = cdSimpleUVAnimPixel::PS[0];
-    nglDxRegisterPShader((unsigned int**)cdSimpleUVAnimFullbrightPixel::PS, cdSimpleUVAnimFullbrightPixel::PShaderTable[0]);
-    cdSimpleUVAnimFullbrightPixel::Shader = cdSimpleUVAnimFullbrightPixel::PS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdSimpleUVAnimRender::VS, cdSimpleUVAnimRender::VShaderTable, 0);
+    cdSimpleUVAnimRender::Shader = cdSimpleUVAnimRender::VS != nullptr ? cdSimpleUVAnimRender::VS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleUVAnimPixel::PS, cdSimpleUVAnimPixel::PShaderTable, 0);
+    cdSimpleUVAnimPixel::Shader = cdSimpleUVAnimPixel::PS != nullptr ? cdSimpleUVAnimPixel::PS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleUVAnimFullbrightPixel::PS, cdSimpleUVAnimFullbrightPixel::PShaderTable, 0);
+    cdSimpleUVAnimFullbrightPixel::Shader = cdSimpleUVAnimFullbrightPixel::PS != nullptr ? cdSimpleUVAnimFullbrightPixel::PS[0] : 0;
 }
 
 // ============================================================================

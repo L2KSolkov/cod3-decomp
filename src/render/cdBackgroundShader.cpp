@@ -104,12 +104,12 @@ void ToggleCDBackgroundShader() {
 // ============================================================================
 void cdBackgroundShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdBackgroundRender::VS, cdBackgroundRender::VShaderTable[0]);
-    cdBackgroundRender::Shader = cdBackgroundRender::VS[0];
-    nglDxRegisterPShader((unsigned int**)cdBackgroundPixel::PS, cdBackgroundPixel::PShaderTable[0]);
-    cdBackgroundPixel::Shader = cdBackgroundPixel::PS[0];
-    nglDxRegisterPShader((unsigned int**)cdBackgroundFullbrightPixel::PS, cdBackgroundFullbrightPixel::PShaderTable[0]);
-    cdBackgroundFullbrightPixel::Shader = cdBackgroundFullbrightPixel::PS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdBackgroundRender::VS, cdBackgroundRender::VShaderTable, 0);
+    cdBackgroundRender::Shader = cdBackgroundRender::VS != nullptr ? cdBackgroundRender::VS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdBackgroundPixel::PS, cdBackgroundPixel::PShaderTable, 0);
+    cdBackgroundPixel::Shader = cdBackgroundPixel::PS != nullptr ? cdBackgroundPixel::PS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdBackgroundFullbrightPixel::PS, cdBackgroundFullbrightPixel::PShaderTable, 0);
+    cdBackgroundFullbrightPixel::Shader = cdBackgroundFullbrightPixel::PS != nullptr ? cdBackgroundFullbrightPixel::PS[0] : 0;
 }
 
 // ============================================================================

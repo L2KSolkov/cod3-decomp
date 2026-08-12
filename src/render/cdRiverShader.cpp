@@ -120,13 +120,13 @@ int cdRiverShaderNode::GetVShaderFogConstantOffset() {
 // ============================================================================
 void cdRiverShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdRiverRender::VS, cdRiverRender::VShaderTable[0]);
-    cdRiverRender::Shader = cdRiverRender::VS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdRiverRender::VS, cdRiverRender::VShaderTable, 0);
+    cdRiverRender::Shader = cdRiverRender::VS != nullptr ? cdRiverRender::VS[0] : 0;
     for (int v0 = 0, i = 8; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdRiverPixel::PS[0][0][v0], cdRiverPixel::PShaderTable[0][0][v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdRiverPixel::PS[0][0][v0], cdRiverPixel::PShaderTable[0][0], v0);
     }
-    nglDxRegisterPShader((unsigned int**)cdRiverPixel_Fullbright::PS, cdRiverPixel_Fullbright::PShaderTable[0]);
-    cdRiverPixel_Fullbright::Shader = cdRiverPixel_Fullbright::PS[0];
+    nglDxRegisterPShaderSafe((unsigned int**)cdRiverPixel_Fullbright::PS, cdRiverPixel_Fullbright::PShaderTable, 0);
+    cdRiverPixel_Fullbright::Shader = cdRiverPixel_Fullbright::PS != nullptr ? cdRiverPixel_Fullbright::PS[0] : 0;
 }
 
 // ============================================================================

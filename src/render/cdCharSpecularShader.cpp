@@ -65,12 +65,12 @@ void ToggleCDCharSpecularShader() {
 void cdCharSpecularShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdCharSpecularShaderRender::VS[v0], cdCharSpecularShaderRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdCharSpecularShaderRender::VS[v0], cdCharSpecularShaderRender::VShaderTable, v0);
     }
-    nglDxRegisterPShader((unsigned int**)cdCharSpecularPixel::PS, cdCharSpecularPixel::PShaderTable[0]);
-    cdCharSpecularPixel::Shader = cdCharSpecularPixel::PS[0];
-    nglDxRegisterPShader((unsigned int**)cdCharSpecularFullbrightPixel::PS, cdCharSpecularFullbrightPixel::PShaderTable[0]);
-    cdCharSpecularFullbrightPixel::Shader = cdCharSpecularFullbrightPixel::PS[0];
+    nglDxRegisterPShaderSafe((unsigned int**)cdCharSpecularPixel::PS, cdCharSpecularPixel::PShaderTable, 0);
+    cdCharSpecularPixel::Shader = cdCharSpecularPixel::PS != nullptr ? cdCharSpecularPixel::PS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdCharSpecularFullbrightPixel::PS, cdCharSpecularFullbrightPixel::PShaderTable, 0);
+    cdCharSpecularFullbrightPixel::Shader = cdCharSpecularFullbrightPixel::PS != nullptr ? cdCharSpecularFullbrightPixel::PS[0] : 0;
 }
 
 // ============================================================================

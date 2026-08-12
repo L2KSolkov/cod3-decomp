@@ -72,19 +72,19 @@ void ToggleCDWorldBlendPointLitShader() {
 void cdWorldBlendPointLitShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdWorldBlendPointLitRender::VS[v0], cdWorldBlendPointLitRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdWorldBlendPointLitRender::VS[v0], cdWorldBlendPointLitRender::VShaderTable, v0);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdWorldBlendPointLitProjectedRender::VS[v0], cdWorldBlendPointLitProjectedRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdWorldBlendPointLitProjectedRender::VS[v0], cdWorldBlendPointLitProjectedRender::VShaderTable, v0);
     }
     for (int v0 = 0, i = 4; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdWorldBlendPointLitPixel::PS[0][v0], cdWorldBlendPointLitPixel::PShaderTable[0][v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdWorldBlendPointLitPixel::PS[0][v0], cdWorldBlendPointLitPixel::PShaderTable[0], v0);
     }
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdWorldBlendPointLitProjectedPixel::PS[v0], cdWorldBlendPointLitProjectedPixel::PShaderTable[v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdWorldBlendPointLitProjectedPixel::PS[v0], cdWorldBlendPointLitProjectedPixel::PShaderTable, v0);
     }
-    nglDxRegisterPShader((unsigned int**)cdWorldBlendPointLitSolidColorPixel::PS, cdWorldBlendPointLitSolidColorPixel::PShaderTable[0]);
-    cdWorldBlendPointLitSolidColorPixel::Shader = cdWorldBlendPointLitSolidColorPixel::PS[0];
+    nglDxRegisterPShaderSafe((unsigned int**)cdWorldBlendPointLitSolidColorPixel::PS, cdWorldBlendPointLitSolidColorPixel::PShaderTable, 0);
+    cdWorldBlendPointLitSolidColorPixel::Shader = cdWorldBlendPointLitSolidColorPixel::PS != nullptr ? cdWorldBlendPointLitSolidColorPixel::PS[0] : 0;
 }
 
 // ============================================================================

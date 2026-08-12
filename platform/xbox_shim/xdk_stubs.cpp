@@ -2,17 +2,16 @@
 // xdk_stubs.cpp - XDK (Xbox) API link stubs (NEVER reconstruct; Phase 6
 // backends replace these). Generated from the linker unresolved list.
 // NOTE: this toolchain only accepts calling-convention keywords AFTER the
-// return type on free functions, and rejects __fastcall definitions, so
-// the fastcall entry points are aliased via /alternatename pragmas.
+// return type on free functions.
 // ============================================================================
 
 #include <stdint.h>
 
 extern "C" {
 
-void __stdcall D3DDevice_SetRenderState_Simple(unsigned int a0, unsigned int a1) {}
-void __stdcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int a0, unsigned int a1) {}
-void __stdcall D3DDevice_SetVertexShaderConstantNotInlineFast(unsigned int a0, unsigned int a1, unsigned int a2) {}
+void __fastcall D3DDevice_SetRenderState_Simple(unsigned int a0, unsigned int a1) {}
+void __fastcall D3DDevice_SetVertexShaderConstant1Fast(unsigned int a0, unsigned int a1) {}
+void __fastcall D3DDevice_SetVertexShaderConstantNotInlineFast(unsigned int a0, unsigned int a1, unsigned int a2) {}
 void __cdecl compress2(void) {}
 unsigned int __stdcall D3DBaseTexture_GetLevelCount(unsigned int a0) { return 0; }
 void __stdcall D3DCubeTexture_GetCubeMapSurface2(unsigned int a0, unsigned int a1, unsigned int a2) {}
@@ -133,7 +132,3 @@ void __stdcall D3DDevice_SetVertexShaderInputDirect(unsigned int a0, unsigned in
 void __stdcall D3DResource_Release(unsigned int a0) {}
 int __cdecl __fpclass(double a0) { (void)a0; return 0; }
 }
-
-#pragma comment(linker, "/alternatename:@D3DDevice_SetRenderState_Simple@8=_D3DDevice_SetRenderState_Simple@8")
-#pragma comment(linker, "/alternatename:@D3DDevice_SetVertexShaderConstant1Fast@8=_D3DDevice_SetVertexShaderConstant1Fast@8")
-#pragma comment(linker, "/alternatename:@D3DDevice_SetVertexShaderConstantNotInlineFast@12=_D3DDevice_SetVertexShaderConstantNotInlineFast@12")

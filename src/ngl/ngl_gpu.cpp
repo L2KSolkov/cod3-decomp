@@ -175,8 +175,12 @@ void nglGpuInitShaders() {
     nglGpuPCUVVertexFmt = *gpuCreateVertexFormat(&result, 0x18u, nglGpuPCUVVertexElements);
     nglGpuPUV4VertexFmt = *gpuCreateVertexFormat(&result, 0x2Cu, nglGpuPUV4VertexElements);
 
-    nglDxRegisterVShader(nglGpuDebugVertexShader::VS, nglGpuDebugVertexShader::VShaderTable[0]);
-    nglGpuDebugVertexShader::Shader = nglGpuDebugVertexShader::VS[0];
+    nglDxRegisterVShaderSafe(nglGpuDebugVertexShader::VS,
+                             nglGpuDebugVertexShader::VShaderTable, 0);
+    nglGpuDebugVertexShader::Shader =
+        nglGpuDebugVertexShader::VS != nullptr
+            ? nglGpuDebugVertexShader::VS[0]
+            : 0;
     nglDxRegisterPShader(nglGpuDebugPixelShader::PS, nglGpuDebugPixelShader::PShaderTable[0]);
     nglGpuDebugPixelShader::Shader = nglGpuDebugPixelShader::PS[0];
     nglDxRegisterVShader(nglGpuQuadPCVertexShader::VS, nglGpuQuadPCVertexShader::VShaderTable[0]);

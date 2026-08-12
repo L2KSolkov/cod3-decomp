@@ -93,8 +93,8 @@ void ToggleCDDebugShader() {
 // ============================================================================
 void cdDebugShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdDebugShaderRender::VS, cdDebugShaderRender::VShaderTable[0]);
-    nglDxRegisterPShader((unsigned int**)cdDebugPixel::PS, cdDebugPixel::PShaderTable[0]);
+    nglDxRegisterVShaderSafe((unsigned int*)cdDebugShaderRender::VS, cdDebugShaderRender::VShaderTable, 0);
+    nglDxRegisterPShaderSafe((unsigned int**)cdDebugPixel::PS, cdDebugPixel::PShaderTable, 0);
 }
 
 // ============================================================================

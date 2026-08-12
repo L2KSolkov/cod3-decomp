@@ -107,6 +107,24 @@ extern void nglRenderDebug(void);
 extern void nglListSendBatch(jqBatch* pBatch);
 extern void nglDxRegisterVShader(unsigned int* VS, const unsigned int* Microcode);
 extern void nglDxRegisterPShader(unsigned int** PS, const unsigned int* Microcode);
+
+// Guarded registration for shader init (render_xboxr cd*Shader.o). The
+// microcode tables are not extracted until Phase 6; skip when the ported
+// static is still the null placeholder.
+inline void nglDxRegisterVShaderSafe(unsigned int* VS,
+                                     const unsigned int* const* table,
+                                     int index)
+{
+    if (VS != nullptr && table != nullptr)
+        nglDxRegisterVShader(VS, table[index]);
+}
+inline void nglDxRegisterPShaderSafe(unsigned int** PS,
+                                     const unsigned int* const* table,
+                                     int index)
+{
+    if (PS != nullptr && table != nullptr)
+        nglDxRegisterPShader(PS, table[index]);
+}
 extern nglScene* nglRootBuildScene;
 extern int nglSceneRecursion;
 

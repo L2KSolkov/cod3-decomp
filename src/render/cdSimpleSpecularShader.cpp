@@ -106,10 +106,10 @@ void ToggleCDSimpleSpecularShader() {
 void cdSimpleSpecularShader::Register() {
     nglShader::Register();
     for (int v0 = 0, i = 2; i != 0; --i, ++v0) {
-        nglDxRegisterVShader((unsigned int*)&cdSimpleSpecularRender::VS[v0], cdSimpleSpecularRender::VShaderTable[v0]);
+        nglDxRegisterVShaderSafe((unsigned int*)&cdSimpleSpecularRender::VS[v0], cdSimpleSpecularRender::VShaderTable, v0);
     }
-    nglDxRegisterPShader((unsigned int**)cdSimpleSpecularPixel::PS, cdSimpleSpecularPixel::PShaderTable[0]);
-    nglDxRegisterPShader((unsigned int**)cdSimpleSpecularFullbrightPixel::PS, cdSimpleSpecularFullbrightPixel::PShaderTable[0]);
+    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleSpecularPixel::PS, cdSimpleSpecularPixel::PShaderTable, 0);
+    nglDxRegisterPShaderSafe((unsigned int**)cdSimpleSpecularFullbrightPixel::PS, cdSimpleSpecularFullbrightPixel::PShaderTable, 0);
 }
 
 // ============================================================================

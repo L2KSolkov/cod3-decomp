@@ -101,12 +101,12 @@ void ToggleCDWorldVertexLitShader() {
 // ============================================================================
 void cdWorldVertexLitShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdWorldVertexLitRender::VS, cdWorldVertexLitRender::VShaderTable[0]);
-    cdWorldVertexLitRender::Shader = cdWorldVertexLitRender::VS[0];
-    nglDxRegisterPShader((unsigned int**)cdWorldVertexLitPixel::PS, cdWorldVertexLitPixel::PShaderTable[0]);
-    cdWorldVertexLitPixel::Shader = cdWorldVertexLitPixel::PS[0];
-    nglDxRegisterPShader((unsigned int**)cdWorldVertexLitFullbrightPixel::PS, cdWorldVertexLitFullbrightPixel::PShaderTable[0]);
-    cdWorldVertexLitFullbrightPixel::Shader = cdWorldVertexLitFullbrightPixel::PS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdWorldVertexLitRender::VS, cdWorldVertexLitRender::VShaderTable, 0);
+    cdWorldVertexLitRender::Shader = cdWorldVertexLitRender::VS != nullptr ? cdWorldVertexLitRender::VS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdWorldVertexLitPixel::PS, cdWorldVertexLitPixel::PShaderTable, 0);
+    cdWorldVertexLitPixel::Shader = cdWorldVertexLitPixel::PS != nullptr ? cdWorldVertexLitPixel::PS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdWorldVertexLitFullbrightPixel::PS, cdWorldVertexLitFullbrightPixel::PShaderTable, 0);
+    cdWorldVertexLitFullbrightPixel::Shader = cdWorldVertexLitFullbrightPixel::PS != nullptr ? cdWorldVertexLitFullbrightPixel::PS[0] : 0;
 }
 
 // ============================================================================

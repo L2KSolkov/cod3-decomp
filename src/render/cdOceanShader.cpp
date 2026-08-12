@@ -146,13 +146,13 @@ int cdOceanShaderNode::GetVShaderParamsStartAddress() {
 // ============================================================================
 void cdOceanShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdOceanRender::VS, cdOceanRender::VShaderTable[0]);
-    cdOceanRender::Shader = cdOceanRender::VS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdOceanRender::VS, cdOceanRender::VShaderTable, 0);
+    cdOceanRender::Shader = cdOceanRender::VS != nullptr ? cdOceanRender::VS[0] : 0;
     for (int v0 = 0, i = 8; i != 0; --i, ++v0) {
-        nglDxRegisterPShader((unsigned int**)&cdOceanPixel::PS[0][0][v0], cdOceanPixel::PShaderTable[0][0][v0]);
+        nglDxRegisterPShaderSafe((unsigned int**)&cdOceanPixel::PS[0][0][v0], cdOceanPixel::PShaderTable[0][0], v0);
     }
-    nglDxRegisterPShader((unsigned int**)cdOceanPixel_Fullbright::PS, cdOceanPixel_Fullbright::PShaderTable[0]);
-    cdOceanPixel_Fullbright::Shader = cdOceanPixel_Fullbright::PS[0];
+    nglDxRegisterPShaderSafe((unsigned int**)cdOceanPixel_Fullbright::PS, cdOceanPixel_Fullbright::PShaderTable, 0);
+    cdOceanPixel_Fullbright::Shader = cdOceanPixel_Fullbright::PS != nullptr ? cdOceanPixel_Fullbright::PS[0] : 0;
 }
 
 // ============================================================================

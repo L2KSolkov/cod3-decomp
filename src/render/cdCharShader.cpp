@@ -68,12 +68,12 @@ void ToggleCDCharShader() {
 // ============================================================================
 void cdCharShader::Register() {
     nglShader::Register();
-    nglDxRegisterVShader((unsigned int*)cdCharShaderRender::VS, cdCharShaderRender::VShaderTable[0]);
-    cdCharShaderRender::Shader = cdCharShaderRender::VS[0];
-    nglDxRegisterPShader((unsigned int**)cdCharPixel::PS, cdCharPixel::PShaderTable[0]);
-    cdCharPixel::Shader = cdCharPixel::PS[0];
-    nglDxRegisterPShader((unsigned int**)cdCharFullbrightPixel::PS, cdCharFullbrightPixel::PShaderTable[0]);
-    cdCharFullbrightPixel::Shader = cdCharFullbrightPixel::PS[0];
+    nglDxRegisterVShaderSafe((unsigned int*)cdCharShaderRender::VS, cdCharShaderRender::VShaderTable, 0);
+    cdCharShaderRender::Shader = cdCharShaderRender::VS != nullptr ? cdCharShaderRender::VS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdCharPixel::PS, cdCharPixel::PShaderTable, 0);
+    cdCharPixel::Shader = cdCharPixel::PS != nullptr ? cdCharPixel::PS[0] : 0;
+    nglDxRegisterPShaderSafe((unsigned int**)cdCharFullbrightPixel::PS, cdCharFullbrightPixel::PShaderTable, 0);
+    cdCharFullbrightPixel::Shader = cdCharFullbrightPixel::PS != nullptr ? cdCharFullbrightPixel::PS[0] : 0;
 }
 
 // ============================================================================
