@@ -27,6 +27,7 @@ void calc_velocities(const math::Mat43& mat0, const math::Mat43& mat1,
                      const math::Dir3& center_offset_loc, float delta_t,
                      math::Dir3* t_vel, math::Dir3* a_vel);
 }
+void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
 
 class PakManager {
 public:
@@ -314,6 +315,7 @@ private:
     void update_bone_vel_info(float delta_t);  // ?update_bone_vel_info@biped_phys_info@@AAEXM@Z
     bool setup(Entity* owner);                 // ?setup@biped_phys_info@@AAE_NPAVEntity@@@Z
 public:
+    void update_vel_matrices();                // ?update_vel_matrices@biped_phys_info@@QAEXXZ
     void prolog_frame_advance(float delta_t);  // ?prolog_frame_advance@biped_phys_info@@QAEXM@Z
 };
 
@@ -514,6 +516,62 @@ bool biped_phys_info::setup(Entity* owner)
     m_last_origin.v = m_cur_origin.v;
     m_last_angles.v = m_cur_angles.v;
     return success;
+}
+
+// Mat43 row-vector multiply: result = A * B (rows of A transformed by B).
+static math::Mat43 MulMat43Row(const math::Mat43& A, const math::Mat43& B)
+{
+    math::Mat43 r;
+    r.x.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(A.x.v, A.x.v, 0), B.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(A.x.v, A.x.v, 85), B.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(A.x.v, A.x.v, 170), B.z.v));
+    r.y.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(A.y.v, A.y.v, 0), B.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(A.y.v, A.y.v, 85), B.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(A.y.v, A.y.v, 170), B.z.v));
+    r.z.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(A.z.v, A.z.v, 0), B.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(A.z.v, A.z.v, 85), B.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(A.z.v, A.z.v, 170), B.z.v));
+    r.w.v = _mm_add_ps(
+        _mm_add_ps(_mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(A.w.v, A.w.v, 0), B.x.v),
+                              _mm_mul_ps(_mm_shuffle_ps(A.w.v, A.w.v, 85), B.y.v)),
+                   _mm_mul_ps(_mm_shuffle_ps(A.w.v, A.w.v, 170), B.z.v)),
+        B.w.v);
+    return r;
+}
+
+// ea: 0x6F3150
+void biped_phys_info::update_vel_matrices()
+{
+    // World transforms from cur/last angles + origin (AnglesToAxis layout:
+    // axis[0..2] = x/y/z rows, 4th lane 0, translation in w).
+    float curAxis[3][3], lastAxis[3][3];
+    AnglesToAxis(&m_cur_angles, curAxis);
+    AnglesToAxis(&m_last_angles, lastAxis);
+
+    math::Mat43 curWorld, lastWorld;
+    curWorld.x.v = _mm_loadu_ps(&curAxis[0][0]);
+    curWorld.y.v = _mm_loadu_ps(&curAxis[1][0]);
+    curWorld.z.v = _mm_loadu_ps(&curAxis[2][0]);
+    curWorld.w.v = m_cur_origin.v;
+    lastWorld.x.v = _mm_loadu_ps(&lastAxis[0][0]);
+    lastWorld.y.v = _mm_loadu_ps(&lastAxis[1][0]);
+    lastWorld.z.v = _mm_loadu_ps(&lastAxis[2][0]);
+    lastWorld.w.v = m_last_origin.v;
+
+    for (int i = 0; i < 10; ++i)
+    {
+        if (m_bone[i] < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 243,
+                         "m_bone[i] >= 0", defaultFileName))
+            __debugbreak();
+        math::Mat43 lm = MulMat43Row(m_last_mat[i], lastWorld);
+        math::Mat43 cm = MulMat43Row(m_cur_mat[i], curWorld);
+        memcpy(&g_last_mat[i], &lm, sizeof(math::Mat43));
+        memcpy(&g_cur_mat[i], &cm, sizeof(math::Mat43));
+    }
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
