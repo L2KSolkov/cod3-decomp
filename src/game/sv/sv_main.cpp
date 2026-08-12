@@ -31,7 +31,7 @@ extern void  Netchan_Transmit(netchan_t* chan, int length, const unsigned char* 
 extern int   Netchan_Process(netchan_t* chan, msg_t* msg);
 extern void  NET_OutOfBandPrint(netsrc_t sock, netadr_t adr, const char* format, ...);
 extern void  SV_ExecuteClientMessage(client_s* cl, msg_t* msg);
-extern const char* nullStr;
+const char* nullStr = "";  // ?nullStr@@3PBDB (sv.o)
 extern int   com_frameNumber;
 
 // SV_SpawnServer externs (cross-object; core.o / game.o / filesystem)

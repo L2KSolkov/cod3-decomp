@@ -39,7 +39,7 @@ bool gMissionDataInitialized;    // ?gMissionDataInitialized (game2.o)
 extern void BrocAddEntityThread(Entity* ent, unsigned int fcnHash,
                                 void* params);  // ?BrocAddEntityThread (scr.o)
 bool gTotalResetOfLevel;         // ?gTotalResetOfLevel (game2.o)
-extern const char* notSet;              // ?notSet (game2.o, "Not Set")
+const char* notSet = "Not Set";         // ?notSet (game2.o)
 extern int bg_iNumWeapons;              // ?bg_iNumWeapons (game.o)
 extern vmCvar_t g_drawSmokeGren;        // ?g_drawSmokeGren (g.o)
 

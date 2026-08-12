@@ -545,7 +545,7 @@ extern int timeBeforeFirstEvents;
 extern int timeBeforeServer;
 extern cvar_t* cl_stanceHoldTime;
 extern cvar_t* com_animCheck;
-extern const char* sBuildId;
+const char* sBuildId = "cod3mp";  // ?sBuildId@@3PBDB (BuildId.o @ 0x122A5D0)
 extern void tlPrintf(const char* fmt, ...);
 
 // Renderer export (refexport_t from cl_scr.cpp re_api2 pattern)

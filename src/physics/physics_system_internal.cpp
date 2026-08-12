@@ -24,6 +24,8 @@ extern const math::Dir3& Float4_Zero_212;
 
 bool tlScratchpadLocked = false;  // ?tlScratchpadLocked@@3_NA (tl_system.o data)
 phys_proftimer_callbacks g_phys_proftimer_callbacks;  // ?g_phys_proftimer_callbacks (phys_xboxr @ 0x14DBBF4)
+const char* SOLVER_MEMORY_ALLOCATER_ERROR_MSG =
+    "Solver memory allocater error";  // ?SOLVER_MEMORY_ALLOCATER_ERROR_MSG@@3PBDB (physics_system_internal.o)
 
 // phys_constraint_solver_multithreaded.o (list_constraint_solver::process)
 extern void list_constraint_solver_process(

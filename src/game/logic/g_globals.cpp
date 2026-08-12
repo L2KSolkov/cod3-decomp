@@ -499,3 +499,8 @@ const char* const defaultFileName = "\0\0sv_cheats";
 // .rdata @ 0xD0155C / 0xD0156C (verified against XBE bytes)
 extern const float colorRed[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
 extern const float colorGreen[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
+extern const float colorBlue[4] = { 0.0f, 0.0f, 1.0f, 1.0f };       // ?colorBlue@@3QBMB (game.o @ 0x10F0A8C)
+extern const float colorYellow[4] = { 1.0f, 1.0f, 0.0f, 1.0f };     // ?colorYellow@@3QBMB (game.o @ 0x10F0A9C)
+extern const float colorMagenta[4] = { 1.0f, 0.0f, 1.0f, 1.0f };    // ?colorMagenta@@3QBMB (game.o @ 0x10F0ACC)
+extern const float colorCyan[4] = { 0.0f, 1.0f, 1.0f, 1.0f };       // ?colorCyan@@3QBMB (game.o @ 0x10F0ADC)
+extern const float colorMdCyan[4] = { 0.0f, 0.5f, 0.5f, 1.0f };     // ?colorMdCyan@@3QBMB (game.o @ 0x10F0AFC)
