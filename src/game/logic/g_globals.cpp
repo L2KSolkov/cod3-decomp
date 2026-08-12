@@ -491,6 +491,7 @@ cFreeList<Entity> gEntFreeList;    // @ 0xF50D04
 
 str_const_t str_const;             // @ 0xECBD30 (runtime-filled)
 HashString hash_const_info_player_deathmatch;  // ?hash_const_info_player_deathmatch (g.o)
+hash_const_t hash_const;  // ?hash_const@@3Uhash_const_t@@A (g.o; runtime-filled)
 
 // .rdata @ 0xCD67AE - 2 NUL bytes then "sv_cheats" (verified vs XBE bytes)
 const char* const defaultFileName = "\0\0sv_cheats";
