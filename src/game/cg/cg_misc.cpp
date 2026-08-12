@@ -3667,7 +3667,12 @@ extern void* GetTextureData(const char* name, int image_type,
 extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
                           const char* defaultValue, int flags);
 extern void Cvar_Set(const char* var_name, const char* value);
-extern int trap_R_RegisterShaderNoMip(const char* name, int imagetype);
+// trap_R_RegisterShaderNoMip artifact (cg.o; shader registry stub)
+int trap_R_RegisterShaderNoMip(const char* name, int imagetype)
+{
+    (void)name; (void)imagetype;
+    return 0;
+}
 void* off_DF9208[64];  // cg.o data
 extern void* SoundMediaMgr_j_nullsub_91(void* self);
 enum netsrc_t {

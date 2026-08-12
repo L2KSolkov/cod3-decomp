@@ -641,7 +641,12 @@ struct statmonitor_s;
 extern void StatMon_GetStatsArray(const statmonitor_s** stats, int* count);
 extern const char* CG_SafeTranslateString_Internal(const char* pszReference,
                                                    const char* pszSystem);
-extern int trap_R_Text_Height(int font, float scale);
+// trap_R_Text_Height artifact (cg.o; text renderer stub)
+int trap_R_Text_Height(int font, float scale)
+{
+    (void)font; (void)scale;
+    return 16;
+}
 extern void SCR_UpdateScreen();
 extern int lastDraw;
 extern int callCount;
