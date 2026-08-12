@@ -130,11 +130,12 @@ public:
     void*   mConstraints;  // +0x10 (InplaceVector<PhysConstraint>)
 };
 
-// InplaceVector<T> (ae/inplace/InplaceVector.h view; 8 bytes)
+// InplaceVector<T> (ae/inplace/InplaceVector.h view; 8 bytes). Layout
+// verified from AddPiece disasm (mSize read from +0x00, elements from +0x04).
 template <typename T>
 struct InplaceVector {
-    T*           mList;  // +0x00
-    unsigned int mSize;  // +0x04
+    unsigned int mSize;  // +0x00
+    T*           mList;  // +0x04
 };
 
 // PhysConstraint (physics.o RBPhysData.h view; 40 bytes, IDA ordinal)
@@ -542,10 +543,16 @@ struct BrocAPILocal {
     uint8_t _pad[0x61C];
     TPakInfoLocal* (*mGetPakVector)(float x, float y, float z);  // +0x61C
 };
-// XModel view (XModel::name InplaceString at +0x48)
+// XModel view (lod[5] +0x24, name InplaceString +0x48)
+struct XModelLodLocal {
+    uint8_t _pad[8];
+    void*   xmodelParts;  // +0x08
+};
 struct XModelLocal {
-    uint8_t    _pad[0x48];
-    const char* mStr;  // +0x48 (name)
+    uint8_t         _pad[0x24];
+    XModelLodLocal* lod[5];  // +0x24
+    uint8_t         _pad38[0x48 - 0x38];
+    const char*     mStr;    // +0x48 (name)
 };
 // DObjSkelMat - DObj skeleton matrix (64 bytes; core_types.h view)
 struct DObjSkelMat {
@@ -1179,12 +1186,17 @@ void rb_collision_capsule::xform(const math::Mat43& mat)
 // math@@H@Z / ?GetBoneIndex@DObj@@QBEHPBD@Z) - stub until render.o is ported.
 class DObj {
 public:
-    uint8_t _pad0[0xC0];
+    uint8_t _pad0[0x60];
+    unsigned char modelParents[8];  // +0x60
+    uint8_t _pad68[0x80 - 0x68];
+    void*   models[8];              // +0x80 (IVPointer<XModel>[8]: value/pakId pairs)
+    uint8_t _padA0[0xC0 - 0xA0];
     int     mPakId;            // +0xC0
     void*   mPhysDataValue;    // +0xC4 (IVPointerRaw mPhysData)
     int     mPhysDataPakId;    // +0xC8
-    uint8_t _padCC[0xCF - 0xCC];
-    unsigned char numBones;  // +0xCF
+    uint8_t _padCC[0xCE - 0xCC];
+    unsigned char numModels;  // +0xCE
+    unsigned char numBones;   // +0xCF
 
     const math::Mat43& GetMat(int boneIndex);
     int GetBoneIndex(const char* name) const;
@@ -5744,9 +5756,178 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
 
 // stub until DObjMatriceModelToLocal (0x6FF860) is ported (Hex-Rays output
 // garbled; needs disasm-driven reconstruction)
+// XBoneHierarchy view (12 bytes: mName +0, mNameHash +4, mParentIndex +8)
+struct XBoneHierarchyLocal {
+    uint8_t _pad[8];
+    int     mParentIndex;  // +0x08
+};
+// XModelParts partial (mHierarchy InplaceVector {mSize,mList} at +0x10)
+struct XModelPartsLocal {
+    uint8_t               _pad[0x10];
+    unsigned int          mHierarchySize;  // +0x10
+    XBoneHierarchyLocal*  mHierarchy;      // +0x14
+};
+
+// Inverse-multiply helper matching DObjMatriceModelToLocal's SSE: the parent
+// rotation is transposed (orthonormal => inverse) and each row of bone is
+// dotted with its columns; the translation row is (bone.w - parent.w) · cols.
+static void InverseMultiplyLocal(const math::Mat43& parent, math::Mat43& bone)
+{
+    __m128 x = parent.x.v, y = parent.y.v, z = parent.z.v, w = parent.w.v;
+    __m128 v11 = _mm_shuffle_ps(x, y, 68);
+    __m128 col1 = _mm_shuffle_ps(v11, z, 221);
+    __m128 col0 = _mm_shuffle_ps(v11, z, 136);
+    __m128 col2 = _mm_shuffle_ps(_mm_shuffle_ps(x, y, 238), z, 168);
+    __m128 negw = _mm_xor_ps(Float4_SignMask_12, w);
+    __m128 t = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(negw, negw, 0), col0),
+            _mm_mul_ps(_mm_shuffle_ps(negw, negw, 85), col1)),
+        _mm_mul_ps(_mm_shuffle_ps(negw, negw, 170), col2));
+
+    __m128 r0 = bone.x.v;
+    __m128 r1 = bone.y.v;
+    __m128 r2 = bone.z.v;
+    __m128 r3 = bone.w.v;
+    bone.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(r0, r0, 0), col0),
+            _mm_mul_ps(_mm_shuffle_ps(r0, r0, 85), col1)),
+        _mm_mul_ps(_mm_shuffle_ps(r0, r0, 170), col2));
+    bone.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(r1, r1, 0), col0),
+            _mm_mul_ps(_mm_shuffle_ps(r1, r1, 85), col1)),
+        _mm_mul_ps(_mm_shuffle_ps(r1, r1, 170), col2));
+    bone.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(r2, r2, 0), col0),
+            _mm_mul_ps(_mm_shuffle_ps(r2, r2, 85), col1)),
+        _mm_mul_ps(_mm_shuffle_ps(r2, r2, 170), col2));
+    bone.w.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(r3, r3, 0), col0),
+            _mm_mul_ps(_mm_shuffle_ps(r3, r3, 85), col1)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(r3, r3, 170), col2), t));
+}
+
+// ea: 0x6FF860 (disasm-driven reconstruction; Hex-Rays output was garbled)
 void DObjMatriceModelToLocal(Entity* owner)
 {
-    (void)owner;
+    DObj* mDObj = owner->mDObj;
+    DObjSkelMat* MatrixArray = DObjGetMatrixArray(mDObj, 0);
+    int modelIndex = (int)mDObj->numModels - 1;
+    if (modelIndex < 0)
+        return;
+    for (; modelIndex >= 0; --modelIndex)
+    {
+        // models[] is IVPointer<XModel>[8]: { value, pakId } per slot
+        void** model_slot =
+            (void**)((char*)mDObj->models + modelIndex * 8);
+        XModelLocal* model = (XModelLocal*)model_slot[0];
+        TPakId model_pak = (TPakId)(uintptr_t)model_slot[1];
+        ValidatePakId(model_pak);
+
+        // Find the first non-null LOD; from its parts derive the hierarchy
+        // count and the parts used for the parent-index lookup.
+        XModelLodLocal* lod = model->lod[0];
+        int i = 0;
+        if (lod == nullptr)
+        {
+            while (i < 4 && model->lod[++i] == nullptr)
+                ;
+            lod = model->lod[i];
+        }
+        XModelPartsLocal* parts = nullptr;
+        unsigned int hierarchy_count = 0;
+        if (lod != nullptr && lod->xmodelParts != nullptr)
+        {
+            XModelPartsLocal* p = (XModelPartsLocal*)lod->xmodelParts;
+            hierarchy_count = p->mHierarchySize;
+            parts = p;
+            ValidatePakId(model_pak);
+        }
+
+        // parts used for the per-bone parent lookup (second scan result)
+        XModelPartsLocal* parts2 = parts;
+        if (parts2 == nullptr)
+        {
+            // fall back: re-scan for a LOD with parts
+            for (int j = 0; j < 5; ++j)
+            {
+                if (model->lod[j] != nullptr
+                    && model->lod[j]->xmodelParts != nullptr)
+                {
+                    parts2 = (XModelPartsLocal*)model->lod[j]->xmodelParts;
+                    break;
+                }
+            }
+        }
+        unsigned int v49 = hierarchy_count;
+        if (v49 == 0)
+            continue;
+
+        DObjSkelMat* v17 = DObjGetMatrixArray(mDObj, modelIndex);
+        int parent_bone = -1;
+        unsigned int v16 = v49 - 1;
+        for (;;)
+        {
+            unsigned int idx = v16;
+            if (v16 >= parts2->mHierarchySize)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                AeAssert::gCurrentLine = 81;
+                AeAssert::gCurrentExpr = "index < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+                if (v16 >= parts2->mHierarchySize)
+                    idx = 0;
+            }
+            int parent =
+                parts2->mHierarchy[idx].mParentIndex;
+            if (v16 == 0)
+            {
+                // root bone: parent from model 0's array at modelParent
+                unsigned int parent_model = mDObj->modelParents[modelIndex];
+                math::Mat43 parent_mat;
+                memcpy(&parent_mat, &MatrixArray[parent_model],
+                       sizeof(DObjSkelMat));
+                math::Mat43 bone;
+                memcpy(&bone, &v17[0], sizeof(DObjSkelMat));
+                InverseMultiplyLocal(parent_mat, bone);
+                memcpy(&v17[0], &bone, sizeof(DObjSkelMat));
+            }
+            else
+            {
+                if (parent_bone != parent)
+                {
+                    parent_bone = parent;
+                    math::Mat43 parent_mat;
+                    memcpy(&parent_mat, &v17[parent],
+                           sizeof(DObjSkelMat));
+                    math::Mat43 bone;
+                    memcpy(&bone, &v17[v16], sizeof(DObjSkelMat));
+                    InverseMultiplyLocal(parent_mat, bone);
+                    memcpy(&v17[v16], &bone, sizeof(DObjSkelMat));
+                }
+                else
+                {
+                    math::Mat43 parent_mat;
+                    memcpy(&parent_mat, &v17[parent_bone],
+                           sizeof(DObjSkelMat));
+                    math::Mat43 bone;
+                    memcpy(&bone, &v17[v16], sizeof(DObjSkelMat));
+                    InverseMultiplyLocal(parent_mat, bone);
+                    memcpy(&v17[v16], &bone, sizeof(DObjSkelMat));
+                }
+            }
+            if (v16 == 0)
+                break;
+            --v16;
+        }
+    }
 }
 
 // biped_system (physics.o RBRagdoll.cpp) - rb_ragdoll_model subclass.
