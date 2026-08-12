@@ -251,6 +251,7 @@ public:
     DObj* mDObj;  // +0x00
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
+    const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
 };
 const math::Mat43& Entity::DObj::GetMat(int boneIndex)
 {
@@ -312,6 +313,7 @@ private:
     void reset_bone_vel_info(float delta_t);   // ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z
     void update_bone_vel_info(float delta_t);  // ?update_bone_vel_info@biped_phys_info@@AAEXM@Z
 public:
+    void prolog_frame_advance(float delta_t);  // ?prolog_frame_advance@biped_phys_info@@QAEXM@Z
 };
 
 // ea: 0x6F71C0
@@ -439,6 +441,28 @@ void biped_phys_info::update_bone_vel_info(float delta_t)
     m_cur_origin.v = _mm_loadu_ps(curOrigin);
     const float* curAngles = (const float*)((const char*)m_owner + 0x160);
     m_cur_angles.v = _mm_loadu_ps(curAngles);
+}
+
+// rb_ragdoll_model (physics.o)
+struct rb_ragdoll_model {
+    void update_ballistic_target();  // ?update_ballistic_target@rb_ragdoll_model@@QAEXXZ
+};
+void rb_ragdoll_model::update_ballistic_target()
+{
+    // stub until rb_ragdoll_model internals are ported
+}
+
+// ea: 0x6F7620
+void biped_phys_info::prolog_frame_advance(float delta_t)
+{
+    if (m_owner == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 181, "m_owner",
+                     defaultFileName))
+        __debugbreak();
+    m_owner->CalcRotTranMat43();
+    update_bone_vel_info(delta_t);
+    if (m_bp_sys != nullptr)
+        ((rb_ragdoll_model*)m_bp_sys)->update_ballistic_target();
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
