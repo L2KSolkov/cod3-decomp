@@ -12,6 +12,34 @@
 #include <stdio.h>
 #include <intrin.h>
 #include "core/mem_heap.h"
+#include "ngl/nglFont.h"
+
+// Color (core/color.h view; RGBA float)
+class Color {
+public:
+    float r, g, b, a;
+};
+
+// shell.o / render.o C-bridge stubs for MyRenderText
+typedef int font_index;
+extern font_index FEManager_FindFont(void* fe, const char* name, bool check);
+extern nglFont* FEManager_GetFont(void* fe, font_index f, float scale);
+extern unsigned int extract_color(const Color& col);
+extern void* g_femanager_ptr;
+
+// Cross-object stubs (shell.o / render.o)
+font_index FEManager_FindFont(void* fe, const char* name, bool check)
+{ (void)fe; (void)name; (void)check; return -1; }
+nglFont* FEManager_GetFont(void* fe, font_index f, float scale)
+{ (void)fe; (void)f; (void)scale; return nullptr; }
+unsigned int extract_color(const Color& col)
+{
+    unsigned int r = (unsigned int)(col.r * 255.0f);
+    unsigned int g = (unsigned int)(col.g * 255.0f);
+    unsigned int b = (unsigned int)(col.b * 255.0f);
+    unsigned int a = (unsigned int)(col.a * 255.0f);
+    return (a << 24) | (r << 16) | (g << 8) | b;
+}
 
 extern int Cmd_Argc();       // core.o
 extern char* Cmd_Argv(int arg);  // core.o
@@ -31,13 +59,6 @@ public:
 };
 // shell.o owns the real symbol; placeholder until shell.o is ported
 FEManager g_femanager;
-
-namespace math {
-class Position3 {
-public:
-    __m128 v;
-};
-}
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1 };
@@ -626,6 +647,33 @@ unsigned int codNflReadFile(nflFileID fileID, unsigned int fileOffset,
     if (result == 0)
         g_femanager.DrawDiscError();
     return result;
+}
+
+// ea: 0x665470
+void MyRenderText(const char* str, int x, int y, const Color& col,
+                  float depth, float size)
+{
+    static int S12_3_guard = 0;
+    static font_index font = -1;
+    static nglFont* cached_font = nullptr;
+    if ((S12_3_guard & 1) == 0)
+    {
+        S12_3_guard |= 1;
+        font = FEManager_FindFont(&g_femanager, "i_helvetica_bold", false);
+        cached_font = FEManager_GetFont(&g_femanager, font, 1.0f);
+    }
+    nglFont* Font = cached_font;
+    if (nglSysFont != nullptr)
+        Font = nglSysFont;
+    unsigned int color = extract_color(col);
+    Color dark_float_color;
+    memset(&dark_float_color, 0, 12);
+    dark_float_color.a = col.a;
+    unsigned int v8 = extract_color(dark_float_color);
+    float cola = (float)y;
+    float ya = (float)x;
+    nglListAddString(Font, str, ya, cola, depth, v8, size, size);
+    nglListAddString(Font, str, ya, cola, depth, color, size, size);
 }
 
 // ?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z (streamer.o; stub)
