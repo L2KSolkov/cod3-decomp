@@ -339,7 +339,13 @@ public:
 extern int controller_num_controllers();
 extern int LocalClient_ClientToPort(int client);
 extern void* STBManager_sInst;
-extern const char* STBManager_GetSTBString(void* self, const char* pszReference);
+// ?STBManager_GetSTBString@@YAPBDPAXPBD@Z artifact (real member
+// STBManager::GetSTBString, core.o 0x4C5E30; STB entry table not ported yet)
+const char* STBManager_GetSTBString(void* self, const char* pszReference)
+{
+    (void)self;
+    return pszReference;
+}
 extern void* FEManager_GetDMS(void* self, int client);
 extern void DialogMenuSystem_BringUp(void* self, const char* t, bool type_ok,
                                      bool type_yn, const char* title_unloc,
@@ -347,7 +353,13 @@ extern void DialogMenuSystem_BringUp(void* self, const char* t, bool type_ok,
 extern void DialogMenuSystem_CloseDialog(void* self);
 extern void* FEManager_GetIGMS(void* self, int client);
 extern void InGameMenuSystem_ActivatePauseMenu(void* self);
-extern bool InGameMenuSystem_IsSystemActive(void* self);
+// ?InGameMenuSystem_IsSystemActive@@YA_NPAX@Z artifact (real member in
+// InGameMenuSystem::IsSystemActive, shell.o; not ported yet)
+bool InGameMenuSystem_IsSystemActive(void* self)
+{
+    (void)self;
+    return false;
+}
 extern void GamePause_SetGamePaused(int client, bool paused);
 extern void GamePause_SetAllPaused(bool paused);
 extern void SoundDevice_PauseAllSounds(void* self);

@@ -328,7 +328,13 @@ extern void SoundDevice_SetListenerVectors(void* self, int listener,
                                            const float* up);
 extern int SoundDevice_GetNumberOfListeners(void* self);
 extern void subtitle_manager_render();
-extern bool FEManager_InGameMenusActive(void* self, int client);
+// ?FEManager_InGameMenusActive@@YA_NPAXH@Z artifact (real member
+// FEManager::InGameMenusActive, shell.o; not ported yet)
+bool FEManager_InGameMenusActive(void* self, int client)
+{
+    (void)self; (void)client;
+    return false;
+}
 extern void FEManager_DrawIGO(void* self, int client);
 struct cvar_t;
 extern cvar_t* Cvar_Get(const char* name, const char* value, int flags);

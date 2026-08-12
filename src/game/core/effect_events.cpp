@@ -176,7 +176,13 @@ extern const char* PakManager_GetPakLongName(void* mgr, TPakId pakId);
 extern const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row,
                                                          int id);
 extern const float* DbRow_GetFieldValuePtrFloat(const DbRow* row, int id);
-extern const char* DialogueManager_GetDialogue(void* mgr, unsigned int hash);
+// ?DialogueManager_GetDialogue@@YAPBDPAXI@Z artifact (real member in
+// DialogueManager::GetDialogue, core.o 0x4C55B0; InplaceTree not ported yet)
+const char* DialogueManager_GetDialogue(void* mgr, unsigned int hash)
+{
+    (void)mgr; (void)hash;
+    return nullptr;
+}
 extern void* GdbFileManager_sInst;  // 0x00F4F434
 extern void* GdbFileManager_GetGdbFile(void* mgr, TPakId pakId,
                                        const char* name, const char* type);
