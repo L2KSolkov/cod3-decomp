@@ -10,7 +10,34 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <intrin.h>
 #include "core/mem_heap.h"
+
+extern int Cmd_Argc();       // core.o
+extern char* Cmd_Argv(int arg);  // core.o
+extern double atof(const char* nptr);
+typedef unsigned nflState;
+typedef unsigned nflFileID;
+extern void nflUpdate();
+extern nflState nflGetState();
+extern unsigned int nflReadFile(nflFileID file, unsigned offset, void* buf,
+                                unsigned size);
+#define NFL_STATE_ERROR 2
+
+// FEManager (shell.o; DrawDiscError only)
+class FEManager {
+public:
+    void DrawDiscError();  // ?DrawDiscError@FEManager@@QAEXXZ (shell.o; stub)
+};
+// shell.o owns the real symbol; placeholder until shell.o is ported
+FEManager g_femanager;
+
+namespace math {
+class Position3 {
+public:
+    __m128 v;
+};
+}
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1 };
@@ -106,7 +133,7 @@ enum nflRequestState {
     NFL_REQUEST_STATE_ACTIVE = 4,
 };
 typedef unsigned int nflRequestID;
-typedef int nflFileID;
+typedef unsigned int nflFileID;
 #define NFL_REQUEST_ID_INVALID ((nflRequestID)-1)
 // nfl.cpp defines nflRequestState as unsigned; match its mangled symbol
 extern unsigned int nflGetRequestState(unsigned int requestID);
@@ -199,6 +226,12 @@ struct PakInfoNode {
 
 class PakManager {
 public:
+    enum state_e {
+        STATE_UNLOADED = 0,
+        STATE_LOADING = 1,
+        STATE_LOADED = 2,
+        STATE_UNLOADING = 3,
+    };
     static void CreateInst();  // ?CreateInst@PakManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@PakManager@@SAXXZ (core.o)
     struct TThreadedPakContextStack {
@@ -256,6 +289,8 @@ public:
     bool IsUnloading(TPakId id) const;
     // - ea: 0x665710
     void SetSoundProgress(float t);
+    // - ea: 0x665760
+    void SetBrocProgress(float t);
     // - ea: 0x665570
     float GetDistance(PakInfoNode* node) const;
     // - ea: 0x6655C0 (stub until PakFile/BankManager land)
@@ -375,6 +410,20 @@ void DbTablesetMgr::DecodeBank(const char* name, unsigned char* data,
 void LightGridMgr::DecodeBank(const char* name, unsigned char* data,
                               int size, TPakId pakId)
 { (void)name; (void)data; (void)size; (void)pakId; }
+
+// StreamZoneManager (streamer.o; mDebugRenderMode +0x190, mInitialPosition +0x1A0)
+class StreamZoneManager {
+public:
+    uint8_t _pad[0x190];
+    struct {
+        unsigned int mEnabled : 1;  // bit 0
+        float zoneGraphScale;       // +0x194
+    } mDebugRenderMode;             // +0x190
+    math::Position3 mInitialPosition;  // +0x1A0
+
+    static StreamZoneManager* sInst;  // defined in sv_globals.cpp
+    void SetInitialPosition(const math::Position3& pos);
+};
 
 // ae_heap (core_xboxr; vtable+4 = Malloc(unsigned size, int align))
 class ae_heap {
@@ -516,6 +565,67 @@ void PakManager::SetSoundProgress(float t)
     void (*cb)(float) = mProgressCallback;
     if (cb != NULL)
         cb(((1.0f - sWbkPercentage) - sBrocPercentage) + (sWbkPercentage * t));
+}
+
+// ea: 0x665760
+void PakManager::SetBrocProgress(float t)
+{
+    void (*cb)(float) = mProgressCallback;
+    if (cb != NULL)
+        cb((sBrocPercentage * t) + (1.0f - sBrocPercentage));
+}
+
+// ea: 0x665880
+void NflError(const char* msg)
+{
+    printf("NFL ERROR: %s\n", msg);
+}
+
+// ea: 0x6658A0
+void NflWarning(const char* msg)
+{
+    printf("NFL WARNING: %s\n", msg);
+}
+
+// ea: 0x6659D0
+void StreamZoneManager::SetInitialPosition(const math::Position3& pos)
+{
+    mInitialPosition.v = pos.v;
+}
+
+// ea: 0x665960
+void ToggleZoneGraph()
+{
+    if (Cmd_Argc() <= 1)
+    {
+        StreamZoneManager::sInst->mDebugRenderMode.mEnabled ^= 1;
+    }
+    else
+    {
+        StreamZoneManager::sInst->mDebugRenderMode.mEnabled |= 1;
+        StreamZoneManager::sInst->mDebugRenderMode.zoneGraphScale =
+            (float)atof(Cmd_Argv(1));
+    }
+}
+
+// ea: 0x6658D0
+nflState codNflUpdate()
+{
+    nflUpdate();
+    nflState result = nflGetState();
+    if (result == NFL_STATE_ERROR)
+        g_femanager.DrawDiscError();
+    return result;
+}
+
+// ea: 0x6658F0
+unsigned int codNflReadFile(nflFileID fileID, unsigned int fileOffset,
+                            void* buffer, unsigned int dataSize)
+{
+    unsigned int result = nflReadFile(fileID, fileOffset, buffer, dataSize);
+    if (result == 0)
+        g_femanager.DrawDiscError();
+    return result;
 }
 
 // ?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z (streamer.o; stub)
