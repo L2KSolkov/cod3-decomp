@@ -189,7 +189,43 @@ enum EPakType {
 };
 class NumBanks {
 public:
-    unsigned int mNumBanks;
+    float    ps2;              // +0x00
+    uint8_t  _pad4[8];         // +0x04 (NumBanks::Ps3Banks)
+    float    xbox;             // +0x0C
+    float    xenon;            // +0x10
+    float    pcx;              // +0x14
+    uint8_t  _pad18[8];        // +0x18 (NumBanks::GcBanks)
+};
+
+// ae/core/BitSet.h view (word-based; the core_systems.h template is byte-based)
+template <int N>
+struct BitSet {
+    unsigned int mBits[N / 32];  // +0x00
+    bool Test(int v) const;
+};
+
+// TBankAlloc (BankManager.cpp; two 64-bit bank allocation bitmaps)
+struct TBankAlloc {
+    BitSet<64> mram_alloc1;  // +0x00
+    BitSet<64> mram_alloc2;  // +0x08
+
+    bool IsEmpty() const;   // ?IsEmpty@TBankAlloc@@QBE_NXZ
+    void Clear();           // ?Clear@TBankAlloc@@QAEXXZ
+    float ToFloat() const;  // ?ToFloat@TBankAlloc@@QBEMXZ
+};
+
+// BankManager (BankManager.cpp; mNumMramBanks +0x10, mFreeBanks +0x00)
+class BankManager {
+public:
+    TBankAlloc mFreeBanks;        // +0x00
+    float      mNumMramBanks;     // +0x10
+    unsigned int mMramBankSize;   // +0x14
+    unsigned char* mMramArena;    // +0x18
+    float      mLowestFreeAmount; // +0x1C
+    TBankAlloc m_last_alloc;      // +0x20
+
+    NumBanks get_free_count() const;  // ?get_free_count@BankManager@@QBE?AVNumBanks@@XZ
+    bool can_alloc(NumBanks num_banks) const;  // ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z
 };
 
 template <typename T, int N>
@@ -657,9 +693,12 @@ public:
         float zoneGraphScale;       // +0x194
     } mDebugRenderMode;             // +0x190
     math::Position3 mInitialPosition;  // +0x1A0
+    uint8_t _pad1AC[0x1C0 - 0x1AC];
+    int     mInitialCell;           // +0x1C0
 
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
+    void SetInitialCell(int cell);  // ?SetInitialCell@StreamZoneManager@@QAEXH@Z
     void OnUnloaded(TPakId pakId);  // ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z
 private:
     void SetTopOverrideBrushSet(ZoneBoundaryBank* bank,
@@ -667,17 +706,20 @@ private:
 };
 
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
-// mDebugRenderEnts +0x1B4)
-class SceneManager {
+// mDebugRenderEnts +0x1B4, mDebugRenderLights +0x1B5)
+struct SceneManager {
 public:
     uint8_t _pad[0x1A0];
     void*   mWorldSpawn;        // +0x1A0
     uint8_t _pad1A4[0x1B0 - 0x1A4];
     float   mDebugRenderDist;   // +0x1B0
     bool    mDebugRenderEnts;   // +0x1B4
+    bool    mDebugRenderLights; // +0x1B5
 
+    static SceneManager* sInst;  // ?sInst@SceneManager@@2PAV1@A (sv_main.cpp)
     void ToggleSceneFX(float dist);  // ?ToggleSceneFX@SceneManager@@QAEXM@Z
     void ToggleRenderEnts();         // ?ToggleRenderEnts@SceneManager@@QAEXXZ
+    void ToggleRenderLights();       // ?ToggleRenderLights@SceneManager@@QAEXXZ
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
 
@@ -831,6 +873,11 @@ void PakManager::SetBrocProgress(float t)
         cb((sBrocPercentage * t) + (1.0f - sBrocPercentage));
 }
 
+// ea: 0x665870 (empty no-op)
+void NflMessage()
+{
+}
+
 // ea: 0x665880
 void NflError(const char* msg)
 {
@@ -853,6 +900,12 @@ void StreamZoneManager::SetInitialPosition(const math::Position3& pos)
 void StreamZoneManager::OnUnloaded(TPakId pakId)
 {
     (void)pakId;
+}
+
+// ea: 0x6659C0
+void StreamZoneManager::SetInitialCell(int cell)
+{
+    mInitialCell = cell;
 }
 
 // ea: 0x666FE0
@@ -949,6 +1002,56 @@ void SceneManager::ToggleRenderEnts()
     mDebugRenderEnts = !mDebugRenderEnts;
 }
 
+// ea: 0x665A90
+void SceneManager::ToggleRenderLights()
+{
+    mDebugRenderLights = !mDebugRenderLights;
+}
+
+// ea: 0x668B30
+void Console_ToggleSceneFX()
+{
+    if (Cmd_Argc() > 1)
+    {
+        float v4 = (float)atof(Cmd_Argv(1));
+        if (v4 == -1.0f)
+        {
+            if (SceneManager::sInst->mDebugRenderDist != 0.0f)
+            {
+                SceneManager::sInst->mDebugRenderDist = 0.0f;
+                return;
+            }
+        }
+        else if (v4 != 1.0f)
+        {
+            SceneManager::sInst->mDebugRenderDist = v4;
+            return;
+        }
+        SceneManager::sInst->mDebugRenderDist = 500.0f;
+    }
+    else
+    {
+        float v3 = 0.0f;
+        if (SceneManager::sInst->mDebugRenderDist == 0.0f)
+            v3 = 500.0f;
+        SceneManager::sInst->mDebugRenderDist = v3;
+    }
+}
+
+// ea: 0x668BF0
+void Console_ToggleRenderEnts()
+{
+    SceneManager::sInst->mDebugRenderEnts =
+        !SceneManager::sInst->mDebugRenderEnts;
+}
+
+// ea: 0x668C10
+void Console_ToggleRenderLights()
+{
+    SceneManager::sInst->mDebugRenderLights =
+        !SceneManager::sInst->mDebugRenderLights;
+}
+
 // ea: 0x665AB0
 void SceneManager::ProcessWorldSpawn(const WorldSpawn& worldspawn)
 {
@@ -972,6 +1075,12 @@ void SceneManager::ProcessWorldSpawn(const WorldSpawn& worldspawn)
 
 // apk texture helpers (ngl/streamer)
 extern bool nglCanReleaseTexture(nglTexture* Tex);  // ngl_dx_tex
+
+// ea: 0x665B60
+void cdDestroyApk(apk::apkFile* file)
+{
+    apk::apkDeleteFile(file);
+}
 
 // ea: 0x665B70
 nglTexture* cdLoadTexureInplace(void* data)
@@ -1359,6 +1468,15 @@ extern unsigned int gNflMediaId;  // ?gNflMediaId@@3IA
 void* gNflMemAlloc = nullptr;     // ?gNflMemAlloc@@3PAXA
 unsigned int gNflAlignment = 0;   // ?gNflAlignment@@3IA
 unsigned int gNflMediaId = 0;
+
+extern void nflShutdown();  // nfl_common.o
+
+// ea: 0x6658C0
+void ShutdownNfl()
+{
+    nflShutdown();
+    gNflMemAlloc = nullptr;
+}
 
 unsigned int nflInit(nflInitParamsBin* ip)
 {
@@ -1845,6 +1963,97 @@ void stream_free(unsigned char* ptr)
     }
     if (ptr != nullptr)
         mem_heap_free(ptr);
+}
+
+// ea: 0x4E3560 (core.o)
+template <>
+bool BitSet<64>::Test(int v) const
+{
+    if (v >> 5 >= 2)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
+        AeAssert::gCurrentLine = 123;
+        AeAssert::gCurrentExpr = "idx < GetNumWords()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Please add a descriptive string"))
+            __debugbreak();
+    }
+    return ((1 << (v & 0x1F)) & mBits[v >> 5]) != 0;
+}
+
+// ea: 0x66B120
+bool TBankAlloc::IsEmpty() const
+{
+    for (int v1 = 0; v1 < 2; ++v1)
+    {
+        if (mram_alloc1.mBits[v1] != 0)
+            return false;
+    }
+    for (int v2 = 0; v2 < 2; ++v2)
+    {
+        if (mram_alloc2.mBits[v2] != 0)
+            return false;
+    }
+    return true;
+}
+
+// ea: 0x66B150
+void TBankAlloc::Clear()
+{
+    mram_alloc1.mBits[1] = 0;
+    mram_alloc1.mBits[0] = 0;
+    mram_alloc2.mBits[1] = 0;
+    mram_alloc2.mBits[0] = 0;
+}
+
+// ea: 0x66B160
+float TBankAlloc::ToFloat() const
+{
+    float c = 0.0f;
+    for (int v2 = 0; v2 < 64; ++v2)
+    {
+        if (mram_alloc1.Test(v2))
+            c += 0.5f;
+        if (mram_alloc2.Test(v2))
+            c += 0.5f;
+    }
+    return c;
+}
+
+// ea: 0x66BC50
+NumBanks BankManager::get_free_count() const
+{
+    NumBanks count;
+    memset(&count, 0, sizeof(count));
+    bool hasHalf = false;
+    int v3 = 0;
+    float limit = mNumMramBanks + 0.5f;
+    if (limit > 0.0f)
+    {
+        do
+        {
+            bool v5 = mFreeBanks.mram_alloc1.Test(v3);
+            bool v6 = mFreeBanks.mram_alloc2.Test(v3);
+            if (v5 && v6)
+            {
+                count.xbox += 1.0f;
+            }
+            else if (v5 != v6 && !hasHalf)
+            {
+                count.xbox += 0.5f;
+                hasHalf = true;
+            }
+            ++v3;
+        } while (limit > v3);
+    }
+    return count;
+}
+
+// ea: 0x66F390
+bool BankManager::can_alloc(NumBanks num_banks) const
+{
+    return num_banks.xbox <= get_free_count().xbox;
 }
 
 // ea: 0x6652B0 / 0x665320 / 0x665330 / 0x665340 (empty no-ops)
