@@ -4947,8 +4947,11 @@ public:
     float          m_list_radius[2];  // +0x70
     float          m_geom_radius;     // +0x78
     int            m_count;           // +0x7C
+    math::Dir3     m_aabb_mn;         // +0x80
+    math::Dir3     m_aabb_mx;         // +0x90
 
     void init(rigid_body_sphere_list* cg);  // ?init@phys_gjk_geom_ragdoll_1@@QAEXPAVrigid_body_sphere_list@@@Z
+    virtual void comp_aabb(const math::Mat43& cg_to_world_xform);  // ?comp_aabb@phys_gjk_geom_ragdoll_1@@UAEXABVMat43@math@@@Z
 };
 
 class rigid_body_sphere_list {
@@ -5062,6 +5065,39 @@ void phys_gjk_geom_ragdoll_1::init(rigid_body_sphere_list* cg)
         if (v9 < 0.0f)
             v9 = 0.0f;
         m_list_radius[1] = v9;
+    }
+}
+
+// ea: 0x6FBE40
+void phys_gjk_geom_ragdoll_1::comp_aabb(
+    const math::Mat43& cg_to_world_xform)
+{
+    for (int i = 0; i < m_count; ++i)
+    {
+        math::Dir3 c;
+        c.v = m_list_center[i].v;
+        math::Dir3 r;
+        r.v = _mm_set1_ps(m_list_radius[i] + m_geom_radius);
+        math::Mat43 m = cg_to_world_xform;
+        __m128 w = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(c.v, c.v, 0), m.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(c.v, c.v, 85), m.y.v)),
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(c.v, c.v, 170), m.z.v),
+                       m.w.v));
+        math::Dir3 mn, mx;
+        mn.v = _mm_sub_ps(w, r.v);
+        mx.v = _mm_add_ps(w, r.v);
+        if (i != 0)
+        {
+            m_aabb_mn.v = _mm_min_ps(m_aabb_mn.v, mn.v);
+            m_aabb_mx.v = _mm_max_ps(m_aabb_mx.v, mx.v);
+        }
+        else
+        {
+            m_aabb_mn = mn;
+            m_aabb_mx = mx;
+        }
     }
 }
 
