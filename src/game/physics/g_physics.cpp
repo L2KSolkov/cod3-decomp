@@ -109,6 +109,19 @@ struct level_locals_t {
     int     time;  // +0x9C
 };
 extern level_locals_t level;  // ?level@@3Ulevel_locals_t@@A
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (game.o)
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z (g.o inline)
+};
+struct sentient_s {
+    uint8_t _pad[0x38];
+    int32_t bIgnoreMe;  // +0x38
+};
+struct actor_s {
+    uint8_t _pad[0x310];
+    int     bIsAlive;  // +0x310 (Physics.bIsAlive)
+};
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
     PROP_PRIORITY_MEDIUM = 1,
@@ -699,16 +712,23 @@ public:
     uint8_t _pad240[0x248 - 0x240];
     biped_phys_info* mBPInfo;    // +0x248
     uint8_t _pad24C[0x25C - 0x24C];
+    void* actor;                 // +0x258 (actor_s*)
     void* sentient;              // +0x25C (sentient_s*)
     void* scr_vehicle;           // +0x260 (scr_vehicle_t*)
     uint8_t _pad264[0x2B0 - 0x264];
     uint8_t physicsObject;       // +0x2B0
-    uint8_t _pad2B1[0x2C4 - 0x2B1];
+    uint8_t _pad2B1[0x2B8 - 0x2B1];
+    int32_t takedamage;          // +0x2B8
+    uint8_t _pad2BC[0x2C4 - 0x2BC];
     int32_t  flags;              // +0x2C4
     unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
     uint8_t _pad2CC[0x348 - 0x2CC];
     int32_t nextthink;           // +0x348
     int32_t think;               // +0x34C (fn_think_e)
+    uint8_t _pad350[0x355 - 0x350];
+    uint8_t  die;                // +0x355
+    uint8_t  _pad356[3];
+    int32_t  health;             // +0x358
 
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
@@ -2472,6 +2492,52 @@ enum hitLocation_t {
     HITLOC_GUN,
     HITLOC_NUM = 0x13,
 };
+
+// Port-local dietable (defined in g_entity_misc.cpp; uses Broc's EHitLocation
+// tag + PBM const-qualification; binary's QBM/W4hitLocation_t form is a
+// separate pre-existing mismatch).
+enum EHitLocation : int;
+extern void (*dietable[8])(Entity* self, Entity* inflictor, Entity* attacker,
+                           int damage, int mod, int weapon, const float* point,
+                           const float* dir, EHitLocation hitLoc);
+
+// ea: 0x6F61C0
+void KillEntity(Entity* e)
+{
+    uint8_t die = e->die;
+    if (die != 0 && e->actor != nullptr
+        && ((actor_s*)e->actor)->bIsAlive != 0)
+    {
+        if (die >= 8u)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBSimpleAPI.cpp";
+            AeAssert::gCurrentLine = 15;
+            AeAssert::gCurrentExpr = "e->die > 0 && e->die < DIE_MAX";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+        }
+        int v4 = e->health + 1;
+        e->health = -1;
+        sentient_s* sentient = (sentient_s*)e->sentient;
+        float dir[3] = {0.0f, 0.0f, 1.0f};
+        if (sentient != nullptr)
+            sentient->bIgnoreMe = 1;
+        int v6 = currCl;
+        Entity* ea = EntityManager::sInst->GetPlayer(currCl);
+        int v9 = e->die;
+        Entity* Player = EntityManager::sInst->GetPlayer(v6);
+        dietable[v9](
+            e, ea, Player, v4, 0, 0,
+            &e->r.currentOrigin.v.m128_f32[0], dir,
+            (EHitLocation)HITLOC_NONE);
+    }
+    else if ((e->flags & 0x2000000) != 0)
+    {
+        e->takedamage = 1;
+        e->health = -1;
+    }
+}
 
 // ea: 0x6F2F20
 void PhysShutdown()
