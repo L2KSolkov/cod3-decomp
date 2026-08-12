@@ -51,6 +51,12 @@ public:
 class Entity;
 struct rb_extra_info;
 class DObj;
+class rigid_body;
+enum EPropPriority {
+    PROP_PRIORITY_LOW = 0,
+    PROP_PRIORITY_MEDIUM = 1,
+    PROP_PRIORITY_HIGH = 2,
+};
 void DObjGetBasePose(DObj* obj);  // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o)
 void path_constraint_destroy(class rigid_body_constraint_custom_path* vpc);
 
@@ -108,13 +114,25 @@ public:
     void set_default_pose();      // ?set_default_pose@rb_vehicle@@QAEXXZ
     void cleanup_path();          // ?cleanup_path@rb_vehicle@@QAEXXZ
 };
+// rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
+// set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
+// (0x705F90) disassembly + IDA local type field order.
 struct rb_extra_info {
-    void* m_rb;              // +0x00
-    uint8_t _pad04[0x40 - 0x04];
-    void* m_gjk_geom_list;   // +0x40
-    uint8_t _pad44[0x54 - 0x44];
-    rb_vehicle* m_rb_vehicle;  // +0x54
-    void collision_epilog();
+    math::Mat43 m_transform;         // +0x00
+    void*       m_gjk_geom_list;     // +0x40
+    Entity*     m_ent;               // +0x44
+    rigid_body* m_rb;                // +0x48
+    math::Mat43* m_cg_mesh_mat;      // +0x4C
+    Bitmask<unsigned int> m_flags;   // +0x50
+    rb_vehicle* m_rb_vehicle;        // +0x54
+    int         m_priority;          // +0x58 (EPropPriority)
+    float       m_time_since_last_event;  // +0x5C
+    void*       m_next;              // +0x60
+
+    void collision_epilog();  // ?collision_epilog@rb_extra_info@@QAEXXZ
+    void set_priority(EPropPriority p);  // ?set_priority@rb_extra_info@@QAEXW4EPropPriority@@@Z
+    void frame_advance(float delta_t); // ?frame_advance@rb_extra_info@@QAEXM@Z
+    void evaluate_effect_priority();   // ?evaluate_effect_priority@rb_extra_info@@QAEXXZ
 };
 
 template <typename T, int N> class phys_static_memory_pool;
@@ -242,7 +260,6 @@ public:
     }
 };
 
-class rigid_body;
 void render_single_rigid_body(rigid_body* const rb);
 
 // ea: 0x6F2FD0
@@ -453,8 +470,21 @@ int DObj::GetBoneIndex(const char* name) const
 // Entity (game_types.h view; local minimal copy - cannot include game_types.h)
 class Entity {
 public:
-    uint8_t _pad0[0x23C];
-    DObj* mDObj;  // +0x23C
+    struct refEntity {
+        uint8_t        _pad0[0x70];
+        math::Position3 currentOrigin;  // +0x70
+        math::Position3 currentAngles;  // +0x80
+        math::Mat43     currentMat;     // +0x90
+    };
+
+    uint8_t _pad0[0xE0];
+    refEntity r;                 // +0xE0 (r.currentOrigin +0x150, currentAngles +0x160,
+                                 //  currentMat +0x170)
+    uint8_t _pad140[0x23C - (0xE0 + sizeof(refEntity))];
+    DObj* mDObj;                 // +0x23C
+    uint8_t _pad240[0x2C8 - 0x240];
+    unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
+
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
     const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
@@ -464,6 +494,90 @@ public:
 void DObjGetBasePose(DObj* obj)
 {
     (void)obj;
+}
+
+// Camera (cg.o view; minimal local copy for evaluate_effect_priority)
+struct Camera {
+    uint8_t         _pad0[0x30];
+    math::Position3 mPrevViewPos;  // +0x30
+    math::Position3 mPrevAngles;   // +0x40
+    math::Position3 mPrevViewDir;  // +0x50
+};
+extern Camera gCamera[8];  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0)
+extern int currCl;         // ?currCl@@3HA (cg.o)
+
+// ea: 0x6F6E60
+void rb_extra_info::set_priority(EPropPriority p)
+{
+    m_priority = p;
+    if (p == PROP_PRIORITY_LOW)
+    {
+        m_ent->mFlags &= ~1u;
+        m_flags.mMask &= ~2u;
+        m_flags.mMask &= ~4u;
+        m_flags.mMask &= ~8u;
+    }
+    else if (p == PROP_PRIORITY_HIGH)
+    {
+        m_flags.mMask |= 8u;
+        m_flags.mMask |= 0x10u;
+    }
+}
+
+// ea: 0x6FE8A0
+void rb_extra_info::frame_advance(float delta_t)
+{
+    if (m_priority != 0)
+    {
+        m_time_since_last_event = delta_t + m_time_since_last_event;
+        if (m_time_since_last_event > 2.0f)
+            evaluate_effect_priority();
+    }
+}
+
+// ea: 0x6F6EC0
+void rb_extra_info::evaluate_effect_priority()
+{
+    if (m_priority != 0)
+    {
+        __m128 v1 = gCamera[currCl].mPrevViewDir.v;
+        math::Position3* p_mPrevViewPos = &gCamera[currCl].mPrevViewPos;
+        __m128 v3 = _mm_set1_ps(0.5f);
+        __m128 v4 = _mm_add_ps(
+            p_mPrevViewPos->v,
+            _mm_mul_ps(_mm_mul_ps(v1, _mm_set1_ps(400.0f)), v3));
+        __m128 cur_origin = m_ent->r.currentOrigin.v;
+        __m128 v5 = _mm_shuffle_ps(
+            cur_origin, _mm_shuffle_ps(_mm_setzero_ps(), cur_origin, 240), 196);
+        __m128 v6 = _mm_sub_ps(
+            _mm_shuffle_ps(v4, _mm_shuffle_ps(_mm_setzero_ps(), v4, 240), 196),
+            v5);
+        __m128 v7 = _mm_mul_ps(v6, v6);
+        if ((v7.m128_f32[0]
+             + (_mm_shuffle_ps(v7, v7, 85).m128_f32[0]
+                + _mm_shuffle_ps(v7, v7, 170).m128_f32[0]))
+            >= 160000.0f)
+        {
+            __m128 v9 = _mm_add_ps(
+                p_mPrevViewPos->v,
+                _mm_mul_ps(_mm_mul_ps(v1, _mm_set1_ps(1300.0f)), v3));
+            __m128 v10 = _mm_sub_ps(
+                _mm_shuffle_ps(v9, _mm_shuffle_ps(_mm_setzero_ps(), v9, 240), 196),
+                v5);
+            __m128 v11 = _mm_mul_ps(v10, v10);
+            if ((v11.m128_f32[0]
+                 + (_mm_shuffle_ps(v11, v11, 85).m128_f32[0]
+                    + _mm_shuffle_ps(v11, v11, 170).m128_f32[0]))
+                < 1690000.0f)
+                m_flags.mMask |= 8u;
+        }
+        else
+        {
+            unsigned int v8 = m_flags.mMask | 0x18;
+            m_flags.mMask |= 8u;
+            m_flags.mMask = v8;
+        }
+    }
 }
 
 // ea: 0x6FC080
