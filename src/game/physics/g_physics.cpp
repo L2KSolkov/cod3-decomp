@@ -28,6 +28,8 @@ void calc_velocities(const math::Mat43& mat0, const math::Mat43& mat1,
                      math::Dir3* t_vel, math::Dir3* a_vel);
 }
 void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
+void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
+                  math::Mat43& mat);  // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z
 
 class PakManager {
 public:
@@ -44,7 +46,8 @@ public:
     static void RenderAxis(const math::Mat43& mat, float length, float width);
 };
 struct rb_vehicle {
-    uint8_t _pad[0x388];
+    int     m_num_colliding_wheels;  // +0x00
+    uint8_t _pad[0x388 - 0x04];
     void*   m_vci;  // +0x388
 };
 struct rb_extra_info {
@@ -572,6 +575,95 @@ void biped_phys_info::update_vel_matrices()
         memcpy(&g_last_mat[i], &lm, sizeof(math::Mat43));
         memcpy(&g_cur_mat[i], &cm, sizeof(math::Mat43));
     }
+}
+
+// scr_vehicle_t pathPos view (g.o; minimal for path_constraint_*)
+struct scr_vehicle_path_view {
+    float origin[3];   // +0x00
+    float angles[3];   // +0x10
+};
+struct scr_vehicle_t {
+    scr_vehicle_path_view pathPos;  // +0x00
+    uint8_t _pad[0x518 - sizeof(scr_vehicle_path_view)];
+    void*   mRBVeh;                 // +0x518 rb_vehicle*
+};
+struct entity_path_view {
+    scr_vehicle_t* scr_vehicle;  // +0x00
+};
+
+// ea: 0x6F5EC0
+rigid_body_constraint_custom_path* path_constraint_create(Entity* veh)
+{
+    if (veh == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     209, "veh", defaultFileName))
+        __debugbreak();
+    entity_path_view* ev = (entity_path_view*)veh;
+    if (ev->scr_vehicle == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     210, "veh->scr_vehicle", defaultFileName))
+        __debugbreak();
+    // mRBVeh + chassis_rbinf + m_rb chain (offsets from g_local.h view)
+    void* mRBVeh = ev->scr_vehicle->mRBVeh;
+    if (mRBVeh == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     211, "veh->scr_vehicle->mRBVeh", defaultFileName))
+        __debugbreak();
+    void* rbinf = *(void**)((char*)mRBVeh + 0x274);
+    if (rbinf == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     212, "veh->scr_vehicle->mRBVeh->get_chassis_rbinf()",
+                     defaultFileName))
+        __debugbreak();
+    rigid_body* m_rb = *(rigid_body**)((char*)rbinf + 0x0);
+    if (m_rb == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     213, "veh->scr_vehicle->mRBVeh->get_chassis_rbinf()->m_rb",
+                     defaultFileName))
+        __debugbreak();
+    user_rigid_body* user_rigid_body = phys_sys::create_user_rigid_body(false);
+    rigid_body_constraint_custom_path* rbc_custom_path =
+        phys_sys::create_rbc_custom_path(m_rb, user_rigid_body, false);
+    if (rbc_custom_path == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     219, "rbc_custom_path", defaultFileName))
+        __debugbreak();
+    rbc_custom_path->b1_r_loc.v = _mm_setzero_ps();
+    memcpy(&rbc_custom_path->m_path_mat, (const char*)veh + 0x170,
+           sizeof(math::Mat43));  // veh->r.currentMat
+    rbc_custom_path->m_urb = user_rigid_body;
+    user_rigid_body->set(&rbc_custom_path->m_path_mat);
+    return rbc_custom_path;
+}
+
+// ea: 0x6F5B60
+void path_constraint_update(rigid_body_constraint_custom_path* vpc, Entity* veh)
+{
+    if (vpc == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     186, "vpc", defaultFileName))
+        __debugbreak();
+    if (veh == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBVehicleCustomConstraint.cpp",
+                     187, "veh", defaultFileName))
+        __debugbreak();
+    entity_path_view* ev = (entity_path_view*)veh;
+    scr_vehicle_t* scr_vehicle = ev->scr_vehicle;
+    math::Position3 origin;
+    origin.v.m128_f32[0] = scr_vehicle->pathPos.origin[0];
+    origin.v.m128_f32[1] = scr_vehicle->pathPos.origin[1];
+    origin.v.m128_f32[2] = scr_vehicle->pathPos.origin[2];
+    origin.v.m128_f32[3] = 0.0f;
+    math::Position3 angles;
+    angles.v.m128_f32[0] = scr_vehicle->pathPos.angles[0];
+    angles.v.m128_f32[1] = scr_vehicle->pathPos.angles[1];
+    angles.v.m128_f32[2] = scr_vehicle->pathPos.angles[2];
+    angles.v.m128_f32[3] = 0.0f;
+    AnglesToAxis(angles, origin, vpc->m_path_mat);
+    vpc->b1_r_loc.v = _mm_setzero_ps();
+    void* mRBVeh = scr_vehicle->mRBVeh;
+    if (((rb_vehicle*)mRBVeh)->m_num_colliding_wheels >= 3)
+        vpc->b1_r_loc.v.m128_f32[0] = -6.0f;  // 0xC0C00000
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the

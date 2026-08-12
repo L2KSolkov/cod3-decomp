@@ -2226,6 +2226,13 @@ void AnglesToAxis(const math::Position3* angles, const math::Position3* origin,
     mat->w.v.m128_f32[3] = origin->v.m128_f32[3];
 }
 
+// ?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z (core.o reference form)
+void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
+                  math::Mat43& mat)
+{
+    AnglesToAxis(&angles, &origin, &mat);
+}
+
 // ea: 0x004C29C0
 void AnglesToAxis(const math::Position3* angles, const math::Position3* origin,
                   math::Mat44* out)
