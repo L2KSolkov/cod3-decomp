@@ -120,8 +120,14 @@ void frame_advance();
 struct _LAUNCH_DATA {
     unsigned char raw[0x100];
 };
-extern int XGetLaunchInfo(unsigned int* pdwLaunchDataType,
-                          _LAUNCH_DATA* pLaunchData);
+// XGetLaunchInfo (XAPI; stub)
+int XGetLaunchInfo(unsigned int* pdwLaunchDataType,
+                   _LAUNCH_DATA* pLaunchData)
+{
+    (void)pLaunchData;
+    *pdwLaunchDataType = 0;
+    return 1;
+}
 
 // ============================================================================
 // XboxLiveOptionsMenu

@@ -3607,8 +3607,12 @@ extern float VectorNormalize(float* v);
 extern void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
                            float (*out)[3]);
 extern float AngleNormalize360(float angle);
-extern int PadAliasMgr_GetButtonValue(void* self, int ctrlNum,
-                                      int buttonAlias);
+// PadAliasMgr_GetButtonValue artifact (controller layer; stub)
+int PadAliasMgr_GetButtonValue(void* self, int ctrlNum, int buttonAlias)
+{
+    (void)self; (void)ctrlNum; (void)buttonAlias;
+    return 0;
+}
 extern void* PadAliasMgr_sInst;  // 0x00F4F458
 extern int g_vehicle_button_threshold;  // 0x00E01F04
 extern vmCvar_t g_vehControlMode;       // 0x00EADD48

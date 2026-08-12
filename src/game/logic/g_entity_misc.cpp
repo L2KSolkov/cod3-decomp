@@ -4,6 +4,18 @@
 // ============================================================================
 
 #include "game/logic/g_local.h"
+
+// ??0DObj@@QAE@H@Z (render.o) - minimal ctor; skel/matrices initialized by
+// DObjCreateSkel at alloc time in the real engine.
+DObj::DObj(int pakId)
+{
+    memset(this, 0, sizeof(DObj));
+    mPakId = pakId;
+}
+// ??1DObj@@QAE@XZ (render.o)
+DObj::~DObj()
+{
+}
 #include "core/PoolAllocator.h"
 #include "core/color.h"
 #include "core/tlFixedString.h"

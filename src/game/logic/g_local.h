@@ -3614,7 +3614,7 @@ public:
     void* operator new(size_t s, void* p) { return p; }  // placement
     void operator delete(void* p); // ??3DObj@@SAXPAX@Z (render.o)
     void operator delete(void* p, size_t) { DObj::operator delete(p); }  // matching placement
-    DObj(int pakId);               // ??0DObj@@QAE@W4TPakId@@@Z (render.o)
+    DObj(int pakId);               // ??0DObj@@QAE@H@Z (render.o)
     ~DObj();                       // ??1DObj@@QAE@XZ (render.o)
     int GetBoneParent(int boneIndex);          // ?GetBoneParent@DObj@@QAEHH@Z (render.o)
     const math::Mat43::Packed& GetBaseRelMat(int boneIndex);  // ?GetBaseRelMat@DObj@@QAEABUPacked@Mat43@math@@H@Z (render.o)
