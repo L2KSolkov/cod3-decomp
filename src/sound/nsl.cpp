@@ -104,6 +104,29 @@ float          nslGetWaveParam(nslWaveID, int, float defaultValue) { return defa
 float         nslGetSourceParam(nslSourceID, int, float defaultValue) { return defaultValue; }  // ?nslGetSourceParam@@YAMW4nslSourceID@@HM@Z (nslSource.o)
 int           nslIsWaveStreamed(nslWaveID) { return 0; }     // ?nslIsWaveStreamed@@YAHW4nslWaveID@@@Z (nslCompat.o)
 void          nslGetSourcePosition(nslSourceID, float* position) {}  // ?nslGetSourcePosition@@YAXW4nslSourceID@@QAM@Z (nslSource.o)
+
+// nslCompat.o / nslSource.o family (stubbed; manglings match binary)
+int           nslGetBankState(nslBankID) { return 0; }
+void          nslFreeBank(nslBankID) {}
+void          nslStopSource(nslSourceID) {}
+void          nslQueueSource(nslSourceID) {}
+void          nslFreeSource(nslSourceID) {}
+void          nslSetSourceParam(nslSourceID, int, float) {}
+void          nslSetSourcePosition(nslSourceID, const float*) {}
+void          nslSetSourceVelocity(nslSourceID, const float*) {}
+void          nslDampen(float) {}
+void          nslUndampen() {}
+void          nslUpdateBanks() {}
+void          nslStart(void*) {}
+void          nslExit() {}
+void          nslSetEffect(const void*) {}
+void          nslSetListenerPosition(const float*) {}
+void          nslSetListenerOrientation(const float*, const float*) {}
+void          nslSetBusPitchAddBus(unsigned int) {}
+void          nslSetBusPitchRemoveBus(unsigned int) {}
+void          nslSetBusVolumeAddBus(unsigned int) {}
+void          nslSetBusVolumeRemoveBus(unsigned int) {}
+unsigned int  nslWaveGetHash(nslWaveID) { return 0; }
 int           nslGetWaveLength(nslWaveID) { return 0; }      // ?nslGetWaveLength@@YAHW4nslWaveID@@@Z
 unsigned      nslGetSourceLength(nslSourceID) { return 0; }  // ?nslGetSourceLength@@YAIW4nslSourceID@@@Z
 int           nslIsWaveLooped(nslWaveID) { return 0; }       // ?nslIsWaveLooped@@YAHW4nslWaveID@@@Z
