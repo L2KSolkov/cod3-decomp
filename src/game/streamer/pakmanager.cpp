@@ -87,6 +87,38 @@ extern unsigned int nflReadFile(nflFileID file, unsigned offset, void* buf,
 #define NFL_STATE_ERROR 2
 extern void mem_break();  // mem_heap.cpp
 
+// nfl async (nfl_common.o; streamer-side stubs)
+typedef unsigned int nflRequestID;
+#define NFL_PRIORITY_LOWEST 0
+typedef void (*nflReadCallback)(unsigned int state, unsigned int);
+extern nflRequestID nflReadFileAsyncWithCallBack(
+    nflFileID fileID, unsigned int fileOffset, void* buffer,
+    unsigned int dataSize, nflReadCallback callback);
+extern void nflSetRequestPriority(nflRequestID requestID,
+                                  unsigned int priority);
+nflRequestID nflReadFileAsyncWithCallBack(
+    nflFileID fileID, unsigned int fileOffset, void* buffer,
+    unsigned int dataSize, nflReadCallback callback)
+{
+    (void)fileID; (void)fileOffset; (void)buffer; (void)dataSize;
+    (void)callback;
+    return 0;
+}
+void nflSetRequestPriority(nflRequestID requestID, unsigned int priority)
+{
+    (void)requestID; (void)priority;
+}
+void codNflCallback(unsigned int state, unsigned int requestId);
+void codNflCallback(unsigned int state, unsigned int requestId)
+{
+    (void)state; (void)requestId;
+}
+
+struct AssetBankSet {
+    virtual ~AssetBankSet();  // defined in g_entity_misc.cpp
+    AssetBankSet();           // defined in ctor_dtor.cpp
+};
+
 // FEManager (shell.o; DrawDiscError only)
 class FEManager {
 public:
@@ -126,6 +158,9 @@ struct ae_sized_array {
     T m_elements[N];  // +0x00
     int m_size;       // +N*sizeof(T)
 };
+
+// AssetBankSet sBankArray (streamer.o data @ 0xF58BC8)
+ae_sized_array<void*, 24> AssetBankSet_sBankArray;
 
 // PakHeader (streamer.o PakFile.h; 48 bytes)
 struct PakHeader {
@@ -208,7 +243,9 @@ public:
 
     uint8_t      _pad0[0x08];           // m_dlist_node
     const char*  mCurrDecodeFile;       // +0x08
-    uint8_t      _pad0C[0x4C - 0x0C];   // mPath (64)
+    struct {
+        char mBuff[64];  // ae_fixed_string<64>
+    } mPath;                            // +0x0C
     EPakType     mPakType;              // +0x4C
     unsigned int mFilesize;             // +0x50
     nflFileID    mFileId;               // +0x54
@@ -243,6 +280,13 @@ public:
     bool MemFree(void* ptr, bool search_prereqs);
     // ea: 0x6661D0
     bool IsInPakHeap(void* pPtr);
+    // ea: 0x666270
+    const PakHeader::Section* GetSection(const char* type) const;
+    // ea: 0x666320
+    void* PakReadDataAsync(unsigned char* buffer,
+                           unsigned char* uncompressedSize,
+                           unsigned int compressedSize,
+                           unsigned int offset, unsigned int isHeader);
 
     // ea: 0x664B90
     float GetLoadTime() const;
@@ -394,7 +438,50 @@ public:
     void*   mEntries[99];  // +0x34 (InstanceBankSet*[99])
 
     void ReleaseInstanceBank(TPakId pakId);  // ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z
+    void DecodeInstbank(const char* name, unsigned char* data, int size,
+                        TPakId pakId);  // ?DecodeInstbank@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z
 };
+
+// InstanceBankSet / InstanceBank (streamer.o)
+enum eInstanceBankType {
+    INSTBANK_TYPE_APK = 0,
+    INSTBANK_TYPE_TEXTURE,
+    INSTBANK_TYPE_FONT,
+    INSTBANK_TYPE_MESHFILE,
+    INSTBANK_TYPE_MESH,
+    INSTBANK_TYPE_ANIMFILE,
+    INSTBANK_TYPE_ANIM,
+    INSTBANK_TYPE_SCNANIM,
+    INSTBANK_TYPE_ANIMOFFSET,
+    INSTBANK_TYPE_SKELETON,
+    INSTBANK_TYPE_EFFECT,
+    INSTBANK_TYPE_FX,
+    INSTBANK_TYPE_DISCTEX,
+    INSTBANK_TYPE_DISCTEXSIZE,
+};
+
+struct InstanceBank {
+    int      mType;       // +0x00
+    char     mTypeStr[12]; // +0x04
+    uint8_t  _pad10[0x18 - 0x10];
+    uint8_t  _pad18[0x20 - 0x18];
+};
+
+struct InstanceBankSet {
+    unsigned int mId;       // +0x00
+    float        mVersion;  // +0x04
+    void*        mInstanceBanks;  // +0x08
+    void*        mPtrFixupTable;  // +0x10
+
+    void Fixup();  // ?Fixup@InstanceBankSet@@QAEXXZ (stub)
+    InstanceBank* GetBank(eInstanceBankType type);  // ?GetBank@InstanceBankSet@@QAEAAVInstanceBank@@W4eInstanceBankType@@@Z (stub)
+};
+void InstanceBankSet::Fixup() {}
+InstanceBank* InstanceBankSet::GetBank(eInstanceBankType type)
+{
+    (void)type;
+    return nullptr;
+}
 
 // Manager DecodeBank stubs (cross-object: core.o / render.o / mp_actors.o)
 class XModelManager {
@@ -841,6 +928,95 @@ bool PakFile::IsInPakHeap(void* pPtr)
             return false;
     }
     return true;
+}
+
+// ea: 0x666270
+const PakHeader::Section* PakFile::GetSection(const char* type) const
+{
+    PakHeader* mHeader = this->mHeader;
+    unsigned int v4 = 0;
+    if (mHeader->numSections != 0)
+    {
+        while (1)
+        {
+            if (strncmp(type, mHeader->sections[v4].name, 8) == 0)
+                return &mHeader->sections[v4];
+            ++v4;
+            if (v4 >= mHeader->numSections)
+                goto LABEL_5;
+        }
+    }
+LABEL_5:
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+    AeAssert::gCurrentLine = 2270;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("no section with this name: %s in %s", type,
+                             mPath.mBuff))
+        __debugbreak();
+    return nullptr;
+}
+
+// ea: 0x666320
+void* PakFile::PakReadDataAsync(unsigned char* buffer,
+                                unsigned char* uncompressedSize,
+                                unsigned int compressedSize,
+                                unsigned int offset, unsigned int isHeader)
+{
+    if (uncompressedSize == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 2280;
+        AeAssert::gCurrentExpr = "buffer";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Out of memory!"))
+            __debugbreak();
+    }
+    nflRequestID v8 = nflReadFileAsyncWithCallBack(
+        mFileId, isHeader, uncompressedSize, compressedSize, codNflCallback);
+    nflSetRequestPriority(v8, NFL_PRIORITY_LOWEST);
+    *buffer = (unsigned char)v8;
+    return buffer;
+}
+
+// ea: 0x6663F0
+void InstanceBankMgr::DecodeInstbank(const char* name, unsigned char* data,
+                                     int size, TPakId pakId)
+{
+    (void)name; (void)size;
+    if (mEntries[pakId] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 183;
+        AeAssert::gCurrentExpr = "mEntries[pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Instance bank already loaded!"))
+            __debugbreak();
+    }
+    ((InstanceBankSet*)data)->Fixup();
+    const char* types[13] = {
+        "TEXTURE", "FONT", "MESHFILE", "MESH", "ANIMFILE", "ANIM",
+        "SCNANIM", "ANIMOFFSET", "SKELETON", "EFFECT", "FX", "DISCTEX",
+        "DISCTEXSIZE",
+    };
+    for (int i = INSTBANK_TYPE_TEXTURE; i <= INSTBANK_TYPE_DISCTEXSIZE; ++i)
+    {
+        InstanceBank* Bank =
+            ((InstanceBankSet*)data)->GetBank((eInstanceBankType)i);
+        if (_stricmp(Bank->mTypeStr, types[i]) != 0)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+            AeAssert::gCurrentLine = 200;
+            AeAssert::gCurrentExpr = "!stricmp(bank.GetTypeStr(), types[i])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Bad instance bank!"))
+                __debugbreak();
+        }
+    }
+    mEntries[pakId] = data;
 }
 
 // ea: 0x665960
