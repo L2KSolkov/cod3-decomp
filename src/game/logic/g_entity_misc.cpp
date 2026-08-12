@@ -2743,7 +2743,6 @@ void PHYS_ASSERT_UNIT(const math::Dir3& a) { (void)a; }
 void PHYS_ASSERT_UNIT(const math::Dir3* a) { (void)a; }
 void physics_debug_render() {}
 void PhysInit() {}
-void PhysShutdown() {}
 void Player_ActivateHoldCmd(Entity* e) { (void)e; }
 void PlayerAnimMgr_Update(float a) { (void)a; }
 void PrintPakNames() {}

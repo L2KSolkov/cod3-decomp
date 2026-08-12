@@ -53,9 +53,9 @@ enum EEndRoundCondition {
 };
 
 // ============================================================================
-// EHitLocation â€” damage location (hitLocation_t). HITLOC_NONE == 0 and
-// HITLOC_NUM == 0x13 verified via disassembly; middle order follows the
-// original hitLoc damage table (COD2-derived naming).
+// EHitLocation â€” damage location (hitLocation_t). Values verified against the
+// GetPhysBoneID jump table (physics.o 0x6F2F30): switch covers cases 0..18
+// with 19 cases, HITLOC_NUM == 0x13. PDB member names kept exactly.
 // ============================================================================
 enum EHitLocation {
     HITLOC_NONE = 0,
@@ -64,18 +64,19 @@ enum EHitLocation {
     HITLOC_NECK,
     HITLOC_TORSO_UPR,
     HITLOC_TORSO_LWR,
-    HITLOC_LEFT_ARM,
-    HITLOC_RIGHT_ARM,
-    HITLOC_LEFT_HAND,
-    HITLOC_RIGHT_HAND,
-    HITLOC_LEFT_LEG_UPR,
-    HITLOC_RIGHT_LEG_UPR,
-    HITLOC_LEFT_LEG_LWR,
-    HITLOC_RIGHT_LEG_LWR,
-    HITLOC_LEFT_FOOT,
-    HITLOC_RIGHT_FOOT,
+    HITLOC_R_ARM_UPR,
+    HITLOC_L_ARM_UPR,
+    HITLOC_R_ARM_LWR,
+    HITLOC_L_ARM_LWR,
+    HITLOC_R_HAND,
+    HITLOC_L_HAND,
+    HITLOC_R_LEG_UPR,
+    HITLOC_L_LEG_UPR,
+    HITLOC_R_LEG_LWR,
+    HITLOC_L_LEG_LWR,
+    HITLOC_R_FOOT,
+    HITLOC_L_FOOT,
     HITLOC_GUN,
-    HITLOC_HEAD_BACK,
     HITLOC_NUM = 0x13,
 };
 
