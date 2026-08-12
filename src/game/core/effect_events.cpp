@@ -151,9 +151,19 @@ extern void Scr_Notify(Entity* ent, HashString hashValue,
 extern int g_debug_sync_queries;  // 0x00F00E78
 extern TPakId CurPakId();
 extern unsigned int AeHash(const char* str);
-extern int FX_RegisterEffect(const char* name);
+// ?FX_RegisterEffect@@YAHPBD@Z (render.o; cdGetEffectTemplate not ported yet)
+int FX_RegisterEffect(const char* name)
+{
+    (void)name;
+    return 0;
+}
 extern bool IsInSceneAnim();
-extern int FX_GetBoneIndex(void* dobj, unsigned int bone_name_hash);
+// ?FX_GetBoneIndex@@YAHPBVDObj@@I@Z (render.o; DObj bone lookup not ported)
+int FX_GetBoneIndex(void* dobj, unsigned int bone_name_hash)
+{
+    (void)dobj; (void)bone_name_hash;
+    return -1;
+}
 extern PoolAllocator* gCommonPoolAllocator;  // 0x00F00A18
 extern float sNaN;  // 0x10F19D0
 extern Broc::string gNULLString;  // 0x00F00EEC

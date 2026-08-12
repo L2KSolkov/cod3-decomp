@@ -3247,7 +3247,12 @@ extern void AnimationPlayer_Play(void* self, void* anim, bool forceRestart,
                                  float fadeIn, void* playMethod,
                                  float callbackTime, void* callback,
                                  float speed, float startTimeSec);
-extern float AnimationPlayer_GetAnimTime(void* self, void* anim);
+// ?AnimationPlayer_GetAnimTime@@YAMPBX0@Z artifact (anim.o; stub)
+float AnimationPlayer_GetAnimTime(void* self, void* anim)
+{
+    (void)self; (void)anim;
+    return 0.0f;
+}
 extern void CG_StartWeaponAnim(int weaponNum, DObj* dobj, int animIndex,
                                float fadeInTime, float startTimeInSec,
                                int forceRestart);
