@@ -20,8 +20,20 @@ void* (*apkResourceLocatorCallback)(const tlFixedString&, uint32_t) = nullptr;
 extern void  tlWarning(const char* fmt, ...);
 extern void* tlMemAlloc(uint32_t size, uint32_t align, uint32_t flags);
 extern void  tlMemFree(void* ptr);
-extern bool  tlReadFile(const char* path, void* buf, uint32_t size, uint32_t offset);
-extern bool  _tlAssert(const char* file, int line, const char* cond, const char* msg);
+
+namespace apk {
+// apk_xboxr stubs (mangled as namespace members: ?tlReadFile@apk@@YA_NPBD0PAXII@Z)
+bool tlReadFile(const char* path, void* buf, uint32_t size, uint32_t offset)
+{
+    (void)path; (void)buf; (void)size; (void)offset;
+    return false;
+}
+bool _tlAssert(const char* file, int line, const char* cond, const char* msg)
+{
+    (void)file; (void)line; (void)cond; (void)msg;
+    return false;
+}
+}  // namespace apk
 
 // ============================================================================
 // apkRegisterFileType
@@ -128,7 +140,7 @@ void* apkFileEntry::GetData(apkFile* file, int section, bool assertIfNoData) {
             uint32_t secWord = ((uint32_t*)((uint8_t*)typeEntry + 0x14))[section];
             uint8_t secIndex = (uint8_t)(secWord >> 24);
             if (secIndex == 255) {
-                if (assertIfNoData && _tlAssert("source/apk.cpp", 0x7B, "false", "Missing data for section."))
+                if (assertIfNoData && apk::_tlAssert("source/apk.cpp", 0x7B, "false", "Missing data for section."))
                     __debugbreak();
                 return nullptr;
             }
@@ -163,7 +175,7 @@ uint32_t apkFileEntry::GetDataSize(apkFile* file, int section, bool assertIfNoDa
                     }
                 } else if (first == this) {
                     if (secIndex == 255) {
-                        if (assertIfNoData && _tlAssert("source/apk.cpp", 0xAA, "false", "Missing data for section."))
+                        if (assertIfNoData && apk::_tlAssert("source/apk.cpp", 0xAA, "false", "Missing data for section."))
                             __debugbreak();
                         if (dataPtr) *dataPtr = nullptr;
                         return 0;
@@ -234,7 +246,7 @@ apkFileEntry* apkFile::GetFile(uint32_t idx) {
         idx -= te->NEntries;
         te = (apkFileTypeEntry*)((uint8_t*)te + 4 * NSections + 20);
     }
-    _tlAssert("source/apk.cpp", 0x109, "", "");
+    apk::_tlAssert("source/apk.cpp", 0x109, "", "");
     __debugbreak();
     return nullptr;
 }
@@ -493,7 +505,7 @@ apkFile* apkLoadFile(const char* filename) {
     strcpy(path + rootLen, filename);
 
     void* buf = nullptr;
-    if (!tlReadFile(path, &buf, 0, 0)) {
+    if (!apk::tlReadFile(path, &buf, 0, 0)) {
         tlWarning("Unable to open %s.\n", path);
         return nullptr;
     }
