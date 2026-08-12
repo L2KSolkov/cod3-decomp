@@ -2420,9 +2420,25 @@ void rb_vehicle::init(Entity* owner, vehicle_rb_parameter* parameter)
     m_exhaust_effect.mVal = 0;
 }
 
-// stub until rb_vehicle::_align_wheels (0x6F4830) is ported
+// ?wheelNames@@3PAPADA (physics.o data @ 0xE01EE4)
+char* wheelNames[8] = {
+    "tag_wheel_front_left",   "tag_wheel_front_right",
+    "tag_wheel_back_left",    "tag_wheel_back_right",
+    "tag_wheel_middle_left",  "tag_wheel_middle_right",
+    "tag_wheel_middle_back_left", "tag_wheel_middle_back_right",
+};
+
+// ea: 0x6F4830
 void rb_vehicle::_align_wheels()
 {
+    for (int i = 0; i < 8; ++i)
+        m_wheel_bone_indices[i] = m_owner->mDObj->GetBoneIndex(wheelNames[i]);
+    for (int i = 0; i < 8; ++i)
+    {
+        if (m_wheel_bone_indices[i] >= 0)
+            m_wheel_orig_relpo[i] =
+                m_owner->mDObj->GetMat(m_wheel_bone_indices[i]);
+    }
 }
 
 // ea: 0x6F4A30
@@ -6079,6 +6095,25 @@ public:
     float            m_tween_time;    // +0x2050
     float            m_tween_duration;  // +0x2054
 
+    // ??0biped_system@@QAE@PAVbiped_phys_info@@@Z (physics.o inline 0x71E370)
+    biped_system() : biped_system(nullptr) {}
+    biped_system(biped_phys_info* bp_info)
+    {
+        reset_stability();
+        reset_ballistic_target();
+        bp_bone_array.m_list_qstart.reset_buffer();
+        bp_bone_array.m_list_pstart.reset_buffer();
+        // callback sphere-list pool (m_collision_callback +0x10 = +0xCA0;
+        // slot_array at pool+0xFF0, count at pool+0xFF4)
+        *(void**)((char*)this + 0x1A90) = (char*)this + 0xCA0;
+        *(int*)((char*)this + 0x1A94) = 0;
+        // callback capsule-pair pool (m_collision_callback +0x1010 = +0x1CA0;
+        // slot_array at pool+0x70, count at pool+0x74)
+        *(void**)((char*)this + 0x1D10) = (char*)this + 0x1CA0;
+        *(int*)((char*)this + 0x1D14) = 0;
+        m_bp_info = bp_info;
+    }
+
     void prolog_frame_advance(Entity* owner, float delta_t);  // ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
     void debug_render();  // ?debug_render@biped_system@@QAEXXZ
     void render_joint(int joint_id, Bitmask<unsigned int> render_flags);  // ?render_joint@biped_system@@QAEXHV?$Bitmask@I@@@Z
@@ -6692,10 +6727,45 @@ void biped_phys_info::epilog_frame_advance_all(float delta_t)
         g_list_biped_phys_info.m_alloc_list[i]->epilog_frame_advance(delta_t);
 }
 
-// stub until biped_phys_info::create_bp_sys (0x70B190) is ported
+// ea: 0x70B190
 void biped_phys_info::create_bp_sys(int flags)
 {
-    (void)flags;
+    if (m_owner == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 364, "m_owner",
+                     defaultFileName))
+        __debugbreak();
+    biped_system* m_bp_sys = this->m_bp_sys;
+    if (m_bp_sys != nullptr)
+    {
+        m_bp_sys->m_flags = flags;
+        m_bp_sys->remove_all_user_rigid_body();
+        m_bp_sys->reset_stability();
+        m_bp_sys->reset_ballistic_target();
+        m_bp_sys->m_is_stable = false;
+        m_bp_sys->m_stable_timer = 0.0f;
+    }
+    else
+    {
+        biped_system* v5;
+        if (g_list_biped_system.m_alloc_count < 16)
+            v5 = g_list_biped_system
+                     .m_alloc_list[g_list_biped_system.m_alloc_count++];
+        else
+        {
+            tlFatal("phys memory pool add_nc overflow.");
+            v5 = nullptr;
+        }
+        biped_system* v6 = nullptr;
+        if (v5 != nullptr)
+            v6 = new (v5) biped_system(this);
+        this->m_bp_sys = v6;
+        if (v6 == nullptr
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 372, "m_bp_sys",
+                         defaultFileName))
+            __debugbreak();
+        this->m_bp_sys->create_bps(this->m_owner, flags);
+        this->m_owner->flags |= 0x410000;
+    }
 }
 
 // ea: 0x6FF7F0
@@ -7240,10 +7310,105 @@ void biped_system::setup_physics(Entity* owner)
     (void)owner;
 }
 
-// stub until biped_system::update_stability (0x6FAA60) is ported
+// ?PHYSICS_GRAVITY_SCALE_1@@3MB (physics.o data @ 0xE01F08)
+const float PHYSICS_GRAVITY_SCALE_1 = 42.5f;
+
+// ea: 0x6FAA60
 void biped_system::update_stability(float delta_t)
 {
-    (void)delta_t;
+    for (int i = 0; i < 10; ++i)
+    {
+        if ((i < 0 || i >= m_joints.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        rigid_body_constraint_ragdoll* v4 = m_joints.m_slot_array[i];
+        if (v4 != nullptr)
+        {
+            float damp_k = g_ragdoll_mass_scale * 25.0f;
+            switch (i)
+            {
+            case 0:
+            case 2:
+                damp_k = damp_k * 0.5f;
+                break;
+            case 4:
+            case 6:
+                damp_k = damp_k * 0.80000001f;
+                break;
+            default:
+                break;
+            }
+            v4->set_damp_k(damp_k);
+            v4->m_flags |= 0x200u;
+        }
+    }
+    rb_ragdoll_model::update_stability(delta_t);
+    bool m_stable = this->m_stable;
+    this->m_is_stable = false;
+    if (m_stable)
+    {
+        float v7 = m_stable_timer + delta_t;
+        m_stable_timer = v7;
+        if (v7 >= 2.0f)
+            m_is_stable = true;
+        float turn_off_factor;
+        float v8 = 1.0f - ((2.0f - v7) * 0.5f);
+        if (v8 >= 0.0f)
+        {
+            turn_off_factor = 1.0f;
+            if (v8 <= 1.0f)
+                turn_off_factor = v8;
+        }
+        else
+        {
+            turn_off_factor = 0.0f;
+        }
+        float gravity_multiplier =
+            (1.0f - turn_off_factor) * PHYSICS_GRAVITY_SCALE_1;
+        for (int j = 0; j < 10; ++j)
+        {
+            if ((j < 0 || j >= m_list_rigid_body.m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            rigid_body* v10 = m_list_rigid_body.m_slot_array[j];
+            if ((j < 0 || j >= m_joints.m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            rigid_body_constraint_ragdoll* v11 = m_joints.m_slot_array[j];
+            if (v10 != nullptr)
+                v10->m_gravity_multiplier = gravity_multiplier;
+            if (v11 != nullptr)
+            {
+                float v12 = g_ragdoll_mass_scale * 25.0f;
+                switch (j)
+                {
+                case 0:
+                case 2:
+                    v12 = v12 * 0.5f;
+                    break;
+                case 4:
+                case 6:
+                    v12 = v12 * 0.80000001f;
+                    break;
+                default:
+                    break;
+                }
+                v11->set_damp_k(
+                    ((g_ragdoll_mass_scale * turn_off_factor) * 50.0f)
+                    + v12);
+            }
+        }
+    }
+    else
+    {
+        m_stable_timer = 0.0f;
+    }
 }
 
 // stub until phys_anim_bone_array::copy_back_tween (0x6F79B0) is ported
