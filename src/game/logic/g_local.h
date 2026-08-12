@@ -3592,7 +3592,8 @@ struct Destructible {
     static void Initialize(Destructible* self, Entity* ent, bool reInit);
 };
 
-struct PhysData {
+class PhysData {
+public:
     InplaceString mName;          // +0x00
     float         mMass;          // +0x04
     float         mBounce;        // +0x08

@@ -5,6 +5,7 @@
 
 #include "physics/physics_system.h"
 #include "physics/rb_ragdoll_model.h"
+#include <float.h>
 #include <intrin.h>
 #include <math.h>
 #include <new>
@@ -100,9 +101,18 @@ class biped_phys_info;
 struct phys_gjk_geom_list;
 class phys_gjk_geom_cod_base;
 struct trajectory_t;
-struct PhysData {
+class PhysData {
+public:
     uint8_t _pad0[0x08];
     float   mBounce;  // +0x08
+};
+
+// IVPointer<T> (game_types.h view; class tag V matches the binary manglings)
+template <typename T>
+class IVPointer {
+public:
+    T*           mValue;  // +0x00
+    unsigned int mPakId;  // +0x04
 };
 class DCGSet;
 void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
@@ -274,6 +284,7 @@ struct vector {
 class string {
 public:
     void* mBlock;  // +0x00 (Block*; chars follow the header)
+    string& operator=(const char* txt);  // ??4string@Broc@@QAEAAV01@PBD@Z (Broc.o)
 };
 }
 
@@ -368,6 +379,8 @@ public:
 class HashString {
 public:
     unsigned int mHash;  // +0x00
+    HashString();  // ??0HashString@@QAE@XZ
+    HashString(Broc::string& str);  // ??0HashString@@QAE@AAVstring@Broc@@@Z
 };
 
 // hash_const_t (g_local.h view; local copy - only physics fields used)
@@ -450,6 +463,27 @@ extern int g_vehicle_button_threshold;  // ?g_vehicle_button_threshold@@3HA (phy
 float vectoyaw(float* vec);  // ?vectoyaw@@YAMPAM@Z (core.o)
 float AngleNormalize180Accurate(float angle);  // ?AngleNormalize180Accurate@@YAMM@Z (core.o)
 void Axis4ToAngles(const float (*axis)[4], float* angles);  // ?Axis4ToAngles@@YAXPAY03$$CBMPAM@Z (core.o)
+void* G_GetModel(const char* modelName, TPakId pakId);  // ?G_GetModel@@YAPAXPBDW4TPakId@@@Z (g.o)
+Entity* G_Spawn(TPakId pakId);  // ?G_Spawn@@YAPAVEntity@@W4TPakId@@@Z (g.o)
+int G_CallSpawnEntity(Entity* ent);  // ?G_CallSpawnEntity@@YAHPAVEntity@@@Z (g.o)
+void SV_SetBrushModel(Entity* ent);  // ?SV_SetBrushModel@@YAXPAVEntity@@@Z (sv.o)
+void CalculatePhysData(Entity* ent, IVPointer<PhysData> physData);  // ?CalculatePhysData@@YAXPAVEntity@@V?$IVPointer@VPhysData@@@@@Z
+// BrocAPI view (broc_types.h; gpBrocAPI tag must stay U for the mangling)
+struct BrocAPI;
+extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A (Broc.o @ 0xF3ABDC)
+struct TPakInfoLocal {
+    uint8_t _pad[0xB4];
+    TPakId  mPakId;  // +0xB4
+};
+struct BrocAPILocal {
+    uint8_t _pad[0x61C];
+    TPakInfoLocal* (*mGetPakVector)(float x, float y, float z);  // +0x61C
+};
+// XModel view (XModel::name InplaceString at +0x48)
+struct XModelLocal {
+    uint8_t    _pad[0x48];
+    const char* mStr;  // +0x48 (name)
+};
 // DObjSkelMat - DObj skeleton matrix (64 bytes; core_types.h view)
 struct DObjSkelMat {
     float axis[3][4];  // +0x00
@@ -1083,7 +1117,8 @@ public:
     uint8_t _pad0[0xC0];
     int     mPakId;            // +0xC0
     void*   mPhysDataValue;    // +0xC4 (IVPointerRaw mPhysData)
-    uint8_t _padC8[0xCF - 0xC8];
+    int     mPhysDataPakId;    // +0xC8
+    uint8_t _padCC[0xCF - 0xCC];
     unsigned char numBones;  // +0xCF
 
     const math::Mat43& GetMat(int boneIndex);
@@ -1143,18 +1178,26 @@ struct refEntity {  // EntityShared subset
     DObj* mDObj;                 // +0x23C
     uint8_t _pad240[0x248 - 0x240];
     biped_phys_info* mBPInfo;    // +0x248
-    uint8_t _pad24C[0x254 - 0x24C];
+    void*   mDestructibleValue;  // +0x24C (IVPointer<Destructible>)
+    int     mDestructiblePakId;  // +0x250
     void* client;                // +0x254 (Client*; ps.viewangles +0xD0)
     void* actor;                 // +0x258 (actor_s*)
     void* sentient;              // +0x25C (sentient_s*)
     void* scr_vehicle;           // +0x260 (scr_vehicle_t*)
-    uint8_t _pad264[0x28C - 0x264];
+    uint8_t _pad264[0x270 - 0x264];
+    void*   mModelValue;         // +0x270 (IVPointer<XModel>)
+    int     mModelPakId;         // +0x274
+    uint8_t _pad278[0x27C - 0x278];
+    Broc::string mClassName;     // +0x27C
+    HashString   mClassNameHash; // +0x280
+    uint8_t _pad284[0x28C - 0x284];
     Broc::string mTarget;        // +0x28C (path node target name)
     uint8_t _pad290[0x2B0 - 0x290];
     uint8_t physicsObject;       // +0x2B0
     uint8_t _pad2B1[0x2B8 - 0x2B1];
     int32_t takedamage;          // +0x2B8
-    uint8_t _pad2BC[0x2C4 - 0x2BC];
+    uint8_t _pad2BC[0x2C0 - 0x2BC];
+    int32_t spawnflags;          // +0x2C0
     int32_t  flags;              // +0x2C4
     unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
     uint8_t _pad2CC[0x31C - 0x2CC];
@@ -6537,17 +6580,22 @@ void Destructible::AddPiece(Entity* ent, const char* exploderType)
 // ============================================================================
 class PhysDataBank;
 class DestructibleBank;
+class DestructibleLocal;
 class PhysDataBankManager {
 public:
     static PhysDataBankManager* sInst;  // ?sInst@PhysDataBankManager@@2PAV1@A (g_globals.cpp)
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);  // ?DecodeBank@PhysDataBankManager@@QAEXPBDPAEHW4TPakId@@@Z
+    IVPointer<PhysData> GetPhysData(
+        TPakId pak_id, const char* name);  // ?GetPhysData@PhysDataBankManager@@QAE?AV?$IVPointer@VPhysData@@@@W4TPakId@@PBD@Z
 };
 class DestructibleBankManager {
 public:
     static DestructibleBankManager* sInst;  // ?sInst@DestructibleBankManager@@2PAV1@A (g_globals.cpp)
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);  // ?DecodeBank@DestructibleBankManager@@QAEXPBDPAEHW4TPakId@@@Z
+    IVPointer<Destructible> GetDestructible(
+        TPakId pak_id, const char* name);  // ?GetDestructible@DestructibleBankManager@@QAE?AV?$IVPointer@VDestructible@@@@W4TPakId@@PBD@Z
 };
 
 // InplaceAssetBank<PhysData,InplaceTree<InplaceString,unsigned int>>::Fixup
@@ -6603,6 +6651,108 @@ void DecodeDestructible(const char* name, unsigned char* data, int size,
     DestructibleBankManager* v4 = DestructibleBankManager::sInst;
     InplaceAssetBank_Fixup_Destructible(data);
     InplaceAssetBankSet_AddBank_DestructibleBank(v4, pakId, data);
+}
+
+// ea: 0x709720
+Entity* SpawnBrokenPiece(Entity* owner, const char* classname,
+                         const char* modelName, const math::Position3* origin,
+                         bool makeDestructible)
+{
+    BrocAPILocal* api = (BrocAPILocal*)gpBrocAPI;
+    TPakInfoLocal* v6 =
+        api->mGetPakVector(origin->v.m128_f32[0], origin->v.m128_f32[1],
+                           origin->v.m128_f32[2]);
+    TPakId v7;
+    if (v6 != nullptr)
+        v7 = v6->mPakId;
+    else
+        v7 = CurPakId();
+    if (owner != nullptr)
+    {
+        TPakId mPakId = (TPakId)owner->mPakId;
+        if (mPakId == PAK_ID_INVALID)
+            mPakId = CurPakId();
+        if (mPakId != CurPakId())
+        {
+            TPakId v9 = (TPakId)owner->mPakId;
+            if (v9 == PAK_ID_INVALID)
+                v9 = CurPakId();
+            v7 = v9;
+        }
+    }
+    void* result = G_GetModel(modelName, v7);
+    if (result != nullptr)
+    {
+        TPakId v11 = v6 != nullptr ? v6->mPakId : PAK_ID_INVALID;
+        Entity* v12 = G_Spawn(v11);
+        v12->mClassName = classname;
+        HashString hs(v12->mClassName);
+        v12->mClassNameHash.mHash = hs.mHash;
+        v12->r.currentOrigin.v = origin->v;
+        if ((_fpclass(v12->r.currentOrigin.v.m128_f32[0]) & 0x297) != 0
+            || (_fpclass(v12->r.currentOrigin.v.m128_f32[1]) & 0x297) != 0
+            || (_fpclass(v12->r.currentOrigin.v.m128_f32[2]) & 0x297) != 0)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Destructible.cpp";
+            AeAssert::gCurrentLine = 49;
+            AeAssert::gCurrentExpr =
+                "!IS_NAN((ent->r.currentOrigin)[0]) && !IS_NAN((ent->r.currentOrigin)[1]) && !IS_NAN((ent->r.currentOrigin)[2])";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Invalid vector"))
+                __debugbreak();
+        }
+        v12->spawnflags = 0;
+        SetModel(v12, modelName);
+        if (G_CallSpawnEntity(v12) != 0)
+        {
+            if (makeDestructible)
+            {
+                TPakId v13 = (TPakId)v12->mPakId;
+                if (v13 == PAK_ID_INVALID)
+                    v13 = CurPakId();
+                IVPointer<Destructible> Destructible =
+                    DestructibleBankManager::sInst->GetDestructible(
+                        v13, "global");
+                v12->mDestructibleValue = Destructible.mValue;
+                v12->mDestructiblePakId = Destructible.mPakId;
+                v12->takedamage = 1;
+            }
+            SV_SetBrushModel(v12);
+            ValidatePakId(v12->mModelPakId);
+            TPakId v17 = (TPakId)v12->mPakId;
+            const char* mStr =
+                v12->mModelValue != nullptr
+                    ? ((XModelLocal*)v12->mModelValue)->mStr
+                    : nullptr;
+            if (v17 == PAK_ID_INVALID)
+                v17 = CurPakId();
+            IVPointer<PhysData> p =
+                PhysDataBankManager::sInst->GetPhysData(v17, mStr);
+            int v19 = p.mPakId;
+            ValidatePakId(p.mPakId);
+            if (p.mValue != nullptr)
+            {
+                DObj* mDObj = v12->mDObj;
+                mDObj->mPhysDataValue = p.mValue;
+                mDObj->mPhysDataPakId = v19;
+                IVPointer<PhysData> v21;
+                v21.mValue = p.mValue;
+                v21.mPakId = v19;
+                CalculatePhysData(v12, v21);
+            }
+            v12->r.contents = 0x200001;
+            if (owner != nullptr)
+                v12->r.svFlags = owner->r.svFlags;
+            else
+                v12->r.svFlags |= 0x10u;
+            v12->r.contents = 0x202081;
+            G_SetOrigin(v12, origin);
+            g_LinkEntity(v12);
+        }
+        return v12;
+    }
+    return (Entity*)result;
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
