@@ -95,6 +95,16 @@ public:
     rigid_body_constraint_ragdoll* add_joint(int rb_parent_id, int rb_id);
     rigid_body_constraint_angular_actuator* add_actuator(int rb_parent_id, int rb_id);
     void remove_actuator(int rb_id);
+    // get_joint - ea: 0x718D20 (physics.o inline COMDAT)
+    rigid_body_constraint_ragdoll* get_joint(int rb_id)
+    {
+        if ((rb_id < 0 || rb_id >= m_joints.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        return m_joints.m_slot_array[rb_id];
+    }
     void update_ballistic_target();
     void get_ballistic_info(math::Dir3* center_of_mass, math::Dir3* total_momentum,
                             float* total_mass);

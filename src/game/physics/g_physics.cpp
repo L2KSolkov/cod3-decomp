@@ -7065,12 +7065,27 @@ void biped_system::rdbi_calc_bone_mat_from_rb()
 {
 }
 
-// stub until biped_system internals are ported (physics.o 0x6FB610)
+// ea: 0x6FB610
 void biped_system::render_joint(int joint_id,
                                 Bitmask<unsigned int> render_flags)
 {
-    (void)joint_id;
-    (void)render_flags;
+    if (joint_id > 10)
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+            if ((i < 0 || i >= m_joints.m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            render_single_joint(m_joints.m_slot_array[i], render_flags);
+        }
+    }
+    else
+    {
+        render_single_joint(rb_ragdoll_model::get_joint(joint_id),
+                            render_flags);
+    }
 }
 
 // phys_make_rotate (physics.o inline COMDAT 0x716480). Same math as
@@ -7544,11 +7559,218 @@ void biped_system::update_stability(float delta_t)
     }
 }
 
-// stub until phys_anim_bone_array::copy_back_tween (0x6F79B0) is ported
+// float constants for the copy_back_tween acos/sin approximations
+static const __m128 Float4_SinCoefs_12 =
+    _mm_setr_ps(-0.16666667f, 0.0083333338f, -0.00019841269f, 0.0f);
+static const math::Dir3 Float4_XAxis_12 = {
+    _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f)
+};
+
+// ea: 0x6F79B0
 void phys_anim_bone_array::copy_back_tween(Entity* owner, float t_)
 {
-    (void)owner;
-    (void)t_;
+    int numBones = owner->mDObj->numBones;
+    int m_alloc_count = m_list_qstart.m_alloc_count;
+    int v66 = numBones;
+    if (numBones > m_alloc_count)
+    {
+        v66 = m_alloc_count;
+        numBones = m_alloc_count;
+    }
+    int v6 = 0;
+    if (numBones > 0)
+    {
+        __m128 v47 = _mm_set1_ps(t_);
+        __m128 v48 = _mm_set1_ps(1.0f - t_);
+        int v69 = 0;
+        for (int i = 0;; ++i)
+        {
+            int BoneParent = owner->mDObj->GetBoneParent(v6);
+            if ((i < 0 || v6 >= m_list_phys_anim_bone.m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            phys_anim_bone* bone_count =
+                &m_list_phys_anim_bone.m_slot_array[i];
+            if ((i < 0 || v6 >= m_list_qstart.m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            if ((i < 0 || v6 >= m_list_pstart.m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            int m_rb_index = bone_count->m_rb_index;
+            __m128 v52 = _mm_add_ps(
+                _mm_mul_ps(m_list_pstart.m_slot_array[v69].v, v48),
+                _mm_mul_ps(bone_count->mat_loc.w.v, v47));
+            if (m_rb_index == -1)
+                goto slerp;
+            if (m_rb_index != 0)
+            {
+                const math::Mat43& Mat = owner->mDObj->GetMat(BoneParent);
+                math::Position3 plerp;
+                plerp.v = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v52, v52, 0), Mat.x.v),
+                        _mm_mul_ps(_mm_shuffle_ps(v52, v52, 85), Mat.y.v)),
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(v52, v52, 170), Mat.z.v),
+                        Mat.w.v));
+                math::Mat43& dst = const_cast<math::Mat43&>(
+                    owner->mDObj->GetMat(v6));
+                dst.w.v = plerp.v;
+            }
+            ++v6;
+            ++v69;
+            if (v6 >= v66)
+                return;
+            continue;
+
+        slerp:
+            const math::Quaternion& qstart_q = m_list_qstart.m_slot_array[v69];
+            __m128 qstart = _mm_setr_ps(qstart_q.x, qstart_q.y, qstart_q.z,
+                                        qstart_q.w);
+            __m128 qend = _mm_setr_ps(bone_count->qend.x, bone_count->qend.y,
+                                      bone_count->qend.z, bone_count->qend.w);
+            __m128 v15 = _mm_mul_ps(qstart, qend);
+            float dot = v15.m128_f32[0]
+                + (v15.m128_f32[1] + (v15.m128_f32[2] + v15.m128_f32[3]));
+            __m128 v18;
+            float d = dot;
+            if (dot >= 0.0f)
+            {
+                v18 = _mm_setr_ps(1.0f - t_, t_, 1.0f, 0.0f);
+            }
+            else
+            {
+                v18 = _mm_setr_ps(1.0f - t_, 0.0f - t_, 1.0f, 0.0f);
+                d = 0.0f - dot;
+            }
+            float theta;
+            if (d < 0.99999899f)
+            {
+                if (d >= 0.5f)
+                {
+                    float s = sqrtf((1.0f - d) * 0.5f);
+                    float s2 = s * s;
+                    float s3 = s2 * s;
+                    float s5 = s3 * s2;
+                    theta = ((((s5 * s2) * 0.1079625f)
+                              + (s5 * 0.15000001f))
+                             + (s3 * 0.33333331f))
+                        + (s * 2.0f);
+                }
+                else
+                {
+                    float d2 = d * d;
+                    float d3 = d2 * d;
+                    float d4 = d2 * d2;
+                    theta = ((((d4 * d2) * -0.053981241f)
+                              - (d4 * 0.075000003f))
+                             - (d3 * 0.1666667f))
+                        - d
+                        + 1.570796f;
+                }
+                __m128 v27 = _mm_mul_ps(v18, _mm_set1_ps(theta));
+                __m128 v28 = _mm_mul_ps(v27, v27);
+                __m128 v29 = _mm_mul_ps(v28, v27);
+                __m128 v30 = _mm_mul_ps(v28, v29);
+                __m128 v31 = _mm_add_ps(
+                    _mm_add_ps(
+                        v27,
+                        _mm_mul_ps(
+                            _mm_mul_ps(v28, v30),
+                            _mm_shuffle_ps(Float4_SinCoefs_12,
+                                           Float4_SinCoefs_12, 170))),
+                    _mm_mul_ps(v30,
+                               _mm_shuffle_ps(Float4_SinCoefs_12,
+                                              Float4_SinCoefs_12, 85)));
+                qstart = _mm_setr_ps(qstart_q.x, qstart_q.y, qstart_q.z,
+                                     qstart_q.w);
+                __m128 v32 = _mm_add_ps(
+                    v31,
+                    _mm_mul_ps(v29,
+                               _mm_shuffle_ps(Float4_SinCoefs_12,
+                                              Float4_SinCoefs_12, 0)));
+                float v64 = v32.m128_f32[2];
+                v18 = _mm_div_ps(v32, _mm_set1_ps(v64));
+            }
+            __m128 v33 = _mm_add_ps(
+                _mm_mul_ps(qstart, _mm_shuffle_ps(v18, v18, 0)),
+                _mm_mul_ps(qend, _mm_shuffle_ps(v18, v18, 85)));
+            float v63 = v33.m128_f32[3];
+            __m128 v34 = _mm_mul_ps(v33, v33);
+            float len = sqrtf(v34.m128_f32[0]
+                              + (v34.m128_f32[1] + v34.m128_f32[2]));
+            __m128 v36;
+            if (len == 0.0f)
+                v36 = Float4_XAxis_12.v;
+            else
+                v36 = _mm_div_ps(v33, _mm_set1_ps(0.0f - len));
+            __m128 v37 = _mm_xor_ps(Float4_SignMask_12, v36);
+            float ql = len;
+            float w2_w = (v63 * v63) - (ql * ql);
+            __m128 v39 = _mm_mul_ps(v37, _mm_set1_ps(w2_w));
+            __m128 v40 = _mm_sub_ps(v37, v39);
+            float wq2 = (v63 * 2.0f) * ql;
+            __m128 v41 = _mm_mul_ps(v37, _mm_set1_ps(wq2));
+            __m128 v42 = _mm_xor_ps(Float4_SignMask_12, v41);
+            __m128 r0 = _mm_setr_ps(
+                (v63 * v63) - (ql * ql), v41.m128_f32[2], v42.m128_f32[1],
+                v42.m128_f32[1]);
+            __m128 r1 = _mm_setr_ps(v41.m128_f32[1], w2_w,
+                                    v41.m128_f32[0], v41.m128_f32[0]);
+            __m128 r2 = _mm_setr_ps(v42.m128_f32[0], v41.m128_f32[0],
+                                    w2_w, v42.m128_f32[0]);
+            __m128 v49 = _mm_add_ps(
+                r0, _mm_mul_ps(v40, _mm_shuffle_ps(v37, v37, 0)));
+            __m128 v50 = _mm_add_ps(
+                r1, _mm_mul_ps(v40, _mm_shuffle_ps(v37, v37, 85)));
+            __m128 v51 = _mm_add_ps(
+                r2, _mm_mul_ps(v40, _mm_shuffle_ps(v37, v37, 170)));
+            const math::Mat43& v43 = owner->mDObj->GetMat(BoneParent);
+            __m128 y = v43.y.v;
+            __m128 z = v43.z.v;
+            __m128 v54 = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v49, v49, 0), v43.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(v49, v49, 85), y)),
+                _mm_mul_ps(_mm_shuffle_ps(v49, v49, 170), z));
+            math::Dir3 v55;
+            v55.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v50, v50, 0), v43.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(v50, v50, 85), y)),
+                _mm_mul_ps(_mm_shuffle_ps(v50, v50, 170), z));
+            math::Dir3 v56;
+            v56.v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v51, v51, 0), v43.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(v51, v51, 85), y)),
+                _mm_mul_ps(_mm_shuffle_ps(v51, v51, 170), z));
+            __m128 v57 = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v52, v52, 0), v43.x.v),
+                    _mm_mul_ps(_mm_shuffle_ps(v52, v52, 85), y)),
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v52, v52, 170), z),
+                    v43.w.v));
+            math::Mat43& v46 = const_cast<math::Mat43&>(
+                owner->mDObj->GetMat(v6));
+            v46.x.v = v54;
+            v46.y.v = v55.v;
+            v46.z.v = v56.v;
+            v46.w.v = v57;
+            ++v6;
+            ++v69;
+            if (v6 >= v66)
+                return;
+        }
+    }
 }
 
 // ea: 0x6F8E20
