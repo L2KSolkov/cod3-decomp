@@ -450,6 +450,17 @@ extern int g_vehicle_button_threshold;  // ?g_vehicle_button_threshold@@3HA (phy
 float vectoyaw(float* vec);  // ?vectoyaw@@YAMPAM@Z (core.o)
 float AngleNormalize180Accurate(float angle);  // ?AngleNormalize180Accurate@@YAMM@Z (core.o)
 void Axis4ToAngles(const float (*axis)[4], float* angles);  // ?Axis4ToAngles@@YAXPAY03$$CBMPAM@Z (core.o)
+// DObjSkelMat - DObj skeleton matrix (64 bytes; core_types.h view)
+struct DObjSkelMat {
+    float axis[3][4];  // +0x00
+    float origin[4];   // +0x30
+};
+DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);  // ?SV_DObjGetMatrixArray@@YAPAUDObjSkelMat@@PAVEntity@@@Z (sv.o)
+DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);  // ?DObjGetMatrixArray@@YAPAUDObjSkelMat@@PBVDObj@@H@Z (render.o)
+void DObjMatriceModelToLocal(Entity* owner);  // ?DObjMatriceModelToLocal@@YAXPAVEntity@@@Z
+void CopyMatrix(math::Mat43& out, DObjSkelMat& in);  // ?CopyMatrix@@YAXAAVMat43@math@@AAUDObjSkelMat@@@Z (render.o inline)
+// dword_E01E5C - physics.o bone-index mapping table (10 x { boneIdx, name })
+extern int dword_E01E5C[20];
 
 // Bitmask<T> (ae/core/bitmask.h). Add/Rmv are inline COMDATs (g.o 0x4ACC30 /
 // 0x4ACCC0). class tag (V) required for V?$Bitmask@I@@ manglings.
@@ -1077,6 +1088,7 @@ public:
 
     const math::Mat43& GetMat(int boneIndex);
     int GetBoneIndex(const char* name) const;
+    int GetBoneParent(int boneIndex);  // ?GetBoneParent@DObj@@QAEHH@Z (render.o; stub)
 };
 const math::Mat43& DObj::GetMat(int boneIndex)
 {
@@ -1126,7 +1138,8 @@ struct refEntity {  // EntityShared subset
                                  //  currentMat +0x170)
     uint8_t _pad140[0x230 - (0xE0 + sizeof(refEntity))];
     int32_t mPakId;              // +0x230
-    uint8_t _pad234[0x23C - 0x234];
+    unsigned int mHandle;        // +0x234 (DbLinkedHandle mVal)
+    uint8_t _pad238[0x23C - 0x238];
     DObj* mDObj;                 // +0x23C
     uint8_t _pad240[0x248 - 0x240];
     biped_phys_info* mBPInfo;    // +0x248
@@ -4998,10 +5011,12 @@ void absolutely_fatal_irrecoverable_error_infinite_loop()
         ++x_0;
 }
 
-// phys_anim_bone (physics.o; stride 0x60 - mBoneIndex +0x50, m_rb_index +0x54)
+// phys_anim_bone (physics.o; 96 bytes - mat_loc +0x00, qend +0x40,
+// mBoneIndex +0x50, m_rb_index +0x54, m_rb_parent_index +0x58)
 class phys_anim_bone {
 public:
-    uint8_t _pad0[0x50];
+    math::Mat43 mat_loc;      // +0x00
+    math::Quaternion qend;    // +0x40
     int     mBoneIndex;  // +0x50
     int     m_rb_index;  // +0x54
     int     m_rb_parent_index;  // +0x58
@@ -5013,12 +5028,17 @@ public:
     void copy_back_bones(Entity* owner);  // ?copy_back_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z
     void remove_rigid_body(int rb_index);  // ?remove_rigid_body@phys_anim_bone_array@@QAEXH@Z
     void copy_back_tween(Entity* owner, float t_);  // ?copy_back_tween@phys_anim_bone_array@@QAEXPAVEntity@@M@Z
+    void attach_physics_bones(Entity* owner);  // ?attach_physics_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z
+    void copy_tween_start(Entity* owner);      // ?copy_tween_start@phys_anim_bone_array@@QAEXPAVEntity@@@Z
     int  get_bone(int rb_index);  // ?get_bone@phys_anim_bone_array@@QAEHH@Z
     int  get_phys_bone(int bone_id);  // ?get_phys_bone@phys_anim_bone_array@@QAEHH@Z
 
     // ?m_list_phys_anim_bone@phys_anim_bone_array@@2V?$phys_static_array@Vphys_anim_bone@@$0FK@@@A
     // (physics.o data @ 0xE01F10)
     static phys_static_array<phys_anim_bone, 90> m_list_phys_anim_bone;
+
+    phys_static_array<math::Quaternion, 90> m_list_qstart;  // +0x00
+    phys_static_array<math::Position3, 90>  m_list_pstart;  // +0x5B0
 };
 phys_static_array<phys_anim_bone, 90>
     phys_anim_bone_array::m_list_phys_anim_bone;
@@ -5041,6 +5061,218 @@ void phys_anim_bone_array::write_skeleton(Entity* owner,
     for (int i = 0; i < bone_count; ++i)
         memcpy(&const_cast<math::Mat43&>(owner->mDObj->GetMat(i)),
                &skeleton_pose[i], sizeof(math::Mat43));
+}
+
+// CopyMatrix (render.o inline COMDAT 0x6E7820) - DObjSkelMat -> Mat43
+void CopyMatrix(math::Mat43& out, DObjSkelMat& in)
+{
+    memcpy(&out, &in, sizeof(DObjSkelMat));
+}
+
+// dword_E01E5C - physics.o bone/rb mapping table. First dword of each 8-byte
+// pair is the bone index (-1 until runtime init), second is a name pointer.
+int dword_E01E5C[20] = {
+    -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+    -1, 0, -1, 0, -1, 0, -1, 0, -1, 0,
+};
+
+// phys_static_array::add for object-element arrays (the local rb_ragdoll
+// template returns the slot value; the binary's object instantiations return
+// a pointer, e.g. ?add@?$phys_static_array@Vphys_anim_bone@@$0FK@@@QAEPAV...)
+template <typename T, int CAP>
+static T* phys_static_array_add_ptr(phys_static_array<T, CAP>& arr,
+                                    const char* error_msg)
+{
+    if (arr.m_alloc_count < CAP)
+    {
+        T* slot = &arr.m_slot_array[arr.m_alloc_count];
+        arr.m_alloc_count += 1;
+        return slot;
+    }
+    tlFatal(error_msg);
+    return nullptr;
+}
+
+// Matrix -> quaternion (branch structure + constants from attach_physics_bones
+// 0x6FFF40 / copy_tween_start 0x6F8190; threshold -1/3, 0.5/sqrt scale).
+static math::Quaternion MatToQuat(const math::Mat43& m)
+{
+    float m00 = m.x.v.m128_f32[0], m01 = m.x.v.m128_f32[1],
+          m02 = m.x.v.m128_f32[2];
+    float m10 = m.y.v.m128_f32[0], m11 = m.y.v.m128_f32[1],
+          m12 = m.y.v.m128_f32[2];
+    float m20 = m.z.v.m128_f32[0], m21 = m.z.v.m128_f32[1],
+          m22 = m.z.v.m128_f32[2];
+    float trace = (m00 + m11) + m22;
+    math::Quaternion q;
+    if (trace >= -0.33333299f)
+    {
+        float s = 0.5f / sqrtf(trace + 1.0f);
+        q.x = (m21 - m12) * s;
+        q.y = (m02 - m20) * s;
+        q.z = (m10 - m01) * s;
+        q.w = (trace + 1.0f) * s;
+    }
+    else if (m11 <= m00)
+    {
+        if (m00 <= m22)
+        {
+            float s = 0.5f / sqrtf((m22 - m00 - m11) + 1.0f);
+            q.x = (m20 + m02) * s;
+            q.y = (m12 + m21) * s;
+            q.z = (m10 - m01) * s;
+            q.w = (m22 - m00 - m11 + 1.0f) * s;
+        }
+        else
+        {
+            float s = 0.5f / sqrtf((m00 - m11 - m22) + 1.0f);
+            q.x = (m00 - m11 - m22 + 1.0f) * s;
+            q.y = (m01 + m10) * s;
+            q.z = (m20 + m02) * s;
+            q.w = (m12 - m21) * s;
+        }
+    }
+    else if (m11 <= m22)
+    {
+        float s = 0.5f / sqrtf((m22 - m00 - m11) + 1.0f);
+        q.x = (m20 + m02) * s;
+        q.y = (m12 + m21) * s;
+        q.z = (m10 - m01) * s;
+        q.w = (m22 - m00 - m11 + 1.0f) * s;
+    }
+    else
+    {
+        float s = 0.5f / sqrtf((m11 - m00 - m22) + 1.0f);
+        q.x = (m01 + m10) * s;
+        q.y = (m11 - m00 - m22 + 1.0f) * s;
+        q.z = (m12 + m21) * s;
+        q.w = (m02 - m20) * s;
+    }
+    return q;
+}
+
+// ea: 0x6FFF40
+void phys_anim_bone_array::attach_physics_bones(Entity* owner)
+{
+    int v4 = 0;
+    if (m_list_phys_anim_bone.m_alloc_count <= 0
+        || owner->mDObj->numBones > m_list_phys_anim_bone.m_alloc_count)
+    {
+        m_list_phys_anim_bone.m_alloc_count = 0;
+        int numBones = owner->mDObj->numBones;
+        DObjSkelMat* MatrixArray = SV_DObjGetMatrixArray(owner);
+        if (MatrixArray == nullptr)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBRagdoll.cpp";
+            AeAssert::gCurrentLine = 527;
+            AeAssert::gCurrentExpr = "matrices";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("no matrices for dobj?"))
+                __debugbreak();
+        }
+        DObjMatriceModelToLocal(owner);
+        if (numBones > 0)
+        {
+            while (v4 < numBones)
+            {
+                phys_anim_bone* v5 = phys_static_array_add_ptr(
+                    m_list_phys_anim_bone, "phys array add overflow.");
+                v5->m_rb_index = -1;
+                v5->m_rb_parent_index = -1;
+                v5->mBoneIndex = v4;
+                int v6 = 0;
+                while (v4 != dword_E01E5C[2 * v6])
+                {
+                    if (++v6 >= 10)
+                        goto LABEL_13;
+                }
+                v5->m_rb_index = v6;
+            LABEL_13:
+                int BoneParent = owner->mDObj->GetBoneParent(v4);
+                if (BoneParent >= 0)
+                {
+                    if (BoneParent >= v4
+                        && _tlAssert(
+                               "c:\\cod\\code\\game\\RBRagdoll.cpp", 552,
+                               "parentBoneIndex < bctr", defaultFileName))
+                        __debugbreak();
+                    v5->m_rb_parent_index = v5->m_rb_index;
+                }
+                CopyMatrix(v5->mat_loc, *MatrixArray);
+                v5->qend = MatToQuat(v5->mat_loc);
+                ++v4;
+                ++MatrixArray;
+            }
+        }
+        DObjGetBasePose(owner->mDObj);
+    }
+}
+
+// ea: 0x6F8190
+void phys_anim_bone_array::copy_tween_start(Entity* owner)
+{
+    int numBones = owner->mDObj->numBones;
+    int v80 = numBones;
+    int v110 = 0;
+    if (numBones != 0)
+    {
+        while (true)
+        {
+            math::Quaternion* v4 = phys_static_array_add_ptr(
+                m_list_qstart, "phys array add overflow.");
+            math::Position3* v5 = phys_static_array_add_ptr(
+                m_list_pstart, "phys array add overflow.");
+            if (v4 == nullptr || v5 == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::JSV;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\RBRagdoll.cpp";
+                AeAssert::gCurrentLine = 572;
+                AeAssert::gCurrentExpr = "qstart && pstart";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("the character has too many bones"))
+                    __debugbreak();
+            }
+            int BoneParent = owner->mDObj->GetBoneParent(v110);
+            if (BoneParent < 0)
+            {
+                const math::Mat43::Packed& BaseRelMat =
+                    owner->GetBaseRelMat(v110);
+                math::Mat43 m;
+                m.x.v = _mm_setr_ps(BaseRelMat.x.x, BaseRelMat.x.y,
+                                    BaseRelMat.x.z, 0.0f);
+                m.y.v = _mm_setr_ps(BaseRelMat.y.x, BaseRelMat.y.y,
+                                    BaseRelMat.y.z, 0.0f);
+                m.z.v = _mm_setr_ps(BaseRelMat.z.x, BaseRelMat.z.y,
+                                    BaseRelMat.z.z, 0.0f);
+                m.w.v = _mm_setzero_ps();
+                *v4 = MatToQuat(m);
+                math::Position3 p;
+                p.v = _mm_setr_ps(BaseRelMat.w.x, BaseRelMat.w.y,
+                                  BaseRelMat.w.z, 0.0f);
+                *v5 = p;
+                goto LABEL_28;
+            }
+            const math::Mat43& parentMat =
+                owner->mDObj->GetMat(BoneParent);
+            const math::Mat43& Mat = owner->mDObj->GetMat(v110);
+            math::Mat43 v46;
+            phys_full_inv_multiply_mat(v46, parentMat, Mat);
+            *v4 = MatToQuat(v46);
+            *v5 = v46.w;
+        LABEL_28:
+            if (++v110 >= v80)
+                return;
+        }
+    }
+}
+
+// stub until DObjMatriceModelToLocal (0x6FF860) is ported (Hex-Rays output
+// garbled; needs disasm-driven reconstruction)
+void DObjMatriceModelToLocal(Entity* owner)
+{
+    (void)owner;
 }
 
 // biped_system (physics.o RBRagdoll.cpp) - rb_ragdoll_model subclass.
@@ -6113,15 +6345,31 @@ public:
     void SetCoverNodeStatus(const Broc::string& name, int inValid);
 };
 
-// Destructible (physics.o; minimal view for the DeletePiece family)
+// InplaceVector<T> (ae/inplace/InplaceVector.h view; 8 bytes)
+template <typename T>
+struct InplaceVector {
+    T*           mList;  // +0x00
+    unsigned int mSize;  // +0x04
+};
+
+// Destructible (physics.o RBDestructible.cpp; 196 bytes, IDA ordinal).
+// mVisibleStatic/mVisibleSwapOut/mVisiblePiece offsets verified from IDA.
 class Destructible {
 public:
+    uint8_t     _pad0[0x3C];
+    InplaceVector<unsigned int> mVisibleStatic;      // +0x3C (DbLinkedHandle<...> mVal)
+    uint8_t     _pad44[0x4C - 0x44];
+    InplaceVector<unsigned int> mVisibleSwapOut;     // +0x4C
+    uint8_t     _pad54[0x5C - 0x54];
+    InplaceVector<unsigned int> mVisiblePiece;       // +0x5C
+
     void DeletePiece(Entity* ent);  // ?DeletePiece@Destructible@@QAEXPAVEntity@@@Z
     void ThrowPiece(Entity* entPiece, float force,
                     const math::Position3& hitp,
                     const math::Position3& trajectory,
                     bool useRealPhysics);  // ?ThrowPiece@Destructible@@QAEXPAVEntity@@MABVPosition3@math@@1_N@Z
     static void InvalidateCoverNode(Entity* ent);  // ?InvalidateCoverNode@Destructible@@SAXPAVEntity@@@Z
+    void AddPiece(Entity* ent, const char* exploderType);  // ?AddPiece@Destructible@@QAEXPAVEntity@@PBD@Z
 };
 
 // ea: 0x6F64B0
@@ -6169,6 +6417,113 @@ void Destructible::ThrowPiece(Entity* entPiece, float force,
             math::Position3 rotpos;
             rotpos.v = rot.v;
             BrocSys::Mover_RotateSpeed(entPiece, rotpos, 10.0f, 0.0f, 0.0f);
+        }
+    }
+}
+
+// AddPiece helper (shared by the exploder_stay / exploder_swap_out /
+// exploder_piece_visible branches; identical scan-and-fill logic per branch)
+static void AddPiece_ToVector(InplaceVector<unsigned int>* p,
+                              unsigned int ent_handle)
+{
+    unsigned int v4 = 0;
+    if (p->mSize != 0)
+    {
+        while (1)
+        {
+            unsigned int mVal = p->mList[v4];
+            unsigned int v6 = mVal & 0xFFF;
+            if (v6 >= 0x540
+                || mVal >> 12 != EntityHandleDb::sInst.mElements[v6].mKey
+                || EntityHandleDb::sInst.mElements[v6].mObject == nullptr)
+                break;
+            if (++v4 >= p->mSize)
+                goto LABEL_9;
+        }
+        p->mList[v4] = ent_handle;
+        return;
+    }
+LABEL_9:
+    for (unsigned int i = 0; i < p->mSize; ++i)
+    {
+        unsigned int v8 = i;
+        if (i >= p->mSize)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+            AeAssert::gCurrentLine = 81;
+            AeAssert::gCurrentExpr = "index < mSize";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Bounds check"))
+                __debugbreak();
+            if (i >= p->mSize)
+                v8 = 0;
+        }
+        p->mList[v8] = 0;
+    }
+    unsigned int v9 = 0;
+    if (p->mSize != 0)
+    {
+        while (1)
+        {
+            unsigned int v10 = v9;
+            if (v9 >= p->mSize)
+            {
+                AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                AeAssert::gCurrentLine = 81;
+                AeAssert::gCurrentExpr = "index < mSize";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+                if (v9 >= p->mSize)
+                    v10 = 0;
+            }
+            unsigned int v11 = p->mList[v10] & 0xFFF;
+            if (v11 >= 0x540
+                || p->mList[v10] >> 12
+                       != EntityHandleDb::sInst.mElements[v11].mKey
+                || EntityHandleDb::sInst.mElements[v11].mObject == nullptr)
+                break;
+            if (++v9 >= p->mSize)
+                return;
+        }
+        if (v9 < p->mSize)
+            goto LABEL_36;
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+        AeAssert::gCurrentLine = 81;
+        AeAssert::gCurrentExpr = "index < mSize";
+        if (AeAssert::IsIgnored() || !AeAssert::Assert("Bounds check"))
+        {
+        LABEL_34:
+            if (v9 >= p->mSize)
+                v9 = 0;
+        LABEL_36:
+            p->mList[v9] = ent_handle;
+            return;
+        }
+        __debugbreak();
+        goto LABEL_34;
+    }
+}
+
+// ea: 0x7057A0
+void Destructible::AddPiece(Entity* ent, const char* exploderType)
+{
+    if (exploderType != nullptr && ent != nullptr)
+    {
+        if (strcmp(exploderType, "exploder_stay") == 0)
+        {
+            AddPiece_ToVector(&mVisibleStatic, ent->mHandle);
+        }
+        else if (strcmp(exploderType, "exploder_swap_out") == 0)
+        {
+            AddPiece_ToVector(&mVisibleSwapOut, ent->mHandle);
+        }
+        else if (strcmp(exploderType, "exploder_piece_visible") == 0)
+        {
+            AddPiece_ToVector(&mVisiblePiece, ent->mHandle);
         }
     }
 }
