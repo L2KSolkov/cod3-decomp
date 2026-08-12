@@ -229,6 +229,7 @@ void phys_full_inv_multiply_mat(math::Mat43& dest_m,
                                 const math::Mat43& left_m,
                                 const math::Mat43& right_m);  // physics.o inline
 static const __m128 Float4_SignMask_12 = { -0.0f, -0.0f, -0.0f, -0.0f };
+static const __m128 Float4_Zero_12 = { 0.0f, 0.0f, 0.0f, 0.0f };  // 0xD142E0
 // ea: 0x7187C0 - dest = inverse(left) * right (left is orthonormal: transpose)
 void phys_full_inv_multiply_mat(math::Mat43& dest_m,
                                 const math::Mat43& left_m,
@@ -1380,7 +1381,17 @@ public:
     uint8_t _pad[0xA8];  // +0x00 (incl. mFreeIndices BitSet<1344>)
     EntityHandleDbDbElement mElements[0x540];  // +0xA8
     static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A (g.o)
+
+    Entity* GetObject(int idx);  // HandleDb<Entity,1344,SizedHandle<12,20>> (g.o)
 };
+
+// ?GetObject@?$HandleDb@VEntity@@$0FEA@V?$SizedHandle@$0M@$0BE@@@@@QBEPAVEntity@@H@Z
+// (g.o; stub until g.o is ported)
+Entity* EntityHandleDb::GetObject(int idx)
+{
+    (void)idx;
+    return nullptr;
+}
 
 // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o; stub until render.o is ported)
 void DObjGetBasePose(DObj* obj)
@@ -5299,14 +5310,23 @@ void prop_phys_collision::collide_entities(rb_extra_info* rb_inf)
 {
     (void)rb_inf;
 }
-// helper stubs for the collide pass
+// ea: 0x7197E0
 bool are_potentially_colliding(const math::Dir3* b1_mn,
                                const math::Dir3* b1_mx,
                                const math::Dir3* b2_mn,
                                const math::Dir3* b2_mx)
 {
-    (void)b1_mn; (void)b1_mx; (void)b2_mn; (void)b2_mx;
-    return false;
+    static const math::Dir3 active_eps_vec = {
+        _mm_setr_ps(3.4f, 3.4f, 3.4f, 0.0f)
+    };
+    return (_mm_movemask_ps(
+                _mm_cmplt_ps(
+                    _mm_max_ps(
+                        _mm_sub_ps(b2_mn->v,
+                                   _mm_add_ps(b1_mx->v, active_eps_vec.v)),
+                        _mm_sub_ps(_mm_sub_ps(b1_mn->v, active_eps_vec.v),
+                                   b2_mx->v)),
+                    Float4_Zero_12)) & 7) == 7;
 }
 void collide_segment(void* wci, void* wci_ent, void* ent1, void* g1_rb,
                      const math::Mat43* g1_xform, void* g1)
@@ -5320,16 +5340,38 @@ bool rb_extra_info_can_have_event(void* rb_inf)
     (void)rb_inf;
     return false;
 }
-void create_prop_collide_callback(void* rb_inf, int surfaceFlags, void* b1,
-                                  void* b2)
-{
-    (void)rb_inf; (void)surfaceFlags; (void)b1; (void)b2;
-}
+void create_prop_collide_callback(rb_extra_info* rb_inf, int surfaceFlags,
+                                  rigid_body* b1,
+                                  rigid_body* b2);  // 0x71DB60
+
+// Temporary stand-in for phys_gjk_info::phys_collide_do_gjk_collide (0x87B280,
+// phys_gjk.o). The real engine body is ported in src/physics/phys_gjk.cpp but
+// its callees (init_gjk, comp_lambda_*, comp_v, cache updates, ...) are not
+// ported yet, so pulling it into the link breaks. Swap this out when phys_gjk.o
+// internals land.
 int phys_collide_do_gjk_collide_stub(void* gjk_info, void* d,
                                      float sep_thresh)
 {
     (void)gjk_info; (void)d; (void)sep_thresh;
     return 0;
+}
+
+// phys_collide_data_callback (phys_gjk.h view; vtable slot 0 = process)
+class phys_collide_data_callback {
+public:
+    virtual bool process(phys_collide_data* d) = 0;  // (pcd_callback->process)(d)
+};
+
+// ea: 0x6F1D40 (physics.o inline; dead COMDAT - call sites inline the body)
+void phys_collide_do_gjk_collide_and_contact_manifold(phys_collide_data* d)
+{
+    if (phys_collide_do_gjk_collide_stub(d->gjk_info, d, 3.4000001f))
+    {
+        phys_collide_data_callback* pcd_callback =
+            (phys_collide_data_callback*)d->pcd_callback;
+        if (pcd_callback == nullptr || pcd_callback->process(d))
+            d->cman_process->process(d);
+    }
 }
 
 // stub until process_prop_collide_callbacks (0x702740) is ported
@@ -5587,10 +5629,43 @@ int CGBank::get_type(unsigned int index) const
     return 0;
 }
 
-// stub until physics_colgeom_visitor::visit (0xB08E20) is ported
-visit_result_t physics_colgeom_visitor::visit(int cluster_offset)
+// ea: 0x719920
+visit_result_t physics_colgeom_visitor::visit(int index)
 {
-    (void)cluster_offset;
+    if (m_cur_bank == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.h", 379, "m_cur_bank",
+                     defaultFileName))
+        __debugbreak();
+    CGBank* m_cur_bank = this->m_cur_bank;
+    if (index >= m_cur_bank->objects.m_count)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JSV;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+        AeAssert::gCurrentLine = 233;
+        AeAssert::gCurrentExpr = "index < size()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+        if (index >= m_cur_bank->objects.m_count
+            && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                         "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+    }
+    if ((((cdl_object_t*)m_cur_bank->objects.m_elements)[index].cflags
+         & m_mask) != 0)
+    {
+        if (m_object_list_count >= 256
+            && _tlAssert("c:\\cod\\code\\game\\RBCollision.h", 382,
+                         "m_object_list_count < MAX_NUM_OBJECTS",
+                         defaultFileName))
+            __debugbreak();
+        int m_object_list_count = this->m_object_list_count;
+        if (m_object_list_count < 256)
+        {
+            m_object_list[m_object_list_count].m_bank = m_cur_bank;
+            m_object_list[m_object_list_count].m_index = index;
+            this->m_object_list_count = m_object_list_count + 1;
+        }
+    }
     return CONTINUE_VISITING;
 }
 
@@ -5599,12 +5674,252 @@ void traverse_rtree(const math::Position3& p0, const math::Position3& p1,
                     const rtree_root_t& root, subdivision_visitor& visitor);
 
 struct physics_colgeom_visitor;
-class prop_collide_callback;
+// prop_collide_callback (physics.o RBCollision.cpp; 28 bytes). Class tag (V)
+// matches the binary manglings. Inline methods 0x6F2C60..0x6F2CB0.
+class prop_collide_callback {
+public:
+    struct avl_tree_node {
+        prop_collide_callback* m_left;    // +0x00
+        prop_collide_callback* m_right;   // +0x04
+        int                    m_balance; // +0x08
+    };
+
+    rb_extra_info*    m_rb_inf;         // +0x00
+    int               mHitSurfaceFlags; // +0x04
+    rigid_body_pair_key m_avl_key;      // +0x08
+    avl_tree_node     m_avl_tree_node;  // +0x10
+
+    // set - ea: 0x6F2C60
+    void set(rb_extra_info* rb_inf, int surfaceFlags,
+             const rigid_body_pair_key& key)
+    {
+        m_rb_inf = rb_inf;
+        mHitSurfaceFlags = surfaceFlags;
+        m_avl_key.m_b1 = key.m_b1;
+        m_avl_key.m_b2 = key.m_b2;
+    }
+    // get_avl_key - ea: 0x6F2C90
+    const rigid_body_pair_key& get_avl_key() const { return m_avl_key; }
+    // set_avl_key - ea: 0x6F2CA0
+    void set_avl_key(const rigid_body_pair_key& key)
+    {
+        m_avl_key.m_b1 = key.m_b1;
+        m_avl_key.m_b2 = key.m_b2;
+    }
+};
+static_assert(sizeof(prop_collide_callback) == 0x1C,
+              "prop_collide_callback size mismatch");
+
+// phys_inplace_avl_tree<K,T> (physics.o; phys_avl_tree.h template).
+// Same AVL implementation as the pulse_sum.h instantiation (ea 0x7175C0 find /
+// 0x71C950 add), verified against the physics.o inline COMDATs.
 template <typename K, typename V> class phys_inplace_avl_tree;
 template <typename K, typename V>
 class phys_inplace_avl_tree {
 public:
-    void* m_tree_root;  // +0x00
+    V* m_tree_root;  // +0x00
+
+    struct stack_item {
+        V** m_node;
+        int  m_child;
+    };
+
+    phys_inplace_avl_tree() : m_tree_root(nullptr) {}  // ea: 0x71ABE0
+
+    static bool key_lt(const K& a, const K& b)
+    {
+        if (a.m_b1 != b.m_b1)
+            return a.m_b1 < b.m_b1;
+        return a.m_b2 < b.m_b2;
+    }
+
+    static int avl_max(int a, int b) { return a <= b ? b : a; }  // ea: 0x71B490
+
+    // find - ea: 0x717160
+    V* find(const K& key)
+    {
+        V* result = m_tree_root;
+        if (m_tree_root != nullptr)
+        {
+            do
+            {
+                if (key.m_b1 == result->m_avl_key.m_b1
+                    && key.m_b2 == result->m_avl_key.m_b2)
+                    break;
+                if (key_lt(key, result->m_avl_key))
+                    result = result->m_avl_tree_node.m_left;
+                else
+                    result = result->m_avl_tree_node.m_right;
+            } while (result != nullptr);
+        }
+        return result;
+    }
+
+    // add - ea: 0x71C950
+    void add(const K& key, V* data)
+    {
+        stack_item the_stack[32];
+        stack_item* cur = the_stack;
+        the_stack[0].m_node = &m_tree_root;
+        bool done = (m_tree_root == nullptr);
+        for (; !done; ++cur)
+        {
+            V* node = *cur->m_node;
+            if (((cur - the_stack + 8) & 0xFFFFFFF8) >= 256
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                       586, "cur_item + 1 - the_stack < 32", ""))
+                __debugbreak();
+            if (key_lt(key, node->m_avl_key))
+            {
+                cur->m_child = -1;
+                cur[1].m_node = &node->m_avl_tree_node.m_left;
+            }
+            else
+            {
+                if (!key_lt(node->m_avl_key, key)
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                           595, "key > root->get_avl_key()", ""))
+                    __debugbreak();
+                cur->m_child = 1;
+                cur[1].m_node = &node->m_avl_tree_node.m_right;
+            }
+            done = (*cur[1].m_node == nullptr);
+        }
+        *cur->m_node = data;
+        data->m_avl_tree_node.m_left = nullptr;
+        data->m_avl_tree_node.m_right = nullptr;
+        data->m_avl_tree_node.m_balance = 0;
+        data->m_avl_key.m_b1 = key.m_b1;
+        data->m_avl_key.m_b2 = key.m_b2;
+        if (cur > the_stack)
+        {
+            V** m_node;
+            do
+            {
+                m_node = cur[-1].m_node;
+                int m_child = cur[-1].m_child;
+                --cur;
+                (*m_node)->m_avl_tree_node.m_balance += m_child;
+                V* root = *m_node;
+                int m_balance = root->m_avl_tree_node.m_balance;
+                if (m_balance == -2)
+                {
+                    int v16 =
+                        root->m_avl_tree_node.m_left->m_avl_tree_node.m_balance;
+                    if (v16 != -1 && v16 != 1
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                               613,
+                               "GAVLN(GAVLN(root)->m_left)->m_balance == -1 || GAVLN(GAVLN(root)->m_left)->m_balance == 1",
+                               ""))
+                        __debugbreak();
+                    V* m_left = root->m_avl_tree_node.m_left;
+                    if (m_left->m_avl_tree_node.m_balance == 1)
+                    {
+                        V* m_right = m_left->m_avl_tree_node.m_right;
+                        root->m_avl_tree_node.m_left
+                            ->m_avl_tree_node.m_right =
+                            m_right->m_avl_tree_node.m_left;
+                        int v20 = m_right->m_avl_tree_node.m_balance;
+                        m_right->m_avl_tree_node.m_left =
+                            root->m_avl_tree_node.m_left;
+                        root->m_avl_tree_node.m_left
+                            ->m_avl_tree_node.m_balance +=
+                            v20 <= 0 ? 1 : v20 + 1;
+                        int v21 = -root->m_avl_tree_node.m_left
+                                       ->m_avl_tree_node.m_balance;
+                        m_right->m_avl_tree_node.m_balance +=
+                            (v21 < 0
+                             || root->m_avl_tree_node.m_left
+                                        ->m_avl_tree_node.m_balance
+                                        == 0)
+                                ? 1
+                                : v21 + 1;
+                        root->m_avl_tree_node.m_left = m_right;
+                    }
+                    V* v22 = root->m_avl_tree_node.m_left;
+                    root->m_avl_tree_node.m_left = v22->m_avl_tree_node.m_right;
+                    v22->m_avl_tree_node.m_right = root;
+                    root->m_avl_tree_node.m_balance +=
+                        ((-v22->m_avl_tree_node.m_balance < 0
+                          || v22->m_avl_tree_node.m_balance == 0)
+                             ? -v22->m_avl_tree_node.m_balance + 1
+                             : 1);
+                    v22->m_avl_tree_node.m_balance +=
+                        root->m_avl_tree_node.m_balance <= 0
+                            ? 1
+                            : root->m_avl_tree_node.m_balance + 1;
+                    *m_node = v22;
+                    if (v22->m_avl_tree_node.m_balance == 0)
+                        continue;
+                    if (_tlAssert(
+                            "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                            617, "GAVLN(root)->m_balance == 0", ""))
+                        __debugbreak();
+                }
+                else if (m_balance == 2)
+                {
+                    int v24 =
+                        root->m_avl_tree_node.m_right->m_avl_tree_node.m_balance;
+                    if (v24 != -1 && v24 != 1
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                               621,
+                               "GAVLN(GAVLN(root)->m_right)->m_balance == -1 || GAVLN(GAVLN(root)->m_right)->m_balance == 1",
+                               ""))
+                        __debugbreak();
+                    V* v26 = root->m_avl_tree_node.m_right;
+                    if (v26->m_avl_tree_node.m_balance == -1)
+                    {
+                        V* v27 = v26->m_avl_tree_node.m_left;
+                        v26->m_avl_tree_node.m_left =
+                            v27->m_avl_tree_node.m_right;
+                        int v28 = v27->m_avl_tree_node.m_balance;
+                        v27->m_avl_tree_node.m_right =
+                            root->m_avl_tree_node.m_right;
+                        root->m_avl_tree_node.m_right
+                            ->m_avl_tree_node.m_balance +=
+                            v28 >= 0 ? 1 : -v28 + 1;
+                        v27->m_avl_tree_node.m_balance +=
+                            root->m_avl_tree_node.m_right
+                                        ->m_avl_tree_node.m_balance
+                                    <= 0
+                                ? 1
+                                : root->m_avl_tree_node.m_right
+                                          ->m_avl_tree_node.m_balance
+                                      + 1;
+                        root->m_avl_tree_node.m_right = v27;
+                    }
+                    V* v29 = root->m_avl_tree_node.m_right;
+                    root->m_avl_tree_node.m_right = v29->m_avl_tree_node.m_left;
+                    v29->m_avl_tree_node.m_left = root;
+                    root->m_avl_tree_node.m_balance +=
+                        v29->m_avl_tree_node.m_balance <= 0
+                            ? 1
+                            : v29->m_avl_tree_node.m_balance + 1;
+                    v29->m_avl_tree_node.m_balance +=
+                        (-root->m_avl_tree_node.m_balance < 0
+                         || root->m_avl_tree_node.m_balance == 0)
+                            ? 1
+                            : -root->m_avl_tree_node.m_balance + 1;
+                    *m_node = v29;
+                    if (v29->m_avl_tree_node.m_balance == 0)
+                        continue;
+                    if (_tlAssert(
+                            "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                            625, "GAVLN(root)->m_balance == 0", ""))
+                        __debugbreak();
+                }
+                else
+                {
+                    continue;
+                }
+            } while ((*m_node)->m_avl_tree_node.m_balance != 0
+                     && cur > the_stack);
+        }
+    }
 };
 phys_gjk_info* g_gjk_info = nullptr;                         // ?g_gjk_info@@3PAVphys_gjk_info@@A
 phys_contact_manifold_process* g_cman_process = nullptr;     // ?g_cman_process@@3PAVphys_contact_manifold_process@@A
@@ -5613,10 +5928,28 @@ physics_colgeom_visitor* g_physics_colgeom_visitor = nullptr;  // ?g_physics_col
 TouchEntityData* g_phys_touch_entity_data = nullptr;         // ?g_phys_touch_entity_data@@3PAVTouchEntityData@@A
 prop_collide_callback* g_list_prop_collide_callback = nullptr;  // ?g_list_prop_collide_callback@@3PAVprop_collide_callback@@A
 int   g_list_prop_collide_callback_count = 0;       // ?g_list_prop_collide_callback_count@@3HA
-phys_inplace_avl_tree<rigid_body_pair_key, prop_collide_callback>*
-    g_prop_collide_callback_database = nullptr;  // ?g_prop_collide_callback_database@@3V?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@A
+phys_inplace_avl_tree<rigid_body_pair_key, prop_collide_callback>
+    g_prop_collide_callback_database;  // ?g_prop_collide_callback_database@@3V?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@A
 extern bool tlScratchpadLocked;  // ?tlScratchpadLocked@@3_NA (tl_system.o)
 void* contact_point_info_get_cpi_allocater();  // physics.o helper
+
+// ea: 0x71DB60
+void create_prop_collide_callback(rb_extra_info* rb_inf, int surfaceFlags,
+                                  rigid_body* b1, rigid_body* b2)
+{
+    rigid_body_pair_key key(b1, b2);
+    if (g_prop_collide_callback_database.find(key) == nullptr
+        && g_list_prop_collide_callback_count < 100)
+    {
+        prop_collide_callback* v4 =
+            &g_list_prop_collide_callback[g_list_prop_collide_callback_count++];
+        v4->m_rb_inf = rb_inf;
+        v4->mHitSurfaceFlags = surfaceFlags;
+        v4->m_avl_key.m_b1 = key.m_b1;
+        v4->m_avl_key.m_b2 = key.m_b2;
+        g_prop_collide_callback_database.add(key, v4);
+    }
+}
 
 // ea: 0x702CB0
 void collision_memory_prolog()
@@ -5672,8 +6005,7 @@ void collision_memory_prolog()
     v4->m_brush_count = 0;
     v4->m_aabb_count = 0;
     g_list_prop_collide_callback_count = 0;
-    if (g_prop_collide_callback_database != nullptr)
-        g_prop_collide_callback_database->m_tree_root = nullptr;
+    g_prop_collide_callback_database.m_tree_root = nullptr;
     for (int i = 0; i < g_collision_memory_allocater.m_num_buffers; ++i)
         g_collision_memory_allocater.m_list_memory_buffer[i].m_user_start =
             g_collision_memory_allocater.m_list_memory_buffer[i].m_buffer_cur;
@@ -5811,17 +6143,7 @@ void prop_phys_collision::collide_bodies(rb_extra_info* rb_inf1,
                         v19->gjk_ci =
                             g_phys_gjk_cache_system.get_gjk_cache_info(
                                 v23, m_geom_id, true);
-                        if (phys_collide_do_gjk_collide_stub(
-                                v19->gjk_info, v19, 3.4000001f))
-                        {
-                            void* pcd_callback = v19->pcd_callback;
-                            if (pcd_callback == nullptr
-                                || (*(int (**)(void*, void*))pcd_callback)(
-                                       pcd_callback, v19) != 0)
-                            {
-                                // cman_process->process(d)
-                            }
-                        }
+                        phys_collide_do_gjk_collide_and_contact_manifold(v19);
                     }
                 }
             }
@@ -6052,8 +6374,7 @@ void collision_memory_epilog()
         __debugbreak();
     tlScratchpadLocked = false;
     g_list_prop_collide_callback_count = 0;
-    if (g_prop_collide_callback_database != nullptr)
-        g_prop_collide_callback_database->m_tree_root = nullptr;
+    g_prop_collide_callback_database.m_tree_root = nullptr;
 }
 
 // ea: 0x70CFA0
@@ -6344,8 +6665,7 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
     }
 }
 
-// stub until DObjMatriceModelToLocal (0x6FF860) is ported (Hex-Rays output
-// garbled; needs disasm-driven reconstruction)
+// DObjMatriceModelToLocal (0x6FF860) - disasm-driven reconstruction
 // XBoneHierarchy view (12 bytes: mName +0, mNameHash +4, mParentIndex +8)
 struct XBoneHierarchyLocal {
     uint8_t _pad[8];
@@ -6642,10 +6962,65 @@ struct cdl_proftimer {
 // ?cdl_proftimer_update_rb@@3Ucdl_proftimer@@A (game.o data @ 0x01334968)
 extern cdl_proftimer cdl_proftimer_update_rb;
 
-// stub until RBAdvanceDebug (0x704290) is ported
+// SaveGameData (sv_stubs.h view; mControllerPort inside StubData @ +0x3B0)
+struct SaveGameData {
+    uint8_t _pad[0x3B0];
+    int     mControllerPort;  // +0x3B0 (StubData.mControllerPort)
+    uint8_t _rest[7156 - 0x3B4];
+};
+extern SaveGameData* gSaveGameData;  // ?gSaveGameData@@3PAUSaveGameData@@A (game.o @ 0xF312F0)
+char rumble_test = -1;  // physics.o data @ 0xF916F8 (byte 0xFF)
+
+// controller (core.o; minimal view - full impl in input/controller.cpp)
+class controller {
+public:
+    enum ButtonIndex {
+        CIRCLE   = 6,  // B button
+        TRIANGLE = 7,  // Y button
+    };
+    enum RumbleIndex {
+        RUMBLE_LEFT  = 0,
+        RUMBLE_RIGHT = 1,
+    };
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ
+    int  button_value(int i_controller_num,
+                      ButtonIndex i_button);  // ?button_value@controller@@QAEHHW4ButtonIndex@1@@Z
+    void rumble(int i_controller_num, RumbleIndex i_motor,
+                float intensity);  // ?rumble@controller@@QAEXHW4RumbleIndex@1@M@Z
+};
+
+// ea: 0x704290
 void RBAdvanceDebug(float delta_t)
 {
     (void)delta_t;
+    EntityHandleDb::sInst.GetObject(0);
+    if (rumble_test && gSaveGameData[currCl].mControllerPort != -1)
+    {
+        controller* v0 = controller::inst();
+        float intensity;
+        if (v0->button_value(gSaveGameData[currCl].mControllerPort,
+                             controller::TRIANGLE) != 0)
+            intensity = 1.0f;
+        else
+            intensity = 0.0f;
+        controller* v1 = controller::inst();
+        v1->rumble(gSaveGameData[currCl].mControllerPort,
+                   controller::RUMBLE_LEFT, intensity);
+        controller* v2 = controller::inst();
+        if (v2->button_value(gSaveGameData[currCl].mControllerPort,
+                             controller::CIRCLE) != 0)
+        {
+            controller* v3 = controller::inst();
+            v3->rumble(gSaveGameData[currCl].mControllerPort,
+                       controller::RUMBLE_RIGHT, 1.0f);
+        }
+        else
+        {
+            controller* v4 = controller::inst();
+            v4->rumble(gSaveGameData[currCl].mControllerPort,
+                       controller::RUMBLE_RIGHT, 0.0f);
+        }
+    }
 }
 
 // ea: 0x7032B0
@@ -7451,9 +7826,66 @@ void phys_anim_bone_array::remove_rigid_body(int rb_index)
     }
 }
 
-// stub until biped_system internals are ported (physics.o inline 0x719FA0)
+// client_bone_info (physics.o RBRagdoll.cpp; 80 bytes)
+struct client_bone_info {
+    math::Mat43 m_bone_mat_loc;  // +0x00
+    Entity*     m_ent;           // +0x40
+    int         m_bone_index;    // +0x44
+    int         m_rb_index;      // +0x48
+};
+static_assert(sizeof(client_bone_info) == 0x50,
+              "client_bone_info size mismatch");
+
+// ea: 0x6FA860
+void calc_bone_mat_from_rb(Entity* ent, int boneIndex, rigid_body* rb,
+                           const math::Mat43* bone_mat_loc)
+{
+    if ((~(rb->m_flags >> 6) & 1) == 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 79,
+               "debug_flag_is_not_in_collision()", defaultFileName))
+        __debugbreak();
+    math::Mat43 root_mat;
+    phys_full_multiply_mat(root_mat, rb->m_mat, *bone_mat_loc);
+    if (boneIndex == 0)
+    {
+        math::Mat43 worldBoneMat;
+        worldBoneMat.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        worldBoneMat.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+        worldBoneMat.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+        worldBoneMat.w.v = root_mat.w.v;
+        ent->r.currentMat.x.v = worldBoneMat.x.v;
+        ent->r.currentMat.y.v = worldBoneMat.y.v;
+        ent->r.currentMat.z.v = worldBoneMat.z.v;
+        ent->r.currentMat.w.v = worldBoneMat.w.v;
+        ent->CalcOriginAnglesFromMat();
+    }
+    math::Mat43* Mat = (math::Mat43*)&ent->mDObj->GetMat(boneIndex);
+    phys_full_inv_multiply_mat(*Mat, ent->r.currentMat, root_mat);
+}
+
+// ea: 0x719FA0
 void biped_system::rdbi_calc_bone_mat_from_rb()
 {
+    client_bone_info* list = (client_bone_info*)((char*)this + 0x1D20);
+    for (int i = 0; i < 10; ++i)
+    {
+        if (i < 0
+            && _tlAssert("c:/cod/code/tl/physics/include\\phys_mem.h", 374,
+                         "i >= 0 && i < size", defaultFileName))
+            __debugbreak();
+        client_bone_info& cbi = list[i];
+        if ((cbi.m_rb_index < 0
+             || cbi.m_rb_index >= m_list_rigid_body.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        calc_bone_mat_from_rb(
+            cbi.m_ent, cbi.m_bone_index,
+            m_list_rigid_body.m_slot_array[cbi.m_rb_index],
+            &cbi.m_bone_mat_loc);
+    }
 }
 
 // ea: 0x6FB610
@@ -10096,8 +10528,8 @@ public:
     uint8_t        _pad48[0x50 - 0x48];
     math::Position3 m_bounding_sphere_center_loc;  // +0x50
     float          m_bounding_sphere_radius;       // +0x60
-    rb_collision_capsule m_capsule;  // +0x64
-    uint8_t        _padB4[0xC0 - (0x64 + sizeof(rb_collision_capsule))];
+    uint8_t        _pad64[0x70 - 0x64];
+    rb_collision_capsule m_capsule;  // +0x70
     math::Position3 m_tunnel_test_last_pos;  // +0xC0
     math::Position3 m_tunnel_hit_pos;  // +0xD0
     float          m_tunnel_test_radius;  // +0xE0
@@ -10111,9 +10543,9 @@ public:
 private:
     void calc_bounding_sphere();  // ?calc_bounding_sphere@rigid_body_sphere_list@@AAEXXZ
 public:
-    void calc_total_aabb();  // ?calc_total_aabb@rigid_body_sphere_list@@QAEXXZ (physics.o inline 0xB09930; stub)
-    void tunnel_test_prolog(physics_colgeom_visitor* visitor);  // ?tunnel_test_prolog@rigid_body_sphere_list@@QAEXPAUphysics_colgeom_visitor@@@Z (inline 0xB0D0F0; stub)
-    void update_colgeom();  // ?update_colgeom@rigid_body_sphere_list@@QAEXXZ (inline 0xB0B950; stub)
+    void calc_total_aabb();  // ?calc_total_aabb@rigid_body_sphere_list@@QAEXXZ (physics.o inline 0xB09930)
+    void tunnel_test_prolog(physics_colgeom_visitor* visitor);  // ?tunnel_test_prolog@rigid_body_sphere_list@@QAEXPAUphysics_colgeom_visitor@@@Z (inline 0xB0D0F0)
+    void update_colgeom();  // ?update_colgeom@rigid_body_sphere_list@@QAEXXZ (inline 0xB0B950)
     void init_tunnel_test(math::Position3& center_pos);  // ?init_tunnel_test@rigid_body_sphere_list@@QAEXAAVPosition3@math@@@Z
     void set(rigid_body* const owner);  // ?set@rigid_body_sphere_list@@QAEXQAVrigid_body@@@Z
 };
@@ -10869,18 +11301,7 @@ void ragdoll_collision_callback::get_all_collisions()
                 v23->solver_priority = 0;
                 v23->gjk_ci = g_phys_gjk_cache_system.get_gjk_cache_info(
                     v23->id1, v23->id2, true);
-                if (phys_collide_do_gjk_collide_stub(v23->gjk_info, v23,
-                                                     3.4000001f))
-                {
-                    void* pcd_callback = v23->pcd_callback;
-                    if (pcd_callback == nullptr
-                        || (*(int (**)(void*, void*))pcd_callback)(
-                               pcd_callback, v23) != 0)
-                    {
-                        if (v23->cman_process != nullptr)
-                            v23->cman_process->process(v23);
-                    }
-                }
+                phys_collide_do_gjk_collide_and_contact_manifold(v23);
             }
         }
     }
@@ -11003,18 +11424,7 @@ void ragdoll_collision_callback::collide_terrain()
         v40->solver_priority = 1;
         v40->gjk_ci = g_phys_gjk_cache_system.get_gjk_cache_info(
             v40->id1, v40->id2, true);
-        if (phys_collide_do_gjk_collide_stub(v40->gjk_info, v40,
-                                             3.4000001f))
-        {
-            void* pcd_callback = v40->pcd_callback;
-            if (pcd_callback == nullptr
-                || (*(int (**)(void*, void*))pcd_callback)(pcd_callback,
-                                                            v40) != 0)
-            {
-                if (v40->cman_process != nullptr)
-                    v40->cman_process->process(v40);
-            }
-        }
+        phys_collide_do_gjk_collide_and_contact_manifold(v40);
     }
 }
 
