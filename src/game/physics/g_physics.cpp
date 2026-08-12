@@ -6830,11 +6830,16 @@ void prop_system_collision_process()
 {
     prop_phys_collision::get_all_collisions();
 }
-// stubs until collide_terrain/collide_entities (0x709B10/0x70A330) are ported
-void prop_phys_collision::collide_terrain(rb_extra_info* rb_inf)
-{
-    (void)rb_inf;
-}
+// cdl_brush_t / cdl_patch_t records (cdl_mem.h view; 4 bytes each)
+struct cdl_brush_rec {
+    uint16_t first_side;
+    uint16_t nsides;
+};
+struct cdl_patch_rec {
+    uint16_t first_index;
+    uint16_t num_inds;
+};
+
 void prop_phys_collision::collide_entities(rb_extra_info* rb_inf)
 {
     (void)rb_inf;
@@ -8484,7 +8489,7 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
 // XBoneHierarchy view (12 bytes: mName +0, mNameHash +4, mParentIndex +8)
 // Inverse-multiply helper matching DObjMatriceModelToLocal's SSE: the parent
 // rotation is transposed (orthonormal => inverse) and each row of bone is
-// dotted with its columns; the translation row is (bone.w - parent.w) · cols.
+// dotted with its columns; the translation row is (bone.w - parent.w) Â· cols.
 static void InverseMultiplyLocal(const math::Mat43& parent, math::Mat43& bone)
 {
     __m128 x = parent.x.v, y = parent.y.v, z = parent.z.v, w = parent.w.v;
@@ -13664,5 +13669,251 @@ void merge_spheres(const math::Position3& c1ref, float r1, math::Position3* c2,
     {
         c2->v = c1->v;
         *r2 = r1;
+    }
+}
+
+// ea: 0x709B10
+void prop_phys_collision::collide_terrain(rb_extra_info* rb_inf)
+{
+    if ((rb_inf->m_flags.mMask & 1) == 0)
+        return;
+    if (rb_inf->m_ent == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 387, "ent",
+                     defaultFileName))
+        __debugbreak();
+    const math::Mat43* m_cg_mesh_mat = rb_inf->m_cg_mesh_mat;
+    rigid_body* rb = rb_inf->m_rb;
+    rb_vehicle* m_rb_vehicle = rb_inf->m_rb_vehicle;
+    bool vehicle =
+        m_rb_vehicle != nullptr && (m_rb_vehicle->m_flags.mMask & 0x80) != 0;
+
+    phys_gjk_geom_list* gjk_geom_list =
+        (phys_gjk_geom_list*)rb_inf->m_gjk_geom_list;
+    math::Dir3 aabb_mn = gjk_geom_list->m_aabb_mn;
+    math::Dir3 aabb_mx = gjk_geom_list->m_aabb_mx;
+    add_active_eps_aabb(&aabb_mn, &aabb_mx);
+    environment_rigid_body* erb = phys_sys::get_environment_rigid_body();
+    physics_colgeom_visitor* local_primitive_list =
+        generate_local_primitive_list(aabb_mn, aabb_mx, 577);
+    int m_object_list_count = local_primitive_list->m_object_list_count;
+    for (int obj_i = 0; obj_i < m_object_list_count; ++obj_i)
+    {
+        CGBank* bank =
+            local_primitive_list->m_object_list[obj_i].m_bank;
+        unsigned int index =
+            (unsigned short)local_primitive_list->m_object_list[obj_i].m_index;
+        int type = bank->get_type(index);
+        if (index >= (unsigned int)bank->objects.m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 233;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (index >= (unsigned int)bank->objects.m_count
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                       "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)bank->objects.m_elements)[index];
+        math::Dir3 obj_mn, obj_mx;
+        obj_mn.v = _mm_sub_ps(
+            _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2], 0.0f),
+            _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                        obj->box_radius[2], 0.0f));
+        obj_mx.v = _mm_add_ps(
+            _mm_setr_ps(obj->center[0], obj->center[1], obj->center[2], 0.0f),
+            _mm_setr_ps(obj->box_radius[0], obj->box_radius[1],
+                        obj->box_radius[2], 0.0f));
+        // CONTENTS marker 0x10200 ("D3DXX" header-string address in the
+        // original build): skipped for non-vehicle rb_inf.
+        if (obj->cflags == 0x10200 && !vehicle)
+            continue;
+        phys_gjk_geom_cod_base* gjk_geom =
+            g_gjk_geom_database->get_gjk_geom(obj, (int)index, bank);
+        if (gjk_geom == nullptr)
+            continue;
+
+        for (phys_gjk_geom_cod_base* i =
+                 (phys_gjk_geom_cod_base*)
+                     gjk_geom_list->m_first_geom;
+             i != nullptr; i = i->m_next_geom)
+        {
+            if (m_rb_vehicle != nullptr
+                && (m_rb_vehicle->m_flags.mMask & 0x100) != 0)
+                break;
+            if (!are_potentially_colliding(&i->m_aabb_mn, &i->m_aabb_mx,
+                                           &obj_mn, &obj_mx))
+                continue;
+            float fric_coef = rb->m_fric_coef;
+            if (m_rb_vehicle != nullptr)
+            {
+                if ((rb->m_flags & 0x50) == 0
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                           109, "debug_flag_is_in_collision()",
+                           defaultFileName))
+                    __debugbreak();
+                if (rb->m_col_mat.z.v.m128_f32[2] > 0.2f)
+                    fric_coef = 0.0f;
+            }
+            DObj* mDObj = rb_inf->m_ent->mDObj;
+            void* mValue = mDObj->mPhysDataValue;
+            TPakId mPakId = (TPakId)mDObj->mPhysDataPakId;
+            float M_BOUNCE_COEF = 0.25f;
+            ValidatePakId(mPakId);
+            if (mValue != nullptr)
+            {
+                ValidatePakId(mPakId);
+                M_BOUNCE_COEF = ((PhysData*)mValue)->mBounce;
+            }
+            if (rb_inf->can_have_event())
+                create_prop_collide_callback(rb_inf, obj->sflags, rb, erb);
+            phys_collide_data* v26 = g_list_phys_collide_data;
+            if ((erb->m_flags & 0x50) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                       109, "debug_flag_is_in_collision()", defaultFileName))
+                __debugbreak();
+            if ((erb->m_flags & 0x50) == 0
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                       109, "debug_flag_is_in_collision()", defaultFileName))
+                __debugbreak();
+            int m_priority = rb_inf->m_priority;
+            unsigned int id1 = (unsigned int)i->m_geom_id;
+            unsigned int id2 = (unsigned int)gjk_geom->m_geom_id;
+            v26->gjk_cg1 = (const phys_gjk_geom*)i;
+            v26->gjk_cg2 = (const phys_gjk_geom*)gjk_geom;
+            v26->cg1_to_world_xform = m_cg_mesh_mat;
+            v26->cg2_to_world_xform = &erb->m_col_mat;
+            v26->cg1_to_rb1_xform = &rb_inf->m_transform;
+            v26->rb2_to_world_xform = &erb->m_col_mat;
+            v26->rb1 = rb;
+            v26->rb2 = erb;
+            v26->gjk_ci = nullptr;
+            v26->pcd_callback = nullptr;
+            v26->gjk_info = g_gjk_info;
+            v26->cman_process = g_cman_process;
+            v26->id1 = id1;
+            v26->id2 = id2;
+            v26->fric_coef = fric_coef;
+            v26->bounce_coef = M_BOUNCE_COEF;
+            v26->no_overflow_error = true;
+            v26->solver_priority = m_priority;
+            v26->gjk_ci =
+                g_phys_gjk_cache_system.get_gjk_cache_info(id1, id2, true);
+            phys_collide_do_gjk_collide_and_contact_manifold(v26);
+        }
+
+        if (m_rb_vehicle != nullptr)
+        {
+            vehicle_collision_info* m_vci =
+                (vehicle_collision_info*)m_rb_vehicle->m_vci;
+            if (m_vci == nullptr
+                && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 470,
+                             "vci", defaultFileName))
+                __debugbreak();
+            int wheel_count = m_vci->m_list_wheel_collision_info_count;
+            for (int wheel_i = 0; wheel_i < wheel_count; ++wheel_i)
+            {
+                wheel_collision_info* wci =
+                    &m_vci->m_list_wheel_collision_info[wheel_i];
+                int overlap = _mm_movemask_ps(
+                    _mm_cmplt_ps(
+                        _mm_max_ps(
+                            _mm_sub_ps(obj_mn.v, wci->m_aabb_mx.v),
+                            _mm_sub_ps(wci->m_aabb_mn.v, obj_mx.v)),
+                        Float4_Zero_12));
+                if ((overlap & 7) != 7)
+                    continue;
+                bool hit = false;
+                if (type == 1)  // CDL_BRUSH
+                {
+                    unsigned int brush_index =
+                        index - (unsigned int)bank->nboxes;
+                    if (brush_index >= (unsigned int)bank->brushes.m_count
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                               91, "index >= 0 && index < size()",
+                               "invalid index"))
+                        __debugbreak();
+                    cdl_brush_rec* brush_rec =
+                        &((cdl_brush_rec*)bank->brushes.m_elements)
+                              [brush_index];
+                    unsigned int first_side = brush_rec->first_side;
+                    if (first_side
+                            >= (unsigned int)bank->brush_sides.m_count
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                               91, "index >= 0 && index < size()",
+                               "invalid index"))
+                        __debugbreak();
+                    hit = collide_brush_segment(
+                        reinterpret_cast<const math::Position3&>(wci->m_p0),
+                        reinterpret_cast<const math::Position3&>(wci->m_p1),
+                        reinterpret_cast<const math::Position3&>(obj_mn),
+                        reinterpret_cast<const math::Position3&>(obj_mx),
+                        (const cdlPlane*)bank->brush_sides.m_elements
+                            + first_side,
+                        brush_rec->nsides, wci->m_t,
+                        reinterpret_cast<math::Position3*>(&wci->m_normal));
+                }
+                else if (type == 2)  // CDL_PATCH
+                {
+                    unsigned int patch_index =
+                        index - (unsigned int)bank->nbrushes
+                        - (unsigned int)bank->nboxes;
+                    if (patch_index >= (unsigned int)bank->patches.m_count
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                               91, "index >= 0 && index < size()",
+                               "invalid index"))
+                        __debugbreak();
+                    cdl_patch_rec* patch_rec =
+                        &((cdl_patch_rec*)bank->patches.m_elements)
+                              [patch_index];
+                    if (patch_index
+                            >= (unsigned int)bank->gjk_patches.m_count
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                               91, "index >= 0 && index < size()",
+                               "invalid index"))
+                        __debugbreak();
+                    unsigned int num_inds = patch_rec->num_inds;
+                    const unsigned char* index_list =
+                        (const unsigned char*)bank->patch_inds.m_elements
+                        + patch_rec->first_index;
+                    math::Dir3* vert_list =
+                        ((phys_gjk_geom_vert_list*)gjk_geom)->m_vert_list;
+                    hit = collide_segment(
+                        *obj, vert_list, index_list, 0, (int)num_inds,
+                        reinterpret_cast<const math::Position3&>(wci->m_p0),
+                        reinterpret_cast<const math::Position3&>(wci->m_p1),
+                        wci->m_t,
+                        reinterpret_cast<math::Position3&>(wci->m_normal),
+                        nullptr);
+                }
+                else  // CDL_BOX
+                {
+                    hit = collide_box_segment(
+                        reinterpret_cast<const math::Position3&>(wci->m_p0),
+                        reinterpret_cast<const math::Position3&>(wci->m_p1),
+                        reinterpret_cast<const math::Position3&>(obj_mn),
+                        reinterpret_cast<const math::Position3&>(obj_mx),
+                        wci->m_t,
+                        reinterpret_cast<math::Position3*>(&wci->m_normal));
+                }
+                if (hit)
+                {
+                    wci->m_did_hit = true;
+                    wci->m_surface_flags = obj->sflags;
+                    wci->m_hit_rb = erb;
+                }
+            }
+        }
     }
 }
