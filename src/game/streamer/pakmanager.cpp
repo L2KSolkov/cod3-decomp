@@ -157,6 +157,12 @@ template <typename T, int N>
 struct ae_sized_array {
     T m_elements[N];  // +0x00
     int m_size;       // +N*sizeof(T)
+
+    void push_back(const T& elt)
+    {
+        if (m_size < N)
+            m_elements[m_size++] = elt;
+    }
 };
 
 // AssetBankSet sBankArray (streamer.o data @ 0xF58BC8)
@@ -316,7 +322,11 @@ struct PakInfoNode {
     EPakType    pakType;        // +0x00
     void*       longName;       // +0x04
     void*       path;           // +0x08
-    uint8_t     _pad0C[0xB4 - 0x0C];
+    struct {
+        unsigned int mSize;          // +0x0C
+        const PakInfoNode** mList;   // +0x10
+    } prereqs;                       // +0x0C (InplaceVector)
+    uint8_t     _pad14[0xB4 - 0x14];
     TPakId      pakId;          // +0xB4
     unsigned int refCount;      // +0xB8
     float       distance;       // +0xBC
@@ -396,6 +406,10 @@ public:
     void SetBrocProgress(float t);
     // - ea: 0x665570
     float GetDistance(PakInfoNode* node) const;
+    // - ea: 0x666A40
+    void RegisterPakLoaded(PakInfoNode* pak);
+    // - ea: 0x666B90
+    void RegisterPakUnloaded(PakInfoNode* pak);
     // - ea: 0x6655C0 (stub until PakFile/BankManager land)
     TPakId FindPakId(EPakType t) const;
     // - ea: 0x671ED0 (stub: real impl walks mActivePaks and calls
@@ -1017,6 +1031,85 @@ void InstanceBankMgr::DecodeInstbank(const char* name, unsigned char* data,
         }
     }
     mEntries[pakId] = data;
+}
+
+// ea: 0x666A40
+void PakManager::RegisterPakLoaded(PakInfoNode* pak)
+{
+    if (pak->pakId == PAK_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 1968;
+        AeAssert::gCurrentExpr = "pak->pakId != PAK_ID_INVALID";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("this fcn does not assign the pakId"))
+            __debugbreak();
+    }
+    unsigned int v2 = 0;
+    if ((pak->refCount & 0x80000000) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 1971;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("negative ref count!"))
+            __debugbreak();
+    }
+    unsigned int mSize = pak->prereqs.mSize;
+    ++pak->refCount;
+    if (mSize != 0)
+    {
+        do
+        {
+            PakInfoNode* v6 = (PakInfoNode*)pak->prereqs.mList[v2];
+            TPakId pakId = v6->pakId;
+            if (pakId == PAK_ID_INVALID || mSlots[pakId] == nullptr
+                || mSlots[pakId]->mState != PakFile::LOADED)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 1977;
+                AeAssert::gCurrentExpr = "IsLoaded(prereq->pakId)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "prereq better be loaded or we've got problems"))
+                    __debugbreak();
+            }
+            RegisterPakLoaded(v6);
+            ++v2;
+        } while (v2 < pak->prereqs.mSize);
+    }
+}
+
+// ea: 0x666B90
+void PakManager::RegisterPakUnloaded(PakInfoNode* pak)
+{
+    --pak->refCount;
+    unsigned int v3 = 0;
+    if (pak->prereqs.mSize != 0)
+    {
+        do
+        {
+            PakInfoNode* v5 = (PakInfoNode*)pak->prereqs.mList[v3];
+            TPakId pakId = v5->pakId;
+            if (pakId == PAK_ID_INVALID || mSlots[pakId] == nullptr
+                || mSlots[pakId]->mState != PakFile::LOADED)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 1993;
+                AeAssert::gCurrentExpr = "IsLoaded(prereq->pakId)";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "prereq better be loaded or we've got problems"))
+                    __debugbreak();
+            }
+            RegisterPakUnloaded(v5);
+            ++v3;
+        } while (v3 < pak->prereqs.mSize);
+    }
 }
 
 // ea: 0x665960
