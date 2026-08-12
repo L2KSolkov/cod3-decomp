@@ -4,6 +4,12 @@
 
 #include "game/logic/g_local.h"
 
+class PoolAllocator {
+public:
+    int GetMemSize() const;
+    int GetMemRemaining() const;
+};
+
 extern bool apsGetPoolInfo(int nPool, int& size, int& capacity, int& used,
                            int& peak);  // ?apsGetPoolInfo@@YA_NHAAH000@Z
 
@@ -1052,8 +1058,8 @@ void MemGraph::Render()
         DebugRender::RenderText("BrPool", 15,
                                 (int)(textOffset + height), txtCol, 1.0f,
                                 fontScale);
-        int remain = PoolAllocator_GetMemRemaining(gBrocPool);
-        int total = PoolAllocator_GetMemSize(gBrocPool);
+        int remain = gBrocPool->GetMemRemaining();
+        int total = gBrocPool->GetMemSize();
         float remainMb = remain * 0.00000095367432f;
         usedMarker = left + remainMb * MBRenderScale;
         freeMarker = usedMarker

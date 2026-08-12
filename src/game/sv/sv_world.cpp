@@ -107,7 +107,22 @@ extern int           CM_TransformedPointContents(const math::Position3& p,
                                                  DCGSet* model,
                                                  const math::Position3& origin,
                                                  const math::Position3& angles);
-extern int           DObjHasContents(const DObj* obj, int contentmask);
+// ea: 0x006CDF20 (render.o)
+int DObjHasContents(const DObj* obj, int contentmask)  // ?DObjHasContents@@YAHPBVDObj@@H@Z
+{
+    if (obj == nullptr || *(unsigned char*)((char*)obj + 0xCE) == 0)
+        return 0;
+    int numModels = *(unsigned char*)((char*)obj + 0xCE);
+    for (int i = 0; i < numModels; ++i)
+    {
+        const char* model = (const char*)obj + 0x80 + 8 * i;
+        void* mValue = *(void**)model;
+        if (mValue != nullptr
+            && (*(int*)((char*)mValue + 0x40) & contentmask) != 0)
+            return 1;
+    }
+    return 0;
+}
 extern void          DObjGeomTraceline(const DObj* obj, const math::Position3* localStart,
                                        const math::Position3* localEnd, int contentmask,
                                        struct DObjTrace_s* results, float extraDistanceCheck);
@@ -124,7 +139,13 @@ extern void          ValidatePakId(TPakId pakId);
 extern TPakId        CurPakId(void);
 extern DCGSet*       ClipHandleToDCGSet(TPakId pakId, int handle);
 extern void          CM_ModelBounds(DCGSet* model, math::Position3& mins, math::Position3& maxs);
-extern int           DCGSet_get_contents(const DCGSet* model);
+// ?get_contents@DCGSet@@QBEHXZ (cg.o 0x528100; contents at +0x40)
+int DCGSet_get_contents(const DCGSet* model)
+{
+    if (model == nullptr)
+        return 0;
+    return *(int*)((char*)model + 0x40);
+}
 extern void          SV_LinkEntity(Entity* gEnt);
 extern void          Com_DPrintf(const char* fmt, ...);
 extern EntityManager* EntityManager_sInst(void);
