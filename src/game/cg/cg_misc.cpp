@@ -3699,7 +3699,6 @@ extern void InteractionController_EndInteraction(void* self, int wasInteracting)
 extern int InteractionController_StartInteraction(void* self, Entity* interactable,
                                                   const char* name, int curPakId);
 extern float InteractionController_GetRotation(void* self);
-extern int Entity_GetPlayerIndex(const Entity* self);
 bool gSceneAnimCamera;  // 0x00F258F6
 extern vmCvar_t cg_altTankCam;  // 0x00F5BC30
 extern TPakId CurPakId();
@@ -4308,7 +4307,7 @@ void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
         && *(void**)((char*)veh->scr_vehicle + 0x518) != nullptr)
     {
         Entity* mObject = DbHandleToEntity(veh->r.mOwner.mHandle.mVal);
-        int PlayerIndex = Entity_GetPlayerIndex(mObject);
+        int PlayerIndex = mObject->GetPlayerIndex();
         float Rotation =
             InteractionController_GetRotation(
                 (void*)InteractionController::Inst(PlayerIndex));

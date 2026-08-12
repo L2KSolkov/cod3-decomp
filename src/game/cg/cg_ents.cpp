@@ -740,7 +740,7 @@ extern int CL_GetServerCommand(int serverCommandNumber);
 extern int dword_F6294C[4 * 1580];
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
-extern TPakId CurPakId();
+extern TPakId CurPakId();  // defined in streamer/pakmanager.cpp
 extern float VectorNormalize2(const float* v, float* out);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
@@ -1069,7 +1069,6 @@ extern vehicle_info_t* G_GetVehicleInfo(Entity* ent);
 extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
 extern int AnimationPlayer_IsPartialIdle(void* player, bool checkLooping);
-extern int Entity_GetPlayerIndex(Entity* ent);
 struct CameraView {
     uint8_t _pad[0x118];
     float mTweenTime;      // +0x114
@@ -1201,7 +1200,7 @@ void CG_Player(Entity* entity)
             {
                 bool camTweening =
                     ((CameraView*)((char*)gCamera
-                                   + 0x1F0 * Entity_GetPlayerIndex(entity)))
+                                   + 0x1F0 * entity->GetPlayerIndex()))
                         ->IsTweening();
                 if (entity != EntityManager::sInst->GetPlayer(
                                                       currCl)
