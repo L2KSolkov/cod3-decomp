@@ -249,6 +249,7 @@ public:
         int GetBoneIndex(const char* name);  // ?GetBoneIndex@DObj@@QBEHPBD@Z
     };
     DObj* mDObj;  // +0x00
+    math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
 };
 const math::Mat43& Entity::DObj::GetMat(int boneIndex)
 {
@@ -290,10 +291,12 @@ void phys_anim_bone_array::write_skeleton(Entity* owner,
 // biped_phys_info (physics.o RBRagdoll.cpp); ctor only - the full layout is
 // mapped incrementally as the family is ported.
 struct biped_phys_info {
-    unsigned int m_render_flags;  // +0x00 (Bitmask mMask)
-    Entity*      m_owner;         // +0x04
-    void*        m_bp_sys;        // +0x08 (biped_system*)
-    uint8_t      _pad0C[0x510 - 0x0C];
+    unsigned int   m_render_flags;  // +0x00 (Bitmask mMask)
+    Entity*        m_owner;         // +0x04
+    void*          m_bp_sys;        // +0x08 (biped_system*)
+    math::Mat43    m_cur_mat[10];   // +0x0C
+    uint8_t        _pad28C[0x2A0 - 0x28C];
+    math::Mat43    m_last_mat[10];  // +0x2A0
     math::Position3 m_cur_angles;    // +0x510
     math::Position3 m_cur_origin;    // +0x520
     math::Position3 m_last_angles;   // +0x530
@@ -304,6 +307,9 @@ struct biped_phys_info {
     biped_phys_info();  // ??0biped_phys_info@@QAE@XZ
     void get_cur_vel(int rb_id, const math::Position3& com,
                      math::Dir3* cur_tvel, math::Dir3* cur_avel);
+private:
+    void reset_bone_vel_info(float delta_t);   // ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z
+public:
 };
 
 // ea: 0x6F71C0
@@ -383,6 +389,26 @@ void biped_phys_info::get_cur_vel(int rb_id, const math::Position3& com,
     {
         v.m128_f32[2] = 10.0f;
         cur_tvel->v = v;
+    }
+}
+
+// ea: 0x6F3CF0
+void biped_phys_info::reset_bone_vel_info(float delta_t)
+{
+    if (m_owner == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 333, "m_owner",
+                     defaultFileName))
+        __debugbreak();
+    m_delta_t = delta_t;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (m_bone[i] < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 337,
+                         "m_bone[i] >= 0", defaultFileName))
+            __debugbreak();
+        math::Mat43 mat = m_owner->CalcAbsMat(m_bone[i]);
+        memcpy(&m_last_mat[i], &mat, sizeof(math::Mat43));
+        memcpy(&m_cur_mat[i], &mat, sizeof(math::Mat43));
     }
 }
 
