@@ -71,6 +71,7 @@ struct rb_extra_info;
 class DObj;
 class rigid_body;
 class biped_phys_info;
+struct phys_gjk_geom_list;
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
     PROP_PRIORITY_MEDIUM = 1,
@@ -193,6 +194,7 @@ public:
     void set_priority(EPropPriority p);  // ?set_priority@rb_extra_info@@QAEXW4EPropPriority@@@Z
     void frame_advance(float delta_t); // ?frame_advance@rb_extra_info@@QAEXM@Z
     void evaluate_effect_priority();   // ?evaluate_effect_priority@rb_extra_info@@QAEXXZ
+    phys_gjk_geom_list* try_collision_prolog();  // ?try_collision_prolog@rb_extra_info@@QAEPAVphys_gjk_geom_list@@XZ
 };
 
 template <typename T, int N> class phys_static_memory_pool;
@@ -531,12 +533,24 @@ struct ragdoll_collision_callback {
     Entity* m_owner;  // +0x00
 
     void set(Entity* const owner);  // ?set@ragdoll_collision_callback@@QAEXQAVEntity@@@Z
+    void get_all_collisions();  // ?get_all_collisions@ragdoll_collision_callback@@QAEXXZ
+    void process_environment_collision_events();  // ?process_environment_collision_events@ragdoll_collision_callback@@QAEXXZ
 };
 
 // ea: 0x6F46A0
 void ragdoll_collision_callback::set(Entity* const owner)
 {
     m_owner = owner;
+}
+
+// stub until ragdoll_collision_callback internals are ported (0x70BD00)
+void ragdoll_collision_callback::get_all_collisions()
+{
+}
+
+// stub until ragdoll_collision_callback internals are ported (0x700910)
+void ragdoll_collision_callback::process_environment_collision_events()
+{
 }
 
 // DObj (render.o; local stub view). copy_skeleton disasm reads numBones at
@@ -878,10 +892,17 @@ struct wheel_collision_info {
 };
 
 // phys_gjk_geom_list (physics.o; aabb fields used by vehicle_collision_info)
-struct phys_gjk_geom_list {
+class phys_gjk_geom_list {
+public:
     math::Dir3 m_aabb_mn;  // +0x00
     math::Dir3 m_aabb_mx;  // +0x10
 };
+
+// stub until try_collision_prolog (0x705F90) is ported
+phys_gjk_geom_list* rb_extra_info::try_collision_prolog()
+{
+    return nullptr;
+}
 
 // ea: 0x6F6C20
 void wheel_collision_info::setup(rigid_body* rb,
@@ -1009,6 +1030,107 @@ void vehicle_collision_info::process(rb_extra_info* rb_inf)
     }
 }
 
+// gjk_geom_database (physics.o; minimal view for ballistic reinit)
+struct gjk_geom_database {
+    void* m_tree_root;      // +0x00 (m_ggi_search_tree.m_tree_root)
+    int   m_terrain_count;  // +0x04
+    int   m_entity_count;   // +0x08
+    int   m_actor_count;    // +0x0C
+    int   m_patch_count;    // +0x10
+    int   m_brush_count;    // +0x14
+    int   m_aabb_count;     // +0x18
+};
+// ?g_gjk_geom_database@@3PAUgjk_geom_database@@A (physics.o data @ 0xF79488)
+gjk_geom_database* g_gjk_geom_database = nullptr;
+
+// ?g_in_physics_collision_callback@@3_NA (physics.o data @ 0xF79475)
+bool g_in_physics_collision_callback = false;
+
+// ea: 0x6FF0E0
+void prop_system_collision_epilog()
+{
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+    {
+        rb_extra_info* v2 = g_list_rb_extra_info.m_alloc_list[i];
+        v2->m_gjk_geom_list = nullptr;
+        rb_vehicle* m_rb_vehicle = v2->m_rb_vehicle;
+        if (m_rb_vehicle != nullptr)
+            m_rb_vehicle->m_vci = nullptr;
+    }
+}
+
+// ea: 0x707130
+void prop_system_collision_prolog()
+{
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+    {
+        if (g_list_rb_extra_info.m_alloc_list[i]->try_collision_prolog()
+                == nullptr
+            && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 361,
+                         "gjk_geom_list", defaultFileName))
+            __debugbreak();
+    }
+}
+
+// ea: 0x6F7060
+void phys_collision_allocater_ballistic_reinit()
+{
+    for (int i = 0; i < g_collision_memory_allocater.m_num_buffers; ++i)
+        g_collision_memory_allocater.m_list_memory_buffer[i].m_buffer_cur =
+            g_collision_memory_allocater.m_list_memory_buffer[i].m_user_start;
+    gjk_geom_database* v2 = g_gjk_geom_database;
+    v2->m_tree_root = nullptr;
+    v2->m_terrain_count = 0;
+    v2->m_entity_count = 0;
+    v2->m_actor_count = 0;
+    v2->m_patch_count = 0;
+    v2->m_brush_count = 0;
+    v2->m_aabb_count = 0;
+    prop_system_collision_epilog();
+    prop_system_collision_prolog();
+}
+
+// stub until collision_memory_prolog (0x702CB0) is ported
+void collision_memory_prolog()
+{
+}
+// prop_phys_collision (physics.o; static collision pass helpers)
+struct prop_phys_collision {
+    static void get_all_collisions();  // ?get_all_collisions@prop_phys_collision@@SAXXZ
+};
+// stub until prop_phys_collision::get_all_collisions (0x70AFE0) is ported
+void prop_phys_collision::get_all_collisions()
+{
+}
+// stub until process_prop_collide_callbacks (0x702740) is ported
+void process_prop_collide_callbacks()
+{
+}
+// stub until collision_memory_epilog (0x6F6D20) is ported
+void collision_memory_epilog()
+{
+}
+
+void do_all_biped_system_collision_callback();  // 0x70C8D0
+void do_all_biped_system_process_collision_events();  // 0x704A10
+
+// ea: 0x70CFA0
+void physics_collision_callback()
+{
+    g_in_physics_collision_callback = true;
+    collision_memory_prolog();
+    prop_system_collision_prolog();
+    prop_phys_collision::get_all_collisions();
+    do_all_biped_system_collision_callback();
+    process_prop_collide_callbacks();
+    do_all_biped_system_process_collision_events();
+    prop_system_collision_epilog();
+    collision_memory_epilog();
+    g_in_physics_collision_callback = false;
+}
+
 // ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A
 // (physics.o data @ 0xE2B8F0)
 phys_static_memory_pool<rb_vehicle, 10> g_rb_vehicle_list;
@@ -1057,7 +1179,9 @@ class biped_phys_info;
 class biped_system : public rb_ragdoll_model {
 public:
     phys_anim_bone_array bp_bone_array;  // +0x130
-    uint8_t _pad131[0x2040 - 0x130 - sizeof(phys_anim_bone_array)];
+    uint8_t _pad131[0xC90 - 0x130 - sizeof(phys_anim_bone_array)];
+    ragdoll_collision_callback m_collision_callback;  // +0xC90
+    uint8_t _padC94[0x2040 - 0xC94];
     biped_phys_info* m_bp_info;   // +0x2040
     int              m_flags;         // +0x2044
     float            m_stable_timer;  // +0x2048
@@ -1115,6 +1239,28 @@ public:
 
 biped_phys_info* create_biped_phys_info(Entity* owner);  // ?create_biped_phys_info@@YAPAVbiped_phys_info@@PAVEntity@@@Z
 void destroy_biped_phys_info(biped_phys_info* bp_info);  // ?destroy_biped_phys_info@@YAXPAVbiped_phys_info@@@Z
+
+// ?g_list_biped_system@@3V?$phys_static_memory_pool@Vbiped_system@@$0BA@@@A
+// (physics.o data @ 0xE09970)
+extern phys_static_memory_pool<biped_system, 16> g_list_biped_system;
+
+// ea: 0x70C8D0
+void do_all_biped_system_collision_callback()
+{
+    int count = g_list_biped_system.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_list_biped_system.m_alloc_list[i]->m_collision_callback
+            .get_all_collisions();
+}
+
+// ea: 0x704A10
+void do_all_biped_system_process_collision_events()
+{
+    int count = g_list_biped_system.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_list_biped_system.m_alloc_list[i]->m_collision_callback
+            .process_environment_collision_events();
+}
 
 // ea: 0x6F71C0
 biped_phys_info::biped_phys_info()
