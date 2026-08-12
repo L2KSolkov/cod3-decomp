@@ -644,7 +644,8 @@ static_assert(sizeof(environment_rigid_body) == 0x1B0, "environment_rigid_body s
 // rigid_body_constraint_custom_path — custom path constraint (128 bytes)
 // Size: 0x80 (128 bytes) — verified against IDA
 // ============================================================================
-struct rigid_body_constraint_custom_path : rigid_body_constraint {
+class rigid_body_constraint_custom_path : public rigid_body_constraint {
+public:
     math::Mat43     m_path_mat;        // +0x10
     math::Dir3      b1_r_loc;          // +0x50
     user_rigid_body* m_urb;            // +0x60
