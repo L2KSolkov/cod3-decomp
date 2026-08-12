@@ -136,6 +136,30 @@ public:
     unsigned int mVal;  // +0x00
 };
 
+// ragdoll_collision_callback (physics.o RBRagdollCollision.cpp). Raw-offset
+// pools: m_rb_colgeom (m_alloc_list +0xFB0, count +0x1004), m_rb_cp
+// (m_alloc_list +0x1048, count +0x1084).
+class rigid_body_sphere_list;
+class rb_capsule_pair;
+struct ragdoll_collision_callback {
+    Entity* m_owner;  // +0x00
+    uint8_t _pad4[0xFB0 - 0x04];
+    rigid_body_sphere_list** m_rb_colgeom_alloc_list;  // +0xFB0
+    uint8_t _padFB4[0x1004 - 0xFB4];
+    int     m_rb_colgeom_count;  // +0x1004
+    uint8_t _pad1008[0x1048 - 0x1008];
+    rb_capsule_pair** m_rb_cp_alloc_list;  // +0x1048
+    uint8_t _pad104C[0x1084 - 0x104C];
+    int     m_rb_cp_count;  // +0x1084
+
+    void set(Entity* const owner);  // ?set@ragdoll_collision_callback@@QAEXQAVEntity@@@Z
+    void get_all_collisions();  // ?get_all_collisions@ragdoll_collision_callback@@QAEXXZ
+    void process_environment_collision_events();  // ?process_environment_collision_events@ragdoll_collision_callback@@QAEXXZ
+    void remove_colgeom(int rb_id);  // ?remove_colgeom@ragdoll_collision_callback@@QAEXH@Z
+    rigid_body_sphere_list* get_colgeom(int rb_id);  // ?get_colgeom@ragdoll_collision_callback@@QAEPAVrigid_body_sphere_list@@H@Z
+    rigid_body_sphere_list* add_colgeom(int rb_id);  // ?add_colgeom@ragdoll_collision_callback@@QAEPAVrigid_body_sphere_list@@H@Z
+};
+
 // HashString (broc_types.h view; local copy - 4 bytes)
 class HashString {
 public:
@@ -663,38 +687,6 @@ void rb_collision_capsule::set(const math::Position3& p1_loc,
     m_r = r;
 }
 
-// ragdoll_collision_callback (physics.o)
-class Entity;
-struct ragdoll_collision_callback {
-    Entity* m_owner;  // +0x00
-
-    void set(Entity* const owner);  // ?set@ragdoll_collision_callback@@QAEXQAVEntity@@@Z
-    void get_all_collisions();  // ?get_all_collisions@ragdoll_collision_callback@@QAEXXZ
-    void process_environment_collision_events();  // ?process_environment_collision_events@ragdoll_collision_callback@@QAEXXZ
-    void remove_colgeom(int rb_id);  // ?remove_colgeom@ragdoll_collision_callback@@QAEXH@Z
-};
-
-// ea: 0x6F46A0
-void ragdoll_collision_callback::set(Entity* const owner)
-{
-    m_owner = owner;
-}
-
-// stub until ragdoll_collision_callback internals are ported (0x70BD00)
-void ragdoll_collision_callback::get_all_collisions()
-{
-}
-
-// stub until ragdoll_collision_callback internals are ported (0x700910)
-void ragdoll_collision_callback::process_environment_collision_events()
-{
-}
-
-// stub until ragdoll_collision_callback internals are ported (0x708DC0)
-void ragdoll_collision_callback::remove_colgeom(int rb_id)
-{
-    (void)rb_id;
-}
 
 // DObj (render.o; local stub view). copy_skeleton disasm reads numBones at
 // +0xCF; GetMat/GetBoneIndex are render.o symbols (?GetMat@DObj@@QAEABVMat43@
@@ -3071,20 +3063,44 @@ struct rb_collision_sphere {
     math::Position3 m_center_loc;  // +0x00
     float           m_radius;      // +0x10
 };
-struct phys_sphere_array {
-    rb_collision_sphere* m_slot_array;  // +0x00
-    int                 m_alloc_count;  // +0x04
+// phys_gjk_geom_ragdoll_1 (physics.o; minimal view for sphere-list set/init)
+class phys_gjk_geom_ragdoll_1 {
+public:
+    void init(rigid_body_sphere_list* cg);  // ?init@phys_gjk_geom_ragdoll_1@@QAEXPAVrigid_body_sphere_list@@@Z
 };
-struct rigid_body_sphere_list {
+
+// rb_capsule_pair (physics.o; m_b1_cg/m_b2_cg)
+class rb_capsule_pair {
+public:
+    rigid_body_sphere_list* m_b1_cg;  // +0x00
+    rigid_body_sphere_list* m_b2_cg;  // +0x04
+};
+
+class rigid_body_sphere_list {
+public:
     uint8_t        _pad0[0x40];
     rb_collision_sphere* m_slot_array;  // +0x40
     int            m_alloc_count;       // +0x44
     uint8_t        _pad48[0x50 - 0x48];
     math::Position3 m_bounding_sphere_center_loc;  // +0x50
     float          m_bounding_sphere_radius;       // +0x60
+    uint8_t        _pad64[0xC0 - 0x64];
+    math::Position3 m_tunnel_test_last_pos;  // +0xC0
+    uint8_t        _padD0[0xE0 - 0xD0];
+    float          m_tunnel_test_radius;  // +0xE0
+    int            m_tunnel_test_active_counter;  // +0xE4
+    rigid_body*    m_owner;  // +0xE8
+    int            m_rb_id;  // +0xEC
+    phys_gjk_geom_ragdoll_1 m_gjk_geom;  // +0xF0
+    uint8_t        _padF0[0x120 - 0xF0 - sizeof(phys_gjk_geom_ragdoll_1)];
+    rigid_body_sphere_list* m_geom_id;  // +0x120 (m_gjk_geom.m_geom_id)
+    void*          m_next_geom;  // +0x124
 
 private:
     void calc_bounding_sphere();  // ?calc_bounding_sphere@rigid_body_sphere_list@@AAEXXZ
+public:
+    void init_tunnel_test(math::Position3& center_pos);  // ?init_tunnel_test@rigid_body_sphere_list@@QAEXAAVPosition3@math@@@Z
+    void set(rigid_body* const owner);  // ?set@rigid_body_sphere_list@@QAEXQAVrigid_body@@@Z
 };
 void rigid_body_sphere_list::calc_bounding_sphere()
 {
@@ -3110,6 +3126,151 @@ void rigid_body_sphere_list::calc_bounding_sphere()
                       &m_bounding_sphere_center_loc,
                       &m_bounding_sphere_radius);
     }
+}
+
+// ea: 0x700730
+void rigid_body_sphere_list::init_tunnel_test(math::Position3& center_pos)
+{
+    m_tunnel_test_last_pos.v = center_pos.v;
+    m_tunnel_test_radius = m_bounding_sphere_radius;
+    rb_collision_sphere* p = m_slot_array;
+    rb_collision_sphere* end = &m_slot_array[m_alloc_count];
+    for (; p != end; ++p)
+    {
+        if (m_tunnel_test_radius > p->m_radius)
+            m_tunnel_test_radius = p->m_radius;
+    }
+}
+
+// stub until phys_gjk_geom_ragdoll_1::init (0x7007A0) is ported
+void phys_gjk_geom_ragdoll_1::init(rigid_body_sphere_list* cg)
+{
+    (void)cg;
+}
+
+// ea: 0x704A50
+void rigid_body_sphere_list::set(rigid_body* const owner)
+{
+    m_owner = owner;
+    calc_bounding_sphere();
+    m_gjk_geom.init(this);
+    m_geom_id = this;
+    m_next_geom = nullptr;
+    m_tunnel_test_active_counter = 0;
+}
+
+void mem_break();  // mem_heap.cpp
+
+// ea: 0x700D10
+rigid_body_sphere_list* ragdoll_collision_callback::get_colgeom(int rb_id)
+{
+    for (int i = 0; i < m_rb_colgeom_count; ++i)
+    {
+        rigid_body_sphere_list* cg = m_rb_colgeom_alloc_list[i];
+        if (cg->m_rb_id == rb_id)
+            return cg;
+    }
+    return nullptr;
+}
+
+// ea: 0x704EA0
+rigid_body_sphere_list* ragdoll_collision_callback::add_colgeom(int rb_id)
+{
+    if (get_colgeom(rb_id) != nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdollCollision.cpp", 1051,
+                     "get_colgeom(rb_id) == NULL", defaultFileName))
+        __debugbreak();
+    // phys_static_memory_pool<rigid_body_sphere_list,10>::add
+    int count = m_rb_colgeom_count;
+    rigid_body_sphere_list* v3 = nullptr;
+    if (count < 10)
+    {
+        v3 = m_rb_colgeom_alloc_list[count];
+        m_rb_colgeom_count = count + 1;
+        if (v3 != nullptr)
+            new (v3) rigid_body_sphere_list;
+    }
+    if (v3 == nullptr)
+        mem_break();
+    v3->m_rb_id = rb_id;
+    return v3;
+}
+
+// ea: 0x708DC0
+void ragdoll_collision_callback::remove_colgeom(int rb_id)
+{
+    rigid_body_sphere_list* colgeom = get_colgeom(rb_id);
+    rigid_body_sphere_list* v4 = colgeom;
+    if (colgeom != nullptr)
+    {
+        // phys_static_memory_pool<rigid_body_sphere_list,10>::remove
+        int count = m_rb_colgeom_count;
+        int idx = -1;
+        for (int i = 0; i < count; ++i)
+        {
+            if (m_rb_colgeom_alloc_list[i] == v4)
+            {
+                idx = i;
+                break;
+            }
+        }
+        if (idx >= 0)
+        {
+            if (count > 1)
+            {
+                int last = count - 1;
+                m_rb_colgeom_count = last;
+                m_rb_colgeom_alloc_list[idx] =
+                    m_rb_colgeom_alloc_list[last];
+            }
+            else
+            {
+                m_rb_colgeom_count = 0;
+            }
+        }
+        // remove rb_capsule_pair entries referencing this colgeom
+        int cp_count = m_rb_cp_count;
+        int i = 0;
+        while (i < cp_count)
+        {
+            rb_capsule_pair* pair = m_rb_cp_alloc_list[i];
+            if (pair->m_b1_cg == v4 || pair->m_b2_cg == v4)
+            {
+                if (cp_count > 1)
+                {
+                    int last = cp_count - 1;
+                    m_rb_cp_count = last;
+                    m_rb_cp_alloc_list[i] =
+                        m_rb_cp_alloc_list[last];
+                }
+                else
+                {
+                    m_rb_cp_count = 0;
+                }
+                cp_count = m_rb_cp_count;
+            }
+            else
+            {
+                ++i;
+            }
+        }
+    }
+}
+
+// ea: 0x6F46A0
+void ragdoll_collision_callback::set(Entity* const owner)
+{
+    m_owner = owner;
+}
+
+// stub until ragdoll_collision_callback internals are ported (0x70BD00)
+void ragdoll_collision_callback::get_all_collisions()
+{
+}
+
+// stub until ragdoll_collision_callback internals are ported (0x700910)
+void ragdoll_collision_callback::process_environment_collision_events()
+{
 }
 
 // ea: 0x716760 (physics.o; RBRagdollCollision.cpp)
