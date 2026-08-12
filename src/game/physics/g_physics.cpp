@@ -507,6 +507,8 @@ extern int g_vehicle_button_threshold;  // ?g_vehicle_button_threshold@@3HA (phy
 float vectoyaw(float* vec);  // ?vectoyaw@@YAMPAM@Z (core.o)
 float AngleNormalize180Accurate(float angle);  // ?AngleNormalize180Accurate@@YAMM@Z (core.o)
 void Axis4ToAngles(const float (*axis)[4], float* angles);  // ?Axis4ToAngles@@YAXPAY03$$CBMPAM@Z (core.o)
+// make_rotate(Mat43&, Dir3 const&, float, float) - pulse_sum.h inline
+void make_rotate(math::Mat43& m, const math::Dir3& u, float ca, float sa);
 // game.o raw segment collide helpers (g_cm_load.cpp)
 struct cdlPlane { int packed[4]; };  // 16 bytes
 struct cdl_object_t;
@@ -4189,6 +4191,8 @@ class phys_gjk_geom_aabb : public phys_gjk_geom_cod_base {
 public:
     math::Dir3 m_center_local;  // +0x40
     math::Dir3 m_dims;          // +0x50
+    phys_gjk_geom_aabb(const math::Dir3& center,
+                       const math::Dir3& dims);  // ??0phys_gjk_geom_aabb@@QAE@ABVDir3@math@@0@Z
     static phys_gjk_geom_aabb* create(const math::Dir3& center,
                                       const math::Dir3& dims);
 };
@@ -4199,22 +4203,60 @@ public:
     static phys_gjk_geom_vert_list* create(int num_verts, DCGSet* dcg,
                                            int dcg_index);
 };
+// ea: 0x71BD70
+phys_gjk_geom_aabb::phys_gjk_geom_aabb(const math::Dir3& center,
+                                      const math::Dir3& dims)
+{
+    m_center_local.v = center.v;
+    m_dims.v = dims.v;
+    m_dcg = nullptr;
+    m_dcg_index = -1;
+}
+// ea: 0x719260
 phys_gjk_geom_aabb* phys_gjk_geom_aabb::create(const math::Dir3& center,
                                                const math::Dir3& dims)
 {
-    (void)center; (void)dims;
-    return nullptr;
+    void* mem = g_collision_memory_allocater.allocate(
+        0x60, 16, false, "phys_collision_allocater overflow.");
+    if (mem == nullptr)
+        return nullptr;
+    return new (mem) phys_gjk_geom_aabb(center, dims);
 }
+// ea: 0x71C200
 phys_gjk_geom_vert_list* phys_gjk_geom_vert_list::create(int num_verts,
                                                          DCGSet* dcg,
                                                          int dcg_index)
 {
-    (void)num_verts; (void)dcg; (void)dcg_index;
-    return nullptr;
+    if (num_verts <= 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBCollision.h";
+        AeAssert::gCurrentLine = 0xE9;
+        AeAssert::gCurrentExpr = "num_verts > 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("physics object with no vertex data"))
+            __debugbreak();
+    }
+    phys_gjk_geom_vert_list* result =
+        (phys_gjk_geom_vert_list*)g_collision_memory_allocater.allocate(
+            0x50, 16, false, "phys_collision_allocater overflow.");
+    if (result == nullptr)
+        return nullptr;
+    result->m_vert_list =
+        (math::Dir3*)g_collision_memory_allocater.allocate(
+            num_verts * 16, 16, false, "phys_collision_allocater overflow.");
+    if (result->m_vert_list == nullptr)
+        return nullptr;
+    result->m_vert_list_count = num_verts;
+    result->m_dcg = dcg;
+    result->m_dcg_index = dcg_index;
+    return result;
 }
+// ea: 0x719260 (phys_gjk_geom_list::create; ctor is a no-op)
 void* phys_gjk_geom_list_create()
 {
-    return nullptr;
+    return g_collision_memory_allocater.allocate(
+        0x30, 16, false, "phys_collision_allocater overflow.");
 }
 
 // cdl_vinfo_t / cdl_array<vi4> minimal views for unpack
@@ -6611,11 +6653,28 @@ void biped_system::render_joint(int joint_id,
     (void)render_flags;
 }
 
-// phys_make_rotate (physics.o inline COMDAT 0x30A480; stub until ported)
+// phys_make_rotate (physics.o inline COMDAT 0x716480). Same math as
+// pulse_sum.h make_rotate(Dir3,Dir3) but emitted unguarded in physics.o:
+// axis = normalize(v1 x v2), then rotate v1 toward v2 by the axis-angle.
 void phys_make_rotate(math::Mat43* mat, const math::Dir3& v1,
                       const math::Dir3& v2)
 {
-    (void)mat; (void)v1; (void)v2;
+    __m128 cross = _mm_sub_ps(
+        _mm_mul_ps(_mm_shuffle_ps(v1.v, v1.v, 9),
+                   _mm_shuffle_ps(v2.v, v2.v, 18)),
+        _mm_mul_ps(_mm_shuffle_ps(v1.v, v1.v, 18),
+                   _mm_shuffle_ps(v2.v, v2.v, 9)));
+    __m128 c2 = _mm_mul_ps(cross, cross);
+    float len_sq = c2.m128_f32[0] + (c2.m128_f32[1] + c2.m128_f32[2]);
+    float len = sqrtf(len_sq);
+    __m128 axis = _mm_div_ps(cross, _mm_set1_ps(len));
+    __m128 dotv = _mm_mul_ps(v1.v, v2.v);
+    float dot = dotv.m128_f32[0] + (dotv.m128_f32[1] + dotv.m128_f32[2]);
+    float len2 = sqrtf(dot * dot + len * len);
+    float inv_len2 = 1.0f / len2;
+    math::Dir3 axis_v;
+    axis_v.v = axis;
+    make_rotate(*mat, axis_v, inv_len2 * dot, inv_len2 * len);
 }
 
 // ea: 0x6FAD30
@@ -8804,6 +8863,7 @@ void path_constraint_destroy(class rigid_body_constraint_custom_path* vpc)
 struct rb_collision_sphere {
     math::Position3 m_center_loc;  // +0x00
     float           m_radius;      // +0x10
+    uint8_t         _pad14[0x20 - 0x14];  // 32-byte stride (IDA ordinal)
 };
 // phys_gjk_geom_ragdoll_1 (physics.o; 128 bytes; derives from phys_gjk_geom
 // which has vtable +0x00, m_geom_id +0x30, m_next_geom +0x34)
@@ -8837,7 +8897,7 @@ public:
     rb_collision_capsule m_capsule;  // +0x64
     uint8_t        _padB4[0xC0 - (0x64 + sizeof(rb_collision_capsule))];
     math::Position3 m_tunnel_test_last_pos;  // +0xC0
-    uint8_t        _padD0[0xE0 - 0xD0];
+    math::Position3 m_tunnel_hit_pos;  // +0xD0
     float          m_tunnel_test_radius;  // +0xE0
     int            m_tunnel_test_active_counter;  // +0xE4
     rigid_body*    m_owner;  // +0xE8
@@ -9034,22 +9094,126 @@ void rigid_body_sphere_list::set(rigid_body* const owner)
     m_tunnel_test_active_counter = 0;
 }
 
-// physics.o inline COMDATs (rigid_body_sphere_list helpers; stubs until the
-// sphere-collision pass is reconstructed from disasm)
-void rigid_body_sphere_list::calc_total_aabb() {}
+// ea: 0x71A430
+void rigid_body_sphere_list::calc_total_aabb()
+{
+    rigid_body* m_owner = this->m_owner;
+    if ((m_owner->m_flags & 0x50) == 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+               "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+    // world center = bounding sphere center transformed by owner's col mat
+    __m128 c = m_bounding_sphere_center_loc.v;
+    __m128 world = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(c, c, 0), m_owner->m_col_mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(c, c, 85), m_owner->m_col_mat.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(c, c, 170), m_owner->m_col_mat.z.v),
+            m_owner->m_col_mat.w.v));
+    __m128 radius = _mm_setr_ps(m_bounding_sphere_radius,
+                                m_bounding_sphere_radius,
+                                m_bounding_sphere_radius, 0.0f);
+    m_total_aabb_mn.v =
+        _mm_sub_ps(_mm_min_ps(world, m_tunnel_test_last_pos.v), radius);
+    m_total_aabb_mx.v =
+        _mm_add_ps(_mm_max_ps(world, m_tunnel_test_last_pos.v), radius);
+}
+
+// ea: 0x71C450
+void rigid_body_sphere_list::update_colgeom()
+{
+    rigid_body* m_owner = this->m_owner;
+    if ((m_owner->m_flags & 0x50) == 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+               "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+    m_capsule.xform(m_owner->m_col_mat);
+    rb_collision_sphere* end = m_slot_array + m_alloc_count;
+    for (rb_collision_sphere* s = m_slot_array; s != end; ++s)
+    {
+        if ((m_owner->m_flags & 0x50) == 0
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+                   "debug_flag_is_in_collision()", defaultFileName))
+            __debugbreak();
+    }
+}
+
+// ea: 0x71DBF0
 void rigid_body_sphere_list::tunnel_test_prolog(
     physics_colgeom_visitor* visitor)
 {
-    (void)visitor;
+    rigid_body* m_owner = this->m_owner;
+    if ((m_owner->m_flags & 0x50) == 0
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 109,
+               "debug_flag_is_in_collision()", defaultFileName))
+        __debugbreak();
+    __m128 c = m_bounding_sphere_center_loc.v;
+    __m128 world = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(c, c, 0), m_owner->m_col_mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(c, c, 85), m_owner->m_col_mat.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(c, c, 170), m_owner->m_col_mat.z.v),
+            m_owner->m_col_mat.w.v));
+    __m128 delta = _mm_sub_ps(world, m_tunnel_test_last_pos.v);
+    __m128 d2 = _mm_mul_ps(delta, delta);
+    float len_sq = d2.m128_f32[0] + (d2.m128_f32[1] + d2.m128_f32[2]);
+    float radius = m_tunnel_test_radius * 0.5f;
+    if (len_sq > radius * radius)
+    {
+        float dist = sqrtf(len_sq);
+        float t_ = (dist + radius) / dist;
+        math::Position3 p0;
+        p0.v = m_tunnel_test_last_pos.v;
+        math::Position3 p1;
+        p1.v = _mm_add_ps(m_tunnel_test_last_pos.v,
+                          _mm_mul_ps(delta, _mm_set1_ps(t_)));
+        if (collide_ray_object_list(
+                visitor, m_total_aabb_mn, m_total_aabb_mx,
+                reinterpret_cast<const math::Dir3&>(p0),
+                reinterpret_cast<const math::Dir3&>(p1), &t_))
+        {
+            m_tunnel_hit_pos.v =
+                _mm_add_ps(m_tunnel_test_last_pos.v,
+                           _mm_mul_ps(delta, _mm_set1_ps(t_ - 1.0f)));
+            if (m_tunnel_test_active_counter < 0x2D)
+                ++m_tunnel_test_active_counter;
+        }
+        else
+        {
+            m_tunnel_hit_pos.v = _mm_setzero_ps();
+            m_tunnel_test_active_counter = 0;
+        }
+    }
+    else
+    {
+        m_tunnel_hit_pos.v = _mm_setzero_ps();
+        m_tunnel_test_active_counter = 0;
+    }
+    m_owner->translate_col_mat(
+        reinterpret_cast<const math::Dir3&>(m_tunnel_hit_pos));
+    m_tunnel_test_last_pos.v =
+        _mm_add_ps(world, m_tunnel_hit_pos.v);
 }
-void rigid_body_sphere_list::update_colgeom() {}
 
-// ?add_active_eps_aabb@@YAXPAVDir3@math@@0@Z (physics.o inline 0xAE1580;
-// expands the AABB by the active-eps pad; stub)
+// ?add_active_eps_aabb@@YAXPAVDir3@math@@0@Z (physics.o inline 0x6F2080).
+// Expands the AABB by the active-eps pad (3.4 units each axis; local static
+// active_eps_vec {3.4,3.4,3.4,0}).
 void add_active_eps_aabb(math::Dir3* aabb_mn, math::Dir3* aabb_mx)
 {
-    (void)aabb_mn;
-    (void)aabb_mx;
+    if (aabb_mn == aabb_mx
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.h", 0x112,
+                     "aabb_mn != aabb_mx", defaultFileName))
+        __debugbreak();
+    static const __m128 active_eps_vec =
+        _mm_setr_ps(3.4f, 3.4f, 3.4f, 0.0f);
+    aabb_mn->v = _mm_sub_ps(aabb_mn->v, active_eps_vec);
+    aabb_mx->v = _mm_add_ps(aabb_mx->v, active_eps_vec);
 }
 
 // rb_capsule_pair (physics.o; m_b1_cg/m_b2_cg)

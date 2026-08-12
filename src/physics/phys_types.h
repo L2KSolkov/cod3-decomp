@@ -313,6 +313,25 @@ public:
     const math::Mat43& get_mat() const { return m_mat; }  // ?get_mat@rigid_body@@QBEABVMat43@math@@XZ
     math::Mat43& dangerous_get_mat() { return m_mat; }    // ?dangerous_get_mat@rigid_body@@QAEAAVMat43@math@@XZ
 
+    // translate_col_mat - ea: 0x718B90 (physics.o inline COMDAT)
+    void translate_col_mat(const math::Dir3& t)  // ?translate_col_mat@rigid_body@@QAEXABVDir3@math@@@Z
+    {
+        if ((t.v.m128_f32[0] != t.v.m128_f32[0]
+             || t.v.m128_f32[1] != t.v.m128_f32[1]
+             || t.v.m128_f32[2] != t.v.m128_f32[2])
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 119,
+                   "(t.GetX() == t.GetX() && t.GetY() == t.GetY() && t.GetZ() == t.GetZ())",
+                   "invalid vector"))
+            __debugbreak();
+        if ((~(m_flags >> 6) & 1) == 0
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 120,
+                   "debug_flag_is_in_collision()", defaultFileName))
+            __debugbreak();
+        m_col_mat.w.v = _mm_add_ps(m_col_mat.w.v, t.v);
+    }
+
     rigid_body() {}  // ea: 0x880C60
     rigid_body& operator=(const rigid_body& other);  // ea: 0x892160
 
