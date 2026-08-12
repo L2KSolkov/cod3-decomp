@@ -47,6 +47,8 @@ namespace nuge {
 void calc_velocities(const math::Mat43& mat0, const math::Mat43& mat1,
                      const math::Dir3& center_offset_loc, float delta_t,
                      math::Dir3* t_vel, math::Dir3* a_vel);
+void calc_sphere_inertia(float radius, math::Dir3* unit_inertia,
+                         float* volume);  // ?calc_sphere_inertia@nuge@@SAXMPAVDir3@math@@PAM@Z
 }
 void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
 void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
@@ -297,8 +299,8 @@ struct ragdoll_collision_callback {
     rigid_body_sphere_list* add_colgeom(int rb_id);  // ?add_colgeom@ragdoll_collision_callback@@QAEPAVrigid_body_sphere_list@@H@Z
 };
 
-// bone_mass_info (physics.o RBRagdoll.cpp; 464 bytes). Fields written by set
-// (0x6F42C0) with verified offsets.
+// bone_mass_info (physics.o RBRagdoll.cpp; 464 bytes). Layout verified from
+// IDA ordinal 6939 (matches set 0x6F42C0 and calc_stuff 0x6F9070).
 class bone_mass_info {
 public:
     int   m_b1;           // +0x00
@@ -306,32 +308,43 @@ public:
     float m_percent;      // +0x08
     uint8_t _pad0C[0x10 - 0x0C];
     math::Position3 m_b1_adjust_p2_loc;  // +0x10
-    uint8_t _pad20[0x30 - 0x20];
+    math::Position3 m_b1_adjust_p1_loc;  // +0x20
     float m_p1_radius;    // +0x30
     float m_p2_radius;    // +0x34
     int   m_collision_sphere_count;  // +0x38
-    uint8_t _pad3C[0x64 - 0x3C];
-    math::Position3 m_p1; // +0x64
-    math::Position3 m_p2; // +0x74
-    math::Position3 m_com;  // +0x84
-    math::Position3 m_capsule_p1;  // +0x94
-    math::Position3 m_capsule_p2;  // +0xA4
+    uint8_t _pad3C[0x40 - 0x3C];
+    math::Position3 m_p1; // +0x40
+    math::Position3 m_p2; // +0x50
+    math::Position3 m_com;  // +0x60
+    math::Position3 m_capsule_p1;  // +0x70
+    math::Position3 m_capsule_p2;  // +0x80
+    float m_capsule_radius;  // +0x90
+    uint8_t _pad94[0xA0 - 0x94];
+    math::Position3 m_capsule_b1_adjust_p2_loc;  // +0xA0
+    float m_entity_collision_sphere_radius;  // +0xB0
     float m_mass;         // +0xB4
-    uint8_t _padB8[0xD0 - 0xB8];
+    math::Position3 m_inertia;  // +0xC0
     float m_inertia_sphere_radius;  // +0xD0
     float m_friction_k;   // +0xD4
-    int   m_rb_id;        // +0xD8
-    uint8_t _padDC[0xE0 - 0xDC];
+    float m_damp_k;       // +0xD8
+    int   m_rb_id;        // +0xDC
     int   m_rb_parent_id; // +0xE0
-    uint8_t _padE4[0xEC - 0xE4];
+    int   m_rb_bone;      // +0xE4
+    int   m_rb_parent_bone;  // +0xE8
     int   m_joint_type;   // +0xEC
     float m_theta_min;    // +0xF0
     float m_theta_max;    // +0xF4
-    uint8_t _padF8[0x120 - 0xF8];
+    uint8_t _padF8[0x100 - 0xF8];
+    math::Position3 m_rb_parent_pivot_loc;  // +0x100
+    math::Position3 m_rb_pivot_loc;         // +0x110
     math::Dir3 m_rb_parent_axis_loc;  // +0x120
     math::Dir3 m_rb_axis_loc;         // +0x130
     math::Dir3 m_rb_parent_ref_loc;   // +0x140
     math::Dir3 m_rb_ref_loc;          // +0x150
+    int   m_joint_limit_count;  // +0x160
+    math::Dir3 m_joint_limit_axis[4];  // +0x170
+    float m_joint_limit_angle[4];      // +0x1B0
+    float m_joint_power;               // +0x1C0
 
     enum joint_type_e {
         JOINT_TYPE_NONE = 0,
@@ -346,6 +359,7 @@ public:
              const math::Dir3& rb_axis_loc,
              const math::Dir3& rb_parent_ref_loc,
              const math::Dir3& rb_ref_loc, float power);  // ?set@bone_mass_info@@QAEXHHMMMABVPosition3@math@@HMMMHHW4joint_type_e@1@MMABVDir3@3@222M@Z
+    void calc_stuff(Entity* const owner);  // ?calc_stuff@bone_mass_info@@QAEXQAVEntity@@@Z
 };
 
 // HashString (broc_types.h view; local copy - 4 bytes)
@@ -1064,6 +1078,9 @@ struct refEntity {  // EntityShared subset
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
     const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
+    int GetParentBoneIndex(int boneIndex);  // ?GetParentBoneIndex@Entity@@QAEHH@Z (game.o)
+    const math::Mat43::Packed& GetBaseRelMat(
+        int boneIndex);  // ?GetBaseRelMat@Entity@@QAEABUPacked@Mat43@math@@H@Z (game.o)
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (game.o)
     void set_bp_info(biped_phys_info* bpInfo);  // ?set_bp_info@Entity@@QAEXPAVbiped_phys_info@@@Z (game.o)
     void CalcOriginAnglesFromMat();  // ?CalcOriginAnglesFromMat@Entity@@QAEXXZ (game.o)
@@ -1079,6 +1096,150 @@ void DObjGetBasePose(DObj* obj)
 void Entity::set_bp_info(biped_phys_info* bpInfo)
 {
     mBPInfo = bpInfo;
+}
+
+// ea: 0x6F9070
+void bone_mass_info::calc_stuff(Entity* const owner)
+{
+    math::Mat43 b1_abs_mat = owner->CalcAbsMat(m_b1);
+    math::Mat43 b2_abs_mat = owner->CalcAbsMat(m_b2);
+    __m128 v4 = b1_abs_mat.y.v;
+    __m128 v5 = b1_abs_mat.x.v;
+    __m128 v6 = b1_abs_mat.z.v;
+    m_p1.v = b1_abs_mat.w.v;
+    __m128 m_percent_low = _mm_set1_ps(m_percent);
+    math::Dir3 v39;
+    v39.v = _mm_add_ps(
+        b2_abs_mat.w.v,
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(m_b1_adjust_p2_loc.v,
+                                   m_b1_adjust_p2_loc.v, 0),
+                    v5),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(m_b1_adjust_p2_loc.v,
+                                   m_b1_adjust_p2_loc.v, 85),
+                    v4)),
+            _mm_mul_ps(
+                _mm_shuffle_ps(m_b1_adjust_p2_loc.v,
+                               m_b1_adjust_p2_loc.v, 170),
+                v6)));
+    __m128 v8 = _mm_set1_ps(1.0f - m_percent);
+    m_p2.v = v39.v;
+    __m128 v10 = _mm_add_ps(
+        _mm_mul_ps(m_p1.v, v8),
+        _mm_mul_ps(m_p2.v, m_percent_low));
+    __m128 v11 = _mm_shuffle_ps(v5, v4, 68);
+    __m128 v12 = _mm_shuffle_ps(_mm_shuffle_ps(v5, v4, 238), v6, 168);
+    __m128 v13 = v11;
+    __m128 v14 = _mm_shuffle_ps(v11, v6, 221);
+    __m128 v15 = _mm_shuffle_ps(v13, v6, 136);
+    float v15w = b1_abs_mat.w.v.m128_f32[0];
+    m_com.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v10, v10, 0), v14),
+                   _mm_mul_ps(_mm_shuffle_ps(v10, v10, 85), v12)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v10, v10, 170), v13),
+            _mm_xor_ps(
+                Float4_SignMask_12,
+                _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(b1_abs_mat.w.v, b1_abs_mat.w.v, 0),
+                            v14),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(b1_abs_mat.w.v, b1_abs_mat.w.v, 85),
+                            v12)),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(b1_abs_mat.w.v, b1_abs_mat.w.v, 170),
+                        v13)))));
+    m_capsule_p1.v.m128_f32[0] = v15w;
+    m_capsule_p1.v.m128_f32[1] = b1_abs_mat.w.v.m128_f32[1];
+    m_capsule_p1.v.m128_f32[2] = b1_abs_mat.w.v.m128_f32[2];
+    m_capsule_p1.v.m128_f32[3] = b1_abs_mat.w.v.m128_f32[3];
+    math::Position3 v16;
+    v16.v = m_p1.v;
+    v39.v = _mm_add_ps(
+        b2_abs_mat.w.v,
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(
+                    _mm_shuffle_ps(m_capsule_b1_adjust_p2_loc.v,
+                                   m_capsule_b1_adjust_p2_loc.v, 0),
+                    b1_abs_mat.x.v),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(m_capsule_b1_adjust_p2_loc.v,
+                                   m_capsule_b1_adjust_p2_loc.v, 85),
+                    b1_abs_mat.y.v)),
+            _mm_mul_ps(
+                _mm_shuffle_ps(m_capsule_b1_adjust_p2_loc.v,
+                               m_capsule_b1_adjust_p2_loc.v, 170),
+                v6)));
+    math::Position3 v17;
+    v17.v = m_p2.v;
+    m_capsule_p2.v = v39.v;
+    __m128 v = _mm_sub_ps(v17.v, v16.v);
+    __m128 v19 = _mm_mul_ps(v, v);
+    float v38 = v19.m128_f32[0]
+        + (v19.m128_f32[1] + v19.m128_f32[2]);
+    math::Dir3 v39b;
+    v39b.v = v;
+    v38 = sqrtf(v38);
+    if (v38 <= 0.001f)
+    {
+        bool v20 = _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 772,
+                             "nbone_dir > .001f", defaultFileName);
+        v = v39b.v;
+        if (v20)
+            __debugbreak();
+    }
+    __m128 v21 = _mm_set1_ps(1.0f / v38);
+    __m128 v22 = _mm_mul_ps(v, v21);
+    if (m_rb_id == 0)
+    {
+        m_p2.v = _mm_sub_ps(
+            m_p2.v, _mm_mul_ps(v22, _mm_set1_ps(m_p2_radius * 0.75f)));
+    }
+    if (m_rb_id == 7 || m_rb_id == 9)
+    {
+        m_p2.v = _mm_sub_ps(
+            m_p2.v, _mm_mul_ps(v22, _mm_set1_ps(m_p2_radius * 0.94999999f)));
+    }
+    float v26 = (m_p1_radius - 1.7f) - 0.34f;
+    float v27 = (m_p2_radius - 1.7f) - 0.34f;
+    m_p1_radius = v26;
+    m_p2_radius = v27;
+    if (v26 <= 0.0f
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 788,
+                     "m_p1_radius > 0.0f", defaultFileName))
+        __debugbreak();
+    if (m_p2_radius <= 0.0f
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 789,
+                     "m_p2_radius > 0.0f", defaultFileName))
+        __debugbreak();
+    math::Dir3 unit_inertia;
+    float volume;
+    nuge::calc_sphere_inertia(m_inertia_sphere_radius, &unit_inertia,
+                              &volume);
+    math::Dir3 v39c;
+    v39c.v = _mm_mul_ps(unit_inertia.v, _mm_set1_ps(m_mass / volume));
+    m_inertia.v = v39c.v;
+    int m_b1_ = m_b1;
+    m_rb_bone = m_b1_;
+    int ParentBoneIndex = owner->GetParentBoneIndex(m_b1_);
+    m_rb_parent_bone = ParentBoneIndex;
+    if (ParentBoneIndex >= 0)
+    {
+        const math::Mat43::Packed& BaseRelMat = owner->GetBaseRelMat(m_rb_bone);
+        math::Dir3 v39d;
+        v39d.v.m128_f32[0] = BaseRelMat.w.x;
+        v39d.v.m128_f32[1] = BaseRelMat.w.y;
+        v39d.v.m128_f32[2] = BaseRelMat.w.z;
+        v39d.v.m128_f32[3] = 0.0f;
+        m_rb_parent_pivot_loc.v = v39d.v;
+        m_rb_pivot_loc.v = _mm_setzero_ps();
+    }
 }
 
 // Camera (cg.o view; minimal local copy for evaluate_effect_priority)
