@@ -948,6 +948,9 @@ struct phys_gjk_cache_info {
     int         m_support_count;    // +0x70
     phys_gjk_geom_id_pair_key m_key; // +0x74
     unsigned int m_flags;           // +0x7C
+
+    // update_swapped - ea: 0x6F1950 (physics.o inline COMDAT)
+    void update_swapped(bool swapped);
 };
 static_assert(sizeof(phys_gjk_cache_info) == 0x80, "phys_gjk_cache_info size mismatch");
 static_assert(offsetof(phys_gjk_cache_info, m_support_dir) == 0x00, "gjk_cache_info::m_support_dir offset mismatch");

@@ -5206,30 +5206,544 @@ static bool frame_advance_flag()
 // ?g_physics_memory_buffer@@3PADA (physics.o data @ 0xF79478)
 char* g_physics_memory_buffer = nullptr;
 
-// phys_gjk_cache_system_avl_tree<N> (physics.o; update_cache stub)
+// ea: 0x6F1950
+void phys_gjk_cache_info::update_swapped(bool swapped)
+{
+    unsigned int m_flags = this->m_flags;
+    if (swapped != ((m_flags & 2) != 0))
+    {
+        unsigned int v3 = swapped ? (m_flags | 2) : (m_flags & 0xFFFFFFFD);
+        m_flags = v3;
+        if ((v3 & 4) != 0)
+            m_support_dir.v = _mm_xor_ps(Float4_SignMask_12, m_support_dir.v);
+        if ((v3 & 8) != 0)
+        {
+            int v4 = 0;
+            if (m_support_count > 0)
+            {
+                math::Dir3* m_support_b = this->m_support_b;
+                do
+                {
+                    __m128 temp = m_support_b[-3].v;
+                    m_support_b[-3].v = m_support_b->v;
+                    m_support_b->v = temp;
+                    ++v4;
+                    ++m_support_b;
+                } while (v4 < m_support_count);
+            }
+        }
+    }
+}
+
+// phys_gjk_cache_info_internal (physics.o; phys_gjk_cache_info + AVL node,
+// 144 bytes)
+struct phys_gjk_cache_info_internal : phys_gjk_cache_info {
+    struct avl_tree_node {
+        phys_gjk_cache_info_internal* m_left;    // +0x00
+        phys_gjk_cache_info_internal* m_right;   // +0x04
+        int                            m_balance; // +0x08
+    } m_avl_tree_node;  // +0x80
+};
+static_assert(sizeof(phys_gjk_cache_info_internal) == 0x90,
+              "phys_gjk_cache_info_internal size mismatch");
+
+// phys_gjk_cache_system_avl_tree<N> (physics.o collision/gjk cache system).
+// Binary layout: m_list_phys_gjk_cache_info_internal (pool, 0x128F0 bytes for
+// N=500) + m_search_tree (phys_inplace_avl_tree root, +0x128F0).
+// find/add/remove are the phys_avl_tree.h AVL instantiations
+// phys_inplace_avl_tree<phys_gjk_geom_id_pair_key,
+//   phys_gjk_cache_info_internal>::find/add/remove (0x71B6A0/0x71CE70/0x71D2F0).
 template <int N>
 class phys_gjk_cache_system_avl_tree {
 public:
-    void update_cache();  // ?update_cache@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEXXZ
-    phys_gjk_cache_info* get_gjk_cache_info(
-        unsigned int id1, unsigned int id2,
-        bool no_error);  // ?get_gjk_cache_info@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEPAUphys_gjk_cache_info@@II_N@Z
+    struct stack_item {
+        phys_gjk_cache_info_internal** m_node;
+        int                            m_child;
+    };
+
+    phys_static_memory_pool<phys_gjk_cache_info_internal, N>
+        m_list_phys_gjk_cache_info_internal;  // +0x00
+    phys_gjk_cache_info_internal*
+        m_search_tree_root;  // +0x128F0 (phys_inplace_avl_tree m_tree_root)
+
+    static bool key_lt(const phys_gjk_geom_id_pair_key& a,
+                       const phys_gjk_geom_id_pair_key& b)
+    {
+        if (a.m_id1 != b.m_id1)
+            return a.m_id1 < b.m_id1;
+        return a.m_id2 < b.m_id2;
+    }
+
+    // find - ea: 0x71B6A0
+    phys_gjk_cache_info_internal* find(const phys_gjk_geom_id_pair_key& key)
+    {
+        phys_gjk_cache_info_internal* result = m_search_tree_root;
+        if (m_search_tree_root != nullptr)
+        {
+            unsigned int m_id1 = key.m_id1;
+            do
+            {
+                if (m_id1 == result->m_key.m_id1
+                    && key.m_id2 == result->m_key.m_id2)
+                    break;
+                unsigned int v4 = result->m_key.m_id1;
+                bool v5 = m_id1 < v4;
+                if (m_id1 == v4)
+                    v5 = key.m_id2 < result->m_key.m_id2;
+                result = v5 ? result->m_avl_tree_node.m_left
+                            : result->m_avl_tree_node.m_right;
+            } while (result != nullptr);
+        }
+        return result;
+    }
+
+    // add - ea: 0x71CE70
+    void add(const phys_gjk_geom_id_pair_key& key,
+             phys_gjk_cache_info_internal* data)
+    {
+        stack_item the_stack[32];
+        stack_item* cur = the_stack;
+        the_stack[0].m_node = &m_search_tree_root;
+        bool done = (m_search_tree_root == nullptr);
+        for (; !done; ++cur)
+        {
+            phys_gjk_cache_info_internal* node = *cur->m_node;
+            if (((cur - the_stack + 8) & 0xFFFFFFF8) >= 256
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                       586, "cur_item + 1 - the_stack < 32", defaultFileName))
+                __debugbreak();
+            if (key_lt(key, node->m_key))
+            {
+                cur->m_child = -1;
+                cur[1].m_node = &node->m_avl_tree_node.m_left;
+            }
+            else
+            {
+                if (!key_lt(node->m_key, key)
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                           595, "key > root->get_avl_key()",
+                           defaultFileName))
+                    __debugbreak();
+                cur->m_child = 1;
+                cur[1].m_node = &node->m_avl_tree_node.m_right;
+            }
+            done = (*cur[1].m_node == nullptr);
+        }
+        *cur->m_node = data;
+        data->m_avl_tree_node.m_left = nullptr;
+        data->m_avl_tree_node.m_right = nullptr;
+        data->m_avl_tree_node.m_balance = 0;
+        if (cur > the_stack)
+        {
+            phys_gjk_cache_info_internal** m_node;
+            do
+            {
+                m_node = cur[-1].m_node;
+                int m_child = cur[-1].m_child;
+                --cur;
+                (*m_node)->m_avl_tree_node.m_balance += m_child;
+                phys_gjk_cache_info_internal* root = *m_node;
+                int m_balance = root->m_avl_tree_node.m_balance;
+                if (m_balance == -2)
+                {
+                    phys_gjk_cache_info_internal* m_left =
+                        root->m_avl_tree_node.m_left;
+                    if (m_left->m_avl_tree_node.m_balance == 1)
+                    {
+                        phys_gjk_cache_info_internal* m_right =
+                            m_left->m_avl_tree_node.m_right;
+                        root->m_avl_tree_node.m_left
+                            ->m_avl_tree_node.m_right =
+                            m_right->m_avl_tree_node.m_left;
+                        int v20 = m_right->m_avl_tree_node.m_balance;
+                        m_right->m_avl_tree_node.m_left =
+                            root->m_avl_tree_node.m_left;
+                        root->m_avl_tree_node.m_left
+                            ->m_avl_tree_node.m_balance +=
+                            v20 <= 0 ? 1 : v20 + 1;
+                        int v21 = -root->m_avl_tree_node.m_left
+                                       ->m_avl_tree_node.m_balance;
+                        m_right->m_avl_tree_node.m_balance +=
+                            (v21 < 0
+                             || root->m_avl_tree_node.m_left
+                                        ->m_avl_tree_node.m_balance
+                                        == 0)
+                                ? 1
+                                : v21 + 1;
+                        root->m_avl_tree_node.m_left = m_right;
+                    }
+                    phys_gjk_cache_info_internal* v22 =
+                        root->m_avl_tree_node.m_left;
+                    root->m_avl_tree_node.m_left =
+                        v22->m_avl_tree_node.m_right;
+                    v22->m_avl_tree_node.m_right = root;
+                    root->m_avl_tree_node.m_balance +=
+                        ((-v22->m_avl_tree_node.m_balance < 0
+                          || v22->m_avl_tree_node.m_balance == 0)
+                             ? -v22->m_avl_tree_node.m_balance + 1
+                             : 1);
+                    v22->m_avl_tree_node.m_balance +=
+                        root->m_avl_tree_node.m_balance <= 0
+                            ? 1
+                            : root->m_avl_tree_node.m_balance + 1;
+                    *m_node = v22;
+                    if (v22->m_avl_tree_node.m_balance == 0)
+                        continue;
+                    if (_tlAssert(
+                            "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                            617, "GAVLN(root)->m_balance == 0",
+                            defaultFileName))
+                        __debugbreak();
+                }
+                else if (m_balance == 2)
+                {
+                    phys_gjk_cache_info_internal* v24 =
+                        root->m_avl_tree_node.m_right;
+                    if (v24->m_avl_tree_node.m_balance == -1)
+                    {
+                        phys_gjk_cache_info_internal* v25 =
+                            v24->m_avl_tree_node.m_left;
+                        root->m_avl_tree_node.m_right
+                            ->m_avl_tree_node.m_left =
+                            v25->m_avl_tree_node.m_right;
+                        int v26 = v25->m_avl_tree_node.m_balance;
+                        v25->m_avl_tree_node.m_right =
+                            root->m_avl_tree_node.m_right;
+                        root->m_avl_tree_node.m_right
+                            ->m_avl_tree_node.m_balance +=
+                            v26 >= 0 ? 1 : -v26 + 1;
+                        v25->m_avl_tree_node.m_balance +=
+                            root->m_avl_tree_node.m_right
+                                        ->m_avl_tree_node.m_balance
+                                    <= 0
+                                ? 1
+                                : root->m_avl_tree_node.m_right
+                                          ->m_avl_tree_node.m_balance
+                                      + 1;
+                        root->m_avl_tree_node.m_right = v25;
+                    }
+                    phys_gjk_cache_info_internal* v27 =
+                        root->m_avl_tree_node.m_right;
+                    root->m_avl_tree_node.m_right =
+                        v27->m_avl_tree_node.m_left;
+                    v27->m_avl_tree_node.m_left = root;
+                    root->m_avl_tree_node.m_balance +=
+                        v27->m_avl_tree_node.m_balance <= 0
+                            ? 1
+                            : v27->m_avl_tree_node.m_balance + 1;
+                    v27->m_avl_tree_node.m_balance +=
+                        (-root->m_avl_tree_node.m_balance < 0
+                         || root->m_avl_tree_node.m_balance == 0)
+                            ? 1
+                            : -root->m_avl_tree_node.m_balance + 1;
+                    *m_node = v27;
+                    if (v27->m_avl_tree_node.m_balance == 0)
+                        continue;
+                    if (_tlAssert(
+                            "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                            625, "GAVLN(root)->m_balance == 0",
+                            defaultFileName))
+                        __debugbreak();
+                }
+                else
+                {
+                    continue;
+                }
+            } while ((*m_node)->m_avl_tree_node.m_balance != 0
+                     && cur > the_stack);
+        }
+    }
+
+    // remove - ea: 0x71D2F0
+    void remove(const phys_gjk_geom_id_pair_key& key)
+    {
+        stack_item the_stack[32];
+        stack_item* cur = the_stack;
+        the_stack[0].m_node = &m_search_tree_root;
+        while (1)
+        {
+            phys_gjk_cache_info_internal* node = *cur->m_node;
+            if (node == nullptr
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                       644, "root", defaultFileName))
+                __debugbreak();
+            if (((cur - the_stack + 8) & 0xFFFFFFF8) >= 256
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                       645, "cur_item + 1 - the_stack < 32",
+                       defaultFileName))
+                __debugbreak();
+            if (!key_lt(key, node->m_key))
+                break;
+            cur->m_child = -1;
+            cur[1].m_node = &node->m_avl_tree_node.m_left;
+            ++cur;
+        }
+        phys_gjk_cache_info_internal* node = *cur->m_node;
+        if (key_lt(node->m_key, key))
+        {
+            cur->m_child = 1;
+            cur[1].m_node = &node->m_avl_tree_node.m_right;
+            ++cur;
+        }
+        phys_gjk_cache_info_internal* found = *cur->m_node;
+        if ((key.m_id1 != found->m_key.m_id1
+             || key.m_id2 != found->m_key.m_id2)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h", 659,
+                   "key == root->get_avl_key()", defaultFileName))
+            __debugbreak();
+        phys_gjk_cache_info_internal** v9 = cur->m_node;
+        phys_gjk_cache_info_internal* v10 = *cur->m_node;
+        stack_item* right_item = nullptr;
+        if (v10->m_avl_tree_node.m_right != nullptr)
+        {
+            cur->m_child = 1;
+            ++cur;
+            cur->m_node = &v10->m_avl_tree_node.m_right;
+            right_item = cur;
+            while ((*cur->m_node)->m_avl_tree_node.m_left != nullptr)
+            {
+                if (((cur - the_stack + 8) & 0xFFFFFFF8) >= 256
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                           674, "cur_item + 1 - the_stack < 32",
+                           defaultFileName))
+                    __debugbreak();
+                cur->m_child = -1;
+                cur[1].m_node =
+                    &(*cur->m_node)->m_avl_tree_node.m_left;
+                ++cur;
+            }
+            phys_gjk_cache_info_internal* m_left = *cur->m_node;
+            *cur->m_node = m_left->m_avl_tree_node.m_right;
+            m_left->m_avl_tree_node.m_left =
+                (*v9)->m_avl_tree_node.m_left;
+            m_left->m_avl_tree_node.m_right =
+                (*v9)->m_avl_tree_node.m_right;
+            m_left->m_avl_tree_node.m_balance =
+                (*v9)->m_avl_tree_node.m_balance;
+            right_item->m_node = &m_left->m_avl_tree_node.m_right;
+            *v9 = m_left;
+        }
+        else
+        {
+            *v9 = v10->m_avl_tree_node.m_left;
+        }
+        if (cur > the_stack)
+        {
+            phys_gjk_cache_info_internal** v15;
+            do
+            {
+                v15 = cur[-1].m_node;
+                int m_child = cur[-1].m_child;
+                --cur;
+                (*v15)->m_avl_tree_node.m_balance -= m_child;
+                phys_gjk_cache_info_internal* root = *v15;
+                int m_balance = root->m_avl_tree_node.m_balance;
+                if (m_balance == -2)
+                {
+                    phys_gjk_cache_info_internal* v19 =
+                        root->m_avl_tree_node.m_left;
+                    if (v19->m_avl_tree_node.m_balance == 1)
+                    {
+                        phys_gjk_cache_info_internal* m_right =
+                            v19->m_avl_tree_node.m_right;
+                        root->m_avl_tree_node.m_left
+                            ->m_avl_tree_node.m_right =
+                            m_right->m_avl_tree_node.m_left;
+                        int v21 = m_right->m_avl_tree_node.m_balance;
+                        m_right->m_avl_tree_node.m_left =
+                            root->m_avl_tree_node.m_left;
+                        root->m_avl_tree_node.m_left
+                            ->m_avl_tree_node.m_balance +=
+                            v21 <= 0 ? 1 : v21 + 1;
+                        int v22 = -root->m_avl_tree_node.m_left
+                                       ->m_avl_tree_node.m_balance;
+                        m_right->m_avl_tree_node.m_balance +=
+                            (v22 < 0
+                             || root->m_avl_tree_node.m_left
+                                        ->m_avl_tree_node.m_balance
+                                        == 0)
+                                ? 1
+                                : v22 + 1;
+                        root->m_avl_tree_node.m_left = m_right;
+                    }
+                    phys_gjk_cache_info_internal* v23 =
+                        root->m_avl_tree_node.m_left;
+                    root->m_avl_tree_node.m_left =
+                        v23->m_avl_tree_node.m_right;
+                    v23->m_avl_tree_node.m_right = root;
+                    root->m_avl_tree_node.m_balance +=
+                        ((-v23->m_avl_tree_node.m_balance < 0
+                          || v23->m_avl_tree_node.m_balance == 0)
+                             ? -v23->m_avl_tree_node.m_balance + 1
+                             : 1);
+                    int v24 = v23->m_avl_tree_node.m_balance;
+                    int v25 = root->m_avl_tree_node.m_balance <= 0
+                                  ? 1
+                                  : root->m_avl_tree_node.m_balance + 1;
+                    v23->m_avl_tree_node.m_balance = v25 + v24;
+                    *v15 = v23;
+                    int v26 = v23->m_avl_tree_node.m_balance;
+                    if (v25 + v24 == 0 || v26 == 1)
+                        continue;
+                    if (_tlAssert(
+                            "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                            701,
+                            "GAVLN(root)->m_balance == 0 || GAVLN(root)->m_balance == +1",
+                            defaultFileName))
+                        __debugbreak();
+                }
+                else if (m_balance == 2)
+                {
+                    phys_gjk_cache_info_internal* v28 =
+                        root->m_avl_tree_node.m_right;
+                    if (v28->m_avl_tree_node.m_balance == -1)
+                    {
+                        phys_gjk_cache_info_internal* v29 =
+                            v28->m_avl_tree_node.m_left;
+                        root->m_avl_tree_node.m_right
+                            ->m_avl_tree_node.m_left =
+                            v29->m_avl_tree_node.m_right;
+                        int v30 = v29->m_avl_tree_node.m_balance;
+                        v29->m_avl_tree_node.m_right =
+                            root->m_avl_tree_node.m_right;
+                        root->m_avl_tree_node.m_right
+                            ->m_avl_tree_node.m_balance +=
+                            v30 >= 0 ? 1 : -v30 + 1;
+                        v29->m_avl_tree_node.m_balance +=
+                            root->m_avl_tree_node.m_right
+                                        ->m_avl_tree_node.m_balance
+                                    <= 0
+                                ? 1
+                                : root->m_avl_tree_node.m_right
+                                          ->m_avl_tree_node.m_balance
+                                      + 1;
+                        root->m_avl_tree_node.m_right = v29;
+                    }
+                    phys_gjk_cache_info_internal* v31 =
+                        root->m_avl_tree_node.m_right;
+                    root->m_avl_tree_node.m_right =
+                        v31->m_avl_tree_node.m_left;
+                    v31->m_avl_tree_node.m_left = root;
+                    root->m_avl_tree_node.m_balance +=
+                        v31->m_avl_tree_node.m_balance <= 0
+                            ? 1
+                            : v31->m_avl_tree_node.m_balance + 1;
+                    int v33 = (-root->m_avl_tree_node.m_balance < 0
+                               || root->m_avl_tree_node.m_balance == 0)
+                                  ? 1
+                                  : -root->m_avl_tree_node.m_balance + 1;
+                    bool v34 =
+                        (v33 + v31->m_avl_tree_node.m_balance == 0);
+                    v31->m_avl_tree_node.m_balance += v33;
+                    *v15 = v31;
+                    int v35 = v31->m_avl_tree_node.m_balance;
+                    if (v34 || v35 == -1)
+                        continue;
+                    if (_tlAssert(
+                            "c:\\cod\\code\\tl\\physics\\include\\phys_avl_tree.h",
+                            708,
+                            "GAVLN(root)->m_balance == 0 || GAVLN(root)->m_balance == -1",
+                            defaultFileName))
+                        __debugbreak();
+                }
+                else
+                {
+                    continue;
+                }
+            } while ((*v15)->m_avl_tree_node.m_balance == 0
+                     && cur > the_stack);
+        }
+    }
+
+    // update_cache - ea: 0x71E1C0
+    void update_cache()
+    {
+        phys_gjk_cache_info_internal** v2 =
+            m_list_phys_gjk_cache_info_internal.m_alloc_list;
+        phys_gjk_cache_info_internal** end =
+            &v2[m_list_phys_gjk_cache_info_internal.m_alloc_count];
+        while (end != v2)
+        {
+            phys_gjk_cache_info_internal* v3 = *v2;
+            unsigned int v4 = v3->m_flags;
+            if ((v4 & 1) != 0)
+            {
+                ++v2;
+                v3->m_flags = v4 & 0xFFFFFFFE;
+            }
+            else
+            {
+                remove(v3->m_key);
+                m_list_phys_gjk_cache_info_internal.remove(v3);
+            }
+        }
+    }
+
+    // get_gjk_cache_info - ea: 0x71E090
+    phys_gjk_cache_info* get_gjk_cache_info(unsigned int id1,
+                                            unsigned int id2, bool no_error)
+    {
+        unsigned int v4 = id1;
+        unsigned int v5 = id2;
+        bool swapped;
+        if (id1 == id2)
+        {
+            if (_tlAssert(
+                    "c:\\cod\\code\\tl\\physics\\include\\collision\\phys_gjk_cache_system.h",
+                    238, "id1 != id2", defaultFileName))
+                __debugbreak();
+        }
+        if (id1 <= id2)
+        {
+            swapped = false;
+        }
+        else
+        {
+            v4 = id2;
+            v5 = id1;
+            swapped = true;
+        }
+        if (v4 >= v5
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\collision\\phys_gjk_cache_system.h",
+                   23, "id1 < id2", defaultFileName))
+            __debugbreak();
+        phys_gjk_geom_id_pair_key key;
+        key.m_id1 = v4;
+        key.m_id2 = v5;
+        phys_gjk_cache_info_internal* v9 = find(key);
+        if (v9 != nullptr)
+        {
+            v9->update_swapped(swapped);
+            return v9;
+        }
+        phys_gjk_cache_info_internal* v12 =
+            m_list_phys_gjk_cache_info_internal.add(
+                no_error,
+                "POOL OUT OF MEMORY, phys_gjk_cache_system_avl_tree, INCREASE NUM_PHYS_GJK_CACHE_INFO.");
+        if (v12 != nullptr)
+        {
+            v12->m_key.m_id1 = key.m_id1;
+            v12->m_key.m_id2 = key.m_id2;
+            v12->m_flags = 0;
+            v12->m_flags = swapped ? 2 : 0;
+            add(key, v12);
+        }
+        return v12;
+    }
 };
-// stub until the gjk cache tree is ported (physics.o inline 0xB0D6C0)
-template <int N>
-void phys_gjk_cache_system_avl_tree<N>::update_cache()
-{
-}
-// stub until the gjk cache tree is ported (physics.o inline 0xB0D590)
-template <int N>
-phys_gjk_cache_info* phys_gjk_cache_system_avl_tree<N>::get_gjk_cache_info(
-    unsigned int id1, unsigned int id2, bool no_error)
-{
-    (void)id1;
-    (void)id2;
-    (void)no_error;
-    return nullptr;
-}
+static_assert(sizeof(phys_gjk_cache_system_avl_tree<500>) == 0x12900,
+              "phys_gjk_cache_system_avl_tree<500> size mismatch");
+static_assert(offsetof(phys_gjk_cache_system_avl_tree<500>,
+                       m_search_tree_root)
+                  == 0x128F0,
+              "m_search_tree_root offset mismatch");
 // ?g_phys_gjk_cache_system@@3V?$phys_gjk_cache_system_avl_tree@$0BPE@@@A
 // (physics.o data @ 0xF794D0)
 phys_gjk_cache_system_avl_tree<500> g_phys_gjk_cache_system;
