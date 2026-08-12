@@ -13,6 +13,10 @@
 #include <intrin.h>
 #include "core/mem_heap.h"
 #include "ngl/nglFont.h"
+#include "ngl/nglTexture.h"
+#include "filesystem/apk.h"
+#include "core/tlFixedString.h"
+#include "core/tlResourceDirectory.h"
 
 // Color (core/color.h view; RGBA float)
 class Color {
@@ -444,6 +448,22 @@ public:
 
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
+    void OnUnloaded(TPakId pakId);  // ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z
+};
+
+// SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
+// mDebugRenderEnts +0x1B4)
+class SceneManager {
+public:
+    uint8_t _pad[0x1A0];
+    void*   mWorldSpawn;        // +0x1A0
+    uint8_t _pad1A4[0x1B0 - 0x1A4];
+    float   mDebugRenderDist;   // +0x1B0
+    bool    mDebugRenderEnts;   // +0x1B4
+
+    void ToggleSceneFX(float dist);  // ?ToggleSceneFX@SceneManager@@QAEXM@Z
+    void ToggleRenderEnts();         // ?ToggleRenderEnts@SceneManager@@QAEXXZ
+    void ProcessWorldSpawn(const void* worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
 
 // ae_heap (core_xboxr; vtable+4 = Malloc(unsigned size, int align))
@@ -612,6 +632,82 @@ void NflWarning(const char* msg)
 void StreamZoneManager::SetInitialPosition(const math::Position3& pos)
 {
     mInitialPosition.v = pos.v;
+}
+
+// ea: 0x665A00 (empty no-op)
+void StreamZoneManager::OnUnloaded(TPakId pakId)
+{
+    (void)pakId;
+}
+
+// ea: 0x665A10
+void SceneManager::ToggleSceneFX(float dist)
+{
+    float v2 = dist;
+    if (dist == -1.0f)
+    {
+        if (mDebugRenderDist != 0.0f)
+        {
+            mDebugRenderDist = 0.0f;
+            return;
+        }
+        goto LABEL_5;
+    }
+    if (dist == 1.0f)
+    LABEL_5:
+        v2 = 500.0f;
+    mDebugRenderDist = v2;
+}
+
+// ea: 0x665A70
+void SceneManager::ToggleRenderEnts()
+{
+    mDebugRenderEnts = !mDebugRenderEnts;
+}
+
+// apk texture helpers (ngl/streamer)
+extern bool nglCanReleaseTexture(nglTexture* Tex);  // ngl_dx_tex
+
+// ea: 0x665B70
+nglTexture* cdLoadTexureInplace(void* data)
+{
+    apk::apkFile* FileInPlace = apk::apkLoadFileInPlace(data, true);
+    if (FileInPlace != nullptr)
+    {
+        tlFixedString name("image");
+        int SectionIndex = FileInPlace->GetSectionIndex(name);
+        apk::apkFileEntry* FirstFile =
+            FileInPlace->GetFirstFile(0x584554u);
+        return (nglTexture*)FirstFile->GetData(FileInPlace, SectionIndex,
+                                               true);
+    }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\apkSupport.cpp";
+    AeAssert::gCurrentLine = 106;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("Problem loading texture"))
+        __debugbreak();
+    return nullptr;
+}
+
+// ea: 0x665C30
+void cdDeleteTextureCallback(apk::apkFile* File, apk::apkFileEntry* Entry)
+{
+    tlFixedString name("image");
+    int SectionIndex = File->GetSectionIndex(name);
+    nglTexture* Data = (nglTexture*)Entry->GetData(File, SectionIndex, true);
+    nglTexture* v4 = Data;
+    if ((Data->Flags & 8) != 0)
+    {
+        if (!nglCanReleaseTexture(Data))
+        {
+            tlWarning("NGL: Texture %s destroyed while still referenced by the async renderer.\n",
+                      v4->FileName->str);
+            ngliWaitForResource();
+        }
+        ngliUnloadTexture(File, Entry);
+    }
 }
 
 // ea: 0x665960
