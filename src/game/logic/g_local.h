@@ -1751,9 +1751,9 @@ struct weaponParms {
 static_assert(sizeof(weaponParms) == 0x40, "weaponParms size mismatch");
 
 void   j_nullsub_37(actor_s* pSelf, weaponParms* wp);   // g.o
-Entity* Actor_Grenade_IsValidTrajectory(actor_s* pSelf, const float* vFrom,
-                                        const float* vVelocity,
-                                        const float* vGoal);  // mp_actors.o
+int Actor_Grenade_IsValidTrajectory(actor_s* pSelf, const float* vFrom,
+                                    const float* vVelocity,
+                                    const float* vGoal);  // mp_actors.o 0x77C4D0
 
 // ============================================================================
 // turretInfo_t - turret runtime state (0x8C bytes) - verified against IDA

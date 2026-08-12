@@ -7,6 +7,15 @@
 int Weapon_Mine_Test(Entity* ent, weaponParms* wp, math::Position3* position,
                      math::Dir3* normal);
 
+// ea: 0x0077C4D0 (mp_actors.o)
+int Actor_Grenade_IsValidTrajectory(actor_s* pSelf, const float* vFrom,
+                                    const float* vVelocity,
+                                    const float* vGoal)
+{
+    (void)pSelf; (void)vFrom; (void)vVelocity; (void)vGoal;
+    return 0;
+}
+
 #include <math.h>
 #include <stdlib.h>
 
@@ -1281,7 +1290,7 @@ Entity* fire_rifle_grenade(Entity* self, const float* target, int grenadeWPID,
     dir[2] = ((target[2] - start[2]) - drop) * (1.0f / time);
     if (!checkTrajectory
         || Actor_Grenade_IsValidTrajectory(self->actor, start, dir,
-                                           target) != nullptr)
+                                           target) != 0)
     {
         Client* client = self->client;
         if (client != nullptr && client->ps.grenadeTimeLeft != 0)

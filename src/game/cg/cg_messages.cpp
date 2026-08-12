@@ -8,8 +8,13 @@
 #include <string.h>
 
 extern int currCl;
-extern const char* SEH_LocalizeTextMessage(const char* pszMessage,
-                                           const char* pszMsgType);
+// ?SEH_LocalizeTextMessage@@YAPBDPBD0@Z (render.o; string-ed not ported yet)
+const char* SEH_LocalizeTextMessage(const char* pszMessage,
+                                    const char* pszMsgType)
+{
+    (void)pszMsgType;
+    return pszMessage;
+}
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern unsigned int SEH_ReadCharFromString(const char** ppsText,
                                            int* pbIsTrailingPunctuation);

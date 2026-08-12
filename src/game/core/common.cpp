@@ -136,9 +136,13 @@ extern void XAnimInit();
 extern void XAnimFreeTree(void* tree);
 extern void Sys_OutOfMemError();
 extern void tlFatal(const char* fmt, ...);
-extern const char* SEH_LocalizeTextMessage(const char* pszInputBuffer,
-                                          const char* pszMessageType,
-                                          int errType);
+// ?SEH_LocalizeTextMessage@@YAPBDPBD0W4msgLocErrType_t@@@Z (shell.o; stub)
+const char* SEH_LocalizeTextMessage(const char* pszInputBuffer,
+                                    const char* pszMessageType, int errType)
+{
+    (void)pszMessageType; (void)errType;
+    return pszInputBuffer;
+}
 extern void SoundDevice_StopAllSounds(void* self);
 extern void AudioBankMgr_Update(void* self);
 extern void* AudioBankMgr_sInst;
