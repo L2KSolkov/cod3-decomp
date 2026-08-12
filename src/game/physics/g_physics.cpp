@@ -865,6 +865,7 @@ public:
     void evaluate_effect_priority();   // ?evaluate_effect_priority@rb_extra_info@@QAEXXZ
     phys_gjk_geom_list* try_collision_prolog();  // ?try_collision_prolog@rb_extra_info@@QAEPAVphys_gjk_geom_list@@XZ
     void collision_prolog();  // ?collision_prolog@rb_extra_info@@QAEXXZ
+    bool can_have_event();  // ?can_have_event@rb_extra_info@@QAE_NXZ (0x719A90)
     void set(Entity* const ent, rigid_body* const rb,
              const math::Mat43& transform, float bs_radius,
              const math::Position3& bs_center_loc);  // ?set@rb_extra_info@@QAEXQAVEntity@@QAVrigid_body@@ABVMat43@math@@MABVPosition3@5@@Z
@@ -5892,9 +5893,18 @@ void collide_segment(void* wci, void* wci_ent, void* ent1, void* g1_rb,
     (void)g1;
 }
 void ValidatePakId(int pakId);  // streamer.o ?ValidatePakId@@YAXW4TPakId@@@Z
-bool rb_extra_info_can_have_event(void* rb_inf)
+// ea: 0x719A90
+bool rb_extra_info::can_have_event()
 {
-    (void)rb_inf;
+    if ((m_flags.mMask & 8) != 0 && m_time_since_last_event > 0.1f)
+    {
+        __m128 v1 = _mm_mul_ps(m_rb->m_t_vel.v, m_rb->m_t_vel.v);
+        if ((v1.m128_f32[0]
+             + (_mm_shuffle_ps(v1, v1, 85).m128_f32[0]
+                + _mm_shuffle_ps(v1, v1, 170).m128_f32[0]))
+            > 2500.0f)
+            return true;
+    }
     return false;
 }
 void create_prop_collide_callback(rb_extra_info* rb_inf, int surfaceFlags,
@@ -6488,7 +6498,6 @@ int   g_list_prop_collide_callback_count = 0;       // ?g_list_prop_collide_call
 phys_inplace_avl_tree<rigid_body_pair_key, prop_collide_callback>
     g_prop_collide_callback_database;  // ?g_prop_collide_callback_database@@3V?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@A
 extern bool tlScratchpadLocked;  // ?tlScratchpadLocked@@3_NA (tl_system.o)
-void* contact_point_info_get_cpi_allocater();  // physics.o helper
 
 // ea: 0x71DB60
 void create_prop_collide_callback(rb_extra_info* rb_inf, int surfaceFlags,
@@ -6530,8 +6539,7 @@ void collision_memory_prolog()
     if (v0 != nullptr)
         v1 = new (v0) phys_contact_manifold_process;
     g_cman_process = v1;
-    g_cman_process->m_cpi_allocater =
-        (phys_memory_heap*)contact_point_info_get_cpi_allocater();
+    g_cman_process->m_cpi_allocater = contact_point_info::get_cpi_allocater();
     g_list_phys_collide_data = (phys_collide_data*)
         g_collision_memory_allocater.allocate(
             84, 4, false, "phys_collision_allocater overflow.");
@@ -6663,7 +6671,7 @@ void prop_phys_collision::collide_bodies(rb_extra_info* rb_inf1,
                             ValidatePakId(mDObj->mPakId);
                             M_BOUNCE_COEF = ((PhysData*)mValue)->mBounce;
                         }
-                        if (rb_extra_info_can_have_event(rb_inf1))
+                        if (rb_inf1->can_have_event())
                             create_prop_collide_callback(rb_inf1, 0, rb1,
                                                          rb2);
                         phys_collide_data* v19 = g_list_phys_collide_data;
@@ -6708,13 +6716,23 @@ void prop_phys_collision::collide_bodies(rb_extra_info* rb_inf1,
     }
 }
 
-void* contact_point_info_get_cpi_allocater()
-{
-    return nullptr;
-}
-// ?phys_contact_manifold_process@@QAE@XZ ctor stub until the manifold is ported
+// ea: 0x719050
 phys_contact_manifold_process::phys_contact_manifold_process()
 {
+    *(void**)((char*)m_list_cpi + 0x00) = nullptr;  // m_list_cpi.m_first
+    *(void**)((char*)m_list_cpi + 0x04) = nullptr;  // m_list_cpi.m_last
+    phys_memory_heap* p_m_allocater = &m_allocater;
+    m_allocater.m_buffer_start = nullptr;
+    m_allocater.m_buffer_end = nullptr;
+    m_allocater.m_buffer_cur = nullptr;
+    m_allocater.m_user_start = nullptr;
+    m_cpi_allocater = nullptr;
+    *(void**)((char*)m_list_cpi + 0x00) = nullptr;
+    *(void**)((char*)m_list_cpi + 0x04) = nullptr;
+    m_cpi = nullptr;
+    m_allocater.set_buffer(m_allocater_memory, 4096, 1);
+    cman1.m_allocater = p_m_allocater;
+    cman2.m_allocater = p_m_allocater;
 }
 
 // ea: 0x6F30F0
