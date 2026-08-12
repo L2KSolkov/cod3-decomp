@@ -231,7 +231,6 @@ struct SoundDeviceInst {
 SoundDeviceInst* SoundDevice_sInst = nullptr;  // ?SoundDevice_sInst (core.o)
 
 CameraShake* g_cameraShake = nullptr;
-ParticleEffect::SArrayType ParticleEffect::sArray;  // ?sArray@ParticleEffect (aeps)
 int dword_F6A290[4 * 0x322];
 int g_debug_sync_queries = 0;
 PoolAllocator* gCommonPoolAllocator = nullptr;

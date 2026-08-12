@@ -3622,7 +3622,7 @@ extern void RumbleEffect_Ctor(void* self);
 extern void RumbleEffect_SetIntensity(void* self, int rumbleID,
                                       float new_intensity);
 extern void RumbleEffect_SetNotes(void* self, int rumbleID, void* notes);
-extern const char* gTankRumbleNotes;  // 0x00DF9D80
+const char* gTankRumbleNotes = "tank";  // ?gTankRumbleNotes@@3PBDB (cg.o @ 0x11E9280)
 extern void BrocString_ctor(void* self, const char* s);
 extern void BrocString_dtor(void* self);
 struct DObjSkelMat;

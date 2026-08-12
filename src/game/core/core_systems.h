@@ -248,12 +248,6 @@ struct ParticleEffect {
     TPakId     mPakId;              // +0x34
     void*      mRaycastData;        // +0x38
 
-    // ?sArray@ParticleEffect@@2V?$ae_sized_array@U?$ae_pair@FF@@$0EAA@@@@A
-    struct SArrayType {
-        int16_t m_elements[256][2];
-        int     m_size;
-    };
-    static SArrayType sArray;
 };
 static_assert(sizeof(ParticleEffect) == 0x3C, "ParticleEffect size mismatch");
 static_assert(offsetof(ParticleEffect, mEffect) == 0x1C,

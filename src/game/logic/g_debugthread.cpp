@@ -50,6 +50,7 @@ struct ae_pair {
 struct ParticleEffect {
     static ae_sized_array<ae_pair<short, short>, 256> sArray;  // ?sArray@ParticleEffect@@2V?$ae_sized_array@V?$ae_pair@FF@@$0BAA@@@A (render.o)
 };
+ae_sized_array<ae_pair<short, short>, 256> ParticleEffect::sArray;  // render.o @ 0x13646A8
 
 // AeThread / AeThreadManager list walk (sv_stubs.h owns AeThreadManager)
 struct AeThread {
