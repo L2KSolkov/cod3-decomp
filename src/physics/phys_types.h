@@ -764,7 +764,7 @@ struct contact_manifold_mesh_point {
 };
 static_assert(sizeof(contact_manifold_mesh_point) == 0x20, "contact_manifold_mesh_point size mismatch");
 
-struct phys_collide_data;
+class phys_collide_data;
 struct phys_gjk_geom;
 
 // ============================================================================
@@ -957,7 +957,8 @@ static_assert(sizeof(phys_gjk_geom) == 0x4, "phys_gjk_geom size mismatch");
 // ============================================================================
 // phys_collide_data â€” GJK collision request (84 bytes)
 // ============================================================================
-struct phys_collide_data {
+class phys_collide_data {
+public:
     const phys_gjk_geom* gjk_cg1;          // +0x00
     const phys_gjk_geom* gjk_cg2;          // +0x04
     const math::Mat43*   cg1_to_world_xform; // +0x08

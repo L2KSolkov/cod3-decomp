@@ -80,6 +80,7 @@ class DObj;
 class rigid_body;
 class biped_phys_info;
 struct phys_gjk_geom_list;
+void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
 enum phys_bones {
     rb_torso = 0,
     rb_head = 1,
@@ -93,6 +94,7 @@ enum phys_bones {
     rb_right_calf = 9,
     num_rb_phys_bones = 10,
 };
+void HelmetController(Entity* owner);  // ?HelmetController@@YAXPAVEntity@@@Z (cg.o)
 enum EPropPriority {
     PROP_PRIORITY_LOW = 0,
     PROP_PRIORITY_MEDIUM = 1,
@@ -106,6 +108,21 @@ class Handle {
 public:
     unsigned int mVal;  // +0x00
 };
+
+// HashString (broc_types.h view; local copy - 4 bytes)
+class HashString {
+public:
+    unsigned int mHash;  // +0x00
+};
+
+// hash_const_t (g_local.h view; local copy - only physics fields used)
+struct hash_const_t {
+    uint8_t    _pad[0x114];
+    HashString physicsdone;   // +0x114
+    HashString physicsstart;  // +0x118
+};
+// ?hash_const@@3Uhash_const_t@@A (g.o data @ 0xED2AB0)
+extern hash_const_t hash_const;
 
 // Bitmask<T> (ae/core/bitmask.h). Add/Rmv are inline COMDATs (g.o 0x4ACC30 /
 // 0x4ACCC0). class tag (V) required for V?$Bitmask@I@@ manglings.
@@ -221,6 +238,7 @@ public:
     void frame_advance(float delta_t); // ?frame_advance@rb_extra_info@@QAEXM@Z
     void evaluate_effect_priority();   // ?evaluate_effect_priority@rb_extra_info@@QAEXXZ
     phys_gjk_geom_list* try_collision_prolog();  // ?try_collision_prolog@rb_extra_info@@QAEPAVphys_gjk_geom_list@@XZ
+    void collision_prolog();  // ?collision_prolog@rb_extra_info@@QAEXXZ
 };
 
 template <typename T, int N> class phys_static_memory_pool;
@@ -628,12 +646,14 @@ public:
     biped_phys_info* mBPInfo;    // +0x248
     uint8_t _pad24C[0x2B0 - 0x24C];
     uint8_t physicsObject;       // +0x2B0
-    uint8_t _pad2B1[0x2C8 - 0x2B1];
+    uint8_t _pad2B1[0x2C4 - 0x2B1];
+    int32_t  flags;              // +0x2C4
     unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
 
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
     const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ
+    void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (game.o)
 };
 
 // ?DObjGetBasePose@@YAXPAVDObj@@@Z (render.o; stub until render.o is ported)
@@ -886,7 +906,8 @@ const rigid_body* get_entity_rb(Entity* e);        // ?get_entity_rb@rb_prop_sys
 bool entity_in_system(Entity* e);                  // ?entity_in_system@rb_prop_system@@YA_NPAVEntity@@@Z
 bool is_entity_stable(Entity* e);                  // ?is_entity_stable@rb_prop_system@@YA_NPAVEntity@@@Z
 rigid_body* get_associated_rigid_body(Entity* e);  // ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z
-void frame_advance(float delta_t);                 // ?frame_advance@rb_prop_system@@YAXM@Z
+    void frame_advance(float delta_t);                 // ?frame_advance@rb_prop_system@@YAXM@Z
+    void remove_entity(Entity* e);                     // ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z
 }
 
 // ea: 0x6FEAD0
@@ -933,6 +954,126 @@ rigid_body* rb_prop_system::get_associated_rigid_body(Entity* e)
     return const_cast<rigid_body*>(get_entity_rb(e));
 }
 
+// ea: 0x6FE8D0
+void rb_prop_system::remove_entity(Entity* e)
+{
+    int m_alloc_count = g_list_rb_extra_info.m_alloc_count;
+    int v2 = 0;
+    bool v3 = false;
+    int i = 0;
+    if (m_alloc_count > 0)
+    {
+        for (;;)
+        {
+            if ((v2 < 0 || v2 >= m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                       178, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            rb_extra_info* v4 = g_list_rb_extra_info.m_alloc_list[v2];
+            if (v4->m_ent == e)
+            {
+                if (v3)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::JRS;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\RBPropSys.cpp";
+                    AeAssert::gCurrentLine = 549;
+                    AeAssert::gCurrentExpr = "!found";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "Found a single entity that had multiple rigid bodies."))
+                        __debugbreak();
+                }
+                e->flags &= ~0x400000u;
+                phys_sys::destroy(v4->m_rb);
+                g_list_rb_extra_info.remove(v4);
+                v3 = true;
+            }
+            else
+            {
+                ++i;
+            }
+            m_alloc_count = g_list_rb_extra_info.m_alloc_count;
+            if (i >= m_alloc_count)
+                break;
+            v2 = i;
+        }
+    }
+}
+
+// ea: 0x7185F0 (inline COMDAT) - dest = left * right (row-vector)
+void phys_full_multiply_mat(math::Mat43& dest, const math::Mat43& left,
+                            const math::Mat43& right)
+{
+    __m128 v3 = left.z.v;
+    __m128 v4 = left.y.v;
+    __m128 v5 = left.x.v;
+    dest.x.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(right.x.v, right.x.v, 0),
+                              left.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(right.x.v, right.x.v, 85), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(right.x.v, right.x.v, 170), v3));
+    dest.y.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(right.y.v, right.y.v, 0),
+                              left.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(right.y.v, right.y.v, 85), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(right.y.v, right.y.v, 170), v3));
+    dest.z.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(right.z.v, right.z.v, 0),
+                              left.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(right.z.v, right.z.v, 85), v4)),
+        _mm_mul_ps(_mm_shuffle_ps(right.z.v, right.z.v, 170), v3));
+    dest.w.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(right.w.v, right.w.v, 0), v5),
+            _mm_mul_ps(_mm_shuffle_ps(right.w.v, right.w.v, 85), v4)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(right.w.v, right.w.v, 170), v3),
+                   left.w.v));
+}
+
+// Float4_SignMask_12 (.rdata @ 0xD143B0; 0x80000000 x4)
+static const __m128 Float4_SignMask_12 = { -0.0f, -0.0f, -0.0f, -0.0f };
+
+// ea: 0x71A240 (inline COMDAT)
+void full_inverse(math::Mat43& dest, const math::Mat43& source)
+{
+    if (&dest == &source)
+    {
+        math::Mat43 tmp;
+        full_inverse(tmp, source);
+        memcpy(&dest, &tmp, sizeof(math::Mat43));
+        return;
+    }
+    __m128 v3 = source.y.v;
+    __m128 v4 = source.x.v;
+    __m128 v5 = source.z.v;
+    __m128 v6 = _mm_shuffle_ps(source.x.v, v3, 68);
+    dest.x.v = _mm_shuffle_ps(v6, v5, 136);
+    dest.y.v = _mm_shuffle_ps(v6, v5, 221);
+    dest.z.v = _mm_shuffle_ps(_mm_shuffle_ps(v4, v3, 238), v5, 168);
+    dest.w.v = _mm_xor_ps(
+        Float4_SignMask_12,
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(source.w.v, source.w.v, 0),
+                           dest.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(source.w.v, source.w.v, 85),
+                           dest.y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(source.w.v, source.w.v, 170),
+                       dest.z.v)));
+}
+
+// ea: 0x6FA9E0
+void calc_rb_mat_from_bone(Entity* ent, int boneIndex, rigid_body* rb,
+                           const math::Mat43& bone_mat_loc)
+{
+    math::Mat43 v7;
+    full_inverse(v7, bone_mat_loc);
+    math::Mat43 v6 = ent->CalcAbsMat(boneIndex);
+    phys_full_multiply_mat(rb->m_mat, v6, v7);
+}
+
 // wheel_collision_info (physics.o vehicle_collision.cpp). Layout from setup
 // (0x6F6C20) + vehicle_collision_info::setup (0x6FE630) disassembly: m_p0
 // +0x00, m_p1 +0x10, m_aabb_mn +0x20, m_aabb_mx +0x30, m_t +0x50,
@@ -964,6 +1105,22 @@ public:
 phys_gjk_geom_list* rb_extra_info::try_collision_prolog()
 {
     return nullptr;
+}
+
+// ea: 0x7060E0
+void rb_extra_info::collision_prolog()
+{
+    if (try_collision_prolog() == nullptr)
+        phys_collision_allocater_ballistic_reinit();
+    if (m_gjk_geom_list == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBPropSys.cpp", 173,
+                     "m_gjk_geom_list", defaultFileName))
+        __debugbreak();
+    rb_vehicle* m_rb_vehicle = this->m_rb_vehicle;
+    if (m_rb_vehicle != nullptr && m_rb_vehicle->m_vci == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBPropSys.cpp", 175,
+                     "m_rb_vehicle->m_vci", defaultFileName))
+        __debugbreak();
 }
 
 // ea: 0x6F6C20
@@ -1117,15 +1274,35 @@ template <int N>
 class phys_gjk_cache_system_avl_tree {
 public:
     void update_cache();  // ?update_cache@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEXXZ
+    phys_gjk_cache_info* get_gjk_cache_info(
+        unsigned int id1, unsigned int id2,
+        bool no_error);  // ?get_gjk_cache_info@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEPAUphys_gjk_cache_info@@II_N@Z
 };
 // stub until the gjk cache tree is ported (physics.o inline 0xB0D6C0)
 template <int N>
 void phys_gjk_cache_system_avl_tree<N>::update_cache()
 {
 }
+// stub until the gjk cache tree is ported (physics.o inline 0xB0D590)
+template <int N>
+phys_gjk_cache_info* phys_gjk_cache_system_avl_tree<N>::get_gjk_cache_info(
+    unsigned int id1, unsigned int id2, bool no_error)
+{
+    (void)id1;
+    (void)id2;
+    (void)no_error;
+    return nullptr;
+}
 // ?g_phys_gjk_cache_system@@3V?$phys_gjk_cache_system_avl_tree@$0BPE@@@A
 // (physics.o data @ 0xF794D0)
 phys_gjk_cache_system_avl_tree<500> g_phys_gjk_cache_system;
+
+// ea: 0x707100
+void set_gjk_cache_info(phys_collide_data* d)
+{
+    d->gjk_ci = g_phys_gjk_cache_system.get_gjk_cache_info(
+        d->id1, d->id2, true);
+}
 
 // ea: 0x6FF0E0
 void prop_system_collision_epilog()
@@ -1233,6 +1410,7 @@ struct phys_anim_bone_array {
     static void write_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
     void copy_back_bones(Entity* owner);  // ?copy_back_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z
     void remove_rigid_body(int rb_index);  // ?remove_rigid_body@phys_anim_bone_array@@QAEXH@Z
+    void copy_back_tween(Entity* owner, float t_);  // ?copy_back_tween@phys_anim_bone_array@@QAEXPAVEntity@@M@Z
 };
 
 // ea: 0x6F4120
@@ -1269,6 +1447,8 @@ public:
     int              m_flags;         // +0x2044
     float            m_stable_timer;  // +0x2048
     bool             m_is_stable;     // +0x204C
+    float            m_tween_time;    // +0x2050
+    float            m_tween_duration;  // +0x2054
 
     void prolog_frame_advance(Entity* owner, float delta_t);  // ?prolog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
     void debug_render();  // ?debug_render@biped_system@@QAEXXZ
@@ -1276,10 +1456,14 @@ public:
     void destroy_bps(Entity* owner);  // ?destroy_bps@biped_system@@QAEXPAVEntity@@@Z
     void recreate_bps(Entity* owner, int flags);  // ?recreate_bps@biped_system@@QAEXPAVEntity@@H@Z
     void remove_rigid_body(phys_bones rb_id);  // ?remove_rigid_body@biped_system@@QAEXW4phys_bones@@@Z
+    void create_bps(Entity* owner, int flags);  // ?create_bps@biped_system@@QAEXPAVEntity@@H@Z
+    void epilog_frame_advance(Entity* owner, float delta_t);  // ?epilog_frame_advance@biped_system@@QAEXPAVEntity@@M@Z
 private:
     void initialize_members();  // ?initialize_members@biped_system@@AAEXXZ
     void create_system(biped_phys_info* bp_info);  // ?create_system@biped_system@@AAEXPAVbiped_phys_info@@@Z
     void rdbi_calc_bone_mat_from_rb();  // ?rdbi_calc_bone_mat_from_rb@biped_system@@AAEXXZ
+    void update_stability(float delta_t);  // ?update_stability@biped_system@@AAEXM@Z
+    void setup_physics(Entity* owner);     // ?setup_physics@biped_system@@AAEXPAVEntity@@@Z
     friend class biped_phys_info;
 };
 
@@ -1587,6 +1771,58 @@ void biped_system::remove_rigid_body(phys_bones rb_id)
     bp_bone_array.remove_rigid_body(rb_id);
     m_collision_callback.remove_colgeom(rb_id);
     rb_ragdoll_model::remove_rigid_body(rb_id);
+}
+
+// stub until biped_system::setup_physics (0x707180) is ported
+void biped_system::setup_physics(Entity* owner)
+{
+    (void)owner;
+}
+
+// stub until biped_system::update_stability (0x6FAA60) is ported
+void biped_system::update_stability(float delta_t)
+{
+    (void)delta_t;
+}
+
+// stub until phys_anim_bone_array::copy_back_tween (0x6F79B0) is ported
+void phys_anim_bone_array::copy_back_tween(Entity* owner, float t_)
+{
+    (void)owner;
+    (void)t_;
+}
+
+// ea: 0x708D50
+void biped_system::create_bps(Entity* owner, int flags)
+{
+    m_flags = flags;
+    setup_physics(owner);
+    m_tween_time = 0.0f;
+    m_tween_duration = 0.5f;
+    rb_ragdoll_model::reset_stability();
+    rb_ragdoll_model::reset_ballistic_target();
+    m_is_stable = false;
+    m_stable_timer = 0.0f;
+    owner->Notify(hash_const.physicsstart);
+}
+
+// ea: 0x6FACB0
+void biped_system::epilog_frame_advance(Entity* owner, float delta_t)
+{
+    update_stability(delta_t);
+    rdbi_calc_bone_mat_from_rb();
+    float v4 = delta_t + m_tween_time;
+    float m_tween_duration_ = m_tween_duration;
+    if (m_tween_duration_ <= v4)
+    {
+        bp_bone_array.copy_back_bones(owner);
+    }
+    else
+    {
+        m_tween_time = v4;
+        bp_bone_array.copy_back_tween(owner, v4 / m_tween_duration_);
+    }
+    HelmetController(owner);
 }
 
 // USER_BONE_ID_* globals (physics.o data @ 0xE01EA8..0xE01EDC)
