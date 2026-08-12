@@ -134,6 +134,27 @@ DialogMenuSystem* FEManager::GetDMS(int client)
 void FEManager::DrawDiscError() {}
 void FEManager::UpdateLoadingMenu(float percentDone) { (void)percentDone; }
 
+// OverlayMenu / InGameLiveOptionsMenu statics (shell.o; stubs, port later)
+OverlayMenu* OverlayMenu::Me(int version)
+{
+    (void)version;
+    return nullptr;
+}
+void OverlayMenu::SetState(int state)
+{
+    (void)state;
+}
+bool InGameLiveOptionsMenu::ResponseYesJoin(int a)
+{
+    (void)a;
+    return false;
+}
+bool InGameLiveOptionsMenu::ResponseNoJoin(int a)
+{
+    (void)a;
+    return false;
+}
+
 // PanelFile members (shell.o; stubs, port later)
 PanelFile::~PanelFile() {}
 PanelFile* PanelFile::Clone()
@@ -261,14 +282,14 @@ extern void nglDxUnbindTexStages();
 extern int nglDxCheckErrorD3D(int dwErrCode, const char* a2,
                               unsigned int a3);
 struct nglDxRenderState {
-    static void Init(void* self);
+    void Init();
 };
 extern nglDxRenderState nglDxState;
 extern void nglDxInitShaders(bool RegisterShaders);
 
-struct LocalClient {
-    static int ClientToPort(int client);
-};
+namespace LocalClient {
+    int ClientToPort(int client);
+}
 
 // Icon constants (LiveWrapper::GetIcon returns one of these pointers)
 #define ICON_GAME_INVITE ((char*)0x20000)
@@ -1251,6 +1272,6 @@ void RenderUIX(void*)
         LiveWrapper::theWrapper->Render();
     }
     nglDxCheckErrorD3D(0, "c:\\cod\\code\\game\\xbox_main.cpp", 534);
-    nglDxRenderState::Init(&nglDxState);
+    nglDxState.Init();
     nglDxInitShaders(false);
 }

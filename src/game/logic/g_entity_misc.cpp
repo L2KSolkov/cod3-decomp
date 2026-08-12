@@ -276,7 +276,8 @@ template <typename T>
 struct cdl_array {
     int m_count;     // +0x00
     T*   m_elements; // +0x04
-    void resize(unsigned int n);  // ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z
+    // ?resize@?$cdl_array@UcdlPlane@@@@QAEXI@Z (cdl_xboxr; stub)
+    void resize(unsigned int n) { (void)n; }
 };
 
 extern gpuVertexFormat cddebug_vertex_format;
@@ -1741,6 +1742,124 @@ int SmokeGrenadeMgr_EntityCanSeeEntity(void* self, Entity* ent,
 {
     (void)self; (void)ent; (void)targEnt; (void)visThreshold;
     return 0;
+}
+
+// LocalClient namespace (cl.o; stubs, port later)
+namespace LocalClient {
+int FirstLocalClientIndex()
+{
+    return 0;
+}
+int ClientToPort(int client)
+{
+    (void)client;
+    return 0;
+}
+void SetFirstLocalClientIndex(int index) { (void)index; }
+void SetLastLocalClientIndex(int index) { (void)index; }
+void InitializeClientControllers() {}
+}
+
+// XModelManager / DestructibleBankManager / PhysDataBankManager accessors
+IVPointer<XModel> XModelManager::GetXModel(TPakId pak_id, const char* name)
+{
+    (void)pak_id; (void)name;
+    IVPointer<XModel> r = {};
+    return r;
+}
+IVPointer<Destructible> DestructibleBankManager::GetDestructible(
+    TPakId pak_id, const char* name)
+{
+    (void)pak_id; (void)name;
+    IVPointer<Destructible> r = {};
+    return r;
+}
+IVPointer<PhysData> PhysDataBankManager::GetPhysData(TPakId pak_id,
+                                                     const char* name)
+{
+    (void)pak_id; (void)name;
+    IVPointer<PhysData> r = {};
+    return r;
+}
+void Destructible::Initialize(Destructible* self, Entity* ent, bool reInit)
+{
+    (void)self; (void)ent; (void)reInit;
+}
+
+// PakFile statics (streamer.o; stubs, port later)
+void PakFile::GetHeapUsage(PakFile* self, int* used, int* size)
+{
+    (void)self; (void)used; (void)size;
+}
+const PakInfoNode* PakFile::GetInfo(PakFile* self)
+{
+    (void)self;
+    return nullptr;
+}
+
+// level_locals_t::Clear (g.o; stub)
+void level_locals_t::Clear(level_locals_t* self)
+{
+    (void)self;
+}
+
+// DObj operator new/delete (render.o; stubs)
+void* DObj::operator new(size_t s)
+{
+    return mem_heap_malloc((unsigned int)s);
+}
+void DObj::operator delete(void* p)
+{
+    mem_heap_free(p);
+}
+
+// XModel::GetNumBones (render.o; stub)
+int XModel::GetNumBones(XModel* model, int lodIndex)
+{
+    (void)model; (void)lodIndex;
+    return 0;
+}
+
+// Task::~Task (game2.o; stub)
+Task::~Task() {}
+
+// RumbleManager free artifacts (core.o surface; forwarding stubs)
+class RumbleEffectInstanceHandle {
+public:
+    int mVal;  // +0x00
+};
+void RumbleManager_StopMotors(void* self) { (void)self; }
+void RumbleManager_Reset(void* self) { (void)self; }
+void RumbleManager_Remove(void* self, RumbleEffectInstanceHandle handle)
+{
+    (void)self; (void)handle;
+}
+void RumbleManager_SetIntensity(void* self, int handle, float intensity)
+{
+    (void)self; (void)handle; (void)intensity;
+}
+void RumbleManager_FrameAdvance(void* self, float delta)
+{
+    (void)self; (void)delta;
+}
+void RumbleManager_Play(void* self, void* effect, float intensity)
+{
+    (void)self; (void)effect; (void)intensity;
+}
+void* RumbleManager_Inst(int instance)
+{
+    (void)instance;
+    return nullptr;
+}
+
+// GamePause free artifacts (forward to the statics)
+void GamePause_SetGamePaused(int client, bool paused)
+{
+    GamePause::SetGamePaused(client, paused);
+}
+void GamePause_SetAllPaused(bool paused)
+{
+    GamePause::SetAllPaused(paused);
 }
 
 // BrocSys (scr.o; stubs, port later)

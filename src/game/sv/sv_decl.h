@@ -125,4 +125,5 @@ char   Q_CleanCharacter(char c);
 // entity/player managers (namespace in the binary: ?FirstLocalClientIndex@LocalClient@@YAHXZ)
 namespace LocalClient {
     int FirstLocalClientIndex(void);       // cl.o 0x52EF80
+    int ClientToPort(int client);          // cl.o ?ClientToPort@LocalClient@@YAHH@Z
 };

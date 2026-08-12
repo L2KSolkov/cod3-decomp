@@ -361,7 +361,7 @@ int controller_num_controllers()
 {
     return 4;
 }
-extern int LocalClient_ClientToPort(int client);
+namespace LocalClient { extern int ClientToPort(int client); }
 extern void* STBManager_sInst;
 // ?STBManager_GetSTBString@@YAPBDPAXPBD@Z artifact (real member
 // STBManager::GetSTBString, core.o 0x4C5E30; STB entry table not ported yet)
@@ -413,8 +413,10 @@ class InspectorManager;
 extern void InspectorManager_Update(InspectorManager* self);
 extern InspectorManager g_inspectorManager;
 extern void SendClientThinkMsg();
-extern void LocalClient_SetFirstLocalClientIndex(int index);
-extern void LocalClient_SetLastLocalClientIndex(int index);
+namespace LocalClient {
+    extern void SetFirstLocalClientIndex(int index);
+    extern void SetLastLocalClientIndex(int index);
+}
 extern void CL_RecallKeys();
 extern void CL_BackUpKeys();
 extern void CL_Frame(int msec, float screen_time_inc);
@@ -505,7 +507,7 @@ extern void* PakManager_GetPakInfo(void* self, const char* long_name);
 extern void PakManager_SetUserDistance(void* self, void* cpak, float dist);
 extern void AudioBankMgr_FinishLoading(void* self);
 extern void InspectorManager_Initialise(InspectorManager* self);
-extern void LocalClient_InitializeClientControllers();
+namespace LocalClient { extern void InitializeClientControllers(); }
 extern void WheelMarkMgr_Init();
 extern void WheelMarkMgr_Exit();
 extern void DebugRender_Init(void* self);
@@ -1875,7 +1877,7 @@ char Com_ControllerTest(int port)
 {
     if (!g_enableControllerTest)
         return 1;
-    int v1 = LocalClient_ClientToPort(port);
+    int v1 = LocalClient::ClientToPort(port);
     if (!g_controllerConnected[port])
     {
         if (&g_femanager != nullptr
@@ -1980,7 +1982,7 @@ bool Com_ControllerTest()
 // ea: 0x004CA010
 void Com_ControllerWarningDialog(bool activate, int client)
 {
-    gControllerWarningDialogIsActive[LocalClient_ClientToPort(client)] = activate;
+    gControllerWarningDialogIsActive[LocalClient::ClientToPort(client)] = activate;
     if (activate)
     {
         const char* STBString = STBManager_GetSTBString(
@@ -2004,15 +2006,15 @@ void Com_ControllerWarningDialog(bool activate, int client)
 // ea: 0x004CA120
 void Com_CheckControllerUnplugged(bool signedIn, int client)
 {
-    if (g_controllerConnected[LocalClient_ClientToPort(client)])
+    if (g_controllerConnected[LocalClient::ClientToPort(client)])
     {
-        if (!g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)]
-                && gControllerWarningDialogIsActive[LocalClient_ClientToPort(client)]
-            || g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)]
+        if (!g_controllerConnectedErrorShown[LocalClient::ClientToPort(client)]
+                && gControllerWarningDialogIsActive[LocalClient::ClientToPort(client)]
+            || g_controllerConnectedErrorShown[LocalClient::ClientToPort(client)]
                 && controller::inst()->controller_is_connected(
-                    LocalClient_ClientToPort(client)))
+                    LocalClient::ClientToPort(client)))
         {
-            g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)] = false;
+            g_controllerConnectedErrorShown[LocalClient::ClientToPort(client)] = false;
             if (!signedIn)
             {
                 gControllerWarningDialogIsActive[0] = false;
@@ -2022,9 +2024,9 @@ void Com_CheckControllerUnplugged(bool signedIn, int client)
         }
     }
     else if (*(&dword_F6A290[0] + 802 * client) == 2
-             && !g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)])
+             && !g_controllerConnectedErrorShown[LocalClient::ClientToPort(client)])
     {
-        g_controllerConnectedErrorShown[LocalClient_ClientToPort(client)] = true;
+        g_controllerConnectedErrorShown[LocalClient::ClientToPort(client)] = true;
         if (*(bool*)((char*)&g_femanager + 0x36))  // inGame
         {
             void* IGMS = FEManager_GetIGMS(&g_femanager, client);
@@ -2244,8 +2246,8 @@ cvar_t* Com_Frame()
         v9 = 0;
     }
     SoundDevice_SetNumberOfListeners(SoundDevice::sInst, v10);
-    LocalClient_SetFirstLocalClientIndex(v9);
-    LocalClient_SetLastLocalClientIndex(0);
+    LocalClient::SetFirstLocalClientIndex(v9);
+    LocalClient::SetLastLocalClientIndex(0);
     if (dword_F6A290[0])
     {
         currCl = NS_CLIENT;
@@ -2400,7 +2402,7 @@ void Com_Init(char* commandLine)
     Cbuf_AddText("exec autoexec.cfg\n");
     if (Com_SafeMode())
         Cbuf_AddText("exec safemode.cfg\n");
-    LocalClient_InitializeClientControllers();
+    LocalClient::InitializeClientControllers();
     Cbuf_Execute();
     int* p_mControllerPort = &((int*)gSaveGameData)[0x3B0 / 4];
     int* end = &((int*)gSaveGameData)[0x3B0 / 4] + 1789 * 4;

@@ -124,3 +124,68 @@ void DynamicDecalMgr::CreateInst() {}
 void DynamicDecalMgr::DeleteInst() {}
 void TestFPS::CreateInst() {}
 void TestFPS::DeleteInst() {}
+
+// j_nullsub_N no-op stubs. IDA-invented names for linker thunks that jump to
+// nullsubs (do-nothing functions); binary semantics are exactly no-ops.
+class Entity;
+class DObj;
+struct actor_s;
+struct weaponParms;
+struct nglMeshSection;
+struct ai_orient_t;
+namespace math { class Position3; }
+
+void j_nullsub_15(actor_s* a, Entity* b) { (void)a; (void)b; }
+void j_nullsub_17(Entity* e, int a, int b, math::Position3* p, float f)
+{
+    (void)e; (void)a; (void)b; (void)p; (void)f;
+}
+void j_nullsub_20() {}
+void j_nullsub_27(nglMeshSection* s) { (void)s; }
+void j_nullsub_30(DObj* o, int* p) { (void)o; (void)p; }
+void j_nullsub_33(const char* s) { (void)s; }
+void j_nullsub_35() {}
+void j_nullsub_37(actor_s* a, weaponParms* w) { (void)a; (void)w; }
+void j_nullsub_47(weaponParms* w, const float* a, float* b)
+{
+    (void)w; (void)a; (void)b;
+}
+void j_nullsub_54(weaponParms* w, const float* a, float* b)
+{
+    (void)w; (void)a; (void)b;
+}
+void j_nullsub_57(actor_s* a) { (void)a; }
+void j_nullsub_60(actor_s* a) { (void)a; }
+void j_nullsub_64(Entity* a, Entity* b) { (void)a; (void)b; }
+void j_nullsub_67(nglMeshSection* s) { (void)s; }
+void j_nullsub_72(int a, int b, float f) { (void)a; (void)b; (void)f; }
+void j_nullsub_74(Entity* e, int a) { (void)e; (void)a; }
+void j_nullsub_77(Entity* e) { (void)e; }
+void j_nullsub_82(DObj* o, int* p) { (void)o; (void)p; }
+void j_nullsub_82(void* o, int* p) { (void)o; (void)p; }
+void j_nullsub_83(ai_orient_t* a, float f) { (void)a; (void)f; }
+void j_nullsub_84(Entity* e, int a, int b, const float* c, const float* d,
+                  float f)
+{
+    (void)e; (void)a; (void)b; (void)c; (void)d; (void)f;
+}
+void j_nullsub_86(int a) { (void)a; }
+void j_nullsub_89(DObj* o, float f) { (void)o; (void)f; }
+void j_nullsub_89(void* o, float f) { (void)o; (void)f; }
+void j_nullsub_93() {}
+void j_nullsub_117(unsigned int a, int b, const float* c, float d, float* e,
+                   float* f, float* g)
+{
+    (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g;
+}
+void j_nullsub_118(actor_s* a) { (void)a; }
+void j_nullsub_120(Entity* e) { (void)e; }
+void j_nullsub_121(int a, int b, float f, int c)
+{
+    (void)a; (void)b; (void)f; (void)c;
+}
+void* SoundMediaMgr_j_nullsub_91(void* p)
+{
+    (void)p;
+    return nullptr;
+}

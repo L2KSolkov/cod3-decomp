@@ -165,6 +165,11 @@ struct controller_view {
     int locked_port;
     static controller_view* inst();
 };
+controller_view* controller_view::inst()
+{
+    static controller_view s = {};
+    return &s;
+}
 struct mathPosition3 {
     float v[4];
 };

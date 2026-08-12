@@ -68,6 +68,12 @@ struct AeThread {
     void GetCondText(ae_fixed_string<64, unsigned char>& str);  // ?GetCondText@AeThread@@QAEXAAV?$ae_fixed_string@$0EA@E@@@Z
 };
 
+// AeThread::GetCondText (game2.o; stub)
+void AeThread::GetCondText(ae_fixed_string<64, unsigned char>& str)
+{
+    (void)str;
+}
+
 extern void DisplayPoolTotals(PoolAllocator* pool);   // g_game2_misc.cpp
 extern PoolAllocator* gCommonPoolAllocator;           // ?gCommonPoolAllocator@@3PAVPoolAllocator@@A
 extern PoolAllocator* gAeThreadBackupStackAllocator;  // g_local.h

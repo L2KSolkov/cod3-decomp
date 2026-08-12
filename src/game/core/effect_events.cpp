@@ -405,6 +405,30 @@ void EffectEventSys_PlayQueuedEffect(void* self, unsigned int handle)
     (void)self; (void)handle;
 }
 
+// Db / nalHeap virtual dtors (core.o; stubs, port later)
+DbFieldSet::~DbFieldSet() {}
+DbQuery::~DbQuery() {}
+nalHeap::~nalHeap() {}
+void DbFieldSet_Clear(DbFieldSet* self)
+{
+    (void)self;
+}
+DbField* DbFieldSet_GetFieldById(DbFieldSet* self, int fieldId)
+{
+    (void)self; (void)fieldId;
+    return nullptr;
+}
+
+// LightEffect (core.o; SetScale is a member)
+void LightEffect::SetScale(float s)
+{
+    (void)s;
+}
+void LightEffect_SetColor(void* self, float r, float g, float b, float a)
+{
+    (void)self; (void)r; (void)g; (void)b; (void)a;
+}
+
 // ============================================================================
 // GDB event + particle params surfaces (name-accessed fields)
 // ============================================================================

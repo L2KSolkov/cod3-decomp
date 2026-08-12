@@ -311,7 +311,7 @@ void* gCurrentCamera;  // ?gCurrentCamera (cg.o Camera* artifact)
 extern struct Camera* gCamera;
 extern void Camera_Update(void* self);
 extern void Camera_UpdatePostViewModels(void* self);
-extern int LocalClient_FirstLocalClientIndex();
+namespace LocalClient { extern int FirstLocalClientIndex(void); }
 extern int G_GetServerSnapTime();
 extern int CG_UpdateCvars();
 extern int CG_ProcessSnapshots();
@@ -1758,7 +1758,7 @@ void CG_DrawActive(float a1)
 void CG_DrawActiveFrame(int serverTime, int demoPlayback, int cubemapShot,
                         int cubemapSize, int animFrametime)
 {
-    if (currCl == LocalClient_FirstLocalClientIndex())
+    if (currCl == LocalClient::FirstLocalClientIndex())
     {
         int v6 = serverTime - cgGlobal.time;
         cgGlobal.oldTime = cgGlobal.time;
