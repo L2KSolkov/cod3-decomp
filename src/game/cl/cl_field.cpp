@@ -229,7 +229,11 @@ struct refexport_t {
     int Text_Width(const char* a1, int a2, float a3, float a4, int a5);
 };
 extern refexport_t re;
-extern int SEH_PrintStrlen(const char* string);
+// ?SEH_PrintStrlen@@YAHPBD@Z (shell.o 0x581200; stub)
+int SEH_PrintStrlen(const char* string)
+{
+    return string != nullptr ? (int)strlen(string) : 0;
+}
 
 // ea: 0x5315B0
 void Field_Draw(field_t* edit, int x, int y, int showCursor)

@@ -4,6 +4,9 @@
 
 #include "game/logic/g_local.h"
 
+extern bool apsGetPoolInfo(int nPool, int& size, int& capacity, int& used,
+                           int& peak);  // ?apsGetPoolInfo@@YA_NHAAH000@Z
+
 #include <math.h>
 #include <stdio.h>
 
@@ -1081,8 +1084,7 @@ void MemGraph::Render()
         for (int i = 0; i < 100; ++i)
         {
             int poolSize, poolCap, poolUsed, poolPeak;
-            if (apsMemory_GetPoolInfo(i, &poolSize, &poolCap, &poolUsed,
-                                      &poolPeak) == 0)
+            if (!apsGetPoolInfo(i, poolSize, poolCap, poolUsed, poolPeak))
                 break;
             apsUsed += (float)poolUsed;
             apsFree += (float)(poolSize - poolUsed);

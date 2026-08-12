@@ -2082,7 +2082,7 @@ extern cgGlobal_t cgGlobal;   // 0xF5FE30
 float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker, Entity* pInflictor,
                               const float* point, int mod);
 bool  G_IsPlayerInVehicle(Entity* player);       // ?G_IsPlayerInVehicle@@YA_NPAVEntity@@@Z
-bool  IsPlayerFullySeatedInVehicle(Entity* player);
+bool  IsPlayerFullySeatedInVehicle(Entity* player);  // defined in g_scr_vehicle.cpp
 bool  G_CanPlayerBeDamagedInVehicle(Entity* player);
 int   CanDamage(Entity* targ, const float* origin, Entity* inflictor);
 int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,

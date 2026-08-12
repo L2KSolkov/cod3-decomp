@@ -1007,8 +1007,17 @@ const BaseCmdFuncInfo* ButtonEntry::GetBoundCmdRelease()
 // ============================================================================
 // ButtonEntry::SetKeyBinding - ea: 0x4FEAA0
 // ============================================================================
-extern int InteractionController_Press(void* self, int buttonIndex);
-extern int InteractionController_Release(void* self, int buttonIndex);
+// InteractionController_Press/Release artifacts (anim.o 0x53C080/0x53C0A0; stub)
+int InteractionController_Press(void* self, int buttonIndex)
+{
+    (void)self; (void)buttonIndex;
+    return 0;
+}
+int InteractionController_Release(void* self, int buttonIndex)
+{
+    (void)self; (void)buttonIndex;
+    return 0;
+}
 extern void Cmd_CallCmdFunction(const BaseCmdFuncInfo* cmd, int key, int time);
 extern void CL_KeyEvent(int key, int down, unsigned int time);
 

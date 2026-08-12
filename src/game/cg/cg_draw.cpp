@@ -331,7 +331,12 @@ extern void SoundDevice_SetListenerVectors(void* self, int listener,
                                            const float* position,
                                            const float* front,
                                            const float* up);
-extern int SoundDevice_GetNumberOfListeners(void* self);
+// ?GetNumberOfListeners@SoundDevice@@QAEHXZ (game.o 0x602B10; stub)
+int SoundDevice_GetNumberOfListeners(void* self)
+{
+    (void)self;
+    return 1;
+}
 extern void subtitle_manager_render();
 // ?FEManager_InGameMenusActive@@YA_NPAXH@Z artifact (real member
 // FEManager::InGameMenusActive, shell.o; not ported yet)
