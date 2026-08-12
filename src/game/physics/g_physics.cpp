@@ -2101,6 +2101,7 @@ public:
     uint8_t _pad0[0x50];
     int     mBoneIndex;  // +0x50
     int     m_rb_index;  // +0x54
+    int     m_rb_parent_index;  // +0x58
 };
 class phys_anim_bone_array {
 public:
@@ -2110,6 +2111,7 @@ public:
     void remove_rigid_body(int rb_index);  // ?remove_rigid_body@phys_anim_bone_array@@QAEXH@Z
     void copy_back_tween(Entity* owner, float t_);  // ?copy_back_tween@phys_anim_bone_array@@QAEXPAVEntity@@M@Z
     int  get_bone(int rb_index);  // ?get_bone@phys_anim_bone_array@@QAEHH@Z
+    int  get_phys_bone(int bone_id);  // ?get_phys_bone@phys_anim_bone_array@@QAEHH@Z
 
     // ?m_list_phys_anim_bone@phys_anim_bone_array@@2V?$phys_static_array@Vphys_anim_bone@@$0FK@@@A
     // (physics.o data @ 0xE01F10)
@@ -2523,6 +2525,62 @@ int phys_anim_bone_array::get_bone(int rb_index)
             "i >= 0 && i < m_alloc_count", defaultFileName))
         __debugbreak();
     return m_list_phys_anim_bone.m_slot_array[0].mBoneIndex;
+}
+
+// ea: 0x6F8CB0
+int phys_anim_bone_array::get_phys_bone(int bone_id)
+{
+    int m_alloc_count = m_list_phys_anim_bone.m_alloc_count;
+    int v3 = 0;
+    if (m_alloc_count <= 0)
+        return -1;
+    for (int i = 0;; ++i)
+    {
+        if ((i < 0 || v3 >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        if (m_list_phys_anim_bone.m_slot_array[i].mBoneIndex == bone_id)
+            break;
+        m_alloc_count = m_list_phys_anim_bone.m_alloc_count;
+        if (++v3 >= m_alloc_count)
+            return -1;
+    }
+    if ((v3 < 0 || v3 >= m_alloc_count)
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc", 108,
+               "i >= 0 && i < m_alloc_count", defaultFileName))
+        __debugbreak();
+    int v6 = v3;
+    if (m_list_phys_anim_bone.m_slot_array[v3].m_rb_index == -1)
+    {
+        if ((v3 < 0 || v3 >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        if (m_list_phys_anim_bone.m_slot_array[v6].m_rb_parent_index < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 618,
+                         "m_list_phys_anim_bone[i].m_rb_parent_index >= 0",
+                         defaultFileName))
+            __debugbreak();
+        if ((v3 < 0 || v3 >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        return m_list_phys_anim_bone.m_slot_array[v6].m_rb_parent_index;
+    }
+    else
+    {
+        if ((v3 < 0 || v3 >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        return m_list_phys_anim_bone.m_slot_array[v6].m_rb_index;
+    }
 }
 
 // ea: 0x708D50
