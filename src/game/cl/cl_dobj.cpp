@@ -49,7 +49,7 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 // DObj externs (core engine)
 // ============================================================================
-struct DObj;
+class DObj;
 extern int DObjSkelExists(DObj* obj, int timeStamp);
 extern int DObjSkelExistsConst(DObj* obj, int timeStamp);
 extern unsigned int DObjGetAllocSkelSize(DObj* obj);

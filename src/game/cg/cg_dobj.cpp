@@ -19,6 +19,29 @@ extern void j_nullsub_30(DObj* obj, int* partBits);
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern void DObjGetHierarchyBits(DObj* obj, int boneIndex, int* partBits);
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
+
+// ea: 0x006BDF90 (render.o)
+int DObjSkelExists(DObj* obj, int timeStamp)  // ?DObjSkelExists@@YAHPAVDObj@@H@Z
+{
+    (void)timeStamp;
+    return obj->skel != nullptr;
+}
+// ea: 0x006BDFB0 (render.o)
+int DObjSkelExistsConst(DObj* obj, int timeStamp)  // ?DObjSkelExistsConst@@YAHPAVDObj@@H@Z
+{
+    (void)timeStamp;
+    return obj->skel != nullptr;
+}
+// ea: 0x006BDF70 (render.o)
+unsigned int DObjGetAllocSkelSize(DObj* obj)  // ?DObjGetAllocSkelSize@@YAHPAVDObj@@@Z
+{
+    return ((unsigned int)obj->numBones << 6) + 48;
+}
+// ea: 0x006BE1E0 (render.o)
+int DObjNumBones(DObj* obj)  // ?DObjNumBones@@YAHPAVDObj@@@Z
+{
+    return obj->numBones;
+}
 extern int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex);
 extern int CL_DObjCreateSkelForBones(DObj* obj, int* partBits);
 extern void CL_DObjCalcSkel(DObj* obj, int* partBits);
