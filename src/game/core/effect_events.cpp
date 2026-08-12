@@ -252,6 +252,11 @@ struct SoundDeviceInst {
 SoundDeviceInst* SoundDevice_sInst = nullptr;  // ?SoundDevice_sInst (core.o)
 
 CameraShake* g_cameraShake = nullptr;
+// ?IsLightFinished@LightEffect@@QAE_NXZ (core.o; stub)
+bool LightEffect::IsLightFinished()
+{
+    return false;
+}
 int dword_F6A290[4 * 0x322];
 int g_debug_sync_queries = 0;
 PoolAllocator* gCommonPoolAllocator = nullptr;

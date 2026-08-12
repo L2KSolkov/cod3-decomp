@@ -114,6 +114,33 @@ int MultiplayerMgr::GetDroppedItemType(int itemType)
     (void)itemType;
     return 0;
 }
+// Dropped-item stubs (mp.o; MPEntityHandle surface not ported)
+MultiplayerMgr::MPEntityHandle MultiplayerMgr::FindDroppedItemID(
+    int itemType, Entity* item, Entity* owner)
+{
+    (void)itemType; (void)item; (void)owner;
+    MultiplayerMgr::MPEntityHandle h;
+    h.mVal = 0;
+    return h;
+}
+MultiplayerMgr::MPEntityHandle MultiplayerMgr::RegisterDroppedItem(
+    int itemType, Entity* item, Entity* owner)
+{
+    (void)itemType; (void)item; (void)owner;
+    MultiplayerMgr::MPEntityHandle h;
+    h.mVal = 0;
+    return h;
+}
+void MultiplayerMgr::RegisterDroppedItem(int itemType, Entity* item,
+                                         Entity* owner, int extra)
+{
+    (void)itemType; (void)item; (void)owner; (void)extra;
+}
+void MultiplayerMgr::GetNextDroppedItemID(void* result, int itemType,
+                                         Entity* owner)
+{
+    (void)result; (void)itemType; (void)owner;
+}
 
 // ============================================================================
 // MPLiveEngine

@@ -190,12 +190,22 @@ struct MPPeer {
     MPPlayerManager* GetPlayerManager();  // extern mp.o
 };
 
+class Entity;  // game_types.h
+
 struct MultiplayerMgr {
     MPPeer* mPeer;                 // +0x00
     bool mRankedGame;              // +0x35
     bool mLinkCheckEnabled;        // +0x40
     bool IsHost();                 // ?IsHost@MultiplayerMgr@@QAE_NXZ
     int  GetDroppedItemType(int itemType);  // ?GetDroppedItemType@MultiplayerMgr@@QAE?AW4EDroppedItemTypes@@W4itemType_t@@@Z
+    class MPEntityHandle {
+    public:
+        int mVal;
+    };
+    MPEntityHandle FindDroppedItemID(int itemType, Entity* item, Entity* owner);
+    MPEntityHandle RegisterDroppedItem(int itemType, Entity* item, Entity* owner);
+    void RegisterDroppedItem(int itemType, Entity* item, Entity* owner, int extra);
+    void GetNextDroppedItemID(void* result, int itemType, Entity* owner);
     static MultiplayerMgr* sInst;  // mp.o data
     static void Step(MultiplayerMgr* self, int earlyOutInterval,
                      bool fromThread, bool a_bFromGame);
