@@ -1514,6 +1514,21 @@ void cFreeList_Shutdown(void* freelist)
     (void)freelist;
 }
 
+// BrocSys (scr.o; stubs, port later)
+namespace BrocSys {
+void Init() {}
+void TakeWeapon(Entity* pSelf, const char* pszWeaponName)
+{
+    (void)pSelf; (void)pszWeaponName;
+}
+void CopyExtendedEntity(const Entity* source, Entity* dest)
+{
+    (void)source; (void)dest;
+}
+void UnloadScript() {}
+void LoadScript() {}
+}
+
 // refEntity_t - leading member of trRefEntity (+0x00) - matches cg_local.h
 struct refEntity_t {
     int   reType;          // +0x00

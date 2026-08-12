@@ -822,6 +822,8 @@ namespace AeAssert {
 // ============================================================================
 struct movie_manager {
     static void load_and_play_movie(const char* movie_name, const char* sound_name);
+    static void frame_advance();       // ?frame_advance@movie_manager@@SAXXZ
+    static void render();              // ?render@movie_manager@@SAXXZ
 };
 
 // ============================================================================

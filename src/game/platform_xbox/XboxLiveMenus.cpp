@@ -160,6 +160,16 @@ void PanelFile::UpdateWidescreen(bool widescreen, float about_x)
     (void)widescreen; (void)about_x;
 }
 
+// PanelQuad (shell.o; artifact manglings - binary has virtual SetVisibility)
+void PanelQuad::SetShown(bool shown)
+{
+    (void)shown;
+}
+void PanelQuad::SetVisibility(float v)
+{
+    (void)v;
+}
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>

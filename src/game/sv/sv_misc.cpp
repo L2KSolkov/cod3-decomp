@@ -69,6 +69,15 @@ const void* StreamZoneManager::GetCellPakInfo(int cellIndex)
     return nullptr;
 }
 
+// movie_manager stubs (shell.o; port later)
+void movie_manager::load_and_play_movie(const char* movie_name,
+                                        const char* sound_name)
+{
+    (void)movie_name; (void)sound_name;
+}
+void movie_manager::frame_advance() {}
+void movie_manager::render() {}
+
 // ============================================================================
 // Cross-object externs
 // ============================================================================

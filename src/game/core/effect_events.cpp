@@ -321,6 +321,20 @@ float Sound_GetLength(const Sound* s)  // artifact shim
 extern void Sound_SetPoPtr(Sound* s, const math::Mat43* po);
 extern void Sound_SetPitch(Sound* s, float pitch);
 extern void Sound_SetVolume(Sound* s, float vol);
+void Sound_Stop(Sound* s) { (void)s; }
+void Sound_PlayQueued(Sound* s) { (void)s; }
+void Sound_SetPoPtr(Sound* s, const math::Mat43* po)
+{
+    (void)s; (void)po;
+}
+void Sound_SetPitch(Sound* s, float pitch)
+{
+    (void)s; (void)pitch;
+}
+void Sound_SetVolume(Sound* s, float vol)
+{
+    (void)s; (void)vol;
+}
 // ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o; stub
 // until subtitle_manager is ported - subtitles disabled)
 bool subtitle_manager_play_subtitle(const char* tag, const char* prefix)
