@@ -3192,11 +3192,61 @@ void phys_collision_allocater_ballistic_reinit()
 struct prop_phys_collision {
     static void get_all_collisions();  // ?get_all_collisions@prop_phys_collision@@SAXXZ
     static void collide_bodies(rb_extra_info* rb_inf1, rb_extra_info* rb_inf2);  // ?collide_bodies@prop_phys_collision@@SAXPAVrb_extra_info@@0@Z
-    static void collide_terrain(void* a1, rb_extra_info* rb_inf);  // ?collide_terrain@prop_phys_collision@@SAXPAUphysics_colgeom_visitor@@PAVrb_extra_info@@@Z
-    static void collide_entities(void* a1, rb_extra_info* rb_inf);  // ?collide_entities@prop_phys_collision@@SAXPAVphys_gjk_geom_cod_base@@PAVrb_extra_info@@@Z
+    static void collide_terrain(rb_extra_info* rb_inf);  // ?collide_terrain@prop_phys_collision@@SAXPAVrb_extra_info@@@Z
+    static void collide_entities(rb_extra_info* rb_inf);  // ?collide_entities@prop_phys_collision@@SAXPAVrb_extra_info@@@Z
 };
 void prop_phys_collision::get_all_collisions()
 {
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int j = 0; j < count; ++j)
+    {
+        if ((j < 0 || j >= g_list_rb_extra_info.m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                   178, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        prop_phys_collision::collide_entities(
+            g_list_rb_extra_info.m_alloc_list[j]);
+    }
+    count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        prop_phys_collision::collide_terrain(
+            g_list_rb_extra_info.m_alloc_list[i]);
+
+    // all pairs
+    int total = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < total - 1; ++i)
+    {
+        for (int v5 = i + 1; v5 < total; ++v5)
+        {
+            prop_phys_collision::collide_bodies(
+                g_list_rb_extra_info.m_alloc_list[i],
+                g_list_rb_extra_info.m_alloc_list[v5]);
+        }
+    }
+    // vehicle wheel processing
+    count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+    {
+        rb_extra_info* rb_inf = g_list_rb_extra_info.m_alloc_list[i];
+        if (rb_inf->m_rb_vehicle != nullptr
+            && rb_inf->m_rb_vehicle->m_vci != nullptr)
+        {
+            vehicle_collision_info* m_vci =
+                (vehicle_collision_info*)rb_inf->m_rb_vehicle->m_vci;
+            for (int w = 0; w < m_vci->m_list_wheel_collision_info_count; ++w)
+                m_vci->m_list_wheel_collision_info[w].process(rb_inf, w);
+        }
+    }
+}
+// stubs until collide_terrain/collide_entities (0x709B10/0x70A330) are ported
+void prop_phys_collision::collide_terrain(rb_extra_info* rb_inf)
+{
+    (void)rb_inf;
+}
+void prop_phys_collision::collide_entities(rb_extra_info* rb_inf)
+{
+    (void)rb_inf;
 }
 // helper stubs for the collide pass
 bool are_potentially_colliding(const math::Dir3* b1_mn,
