@@ -3550,21 +3550,6 @@ void rb_vehicle_update_from_network(rb_vehicle* self, math::Position3* position,
                                     math::Position3* angles, math::Dir3* vel,
                                     math::Dir3* aVel);                // phys_xboxr
 
-// ea: 0x006FC200 (physics.o) - rb_vehicle::get_velocity inline
-inline math::Dir3 rb_vehicle::get_velocity() const
-{
-    math::Dir3 result;
-    if ((m_flags & 1) != 0)
-    {
-        result.v = _mm_setzero_ps();
-        return result;
-    }
-    // m_chassis_rbinf->m_rb->m_t_vel (rb_extra_info +0x48 -> rigid_body +0xD0)
-    void* rb = *(void**)((char*)m_chassis_rbinf + 0x48);
-    result.v = *(const __m128*)((char*)rb + 0xD0);
-    return result;
-}
-
 // Task - task system base (28 bytes) - verified against IDA
 struct Task {
     uint8_t     _dlist[8];         // +0x04

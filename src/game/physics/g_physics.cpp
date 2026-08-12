@@ -136,6 +136,15 @@ public:
     unsigned int mVal;  // +0x00
 };
 
+// Broc::vector (broc_types.h view; local copy - 12 bytes)
+namespace Broc {
+struct vector {
+    float x;  // +0x00
+    float y;  // +0x04
+    float z;  // +0x08
+};
+}
+
 // ragdoll_collision_callback (physics.o RBRagdollCollision.cpp). Raw-offset
 // pools: m_rb_colgeom (m_alloc_list +0xFB0, count +0x1004), m_rb_cp
 // (m_alloc_list +0x1048, count +0x1084).
@@ -240,7 +249,8 @@ public:
     int    m_wheel_effect_state[4];  // +0x00 (wheel_effect_state_e)
     Handle m_wheel_effects[4];       // +0x10
     Handle m_exhaust_effect;         // +0x20
-    uint8_t _pad24[0x250 - 0x24];
+    int    m_wheel_bone_indices[8];  // +0x24
+    math::Mat43 m_wheel_orig_relpo[8];  // +0x50
     vehicle_rb_parameter* m_parameter;           // +0x250
     float m_throttle;                            // +0x254
     float m_brake;                               // +0x258
@@ -254,7 +264,9 @@ public:
     rigid_body_constraint_custom_orientation* m_orientation_constraint;  // +0x278
     rigid_body_constraint_custom_path* m_vpc;    // +0x27C
     Bitmask<unsigned int> m_flags;               // +0x280
-    uint8_t _pad284[0x310 - 0x284];
+    uint8_t _pad284[0x290 - 0x284];
+    math::Mat43 m_prev_rb_mat;                   // +0x290 (teleport writes w at +0x2C0)
+    uint8_t _pad2D0[0x310 - 0x2D0];
     float m_fake_rpm;                            // +0x310
     int   m_num_colliding_wheels;                // +0x314
     float m_current_side_fric_scale;             // +0x318
@@ -299,9 +311,11 @@ public:
     void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
     void unpause_physics();       // ?unpause_physics@rb_vehicle@@QAEXXZ
+    math::Dir3 get_velocity() const;  // ?get_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ
     math::Dir3 get_angular_velocity() const;  // ?get_angular_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ
     math::Position3 get_rb_position() const;  // ?get_rb_position@rb_vehicle@@QBE?AVPosition3@math@@XZ
     math::Dir3 get_rb_angles() const;         // ?get_rb_angles@rb_vehicle@@QBE?AVDir3@math@@XZ
+    void teleport(const Broc::vector& vSpawnPos, const Broc::vector* vAngles);  // ?teleport@rb_vehicle@@QAEXABUvector@Broc@@PBU23@@Z
     static void frame_prolog_all_systems(float delta_t);  // ?frame_prolog_all_systems@rb_vehicle@@SAXM@Z
     static void frame_epilog_all_systems(float delta_t);  // ?frame_epilog_all_systems@rb_vehicle@@SAXM@Z
 private:
@@ -309,6 +323,7 @@ private:
     void _update_epilog(float delta_t);  // ?_update_epilog@rb_vehicle@@AAEXM@Z
     void _update_unpause();       // ?_update_unpause@rb_vehicle@@AAEXXZ
     void _align_wheels();         // ?_align_wheels@rb_vehicle@@AAEXXZ
+    void _set_default_pose_wheels_only();  // ?_set_default_pose_wheels_only@rb_vehicle@@AAEXXZ
     float _calc_initial_susp_spring_k(
         rigid_body_constraint_wheel* wheel_constraint);  // ?_calc_initial_susp_spring_k@rb_vehicle@@AAEMPAVrigid_body_constraint_wheel@@@Z
     void _update_friction(float delta_t);  // ?_update_friction@rb_vehicle@@AAEXM@Z
@@ -915,6 +930,26 @@ rb_vehicle::rb_vehicle()
     m_wheel_count = 0;
 }
 
+// ea: 0x6F4930
+void rb_vehicle::_set_default_pose_wheels_only()
+{
+    int* m_wheel_bone_indices = this->m_wheel_bone_indices;
+    math::Dir3* p_z = &this->m_wheel_orig_relpo[0].z;
+    for (int i = 8; i != 0; --i)
+    {
+        DObj* mDObj = m_owner->mDObj;
+        if (mDObj->numBones >= *m_wheel_bone_indices
+            && *m_wheel_bone_indices >= 0)
+        {
+            // DObj::GetMat(boneIndex) = wheel_orig_relpo[i]
+            memcpy((char*)&mDObj->GetMat(*m_wheel_bone_indices),
+                   p_z[-2].v.m128_f32, sizeof(math::Mat43));
+        }
+        ++m_wheel_bone_indices;
+        p_z += 4;
+    }
+}
+
 // ea: 0x6FCDE0
 int rb_vehicle::get_num_rb_vehicles()
 {
@@ -1312,6 +1347,51 @@ void rb_vehicle::unpause_physics()
     {
         m_flags.mMask |= 2u;
         _update_unpause();
+    }
+}
+
+// ea: 0x6FC200
+math::Dir3 rb_vehicle::get_velocity() const
+{
+    math::Dir3 result;
+    if ((m_flags.mMask & 1) != 0)
+        result.v = _mm_setzero_ps();
+    else
+        result.v = m_chassis_rbinf->m_rb->m_t_vel.v;
+    return result;
+}
+
+// ea: 0x70C350
+void rb_vehicle::teleport(const Broc::vector& vSpawnPos,
+                          const Broc::vector* vAngles)
+{
+    pause_physics(false);
+    if ((m_flags.mMask & 1) != 0)
+    {
+        m_flags.mMask |= 2u;
+        _update_unpause();
+    }
+    math::Position3 pos;
+    pos.v = _mm_setr_ps(vSpawnPos.x, vSpawnPos.y, vSpawnPos.z, 0.0f);
+    if (vAngles != nullptr)
+    {
+        math::Position3 angles;
+        angles.v = _mm_setr_ps(vAngles->x, vAngles->y, vAngles->z, 0.0f);
+        AnglesToAxis(angles, pos, m_prev_rb_mat);
+    }
+    else
+    {
+        m_prev_rb_mat.w.v = pos.v;
+    }
+    if ((m_flags.mMask & 1) == 0)
+    {
+        rigid_body* m_rb = m_chassis_rbinf->m_rb;
+        if ((~(m_rb->m_flags >> 6) & 1) == 0
+            && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                         85, "debug_flag_is_not_in_collision()",
+                         defaultFileName))
+            __debugbreak();
+        memcpy(&m_rb->m_mat, &m_prev_rb_mat, sizeof(math::Mat43));
     }
 }
 
