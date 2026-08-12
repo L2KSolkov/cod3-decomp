@@ -211,11 +211,16 @@ public:
     void cleanup_path();          // ?cleanup_path@rb_vehicle@@QAEXXZ
     void end_path();              // ?end_path@rb_vehicle@@QAEXXZ
     void pause_physics(bool shutdown);  // ?pause_physics@rb_vehicle@@QAEX_N@Z
+    void unpause_physics();       // ?unpause_physics@rb_vehicle@@QAEXXZ
+    math::Dir3 get_angular_velocity() const;  // ?get_angular_velocity@rb_vehicle@@QBE?AVDir3@math@@XZ
+    math::Position3 get_rb_position() const;  // ?get_rb_position@rb_vehicle@@QBE?AVPosition3@math@@XZ
+    math::Dir3 get_rb_angles() const;         // ?get_rb_angles@rb_vehicle@@QBE?AVDir3@math@@XZ
     static void frame_prolog_all_systems(float delta_t);  // ?frame_prolog_all_systems@rb_vehicle@@SAXM@Z
     static void frame_epilog_all_systems(float delta_t);  // ?frame_epilog_all_systems@rb_vehicle@@SAXM@Z
 private:
     void _update_prolog(float delta_t);  // ?_update_prolog@rb_vehicle@@AAEXM@Z
     void _update_epilog(float delta_t);  // ?_update_epilog@rb_vehicle@@AAEXM@Z
+    void _update_unpause();       // ?_update_unpause@rb_vehicle@@AAEXXZ
 };
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
@@ -644,7 +649,10 @@ public:
     DObj* mDObj;                 // +0x23C
     uint8_t _pad240[0x248 - 0x240];
     biped_phys_info* mBPInfo;    // +0x248
-    uint8_t _pad24C[0x2B0 - 0x24C];
+    uint8_t _pad24C[0x25C - 0x24C];
+    void* sentient;              // +0x25C (sentient_s*)
+    void* scr_vehicle;           // +0x260 (scr_vehicle_t*)
+    uint8_t _pad264[0x2B0 - 0x264];
     uint8_t physicsObject;       // +0x2B0
     uint8_t _pad2B1[0x2C4 - 0x2B1];
     int32_t  flags;              // +0x2C4
@@ -868,6 +876,68 @@ void rb_vehicle::end_path()
 void rb_vehicle::pause_physics(bool shutdown)
 {
     (void)shutdown;
+}
+
+// stub until rb_vehicle::_update_unpause (0x709090) is ported
+void rb_vehicle::_update_unpause()
+{
+}
+
+// ea: 0x70C080
+void rb_vehicle::unpause_physics()
+{
+    if ((m_flags.mMask & 1) != 0)
+    {
+        m_flags.mMask |= 2u;
+        _update_unpause();
+    }
+}
+
+// ea: 0x6FC290
+math::Dir3 rb_vehicle::get_angular_velocity() const
+{
+    math::Dir3 result;
+    if ((m_flags.mMask & 1) != 0)
+        result.v = _mm_setzero_ps();
+    else
+        result.v = m_chassis_rbinf->m_rb->m_a_vel.v;
+    return result;
+}
+
+// ea: 0x6FC320
+math::Position3 rb_vehicle::get_rb_position() const
+{
+    math::Position3 result;
+    if ((m_flags.mMask & 1) != 0)
+    {
+        result.v = _mm_setzero_ps();
+        return result;
+    }
+    rigid_body* m_rb = m_chassis_rbinf->m_rb;
+    if ((~(m_rb->m_flags >> 6) & 1) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 79,
+                     "debug_flag_is_not_in_collision()", defaultFileName))
+        __debugbreak();
+    result.v = m_rb->m_mat.w.v;
+    return result;
+}
+
+void AxisToAngles(const float (*axis)[3], float* angles);  // ?AxisToAngles@@YAXQAY02$$CBMQAM@Z (q_math.cpp)
+
+// ea: 0x6FC3D0
+math::Dir3 rb_vehicle::get_rb_angles() const
+{
+    math::Dir3 angles;
+    angles.v = _mm_setzero_ps();
+    if ((m_flags.mMask & 1) != 0)
+        return angles;
+    rigid_body* m_rb = m_chassis_rbinf->m_rb;
+    if ((~(m_rb->m_flags >> 6) & 1) == 0
+        && _tlAssert("c:\\cod\\code\\tl\\physics\\include\\rigid_body.h", 79,
+                     "debug_flag_is_not_in_collision()", defaultFileName))
+        __debugbreak();
+    AxisToAngles((const float(*)[3])m_rb, &angles.v.m128_f32[0]);
+    return angles;
 }
 
 // stub until rb_vehicle::_update_prolog (0x70CA40) is ported
@@ -2178,6 +2248,35 @@ void path_constraint_update(rigid_body_constraint_custom_path* vpc, Entity* veh)
     void* mRBVeh = scr_vehicle->mRBVeh;
     if (((rb_vehicle*)mRBVeh)->m_num_colliding_wheels >= 3)
         vpc->b1_r_loc.v.m128_f32[0] = -6.0f;  // 0xC0C00000
+}
+
+// ea: 0x70D0D0
+void StopPhysics(Entity* e)
+{
+    if (e->sentient != nullptr)
+    {
+        biped_phys_info* mBPInfo = e->mBPInfo;
+        if (mBPInfo != nullptr)
+            mBPInfo->destroy_bp_sys(false);
+    }
+    else
+    {
+        scr_vehicle_t* scr_vehicle = (scr_vehicle_t*)e->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            rb_vehicle* mRBVeh = (rb_vehicle*)scr_vehicle->mRBVeh;
+            if (mRBVeh != nullptr)
+            {
+                mRBVeh->pause_physics(true);
+                g_rb_vehicle_list.remove(mRBVeh);
+                ((scr_vehicle_t*)e->scr_vehicle)->mRBVeh = nullptr;
+            }
+        }
+        else
+        {
+            rb_prop_system::remove_entity(e);
+        }
+    }
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
