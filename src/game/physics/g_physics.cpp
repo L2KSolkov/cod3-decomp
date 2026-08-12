@@ -176,7 +176,8 @@ public:
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
 // (0x705F90) disassembly + IDA local type field order.
-struct rb_extra_info {
+class rb_extra_info {
+public:
     math::Mat43 m_transform;         // +0x00
     void*       m_gjk_geom_list;     // +0x40
     Entity*     m_ent;               // +0x44
@@ -767,10 +768,98 @@ void rb_vehicle::pause_physics(bool shutdown)
     (void)shutdown;
 }
 
+// rb_prop_system free helpers (physics.o RBPropSys.cpp; namespace in binary)
+extern phys_static_memory_pool<rb_extra_info, 35> g_list_rb_extra_info;
+// ?g_list_rb_extra_info@@3V?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@A
+namespace rb_prop_system {
+const rigid_body* get_entity_rb(Entity* e);        // ?get_entity_rb@rb_prop_system@@YAPBVrigid_body@@PAVEntity@@@Z
+bool entity_in_system(Entity* e);                  // ?entity_in_system@rb_prop_system@@YA_NPAVEntity@@@Z
+bool is_entity_stable(Entity* e);                  // ?is_entity_stable@rb_prop_system@@YA_NPAVEntity@@@Z
+rigid_body* get_associated_rigid_body(Entity* e);  // ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z
+}
+
+// ea: 0x6FEAD0
+const rigid_body* rb_prop_system::get_entity_rb(Entity* e)
+{
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+    {
+        rb_extra_info* inf = g_list_rb_extra_info.m_alloc_list[i];
+        if (inf->m_ent == e)
+            return inf->m_rb;
+    }
+    return nullptr;
+}
+
+// ea: 0x6FEA40
+bool rb_prop_system::entity_in_system(Entity* e)
+{
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+    {
+        if (g_list_rb_extra_info.m_alloc_list[i]->m_ent == e)
+            return true;
+    }
+    return false;
+}
+
+// ea: 0x6FEA80
+bool rb_prop_system::is_entity_stable(Entity* e)
+{
+    int count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+    {
+        rb_extra_info* inf = g_list_rb_extra_info.m_alloc_list[i];
+        if (inf->m_ent == e && (inf->m_rb->m_flags & 4) == 0)
+            return false;
+    }
+    return true;
+}
+
+// ea: 0x703DB0
+rigid_body* rb_prop_system::get_associated_rigid_body(Entity* e)
+{
+    return const_cast<rigid_body*>(get_entity_rb(e));
+}
+
+// wheel_collision_info (physics.o vehicle_collision.cpp; minimal view)
+struct wheel_collision_info {
+    void process(rb_extra_info* rb_inf, int wheel_i);  // ?process@wheel_collision_info@@QAEXPAVrb_extra_info@@H@Z
+};
+// stub until wheel_collision_info::process (0x6FE3A0) is ported
+void wheel_collision_info::process(rb_extra_info* rb_inf, int wheel_i)
+{
+    (void)rb_inf;
+    (void)wheel_i;
+}
+
+// vehicle_collision_info (physics.o vehicle_collision.cpp)
+struct vehicle_collision_info {
+    wheel_collision_info* m_list_wheel_collision_info;  // +0x00
+    int m_list_wheel_collision_info_count;              // +0x04
+
+    void process(rb_extra_info* rb_inf);  // ?process@vehicle_collision_info@@QAEXPAVrb_extra_info@@@Z
+};
+
+// ea: 0x6FE770
+void vehicle_collision_info::process(rb_extra_info* rb_inf)
+{
+    int v3 = 0;
+    if (m_list_wheel_collision_info_count > 0)
+    {
+        int v4 = 0;
+        do
+            m_list_wheel_collision_info[v4++].process(rb_inf, v3++);
+        while (v3 < m_list_wheel_collision_info_count);
+    }
+}
+
 // ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A
 // (physics.o data @ 0xE2B8F0)
 phys_static_memory_pool<rb_vehicle, 10> g_rb_vehicle_list;
-
+// ?g_list_rb_extra_info@@3V?$phys_static_memory_pool@Vrb_extra_info@@$0CD@@@A
+// (physics.o data @ 0xE2A000)
+phys_static_memory_pool<rb_extra_info, 35> g_list_rb_extra_info;
 // ea: 0x6F6AC0 - fatal trap; x_0 is an unnamed physics.o data global
 // (0xF916B8) referenced only from here.
 static volatile unsigned int x_0 = 0;
