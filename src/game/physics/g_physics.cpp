@@ -217,10 +217,15 @@ public:
 class DCGSet;
 void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
 enum hitLocation_t;
+enum EHitLocation;                       // Broc's EHitLocation (g_local.h)
 int GetPhysBoneID(hitLocation_t id);
 void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
                   const math::Dir3& hitd, float force, bool local_hitp,
                   hitLocation_t hitLoc);
+// G_Damage (game.o g_combat.cpp; declared for the wheel-collide damage call)
+void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
+              const float* dir, const float* point, int damage, int dflags,
+              int mod, EHitLocation hitLoc, int weapon);
 enum phys_bones {
     rb_torso = 0,
     rb_head = 1,
@@ -4199,11 +4204,46 @@ void rb_vehicle::update_from_network(const math::Position3& position,
 // DCGSet (sv_stubs.h view; local copy - objects array + aabb)
 class DCGSet {
 public:
+    uint16_t nboxes;           // +0x00
+    uint16_t _pad02;           // +0x02
     int   objects_m_count;     // +0x04
     void* objects_m_elements;  // +0x08
-    uint8_t _pad0C[0x30 - 0x0C];
+    int   brushes_m_count;     // +0x0C
+    void* brushes_m_elements;  // +0x10
+    uint8_t _pad14[0x1C - 0x14];
+    int   brush_sides_m_count;  // +0x1C
+    void* brush_sides_m_elements;  // +0x20
+    uint8_t _pad24[0x30 - 0x24];
     math::Position3 min;       // +0x30
     math::Position3 max;       // +0x40
+
+    // get_type - ea: 0x718570 (physics.o inline COMDAT); 1 = brush, 0 = box
+    int get_type(unsigned int index) const
+    {
+        if (index >= (unsigned int)objects_m_count)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 83;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+        }
+        return index >= nboxes;
+    }
+};
+
+// cdl_brush_t (cdl_mem.h view; objects[] element - center +0x08, half
+// extents +0x14, 36 bytes)
+struct cdl_brush_record {
+    uint8_t _pad[8];
+    float   center[3];   // +0x08
+    float   extents[3];  // +0x14
+};
+// brushes[] side record (4 bytes: { uint16 first_side; uint16 nsides; })
+struct cdl_brush_side_rec {
+    uint16_t first_side;
+    uint16_t nsides;
 };
 
 // ea: 0x6FD850
@@ -6817,11 +6857,122 @@ bool are_potentially_colliding(const math::Dir3* b1_mn,
                                    b2_mx->v)),
                     Float4_Zero_12)) & 7) == 7;
 }
-void collide_segment(void* wci, void* wci_ent, void* ent1, void* g1_rb,
-                     const math::Mat43* g1_xform, void* g1)
+// ea: 0x6FF120 - wheel segment vs cod geom (brush) collide. The wheel
+// segment is transformed into the geom's model space, then collide_brush_segment
+// is run against the DCG brush. On hit the wheel info is updated and the
+// collided entity (if a non-vehicle prop) takes 1 point of damage.
+void collide_segment(wheel_collision_info* wci, Entity* wci_ent, Entity* ent1,
+                     rigid_body* g1_rb, const math::Mat43* g1_xform,
+                     phys_gjk_geom_cod_base* g1)
 {
-    (void)wci; (void)wci_ent; (void)ent1; (void)g1_rb; (void)g1_xform;
-    (void)g1;
+    int overlap = _mm_movemask_ps(
+        _mm_cmplt_ps(
+            _mm_max_ps(
+                _mm_sub_ps(g1->m_aabb_mn.v, wci->m_aabb_mx.v),
+                _mm_sub_ps(wci->m_aabb_mn.v, g1->m_aabb_mx.v)),
+            Float4_Zero_12));
+    if ((overlap & 7) != 7)
+        return;
+
+    // world -> model-space transform via the transposed (inverse) rotation.
+    __m128 x = g1_xform->x.v, y = g1_xform->y.v, z = g1_xform->z.v;
+    __m128 w = g1_xform->w.v;
+    __m128 v11 = _mm_shuffle_ps(x, y, 68);
+    __m128 col1 = _mm_shuffle_ps(v11, z, 221);
+    __m128 col0 = _mm_shuffle_ps(v11, z, 136);
+    __m128 col2 = _mm_shuffle_ps(_mm_shuffle_ps(x, y, 238), z, 168);
+    __m128 negw = _mm_xor_ps(Float4_SignMask_12, w);
+    __m128 trans = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(negw, negw, 0), col0),
+                   _mm_mul_ps(_mm_shuffle_ps(negw, negw, 0x55), col1)),
+        _mm_mul_ps(_mm_shuffle_ps(negw, negw, 0xAA), col2));
+    math::Position3 p0_local, p1_local;
+    p0_local.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(wci->m_p0.v, wci->m_p0.v, 0), col0),
+            _mm_mul_ps(_mm_shuffle_ps(wci->m_p0.v, wci->m_p0.v, 0x55), col1)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(wci->m_p0.v, wci->m_p0.v, 0xAA), col2),
+            trans));
+    p1_local.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(wci->m_p1.v, wci->m_p1.v, 0), col0),
+            _mm_mul_ps(_mm_shuffle_ps(wci->m_p1.v, wci->m_p1.v, 0x55), col1)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(wci->m_p1.v, wci->m_p1.v, 0xAA), col2),
+            trans));
+
+    float t = wci->m_t;
+    if (g1->m_dcg != nullptr)
+    {
+        DCGSet* dcg = g1->m_dcg;
+        unsigned int m_dcg_index = (unsigned short)g1->m_dcg_index;
+        if (dcg->get_type(g1->m_dcg_index) != 1
+            && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 633,
+                         "g1->m_dcg->get_type(g1->m_dcg_index) == CDL_BRUSH",
+                         defaultFileName))
+            __debugbreak();
+        cdl_brush_record* brush =
+            &((cdl_brush_record*)dcg->objects_m_elements)[m_dcg_index];
+        math::Position3 bmin, bmax;
+        bmin.v = _mm_sub_ps(
+            _mm_setr_ps(brush->center[0], brush->center[1], brush->center[2],
+                        0.0f),
+            _mm_setr_ps(brush->extents[0], brush->extents[1],
+                        brush->extents[2], 0.0f));
+        bmax.v = _mm_add_ps(
+            _mm_setr_ps(brush->center[0], brush->center[1], brush->center[2],
+                        0.0f),
+            _mm_setr_ps(brush->extents[0], brush->extents[1],
+                        brush->extents[2], 0.0f));
+        unsigned int brush_index =
+            m_dcg_index - (unsigned int)dcg->nboxes;
+        cdl_brush_side_rec* side_rec =
+            &((cdl_brush_side_rec*)dcg->brushes_m_elements)[brush_index];
+        if (side_rec->first_side >= (unsigned int)dcg->brush_sides_m_count
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                   "index >= 0 && index < size()", "invalid index"))
+            __debugbreak();
+        const cdlPlane* sides =
+            (const cdlPlane*)dcg->brush_sides_m_elements
+            + side_rec->first_side;
+        math::Position3 normal;
+        if (!collide_brush_segment(p0_local, p1_local, bmin, bmax, sides,
+                                   side_rec->nsides, t, &normal))
+            return;
+
+        if (ent1 != nullptr && ent1->scr_vehicle == nullptr
+            && wci_ent != nullptr)
+        {
+            if (wci_ent == nullptr
+                && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 644,
+                             "wci_ent", defaultFileName))
+                __debugbreak();
+            float dir[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
+            G_Damage(ent1, wci_ent, wci_ent, dir,
+                     &wci->m_p0.v.m128_f32[0], 1, 0, 0x20,
+                     (EHitLocation)0, -1);
+            if ((ent1->mFlags & 0x400000) != 0 || ent1->actor != nullptr
+                || ent1->client != nullptr || ent1->think == 0x0C)
+                return;
+        }
+
+        wci->m_normal.v = normal.v;
+        wci->m_t = t;
+        wci->m_did_hit = true;
+        wci->m_surface_flags = 0;
+        wci->m_hit_rb = g1_rb;
+        // model-space normal -> world (row-vector * matrix)
+        wci->m_normal.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(normal.v, normal.v, 0),
+                           g1_xform->x.v),
+                _mm_mul_ps(_mm_shuffle_ps(normal.v, normal.v, 0x55),
+                           g1_xform->y.v)),
+            _mm_mul_ps(_mm_shuffle_ps(normal.v, normal.v, 0xAA),
+                       g1_xform->z.v));
+    }
 }
 void ValidatePakId(int pakId);  // streamer.o ?ValidatePakId@@YAXW4TPakId@@@Z
 // ea: 0x719A90
@@ -7712,7 +7863,8 @@ void prop_phys_collision::collide_bodies(rb_extra_info* rb_inf1,
                     for (int i = 0; i < m_vci->m_list_wheel_collision_info_count; ++i)
                         collide_segment(
                             &m_vci->m_list_wheel_collision_info[i], nullptr,
-                            nullptr, rb2, b2w, g1);
+                            nullptr, rb2, b2w,
+                            (phys_gjk_geom_cod_base*)g1);
                     v3 = rb_inf1;
                 }
                 v2 = rb_inf2;
@@ -7729,7 +7881,8 @@ void prop_phys_collision::collide_bodies(rb_extra_info* rb_inf1,
                 {
                     for (int i = 0; i < v11->m_list_wheel_collision_info_count; ++i)
                         collide_segment(&v11->m_list_wheel_collision_info[i],
-                                        nullptr, nullptr, rb1, a2w, g1a);
+                                        nullptr, nullptr, rb1, a2w,
+                                        (phys_gjk_geom_cod_base*)g1a);
                     v3 = rb_inf1;
                 }
             }
