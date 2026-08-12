@@ -8,14 +8,19 @@
 #include "physics/phys_types.h"
 
 // ============================================================================
-// phys_static_array<T*, 10> - fixed inline array (48 bytes).
+// phys_static_array<T, CAP> - fixed inline array. class tag (V) matches the
+// binary manglings (e.g. ?m_list_rigid_body@rb_ragdoll_model@@2V?$
+// phys_static_array@PAVrigid_body@@$09@@A).
 // m_buffer[40] + m_slot_array (points at buffer) + m_alloc_count.
 // ============================================================================
 template <typename T, int CAP>
-struct phys_static_array {
+class phys_static_array {
+public:
     char m_buffer[CAP * sizeof(T)];  // +0x00
-    T* const* m_slot_array;          // +CAP*sizeof(T)
+    T* const  m_slot_array;          // +CAP*sizeof(T)
     int       m_alloc_count;         // +CAP*sizeof(T)+4
+
+    phys_static_array() : m_slot_array((T*)m_buffer), m_alloc_count(0) {}
 
     T& operator[](int i) { return ((T*)m_buffer)[i]; }  // ea: 0x87E1A0
     const T& operator[](int i) const { return ((T*)m_buffer)[i]; }

@@ -673,9 +673,13 @@ struct rb_collision_capsule {
     math::Position3 m_p1_loc;  // +0x00
     math::Position3 m_p2_loc;  // +0x10
     float           m_r;       // +0x20
+    uint8_t         _pad24[0x30 - 0x24];
+    math::Position3 m_p1;      // +0x30
+    math::Position3 m_p2;      // +0x40
 
     void set(const math::Position3& p1_loc, const math::Position3& p2_loc,
              float r);  // ?set@rb_collision_capsule@@QAEXABVPosition3@math@@0M@Z
+    void xform(const math::Mat43& mat);  // ?xform@rb_collision_capsule@@QAEXABVMat43@math@@@Z
 };
 
 // ea: 0x6F4650
@@ -685,6 +689,25 @@ void rb_collision_capsule::set(const math::Position3& p1_loc,
     m_p1_loc.v = p1_loc.v;
     m_p2_loc.v = p2_loc.v;
     m_r = r;
+}
+
+// ea: 0x6FB690
+void rb_collision_capsule::xform(const math::Mat43& mat)
+{
+    m_p1.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_p1_loc.v, m_p1_loc.v, 0), mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(m_p1_loc.v, m_p1_loc.v, 85), mat.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_p1_loc.v, m_p1_loc.v, 170), mat.z.v),
+            mat.w.v));
+    m_p2.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_p2_loc.v, m_p2_loc.v, 0), mat.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(m_p2_loc.v, m_p2_loc.v, 85), mat.y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(m_p2_loc.v, m_p2_loc.v, 170), mat.z.v),
+            mat.w.v));
 }
 
 
@@ -1374,9 +1397,10 @@ namespace rb_prop_system {
 const rigid_body* get_entity_rb(Entity* e);        // ?get_entity_rb@rb_prop_system@@YAPBVrigid_body@@PAVEntity@@@Z
 bool entity_in_system(Entity* e);                  // ?entity_in_system@rb_prop_system@@YA_NPAVEntity@@@Z
 bool is_entity_stable(Entity* e);                  // ?is_entity_stable@rb_prop_system@@YA_NPAVEntity@@@Z
-rigid_body* get_associated_rigid_body(Entity* e);  // ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z
+    rigid_body* get_associated_rigid_body(Entity* e);  // ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z
     void frame_advance(float delta_t);                 // ?frame_advance@rb_prop_system@@YAXM@Z
     void remove_entity(Entity* e);                     // ?remove_entity@rb_prop_system@@YAXPAVEntity@@@Z
+    rigid_body* add_entity(Entity* e, float mass, float fric);  // ?add_entity@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@MM@Z
 }
 
 // ea: 0x6FEAD0
@@ -1421,6 +1445,15 @@ bool rb_prop_system::is_entity_stable(Entity* e)
 rigid_body* rb_prop_system::get_associated_rigid_body(Entity* e)
 {
     return const_cast<rigid_body*>(get_entity_rb(e));
+}
+
+// stub until rb_prop_system::add_entity (0x706150) is ported
+rigid_body* rb_prop_system::add_entity(Entity* e, float mass, float fric)
+{
+    (void)e;
+    (void)mass;
+    (void)fric;
+    return nullptr;
 }
 
 // ea: 0x6FE8D0
@@ -2062,13 +2095,28 @@ void absolutely_fatal_irrecoverable_error_infinite_loop()
         ++x_0;
 }
 
-struct phys_anim_bone_array {
+// phys_anim_bone (physics.o; stride 0x60 - mBoneIndex +0x50, m_rb_index +0x54)
+class phys_anim_bone {
+public:
+    uint8_t _pad0[0x50];
+    int     mBoneIndex;  // +0x50
+    int     m_rb_index;  // +0x54
+};
+class phys_anim_bone_array {
+public:
     static void copy_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
     static void write_skeleton(Entity* owner, math::Mat43* const skeleton_pose);
     void copy_back_bones(Entity* owner);  // ?copy_back_bones@phys_anim_bone_array@@QAEXPAVEntity@@@Z
     void remove_rigid_body(int rb_index);  // ?remove_rigid_body@phys_anim_bone_array@@QAEXH@Z
     void copy_back_tween(Entity* owner, float t_);  // ?copy_back_tween@phys_anim_bone_array@@QAEXPAVEntity@@M@Z
+    int  get_bone(int rb_index);  // ?get_bone@phys_anim_bone_array@@QAEHH@Z
+
+    // ?m_list_phys_anim_bone@phys_anim_bone_array@@2V?$phys_static_array@Vphys_anim_bone@@$0FK@@@A
+    // (physics.o data @ 0xE01F10)
+    static phys_static_array<phys_anim_bone, 90> m_list_phys_anim_bone;
 };
+phys_static_array<phys_anim_bone, 90>
+    phys_anim_bone_array::m_list_phys_anim_bone;
 
 // ea: 0x6F4120
 void phys_anim_bone_array::copy_skeleton(Entity* owner,
@@ -2447,6 +2495,34 @@ void phys_anim_bone_array::copy_back_tween(Entity* owner, float t_)
 {
     (void)owner;
     (void)t_;
+}
+
+// ea: 0x6F8E20
+int phys_anim_bone_array::get_bone(int rb_index)
+{
+    int m_alloc_count = m_list_phys_anim_bone.m_alloc_count;
+    for (int i = 0; i < m_alloc_count; ++i)
+    {
+        if ((i < 0 || i >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                   108, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        if (m_list_phys_anim_bone.m_slot_array[i].m_rb_index == rb_index)
+        {
+            if ((i < 0 || i >= m_alloc_count)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                       108, "i >= 0 && i < m_alloc_count", defaultFileName))
+                __debugbreak();
+            return m_list_phys_anim_bone.m_slot_array[i].mBoneIndex;
+        }
+    }
+    if (_tlAssert(
+            "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc", 108,
+            "i >= 0 && i < m_alloc_count", defaultFileName))
+        __debugbreak();
+    return m_list_phys_anim_bone.m_slot_array[0].mBoneIndex;
 }
 
 // ea: 0x708D50
@@ -3001,6 +3077,13 @@ void KillEntity(Entity* e)
         e->takedamage = 1;
         e->health = -1;
     }
+}
+
+// ea: 0x7096E0
+void SetAVel(Entity* e)
+{
+    if ((e->flags & 0x400000) == 0)
+        rb_prop_system::add_entity(e, -1.0f, -1.0f);
 }
 
 // ea: 0x6F2F20
