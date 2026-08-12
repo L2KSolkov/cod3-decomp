@@ -3512,6 +3512,7 @@ struct rb_vehicle {
     static int sRenderAllVehicles;  // ?sRenderAllVehicles@rb_vehicle@@2HA (physics.o)
     static void remove_vehicle(rb_vehicle* v);  // ?remove_vehicle@rb_vehicle@@SAXQAV1@@Z physics.o
     static void end_path(rb_vehicle* v);        // physics.o
+    static void update_parms(vehicle_rb_parameter* p, bool from_network);  // physics.o
 };
 
 struct rigid_body_constraint_wheel {

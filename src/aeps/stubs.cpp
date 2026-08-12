@@ -10,3 +10,15 @@
 void __cod3_stub_aeps(void) {
     COD3_UNIMPLEMENTED("aeps");
 }
+
+// apsShrimpRenderer virtuals (apsShrimpRenderer.o; stubs, port later)
+#include "apsShrimpRenderer.h"
+float apsShrimpRenderer::GetChanceToRemove() const
+{
+    return 0.0f;
+}
+bool apsShrimpRenderer::GetMeshRadius(float& oRadius) const
+{
+    (void)oRadius;
+    return false;
+}

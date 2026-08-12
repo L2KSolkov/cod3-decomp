@@ -9,6 +9,36 @@
 #include <stdio.h>
 #include <string.h>
 
+// rb_vehicle statics + free helpers (physics.o; stubs, port later)
+void rb_vehicle::remove_vehicle(rb_vehicle* v)
+{
+    (void)v;
+}
+void rb_vehicle::end_path(rb_vehicle* v)
+{
+    (void)v;
+}
+void rb_vehicle::update_parms(vehicle_rb_parameter* p, bool from_network)
+{
+    (void)p; (void)from_network;
+}
+rb_vehicle* GetPlayerRBVehicle()
+{
+    return nullptr;
+}
+void rb_vehicle_debug_render_all() {}
+void rb_vehicle_unpause_physics(rb_vehicle* self)
+{
+    (void)self;
+}
+void rb_vehicle_update_from_network(rb_vehicle* self,
+                                    math::Position3* position,
+                                    math::Position3* angles, math::Dir3* vel,
+                                    math::Dir3* aVel)
+{
+    (void)self; (void)position; (void)angles; (void)vel; (void)aVel;
+}
+
 // Minimal view of RumbleManager (full class in core/core_systems.h).
 class RumbleEffectInstanceHandle {
 public:
