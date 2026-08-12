@@ -9472,23 +9472,31 @@ void biped_phys_info::epilog_frame_advance(float delta_t)
     }
 }
 
-// stubs until biped_system pulse internals are ported (physics.o inline
-// 0xAE18B0 / 0xAE19D0)
+// ea: 0x6F23B0
 void biped_system::apply_pulse_to_bone(phys_bones bone_id,
                                        const math::Dir3& pulse)
 {
-    (void)bone_id;
-    (void)pulse;
+    if (!g_in_physics_collision_callback)
+    {
+        math::Dir3 v4;
+        v4.v = _mm_mul_ps(pulse.v, _mm_set1_ps(g_ragdoll_mass_scale));
+        apply_pulse((int)bone_id, &v4);
+    }
 }
+// ea: 0x6F24D0
 void biped_system::apply_pulse_to_bone(phys_bones bone_id,
                                        const math::Position3& hitp,
                                        const math::Dir3& pulse,
                                        float torque_mult)
 {
-    (void)bone_id;
-    (void)hitp;
-    (void)pulse;
-    (void)torque_mult;
+    if (!g_in_physics_collision_callback)
+    {
+        math::Dir3 v7;
+        v7.v = hitp.v;
+        math::Dir3 v8;
+        v8.v = _mm_mul_ps(pulse.v, _mm_set1_ps(g_ragdoll_mass_scale));
+        apply_pulse((int)bone_id, &v7, &v8, torque_mult);
+    }
 }
 
 // ea: 0x70D210
