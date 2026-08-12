@@ -78,6 +78,8 @@ void calc_velocities(const math::Mat43& mat0, const math::Mat43& mat1,
                      math::Dir3* t_vel, math::Dir3* a_vel);
 void calc_sphere_inertia(float radius, math::Dir3* unit_inertia,
                          float* volume);  // ?calc_sphere_inertia@nuge@@SAXMPAVDir3@math@@PAM@Z
+void calc_box_inertia(const math::Dir3* dim, math::Dir3* unit_inertia,
+                      float* volume);  // ?calc_box_inertia@nuge@@SAXPBVDir3@math@@PAV23@PAM@Z
 }
 void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
 void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
@@ -276,6 +278,22 @@ void phys_full_inv_multiply_mat(math::Mat43& dest_m,
         _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v18, v18, 170), v6), v17));
 }
 TPakId CurPakId();  // ?CurPakId@@YA?AW4TPakId@@XZ (streamer.o)
+void ValidatePakId(TPakId pakId);  // streamer.o ?ValidatePakId@@YAXW4TPakId@@@Z
+// cdl_object_t (g_local.h view; local copy - cflags + aabb)
+struct cdl_object_t {
+    int   cflags;        // +0x00
+    int   sflags;        // +0x04
+    float center[3];     // +0x08
+    float box_radius[3]; // +0x14
+    float sphere_radius; // +0x20
+};
+struct vehicle_pathpos_t;
+void G_VehInitPathPos(vehicle_pathpos_t* vpp);  // g.o 0x4526D0
+bool FindInitialVel(Entity* e, math::Dir3& initial_t_vel,
+                    math::Dir3& initial_a_vel);  // physics.o
+void SetupConstraints(rb_extra_info* rb_inf);  // physics.o
+extern float PHYSICS_GRAVITY_SCALE_1;  // physics.o @ 0xE01F08
+extern const math::Dir3& PHYSICS_GRAVITY_DIRECTION_3;  // physics.o @ 0xE01F00
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                            math::Position3& result);  // g.o
 struct level_locals_t {
@@ -3883,13 +3901,320 @@ void rb_prop_system::add_entity_point_constraint(
     }
 }
 
-// stub until rb_prop_system::add_entity (0x706150) is ported
+// physics.o data globals (RBPropSys.cpp)
+float minDim = 8.0f;   // 0xE36B18
+float thresh_0 = 27.0f; // 0xE36B14
+static const math::Dir3 PHYSICS_GRAVITY_DIRECTION_3_data = {
+    _mm_setr_ps(0.0f, 0.0f, -1.0f, 0.0f)
+};
+const math::Dir3& PHYSICS_GRAVITY_DIRECTION_3 =
+    PHYSICS_GRAVITY_DIRECTION_3_data;
+
+// ea: 0x706150
 rigid_body* rb_prop_system::add_entity(Entity* e, float mass, float fric)
 {
-    (void)e;
-    (void)mass;
-    (void)fric;
-    return nullptr;
+    if ((_fpclass(e->r.currentAngles.v.m128_f32[0]) & 0x297) != 0
+        || (_fpclass(e->r.currentAngles.v.m128_f32[1]) & 0x297) != 0
+        || (_fpclass(e->r.currentAngles.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 335;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((e->r.currentAngles)[0]) && !IS_NAN((e->r.currentAngles)[1]) && !IS_NAN((e->r.currentAngles)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(e->r.currentOrigin.v.m128_f32[0]) & 0x297) != 0
+        || (_fpclass(e->r.currentOrigin.v.m128_f32[1]) & 0x297) != 0
+        || (_fpclass(e->r.currentOrigin.v.m128_f32[2]) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 336;
+        AeAssert::gCurrentExpr =
+            "!IS_NAN((e->r.currentOrigin)[0]) && !IS_NAN((e->r.currentOrigin)[1]) && !IS_NAN((e->r.currentOrigin)[2])";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid vector"))
+            __debugbreak();
+    }
+    if ((_fpclass(mass) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 337;
+        AeAssert::gCurrentExpr = "!IS_NAN(mass)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    if ((_fpclass(fric) & 0x297) != 0)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 338;
+        AeAssert::gCurrentExpr = "!IS_NAN(fric)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Invalid number!"))
+            __debugbreak();
+    }
+    int m_alloc_count = g_list_rb_extra_info.m_alloc_count;
+    for (int i = 0; i < g_list_rb_extra_info.m_alloc_count; ++i)
+    {
+        if ((i < 0 || i >= m_alloc_count)
+            && _tlAssert(
+                   "c:\\cod\\code\\tl\\physics\\include\\phys_memory_pool_base.inc",
+                   178, "i >= 0 && i < m_alloc_count", defaultFileName))
+            __debugbreak();
+        if (g_list_rb_extra_info.m_alloc_list[i]->m_ent == e)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+            AeAssert::gCurrentLine = 344;
+            AeAssert::gCurrentExpr = "ptr->m_ent != e";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Adding entity to physics that is already in physics"))
+                __debugbreak();
+        }
+        m_alloc_count = g_list_rb_extra_info.m_alloc_count;
+    }
+    if (e->mDObj == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 351;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Physics entity with no DObj."))
+            __debugbreak();
+        return nullptr;
+    }
+    DCGSet* bmodel = (DCGSet*)e->r.bmodel;
+    if (bmodel == nullptr)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 357;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Physics entity with no collmap"))
+            __debugbreak();
+        return nullptr;
+    }
+    unsigned int v42 = *(unsigned int*)((char*)bmodel + 0x4);
+    if (v42 > 10)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 366;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored())
+        {
+            DObj* mDObj = e->mDObj;
+            void** model0 = (void**)mDObj->models;
+            ValidatePakId((TPakId)(uintptr_t)model0[1]);
+            if (AeAssert::Warning(
+                    "Model %s has too many brushes (%d). Will not go into physics.",
+                    ((XModelLocal*)model0[0])->mStr, v42))
+                __debugbreak();
+        }
+        return nullptr;
+    }
+    unsigned int clip_i = 0;
+    while (clip_i < v42)
+    {
+        if (clip_i >= *(unsigned int*)((char*)bmodel + 0x4))
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JSV;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\cgbank.h";
+            AeAssert::gCurrentLine = 77;
+            AeAssert::gCurrentExpr = "index < size()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+            if (clip_i >= *(unsigned int*)((char*)bmodel + 0x4)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                       "index >= 0 && index < size()", "invalid index"))
+                __debugbreak();
+        }
+        cdl_object_t* obj =
+            &((cdl_object_t*)*(void**)((char*)bmodel + 0x8))[clip_i];
+        if ((obj->cflags & 0x241) != 0)
+            break;
+        ++clip_i;
+    }
+    if (clip_i == v42)
+    {
+        AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 379;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("no physics clips in the collmap"))
+            __debugbreak();
+        return nullptr;
+    }
+    if (m_alloc_count > g_rb_vehicle_list.m_alloc_count + 25)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 385;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Ran out of rb_infos"))
+            __debugbreak();
+        return nullptr;
+    }
+    rb_extra_info* v8 = g_list_rb_extra_info.add(
+        true, "phys memory pool add overflow.");
+    if (v8 == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 392;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Ran out of rb_infos"))
+            __debugbreak();
+        return nullptr;
+    }
+
+    math::Position3 mins, maxs;
+    mins.v = ((math::Position3*)((char*)bmodel + 0x30))->v;
+    maxs.v = ((math::Position3*)((char*)bmodel + 0x40))->v;
+    math::Dir3 dims;
+    dims.v = _mm_sub_ps(maxs.v, mins.v);
+    dims.v.m128_f32[0] =
+        (dims.v.m128_f32[0] < minDim) ? minDim : dims.v.m128_f32[0];
+    dims.v.m128_f32[1] =
+        (dims.v.m128_f32[1] < minDim) ? minDim : dims.v.m128_f32[1];
+    dims.v.m128_f32[2] =
+        (dims.v.m128_f32[2] < minDim) ? minDim : dims.v.m128_f32[2];
+    math::Position3 center;
+    center.v = _mm_mul_ps(_mm_add_ps(maxs.v, mins.v), _mm_set1_ps(0.5f));
+
+    math::Dir3 unit_inertia;
+    float volume;
+    nuge::calc_box_inertia(&dims, &unit_inertia, &volume);
+    __m128 v18 = _mm_mul_ps(dims.v, dims.v);
+    float dim2 =
+        v18.m128_f32[0] + (v18.m128_f32[1] + v18.m128_f32[2]);
+
+    math::Mat43 transform;
+    SetIdentity(transform);
+    transform.w.v = _mm_xor_ps(Float4_SignMask_12, center.v);
+    float bs_radius = sqrtf(dim2) * 0.5f;
+    rigid_body* rb = phys_sys::create_rigid_body(false);
+    if (rb == nullptr)
+    {
+        g_list_rb_extra_info.remove(v8);
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 431;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Ran out of rigid bodies."))
+            __debugbreak();
+        return nullptr;
+    }
+    v8->set(e, rb, transform, bs_radius, center);
+
+    DObj* mDObj = e->mDObj;
+    void* mValue = mDObj->mPhysDataValue;
+    TPakId mPakId = (TPakId)mDObj->mPhysDataPakId;
+    ValidatePakId(mPakId);
+    if (mValue != nullptr)
+    {
+        ValidatePakId(mPakId);
+        mass = ((PhysData*)mValue)->mMass;
+        ValidatePakId(mPakId);
+        fric = ((PhysData*)mValue)->mFric;
+        if (mass > 0.0f && fric >= 0.0f)
+            goto have_mass;
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 451;
+        AeAssert::gCurrentExpr = "mass > 0.0f && fric >= 0.0f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad mass or fiction on physData."))
+            __debugbreak();
+    }
+    else
+    {
+        float bounce;
+        CalculatePhysData(e, mass, fric, bounce);
+    }
+have_mass:
+    if (mass < 0.0f)
+        mass = 0.1f;
+    float fric_coef = 0.5f;
+    if (bs_radius <= 40.0f)
+        fric_coef = 0.2f;
+    if (fric >= 0.0f && fric <= 1.0f)
+        fric_coef = fric;
+
+    transform = e->CalcRotTranMat43();
+    __m128 v24 = center.v;
+    __m128 v25 = _mm_add_ps(
+        _mm_mul_ps(_mm_shuffle_ps(v24, v24, 170), transform.z.v),
+        transform.w.v);
+    __m128 v26 = _mm_mul_ps(_mm_shuffle_ps(v24, v24, 85), transform.y.v);
+    __m128 v27 = _mm_mul_ps(_mm_shuffle_ps(v24, v24, 0), transform.x.v);
+    __m128 inertia = _mm_mul_ps(unit_inertia.v, _mm_set1_ps(mass / volume));
+    float iy = inertia.m128_f32[1];
+    float iz = inertia.m128_f32[2];
+    float ix = inertia.m128_f32[0];
+    transform.w.v = _mm_add_ps(_mm_add_ps(v27, v26), v25);
+    // smallest moment
+    float smallest = (iz <= ix) ? iz : ix;
+    if (iy <= smallest)
+        smallest = iy;
+    if (smallest < 0.0099999998f)
+    {
+        if (smallest <= 0.0000099999997f)
+        {
+            AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+            AeAssert::gCurrentLine = 483;
+            AeAssert::gCurrentExpr = "smallest_moment > 0.00001f";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(defaultFileName))
+                __debugbreak();
+        }
+        inertia = _mm_mul_ps(inertia,
+                             _mm_set1_ps(0.01f / smallest));
+    }
+    math::Dir3 zero_tvel, zero_avel;
+    zero_tvel.v = _mm_setzero_ps();
+    zero_avel.v = _mm_setzero_ps();
+    FindInitialVel(e, zero_tvel, zero_avel);
+    G_EntUnlink(e);
+    if (e->scr_vehicle != nullptr)
+        G_VehInitPathPos(
+            (vehicle_pathpos_t*)&((scr_vehicle_t*)e->scr_vehicle)->pathPos);
+    rb->set(mass, reinterpret_cast<const math::Dir3&>(inertia), transform,
+            zero_tvel, zero_avel, fric_coef, 3);
+    rb->set_gravity_dir(PHYSICS_GRAVITY_DIRECTION_3);
+    rb->m_gravity_multiplier = PHYSICS_GRAVITY_SCALE_1;
+    rb->set_max_avel(8.0f);
+    e->flags |= 0x400000;
+    if (g_in_physics_collision_callback)
+        v8->collision_prolog();
+    int big_dims = 0;
+    for (int j = 0; j < 3; ++j)
+        if (dims.v.m128_f32[j] > thresh_0)
+            ++big_dims;
+    if (big_dims < 2)
+    {
+        v8->m_priority = 0;
+        v8->m_ent->mFlags &= ~1u;
+        v8->m_flags.mMask &= ~2u;
+        v8->m_flags.mMask &= ~4u;
+        v8->m_flags.mMask &= ~8u;
+    }
+    v8->evaluate_effect_priority();
+    SetupConstraints(v8);
+    e->Notify(hash_const.physicsstart);
+    return rb;
 }
 
 // ea: 0x6FE9B0
@@ -4343,14 +4668,6 @@ struct gjk_geom_info {
     void* m_avl_left;     // +0x08
     void* m_avl_right;    // +0x0C
     int   m_avl_balance;  // +0x10
-};
-// cdl_object_t (g_local.h view; local copy - cflags + aabb)
-struct cdl_object_t {
-    int   cflags;        // +0x00
-    int   sflags;        // +0x04
-    float center[3];     // +0x08
-    float box_radius[3]; // +0x14
-    float sphere_radius; // +0x20
 };
 class CGBank;
 // phys_gjk_geom_cod_base (phys_gjk.h view; 64 bytes, IDA ordinal). Base of
@@ -7533,7 +7850,7 @@ void biped_system::setup_physics(Entity* owner)
 }
 
 // ?PHYSICS_GRAVITY_SCALE_1@@3MB (physics.o data @ 0xE01F08)
-const float PHYSICS_GRAVITY_SCALE_1 = 42.5f;
+float PHYSICS_GRAVITY_SCALE_1 = 42.5f;
 
 // ea: 0x6FAA60
 void biped_system::update_stability(float delta_t)

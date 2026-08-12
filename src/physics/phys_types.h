@@ -332,6 +332,16 @@ public:
         m_col_mat.w.v = _mm_add_ps(m_col_mat.w.v, t.v);
     }
 
+    // set_gravity_dir / set_max_avel - ea: 0x6E4EA0 / 0x6E4EC0 (inline COMDATs)
+    void set_gravity_dir(const math::Dir3& d)  // ?set_gravity_dir@rigid_body@@QAEXABVDir3@math@@@Z
+    {
+        m_gravity_dir.v = d.v;
+    }
+    void set_max_avel(float max_avel)  // ?set_max_avel@rigid_body@@QAEXM@Z
+    {
+        m_max_avel = max_avel;
+    }
+
     rigid_body() {}  // ea: 0x880C60
     rigid_body& operator=(const rigid_body& other);  // ea: 0x892160
 
