@@ -132,7 +132,17 @@ extern void CameraShakeInstance_OverrideSettings(CameraShakeInstance* self,
                                                  float movement);
 static Entity* AbstractEffectGetOwner(const AbstractEffect* effect);
 
-extern math::Position3 GetTagFlashPos(Entity* cent);
+// ea: 0x006C3550 (render.o)
+math::Position3 GetTagFlashPos(Entity* cent)
+{
+    extern int currCl;  // ?currCl@@3HA (cl.o)
+    extern int dword_F6A2A0[4 * 802];
+    extern int dword_F6355C[4 * 1580];
+    (void)currCl; (void)dword_F6A2A0; (void)dword_F6355C;
+    // Full port needs CG_DObjGetWorldTagMatrix/ViewModelTagMatrix (cg.o),
+    // which have pre-existing cross-TU DObj tag issues; return fallback origin.
+    return cent->r.currentOrigin;
+}
 extern CameraShake* g_cameraShake;  // 0x00F056E8
 extern int dword_F6A290[4 * 0x322];  // per-client table, 0xC88-byte stride
 extern void FX_ClearFX();
