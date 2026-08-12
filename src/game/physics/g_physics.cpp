@@ -1516,6 +1516,88 @@ void do_all_biped_system_process_collision_events();  // 0x704A10
 class phys_gjk_info;
 class phys_contact_manifold_process;
 class TouchEntityData;
+class EntityHandleDb;
+template <typename Db, typename T>
+class DbLinkedHandle {
+public:
+    Handle mHandle;  // +0x00
+};
+int CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
+                    DbLinkedHandle<EntityHandleDb, Entity>* entityList,
+                    int maxcount, int contentmask);  // game.o
+
+// TouchEntityData (g_local.h view; local copy - 0x230 bytes)
+class TouchEntityData {
+public:
+    int   num;  // +0x00
+    uint8_t _pad4[0x10 - 0x04];
+    math::Position3 mins;  // +0x10
+    math::Position3 maxs;  // +0x20
+    DbLinkedHandle<EntityHandleDb, Entity> touch[128];  // +0x30
+};
+
+// subdivision_visitor (g_local.h view; local copy)
+enum visit_result_t { CONTINUE_VISITING = 0 };
+struct subdivision_visitor {
+    virtual visit_result_t visit(int cluster_offset) = 0;
+};
+
+// rtree types (g_local.h / g_rtree.cpp views; local copies)
+struct rtree_node_t {
+    int16_t minx;  // +0x00
+    int16_t maxx;  // +0x02
+    int16_t miny;  // +0x04
+    int16_t maxy;  // +0x06
+    int16_t minz;  // +0x08
+    int16_t maxz;  // +0x0A
+    int     offs;  // +0x0C
+};
+struct rtree_root_t {
+    math::Position3 region_center;        // +0x00
+    math::Position3 region_halfsize_inv32k;  // +0x10
+    rtree_node_t*   simd_tree;            // +0x20
+    void*           simd_pointer_base;    // +0x24
+    int             top_level_aabb_count; // +0x28
+    int             nsimd_levels;         // +0x2C
+};
+
+// CGBank (g_local.h view; rtree_root only)
+class CGBank {
+public:
+    uint8_t _pad0[0x90];
+    rtree_root_t rtree_root;  // +0x90
+};
+
+// CGBankManager (g_local.h view; minimal - sInst is port-local void*)
+class CGBankManager {
+public:
+    static void* sInst;  // ?sInst@CGBankManager@@2PAXA (port-local)
+    uint8_t _pad4[0x0C - 0x04];
+    int    mCount;       // +0x0C
+    CGBank* mBankArray[99];  // +0x10
+};
+
+// physics_colgeom_visitor (physics.o; subclass of subdivision_visitor)
+struct physics_colgeom_visitor : subdivision_visitor {
+    uint8_t _pad4[0x804 - 0x04];
+    int     m_object_list_count;  // +0x804
+    CGBank* m_cur_bank;           // +0x808
+    int     m_mask;               // +0x80C
+
+    visit_result_t visit(int cluster_offset);  // physics.o inline 0xB08E20
+};
+
+// stub until physics_colgeom_visitor::visit (0xB08E20) is ported
+visit_result_t physics_colgeom_visitor::visit(int cluster_offset)
+{
+    (void)cluster_offset;
+    return CONTINUE_VISITING;
+}
+
+// traverse_rtree (physics.o; ported in g_rtree.cpp)
+void traverse_rtree(const math::Position3& p0, const math::Position3& p1,
+                    const rtree_root_t& root, subdivision_visitor& visitor);
+
 struct physics_colgeom_visitor;
 class prop_collide_callback;
 template <typename K, typename V> class phys_inplace_avl_tree;
@@ -1534,6 +1616,52 @@ int   g_list_prop_collide_callback_count = 0;       // ?g_list_prop_collide_call
 phys_inplace_avl_tree<rigid_body_pair_key, prop_collide_callback>*
     g_prop_collide_callback_database = nullptr;  // ?g_prop_collide_callback_database@@3V?$phys_inplace_avl_tree@Vrigid_body_pair_key@@Vprop_collide_callback@@@@A
 extern bool tlScratchpadLocked;  // ?tlScratchpadLocked@@3_NA (tl_system.o)
+
+// ea: 0x6F30F0
+TouchEntityData* generate_local_entities_list(const math::Dir3& aabb_mn,
+                                              const math::Dir3& aabb_mx,
+                                              int mask)
+{
+    g_phys_touch_entity_data->mins.v = aabb_mn.v;
+    g_phys_touch_entity_data->maxs.v = aabb_mx.v;
+    g_phys_touch_entity_data->num = CM_AreaEntities(
+        g_phys_touch_entity_data->mins, g_phys_touch_entity_data->maxs,
+        g_phys_touch_entity_data->touch, 128, mask);
+    return g_phys_touch_entity_data;
+}
+
+// ea: 0x6F70B0
+physics_colgeom_visitor* generate_local_primitive_list(
+    const math::Dir3& aabb_mn, const math::Dir3& aabb_mx, int mask)
+{
+    physics_colgeom_visitor* v4 = g_physics_colgeom_visitor;
+    g_physics_colgeom_visitor->m_object_list_count = 0;
+    v4->m_cur_bank = nullptr;
+    v4->m_mask = mask;
+    CGBankManager* mgr = (CGBankManager*)CGBankManager::sInst;
+    int mCount = mgr->mCount;
+    for (int v5 = 0; v5 < mCount; ++v5)
+    {
+        if (v5 > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        g_physics_colgeom_visitor->m_cur_bank = mgr->mBankArray[v5];
+        math::Position3 v9;
+        v9.v = aabb_mx.v;
+        math::Position3 v8;
+        v8.v = aabb_mn.v;
+        traverse_rtree(v8, v9,
+                       g_physics_colgeom_visitor->m_cur_bank->rtree_root,
+                       *g_physics_colgeom_visitor);
+    }
+    return g_physics_colgeom_visitor;
+}
 
 // ea: 0x6F6D20
 void collision_memory_epilog()
