@@ -53,6 +53,22 @@ void SceneManager::ResetAllStaticModels() {}
 void SceneManager::RestartPersistentArray() {}
 void SceneManager::InstanceEntities() {}
 
+// StreamZoneManager stubs (streamer.o; ported later)
+void StreamZoneManager::Update(int cellNum, const math::Position3* pos,
+                               bool forceReset)
+{
+    (void)cellNum; (void)pos; (void)forceReset;
+}
+void StreamZoneManager::CheckpointRestart()
+{
+    // stub
+}
+const void* StreamZoneManager::GetCellPakInfo(int cellIndex)
+{
+    (void)cellIndex;
+    return nullptr;
+}
+
 // ============================================================================
 // Cross-object externs
 // ============================================================================

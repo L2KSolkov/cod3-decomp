@@ -35,6 +35,29 @@ bool MPUIInterface::InSession()  // ?InSession@MPUIInterface@@SA?B_NXZ
     return mInSession;
 }
 
+// mp.o statics (stubs; ported later)
+bool MPUIInterface::BlockUntilNetReady()
+{
+    return false;
+}
+bool MPUIInterface::GameListingGet(unsigned int& numGames)
+{
+    (void)numGames;
+    return false;
+}
+void MPUIInterface::ExitGame()
+{
+    // stub
+}
+void MPUIInterface::QueryFromID(XNKID* sessionID)
+{
+    (void)sessionID;
+}
+void MPUIInterface::Step()
+{
+    // stub
+}
+
 // ============================================================================
 // Assertion system externs (core_xboxr:AeAssert.o)
 // ============================================================================

@@ -309,6 +309,7 @@ public:
     static void QueryFromID(XNKID* sessionID);  // ?QueryFromID@MPUIInterface@@SAXPAUXNKID@@@Z
     static void Step();                    // ?Step@MPUIInterface@@SAXXZ
     static bool GameListingGet(unsigned int& numGames);  // ?GameListingGet@MPUIInterface@@SAPAUsGameListing@@AAK@Z
+    static bool BlockUntilNetReady();      // ?BlockUntilNetReady@MPUIInterface@@SA_NXZ
     static bool mLiveQueryActive;   // ?mLiveQueryActive@MPUIInterface@@1_NA
     static bool mQueryFromID;       // ?mQueryFromID@MPUIInterface@@1_NA
     static bool mIsViewableOnline;  // ?mIsViewableOnline@MPUIInterface@@1_NA

@@ -34,3 +34,21 @@ int XModelTraceLine(IVPointer<XModel> model, trace_t* results,
     (void)localStart; (void)localEnd; (void)contentmask;
     return 0;
 }
+
+// FogConfig (render.o; stubs, port later)
+namespace FogConfig {
+void GetEnabled(int& enable) { (void)enable; }
+void GetColor(float& red, float& green, float& blue)
+{
+    (void)red; (void)green; (void)blue;
+}
+void GetRange(float& n, float& f) { (void)n; (void)f; }
+void GetVal(float& s, float& e) { (void)s; (void)e; }
+void SetColor(float r, float g, float b)
+{
+    (void)r; (void)g; (void)b;
+}
+void SetRange(float n, float f) { (void)n; (void)f; }
+void SetVal(float s, float e) { (void)s; (void)e; }
+void SetEnabled(int enable) { (void)enable; }
+}

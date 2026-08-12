@@ -134,6 +134,32 @@ DialogMenuSystem* FEManager::GetDMS(int client)
 void FEManager::DrawDiscError() {}
 void FEManager::UpdateLoadingMenu(float percentDone) { (void)percentDone; }
 
+// PanelFile members (shell.o; stubs, port later)
+PanelFile::~PanelFile() {}
+PanelFile* PanelFile::Clone()
+{
+    return nullptr;
+}
+PanelQuad* PanelFile::GetPointer(const char* search_name)
+{
+    (void)search_name;
+    return nullptr;
+}
+FEText* PanelFile::GetTextPointer(const char* search_name)
+{
+    (void)search_name;
+    return nullptr;
+}
+void PanelFile::Draw() {}
+void PanelFile::UpdateSplitScreen(int viewport, int old_viewport)
+{
+    (void)viewport; (void)old_viewport;
+}
+void PanelFile::UpdateWidescreen(bool widescreen, float about_x)
+{
+    (void)widescreen; (void)about_x;
+}
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -321,7 +347,7 @@ void XboxLiveOptionsMenu::Draw()
 {
     PanelFile* mPanel = this->mPanel;
     if (mPanel != nullptr)
-        PanelFile::Draw(mPanel);
+        mPanel->Draw();
     if (mHelpbar != nullptr)
         mHelpbar->Draw();
     if (mInstructionsText != nullptr)
@@ -422,7 +448,7 @@ void XboxLiveOptionsMenu::UpdateSplitScreen()
     if (mPanel != nullptr)
     {
         int viewport = 0;
-        PanelFile::UpdateSplitScreen(mPanel, viewport, viewport);
+        mPanel->UpdateSplitScreen(viewport, viewport);
         if (mHelpbar != nullptr)
             mHelpbar->UpdateForSplitScreen(viewport, viewport);
     }
@@ -437,7 +463,7 @@ void XboxLiveOptionsMenu::UpdateWidescreen(BOOL widescreen)
         if (mPanel != nullptr)
         {
             mWidescreen = widescreen;
-            PanelFile::UpdateWidescreen(mPanel, widescreen, 320.0f);
+            mPanel->UpdateWidescreen(widescreen, 320.0f);
             if (mHelpbar != nullptr)
                 mHelpbar->UpdateForWidescreen(widescreen);
         }
@@ -455,7 +481,7 @@ void XboxLiveOptionsMenu::WireForSignedOut()
     for (int i = 0; i < 4; ++i)
     {
         FEText* TextPointer =
-            PanelFile::GetTextPointer(mPanel, szSlotText[i]);
+            mPanel->GetTextPointer(szSlotText[i]);
         TextPointer->SetAlpha(1036831949);
     }
 }
@@ -469,7 +495,7 @@ void XboxLiveOptionsMenu::WireForSignedIn()
     for (int i = 0; i < 4; ++i)
     {
         FEText* TextPointer =
-            PanelFile::GetTextPointer(mPanel, szSlotText[i]);
+            mPanel->GetTextPointer(szSlotText[i]);
         TextPointer->SetColorMenuItem(m_pOldTextColor[i].i,
                                       m_pOldSelectedTextColor[i].i);
     }
@@ -486,12 +512,12 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     bool v4 = mVersion <= 0;
     mPanel = v2;
     if (!v4)
-        mPanel = PanelFile::Clone(v2);
+        mPanel = v2->Clone();
 
     const char* bgArtNames[3] = { "bkg", "bkg_detail_01", "bkg_detail_02" };
     for (int i = 0; i < 3; ++i)
     {
-        m_pBackgroundArt[i] = PanelFile::GetPointer(mPanel, bgArtNames[i]);
+        m_pBackgroundArt[i] = mPanel->GetPointer(bgArtNames[i]);
         if (m_pBackgroundArt[i] == nullptr)
         {
             ASSERT("m_pBackgroundArt[i]",
@@ -514,7 +540,7 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     };
     do
     {
-        m_pText[v6] = PanelFile::GetTextPointer(mPanel, rowTextNames[v6]);
+        m_pText[v6] = mPanel->GetTextPointer(rowTextNames[v6]);
         if (m_pText[v6] == nullptr)
         {
             ASSERT("m_pText[i]",
@@ -575,7 +601,7 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     };
     for (int j = 0; j < 5; ++j)
     {
-        m_pRowArt[j] = PanelFile::GetPointer(mPanel, rowArtNames[j]);
+        m_pRowArt[j] = mPanel->GetPointer(rowArtNames[j]);
         if (m_pRowArt[j] == nullptr)
         {
             ASSERT("m_pRowArt[i]",
@@ -589,9 +615,9 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     for (int k = 5; k != 0; --k)
     {
         snprintf(szSlotGeometry, 0x40, "slot_%02d_arrow_left", v19);
-        PanelFile::GetPointer(mPanel, szSlotGeometry)->SetShown(false);
+        mPanel->GetPointer(szSlotGeometry)->SetShown(false);
         snprintf(szSlotGeometry, 0x40, "slot_%02d_arrow_right", v19);
-        PanelFile::GetPointer(mPanel, szSlotGeometry)->SetShown(false);
+        mPanel->GetPointer(szSlotGeometry)->SetShown(false);
         ++v19;
     }
 
@@ -600,7 +626,7 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     };
     for (int m = 0; m < 4; ++m)
     {
-        m_pLineArt[m] = PanelFile::GetPointer(mPanel, lineArtNames[m]);
+        m_pLineArt[m] = mPanel->GetPointer(lineArtNames[m]);
         if (m_pLineArt[m] == nullptr)
         {
             ASSERT("m_pLineArt[i]",
@@ -616,12 +642,12 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     for (int n = 0; n < 5; ++n)
     {
         const char* v25 = slotTextNames[n];
-        FEText* TextPointer = PanelFile::GetTextPointer(mPanel, v25);
+        FEText* TextPointer = mPanel->GetTextPointer(v25);
         m_ListBox.SetItem(n, 0, TextPointer, 0);
         m_ListBox.SetText(n, 0, szXBoxOptionReferences[n]);
-        FEText* v49 = PanelFile::GetTextPointer(mPanel, v25);
+        FEText* v49 = mPanel->GetTextPointer(v25);
         m_pOldTextColor[n].i = v49->GetColor();
-        FEText* v27 = PanelFile::GetTextPointer(mPanel, v25);
+        FEText* v27 = mPanel->GetTextPointer(v25);
         m_pOldSelectedTextColor[n].i = v27->GetUnselectedColor();
     }
     m_ListBox.SetAllColumnsSelectable(false);
@@ -649,10 +675,10 @@ void XboxLiveOptionsMenu::OnActivate()
     if (mWidescreen != (cg_widescreen_integer != 0))
         UpdateWidescreen(cg_widescreen_integer != 0);
     friendIcon = 0;
-    if (PanelFile::GetPointer(mPanel, "game_invite") != nullptr)
-        PanelFile::GetPointer(mPanel, "game_invite")->SetShown(false);
-    if (PanelFile::GetPointer(mPanel, "friend_request") != nullptr)
-        PanelFile::GetPointer(mPanel, "friend_request")->SetShown(false);
+    if (mPanel->GetPointer("game_invite") != nullptr)
+        mPanel->GetPointer("game_invite")->SetShown(false);
+    if (mPanel->GetPointer("friend_request") != nullptr)
+        mPanel->GetPointer("friend_request")->SetShown(false);
     if (v2->internalState != kSignedIn)
     {
         WireForSignedOut();
@@ -748,20 +774,20 @@ void XboxLiveOptionsMenu::Update(float time_inc)
     char* Icon = LiveWrapper::theWrapper->GetIcon(0);
     if (Icon == nullptr || LiveWrapper::theWrapper->internalState != kSignedIn)
     {
-        PanelFile::GetPointer(mPanel, "game_invite")->SetShown(false);
+        mPanel->GetPointer("game_invite")->SetShown(false);
         goto LABEL_8;
     }
     if (Icon == ICON_GAME_INVITE)
     {
-        PanelFile::GetPointer(mPanel, "game_invite")->SetShown(true);
+        mPanel->GetPointer("game_invite")->SetShown(true);
 LABEL_8:
-        PanelFile::GetPointer(mPanel, "friend_request")->SetShown(false);
+        mPanel->GetPointer("friend_request")->SetShown(false);
         goto LABEL_9;
     }
     if (Icon == ICON_FRIEND_REQUEST)
     {
-        PanelFile::GetPointer(mPanel, "game_invite")->SetShown(false);
-        PanelFile::GetPointer(mPanel, "friend_request")->SetShown(true);
+        mPanel->GetPointer("game_invite")->SetShown(false);
+        mPanel->GetPointer("friend_request")->SetShown(true);
     }
 LABEL_9:
     if (waitingForSignIn && LiveWrapper::theWrapper->internalState != kSigningIn)
@@ -867,8 +893,8 @@ void InGameLiveOptionsMenu::OnActivate()
     if (v1 != nullptr)
     {
         friendIcon = 0;
-        PanelFile::GetPointer(panel, "game_invite")->SetVisibility(0);
-        PanelFile::GetPointer(panel, "friend_request")->SetVisibility(0);
+        panel->GetPointer("game_invite")->SetVisibility(0);
+        panel->GetPointer("friend_request")->SetVisibility(0);
         wasSignedIn = v1->internalState == kSignedIn;
         FEMenu::OnActivate();
         if ((v1->localPlayers[0].notificationFlags & 1) != 0)
@@ -899,7 +925,7 @@ void InGameLiveOptionsMenu::OnActivate()
 void InGameLiveOptionsMenu::Draw()
 {
     if (panel != nullptr)
-        PanelFile::Draw(panel);
+        panel->Draw();
     movie_manager::render();
     FEMenu::Draw();
 }
@@ -1015,8 +1041,8 @@ void InGameLiveOptionsMenu::Update(float time_inc)
     FEMenu::Update(time_inc);
     movie_manager::frame_advance();
     PanelQuad* Pointer =
-        PanelFile::GetPointer(panel, "friend_request");
-    PanelQuad* v3 = PanelFile::GetPointer(panel, "game_invite");
+        panel->GetPointer("friend_request");
+    PanelQuad* v3 = panel->GetPointer("game_invite");
     ShowNotificationIcon(&friendIcon, v3, Pointer);
     if (waitingForSignIn && LiveWrapper::theWrapper->internalState != kSigningIn)
         waitingForSignIn = false;

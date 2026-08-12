@@ -167,13 +167,14 @@ struct PanelFile {
     uint8_t   _pad1D[3];               // +0x1D
     char      mName[64];               // +0x20
 
-    static PanelFile* Clone(PanelFile* pf);
-    static PanelQuad* GetPointer(PanelFile* pf, const char* search_name);
-    static FEText* GetTextPointer(PanelFile* pf, const char* search_name);
-    static void Draw(PanelFile* pf);
-    static void UpdateSplitScreen(PanelFile* pf, int viewport, int old_viewport);
-    static void UpdateWidescreen(PanelFile* pf, bool widescreen, float about_x);
-    ~PanelFile();
+    // shell.o members (?Clone@PanelFile@@QAEPAV1@XZ etc.)
+    PanelFile* Clone();
+    PanelQuad* GetPointer(const char* search_name);
+    FEText* GetTextPointer(const char* search_name);
+    void Draw();
+    void UpdateSplitScreen(int viewport, int old_viewport);
+    void UpdateWidescreen(bool widescreen, float about_x);
+    ~PanelFile();  // ??1PanelFile@@QAE@XZ
 };
 static_assert(sizeof(PanelFile) == 0x60, "PanelFile size mismatch");
 static_assert(offsetof(PanelFile, pquads) == 0x00, "PanelFile::pquads offset mismatch");
