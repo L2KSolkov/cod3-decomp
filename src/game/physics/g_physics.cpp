@@ -341,6 +341,8 @@ extern int gPhysicsFinder;  // ?gPhysicsFinder@@3HA (g.o)
 // ?low_end_speed@@3MA / ?percent_to_give@@3MA (physics.o data @ 0xE36B2C/0xE36B28)
 float low_end_speed = 300.0f;    // 0x43960000
 float percent_to_give = 1.5f;    // 0x3FC00000
+// ?min_speed2@@3MA (physics.o data @ 0xE36B20; 5000.0)
+float min_speed2 = 5000.0f;      // 0x45992000
 struct vmCvar_t {
     int integer;  // +0x00 (minimal)
 };
@@ -351,6 +353,8 @@ public:
     static MultiplayerMgr* sInst;  // ?sInst@MultiplayerMgr@@2PAV1@A
     void ApplyLocalPhysicsToVehicle(Entity* vehicle, math::Mat43* mat,
                                     math::Dir3* velocity);
+    void VehicleRequestOwnership(Entity* vehicle,
+                                 Entity* newOwner);  // core.o (stub)
 };
 // stub until MultiplayerMgr internals are ported (core.o)
 void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
@@ -358,6 +362,11 @@ void MultiplayerMgr::ApplyLocalPhysicsToVehicle(Entity* vehicle,
                                                 math::Dir3* velocity)
 {
     (void)vehicle; (void)mat; (void)velocity;
+}
+void MultiplayerMgr::VehicleRequestOwnership(Entity* vehicle,
+                                             Entity* newOwner)
+{
+    (void)vehicle; (void)newOwner;
 }
 MultiplayerMgr* MultiplayerMgr::sInst = nullptr;
 class EntityManager {
@@ -1992,6 +2001,7 @@ struct scr_vehicle_t {
     // (g.o; g_scr_vehicle.cpp defines the pointer-arg variant)
     void CollisionDamage(Entity* ent, const math::Position3* pos,
                          const math::Position3* dir, float intensity);
+    void AssignPhysics(Entity* player);  // ?AssignPhysics@scr_vehicle_t@@QAEXPAVEntity@@@Z (g.o)
 };
 
 // ea: 0x6FE100
@@ -6840,10 +6850,6 @@ struct cdl_patch_rec {
     uint16_t num_inds;
 };
 
-void prop_phys_collision::collide_entities(rb_extra_info* rb_inf)
-{
-    (void)rb_inf;
-}
 // ea: 0x7197E0
 bool are_potentially_colliding(const math::Dir3* b1_mn,
                                const math::Dir3* b1_mx,
@@ -7026,6 +7032,146 @@ void phys_collide_do_gjk_collide_and_contact_manifold(phys_collide_data* d)
         if (pcd_callback == nullptr || pcd_callback->process(d))
             d->cman_process->process(d);
     }
+}
+
+// collide_entities_callback (physics.o; 12 bytes: vftable + ent1 + ent2).
+// process - ea: 0x71EBA0
+class collide_entities_callback : public phys_collide_data_callback {
+public:
+    Entity* ent1;  // +0x04 (the rb_inf's owner entity)
+    Entity* ent2;  // +0x08 (the hit entity)
+
+    bool process(phys_collide_data* d) override;
+};
+
+// list_phys_collide_data_add - ea: 0x71E2C0 (physics.o inline COMDAT)
+void list_phys_collide_data_add(phys_collide_data* d)
+{
+    d->gjk_ci = g_phys_gjk_cache_system.get_gjk_cache_info(
+        d->id1, d->id2, true);
+    phys_collide_do_gjk_collide_and_contact_manifold(d);
+}
+
+// ea: 0x71EBA0
+bool collide_entities_callback::process(phys_collide_data* d)
+{
+    const math::Mat43* cg1_to_world_xform = d->cg1_to_world_xform;
+    math::Position3 hitp;
+    hitp.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(
+                _mm_shuffle_ps(d->cg1_cinfo_loc->m_p1.v,
+                               d->cg1_cinfo_loc->m_p1.v, 0),
+                cg1_to_world_xform->x.v),
+            _mm_mul_ps(
+                _mm_shuffle_ps(d->cg1_cinfo_loc->m_p1.v,
+                               d->cg1_cinfo_loc->m_p1.v, 0x55),
+                cg1_to_world_xform->y.v)),
+        _mm_add_ps(
+            _mm_mul_ps(
+                _mm_shuffle_ps(d->cg1_cinfo_loc->m_p1.v,
+                               d->cg1_cinfo_loc->m_p1.v, 0xAA),
+                cg1_to_world_xform->z.v),
+            cg1_to_world_xform->w.v));
+    math::Dir3 normal;
+    normal.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(
+                _mm_shuffle_ps(d->cg1_cinfo_loc->m_n.v,
+                               d->cg1_cinfo_loc->m_n.v, 0),
+                cg1_to_world_xform->x.v),
+            _mm_mul_ps(
+                _mm_shuffle_ps(d->cg1_cinfo_loc->m_n.v,
+                               d->cg1_cinfo_loc->m_n.v, 0x55),
+                cg1_to_world_xform->y.v)),
+        _mm_mul_ps(
+            _mm_shuffle_ps(d->cg1_cinfo_loc->m_n.v,
+                           d->cg1_cinfo_loc->m_n.v, 0xAA),
+            cg1_to_world_xform->z.v));
+    if (ent2 != nullptr)
+    {
+        if (ent2->scr_vehicle != nullptr
+            && ((scr_vehicle_t*)ent2->scr_vehicle)->mRBVeh != nullptr)
+        {
+            if (ent1 != nullptr && ent1->scr_vehicle != nullptr)
+            {
+                Entity* physics_owner =
+                    *(Entity**)((char*)((scr_vehicle_t*)ent1->scr_vehicle)
+                                + 0x174);
+                if (IsLocalPlayer(physics_owner))
+                {
+                    if (((scr_vehicle_t*)ent2->scr_vehicle)
+                            ->seats[0].occupant
+                        == 0)
+                    {
+                        Entity* v15 =
+                            *(Entity**)((char*)((scr_vehicle_t*)ent1
+                                                    ->scr_vehicle)
+                                        + 0x174);
+                        MultiplayerMgr::sInst->VehicleRequestOwnership(ent2,
+                                                                       v15);
+                        Entity* v16 =
+                            *(Entity**)((char*)((scr_vehicle_t*)ent1
+                                                    ->scr_vehicle)
+                                        + 0x174);
+                        ((scr_vehicle_t*)ent2->scr_vehicle)
+                            ->AssignPhysics(v16);
+                    }
+                }
+            }
+            math::Dir3 neg_normal;
+            neg_normal.v = _mm_xor_ps(Float4_SignMask_12, normal.v);
+            ApplyPhysics(ent2, hitp, neg_normal, 0.1f, false,
+                         (hitLocation_t)4 /* HITLOC_TORSO_UPR */);
+        }
+        else if (ent2->scr_vehicle == nullptr)
+        {
+            rigid_body* rb1 = d->rb1;
+            int damage;
+            if (rb1->m_inv_mass < 0.25f
+                || (ent1->scr_vehicle != nullptr
+                    && ((scr_vehicle_t*)ent1->scr_vehicle)->mRBVeh != nullptr
+                    && (((rb_vehicle*)((scr_vehicle_t*)ent1->scr_vehicle)
+                             ->mRBVeh)
+                            ->m_flags.mMask
+                        & 0x100)
+                           != 0))
+            {
+                damage = 300;
+            }
+            else
+            {
+                __m128 v20 =
+                    _mm_mul_ps(rb1->m_t_vel.v, rb1->m_t_vel.v);
+                float v30 =
+                    v20.m128_f32[0]
+                    + (_mm_shuffle_ps(v20, v20, 85).m128_f32[0]
+                       + _mm_shuffle_ps(v20, v20, 170).m128_f32[0]);
+                float v21 = v30 * 0.60000002f;
+                if (v21 < 1.0f)
+                    v21 = 1.0f;
+                damage = (int)v21;
+            }
+            math::Dir3 neg_normal;
+            neg_normal.v = _mm_xor_ps(Float4_SignMask_12, normal.v);
+            G_Damage(ent2, ent1, ent1, &neg_normal.v.m128_f32[0],
+                     &hitp.v.m128_f32[0], damage, 0, 32,
+                     (EHitLocation)0 /* HITLOC_NONE */, -1);
+        }
+    }
+    rb_vehicle* v24 = ent1->scr_vehicle != nullptr
+                          ? (rb_vehicle*)((scr_vehicle_t*)ent1->scr_vehicle)
+                                ->mRBVeh
+                          : nullptr;
+    if (ent1->scr_vehicle == nullptr || v24 == nullptr
+        || (v24->m_flags.mMask & 0x100) == 0)
+    {
+        Entity* v25 = ent2;
+        if ((v25->flags & 0x400000) == 0 && v25->actor == nullptr
+            && v25->client == nullptr && v25->think != 0x0C)
+            return true;
+    }
+    return false;
 }
 
 void process_prop_collide_callbacks();  // 0x702740
@@ -8489,7 +8635,7 @@ void phys_anim_bone_array::copy_tween_start(Entity* owner)
 // XBoneHierarchy view (12 bytes: mName +0, mNameHash +4, mParentIndex +8)
 // Inverse-multiply helper matching DObjMatriceModelToLocal's SSE: the parent
 // rotation is transposed (orthonormal => inverse) and each row of bone is
-// dotted with its columns; the translation row is (bone.w - parent.w) Â· cols.
+// dotted with its columns; the translation row is (bone.w - parent.w) Ã‚Â· cols.
 static void InverseMultiplyLocal(const math::Mat43& parent, math::Mat43& bone)
 {
     __m128 x = parent.x.v, y = parent.y.v, z = parent.z.v, w = parent.w.v;
@@ -13915,5 +14061,357 @@ void prop_phys_collision::collide_terrain(rb_extra_info* rb_inf)
                 }
             }
         }
+    }
+}
+
+// ea: 0x70A330
+void prop_phys_collision::collide_entities(rb_extra_info* rb_inf)
+{
+    Entity* m_ent = rb_inf->m_ent;
+    if (m_ent == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 676, "ent1",
+                     defaultFileName))
+        __debugbreak();
+    rigid_body* m_rb = rb_inf->m_rb;
+    if (rb_inf->m_gjk_geom_list == nullptr
+        && _tlAssert(
+               "c:\\cod\\code\\game\\RBCollision.cpp", 678,
+               "rb_inf->m_gjk_geom_list", defaultFileName))
+        __debugbreak();
+    rb_vehicle* m_rb_vehicle = rb_inf->m_rb_vehicle;
+    const math::Mat43* m_cg_mesh_mat = rb_inf->m_cg_mesh_mat;
+    bool vehicle =
+        m_rb_vehicle != nullptr && (m_rb_vehicle->m_flags.mMask & 0x80) != 0;
+    phys_gjk_geom_list* gjk_geom_list =
+        (phys_gjk_geom_list*)rb_inf->m_gjk_geom_list;
+    math::Dir3 aabb_mn, aabb_mx;
+    // get_active_eps_aabb<phys_gjk_geom_list> (physics.o inline 0x718220)
+    aabb_mn.v = gjk_geom_list->m_aabb_mn.v;
+    aabb_mx.v = gjk_geom_list->m_aabb_mx.v;
+    add_active_eps_aabb(&aabb_mn, &aabb_mx);
+    g_phys_touch_entity_data->mins.v = aabb_mn.v;
+    g_phys_touch_entity_data->maxs.v = aabb_mx.v;
+    g_phys_touch_entity_data->num = CM_AreaEntities(
+        g_phys_touch_entity_data->mins, g_phys_touch_entity_data->maxs,
+        g_phys_touch_entity_data->touch, 128, 42009169);
+    int num = g_phys_touch_entity_data->num;
+    if (num <= 0)
+        return;
+    for (int ent_i = 0; ent_i < num; ++ent_i)
+    {
+        unsigned int handle =
+            g_phys_touch_entity_data->touch[ent_i].mHandle.mVal;
+        unsigned int idx = handle & 0xFFF;
+        if (idx >= 0x540
+            || handle >> 12 != EntityHandleDb::sInst.mElements[idx].mKey)
+            continue;
+        Entity* mObject = EntityHandleDb::sInst.mElements[idx].mObject;
+        if (mObject == nullptr || m_ent == mObject)
+            continue;
+        int flags = mObject->flags;
+        if (((flags & 0x2000000) == 0 && mObject->r.bmodel == nullptr
+             && mObject->actor == nullptr && mObject->client == nullptr)
+            || (0x400000 & flags) != 0)
+            continue;
+        DCGSet* bmodel = (DCGSet*)mObject->r.bmodel;
+        if (bmodel != nullptr && bmodel->objects_m_count > 0x14)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::JRS;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBCollision.cpp";
+            AeAssert::gCurrentLine = 702;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored())
+            {
+                const char* mStr;
+                void* model_value = *(void**)((char*)mObject + 0x270);
+                ValidatePakId(*(int*)((char*)mObject + 0x274));
+                if (model_value != nullptr)
+                    mStr = *(const char**)((char*)model_value + 0x48);
+                else
+                    mStr = "unknown";
+                if (AeAssert::Warning(
+                        "Model %s has too many brushes (%d). Will not collide.",
+                        mStr, bmodel->objects_m_count))
+                    __debugbreak();
+            }
+            continue;
+        }
+
+        void* actor = mObject->actor;
+        bool is_actor = (flags & 0x2000000) != 0;
+        if (actor != nullptr || mObject->client != nullptr
+            || (flags & 0x2000000) != 0)
+        {
+            // Actor / client path: GJK collide + direct impulse damage.
+            if (m_ent->scr_vehicle == nullptr)
+                goto LABEL_94;
+            {
+                unsigned int owner_handle =
+                    *(unsigned int*)((char*)mObject + 0x1B0);
+                unsigned int owner_idx = owner_handle & 0xFFF;
+                Entity* owner = nullptr;
+                if (owner_idx < 0x540
+                    && owner_handle >> 12
+                           == EntityHandleDb::sInst.mElements[owner_idx].mKey)
+                    owner =
+                        EntityHandleDb::sInst.mElements[owner_idx].mObject;
+                if (owner == m_ent)
+                    continue;
+            }
+        LABEL_94:
+            if (mObject->tagInfo != nullptr || flags < 0
+                || ((actor != nullptr || mObject->client != nullptr)
+                    && rb_inf->m_priority == 0))
+                continue;
+            {
+                phys_gjk_geom_cod_base* actor_gjk_geom =
+                    g_gjk_geom_database->get_actor_gjk_geom(mObject, nullptr);
+                __m128 v45 = _mm_mul_ps(m_rb->m_t_vel.v, m_rb->m_t_vel.v);
+                float v79 =
+                    v45.m128_f32[0]
+                    + (_mm_shuffle_ps(v45, v45, 85).m128_f32[0]
+                       + _mm_shuffle_ps(v45, v45, 170).m128_f32[0]);
+                bool process_actor = true;
+                if (min_speed2 <= v79 || is_actor)
+                {
+                    for (phys_gjk_geom_cod_base* m_first_geom =
+                             (phys_gjk_geom_cod_base*)
+                                 gjk_geom_list->m_first_geom;
+                         m_first_geom != nullptr;
+                         m_first_geom = m_first_geom->m_next_geom)
+                    {
+                        if (!process_actor)
+                            break;
+                        environment_rigid_body* erb =
+                            phys_sys::get_environment_rigid_body();
+                        phys_collide_data* v49 = g_list_phys_collide_data;
+                        phys_gjk_info* v50 = g_gjk_info;
+                        unsigned int id2 =
+                            (unsigned int)*(void**)((char*)actor_gjk_geom
+                                                    + 0x30);
+                        unsigned int id1 =
+                            (unsigned int)m_first_geom->m_geom_id;
+                        v49->gjk_cg1 = (const phys_gjk_geom*)m_first_geom;
+                        v49->gjk_cg2 =
+                            (const phys_gjk_geom*)actor_gjk_geom;
+                        v49->cg2_to_world_xform = &erb->m_col_mat;
+                        v49->cg1_to_world_xform = m_cg_mesh_mat;
+                        v49->id1 = id1;
+                        v49->id2 = id2;
+                        v49->gjk_ci = nullptr;
+                        v49->gjk_info = v50;
+                        if (phys_collide_do_gjk_collide_stub(
+                                v50, v49, 3.4000001f))
+                        {
+                            phys_gjk_collision_info* cg1_cinfo_loc =
+                                v49->cg1_cinfo_loc;
+                            math::Position3 p1_world;
+                            p1_world.v = _mm_add_ps(
+                                _mm_add_ps(
+                                    _mm_mul_ps(
+                                        _mm_shuffle_ps(
+                                            cg1_cinfo_loc->m_p1.v,
+                                            cg1_cinfo_loc->m_p1.v, 0),
+                                        m_cg_mesh_mat->x.v),
+                                    _mm_mul_ps(
+                                        _mm_shuffle_ps(
+                                            cg1_cinfo_loc->m_p1.v,
+                                            cg1_cinfo_loc->m_p1.v, 0x55),
+                                        m_cg_mesh_mat->y.v)),
+                                _mm_add_ps(
+                                    _mm_mul_ps(
+                                        _mm_shuffle_ps(
+                                            cg1_cinfo_loc->m_p1.v,
+                                            cg1_cinfo_loc->m_p1.v, 0xAA),
+                                        m_cg_mesh_mat->z.v),
+                                    m_cg_mesh_mat->w.v));
+                            math::Dir3 n_world;
+                            n_world.v = _mm_add_ps(
+                                _mm_add_ps(
+                                    _mm_mul_ps(
+                                        _mm_shuffle_ps(
+                                            cg1_cinfo_loc->m_n.v,
+                                            cg1_cinfo_loc->m_n.v, 0),
+                                        m_cg_mesh_mat->x.v),
+                                    _mm_mul_ps(
+                                        _mm_shuffle_ps(
+                                            cg1_cinfo_loc->m_n.v,
+                                            cg1_cinfo_loc->m_n.v, 0x55),
+                                        m_cg_mesh_mat->y.v)),
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(
+                                        cg1_cinfo_loc->m_n.v,
+                                        cg1_cinfo_loc->m_n.v, 0xAA),
+                                    m_cg_mesh_mat->z.v));
+                            __m128 neg = _mm_xor_ps(Float4_SignMask_12,
+                                                    n_world.v);
+                            __m128 v63 = _mm_mul_ps(neg, m_rb->m_t_vel.v);
+                            float rel =
+                                v63.m128_f32[0]
+                                + (_mm_shuffle_ps(v63, v63, 85).m128_f32[0]
+                                   + _mm_shuffle_ps(v63, v63, 170)
+                                         .m128_f32[0]);
+                            if (rel <= 300.0f)
+                                rel = 0.0f;
+                            int damage = (int)(rel * 0.23999999f);
+                            if (damage > 0)
+                            {
+                                G_Damage(
+                                    mObject, m_ent, m_ent,
+                                    &neg.m128_f32[0],
+                                    &p1_world.v.m128_f32[0], damage, 0, 32,
+                                    (EHitLocation)0, -1);
+                            }
+                            process_actor = false;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Static mesh path.
+            mObject->CalcRotTranMat43();
+            DCGSet* v14 = (DCGSet*)mObject->r.bmodel;
+            int obj_count = v14->objects_m_count;
+            if (obj_count <= 0)
+                goto LABEL_42;
+            {
+                int v15 = 0;
+                while (1)
+                {
+                    if (v15 >= obj_count
+                        && _tlAssert(
+                               "c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h",
+                               91, "index >= 0 && index < size()",
+                               "invalid index"))
+                        __debugbreak();
+                    if (((cdl_object_t*)v14->objects_m_elements)[v15]
+                            .cflags
+                            == 0x10200
+                        && !vehicle)
+                        goto NEXT_ENTITY;
+                    ++v15;
+                    if (v15 >= obj_count)
+                        goto LABEL_42;
+                }
+            }
+        LABEL_42:
+            {
+                math::Position3 center =
+                    *(math::Position3*)((char*)v14 + 0x50);
+                float radius = *(float*)((char*)v14 + 0x60);
+                __m128 v24 = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(center.v, center.v, 0),
+                                   mObject->r.currentMat.x.v),
+                        _mm_mul_ps(_mm_shuffle_ps(center.v, center.v, 0x55),
+                                   mObject->r.currentMat.y.v)),
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(center.v, center.v, 0xAA),
+                                   mObject->r.currentMat.z.v),
+                        mObject->r.currentMat.w.v));
+                __m128 rv = _mm_setr_ps(radius, radius, radius, 0.0f);
+                math::Dir3 bmax;
+                bmax.v = _mm_add_ps(v24, rv);
+                math::Dir3 bmin;
+                bmin.v = _mm_sub_ps(v24, rv);
+                if (!are_potentially_colliding(&aabb_mn, &aabb_mx, &bmin,
+                                               &bmax))
+                    goto NEXT_ENTITY;
+                phys_gjk_geom_list* ent_geom_list =
+                    g_gjk_geom_database->get_gjk_geom(
+                        mObject, &mObject->r.currentMat);
+                if (ent_geom_list == nullptr)
+                    goto NEXT_ENTITY;
+                environment_rigid_body* erb =
+                    phys_sys::get_environment_rigid_body();
+                for (phys_gjk_geom_cod_base* rb =
+                         (phys_gjk_geom_cod_base*)
+                             gjk_geom_list->m_first_geom;
+                     rb != nullptr; rb = rb->m_next_geom)
+                {
+                    for (phys_gjk_geom_cod_base* v25 =
+                             (phys_gjk_geom_cod_base*)
+                                 ent_geom_list->m_first_geom;
+                         v25 != nullptr; v25 = v25->m_next_geom)
+                    {
+                        if ((mObject->flags & 0x400000) != 0)
+                            break;
+                        if (!are_potentially_colliding(
+                                &rb->m_aabb_mn, &rb->m_aabb_mx,
+                                &v25->m_aabb_mn, &v25->m_aabb_mx))
+                            continue;
+                        float fric_coef = m_rb->m_fric_coef;
+                        if (m_rb_vehicle != nullptr
+                            && m_rb->m_col_mat.z.v.m128_f32[2] > 0.2f)
+                            fric_coef = 0.0f;
+                        DObj* mDObj = rb_inf->m_ent->mDObj;
+                        void* mValue = mDObj->mPhysDataValue;
+                        TPakId mPakId = (TPakId)mDObj->mPhysDataPakId;
+                        int bounce_bits = 0x3E800000;  // 0.25f
+                        ValidatePakId(mPakId);
+                        if (mValue != nullptr)
+                        {
+                            ValidatePakId(mPakId);
+                            bounce_bits = *(int*)((char*)mValue + 8);
+                        }
+                        phys_collide_data* v32 = g_list_phys_collide_data;
+                        if ((erb->m_flags & 0x50) == 0
+                            && _tlAssert(
+                                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                                   109, "debug_flag_is_in_collision()",
+                                   defaultFileName))
+                            __debugbreak();
+                        int m_priority = rb_inf->m_priority;
+                        collide_entities_callback pcd_callback;
+                        pcd_callback.ent1 = m_ent;
+                        pcd_callback.ent2 = mObject;
+                        v32->gjk_cg1 = (const phys_gjk_geom*)rb;
+                        v32->gjk_cg2 = (const phys_gjk_geom*)v25;
+                        v32->cg1_to_world_xform = m_cg_mesh_mat;
+                        v32->cg2_to_world_xform = &mObject->r.currentMat;
+                        v32->cg1_to_rb1_xform = &rb_inf->m_transform;
+                        v32->rb2_to_world_xform = &erb->m_col_mat;
+                        v32->rb1 = m_rb;
+                        v32->rb2 = erb;
+                        v32->id1 = (unsigned int)rb->m_geom_id;
+                        v32->id2 = (unsigned int)v25->m_geom_id;
+                        v32->pcd_callback = &pcd_callback;
+                        v32->fric_coef = fric_coef;
+                        v32->bounce_coef = *(float*)&bounce_bits;
+                        v32->gjk_ci = nullptr;
+                        v32->gjk_info = g_gjk_info;
+                        v32->cman_process = g_cman_process;
+                        v32->no_overflow_error = true;
+                        v32->solver_priority = m_priority;
+                        list_phys_collide_data_add(v32);
+                    }
+                }
+                if (m_rb_vehicle != nullptr)
+                {
+                    vehicle_collision_info* m_vci =
+                        (vehicle_collision_info*)m_rb_vehicle->m_vci;
+                    for (phys_gjk_geom_cod_base* i =
+                             (phys_gjk_geom_cod_base*)
+                                 ent_geom_list->m_first_geom;
+                         i != nullptr; i = i->m_next_geom)
+                    {
+                        if ((mObject->flags & 0x400000) != 0)
+                            break;
+                        int wheel_count =
+                            m_vci->m_list_wheel_collision_info_count;
+                        for (int w = 0; w < wheel_count; ++w)
+                        {
+                            collide_segment(
+                                &m_vci->m_list_wheel_collision_info[w],
+                                m_ent, mObject, erb,
+                                &mObject->r.currentMat, i);
+                        }
+                    }
+                }
+            }
+        }
+    NEXT_ENTITY:;
     }
 }
