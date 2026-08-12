@@ -3404,7 +3404,8 @@ public:
     uint8_t        _pad48[0x50 - 0x48];
     math::Position3 m_bounding_sphere_center_loc;  // +0x50
     float          m_bounding_sphere_radius;       // +0x60
-    uint8_t        _pad64[0xC0 - 0x64];
+    rb_collision_capsule m_capsule;  // +0x64
+    uint8_t        _padB4[0xC0 - (0x64 + sizeof(rb_collision_capsule))];
     math::Position3 m_tunnel_test_last_pos;  // +0xC0
     uint8_t        _padD0[0xE0 - 0xD0];
     float          m_tunnel_test_radius;  // +0xE0
@@ -3521,6 +3522,170 @@ void rigid_body_sphere_list::set(rigid_body* const owner)
 }
 
 void mem_break();  // mem_heap.cpp
+
+// ea: 0x6FB740 - segment-segment closest points + capsule overlap test.
+// Reconstructed from the SIMD disassembly (Ericson segment-distance form).
+static inline float dot3(const float* a, const float* b)
+{
+    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+bool collide_crapsule_crapsule(const math::Position3& a1,
+                               const math::Position3& a2, float r1,
+                               const math::Position3& b1,
+                               const math::Position3& b2, float r2,
+                               math::Position3* p1, math::Position3* p2,
+                               math::Dir3* normal)
+{
+    const float* d1 = &a2.v.m128_f32[0];
+    const float* d2 = &b1.v.m128_f32[0];
+    float da[3], db[3], dr[3];
+    da[0] = a2.v.m128_f32[0] - a1.v.m128_f32[0];
+    da[1] = a2.v.m128_f32[1] - a1.v.m128_f32[1];
+    da[2] = a2.v.m128_f32[2] - a1.v.m128_f32[2];
+    db[0] = b1.v.m128_f32[0] - b2.v.m128_f32[0];
+    db[1] = b1.v.m128_f32[1] - b2.v.m128_f32[1];
+    db[2] = b1.v.m128_f32[2] - b2.v.m128_f32[2];
+    dr[0] = a1.v.m128_f32[0] - b1.v.m128_f32[0];
+    dr[1] = a1.v.m128_f32[1] - b1.v.m128_f32[1];
+    dr[2] = a1.v.m128_f32[2] - b1.v.m128_f32[2];
+
+    float a = dot3(da, da);          // det
+    float b = dot3(da, db);          // v68
+    float e = dot3(db, db);          // v64
+    float c = dot3(da, dr);          // s_
+    float f = dot3(db, dr);          // v19
+    float denom = e * a - b * b;     // v61
+
+    float dist_sq = 0.0f;
+    bool interior = false;
+    if (fabs(denom) > 0.0000099999997f)
+    {
+        float s = (b * f - c * e) / denom;
+        float t = (a * f - c * b) / denom;
+        if (s >= 0.0f && s <= 1.0f && t >= 0.0f && t <= 1.0f)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                p1->v.m128_f32[i] = a1.v.m128_f32[i] + da[i] * s;
+                p2->v.m128_f32[i] = b1.v.m128_f32[i] - db[i] * t;
+            }
+            for (int i = 0; i < 3; ++i)
+                normal->v.m128_f32[i] =
+                    p2->v.m128_f32[i] - p1->v.m128_f32[i];
+            dist_sq = dot3(&normal->v.m128_f32[0], &normal->v.m128_f32[0]);
+            interior = true;
+        }
+    }
+
+    if (!interior)
+    {
+        // clamp on segment A
+        float sa = c / a;
+        if (sa < 0.0f)
+            sa = 0.0f;
+        else if (sa > 1.0f)
+            sa = 1.0f;
+        for (int i = 0; i < 3; ++i)
+        {
+            p1->v.m128_f32[i] = a1.v.m128_f32[i] + da[i] * sa;
+            p2->v.m128_f32[i] = b1.v.m128_f32[i];
+        }
+        for (int i = 0; i < 3; ++i)
+            normal->v.m128_f32[i] =
+                p2->v.m128_f32[i] - p1->v.m128_f32[i];
+        float d1_sq = dot3(&normal->v.m128_f32[0], &normal->v.m128_f32[0]);
+        dist_sq = d1_sq;
+
+        // clamp on segment B
+        float tb = f / e;
+        if (tb < 0.0f)
+            tb = 0.0f;
+        else if (tb > 1.0f)
+            tb = 1.0f;
+        float n4[3], an4[3];
+        for (int i = 0; i < 3; ++i)
+        {
+            n4[i] = b1.v.m128_f32[i] - db[i] * tb;
+            an4[i] = n4[i] - a1.v.m128_f32[i];
+        }
+        float d2_sq = dot3(an4, an4);
+        if (d1_sq > d2_sq)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                p1->v.m128_f32[i] = a1.v.m128_f32[i];
+                p2->v.m128_f32[i] = n4[i];
+                normal->v.m128_f32[i] = an4[i];
+            }
+            dist_sq = d2_sq;
+        }
+
+        // a2 endpoint vs segment B
+        float v50[3];
+        v50[0] = a2.v.m128_f32[0] - b2.v.m128_f32[0];
+        v50[1] = a2.v.m128_f32[1] - b2.v.m128_f32[1];
+        v50[2] = a2.v.m128_f32[2] - b2.v.m128_f32[2];
+        float s2 = dot3(v50, db) / e;
+        if (s2 < 0.0f)
+            s2 = 0.0f;
+        else if (s2 > 1.0f)
+            s2 = 1.0f;
+        float n4a[3], an4a[3];
+        for (int i = 0; i < 3; ++i)
+        {
+            n4a[i] = b2.v.m128_f32[i] + db[i] * s2;
+            an4a[i] = n4a[i] - a2.v.m128_f32[i];
+        }
+        float d3_sq = dot3(an4a, an4a);
+        if (dist_sq > d3_sq)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                p1->v.m128_f32[i] = a2.v.m128_f32[i];
+                p2->v.m128_f32[i] = n4a[i];
+                normal->v.m128_f32[i] = an4a[i];
+            }
+            dist_sq = d3_sq;
+        }
+
+        // b2 endpoint vs segment A
+        float s3 = dot3(v50, da) / a;
+        if (s3 < 0.0f)
+            s3 = 0.0f;
+        else if (s3 > 1.0f)
+            s3 = 1.0f;
+        float p1b[3], an4b[3];
+        for (int i = 0; i < 3; ++i)
+        {
+            p1b[i] = a2.v.m128_f32[i] - da[i] * s3;
+            an4b[i] = b2.v.m128_f32[i] - p1b[i];
+        }
+        float d4_sq = dot3(an4b, an4b);
+        if (dist_sq > d4_sq)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                p1->v.m128_f32[i] = p1b[i];
+                p2->v.m128_f32[i] = b2.v.m128_f32[i];
+                normal->v.m128_f32[i] = an4b[i];
+            }
+            dist_sq = d4_sq;
+        }
+    }
+
+    if (dist_sq <= 0.0000099999997f
+        || ((r1 + r2) * (r1 + r2)) < dist_sq)
+        return false;
+    float len = sqrtf(dist_sq);
+    for (int i = 0; i < 3; ++i)
+        normal->v.m128_f32[i] /= len;
+    for (int i = 0; i < 3; ++i)
+        p1->v.m128_f32[i] += normal->v.m128_f32[i] * r1;
+    for (int i = 0; i < 3; ++i)
+        p2->v.m128_f32[i] -= normal->v.m128_f32[i] * r2;
+    return true;
+}
 
 // ea: 0x700D10
 rigid_body_sphere_list* ragdoll_collision_callback::get_colgeom(int rb_id)
