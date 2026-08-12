@@ -1610,6 +1610,51 @@ void DebugRender_Init(void* self)
     (void)self;
 }
 
+// PathNodes helpers (mp_actors.o; stubs, port later)
+namespace PathNodes {
+const PathNode* NodeHandle::operator*() const
+{
+    return nullptr;
+}
+}
+PathNodes::PathNode* HandleDbToNode(PathNodes::NodeHandle h)
+{
+    (void)h.mValue;
+    return nullptr;
+}
+PathNodes::PathNode* Sentient_NearestNode(sentient_s* pSelf,
+                                          float (*vNormal)[1], float* fDist,
+                                          int a4, int iCheckDontLink,
+                                          float distanceThreshold,
+                                          int ignoreNegotiationBegin)
+{
+    (void)pSelf; (void)vNormal; (void)fDist; (void)a4;
+    (void)iCheckDontLink; (void)distanceThreshold;
+    (void)ignoreNegotiationBegin;
+    return nullptr;
+}
+const PathNodes::PathNode* PathNodes_NodeHandle_deref(
+    const PathNodes::NodeHandle* h)
+{
+    (void)h;
+    return nullptr;
+}
+void Path_DrawDebug() {}
+void Path_DrawDebugNode(const PathNodes::PathNode* pNode)
+{
+    (void)pNode;
+}
+void Path_Init() {}
+void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int team)
+{
+    (void)pNode; (void)team;
+}
+void Path_RelinquishNodePermanently(const PathNodes::PathNode* pNode,
+                                    sentient_s* pSentient)
+{
+    (void)pNode; (void)pSentient;
+}
+
 // BrocSys (scr.o; stubs, port later)
 namespace BrocSys {
 void Init() {}
