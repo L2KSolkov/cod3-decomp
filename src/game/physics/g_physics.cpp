@@ -2837,9 +2837,50 @@ void* phys_gjk_geom_list_create()
 {
     return nullptr;
 }
-void unpack_vinfo(void* vinfo, void* verts, void* vert_list)
+// cdl_vinfo_t / cdl_array<vi4> minimal views for unpack
+struct cdl_vinfo_t {
+    float vbase[3];       // +0x00 (x/y/z)
+    int   num_verts;      // +0x0C
+    int   first_vert;     // +0x10
+};
+struct vi4 {
+    int v;  // +0x00
+};
+template <typename T>
+class cdl_array {
+public:
+    int   m_count;      // +0x00
+    T*    m_elements;   // +0x04
+};
+
+// ea: 0x6FF680
+void unpack(const cdl_vinfo_t& vinfo, const cdl_array<vi4>& verts,
+            math::Dir3* vert_list)
 {
-    (void)vinfo; (void)verts; (void)vert_list;
+    math::Position3 base;
+    base.v = _mm_setr_ps(vinfo.vbase[0], vinfo.vbase[1], vinfo.vbase[2],
+                         0.0f);
+    int num_verts = vinfo.num_verts;
+    unsigned int first_vert = vinfo.first_vert;
+    if (first_vert >= (unsigned int)verts.m_count
+        && _tlAssert("c:\\cod\\code\\tl\\cdl\\source\\cdl_mem.h", 89,
+                     "index >= 0 && index < size()", "invalid index"))
+        __debugbreak();
+    vi4* v5 = &verts.m_elements[first_vert];
+    if (num_verts != 0)
+    {
+        do
+        {
+            math::Position3 q;
+            q.v = _mm_setr_ps((float)((v5->v & 0x7FF) * 0.25f),
+                              (float)(((v5->v >> 11) & 0x7FF) * 0.25f),
+                              (float)((v5->v >> 22) * 0.25f), 0.0f);
+            vert_list->v = _mm_add_ps(base.v, q.v);
+            ++vert_list;
+            ++v5;
+            --num_verts;
+        } while (num_verts != 0);
+    }
 }
 unsigned int make_unique_id(Entity* ent, unsigned int object_id)
 {
