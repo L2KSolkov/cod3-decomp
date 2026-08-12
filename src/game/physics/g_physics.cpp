@@ -232,13 +232,18 @@ class vehicle_rb_parameter {
 public:
     uint8_t _pad0[0x18];
     float   m_susp_spring_k;      // +0x18
-    uint8_t _pad1C[0x28 - 0x1C];
+    float   m_tilt_fakey;         // +0x1C
+    uint8_t _pad20[0x28 - 0x20];
     float   m_tire_fric_fwd;      // +0x28
     float   m_tire_fric_side;     // +0x2C
     float   m_tire_fric_brake;    // +0x30
     float   m_tire_fric_hand_brake;  // +0x34
-    uint8_t _pad38[0x58 - 0x38];
+    float   m_body_mass;          // +0x38
+    uint8_t _pad3C[0x50 - 0x3C];
+    float   m_upright_strength;   // +0x50
+    float   m_roll_resistance;    // +0x54
     float   m_peel_out_max_speed;  // +0x58
+    float   m_speed_max;          // +0x5C
 
     static vehicle_rb_parameter* GetRBVehParameter(
         const char* name);  // ?GetRBVehParameter@vehicle_rb_parameter@@SAPAV1@PBD@Z
@@ -334,6 +339,7 @@ private:
     float _calc_initial_susp_spring_k(
         rigid_body_constraint_wheel* wheel_constraint);  // ?_calc_initial_susp_spring_k@rb_vehicle@@AAEMPAVrigid_body_constraint_wheel@@@Z
     void _update_friction(float delta_t);  // ?_update_friction@rb_vehicle@@AAEXM@Z
+    void _update_fakey_stuff(float delta_t);  // ?_update_fakey_stuff@rb_vehicle@@AAEXM@Z
 };
 // rb_extra_info (physics.o RBPropSys.cpp). Layout verified against
 // set_priority (0x6F6E60), frame_advance (0x6FE8A0) and try_collision_prolog
@@ -1212,6 +1218,89 @@ void rb_vehicle::_update_friction(float delta_t)
         }
         m_current_fwd_fric_scale = m_parameter->m_tire_fric_fwd * v4;
     }
+}
+
+// ea: 0x6F4B00
+void rb_vehicle::_update_fakey_stuff(float delta_t)
+{
+    float v2 = 0.0f;
+    rigid_body* m_rb = m_chassis_rbinf->m_rb;
+    m_num_colliding_wheels = 0;
+    if (m_throttle > 0.5f)
+        v2 = m_parameter->m_tilt_fakey * m_parameter->m_susp_spring_k;
+    else if (m_throttle < -0.5f)
+        v2 = 0.0f - (m_parameter->m_tilt_fakey
+                     * m_parameter->m_susp_spring_k);
+
+    rigid_body_constraint_wheel* v6 =
+        (rigid_body_constraint_wheel*)m_wheels[1];
+    if (v6 != nullptr)
+    {
+        float spring_k = _calc_initial_susp_spring_k(
+            (rigid_body_constraint_wheel*)m_wheels[1]);
+        v6->m_suspension_stiffness_k = spring_k + v2;
+        if ((v6->m_wheel_flags & 1) != 0)
+            ++m_num_colliding_wheels;
+        rigid_body_constraint_wheel* v8 =
+            (rigid_body_constraint_wheel*)m_wheels[0];
+        v8->m_suspension_stiffness_k = spring_k + v2;
+        if ((v8->m_wheel_flags & 1) != 0)
+            ++m_num_colliding_wheels;
+    }
+    rigid_body_constraint_wheel* v9 =
+        (rigid_body_constraint_wheel*)m_wheels[3];
+    if (v9 != nullptr)
+    {
+        float spring_ka = _calc_initial_susp_spring_k(v9);
+        if ((v9->m_wheel_flags & 1) != 0)
+            ++m_num_colliding_wheels;
+        v9->m_suspension_stiffness_k = spring_ka - v2;
+        rigid_body_constraint_wheel* v10 =
+            (rigid_body_constraint_wheel*)m_wheels[2];
+        v10->m_suspension_stiffness_k = spring_ka - v2;
+        if ((v10->m_wheel_flags & 1) != 0)
+            ++m_num_colliding_wheels;
+    }
+
+    if (m_orientation_constraint == nullptr)
+    {
+        environment_rigid_body* environment_rigid_body =
+            phys_sys::get_environment_rigid_body();
+        rigid_body_constraint_custom_orientation* rbc_custom_orientation =
+            phys_sys::create_rbc_custom_orientation(m_rb,
+                                                    environment_rigid_body,
+                                                    false);
+        m_parameter = this->m_parameter;
+        m_orientation_constraint = rbc_custom_orientation;
+        rbc_custom_orientation->m_torque_resistance =
+            m_parameter->m_roll_resistance * m_parameter->m_body_mass;
+        m_orientation_constraint->m_upright_strength =
+            m_parameter->m_upright_strength * m_parameter->m_body_mass;
+    }
+
+    bool v14 = m_throttle > 0.89999998f
+               && m_parameter->m_peel_out_max_speed > m_forward_vel;
+    bool v17 = false;
+    for (int i = 0; i < 8; ++i)
+    {
+        rigid_body_constraint_wheel* w =
+            (rigid_body_constraint_wheel*)m_wheels[i];
+        if (w != nullptr && w->m_wheel_state == 0
+            && (v14
+                || (m_throttle > 0.69999999f
+                    && (w->m_wheel_flags & 1) == 0)))
+        {
+            v17 = true;
+            w->m_wheel_pos = (delta_t * 40.0f) + w->m_wheel_pos;
+        }
+    }
+
+    float v25 = 0.80000001f;
+    float rpm_target =
+        fabs(m_forward_vel / m_parameter->m_speed_max) * fabs(m_throttle);
+    if (!v17)
+        v25 = rpm_target;
+    m_fake_rpm = (((v25 - m_fake_rpm) * delta_t) * 5.0f) + m_fake_rpm;
 }
 
 // ea: 0x6F4F50
