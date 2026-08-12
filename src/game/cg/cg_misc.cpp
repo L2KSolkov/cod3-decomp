@@ -82,8 +82,12 @@ extern void ByteToDir(unsigned int b, float* dir);
 extern void PerpendicularVector(float* dst, float* src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
-extern int controller_button_value(void* self, int i_controller_num,
-                                   int i_button);
+// controller_button_value artifact (controller_xboxr; stub)
+int controller_button_value(void* self, int i_controller_num, int i_button)
+{
+    (void)self; (void)i_controller_num; (void)i_button;
+    return 0;
+}
 extern int controller_button_pressed(void* self, int i_controller_num,
                                      int i_button);
 extern void* FEManager_GetIGMS(void* self, int client);
@@ -686,7 +690,15 @@ extern void RumbleManager_Remove(void* self, RumbleEffectInstanceHandle handle);
 extern float CG_GetViewFov();
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern void FastSinCos(float radians, float* psin, float* pcos);
-extern int _fpclass(double x);
+// _fpclass CRT helper (binary links it as ?_fpclass@@YAHN@Z)
+int _fpclass(double x)
+{
+    if (x != x) return 0x02;                 // FP_NAN
+    if (x > 1.7976931348623157e308) return 0x04;   // FP_INFINITE
+    if (x < -1.7976931348623157e308) return 0x05;  // FP_NEG_INFINITE
+    if (x == 0.0) return 0x08;               // FP_ZERO
+    return 0x10;                             // FP_NORMAL
+}
 extern int dword_F6A2A0[4 * 802];
 extern float angle[4 * 395];
 extern float dword_F63C70[4 * 1580];

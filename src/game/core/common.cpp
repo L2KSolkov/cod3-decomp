@@ -340,7 +340,11 @@ public:
     bool controller_is_connected(int index);
     bool button_pressed_clear(int index, ButtonIndex btn);
 };
-extern int controller_num_controllers();
+// controller_num_controllers artifact (controller_xboxr; stub)
+int controller_num_controllers()
+{
+    return 4;
+}
 extern int LocalClient_ClientToPort(int client);
 extern void* STBManager_sInst;
 // ?STBManager_GetSTBString@@YAPBDPAXPBD@Z artifact (real member

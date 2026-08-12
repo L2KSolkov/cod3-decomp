@@ -2909,7 +2909,8 @@ AudioBankMgr* AudioBankMgr::sInst = nullptr;
 // ============================================================================
 // AudioBankMgr ctor / RegisterWbk - ea: 0x621440 / 0x621470
 // ============================================================================
-extern int nflOpenFile(int mediaID, const char* fileName);  // nfl_xboxr
+extern enum nflMediaID : unsigned;
+extern nflFileID nflOpenFile(nflMediaID mediaID, const char* fileName);  // ?nflOpenFile@@YAIW4nflMediaID@@PBD@Z
 extern int gNflMediaId;                                     // nfl_xboxr
 extern void* AssetBankSet_ctor(void* self);                 // streamer.o
 static tlFixedString dflt;          // ?dflt@@3VtlFixedString@@A @ 0xF58C04
@@ -2935,7 +2936,7 @@ void AudioBankMgr::RegisterWbk(const tlFixedString& name, const char* path,
     }
     if (name == dflt)
         path = "sp_test\\default.wbk";
-    int fileId = nflOpenFile(gNflMediaId, path);
+    nflFileID fileId = nflOpenFile((nflMediaID)gNflMediaId, path);
     if (fileId == -1)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -4149,7 +4150,8 @@ extern void nslSetListenerPosition(const float* pos);        // ?nslSetListenerP
 extern void nslSetListenerOrientation(const float* a,
                                       const float* b);       // ?nslSetListenerOrientation@@YAXQBM0@Z
 extern void AnglesToAxis(const float* angles, float (*axis)[3]);  // core.o
-extern int nslInit(const void* ip);                          // ?nslInit@@YAHPBUnslInitParams@@@Z (returns work size)
+struct nslInitParams { unsigned maxVoices; unsigned maxSources; int speakerMode; };
+extern int nslInit(const nslInitParams* ip);                 // ?nslInit@@YAHPBUnslInitParams@@@Z
 unsigned char nsl_initParams[0x44];                          // ?nsl_initParams (nsl.o @ 0xE4B680)
 extern void nslStart(void* work);                            // ?nslStart@@YAXPAX@Z
 extern void nslExit();                                       // ?nslExit@@YAXXZ
@@ -4166,7 +4168,7 @@ extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
 // ea: 0x006024A0
 nslBankID SoundDevice::SyncLoadBank(const char* filename)
 {
-    nflFileID v2 = nflOpenFile(gNflMediaId, filename);
+    nflFileID v2 = nflOpenFile((nflMediaID)gNflMediaId, filename);
     if (v2 == (nflFileID)-1)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -4466,7 +4468,7 @@ SoundDevice::SoundDevice()
     *(unsigned int*)&this->mNslParams[4] = 1;
     *(unsigned int*)this->mNslParams = 512;
     memcpy(this->mNslParams, nsl_initParams, sizeof(this->mNslParams));
-    void* v5 = mem_heap_malloc(nslInit(this->mNslParams));
+    void* v5 = mem_heap_malloc(nslInit((const nslInitParams*)this->mNslParams));
     this->mNslBuffer = v5;
     if (v5 == nullptr)
     {

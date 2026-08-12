@@ -40,7 +40,19 @@ extern void Key_Bindlist_f();
 extern void Field_CharEvent(field_t* edit, int ch);
 extern int dword_F170E0;
 int dword_F170E8;
-extern int atoi(const char* nptr);
+// atoi CRT (mangled as ?atoi@@YAHPBD@Z in the binary)
+int atoi(const char* nptr)
+{
+    int result = 0;
+    int sign = 1;
+    if (nptr == nullptr) return 0;
+    while (*nptr == ' ') ++nptr;
+    if (*nptr == '-') { sign = -1; ++nptr; }
+    else if (*nptr == '+') ++nptr;
+    while (*nptr >= '0' && *nptr <= '9')
+        result = result * 10 + (*nptr++ - '0');
+    return sign * result;
+}
 extern struct cvar_t* com_sv_running;
 extern struct cvar_t* com_cl_running;
 extern int dword_F0F200[2];
