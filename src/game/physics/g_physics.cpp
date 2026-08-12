@@ -361,6 +361,8 @@ public:
 
     enum joint_type_e {
         JOINT_TYPE_NONE = 0,
+        JOINT_TYPE_HINGE = 1,
+        JOINT_TYPE_SWIVEL = 2,
     };
 
     void set(int b1, int b2, float p1_radius, float p2_radius, float percent,
@@ -1068,6 +1070,8 @@ phys_collision_allocater g_collision_memory_allocater;
 
 // ?g_ragdoll_mass_scale@@3MA (physics.o data @ 0xE01E50)
 float g_ragdoll_mass_scale = 1.0f;
+// ?dampValue@@3MA (physics.o data @ 0xE36AC0)
+float dampValue = 0.5f;
 
 // ea: 0x6F4570
 double get_joint_damp_k(int rb_bone_id)
@@ -6506,6 +6510,298 @@ static const char* const s_user_bone_names[8] = {
     "Bip01 L Calf",      // USER_BONE_ID_LEFT_CALF
     "Bip01 R Thigh",     // USER_BONE_ID_RIGHT_THIGH
 };
+
+// ?m_bone_mass_info@@3PAVbone_mass_info@@A (physics.o data @ 0xF8C160)
+bone_mass_info m_bone_mass_info[10];
+
+// Ragdoll local-frame rotate used by setup_bone_mass_info's scaling tail:
+// x*-X + y*Z + z*Y => (-x, z, y) (constants 0xBF800000 / v38=(0,0,1,0) /
+// 0x3F80000000000000uLL from 0x6FA62E..0x6FA6D4).
+static __m128 RagdollRotate(__m128 v, __m128 y_axis)
+{
+    return _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v, v, 0),
+                       _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f)),
+            _mm_mul_ps(_mm_shuffle_ps(v, v, 85), y_axis)),
+        _mm_mul_ps(_mm_shuffle_ps(v, v, 170),
+                   _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f)));
+}
+
+// ea: 0x6F94D0
+void setup_bone_mass_info(Entity* owner)
+{
+    setup_user_bone_ids(owner);
+    memset(m_bone_mass_info, 0, sizeof(m_bone_mass_info));
+    math::Dir3 v46, v47, v48, v49;
+    math::Position3 v50;
+    v49.v = _mm_setzero_ps();
+    v48.v = _mm_setzero_ps();
+    v47.v = _mm_setzero_ps();
+    v50.v = _mm_setzero_ps();
+    v46.v = _mm_setzero_ps();
+    int v2 = USER_BONE_ID_HEAD;
+    m_bone_mass_info[0].set(
+        USER_BONE_ID_PELVIS, USER_BONE_ID_HEAD, 0.2f, 0.22499999f, 0.5f,
+        v50, 2, 300.0f, 0.30000001f, 1.0f, 0, -1,
+        bone_mass_info::JOINT_TYPE_NONE, 0.0f, 0.0f, v46, v47, v48, v49,
+        0.0f);
+    float v3 = dampValue;
+    m_bone_mass_info[0].m_damp_k = dampValue;
+    m_bone_mass_info[0].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    m_bone_mass_info[0].m_capsule_radius = 0.18000001f;
+    m_bone_mass_info[0].m_capsule_b1_adjust_p2_loc.v.m128_f32[0] =
+        -0.15000001f;
+    v46.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v47.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v48.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    v49.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    v50.v = _mm_setr_ps(-0.34999999f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[1].set(
+        v2, v2, 0.15000001f, 0.15000001f, 0.5f, v50, 1, 50.0f,
+        0.30000001f, 0.25f, 1, 0, bone_mass_info::JOINT_TYPE_SWIVEL,
+        -0.75f, 0.75f, v49, v48, v47, v46, 1.0f);
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    math::Dir3* v5 = &m_bone_mass_info[1].m_joint_limit_axis[
+        m_bone_mass_info[1].m_joint_limit_count];
+    v5->v = _mm_setr_ps(-1.0f, 0.0f, v50.v.m128_f32[2],
+                        v50.v.m128_f32[3]);
+    m_bone_mass_info[1].m_joint_limit_angle[
+        m_bone_mass_info[1].m_joint_limit_count++] = 0.87266463f;
+    v50.v = _mm_setzero_ps();
+    m_bone_mass_info[1].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    v46.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v47.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v48.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    v49.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[1].m_capsule_radius = 0.0f;
+    int v8 = USER_BONE_ID_LEFT_FOREARM;
+    m_bone_mass_info[2].set(
+        USER_BONE_ID_LEFT_UPPERARM, USER_BONE_ID_LEFT_FOREARM, 0.1f, 0.1f,
+        0.5f, v50, 2, 50.0f, 0.30000001f, 1.0f, 2, 0,
+        bone_mass_info::JOINT_TYPE_SWIVEL, -1.6f, -0.2f, v49, v48, v47, v46,
+        1.0f);
+    math::Dir3* v9p = &m_bone_mass_info[2].m_joint_limit_axis[
+        m_bone_mass_info[2].m_joint_limit_count];
+    m_bone_mass_info[2].m_damp_k = v3;
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    v9p->v = _mm_setr_ps(-1.0f, 0.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[2].m_joint_limit_angle[
+        m_bone_mass_info[2].m_joint_limit_count++] = 1.4835299f;
+    v50.v.m128_f32[2] = -1.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    math::Dir3* v12 = &m_bone_mass_info[2].m_joint_limit_axis[
+        m_bone_mass_info[2].m_joint_limit_count];
+    v12->v = _mm_setr_ps(0.0f, 0.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[2].m_joint_limit_angle[
+        m_bone_mass_info[2].m_joint_limit_count++] = 1.9198623f;
+    m_bone_mass_info[2].m_capsule_radius = 0.0f;
+    m_bone_mass_info[2].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    v46.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v47.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v48.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v50.v = _mm_setr_ps(-0.15000001f, 0.0f, 0.0f, 0.0f);
+    v49.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[3].set(
+        v8, USER_BONE_ID_LEFT_HAND, 0.1f, 0.1f, 0.5f, v50, 2, 50.0f,
+        0.30000001f, 0.5f, 3, 2, bone_mass_info::JOINT_TYPE_HINGE,
+        -2.0943952f, -0.087266468f, v49, v48, v47, v46, 1.0f);
+    m_bone_mass_info[3].m_damp_k = v3;
+    m_bone_mass_info[3].m_capsule_radius = 0.075000003f;
+    m_bone_mass_info[3].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    m_bone_mass_info[3].m_capsule_b1_adjust_p2_loc.v.m128_f32[0] =
+        -0.050000001f;
+    v46.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v47.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v48.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    v49.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    int v15 = USER_BONE_ID_RIGHT_FOREARM;
+    m_bone_mass_info[4].set(
+        USER_BONE_ID_RIGHT_UPPERARM, USER_BONE_ID_RIGHT_FOREARM, 0.1f, 0.1f,
+        0.5f, v50, 2, 50.0f, 0.30000001f, 1.0f, 4, 0,
+        bone_mass_info::JOINT_TYPE_SWIVEL, 0.2f, 1.6f, v49, v48, v47, v46,
+        1.0f);
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    m_bone_mass_info[4].m_damp_k = v3;
+    math::Dir3* v16 = &m_bone_mass_info[4].m_joint_limit_axis[
+        m_bone_mass_info[4].m_joint_limit_count];
+    v16->v = _mm_setr_ps(-1.0f, 0.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[4].m_joint_limit_angle[
+        m_bone_mass_info[4].m_joint_limit_count++] = 1.4835299f;
+    v50.v.m128_f32[2] = -1.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    math::Dir3* v19 = &m_bone_mass_info[4].m_joint_limit_axis[
+        m_bone_mass_info[4].m_joint_limit_count];
+    v19->v = _mm_setr_ps(0.0f, 0.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[4].m_joint_limit_angle[
+        m_bone_mass_info[4].m_joint_limit_count++] = 1.9198623f;
+    m_bone_mass_info[4].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    v46.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v47.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v48.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[4].m_capsule_radius = 0.0f;
+    v49.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v50.v = _mm_setr_ps(-0.15000001f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[5].set(
+        v15, USER_BONE_ID_RIGHT_HAND, 0.1f, 0.1f, 0.5f, v50, 2, 50.0f,
+        0.30000001f, 0.5f, 5, 4, bone_mass_info::JOINT_TYPE_HINGE,
+        -2.0943952f, -0.087266468f, v49, v48, v47, v46, 1.0f);
+    v50.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    m_bone_mass_info[5].m_capsule_radius = 0.075000003f;
+    m_bone_mass_info[5].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    m_bone_mass_info[5].m_capsule_b1_adjust_p2_loc.v.m128_f32[0] =
+        -0.050000001f;
+    __m128 v = v50.v;
+    v50.v = _mm_setzero_ps();
+    v46.v = v;
+    v47.v = v50.v;
+    v48.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[1].m_damp_k = v3;
+    v49.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    int v23 = USER_BONE_ID_LEFT_CALF;
+    m_bone_mass_info[6].set(
+        USER_BONE_ID_LEFT_THIGH, USER_BONE_ID_LEFT_CALF, 0.15000001f,
+        0.15000001f, 0.5f, v50, 2, 50.0f, 0.30000001f, 1.0f, 6, 0,
+        bone_mass_info::JOINT_TYPE_SWIVEL, -0.60000002f, 0.60000002f, v49,
+        v48, v47, v46, 1.0f);
+    math::Dir3* v24 = &m_bone_mass_info[6].m_joint_limit_axis[
+        m_bone_mass_info[6].m_joint_limit_count];
+    m_bone_mass_info[6].m_damp_k = v3;
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    v24->v = _mm_setr_ps(1.0f, 0.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[6].m_joint_limit_angle[
+        m_bone_mass_info[6].m_joint_limit_count++] = 0.69813174f;
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    math::Dir3* v27 = &m_bone_mass_info[6].m_joint_limit_axis[
+        m_bone_mass_info[6].m_joint_limit_count];
+    v27->v = _mm_setr_ps(0.0f, 1.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[6].m_joint_limit_angle[
+        m_bone_mass_info[6].m_joint_limit_count++] = 1.5707964f;
+    m_bone_mass_info[6].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    m_bone_mass_info[6].m_capsule_radius = 0.11f;
+    v46.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v47.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v48.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v50.v = _mm_setr_ps(-0.15000001f, 0.0f, 0.0f, 0.0f);
+    v49.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[7].set(
+        v23, USER_BONE_ID_LEFT_FOOT, 0.15000001f, 0.15000001f, 0.5f, v50, 2,
+        50.0f, 0.30000001f, 0.25f, 7, 6, bone_mass_info::JOINT_TYPE_HINGE,
+        -1.7453293f, -0.087266468f, v49, v48, v47, v46, 1.0f);
+    v50.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    m_bone_mass_info[7].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    m_bone_mass_info[7].m_capsule_b1_adjust_p2_loc.v.m128_f32[0] =
+        -0.050000001f;
+    m_bone_mass_info[7].m_capsule_radius = 0.1f;
+    __m128 v30 = v50.v;
+    v50.v = _mm_setzero_ps();
+    v46.v = v30;
+    v47.v = v50.v;
+    v48.v = _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f);
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    v49.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    int v31 = USER_BONE_ID_RIGHT_CALF;
+    m_bone_mass_info[7].m_damp_k = v3;
+    m_bone_mass_info[8].set(
+        USER_BONE_ID_RIGHT_THIGH, USER_BONE_ID_RIGHT_CALF, 0.15000001f,
+        0.15000001f, 0.5f, v50, 2, 50.0f, 0.30000001f, 1.0f, 8, 0,
+        bone_mass_info::JOINT_TYPE_SWIVEL, -0.60000002f, 0.60000002f, v49,
+        v48, v47, v46, 1.0f);
+    math::Dir3* v32 = &m_bone_mass_info[8].m_joint_limit_axis[
+        m_bone_mass_info[8].m_joint_limit_count];
+    m_bone_mass_info[8].m_damp_k = v3;
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    v32->v = _mm_setr_ps(1.0f, 0.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[8].m_joint_limit_angle[
+        m_bone_mass_info[8].m_joint_limit_count++] = 0.69813174f;
+    v50.v.m128_f32[2] = 0.0f;
+    v50.v.m128_f32[3] = 0.0f;
+    math::Dir3* v35 = &m_bone_mass_info[8].m_joint_limit_axis[
+        m_bone_mass_info[8].m_joint_limit_count];
+    v35->v = _mm_setr_ps(0.0f, -1.0f, v50.v.m128_f32[2],
+                         v50.v.m128_f32[3]);
+    m_bone_mass_info[8].m_joint_limit_angle[
+        m_bone_mass_info[8].m_joint_limit_count++] = 1.5707964f;
+    m_bone_mass_info[8].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    m_bone_mass_info[8].m_capsule_radius = 0.11f;
+    v46.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v47.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v48.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v50.v = _mm_setr_ps(-0.15000001f, 0.0f, 0.0f, 0.0f);
+    v49.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    m_bone_mass_info[9].set(
+        v31, USER_BONE_ID_RIGHT_FOOT, 0.15000001f, 0.15000001f, 0.5f, v50, 2,
+        50.0f, 0.30000001f, 0.25f, 9, 8, bone_mass_info::JOINT_TYPE_HINGE,
+        -1.7453293f, -0.087266468f, v49, v48, v47, v46, 1.0f);
+    m_bone_mass_info[9].m_capsule_b1_adjust_p2_loc.v = _mm_setzero_ps();
+    m_bone_mass_info[9].m_capsule_b1_adjust_p2_loc.v.m128_f32[0] =
+        -0.050000001f;
+    v50.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    m_bone_mass_info[9].m_damp_k = v3;
+    __m128 v38 = v50.v;
+    m_bone_mass_info[9].m_capsule_radius = 0.1f;
+
+    __m128 scale34 = _mm_set1_ps(34.0f);
+    __m128 y_axis = v38;  // (0,0,1,0) - RagdollRotate y-axis
+    for (int i = 0; i < 10; ++i)
+    {
+        bone_mass_info* b = &m_bone_mass_info[i];
+        b->m_mass = (g_ragdoll_mass_scale * b->m_mass) * 0.001f;
+        b->m_inertia_sphere_radius *= 34.0f;
+        b->m_p1_radius *= 34.0f;
+        b->m_p2_radius *= 34.0f;
+        b->m_b1_adjust_p2_loc.v =
+            _mm_mul_ps(RagdollRotate(b->m_b1_adjust_p2_loc.v, y_axis),
+                       scale34);
+        b->m_capsule_b1_adjust_p2_loc.v = _mm_mul_ps(
+            RagdollRotate(b->m_capsule_b1_adjust_p2_loc.v, y_axis), scale34);
+        b->m_capsule_radius *= 34.0f;
+        b->m_rb_parent_axis_loc.v =
+            RagdollRotate(b->m_rb_parent_axis_loc.v, y_axis);
+        b->m_rb_axis_loc.v = RagdollRotate(b->m_rb_axis_loc.v, y_axis);
+        b->m_rb_parent_ref_loc.v =
+            RagdollRotate(b->m_rb_parent_ref_loc.v, y_axis);
+        float old_theta_min = b->m_theta_min;
+        b->m_rb_ref_loc.v = RagdollRotate(b->m_rb_ref_loc.v, y_axis);
+        b->m_theta_min = 0.0f - b->m_theta_max;
+        b->m_theta_max = 0.0f - old_theta_min;
+        for (int j = 0; j < b->m_joint_limit_count; ++j)
+        {
+            b->m_joint_limit_axis[j].v = _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(b->m_joint_limit_axis[j].v,
+                                       b->m_joint_limit_axis[j].v, 0),
+                        _mm_setr_ps(-1.0f, 0.0f, 0.0f, 0.0f)),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(b->m_joint_limit_axis[j].v,
+                                       b->m_joint_limit_axis[j].v, 85),
+                        v46.v)),
+                _mm_mul_ps(
+                    _mm_shuffle_ps(b->m_joint_limit_axis[j].v,
+                                   b->m_joint_limit_axis[j].v, 170),
+                    v46.v));
+        }
+    }
+    for (int i = 0; i < 10; ++i)
+        m_bone_mass_info[i].calc_stuff(owner);
+}
 
 // ea: 0x6F71E0
 bool biped_phys_info::setup(Entity* owner)
