@@ -109,7 +109,12 @@ extern void CG_RegisterItemVisuals(int itemNum);
 extern bool CG_SetupViewModelDObj(DObj* dobj, int weaponNum);
 extern void CG_WeaponRunXModelAnims(PlayerState* ps, weaponInfo_s* weapon);
 extern bool CG_GetWeapReticleZoom(float* pfZoom);
-extern int InteractionController_CanRunWeaponAnims(void* self);
+// InteractionController_CanRunWeaponAnims artifact (game/o; stub)
+int InteractionController_CanRunWeaponAnims(void* self)
+{
+    (void)self;
+    return 1;
+}
 void* PlayerAnimMgr_sInst = nullptr;  // cg.o artifact (PlayerAnimMgr*)
 extern void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps,
                                Entity* entity, int bDrawGun);
@@ -200,7 +205,10 @@ float tr_viewModelInfo_mWeaponScale[4];
 extern int tr_viewModelInfo_mWeaponOrigin_used;
 void* tr_viewModelInfo_mWeaponOrigin = nullptr;  // cg.o artifact
 unsigned int tagHashInit;
-extern void InteractionController_PostPhysicsUpdate(void* self, float deltaT);
+void InteractionController_PostPhysicsUpdate(void* self, float deltaT)
+{
+    (void)self; (void)deltaT;
+}
 
 extern int Com_BitCheck(const int* const array, int bitNum);
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);

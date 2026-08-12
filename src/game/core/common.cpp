@@ -371,7 +371,10 @@ extern void SoundDevice_UnpauseAllSounds(void* self);
 extern void FEManager_DrawControllerError(void* self);
 extern void MemoryUnitManager_Service();
 extern void SyncFrameBuffers();
-extern void InteractionController_ChangeWeaponToPending(void* inst);
+void InteractionController_ChangeWeaponToPending(void* inst)
+{
+    (void)inst;
+}
 extern void StatMon_Warning(int type, int duration, const char* pszShaderName);
 extern void SetAnimCheck(int bAnimCheck);
 extern void ServerTime_Tick();
@@ -488,8 +491,12 @@ extern void DCGBankManager_DeleteInst();
 extern void AnimBankManager_CreateInst();
 extern void RumbleManager_CreateInst();
 extern void RumbleManager_DeleteInst();
-extern void InteractionController_CreateInst();
-extern void InteractionController_DeleteInst();
+void InteractionController_CreateInst()
+{
+}
+void InteractionController_DeleteInst()
+{
+}
 extern void BinFileManager_CreateInst();
 extern void BinFileManager_DeleteInst();
 extern void CurveManager_CreateInst();

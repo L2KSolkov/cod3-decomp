@@ -113,8 +113,15 @@ extern void FEManager_DrawAARMenus(fe_manager_view* self);
 extern void FEManager_UpdateFrontEnd(fe_manager_view* self, float time_inc);
 extern void FEManager_UpdateAARMenus(fe_manager_view* self, float time_inc);
 extern void FEManager_UpdateInGameMenus(fe_manager_view* self, float time_inc);
-extern int InteractionController_DoRenderText(void* self, int index);
-extern void InteractionController_RenderText(void* self);
+int InteractionController_DoRenderText(void* self, int index)
+{
+    (void)self; (void)index;
+    return 0;
+}
+void InteractionController_RenderText(void* self)
+{
+    (void)self;
+}
 
 // re renderer externs
 struct refexport_t {

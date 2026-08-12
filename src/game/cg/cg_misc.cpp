@@ -3699,11 +3699,28 @@ const float* InteractionController_GetHandsAngles(void* self)
     static const float zero[3] = { 0.0f, 0.0f, 0.0f };
     return zero;
 }
-extern int InteractionController_GetCameraMode(void* self);
-extern void InteractionController_EndInteraction(void* self, int wasInteracting);
-extern int InteractionController_StartInteraction(void* self, Entity* interactable,
-                                                  const char* name, int curPakId);
-extern float InteractionController_GetRotation(void* self);
+// InteractionController free-function artifacts (real members in game/o;
+// instance surface not ported yet)
+int InteractionController_GetCameraMode(void* self)
+{
+    (void)self;
+    return 0;
+}
+void InteractionController_EndInteraction(void* self, int wasInteracting)
+{
+    (void)self; (void)wasInteracting;
+}
+int InteractionController_StartInteraction(void* self, Entity* interactable,
+                                           const char* name, int curPakId)
+{
+    (void)self; (void)interactable; (void)name; (void)curPakId;
+    return 0;
+}
+float InteractionController_GetRotation(void* self)
+{
+    (void)self;
+    return 0.0f;
+}
 bool gSceneAnimCamera;  // 0x00F258F6
 extern vmCvar_t cg_altTankCam;  // 0x00F5BC30
 extern TPakId CurPakId();
