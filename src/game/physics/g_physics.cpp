@@ -84,6 +84,12 @@ public:
 private:
     void allocate_buffer();  // ?allocate_buffer@phys_collision_allocater@@AAEXXZ
     void free_buffers();     // ?free_buffers@phys_collision_allocater@@AAEXXZ
+public:
+    void set_buffer(void* const start, int size, int alignment);  // ?set_buffer@phys_collision_allocater@@QAEXQAXHH@Z
+    void capture_user_start();  // ?capture_user_start@phys_collision_allocater@@QAEXXZ
+    void reset_to_user_start(); // ?reset_to_user_start@phys_collision_allocater@@QAEXXZ
+    int  get_warning_level();   // ?get_warning_level@phys_collision_allocater@@QAEHXZ
+    void reset_warning_level(); // ?reset_warning_level@phys_collision_allocater@@QAEXXZ
 };
 
 // ea: 0x6F2FF0
@@ -132,6 +138,46 @@ void phys_collision_allocater::free_buffers()
             ++v3;
         } while (v2 < m_num_buffers);
     }
+}
+
+// ea: 0x6F1E20
+void phys_collision_allocater::set_buffer(void* const start, int size,
+                                          int alignment)
+{
+    m_list_memory_buffer[0].set_buffer((char*)start, size, alignment);
+    m_num_buffers = 1;
+    m_high_buffer_count = 1;
+}
+
+// ea: 0x6F1E60
+void phys_collision_allocater::capture_user_start()
+{
+    for (int i = 0; i < m_num_buffers; ++i)
+        m_list_memory_buffer[i].m_user_start =
+            m_list_memory_buffer[i].m_buffer_cur;
+}
+
+// ea: 0x6F1E90
+void phys_collision_allocater::reset_to_user_start()
+{
+    for (int i = 0; i < m_num_buffers; ++i)
+        m_list_memory_buffer[i].m_buffer_cur =
+            m_list_memory_buffer[i].m_user_start;
+}
+
+// ea: 0x6F1DF0
+int phys_collision_allocater::get_warning_level()
+{
+    if (m_out_of_memory)
+        return 2;
+    return m_high_buffer_count > 1;
+}
+
+// ea: 0x6F1E10
+void phys_collision_allocater::reset_warning_level()
+{
+    m_out_of_memory = false;
+    m_high_buffer_count = 0;
 }
 
 // ?g_ragdoll_mass_scale@@3MA (physics.o data @ 0xE01E50)
