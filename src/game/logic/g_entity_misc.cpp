@@ -2859,6 +2859,7 @@ void UpdateWheelMarks(Entity* e, int a, bool b, const math::Position3& c,
 {
     (void)e; (void)a; (void)b; (void)c; (void)d;
 }
+void j_nullsub_50(void* self) { (void)self; }
 void ValidatePakId(int a) { (void)a; }
 void View_SetViewportClipping(int a) { (void)a; }
 void WaitTilOutput_AssignData(void* a, void* b) { (void)a; (void)b; }

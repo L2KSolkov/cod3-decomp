@@ -39,6 +39,31 @@ Handle PostEffectEventPhysicsImpact(const Entity* ent, int myColMat,
 Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir,
                     float iDamage);  // g.o
 
+// effect-events / vehicle externs (game.o / core.o)
+// proximity_data_t (game.o; minimal view - lo +0x00, hi +0x10)
+struct proximity_data_t {
+    math::Position3 lo;  // +0x00
+    math::Position3 hi;  // +0x10
+};
+extern void filter_proximity_data(const math::Position3& lo,
+                                  const math::Position3& hi, int contents,
+                                  const proximity_data_t& in,
+                                  proximity_data_t& out);  // game.o
+extern void j_nullsub_50(void* self);  // g.o
+extern void EffectEventAdjustEffect_Scale(Handle effect, const char* param,
+                                          float scale);  // core.o 0x4CB8E0
+extern Handle PostEffectEventVehicle(const Entity* ent,
+                                     const char* vehicleType,
+                                     int action);  // core.o
+extern Handle PostEffectEventVehicleWheel(const Entity* ent,
+                                          const char* vehicleType,
+                                          int action, int mat_type,
+                                          unsigned int wheel_tag_hash);  // core.o
+extern void UpdateWheelMarks(Entity* owner, int wheel_id, bool wheel_state,
+                             const math::Position3& hitp,
+                             const math::Dir3& hitn);  // physics.o
+extern unsigned int s_wheelTagHashes[6];  // g.o @ 0xEE62CC
+
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
 extern const char* const defaultFileName;
@@ -1475,6 +1500,8 @@ struct refEntity {  // EntityShared subset
     void*    tagInfo;            // +0x3D4 (tagInfo_t*)
     uint8_t  _pad3D8[0x3DC - 0x3D8];
     void*    scripted;           // +0x3DC (animscripted_t*)
+    uint8_t  _pad3E0[0x45C - 0x3E0];
+    proximity_data_t* proximity_data;  // +0x45C
 
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
@@ -1853,11 +1880,14 @@ void rb_vehicle::cleanup_path()
 
 // wheel_effect_state_e (physics.o RBVehicle.cpp)
 enum wheel_effect_state_e {
+    WHEEL_STATE_ROLLING = 0,
     WHEEL_STATE_AIRBORN = 1,
+    WHEEL_STATE_PEELINGOUT = 2,
+    WHEEL_STATE_SKIDDING = 3,
 };
 // vehicle_info_t (g_vehiclefuncs.h view; type +0x20)
 struct vehicle_info_t {
-    uint8_t _pad0[0x20];
+    char    name[32];  // +0x00
     short   type;  // +0x20
     short   subtype;  // +0x22
     uint8_t _pad24[0x21C - 0x24];
@@ -2977,11 +3007,218 @@ void rb_vehicle::update_steering(float delta_t)
     }
 }
 
-// stubs until the wheel-effect/tread/wheel-matrix internals are ported
-// (0x705070 / 0x6FC5B0 / 0x701B70)
+// ea: 0x705070
 void rb_vehicle::_update_wheel_effects(float delta_t)
 {
     (void)delta_t;
+    if ((m_flags.mMask & 1) != 0)
+        return;
+
+    // Peel-out flag: throttle above 0.9 and forward vel above peel-out max.
+    bool peeling = m_throttle > 0.89999998f
+                   && m_forward_vel > m_parameter->m_peel_out_max_speed;
+    vehicle_info_t* v76 =
+        VEH_GetInfo(((scr_vehicle_t*)m_owner->scr_vehicle)->infoIdx);
+    rb_extra_info* m_chassis_rbinf = this->m_chassis_rbinf;
+    rigid_body* m_rb = m_chassis_rbinf->m_rb;
+
+    // Water-filter pass (contents 32): ML (4) / MR (5) wheels.
+    proximity_data_t water_objects;
+    if (m_owner->proximity_data != nullptr
+        && m_owner->proximity_data->lo.v.m128_f32[0]
+               <= m_owner->proximity_data->hi.v.m128_f32[0])
+    {
+        filter_proximity_data(
+            m_owner->proximity_data->lo, m_owner->proximity_data->hi, 32,
+            *m_owner->proximity_data, water_objects);
+        if ((m_flags.mMask & 0x20) != 0)
+        {
+            rigid_body_constraint_wheel* v9 =
+                (rigid_body_constraint_wheel*)m_wheels[4];
+            math::Position3 hitp;
+            hitp.v = v9->m_b2_hitp_loc.v;
+            math::Dir3 hitn;
+            hitn.v = v9->m_b2_hitn_loc.v;
+            bool airborne = (v9->m_wheel_flags & 1) == 0;
+            UpdateWheelMarks(m_owner, 4, airborne, hitp, hitn);
+            rigid_body_constraint_wheel* v13 =
+                (rigid_body_constraint_wheel*)m_wheels[5];
+            math::Position3 hitp2;
+            hitp2.v = v13->m_b2_hitp_loc.v;
+            math::Dir3 hitn2;
+            hitn2.v = v13->m_b2_hitn_loc.v;
+            bool airborne2 = (v13->m_wheel_flags & 1) == 0;
+            UpdateWheelMarks(m_owner, 5, airborne2, hitp2, hitn2);
+            j_nullsub_50(&water_objects);
+            return;
+        }
+    }
+
+    int wheel = 0;
+    for (; wheel < 4; ++wheel)
+    {
+        rigid_body_constraint_wheel* v17 =
+            (rigid_body_constraint_wheel*)m_wheels[wheel];
+        if (v17 == nullptr
+            || (v76->subtype == 2 && wheel == 1))
+            break;
+
+        unsigned int m_wheel_flags = v17->m_wheel_flags;
+        wheel_effect_state_e oldState =
+            (wheel_effect_state_e)m_wheel_effect_state[wheel];
+        float v70 = 0.0f;
+        if ((m_wheel_flags & 1) != 0)
+        {
+            if (peeling)
+            {
+                m_wheel_effect_state[wheel] = WHEEL_STATE_PEELINGOUT;
+            }
+            else if ((m_flags.mMask & 2) != 0
+                     && fabs(m_owner->speed) > 100.0f)
+            {
+                m_wheel_effect_state[wheel] = WHEEL_STATE_SKIDDING;
+                v70 = 600.0f;
+            }
+            else if ((m_wheel_flags & 4) != 0)
+            {
+                // Compute slip: body velocity + angular contribution, then
+                // remove the suspension-normal component.
+                const math::Mat43& mat = m_rb->dangerous_get_mat();
+                __m128 v22 = _mm_shuffle_ps(mat.x.v, mat.y.v, 68);
+                __m128 tv = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(m_rb->m_t_vel.v,
+                                                  m_rb->m_t_vel.v, 0),
+                                   _mm_shuffle_ps(v22, mat.z.v, 136)),
+                        _mm_mul_ps(_mm_shuffle_ps(m_rb->m_t_vel.v,
+                                                  m_rb->m_t_vel.v, 0x55),
+                                   _mm_shuffle_ps(v22, mat.z.v, 221))),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(m_rb->m_t_vel.v, m_rb->m_t_vel.v,
+                                       0xAA),
+                        _mm_shuffle_ps(
+                            _mm_shuffle_ps(mat.x.v, mat.y.v, 238), mat.z.v,
+                            168)));
+                const math::Mat43& mat2 = m_rb->dangerous_get_mat();
+                __m128 v26 = _mm_shuffle_ps(mat2.x.v, mat2.y.v, 68);
+                __m128 av = _mm_add_ps(
+                    _mm_add_ps(
+                        _mm_mul_ps(_mm_shuffle_ps(m_rb->m_a_vel.v,
+                                                  m_rb->m_a_vel.v, 0),
+                                   _mm_shuffle_ps(v26, mat2.z.v, 136)),
+                        _mm_mul_ps(_mm_shuffle_ps(m_rb->m_a_vel.v,
+                                                  m_rb->m_a_vel.v, 0x55),
+                                   _mm_shuffle_ps(v26, mat2.z.v, 221))),
+                    _mm_mul_ps(
+                        _mm_shuffle_ps(m_rb->m_a_vel.v, m_rb->m_a_vel.v,
+                                       0xAA),
+                        _mm_shuffle_ps(
+                            _mm_shuffle_ps(mat2.x.v, mat2.y.v, 238), mat2.z.v,
+                            168)));
+                math::Dir3 susp = v17->m_b1_suspension_dir_loc;
+                __m128 wheel_pt = _mm_add_ps(
+                    v17->m_b1_wheel_center_loc.v,
+                    _mm_mul_ps(
+                        susp.v,
+                        _mm_set1_ps(v17->m_wheel_radius
+                                    - v17->m_wheel_displaced_center_dist)));
+                __m128 ang = _mm_sub_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(av, av, 9),
+                               _mm_shuffle_ps(wheel_pt, wheel_pt, 18)),
+                    _mm_mul_ps(_mm_shuffle_ps(av, av, 18),
+                               _mm_shuffle_ps(wheel_pt, wheel_pt, 9)));
+                math::Dir3 axis = v17->m_b1_wheel_axis_loc;
+                __m128 surf = _mm_add_ps(
+                    _mm_add_ps(tv, ang),
+                    _mm_mul_ps(
+                        _mm_sub_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(axis.v, axis.v, 9),
+                                       _mm_shuffle_ps(susp.v, susp.v, 18)),
+                            _mm_mul_ps(_mm_shuffle_ps(axis.v, axis.v, 18),
+                                       _mm_shuffle_ps(susp.v, susp.v, 9))),
+                        _mm_set1_ps(v17->m_wheel_vel * v17->m_wheel_radius)));
+                __m128 dot = _mm_mul_ps(surf, susp.v);
+                float proj =
+                    dot.m128_f32[0]
+                    + (_mm_shuffle_ps(dot, dot, 85).m128_f32[0]
+                       + _mm_shuffle_ps(dot, dot, 170).m128_f32[0]);
+                __m128 lat = _mm_sub_ps(
+                    surf, _mm_mul_ps(susp.v, _mm_set1_ps(proj)));
+                __m128 lat2 = _mm_mul_ps(lat, lat);
+                v70 = lat2.m128_f32[0]
+                      + (_mm_shuffle_ps(lat2, lat2, 85).m128_f32[0]
+                         + _mm_shuffle_ps(lat2, lat2, 170).m128_f32[0]);
+                if (v70 > 62500.0f)
+                    m_wheel_effect_state[wheel] = WHEEL_STATE_SKIDDING;
+                else
+                    m_wheel_effect_state[wheel] = WHEEL_STATE_ROLLING;
+            }
+            else
+            {
+                m_wheel_effect_state[wheel] = WHEEL_STATE_ROLLING;
+            }
+        }
+        else
+        {
+            m_wheel_effect_state[wheel] = WHEEL_STATE_AIRBORN;
+        }
+
+        if (m_wheel_effect_state[wheel] == oldState)
+            continue;
+
+        if (oldState == WHEEL_STATE_PEELINGOUT
+            || oldState == WHEEL_STATE_SKIDDING)
+        {
+            // StopEffect (m_wheel_effects[wheel] -> 0)
+            m_wheel_effects[wheel].mVal = 0;
+        }
+        if (m_wheel_effect_state[wheel] == WHEEL_STATE_PEELINGOUT)
+            break;  // stop processing wheels while peeling
+        if (m_wheel_effect_state[wheel] == WHEEL_STATE_SKIDDING)
+        {
+            Handle v66;
+            v66 = PostEffectEventVehicleWheel(
+                m_owner, v76->name, 0x2B,
+                ((scr_vehicle_t*)m_owner->scr_vehicle)
+                    ->phys.wheelSurfType[wheel],
+                s_wheelTagHashes[wheel]);
+            m_wheel_effects[wheel] = v66;
+            float vol = (v70 - 150.0f) * 0.0000049382716f;
+            if (vol < 0.0f)
+                vol = 0.0f;
+            else if (vol > 1.0f)
+                vol = 1.0f;
+            EffectEventAdjustEffect_Scale(m_wheel_effects[wheel],
+                                          "SOUND_VOLUME", vol);
+            EffectEventAdjustEffect_Scale(m_wheel_effects[wheel],
+                                          "EmissionRate", vol * 60.0f);
+        }
+        else
+        {
+            math::Position3 hitp;
+            hitp.v = v17->m_b2_hitp_loc.v;
+            math::Dir3 hitn;
+            hitn.v = v17->m_b2_hitn_loc.v;
+            UpdateWheelMarks(m_owner, wheel, m_wheel_effect_state[wheel],
+                             hitp, hitn);
+        }
+    }
+
+    // Exhaust/dust effect tail: start or adjust the exhaust effect.
+    if (m_exhaust_effect.mVal != 0)
+    {
+        float scale = m_current_fwd_fric_scale * 0.0033333334f;
+        if (scale > 1.0f)
+            scale = 1.0f;
+        float v53 = fabs(m_throttle) * 30.0f + scale * 10.0f;
+        EffectEventAdjustEffect_Scale(m_exhaust_effect, "EmissionRate",
+                                      v53);
+    }
+    else
+    {
+        m_exhaust_effect = PostEffectEventVehicle(m_owner, v76->name, 0x2C);
+    }
+    j_nullsub_50(&water_objects);
 }
 // ea: 0x6FC5B0
 void rb_vehicle::calc_tread_matrices()
