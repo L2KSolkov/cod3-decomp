@@ -91,6 +91,10 @@ class biped_phys_info;
 struct phys_gjk_geom_list;
 class phys_gjk_geom_cod_base;
 struct trajectory_t;
+struct PhysData {
+    uint8_t _pad0[0x08];
+    float   mBounce;  // +0x08
+};
 class DCGSet;
 void phys_collision_allocater_ballistic_reinit();  // 0x6F7060
 enum hitLocation_t;
@@ -945,7 +949,10 @@ void rb_collision_capsule::xform(const math::Mat43& mat)
 // math@@H@Z / ?GetBoneIndex@DObj@@QBEHPBD@Z) - stub until render.o is ported.
 class DObj {
 public:
-    uint8_t _pad0[0xCF];
+    uint8_t _pad0[0xC0];
+    int     mPakId;            // +0xC0
+    void*   mPhysDataValue;    // +0xC4 (IVPointerRaw mPhysData)
+    uint8_t _padC8[0xCF - 0xC8];
     unsigned char numBones;  // +0xCF
 
     const math::Mat43& GetMat(int boneIndex);
@@ -3184,11 +3191,46 @@ void phys_collision_allocater_ballistic_reinit()
 // prop_phys_collision (physics.o; static collision pass helpers)
 struct prop_phys_collision {
     static void get_all_collisions();  // ?get_all_collisions@prop_phys_collision@@SAXXZ
+    static void collide_bodies(rb_extra_info* rb_inf1, rb_extra_info* rb_inf2);  // ?collide_bodies@prop_phys_collision@@SAXPAVrb_extra_info@@0@Z
+    static void collide_terrain(void* a1, rb_extra_info* rb_inf);  // ?collide_terrain@prop_phys_collision@@SAXPAUphysics_colgeom_visitor@@PAVrb_extra_info@@@Z
+    static void collide_entities(void* a1, rb_extra_info* rb_inf);  // ?collide_entities@prop_phys_collision@@SAXPAVphys_gjk_geom_cod_base@@PAVrb_extra_info@@@Z
 };
-// stub until prop_phys_collision::get_all_collisions (0x70AFE0) is ported
 void prop_phys_collision::get_all_collisions()
 {
 }
+// helper stubs for the collide pass
+bool are_potentially_colliding(const math::Dir3* b1_mn,
+                               const math::Dir3* b1_mx,
+                               const math::Dir3* b2_mn,
+                               const math::Dir3* b2_mx)
+{
+    (void)b1_mn; (void)b1_mx; (void)b2_mn; (void)b2_mx;
+    return false;
+}
+void collide_segment(void* wci, void* wci_ent, void* ent1, void* g1_rb,
+                     const math::Mat43* g1_xform, void* g1)
+{
+    (void)wci; (void)wci_ent; (void)ent1; (void)g1_rb; (void)g1_xform;
+    (void)g1;
+}
+void ValidatePakId(int pakId);  // streamer.o ?ValidatePakId@@YAXW4TPakId@@@Z
+bool rb_extra_info_can_have_event(void* rb_inf)
+{
+    (void)rb_inf;
+    return false;
+}
+void create_prop_collide_callback(void* rb_inf, int surfaceFlags, void* b1,
+                                  void* b2)
+{
+    (void)rb_inf; (void)surfaceFlags; (void)b1; (void)b2;
+}
+int phys_collide_do_gjk_collide_stub(void* gjk_info, void* d,
+                                     float sep_thresh)
+{
+    (void)gjk_info; (void)d; (void)sep_thresh;
+    return 0;
+}
+
 // stub until process_prop_collide_callbacks (0x702740) is ported
 void process_prop_collide_callbacks()
 {
@@ -3362,6 +3404,156 @@ void collision_memory_prolog()
     for (int i = 0; i < g_collision_memory_allocater.m_num_buffers; ++i)
         g_collision_memory_allocater.m_list_memory_buffer[i].m_user_start =
             g_collision_memory_allocater.m_list_memory_buffer[i].m_buffer_cur;
+}
+
+// ea: 0x70AC40
+void prop_phys_collision::collide_bodies(rb_extra_info* rb_inf1,
+                                         rb_extra_info* rb_inf2)
+{
+    rb_extra_info* v2 = rb_inf2;
+    rb_extra_info* v3 = rb_inf1;
+    if ((rb_inf1->m_flags.mMask & 4) != 0
+        || (rb_inf2->m_flags.mMask & 4) != 0)
+    {
+        Entity* m_ent = rb_inf2->m_ent;
+        Entity* ent1 = rb_inf1->m_ent;
+        if (ent1 == nullptr
+            && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 851, "ent1",
+                         defaultFileName))
+            __debugbreak();
+        if (m_ent == nullptr
+            && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 852, "ent2",
+                         defaultFileName))
+            __debugbreak();
+        math::Mat43* b2w = rb_inf2->m_cg_mesh_mat;
+        math::Mat43* a2w = rb_inf1->m_cg_mesh_mat;
+        rigid_body* rb1 = rb_inf1->m_rb;
+        rigid_body* rb2 = rb_inf2->m_rb;
+        if (rb_inf1->m_gjk_geom_list == nullptr
+            && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 860,
+                         "rb_inf1->m_gjk_geom_list", defaultFileName))
+            __debugbreak();
+        if (rb_inf2->m_gjk_geom_list == nullptr
+            && _tlAssert("c:\\cod\\code\\game\\RBCollision.cpp", 861,
+                         "rb_inf2->m_gjk_geom_list", defaultFileName))
+            __debugbreak();
+        if (are_potentially_colliding(
+                &((phys_gjk_geom_list*)rb_inf1->m_gjk_geom_list)->m_aabb_mn,
+                &((phys_gjk_geom_list*)rb_inf1->m_gjk_geom_list)->m_aabb_mx,
+                &((phys_gjk_geom_list*)rb_inf2->m_gjk_geom_list)->m_aabb_mn,
+                &((phys_gjk_geom_list*)rb_inf2->m_gjk_geom_list)->m_aabb_mx))
+        {
+            if (rb_inf1->m_rb_vehicle != nullptr
+                && rb_inf1->m_rb_vehicle->m_vci != nullptr)
+            {
+                vehicle_collision_info* m_vci =
+                    (vehicle_collision_info*)rb_inf1->m_rb_vehicle->m_vci;
+                for (void* g1 = ((phys_gjk_geom_list*)rb_inf2->m_gjk_geom_list)
+                                    ->m_first_geom;
+                     g1 != nullptr; g1 = *(void**)g1)
+                {
+                    for (int i = 0; i < m_vci->m_list_wheel_collision_info_count; ++i)
+                        collide_segment(
+                            &m_vci->m_list_wheel_collision_info[i], nullptr,
+                            nullptr, rb2, b2w, g1);
+                    v3 = rb_inf1;
+                }
+                v2 = rb_inf2;
+            }
+            if (v2->m_rb_vehicle != nullptr
+                && v2->m_rb_vehicle->m_vci != nullptr)
+            {
+                vehicle_collision_info* v11 =
+                    (vehicle_collision_info*)v2->m_rb_vehicle->m_vci;
+                for (void* g1a =
+                         ((phys_gjk_geom_list*)v3->m_gjk_geom_list)
+                             ->m_first_geom;
+                     g1a != nullptr; g1a = *(void**)g1a)
+                {
+                    for (int i = 0; i < v11->m_list_wheel_collision_info_count; ++i)
+                        collide_segment(&v11->m_list_wheel_collision_info[i],
+                                        nullptr, nullptr, rb1, a2w, g1a);
+                    v3 = rb_inf1;
+                }
+            }
+            for (void* m_first_geom =
+                     ((phys_gjk_geom_list*)v3->m_gjk_geom_list)->m_first_geom;
+                 m_first_geom != nullptr;
+                 m_first_geom = *(void**)m_first_geom)
+            {
+                for (void* g2 = ((phys_gjk_geom_list*)rb_inf2->m_gjk_geom_list)
+                                    ->m_first_geom;
+                     g2 != nullptr; g2 = *(void**)g2)
+                {
+                    if (are_potentially_colliding(
+                            &((phys_gjk_geom_list*)m_first_geom)->m_aabb_mn,
+                            &((phys_gjk_geom_list*)m_first_geom)->m_aabb_mx,
+                            &((phys_gjk_geom_list*)g2)->m_aabb_mn,
+                            &((phys_gjk_geom_list*)g2)->m_aabb_mx))
+                    {
+                        DObj* mDObj = ent1->mDObj;
+                        float M_FRICTION_COEF = rb1->m_fric_coef;
+                        float M_BOUNCE_COEF = 0.0f;
+                        ValidatePakId(mDObj->mPakId);
+                        void* mValue = mDObj->mPhysDataValue;
+                        if (mValue != nullptr)
+                        {
+                            ValidatePakId(mDObj->mPakId);
+                            M_BOUNCE_COEF = ((PhysData*)mValue)->mBounce;
+                        }
+                        if (rb_extra_info_can_have_event(rb_inf1))
+                            create_prop_collide_callback(rb_inf1, 0, rb1,
+                                                         rb2);
+                        phys_collide_data* v19 = g_list_phys_collide_data;
+                        if ((rb2->m_flags & 0x50) == 0
+                            && _tlAssert(
+                                   "c:\\cod\\code\\tl\\physics\\include\\rigid_body.h",
+                                   109, "debug_flag_is_in_collision()",
+                                   defaultFileName))
+                            __debugbreak();
+                        int m_priority = rb_inf1->m_priority;
+                        void* v21 = g_cman_process;
+                        void* v27 = g_gjk_info;
+                        unsigned int m_geom_id = *(unsigned int*)g2;
+                        unsigned int v23 = *(unsigned int*)m_first_geom;
+                        v19->gjk_cg1 = (const phys_gjk_geom*)m_first_geom;
+                        v19->gjk_cg2 = (const phys_gjk_geom*)g2;
+                        v19->cg1_to_world_xform = a2w;
+                        v19->cg2_to_world_xform = b2w;
+                        v19->cg1_to_rb1_xform = &rb_inf1->m_transform;
+                        v19->rb2_to_world_xform = &rb2->m_col_mat;
+                        v19->rb1 = rb1;
+                        v19->rb2 = rb2;
+                        v19->gjk_ci = nullptr;
+                        v19->pcd_callback = nullptr;
+                        v19->id1 = v23;
+                        v19->fric_coef = M_FRICTION_COEF;
+                        v19->id2 = m_geom_id;
+                        v19->bounce_coef = M_BOUNCE_COEF;
+                        v19->gjk_info = (phys_gjk_info*)v27;
+                        v19->cman_process =
+                            (phys_contact_manifold_process*)v21;
+                        v19->no_overflow_error = true;
+                        v19->solver_priority = m_priority;
+                        v19->gjk_ci =
+                            g_phys_gjk_cache_system.get_gjk_cache_info(
+                                v23, m_geom_id, true);
+                        if (phys_collide_do_gjk_collide_stub(
+                                v19->gjk_info, v19, 3.4000001f))
+                        {
+                            void* pcd_callback = v19->pcd_callback;
+                            if (pcd_callback == nullptr
+                                || (*(int (**)(void*, void*))pcd_callback)(
+                                       pcd_callback, v19) != 0)
+                            {
+                                // cman_process->process(d)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void* contact_point_info_get_cpi_allocater()
