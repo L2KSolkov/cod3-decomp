@@ -3294,6 +3294,16 @@ class phys_gjk_info;
 class phys_contact_manifold_process;
 class TouchEntityData;
 class EntityHandleDb;
+struct EntityHandleDbDbElement {
+    Entity* mObject;  // +0x00
+    int     mKey;     // +0x04
+};
+class EntityHandleDb {
+public:
+    uint8_t _pad[0xA8];  // +0x00 (incl. mFreeIndices BitSet<1344>)
+    EntityHandleDbDbElement mElements[0x540];  // +0xA8
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
+};
 template <typename Db, typename T>
 class DbLinkedHandle {
 public:
@@ -5180,6 +5190,78 @@ void SetAVel(Entity* e)
 {
     if ((e->flags & 0x400000) == 0)
         rb_prop_system::add_entity(e, -1.0f, -1.0f);
+}
+
+// minimal BitSet<1344> iteration over EntityHandleDb::sInst.mFreeIndices
+// (the binary's ~mFreeIndices set; 1344 bits = 42 words at +0x00)
+static int bitset_next_free(int& word_idx, unsigned int& cur_word,
+                            int& cur_val)
+{
+    for (;;)
+    {
+        if (cur_word != 0)
+        {
+            unsigned long bit;
+            _BitScanForward(&bit, cur_word);
+            cur_word &= ~(1u << bit);
+            cur_val = word_idx * 32 + (int)bit;
+            return cur_val;
+        }
+        if (++word_idx >= 42)
+        {
+            word_idx = -1;
+            return -1;
+        }
+        cur_word = ((unsigned int*)&EntityHandleDb::sInst)[word_idx];
+    }
+}
+
+// ea: 0x7041B0
+Entity* nuge_get_actor()
+{
+    int word_idx = 0;
+    unsigned int cur_word = ((unsigned int*)&EntityHandleDb::sInst)[0];
+    int cur_val = -1;
+    // ~mFreeIndices: invert the stored free bits
+    cur_word = ~cur_word;
+    bitset_next_free(word_idx, cur_word, cur_val);
+    for (;;)
+    {
+        if (cur_val != -1)
+        {
+            if (cur_val >= 0x540)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+                AeAssert::gCurrentLine = 78;
+                AeAssert::gCurrentExpr =
+                    "idx >= 0 && idx < _MaxEltements";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("index out of bounds"))
+                    __debugbreak();
+            }
+            Entity* result = EntityHandleDb::sInst.mElements[cur_val].mObject;
+            if (result != nullptr && result->actor != nullptr)
+            {
+                biped_phys_info* mBPInfo = result->mBPInfo;
+                if (mBPInfo != nullptr && mBPInfo->m_bp_sys == nullptr)
+                    return result;
+            }
+            bitset_next_free(word_idx, cur_word, cur_val);
+        }
+        else
+        {
+            if (word_idx == -1)
+                return nullptr;
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+            AeAssert::gCurrentLine = 78;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _MaxEltements";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("index out of bounds"))
+                __debugbreak();
+        }
+    }
 }
 
 // ea: 0x6F2F20
