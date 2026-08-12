@@ -68,10 +68,16 @@ extern void CL_InitCGame();
 extern void Con_Init();
 extern void Con_Close();
 extern void Con_OneTimeInit();
-extern void CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
-                                    int linewidth, int color, int flags);
-extern int CL_RestoreMessageType(unsigned char* buffer, int used, int total,
-                                 void* msgwnd, int type, int linewidth);
+extern int CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
+                                   int linewidth, int color, int flags);
+// CL_RestoreMessageType artifact (cl.o; stub)
+int CL_RestoreMessageType(unsigned char* buffer, int used, int total,
+                          void* msgwnd, int type, int linewidth)
+{
+    (void)buffer; (void)used; (void)total; (void)msgwnd;
+    (void)type; (void)linewidth;
+    return 0;
+}
 extern int ColorIndex(unsigned char c);
 extern void Con_Linefeed(int type, int duration, int flags);
 extern void SoundDevice_StopAllSounds(void* self);

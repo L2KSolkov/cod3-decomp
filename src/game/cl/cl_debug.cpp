@@ -106,8 +106,13 @@ int iLastCompassTime_1;   // ?iLastCompassTime_1@@3HA (cl.o)
 int unk_F6A28C = 0;       // ?unk_F6A28C@@3HA (cl.o)
 extern void re_LocateDebugStrings(int a1, int a2);
 extern void re_LocateDebugLines(int a1, int a2);
-extern int CL_SaveMessageType(unsigned char* buffer, int used, int total,
-                              void* msgwnd);
+// CL_SaveMessageType artifact (cl.o; stub)
+int CL_SaveMessageType(unsigned char* buffer, int used, int total,
+                       void* msgwnd)
+{
+    (void)buffer; (void)used; (void)total; (void)msgwnd;
+    return used;
+}
 
 // ============================================================================
 // Misc commands

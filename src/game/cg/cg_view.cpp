@@ -618,7 +618,12 @@ float sRumTimeMin;
 float sRumTimeMax;
 float sRumTimeFactor;
 extern void AnglesToForward(const float* const angles, float* const forward);
-extern int CG_UpdateCameraShake(void* shake, int client);
+// CG_UpdateCameraShake artifact (cg.o; stub)
+int CG_UpdateCameraShake(void* shake, int client)
+{
+    (void)shake; (void)client;
+    return 0;
+}
 extern void CG_EndShellShock(const void* parms, int time);
 extern void CG_UpdateShellShockSound(const void* parms);
 extern void CG_UpdateShellShockMouse(const void* parms, int time, int duration);

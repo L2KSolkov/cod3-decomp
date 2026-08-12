@@ -33,8 +33,14 @@ extern void Con_UpdateMessageWindowLine(msgwnd_t* msgwnd, int linefeed,
                                         int duration, int flags);
 extern void Con_DrawMessageWindow(msgwnd_t* msgwnd, int x, int y,
                                   float alpha, msgwnd_mode_t mode);
-extern int CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
-                                   int linewidth, int color, int flags);
+// CL_ConsolePrint_AddLine artifact (cl.o; stub)
+int CL_ConsolePrint_AddLine(int type, const char* txt, int duration,
+                            int linewidth, int color, int flags)
+{
+    (void)type; (void)txt; (void)duration; (void)linewidth;
+    (void)color; (void)flags;
+    return 0;
+}
 extern void CL_AddConsoleInfoColor(int iFirstInfo, const float* vColor);
 extern void CL_AddDeathMessageText(const char* pszString, int iForceColor);
 extern void* FEManager_GetFont(void* self, int f, float scale);
