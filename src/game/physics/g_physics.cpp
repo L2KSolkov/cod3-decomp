@@ -250,6 +250,7 @@ public:
     };
     DObj* mDObj;  // +0x00
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
+    math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
 };
 const math::Mat43& Entity::DObj::GetMat(int boneIndex)
 {
@@ -309,6 +310,7 @@ struct biped_phys_info {
                      math::Dir3* cur_tvel, math::Dir3* cur_avel);
 private:
     void reset_bone_vel_info(float delta_t);   // ?reset_bone_vel_info@biped_phys_info@@AAEXM@Z
+    void update_bone_vel_info(float delta_t);  // ?update_bone_vel_info@biped_phys_info@@AAEXM@Z
 public:
 };
 
@@ -410,6 +412,33 @@ void biped_phys_info::reset_bone_vel_info(float delta_t)
         memcpy(&m_last_mat[i], &mat, sizeof(math::Mat43));
         memcpy(&m_cur_mat[i], &mat, sizeof(math::Mat43));
     }
+}
+
+// ea: 0x6F3EB0
+void biped_phys_info::update_bone_vel_info(float delta_t)
+{
+    if (m_owner == nullptr
+        && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 346, "m_owner",
+                     defaultFileName))
+        __debugbreak();
+    m_delta_t = delta_t;
+    for (int i = 0; i < 10; ++i)
+    {
+        if (m_bone[i] < 0
+            && _tlAssert("c:\\cod\\code\\game\\RBRagdoll.cpp", 350,
+                         "m_bone[i] >= 0", defaultFileName))
+            __debugbreak();
+        memcpy(&m_last_mat[i], &m_cur_mat[i], sizeof(math::Mat43));
+        math::Mat43 rel = m_owner->GetRelMat(m_bone[i]);
+        memcpy(&m_cur_mat[i], &rel, sizeof(math::Mat43));
+    }
+    m_last_origin.v = m_cur_origin.v;
+    m_last_angles.v = m_cur_angles.v;
+    // refresh cur origin/angles from owner's render state
+    const float* curOrigin = (const float*)((const char*)m_owner + 0x150);
+    m_cur_origin.v = _mm_loadu_ps(curOrigin);
+    const float* curAngles = (const float*)((const char*)m_owner + 0x160);
+    m_cur_angles.v = _mm_loadu_ps(curAngles);
 }
 
 // Binary parameter type for GetPhysBoneID (mangles as W4hitLocation_t@@; the
