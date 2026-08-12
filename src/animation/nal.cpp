@@ -822,16 +822,12 @@ void XAnimSetAnimRate(XAnimTree* tree, unsigned int animIndex, float rate)
     XAnimSetAnimRateInternal(tree, animIndex, rate);
 }
 
-// TODO: PakHeapContext real port (streamer.o;
-//       ??0PakHeapContext@@QAE@W4TPakId@@_N@Z @ 0x66B040). Minimal placeholder
-//       so XAnimFreeInfo's heap-scoped release call compiles.
+// PakHeapContext (real port in streamer/pakmanager.cpp;
+// ??0PakHeapContext@@QAE@W4TPakId@@_N@Z @ 0x66B040)
+enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 struct PakHeapContext {
-    PakHeapContext(int pakId, bool once)
-    {
-        (void)pakId;
-        (void)once;
-    }
-    ~PakHeapContext() {}
+    PakHeapContext(TPakId pakId, bool once);
+    ~PakHeapContext();
 };
 
 // ea: 0x53E150
@@ -845,7 +841,7 @@ void XAnimFreeInfo(XAnimTree* tree, unsigned short infoIndex)
     XAnimInfo* info = &g_info[infoIndex];
     if (*(void**)&info->s[28] != nullptr)
     {
-        PakHeapContext ctx(tree->mPakId, false);
+        PakHeapContext ctx((TPakId)tree->mPakId, false);
         void* obj = *(void**)&info->s[28];
         if (obj != nullptr)
         {

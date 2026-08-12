@@ -64,6 +64,8 @@ struct mem_heap {
     uint8_t _pad8[0x484 - 0x08];
     unsigned int size;      // +0x484
     unsigned int used_byte; // +0x488
+    unsigned int high_used_byte;  // +0x48C
+    mem_heap* reserve;      // +0x490
 };
 
 template <typename T, int N>
@@ -117,6 +119,11 @@ unsigned int extract_color(const Color& col)
 extern int Cmd_Argc();       // core.o
 extern char* Cmd_Argv(int arg);  // core.o
 extern double atof(const char* nptr);
+extern void tlPrintf(const char* fmt, ...);      // tl_system.o
+extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
+extern void tlMemFree(void* ptr);                // tl_system.o
+extern void mem_heap_create(mem_heap* heap, void* start, void* end,
+                            mem_heap* reserve);  // mem_heap.cpp
 typedef unsigned nflState;
 typedef unsigned nflFileID;
 extern void nflUpdate();
@@ -240,6 +247,21 @@ struct ae_sized_array {
     }
 };
 
+template <typename T, int N>
+T& ae_array_get(ae_sized_array<T, N>& a, int idx)
+{
+    if (idx >= N)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+        AeAssert::gCurrentLine = 148;
+        AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    return a.m_elements[idx];
+}
+
 // AssetBankSet sBankArray (streamer.o data @ 0xF58BC8)
 ae_sized_array<void*, 24> AssetBankSet_sBankArray;
 
@@ -338,8 +360,8 @@ public:
     unsigned char* mHeaderBuffer;       // +0x88
     TRequestId   mHeaderRequestId;      // +0x8C
     uint8_t      _pad90[0xA0 - 0x90];   // mApkFiles/mCloseHandle/mOnlyLoadHeader
-    ae_array<mem_heap*, 12> mHeapList;  // +0xA0
-    ae_array<PakFile*, 4>   mPrereqHeaps;  // +0xD4
+    ae_sized_array<mem_heap*, 12> mHeapList;  // +0xA0
+    ae_sized_array<PakFile*, 4>   mPrereqHeaps;  // +0xD4
     uint8_t      _padE4[0xE8 - 0xE4];
     unsigned int mCurrentFile;          // +0xE8
     unsigned char* mCurrentFilePtr;     // +0xEC
@@ -368,6 +390,11 @@ public:
                            unsigned char* uncompressedSize,
                            unsigned int compressedSize,
                            unsigned int offset, unsigned int isHeader);
+    // ea: 0x665EC0
+    void GetHeapUsage(int& used, int& size) const;  // ?GetHeapUsage@PakFile@@QBEXAAH0@Z
+    // ea: 0x665F60
+    mem_heap* CreateHeap(unsigned char* heap_start,
+                         unsigned int heap_size);  // ?CreateHeap@PakFile@@AAEPAUmem_heap@@PAEI@Z
 
     // ea: 0x664B90
     float GetLoadTime() const;
@@ -519,6 +546,75 @@ public:
     // - ea: 0x665960 (stub)
     const PakInfoNode* GetPakInfo(const char* long_name) const;
 };
+
+// PoolAllocator (core/PoolAllocator.h; Allocate only) - used by CreateHeap
+class PoolAllocator {
+public:
+    void* Allocate(unsigned int size, bool forceHeapAlloc = false);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
+};
+extern PoolAllocator* gPakMemHeapAllocator;  // ?gPakMemHeapAllocator@@3PAVPoolAllocator@@A @ 0xF592F0
+
+// TlSystemCallbacks (core_systems.h; LockTlAllocsToPakHeap only)
+class TlSystemCallbacks {
+public:
+    static bool LockTlAllocsToPakHeap(bool s, bool once);  // ?LockTlAllocsToPakHeap@TlSystemCallbacks@@SA_N_N0@Z (sys.cpp)
+};
+
+// PakHeapContext (PakFile.cpp; mPakId +0, mLastState +4)
+class PakHeapContext {
+public:
+    TPakId mPakId;      // +0x00
+    bool   mLastState;  // +0x04
+
+    PakHeapContext(TPakId id, bool once);  // ??0PakHeapContext@@QAE@W4TPakId@@_N@Z
+    ~PakHeapContext();                     // ??1PakHeapContext@@QAE@XZ
+};
+
+// ae_vector<T> (ae/core/ae_vector.h; 12 bytes) - grow policy per IDA
+template <typename T>
+struct ae_vector {
+    T*  mElements;   // +0x00
+    int mCapacity;   // +0x04
+    int mSize;       // +0x08
+
+    void push_back(const T& iElement)
+    {
+        if (mSize >= mCapacity)
+        {
+            int v4 = mSize + 4;
+            if (mSize <= 3)
+                v4 = mSize + 1;
+            T* v9 = (T*)tlMemAlloc(sizeof(T) * v4, 8, 0);
+            for (int v5 = 0; v5 < mSize; ++v5)
+                v9[v5] = mElements[v5];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mCapacity = v4;
+            mElements = v9;
+        }
+        mElements[mSize++] = iElement;
+    }
+};
+
+// GlowSprites / GlowBeam (streamer.o render lists; verified IDA)
+struct GlowSprites {
+    float pos[3];          // +0x00
+    float rad;             // +0x0C
+    unsigned int color;    // +0x10
+};
+struct GlowBeam {
+    float pos[3];          // +0x00
+    float dir[3];          // +0x0C
+    float rad;             // +0x18
+    unsigned int color;    // +0x1C
+};
+
+ae_vector<GlowSprites> GlowSpritesList;  // ?GlowSpritesList@@3V?$ae_vector@UGlowSprites@@@@A @ 0xF59328
+ae_vector<GlowBeam> GlowBeamsList;       // ?GlowBeamsList@@3V?$ae_vector@UGlowBeam@@@@A @ 0xF59334
 
 // InstanceBankMgr (streamer.o; mEntries[99] @ +0x34)
 class InstanceBankMgr {
@@ -784,6 +880,7 @@ void PakManager::DeleteInst()
 unsigned int PakManager::sComputeDistanceKey = 1;
 float PakManager::sBrocPercentage = 0.1f;
 float PakManager::sWbkPercentage = 0.1f;
+PoolAllocator* gPakMemHeapAllocator = nullptr;  // ?gPakMemHeapAllocator@@3PAVPoolAllocator@@A @ 0xF592F0
 
 // ea: 0x666C50
 const ae_sized_array<TPakId, 128>& PakManager::GetContextStack() const
@@ -1479,6 +1576,128 @@ void* PakFile::PakReadDataAsync(unsigned char* buffer,
     nflSetRequestPriority(v8, NFL_PRIORITY_LOWEST);
     *buffer = (unsigned char)v8;
     return buffer;
+}
+
+// ea: 0x665EC0
+void PakFile::GetHeapUsage(int& used, int& size) const
+{
+    used = 0;
+    size = 0;
+    for (int i = 0; i < mHeapList.m_size; ++i)
+    {
+        if (i >= 0xC)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 148;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        mem_heap* v5 = mHeapList.m_elements[i];
+        used += v5->used_byte;
+        size += v5->size;
+    }
+}
+
+// ea: 0x665F60
+mem_heap* PakFile::CreateHeap(unsigned char* heap_start,
+                              unsigned int heap_size)
+{
+    if (heap_size > 0x2000 && mHeapList.m_size < 11)
+    {
+        unsigned char* v4 = heap_size + heap_start;
+        unsigned char* v5 =
+            (unsigned char*)(((uintptr_t)heap_start + 31) & 0xFFFFFFE0u);
+        mem_heap* v6 =
+            (mem_heap*)gPakMemHeapAllocator->Allocate(0x49Cu, false);
+        mem_heap_create(v6, v5, v4, nullptr);
+        mHeapList.push_back(v6);
+        tlPrintf("pak: heap is created at %X end %X size %i\n",
+                 v5, v4, v4 - v5);
+        return v6;
+    }
+    return nullptr;
+}
+
+// ea: 0x66BD80
+void DecodeHeap(const char* name, unsigned char* data, unsigned int size,
+                TPakId pakId, PakFile* pak)
+{
+    (void)name; (void)pakId;
+    int m_size = pak->mHeapList.m_size;
+    mem_heap* v6 =
+        m_size != 0 ? pak->mHeapList.m_elements[m_size - 1] : nullptr;
+    mem_heap* Heap = pak->CreateHeap(data, size);
+    if (Heap != nullptr && v6 != nullptr)
+    {
+        Heap->reserve = v6->reserve;
+        v6->reserve = Heap;
+    }
+}
+
+// ea: 0x66B040
+PakHeapContext::PakHeapContext(TPakId id, bool once)
+{
+    mPakId = id;
+    if (id != PAK_ID_INVALID)
+    {
+        if (PakManager::sInst->mSlots[id] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+            AeAssert::gCurrentLine = 2417;
+            AeAssert::gCurrentExpr = "PakManager::Inst()->IsValid( id )";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("bad pak id for alloc"))
+                __debugbreak();
+        }
+        mLastState = TlSystemCallbacks::LockTlAllocsToPakHeap(true, once);
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+        ContextStack.push_back(id);
+    }
+}
+
+// ea: 0x66F060
+PakHeapContext::~PakHeapContext()
+{
+    if (mPakId != PAK_ID_INVALID)
+    {
+        TlSystemCallbacks::LockTlAllocsToPakHeap(mLastState, false);
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+        int m_size = ContextStack.m_size;
+        if (m_size != 0)
+            ContextStack.m_size = m_size - 1;
+    }
+}
+
+// ea: 0x6720B0
+void AddGlowSprite(float* pos, float rad, unsigned int col)
+{
+    GlowSprites s;
+    s.pos[0] = pos[0];
+    s.pos[1] = pos[1];
+    s.pos[2] = pos[2];
+    s.rad = rad;
+    s.color = col;
+    GlowSpritesList.push_back(s);
+}
+
+// ea: 0x672100
+void AddGlowBeam(float* pos, float* dir, float rad, unsigned int col)
+{
+    GlowBeam s;
+    s.pos[0] = pos[0];
+    s.pos[1] = pos[1];
+    s.pos[2] = pos[2];
+    s.dir[0] = dir[0];
+    s.dir[1] = dir[1];
+    s.dir[2] = dir[2];
+    s.rad = rad;
+    s.color = col;
+    GlowBeamsList.push_back(s);
 }
 
 // ea: 0x6663F0
