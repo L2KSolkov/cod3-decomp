@@ -6,6 +6,12 @@
 
 #include "MPMainMenuXBox.h"
 
+// FEText getters (shell.o FEText.cpp family; manglings ?GetX@FEText@@QBMXZ etc.)
+float FEText::GetX()      { return xy.x; }
+float FEText::GetY()      { return xy.y; }
+float FEText::GetScaleX() { return scale.x; }
+font_index FEText::GetFont() { return font; }
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>

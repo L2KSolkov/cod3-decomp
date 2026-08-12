@@ -51,8 +51,12 @@ struct apsBounds {
         mMax.v = _mm_add_ps(mMax.v, splat);
     }
     // game2.o (non-inline): bounding-sphere radius = length(max-min) * 0.5.
-    // Unresolved here; apsGroup.o calls it (via 0x41F650).
-    float Radius() const;
+    float Radius() const
+    {
+        __m128 d = _mm_sub_ps(mMax.v, mMin.v);
+        float dx = d.m128_f32[0], dy = d.m128_f32[1], dz = d.m128_f32[2];
+        return sqrtf(dx * dx + dy * dy + dz * dz) * 0.5f;
+    }
 
     // apsMath.o (non-inline): bounding-box extent = max - min.
     math::Dir3 Size() const;
