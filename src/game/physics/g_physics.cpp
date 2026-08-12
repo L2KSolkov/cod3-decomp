@@ -92,6 +92,8 @@ class rigid_body;
 rigid_body_constraint_custom_path* path_constraint_create(
     Entity* veh);  // ?path_constraint_create@@YAPAVrigid_body_constraint_custom_path@@PAVEntity@@@Z
 extern bool g_in_physics_collision_callback;
+void VEH_Backup(Entity* ent);  // ?VEH_Backup@@YAXPAVEntity@@@Z (g.o)
+void VEH_UpdatePath(Entity* ent, int msec);  // ?VEH_UpdatePath@@YAXPAVEntity@@H@Z (g.o)
 class biped_phys_info;
 struct phys_gjk_geom_list;
 class phys_gjk_geom_cod_base;
@@ -546,6 +548,8 @@ public:
     void teleport(const Broc::vector& vSpawnPos, const Broc::vector* vAngles);  // ?teleport@rb_vehicle@@QAEXABUvector@Broc@@PBU23@@Z
     static void frame_prolog_all_systems(float delta_t);  // ?frame_prolog_all_systems@rb_vehicle@@SAXM@Z
     static void frame_epilog_all_systems(float delta_t);  // ?frame_epilog_all_systems@rb_vehicle@@SAXM@Z
+    static void debug_render_all();  // ?debug_render_all@rb_vehicle@@SAXXZ
+    void debug_render();             // ?debug_render@rb_vehicle@@QAEXXZ
 private:
     void _update_prolog(float delta_t);  // ?_update_prolog@rb_vehicle@@AAEXM@Z
     void _update_epilog(float delta_t);  // ?_update_epilog@rb_vehicle@@AAEXM@Z
@@ -1043,15 +1047,19 @@ struct refEntity {  // EntityShared subset
     uint8_t _pad2BC[0x2C4 - 0x2BC];
     int32_t  flags;              // +0x2C4
     unsigned int mFlags;         // +0x2C8 (Bitmask<unsigned int>)
-    uint8_t _pad2CC[0x344 - 0x2CC];
-    void* tagInfo;               // +0x344 (tagInfo_t*)
+    uint8_t _pad2CC[0x31C - 0x2CC];
+    float    speed;              // +0x31C (verified from _update_epilog)
+    uint8_t _pad320[0x348 - 0x320];
     int32_t nextthink;           // +0x348
     int32_t think;               // +0x34C (fn_think_e)
     uint8_t _pad350[0x355 - 0x350];
     uint8_t  die;                // +0x355
     uint8_t  _pad356[3];
     int32_t  health;             // +0x358
-    float    speed;              // +0x35C (verified from _update_epilog)
+    uint8_t  _pad35C[0x3D4 - 0x35C];
+    void*    tagInfo;            // +0x3D4 (tagInfo_t*)
+    uint8_t  _pad3D8[0x3DC - 0x3D8];
+    void*    scripted;           // +0x3DC (animscripted_t*)
 
     math::Mat43 CalcAbsMat(int boneIndex);  // ?CalcAbsMat@Entity@@QAE?AVMat43@math@@H@Z
     math::Mat43 GetRelMat(int boneIndex);   // ?GetRelMat@Entity@@QAE?AVMat43@math@@H@Z
@@ -1264,28 +1272,76 @@ float g_vehicle_gravity_multiplier = 1.5f;  // 0x3FC00000
 // ?hand_brake_friction_time@@3MA (physics.o data @ 0xE36AC4)
 float hand_brake_friction_time = 0.3f;      // 0x3E99999A
 
-// scr_vehicle_t (g_local.h view; pathPos + infoIdx + mRBVeh)
-struct scr_vehicle_path_view {
-    float origin[3];   // +0x00
-    float angles[3];   // +0x10
+// scr_vehicle_t (g_local.h view). Layout verified against IDA (ordinal 4887):
+// pathPos +0x00 (vehicle_pathpos_t, 0xB8), phys +0xC0 (vehicle_physic_t,
+// 0xB0), infoIdx +0x178, seats +0x1E0 (11*28), current +0x3E0 / next +0x420
+// (LerpedVariables, 0x40 each), boneIndex +0x460. mRBVeh is a legacy
+// local-view field (not present in the binary scr_vehicle_t).
+struct vehicle_node_view {      // vehicle_node_t (64 bytes)
+    void* mName;                // +0x00 (Broc::string)
+    void* mTarget;              // +0x04
+    float speed;                // +0x08
+    float lookAhead;            // +0x0C
+    void* script_noteworthy;    // +0x10 (Broc::string)
+    float origin[3];            // +0x14
+    float dir[3];               // +0x20
+    float angles[3];            // +0x2C
+    float length;               // +0x38
+    uint8_t packed[4];          // +0x3C (nextIdx/prevIdx/rotated bitfields)
+};
+struct vehicle_pathpos_view {   // vehicle_pathpos_t (184 bytes)
+    int16_t nodeIdx;            // +0x00
+    int16_t endOfPath;          // +0x02
+    float   frac;               // +0x04
+    float   speed;              // +0x08
+    float   lookAhead;          // +0x0C
+    float   slide;              // +0x10
+    float   origin[3];          // +0x14
+    float   angles[3];          // +0x20
+    float   lookPos[3];         // +0x2C
+    vehicle_node_view switchNode[2];  // +0x38
+};
+struct vehicle_physic_view {    // vehicle_physic_t (176 bytes)
+    math::Position3 origin;     // +0x00
+    math::Position3 prevOrigin; // +0x10
+    math::Position3 angles;     // +0x20
+    math::Position3 prevAngles; // +0x30
+    math::Dir3      vel;        // +0x40
+    math::Dir3      rotVel;     // +0x50
+    float wheelZVel[6];         // +0x60
+    float wheelZPos[6];         // +0x78
+    int   wheelSurfType[6];     // +0x90
 };
 struct scr_vehicle_t {
-    scr_vehicle_path_view pathPos;  // +0x00
-    uint8_t _pad[0x178 - sizeof(scr_vehicle_path_view)];
-    int16_t infoIdx;                // +0x178
-    uint8_t _pad17A[0x250 - 0x17A];
+    vehicle_pathpos_view pathPos;  // +0x00
+    vehicle_physic_view  phys;     // +0xC0
+    void*   mEntity;               // +0x170
+    void*   mPhysicsOwner;         // +0x174
+    int16_t infoIdx;               // +0x178
+    int16_t waitNode;              // +0x17A
+    float   waitSpeed;             // +0x17C
+    uint8_t _pad180[0x1E0 - 0x180];
+    uint8_t seats[0x134];          // +0x1E0 (11 * 28)
+    uint8_t _pad314[0x3E0 - 0x314];
+    struct {  // scr_vehicle_t::LerpedVariables (64 bytes)
+        math::Position3 mBodyPosition;  // +0x00
+        math::Position3 mTurretAngles;  // +0x10
+        math::Position3 mGunnerAngles;  // +0x20
+        float mSteeringAngle;           // +0x30
+        float mHatchAngleRight;         // +0x34
+        float mHatchAngleLeft;          // +0x38
+    } current;                          // +0x3E0
     struct {
-        float vel[4];         // +0x250 (phys.vel)
-        float rotVel[4];      // +0x260
-        int   wheelSurfType[4];  // +0x270
-        float origin[4];      // +0x280
-        float angles[4];      // +0x290
-    } phys;
-    struct {
-        float mSteeringAngle;  // +0x2A0
-    } current, next;
-    uint8_t _pad2AC[0x518 - 0x2AC];
-    void*   mRBVeh;                 // +0x518 rb_vehicle*
+        math::Position3 mBodyPosition;
+        math::Position3 mTurretAngles;
+        math::Position3 mGunnerAngles;
+        float mSteeringAngle;
+        float mHatchAngleRight;
+        float mHatchAngleLeft;
+    } next;                             // +0x420
+    uint8_t boneIndex[120];             // +0x460
+    uint8_t _pad4D8[0x518 - 0x4D8];
+    void*   mRBVeh;                     // +0x518 (legacy local-view field)
 };
 
 // ea: 0x6FE100
@@ -1898,6 +1954,19 @@ void rb_vehicle::start_path(int attach_mode)
     }
 }
 
+// ea: 0x701B40
+void rb_vehicle::debug_render_all()
+{
+    int count = g_rb_vehicle_list.m_alloc_count;
+    for (int i = 0; i < count; ++i)
+        g_rb_vehicle_list.m_alloc_list[i]->debug_render();
+}
+
+// stub until rb_vehicle::debug_render (0x6FCDF0) is ported
+void rb_vehicle::debug_render()
+{
+}
+
 // ea: 0x6F2910 (inline COMDAT)
 void rb_vehicle::set_brake(float braking)
 {
@@ -2294,12 +2363,12 @@ void rb_vehicle::_update_epilog(float delta_t)
     _update_wheel_effects(delta_t);
     if ((m_flags.mMask & 1) != 0)
     {
-        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel[2] = 0.0f;
-        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel[1] = 0.0f;
-        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel[0] = 0.0f;
-        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel[2] = 0.0f;
-        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel[1] = 0.0f;
-        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel[0] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel.v.m128_f32[2] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel.v.m128_f32[1] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.vel.v.m128_f32[0] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel.v.m128_f32[2] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel.v.m128_f32[1] = 0.0f;
+        ((scr_vehicle_t*)m_owner->scr_vehicle)->phys.rotVel.v.m128_f32[0] = 0.0f;
         m_owner->speed = 0.0f;
         return;
     }
@@ -2327,14 +2396,18 @@ void rb_vehicle::_update_epilog(float delta_t)
         }
     }
     scr_vehicle_t* sv = (scr_vehicle_t*)m_owner->scr_vehicle;
-    sv->phys.vel[0] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[0];
-    sv->phys.vel[1] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[1];
-    sv->phys.vel[2] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[2];
-    sv->phys.vel[3] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[3];
-    sv->phys.rotVel[0] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[0];
-    sv->phys.rotVel[1] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[1];
-    sv->phys.rotVel[2] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[2];
-    sv->phys.rotVel[3] = m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[3];
+    sv->phys.vel.v.m128_f32[0] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[0];
+    sv->phys.vel.v.m128_f32[1] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[1];
+    sv->phys.vel.v.m128_f32[2] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[2];
+    sv->phys.vel.v.m128_f32[3] = m_chassis_rbinf->m_rb->m_t_vel.v.m128_f32[3];
+    sv->phys.rotVel.v.m128_f32[0] =
+        m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[0];
+    sv->phys.rotVel.v.m128_f32[1] =
+        m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[1];
+    sv->phys.rotVel.v.m128_f32[2] =
+        m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[2];
+    sv->phys.rotVel.v.m128_f32[3] =
+        m_chassis_rbinf->m_rb->m_a_vel.v.m128_f32[3];
     if ((m_flags.mMask & 0x100) == 0)
     {
         rigid_body* m_rb = m_chassis_rbinf->m_rb;
@@ -2343,14 +2416,14 @@ void rb_vehicle::_update_epilog(float delta_t)
                          79, "debug_flag_is_not_in_collision()",
                          defaultFileName))
             __debugbreak();
-        sv->phys.origin[0] = m_rb->m_mat.w.v.m128_f32[0];
-        sv->phys.origin[1] = m_rb->m_mat.w.v.m128_f32[1];
-        sv->phys.origin[2] = m_rb->m_mat.w.v.m128_f32[2];
-        sv->phys.origin[3] = m_rb->m_mat.w.v.m128_f32[3];
-        sv->phys.angles[0] = m_owner->r.currentAngles.v.m128_f32[0];
-        sv->phys.angles[1] = m_owner->r.currentAngles.v.m128_f32[1];
-        sv->phys.angles[2] = m_owner->r.currentAngles.v.m128_f32[2];
-        sv->phys.angles[3] = m_owner->r.currentAngles.v.m128_f32[3];
+        sv->phys.origin.v.m128_f32[0] = m_rb->m_mat.w.v.m128_f32[0];
+        sv->phys.origin.v.m128_f32[1] = m_rb->m_mat.w.v.m128_f32[1];
+        sv->phys.origin.v.m128_f32[2] = m_rb->m_mat.w.v.m128_f32[2];
+        sv->phys.origin.v.m128_f32[3] = m_rb->m_mat.w.v.m128_f32[3];
+        sv->phys.angles.v.m128_f32[0] = m_owner->r.currentAngles.v.m128_f32[0];
+        sv->phys.angles.v.m128_f32[1] = m_owner->r.currentAngles.v.m128_f32[1];
+        sv->phys.angles.v.m128_f32[2] = m_owner->r.currentAngles.v.m128_f32[2];
+        sv->phys.angles.v.m128_f32[3] = m_owner->r.currentAngles.v.m128_f32[3];
         sv->current.mSteeringAngle =
             (m_steer_current_angle * 180.0f) * 0.31830987f;
         sv->next.mSteeringAngle =
@@ -2540,6 +2613,96 @@ void rb_prop_system::add_entity_dist_constraint(
         rigid_body_constraint_distance* rbc_dist =
             phys_sys::create_rbc_dist(entity_rb, v8, false);
         rbc_dist->set(b1_r_loc, b2_r_loc, min_dist, max_dist);
+    }
+}
+
+// ea: 0x706D80
+void rb_prop_system::add_entity_point_constraint(
+    Entity* e1, const math::Position3& e1_loc_pt, Entity* e2,
+    const math::Position3& e2_loc_pt)
+{
+    rigid_body* entity_rb = (rigid_body*)get_entity_rb(e1);
+    rigid_body* v5 = (rigid_body*)get_entity_rb(e2);
+    rigid_body* v24 = v5;
+    if (entity_rb != nullptr && v5 != nullptr)
+    {
+        __m128 v = e1_loc_pt.v;
+        math::Dir3 v39;
+        v39.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v, v, 0), e1->r.currentMat.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(v, v, 85), e1->r.currentMat.y.v)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v, v, 170), e1->r.currentMat.z.v),
+                e1->r.currentMat.w.v));
+        const math::Mat43& mat = entity_rb->get_mat();
+        math::Position3 v38;
+        v38.v = v39.v;  // toPosition3 (inline 16-byte copy)
+        __m128 y = mat.y.v;
+        __m128 z = mat.z.v;
+        __m128 v11 = _mm_shuffle_ps(mat.x.v, y, 68);
+        __m128 v12 = _mm_shuffle_ps(_mm_shuffle_ps(mat.x.v, y, 238), z, 168);
+        __m128 v13 = v11;
+        __m128 v14 = _mm_shuffle_ps(v11, z, 221);
+        __m128 v15 = _mm_shuffle_ps(v13, z, 136);
+        __m128 v34 = _mm_xor_ps(
+            Float4_SignMask_12,
+            _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(mat.w.v, mat.w.v, 0), v15),
+                    _mm_mul_ps(_mm_shuffle_ps(mat.w.v, mat.w.v, 85), v14)),
+                _mm_mul_ps(_mm_shuffle_ps(mat.w.v, mat.w.v, 170), v12)));
+        __m128 v16 = _mm_mul_ps(_mm_shuffle_ps(v38.v, v38.v, 170), v12);
+        __m128 v17 = _mm_mul_ps(_mm_shuffle_ps(v38.v, v38.v, 85), v14);
+        math::Position3 v18;
+        v18.v = e2->r.currentMat.w.v;
+        __m128 v19 = _mm_mul_ps(_mm_shuffle_ps(v38.v, v38.v, 0), v15);
+        math::Dir3 v20;
+        v20.v = e2->r.currentMat.z.v;
+        v38.v = v17;
+        __m128 v36 = v19;
+        __m128 v21 = e2_loc_pt.v;
+        __m128 v22 =
+            _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v21, v21, 170), v20.v), v18.v);
+        math::Dir3 v23;
+        v23.v = e2->r.currentMat.y.v;
+        __m128 v37 = v16;
+        v39.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v21, v21, 0), e2->r.currentMat.x.v),
+                _mm_mul_ps(_mm_shuffle_ps(v21, v21, 85), v23.v)),
+            v22);
+        const math::Mat43& v25 = v24->get_mat();
+        math::Position3 v35;
+        v35.v = v39.v;  // toPosition3
+        __m128 v27 = v25.y.v;
+        __m128 v28 = v25.z.v;
+        __m128 v29 = _mm_shuffle_ps(v25.x.v, v27, 68);
+        __m128 v30 = _mm_shuffle_ps(v29, v28, 221);
+        __m128 v31 =
+            _mm_shuffle_ps(_mm_shuffle_ps(v25.x.v, v27, 238), v28, 168);
+        __m128 v32 = _mm_shuffle_ps(v29, v28, 136);
+        v39.v = _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v35.v, v35.v, 0), v32),
+                _mm_mul_ps(_mm_shuffle_ps(v35.v, v35.v, 85), v30)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v35.v, v35.v, 170), v31),
+                _mm_xor_ps(
+                    Float4_SignMask_12,
+                    _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(_mm_shuffle_ps(v25.w.v, v25.w.v, 0),
+                                       v32),
+                            _mm_mul_ps(_mm_shuffle_ps(v25.w.v, v25.w.v, 85),
+                                       v30)),
+                        _mm_mul_ps(_mm_shuffle_ps(v25.w.v, v25.w.v, 170),
+                                   v31)))));
+        v38.v = _mm_add_ps(_mm_add_ps(v36, v38.v), _mm_add_ps(v37, v34));
+        rigid_body_constraint_point* rbc_point =
+            phys_sys::create_rbc_point(entity_rb, v24, false);
+        rbc_point->set(reinterpret_cast<const math::Dir3&>(v38),
+                       reinterpret_cast<const math::Dir3&>(v39));
     }
 }
 
@@ -5561,6 +5724,74 @@ void FN_HangEntity()
             }
         }
     }
+}
+
+// ea: 0x705DA0
+bool FindInitialVel(Entity* e, math::Dir3& initial_t_vel,
+                    math::Dir3& initial_a_vel)
+{
+    Entity* v3 = e;
+    if ((e->flags & 0x400000) != 0)
+        goto LABEL_6;
+    while (true)
+    {
+        if (v3->scr_vehicle != nullptr)
+        {
+            VEH_Backup(v3);
+            VEH_UpdatePath(v3, 50);
+            scr_vehicle_t* scr_vehicle = (scr_vehicle_t*)v3->scr_vehicle;
+            math::Dir3 v9;
+            v9.v.m128_f32[0] = scr_vehicle->phys.vel.v.m128_f32[0];
+            v9.v.m128_f32[1] = scr_vehicle->phys.vel.v.m128_f32[1];
+            v9.v.m128_f32[2] = scr_vehicle->phys.vel.v.m128_f32[2];
+            v9.v.m128_f32[3] = 0.0f;
+            initial_t_vel.v = v9.v;
+            math::Dir3 va;
+            va.v.m128_f32[0] =
+                scr_vehicle->phys.rotVel.v.m128_f32[0] * 3.1415927f
+                * 0.0055555557f;
+            va.v.m128_f32[1] =
+                scr_vehicle->phys.rotVel.v.m128_f32[1] * 3.1415927f
+                * 0.0055555557f;
+            va.v.m128_f32[2] =
+                scr_vehicle->phys.rotVel.v.m128_f32[2] * 3.1415927f
+                * 0.0055555557f;
+            va.v.m128_f32[3] = 0.0f;
+            initial_a_vel.v = _mm_mul_ps(va.v, _mm_set1_ps(0.3f));
+            return true;
+        }
+        if (v3->tagInfo == nullptr)
+            break;
+        v3 = (Entity*)((tagInfoLocal*)v3->tagInfo)->parent;
+        if (v3 == nullptr)
+            break;
+        if ((v3->flags & 0x400000) != 0)
+            goto LABEL_6;
+    }
+    initial_t_vel.v = _mm_setzero_ps();
+    initial_a_vel.v = _mm_setzero_ps();
+    return false;
+LABEL_6:
+    const rigid_body* entity_rb = rb_prop_system::get_entity_rb(v3);
+    if (entity_rb != nullptr)
+    {
+        initial_t_vel.v = entity_rb->m_t_vel.v;
+        initial_a_vel.v = entity_rb->m_a_vel.v;
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\RBPropSys.cpp";
+        AeAssert::gCurrentLine = 25;
+        AeAssert::gCurrentExpr = "rb";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Bad flag on physics entity."))
+        {
+            __debugbreak();
+            return true;
+        }
+    }
+    return true;
 }
 
 // ea: 0x7096E0
