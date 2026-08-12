@@ -118,8 +118,8 @@ extern void AddLeanToPosition(float* const vPosition, float fViewYaw,
                               float fLeanDist);
 extern void DObjAdvanceAnimationPlayer(void* d, float deltaT);
 extern void DObjInitServerTime(void* d, float dtime);
-extern bool DObjUpdateServerInfo(void* obj, float dtime, bool bNotify,
-                                 int animindex);
+extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
+                                 unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
 extern void DObjCalcAnim(void* obj, int iPhase);
 extern void j_nullsub_82(void* obj, int* partBits);
 extern void CG_UpdateViewModelPosAndOrientation(void* hand);
@@ -1732,7 +1732,7 @@ void CG_AddPlayerWeapon(refEntity_t* parent, PlayerState* ps, Entity* entity,
             case 0x17: deltaT = 3; break;
             default: deltaT = 0; break;
             }
-            DObjUpdateServerInfo((void*)dword_F6A2A0[802 * currCl],
+            DObjUpdateServerInfo((DObj*)dword_F6A2A0[802 * currCl],
                                  cgGlobal_frametime * 0.001f, true, deltaT);
             int partBits[4];
             memset(partBits, 255, sizeof(partBits));

@@ -65,7 +65,7 @@ void XAnimUpdateServerInfoInternal(XAnimTree* tree, unsigned int animIndex,
 
 // ea: 0x00552C20 (anim.o)
 bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
-                          unsigned int animindex)  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z
+                          unsigned int animindex)  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
 {
     if (dtime < 0.0f)
     {

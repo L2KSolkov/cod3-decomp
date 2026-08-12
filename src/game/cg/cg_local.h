@@ -11,7 +11,7 @@
 #include "game/game_types.h"
 
 struct Entity;
-struct DObj;
+class DObj;
 
 // Renderer export table (refexport_t; matches the layout used by core.o
 // common.cpp's re_export_view and cl_parse.cpp's refexport_t2)
@@ -119,7 +119,8 @@ struct weaponFileInfoFull : weaponFileInfo_t {
     float fOOPosAnimLength[2];  // +0x8C0 (offset in actual struct)
 };
 
-struct DObj {
+class DObj {
+public:
     void* tree[8];        // +0x00 XAnimTree*[8]
     void* animPlayers[8]; // +0x20 AnimationPlayer*[8]
     void* mPose[8];       // +0x40
