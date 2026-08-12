@@ -27,6 +27,8 @@ struct cdl_profcounter {
 };
 void cdl_proftimer_cls::start() {}
 void cdl_proftimer_cls::stop() {}
+// ?cdl_proftimer_update_rb@@3Ucdl_proftimer@@A (game.o data @ 0x01334968)
+cdl_proftimer cdl_proftimer_update_rb;
 cdl_proftimer cdl_proftimer_vmcalls;              // ?cdl_proftimer_vmcalls@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_cl_msgs;              // ?cdl_proftimer_cl_msgs@@3Ucdl_proftimer@@A
 cdl_proftimer cdl_proftimer_cvar;                 // ?cdl_proftimer_cvar@@3Ucdl_proftimer@@A

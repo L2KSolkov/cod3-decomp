@@ -2728,7 +2728,6 @@ void PHYS_ASSERT_ORTHONORMAL(const math::Mat43* m) { (void)m; }
 void PHYS_ASSERT_UNIT(const math::Dir3& a) { (void)a; }
 void PHYS_ASSERT_UNIT(const math::Dir3* a) { (void)a; }
 void physics_debug_render() {}
-void PhysInit() {}
 void Player_ActivateHoldCmd(Entity* e) { (void)e; }
 void PlayerAnimMgr_Update(float a) { (void)a; }
 void PrintPakNames() {}
@@ -2833,7 +2832,6 @@ void trap_R_Text_Paint(float a, float b, int c, float d, const float* e,
     (void)a; (void)b; (void)c; (void)d; (void)e;
     (void)f; (void)g; (void)h; (void)i;
 }
-void UpdateRigidBody(float a) { (void)a; }
 void UpdateWheelMarks(Entity* e, int a, bool b, const math::Position3& c,
                       const math::Dir3& d)
 {

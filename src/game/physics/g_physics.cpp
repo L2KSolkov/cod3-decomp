@@ -63,8 +63,16 @@ void merge_spheres(const math::Position3& c1, float r1, math::Position3* c2,
 class Color;
 class DebugRender {
 public:
+    static DebugRender sInst;
     static void RenderAxis(const math::Mat43& mat, float length, float width);
+    void AddRenderer(void (*fp)());  // ?AddRenderer@DebugRender@@QAEXP6AXXZ@Z
 };
+// ?sInst@DebugRender@@2V1@A (physics.o data @ 0xF74D20)
+DebugRender DebugRender::sInst;
+void DebugRender::AddRenderer(void (*fp)())
+{
+    (void)fp;
+}
 
 class Entity;
 struct rb_extra_info;
@@ -878,6 +886,7 @@ const rigid_body* get_entity_rb(Entity* e);        // ?get_entity_rb@rb_prop_sys
 bool entity_in_system(Entity* e);                  // ?entity_in_system@rb_prop_system@@YA_NPAVEntity@@@Z
 bool is_entity_stable(Entity* e);                  // ?is_entity_stable@rb_prop_system@@YA_NPAVEntity@@@Z
 rigid_body* get_associated_rigid_body(Entity* e);  // ?get_associated_rigid_body@rb_prop_system@@YAPAVrigid_body@@PAVEntity@@@Z
+void frame_advance(float delta_t);                 // ?frame_advance@rb_prop_system@@YAXM@Z
 }
 
 // ea: 0x6FEAD0
@@ -1098,6 +1107,25 @@ gjk_geom_database* g_gjk_geom_database = nullptr;
 
 // ?g_in_physics_collision_callback@@3_NA (physics.o data @ 0xF79475)
 bool g_in_physics_collision_callback = false;
+// ?gPhysicsFrameAdvance@@3_NA (physics.o data @ 0xF79474)
+bool gPhysicsFrameAdvance = false;
+// ?g_physics_memory_buffer@@3PADA (physics.o data @ 0xF79478)
+char* g_physics_memory_buffer = nullptr;
+
+// phys_gjk_cache_system_avl_tree<N> (physics.o; update_cache stub)
+template <int N>
+class phys_gjk_cache_system_avl_tree {
+public:
+    void update_cache();  // ?update_cache@?$phys_gjk_cache_system_avl_tree@$0BPE@@@QAEXXZ
+};
+// stub until the gjk cache tree is ported (physics.o inline 0xB0D6C0)
+template <int N>
+void phys_gjk_cache_system_avl_tree<N>::update_cache()
+{
+}
+// ?g_phys_gjk_cache_system@@3V?$phys_gjk_cache_system_avl_tree@$0BPE@@@A
+// (physics.o data @ 0xF794D0)
+phys_gjk_cache_system_avl_tree<500> g_phys_gjk_cache_system;
 
 // ea: 0x6FF0E0
 void prop_system_collision_epilog()
@@ -1183,6 +1211,7 @@ void physics_collision_callback()
     collision_memory_epilog();
     g_in_physics_collision_callback = false;
 }
+
 
 // ?g_rb_vehicle_list@@3V?$phys_static_memory_pool@Vrb_vehicle@@$09@@A
 // (physics.o data @ 0xE2B8F0)
@@ -1301,6 +1330,74 @@ void destroy_biped_phys_info(biped_phys_info* bp_info);  // ?destroy_biped_phys_
 // ?g_list_biped_system@@3V?$phys_static_memory_pool@Vbiped_system@@$0BA@@@A
 // (physics.o data @ 0xE09970)
 extern phys_static_memory_pool<biped_system, 16> g_list_biped_system;
+
+// cdl_proftimer (cdl_common.o view; local copy)
+struct cdl_proftimer {
+    void start();  // ?start@cdl_proftimer@@QAEXXZ
+    void stop();   // ?stop@cdl_proftimer@@QAEXXZ
+};
+// ?cdl_proftimer_update_rb@@3Ucdl_proftimer@@A (game.o data @ 0x01334968)
+extern cdl_proftimer cdl_proftimer_update_rb;
+
+// stub until RBAdvanceDebug (0x704290) is ported
+void RBAdvanceDebug(float delta_t)
+{
+    (void)delta_t;
+}
+
+// stub until rb_prop_system::frame_advance (0x7032B0) is ported
+void rb_prop_system::frame_advance(float delta_t)
+{
+    (void)delta_t;
+}
+
+// ea: 0x70D250
+void UpdateRigidBody(float delta_t)
+{
+    char solver_memory_buffer[76480];
+    cdl_proftimer_update_rb.start();
+    if (delta_t >= 0.1f)
+        delta_t = 0.1f;
+    phys_sys::solver_memory_buffer_set(solver_memory_buffer,
+                                       0);  // dword_12AC0 (.textbss = 0)
+    g_physics_memory_buffer = solver_memory_buffer;
+    RBAdvanceDebug(delta_t);
+    biped_phys_info::prolog_frame_advance_all(delta_t);
+    rb_vehicle::frame_prolog_all_systems(delta_t);
+    gPhysicsFrameAdvance = true;
+    phys_sys::phys_frame_advance(delta_t);
+    gPhysicsFrameAdvance = false;
+    rb_vehicle::frame_epilog_all_systems(delta_t);
+    rb_prop_system::frame_advance(delta_t);
+    biped_phys_info::epilog_frame_advance_all(delta_t);
+    g_physics_memory_buffer = nullptr;
+    phys_sys::solver_memory_buffer_nullify();
+    g_phys_gjk_cache_system.update_cache();
+    cdl_proftimer_update_rb.stop();
+}
+
+// ea: 0x70CFE0
+void PhysInit()
+{
+    phys_mem_info pmi;
+    pmi.m_num_user_rigid_body = 10;
+    pmi.m_num_rbc_custom_orientation = 10;
+    pmi.m_num_rbc_custom_path = 10;
+    pmi.m_num_rigid_body = 195;
+    pmi.m_contact_point_buffer_size = 0;  // dword_235B0 (.textbss = 0)
+    pmi.m_num_rbc_contact = 431;
+    pmi.m_num_rbc_point = 12;
+    pmi.m_num_rbc_ragdoll = 144;
+    pmi.m_num_rbc_angular_actuator = 144;
+    pmi.m_num_rbc_hinge = 8;
+    pmi.m_num_rbc_wheel = 60;
+    pmi.m_num_rbc_dist = 8;
+    phys_sys::phys_init(&pmi);
+    phys_sys::set_collision_callback(physics_collision_callback);
+    DebugRender::sInst.AddRenderer(biped_phys_info::debug_render_all);
+    phys_sys::set_max_delta_t(0.051282052f);
+    phys_sys::set_v_tol(8, 100);
+}
 
 // ea: 0x70C8D0
 void do_all_biped_system_collision_callback()
