@@ -260,6 +260,10 @@ struct vector {
     float y;  // +0x04
     float z;  // +0x08
 };
+class string {
+public:
+    void* mBlock;  // +0x00 (Block*; chars follow the header)
+};
 }
 
 // ragdoll_collision_callback (physics.o RBRagdollCollision.cpp). Raw-offset
@@ -5246,6 +5250,60 @@ Entity* nuge_get_actor()
                 biped_phys_info* mBPInfo = result->mBPInfo;
                 if (mBPInfo != nullptr && mBPInfo->m_bp_sys == nullptr)
                     return result;
+            }
+            bitset_next_free(word_idx, cur_word, cur_val);
+        }
+        else
+        {
+            if (word_idx == -1)
+                return nullptr;
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+            AeAssert::gCurrentLine = 78;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _MaxEltements";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("index out of bounds"))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x7040A0
+Entity* nuge_get_entity(const Broc::string& target_name)
+{
+    int word_idx = 0;
+    unsigned int cur_word = ~((unsigned int*)&EntityHandleDb::sInst)[0];
+    int cur_val = -1;
+    bitset_next_free(word_idx, cur_word, cur_val);
+    for (;;)
+    {
+        if (cur_val != -1)
+        {
+            if (cur_val >= 0x540)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\HandleDb.h";
+                AeAssert::gCurrentLine = 78;
+                AeAssert::gCurrentExpr =
+                    "idx >= 0 && idx < _MaxEltements";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("index out of bounds"))
+                    __debugbreak();
+            }
+            Entity* mObject =
+                EntityHandleDb::sInst.mElements[cur_val].mObject;
+            if (mObject != nullptr)
+            {
+                // mObject->targetname (Broc::string at +0x284 in full Entity;
+                // local view: targetname mBlock at +0x28C per g_local.h)
+                void* mBlock = *(void**)((char*)mObject + 0x28C);
+                if (mBlock != nullptr)
+                {
+                    const char* ent_name = (const char*)mBlock + 4;
+                    const char* want = (const char*)target_name.mBlock + 4;
+                    if (_stricmp(ent_name, want) == 0)
+                        return mObject;
+                }
             }
             bitset_next_free(word_idx, cur_word, cur_val);
         }
