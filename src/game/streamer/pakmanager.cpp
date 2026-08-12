@@ -25,6 +25,10 @@ enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 #define PAK_ID_INVALID ((TPakId)-1)
 #define PAK_ID_MIN ((TPakId)0)
 enum EPakType { kPakTypeGlobal = 0 };
+class NumBanks {
+public:
+    unsigned int mNumBanks;
+};
 
 template <typename T, int N>
 struct ae_sized_array {
@@ -100,6 +104,16 @@ public:
     bool IsUnloading(TPakId id) const;
     // - ea: 0x665710
     void SetSoundProgress(float t);
+    // - ea: 0x6655C0 (stub until PakFile/BankManager land)
+    TPakId FindPakId(EPakType t) const;
+    // - ea: 0x665B70 (stub)
+    TPakId SyncLoadPak(EPakType t, const char* path, NumBanks banks);
+    // - ea: 0x665D10 (stub)
+    TPakId SyncLoadPak(const PakInfoNode* cpak);
+    // - ea: 0x665900 (stub)
+    const PakInfoNode* GetPakInfo(TPakId pakId) const;
+    // - ea: 0x665960 (stub)
+    const PakInfoNode* GetPakInfo(const char* long_name) const;
 };
 
 unsigned int PakManager::sComputeDistanceKey = 1;
@@ -214,6 +228,33 @@ void PakManager::SetSoundProgress(float t)
     void (*cb)(float) = mProgressCallback;
     if (cb != NULL)
         cb(((1.0f - sWbkPercentage) - sBrocPercentage) + (sWbkPercentage * t));
+}
+
+// Stubs for PakManager members that need PakFile/BankManager/InplaceTree.
+TPakId PakManager::FindPakId(EPakType t) const
+{
+    (void)t;
+    return PAK_ID_INVALID;
+}
+TPakId PakManager::SyncLoadPak(EPakType t, const char* path, NumBanks banks)
+{
+    (void)t; (void)path; (void)banks;
+    return PAK_ID_INVALID;
+}
+TPakId PakManager::SyncLoadPak(const PakInfoNode* cpak)
+{
+    (void)cpak;
+    return PAK_ID_INVALID;
+}
+const PakInfoNode* PakManager::GetPakInfo(TPakId pakId) const
+{
+    (void)pakId;
+    return nullptr;
+}
+const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
+{
+    (void)long_name;
+    return nullptr;
 }
 
 // ============================================================================
