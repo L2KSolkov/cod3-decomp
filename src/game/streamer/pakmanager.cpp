@@ -42,17 +42,34 @@ struct WorldSpawn {
 extern void SV_SetConfigstring(int index, const char* val);  // sv.o
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
 extern void Com_Error(int code, const char* fmt, ...);  // core.o
-// Entity minimal view for the Notify dispatcher (full type in game_types.h;
-// Notify is defined in game/logic/g_entity_misc.cpp)
+// IVPointer<T> (game_types.h; intrusive counted pointer, 8 bytes)
+struct XModel;
+template <typename T>
+class IVPointer {
+public:
+    T*           mValue;   // +0x00
+    unsigned int mPakId;   // +0x04
+
+    bool operator!() const { return mValue == nullptr; }
+};
+
+// Entity view for the Notify dispatcher + ConvertEntity field copies
+// (full type in game_types.h; offsets verified against IDA)
 class Entity {
 public:
-    uint8_t _pad[0xE0];  // up to EntityShared
+    uint8_t _pad[0xE0];  // EntityState s
     struct Shared {
         uint8_t _pad[0x70];
         math::Position3 currentOrigin;  // +0x70
     };
-    Shared r;  // +0xE0 (EntityShared)
+    Shared r;           // +0xE0 (EntityShared)
+    uint8_t _pad160[0x230 - 0x160];
+    int32_t mPakId;     // +0x230
+    uint8_t _pad234[0x270 - 0x234];
+    IVPointer<XModel> mModel;  // +0x270
+
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (g_entity_misc.cpp)
+    int GetPakId() const { return mPakId; }  // g.o inline
 };
 extern void UpdateEntityHash(Entity* ent);  // ?UpdateEntityHash@@YAXPAVEntity@@@Z (g_scr.cpp)
 
@@ -85,6 +102,7 @@ extern int dword_F6A290[4 * 0x322];  // Xbox dev/retail flag array @ 0xF6A290 (d
 extern int R_CellForPoint(const math::Position3* pos);  // render.o (g_entity_misc.cpp)
 extern void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o (g_active.cpp)
 extern void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o (g_active.cpp)
+extern unsigned short G_NewString(const char* str);  // g.o (g_utils.cpp)
 
 // mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
 struct mem_heap {
@@ -1705,7 +1723,14 @@ public:
     static XModelManager* sInst;  // defined in sv_globals.cpp
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
+    IVPointer<XModel> GetXModel(TPakId pak_id, const char* name);  // render.o 0xAC54D0; stub
 };
+IVPointer<XModel> XModelManager::GetXModel(TPakId pak_id, const char* name)
+{
+    (void)pak_id; (void)name;
+    IVPointer<XModel> result = { nullptr, PAK_ID_INVALID };
+    return result;  // stub: render.o
+}
 class XModelPartsManager {
 public:
     static XModelPartsManager* sInst;
@@ -2129,6 +2154,7 @@ public:
 
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
 // mDebugRenderEnts +0x1B4, mDebugRenderLights +0x1B5)
+struct SceneEntity;
 struct SceneManager {
 public:
     uint8_t _pad[0x04];                      // vftable (AssetBankSet base)
@@ -2163,6 +2189,7 @@ public:
     void UpdateEffects(float delta_t);  // ?UpdateEffects@SceneManager@@QAEXM@Z @ 0x6690B0
     void DebugRenderFX();  // ?DebugRenderFX@SceneManager@@QAEXXZ @ 0x669530
     void InstanceEntities();  // ?InstanceEntities@SceneManager@@QAEXXZ @ 0x6788F0
+    void ConvertEntity(SceneEntity* source, Entity* dest);  // ?ConvertEntity@SceneManager@@AAEXPAVSceneEntity@@PAVEntity@@@Z @ 0x673D60
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
@@ -3352,10 +3379,12 @@ struct SceneEntity {
     };
 
     int              mType;      // +0x00
-    uint8_t          _pad4[0x08 - 0x04];
+    const char*      m_classname;  // +0x04
     math::Position3  m_origin;   // +0x08
     uint8_t          _pad18[0x50 - 0x18];
     math::Position3  m_angles;   // +0x50
+    uint8_t          _pad60[0xD0 - 0x60];
+    BitSet<29>       mSpecifiedFields;  // +0xD0
 };
 
 // ea: 0x6788F0
@@ -3425,6 +3454,155 @@ void SceneManager::InstanceEntities()
         {
             G_SetOrigin(player, &pos);
             G_SetAngle(player, &angles);
+        }
+    }
+}
+
+// ea: 0x673D60
+void SceneManager::ConvertEntity(SceneEntity* source, Entity* dest)
+{
+    struct EntityFieldCopy {
+        int srcOffset;
+        int destOffset;
+        int size;
+        int type;
+        int field;
+    };
+    // field table from 0x673DA2 (src, dest, size, type, specified-field bit)
+    static const EntityFieldCopy kFields[29] = {
+        { 4,   0x27C, 4,  0x0E, 0  },  // mClassName string
+        { 8,   0x150, 12, 0x05, 1  },  // currentOrigin
+        { 20,  0x270, 4,  0x0C, 2  },  // mModel
+        { 24,  0x2C0, 4,  0x00, 3  },  // spawnflags
+        { 28,  0x31C, 4,  0x03, 4  },
+        { 32,  0x320, 4,  0x03, 5  },
+        { 36,  0x28C, 4,  0x0E, 6  },  // mTarget string
+        { 40,  0x284, 4,  0x0E, 7  },  // targetname string
+        { 56,  0x318, 2,  0x04, 8  },  // G_NewString ushort
+        { 60,  0x380, 4,  0x03, 9  },
+        { 64,  0x384, 4,  0x03, 10 },
+        { 68,  0x36C, 4,  0x00, 11 },
+        { 72,  0x358, 4,  0x00, 12 },
+        { 76,  0x360, 4,  0x00, 13 },
+        { 80,  0x160, 12, 0x05, 14 },  // currentAngles
+        { 96,  0x390, 12, 0x05, 15 },
+        { 108, 0x314, 4,  0x03, 16 },
+        { 112, 0x31C, 4,  0x03, 17 },
+        { 116, 0x278, 4,  0x03, 18 },  // modelscale
+        { 144, 0x3B4, 4,  0x00, 19 },
+        { 148, 0x388, 4,  0x03, 20 },
+        { 164, 0x36C, 4,  0x00, 21 },
+        { 168, 0x3B8, 4,  0x0E, 22 },  // string
+        { 176, 0x294, 4,  0x0E, 23 },  // mGroupName string
+        { 184, 0x29C, 4,  0x0E, 24 },  // mScriptNoteworthy string
+        { 188, 0x35C, 4,  0x00, 25 },
+        { 196, 0x2A4, 4,  0x0E, 26 },  // string
+        { 204, 0x3BE, 2,  0x01, 27 },
+        { 200, 0x2B8, 4,  0x00, 28 },
+    };
+
+    for (int i = 0; i < 29; ++i)
+    {
+        const EntityFieldCopy& f = kFields[i];
+        if (!source->mSpecifiedFields.Test(f.field))
+            continue;
+        switch (f.type)
+        {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 5:
+        case 0xF:
+            memcpy((char*)dest + f.destOffset, (char*)source + f.srcOffset,
+                   f.size);
+            break;
+
+        case 4:
+        {
+            const char* v4 = *(const char**)((char*)source + f.srcOffset);
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+            AeAssert::gCurrentLine = 2491;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Is this still used? (CD)"))
+                __debugbreak();
+            *(unsigned short*)((char*)dest + f.destOffset) =
+                G_NewString(v4);
+            break;
+        }
+
+        case 0xC:
+        {
+            const char* v7 = *(const char**)((char*)source + f.srcOffset);
+            if (v7 == nullptr)
+                break;
+            if (*v7 == '*')
+            {
+                int v8 = atoi(v7 + 1);
+                if (v8 != (unsigned short)v8)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\scenemanager.cpp";
+                    AeAssert::gCurrentLine = 2515;
+                    AeAssert::gCurrentExpr =
+                        "modelIndex == (unsigned short) modelIndex";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("old cod assert"))
+                        __debugbreak();
+                }
+                *(unsigned short*)((char*)dest + 0x06) =
+                    (unsigned short)v8;  // s.index.brushmodel
+            }
+            else if (*(const int*)v7 == 0x6F5F3373)
+            {
+                *(int*)((char*)dest + 0x2C4) |= 0x400;  // flags
+                *(unsigned short*)((char*)dest + 0x06) =
+                    (unsigned short)atoi(v7 + 7);
+            }
+            else
+            {
+                TPakId PakId = (TPakId)dest->GetPakId();
+                dest->mModel = XModelManager::sInst->GetXModel(PakId, v7);
+                if (dest->mModel.mValue == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::ARO;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\scenemanager.cpp";
+                    AeAssert::gCurrentLine = 2526;
+                    AeAssert::gCurrentExpr = "dest->mModel";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "Unable to get model '%s' for entity", v7))
+                        __debugbreak();
+                }
+                if (*(const int*)v7 == 0x6F5F34F3)
+                {
+                    *(unsigned short*)((char*)dest + 0x06) =
+                        (unsigned short)atoi(v7 + 7);
+                }
+            }
+            break;
+        }
+
+        case 0xE:
+        {
+            Broc::string v5(*(const char**)((char*)source + f.srcOffset));
+            *(Broc::string*)((char*)dest + f.destOffset) = v5;
+            break;
+        }
+
+        default:
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+            AeAssert::gCurrentLine = 2540;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("Unknown entity field type!"))
+                __debugbreak();
+            break;
         }
     }
 }
