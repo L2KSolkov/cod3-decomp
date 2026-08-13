@@ -74,10 +74,17 @@ extern str_const_t str_const;  // ?str_const@@3Ustr_const_t@@A @ 0xECBD30 (g_glo
 class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (effect_events.cpp)
+    uint8_t _pad[0x04];
+    Entity* mPlayers[16];         // +0x04
     EntityMin* mWorld;            // +0x44
     Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z (g_entity_misc.cpp)
 };
 extern int currCl;  // ?currCl@@3HA (platform_xbox/XboxLiveMenus.cpp)
+
+extern int dword_F6A290[4 * 0x322];  // Xbox dev/retail flag array @ 0xF6A290 (defined in effect_events.cpp)
+extern int R_CellForPoint(const math::Position3* pos);  // render.o (g_entity_misc.cpp)
+extern void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o (g_active.cpp)
+extern void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o (g_active.cpp)
 
 // mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
 struct mem_heap {
@@ -2155,6 +2162,7 @@ public:
     void PostProcess(TPakId pakId);  // ?PostProcess@SceneManager@@AAEXW4TPakId@@@Z @ 0x6787E0
     void UpdateEffects(float delta_t);  // ?UpdateEffects@SceneManager@@QAEXM@Z @ 0x6690B0
     void DebugRenderFX();  // ?DebugRenderFX@SceneManager@@QAEXXZ @ 0x669530
+    void InstanceEntities();  // ?InstanceEntities@SceneManager@@QAEXXZ @ 0x6788F0
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
@@ -3335,6 +3343,90 @@ void SceneManager::DebugRenderFX()
     sprintf(summary, "Active FX: %d/%d\n", active, total);
     DebugRender::RenderText(summary, 20, 20,
                             Color(1.0f, 1.0f, 1.0f, 1.0f), 0.0f, 1.0f);
+}
+
+// SceneEntity (scenemanager.cpp; mType +0x00, m_origin +0x08, m_angles +0x50)
+struct SceneEntity {
+    enum {
+        kSceneObject_spawn_intermission = 0,
+    };
+
+    int              mType;      // +0x00
+    uint8_t          _pad4[0x08 - 0x04];
+    math::Position3  m_origin;   // +0x08
+    uint8_t          _pad18[0x50 - 0x18];
+    math::Position3  m_angles;   // +0x50
+};
+
+// ea: 0x6788F0
+void SceneManager::InstanceEntities()
+{
+    for (int pakId = PAK_ID_MIN; pakId < PAK_ID_MAX; ++pakId)
+    {
+        SceneBank* bank = mBankArray.m_elements[pakId];
+        if (bank == nullptr)
+            continue;
+        if (bank->mWorldSpawn != nullptr)
+            ProcessWorldSpawn(*(WorldSpawn*)bank->mWorldSpawn);
+        for (unsigned int i = 0; i < bank->mSceneEntities.mSize; ++i)
+            ProcessEntity((TPakId)pakId, (int)i);
+        for (unsigned int j = 0; j < bank->mVehicleNodes.mSize; ++j)
+            ProcessVehicleNode((TPakId)pakId, j);
+    }
+
+    TPakId mLevelPakId = PakManager::sInst->mLevelPakId;
+    SceneBank* bank = mBankArray.m_elements[mLevelPakId];
+    unsigned int intermissionIndices[16];
+    int count = 0;
+    for (unsigned int i = 0; i < bank->mSceneEntities.mSize; ++i)
+    {
+        if (((SceneEntity*)bank->mSceneEntities.mList[i])->mType
+            == SceneEntity::kSceneObject_spawn_intermission)
+        {
+            if (count < 16)
+            {
+                intermissionIndices[count++] = i;
+            }
+            else
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 174;
+                AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("no room left in array"))
+                    __debugbreak();
+            }
+        }
+    }
+    if (count != 0)
+    {
+        unsigned int pick = (unsigned int)(rand() % count);
+        if (pick >= 16)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        SceneEntity* ent = (SceneEntity*)
+            bank->mSceneEntities.mList[intermissionIndices[pick]];
+        math::Position3 pos = ent->m_origin;
+        math::Position3 angles = ent->m_angles;
+        int cell = R_CellForPoint(&pos);
+        StreamZoneManager::sInst->mInitialPosition = pos;
+        StreamZoneManager::sInst->mInitialCell = cell;
+        StreamZoneManager::sInst->Update(cell, &pos, true);
+        Entity* player = EntityManager::sInst->mPlayers[0];
+        if (player != nullptr && dword_F6A290[0] == 2)
+        {
+            G_SetOrigin(player, &pos);
+            G_SetAngle(player, &angles);
+        }
+    }
 }
 
 // ea: 0x6787E0

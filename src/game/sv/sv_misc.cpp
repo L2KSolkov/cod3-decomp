@@ -48,10 +48,6 @@ void PathNodeMgr::DisconnectPathsForEntity(Entity* ent) { (void)ent; }
 void PathNodeMgr::NodeList() {}
 void PathNodeMgr::CheckpointResetNodes() {}
 
-// SceneManager stubs (streamer.o; ported later)
-void SceneManager::InstanceEntities() {}
-
-
 // movie_manager stubs (shell.o; port later)
 void movie_manager::load_and_play_movie(const char* movie_name,
                                         const char* sound_name)
