@@ -188,6 +188,7 @@ bool Error(const char* fmt, ...);
 enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
 #define PAK_ID_INVALID ((TPakId)-1)
 #define PAK_ID_MIN ((TPakId)0)
+#define PAK_ID_MAX ((TPakId)99)
 enum EPakType {
     kPakTypeGlobal = 0,
     kPakTypeFrontEnd = 1,
@@ -207,8 +208,12 @@ public:
 // ae/core/BitSet.h view (word-based; the core_systems.h template is byte-based)
 template <int N>
 struct BitSet {
-    unsigned int mBits[N / 32];  // +0x00
+    static const int kNumWords = (N + 31) / 32;
+    unsigned int mBits[kNumWords];  // +0x00
+
     bool Test(int v) const;
+    void Add(int v) { mBits[v >> 5] |= (1u << (v & 0x1F)); }
+    void Rmv(int v) { mBits[v >> 5] &= ~(1u << (v & 0x1F)); }
 };
 
 // TBankAlloc (BankManager.cpp; two 64-bit bank allocation bitmaps)
@@ -231,8 +236,10 @@ public:
     float      mLowestFreeAmount; // +0x1C
     TBankAlloc m_last_alloc;      // +0x20
 
+    static BankManager* sInst;    // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
     NumBanks get_free_count() const;  // ?get_free_count@BankManager@@QBE?AVNumBanks@@XZ
     bool can_alloc(NumBanks num_banks) const;  // ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z
+    int get_alloc_count(const TBankAlloc& bat) const;  // ?get_alloc_count@BankManager@@QBEHABUTBankAlloc@@@Z
 };
 
 template <typename T, int N>
@@ -352,7 +359,8 @@ public:
     EPakType     mPakType;              // +0x4C
     unsigned int mFilesize;             // +0x50
     nflFileID    mFileId;               // +0x54
-    uint8_t      _pad58[0x78 - 0x58];   // mBankAlloc/mSerializedAlloc
+    TBankAlloc   mBankAlloc;            // +0x58
+    TBankAlloc   mSerializedAlloc;      // +0x68
     TPakId       mPakId;                // +0x78
     const PakInfoNode* mPakInfo;        // +0x7C
     PakHeader*   mHeader;               // +0x80
@@ -436,7 +444,67 @@ struct PakInfoNode {
     unsigned int mapColor;      // +0xC4
     float       computedDistance;  // +0xC8
     unsigned int visited;       // +0xCC
-    uint8_t     _padD0[0xE0 - 0xD0];
+    BitSet<99>* prereqPakIds;   // +0xD0
+    uint8_t     _padD4[0xE0 - 0xD4];
+};
+
+// InplaceVector<T> (ae/inplace/InplaceVector.h; full definition in
+// game/game_types.h) - minimal view
+template <typename T>
+struct InplaceVector {
+    unsigned int mSize;  // +0x00
+    T*           mList;  // +0x04
+};
+
+// ae_vector<T> (ae/core/ae_vector.h; 12 bytes) - grow policy per IDA
+template <typename T>
+struct ae_vector {
+    T*  mElements;   // +0x00
+    int mCapacity;   // +0x04
+    int mSize;       // +0x08
+
+    void push_back(const T& iElement)
+    {
+        if (mSize >= mCapacity)
+        {
+            int v4 = mSize + 4;
+            if (mSize <= 3)
+                v4 = mSize + 1;
+            T* v9 = (T*)tlMemAlloc(sizeof(T) * v4, 8, 0);
+            for (int v5 = 0; v5 < mSize; ++v5)
+                v9[v5] = mElements[v5];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mCapacity = v4;
+            mElements = v9;
+        }
+        mElements[mSize++] = iElement;
+    }
+};
+
+// PakInfoBank (streamer.o; InplaceAssetBank base, mPtrs +0x10)
+class PakInfoBank {
+public:
+    uint8_t _pad[0x10];
+    InplaceVector<const PakInfoNode*> mPtrs;  // +0x10
+};
+
+// reserved_dlist<T> (ae/core; intrusive node = T's first member) - verified IDA
+template <typename T>
+struct reserved_dlist {
+    struct dlist_node {
+        dlist_node* m_next;  // +0x00
+        dlist_node* m_prev;  // +0x04
+    };
+
+    int         m_size;  // +0x00
+    dlist_node* m_head;  // +0x04
+    dlist_node* m_end;   // +0x08
+    dlist_node* m_tail;  // +0x0C
 };
 
 class PakManager {
@@ -459,21 +527,22 @@ public:
     int mState;                       // +0x10 PakManager::state_e
     bool mFilled;                     // +0x14
     bool mFillingBanks;               // +0x15
-    void* mPakInfoBank;               // +0x18
-    void* mLevelPakInfoBank;          // +0x1C
+    PakInfoBank* mPakInfoBank;        // +0x18
+    PakInfoBank* mLevelPakInfoBank;   // +0x1C
     uint8_t _pad20[0x24 - 0x20];
     TPakId mCurrentPakId;             // +0x24
-    uint8_t _pad28[0x30 - 0x28];
+    uint8_t _pad28[0x2C - 0x28];
+    TPakId mAnimPakId;                // +0x2C
     TPakId mGlobalPakId;              // +0x30
     uint8_t _pad34[0x38 - 0x34];
     TPakId mLevelPakId;               // +0x38
-    uint8_t _pad3C[0x40 - 0x3C];
+    TPakId mDebugPakId;               // +0x3C
     PakFile* mSlots[99];              // +0x40
-    uint8_t _pad1CC[0x364 - (0x40 + 99 * 4)];
+    const PakInfoNode* mPakInfoPtrs[99];  // +0x1CC
     void (*mProgressCallback)(float); // +0x364
     uint8_t _pad368[0x4384 - 0x368];
     int mEnabled;                     // +0x4384
-    uint8_t _pad4388[0x4398 - 0x4388];
+    reserved_dlist<PakFile> mActivePaks;  // +0x4388
     TThreadedPakContextStack mContextStack[1];  // +0x4398
 
     static PakManager* sInst;          // ?sInst@PakManager@@2PAV1@A (sv_globals.cpp)
@@ -508,12 +577,27 @@ public:
     void SetBrocProgress(float t);
     // - ea: 0x665570
     float GetDistance(PakInfoNode* node) const;
+    // - ea: 0x671900
+    const char* GetPakName(TPakId id) const;
+    // - ea: 0x6719E0
+    bool IsLoaded(const char* long_name) const;
+    // - ea: 0x671A70
+    void CopyContextStack(ae_sized_array<TPakId, 32>* ret) const;
+    // - ea: 0x66FC30
+    void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>* ret,
+                             BitSet<99>* seen) const;
     // - ea: 0x666A40
     void RegisterPakLoaded(PakInfoNode* pak);
     // - ea: 0x666B90
     void RegisterPakUnloaded(PakInfoNode* pak);
     // - ea: 0x6655C0 (stub until PakFile/BankManager land)
     TPakId FindPakId(EPakType t) const;
+    // - ea: 0x671CC0
+    TPakId FindPakId(const char* pak_name) const;
+    // - ea: 0x671D60
+    void GetActivePakIds(ae_vector<TPakId>* id_set) const;
+    // - ea: 0x671DF0
+    int GetUnloadableBankCount(bool mram) const;
     // - ea: 0x671ED0 (stub: real impl walks mActivePaks and calls
     // PakFile::MemAlloc; the active-pak list is not ported yet)
     void* CrazyTempMemBorrow(unsigned int align, unsigned int size);
@@ -568,36 +652,6 @@ public:
 
     PakHeapContext(TPakId id, bool once);  // ??0PakHeapContext@@QAE@W4TPakId@@_N@Z
     ~PakHeapContext();                     // ??1PakHeapContext@@QAE@XZ
-};
-
-// ae_vector<T> (ae/core/ae_vector.h; 12 bytes) - grow policy per IDA
-template <typename T>
-struct ae_vector {
-    T*  mElements;   // +0x00
-    int mCapacity;   // +0x04
-    int mSize;       // +0x08
-
-    void push_back(const T& iElement)
-    {
-        if (mSize >= mCapacity)
-        {
-            int v4 = mSize + 4;
-            if (mSize <= 3)
-                v4 = mSize + 1;
-            T* v9 = (T*)tlMemAlloc(sizeof(T) * v4, 8, 0);
-            for (int v5 = 0; v5 < mSize; ++v5)
-                v9[v5] = mElements[v5];
-            if (mElements != nullptr)
-            {
-                tlMemFree(mElements);
-                mElements = nullptr;
-                mCapacity = 0;
-            }
-            mCapacity = v4;
-            mElements = v9;
-        }
-        mElements[mSize++] = iElement;
-    }
 };
 
 // GlowSprites / GlowBeam (streamer.o render lists; verified IDA)
@@ -747,14 +801,6 @@ void LightGridMgr::DecodeBank(const char* name, unsigned char* data,
 class ZoneOverrideBrushSet;
 class StreamZone;
 class ZoneCellDesc;
-
-// InplaceVector<T> (ae/inplace/InplaceVector.h; full definition in
-// game/game_types.h) - minimal view used by SetTopOverrideBrushSet
-template <typename T>
-struct InplaceVector {
-    unsigned int mSize;  // +0x00
-    T*           mList;  // +0x04
-};
 
 // Bounds-checked InplaceVector access (InplaceVector.h:81, inlined in release)
 template <typename T>
@@ -2019,11 +2065,99 @@ void PakManager::CrazyTempMemGiveBack(void* ptr)
     free(ptr);
 }
 
-// Stubs for PakManager members that need PakFile/BankManager/InplaceTree.
+// ea: 0x671C60
 TPakId PakManager::FindPakId(EPakType t) const
 {
-    (void)t;
-    return PAK_ID_INVALID;
+    reserved_dlist<PakFile>::dlist_node* m_node = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_node != nullptr ? m_node->m_next : nullptr;
+    if (m_node == mActivePaks.m_end || m_next == nullptr)
+        return PAK_ID_INVALID;
+    while (((PakFile*)m_node)->mPakType != t)
+    {
+        m_node = m_next;
+        m_next = m_next->m_next;
+        if (m_next == nullptr)
+            return PAK_ID_INVALID;
+    }
+    return ((PakFile*)m_node)->mPakId;
+}
+
+// ea: 0x671CC0
+TPakId PakManager::FindPakId(const char* pak_name) const
+{
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == mActivePaks.m_end || m_next == nullptr)
+        return PAK_ID_INVALID;
+    while (1)
+    {
+        const PakInfoNode* v4 = ((PakFile*)m_head)->mPakInfo;
+        if (v4 != nullptr
+            && _stricmp((const char*)v4->longName, pak_name) == 0)
+            return ((PakFile*)m_head)->mPakId;
+        m_head = m_next;
+        m_next = m_next->m_next;
+        if (m_next == nullptr)
+            return PAK_ID_INVALID;
+    }
+}
+
+// ea: 0x6666B0
+const PakInfoNode* PakManager::GetPakInfo(TPakId pakId) const
+{
+    if (mPakInfoBank == nullptr || pakId == PAK_ID_INVALID)
+        return nullptr;
+    const PakInfoNode* result = mPakInfoPtrs[pakId];
+    if (result != nullptr)
+        return result;
+    PakFile* v5 = mSlots[pakId];
+    if (v5 != nullptr)
+    {
+        if (v5->mPakType == kPakTypeCount)
+            return nullptr;
+        if (v5->mPakInfo != nullptr)
+        {
+            result = v5->GetInfo();
+            const_cast<PakManager*>(this)->mPakInfoPtrs[pakId] = result;
+            return result;
+        }
+    }
+    for (unsigned int v6 = 0; v6 < mPakInfoBank->mPtrs.mSize; ++v6)
+    {
+        result = mPakInfoBank->mPtrs.mList[v6];
+        if (result->pakId == pakId)
+        {
+            const_cast<PakManager*>(this)->mPakInfoPtrs[pakId] = result;
+            return result;
+        }
+    }
+    PakInfoBank* level = mLevelPakInfoBank;
+    for (unsigned int v8 = 0; v8 < level->mPtrs.mSize; ++v8)
+    {
+        result = level->mPtrs.mList[v8];
+        if (result->pakId == pakId)
+        {
+            const_cast<PakManager*>(this)->mPakInfoPtrs[pakId] = result;
+            return result;
+        }
+    }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+    AeAssert::gCurrentLine = 610;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("no info for pak id '%d'", pakId))
+        __debugbreak();
+    return nullptr;
+}
+
+// ea: 0x66C660 (needs InplaceTree::Find; stub until InplaceTree lands)
+const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
+{
+    (void)long_name;
+    return nullptr;
 }
 TPakId PakManager::SyncLoadPak(EPakType t, const char* path, NumBanks banks)
 {
@@ -2034,16 +2168,6 @@ TPakId PakManager::SyncLoadPak(const PakInfoNode* cpak)
 {
     (void)cpak;
     return PAK_ID_INVALID;
-}
-const PakInfoNode* PakManager::GetPakInfo(TPakId pakId) const
-{
-    (void)pakId;
-    return nullptr;
-}
-const PakInfoNode* PakManager::GetPakInfo(const char* long_name) const
-{
-    (void)long_name;
-    return nullptr;
 }
 void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
 {
@@ -2080,6 +2204,252 @@ void PakManager_MemFree(TPakId id, void* ptr, bool bUseActorHeap)
     (void)id; (void)ptr; (void)bUseActorHeap;
 }
 
+// ea: 0x671900
+const char* PakManager::GetPakName(TPakId id) const
+{
+    PakFile* v2 = mSlots[id];
+    if (v2 != nullptr)
+    {
+        if (v2->mPakType == kPakTypeCount)
+            return *(const char**)4;  // dead branch in original (reads addr 4)
+        if (v2->mPakInfo == nullptr)
+            v2->mPakInfo = PakManager::sInst->GetPakInfo(v2->mPakId);
+        return (const char*)v2->mPakInfo->longName;
+    }
+    reserved_dlist<PakFile>::dlist_node* m_node = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_node != nullptr ? m_node->m_next : nullptr;
+    if (m_node != mActivePaks.m_end && m_next != nullptr)
+    {
+        while (1)
+        {
+            if (((PakFile*)m_node)->mPakId == id)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 2323;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error(
+                        "active pak id found with NULL mSlots data"))
+                    __debugbreak();
+            }
+            m_node = m_next;
+            m_next = m_next->m_next;
+            if (m_next == nullptr)
+                break;
+        }
+    }
+    return "<invalid pak id>";
+}
+
+// ea: 0x6719E0
+bool PakManager::IsLoaded(const char* long_name) const
+{
+    reserved_dlist<PakFile>::dlist_node* m_node = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_node != nullptr ? m_node->m_next : nullptr;
+    if (m_node == mActivePaks.m_end || m_next == nullptr)
+        return false;
+    while (1)
+    {
+        PakFile* pak = (PakFile*)m_node;
+        const PakInfoNode* m_prev;
+        if (pak->mPakType == kPakTypeCount)
+        {
+            m_prev = nullptr;
+        }
+        else
+        {
+            if (pak->mPakInfo == nullptr)
+                pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+            m_prev = pak->mPakInfo;
+        }
+        if (_stricmp((const char*)m_prev->longName, long_name) == 0)
+            return true;
+        m_node = m_next;
+        m_next = m_next->m_next;
+        if (m_next == nullptr)
+            return false;
+    }
+}
+
+// ea: 0x671D60
+void PakManager::GetActivePakIds(ae_vector<TPakId>* id_set) const
+{
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head != mActivePaks.m_end && m_next != nullptr)
+    {
+        do
+        {
+            TPakId id = ((PakFile*)m_head)->mPakId;
+            id_set->push_back(id);
+            m_head = m_next;
+            m_next = m_next->m_next;
+        } while (m_next != nullptr);
+    }
+}
+
+// ea: 0x671DF0
+int PakManager::GetUnloadableBankCount(bool mram) const
+{
+    (void)mram;
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    int count = 0;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == mActivePaks.m_end || m_next == nullptr)
+        return 0;
+    do
+    {
+        PakFile* pak = (PakFile*)m_head;
+        const PakInfoNode* m_prev;
+        if (pak->mPakType == kPakTypeCount)
+        {
+            m_prev = nullptr;
+        }
+        else
+        {
+            if (pak->mPakInfo == nullptr)
+                pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+            m_prev = pak->mPakInfo;
+        }
+        if (0.0f != GetDistance(const_cast<PakInfoNode*>(m_prev)))
+            count += BankManager::sInst->get_alloc_count(pak->mBankAlloc);
+        m_head = m_next;
+        m_next = m_next->m_next;
+    } while (m_next != nullptr);
+    return count;
+}
+
+// ea: 0x671A70
+void PakManager::CopyContextStack(ae_sized_array<TPakId, 32>* ret) const
+{
+    TPakId pakId = mAnimPakId;
+    ((ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack())
+        .push_back(pakId);
+    pakId = mGlobalPakId;
+    ((ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack())
+        .push_back(pakId);
+    pakId = mDebugPakId;
+    ((ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack())
+        .push_back(pakId);
+    pakId = mLevelPakId;
+    ((ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack())
+        .push_back(pakId);
+
+    BitSet<99> used_paks;
+    memset(&used_paks, 0, sizeof(used_paks));
+    const ae_sized_array<TPakId, 128>& v10 = GetContextStack();
+    for (int i = v10.m_size - 1; i >= 0; --i)
+    {
+        TPakId v12 = v10.m_elements[i];
+        pakId = v12;
+        if (v12 != PAK_ID_INVALID && !used_paks.Test(v12))
+        {
+            if (v12 > 0x62)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 2412;
+                AeAssert::gCurrentExpr =
+                    "pakId > PAK_ID_INVALID && pakId < PAK_ID_MAX";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("bounds check"))
+                    __debugbreak();
+            }
+            used_paks.Add(v12);
+            ret->push_back(pakId);
+        }
+    }
+
+    ae_sized_array<TPakId, 128>& s0 =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    if (s0.m_size != 0)
+        s0.m_size -= 1;
+    ae_sized_array<TPakId, 128>& s1 =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    if (s1.m_size != 0)
+        s1.m_size -= 1;
+    ae_sized_array<TPakId, 128>& s2 =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    if (s2.m_size != 0)
+        s2.m_size -= 1;
+    ae_sized_array<TPakId, 128>& s3 =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    if (s3.m_size != 0)
+        s3.m_size -= 1;
+}
+
+// ea: 0x66FC30
+void PakManager::GetPakPrerequisites(TPakId pakId,
+                                     ae_sized_array<TPakId, 32>* ret,
+                                     BitSet<99>* seen) const
+{
+    if (pakId == PAK_ID_INVALID)
+        return;
+    ret->push_back(pakId);
+    seen->Add(pakId);
+    if (pakId == mDebugPakId)
+        return;
+    if (mPakInfoBank == nullptr)
+        return;
+    const PakInfoNode* PakInfo = GetPakInfo(pakId);
+    if (PakInfo == nullptr)
+        return;
+    if (PakInfo->prereqPakIds != nullptr)
+    {
+        for (int i = PAK_ID_MIN; i < PAK_ID_MAX; ++i)
+        {
+            if (PakInfo->prereqPakIds->Test(i) && !seen->Test(i))
+            {
+                seen->Add(i);
+                pakId = (TPakId)i;
+                ret->push_back(pakId);
+            }
+        }
+        return;
+    }
+
+    unsigned int mSize = PakInfo->prereqs.mSize;
+    BitSet<99> prereqPakIds;
+    ae_sized_array<TPakId, 32> ids;
+    memset(&prereqPakIds, 0, sizeof(prereqPakIds));
+    ids.m_size = 0;
+    for (unsigned int v6 = 0; v6 < mSize; ++v6)
+    {
+        TPakId v13 = PakInfo->prereqs.mList[v6]->pakId;
+        if (!prereqPakIds.Test(v13))
+            GetPakPrerequisites(v13, &ids, &prereqPakIds);
+    }
+    TPakId v14 = PakInfo->pakId;
+    if (v14 != PAK_ID_MIN)
+    {
+        BitSet<99>* v15 =
+            (BitSet<99>*)PakManager::sInst->MemAlloc(v14, 0x10u, false);
+        if (v15 != nullptr)
+            memset(v15, 0, sizeof(*v15));
+        const_cast<PakInfoNode*>(PakInfo)->prereqPakIds = v15;
+        if (v15 != nullptr)
+        {
+            v15->mBits[0] = prereqPakIds.mBits[0];
+            v15->mBits[1] = prereqPakIds.mBits[1];
+            v15->mBits[2] = prereqPakIds.mBits[2];
+            v15->mBits[3] = prereqPakIds.mBits[3];
+        }
+    }
+    for (int j = 0; j < ids.m_size; ++j)
+    {
+        TPakId v18 = ids.m_elements[j];
+        if (prereqPakIds.Test(v18) && !seen->Test(v18))
+        {
+            seen->Add(v18);
+            ret->push_back(v18);
+        }
+    }
+}
+
 // ============================================================================
 // Free functions (streamer.o)
 // ============================================================================
@@ -2102,6 +2472,56 @@ void ValidatePakId(TPakId pakId)
         if (!AeAssert::IsIgnored() && AeAssert::Warning("bad/old pak id"))
             __debugbreak();
     }
+}
+
+// ea: 0x66FB10
+void GetAllPaks(ae_sized_array<TPakId, 32>* ret)
+{
+    if (PakManager::sInst == nullptr)
+        return;
+    reserved_dlist<PakFile>::dlist_node* m_node =
+        PakManager::sInst->mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_node != nullptr ? m_node->m_next : nullptr;
+    if (m_node == PakManager::sInst->mActivePaks.m_end || m_next == nullptr)
+        return;
+    while (1)
+    {
+        TPakId elt = ((PakFile*)m_node)->mPakId;
+        ret->push_back(elt);
+        m_node = m_next;
+        m_next = m_next->m_next;
+        if (m_next == nullptr)
+            break;
+    }
+}
+
+// ea: 0x6758C0
+void GetPakPrerequisites(TPakId pakId, ae_sized_array<TPakId, 32>* ret)
+{
+    if (PakManager::sInst != nullptr)
+    {
+        BitSet<99> seenPaks;
+        memset(&seenPaks, 0, sizeof(seenPaks));
+        PakManager::sInst->GetPakPrerequisites(pakId, ret, &seenPaks);
+        TPakId anim_pak_id = PakManager::sInst->mAnimPakId;
+        if (anim_pak_id != PAK_ID_INVALID && !seenPaks.Test(anim_pak_id))
+            ret->push_back(anim_pak_id);
+        anim_pak_id = PakManager::sInst->mGlobalPakId;
+        if (anim_pak_id != PAK_ID_INVALID && !seenPaks.Test(anim_pak_id))
+            ret->push_back(anim_pak_id);
+    }
+    else
+    {
+        ret->push_back(pakId);
+    }
+}
+
+// ea: 0x675960
+void get_context_stack(ae_sized_array<TPakId, 32>* ret)
+{
+    if (PakManager::sInst != nullptr)
+        PakManager::sInst->CopyContextStack(ret);
 }
 
 // ============================================================================
@@ -2392,11 +2812,11 @@ void stream_free(unsigned char* ptr)
         mem_heap_free(ptr);
 }
 
-// ea: 0x4E3560 (core.o)
-template <>
-bool BitSet<64>::Test(int v) const
+// ea: 0x4E3560 (core.o BitSet<64>::Test; same source line for every N)
+template <int N>
+bool BitSet<N>::Test(int v) const
 {
-    if (v >> 5 >= 2)
+    if (v >> 5 >= kNumWords)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
@@ -2482,6 +2902,26 @@ bool BankManager::can_alloc(NumBanks num_banks) const
 {
     return num_banks.xbox <= get_free_count().xbox;
 }
+
+// ea: 0x66B910
+int BankManager::get_alloc_count(const TBankAlloc& bat) const
+{
+    int count = 0;
+    if (mNumMramBanks + 0.5f > 0.0f)
+    {
+        int v4 = 0;
+        do
+        {
+            if (bat.mram_alloc1.Test(v4) || bat.mram_alloc2.Test(v4))
+                ++count;
+            ++v4;
+        } while (mNumMramBanks + 0.5f > v4);
+        return count;
+    }
+    return 0;
+}
+
+BankManager* BankManager::sInst = nullptr;  // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
 
 // ea: 0x6652B0 / 0x665320 / 0x665330 / 0x665340 (empty no-ops)
 void DecodeGrassInfo(const char* name, unsigned char* data, int size,
