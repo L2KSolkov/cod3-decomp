@@ -10,9 +10,46 @@
 #include "core/tlFixedString.h"
 #include "engine/broc_types.h"
 
-// Scene-anim list (anim.o) - dlist node at +0x00 (reserved_dlist intrusive)
+class Entity;
+
+// Minimal local DObj view (full class in cg_local.h; offsets verified IDA)
+class DObj {
+public:
+    void* tree[8];             // +0x00
+    void* animPlayers[8];      // +0x20
+    void* mPose[8];            // +0x40
+    unsigned char modelParents[8];  // +0x60
+    unsigned char matOffset[8];     // +0x68
+    void* skel;                // +0x70
+    unsigned char numModels;   // +0xCE
+    Entity* mEntity;           // +0xD0
+    int mLOD;                  // +0xD8
+    int mLODOverride;          // +0xDC
+    struct ModelSlot {
+        void* mValue;  // +0x00
+        int mPakId;    // +0x04
+    } models[8];               // +0x80
+    int mPakId;                // +0xC0
+};
+
+// Local DbLinkedHandle view (full template in game_types.h)
+template <typename DB, typename T>
+struct DbLinkedHandle {
+    unsigned int mVal;  // +0x00
+};
+
+// Scene-anim list (anim.o) - dlist node at +0x00 (reserved_dlist intrusive).
+// Full layout verified vs disasm: mFileID +8, mInst +0xC, mNotify +0x10,
+// mPakId +0x14, mPlaying +0x19, mName @+0x28.
 struct SceneAnimInfo {
     unsigned char m_dlist_node[8];  // +0x00
+    int mFileID;                    // +0x08
+    void* mInst;                    // +0x0C
+    void* mNotify;                  // +0x10
+    int mPakId;                     // +0x14
+    unsigned char mPlaying;         // +0x19
+    unsigned char _pad[0x28 - 0x1A];
+    char mName[32];                 // +0x28
 
     // ?get_dlist_node@SceneAnimInfo@@QAEPAXXZ (0x539D10)
     void* get_dlist_node() { return this; }
@@ -99,6 +136,21 @@ struct reserved_dlist {
             return m_node;
         }
     };
+
+    // ?erase@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@AAV21@@Z
+    iterator erase(dlist_node* node)
+    {
+        if (node->m_next != nullptr)
+            node->m_next->m_prev = node->m_prev;
+        if (node->m_prev != nullptr)
+            node->m_prev->m_next = node->m_next;
+        if (m_tail == node)
+            m_tail = node->m_prev;
+        --m_size;
+        return iterator(node->m_next, node->m_next != nullptr
+                                           ? node->m_next->m_next
+                                           : nullptr);
+    }
 };
 reserved_dlist<SceneAnimInfo> gSceneAnimList;  // ?gSceneAnimList@@3V?$reserved_dlist@VSceneAnimInfo@@@@A (anim.o @ 0xDF2ACC)
 
@@ -117,6 +169,8 @@ extern int gCurrentLine;
 extern const char* gCurrentExpr;
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
+bool Error(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
 }
 
 #define XANIM_ASSERT(expr, file, line, msg)                                 \
@@ -200,6 +254,12 @@ extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc(unsigned int size);
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* desc);
+extern void nflCloseFile(int file);  // filesystem/nfl.cpp
+extern void PoolAllocator_Release(void* allocator, void* ptr);
+// ?subtitle_manager_play_subtitle@SoundDevice@@YA_NPBD0@Z (shell.o stub)
+namespace SoundDevice {
+bool subtitle_manager_play_subtitle(const char* tag, const char* prefix);
+}
 
 struct nalPositionOrientation {
     math::Position3 pos;
@@ -1149,6 +1209,117 @@ void XAnimShutdown()
         gEnd.clear();
 }
 
+// XAnim helper deps (bodies in xanim.cpp; declared after XAnimTree/AnimTree)
+extern int XAnimSetGoalWeightInternal(XAnimTree* tree, unsigned int animIndex,
+                                      float goalWeight, float goalTime,
+                                      float rate, bool bForce,
+                                      unsigned int notifyName,
+                                      unsigned short notifyType,
+                                      bool bRestart);
+extern void XAnimEnsureGoalWeightParent(XAnimTree* tree,
+                                        unsigned int animIndex,
+                                        float goalTime, bool bRestart);
+extern void XAnimUpdateSyncTime(XAnimTree* tree, unsigned int animIndex,
+                                int bRestart);
+extern void XAnimUpdateServerNotify(XAnimTree* tree, unsigned int animIndex);
+extern void XAnimClearGoalWeightKnobInternal(XAnimTree* tree,
+                                             unsigned int animIndex,
+                                             float goalWeight,
+                                             float goalTime);
+extern void XAnimSetCompleteGoalWeight(XAnimTree* tree, unsigned int animIndex,
+                                       float goalWeight, float goalTime,
+                                       float rate, unsigned int notifyName,
+                                       unsigned int notifyType, void* bRestart);
+extern void XAnimSetupSyncNodes_r(AnimTree* anims, unsigned int animIndex);
+
+extern void ValidatePakId(int pakId);  // g_entity_misc.cpp stub
+extern void DObjInitServerTime(void* d, float dtime);
+extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
+                                 unsigned int animindex);
+extern int _fpclass(double x);  // CRT helper (cg_misc.cpp)
+
+// Forward decls for the DObj sub-model helpers (defined later in this TU)
+void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose);
+void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose,
+                         bool absolute);
+void PostApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose);
+void SetAutoTrajectoryEntityPO(Entity* ent, bool absolute, DObj* masterObj);
+void* SceneAnimClient_Ctor(void* self, const nalSceneAnim* anim,
+                           const tlFixedString* name, float blendIn,
+                           float blendOut);
+
+// Local EntityHandleDb view (full in streamer/pakmanager.cpp)
+struct DbElement {
+    unsigned int mKey;    // +0x00
+    Entity* mObject;      // +0x04
+};
+class EntityHandleDb {
+public:
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@2V1@A
+    unsigned char _pad[0xA8];
+    DbElement mElements[0x540];  // +0xA8
+};
+
+// Local gDroneAEMap view (full in g_game2_misc.cpp)
+struct DroneHandleVec {
+    unsigned char _pad[0x0C];
+    DbLinkedHandle<EntityHandleDb, Entity>* mElements;  // +0x0C
+    int mSize;  // +0x10
+};
+struct ae_pair_drone {
+    unsigned int first;   // +0x00
+    DroneHandleVec* second;  // +0x04
+};
+struct DroneAEMap {
+    ae_pair_drone* m_elements[8];  // +0x00
+    int m_size;  // +0x20
+};
+extern DroneAEMap gDroneAEMap;  // ?gDroneAEMap@@3V?$ae_sized_array@... (game2.o @ 0x12F45E0)
+
+// InteractionController (anim.o member mCurState @ +0x14)
+class InteractionController {
+public:
+    static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+    void* mCurState;  // +0x14
+};
+
+// Stub bodies for the xanim goal-weight internals (ported with the
+// remaining xanim cluster; correct mangled signatures).
+int XAnimSetGoalWeightInternal(XAnimTree* tree, unsigned int animIndex,
+                               float goalWeight, float goalTime, float rate,
+                               bool bForce, unsigned int notifyName,
+                               unsigned short notifyType, bool bRestart)
+{
+    (void)tree; (void)animIndex; (void)goalWeight; (void)goalTime;
+    (void)rate; (void)bForce; (void)notifyName; (void)notifyType;
+    (void)bRestart;
+    return 0;
+}
+void XAnimEnsureGoalWeightParent(XAnimTree* tree, unsigned int animIndex,
+                                 float goalTime, bool bRestart)
+{
+    (void)tree; (void)animIndex; (void)goalTime; (void)bRestart;
+}
+void XAnimUpdateSyncTime(XAnimTree* tree, unsigned int animIndex,
+                         int bRestart)
+{
+    (void)tree; (void)animIndex; (void)bRestart;
+}
+void XAnimUpdateServerNotify(XAnimTree* tree, unsigned int animIndex)
+{
+    (void)tree; (void)animIndex;
+}
+void XAnimClearGoalWeightKnobInternal(XAnimTree* tree,
+                                      unsigned int animIndex,
+                                      float goalWeight, float goalTime)
+{
+    (void)tree; (void)animIndex; (void)goalWeight; (void)goalTime;
+}
+void XAnimSetupSyncNodes_r(AnimTree* anims, unsigned int animIndex)
+{
+    (void)anims; (void)animIndex;
+}
+
 // ============================================================================
 // anim.o tiny COMDAT batch (xanim/nal/DObj inline accessors)
 // ============================================================================
@@ -1523,7 +1694,15 @@ const char* GetButtonTextName(unsigned int index)
 // Local view of EntityManager (full class in streamer/pakmanager.cpp).
 class Entity {
 public:
-    unsigned char _pad[0x254];
+    unsigned int flags;   // +0x04
+    unsigned int mFlags;  // +0x08
+    unsigned char _pad[0x230 - 0x0C];
+    struct {
+        unsigned int mVal;  // +0x230
+    } mHandle;             // +0x230
+    unsigned char _pad2[0x23C - 0x234];
+    DObj* mDObj;           // +0x23C
+    unsigned char _pad3[0x254 - 0x240];
     void* client;  // +0x254
 };
 class EntityManager {
@@ -1950,8 +2129,6 @@ void PlayerAnimMgr::PlayModifier(const char* animName, int animateCamera,
 // m_CurrParam +0x2E8, m_bWasPrevOpABlend +0x2EC, m_iStackDepth +0x2F0,
 // m_iMaxStackDepth +0x2F4.
 // ============================================================================
-
-class DObj;  // local forward decl (full class in cg_local.h)
 
 class AnimQueue {
 public:
@@ -3452,3 +3629,611 @@ template void FastCycleTrajectory<
     nalComponentData::AnimData, nalComponentData::SkeletonComponentData,
     CODNoteData::AnimComponentData>(nalComponentEnum&, void*, void*, int, bool,
                                     const int*);
+
+// ============================================================================
+// xanim.cpp leaf batch (anim.o) - simple/empty/wrapper functions
+// ============================================================================
+
+// ea: 0x0053E0D0
+void XAnimFreeMemory()
+{
+}
+
+// ea: 0x0053E340
+AnimTree* XAnimCreateAnims()
+{
+    XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 609, "dead code");
+    return nullptr;
+}
+
+// ea: 0x0053E690
+const char* XAnimGetAnimTreeDebugName(AnimTree* anims)
+{
+    return (const char*)*(void**)anims;  // anims->name.mStr
+}
+
+// ea: 0x0053E6E0
+void DObjUpdateClientInfo()
+{
+}
+
+// ea: 0x0053E9C0
+void XAnimSetUser()
+{
+}
+
+// ea: 0x0053E9E0
+void XAnimLoadAnimTree()
+{
+    XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 5488,
+                 "ma dead code");
+}
+
+// ea: 0x0053EA30
+void XAnimSaveAnimTree()
+{
+    XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 5521,
+                 "ma dead code");
+}
+
+// ea: 0x00543870
+unsigned int XAnimGetAnimTreeSize(AnimTree* anims)
+{
+    return anims->entries.mList[0].numAnims;
+}
+
+// ea: 0x00545520 / 0x00545540
+bool XAnimIsVariationChunk(XAnimTree* tree, unsigned int animIndex)
+{
+    return (tree->anims->entries.mList[animIndex].u.s.flags & 0x20) != 0;
+}
+
+bool XAnimIsVariationChunk(AnimTree* anims, unsigned int animIndex)
+{
+    return (anims->entries.mList[animIndex].u.s.flags & 0x20) != 0;
+}
+
+// ea: 0x00545560
+void XAnimResetAnimVariationChunkState(XAnimTree* tree, unsigned int animIndex)
+{
+    XAnimEntry* v2 = &tree->anims->entries.mList[animIndex];
+    if (v2 == nullptr)
+    {
+        XANIM_ASSERT("entry", "c:\\cod\\code\\game\\xanim.cpp", 5663,
+                     "old cod assert");
+    }
+    if ((tree->anims->entries.mList[animIndex].u.s.flags & 0x20) == 0)
+    {
+        XANIM_ASSERT("XAnimIsVariationChunk(tree,animIndex)",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5664,
+                     "old cod assert");
+    }
+    int v3 = 0;
+    if (v2->numAnims != 0)
+    {
+        do
+        {
+            if (tree->infoArray[animIndex] != 0)
+                XAnimClearGoalWeight(tree, v3 + v2->u.s.children, 0.0f);
+            ++v3;
+        } while (v3 < v2->numAnims);
+    }
+}
+
+// ea: 0x005440A0
+void XAnimClearChildGoalWeights(XAnimTree* tree, unsigned int animIndex,
+                                float blendTime)
+{
+    if (tree == nullptr)
+    {
+        XANIM_ASSERT("tree", "c:\\cod\\code\\game\\xanim.cpp", 4794,
+                     "old cod assert");
+    }
+    if (tree->anims == nullptr)
+    {
+        XANIM_ASSERT("tree->anims", "c:\\cod\\code\\game\\xanim.cpp", 4795,
+                     "old cod assert");
+    }
+    if (animIndex >= tree->anims->entries.mSize)
+    {
+        XANIM_ASSERT("animIndex < tree->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4796,
+                     "old cod assert");
+    }
+    if (blendTime < 0.001f)
+        blendTime = 0.0f;
+    XAnimEntry* v4 = &tree->anims->entries.mList[animIndex];
+    int numAnims = v4->numAnims;
+    if (v4->numAnims != 0)
+    {
+        int v3 = 0;
+        do
+        {
+            XAnimClearGoalWeight(tree, v3 + v4->u.s.children, blendTime);
+            ++v3;
+        } while (v3 < numAnims);
+    }
+}
+
+// ea: 0x00544A10
+void XAnimSetupSyncNodes(AnimTree* anims)
+{
+    XAnimSetupSyncNodes_r(anims, 0);
+}
+
+// ea: 0x00549A50
+int XAnimGetFrameCount(AnimTree* anims, unsigned int animIndex)
+{
+    if (anims == nullptr)
+    {
+        XANIM_ASSERT("anims", "c:\\cod\\code\\game\\xanim.cpp", 2693,
+                     "old cod assert");
+    }
+    XAnimEntry* v3 = &anims->entries.mList[animIndex];
+    if (v3 == nullptr)
+    {
+        XANIM_ASSERT("entry", "c:\\cod\\code\\game\\xanim.cpp", 2696,
+                     "old cod assert");
+        return 0;
+    }
+    if ((anims->entries.mList[animIndex].u.s.flags & 0x20) != 0)
+        v3 = &anims->entries.mList[v3->ucLastChosenChild + v3->u.s.children];
+    void* anim = v3->anim;
+    if (anim == nullptr)
+        return 0;
+    return *(int*)((char*)anim + 0x3C);  // FrameCount
+}
+
+// SceneAnimInfo::sAllocator (anim.o data)
+void* SceneAnimInfo_sAllocator = nullptr;
+
+// ea: 0x0053E6F0
+void KillSceneAnim(SceneAnimInfo* info)
+{
+    if (info->mInst == nullptr)
+    {
+        XANIM_ASSERT("info->mInst", "c:\\cod\\code\\game\\xanim.cpp", 3641,
+                     "scene anim instance didn't exist");
+    }
+    PakHeapContext pakCtx((TPakId)info->mPakId, false);
+    void* mInst = info->mInst;
+    if (mInst != nullptr)
+    {
+        typedef void (__thiscall* DtorFn)(void*, unsigned int);
+        ((DtorFn)((void**)*(void**)mInst)[0])(mInst, 1);
+    }
+    nflCloseFile(info->mFileID);
+    PoolAllocator_Release(SceneAnimInfo_sAllocator, info);
+}
+
+// ea: 0x00552D50
+int SceneAnimNumPlaying()
+{
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_head =
+        gSceneAnimList.m_head;
+    int result = 0;
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_next =
+        gSceneAnimList.m_head != nullptr ? gSceneAnimList.m_head->m_next
+                                         : nullptr;
+    if (gSceneAnimList.m_head
+            != (reserved_dlist<SceneAnimInfo>::dlist_node*)
+                   &gSceneAnimList.m_end
+        && m_next != nullptr)
+    {
+        do
+        {
+            SceneAnimInfo* info = (SceneAnimInfo*)m_head;
+            if (info->mPlaying != 0)
+                ++result;
+            m_head = m_next;
+            m_next = m_next->m_next;
+        } while (m_next != nullptr);
+    }
+    return result;
+}
+
+// ea: 0x0054B440
+int XAnimSetGoalWeight(XAnimTree* tree, unsigned int animIndex,
+                       float goalWeight, float goalTime, float rate,
+                       unsigned int notifyName, unsigned short notifyType,
+                       int bRestart)
+{
+    if (goalWeight < 0.001f)
+        goalWeight = 0.0f;
+    int error = XAnimSetGoalWeightInternal(
+        tree, animIndex, goalWeight, goalTime, rate, false, notifyName,
+        notifyType, bRestart != 0);
+    XAnimEnsureGoalWeightParent(tree, animIndex, goalTime, bRestart != 0);
+    XAnimUpdateSyncTime(tree, animIndex, bRestart);
+    XAnimUpdateServerNotify(tree, animIndex);
+    return error;
+}
+
+// ea: 0x00554B70
+void XAnimSetGoalWeightKnob(XAnimTree* tree, unsigned int animIndex,
+                            float goalWeight, float goalTime, float rate,
+                            unsigned int notifyName,
+                            unsigned short notifyType, int bRestart)
+{
+    if (goalWeight < 0.001f)
+        goalWeight = 0.0f;
+    XAnimClearGoalWeightKnobInternal(tree, animIndex, goalWeight, goalTime);
+    XAnimSetGoalWeight(tree, animIndex, goalWeight, goalTime, rate,
+                       notifyName, notifyType, bRestart);
+}
+
+// ea: 0x00554940
+void XAnimSetCompleteGoalWeightKnob(
+    XAnimTree* tree, unsigned int animIndex, float goalWeight, float goalTime,
+    float rate, unsigned int notifyName, unsigned short notifyType,
+    int bRestart)
+{
+    if (goalWeight < 0.001f)
+        goalWeight = 0.0f;
+    XAnimClearGoalWeightKnobInternal(tree, animIndex, goalWeight, goalTime);
+    XAnimSetCompleteGoalWeight(tree, animIndex, goalWeight, goalTime, rate,
+                               notifyName, notifyType,
+                               (void*)(intptr_t)bRestart);
+}
+
+// ea: 0x005532B0
+void PlaySceneAnim(unsigned int handle, void* endNotify, void* blendNotify)
+{
+    SceneAnimInfo* info = (SceneAnimInfo*)handle;
+    if (info->mPlaying != 0)
+    {
+        XANIM_ASSERT("!info->mPlaying", "c:\\cod\\code\\game\\xanim.cpp",
+                     3607, "scene anim was already playing?");
+    }
+    void* v3 = info->mInst;
+    if (v3 == 0
+        || ((int (__thiscall*)(void*))((void**)*(void**)v3)[1])(v3) == 0)
+    {
+        XANIM_ASSERT("info->mInst && info->mInst->IsReady()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 3608,
+                     "scene anim instance was not ready?");
+    }
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_head =
+        gSceneAnimList.m_head;
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_next =
+        gSceneAnimList.m_head != nullptr ? gSceneAnimList.m_head->m_next
+                                         : nullptr;
+    if (gSceneAnimList.m_head
+            != (reserved_dlist<SceneAnimInfo>::dlist_node*)
+                   &gSceneAnimList.m_end
+        && m_next != nullptr)
+    {
+        while (1)
+        {
+            SceneAnimInfo* cur = (SceneAnimInfo*)m_head;
+            if (cur->mNotify == endNotify)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\xanim.cpp";
+                AeAssert::gCurrentLine = 3615;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error(
+                        "notify is already used for another scene anim"))
+                    __debugbreak();
+                break;
+            }
+            if (blendNotify != nullptr
+                && cur->mPakId == (int)(intptr_t)blendNotify)
+                break;
+            m_head = m_next;
+            m_next = m_next->m_next;
+            if (m_next == nullptr)
+                break;
+        }
+    }
+    char name[32];
+    strncpy(name, info->mName, 0x20u);
+    name[31] = 0;
+    SoundDevice::subtitle_manager_play_subtitle(name, nullptr);
+    void* v6 = info->mInst;
+    info->mPlaying = 1;
+    *(void**)((char*)info + 0x10) = endNotify;
+    *(void**)((char*)info + 0x14) = blendNotify;
+    ((void (__thiscall*)(void*))((void**)*(void**)v6)[2])(v6);
+}
+
+// ea: 0x00553440
+void StopSceneAnim(SceneAnimInfo* handle)
+{
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_head =
+        gSceneAnimList.m_head;
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_next =
+        gSceneAnimList.m_head->m_next;
+    if (gSceneAnimList.m_head->m_next == nullptr)
+        goto LABEL_4;
+    while (m_head != (reserved_dlist<SceneAnimInfo>::dlist_node*)handle)
+    {
+        m_head = m_next;
+        m_next = m_next->m_next;
+        if (m_next == nullptr)
+            goto LABEL_4;
+    }
+    {
+        reserved_dlist<SceneAnimInfo>::dlist_node* dnode =
+            (reserved_dlist<SceneAnimInfo>::dlist_node*)handle;
+        if (dnode->m_next == nullptr)
+            goto LABEL_4;
+        gSceneAnimList.erase(
+            dnode);
+        KillSceneAnim(handle);
+        return;
+    }
+LABEL_4:
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+    AeAssert::gCurrentLine = 3659;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error("invalid scene anim handle"))
+        __debugbreak();
+}
+
+// ============================================================================
+// xanim.cpp medium batch (anim.o) - DObj pose/trajectory + scene-anim glue
+// ============================================================================
+
+// Local XModelParts view (mAnimDef @ +0x38; full view in sv_stubs.h)
+struct XModelPartsAnim {
+    unsigned char _pad[0x38];
+    void* mAnimDef;  // +0x38
+};
+
+// ea: 0x0053E7C0
+void DObjAllocateSubModelPose(DObj* obj, int i,
+                              nalGenericSkeleton* skeleton)
+{
+    if (obj->mPose[i] == nullptr)
+        obj->mPose[i] = new_nalGenericPose((TPakId)obj->mPakId, skeleton);
+}
+
+// ea: 0x0053E7F0
+void DObjFreeAnim(DObj* obj)
+{
+    if (obj == nullptr)
+    {
+        XANIM_ASSERT("obj", "c:\\cod\\code\\game\\xanim.cpp", 4204,
+                     "old cod assert");
+    }
+    PakHeapContext ctx((TPakId)obj->mPakId, false);
+    for (int i = 0; i < obj->numModels; ++i)
+    {
+        nalGenericPose* v4 = (nalGenericPose*)obj->mPose[i];
+        if (obj->mPose[i] != nullptr)
+        {
+            v4->~nalGenericPose();
+            tlMemFree(v4);
+            obj->mPose[i] = nullptr;
+        }
+    }
+}
+
+// ea: 0x00549BD0
+void* SceneAnimCallback(const nalSceneAnim* anim, const tlFixedString* name,
+                        float* p)
+{
+    void* v3 = mem_heap_malloc(0xD4);
+    if (v3 != nullptr)
+        return SceneAnimClient_Ctor(v3, anim, name, p[0], p[1]);
+    return nullptr;
+}
+
+// SceneAnimClient (anim.o 0x561630/0x5619A0) - ctor ported below.
+
+// ea: 0x005549A0
+int XAnimSetCompleteGoalWeightKnobAll(
+    XAnimTree* tree, unsigned int animIndex, unsigned int rootIndex,
+    float goalWeight, float goalTime, float rate, unsigned int notifyName,
+    unsigned short notifyType, int bRestart)
+{
+    unsigned int parent = animIndex;
+    if (animIndex == rootIndex)
+    {
+        XANIM_ASSERT("animIndex != rootIndex",
+                     "c:\\cod\\code\\game\\xanim.cpp", 4741,
+                     "old cod assert");
+    }
+    if (goalWeight < 0.001f)
+        goalWeight = 0.0f;
+    if ((_fpclass(rate) & 0x297) != 0)
+        rate = 1.0f;
+    XAnimClearGoalWeightKnobInternal(tree, animIndex, goalWeight, goalTime);
+    int error = XAnimSetGoalWeightInternal(
+        tree, animIndex, goalWeight, goalTime, rate, false, notifyName,
+        notifyType, bRestart != 0);
+    XAnimEnsureGoalWeightParent(tree, animIndex, goalTime, bRestart != 0);
+    XAnimUpdateSyncTime(tree, animIndex, bRestart);
+    XAnimUpdateServerNotify(tree, animIndex);
+    if (animIndex == 0)
+        return 1;
+    while (1)
+    {
+        AnimTree* anims = tree->anims;
+        unsigned int mSize = anims->entries.mSize;
+        unsigned int v13 = parent;
+        if (parent >= mSize)
+        {
+            XANIM_ASSERT("index < mSize",
+                         "../ae\\inplace/InplaceVector.h", 81,
+                         "Bounds check");
+            v13 = parent;
+            if (parent >= anims->entries.mSize)
+                v13 = 0;
+        }
+        parent = anims->entries.mList[v13].parent;
+        if (parent == rootIndex)
+            break;
+        XAnimClearGoalWeightKnobInternal(tree, parent, 1.0f, goalTime);
+        XAnimSetGoalWeightInternal(tree, parent, 1.0f, goalTime, 1.0f, false,
+                                   0, 0, bRestart != 0);
+        XAnimUpdateSyncTime(tree, parent, bRestart);
+        XAnimUpdateServerNotify(tree, parent);
+        if (parent == 0)
+            return 1;
+    }
+    return error;
+}
+
+// ea: 0x0054BF0  (XAnimUpdateServerTime)
+void XAnimUpdateServerTime(Entity* e, float deltaT)
+{
+    if ((e->flags & 0x10000) == 0 || (e->mFlags & 0x10) != 0)
+    {
+        DObjInitServerTime(e->mDObj, deltaT);
+        bool doNotifies;
+        if (InteractionController::Inst(currCl)->mCurState == nullptr
+            || e->mDObj == nullptr
+            || (doNotifies = false, e->mDObj->animPlayers[0] == nullptr))
+        {
+            doNotifies = true;
+        }
+        DObjUpdateServerInfo(e->mDObj, deltaT, doNotifies, 0);
+    }
+}
+
+// ea: 0x00554EB0
+Entity* GetDroneMaster(Entity* e)
+{
+    // gDroneAEMap walk (game2.o data @ 0x12F45E0)
+    DroneAEMap* v1 = &gDroneAEMap;
+    DroneAEMap* v2 = (DroneAEMap*)((char*)&gDroneAEMap + 4 * gDroneAEMap.m_size);
+    if (v2 == &gDroneAEMap)
+        return nullptr;
+    unsigned int mVal = e->mHandle.mVal;
+    DroneHandleVec* second = nullptr;
+    while (1)
+    {
+        second = v1->m_elements[0]->second;
+        DbLinkedHandle<EntityHandleDb, Entity>* mElements =
+            second->mElements;
+        DbLinkedHandle<EntityHandleDb, Entity>* v6 =
+            &second->mElements[second->mSize];
+        if (second->mElements != v6)
+        {
+            do
+            {
+                if (mElements->mVal == mVal)
+                    break;
+                ++mElements;
+            } while (mElements != v6);
+        }
+        if (mElements->mVal == mVal)
+            break;
+        v1 = (DroneAEMap*)((char*)v1 + 4);
+        if (v1 == v2)
+            return nullptr;
+    }
+    unsigned int v8 = second->mElements->mVal;
+    unsigned int v9 = v8 & 0xFFF;
+    if (v9 < 0x540
+        && v8 >> 12 == EntityHandleDb::sInst.mElements[v9].mKey)
+        return EntityHandleDb::sInst.mElements[v9].mObject;
+    return nullptr;
+}
+
+// ea: 0x00554400
+void DObjApplyPoseWrapper(DObj* obj, int i, int iPhase,
+                          nalGenericPose* pose, bool absolute)
+{
+    if (iPhase == -1)
+    {
+        ApplyPoseToSubModel(obj, i, pose);
+        SetAutoTrajectoryEntityPO(obj->mEntity, absolute, nullptr);
+    }
+    else if (iPhase != 0)
+    {
+        PostApplyPoseToSubModel(obj, i, pose);
+        bool DobjAbsolute = AnimQueue::GetDobjAbsolute(obj);
+        SetAutoTrajectoryEntityPO(obj->mEntity, DobjAbsolute, nullptr);
+    }
+    else
+    {
+        ApplyPoseToSubModel(obj, i, pose, absolute);
+    }
+}
+
+// ea: 0x0054A3B0
+void DObjGetTrajectory(nalPositionOrientation* po, DObj* obj)
+{
+    nalPositionOrientation v9;
+    v9.orient.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    memset(&v9.pos, 0, sizeof(v9.pos));
+    *po = v9;
+    if (obj == nullptr)
+    {
+        XANIM_ASSERT("obj", "c:\\cod\\code\\game\\xanim.cpp", 4302,
+                     "old cod assert");
+    }
+    if (obj->skel != nullptr)
+    {
+        ValidatePakId(obj->models[0].mPakId);
+        void* mValue = obj->models[0].mValue;
+        void** lod = *(void***)((char*)mValue + 0x24);
+        int i = 0;
+        while (lod[i] == nullptr)
+            ++i;
+        void* mAnimDef = *(void**)((char*)*(void**)((char*)mValue + 0x24 + i * 4)
+                                   + 8 + 0x38);
+        if (mAnimDef != nullptr
+            && *(void**)mAnimDef == (void*)0x10E6D04)
+        {
+            nalGenericPose* v7 = (nalGenericPose*)obj->mPose[0];
+            if (v7 != nullptr)
+            {
+                void* Skeleton = *(void**)v7;
+                if (Skeleton != nullptr
+                    && *(void**)Skeleton == (void*)0x10E6D04)
+                {
+                    ((nalGenericSkeleton*)Skeleton)
+                        ->GetTrajectoryUpdate(*v7, *po);
+                    if ((_fpclass(po->orient.v.m128_f32[0]) & 0x297) != 0
+                        || (_fpclass(po->orient.v.m128_f32[1]) & 0x297) != 0
+                        || (_fpclass(po->orient.v.m128_f32[2]) & 0x297) != 0)
+                    {
+                        XANIM_ASSERT(
+                            "!IS_NAN((po.o)[0]) && !IS_NAN((po.o)[1]) && !IS_NAN((po.o)[2])",
+                            "c:\\cod\\code\\game\\xanim.cpp", 4315,
+                            "Invalid vector");
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Stub bodies for the remaining complex xanim cluster (ported next pass with
+// correct mangled signatures).
+void nalGenericSkeleton::GetTrajectoryUpdate(const nalGenericPose& pose,
+                                             nalPositionOrientation& po) const
+{
+    (void)pose;
+    memset(&po, 0, sizeof(po));
+}
+void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose)
+{
+    (void)obj; (void)i; (void)pose;
+}
+void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose,
+                         bool absolute)
+{
+    (void)obj; (void)i; (void)pose; (void)absolute;
+}
+void PostApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose)
+{
+    (void)obj; (void)i; (void)pose;
+}
+void SetAutoTrajectoryEntityPO(Entity* ent, bool absolute, DObj* masterObj)
+{
+    (void)ent; (void)absolute; (void)masterObj;
+}
+void* SceneAnimClient_Ctor(void* self, const nalSceneAnim* anim,
+                           const tlFixedString* name, float blendIn,
+                           float blendOut)
+{
+    (void)anim; (void)name; (void)blendIn; (void)blendOut;
+    return self;
+}
