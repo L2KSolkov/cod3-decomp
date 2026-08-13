@@ -294,6 +294,7 @@ public:
     static void* operator new(size_t s);  // ??2Entity@@SAPAXI@Z (core.o)
     static void operator delete(void* ptr);  // ??3Entity@@SAXPAX@Z (game.o 0x620210)
     void SetAnimDebug(int lastAnim);  // ?SetAnimDebug@Entity@@QAEXH@Z (game.o 0x62AFB0)
+    void SetScriptEventHandler(ScriptEventHandler* n);  // ?SetScriptEventHandler@Entity@@QAEXPAVScriptEventHandler@@@Z (streamer.o 0x6816F0)
     static void FreeAllDObjs(bool deleteDObjs);  // ?FreeAllDObjs@Entity@@SAX_N@Z
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z

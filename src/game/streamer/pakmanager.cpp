@@ -44,6 +44,7 @@ extern void Cvar_Set(const char* var_name, const char* value);  // core.o
 extern void Com_Error(int code, const char* fmt, ...);  // core.o
 // IVPointer<T> (game_types.h; intrusive counted pointer, 8 bytes)
 struct XModel;
+struct ScriptEventHandler;
 template <typename T>
 class IVPointer {
 public:
@@ -65,11 +66,14 @@ public:
     Shared r;           // +0xE0 (EntityShared)
     uint8_t _pad160[0x230 - 0x160];
     int32_t mPakId;     // +0x230
-    uint8_t _pad234[0x270 - 0x234];
+    uint8_t _pad234[0x244 - 0x234];
+    ScriptEventHandler* mScriptEventHandler;  // +0x244
+    uint8_t _pad248[0x270 - 0x248];
     IVPointer<XModel> mModel;  // +0x270
 
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (g_entity_misc.cpp)
     int GetPakId() const { return mPakId; }  // g.o inline
+    void SetScriptEventHandler(class ScriptEventHandler* n);  // ?SetScriptEventHandler@Entity@@QAEXPAVScriptEventHandler@@@Z
 };
 extern void UpdateEntityHash(Entity* ent);  // ?UpdateEntityHash@@YAXPAVEntity@@@Z (g_scr.cpp)
 
@@ -364,7 +368,7 @@ void codNflCallback(unsigned int state, unsigned int requestId)
 }
 
 namespace AeAssert {
-enum ECoderId { COD3 = 0, ARO = 1, AC = 9 };
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3, JSV = 10, AC = 9 };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -3604,6 +3608,30 @@ void SceneManager::InstanceEntities()
             G_SetOrigin(player, &pos);
             G_SetAngle(player, &angles);
         }
+    }
+}
+
+// ea: 0x6816F0
+void Entity::SetScriptEventHandler(ScriptEventHandler* n)
+{
+    if (mScriptEventHandler == nullptr)
+    {
+        mScriptEventHandler = n;
+        return;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::JRS;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Entity.h";
+    AeAssert::gCurrentLine = 339;
+    AeAssert::gCurrentExpr = "!mScriptEventHandler";
+    if (AeAssert::IsIgnored())
+    {
+        mScriptEventHandler = n;
+    }
+    else
+    {
+        if (AeAssert::Assert(defaultFileName))
+            __debugbreak();
+        mScriptEventHandler = n;
     }
 }
 
