@@ -65,7 +65,7 @@ void XAnimUpdateServerInfoInternal(XAnimTree* tree, unsigned int animIndex,
 
 // ea: 0x00552C20 (anim.o)
 bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
-                          unsigned int animindex)  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
+                          int animindex)  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z
 {
     if (dtime < 0.0f)
     {
@@ -119,7 +119,7 @@ extern int   DObjSkelExistsConst(DObj* obj, int timeStamp);
 extern unsigned int DObjGetAllocSkelSize(DObj* obj);  // ?DObjGetAllocSkelSize@@YAIPAVDObj@@@Z
 extern void  DObjCreateSkel(DObj* obj, char* buf);
 extern bool  DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
-                                  unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
+int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z
 extern void  DObjInitServerTime(DObj* d, float dtime);
 extern void  DObjGetHierarchyBits(DObj* obj, int boneIndex, int* partBits);
 extern void  DObjCalcAnim(DObj* obj, int iPhase);

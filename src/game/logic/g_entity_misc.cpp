@@ -2034,7 +2034,7 @@ void* RE_RegisterModel(void* result, const char* name, int pakId, int imagetype)
     (void)result; (void)name; (void)pakId; (void)imagetype;
     return nullptr;
 }
-void* XAnimCreateTree(Entity* ent, AnimTree* anims)
+XAnimTree* XAnimCreateTree(Entity* ent, AnimTree* anims)
 {
     (void)ent; (void)anims;
     return nullptr;
@@ -2869,23 +2869,25 @@ void WheelMarkMgr_Init() {}
 void WheelMarkMgr_Reset() {}
 struct XAnimTree;
 struct XAnimEntry;
-void XAnimCalcAbsDelta(XAnimTree* t, unsigned int a, float* b, float* c)
+void XAnimCalcAbsDelta(XAnimTree* t, unsigned int a, float* const b,
+                       float* const c)
 {
     (void)t; (void)a; (void)b; (void)c;
 }
-void XAnimFreeTree(void* t) { (void)t; }
-void XAnimGetAbsDelta(AnimTree* t, unsigned int a, float* b, float* c, float d)
+void XAnimFreeTree(XAnimTree* t) { (void)t; }
+void XAnimGetAbsDelta(AnimTree* t, unsigned int a, float* const b,
+                      float* const c, float d)
 {
     (void)t; (void)a; (void)b; (void)c; (void)d;
 }
-void XAnimGetRelDelta(AnimTree* t, unsigned int a, float* b, float* c,
-                      float d, float e)
+void XAnimGetRelDelta(AnimTree* t, unsigned int a, float* const b,
+                      float* const c, float d, float e)
 {
     (void)t; (void)a; (void)b; (void)c; (void)d; (void)e;
 }
 void XAnimSetCompleteGoalWeight(XAnimTree* t, unsigned int a, float b, float c,
-                                float d, unsigned int e, unsigned int f,
-                                void* g)
+                                float d, unsigned int e, unsigned short f,
+                                int g)
 {
     (void)t; (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; (void)g;
 }

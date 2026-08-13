@@ -2516,8 +2516,8 @@ float maxClamp[3];    // ?maxClamp (cg.o)
 float maxClamp_0[3];  // ?maxClamp_0 (cg.o)
 float minClamp[3];    // ?minClamp (cg.o)
 float minClamp_0[3];  // ?minClamp_0 (cg.o)
-struct Camera;
-extern struct Camera* gCamera;
+class Camera;
+extern Camera* gCamera;
 
 // ea: 0x006A1900
 void CG_CalcEntityLerpPositions(Entity* cent)

@@ -956,7 +956,8 @@ struct IGOFrontEnd {
 static_assert(sizeof(IGOFrontEnd) == 168, "IGOFrontEnd size mismatch");
 
 // Camera â€” camera state (0x1F0 stride) - full layout from cg.o (cg_misc.cpp)
-struct Camera {
+class Camera {
+public:
     Camera();  // real in cg_misc.cpp (avoids implicit COMDAT vs real def)
     uint8_t _pad0[0x2C];                 // +0x00 (GlobalEffectNode)
     bool    mDeathRumble;                // +0x2C

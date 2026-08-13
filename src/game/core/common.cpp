@@ -18,6 +18,8 @@ SoundOptions gSoundOptions;
 #include <string.h>
 #include <time.h>
 
+class XAnimTree;  // anim.o
+
 // Minimal view of GamePause (full class in game/sv/sv_stubs.h).
 struct GamePause { static bool IsGamePaused(int client); };
 
@@ -149,7 +151,7 @@ extern void Com_CleanupSkeletons();
 extern void Com_ResetParseSessions();
 extern void XAnimShutdown();
 extern void XAnimInit();
-extern void XAnimFreeTree(void* tree);
+extern void XAnimFreeTree(XAnimTree* tree);
 extern void Sys_OutOfMemError();
 extern void tlFatal(const char* fmt, ...);
 // ?SEH_LocalizeTextMessage@@YAPBDPBD0W4msgLocErrType_t@@@Z (shell.o; stub)
@@ -1225,13 +1227,13 @@ void Com_Restart()
 // ea: 0x004BBF40
 void Com_XAnimFreeTree(void* animtree)
 {
-    XAnimFreeTree(animtree);
+        XAnimFreeTree((XAnimTree*)animtree);
 }
 
 // ea: 0x004BBF80
 void Com_XAnimFreeSmallTree(void* animtree)
 {
-    XAnimFreeTree(animtree);
+        XAnimFreeTree((XAnimTree*)animtree);
 }
 
 // ea: 0x004BBF90

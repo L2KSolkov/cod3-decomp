@@ -1925,7 +1925,8 @@ extern void XAnimClearGoalWeightKnobInternal(XAnimTree* tree,
 extern void XAnimSetCompleteGoalWeight(XAnimTree* tree, unsigned int animIndex,
                                        float goalWeight, float goalTime,
                                        float rate, unsigned int notifyName,
-                                       unsigned int notifyType, void* bRestart);
+                                       unsigned short notifyType,
+                                       int bRestart);
 extern void XAnimSetupSyncNodes_r(AnimTree* anims, unsigned int animIndex);
 
 // Local XAnimEntry_Create (PAV mangling for this TU's class-typed XAnimEntry;
@@ -1945,7 +1946,7 @@ void* nalGenericInstance_Ctor(void* self, void* anim, void* skeleton)
 extern void ValidatePakId(int pakId);  // g_entity_misc.cpp stub
 extern void DObjInitServerTime(DObj* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
-                                 unsigned int animindex);
+                                 int animindex);
 extern int _fpclass(double x);  // CRT helper (cg_misc.cpp)
 
 // Binary scope: `anonymous namespace' in c:\cod\code\game\xanim.cpp
@@ -2051,7 +2052,7 @@ public:
 };
 
 // Local view of Camera (full class in cg_misc.cpp; StopAnimating real there).
-struct Camera {
+class Camera {
 public:
     void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
     int IsAnimating() const;                 // 0x55FA40
@@ -2061,7 +2062,13 @@ public:
     int mCamMode;        // +0x190
     int mVehicleCamMode; // +0x194
 };
-extern Camera* gCamera;  // ?gCamera@@3PAUCamera@@A (cg.o @ 0x1358EF0)
+extern Camera* gCamera;  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0)
+
+// ea: 0x0053A840
+Camera& GetCamera(int index)
+{
+    return gCamera[index];
+}
 
 extern int currCl;
 extern int dword_F6A2A0[4 * 802];
@@ -5826,8 +5833,7 @@ void XAnimSetCompleteGoalWeightKnob(
         goalWeight = 0.0f;
     XAnimClearGoalWeightKnobInternal(tree, animIndex, goalWeight, goalTime);
     XAnimSetCompleteGoalWeight(tree, animIndex, goalWeight, goalTime, rate,
-                               notifyName, notifyType,
-                               (void*)(intptr_t)bRestart);
+                               notifyName, notifyType, bRestart);
 }
 
 // ea: 0x005532B0
@@ -17369,6 +17375,29 @@ void* sInteractionInfos[8] = {0};
 int sNumInteractionInfos = 0;
 void* sInteractStateInfos[64] = {0};
 int sNumInteractStateInfos = 0;
+
+// ConfigStringManager (core.o; sInst in core_globals.h @ 0x12F039C)
+class ConfigStringManager {
+public:
+    static ConfigStringManager* sInst;
+    void CallbackSearch(TPakId pakId, const char* type,
+                        void (*callback)(const char*, const ConfigString*));
+};
+
+void ParseInteractionConfigString(const char* name, const ConfigString* cfgstr);
+void ParseInteractStateConfigString(const char* name,
+                                    const ConfigString* cfgstr);
+
+// ea: 0x0053F0A0
+void G_InitialParseInteractionInfo()
+{
+    sNumInteractionInfos = 0;
+    TPakId v0 = CurPakId();
+    ConfigStringManager::sInst->CallbackSearch(
+        v0, "INTERACTIONFILE", ParseInteractionConfigString);
+    ConfigStringManager::sInst->CallbackSearch(
+        v0, "INTERACTSTATEFILE", ParseInteractStateConfigString);
+}
 
 extern int DoesInteractionInfoExist(const char* name);
 extern int DoesInteractStateInfoExist(const char* name);

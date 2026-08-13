@@ -33,7 +33,7 @@ public:
     Entity* mPlayers[16];         // +0x04
 };
 
-struct Camera;
+class Camera;
 
 extern int currCl;
 int cgGlobal_time = 0;  // ?cgGlobal_time@@3HA (cg.o)
@@ -308,7 +308,7 @@ extern FEManager g_femanager;
 int unk_F6A2AC[4 * 3208];  // cg.o BSS
 void* nglBuildScene_RenderTarget = nullptr;  // ngl.o
 void* gCurrentCamera;  // ?gCurrentCamera (cg.o Camera* artifact)
-extern struct Camera* gCamera;
+extern Camera* gCamera;
 extern void Camera_Update(void* self);
 extern void Camera_UpdatePostViewModels(void* self);
 namespace LocalClient { extern int FirstLocalClientIndex(void); }

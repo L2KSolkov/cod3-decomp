@@ -26,7 +26,7 @@ public:
     bool IsLocalPlayer(Entity* entity);  // ?IsLocalPlayer@EntityManager@@QAE_NPAVEntity@@@Z
 };
 
-struct Camera;
+class Camera;
 
 extern int currCl;
 extern int cgGlobal_time;
@@ -1087,7 +1087,7 @@ extern int level_time;
 extern int dword_F62964[4 * 1580];
 extern int dword_F6355C[4 * 1580];
 extern float dword_F63C70[4 * 1580];
-extern struct Camera* gCamera;
+extern Camera* gCamera;
 extern int dword_180000;
 unsigned int head_hash_0;
 extern float VectorDistance(const float* v1, const float* v2);

@@ -1847,7 +1847,8 @@ enum EVehicleCameraMode {
     VEH_MODE_HLO = 2,
     VEH_MODE_STRAFE = 3,
 };
-struct Camera {
+class Camera {
+public:
     uint8_t         _pad0[0x30];
     math::Position3 mPrevViewPos;  // +0x30
     math::Position3 mPrevAngles;   // +0x40

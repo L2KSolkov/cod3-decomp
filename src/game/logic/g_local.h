@@ -953,10 +953,13 @@ void      XAnimSetTime(XAnimTree* tree, unsigned int animIndex, float time);
 int       XAnimHasTime(AnimTree* anims, unsigned int animIndex);
 int       XAnimIsPrimitive(AnimTree* anims, unsigned int animIndex);
 float     XAnimGetLength(AnimTree* anims, unsigned int animIndex);
-void      XAnimCalcAbsDelta(XAnimTree* tree, unsigned int animIndex, float* rot, float* trans);
-void      XAnimGetRelDelta(AnimTree* anims, unsigned int animIndex, float* rot, float* trans,
+void      XAnimCalcAbsDelta(XAnimTree* tree, unsigned int animIndex,
+                            float* const rot, float* const trans);
+void      XAnimGetRelDelta(AnimTree* anims, unsigned int animIndex,
+                           float* const rot, float* const trans,
                            float time1, float time2);
-void      XAnimGetAbsDelta(AnimTree* anims, unsigned int animIndex, float* rot, float* trans, float time);
+void      XAnimGetAbsDelta(AnimTree* anims, unsigned int animIndex,
+                           float* const rot, float* const trans, float time);
 int       XAnimIsLooped(AnimTree* anims, unsigned int animIndex);
 bool      XAnimNotetrackExists(AnimTree* anims, unsigned int animIndex, const unsigned int& name);
 float     XAnimGetTime(XAnimTree* tree, unsigned int animIndex);
@@ -2271,7 +2274,7 @@ vehicle_info_t* VEH_GetPlayerVehicleInfo(void);     // g.o 0x470490
 int16_t VEH_GetPlayerVehicleInfo(const char* name); // g.o 0x44D4E0
 int     G_InitScrVehicles(void);                    // g.o 0x45E1D0
 // anim.o ?G_InitialParseInteractionInfo@@YAXXZ (stub; port later)
-inline void G_InitialParseInteractionInfo(void) {}
+void G_InitialParseInteractionInfo(void);
 void    G_InitSentients(void);                       // g.o
 void    GScr_LoadScriptsAndAnimsForEntities(void);   // g.o
 unsigned char GScr_LoadConsts(void);                 // g.o
@@ -2559,7 +2562,7 @@ void j_nullsub_117(unsigned int entity, int iClipMask, const float* vOrigin,
                    float* pfCorpseHeight);  // g.o (null)
 void  G_RunThink(Entity* ent, int msec);         // g.o
 int   XAnimGetAnims(AnimTree* tree);             // anim.o
-void* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
+XAnimTree* XAnimCreateTree(Entity* ent, AnimTree* anims);  // anim.o
 extern const float colorBlue[4];                 // g.o .rdata
 struct debug_aabb {
     math::Position3 bmin;  // +0x00
@@ -3250,8 +3253,9 @@ extern const char* sEntryPointHintText[6];       // g.o
 void  G_Animscripted_Think(Entity* ent);         // g.o 0x466BE0
 void  XAnimSetCompleteGoalWeight(XAnimTree* tree, unsigned int animIndex,
                                  float goalWeight, float goalTime, float rate,
-                                 unsigned int notifyName, unsigned int notifyType,
-                                 void* bRestart);  // anim.o
+                                 unsigned int notifyName,
+                                 unsigned short notifyType,
+                                 int bRestart);  // anim.o
 void  MultiplayerMgr_GetNextDroppedItemID(void* self, void* result, int itemType,
                                           Entity* owner);  // mp.o
 void  MultiplayerMgr_DropItem(void* self, int itemType, const math::Position3* position,

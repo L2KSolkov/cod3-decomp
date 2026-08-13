@@ -151,7 +151,7 @@ void DObjAdvanceAnimationPlayer(DObj* d, float deltaT)
 }
 extern void DObjInitServerTime(DObj* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
-                                 unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
+int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NH@Z
 
 // ea: 0x005612E0
 void DObj::SetLODOverride(int startLod)
@@ -1556,8 +1556,8 @@ int ADSMetaAnimPlayer_Update(void* self, void* pAnimTree,
 }
 extern void Camera_StartAnimating(void* cam, float minTweenTime);
 extern void Camera_StopAnimating(void* cam, float minTweenTime);
-struct Camera;
-extern struct Camera* gCamera;
+class Camera;
+extern Camera* gCamera;
 struct XAnimTree;
 extern bool CanInterrupt(XAnimTree* pAnimTree, void* client_cgs);
 extern struct cgs_t* cgs;

@@ -3693,9 +3693,9 @@ void G_Animscripted_Think(Entity* ent)
                 {
                     ent->flags &= 0xFEFFFFFF;
                     XAnimSetCompleteGoalWeight(v3, v2->anim, 1.0f, 0.0f, 1.0f,
-                                               0, 0, nullptr);
+                                               0, 0, 0);
                     XAnimSetCompleteGoalWeight(v3, v2->anim, 0.0f, 0.0f, 1.0f,
-                                               0, 0, nullptr);
+                                               0, 0, 0);
                     v2->anim = 0;
                 }
             }
@@ -3915,7 +3915,7 @@ void G_Animscripted(Entity* ent, const float* origin, const float* angles,
     XAnimSetCompleteGoalWeight(pAnimTree, anim.mHandle & 0xFFFF, 1.0f,
                                fBlendInTime,
                                1.0f, notifyName, 0,
-                               (void*)(intptr_t)(isLooped == 0));
+                               (int)(isLooped == 0));
     scripted->fBlendOutTime = fBlendOutTime;
     ent->flags |= 0x1000000;
 }
