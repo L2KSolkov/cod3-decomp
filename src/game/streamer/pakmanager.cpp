@@ -142,6 +142,15 @@ struct cvar_t {
 };
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o cvar.cpp
+extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
+                                                // core.o (common.cpp)
+extern void DebugRender_AddRenderer(void* self, void* fp);  // core.o
+extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
+unsigned char* stream_alloc(int size, bool aram);  // streamer.o
+void ConsoleSetPakDistance();   // streamer.o
+void ConsoleClearPakDistance(); // streamer.o
+void TogglePakRender();         // streamer.o
+void cdInitApk();               // streamer.o (apk support)
 extern bool ShouldConnectPaths();                 // core.o sys.cpp
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
@@ -954,7 +963,12 @@ public:
         int m_size;              // +0x204
     };
 
-    uint8_t _pad0[0x10];
+    struct {
+        unsigned int bankUsage;    // +0x00 (bit 0 toggled by TogglePakRender)
+        cvar_t*      progressbar;  // +0x04
+        cvar_t*      paks;         // +0x08
+        cvar_t*      heaps;        // +0x0C
+    } mDebugRenderMode;            // +0x00
     int mState;                       // +0x10 PakManager::state_e
     bool mFilled;                     // +0x14
     bool mFillingBanks;               // +0x15
@@ -965,27 +979,44 @@ public:
     const PakInfoNode* mCurSection;   // +0x28
     TPakId mAnimPakId;                // +0x2C
     TPakId mGlobalPakId;              // +0x30
-    uint8_t _pad34[0x38 - 0x34];
+    TPakId mCurVehiclePakId;          // +0x34
     TPakId mLevelPakId;               // +0x38
     TPakId mDebugPakId;               // +0x3C
     PakFile* mSlots[99];              // +0x40
     const PakInfoNode* mPakInfoPtrs[99];  // +0x1CC
+    BitSet<32> mSectionStates;        // +0x358
     PakInfoNode* mCurrentPakInfo;     // +0x35C
     const PakInfoNode* mNextPakInfo;  // +0x360
     void (*mProgressCallback)(float); // +0x364
-    uint8_t _pad368[0x4368 - 0x368];
+    char fli_buffer[0x4000];          // +0x368
     bool mRequestedStopLoading;       // +0x4368
-    uint8_t _pad4369[0x4384 - 0x4369];
+    struct {                          // ae_vector<ae_pair<tlFixedString,bool>>
+        void* mElements;              // +0x436C
+        int   mCapacity;              // +0x4370
+        int   mSize;                  // +0x4374
+    } mAudioBanks;                    // +0x436C
+    struct {                          // ae_vector<PakManager::TStbData>
+        void* mElements;              // +0x4378
+        int   mCapacity;              // +0x437C
+        int   mSize;                  // +0x4380
+    } mStbVector;                     // +0x4378
     int mEnabled;                     // +0x4384
     reserved_dlist<PakFile> mActivePaks;  // +0x4388
     TThreadedPakContextStack mContextStack[1];  // +0x4398
     int mNumZonesLoaded;              // +0x45A0
 
     static PakManager* sInst;          // ?sInst@PakManager@@2PAV1@A (sv_globals.cpp)
-    int mDebugRenderMode;              // +0x00 (first member; TogglePakRender)
     static unsigned int sComputeDistanceKey;  // ?sComputeDistanceKey@PakManager@@0IA
     static float sBrocPercentage;      // ?sBrocPercentage@PakManager@@0MA
     static float sWbkPercentage;       // ?sWbkPercentage@PakManager@@0MA
+
+    PakManager();               // ??0PakManager@@QAE@XZ @ 0x6791F0
+    // - ea: 0x66C620
+    void Reset();
+    // - ea: 0x670480 (large; stub)
+    void DebugRender();
+    // - ea: 0x687700
+    static void SingletonDebugRender();
 
     // - ea: 0x666C50
     const ae_sized_array<TPakId, 128>& GetContextStack() const;
@@ -3673,8 +3704,150 @@ void PakManager::Update(bool calledFromMovie)
     }
 }
 
-// Sub-machine stubs (deferred ports; the real bodies follow in later batches)
-void PakManager::ProgressUpdate() {}
+// ea: 0x671600
+void PakManager::ProgressUpdate()
+{
+    if (mProgressCallback == nullptr)
+        return;
+    float total = BankManager::sInst->mNumMramBanks;
+    float count = 0.0f;
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == mActivePaks.m_end)
+    {
+        m_next = nullptr;
+        m_head = nullptr;
+    }
+    if (m_next != nullptr)
+    {
+        while (1)
+        {
+            PakFile* pak = (PakFile*)m_head;
+            if (pak->mState != PakFile::LOADING
+                || pak->mDefaultSectionIdx == -1)
+            {
+                count += pak->mBankAlloc.ToFloat();
+            }
+            else if (pak->mLoadingState == PakFile::LOADING_DATA
+                     || pak->mLoadingState == PakFile::LOADING_DONE)
+            {
+                // count loaded banks of the section currently being read
+                PakHeader::Section& sec =
+                    pak->mHeader->sections[pak->mDefaultSectionIdx];
+                unsigned int mramSize = BankManager::sInst->mMramBankSize;
+                for (unsigned int i = 0; i < sec.numBanks; ++i)
+                {
+                    PakHeader::Bank& bank = sec.banks[i];
+                    if ((bank.flags & PAK_BANK_FLAG_READ_DONE) != 0)
+                    {
+                        if (bank.memsize == mramSize)
+                            count += 1.0f;
+                        else if (bank.memsize == (mramSize >> 1))
+                            count += 0.5f;
+                    }
+                }
+            }
+            if (m_next == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+                AeAssert::gCurrentLine = 501;
+                AeAssert::gCurrentExpr = "m_next != 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            m_head = m_next;
+            if (m_next->m_next == nullptr)
+                break;
+            m_next = m_next->m_next;
+        }
+    }
+    mProgressCallback((1.0f - sBrocPercentage - sWbkPercentage)
+                      * (count / total));
+}
+
+// ea: 0x66C620
+void PakManager::Reset()
+{
+    mFilled = false;
+    mNextPakInfo = nullptr;
+    mPakIdServer = PAK_ID_MIN;
+    mCurSection = nullptr;
+    mCurrentPakInfo = nullptr;
+    const PakInfoNode** mPakInfoPtrs = this->mPakInfoPtrs;
+    for (int i = 100; i != 0; --i)
+    {
+        *(mPakInfoPtrs - 99) = nullptr;
+        *mPakInfoPtrs++ = nullptr;
+    }
+    mSectionStates.mBits[0] = 0;
+}
+
+// ea: 0x6791F0
+PakManager::PakManager()
+{
+    mPakInfoBank = nullptr;
+    mLevelPakInfoBank = nullptr;
+    mAnimPakId = PAK_ID_INVALID;
+    mGlobalPakId = PAK_ID_INVALID;
+    mLevelPakId = PAK_ID_INVALID;
+    mDebugPakId = PAK_ID_INVALID;
+    mSectionStates.mBits[0] = 0;
+    mProgressCallback = nullptr;
+    mRequestedStopLoading = false;
+    mAudioBanks.mElements = nullptr;
+    mAudioBanks.mCapacity = 0;
+    mAudioBanks.mSize = 0;
+    mStbVector.mElements = nullptr;
+    mStbVector.mCapacity = 0;
+    mStbVector.mSize = 0;
+    mEnabled = 1;
+    mActivePaks.m_end = nullptr;
+    mActivePaks.m_size = 0;
+    mActivePaks.m_head =
+        (reserved_dlist<PakFile>::dlist_node*)&mActivePaks.m_end;
+    mActivePaks.m_tail =
+        (reserved_dlist<PakFile>::dlist_node*)&mActivePaks.m_head;
+    mContextStack[0].m_size = 0;
+    mNumZonesLoaded = 0;
+    memset(&mDebugRenderMode, 0, sizeof(mDebugRenderMode));
+    Cmd_AddCommand("PakRender", TogglePakRender);
+    mDebugRenderMode.progressbar = Cvar_Get("progressbar", "0", 0);
+    mDebugRenderMode.paks = Cvar_Get("renderpaks", "0", 0);
+    mDebugRenderMode.heaps = Cvar_Get("renderheaps", "0", 0);
+    Reset();
+    PakFile::sHeaderBufferSize = 36864;
+    PakFile::sHeaderBuffer = stream_alloc(36864, false);
+    for (int i = 99; i != 0; --i)
+    {
+        mSlots[99 - i] = nullptr;
+        mPakInfoPtrs[99 - i] = nullptr;
+    }
+    DebugRender_AddRenderer(DebugRender_sInst,
+                            (void*)&PakManager::SingletonDebugRender);
+    Cmd_AddCommand("SetPakDistance", ConsoleSetPakDistance);
+    Cmd_AddCommand("ClearPakDistance", ConsoleClearPakDistance);
+    memset(mContextStack, 0, sizeof(TThreadedPakContextStack));
+    cdInitApk();
+}
+
+// ea: 0x670480 (large debug render; port later)
+void PakManager::DebugRender()
+{
+}
+
+// ea: 0x687700
+void PakManager::SingletonDebugRender()
+{
+    PakManager::sInst->DebugRender();
+}
+
+// ea: 0x678EF0 (apk support; port with cd* callbacks)
+void cdInitApk()
+{
+}
 
 // ea: 0x671360
 PakInfoNode* PakManager::GetBestUnloadablePak()
@@ -7995,10 +8168,9 @@ void cdInvokeMultiApkCallbacks(const char* name, const char* file_ext,
 }
 
 // ea: 0x665370
-PakManager* TogglePakRender()
+void TogglePakRender()
 {
-    PakManager::sInst->mDebugRenderMode ^= 1;
-    return PakManager::sInst;
+    PakManager::sInst->mDebugRenderMode.bankUsage ^= 1;
 }
 
 // ea: 0x665390
