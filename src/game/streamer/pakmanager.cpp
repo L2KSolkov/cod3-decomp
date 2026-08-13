@@ -15,11 +15,18 @@
 #include "core/memory_types.h"
 #include "ngl/nglFont.h"
 #include "ngl/nglTexture.h"
+#include "ngl/ngl_dx_quad.h"
 #include "filesystem/apk.h"
 #include "core/ae_fixed_string.h"
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
 #include "engine/broc_types.h"
+
+// PakFile bank flags (PakFile.cpp; header flags + runtime state)
+#define PAK_BANK_FLAG_APK_HEADER 0x80      // bank is apk-backed (header)
+#define PAK_BANK_FLAG_READ_DONE  0x10000   // async read finished
+#define PAK_BANK_FLAG_MEM         0x20000  // memory allocated
+#define PAK_BANK_FLAG_APK_LOADED  0x40000  // apk loaded in place
 
 // WorldSpawn (SceneEntity base + key-value strings; streamer.o)
 struct WorldSpawn {
@@ -613,6 +620,8 @@ public:
                  unsigned int heap_size);  // ?AddHeap@PakFile@@QAEXPAEI@Z
     // ea: 0x66E400
     static void SetupAllocator();  // ?SetupAllocator@PakFile@@SAXXZ
+    // ea: 0x66A900
+    void RenderDebug();  // ?RenderDebug@PakFile@@ABEXXZ
     // ea: 0x66A120
     void InitiateHeaderRead();  // ?InitiateHeaderRead@PakFile@@AAEXXZ
     // ea: 0x66E540
@@ -2480,6 +2489,136 @@ void MyRenderText(const char* str, int x, int y, const Color& col,
     float ya = (float)x;
     nglListAddString(Font, str, ya, cola, depth, v8, size, size);
     nglListAddString(Font, str, ya, cola, depth, color, size, size);
+}
+
+// DebugRender (render.o; RenderText defined in g_entity_misc.cpp)
+class DebugRender {
+public:
+    static void RenderText(const char* str, int x, int y, const Color& col,
+                           float depth, float size);  // render.o 0xAAC7D0
+};
+
+// ngl debug-quad helpers (ngl.o)
+extern int nglGetScreenWidth();
+extern int nglGetScreenHeight();
+extern void nglInitQuad(nglQuad* quad);
+extern void nglSetQuadTex(nglQuad* quad, nglTexture* tex);
+extern void nglSetQuadColor(nglQuad* quad, unsigned int c);
+extern void nglSetQuadRect(nglQuad* quad, float x1, float y1, float x2,
+                           float y2);
+extern void nglListAddQuad(nglQuad* quad);
+extern float nflGetRequestProgress(nflRequestID requestID);  // filesystem/nfl.cpp
+
+// ea: 0x66A900
+void PakFile::RenderDebug()
+{
+    if (mLoadingState != LOADING_DATA)
+        return;
+
+    const float x1 = 0.2f;
+    const float y1 = 0.88f;
+    const float x2 = 0.8f;
+    const float y2 = 0.9f;
+    static double width_per_byte = 0.0027343746342313943;  // @ 0xDF912C
+
+    float ScreenWidth = (float)nglGetScreenWidth();
+    float ScreenHeight = (float)nglGetScreenHeight();
+
+    const PakInfoNode* mPakInfo;
+    if (mPakType == kPakTypeCount)
+        mPakInfo = nullptr;
+    else
+    {
+        if (this->mPakInfo == nullptr)
+            this->mPakInfo = PakManager::sInst->GetPakInfo(mPakId);
+        mPakInfo = this->mPakInfo;
+    }
+    if (mPakInfo != nullptr)
+    {
+        Color white = {1.0f, 1.0f, 1.0f, 1.0f};
+        DebugRender::RenderText(((InplaceString*)mPakInfo->longName)->mStr,
+                                (int)(x1 * ScreenWidth),
+                                (int)(y1 * ScreenHeight - 22.0f), white,
+                                0.0f, 1.0f);
+    }
+
+    float RequestProgress =
+        (float)mCurrentFile
+        / (float)mHeader->sections[mDefaultSectionIdx].numFiles;
+    if (RequestProgress < 0.0f || RequestProgress > 1.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 1387;
+        AeAssert::gCurrentExpr = "done>=0.0f && done<=1.0f";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("sanity check"))
+            __debugbreak();
+    }
+
+    nglQuad* v8 = (nglQuad*)nglListAlloc(0x60, 0x10);
+    nglInitQuad(v8);
+    nglSetQuadTex(v8, nullptr);
+    nglSetQuadColor(v8, 0xFF800000);
+    nglSetQuadRect(v8, x1 * ScreenWidth, y1 * ScreenHeight,
+                   (x1 + (x2 - x1) * RequestProgress) * ScreenWidth,
+                   y2 * ScreenHeight);
+    nglListAddQuad(v8);
+
+    nglQuad* v9 = (nglQuad*)nglListAlloc(0x60, 0x10);
+    nglInitQuad(v9);
+    nglSetQuadTex(v9, nullptr);
+    nglSetQuadColor(v9, 0xFF808080);
+    nglSetQuadRect(v9, (x1 + (x2 - x1) * RequestProgress) * ScreenWidth,
+                   y1 * ScreenHeight, x2 * ScreenWidth, y2 * ScreenHeight);
+    nglListAddQuad(v9);
+
+    PakHeader::Section& sec = mHeader->sections[mDefaultSectionIdx];
+    float xstart = x1;
+    for (unsigned int i = 0; i < sec.numBanks; ++i)
+    {
+        PakHeader::Bank* bank = &sec.banks[i];
+        float bankProgress;
+        if (bank->requestId == NFL_REQUEST_ID_INVALID)
+        {
+            bankProgress = 0.0f;
+        }
+        else
+        {
+            bankProgress = nflGetRequestProgress(bank->requestId);
+        }
+        if ((bank->flags & PAK_BANK_FLAG_READ_DONE) != 0)
+            bankProgress = 1.0f;
+        else if (bankProgress == -1.0f)
+            bankProgress = 0.0f;
+
+        float xend1 =
+            xstart + (float)((double)bank->memsize * width_per_byte);
+        float xend2 =
+            xstart + (float)((double)(int)bank->size * width_per_byte);
+
+        nglQuad* v22 = (nglQuad*)nglListAlloc(0x60, 0x10);
+        nglInitQuad(v22);
+        nglSetQuadTex(v22, nullptr);
+        nglSetQuadColor(v22, 0xFF008000);
+        nglSetQuadRect(v22, xstart * ScreenWidth, y1 * ScreenHeight,
+                       (xstart + (xend2 - xstart) * bankProgress)
+                           * ScreenWidth,
+                       y2 * ScreenHeight);
+        nglListAddQuad(v22);
+
+        nglQuad* v23 = (nglQuad*)nglListAlloc(0x60, 0x10);
+        nglInitQuad(v23);
+        nglSetQuadTex(v23, nullptr);
+        nglSetQuadColor(v23, 0xFF808080);
+        nglSetQuadRect(v23,
+                       (xstart + (xend2 - xstart) * bankProgress)
+                           * ScreenWidth,
+                       y1 * ScreenHeight, xend2 * ScreenWidth,
+                       y2 * ScreenHeight);
+        nglListAddQuad(v23);
+
+        xstart = xend1 + 0.01f;
+    }
 }
 
 // ?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z (streamer.o; stub)
@@ -4823,12 +4962,6 @@ void PakFile::UnloadSerialized()
     if (v5.m_size != 0)
         v5.m_size -= 1;
 }
-
-// Bank flags (PakFile.cpp; header flags + runtime state)
-#define PAK_BANK_FLAG_APK_HEADER 0x80      // bank is apk-backed (header)
-#define PAK_BANK_FLAG_READ_DONE  0x10000   // async read finished
-#define PAK_BANK_FLAG_MEM         0x20000  // memory allocated
-#define PAK_BANK_FLAG_APK_LOADED  0x40000  // apk loaded in place
 
 ae_sized_array<ae_heap_base*, 32> gPakHeaps;  // ?gPakHeaps@@3V?$ae_sized_array@PAVae_heap_base@@$0CA@@@A
 
