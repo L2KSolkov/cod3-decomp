@@ -761,7 +761,7 @@ public:
 // InGameMenuSystem — in-game menu system (56 bytes; opaque, only is_active)
 // ============================================================================
 struct InGameMenuSystem {
-    uint8_t _pad0[0x04];
+    virtual void Update(float time_inc);       // vftable slot 16 (offset 0x40); ?Update@InGameMenuSystem@@UAEXM@Z
     void**  menus;                       // +0x04 (FEMenu**)
     uint8_t _pad8[0x34 - 0x08];
     bool    is_active;                   // +0x34 (FEMenuSystem field, opaque)

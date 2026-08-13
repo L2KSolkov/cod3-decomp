@@ -1177,7 +1177,54 @@ static_assert(sizeof(FEMultiLineText) == 0xA8, "FEMultiLineText size mismatch");
 static_assert(offsetof(FEMultiLineText, lines) == 0x90, "FEMultiLineText::lines offset mismatch");
 
 // ============================================================================
-// FEMenuListBoxItem â€” list-box data row (28 bytes) â€” verified against IDA
+// LoadingMenu - in-game loading screen (shell.o InGameMenus.cpp)
+// Size: 0xF8 (248 bytes) - verified against IDA
+// ============================================================================
+class LoadingMenu : public FEMenu {
+public:
+    struct TipArray {
+        unsigned int  mCount;     // +0x00
+        unsigned int* mArray[2];  // +0x04
+    };
+
+    ae_array<PanelQuad*, 9> mBackgroundArt;  // +0x4C
+    ae_array<FEText*, 2>    mTitleText;      // +0x70
+    ae_array<FEText*, 1>    mText;           // +0x78
+    ae_array<FEText*, 2>    mMapText;        // +0x7C
+    float                   mPercentDone;    // +0x84
+    FEMultiLineText*        mTipEntry;       // +0x88
+    TipArray                mTipArrays[7];   // +0x8C (84 bytes)
+    bool                    mWidescreen;     // +0xE0
+    PanelQuad*              m_pLoadingBar;   // +0xE4
+    float                   m_fLoadingBarLeft;   // +0xE8
+    float                   m_fLoadingBarRight;  // +0xEC
+    float                   m_fLoadingBarTop;    // +0xF0
+    float                   m_fLoadingBarBottom; // +0xF4
+
+    virtual void SetPanelFile(PanelFile* pf);        // slot 0 0x597120
+    virtual void PanelFileUnloaded(PanelFile* pf);   // slot 1 0x593080
+    virtual void UpdateWidescreen(bool widescreen);  // slot 2 0x580230
+    virtual ~LoadingMenu();                          // slot 3 0x592FF0
+    virtual void Draw();                             // slot 20 0x57FFC0
+    virtual void Update(float time_inc);             // slot 23 0x574450
+    virtual void Select(int entry_num);              // slot 26 0x574410
+    virtual void OnActivate();                       // slot 28 0x596FB0
+    virtual void OnDeactivate(FEMenu* m);            // slot 29 0x5743F0
+    virtual void OnCross(int c);                     // slot 36 0x574420
+
+    LoadingMenu(FEMenuSystem* s);                    // 0x592E90
+    static LoadingMenu* Me();                        // ?Me@LoadingMenu@@SAPAV1@XZ 0x574430
+    void PickTip();                                  // 0x580010
+    void UpdateLoading(float percentDone);           // 0x574460
+private:
+    static const char* szMapImageFiles[];            // ?szMapImageFiles@LoadingMenu@@0PAPBDA @ 0xDF3A20
+};
+static_assert(sizeof(LoadingMenu) == 0xF8, "LoadingMenu size mismatch");
+static_assert(offsetof(LoadingMenu, mTipArrays) == 0x8C,
+              "LoadingMenu::mTipArrays offset mismatch");
+
+// ============================================================================
+// FEMenuListBoxItem â€" list-box data row (28 bytes) â€" verified against IDA
 // ============================================================================
 class FEMenuListBoxItem {
 public:
