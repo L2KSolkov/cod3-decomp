@@ -3489,6 +3489,17 @@ extern void nglSetQuadColor(nglQuad* quad, unsigned int c);
 extern void nglSetQuadRect(nglQuad* quad, float x1, float y1, float x2,
                            float y2);
 extern void nglListAddQuad(nglQuad* quad);
+extern void ngliProcessTexture(apk::apkFile* File, apk::apkFileEntry* Entry);
+extern void auxFontDirectoryDelete(nglFont* Font);  // ngl_aux.cpp
+extern void FEManagerSetFont(nglFont* f, const char* font_filename);  // shell.o
+void FEManagerSetFont(nglFont* f, const char* font_filename)
+{
+    (void)f; (void)font_filename;  // stub: shell.o
+}
+class apsEffectTemplate;  // class (apsEffect.h); matches ?PAV mangling
+extern apsEffectTemplate* sMissingParticleEffect;  // ?sMissingParticleEffect@@3PAVapsEffectTemplate@@A @ 0xF59310
+extern apsEffectTemplate* apsLoadEffectInplace(apk::apkFile* File,
+                                               apk::apkFileEntry* Entry);  // apsRegister.cpp
 extern float nflGetRequestProgress(nflRequestID requestID);  // filesystem/nfl.cpp
 
 // ea: 0x66A900
@@ -4619,58 +4630,194 @@ void PakManager::SingletonDebugRender()
     PakManager::sInst->DebugRender();
 }
 
-// apk callbacks (apkSupport.cpp; the ngl-backed load/delete impls are ported
-// with the ngl batch - kept as ABI-faithful stubs for now)
+// apk callbacks (apkSupport.cpp)
+
+// ngl_sysfont/ngl_default/charskel/missing_effect (apkSupport.cpp statics)
+static tlFixedString ngl_sysfont_name("ngl_sysfont");
+static tlFixedString ngl_default_name("ngl_default");
+static tlFixedString charskel_name("charskel");
+static tlFixedString missing_effect_name("missing_effect");
+
+// ea: 0x66E090
 void cdLoadTextureCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                            void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    tlFixedString name("image");
+    int SectionIndex = File->GetSectionIndex(name);
+    nglTexture* Data = (nglTexture*)Entry->GetData(File, SectionIndex, true);
+    if (Data != nullptr)
+    {
+        ngliProcessTexture(File, Entry);
+        Data->Flags |= 8;
+        if (*Data->FileName == ngl_default_name)
+            nglDefaultTex = Data;
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        TPakId v8 = PAK_ID_INVALID;
+        if (ContextStack.m_size != 0)
+            v8 = ContextStack.m_elements[ContextStack.m_size - 1];
+        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_TEXTURE, v8,
+                                    *Data->FileName, (unsigned int)Data);
+    }
 }
+
+// ea: 0x66E170
 void cdLoadMeshCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                         void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    tlFixedString name("image");
+    int SectionIndex = File->GetSectionIndex(name);
+    nglMesh* Data = (nglMesh*)Entry->GetData(File, SectionIndex, true);
+    if (Data != nullptr)
+    {
+        Data->File = File;
+        Data->LastFrameRef = -1;
+        nglProcessMesh(Data, Entry);
+        Data->Flags |= 0x1010000;
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        TPakId v6 = PAK_ID_INVALID;
+        if (ContextStack.m_size != 0)
+            v6 = ContextStack.m_elements[ContextStack.m_size - 1];
+        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_MESH, v6, *Data->Name,
+                                    (unsigned int)Data);
+    }
 }
+
+// ea: 0x665CB0
 void cdDeleteMeshCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                           void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    tlFixedString name("image");
+    int SectionIndex = File->GetSectionIndex(name);
+    nglMesh* Data = (nglMesh*)Entry->GetData(File, SectionIndex, true);
+    if ((Data->Flags & 0x10000) != 0)
+    {
+        if (!nglCanReleaseMesh(Data))
+        {
+            tlWarning("NGL: Mesh %s destroyed while still referenced by the async renderer.\n",
+                      Data->Name->str);
+            ngliWaitForResource();
+        }
+        nglUnloadMesh(Data);
+    }
 }
+
+// ea: 0x665DE0
 void cdLoadSkelCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                         void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    if (*(tlFixedString*)Entry->Name == charskel_name)
+    {
+        tlFixedString name("image");
+        int SectionIndex = File->GetSectionIndex(name);
+        gCharSkel =
+            (unsigned char*)Entry->GetData(File, SectionIndex, true);
+    }
 }
+
+// ea: 0x665E60 (empty no-op)
 void cdDeleteSkelCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                           void* UserData)
 {
     (void)File; (void)Entry; (void)UserData;
 }
+
+// ea: 0x66E2A0
 void cdLoadFontCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                         void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    tlFixedString name("image");
+    int SectionIndex = File->GetSectionIndex(name);
+    nglFont* Data = (nglFont*)Entry->GetData(File, SectionIndex, true);
+    if (Data != nullptr)
+    {
+        int* p_Width = (int*)Data->Texture;
+        Data->MapFlags = 1;
+        Data->BlendMode = 0x64CF8600;
+        float invW = 1.0f / (float)p_Width[0];
+        float invH = 1.0f / (float)p_Width[1];
+        for (int i = 0; i < Data->Header.NumGlyphs; ++i)
+        {
+            Data->TexCoords[4 * i + 0] *= invW;
+            Data->TexCoords[4 * i + 1] *= invH;
+            Data->TexCoords[4 * i + 2] *= invW;
+            Data->TexCoords[4 * i + 3] *= invH;
+        }
+        if (*Data->FileName == ngl_sysfont_name)
+        {
+            nglSysFont = Data;
+        }
+        else
+        {
+            FEManagerSetFont(Data, Data->FileName->str);
+        }
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        TPakId v13 = PAK_ID_INVALID;
+        if (ContextStack.m_size != 0)
+            v13 = ContextStack.m_elements[ContextStack.m_size - 1];
+        InstanceBankMgr::sInst->Add(INSTBANK_TYPE_FONT, v13,
+                                    *Data->FileName, (unsigned int)Data);
+    }
 }
+
+// ea: 0x665D30
 void cdDeleteFontCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                           void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    tlFixedString name("image");
+    int SectionIndex = File->GetSectionIndex(name);
+    nglFont* Data = (nglFont*)Entry->GetData(File, SectionIndex, true);
+    auxFontDirectoryDelete(Data);
 }
+
+// ea: 0x665E70
 void cdLoadMaterialCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                             void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    tlFixedString name("image");
+    int SectionIndex = File->GetSectionIndex(name);
+    nglMaterial* Data = (nglMaterial*)Entry->GetData(File, SectionIndex, true);
+    nglProcessMaterial(Data);
 }
+
+// ea: 0x665EB0 (empty no-op)
 void cdDeleteMaterialCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                               void* UserData)
 {
     (void)File; (void)Entry; (void)UserData;
 }
+
+// ea: 0x66E200
 void cdLoadParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                             void* UserData)
 {
-    (void)File; (void)Entry; (void)UserData;
+    (void)UserData;
+    apsEffectTemplate* EffectInplace = apsLoadEffectInplace(File, Entry);
+    if (*(tlFixedString*)Entry->Name == missing_effect_name)
+        sMissingParticleEffect = EffectInplace;
+    ae_sized_array<TPakId, 128>& ContextStack =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    TPakId v6 = PAK_ID_INVALID;
+    if (ContextStack.m_size != 0)
+        v6 = ContextStack.m_elements[ContextStack.m_size - 1];
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_EFFECT, v6,
+                                *(tlFixedString*)Entry->Name,
+                                (unsigned int)EffectInplace);
 }
+
+// ea: 0x665D20 (empty no-op)
 void cdDeleteParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
                               void* UserData)
 {
@@ -4701,7 +4848,7 @@ void cdInitApk()
 }
 
 // Resource getters (apkSupport.cpp; decode impls port with the ngl batch)
-struct apsEffectTemplate;
+class apsEffectTemplate;
 class nalBaseSkeleton;
 template <typename T> class nalAnimClass;
 struct nalAnyPose;
