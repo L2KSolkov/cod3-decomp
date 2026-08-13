@@ -121,6 +121,14 @@ extern void tlPrintf(const char* fmt, ...);      // tl_system.o
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
 extern void tlMemFree(void* ptr);                // tl_system.o
 extern unsigned int AeHash(const char* str);     // ae_hash.cpp
+struct cvar_t {
+    char*  name;    // +0x00
+    char*  string;  // +0x04
+    float  value;   // +0x08
+};
+extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
+                        int flags);  // core.o cvar.cpp
+extern bool ShouldConnectPaths();                 // core.o sys.cpp
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
 extern const char* const defaultFileName;  // g_globals.cpp
@@ -248,6 +256,7 @@ public:
     TBankAlloc m_last_alloc;      // +0x20
 
     static BankManager* sInst;    // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
+    BankManager();                // ??0BankManager@@QAE@XZ
     float GetNumBanks() const;    // ?GetNumBanks@BankManager@@QBEMXZ
     unsigned int get_bank_size() const;  // ?get_bank_size@BankManager@@QBEIXZ
     TBankAlloc get_free_banks() const;   // ?get_free_banks@BankManager@@QBE?AUTBankAlloc@@XZ
@@ -257,6 +266,7 @@ public:
     NumBanks get_free_count() const;  // ?get_free_count@BankManager@@QBE?AVNumBanks@@XZ
     bool can_alloc(NumBanks num_banks) const;  // ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z
     int get_alloc_count(const TBankAlloc& bat) const;  // ?get_alloc_count@BankManager@@QBEHABUTBankAlloc@@@Z
+    void release(TBankAlloc& alloc);  // ?release@BankManager@@QAEXAAUTBankAlloc@@@Z
 };
 
 template <typename T, int N>
@@ -448,6 +458,11 @@ public:
     // ea: 0x665F60
     mem_heap* CreateHeap(unsigned char* heap_start,
                          unsigned int heap_size);  // ?CreateHeap@PakFile@@AAEPAUmem_heap@@PAEI@Z
+    // ea: 0x66AFF0
+    void AddHeap(unsigned char* heap_start,
+                 unsigned int heap_size);  // ?AddHeap@PakFile@@QAEXPAEI@Z
+    // ea: 0x66E400
+    static void SetupAllocator();  // ?SetupAllocator@PakFile@@SAXXZ
 
     // ea: 0x664B90
     float GetLoadTime() const;
@@ -728,6 +743,15 @@ public:
 // PoolAllocator (core/PoolAllocator.h)
 class PoolAllocator {
 public:
+    struct PoolConfig {
+        unsigned short blockSize;   // +0x00
+        unsigned short numBlocks;   // +0x02
+        unsigned short blockAlign;  // +0x04
+        char*          block;       // +0x08
+    };
+
+    PoolAllocator(const ae_sized_array<PoolConfig, 16>& cfgList,
+                  unsigned int flags);  // ??0PoolAllocator@@QAE@ABV?$ae_sized_array@UPoolConfig@PoolAllocator@@$0BA@@@I@Z
     void* Allocate(unsigned int size, bool forceHeapAlloc = false);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
     void Release(void* ptr);  // ?Release@PoolAllocator@@QAEXPAX@Z
 };
@@ -3916,6 +3940,126 @@ int BankManager::get_alloc_count(const TBankAlloc& bat) const
 }
 
 BankManager* BankManager::sInst = nullptr;  // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
+
+void* g_bank_space = nullptr;      // ?g_bank_space@@3PAXA @ 0xF592CC
+int   g_bank_space_size = 0;       // ?g_bank_space_size@@3HA @ 0xF592D0
+
+// ea: 0x66F0A0
+BankManager::BankManager()
+{
+    mFreeBanks.Clear();
+    mNumMramBanks = 0.0f;
+    mMramBankSize = 0;
+    mMramArena = nullptr;
+    m_last_alloc.Clear();
+
+    char buf[16];
+    sprintf(buf, "%f", 34.5);
+    cvar_t* v2 = Cvar_Get("num_banks", buf, 16);
+    int num_banks = 1107951616;  // 34.5f bits
+    if (v2 != nullptr && v2->value != 0.0)
+        num_banks = *(int*)&v2->value;
+    float v3 = 160.0f;
+    if (!ShouldConnectPaths())
+        v3 = *(float*)&num_banks;
+    mNumMramBanks = v3;
+    mMramBankSize = 0xB0000;
+    mFreeBanks.Clear();
+    int v4 = 0;
+    if (mNumMramBanks + 0.5f > 0.0f)
+    {
+        do
+        {
+            mFreeBanks.mram_alloc1.Add(v4);
+            if (v4 != (int)mNumMramBanks)
+                mFreeBanks.mram_alloc2.Add(v4);
+            ++v4;
+        } while ((int)(mNumMramBanks + 0.5f) > v4);
+    }
+    mMramArena = stream_alloc((int)(mMramBankSize * mNumMramBanks), false);
+    g_bank_space_size = (int)(mMramBankSize * mNumMramBanks);
+    g_bank_space = mMramArena;
+    mLowestFreeAmount = get_free_count().xbox;
+}
+
+// ea: 0x66B850
+void BankManager::release(TBankAlloc& alloc)
+{
+    int v2 = 0;
+    if (mNumMramBanks + 0.5f > 0.0f)
+    {
+        BankManager* v5 = this;
+        do
+        {
+            bool v4 = alloc.mram_alloc1.Test(v2);
+            bool v7 = alloc.mram_alloc2.Test(v2);
+            if (v4)
+            {
+                alloc.mram_alloc1.Rmv(v2);
+                v5 = this;
+                mFreeBanks.mram_alloc1.Add(v2);
+            }
+            else
+            {
+                v5 = this;
+            }
+            if (v7)
+            {
+                alloc.mram_alloc2.Rmv(v2);
+                v5->mFreeBanks.mram_alloc2.Add(v2);
+            }
+            ++v2;
+        } while (v5->mNumMramBanks + 0.5f > v2);
+    }
+}
+
+// ea: 0x66E400
+void PakFile::SetupAllocator()
+{
+    ae_sized_array<PoolAllocator::PoolConfig, 16> cfgList;
+    memset(&cfgList, 0, sizeof(cfgList));
+    cfgList.m_size = 0;
+    PoolAllocator::PoolConfig elt;
+    elt.blockSize = 276;
+    elt.blockAlign = 4;
+    elt.numBlocks = 12;
+    elt.block = nullptr;
+    cfgList.push_back(elt);
+    void* block = mem_heap_malloc(0x3Cu);
+    if (block != nullptr)
+        PakFile::sAllocator =
+            new (block) PoolAllocator(cfgList, 1u);
+    else
+        PakFile::sAllocator = nullptr;
+
+    ae_sized_array<PoolAllocator::PoolConfig, 16> v7;
+    memset(&v7, 0, sizeof(v7));
+    v7.m_size = 0;
+    elt.blockSize = 1180;
+    elt.blockAlign = 4;
+    elt.numBlocks = 16;
+    elt.block = nullptr;
+    v7.push_back(elt);
+    void* result = mem_heap_malloc(0x3Cu);
+    if (result != nullptr)
+        gPakMemHeapAllocator = new (result) PoolAllocator(v7, 1u);
+    else
+        gPakMemHeapAllocator = nullptr;
+}
+
+// ea: 0x66AFF0
+void PakFile::AddHeap(unsigned char* heap_start, unsigned int heap_size)
+{
+    int m_size = mHeapList.m_size;
+    mem_heap* v4 =
+        m_size != 0 ? mHeapList.m_elements[m_size - 1] : nullptr;
+    mem_heap* Heap = CreateHeap(heap_start, heap_size);
+    if (Heap != nullptr && v4 != nullptr)
+    {
+        Heap->reserve = v4->reserve;
+        v4->reserve = Heap;
+    }
+}
 
 // ea: 0x6652B0 / 0x665320 / 0x665330 / 0x665340 (empty no-ops)
 void DecodeGrassInfo(const char* name, unsigned char* data, int size,
