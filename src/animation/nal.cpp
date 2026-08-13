@@ -1882,6 +1882,7 @@ public:
     void* pTurretInfo;                // +0x264
 
     int GetPlayerIndex() const;  // 0x612340 (game.o; stub)
+    void Notify(HashString h);  // real in g_entity_misc.cpp
     void Notify(HashString h, const unsigned int& e);  // real in g_entity_misc.cpp
 };
 
@@ -6197,7 +6198,8 @@ public:
     int mSaveFrozen;            // +0x44
     int mSaveNoClip;            // +0x48
     int mSaveDrawCrosshair;     // +0x4C
-    unsigned char _pad[0x64 - 0x50];
+    int mEffectEventState[4];   // +0x50
+    unsigned int mEffectEventPosted;  // +0x60
     void* mPlayerAnim;          // +0x64
     void* mOtherAnim;           // +0x68
     void* mPlayerCallback;      // +0x6C
@@ -6232,6 +6234,8 @@ public:
     void Activate();                // 0x54CC10 (virtual in binary; stub)
     void Deactivate();              // 0x53F920 (virtual in binary; stub)
     InteractState* Update(float deltaT);  // 0x546700 (virtual in binary; stub)
+    void CheckForEffectEvents(float deltaT, int postRemaining);  // 0x54D9E0
+    void DoWeaponChange();  // 0x546A00
 
     // ?PostEffectEvent@InteractState@@IAEXIH@Z (stub; real in g.o)
     void PostEffectEvent(unsigned int effectName, int eventIndex)
@@ -6248,9 +6252,15 @@ public:
     RumbleEffectInstanceHandle() : mVal(0) {}
     int mVal;  // +0x00
 };
+struct RumbleEffect;
 class RumbleManager {
 public:
+    static RumbleManager* Inst(int instance);  // real in rumble.cpp
     void Remove(RumbleEffectInstanceHandle handle);  // core.o
+    void SetIntensity(RumbleEffectInstanceHandle handle,
+                      float intensity);  // real in rumble.cpp
+    RumbleEffectInstanceHandle Play(RumbleEffect* effect,
+                                    float intensity);  // real in rumble.cpp
 };
 
 // ea: 0x0053D240
@@ -6377,7 +6387,8 @@ void InteractState::CheckNotifySet(Entity* ent, int eventIndex)
     if (mNotifySet != nullptr)
     {
         InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
-        unsigned int chk = info->notifyHash[eventIndex];
+        unsigned int chk =
+            *(unsigned int*)((char*)info + 0x42C + 4 * eventIndex);
         void* Notify = EntityNotifySet_GetNotify(mNotifySet, chk);
         if (Notify != nullptr)
         {
@@ -6392,7 +6403,10 @@ void InteractState::CheckNotifySet(Entity* ent, int eventIndex)
             } while (v7 < 4);
             if (v7 == 4)
             {
-                PostEffectEvent(info->notifyName[eventIndex], eventIndex);
+                PostEffectEvent(
+                    (unsigned int)(uintptr_t)((char*)info + 0x3DC
+                                              + 20 * eventIndex),
+                    eventIndex);
                 this->mNotifiesUsed[eventIndex] = Notify;
             }
         }
@@ -7999,6 +8013,385 @@ int CheckActorInteraction(Entity* ent, const char* interactionName)
 }
 
 // ============================================================================
+// InteractStateMelee cluster (anim.o; offsets verified vs IDA)
+// ============================================================================
+
+extern int BG_GetNumWeapons();  // real (bg_weapons)
+
+// anim.o statics (verified vs IDA)
+float minScore = 0.2f;        // @ 0xDF30AC
+float maxScore = 0.8f;        // @ 0xDF30A4
+float minIntensity = 0.1f;    // @ 0xDF30A8
+float maxIntensity = 0.4f;    // @ 0xDF3098
+float rateMin = 0.3f;         // @ 0xDF30A0
+float rateMax = 0.5f;         // @ 0xDF309C
+float sLerpT_0 = 0.1f;        // @ 0xDF30DC
+
+// ea: 0x00540670
+float InteractStateMelee_CalcModifierBlendTime(InteractState* self)
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+    float thresholdMin = *(float*)((char*)info + 0x548);
+    float cur = *(float*)((char*)self + 0x1DC);
+    if (thresholdMin <= cur)
+    {
+        float thresholdMax = *(float*)((char*)info + 0x54C);
+        thresholdMin = (cur <= thresholdMax) ? cur : thresholdMax;
+    }
+    return (thresholdMin - *(float*)((char*)info + 0x548))
+           / (*(float*)((char*)info + 0x54C)
+              - *(float*)((char*)info + 0x548))
+           * (*(float*)((char*)info + 0x540)
+              - *(float*)((char*)info + 0x544))
+           + *(float*)((char*)info + 0x544);
+}
+
+// ea: 0x005405E0
+void InteractStateMelee_CalcAnimScore(InteractState* self, float deltaT)
+{
+    int mModifierIndex = *(int*)((char*)self + 0x1B0);
+    float desiredAnimScore = *(float*)((char*)self + 0x1D0);
+    float v3 = 1.0f;
+    if (mModifierIndex < *(int*)((char*)self + 0x1B4) - 1)
+    {
+        v3 = *(float*)((char*)((InteractStateInfoLocal*)self->mInfo) + 0x564
+                       + 4 * mModifierIndex);
+    }
+    if (*(float*)((char*)self + 0x1D0) > v3)
+        desiredAnimScore = v3;
+    float animScore = *(float*)((char*)self + 0x1D8);
+    *(float*)((char*)self + 0x1D8) =
+        (1.0f - powf(1.0f - sLerpT_0, deltaT * 59.999996f))
+            * (desiredAnimScore - animScore)
+        + animScore;
+}
+
+// ea: 0x0053DB10
+int InteractStateMelee_GetInitialModifierIndex(InteractState* self,
+                                               float score)
+{
+    int result = 0;
+    int v3 = 0;
+    int v4 = *(int*)((char*)self + 0x1B4) - 1;
+    float* thr = (float*)((char*)((InteractStateInfoLocal*)self->mInfo)
+                          + 0x550);
+    while (v3 < v4)
+    {
+        if (score <= (thr[v3 + 5] + thr[v3]) * 0.5f)
+            break;
+        result = ++v3;
+    }
+    return result;
+}
+
+// ea: 0x0053DBE0
+void InteractStateMelee_GetFacialAnims(InteractState* self)
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+    char* base = (char*)info + 0x2D0;  // interModAnim[5]
+    if (*base != 0)
+    {
+        char animNames[160];
+        strcpy(animNames, base);
+        int len = (int)strlen(animNames);
+        for (int i = 1; i < 4; ++i)
+        {
+            strcpy(animNames + 40 * i, animNames);
+            animNames[40 * i + len - 1] = (char)(65 + i);
+        }
+        for (int i = 0; i < 4; ++i)
+        {
+            tlFixedString name(animNames + 40 * i);
+            void* Anim = nalGetAnim(name);
+            if (Anim != nullptr)
+            {
+                int* numFacialAnims = (int*)((char*)self + 0x1FC);
+                *(void**)((char*)self + 0x200 + 4 * *numFacialAnims) = Anim;
+                ++*numFacialAnims;
+            }
+        }
+    }
+}
+
+// ea: 0x00540300
+void InteractStateMelee_UpdateFOV(InteractState* self, float deltaT)
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+    if (*(float*)((char*)info + 0x3D0) < 1.0f)
+    {
+        float score = *(float*)((char*)self + 0x1D0);
+        float v3 = 0.0f;
+        float t = (score - *(float*)((char*)info + 0x3D0))
+                  / (*(float*)((char*)info + 0x3D4)
+                     - *(float*)((char*)info + 0x3D0));
+        if (t >= 0.0f)
+        {
+            if (t <= 1.0f)
+                v3 = t;
+            else
+                v3 = 1.0f;
+        }
+        float mInitialFOV = *(float*)((char*)self + 0x1F4);
+        float v6 = (mInitialFOV - *(float*)((char*)info + 0x3CC)) * v3
+                   + *(float*)((char*)info + 0x3CC);
+        float v5 = *(float*)((char*)self + 0x1F8) + deltaT;
+        *(float*)((char*)self + 0x1F8) = v5;
+        if (v5 <= *(float*)((char*)info + 0x3D8))
+        {
+            v6 = ((v6 - mInitialFOV) / *(float*)((char*)info + 0x3D8)) * v5
+                 + mInitialFOV;
+        }
+        *(float*)&cg_fov = v6;
+    }
+}
+
+// ea: 0x005401D0
+void InteractStateMelee_UpdateRumble(InteractState* self, float deltaT)
+{
+    (void)deltaT;
+    int handle = *(int*)((char*)self + 0x1C8);
+    if (handle != 0)
+    {
+        float lastIntensity = *(float*)((char*)self + 0x1CC);
+        float score = *(float*)((char*)self + 0x1D0);
+        float v2 = minScore;
+        float v3 = minIntensity;
+        if (minScore <= score)
+        {
+            if (score > maxScore)
+            {
+                float v5 = (score - maxScore) / (1.0f - maxScore);
+                v3 = v5 * maxIntensity;
+            }
+            else
+            {
+                float resistRate = *(float*)((char*)self + 0x1E0);
+                if (resistRate > rateMin)
+                {
+                    if (rateMax <= resistRate)
+                        resistRate = rateMax;
+                    float v4 = resistRate - rateMin;
+                    v2 = rateMax - rateMin;
+                    v3 = (v4 / v2) * maxIntensity;
+                }
+            }
+        }
+        else
+        {
+            float v4 = minScore - score;
+            v3 = (v4 / v2) * maxIntensity;
+        }
+        float intensity = ((v3 - *(float*)((char*)self + 0x1CC)) * 0.80000001f)
+                          + *(float*)((char*)self + 0x1CC);
+        *(float*)((char*)self + 0x1CC) = intensity;
+        if (fabsf(lastIntensity - intensity) > 0.0099999998f)
+        {
+            RumbleManager* v7 = RumbleManager::Inst(currCl);
+            RumbleEffectInstanceHandle h;
+            h.mVal = handle;
+            v7->SetIntensity(h, intensity);
+        }
+    }
+}
+
+// Local RumbleEffect view (full in core_systems.h)
+struct RumbleEffect {
+    struct RumbleData {
+        bool enabled;              // +0x00
+        unsigned char _pad[3];
+        float delay;               // +0x04
+        float intensity;           // +0x08
+        float ramp_up_duration;    // +0x0C
+        float steady_duration;     // +0x10
+        float ramp_down_duration;  // +0x14
+        unsigned char _pad2[0x20 - 0x18];
+    } mRumbleDataArray[2];         // +0x00
+};
+
+// ea: 0x005461C0
+RumbleEffectInstanceHandle InteractState_StartRumble(
+    float leftIntensity, float rightIntensity, float leftSteadyDur,
+    float rightSteadyDur, float leftDelay, float rightDelay, float rampUp,
+    float rampDown)
+{
+    RumbleEffectInstanceHandle result;
+    if (RumbleManager::Inst(currCl) != nullptr)
+    {
+        RumbleEffect rumbleEffect;
+        memset(&rumbleEffect, 0, sizeof(rumbleEffect));
+        for (int i = 0; i < 2; ++i)
+        {
+            rumbleEffect.mRumbleDataArray[i].delay = 0.0f;
+            rumbleEffect.mRumbleDataArray[i].intensity = 1.0f;
+            rumbleEffect.mRumbleDataArray[i].ramp_up_duration = 0.0f;
+            rumbleEffect.mRumbleDataArray[i].steady_duration = 1.0f;
+            rumbleEffect.mRumbleDataArray[i].ramp_down_duration = 0.0f;
+            rumbleEffect.mRumbleDataArray[i].enabled = true;
+        }
+        if (leftIntensity < 0.0f || leftIntensity > 1.0f)
+        {
+            XANIM_ASSERT(
+                "new_intensity >= 0.0f && new_intensity <= 1.0f",
+                "c:\\cod\\code\\game\\RumbleEffect.h", 103,
+                "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[0].intensity = leftIntensity;
+        if (leftSteadyDur < 0.0f)
+        {
+            XANIM_ASSERT("new_duration >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 124,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[0].steady_duration = leftSteadyDur;
+        if (rampUp < 0.0f)
+        {
+            XANIM_ASSERT("new_duration >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 117,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[0].ramp_up_duration = rampUp;
+        if (rampDown < 0.0f)
+        {
+            XANIM_ASSERT("new_duration >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 110,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[0].ramp_down_duration = rampDown;
+        if (leftDelay < 0.0f)
+        {
+            XANIM_ASSERT("new_delay >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 90,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[0].delay = leftDelay;
+        if (rightIntensity < 0.0f || rightIntensity > 1.0f)
+        {
+            XANIM_ASSERT(
+                "new_intensity >= 0.0f && new_intensity <= 1.0f",
+                "c:\\cod\\code\\game\\RumbleEffect.h", 103,
+                "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[1].intensity = rightIntensity;
+        if (rightSteadyDur < 0.0f)
+        {
+            XANIM_ASSERT("new_duration >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 124,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[1].steady_duration = rightSteadyDur;
+        if (rampUp < 0.0f)
+        {
+            XANIM_ASSERT("new_duration >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 117,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[1].ramp_up_duration = rampUp;
+        if (rampDown < 0.0f)
+        {
+            XANIM_ASSERT("new_duration >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 110,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[1].ramp_down_duration = rampDown;
+        if (rightDelay < 0.0f)
+        {
+            XANIM_ASSERT("new_delay >= 0.0f",
+                         "c:\\cod\\code\\game\\RumbleEffect.h", 90,
+                         "Please add a descriptive string");
+        }
+        rumbleEffect.mRumbleDataArray[1].delay = rightDelay;
+        result = RumbleManager::Inst(currCl)->Play(&rumbleEffect, 1.0f);
+    }
+    else
+    {
+        result.mVal = 0;
+    }
+    return result;
+}
+
+// ea: 0x0054D9E0
+void InteractState::CheckForEffectEvents(float deltaT, int postRemaining)
+{
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    for (int i = 0; i < 4; ++i)
+    {
+        InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+        unsigned int mask = 1u << i;
+        if (*(unsigned int*)((char*)info + 0x42C + 4 * i) != 0
+            && mEffectEventState[i] == 0
+            && (mask & mEffectEventPosted) == 0)
+        {
+            float eventTime = *(float*)((char*)info + 0x43C + 4 * i);
+            if (eventTime < 0.0f)
+            {
+                CheckNotifySet(player, i);
+                unsigned int v9 = mController->mInteractableH.mVal & 0xFFF;
+                if (v9 < 0x540
+                    && mController->mInteractableH.mVal >> 12
+                           == EntityHandleDb::sInst.mElements[v9].mKey)
+                {
+                    Entity* mObject =
+                        EntityHandleDb::sInst.mElements[v9].mObject;
+                    if (mObject != nullptr)
+                        CheckNotifySet(mObject, i);
+                }
+            }
+            else if (eventTime >= (mStateTimer - deltaT)
+                     || postRemaining != 0)
+            {
+                const char* notifyName = (char*)info + 0x3DC + 20 * i;
+                PostEffectEvent((unsigned int)(uintptr_t)notifyName, i);
+                HashString h;
+                h.mHash = HashString::CalcHash(notifyName);
+                player->Notify(h);
+            }
+            mEffectEventPosted |= mask;
+        }
+    }
+}
+
+// ea: 0x00546A00
+void InteractState::DoWeaponChange()
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (*(int*)((char*)info + 0x348) != 0
+        || *(int*)((char*)info + 0x34C) != 0)
+    {
+        mFlags |= 0x40u;
+        mDesiredWeaponIndex = -1;
+        int v4 = 1;
+        if (BG_GetNumWeapons() >= 1)
+        {
+            while (1)
+            {
+                weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v4);
+                if (_stricmp((char*)InfoForWeapon + 0x0C,
+                             (char*)info + 0x328)
+                    == 0)
+                    break;
+                if (++v4 > BG_GetNumWeapons())
+                    goto done;
+            }
+            mDesiredWeaponIndex = v4;
+        }
+    done:
+        if (mDesiredWeaponIndex == -1)
+        {
+            XANIM_ASSERT("mDesiredWeaponIndex != -1",
+                         "c:\\cod\\code\\game\\InteractState.cpp", 560,
+                         "Did not find desired interaction weapon");
+        }
+        if (mDesiredWeaponIndex != -1)
+        {
+            if (*(int*)((char*)info + 0x34C) != 0)
+                mController->ForceInteractionWeapon(mDesiredWeaponIndex);
+            else
+                mController->SelectInteractionWeapon(mDesiredWeaponIndex);
+        }
+    }
+}
+
+// ============================================================================
 // Interaction config-string parsing (anim.o InteractionController.cpp)
 // ============================================================================
 
@@ -8054,7 +8447,7 @@ int InteractStateParseSpecificField(unsigned char* pStruct,
         }
         if (v3 != 25)
         {
-            pStruct[8] = (unsigned char)v3;
+            pStruct[0x20] = (unsigned char)v3;
             return 1;
         }
         XANIM_ASSERT("0",
@@ -8072,10 +8465,10 @@ int InteractStateParseSpecificField(unsigned char* pStruct,
         }
         if (v5 != 6)
         {
-            pStruct[9] = (unsigned char)v5;
+            pStruct[0x24] = (unsigned char)v5;
             return 1;
         }
-        pStruct[9] = (unsigned char)-1;
+        pStruct[0x24] = (unsigned char)-1;
         return 1;
     }
     case 10:  // lerp type
