@@ -11,6 +11,7 @@
 #include <math.h>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
+#include "core/ae_fixed_string.h"
 #include "engine/broc_types.h"
 
 class Entity;
@@ -2747,6 +2748,11 @@ public:
     {
         Skeleton = nullptr;
     }
+    // ?IsValid@?$nalGenericComponentHandle@VnalPositionOrientation@@@nalGeneric@@QBE_NXZ (0x55ED20)
+    bool IsValid() const
+    {
+        return Skeleton != nullptr;
+    }
 
 protected:
     nalGenericComponentHandle(const nalGenericSkeleton* skeleton,
@@ -3045,10 +3051,10 @@ inline T ReadUnaligned(const void* iMem)
 
 // ??$ReadIncUnaligned@M@@YAMAAPAD@Z (0x560F00)
 template <typename T>
-inline T ReadIncUnaligned(char** iPos)
+inline T ReadIncUnaligned(char*& iPos)
 {
-    T v = *(T*)*iPos;
-    *iPos += sizeof(T);
+    T v = *(T*)iPos;
+    iPos += sizeof(T);
     return v;
 }
 
@@ -4515,13 +4521,29 @@ void nalGenericPoseBlender::Blend(nalGenericPose& out,
 
 // ??$nalPosePtrCast@VnalGenericPose@nalGeneric@@@@YAPAVnalGenericPose@nalGeneric@@PAVnalBasePose@@@Z
 template <typename T>
-inline T* nalPosePtrCast(void* ptr)
+inline T* nalPosePtrCast(nalBasePose* ptr)
 {
     if (ptr == nullptr || *(void**)ptr == nullptr
         || *(void**)(*(void**)ptr) != (void*)0x10E6D04)
         return nullptr;
     return (T*)ptr;
 }
+
+// COMDAT emission anchors (anim.o template instantiations, dumpbin-verified)
+template struct InplaceVector<XAnimEntry>;
+template struct InplaceVector<AnimTree>;
+template void PakDelete<InteractState>(TPakId, InteractState*, bool);
+template void PakDelete<InteractInputRcvr>(TPakId, InteractInputRcvr*, bool);
+template float lerp<float>(const float&, const float&, float);
+template float ReadUnaligned<float>(const void*);
+template float ReadIncUnaligned<float>(char*&);
+template struct ae_fixed_string<64, unsigned char>;
+template struct ae_fixed_string<32, unsigned char>;
+template bool operator==<32, unsigned char>(
+    const ae_fixed_string<32, unsigned char>&, const char*);
+template class nalGeneric::nalGenericComponentHandle<nalPositionOrientation>;
+template nalGeneric::nalGenericPose* nalPosePtrCast<nalGeneric::nalGenericPose>(
+    nalBasePose*);
 
 // ea: 0x00547E10
 void VectorCopyUnalignedInc(char*& pos, float (&v)[3])

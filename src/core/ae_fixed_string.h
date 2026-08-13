@@ -18,7 +18,8 @@ bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff,
 }
 
 template <int CAPACITY, typename CHAR = char>
-struct ae_fixed_string {
+class ae_fixed_string {
+public:
     CHAR            mBuff[(CAPACITY - 1) / sizeof(CHAR)];  // +0x00
     unsigned char   mLength;                               // +sizeof(mBuff)
 
@@ -43,7 +44,7 @@ struct ae_fixed_string {
         mLength = (unsigned char)i;
     }
 
-    const CHAR* c_str() const { return mBuff; }
+    const char* c_str() const { return (const char*)mBuff; }
     int length() const { return mLength; }
     static int capacity() {
         return (CAPACITY - 1) / sizeof(CHAR) * sizeof(CHAR);
