@@ -1474,6 +1474,14 @@ void XAnimUpdateServerNotify(XAnimTree* tree, unsigned int animIndex)
 {
     (void)tree; (void)animIndex;
 }
+
+// ea: 0x0053E2F0 (dead-code assert; signature from map)
+void XAnimBlend(AnimTree* anims, unsigned short a2, const char* a3,
+                unsigned short a4, unsigned short a5, unsigned short a6)
+{
+    (void)anims; (void)a2; (void)a3; (void)a4; (void)a5; (void)a6;
+    XANIM_ASSERT("0", "c:\\cod\\code\\game\\xanim.cpp", 590, "dead code");
+}
 void XAnimClearGoalWeightKnobInternal(XAnimTree* tree,
                                       unsigned int animIndex,
                                       float goalWeight, float goalTime)
