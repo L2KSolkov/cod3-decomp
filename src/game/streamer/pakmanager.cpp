@@ -5813,6 +5813,21 @@ tlFixedString GetName(const char* name)
 struct MultiApk;
 typedef void (*MultiApkCallback)(const char*, MultiApk*, TPakId);
 
+// MultiApk reference tables (apkSupport.cpp; verified against IDA)
+struct MultiApkObject {
+    tlFixedString* name;  // +0x00
+    void* ptr;            // +0x04
+};
+struct MultiApkReference {
+    unsigned int    Type;      // +0x00
+    unsigned int    NObjects;  // +0x04
+    MultiApkObject* Objects;   // +0x08
+};
+struct MultiApk {
+    unsigned int       NReferences;  // +0x00
+    MultiApkReference* References;   // +0x04
+};
+
 // ea: 0x66F480
 void RegisterMesh(const char* name, MultiApk* file, TPakId pakId)
 {
@@ -5835,6 +5850,104 @@ MultiApkCallback GetMultiApkFcn(const char* ext)
         && AeAssert::Warning("no multi-apk callback for type '%s'", ext))
         __debugbreak();
     return nullptr;
+}
+
+// ea: 0x6744B0
+void cdInvokeMultiApkCallbacks(const char* name, const char* file_ext,
+                               TPakId pakId, apk::apkFile* File,
+                               apk::apkFileEntry* Entry)
+{
+    tlFixedString image("image");
+    int SectionIndex = File->GetSectionIndex(image);
+    MultiApk* multi =
+        (MultiApk*)Entry->GetData(File, SectionIndex, true);
+    unsigned int refIdx = 0;
+    if (multi->NReferences != 0)
+    {
+        do
+        {
+            MultiApkReference* ref = &multi->References[refIdx];
+            apk::apkFileTypeEntry* typeEntry =
+                File->GetFileTypeEntry(ref->Type);
+            if (typeEntry == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\apkSupport.cpp";
+                AeAssert::gCurrentLine = 61;
+                AeAssert::gCurrentExpr = "typeEntry";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Bad apk!"))
+                    __debugbreak();
+            }
+            apk::apkFileEntry* firstFile =
+                typeEntry->FirstEntry;
+            unsigned int objIdx = 0;
+            if (ref->NObjects != 0)
+            {
+                while (1)
+                {
+                    apk::apkFileEntry* entry = nullptr;
+                    MultiApkObject* obj =
+                        (MultiApkObject*)((char*)ref->Objects + 8 * objIdx);
+                    if (firstFile != nullptr)
+                    {
+                        apk::apkFileEntry* cur = firstFile;
+                        do
+                        {
+                            const unsigned int* a =
+                                (const unsigned int*)cur->Name;
+                            const unsigned int* b =
+                                (const unsigned int*)obj->name;
+                            int v17 = 0;
+                            while (a[v17] == b[v17])
+                            {
+                                ++v17;
+                                if (v17 >= 8)
+                                {
+                                    entry = cur;
+                                    break;
+                                }
+                            }
+                            if (entry != nullptr)
+                                break;
+                            cur = File->GetNextFile(ref->Type, cur);
+                        } while (cur != nullptr);
+                    }
+                    File->ApplyReferencesForEntry(entry);
+                    if (entry == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\apkSupport.cpp";
+                        AeAssert::gCurrentLine = 83;
+                        AeAssert::gCurrentExpr = "entry";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bad apk!"))
+                            __debugbreak();
+                    }
+                    if (!File->InvokeFileLoadCallback(typeEntry, entry))
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\apkSupport.cpp";
+                        AeAssert::gCurrentLine = 85;
+                        AeAssert::gCurrentExpr = "found";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                   "Didn't find load callback for %s",
+                                   obj->name->str))
+                            __debugbreak();
+                    }
+                    if (++objIdx >= ref->NObjects)
+                        break;
+                }
+            }
+            ++refIdx;
+        } while (refIdx < multi->NReferences);
+    }
+    MultiApkCallback MultiApkFcn = GetMultiApkFcn(file_ext);
+    if (MultiApkFcn != nullptr)
+        MultiApkFcn(name, multi, pakId);
 }
 
 // ea: 0x665370
