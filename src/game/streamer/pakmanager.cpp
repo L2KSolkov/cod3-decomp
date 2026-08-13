@@ -116,6 +116,34 @@ void g_LocationalTrace(trace_t* results, const math::Position3* start,
                        unsigned char* priorityMap,
                        float coneAngleTangent);  // g.o (g_trace.cpp)
 
+// RenderInstanceGroups globals (render.o / cg.o / streamer.o)
+// phys_static_array<T,CAP> (phys_types.h view; class tag V matches the
+// binary mangling; m_slot_array at +CAP*sizeof(T), m_alloc_count +4)
+template <typename T, int CAP>
+class phys_static_array {
+public:
+    char m_buffer[CAP * sizeof(T)];   // +0x00
+    T* const m_slot_array;            // +CAP*sizeof(T)
+    int m_alloc_count;                // +CAP*sizeof(T)+4
+
+    phys_static_array() : m_slot_array((T*)m_buffer), m_alloc_count(0) {}
+    T& operator[](int i) { return ((T*)m_buffer)[i]; }
+};
+struct trGlobals_t {
+    uint8_t _pad[0x10];
+    float viewParmsOrigin[3];  // +0x10 (viewParms.or.origin)
+};
+extern trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A (render.o @ 0x13642D0)
+extern bool gFirstCamera;  // cg.o (common.cpp)
+int gFrameToggle = 0;      // ?gFrameToggle@@3HA @ 0xF5930C (streamer.o)
+extern int g_camera_cell;  // render.o @ 0x11E993C
+int g_camera_cell = 0;     // stub until render.o lands
+extern float gZoomRatio;   // cg.o (cg_view.cpp)
+extern phys_static_array<phys_static_array<math::Vector4, 20>, 64> portals;
+phys_static_array<phys_static_array<math::Vector4, 20>, 64> portals;  // render.o @ 0x11EA840
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);  // phys_types.h
+
 // EntityHandleDb (game_types.h view; sInst defined in g_globals.cpp)
 class EntityHandleDb {
 public:
@@ -229,9 +257,15 @@ extern unsigned int AeHash(const char* str);     // ae_hash.cpp
 struct cvar_t {
     char*  name;      // +0x00
     char*  string;    // +0x04
-    float  value;     // +0x08
-    uint8_t _pad0C[0x10 - 0x0C];
-    int    integer;   // +0x10
+    char*  resetString;        // +0x08
+    char*  latchedString;      // +0x0C
+    int    flags;              // +0x10
+    int    modified;           // +0x14
+    int    modificationCount;  // +0x18
+    float  value;              // +0x1C
+    int    integer;            // +0x20
+    cvar_t* next;              // +0x24
+    cvar_t* hashNext;          // +0x28
 };
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o cvar.cpp
@@ -2138,15 +2172,39 @@ struct BrocAPI {
 };
 extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A @ 0xF3ABDC
 struct cdSimpleInstance {
-    uint8_t _pad[0x20];                 // +0x00
+    void*  Mesh;           // +0x00
+    void*  Section;        // +0x04
+    void*  Material;       // +0x08
+    int    NInstances;     // +0x0C
+    float  mMinLodDist2;   // +0x10
+    float  mMaxLodDist2;   // +0x14
+    void*  Insts;          // +0x18
+    int*   cells;          // +0x1C
     void Destroy();  // ?Destroy@cdSimpleInstance@@QAEXXZ (cdSimpleInstance.cpp)
+    void Render();   // ?Render@cdSimpleInstance@@QAEXXZ (render.o 0x7C50F0)
 };
 struct InstanceListNode {
     cdSimpleInstance instance;          // +0x00 (0x20 bytes)
-    uint8_t _pad20[0x30 - 0x20];
-    void*  renderFlagList;              // +0x30
+    uint8_t _pad20[0x24 - 0x20];
+    float  mMinDist;                    // +0x24
+    float  mMaxDist;                    // +0x28
+    int*   mInstanceData;               // +0x2C ({count @ +8, data @ +0xC})
+    unsigned int** mRadii;              // +0x30 (per-instance flag words)
     InstanceListNode* next;             // +0x34
 };
+
+// InstanceData (scenemanager.cpp; stride 0x28, verified IDA)
+struct InstanceData {
+    float cullA[3];     // +0x00
+    float cullB[3];     // +0x0C
+    float worldPos[3];  // +0x18
+    float pad;          // +0x24
+};
+
+// ea: 0x7C50F0 (render.o; stub until cdSimpleInstance::Render is ported)
+void cdSimpleInstance::Render()
+{
+}
 struct SceneEffectGroup;
 
 // SceneEffect (scenemanager.cpp; state machine fields verified IDA)
@@ -2280,6 +2338,7 @@ public:
     void InstanceEntities();  // ?InstanceEntities@SceneManager@@QAEXXZ @ 0x6788F0
     void ConvertEntity(SceneEntity* source, Entity* dest);  // ?ConvertEntity@SceneManager@@AAEXPAVSceneEntity@@PAVEntity@@@Z @ 0x673D60
     void RenderLightGlows();  // ?RenderLightGlows@SceneManager@@QAEXXZ @ 0x675EA0
+    void RenderInstanceGroups();  // ?RenderInstanceGroups@SceneManager@@QAEXXZ @ 0x669AF0
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
@@ -3003,7 +3062,7 @@ void SceneManager::UnloadInstanceGroups(TPakId pakId)
                         v11 = ContextStack
                                   .m_elements[ContextStack.m_size - 1];
                     PakManager::sInst->MemFree(v11,
-                                               instanceList->renderFlagList,
+                                               instanceList->mRadii,
                                                false);
                     PakManager::sInst->MemFree(pakId, instanceList, false);
                     instanceList = next;
@@ -4724,6 +4783,177 @@ void SceneManager::RenderLightGlows()
                         nglListAddQuad(&q);
                     }
                 }
+            }
+        }
+    }
+}
+
+// ea: 0x669AF0
+void SceneManager::RenderInstanceGroups()
+{
+    math::Position3 cameraPos;
+    cameraPos.v = _mm_setr_ps(tr.viewParmsOrigin[0], tr.viewParmsOrigin[1],
+                              tr.viewParmsOrigin[2], 0.0f);
+    if (gFirstCamera)
+        ++gFrameToggle;
+    int instanceLods = Cvar_Get("instance_lods", "1", 256)->integer;
+    int cullInstances = Cvar_Get("cull_instances", "1", 256)->integer;
+    if (View::IsSplitScreen())
+        cullInstances = 0;
+
+    for (int bankIdx = 0; bankIdx < 99; ++bankIdx)
+    {
+        SceneBank* bank = mBankArray.m_elements[bankIdx];
+        if (bank == nullptr)
+            continue;
+        InplaceVector<InstanceGroup>* groups = &bank->mInstanceGroups;
+        for (unsigned int gi = 0; gi < groups->mSize; ++gi)
+        {
+            InstanceListNode* node =
+                (InstanceListNode*)groups->mList[gi].instanceList;
+            if (node == nullptr)
+                continue;
+            for (; node != nullptr; node = node->next)
+            {
+                int visibleCount = 0;
+                __m128 meshData =
+                    *(__m128*)((const char*)node->instance.Mesh + 0x20);
+                float max2 =
+                    _mm_shuffle_ps(meshData, meshData, 255).m128_f32[0] * 1.1f;
+                if (instanceLods != 0)
+                {
+                    float min2 = node->mMinDist * node->mMinDist;
+                    float maxDist2 =
+                        node->mMaxDist * node->mMaxDist * 1.05f;
+                    int* array = node->mInstanceData;
+                    if (array[2] == 0)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "../ae\\inplace/InplaceVector.h";
+                        AeAssert::gCurrentLine = 81;
+                        AeAssert::gCurrentExpr = "index < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                    }
+                    InstanceData* inst = (InstanceData*)array[3];
+                    unsigned int** radii = node->mRadii;
+                    int count = array[2];
+                    for (int group = 0; group < count; ++group)
+                    {
+                        __m128 worldPos =
+                            _mm_setr_ps(inst[group].worldPos[0],
+                                        inst[group].worldPos[1],
+                                        inst[group].worldPos[2], 0.0f);
+                        __m128 d = _mm_sub_ps(worldPos, cameraPos.v);
+                        __m128 d2 = _mm_mul_ps(d, d);
+                        float dist2 =
+                            (d2.m128_f32[0]
+                             + (_mm_shuffle_ps(d2, d2, 85).m128_f32[0]
+                                + _mm_shuffle_ps(d2, d2, 170).m128_f32[0]))
+                            * gZoomRatio;
+                        unsigned int* radius = radii[group];
+                        int flag = 1;  // culled
+                        if (dist2 >= min2 && maxDist2 >= dist2)
+                        {
+                            int cell = node->instance.cells[group];
+                            bool portalVisible = true;
+                            if (cullInstances != 0 && g_camera_cell >= 0
+                                && g_camera_cell != cell && cell >= 0)
+                            {
+                                portalVisible = false;
+                                if (portals.m_alloc_count > 0)
+                                {
+                                    __m128 cullA =
+                                        _mm_setr_ps(inst[group].cullA[0],
+                                                    inst[group].cullA[1],
+                                                    inst[group].cullA[2],
+                                                    0.0f);
+                                    __m128 cullB =
+                                        _mm_setr_ps(inst[group].cullB[0],
+                                                    inst[group].cullB[1],
+                                                    inst[group].cullB[2],
+                                                    0.0f);
+                                    // cross term per binary shuffle pattern:
+                                    // (cullA.y*cullB.z - cullA.z*cullB.y,
+                                    //  0, -(that))
+                                    __m128 cross = _mm_sub_ps(
+                                        _mm_mul_ps(
+                                            _mm_shuffle_ps(cullA, cullA, 0x09),
+                                            _mm_shuffle_ps(cullB, cullB, 0x12)),
+                                        _mm_mul_ps(
+                                            _mm_shuffle_ps(cullA, cullA, 0x12),
+                                            _mm_shuffle_ps(cullB, cullB, 0x09)));
+                                    __m128 xv = _mm_shuffle_ps(meshData,
+                                                               meshData, 0);
+                                    __m128 yv = _mm_shuffle_ps(meshData,
+                                                               meshData, 0x55);
+                                    __m128 zv = _mm_shuffle_ps(meshData,
+                                                               meshData, 0xAA);
+                                    __m128 v24 = _mm_add_ps(
+                                        _mm_add_ps(
+                                            _mm_mul_ps(xv, cullA),
+                                            _mm_mul_ps(yv, cullB)),
+                                        _mm_add_ps(_mm_mul_ps(zv, cross),
+                                                   worldPos));
+                                    for (int planes = 0;
+                                         planes < portals.m_alloc_count;
+                                         ++planes)
+                                    {
+                                        phys_static_array<math::Vector4, 20>&
+                                            inner = portals[planes];
+                                        int j2 = 0;
+                                        for (; j2 < inner.m_alloc_count; ++j2)
+                                        {
+                                            if (j2 < 0
+                                                || j2 >= inner.m_alloc_count)
+                                            {
+                                                if (_tlAssert(
+                                                        "c:\\cod\\code\\tl\\physics\\include\\phys_array_base.inc",
+                                                        114,
+                                                        "i >= 0 && i < m_alloc_count",
+                                                        defaultFileName))
+                                                    __debugbreak();
+                                            }
+                                            __m128 plane =
+                                                inner.m_slot_array[j2].v;
+                                            float dot =
+                                                plane.m128_f32[0]
+                                                    * v24.m128_f32[0]
+                                                + plane.m128_f32[1]
+                                                      * v24.m128_f32[1]
+                                                + plane.m128_f32[2]
+                                                      * v24.m128_f32[2];
+                                            if (-max2 > dot - plane.m128_f32[3])
+                                                break;
+                                        }
+                                        if (j2 == inner.m_alloc_count)
+                                        {
+                                            portalVisible = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            if (portalVisible)
+                            {
+                                flag = 0;
+                                ++visibleCount;
+                            }
+                        }
+                        int bit = gFrameToggle & 1;
+                        *radius = (flag << bit) | (*radius & (2 - bit));
+                    }
+                }
+                else if (node->instance.mMinLodDist2 == 0.0f)
+                {
+                    for (int k = 0; k < node->instance.NInstances; ++k)
+                        *node->mRadii[k] = 0;
+                    visibleCount = node->instance.NInstances;
+                }
+                if (visibleCount != 0)
+                    node->instance.Render();
             }
         }
     }
