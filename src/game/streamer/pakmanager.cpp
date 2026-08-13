@@ -1698,10 +1698,9 @@ class StreamZoneManager {
 public:
     uint8_t _pad0[0x04];  // anonymous head region (bank array starts at +0x04)
     ae_array<ZoneBoundaryBank*, 99> mBankArray;  // +0x04 (elements at +0x04)
-    struct {
-        unsigned int mEnabled : 1;  // bit 0
-        float zoneGraphScale;       // +0x194
-    } mDebugRenderMode;             // +0x190
+    unsigned int mDebugRenderMode;  // +0x190 (bit0 ZoneGraph, bit1 active
+                                    // node sphere, bit2 zone names)
+    float zoneGraphScale;           // +0x194
     math::Position3 mInitialPosition;  // +0x1A0
     uint8_t _pad1AC[0x1B0 - 0x1AC];
     math::Position3 mLastPosition;  // +0x1B0
@@ -1716,6 +1715,7 @@ public:
     ~StreamZoneManager();      // ??1StreamZoneManager@@UAE@XZ @ 0x6782F0
     static void SingletonDebugRender();  // ?SingletonDebugRender@StreamZoneManager@@SAXXZ @ 0x687640
     void DebugRender();        // ?DebugRender@StreamZoneManager@@QAEXXZ @ 0x66CD60 (stub)
+    void RenderZoneGraph(const ZoneBoundaryBank* zbs);  // ?RenderZoneGraph@StreamZoneManager@@QBEXPBVZoneBoundaryBank@@@Z @ 0x6678F0
 
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
@@ -3416,12 +3416,12 @@ void ToggleZoneGraph()
 {
     if (Cmd_Argc() <= 1)
     {
-        StreamZoneManager::sInst->mDebugRenderMode.mEnabled ^= 1;
+        StreamZoneManager::sInst->mDebugRenderMode ^= 1;
     }
     else
     {
-        StreamZoneManager::sInst->mDebugRenderMode.mEnabled |= 1;
-        StreamZoneManager::sInst->mDebugRenderMode.zoneGraphScale =
+        StreamZoneManager::sInst->mDebugRenderMode |= 1;
+        StreamZoneManager::sInst->zoneGraphScale =
             (float)atof(Cmd_Argv(1));
     }
 }
@@ -6822,8 +6822,8 @@ StreamZoneManager::StreamZoneManager()
     AssetBankSet::sBankArray.push_back((AssetBankSet*)this);
     DebugRender_AddRenderer(DebugRender_sInst,
                             (void*)&StreamZoneManager::SingletonDebugRender);
-    mDebugRenderMode.mEnabled = 0;
-    mDebugRenderMode.zoneGraphScale = 0.0f;
+    mDebugRenderMode = 0;
+    zoneGraphScale = 0.0f;
     Cmd_AddCommand("ZoneGraph", ToggleZoneGraph);
 }
 
@@ -6840,9 +6840,51 @@ void StreamZoneManager::SingletonDebugRender()
     StreamZoneManager::sInst->DebugRender();
 }
 
-// ea: 0x66CD60 (stub; render pass port later)
+// ea: 0x66CD60
 void StreamZoneManager::DebugRender()
 {
+    int mFirstBank = this->mFirstBank;
+    while (mFirstBank != -1)
+    {
+        if (mFirstBank > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        ZoneBoundaryBank* v3 = mBankArray.m_elements[mFirstBank];
+        int v7 = 4 * mFirstBank;
+        if ((mDebugRenderMode & 2) != 0)
+        {
+            Color argb_color;
+            argb_color.r = 0.0f;
+            argb_color.g = 1.0f;
+            argb_color.b = 0.0f;
+            argb_color.a = 1.0f;
+            DebugRender::RenderSphere(v3->mActiveNode->mPosition, 0.5f,
+                                      argb_color);
+        }
+        if ((mDebugRenderMode & 1) != 0)
+            RenderZoneGraph(v3);
+        if ((mDebugRenderMode & 4) != 0)
+        {
+            for (unsigned int j = 0; j < v3->mPtrs.mSize; ++j)
+            {
+                // zone-name render pass (empty in the release build)
+            }
+        }
+        mFirstBank = mBankArray.m_elements[v7 / 4]->mNextBank;
+    }
+}
+
+// ea: 0x6678F0 (zone-graph line render; port later)
+void StreamZoneManager::RenderZoneGraph(const ZoneBoundaryBank* zbs)
+{
+    (void)zbs;
 }
 
 // ea: 0x6795C0
