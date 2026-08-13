@@ -2787,7 +2787,7 @@ template <typename T, int N>
 struct ae_array {
     T m_data[N];  // +0x00
 
-    T& operator[](unsigned int idx)
+    T& operator[](int idx)
     {
         if (idx >= (unsigned int)N)
         {
@@ -4299,6 +4299,8 @@ struct AnimBankLocal {
     AnimTree* mList;      // +0x04
 };
 
+class AnimBankManager;
+class AnimBank;
 extern void* AnimBankManager_sInst;  // ?sInst@AnimBankManager@@2PAV1@A
 extern void* AnimBankManager_GetBank(void* mgr, int pakId);
 
@@ -15924,11 +15926,192 @@ InteractInputRcvr* InteractInputRcvr::CreateInputRcvr(EInputType type,
 // called by game logic.)
 // ============================================================================
 
-class AnimBankManager {  // ??_GAnimBankManager@@UAEPAXI@Z
+// ============================================================================
+// AnimBankManager / AnimBank (anim.o; xanim.cpp) - real class methods
+// Layout verified vs IDB: AnimBank 0xC (anims +0, mPtrFixupTable +8),
+// AnimBankManager 0x190 (mBankArray[99] +4), PtrFixupTable 0x8.
+// ============================================================================
+struct AnimTree;
+class AnimBank {
 public:
-    virtual ~AnimBankManager() { DoNotOptimizeMarker(); }
-    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+    struct {
+        unsigned int mSize;   // +0x00
+        AnimTree* mList;      // +0x04
+    } anims;                  // +0x00
+    unsigned int mPtrFixupTable;  // +0x08 (offset, relocated in-place)
+
+    void Fixup();            // ?Fixup@AnimBank@@QAEXXZ (0x55FA50)
 };
+template class ae_array<AnimBank*, 99>;
+
+struct PtrFixupTable {
+    unsigned char _pad[8];
+    void Fixup(const void* basePtr);  // real in filesystem/inplace.cpp
+};
+
+class AssetBankSet {
+public:
+    virtual ~AssetBankSet();  // real in g_entity_misc.cpp
+};
+
+class AnimBankManager : public AssetBankSet {
+public:
+    AnimBankManager();   // ??0AnimBankManager@@QAE@XZ (0x545650)
+    virtual ~AnimBankManager();  // ??1AnimBankManager@@UAE@XZ (0x53EA80)
+
+    ae_array<AnimBank*, 99> mBankArray;  // +0x04
+
+protected:
+    void UnloadBank(TPakId pakId);  // ?UnloadBank@AnimBankManager@@EAEXW4TPakId@@@Z (0x53EA90)
+private:
+    void AddBank(TPakId pakId, AnimBank* bank);  // ?AddBank@...@@AAEXW4TPakId@@PAVAnimBank@@@Z (0x5456F0)
+public:
+    AnimBank* GetBank(TPakId pakId);     // ?GetBank@...@@QAEPAVAnimBank@@W4TPakId@@@Z (0x545760)
+    void UnloadAll();                    // ?UnloadAll@...@@QAEXXZ (0x5457D0)
+    void DecodeAnimBank(const char* name, unsigned char* data, int size,
+                        TPakId pakId);   // ?DecodeAnimBank@...@@QAEXPBD0H W4TPakId@@@Z (0x54B980)
+};
+
+// ea: 0x00545650
+AnimBankManager::AnimBankManager()
+{
+    for (unsigned int i = 0; i < 99; ++i)
+        mBankArray[i] = nullptr;
+}
+
+// ea: 0x0053EA80
+AnimBankManager::~AnimBankManager()
+{
+    // binary calls AssetBankSet::~AssetBankSet(this) after vftable reset
+}
+
+// ea: 0x0053EA90
+void AnimBankManager::UnloadBank(TPakId pakId)
+{
+    (void)pakId;
+}
+
+// ea: 0x005456F0
+void AnimBankManager::AddBank(TPakId pakId, AnimBank* bank)
+{
+    if (mBankArray[(int)pakId] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+        AeAssert::gCurrentLine = 5728;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("We already have a bank for this pak id!"))
+            __debugbreak();
+    }
+    mBankArray[(int)pakId] = bank;
+}
+
+// ea: 0x00545760
+AnimBank* AnimBankManager::GetBank(TPakId pakId)
+{
+    if (mBankArray[(int)pakId] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+        AeAssert::gCurrentLine = 5734;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no bank for this pak id!"))
+            __debugbreak();
+    }
+    return mBankArray[(int)pakId];
+}
+
+// ea: 0x005457D0
+void AnimBankManager::UnloadAll()
+{
+    for (unsigned int i = 0; i < 99; ++i)
+        mBankArray[i] = nullptr;
+}
+
+// ea: 0x0054B980
+void AnimBankManager::DecodeAnimBank(const char* name, unsigned char* data,
+                                     int size, TPakId pakId)
+{
+    (void)name; (void)size;
+    AnimBank* v5 = (AnimBank*)data;
+    PtrFixupTable* v7 =
+        (PtrFixupTable*)((char*)data + v5->mPtrFixupTable);
+    v5->mPtrFixupTable = (unsigned int)(uintptr_t)v7;
+    v7->Fixup(v5);
+    AddBank(PAK_ID_MIN, v5);
+    unsigned int mSize = v5->anims.mSize;
+    unsigned int v9 = 0;
+    int ti = 0;
+    if (v5->anims.mSize != 0)
+    {
+        while (1)
+        {
+            if (v9 >= mSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\inplace/InplaceVector.h";
+                AeAssert::gCurrentLine = 81;
+                AeAssert::gCurrentExpr = "index < mSize";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("Bounds check"))
+                    __debugbreak();
+            }
+            if (v9 >= v5->anims.mSize)
+                v9 = 0;
+            AnimTree* v10 = &v5->anims.mList[v9];
+            unsigned int v11 = 0;
+            if (*(unsigned int*)((char*)v10 + 4) != 0)
+            {
+                do
+                {
+                    unsigned int v12 = v11;
+                    if (v11 >= *(unsigned int*)((char*)v10 + 4))
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile =
+                            "../ae\\inplace/InplaceVector.h";
+                        AeAssert::gCurrentLine = 81;
+                        AeAssert::gCurrentExpr = "index < mSize";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                        if (v11 >= *(unsigned int*)((char*)v10 + 4))
+                            v12 = 0;
+                    }
+                    char* v13 = *(char**)((char*)v10 + 8) + 28 * v12;
+                    *(int*)(v13 + 12) = 0;
+                    *(int*)(v13 + 8) = 0;
+                    ++v11;
+                } while (v11 < *(unsigned int*)((char*)v10 + 4));
+                v5 = (AnimBank*)data;
+            }
+            mSize = v5->anims.mSize;
+            if (++ti >= (int)v5->anims.mSize)
+                break;
+            v9 = (unsigned int)ti;
+        }
+    }
+}
+
+// ea: 0x0055FA50
+void AnimBank::Fixup()
+{
+    PtrFixupTable* v1 = (PtrFixupTable*)((char*)this + mPtrFixupTable);
+    mPtrFixupTable = (unsigned int)(uintptr_t)v1;
+    v1->Fixup(this);
+}
+
+// ea: 0x00554BD0 (?DecodeAnimBank@@YAXPBDPAEHW4TPakId@@PAVPakFile@@@Z)
+struct PakFile;
+void DecodeAnimBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId, PakFile* file)
+{
+    (void)file;
+    ((AnimBankManager*)AnimBankManager_sInst)
+        ->DecodeAnimBank(name, data, size, pakId);
+}
+
 class AnimationUpdateTask {  // ??_GAnimationUpdateTask@@UAEPAXI@Z
 public:
     virtual ~AnimationUpdateTask() { DoNotOptimizeMarker(); }
