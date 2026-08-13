@@ -14,6 +14,7 @@ namespace math {
 class Dir3;
 class Position3;
 class Mat33;
+class Mat44;
 class Mat43;
 struct TranMat43;
 class DiagMat33;
@@ -89,6 +90,8 @@ public:
     struct Packed {
         float x, y, z, w;
     };
+
+    const Vector4& operator*=(const Mat44& m);  // ??XVector4@math@@QAEABV01@ABVMat44@1@@Z (streamer.o)
 };
 static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
 
@@ -139,8 +142,26 @@ struct Mat44 {
     Vector4 y;  // +0x10
     Vector4 z;  // +0x20
     Vector4 w;  // +0x30
+
+    Mat44() {}
+    Mat44(const Vector4& _x, const Vector4& _y, const Vector4& _z,
+          const Vector4& _w);  // ??0Mat44@math@@QAE@ABVVector4@1@000@Z
+    Mat44(const Mat33& m);     // ??0Mat44@math@@QAE@ABVMat33@1@@Z
+
+    Vector4& GetX();  // ?GetX@Mat44@math@@QAEAAVVector4@2@XZ
+    Vector4& GetY();  // ?GetY@Mat44@math@@QAEAAVVector4@2@XZ
+    Vector4& GetZ();  // ?GetZ@Mat44@math@@QAEAAVVector4@2@XZ
+    Vector4& GetW();  // ?GetW@Mat44@math@@QAEAAVVector4@2@XZ
 };
 static_assert(sizeof(Mat44) == 0x40, "Mat44 size mismatch");
+
+// streamer.o SSE math COMDATs (defined in game/streamer/pakmanager.cpp)
+float    LengthSquared(const Position3& v);                       // ?LengthSquared@math@@YAMABVPosition3@1@@Z
+Vector4  operator+(const Vector4& a, const Position3& b);         // ??Hmath@@YA?AVVector4@0@ABV10@ABVPosition3@0@@Z
+Vector4  operator/(const Vector4& a, float b);                    // ??Kmath@@YA?AVVector4@0@ABV10@M@Z
+Vector4  Mul(const Position3& v, const Mat44& m);                 // ?Mul@math@@YA?AVVector4@1@ABVPosition3@1@ABVMat44@1@@Z
+Vector4  operator*(const Position3& v, const Mat44& m);           // ??Dmath@@YA?AVVector4@0@ABVPosition3@0@ABVMat44@0@@Z
+Mat44    Mul(const Mat44& a, const Mat33& b);                     // ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat33@1@@Z
 
 // ============================================================================
 // TranMat43 — translation-only matrix (16 bytes, single Position3)

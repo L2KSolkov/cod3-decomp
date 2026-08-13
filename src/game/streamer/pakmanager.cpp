@@ -3046,6 +3046,244 @@ void PakManager::LoadWbk(tlFixedString audioBank, bool async)
     (void)audioBank; (void)async;
 }
 
+// ============================================================================
+// nal resource directory globals + accessors (streamer.o 0x6637E0 - 0x6638D0)
+// ============================================================================
+struct nalAnyPose;
+class nalAnimFile;
+class nalSceneAnim;
+class nalBaseSkeleton;
+template <typename T> class nalAnimClass;
+
+tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalAnimDirectory = nullptr;      // @ 0x10E95FC
+tlResourceDirectory<nalAnimFile>* nalAnimFileDirectory = nullptr;               // @ 0x10E95F8
+tlResourceDirectory<nalBaseSkeleton>* nalSkeletonDirectory = nullptr;           // @ 0x10EC618
+tlResourceDirectory<nalSceneAnim>* nalSceneAnimDirectory = nullptr;             // @ 0x10E95F4
+
+// ea: 0x6637E0 / 0x6637F0
+tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalGetAnimDirectory()
+{
+    return nalAnimDirectory;
+}
+void nalSetAnimDirectory(tlResourceDirectory<nalAnimClass<nalAnyPose>>* dir)
+{
+    nalAnimDirectory = dir;
+}
+
+// ea: 0x663800 / 0x663810
+tlResourceDirectory<nalAnimFile>* nalGetAnimFileDirectory()
+{
+    return nalAnimFileDirectory;
+}
+void nalSetAnimFileDirectory(tlResourceDirectory<nalAnimFile>* dir)
+{
+    nalAnimFileDirectory = dir;
+}
+
+// ea: 0x663820 / 0x663830
+tlResourceDirectory<nalBaseSkeleton>* nalGetSkeletonDirectory()
+{
+    return nalSkeletonDirectory;
+}
+void nalSetSkeletonDirectory(tlResourceDirectory<nalBaseSkeleton>* dir)
+{
+    nalSkeletonDirectory = dir;
+}
+
+// ea: 0x663840 / 0x663850
+tlResourceDirectory<nalSceneAnim>* nalGetSceneAnimDirectory()
+{
+    return nalSceneAnimDirectory;
+}
+void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim>* dir)
+{
+    nalSceneAnimDirectory = dir;
+}
+
+// cdResourceDirectory<T> (streamer.o) - static accessors over the nal globals
+template <typename T>
+struct cdResourceDirectory {
+    static tlResourceDirectory<T>* GetDirectory();
+    static void SetDirectory(tlResourceDirectory<T>* dir);
+};
+
+template <>
+tlResourceDirectory<nalAnimClass<nalAnyPose>>*
+cdResourceDirectory<nalAnimClass<nalAnyPose>>::GetDirectory()
+{
+    return nalAnimDirectory;
+}
+template <>
+void cdResourceDirectory<nalAnimClass<nalAnyPose>>::SetDirectory(
+    tlResourceDirectory<nalAnimClass<nalAnyPose>>* dir)
+{
+    nalAnimDirectory = dir;
+}
+
+template <>
+tlResourceDirectory<nalSceneAnim>*
+cdResourceDirectory<nalSceneAnim>::GetDirectory()
+{
+    return nalSceneAnimDirectory;
+}
+template <>
+void cdResourceDirectory<nalSceneAnim>::SetDirectory(
+    tlResourceDirectory<nalSceneAnim>* dir)
+{
+    nalSceneAnimDirectory = dir;
+}
+
+template <>
+tlResourceDirectory<nalAnimFile>*
+cdResourceDirectory<nalAnimFile>::GetDirectory()
+{
+    return nalAnimFileDirectory;
+}
+template <>
+void cdResourceDirectory<nalAnimFile>::SetDirectory(
+    tlResourceDirectory<nalAnimFile>* dir)
+{
+    nalAnimFileDirectory = dir;
+}
+
+template <>
+tlResourceDirectory<nalBaseSkeleton>*
+cdResourceDirectory<nalBaseSkeleton>::GetDirectory()
+{
+    return nalSkeletonDirectory;
+}
+template <>
+void cdResourceDirectory<nalBaseSkeleton>::SetDirectory(
+    tlResourceDirectory<nalBaseSkeleton>* dir)
+{
+    nalSkeletonDirectory = dir;
+}
+
+// ============================================================================
+// math SSE COMDATs (streamer.o 0x663930 - 0x663EF0)
+// ============================================================================
+namespace math {
+
+// ea: 0x663930
+float LengthSquared(const Position3& v)
+{
+    __m128 v1 = _mm_mul_ps(v.v, v.v);
+    return v1.m128_f32[0] + (_mm_shuffle_ps(v1, v1, 0x55).m128_f32[0]
+                             + _mm_shuffle_ps(v1, v1, 0xAA).m128_f32[0]);
+}
+
+// ea: 0x663990
+Vector4 operator+(const Vector4& a, const Position3& b)
+{
+    Vector4 r;
+    r.v = _mm_add_ps(a.v, _mm_shuffle_ps(b.v,
+                                         _mm_shuffle_ps(_mm_set1_ps(1.0f),
+                                                        b.v, 0xA0),
+                                         0x34));
+    return r;
+}
+
+// ea: 0x6639E0
+Vector4 operator/(const Vector4& a, float b)
+{
+    Vector4 r;
+    r.v = _mm_div_ps(a.v, _mm_shuffle_ps(_mm_set1_ps(b), _mm_set1_ps(b), 0));
+    return r;
+}
+
+// ea: 0x663A20
+Mat44::Mat44(const Vector4& _x, const Vector4& _y, const Vector4& _z,
+             const Vector4& _w)
+{
+    x.v = _x.v;
+    y.v = _y.v;
+    z.v = _z.v;
+    w.v = _w.v;
+}
+
+// ea: 0x663AC0 / 0x663AD0 / 0x663AE0 / 0x663AF0
+Vector4& Mat44::GetX() { return x; }
+Vector4& Mat44::GetY() { return y; }
+Vector4& Mat44::GetZ() { return z; }
+Vector4& Mat44::GetW() { return w; }
+
+// ea: 0x663B00
+Mat44::Mat44(const Mat33& m)
+{
+    x.v = _mm_shuffle_ps(_mm_setzero_ps(), m.x.v, 0xA0);
+    y.v = _mm_shuffle_ps(_mm_setzero_ps(), m.y.v, 0xA0);
+    z.v = _mm_shuffle_ps(_mm_setzero_ps(), m.z.v, 0xA0);
+    w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);  // Float4_WAxis
+}
+
+// ea: 0x663B80 / 0x663C00
+Vector4 Mul(const Position3& v, const Mat44& m)
+{
+    Vector4 r;
+    r.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v.v, v.v, 0x00), m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(v.v, v.v, 0x55), m.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v.v, v.v, 0xAA), m.z.v),
+                   m.w.v));
+    return r;
+}
+Vector4 operator*(const Position3& v, const Mat44& m)
+{
+    return Mul(v, m);
+}
+
+// ea: 0x663C80
+const Vector4& Vector4::operator*=(const Mat44& m)
+{
+    __m128 v = this->v;
+    this->v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v, v, 0x00), m.x.v),
+                   _mm_mul_ps(_mm_shuffle_ps(v, v, 0x55), m.y.v)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v, v, 0xAA), m.z.v),
+                   _mm_mul_ps(_mm_shuffle_ps(v, v, 0xFF), m.w.v)));
+    return *this;
+}
+
+// ea: 0x663D10
+Mat44 Mul(const Mat44& a, const Mat33& b)
+{
+    __m128 v3 = _mm_shuffle_ps(_mm_setzero_ps(), b.x.v, 0xA0);
+    __m128 v4 = _mm_shuffle_ps(_mm_setzero_ps(), b.y.v, 0xA0);
+    __m128 v6 = _mm_shuffle_ps(_mm_setzero_ps(), b.z.v, 0xA0);
+    __m128 waxis = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);  // Float4_WAxis
+
+    Vector4 tmp_4, tmp_20;
+    tmp_4.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(a.y.v, a.y.v, 0x00), v3),
+                   _mm_mul_ps(_mm_shuffle_ps(a.y.v, a.y.v, 0x55), v4)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(a.y.v, a.y.v, 0xAA), v6),
+                   _mm_mul_ps(_mm_shuffle_ps(a.y.v, a.y.v, 0xFF), waxis)));
+    Vector4 v7;
+    v7.v = a.w.v;
+    tmp_20.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(a.z.v, a.z.v, 0x00), v3),
+                   _mm_mul_ps(_mm_shuffle_ps(a.z.v, a.z.v, 0x55), v4)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(a.z.v, a.z.v, 0xAA), v6),
+                   _mm_mul_ps(_mm_shuffle_ps(a.z.v, a.z.v, 0xFF), waxis)));
+
+    Mat44 result;
+    result.x.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(a.x.v, a.x.v, 0x00), v3),
+                   _mm_mul_ps(_mm_shuffle_ps(a.x.v, a.x.v, 0x55), v4)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(a.x.v, a.x.v, 0xAA), v6),
+                   _mm_mul_ps(_mm_shuffle_ps(a.x.v, a.x.v, 0xFF), waxis)));
+    result.y = tmp_4;
+    result.z = tmp_20;
+    result.w.v = _mm_add_ps(
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v7.v, v7.v, 0x00), v3),
+                   _mm_mul_ps(_mm_shuffle_ps(v7.v, v7.v, 0x55), v4)),
+        _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v7.v, v7.v, 0xAA), v6),
+                   _mm_mul_ps(_mm_shuffle_ps(v7.v, v7.v, 0xFF), waxis)));
+    return result;
+}
+
+}  // namespace math
+
 // ea: 0x664BC0
 float PakFile::GetProgress() const
 {
