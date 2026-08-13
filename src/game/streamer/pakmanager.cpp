@@ -2785,13 +2785,14 @@ void PakManager::MemFree(TPakId id, void* ptr, bool bUseActorHeap)
                 __debugbreak();
         }
         PakFile* v5 = id > 0x62 ? nullptr : mSlots[id];
-        if (!v5->MemFree(ptr, true))
-            mem_heap_free(ptr);
+        if (v5->MemFree(ptr, true))
+            return;
     }
+    mem_heap* v6 = gActorHeap->GetHeapPointer();
+    if (v6 != nullptr && ptr >= v6->start && ptr < v6->end)
+        mem_heap_free(v6, ptr);
     else
-    {
         mem_heap_free(ptr);
-    }
 }
 
 // ============================================================================
@@ -4315,8 +4316,29 @@ void PakFile::UpdateLoading()
 
 void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
 {
-    (void)id; (void)size; (void)bUseActorHeap;
-    return nullptr;
+    if (id != PAK_ID_INVALID)
+    {
+        if (sInst->mSlots[id] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 2583;
+            AeAssert::gCurrentExpr = "PakManager::Inst()->IsValid( id )";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("bad pak id for MemAlloc"))
+                __debugbreak();
+        }
+        PakFile* v5 = id > 0x62 ? nullptr : mSlots[id];
+        void* result = v5->MemAlloc(0x10u, size, true);
+        if (result != nullptr)
+            return result;
+    }
+    if (!bUseActorHeap)
+        return mem_heap_malloc(16, size);
+    void* result = gActorHeap->Malloc(size, 16);
+    if (result == nullptr)
+        return mem_heap_malloc(16, size);
+    return result;
 }
 void PakManager::ResetPriorities(bool user_distances_also)
 {
