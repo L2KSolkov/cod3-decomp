@@ -101,6 +101,10 @@ struct ae_fixed_string {
         mBuff[l] = 0;
         return *this;
     }
+
+    // ea: 0x686FF0 — get_file_name (streamer.o COMDAT; defined in
+    // game/streamer/pakmanager.cpp)
+    ae_fixed_string get_file_name(bool truncExt) const;
 };
 
 // ae_formatted_string — extends ae_fixed_string via inheritance

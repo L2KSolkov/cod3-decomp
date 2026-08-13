@@ -15,6 +15,7 @@
 #include "ngl/nglFont.h"
 #include "ngl/nglTexture.h"
 #include "filesystem/apk.h"
+#include "core/ae_fixed_string.h"
 #include "core/tlFixedString.h"
 #include "core/tlResourceDirectory.h"
 #include "engine/broc_types.h"
@@ -833,6 +834,7 @@ public:
     CdResourceDirectoryView m_skeleton_directory;  // +0x24
     MipSettingsBank* mMipSettingsBank;  // +0x30
     InstanceBankSet* mEntries[99];  // +0x34
+    static InstanceBankMgr* sInst;  // ?sInst@InstanceBankMgr@@2PAV1@A
 
     void ReleaseInstanceBank(TPakId pakId);  // ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z
     void DecodeInstbank(const char* name, unsigned char* data, int size,
@@ -850,6 +852,7 @@ public:
     bool GetMipScale(const char* texture,
                      float* out_value);  // ?GetMipScale@InstanceBankMgr@@QAE_NPBDAAM@Z
 };
+InstanceBankMgr* InstanceBankMgr::sInst = nullptr;
 
 // Manager DecodeBank stubs (cross-object: core.o / render.o / mp_actors.o)
 class XModelManager {
@@ -4061,6 +4064,85 @@ void InstanceBankMgr::ReleaseSkeletons(TPakId pakId)
         }
     }
     m_skeleton_directory.m_enable_release = false;
+}
+
+// ============================================================================
+// GetName / RegisterMesh / GetMultiApkFcn (streamer.o 0x66F3C0 - 0x66F670)
+// ============================================================================
+namespace AeStringSupport {
+void CStrToAeStr(char* dst, int* dstLen, int capacity, const char* src);
+void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,
+                 bool includeExt);
+void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src,
+               int srcLen);
+}
+
+// ea: 0x686FF0 (streamer.o COMDAT; ae_fixed_string<512,unsigned short>)
+template <>
+ae_fixed_string<512, unsigned short>
+ae_fixed_string<512, unsigned short>::get_file_name(bool truncExt) const
+{
+    ae_fixed_string<512, unsigned short> result;
+    char r[510];
+    r[0] = 0;
+    int dstLen = 0;
+    AeStringSupport::GetFileName(r, &dstLen, (const char*)mBuff, mLength,
+                                 truncExt);
+    int oLen = 0;
+    AeStringSupport::AeStrCopy((char*)result.mBuff, &oLen, 510, r, dstLen);
+    result.mLength = (unsigned char)oLen;
+    return result;
+}
+
+// ea: 0x66F3C0
+tlFixedString GetName(const char* name)
+{
+    ae_fixed_string<512, unsigned short> cpy;
+    int oLen = 0;
+    AeStringSupport::CStrToAeStr((char*)cpy.mBuff, &oLen, 510, name);
+    cpy.mLength = (unsigned char)oLen;
+    cpy = cpy.get_file_name(true);
+    char* p_cpy = (char*)cpy.mBuff;
+    if (p_cpy[0] != 0)
+    {
+        char v3;
+        do
+        {
+            if (p_cpy[0] == 46)
+                p_cpy[0] = 0;
+            v3 = p_cpy[1];
+            ++p_cpy;
+        } while (v3 != 0);
+    }
+    tlFixedString str((const char*)cpy.mBuff);
+    return str;
+}
+
+struct MultiApk;
+typedef void (*MultiApkCallback)(const char*, MultiApk*, TPakId);
+
+// ea: 0x66F480
+void RegisterMesh(const char* name, MultiApk* file, TPakId pakId)
+{
+    tlFixedString result = GetName(name);
+    InstanceBankMgr::sInst->Add(INSTBANK_TYPE_TEXTURE, pakId, result,
+                                (unsigned int)file);
+}
+
+// ea: 0x66F670
+MultiApkCallback GetMultiApkFcn(const char* ext)
+{
+    tlFixedString v3(ext);
+    if (v3.hash == 521171546 || v3.hash == 521531143)
+        return RegisterMesh;
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DecodePakFile.cpp";
+    AeAssert::gCurrentLine = 443;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("no multi-apk callback for type '%s'", ext))
+        __debugbreak();
+    return nullptr;
 }
 
 // ea: 0x665370
