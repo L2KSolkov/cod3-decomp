@@ -1902,6 +1902,7 @@ struct Camera {
 public:
     void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
     int IsAnimating() const;                 // 0x55FA40
+    void StartTween(float tweenTime, bool anglesOnly);  // ?StartTween@Camera@@QAEXM_N@Z (cg_misc real)
 };
 extern Camera* gCamera;  // ?gCamera@@3PAUCamera@@A (cg.o @ 0x1358EF0)
 
@@ -8387,6 +8388,248 @@ void InteractState::DoWeaponChange()
                 mController->ForceInteractionWeapon(mDesiredWeaponIndex);
             else
                 mController->SelectInteractionWeapon(mDesiredWeaponIndex);
+        }
+    }
+}
+
+// ============================================================================
+// PickLiveGrenade + Vehicle steering cluster (anim.o)
+// ============================================================================
+
+extern float VectorNormalize(float* v);  // real (math lib)
+extern void vectoangles(float* vec, float* angles);  // real (cg_misc)
+
+// anim.o statics (verified vs IDA)
+float sMaxScore = 1.0f;      // @ 0xDF3750
+static const unsigned int kSMinScoreBits = 0xFFFFFFFFu;
+float sMinScore = *(const float*)&kSMinScoreBits;  // NaN @ 0xF309BC
+float sSWAngleMax = 35.0f;   // @ 0xDF29DC
+float sSWKeepTurn = 90.0f;   // @ 0xDF29E0
+float sSWTurnRate = 300.0f;  // @ 0xDF29E4
+float sSWAngleFactor = 1.0f; // @ 0xDF29E8
+
+// ea: 0x0053EB00
+void InteractStatePickLiveGrenade_RotateCamera(InteractState* self,
+                                               float* angles, float time)
+{
+    (void)self;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    char* ps = (char*)Player->client;
+    *(int*)(ps + 0x54) += (int)(angles[0] * 182.04445f) & 0xFFFF;
+    *(int*)(ps + 0x58) += (int)(angles[1] * 182.04445f) & 0xFFFF;
+    *(int*)(ps + 0x5C) += (int)(angles[2] * 182.04445f) & 0xFFFF;
+    ((Camera*)((char*)gCamera + 0x1F0 * currCl))->StartTween(time, true);
+}
+
+// ea: 0x00555390
+void InteractStatePickLiveGrenade_ComputeDeltaAngles(InteractState* self)
+{
+    unsigned int mVal = self->mController->mInteractableH.mVal;
+    unsigned int v3 = mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    char* ps = (char*)Player->client;
+    float dir[3];
+    float* mo = (float*)((char*)mObject + 0x150);
+    float* po = (float*)((char*)Player + 0x150);
+    dir[0] = mo[0] - po[0];
+    dir[1] = mo[1] - po[1];
+    dir[2] = mo[2] - (po[2] + *(float*)(ps + 0xE0));
+    VectorNormalize(dir);
+    float newAngles[3];
+    vectoangles(dir, newAngles);
+    *(float*)((char*)self + 0x1A4) = newAngles[0] - *(float*)(ps + 0xD0);
+    *(float*)((char*)self + 0x1A8) = newAngles[1] - *(float*)(ps + 0xD4);
+    *(float*)((char*)self + 0x1AC) = newAngles[2] - *(float*)(ps + 0xD8);
+}
+
+// ea: 0x00551320
+void InteractStateVehicleRelease_CalcSteeringWheelAngle(InteractState* self,
+                                                        float deltaT)
+{
+    (void)deltaT;
+    unsigned int v2 = self->mController->mInteractableH.mVal & 0xFFF;
+    if (v2 < 0x540
+        && self->mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
+        {
+            InteractStateInfoLocal* mInfo =
+                (InteractStateInfoLocal*)self->mInfo;
+            if (*(float*)((char*)mInfo + 0x378) != 0.0f)
+            {
+                float timeRatio =
+                    self->mStateTimer / *(float*)((char*)mInfo + 0x378);
+                if (timeRatio >= 1.0f)
+                    timeRatio = 1.0f;
+                float init = *(float*)((char*)self + 0x1B0);
+                sSteeringWheelAngleVehicleBase =
+                    (cosf(timeRatio * 3.1415927f - 3.1415927f) + 1.0f)
+                        * 0.5f * -init
+                    + init;
+            }
+        }
+    }
+}
+
+// ea: 0x00551090
+float InteractStateVehicleTurn_CalcScore(InteractState* self, float deltaT)
+{
+    (void)deltaT;
+    *(float*)((char*)self + 0x1B8) = 0.5f;
+    InteractionController* mController = self->mController;
+    unsigned int mVal = mController->mInteractableH.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
+        {
+            InteractStateInfoLocal* mInfo =
+                (InteractStateInfoLocal*)self->mInfo;
+            InteractState* v7 = self->mSuccessState[3];
+            float steeringWheelAngleMax =
+                *(float*)((char*)mInfo + 0x588);
+            sSWAngleMax = steeringWheelAngleMax;
+            float v9 = -steeringWheelAngleMax;
+            if (v7 != nullptr)
+            {
+                if (*(int*)((char*)mInfo + 0x584) != 0)
+                    v9 = 0.0f;
+                else
+                    steeringWheelAngleMax = 0.0f;
+            }
+            float v10 = (sSteeringWheelAngleVehicleBase - v9)
+                        / (steeringWheelAngleMax - v9);
+            if (v7 == nullptr || *(int*)((char*)mInfo + 0x584) == 0)
+                v10 = 1.0f - v10;
+            float v11 = ((sMaxScore - sMinScore) * v10) + sMinScore;
+            if (sMinScore > v11)
+            {
+                *(float*)((char*)self + 0x1B8) = sMinScore;
+                return *(float*)((char*)self + 0x1B8);
+            }
+            if (v11 > sMaxScore)
+                v11 = sMaxScore;
+            *(float*)((char*)self + 0x1B8) = v11;
+        }
+    }
+    return *(float*)((char*)self + 0x1B8);
+}
+
+// ea: 0x00550910
+void InteractStateVehicleBase_CalcSteeringWheelAngle(InteractState* self,
+                                                     float deltaT)
+{
+    InteractionController* c = self->mController;
+    unsigned int v2 = c->mInteractableH.mVal & 0xFFF;
+    if (v2 < 0x540
+        && c->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            void* scr_vehicle = mObject->scr_vehicle;
+            if (scr_vehicle != nullptr)
+            {
+                float mSteeringAngle = *(float*)((char*)scr_vehicle + 0x410);
+                InteractStateInfoLocal* mInfo =
+                    (InteractStateInfoLocal*)self->mInfo;
+                float steeringAngleKeepTurn =
+                    *(float*)((char*)mInfo + 0x58C);
+                float steeringWheelAngleMax =
+                    *(float*)((char*)mInfo + 0x588);
+                float steeringWheelTurnRate =
+                    *(float*)((char*)mInfo + 0x590);
+                float steeringWheelAngleFactor =
+                    *(float*)((char*)mInfo + 0x594);
+                sSWAngleMax = steeringWheelAngleMax;
+                sSWKeepTurn = steeringAngleKeepTurn;
+                sSWTurnRate = steeringWheelTurnRate;
+                sSWAngleFactor = steeringWheelAngleFactor;
+                float* mLastDelta = (float*)((char*)self + 0x1A4);
+                float* mTurnRate = (float*)((char*)self + 0x1A0);
+                if (mSteeringAngle > steeringAngleKeepTurn)
+                {
+                    if (*mLastDelta >= 0.0f)
+                    {
+                        float v11 = (deltaT * 60.0f) + *mTurnRate;
+                        if (steeringWheelTurnRate <= v11
+                            && v11 <= steeringWheelTurnRate)
+                            steeringWheelTurnRate = v11;
+                    }
+                    *mTurnRate = steeringWheelTurnRate;
+                    *mLastDelta = steeringWheelTurnRate * deltaT;
+                }
+                else if ((0.0f - steeringAngleKeepTurn) > mSteeringAngle)
+                {
+                    if (*mLastDelta <= 0.0f)
+                    {
+                        float v12 = (deltaT * 60.0f) + *mTurnRate;
+                        if (steeringWheelTurnRate <= v12
+                            && v12 <= steeringWheelTurnRate)
+                            steeringWheelTurnRate = v12;
+                    }
+                    *mTurnRate = steeringWheelTurnRate;
+                    *mLastDelta = -(steeringWheelTurnRate * deltaT);
+                }
+                else
+                {
+                    float v13 = steeringWheelAngleFactor * mSteeringAngle;
+                    if (v13 <= sSteeringWheelAngleVehicleBase)
+                    {
+                        if (*mLastDelta <= 0.0f)
+                        {
+                            float v17 = (deltaT * 60.0f) + *mTurnRate;
+                            if (steeringWheelTurnRate <= v17
+                                && v17 <= steeringWheelTurnRate)
+                                steeringWheelTurnRate = v17;
+                        }
+                        *mTurnRate = steeringWheelTurnRate;
+                        float v18 = -(steeringWheelTurnRate * deltaT);
+                        *mLastDelta = v18;
+                        if (v13 > v18 + sSteeringWheelAngleVehicleBase)
+                            *mLastDelta =
+                                v13 - sSteeringWheelAngleVehicleBase;
+                    }
+                    else
+                    {
+                        if (*mLastDelta >= 0.0f)
+                        {
+                            float v14 = (deltaT * 60.0f) + *mTurnRate;
+                            if (steeringWheelTurnRate <= v14
+                                && v14 <= steeringWheelTurnRate)
+                                steeringWheelTurnRate = v14;
+                        }
+                        *mTurnRate = steeringWheelTurnRate;
+                        float v15 = steeringWheelTurnRate * deltaT;
+                        *mLastDelta = v15;
+                        if (v15 + sSteeringWheelAngleVehicleBase <= v13)
+                            goto clamp;
+                        *mLastDelta = v13 - sSteeringWheelAngleVehicleBase;
+                    }
+                }
+clamp:
+                float v19 = *mLastDelta + sSteeringWheelAngleVehicleBase;
+                if ((0.0f - steeringWheelAngleMax) <= v19)
+                {
+                    sSteeringWheelAngleVehicleBase = steeringWheelAngleMax;
+                    if (v19 <= steeringWheelAngleMax)
+                        sSteeringWheelAngleVehicleBase = v19;
+                }
+                else
+                {
+                    sSteeringWheelAngleVehicleBase =
+                        -steeringWheelAngleMax;
+                }
+            }
         }
     }
 }
