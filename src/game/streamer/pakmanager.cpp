@@ -243,12 +243,20 @@ enum EPakType {
 };
 class NumBanks {
 public:
+    struct Ps3Banks {
+        float main;  // +0x00
+        float lram;  // +0x04
+    };
+    struct GcBanks {
+        float main;  // +0x00
+        float aram;  // +0x04
+    };
     float    ps2;              // +0x00
-    uint8_t  _pad4[8];         // +0x04 (NumBanks::Ps3Banks)
+    Ps3Banks ps3;              // +0x04
     float    xbox;             // +0x0C
     float    xenon;            // +0x10
     float    pcx;              // +0x14
-    uint8_t  _pad18[8];        // +0x18 (NumBanks::GcBanks)
+    GcBanks  gc;               // +0x18
 
     float& to_float();         // ?to_float@NumBanks@@QAEAAMXZ
     float to_float() const;    // ?to_float@NumBanks@@QBEMXZ
@@ -274,6 +282,9 @@ struct BitSet {
     }
 };
 
+
+struct mem_info;
+template <typename T, int N> struct ae_sized_array;
 
 // TBankAlloc (BankManager.cpp; two 64-bit bank allocation bitmaps)
 struct TBankAlloc {
@@ -308,6 +319,10 @@ public:
     int get_alloc_count(const TBankAlloc& bat) const;  // ?get_alloc_count@BankManager@@QBEHABUTBankAlloc@@@Z
     void release(TBankAlloc& alloc);  // ?release@BankManager@@QAEXAAUTBankAlloc@@@Z
     TBankAlloc Allocate(NumBanks num_banks);  // ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z
+    void GetAllocs(TBankAlloc bat, const NumBanks& numBanks,
+                   ae_sized_array<mem_info, 32>* output);  // ?GetAllocs@BankManager@@QBEXUTBankAlloc@@ABVNumBanks@@AAV?$ae_sized_array@Vmem_info@@$0CA@@@@Z
+    mem_info get_alloc(const TBankAlloc& bat, int which,
+                       bool mram) const;  // ?get_alloc@BankManager@@QBE?AVmem_info@@ABUTBankAlloc@@H_N@Z
 };
 
 template <typename T, int N>
@@ -4612,6 +4627,208 @@ TBankAlloc BankManager::Allocate(NumBanks num_banks)
     result.mram_alloc1 = alloc;
     result.mram_alloc2 = alloc2;
     return result;
+}
+
+// ea: 0x66B2F0 (BankManager.cpp file-static)
+static void InternalGetAllocs(float numAvailableBanks, float* numBanks,
+                              unsigned int bankSize,
+                              unsigned char* arena, BitSet<64>* alloc1,
+                              BitSet<64>* alloc2,
+                              ae_sized_array<mem_info, 32>* output)
+{
+    int v7 = 0;
+    unsigned char* v8 = arena;
+    while (*numBanks >= 1.0f)
+    {
+        if (numAvailableBanks <= (float)v7)
+            break;
+        if (alloc1->Test(v7) && alloc2->Test(v7))
+        {
+            alloc1->Rmv(v7);
+            alloc2->Rmv(v7);
+            *numBanks -= 1.0f;
+            mem_info mi = mem_info(v8, (int)bankSize);
+            output->push_back(mi);
+        }
+        ++v7;
+        v8 += bankSize;
+    }
+    if (*numBanks > 0.0f)
+    {
+        int v9 = 0;
+        float v16 = numAvailableBanks + 0.5f;
+        if (v16 > 0.0f)
+        {
+            bool v10;
+            for (;;)
+            {
+                v10 = alloc1->Test(v9);
+                if (v10 != alloc2->Test(v9))
+                    break;
+                if (v16 <= (float)++v9)
+                    goto scan_alloc1;
+            }
+            mem_info mi = mem_info(
+                v10 ? &arena[bankSize * v9]
+                    : &arena[(bankSize >> 1) + bankSize * v9],
+                (int)(bankSize >> 1));
+            (v10 ? alloc1 : alloc2)->Rmv(v9);
+            output->push_back(mi);
+            *numBanks -= 0.5f;
+            return;
+        }
+scan_alloc1:
+        {
+            int v11 = 0;
+            if (numAvailableBanks > 0.0f)
+            {
+                while (1)
+                {
+                    if (v11 >> 5 >= 2)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
+                        AeAssert::gCurrentLine = 123;
+                        AeAssert::gCurrentExpr = "idx < GetNumWords()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                   "Please add a descriptive string"))
+                            __debugbreak();
+                    }
+                    if (((1 << (v11 & 0x1F))
+                         & alloc1->mBits[v11 >> 5]) != 0)
+                        break;
+                    if (numAvailableBanks <= (float)++v11)
+                        return;
+                }
+                alloc1->Rmv(v11);
+                mem_info mi = mem_info(&arena[bankSize * v11],
+                                       (int)(bankSize >> 1));
+                output->push_back(mi);
+                *numBanks -= 0.5f;
+            }
+        }
+    }
+}
+
+// ea: 0x66B540
+void BankManager::GetAllocs(TBankAlloc bat, const NumBanks& numBanks,
+                            ae_sized_array<mem_info, 32>* output)
+{
+    float numBanksLocal = numBanks.xbox;
+    InternalGetAllocs(mNumMramBanks, &numBanksLocal, mMramBankSize,
+                      mMramArena, &bat.mram_alloc1, &bat.mram_alloc2,
+                      output);
+    if (!bat.IsEmpty())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 564;
+        AeAssert::gCurrentExpr = "bat.IsEmpty()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Banks left over!"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x66B9A0
+mem_info BankManager::get_alloc(const TBankAlloc& bat, int which,
+                                bool mram) const
+{
+    (void)mram;
+    if (which < 0 || which >= get_alloc_count(bat))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 801;
+        AeAssert::gCurrentExpr =
+            "0 <= which && which < get_alloc_count(bat)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+            __debugbreak();
+    }
+    int v6 = -1;
+    int v7 = 0;
+    int group_index = -1;
+    unsigned char* arena = mMramArena;
+    bool half = false;
+    int index = -1;
+    if (mNumMramBanks + 0.5f > 0.0f)
+    {
+        // full-bank groups (both alloc1+alloc2)
+        while (!bat.mram_alloc1.Test(v7) || !bat.mram_alloc2.Test(v7)
+               || ++v6 != which)
+        {
+            if (mNumMramBanks + 0.5f <= (float)++v7)
+            {
+                group_index = v6;
+                goto half_search;
+            }
+        }
+        index = v7;
+    }
+    else
+    {
+half_search:
+        if (mNumMramBanks + 0.5f <= 0.0f)
+            goto not_found;
+        for (int v8 = 0;; ++v8)
+        {
+            bool v9 = bat.mram_alloc2.Test(v8);
+            if (bat.mram_alloc1.Test(v8) != v9 && ++group_index == which)
+            {
+                half = true;
+                index = v8;
+                break;
+            }
+            if (mNumMramBanks + 0.5f <= (float)(v8 + 1))
+            {
+                v6 = group_index;
+                goto not_found;
+            }
+        }
+    }
+    {
+        unsigned int v10 = 0;
+        if (half && bat.mram_alloc2.Test(index))
+            v10 = mMramBankSize >> 1;
+        unsigned char* v11 = &arena[v10 + (unsigned int)index * mMramBankSize];
+        unsigned int v12 = mMramBankSize >> (half ? 1 : 0);
+        if (v11 == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+            AeAssert::gCurrentLine = 919;
+            AeAssert::gCurrentExpr = "mi.data != 0";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("no alloc?"))
+                __debugbreak();
+        }
+        if ((((uintptr_t)v11 + 4095) & 0xFFFFF000) != (uintptr_t)v11)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+            AeAssert::gCurrentLine = 922;
+            AeAssert::gCurrentExpr =
+                "( (uint32(mi.data) + (4*1024-1)) & ~(4*1024-1)) == "
+                "uint32(mi.data)";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("bank is not aligned!"))
+                __debugbreak();
+        }
+        mem_info result = mem_info(v11, (int)v12);
+        return result;
+    }
+not_found:
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 912;
+        AeAssert::gCurrentExpr = "found";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("bank alloc index out of range?"))
+            __debugbreak();
+        mem_info result = mem_info(nullptr, 0);
+        return result;
+    }
 }
 
 // ea: 0x66F0A0
