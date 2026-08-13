@@ -1287,13 +1287,36 @@ private:
                                 ZoneOverrideBrushSet* zob);  // ?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
 };
 
+class SceneBank;
+
+// SceneEffectGroup (scenemanager.cpp; 12 bytes, verified IDA)
+struct SceneEffectGroup {
+    InplaceString mName;    // +0x00
+    unsigned int  mHash;    // +0x04
+    unsigned int  mActive;  // +0x08
+};
+
+// CheckpointMgr minimal view (full type in sv_stubs.h)
+struct CheckpointMgr {
+    bool mUsingCheckpoints;  // +0x00
+    uint8_t _pad01[3];
+    uint8_t _pad04[0x574 - 0x04];
+    bool mCheckpointSaveExists;  // +0x574
+    static CheckpointMgr* sInst;  // ?sInst@CheckpointMgr@@2PAV1@A (sv_main.cpp)
+};
+
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
 // mDebugRenderEnts +0x1B4, mDebugRenderLights +0x1B5)
 struct SceneManager {
 public:
-    uint8_t _pad[0x1A0];
+    uint8_t _pad[0x0C];
+    ae_array<SceneBank*, 99> mBankArray;       // +0x0C
+    InplaceVector<SceneEffectGroup>* mSceneEffectGroups;  // +0x198
+    InplaceVector<unsigned char>* mPersistantStorage;     // +0x19C
     void*   mWorldSpawn;        // +0x1A0
-    uint8_t _pad1A4[0x1B0 - 0x1A4];
+    int     mEffectCount;       // +0x1A4
+    int     mEffectDelayFrames; // +0x1A8
+    int     mLoadedIdsCount;    // +0x1AC
     float   mDebugRenderDist;   // +0x1B0
     bool    mDebugRenderEnts;   // +0x1B4
     bool    mDebugRenderLights; // +0x1B5
@@ -1302,8 +1325,15 @@ public:
     void ToggleSceneFX(float dist);  // ?ToggleSceneFX@SceneManager@@QAEXM@Z
     void ToggleRenderEnts();         // ?ToggleRenderEnts@SceneManager@@QAEXXZ
     void ToggleRenderLights();       // ?ToggleRenderLights@SceneManager@@QAEXXZ
+    void RestartPersistentArray();   // ?RestartPersistentArray@SceneManager@@QAEXXZ
+    void ResetAllStaticModels();     // ?ResetAllStaticModels@SceneManager@@QAEXXZ
+    void EnableEffect(unsigned int hash);  // ?EnableEffect@SceneManager@@QAEXI@Z
+    void DisableEffect(unsigned int hash); // ?DisableEffect@SceneManager@@QAEXI@Z
+    SceneBank* GetBank(TPakId pakId);      // ?GetBank@SceneManager@@AAEPAVSceneBank@@W4TPakId@@@Z
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
+
+ae_sized_array<TPakId, 99> loaded_ids;  // ?loaded_ids@@3V?$ae_sized_array@W4TPakId@@$0GD@@@A @ 0xF593B0
 
 // ae_heap (core_xboxr; vtable+4 = Malloc(unsigned size, int align))
 class ae_heap {
@@ -1799,6 +1829,152 @@ void SceneManager::ToggleRenderEnts()
 void SceneManager::ToggleRenderLights()
 {
     mDebugRenderLights = !mDebugRenderLights;
+}
+
+// ea: 0x668C30
+void SceneManager::RestartPersistentArray()
+{
+    InplaceVector<unsigned char>* storage = mPersistantStorage;
+    if (storage == nullptr)
+        return;
+    if (CheckpointMgr::sInst->mUsingCheckpoints
+        && CheckpointMgr::sInst->mCheckpointSaveExists)
+    {
+        for (unsigned int i = 0; i < storage->mSize; ++i)
+        {
+            if (storage->mList[i] == 1)
+                mPersistantStorage->mList[i] = 0;
+            storage = mPersistantStorage;
+        }
+    }
+    else
+    {
+        for (unsigned int j = 0; j < storage->mSize; ++j)
+        {
+            storage->mList[j] = 0;
+            storage = mPersistantStorage;
+        }
+    }
+}
+
+// ea: 0x668CB0
+void SceneManager::ResetAllStaticModels()
+{
+    for (int i = 0; i < mLoadedIdsCount; ++i)
+    {
+        if (i > 0x62)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 154;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _CAPACITY";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+        if ((unsigned int)loaded_ids.m_elements[i] > 0x62u)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 31;
+            AeAssert::gCurrentExpr = "idx >= 0 && idx < _SIZE";
+            if (!AeAssert::IsIgnored() && AeAssert::Assert("out of bounds"))
+                __debugbreak();
+        }
+    }
+}
+
+// ea: 0x668ED0
+void SceneManager::EnableEffect(unsigned int hash)
+{
+    if (mSceneEffectGroups == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 335;
+        AeAssert::gCurrentExpr = "mSceneEffectGroups";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no groups! maybe rebuild bsp?"))
+            __debugbreak();
+    }
+    if (mSceneEffectGroups != nullptr)
+    {
+        unsigned int v4 = 0;
+        if (mSceneEffectGroups->mSize != 0)
+        {
+            while (1)
+            {
+                if (mSceneEffectGroups->mList[v4].mHash == hash)
+                    break;
+                if (++v4 >= mSceneEffectGroups->mSize)
+                    goto not_found;
+            }
+            mSceneEffectGroups->mList[v4].mActive = 1;
+            return;
+        }
+not_found:
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 348;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Unable to find any group with this id"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x668FC0
+void SceneManager::DisableEffect(unsigned int hash)
+{
+    if (mSceneEffectGroups == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 355;
+        AeAssert::gCurrentExpr = "mSceneEffectGroups";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no groups! maybe rebuild bsp?"))
+            __debugbreak();
+    }
+    if (mSceneEffectGroups != nullptr)
+    {
+        unsigned int v4 = 0;
+        if (mSceneEffectGroups->mSize != 0)
+        {
+            while (1)
+            {
+                if (mSceneEffectGroups->mList[v4].mHash == hash)
+                    break;
+                if (++v4 >= mSceneEffectGroups->mSize)
+                    goto not_found;
+            }
+            mSceneEffectGroups->mList[v4].mActive = 0;
+            return;
+        }
+not_found:
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 368;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Unable to find any group with this id"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x66A0B0
+SceneBank* SceneManager::GetBank(TPakId pakId)
+{
+    if (mBankArray.m_elements[pakId] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 2566;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no bank for this pak id!"))
+            __debugbreak();
+    }
+    return mBankArray.m_elements[pakId];
 }
 
 // ea: 0x668B30

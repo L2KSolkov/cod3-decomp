@@ -49,8 +49,6 @@ void PathNodeMgr::NodeList() {}
 void PathNodeMgr::CheckpointResetNodes() {}
 
 // SceneManager stubs (streamer.o; ported later)
-void SceneManager::ResetAllStaticModels() {}
-void SceneManager::RestartPersistentArray() {}
 void SceneManager::InstanceEntities() {}
 
 // StreamZoneManager stubs (streamer.o; ported later)
