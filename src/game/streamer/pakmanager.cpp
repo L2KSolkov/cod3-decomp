@@ -1781,6 +1781,8 @@ struct ZoneOverrideBrush {
     uint8_t _pad28[0x40 - 0x28];
 
     bool IsInside(const math::Position3& point);  // ?IsInside@ZoneOverrideBrush@@QBE_NABVPosition3@math@@@Z (stub)
+    bool IsInsidePlane(const math::Position3& point,
+                       const math::Vector4& vec) const;  // ?IsInsidePlane@ZoneOverrideBrush@@QBE_NABVPosition3@math@@ABVVector4@3@@Z
 };
 
 // ZoneOverrideBrushSet (streamer.o; mZoneBitset +0x0C, mZoneDistances +0x14)
@@ -7315,6 +7317,16 @@ void BoundingBox::accumulate(const math::Position3& p)
         vmax.v.m128_f32[2] = p.v.m128_f32[2];
 }
 
+// ea: 0x684900
+bool ZoneOverrideBrush::IsInsidePlane(const math::Position3& point,
+                                      const math::Vector4& vec) const
+{
+    __m128 v3 = _mm_mul_ps(point.v, vec.v);
+    return _mm_shuffle_ps(vec.v, vec.v, 255).m128_f32[0]
+           > (v3.m128_f32[0] + (_mm_shuffle_ps(v3, v3, 85).m128_f32[0]
+                                + _mm_shuffle_ps(v3, v3, 170).m128_f32[0]));
+}
+
 // ea: 0x6636A0
 const StreamZone* ZoneCellDesc::GetZone() const { return mZone; }
 
@@ -8081,6 +8093,14 @@ tlResourceDirectory<nalSceneAnim>* nalSceneAnimDirectory = nullptr;             
 extern int nalReleaseSkeleton(nalBaseSkeleton* skeleton);  // nal.cpp
 extern int nalReleaseAnimFile(nalAnimFile* file);          // nal.cpp
 extern int nalReleaseSceneAnim(nalSceneAnim* sceneAnim);   // nal.cpp
+extern nalBaseSkeleton* nalLoadSkeletonInPlace(void* data);  // nal.cpp
+extern nalAnimFile* nalLoadAnimFileInPlace(const tlFixedString& FileName,
+                                           void* Data);      // nal.cpp
+extern void XAnimEntryInvalidate();  // anim.o 0x92D5E0
+void XAnimEntryInvalidate()  // stub until anim.o lands
+{
+}
+tlFixedString GetName(const char* name);  // defined below (0x66F3C0)
 // XAnimRelease (anim.o 0x5513E0; stub)
 extern void XAnimRelease(nalAnimClass<nalAnyPose>* anim);
 void XAnimRelease(nalAnimClass<nalAnyPose>* anim)
@@ -10623,20 +10643,64 @@ void DecodeFont(const char* name, unsigned char* data, unsigned int size,
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
+// ea: 0x66F590
 void DecodeAnim(const char* name, unsigned char* data, unsigned int size,
                 TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    (void)size; (void)pak;
+    PakHeapContext heap_ctx(pakId, false);
+    XAnimEntryInvalidate();
+    tlFixedString nm = GetName(name);
+    if (nalLoadAnimFileInPlace(nm, data) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DecodePakFile.cpp";
+        AeAssert::gCurrentLine = 147;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("pak: failed loading anim %s", name))
+            __debugbreak();
+    }
+    if (heap_ctx.mPakId != PAK_ID_INVALID)
+    {
+        TlSystemCallbacks::LockTlAllocsToPakHeap(heap_ctx.mLastState, false);
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        if (ContextStack.m_size != 0)
+            ContextStack.m_size = ContextStack.m_size - 1;
+    }
 }
 void DecodePanel(const char* name, unsigned char* data, unsigned int size,
                  TPakId pakId, PakFile* pak)
 {
     (void)name; (void)data; (void)size; (void)pakId; (void)pak;
 }
+// ea: 0x66F4C0
 void DecodeSkeleton(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    (void)size; (void)pak;
+    PakHeapContext heap_ctx(pakId, false);
+    if (nalLoadSkeletonInPlace(data) == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\DecodePakFile.cpp";
+        AeAssert::gCurrentLine = 129;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("pak: failed loading skeleton %s", name))
+            __debugbreak();
+    }
+    if (heap_ctx.mPakId != PAK_ID_INVALID)
+    {
+        TlSystemCallbacks::LockTlAllocsToPakHeap(heap_ctx.mLastState, false);
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        if (ContextStack.m_size != 0)
+            ContextStack.m_size = ContextStack.m_size - 1;
+    }
 }
 void DecodeConfigStrings(const char* name, unsigned char* data, unsigned int size,
                          TPakId pakId, PakFile* pak)
