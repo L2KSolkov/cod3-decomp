@@ -599,6 +599,8 @@ class nalPositionOrientation {
 public:
     math::Position3 pos;
     math::Quaternion orient;
+
+    void operator*=(const nalPositionOrientation& rhs);  // ??XnalPositionOrientation@@QAEXABV0@@Z (0x560010)
 };
 
 class nalMatrix4x4 {
@@ -806,22 +808,56 @@ void nalGenericBlendTorso(nalGenericPose& out, float t, const nalGenericPose& a,
 // ============================================================================
 // nalGenericComponent — component type interface (Blend + BlendArray)
 // ============================================================================
-class nalComponentInitList {
+// nalInitList - intrusive list of component init entries (anim.o)
+// ??0nalInitList@@QAE@XZ (0x55E480) / ??1nalInitList@@UAE@XZ (0x55E4A0)
+class nalComponentBase;
+class nalInitList {
+public:
+    nalInitList();
+    virtual ~nalInitList();
+
+    nalInitList* next;  // +0x04
+    static nalInitList* head;  // ?head@nalInitList@@0PAV1@A @ 0x10E9604
+};
+
+nalInitList* nalInitList::head = nullptr;
+
+// ea: 0x0055E480
+nalInitList::nalInitList()
+{
+    next = head;
+    head = this;
+}
+
+// ea: 0x0055E4A0
+nalInitList::~nalInitList()
+{
+}
+
+class nalComponentInitList : public nalInitList {
 public:
     virtual void Register() {}
-    virtual ~nalComponentInitList() { DoNotOptimizeMarker(); }  // ??_E...UAEPAXI@Z
-    static void DoNotOptimizeMarker()
-    {
-        static volatile int s;
-        s = 1;
-    }
+    virtual ~nalComponentInitList() {}  // ??_E...UAEPAXI@Z
     static void DeleteArrayShim(void* p)
     {
         delete[] (nalComponentInitList*)p;
     }
-    nalComponentInitList();  // out-of-line to force vftable emission
+
+    // ??0nalComponentInitList@@QAE@PBDABVnalComponentBase@@@Z (0x55E7D0)
+    nalComponentInitList(const char* name, const nalComponentBase& component);
+
+    const char* Name;              // +0x08
+    const nalComponentBase* Component;  // +0x0C
 };
-nalComponentInitList::nalComponentInitList() {}
+
+// ea: 0x0055E7D0
+nalComponentInitList::nalComponentInitList(const char* name,
+                                           const nalComponentBase& component)
+    : nalInitList()
+{
+    Name = name;
+    Component = &component;
+}
 class nalComponentU8Base            { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentSignalCounter     { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentRLE8Int1          { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
@@ -1070,10 +1106,18 @@ struct XAnimInfo {
     unsigned short next;          // +0x0C
     unsigned char  s[36];         // +0x10
     void*          pEntity;       // +0x34
+
+    XAnimInfo();  // ??0XAnimInfo@@QAE@XZ (0x55E980)
 };
 
 // ?g_info@@3PAUXAnimInfo@@A @ 0xF25AE8 (512 entries)
 XAnimInfo g_info[512];
+
+// ea: 0x0055E980
+XAnimInfo::XAnimInfo()
+{
+    notifyName = 0;
+}
 
 // Mirrors game2.o AnimIK (0x7C bytes; full definition in g_game2_misc.cpp).
 // Only `initialized` is touched by xanim.cpp.
@@ -4480,14 +4524,14 @@ inline T* nalPosePtrCast(void* ptr)
 }
 
 // ea: 0x00547E10
-void VectorCopyUnalignedInc(float** pos, float (*v)[3])
+void VectorCopyUnalignedInc(char*& pos, float (&v)[3])
 {
-    float v2 = *(*pos)++;
-    (*v)[0] = v2;
-    v2 = *(*pos)++;
-    (*v)[1] = v2;
-    v2 = *(*pos)++;
-    (*v)[2] = v2;
+    v[0] = *(float*)pos;
+    pos += 4;
+    v[1] = *(float*)pos;
+    pos += 4;
+    v[2] = *(float*)pos;
+    pos += 4;
 }
 
 // ?g_tree_list@@3V?$reserved_dlist@VXAnimTree@@@@A @ 0xDF2ABC
@@ -5698,7 +5742,7 @@ __declspec(noinline) void DObjApplyPoseWrapper(
 }
 
 // ea: 0x0054A3B0
-void DObjGetTrajectory(nalPositionOrientation* po, DObj* obj)
+void DObjGetTrajectory(nalPositionOrientation& po, DObj* obj)
 {
     nalPositionOrientation v9;
     v9.orient.x = 0.0f;
@@ -5706,7 +5750,7 @@ void DObjGetTrajectory(nalPositionOrientation* po, DObj* obj)
     v9.orient.z = 0.0f;
     v9.orient.w = 1.0f;
     memset(&v9.pos, 0, sizeof(v9.pos));
-    *po = v9;
+    po = v9;
     if (obj == nullptr)
     {
         XANIM_ASSERT("obj", "c:\\cod\\code\\game\\xanim.cpp", 4302,
@@ -5733,10 +5777,10 @@ void DObjGetTrajectory(nalPositionOrientation* po, DObj* obj)
                     && *(void**)Skeleton == (void*)0x10E6D04)
                 {
                     ((nalGenericSkeleton*)Skeleton)
-                        ->GetTrajectoryUpdate(*v7, *po);
-                    if ((_fpclass(po->orient.x) & 0x297) != 0
-                        || (_fpclass(po->orient.y) & 0x297) != 0
-                        || (_fpclass(po->orient.z) & 0x297) != 0)
+                        ->GetTrajectoryUpdate(*v7, po);
+                    if ((_fpclass(po.orient.x) & 0x297) != 0
+                        || (_fpclass(po.orient.y) & 0x297) != 0
+                        || (_fpclass(po.orient.z) & 0x297) != 0)
                     {
                         XANIM_ASSERT(
                             "!IS_NAN((po.o)[0]) && !IS_NAN((po.o)[1]) && !IS_NAN((po.o)[2])",
@@ -5958,6 +6002,12 @@ nalPositionOrientation operator*(const nalPositionOrientation& a,
     result.pos.v = _mm_add_ps(_mm_add_ps(_mm_add_ps(v11, v9), v8),
                               b.pos.v);
     return result;
+}
+
+// ea: 0x00560010
+void nalPositionOrientation::operator*=(const nalPositionOrientation& rhs)
+{
+    *this = operator*(*this, rhs);
 }
 
 // ea: 0x005483C0
@@ -6351,9 +6401,9 @@ void DroneSetAutoTrajectoryPO(Entity* e, DObj* masterDObj)
 {
     nalPositionOrientation po;
     if ((e->mFlags & 8) != 0)
-        DObjGetTrajectory(&po, masterDObj);
+        DObjGetTrajectory(po, masterDObj);
     else
-        DObjGetTrajectory(&po, e->mDObj);
+        DObjGetTrajectory(po, e->mDObj);
     math::Mat44 axis;
     AnglesToAxis(&e->r.currentAngles, &e->r.currentOrigin, &axis);
     // SSE verbatim: out = axis.x*po.pos.x + axis.y*po.pos.y +
@@ -11297,18 +11347,6 @@ void InteractionController::Update(float deltaT)
         }
     }
     cdl_proftimer_interact.stop();
-}
-
-// ea: 0x00556E50
-int CheckActorInteraction(Entity* ent, const char* interactionName)
-{
-    if (InteractionController::Inst(currCl)->mCurState != nullptr)
-        return 1;
-    if (Actor_PushState((actor_s*)ent->actor, AIS_INTERACTION) == 0)
-        return 0;
-    TPakId v4 = CurPakId();
-    return InteractionController::Inst(currCl)->StartInteraction(
-        ent, interactionName, v4);
 }
 
 // ============================================================================
@@ -16828,12 +16866,6 @@ void AnimationUpdateTask::ApplyPose(Entity* e, float deltaT)
         } while (v4 < mDObj->numModels);
     }
 }
-class nalInitList {  // ??_GnalInitList@@UAEPAXI@Z
-public:
-    virtual ~nalInitList() { DoNotOptimizeMarker(); }
-    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
-};
-
 void XAnimNotifyInfo_DeleteArrayShim(void* p)  // ??_EXAnimNotifyInfo@@QAEPAXI@Z
 {
     delete[] (XAnimNotifyInfo*)p;
