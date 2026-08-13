@@ -932,17 +932,18 @@ protected:
                                  int controller);   // slot 29 0x5711A0
     virtual bool GetAnalogPressed(int button,
                                   int* p_controller);  // slot 30 0x5711D0
-    virtual bool GetButtonPressed(controller::ButtonIndex button,
+    virtual bool GetButtonPressed(int button,
                                   int* p_controller);  // slot 31 0x571330
-    virtual bool GetButtonReleased(controller::ButtonIndex button,
+    virtual bool GetButtonReleased(int button,
                                    int* p_controller);  // slot 32 0x571350
-    virtual int GetStickValueX(controller::StickIndex stick,
+    virtual int GetStickValueX(int stick,
                                int* p_controller);  // slot 33 0x571390
-    virtual int GetStickValueY(controller::StickIndex stick,
+    virtual int GetStickValueY(int stick,
                                int* p_controller);  // slot 34 0x5713B0
     virtual int GetClientFromController(int c);     // slot 35 0x571320
     virtual void NewMenuActive() {}                 // slot 36 inline 0x5AFA30
 public:
+    FEMenuSystem(int s, font_index f);  // ?FEMenuSystem@@QAE@HW4font_index@@@Z 0x57DD70
     int CurrentOverlay();                           // ?CurrentOverlay@FEMenuSystem@@QAEHXZ 0x570DC0
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
 };

@@ -1513,19 +1513,17 @@ int FEMenuSystem::GetClientFromController(int c)
 }
 
 // ea: 0x00571330
-bool FEMenuSystem::GetButtonPressed(controller::ButtonIndex button,
-                                    int* p_controller)
+bool FEMenuSystem::GetButtonPressed(int button, int* p_controller)
 {
     controller* v3 = controller::inst();
-    return v3->button_pressed(button, p_controller);
+    return v3->button_pressed((controller::ButtonIndex)button, p_controller);
 }
 
 // ea: 0x00571350
-bool FEMenuSystem::GetButtonReleased(controller::ButtonIndex button,
-                                     int* p_controller)
+bool FEMenuSystem::GetButtonReleased(int button, int* p_controller)
 {
     controller* v3 = controller::inst();
-    return v3->button_released(button, p_controller);
+    return v3->button_released((controller::ButtonIndex)button, p_controller);
 }
 
 // ea: 0x00571370
@@ -1541,17 +1539,35 @@ void FEMenuSystem::SetActiveMenu(int menu)
 }
 
 // ea: 0x00571390
-int FEMenuSystem::GetStickValueX(controller::StickIndex stick,
-                                 int* p_controller)
+int FEMenuSystem::GetStickValueX(int stick, int* p_controller)
 {
-    return controller::inst()->stick_value_x(stick, p_controller);
+    return controller::inst()->stick_value_x((controller::StickIndex)stick,
+                                             p_controller);
 }
 
 // ea: 0x005713B0
-int FEMenuSystem::GetStickValueY(controller::StickIndex stick,
-                                 int* p_controller)
+int FEMenuSystem::GetStickValueY(int stick, int* p_controller)
 {
-    return controller::inst()->stick_value_y(stick, p_controller);
+    return controller::inst()->stick_value_y((controller::StickIndex)stick,
+                                             p_controller);
+}
+
+// ea: 0x0057DD70
+FEMenuSystem::FEMenuSystem(int s, font_index f)
+{
+    size = s;
+    menus = (FEMenu**)mem_heap_malloc(4 * s);
+    font = f;
+    count = 0;
+    background = -1;
+    drawHelpbar = true;
+    m_active = -1;
+    is_active = false;
+    default_color_scheme = 10;
+    button_down_flags[0] = 0;
+    UpdateButtonDown();
+    for (int i = 0; i < count; ++i)
+        menus[i]->Init();
 }
 
 // ea: 0x0057DFB0
