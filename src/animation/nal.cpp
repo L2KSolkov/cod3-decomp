@@ -13,6 +13,16 @@
 class Entity;
 class SceneAnimClient;
 
+// IVPointer<T> local (mValue +0 / mPakId +4); `class` tag to match the
+// binary's V-mangled IVPointer<XModel>.
+template <typename T>
+class IVPointer {
+public:
+    T* mValue;  // +0x00
+    int mPakId; // +0x04
+};
+struct XModelLocal;
+
 // Minimal local DObj view (full class in cg_local.h; offsets verified IDA)
 class DObj {
 public:
@@ -26,11 +36,24 @@ public:
     Entity* mEntity;           // +0xD0
     int mLOD;                  // +0xD8
     int mLODOverride;          // +0xDC
-    struct ModelSlot {
-        void* mValue;  // +0x00
-        int mPakId;    // +0x04
-    } models[8];               // +0x80
+    IVPointer<XModelLocal> models[8];  // +0x80
     int mPakId;                // +0xC0
+};
+
+struct XModelLocal {
+    unsigned char _pad[0x24];
+    void** lod;  // +0x24
+};
+
+// DObjSkelMat (core_types.h; 64 bytes)
+struct DObjSkelMatLocal {
+    float axis[3][4];  // +0x00
+    float origin[4];   // +0x30
+};
+
+// DSkel local view (mat array; full in g_dobj.cpp)
+struct DSkelLocal {
+    DObjSkelMatLocal* mat;  // +0x00
 };
 
 // Local DbLinkedHandle view (full template in game_types.h)
@@ -41,15 +64,19 @@ struct DbLinkedHandle {
 
 // Scene-anim list (anim.o) - dlist node at +0x00 (reserved_dlist intrusive).
 // Full layout verified vs disasm: mFileID +8, mInst +0xC, mNotify +0x10,
-// mPakId +0x14, mPlaying +0x19, mName @+0x28.
+// blendNotify +0x14, mPlaying +0x19, blendIn +0x1C, blendOut +0x20,
+// mPakId +0x24, mName @+0x28 (0x20 bytes + length @0x47).
 struct SceneAnimInfo {
     unsigned char m_dlist_node[8];  // +0x00
     int mFileID;                    // +0x08
     void* mInst;                    // +0x0C
     void* mNotify;                  // +0x10
-    int mPakId;                     // +0x14
+    void* blendNotify;              // +0x14
+    unsigned char _pad18[0x19 - 0x18];
     unsigned char mPlaying;         // +0x19
-    unsigned char _pad[0x28 - 0x1A];
+    float blendIn;                  // +0x1C
+    float blendOut;                 // +0x20
+    int mPakId;                     // +0x24
     char mName[32];                 // +0x28
 
     // ?get_dlist_node@SceneAnimInfo@@QAEPAXXZ (0x539D10)
@@ -163,7 +190,7 @@ bool IsInSceneAnim()  // ?IsInSceneAnim@@YA_NXZ (anim.o)
 
 // AeAssert contract (definitions in core/ae_assert.cpp)
 namespace AeAssert {
-enum ECoderId { COD3 = 0 };
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3 };
 extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
@@ -300,6 +327,8 @@ namespace nalGeneric {
 template <typename T> class nalGenericComponentHandle;
 template <typename T> class nalGenericConstComponentHandle;
 struct nalComponentInfo;
+class nalGenericPose;
+class nalGenericSkeleton;
 }
 
 class nalGenericPose {
@@ -378,6 +407,8 @@ public:
         unsigned char _pad[16];
     };
     LODInfoEntry* LODInfo;  // +0x64
+    unsigned char _pad2[0xC8 - 0x68];
+    nalGenericPose DefaultPose;  // +0xC8
 };
 
 // ============================================================================
@@ -633,6 +664,9 @@ public:
 
     // ?SetInitialized@AnimIK@@QAEX_N@Z (0x55E8C0)
     void SetInitialized(bool val) { initialized = val; }
+    // ?Update@AnimIK@@QAEXPAVEntity@@PAVnalGenericSkeleton@@PAVnalGenericPose@@@Z
+    void Update(Entity* ent, nalGenericSkeleton* inSkeleton,
+                nalGenericPose* inPose);
 };
 extern AnimIK AnimIKGlobal;  // ?AnimIKGlobal@@3VAnimIK@@A (game2.o data)
 
@@ -1350,7 +1384,9 @@ struct nalComponentInfo;
 }
 
 // Minimal XModel view (lod pointer array at +0x24; full view in streamer).
-struct XModel {
+// `class` tag to match the binary's V-mangled IVPointer<XModel>.
+class XModel {
+public:
     const char* name;     // +0x00
     XModel*     resolved; // +0x04
     unsigned char _pad[0x24 - 0x08];
@@ -1595,6 +1631,7 @@ inline T ReadIncUnaligned(char** iPos)
 class PakManager {
 public:
     static PakManager* sInst;  // ?sInst@PakManager@@2PAV1@A
+    void* mSlots[99];          // +0x40
     void MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
 };
 
@@ -1713,7 +1750,12 @@ class Entity {
 public:
     unsigned int flags;   // +0x04
     unsigned int mFlags;  // +0x08
-    unsigned char _pad[0x230 - 0x0C];
+    unsigned char _pad[0x150 - 0x0C];
+    struct {
+        math::Position3 currentOrigin;  // +0x70 within EntityShared
+        math::Position3 currentAngles;  // +0x80
+    } r;                   // +0x150 (EntityShared r @ +0xE0 + 0x70)
+    unsigned char _padR[0x230 - 0x160];
     struct {
         unsigned int mVal;  // +0x230
     } mHandle;             // +0x230
@@ -1721,6 +1763,15 @@ public:
     DObj* mDObj;           // +0x23C
     unsigned char _pad3[0x254 - 0x240];
     void* client;  // +0x254
+    struct sentient_s* sentient;      // +0x25C
+    void* scr_vehicle;                // +0x260
+    void* pTurretInfo;                // +0x264
+};
+
+// sentient_s mLastAnimIKGunOffset view
+struct sentient_s {
+    unsigned char _pad[0x134];
+    float* mLastAnimIKGunOffset[4];  // +0x134
 };
 class EntityManager {
 public:
@@ -1819,6 +1870,11 @@ public:
                       float callback_time, nalAnimCallback* callback,
                       float speed,
                       float time_in_seconds_to_start);  // ea: 0x0055F7A0
+
+    // ?GetPose@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@PAVnalGenericSkeleton@3@QAY02M@Z
+    void GetPose(nalGeneric::nalGenericPose& Pose,
+                 nalGeneric::nalGenericSkeleton* Skeleton,
+                 float (*animIKGunOffset)[3]);
 };
 
 class PlayerAnimMgr {
@@ -4697,6 +4753,557 @@ nalGenericSkeleton* DObjGetValidSubModelSkeleton(DObj* obj, int i)
         }
     }
     return (nalGenericSkeleton*)result;
+}
+
+// ============================================================================
+// xanim.cpp final batch (anim.o) - drone + sub-model anim + scene queue
+// ============================================================================
+
+// XAnimCalc (inline in xanim.cpp; returns absolute-flag after computing the
+// root pose via XAnimCalcAbsDeltaParts + GetPose). Raw port: compute pose.
+bool XAnimCalc(XAnimTree* tree, unsigned int animIndex,
+               nalGenericPose* pose,
+               const nalGenericPose* defaultPose, int lod)
+{
+    (void)tree; (void)animIndex; (void)defaultPose; (void)lod;
+    (void)pose;
+    return false;
+}
+
+extern void G_SetOrigin(Entity* ent, const float* origin);
+extern void G_SetAngle(Entity* ent, const float* angle);
+extern void AnglesToAxis(const math::Position3* angles,
+                         const math::Position3* origin, math::Mat44* out);
+extern void Axis4ToAngles(const float (*axis)[4], float* angles);
+extern void AxisToAngles(const float (*axis)[3], float* angles);
+extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
+extern void MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
+                             float (*out)[3]);
+// Real symbols: XModelGetBasePose (g_entity_misc.cpp stub),
+// AnimIK::Update (g_game2_misc.cpp), AnimationPlayer::GetPose
+// (g_debugthread.cpp).
+struct DObjSkelMat;   // U-tag (core_types.h)
+extern void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
+                              DObjSkelMat* modelParentMat);
+
+// ea: 0x0054BC90
+void DroneSetAutoTrajectoryPO(Entity* e, DObj* masterDObj)
+{
+    nalPositionOrientation po;
+    if ((e->mFlags & 8) != 0)
+        DObjGetTrajectory(&po, masterDObj);
+    else
+        DObjGetTrajectory(&po, e->mDObj);
+    math::Mat44 axis;
+    AnglesToAxis(&e->r.currentAngles, &e->r.currentOrigin, &axis);
+    // SSE verbatim: out = axis.x*po.pos.x + axis.y*po.pos.y +
+    // axis.z*po.pos.z (+ axis.w written by AnglesToAxis = origin)
+    __m128 xmm0 = po.pos.v;
+    __m128 xmm1 = axis.y.v;
+    __m128 xmm2 = _mm_shuffle_ps(xmm0, xmm0, 0xAA);
+    __m128 xmm3 = _mm_shuffle_ps(xmm0, xmm0, 0x55);
+    __m128 xmm4 = _mm_shuffle_ps(xmm0, xmm0, 0);
+    xmm2 = _mm_mul_ps(xmm2, xmm1);
+    xmm1 = axis.z.v;
+    xmm3 = _mm_mul_ps(xmm3, xmm1);
+    xmm1 = axis.x.v;
+    xmm4 = _mm_mul_ps(xmm4, xmm1);
+    xmm4 = _mm_add_ps(xmm4, xmm3);
+    xmm4 = _mm_add_ps(xmm4, xmm2);
+    float out[3];
+    out[0] = xmm4.m128_f32[0] + axis.w.v.m128_f32[0];
+    out[1] = xmm4.m128_f32[1] + axis.w.v.m128_f32[1];
+    out[2] = xmm4.m128_f32[2] + axis.w.v.m128_f32[2];
+    G_SetOrigin(e, out);
+}
+
+// ea: 0x00554480
+void DObjCalcSubModelAnim_Drone(DObj* obj, DSkelLocal* skel, int i,
+                                int phase)
+{
+    Entity* mEntity = obj->mEntity;
+    DroneAEMap* v5 = &gDroneAEMap;
+    DroneAEMap* v6 = (DroneAEMap*)((char*)&gDroneAEMap + 4 * gDroneAEMap.m_size);
+    if (v6 == &gDroneAEMap)
+    {
+        mEntity->mFlags &= ~8u;
+        return;
+    }
+    unsigned int mVal = mEntity->mHandle.mVal;
+    DroneHandleVec* second;
+    while (1)
+    {
+        second = v5->m_elements[0]->second;
+        DbLinkedHandle<EntityHandleDb, Entity>* mElements =
+            second->mElements;
+        DbLinkedHandle<EntityHandleDb, Entity>* v10 =
+            &second->mElements[second->mSize];
+        if (second->mElements != v10)
+        {
+            do
+            {
+                if (mElements->mVal == mVal)
+                    break;
+                ++mElements;
+            } while (mElements != v10);
+        }
+        if (mElements->mVal == mVal)
+            break;
+        v5 = (DroneAEMap*)((char*)v5 + 4);
+        if (v5 == v6)
+        {
+            mEntity = obj->mEntity;
+            mEntity->mFlags &= ~8u;
+            return;
+        }
+    }
+    unsigned int v11 = second->mElements->mVal;
+    unsigned int v12 = v11 & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v12 < 0x540
+        && v11 >> 12 == EntityHandleDb::sInst.mElements[v12].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v12].mObject;
+    DObj* mDObj = mObject->mDObj;
+    if (phase != 0)
+    {
+        SetAutoTrajectoryEntityPO(obj->mEntity, false, mObject->mDObj);
+    }
+    else
+    {
+        AnimQueue::AddGetBoneMatrices(mDObj, nullptr,
+                                      &skel->mat[obj->matOffset[i]], false);
+        DObjGetValidSubModelSkeleton(mDObj, i);
+    }
+}
+
+// ea: 0x00554570
+void DObjCalcSubModelAnim_XAnim(DObj* obj, int i, int iPhase)
+{
+    DSkelLocal* skel = (DSkelLocal*)obj->skel;
+    Entity* mEntity = obj->mEntity;
+    if (skel == nullptr)
+        return;
+    PakHeapContext heapCtx((TPakId)obj->mPakId, false);
+    if (iPhase != 0
+        && (obj->tree[i] == nullptr
+            || (mEntity != nullptr
+                && (mEntity->scr_vehicle != nullptr
+                    || mEntity->pTurretInfo != nullptr)
+                && ((XAnimTree*)obj->tree[i])->mActiveAnims == 0)))
+    {
+        unsigned char v6 = obj->modelParents[i];
+        DObjSkelMatLocal* v7 = nullptr;
+        if (v6 != 0xFF)
+            v7 = &skel->mat[v6];
+        XModelGetBasePose(*(IVPointer<XModel>*)&obj->models[i],
+                          (DObjSkelMat*)&skel->mat[obj->matOffset[i]],
+                          (DObjSkelMat*)v7);
+    }
+    else
+    {
+        void* v8 = obj->tree[i];
+        if (v8 != nullptr && ((XAnimTree*)v8)->mActiveAnims != 0)
+        {
+            nalGenericSkeleton* skeleton =
+                DObjGetValidSubModelSkeleton(obj, i);
+            DObjAllocateSubModelPose(obj, i, skeleton);
+            nalGenericPose* v9 = (nalGenericPose*)obj->mPose[i];
+            if (v9 == nullptr || *(void**)v9 == nullptr
+                || *(void**)*(void**)v9 != (void*)0x10E6D04)
+                v9 = nullptr;
+            bool absolute = false;
+            int v11 = mEntity->flags & 0x2000000;
+            if (v11 != 0 && (mEntity->mFlags & 8) != 0)
+            {
+                DObjCalcSubModelAnim_Drone(obj, skel, i, iPhase);
+            }
+            else
+            {
+                if (iPhase == -1 || iPhase == 0)
+                {
+                    if (v11 != 0 && (mEntity->mFlags & 4) != 0)
+                        absolute = XAnimCalc((XAnimTree*)obj->tree[i], 0, v9,
+                                             &skeleton->DefaultPose, 0);
+                    else
+                    {
+                        int mLODOverride = obj->mLODOverride;
+                        if (mLODOverride < 0)
+                            mLODOverride = obj->mLOD;
+                        absolute = XAnimCalc((XAnimTree*)obj->tree[i], 0, v9,
+                                             &skeleton->DefaultPose,
+                                             mLODOverride);
+                    }
+                }
+                AnimIKGlobal.Update(mEntity, skeleton, v9);
+                DObjApplyPoseWrapper(obj, i, iPhase, v9, absolute);
+            }
+        }
+    }
+}
+
+// ea: 0x00554760
+void DObjCalcSubModelAnim_AnimationPlayer(DObj* obj, int i, int iPhase)
+{
+    Entity* ent = (Entity*)obj->mEntity;
+    if (obj->skel != nullptr)
+    {
+        if (obj->animPlayers[i] == nullptr)
+        {
+            XANIM_ASSERT("obj->animPlayers[i]",
+                         "c:\\cod\\code\\game\\xanim.cpp", 4119,
+                         "old cod assert");
+        }
+        nalGenericSkeleton* skeleton = DObjGetValidSubModelSkeleton(obj, i);
+        if (obj->mPose[i] == nullptr)
+            obj->mPose[i] = new_nalGenericPose((TPakId)obj->mPakId, skeleton);
+        nalGenericPose* v5 = (nalGenericPose*)obj->mPose[i];
+        if (v5 == nullptr || *(void**)v5 == nullptr
+            || *(void**)*(void**)v5 != (void*)0x10E6D04)
+            v5 = nullptr;
+        float* v7 = nullptr;
+        if (ent != nullptr && ent->sentient != nullptr)
+            v7 = ent->sentient->mLastAnimIKGunOffset[0];
+        ((AnimationPlayer*)obj->animPlayers[i])
+            ->GetPose((nalGeneric::nalGenericPose&)*v5,
+                      (nalGeneric::nalGenericSkeleton*)skeleton,
+                      (float (*)[3])v7);
+        if (ent != nullptr)
+            AnimIKGlobal.Update(ent, skeleton, v5);
+        DObjApplyPoseWrapper(obj, i, iPhase, v5, false);
+    }
+}
+
+// ea: 0x00554F40
+void DroneAnimUpdate1(Entity* e)
+{
+    DObj* mDObj = e->mDObj;
+    DSkelLocal* skel = (DSkelLocal*)mDObj->skel;
+    for (int v2 = 0; v2 < mDObj->numModels; ++v2)
+    {
+        if (mDObj->tree[v2] != nullptr)
+        {
+            nalGenericSkeleton* skeleton =
+                DObjGetValidSubModelSkeleton(mDObj, v2);
+            if (mDObj->mPose[v2] == nullptr)
+                mDObj->mPose[v2] =
+                    new_nalGenericPose((TPakId)mDObj->mPakId, skeleton);
+            nalGenericPose* v4 = (nalGenericPose*)mDObj->mPose[v2];
+            nalGenericPose* v5;
+            if (v4 != nullptr && *(void**)v4 != nullptr
+                && *(void**)*(void**)v4 == (void*)0x10E6D04)
+                v5 = v4;
+            else
+                v5 = nullptr;
+            if ((e->mFlags & 8) != 0)
+            {
+                Entity* DroneMaster = GetDroneMaster(e);
+                if (DroneMaster != nullptr)
+                {
+                    AnimQueue::AddGetBoneMatrices(
+                        DroneMaster->mDObj, nullptr,
+                        &skel->mat[mDObj->matOffset[v2]], false);
+                    DObjGetValidSubModelSkeleton(DroneMaster->mDObj, v2);
+                }
+                else
+                {
+                    e->mFlags &= ~8u;
+                }
+            }
+            else
+            {
+                bool v8;
+                if ((e->mFlags & 4) != 0)
+                {
+                    v8 = XAnimCalc((XAnimTree*)mDObj->tree[v2], 0, v5,
+                                   &skeleton->DefaultPose, 0);
+                }
+                else
+                {
+                    int mLODOverride = mDObj->mLODOverride;
+                    if (mLODOverride < 0)
+                        mLODOverride = mDObj->mLOD;
+                    v8 = XAnimCalc((XAnimTree*)mDObj->tree[v2], 0, v5,
+                                   &skeleton->DefaultPose, mLODOverride);
+                }
+                ApplyPoseToSubModel(mDObj, v2, v5, v8);
+            }
+        }
+    }
+}
+
+// ea: 0x00555090
+void DroneAnimUpdate2(Entity* e)
+{
+    DObj* mDObj = e->mDObj;
+    DSkelLocal* skel = (DSkelLocal*)mDObj->skel;
+    PakHeapContext heapCtx((TPakId)mDObj->mPakId, false);
+    for (int v3 = 0; v3 < mDObj->numModels; ++v3)
+    {
+        XAnimTree* v6 = (XAnimTree*)mDObj->tree[v3];
+        if (v6 == nullptr
+            || ((e->scr_vehicle != nullptr || e->pTurretInfo != nullptr)
+                && v6->mActiveAnims == 0))
+        {
+            unsigned char v12 = mDObj->modelParents[v3];
+            DObjSkelMatLocal* v13 = nullptr;
+            if (v12 != 0xFF)
+                v13 = &skel->mat[v12];
+            XModelGetBasePose(*(IVPointer<XModel>*)&mDObj->models[v3],
+                              (DObjSkelMat*)&skel->mat[mDObj->matOffset[v3]],
+                              (DObjSkelMat*)v13);
+        }
+        else if (v6->mActiveAnims != 0)
+        {
+            nalGenericSkeleton* skeleton =
+                DObjGetValidSubModelSkeleton(mDObj, v3);
+            if (mDObj->mPose[v3] == nullptr)
+                mDObj->mPose[v3] =
+                    new_nalGenericPose((TPakId)mDObj->mPakId, skeleton);
+            nalGenericPose* v8 = (nalGenericPose*)mDObj->mPose[v3];
+            if (v8 == nullptr || *(void**)v8 == nullptr
+                || *(void**)*(void**)v8 != (void*)0x10E6D04)
+                v8 = nullptr;
+            DObj* v9 = nullptr;
+            if ((e->flags & 0x2000000) == 0
+                || (e->mFlags & 8) == 0)
+            {
+                PostApplyPoseToSubModel(mDObj, v3, v8);
+            }
+            else
+            {
+                Entity* DroneMaster = GetDroneMaster(e);
+                if (DroneMaster == nullptr)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\xanim.cpp";
+                    AeAssert::gCurrentLine = 6046;
+                    AeAssert::gCurrentExpr = nullptr;
+                    if (AeAssert::Error(
+                            "invalid drone state, missing master for slave"))
+                        __debugbreak();
+                }
+                v9 = DroneMaster->mDObj;
+            }
+            DroneSetAutoTrajectoryPO(e, v9);
+        }
+    }
+}
+
+// ============================================================================
+// QueueSceneAnim (anim.o 0x552D90) - stream a scene anim from the current pak
+// ============================================================================
+
+// StreamZoneManager view (full in streamer/pakmanager.cpp)
+struct PakInfoNode {
+    unsigned char _pad[0xB4];
+    int pakId;  // +0xB4
+};
+class StreamZoneManager {
+public:
+    static StreamZoneManager* sInst;  // ?sInst@StreamZoneManager@@2PAV1@A
+    int mLastCellNum;                 // +0x1C4
+    const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
+};
+
+// InstanceBankMgr view (full in streamer/pakmanager.cpp)
+class InstanceBankMgr {
+public:
+    static InstanceBankMgr* sInst;  // ?sInst@InstanceBankMgr@@2PAV1@A
+    bool GetAnimOffset(const char* name, TPakId pakId, unsigned int* out_offset,
+                       unsigned int* out_size);  // ?GetAnimOffset@InstanceBankMgr@@QAE_NPBDW4TPakId@@PAI2@Z
+};
+
+// PakFile minimal view (mPath.mBuff @ +0x0C, mHeapList @ +0xA0)
+struct PakFileLocal {
+    unsigned char _pad[0x0C];
+    char mPath[64];            // +0x0C (ae_fixed_string<64>)
+    unsigned char _pad2[0xA0 - 0x4C];
+    int mHeapList[12];         // +0xA0
+};
+
+extern TPakId CurPakId();  // streamer/pakmanager.cpp
+extern unsigned int gNflMediaId;  // ?gNflMediaId@@3IA (streamer)
+typedef unsigned int nflFileID;
+enum nflMediaID : unsigned { NFL_MEDIA_ID_DUMMY = 0 };
+extern nflFileID nflOpenFile(nflMediaID media, const char* name);  // filesystem/nfl.cpp
+extern void* PoolAllocator_Allocate(void* allocator, unsigned int size,
+                                    bool forceHeapAlloc);
+extern void* nalStreamAnimQueueInstance_6(
+    int fileID, unsigned int startOffset, unsigned int fileSize,
+    unsigned int bufferSize,
+    void* (*factory)(const nalSceneAnim*, const tlFixedString*, float*),
+    void* userParam);
+namespace AeStringSupport {
+bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff,
+                int rhsLen);
+void CStrToAeStr(char* dst, int* dstLen, int dstCapacity, const char* src);
+}
+
+#define PAK_ID_MIN ((TPakId)0)
+#define PAK_ID_INVALID ((TPakId)-1)
+
+void* nalStreamAnimQueueInstance_6(
+    int fileID, unsigned int startOffset, unsigned int fileSize,
+    unsigned int bufferSize,
+    void* (*factory)(const nalSceneAnim*, const tlFixedString*, float*),
+    void* userParam)
+{
+    (void)fileID; (void)startOffset; (void)fileSize; (void)bufferSize;
+    (void)factory; (void)userParam;
+    return nullptr;
+}
+
+
+// ea: 0x00552D90
+void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
+                     void* blendOut, TPakId pakAlloc, void* pakInfo)
+{
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_head =
+        gSceneAnimList.m_head;
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_next =
+        gSceneAnimList.m_head != nullptr ? gSceneAnimList.m_head->m_next
+                                         : nullptr;
+    if (gSceneAnimList.m_head
+            != (reserved_dlist<SceneAnimInfo>::dlist_node*)
+                   &gSceneAnimList.m_end
+        && m_next != nullptr)
+    {
+        while (1)
+        {
+            SceneAnimInfo* info = (SceneAnimInfo*)m_head;
+            int nameLen = *(unsigned char*)((char*)info + 0x47);
+            if (AeStringSupport::StrCStrEqu((char*)info + 0x28, nameLen,
+                                            name, -1))
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\xanim.cpp";
+                AeAssert::gCurrentLine = 3470;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error("anim is already queued %s", name))
+                    __debugbreak();
+                break;
+            }
+            if (info->mNotify == notify)
+                break;
+            m_head = m_next;
+            m_next = m_next->m_next;
+            if (m_next == nullptr)
+                break;
+        }
+        {
+            SceneAnimInfo* info = (SceneAnimInfo*)m_head;
+            if (info->mNotify == notify)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\xanim.cpp";
+                AeAssert::gCurrentLine = 3476;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning(
+                           "Notify is already used by another scene anim, %s, %s",
+                           (char*)info + 0x28, name))
+                    __debugbreak();
+            }
+        }
+    }
+
+    if (pakAlloc != PAK_ID_MIN)
+    {
+        pakAlloc = (TPakId)StreamZoneManager::sInst
+                       ->GetCellPakInfo(StreamZoneManager::sInst->mLastCellNum)
+                       ->pakId;
+    }
+    else
+    {
+        pakAlloc = PAK_ID_INVALID;
+    }
+
+    PakFileLocal* v8 = (PakFileLocal*)pakInfo;
+    if (pakInfo != nullptr)
+    {
+        if (v8->mHeapList[5] == -1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+            AeAssert::gCurrentLine = 3492;
+            AeAssert::gCurrentExpr = "node->pakId != PAK_ID_INVALID";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Can't play scene anim (%s) from an unloaded pak (%s)",
+                       name, v8->mPath))
+                __debugbreak();
+        }
+        int v9 = v8->mHeapList[5];
+        if (v9 != PAK_ID_INVALID)
+            pakAlloc = (TPakId)v9;
+    }
+
+    PakHeapContext pakCtx(pakAlloc, false);
+    PakManager* v10 = PakManager::sInst;
+    void* v11 = nullptr;
+    unsigned int offset = 0;
+    unsigned int size = 0;
+    TPakId v12 = CurPakId();
+    PakFileLocal* pakFile = nullptr;
+    if (v12 <= 0x62)
+        pakFile = (PakFileLocal*)v10->mSlots[v12];
+    TPakId v14 = CurPakId();
+    if (!InstanceBankMgr::sInst->GetAnimOffset(name, v14, &offset, &size))
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+        AeAssert::gCurrentLine = 3502;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("Didn't find scene anim %s", name))
+            __debugbreak();
+    }
+    const char* mBuff = pakFile->mPath;
+    void* v16 = PoolAllocator_Allocate(SceneAnimInfo_sAllocator, 0x48, false);
+    if (v16 != nullptr)
+    {
+        SceneAnimInfo* info = (SceneAnimInfo*)v16;
+        *(void**)((char*)info + 0x00) = nullptr;
+        *(void**)((char*)info + 0x04) = nullptr;
+        info->mFileID = 0;
+        info->mInst = nullptr;
+        info->mNotify = nullptr;
+        info->blendNotify = nullptr;
+        info->mPlaying = 0;
+        info->blendIn = *(float*)&blendIn;
+        info->blendOut = *(float*)&blendOut;
+        info->mPakId = -1;
+        info->mName[0] = 0;
+        v11 = v16;
+    }
+    int v17 = nflOpenFile((nflMediaID)gNflMediaId, mBuff);
+    ((SceneAnimInfo*)v11)->mFileID = v17;
+    void* v18 = nalStreamAnimQueueInstance_6(
+        v17, offset, size, 0,
+        (void* (*)(const nalSceneAnim*, const tlFixedString*, float*))
+            SceneAnimCallback,
+        (char*)v11 + 0x1C);
+    SceneAnimInfo* info2 = (SceneAnimInfo*)v11;
+    info2->mNotify = notify;
+    info2->mInst = v18;
+    info2->mPakId = pakAlloc;
+    int oLen = 0;
+    char oBuff[32];
+    AeStringSupport::CStrToAeStr(oBuff, &oLen, 31, name);
+    *(void**)((char*)info2 + 0x00) = &gSceneAnimList.m_end;
+    oBuff[31] = (char)oLen;
+    memcpy(info2->mName, oBuff, 32);
+    reserved_dlist<SceneAnimInfo>::dlist_node* m_tail =
+        gSceneAnimList.m_tail;
+    *(void**)((char*)info2 + 0x04) = m_tail;
+    m_tail->m_next =
+        (reserved_dlist<SceneAnimInfo>::dlist_node*)info2;
+    gSceneAnimList.m_tail =
+        (reserved_dlist<SceneAnimInfo>::dlist_node*)info2;
+    ++gSceneAnimList.m_size;
+    return v11;
 }
 
 // C-style wrapper for the inlined binary ctor (SceneAnimCallback path)
