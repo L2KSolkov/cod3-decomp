@@ -13,6 +13,7 @@
 #include <intrin.h>
 #include "core/mem_heap.h"
 #include "core/memory_types.h"
+#include "core/color.h"
 #include "ngl/nglFont.h"
 #include "ngl/nglTexture.h"
 #include "ngl/ngl_mesh.h"
@@ -45,6 +46,12 @@ extern void Com_Error(int code, const char* fmt, ...);  // core.o
 // Notify is defined in game/logic/g_entity_misc.cpp)
 class Entity {
 public:
+    uint8_t _pad[0xE0];  // up to EntityShared
+    struct Shared {
+        uint8_t _pad[0x70];
+        math::Position3 currentOrigin;  // +0x70
+    };
+    Shared r;  // +0xE0 (EntityShared)
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (g_entity_misc.cpp)
 };
 extern void UpdateEntityHash(Entity* ent);  // ?UpdateEntityHash@@YAXPAVEntity@@@Z (g_scr.cpp)
@@ -103,12 +110,6 @@ T& ae_array_get(ae_array<T, N>& a, int idx)
     }
     return a.m_elements[idx];
 }
-
-// Color (core/color.h view; RGBA float)
-class Color {
-public:
-    float r, g, b, a;
-};
 
 // shell.o / render.o C-bridge stubs for MyRenderText
 typedef int font_index;
@@ -275,8 +276,33 @@ public:
     unsigned int mVal;  // +0x00
 };
 
+// AbstractEffect (core_systems.h; vtable slot order must match: dtor,
+// SetPoPtr, IsQueued, IsLooping, AdjustEffect_Scale, FastForward,
+// PlayQueuedEffect, StartFadeOut, FrameAdvance, IsFinished, StopEffect,
+// GetDebugString)
+class AbstractEffect {
+public:
+    virtual ~AbstractEffect();
+    virtual void SetPoPtr(math::Mat43* po);
+    virtual bool IsQueued() const;
+    virtual bool IsLooping() const;
+    virtual void AdjustEffect_Scale(const char* param, float scale);
+    virtual void FastForward(float deltaT);
+    virtual void PlayQueuedEffect();
+    virtual void StartFadeOut(float time);
+    virtual void FrameAdvance(float deltaT);
+    virtual bool IsFinished();
+    virtual void StopEffect();
+    virtual Broc::string GetDebugString() const;  // effect_events.cpp
+};
+
 struct ActiveEffectSet {
 public:
+    struct EffectsArray {
+        AbstractEffect* m_elements[6];
+        int m_size;
+    };
+    EffectsArray mEffects;  // +0x00
     void SetPoPtr(math::Mat43* po);  // ?SetPoPtr@ActiveEffectSet@@QAEXPAVMat43@math@@@Z (effect_events.cpp)
 };
 
@@ -2004,7 +2030,7 @@ struct SceneEffectGroup;
 
 // SceneEffect (scenemanager.cpp; state machine fields verified IDA)
 struct SceneEffect {
-    uint8_t      _pad[0x40];
+    math::Mat43  mPo;           // +0x00 (w row = position)
     const char*  mScriptId;       // +0x40
     SceneEffectGroup* mGroupPtr;  // +0x44 (group hash until resolved)
     unsigned int mFlags;          // +0x48
@@ -2089,6 +2115,9 @@ public:
                            float depth, float size);  // render.o 0xAAC7D0
     static void RenderSphere(const math::Position3& pos, float radius,
                              const Color& argb);  // render.o 0x6D4AF0
+    static void RenderText3D(const math::Position3& wpos, const Color& col,
+                             float scale, const char* format,
+                             ...);  // render.o 0xAB36C0
 };
 
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
@@ -2125,6 +2154,7 @@ public:
     void ProcessEffects(TPakId pakId, SceneBank* bank);  // ?ProcessEffects@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z
     void PostProcess(TPakId pakId);  // ?PostProcess@SceneManager@@AAEXW4TPakId@@@Z @ 0x6787E0
     void UpdateEffects(float delta_t);  // ?UpdateEffects@SceneManager@@QAEXM@Z @ 0x6690B0
+    void DebugRenderFX();  // ?DebugRenderFX@SceneManager@@QAEXXZ @ 0x669530
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
@@ -3195,6 +3225,116 @@ void SceneManager::UpdateEffects(float delta_t)
                 fxset->SetPoPtr((math::Mat43*)effect);
         }
     }
+}
+
+// ea: 0x669530
+void SceneManager::DebugRenderFX()
+{
+    if (mDebugRenderDist == 0.0f)
+        return;
+    int active = 0;
+    int total = 0;
+    const Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    math::Position3 playerPos = Player->r.currentOrigin;
+    char buf[512];
+    for (int bankIdx = 0; bankIdx < 99; ++bankIdx)
+    {
+        SceneBank* bank = mBankArray.m_elements[bankIdx];
+        if (bank == nullptr)
+            continue;
+        InplaceVector<SceneEffect>* p_mSceneEffects = &bank->mSceneEffects;
+        for (unsigned int i = 0; i < p_mSceneEffects->mSize; ++i)
+        {
+            ++total;
+            SceneEffect* effect = &p_mSceneEffects->mList[i];
+            math::Position3 pos;
+            pos.v = effect->mPo.w.v;
+            math::Position3 delta;
+            delta.v = _mm_sub_ps(pos.v, playerPos.v);
+            __m128 d2 = _mm_mul_ps(delta.v, delta.v);
+            float dist = sqrtf(d2.m128_f32[0]
+                               + (_mm_shuffle_ps(d2, d2, 85).m128_f32[0]
+                                  + _mm_shuffle_ps(d2, d2, 170).m128_f32[0]));
+
+            Broc::string dbg;
+            sprintf(buf, "effect: %s\n", effect->mScriptId);
+            dbg += buf;
+            sprintf(buf, "position: %d %d %d\n",
+                    (int)pos.v.m128_f32[0], (int)pos.v.m128_f32[1],
+                    (int)pos.v.m128_f32[2]);
+            dbg += buf;
+
+            const char* stateStr = nullptr;
+            switch (effect->mState)
+            {
+            case 0: stateStr = "uninitialized"; break;
+            case 1: stateStr = "playing"; ++active; break;
+            case 2: stateStr = "loop delay"; break;
+            case 3: stateStr = "stopped"; break;
+            case 4: stateStr = "dead"; break;
+            default: break;
+            }
+            sprintf(buf, "state: %s\n", stateStr);
+            dbg += buf;
+
+            if (effect->mGroupPtr != nullptr)
+            {
+                sprintf(buf, "group: %s\n", effect->mGroupPtr->mName.mStr);
+                dbg += buf;
+                const char* groupState =
+                    effect->mGroupPtr->mActive ? "enabled" : "disabled";
+                sprintf(buf, "groupstate: %s\n", groupState);
+                dbg += buf;
+            }
+
+            if ((effect->mFlags & 1) != 0)
+            {
+                sprintf(buf, "loop: %.2f - %.2f\n",
+                        (float)effect->mLoopDelayMin * 0.01f,
+                        (float)effect->mLoopDelayMax * 0.01f);
+                dbg += buf;
+            }
+
+            if (effect->mState == 2)
+            {
+                sprintf(buf, "countdown: %.2f\n", effect->mDelayCountdown);
+                dbg += buf;
+            }
+
+            ActiveEffectSet* fxset =
+                EffectEventSys::sInst->GetActiveEffectSet(
+                    Handle{effect->mEffectHandle});
+            if (fxset != nullptr)
+            {
+                for (int j = 0; j < fxset->mEffects.m_size; ++j)
+                {
+                    Broc::string fxdbg = fxset->mEffects.m_elements[j]
+                                             ->GetDebugString();
+                    dbg += fxdbg;
+                    dbg += "\n";
+                }
+            }
+            else
+            {
+                dbg += "[no active fx]\n";
+            }
+
+            DebugRender::RenderSphere(pos, 16.0f,
+                                      Color(1.0f, 1.0f, 0.0f, 0.5f));
+            if (mDebugRenderDist >= dist)
+            {
+                const char* txt =
+                    dbg.mBlock != nullptr ? dbg.GetBuff() : defaultFileName;
+                DebugRender::RenderText3D(pos, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                                          1.0f, txt);
+            }
+        }
+    }
+
+    char summary[32];
+    sprintf(summary, "Active FX: %d/%d\n", active, total);
+    DebugRender::RenderText(summary, 20, 20,
+                            Color(1.0f, 1.0f, 1.0f, 1.0f), 0.0f, 1.0f);
 }
 
 // ea: 0x6787E0
