@@ -1461,6 +1461,15 @@ struct cdResourceDirectory : tlResourceDirectory<T> {
     virtual T* Add(T* DataPtr) override;
     // ?Find@?$cdResourceDirectory@V...@@@UAEPAV...@@ABVtlFixedString@@@Z
     virtual T* Find(const tlFixedString& key) override;
+
+    void EnableRelease(bool enabled);  // ?EnableRelease@?$cdResourceDirectory@V...@@@QAEX_N@Z
+
+    static tlResourceDirectory<T>* GetDirectory();   // ?GetDirectory@?$cdResourceDirectory@V...@@@SAPAV...@@XZ
+    static void SetDirectory(tlResourceDirectory<T>* dir);  // ?SetDirectory@?$cdResourceDirectory@V...@@@SAXPAV...@@@Z
+
+    virtual const char* DirectoryName() override;      // ?DirectoryName@?$cdResourceDirectory@V...@@@UAEPBDXZ
+    virtual bool Del(T* const DataPtr) override;       // ?Del@?$cdResourceDirectory@V...@@@UAE_NQAV...@@@Z
+    virtual void ReleaseAll(bool warn, bool system, int maxforce) override;  // ?ReleaseAll@?$cdResourceDirectory@V...@@@UAEX_N0H@Z
 };
 
 // MipSettingsBank (streamer.o; mMipSettings +0x0C)
@@ -1520,19 +1529,27 @@ template <typename T> struct CdResourceTraits;
 template <> struct CdResourceTraits<nalAnimClass<nalAnyPose>> {
     static const int kBankType = INSTBANK_TYPE_ANIMFILE;
     static const int kNameOffset = 0x00;  // DataPtr->Name
+    static const char* const kDirectoryName;  // "cdAnimDirectory"
 };
 template <> struct CdResourceTraits<nalSceneAnim> {
     static const int kBankType = INSTBANK_TYPE_ANIM;
     static const int kNameOffset = 0x10;  // DataPtr->Header.Name
+    static const char* const kDirectoryName;  // "cdSceneAnimDirectory"
 };
 template <> struct CdResourceTraits<nalAnimFile> {
     static const int kBankType = INSTBANK_TYPE_MESH;
     static const int kNameOffset = 0x10;  // DataPtr->Header.Name
+    static const char* const kDirectoryName;  // "cdAnimFileDirectory"
 };
 template <> struct CdResourceTraits<nalBaseSkeleton> {
     static const int kBankType = INSTBANK_TYPE_ANIMOFFSET;
     static const int kNameOffset = 0x00;  // DataPtr->Name
+    static const char* const kDirectoryName;  // "cdSkeletonDirectory"
 };
+const char* const CdResourceTraits<nalAnimClass<nalAnyPose>>::kDirectoryName = "cdAnimDirectory";
+const char* const CdResourceTraits<nalSceneAnim>::kDirectoryName = "cdSceneAnimDirectory";
+const char* const CdResourceTraits<nalAnimFile>::kDirectoryName = "cdAnimFileDirectory";
+const char* const CdResourceTraits<nalBaseSkeleton>::kDirectoryName = "cdSkeletonDirectory";
 
 // ea: 0x66F6F0/0x66F760/0x66F7D0/0x66F840
 template <typename T>
@@ -1571,6 +1588,42 @@ T* cdResourceDirectory<T>::Find(const tlFixedString& key)
             (eInstanceBankType)CdResourceTraits<T>::kBankType,
             PAK_ID_INVALID, &key);
     return result;
+}
+
+// ea: 0x6827B0/0x682940/0x682AD0/0x682E40
+template <typename T>
+void cdResourceDirectory<T>::EnableRelease(bool enabled)
+{
+    m_enable_release = enabled;
+}
+
+// ea: 0x685B00/0x685D10/0x685F20/0x682D40
+template <typename T>
+bool cdResourceDirectory<T>::Del(T* const DataPtr)
+{
+    (void)DataPtr;
+    return true;
+}
+
+// ea: 0x685B70/0x685D80/0x685F90/0x682DB0
+template <typename T>
+void cdResourceDirectory<T>::ReleaseAll(bool warn, bool system, int maxforce)
+{
+    (void)warn; (void)system; (void)maxforce;
+    AeAssert::gCurrentAuthor = AeAssert::COD3;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.h";
+    AeAssert::gCurrentLine = 100;
+    AeAssert::gCurrentExpr = nullptr;
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Warning("this probably shouldn't be called anywhere"))
+        __debugbreak();
+}
+
+// ea: 0x685AF0/0x685D00/0x685F10/0x682D30
+template <typename T>
+const char* cdResourceDirectory<T>::DirectoryName()
+{
+    return CdResourceTraits<T>::kDirectoryName;
 }
 
 // Manager DecodeBank stubs (cross-object: core.o / render.o / mp_actors.o)
@@ -7985,6 +8038,60 @@ tlResourceDirectory<nalSceneAnim>* nalGetSceneAnimDirectory()
 void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim>* dir)
 {
     nalSceneAnimDirectory = dir;
+}
+
+// cdResourceDirectory<T> static accessors over the nal globals
+// (ea: 0x663860..0x6638D0)
+template <>
+tlResourceDirectory<nalAnimClass<nalAnyPose>>*
+cdResourceDirectory<nalAnimClass<nalAnyPose>>::GetDirectory()
+{
+    return nalAnimDirectory;
+}
+template <>
+void cdResourceDirectory<nalAnimClass<nalAnyPose>>::SetDirectory(
+    tlResourceDirectory<nalAnimClass<nalAnyPose>>* dir)
+{
+    nalAnimDirectory = dir;
+}
+
+template <>
+tlResourceDirectory<nalSceneAnim>*
+cdResourceDirectory<nalSceneAnim>::GetDirectory()
+{
+    return nalSceneAnimDirectory;
+}
+template <>
+void cdResourceDirectory<nalSceneAnim>::SetDirectory(
+    tlResourceDirectory<nalSceneAnim>* dir)
+{
+    nalSceneAnimDirectory = dir;
+}
+
+template <>
+tlResourceDirectory<nalAnimFile>*
+cdResourceDirectory<nalAnimFile>::GetDirectory()
+{
+    return nalAnimFileDirectory;
+}
+template <>
+void cdResourceDirectory<nalAnimFile>::SetDirectory(
+    tlResourceDirectory<nalAnimFile>* dir)
+{
+    nalAnimFileDirectory = dir;
+}
+
+template <>
+tlResourceDirectory<nalBaseSkeleton>*
+cdResourceDirectory<nalBaseSkeleton>::GetDirectory()
+{
+    return nalSkeletonDirectory;
+}
+template <>
+void cdResourceDirectory<nalBaseSkeleton>::SetDirectory(
+    tlResourceDirectory<nalBaseSkeleton>* dir)
+{
+    nalSkeletonDirectory = dir;
 }
 
 // ============================================================================
