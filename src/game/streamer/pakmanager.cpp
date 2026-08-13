@@ -2319,8 +2319,19 @@ public:
     InplaceVector<SceneLight> mSceneLights;        // +0x40
     InplaceVector<void*> mPersistentStorage;       // +0x48
     unsigned char* mSceneHeap;    // +0x50
+    void*       mPtrFixupTable;   // +0x54
 
     int GetSceneHeapSize();  // ?GetSceneHeapSize@SceneBank@@QAEHXZ
+    void Fixup();            // ?Fixup@SceneBank@@QAEXXZ @ 0x685260
+};
+
+// PtrFixupTable (inplace.cpp; mList +0, mSize +4)
+class PtrFixupTable {
+public:
+    void*        mList;  // +0x00
+    unsigned int mSize;  // +0x04
+
+    void Fixup(const void* basePtr);  // ?Fixup@PtrFixupTable@@QAEXPBX@Z (inplace.cpp 0x7E18D0)
 };
 
 // ea: 0x681660
@@ -2339,6 +2350,46 @@ float SceneEffect::GetLoopDelayMax() const
 int SceneBank::GetSceneHeapSize()
 {
     return mSceneHeapSize;
+}
+
+// ea: 0x685260
+void SceneBank::Fixup()
+{
+    if (mId != 1396917582)  // FourCC('SCEN')
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Scene.h";
+        AeAssert::gCurrentLine = 721;
+        AeAssert::gCurrentExpr = "mId == FourCC('SCEN')";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("this is not a scene bank!"))
+            __debugbreak();
+    }
+    if (mVersion != 1.34f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Scene.h";
+        AeAssert::gCurrentLine = 722;
+        AeAssert::gCurrentExpr = "mVersion == 1.34f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("incorrect version!"))
+            __debugbreak();
+    }
+    if ((uintptr_t)mPtrFixupTable >= 0x10000000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\Scene.h";
+        AeAssert::gCurrentLine = 723;
+        AeAssert::gCurrentExpr =
+            "((unsigned)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    PtrFixupTable* v2 =
+        (PtrFixupTable*)((char*)this + (uintptr_t)mPtrFixupTable);
+    mPtrFixupTable = v2;
+    v2->Fixup(this);
 }
 
 // SceneEffectGroup (scenemanager.cpp; 12 bytes, verified IDA)
@@ -2424,6 +2475,8 @@ public:
     static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
     void DebugRender();        // ?DebugRender@SceneManager@@QAEXXZ @ 0x675E20 (stub)
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
+    void DecodeScene(const char* name, unsigned char* data, int size,
+                     TPakId pakId);  // ?DecodeScene@SceneManager@@QAEXPBDPAEHW4TPakId@@@Z @ 0x679D20
 };
 
 ae_sized_array<TPakId, 99> loaded_ids;  // ?loaded_ids@@3V?$ae_sized_array@W4TPakId@@$0GD@@@A @ 0xF593B0
@@ -5366,6 +5419,50 @@ void SceneManager::DebugRenderEnts()
     DebugRender::RenderQuad2D(20.0f + w0 + w1 + w2 + w3, 20.0f,
                               20.0f + w0 + w1 + w2 + w3 + w4, 40.0f, -5.0f,
                               Color(1.0f, 0.0f, 0.0f, 1.0f));
+}
+
+// ea: 0x679D20
+void SceneManager::DecodeScene(const char* name, unsigned char* data,
+                               int size, TPakId pakId)
+{
+    (void)name; (void)size;
+    SceneBank* bank = (SceneBank*)data;
+    bank->Fixup();
+    AddBank(pakId, bank);
+    InplaceVector<unsigned char>* storage =
+        (InplaceVector<unsigned char>*)&bank->mPersistentStorage;
+    for (unsigned int v7 = 0; v7 < storage->mSize; ++v7)
+        storage->mList[v7] = 0;
+    PostProcess(pakId);
+    if (storage->mSize != 0)
+    {
+        if (mPersistantStorage != nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+            AeAssert::gCurrentLine = 260;
+            AeAssert::gCurrentExpr = "!mPersistantStorage";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "TOO MANY SCENEBANKS WITH PERSISTANT STORAGE ARRAYS"))
+                __debugbreak();
+        }
+        mPersistantStorage = storage;
+    }
+}
+
+// ea: 0x679DD0
+void DecodeZoneBoundaryBank(const char* name, unsigned char* data, int size,
+                            TPakId pakId)
+{
+    StreamZoneManager::sInst->DecodeBank(name, data, size, pakId);
+}
+
+// ea: 0x679DF0
+void DecodeScene(const char* name, unsigned char* data, int size,
+                 TPakId pakId)
+{
+    SceneManager::sInst->DecodeScene(name, data, size, pakId);
 }
 
 // ea: 0x6663F0
@@ -12462,7 +12559,8 @@ void DecodeFLI(const char* name, unsigned char* data, unsigned int size, TPakId 
 void DecodeScene(const char* name, unsigned char* data, unsigned int size,
                  TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    (void)pak;
+    DecodeScene(name, data, (int)size, pakId);
 }
 void DecodePhysData(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak)
@@ -12482,7 +12580,8 @@ void DecodeBin(const char* name, unsigned char* data, unsigned int size, TPakId 
 void DecodeZoneBoundaryBank(const char* name, unsigned char* data, unsigned int size,
                             TPakId pakId, PakFile* pak)
 {
-    (void)name; (void)data; (void)size; (void)pakId; (void)pak;
+    (void)pak;
+    DecodeZoneBoundaryBank(name, data, (int)size, pakId);
 }
 void DecodeAnimBank(const char* name, unsigned char* data, unsigned int size,
                     TPakId pakId, PakFile* pak)
