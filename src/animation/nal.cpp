@@ -214,10 +214,26 @@ void SceneAnimInfo::operator delete(void* ptr)
 // reserved_dlist<T> - intrusive dlist (ae/core; verified IDA: node first
 // member of T). Members below carry anim.o inline-COMDAT eases.
 template <typename T>
-struct reserved_dlist {
+class reserved_dlist {
+public:
     struct dlist_node {
         dlist_node* m_next;  // +0x00
         dlist_node* m_prev;  // +0x04
+
+        dlist_node() : m_next(nullptr), m_prev(nullptr) {}
+
+        // ??0dlist_node@?$reserved_dlist@VSceneAnimInfo@@@@QAE@PAU01@0@Z
+        dlist_node(dlist_node* prev, dlist_node* next)
+            : m_next(next), m_prev(prev)
+        {
+        }
+
+        // ?pop@dlist_node@?$reserved_dlist@VSceneAnimInfo@@@@QAEXXZ
+        void pop()
+        {
+            m_next->m_prev = m_prev;
+            m_prev->m_next = m_next;
+        }
     };
     int         m_size;  // +0x00
     dlist_node* m_head;  // +0x04
@@ -247,6 +263,64 @@ struct reserved_dlist {
         return m_head;
     }
 
+    // ?empty@?$reserved_dlist@VSceneAnimInfo@@@@QBE_NXZ
+    bool empty() const
+    {
+        return m_head == &m_end;
+    }
+
+    // ?clear@?$reserved_dlist@VSceneAnimInfo@@@@QAEXXZ
+    void clear()
+    {
+        m_size = 0;
+        m_head = &m_end;
+        m_end.m_next = nullptr;
+        m_end.m_prev = (dlist_node*)&m_head;
+    }
+
+    // ?validate@?$reserved_dlist@VSceneAnimInfo@@@@QBEXXZ
+    void validate() const
+    {
+    }
+
+    // ?push_back@?$reserved_dlist@VSceneAnimInfo@@@@QAEXPAVSceneAnimInfo@@@Z
+    void push_back(T* obj)
+    {
+        ((dlist_node*)obj)->m_next = &m_end;
+        dlist_node* m_tail = m_end.m_prev;
+        ((dlist_node*)obj)->m_prev = m_tail;
+        m_tail->m_next = (dlist_node*)obj;
+        m_end.m_prev = (dlist_node*)obj;
+        ++m_size;
+    }
+
+    // ?pop_back@?$reserved_dlist@VSceneAnimInfo@@@@QAEPAVSceneAnimInfo@@XZ
+    T* pop_back()
+    {
+        dlist_node* result = m_end.m_prev;
+        if (result == (dlist_node*)&m_head)
+            return nullptr;
+        dlist_node* m_prev = ((dlist_node*)result)->m_prev;
+        m_end.m_prev = m_prev;
+        m_prev->m_next = ((dlist_node*)result)->m_next;
+        --m_size;
+        return (T*)result;
+    }
+
+    // ?erase@?$reserved_dlist@VSceneAnimInfo@@@@QAEXPAVSceneAnimInfo@@@Z
+    void erase(T* obj)
+    {
+        if (find(obj).m_next == nullptr)
+        {
+            XANIM_ASSERT("find( obj ) != end()",
+                         "../ae\\core/reserved_dlist.h", 418,
+                         "Please add a descriptive string");
+        }
+        ((dlist_node*)obj)->m_next->m_prev = ((dlist_node*)obj)->m_prev;
+        ((dlist_node*)obj)->m_prev->m_next = ((dlist_node*)obj)->m_next;
+        --m_size;
+    }
+
     class iterator {
     public:
         dlist_node* m_node;  // +0x00
@@ -259,6 +333,19 @@ struct reserved_dlist {
         iterator(T* obj)
             : m_node((dlist_node*)obj),
               m_next(((dlist_node*)obj)->m_next) {}
+
+        // ??0iterator@?$reserved_dlist@VSceneAnimInfo@@@@QAE@AAV1@@Z
+        iterator(reserved_dlist& dlist)
+        {
+            dlist_node* m_head = dlist.m_head;
+            m_node = m_head;
+            m_next = m_head != nullptr ? m_head->m_next : nullptr;
+            if (dlist.m_head == &dlist.m_end)
+            {
+                m_next = nullptr;
+                m_node = nullptr;
+            }
+        }
 
         // ??Diterator@?$reserved_dlist@VXAnimTree@@@@QAEPAVXAnimTree@@XZ
         // ??Diterator@?$reserved_dlist@VSceneAnimInfo@@@@QAEPAVSceneAnimInfo@@XZ
@@ -307,7 +394,37 @@ struct reserved_dlist {
         {
             return m_next != other.m_next;
         }
+
+        // ?compare@iterator@?$reserved_dlist@VSceneAnimInfo@@@@QBE_NABV12@@Z
+        bool compare(const iterator& rhs) const
+        {
+            return rhs.m_next == m_next;
+        }
     };
+
+    // ?begin@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@XZ
+    iterator begin()
+    {
+        iterator result;
+        dlist_node* m_head = this->m_head;
+        result.m_node = m_head;
+        result.m_next = m_head != nullptr ? m_head->m_next : nullptr;
+        if (this->m_head == &m_end)
+        {
+            result.m_next = nullptr;
+            result.m_node = nullptr;
+        }
+        return result;
+    }
+
+    // ?end@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@XZ
+    iterator end()
+    {
+        iterator result;
+        result.m_node = &m_end;
+        result.m_next = nullptr;
+        return result;
+    }
 
     // ?find@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@PAVSceneAnimInfo@@@Z
     iterator find(T* object)
