@@ -1004,10 +1004,10 @@ public:
         lockInput = enable;
     }
     virtual class FEComboBox* AddComboBox(
-        int index, short numOptions, FEText* text, FEText* label,
+        int index, int numOptions, FEText* text, FEText* label,
         PanelQuad* leftArrow, PanelQuad* rightArrow);  // slot 10 0x585F30
     virtual class FEComboBox* AddComboBox(
-        int index, short numOptions, FEText* text, PanelQuad* leftArrow,
+        int index, int numOptions, FEText* text, PanelQuad* leftArrow,
         PanelQuad* rightArrow);                      // slot 11 0x585E60
     virtual class FESlider* AddSlider(int index, FEText* barText,
                                       FEText* label);  // slot 12 0x5860D0
@@ -1104,8 +1104,8 @@ protected:
     virtual void ButtonHeldAction();                // slot 62 0x570890
 public:
     FEMenu();                                       // 0x57DA80
-    FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, short mve,
-           short flg);                              // 0x57DAE0
+    FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve,
+           int flg);                                // 0x57DAE0 ??0FEMenu@@QAE@PAVFEMenuSystem@@HHHHH@Z
     void Cleanup();                                 // ?Cleanup@FEMenu@@QAEXXZ 0x58DF20
     bool GetFlag(int f)                             // ?GetFlag@FEMenu@@QAE_NH@Z 0x5AE940
     {
@@ -1222,6 +1222,38 @@ private:
 static_assert(sizeof(LoadingMenu) == 0xF8, "LoadingMenu size mismatch");
 static_assert(offsetof(LoadingMenu, mTipArrays) == 0x8C,
               "LoadingMenu::mTipArrays offset mismatch");
+
+// ============================================================================
+// FEMultiMenu - menu base that adds held-button Up/Down/Left/Right
+// (shell.o FEMultiMenu.cpp) - same size as FEMenu (0x4C)
+// ============================================================================
+class FEMultiMenu : public FEMenu {
+public:
+    FEMultiMenu(FEMenuSystem* s, int num, int flg);  // 0x5921B0
+protected:
+    virtual void ButtonHeldAction();                 // slot 62 0x570950
+};
+static_assert(sizeof(FEMultiMenu) == 0x4C, "FEMultiMenu size mismatch");
+
+// ============================================================================
+// ControllerDisconnectedMenu - controller error overlay (80 bytes)
+// Size: 0x50 - verified against IDA
+// ============================================================================
+class ControllerDisconnectedMenu : public FEMenu {
+public:
+    FEMultiLineText* text;           // +0x4C
+
+    virtual void SetPanelFile(PanelFile* pf);  // slot 0 0x586D20
+    virtual void Draw();                       // slot 20 0x580290
+    virtual void OnActivate();                 // slot 28 0x574480
+
+    ControllerDisconnectedMenu();              // 0x5931C0
+    void SetErrorMessage();                    // 0x574490
+};
+static_assert(sizeof(ControllerDisconnectedMenu) == 0x50,
+              "ControllerDisconnectedMenu size mismatch");
+static_assert(offsetof(ControllerDisconnectedMenu, text) == 0x4C,
+              "ControllerDisconnectedMenu::text offset mismatch");
 
 // ============================================================================
 // FEMenuListBoxItem â€" list-box data row (28 bytes) â€" verified against IDA

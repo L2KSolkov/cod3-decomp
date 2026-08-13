@@ -228,8 +228,8 @@ FEMenu::FEMenu()
 }
 
 // ea: 0x0057DAE0
-FEMenu::FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, short mve,
-               short flg)
+FEMenu::FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve,
+               int flg)
 {
     center_y = y;
     system = menuSystem;
@@ -954,7 +954,7 @@ void FEMenu::PlayNavigationSoundWait()
 }
 
 // ea: 0x00585F30
-FEComboBox* FEMenu::AddComboBox(int index, short numOptions, FEText* text,
+FEComboBox* FEMenu::AddComboBox(int index, int numOptions, FEText* text,
                                 FEText* label, PanelQuad* leftArrow,
                                 PanelQuad* rightArrow)
 {
@@ -980,7 +980,7 @@ FEComboBox* FEMenu::AddComboBox(int index, short numOptions, FEText* text,
 }
 
 // ea: 0x00585E60
-FEComboBox* FEMenu::AddComboBox(int index, short numOptions, FEText* text,
+FEComboBox* FEMenu::AddComboBox(int index, int numOptions, FEText* text,
                                 PanelQuad* leftArrow, PanelQuad* rightArrow)
 {
     if (index < 0 || index >= num_entries)
