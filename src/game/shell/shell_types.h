@@ -93,15 +93,16 @@ struct PanelQuad : PanelAnimObject {
 
 struct PanelQuadSection {
     struct PQVert {
-        float X;     // +0x00
-        float Y;     // +0x04
-        float U;     // +0x08
-        float V;     // +0x0C
-        float pad;   // +0x10
+        float        X;      // +0x00
+        float        Y;      // +0x04
+        float        U;      // +0x08
+        float        V;      // +0x0C
+        unsigned int Color;  // +0x10
     };
     struct QuadData {
         PQVert Verts[4];  // +0x00 (80 bytes)
-        char   pad2[8];   // +0x50
+        float  Z;         // +0x50
+        char   pad2[4];   // +0x54
     };
 
     short    x_initial[4];  // +0x00
@@ -114,6 +115,15 @@ struct PanelQuadSection {
     Broc::vector GetInitialMin();     // shell.o 0x569E50
     Broc::vector GetMaxUV();          // shell.o 0x569F00
     Broc::vector GetMinUV();          // shell.o 0x569FB0
+    void SetInitialXY(Broc::vector* tmp_initial);  // shell.o 0x5696F0
+    void SetUV(Broc::vector* uv);                  // shell.o 0x569B30
+    void SetPos(Broc::vector* xy);                 // shell.o 0x569BB0
+    void AddPQSection(Broc::vector* xy,
+                      Broc::vector* uv, color32* col,
+                      float z);                          // shell.o 0x579550
+    void SetColorVert(int i, color32 c);                 // shell.o 0x569AB0
+    void SetColorNAVert(int i, color32 c);               // shell.o 0x579800
+    color32 GetColor(int index);                         // shell.o 0x579900
 };
 static_assert(sizeof(PanelQuadSection::PQVert) == 20,
               "PQVert size mismatch");

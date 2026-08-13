@@ -13,6 +13,82 @@ extern const char* const defaultFileName;  // 0xCD67AE
 // PanelQuadSection bounds
 // ============================================================================
 
+// ea: 0x005696F0
+void PanelQuadSection::SetInitialXY(Broc::vector* tmp_initial)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        x_initial[i] = (short)tmp_initial->x;
+        y_initial[i] = (short)tmp_initial->y;
+        ++tmp_initial;
+    }
+}
+
+// ea: 0x00569B30
+void PanelQuadSection::SetUV(Broc::vector* uv)
+{
+    quad.Verts[0].U = uv[0].x;
+    quad.Verts[0].V = uv[0].y;
+    quad.Verts[1].U = uv[1].x;
+    quad.Verts[1].V = uv[1].y;
+    quad.Verts[2].U = uv[2].x;
+    quad.Verts[2].V = uv[2].y;
+    quad.Verts[3].U = uv[3].x;
+    quad.Verts[3].V = uv[3].y;
+}
+
+// ea: 0x00569BB0
+void PanelQuadSection::SetPos(Broc::vector* xy)
+{
+    quad.Verts[0].X = xy[0].x;
+    quad.Verts[0].Y = xy[0].y;
+    quad.Verts[1].X = xy[1].x;
+    quad.Verts[1].Y = xy[1].y;
+    quad.Verts[2].X = xy[2].x;
+    quad.Verts[2].Y = xy[2].y;
+    quad.Verts[3].X = xy[3].x;
+    quad.Verts[3].Y = xy[3].y;
+}
+
+// ea: 0x00579550
+void PanelQuadSection::AddPQSection(Broc::vector* xy, Broc::vector* uv,
+                                    color32* col, float z)
+{
+    for (int v5 = 0; v5 < 4; ++v5)
+    {
+        x_initial[v5] = (short)xy[v5].x;
+        y_initial[v5] = (short)xy[v5].y;
+        quad.Verts[v5].X = xy[v5].x;
+        quad.Verts[v5].Y = xy[v5].y;
+        quad.Verts[v5].U = uv[v5].x;
+        quad.Verts[v5].V = uv[v5].y;
+        quad.Verts[v5].Color = col[v5].i;
+    }
+    quad.Z = z;
+}
+
+// ea: 0x00569AB0
+void PanelQuadSection::SetColorVert(int i, color32 c)
+{
+    quad.Verts[i].Color = c.c.b | ((c.c.g | (c.c.r << 8)) << 8);
+}
+
+// ea: 0x00579800
+void PanelQuadSection::SetColorNAVert(int i, color32 c)
+{
+    quad.Verts[i].Color =
+        c.c.b | ((c.c.g | ((c.c.r | ((quad.Verts[i].Color >> 24) << 8)) << 8))
+                << 8);
+}
+
+// ea: 0x00579900
+color32 PanelQuadSection::GetColor(int index)
+{
+    color32 result;
+    result.i = quad.Verts[index].Color;
+    return result;
+}
+
 // ea: 0x00569C60
 Broc::vector PanelQuadSection::GetMax()
 {
