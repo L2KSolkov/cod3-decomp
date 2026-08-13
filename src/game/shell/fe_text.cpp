@@ -22,24 +22,6 @@ extern bool CompareButton(const char* text, const char* button,
 
 extern FEManager g_femanager;
 
-// ============================================================================
-// FETextFlashInfo (20 bytes - ui_types.h verified)
-// ============================================================================
-class FETextFlashInfo {
-public:
-    color32 flash_color;      // +0x00
-    float   flash_timer;      // +0x04
-    float   flash_intensity;  // +0x08
-    float   flash_period;     // +0x0C
-    bool    reset;            // +0x10
-
-    FETextFlashInfo(color32 col, float period);  // shell.o 0x56B940
-    void Update(float time_inc);                 // shell.o 0x56B970
-    color32 GetColor(color32 normal_color);      // shell.o 0x56B9B0
-    void Reset();                                // shell.o 0x56BA70
-};
-static_assert(sizeof(FETextFlashInfo) == 20, "FETextFlashInfo size mismatch");
-
 // ea: 0x0056B940
 FETextFlashInfo::FETextFlashInfo(color32 col, float period)
 {
@@ -81,26 +63,6 @@ void FETextFlashInfo::Reset()
     flash_intensity = 0.0f;
 }
 
-// ============================================================================
-// FEMenuColorScheme (16-byte scheme records at 0xDF3AE0)
-// ============================================================================
-class FEMenuColorScheme {
-public:
-    color32 unselect;     // +0x00
-    color32 highlight1;   // +0x04
-    color32 highlight2;   // +0x08
-    char    flags;        // +0x0C
-    char    _pad[3];
-
-    static bool GetInfo(char index, color32& un, color32& h1,
-                        color32& h2);   // shell.o 0x56FB10
-    static bool GetInfo(char index, color32& un,
-                        color32& sel);  // shell.o 0x56FB50
-    static int GetSchemeFromText(Broc::string& schemeText);  // shell.o 0x56FB80
-};
-static_assert(sizeof(FEMenuColorScheme) == 16,
-              "FEMenuColorScheme size mismatch");
-
 extern FEMenuColorScheme color_schemes[];  // 0xDF3AE0
 extern const char* const FEMenuColorSchemeText[];  // 0xCEF370 (17 entries)
 
@@ -109,17 +71,17 @@ bool FEMenuColorScheme::GetInfo(char index, color32& un, color32& h1,
                                 color32& h2)
 {
     un.i = color_schemes[index].unselect.i;
-    h1.i = color_schemes[index].highlight1.i;
-    h2.i = color_schemes[index].highlight2.i;
-    return color_schemes[index].flags != 0;
+    h1.i = color_schemes[index].high1.i;
+    h2.i = color_schemes[index].high2.i;
+    return color_schemes[index].flash;
 }
 
 // ea: 0x0056FB50
 bool FEMenuColorScheme::GetInfo(char index, color32& un, color32& sel)
 {
     un.i = color_schemes[index].unselect.i;
-    sel.i = color_schemes[index].highlight1.i;
-    return color_schemes[index].flags != 0;
+    sel.i = color_schemes[index].high1.i;
+    return color_schemes[index].flash;
 }
 
 // ea: 0x0056FB80

@@ -12,26 +12,9 @@
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
+#include "game/ui_types.h"
 #include "game/sv/sv_decl.h"
 #include "game/sv/sv_stubs.h"
-
-// Minimal color32 view (class-tagged V in the binary; full union in
-// ui_types.h, which cannot be combined with sv_stubs.h).
-class color32 {
-public:
-    union {
-        unsigned int i;
-        struct {
-            uint8_t b;
-            uint8_t g;
-            uint8_t r;
-            uint8_t a;
-        } c;
-    };
-
-    color32() {}
-    color32(unsigned int ic) { i = ic; }
-};
 
 enum ELanguage {
     kLanguageEnglish = 0,
@@ -53,104 +36,6 @@ enum errorParm_t {
     ERR_SCRIPT = 6,
     ERR_LOCALIZATION = 7,
 };
-
-// Minimal PanelAnimObject/PanelQuad views (full in ui_types.h; sv_stubs.h
-// cannot be combined with ui_types.h because both define FEMenuSystem).
-// The virtual destructor keeps PanelQuad polymorphic so FloatingPQ shares the
-// base vfptr (mirrors the binary layout: PanelQuad 72 bytes, FloatingPQ 84).
-struct PanelAnimObject {
-    virtual ~PanelAnimObject() {}
-    float visibility; // +0x04
-    float z_value;    // +0x08
-    float fade_timer; // +0x0C
-    char  flags;      // +0x10
-};
-
-struct PanelQuadSection;
-
-struct PanelQuad : PanelAnimObject {
-    Broc::vector         center_point;       // +0x14
-    PanelQuadSection**   pqs_elements;       // +0x20 (ae_vector)
-    int                  pqs_mSize;          // +0x24
-    int                  pqs_mCapacity;      // +0x28
-    void*                am_info;            // +0x2C
-    float                rotation;           // +0x30
-    float                sc_x;               // +0x34
-    float                sc_y;               // +0x38
-    unsigned int         quadMapFlags;       // +0x3C
-    unsigned int         quadBlendModeType;  // +0x40
-    Broc::string         name;               // +0x44
-
-    PanelQuad(char* name);  // ??0PanelQuad@@QAE@PAD@Z (shell.o 0x58B840)
-    virtual void Shift(float off_x, float off_y);  // shell.o 0x57A6A0
-    virtual void SetCenterPos(float cx, float cy)  // vtable slot 39 (0x9C)
-    {
-        Shift(cx - center_point.x, cy - center_point.y);
-    }
-
-    Broc::vector GetMax();        // shell.o 0x57AC40
-    Broc::vector GetMin();        // shell.o 0x57AF20
-    Broc::vector GetInitialMax(); // shell.o 0x57B200
-    Broc::vector GetInitialMin(); // shell.o 0x57B490
-};
-
-struct PanelQuadSection {
-    struct PQVert {
-        float        X;      // +0x00
-        float        Y;      // +0x04
-        float        U;      // +0x08
-        float        V;      // +0x0C
-        unsigned int Color;  // +0x10
-    };
-    struct QuadData {
-        PQVert Verts[4];  // +0x00 (80 bytes)
-        float  Z;         // +0x50
-        char   pad2[4];   // +0x54
-    };
-
-    short    x_initial[4];  // +0x00
-    short    y_initial[4];  // +0x08
-    QuadData quad;          // +0x10 (88 bytes)
-
-    Broc::vector GetMax();            // ?GetMax@PanelQuadSection@@QAE?AUvector@Broc@@XZ
-    Broc::vector GetMin();            // shell.o 0x569D00
-    Broc::vector GetInitialMax();     // shell.o 0x569DA0
-    Broc::vector GetInitialMin();     // shell.o 0x569E50
-    Broc::vector GetMaxUV();          // shell.o 0x569F00
-    Broc::vector GetMinUV();          // shell.o 0x569FB0
-    void SetInitialXY(Broc::vector* tmp_initial);  // shell.o 0x5696F0
-    void SetUV(Broc::vector* uv);                  // shell.o 0x569B30
-    void SetPos(Broc::vector* xy);                 // shell.o 0x569BB0
-    void AddPQSection(Broc::vector* xy,
-                      Broc::vector* uv, color32* col,
-                      float z);                          // shell.o 0x579550
-    void SetColorVert(int i, color32 c);                 // shell.o 0x569AB0
-    void SetColorNAVert(int i, color32 c);               // shell.o 0x579800
-    color32 GetColor(int index);                         // shell.o 0x579900
-};
-static_assert(sizeof(PanelQuadSection::PQVert) == 20,
-              "PQVert size mismatch");
-static_assert(sizeof(PanelQuadSection) == 104,
-              "PanelQuadSection size mismatch");
-
-// ============================================================================
-// FEMultiLineText / FEMenuListBoxItem minimal views
-// ============================================================================
-struct FEMultiLineText {
-    static Broc::string ReplaceEndlines(Broc::string t);  // shell.o 0x56E670
-};
-
-struct FEMenuListBoxItem {
-    int          mIndex;         // +0x00
-    Broc::string mText;          // +0x04
-    void*        mData;          // +0x08
-    int          mSubItemCount;  // +0x0C
-    Broc::string mSubItems[3];   // +0x10
-
-    const Broc::string& GetSubItem(unsigned int index);  // shell.o 0x571D90
-};
-static_assert(sizeof(FEMenuListBoxItem) == 28,
-              "FEMenuListBoxItem size mismatch");
 
 // ============================================================================
 // CStringEdPackage - string table editor package (shell.o string_ed.cpp)
@@ -290,17 +175,6 @@ struct MPsharedStubData {
     void get(StubData* stubData) const;
 };
 static_assert(sizeof(MPsharedStubData) == 0x5D, "MPsharedStubData size mismatch");
-
-// ============================================================================
-// FloatingPQ - screen-projected quad (84 bytes; PanelQuad + location_3d)
-// ============================================================================
-struct FloatingPQ : PanelQuad {
-    Broc::vector location_3d;  // +0x48
-
-    FloatingPQ(char* n);
-    virtual void UpdateInScene();
-};
-static_assert(sizeof(FloatingPQ) == 84, "FloatingPQ size mismatch");
 
 // controller::ButtonIndex enum (full in input/controller.cpp)
 class controller {

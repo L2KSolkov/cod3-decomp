@@ -8379,15 +8379,6 @@ struct FEMultiLineText {
                     color32 col);  // real in XboxLiveMenus.cpp
 };
 
-// V-tag color32 stub (ui_types.h uses a union tag; binary mangles Vcolor32)
-FEMultiLineText::FEMultiLineText(font_index f, float x1, float y1, float z1,
-                                 panel_layer layer, float s, int horizJust,
-                                 int vertJust, color32 col)
-{
-    (void)f; (void)x1; (void)y1; (void)z1; (void)layer; (void)s;
-    (void)horizJust; (void)vertJust; (void)col;
-}
-
 struct vmCvar_t;
 extern vmCvar_t cg_fov;  // ?cg_fov@@3UvmCvar_t@@A (cg.o)
 

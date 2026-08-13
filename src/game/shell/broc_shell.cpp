@@ -278,15 +278,15 @@ Broc::vector PanelQuad::GetMax()
 {
     Broc::vector max_coords;
     max_coords.z = sNaN;
-    if (pqs_mSize <= 0)
+    if (pqs.mSize <= 0)
         return max_coords;
-    max_coords = pqs_elements[0]->GetMax();
-    for (int v8 = 1; v8 < pqs_mSize; ++v8)
+    max_coords = pqs.mElements[0]->GetMax();
+    for (int v8 = 1; v8 < pqs.mSize; ++v8)
     {
-        Broc::vector v22 = pqs_elements[v8]->GetMax();
+        Broc::vector v22 = pqs.mElements[v8]->GetMax();
         if (v22.x > max_coords.x)
             max_coords.x = v22.x;
-        Broc::vector v21 = pqs_elements[v8]->GetInitialMax();
+        Broc::vector v21 = pqs.mElements[v8]->GetInitialMax();
         if (v21.y > max_coords.y)
             max_coords.y = v21.y;
     }
@@ -298,15 +298,15 @@ Broc::vector PanelQuad::GetMin()
 {
     Broc::vector min_coords;
     min_coords.z = sNaN;
-    if (pqs_mSize <= 0)
+    if (pqs.mSize <= 0)
         return min_coords;
-    min_coords = pqs_elements[0]->GetMin();
-    for (int v8 = 1; v8 < pqs_mSize; ++v8)
+    min_coords = pqs.mElements[0]->GetMin();
+    for (int v8 = 1; v8 < pqs.mSize; ++v8)
     {
-        Broc::vector v22 = pqs_elements[v8]->GetMin();
+        Broc::vector v22 = pqs.mElements[v8]->GetMin();
         if (min_coords.x > v22.x)
             min_coords.x = v22.x;
-        Broc::vector v21 = pqs_elements[v8]->GetInitialMin();
+        Broc::vector v21 = pqs.mElements[v8]->GetInitialMin();
         if (min_coords.y > v21.y)
             min_coords.y = v21.y;
     }
@@ -318,15 +318,15 @@ Broc::vector PanelQuad::GetInitialMax()
 {
     Broc::vector max_coords;
     max_coords.z = sNaN;
-    if (pqs_mSize <= 0)
+    if (pqs.mSize <= 0)
         return max_coords;
-    max_coords = pqs_elements[0]->GetInitialMax();
-    for (int v3 = 1; v3 < pqs_mSize; ++v3)
+    max_coords = pqs.mElements[0]->GetInitialMax();
+    for (int v3 = 1; v3 < pqs.mSize; ++v3)
     {
-        Broc::vector v23 = pqs_elements[v3]->GetInitialMax();
+        Broc::vector v23 = pqs.mElements[v3]->GetInitialMax();
         if (v23.x > max_coords.x)
             max_coords.x = v23.x;
-        Broc::vector v21 = pqs_elements[v3]->GetInitialMax();
+        Broc::vector v21 = pqs.mElements[v3]->GetInitialMax();
         if (v21.y > max_coords.y)
             max_coords.y = v21.y;
     }
@@ -338,15 +338,15 @@ Broc::vector PanelQuad::GetInitialMin()
 {
     Broc::vector min_coords;
     min_coords.z = sNaN;
-    if (pqs_mSize <= 0)
+    if (pqs.mSize <= 0)
         return min_coords;
-    min_coords = pqs_elements[0]->GetInitialMin();
-    for (int v3 = 1; v3 < pqs_mSize; ++v3)
+    min_coords = pqs.mElements[0]->GetInitialMin();
+    for (int v3 = 1; v3 < pqs.mSize; ++v3)
     {
-        Broc::vector v23 = pqs_elements[v3]->GetInitialMin();
+        Broc::vector v23 = pqs.mElements[v3]->GetInitialMin();
         if (min_coords.x > v23.x)
             min_coords.x = v23.x;
-        Broc::vector v21 = pqs_elements[v3]->GetInitialMin();
+        Broc::vector v21 = pqs.mElements[v3]->GetInitialMin();
         if (min_coords.y > v21.y)
             min_coords.y = v21.y;
     }

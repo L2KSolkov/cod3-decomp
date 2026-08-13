@@ -950,6 +950,7 @@ struct SceneManager {
     void InstanceEntities();             // ?InstanceEntities@SceneManager@@QAEXXZ
 };
 
+#ifndef COD3_FULL_FE_TYPES
 struct FEMenuSystem {
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
     uint8_t _pad[0x2A - 0x04];
@@ -958,6 +959,7 @@ struct FEMenuSystem {
     bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch (opaque)");
+#endif
 
 // ============================================================================
 // GamePause — static pause helpers

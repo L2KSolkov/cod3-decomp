@@ -6,6 +6,10 @@
 
 #pragma once
 
+// Full FE type set is available; sv_stubs.h keeps its minimal FEMenuSystem
+// view out when this header has been included.
+#define COD3_FULL_FE_TYPES
+
 #include "core/math_types.h"
 #include "engine/broc_types.h"
 #ifdef _WIN32
@@ -16,16 +20,20 @@
 
 // ============================================================================
 // color32 â€” 32-bit RGBA color (4 bytes) â€” verified against IDA
-// Union of packed uint + byte components (b, g, r, a order)
+// Class-tagged (V) to match the binary's mangling (??AVcolor32@@);
+// anonymous union keeps the packed uint + byte component views.
 // ============================================================================
-union color32 {
-    unsigned int i;
-    struct {
-        uint8_t b;  // +0x00
-        uint8_t g;  // +0x01
-        uint8_t r;  // +0x02
-        uint8_t a;  // +0x03
-    } c;
+class color32 {
+public:
+    union {
+        unsigned int i;
+        struct {
+            uint8_t b;  // +0x00
+            uint8_t g;  // +0x01
+            uint8_t r;  // +0x02
+            uint8_t a;  // +0x03
+        } c;
+    };
 
     color32() {}
     // ??0color32@@QAE@I@Z (anim.o 0x53A320)
@@ -47,6 +55,8 @@ static_assert(sizeof(ae_vector<char>) == 0x0C, "ae_vector size mismatch");
 // ============================================================================
 // font_index â€” font selection enum (from IDA, all values verified)
 // ============================================================================
+#ifndef COD3_FONT_INDEX_DEFINED
+#define COD3_FONT_INDEX_DEFINED
 enum font_index {
     FONT_GARAMOND = 0,
     FONT_GEMFONTONE = 1,
@@ -59,6 +69,7 @@ enum font_index {
     NUM_FONTS = 8,
     INVALID_FONT = 9,
 };
+#endif
 
 // ============================================================================
 // FEMENUCMD â€” menu command bit flags (from IDA, all values verified)
@@ -125,7 +136,7 @@ static_assert(sizeof(PanelFileUser) == 4, "PanelFileUser size mismatch");
 // Size: 0x14 (20 bytes) â€” verified against IDA
 // ============================================================================
 struct PanelAnimObject {
-    struct PanelAnimObject_vtbl* __vftable;  // +0x00
+    virtual ~PanelAnimObject() {}            // +0x00 (vfptr)
     float visibility;                        // +0x04
     float z_value;                           // +0x08
     float fade_timer;                        // +0x0C
@@ -153,12 +164,73 @@ struct PanelQuad : PanelAnimObject {
     Broc::string   name;                      // +0x44
 
     PanelQuad(char* name);  // ??0PanelQuad@@QAE@PAD@Z (shell.o 0x58B840)
+    virtual void Shift(float off_x, float off_y);  // shell.o 0x57A6A0
+    virtual void SetCenterPos(float cx, float cy)  // vtable slot 39 (0x9C)
+    {
+        Shift(cx - center_point.x, cy - center_point.y);
+    }
+    Broc::vector GetMax();        // shell.o 0x57AC40
+    Broc::vector GetMin();        // shell.o 0x57AF20
+    Broc::vector GetInitialMax(); // shell.o 0x57B200
+    Broc::vector GetInitialMin(); // shell.o 0x57B490
     void SetShown(bool shown);
     void SetVisibility(float v);
 };
 static_assert(sizeof(PanelQuad) == 0x48, "PanelQuad size mismatch");
 static_assert(offsetof(PanelQuad, center_point) == 0x14, "PanelQuad::center_point offset mismatch");
 static_assert(offsetof(PanelQuad, pqs) == 0x20, "PanelQuad::pqs offset mismatch");
+
+// ============================================================================
+// PanelQuadSection â€” quad section (104 bytes) â€” verified against IDA
+// ============================================================================
+struct PanelQuadSection {
+    struct PQVert {
+        float        X;      // +0x00
+        float        Y;      // +0x04
+        float        U;      // +0x08
+        float        V;      // +0x0C
+        unsigned int Color;  // +0x10
+    };
+    struct QuadData {
+        PQVert Verts[4];  // +0x00 (80 bytes)
+        float  Z;         // +0x50
+        char   pad2[4];   // +0x54
+    };
+
+    short    x_initial[4];  // +0x00
+    short    y_initial[4];  // +0x08
+    QuadData quad;          // +0x10 (88 bytes)
+
+    Broc::vector GetMax();            // shell.o 0x569C60
+    Broc::vector GetMin();            // shell.o 0x569D00
+    Broc::vector GetInitialMax();     // shell.o 0x569DA0
+    Broc::vector GetInitialMin();     // shell.o 0x569E50
+    Broc::vector GetMaxUV();          // shell.o 0x569F00
+    Broc::vector GetMinUV();          // shell.o 0x569FB0
+    void SetInitialXY(Broc::vector* tmp_initial);  // shell.o 0x5696F0
+    void SetUV(Broc::vector* uv);                  // shell.o 0x569B30
+    void SetPos(Broc::vector* xy);                 // shell.o 0x569BB0
+    void AddPQSection(Broc::vector* xy, Broc::vector* uv, color32* col,
+                      float z);                    // shell.o 0x579550
+    void SetColorVert(int i, color32 c);           // shell.o 0x569AB0
+    void SetColorNAVert(int i, color32 c);         // shell.o 0x579800
+    color32 GetColor(int index);                   // shell.o 0x579900
+};
+static_assert(sizeof(PanelQuadSection::PQVert) == 20,
+              "PQVert size mismatch");
+static_assert(sizeof(PanelQuadSection) == 104,
+              "PanelQuadSection size mismatch");
+
+// ============================================================================
+// FloatingPQ â€” screen-projected quad (84 bytes) â€” verified against IDA
+// ============================================================================
+struct FloatingPQ : PanelQuad {
+    Broc::vector location_3d;  // +0x48
+
+    FloatingPQ(char* n);          // shell.o 0x591070
+    virtual void UpdateInScene(); // shell.o 0x56AD40
+};
+static_assert(sizeof(FloatingPQ) == 84, "FloatingPQ size mismatch");
 
 // ============================================================================
 // PanelFile â€” panel definition file (96 bytes)
@@ -197,6 +269,11 @@ struct FETextFlashInfo {
     float   flash_period;      // +0x0C
     bool    reset;             // +0x10
     uint8_t _pad11[3];         // +0x11
+
+    FETextFlashInfo(color32 col, float period);  // shell.o 0x56B940
+    void Update(float time_inc);                 // shell.o 0x56B970
+    color32 GetColor(color32 normal_color);      // shell.o 0x56B9B0
+    void Reset();                                // shell.o 0x56BA70
 };
 static_assert(sizeof(FETextFlashInfo) == 0x14, "FETextFlashInfo size mismatch");
 
@@ -220,6 +297,41 @@ struct FEText : PanelAnimObject {
     int16_t          flags;                 // +0x6C
     uint8_t          _pad6E[2];             // +0x6E
 
+    FEText() {}  // inline default (FE subclass ctors)
+    FEText(font_index f, const char* s, float x, float y, int z,
+           panel_layer layer, float scale, int hJustify, int vJustify,
+           color32 col);                    // shell.o 0x56BA80
+    virtual ~FEText();                      // shell.o 0x56BCE0
+    virtual FEText* Clone();                // shell.o 0x56BD50
+    virtual void CopyFrom(FEText* fet);     // shell.o 0x56BDC0
+    virtual void Update(float time_inc);    // shell.o 0x56BEF0
+    virtual void UpdateForWidescreen(bool widescreen);  // shell.o 0x56BFF0
+    virtual void UpdateForWidescreen(bool widescreen, int viewport);
+                                            // shell.o 0x56C120
+    virtual void MoveForSplitScreen(int viewport, int old_viewport);
+                                            // shell.o 0x56C250
+    virtual void UpdateForHUDSplitScreen(int viewport, int old_viewport,
+                                         int client, float widescreen,
+                                         float split);  // shell.o 0x56C380
+    virtual void UpdateForSplitScreen(int viewport, int old_viewport);
+                                            // shell.o 0x56C4F0
+    virtual void SetHJustify(int h);        // shell.o 0x56C7F0
+    virtual void SetVJustify(int v);        // shell.o 0x56C830
+    virtual void SetText(const char* s);    // shell.o 0x56C870
+    virtual void SetText(unsigned int hash);// shell.o 0x56C900
+    virtual void SetNoFlash(color32 c);     // shell.o 0x56C930
+    virtual void SetFlash(color32 c1, color32 c2, float period);
+                                            // shell.o 0x56C950
+    virtual void SetNoColor();              // shell.o 0x56C9D0
+    static void CreateNGLColorCode(color32 c, char* dest);  // shell.o 0x56C9E0
+    virtual void Draw(bool localize);       // shell.o 0x57C390
+    virtual float GetWidth(const float* p); // shell.o 0x57C6E0
+    virtual float GetHeight(const float* p);// shell.o 0x57C910
+protected:
+    virtual void Animate(math::Mat43* m, float time);  // shell.o 0x56CA30
+    virtual void AdjustForJustification(float& x, float& y, float z);
+                                            // shell.o 0x56CB60
+public:
     void SetAlpha(int a);
     void SetColorMenuItem(unsigned int normal, unsigned int selected);
     void SetText(const char* s, int a3);
@@ -246,7 +358,7 @@ static_assert(offsetof(FEText, flags) == 0x6C, "FEText::flags offset mismatch");
 // Size: 0x18 (24 bytes) â€” verified against IDA
 // ============================================================================
 struct FEMenuEntry {
-    struct FEMenuEntry_vtbl* __vftable;  // +0x00
+    virtual ~FEMenuEntry() {}            // +0x00 (vfptr)
     FEMenu*    menu;                     // +0x04
     int16_t    up;                       // +0x08
     int16_t    down;                     // +0x0A
@@ -261,6 +373,11 @@ struct FEMenuEntry {
     // vtable helpers (slots: 12=SetString, 16=SetEnabled)
     void SetString(const char* s);
     void SetEnabled(bool e);
+    void CommonConstructor(FEText* text, FEMenu* menu);  // shell.o 0x56FBC0
+    virtual void CopyFrom(FEText* fet);   // shell.o 0x56FC20
+    virtual void SetText(FEText* fet);    // shell.o 0x56FC30
+protected:
+    virtual void AdjustColor(FEText* fet);// shell.o 0x56FCC0
 };
 static_assert(sizeof(FEMenuEntry) == 0x18, "FEMenuEntry size mismatch");
 static_assert(offsetof(FEMenuEntry, text) == 0x10, "FEMenuEntry::text offset mismatch");
@@ -275,6 +392,12 @@ struct FEMenuColorScheme {
     color32 high2;     // +0x08
     bool    flash;     // +0x0C
     uint8_t _pad0D[3]; // +0x0D
+
+    static bool GetInfo(char index, color32& un, color32& h1,
+                        color32& h2);   // shell.o 0x56FB10
+    static bool GetInfo(char index, color32& un,
+                        color32& sel);  // shell.o 0x56FB50
+    static int GetSchemeFromText(Broc::string& schemeText);  // shell.o 0x56FB80
 };
 static_assert(sizeof(FEMenuColorScheme) == 0x10, "FEMenuColorScheme size mismatch");
 
@@ -396,9 +519,25 @@ struct FEMultiLineText : FEText {
     void UpdateForWidescreen(bool widescreen);
     void SetNumLines(int n);
     void SetText(const char* s);
+    static Broc::string ReplaceEndlines(Broc::string t);  // shell.o 0x56E670
     FEMultiLineText(font_index f, float x1, float y1, float z1,
                     panel_layer layer, float s, int horizJust, int vertJust,
                     color32 col);
 };
 static_assert(sizeof(FEMultiLineText) == 0xA8, "FEMultiLineText size mismatch");
 static_assert(offsetof(FEMultiLineText, lines) == 0x90, "FEMultiLineText::lines offset mismatch");
+
+// ============================================================================
+// FEMenuListBoxItem â€” list-box data row (28 bytes) â€” verified against IDA
+// ============================================================================
+struct FEMenuListBoxItem {
+    int          mIndex;         // +0x00
+    Broc::string mText;          // +0x04
+    void*        mData;          // +0x08
+    int          mSubItemCount;  // +0x0C
+    Broc::string mSubItems[3];   // +0x10
+
+    const Broc::string& GetSubItem(unsigned int index);  // shell.o 0x571D90
+};
+static_assert(sizeof(FEMenuListBoxItem) == 28,
+              "FEMenuListBoxItem size mismatch");
