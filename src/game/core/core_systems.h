@@ -1153,6 +1153,8 @@ struct ServerTime {
     float        mTickDelta;        // +0x08
     float        mTickDeltaInv;     // +0x0C
     float        mElapsedTime;      // +0x10
+
+    float GetElapsedTime() const { return mElapsedTime; }  // ?GetElapsedTime@ServerTime@@QBEMXZ (sv.o 0x51E1D0; inline COMDAT)
 };
 static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
 
