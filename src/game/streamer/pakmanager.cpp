@@ -268,15 +268,34 @@ void G_ParseInteractionInfo(TPakId pakId)
 {
     (void)pakId;  // stub: game.o
 }
+
+// Handle (game_types.h; class for VHandle mangling)
+class Handle {
+public:
+    unsigned int mVal;  // +0x00
+};
+
+struct ActiveEffectSet {
+public:
+    void SetPoPtr(math::Mat43* po);  // ?SetPoPtr@ActiveEffectSet@@QAEXPAVMat43@math@@@Z (effect_events.cpp)
+};
+
 class EffectEventSys {
 public:
     static EffectEventSys* sInst;  // ?sInst@EffectEventSys@@2PAV1@A (g_cmd.cpp)
     void StopEffect(unsigned int handle, bool kill);  // game.o; stub
+    ActiveEffectSet* GetActiveEffectSet(Handle handle);  // ?GetActiveEffectSet@EffectEventSys@@QAEPAVActiveEffectSet@@VHandle@@@Z (effect_events.cpp)
+    void StopEffect(Handle handle, bool kill);  // ?StopEffect@EffectEventSys@@QAEXVHandle@@_N@Z (effect_events.cpp)
 };
 void EffectEventSys::StopEffect(unsigned int handle, bool kill)
 {
     (void)handle; (void)kill;  // stub: game.o
 }
+// core.o 0x4D2340 (effect_events.cpp)
+extern Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
+                                        bool queue, TPakId pakid,
+                                        bool important);
+extern float flrand(float min, float max);  // q_math.cpp ?flrand@@YAMMM@Z
 extern void R_DestroyStaticModels(TPakId pakId);  // render.o
 void R_DestroyStaticModels(TPakId pakId)
 {
@@ -1981,13 +2000,19 @@ struct InstanceListNode {
     void*  renderFlagList;              // +0x30
     InstanceListNode* next;             // +0x34
 };
+struct SceneEffectGroup;
+
+// SceneEffect (scenemanager.cpp; state machine fields verified IDA)
 struct SceneEffect {
-    uint8_t      _pad[0x4C];
-    unsigned short mLoopDelayMin;       // +0x4C
-    unsigned short mLoopDelayMax;       // +0x4E
-    unsigned int mEffectHandle;         // +0x50
-    unsigned int mState;                // +0x54 (0 = kStateUninitialized)
-    float        mDelayCountdown;       // +0x58
+    uint8_t      _pad[0x40];
+    const char*  mScriptId;       // +0x40
+    SceneEffectGroup* mGroupPtr;  // +0x44 (group hash until resolved)
+    unsigned int mFlags;          // +0x48
+    unsigned short mLoopDelayMin; // +0x4C
+    unsigned short mLoopDelayMax; // +0x4E
+    unsigned int mEffectHandle;   // +0x50
+    unsigned int mState;          // +0x54 (0 = kStateUninitialized)
+    float        mDelayCountdown; // +0x58
 
     float GetLoopDelayMin() const;  // ?GetLoopDelayMin@SceneEffect@@QBEMXZ
     float GetLoopDelayMax() const;  // ?GetLoopDelayMax@SceneEffect@@QBEMXZ
@@ -2099,6 +2124,7 @@ public:
     void DebugRenderLights();  // ?DebugRenderLights@SceneManager@@QAEXXZ
     void ProcessEffects(TPakId pakId, SceneBank* bank);  // ?ProcessEffects@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z
     void PostProcess(TPakId pakId);  // ?PostProcess@SceneManager@@AAEXW4TPakId@@@Z @ 0x6787E0
+    void UpdateEffects(float delta_t);  // ?UpdateEffects@SceneManager@@QAEXM@Z @ 0x6690B0
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
@@ -2966,6 +2992,209 @@ void SceneManager::ProcessEffects(TPakId pakId, SceneBank* bank)
             __debugbreak();
     }
     loaded_ids.m_elements[mLoadedIdsCount] = pakId;
+}
+
+// ea: 0x6690B0
+void SceneManager::UpdateEffects(float delta_t)
+{
+    if (delta_t == 0.0f)
+        return;
+    mEffectCount = 0;
+    mEffectDelayFrames = 0;
+    const Entity* level = (const Entity*)EntityManager::sInst->mWorld;
+    for (int v3 = 0; v3 < mLoadedIdsCount; ++v3)
+    {
+        TPakId pakId = loaded_ids.m_elements[v3];
+        SceneBank* bank = mBankArray.m_elements[pakId];
+        InplaceVector<SceneEffect>* p_mSceneEffects = &bank->mSceneEffects;
+        for (unsigned int i = 0; i < p_mSceneEffects->mSize; ++i)
+        {
+            SceneEffect* effect = &p_mSceneEffects->mList[i];
+            if (effect->mState == 5)
+                continue;
+            ActiveEffectSet* fxset =
+                EffectEventSys::sInst->GetActiveEffectSet(
+                    Handle{effect->mEffectHandle});
+            int v18;
+            bool v19;
+            unsigned int v20;
+            float tmin;
+            float tmaxa;
+            Handle h2;
+            switch (effect->mState)
+            {
+            case 0:
+                effect->mDelayCountdown -= 1.0f;
+                if (effect->mDelayCountdown > 0.0f)
+                    break;
+                {
+                    unsigned int tmax = (unsigned int)effect->mGroupPtr;
+                    if (tmax == 0)
+                        goto UpdateEffects_L23;
+                    if (mSceneEffectGroups == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\scenemanager.cpp";
+                        AeAssert::gCurrentLine = 405;
+                        AeAssert::gCurrentExpr = "mSceneEffectGroups";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                   "no scene file loaded with effect group list!"))
+                            __debugbreak();
+                    }
+                    effect->mGroupPtr = nullptr;
+                    if (mSceneEffectGroups == nullptr)
+                        goto UpdateEffects_L23;
+                    unsigned int v14 = 0;
+                    if (mSceneEffectGroups->mSize != 0)
+                    {
+                        while (mSceneEffectGroups->mList[v14].mHash != tmax)
+                        {
+                            if (++v14 >= mSceneEffectGroups->mSize)
+                                goto UpdateEffects_L18;
+                        }
+                        effect->mGroupPtr = &mSceneEffectGroups->mList[v14];
+                    }
+                UpdateEffects_L18:
+                    if (effect->mGroupPtr == nullptr)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\scenemanager.cpp";
+                        AeAssert::gCurrentLine = 417;
+                        AeAssert::gCurrentExpr = "effect.mGroupPtr";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                   "Didn't find effect group for hash 0x%08x",
+                                   tmax))
+                            __debugbreak();
+                    }
+                }
+            UpdateEffects_L23:
+                if (fxset != nullptr)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::ARO;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\scenemanager.cpp";
+                    AeAssert::gCurrentLine = 421;
+                    AeAssert::gCurrentExpr = "!fxset";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert(
+                               "shouldn't be initialized already"))
+                        __debugbreak();
+                }
+                {
+                    SceneEffectGroup* mVal = effect->mGroupPtr;
+                    if (mVal == nullptr || mVal->mActive != 0)
+                    {
+                        Handle h;
+                        h.mVal = PostEffectEventScriptCall(
+                            level, effect->mScriptId, false, pakId,
+                            false).mVal;
+                        effect->mEffectHandle = h.mVal;
+                        fxset = EffectEventSys::sInst->GetActiveEffectSet(h);
+                        if (fxset == nullptr)
+                        {
+                            AeAssert::gCurrentAuthor = AeAssert::ARO;
+                            AeAssert::gCurrentFile =
+                                "c:\\cod\\code\\game\\scenemanager.cpp";
+                            AeAssert::gCurrentLine = 430;
+                            AeAssert::gCurrentExpr = "fxset";
+                            if (!AeAssert::IsIgnored()
+                                && AeAssert::Assert(
+                                       "should always have a fx set here, even if the trigger does nothing"))
+                                __debugbreak();
+                        }
+                        effect->mState = 1;
+                    }
+                    else
+                    {
+                        effect->mState = 4;
+                    }
+                }
+                goto UpdateEffects_L59;
+
+            case 1:
+                if (fxset != nullptr)
+                    goto UpdateEffects_L58;
+                effect->mState = 5;
+                break;
+
+            case 2:
+                v18 = (effect->mGroupPtr != nullptr)
+                          ? effect->mGroupPtr->mActive
+                          : 1;
+                v19 = (v18 != 0);
+                if (fxset != nullptr)
+                {
+                    if (!v19)
+                    {
+                        EffectEventSys::sInst->StopEffect(
+                            Handle{effect->mEffectHandle}, false);
+                        effect->mEffectHandle = 0;
+                    UpdateEffects_L53:
+                        effect->mState = 4;
+                        break;
+                    }
+                    goto UpdateEffects_L59;
+                }
+                else
+                {
+                    if (!v19)
+                        goto UpdateEffects_L53;
+                    v20 = effect->mFlags;
+                    if ((v20 & 1) == 0 && (v20 & 4) != 0)
+                    {
+                        effect->mState = 5;
+                        break;
+                    }
+                    effect->mFlags = v20 | 4;
+                    if (effect->mLoopDelayMax != 0)
+                    {
+                        tmin = (float)effect->mLoopDelayMin * 0.01f;
+                        tmaxa =
+                            flrand(tmin, (float)effect->mLoopDelayMax * 0.01f);
+                        if (tmaxa != 0.0f)
+                        {
+                            effect->mState = 3;
+                            effect->mDelayCountdown = tmaxa;
+                            break;
+                        }
+                    }
+                }
+            UpdateEffects_L50:
+                effect->mState = 2;
+                h2.mVal = PostEffectEventScriptCall(
+                    level, effect->mScriptId, false, pakId,
+                    false).mVal;
+                effect->mEffectHandle = h2.mVal;
+                fxset = EffectEventSys::sInst->GetActiveEffectSet(h2);
+                goto UpdateEffects_L59;
+
+            case 3:
+                effect->mDelayCountdown -= delta_t;
+                if (effect->mDelayCountdown > 0.0f)
+                    goto UpdateEffects_L59;
+                goto UpdateEffects_L50;
+
+            case 4:
+                if (effect->mGroupPtr != nullptr
+                    && effect->mGroupPtr->mActive != 0)
+                    goto UpdateEffects_L58;
+                goto UpdateEffects_L59;
+
+            default:
+                goto UpdateEffects_L59;
+            }
+
+        UpdateEffects_L58:
+            effect->mState = 2;
+        UpdateEffects_L59:
+            if (fxset != nullptr)
+                fxset->SetPoPtr((math::Mat43*)effect);
+        }
+    }
 }
 
 // ea: 0x6787E0
