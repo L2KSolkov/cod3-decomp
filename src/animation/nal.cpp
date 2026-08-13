@@ -1492,9 +1492,464 @@ extern DroneAEMap gDroneAEMap;  // ?gDroneAEMap@@3V?$ae_sized_array@... (game2.o
 // ============================================================================
 class InteractState;
 
+// Local view of EntityManager (full class in streamer/pakmanager.cpp).
+class Entity {
+public:
+    unsigned int flags;   // +0x04
+    unsigned int mFlags;  // +0x08
+    unsigned char _pad[0x150 - 0x0C];
+    struct {
+        math::Position3 currentOrigin;  // +0x70 within EntityShared
+        math::Position3 currentAngles;  // +0x80
+        math::Mat43 currentMat;         // +0x90
+    } r;                   // +0x150 (EntityShared r @ +0xE0 + 0x70)
+    unsigned char _padR[0x230 - 0x1B0];
+    struct {
+        unsigned int mVal;  // +0x230
+    } mHandle;             // +0x230
+    unsigned char _pad2[0x23C - 0x234];
+    DObj* mDObj;           // +0x23C
+    void* mNotifySet;      // +0x240 (EntityNotifySet*)
+    unsigned char _pad3[0x254 - 0x244];
+    void* client;  // +0x254
+    void* actor;   // +0x258 (actor_s*)
+    struct sentient_s* sentient;      // +0x25C
+    void* scr_vehicle;                // +0x260
+    void* pTurretInfo;                // +0x264
+
+    int GetPlayerIndex() const;  // 0x612340 (game.o; stub)
+    const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (real in g_entity_misc.cpp)
+    void Notify(HashString h);  // real in g_entity_misc.cpp
+    void Notify(HashString h, const unsigned int& e);  // real in g_entity_misc.cpp
+};
+
+// sentient_s mLastAnimIKGunOffset view
+struct sentient_s {
+    unsigned char _pad[0x134];
+    float* mLastAnimIKGunOffset[4];  // +0x134
+};
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+};
+
+// Local view of Camera (full class in cg_misc.cpp; StopAnimating real there).
+struct Camera {
+public:
+    void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
+    int IsAnimating() const;                 // 0x55FA40
+    void StartTween(float tweenTime, bool anglesOnly);  // ?StartTween@Camera@@QAEXM_N@Z (cg_misc real)
+};
+extern Camera* gCamera;  // ?gCamera@@3PAUCamera@@A (cg.o @ 0x1358EF0)
+
+extern int currCl;
+extern int dword_F6A2A0[4 * 802];
+extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
+
+class AnimationPlayer {
+public:
+    enum AnimationPlayerModifierType {
+        nalPartialModifier = 1,
+        nalFullModifier = 2,
+    };
+
+    // nalPlayMethod - real body in g_debugthread.cpp (game2.o)
+    class nalPlayMethod {
+    public:
+        nalPlayMethod();   // ??0nalPlayMethod@AnimationPlayer@@QAE@XZ (game2.o)
+        ~nalPlayMethod();  // ??1nalPlayMethod@AnimationPlayer@@QAE@XZ (game2.o)
+        void SetNoteHandlerEntityHandle(
+            DbLinkedHandle<EntityHandleDb, Entity> handle);  // 0x4F5D10
+    };
+
+    // nalAnimCallback - vftable + curAnim (anim.o 0x539EB0/0x539ED0/0x539EE0)
+    class nalAnimCallback {
+    public:
+        void** __vftable;          // +0x00
+        nalGenericAnim* curAnim;   // +0x04
+
+        nalAnimCallback();         // ea: 0x00539EB0
+        void Reference(nalGenericAnim* anim);  // ea: 0x00539ED0
+        void Release();            // ea: 0x00539EE0
+        int IsAnimPlaying(nalGenericAnim* anim);  // ea: 0x00539EF0
+    };
+
+    // nalAnimState - 0x2C (IDA verified)
+    struct nalAnimState {
+        // ??2/??3nalAnimState@AnimationPlayer@@SAPAXI@Z (anim.o 0x539F30/50)
+        static void* operator new(unsigned int sz);
+        static void* operator new(unsigned int, void* p) { return p; }
+        static void operator delete(void* ptr);
+
+        void* instance;        // +0x00
+        float speed;           // +0x04
+        float tlimit;          // +0x08
+        nalAnimCallback* callback;  // +0x0C
+        void* play_method;     // +0x10
+        float t;               // +0x14
+        float t_prev;          // +0x18
+        float alpha;           // +0x1C
+        float maxAlpha;        // +0x20
+        float fadein_rate;     // +0x24
+        int state;             // +0x28
+
+        void Setup(nalGenericAnim* anim, void* skeleton, float _fadein_rate,
+                   void* _play_method, float callback_time,
+                   nalAnimCallback* _callback, float _speed,
+                   float time_in_seconds_to_start);  // ea: 0x0055F280
+    };
+
+    // nalPartialAnimState - 0x44 (IDA verified)
+    struct nalPartialAnimState {
+        nalAnimState base;              // +0x00
+        unsigned int CreationAdvanceCount;  // +0x2C
+        nalPartialAnimState* next;      // +0x30
+        unsigned int mask;              // +0x34
+        float priority;                 // +0x38
+        float fadeout_rate;             // +0x3C
+        int type;                       // +0x40
+    };
+
+    enum nalAnimStateEnum {
+        FadeIn = 0,
+        Running = 1,
+        FadeOut = 2,
+    };
+
+    void* Skeleton;                       // +0x00
+    unsigned char _pad[0x24 - 0x04];
+    int QueueSize;                        // +0x24
+    nalAnimState* AnimStates[3];          // +0x28
+    nalPartialAnimState* PartialAnimStates;    // +0x34
+    nalPartialAnimState* PartialAnimStatePool; // +0x38
+    int AdvanceCount;                     // +0x3C
+
+    void StopModifiers(unsigned int mask);   // ea: 0x0053A040
+    void FadeOutModifiers(float newFadeOut, unsigned int mask);  // ea: 0x0053A0A0
+    nalPartialAnimState* _FindModifier(unsigned int mask,
+                                       float priority);  // ea: 0x0053A1E0
+    void _StopOrHoldModifiers(unsigned int mask,
+                              float priority);  // ea: 0x0053A230
+    int GetQueueSize();                    // ea: 0x0053A2A0
+    void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
+    void PlayModifier(nalGenericAnim* anim,
+                      AnimationPlayerModifierType type, float priority,
+                      unsigned int mask, bool ForceRestart, float fade_in,
+                      float fade_out, nalPlayMethod* play_method,
+                      float callback_time, nalAnimCallback* callback,
+                      float speed,
+                      float time_in_seconds_to_start);  // ea: 0x0055F7A0
+
+    // ?GetPose@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@PAVnalGenericSkeleton@3@QAY02M@Z
+    void GetPose(nalGeneric::nalGenericPose& Pose,
+                 nalGeneric::nalGenericSkeleton* Skeleton,
+                 float (*animIKGunOffset)[3]);
+
+    // ?Reset@AnimationPlayer@@QAEXXZ (anim.o; stub)
+    void Reset() {}
+
+    // ?Play@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@_NMPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM@Z
+    void Play(nalGenericAnim* anim, bool ForceRestart, float fade_in,
+              void* play_method, float callback_time, void* callback,
+              float speed, float time_in_seconds_to_start)
+    {
+        (void)anim; (void)ForceRestart; (void)fade_in; (void)play_method;
+        (void)callback_time; (void)callback; (void)speed;
+        (void)time_in_seconds_to_start;
+    }
+};
+// ea: 0x00539EB0
+AnimationPlayer::nalAnimCallback::nalAnimCallback()
+{
+    static void* sVftable[3];  // Invoke/Reference/Release slots
+    __vftable = sVftable;
+    curAnim = nullptr;
+}
+
+// ea: 0x00539ED0
+void AnimationPlayer::nalAnimCallback::Reference(nalGenericAnim* anim)
+{
+    curAnim = anim;
+}
+
+// ea: 0x00539EE0
+void AnimationPlayer::nalAnimCallback::Release()
+{
+    curAnim = nullptr;
+}
+
+// ea: 0x00539EF0
+int AnimationPlayer::nalAnimCallback::IsAnimPlaying(nalGenericAnim* anim)
+{
+    return curAnim != nullptr && anim == curAnim;
+}
+
+// ea: 0x0055F280
+void AnimationPlayer::nalAnimState::Setup(nalGenericAnim* anim, void* skeleton,
+                                          float _fadein_rate,
+                                          void* _play_method,
+                                          float callback_time,
+                                          nalAnimCallback* _callback,
+                                          float _speed,
+                                          float time_in_seconds_to_start)
+{
+    void* Instance;
+    if (_play_method != nullptr)
+    {
+        // nalPlayMethod::CreateInstance delegates to nalGenericAnim_CreateInstance
+        Instance = nalGenericAnim_CreateInstance(anim, skeleton);
+    }
+    else
+    {
+        Instance = nalGenericAnim_CreateInstance(anim, skeleton);
+    }
+    instance = Instance;
+    speed = _speed;
+    float Duration = *(float*)((char*)anim + 0x38);
+    float v12 = Duration == 0.0f ? 0.0f : 1.0f / Duration;
+    tlimit = v12 * callback_time + 1.0f;
+    callback = _callback;
+    if (_callback != nullptr)
+        _callback->Reference(anim);
+    play_method = _play_method;
+    float v14 = *(float*)((char*)instance + 0x08) * time_in_seconds_to_start;
+    t = v14;
+    t_prev = v14;
+    alpha = 0.0f;
+    maxAlpha = 1.0f;
+    fadein_rate = _fadein_rate;
+    state = Running;
+    if (_fadein_rate == 0.0f)
+        alpha = 1.0f;
+    // binary: _play_method->Reference(this) - thunk, no-op in port
+}
+
+// ea: 0x0053A040
+void AnimationPlayer::StopModifiers(unsigned int mask)
+{
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->mask == mask || mask == 0xFFFFFFFFu)
+        {
+            nalAnimCallback* callback = i->base.callback;
+            i->base.state = FadeOut;
+            if (callback != nullptr)
+                callback->Release();
+            i->base.callback = nullptr;
+        }
+    }
+}
+
+// ea: 0x0053A0A0
+void AnimationPlayer::FadeOutModifiers(float newFadeOut, unsigned int mask)
+{
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->mask == mask)
+        {
+            float v4 = 0.0f;
+            if (newFadeOut != 0.0f)
+                v4 = 1.0f / newFadeOut;
+            nalAnimCallback* callback = i->base.callback;
+            i->fadeout_rate = v4;
+            i->base.state = FadeOut;
+            if (callback != nullptr)
+                callback->Release();
+            i->base.callback = nullptr;
+        }
+    }
+}
+
+// ea: 0x0053A1E0
+AnimationPlayer::nalPartialAnimState* AnimationPlayer::_FindModifier(
+    unsigned int mask, float priority)
+{
+    nalPartialAnimState* result = nullptr;
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->priority == priority && i->mask == mask)
+            result = i;
+    }
+    return result;
+}
+
+// ea: 0x0053A230
+void AnimationPlayer::_StopOrHoldModifiers(unsigned int mask, float priority)
+{
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->mask == mask)
+        {
+            float v4 = i->priority;
+            nalAnimCallback* callback = i->base.callback;
+            i->base.state = FadeOut;
+            if (v4 <= priority)
+            {
+                if (callback != nullptr)
+                    callback->Release();
+                i->base.state = Running;
+            }
+            else if (callback != nullptr)
+            {
+                callback->Release();
+            }
+            i->base.callback = nullptr;
+        }
+    }
+}
+
+// ea: 0x0053A2A0
+int AnimationPlayer::GetQueueSize()
+{
+    return QueueSize;
+}
+
+// ea: 0x0055F730
+void AnimationPlayer::SetSpeed(nalGenericAnim* anim, float speed)
+{
+    if (QueueSize > 0)
+    {
+        if (anim == *(void**)((char*)AnimStates[0]->instance + 0x10))
+        {
+            for (int i = 0; i < QueueSize; ++i)
+            {
+                if (*(void**)((char*)AnimStates[i]->instance + 0x10)
+                    != nullptr)
+                    AnimStates[i]->speed = speed;
+            }
+        }
+    }
+}
+
+// ea: 0x0055F7A0
+void AnimationPlayer::PlayModifier(nalGenericAnim* anim,
+                                   AnimationPlayerModifierType type,
+                                   float priority, unsigned int mask,
+                                   bool ForceRestart, float fade_in,
+                                   float fade_out, nalPlayMethod* play_method,
+                                   float callback_time,
+                                   nalAnimCallback* callback, float speed,
+                                   float time_in_seconds_to_start)
+{
+    static nalAnimCallback DefaultNonloopingCallback;
+
+    char v14 = *(unsigned char*)((char*)anim + 0x34) & 1;
+    nalPartialAnimState* match;
+    if (v14 == 0 && ForceRestart)
+    {
+        match = nullptr;
+        goto LABEL_17;
+    }
+    {
+        nalPartialAnimState* v15 = PartialAnimStates;
+        nalPartialAnimState* v16 = nullptr;
+        if (v15 != nullptr)
+        {
+            do
+            {
+                if (v15->priority == priority && v15->mask == mask)
+                    v16 = v15;
+                v15 = v15->next;
+            } while (v15 != nullptr);
+            v14 = *(unsigned char*)((char*)anim + 0x34) & 1;
+        }
+        match = v16;
+        if (v16 == nullptr
+            || *(void**)((char*)v16->base.instance + 0x10) != anim
+            || ForceRestart
+            || (callback != nullptr && v16->base.callback == nullptr))
+            goto LABEL_17;
+        return;
+    }
+
+LABEL_17:
+    if (callback == nullptr && v14 == 0)
+        callback = &DefaultNonloopingCallback;
+    if (type == nalPartialModifier || type == nalFullModifier)
+        _StopOrHoldModifiers(mask, priority);
+    else
+        StopModifiers(mask);
+
+    nalPartialAnimState** insert = &PartialAnimStates;
+    nalPartialAnimState* cur = PartialAnimStates;
+    while (cur != nullptr)
+    {
+        if (cur->priority > priority)
+            break;
+        insert = &cur->next;
+        cur = cur->next;
+    }
+
+    nalPartialAnimState* state;
+    if (PartialAnimStatePool != nullptr)
+    {
+        state = PartialAnimStatePool;
+        PartialAnimStatePool = PartialAnimStatePool->next;
+    }
+    else
+    {
+        state = (nalPartialAnimState*)tlMemAlloc(0x44, 8, 0);
+    }
+
+    state->next = *insert;
+    *insert = state;
+    float v22 = fade_out == 0.0f ? 0.0f : 1.0f / fade_out;
+    float fadein = fade_in == 0.0f ? 0.0f : 1.0f / fade_in;
+    state->base.Setup(anim, Skeleton, fadein, play_method, callback_time,
+                      callback, speed, time_in_seconds_to_start);
+    state->priority = priority;
+    state->mask = mask;
+    state->type = type;
+    state->base.state = FadeIn;
+    state->fadeout_rate = v22;
+    state->CreationAdvanceCount = AdvanceCount;
+    if (match != nullptr && (*(unsigned char*)((char*)anim + 0x34) & 1) != 0
+        && (*(unsigned char*)((char*)*(void**)((char*)match->base.instance + 0x10)
+                              + 0x34)
+            & 1) != 0
+        && !ForceRestart)
+    {
+        float t = match->base.t;
+        state->base.t = t;
+        if (*(void**)((char*)match->base.instance + 0x10) == anim)
+            state->base.t_prev = match->base.t_prev;
+        else
+            state->base.t_prev = t;
+    }
+}
+
+
 class InteractionController {
 public:
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+
+    // ??0InteractionController@@QAE@H@Z (0x545D80) / ??1...@@QAE@XZ (0x5570B0)
+    InteractionController(int client);
+    ~InteractionController();
+
+    // ??0InstanceHolder@InteractionController@@QAE@XZ (0x53AFB0)
+    struct InstanceHolder {
+        InstanceHolder();
+        InteractionController* sInst[1];  // +0x00
+    };
+    static InstanceHolder sInstHolder;
+
+    // ??0Lerper@InteractionController@@QAE@XZ (0x53A800)
+    class Lerper {
+    public:
+        Lerper();
+        float mTarget;      // +0x00
+        float mDuration;    // +0x04
+        float mLerpTimeIn;  // +0x08
+        float mLerpTimeOut; // +0x0C
+        float mInitialVal;  // +0x10
+        float mTimer;       // +0x14
+    };
 
     unsigned int mFlags;        // +0x00
     void* mCurState;            // +0x04
@@ -1530,6 +1985,7 @@ public:
     math::Mat43 mScriptOriginMat;    // +0xF0
     float mScriptOriginAngles[3];    // +0x130
     struct InteractionQueueEntry {
+        InteractionQueueEntry();
         struct { unsigned int mVal; } mEntityHandle;  // +0x00
         int mInfoIndex;              // +0x04
         TPakId mCurPakId;            // +0x08
@@ -1537,41 +1993,43 @@ public:
     int mCurQueueSize;          // +0x1B4
     void* mRenderText[5];       // +0x1B8 (FEMultiLineText*)
     int mRenderTextPosX[5];     // +0x1CC
-    struct { float mTarget, mDuration, mLerpTimeIn, mLerpTimeOut, mInitialVal, mTimer; } mTimeScaleMgr;  // +0x1E0
+    Lerper mTimeScaleMgr;       // +0x1E0
     struct { void* mElements; int mCapacity; int mSize; } mStates;  // +0x1F8
 
     // ea: 0x0053A3B0
-    void GetInteractableH(void* result);
-    int GetSelectedInteractWeaponIndex();  // 0x53A3D0
-    int GetLastStateWeaponIndex();         // 0x53A3E0
+    DbLinkedHandle<EntityHandleDb, Entity> GetInteractableH() const;  // 0x53A3B0
+    int GetSelectedInteractWeaponIndex() const;  // 0x53A3D0
+    int GetLastStateWeaponIndex() const;         // 0x53A3E0
     void SetSoundLoopHandle(int handle);    // 0x53A3F0
-    int GetSoundLoopHandle();              // 0x53A410
-    void SetHands(float (*handsAngles)[3], float (*handsOrigin)[3]);  // 0x53A420
+    int GetSoundLoopHandle() const;        // 0x53A410
+    void SetHands(float (&handsAngles)[3], float (&handsOrigin)[3]);  // 0x53A420
     void SetHandsToLast();                 // 0x53A490
-    const float (*GetLastHandsAngles())[3];  // 0x53A4D0
-    const float (*GetLastHandsOrigin())[3];  // 0x53A4E0
+    const float (&GetLastHandsAngles() const)[3];  // 0x53A4D0
+    const float (&GetLastHandsOrigin() const)[3];  // 0x53A4E0
     void SetMetaAnimScore(float score);    // 0x53A4F0
-    void SetScriptOrigin(math::Mat43* mat, float* angles);  // 0x53A510
-    const math::Mat43* GetScriptOriginMat();  // 0x53A5F0
-    const float (*GetScriptOriginAngles())[3];  // 0x53A660
-    const math::Position3* GetScriptOriginPos();  // 0x53A6D0
+    void SetScriptOrigin(math::Mat43& mat, float* const angles);  // 0x53A510
+    const math::Mat43& GetScriptOriginMat() const;  // 0x53A5F0
+    const float (&GetScriptOriginAngles() const)[3];  // 0x53A660
+    const math::Position3& GetScriptOriginPos() const;  // 0x53A6D0
     void SetScaledArmsOffsets(float offsetX, float offsetY, float offsetZ);  // 0x53A740
-    void GetScaledArmsOffsets(float* offsetX, float* offsetY, float* offsetZ);  // 0x53A7C0
+    void GetScaledArmsOffsets(float& offsetX, float& offsetY,
+                              float& offsetZ);  // 0x53A7C0
     void SetRenderText(const char* text, int y, float flashPeriod);  // 0x53C2E0
     void SetRenderText(const char* text, int x, int y, float scale,
-                       float alpha, unsigned int index);  // 0x53C380
-    void SetRenderTextScale(float scale, unsigned int index);  // 0x53C450
-    void SetRenderTextAlpha(float alpha, unsigned int index);  // 0x53C4C0
+                       float alpha, int index);  // 0x53C380
+    void SetRenderTextScale(float scale, int index);  // 0x53C450
+    void SetRenderTextAlpha(float alpha, int index);  // 0x53C4C0
+    void RenderText();                     // 0x53F130
     void ResetAnimationPlayer();           // 0x53F0E0
-    void ClearRenderText(unsigned int index);  // 0x53F1E0
+    void ClearRenderText(int index);  // 0x53F1E0
     void ClearAllRenderText();             // 0x53F280
     int DoRenderText(unsigned int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o)
 
     // accessor cluster (anim.o; smallest-first batch)
-    void* GetNextPlayerCallback();    // 0x53C220
-    void* GetNextOtherCallback();     // 0x53C250
-    void* GetNextPlayerPlayMethod();  // 0x53C280
-    void* GetNextOtherPlayMethod();   // 0x53C2B0
+    AnimationPlayer::nalAnimCallback* GetNextPlayerCallback();  // 0x53C220
+    AnimationPlayer::nalAnimCallback* GetNextOtherCallback();   // 0x53C250
+    AnimationPlayer::nalPlayMethod* GetNextPlayerPlayMethod();  // 0x53C280
+    AnimationPlayer::nalPlayMethod* GetNextOtherPlayMethod();   // 0x53C2B0
     int GetCameraMode() const;        // 0x53C040 (virtual in binary)
     float GetRotation() const;        // 0x53C060
     int GetClient() const;            // 0x53A7F0
@@ -1584,11 +2042,7 @@ public:
     void CreateInteractableAnimPlayer();   // 0x54CA00
     void SetInteractableH(
         const DbLinkedHandle<EntityHandleDb, Entity>& handle);  // 0x5554A0
-    void ClearQueue();                 // 0x53BFF0
-    void FreeAllStates();              // 0x54C890
-    void PopActorInteractionState();   // 0x54CB40
     void FreeInteractableAnimPlayer(); // 0x54CAE0
-    void SendResultNotify();           // 0x54C990
     void SelectInteractionWeapon(int newIndex);  // 0x546050
     void ForceInteractionWeapon(int newIndex);  // 0x5460D0
     void RemoveInteractionWeapon();    // 0x53C0C0
@@ -1596,11 +2050,18 @@ public:
     void CreateInteraction(const char* name, TPakId curPakId);  // 0x54C8E0
     void QueueInteraction(Entity* interactable, const char* name,
                           TPakId curPakId);  // 0x556A80
-    InteractState* StartNextQueuedInteraction();  // 0x556D00
     int StartInteraction(Entity* interactable, const char* name,
                          TPakId curPakId);  // 0x556920
     void EndInteraction(int wasInteracting);  // 0x556BA0
     void Update(float deltaT);  // 0x557170
+
+private:
+    // Binary AAE (private)
+    void ClearQueue();                 // 0x53BFF0
+    void FreeAllStates();              // 0x54C890
+    void PopActorInteractionState();   // 0x54CB40
+    void SendResultNotify();           // 0x54C990
+    InteractState* StartNextQueuedInteraction();  // 0x556D00
 };
 
 // Stub bodies for the xanim goal-weight internals (ported with the
@@ -2042,169 +2503,6 @@ const char* GetButtonTextName(unsigned int index)
 // Layouts verified against IDA (nalAnimState 0x2C, nalPartialAnimState 0x44).
 // ============================================================================
 
-// Local view of EntityManager (full class in streamer/pakmanager.cpp).
-class Entity {
-public:
-    unsigned int flags;   // +0x04
-    unsigned int mFlags;  // +0x08
-    unsigned char _pad[0x150 - 0x0C];
-    struct {
-        math::Position3 currentOrigin;  // +0x70 within EntityShared
-        math::Position3 currentAngles;  // +0x80
-        math::Mat43 currentMat;         // +0x90
-    } r;                   // +0x150 (EntityShared r @ +0xE0 + 0x70)
-    unsigned char _padR[0x230 - 0x1B0];
-    struct {
-        unsigned int mVal;  // +0x230
-    } mHandle;             // +0x230
-    unsigned char _pad2[0x23C - 0x234];
-    DObj* mDObj;           // +0x23C
-    void* mNotifySet;      // +0x240 (EntityNotifySet*)
-    unsigned char _pad3[0x254 - 0x244];
-    void* client;  // +0x254
-    void* actor;   // +0x258 (actor_s*)
-    struct sentient_s* sentient;      // +0x25C
-    void* scr_vehicle;                // +0x260
-    void* pTurretInfo;                // +0x264
-
-    int GetPlayerIndex() const;  // 0x612340 (game.o; stub)
-    const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (real in g_entity_misc.cpp)
-    void Notify(HashString h);  // real in g_entity_misc.cpp
-    void Notify(HashString h, const unsigned int& e);  // real in g_entity_misc.cpp
-};
-
-// sentient_s mLastAnimIKGunOffset view
-struct sentient_s {
-    unsigned char _pad[0x134];
-    float* mLastAnimIKGunOffset[4];  // +0x134
-};
-class EntityManager {
-public:
-    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A
-    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
-};
-
-// Local view of Camera (full class in cg_misc.cpp; StopAnimating real there).
-struct Camera {
-public:
-    void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
-    int IsAnimating() const;                 // 0x55FA40
-    void StartTween(float tweenTime, bool anglesOnly);  // ?StartTween@Camera@@QAEXM_N@Z (cg_misc real)
-};
-extern Camera* gCamera;  // ?gCamera@@3PAUCamera@@A (cg.o @ 0x1358EF0)
-
-extern int currCl;
-extern int dword_F6A2A0[4 * 802];
-extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
-
-class AnimationPlayer {
-public:
-    enum AnimationPlayerModifierType {
-        nalPartialModifier = 1,
-        nalFullModifier = 2,
-    };
-
-    // nalPlayMethod - real body in g_debugthread.cpp (game2.o)
-    struct nalPlayMethod {
-        void SetNoteHandlerEntityHandle(
-            DbLinkedHandle<EntityHandleDb, Entity> handle);  // 0x4F5D10
-    };
-
-    // nalAnimCallback - vftable + curAnim (anim.o 0x539EB0/0x539ED0/0x539EE0)
-    struct nalAnimCallback {
-        void** __vftable;          // +0x00
-        nalGenericAnim* curAnim;   // +0x04
-
-        nalAnimCallback();         // ea: 0x00539EB0
-        void Reference(nalGenericAnim* anim);  // ea: 0x00539ED0
-        void Release();            // ea: 0x00539EE0
-        int IsAnimPlaying(nalGenericAnim* anim);  // ea: 0x00539EF0
-    };
-
-    // nalAnimState - 0x2C (IDA verified)
-    struct nalAnimState {
-        // ??2/??3nalAnimState@AnimationPlayer@@SAPAXI@Z (anim.o 0x539F30/50)
-        static void* operator new(unsigned int sz);
-        static void* operator new(unsigned int, void* p) { return p; }
-        static void operator delete(void* ptr);
-
-        void* instance;        // +0x00
-        float speed;           // +0x04
-        float tlimit;          // +0x08
-        nalAnimCallback* callback;  // +0x0C
-        void* play_method;     // +0x10
-        float t;               // +0x14
-        float t_prev;          // +0x18
-        float alpha;           // +0x1C
-        float maxAlpha;        // +0x20
-        float fadein_rate;     // +0x24
-        int state;             // +0x28
-
-        void Setup(nalGenericAnim* anim, void* skeleton, float _fadein_rate,
-                   void* _play_method, float callback_time,
-                   nalAnimCallback* _callback, float _speed,
-                   float time_in_seconds_to_start);  // ea: 0x0055F280
-    };
-
-    // nalPartialAnimState - 0x44 (IDA verified)
-    struct nalPartialAnimState {
-        nalAnimState base;              // +0x00
-        unsigned int CreationAdvanceCount;  // +0x2C
-        nalPartialAnimState* next;      // +0x30
-        unsigned int mask;              // +0x34
-        float priority;                 // +0x38
-        float fadeout_rate;             // +0x3C
-        int type;                       // +0x40
-    };
-
-    enum nalAnimStateEnum {
-        FadeIn = 0,
-        Running = 1,
-        FadeOut = 2,
-    };
-
-    void* Skeleton;                       // +0x00
-    unsigned char _pad[0x24 - 0x04];
-    int QueueSize;                        // +0x24
-    nalAnimState* AnimStates[3];          // +0x28
-    nalPartialAnimState* PartialAnimStates;    // +0x34
-    nalPartialAnimState* PartialAnimStatePool; // +0x38
-    int AdvanceCount;                     // +0x3C
-
-    void StopModifiers(unsigned int mask);   // ea: 0x0053A040
-    void FadeOutModifiers(float newFadeOut, unsigned int mask);  // ea: 0x0053A0A0
-    nalPartialAnimState* _FindModifier(unsigned int mask,
-                                       float priority);  // ea: 0x0053A1E0
-    void _StopOrHoldModifiers(unsigned int mask,
-                              float priority);  // ea: 0x0053A230
-    int GetQueueSize();                    // ea: 0x0053A2A0
-    void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
-    void PlayModifier(nalGenericAnim* anim,
-                      AnimationPlayerModifierType type, float priority,
-                      unsigned int mask, bool ForceRestart, float fade_in,
-                      float fade_out, nalPlayMethod* play_method,
-                      float callback_time, nalAnimCallback* callback,
-                      float speed,
-                      float time_in_seconds_to_start);  // ea: 0x0055F7A0
-
-    // ?GetPose@AnimationPlayer@@QAEXAAVnalGenericPose@nalGeneric@@PAVnalGenericSkeleton@3@QAY02M@Z
-    void GetPose(nalGeneric::nalGenericPose& Pose,
-                 nalGeneric::nalGenericSkeleton* Skeleton,
-                 float (*animIKGunOffset)[3]);
-
-    // ?Reset@AnimationPlayer@@QAEXXZ (anim.o; stub)
-    void Reset() {}
-
-    // ?Play@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@_NMPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM@Z
-    void Play(nalGenericAnim* anim, bool ForceRestart, float fade_in,
-              void* play_method, float callback_time, void* callback,
-              float speed, float time_in_seconds_to_start)
-    {
-        (void)anim; (void)ForceRestart; (void)fade_in; (void)play_method;
-        (void)callback_time; (void)callback; (void)speed;
-        (void)time_in_seconds_to_start;
-    }
-};
 
 class PlayerAnimMgr {
 public:
@@ -2220,270 +2518,6 @@ public:
     void* mCurPrimary;   // +0x14
     void* mCurModifier;  // +0x18
 };
-
-// ea: 0x00539EB0
-AnimationPlayer::nalAnimCallback::nalAnimCallback()
-{
-    static void* sVftable[3];  // Invoke/Reference/Release slots
-    __vftable = sVftable;
-    curAnim = nullptr;
-}
-
-// ea: 0x00539ED0
-void AnimationPlayer::nalAnimCallback::Reference(nalGenericAnim* anim)
-{
-    curAnim = anim;
-}
-
-// ea: 0x00539EE0
-void AnimationPlayer::nalAnimCallback::Release()
-{
-    curAnim = nullptr;
-}
-
-// ea: 0x00539EF0
-int AnimationPlayer::nalAnimCallback::IsAnimPlaying(nalGenericAnim* anim)
-{
-    return curAnim != nullptr && anim == curAnim;
-}
-
-// ea: 0x0055F280
-void AnimationPlayer::nalAnimState::Setup(nalGenericAnim* anim, void* skeleton,
-                                          float _fadein_rate,
-                                          void* _play_method,
-                                          float callback_time,
-                                          nalAnimCallback* _callback,
-                                          float _speed,
-                                          float time_in_seconds_to_start)
-{
-    void* Instance;
-    if (_play_method != nullptr)
-    {
-        // nalPlayMethod::CreateInstance delegates to nalGenericAnim_CreateInstance
-        Instance = nalGenericAnim_CreateInstance(anim, skeleton);
-    }
-    else
-    {
-        Instance = nalGenericAnim_CreateInstance(anim, skeleton);
-    }
-    instance = Instance;
-    speed = _speed;
-    float Duration = *(float*)((char*)anim + 0x38);
-    float v12 = Duration == 0.0f ? 0.0f : 1.0f / Duration;
-    tlimit = v12 * callback_time + 1.0f;
-    callback = _callback;
-    if (_callback != nullptr)
-        _callback->Reference(anim);
-    play_method = _play_method;
-    float v14 = *(float*)((char*)instance + 0x08) * time_in_seconds_to_start;
-    t = v14;
-    t_prev = v14;
-    alpha = 0.0f;
-    maxAlpha = 1.0f;
-    fadein_rate = _fadein_rate;
-    state = Running;
-    if (_fadein_rate == 0.0f)
-        alpha = 1.0f;
-    // binary: _play_method->Reference(this) - thunk, no-op in port
-}
-
-// ea: 0x0053A040
-void AnimationPlayer::StopModifiers(unsigned int mask)
-{
-    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
-         i = i->next)
-    {
-        if (i->mask == mask || mask == 0xFFFFFFFFu)
-        {
-            nalAnimCallback* callback = i->base.callback;
-            i->base.state = FadeOut;
-            if (callback != nullptr)
-                callback->Release();
-            i->base.callback = nullptr;
-        }
-    }
-}
-
-// ea: 0x0053A0A0
-void AnimationPlayer::FadeOutModifiers(float newFadeOut, unsigned int mask)
-{
-    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
-         i = i->next)
-    {
-        if (i->mask == mask)
-        {
-            float v4 = 0.0f;
-            if (newFadeOut != 0.0f)
-                v4 = 1.0f / newFadeOut;
-            nalAnimCallback* callback = i->base.callback;
-            i->fadeout_rate = v4;
-            i->base.state = FadeOut;
-            if (callback != nullptr)
-                callback->Release();
-            i->base.callback = nullptr;
-        }
-    }
-}
-
-// ea: 0x0053A1E0
-AnimationPlayer::nalPartialAnimState* AnimationPlayer::_FindModifier(
-    unsigned int mask, float priority)
-{
-    nalPartialAnimState* result = nullptr;
-    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
-         i = i->next)
-    {
-        if (i->priority == priority && i->mask == mask)
-            result = i;
-    }
-    return result;
-}
-
-// ea: 0x0053A230
-void AnimationPlayer::_StopOrHoldModifiers(unsigned int mask, float priority)
-{
-    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
-         i = i->next)
-    {
-        if (i->mask == mask)
-        {
-            float v4 = i->priority;
-            nalAnimCallback* callback = i->base.callback;
-            i->base.state = FadeOut;
-            if (v4 <= priority)
-            {
-                if (callback != nullptr)
-                    callback->Release();
-                i->base.state = Running;
-            }
-            else if (callback != nullptr)
-            {
-                callback->Release();
-            }
-            i->base.callback = nullptr;
-        }
-    }
-}
-
-// ea: 0x0053A2A0
-int AnimationPlayer::GetQueueSize()
-{
-    return QueueSize;
-}
-
-// ea: 0x0055F730
-void AnimationPlayer::SetSpeed(nalGenericAnim* anim, float speed)
-{
-    if (QueueSize > 0)
-    {
-        if (anim == *(void**)((char*)AnimStates[0]->instance + 0x10))
-        {
-            for (int i = 0; i < QueueSize; ++i)
-            {
-                if (*(void**)((char*)AnimStates[i]->instance + 0x10)
-                    != nullptr)
-                    AnimStates[i]->speed = speed;
-            }
-        }
-    }
-}
-
-// ea: 0x0055F7A0
-void AnimationPlayer::PlayModifier(nalGenericAnim* anim,
-                                   AnimationPlayerModifierType type,
-                                   float priority, unsigned int mask,
-                                   bool ForceRestart, float fade_in,
-                                   float fade_out, nalPlayMethod* play_method,
-                                   float callback_time,
-                                   nalAnimCallback* callback, float speed,
-                                   float time_in_seconds_to_start)
-{
-    static nalAnimCallback DefaultNonloopingCallback;
-
-    char v14 = *(unsigned char*)((char*)anim + 0x34) & 1;
-    nalPartialAnimState* match;
-    if (v14 == 0 && ForceRestart)
-    {
-        match = nullptr;
-        goto LABEL_17;
-    }
-    {
-        nalPartialAnimState* v15 = PartialAnimStates;
-        nalPartialAnimState* v16 = nullptr;
-        if (v15 != nullptr)
-        {
-            do
-            {
-                if (v15->priority == priority && v15->mask == mask)
-                    v16 = v15;
-                v15 = v15->next;
-            } while (v15 != nullptr);
-            v14 = *(unsigned char*)((char*)anim + 0x34) & 1;
-        }
-        match = v16;
-        if (v16 == nullptr
-            || *(void**)((char*)v16->base.instance + 0x10) != anim
-            || ForceRestart
-            || (callback != nullptr && v16->base.callback == nullptr))
-            goto LABEL_17;
-        return;
-    }
-
-LABEL_17:
-    if (callback == nullptr && v14 == 0)
-        callback = &DefaultNonloopingCallback;
-    if (type == nalPartialModifier || type == nalFullModifier)
-        _StopOrHoldModifiers(mask, priority);
-    else
-        StopModifiers(mask);
-
-    nalPartialAnimState** insert = &PartialAnimStates;
-    nalPartialAnimState* cur = PartialAnimStates;
-    while (cur != nullptr)
-    {
-        if (cur->priority > priority)
-            break;
-        insert = &cur->next;
-        cur = cur->next;
-    }
-
-    nalPartialAnimState* state;
-    if (PartialAnimStatePool != nullptr)
-    {
-        state = PartialAnimStatePool;
-        PartialAnimStatePool = PartialAnimStatePool->next;
-    }
-    else
-    {
-        state = (nalPartialAnimState*)tlMemAlloc(0x44, 8, 0);
-    }
-
-    state->next = *insert;
-    *insert = state;
-    float v22 = fade_out == 0.0f ? 0.0f : 1.0f / fade_out;
-    float fadein = fade_in == 0.0f ? 0.0f : 1.0f / fade_in;
-    state->base.Setup(anim, Skeleton, fadein, play_method, callback_time,
-                      callback, speed, time_in_seconds_to_start);
-    state->priority = priority;
-    state->mask = mask;
-    state->type = type;
-    state->base.state = FadeIn;
-    state->fadeout_rate = v22;
-    state->CreationAdvanceCount = AdvanceCount;
-    if (match != nullptr && (*(unsigned char*)((char*)anim + 0x34) & 1) != 0
-        && (*(unsigned char*)((char*)*(void**)((char*)match->base.instance + 0x10)
-                              + 0x34)
-            & 1) != 0
-        && !ForceRestart)
-    {
-        float t = match->base.t;
-        state->base.t = t;
-        if (*(void**)((char*)match->base.instance + 0x10) == anim)
-            state->base.t_prev = match->base.t_prev;
-        else
-            state->base.t_prev = t;
-    }
-}
 
 // ea: 0x00540FB0
 void PlayerAnimMgr::PlayModifier(nalGenericAnim& anim, int animateCamera,
@@ -5791,19 +5825,22 @@ void* SceneAnimClient_CtorReal(void* self, const nalSceneAnim* anim,
 // ============================================================================
 
 // ea: 0x0053A3B0
-void InteractionController::GetInteractableH(void* result)
+DbLinkedHandle<EntityHandleDb, Entity>
+InteractionController::GetInteractableH() const
 {
-    *(unsigned int*)result = mInteractableH.mVal;
+    DbLinkedHandle<EntityHandleDb, Entity> result;
+    result.mVal = mInteractableH.mVal;
+    return result;
 }
 
 // ea: 0x0053A3D0
-int InteractionController::GetSelectedInteractWeaponIndex()
+int InteractionController::GetSelectedInteractWeaponIndex() const
 {
     return mSelectedInteractWeaponIndex;
 }
 
 // ea: 0x0053A3E0
-int InteractionController::GetLastStateWeaponIndex()
+int InteractionController::GetLastStateWeaponIndex() const
 {
     return mLastStateWeaponIndex;
 }
@@ -5815,21 +5852,21 @@ void InteractionController::SetSoundLoopHandle(int handle)
 }
 
 // ea: 0x0053A410
-int InteractionController::GetSoundLoopHandle()
+int InteractionController::GetSoundLoopHandle() const
 {
     return mSoundLoopHandle;
 }
 
 // ea: 0x0053A420
-void InteractionController::SetHands(float (*handsAngles)[3],
-                                     float (*handsOrigin)[3])
+void InteractionController::SetHands(float (&handsAngles)[3],
+                                     float (&handsOrigin)[3])
 {
-    mHandsAngles[0] = (*handsAngles)[0];
-    mHandsAngles[1] = (*handsAngles)[1];
-    mHandsAngles[2] = (*handsAngles)[2];
-    mHandsOrigin[0] = (*handsOrigin)[0];
-    mHandsOrigin[1] = (*handsOrigin)[1];
-    mHandsOrigin[2] = (*handsOrigin)[2];
+    mHandsAngles[0] = handsAngles[0];
+    mHandsAngles[1] = handsAngles[1];
+    mHandsAngles[2] = handsAngles[2];
+    mHandsOrigin[0] = handsOrigin[0];
+    mHandsOrigin[1] = handsOrigin[1];
+    mHandsOrigin[2] = handsOrigin[2];
     mLastHandsAngles[0] = mHandsAngles[0];
     mLastHandsAngles[1] = mHandsAngles[1];
     mLastHandsAngles[2] = mHandsAngles[2];
@@ -5852,15 +5889,15 @@ void InteractionController::SetHandsToLast()
 }
 
 // ea: 0x0053A4D0
-const float (*InteractionController::GetLastHandsAngles())[3]
+const float (&InteractionController::GetLastHandsAngles() const)[3]
 {
-    return &mLastHandsAngles;
+    return mLastHandsAngles;
 }
 
 // ea: 0x0053A4E0
-const float (*InteractionController::GetLastHandsOrigin())[3]
+const float (&InteractionController::GetLastHandsOrigin() const)[3]
 {
-    return &mLastHandsOrigin;
+    return mLastHandsOrigin;
 }
 
 // ea: 0x0053A4F0
@@ -5870,9 +5907,10 @@ void InteractionController::SetMetaAnimScore(float score)
 }
 
 // ea: 0x0053A510
-void InteractionController::SetScriptOrigin(math::Mat43* mat, float* angles)
+void InteractionController::SetScriptOrigin(math::Mat43& mat,
+                                            float* const angles)
 {
-    mScriptOriginMat = *mat;
+    mScriptOriginMat = mat;
     mScriptOriginAngles[0] = angles[0];
     mScriptOriginAngles[1] = angles[1];
     mScriptOriginAngles[2] = angles[2];
@@ -5880,7 +5918,7 @@ void InteractionController::SetScriptOrigin(math::Mat43* mat, float* angles)
 }
 
 // ea: 0x0053A5F0
-const math::Mat43* InteractionController::GetScriptOriginMat()
+const math::Mat43& InteractionController::GetScriptOriginMat() const
 {
     if ((mFlags & 0x40) == 0)
     {
@@ -5888,11 +5926,11 @@ const math::Mat43* InteractionController::GetScriptOriginMat()
                      "c:\\cod\\code\\game\\InteractionController.h", 153,
                      "Bad");
     }
-    return &mScriptOriginMat;
+    return mScriptOriginMat;
 }
 
 // ea: 0x0053A660
-const float (*InteractionController::GetScriptOriginAngles())[3]
+const float (&InteractionController::GetScriptOriginAngles() const)[3]
 {
     if ((mFlags & 0x40) == 0)
     {
@@ -5900,11 +5938,11 @@ const float (*InteractionController::GetScriptOriginAngles())[3]
                      "c:\\cod\\code\\game\\InteractionController.h", 154,
                      "Bad");
     }
-    return &mScriptOriginAngles;
+    return mScriptOriginAngles;
 }
 
 // ea: 0x0053A6D0
-const math::Position3* InteractionController::GetScriptOriginPos()
+const math::Position3& InteractionController::GetScriptOriginPos() const
 {
     if ((mFlags & 0x40) == 0)
     {
@@ -5912,7 +5950,7 @@ const math::Position3* InteractionController::GetScriptOriginPos()
                      "c:\\cod\\code\\game\\InteractionController.h", 155,
                      "Bad");
     }
-    return &mScriptOriginMat.w;
+    return mScriptOriginMat.w;
 }
 
 // ea: 0x0053A740
@@ -5931,34 +5969,154 @@ void InteractionController::SetScaledArmsOffsets(float offsetX, float offsetY,
 }
 
 // ea: 0x0053A7C0
-void InteractionController::GetScaledArmsOffsets(float* offsetX,
-                                                 float* offsetY,
-                                                 float* offsetZ)
+void InteractionController::GetScaledArmsOffsets(float& offsetX,
+                                                 float& offsetY,
+                                                 float& offsetZ)
 {
-    *offsetX = mCurArmsOffsetX;
-    *offsetY = mCurArmsOffsetY;
-    *offsetZ = mCurArmsOffsetZ;
+    offsetX = mCurArmsOffsetX;
+    offsetY = mCurArmsOffsetY;
+    offsetZ = mCurArmsOffsetZ;
 }
 
-// ea: 0x0053A800 (InteractionController::Lerper)
-struct InteractionController_Lerper {
-    float mTarget;      // +0x00
-    float mDuration;    // +0x04
-    float mLerpTimeIn;  // +0x08
-    float mLerpTimeOut; // +0x0C
-    float mInitialVal;  // +0x10
-    float mTimer;       // +0x14
+// ea: 0x0053A800
+InteractionController::Lerper::Lerper()
+{
+    mTarget = 1.0f;
+    mDuration = -1.0f;
+    mLerpTimeIn = 0.0f;
+    mLerpTimeOut = 0.0f;
+    mInitialVal = 0.0f;
+    mTimer = 0.0f;
+}
+
+// ea: 0x0053AFB0
+InteractionController::InstanceHolder::InstanceHolder()
+{
+    sInst[0] = nullptr;
+}
+
+// ea: 0x0055FEB0
+InteractionController::InteractionQueueEntry::InteractionQueueEntry()
+{
+    mEntityHandle.mVal = 0;
+}
+
+// anim.o FE-render support types (color32 ctor is anim.o 0x53A320)
+class color32 {
+public:
+    color32(unsigned int ic) : i(ic) {}
+    unsigned int i;  // +0x00
+};
+enum font_index { FONT_BUTTON = 2 };
+enum panel_layer { PANEL_LAYER_BACKGROUND = 0 };
+struct FEMultiLineText {
+    FEMultiLineText(font_index f, float x1, float y1, float z1,
+                    panel_layer layer, float s, int horizJust, int vertJust,
+                    color32 col);  // real in XboxLiveMenus.cpp
 };
 
-// ea: 0x0053A800
-void InteractionController_Lerper_Ctor(InteractionController_Lerper* self)
+// V-tag color32 stub (ui_types.h uses a union tag; binary mangles Vcolor32)
+FEMultiLineText::FEMultiLineText(font_index f, float x1, float y1, float z1,
+                                 panel_layer layer, float s, int horizJust,
+                                 int vertJust, color32 col)
 {
-    self->mTarget = 1.0f;
-    self->mDuration = -1.0f;
-    self->mLerpTimeIn = 0.0f;
-    self->mLerpTimeOut = 0.0f;
-    self->mInitialVal = 0.0f;
-    self->mTimer = 0.0f;
+    (void)f; (void)x1; (void)y1; (void)z1; (void)layer; (void)s;
+    (void)horizJust; (void)vertJust; (void)col;
+}
+
+struct vmCvar_t;
+extern vmCvar_t cg_fov;  // ?cg_fov@@3UvmCvar_t@@A (cg.o)
+
+// ea: 0x00545D80
+InteractionController::InteractionController(int client)
+{
+    mFlags = 0;
+    mCurState = nullptr;
+    mInitialState = nullptr;
+    mInteractableH.mVal = 0;
+    mClient = client;
+    mMetaAnimScore = 0.0f;
+    mSelectedInteractWeaponIndex = -1;
+    mPendingWeaponIndex = -1;
+    mRestoreWeaponIndex = -1;
+    mLastStateWeaponIndex = -1;
+    for (int i = 0; i < 3; ++i)
+    {
+        new ((void*)&mPlayerCallback[i]) AnimationPlayer::nalAnimCallback();
+        new ((void*)&mOtherCallback[i]) AnimationPlayer::nalAnimCallback();
+        new ((void*)&mPlayerPlayMethod[i]) AnimationPlayer::nalPlayMethod();
+        new ((void*)&mOtherPlayMethod[i]) AnimationPlayer::nalPlayMethod();
+    }
+    mNextPlayerCallbackIndex = 0;
+    mNextOtherCallbackIndex = 0;
+    mNextPlayerPlayMethodIndex = 0;
+    mNextOtherPlayMethodIndex = 0;
+    mSoundLoopHandle = -1;
+    for (int i = 0; i < 10; ++i)
+        mQueue[i].mInfoIndex = -1;
+    mStates.mElements = nullptr;
+    mStates.mCapacity = 0;
+    mStates.mSize = 0;
+    mHandsAngles[0] = 0.0f;
+    mHandsAngles[1] = 0.0f;
+    mHandsAngles[2] = 0.0f;
+    mHandsOrigin[0] = 0.0f;
+    mHandsOrigin[1] = 0.0f;
+    mHandsOrigin[2] = 0.0f;
+    mLastHandsAngles[0] = 0.0f;
+    mLastHandsAngles[1] = 0.0f;
+    mLastHandsAngles[2] = 0.0f;
+    mLastHandsOrigin[0] = 0.0f;
+    mLastHandsOrigin[1] = 0.0f;
+    mLastHandsOrigin[2] = 0.0f;
+    // binary also writes InteractInputRcvr::sInputRcvrs[0] = nullptr here;
+    // InitInputRcvrArray() zeroes the full array, so it is omitted.
+    // dword_F23FB0..F23FC0 (unlabeled anim.o BSS) left unported
+    mInitialFOV = *(float*)((char*)&cg_fov + 0x1C);
+    mCurQueueSize = 0;
+    for (int i = 0; i < 5; ++i)
+    {
+        void* mem = mem_heap_malloc(0xA8);
+        FEMultiLineText* text = nullptr;
+        if (mem != nullptr)
+        {
+            text = new (mem) FEMultiLineText(
+                FONT_BUTTON, -1.0f, -1.0f, 0.0f, PANEL_LAYER_BACKGROUND,
+                0.7f, 0, 0, color32(0xDCDCDCDC));
+            ((void (__thiscall*)(void*, int))(
+                (void**)*(void**)text)[0x17C / 4])(text, 1);
+        }
+        mRenderText[i] = text;
+        mRenderTextPosX[i] = -1;
+    }
+}
+
+// ea: 0x005570B0
+InteractionController::~InteractionController()
+{
+    // binary calls FreeInteraction(this) first (separate anim.o func; unported)
+    for (int i = 0; i < 5; ++i)
+    {
+        if (mRenderText[i] != nullptr)
+        {
+            ((void (__thiscall*)(void*, int))(
+                (void**)*(void**)mRenderText[i])[1])(mRenderText[i], 1);
+            mRenderText[i] = nullptr;
+        }
+    }
+    if (mStates.mElements != nullptr)
+    {
+        tlMemFree(mStates.mElements);
+        mStates.mElements = nullptr;
+        mStates.mCapacity = 0;
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+        ((AnimationPlayer::nalPlayMethod*)mOtherPlayMethod[i])
+            ->~nalPlayMethod();
+        ((AnimationPlayer::nalPlayMethod*)mPlayerPlayMethod[i])
+            ->~nalPlayMethod();
+    }
 }
 
 // ============================================================================
@@ -7681,44 +7839,48 @@ void InteractionController::ChangeWeaponToPending()
 }
 
 // ea: 0x0053C220 / 0x0053C250 / 0x0053C280 / 0x0053C2B0
-void* InteractionController::GetNextPlayerCallback()
+AnimationPlayer::nalAnimCallback*
+InteractionController::GetNextPlayerCallback()
 {
     int idx = mNextPlayerCallbackIndex;
     void* result = mPlayerCallback[idx++];
     mNextPlayerCallbackIndex = idx;
     if (idx == 3)
         mNextPlayerCallbackIndex = 0;
-    return result;
+    return (AnimationPlayer::nalAnimCallback*)result;
 }
 
-void* InteractionController::GetNextOtherCallback()
+AnimationPlayer::nalAnimCallback*
+InteractionController::GetNextOtherCallback()
 {
     int idx = mNextOtherCallbackIndex;
     void* result = mOtherCallback[idx++];
     mNextOtherCallbackIndex = idx;
     if (idx == 3)
         mNextOtherCallbackIndex = 0;
-    return result;
+    return (AnimationPlayer::nalAnimCallback*)result;
 }
 
-void* InteractionController::GetNextPlayerPlayMethod()
+AnimationPlayer::nalPlayMethod*
+InteractionController::GetNextPlayerPlayMethod()
 {
     int idx = mNextPlayerPlayMethodIndex;
     void* result = mPlayerPlayMethod[idx++];
     mNextPlayerPlayMethodIndex = idx;
     if (idx == 3)
         mNextPlayerPlayMethodIndex = 0;
-    return result;
+    return (AnimationPlayer::nalPlayMethod*)result;
 }
 
-void* InteractionController::GetNextOtherPlayMethod()
+AnimationPlayer::nalPlayMethod*
+InteractionController::GetNextOtherPlayMethod()
 {
     int idx = mNextOtherPlayMethodIndex;
     void* result = mOtherPlayMethod[idx++];
     mNextOtherPlayMethodIndex = idx;
     if (idx == 3)
         mNextOtherPlayMethodIndex = 0;
-    return result;
+    return (AnimationPlayer::nalPlayMethod*)result;
 }
 
 // ea: 0x0053D820
@@ -14211,7 +14373,7 @@ void InteractState::CalcTargetPosAndAngles(LerpInfo& lerpInfo, DObj& dobj,
     }
     math::Mat43 mat;
     if (useScriptOrigin != 0 && (mController->mFlags & 0x40) != 0)
-        mat = *mController->GetScriptOriginMat();
+        mat = mController->GetScriptOriginMat();
     else
         GetInteractableMat(mat);
     const math::Mat43& inv = lerpInfo.mInvTagUtilityMat;
@@ -14271,7 +14433,8 @@ void InteractState::UpdateOtherPosAndAngles()
         }
         const float* ScriptOriginAngles =
             (const float*)c->GetScriptOriginAngles();
-        const float* ScriptOriginPos = (const float*)c->GetScriptOriginPos();
+        const float* ScriptOriginPos =
+            (const float*)&c->GetScriptOriginPos();
         mOtherLerp.mTargetAngles[0] = ScriptOriginAngles[0];
         mOtherLerp.mTargetAngles[1] = ScriptOriginAngles[1];
         mOtherLerp.mTargetAngles[2] = ScriptOriginAngles[2];
@@ -14374,8 +14537,8 @@ void InteractState::UpdateAlignment(float deltaT)
     {
     case kLerpSnapPlayer:
     case (kNumLerpTypes | kLerpSnapPlayer):
-        mController->SetHands(&mPlayerLerp.mTargetAngles,
-                              &mPlayerLerp.mTargetPos);
+        mController->SetHands(mPlayerLerp.mTargetAngles,
+                              mPlayerLerp.mTargetPos);
         break;
     case kLerpPlayer:
         if (UpdateLerp(deltaT) >= 1.0f)
@@ -14386,8 +14549,8 @@ void InteractState::UpdateAlignment(float deltaT)
             mLerpType = kLerpStagedSnap;
         break;
     case kLerpStagedSnap:
-        mController->SetHands(&mPlayerLerp.mTargetAngles,
-                              &mPlayerLerp.mTargetPos);
+        mController->SetHands(mPlayerLerp.mTargetAngles,
+                              mPlayerLerp.mTargetPos);
         UpdateOtherPosAndAngles();
         SetOtherPosAndAngles(mOtherLerp.mTargetAngles,
                              mOtherLerp.mTargetPos);
@@ -14709,7 +14872,7 @@ void InteractionController::SetRenderText(const char* text, int y,
 // ea: 0x0053C380
 void InteractionController::SetRenderText(const char* text, int x, int y,
                                          float scale, float alpha,
-                                         unsigned int index)
+                                         int index)
 {
     if (index > 4)
     {
@@ -14731,7 +14894,7 @@ void InteractionController::SetRenderText(const char* text, int x, int y,
 }
 
 // ea: 0x0053C450
-void InteractionController::SetRenderTextScale(float scale, unsigned int index)
+void InteractionController::SetRenderTextScale(float scale, int index)
 {
     if (index > 4)
     {
@@ -14745,7 +14908,7 @@ void InteractionController::SetRenderTextScale(float scale, unsigned int index)
 
 // ea: 0x0053C4C0
 void InteractionController::SetRenderTextAlpha(float alpha,
-                                               unsigned int index)
+                                               int index)
 {
     if (index > 4)
     {
@@ -14773,7 +14936,7 @@ void InteractionController::ResetAnimationPlayer()
 }
 
 // ea: 0x0053F1E0
-void InteractionController::ClearRenderText(unsigned int index)
+void InteractionController::ClearRenderText(int index)
 {
     if (index > 4)
     {
@@ -14796,6 +14959,42 @@ void InteractionController::ClearAllRenderText()
 {
     for (int i = 0; i < 5; ++i)
         ClearRenderText(i);
+}
+
+struct GamePause {
+    static bool IsGamePaused(int client);  // real in cg_draw.cpp
+};
+extern int nglGetScreenWidth();  // ?nglGetScreenWidth@@YAHXZ
+
+// ea: 0x0053F130
+void InteractionController::RenderText()
+{
+    if (!GamePause::IsGamePaused(currCl))
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            if (DoRenderText(i) != 0)
+            {
+                void* text = mRenderText[i];
+                float positionX;
+                float positionY;
+                ((void (__thiscall*)(void*, float*, float*))(
+                    (void**)*(void**)text)[0x160 / 4])(
+                    text, &positionX, &positionY);
+                float v6;
+                if (mRenderTextPosX[i] >= 0)
+                    v6 = (float)(mRenderTextPosX[i] * nglGetScreenWidth())
+                         * 0.0015625f;
+                else
+                    v6 = (float)nglGetScreenWidth() * 0.5f;
+                positionX = v6;
+                ((FEMLT_SetPosFn)((void**)*(void**)text)[0x94 / 4])(
+                    text, (int)positionX, (int)positionY);
+                ((void (__thiscall*)(void*, int))(
+                    (void**)*(void**)text)[0x4C / 4])(text, 0);
+            }
+        }
+    }
 }
 
 // ea: 0x0053F2A0
