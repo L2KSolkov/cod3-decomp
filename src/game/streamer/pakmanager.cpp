@@ -146,6 +146,8 @@ public:
 struct trGlobals_t {
     uint8_t _pad[0x10];
     float viewParmsOrigin[3];  // +0x10 (viewParms.or.origin)
+    uint8_t _pad1C[0x290 - 0x1C];
+    void*   world;             // +0x290 (world_t*)
 };
 extern trGlobals_t tr;  // ?tr@@3UtrGlobals_t@@A (render.o @ 0x13642D0)
 extern bool gFirstCamera;  // cg.o (common.cpp)
@@ -1669,14 +1671,6 @@ enum eInstanceBankType {
     INSTBANK_TYPE_DISCTEX,
     INSTBANK_TYPE_DISCTEXSIZE,
 };
-// world_t (render.o; mSky +0x108, size 0x10C)
-struct world_t {
-    uint8_t _pad[0x108];
-    void*   mSky;  // +0x108
-};
-extern world_t s_worldData;  // ?s_worldData@@3Uworld_t@@A @ 0xF74B98
-world_t s_worldData;
-
 // Values verified against DecodeInstbank's type-string table (TEXTURE=0 ..
 // DISCTEXSIZE=12) and the raw pushes at the cdGet*/cdLoad* call sites. The
 // earlier "APK=0, TEXTURE=1, ..." layout was shifted by one.
@@ -2094,8 +2088,115 @@ struct BoundingBox {
     math::Position3 vmin;  // +0x00
     math::Position3 vmax;  // +0x10
 
+    BoundingBox()  // ??0BoundingBox@@QAE@XZ (game2.o 0x517200)
+    {
+        vmin.v = _mm_set1_ps(3.4028235e38f);
+        vmax.v = _mm_set1_ps(-3.4028235e38f);
+    }
     void accumulate(const math::Position3& p);  // ?accumulate@BoundingBox@@QAEXABVPosition3@math@@@Z
 };
+
+// XModel / StaticModel / BSP views (render.o + game.o; offsets verified IDA)
+struct XModelParts;
+struct XModelLod {
+    uint8_t _pad[0x08];
+    XModelParts* xmodelParts;  // +0x08
+};
+struct XModelParts {
+    uint8_t _pad[0x10];
+    struct {
+        int  mSize;   // +0x10
+        void* mList;  // +0x14
+    } mHierarchy;
+};
+struct XModel {
+    const char* name;     // +0x00
+    XModel*     resolved; // +0x04 (cached GetXModel result)
+    uint8_t     _pad8[0x24 - 0x08];
+    XModelLod** lod;      // +0x24 (null-terminated array)
+    uint8_t     _pad28[0x40 - 0x28];
+    int         contents; // +0x40
+};
+struct BspNode {
+    uint8_t _pad[0x10];
+};
+struct BspTree {
+    uint8_t _pad[0x08];
+    struct {
+        int      mSize;  // +0x08
+        BspNode* mList;  // +0x0C
+    } mNodes;
+};
+// world_t (render.o; bspTree +0x100, mSky +0x108, size 0x10C)
+struct world_t {
+    uint8_t _pad[0x100];
+    BspTree* bspTree;  // +0x100
+    uint8_t _pad104[0x108 - 0x104];
+    void*   mSky;      // +0x108
+};
+
+// class tag matches ?CM_LinkStaticModel@@YAXPAVStaticModel@@@Z
+class StaticModel {
+public:
+    uint8_t _pad0[0x68];
+    XModel* xmodel;        // +0x68
+    float   axis[3][3];    // +0x6C
+    uint8_t _pad78[0x90 - 0x78];
+    float   origin[3];     // +0x90
+    float   scale;         // +0x9C
+    float   absmin[3];     // +0xA0
+    float   absmax[3];     // +0xAC
+    uint8_t _padB8[0xE0 - 0xB8];
+    TPakId  pakId;         // +0xE0
+    uint8_t _padE4[0xE8 - 0xE4];
+    int     instance;      // +0xE8
+};
+
+void ValidatePakId(TPakId pakId);  // defined below (0x6653A0)
+
+// render.o entry points (stubs until render.o lands)
+extern void R_GetXModelBounds(XModel* m, float (*axis)[3],
+                              BoundingBox& bounds);  // render.o 0xAB1DC0
+void R_GetXModelBounds(XModel* m, float (*axis)[3], BoundingBox& bounds)
+{
+    (void)m; (void)axis; (void)bounds;
+}
+extern void R_FilterModelIntoCells_r(world_t* world, BspNode* node,
+                                     StaticModel* psm,
+                                     const math::Position3& mins,
+                                     const math::Position3& maxs);  // render.o 0xAB62C0
+void R_FilterModelIntoCells_r(world_t* world, BspNode* node,
+                              StaticModel* psm, const math::Position3& mins,
+                              const math::Position3& maxs)
+{
+    (void)world; (void)node; (void)psm; (void)mins; (void)maxs;
+}
+extern void XModelGetBasePose(IVPointer<XModel> model,
+                              math::Mat43* mat);  // render.o 0xABA270
+void XModelGetBasePose(IVPointer<XModel> model, math::Mat43* mat)
+{
+    (void)model; (void)mat;
+}
+extern int XModelGetStaticBounds(IVPointer<XModel> model, float (*axis)[3],
+                                 math::Position3& mins,
+                                 math::Position3& maxs,
+                                 const math::Mat43* bones,
+                                 int nbones);  // render.o 0xABB0A0
+int XModelGetStaticBounds(IVPointer<XModel> model, float (*axis)[3],
+                          math::Position3& mins, math::Position3& maxs,
+                          const math::Mat43* bones, int nbones)
+{
+    (void)model; (void)axis; (void)mins; (void)maxs; (void)bones; (void)nbones;
+    return 0;
+}
+extern IVPointer<XModel> gDefaultXmodel;  // render.o @ 0x11EA6C8
+IVPointer<XModel> gDefaultXmodel = { nullptr, PAK_ID_INVALID };
+extern void CM_LinkStaticModel(StaticModel* staticModel);  // game.o (g_cm_load.cpp)
+extern math::Position3 native_to_cdl_pos3(const float* v);  // g.o inline 0x4AF1C0
+extern BspTree* g_bspTree;  // game.o @ 0xF743DC
+
+extern world_t s_worldData;  // ?s_worldData@@3Uworld_t@@A @ 0xF74B98
+world_t s_worldData;
 class ZoneCellBox {
 public:
     const BoundingBox& GetBounds() const;  // ?GetBounds@ZoneCellBox@@QBEABVBoundingBox@@XZ
@@ -2468,7 +2569,7 @@ public:
     void RenderInstanceGroups();  // ?RenderInstanceGroups@SceneManager@@QAEXXZ @ 0x669AF0
     void DebugRenderEnts();  // ?DebugRenderEnts@SceneManager@@QAEXXZ @ 0x672170
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
-    void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
+    void ProcessStaticModel(TPakId pakId, StaticModel& model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
     void ProcessVehicleNode(TPakId pakId, unsigned int nodeIdx);  // ?ProcessVehicleNode@SceneManager@@AAEXW4TPakId@@H@Z @ 0x66DCA0
     SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
@@ -3923,7 +4024,8 @@ void SceneManager::PostProcess(TPakId pakId)
     }
     for (unsigned int v7 = 0; v7 < Bank->mStaticModels.mSize; ++v7)
     {
-        ProcessStaticModel(pakId, &Bank->mStaticModels.mList[v7]);
+        ProcessStaticModel(pakId,
+                           ((StaticModel*)Bank->mStaticModels.mList)[v7]);
     }
     extern int cls_state;  // ?cls_state@@3HA (cl_debug.cpp)
     if (cls_state == 0 /* CA_ACTIVE */ || cls_state == 5 /* CA_MAP_RESTART */)
@@ -3940,10 +4042,160 @@ void SceneManager::ProcessInstanceGroup(TPakId pakId, void* group)
     (void)pakId; (void)group;
 }
 
-// ea: 0x66D670 (heavy; port later)
-void SceneManager::ProcessStaticModel(TPakId pakId, void* model)
+// ea: 0x66D670
+void SceneManager::ProcessStaticModel(TPakId pakId, StaticModel& model)
 {
-    (void)pakId; (void)model;
+    XModel* xmodel = model.xmodel;
+    model.pakId = pakId;
+    if (xmodel == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 1524;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("Static model without model!"))
+            __debugbreak();
+        return;
+    }
+
+    if (xmodel->resolved == nullptr)
+    {
+        IVPointer<XModel> xmodptr =
+            XModelManager::sInst->GetXModel(pakId, xmodel->name);
+        ValidatePakId((TPakId)xmodptr.mPakId);
+        if (xmodptr.mValue == nullptr)
+            xmodptr = gDefaultXmodel;
+        ValidatePakId((TPakId)xmodptr.mPakId);
+        if (xmodptr.mValue != nullptr)
+        {
+            ValidatePakId((TPakId)xmodptr.mPakId);
+            xmodel->resolved = xmodptr.mValue;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+            AeAssert::gCurrentLine = 1510;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning(
+                       "scene contains %s but mesh is not\nin pakfile",
+                       xmodel->name))
+                __debugbreak();
+            return;
+        }
+    }
+
+    model.xmodel = xmodel->resolved;
+    if (model.xmodel == nullptr)
+        return;
+
+    BoundingBox bounds;
+    if (model.instance == 0)
+    {
+        R_GetXModelBounds(model.xmodel, model.axis, bounds);
+        math::Position3 o = native_to_cdl_pos3(model.origin);
+        bounds.vmin.v = _mm_add_ps(bounds.vmin.v, o.v);
+        bounds.vmax.v = _mm_add_ps(bounds.vmax.v, o.v);
+        ((world_t*)tr.world)->bspTree = g_bspTree;
+        BspNode* node =
+            &((world_t*)tr.world)->bspTree->mNodes.mList[0];
+        R_FilterModelIntoCells_r((world_t*)tr.world, node, &model,
+                                 bounds.vmin, bounds.vmax);
+        model.absmin[0] = bounds.vmin.v.m128_f32[0];
+        model.absmin[1] = bounds.vmin.v.m128_f32[1];
+        model.absmin[2] = bounds.vmin.v.m128_f32[2];
+        model.absmax[0] = bounds.vmax.v.m128_f32[0];
+        model.absmax[1] = bounds.vmax.v.m128_f32[1];
+        model.absmax[2] = bounds.vmax.v.m128_f32[2];
+    }
+
+    XModel* v14 = model.xmodel;
+    XModelLod** lod = v14->lod;
+    int v16 = 0;
+    if (v14->lod[0] == nullptr)
+    {
+        XModelLod** v17 = v14->lod;
+        do
+        {
+            ++v17;
+            ++v16;
+        } while (*v17 == nullptr);
+    }
+    XModelLod* v18 = v14->lod[v16];
+    int nbones = PAK_ID_MIN;
+    if (v18->xmodelParts != nullptr)
+    {
+        if (*lod == nullptr)
+        {
+            XModelLod* v20;
+            do
+            {
+                v20 = lod[1];
+                ++lod;
+                ++nbones;
+            } while (v20 == nullptr);
+        }
+        nbones = v14->lod[nbones]->xmodelParts->mHierarchy.mSize;
+    }
+
+    static math::Mat43 bones[64];
+    if (nbones > 64)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 1565;
+        AeAssert::gCurrentExpr = "nbones <= MAX_BONES";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("static XModel %s has too many bones.",
+                                model.xmodel->name))
+            return;
+    }
+    else
+    {
+        IVPointer<XModel> v27;
+        v27.mValue = model.xmodel;
+        v27.mPakId = model.pakId;
+        XModelGetBasePose(v27, bones);
+        math::Position3 mins;
+        math::Position3 maxs;
+        if (XModelGetStaticBounds(v27, model.axis, mins, maxs, bones,
+                                  nbones) != 0)
+        {
+            math::Position3 origin;
+            origin.v = _mm_setr_ps(model.origin[0], model.origin[1],
+                                   model.origin[2], 0.0f);
+            __m128 scale = _mm_set1_ps(model.scale);
+            __m128 amin = _mm_add_ps(_mm_mul_ps(mins.v, scale), origin.v);
+            __m128 amax = _mm_add_ps(_mm_mul_ps(maxs.v, scale), origin.v);
+            model.absmin[0] = amin.m128_f32[0];
+            model.absmin[1] = amin.m128_f32[1];
+            model.absmin[2] = amin.m128_f32[2];
+            model.absmax[0] = amax.m128_f32[0];
+            model.absmax[1] = amax.m128_f32[1];
+            model.absmax[2] = amax.m128_f32[2];
+            if (model.instance == 0)
+            {
+                math::Position3 bmin;
+                bmin.v = _mm_setr_ps(model.absmin[0], model.absmin[1],
+                                     model.absmin[2], 0.0f);
+                math::Position3 bmax;
+                bmax.v = _mm_setr_ps(model.absmax[0], model.absmax[1],
+                                     model.absmax[2], 0.0f);
+                bounds.accumulate(bmin);
+                bounds.accumulate(bmax);
+                model.absmin[0] = bounds.vmin.v.m128_f32[0];
+                model.absmin[1] = bounds.vmin.v.m128_f32[1];
+                model.absmin[2] = bounds.vmin.v.m128_f32[2];
+                model.absmax[0] = bounds.vmax.v.m128_f32[0];
+                model.absmax[1] = bounds.vmax.v.m128_f32[1];
+                model.absmax[2] = bounds.vmax.v.m128_f32[2];
+            }
+            if (model.xmodel->contents != 0)
+                CM_LinkStaticModel(&model);
+        }
+    }
 }
 
 // ea: 0x676C50 (heavy; port later)
