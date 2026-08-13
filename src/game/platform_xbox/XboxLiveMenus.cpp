@@ -6,17 +6,6 @@
 
 #include "XboxLiveMenus.h"
 
-// FEText getters (shell.o FEText.cpp family; manglings ?GetX@FEText@@QAEMXZ etc.)
-float FEText::GetX()      { return xy.x; }
-float FEText::GetY()      { return xy.y; }
-float FEText::GetScaleX() { return scale.x; }
-font_index FEText::GetFont() { return font; }
-void FEText::SetAlpha(int a)        { (void)a; }
-void FEText::SetColorMenuItem(unsigned int normal, unsigned int selected) { (void)normal; (void)selected; }
-void FEText::SetText(const char* s, int a3) { (void)s; (void)a3; }
-void FEText::SetShown(bool shown)   { (void)shown; }
-unsigned int FEText::GetColor()     { return *(unsigned int*)&color1; }
-unsigned int FEText::GetUnselectedColor() { return *(unsigned int*)&color_unselected; }
 int DialogMenuSystem::GetActiveMenu()
 {
     return 0;
@@ -584,7 +573,7 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
             if (v49 != nullptr)
             {
                 FEText* v50 = m_pText[4];
-                unsigned int v35 = v50->GetColor();
+                unsigned int v35 = v50->GetColor().i;
                 float layer = v50->GetScaleX();
                 float x1 = v50->GetY();
                 float v29 = v50->GetX();
@@ -599,7 +588,7 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
         }
         else
         {
-            m_pText[v6]->SetText(v7, 0);
+            m_pText[v6]->SetText(v7);
         }
         m_pText[v6]->SetShown(true);
         v6++;
@@ -615,7 +604,7 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     if (v50 != nullptr)
     {
         FEText* v49 = m_pText[3];
-        unsigned int v36 = v49->GetColor();
+        unsigned int v36 = v49->GetColor().i;
         float layera = v49->GetScaleX();
         float x1a = v49->GetY();
         float v30 = v49->GetX();
@@ -677,9 +666,9 @@ void XboxLiveOptionsMenu::SetPanelFile(PanelFile* pf)
         m_ListBox.SetItem(n, 0, TextPointer, 0);
         m_ListBox.SetText(n, 0, szXBoxOptionReferences[n]);
         FEText* v49 = mPanel->GetTextPointer(v25);
-        m_pOldTextColor[n].i = v49->GetColor();
+        m_pOldTextColor[n].i = v49->GetColor().i;
         FEText* v27 = mPanel->GetTextPointer(v25);
-        m_pOldSelectedTextColor[n].i = v27->GetUnselectedColor();
+        m_pOldSelectedTextColor[n].i = v27->GetUnselectedColor().i;
     }
     m_ListBox.SetAllColumnsSelectable(false);
     if (m_ListBox.mItemColumnsCount <= 0)
@@ -788,7 +777,7 @@ void XboxLiveOptionsMenu::UpdateDynamicText()
         ASSERT("m_currSelection < kXboxOptionsCnt",
                "c:\\cod\\code\\game\\mp/ui/XboxLiveOptionsMenu.cpp", 632);
     }
-    m_pText[2]->SetText(szXBoxOptionReferences[m_currSelection], 0);
+    m_pText[2]->SetText(szXBoxOptionReferences[m_currSelection]);
     const char* STBString =
         STBManager::sInst->GetSTBString(
             szXBoxOptionDescriptionReferences[m_currSelection]);

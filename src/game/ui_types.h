@@ -92,23 +92,32 @@ enum FEMENUCMD {
     FEMENUCMD_END = 16384,
 };
 
-// Forward declarations
-struct FEText;
-struct FEMultiLineText;
-struct FEMenu;
-struct FEMenuSystem;
-struct PanelFile;
-struct FEMenuEntry;
+// Forward declarations (class tags match the original binary's manglings)
+class FEText;
+class FEMultiLineText;
+class FEMenu;
+class FEMenuSystem;
+class PanelFile;
+class FEMenuEntry;
 struct UIListBox;
 struct OverlayMenu;
 struct DialogMenuSystem;
 struct DialogMenu;
-struct PanelQuad;
-struct FEText;
+class PanelQuad;
+class FEText;
 
 // panel_layer - quad layer enum
 enum panel_layer {
     PANEL_LAYER_BACKGROUND = 0,
+    PANEL_LAYER_1 = 1,
+    PANEL_LAYER_2 = 2,
+    PANEL_LAYER_3 = 3,
+    PANEL_LAYER_4 = 4,
+    PANEL_LAYER_5 = 5,
+    PANEL_LAYER_6 = 6,
+    PANEL_LAYER_7 = 7,
+    PANEL_LAYER_8 = 8,
+    PANEL_LAYER_TOTAL = 9,
 };
 
 // ============================================================================
@@ -126,7 +135,8 @@ struct ae_array {
 // PanelFileUser â€” panel file user base (4 bytes, vtable only)
 // Size: 0x04 (4 bytes) â€” verified against IDA
 // ============================================================================
-struct PanelFileUser {
+class PanelFileUser {
+public:
     struct PanelFileUser_vtbl* __vftable;  // +0x00
 };
 static_assert(sizeof(PanelFileUser) == 4, "PanelFileUser size mismatch");
@@ -135,13 +145,20 @@ static_assert(sizeof(PanelFileUser) == 4, "PanelFileUser size mismatch");
 // PanelAnimObject â€” animated panel element base (20 bytes)
 // Size: 0x14 (20 bytes) â€” verified against IDA
 // ============================================================================
-struct PanelAnimObject {
+class PanelAnimObject {
+public:
     virtual ~PanelAnimObject() {}            // +0x00 (vfptr)
     float visibility;                        // +0x04
     float z_value;                           // +0x08
     float fade_timer;                        // +0x0C
     char  flags;                             // +0x10
     uint8_t _pad11[3];                       // +0x11
+
+    // shell.o inline COMDATs (verified manglings)
+    virtual bool IsShown() { return (flags & 1) != 0; }
+    virtual void SetShown(bool shown) { flags = shown ? (char)(flags | 1) : (char)(flags & 0xFE); }
+    virtual float GetZvalue() { return z_value; }
+    virtual void SetZvalueAbs(float z) { z_value = z; }
 };
 static_assert(sizeof(PanelAnimObject) == 0x14, "PanelAnimObject size mismatch");
 static_assert(offsetof(PanelAnimObject, visibility) == 0x04, "PanelAnimObject::visibility offset mismatch");
@@ -150,9 +167,10 @@ static_assert(offsetof(PanelAnimObject, visibility) == 0x04, "PanelAnimObject::v
 // PanelQuad â€” panel quad (72 bytes)
 // Size: 0x48 (72 bytes) â€” verified against IDA
 // ============================================================================
-struct PanelQuadSection;
+class PanelQuadSection;
 
-struct PanelQuad : PanelAnimObject {
+class PanelQuad : public PanelAnimObject {
+public:
     Broc::vector   center_point;              // +0x14
     ae_vector<PanelQuadSection*> pqs;         // +0x20 (12 bytes)
     void*          am_info;                   // +0x2C (PQArcMaskingInfo*)
@@ -183,7 +201,8 @@ static_assert(offsetof(PanelQuad, pqs) == 0x20, "PanelQuad::pqs offset mismatch"
 // ============================================================================
 // PanelQuadSection â€” quad section (104 bytes) â€” verified against IDA
 // ============================================================================
-struct PanelQuadSection {
+class PanelQuadSection {
+public:
     struct PQVert {
         float        X;      // +0x00
         float        Y;      // +0x04
@@ -236,7 +255,8 @@ static_assert(sizeof(FloatingPQ) == 84, "FloatingPQ size mismatch");
 // PanelFile â€” panel definition file (96 bytes)
 // Size: 0x60 (96 bytes) â€” verified against IDA
 // ============================================================================
-struct PanelFile {
+class PanelFile {
+public:
     ae_vector<PanelQuad*> pquads;      // +0x00 (12 bytes)
     ae_vector<FEText*>    ptext;       // +0x0C (12 bytes)
     int       indexHidden;             // +0x18
@@ -281,7 +301,8 @@ static_assert(sizeof(FETextFlashInfo) == 0x14, "FETextFlashInfo size mismatch");
 // FEText â€” text element (112 bytes)
 // Size: 0x70 (112 bytes) â€” verified against IDA
 // ============================================================================
-struct FEText : PanelAnimObject {
+class FEText : public PanelAnimObject {
+public:
     FETextFlashInfo* flash_info;            // +0x14
     font_index       font;                  // +0x18
     Broc::string     text;                  // +0x1C
@@ -296,6 +317,30 @@ struct FEText : PanelAnimObject {
     int              panel_text_index;      // +0x68
     int16_t          flags;                 // +0x6C
     uint8_t          _pad6E[2];             // +0x6E
+
+    // shell.o inline COMDATs (verified manglings)
+    virtual void SetTextNoLocalize(const char* s) { text = s; }
+    virtual void SetPos(float x, float y) { xy.x = x; xy.y = y; }
+    virtual void SetY(float y) { xy.y = y; }
+    virtual void SetAlpha(float a) { (void)a; }
+    virtual void SetColorMenuItem(color32 normal, color32 selected)
+    {
+        color1 = normal;
+        color_unselected = selected;
+    }
+    virtual float GetScaleX() const { return scale.x; }
+    virtual color32 GetColor() { return color1; }
+    virtual color32 GetUnselectedColor() { return color_unselected; }
+    virtual float GetX() { return xy.x; }
+    virtual float GetY() { return xy.y; }
+    virtual bool GetFlag(int f) { return (flags & f) != 0; }
+    virtual void SetFlag(int f, bool on)
+    {
+        if (on)
+            flags = (int16_t)(flags | f);
+        else
+            flags = (int16_t)(flags & ~f);
+    }
 
     FEText() {}  // inline default (FE subclass ctors)
     FEText(font_index f, const char* s, float x, float y, int z,
@@ -332,16 +377,6 @@ protected:
     virtual void AdjustForJustification(float& x, float& y, float z);
                                             // shell.o 0x56CB60
 public:
-    void SetAlpha(int a);
-    void SetColorMenuItem(unsigned int normal, unsigned int selected);
-    void SetText(const char* s, int a3);
-    void SetShown(bool shown);
-    void Draw();
-    unsigned int GetColor();
-    unsigned int GetUnselectedColor();
-    float GetScaleX();
-    float GetX();
-    float GetY();
     font_index GetFont();
 };
 static_assert(sizeof(FEText) == 0x70, "FEText size mismatch");
@@ -357,7 +392,8 @@ static_assert(offsetof(FEText, flags) == 0x6C, "FEText::flags offset mismatch");
 // FEMenuEntry â€” selectable menu entry (24 bytes)
 // Size: 0x18 (24 bytes) â€” verified against IDA
 // ============================================================================
-struct FEMenuEntry {
+class FEMenuEntry {
+public:
     virtual ~FEMenuEntry() {}            // +0x00 (vfptr)
     FEMenu*    menu;                     // +0x04
     int16_t    up;                       // +0x08
@@ -405,7 +441,8 @@ static_assert(sizeof(FEMenuColorScheme) == 0x10, "FEMenuColorScheme size mismatc
 // FEMenuSystem â€” menu system (44 bytes)
 // Size: 0x2C (44 bytes) â€” verified against IDA
 // ============================================================================
-struct FEMenuSystem : PanelFileUser {
+class FEMenuSystem : public PanelFileUser {
+public:
     FEMenu**    menus;                 // +0x04
     font_index  font;                  // +0x08
     int         size;                  // +0x0C
@@ -436,7 +473,8 @@ static_assert(offsetof(FEMenuSystem, m_active) == 0x1C, "FEMenuSystem::m_active 
 
 // FEMenu base methods (shell.o provides the real implementations)
 struct FEMenuVtbl;
-struct FEMenu {
+class FEMenu {
+public:
     FEMenuVtbl* __vftable;                       // +0x00
     FEMenuEntry** entries;                       // +0x04
     FEMenuSystem* system;                        // +0x08
@@ -494,7 +532,8 @@ struct MultiLineString;
 // FEMultiLineText â€” multiline text element (168 bytes)
 // Size: 0xA8 (168 bytes) â€” verified against IDA
 // ============================================================================
-struct FEMultiLineText : FEText {
+class FEMultiLineText : public FEText {
+public:
     color32 button_color;              // +0x70
     float   button_scale;              // +0x74
     float   line_spacing_init;         // +0x78
@@ -530,7 +569,8 @@ static_assert(offsetof(FEMultiLineText, lines) == 0x90, "FEMultiLineText::lines 
 // ============================================================================
 // FEMenuListBoxItem â€” list-box data row (28 bytes) â€” verified against IDA
 // ============================================================================
-struct FEMenuListBoxItem {
+class FEMenuListBoxItem {
+public:
     int          mIndex;         // +0x00
     Broc::string mText;          // +0x04
     void*        mData;          // +0x08

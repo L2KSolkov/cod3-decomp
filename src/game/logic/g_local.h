@@ -3338,7 +3338,7 @@ void  MultiplayerMgr_ApplyLocalPhysicsToVehicle(void* self, Entity* vehicle,
                                                 math::Position3* angles,
                                                 float* velocity);  // mp.o
 extern unsigned int s_wheelTagHashes[6];         // g.o @ 0xEE62CC
-extern unsigned int s_gunnerFlashTagHashes[6];   // g.o @ 0xEE62E4
+extern unsigned int s_gunnerFlashTagHashes[4];   // g.o @ 0xEE62E4
 extern unsigned int s_entryPointTagHashes[6];    // g.o @ 0xEE62F4
 extern unsigned int s_flashTagHashes[4];         // g.o @ 0xEE630C
 extern unsigned int s_seatTagHashes[6];          // g.o @ 0xEE631C

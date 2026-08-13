@@ -228,14 +228,14 @@ static_assert(sizeof(ServerTime) == 0x14, "ServerTime size mismatch");
 // FEManager — front-end manager (1012 bytes; opaque, only sv.o fields shown)
 // ============================================================================
 struct IGOFrontEnd;
-struct FEMenuSystem;
+class FEMenuSystem;
 struct DialogMenuSystem;
 struct InGameMenuSystem;
 struct AARMenuSystem {
     bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
 };
 struct ProfileManager;
-struct PanelQuad;
+class PanelQuad;
 struct nglFont;
 struct ControllerDisconnectedMenu;
 
@@ -951,7 +951,8 @@ struct SceneManager {
 };
 
 #ifndef COD3_FULL_FE_TYPES
-struct FEMenuSystem {
+class FEMenuSystem {
+public:
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
     uint8_t _pad[0x2A - 0x04];
     bool    is_active;                   // +0x2A

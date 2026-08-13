@@ -63,7 +63,7 @@ static_assert(sizeof(UIListBox) == 0xAC, "UIListBox size mismatch");
 // ============================================================================
 // XboxLiveOptionsMenu - 0x188 (verified)
 // ============================================================================
-struct FEComboBox;
+class FEComboBox;
 
 class XboxLiveOptionsMenu : public FEMenu {
 public:

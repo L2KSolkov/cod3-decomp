@@ -381,27 +381,26 @@ vehicleVarConfig_t sVehicleVarConfig[27] = {  // @ 0xDD7608
     { "tire_damp_hand", 0x68 },
 };
 
-// tag hash arrays (g_scr_vehicle.cpp data, filled by static init) @ .data 0xEE62CC
-static unsigned int TagHash(const char* s) { return HashString::CalcHash(s); }
+// tag hash arrays (g_scr_vehicle.cpp data) @ .data 0xEE62CC.
+// Values copied from the original binary's HashString::CalcHash output
+// (DJB2 with lowercase folding, verified against tlFixedString ctor 0x4A53F0).
 unsigned int s_wheelTagHashes[6] = {
-    TagHash("tag_wheel_front_left"), TagHash("tag_wheel_front_right"),
-    TagHash("tag_wheel_back_left"), TagHash("tag_wheel_back_right"),
-    TagHash("tag_wheel_middle_left"), TagHash("tag_wheel_middle_right"),
+    0xBA21B5C2, 0xFEC735B5, 0x34790A6A,
+    0xC4091F5D, 0xE8DCBD08, 0x04E325BB,
 };
-unsigned int s_gunnerFlashTagHashes[6] = { 0, 0, 0, 0, 0, 0 };  // boundary only
+unsigned int s_gunnerFlashTagHashes[4] = {
+    0x2F400DFB, 0x1741CD8E, 0x2F400DFC, 0x1741CDB0,
+};
 unsigned int s_entryPointTagHashes[6] = {
-    TagHash("tag_enter_right"), TagHash("tag_enter_left"),
-    TagHash("tag_enter_back"), TagHash("tag_enter_back_left"),
-    TagHash("tag_enter_back_right"), TagHash("tag_wheel_front"),
+    0x0F0D7E56, 0x3E80EE43, 0x3E7B6109,
+    0xE3B27AB3, 0x5A7098C6, 0xB556B6B8,
 };
 unsigned int s_flashTagHashes[4] = {
-    TagHash("tag_flash"), TagHash("tag_flash_11"),
-    TagHash("tag_flash_2"), TagHash("tag_flash_3"),
+    0x2B100B49, 0x1741CD4A, 0x2F400DFA, 0x1741CD6C,
 };
 unsigned int s_seatTagHashes[6] = {
-    TagHash("tag_driver"), TagHash("tag_gunner"),
-    TagHash("tag_passenger1"), TagHash("tag_passenger2"),
-    TagHash("tag_passenger3"), TagHash("tag_passenger4"),
+    0x88D82607, 0x9010854A, 0xACCA8E14,
+    0xACCA8E15, 0xACCA8E16, 0xACCA8E17,
 };
 
 int g_drawDebugLos;            // @ 0xEB1108
