@@ -41,6 +41,7 @@ public:
     int mPakId;                // +0xC0
 
     const math::Mat43& GetMat(int boneIndex);  // ?GetMat@DObj@@QAEABVMat43@math@@H@Z (real in g_dobj.cpp)
+    void SetLODOverride(int startLod);  // ?SetLODOverride@DObj@@QAEXH@Z (real in cg_weapon.cpp)
 };
 
 struct XModelLocal {
@@ -6258,6 +6259,7 @@ struct InteractStateInfo {
     unsigned int instantChangeWeapon;// +0x34C
     unsigned int holdUseExitEnabled;// +0x370
     float maxDuration;              // +0x378
+    float minDuration;              // +0x374
     float acceptInputMinTime;       // +0x37C
     float acceptInputMaxTime;       // +0x380
     float lerpDuration;             // +0x38C
@@ -6274,7 +6276,10 @@ struct InteractStateInfo {
     char buttonHelpStr[64];         // +0x4DC
     unsigned int swirlClockwise;    // +0x520
     unsigned int leftStick;         // +0x524
+    float initialScore;             // +0x528
     float difficulty;               // +0x52C
+    float winningDelay;             // +0x538
+    float losingDelay;              // +0x53C
     float modBlendMin;              // +0x540
     float modBlendMax;              // +0x544
     float modBlendScoreDeltaMin;    // +0x548
@@ -6623,6 +6628,7 @@ protected:
     virtual void GetInteractableMat(math::Mat43& mat) const;  // 0x54D720 (MBEXAAVMat43)
     virtual void PostEffectEvent(const char* effectName, int eventIndex);  // 0x53FBB0 (MAE)
     virtual void PlayAnims(int weaponIndex, float fadeIn);  // 0x54DC40 (MAE)
+    void FadeOutModifiers(float fadeOutTime, unsigned int mask);  // ?FadeOutModifiers@InteractState@@IAEXMI@Z
 
     friend void InteractStateMeleeSuccess_PlayAnims(InteractState* self,
                                                     int weaponIndex,
@@ -6733,6 +6739,144 @@ public:
     virtual void Activate();              // ?Activate@InteractStateRowboatInit@@UAEXXZ
     virtual void Deactivate();            // ?Deactivate@InteractStateRowboatInit@@UAEXXZ
     virtual InteractState* Update(float deltaT);  // ?Update@...@@UAEPAVInteractState@@M@Z
+};
+
+// ============================================================================
+// InteractStateMelee + 8 subclasses (anim.o InteractStateMelee.cpp)
+// Layout verified vs IDB: mMetaNalBaseAnimPtr[2] +0x1A0, mMetaAnimDataPtr[2]
+// +0x1A8, mModifierIndex +0x1B0, mNumModifiers +0x1B4, mModifierAnimTime
+// +0x1B8, mModifierIntervalTimer +0x1BC, mPlayerSoundHandle +0x1C0,
+// mOtherSoundHandle +0x1C4, mRumbleHandle +0x1C8, mRumbleIntensity +0x1CC,
+// mScore +0x1D0, mDesiredScore +0x1D4, mAnimScore +0x1D8, mCurScoreDelta
+// +0x1DC, mResistRate +0x1E0, mResistCharge +0x1E4, mResistBurnAmt +0x1E8,
+// mWinningDelayTimer +0x1EC, mLosingDelayTimer +0x1F0, mInitialFOV +0x1F4,
+// mFOVLerpTime +0x1F8, mNumFacialAnims +0x1FC, mFacialAnims +0x200,
+// mFacialAnimTimer +0x210.  Subclasses are 0x1A0 (Melee base is 0x220) so
+// they derive from InteractState (Success/Failure from InteractStatePlayAnims).
+// ============================================================================
+class InteractStateMelee : public InteractState {
+public:
+    InteractStateMelee(TPakId curPakId, const InteractStateInfo* info,
+                       InteractionController* controller);
+    virtual void Activate();    // ?Activate@InteractStateMelee@@UAEXXZ
+    virtual void Deactivate();  // ?Deactivate@InteractStateMelee@@UAEXXZ
+    virtual InteractState* Update(float deltaT);  // ?Update@InteractStateMelee@@UAEPAVInteractState@@M@Z
+
+    void* mMetaNalBaseAnimPtr[2];   // +0x1A0
+    void* mMetaAnimDataPtr[2];      // +0x1A8
+    int mModifierIndex;             // +0x1B0
+    int mNumModifiers;              // +0x1B4
+    float mModifierAnimTime;        // +0x1B8
+    float mModifierIntervalTimer;   // +0x1BC
+    int mPlayerSoundHandle;         // +0x1C0
+    int mOtherSoundHandle;          // +0x1C4
+    int mRumbleHandle;              // +0x1C8 (RumbleEffectInstanceHandle mVal)
+    float mRumbleIntensity;         // +0x1CC
+    float mScore;                   // +0x1D0
+    float mDesiredScore;            // +0x1D4
+    float mAnimScore;               // +0x1D8
+    float mCurScoreDelta;           // +0x1DC
+    float mResistRate;              // +0x1E0
+    float mResistCharge;            // +0x1E4
+    float mResistBurnAmt;           // +0x1E8
+    float mWinningDelayTimer;       // +0x1EC
+    float mLosingDelayTimer;        // +0x1F0
+    float mInitialFOV;              // +0x1F4
+    float mFOVLerpTime;             // +0x1F8
+    int mNumFacialAnims;            // +0x1FC
+    void* mFacialAnims[4];          // +0x200
+    float mFacialAnimTimer;         // +0x210
+
+private:
+    // Binary AAE/ABE (private)
+    float CalcModifierBlendTime() const;  // ?CalcModifierBlendTime@...@@ABEMXZ
+    void CalcAnimScore(float deltaT);     // ?CalcAnimScore@...@@AAEXM@Z
+    int GetInitialModifierIndex(float score) const;  // ?GetInitialModifierIndex@...@@ABEHM@Z
+    void GetFacialAnims();                // ?GetFacialAnims@...@@AAEXXZ
+    void UpdateFOV(float deltaT);         // ?UpdateFOV@...@@AAEXM@Z
+    void UpdateRumble(float deltaT);      // ?UpdateRumble@...@@AAEXM@Z
+    void CalcScore(float deltaT);         // ?CalcScore@...@@AAEXM@Z
+    void UpdateModifiers(float deltaT);   // ?UpdateModifiers@...@@AAEXM@Z
+    void UpdateFacialAnim(float deltaT);  // ?UpdateFacialAnim@...@@AAEXM@Z
+};
+
+class InteractStateMeleeInitiate : public InteractState {
+public:
+    InteractStateMeleeInitiate(TPakId, const InteractStateInfo*,
+                               InteractionController*);
+    virtual void Activate();
+    virtual void Deactivate();
+    virtual InteractState* Update(float deltaT);
+};
+
+class InteractStateMeleeStart : public InteractState {
+public:
+    InteractStateMeleeStart(TPakId, const InteractStateInfo*,
+                            InteractionController*);
+    virtual void Activate();
+    virtual void Deactivate();
+    virtual InteractState* Update(float deltaT);
+};
+
+class InteractStateMeleeSuccessSetup : public InteractState {
+public:
+    InteractStateMeleeSuccessSetup(TPakId, const InteractStateInfo*,
+                                   InteractionController*);
+    virtual void Activate();
+    virtual void Deactivate();
+    virtual InteractState* Update(float deltaT);
+};
+
+class InteractStateMeleeSuccess : public InteractStatePlayAnims {
+public:
+    InteractStateMeleeSuccess(TPakId, const InteractStateInfo*,
+                              InteractionController*);
+    virtual void Activate();
+    virtual void Deactivate();
+    virtual InteractState* Update(float deltaT);
+protected:
+    virtual void PlayAnims(int weaponIndex, float fadeIn);  // ?PlayAnims@InteractStateMeleeSuccess@@MAEXHM@Z
+};
+
+class InteractStateMeleeFailure : public InteractStatePlayAnims {
+public:
+    InteractStateMeleeFailure(TPakId, const InteractStateInfo*,
+                              InteractionController*);
+    virtual void Activate();
+    virtual void Deactivate();
+    virtual InteractState* Update(float deltaT);
+protected:
+    virtual void PlayAnims(int weaponIndex, float fadeIn);  // ?PlayAnims@InteractStateMeleeFailure@@MAEXHM@Z
+};
+
+class InteractStateMeleeStagedInitiate : public InteractState {
+public:
+    InteractStateMeleeStagedInitiate(TPakId, const InteractStateInfo*,
+                                     InteractionController*);
+    virtual void Activate();
+    virtual void Deactivate();
+    virtual InteractState* Update(float deltaT);
+protected:
+    virtual void PostEffectEvent(const char* effectName,
+                                 int eventIndex);  // ?PostEffectEvent@InteractStateMeleeStagedInitiate@@MAEXPBDH@Z
+};
+
+class InteractStateMeleeStagedSuccess : public InteractState {
+public:
+    InteractStateMeleeStagedSuccess(TPakId, const InteractStateInfo*,
+                                    InteractionController*);
+    virtual void Activate();
+    virtual void Deactivate();
+    virtual InteractState* Update(float deltaT);
+
+    int mEnemyDead;  // +0x1A0
+};
+
+class InteractStateMeleeDropWeapon : public InteractState {
+public:
+    InteractStateMeleeDropWeapon(TPakId, const InteractStateInfo*,
+                                 InteractionController*);
+    virtual void Deactivate();
 };
 
 extern void* RumbleManager_Inst(int instance);
@@ -7593,27 +7737,6 @@ INTERACT_STATE_CTOR(InteractStateScaleAnimSpeed, kInteractTypeScaleAnimSpeed)
 INTERACT_STATE_CTOR(InteractStateStrengthTest, kInteractTypeStrengthTest)
 // 0x546FB0
 INTERACT_STATE_CTOR(InteractStateLeverPush, kInteractTypeLeverPush)
-// 0x547160
-INTERACT_STATE_CTOR(InteractStateMelee, kInteractTypeMelee)
-// 0x5471B0
-INTERACT_STATE_CTOR(InteractStateMeleeInitiate, kInteractTypeMeleeInitiate)
-// 0x547270
-INTERACT_STATE_CTOR(InteractStateMeleeStart, kInteractTypeMeleeStart)
-// 0x547330
-INTERACT_STATE_CTOR(InteractStateMeleeSuccessSetup,
-                   kInteractTypeMeleeSuccessSetup)
-// 0x547490
-INTERACT_STATE_CTOR(InteractStateMeleeSuccess, kInteractTypeMeleeSuccess)
-// 0x5474C0
-INTERACT_STATE_CTOR(InteractStateMeleeFailure, kInteractTypeMeleeFailure)
-// 0x547500
-INTERACT_STATE_CTOR(InteractStateMeleeStagedInitiate,
-                   kInteractTypeMeleeStagedInitiate)
-// 0x5475D0
-INTERACT_STATE_CTOR(InteractStateMeleeStagedSuccess,
-                   kInteractTypeMeleeStagedSuccess)
-// 0x547600
-INTERACT_STATE_CTOR(InteractStateMeleeDropWeapon, kInteractTypeMeleeDropWeapon)
 // 0x547630
 // 0x547BE0
 INTERACT_STATE_CTOR(InteractStateVehicleBase, kInteractTypeVehicleBase)
@@ -7658,6 +7781,41 @@ InteractStateRowboat::InteractStateRowboat(TPakId curPakId,
 {
     mType = kInteractTypeRowboat;
 }
+
+// ??0InteractStateMelee@@QAE@... (0x547160)
+InteractStateMelee::InteractStateMelee(TPakId curPakId,
+                                       const InteractStateInfo* info,
+                                       InteractionController* controller)
+    : InteractState(curPakId, info, controller)
+{
+    mType = kInteractTypeMelee;
+}
+
+#define MELEE_SUB_CTOR(NAME, TYPE, BASE)                                   \
+    NAME::NAME(TPakId curPakId, const InteractStateInfo* info,             \
+               InteractionController* controller)                          \
+        : BASE(curPakId, info, controller)                                 \
+    {                                                                      \
+        mType = (TYPE);                                                    \
+    }
+
+MELEE_SUB_CTOR(InteractStateMeleeInitiate, kInteractTypeMeleeInitiate,
+               InteractState)
+MELEE_SUB_CTOR(InteractStateMeleeStart, kInteractTypeMeleeStart, InteractState)
+MELEE_SUB_CTOR(InteractStateMeleeSuccessSetup, kInteractTypeMeleeSuccessSetup,
+               InteractState)
+MELEE_SUB_CTOR(InteractStateMeleeSuccess, kInteractTypeMeleeSuccess,
+               InteractStatePlayAnims)
+MELEE_SUB_CTOR(InteractStateMeleeFailure, kInteractTypeMeleeFailure,
+               InteractStatePlayAnims)
+MELEE_SUB_CTOR(InteractStateMeleeStagedInitiate,
+               kInteractTypeMeleeStagedInitiate, InteractState)
+MELEE_SUB_CTOR(InteractStateMeleeStagedSuccess,
+               kInteractTypeMeleeStagedSuccess, InteractState)
+MELEE_SUB_CTOR(InteractStateMeleeDropWeapon, kInteractTypeMeleeDropWeapon,
+               InteractState)
+
+#undef MELEE_SUB_CTOR
 
 // ea: 0x0055FEB0 (InteractionController::InteractionQueueEntry ctor)
 void InteractionQueueEntry_Ctor(void* self)
@@ -8569,6 +8727,19 @@ static void InteractStateRowboatInit_New(InteractState* mem, TPakId curPakId,
 static void InteractStateRowboat_New(InteractState* mem, TPakId curPakId,
                                      void* info,
                                      InteractionController* controller);
+#define MELEE_NEW_FWD(NAME)                                                 \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)
+MELEE_NEW_FWD(InteractStateMelee);
+MELEE_NEW_FWD(InteractStateMeleeInitiate);
+MELEE_NEW_FWD(InteractStateMeleeStart);
+MELEE_NEW_FWD(InteractStateMeleeSuccessSetup);
+MELEE_NEW_FWD(InteractStateMeleeSuccess);
+MELEE_NEW_FWD(InteractStateMeleeFailure);
+MELEE_NEW_FWD(InteractStateMeleeStagedInitiate);
+MELEE_NEW_FWD(InteractStateMeleeStagedSuccess);
+MELEE_NEW_FWD(InteractStateMeleeDropWeapon);
+#undef MELEE_NEW_FWD
 static const struct InteractStateCtorEntry {
     int mType;
     int mSize;
@@ -8581,15 +8752,15 @@ static const struct InteractStateCtorEntry {
     { 4, 0x1C0, InteractStateStrengthTest_Ctor },
     { 5, 0x1B0, InteractStateScaleAnimSpeed_Ctor },
     { 6, 0x1E0, InteractStateLeverPush_Ctor },
-    { 7, 0x220, InteractStateMelee_Ctor },
-    { 8, 0x1A0, InteractStateMeleeInitiate_Ctor },
-    { 9, 0x1A0, InteractStateMeleeStart_Ctor },
-    { 10, 0x1A0, InteractStateMeleeSuccessSetup_Ctor },
-    { 11, 0x1A0, InteractStateMeleeSuccess_Ctor },
-    { 12, 0x1A0, InteractStateMeleeFailure_Ctor },
-    { 13, 0x1A0, InteractStateMeleeStagedInitiate_Ctor },
-    { 14, 0x1B0, InteractStateMeleeStagedSuccess_Ctor },
-    { 15, 0x1A0, InteractStateMeleeDropWeapon_Ctor },
+    { 7, 0x220, InteractStateMelee_New },
+    { 8, 0x1A0, InteractStateMeleeInitiate_New },
+    { 9, 0x1A0, InteractStateMeleeStart_New },
+    { 10, 0x1A0, InteractStateMeleeSuccessSetup_New },
+    { 11, 0x1A0, InteractStateMeleeSuccess_New },
+    { 12, 0x1A0, InteractStateMeleeFailure_New },
+    { 13, 0x1A0, InteractStateMeleeStagedInitiate_New },
+    { 14, 0x1B0, InteractStateMeleeStagedSuccess_New },
+    { 15, 0x1A0, InteractStateMeleeDropWeapon_New },
     { 16, 0x1B0, InteractStateMortarLoad_Ctor },
     { 17, 0x1B0, InteractStateVehicleBase_Ctor },
     { 18, 0x1B0, InteractStateVehicleIdle_Ctor },
@@ -8616,6 +8787,24 @@ static void InteractStateRowboatInit_New(InteractState* mem, TPakId curPakId,
     new (mem) InteractStateRowboatInit(
         curPakId, (const InteractStateInfo*)info, controller);
 }
+
+#define MELEE_NEW(NAME)                                                     \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)               \
+    {                                                                       \
+        new (mem) NAME(curPakId, (const InteractStateInfo*)info,            \
+                       controller);                                         \
+    }
+MELEE_NEW(InteractStateMelee)
+MELEE_NEW(InteractStateMeleeInitiate)
+MELEE_NEW(InteractStateMeleeStart)
+MELEE_NEW(InteractStateMeleeSuccessSetup)
+MELEE_NEW(InteractStateMeleeSuccess)
+MELEE_NEW(InteractStateMeleeFailure)
+MELEE_NEW(InteractStateMeleeStagedInitiate)
+MELEE_NEW(InteractStateMeleeStagedSuccess)
+MELEE_NEW(InteractStateMeleeDropWeapon)
+#undef MELEE_NEW
 
 // Placement-new wrapper for the real InteractStateRowboat ctor (the other
 // entries still use the C-style *_Ctor wrappers pending their own class
@@ -8799,6 +8988,31 @@ void InteractState::PostEffectEvent(const char* scriptName, int eventIndex)
         sTimeScaleMgr.mTimer = 0.0f;
         sTimeScaleMgr.mInitialVal = com_timescale->value;
     }
+}
+
+// ea: 0x0054DEB0
+void InteractState::FadeOutModifiers(float fadeOutTime, unsigned int mask)
+{
+    InteractionController* mController = this->mController;
+    if (mController->mSelectedInteractWeaponIndex < 1)
+        EntityManager::sInst->GetPlayer(mController->mClient);
+    InteractionController* v5 = this->mController;
+    DObj* dobj = (DObj*)dword_F6A2A0[802 * v5->mClient];
+    unsigned int mVal = v5->mInteractableH.mVal;
+    unsigned int v8 = mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v8 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v8].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+    DObj* mDObj = nullptr;
+    if (mObject != nullptr)
+        mDObj = mObject->mDObj;
+    if (dobj != nullptr && dobj->animPlayers[0] != nullptr)
+        ((AnimationPlayer*)dobj->animPlayers[0])
+            ->FadeOutModifiers(fadeOutTime, mask);
+    if (mDObj != nullptr && mDObj->animPlayers[0] != nullptr)
+        ((AnimationPlayer*)mDObj->animPlayers[0])
+            ->FadeOutModifiers(fadeOutTime, mask);
 }
 
 float sArmsOffsetLerpDuration = 0.1f;  // 0xDF37CC
@@ -9109,11 +9323,11 @@ float rateMax = 0.5f;         // @ 0xDF309C
 float sLerpT_0 = 0.1f;        // @ 0xDF30DC
 
 // ea: 0x00540670
-float InteractStateMelee_CalcModifierBlendTime(InteractState* self)
+float InteractStateMelee::CalcModifierBlendTime() const
 {
-    InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)this->mInfo;
     float thresholdMin = *(float*)((char*)info + 0x548);
-    float cur = *(float*)((char*)self + 0x1DC);
+    float cur = *(float*)((char*)this + 0x1DC);
     if (thresholdMin <= cur)
     {
         float thresholdMax = *(float*)((char*)info + 0x54C);
@@ -9128,33 +9342,32 @@ float InteractStateMelee_CalcModifierBlendTime(InteractState* self)
 }
 
 // ea: 0x005405E0
-void InteractStateMelee_CalcAnimScore(InteractState* self, float deltaT)
+void InteractStateMelee::CalcAnimScore(float deltaT)
 {
-    int mModifierIndex = *(int*)((char*)self + 0x1B0);
-    float desiredAnimScore = *(float*)((char*)self + 0x1D0);
+    int mModifierIndex = *(int*)((char*)this + 0x1B0);
+    float desiredAnimScore = *(float*)((char*)this + 0x1D0);
     float v3 = 1.0f;
-    if (mModifierIndex < *(int*)((char*)self + 0x1B4) - 1)
+    if (mModifierIndex < *(int*)((char*)this + 0x1B4) - 1)
     {
-        v3 = *(float*)((char*)((InteractStateInfoLocal*)self->mInfo) + 0x564
+        v3 = *(float*)((char*)((InteractStateInfoLocal*)this->mInfo) + 0x564
                        + 4 * mModifierIndex);
     }
-    if (*(float*)((char*)self + 0x1D0) > v3)
+    if (*(float*)((char*)this + 0x1D0) > v3)
         desiredAnimScore = v3;
-    float animScore = *(float*)((char*)self + 0x1D8);
-    *(float*)((char*)self + 0x1D8) =
+    float animScore = *(float*)((char*)this + 0x1D8);
+    *(float*)((char*)this + 0x1D8) =
         (1.0f - powf(1.0f - sLerpT_0, deltaT * 59.999996f))
             * (desiredAnimScore - animScore)
         + animScore;
 }
 
 // ea: 0x0053DB10
-int InteractStateMelee_GetInitialModifierIndex(InteractState* self,
-                                               float score)
+int InteractStateMelee::GetInitialModifierIndex(float score) const
 {
     int result = 0;
     int v3 = 0;
-    int v4 = *(int*)((char*)self + 0x1B4) - 1;
-    float* thr = (float*)((char*)((InteractStateInfoLocal*)self->mInfo)
+    int v4 = *(int*)((char*)this + 0x1B4) - 1;
+    float* thr = (float*)((char*)((InteractStateInfoLocal*)this->mInfo)
                           + 0x550);
     while (v3 < v4)
     {
@@ -9166,9 +9379,9 @@ int InteractStateMelee_GetInitialModifierIndex(InteractState* self,
 }
 
 // ea: 0x0053DBE0
-void InteractStateMelee_GetFacialAnims(InteractState* self)
+void InteractStateMelee::GetFacialAnims()
 {
-    InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)this->mInfo;
     char* base = (char*)info + 0x2D0;  // interModAnim[5]
     if (*base != 0)
     {
@@ -9186,8 +9399,8 @@ void InteractStateMelee_GetFacialAnims(InteractState* self)
             void* Anim = nalGetAnim(name);
             if (Anim != nullptr)
             {
-                int* numFacialAnims = (int*)((char*)self + 0x1FC);
-                *(void**)((char*)self + 0x200 + 4 * *numFacialAnims) = Anim;
+                int* numFacialAnims = (int*)((char*)this + 0x1FC);
+                *(void**)((char*)this + 0x200 + 4 * *numFacialAnims) = Anim;
                 ++*numFacialAnims;
             }
         }
@@ -9195,12 +9408,12 @@ void InteractStateMelee_GetFacialAnims(InteractState* self)
 }
 
 // ea: 0x00540300
-void InteractStateMelee_UpdateFOV(InteractState* self, float deltaT)
+void InteractStateMelee::UpdateFOV(float deltaT)
 {
-    InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)this->mInfo;
     if (*(float*)((char*)info + 0x3D0) < 1.0f)
     {
-        float score = *(float*)((char*)self + 0x1D0);
+        float score = *(float*)((char*)this + 0x1D0);
         float v3 = 0.0f;
         float t = (score - *(float*)((char*)info + 0x3D0))
                   / (*(float*)((char*)info + 0x3D4)
@@ -9212,11 +9425,11 @@ void InteractStateMelee_UpdateFOV(InteractState* self, float deltaT)
             else
                 v3 = 1.0f;
         }
-        float mInitialFOV = *(float*)((char*)self + 0x1F4);
+        float mInitialFOV = *(float*)((char*)this + 0x1F4);
         float v6 = (mInitialFOV - *(float*)((char*)info + 0x3CC)) * v3
                    + *(float*)((char*)info + 0x3CC);
-        float v5 = *(float*)((char*)self + 0x1F8) + deltaT;
-        *(float*)((char*)self + 0x1F8) = v5;
+        float v5 = *(float*)((char*)this + 0x1F8) + deltaT;
+        *(float*)((char*)this + 0x1F8) = v5;
         if (v5 <= *(float*)((char*)info + 0x3D8))
         {
             v6 = ((v6 - mInitialFOV) / *(float*)((char*)info + 0x3D8)) * v5
@@ -9227,14 +9440,14 @@ void InteractStateMelee_UpdateFOV(InteractState* self, float deltaT)
 }
 
 // ea: 0x005401D0
-void InteractStateMelee_UpdateRumble(InteractState* self, float deltaT)
+void InteractStateMelee::UpdateRumble(float deltaT)
 {
     (void)deltaT;
-    int handle = *(int*)((char*)self + 0x1C8);
+    int handle = *(int*)((char*)this + 0x1C8);
     if (handle != 0)
     {
-        float lastIntensity = *(float*)((char*)self + 0x1CC);
-        float score = *(float*)((char*)self + 0x1D0);
+        float lastIntensity = *(float*)((char*)this + 0x1CC);
+        float score = *(float*)((char*)this + 0x1D0);
         float v2 = minScore;
         float v3 = minIntensity;
         if (minScore <= score)
@@ -9246,7 +9459,7 @@ void InteractStateMelee_UpdateRumble(InteractState* self, float deltaT)
             }
             else
             {
-                float resistRate = *(float*)((char*)self + 0x1E0);
+                float resistRate = *(float*)((char*)this + 0x1E0);
                 if (resistRate > rateMin)
                 {
                     if (rateMax <= resistRate)
@@ -9262,9 +9475,9 @@ void InteractStateMelee_UpdateRumble(InteractState* self, float deltaT)
             float v4 = minScore - score;
             v3 = (v4 / v2) * maxIntensity;
         }
-        float intensity = ((v3 - *(float*)((char*)self + 0x1CC)) * 0.80000001f)
-                          + *(float*)((char*)self + 0x1CC);
-        *(float*)((char*)self + 0x1CC) = intensity;
+        float intensity = ((v3 - *(float*)((char*)this + 0x1CC)) * 0.80000001f)
+                          + *(float*)((char*)this + 0x1CC);
+        *(float*)((char*)this + 0x1CC) = intensity;
         if (fabsf(lastIntensity - intensity) > 0.0099999998f)
         {
             RumbleManager* v7 = RumbleManager::Inst(currCl);
@@ -10495,6 +10708,965 @@ InteractState* InteractStateRowboatInit::Update(float deltaT)
 }
 
 // ============================================================================
+// InteractStateMelee cluster virtuals (anim.o InteractStateMelee.cpp)
+// ============================================================================
+
+// anim.o melee statics (verified vs IDA)
+float baseIntensityLeft = 1.0f;    // 0xDF3720
+float baseIntensityRight = 1.0f;   // 0xDF371C
+float duration = 1000.0f;          // 0xDF3724 (0x447A0000)
+float sResistRateMax_0 = 0.5f;     // 0xDF30D8
+float sXBoxTriggerBonusFactor_0 = 1.5f;  // 0xDF30D4
+float sPushRateMinFreq_0 = 0.5f;   // 0xDF30D0
+float sPushRateMinVariance_0 = 0.5f;  // 0xDF30C8
+float sPushRateMinBaseMax_0 = 0.3f;  // 0xDF30C4
+float sPushRateMinBaseMin_0 = 0.22f; // 0xDF30C0
+float sPressTimeMax_0 = 8.0f;      // 0xDF30CC
+float sResistExhaustRate_0 = 0.75f;  // 0xDF30B4
+float sResistRateMin_0 = 0.2f;     // 0xDF30B0
+float sResistIncRate_0 = 1.7f;     // 0xDF30B8
+float sResistRatePenaltyFactor_0 = 1.1f;  // 0xDF30BC
+float sLosingDelayThresh_0 = 0.1f;  // 0xDF37B0
+float sWinningDelayThresh_0 = 0.9f; // 0xDF37AC
+float sLoseThresh_0 = 0.01f;       // 0xDF37A8
+float sWinThresh_0 = 0.99f;        // 0xDF37A4
+float sStuckLosingTimeFraction_0 = 0.5f;  // 0xDF37A0
+float sAcceptInputDisplayHeadStart = 0.5f;  // 0xDF29D8
+float sForce = 0.05f;              // 0xDF3738
+unsigned int sYaw = 0x80;          // 0xDF3734
+
+extern bool gGodModeEnabled;       // ?gGodModeEnabled@@3_NA
+extern int gInteractArmsWeaponIndex;  // ?gInteractArmsWeaponIndex@@3HA
+extern void CG_DamageFeedback(int yawByte, int pitchByte, float damage);
+extern void G_Damage(Entity* targ, Entity* inflictor, Entity* attacker,
+                     const float* dir, const float* point, int damage,
+                     int dflags, int mod, EHitLocation hitLoc, int weapon);
+extern Entity* Drop_Weapon(Entity* pEnt, int iWeaponIndex,
+                           const char* pszTag);
+enum hitLocation_t;
+extern void ApplyPhysics(Entity* hitEnt, const math::Position3& hitp,
+                         const math::Dir3& hitd, float force, bool local_hitp,
+                         hitLocation_t hitLoc);
+extern int BG_AmmoForWeapon(int iWeapon);
+extern int BG_ClipForWeapon(int iWeapon);
+extern void BG_GetRandomAmmoCounts(int& ammo, int& clip, int weaponIndex);
+extern int G_EntDetach(Entity* ent, const char* model, const char* tagName);
+extern void ValidatePakId(TPakId pakId);
+extern Handle PostEffectEventEIMelee(const Entity* ent, int action);
+struct level_locals_t {
+    int time;            // +0x09C
+    int reloadDelayTime; // +0xAB8
+};
+extern level_locals_t level;  // ?level@@3Ulevel_locals_t@@A (g_globals.cpp)
+
+// ea: 0x0054EC60
+void InteractStateMelee::Activate()
+{
+    InteractState::Activate();
+    Entity* player = EntityManager::sInst->GetPlayer(currCl);
+    *(int*)((char*)player->client + 0x800) = 1;  // bFrozen
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    mModifierIndex = -1;
+    mNumModifiers = 0;
+    if (mInfo->playerModAnim[0][0] != 0)
+        mNumModifiers = 1;
+    if (mInfo->playerModAnim[1][0] != 0)
+        mNumModifiers = 2;
+    if (mInfo->playerModAnim[2][0] != 0)
+        mNumModifiers = 3;
+    if (mInfo->playerModAnim[3][0] != 0)
+        mNumModifiers = 4;
+    if (mInfo->playerModAnim[4][0] != 0)
+        mNumModifiers = 5;
+    if (mInfo->playerModAnim[5][0] != 0)
+        mNumModifiers = 6;
+    mModifierAnimTime = 0.0f;
+    mModifierIntervalTimer = -1.0f;
+    float initialScore = mInfo->initialScore;
+    mScore = initialScore;
+    mDesiredScore = initialScore;
+    mPlayerSoundHandle = -1;
+    mOtherSoundHandle = -1;
+    mAnimScore = mScore;
+    mCurScoreDelta = 0.0f;
+    mResistRate = -1.0f;
+    mResistCharge = 0.1f;
+    mResistBurnAmt = 0.0f;
+    mWinningDelayTimer = 0.0f;
+    mLosingDelayTimer = 0.0f;
+    mInitialFOV = *(float*)&cg_fov;
+    mFOVLerpTime = 0.0f;
+    mNumFacialAnims = 0;
+    mFacialAnims[0] = nullptr;
+    mFacialAnims[1] = nullptr;
+    mFacialAnims[2] = nullptr;
+    mFacialAnims[3] = nullptr;
+    mFacialAnimTimer = 0.0f;
+    GetFacialAnims();
+    mRumbleIntensity = 0.0f;
+    RumbleManager* rm = (RumbleManager*)RumbleManager_Inst(currCl);
+    if (rm != nullptr)
+    {
+        RumbleEffectInstanceHandle handle = InteractState_StartRumble(
+            baseIntensityLeft, baseIntensityRight, duration, duration, 0.0f,
+            0.0f, 0.0f, 0.0f);
+        mRumbleHandle = handle.mVal;
+        mRumbleIntensity = 0.1f;
+        RumbleEffectInstanceHandle h;
+        h.mVal = mRumbleHandle;
+        rm->SetIntensity(h, mRumbleIntensity);
+    }
+}
+
+// ea: 0x0054EEF0
+void InteractStateMelee::Deactivate()
+{
+    InteractState::Deactivate();
+    for (int i = 2; i != 0; --i)
+    {
+        int idx = i - 1;
+        void* base = mMetaNalBaseAnimPtr[idx];
+        if (base != nullptr)
+        {
+            ((void (__thiscall*)(void*, int))(
+                (void**)*(void**)base)[4 / 4])(base, 1);
+            mMetaNalBaseAnimPtr[idx] = nullptr;
+        }
+        if (mMetaAnimDataPtr[idx] != nullptr)
+        {
+            mem_heap_free(mMetaAnimDataPtr[idx]);
+            mMetaAnimDataPtr[idx] = nullptr;
+        }
+    }
+    InteractionController* c = mController;
+    if (c->mSoundLoopHandle != -1)
+    {
+        Handle effect;
+        effect.mVal = c->mSoundLoopHandle;
+        EffectEventStopEmitting(effect);
+    }
+    if (mRumbleHandle != 0)
+    {
+        RumbleManager* rm = (RumbleManager*)RumbleManager_Inst(currCl);
+        if (rm != nullptr)
+        {
+            RumbleEffectInstanceHandle h;
+            h.mVal = mRumbleHandle;
+            rm->Remove(h);
+        }
+        mRumbleHandle = 0;
+    }
+    FadeOutModifiers(0.1f, 8u);
+    FadeOutModifiers(0.1f, 4u);
+}
+
+// ea: 0x00555B00
+InteractState* InteractStateMelee::Update(float deltaT)
+{
+    InteractState* v4 = InteractState::Update(deltaT);
+    InteractState* nextState = v4;
+    if (sLosingDelayThresh_0 <= mScore)
+        mLosingDelayTimer = 0.0f;
+    else
+        mLosingDelayTimer = deltaT + mLosingDelayTimer;
+    float v6 = 0.0f;
+    if (mScore > sWinningDelayThresh_0)
+        v6 = mWinningDelayTimer + deltaT;
+    mWinningDelayTimer = v6;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (gGodModeEnabled || sLoseThresh_0 <= mDesiredScore
+        || mLosingDelayTimer <= info->losingDelay)
+    {
+        if (mDesiredScore <= sWinThresh_0
+            || mWinningDelayTimer <= info->winningDelay)
+        {
+            if ((mFlags & 0x80) != 0)
+            {
+                mScore = sLoseThresh_0 - 0.001f;
+            }
+            else if (mStateTimer
+                     > (info->acceptInputMinTime
+                        + sAcceptInputDisplayHeadStart))
+            {
+                CalcScore(deltaT);
+            }
+            if (!gGodModeEnabled
+                && sLoseThresh_0 > mDesiredScore
+                && mLosingDelayTimer
+                       > (info->losingDelay * sStuckLosingTimeFraction_0))
+            {
+                mFlags |= 0x80u;
+            }
+        }
+        else
+        {
+            nextState = mSuccessState[0];
+            mController->mFlags |= 0x200u;
+        }
+    }
+    else
+    {
+        nextState = mFailureState;
+    }
+    mController->mMetaAnimScore = mAnimScore;
+    Entity* v8 = EntityManager::sInst->GetPlayer(currCl);
+    Entity* v9 = v8;
+    if ((mFlags & 1) == 0)
+    {
+        if (*(int*)((char*)v8->client + 0xA4)
+            != mController->mSelectedInteractWeaponIndex)
+        {
+            XANIM_ASSERT(
+                "player->client->ps.weapon == weaponIndex",
+                "c:\\cod\\code\\game\\InteractStateMelee.cpp", 223,
+                "Weapon needs to be set to interact weapon");
+        }
+        if (mMetaNalBaseAnimPtr[0] != nullptr)
+        {
+            XANIM_ASSERT("!mMetaNalBaseAnimPtr[0]",
+                         "c:\\cod\\code\\game\\InteractStateMelee.cpp", 226,
+                         "Should be null");
+        }
+        if (mMetaAnimDataPtr[0] != nullptr)
+        {
+            XANIM_ASSERT("!mMetaAnimDataPtr[0]",
+                         "c:\\cod\\code\\game\\InteractStateMelee.cpp", 227,
+                         "Should be null");
+        }
+        void* v11 = tlMemAlloc(0x44, 8, 0);
+        void* v12 = (v11 != nullptr) ? MetaNalBaseAnim_Ctor(v11) : nullptr;
+        mMetaNalBaseAnimPtr[0] = v12;
+        void* v13 = mem_heap_malloc(0x2C);
+        if (v13 != nullptr)
+            v13 = new (v13) InteractMetaAnimData();
+        mMetaAnimDataPtr[0] = v13;
+        MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr[0], mMetaAnimDataPtr[0]);
+        DObj* dobj = (DObj*)dword_F6A2A0[802 * mController->mClient];
+        tlFixedString name(info->playerAnim);
+        void* Anim = nalGetAnim(name);
+        MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr[0], &Anim, 1);
+        ((AnimationPlayer*)dobj->animPlayers[0])
+            ->Play((nalGenericAnim*)mMetaNalBaseAnimPtr[0], true,
+                   info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
+                   mPlayerCallback, 1.0f, 0.0f);
+        mFlags |= 1u;
+        if (info->interactableAnim[0] != 0)
+        {
+            unsigned int v17 = mController->mInteractableH.mVal & 0xFFF;
+            if (v17 < 0x540
+                && mController->mInteractableH.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v17].mKey)
+            {
+                Entity* mObject =
+                    EntityHandleDb::sInst.mElements[v17].mObject;
+                if (mObject != nullptr)
+                {
+                    if (mMetaNalBaseAnimPtr[1] != nullptr)
+                    {
+                        XANIM_ASSERT(
+                            "!mMetaNalBaseAnimPtr[1]",
+                            "c:\\cod\\code\\game\\InteractStateMelee.cpp",
+                            247, "Should be null");
+                    }
+                    if (mMetaAnimDataPtr[1] != nullptr)
+                    {
+                        XANIM_ASSERT(
+                            "!mMetaAnimDataPtr[1]",
+                            "c:\\cod\\code\\game\\InteractStateMelee.cpp",
+                            248, "Should be null");
+                    }
+                    void* v19 = tlMemAlloc(0x44, 8, 0);
+                    void* v20 =
+                        (v19 != nullptr) ? MetaNalBaseAnim_Ctor(v19) : nullptr;
+                    mMetaNalBaseAnimPtr[1] = v20;
+                    void* v21 = mem_heap_malloc(0x2C);
+                    if (v21 != nullptr)
+                        v21 = new (v21) InteractMetaAnimData();
+                    mMetaAnimDataPtr[1] = v21;
+                    MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr[1],
+                                           mMetaAnimDataPtr[1]);
+                    tlFixedString v24(info->interactableAnim);
+                    void* v25 = nalGetAnim(v24);
+                    MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr[1], &v25,
+                                                1);
+                    DObj* mDObj = mObject->mDObj;
+                    mController->CreateInteractableAnimPlayer();
+                    for (int v26 = 0; v26 < mDObj->numModels; ++v26)
+                    {
+                        AnimationPlayer* v27 =
+                            (AnimationPlayer*)mDObj->animPlayers[v26];
+                        if (v27 != nullptr)
+                        {
+                            void* cb =
+                                (v26 != 0) ? nullptr : mOtherCallback;
+                            v27->Play(
+                                (nalGenericAnim*)mMetaNalBaseAnimPtr[1], true,
+                                info->animFadeInTime,
+                                (void*)&gMetaAnimPlayMethod, 0.0f, cb, 1.0f,
+                                0.0f);
+                        }
+                    }
+                }
+            }
+        }
+        v9 = v8;
+    }
+    if (*(int*)((char*)v9->client + 0xA4)
+        == mController->mSelectedInteractWeaponIndex)
+    {
+        UpdateModifiers(deltaT);
+        UpdateFacialAnim(deltaT);
+    }
+    CalcAnimScore(deltaT);
+    UpdateRumble(deltaT);
+    UpdateFOV(deltaT);
+    if (nextState == mSuccessState[0])
+    {
+        mPlayerSoundHandle =
+            PostEffectEventEIMelee(v9, 59).mVal;
+        mOtherSoundHandle =
+            PostEffectEventEIMelee(v9, 58).mVal;
+    }
+    return nextState;
+}
+
+// ea: 0x00540400
+void InteractStateMelee::CalcScore(float deltaT)
+{
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    InteractInputRcvr* mInputRcvr = (InteractInputRcvr*)this->mInputRcvr;
+    float v6 = ((1.0f - mInfo->difficulty) * 0.039999999f) + 0.050000001f;
+    float v7 = (mInputRcvr->mInputRate * sXBoxTriggerBonusFactor_0) * v6;
+    if (mResistRate < 0.0f)
+        mResistRate = sResistRateMax_0;
+    float pushRateMin =
+        sinf(sPushRateMinFreq_0 * mStateTimer * 6.2831855f)
+            * sPushRateMinVariance_0
+        + (sPushRateMinBaseMax_0 - sPushRateMinBaseMin_0) * mScore
+        + sPushRateMinBaseMin_0;
+    float v8;
+    if (mInputRcvr->mTimeSinceLastInput <= (sPressTimeMax_0 * v6)
+        || mStateTimer <= (mInfo->acceptInputMinTime
+                           + sAcceptInputDisplayHeadStart))
+    {
+        float v2 = sResistRateMax_0;
+        float resist = mResistRate;
+        if (pushRateMin <= v7)
+        {
+            if (v2 <= mResistRate)
+                resist = v2;
+            float v11 = sResistExhaustRate_0 * deltaT;
+            mResistRate = resist;
+            v8 = resist - v11;
+            v2 = sResistRateMin_0;
+            if (v8 <= sResistRateMin_0)
+                v8 = v2;
+        }
+        else
+        {
+            v8 = (sResistIncRate_0 * deltaT) + mResistRate;
+            if (v2 <= v8)
+                v8 = v2;
+        }
+    }
+    else
+    {
+        v8 = sResistRatePenaltyFactor_0 * mResistRate;
+    }
+    mResistRate = v8;
+    float v12 = ((v7 - v8) * deltaT) + mDesiredScore;
+    if (v12 < 0.0f)
+        v12 = 0.0f;
+    else if (v12 > 1.0f)
+        v12 = 1.0f;
+    mDesiredScore = v12;
+    float lastScore = mScore;
+    float pushRateMina =
+        (1.0f - powf(0.300000011920929f, deltaT * 59.999996f))
+            * (v12 - lastScore)
+        + lastScore;
+    mScore = pushRateMina;
+    if (deltaT > 0.0f)
+        mCurScoreDelta = (pushRateMina - lastScore) / deltaT;
+}
+
+// ea: 0x0054F5E0 (?Activate@InteractStateMeleeInitiate@@UAEXXZ)
+void InteractStateMeleeInitiate::Activate()
+{
+    InteractState::Activate();
+    mController->mFlags |= 0x80u;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    *(int*)((char*)Player->client + 0x800) = 1;
+    if (gInteractArmsWeaponIndex <= 0)
+    {
+        XANIM_ASSERT(
+            "gInteractArmsWeaponIndex > 0",
+            "c:\\cod\\code\\game\\InteractStateMelee.cpp", 713,
+            "Weapon type interact missing - should be in a weapons tpl");
+    }
+    mController->ForceInteractionWeapon(gInteractArmsWeaponIndex);
+    PlayAnims(*(int*)((char*)Player->client + 0xA4),
+              ((InteractStateInfoLocal*)mInfo)->animFadeInTime);
+    unsigned int v3 = mController->mInteractableH.mVal & 0xFFF;
+    if (v3 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+        {
+            DObj* mDObj = mObject->mDObj;
+            if (mDObj != nullptr)
+                mDObj->SetLODOverride(0);
+            void* actor = mObject->actor;
+            if (actor != nullptr)
+                *(int*)((char*)actor + 0xB20) = 1;  // mInteractStage
+            PostEffectEventScriptCall(Player, "MELEE_ATTACK", false,
+                                      PAK_ID_INVALID, false);
+            PostEffectEventScriptCall(Player, "MELEE_HIT", false,
+                                      PAK_ID_INVALID, false);
+            CG_DamageFeedback(sYaw, 0, 0);
+        }
+    }
+}
+
+// ea: 0x0054F730
+void InteractStateMeleeInitiate::Deactivate()
+{
+    InteractState::Deactivate();
+    unsigned int v2 = mController->mInteractableH.mVal & 0xFFF;
+    if (v2 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            void* actor = mObject->actor;
+            if (actor != nullptr)
+            {
+                *(int*)((char*)actor + 0x2AC) = 1;  // bRestartAnimScript
+                *(int*)((char*)mObject->actor + 0xB20) = 2;
+            }
+        }
+    }
+}
+
+// ea: 0x005471E0
+InteractState* InteractStateMeleeInitiate::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    if ((mFlags & 1) == 0 || mPlayerAnim == nullptr)
+        return v3;
+    if (mPlayerCallback == nullptr)
+    {
+        XANIM_ASSERT("mPlayerCallback",
+                     "c:\\cod\\code\\game\\InteractStateMelee.cpp", 762,
+                     "Null player callback");
+    }
+    void* curAnim = *(void**)((char*)mPlayerCallback + 0x04);
+    if (mPlayerAnim != nullptr
+        && (curAnim == nullptr || mPlayerAnim != curAnim))
+        return mSuccessState[0];
+    return v3;
+}
+
+// ea: 0x0054F790 (?Activate@InteractStateMeleeStart@@UAEXXZ)
+void InteractStateMeleeStart::Activate()
+{
+    InteractState::Activate();
+    Entity* v2 = EntityManager::sInst->GetPlayer(currCl);
+    Entity* player = v2;
+    *(int*)((char*)v2->client + 0x800) = 1;
+    int v4 = 1;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (BG_GetNumWeapons() >= 1)
+    {
+        while (1)
+        {
+            weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(v4);
+            if (_stricmp((char*)InfoForWeapon + 0x0C,
+                         info->weaponDisplayName)
+                == 0)
+                break;
+            if (++v4 > BG_GetNumWeapons())
+                goto done;
+        }
+        if (v4 != -1)
+        {
+            mController->ForceInteractionWeapon(v4);
+            if (v2->client != nullptr)
+            {
+                int ammoIdx = BG_AmmoForWeapon(v4);
+                int clipIdx = BG_ClipForWeapon(v4);
+                BG_GetRandomAmmoCounts(
+                    *(int*)((char*)v2->client + 0x144 + 4 * ammoIdx),
+                    *(int*)((char*)v2->client + 0x2B4 + 4 * clipIdx), v4);
+            }
+            PlayAnims(v4, info->animFadeInTime);
+            unsigned int v7 = mController->mInteractableH.mVal & 0xFFF;
+            if (v7 < 0x540
+                && mController->mInteractableH.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v7].mKey)
+            {
+                Entity* mObject = EntityHandleDb::sInst.mElements[v7].mObject;
+                if (mObject != nullptr)
+                {
+                    const char* modelName = nullptr;
+                    unsigned char* pTag =
+                        (unsigned char*)mObject + 0x3E0;  // mAttachModels[0].mTag
+                    for (int i = 7; i != 0; --i)
+                    {
+                        if (*(void**)pTag != nullptr
+                            && *(void**)pTag != (void*)-12
+                            && *(char*)(pTag + 4) != 0)
+                        {
+                            ValidatePakId(*(TPakId*)(pTag - 4));
+                            if (*(void**)(pTag - 8) != nullptr)
+                            {
+                                const char* v10 =
+                                    (const char*)(pTag + 4);
+                                if (*(void**)pTag == nullptr)
+                                    v10 = "";
+                                if (strcmp(v10, "tag_weapon_right") == 0)
+                                {
+                                    ValidatePakId(*(TPakId*)(pTag - 4));
+                                    modelName =
+                                        *(const char**)(
+                                            (char*)*(void**)(pTag - 8) + 24);
+                                }
+                            }
+                        }
+                        pTag += 12;
+                    }
+                    if (modelName != nullptr)
+                    {
+                        G_EntDetach(mObject, modelName, "tag_weapon_right");
+                        void* actor = mObject->actor;
+                        if (actor != nullptr)
+                        {
+                            *(int*)((char*)actor + 0xB20) = 2;
+                            *(int*)((char*)mObject->actor + 0x2AC) = 1;
+                        }
+                    }
+                    v2 = player;
+                }
+            }
+            PostEffectEventEIMelee(v2, 60);
+        }
+    }
+done:
+    mController->mSoundLoopHandle =
+        PostEffectEventEIMelee(v2, 61).mVal;
+}
+
+// ea: 0x0054F9A0
+void InteractStateMeleeStart::Deactivate()
+{
+    InteractState::Deactivate();
+    unsigned int v2 = mController->mInteractableH.mVal & 0xFFF;
+    if (v2 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            void* actor = mObject->actor;
+            if (actor != nullptr)
+                *(int*)((char*)actor + 0x2AC) = 1;
+        }
+    }
+}
+
+// ea: 0x005472A0
+InteractState* InteractStateMeleeStart::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    if (mPlayerAnim == nullptr)
+        return v3;
+    if (mPlayerCallback == nullptr)
+    {
+        XANIM_ASSERT("mPlayerCallback",
+                     "c:\\cod\\code\\game\\InteractStateMelee.cpp", 879,
+                     "Null player callback");
+    }
+    void* curAnim = *(void**)((char*)mPlayerCallback + 0x04);
+    if (curAnim != nullptr && mPlayerAnim == curAnim)
+        return v3;
+    return mSuccessState[0];
+}
+
+// ea: 0x0054F9F0
+void InteractStateMeleeSuccessSetup::Activate()
+{
+    InteractState::Activate();
+    EntityManager::sInst->GetPlayer(currCl);
+    *(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client + 0x800) =
+        1;
+    InteractState_StartRumble(0.5f, 0.7f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f,
+                              0.0f);
+}
+
+// ea: 0x005406F0 (thunk)
+void InteractStateMeleeSuccessSetup::Deactivate()
+{
+    InteractState::Deactivate();
+}
+
+// ea: 0x00547360
+InteractState* InteractStateMeleeSuccessSetup::Update(float deltaT)
+{
+    InteractState::Update(deltaT);
+    if ((mFlags & 1) == 0)
+    {
+        InteractionController* mController = this->mController;
+        int mSelectedInteractWeaponIndex =
+            mController->mSelectedInteractWeaponIndex;
+        if (mSelectedInteractWeaponIndex < 1)
+        {
+            Entity* Player =
+                EntityManager::sInst->GetPlayer(mController->mClient);
+            if (Player != nullptr && Player->client != nullptr)
+                mSelectedInteractWeaponIndex =
+                    *(int*)((char*)Player->client + 0xA4);
+            else
+                mSelectedInteractWeaponIndex = 0;
+        }
+        PlayAnims(mSelectedInteractWeaponIndex,
+                  ((InteractStateInfoLocal*)mInfo)->animFadeInTime);
+    }
+    InteractInputRcvr* rcvr = (InteractInputRcvr*)mInputRcvr;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (rcvr->mInputRate > 0.0f && mStateTimer > info->acceptInputMinTime
+        && mStateTimer > info->minDuration)
+    {
+        int v10 = (int)(rcvr->mInputRate + 0.001f) - 1;
+        if (v10 >= 4)
+        {
+            XANIM_ASSERT(
+                "input >= 0 && input < kNumInteractSuccessStates",
+                "c:\\cod\\code\\game\\InteractStateMelee.cpp", 939,
+                "Bad success state index");
+        }
+        return mSuccessState[v10];
+    }
+    void* curAnim = *(void**)((char*)mPlayerCallback + 0x04);
+    if (mStateTimer <= info->maxDuration && curAnim != nullptr
+        && mPlayerAnim == curAnim)
+        return this;
+    return mFailureState;
+}
+
+// ea: 0x0054FA50
+void InteractStateMeleeSuccess::Activate()
+{
+    InteractStatePlayAnims::Activate();
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    *(int*)((char*)Player->client + 0x800) = 1;
+    PostEffectEventScriptCall(Player, "MELEE_SWIPE", false, PAK_ID_INVALID,
+                              false);
+}
+
+// ea: 0x00540700
+void InteractStateMeleeSuccess::Deactivate()
+{
+    InteractState::Deactivate();
+    mController->mFlags |= 0x400u;
+    if (mSuccessState[0] == nullptr)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        if (Player != nullptr)
+        {
+            char* ps = (char*)Player->client;
+            if (ps != nullptr)
+            {
+                int v6 = *(int*)(ps + 0xA4);
+                *(int*)(ps + 0xA8) = 1;
+                weaponFileInfo_t* info = BG_GetInfoForWeapon(v6);
+                *(int*)(ps + 0x34) = *(int*)((char*)info + 0x628);
+                *(unsigned int*)(ps + 0x530) =
+                    (~*(unsigned int*)(ps + 0x530) & 0x200) | 0xA;
+            }
+        }
+    }
+}
+
+// ea: 0x0054FAA0
+InteractState* InteractStateMeleeSuccess::Update(float deltaT)
+{
+    InteractState* v4 = InteractStatePlayAnims::Update(deltaT);
+    EntityManager::sInst->GetPlayer(currCl);
+    if ((mFlags & 1) == 0)
+        return v4;
+    unsigned int v6 = mController->mInteractableH.mVal & 0xFFF;
+    if (v6 >= 0x540
+        || mController->mInteractableH.mVal >> 12
+               != EntityHandleDb::sInst.mElements[v6].mKey)
+        return v4;
+    Entity* mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+    if (mObject != nullptr && (mFlags & 0x20) == 0)
+    {
+        if (mOtherCallback == nullptr)
+        {
+            XANIM_ASSERT("mOtherCallback",
+                         "c:\\cod\\code\\game\\InteractStateMelee.cpp", 1006,
+                         "Null callback");
+        }
+        void* curAnim = *(void**)((char*)mOtherCallback + 0x04);
+        if (curAnim == nullptr || mOtherAnim != curAnim)
+        {
+            void* actor = mObject->actor;
+            *(int*)((char*)mObject + 0x2B8) = 1;  // takedamage
+            math::Dir3 v12;
+            v12.v = _mm_xor_ps(*(__m128*)((char*)actor + 0x2E0),
+                               _mm_set1_ps(-0.0f));
+            math::Position3 v13;
+            memset(&v13, 0, sizeof(v13));
+            ApplyPhysics(mObject, v13, v12, sForce, false,
+                         (hitLocation_t)4);  // HITLOC_TORSO_UPR
+            mFlags |= 0x20u;
+        }
+    }
+    return v4;
+}
+
+// ea: 0x0054FC10 / 0x0054FC50
+void InteractStateMeleeSuccess::PlayAnims(int weaponIndex, float fadeIn)
+{
+    mFlags |= 0x400u;
+    InteractState::PlayAnims(weaponIndex, fadeIn);
+}
+
+void InteractStateMeleeFailure::PlayAnims(int weaponIndex, float fadeIn)
+{
+    mFlags |= 0x400u;
+    InteractState::PlayAnims(weaponIndex, fadeIn);
+}
+
+// ea: 0x0054FC20
+void InteractStateMeleeFailure::Activate()
+{
+    InteractStatePlayAnims::Activate();
+    EntityManager::sInst->GetPlayer(currCl);
+    *(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client + 0x800) =
+        1;
+}
+
+// ea: 0x00540780
+void InteractStateMeleeFailure::Deactivate()
+{
+    InteractState::Deactivate();
+    float ZEROVEC[3];
+    memset(ZEROVEC, 0, sizeof(ZEROVEC));
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        int v2 = *(int*)((char*)Player + 0x358) + 1;  // health + 1
+        *(int*)((char*)Player + 0x2B8) = 1;           // takedamage
+        G_Damage(Player, nullptr, nullptr, ZEROVEC, ZEROVEC, v2, 0, 31,
+                 HITLOC_HEAD, -1);
+        level.reloadDelayTime = level.time;
+    }
+}
+
+// ea: 0x005474F0 (thunk to PlayAnims::Update)
+InteractState* InteractStateMeleeFailure::Update(float deltaT)
+{
+    return InteractStatePlayAnims::Update(deltaT);
+}
+
+// ea: 0x0054FC60
+void InteractStateMeleeStagedInitiate::Activate()
+{
+    InteractState::Activate();
+    mController->mFlags |= 0x80u;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    *(int*)((char*)Player->client + 0x800) = 1;
+    unsigned int v3 = mController->mInteractableH.mVal & 0xFFF;
+    if (v3 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+        {
+            *(unsigned int*)((char*)mObject + 0x2C8) |= 2u;  // mFlags
+            void* actor = mObject->actor;
+            if (actor != nullptr)
+                *(int*)((char*)actor + 0xB20) = 0;
+        }
+    }
+    PlayAnims(*(int*)((char*)Player->client + 0xA4),
+              ((InteractStateInfoLocal*)mInfo)->animFadeInTime);
+}
+
+// ea: 0x0054FD10
+void InteractStateMeleeStagedInitiate::Deactivate()
+{
+    InteractState::Deactivate();
+    unsigned int v2 = mController->mInteractableH.mVal & 0xFFF;
+    if (v2 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            void* actor = mObject->actor;
+            if (actor != nullptr)
+            {
+                *(int*)((char*)actor + 0x2AC) = 1;
+                *(int*)((char*)mObject->actor + 0xB20) = 2;
+            }
+        }
+    }
+    EntityManager::sInst->GetPlayer(currCl);
+}
+
+// ea: 0x00547530
+InteractState* InteractStateMeleeStagedInitiate::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    EntityManager::sInst->GetPlayer(currCl);
+    if ((mFlags & 1) == 0)
+        return v3;
+    if (mPlayerCallback == nullptr)
+    {
+        XANIM_ASSERT("mPlayerCallback",
+                     "c:\\cod\\code\\game\\InteractStateMelee.cpp", 1144,
+                     "Null player callback");
+    }
+    if (mPlayerAnim == nullptr)
+        return v3;
+    void* curAnim = *(void**)((char*)mPlayerCallback + 0x04);
+    if (curAnim != nullptr && mPlayerAnim == curAnim)
+        return v3;
+    return mSuccessState[0];
+}
+
+// ea: 0x0054FD80
+void InteractStateMeleeStagedInitiate::PostEffectEvent(const char* effectName,
+                                                       int eventIndex)
+{
+    InteractState::PostEffectEvent(effectName, eventIndex);
+}
+
+// ea: 0x0054FDC0
+void InteractStateMeleeStagedSuccess::Activate()
+{
+    InteractState::Activate();
+    EntityManager::sInst->GetPlayer(currCl);
+    *(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client + 0x800) =
+        1;
+    InteractionController* mController = this->mController;
+    mEnemyDead = 0;
+    int weaponIndex = mController->mSelectedInteractWeaponIndex;
+    if (weaponIndex < 1)
+    {
+        Entity* Player =
+            EntityManager::sInst->GetPlayer(mController->mClient);
+        if (Player != nullptr)
+        {
+            void* client = Player->client;
+            if (client != nullptr)
+            {
+                PlayAnims(*(int*)((char*)client + 0xA4),
+                          ((InteractStateInfoLocal*)mInfo)->animFadeInTime);
+                return;
+            }
+        }
+        weaponIndex = 0;
+    }
+    PlayAnims(weaponIndex, ((InteractStateInfoLocal*)mInfo)->animFadeInTime);
+}
+
+// ea: 0x005407F0
+void InteractStateMeleeStagedSuccess::Deactivate()
+{
+    InteractState::Deactivate();
+    mController->mFlags |= 0x400u;
+    if (mSuccessState[0] == nullptr)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        if (Player != nullptr)
+        {
+            char* ps = (char*)Player->client;
+            if (ps != nullptr)
+            {
+                int v6 = *(int*)(ps + 0xA4);
+                *(int*)(ps + 0xA8) = 1;
+                weaponFileInfo_t* info = BG_GetInfoForWeapon(v6);
+                *(int*)(ps + 0x34) = *(int*)((char*)info + 0x628);
+                *(unsigned int*)(ps + 0x530) =
+                    (~*(unsigned int*)(ps + 0x530) & 0x200) | 0xA;
+            }
+        }
+    }
+}
+
+// ea: 0x0054FE50
+InteractState* InteractStateMeleeStagedSuccess::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    EntityManager::sInst->GetPlayer(currCl);
+    if ((mFlags & 1) == 0)
+        return v3;
+    unsigned int v4 = mController->mInteractableH.mVal & 0xFFF;
+    if (v4 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr && mEnemyDead == 0)
+        {
+            tlFixedString name(
+                ((InteractStateInfoLocal*)mInfo)->interactableAnim);
+            void* Anim = nalGetAnim(name);
+            if (mOtherCallback == nullptr)
+            {
+                XANIM_ASSERT("mOtherCallback",
+                             "c:\\cod\\code\\game\\InteractStateMelee.cpp",
+                             1233, "Null callback");
+            }
+            void* curAnim = *(void**)((char*)mOtherCallback + 0x04);
+            if (curAnim == nullptr || Anim != curAnim)
+            {
+                *(int*)((char*)mObject + 0x2B8) = 1;  // takedamage
+                *(int*)((char*)mObject + 0x358) = -1;  // health
+                mController->mFlags &= ~2u;
+                mEnemyDead = 1;
+            }
+        }
+    }
+    if (mPlayerCallback == nullptr)
+    {
+        XANIM_ASSERT("mPlayerCallback",
+                     "c:\\cod\\code\\game\\InteractStateMelee.cpp", 1249,
+                     "Null player callback");
+    }
+    void* curAnim2 = *(void**)((char*)mPlayerCallback + 0x04);
+    if (mPlayerAnim != nullptr
+        && (curAnim2 == nullptr || mPlayerAnim != curAnim2)
+        && mEnemyDead != 0)
+        return mSuccessState[0];
+    return v3;
+}
+
+// ea: 0x00540870
+void InteractStateMeleeDropWeapon::Deactivate()
+{
+    InteractState::Deactivate();
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        unsigned char weapon = *(unsigned char*)((char*)Player + 3);
+        if (weapon != 0)
+            Drop_Weapon(Player, weapon, nullptr);
+    }
+}
+
+// ============================================================================
 // Meta-anim + Melee final cluster (anim.o)
 // Melee fields: mModifierIndex +0x1B0, mNumModifiers +0x1B4, mModifierAnimTime
 // +0x1B8, mModifierIntervalTimer +0x1BC, mPlayerSoundHandle +0x1C0,
@@ -10693,7 +11865,7 @@ void InteractStateLeverPush_PlayMetaAnims(InteractState* self)
 }
 
 // ea: 0x0054F390
-void InteractStateMelee_UpdateFacialAnim(InteractState* self, float deltaT)
+void InteractStateMelee::UpdateFacialAnim(float deltaT)
 {
     unsigned int mVal = InteractionController::Inst(currCl)
                             ->mInteractableH.mVal;
@@ -10704,23 +11876,23 @@ void InteractStateMelee_UpdateFacialAnim(InteractState* self, float deltaT)
         Entity* ent = EntityHandleDb::sInst.mElements[v4].mObject;
         if (ent != nullptr)
         {
-            int numFacialAnims = *(int*)((char*)self + 0x1FC);
+            int numFacialAnims = *(int*)((char*)this + 0x1FC);
             if (numFacialAnims > 0)
             {
-                int mModifierIndex = *(int*)((char*)self + 0x1B0);
-                float v7 = deltaT + *(float*)((char*)self + 0x210);
-                *(float*)((char*)self + 0x210) = v7;
+                int mModifierIndex = *(int*)((char*)this + 0x1B0);
+                float v7 = deltaT + *(float*)((char*)this + 0x210);
+                *(float*)((char*)this + 0x210) = v7;
                 if ((mModifierIndex == 0
-                     && sFacialAnimTimeMin > self->mStateTimer)
+                     && sFacialAnimTimeMin > this->mStateTimer)
                     || v7 > sFacialAnimTimeMin)
                 {
                     int v9 = irand(0, numFacialAnims);
-                    void* v10 = *(void**)((char*)self + 0x200 + 4 * v9);
-                    void** arr = (void**)((char*)self + 0x200);
+                    void* v10 = *(void**)((char*)this + 0x200 + 4 * v9);
+                    void** arr = (void**)((char*)this + 0x200);
                     for (int k = v9; k < numFacialAnims; ++k)
                         arr[k] = (k + 1 < numFacialAnims) ? arr[k + 1]
                                                           : nullptr;
-                    *(int*)((char*)self + 0x1FC) = numFacialAnims - 1;
+                    *(int*)((char*)this + 0x1FC) = numFacialAnims - 1;
                     DObj* mDObj = ent->mDObj;
                     if (mDObj != nullptr)
                     {
@@ -10735,7 +11907,7 @@ void InteractStateMelee_UpdateFacialAnim(InteractState* self, float deltaT)
                                 1.0f, 0.0f);
                         }
                     }
-                    *(float*)((char*)self + 0x210) = 0.0f;
+                    *(float*)((char*)this + 0x210) = 0.0f;
                     const char* animName = (const char*)v10 + 4;
                     int v16 = tolower(animName[strlen(animName) - 1]);
                     int v17 = v16 - 0x60;
@@ -10768,12 +11940,12 @@ void InteractStateMelee_UpdateFacialAnim(InteractState* self, float deltaT)
 }
 
 // ea: 0x0054EFF0
-void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
+void InteractStateMelee::UpdateModifiers(float deltaT)
 {
-    float* pIntervalTimer = (float*)((char*)self + 0x1BC);
-    float* pAnimTime = (float*)((char*)self + 0x1B8);
-    int* pModifierIndex = (int*)((char*)self + 0x1B0);
-    int* pNumModifiers = (int*)((char*)self + 0x1B4);
+    float* pIntervalTimer = (float*)((char*)this + 0x1BC);
+    float* pAnimTime = (float*)((char*)this + 0x1B8);
+    int* pModifierIndex = (int*)((char*)this + 0x1B0);
+    int* pNumModifiers = (int*)((char*)this + 0x1B4);
     *pIntervalTimer = *pIntervalTimer - deltaT;
     if (*pIntervalTimer <= 0.0f)
     {
@@ -10783,10 +11955,10 @@ void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
         int blendIsDefault = 0;
         if (mModifierIndex == -1)
         {
-            float mScore = *(float*)((char*)self + 0x1D0);
+            float mScore = *(float*)((char*)this + 0x1D0);
             blendIsDefault = 1;
             *pModifierIndex =
-                InteractStateMelee_GetInitialModifierIndex(self, mScore);
+                GetInitialModifierIndex(mScore);
         }
         if (*pNumModifiers <= 1)
         {
@@ -10795,8 +11967,8 @@ void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
         else
         {
             InteractStateInfoLocal* info =
-                (InteractStateInfoLocal*)self->mInfo;
-            if (*(float*)((char*)self + 0x1D0)
+                (InteractStateInfoLocal*)this->mInfo;
+            if (*(float*)((char*)this + 0x1D0)
                 > info->modAnimThresholdMax[*pModifierIndex])
             {
                 int v8 = *pNumModifiers - 1;
@@ -10807,13 +11979,13 @@ void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
                         break;
                     int v10 = v9 + 1;
                     *pModifierIndex = v10;
-                    if (!(*(float*)((char*)self + 0x1D0)
+                    if (!(*(float*)((char*)this + 0x1D0)
                           > info->modAnimThresholdMax[v10]))
                         break;
                 }
             }
             if (*(float*)((char*)info + 0x54C + 4 * *pModifierIndex)
-                > *(float*)((char*)self + 0x1D0))
+                > *(float*)((char*)this + 0x1D0))
             {
                 for (;;)
                 {
@@ -10823,19 +11995,19 @@ void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
                     int v12 = v11 - 1;
                     *pModifierIndex = v12;
                     if (!(*(float*)((char*)info + 0x54C + 4 * v12)
-                          > *(float*)((char*)self + 0x1D0)))
+                          > *(float*)((char*)this + 0x1D0)))
                         break;
                 }
             }
         }
         if (*pModifierIndex != mModifierIndex)
         {
-            InteractionController* mController = self->mController;
+            InteractionController* mController = this->mController;
             void* playerMod = nullptr;
             void* otherMod = nullptr;
             if (mController->mSelectedInteractWeaponIndex < 1)
                 EntityManager::sInst->GetPlayer(mController->mClient);
-            InteractionController* v15 = self->mController;
+            InteractionController* v15 = this->mController;
             unsigned int mVal = v15->mInteractableH.mVal;
             DObj* dobj = (DObj*)dword_F6A2A0[802 * v15->mClient];
             unsigned int v17 = mVal & 0xFFF;
@@ -10848,7 +12020,7 @@ void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
                 otherDObj = mObject->mDObj;
             Entity* Player = EntityManager::sInst->GetPlayer(currCl);
             InteractStateInfoLocal* info =
-                (InteractStateInfoLocal*)self->mInfo;
+                (InteractStateInfoLocal*)this->mInfo;
             if (info->playerModAnim[*pModifierIndex][0] != 0
                 && dobj->animPlayers[0] != nullptr)
             {
@@ -10863,7 +12035,7 @@ void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
                 otherMod = nalGetAnim(v29);
             }
             if (blendTime == 0.0f)
-                blendTime = InteractStateMelee_CalcModifierBlendTime(self);
+                blendTime = CalcModifierBlendTime();
             else
                 blendTime = sInitialBlendTime;
             if (playerMod != nullptr)
@@ -10904,16 +12076,16 @@ void InteractStateMelee_UpdateModifiers(InteractState* self, float deltaT)
             if (v27 != 0
                 && (v27 == *pNumModifiers - 1 || lastModIndex <= v27))
             {
-                *(int*)((char*)self + 0x1C0) =
+                *(int*)((char*)this + 0x1C0) =
                     PostEffectEventEIMelee(Player, 59).mVal;
-                *(int*)((char*)self + 0x1C4) =
+                *(int*)((char*)this + 0x1C4) =
                     PostEffectEventEIMelee(Player, 58).mVal;
             }
             else
             {
-                *(int*)((char*)self + 0x1C0) =
+                *(int*)((char*)this + 0x1C0) =
                     PostEffectEventEIMelee(Player, 60).mVal;
-                *(int*)((char*)self + 0x1C4) =
+                *(int*)((char*)this + 0x1C4) =
                     PostEffectEventEIMelee(Player, 61).mVal;
             }
         }
