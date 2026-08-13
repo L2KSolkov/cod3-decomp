@@ -409,7 +409,10 @@ void ae_heap_base::MemFree(void* ptr, mem_heap* heap) {
 }
 
 bool ae_heap_base::MemCheckFree(void* ptr, mem_heap* heap) {
-    return ptr != nullptr;
+    if (ptr < heap->start || ptr >= heap->end)
+        return false;
+    mem_heap_free(heap, ptr);
+    return true;
 }
 
 // ============================================================================

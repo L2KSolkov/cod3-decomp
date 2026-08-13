@@ -19,6 +19,9 @@ struct mem_heap;
 // ============================================================================
 struct ae_heap_base {
     struct ae_heap_base_vtbl* __vftable;  // +0x00
+
+    // ?MemCheckFree@ae_heap_base@@IAE_NPAXPAUmem_heap@@@Z (ae_heap.o 0x7BBF40)
+    bool MemCheckFree(void* ptr, mem_heap* heap);
 };
 static_assert(sizeof(ae_heap_base) == 4, "ae_heap_base size mismatch");
 
@@ -28,6 +31,9 @@ static_assert(sizeof(ae_heap_base) == 4, "ae_heap_base size mismatch");
 // ============================================================================
 struct ae_heap_wrapper : ae_heap_base {
     mem_heap* mHeap;  // +0x04
+
+    // ?CheckFree@ae_heap_wrapper@@UAE_NPAX@Z (streamer.o 0x684DD0)
+    bool CheckFree(void* ptr);
 };
 static_assert(sizeof(ae_heap_wrapper) == 8, "ae_heap_wrapper size mismatch");
 

@@ -1617,8 +1617,8 @@ struct InstanceBankSet {
 };
 
 // nal resource types (nal.h; forward decls)
-struct nalAnyPose;
-struct nalAnimFile;
+class nalAnyPose;
+struct nalAnimFile;  // struct to match nal.cpp externs (PAU mangling)
 class nalSceneAnim;
 class nalBaseSkeleton;
 template <typename T> class nalAnimClass;
@@ -6420,7 +6420,7 @@ void cdInitApk()
 class apsEffectTemplate;
 class nalBaseSkeleton;
 template <typename T> class nalAnimClass;
-struct nalAnyPose;
+class nalAnyPose;
 struct MultiApk;
 const tlFixedString* GetKey(const nglMesh* m);  // ngl_internal.cpp
 void GetAllPaks(ae_sized_array<TPakId, 32>* ret);  // streamer.o (defined below)
@@ -9239,7 +9239,7 @@ void PakManager::LoadWbk(tlFixedString audioBank, bool async)
 // ============================================================================
 // nal resource directory globals + accessors (streamer.o 0x6637E0 - 0x6638D0)
 // ============================================================================
-struct nalAnyPose;
+class nalAnyPose;
 struct nalAnimFile;
 class nalSceneAnim;
 class nalBaseSkeleton;
@@ -9305,6 +9305,53 @@ tlResourceDirectory<nalSceneAnim>* nalGetSceneAnimDirectory()
 void nalSetSceneAnimDirectory(tlResourceDirectory<nalSceneAnim>* dir)
 {
     nalSceneAnimDirectory = dir;
+}
+
+// nal resource views (nal.h; minimal fields for GetKeyPtr, verified IDA:
+// vtable +0x00, Name +0x08 for nalBaseSkeleton / nalAnimClass<nalAnyPose>;
+// Header.Name +0x10 for nalAnimFile / nalSceneAnim)
+class nalBaseSkeleton {
+public:
+    void* __vftable;       // +0x00
+    tlFixedString Name;    // +0x08
+};
+
+template <typename T>
+class nalAnimClass {
+public:
+    void* __vftable;       // +0x00
+    tlFixedString Name;    // +0x08
+};
+
+struct nalAnimFile {
+public:
+    uint8_t _pad[0x10];
+    tlFixedString Name;    // +0x10 (Header.Name)
+};
+
+class nalSceneAnim {
+public:
+    uint8_t _pad[0x10];
+    tlFixedString Name;    // +0x10 (Header.Name)
+};
+
+// ea: 0x6817A0 / 0x6817B0 / 0x6817C0 / 0x6817E0 (ngl texture/mesh/font
+// overloads already live in render/ngl_aux.cpp)
+const tlFixedString* GetKeyPtr(const nalBaseSkeleton* baseskeleton)
+{
+    return &baseskeleton->Name;
+}
+const tlFixedString* GetKeyPtr(const nalAnimClass<nalAnyPose>* baseanim)
+{
+    return &baseanim->Name;
+}
+const tlFixedString* GetKeyPtr(const nalAnimFile* animfile)
+{
+    return &animfile->Name;
+}
+const tlFixedString* GetKeyPtr(const nalSceneAnim* sceneanim)
+{
+    return &sceneanim->Name;
 }
 
 // cdResourceDirectory<T> static accessors over the nal globals
@@ -10758,7 +10805,12 @@ static void __fastcall Wrapper_Free(void* self, void* ptr)
 }
 static bool __fastcall Wrapper_CheckFree(void* self, void* ptr)
 {
-    return mem_heap_free_check_reserve(*(mem_heap**)((char*)self + 4), ptr);
+    // ae_heap_base::MemCheckFree semantics (0x7BBF40)
+    mem_heap* heap = *(mem_heap**)((char*)self + 4);
+    if (ptr < heap->start || ptr >= heap->end)
+        return false;
+    mem_heap_free(heap, ptr);
+    return true;
 }
 static mem_heap* __fastcall Wrapper_GetHeapPointer(void* self)
 {
@@ -10771,6 +10823,12 @@ static void* s_ae_heap_wrapper_vftable[5] = {
     (void*)Wrapper_CheckFree,
     (void*)Wrapper_GetHeapPointer,
 };
+
+// ea: 0x684DD0
+bool ae_heap_wrapper::CheckFree(void* ptr)
+{
+    return ae_heap_base::MemCheckFree(ptr, mHeap);
+}
 
 // ea: 0x66E930
 void PakFile::CreateHeaps()
