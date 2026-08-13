@@ -11978,6 +11978,14 @@ Mat33 AxisAngleToRotMat(const Dir3& axis, float angle)
     return AxisSinCosToRotMat(axis, sc.v.m128_f32[0], sc.v.m128_f32[1]);
 }
 
+// ea: 0x51E110
+Vector4 Vector4_One()
+{
+    Vector4 r;
+    r.v = _mm_set1_ps(1.0f);
+    return r;
+}
+
 }  // namespace math
 
 // ea: 0x664BC0

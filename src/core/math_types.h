@@ -164,6 +164,7 @@ Vector4  operator*(const Position3& v, const Mat44& m);           // ??Dmath@@YA
 Mat44    Mul(const Mat44& a, const Mat33& b);                     // ?Mul@math@@YA?AVMat44@1@ABV21@ABVMat33@1@@Z
 Mat33    AxisSinCosToRotMat(const Dir3& v, float s, float c);     // ?AxisSinCosToRotMat@math@@YA?AVMat33@1@ABVDir3@1@MM@Z
 Mat33    AxisAngleToRotMat(const Dir3& axis, float angle);        // ?AxisAngleToRotMat@math@@YA?AVMat33@1@ABVDir3@1@M@Z
+Vector4  Vector4_One();                                           // ?Vector4_One@math@@YA?AVVector4@1@XZ (sv.o 0x51E110)
 
 // ============================================================================
 // TranMat43 — translation-only matrix (16 bytes, single Position3)

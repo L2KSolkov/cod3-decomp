@@ -181,6 +181,24 @@ void LiveLocal::Reset()
 
 LiveWrapper* LiveWrapper::theWrapper;
 
+// ea: 0x51E160
+ELiveState LiveWrapper::GetState()
+{
+    return (ELiveState)internalState;
+}
+
+// ea: 0x51E170
+HRESULT LiveWrapper::GetLastLoginCode()
+{
+    return lastLoginCode;
+}
+
+// ea: 0x51E180
+UIX_LOGON_TYPE LiveWrapper::GetLoginMethod()
+{
+    return logonMethod;
+}
+
 // LiveWrapper vtable (slots 0..19; matches the binary's ??_7LiveWrapper@@6B@
 // at rdata 0xD173BC). Pure-virtual/placeholder slots are nullsub or purecall.
 static void* LiveWrapperVftable[20];

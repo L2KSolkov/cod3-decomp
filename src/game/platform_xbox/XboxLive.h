@@ -192,6 +192,9 @@ public:
                                          unsigned int dwDuration,
                                          unsigned int dwSize);
     HRESULT __stdcall VoiceMailStopped(unsigned int dwLocalPort);
+    ELiveState GetState();            // ?GetState@LiveWrapper@@QAE?AW4ELiveState@@XZ (sv.o 0x51E160)
+    HRESULT GetLastLoginCode();       // ?GetLastLoginCode@LiveWrapper@@QAEJXZ (sv.o 0x51E170)
+    UIX_LOGON_TYPE GetLoginMethod();  // ?GetLoginMethod@LiveWrapper@@QAE?AW4_UIX_LOGON_TYPE@@XZ (sv.o 0x51E180)
     void RefreshMuteList(unsigned int controllerIndex);
     void ShowFriendsList(unsigned int portNumber);
     void ShowPlayersList(unsigned int portNumber, unsigned int bitFlagMask);

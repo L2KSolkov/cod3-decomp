@@ -428,6 +428,12 @@ MPLiveEngine::~MPLiveEngine()
     liveSession.Reset();
 }
 
+// ea: 0x51E190
+unsigned int MPLiveEngine::GetLockedPort()
+{
+    return actualPort;
+}
+
 // ea: 0x721870
 bool MPLiveEngine::CanHear(const XUID* talker, const XUID* listener)
 {

@@ -220,6 +220,8 @@ public:
     int     mNumPanels;                 // +0x3F0
     // +0x3F4 .. 0x3F4 remaining pad
     void UpdateLoadingMenu(float percentDone);  // ?UpdateLoadingMenu@FEManager@@QAEXM@Z
+    void SetInGameMenusActive(bool active,
+                              int client);  // ?SetInGameMenusActive@FEManager@@QAEX_NH@Z (sv.o 0x51E1A0)
 };
 static_assert(sizeof(FEManager) == 0x3F4, "FEManager size mismatch");
 
@@ -245,6 +247,8 @@ struct MultiplayerMgr {
     bool    mLinkCheckEnabled;      // +0x40 (field used by SV_Map_f)
     uint8_t _pad2[0x50 - 0x41];
     static MultiplayerMgr* sInst;   // ?sInst@MultiplayerMgr@@2PAV1@A
+    void setEnableLinkCheck(bool enabled);  // ?setEnableLinkCheck@MultiplayerMgr@@QAEX_N@Z (sv.o 0x528020)
+    bool getEnableLinkCheck();              // ?getEnableLinkCheck@MultiplayerMgr@@QAE_NXZ (sv.o 0x528030)
     void ExitLevel();
     void StartDevServer();
     void MapRestart();                                  // ?MapRestart@MultiplayerMgr@@QAEXXZ (mp.o)
@@ -618,6 +622,7 @@ struct CheckpointMgr {
     void ClearSavedCheckpointData();       // ?ClearSavedCheckpointData@CheckpointMgr@@QAEXXZ (game.o 0x640E60)
     void SaveCheckpoint(const char* checkpointName, bool calledFromScript);  // ?SaveCheckpoint@CheckpointMgr@@QAEXPBD_N@Z
     void LoadCheckpointFromStubData();     // ?LoadCheckpointFromStubData@CheckpointMgr@@QAEXXZ (game.o 0x632120)
+    const char* GetCheckpointMapName();    // ?GetCheckpointMapName@CheckpointMgr@@QAEPBDXZ (sv.o 0x528190)
     void SetCheckpointCvar();             // ?SetCheckpointCvar@CheckpointMgr@@QAEXXZ
     void RestoreExplodedExploders();      // ?RestoreExplodedExploders@CheckpointMgr@@QAEXXZ
     void RestoreSceneEntity(Entity* pEnt);  // ?RestoreSceneEntity@CheckpointMgr@@QAEXPAVEntity@@@Z (game.o 0x609010)
@@ -884,8 +889,11 @@ struct SceneManager {
 
 struct FEMenuSystem {
     virtual void SetActiveMenu(int a2);  // ?SetActiveMenu@FEMenuSystem@@UAEXH@Z
+    uint8_t _pad[0x2A - 0x04];
+    bool    is_active;                   // +0x2A
+    void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
 };
-static_assert(sizeof(FEMenuSystem) == 4, "FEMenuSystem size mismatch (opaque)");
+static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch (opaque)");
 
 // ============================================================================
 // GamePause — static pause helpers
@@ -1039,6 +1047,8 @@ struct MPPlayer {
     uint8_t _pad[4];
     int     mClientIndex;   // +0x04
     Entity* GetEntity();    // ?GetEntity@MPPlayer@@QAEPAVEntity@@XZ
+    void SetClientIndex(int index);  // ?SetClientIndex@MPPlayer@@QAEXH@Z (sv.o 0x528040)
+    int  GetClientIndex();           // ?GetClientIndex@MPPlayer@@QAEHXZ (sv.o 0x528050)
 
     static int sDebugNetworkUpdates;   // ?sDebugNetworkUpdates@MPPlayer@@2HA (mp.o)
     static int sPauseNetworkUpdates;   // ?sPauseNetworkUpdates@MPPlayer@@2HA (mp.o)

@@ -4,10 +4,107 @@
 
 #include "game/sv/sv_decl.h"
 #include "game/sv/sv_stubs.h"
+#include "ngl/ngl_dx_gpu.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <intrin.h>
+
+// ============================================================================
+// sv.o small accessors (verified against IDA)
+// ============================================================================
+
+// PakManagerContext (sv.o 0x51E0C0/0x51E0F0; RAII pak-heap context)
+class PakManagerContext {
+public:
+    PakManagerContext(TPakId id);  // ??0PakManagerContext@@QAE@W4TPakId@@@Z
+    ~PakManagerContext();          // ??1PakManagerContext@@QAE@XZ
+};
+PakManagerContext::PakManagerContext(TPakId id)
+{
+    PakManager::sInst->PushContext(id);
+}
+PakManagerContext::~PakManagerContext()
+{
+    PakManager::sInst->PopContext();
+}
+
+// cdl_object_t (g_local.h view; cflags +0x00)
+struct cdl_object_t {
+    int cflags;  // +0x00
+
+    int get_cflags() const;  // ?get_cflags@cdl_object_t@@QBEHXZ (sv.o 0x51E0A0)
+};
+
+// ea: 0x51E0A0
+int cdl_object_t::get_cflags() const
+{
+    return cflags;
+}
+
+// ea: 0x528090
+bool intersect_aabb_aabb(const math::Position3* min0,
+                         const math::Position3* max0,
+                         const math::Position3* min1,
+                         const math::Position3* max1)
+{
+    __m128 d = _mm_max_ps(_mm_sub_ps(min1->v, max0->v),
+                          _mm_sub_ps(min0->v, max1->v));
+    return (_mm_movemask_ps(_mm_cmplt_ps(d, _mm_setzero_ps())) & 7) == 7;
+}
+
+// ea: 0x51E150
+void FEMenuSystem::SetSystemActive(bool active)
+{
+    is_active = active;
+}
+
+// ea: 0x51E1A0
+void FEManager::SetInGameMenusActive(bool active, int client)
+{
+    InGameMenuSystem* v3 = mIGMS[client];
+    if (v3 != nullptr)
+        v3->is_active = active;
+}
+
+// ea: 0x528020
+void MultiplayerMgr::setEnableLinkCheck(bool enabled)
+{
+    mLinkCheckEnabled = enabled;
+}
+
+// ea: 0x528030
+bool MultiplayerMgr::getEnableLinkCheck()
+{
+    return mLinkCheckEnabled;
+}
+
+// ea: 0x528040
+void MPPlayer::SetClientIndex(int index)
+{
+    mClientIndex = index;
+}
+
+// ea: 0x528050
+int MPPlayer::GetClientIndex()
+{
+    return mClientIndex;
+}
+
+// ea: 0x528190
+const char* CheckpointMgr::GetCheckpointMapName()
+{
+    if (mCurrentMapName.mBlock != nullptr)
+        return (const char*)(mCurrentMapName.mBlock + 1);
+    return defaultFileName;
+}
+
+// ea: 0x51E0B0 (XDK shim)
+long __stdcall D3DDevice::PersistDisplay()
+{
+    D3DDevice_PersistDisplay();  // void XDK shim (d3d8.h)
+    return 0;  // S_OK
+}
 
 // shell.o IGOFrontEnd stubs (real impls in shell.o; ported later)
 void IGOFrontEnd::SetTutorialText(int ref, int viewport)

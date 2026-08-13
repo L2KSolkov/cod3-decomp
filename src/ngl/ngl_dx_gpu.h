@@ -364,6 +364,7 @@ enum _D3DRESOURCETYPE {
 // ============================================================================
 class D3DDevice {
 public:
+    static long __stdcall PersistDisplay();  // ?PersistDisplay@D3DDevice@@SGJXZ (sv.o 0x51E0B0; XDK shim)
     static unsigned int __stdcall CreateTexture(unsigned int Width, unsigned int Height,
                                                 unsigned int Levels, unsigned int Usage,
                                                 _D3DFORMAT Format, unsigned int UnusedPool,

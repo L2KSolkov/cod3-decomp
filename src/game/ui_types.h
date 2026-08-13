@@ -295,6 +295,7 @@ struct FEMenuSystem : PanelFileUser {
     int  GetCurrentClient();
     void AddOverlay(int a2);
     void ReturnToPreviousMenu(int a2);
+    void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch");
 static_assert(offsetof(FEMenuSystem, menus) == 0x04, "FEMenuSystem::menus offset mismatch");
