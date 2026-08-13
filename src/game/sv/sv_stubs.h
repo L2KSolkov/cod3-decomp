@@ -274,6 +274,11 @@ public:
     // +0x3F4 .. 0x3F4 remaining pad
     void UpdateLoadingMenu(float percentDone);  // ?UpdateLoadingMenu@FEManager@@QAEXM@Z
     nglFont* GetFont(font_index f);  // ?GetFont@FEManager@@QAEPAVnglFont@@W4font_index@@@Z (shell.o)
+    font_index FindFont(const char* font_filename,
+                        bool checkfileext);  // ?FindFont@FEManager@@QAE?AW4font_index@@PBD_N@Z (shell.o 0x5852E0)
+    PanelQuad* GetDefaultPQ();               // ?GetDefaultPQ@FEManager@@QAEPAVPanelQuad@@XZ (shell.o 0x593D90)
+    static ae_fixed_string<32, unsigned char>
+        font_name_array[4];  // ?font_name_array@FEManager@@0PAV?$ae_fixed_string@$0CA@E@@A @ 0xF382C0
     void SetInGameMenusActive(bool active,
                               int client);  // ?SetInGameMenusActive@FEManager@@QAEX_NH@Z (sv.o 0x51E1A0)
     void UpdateIGO(float time_inc);           // ?UpdateIGO@FEManager@@QAEXM@Z (cl.o 0x528390)

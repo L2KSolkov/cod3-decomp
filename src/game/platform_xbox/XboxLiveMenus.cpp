@@ -39,13 +39,6 @@ void FEMenuEntry::SetString(const char* s) { (void)s; }
 void FEMenuEntry::SetEnabled(bool e) { (void)e; }
 void FEMenuSystem::AddOverlay(int a2) { (void)a2; }
 void FEMenuSystem::ReturnToPreviousMenu(int a2) { (void)a2; }
-FEMultiLineText::FEMultiLineText(font_index f, float x1, float y1, float z1,
-                                 panel_layer layer, float s, int horizJust,
-                                 int vertJust, color32 col)
-{
-    (void)f; (void)x1; (void)y1; (void)z1; (void)layer; (void)s;
-    (void)horizJust; (void)vertJust; (void)col;
-}
 void FEMultiLineText::Draw() {}
 void FEMultiLineText::SetTextBoxNoLocalize(const char* s, int a3, int a4)
 {
@@ -59,8 +52,6 @@ void FEMultiLineText::UpdateForWidescreen(bool widescreen)
 {
     (void)widescreen;
 }
-void FEMultiLineText::SetNumLines(int n) { (void)n; }
-void FEMultiLineText::SetText(const char* s) { (void)s; }
 UIListBox::~UIListBox() {}
 void UIListBox::OnUp(int a2) { (void)a2; }
 void UIListBox::OnDown(int a2) { (void)a2; }
@@ -145,41 +136,6 @@ bool InGameLiveOptionsMenu::ResponseNoJoin(int a)
 }
 
 // PanelFile members (shell.o; stubs, port later)
-PanelFile::~PanelFile() {}
-PanelFile* PanelFile::Clone()
-{
-    return nullptr;
-}
-PanelQuad* PanelFile::GetPointer(const char* search_name)
-{
-    (void)search_name;
-    return nullptr;
-}
-FEText* PanelFile::GetTextPointer(const char* search_name)
-{
-    (void)search_name;
-    return nullptr;
-}
-void PanelFile::Draw() {}
-void PanelFile::UpdateSplitScreen(int viewport, int old_viewport)
-{
-    (void)viewport; (void)old_viewport;
-}
-void PanelFile::UpdateWidescreen(bool widescreen, float about_x)
-{
-    (void)widescreen; (void)about_x;
-}
-
-// PanelQuad (shell.o; artifact manglings - binary has virtual SetVisibility)
-void PanelQuad::SetShown(bool shown)
-{
-    (void)shown;
-}
-void PanelQuad::SetVisibility(float v)
-{
-    (void)v;
-}
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>

@@ -325,6 +325,7 @@ add_library(cod3_game_shell STATIC
     src/game/shell/fe_util.cpp
     src/game/shell/stringed_hooks.cpp
     src/game/shell/fe_text.cpp
+    src/game/shell/panel_file.cpp
 )
 add_library(cod3_game_game STATIC src/game/game/stubs_game.cpp)
 add_library(cod3_game_core STATIC

@@ -1289,3 +1289,103 @@ void MultiLineString::Draw(float z, int col, int button_col,
         }
     }
 }
+
+// ============================================================================
+// FEMultiLineText (FEText.cpp family)
+// ============================================================================
+
+// ea: 0x00584DA0
+FEMultiLineText::FEMultiLineText(font_index f, float x1, float y1, int z1,
+                                 panel_layer layer, float s, int horizJust,
+                                 int vertJust, color32 col)
+    : FEText(f, defaultFileName, x1, y1, z1, layer, s, horizJust, vertJust,
+             col)
+{
+    button_color.i = 0;
+    line_num = 0;
+    line_avail_num = 0;
+    lines = nullptr;
+    scrollable = false;
+    scroll_edge_based = false;
+    scroll_box_height = 0;
+    scroll_first = 0;
+    scroll_last = 0;
+    cut_off_if_too_long = false;
+    scroll_offset = 0.0f;
+    button_scale = 1.0f;
+    button_y_offset = 0.0f;
+    button_color.i = 0xFFFFFFFF;
+    box_width = -1;
+    nglFont* v11 = g_femanager.GetFont(font);
+    unsigned int width;
+    unsigned int height;
+    nglGetStringDimensions(v11, "!", &width, &height, scale.x, scale.y);
+    line_spacing_init = (float)height;
+    line_spacing = (float)height;
+}
+
+// ea: 0x0056D6D0
+void FEMultiLineText::SetNumLines(int n)
+{
+    if (n == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 1277;
+        AeAssert::gCurrentExpr = "n != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    line_avail_num = n;
+    line_num = 0;
+    if (lines != nullptr)
+    {
+        int count = ((int*)lines)[-1];
+        for (int i = 0; i < count; ++i)
+            lines[i].~MultiLineString();
+        mem_heap_free((int*)lines - 1);
+    }
+    int* v6 = (int*)mem_heap_malloc(32 * line_avail_num + 4);
+    if (v6 != nullptr)
+    {
+        MultiLineString* v7 = (MultiLineString*)(v6 + 1);
+        *v6 = line_avail_num;
+        for (int i = 0; i < line_avail_num; ++i)
+            new (&v7[i]) MultiLineString();
+        lines = v7;
+    }
+    else
+    {
+        lines = nullptr;
+    }
+}
+
+// ea: 0x0057CFA0
+void FEMultiLineText::SetLineSpacing(int new_spacing)
+{
+    if (new_spacing == -1)
+    {
+        unsigned int width;
+        unsigned int new_spacinga;
+        nglFont* Font = g_femanager.GetFont(font);
+        nglGetStringDimensions(Font, "!", &width, &new_spacinga, scale.x,
+                               scale.y);
+        line_spacing_init = (float)new_spacinga;
+        line_spacing = line_spacing_init;
+    }
+    else
+    {
+        line_spacing_init = (float)new_spacing;
+        line_spacing = line_spacing_init;
+    }
+}
+
+// ea: 0x0056D7E0
+void FEMultiLineText::SetText(const char* reference)
+{
+    const char* STBString = STBManager::sInst->GetSTBString(reference);
+    if (STBString != nullptr)
+        SetTextNoLocalize(STBString);
+    else
+        SetTextNoLocalize(reference);
+}

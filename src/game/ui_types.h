@@ -18,6 +18,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+class nglTexture;
+class nglFont;
+struct PanelMaterial;
+
 // ============================================================================
 // color32 â€” 32-bit RGBA color (4 bytes) â€” verified against IDA
 // Class-tagged (V) to match the binary's mangling (??AVcolor32@@);
@@ -154,11 +158,51 @@ public:
     char  flags;                             // +0x10
     uint8_t _pad11[3];                       // +0x11
 
-    // shell.o inline COMDATs (verified manglings)
-    virtual bool IsShown() { return (flags & 1) != 0; }
-    virtual void SetShown(bool shown) { flags = shown ? (char)(flags | 1) : (char)(flags & 0xFE); }
-    virtual float GetZvalue() { return z_value; }
-    virtual void SetZvalueAbs(float z) { z_value = z; }
+    // Vtable layout matches the binary (verified against ??_7PanelAnimObject).
+    virtual void Draw() = 0;                    // +0x04 pure (__purecall)
+    virtual void Update(float time_inc);        // +0x08 shell.o 0x56B6E0
+    virtual void CopyFrom(const PanelAnimObject* pao);  // +0x0C 0x56B770
+    virtual void StartAnim(bool on)             // +0x10 inline 0x5B1A90
+    {
+        flags = on ? (char)(flags | 2) : (char)(flags & 0xFD);
+    }
+    virtual void ResetXform()                   // +0x14 inline 0x5B1AC0
+    {
+        flags = (char)(flags & ~1);
+    }
+protected:
+    virtual void Animate(math::Mat43*, float) = 0;  // +0x18 pure
+public:
+    virtual void SetWidescreenAlign(short wa);       // +0x1C 0x56B7A0
+    virtual void SetZvalue(float z, panel_layer layer);  // +0x20 0x56B7D0
+    virtual void StartFade(bool start, bool fade_in,
+                           float time);              // +0x24 0x56B820
+    virtual void SetZvalueAbs(float z)               // +0x28 inline 0x5AD5B0
+    {
+        z_value = z;
+    }
+    virtual float GetZvalue()                        // +0x2C inline 0x5AD5D0
+    {
+        return z_value;
+    }
+    virtual float GetY()                             // +0x30 inline 0x5AD5E0
+    {
+        return 0.0f;
+    }
+    virtual bool IsFading()                          // +0x34 inline 0x5B1AD0
+    {
+        return (flags & 0x10) != 0 || (flags & 0x20) != 0;
+    }
+    virtual bool IsShown()                           // +0x38 inline 0x5B1AE0
+    {
+        return (flags & 1) != 0;
+    }
+    virtual void SetShown(bool shown)                // +0x3C inline 0x5B1AF0
+    {
+        flags = shown ? (char)(flags | 1) : (char)(flags & 0xFE);
+    }
+    virtual void SetColor(color32 c) = 0;            // +0x40 pure
+    virtual color32 GetColor() = 0;                  // +0x44 pure
 };
 static_assert(sizeof(PanelAnimObject) == 0x14, "PanelAnimObject size mismatch");
 static_assert(offsetof(PanelAnimObject, visibility) == 0x04, "PanelAnimObject::visibility offset mismatch");
@@ -181,22 +225,62 @@ public:
     unsigned int   quadBlendModeType;         // +0x40
     Broc::string   name;                      // +0x44
 
+    PanelQuad();  // ??0PanelQuad@@QAE@XZ (shell.o 0x58B780)
     PanelQuad(char* name);  // ??0PanelQuad@@QAE@PAD@Z (shell.o 0x58B840)
+    virtual ~PanelQuad();   // ??1PanelQuad@@UAE@XZ (shell.o 0x590F70)
+    virtual void Draw();    // ?Draw@PanelQuad@@UAEXXZ (shell.o 0x579BC0)
+    virtual void SetColor(color32 c);    // 0x57A1F0
+    virtual color32 GetColor();          // 0x5B6620
+    virtual void SetVisibility(float alpha);  // 0x57A450
+    virtual void SetZvalueAbs(float z);       // 0x57A530
+    virtual void SetMaterialFlags(unsigned int mapflags);  // 0x56AB90
+    virtual void SetTexture(nglTexture* tex);              // 0x57A170
+    virtual void Init(Broc::vector* xy, color32* col,
+                      panel_layer lay, float z,
+                      const char* filename);  // 0x58BAC0
+    virtual void Load(PanelMaterial* mats, unsigned char* buffer,
+                      int& index,
+                      const math::Mat43* parent_matrix);  // 0x58BC10
     virtual void Shift(float off_x, float off_y);  // shell.o 0x57A6A0
     virtual void SetCenterPos(float cx, float cy)  // vtable slot 39 (0x9C)
     {
         Shift(cx - center_point.x, cy - center_point.y);
     }
+    void FormatForSplitScreen(int viewport, int old_viewport);  // 0x57A940
+    void MoveForSplitScreen(int viewport, int old_viewport);    // 0x57A9C0
+    void FattenMeForWidescreen(bool widescreen, float x);       // 0x57AA40
+protected:
+    virtual void Animate(math::Mat43* mat, float vis);  // 0x57AB70
+public:
     Broc::vector GetMax();        // shell.o 0x57AC40
     Broc::vector GetMin();        // shell.o 0x57AF20
     Broc::vector GetInitialMax(); // shell.o 0x57B200
     Broc::vector GetInitialMin(); // shell.o 0x57B490
-    void SetShown(bool shown);
-    void SetVisibility(float v);
 };
 static_assert(sizeof(PanelQuad) == 0x48, "PanelQuad size mismatch");
 static_assert(offsetof(PanelQuad, center_point) == 0x14, "PanelQuad::center_point offset mismatch");
 static_assert(offsetof(PanelQuad, pqs) == 0x20, "PanelQuad::pqs offset mismatch");
+
+// ============================================================================
+// PanelMaterial â€” per-quad material (16 bytes) â€” verified against IDA
+// (ReadPanelMaterial 0x57BEE0: texture +0, filename +4, color +8, hasmap +0xC)
+// ============================================================================
+struct PanelMaterial {
+    nglTexture* texture;         // +0x00
+    const char* filename;        // +0x04
+    color32     color;           // +0x08
+    bool        hasmap;          // +0x0C
+    bool        bilinearfilter;  // +0x0D
+    bool        wrapu;           // +0x0E
+    bool        wrapv;           // +0x0F
+
+    PanelMaterial() : texture(nullptr), filename(nullptr), hasmap(false),
+                      bilinearfilter(false), wrapu(false), wrapv(false)
+    {
+        color.i = 0;
+    }
+};
+static_assert(sizeof(PanelMaterial) == 0x10, "PanelMaterial size mismatch");
 
 // ============================================================================
 // PanelQuadSection â€” quad section (104 bytes) â€” verified against IDA
@@ -213,7 +297,7 @@ public:
     struct QuadData {
         PQVert Verts[4];  // +0x00 (80 bytes)
         float  Z;         // +0x50
-        char   pad2[4];   // +0x54
+        nglTexture* Tex;  // +0x54
     };
 
     short    x_initial[4];  // +0x00
@@ -234,6 +318,12 @@ public:
     void SetColorVert(int i, color32 c);           // shell.o 0x569AB0
     void SetColorNAVert(int i, color32 c);         // shell.o 0x579800
     color32 GetColor(int index);                   // shell.o 0x579900
+    void Animate(math::Mat43* xform, float z_value,
+                 bool xform_was_set);              // shell.o 0x56A130
+    void Draw(unsigned int type, unsigned int mapflags);  // shell.o 0x56A2F0
+    void SetVisibility(int i, float vis);          // shell.o 0x5798A0
+    void FormatForSplitScreen(int viewport, int old_viewport);  // 0x56A3B0
+    void MoveForSplitScreen(int viewport, int old_viewport);    // 0x56A690
 };
 static_assert(sizeof(PanelQuadSection::PQVert) == 20,
               "PQVert size mismatch");
@@ -265,13 +355,38 @@ public:
     char      mName[64];               // +0x20
 
     // shell.o members (?Clone@PanelFile@@QAEPAV1@XZ etc.)
+    PanelFile();  // ??0PanelFile@@QAE@XZ (shell.o 0x5843D0)
     PanelFile* Clone();
     PanelQuad* GetPointer(const char* search_name);
     FEText* GetTextPointer(const char* search_name);
     void Draw();
     void UpdateSplitScreen(int viewport, int old_viewport);
     void UpdateWidescreen(bool widescreen, float about_x);
+    void Update(float time_inc);                 // shell.o 0x57BA40
+    void MoveSplitScreen(int viewport, int old_viewport);  // 0x57BCB0
+    void PreMashFixup();                         // shell.o 0x56ADC0
+    void PostUnmashFixup(panel_layer layer);     // shell.o 0x57B730
+    void ReadPanelMaterial(PanelMaterial& mat, unsigned char* buffer,
+                           int& index);          // shell.o 0x57BEE0
+    int FindPanelQuadByPointer(PanelQuad* the_pointer);  // 0x57BF80
+    int FindFETextByPointer(FEText* the_pointer);        // 0x57BFC0
+    bool Load(const char* filename, unsigned char* buffer,
+              int buffer_size);                  // shell.o 0x593A00
+    PanelAnimObject* FindAnimObject(const char* search_name);  // 0x5948C0
     ~PanelFile();  // ??1PanelFile@@QAE@XZ
+private:
+    void Cleanup();  // ??0PanelFile... Cleanup@PanelFile@@AAEXXZ (0x58C4C0)
+    void LoadPanelGeom(unsigned char* buffer, int& index,
+                       const math::Mat43* parent_matrix);  // 0x5910E0
+    void LoadPanelObject(unsigned char* buffer, int& index,
+                         const math::Mat43* parent_matrix,
+                         const char* name, short widescreen_align);
+    void LoadPanelText(unsigned char* buffer, int& index,
+                       const math::Mat43* parent_matrix,
+                       const char* name, short widescreen_align);
+    void LoadPanelText2(unsigned char* buffer, int& index,
+                        const math::Mat43* parent_matrix,
+                        const char* name, short widescreen_align);
 };
 static_assert(sizeof(PanelFile) == 0x60, "PanelFile size mismatch");
 static_assert(offsetof(PanelFile, pquads) == 0x00, "PanelFile::pquads offset mismatch");
@@ -319,6 +434,8 @@ public:
     uint8_t          _pad6E[2];             // +0x6E
 
     // shell.o inline COMDATs (verified manglings)
+    virtual void Draw() { Draw(false); }  // ?Draw@FEText@@UAEXXZ (0x5AD830)
+    virtual void SetColor(color32 c) { SetNoFlash(c); }  // 0x5ADC20
     virtual void SetTextNoLocalize(const char* s) { text = s; }
     virtual void SetPos(float x, float y) { xy.x = x; xy.y = y; }
     virtual void SetY(float y) { xy.y = y; }
@@ -334,6 +451,25 @@ public:
     virtual float GetX() { return xy.x; }
     virtual float GetY() { return xy.y; }
     virtual bool GetFlag(int f) { return (flags & f) != 0; }
+    virtual bool IsOnMenu() { return GetFlag(2); }       // 0x5AD860
+    virtual Broc::string GetName() { return name; }      // 0x5ADC50
+    virtual void SetName(const char* n) { name = n; }    // 0x5ADAA0
+    virtual void SetPanelTextIndex(int the_index)        // 0x5ADC10
+    {
+        panel_text_index = the_index;
+    }
+    virtual void SetScaleMenuItem(float s_selected,      // 0x5AD9D0
+                                  float s_unselected)
+    {
+        scale.x = s_selected;
+        scale.y = s_selected;
+        scale.z = 0.0f;
+        scale_unselected.x = s_unselected;
+        scale_unselected.y = s_unselected;
+        scale_unselected.z = 0.0f;
+        scale_init.z = s_unselected;
+    }
+    virtual void SetLineSpacing(int) {}                  // 0x5ADE10 (empty)
     virtual void SetFlag(int f, bool on)
     {
         if (on)
@@ -556,10 +692,19 @@ public:
     void SetTextBoxNoLocalize(const char* s, int a3, int a4);
     void UpdateForSplitScreen(int viewport, int old_viewport);
     void UpdateForWidescreen(bool widescreen);
-    void SetNumLines(int n);
-    void SetText(const char* s);
+    virtual void SetNumLines(int n);      // ?SetNumLines@FEMultiLineText@@UAEXH@Z (0x56D6D0)
+    virtual void SetText(const char* s);  // ?SetText@FEMultiLineText@@UAEXPBD@Z (0x56D7E0)
+    virtual void SetLineSpacing(int new_spacing);  // 0x57CFA0
+    virtual void SetBoxWidth(int width)            // inline 0x5B1C30
+    {
+        box_width = width;
+    }
+    virtual void SetCutOffIfTooLong(bool coitl)    // inline 0x5B1C70
+    {
+        cut_off_if_too_long = coitl;
+    }
     static Broc::string ReplaceEndlines(Broc::string t);  // shell.o 0x56E670
-    FEMultiLineText(font_index f, float x1, float y1, float z1,
+    FEMultiLineText(font_index f, float x1, float y1, int z1,
                     panel_layer layer, float s, int horizJust, int vertJust,
                     color32 col);
 };
