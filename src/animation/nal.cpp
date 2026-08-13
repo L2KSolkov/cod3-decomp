@@ -6953,6 +6953,82 @@ public:
     int mRateAchieved;  // +0x1B0
 };
 
+// ============================================================================
+// InteractStateLeverPush / MortarLoad / PickLiveGrenade (anim.o)
+// LeverPush 0x1E0: mMetaNalBaseAnimPtr[2] +0x1A0, mMetaAnimDataPtr[2] +0x1A8,
+// mScore +0x1B0, mDesiredScore +0x1B4, mCurScoreDelta +0x1B8, mResistRate
+// +0x1BC, mResistCharge +0x1C0, mResistBurnAmt +0x1C4, mWinningDelayTimer
+// +0x1C8, mLosingDelayTimer +0x1CC, mPassedResistThreshold +0x1D0,
+// mLastPressesPerSec +0x1D4, mStartedNotifySent +0x1D8.
+// MortarLoad 0x1B0 extends PlayPlayerAnim: mFired +0x1A0.
+// PickLiveGrenade 0x1C0: bFreeOldLiveGrenade +0x1A0 (byte), mDeltaAngles[3]
+// +0x1A4, mInteractionWeapon +0x1B0, mDelayTime +0x1B4, mDelayStarted +0x1B8.
+// ============================================================================
+class InteractStateLeverPush : public InteractState {
+public:
+    InteractStateLeverPush(TPakId curPakId, const InteractStateInfo* info,
+                           InteractionController* controller);
+    virtual void Activate();              // 0x555A50
+    virtual void Deactivate();            // 0x53FD50
+    virtual InteractState* Update(float deltaT);  // 0x547000
+
+    void* mMetaNalBaseAnimPtr[2];  // +0x1A0
+    void* mMetaAnimDataPtr[2];     // +0x1A8
+    float mScore;                  // +0x1B0
+    float mDesiredScore;           // +0x1B4
+    float mCurScoreDelta;          // +0x1B8
+    float mResistRate;             // +0x1BC
+    float mResistCharge;           // +0x1C0
+    float mResistBurnAmt;          // +0x1C4
+    float mWinningDelayTimer;      // +0x1C8
+    float mLosingDelayTimer;       // +0x1CC
+    int mPassedResistThreshold;    // +0x1D0
+    float mLastPressesPerSec;      // +0x1D4
+    int mStartedNotifySent;        // +0x1D8
+
+private:
+    // Binary AAE (private)
+    void CalcScore(float deltaT);  // ?CalcScore@...@@AAEXM@Z
+    void PlayMetaAnims();          // ?PlayMetaAnims@...@@AAEXXZ
+};
+
+class InteractStateMortarLoad : public InteractStatePlayPlayerAnim {
+public:
+    InteractStateMortarLoad(TPakId curPakId, const InteractStateInfo* info,
+                            InteractionController* controller);
+    virtual void Activate();              // 0x54E440
+    virtual void Deactivate();            // 0x53FBD0 (thunk)
+    virtual InteractState* Update(float deltaT);  // 0x546EC0
+    virtual int GetCameraMode() const;    // 0x53DAC0 (UBEH)
+    virtual int Press(int buttonIndex);   // 0x53DA00
+    virtual int Release(int buttonIndex); // 0x53DA60
+
+    int mFired;  // +0x1A0
+};
+
+class InteractStatePickLiveGrenade : public InteractState {
+public:
+    InteractStatePickLiveGrenade(TPakId curPakId, const InteractStateInfo* info,
+                                 InteractionController* controller);
+    virtual void Activate();              // 0x53EAA0 (empty)
+    virtual void Deactivate();            // 0x53EAB0 (empty)
+    virtual InteractState* Update(float deltaT);  // 0x54BEF0 (thunk)
+    virtual int Press(int buttonIndex);   // 0x53EBA0
+    virtual int Release(int buttonIndex); // 0x53EBC0
+
+    unsigned char bFreeOldLiveGrenade;  // +0x1A0
+    float mDeltaAngles[3];              // +0x1A4
+    int mInteractionWeapon;             // +0x1B0
+    float mDelayTime;                   // +0x1B4
+    unsigned char mDelayStarted;        // +0x1B8
+
+protected:
+    // Binary IAE (protected)
+    void fireLiveGrenade(Entity* player);  // ?fireLiveGrenade@...@@IAEXPAVEntity@@@Z
+    void RotateCamera(float* const angles, float time);  // ?RotateCamera@...@@IAEXQAMM@Z
+    void ComputeDeltaAngles();          // ?ComputeDeltaAngles@...@@IAEXXZ
+};
+
 extern void* RumbleManager_Inst(int instance);
 
 // ?Remove@RumbleManager@@QAEXVRumbleEffectInstanceHandle@@@Z (core.o real)
@@ -7265,13 +7341,6 @@ int InteractState::GetCameraMode() const
             || (InteractionController::Inst(currCl)->mFlags & 4) != 0))
         return 16;
     return 17;
-}
-
-// ea: 0x0053DAC0 / 0x005614C0 (virtual overrides in binary)
-int InteractStateMortarLoad_GetCameraMode(InteractState* self)
-{
-    (void)self;
-    return 18;
 }
 
 int InteractStateVehicleBase_GetCameraMode(InteractState* self)
@@ -7797,10 +7866,6 @@ void InteractState_Ctor(InteractState* self, TPakId curPakId, void* info,
 
 // 0x546E60
 INTERACT_STATE_CTOR(InteractStateVehicleLink, kInteractTypeVehicleLink)
-// 0x546E90
-INTERACT_STATE_CTOR(InteractStateMortarLoad, kInteractTypeMortarLoad)
-// 0x546FB0
-INTERACT_STATE_CTOR(InteractStateLeverPush, kInteractTypeLeverPush)
 // 0x547630
 // 0x547BE0
 INTERACT_STATE_CTOR(InteractStateVehicleBase, kInteractTypeVehicleBase)
@@ -7810,9 +7875,6 @@ INTERACT_STATE_CTOR(InteractStateVehicleIdle, kInteractTypeVehicleIdle)
 INTERACT_STATE_CTOR(InteractStateVehicleTurn, kInteractTypeVehicleTurn)
 // 0x547CC0
 INTERACT_STATE_CTOR(InteractStateVehicleRelease, kInteractTypeVehicleRelease)
-// 0x54BEA0
-INTERACT_STATE_CTOR(InteractStatePickLiveGrenade,
-                   kInteractTypePickLiveGrenade)
 
 #undef INTERACT_STATE_CTOR
 
@@ -8800,6 +8862,13 @@ PPA_NEW_FWD(InteractStatePush);
 PPA_NEW_FWD(InteractStateStrengthTest);
 PPA_NEW_FWD(InteractStateScaleAnimSpeed);
 #undef PPA_NEW_FWD
+#define LMP_NEW_FWD(NAME)                                                   \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)
+LMP_NEW_FWD(InteractStateLeverPush);
+LMP_NEW_FWD(InteractStateMortarLoad);
+LMP_NEW_FWD(InteractStatePickLiveGrenade);
+#undef LMP_NEW_FWD
 #define MELEE_NEW_FWD(NAME)                                                 \
     static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
                            InteractionController* controller)
@@ -8824,7 +8893,7 @@ static const struct InteractStateCtorEntry {
     { 3, 0x1C0, InteractStatePush_New },
     { 4, 0x1C0, InteractStateStrengthTest_New },
     { 5, 0x1B0, InteractStateScaleAnimSpeed_New },
-    { 6, 0x1E0, InteractStateLeverPush_Ctor },
+    { 6, 0x1E0, InteractStateLeverPush_New },
     { 7, 0x220, InteractStateMelee_New },
     { 8, 0x1A0, InteractStateMeleeInitiate_New },
     { 9, 0x1A0, InteractStateMeleeStart_New },
@@ -8834,13 +8903,13 @@ static const struct InteractStateCtorEntry {
     { 13, 0x1A0, InteractStateMeleeStagedInitiate_New },
     { 14, 0x1B0, InteractStateMeleeStagedSuccess_New },
     { 15, 0x1A0, InteractStateMeleeDropWeapon_New },
-    { 16, 0x1B0, InteractStateMortarLoad_Ctor },
+    { 16, 0x1B0, InteractStateMortarLoad_New },
     { 17, 0x1B0, InteractStateVehicleBase_Ctor },
     { 18, 0x1B0, InteractStateVehicleIdle_Ctor },
     { 19, 0x1C0, InteractStateVehicleTurn_Ctor },
     { 20, 0x1C0, InteractStateVehicleRelease_Ctor },
     { 21, 0x1A0, InteractStateVehicleLink_Ctor },
-    { 22, 0x1C0, InteractStatePickLiveGrenade_Ctor },
+    { 22, 0x1C0, InteractStatePickLiveGrenade_New },
     { 23, 0x1A0, InteractStateRowboatInit_New },
     { 24, 0x210, InteractStateRowboat_New },
 };
@@ -8874,6 +8943,18 @@ PPA_NEW(InteractStatePush)
 PPA_NEW(InteractStateStrengthTest)
 PPA_NEW(InteractStateScaleAnimSpeed)
 #undef PPA_NEW
+
+#define LMP_NEW(NAME)                                                       \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)               \
+    {                                                                       \
+        new (mem) NAME(curPakId, (const InteractStateInfo*)info,            \
+                       controller);                                         \
+    }
+LMP_NEW(InteractStateLeverPush)
+LMP_NEW(InteractStateMortarLoad)
+LMP_NEW(InteractStatePickLiveGrenade)
+#undef LMP_NEW
 
 #define MELEE_NEW(NAME)                                                     \
     static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
@@ -9788,44 +9869,6 @@ float sSWKeepTurn = 90.0f;   // @ 0xDF29E0
 float sSWTurnRate = 300.0f;  // @ 0xDF29E4
 float sSWAngleFactor = 1.0f; // @ 0xDF29E8
 
-// ea: 0x0053EB00
-void InteractStatePickLiveGrenade_RotateCamera(InteractState* self,
-                                               float* angles, float time)
-{
-    (void)self;
-    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
-    char* ps = (char*)Player->client;
-    *(int*)(ps + 0x54) += (int)(angles[0] * 182.04445f) & 0xFFFF;
-    *(int*)(ps + 0x58) += (int)(angles[1] * 182.04445f) & 0xFFFF;
-    *(int*)(ps + 0x5C) += (int)(angles[2] * 182.04445f) & 0xFFFF;
-    ((Camera*)((char*)gCamera + 0x1F0 * currCl))->StartTween(time, true);
-}
-
-// ea: 0x00555390
-void InteractStatePickLiveGrenade_ComputeDeltaAngles(InteractState* self)
-{
-    unsigned int mVal = self->mController->mInteractableH.mVal;
-    unsigned int v3 = mVal & 0xFFF;
-    Entity* mObject = nullptr;
-    if (v3 < 0x540
-        && mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
-        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
-    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
-    char* ps = (char*)Player->client;
-    float dir[3];
-    float* mo = (float*)((char*)mObject + 0x150);
-    float* po = (float*)((char*)Player + 0x150);
-    dir[0] = mo[0] - po[0];
-    dir[1] = mo[1] - po[1];
-    dir[2] = mo[2] - (po[2] + *(float*)(ps + 0xE0));
-    VectorNormalize(dir);
-    float newAngles[3];
-    vectoangles(dir, newAngles);
-    *(float*)((char*)self + 0x1A4) = newAngles[0] - *(float*)(ps + 0xD0);
-    *(float*)((char*)self + 0x1A8) = newAngles[1] - *(float*)(ps + 0xD4);
-    *(float*)((char*)self + 0x1AC) = newAngles[2] - *(float*)(ps + 0xD8);
-}
-
 // ea: 0x00551320
 void InteractStateVehicleRelease_CalcSteeringWheelAngle(InteractState* self,
                                                         float deltaT)
@@ -10074,23 +10117,6 @@ void RowboatMgr::AddBoatman(const char* targetName, bool isLeader)
                 ++mNumLeaders;
         }
     }
-}
-
-struct weaponParms;  // U-tag; real in g_weapon.h
-extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);
-extern Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType,
-                                           weaponParms* wp);
-
-// ea: 0x0053EAC0
-void InteractStatePickLiveGrenade_fireLiveGrenade(InteractState* self,
-                                                  Entity* player)
-{
-    (void)self;
-    char wp[0x40];
-    int weapon = *(unsigned char*)((char*)player + 3);  // s.weapon
-    *(void**)wp = BG_GetInfoForWeapon(weapon);
-    CalcMuzzlePoints(player, (weaponParms*)wp);
-    weapon_grenadelauncher_fire(player, weapon, (weaponParms*)wp);
 }
 
 // ============================================================================
@@ -12288,6 +12314,517 @@ InteractState* InteractStateStrengthTest::Update(float deltaT)
 }
 
 // ============================================================================
+// InteractStateLeverPush / MortarLoad / PickLiveGrenade (anim.o
+// InteractStateLever.cpp / InteractStateMortar.cpp / InteractStatePickup.cpp)
+// ============================================================================
+
+// anim.o statics (verified vs IDA)
+float sPressesThresholdStart = 0.1f;  // 0xDF3060
+float sPressesThresholdStop = 0.05f;  // 0xDF3064
+float sResistThreshold = 0.4f;        // 0xDF3068
+float sResistRateMin = 0.2f;          // 0xDF306C
+float sResistExhaustRate = 0.75f;     // 0xDF3070
+float sResistIncRate = 1.7f;          // 0xDF3074
+float sResistRatePenaltyFactor = 1.1f;  // 0xDF3078
+float sPressTimeMax = 8.0f;           // 0xDF307C
+float sPushRateMinVariance = 0.5f;    // 0xDF3080
+float sPushRateMinBaseMax = 0.3f;     // 0xDF3084
+float sPushRateMinBaseMin = 0.22f;    // 0xDF3088
+float sPushRateMinFreq = 0.5f;        // 0xDF308C
+float sXBoxTriggerBonusFactor = 1.5f; // 0xDF3090
+float sResistRateMax = 0.5f;          // 0xDF3094
+float sStuckLosingTimeFraction = 0.9f;  // 0xDF3360
+float sWinThresh = 0.99f;             // 0xDF3364
+float sLoseThresh = 0.01f;            // 0xDF3368
+float sWinningDelayThresh = 0.9f;     // 0xDF336C
+float sLosingDelayThresh = 0.1f;      // 0xDF3370
+
+struct weaponParms;  // U-tag; real in g_weapon.h
+extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);
+extern Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType,
+                                           weaponParms* wp);
+
+// Local views matching game2.o definitions (manglings verified via dumpbin).
+struct ButtonEntry {
+    unsigned char _pad[0xC];   // size verified (g_game2_misc.cpp)
+    void Press(bool doCommands);    // ?Press@ButtonEntry@@QAEX_N@Z
+    void Release(bool doCommands);  // ?Release@ButtonEntry@@QAEX_N@Z
+};
+struct ButtonMgr {
+    static ButtonEntry (*mButtons)[16];
+    // ?mButtons@ButtonMgr@@2PAY0BA@UButtonEntry@@A (game2.o)
+};
+class controller {
+public:
+    unsigned char _pad[0x18];
+    int locked_port;            // +0x18 (verified vs MortarLoad::Update)
+    static controller* inst();  // ?inst@controller@@SAPAV1@XZ (game2.o)
+};
+
+// ea: 0x00546FB0
+InteractStateLeverPush::InteractStateLeverPush(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractState(curPakId, info, controller)
+{
+    mType = kInteractTypeLeverPush;
+    mMetaNalBaseAnimPtr[0] = nullptr;
+    mMetaAnimDataPtr[0] = nullptr;
+    mMetaNalBaseAnimPtr[1] = nullptr;
+    mMetaAnimDataPtr[1] = nullptr;
+}
+
+// ea: 0x00555A50
+void InteractStateLeverPush::Activate()
+{
+    InteractState::Activate();
+    EntityManager::sInst->GetPlayer(currCl);
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    float initialScore = mInfo->initialScore;
+    mScore = initialScore;
+    mDesiredScore = initialScore;
+    mResistRate = -1.0f;
+    mCurScoreDelta = 0.0f;
+    mResistCharge = 0.1f;
+    mResistBurnAmt = 0.0f;
+    mWinningDelayTimer = 0.0f;
+    mLosingDelayTimer = 0.0f;
+    mPassedResistThreshold = 0;
+    mLastPressesPerSec = 0.0f;
+    PlayMetaAnims();
+    mController->mMetaAnimScore = mScore;
+}
+
+// ea: 0x0053FD50
+void InteractStateLeverPush::Deactivate()
+{
+    InteractState::Deactivate();
+    for (int i = 2; i != 0; --i)
+    {
+        int idx = i - 1;
+        void* base = mMetaNalBaseAnimPtr[idx];
+        if (base != nullptr)
+        {
+            ((void (__thiscall*)(void*, int))((void**)*(void**)base)[1])(
+                base, 1);
+            mMetaNalBaseAnimPtr[idx] = nullptr;
+        }
+        if (mMetaAnimDataPtr[idx] != nullptr)
+        {
+            mem_heap_free(mMetaAnimDataPtr[idx]);
+            mMetaAnimDataPtr[idx] = nullptr;
+        }
+    }
+    if (mStartedNotifySent != 0)
+    {
+        static unsigned int stopHash_0 = HashString::CalcHash("stopped");
+        HashString h;
+        h.mHash = stopHash_0;
+        EntityManager::sInst->GetPlayer(currCl)->Notify(h);
+        mStartedNotifySent = 0;
+    }
+}
+
+// ea: 0x00547000
+InteractState* InteractStateLeverPush::Update(float deltaT)
+{
+    InteractState::Update(deltaT);
+    float v3 = 0.0f;
+    if (sLosingDelayThresh <= mScore)
+        mLosingDelayTimer = 0.0f;
+    else
+        mLosingDelayTimer = deltaT + mLosingDelayTimer;
+    if (mScore > sWinningDelayThresh)
+        v3 = mWinningDelayTimer + deltaT;
+    mWinningDelayTimer = v3;
+    float v4 = sLoseThresh;
+    InteractState* mFailureState = this;
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (sLoseThresh <= mDesiredScore
+        || mLosingDelayTimer <= info->losingDelay)
+    {
+        if (mDesiredScore <= sWinThresh
+            || mWinningDelayTimer <= info->winningDelay)
+        {
+            if ((mFlags & 0x80) == 0)
+            {
+                if (mStateTimer > info->acceptInputMinTime)
+                {
+                    CalcScore(deltaT);
+                    v4 = sLoseThresh;
+                }
+            }
+            else
+            {
+                mScore = sLoseThresh - 0.001f;
+            }
+            if (v4 > mDesiredScore
+                && mLosingDelayTimer
+                       > (info->losingDelay * sStuckLosingTimeFraction))
+                mFlags |= 0x80u;
+        }
+        else
+        {
+            mFailureState = mSuccessState[0];
+            mController->mFlags |= 0x200u;
+        }
+    }
+    else
+    {
+        mFailureState = this->mFailureState;
+    }
+    mController->mMetaAnimScore = mScore;
+    return mFailureState;
+}
+
+// ea: 0x0053FE80
+void InteractStateLeverPush::CalcScore(float deltaT)
+{
+    float v2 = sResistRateMax;
+    bool v4 = mResistRate >= 0.0f;
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    InteractInputRcvr* mInputRcvr = (InteractInputRcvr*)this->mInputRcvr;
+    float v7 = ((1.0f - mInfo->difficulty) * 0.08f) + 0.05f;
+    float pressesPerSec = mInputRcvr->mInputRate * sXBoxTriggerBonusFactor;
+    float v8 = v7 * pressesPerSec;
+    if (!v4)
+        mResistRate = sResistRateMax;
+    float sPushRateMinDelta =
+        sin(sPushRateMinFreq * mStateTimer * 6.2831855f) * sPushRateMinVariance;
+    float v9;
+    if (mPassedResistThreshold != 0
+        && mInputRcvr->mTimeSinceLastInput <= (sPressTimeMax * v7)
+        && (sPushRateMinDelta
+            + (((sPushRateMinBaseMax - sPushRateMinBaseMin) * mScore)
+               + sPushRateMinBaseMin))
+               > v8)
+    {
+        v9 = (sResistIncRate * deltaT) + mResistRate;
+        if (v2 <= v9)
+            v9 = v2;
+    }
+    else
+    {
+        if (v2 <= mResistRate)
+            mResistRate = v2;
+        float v11 = sResistExhaustRate * deltaT;
+        v9 = mResistRate - v11;
+        if (v9 <= sResistRateMin)
+            v9 = sResistRateMin;
+    }
+    mResistRate = v9;
+    float v12 = ((v8 - v9) * deltaT) + mDesiredScore;
+    float clamped;
+    if (v12 >= 0.0f)
+    {
+        clamped = 1.0f;
+        if (v12 <= 1.0f)
+            clamped = v12;
+    }
+    else
+    {
+        clamped = 0.0f;
+    }
+    mDesiredScore = clamped;
+    float lastScore = mScore;
+    float lerpK = 1.0f - pow(0.3f, deltaT * 60.0f);
+    float v13 = ((clamped - lastScore) * lerpK) + lastScore;
+    mScore = v13;
+    if (deltaT > 0.0f)
+        mCurScoreDelta = (v13 - lastScore) / deltaT;
+    if (mScore > sResistThreshold)
+        mPassedResistThreshold = 1;
+    if (mStartedNotifySent != 0)
+    {
+        if (mLastPressesPerSec > sPressesThresholdStop
+            && sPressesThresholdStop >= pressesPerSec)
+        {
+            static unsigned int stopHash_1 = HashString::CalcHash("stopped");
+            HashString h;
+            h.mHash = stopHash_1;
+            EntityManager::sInst->GetPlayer(currCl)->Notify(h);
+            mStartedNotifySent = 0;
+        }
+    }
+    else if (sPressesThresholdStart >= mLastPressesPerSec
+             && pressesPerSec > sPressesThresholdStart)
+    {
+        static unsigned int startHash = HashString::CalcHash("started");
+        HashString h;
+        h.mHash = startHash;
+        EntityManager::sInst->GetPlayer(currCl)->Notify(h);
+        mStartedNotifySent = 1;
+    }
+    mLastPressesPerSec = pressesPerSec;
+}
+
+// ea: 0x0054E880
+void InteractStateLeverPush::PlayMetaAnims()
+{
+    if ((mFlags & 1) == 0)
+    {
+        if (*(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client
+                    + 0xA4)
+            != mController->mSelectedInteractWeaponIndex)
+        {
+            XANIM_ASSERT(
+                "player->client->ps.weapon == weaponIndex",
+                "c:\\cod\\code\\game\\InteractStateLever.cpp", 186,
+                "Weapon needs to be set to interact weapon");
+        }
+        if (mMetaNalBaseAnimPtr[0] != nullptr)
+        {
+            XANIM_ASSERT("!mMetaNalBaseAnimPtr[0]",
+                         "c:\\cod\\code\\game\\InteractStateLever.cpp", 189,
+                         "Should be null");
+        }
+        if (mMetaAnimDataPtr[0] != nullptr)
+        {
+            XANIM_ASSERT("!mMetaAnimDataPtr[0]",
+                         "c:\\cod\\code\\game\\InteractStateLever.cpp", 190,
+                         "Should be null");
+        }
+        void* v2 = tlMemAlloc(0x44, 8, 0);
+        void* v3 = (v2 != nullptr) ? MetaNalBaseAnim_Ctor(v2) : nullptr;
+        mMetaNalBaseAnimPtr[0] = v3;
+        void* v4 = mem_heap_malloc(0x2C);
+        if (v4 != nullptr)
+            v4 = new (v4) InteractMetaAnimData();
+        mMetaAnimDataPtr[0] = v4;
+        MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr[0], mMetaAnimDataPtr[0]);
+        DObj* dobj = (DObj*)dword_F6A2A0[802 * mController->mClient];
+        InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+        tlFixedString name(info->playerAnim);
+        void* Anim = nalGetAnim(name);
+        MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr[0], &Anim, 1);
+        ((AnimationPlayer*)dobj->animPlayers[0])
+            ->Play((nalGenericAnim*)mMetaNalBaseAnimPtr[0], true,
+                   info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
+                   mPlayerCallback, 1.0f, 0.0f);
+        mFlags |= 1u;
+        if (info->interactableAnim[0] != 0)
+        {
+            unsigned int v8 = mController->mInteractableH.mVal & 0xFFF;
+            if (v8 < 0x540
+                && mController->mInteractableH.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v8].mKey)
+            {
+                Entity* mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+                if (mObject != nullptr)
+                {
+                    if (mMetaNalBaseAnimPtr[1] != nullptr)
+                    {
+                        XANIM_ASSERT(
+                            "!mMetaNalBaseAnimPtr[1]",
+                            "c:\\cod\\code\\game\\InteractStateLever.cpp",
+                            211, "Should be null");
+                    }
+                    if (mMetaAnimDataPtr[1] != nullptr)
+                    {
+                        XANIM_ASSERT(
+                            "!mMetaAnimDataPtr[1]",
+                            "c:\\cod\\code\\game\\InteractStateLever.cpp",
+                            212, "Should be null");
+                    }
+                    void* v10 = tlMemAlloc(0x44, 8, 0);
+                    void* v11 =
+                        (v10 != nullptr) ? MetaNalBaseAnim_Ctor(v10) : nullptr;
+                    mMetaNalBaseAnimPtr[1] = v11;
+                    void* v12 = mem_heap_malloc(0x2C);
+                    if (v12 != nullptr)
+                        v12 = new (v12) InteractMetaAnimData();
+                    mMetaAnimDataPtr[1] = v12;
+                    MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr[1],
+                                           mMetaAnimDataPtr[1]);
+                    tlFixedString v20(info->interactableAnim);
+                    void* v15 = nalGetAnim(v20);
+                    MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr[1], &v15,
+                                                1);
+                    DObj* mDObj = mObject->mDObj;
+                    mController->CreateInteractableAnimPlayer();
+                    for (int v17 = 0; v17 < mDObj->numModels; ++v17)
+                    {
+                        AnimationPlayer* v18 =
+                            (AnimationPlayer*)mDObj->animPlayers[v17];
+                        if (v18 != nullptr)
+                        {
+                            void* callback =
+                                (v17 != 0) ? nullptr : mOtherCallback;
+                            v18->Play(
+                                (nalGenericAnim*)mMetaNalBaseAnimPtr[1], true,
+                                info->animFadeInTime,
+                                (void*)&gMetaAnimPlayMethod, 0.0f, callback,
+                                1.0f, 0.0f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00546E90
+InteractStateMortarLoad::InteractStateMortarLoad(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStatePlayPlayerAnim(curPakId, info, controller)
+{
+    mType = kInteractTypeMortarLoad;
+}
+
+// ea: 0x0054E440
+void InteractStateMortarLoad::Activate()
+{
+    InteractStatePlayPlayerAnim::Activate();
+    mFired = 0;
+}
+
+// ea: 0x0053FBD0 (thunk)
+void InteractStateMortarLoad::Deactivate()
+{
+    InteractState::Deactivate();
+}
+
+// ea: 0x00546EC0
+InteractState* InteractStateMortarLoad::Update(float deltaT)
+{
+    InteractState* v3 = InteractStatePlayPlayerAnim::Update(deltaT);
+    if (mFired != 0)
+    {
+        controller* v4 = controller::inst();
+        ButtonMgr::mButtons[v4->locked_port][8].Release(true);
+    }
+    if (v3 == nullptr || v3 == this || mFired != 0)
+        return v3;
+    controller* v6 = controller::inst();
+    ButtonMgr::mButtons[v6->locked_port][8].Press(true);
+    mFired = 1;
+    return this;
+}
+
+// ea: 0x0053DA00
+int InteractStateMortarLoad::Press(int buttonIndex)
+{
+    if ((buttonIndex == 215 && (mFlags & 2) != 0)
+        || (((InteractStateInfoLocal*)mInfo)->holdUseExitEnabled
+            && buttonIndex == 211))
+        return 0;
+    InteractInputRcvr* mInputRcvr = (InteractInputRcvr*)this->mInputRcvr;
+    if (mInputRcvr != nullptr)
+        return mInputRcvr->Press(buttonIndex);
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+// ea: 0x0053DA60
+int InteractStateMortarLoad::Release(int buttonIndex)
+{
+    if ((buttonIndex == 215 && (mFlags & 2) != 0)
+        || (((InteractStateInfoLocal*)mInfo)->holdUseExitEnabled
+            && buttonIndex == 211))
+        return 0;
+    InteractInputRcvr* mInputRcvr = (InteractInputRcvr*)this->mInputRcvr;
+    if (mInputRcvr != nullptr)
+        return mInputRcvr->Release(buttonIndex);
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+// ea: 0x0053DAC0
+int InteractStateMortarLoad::GetCameraMode() const
+{
+    return 18;
+}
+
+// ea: 0x0054BEA0
+InteractStatePickLiveGrenade::InteractStatePickLiveGrenade(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractState(curPakId, info, controller)
+{
+    bFreeOldLiveGrenade = 0;
+    mDelayStarted = 0;
+    mType = kInteractTypePickLiveGrenade;
+    mInteractionWeapon = -1;
+    mDelayTime = 0.0f;
+}
+
+// ea: 0x0053EAA0 (empty)
+void InteractStatePickLiveGrenade::Activate()
+{
+}
+
+// ea: 0x0053EAB0 (empty)
+void InteractStatePickLiveGrenade::Deactivate()
+{
+}
+
+// ea: 0x0054BEF0 (thunk)
+InteractState* InteractStatePickLiveGrenade::Update(float deltaT)
+{
+    return InteractState::Update(deltaT);
+}
+
+// ea: 0x0053EBA0
+int InteractStatePickLiveGrenade::Press(int buttonIndex)
+{
+    return buttonIndex == 211;
+}
+
+// ea: 0x0053EBC0
+int InteractStatePickLiveGrenade::Release(int buttonIndex)
+{
+    (void)buttonIndex;
+    return 0;
+}
+
+// ea: 0x0053EAC0
+void InteractStatePickLiveGrenade::fireLiveGrenade(Entity* player)
+{
+    char wp[0x40];
+    int weapon = *(unsigned char*)((char*)player + 3);  // s.weapon
+    *(void**)wp = BG_GetInfoForWeapon(weapon);
+    CalcMuzzlePoints(player, (weaponParms*)wp);
+    weapon_grenadelauncher_fire(player, weapon, (weaponParms*)wp);
+}
+
+// ea: 0x0053EB00
+void InteractStatePickLiveGrenade::RotateCamera(float* const angles,
+                                                float time)
+{
+    char* ps = (char*)EntityManager::sInst->GetPlayer(currCl)->client;
+    *(int*)(ps + 0x54) += (int)(angles[0] * 182.04445f) & 0xFFFF;
+    *(int*)(ps + 0x58) += (int)(angles[1] * 182.04445f) & 0xFFFF;
+    *(int*)(ps + 0x5C) += (int)(angles[2] * 182.04445f) & 0xFFFF;
+    ((Camera*)((char*)gCamera + 0x1F0 * currCl))->StartTween(time, true);
+}
+
+// ea: 0x00555390
+void InteractStatePickLiveGrenade::ComputeDeltaAngles()
+{
+    unsigned int mVal = mController->mInteractableH.mVal;
+    unsigned int v3 = mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v3 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    char* ps = (char*)Player->client;
+    float dir[3];
+    dir[0] = mObject->r.currentOrigin.v.m128_f32[0]
+             - Player->r.currentOrigin.v.m128_f32[0];
+    dir[1] = mObject->r.currentOrigin.v.m128_f32[1]
+             - Player->r.currentOrigin.v.m128_f32[1];
+    dir[2] = mObject->r.currentOrigin.v.m128_f32[2]
+             - (Player->r.currentOrigin.v.m128_f32[2]
+                + *(float*)(ps + 0xE0));
+    VectorNormalize(dir);
+    float newAngles[3];
+    vectoangles(dir, newAngles);
+    mDeltaAngles[0] = newAngles[0] - *(float*)(ps + 0xD0);
+    mDeltaAngles[1] = newAngles[1] - *(float*)(ps + 0xD4);
+    mDeltaAngles[2] = newAngles[2] - *(float*)(ps + 0xD8);
+}
+
+// ============================================================================
 // Meta-anim + Melee final cluster (anim.o)
 // Melee fields: mModifierIndex +0x1B0, mNumModifiers +0x1B4, mModifierAnimTime
 // +0x1B8, mModifierIntervalTimer +0x1BC, mPlayerSoundHandle +0x1C0,
@@ -12375,114 +12912,6 @@ void InteractStateVehicleTurn_PlayMetaAnim(InteractState* self, float deltaT)
                (void*)&gMetaAnimPlayMethod, 0.0f, self->mPlayerCallback,
                1.0f, 0.0f);
     self->mFlags |= 1u;
-}
-
-// ea: 0x0054E880
-void InteractStateLeverPush_PlayMetaAnims(InteractState* self)
-{
-    if ((self->mFlags & 1) == 0)
-    {
-        if (*(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client
-                    + 0xA4)
-            != self->mController->mSelectedInteractWeaponIndex)
-        {
-            XANIM_ASSERT(
-                "player->client->ps.weapon == weaponIndex",
-                "c:\\cod\\code\\game\\InteractStateLever.cpp", 186,
-                "Weapon needs to be set to interact weapon");
-        }
-        if (*(void**)((char*)self + 0x1A0) != nullptr)
-        {
-            XANIM_ASSERT("!mMetaNalBaseAnimPtr[0]",
-                         "c:\\cod\\code\\game\\InteractStateLever.cpp", 189,
-                         "Should be null");
-        }
-        if (*(void**)((char*)self + 0x1A8) != nullptr)
-        {
-            XANIM_ASSERT("!mMetaAnimDataPtr[0]",
-                         "c:\\cod\\code\\game\\InteractStateLever.cpp", 190,
-                         "Should be null");
-        }
-        void* v2 = tlMemAlloc(0x44, 8, 0);
-        void* v3 = (v2 != nullptr) ? MetaNalBaseAnim_Ctor(v2) : nullptr;
-        *(void**)((char*)self + 0x1A0) = v3;
-        void* v4 = mem_heap_malloc(0x2C);
-        if (v4 != nullptr)
-            v4 = new (v4) InteractMetaAnimData();
-        *(void**)((char*)self + 0x1A8) = v4;
-        MetaNalBaseAnim_Create(*(void**)((char*)self + 0x1A0),
-                               *(void**)((char*)self + 0x1A8));
-        DObj* dobj =
-            (DObj*)dword_F6A2A0[802 * self->mController->mClient];
-        InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
-        tlFixedString name(info->playerAnim);
-        void* Anim = nalGetAnim(name);
-        MetaNalBaseAnim_DelayCreate(*(void**)((char*)self + 0x1A0), &Anim, 1);
-        ((AnimationPlayer*)dobj->animPlayers[0])
-            ->Play((nalGenericAnim*)*(void**)((char*)self + 0x1A0), true,
-                   info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
-                   self->mPlayerCallback, 1.0f, 0.0f);
-        self->mFlags |= 1u;
-        if (info->interactableAnim[0] != 0)
-        {
-            unsigned int v8 = self->mController->mInteractableH.mVal & 0xFFF;
-            if (v8 < 0x540
-                && self->mController->mInteractableH.mVal >> 12
-                       == EntityHandleDb::sInst.mElements[v8].mKey)
-            {
-                Entity* mObject = EntityHandleDb::sInst.mElements[v8].mObject;
-                if (mObject != nullptr)
-                {
-                    if (*(void**)((char*)self + 0x1A4) != nullptr)
-                    {
-                        XANIM_ASSERT(
-                            "!mMetaNalBaseAnimPtr[1]",
-                            "c:\\cod\\code\\game\\InteractStateLever.cpp",
-                            211, "Should be null");
-                    }
-                    if (*(void**)((char*)self + 0x1AC) != nullptr)
-                    {
-                        XANIM_ASSERT(
-                            "!mMetaAnimDataPtr[1]",
-                            "c:\\cod\\code\\game\\InteractStateLever.cpp",
-                            212, "Should be null");
-                    }
-                    void* v10 = tlMemAlloc(0x44, 8, 0);
-                    void* v11 =
-                        (v10 != nullptr) ? MetaNalBaseAnim_Ctor(v10) : nullptr;
-                    *(void**)((char*)self + 0x1A4) = v11;
-                    void* v12 = mem_heap_malloc(0x2C);
-                    if (v12 != nullptr)
-                        v12 = new (v12) InteractMetaAnimData();
-                    *(void**)((char*)self + 0x1AC) = v12;
-                    MetaNalBaseAnim_Create(*(void**)((char*)self + 0x1A4),
-                                           *(void**)((char*)self + 0x1AC));
-                    tlFixedString v20(info->interactableAnim);
-                    void* v15 = nalGetAnim(v20);
-                    MetaNalBaseAnim_DelayCreate(
-                        *(void**)((char*)self + 0x1A4), &v15, 1);
-                    DObj* mDObj = mObject->mDObj;
-                    self->mController->CreateInteractableAnimPlayer();
-                    for (int v17 = 0; v17 < mDObj->numModels; ++v17)
-                    {
-                        AnimationPlayer* v18 =
-                            (AnimationPlayer*)mDObj->animPlayers[v17];
-                        if (v18 != nullptr)
-                        {
-                            void* callback =
-                                (v17 != 0) ? nullptr : self->mOtherCallback;
-                            v18->Play(
-                                (nalGenericAnim*)*(void**)((char*)self
-                                                           + 0x1A4),
-                                true, info->animFadeInTime,
-                                (void*)&gMetaAnimPlayMethod, 0.0f, callback,
-                                1.0f, 0.0f);
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 // ea: 0x0054F390
