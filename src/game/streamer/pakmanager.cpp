@@ -141,6 +141,9 @@ void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src,
 }
 typedef unsigned nflState;
 typedef unsigned nflFileID;
+enum nflMediaID : unsigned { NFL_MEDIA_DEFAULT = 0 };  // matches filesystem/nfl.cpp
+#define NFL_FILE_ID_INVALID ((nflFileID)-1)
+extern nflFileID nflOpenFile(nflMediaID media, const char* name);  // filesystem/nfl.cpp
 extern void nflUpdate();
 extern nflState nflGetState();
 extern unsigned int nflReadFile(nflFileID file, unsigned offset, void* buf,
@@ -169,24 +172,25 @@ void nflSetRequestPriority(nflRequestID requestID, unsigned int priority)
 {
     (void)requestID; (void)priority;
 }
+extern nflFileID nflOpenFileEx(nflMediaID media, const char* fileName,
+                               unsigned int* fileSize);  // nfl_common.o
+extern void nflCancelFileRequests(nflFileID fileID);     // nfl_common.o
+extern void nflCloseFile(nflFileID file);                // filesystem/nfl.cpp
+nflFileID nflOpenFileEx(nflMediaID media, const char* fileName,
+                        unsigned int* fileSize)
+{
+    (void)media; (void)fileSize;
+    return nflOpenFile(media, fileName);
+}
+void nflCancelFileRequests(nflFileID fileID)
+{
+    (void)fileID;
+}
 void codNflCallback(unsigned int state, unsigned int requestId);
 void codNflCallback(unsigned int state, unsigned int requestId)
 {
     (void)state; (void)requestId;
 }
-
-struct AssetBankSet {
-    virtual ~AssetBankSet();  // defined in g_entity_misc.cpp
-    AssetBankSet();           // defined in ctor_dtor.cpp
-};
-
-// FEManager (shell.o; DrawDiscError only)
-class FEManager {
-public:
-    void DrawDiscError();  // ?DrawDiscError@FEManager@@QAEXXZ (shell.o; stub)
-};
-// shell.o owns the real symbol; placeholder until shell.o is ported
-FEManager g_femanager;
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0, ARO = 1, AC = 9 };
@@ -232,6 +236,15 @@ struct BitSet {
     bool Test(int v) const;
     void Add(int v) { mBits[v >> 5] |= (1u << (v & 0x1F)); }
     void Rmv(int v) { mBits[v >> 5] &= ~(1u << (v & 0x1F)); }
+    bool IsEmpty() const
+    {
+        for (int i = 0; i < kNumWords; ++i)
+        {
+            if (mBits[i] != 0)
+                return false;
+        }
+        return true;
+    }
 };
 
 
@@ -267,6 +280,7 @@ public:
     bool can_alloc(NumBanks num_banks) const;  // ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z
     int get_alloc_count(const TBankAlloc& bat) const;  // ?get_alloc_count@BankManager@@QBEHABUTBankAlloc@@@Z
     void release(TBankAlloc& alloc);  // ?release@BankManager@@QAEXAAUTBankAlloc@@@Z
+    TBankAlloc Allocate(NumBanks num_banks);  // ?Allocate@BankManager@@QAE?AUTBankAlloc@@VNumBanks@@@Z
 };
 
 template <typename T, int N>
@@ -296,8 +310,73 @@ T& ae_array_get(ae_sized_array<T, N>& a, int idx)
     return a.m_elements[idx];
 }
 
-// AssetBankSet sBankArray (streamer.o data @ 0xF58BC8)
-ae_sized_array<void*, 24> AssetBankSet_sBankArray;
+// Cross-object bridge stubs (render.o / fx.o / anim.o / shell.o)
+extern void R_RefreshCell(int cellIndex, bool clear);  // render.o
+void R_RefreshCell(int cellIndex, bool clear)
+{
+    (void)cellIndex; (void)clear;
+}
+extern void FX_KillEffects(TPakId pakId);  // fx.o
+void FX_KillEffects(TPakId pakId)
+{
+    (void)pakId;
+}
+extern void StopAllSceneAnims(TPakId pakId);  // anim.o
+void StopAllSceneAnims(TPakId pakId)
+{
+    (void)pakId;
+}
+
+// AssetBankSet (streamer.o; sBankArray @ 0xF59348)
+struct AssetBankSet {
+    virtual ~AssetBankSet();  // defined in g_entity_misc.cpp
+    AssetBankSet();           // defined in ctor_dtor.cpp
+    virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@AssetBankSet@@UAEXW4TPakId@@@Z (streamer.o)
+
+    static ae_sized_array<AssetBankSet*, 24> sBankArray;  // ?sBankArray@AssetBankSet@@0V?$ae_sized_array@PAVAssetBankSet@@$0BI@@@A
+    static void UnloadBanks(TPakId pakId);  // ?UnloadBanks@AssetBankSet@@SAXW4TPakId@@@Z (streamer.o 0x66B0E0)
+};
+ae_sized_array<AssetBankSet*, 24> AssetBankSet::sBankArray;
+
+// ea: 0x66B0E0
+void AssetBankSet::UnloadBanks(TPakId pakId)
+{
+    for (int i = 0; i < sBankArray.m_size; ++i)
+        sBankArray.m_elements[i]->UnloadBank(pakId);
+}
+
+// stub: AssetBankSet::UnloadBank (overridden by derived managers)
+void AssetBankSet::UnloadBank(TPakId pakId)
+{
+    (void)pakId;
+}
+
+// ThroughputMeasurer (streamer.o PakFile.cpp; mStart double + mBytes)
+struct ThroughputMeasurer {
+    double       mStart;   // +0x00
+    unsigned int mBytes;   // +0x08
+
+    float safeGetTime() const;  // ?safeGetTime@ThroughputMeasurer@@QBEMXZ
+};
+ThroughputMeasurer gThroughputMeasurer;  // ?gThroughputMeasurer@@3UThroughputMeasurer@@A @ 0xF59318
+
+float ThroughputMeasurer::safeGetTime() const
+{
+    return 0.0f;  // stub: real impl returns host clock seconds
+}
+
+// FEManager (shell.o; DrawDiscError + UnloadBank stubs)
+class FEManager {
+public:
+    void DrawDiscError();  // ?DrawDiscError@FEManager@@QAEXXZ (shell.o; stub)
+    void UnloadBank(TPakId pakId);  // ?UnloadBank@FEManager@@QAEXW4TPakId@@@Z (shell.o; stub)
+};
+// shell.o owns the real symbol; placeholder until shell.o is ported
+FEManager g_femanager;
+void FEManager::UnloadBank(TPakId pakId)
+{
+    (void)pakId;
+}
 
 // PakHeader (streamer.o PakFile.h; 48 bytes)
 struct PakHeader {
@@ -376,6 +455,36 @@ extern unsigned int nflGetRequestState(unsigned int requestID);
 struct PakInfoNode;
 class PoolAllocator;
 
+// ae_vector<T> (ae/core/ae_vector.h; 12 bytes) - grow policy per IDA
+template <typename T>
+struct ae_vector {
+    T*  mElements;   // +0x00
+    int mCapacity;   // +0x04
+    int mSize;       // +0x08
+
+    void push_back(const T& iElement)
+    {
+        if (mSize >= mCapacity)
+        {
+            int v4 = mSize + 4;
+            if (mSize <= 3)
+                v4 = mSize + 1;
+            T* v9 = (T*)tlMemAlloc(sizeof(T) * v4, 8, 0);
+            for (int v5 = 0; v5 < mSize; ++v5)
+                v9[v5] = mElements[v5];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mCapacity = v4;
+            mElements = v9;
+        }
+        mElements[mSize++] = iElement;
+    }
+};
+
 // PakFile (streamer.o PakFile.h; 276 bytes, verified IDA)
 class PakFile {
 public:
@@ -407,7 +516,9 @@ public:
     int          mDefaultSectionIdx;    // +0x84
     unsigned char* mHeaderBuffer;       // +0x88
     TRequestId   mHeaderRequestId;      // +0x8C
-    uint8_t      _pad90[0xA0 - 0x90];   // mApkFiles/mCloseHandle/mOnlyLoadHeader
+    ae_vector<apk::apkFile*> mApkFiles; // +0x90
+    bool         mCloseHandle;          // +0x9C
+    bool         mOnlyLoadHeader;       // +0x9D
     ae_sized_array<mem_heap*, 12> mHeapList;  // +0xA0
     ae_sized_array<PakFile*, 4>   mPrereqHeaps;  // +0xD4
     uint8_t      _padE4[0xE8 - 0xE4];
@@ -419,11 +530,12 @@ public:
     EState       mState;                // +0xFC
     ELoadingState mLoadingState;        // +0x100
     enum ELoadingStateAll { LOADING_DONE = 3 };
-    uint8_t      _pad104[0x110 - 0x104];  // mLooseFiles
+    ae_vector<void*> mLooseFiles;       // +0x104
     LoadStats*   mLoadStats;            // +0x110
 
     static unsigned char* sHeaderBuffer;  // ?sHeaderBuffer@PakFile@@0PAEA
     static bool sHeaderBufferUsed;        // ?sHeaderBufferUsed@PakFile@@0_NA
+    static unsigned int sHeaderBufferSize;  // ?sHeaderBufferSize@PakFile@@0IA
     static PoolAllocator* sAllocator;     // ?sAllocator@PakFile@@0PAVPoolAllocator@@A @ 0xF592EC
 
     void* get_dlist_node();     // ?get_dlist_node@PakFile@@QAEPAXXZ
@@ -463,6 +575,22 @@ public:
                  unsigned int heap_size);  // ?AddHeap@PakFile@@QAEXPAEI@Z
     // ea: 0x66E400
     static void SetupAllocator();  // ?SetupAllocator@PakFile@@SAXXZ
+    // ea: 0x66A120
+    void InitiateHeaderRead();  // ?InitiateHeaderRead@PakFile@@AAEXXZ
+    // ea: 0x66E540
+    void CancelLoading();  // ?CancelLoading@PakFile@@AAEXXZ
+    // ea: 0x6746C0
+    void AsyncLoad(NumBanks numBanks);  // ?AsyncLoad@PakFile@@QAEXVNumBanks@@@Z
+    // ea: 0x6747D0
+    void AsyncUnload();  // ?AsyncUnload@PakFile@@QAEXXZ
+    // ea: 0x66E7C0
+    void BeginAsyncUnload();  // ?BeginAsyncUnload@PakFile@@AAEXXZ
+    // ea: 0x66E860
+    void UnloadSerialized();  // ?UnloadSerialized@PakFile@@AAEXXZ
+    // ea: 0x675410
+    void AddApk(apk::apkFile* apk);  // ?AddApk@PakFile@@QAEXPAVapkFile@apk@@@Z
+    // ea: 0x6754A0
+    void ReleaseApks();  // ?ReleaseApks@PakFile@@QAEXXZ
 
     // ea: 0x664B90
     float GetLoadTime() const;
@@ -515,36 +643,6 @@ template <typename T>
 struct InplaceVector {
     unsigned int mSize;  // +0x00
     T*           mList;  // +0x04
-};
-
-// ae_vector<T> (ae/core/ae_vector.h; 12 bytes) - grow policy per IDA
-template <typename T>
-struct ae_vector {
-    T*  mElements;   // +0x00
-    int mCapacity;   // +0x04
-    int mSize;       // +0x08
-
-    void push_back(const T& iElement)
-    {
-        if (mSize >= mCapacity)
-        {
-            int v4 = mSize + 4;
-            if (mSize <= 3)
-                v4 = mSize + 1;
-            T* v9 = (T*)tlMemAlloc(sizeof(T) * v4, 8, 0);
-            for (int v5 = 0; v5 < mSize; ++v5)
-                v9[v5] = mElements[v5];
-            if (mElements != nullptr)
-            {
-                tlMemFree(mElements);
-                mElements = nullptr;
-                mCapacity = 0;
-            }
-            mCapacity = v4;
-            mElements = v9;
-        }
-        mElements[mSize++] = iElement;
-    }
 };
 
 // PakInfoBank (streamer.o; InplaceAssetBank base, mPtrs +0x10)
@@ -1056,6 +1154,8 @@ public:
     uint8_t _pad[0x20];
     InplaceString mName;         // +0x20
     const PakInfoNode* mPakInfo;  // +0x24
+    uint8_t _pad28[0x30 - 0x28];
+    InplaceVector<const ZoneCellDesc*> mCells;  // +0x30
 
     const char* GetName() const;              // ?GetName@StreamZone@@QBEPBDXZ
     void SetPakInfo(const PakInfoNode* n);    // ?SetPakInfo@StreamZone@@QBEXPBUPakInfoNode@@@Z
@@ -1064,7 +1164,9 @@ public:
 // ZoneCellDesc (streamer.o view; mZone +0x2C)
 class ZoneCellDesc {
 public:
-    uint8_t _pad[0x2C];
+    uint8_t _pad[0x20];
+    unsigned int mCellId;       // +0x20
+    uint8_t _pad24[0x2C - 0x24];
     const StreamZone* mZone;  // +0x2C
 
     const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
@@ -1090,6 +1192,7 @@ public:
     void SetInitialCell(int cell);  // ?SetInitialCell@StreamZoneManager@@QAEXH@Z
     void OnLoading(TPakId pakId);  // ?OnLoading@StreamZoneManager@@QAEXW4TPakId@@@Z (empty no-op)
     void OnUnloaded(TPakId pakId);  // ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z
+    void OnUnload(TPakId pakId);  // ?OnUnload@StreamZoneManager@@QAEXW4TPakId@@@Z
     int GetNumZones() const;        // ?GetNumZones@StreamZoneManager@@QBEHXZ
     const StreamZone* GetZoneByIndex(unsigned int index) const;  // ?GetZoneByIndex@StreamZoneManager@@QBEPBVStreamZone@@I@Z
     const StreamZone* FindZone(TPakId pakId) const;  // ?FindZone@StreamZoneManager@@QBEPBVStreamZone@@W4TPakId@@@Z
@@ -2943,6 +3046,7 @@ void get_context_stack(ae_sized_array<TPakId, 32>* ret)
 
 unsigned char* PakFile::sHeaderBuffer = nullptr;
 bool PakFile::sHeaderBufferUsed = false;
+unsigned int PakFile::sHeaderBufferSize = 0;
 
 // ea: 0x664B90
 float PakFile::GetLoadTime() const
@@ -3223,6 +3327,37 @@ void ZoneOverrideBrushSet::SetInside(bool isInside)
 void StreamZoneManager::OnLoading(TPakId pakId)
 {
     (void)pakId;
+}
+
+// ea: 0x6676E0
+void StreamZoneManager::OnUnload(TPakId pakId)
+{
+    int i = mFirstBank;
+    unsigned int mFirstBank = (unsigned int)this->mFirstBank;
+    if (mFirstBank == (unsigned int)-1)
+        return;
+    while (1)
+    {
+        ZoneBoundaryBank* v4 = ZoneBankAt(*this, mFirstBank);
+        unsigned int v11 = mFirstBank;
+        for (unsigned int v5 = 0; v5 < v4->mPtrs.mSize; ++v5)
+        {
+            StreamZone* zone = (StreamZone*)v4->mPtrs.mList[v5];
+            const PakInfoNode* mPakInfo = zone->mPakInfo;
+            if (mPakInfo != nullptr && mPakInfo->pakId == pakId)
+            {
+                for (unsigned int v9 = 0; v9 < zone->mCells.mSize; ++v9)
+                {
+                    const ZoneCellDesc* cell = zone->mCells.mList[v9];
+                    R_RefreshCell(cell->mCellId, true);
+                }
+            }
+        }
+        i = ZoneBankAt(*this, v11)->mNextBank;
+        if (i == -1)
+            break;
+        mFirstBank = (unsigned int)ZoneBankAt(*this, v11)->mNextBank;
+    }
 }
 
 // ea: 0x663730
@@ -3944,6 +4079,136 @@ BankManager* BankManager::sInst = nullptr;  // ?sInst@BankManager@@2PAV1@A @ 0xF
 void* g_bank_space = nullptr;      // ?g_bank_space@@3PAXA @ 0xF592CC
 int   g_bank_space_size = 0;       // ?g_bank_space_size@@3HA @ 0xF592D0
 
+// ea: 0x66B5E0 (BankManager.cpp file-static)
+static void InternalAllocate(float numAvailableBanks, BitSet<64>* freeBanks1,
+                             BitSet<64>* freeBanks2, BitSet<64>* alloc1,
+                             BitSet<64>* alloc2, float* numBanks, bool lram)
+{
+    for (int i = 0; *numBanks >= 1.0f; ++i)
+    {
+        if (numAvailableBanks <= (float)i)
+            break;
+        if (freeBanks1->Test(i) && freeBanks2->Test(i))
+        {
+            freeBanks1->Rmv(i);
+            alloc1->Add(i);
+            freeBanks2->Rmv(i);
+            alloc2->Add(i);
+            *numBanks -= 1.0f;
+        }
+    }
+    bool half = false;
+    if (*numBanks > 0.0f)
+    {
+        half = true;
+        int v9 = 0;
+        if (numAvailableBanks + 0.5f > 0.0f)
+        {
+            bool v10;
+            for (;;)
+            {
+                v10 = freeBanks1->Test(v9);
+                if (v10 != freeBanks2->Test(v9))
+                    break;
+                if (numAvailableBanks + 0.5f <= (float)++v9)
+                    goto scan_free1;
+            }
+            if (v10)
+            {
+                freeBanks1->Rmv(v9);
+                alloc1->Add(v9);
+            }
+            else
+            {
+                freeBanks2->Rmv(v9);
+                alloc2->Add(v9);
+            }
+            *numBanks -= 0.5f;
+        }
+        else
+        {
+scan_free1:
+            int v11 = 0;
+            if (numAvailableBanks > 0.0f)
+            {
+                while (1)
+                {
+                    if (v11 >> 5 >= 2)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::COD3;
+                        AeAssert::gCurrentFile = "../ae\\core/BitSet.h";
+                        AeAssert::gCurrentLine = 123;
+                        AeAssert::gCurrentExpr = "idx < GetNumWords()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Please add a descriptive string"))
+                            __debugbreak();
+                    }
+                    if (((1 << (v11 & 0x1F))
+                         & freeBanks1->mBits[v11 >> 5]) != 0)
+                        break;
+                    if (numAvailableBanks <= (float)++v11)
+                        goto done;
+                }
+                freeBanks1->Rmv(v11);
+                alloc1->Add(v11);
+                *numBanks -= 0.5f;
+            }
+        }
+    }
+done:
+    if (!lram && half && *numBanks == 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 634;
+        AeAssert::gCurrentExpr = "!half || numBanks != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("unsuccessful alloc"))
+            __debugbreak();
+    }
+}
+
+// ea: 0x66F230
+TBankAlloc BankManager::Allocate(NumBanks num_banks)
+{
+    BitSet<64> alloc;
+    BitSet<64> alloc2;
+    alloc.mBits[1] = 0;
+    alloc.mBits[0] = 0;
+    alloc2.mBits[1] = 0;
+    alloc2.mBits[0] = 0;
+    float numBanks = num_banks.xbox;
+    InternalAllocate(mNumMramBanks, &mFreeBanks.mram_alloc1,
+                     &mFreeBanks.mram_alloc2, &alloc, &alloc2, &numBanks,
+                     false);
+    if (numBanks != 0.0f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 668;
+        AeAssert::gCurrentExpr = nullptr;
+        if (AeAssert::Error("main ram banks exhausted!"))
+            __debugbreak();
+    }
+    if (alloc.IsEmpty() && alloc2.IsEmpty())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 699;
+        AeAssert::gCurrentExpr = "!alloc.IsEmpty()";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bad alloc!"))
+            __debugbreak();
+    }
+    m_last_alloc.mram_alloc1 = alloc;
+    m_last_alloc.mram_alloc2 = alloc2;
+    float freeCount = get_free_count().xbox;
+    if (mLowestFreeAmount > freeCount)
+        mLowestFreeAmount = freeCount;
+    TBankAlloc result;
+    result.mram_alloc1 = alloc;
+    result.mram_alloc2 = alloc2;
+    return result;
+}
+
 // ea: 0x66F0A0
 BankManager::BankManager()
 {
@@ -4058,6 +4323,265 @@ void PakFile::AddHeap(unsigned char* heap_start, unsigned int heap_size)
     {
         Heap->reserve = v4->reserve;
         v4->reserve = Heap;
+    }
+}
+
+// ============================================================================
+// PakFile streaming internals (streamer.o PakFile.cpp)
+// ============================================================================
+
+// ea: 0x66A120
+void PakFile::InitiateHeaderRead()
+{
+    if (mHeader != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 366;
+        AeAssert::gCurrentExpr = "mHeader==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Can't load a pakfile again!"))
+            __debugbreak();
+    }
+    if (sHeaderBufferUsed)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 369;
+        AeAssert::gCurrentExpr = "!sHeaderBufferUsed";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Loading 2 pakfiles at once?!"))
+            __debugbreak();
+    }
+    sHeaderBufferUsed = true;
+    mHeaderBuffer = sHeaderBuffer;
+    unsigned char buffer[4];
+    mFileId = nflOpenFileEx((nflMediaID)gNflMediaId, mPath.mBuff,
+                            &mFilesize);
+    if (mFileId == NFL_FILE_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 394;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("error opening file '%s'", mPath.mBuff))
+            __debugbreak();
+        mHeaderBuffer = nullptr;
+        mState = LOADED;
+        sHeaderBufferUsed = false;
+        return;
+    }
+    if (mFilesize == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 400;
+        AeAssert::gCurrentExpr = "mFilesize != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("incorrect filesize"))
+            __debugbreak();
+    }
+    if (sHeaderBufferSize < 0x8000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 403;
+        AeAssert::gCurrentExpr =
+            "sHeaderBufferSize > 0 && sHeaderBufferSize >= (32*1024)";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("size check"))
+            __debugbreak();
+    }
+    PakReadDataAsync(buffer, mHeaderBuffer, sHeaderBufferSize, 0, false);
+    mHeaderRequestId.nflId = buffer[0];
+    gThroughputMeasurer.mStart = gThroughputMeasurer.safeGetTime();
+    gThroughputMeasurer.mBytes = 0;
+    if (mHeaderRequestId.nflId == NFL_REQUEST_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 409;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("invalid request (requesting header)!"))
+            __debugbreak();
+    }
+    mLoadingState = LOADING_HEADER;
+}
+
+// ea: 0x66E540
+void PakFile::CancelLoading()
+{
+    nflUpdate();
+    if (nflGetState() == NFL_STATE_ERROR)
+        g_femanager.DrawDiscError();
+    if (mFileId != NFL_FILE_ID_INVALID)
+    {
+        nflCancelFileRequests(mFileId);
+        mHeaderRequestId.nflId = NFL_REQUEST_ID_INVALID;
+    }
+    PakHeader* mHeader = this->mHeader;
+    if (mHeader != nullptr)
+    {
+        for (int v3 = 0; v3 < mHeader->sections[mDefaultSectionIdx].numBanks;
+             ++v3)
+        {
+            PakHeader::Bank* v7 =
+                &mHeader->sections[mDefaultSectionIdx].banks[v3];
+            if (v7->requestId != NFL_REQUEST_ID_INVALID)
+                v7->requestId = NFL_REQUEST_ID_INVALID;
+        }
+    }
+    if (!mSerializedAlloc.IsEmpty())
+        BankManager::sInst->release(mSerializedAlloc);
+    if (!mSerializedAlloc.IsEmpty())
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 924;
+        AeAssert::gCurrentExpr = "mSerializedAlloc.IsEmpty()";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("bank manager should clear this bitset"))
+            __debugbreak();
+    }
+    PakHeader::Section* v15 = &mHeader->sections[mDefaultSectionIdx];
+    for (int bankIdx = 0; bankIdx < v15->numBanks; ++bankIdx)
+    {
+        PakHeader::Bank* v18 = &v15->banks[bankIdx];
+        if ((v18->flags & 0x40000) != 0)
+        {
+            v18->flags &= ~0x40000u;
+            apk::apkDeleteFile((apk::apkFile*)((char*)v18->memptr + 8));
+        }
+        if ((v18->flags & 0x20000) != 0)
+        {
+            unsigned char* memptr = v18->memptr;
+            if (sHeaderBuffer == memptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BankManager.cpp";
+                AeAssert::gCurrentLine = 133;
+                AeAssert::gCurrentExpr = "PakFile::sHeaderBuffer != ptr";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("trying to free reserved buffer"))
+                    __debugbreak();
+            }
+            if (memptr != nullptr)
+                mem_heap_free(memptr);
+            v18->memptr = nullptr;
+            v18->memsize = 0;
+        }
+    }
+    CopyHeader();
+    sHeaderBufferUsed = false;
+    nflUpdate();
+    if (nflGetState() == NFL_STATE_ERROR)
+        g_femanager.DrawDiscError();
+    if (mCloseHandle)
+    {
+        nflCloseFile(mFileId);
+        mFileId = NFL_FILE_ID_INVALID;
+    }
+    mState = LOADED;
+    mLoadingState = (ELoadingState)8;
+}
+
+// ea: 0x6746C0
+void PakFile::AsyncLoad(NumBanks numBanks)
+{
+    tlPrintf("pak: loading '%s' (%.1f banks)\n", mPath.mBuff, numBanks.xbox);
+    if (numBanks.xbox + 0.5f > 0.0f)
+    {
+        mBankAlloc = BankManager::sInst->Allocate(numBanks);
+        if (mBankAlloc.IsEmpty())
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+            AeAssert::gCurrentLine = 350;
+            AeAssert::gCurrentExpr = "!mBankAlloc.IsEmpty()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("empty allocation from bank manager?!"))
+                __debugbreak();
+        }
+    }
+    mState = LOADING;
+    mLoadingState = LOADING_HEADER;
+    InitiateHeaderRead();
+}
+
+// ea: 0x6747D0
+void PakFile::AsyncUnload()
+{
+    tlPrintf("pak: async unloading '%s'\n", mPath.mBuff);
+    if (mState == LOADING)
+        CancelLoading();
+    mState = UNLOADING;
+    mLoadingState = (ELoadingState)4;  // UNLOADING_SERIALIZED
+}
+
+// ea: 0x66E7C0
+void PakFile::BeginAsyncUnload()
+{
+    if (mState == LOADING)
+        CancelLoading();
+    if (mState != LOADED)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 1558;
+        AeAssert::gCurrentExpr = "mState == STATE_LOADED";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Can't unload a pak that isn't fully loaded"))
+            __debugbreak();
+    }
+    tlPrintf("pak: unloading '%s' with id '%d'\n", mPath.mBuff, mPakId);
+    TPakId pakId = mPakId;
+    mLoadingState = (ELoadingState)4;  // UNLOADING_SERIALIZED
+    mState = UNLOADING;
+    StreamZoneManager::sInst->OnUnload(pakId);
+}
+
+// ea: 0x66E860
+void PakFile::UnloadSerialized()
+{
+    ae_sized_array<TPakId, 128>& ContextStack =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    ContextStack.push_back(mPakId);
+    TPakId pakId = mPakId;
+    AssetBankSet::UnloadBanks(pakId);
+    g_femanager.UnloadBank(this->mPakId);
+    FX_KillEffects(this->mPakId);
+    StopAllSceneAnims(this->mPakId);
+    void** mElements = mLooseFiles.mElements;
+    void** i = &mElements[mLooseFiles.mSize];
+    for (; mElements != i; ++mElements)
+        mem_heap_free(*mElements);
+    ae_sized_array<TPakId, 128>& v5 =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    if (v5.m_size != 0)
+        v5.m_size -= 1;
+}
+
+// ea: 0x675410
+void PakFile::AddApk(apk::apkFile* apk)
+{
+    PakHeapContext heap_ctx(mPakId, false);
+    mApkFiles.push_back(apk);
+}
+
+// ea: 0x6754A0
+void PakFile::ReleaseApks()
+{
+    PakHeapContext heap_ctx(mPakId, false);
+    apk::apkFile** mElements = mApkFiles.mElements;
+    apk::apkFile** v3 = &mElements[mApkFiles.mSize];
+    while (mElements != v3)
+        apk::apkDeleteFile(*mElements++);
+    if (mApkFiles.mElements != nullptr)
+    {
+        tlMemFree(mApkFiles.mElements);
+        mApkFiles.mElements = nullptr;
+        mApkFiles.mCapacity = 0;
     }
 }
 
