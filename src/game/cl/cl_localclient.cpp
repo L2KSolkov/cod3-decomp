@@ -63,8 +63,11 @@ static int lNumLocalClients;
 // LocalClient (cl.o; C++ statics matching the binary mangling)
 class LocalClient {
 public:
+    static void InitializeClientControllers();      // ?InitializeClientControllers@LocalClient@@YAXXZ (0x52EF50)
     static int  LastLocalClientIndex();          // ?LastLocalClientIndex@LocalClient@@YAHXZ (0x52EF60)
+    static void SetLastLocalClientIndex(int index); // ?SetLastLocalClientIndex@LocalClient@@YAXH@Z (0x52EF70)
     static int  NumLocalClients();               // ?NumLocalClients@LocalClient@@YAHXZ (0x52EFA0)
+    static void SetFirstLocalClientIndex(int index);// ?SetFirstLocalClientIndex@LocalClient@@YAXH@Z (0x52EF90)
     static void SetNumLocalClients(int num);     // ?SetNumLocalClients@LocalClient@@YAXH@Z (0x52EFB0)
     static int  GetNumLocalClientsByState(int state);  // ?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z (0x52EFC0)
     static int  PortToClient(int port);          // ?PortToClient@LocalClient@@YAHH@Z (0x52F010)
@@ -77,9 +80,13 @@ public:
 };
 
 // ea: 0x52EF50
-void LocalClient_InitializeClientControllers()
+void LocalClient::InitializeClientControllers()
 {
     unk_F6A28C = 0;
+}
+void LocalClient_InitializeClientControllers()
+{
+    LocalClient::InitializeClientControllers();
 }
 
 // ea: 0x52EF60
@@ -93,9 +100,13 @@ int LocalClient_LastLocalClientIndex()
 }
 
 // ea: 0x52EF70
-void LocalClient_SetLastLocalClientIndex(int index)
+void LocalClient::SetLastLocalClientIndex(int index)
 {
     lLastLocalClientIndex = index;
+}
+void LocalClient_SetLastLocalClientIndex(int index)
+{
+    LocalClient::SetLastLocalClientIndex(index);
 }
 
 // ea: 0x52EF80
@@ -105,9 +116,13 @@ int LocalClient_FirstLocalClientIndex()
 }
 
 // ea: 0x52EF90
-void LocalClient_SetFirstLocalClientIndex(int index)
+void LocalClient::SetFirstLocalClientIndex(int index)
 {
     lFirstLocalClientIndex = index;
+}
+void LocalClient_SetFirstLocalClientIndex(int index)
+{
+    LocalClient::SetFirstLocalClientIndex(index);
 }
 
 // ea: 0x52EFA0
