@@ -72,7 +72,7 @@ void   Cmd_TokenizeString(const char* text_in);
 void   Cmd_ExecuteServerString(const char* text);
 
 // fs.cpp
-int    FS_ReadFile(char* qpath, void** buffer);
+int    FS_ReadFile(const char* qpath, void** buffer);
 void   FS_Shutdown(int closemfp);
 void   FS_Restart(int checksumFeed);
 void   FS_ClearMemory(void);
@@ -113,8 +113,9 @@ void   XModelEnforceExist(int bEnforce);
 char*  ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
 
 // fs.cpp
-int    FS_FOpenFileByMode(const char* qpath, int* f, int mode);
-unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
+enum fsMode_t;
+int    FS_FOpenFileByMode(const char* qpath, int* f, fsMode_t mode);
+int    FS_Read(void* buffer, int len, int f);
 void   FS_FCloseFile(int f);
 
 // common/parse helpers

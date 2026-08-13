@@ -21,7 +21,7 @@ extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
 extern int FS_FOpenFileWrite(const char* filename);
-extern unsigned int FS_Write(char* buffer, unsigned int len, int h);
+extern int FS_Write(const void* buffer, int len, int h);
 extern void FS_FCloseFile(int f);
 extern void Con_OneTimeInit();
 extern void* mem_heap_malloc(unsigned int size);

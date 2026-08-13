@@ -86,7 +86,7 @@ extern int SEH_GetCurrentLanguage();
 // Forward declarations (mutually recursive)
 void FS_CopyFile(char* fromOSPath, char* toOSPath);
 void FS_FCloseFile(int f);
-unsigned int FS_Write(char* buffer, unsigned int len, int h);
+int FS_Write(const void* buffer, int len, int h);
 void FS_Flush(int f);
 int FS_filelength(int f);
 
@@ -116,6 +116,13 @@ bool Warning(const char* fmt, ...);
 // Filesystem
 // ============================================================================
 
+enum fsMode_t {
+    FS_READ = 0,
+    FS_WRITE = 1,
+    FS_APPEND = 2,
+    FS_APPEND_SYNC = 3,
+};
+
 // ea: 0x004B5670
 int FS_Initialized()
 {
@@ -123,14 +130,12 @@ int FS_Initialized()
 }
 
 // ea: 0x004B5680
-char FS_CheckFileSystemStarted()
+void FS_CheckFileSystemStarted()
 {
-    char result = (char)fs_searchpaths;
     if (fs_searchpaths == nullptr)
     {
         ASSERT("fs_searchpaths", "c:\\cod\\code\\game\\com_files.cpp", 319);
     }
-    return result;
 }
 
 // ea: 0x004B56D0
@@ -163,7 +168,7 @@ int FS_LanguageHasAssets(int iLanguage)
 }
 
 // ea: 0x004B5750
-int FS_HashFileName(const char* fname, int hashSize)
+long FS_HashFileName(const char* fname, int hashSize)
 {
     const char* v2 = fname;
     int v3 = 0;
@@ -221,8 +226,9 @@ int FS_filelength(int f)
 }
 
 // ea: 0x004B59B0
-void FS_Remove()
+void FS_Remove(const char* osPath)
 {
+    (void)osPath;
     AeAssert::gCurrentAuthor = AeAssert::COD3;
     AeAssert::gCurrentFile = "c:\\cod\\code\\game\\com_files.cpp";
     AeAssert::gCurrentLine = 681;
@@ -257,7 +263,7 @@ int FS_FilenameCompare(const char* s1, const char* s2)
 }
 
 // ea: 0x004B5A70
-char* FS_ShiftedStrStr(const char* string, const char* substring, char shift)
+char* FS_ShiftedStrStr(const char* string, const char* substring, int shift)
 {
     char buf[256];
     const char* v3 = substring;
@@ -312,8 +318,9 @@ void FS_ResetFiles()
 }
 
 // ea: 0x004B5C00
-void FS_AddNonPackFileDirectory()
+void FS_AddNonPackFileDirectory(const char* path, const char* dir)
 {
+    (void)path; (void)dir;
     for (searchpath_s* i = fs_searchpaths; i != nullptr; i = i->next)
     {
         if (i->pack == nullptr)
@@ -776,7 +783,7 @@ int FS_TouchFile(const char* name)
 }
 
 // ea: 0x004C7440
-char* FS_ShortOSFilePath(const char* filename)
+const char* FS_ShortOSFilePath(const char* filename)
 {
     searchpath_s* v1 = fs_searchpaths;
     if (fs_searchpaths == nullptr)
@@ -807,7 +814,7 @@ char* FS_ShortOSFilePath(const char* filename)
 }
 
 // ea: 0x004C74F0
-unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f)
+int FS_Read(void* buffer, int len, int f)
 {
     FS_CheckFileSystemStarted();
     if (f == 0)
@@ -818,7 +825,7 @@ unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f)
     unsigned int tries = 0;
     if (len != 0)
     {
-        unsigned char* buf = buffer;
+        unsigned char* buf = (unsigned char*)buffer;
         while (1)
         {
             unsigned int v7 =
@@ -952,14 +959,13 @@ int FS_Seek(int f, long offset, int origin)
     if (!AeAssert::IsIgnored()
         && AeAssert::Warning(va("Bad origin %i in FS_Seek", origin)))
         __debugbreak();
-    return 0;
 }
 
 // ea: 0x004C78A0
-int FS_ReadFile(char* qpath, void** buffer)
+int FS_ReadFile(const char* qpath, void** buffer)
 {
     FS_CheckFileSystemStarted();
-    char* v2 = qpath;
+    const char* v2 = qpath;
     if (!qpath || !*qpath)
         Com_Error(0, "FS_ReadFile with empty name");
     int v3;
@@ -1075,13 +1081,17 @@ void FS_FreeFile(void* buffer)
 }
 
 // ea: 0x004BC8C0
-void FS_PureServerSetLoadedPaks()
+void FS_PureServerSetLoadedPaks(const char* loadedPaks,
+                                const char* referencedPaks)
 {
+    (void)loadedPaks; (void)referencedPaks;
 }
 
 // ea: 0x004BC8D0
-void FS_PureServerSetReferencedPaks()
+void FS_PureServerSetReferencedPaks(const char* loadedPaks,
+                                    const char* referencedPaks)
 {
+    (void)loadedPaks; (void)referencedPaks;
 }
 
 // ea: 0x004BDAD0
@@ -1132,12 +1142,12 @@ void FS_FCloseFile(int f)
 }
 
 // ea: 0x004BDBD0
-unsigned int FS_Write(char* buffer, unsigned int len, int h)
+int FS_Write(const void* buffer, int len, int h)
 {
     FS_CheckFileSystemStarted();
     if (h == 0)
         return h;
-    unsigned int v4 = len;
+    int v4 = len;
     FILE* v6 = FS_FileForHandle(h);
     unsigned int tries = 0;
     if (len == 0)
@@ -1157,7 +1167,7 @@ unsigned int FS_Write(char* buffer, unsigned int len, int h)
         tries = 1;
     writeMore:
         v4 -= v7;
-        buffer += v7;
+        buffer = (const char*)buffer + v7;
         if (v4 == 0)
         {
             if (fsh[h].streamed != 0)
@@ -1168,7 +1178,6 @@ unsigned int FS_Write(char* buffer, unsigned int len, int h)
     if (v7 != (unsigned int)-1)
         goto writeMore;
     Com_Printf("FS_Write: -1 bytes written\n");
-    return 0;
 }
 
 // ea: 0x004BDC70
@@ -1675,7 +1684,7 @@ void FS_Restart(int checksumFeed)
 }
 
 // ea: 0x004C84B0
-int FS_FOpenFileByMode(const char* qpath, int* f, int mode)
+int FS_FOpenFileByMode(const char* qpath, int* f, fsMode_t mode)
 {
     int v3 = 0;
     int Internal = 6969;
@@ -1776,7 +1785,7 @@ void FS_TouchFile_f()
 }
 
 // ea: 0x004CEB90
-int FS_InitFilesystem()
+void FS_InitFilesystem()
 {
     Com_StartupVariable("fs_cdpath");
     Com_StartupVariable("fs_basepath");
@@ -1794,7 +1803,6 @@ int FS_InitFilesystem()
     Q_strncpyz(lastValidBase, fs_basepath->string, 128);
     Q_strncpyz(lastValidGame, fs_gamedirvar->string, 128);
     memset(fs_bsp_gamedir, 0, 128);
-    return 0;
 }
 
 // ============================================================================

@@ -118,14 +118,14 @@ extern void SV_Shutdown();
 extern void SV_Init();
 extern void SV_Frame(int msec);
 extern void SV_PacketEvent(netadr_t from, msg_t* msg);
-extern int FS_InitFilesystem();
+extern void FS_InitFilesystem();
 extern void FS_Shutdown(int closemfp);
 extern int FS_FOpenFileWrite(const char* filename);
 extern void FS_FCloseFile(int f);
 extern void FS_ForceFlush(int f);
 extern void FS_Printf(int h, const char* fmt, ...);
-extern unsigned int FS_Write(char* buffer, unsigned int len, int h);
-extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
+extern int FS_Write(const void* buffer, int len, int h);
+extern int FS_Read(void* buffer, int len, int f);
 // FS_FOpenFileRead_Internal is static in files.cpp; local shim for journal I/O
 static int FS_FOpenFileRead_Internal(const char* filename, int* file,
                                      int uniqueFILE, int streamThread)

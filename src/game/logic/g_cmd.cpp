@@ -1381,7 +1381,7 @@ void ButtonMgr_ClearBinding(const BaseCmdFuncInfo* boundCmd, int clnt)
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DefaultExtension(char* path, int maxSize,
                                  const char* extension);  // core.o
-extern int  FS_ReadFile(char* qpath, void** buffer);  // core.o
+extern int  FS_ReadFile(const char* qpath, void** buffer);  // core.o
 extern void FS_FreeFile(void* buffer);                      // core.o
 
 // ============================================================================

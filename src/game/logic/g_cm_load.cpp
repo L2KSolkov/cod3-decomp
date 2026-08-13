@@ -1166,7 +1166,7 @@ extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o
 extern void Com_DPrintf(const char* fmt, ...);  // core.o
 extern int FS_FOpenFileRead(const char* filename, int* file, int uniqueFILE);  // core.o
-extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);  // core.o
+extern int FS_Read(void* buffer, int len, int f);  // core.o
 extern int FS_Seek(int f, long offset, int origin);  // core.o ?FS_Seek@@YAHHJH@Z
 extern void FS_FCloseFile(int f);  // core.o
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,

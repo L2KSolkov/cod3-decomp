@@ -336,7 +336,7 @@ void SV_Startup() {
 void SV_SetExpectedHunkUsage(char* mapname) {
     int handle;
     const char* buftrav;
-    int v1 = FS_FOpenFileByMode("hunkusage.dat", &handle, 0);
+    int v1 = FS_FOpenFileByMode("hunkusage.dat", &handle, (fsMode_t)0);
     int v2 = v1;
     if (v1 >= 0) {
         unsigned int v3 = (unsigned int)(v1 + 1);

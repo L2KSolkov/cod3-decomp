@@ -633,9 +633,10 @@ extern void CG_UpdateShellShockCamera(const void* parms, int time,
                                       int duration);
 extern void CL_SetUserCmdInShellshock(int shocked);
 extern char* va(const char* fmt, ...);
-extern int FS_FOpenFileByMode(const char* qpath, int* f, int mode);
-extern unsigned int FS_Write(char* buffer, unsigned int len, int h);
-extern unsigned int FS_Read(unsigned char* buffer, unsigned int len, int f);
+enum fsMode_t;
+extern int FS_FOpenFileByMode(const char* qpath, int* f, fsMode_t mode);
+extern int FS_Write(const void* buffer, int len, int h);
+extern int FS_Read(void* buffer, int len, int f);
 extern void FS_FCloseFile(int f);
 extern int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars,
                                  char* buffer, unsigned int bufsize);
@@ -738,7 +739,7 @@ int CG_SaveShellShockCvars(const char* name)
         == 0)
         return 0;
     const char* v1 = va("scripts/%s.shock", name);
-    if (FS_FOpenFileByMode(v1, &fh, 1 /* FS_WRITE */) < 0)
+    if (FS_FOpenFileByMode(v1, &fh, (fsMode_t)1 /* FS_WRITE */) < 0)
         return 0;
     FS_Write((char*)filebuf, (unsigned int)strlen((const char*)filebuf), fh);
     FS_FCloseFile(fh);
@@ -886,7 +887,7 @@ int CG_LoadShellShockCvars(const char* name)
 {
     const char* v1 = va("scripts/%s.shock", name);
     int fh;
-    int v2 = FS_FOpenFileByMode(v1, &fh, 0 /* FS_READ */);
+    int v2 = FS_FOpenFileByMode(v1, &fh, (fsMode_t)0 /* FS_READ */);
     int v3 = v2;
     if (v2 >= 0)
     {

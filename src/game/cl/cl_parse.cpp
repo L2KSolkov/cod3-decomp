@@ -109,6 +109,7 @@ extern int VM_Call(struct vm_s* vm, int callnum, ...);
 extern struct vm_s* VM_Create(const char* module,
                               int (__cdecl* systemCalls)(int*));
 extern int CL_CgameSystemCalls(int* args);
+enum fsMode_t;
 extern void tlPrintf(const char* fmt, ...);
 extern int MSG_ReadLong(struct msg_t* msg);
 extern unsigned char MSG_ReadByte(struct msg_t* msg);
@@ -254,16 +255,16 @@ struct refimport_t2 {
     int (*Com_LoadCvarsFromBuffer)(const char**, int, const char*,
                                    const char*);
     int (*FS_FileIsInPAK)(const char*, int*);
-    int (*FS_ReadFile)(char*, void**);
+    int (*FS_ReadFile)(const char*, void**);
     void (*FS_FreeFile)(void*);
     char** (*FS_ListFiles)(const char*, const char*, int*);
     void (*FS_FreeFileList)(char**);
     void (*FS_WriteFile)(const char*, const void*, int);
     int (*FS_FileExists)(const char*);
-    int (*FS_FOpenFileByMode)(const char*, int*, int);
+    int (*FS_FOpenFileByMode)(const char*, int*, enum fsMode_t);
     void (*FS_FCloseFile)(int);
-    unsigned int (*FS_Read)(unsigned char*, unsigned int, int);
-    unsigned int (*FS_Write)(char*, unsigned int, int);
+    int (*FS_Read)(void*, int, int);
+    int (*FS_Write)(const void*, int, int);
     class BspPlane* (*CM_GetPlaneNum)(int);
     int (*CG_GetGameModel)(short);
     void (*CG_DObjCalcPose)(void*, void*, int*);
@@ -1008,15 +1009,15 @@ void CL_InitRef()
     extern void Cbuf_ExecuteText(int, const char*);
     extern void CL_RefPrintf(int, const char*, ...);
     extern int CL_ScaledMilliseconds();
-    extern int FS_ReadFile(char*, void**);
+    extern int FS_ReadFile(const char*, void**);
     extern void FS_FreeFile(void*);
     extern void FS_FreeFileList(char**);
     extern char** FS_ListFiles(const char*, const char*, int*);
     extern int FS_FileExists(const char*);
-    extern int FS_FOpenFileByMode(const char*, int*, int);
+    extern int FS_FOpenFileByMode(const char*, int*, enum fsMode_t);
     extern void FS_FCloseFile(int);
-    extern unsigned int FS_Read(unsigned char*, unsigned int, int);
-    extern unsigned int FS_Write(char*, unsigned int, int);
+    extern int FS_Read(void*, int, int);
+    extern int FS_Write(const void*, int, int);
     extern class BspPlane* CM_GetPlaneNum(int);
     extern struct cvar_t* Cvar_FindVar(const char*);
     extern int Com_SaveCvarsToBuffer(const char**, int, char*, unsigned int);
