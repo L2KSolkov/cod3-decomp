@@ -315,6 +315,12 @@ add_library(cod3_game_logic STATIC
 add_library(cod3_game_script STATIC src/game/script/stubs_game.cpp)
 add_library(cod3_game_mp STATIC src/game/mp/stubs_game.cpp)
 add_library(cod3_game_mpshell STATIC src/game/mpshell/stubs_game.cpp)
+add_library(cod3_game_shell STATIC
+    src/game/shell/stubs_game.cpp
+    src/game/shell/stub_data.cpp
+    src/game/shell/shell_math.cpp
+    src/game/shell/shell_util.cpp
+)
 add_library(cod3_game_game STATIC src/game/game/stubs_game.cpp)
 add_library(cod3_game_core STATIC
     src/game/core/stubs_game.cpp
@@ -434,6 +440,7 @@ target_link_libraries(cod3mp PRIVATE
     cod3_game_script
     cod3_game_mp
     cod3_game_mpshell
+    cod3_game_shell
     cod3_game_game
     cod3_game_core
     cod3_game_game2

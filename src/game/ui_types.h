@@ -152,6 +152,7 @@ struct PanelQuad : PanelAnimObject {
     unsigned int   quadBlendModeType;         // +0x40
     Broc::string   name;                      // +0x44
 
+    PanelQuad(char* name);  // ??0PanelQuad@@QAE@PAD@Z (shell.o 0x58B840)
     void SetShown(bool shown);
     void SetVisibility(float v);
 };

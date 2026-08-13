@@ -127,8 +127,8 @@ struct StubData {
     bool    mSaved;                    // +0x100
     int     mSaveId;                   // +0x104
     uint8_t savedState[516];           // +0x108 (_XONLINE_LOGON_STATE, opaque)
-    uint8_t loginMethod[4];            // +0x30C (_UIX_LOGON_TYPE)
-    uint8_t liveState[4];              // +0x310 (ELiveState)
+    int     loginMethod;               // +0x30C (_UIX_LOGON_TYPE)
+    int     liveState;                 // +0x310 (ELiveState)
     uint8_t savedInvite[156];          // +0x314 (_XONLINE_ACCEPTED_GAMEINVITE, opaque)
     int     mControllerPort;           // +0x3B0
     bool    savedStateIsValid;         // +0x3B4
@@ -138,6 +138,12 @@ struct StubData {
     bool    mbWasInvited;              // +0x3BE
     bool    mDisableSave;              // +0x3BF
     char    mCmdLine[256];             // +0x3C0
+
+    void Init();                     // ?Init@StubData@@QAEXXZ (shell.o)
+    void LoadData(StubData* input);  // ?LoadData@StubData@@QAEXPAU1@@Z
+    void LoadDataLastMinFix(StubData* input);  // shell.o
+    void ApplyDifficulty();          // ?ApplyDifficulty@StubData@@QAEXXZ
+    void ApplyStubOptions();         // ?ApplyStubOptions@StubData@@QAEXXZ
 };
 static_assert(sizeof(StubData) == 0x4C0, "StubData size mismatch");
 static_assert(offsetof(StubData, mControllerPort) == 0x3B0, "StubData::mControllerPort offset mismatch");
@@ -149,9 +155,36 @@ static_assert(offsetof(StubData, mInvertAim) == 0x41, "StubData::mInvertAim offs
 // ============================================================================
 struct SaveGameData {
     StubData mStubData;         // +0x000
-    uint8_t  _rest[7156 - sizeof(StubData)];  // remaining fields opaque
+    bool     mCheckpointSaveExists;    // +0x4C0
+    int      ammo[92];                 // +0x4C4
+    int      ammoclip[92];             // +0x634
+    int      weapons[2];               // +0x7A4
+    char     weaponslots[10];          // +0x7AC
+    int      weaponrechamber[2];       // +0x7B8
+    int      weapon;                   // +0x7C0
+    float    mPlayerHealth;            // +0x7C4
+    float    mPlayerOrientation[3];    // +0x7C8
+    float    mPlayerPosition[3];       // +0x7D4
+    uint8_t  mFriendlies[896];         // +0x7E0
+    int      mFriendlyCount;           // +0xB60
+    char     mEvent[32];               // +0xB64
+    char     mCurrentMapName[32];      // +0xB84
+    char     mCheckpointName[32];      // +0xBA4
+    int      mGameVarCount;            // +0xBC4
+    uint8_t  mGameVars[3072];          // +0xBC8
+    int      mSavedExploderCount;      // +0x17C8
+    uint8_t  mCheckpointScriptExploded[1024];  // +0x17CC
+    char     m_title_prefix[12];       // +0x1BCC
+    char     m_version_number[26];     // +0x1BD8
+
+    void Init();                       // ?Init@SaveGameData@@QAEXXZ
+    void LoadData(SaveGameData* input);  // ?LoadData@SaveGameData@@QAEXPAU1@@Z
 };
 static_assert(sizeof(SaveGameData) == 7156, "SaveGameData size mismatch");
+static_assert(offsetof(SaveGameData, ammo) == 0x4C4,
+              "SaveGameData::ammo offset mismatch");
+static_assert(offsetof(SaveGameData, mFriendlies) == 0x7E0,
+              "SaveGameData::mFriendlies offset mismatch");
 
 // MP player / entity manager minimal views (fields used by SV_PostConnect)
 struct MPPlayer;

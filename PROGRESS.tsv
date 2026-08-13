@@ -1,6 +1,6 @@
 source_cpp	lib	obj	class	funcs	status	notes
 
-shell.o		shell.o	game	1175	TODO	
+shell.o		shell.o	game	1175	IN_PROGRESS	shell campaign started 2026-08-13: inventory+plan in analysis/shell_o_*.tsv (1175 non-inline; class->file map: profile/options/igo_widgets/fe_*); cod3_game_shell lib added (src/game/shell/); batch 1 COMPLETE (18/18): StubData Init/LoadData/LoadDataLastMinFix/ApplyDifficulty/ApplyStubOptions + SaveGameData Init/LoadData (full verified layout in sv_stubs.h incl. ammo/ammoclip/mFriendlies/mGameVars/m_version_number), MPsharedStubData set/get, make_euler x2, ReadMatrix3x4, FloatingPQ ctor+UpdateInScene, system_time equals/newer_than, mapButton, SE_BuildFileList; audit: 53/1175 exact (31 stubs pre-existing) - next: shell_util fe_util.cpp small families (SE_R_ListFiles/ReadVector3d refs), loading_menu, stub Data remaining
 
 scr.o		scr.o	game	846	TODO	
 
