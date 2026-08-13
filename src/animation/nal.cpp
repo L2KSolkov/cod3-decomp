@@ -5962,14 +5962,19 @@ void InteractionController_Lerper_Ctor(InteractionController_Lerper* self)
 
 // ============================================================================
 // InteractInputRcvr (anim.o InteractionController.cpp)
-// Layout verified vs ctors (0x53A8C0/0x53A9E0/...): vftable +0, mType +4,
+// Layout verified vs IDB + Activate disasm (0x53C780): vftable +0, mType +4,
 // mPakId +8, mFlags +0xC, mInfo +0x10, mTimer +0x14, mInputRate +0x18,
-// mInputProgress +0x1C, mTimeSinceLastInput +0x20, mProgress[10] +0x24,
-// mNumProgress +0x50. Subclass fields start at +0x54.
+// mInputProgress +0x1C, mTimeSinceLastInput +0x20, mBucketTime[5] +0x24,
+// mBucketCount[5] +0x38, mTimeIndex +0x4C, mNumTimesUsed +0x50. Subclass
+// fields start at +0x54 (ButtonMash 0x60 / ButtonPress 0x5C / StickSwirl
+// 0x64 / ToggleVert+Horiz 0x5C / Rowboat 0x54).
 // ============================================================================
+struct InteractStateInfo;
+
 class InteractInputRcvr {
 public:
     enum EInputType {
+        kInputTypeInvalid = -1,
         kInputTypeButtonMash = 0,
         kInputTypeButtonPress = 1,
         kInputTypeStickSwirl = 2,
@@ -5980,11 +5985,12 @@ public:
     };
 
     static InteractInputRcvr* sInputRcvrs[kInputTypeCount];  // ?sInputRcvrs@InteractInputRcvr@@1PAPAV1@A @ 0xF23FAC
-    static InteractInputRcvr* CreateInputRcvr(EInputType type,
-                                              TPakId curPakId);
     static InteractInputRcvr* GetInteractInputRcvr(EInputType type,
                                                    TPakId curPakId);
     static void FreeInputRcvrs();
+
+    // ??0InteractInputRcvr@@QAE@W4TPakId@@@Z (0x53A8C0)
+    InteractInputRcvr(TPakId curPakId);
 
     void* __vftable;     // +0x00
     int mType;           // +0x04
@@ -5995,21 +6001,31 @@ public:
     float mInputRate;    // +0x18
     float mInputProgress;// +0x1C
     float mTimeSinceLastInput;  // +0x20
-    float mProgress[10]; // +0x24
-    int mNumProgress;    // +0x50
+    float mBucketTime[5];  // +0x24
+    int mBucketCount[5];   // +0x38
+    int mTimeIndex;        // +0x4C
+    int mNumTimesUsed;     // +0x50
 
     void ResetInputMeasures();     // 0x53A930
-    float GetInputRate();          // 0x53A950
-    float GetInputProgress();      // 0x53A960
-    float GetTimeSinceLastInput(); // 0x53A970
-    void MeasureInput(float& rate, float& progress, float deltaT);  // 0x53F350
+    float GetInputRate() const;    // 0x53A950
+    float GetInputProgress() const;// 0x53A960
+    float GetTimeSinceLastInput() const;  // 0x53A970
+    TPakId GetPakId() const;       // 0x53A920
     void SetFlag(unsigned int f, int enable);  // 0x53A980
     int IsFlagged(unsigned int f) const;       // 0x53A9C0
-    void Deactivate();           // 0x53A910 (virtual in binary)
-    float Update(float deltaT);  // 0x53C7E0
-    int Press(int buttonIndex);  // 0x53C820
-    int Release(int buttonIndex);  // 0x53C840
     static void InitInputRcvrArray();  // 0x53C530
+
+    virtual void Activate(const InteractStateInfo& info);  // 0x53C780
+    virtual void Deactivate();            // 0x53A910
+    virtual float Update(float deltaT);   // 0x53C7E0
+    virtual int Press(int buttonIndex);   // 0x53C820
+    virtual int Release(int buttonIndex); // 0x53C840
+
+protected:
+    static InteractInputRcvr* CreateInputRcvr(EInputType type,
+                                              TPakId curPakId);  // 0x53C560 (KAE)
+    virtual void MeasureInput(float& rate, float& progress,
+                              float deltaT);  // 0x53F350 (MAE)
 };
 
 class InteractInputRcvrButtonMash : public InteractInputRcvr {
@@ -6019,18 +6035,19 @@ public:
     int mLastButtonIndexPressed;// +0x5C
 
     InteractInputRcvrButtonMash(TPakId curPakId)
+        : InteractInputRcvr(curPakId)
     {
-        mPakId = curPakId;
-        mFlags = 0;
-        mInfo = nullptr;
-        mTimer = 0.0f;
-        mInputRate = 0.0f;
-        mInputProgress = 0.0f;
         mButtonIndex = -1;
         mButtonIndex2 = -1;
         mLastButtonIndexPressed = -1;
         mType = kInputTypeButtonMash;
     }
+    virtual void Activate(const InteractStateInfo& info);  // 0x53C860
+    virtual void Deactivate();            // 0x53F500
+    virtual int Press(int buttonIndex);   // 0x53C940
+protected:
+    virtual void MeasureInput(float& rate, float& progress,
+                              float deltaT);  // 0x53F530
 };
 
 class InteractInputRcvrButtonPress : public InteractInputRcvr {
@@ -6039,16 +6056,17 @@ public:
     int mInfoButtonIndex;       // +0x58 (raw info->buttonIndex pick)
 
     InteractInputRcvrButtonPress(TPakId curPakId)
+        : InteractInputRcvr(curPakId)
     {
-        mPakId = curPakId;
-        mFlags = 0;
-        mInfo = nullptr;
-        mTimer = 0.0f;
-        mInputRate = 0.0f;
-        mInputProgress = 0.0f;
         mButtonIndex = -1;
         mType = kInputTypeButtonPress;
     }
+    virtual void Activate(const InteractStateInfo& info);  // 0x53C9A0
+    virtual void Deactivate();            // 0x53F5D0
+    virtual int Press(int buttonIndex);   // 0x53CAB0
+protected:
+    virtual void MeasureInput(float& rate, float& progress,
+                              float deltaT);  // 0x53F600
 };
 
 class InteractInputRcvrStickSwirl : public InteractInputRcvr {
@@ -6059,15 +6077,15 @@ public:
     float mRate;                // +0x60
 
     InteractInputRcvrStickSwirl(TPakId curPakId)
+        : InteractInputRcvr(curPakId)
     {
-        mPakId = curPakId;
-        mFlags = 0;
-        mInfo = nullptr;
-        mTimer = 0.0f;
-        mInputRate = 0.0f;
-        mInputProgress = 0.0f;
         mType = kInputTypeStickSwirl;
     }
+    virtual void Activate(const InteractStateInfo& info);  // 0x53CAE0
+    virtual void Deactivate();            // 0x53F6E0
+protected:
+    virtual void MeasureInput(float& rate, float& progress,
+                              float deltaT);  // 0x53CB50
 };
 
 class InteractInputRcvrStickToggleVert : public InteractInputRcvr {
@@ -6076,32 +6094,26 @@ public:
     int mNextDir;               // +0x58
 
     InteractInputRcvrStickToggleVert(TPakId curPakId)
+        : InteractInputRcvr(curPakId)
     {
-        mPakId = curPakId;
-        mFlags = 0;
-        mInfo = nullptr;
-        mTimer = 0.0f;
-        mInputRate = 0.0f;
-        mInputProgress = 0.0f;
         mType = kInputTypeStickToggleVert;
         mVert = 1;
     }
+    virtual void Activate(const InteractStateInfo& info);  // 0x53CCB0
+    virtual void Deactivate();            // 0x53F710
+protected:
+    virtual void MeasureInput(float& rate, float& progress,
+                              float deltaT);  // 0x53F740
 };
 
-class InteractInputRcvrStickToggleHoriz : public InteractInputRcvr {
+// Binary vftable (0xCEBCEC) reuses StickToggleVert's Activate/Deactivate/
+// MeasureInput; Horiz derives from Vert with only ctor + mVert differences.
+class InteractInputRcvrStickToggleHoriz : public InteractInputRcvrStickToggleVert {
 public:
-    int mVert;                  // +0x54
-    int mNextDir;               // +0x58
-
     InteractInputRcvrStickToggleHoriz(TPakId curPakId)
+        : InteractInputRcvrStickToggleVert(curPakId)
     {
-        mPakId = curPakId;
-        mFlags = 0;
-        mInfo = nullptr;
-        mTimer = 0.0f;
-        mInputRate = 0.0f;
-        mInputProgress = 0.0f;
-        mType = kInputTypeStickToggleHoriz;
+        mType = kInputTypeCount;  // binary sets mType = kInputTypeCount here
         mVert = 0;
     }
 };
@@ -6109,15 +6121,15 @@ public:
 class InteractInputRcvrRowboat : public InteractInputRcvr {
 public:
     InteractInputRcvrRowboat(TPakId curPakId)
+        : InteractInputRcvr(curPakId)
     {
-        mPakId = curPakId;
-        mFlags = 0;
-        mInfo = nullptr;
-        mTimer = 0.0f;
-        mInputRate = 0.0f;
-        mInputProgress = 0.0f;
         mType = kInputTypeRowboat;
     }
+    virtual void Activate(const InteractStateInfo& info);  // 0x53CD10
+    virtual void Deactivate();            // 0x53CD70
+protected:
+    virtual void MeasureInput(float& rate, float& progress,
+                              float deltaT);  // 0x53CD80
 };
 
 InteractInputRcvr* InteractInputRcvr::sInputRcvrs[kInputTypeCount] = {
@@ -6132,105 +6144,57 @@ void InteractInputRcvr::ResetInputMeasures()
 }
 
 // ea: 0x0053A950
-float InteractInputRcvr::GetInputRate()
+float InteractInputRcvr::GetInputRate() const
 {
     return mInputRate;
 }
 
 // ea: 0x0053A960
-float InteractInputRcvr::GetInputProgress()
+float InteractInputRcvr::GetInputProgress() const
 {
     return mInputProgress;
 }
 
 // ea: 0x0053A970
-float InteractInputRcvr::GetTimeSinceLastInput()
+float InteractInputRcvr::GetTimeSinceLastInput() const
 {
     return mTimeSinceLastInput;
 }
 
-// ea: 0x0053A9E0
-void InteractInputRcvrButtonMash_Ctor(InteractInputRcvrButtonMash* self,
-                                      TPakId curPakId)
+// ea: 0x0053A8C0
+InteractInputRcvr::InteractInputRcvr(TPakId curPakId)
 {
-    self->mPakId = curPakId;
-    self->mFlags = 0;
-    self->mInfo = nullptr;
-    self->mTimer = 0.0f;
-    self->mInputRate = 0.0f;
-    self->mInputProgress = 0.0f;
-    self->mButtonIndex = -1;
-    self->mButtonIndex2 = -1;
-    self->mLastButtonIndexPressed = -1;
-    self->mType = InteractInputRcvr::kInputTypeButtonMash;
+    mPakId = curPakId;
+    mType = kInputTypeInvalid;
+    mFlags = 0;
+    mInfo = nullptr;
+    mTimer = 0.0f;
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
 }
 
-// ea: 0x0053AA30
-void InteractInputRcvrButtonPress_Ctor(InteractInputRcvrButtonPress* self,
-                                       TPakId curPakId)
+// ea: 0x0053A920
+TPakId InteractInputRcvr::GetPakId() const
 {
-    self->mPakId = curPakId;
-    self->mFlags = 0;
-    self->mInfo = nullptr;
-    self->mTimer = 0.0f;
-    self->mInputRate = 0.0f;
-    self->mInputProgress = 0.0f;
-    self->mButtonIndex = -1;
-    self->mType = InteractInputRcvr::kInputTypeButtonPress;
+    return (TPakId)mPakId;
 }
 
-// ea: 0x0053AA80
-void InteractInputRcvrStickSwirl_Ctor(InteractInputRcvrStickSwirl* self,
-                                      TPakId curPakId)
+// ea: 0x0053C780
+void InteractInputRcvr::Activate(const InteractStateInfo& info)
 {
-    self->mPakId = curPakId;
-    self->mFlags = 0;
-    self->mInfo = nullptr;
-    self->mTimer = 0.0f;
-    self->mInputRate = 0.0f;
-    self->mInputProgress = 0.0f;
-    self->mType = InteractInputRcvr::kInputTypeStickSwirl;
-}
-
-// ea: 0x0053AAD0
-void InteractInputRcvrStickToggleVert_Ctor(
-    InteractInputRcvrStickToggleVert* self, TPakId curPakId)
-{
-    self->mPakId = curPakId;
-    self->mFlags = 0;
-    self->mInfo = nullptr;
-    self->mTimer = 0.0f;
-    self->mInputRate = 0.0f;
-    self->mInputProgress = 0.0f;
-    self->mType = InteractInputRcvr::kInputTypeStickToggleVert;
-    self->mVert = 1;
-}
-
-// ea: 0x0053AB20
-void InteractInputRcvrStickToggleHoriz_Ctor(
-    InteractInputRcvrStickToggleHoriz* self, TPakId curPakId)
-{
-    self->mPakId = curPakId;
-    self->mFlags = 0;
-    self->mInfo = nullptr;
-    self->mTimer = 0.0f;
-    self->mInputRate = 0.0f;
-    self->mInputProgress = 0.0f;
-    self->mType = InteractInputRcvr::kInputTypeStickToggleHoriz;
-    self->mVert = 0;
-}
-
-// ea: 0x0053AB70
-void InteractInputRcvrRowboat_Ctor(InteractInputRcvrRowboat* self,
-                                   TPakId curPakId)
-{
-    self->mPakId = curPakId;
-    self->mFlags = 0;
-    self->mInfo = nullptr;
-    self->mTimer = 0.0f;
-    self->mInputRate = 0.0f;
-    self->mInputProgress = 0.0f;
-    self->mType = InteractInputRcvr::kInputTypeRowboat;
+    mInfo = (void*)&info;
+    mTimer = 0.0f;
+    mFlags = 0;
+    for (int i = 0; i < 5; ++i)
+    {
+        mBucketTime[i] = 0.0f;
+        mBucketCount[i] = 0;
+    }
+    mTimeIndex = 0;
+    mNumTimesUsed = 1;
+    mTimeSinceLastInput = 0.0f;
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
 }
 
 // ea: 0x0053F350
@@ -6335,43 +6299,174 @@ float sStickDownMinDist2 = 2500.0f;  // @ 0xDF2E5C
 float sStickDownMinSide = -40.0f;    // @ 0xDF2E58
 float sStickDownMaxProgress = 0.98f; // @ 0xDF2E54
 
-// ea: 0x0053F530 (ButtonMash::MeasureInput)
-void InteractInputRcvrButtonMash_MeasureInput(
-    InteractInputRcvrButtonMash* self, float* inputRate,
-    float* inputProgress, float deltaT)
+// ============================================================================
+// InteractInputRcvr subclass virtuals (anim.o InteractInputRcvr.cpp)
+// ============================================================================
+
+extern int irand(int min, int max);  // ?irand@@YAHHH@Z (game.o)
+
+// ea: 0x0053C860
+void InteractInputRcvrButtonMash::Activate(const InteractStateInfo& info)
 {
-    self->MeasureInput(*inputRate, *inputProgress, deltaT);
-    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)self->mInfo;
-    if (mInfo->acceptInputMinTime >= (self->mTimer - deltaT))
+    mFlags = 0;
+    mTimer = 0.0f;
+    mInfo = (void*)&info;
+    for (int i = 0; i < 5; ++i)
+    {
+        mBucketTime[i] = 0.0f;
+        mBucketCount[i] = 0;
+    }
+    mTimeIndex = 0;
+    mNumTimesUsed = 1;
+    mTimeSinceLastInput = 0.0f;
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
+    if (info.buttonIndex[0] > 15)
+    {
+        XANIM_ASSERT("info.buttonIndex[0] <= controller::SELECT",
+                     "c:\\cod\\code\\game\\InteractInputRcvr.cpp", 285,
+                     "Invalid button value");
+    }
+    mButtonIndex = info.buttonIndex[0] + 207;
+    int v3 = info.buttonIndex[1];
+    if (v3 > 15)
+        mButtonIndex2 = -1;
+    else
+        mButtonIndex2 = v3 + 207;
+    mLastButtonIndexPressed = -1;
+}
+
+// ea: 0x0053C940
+int InteractInputRcvrButtonMash::Press(int buttonIndex)
+{
+    int mButtonIndex2 = this->mButtonIndex2;
+    if (mButtonIndex2 != -1)
+    {
+        int mButtonIndex = this->mButtonIndex;
+        if (buttonIndex != mButtonIndex && buttonIndex != mButtonIndex2)
+            return buttonIndex != 27 && buttonIndex != 9;
+        int mLastButtonIndexPressed = this->mLastButtonIndexPressed;
+        if ((mLastButtonIndexPressed != mButtonIndex
+             || buttonIndex != mButtonIndex2)
+            && (mLastButtonIndexPressed != mButtonIndex2
+                || buttonIndex != mButtonIndex)
+            && mLastButtonIndexPressed != -1)
+        {
+            return buttonIndex != 27 && buttonIndex != 9;
+        }
+        this->mLastButtonIndexPressed = buttonIndex;
+    }
+    else if (buttonIndex != this->mButtonIndex)
+    {
+        return buttonIndex != 27 && buttonIndex != 9;
+    }
+    mFlags |= 1u;
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+// ea: 0x0053F500
+void InteractInputRcvrButtonMash::Deactivate()
+{
+    InteractionController* v1 = InteractionController::Inst(currCl);
+    for (int i = 0; i < 5; ++i)
+        v1->ClearRenderText(i);
+}
+
+// ea: 0x0053F530
+void InteractInputRcvrButtonMash::MeasureInput(float& inputRate,
+                                               float& inputProgress,
+                                               float deltaT)
+{
+    InteractInputRcvr::MeasureInput(inputRate, inputProgress, deltaT);
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    if (mInfo->acceptInputMinTime >= (mTimer - deltaT))
     {
         char text[64];
         sprintf(text, mInfo->buttonHelpStr,
-                GetButtonTextName(mInfo->buttonIndex[1]),
-                GetButtonTextName(mInfo->buttonIndex[0]));
+                GetButtonTextName(mInfo->buttonIndex[0]),
+                GetButtonTextName(mInfo->buttonIndex[1]));
         InteractionController::Inst(currCl)
             ->SetRenderText(text, 320, 0.0f);
     }
 }
 
-// ea: 0x0053F600 (ButtonPress::MeasureInput)
-void InteractInputRcvrButtonPress_MeasureInput(
-    InteractInputRcvrButtonPress* self, float* inputRate,
-    float* inputProgress, float deltaT)
+// ea: 0x0053C9A0
+void InteractInputRcvrButtonPress::Activate(const InteractStateInfo& info)
 {
-    *inputRate = 0.0f;
-    if ((self->mFlags & 1) != 0)
+    mFlags = 0;
+    mTimer = 0.0f;
+    mInfo = (void*)&info;
+    for (int i = 0; i < 5; ++i)
     {
-        *inputRate = 1.0f;
-        self->mFlags &= ~1u;
+        mBucketTime[i] = 0.0f;
+        mBucketCount[i] = 0;
     }
-    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)self->mInfo;
-    float v6 = self->mTimer - deltaT;
+    mTimeIndex = 0;
+    mNumTimesUsed = 1;
+    mTimeSinceLastInput = 0.0f;
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
+    if (info.buttonIndex[0] > 15)
+    {
+        XANIM_ASSERT("info.buttonIndex[0] <= controller::SELECT",
+                     "c:\\cod\\code\\game\\InteractInputRcvr.cpp", 368,
+                     "Invalid button value");
+    }
+    int count = 0;
+    int buttonIndex[4];
+    if (info.buttonIndex[0] != 16)
+    {
+        buttonIndex[0] = info.buttonIndex[0];
+        count = 1;
+    }
+    int v4 = info.buttonIndex[1];
+    if (v4 != 16)
+        buttonIndex[count++] = v4;
+    int v5 = info.buttonIndex[2];
+    if (v5 != 16)
+        buttonIndex[count++] = v5;
+    int v6 = info.buttonIndex[3];
+    if (v6 != 16)
+        buttonIndex[count++] = v6;
+    int v7 = buttonIndex[irand(0, count)];
+    mInfoButtonIndex = v7;
+    mButtonIndex = v7 + 207;
+}
+
+// ea: 0x0053CAB0
+int InteractInputRcvrButtonPress::Press(int buttonIndex)
+{
+    if (buttonIndex == mButtonIndex)
+        mFlags |= 1u;
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+// ea: 0x0053F5D0
+void InteractInputRcvrButtonPress::Deactivate()
+{
+    InteractionController* v1 = InteractionController::Inst(currCl);
+    for (int i = 0; i < 5; ++i)
+        v1->ClearRenderText(i);
+}
+
+// ea: 0x0053F600
+void InteractInputRcvrButtonPress::MeasureInput(float& inputRate,
+                                                float& inputProgress,
+                                                float deltaT)
+{
+    inputRate = 0.0f;
+    if ((mFlags & 1) != 0)
+    {
+        inputRate = 1.0f;
+        mFlags &= ~1u;
+    }
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    float v6 = mTimer - deltaT;
     if (mInfo->acceptInputMinTime < v6)
     {
         float acceptInputMaxTime = mInfo->acceptInputMaxTime;
         if (acceptInputMaxTime > (mInfo->acceptInputMinTime + 0.0099999998f)
-            && self->mTimer > acceptInputMaxTime
-            && acceptInputMaxTime >= v6)
+            && mTimer > acceptInputMaxTime && acceptInputMaxTime >= v6)
         {
             InteractionController::Inst(currCl)->ClearAllRenderText();
         }
@@ -6380,78 +6475,295 @@ void InteractInputRcvrButtonPress_MeasureInput(
     {
         char text[64];
         sprintf(text, mInfo->buttonHelpStr,
-                GetButtonTextName(self->mButtonIndex));
+                GetButtonTextName(mInfoButtonIndex));
         InteractionController::Inst(currCl)
             ->SetRenderText(text, 320, 0.0f);
     }
 }
 
-// ea: 0x0053F740 (StickToggleVert::MeasureInput)
-void InteractInputRcvrStickToggleVert_MeasureInput(
-    InteractInputRcvrStickToggleVert* self, float* inputRate,
-    float* inputProgress, float deltaT)
+// ea: 0x0053CAE0
+void InteractInputRcvrStickSwirl::Activate(const InteractStateInfo& info)
 {
-    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)self->mInfo;
-    float stickVal;
-    if (self->mVert != 0)
-        stickVal = -CL_GamepadPhysicalAxisValue(
-            2 * (mInfo->leftStick != 0) + 1);
+    mFlags = 0;
+    mInfo = (void*)&info;
+    mTimer = 0.0f;
+    for (int i = 0; i < 5; ++i)
+    {
+        mBucketTime[i] = 0.0f;
+        mBucketCount[i] = 0;
+    }
+    mTimeIndex = 0;
+    mNumTimesUsed = 1;
+    mTimeSinceLastInput = 0.0f;
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
+    mCounter = 0;
+    mTotalTime = 0.0f;
+    mTotalAngle = 0.0f;
+    mRate = 0.0f;
+}
+
+// ea: 0x0053F6E0
+void InteractInputRcvrStickSwirl::Deactivate()
+{
+    InteractionController* v1 = InteractionController::Inst(currCl);
+    for (int i = 0; i < 5; ++i)
+        v1->ClearRenderText(i);
+}
+
+// ea: 0x0053CB50
+void InteractInputRcvrStickSwirl::MeasureInput(float& inputRate,
+                                               float& inputProgress,
+                                               float deltaT)
+{
+    (void)inputProgress;
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    float cosDelta = -2.0f;
+    int rotateDir = 0;
+    GetSwirlSpeedDirect(&cosDelta, &rotateDir, mInfo->leftStick == 0);
+    float v7 = (1.0f - cosDelta) * rotateDir;
+    if (mTotalTime <= 0.1f)
+    {
+        mTotalTime += deltaT;
+        mTotalAngle += v7;
+    }
     else
-        stickVal = CL_GamepadPhysicalAxisValue(mInfo->leftStick != 0 ? 2 : 0);
-    int mNextDir = self->mNextDir;
-    if (mNextDir != -1 && stickVal > sMinStickVal)
     {
-        self->mFlags |= 1u;
-        self->mNextDir = -1;
+        mRate = mTotalAngle / mTotalTime;
+        GetAverageDelta(&mRate, &mCounter, mInfo->leftStick == 0);
+        ++mCounter;
+        mTotalTime = 0.0f;
+        mTotalAngle = 0.0f;
     }
-    else if (mNextDir != 1 && (0.0f - sMinStickVal) > stickVal)
-    {
-        self->mFlags |= 1u;
-        self->mNextDir = 1;
-    }
-    self->MeasureInput(*inputRate, *inputProgress, deltaT);
+    float v9 = 0.0f;
+    float v11 = ((deltaT * 1000.0f) * m_yaw->value) * mRate;
+    inputRate = v11;
+    if (mInfo->swirlClockwise != 0)
+        inputRate = -v11;
+    if (inputRate > 0.0f)
+        v9 = inputRate;
+    inputRate = v9;
     if (mInfo->buttonHelpStr[0] != 0
-        && mInfo->acceptInputMinTime >= (self->mTimer - deltaT))
+        && mInfo->acceptInputMinTime >= (mTimer - deltaT))
     {
         InteractionController::Inst(currCl)
             ->SetRenderText(mInfo->buttonHelpStr, 320, 0.0f);
     }
 }
 
-// ea: 0x0053CB50 (StickSwirl::MeasureInput)
-void InteractInputRcvrStickSwirl_MeasureInput(
-    InteractInputRcvrStickSwirl* self, float* inputRate,
-    float* inputProgress, float deltaT)
+// ea: 0x0053CCB0
+void InteractInputRcvrStickToggleVert::Activate(const InteractStateInfo& info)
 {
-    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)self->mInfo;
-    float cosDelta = -2.0f;
-    int rotateDir = 0;
-    GetSwirlSpeedDirect(&cosDelta, &rotateDir, mInfo->leftStick == 0);
-    float v7 = (1.0f - cosDelta) * rotateDir;
-    if (self->mTotalTime <= 0.1f)
+    mFlags = 0;
+    mInfo = (void*)&info;
+    mTimer = 0.0f;
+    for (int i = 0; i < 5; ++i)
     {
-        self->mTotalTime += deltaT;
-        self->mTotalAngle += v7;
+        mBucketTime[i] = 0.0f;
+        mBucketCount[i] = 0;
     }
+    mTimeIndex = 0;
+    mNumTimesUsed = 1;
+    mTimeSinceLastInput = 0.0f;
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
+    mNextDir = 0;
+}
+
+// ea: 0x0053F710
+void InteractInputRcvrStickToggleVert::Deactivate()
+{
+    InteractionController* v1 = InteractionController::Inst(currCl);
+    for (int i = 0; i < 5; ++i)
+        v1->ClearRenderText(i);
+}
+
+// ea: 0x0053F740
+void InteractInputRcvrStickToggleVert::MeasureInput(float& inputRate,
+                                                    float& inputProgress,
+                                                    float deltaT)
+{
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    float stickVal;
+    if (mVert != 0)
+        stickVal = -CL_GamepadPhysicalAxisValue(
+            2 * (mInfo->leftStick != 0) + 1);
     else
+        stickVal = CL_GamepadPhysicalAxisValue(mInfo->leftStick != 0 ? 2 : 0);
+    int mNextDir = this->mNextDir;
+    if (mNextDir != -1 && stickVal > sMinStickVal)
     {
-        self->mRate = self->mTotalAngle / self->mTotalTime;
-        GetAverageDelta(&self->mRate, &self->mCounter, mInfo->leftStick == 0);
-        ++self->mCounter;
-        self->mTotalTime = 0.0f;
-        self->mTotalAngle = 0.0f;
+        mFlags |= 1u;
+        this->mNextDir = -1;
     }
-    float v11 = ((deltaT * 1000.0f) * m_yaw->value) * self->mRate;
-    *inputRate = v11;
-    if (mInfo->swirlClockwise != 0)
-        *inputRate = -v11;
-    if (*inputRate > 0.0f)
-        *inputRate = *inputRate;
+    else if (mNextDir != 1 && (0.0f - sMinStickVal) > stickVal)
+    {
+        mFlags |= 1u;
+        this->mNextDir = 1;
+    }
+    InteractInputRcvr::MeasureInput(inputRate, inputProgress, deltaT);
     if (mInfo->buttonHelpStr[0] != 0
-        && mInfo->acceptInputMinTime >= (self->mTimer - deltaT))
+        && mInfo->acceptInputMinTime >= (mTimer - deltaT))
     {
         InteractionController::Inst(currCl)
             ->SetRenderText(mInfo->buttonHelpStr, 320, 0.0f);
+    }
+}
+
+// ea: 0x0053CD10
+void InteractInputRcvrRowboat::Activate(const InteractStateInfo& info)
+{
+    mInfo = (void*)&info;
+    mTimer = 0.0f;
+    mFlags = 0;
+    for (int i = 0; i < 5; ++i)
+    {
+        mBucketTime[i] = 0.0f;
+        mBucketCount[i] = 0;
+    }
+    mTimeIndex = 0;
+    mNumTimesUsed = 1;
+    mTimeSinceLastInput = 0.0f;
+    mInputRate = 0.0f;
+    mInputProgress = 0.0f;
+}
+
+// ea: 0x0053CD70
+void InteractInputRcvrRowboat::Deactivate()
+{
+}
+
+// ea: 0x0053CD80
+void InteractInputRcvrRowboat::MeasureInput(float& inputRate,
+                                            float& inputProgress,
+                                            float deltaT)
+{
+    (void)inputRate;
+    (void)deltaT;
+    InteractStateInfoLocal* mInfo = (InteractStateInfoLocal*)this->mInfo;
+    mFlags &= 0xFFFFFFF3u;
+    int leftStick = mInfo->leftStick;
+    int axisSide = leftStick != 0 ? 2 : 0;
+    int axisForward = 2 * (leftStick != 0) + 1;
+    if (sStickDownMinProgress > inputProgress)
+    {
+        float a = -CL_GamepadPhysicalAxisValue(axisForward);
+        if (sStickUpMaxSide > fabs(CL_GamepadPhysicalAxisValue(axisSide)))
+        {
+            float v10 = sStickDownMinProgress;
+            float v11 =
+                (a - sStickUpForwardMin)
+                / (sStickUpForwardMax - sStickUpForwardMin);
+            inputProgress = v11;
+            float v12 = v11 * v10;
+            if (v12 >= 0.0f)
+            {
+                float v13 = v10 + 0.0099999998f;
+                if (v12 > v13)
+                    v12 = v13;
+                inputProgress = v12;
+            }
+            else
+            {
+                inputProgress = 0.0f;
+            }
+            return;
+        }
+        mFlags |= 4u;
+        return;
+    }
+    float forward = -CL_GamepadPhysicalAxisValue(axisForward);
+    float aa = CL_GamepadPhysicalAxisValue(axisSide);
+    if (((aa * aa) + (forward * forward)) <= sStickDownMinDist2
+        || aa <= sStickDownMinSide)
+    {
+        mFlags |= 4u;
+        return;
+    }
+    float v27 = fabs(aa);
+    float ab = fabs(forward);
+    float ac;
+    if (0.0f == ab + v27)
+    {
+        ac = 0.0f;
+    }
+    else
+    {
+        float forwarda =
+            1.0f / sqrt((aa * aa) + (forward * forward));
+        float v19;
+        if (ab <= v27)
+        {
+            float v20 = forwarda * ab;
+            if (v20 >= 0.5f)
+            {
+                float af = sqrt(fabs((1.0f - v20) * 0.5f));
+                float af2 = af * af;
+                float af3 = af2 * af;
+                float af4 = af2 * af2;
+                float af6 = af4 * af2;
+                v19 = af6 * -0.1079625f - af4 * 0.15000001f
+                      - af3 * 0.33333331f - af * 2.0f + 1.570796f;
+            }
+            else
+            {
+                float v202 = v20 * v20;
+                float v203 = v202 * v20;
+                float v204 = v202 * v202;
+                float v206 = v204 * v202;
+                v19 = v206 * 0.053981241f + v204 * 0.075000003f
+                      + v203 * 0.1666667f + v20;
+            }
+        }
+        else
+        {
+            float v17 = forwarda * v27;
+            float v18;
+            if (v17 >= 0.5f)
+            {
+                float ae = sqrt(fabs((1.0f - v17) * 0.5f));
+                float ae2 = ae * ae;
+                float ae3 = ae2 * ae;
+                float ae4 = ae2 * ae2;
+                float ae6 = ae4 * ae2;
+                v18 = ae6 * -0.1079625f - ae4 * 0.15000001f
+                      - ae3 * 0.33333331f - ae * 2.0f + 1.570796f;
+            }
+            else
+            {
+                float v172 = v17 * v17;
+                float v173 = v172 * v17;
+                float v174 = v172 * v172;
+                float v176 = v174 * v172;
+                v18 = v176 * 0.053981241f + v174 * 0.075000003f
+                      + v173 * 0.1666667f + v17;
+            }
+            v19 = 1.5707964f - v18;
+        }
+        if (aa < 0.0f)
+            v19 = 3.1415927f - v19;
+        if (forward < 0.0f)
+            v19 = 0.0f - v19;
+        ac = v19;
+    }
+    float v21 = ac * 57.29577791868204f;
+    float v22 = v21;
+    if (v21 < 0.0f)
+        v22 = v21 + 360.0f;
+    float v23 = (360.0f - v22) + 90.0f;
+    if (v23 >= 360.0f)
+        v23 = v23 - 360.0f;
+    if (v23 > 225.0f)
+        v23 = 0.0f;
+    float v24 = ((v23 * 0.0055555557f) * (1.0f - sStickDownMinProgress))
+                + sStickDownMinProgress;
+    if (v24 >= 1.0f)
+        v24 = 1.0f;
+    inputProgress = v24;
+    if (!(v24 <= sStickDownMaxProgress))
+    {
+        mFlags |= 8u;
+        inputProgress = 0.0f;
     }
 }
 
@@ -13969,27 +14281,52 @@ void InteractInputRcvr::FreeInputRcvrs()
     }
 }
 
-// ea: 0x0053C560 (CreateInputRcvr - static; switch on type)
+// ea: 0x0053C560 (CreateInputRcvr - protected static; switch on type)
 InteractInputRcvr* InteractInputRcvr::CreateInputRcvr(EInputType type,
                                                       TPakId curPakId)
 {
+    if (type >= kInputTypeCount)
+    {
+        XANIM_ASSERT("type >= EInputType(0) && type < kInputTypeCount",
+                     "c:\\cod\\code\\game\\InteractInputRcvr.cpp", 65,
+                     "Invalid type");
+    }
+    if (sInputRcvrs[type] != nullptr)
+    {
+        XANIM_ASSERT("sInputRcvrs[type] == 0",
+                     "c:\\cod\\code\\game\\InteractInputRcvr.cpp", 66,
+                     "Already exists");
+        if (sInputRcvrs[type] != nullptr)
+            return sInputRcvrs[type];
+    }
+    InteractInputRcvr* result = nullptr;
     switch (type)
     {
     case kInputTypeButtonMash:
-        return new InteractInputRcvrButtonMash(curPakId);
+        result = new (curPakId) InteractInputRcvrButtonMash(curPakId);
+        break;
     case kInputTypeButtonPress:
-        return new InteractInputRcvrButtonPress(curPakId);
+        result = new (curPakId) InteractInputRcvrButtonPress(curPakId);
+        break;
     case kInputTypeStickSwirl:
-        return new InteractInputRcvrStickSwirl(curPakId);
-    case kInputTypeStickToggleVert:
-        return new InteractInputRcvrStickToggleVert(curPakId);
+        result = new (curPakId) InteractInputRcvrStickSwirl(curPakId);
+        break;
     case kInputTypeStickToggleHoriz:
-        return new InteractInputRcvrStickToggleHoriz(curPakId);
+        result = new (curPakId) InteractInputRcvrStickToggleHoriz(curPakId);
+        break;
+    case kInputTypeStickToggleVert:
+        result = new (curPakId) InteractInputRcvrStickToggleVert(curPakId);
+        break;
     case kInputTypeRowboat:
-        return new InteractInputRcvrRowboat(curPakId);
+        result = new (curPakId) InteractInputRcvrRowboat(curPakId);
+        break;
     default:
-        return nullptr;
+        XANIM_ASSERT("0", "c:\\cod\\code\\game\\InteractInputRcvr.cpp", 80,
+                     "Unknown input receiver type");
+        return sInputRcvrs[type];
     }
+    sInputRcvrs[type] = result;
+    return result;
 }
 
 // ============================================================================
