@@ -738,7 +738,8 @@ FEMenuListBoxItem::~FEMenuListBoxItem()
 }
 
 // ea: 0x571D60
-unsigned int FEMenuListBoxItem::AddSubItem(const Broc::string& subItemText)
+const unsigned int FEMenuListBoxItem::AddSubItem(
+    const Broc::string& subItemText)
 {
     unsigned int mSubItemCount = this->mSubItemCount;
     if (mSubItemCount >= 3)
@@ -792,15 +793,15 @@ FEMenuListBox::~FEMenuListBox()
 }
 
 // ea: 0x58E330
-unsigned int FEMenuListBox::AddItem(const Broc::string& itemText,
-                                    FEMenuListBoxItem* itemData)
+const unsigned int FEMenuListBox::AddItem(const Broc::string& itemText,
+                                          int itemData)
 {
     unsigned int mSize = mItems.mSize;
     FEMenuListBoxItem* v5 =
         (FEMenuListBoxItem*)mem_heap_malloc(0x1Cu);
     FEMenuListBoxItem* v6;
     if (v5 != nullptr)
-        v6 = new (v5) FEMenuListBoxItem(mSize, itemText, (int)itemData);
+        v6 = new (v5) FEMenuListBoxItem(mSize, itemText, itemData);
     else
         v6 = nullptr;
     FEMenuListBoxItem* iElement = v6;
@@ -823,8 +824,8 @@ unsigned int FEMenuListBox::AddItem(const Broc::string& itemText,
 }
 
 // ea: 0x57E520
-unsigned int FEMenuListBox::AddSubItem(unsigned int itemIndex,
-                                       const Broc::string& subItemText)
+const unsigned int FEMenuListBox::AddSubItem(
+    unsigned int itemIndex, const Broc::string& subItemText)
 {
     if (itemIndex >= mItems.mSize)
     {
@@ -971,7 +972,7 @@ void FEMenuListBox::SetCurrentSelection(int iCurrentSelection)
 }
 
 // ea: 0x57EA60
-unsigned int FEMenuListBox::GetCurrentSelection()
+const int FEMenuListBox::GetCurrentSelection()
 {
     if (mSelectedLine >= mItems.mSize)
         return -1;
@@ -979,7 +980,7 @@ unsigned int FEMenuListBox::GetCurrentSelection()
 }
 
 // ea: 0x57EA80
-int FEMenuListBox::GetCurrentSelectionData()
+const int FEMenuListBox::GetCurrentSelectionData()
 {
     if (mSelectedLine >= mItems.mSize)
         return 0;

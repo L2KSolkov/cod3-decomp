@@ -1270,7 +1270,7 @@ public:
                       int data);  // inline COMDAT 0x5B2DF0-ish
     ~FEMenuListBoxItem();         // ?dtor 0x5B2E10-ish
     const Broc::string& GetSubItem(unsigned int index);  // shell.o 0x571D90
-    unsigned int AddSubItem(const Broc::string& text);   // shell.o 0x571D60
+    const unsigned int AddSubItem(const Broc::string& text);  // shell.o 0x571D60
 };
 static_assert(sizeof(FEMenuListBoxItem) == 28,
               "FEMenuListBoxItem size mismatch");
@@ -1395,13 +1395,13 @@ public:
     virtual short OnDown();             // 0x57E970
     virtual void Draw();                // 0x57E5B0
 
-    unsigned int AddItem(const Broc::string& itemText,
-                         FEMenuListBoxItem* itemData);  // 0x58E330
-    unsigned int AddSubItem(unsigned int itemIndex,
-                            const Broc::string& subItemText);  // 0x57E520
+    const unsigned int AddItem(const Broc::string& itemText,
+                               int itemData);  // 0x58E330
+    const unsigned int AddSubItem(unsigned int itemIndex,
+                                  const Broc::string& subItemText);  // 0x57E520
     void SetCurrentSelection(int iCurrentSelection);  // 0x57EA00
-    unsigned int GetCurrentSelection();  // 0x57EA60
-    int GetCurrentSelectionData();       // 0x57EA80
+    const int GetCurrentSelection();     // 0x57EA60
+    const int GetCurrentSelectionData(); // 0x57EA80
     void SetColumnWidth(unsigned int column, float width);  // 0x571DF0
     void SetColumnHeading(unsigned int column,
                           const char* heading);  // 0x571E60
