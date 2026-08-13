@@ -354,10 +354,10 @@ extern vmCvar_t cg_railTrailTime;
 extern vmCvar_t cg_tracerChance;
 extern int dword_DF6ADC[6];
 float tracer_info_speed[6];
-extern void AxisClear(float (*axis)[3]);
-extern float VectorNormalize(float* v);
-extern float VectorDistance(const float* v1, const float* v2);
-extern void PerpendicularVector(float* dst, float* src);
+extern void AxisClear(float (*const axis)[3]);
+extern const float VectorNormalize(float* const v);
+extern const float VectorDistance(const float* const v1, const float* const v2);
+extern void PerpendicularVector(float* const dst, const float* const src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 extern void FastSinCos(float radians, float* psin, float* pcos);
 
@@ -742,7 +742,8 @@ extern int dword_F6294C[4 * 1580];
 extern void* RE_RegisterModel(void* result, const char* name, int pakId,
                               int imagetype);
 extern TPakId CurPakId();  // defined in streamer/pakmanager.cpp
-extern float VectorNormalize2(const float* v, float* out);
+extern const float VectorNormalize2(const float* const v,
+                                    float* const out);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
                                         TPakId pakid, bool important);
@@ -883,7 +884,8 @@ extern weaponInfo_s* cg_weapons;
 extern void* cg_items;
 extern struct gitem_s* bg_itemlist;
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void CG_RegisterItemVisuals(int itemNum);
 extern void CG_Error(const char* msg, ...);
@@ -1090,7 +1092,7 @@ extern float dword_F63C70[4 * 1580];
 extern Camera* gCamera;
 extern int dword_180000;
 unsigned int head_hash_0;
-extern float VectorDistance(const float* v1, const float* v2);
+extern const float VectorDistance(const float* const v1, const float* const v2);
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMat);
 void CG_Player(Entity* entity);
@@ -1363,7 +1365,8 @@ extern void CG_DrawTracer(const math::Position3& _start,
 struct trajectory_t;
 extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
                                   math::Position3& result);
-extern float VectorNormalize2(const float* v, float* out);
+extern const float VectorNormalize2(const float* const v,
+                                    float* const out);
 int dword_DF6ADC[6];  // cg.o BSS
 int dword_DF6AE0[6];  // cg.o BSS
 extern int dword_F6400C[4 * 1580];
@@ -1525,7 +1528,7 @@ extern void CG_FireWeapon(Entity* attacker, EntityState* attackerState,
 extern void CG_EjectWeaponBrass(Entity* entity, int event);
 extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
                                     int weaponAction);
-extern void ByteToDir(unsigned int b, float* dir);
+extern void ByteToDir(int b, float* const dir);
 extern void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                               float* const normal, int weapon, int surfType,
                               Entity* hitEnt);

@@ -108,10 +108,11 @@ void calc_sphere_inertia(float radius, math::Dir3* unit_inertia,
 void calc_box_inertia(const math::Dir3* dim, math::Dir3* unit_inertia,
                       float* volume);  // ?calc_box_inertia@nuge@@SAXPBVDir3@math@@PAV23@PAM@Z
 }
-void AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
+void AnglesToAxis(const math::Position3& angles, float (*const axis)[3]);
 void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
                   math::Mat43& mat);  // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z
-void AnglesToAxis(const float* angles, float (*axis)[3]);  // ?AnglesToAxis@@YAXPBMPAY02M@Z
+void AnglesToAxis(const float* const angles,
+                  float (*const axis)[3]);  // ?AnglesToAxis@@YAXQBMQAY02M@Z
 void SetIdentity(math::Mat43& m);  // inline COMDAT (pulse_sum.h; ea: 0x6E4D00)
 
 class PakManager {
@@ -597,9 +598,10 @@ bool IsLocalPlayer(Entity* entity);  // ?IsLocalPlayer@@YA_NPAVEntity@@@Z (g.o)
 bool Entity_has_zone_collision(const void* self);  // game.o C bridge
 int RecalibrateInput(int val);  // ?RecalibrateInput@@YAHH@Z (cl.o)
 extern int g_vehicle_button_threshold;  // ?g_vehicle_button_threshold@@3HA (physics.o @ 0xE01F04)
-float vectoyaw(float* vec);  // ?vectoyaw@@YAMPAM@Z (core.o)
-float AngleNormalize180Accurate(float angle);  // ?AngleNormalize180Accurate@@YAMM@Z (core.o)
-void Axis4ToAngles(const float (*axis)[4], float* angles);  // ?Axis4ToAngles@@YAXPAY03$$CBMPAM@Z (core.o)
+const float vectoyaw(const float* const vec);  // ?vectoyaw@@YA?BMQBM@Z (core.o)
+const float AngleNormalize180Accurate(float angle);  // ?AngleNormalize180Accurate@@YA?BMM@Z (core.o)
+void Axis4ToAngles(const float (*const axis)[4],
+                   float* const angles);  // ?Axis4ToAngles@@YAXQAY03$$CBMQAM@Z (core.o)
 // make_rotate(Mat43&, Dir3 const&, float, float) - pulse_sum.h inline
 void make_rotate(math::Mat43& m, const math::Dir3& u, float ca, float sa);
 // game.o raw segment collide helpers (g_cm_load.cpp)
@@ -4493,7 +4495,7 @@ math::Position3 rb_vehicle::get_rb_position() const
     return result;
 }
 
-void AxisToAngles(const float (*axis)[3], float* angles);  // ?AxisToAngles@@YAXQAY02$$CBMQAM@Z (q_math.cpp)
+void AxisToAngles(const float (*const axis)[3], float* const angles);  // ?AxisToAngles@@YAXQAY02$$CBMQAM@Z (q_math.cpp)
 
 // ea: 0x6FC3D0
 math::Dir3 rb_vehicle::get_rb_angles() const
@@ -11372,8 +11374,8 @@ void biped_phys_info::update_vel_matrices()
     // World transforms from cur/last angles + origin (AnglesToAxis layout:
     // axis[0..2] = x/y/z rows, 4th lane 0, translation in w).
     float curAxis[3][3], lastAxis[3][3];
-    AnglesToAxis(&m_cur_angles, curAxis);
-    AnglesToAxis(&m_last_angles, lastAxis);
+    AnglesToAxis(m_cur_angles, curAxis);
+    AnglesToAxis(m_last_angles, lastAxis);
 
     math::Mat43 curWorld, lastWorld;
     curWorld.x.v = _mm_loadu_ps(&curAxis[0][0]);

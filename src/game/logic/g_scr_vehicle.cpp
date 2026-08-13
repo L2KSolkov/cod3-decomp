@@ -3831,7 +3831,7 @@ float Scr_Vehicle_DamageScale(Entity* pSelf, Entity* pAttacker,
     }
     float scale = bulletDamage;
     float axis[3][3];
-    AnglesToAxis(&scr_vehicle->phys.angles, axis);
+    AnglesToAxis(scr_vehicle->phys.angles, axis);
     float vdir[3];
     vdir[0] = point[0] - p_phys->origin.v.m128_f32[0];
     vdir[1] = point[1] - p_phys->origin.v.m128_f32[1];
@@ -4245,9 +4245,9 @@ no_target:
             MatrixMultiply(viewAxis, invTgt, rel);
             AxisToAngles(rel, angles);
             float deltaAngles[3];
-            AnglesSubtract((const math::Position3*)angles,
-                           &scr_vehicle->current.mGunnerAngles,
-                           (math::Position3*)deltaAngles);
+            AnglesSubtract(*(const math::Position3*)angles,
+                           scr_vehicle->current.mGunnerAngles,
+                           *(math::Position3*)deltaAngles);
             float absPitch = fabs(deltaAngles[0]);
             float absYaw = fabs(deltaAngles[1]);
             float deltaYAW = AngleNormalize180(
@@ -4363,9 +4363,9 @@ no_target:
             scr_vehicle->current.mGunnerAngles.v.m128_f32[1] =
                 scr_vehicle->next.mGunnerAngles.v.m128_f32[1];
             float deltaAngles[3];
-            AnglesSubtract((const math::Position3*)angles,
-                           &scr_vehicle->current.mGunnerAngles,
-                           (math::Position3*)deltaAngles);
+            AnglesSubtract(*(const math::Position3*)angles,
+                           scr_vehicle->current.mGunnerAngles,
+                           *(math::Position3*)deltaAngles);
             float absPitch = fabs(deltaAngles[0]);
             float absYaw = fabs(deltaAngles[1]);
             if (scr_vehicle->hasGunnerTarget != 0
@@ -5190,7 +5190,7 @@ int VEH_SlideMove(Entity* ent, int gravity, int msec)
         planes[0] = s_phys.groundTrace.normal;
         numPlanes = 1;
     }
-    VectorNormalize2(&veh->phys.vel, &veh->phys.vel);
+    VectorNormalize2(veh->phys.vel, veh->phys.vel);
     collision_context_t context;
     context.__vftable = (collision_context_t_vtbl*)0x00CD8F6C;
     context.pass_entity1.mHandle.mVal = ent->mHandle.mHandle.mVal;
@@ -6157,9 +6157,9 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
                        + up[1] * veh->phys.origin.v.m128_f32[1]))
             / up[2];
     }
-    AnglesSubtract((const math::Position3*)&veh->phys.angles,
-                   (const math::Position3*)&veh->phys.prevAngles,
-                   (math::Position3*)&veh->phys.rotVel);
+    AnglesSubtract(*(const math::Position3*)&veh->phys.angles,
+                   *(const math::Position3*)&veh->phys.prevAngles,
+                   *(math::Position3*)&veh->phys.rotVel);
     float invD = 1.0f / dT;
     veh->phys.rotVel.v.m128_f32[0] *= invD;
     veh->phys.rotVel.v.m128_f32[1] *= invD;
@@ -6512,7 +6512,7 @@ void VEH_JoltBody(Entity* ent, const math::Position3* dir, float intensity,
         else if (intensity > 1.0f)
             intensity = 1.0f;
         float axis[3][3];
-        AnglesToAxis(&scr_vehicle->phys.angles, axis);
+        AnglesToAxis(scr_vehicle->phys.angles, axis);
         scr_vehicle->joltDir[0] = (dir->v.m128_f32[0] * axis[0][0])
                                 + (dir->v.m128_f32[1] * axis[0][1])
                                 + (dir->v.m128_f32[2] * axis[0][2]);
@@ -6567,10 +6567,10 @@ void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
     delta[1] = veh->phys.origin.v.m128_f32[1] - veh->phys.prevOrigin.v.m128_f32[1];
     delta[2] = veh->phys.origin.v.m128_f32[2] - veh->phys.prevOrigin.v.m128_f32[2];
     math::Position3 deltaAngles;
-    AnglesSubtract(&veh->phys.angles, &veh->phys.prevAngles, &deltaAngles);
+    AnglesSubtract(veh->phys.angles, veh->phys.prevAngles, deltaAngles);
     math::Dir3 moveDir;
     math::Dir3 dir = native_to_cdl_dir3(delta);
-    if (VectorNormalize2(&dir, &moveDir) < 0.005f)
+    if (VectorNormalize2(dir, moveDir) < 0.005f)
         return;
     bool pushed;
     if (pOther->actor != nullptr && pSelf->scr_vehicle != nullptr)
@@ -6601,7 +6601,7 @@ void Scr_Vehicle_Touch(Entity* pSelf, Entity* pOther)
     moveDirToEnt.v.m128_f32[1] =
         pOther->r.currentOrigin.v.m128_f32[1] - pSelf->r.currentOrigin.v.m128_f32[1];
     moveDirToEnt.v.m128_f32[2] = 0.0f;
-    VectorNormalize(&moveDirToEnt);
+    VectorNormalize(moveDirToEnt);
     float dot = moveDir.v.m128_f32[0] * moveDirToEnt.v.m128_f32[0]
               + moveDir.v.m128_f32[1] * moveDirToEnt.v.m128_f32[1]
               + moveDir.v.m128_f32[2] * moveDirToEnt.v.m128_f32[2];
@@ -6846,9 +6846,9 @@ void VEH_UpdatePath(Entity* ent, int msec)
         scr_vehicle->phys.vel.v.m128_f32[2] =
             (scr_vehicle->phys.origin.v.m128_f32[2]
              - scr_vehicle->phys.prevOrigin.v.m128_f32[2]) * invMsec;
-        AnglesSubtract((const math::Position3*)&scr_vehicle->phys.angles,
-                       (const math::Position3*)&scr_vehicle->phys.prevAngles,
-                       (math::Position3*)&scr_vehicle->phys.rotVel);
+        AnglesSubtract(*(const math::Position3*)&scr_vehicle->phys.angles,
+                       *(const math::Position3*)&scr_vehicle->phys.prevAngles,
+                       *(math::Position3*)&scr_vehicle->phys.rotVel);
         scr_vehicle->phys.rotVel.v.m128_f32[0] *= invMsec;
         scr_vehicle->phys.rotVel.v.m128_f32[1] *= invMsec;
         scr_vehicle->phys.rotVel.v.m128_f32[2] *= invMsec;

@@ -983,10 +983,11 @@ void      SV_DObjGetHierarchyBits(Entity* entity, int boneIndex,
                                   int* const partBits);
 DObjSkelMat* SV_DObjGetMatrixArray(Entity* entity);
 int       SV_DObjGetBoneIndex(Entity* entity, unsigned int boneNameHash);
-void      AnglesToAxis(const math::Position3* angles, float (*axis)[3]);
-void      DObjSkel2MatrixMultiply43(const DObjSkelMat* in1, const float (*in2)[3], DObjSkelMat* out);
-DObjSkelMat* DObjSkelMatrixMultiply(DObjSkelMat* result, const DObjSkelMat* in1,
-                                    const DObjSkelMat* in2);
+void      AnglesToAxis(const math::Position3& angles, float (*const axis)[3]);
+void      DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
+                                      const float (*const in2)[3], DObjSkelMat* out);
+DObjSkelMat DObjSkelMatrixMultiply(const DObjSkelMat* in1,
+                                   const DObjSkelMat* in2);
 void      ValidatePakId(TPakId pakId);
 
 XAnimTree* G_GetActorAnimTree(actor_s* actor);
@@ -1193,7 +1194,8 @@ void mem_heap_free(void* ptr);
 void AnglesToForward(const float* const angles, float* const forward);
 int  Q_stricmp(const char* s1, const char* s2);
 void Path_MarkNodeInvalid(PathNodes::PathNode* pNode, int eTeam);
-float VectorDistanceSquared(const float* p1, const float* p2);
+const float VectorDistanceSquared(const float* const p1,
+                                    const float* const p2);
 
 namespace cdOceanGlobals {
 // ea: 0x007C0B70 (render_xboxr:cdOceanGlobals.o)
@@ -1494,15 +1496,15 @@ extern cspField_t s_vehicleFields[73];  // g.o .rdata @ 0xDD6EF0
 extern vehicleAnimMap_t* vehicleAnimMaps[6];  // g.o .data @ 0xDD6E6C
 
 // externs
-float  AngleNormalize180(float angle);
-float  AngleNormalize360(float angle);
-float  AngleDelta(float a1, float a2);              // core.o 0x4B9CD0
-float  LerpAngle(float a1, float a2, float frac);   // core.o
+const float AngleNormalize180(float angle);
+const float AngleNormalize360(float angle);
+const float AngleDelta(float a1, float a2);              // core.o 0x4B9CD0
+const float LerpAngle(float a1, float a2, float frac);   // core.o
 float  flrand(float min, float max);                // core.o
 int    Cvar_VariableIntegerValue(const char* var_name);  // core.o
 int    R_CellForPoint(const math::Position3* pos);  // render.o 0x6C52B0
-float  AngleSubtract(float a1, float a2);
-float  PitchForYawOnNormal(float fYaw, const float* vNormal);
+const float AngleSubtract(float a1, float a2);
+float  PitchForYawOnNormal(float fYaw, const float* const vNormal);
 void   gunrandom(float* x, float* y);
 extern float gTanAimConeSpread;
 // ?Actor_CheckArmor@@YAHPAUactor_s@@HH@Z (mp_actors.o 0x77BE90)
@@ -1941,7 +1943,8 @@ inline float Actor_CanSeePointEx(
     return 0.0f;
 }
 bool G_IsPlayerDrivingVehicle(Entity* player);
-float VectorDistanceSquared2D(const math::Position3* p1, const math::Position3* p2);
+const float VectorDistanceSquared2D(const math::Position3& p1,
+                                    const math::Position3& p2);
 math::Position3 native_to_cdl_pos3(const float* v);  // ?native_to_cdl_pos3@@YA?BVPosition3@math@@QBM@Z
 void G_DObjSetLocalTagInternal_0(const float* trans, const float* angles, int bone,
                                  Entity* ent, int a5);
@@ -1981,16 +1984,16 @@ Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
 void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
                                 float* const result);
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3& result);
-void AxisToAngles(const float (*axis)[3], float* angles);
+void AxisToAngles(const float (*const axis)[3], float* const angles);
 void CrossProduct(const float* v1, const float* v2, float* cross);
-float VectorNormalize(float* v);
-float VectorNormalize2D(float* v);
-float VectorNormalize(math::Dir3* v);                    // core.o
-float VectorNormalize2(const math::Dir3* in, math::Dir3* out);  // core.o
-float Q_acos(float c);
-void  YawVectors(float yaw, float* forward, float* right);
-float vectosignedpitch(const float* vec);
-void  vectosignedangles(float* vec, float* angles);
+const float VectorNormalize(float* const v);
+const float VectorNormalize2D(float* const v);
+const float VectorNormalize(math::Dir3& v);                    // core.o
+float VectorNormalize2(const math::Dir3& in, math::Dir3& out);  // core.o
+const float Q_acos(float c);
+void  YawVectors(float yaw, float* const forward, float* const right);
+const float vectosignedpitch(const float* const vec);
+void  vectosignedangles(const float* const vec, float* const angles);
 void  G_DObjCalcBone(Entity* ent, int boneIndex);
 bool  G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex, DObjSkelMat* tagMat);
 void  RegisterItem(unsigned int iItemIndex, int bUpdateCS);
@@ -2041,16 +2044,17 @@ extern void (*thinktable[])(Entity* ent, int msec);
 // externs
 void SV_AdjustAreaPortalState(Entity* ent, int open);
 int  SV_inPVS(const math::Position3& p1, const math::Position3& p2);
-void vectoangles(float* vec, float* angles);
-float RadiusFromBounds(const math::Position3* mins, const math::Position3* maxs);
+void vectoangles(const float* const vec, float* const angles);
+const float RadiusFromBounds(const math::Position3& mins,
+                             const math::Position3& maxs);
 int  CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                      DbLinkedHandle<EntityHandleDb, Entity>* entityList,
                      int maxcount, int contentmask);
 void G_Animscripted_Think(Entity* ent);
 void G_SetEntityOceanHeight(Entity* pEnt);
 int  ScriptMover_Updatemove(float speed, float time, math::Position3* dest);
-float AngleNormalize180(float angle);
-float AngleNormalize360(float angle);
+const float AngleNormalize180(float angle);
+const float AngleNormalize360(float angle);
 void DoorRotateStartOpen(Entity* ent);
 void G_MoverTeam(Entity* ent);
 void G_Animscripted_Think(Entity* ent);
@@ -2078,7 +2082,7 @@ void j_nullsub_64(Entity* pGrenade, Entity* pHitEnt);
 // g_combat.cpp core (G_Damage family)
 // ============================================================================
 bool  IsLocalPlayer(Entity* ent);   // ?IsLocalPlayer@@YA_NPAVEntity@@@Z
-float VectorNormalize2(const float* v, float* out);
+const float VectorNormalize2(const float* const v, float* const out);
 extern vmCvar_t mp_friendlyfire;      // 0xEABBC8
 extern vmCvar_t g_knockback;
 extern vmCvar_t g_debugDamage;
@@ -2112,7 +2116,7 @@ int   G_RadiusDamage(const float* origin, Entity* inflictor, Entity* attacker,
 // ============================================================================
 // missile/explosion helpers
 // ============================================================================
-unsigned char DirToByte(const float* dir);
+const unsigned char DirToByte(const float* const dir);
 void Weapon_MeleeHitShock(Entity* traceEnt);                  // g.o 0x464AC0
 bool Actor_IsMeleeInteractable(const actor_s* pSelf);         // mp_actors.o
 // ?CheckActorInteraction@@YAHAAVEntity@@PBD@Z (anim.o 0x556E50; stub)
@@ -2147,13 +2151,16 @@ enum {
     ERR_SCRIPT = 6,
     ERR_LOCALIZATION = 7,
 };
-void  AngleVectors(const float* angles, float* forward, float* right, float* up);
-void  AngleVectors(const math::Position3* angles, float* forward, float* right,
-                   float* up);  // core.o q_math.cpp
-void  VectorInverse(float* v);  // core.o
-void  VectorNormalizeFast(float* v);   // core.o 0x4BDF70
-void  AnglesSubtract(const math::Position3* v1, const math::Position3* v2,
-                     math::Position3* v3);   // core.o 0x4B99F0
+void  AngleVectors(const float* const angles, float* const forward,
+                   float* const right, float* const up);
+void  AngleVectors(const math::Position3& angles, float* const forward,
+                   float* const right, float* const up);  // core.o q_math.cpp
+void  AngleVectors(const math::Position3& angles, math::Position3& forward,
+                   math::Position3& right, math::Position3& up);  // core.o q_math.cpp
+void  VectorInverse(float* const v);  // core.o
+void  VectorNormalizeFast(float* const v);   // core.o 0x4BDF70
+void  AnglesSubtract(const math::Position3& v1, const math::Position3& v2,
+                     math::Position3& v3);   // core.o 0x4B99F0
 void  ApplyPhysics(Entity* hitEnt, const math::Position3* hitp,
                    const math::Dir3* hitd, float force, bool local_hitp,
                    hitLocation_t hitLoc);   // physics.o 0x70D380
@@ -2208,28 +2215,32 @@ void  j_nullsub_84(Entity* pOriginator, int eType, int iTeamFlags,
                    const float* vStart, const float* vEnd, float fRadiusSqrd);
 void  G_CheckHitTriggerDamage(Entity* pActivator, const math::Position3* vStart,
                               const math::Position3* vEnd, int iDamage, int iMOD);
-float VectorDistance(const float* v1, const float* v2);
-void  AnglesToAxis(const float* angles, float (*axis)[3]);
-void  MatrixInverse(const float (*in)[3], float (*out)[3]);
-void  MatrixTransformVector(const float* in1, const float (*in2)[3], float* out);
-void  MatrixTransposeTransformVector(const float* in1, const float (*in2)[3],
-                                     float* out);  // core.o
-void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
-                              math::Position3* out);
-void  MatrixTransformVector43(const float* in1, const float (*in2)[3],
-                              float* out);
-void  MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
-                     float (*out)[3]);
-void  MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
-                       float (*out)[3]);
-void  MatrixTranspose(const float (*in)[3], float (*out)[3]);
-void  Axis4ToAngles(const float (*axis)[4], float* angles);  // core.o
-float vectosignedyaw(float* vec);                 // core.o
-void  YawToAxis(float yaw, float (*axis)[3]);     // core.o
+const float VectorDistance(const float* const v1, const float* const v2);
+void  AnglesToAxis(const float* const angles, float (*const axis)[3]);
+void  MatrixInverse(const float (*const in)[3], float (*const out)[3]);
+void  MatrixTransformVector(const float* const in1,
+                            const float (*const in2)[3], float* const out);
+void  MatrixTransposeTransformVector(const float* const in1,
+                                     const float (*const in2)[3],
+                                     float* const out);  // core.o
+void  MatrixTransformVector43(const float* const in1,
+                              const float (*const in2)[3],
+                              math::Position3& out);
+void  MatrixTransformVector43(const float* const in1,
+                              const float (*const in2)[3], float* const out);
+void  MatrixMultiply(const float (*const in1)[3],
+                     const float (*const in2)[3], float (*const out)[3]);
+void  MatrixMultiply43(const float (*const in1)[3],
+                       const float (*const in2)[3], float (*const out)[3]);
+void  MatrixTranspose(const float (*const in)[3], float (*const out)[3]);
+void  Axis4ToAngles(const float (*const axis)[4], float* const angles);  // core.o
+const float vectosignedyaw(const float* const vec);  // core.o
+void  YawToAxis(float yaw, float (*const axis)[3]);     // core.o
 XAnimTree* GScr_GetEntAnimTree(Entity* ent);      // g_scr.cpp
-void  RotatePointAroundVector(float* result, float* axis,
-                              const float* src, float angle);  // core.o
-void  MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3]);
+void  RotatePointAroundVector(float* const result, const float* const axis,
+                              const float* const src, float angle);  // core.o
+void  MatrixInverseOrthogonal43(const float (*const in)[3],
+                                float (*const out)[3]);
 void  VEH_UpdateControllers(Entity* entity, int msec);  // g.o 0x46DE90
 int   VEH_FindValidDismountSpot(Entity* ent, float* mins, float* maxs,
                                 float* origin, Entity* player,
@@ -2351,7 +2362,7 @@ extern vmCvar_t g_dumpAnims;                         // ?g_dumpAnims@@3UvmCvar_t
 extern vmCvar_t cg_mpDebugAnimEntity;                // cg.o vmCvar
 extern int gLockMeshList;                            // g.o
 extern int gEnableMeshFlash;                         // g.o
-float AngleNormalize360Accurate(float angle);        // core.o
+const float AngleNormalize360Accurate(float angle);        // core.o
 void  SV_DObjDisplayAnim(Entity* entity);            // sv.o
 void  j_nullsub_93(void);                            // g.o
 int   HudElem_DestroyAll(void);                      // g.o (g_hudelem.cpp)
@@ -2610,7 +2621,7 @@ void  G_TouchTriggersAndVehicles(Entity* pEnt, const math::Position3* origin,
                                  const void* context);  // g.o
 struct player_collision_context_t;  // pmove context (opaque)
 extern void (*entinfotable[3])(Entity* ent);      // g.o
-float vectoyaw(float* vec);                       // core.o
+const float vectoyaw(const float* const vec);     // core.o
 struct TouchEntityData;
 
 // CDL collision types (cdl_types.h / cgbank.h) - used by collide_sphere +
@@ -3106,8 +3117,8 @@ void  G_VehInitPathPos(vehicle_pathpos_t* vpp);   // g.o 0x4526D0
 void  G_DebugCircleEx(const float* center, float radius, const float* dir,
                       const float* color, int depthTest, int duration);  // g.o 0x457170
 void  G_TouchEnts(Entity* ent, int numtouch, DbLinkedHandle<EntityHandleDb, Entity>* touchents);  // g.o 0x474710
-float VectorNormalize2(const float* v, float* out);  // core.o
-void  PerpendicularVector(float* dst, float* src);  // core.o
+const float VectorNormalize2(const float* const v, float* const out);  // core.o
+void  PerpendicularVector(float* const dst, const float* const src);  // core.o
 void  CrossProduct(const float* v1, const float* v2, float* cross);  // core.o
 const gitem_s* BG_FindItemForWeapon(int weapon);  // game.o 0x612E70
 bool  PM_CanSimulateFiringWeapon(int iWeapon);    // game.o 0x614700
@@ -3234,7 +3245,7 @@ void  SP_script_vehicle(Entity* pSelf);          // g.o 0x488CE0
 void  VEH_Backup(Entity* ent);                   // g.o
 int16_t VP_GetNodeIndex(const Broc::string* name, float* origin);  // g.o ?VP_GetNodeIndex@@YAFPBUstring@Broc@@PAM@Z
 void  VP_GetLookAheadXYZ(const vehicle_pathpos_t* vpp, float* lookXYZ);  // g.o
-void  vectoangles(float* vec, float* angles);  // core.o
+void  vectoangles(const float* const vec, float* const angles);  // core.o
 int   VP_UpdatePathPos(Entity* pEnt, vehicle_pathpos_t* vpp, float* dir,
                        bool overrideSpeed, int waitNode);  // g.o
 void  VP_GetAngles(vehicle_pathpos_t* vpp, float* angles);  // g.o
@@ -3321,7 +3332,7 @@ extern unsigned int s_entryPointTagHashes[6];    // g.o @ 0xEE62F4
 extern unsigned int s_flashTagHashes[4];         // g.o @ 0xEE630C
 extern unsigned int s_seatTagHashes[6];          // g.o @ 0xEE631C
 bool  Entity_has_zone_collision(const void* self);  // game.o
-float VectorDistance(const float* v1, const float* v2);  // core.o
+const float VectorDistance(const float* const v1, const float* const v2);  // core.o
 void  InteractionController_ClearQueue(void* self);  // cl.o
 int   CM_AreaEntities(const math::Position3& mins, const math::Position3& maxs,
                       DbLinkedHandle<EntityHandleDb, Entity>* entityList,

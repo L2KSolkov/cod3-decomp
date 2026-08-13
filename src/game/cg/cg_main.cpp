@@ -75,7 +75,8 @@ extern void CG_LoadEntity();
 extern void CG_General(Entity* entity);
 extern void CG_LockLightingOrigin(Entity* ent, refEntity_t* refEnt);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);
 extern void SoundDevice_DampenAllSounds(void* sInst, float level);
 extern void SoundDevice_StopAllSounds(void* sInst);
 extern void Com_FreeWeaponInfoMemory(int iSource, int bRestart);

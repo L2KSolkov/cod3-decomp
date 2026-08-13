@@ -106,8 +106,8 @@ extern void CL_AddDebugLine(const float* start, const float* end,
                             const float* color, int depthTest, int duration,
                             int fromServer, int fadeOut);
 extern void RE_AddRefEntityToScene(void* ent, int iCellNum);
-extern void ByteToDir(unsigned int b, float* dir);
-extern void PerpendicularVector(float* dst, float* src);
+extern void ByteToDir(int b, float* const dir);
+extern void PerpendicularVector(float* const dst, const float* const src);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
 // controller_button_value artifact (controller_xboxr; stub)
@@ -460,7 +460,7 @@ struct localEntity_t {
     refEntity_t  refEntity;  // +0x40
 };
 
-extern float AngleNormalize180(float angle);
+extern const const float AngleNormalize180(float angle);
 extern vmCvar_t cg_bobAmplitudeProne;     // 0x00F5ED68
 extern vmCvar_t cg_bobAmplitudeDucked;    // 0x00F5B850
 extern vmCvar_t cg_bobAmplitudeStanding;  // 0x00F5E978
@@ -1280,9 +1280,10 @@ float tweenTime;  // 0x00DFA37C
 struct DObjSkelMat;
 extern int G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash,
                                    DObjSkelMat* tagMtx);
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);
-extern void AxisToAngles(const float (*axis)[3], float* angles);
-extern float AngleDelta(float angle1, float angle2);
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);
+extern void AxisToAngles(const float (*const axis)[3], float* const angles);
+extern const float AngleDelta(float angle1, float angle2);
 
 static unsigned int s_headHash;
 static bool s_headHashInit;
@@ -1477,12 +1478,13 @@ extern int CG_CalcPassengerViewPos();
 extern void CG_CalcTurretViewValues();
 struct scr_vehicle_t;
 extern vehicle_info_t* G_GetVehicleInfo(scr_vehicle_t* scr_vehicle);
-extern void vectosignedangles(float* vec, float* angles);
-extern void vectoangles(float* vec, float* angles);
-extern float LerpAngle(float a1, float a2, float a3);
-extern void InterpolateAngles(math::Position3* curAngles,
-                              const math::Position3* initialAngles,
-                              const math::Position3* targetAngles, float t);
+extern void vectosignedangles(const float* const vec,
+                              float* const angles);
+extern void vectoangles(const float* const vec, float* const angles);
+extern const float LerpAngle(float a1, float a2, float a3);
+extern void InterpolateAngles(math::Position3& curAngles,
+                              const math::Position3& initialAngles,
+                              const math::Position3& targetAngles, float t);
 extern void AnglesToForward(const math::Position3& angles,
                             math::Dir3& forward);
 extern Entity* GetPlayer(int idx);
@@ -2917,7 +2919,8 @@ extern nglTexture* nglGetFrontBufferTex();
 extern void nglSetQuadTex(nglQuad* quad, nglTexture* tex);
 extern void nglListAddQuad(nglQuad* quad);
 extern void CG_PerturbationPoint(const float* prev, float* out, float mindist);
-extern float VectorNormalize2(const float* v, float* out);
+extern const float VectorNormalize2(const float* const v,
+                                    float* const out);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern char* va(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
@@ -4006,10 +4009,11 @@ struct vehicle_info_full_t {
 
 extern vehicle_info_t* VEH_GetInfo(int idx);
 extern bool IsPlayerFullySeatedInVehicle(Entity* player);
-extern float VectorNormalize(float* v);
-extern void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
-                           float (*out)[3]);
-extern float AngleNormalize360(float angle);
+extern const float VectorNormalize(float* const v);
+extern void MatrixMultiply(const float (*const in1)[3],
+                             const float (*const in2)[3],
+                           float (*const out)[3]);
+extern const float AngleNormalize360(float angle);
 // PadAliasMgr_GetButtonValue artifact (controller layer; stub)
 int PadAliasMgr_GetButtonValue(void* self, int ctrlNum, int buttonAlias)
 {
@@ -4053,7 +4057,7 @@ extern void BrocString_dtor(void* self);
 struct DObjSkelMat;
 extern bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex,
                                           DObjSkelMat* tagMat);
-extern void Axis4ToAngles(const float (*axis)[4], float* angles);
+extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);
 extern void CG_InitConsoleCommands();
 struct glconfig_t;
 struct glconfig_t;
@@ -4855,10 +4859,11 @@ void Camera::UpdateVehicleDriverCamAngles(Entity* veh, PlayerState* ps)
     outAngles[1] = mSteerYawOffset + outAngles[1];
     if (mTweenDuration <= mTweenTime)
     {
-        InterpolateAngles((math::Position3*)&angle[1580 * mClient],
-                          (const math::Position3*)&mPrevAngles.v.m128_f32[0],
-                          (const math::Position3*)outAngles,
-                          ServerTime_sInst.mTickDelta * 15.0f);
+        InterpolateAngles(
+            *(math::Position3*)&angle[1580 * mClient],
+            *(const math::Position3*)&mPrevAngles.v.m128_f32[0],
+            *(const math::Position3*)outAngles,
+            ServerTime_sInst.mTickDelta * 15.0f);
     }
     else
     {
@@ -5296,11 +5301,13 @@ void Camera::UpdateDeathCamera()
     }
 }
 
-extern void InterpolatePositionSmooth(float* a1, const float* a2,
-                                      const float* a3, float a4);
-extern void InterpolateAnglesSmooth(float* a1, float* a2, float* a3,
-                                    float a4);
-extern float AngleNormalize360(float angle);
+extern void InterpolatePositionSmooth(float* const a1,
+                                        const float* const a2,
+                                      const float* const a3, float a4);
+extern void InterpolateAnglesSmooth(float* const a1,
+                                    const float* const a2,
+                                    const float* const a3, float a4);
+extern const float AngleNormalize360(float angle);
 
 // ea: 0x006A5E40
 void Camera::UpdateTween(math::Position3& tweenStartPos,
@@ -5965,7 +5972,8 @@ void Camera::UpdateSceneAnimCam()
         ->client->ps.viewHeightCurrent = 0.0f;
 }
 
-extern void vectosignedangles(const float* vec, float* angles);
+extern void vectosignedangles(const float* const vec,
+                              float* const angles);
 
 static unsigned int s_pelvisHash;
 static bool s_pelvisHashInit;

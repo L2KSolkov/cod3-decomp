@@ -108,7 +108,7 @@ extern int anykeydown;
 extern int dword_106000;
 struct cvar_t;
 extern cvar_t* com_cl_running;
-extern char ClampChar(int i);
+extern const signed char ClampChar(int i);
 extern bool CL_IsADS(int client);
 extern int CL_StanceButtonUpdate();
 

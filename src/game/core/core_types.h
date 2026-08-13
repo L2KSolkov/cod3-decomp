@@ -156,7 +156,8 @@ static_assert(offsetof(sysEvent_t, evType) == 0x04,
 // angles_t - Euler angles (12 bytes)
 // Size: 0x0C (12 bytes) - verified against IDA
 // ============================================================================
-struct angles_t {
+class angles_t {
+public:
     float pitch;  // +0x00
     float yaw;    // +0x04
     float roll;   // +0x08
@@ -179,7 +180,8 @@ static_assert(offsetof(DObjSkelMat, origin) == 0x30,
 // idVec3 - id-style 3-vector (12 bytes)
 // Size: 0x0C (12 bytes) - verified against IDA
 // ============================================================================
-struct idVec3 {
+class idVec3 {
+public:
     float x;  // +0x00
     float y;  // +0x04
     float z;  // +0x08
@@ -191,7 +193,8 @@ static_assert(offsetof(idVec3, z) == 0x08, "idVec3::z offset mismatch");
 // mat3_t - id-style 3x3 matrix (36 bytes)
 // Size: 0x24 (36 bytes) - verified against IDA
 // ============================================================================
-struct mat3_t {
+class mat3_t {
+public:
     idVec3 mat[3];  // +0x00
     void Transpose(mat3_t& matrix);
     void Transpose();
@@ -207,7 +210,8 @@ static_assert(offsetof(mat3_t, mat) == 0x00, "mat3_t::mat offset mismatch");
 // quat_t - quaternion (16 bytes)
 // Size: 0x10 (16 bytes) - verified against IDA
 // ============================================================================
-struct quat_t {
+class quat_t {
+public:
     float x;  // +0x00
     float y;  // +0x04
     float z;  // +0x08

@@ -58,7 +58,8 @@ extern int           CM_BoxLeafnums(math::Vector4& cached_pos, int& cached_leaf,
 extern int           CM_LeafArea(int leafnum);
 extern int           CM_LeafCluster(int leafnum);
 extern int           R_CellForPoint(const math::Position3* pos);
-extern float         RadiusFromBounds(const math::Position3* mins, const math::Position3* maxs);
+extern const float   RadiusFromBounds(const math::Position3& mins,
+                                      const math::Position3& maxs);
 extern void          DObjGetBounds(const DObj* obj, math::Position3& mins, math::Position3& maxs);
 extern int           CM_TraceBox(const math::Position3& start,
                                  const math::Position3& end,
@@ -129,8 +130,11 @@ extern void          DObjGeomTraceline(const DObj* obj, const math::Position3* l
 extern void          DObjTraceline(const DObj* obj, const math::Position3* start,
                                    const math::Position3* end, unsigned char* priorityMap,
                                    struct DObjTrace_s* trace, float extraDistanceCheck);
-extern void          AnglesToAxis(const float* angles, float (*axis)[3]);
-extern void          MatrixTransformVector(const float* in1, const float (*in2)[3], float* out);
+extern void          AnglesToAxis(const float* const angles,
+                                  float (*const axis)[3]);
+extern void          MatrixTransformVector(const float* const in1,
+                                           const float (*const in2)[3],
+                                           float* const out);
 extern void          MatrixTransposeTransformVector43(const math::Position3& in1,
                                                       const float (*const in2)[3],
                                                       math::Position3& out);
@@ -242,7 +246,7 @@ void SV_LinkEntity(Entity* gEnt) {
             v9 = &gEnt->r.absmin;
             v10 = &gEnt->r.absmax;
         } else {
-            float v8 = RadiusFromBounds(&gEnt->r.mins, &gEnt->r.maxs);
+float v8 = RadiusFromBounds(gEnt->r.mins, gEnt->r.maxs);
             gEnt->r.absmin.v.m128_f32[0] = p_currentOrigin->v.m128_f32[0] - v8;
             gEnt->r.absmax.v.m128_f32[0] = v8 + p_currentOrigin->v.m128_f32[0];
             gEnt->r.absmin.v.m128_f32[1] = gEnt->r.currentOrigin.v.m128_f32[1] - v8;

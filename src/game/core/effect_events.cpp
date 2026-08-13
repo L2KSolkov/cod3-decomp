@@ -171,7 +171,8 @@ extern unsigned int s_ImpactMessage;  // 0x00F00F30
 extern void* CurveManager_sInst;  // 0x00F4F430
 extern void CurveManager_PostEvent(void* self, unsigned int entityHandle,
                                    unsigned int hash, float value);
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);
 extern Entity* GetPlayer(int idx);
 extern int currCl;
 extern float clamp_0_to_1(float f);

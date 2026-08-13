@@ -95,9 +95,9 @@ extern vmCvar_t cg_altTankCam;
 extern vmCvar_t cg_hudCompassSpringyPointers;
 extern struct vmCvar_t cg_drawGun;
 
-extern float AngleNormalize360(float angle);
-extern float AngleNormalize180(float angle);
-extern float AngleSubtract(float a1, float a2);
+extern const float AngleNormalize360(float angle);
+extern const const float AngleNormalize180(float angle);
+extern const float AngleSubtract(float a1, float a2);
 extern void CL_SetViewAnglesAxis(int axis, float angle);
 extern bool BG_AllowPlayerWeaponAtVehiclePos(int vehType, int vehPos);
 extern int BG_IsAimDownSightWeapon(int iWeapon);
@@ -573,10 +573,11 @@ void CG_ScreenFade()
     }
 }
 
-extern float VectorNormalize(float* v);
+extern const float VectorNormalize(float* const v);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
-extern void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
-                           float (*out)[3]);
+extern void MatrixMultiply(const float (*const in1)[3],
+                             const float (*const in2)[3],
+                           float (*const out)[3]);
 extern int dword_F64178[4 * 1580];
 extern int dword_F6417C[4 * 1580];
 extern float dword_F63C70[4 * 1580];
@@ -645,7 +646,7 @@ extern void Cvar_Update(vmCvar_t* vmCvar);
 extern void* _Z_MallocInternal(int size);
 extern void _Z_FreeInternal(void* ptr);
 extern void CG_Printf(const char* msg, ...);
-extern void AxisCopy(const float (*in)[3], float (*out)[3]);
+extern void AxisCopy(const float (*const in)[3], float (*const out)[3]);
 extern int dword_F62960[4 * 1580];
 const char** cg_shock_cvar_names;  // ?cg_shock_cvar_names (cg.o)
 void** cg_shock_cvar_ptrs = nullptr;  // cg.o (vmCvar_t*[])
@@ -1182,13 +1183,13 @@ extern vmCvar_t cg_bobAmplitudeStanding;
 extern int cgGlobal_frametime;
 extern float CG_GetVerticalBobFactor(float a1, float a2, float a3);
 extern float CG_GetHorizontalBobFactor(float a1, float a2, float a3);
-extern void AngleVectors(const float* angles, float* forward, float* right,
-                         float* up);
-extern void AnglesSubtract(const math::Position3* v1,
-                           const math::Position3* v2, math::Position3* v3);
+extern void AngleVectors(const float* const angles, float* const forward,
+                         float* const right, float* const up);
+extern void AnglesSubtract(const math::Position3& v1,
+                           const math::Position3& v2, math::Position3& v3);
 float ServerTime_mTickDelta;
 extern int BG_IsAimDownSightWeapon(int iWeapon);
-extern float AngleSubtract(float a1, float a2);
+extern const float AngleSubtract(float a1, float a2);
 
 static float AngleSubtract2(float a, float b)
 {
@@ -1385,10 +1386,11 @@ float vehicleOffsetRate;
 float vehicleOffset;
 extern float GetLeanFraction(float fFrac);
 extern void AnglesToRight(const float* const angles, float* const right);
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);
-extern void AxisToAngles(const float (*axis)[3], float* angles);
-extern float AngleNormalize360(float angle);
-extern float AngleNormalize180(float angle);
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);
+extern void AxisToAngles(const float (*const axis)[3], float* const angles);
+extern const float AngleNormalize360(float angle);
+extern const const float AngleNormalize180(float angle);
 extern int dword_F64030[4 * 1580];
 extern int dword_F64034[4 * 1580];
 extern int dword_F64038[4 * 1580];
@@ -1526,9 +1528,9 @@ int CG_CalculateWeaponPosition_Sway()
     float swayYawScale2 = swayHorizScale * swayYawScale;
     float v52 = v21;
     float v50[3] = {v18 * swayYawScale, v21, v17 * swayYawScale};
-    AnglesSubtract((const math::Position3*)&angle[1580 * currCl],
-                   (const math::Position3*)&dword_F63CC0[1580 * currCl],
-                   (math::Position3*)v50);
+    AnglesSubtract(*(const math::Position3*)&angle[1580 * currCl],
+                   *(const math::Position3*)&dword_F63CC0[1580 * currCl],
+                   *(math::Position3*)v50);
     float mTickDelta = ServerTime_mTickDelta;
     if (mTickDelta == 0.0f)
         mTickDelta = 0.05f;

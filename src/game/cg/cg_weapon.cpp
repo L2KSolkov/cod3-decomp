@@ -207,9 +207,9 @@ extern void j_nullsub_82(void* obj, int* partBits);
 extern void CG_UpdateViewModelPosAndOrientation(void* hand);
 extern void RE_AddViewModelToScene(void* ent);
 extern void RE_SetViewModelInfoIndex(int index);
-extern void AxisCopy(const float (*in)[3], float (*out)[3]);
+extern void AxisCopy(const float (*const in)[3], float (*const out)[3]);
 extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
-                                      const float (*in2)[3],
+                                       const float (*const in2)[3],
                                       DObjSkelMat* out);
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
 extern DObjSkelMat* DObjGetMatrixArray(const DObj* obj, int modelIndex);
@@ -338,8 +338,8 @@ extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
 extern Handle PostEffectEventPointLightFlash(const Entity* ent,
                                              const char* weaponType,
                                              int weaponAction);
-extern void AngleVectors(const math::Position3* angles, float* forward,
-                         float* right, float* up);
+extern void AngleVectors(const math::Position3& angles, float* const forward,
+                         float* const right, float* const up);
 
 struct weaponInfo_s;
 class DObj;
@@ -459,7 +459,8 @@ void CG_WeaponFlash(Entity* entity, int weaponNum,
 void CG_OffsetLMG(float i_XOffset)
 {
     float focusPoint[3], right[3], up[3];
-    AngleVectors((math::Position3*)&angle[395 * currCl], focusPoint, right, up);
+    AngleVectors(*(math::Position3*)&angle[395 * currCl], focusPoint, right,
+                 up);
     int v1 = 1580 * currCl;
     float v3 = (dword_F63C80[v1] * i_XOffset) + dword_F63C70[v1];
     float v4 = (dword_F63C84[v1] * i_XOffset) + dword_F63C74[v1];

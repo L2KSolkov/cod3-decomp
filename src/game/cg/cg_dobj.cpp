@@ -45,10 +45,12 @@ int DObjNumBones(DObj* obj)  // ?DObjNumBones@@YAHPAVDObj@@@Z
 extern int CL_DObjCreateSkelForBone(DObj* obj, int boneIndex);
 extern int CL_DObjCreateSkelForBones(DObj* obj, int* partBits);
 extern void CL_DObjCalcSkel(DObj* obj, int* partBits);
-extern void AxisCopy(const float (*in)[3], float (*out)[3]);
+extern void AxisCopy(const float (*const in)[3], float (*const out)[3]);
 extern void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
-                                      const float (*in2)[3], DObjSkelMat* out);
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);
+                                       const float (*const in2)[3],
+                                      DObjSkelMat* out);
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);
 extern struct vehicle_info_t* s_vehicleInfos[];  // ?s_vehicleInfos@@3PAPAUvehicle_info_t@@A (g.o @ 0xEA7638)
 // ea: 0x0045E900 (g.o)
 void* G_GetVehicleInfo(Entity* ent)  // ?G_GetVehicleInfo@@YAPAUvehicle_info_t@@PAVEntity@@@Z

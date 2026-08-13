@@ -155,7 +155,7 @@ int Player_GetActivateEnt(Entity* pEnt, useList_t* useList)
                 if (mtx != nullptr)
                 {
                     float axis[3][3];
-                    AnglesToAxis(&ent->r.currentAngles, axis);
+                    AnglesToAxis(ent->r.currentAngles, axis);
                     DObjSkelMat out;
                     DObjSkel2MatrixMultiply43(mtx, axis, &out);
                     center[0] = out.origin[0];

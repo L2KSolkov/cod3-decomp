@@ -1760,8 +1760,8 @@ int TraceSphereThroughSphere(traceWork_t* tw,
         float disc = (b * b) - (deltaLenSqrd * v9);
         if (disc < 0.0f)
             return 1;
-        float nlen = VectorNormalize2((const math::Dir3*)v6,
-                                      (math::Dir3*)v6);
+        float nlen = VectorNormalize2(*(const math::Dir3*)v6,
+                                      *(math::Dir3*)v6);
         float sqrtdisc = sqrtf(disc);
         float t = nlen * 0.125f / b + (-b - sqrtdisc) / deltaLenSqrd;
         if (tw->trace_fraction <= t)
@@ -1849,8 +1849,8 @@ int TraceCylinderThroughCylinder(traceWork_t* tw,
     if (disc < 0.0f)
         return 1;
     vNormal[2] = 0.0f;
-    float nlen = VectorNormalize2((const math::Dir3*)vNormal,
-                                  (math::Dir3*)vNormal);
+    float nlen = VectorNormalize2(*(const math::Dir3*)vNormal,
+                                  *(math::Dir3*)vNormal);
     float t = nlen * 0.125f / b;
     float t2 = (-b - sqrtf(disc)) / deltaXY + t;
     if (tw->trace_fraction <= t2)
@@ -2064,8 +2064,9 @@ int SightTraceCylinderThroughCylinder(traceWork_t* tw,
             if (disc >= 0.0f)
             {
                 vNormal[2] = 0.0f;
-                float nlen = VectorNormalize2((const math::Dir3*)vNormal,
-                                              (math::Dir3*)vNormal);
+                float nlen =
+                    VectorNormalize2(*(const math::Dir3*)vNormal,
+                                     *(math::Dir3*)vNormal);
                 float t = fA * 0.125f / nlen;
                 float hit = (-fA - sqrtf(disc)) / deltaLenSqrd + t;
                 if (tw->trace_fraction > hit)
@@ -2118,7 +2119,8 @@ int SightTraceSphereThroughSphere(traceWork_t* tw,
     float disc = (fA * fA) - (deltaLenSqrd * v8);
     if (disc < 0.0f)
         return true;
-    float nlen = VectorNormalize2((const math::Dir3*)v6, (math::Dir3*)v6);
+    float nlen = VectorNormalize2(*(const math::Dir3*)v6,
+                                  *(math::Dir3*)v6);
     float sqrtdisc = sqrtf(disc);
     return tw->trace_fraction
         <= nlen * 0.125f / fA + (-fA - sqrtdisc) / deltaLenSqrd;
@@ -6202,7 +6204,7 @@ int SightTraceXFormed(int hitNum, const math::Position3& start,
         float forward[3];
         float right[3];
         float up[3];
-        AngleVectors(&angles, forward, right, up);
+        AngleVectors(angles, forward, right, up);
         VectorInverse(right);
         float matrix[3][3];
         matrix[0][0] = forward[0];
@@ -6277,7 +6279,7 @@ void TraceXFormed(trace_t* results, const math::Position3& start,
         float forward[3];
         float right[3];
         float up[3];
-        AngleVectors(&angles, forward, right, up);
+        AngleVectors(angles, forward, right, up);
         VectorInverse(right);
         matrix[0][0] = forward[0];
         matrix[0][1] = forward[1];
@@ -8038,7 +8040,8 @@ bool collide_sphere_brush(math::Position3& sphere_center, float sphere_radius,
 // PM_UpdateMeleeAssistAim - ea: 0x62DE20 (bg_pmove.cpp melee assist)
 // ============================================================================
 extern vmCvar_t bg_meleeassistaspeed;  // ?bg_meleeassistaspeed@@3UvmCvar_t@@A (game.o @ 0xF441D0)
-extern void vectosignedangles(const float* vec, float* angles);  // q_math
+extern void vectosignedangles(const float* const vec,
+                              float* const angles);  // q_math
 // ea: 0x0062DE20
 void PM_UpdateMeleeAssistAim(PlayerState* ps, int msec)
 {
@@ -8945,8 +8948,8 @@ int CM_AreaEntities(const math::Position3& mins,
 // ============================================================================
 // CM_TransformedPointContents - ea: 0x632E00 (cm_load.cpp)
 // ============================================================================
-extern void AngleVectors(const math::Position3* angles, float* forward,
-                         float* right, float* up);  // core.o
+extern void AngleVectors(const math::Position3& angles, float* const forward,
+                         float* const right, float* const up);  // core.o
 extern void traverse_rtree(const math::Position3& p0,
                            const math::Position3& p1,
                            const rtree_root_t& root,
@@ -9205,7 +9208,7 @@ int CM_TransformedPointContents(const math::Position3& p, DCGSet* model,
         float right[3];
         float up[3];
         float forward[3];
-        AngleVectors(&angles, forward, right, up);
+        AngleVectors(angles, forward, right, up);
         float v6 = local[1];
         float v7 = (local[2] * right[2]) + (local[1] * right[1])
             + (local[0] * right[0]);

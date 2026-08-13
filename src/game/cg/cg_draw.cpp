@@ -400,7 +400,8 @@ namespace View { extern int lNumViewports; }
 int cg_aWeaponSelect[4];  // ?cg_aWeaponSelect@@3PAHA (cg.o)
 int cg_clientFrame[4 * 1580];  // ?cg_clientFrame (cg.o)
 extern void FastSinCos(float radians, float* psin, float* pcos);
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);
 float g_TestForward[4];
 extern void InspectorManager_Render(void* self);
 class InspectorManager;

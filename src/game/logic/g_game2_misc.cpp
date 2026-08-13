@@ -189,7 +189,7 @@ bool SegmentSphereIntersection(const float* startPoint, const float* endPoint,
                                const float* sphereOrigin, float sphereRadius)
 {
     struct DebugColor { float r, g, b, a; };
-    extern float VectorNormalize(float* v);  // ?VectorNormalize (g.o)
+    extern const float VectorNormalize(float* const v);  // ?VectorNormalize (g.o)
 
     if (g_drawSmokeGren.integer == 2)
     {

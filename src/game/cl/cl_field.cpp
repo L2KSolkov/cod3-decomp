@@ -555,7 +555,7 @@ extern unsigned int frame_msec;
 int totalTime[2];  // cl.o BSS
 float totalAngle[2];
 float sTotalTimeMax;
-extern float VectorNormalize(float* v);
+extern const float VectorNormalize(float* const v);
 extern void CrossProduct(const float* v1, const float* v2, float* cross);
 
 // ea: 0x530780
@@ -650,7 +650,7 @@ public:
 };
 extern void* EntityManager_GetPlayer3(void* inst, int idx);
 void* EntityManager_sInst3 = nullptr;  // cl.o artifact (EntityManager*)
-extern char ClampChar(int i);
+extern const signed char ClampChar(int i);
 
 // ea: 0x530AE0
 void CL_GamepadMove(usercmd_s* cmd)

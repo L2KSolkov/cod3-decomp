@@ -575,7 +575,7 @@ void turret_think_init(Entity* self, int /*msec*/)
         return;
 
     float v13[3][3];
-    AnglesToAxis(&self->r.currentAngles, v13);
+    AnglesToAxis(self->r.currentAngles, v13);
     float baseMtx[4][3];
     memcpy(baseMtx[2], &self->r.currentOrigin, sizeof(baseMtx[2]));
     float transDir[3];
@@ -583,7 +583,7 @@ void turret_think_init(Entity* self, int /*msec*/)
     transDir[1] = buttMtx->origin[1] - v5->origin[1];
     transDir[2] = buttMtx->origin[2] - v5->origin[2];
     math::Position3 end;
-    MatrixTransformVector43(v5->origin, v13, &end);
+    MatrixTransformVector43(v5->origin, v13, end);
     collision_context_t context(self->mHandle, DbLinkedHandle<EntityHandleDb, Entity>(), 17);
     math::Position3 mins, maxs;
     mins.v = _mm_setzero_ps();
@@ -669,7 +669,8 @@ int turret_canuse_auto(Entity* self, actor_s* pActor)
     float v6 = pEnemy->pEnt->r.currentOrigin.v.m128_f32[1] - self->r.currentOrigin.v.m128_f32[1];
     float v8 = pEnemy->pEnt->r.currentOrigin.v.m128_f32[2] - self->r.currentOrigin.v.m128_f32[2];
     if ((((v8 * v8) + (v6 * v6)) + (v7 * v7)) >= pTurretInfo->maxRangeSquared
-        || VectorDistanceSquared2D(&pEnemy->pEnt->r.currentOrigin, &v5->vLastKnownPos) >= 4096.0f)
+        || VectorDistanceSquared2D(pEnemy->pEnt->r.currentOrigin,
+                                   v5->vLastKnownPos) >= 4096.0f)
     {
         return true;
     }

@@ -61,7 +61,8 @@ extern float intersect(const math::Position3& po, const math::Dir3& pn,
     // ?intersect@@YAMABVPosition3@math@@ABVDir3@2@01@Z (cdl_base)
 extern void g_AddDebugString(const float* xyz, const float* color, float scale,
                              const char* pszText);  // ?g_AddDebugString (g_main)
-extern void vectosignedangles(const float* vec, float* angles);  // core.o
+extern void vectosignedangles(const float* const vec,
+                              float* const angles);  // core.o
 extern serverStatic_t svs;  // ?svs@@3UserverStatic_t@@A (sv.o)
 extern cvar_t* g_gameskill; // g.o
 extern float gStickyBoxScaleEasy;   // ?gStickyBoxScaleEasy@@3MA (game.o)
@@ -123,8 +124,8 @@ extern void Com_Printf(const char* fmt, ...);        // ?Com_Printf (core.o)
 extern void mem_heap_free(void* ptr);                // ?mem_heap_free (mem_heap)
 extern void BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm,
                                                 PlayerState* ps);  // bg_misc.cpp
-extern void ProjectPointOnPlane(float* dst, const float* p,
-                                const float* normal);  // core.o q_math.cpp
+extern void ProjectPointOnPlane(float* const dst, const float* const p,
+                                const float* const normal);  // core.o q_math.cpp
 int  PM_WeaponAmmoAvailable(int wp);  // game.o 0x607E50
 int  PM_WeaponClipEmpty(int wp);      // game.o 0x607E80
 int  PM_Weapon_FinishRechamber();     // game.o 0x607FD0
@@ -3967,9 +3968,8 @@ extern math::Vector4 calc_normal(const math::Position3& v0,
                                  const math::Position3& v2);  // game.o 0x60C400
 extern bool _tlAssert(const char* file, int line, const char* expr,
                       const char* msg);  // core/tl_system.cpp
-extern void AnglesToAxis(const math::Position3* angles,
-                         const math::Position3* origin,
-                         math::Mat43* mat);
+extern void AnglesToAxis(const math::Position3& angles,
+                         const math::Position3& origin, math::Mat43& mat);
     // ?AnglesToAxis@@YAXABVPosition3@math@@0AAVMat43@2@@Z (core.o)
 
 // ea: 0x0063AC30
@@ -4049,7 +4049,7 @@ bool push_in_world(pmove_t& pm, float radius,
                         angles.v.m128_f32[2] = 0.0f;
                     if (threshold_0 > fabs(angles.v.m128_f32[0]))
                         angles.v.m128_f32[0] = 0.0f;
-                    AnglesToAxis(&angles, &ent->r.currentOrigin, &mat);
+                    AnglesToAxis(angles, ent->r.currentOrigin, mat);
                 }
                 math::Position3 localProbe;
                 localProbe.v = _mm_add_ps(
@@ -4279,8 +4279,8 @@ bool push_in_world(pmove_t& pm, float radius,
 // ============================================================================
 // PM_SlideMove - ea: 0x63E850 (bg_pmove.cpp)
 // ============================================================================
-extern float VectorNormalize2(const float* v, float* out);
-    // ?VectorNormalize2@@YAMPBMPAM@Z
+extern const float VectorNormalize2(const float* const v,
+                                    float* const out);
 extern void Com_Printf(const char* fmt, ...);  // core.o
 
 // ea: 0x0063E850
@@ -7583,10 +7583,10 @@ int PM_InteruptWeaponWithSprintMove()
 // ============================================================================
 // Prone movement checks - ea: 0x6134F0..0x615B50 (bg_misc.cpp)
 // ============================================================================
-extern float AngleNormalize180Accurate(float angle);  // core.o 0x4BFD90
-extern float vectopitch(const float* vec);            // core.o q_math.cpp
-extern float AngleNormalize360Accurate(float angle);  // core.o 0x4BFD90
-extern float AngleDelta(float angle1, float angle2);  // core.o q_math.cpp
+extern const float AngleNormalize180Accurate(float angle);  // core.o 0x4BFD90
+extern const float vectopitch(const float* const vec);  // core.o q_math.cpp
+extern const float AngleNormalize360Accurate(float angle);  // core.o 0x4BFD90
+extern const float AngleDelta(float angle1, float angle2);  // core.o q_math.cpp
 extern vmCvar_t bg_prone_yawcap;   // ?bg_prone_yawcap@@3UvmCvar_t@@A (game.o)
 extern vmCvar_t bg_lmg_yawcap;     // ?bg_lmg_yawcap@@3UvmCvar_t@@A (game.o)
 extern vmCvar_t bg_ladder_yawcap;  // ?bg_ladder_yawcap@@3UvmCvar_t@@A (game.o)
@@ -7773,7 +7773,7 @@ int BG_CheckProneValid(
     vWaistPos[0] = 0.0f;
     vWaistPos[1] = fYaw - 180.0f;
     vWaistPos[2] = 0.0f;
-    AngleVectors((const math::Position3*)vWaistPos, &fTraceHeight, v54,
+    AngleVectors(*(const math::Position3*)vWaistPos, &fTraceHeight, v54,
                  vRight);
     float v26 = vPos->v.m128_f32[0];
     float v27 = vPos->v.m128_f32[1];

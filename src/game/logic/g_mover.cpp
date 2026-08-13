@@ -2995,7 +2995,7 @@ int G_MoverPush(Entity* pusher, const float* move, const float* amove)
     }
     else
     {
-        float radius = RadiusFromBounds(&pusher->r.mins, &pusher->r.maxs);
+        float radius = RadiusFromBounds(pusher->r.mins, pusher->r.maxs);
         v8 = pusher->r.currentOrigin.v.m128_f32[0] - radius;
         v9 = pusher->r.currentOrigin.v.m128_f32[1] - radius;
         v10 = pusher->r.currentOrigin.v.m128_f32[2] - radius;

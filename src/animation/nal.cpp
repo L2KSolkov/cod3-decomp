@@ -6612,11 +6612,15 @@ extern void G_SetOrigin(Entity* ent, const float* origin);
 extern void G_SetAngle(Entity* ent, const float* angle);
 extern void AnglesToAxis(const math::Position3* angles,
                          const math::Position3* origin, math::Mat44* out);
-extern void Axis4ToAngles(const float (*axis)[4], float* angles);
-extern void AxisToAngles(const float (*axis)[3], float* angles);
+extern void AnglesToAxis(const math::Position3& angles,
+                         const math::Position3& origin,
+                         nalMatrix4x4& out);  // core.o 0x4C29C0 (binary exact)
+extern void Axis4ToAngles(const float (*const axis)[4], float* const angles);
+extern void AxisToAngles(const float (*const axis)[3], float* const angles);
 extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
-extern void MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
-                             float (*out)[3]);
+extern void MatrixMultiply43(const float (*const in1)[3],
+                         const float (*const in2)[3],
+                             float (*const out)[3]);
 // Real symbols: XModelGetBasePose (g_entity_misc.cpp stub),
 // AnimIK::Update (g_game2_misc.cpp), AnimationPlayer::GetPose
 // (g_debugthread.cpp).
@@ -6625,8 +6629,8 @@ extern void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
                               DObjSkelMat* modelParentMat);
 extern void XModelTransform(IVPointer<XModel> model, DObjSkelMat* mat,
                             DObjSkelMat* modelParentMat);  // ?XModelTransform (render.o)
-extern void AnglesToAxis(const math::Position3* angles,
-                         float (*axis)[3]);  // q_math.cpp (real)
+extern void AnglesToAxis(const math::Position3& angles,
+                         float (*const axis)[3]);  // q_math.cpp (real)
 extern void G_GeneralLink(Entity* ent);      // ?G_GeneralLink@@YAXPAVEntity@@@Z (g_main.cpp)
 extern void VEH_SetPosition(Entity* ent, const math::Position3* origin,
                             const math::Position3* angles,
@@ -7336,8 +7340,7 @@ void SceneAnimClient::Advance(
         else
         {
             float anglesM[3][3];
-            AnglesToAxis((const math::Position3*)&v19->r.currentAngles,
-                         anglesM);
+    AnglesToAxis(*(const math::Position3*)&v19->r.currentAngles, anglesM);
             memset(matBuf, 0, sizeof(matBuf));
             memcpy(matBuf[0], anglesM, 12);
             memcpy(matBuf[1], &v19->r.currentMat.x, 16);
@@ -7602,26 +7605,27 @@ void DroneSetAutoTrajectoryPO(Entity* e, DObj* masterDObj)
         DObjGetTrajectory(po, masterDObj);
     else
         DObjGetTrajectory(po, e->mDObj);
-    math::Mat44 axis;
-    AnglesToAxis(&e->r.currentAngles, &e->r.currentOrigin, &axis);
+    nalMatrix4x4 axis;
+    AnglesToAxis(e->r.currentAngles, e->r.currentOrigin, axis);
     // SSE verbatim: out = axis.x*po.pos.x + axis.y*po.pos.y +
     // axis.z*po.pos.z (+ axis.w written by AnglesToAxis = origin)
     __m128 xmm0 = po.pos.v;
-    __m128 xmm1 = axis.y.v;
+    __m128 xmm1 = _mm_loadu_ps(&axis.m[1][0]);
     __m128 xmm2 = _mm_shuffle_ps(xmm0, xmm0, 0xAA);
     __m128 xmm3 = _mm_shuffle_ps(xmm0, xmm0, 0x55);
     __m128 xmm4 = _mm_shuffle_ps(xmm0, xmm0, 0);
     xmm2 = _mm_mul_ps(xmm2, xmm1);
-    xmm1 = axis.z.v;
+    xmm1 = _mm_loadu_ps(&axis.m[2][0]);
     xmm3 = _mm_mul_ps(xmm3, xmm1);
-    xmm1 = axis.x.v;
+    xmm1 = _mm_loadu_ps(&axis.m[0][0]);
     xmm4 = _mm_mul_ps(xmm4, xmm1);
     xmm4 = _mm_add_ps(xmm4, xmm3);
     xmm4 = _mm_add_ps(xmm4, xmm2);
     float out[3];
-    out[0] = xmm4.m128_f32[0] + axis.w.v.m128_f32[0];
-    out[1] = xmm4.m128_f32[1] + axis.w.v.m128_f32[1];
-    out[2] = xmm4.m128_f32[2] + axis.w.v.m128_f32[2];
+    __m128 xmm5 = _mm_loadu_ps(&axis.m[3][0]);
+    out[0] = xmm4.m128_f32[0] + xmm5.m128_f32[0];
+    out[1] = xmm4.m128_f32[1] + xmm5.m128_f32[1];
+    out[2] = xmm4.m128_f32[2] + xmm5.m128_f32[2];
     G_SetOrigin(e, out);
 }
 
@@ -10176,10 +10180,12 @@ void InteractState::StopRumble(int handleVal)
 }
 
 extern int DObjGetBoneIndex(const DObj* obj, unsigned int boneNameHash);
-extern void InterpolateAnglesSmooth(float* a1, float* a2, float* a3,
-                                    float t);
-extern void InterpolatePositionSmooth(float* a1, const float* a2,
-                                      const float* a3, float t);
+extern void InterpolateAnglesSmooth(float* const a1,
+                                    const float* const a2,
+                                    const float* const a3, float t);
+extern void InterpolatePositionSmooth(float* const a1,
+                                        const float* const a2,
+                                      const float* const a3, float t);
 extern int irand(int min, int max);
 extern void* EntityNotifySet_GetNotify(void* self, unsigned int chk);
 
@@ -12928,8 +12934,9 @@ void InteractState::DoWeaponChange()
 // PickLiveGrenade + Vehicle steering cluster (anim.o)
 // ============================================================================
 
-extern float VectorNormalize(float* v);  // real (math lib)
-extern void vectoangles(float* vec, float* angles);  // real (cg_misc)
+extern const float VectorNormalize(float* const v);  // real (math lib)
+extern void vectoangles(const float* const vec,
+                        float* const angles);  // real (cg_misc)
 
 // anim.o statics (verified vs IDA)
 float sMaxScore = 1.0f;      // @ 0xDF3750

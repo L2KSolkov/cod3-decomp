@@ -527,9 +527,9 @@ void render_brush(const math::Position3& bmin, const math::Position3& bmax,
 // ============================================================================
 // Entity helpers - ea: 0x611F00..0x639170
 // ============================================================================
-extern void AnglesToAxis(const math::Position3* angles,
-                         const math::Position3* origin,
-                         math::Mat43* mat);  // core.o (3-arg variant)
+extern void AnglesToAxis(const math::Position3& angles,
+                         const math::Position3& origin,
+                         math::Mat43& mat);  // core.o (3-arg variant)
 extern int g_DOBJF_NOT_RENDERED_LAST_FRAME;  // ?g_DOBJF_NOT_RENDERED_LAST_FRAME (core.o)
 
 extern void XAnimClearTree(XAnimTree* tree);  // ?XAnimClearTree@@YAXPAVXAnimTree@@@Z
@@ -799,8 +799,8 @@ void EnableAI(unsigned int handle)
 const math::Mat43 Entity::CalcRotTranMat43()
 {
     math::Mat43 result;
-    AnglesToAxis(&this->r.currentAngles, &this->r.currentOrigin,
-                 &this->r.currentMat);
+    AnglesToAxis(this->r.currentAngles, this->r.currentOrigin,
+                 this->r.currentMat);
     result = this->r.currentMat;
     return result;
 }
@@ -1329,8 +1329,8 @@ void Entity::FootStep()
     if (client != nullptr
         && this != Player
         && (client->ps.pm_flags & 3) == 0
-        && VectorDistanceSquared2D(&Player->r.currentOrigin,
-                                   &this->r.currentOrigin) <= 1000000.0f)
+        && VectorDistanceSquared2D(Player->r.currentOrigin,
+                                   this->r.currentOrigin) <= 1000000.0f)
     {
         Client* v5 = this->client;
         trace_t trace;
@@ -3228,7 +3228,8 @@ Entity::Entity(TPakId pakId)
 // ============================================================================
 // Entity::CalcOriginAnglesFromMat - ea: 0x611FE0
 // ============================================================================
-extern void Axis4ToAngles(const float (*axis)[4], float* angles);  // core.o
+extern void Axis4ToAngles(const float (*const axis)[4],
+                          float* const angles);  // core.o
 
 // ea: 0x00611FE0
 void Entity::CalcOriginAnglesFromMat()
@@ -5657,7 +5658,8 @@ extern nslSpeakerMode nslGetSpeakerMode();                   // nsl
 extern void nslSetListenerPosition(const float* pos);        // ?nslSetListenerPosition@@YAXQBM@Z
 extern void nslSetListenerOrientation(const float* a,
                                       const float* b);       // ?nslSetListenerOrientation@@YAXQBM0@Z
-extern void AnglesToAxis(const float* angles, float (*axis)[3]);  // core.o
+extern void AnglesToAxis(const float* const angles,
+                         float (*const axis)[3]);  // core.o
 struct nslInitParams { unsigned maxVoices; unsigned maxSources; int speakerMode; };
 extern int nslInit(const nslInitParams* ip);                 // ?nslInit@@YAHPBUnslInitParams@@@Z
 unsigned char nsl_initParams[0x44];                          // ?nsl_initParams (nsl.o @ 0xE4B680)

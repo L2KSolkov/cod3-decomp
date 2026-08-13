@@ -1162,7 +1162,7 @@ void CreateRotationMatrix(const math::Position3& angles,
                           math::Position3* const matrix)
 {
     float mat[3][3];
-    AngleVectors(&angles, mat[0], mat[1], mat[2]);
+    AngleVectors(angles, mat[0], mat[1], mat[2]);
     VectorInverse(mat[1]);
     matrix[0].v.m128_f32[0] = mat[0][0];
     matrix[0].v.m128_f32[1] = mat[0][1];

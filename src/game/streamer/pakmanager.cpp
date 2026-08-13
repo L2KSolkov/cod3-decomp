@@ -135,7 +135,7 @@ extern int R_CellForPoint(const math::Position3* pos);  // render.o (g_entity_mi
 extern void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o (g_active.cpp)
 extern void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o (g_active.cpp)
 extern unsigned short G_NewString(const char* str);  // g.o (g_utils.cpp)
-extern float VectorNormalize(math::Dir3* v);  // core.o (q_math.cpp)
+extern const float VectorNormalize(math::Dir3& v);  // core.o (q_math.cpp)
 extern unsigned char bulletPriorityMap[];     // g.o (g_game2_misc.cpp)
 namespace View {
 bool IsSplitScreen();  // cg_misc.cpp ?IsSplitScreen@View@@YA_NXZ
@@ -2505,9 +2505,9 @@ extern void CM_LinkStaticModel(StaticModel* staticModel);  // game.o (g_cm_load.
 extern math::Position3 native_to_cdl_pos3(const float* v);  // g.o inline 0x4AF1C0
 extern BspTree* g_bspTree;  // game.o @ 0xF743DC
 
-extern void AngleVectors(const float* angles, float* forward, float* right,
-                         float* up);  // core.o (q_math.cpp)
-extern float VectorNormalize(float* v);  // core.o (q_math.cpp)
+extern void AngleVectors(const float* const angles, float* const forward,
+                         float* const right, float* const up);  // core.o (q_math.cpp)
+extern const float VectorNormalize(float* const v);  // core.o (q_math.cpp)
 
 // ProcessEntity cross-object externs (game.o / scr.o / physics.o)
 class Destructible {
@@ -2536,8 +2536,8 @@ extern IVPointer<Destructible> DestructibleBankManager_GetDestructible(
 extern bool dont_delete;            // g.o (g_globals.cpp)
 extern bool no_really_delete_it;    // g.o (g_globals.cpp)
 extern void* gApsHeap;              // ?gApsHeap@@3PAVae_heap@@A (render.o @ 0x1363940; defined in common.cpp)
-extern void AnglesToAxis(const math::Position3* angles,
-                         float (*axis)[3]);  // core.o (q_math.cpp)
+extern void AnglesToAxis(const math::Position3& angles,
+                         float (*const axis)[3]);  // core.o (q_math.cpp)
 extern void nglGetStringDimensions(nglFont* Font, const char* Text,
                                    unsigned int* Width, unsigned int* Height,
                                    float ScaleX, float ScaleY);  // ngl_font.o
@@ -6061,7 +6061,7 @@ void SceneManager::RenderLightGlows()
                                               .m128_f32[0]
                                           + _mm_shuffle_ps(v55, v55, 170)
                                                 .m128_f32[0]));
-                    VectorNormalize((math::Dir3*)&v54);
+                    VectorNormalize(*(math::Dir3*)&v54);
                     if (dist < 5.0f || dist > 3000.0f)
                         offscreen = true;
 
@@ -11055,7 +11055,7 @@ void StreamZoneManager::RenderZoneGraph(const ZoneBoundaryBank* zbs)
     math::Position3 playerPos = player->r.currentOrigin;
     math::Position3 pp = project(playerPos);
     float axis[3][3];
-    AnglesToAxis(&player->r.currentAngles, axis);
+    AnglesToAxis(player->r.currentAngles, axis);
     math::Position3 fwd;
     fwd.v = _mm_setr_ps(playerPos.v.m128_f32[0] + axis[0][0] * 50.0f,
                         playerPos.v.m128_f32[1] + axis[0][1] * 50.0f,

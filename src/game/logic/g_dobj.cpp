@@ -12,8 +12,9 @@
 #include "core/tlFixedString.h"
 #include "core/PoolAllocator.h"
 
-extern void DObjSkelMatrixMultiply43(const DObjSkelMat* in1, const float (*in2)[3],
-                                     float (*out)[3]);
+extern void DObjSkelMatrixMultiply43(const DObjSkelMat* in1,
+                                       const float (*const in2)[3],
+                                     float (*const out)[3]);
 extern void DObjUpdateChildren(DObj* obj, int boneIndex);  // render.o 0xABB990
 
 // ea: 0x4A6AF0
@@ -463,7 +464,7 @@ bool G_DObjGetWorldBoneIndexMatrix(Entity* ent, int boneIndex, DObjSkelMat* tagM
     if (v3 == nullptr)
         return 0;
     float ent_axis[12];
-    AnglesToAxis(&ent->r.currentAngles, (float(*)[3])ent_axis);
+    AnglesToAxis(ent->r.currentAngles, (float(*)[3])ent_axis);
     ent_axis[9] = ent->r.currentOrigin.v.m128_f32[0];
     ent_axis[10] = ent->r.currentOrigin.v.m128_f32[1];
     ent_axis[11] = ent->r.currentOrigin.v.m128_f32[2];
@@ -1136,7 +1137,8 @@ void XModelChildrenToLocal(IVPointer<XModel> model, DObjSkelMat* matrices, int p
             cachedParent = boneParent;
             InverseDObjSkel(&matrices[boneParent], &invParent);
         }
-        DObjSkelMatrixMultiply(&matrices[bone], &matrices[bone], &invParent);
+        matrices[bone] =
+            DObjSkelMatrixMultiply(&matrices[bone], &invParent);
     }
 }
 
@@ -1176,7 +1178,8 @@ void XModelChildrenToModel(IVPointer<XModel> model, DObjSkelMat* matrices, int p
                     if (!AeAssert::IsIgnored() && AeAssert::Assert("no room left in array"))
                         __debugbreak();
                 }
-                DObjSkelMatrixMultiply(&matrices[i], &matrices[i], &matrices[cur]);
+                matrices[i] =
+                    DObjSkelMatrixMultiply(&matrices[i], &matrices[cur]);
                 OrthonormalizeDObjSkel(&matrices[i]);
             }
         }
@@ -1251,7 +1254,7 @@ static void G_DObjSetLocalTagInternal(Entity* ent, int bone, const DObjSkelMat* 
     if (a5 != 0)
     {
         // Relative to the bone's current matrix.
-        DObjSkelMatrixMultiply(&matrices[bone], local, &matrices[bone]);
+        matrices[bone] = DObjSkelMatrixMultiply(local, &matrices[bone]);
     }
     else
     {
@@ -1261,9 +1264,10 @@ static void G_DObjSetLocalTagInternal(Entity* ent, int bone, const DObjSkelMat* 
         math::Mat43::Packed* bindPose = &parts->mTransforms.mList[bone];
         Mat43PackedToDObjSkel(bindPose, &bind);
         DObjSkelMat composed;
-        DObjSkelMatrixMultiply(&composed, local, &bind);
+        composed = DObjSkelMatrixMultiply(local, &bind);
         if (mParentIndex >= 0)
-            DObjSkelMatrixMultiply(&matrices[bone], &composed, &matrices[mParentIndex]);
+            matrices[bone] =
+                DObjSkelMatrixMultiply(&composed, &matrices[mParentIndex]);
         else
             memcpy(&matrices[bone], &composed, sizeof(composed));
     }
@@ -1391,14 +1395,14 @@ void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3])
     }
     if (tagInfo->index < 0)
     {
-        AnglesToAxis(&parent->r.currentAngles, parentAxis);
+        AnglesToAxis(parent->r.currentAngles, parentAxis);
         (*parentAxis)[9] = parent->r.currentOrigin.v.m128_f32[0];
         (*parentAxis)[10] = parent->r.currentOrigin.v.m128_f32[1];
         (*parentAxis)[11] = parent->r.currentOrigin.v.m128_f32[2];
         return;
     }
     float tempAxis[4][3];
-    AnglesToAxis(&parent->r.currentAngles, tempAxis);
+    AnglesToAxis(parent->r.currentAngles, tempAxis);
     tempAxis[3][0] = parent->r.currentOrigin.v.m128_f32[0];
     tempAxis[3][1] = parent->r.currentOrigin.v.m128_f32[1];
     tempAxis[3][2] = parent->r.currentOrigin.v.m128_f32[2];
@@ -1434,7 +1438,7 @@ void G_CalcTagAxis(Entity* ent, int bAnglesOnly)
     float invParentAxis[4][3];
     float axis[4][3];
     G_CalcTagParentAxis(ent, parentAxis);
-    AnglesToAxis(&ent->r.currentAngles, axis);
+    AnglesToAxis(ent->r.currentAngles, axis);
     tagInfo_t* tagInfo = ent->tagInfo;
     if (tagInfo == nullptr)
     {

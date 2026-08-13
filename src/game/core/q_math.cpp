@@ -30,12 +30,12 @@ extern void FastSinCos(float radians, float* psin, float* pcos);
 extern void Com_Error(int code, const char* fmt, ...);
 
 // Forward declarations (mutually recursive angle/axis helpers)
-float vectoyaw(float* vec);
-float vectosignedyaw(float* vec);
-float vectopitch(const float* vec);
-float vectosignedpitch(const float* vec);
-void vectoangles(float* vec, float* angles);
-void vectosignedangles(float* vec, float* angles);
+const float vectoyaw(const float* const const vec);
+const float vectosignedyaw(const float* const const vec);
+const float vectopitch(const float* const vec);
+const float vectosignedpitch(const float* const vec);
+void vectoangles(const float* const vec, float* const angles);
+void vectosignedangles(const float* const vec, float* const angles);
 
 namespace AeAssert {
 enum ECoderId { COD3 = 0 };
@@ -63,7 +63,7 @@ bool Assert(const char* fmt, ...);
 // ============================================================================
 
 // ea: 0x004B5FE0
-int Q_rand(int* seed)
+const int Q_rand(int* seed)
 {
     int result = 69069 * *seed + 1;
     *seed = result;
@@ -71,7 +71,7 @@ int Q_rand(int* seed)
 }
 
 // ea: 0x004B6000
-float Q_random(int* seed)
+const float Q_random(int* seed)
 {
     int v1 = 69069 * *seed + 1;
     *seed = v1;
@@ -80,7 +80,7 @@ float Q_random(int* seed)
 }
 
 // ea: 0x004B6030
-float Q_crandom(int* seed)
+const float Q_crandom(int* seed)
 {
     int v1 = 69069 * *seed + 1;
     *seed = v1;
@@ -89,7 +89,7 @@ float Q_crandom(int* seed)
 }
 
 // ea: 0x004B6070
-int Q_log2(int val)
+const int Q_log2(int val)
 {
     int v1 = val >> 1;
     int result = 0;
@@ -99,7 +99,7 @@ int Q_log2(int val)
 }
 
 // ea: 0x004B6090
-float Q_acos(float c)
+const float Q_acos(float c)
 {
     float angle = acosf(c);
     if (angle <= 3.1415927f && angle >= -3.1415927f)
@@ -108,18 +108,18 @@ float Q_acos(float c)
 }
 
 // ea: 0x004B60D0
-char ClampChar(int i)
+const signed char ClampChar(int i)
 {
-    char result = (char)i;
+    const signed char result = (signed char)i;
     if (i < -128)
-        return (char)0x80;
+        return (signed char)0x80;
     if (i > 127)
-        return 127;
+        return (signed char)127;
     return result;
 }
 
 // ea: 0x004B60F0
-short ClampShort(int i)
+const short ClampShort(int i)
 {
     short result = (short)i;
     if (i < -32768)
@@ -130,7 +130,7 @@ short ClampShort(int i)
 }
 
 // ea: 0x004B6110
-unsigned char DirToByte(const float* dir)
+const unsigned char DirToByte(const float* const dir)
 {
     unsigned char result = 0;
     if (dir != nullptr)
@@ -155,7 +155,7 @@ unsigned char DirToByte(const float* dir)
 }
 
 // ea: 0x004B6170
-void ByteToDir(unsigned int b, float* dir)
+void ByteToDir(int b, float* const dir)
 {
     if (b > 0xA1)
     {
@@ -176,13 +176,14 @@ void ByteToDir(unsigned int b, float* dir)
 // ============================================================================
 
 // ea: 0x004B61C0
-float _DotProduct(const float* v1, const float* v2)
+const float _DotProduct(const float* const const v1, const float* const const v2)
 {
     return v1[2] * v2[2] + v1[1] * v2[1] + *v1 * *v2;
 }
 
 // ea: 0x004B61E0
-void _VectorSubtract(const float* veca, const float* vecb, float* out)
+void _VectorSubtract(const float* const veca, const float* const vecb,
+                     float* const out)
 {
     *out = *veca - *vecb;
     out[1] = veca[1] - vecb[1];
@@ -190,7 +191,8 @@ void _VectorSubtract(const float* veca, const float* vecb, float* out)
 }
 
 // ea: 0x004B6220
-void _VectorAdd(const float* veca, const float* vecb, float* out)
+void _VectorAdd(const float* const veca, const float* const vecb,
+                float* const out)
 {
     *out = *veca + *vecb;
     out[1] = veca[1] + vecb[1];
@@ -206,7 +208,7 @@ void _VectorCopy(const float* in, float* out)
 }
 
 // ea: 0x004B6280
-void _VectorScale(const float* in, float scale, float* out)
+void _VectorScale(const float* const in, float scale, float* const out)
 {
     *out = *in * scale;
     out[1] = in[1] * scale;
@@ -214,7 +216,8 @@ void _VectorScale(const float* in, float scale, float* out)
 }
 
 // ea: 0x004B62C0
-void _VectorMA(const float* veca, float scale, const float* vecb, float* vecc)
+void _VectorMA(const float* const veca, float scale,
+               const float* const vecb, float* const vecc)
 {
     *vecc = *vecb * scale + *veca;
     vecc[1] = vecb[1] * scale + veca[1];
@@ -222,9 +225,10 @@ void _VectorMA(const float* veca, float scale, const float* vecb, float* vecc)
 }
 
 // ea: 0x004B6310
-int VectorCompareEpsilon(const float* v1, float* v2)
+const int VectorCompareEpsilon(const float* const v1,
+                               const float* const v2)
 {
-    float* eax1 = v2;
+    const float* eax1 = v2;
     int v3 = 0;
     while ((eax1[v1 - v2] - *eax1) * (eax1[v1 - v2] - *eax1) <= 0.000024999999f)
     {
@@ -237,13 +241,13 @@ int VectorCompareEpsilon(const float* v1, float* v2)
 }
 
 // ea: 0x004B6360
-float _VectorLength(const float* v)
+const float _VectorLength(const float* const const v)
 {
     return sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
 }
 
 // ea: 0x004B63B0
-float VectorDistance(const float* v1, const float* v2)
+const float VectorDistance(const float* const const v1, const float* const const v2)
 {
     float dir = *v2 - *v1;
     float v4 = v2[1] - v1[1];
@@ -252,7 +256,8 @@ float VectorDistance(const float* v1, const float* v2)
 }
 
 // ea: 0x004B6400
-float VectorDistanceSquared(const float* p1, const float* p2)
+const float VectorDistanceSquared(const float* const p1,
+                                  const float* const p2)
 {
     float v = *p2 - *p1;
     float v4 = p2[1] - p1[1];
@@ -261,7 +266,7 @@ float VectorDistanceSquared(const float* p1, const float* p2)
 }
 
 // ea: 0x004B6440
-float VectorDistance2D(const float* v1, const float* v2)
+const float VectorDistance2D(const float* const const v1, const float* const const v2)
 {
     float dir = *v2 - *v1;
     float dir_4 = v2[1] - v1[1];
@@ -269,7 +274,8 @@ float VectorDistance2D(const float* v1, const float* v2)
 }
 
 // ea: 0x004B6480
-float VectorDistanceSquared2D(const float* p1, const float* p2)
+const float VectorDistanceSquared2D(const float* const const p1,
+                                    const float* const p2)
 {
     float v = *p2 - *p1;
     float v4 = p2[1] - p1[1];
@@ -277,10 +283,11 @@ float VectorDistanceSquared2D(const float* p1, const float* p2)
 }
 
 // ea: 0x004B64B0
-float VectorDistanceSquared2D(const math::Position3* p1, const math::Position3* p2)
+const float VectorDistanceSquared2D(const math::Position3& p1,
+                                    const math::Position3& p2)
 {
-    float v = p2->v.m128_f32[0] - p1->v.m128_f32[0];
-    float v4 = p2->v.m128_f32[1] - p1->v.m128_f32[1];
+    float v = p2.v.m128_f32[0] - p1.v.m128_f32[0];
+    float v4 = p2.v.m128_f32[1] - p1.v.m128_f32[1];
     return v4 * v4 + v * v;
 }
 
@@ -293,7 +300,7 @@ void CrossProduct(const float* v1, const float* v2, float* cross)
 }
 
 // ea: 0x004B6540
-void CrossProductUp(const float* v1, float* cross)
+void CrossProductUp(const float* const v1, float* const cross)
 {
     *cross = v1[1];
     cross[1] = 0.0f - *v1;
@@ -301,43 +308,43 @@ void CrossProductUp(const float* v1, float* cross)
 }
 
 // ea: 0x004B6570
-float VectorNormalize2(const math::Dir3* in, math::Dir3* out)
+float VectorNormalize2(const math::Dir3& in, math::Dir3& out)
 {
-    float v6 = in->v.m128_f32[0] * in->v.m128_f32[0]
-             + in->v.m128_f32[1] * in->v.m128_f32[1]
-             + in->v.m128_f32[2] * in->v.m128_f32[2];
+    float v6 = in.v.m128_f32[0] * in.v.m128_f32[0]
+             + in.v.m128_f32[1] * in.v.m128_f32[1]
+             + in.v.m128_f32[2] * in.v.m128_f32[2];
     if (v6 == 0.0f)
     {
-        out->v.m128_f32[0] = 0.0f;
-        out->v.m128_f32[1] = 0.0f;
-        out->v.m128_f32[2] = 0.0f;
+        out.v.m128_f32[0] = 0.0f;
+        out.v.m128_f32[1] = 0.0f;
+        out.v.m128_f32[2] = 0.0f;
         return 0.0f;
     }
     float v7 = sqrtf(v6);
     float inv = 1.0f / v7;
-    out->v.m128_f32[0] = in->v.m128_f32[0] * inv;
-    out->v.m128_f32[1] = in->v.m128_f32[1] * inv;
-    out->v.m128_f32[2] = in->v.m128_f32[2] * inv;
+    out.v.m128_f32[0] = in.v.m128_f32[0] * inv;
+    out.v.m128_f32[1] = in.v.m128_f32[1] * inv;
+    out.v.m128_f32[2] = in.v.m128_f32[2] * inv;
     return v7;
 }
 
 // ea: 0x004B6620
-float VectorNormalize(math::Dir3* v)
+const float VectorNormalize(math::Dir3& v)
 {
-    float v4 = sqrtf(v->v.m128_f32[0] * v->v.m128_f32[0]
-                   + v->v.m128_f32[1] * v->v.m128_f32[1]
-                   + v->v.m128_f32[2] * v->v.m128_f32[2]);
+    float v4 = sqrtf(v.v.m128_f32[0] * v.v.m128_f32[0]
+                   + v.v.m128_f32[1] * v.v.m128_f32[1]
+                   + v.v.m128_f32[2] * v.v.m128_f32[2]);
     if (v4 != 0.0f)
     {
-        v->v.m128_f32[0] /= v4;
-        v->v.m128_f32[1] /= v4;
-        v->v.m128_f32[2] /= v4;
+        v.v.m128_f32[0] /= v4;
+        v.v.m128_f32[1] /= v4;
+        v.v.m128_f32[2] /= v4;
     }
     return v4;
 }
 
 // ea: 0x004B66B0
-float VectorNormalize(float* v)
+const float VectorNormalize(float* const v)
 {
     float length = sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
     if (length != 0.0f)
@@ -351,7 +358,7 @@ float VectorNormalize(float* v)
 }
 
 // ea: 0x004B6740
-float VectorNormalize2D(float* v)
+const float VectorNormalize2D(float* const v)
 {
     float length = sqrtf(*v * *v + v[1] * v[1]);
     if (length != 0.0f)
@@ -364,7 +371,7 @@ float VectorNormalize2D(float* v)
 }
 
 // ea: 0x004B67C0
-float VectorNormalize4D(float* v)
+const float VectorNormalize4D(float* const v)
 {
     float length = sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2] + v[3] * v[3]);
     if (length != 0.0f)
@@ -379,7 +386,7 @@ float VectorNormalize4D(float* v)
 }
 
 // ea: 0x004B6870
-float VectorNormalize2(const float* v, float* out)
+const float VectorNormalize2(const float* const v, float* const out)
 {
     float length = sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
     if (length == 0.0f)
@@ -399,7 +406,7 @@ float VectorNormalize2(const float* v, float* out)
 }
 
 // ea: 0x004B6920
-void VectorInverse(float* v)
+void VectorInverse(float* const v)
 {
     *v = 0.0f - *v;
     float v1 = 0.0f - v[2];
@@ -408,7 +415,7 @@ void VectorInverse(float* v)
 }
 
 // ea: 0x004B6950
-void Vector4Scale(const float* in, float scale, float* out)
+void Vector4Scale(const float* const in, float scale, float* const out)
 {
     *out = *in * scale;
     out[1] = in[1] * scale;
@@ -417,7 +424,7 @@ void Vector4Scale(const float* in, float scale, float* out)
 }
 
 // ea: 0x004B69A0
-float VectorMax(float* in)
+float VectorMax(const float* const in)
 {
     float v1 = *in;
     if (*in < in[1])
@@ -428,7 +435,8 @@ float VectorMax(float* in)
 }
 
 // ea: 0x004B69D0
-void VectorRotate(const float* in, const float (*matrix)[3], float* out)
+void VectorRotate(const float* const in, const float (*const matrix)[3],
+                  float* const out)
 {
     ASSERT("in != out", "c:\\cod\\code\\game\\com_math.cpp", 721);
     *out = (*matrix)[2] * in[2] + (*matrix)[1] * in[1] + *in * (*matrix)[0];
@@ -437,7 +445,8 @@ void VectorRotate(const float* in, const float (*matrix)[3], float* out)
 }
 
 // ea: 0x004B6AB0
-void MakeNormalVectors(const float* forward, float* right, float* up)
+void MakeNormalVectors(const float* const forward, float* const right,
+                       float* const up)
 {
     right[1] = 0.0f - *forward;
     right[2] = forward[1];
@@ -463,8 +472,9 @@ void MakeNormalVectors(const float* forward, float* right, float* up)
 }
 
 // ea: 0x004B6C10
-void GetPerpendicularViewVector(const float* point, const float* p1,
-                                const float* p2, float* up)
+void GetPerpendicularViewVector(const float* const point,
+                                const float* const p1, const float* const p2,
+                                float* const up)
 {
     float v5 = point[2] - p1[2];
     float v6 = point[1] - p1[1];
@@ -514,8 +524,8 @@ void GetPerpendicularViewVector(const float* point, const float* p1,
 }
 
 // ea: 0x004B6E50
-void ProjectPointOntoVector(float* point, float* vStart, float* vEnd,
-                            float* vProj)
+void ProjectPointOntoVector(float* const point, float* const vStart,
+                            float* const vEnd, float* const vProj)
 {
     float pVec = *point - *vStart;
     float pVec_4 = point[1] - vStart[1];
@@ -549,8 +559,8 @@ void ProjectPointOntoVector(float* point, float* vStart, float* vEnd,
 // ============================================================================
 
 // ea: 0x004B6F90
-void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
-                    float (*out)[3])
+void MatrixMultiply(const float (*const in1)[3],
+                    const float (*const in2)[3], float (*const out)[3])
 {
     (*out)[0] = (*in1)[0] * (*in2)[0] + (*in1)[1] * (*in2)[3] + (*in2)[6] * (*in1)[2];
     (*out)[1] = (*in1)[1] * (*in2)[4] + (*in2)[7] * (*in1)[2] + (*in2)[1] * (*in1)[0];
@@ -564,7 +574,8 @@ void MatrixMultiply(const float (*in1)[3], const float (*in2)[3],
 }
 
 // ea: 0x004B7120
-void MatrixMultiplyEquals(const float (*in)[3], float (*out)[3])
+void MatrixMultiplyEquals(const float (*const in)[3],
+                          float (*const out)[3])
 {
     float v2 = (*in)[1] * (*out)[3] + (*in)[0] * (*out)[0] + (*out)[6] * (*in)[2];
     float v3 = (*out)[7] * (*in)[2] + (*in)[1] * (*out)[4] + (*out)[1] * (*in)[0];
@@ -585,8 +596,8 @@ void MatrixMultiplyEquals(const float (*in)[3], float (*out)[3])
 }
 
 // ea: 0x004B72B0
-void MatrixMultiply34(const float (*in1)[4], const float (*in2)[4],
-                      float (*out)[4])
+void MatrixMultiply34(const float (*const in1)[4],
+                      const float (*const in2)[4], float (*const out)[4])
 {
     (*out)[0] = (*in1)[0] * (*in2)[0] + (*in1)[1] * (*in2)[4] + (*in1)[2] * (*in2)[8];
     (*out)[1] = (*in1)[1] * (*in2)[5] + (*in2)[1] * (*in1)[0] + (*in2)[9] * (*in1)[2];
@@ -603,8 +614,8 @@ void MatrixMultiply34(const float (*in1)[4], const float (*in2)[4],
 }
 
 // ea: 0x004B74D0
-void MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
-                      float (*out)[3])
+void MatrixMultiply43(const float (*const in1)[3],
+                      const float (*const in2)[3], float (*const out)[3])
 {
     (*out)[0] = (*in1)[0] * (*in2)[0] + (*in1)[1] * (*in2)[3] + (*in2)[6] * (*in1)[2];
     (*out)[3] = (*in1)[4] * (*in2)[3] + (*in1)[3] * (*in2)[0] + (*in1)[5] * (*in2)[6];
@@ -622,7 +633,8 @@ void MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
 
 // ea: 0x004B76F0
 void DObjSkelMatrixMultiply43(const DObjSkelMat* in1,
-                              const float (*in2)[3], float (*out)[3])
+                              const float (*const in2)[3],
+                              float (*const out)[3])
 {
     (*out)[0] = in1->axis[0][0] * (*in2)[0] + in1->axis[0][1] * (*in2)[3] + (*in2)[6] * in1->axis[0][2];
     (*out)[3] = in1->axis[1][1] * (*in2)[3] + in1->axis[1][0] * (*in2)[0] + in1->axis[1][2] * (*in2)[6];
@@ -640,7 +652,8 @@ void DObjSkelMatrixMultiply43(const DObjSkelMat* in1,
 
 // ea: 0x004B8000
 void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
-                               const float (*in2)[3], DObjSkelMat* out)
+                               const float (*const in2)[3],
+                               DObjSkelMat* out)
 {
     out->axis[0][0] = in1->axis[0][0] * (*in2)[0] + in1->axis[0][1] * (*in2)[3] + (*in2)[6] * in1->axis[0][2];
     out->axis[1][0] = in1->axis[1][1] * (*in2)[3] + in1->axis[1][0] * (*in2)[0] + in1->axis[1][2] * (*in2)[6];
@@ -661,9 +674,8 @@ void DObjSkel2MatrixMultiply43(const DObjSkelMat* in1,
 }
 
 // ea: 0x004B8240
-DObjSkelMat* DObjSkelMatrixMultiply(DObjSkelMat* result,
-                                    const DObjSkelMat* in1,
-                                    const DObjSkelMat* in2)
+DObjSkelMat DObjSkelMatrixMultiply(const DObjSkelMat* in1,
+                                   const DObjSkelMat* in2)
 {
     DObjSkelMat out;
     out.axis[0][0] = in1->axis[0][1] * in2->axis[1][0] + in1->axis[0][0] * in2->axis[0][0] + in1->axis[0][2] * in2->axis[2][0];
@@ -682,12 +694,11 @@ DObjSkelMat* DObjSkelMatrixMultiply(DObjSkelMat* result,
     out.origin[1] = in1->origin[2] * in2->axis[2][1] + in1->origin[1] * in2->axis[1][1] + in1->origin[0] * in2->axis[0][1] + in2->origin[1];
     out.origin[2] = in1->origin[2] * in2->axis[2][2] + in1->origin[1] * in2->axis[1][2] + in1->origin[0] * in2->axis[0][2] + in2->origin[2];
     out.origin[3] = 1.0f;
-    *result = out;
-    return result;
+    return out;
 }
 
 // ea: 0x004B84C0
-void MatrixTranspose(const float (*in)[3], float (*out)[3])
+void MatrixTranspose(const float (*const in)[3], float (*const out)[3])
 {
     (*out)[0] = (*in)[0];
     (*out)[1] = (*in)[3];
@@ -701,7 +712,7 @@ void MatrixTranspose(const float (*in)[3], float (*out)[3])
 }
 
 // ea: 0x004B8500
-void MatrixInverse(const float (*in)[3], float (*out)[3])
+void MatrixInverse(const float (*const in)[3], float (*const out)[3])
 {
     float det = ((*in)[4] * (*in)[8] - (*in)[7] * (*in)[5]) * (*in)[0]
               - ((*in)[1] * (*in)[8] - (*in)[7] * (*in)[2]) * (*in)[3]
@@ -725,7 +736,8 @@ void MatrixInverse(const float (*in)[3], float (*out)[3])
 }
 
 // ea: 0x004B8ED0
-void MatrixTransformVector(const float* in1, const float (*in2)[3], float* out)
+void MatrixTransformVector(const float* const in1,
+                           const float (*const in2)[3], float* const out)
 {
     *out = (*in2)[3] * in1[1] + (*in2)[6] * in1[2] + *in1 * (*in2)[0];
     out[1] = (*in2)[1] * *in1 + (*in2)[4] * in1[1] + (*in2)[7] * in1[2];
@@ -733,8 +745,9 @@ void MatrixTransformVector(const float* in1, const float (*in2)[3], float* out)
 }
 
 // ea: 0x004B8F60
-void MatrixTransposeTransformVector(const float* in1, const float (*in2)[3],
-                                    float* out)
+void MatrixTransposeTransformVector(const float* const in1,
+                                    const float (*const in2)[3],
+                                    float* const out)
 {
     *out = (*in2)[1] * in1[1] + (*in2)[2] * in1[2] + *in1 * (*in2)[0];
     out[1] = (*in2)[3] * *in1 + (*in2)[4] * in1[1] + (*in2)[5] * in1[2];
@@ -742,8 +755,8 @@ void MatrixTransposeTransformVector(const float* in1, const float (*in2)[3],
 }
 
 // ea: 0x004B8FF0
-void MatrixTransformVector43(const float* in1, const float (*in2)[3],
-                             float* out)
+void MatrixTransformVector43(const float* const in1,
+                             const float (*const in2)[3], float* const out)
 {
     *out = (*in2)[3] * in1[1] + (*in2)[6] * in1[2] + *in1 * (*in2)[0] + (*in2)[9];
     out[1] = (*in2)[1] * *in1 + (*in2)[4] * in1[1] + (*in2)[7] * in1[2] + (*in2)[10];
@@ -751,17 +764,19 @@ void MatrixTransformVector43(const float* in1, const float (*in2)[3],
 }
 
 // ea: 0x004B9090
-void MatrixTransformVector43(const float* in1, const float (*in2)[3],
-                             math::Position3* out)
+void MatrixTransformVector43(const float* const in1,
+                             const float (*const in2)[3],
+                             math::Position3& out)
 {
-    out->v.m128_f32[0] = (*in2)[3] * in1[1] + (*in2)[6] * in1[2] + *in1 * (*in2)[0] + (*in2)[9];
-    out->v.m128_f32[1] = (*in2)[1] * *in1 + (*in2)[4] * in1[1] + (*in2)[7] * in1[2] + (*in2)[10];
-    out->v.m128_f32[2] = (*in2)[2] * *in1 + (*in2)[5] * in1[1] + (*in2)[8] * in1[2] + (*in2)[11];
+    out.v.m128_f32[0] = (*in2)[3] * in1[1] + (*in2)[6] * in1[2] + *in1 * (*in2)[0] + (*in2)[9];
+    out.v.m128_f32[1] = (*in2)[1] * *in1 + (*in2)[4] * in1[1] + (*in2)[7] * in1[2] + (*in2)[10];
+    out.v.m128_f32[2] = (*in2)[2] * *in1 + (*in2)[5] * in1[1] + (*in2)[8] * in1[2] + (*in2)[11];
 }
 
 // ea: 0x004B9130
-void DObjSkelMatrixTransformVector43(const float* in1, const DObjSkelMat* in2,
-                                     float* out)
+void DObjSkelMatrixTransformVector43(const float* const in1,
+                                     const DObjSkelMat* in2,
+                                     float* const out)
 {
     *out = in2->axis[2][0] * in1[2] + in2->axis[1][0] * in1[1] + *in1 * in2->axis[0][0] + in2->origin[0];
     out[1] = in2->axis[0][1] * *in1 + in2->axis[2][1] * in1[2] + in2->axis[1][1] * in1[1] + in2->origin[1];
@@ -769,8 +784,9 @@ void DObjSkelMatrixTransformVector43(const float* in1, const DObjSkelMat* in2,
 }
 
 // ea: 0x004B91D0
-void MatrixTransposeTransformVector43(const float* in1, const float (*in2)[3],
-                                      float* out)
+void MatrixTransposeTransformVector43(const float* const in1,
+                                      const float (*const in2)[3],
+                                      float* const out)
 {
     float v3 = in1[1] - (*in2)[10];
     float v4 = in1[2] - (*in2)[11];
@@ -856,7 +872,7 @@ void ConvertQuatToMat(float* mat)
 }
 
 // ea: 0x004B95E0
-float QuatEigenTrace(float* quat)
+float QuatEigenTrace(float* const quat)
 {
     float v1 = quat[2] * quat[2];
     float v2 = quat[1] * quat[1];
@@ -875,7 +891,7 @@ float AngleEigenTrace(float angle)
 }
 
 // ea: 0x004B96A0
-float QuatRatioEigenTrace(float* quat1, float* quat2)
+float QuatRatioEigenTrace(float* const quat1, float* const quat2)
 {
     float v2 = quat2[3];
     float v3 = 0.0f - *quat2;
@@ -897,7 +913,7 @@ float QuatRatioEigenTrace(float* quat1, float* quat2)
 }
 
 // ea: 0x004B97E0
-unsigned int ColorBytes3(float r, float g, float b)
+const unsigned int ColorBytes3(float r, float g, float b)
 {
     unsigned int i = 0;
     i = (unsigned char)(r * 255.0f);
@@ -908,7 +924,7 @@ unsigned int ColorBytes3(float r, float g, float b)
 }
 
 // ea: 0x004B9820
-unsigned int ColorBytes4(float r, float g, float b, float a)
+const unsigned int ColorBytes4(float r, float g, float b, float a)
 {
     unsigned int i = 0;
     i = (unsigned char)(r * 255.0f);
@@ -919,7 +935,7 @@ unsigned int ColorBytes4(float r, float g, float b, float a)
 }
 
 // ea: 0x004B9870
-float NormalizeColor(float* in, float* out)
+const float NormalizeColor(const float* const const in, float* const out)
 {
     float v4 = in[1];
     float max = *in;
@@ -952,14 +968,14 @@ float NormalizeColor(float* in, float* out)
 }
 
 // ea: 0x004B98F0
-float AngleMod(float a)
+const float AngleMod(float a)
 {
     float aa = a * 182.04445f;
     return aa * 0.0054931641f;
 }
 
 // ea: 0x004B9920
-float LerpAngle(float from, float to, float frac)
+const float LerpAngle(float from, float to, float frac)
 {
     float v3 = to;
     if (to - from > 180.0f)
@@ -973,7 +989,7 @@ float LerpAngle(float from, float to, float frac)
 }
 
 // ea: 0x004B9990
-float AngleSubtract(float a1, float a2)
+const float AngleSubtract(float a1, float a2)
 {
     float a = fmodf(a1 - a2, 360.0f);
     float v2 = a;
@@ -988,34 +1004,35 @@ float AngleSubtract(float a1, float a2)
 }
 
 // ea: 0x004B99F0
-void AnglesSubtract(const math::Position3* v1, const math::Position3* v2,
-                    math::Position3* v3)
+void AnglesSubtract(const math::Position3& v1, const math::Position3& v2,
+                    math::Position3& v3)
 {
-    float v2a = fmodf(v1->v.m128_f32[0] - v2->v.m128_f32[0], 360.0f);
+    float v2a = fmodf(v1.v.m128_f32[0] - v2.v.m128_f32[0], 360.0f);
     float v4 = v2a;
     if (v2a > 180.0f)
         v4 = v2a - 360.0f;
     if (v4 < -180.0f)
         v4 = v4 + 360.0f;
-    v3->v.m128_f32[0] = v4;
-    float v2b = fmodf(v1->v.m128_f32[1] - v2->v.m128_f32[1], 360.0f);
+    v3.v.m128_f32[0] = v4;
+    float v2b = fmodf(v1.v.m128_f32[1] - v2.v.m128_f32[1], 360.0f);
     float v5 = v2b;
     if (v2b > 180.0f)
         v5 = v2b - 360.0f;
     if (v5 < -180.0f)
         v5 = v5 + 360.0f;
-    v3->v.m128_f32[1] = v5;
-    float v2c = fmodf(v1->v.m128_f32[2] - v2->v.m128_f32[2], 360.0f);
+    v3.v.m128_f32[1] = v5;
+    float v2c = fmodf(v1.v.m128_f32[2] - v2.v.m128_f32[2], 360.0f);
     float v6 = v2c;
     if (v2c > 180.0f)
         v6 = v2c - 360.0f;
     if (v6 < -180.0f)
         v6 = v6 + 360.0f;
-    v3->v.m128_f32[2] = v6;
+    v3.v.m128_f32[2] = v6;
 }
 
 // ea: 0x004B9B20
-void AnglesSubtract(const float* v1, const float* v2, float* v3)
+void AnglesSubtract(const float* const v1, const float* const v2,
+                    float* const v3)
 {
     float v2a = fmodf(*v1 - *v2, 360.0f);
     float v4 = v2a;
@@ -1041,14 +1058,14 @@ void AnglesSubtract(const float* v1, const float* v2, float* v3)
 }
 
 // ea: 0x004B9C50
-float AngleNormalize360(float angle)
+const float AngleNormalize360(float angle)
 {
     float anglea = angle * 182.04445f;
     return anglea * 0.0054931641f;
 }
 
 // ea: 0x004B9C80
-float AngleNormalize180(float angle)
+const float AngleNormalize180(float angle)
 {
     float v1 = (angle * 182.04445f) * 0.0054931641f;
     float a = v1;
@@ -1058,7 +1075,7 @@ float AngleNormalize180(float angle)
 }
 
 // ea: 0x004B9CD0
-float AngleDelta(float angle1, float angle2)
+const float AngleDelta(float angle1, float angle2)
 {
     float v2 = ((angle1 - angle2) * 182.04445f) * 0.0054931641f;
     float angle1a = v2;
@@ -1068,29 +1085,30 @@ float AngleDelta(float angle1, float angle2)
 }
 
 // ea: 0x004B9D20
-float RadiusFromBounds(const math::Position3* mins, const math::Position3* maxs)
+const float RadiusFromBounds(const math::Position3& mins,
+                             const math::Position3& maxs)
 {
-    float v6 = fabsf(mins->v.m128_f32[0]);
+    float v6 = fabsf(mins.v.m128_f32[0]);
     float v2 = v6;
-    float b = fabsf(maxs->v.m128_f32[0]);
+    float b = fabsf(maxs.v.m128_f32[0]);
     if (v6 <= b)
         v2 = b;
-    float bb = fabsf(mins->v.m128_f32[1]);
+    float bb = fabsf(mins.v.m128_f32[1]);
     float a = bb;
     float v3 = bb;
-    float ba = fabsf(maxs->v.m128_f32[1]);
+    float ba = fabsf(maxs.v.m128_f32[1]);
     if (a <= ba)
         v3 = ba;
-    float v9 = fabsf(mins->v.m128_f32[2]);
+    float v9 = fabsf(mins.v.m128_f32[2]);
     float v4 = v9;
-    float v7 = fabsf(maxs->v.m128_f32[2]);
+    float v7 = fabsf(maxs.v.m128_f32[2]);
     if (v9 <= v7)
         v4 = v7;
     return sqrtf(v4 * v4 + v3 * v3 + v2 * v2);
 }
 
 // ea: 0x004B9E20
-void ClearBounds(float* mins, float* maxs)
+void ClearBounds(float* const mins, float* const maxs)
 {
     mins[2] = 262144.0f;
     mins[1] = 262144.0f;
@@ -1101,7 +1119,7 @@ void ClearBounds(float* mins, float* maxs)
 }
 
 // ea: 0x004B9E60
-void AxisClear(float (*axis)[3])
+void AxisClear(float (*const axis)[3])
 {
     (*axis)[0] = 1.0f;
     (*axis)[1] = 0.0f;
@@ -1115,7 +1133,7 @@ void AxisClear(float (*axis)[3])
 }
 
 // ea: 0x004B9EA0
-void AxisCopy(const float (*in)[3], float (*out)[3])
+void AxisCopy(const float (*const in)[3], float (*const out)[3])
 {
     (*out)[0] = (*in)[0];
     (*out)[1] = (*in)[1];
@@ -1129,7 +1147,7 @@ void AxisCopy(const float (*in)[3], float (*out)[3])
 }
 
 // ea: 0x004B9EE0
-int PlaneFromPoints(float* plane, const float* a, const float* b, const float* c)
+const int PlaneFromPoints(float* const plane, const float* const const a, const float* const const b, const float* const const c)
 {
     float v4 = c[1] - a[1];
     float v5 = c[2] - a[2];
@@ -1169,8 +1187,8 @@ void SetPlaneSignbits(cplane_s* out)
 }
 
 // ea: 0x004BA060
-int BoxDistSqrdExceeds(const float* absmin, const float* absmax,
-                       const float* org, float fogOpaqueDistSqrd)
+int BoxDistSqrdExceeds(const float* const absmin, const float* const absmax,
+                       const float* const org, float fogOpaqueDistSqrd)
 {
     float v4 = *absmax - *org;
     float v5 = *absmin - *org;
@@ -1226,7 +1244,7 @@ void Vec10Copy(const float* in, float* out)
 }
 
 // ea: 0x004BA180
-float Q_rint(float in)
+const float Q_rint(float in)
 {
     float v1 = in + 0.5f;
     v1 = floorf(v1);
@@ -1234,7 +1252,7 @@ float Q_rint(float in)
 }
 
 // ea: 0x004BA1B0
-float ColorNormalize(float* in, float* out)
+const float ColorNormalize(const float* const const in, float* const out)
 {
     float v4 = in[1];
     float max = *in;
@@ -1264,7 +1282,7 @@ float ColorNormalize(float* in, float* out)
 }
 
 // ea: 0x004BA250
-void VectorSnap(float* v)
+void VectorSnap(float* const v)
 {
     float va = *v + 0.5f;
     va = floorf(va);
@@ -1278,7 +1296,8 @@ void VectorSnap(float* v)
 }
 
 // ea: 0x004BA2C0
-void _Vector5Add(const float* va, const float* vb, float* out)
+void _Vector5Add(const float* const va, const float* const vb,
+                 float* const out)
 {
     *out = *va + *vb;
     out[1] = va[1] + vb[1];
@@ -1288,7 +1307,7 @@ void _Vector5Add(const float* va, const float* vb, float* out)
 }
 
 // ea: 0x004BA320
-void _Vector5Scale(const float* v, float scale, float* out)
+void _Vector5Scale(const float* const v, float scale, float* const out)
 {
     *out = *v * scale;
     out[1] = v[1] * scale;
@@ -1298,7 +1317,7 @@ void _Vector5Scale(const float* v, float scale, float* out)
 }
 
 // ea: 0x004BA380
-void _Vector53Copy(const float* in, float* out)
+void _Vector53Copy(const float* const in, float* const out)
 {
     *out = *in;
     out[1] = in[1];
@@ -1371,13 +1390,13 @@ float DiffTrack(float tgt, float cur, float rate, float deltaTime)
 }
 
 // ea: 0x004BA820
-void InterpolateAngles(math::Position3* curAngles,
-                       const math::Position3* initialAngles,
-                       const math::Position3* targetAngles, float t)
+void InterpolateAngles(math::Position3& curAngles,
+                       const math::Position3& initialAngles,
+                       const math::Position3& targetAngles, float t)
 {
-    float v4 = targetAngles->v.m128_f32[1];
-    float v5 = targetAngles->v.m128_f32[2];
-    float newDeltaYaw = targetAngles->v.m128_f32[0];
+    float v4 = targetAngles.v.m128_f32[1];
+    float v5 = targetAngles.v.m128_f32[2];
+    float newDeltaYaw = targetAngles.v.m128_f32[0];
     float v12 = fabsf(newDeltaYaw);
     if (v12 > 90.0f)
     {
@@ -1393,9 +1412,9 @@ void InterpolateAngles(math::Position3* curAngles,
         }
         while (1);
     }
-    float v7 = v4 - initialAngles->v.m128_f32[1];
-    float v8 = newDeltaYaw - initialAngles->v.m128_f32[0];
-    float v9 = v5 - initialAngles->v.m128_f32[2];
+    float v7 = v4 - initialAngles.v.m128_f32[1];
+    float v8 = newDeltaYaw - initialAngles.v.m128_f32[0];
+    float v9 = v5 - initialAngles.v.m128_f32[2];
     float newDeltaYawa = v7;
     float initialAnglesb = fabsf(v7);
     if (initialAnglesb > 180.0f)
@@ -1413,14 +1432,15 @@ void InterpolateAngles(math::Position3* curAngles,
         while (1);
         v7 = newDeltaYawa;
     }
-    curAngles->v.m128_f32[0] = initialAngles->v.m128_f32[0] + v8 * t;
-    curAngles->v.m128_f32[1] = v7 * t + initialAngles->v.m128_f32[1];
-    curAngles->v.m128_f32[2] = v9 * t + initialAngles->v.m128_f32[2];
+    curAngles.v.m128_f32[0] = initialAngles.v.m128_f32[0] + v8 * t;
+    curAngles.v.m128_f32[1] = v7 * t + initialAngles.v.m128_f32[1];
+    curAngles.v.m128_f32[2] = v9 * t + initialAngles.v.m128_f32[2];
 }
 
 // ea: 0x004BA960
-void InterpolateAnglesSmooth(float* curAngles, float* initialAngles,
-                             float* targetAngles, float t)
+void InterpolateAnglesSmooth(float* const curAngles,
+                             const float* const initialAngles,
+                             const float* const targetAngles, float t)
 {
     float v4 = initialAngles[1];
     float v5 = initialAngles[2];
@@ -1489,8 +1509,9 @@ void InterpolateAnglesSmooth(float* curAngles, float* initialAngles,
 }
 
 // ea: 0x004BAB70
-void InterpolatePositionSmooth(float* curPos, const float* initialPos,
-                               const float* targetPos, float t)
+void InterpolatePositionSmooth(float* const curPos,
+                               const float* const initialPos,
+                               const float* const targetPos, float t)
 {
     float time = cosf(t * 3.1415927f - 3.1415927f);
     float timea = (time + 1.0f) * 0.5f;
@@ -1502,38 +1523,38 @@ void InterpolatePositionSmooth(float* curPos, const float* initialPos,
 }
 
 // ea: 0x004BC250
-void toMatrix(const quat_t* src, mat3_t* dst)
+void toMatrix(const quat_t& src, mat3_t& dst)
 {
-    float y = src->y;
-    float v3 = src->x * 2.0f;
-    float v4 = src->z * 2.0f;
-    float v5 = src->x * v3;
-    float v6 = src->w * v3;
-    float v7 = src->w * (y * 2.0f);
+    float y = src.y;
+    float v3 = src.x * 2.0f;
+    float v4 = src.z * 2.0f;
+    float v5 = src.x * v3;
+    float v6 = src.w * v3;
+    float v7 = src.w * (y * 2.0f);
     float v8 = y * (y * 2.0f);
-    float v9 = src->w * v4;
-    float xy = src->x * (y * 2.0f);
-    float v10 = src->x * v4;
+    float v9 = src.w * v4;
+    float xy = src.x * (y * 2.0f);
+    float v10 = src.x * v4;
     float yz = y * v4;
-    float v11 = src->z * v4;
-    dst->mat[0].x = 1.0f - (v11 + v8);
-    dst->mat[0].y = xy - v9;
-    dst->mat[0].z = v7 + v10;
-    dst->mat[1].x = v9 + xy;
-    dst->mat[1].y = 1.0f - (v11 + v5);
-    dst->mat[1].z = yz - v6;
-    dst->mat[2].x = v10 - v7;
-    dst->mat[2].y = v6 + yz;
-    dst->mat[2].z = 1.0f - (v8 + v5);
+    float v11 = src.z * v4;
+    dst.mat[0].x = 1.0f - (v11 + v8);
+    dst.mat[0].y = xy - v9;
+    dst.mat[0].z = v7 + v10;
+    dst.mat[1].x = v9 + xy;
+    dst.mat[1].y = 1.0f - (v11 + v5);
+    dst.mat[1].z = yz - v6;
+    dst.mat[2].x = v10 - v7;
+    dst.mat[2].y = v6 + yz;
+    dst.mat[2].z = 1.0f - (v8 + v5);
 }
 
 // ea: 0x004BC6A0
-void toQuat(idVec3* src, quat_t* dst)
+void toQuat(idVec3& src, quat_t& dst)
 {
-    dst->x = src->x;
-    dst->y = src->y;
-    dst->z = src->z;
-    dst->w = 0.0f;
+    dst.x = src.x;
+    dst.y = src.y;
+    dst.z = src.z;
+    dst.w = 0.0f;
 }
 
 // ea: 0x004BCF70
@@ -1577,7 +1598,7 @@ float clamp_0_to_1(float f)
 }
 
 // ea: 0x004BDF70
-void VectorNormalizeFast(float* v)
+void VectorNormalizeFast(float* const v)
 {
     float v2 = 1.0f / sqrtf(*v * *v + v[1] * v[1] + v[2] * v[2]);
     *v = *v * v2;
@@ -1588,7 +1609,8 @@ void VectorNormalizeFast(float* v)
 }
 
 // ea: 0x004BF8C0
-void MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3])
+void MatrixInverseOrthogonal43(const float (*const in)[3],
+                                float (*const out)[3])
 {
     (*out)[0] = (*in)[0];
     (*out)[1] = (*in)[3];
@@ -1610,7 +1632,7 @@ void MatrixInverseOrthogonal43(const float (*in)[3], float (*out)[3])
 }
 
 // ea: 0x004BFCE0
-float AngleNormalize360Accurate(float angle)
+const float AngleNormalize360Accurate(float angle)
 {
     float v1 = angle;
     if (angle >= 0.0f)
@@ -1631,7 +1653,7 @@ float AngleNormalize360Accurate(float angle)
 }
 
 // ea: 0x004BFD90
-float AngleNormalize180Accurate(float angle)
+const float AngleNormalize180Accurate(float angle)
 {
     float v1 = angle;
     if (angle > -180.0f)
@@ -1652,7 +1674,8 @@ float AngleNormalize180Accurate(float angle)
 }
 
 // ea: 0x004BFE60
-void ProjectPointOnPlane(float* dst, const float* p, const float* normal)
+void ProjectPointOnPlane(float* const dst, const float* const p,
+                         const float* const normal)
 {
     float lengthSqrd = *normal * *normal + normal[1] * normal[1] + normal[2] * normal[2];
     ASSERT("lengthSqrd", "c:\\cod\\code\\game\\com_math.cpp", 2497);
@@ -1666,7 +1689,7 @@ void ProjectPointOnPlane(float* dst, const float* p, const float* normal)
 }
 
 // ea: 0x004BFFD0
-void NormalToLatLong(float* normal, unsigned char* bytes)
+void NormalToLatLong(const float* const normal, unsigned char* const bytes)
 {
     float v2 = 0.0f;
     if (*normal == 0.0f && normal[1] == 0.0f)
@@ -1743,76 +1766,76 @@ void NormalToLatLong(float* normal, unsigned char* bytes)
 }
 
 // ea: 0x004C05A0
-void toMatrix(const angles_t* src, mat3_t* dst)
+void toMatrix(const angles_t& src, mat3_t& dst)
 {
     float sy, cy, psin, cp, sr, cr;
-    float angle = src->yaw * 0.017453292f;
+    float angle = src.yaw * 0.017453292f;
     FastSinCos(angle, &sy, &cy);
-    float anglea = src->pitch * 0.017453292f;
+    float anglea = src.pitch * 0.017453292f;
     FastSinCos(anglea, &psin, &cp);
-    float angleb = src->roll * 0.017453292f;
+    float angleb = src.roll * 0.017453292f;
     FastSinCos(angleb, &sr, &cr);
     float v3 = 0.0f - psin;
     float v4 = cp * sy;
-    dst->mat[0].x = cp * cy;
-    dst->mat[0].z = v3;
-    dst->mat[0].y = v4;
+    dst.mat[0].x = cp * cy;
+    dst.mat[0].z = v3;
+    dst.mat[0].y = v4;
     float v5 = sy;
     float v6 = cr;
     float v7 = cy;
     float v8 = sr * psin;
-    dst->mat[1].z = sr * cp;
-    dst->mat[1].y = v8 * v5 + v6 * v7;
-    dst->mat[1].x = v8 * v7 - v6 * v5;
+    dst.mat[1].z = sr * cp;
+    dst.mat[1].y = v8 * v5 + v6 * v7;
+    dst.mat[1].x = v8 * v7 - v6 * v5;
     float v9 = cr * cp;
     float v10 = (cr * psin) * sy - sr * cy;
-    dst->mat[2].x = (cr * psin) * cy + sr * sy;
-    dst->mat[2].y = v10;
-    dst->mat[2].z = v9;
+    dst.mat[2].x = (cr * psin) * cy + sr * sy;
+    dst.mat[2].y = v10;
+    dst.mat[2].z = v9;
 }
 
 // ea: 0x004B7910
-void MatrixMultiplyRT(const math::Mat43* in1, const math::Mat43* in2,
-                      math::Mat43* out)
+void MatrixMultiplyRT(const math::Mat43& in1, const math::Mat43& in2,
+                      math::Mat43& out)
 {
     for (int i = 0; i < 3; ++i)
     {
-        out->x.v.m128_f32[i] =
-            in2->x.v.m128_f32[i] * in1->x.v.m128_f32[0]
-            + in2->y.v.m128_f32[i] * in1->x.v.m128_f32[1]
-            + in2->z.v.m128_f32[i] * in1->x.v.m128_f32[2];
-        out->y.v.m128_f32[i] =
-            in2->x.v.m128_f32[i] * in1->y.v.m128_f32[0]
-            + in2->y.v.m128_f32[i] * in1->y.v.m128_f32[1]
-            + in2->z.v.m128_f32[i] * in1->y.v.m128_f32[2];
-        out->z.v.m128_f32[i] =
-            in2->x.v.m128_f32[i] * in1->z.v.m128_f32[0]
-            + in2->y.v.m128_f32[i] * in1->z.v.m128_f32[1]
-            + in2->z.v.m128_f32[i] * in1->z.v.m128_f32[2];
+        out.x.v.m128_f32[i] =
+            in2.x.v.m128_f32[i] * in1.x.v.m128_f32[0]
+            + in2.y.v.m128_f32[i] * in1.x.v.m128_f32[1]
+            + in2.z.v.m128_f32[i] * in1.x.v.m128_f32[2];
+        out.y.v.m128_f32[i] =
+            in2.x.v.m128_f32[i] * in1.y.v.m128_f32[0]
+            + in2.y.v.m128_f32[i] * in1.y.v.m128_f32[1]
+            + in2.z.v.m128_f32[i] * in1.y.v.m128_f32[2];
+        out.z.v.m128_f32[i] =
+            in2.x.v.m128_f32[i] * in1.z.v.m128_f32[0]
+            + in2.y.v.m128_f32[i] * in1.z.v.m128_f32[1]
+            + in2.z.v.m128_f32[i] * in1.z.v.m128_f32[2];
     }
-    out->w.v.m128_f32[0] =
-        in2->x.v.m128_f32[3] * in1->w.v.m128_f32[0]
-        + in2->y.v.m128_f32[3] * in1->w.v.m128_f32[1]
-        + in2->z.v.m128_f32[3] * in1->w.v.m128_f32[2]
-        + in2->w.v.m128_f32[0];
-    out->w.v.m128_f32[1] =
-        in2->x.v.m128_f32[3] * in1->w.v.m128_f32[1]
-        + in2->y.v.m128_f32[3] * in1->w.v.m128_f32[2]
-        + in2->z.v.m128_f32[3] * in1->w.v.m128_f32[0]
-        + in2->w.v.m128_f32[1];
-    out->w.v.m128_f32[2] =
-        in2->x.v.m128_f32[3] * in1->w.v.m128_f32[2]
-        + in2->y.v.m128_f32[3] * in1->w.v.m128_f32[0]
-        + in2->z.v.m128_f32[3] * in1->w.v.m128_f32[1]
-        + in2->w.v.m128_f32[2];
-    out->x.v.m128_f32[3] = 0.0f;
-    out->y.v.m128_f32[3] = 0.0f;
-    out->z.v.m128_f32[3] = 0.0f;
-    out->w.v.m128_f32[3] = 0.0f;
+    out.w.v.m128_f32[0] =
+        in2.x.v.m128_f32[3] * in1.w.v.m128_f32[0]
+        + in2.y.v.m128_f32[3] * in1.w.v.m128_f32[1]
+        + in2.z.v.m128_f32[3] * in1.w.v.m128_f32[2]
+        + in2.w.v.m128_f32[0];
+    out.w.v.m128_f32[1] =
+        in2.x.v.m128_f32[3] * in1.w.v.m128_f32[1]
+        + in2.y.v.m128_f32[3] * in1.w.v.m128_f32[2]
+        + in2.z.v.m128_f32[3] * in1.w.v.m128_f32[0]
+        + in2.w.v.m128_f32[1];
+    out.w.v.m128_f32[2] =
+        in2.x.v.m128_f32[3] * in1.w.v.m128_f32[2]
+        + in2.y.v.m128_f32[3] * in1.w.v.m128_f32[0]
+        + in2.z.v.m128_f32[3] * in1.w.v.m128_f32[1]
+        + in2.w.v.m128_f32[2];
+    out.x.v.m128_f32[3] = 0.0f;
+    out.y.v.m128_f32[3] = 0.0f;
+    out.z.v.m128_f32[3] = 0.0f;
+    out.w.v.m128_f32[3] = 0.0f;
 }
 
 // ea: 0x004B8710
-void MatrixInverse44(float* mat, float* dst)
+void MatrixInverse44(const float* const mat, float* const dst)
 {
     float src_8 = mat[8];
     float src_24 = mat[9];
@@ -1935,53 +1958,53 @@ void mat3_t::Transpose()
 }
 
 // ea: 0x004BC6D0
-void toQuat(mat3_t* src, quat_t* dst)
+void toQuat(mat3_t& src, quat_t& dst)
 {
     static const int next[3] = {1, 2, 0};
-    float s = src->mat[1].y + src->mat[0].x + src->mat[2].z;
+    float s = src.mat[1].y + src.mat[0].x + src.mat[2].z;
     if (s <= 0.0f)
     {
-        int v3 = src->mat[1].y > src->mat[0].x;
-        if (src->mat[2].z > src->mat[v3].x)
+        int v3 = src.mat[1].y > src.mat[0].x;
+        if (src.mat[2].z > src.mat[v3].x)
             v3 = 2;
         int v4 = next[v3];
         int k = next[v4];
-        float* m = &src->mat[0].x;
+        float* m = &src.mat[0].x;
         float sc = m[3 * v3 + v3] - (m[3 * k + k] + m[3 * v4 + v4]) + 1.0f;
         float sd = sqrtf(sc);
-        float* q = &dst->x;
+        float* q = &dst.x;
         q[v3] = sd * 0.5f;
         float se = 0.5f / sd;
-        dst->w = (m[3 * k + v4] - m[3 * v4 + k]) * se;
+        dst.w = (m[3 * k + v4] - m[3 * v4 + k]) * se;
         q[v4] = (m[3 * v3 + v4] + m[3 * v4 + v3]) * se;
         q[k] = (m[3 * v3 + k] + m[3 * k + v3]) * se;
     }
     else
     {
         float sa = sqrtf(s + 1.0f);
-        dst->w = sa * 0.5f;
-        dst->x = (src->mat[2].y - src->mat[1].z) * (0.5f / sa);
-        dst->y = (src->mat[0].z - src->mat[2].x) * (0.5f / sa);
-        dst->z = (src->mat[1].x - src->mat[0].y) * (0.5f / sa);
+        dst.w = sa * 0.5f;
+        dst.x = (src.mat[2].y - src.mat[1].z) * (0.5f / sa);
+        dst.y = (src.mat[0].z - src.mat[2].x) * (0.5f / sa);
+        dst.z = (src.mat[1].x - src.mat[0].y) * (0.5f / sa);
     }
 }
 
 // ea: 0x004C0700
-void toMatrix(const idVec3* src, mat3_t* dst)
+void toMatrix(const idVec3& src, mat3_t& dst)
 {
     angles_t sup;
-    sup.pitch = src->x;
-    sup.yaw = src->y;
-    sup.roll = src->z;
-    toMatrix(&sup, dst);
+    sup.pitch = src.x;
+    sup.yaw = src.y;
+    sup.roll = src.z;
+    toMatrix(sup, dst);
 }
 
 // ea: 0x004C0740
-void toQuat(angles_t* src, quat_t* dst)
+void toQuat(angles_t& src, quat_t& dst)
 {
     mat3_t temp;
-    toMatrix(src, &temp);
-    toQuat(&temp, dst);
+    toMatrix(src, temp);
+    toQuat(temp, dst);
 }
 
 // ea: 0x004C1F00
@@ -1996,7 +2019,8 @@ void gunrandom(float* x, float* y)
 }
 
 // ea: 0x004C1F90
-void RotateAxisByAxis(float (*axis)[4], int axis_of_rotation, float theta)
+void RotateAxisByAxis(float (*const axis)[4], int axis_of_rotation,
+                      float theta)
 {
     float sa, ca;
     FastSinCos(theta, &sa, &ca);
@@ -2042,7 +2066,8 @@ void RotateAxisByAxis(float (*axis)[4], int axis_of_rotation, float theta)
 }
 
 // ea: 0x004C20C0
-void AngleVectors(const float* angles, float* forward, float* right, float* up)
+void AngleVectors(const float* const angles, float* const forward,
+                  float* const right, float* const up)
 {
     ASSERT("forward && right && up", "c:\\cod\\code\\game\\com_math.cpp", 1064);
     float sy, cy, sp, cp;
@@ -2062,33 +2087,33 @@ void AngleVectors(const float* angles, float* forward, float* right, float* up)
 }
 
 // ea: 0x004C2260
-void AngleVectors(const math::Position3* angles, float* forward, float* right,
-                  float* up)
+void AngleVectors(const math::Position3& angles, float* const forward,
+                  float* const right, float* const up)
 {
-    AngleVectors(angles->v.m128_f32, forward, right, up);
+    AngleVectors(angles.v.m128_f32, forward, right, up);
 }
 
 // ea: 0x004C2270
-void AngleVectors(const math::Position3* angles, math::Position3* forward,
-                  math::Position3* right, math::Position3* up)
+void AngleVectors(const math::Position3& angles, math::Position3& forward,
+                  math::Position3& right, math::Position3& up)
 {
     float sy, cy, sp, cp, sr, cr;
-    FastSinCos(angles->v.m128_f32[1] * 0.017453292f, &sy, &cy);
-    FastSinCos(angles->v.m128_f32[0] * 0.017453292f, &sp, &cp);
-    forward->v.m128_f32[0] = cp * cy;
-    forward->v.m128_f32[1] = cp * sy;
-    forward->v.m128_f32[2] = 0.0f - sp;
-    FastSinCos(angles->v.m128_f32[2] * 0.017453292f, &sr, &cr);
-    right->v.m128_f32[0] = cr * sy - sr * sp * cy;
-    right->v.m128_f32[1] = -(cr * cy) - sr * sp * sy;
-    right->v.m128_f32[2] = -(sr * cp);
-    up->v.m128_f32[0] = cr * sp * cy + sr * sy;
-    up->v.m128_f32[1] = cr * sp * sy - sr * cy;
-    up->v.m128_f32[2] = cr * cp;
+    FastSinCos(angles.v.m128_f32[1] * 0.017453292f, &sy, &cy);
+    FastSinCos(angles.v.m128_f32[0] * 0.017453292f, &sp, &cp);
+    forward.v.m128_f32[0] = cp * cy;
+    forward.v.m128_f32[1] = cp * sy;
+    forward.v.m128_f32[2] = 0.0f - sp;
+    FastSinCos(angles.v.m128_f32[2] * 0.017453292f, &sr, &cr);
+    right.v.m128_f32[0] = cr * sy - sr * sp * cy;
+    right.v.m128_f32[1] = -(cr * cy) - sr * sp * sy;
+    right.v.m128_f32[2] = -(sr * cp);
+    up.v.m128_f32[0] = cr * sp * cy + sr * sy;
+    up.v.m128_f32[1] = cr * sp * sy - sr * cy;
+    up.v.m128_f32[2] = cr * cp;
 }
 
 // ea: 0x004C23B0
-void YawVectors(float yaw, float* forward, float* right)
+void YawVectors(float yaw, float* const forward, float* const right)
 {
     float sy;
     FastSinCos(yaw * 0.017453292f, &sy, &yaw);
@@ -2107,7 +2132,7 @@ void YawVectors(float yaw, float* forward, float* right)
 }
 
 // ea: 0x004C2420
-void PerpendicularVector(float* dst, float* src)
+void PerpendicularVector(float* const dst, const float* const src)
 {
     ASSERT("src[0] || src[1] || src[2]", "c:\\cod\\code\\game\\com_math.cpp",
            1161);
@@ -2142,7 +2167,7 @@ void PerpendicularVector(float* dst, float* src)
 }
 
 // ea: 0x004C25F0
-void VectorAngleMultiply(float* vec, float angle)
+void VectorAngleMultiply(float* const vec, float angle)
 {
     float sy;
     FastSinCos(angle * 0.017453292f, &sy, &angle);
@@ -2152,7 +2177,7 @@ void VectorAngleMultiply(float* vec, float angle)
 }
 
 // ea: 0x004C2660
-void PitchToQuaternion(float pitch, float* quat)
+void PitchToQuaternion(float pitch, float* const quat)
 {
     *quat = 0.0f;
     quat[2] = 0.0f;
@@ -2161,7 +2186,7 @@ void PitchToQuaternion(float pitch, float* quat)
 }
 
 // ea: 0x004C26A0
-void YawToQuaternion(float yaw, float* quat)
+void YawToQuaternion(float yaw, float* const quat)
 {
     *quat = 0.0f;
     quat[1] = 0.0f;
@@ -2170,7 +2195,7 @@ void YawToQuaternion(float yaw, float* quat)
 }
 
 // ea: 0x004C26E0
-void RollToQuaternion(float roll, float* quat)
+void RollToQuaternion(float roll, float* const quat)
 {
     float rolla = roll * 0.0087266462f;
     quat[1] = 0.0f;
@@ -2179,7 +2204,7 @@ void RollToQuaternion(float roll, float* quat)
 }
 
 // ea: 0x004C2720
-void AnglesToAxis(const float* angles, float (*axis)[3])
+void AnglesToAxis(const float* const angles, float (*const axis)[3])
 {
     float right[3];
     AngleVectors(angles, *axis, right, &(*axis)[6]);
@@ -2190,10 +2215,10 @@ void AnglesToAxis(const float* angles, float (*axis)[3])
 }
 
 // ea: 0x004C2770
-void AnglesToAxis(const math::Position3* angles, float (*axis)[3])
+void AnglesToAxis(const math::Position3& angles, float (*const axis)[3])
 {
     float right[3];
-    AngleVectors(angles->v.m128_f32, *axis, right, &(*axis)[6]);
+    AngleVectors(angles.v.m128_f32, *axis, right, &(*axis)[6]);
     (*axis)[3] = 0.0f - right[0];
     float v2 = 0.0f - right[2];
     (*axis)[4] = 0.0f - right[1];
@@ -2233,34 +2258,40 @@ void AnglesToAxis(const math::Position3& angles, const math::Position3& origin,
     AnglesToAxis(&angles, &origin, &mat);
 }
 
+// nalMatrix4x4 (anim.o; global class, 4x4 row-major: x/y/z/w rows)
+class nalMatrix4x4 {
+public:
+    float m[4][4];
+};
+
 // ea: 0x004C29C0
-void AnglesToAxis(const math::Position3* angles, const math::Position3* origin,
-                  math::Mat44* out)
+void AnglesToAxis(const math::Position3& angles,
+                  const math::Position3& origin, nalMatrix4x4& out)
 {
     float sy, cy, sp, cp, sr, cr;
-    FastSinCos(angles->v.m128_f32[1] * 0.017453292f, &sy, &cy);
-    FastSinCos(angles->v.m128_f32[0] * 0.017453292f, &sp, &cp);
-    FastSinCos(angles->v.m128_f32[2] * 0.017453292f, &sr, &cr);
-    out->x.v.m128_f32[0] = cp * cy;
-    out->x.v.m128_f32[1] = cp * sy;
-    out->x.v.m128_f32[2] = 0.0f - sp;
-    out->x.v.m128_f32[3] = 0.0f;
-    out->y.v.m128_f32[0] = sr * sp * cy - cr * sy;
-    out->y.v.m128_f32[1] = sr * sp * sy + cr * cy;
-    out->y.v.m128_f32[2] = sr * cp;
-    out->y.v.m128_f32[3] = 0.0f;
-    out->z.v.m128_f32[0] = cr * sp * cy + sr * sy;
-    out->z.v.m128_f32[1] = cr * sp * sy - sr * cy;
-    out->z.v.m128_f32[2] = cr * cp;
-    out->z.v.m128_f32[3] = 0.0f;
-    out->w.v.m128_f32[0] = origin->v.m128_f32[0];
-    out->w.v.m128_f32[1] = origin->v.m128_f32[1];
-    out->w.v.m128_f32[2] = origin->v.m128_f32[2];
-    out->w.v.m128_f32[3] = origin->v.m128_f32[3];
+    FastSinCos(angles.v.m128_f32[1] * 0.017453292f, &sy, &cy);
+    FastSinCos(angles.v.m128_f32[0] * 0.017453292f, &sp, &cp);
+    FastSinCos(angles.v.m128_f32[2] * 0.017453292f, &sr, &cr);
+    out.m[0][0] = cp * cy;
+    out.m[0][1] = cp * sy;
+    out.m[0][2] = 0.0f - sp;
+    out.m[0][3] = 0.0f;
+    out.m[1][0] = sr * sp * cy - cr * sy;
+    out.m[1][1] = sr * sp * sy + cr * cy;
+    out.m[1][2] = sr * cp;
+    out.m[1][3] = 0.0f;
+    out.m[2][0] = cr * sp * cy + sr * sy;
+    out.m[2][1] = cr * sp * sy - sr * cy;
+    out.m[2][2] = cr * cp;
+    out.m[2][3] = 0.0f;
+    out.m[3][0] = origin.v.m128_f32[0];
+    out.m[3][1] = origin.v.m128_f32[1];
+    out.m[3][2] = origin.v.m128_f32[2];
+    out.m[3][3] = origin.v.m128_f32[3];
 }
 
 // ea: 0x004C2B70
-void YawToAxis(float yaw, float (*axis)[3])
+void YawToAxis(float yaw, float (*const axis)[3])
 {
     float psin;
     FastSinCos(yaw * 0.017453292f, &psin, &yaw);
@@ -2279,7 +2310,7 @@ void YawToAxis(float yaw, float (*axis)[3])
 }
 
 // ea: 0x004C2C00
-void AxisToAngles(const float (*axis)[3], float* angles)
+void AxisToAngles(const float (*const axis)[3], float* const angles)
 {
     vectoangles((float*)axis[0], angles);
     float v4 = -(angles[1] * 3.1415927f) / 180.0f;
@@ -2309,7 +2340,7 @@ void AxisToAngles(const float (*axis)[3], float* angles)
 }
 
 // ea: 0x004C2D50
-void Axis4ToAngles(const float (*axis)[4], float* angles)
+void Axis4ToAngles(const float (*const axis)[4], float* const angles)
 {
     vectoangles((float*)axis[0], angles);
     float v4 = -(angles[1] * 3.1415927f) / 180.0f;
@@ -2339,7 +2370,7 @@ void Axis4ToAngles(const float (*axis)[4], float* angles)
 }
 
 // ea: 0x004C2EA0
-void AxisToSignedAngles(const float (*axis)[3], float* angles)
+void AxisToSignedAngles(const float (*const axis)[3], float* const angles)
 {
     vectosignedangles((float*)axis[0], angles);
     float v4 = -(angles[1] * 3.1415927f) / 180.0f;
@@ -2370,7 +2401,8 @@ void AxisToSignedAngles(const float (*axis)[3], float* angles)
 }
 
 // ea: 0x004C2FF0
-void VectorRotateAngles(float* vIn, const float* vRotation, float* out)
+void VectorRotateAngles(const float* const vIn,
+                        const float* const vRotation, float* const out)
 {
     static const int nIndex[3][2] = {{1, 2}, {2, 0}, {0, 1}};
     float vWork[3] = {vIn[0], vIn[1], vIn[2]};
@@ -2396,8 +2428,10 @@ void VectorRotateAngles(float* vIn, const float* vRotation, float* out)
 }
 
 // ea: 0x004C3170
-void VectorRotateAnglesAroundPoint(const float* vIn, const float* vRotation,
-                                   const float* vOrigin, float* out)
+void VectorRotateAnglesAroundPoint(const float* const vIn,
+                                   const float* const vRotation,
+                                   const float* const vOrigin,
+                                   float* const out)
 {
     float vDelta[3];
     vDelta[0] = *vIn - *vOrigin;
@@ -2411,7 +2445,7 @@ void VectorRotateAnglesAroundPoint(const float* vIn, const float* vRotation,
 }
 
 // ea: 0x004C31F0
-void VectorPolar(float* v, float radius, float theta, float phi)
+void VectorPolar(float* const v, float radius, float theta, float phi)
 {
     float st, ct, psin, cp;
     FastSinCos(theta, &st, &ct);
@@ -2422,7 +2456,7 @@ void VectorPolar(float* v, float radius, float theta, float phi)
 }
 
 // ea: 0x004C3260
-float PitchForYawOnNormal(float fYaw, const float* vNormal)
+float PitchForYawOnNormal(float fYaw, const float* const vNormal)
 {
     ASSERT("vNormal[0] || vNormal[1] || vNormal[2]",
            "c:\\cod\\code\\game\\com_math.cpp", 3207);
@@ -2438,23 +2472,23 @@ float PitchForYawOnNormal(float fYaw, const float* vNormal)
 }
 
 // ea: 0x004C3340
-void make_rotate(math::Mat43* mat, int axis_of_rotation, float theta)
+void make_rotate(math::Mat43& mat, int axis_of_rotation, float theta)
 {
     float sa, ca;
     FastSinCos(theta, &sa, &ca);
     math::Dir3 v16;
-    math::Mat43* v4 = mat;
+    math::Mat43* v4 = &mat;
     if (axis_of_rotation == 0)
     {
-        v16 = mat->x;
+        v16 = mat.x;
     }
     else if (axis_of_rotation == 1)
     {
-        v16 = mat->y;
+        v16 = mat.y;
     }
     else if (axis_of_rotation == 2)
     {
-        v16 = mat->z;
+        v16 = mat.z;
     }
     else
     {
@@ -2486,8 +2520,8 @@ void make_rotate(math::Mat43* mat, int axis_of_rotation, float theta)
 }
 
 // ea: 0x004C85C0
-void RotatePointAroundVector(float* dst, float* dir, const float* point,
-                             float degrees)
+void RotatePointAroundVector(float* const dst, const float* const dir,
+                             const float* const point, float degrees)
 {
     ASSERT("dir[0] || dir[1] || dir[2]", "c:\\cod\\code\\game\\com_math.cpp",
            745);
@@ -2531,7 +2565,7 @@ void RotatePointAroundVector(float* dst, float* dir, const float* point,
 }
 
 // ea: 0x004C8BA0
-void RotateAroundDirection(float (*axis)[3], float yaw)
+void RotateAroundDirection(float (*const axis)[3], float yaw)
 {
     float* v2 = &(*axis)[3];
     PerpendicularVector(&(*axis)[3], *axis);
@@ -2568,7 +2602,7 @@ static float FastACos(float x)
 }
 
 // ea: 0x004BE010
-float vectoyaw(float* vec)
+const float vectoyaw(const float* const const vec)
 {
     if (vec[1] == 0.0f && *vec == 0.0f)
         return 0.0f;
@@ -2605,7 +2639,7 @@ float vectoyaw(float* vec)
 }
 
 // ea: 0x004BE300
-float vectosignedyaw(float* vec)
+const float vectosignedyaw(const float* const const vec)
 {
     if (vec[1] == 0.0f && *vec == 0.0f)
         return 0.0f;
@@ -2641,7 +2675,7 @@ float vectosignedyaw(float* vec)
 }
 
 // ea: 0x004BE670
-float vectopitch(const float* vec)
+const float vectopitch(const float* const vec)
 {
     if (vec[1] == 0.0f && *vec == 0.0f)
     {
@@ -2682,7 +2716,7 @@ float vectopitch(const float* vec)
 }
 
 // ea: 0x004BE9B0
-float vectosignedpitch(const float* vec)
+const float vectosignedpitch(const float* const vec)
 {
     if (vec[1] == 0.0f && *vec == 0.0f)
     {
@@ -2719,7 +2753,7 @@ float vectosignedpitch(const float* vec)
 }
 
 // ea: 0x004BECE0
-void vectoangles(float* vec, float* angles)
+void vectoangles(const float* const vec, float* const angles)
 {
     float v3;
     if (vec[1] == 0.0f && *vec == 0.0f)
@@ -2799,17 +2833,17 @@ void vectoangles(float* vec, float* angles)
 }
 
 // ea: 0x004BF2C0
-void vectoangles(const float* vec, math::Position3* angles)
+void vectoangles(const float* const vec, math::Position3& angles)
 {
     float tmp[3];
-    vectoangles((float*)vec, tmp);
-    angles->v.m128_f32[0] = tmp[0];
-    angles->v.m128_f32[1] = tmp[1];
-    angles->v.m128_f32[2] = tmp[2];
+    vectoangles(vec, tmp);
+    angles.v.m128_f32[0] = tmp[0];
+    angles.v.m128_f32[1] = tmp[1];
+    angles.v.m128_f32[2] = tmp[2];
 }
 
 // ea: 0x004BF300
-void vectosignedangles(float* vec, float* angles)
+void vectosignedangles(const float* const vec, float* const angles)
 {
     float v5;
     if (vec[1] == 0.0f && *vec == 0.0f)
@@ -2885,7 +2919,7 @@ void vectosignedangles(float* vec, float* angles)
 }
 
 // ea: 0x004BF990
-float RotationToYaw(const float* rot)
+float RotationToYaw(const float* const rot)
 {
     float v2 = *rot * *rot;
     float r = rot[1] * rot[1] + v2;
@@ -2918,7 +2952,7 @@ float RotationToYaw(const float* rot)
 }
 
 // ea: 0x004C8C60
-int BoxOnPlaneSide(const float* emins, const float* emaxs, const cplane_s* p)
+const int BoxOnPlaneSide(const float* const const emins, const float* const const emaxs, const cplane_s* p)
 {
     float dist1, dist2;
     switch (p->signbits)

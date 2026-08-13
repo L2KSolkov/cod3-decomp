@@ -896,7 +896,7 @@ void G_SetPlayerFixedLink(Entity* ent)
     v1.v.m128_f32[2] = localViewOff[2];
     v1.v.m128_f32[3] = 0.0f;
     math::Position3 angles;
-    AnglesSubtract(&v1, &v12, &angles);
+    AnglesSubtract(v1, v12, angles);
     client->prevLinkAngles[0] = localViewOff[0];
     client->prevLinkAngles[1] = localViewOff[1];
     client->prevLinkAngles[2] = localViewOff[2];
