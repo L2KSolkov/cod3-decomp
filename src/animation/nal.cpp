@@ -379,19 +379,78 @@ class nalStaticInstance;
 class nalBaseSkeleton {
 public:
     virtual ~nalBaseSkeleton() {}
+    tlFixedString Name;  // +0x04 (binary: ?GetName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ)
+
+    // ?GetName@nalBaseSkeleton@@QBEABVtlFixedString@@XZ (0x55E3F0)
+    const tlFixedString& GetName() const;
 };
+
+// ea: 0x0055E3F0
+const tlFixedString& nalBaseSkeleton::GetName() const
+{
+    return Name;
+}
+
+// nalBasePose (anim.o): LOD + 4
+class nalBasePose {
+public:
+    int LOD;  // +0x04 (after vftable)
+
+    // ?GetLOD@nalBasePose@@QBEHXZ (0x55E400)
+    int GetLOD() const;
+};
+
+// ea: 0x0055E400
+int nalBasePose::GetLOD() const
+{
+    return LOD;
+}
+
+// ea: 0x0055E4E0
+bool Compatible(const nalBaseSkeleton* skel1, const nalBaseSkeleton* skel2)
+{
+    return *(void**)skel2 == *(void**)skel1;
+}
 
 // class tag to match binary V-mangled nalAnimClass<nalAnyPose> template args
 class nalAnyPose { public: virtual ~nalAnyPose() {} };
+
+namespace nalGeneric {
+class nalGenericPose;
+class nalGenericSkeleton;
+}
+
+// Return-type trait so nalInstanceClass::GetSkeleton mangles per instantiation
+// (nalAnyPose -> const nalBaseSkeleton*, nalGenericPose -> nalGenericSkeleton*).
+template <typename T> struct nalInstanceSkeletonRet {
+    typedef const nalBaseSkeleton* type;
+};
+template <> struct nalInstanceSkeletonRet<nalGeneric::nalGenericPose> {
+    typedef const nalGeneric::nalGenericSkeleton* type;
+};
 
 // nalAnimClass<T> - minimal view of the shared nal anim base; only the
 // anim.o inline COMDATs below are defined here (fields raw-offset verified).
 template<typename T> class nalAnimClass {
 public:
-    class nalInstanceClass {  // ??_GnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z
+    class nalInstanceClass {
     public:
-        virtual ~nalInstanceClass() { DoNotOptimizeMarker(); }
-        static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+        nalAnimClass<T>* Anim;             // +0x04
+        float Duration;                    // +0x08
+        float InverseDuration;             // +0x0C
+        const nalBaseSkeleton* Skeleton;   // +0x10
+
+        // ??0nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QAE@PAV1@PBVnalBaseSkeleton@@@Z
+        nalInstanceClass(nalAnimClass<T>* a, const nalBaseSkeleton* s);
+        // ??1nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAE@XZ (0x55E600)
+        virtual ~nalInstanceClass();
+        // ?GetAnim@nalInstanceClass@?$nalAnimClass@VnalGenericPose@nalGeneric@@@@QBEPAV2@XZ
+        nalAnimClass<T>* GetAnim() const { return Anim; }
+        // per-T return type (binary manglings verified)
+        typename nalInstanceSkeletonRet<T>::type GetSkeleton() const
+        {
+            return (typename nalInstanceSkeletonRet<T>::type)Skeleton;
+        }
     };
 
     // ??2?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z (0x55E500)
@@ -405,20 +464,91 @@ public:
         tlMemFree(ptr);
     }
 
+    float Duration;          // +0x38
+    float InverseDuration;   // +0x3C
+
     // ?GetDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E540)
-    float GetDuration() const { return *(float*)((char*)this + 0x38); }
+    float GetDuration() const { return Duration; }
     // ?GetInverseDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E550)
-    float GetInverseDuration() const
-    {
-        float d = *(float*)((char*)this + 0x38);
-        return d != 0.0f ? 1.0f / d : 0.0f;
-    }
+    float GetInverseDuration() const { return InverseDuration; }
     // ?IsTrajectoryRelative@?$nalAnimClass@VnalAnyPose@@@@QBE_NXZ (0x55E590)
     bool IsTrajectoryRelative() const
     {
         return (*(unsigned int*)((char*)this + 0x34) & 2) == 0;
     }
+
+    // ?GetSkeleton@?$nalAnimClass@VnalAnyPose@@@@QBEPBVnalBaseSkeleton@@XZ (0x55E530)
+    const nalBaseSkeleton* GetSkeleton() const;
+    // ?CreateInstance@?$nalAnimClass@VnalAnyPose@@@@QAEPAVnalInstanceClass@1@PAVnalBaseSkeleton@@@Z (0x55E610)
+    nalInstanceClass* CreateInstance(nalBaseSkeleton* skeleton);
+    // game2.o virtual (MetaNalBaseAnim overrides)
+    virtual nalInstanceClass* VirtualCreateInstance(nalAnimClass<T>* a,
+                                                    nalBaseSkeleton* skeleton);
+
+    const nalBaseSkeleton* Skeleton;  // +0x40
+    int InstanceCount;                // +0x44
 };
+
+// ea: 0x0055E530
+template <typename T>
+const nalBaseSkeleton* nalAnimClass<T>::GetSkeleton() const
+{
+    return Skeleton;
+}
+
+// ea: 0x0055E5A0
+template <typename T>
+nalAnimClass<T>::nalInstanceClass::nalInstanceClass(nalAnimClass<T>* a,
+                                                    const nalBaseSkeleton* s)
+    : Anim(a)
+{
+    float v3 = 0.0f;
+    Duration = a->Duration;
+    if (Duration != 0.0f)
+        v3 = 1.0f / Duration;
+    const nalBaseSkeleton* Skeleton = s;
+    InverseDuration = v3;
+    if (s == nullptr)
+        Skeleton = a->Skeleton;
+    this->Skeleton = Skeleton;
+    ++a->InstanceCount;
+}
+
+// ea: 0x0055E600
+template <typename T>
+nalAnimClass<T>::nalInstanceClass::~nalInstanceClass()
+{
+    --Anim->InstanceCount;
+}
+
+// ea: 0x0055E610
+template <typename T>
+typename nalAnimClass<T>::nalInstanceClass*
+nalAnimClass<T>::CreateInstance(nalBaseSkeleton* skeleton)
+{
+    if (skeleton != nullptr
+        && *(void**)Skeleton != *(void**)skeleton
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 147,
+               "!skeleton || Compatible(GetSkeleton(),skeleton)",
+               "attempt to create an instance without a compatible skeleton"))
+    {
+        __debugbreak();
+    }
+    return VirtualCreateInstance(this, skeleton);
+}
+
+template <typename T>
+typename nalAnimClass<T>::nalInstanceClass*
+nalAnimClass<T>::VirtualCreateInstance(nalAnimClass<T>* a,
+                                       nalBaseSkeleton* skeleton)
+{
+    (void)a;
+    return new nalInstanceClass(this, skeleton);
+}
+
+template class nalAnimClass<nalAnyPose>;
+template class nalAnimClass<nalGeneric::nalGenericPose>;
 
 extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
@@ -441,7 +571,8 @@ public:
     math::Quaternion orient;
 };
 
-struct nalMatrix4x4 {
+class nalMatrix4x4 {
+public:
     float m[4][4];
 };
 
@@ -529,12 +660,9 @@ public:
     virtual void Process() {}
 
     // ?GetLODCount@nalGenericSkeleton@nalGeneric@@QBEIXZ (0x55E760)
-    unsigned int GetLODCount() const { return LODCount; }
+    unsigned int GetLODCount() const;
     // ?GetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@QBEIH@Z (0x55E770)
-    unsigned int GetBoneMatrixCount(int lod) const
-    {
-        return LODInfo[lod].MatrixCount;
-    }
+    unsigned int GetBoneMatrixCount(int lod) const;
 
     void GetTrajectoryUpdate(const nalGenericPose&, nalPositionOrientation&) const;
     void GetBoneMatrices(const nalGenericPose&, nalMatrix4x4*, int) const;
@@ -565,6 +693,18 @@ public:
     nalGenericPose DefaultPose;  // +0xC8
 };
 
+// ea: 0x0055E760
+unsigned int nalGenericSkeleton::GetLODCount() const
+{
+    return LODCount;
+}
+
+// ea: 0x0055E770
+unsigned int nalGenericSkeleton::GetBoneMatrixCount(int lod) const
+{
+    return LODInfo[lod].MatrixCount;
+}
+
 // ============================================================================
 // nalGenericAnim — runtime animation instance (per-skeleton)
 // ============================================================================
@@ -574,6 +714,11 @@ public:
     virtual ~nalGenericAnim() {}
     virtual void Process() {}
     virtual void Release() {}
+
+    // ??$GetComponentPrivateData@X@nalGenericAnim@nalGeneric@@QBEPBXABV?$nalGenericComponentHandle@X@1@@Z
+    template <typename T>
+    const void* GetComponentPrivateData(
+        const nalGenericComponentHandle<T>& handle) const;
 };
 
 // ============================================================================
@@ -678,8 +823,22 @@ public:
     nalSceneAnimInstance* CreateInstance(nalClientSceneAnim* (*factory)(const nalSceneAnim*, const tlFixedString&)) { return nullptr; }
 
     // ?GetDuration@nalSceneAnim@@QBEMXZ (0x55E6F0); Header.Duration +0x3C
-    float GetDuration() const { return *(float*)((char*)this + 0x3C); }
+    float GetDuration() const;
+    // ?IsLooping@nalSceneAnim@@QBE_NXZ (0x55E700); Header.Flags & 2
+    bool IsLooping() const;
 };
+
+// ea: 0x0055E6F0
+float nalSceneAnim::GetDuration() const
+{
+    return *(float*)((char*)this + 0x3C);
+}
+
+// ea: 0x0055E700
+bool nalSceneAnim::IsLooping() const
+{
+    return (*(unsigned int*)((char*)this + 0x38) & 2) != 0;
+}
 
 // ============================================================================
 // nalSceneAnimInstance — runtime scene animation
@@ -690,12 +849,36 @@ public:
     void AddClientAnim(nalClientSceneAnim*, nalAnimClass<nalAnyPose>*) {}
     void Render() const {}
 
+    float Time;         // +0x00
+    void* SceneAnim;    // +0x04
+
+    // ?GetTime@nalSceneAnimInstance@@QBEMXZ (0x55E710)
+    float GetTime() const;
     // ?GetDuration@nalSceneAnimInstance@@QBEMXZ (0x55E720); SceneAnim +0x04
-    float GetDuration() const
-    {
-        return *(float*)((char*)*(void**)((char*)this + 0x04) + 0x3C);
-    }
+    float GetDuration() const;
+    // ?IsDone@nalSceneAnimInstance@@QBE_NXZ (0x560070)
+    bool IsDone() const;
 };
+
+// ea: 0x0055E710
+float nalSceneAnimInstance::GetTime() const
+{
+    return Time;
+}
+
+// ea: 0x0055E720
+float nalSceneAnimInstance::GetDuration() const
+{
+    return *(float*)((char*)*(void**)((char*)this + 0x04) + 0x3C);
+}
+
+// ea: 0x00560070
+bool nalSceneAnimInstance::IsDone() const
+{
+    nalSceneAnim* sa = (nalSceneAnim*)SceneAnim;
+    return ((*(unsigned int*)((char*)sa + 0x38) & 2) == 0)
+           && Time >= *(float*)((char*)sa + 0x3C);
+}
 
 // ============================================================================
 // nalStaticInstance — static animation instance
@@ -780,7 +963,7 @@ void nalInitListInit() {}
 // ============================================================================
 // xanim.cpp raw accessors (anim.o) - ported from disasm
 // ============================================================================
-class XAnimEntry {
+struct XAnimEntry {
 public:
     unsigned int   hash;        // +0x00
     unsigned short numAnims;    // +0x04
@@ -796,7 +979,16 @@ public:
             unsigned short children; // +0x1A
         } s;
     } u;                          // +0x18
+
+    static int sAttemptIndex;  // ?sAttemptIndex@XAnimEntry@@2HA @ 0xDF29EC
+    void Release();            // ?Release@XAnimEntry@@QAEXXZ (0x541050)
+    void Create();             // ?Create@XAnimEntry@@QAEXXZ (0x548160)
 };
+
+int XAnimEntry::sAttemptIndex = 1;
+
+extern nalAnimClass<nalAnyPose>* cdGetAnim(unsigned int hash);  // ?cdGetAnim@@YAPAV?$nalAnimClass@VnalAnyPose@@@@I@Z
+void ParseNoteTracks(XAnimEntry* entry);  // ?ParseNoteTracks@@YAXPAUXAnimEntry@@@Z (0x547E60)
 
 class AnimTree {
 public:
@@ -849,12 +1041,18 @@ public:
     int  initialized;
 
     // ?SetInitialized@AnimIK@@QAEX_N@Z (0x55E8C0)
-    void SetInitialized(bool val) { initialized = val; }
+    void SetInitialized(bool val);
     // ?Update@AnimIK@@QAEXPAVEntity@@PAVnalGenericSkeleton@@PAVnalGenericPose@@@Z
     void Update(Entity* ent, nalGenericSkeleton* inSkeleton,
                 nalGenericPose* inPose);
 };
 extern AnimIK AnimIKGlobal;  // ?AnimIKGlobal@@3VAnimIK@@A (game2.o data)
+
+// ea: 0x0055E8C0
+void AnimIK::SetInitialized(bool val)
+{
+    initialized = val ? 1 : 0;
+}
 
 // ?gEnd@@3Vstring@Broc@@A (anim.o data @ 0xF2CAF4)
 Broc::string gEnd;
@@ -2201,14 +2399,30 @@ protected:
         static volatile int s;  // non-trivial body forces thunk emission
         s = 1;
     }
+    // ??0nalBasePoseBlender@@IAE@PBVnalBaseSkeleton@@@Z (0x55E420; protected)
+    nalBasePoseBlender(const nalBaseSkeleton* _Skeleton);
+
+    const nalBaseSkeleton* Skeleton;  // +0x04
 public:
     static void DeleteArrayShim(void* p)  // force ??_E...MAEPAXI@Z
     {
         delete[] (nalBasePoseBlender*)p;
     }
-    nalBasePoseBlender();  // out-of-line to force vftable emission
+    // ?GetSkeleton@nalBasePoseBlender@@QBEPBVnalBaseSkeleton@@XZ (0x55E410)
+    const nalBaseSkeleton* GetSkeleton() const;
 };
-nalBasePoseBlender::nalBasePoseBlender() {}
+
+// ea: 0x0055E420
+nalBasePoseBlender::nalBasePoseBlender(const nalBaseSkeleton* _Skeleton)
+    : Skeleton(_Skeleton)
+{
+}
+
+// ea: 0x0055E410
+const nalBaseSkeleton* nalBasePoseBlender::GetSkeleton() const
+{
+    return Skeleton;
+}
 
 template <typename POSE>
 class nalPoseBlenderClass : public nalBasePoseBlender {
@@ -2219,12 +2433,18 @@ public:
     virtual ~nalPoseBlenderClass() { DoNotOptimizeMarker(); }
     static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
 
+    // ?GetSkeleton@?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@QBEPBVnalGenericSkeleton@nalGeneric@@XZ (0x55EAD0)
+    const nalGeneric::nalGenericSkeleton* GetSkeleton() const
+    {
+        return Skeleton;
+    }
+
     const nalGeneric::nalGenericSkeleton* Skeleton;  // +0x04
 };
 template <typename POSE>
 nalPoseBlenderClass<POSE>::nalPoseBlenderClass(
     const nalGeneric::nalGenericSkeleton* _Skeleton)
-    : Skeleton(_Skeleton)
+    : nalBasePoseBlender((const nalBaseSkeleton*)_Skeleton), Skeleton(_Skeleton)
 {
 }
 template class nalPoseBlenderClass<nalGeneric::nalGenericPose>;
@@ -2234,15 +2454,42 @@ template <typename SKELETON, typename POSE>
 class nalPoseClass {
 public:
     // ?GetBoneMatrixCount@?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QBEIXZ
-    unsigned int GetBoneMatrixCount() const
-    {
-        void* lodInfo = *(void**)((char*)Skeleton + 0x64);
-        return ((unsigned int*)lodInfo)[LOD * 5];
-    }
+    unsigned int GetBoneMatrixCount() const;
+    // ?GetBoneMatrices@?$nalPoseClass@...@@QBEXPAVnalMatrix4x4@@@Z (0x55EA50)
+    void GetBoneMatrices(nalMatrix4x4* matrices) const;
+    // ?GetTrajectoryUpdate@?$nalPoseClass@...@@QBEXAAVnalPositionOrientation@@@Z (0x55EA70)
+    void GetTrajectoryUpdate(nalPositionOrientation& po) const;
 
     const void* Skeleton;  // +0x00
     unsigned int LOD;      // +0x04
 };
+
+template <typename SKELETON, typename POSE>
+unsigned int nalPoseClass<SKELETON, POSE>::GetBoneMatrixCount() const
+{
+    void* lodInfo = *(void**)((char*)Skeleton + 0x64);
+    return ((unsigned int*)lodInfo)[LOD * 5];
+}
+
+template <typename SKELETON, typename POSE>
+void nalPoseClass<SKELETON, POSE>::GetBoneMatrices(
+    nalMatrix4x4* matrices) const
+{
+    ((const nalGeneric::nalGenericSkeleton*)Skeleton)
+        ->GetBoneMatrices(*(const nalGeneric::nalGenericPose*)this, matrices,
+                          LOD);
+}
+
+template <typename SKELETON, typename POSE>
+void nalPoseClass<SKELETON, POSE>::GetTrajectoryUpdate(
+    nalPositionOrientation& po) const
+{
+    ((const nalGeneric::nalGenericSkeleton*)Skeleton)
+        ->GetTrajectoryUpdate(*(const nalGeneric::nalGenericPose*)this, po);
+}
+
+template class nalPoseClass<nalGeneric::nalGenericSkeleton,
+                            nalGeneric::nalGenericPose>;
 
 // nalComponentBase - anim.o COMDATs (0x55E820/0x55EDC0)
 class nalComponentBase {
@@ -2318,9 +2565,11 @@ bool IsType(const nalGenericComponentHandle<nalPositionOrientation>& handle,
 }
 }
 
-// ea: 0x55E990 / 0x55E9B0
+// ea: 0x55E990 / 0x55E9B0 (0xC stride verified vs IDB)
 struct XAnimNotifyInfo {
-    Broc::string name;  // +0x00
+    Broc::string name;       // +0x00
+    unsigned int hashed_name;// +0x04
+    float time;              // +0x08
 
     XAnimNotifyInfo();
     ~XAnimNotifyInfo();
@@ -2335,6 +2584,156 @@ XAnimNotifyInfo::~XAnimNotifyInfo()
 {
     name.~string();
 }
+
+// XAnimEntry lifecycle + note-track parse (after the type defs)
+// ea: 0x00541050
+void XAnimEntry::Release()
+{
+    XAnimNotifyInfo* notify = (XAnimNotifyInfo*)this->notify;
+    this->anim = nullptr;
+    this->numAnims = 0;
+    if (notify != nullptr)
+    {
+        int count = *(int*)((char*)notify - 4);
+        for (int i = 0; i < count; ++i)
+            notify[i].~XAnimNotifyInfo();
+        mem_heap_free((char*)notify - 4);
+    }
+    this->notify = nullptr;
+    this->lastAttempt = 0;
+}
+
+// ea: 0x00548160
+void XAnimEntry::Create()
+{
+    if (this->anim == nullptr
+        && this->lastAttempt != XAnimEntry::sAttemptIndex)
+    {
+        XAnimNotifyInfo* notify = (XAnimNotifyInfo*)this->notify;
+        if (notify != nullptr)
+        {
+            int count = *(int*)((char*)notify - 4);
+            for (int i = 0; i < count; ++i)
+                notify[i].~XAnimNotifyInfo();
+            mem_heap_free((char*)notify - 4);
+            this->notify = nullptr;
+        }
+        this->lastAttempt = XAnimEntry::sAttemptIndex;
+        nalAnimClass<nalAnyPose>* Anim = cdGetAnim(this->hash);
+        if (Anim == nullptr
+            || *(void**)Anim != (void*)0x10E6D08)
+            Anim = nullptr;
+        this->anim = Anim;
+        ParseNoteTracks(this);
+    }
+}
+
+// ea: 0x00547E60
+void ParseNoteTracks(XAnimEntry* entry)
+{
+    nalGeneric::nalGenericAnim* anim =
+        (nalGeneric::nalGenericAnim*)entry->anim;
+    if (anim == nullptr)
+        return;
+    nalGeneric::nalGenericComponentHandle<void> handle;
+    handle.Skeleton = nullptr;
+    {
+        tlFixedString v20("fakeroot");
+        tlFixedString v21("COD_Note");
+        ((const nalGenericSkeleton*)*(void**)((char*)anim + 0x0C))
+            ->GetComponentHandle(handle, v20, v21);
+    }
+    if (handle.Skeleton == nullptr)
+    {
+        tlFixedString v20("COD_Note");
+        tlFixedString v21("tag_origin");
+        ((const nalGenericSkeleton*)*(void**)((char*)anim + 0x0C))
+            ->GetComponentHandle(handle, v21, v20);
+    }
+    if (handle.Skeleton == nullptr)
+    {
+        tlFixedString v20("COD_Note");
+        tlFixedString v21("simple");
+        ((const nalGenericSkeleton*)*(void**)((char*)anim + 0x0C))
+            ->GetComponentHandle(handle, v21, v20);
+    }
+    if (handle.Skeleton == nullptr)
+        return;
+    const char* data =
+        (const char*)anim->GetComponentPrivateData(handle);
+    if (data == nullptr)
+        return;
+    const char* stringTable[1024];
+    int numStrings = 0;
+    int stringCount = *(int*)(data + 8);
+    if (stringCount > 0)
+    {
+        const char* str = data + 8 * *(int*)(data + 4) + 12;
+        do
+        {
+            stringTable[numStrings] = str;
+            str += strlen(str) + 1;
+            ++numStrings;
+        } while (numStrings < stringCount);
+        if (stringCount == 0)
+            *(int*)(data + 4) = 0;
+    }
+    if (entry->notify != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::JRS;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+        AeAssert::gCurrentLine = 387;
+        AeAssert::gCurrentExpr = "!entry->notify";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(""))
+            __debugbreak();
+    }
+    int count = *(int*)(data + 4) + 2;
+    void* block = mem_heap_malloc(12 * count + 4);
+    XAnimNotifyInfo* v13 = nullptr;
+    if (block != nullptr)
+    {
+        *(int*)block = count;
+        v13 = (XAnimNotifyInfo*)((char*)block + 4);
+        for (int i = 0; i < count; ++i)
+            new (&v13[i]) XAnimNotifyInfo();
+    }
+    entry->notify = v13;
+    int v14 = *(int*)(data + 8);
+    if (v14 != 0)
+    {
+        for (int i = 0; i < *(int*)(data + 4); ++v13)
+        {
+            v13->name = stringTable[*(int*)(data + 8 * i + 12)];
+            v13->hashed_name = HashString::CalcHash(
+                stringTable[*(int*)(data + 8 * i + 12)]);
+            v13->time = *(float*)(data + 8 * i + 16)
+                        / *(float*)((char*)entry->anim + 0x3C);
+            if (v13->time < 0.0f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+                AeAssert::gCurrentLine = 396;
+                AeAssert::gCurrentExpr = "notify->time >= 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("just checking"))
+                    __debugbreak();
+            }
+            ++i;
+        }
+    }
+    v13->name = "end";
+    v13->hashed_name = HashString::CalcHash("end");
+    v13->time = 1.0f;
+    XAnimNotifyInfo* v18 = v13 + 1;
+    if (v18->name.mBlock != nullptr)
+    {
+        v18->name.mBlock->DecrementCount();
+        v18->name.mBlock = nullptr;
+    }
+    v18->hashed_name = 0;
+    v18->time = -666.0f;
+}
+
 
 // anim.o data (?g_syncOldTime@@3MA @ 0xF258F8, ?g_endNotifyHackCounter@@3FA
 // @ 0xF258F4)
@@ -3262,7 +3661,8 @@ void nalGenericSkeleton::GetComponentHandle(
                                     void* tid =
                                         ((GetTypeIDFn)((void**)*(void**)pComp)[1])(
                                             pComp);
-                                    if (tid != (void*)(uintptr_t)typeId)
+                                    if (!std::is_same<T, void>::value
+                                        && tid != (void*)(uintptr_t)typeId)
                                         goto LABEL_12;
                                     handle.Skeleton =
                                         (const nalGenericSkeleton*)this;
@@ -3563,9 +3963,77 @@ template void nalGenericSkeleton::GetComponentHandle<math::Dir3>(
 template void nalGenericSkeleton::GetComponentHandle<nalPositionOrientation>(
     nalGenericComponentHandle<nalPositionOrientation>&, const tlFixedString&,
     const tlFixedString&) const;
+template void nalGenericSkeleton::GetComponentHandle<void>(
+    nalGenericComponentHandle<void>&, const tlFixedString&,
+    const tlFixedString&) const;
 template void nalGenericSkeleton::GetComponentHandle<float>(
     nalGenericConstComponentHandle<float>&, const tlFixedString&,
     const tlFixedString&) const;
+
+// ??$GetComponentPrivateData@X@nalGenericAnim@nalGeneric@@QBEPBXABV?$nalGenericComponentHandle@X@1@@Z
+template <typename T>
+const void* nalGenericAnim::GetComponentPrivateData(
+    const nalGenericComponentHandle<T>& handle) const
+{
+    // Port of game2.o 0x51CB60 (COMDAT; emitted here so anim.o ParseNoteTracks
+    // can link).  Walks the skeleton's component groups comparing the handle's
+    // ComponentInfo/ComponentIndex against each group + component.
+    const nalGenericSkeleton* skeleton =
+        *(const nalGenericSkeleton**)((char*)this + 0x0C);
+    void* data = *(void**)((char*)this + 0x14);
+    int groupCount = *(int*)((char*)skeleton + 0x84);
+    char* groups = *(char**)((char*)skeleton + 0x88);
+    int groupIdx = 0;
+    if (groupCount <= 0)
+        return nullptr;
+    while (1)
+    {
+        void* compType = *(void**)(groups + 48 * groupIdx + 0x20);
+        // component private-data advance hooks (vtable +0x5C/+0x60/+0x64)
+        typedef void (__thiscall* AdvanceFn)(void*, void**);
+        ((AdvanceFn)((void**)*(void**)compType)[0x5C / 4])(compType, &data);
+        ((AdvanceFn)((void**)*(void**)compType)[0x60 / 4])(compType, &data);
+        ((AdvanceFn)((void**)*(void**)compType)[0x64 / 4])(compType, &data);
+        int count = *(int*)(groups + 48 * groupIdx + 0x28);
+        if (count > 0)
+        {
+            int compIdx = 0;
+            while (1)
+            {
+                int track = compIdx + *(int*)(groups + 48 * groupIdx + 0x24);
+                if (track
+                        >= *(int*)((char*)*(void**)((char*)this + 0x0C) + 0x7C)
+                    && _tlAssert(
+                           "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                           621, "track < GetSkeleton()->PoseTrackCount",
+                           "attempt to access an invalid track"))
+                {
+                    __debugbreak();
+                }
+                if (((1u << (track & 0x1F))
+                     & ((unsigned int*)((char*)this + 0x54))[track / 32])
+                    != 0)
+                {
+                    if ((const void*)(groups + 48 * groupIdx)
+                            == handle.ComponentInfo
+                        && compIdx == handle.ComponentIndex)
+                    {
+                        return data;
+                    }
+                    typedef void (__thiscall* AdvanceDataFn)(void*, void**);
+                    ((AdvanceDataFn)((void**)*(void**)compType)[0x68 / 4])(
+                        compType, &data);
+                }
+                if (++compIdx >= count)
+                    break;
+            }
+        }
+        if (++groupIdx >= groupCount)
+            return nullptr;
+    }
+}
+template const void* nalGenericAnim::GetComponentPrivateData<void>(
+    const nalGenericComponentHandle<void>& handle) const;
 
 // nalGenericComponentHandle ctors (default QAE + 3-arg protected IAE)
 template class nalGenericComponentHandle<math::Dir3>;
@@ -5805,9 +6273,32 @@ public:
 class InstanceBankMgr {
 public:
     static InstanceBankMgr* sInst;  // ?sInst@InstanceBankMgr@@2PAV1@A
+    // ?Inst@InstanceBankMgr@@SAPAV1@XZ (0x55E8B0)
+    static InstanceBankMgr* Inst();
     bool GetAnimOffset(const char* name, TPakId pakId, unsigned int* out_offset,
                        unsigned int* out_size);  // ?GetAnimOffset@InstanceBankMgr@@QAE_NPBDW4TPakId@@PAI2@Z
 };
+
+// ea: 0x0055E8B0
+InstanceBankMgr* InstanceBankMgr::Inst()
+{
+    return sInst;
+}
+
+class PakFile {
+public:
+    unsigned char _pad[0x0C];
+    char mPath[64];  // +0x0C (ae_fixed_string<64>)
+
+    // ?GetPath@PakFile@@QBEPBDXZ (0x55F1E0)
+    const char* GetPath() const;
+};
+
+// ea: 0x0055F1E0
+const char* PakFile::GetPath() const
+{
+    return mPath;
+}
 
 // PakFile minimal view (mPath.mBuff @ +0x0C, mHeapList @ +0xA0)
 struct PakFileLocal {

@@ -2875,7 +2875,6 @@ void XAnimCalcAbsDelta(XAnimTree* t, unsigned int a, float* b, float* c)
 {
     (void)t; (void)a; (void)b; (void)c;
 }
-void XAnimEntry_Create(XAnimEntry* e) { (void)e; }
 void XAnimFreeTree(void* t) { (void)t; }
 void XAnimGetAbsDelta(AnimTree* t, unsigned int a, float* b, float* c, float d)
 {
