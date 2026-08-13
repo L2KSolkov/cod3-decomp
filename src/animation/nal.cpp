@@ -1,5 +1,5 @@
 // ============================================================================
-// NAL — NGL Animation Library (125 funcs, 10 objects)
+// NAL â€” NGL Animation Library (125 funcs, 10 objects)
 // ea: 0x854490-0x878100
 // ============================================================================
 
@@ -17,6 +17,14 @@
 class Entity;
 class SceneAnimClient;
 enum TPakId : int;
+
+// tagInfo_t - entity tag-axis info (axis[4][3] @ +0x10, next @ +0x04)
+struct tagInfo_t {
+    void* mPrev;              // +0x00
+    void* next;               // +0x04 (Entity*)
+    unsigned char _pad[0x10 - 0x08];
+    float axis[4][3];         // +0x10
+};
 
 // IVPointer<T> local (mValue +0 / mPakId +4); `class` tag to match the
 // binary's V-mangled IVPointer<XModel>.
@@ -41,6 +49,7 @@ public:
     Entity* mEntity;           // +0xD0
     int mLOD;                  // +0xD8
     int mLODOverride;          // +0xDC
+    int mLODAnim;              // +0xE0
     IVPointer<XModelLocal> models[8];  // +0x80
     int mPakId;                // +0xC0
 
@@ -501,13 +510,13 @@ namespace math { struct Quaternion; }
 struct tlFixedString;
 
 // ============================================================================
-// nalObject / nalCachedPoseInfo — animation cache types
+// nalObject / nalCachedPoseInfo â€” animation cache types
 // ============================================================================
 struct nalObject {};
 struct nalCachedPoseInfo {};
 
 // ============================================================================
-// nalAnimFile / nalClientSceneAnim / nalHeap — resource types
+// nalAnimFile / nalClientSceneAnim / nalHeap â€” resource types
 // ============================================================================
 struct nalAnimFile {};
 class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
@@ -532,7 +541,7 @@ class nalStreamInstance;
 class nalStaticInstance;
 
 // ============================================================================
-// nalAnimCache — animation data cache (LRU decompression cache)
+// nalAnimCache â€” animation data cache (LRU decompression cache)
 // ============================================================================
 
 class nalBaseSkeleton {
@@ -620,6 +629,15 @@ public:
         {
             (void)t; (void)t_prev; (void)pose; (void)defaultPose;
             (void)lod;
+        }
+
+        // ??$GetPose@VnalGenericPose@nalGeneric@@V12@@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@QAEXMMAAVnalGenericPose@nalGeneric@@ABV23@H@Z
+        template <typename POSE, typename SKELETON>
+        void GetPose(float t, float t_prev, POSE& pose,
+                     const SKELETON& defaultPose, int lod)
+        {
+            VirtualGetPose(t, t_prev, (nalBasePose&)pose,
+                           (const nalBasePose&)defaultPose, lod);
         }
     };
 
@@ -747,6 +765,14 @@ public:
 class nalMatrix4x4 {
 public:
     float m[4][4];
+
+    nalMatrix4x4() {}
+
+    // ??0nalMatrix4x4@@QAE@ABVnalPositionOrientation@@@Z (game2.o 0x51B400)
+    nalMatrix4x4(const nalPositionOrientation& po);
+
+    // ?Identity@nalMatrix4x4@@2V1@A
+    static nalMatrix4x4 Identity;
 };
 
 // nalGenericBoneHandle - bone reference (index + skeleton)
@@ -772,7 +798,7 @@ public:
 };
 
 // ============================================================================
-// nalGenericPose — generic (untyped) pose data
+// nalGenericPose â€” generic (untyped) pose data
 // ============================================================================
 namespace nalGeneric {
 template <typename T> class nalGenericComponentHandle;
@@ -824,7 +850,7 @@ struct nalComponentInfo;
 }
 
 // ============================================================================
-// nalGenericSkeleton — runtime skeleton (bone matrices, processed pose)
+// nalGenericSkeleton â€” runtime skeleton (bone matrices, processed pose)
 // ============================================================================
 class nalGenericSkeleton {
 public:
@@ -879,7 +905,7 @@ unsigned int nalGenericSkeleton::GetBoneMatrixCount(int lod) const
 }
 
 // ============================================================================
-// nalGenericAnim — runtime animation instance (per-skeleton)
+// nalGenericAnim â€” runtime animation instance (per-skeleton)
 // ============================================================================
 class nalGenericAnim {
 public:
@@ -895,7 +921,7 @@ public:
 };
 
 // ============================================================================
-// nalGenericInstance — animated skeleton instance (pose cache, decompression)
+// nalGenericInstance â€” animated skeleton instance (pose cache, decompression)
 // ============================================================================
 class nalGenericInstance {
 public:
@@ -917,7 +943,7 @@ public:
 };
 
 // ============================================================================
-// nalGenericPoseBlender — pose blending
+// nalGenericPoseBlender â€” pose blending
 // ============================================================================
 class nalGenericPoseBlender {
 public:
@@ -928,6 +954,10 @@ public:
     nalGenericPoseBlender(const nalGenericSkeleton* skeleton);
 
     void Blend(nalGenericPose& out, const nalGenericPose& a, const nalGenericPose& b, float t);
+    // ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z
+    // (3-arg variant used by SceneAnimClient::Advance; stub)
+    void Blend(nalGenericPose& out, const nalGenericPose& a,
+               const nalGenericPose& b);
 
 protected:
     // ?VirtualBlend@nalGenericPoseBlender@nalGeneric@@MAEXAAVnalBasePose@@ABV3@1@Z
@@ -961,7 +991,7 @@ void nalGenericBlendIntra(nalGenericPose& out, float t, const nalGenericPose& a,
 void nalGenericBlendTorso(nalGenericPose& out, float t, const nalGenericPose& a, const nalGenericPose& b);
 
 // ============================================================================
-// nalGenericComponent — component type interface (Blend + BlendArray)
+// nalGenericComponent â€” component type interface (Blend + BlendArray)
 // ============================================================================
 // nalInitList - intrusive list of component init entries (anim.o)
 // ??0nalInitList@@QAE@XZ (0x55E480) / ??1nalInitList@@UAE@XZ (0x55E4A0)
@@ -1026,7 +1056,7 @@ class nalComponentTrajectoryPO      { public: static void ComponentCycleTrajecto
 class nalComponentEntropyTrajectoryPO{ public: static void ComponentCycleTrajectory(nalPositionOrientation*,nalPositionOrientation*,int,void*){} };
 
 // ============================================================================
-// nalStreamInstance — streaming animation instance
+// nalStreamInstance â€” streaming animation instance
 // ============================================================================
 class nalStreamInstance {
 public:
@@ -1037,7 +1067,7 @@ public:
 };
 
 // ============================================================================
-// nalSceneAnim / nalSceneAnimInstance — scene animation
+// nalSceneAnim / nalSceneAnimInstance â€” scene animation
 // ============================================================================
 class nalSceneAnim {
 public:
@@ -1062,7 +1092,7 @@ bool nalSceneAnim::IsLooping() const
 }
 
 // ============================================================================
-// nalSceneAnimInstance — runtime scene animation
+// nalSceneAnimInstance â€” runtime scene animation
 // ============================================================================
 class nalSceneAnimInstance {
 public:
@@ -1102,7 +1132,7 @@ bool nalSceneAnimInstance::IsDone() const
 }
 
 // ============================================================================
-// nalStaticInstance — static animation instance
+// nalStaticInstance â€” static animation instance
 // ============================================================================
 class nalStaticInstance {
 public:
@@ -1739,6 +1769,12 @@ struct PakHeapContext {
     ~PakHeapContext();
 };
 
+// TlSystemCallbacks (core_systems.h; real body in sys.cpp)
+class TlSystemCallbacks {
+public:
+    static bool LockTlAllocsToPakHeap(bool s, bool once);
+};
+
 // ea: 0x53E150
 void XAnimFreeInfo(XAnimTree* tree, unsigned short infoIndex)
 {
@@ -1971,12 +2007,13 @@ class Entity {
 public:
     unsigned int flags;   // +0x04
     unsigned int mFlags;  // +0x08
-    unsigned char _pad[0x150 - 0x0C];
+    unsigned char _pad[0xE0 - 0x0C];
     struct {
-        math::Position3 currentOrigin;  // +0x70 within EntityShared
-        math::Position3 currentAngles;  // +0x80
-        math::Mat43 currentMat;         // +0x90
-    } r;                   // +0x150 (EntityShared r @ +0xE0 + 0x70)
+        unsigned char _padR[0x70];
+        math::Position3 currentOrigin;  // +0x150
+        math::Position3 currentAngles;  // +0x160
+        math::Mat43 currentMat;         // +0x170
+    } r;                   // +0xE0
     unsigned char _padR[0x230 - 0x1B0];
     struct {
         unsigned int mVal;  // +0x230
@@ -1990,6 +2027,9 @@ public:
     struct sentient_s* sentient;      // +0x25C
     void* scr_vehicle;                // +0x260
     void* pTurretInfo;                // +0x264
+    unsigned char _pad4[0x3D4 - 0x268];
+    struct tagInfo_t* tagInfo;        // +0x3D4
+    Entity* tagChildren;              // +0x3D8
 
     int GetPlayerIndex() const;  // 0x612340 (game.o; stub)
     const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (real in g_entity_misc.cpp)
@@ -2005,6 +2045,8 @@ struct sentient_s {
 class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A
+    unsigned char _pad[0x44];
+    void* mWorld;                 // +0x44
     Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
 };
 
@@ -2014,6 +2056,10 @@ public:
     void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
     int IsAnimating() const;                 // 0x55FA40
     void StartTween(float tweenTime, bool anglesOnly);  // ?StartTween@Camera@@QAEXM_N@Z (cg_misc real)
+
+    unsigned char _pad[0x190];
+    int mCamMode;        // +0x190
+    int mVehicleCamMode; // +0x194
 };
 extern Camera* gCamera;  // ?gCamera@@3PAUCamera@@A (cg.o @ 0x1358EF0)
 
@@ -3236,6 +3282,9 @@ inline T ReadIncUnaligned(char*& iPos)
 class PakManager {
 public:
     static PakManager* sInst;  // ?sInst@PakManager@@2PAV1@A
+    unsigned char _pad[0x30];
+    TPakId mGlobalPakId;       // +0x30
+    unsigned char _pad2[0x40 - 0x34];
     void* mSlots[99];          // +0x40
     void MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
     void* MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap);  // ?MemAlloc@PakManager@@QAEPAXW4TPakId@@I_N@Z (real in pakmanager.cpp)
@@ -4701,6 +4750,14 @@ void nalGenericPoseBlender::Blend(nalGenericPose& out,
                                   const nalGenericPose& b, float t)
 {
     (void)out; (void)a; (void)b; (void)t;
+}
+
+// ?Blend@nalGenericPoseBlender@nalGeneric@@QAEXAAVnalGenericPose@2@ABV32@1@Z
+void nalGenericPoseBlender::Blend(nalGenericPose& out,
+                                  const nalGenericPose& a,
+                                  const nalGenericPose& b)
+{
+    (void)out; (void)a; (void)b;
 }
 
 // ??$nalPosePtrCast@VnalGenericPose@nalGeneric@@@@YAPAVnalGenericPose@nalGeneric@@PAVnalBasePose@@@Z
@@ -6309,6 +6366,32 @@ void nalMatrix4x4Local::FromQuaternion(const math::Quaternion& q)
     this->w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
 }
 
+// ??0nalMatrix4x4@@QAE@ABVnalPositionOrientation@@@Z (game2.o 0x51B400)
+nalMatrix4x4::nalMatrix4x4(const nalPositionOrientation& po)
+{
+    nalMatrix4x4Local qm;
+    qm.FromQuaternion(po.orient);
+    for (int r = 0; r < 4; ++r)
+    {
+        m[0][r] = qm.x.v.m128_f32[r];
+        m[1][r] = qm.y.v.m128_f32[r];
+        m[2][r] = qm.z.v.m128_f32[r];
+    }
+    m[3][0] = po.pos.v.m128_f32[0];
+    m[3][1] = po.pos.v.m128_f32[1];
+    m[3][2] = po.pos.v.m128_f32[2];
+    m[3][3] = 1.0f;
+}
+
+static nalMatrix4x4 nalMakeIdentity4x4()
+{
+    nalMatrix4x4 m;
+    memset(m.m, 0, sizeof(m.m));
+    m.m[0][0] = m.m[1][1] = m.m[2][2] = m.m[3][3] = 1.0f;
+    return m;
+}
+nalMatrix4x4 nalMatrix4x4::Identity = nalMakeIdentity4x4();
+
 // ??D@YA?AVnalPositionOrientation@@ABV0@0@Z (anim.o 0x55FEC0)
 // Compose: o = quat(a.o, b.o) [SSE verbatim], p = R(b.o) * a.p + b.p
 nalPositionOrientation operator*(const nalPositionOrientation& a,
@@ -6435,6 +6518,71 @@ void XAnimCalcAbsDeltaParts(XAnimEntry* entry,
     }
 }
 
+extern void G_SetOrigin(Entity* ent, const float* origin);
+extern void G_SetAngle(Entity* ent, const float* angle);
+extern void AnglesToAxis(const math::Position3* angles,
+                         const math::Position3* origin, math::Mat44* out);
+extern void Axis4ToAngles(const float (*axis)[4], float* angles);
+extern void AxisToAngles(const float (*axis)[3], float* angles);
+extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
+extern void MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
+                             float (*out)[3]);
+// Real symbols: XModelGetBasePose (g_entity_misc.cpp stub),
+// AnimIK::Update (g_game2_misc.cpp), AnimationPlayer::GetPose
+// (g_debugthread.cpp).
+struct DObjSkelMat;   // U-tag (core_types.h)
+extern void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
+                              DObjSkelMat* modelParentMat);
+extern void XModelTransform(IVPointer<XModel> model, DObjSkelMat* mat,
+                            DObjSkelMat* modelParentMat);  // ?XModelTransform (render.o)
+extern void AnglesToAxis(const math::Position3* angles,
+                         float (*axis)[3]);  // q_math.cpp (real)
+extern void G_GeneralLink(Entity* ent);      // ?G_GeneralLink@@YAXPAVEntity@@@Z (g_main.cpp)
+extern void VEH_SetPosition(Entity* ent, const math::Position3* origin,
+                            const math::Position3* angles,
+                            const float* vel);  // g_scr_vehicle.cpp
+extern void g_LinkEntity(Entity* ent);       // ?g_LinkEntity@@YAXPAVEntity@@@Z
+
+// rb_vehicle (g_physics.cpp) - minimal view for scene-anim camera vehicles
+class rb_vehicle {
+public:
+    void update_from_scene_anim(const math::Position3& position,
+                                const math::Position3& angles,
+                                const math::Dir3& vel);
+};
+
+// ?cdGetSkeleton@@YAPAVnalBaseSkeleton@@W4TPakId@@ABVtlFixedString@@@Z
+// (real body in pakmanager.cpp)
+extern nalBaseSkeleton* cdGetSkeleton(TPakId pakId,
+                                      const tlFixedString& name);
+
+// SceneAnimClient::Advance globals (anim.o data)
+unsigned int gNotifyEndHash = 0;    // ?gNotifyEndHash@@3IA @ 0xF25AA4
+unsigned int gNextSceneCamera = 0;  // ?gNextSceneCamera@@3IA @ 0xF23FA4
+nalPositionOrientation gSceneAnimCameraPO;  // ?gSceneAnimCameraPO@@3VnalPositionOrientation@@A @ 0xF25AB0
+extern bool gSceneAnimCamera;       // cg_misc.cpp @ 0xF258F6
+extern float gSceneAnimCameraFOV;   // cg_misc.cpp @ 0xF258F0
+
+// XModelParts local view (mHierarchy.mSize +0x10, mAnimDef +0x38)
+struct XModelPartsLocal {
+    unsigned char _pad[0x10];
+    unsigned int mHierarchySize;  // +0x10
+    unsigned char _pad2[0x38 - 0x14];
+    void* mAnimDef;               // +0x38
+};
+
+// XModel::GetXModelParts(lodIndex) equivalent (first valid LOD, parts +0x08)
+static XModelPartsLocal* XModelGetXModelPartsLocal(void* xmodel, int lodIndex)
+{
+    void** lod = *(void***)((char*)xmodel + 0x24);
+    int i = lodIndex + 1;
+    if (i < 0)
+        i = 0;
+    while (lod[i] == nullptr)
+        ++i;
+    return (XModelPartsLocal*)*(void**)((char*)lod[i] + 0x08);
+}
+
 // ============================================================================
 // SceneAnimClient (anim.o 0x561630/0x5619A0) - nalClientSceneAnim client
 // ============================================================================
@@ -6450,6 +6598,13 @@ public:
         nalAnimClass<nalAnyPose>::nalInstanceClass* animInst, float t);
     // ?Release@SceneAnimClient@@UAEXXZ (0x563DD0)
     virtual void Release();
+    // ?CreateInstance@SceneAnimClient@@UAEPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@PAV3@@Z (0x5619B0)
+    virtual nalAnimClass<nalAnyPose>::nalInstanceClass* CreateInstance(
+        nalAnimClass<nalAnyPose>::nalInstanceClass* anim);
+    // ?Advance@SceneAnimClient@@UAEXPAVnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@MMMM@Z (0x5623D0)
+    virtual void Advance(nalAnimClass<nalAnyPose>::nalInstanceClass* animInst,
+                         float t, float t_prev, float deltaT,
+                         float timeInSecondsToStart);
 
     const void* mAnim;           // +0x04 nalSceneAnim*
     tlFixedString mName;         // +0x08
@@ -6623,6 +6778,587 @@ void* SceneAnimClient_Delete(SceneAnimClient* self, unsigned int flags)
     return self;
 }
 
+// ea: 0x005619B0
+nalAnimClass<nalAnyPose>::nalInstanceClass*
+SceneAnimClient::CreateInstance(
+    nalAnimClass<nalAnyPose>::nalInstanceClass* anim)
+{
+    nalGeneric::nalGenericAnim* baseAnim =
+        (nalGeneric::nalGenericAnim*)(void*)anim;
+    bool lastState = TlSystemCallbacks::LockTlAllocsToPakHeap(false, false);
+    if (baseAnim != nullptr
+        && *(void**)baseAnim == (void*)0x10E6D08)
+    {
+        // valid generic anim
+    }
+    else
+    {
+        baseAnim = nullptr;
+        XANIM_ASSERT("anim", "c:\\cod\\code\\game\\xanim.cpp", 3066,
+                     "not a generic anim?");
+    }
+    if (mNotify != nullptr)
+    {
+        unsigned int count = ((unsigned int*)mNotify)[-1];
+        AnimNotifyListElem* arr = (AnimNotifyListElem*)mNotify;
+        for (unsigned int n = 0; n < count; ++n)
+            arr[n].AsInfo()->~XAnimNotifyInfo();
+        mem_heap_free((char*)mNotify - 4);
+    }
+    mNotify = nullptr;
+
+    nalGeneric::nalGenericComponentHandle<void> handle;
+    handle.Skeleton = nullptr;
+    nalGenericSkeleton* skel = baseAnim != nullptr
+                                   ? (nalGenericSkeleton*)(void*)*(void**)
+                                         ((char*)baseAnim + 0x30)
+                                   : nullptr;
+    tlFixedString v26("COD_Note");
+    tlFixedString v25("fakeroot");
+    if (skel != nullptr)
+        skel->GetComponentHandle<void>(handle, v25, v26);
+    if (handle.Skeleton == nullptr)
+    {
+        tlFixedString v25b("COD_Note");
+        tlFixedString v26b("tag_origin");
+        if (skel != nullptr)
+            skel->GetComponentHandle<void>(handle, v26b, v25b);
+        if (handle.Skeleton == nullptr)
+        {
+            tlFixedString v25c("COD_Note");
+            tlFixedString v26c("simple");
+            if (skel != nullptr)
+                skel->GetComponentHandle<void>(handle, v26c, v25c);
+            if (handle.Skeleton == nullptr)
+            {
+                tlFixedString v25d("COD_Note");
+                tlFixedString v26d("camera");
+                if (skel != nullptr)
+                    skel->GetComponentHandle<void>(handle, v26d, v25d);
+            }
+        }
+    }
+
+    XAnimNotifyInfo* notifyStart = nullptr;
+    if (handle.Skeleton != nullptr && baseAnim != nullptr)
+    {
+        const void* ComponentPrivate =
+            baseAnim->GetComponentPrivateData<void>(handle);
+        if (ComponentPrivate != nullptr)
+        {
+            const char* stringTable[1024];
+            int strIdx = 0;
+            const char* v9 =
+                (const char*)ComponentPrivate
+                + 8 * *(int*)((char*)ComponentPrivate + 4) + 12;
+            int numStrings = *(int*)((char*)ComponentPrivate + 8);
+            for (int s = 0; s < numStrings; ++s)
+            {
+                stringTable[strIdx++] = v9;
+                v9 += strlen(v9) + 1;
+            }
+            if (mNotify != nullptr)
+            {
+                XANIM_ASSERT("!mNotify", "c:\\cod\\code\\game\\xanim.cpp",
+                             3103, "defaultFileName");
+            }
+            int v10 = *(int*)((char*)ComponentPrivate + 4) + 2;
+            int* v11 = (int*)mem_heap_malloc(12 * v10 + 4);
+            if (v11 != nullptr)
+            {
+                *v11 = v10;
+                notifyStart = (XAnimNotifyInfo*)(v11 + 1);
+                for (int n = 0; n < v10; ++n)
+                    new (&notifyStart[n]) XAnimNotifyInfo();
+            }
+            mNotify = notifyStart;
+            int numAnims = *(int*)((char*)ComponentPrivate + 8);
+            if (numAnims != 0)
+            {
+                XAnimNotifyInfo* cur = notifyStart;
+                for (int i = 0; i < *(int*)((char*)ComponentPrivate + 4);
+                     ++i)
+                {
+                    const char* name =
+                        stringTable[*(int*)((char*)ComponentPrivate
+                                            + 8 * i + 12)];
+                    cur->name = name;
+                    cur->hashed_name = HashString::CalcHash(name);
+                    float t =
+                        *(float*)((char*)ComponentPrivate + 8 * i + 16)
+                        / *(float*)((char*)baseAnim + 0x44);
+                    cur->time = t;
+                    if (t < 0.0f)
+                    {
+                        XANIM_ASSERT("notify->time >= 0",
+                                     "c:\\cod\\code\\game\\xanim.cpp",
+                                     3112, "just checking");
+                    }
+                    cur = (XAnimNotifyInfo*)((char*)cur + 12);
+                }
+            }
+            goto LABEL_33;
+        }
+    }
+    if (mNotify != nullptr)
+    {
+        XANIM_ASSERT("!mNotify", "c:\\cod\\code\\game\\xanim.cpp", 3118,
+                     "defaultFileName");
+    }
+    {
+        int* v21 = (int*)mem_heap_malloc(0x1C);
+        if (v21 != nullptr)
+        {
+            *v21 = 2;
+            notifyStart = (XAnimNotifyInfo*)(v21 + 1);
+            for (int n = 0; n < 2; ++n)
+                new (&notifyStart[n]) XAnimNotifyInfo();
+        }
+        mNotify = notifyStart;
+    }
+LABEL_33:
+    notifyStart->name = "end";
+    static unsigned int end_hash = HashString::CalcHash("end");
+    notifyStart->hashed_name = end_hash;
+    notifyStart->time = 1.0f;
+    XAnimNotifyInfo* v17 = (XAnimNotifyInfo*)((char*)notifyStart + 12);
+    if (v17->name.mBlock != nullptr)
+    {
+        v17->name.mBlock->DecrementCount();
+        v17->name.mBlock = nullptr;
+    }
+    v17->hashed_name = 0;
+    v17->time = -666.0f;
+
+    void* Skeleton = baseAnim != nullptr
+                         ? *(void**)((char*)baseAnim + 0x30)
+                         : nullptr;
+    void* v19 = tlMemAlloc(0x30, 8, 0);
+    void* v20 = nullptr;
+    if (v19 != nullptr)
+        v20 = nalGenericInstance_Ctor(v19, baseAnim, Skeleton);
+    TlSystemCallbacks::LockTlAllocsToPakHeap(lastState, false);
+    if (gCamera[currCl].mCamMode == 3
+        && gCamera[currCl].mVehicleCamMode == 1)
+    {
+        gCamera[currCl].mVehicleCamMode = 0;
+    }
+    return (nalAnimClass<nalAnyPose>::nalInstanceClass*)(void*)v20;
+}
+
+// ea: 0x005623D0
+void SceneAnimClient::Advance(
+    nalAnimClass<nalAnyPose>::nalInstanceClass* animInst, float t,
+    float prevT, float time, float prevTime)
+{
+    bool lockState = TlSystemCallbacks::LockTlAllocsToPakHeap(false, false);
+    if ((mFlags & 1) != 0)
+    {
+        // Camera-anim path (name-driven camera scene animations).
+        if (mName.hash != gNextSceneCamera)
+            return;
+        XAnimNotifyInfo* mNotify = (XAnimNotifyInfo*)this->mNotify;
+        if (mNotify->hashed_name == gNotifyEndHash)
+            goto camera_pose;
+        while (t < mNotify->time || mNotify->time < prevT)
+        {
+            unsigned int nextHash = mNotify[1].hashed_name;
+            ++mNotify;
+            if (nextHash == gNotifyEndHash)
+                goto camera_pose;
+        }
+        {
+            const char* v11 = mNotify->name.mBlock != nullptr
+                                  ? (const char*)(mNotify->name.mBlock + 1)
+                                  : "";
+            if (strstr(v11, "camera") != nullptr)
+                gNextSceneCamera = mNotify->hashed_name;
+            Entity* mWorld = (Entity*)EntityManager::sInst->mWorld;
+            if (mWorld != nullptr)
+            {
+                HashString notifyHash;
+                notifyHash.mHash = mNotify->hashed_name;
+                mWorld->Notify(notifyHash);
+            }
+        }
+        return;
+
+    camera_pose:
+        if ((animInst->Anim->mFlags & 2) == 0)
+        {
+            XANIM_ASSERT(
+                "!animInst->GetAnim()->IsTrajectoryRelative()",
+                "c:\\cod\\code\\game\\xanim.cpp", 3178,
+                "relative camera animations not supported");
+        }
+        {
+            tlFixedString name("camera");
+            nalBaseSkeleton* skel =
+                cdGetSkeleton(PakManager::sInst->mGlobalPakId, name);
+            void* mObject;
+            if (skel != nullptr && *(void**)skel == (void*)0x10E6D04)
+            {
+                mObject = skel;
+            }
+            else
+            {
+                mObject = nullptr;
+                XANIM_ASSERT(
+                    "skeleton", "c:\\cod\\code\\game\\xanim.cpp", 3180,
+                    "camera animdef not in global pak or not generic?");
+            }
+            nalGenericPose pose((const nalGenericSkeleton*)mObject, 0);
+            if ((animInst->Skeleton != *(const nalBaseSkeleton**)&pose
+                 || animInst->Skeleton
+                        != (const nalBaseSkeleton*)*(void**)mObject)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h",
+                       117,
+                       "GetSkeleton() == pose.GetSkeleton() && GetSkeleton() == defaultPose.GetSkeleton()",
+                       "pose skeleton types do not match"))
+            {
+                __debugbreak();
+            }
+            animInst->VirtualGetPose(t, prevT, (nalBasePose&)pose,
+                                     *(nalBasePose*)mObject, 0);
+            gSceneAnimCamera = true;
+            ((nalGenericSkeleton*)mObject)
+                ->GetTrajectoryUpdate(pose, gSceneAnimCameraPO);
+            static tlFixedString trackFovName("FOV");
+            static tlFixedString cameraBoneName("camera");
+            nalGeneric::nalGenericConstComponentHandle<float> fovHandle;
+            ((nalGenericSkeleton*)mObject)
+                ->GetComponentHandle<float>(fovHandle, cameraBoneName,
+                                            trackFovName);
+            if (fovHandle.Skeleton != nullptr)
+                gSceneAnimCameraFOV = pose[fovHandle];
+        }
+        goto cleanup_with_dtor;
+    }
+
+    // Entity path.
+    unsigned int v18 = mEntity.mVal & 0xFFF;
+    if (v18 >= 0x540)
+        return;
+    if (mEntity.mVal >> 12 != EntityHandleDb::sInst.mElements[v18].mKey)
+        return;
+    Entity* v19 = EntityHandleDb::sInst.mElements[v18].mObject;
+    if (v19 == nullptr)
+        return;
+    DObj* mDObj = v19->mDObj;
+    void* skelBase = nullptr;
+    void* v78 = nullptr;
+    if (mDObj != nullptr)
+    {
+        skelBase = mDObj->skel;
+        if (skelBase == nullptr)
+            return;
+        ValidatePakId(mDObj->models[0].mPakId);
+        XModelPartsLocal* parts =
+            XModelGetXModelPartsLocal(mDObj->models[0].mValue, -1);
+        void* mAnimDef = parts != nullptr ? parts->mAnimDef : nullptr;
+        if (mAnimDef != nullptr && *(void**)mAnimDef == (void*)0x10E6D04)
+            v78 = mAnimDef;
+    }
+    if (v78 == nullptr)
+    {
+        const nalBaseSkeleton* Skeleton = animInst->Anim->Skeleton;
+        if (Skeleton == nullptr || *(void**)Skeleton != (void*)0x10E6D04)
+        {
+            XANIM_ASSERT("skeleton", "c:\\cod\\code\\game\\xanim.cpp",
+                         3224,
+                         "no skeleton found for scene animation instance?");
+            v78 = nullptr;
+        }
+        else
+        {
+            v78 = (void*)Skeleton;
+        }
+    }
+
+    // LABEL_48
+    {
+        nalGenericPose* defaultPose = (nalGenericPose*)((char*)v78 + 200);
+        nalGenericPose pose(*defaultPose, true);
+        nalGenericSkeleton* poseSkel = (nalGenericSkeleton*)v78;
+        if (mDObj == nullptr)
+        {
+            animInst->GetPose<nalGeneric::nalGenericPose,
+                              nalGeneric::nalGenericPose>(
+                t, prevT, pose, *defaultPose, 0);
+            goto LABEL_91;
+        }
+
+        mDObj->mLODAnim = -1;
+        int modelIdx = 0;
+        if (mDObj->numModels == 0)
+            goto LABEL_91;
+        do
+        {
+            if (modelIdx != 0)
+            {
+                DObjSkelMat* v27 = nullptr;
+                unsigned char parent = mDObj->modelParents[modelIdx];
+                if (parent != 0xFF)
+                    v27 = (DObjSkelMat*)((char*)skelBase + 48
+                                         + (parent << 6));
+                XModelGetBasePose(
+                    *(IVPointer<XModel>*)&mDObj->models[modelIdx],
+                    (DObjSkelMat*)((char*)skelBase + 48
+                                   + (mDObj->matOffset[modelIdx] << 6)),
+                    v27);
+            }
+
+            // Model 0: scene-anim pose + blend against the current pose.
+            animInst->GetPose<nalGeneric::nalGenericPose,
+                              nalGeneric::nalGenericPose>(
+                t, prevT, pose, *defaultPose, 0);
+            v19->flags &= 0x7BFFFFFFu;
+            if (mDObj->mPose[0] != nullptr && mBlender != nullptr)
+            {
+                float v33 = -1.0f;
+                if (mBlendInTime > time)
+                {
+                    v33 = time / mBlendInTime;
+                }
+                else
+                {
+                    float animDuration = *(float*)((char*)mAnim + 0x3C);
+                    if (mBlendOutTime != 0.0f
+                        && time > animDuration - mBlendOutTime)
+                    {
+                        v33 = (animDuration - time) / mBlendOutTime;
+                    }
+                }
+                if (v33 >= 0.0f && v33 < 1.0f)
+                {
+                    nalGenericPose tmpPose(*defaultPose, true);
+                    nalGeneric::nalGenericPoseBlender* blender =
+                        (nalGeneric::nalGenericPoseBlender*)mBlender;
+                    int poseTrackCount =
+                        *(int*)((char*)blender->Skeleton + 0x7C);
+                    for (int k = 0; k < poseTrackCount; ++k)
+                        blender->BlendValues[k] = v33;
+                    if (mTrajectoryHandle.Skeleton != nullptr)
+                        (*blender)[mTrajectoryHandle] = 1.0f;
+                    blender->Blend(tmpPose,
+                                   *(nalGenericPose*)mDObj->mPose[0], pose);
+                    pose = tmpPose;
+                }
+            }
+            else
+            {
+                v19->flags |= 0x84000000u;
+            }
+
+            ValidatePakId(mDObj->models[0].mPakId);
+            void* mValue = mDObj->models[0].mValue;
+            void** lod = *(void***)((char*)mValue + 0x24);
+            int lodIdx = 0;
+            while (lod[lodIdx] == nullptr)
+                ++lodIdx;
+            unsigned int mSize = 0;
+            if (*(void**)((char*)lod[lodIdx] + 0x08) != nullptr)
+            {
+                int k = 0;
+                while (lod[k] == nullptr)
+                    ++k;
+                mSize = *(unsigned int*)((char*)lod[k] + 0x08 + 0x10);
+            }
+            if (mSize
+                < *(unsigned int*)(*(char**)((char*)&pose + 100) + 0))
+            {
+                unsigned char parent0 = mDObj->modelParents[0];
+                DObjSkelMat* v46 = nullptr;
+                if (parent0 != 0xFF)
+                    v46 = (DObjSkelMat*)((char*)skelBase + 48
+                                         + (parent0 << 6));
+                poseSkel->GetBoneMatrices(
+                    pose,
+                    (nalMatrix4x4*)((char*)skelBase + 48
+                                    + (mDObj->matOffset[0] << 6)),
+                    lodIdx);
+                if (v46 != nullptr)
+                    XModelTransform(
+                        *(IVPointer<XModel>*)&mDObj->models[0],
+                        (DObjSkelMat*)((char*)skelBase + 48
+                                       + (mDObj->matOffset[0] << 6)),
+                        v46);
+            }
+            ++modelIdx;
+        } while (modelIdx < mDObj->numModels);
+
+    LABEL_91:
+        nalPositionOrientation po;
+        poseSkel->GetTrajectoryUpdate(pose, po);
+        float angles3[3];
+        float matBuf[4][4];
+        if ((animInst->Anim->mFlags & 2) != 0)
+        {
+            nalMatrix4x4 m4(po);
+            memcpy(matBuf, m4.m, 64);
+            Axis4ToAngles(matBuf, angles3);
+        }
+        else if (v19->tagInfo != nullptr)
+        {
+            float originM[4][4];
+            memcpy(originM, &nalMatrix4x4::Identity, 64);
+            nalMatrix4x4 m4(po);
+            memcpy(matBuf, m4.m, 64);
+            tagInfo_t* tagInfo = v19->tagInfo;
+            for (int r = 0; r < 4; ++r)
+                for (int c = 0; c < 3; ++c)
+                    originM[r][c] = tagInfo->axis[r][c];
+            __m128 r0 = _mm_loadu_ps(matBuf[0]);
+            __m128 r1 = _mm_loadu_ps(matBuf[1]);
+            __m128 r2 = _mm_loadu_ps(matBuf[2]);
+            __m128 r3 = _mm_loadu_ps(matBuf[3]);
+#define ADV_ROW(rr)                                                        \
+    _mm_add_ps(                                                            \
+        _mm_add_ps(                                                        \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 0),       \
+                       r0),                                                \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 85),      \
+                       r1)),                                               \
+        _mm_add_ps(                                                        \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 170),     \
+                       r2),                                                \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 255),     \
+                       r3)))
+            _mm_storeu_ps(matBuf[0], ADV_ROW(0));
+            _mm_storeu_ps(matBuf[1], ADV_ROW(1));
+            _mm_storeu_ps(matBuf[2], ADV_ROW(2));
+            _mm_storeu_ps(matBuf[3], ADV_ROW(3));
+#undef ADV_ROW
+            for (int r = 0; r < 4; ++r)
+                for (int c = 0; c < 3; ++c)
+                    tagInfo->axis[r][c] = matBuf[r][c];
+            float parentAxis[3][3];
+            G_CalcTagParentAxis(v19, parentAxis);
+            float v70[3][3];
+            MatrixMultiply43(tagInfo->axis, parentAxis, v70);
+            AxisToAngles(v70, angles3);
+        }
+        else
+        {
+            float anglesM[3][3];
+            AnglesToAxis((const math::Position3*)&v19->r.currentAngles,
+                         anglesM);
+            memset(matBuf, 0, sizeof(matBuf));
+            memcpy(matBuf[0], anglesM, 12);
+            memcpy(matBuf[1], &v19->r.currentMat.x, 16);
+            memcpy(matBuf[2], &v19->r.currentMat.y, 16);
+            matBuf[3][0] = v19->r.currentOrigin.v.m128_f32[0];
+            matBuf[3][1] = v19->r.currentOrigin.v.m128_f32[1];
+            matBuf[3][2] = v19->r.currentOrigin.v.m128_f32[2];
+            matBuf[3][3] = 1.0f;
+            nalMatrix4x4 m4(po);
+            float originM[4][4];
+            memcpy(originM, m4.m, 64);
+            __m128 r0 = _mm_loadu_ps(matBuf[0]);
+            __m128 r1 = _mm_loadu_ps(matBuf[1]);
+            __m128 r2 = _mm_loadu_ps(matBuf[2]);
+            __m128 r3 = _mm_loadu_ps(matBuf[3]);
+#define ADV_ROW(rr)                                                        \
+    _mm_add_ps(                                                            \
+        _mm_add_ps(                                                        \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 0),       \
+                       r0),                                                \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 85),      \
+                       r1)),                                               \
+        _mm_add_ps(                                                        \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 170),     \
+                       r2),                                                \
+            _mm_mul_ps(_mm_shuffle_ps(_mm_loadu_ps(originM[rr]),           \
+                                      _mm_loadu_ps(originM[rr]), 255),     \
+                       r3)))
+            _mm_storeu_ps(matBuf[0], ADV_ROW(0));
+            _mm_storeu_ps(matBuf[1], ADV_ROW(1));
+            _mm_storeu_ps(matBuf[2], ADV_ROW(2));
+            _mm_storeu_ps(matBuf[3], ADV_ROW(3));
+#undef ADV_ROW
+            Axis4ToAngles(matBuf, angles3);
+        }
+
+        math::Position3 newOrigin;
+        newOrigin.v.m128_f32[0] = matBuf[3][0];
+        newOrigin.v.m128_f32[1] = matBuf[3][1];
+        newOrigin.v.m128_f32[2] = matBuf[3][2];
+
+        void* scr_vehicle = v19->scr_vehicle;
+        if (scr_vehicle != nullptr)
+        {
+            math::Position3 vehAngles;
+            vehAngles.v = _mm_set_ps(0.0f, angles3[2], 0.0f, angles3[0]);
+            math::Dir3 velocity;
+            velocity.v = _mm_setzero_ps();
+            void* mRBVeh = *(void**)((char*)scr_vehicle + 0x518);
+            if (mRBVeh != nullptr)
+            {
+                if (time - prevTime > 0.0f)
+                {
+                    velocity.v = _mm_div_ps(
+                        _mm_sub_ps(newOrigin.v, v19->r.currentOrigin.v),
+                        _mm_set_ps1(time - prevTime));
+                }
+                ((rb_vehicle*)mRBVeh)
+                    ->update_from_scene_anim(newOrigin, vehAngles, velocity);
+            }
+            else
+            {
+                VEH_SetPosition(v19, &newOrigin, &vehAngles,
+                                (const float*)&velocity.v);
+            }
+        }
+        else
+        {
+            G_SetOrigin(v19, &newOrigin.v.m128_f32[0]);
+            G_SetAngle(v19, angles3);
+        }
+        g_LinkEntity(v19);
+        if ((animInst->Anim->mFlags & 2) == 0)
+        {
+            Entity* tagChildren = v19->tagChildren;
+            while (tagChildren != nullptr)
+            {
+                Entity* next = (Entity*)tagChildren->tagInfo->next;
+                G_GeneralLink(tagChildren);
+                tagChildren = next;
+            }
+        }
+        {
+            unsigned char* v62 = (unsigned char*)this->mNotify + 4;
+            unsigned int v63 = 0;
+            if (*(unsigned int*)v62 != 0)
+            {
+                do
+                {
+                    if (t >= *(float*)(v62 + 4)
+                        && *(float*)(v62 + 4) >= prevT)
+                    {
+                        HashString notifyHash;
+                        notifyHash.mHash = *(unsigned int*)v62;
+                        v19->Notify(notifyHash);
+                    }
+                    v63 = *(unsigned int*)(v62 + 12);
+                    v62 += 12;
+                } while (v63 != 0);
+            }
+        }
+    }
+
+cleanup_with_dtor:
+    TlSystemCallbacks::LockTlAllocsToPakHeap(lockState, false);
+    return;
+}
+
 // ============================================================================
 // xanim.cpp remaining (anim.o) - clone tree + valid sub-model skeleton
 // ============================================================================
@@ -6768,25 +7504,6 @@ bool XAnimCalc(XAnimTree* tree, unsigned int animIndex,
     (void)pose;
     return false;
 }
-
-extern void G_SetOrigin(Entity* ent, const float* origin);
-extern void G_SetAngle(Entity* ent, const float* angle);
-extern void AnglesToAxis(const math::Position3* angles,
-                         const math::Position3* origin, math::Mat44* out);
-extern void Axis4ToAngles(const float (*axis)[4], float* angles);
-extern void AxisToAngles(const float (*axis)[3], float* angles);
-extern void G_CalcTagParentAxis(Entity* ent, float (*parentAxis)[3]);
-extern void MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
-                             float (*out)[3]);
-// Real symbols: XModelGetBasePose (g_entity_misc.cpp stub),
-// AnimIK::Update (g_game2_misc.cpp), AnimationPlayer::GetPose
-// (g_debugthread.cpp).
-struct DObjSkelMat;   // U-tag (core_types.h)
-extern void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
-                              DObjSkelMat* modelParentMat);
-extern void XModelTransform(IVPointer<XModel> model, DObjSkelMat* mat,
-                            DObjSkelMat* modelParentMat);  // ?XModelTransform (render.o)
-
 // ea: 0x0054BC90
 void DroneSetAutoTrajectoryPO(Entity* e, DObj* masterDObj)
 {
