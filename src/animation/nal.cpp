@@ -12210,7 +12210,7 @@ void InteractState::PostPhysicsUpdate(float deltaT)
 extern cvar_t* com_timescale;  // ?com_timescale@@3PAUcvar_t@@A (cl.o)
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
-                                        TPakId pakid, bool important);
+                                        TPakId pakid, const bool important);
 
 // ea: 0x0054DB20 (?PostEffectEvent@InteractState@@MAEXPBDH@Z)
 void InteractState::PostEffectEvent(const char* scriptName, int eventIndex)
@@ -13116,7 +13116,7 @@ float sRumbleScoreMax = 0.9f;    // 0xDF3598
 extern char gMetaAnimPlayMethod;  // ?gMetaAnimPlayMethod@@...A (cg_misc)
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
-                                        TPakId pakid, bool important);
+                                        TPakId pakid, const bool important);
 
 // ea: 0x00540B10
 void InteractStateRowboat::PlayRowingMetaAnim(int index)
@@ -13836,7 +13836,9 @@ extern int BG_ClipForWeapon(int iWeapon);
 extern void BG_GetRandomAmmoCounts(int& ammo, int& clip, int weaponIndex);
 extern int G_EntDetach(Entity* ent, const char* model, const char* tagName);
 extern void ValidatePakId(TPakId pakId);
-extern Handle PostEffectEventEIMelee(const Entity* ent, int action);
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
+extern Handle PostEffectEventEIMelee(const Entity* ent, EAction action,
+                                     bool queue);
 struct level_locals_t {
     int time;            // +0x09C
     int reloadDelayTime; // +0xAB8
@@ -14111,9 +14113,9 @@ InteractState* InteractStateMelee::Update(float deltaT)
     if (nextState == mSuccessState[0])
     {
         mPlayerSoundHandle =
-            PostEffectEventEIMelee(v9, 59).mVal;
+            PostEffectEventEIMelee(v9, (EAction)59, false).mVal;
         mOtherSoundHandle =
-            PostEffectEventEIMelee(v9, 58).mVal;
+            PostEffectEventEIMelee(v9, (EAction)58, false).mVal;
     }
     return nextState;
 }
@@ -14340,12 +14342,12 @@ void InteractStateMeleeStart::Activate()
                     v2 = player;
                 }
             }
-            PostEffectEventEIMelee(v2, 60);
+            PostEffectEventEIMelee(v2, (EAction)60, false);
         }
     }
 done:
     mController->mSoundLoopHandle =
-        PostEffectEventEIMelee(v2, 61).mVal;
+        PostEffectEventEIMelee(v2, (EAction)61, false).mVal;
 }
 
 // ea: 0x0054F9A0
@@ -16552,7 +16554,8 @@ extern void MetaNalBaseAnim_DelayCreate(void* self, void** animArray,
 
 extern void VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx,
                            int entryIdx, int fromPos);  // ?VEH_LinkPlayer (g.o)
-extern Handle PostEffectEventEIMelee(const Entity* ent, int action);
+extern Handle PostEffectEventEIMelee(const Entity* ent, EAction action,
+                                     bool queue);
 
 // ea: 0x0054F390
 void InteractStateMelee::UpdateFacialAnim(float deltaT)
@@ -16767,16 +16770,16 @@ void InteractStateMelee::UpdateModifiers(float deltaT)
                 && (v27 == *pNumModifiers - 1 || lastModIndex <= v27))
             {
                 *(int*)((char*)this + 0x1C0) =
-                    PostEffectEventEIMelee(Player, 59).mVal;
+                    PostEffectEventEIMelee(Player, (EAction)59, false).mVal;
                 *(int*)((char*)this + 0x1C4) =
-                    PostEffectEventEIMelee(Player, 58).mVal;
+                    PostEffectEventEIMelee(Player, (EAction)58, false).mVal;
             }
             else
             {
                 *(int*)((char*)this + 0x1C0) =
-                    PostEffectEventEIMelee(Player, 60).mVal;
+                    PostEffectEventEIMelee(Player, (EAction)60, false).mVal;
                 *(int*)((char*)this + 0x1C4) =
-                    PostEffectEventEIMelee(Player, 61).mVal;
+                    PostEffectEventEIMelee(Player, (EAction)61, false).mVal;
             }
         }
     }

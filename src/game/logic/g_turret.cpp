@@ -1814,7 +1814,8 @@ void turret_think(Entity* self, int msec)
     else
     {
         pTurretInfo->overheating = true;
-        PostEffectEventWeapon(self, InfoForWeapon->szInternalName, kActionWEAPON_PICKUP_FULL);
+        PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
+                              (EAction)kActionWEAPON_PICKUP_FULL);
         Scr_Notify(self, hash_const.overheated, 0);
         if (pTurretInfo->overheatEffect.mVal != 0)
             EffectEventSys::sInst->AdjustEffect_Scale(
@@ -1840,7 +1841,8 @@ void turret_think(Entity* self, int msec)
         if (pTurretInfo->overheatEffect.mVal == 0)
         {
             pTurretInfo->overheatEffect = PostEffectEventWeapon(
-                self, InfoForWeapon->szInternalName, kActionWEAPON_LAST_SHOT_EJECT_FULL);
+                self, InfoForWeapon->szInternalName,
+                (EAction)kActionWEAPON_LAST_SHOT_EJECT_FULL);
         }
         float scalea = (pTurretInfo->heat - 0.25f) * 1.333333333333333f * emissionRate;
         EffectEventSys::sInst->AdjustEffect_Scale(
@@ -2329,7 +2331,8 @@ void turret_track(Entity* self, Entity* other)
             self->isFiring = 0;
             if (self->effectLoopingFire.mVal != 0)
                 EffectEventKill(self->effectLoopingFire);
-            PostEffectEventWeapon(self, InfoForWeapon->szInternalName, kActionVEHICLE_IDLE);
+            PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
+                                  (EAction)kActionVEHICLE_IDLE);
         }
     }
     else
@@ -2346,9 +2349,9 @@ void turret_track(Entity* self, Entity* other)
         {
             self->isFiring = 1;
             PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
-                                  kActionWEAPON_NOTE_TRACK_SOUND_C);
+                                  (EAction)kActionWEAPON_NOTE_TRACK_SOUND_C);
             self->effectLoopingFire = PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
-                                                           kActionWEAPON_NOTE_TRACK_SOUND_D);
+                                                           (EAction)kActionWEAPON_NOTE_TRACK_SOUND_D);
         }
     }
 }

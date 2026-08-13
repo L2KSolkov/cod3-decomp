@@ -746,7 +746,7 @@ extern const float VectorNormalize2(const float* const v,
                                     float* const out);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
-                                        TPakId pakid, bool important);
+                                        TPakId pakid, const bool important);
 extern float dword_F63C70[4 * 1580];
 extern float dword_F63C74[4 * 1580];
 extern float dword_F63C78[4 * 1580];
@@ -1526,8 +1526,9 @@ extern void CG_EntityPreEvent(Entity* entity, int event);
 extern void CG_FireWeapon(Entity* attacker, EntityState* attackerState,
                           int event, unsigned int barrel);
 extern void CG_EjectWeaponBrass(Entity* entity, int event);
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
 extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                                    int weaponAction);
+                                    EAction weaponAction);
 extern void ByteToDir(int b, float* const dir);
 extern void CG_BulletHitEvent(Entity* entity, const math::Position3* origin,
                               float* const normal, int weapon, int surfType,
@@ -1720,7 +1721,7 @@ extern Handle PostEffectEventBulletHit(const Entity* ent,
                                        const CollisionDesc& col_desc);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
-                                        TPakId pakid, bool important);
+                                        TPakId pakid, const bool important);
 extern const char** s_barrelTags;
 const char** s_gunnerBarrelTags;  // ?s_gunnerBarrelTags (game.o)
 
@@ -1921,9 +1922,9 @@ extern float dword_F63BB0[4 * 1580];
 extern int dword_F63BB4[4 * 1580];
 extern Handle PostEffectEventWeaponReload(const Entity* ent,
                                           const char* weaponType,
-                                          int weaponAction, bool queue);
+                                          EAction weaponAction, bool queue);
 extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                                    int weaponAction);
+                                    EAction weaponAction);
 extern void CG_ItemPickup(int itemNum);
 extern void CG_OutOfAmmoChange();
 extern Handle PostEffectEventGrenadeBounce(const Entity* ent,
@@ -2146,7 +2147,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                     (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeaponReload(entity,
                     *(const char**)((char*)InfoForWeapon + 8),
-                    0x10 /* kActionWEAPON_RELOAD_START */, false);
+                    (EAction)0x10 /* kActionWEAPON_RELOAD_START */, false);
             }
             break;
         case 179:
@@ -2155,7 +2156,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v28 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeaponReload(entity,
                     *(const char**)((char*)v28 + 8),
-                    0x11 /* kActionWEAPON_RELOAD_END */, false);
+                    (EAction)0x11 /* kActionWEAPON_RELOAD_END */, false);
             }
             break;
         case 180:
@@ -2163,7 +2164,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v30 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v30 + 8),
-                                      0x13 /* kActionWEAPON_RAISE */);
+                                      (EAction)0x13 /* kActionWEAPON_RAISE */);
             }
             break;
         case 182:
@@ -2172,7 +2173,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v31 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v31 + 8),
-                                      0x12 /* kActionWEAPON_ALT_SWITCH */);
+                                      (EAction)0x12 /* kActionWEAPON_ALT_SWITCH */);
             }
             break;
         case 183:
@@ -2181,7 +2182,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v32 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v32 + 8),
-                                      0x15 /* kActionWEAPON_DEPLOY */);
+                                      (EAction)0x15 /* kActionWEAPON_DEPLOY */);
             }
             break;
         case 184:
@@ -2190,7 +2191,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v33 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v33 + 8),
-                                      0x16 /* kActionWEAPON_BREAKDOWN */);
+                                      (EAction)0x16 /* kActionWEAPON_BREAKDOWN */);
             }
             break;
         case 190:
@@ -2199,7 +2200,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v34 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(entity,
                                       *(const char**)((char*)v34 + 8),
-                                      0x0D /* kActionWEAPON_RECHAMBER */);
+                                      (EAction)0x0D /* kActionWEAPON_RECHAMBER */);
             }
             break;
         case 191:
@@ -2212,7 +2213,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v35 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(
                     entity, *(const char**)((char*)v35 + 8),
-                    0x17 /* kActionWEAPON_NOTE_TRACK_SOUND_A */);
+                    (EAction)0x17 /* kActionWEAPON_NOTE_TRACK_SOUND_A */);
             }
             break;
         case 194:
@@ -2221,7 +2222,7 @@ void CG_EntityEvent(Entity* entity, int event, int bPredict)
                 void* v36 = (void*)BG_GetInfoForWeapon(entity->s.weapon);
                 PostEffectEventWeapon(
                     entity, *(const char**)((char*)v36 + 8),
-                    0x18 /* kActionWEAPON_NOTE_TRACK_SOUND_B */);
+                    (EAction)0x18 /* kActionWEAPON_NOTE_TRACK_SOUND_B */);
             }
             break;
         case 197:
@@ -2435,7 +2436,7 @@ void CG_EntityPreEvent(Entity* entity, int event)
                 (void*)BG_GetInfoForWeapon(entity->s.weapon);
             PostEffectEventWeapon(
                 entity, *(const char**)((char*)InfoForWeapon + 8),
-                13 /* kActionWEAPON_RECHAMBER */);
+                (EAction)13 /* kActionWEAPON_RECHAMBER */);
         }
         break;
     case 191:

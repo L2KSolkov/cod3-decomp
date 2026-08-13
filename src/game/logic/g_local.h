@@ -1981,7 +1981,8 @@ const gitem_s* BG_FindItem(const char* pickupName);
 void SP_actor(Entity* pEnt);
 void Scr_Notify(Entity* ent, HashString hashValue, unsigned int paramcount);
 Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
-                                 bool queue, TPakId pakid, bool important);
+                                 bool queue, TPakId pakid,
+                                 const bool important);
 void BG_EvaluateTrajectoryDelta(const trajectory_t* tr, int atTime,
                                 float* const result);
 void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime, math::Position3& result);
@@ -2129,9 +2130,17 @@ inline int CheckActorInteraction(Entity& ent, const char* interactionName)
 int   G_EntDetach(Entity* ent, const char* modelName, const char* tagName);
 int   G_DObjGetWorldTagMatrix(Entity* ent, unsigned int tag_name_hash, DObjSkelMat* tagMat);
 void  j_nullsub_120(Entity* pGrenade);
-Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType, int weaponAction);
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
+enum ECollisionMaterial : int {
+    kCollisionMaterialMin = 0,
+    kCollisionMaterialASPHALT = 1,
+    kCollisionMaterialNONE = 2,
+    kCollisionMaterialFLESH = 4,
+};
+Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
+                             EAction weaponAction);
 Handle PostEffectEventVehicleWheel(const Entity* ent, const char* vehicleType,
-                                   int action, int mat_type,
+                                   EAction action, ECollisionMaterial mat_type,
                                    unsigned int wheel_tag_hash);  // core.o 0x4D32D0
 struct CollisionDesc;
 Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
@@ -2419,7 +2428,7 @@ extern void UpdateWheelMarks(Entity* owner, int wheel_id, bool wheel_state,
                              const math::Dir3& hitn);  // physics.o
 extern Handle PostEffectEventVehicle(const Entity* ent,
                                      const char* vehicleType,
-                                     int action);  // core.o
+                                     EAction action);  // core.o
 extern void j_nullsub_50(void* self);  // g.o
 extern int kActionVEHICLE_BRAKE;       // core.o enum (40)
 extern int TAG_WHEEL_FRONT_RIGHT;                    // g.o enum

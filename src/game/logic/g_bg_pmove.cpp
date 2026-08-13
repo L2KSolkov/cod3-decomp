@@ -142,7 +142,7 @@ extern void EffectEventSys_StopEffect(void* sInst, unsigned int handle,
                                       bool kill);  // ?StopEffect@EffectEventSys
 extern Handle PostEffectEventWeaponReload(const Entity* ent,
                                           const char* weaponType,
-                                          int weaponAction, bool queue);
+                                          EAction weaponAction, bool queue);
 int bg_iNumWeapons;    // ?bg_iNumWeapons@@3HA (game.o)
 extern char gDisableLMGHipFire;  // game.o @ 0xF4EBFC
 extern void* EffectEventSys_GetActiveEffectSet(void* sInst,
@@ -654,7 +654,7 @@ void PM_QueueReloadSound(int action)
         weaponFileInfo_t* InfoForWeapon = BG_GetInfoForWeapon(Player->s.weapon);
         pm->ps->queuedReloadSound =
             PostEffectEventWeaponReload(Player, InfoForWeapon->szInternalName,
-                                        action, true);
+                                        (EAction)action, true);
         pm->ps->queuedReloadSoundPlayStarted = false;
     }
 }

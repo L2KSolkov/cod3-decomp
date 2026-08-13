@@ -567,7 +567,7 @@ public:
     virtual Broc::string GetDebugString() const;  // effect_events.cpp
 };
 
-struct ActiveEffectSet {
+class ActiveEffectSet {
 public:
     struct EffectsArray {
         AbstractEffect* m_elements[6];
@@ -591,7 +591,7 @@ void EffectEventSys::StopEffect(unsigned int handle, bool kill)
 // core.o 0x4D2340 (effect_events.cpp)
 extern Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
                                         bool queue, TPakId pakid,
-                                        bool important);
+                                        const bool important);
 extern float flrand(float min, float max);  // q_math.cpp ?flrand@@YAMMM@Z
 extern void R_DestroyStaticModels(TPakId pakId);  // render.o
 void R_DestroyStaticModels(TPakId pakId)
@@ -791,7 +791,7 @@ struct BitSet {
 
 
 struct mem_info;
-template <typename T, int N> struct ae_sized_array;
+template <typename T, int N> class ae_sized_array;
 
 // TBankAlloc (BankManager.cpp; two 64-bit bank allocation bitmaps)
 struct TBankAlloc {
@@ -834,7 +834,8 @@ public:
 };
 
 template <typename T, int N>
-struct ae_sized_array {
+class ae_sized_array {
+public:
     T m_elements[N];  // +0x00
     int m_size;       // +N*sizeof(T)
 

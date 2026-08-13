@@ -10,7 +10,8 @@
 #include <stdint.h>
 
 template <typename T, int CAPACITY>
-struct ae_sized_array {
+class ae_sized_array {
+public:
     T       m_elements[CAPACITY];  // +0x00
     int     m_size;                // +sizeof(T)*CAPACITY
 

@@ -845,8 +845,10 @@ void G_ExplodeMissile(Entity* ent, int msec)
     else
     {
         if (ent->key == 0)
-            ent->key = PostEffectEventWeapon(ent, InfoForWeapon->szInternalName,
-                                             kActionEI_MELEE_PLAYER_LOSING | kActionWEAPON_FIRE_3RD).mVal;
+            ent->key = PostEffectEventWeapon(
+                ent, InfoForWeapon->szInternalName,
+                (EAction)(kActionEI_MELEE_PLAYER_LOSING
+                          | kActionWEAPON_FIRE_3RD)).mVal;
         ent->nextthink = level.time + 3000;
     }
 }

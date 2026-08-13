@@ -19,8 +19,10 @@ extern int G_DObjSetControlTagAngles(Entity* ent, int* partBits,
 extern weaponFileInfo_t* BG_GetInfoForWeapon(int weapon);
 class Handle;
 extern void EffectEventStopEmitting(Handle handle);
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
 extern Handle PostEffectEventVehicle(const Entity* ent,
-                                     const char* vehicleType, int action);
+                                     const char* vehicleType,
+                                     EAction action);
 float gTurretOldPITCH;
 float gTurretOldYAW;
 extern int gTurretState;
@@ -172,7 +174,7 @@ void CG_mg42_DoControllers(Entity* entity, bool playerTurret)
                 if (dword_DF91F4 == -1)
                     dword_DF91F4 = PostEffectEventVehicle(
                         entity, InfoForWeapon->szInternalName,
-                        46 /* kActionEI_MELEE_STRUGGLE */).mVal;
+                        (EAction)46 /* kActionEI_MELEE_STRUGGLE */).mVal;
                 goto LABEL_22;
             }
             if (gTurretState == 1)
@@ -185,7 +187,7 @@ void CG_mg42_DoControllers(Entity* entity, bool playerTurret)
         if (gTurretSoundEffectHandle == -1)
             gTurretSoundEffectHandle = PostEffectEventVehicle(
                 entity, InfoForWeapon->szInternalName,
-                45 /* kActionBAZOOKA_TRAIL */).mVal;
+                (EAction)45 /* kActionBAZOOKA_TRAIL */).mVal;
     }
 LABEL_22:
     gTurretOldPITCH = entity->s.angles2.v.m128_f32[0];

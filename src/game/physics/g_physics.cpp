@@ -34,8 +34,10 @@ struct CollisionDesc {
     SimpleCollisionDesc simple;  // +0x00
     ECollisionMaterial material; // +0x20
 };
-Handle PostEffectEventPhysicsImpact(const Entity* ent, int myColMat,
-                                    const CollisionDesc* col_desc,
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
+Handle PostEffectEventPhysicsImpact(const Entity* ent,
+                                    ECollisionMaterial myColMat,
+                                    const CollisionDesc& col_desc,
                                     float intensity);  // effect_events.cpp
 Entity* SpawnHelmet(Entity* self, const float* hitP, const float* hitDir,
                     float iDamage);  // g.o
@@ -55,10 +57,11 @@ extern void EffectEventAdjustEffect_Scale(Handle effect, const char* param,
                                           float scale);  // core.o 0x4CB8E0
 extern Handle PostEffectEventVehicle(const Entity* ent,
                                      const char* vehicleType,
-                                     int action);  // core.o
+                                     EAction action);  // core.o
 extern Handle PostEffectEventVehicleWheel(const Entity* ent,
                                           const char* vehicleType,
-                                          int action, int mat_type,
+                                          EAction action,
+                                          ECollisionMaterial mat_type,
                                           unsigned int wheel_tag_hash);  // core.o
 extern void UpdateWheelMarks(Entity* owner, int wheel_id, bool wheel_state,
                              const math::Position3& hitp,
@@ -3325,8 +3328,8 @@ void rb_vehicle::_update_wheel_effects(float delta_t)
         {
             Handle v66;
             v66 = PostEffectEventVehicleWheel(
-                m_owner, v76->name, 0x2B,
-                ((scr_vehicle_t*)m_owner->scr_vehicle)
+                m_owner, v76->name, (EAction)0x2B,
+                (ECollisionMaterial)((scr_vehicle_t*)m_owner->scr_vehicle)
                     ->phys.wheelSurfType[wheel],
                 s_wheelTagHashes[wheel]);
             m_wheel_effects[wheel] = v66;
@@ -3363,7 +3366,8 @@ void rb_vehicle::_update_wheel_effects(float delta_t)
     }
     else
     {
-        m_exhaust_effect = PostEffectEventVehicle(m_owner, v76->name, 0x2C);
+        m_exhaust_effect =
+            PostEffectEventVehicle(m_owner, v76->name, (EAction)0x2C);
     }
     j_nullsub_50(&water_objects);
 }
@@ -8000,7 +8004,8 @@ void process_prop_collide_callbacks()
                     col_desc.simple.normal.v = normal_v.v;
                     col_desc.material = (ECollisionMaterial)material_index;
                     PostEffectEventPhysicsImpact(p->m_rb_inf->m_ent,
-                                                 col_material, &col_desc,
+                                                 (ECollisionMaterial)col_material,
+                                                 col_desc,
                                                  scaled);
 
                     float v = intensity * 0.001f;
@@ -13828,7 +13833,7 @@ void ragdoll_collision_callback::process_environment_collision_events()
                 _mm_xor_ps(Float4_SignMask_12, max_intensity_cpi->m_normal.v);
             col_desc.material = (ECollisionMaterial)kCollisionMaterialNONE;
             PostEffectEventPhysicsImpact(m_owner, kCollisionMaterialFLESH,
-                                         &col_desc, max_intensity);
+                                         col_desc, max_intensity);
         }
     }
 

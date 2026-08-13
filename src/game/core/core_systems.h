@@ -143,7 +143,8 @@ static_assert(offsetof(SoundParams, mDuration) == 0x18,
 // AbstractEffect - effect base (52 bytes)
 // Size: 0x34 (52 bytes) - verified against IDA
 // ============================================================================
-struct AbstractEffect {
+class AbstractEffect {
+public:
     virtual ~AbstractEffect();
     AbstractEffect() { memset(this, 0, sizeof(AbstractEffect)); }
     AbstractEffect(TPakId pak_id, DbLinkedHandle<EntityHandleDb, Entity> ent, int flags,
@@ -275,9 +276,10 @@ struct AbstractEffectLight : AbstractEffect {
     AbstractEffectLight(Params& params);  // ea: 0x004CDD20
     ~AbstractEffectLight();               // ea: 0x004BD2A0
     Broc::string GetDebugString() const;  // ea: 0x004BD300
-    math::Position3 GetPositionOnEntity(Entity* e) const;  // ea: 0x004CDEF0
     void FrameAdvance(float delta_t);     // ea: 0x004CDF50
     bool IsFinished();                    // ea: 0x004CE060
+private:
+    math::Position3 GetPositionOnEntity(Entity* e) const;  // ea: 0x004CDEF0
 };
 static_assert(sizeof(AbstractEffectLight) == 0x44,
               "AbstractEffectLight size mismatch");
@@ -324,13 +326,14 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
         EUserBoneId bone);  // ea: 0x004CF890
     ~AbstractEffectShakeAndRumble();  // ea: 0x004CF9D0
     Broc::string GetDebugString() const;          // ea: 0x004BD370
-    math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
-    float GetDistanceScale(int client);           // ea: 0x004CE110
     bool IsFinished();                            // ea: 0x004CE720
     void AdjustEffect_Scale(const char* param,
                             float scale);         // ea: 0x004CE780
     void StopEffect();                            // ea: 0x004CE7B0
     void FrameAdvance(float delta_t);             // ea: 0x004CE230
+private:
+    math::Position3 GetPositionOnEntity() const;  // ea: 0x004CE0B0
+    float GetDistanceScale(int client);           // ea: 0x004CE110
 };
 static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x70,
               "AbstractEffectShakeAndRumble size mismatch");
@@ -339,7 +342,8 @@ static_assert(sizeof(AbstractEffectShakeAndRumble) == 0x70,
 // ActiveEffectSet - set of active effects for one query (44 bytes)
 // Size: 0x2C (44 bytes) - verified against IDA
 // ============================================================================
-struct ActiveEffectSet {
+class ActiveEffectSet {
+public:
     ae_sized_array<AbstractEffect*, 6> mEffects;  // +0x00
     TPakId                             mPakId;    // +0x1C
     math::Mat43*                       mPoPtr;    // +0x20
@@ -358,9 +362,10 @@ struct ActiveEffectSet {
     void PlayQueuedEffect();                            // ea: 0x004C0DD0
     void SetPoPtr(math::Mat43* po);                     // ea: 0x004C0E40
     void StopLoopingEffects();                          // ea: 0x004C0EC0
-    void DoStopLoopingEffects();                        // ea: 0x004C0ED0
     void GetDebugFxList(Entity* ent,
-                        std::vector<std::string>* fx);  // ea: 0x004D3AD0
+                        std::vector<std::string>& fx) const;  // ea: 0x004D3AD0
+private:
+    void DoStopLoopingEffects();                        // ea: 0x004C0ED0
 };
 static_assert(sizeof(ActiveEffectSet) == 0x2C, "ActiveEffectSet size mismatch");
 static_assert(offsetof(ActiveEffectSet, mPakId) == 0x1C,
@@ -460,9 +465,6 @@ struct EffectEventSys {
     void DirectionInfo(const float* dir);        // ea: 0x004C11F0
     void FadeOutEffect(AbstractEffect* effect,
                        float seconds);           // ea: 0x004C0FE0
-    void AdvanceFades(float delta);              // ea: 0x004C1010
-    void SetSoundParams(SoundParams& soundParams, PendingQuery& q,
-                        float useNslDefault);    // ea: 0x004C1120
     void SendSpecificSoundNotify(Entity* pEnt,
                                  HashString soundName);  // ea: 0x004BCD90
     void SendSoundNotify(Entity* pEnt);          // ea: 0x004BCDE0
@@ -480,11 +482,9 @@ struct EffectEventSys {
     void StopAll();                              // ea: 0x004CEDC0
     void StopEffect(Handle handle, bool kill);   // ea: 0x004CEF20
     void KillEffectsWithPakId(TPakId pak_id);    // ea: 0x004CF020
-    void CollisionInfo(const CollisionDesc* col_desc,
+    void CollisionInfo(const CollisionDesc& col_desc,
                        bool set_mat);            // ea: 0x004CF1D0
     Handle AssignHandle(ActiveEffectSet* t);     // ea: 0x004CF290
-    void ExecPendingQuery(PendingQuery& q);      // ea: 0x004D13C0
-    void ExecutePendingQueries();                // ea: 0x004D1680
     void BeginEffectQuery(const Entity* ent,
                           TPakId override_pak);  // ea: 0x004D1720
     Handle ExecEffectQuery();                    // ea: 0x004D1A60
@@ -492,15 +492,20 @@ struct EffectEventSys {
                               TPakId override_pak);  // ea: 0x004D1CB0
     void FrameAdvance(float delta);              // ea: 0x004D3930
     void GetDebugFxList(Entity* ent,
-                        std::vector<std::string>* fx);  // ea: 0x004D3C70
+                        std::vector<std::string>& fx) const;  // ea: 0x004D3C70
 
 private:
-    void GetEffectTables(TPakId pak, const char* ts_name, DbTable* type,
-                         ae_sized_array<const DbTable*, 16>* tables);
+    void AdvanceFades(float delta);              // ea: 0x004C1010
+    void SetSoundParams(SoundParams& soundParams, PendingQuery& q,
+                        float useNslDefault);    // ea: 0x004C1120
+    void ExecPendingQuery(PendingQuery& q);      // ea: 0x004D13C0
+    void ExecutePendingQueries();                // ea: 0x004D1680
+    void GetEffectTables(TPakId pak, const char* ts_name, const char* type,
+                         ae_sized_array<const DbTable*, 16>& tables);
                                                        // ea: 0x004CAD20
-    void GetEffectTables(TPakId pak, DbTable* ts_name, const char* ts_global,
+    void GetEffectTables(TPakId pak, const char* ts_name, const char* ts_global,
                          const char* type,
-                         ae_sized_array<const DbTable*, 16>* tables);
+                         ae_sized_array<const DbTable*, 16>& tables);
                                                        // ea: 0x004CAE70
     int QueryGDEvents(const char* event, PendingQuery& q,
                       ActiveEffectSet* fx, float delay);

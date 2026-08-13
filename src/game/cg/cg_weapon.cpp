@@ -222,12 +222,12 @@ extern int CG_WeaponFireRecoil();
 extern void CG_WeaponFlash(Entity* entity, int weaponNum,
                            const math::Position3* origin, int bViewFlash);
 extern void CG_EjectWeaponBrass(Entity* entity, int event);
+enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
 extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                                    int weaponAction);
+                                    EAction weaponAction);
 extern Handle PostEffectEventPointLightFlash(const Entity* ent,
                                              const char* weaponType,
-                                             int weaponAction);
-enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
+                                             EAction weaponAction);
 extern Handle PostEffectEventWeaponFire1st(const Entity* ent,
                                            const char* weaponType,
                                          EAction weaponAction, int cacheSound,
@@ -319,7 +319,7 @@ extern void BG_EvaluateTrajectory(const trajectory_t* tr, int atTime,
 extern float DiffTrack(float tgt, float cur, float rate, float deltaTime);
 extern Handle PostEffectEventScriptCall(const Entity* ent,
                                         const char* scriptId, bool queue,
-                                        TPakId pakid, bool important);
+                                        TPakId pakid, const bool important);
 extern float player_breath_hold_time;
 float player_breath_snd_delay;
 float player_breath_snd_lerp;
@@ -335,10 +335,10 @@ extern void mem_heap_free(void* ptr);
 extern void DObj_Dtor(void* obj);
 extern void DObj_OpDelete(void* obj);
 extern Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                                    int weaponAction);
+                                    EAction weaponAction);
 extern Handle PostEffectEventPointLightFlash(const Entity* ent,
                                              const char* weaponType,
-                                             int weaponAction);
+                                             EAction weaponAction);
 extern void AngleVectors(const math::Position3& angles, float* const forward,
                          float* const right, float* const up);
 
@@ -441,19 +441,19 @@ void CG_WeaponFlash(Entity* entity, int weaponNum,
         weaponFileInfo_t* info =
             (weaponFileInfo_t*)BG_GetInfoForWeapon(weaponNum);
         PostEffectEventWeapon(entity, info->szInternalName,
-                              1 /* kActionWEAPON_VIEW_FLASH */);
+                              (EAction)1 /* kActionWEAPON_VIEW_FLASH */);
     }
     else
     {
         weaponFileInfo_t* info =
             (weaponFileInfo_t*)BG_GetInfoForWeapon(weaponNum);
         PostEffectEventWeapon(entity, info->szInternalName,
-                              2 /* kActionWEAPON_WORLD_FLASH */);
+                              (EAction)2 /* kActionWEAPON_WORLD_FLASH */);
     }
     weaponFileInfo_t* InfoForWeapon =
         (weaponFileInfo_t*)BG_GetInfoForWeapon(weaponNum);
     PostEffectEventPointLightFlash(entity, InfoForWeapon->szInternalName,
-                                   2);
+                                   (EAction)2);
 }
 
 // ea: 0x00692260
@@ -637,14 +637,14 @@ void CG_EjectWeaponBrass(Entity* entity, int event)
                     weaponFileInfo_t* info =
                         (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
                     PostEffectEventWeapon(entity, info->szInternalName,
-                                          3 /* kActionWEAPON_LAST_SHOT_EJECT */);
+                                          (EAction)3 /* kActionWEAPON_LAST_SHOT_EJECT */);
                 }
                 else
                 {
                     weaponFileInfo_t* info =
                         (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
                     PostEffectEventWeapon(entity, info->szInternalName,
-                                          4 /* kActionWEAPON_SHELL_EJECT */);
+                                          (EAction)4 /* kActionWEAPON_SHELL_EJECT */);
                 }
             }
             else
@@ -1068,14 +1068,14 @@ void CG_WeaponUpdateLoopingSound(Entity* entity)
             weaponFileInfo_t* InfoForWeapon =
                 (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
             PostEffectEventWeapon(entity, InfoForWeapon->szInternalName,
-                                  5 /* kActionWEAPON_STOP_FIRE */);
+                                  (EAction)5 /* kActionWEAPON_STOP_FIRE */);
         }
         else
         {
             weaponFileInfo_t* v8 =
                 (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
             PostEffectEventWeapon(entity, v8->szInternalName,
-                                  6 /* kActionWEAPON_LOOP_FIRE */);
+                                  (EAction)6 /* kActionWEAPON_LOOP_FIRE */);
         }
     }
 }
@@ -1346,10 +1346,11 @@ LABEL_18:
             if (v6->s.eType == 14)
             {
                 PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
-                                      2 /* kActionWEAPON_WORLD_FLASH */);
+                                      (EAction)2 /* kActionWEAPON_WORLD_FLASH */);
                 weaponFileInfo_t* v18 =
                     (weaponFileInfo_t*)BG_GetInfoForWeapon(weapon);
-                PostEffectEventPointLightFlash(v6, v18->szInternalName, 2);
+                PostEffectEventPointLightFlash(v6, v18->szInternalName,
+                                               (EAction)2);
             }
             else
             {
@@ -1359,7 +1360,7 @@ LABEL_18:
             if (lc)
             {
                 PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
-                                      7 /* kActionEI_MELEE_ENEMY_WINNING */);
+                                      (EAction)7 /* kActionEI_MELEE_ENEMY_WINNING */);
             }
             if (event == 189)
             {

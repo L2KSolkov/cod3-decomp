@@ -601,7 +601,7 @@ Entity* fire_rocket(Entity* self, float* start, float* dir, float lifetime)
     v6->mModel = XModelManager::sInst->GetXModel(v13, InfoForWeapon->szProjectileModel);
     if (InfoForWeapon->type == 2 /* WEAPTYPE_PROJECTILE */)
         v6->key = PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
-                                        0x40 /* kActionEI_MELEE_PLAYER_LOSING|kActionWEAPON_FIRE_3RD */).mVal;
+                                        (EAction)0x40 /* kActionEI_MELEE_PLAYER_LOSING|kActionWEAPON_FIRE_3RD */).mVal;
     if (self->scr_vehicle == nullptr)
         goto label_26;
     Entity* mObject = HandleDbToEnt(self->r.mOwner);
@@ -1236,7 +1236,7 @@ Entity* fire_grenade(Entity* self, float* start, float* dir, int grenadeWPID,
     v9->r.currentAngles.v.m128_f32[1] = v9->s.apos.trBase[1];
     v9->r.currentAngles.v.m128_f32[2] = v9->s.apos.trBase[2];
     v9->key = PostEffectEventWeapon(v9, InfoForWeapon->szInternalName,
-                                    0x40).mVal;
+                                    (EAction)0x40).mVal;
     ValidatePakId((TPakId)v9->mModel.mPakId);
     if (v9->mModel.mValue != nullptr)
     {
@@ -1357,7 +1357,7 @@ Entity* fire_rifle_grenade(Entity* self, const float* target, int grenadeWPID,
         v6->r.currentAngles.v.m128_f32[1] = v6->s.apos.trBase[1];
         v6->r.currentAngles.v.m128_f32[2] = v6->s.apos.trBase[2];
         v6->key = PostEffectEventWeapon(v6, InfoForWeapon->szInternalName,
-                                        0x40).mVal;
+                                        (EAction)0x40).mVal;
         ValidatePakId((TPakId)v6->mModel.mPakId);
         if (v6->mModel.mValue != nullptr)
         {

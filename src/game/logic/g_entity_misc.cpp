@@ -3392,7 +3392,7 @@ extern struct CollisionDesc {
     int material;             // +0x20
 };
 extern Handle PostEffectEventLanding(const Entity* ent,
-                                     const CollisionDesc* col_desc);
+                                     const CollisionDesc& col_desc);
 
 // ea: 0x00603EF0
 SoundMediaMgr::SoundMediaMgr()
@@ -3420,7 +3420,7 @@ void SoundMediaMgr::PlayLandingSound(Entity* entity,
     v5.coord.v.m128_f32[2] = entity->s.pos.trBase[2];
     memset(&v5.coord.v.m128_f32[3], 0, 20);
     v5.material = surfaceType;
-    PostEffectEventLanding(entity, &v5);
+    PostEffectEventLanding(entity, v5);
 }
 
 extern float nslGetWaveParam(nslWaveID wave, int b, float c);  // nsl_xboxr

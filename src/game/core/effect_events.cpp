@@ -587,7 +587,7 @@ Handle PostEffectEventFootstep(const Entity* ent, EStanceType stanceType,
     BitSetAdd(cq.mSpecifiedFields, 2);
     BitSetRmv(cq.mWeakFields, 2);
     v6->SetScriptId(Broc::string(gNULLString));
-    v6->CollisionInfo(&col_desc, true);
+    v6->CollisionInfo(col_desc, true);
     v6->mCurrentQuery->mQueryType = 1;
     result = v6->ExecEffectQuery();
     return result;
@@ -657,7 +657,7 @@ Handle PostEffectEventBulletHit(const Entity* ent, EWeaponClass weaponClass,
     cq.mWEAPON_CLASS = weaponClass;
     v5->SetScriptId(Broc::string(gNULLString));
     v5->mCurrentQuery->mQueryType = 0;
-    v5->CollisionInfo(&col_desc, true);
+    v5->CollisionInfo(col_desc, true);
     result = v5->ExecEffectQuery();
     return result;
 }
@@ -693,7 +693,7 @@ Handle PostEffectEventGrenadeBounce(const Entity* ent, const char* weaponType,
     SetWeaponIdField(cq, weaponType);
     v5->SetScriptId(Broc::string(gNULLString));
     v5->mCurrentQuery->mQueryType = -1;
-    v5->CollisionInfo(&col_desc, true);
+    v5->CollisionInfo(col_desc, true);
     result = v5->ExecEffectQuery();
     return result;
 }
@@ -729,14 +729,14 @@ Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
     SetWeaponIdField(cq, weaponType);
     v5->SetScriptId(Broc::string(gNULLString));
     v5->mCurrentQuery->mQueryType = -1;
-    v5->CollisionInfo(&col_desc, true);
+    v5->CollisionInfo(col_desc, true);
     result = v5->ExecEffectQuery();
     return result;
 }
 
 // ea: 0x004D1FD0
 Handle PostEffectEventLanding(const Entity* ent,
-                              const CollisionDesc* col_desc)
+                              const CollisionDesc& col_desc)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayLanding != 0)
@@ -760,9 +760,9 @@ Handle PostEffectEventLanding(const Entity* ent,
 
 // ea: 0x004D2080
 Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
-                                 const Broc::vector* pos,
-                                 const Broc::vector* facing, bool queue,
-                                 TPakId pakid, bool important)
+                                 const Broc::vector& pos,
+                                 const Broc::vector& facing, bool queue,
+                                 TPakId pakid, const bool important)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayScriptCall != 0)
@@ -786,20 +786,20 @@ Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
         result.mVal = 0;
         return result;
     }
-    if (pos->x != sNaN && pos->y != sNaN && pos->z != sNaN
-        && facing->x != sNaN && facing->y != sNaN && facing->z != sNaN)
+    if (pos.x != sNaN && pos.y != sNaN && pos.z != sNaN
+        && facing.x != sNaN && facing.y != sNaN && facing.z != sNaN)
     {
         math::Mat43* v24 = (math::Mat43*)gCommonPoolAllocator->Allocate(
             0x40, false);
         math::Position3 v25;
-        v25.v.m128_f32[0] = facing->x;
-        v25.v.m128_f32[1] = facing->y;
-        v25.v.m128_f32[2] = facing->z;
+        v25.v.m128_f32[0] = facing.x;
+        v25.v.m128_f32[1] = facing.y;
+        v25.v.m128_f32[2] = facing.z;
         v25.v.m128_f32[3] = 0.0f;
         math::Position3 angles;
-        angles.v.m128_f32[0] = pos->x;
-        angles.v.m128_f32[1] = pos->y;
-        angles.v.m128_f32[2] = pos->z;
+        angles.v.m128_f32[0] = pos.x;
+        angles.v.m128_f32[1] = pos.y;
+        angles.v.m128_f32[2] = pos.z;
         angles.v.m128_f32[3] = 0.0f;
         AnglesToAxis((const float*)&angles, (float(*)[3])&v24->x);
         EffectEventSys* v16 = EffectEventSysStatics::sInst;
@@ -825,7 +825,8 @@ Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
 
 // ea: 0x004D2340
 Handle PostEffectEventScriptCall(const Entity* ent, const char* scriptId,
-                                 bool queue, TPakId pakid, bool important)
+                                 bool queue, TPakId pakid,
+                                 const bool important)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayScriptCall != 0)
@@ -986,7 +987,7 @@ Handle PostEffectEventWeaponFire3rd(const Entity* ent, const char* weaponType,
 
 // ea: 0x004D2A30
 Handle PostEffectEventWeaponReload(const Entity* ent, const char* weaponType,
-                                   int weaponAction, bool queue)
+                                   EAction weaponAction, bool queue)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayWeapon != 0)
@@ -1016,7 +1017,7 @@ Handle PostEffectEventWeaponReload(const Entity* ent, const char* weaponType,
 
 // ea: 0x004D2B70
 Handle PostEffectEventWeapon(const Entity* ent, const char* weaponType,
-                             int weaponAction)
+                             EAction weaponAction)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayWeapon != 0)
@@ -1077,7 +1078,7 @@ Handle PostEffectEventBulletHit(const Entity* ent, int weaponClass,
     cq.mWEAPON_CLASS = weaponClass;
     v5->SetScriptId(Broc::string(gNULLString));
     v5->mCurrentQuery->mQueryType = 0;
-    v5->CollisionInfo(col_desc, true);
+    v5->CollisionInfo(*col_desc, true);
     result = v5->ExecEffectQuery();
     return result;
 }
@@ -1112,7 +1113,7 @@ Handle PostEffectEventGrenadeBounce(const Entity* ent, const char* weaponType,
     cq.mCONTEXT = 6;
     SetWeaponIdField(cq, weaponType);
     v5->SetScriptId(Broc::string(gNULLString));
-    v5->CollisionInfo(col_desc, true);
+    v5->CollisionInfo(*col_desc, true);
     v5->mCurrentQuery->mQueryType = -1;
     result = v5->ExecEffectQuery();
     return result;
@@ -1148,7 +1149,7 @@ Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
     cq.mCONTEXT = 7;
     SetWeaponIdField(cq, weaponType);
     v5->SetScriptId(Broc::string(gNULLString));
-    v5->CollisionInfo(col_desc, true);
+    v5->CollisionInfo(*col_desc, true);
     v5->mCurrentQuery->mQueryType = -1;
     result = v5->ExecEffectQuery();
     return result;
@@ -1156,7 +1157,7 @@ Handle PostEffectEventProjExplode(const Entity* ent, const char* weaponType,
 
 // ea: 0x004D3070
 Handle PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
-                              int action)
+                              EAction action)
 {
     Handle result;
     int mFxDontPlayTurret;
@@ -1188,8 +1189,8 @@ Handle PostEffectEventVehicle(const Entity* ent, const char* vehicleType,
 
 // ea: 0x004D3190
 Handle PostEffectEventVehicleExplosion(const Entity* ent,
-                                       const char* vehicleType, int action,
-                                       const CollisionDesc* col_desc)
+                                       const char* vehicleType, EAction action,
+                                       const CollisionDesc& col_desc)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayVehicle != 0)
@@ -1210,7 +1211,7 @@ Handle PostEffectEventVehicleExplosion(const Entity* ent,
     cq.mACTION = action;
     v6->SetScriptId(Broc::string(gNULLString));
     v6->mCurrentQuery->mFlags.mVal |= 4u;
-    memcpy(&v6->mCurrentQuery->mCollisionInfo, col_desc,
+    memcpy(&v6->mCurrentQuery->mCollisionInfo, &col_desc,
            sizeof(v6->mCurrentQuery->mCollisionInfo));
     v6->mCurrentQuery->mQueryType = -1;
     result = v6->ExecEffectQuery();
@@ -1219,7 +1220,7 @@ Handle PostEffectEventVehicleExplosion(const Entity* ent,
 
 // ea: 0x004D32D0
 Handle PostEffectEventVehicleWheel(const Entity* ent, const char* vehicleType,
-                                   int action, int mat_type,
+                                   EAction action, ECollisionMaterial mat_type,
                                    unsigned int wheel_tag_hash)
 {
     Handle result;
@@ -1265,7 +1266,8 @@ Handle PostEffectEventVehicleWheel(const Entity* ent, const char* vehicleType,
 
 // ea: 0x004D3490
 Handle PostEffectEventPointLightFlash(const Entity* ent,
-                                      const char* weaponType, int weaponAction)
+                                      const char* weaponType,
+                                      EAction weaponAction)
 {
     Handle result;
     if (gSoundOptions.mFxDontPlayLightFlash != 0)
@@ -1290,8 +1292,9 @@ Handle PostEffectEventPointLightFlash(const Entity* ent,
 }
 
 // ea: 0x004D3560
-Handle PostEffectEventEIMelee(const Entity* ent, int action)
+Handle PostEffectEventEIMelee(const Entity* ent, EAction action, bool queue)
 {
+    (void)queue;
     Handle result;
     EffectEventSys* v3 = EffectEventSysStatics::sInst;
     v3->BeginEffectQuery(ent, (TPakId)-1);
@@ -1311,8 +1314,9 @@ Handle PostEffectEventEIMelee(const Entity* ent, int action)
 }
 
 // ea: 0x004D3620
-Handle PostEffectEventPhysicsImpact(const Entity* ent, int myColMat,
-                                    const CollisionDesc* col_desc,
+Handle PostEffectEventPhysicsImpact(const Entity* ent,
+                                    ECollisionMaterial myColMat,
+                                    const CollisionDesc& col_desc,
                                     float intensity)
 {
     Handle result;
@@ -1321,7 +1325,7 @@ Handle PostEffectEventPhysicsImpact(const Entity* ent, int myColMat,
         result.mVal = 0;
         return result;
     }
-    if (col_desc->material > 0)
+    if (col_desc.material > 0)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\EffectEvent.cpp";
@@ -2001,14 +2005,14 @@ void EffectEventSys::KillEffectsWithPakId(TPakId pak_id)
 }
 
 // ea: 0x004CF1D0
-void EffectEventSys::CollisionInfo(const CollisionDesc* col_desc, bool set_mat)
+void EffectEventSys::CollisionInfo(const CollisionDesc& col_desc, bool set_mat)
 {
     mCurrentQuery->mFlags.mVal |= 4u;
-    memcpy(&mCurrentQuery->mCollisionInfo, col_desc,
+    memcpy(&mCurrentQuery->mCollisionInfo, &col_desc,
            sizeof(mCurrentQuery->mCollisionInfo));
     if (set_mat)
     {
-        int material = col_desc->material;
+        int material = col_desc.material;
         if (material > 0)  // kCollisionMaterialASPHALT
         {
             AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -3926,7 +3930,7 @@ void EffectEventSys::FrameAdvance(float delta)
 
 // ea: 0x004D3AD0
 void ActiveEffectSet::GetDebugFxList(Entity* ent,
-                                     std::vector<std::string>* fx)
+                                     std::vector<std::string>& fx) const
 {
     for (unsigned int v5 = 0; v5 < (unsigned int)mEffects.m_size; ++v5)
     {
@@ -3946,21 +3950,21 @@ void ActiveEffectSet::GetDebugFxList(Entity* ent,
         Broc::string v12 = mEffects[v5]->GetDebugString();
         Broc::string::Block* mBlock = v12.mBlock;
         const char* v9 = mBlock ? (const char*)(mBlock + 1) : defaultFileName;
-        fx->push_back(std::string(v9));
+        fx.push_back(std::string(v9));
     }
 }
 
 // ea: 0x004D3C70
 void EffectEventSys::GetDebugFxList(Entity* ent,
-                                    std::vector<std::string>* fx)
+                                    std::vector<std::string>& fx) const
 {
     for (unsigned int i = 0; i < (unsigned int)mEffectSets.m_size; ++i)
     {
         ASSERT_IDX(i, 512, 148);
         std::vector<std::string> s;
-        mEffectSets[i]->GetDebugFxList(ent, &s);
+        mEffectSets[i]->GetDebugFxList(ent, s);
         for (size_t k = 0; k < s.size(); ++k)
-            fx->push_back(s[k]);
+            fx.push_back(s[k]);
     }
 }
 
@@ -3970,24 +3974,24 @@ void EffectEventSys::GetDebugFxList(Entity* ent,
 
 // ea: 0x004CAD20
 void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
-                                     DbTable* type,
-                                     ae_sized_array<const DbTable*, 16>* tables)
+                                     const char* type,
+                                     ae_sized_array<const DbTable*, 16>& tables)
 {
     TPakId mGlobalPakId = PakManager::sInst->GetGlobalPakId();
     TPakId foundPakId = mGlobalPakId;
     void* triggers = DbTablesetMgr_Find(DbTablesetMgr_sInst, mGlobalPakId,
-                                        type->mName, &foundPakId);
+                                        type, &foundPakId);
     ValidatePakId(foundPakId);
     if (triggers != nullptr)
     {
         ValidatePakId(foundPakId);
         DbTable* t = DbTableSet_GetTable(triggers, "TRIGGERS");
         if (t != nullptr)
-            tables->push_back(t);
+            tables.push_back(t);
     }
     TPakId v9 = CurPakId();
     foundPakId = v9;
-    void* v11 = DbTablesetMgr_Find(DbTablesetMgr_sInst, v9, type->mName,
+    void* v11 = DbTablesetMgr_Find(DbTablesetMgr_sInst, v9, type,
                                    &foundPakId);
     ValidatePakId(foundPakId);
     if (v11 != nullptr && v11 != triggers)
@@ -3995,12 +3999,12 @@ void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
         ValidatePakId(foundPakId);
         DbTable* t = DbTableSet_GetTable(v11, "TRIGGERS");
         if (t != nullptr)
-            tables->push_back(t);
+            tables.push_back(t);
     }
     if (ts_name != nullptr)
     {
         ae_formatted_string<32, unsigned char> v12("%s-%s", ts_name,
-                                                   type->mName);
+                                                   type);
         foundPakId = pak;
         void* v14 = DbTablesetMgr_Find(DbTablesetMgr_sInst, pak,
                                        (const char*)v12.mBuff, &foundPakId);
@@ -4010,19 +4014,20 @@ void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
             ValidatePakId(foundPakId);
             DbTable* t = DbTableSet_GetTable(v14, "TRIGGERS");
             if (t != nullptr)
-                tables->push_back(t);
+                tables.push_back(t);
         }
     }
 }
 
 // ea: 0x004CAE70
-void EffectEventSys::GetEffectTables(TPakId pak, DbTable* ts_name,
+void EffectEventSys::GetEffectTables(TPakId pak, const char* ts_name,
                                      const char* ts_global, const char* type,
-                                     ae_sized_array<const DbTable*, 16>* tables)
+                                     ae_sized_array<const DbTable*, 16>& tables)
 {
+    (void)ts_global;
     TPakId v6 = CurPakId();
     TPakId foundPakId = v6;
-    void* levelts = DbTablesetMgr_Find(DbTablesetMgr_sInst, v6, ts_name->mName,
+    void* levelts = DbTablesetMgr_Find(DbTablesetMgr_sInst, v6, ts_name,
                                        &foundPakId);
     ValidatePakId(foundPakId);
     if (levelts != nullptr)
@@ -4030,7 +4035,7 @@ void EffectEventSys::GetEffectTables(TPakId pak, DbTable* ts_name,
         ValidatePakId(foundPakId);
         DbTable* t = DbTableSet_GetTable(levelts, "TRIGGERS");
         if (t != nullptr)
-            tables->push_back(t);
+            tables.push_back(t);
     }
 }
 
@@ -4510,8 +4515,7 @@ int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
     strcat(buf, ".fx");
     ae_sized_array<const DbTable*, 16> event_tables;
     event_tables.m_size = 0;
-    GetEffectTables(q.mEffectsPak, (DbTable*)buf, nullptr, "EVENT.FX",
-                    &event_tables);
+    GetEffectTables(q.mEffectsPak, buf, nullptr, "EVENT.FX", event_tables);
     for (int ti = 0; ti < event_tables.m_size; ++ti)
     {
         DbQuery query;

@@ -6174,7 +6174,7 @@ void VEH_GroundPlant(Entity* ent, int gravity, int msec)
                 || owner != EntityManager::sInst->GetPlayer(currCl))
             {
                 veh->mRumbleEffectHandle = PostEffectEventVehicle(
-                    ent, info->name, 40 /* kActionVEHICLE_BRAKE */);
+                    ent, info->name, (EAction)40 /* kActionVEHICLE_BRAKE */);
             }
         }
     }
@@ -6931,7 +6931,8 @@ static Handle VEH_StartWheelEffect(Entity* ent, unsigned int wheel_tag_hash,
     if (info->type == 2)
         wheel_tag_hash = 0;
     return PostEffectEventVehicleWheel(ent, (const char*)info,
-                                       0x29 /* kActionVEHICLE_HORN */, mat,
+                                       (EAction)0x29 /* kActionVEHICLE_HORN */,
+                                       (ECollisionMaterial)mat,
                                        wheel_tag_hash);
 }
 
@@ -7047,7 +7048,7 @@ void VEH_UpdateOverHeat(Entity* self, int msec)
                 {
                     seat.overheating = true;
                     PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
-                                          0x37 /* kActionMax|kActionWEAPON_PICKUP */);
+                                          (EAction)0x37 /* kActionMax|kActionWEAPON_PICKUP */);
                     Scr_Notify(self, hash_const.overheated, 0);
                     Handle v8;
                     v8.mVal = seat.overheatEffect.mVal;
@@ -7076,7 +7077,7 @@ void VEH_UpdateOverHeat(Entity* self, int msec)
                     if (v11.mVal == 0)
                         seat.overheatEffect =
                             PostEffectEventWeapon(self, InfoForWeapon->szInternalName,
-                                                  0x36 /* kActionMax|kActionWEAPON_LAST_SHOT_EJECT */);
+                                                  (EAction)0x36 /* kActionMax|kActionWEAPON_LAST_SHOT_EJECT */);
                     float scale = (seat.heat - 0.25f) * 1.333333333333333f * emissionRate_0;
                     EffectEventSys::sInst->AdjustEffect_Scale(
                         Handle{seat.overheatEffect.mVal},
