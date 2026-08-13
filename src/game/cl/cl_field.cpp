@@ -24,7 +24,7 @@ extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
-extern void _Z_FreeInternal(void* ptr);
+extern "C" void _Z_FreeInternal(void* ptr);
 extern char* CopyStringInternal(const char* in);
 extern int cvar_modifiedFlags;
 extern int dword_F1719C;

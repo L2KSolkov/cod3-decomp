@@ -644,8 +644,8 @@ extern int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
                                    const char* buffer, const char* filename);
 struct vmCvar_t;
 extern void Cvar_Update(vmCvar_t* vmCvar);
-extern void* _Z_MallocInternal(int size);
-extern void _Z_FreeInternal(void* ptr);
+extern "C" void* _Z_MallocInternal(int size);
+extern "C" void _Z_FreeInternal(void* ptr);
 extern void CG_Printf(const char* msg, ...);
 extern void AxisCopy(const float (*const in)[3], float (*const out)[3]);
 extern int dword_F62960[4 * 1580];

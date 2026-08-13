@@ -14,13 +14,13 @@ extern void Sys_OutOfMemError();
 extern void Com_Memset(void* dest, int val, unsigned int count);
 
 // ea: 0x004BB010
-void _Z_FreeInternal(void* ptr)
+extern "C" void _Z_FreeInternal(void* ptr)
 {
     mem_heap_free(ptr);
 }
 
 // ea: 0x004C02F0
-void* _Z_MallocInternal(int size)
+extern "C" void* _Z_MallocInternal(int size)
 {
     void* v1 = mem_heap_malloc(size);
     if (v1 == nullptr && size > 0)

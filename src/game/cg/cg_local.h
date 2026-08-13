@@ -77,8 +77,8 @@ struct refexport_t {
 
 extern refexport_t re;
 
-extern void* _Z_MallocInternal(int size);
-extern void  _Z_FreeInternal(void* ptr);
+extern "C" void* _Z_MallocInternal(int size);
+extern "C" void  _Z_FreeInternal(void* ptr);
 
 // EntityHandleDb - entity handle database (full layout, verified against IDA)
 struct EntityHandleDbDbElement {

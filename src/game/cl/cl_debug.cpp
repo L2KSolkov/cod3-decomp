@@ -41,7 +41,7 @@ extern int dword_F170F0;
 int com_skelTimeStamp = 0;  // ?com_skelTimeStamp@@3HA (core.o)
 int bCL_AllowedAllocSkel = 0;  // cl.o BSS
 extern struct cvar_t* cl_testAnimWeight;
-extern void* _Z_MallocInternal(int size);
+extern "C" void* _Z_MallocInternal(int size);
 struct FEManager;
 extern FEManager g_femanager;
 extern void Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr,

@@ -18,12 +18,12 @@ bool CtrlIcon::ContainsIconTag(const char* text)
 }
 
 // ea: 0x004BD730
-CtrlIcon* CtrlIcon::TranslateIconTag(const char* text)
+const char* CtrlIcon::TranslateIconTag(const char* text)
 {
     if (_strnicmp(text, "t:", 2) == 0)
     {
         sprintf(mScratchBuffer, "%s", text + 2);
-        return this;
+        return (const char*)this;
     }
     int v4 = 0;
     while (_stricmp(text, g_ctrlIconInfo[v4][0]) != 0)
@@ -31,12 +31,12 @@ CtrlIcon* CtrlIcon::TranslateIconTag(const char* text)
         if (++v4 >= 0x13)
             return nullptr;
     }
-    return (CtrlIcon*)off_DD8A5C[2 * v4];
+    return (const char*)off_DD8A5C[2 * v4];
 }
 
 // ea: 0x004BD7A0
-char CtrlIcon::ExtractIconTag(const char* text, char* preTagString,
-                             char** postTagString, char** tagString)
+bool CtrlIcon::ExtractIconTag(const char* text, char* preTagString,
+                              char** postTagString, char** tagString)
 {
     if (text == nullptr)
         goto fail;
@@ -51,7 +51,7 @@ char CtrlIcon::ExtractIconTag(const char* text, char* preTagString,
         size_t v9 = v8 - v7 - 1;
         strncpy(preTagString, v7 + 1, v9);
         preTagString[v9] = 0;
-        CtrlIcon* v10 = TranslateIconTag(preTagString);
+        const char* v10 = TranslateIconTag(preTagString);
         *tagString = (char*)v10;
         if (v10 != nullptr)
         {

@@ -17,8 +17,15 @@
 #include "game/core/core_types.h"
 #include "game/core/core_systems.h"
 
-// ELanguage is defined elsewhere (shell/UI object); keep ABI-correct 4-byte.
-typedef int ELanguage;  // TODO: enum values from IDA
+// ELanguage - language enum (shell/UI object; values from IDA)
+enum ELanguage {
+    kLanguageEnglish = 0,
+    kLanguageGerman = 1,
+    kLanguageFrench = 2,
+    kLanguageSpanish = 3,
+    kLanguageItalian = 4,
+    kLanguageJapanese = 5,
+};
 struct ae_heap;
 
 // ============================================================================

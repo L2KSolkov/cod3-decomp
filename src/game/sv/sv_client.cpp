@@ -20,7 +20,7 @@ extern void  Netchan_Setup(netsrc_t sock, netchan_t* chan, netadr_t adr, int qpo
 extern int   MSG_ReadLong(msg_t* msg);
 extern unsigned char MSG_ReadByte(msg_t* msg);
 extern char* MSG_ReadString(msg_t* msg);
-extern void* _Z_MallocInternal(int size);
+extern "C" void* _Z_MallocInternal(int size);
 extern char* ClientConnect(DbLinkedHandle<EntityHandleDb, Entity> entity);
 extern void  SV_FreeAcknowledgedReliableCommands(client_s* cl);
 extern void  SV_PreFrame(int msec);

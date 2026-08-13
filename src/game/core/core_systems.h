@@ -704,10 +704,10 @@ struct ConfigStringManager {
     static void DeleteInst();  // ?DeleteInst@ConfigStringManager@@SAXXZ (core.o)
     unsigned char mData[0x190];  // InplaceAssetBankSet<ConfigStringBank>
     static ConfigStringManager* sInst;  // ?sInst@ConfigStringManager@@2PAV1@A (core.o @ 0x12F039C)
-    void DecodeBank(const char* name, ConfigStringBank* data, int size,
-                    TPakId pakId);
-    ConfigStringPtr GetConfigString(TPakId pakId, const char* name,
-                                    const char* type);
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId);  // ea: 0x004C5C80
+    IVPointer<ConfigString> GetConfigString(TPakId pakId, const char* name,
+                                            const char* type);  // ea: 0x004CE8D0
     void CallbackSearch(TPakId pakId, const char* type,
                         void (*callback)(const char*, const ConfigString*));
     ConfigStringManager();  // ea: 0x004C5C60
@@ -964,9 +964,9 @@ struct AnimHeap : nalHeap {
     unsigned char mHeap[0x49C];  // +0x08 mem_heap
 
     AnimHeap();   // ea: 0x004C1380
-    ~AnimHeap();  // ea: 0x004BD610
-    void* Allocate(unsigned int size);
-    void Free(void* ptr, int size);
+    virtual ~AnimHeap();  // ea: 0x004BD610
+    virtual void* Allocate(int size);   // ea: 0x004BD660 (UAE)
+    virtual void Free(void* ptr, int size);  // ea: 0x004BD690 (UAE)
     static void LinkAnimHeap();
 };
 static_assert(sizeof(AnimHeap) == 0x4A4, "AnimHeap size mismatch");
@@ -981,9 +981,9 @@ struct CtrlIcon {
     static void DeleteInst();  // ?DeleteInst@CtrlIcon@@SAXXZ (core.o)
     char mScratchBuffer[2048];  // +0x00
     bool ContainsIconTag(const char* text);
-    CtrlIcon* TranslateIconTag(const char* text);
-    char ExtractIconTag(const char* text, char* preTagString,
-                        char** postTagString, char** tagString);
+    const char* TranslateIconTag(const char* text);  // ea: 0x004BD730
+    bool ExtractIconTag(const char* text, char* preTagString,
+                        char** postTagString, char** tagString);  // ea: 0x004BD7A0
     CtrlIcon();   // ea: 0x004BD6E0
     ~CtrlIcon();  // ea: 0x004BD6F0
 };

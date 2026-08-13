@@ -19,7 +19,7 @@ extern void* mem_heap_alloc(void* heap, unsigned int alignment,
 extern void mem_heap_release(void* heap, void* ptr);
 
 // ea: 0x004BD660
-void* AnimHeap::Allocate(unsigned int size)
+void* AnimHeap::Allocate(int size)
 {
     unsigned int used_byte = *(unsigned int*)&mHeap[0x488];
     if (size + used_byte <= 0x100000)

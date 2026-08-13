@@ -1016,8 +1016,8 @@ extern Camera gCamera[8];  // ?gCamera@@3PAVCamera@@A (cg.o @ 0x1358EF0, stride 
 // ============================================================================
 // Memory helpers (Z_MallocInternal / Z_FreeInternal / heap)
 // ============================================================================
-extern void* _Z_MallocInternal(int size);
-extern void  _Z_FreeInternal(void* ptr);
+extern "C" void* _Z_MallocInternal(int size);
+extern "C" void  _Z_FreeInternal(void* ptr);
 extern void* mem_heap_malloc(int alignment, unsigned int size);
 extern void  mem_heap_free(void* ptr);
 

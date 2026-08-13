@@ -29,24 +29,24 @@ extern void InplaceAssetBankSet_PredicateSearch_ConfigString(
     void* self, ConfigStringPtr* result, TPakId pakId, void* op, void* formal);
 
 // ea: 0x004C5C80
-void ConfigStringManager::DecodeBank(const char* name, ConfigStringBank* data,
+void ConfigStringManager::DecodeBank(const char* name, unsigned char* data,
                                      int size, TPakId pakId)
 {
-    InplaceAssetBank_Fixup_ConfigString(data);
-    InplaceAssetBankSet_AddBank_ConfigString(this, pakId, data);
+    InplaceAssetBank_Fixup_ConfigString((ConfigStringBank*)data);
+    InplaceAssetBankSet_AddBank_ConfigString(this, pakId,
+                                             (ConfigStringBank*)data);
 }
 
 // ea: 0x004CE8D0
-ConfigStringPtr ConfigStringManager::GetConfigString(TPakId pakId,
-                                                     const char* name,
-                                                     const char* type)
+IVPointer<ConfigString> ConfigStringManager::GetConfigString(
+    TPakId pakId, const char* name, const char* type)
 {
     char nm[128];
     nm[0] = 0;
     sprintf(nm, "%s.%s", name, type);
     ConfigStringPtr xm;
     InplaceAssetBankSet_Find_ConfigString(this, &xm, pakId, nm, 0, nullptr);
-    ConfigStringPtr result;
+    IVPointer<ConfigString> result;
     result.mValue = xm.mValue;
     result.mPakId = xm.mPakId;
     return result;

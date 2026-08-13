@@ -37,14 +37,15 @@ const char* GetLanguageId(ELanguage l)
 }
 
 // ea: 0x004C1490
-void SetGameLanguage(const ae_fixed_string<1024, unsigned short>* sysCmdLine)
+void SetGameLanguage(
+    const ae_fixed_string<1024, unsigned short>& sysCmdLine)
 {
     int v1 = 0;
-    while (strstr((const char*)sysCmdLine->mBuff, sLanguageNames[v1].first)
+    while (strstr((const char*)sysCmdLine.mBuff, sLanguageNames[v1].first)
            == nullptr)
     {
         if (++v1 >= 6)
             return;
     }
-    gLanguage = dword_DD8B74[2 * v1];
+    gLanguage = (ELanguage)dword_DD8B74[2 * v1];
 }

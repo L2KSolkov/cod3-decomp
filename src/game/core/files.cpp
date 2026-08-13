@@ -46,8 +46,8 @@ extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc_ctx(unsigned int size, int alignment,
                                  const char* ctx, const char* file, int line);
-extern void* _Z_MallocInternal(int size);
-extern void _Z_FreeInternal(void* ptr);
+extern "C" void* _Z_MallocInternal(int size);
+extern "C" void _Z_FreeInternal(void* ptr);
 extern char* CopyStringInternal(const char* in);
 extern char* va(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);

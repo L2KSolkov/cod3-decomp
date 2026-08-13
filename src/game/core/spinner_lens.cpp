@@ -66,14 +66,6 @@ public:
     static EntityHandleDb sInst;
 };
 
-enum {
-    kLanguageEnglish = 0,
-    kLanguageGerman = 1,
-    kLanguageFrench = 2,
-    kLanguageSpanish = 3,
-    kLanguageItalian = 4,
-};
-
 // ea: 0x004BD900
 void SpinnerDrawLoading()
 {

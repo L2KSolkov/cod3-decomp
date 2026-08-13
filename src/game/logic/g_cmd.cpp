@@ -1370,7 +1370,7 @@ LABEL_174:
 static BaseCmdFuncInfo* cmd_functions;      // ?cmd_functions (game.o)
 static BaseCmdFuncInfo* sv_cmd_functions;   // ?sv_cmd_functions (game.o)
 
-extern void _Z_FreeInternal(void* ptr);             // ?_Z_FreeInternal (hunk_mem)
+extern "C" void _Z_FreeInternal(void* ptr);             // ?_Z_FreeInternal (hunk_mem)
 extern int Com_Filter(char* filter, char* name, int casesensitive);  // core.o
 extern void ButtonMgr_ClearBinding(const BaseCmdFuncInfo* boundCmd,
                                    int clnt);  // ?ClearBinding@ButtonMgr (game2.o)

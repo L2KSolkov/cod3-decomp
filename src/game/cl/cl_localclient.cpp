@@ -21,7 +21,7 @@ extern void MSG_WriteByte(struct msg_t* msg, int c);
 extern void Netchan_Transmit(netchan_t* chan, int length,
                              const unsigned char* data);
 extern int Netchan_Process(netchan_t* chan, struct msg_t* msg);
-extern void _Z_FreeInternal(void* ptr);
+extern "C" void _Z_FreeInternal(void* ptr);
 extern struct cvar_t* cl_shownet;
 
 // Minimal view (mp.o); sInst symbol ?sInst@MultiplayerMgr@@2PAV1@A
