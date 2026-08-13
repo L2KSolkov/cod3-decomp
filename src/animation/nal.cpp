@@ -6821,35 +6821,7 @@ enum ELerpType {
     kNumLerpTypes = 8,
 };
 
-// Layout verified vs disasm (UpdateLerp 0x53D330 / CalcTargetPosAndAngles):
-// angles are float[3], pos float[3], mInvTagUtilityMat Mat43 at +0x40.
-struct LerpInfo {
-    float mInitialAngles[3];     // +0x00
-    float mTargetAngles[3];      // +0x0C
-    float mInitialPos[3];        // +0x18
-    float mTargetPos[3];         // +0x24
-    int mTagUtilityIndex;           // +0x30
-    int mInteractableTagIndex;      // +0x34
-    int mOtherTagUtilityIndex;      // +0x38
-    int mOtherTagIndex;             // +0x3C
-    math::Mat43 mInvTagUtilityMat;  // +0x40
-
-    void Init();  // ?Init@LerpInfo@InteractState@@QAEXXZ
-};
-
-// ea: 0x0055FA70
-void LerpInfo::Init()
-{
-    memset(this, 0, 0x30);
-    mTagUtilityIndex = -1;
-    mInteractableTagIndex = 0;
-    memset(&mInvTagUtilityMat, 0, sizeof(mInvTagUtilityMat));
-    mInvTagUtilityMat.x.v = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
-    mInvTagUtilityMat.y.v = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
-    mInvTagUtilityMat.z.v = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
-    mInvTagUtilityMat.w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
-}
-
+class RumbleEffectInstanceHandle;
 class InteractState;
 
 class InteractState {
@@ -6878,6 +6850,24 @@ public:
         void Update(float deltaT, float& updatedVal);  // ?Update@Lerper@InteractState@@QAEXMAAM@Z
     };
     static Lerper sTimeScaleMgr;  // ?sTimeScaleMgr@InteractState@@1VLerper@1@A
+
+    // Layout verified vs disasm (UpdateLerp 0x53D330 / CalcTargetPosAndAngles):
+    // angles are float[3], pos float[3], mInvTagUtilityMat Mat43 at +0x40.
+    struct LerpInfo {
+        float mInitialAngles[3];     // +0x00
+        float mTargetAngles[3];      // +0x0C
+        float mInitialPos[3];        // +0x18
+        float mTargetPos[3];         // +0x24
+        int mTagUtilityIndex;        // +0x30
+        int mInteractableTagIndex;   // +0x34
+        int mOtherTagUtilityIndex;   // +0x38
+        int mOtherTagIndex;          // +0x3C
+        math::Mat43 mInvTagUtilityMat;  // +0x40
+
+        // ??0LerpInfo@InteractState@@QAE@XZ (0x561450)
+        LerpInfo();
+        void Init();  // ?Init@LerpInfo@InteractState@@QAEXXZ (0x55FA70)
+    };
 
     void* __vftable;            // +0x00
     int mType;                  // +0x10
@@ -6908,13 +6898,6 @@ public:
     LerpInfo mOtherLerp;        // +0x110
     InteractionController* mController;  // +0x190
 
-    void SetPlayerTagUtilityIndex(int weaponIndex);  // 0x53D280
-    float UpdateLerp(float deltaT);                  // 0x53D330
-    int GetRandomPlayerAnimIndex();                  // 0x53D900
-    void CheckNotifySet(Entity* ent, int eventIndex); // 0x53F9F0
-    void PlayPlayerAnim(void* anim, int weaponIndex, float fadeIn,
-                        float animTimeFrac, float speed);  // 0x53FA70
-
     // Binary vtable order (??_7InteractState@@6B@ @ 0xCED550): Activate,
     // Deactivate, Update, PostPhysicsUpdate, GetCameraMode, Press, Release,
     // GetRotation, GetInteractableMat, PostEffectEvent, PlayAnims.
@@ -6926,27 +6909,41 @@ public:
     virtual int Press(int buttonIndex); // 0x53D860 (UAEHH)
     virtual int Release(int buttonIndex);  // 0x53D8B0 (UAEHH)
     virtual float GetRotation() const;  // 0x5614B0 (UBEM)
-    const void* GetInfo() const;       // 0x53AC20
+    const InteractStateInfo* GetInfo() const;  // 0x53AC20
     TPakId GetPakId() const;           // 0x53AC30
     void SetFlag(unsigned int f, int enable);  // 0x53ABC0
     int IsFlagged(unsigned int f) const;       // 0x53AC00
     void CreateTransitionStates();  // 0x54CBA0
-    void CheckForEffectEvents(float deltaT, int postRemaining);  // 0x54D9E0
-    void DoWeaponChange();  // 0x546A00
-    void SetInitialLerpValues();  // 0x54D1A0
-    void SetOtherTagUtilityIndex();  // 0x54D0E0
-    void SetOtherPosAndAngles(float (*angles)[3], float (*pos)[3]);  // 0x54D6A0
-    void UpdateAlignment(float deltaT);  // 0x5554F0
-    void UpdateHandsPosAndAngles();  // 0x54D2C0
-    void UpdateOtherPosAndAngles();  // 0x54D500
-    void CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
-                                int useScriptOrigin);  // 0x53D420
+    static void StopRumble(int handleVal);  // ?StopRumble@InteractState@@SAXH@Z
+    static RumbleEffectInstanceHandle StartRumble(
+        float leftIntensity, float rightIntensity, float leftSteadyDur,
+        float rightSteadyDur, float leftDelay, float rightDelay, float rampUp,
+        float rampDown);  // ?StartRumble@InteractState@@SA?AVRumbleEffectInstanceHandle@@MMMMMMMM@Z
 
 protected:
     virtual void GetInteractableMat(math::Mat43& mat) const;  // 0x54D720 (MBEXAAVMat43)
     virtual void PostEffectEvent(const char* effectName, int eventIndex);  // 0x53FBB0 (MAE)
     virtual void PlayAnims(int weaponIndex, float fadeIn);  // 0x54DC40 (MAE)
     void FadeOutModifiers(float fadeOutTime, unsigned int mask);  // ?FadeOutModifiers@InteractState@@IAEXMI@Z
+
+    // Binary IAE (protected); exact manglings verified vs IDA.
+    void SetPlayerTagUtilityIndex(int weaponIndex);  // 0x53D280
+    float UpdateLerp(float deltaT);                  // 0x53D330
+    int GetRandomPlayerAnimIndex() const;            // 0x53D900
+    void CheckNotifySet(Entity& ent, int eventIndex);  // 0x53F9F0
+    void PlayPlayerAnim(nalAnimClass<nalAnyPose>* anim, int weaponIndex,
+                        float fadeIn, float animTimeFrac,
+                        float speed);  // 0x53FA70
+    void CheckForEffectEvents(float deltaT, int postRemaining);  // 0x54D9E0
+    void DoWeaponChange();  // 0x546A00
+    void SetInitialLerpValues();  // 0x54D1A0
+    void SetOtherTagUtilityIndex();  // 0x54D0E0
+    void SetOtherPosAndAngles(float (&angles)[3], float (&pos)[3]);  // 0x54D6A0
+    void UpdateAlignment(float deltaT);  // 0x5554F0
+    void UpdateHandsPosAndAngles();  // 0x54D2C0
+    void UpdateOtherPosAndAngles();  // 0x54D500
+    void CalcTargetPosAndAngles(LerpInfo& lerpInfo, DObj& dobj,
+                                int useScriptOrigin);  // 0x53D420
 
     friend void InteractStateMeleeSuccess_PlayAnims(InteractState* self,
                                                     int weaponIndex,
@@ -6960,6 +6957,25 @@ public:
     InteractState(TPakId curPakId, const InteractStateInfo* info,
                   InteractionController* controller);
 };
+
+// ea: 0x00561450
+InteractState::LerpInfo::LerpInfo()
+{
+    Init();
+}
+
+// ea: 0x0055FA70
+void InteractState::LerpInfo::Init()
+{
+    memset(this, 0, 0x30);
+    mTagUtilityIndex = -1;
+    mInteractableTagIndex = 0;
+    memset(&mInvTagUtilityMat, 0, sizeof(mInvTagUtilityMat));
+    mInvTagUtilityMat.x.v = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    mInvTagUtilityMat.y.v = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    mInvTagUtilityMat.z.v = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    mInvTagUtilityMat.w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+}
 
 // ============================================================================
 // InteractStateRowboat (anim.o Rowboat.cpp)
@@ -7468,7 +7484,7 @@ const math::Position3& math::Position3::operator=(const math::Vector4& v)
 }
 
 // ea: 0x0053D240
-void InteractState_StopRumble(int handleVal)
+void InteractState::StopRumble(int handleVal)
 {
     RumbleManager* inst = (RumbleManager*)RumbleManager_Inst(currCl);
     if (inst != nullptr)
@@ -7545,7 +7561,7 @@ float InteractState::UpdateLerp(float deltaT)
 }
 
 // ea: 0x0053D900
-int InteractState::GetRandomPlayerAnimIndex()
+int InteractState::GetRandomPlayerAnimIndex() const
 {
     InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
     tlFixedString name(info->playerAnim);
@@ -7568,9 +7584,9 @@ int InteractState::GetRandomPlayerAnimIndex()
 }
 
 // ea: 0x0053F9F0
-void InteractState::CheckNotifySet(Entity* ent, int eventIndex)
+void InteractState::CheckNotifySet(Entity& ent, int eventIndex)
 {
-    void* mNotifySet = ent->mNotifySet;
+    void* mNotifySet = ent.mNotifySet;
     if (mNotifySet != nullptr)
     {
         InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
@@ -7725,9 +7741,9 @@ float InteractState::GetRotation() const
 }
 
 // ea: 0x0053AC20 / 0x0053AC30
-const void* InteractState::GetInfo() const
+const InteractStateInfo* InteractState::GetInfo() const
 {
-    return mInfo;
+    return (const InteractStateInfo*)mInfo;
 }
 
 TPakId InteractState::GetPakId() const
@@ -8021,7 +8037,8 @@ void InteractState::PlayAnims(int weaponIndex, float fadeIn)
         {
             tlFixedString name(playerAnim);
             void* Anim = nalGetAnim(name);
-            PlayPlayerAnim(Anim, weaponIndex, fadeIn, 0.0f, 1.0f);
+            PlayPlayerAnim((nalAnimClass<nalAnyPose>*)Anim, weaponIndex,
+                           fadeIn, 0.0f, 1.0f);
         }
         if (*interactableAnim != 0)
         {
@@ -8113,7 +8130,8 @@ void InteractStateMeleeFailure_PlayAnims(InteractState* self,
 }
 
 // ea: 0x0053FA70
-void InteractState::PlayPlayerAnim(void* anim, int weaponIndex, float fadeIn,
+void InteractState::PlayPlayerAnim(nalAnimClass<nalAnyPose>* anim,
+                                   int weaponIndex, float fadeIn,
                                    float animTimeFrac, float speed)
 {
     if (anim != nullptr)
@@ -8142,9 +8160,7 @@ void InteractState::PlayPlayerAnim(void* anim, int weaponIndex, float fadeIn,
                 if (cidx + 1 == 3)
                     v12->mNextPlayerCallbackIndex = 0;
                 mPlayerCallback = v14;
-                float animTime = ((nalAnimClass<nalAnyPose>*)mPlayerAnim)
-                                     ->GetDuration()
-                                 * animTimeFrac;
+                float animTime = anim->GetDuration() * animTimeFrac;
                 // AnimationPlayer::Play on DObj animPlayers[0]
                 ((AnimationPlayer*)*(void**)((char*)v8 + 0x20))
                     ->Play((nalGenericAnim*)mPlayerAnim, true, fadeIn, v10,
@@ -8896,8 +8912,8 @@ InteractStateRowboat::EMode InteractStateRowboat::UpdateModeIdle(float deltaT)
             int weaponIndex =
                 ((InteractionController*)controller)
                     ->GetSelectedInteractWeaponIndex();
-            PlayPlayerAnim(Anim, weaponIndex, sIdleFadeTimeRowboat, 0.0f,
-                           1.0f);
+            PlayPlayerAnim((nalAnimClass<nalAnyPose>*)Anim, weaponIndex,
+                           sIdleFadeTimeRowboat, 0.0f, 1.0f);
             mAnimFadeTimer = sIdleFadeTimeRowboat;
             mStartAnim = 0;
             InteractInputRcvr* rcvr = (InteractInputRcvr*)this->mInputRcvr;
@@ -10043,7 +10059,7 @@ struct RumbleEffect {
 };
 
 // ea: 0x005461C0
-RumbleEffectInstanceHandle InteractState_StartRumble(
+RumbleEffectInstanceHandle InteractState::StartRumble(
     float leftIntensity, float rightIntensity, float leftSteadyDur,
     float rightSteadyDur, float leftDelay, float rightDelay, float rampUp,
     float rampDown)
@@ -10158,7 +10174,7 @@ void InteractState::CheckForEffectEvents(float deltaT, int postRemaining)
             float eventTime = *(float*)((char*)info + 0x43C + 4 * i);
             if (eventTime < 0.0f)
             {
-                CheckNotifySet(player, i);
+                CheckNotifySet(*player, i);
                 unsigned int v9 = mController->mInteractableH.mVal & 0xFFF;
                 if (v9 < 0x540
                     && mController->mInteractableH.mVal >> 12
@@ -10167,7 +10183,7 @@ void InteractState::CheckForEffectEvents(float deltaT, int postRemaining)
                     Entity* mObject =
                         EntityHandleDb::sInst.mElements[v9].mObject;
                     if (mObject != nullptr)
-                        CheckNotifySet(mObject, i);
+                        CheckNotifySet(*mObject, i);
                 }
             }
             else if (eventTime >= (mStateTimer - deltaT)
@@ -10396,13 +10412,13 @@ InteractStateRowboat::EMode InteractStateRowboat::UpdateModeSlip(float deltaT)
                 else
                     weaponIndex = 0;
             }
-            PlayPlayerAnim(mSlipAnim, weaponIndex, sSlipFadeTime,
-                           startAnimTimeFrac, 1.0f);
+            PlayPlayerAnim((nalAnimClass<nalAnyPose>*)mSlipAnim, weaponIndex,
+                           sSlipFadeTime, startAnimTimeFrac, 1.0f);
             mAnimFadeTimer = sSlipFadeTime;
             Entity* v7 = EntityManager::sInst->GetPlayer(currCl);
             PostEffectEventScriptCall(v7, "rowing_oar_slip", false,
                                       PAK_ID_INVALID, false);
-            RumbleEffectInstanceHandle handle = InteractState_StartRumble(
+            RumbleEffectInstanceHandle handle = StartRumble(
                 0.1f, 0.1f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f);
             mRumbleHandleVal = handle.mVal;
         }
@@ -10587,14 +10603,14 @@ InteractStateRowboat::EMode InteractStateRowboat::UpdateModeRow(float deltaT)
         {
             if (inScore)
             {
-                RumbleEffectInstanceHandle handle = InteractState_StartRumble(
+                RumbleEffectInstanceHandle handle = StartRumble(
                     0.1f, 0.1f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f);
                 mRumbleHandleVal = handle.mVal;
             }
         }
         else if (!inScore)
         {
-            InteractState_StopRumble(mRumbleHandleVal);
+            StopRumble(mRumbleHandleVal);
             mRumbleHandleVal = -1;
         }
     }
@@ -11104,7 +11120,7 @@ void InteractStateMelee::Activate()
     RumbleManager* rm = (RumbleManager*)RumbleManager_Inst(currCl);
     if (rm != nullptr)
     {
-        RumbleEffectInstanceHandle handle = InteractState_StartRumble(
+        RumbleEffectInstanceHandle handle = StartRumble(
             baseIntensityLeft, baseIntensityRight, duration, duration, 0.0f,
             0.0f, 0.0f, 0.0f);
         mRumbleHandle = handle.mVal;
@@ -11601,8 +11617,7 @@ void InteractStateMeleeSuccessSetup::Activate()
     EntityManager::sInst->GetPlayer(currCl);
     *(int*)((char*)EntityManager::sInst->GetPlayer(currCl)->client + 0x800) =
         1;
-    InteractState_StartRumble(0.5f, 0.7f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f,
-                              0.0f);
+    StartRumble(0.5f, 0.7f, 0.1f, 0.1f, 0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 // ea: 0x005406F0 (thunk)
@@ -12005,7 +12020,8 @@ void InteractStatePlayPlayerAnim::Activate()
             void* Anim = nalGetAnim(name);
             if (Anim != nullptr)
             {
-                PlayPlayerAnim(Anim, mController->GetInteractWeaponIndex(),
+                PlayPlayerAnim((nalAnimClass<nalAnyPose>*)Anim,
+                               mController->GetInteractWeaponIndex(),
                                mInfo->animFadeInTime, 0.0f, 1.0f);
             }
         }
@@ -12031,7 +12047,8 @@ InteractState* InteractStatePlayPlayerAnim::Update(float deltaT)
             void* Anim = nalGetAnim(name);
             if (Anim != nullptr)
             {
-                PlayPlayerAnim(Anim, mController->GetInteractWeaponIndex(),
+                PlayPlayerAnim((nalAnimClass<nalAnyPose>*)Anim,
+                               mController->GetInteractWeaponIndex(),
                                mInfo->animFadeInTime, 0.0f, 1.0f);
             }
         }
@@ -12062,7 +12079,7 @@ InteractState* InteractStatePlayPlayerAnim::Update(float deltaT)
         void* v15 = nalGetAnim(name2);
         if (v15 != nullptr)
         {
-            PlayPlayerAnim(v15,
+            PlayPlayerAnim((nalAnimClass<nalAnyPose>*)v15,
                            InteractionController::Inst(currCl)
                                ->GetInteractWeaponIndex(),
                            info->animFadeInTime, 0.0f, 1.0f);
@@ -13263,7 +13280,8 @@ void InteractStateVehicleIdle::Activate()
                 weapon = 0;
         }
         void* Anim = nalGetAnim(name);
-        PlayPlayerAnim(Anim, weapon, 0.0f, 0.0f, 1.0f);
+        PlayPlayerAnim((nalAnimClass<nalAnyPose>*)Anim, weapon, 0.0f, 0.0f,
+                       1.0f);
     }
     else
     {
@@ -13610,7 +13628,8 @@ void InteractStateVehicleRelease::Activate()
                     weapon = 0;
             }
             void* v11 = nalGetAnim(name2);
-            PlayPlayerAnim(v11, weapon, mInfo->animFadeInTime, 0.0f, speed);
+            PlayPlayerAnim((nalAnimClass<nalAnyPose>*)v11, weapon,
+                           mInfo->animFadeInTime, 0.0f, speed);
         }
     }
     mInitialSteeringWheelAngle = sSteeringWheelAngle;
@@ -14056,8 +14075,8 @@ void InteractState::SetOtherTagUtilityIndex()
 }
 
 // ea: 0x0054D6A0
-void InteractState::SetOtherPosAndAngles(float (*angles)[3],
-                                         float (*pos)[3])
+void InteractState::SetOtherPosAndAngles(float (&angles)[3],
+                                         float (&pos)[3])
 {
     unsigned int mVal = mController->mInteractableH.mVal;
     unsigned int v4 = mVal & 0xFFF;
@@ -14069,12 +14088,12 @@ void InteractState::SetOtherPosAndAngles(float (*angles)[3],
         {
             float* oa = (float*)((char*)mObject + 0x160);
             float* op = (float*)((char*)mObject + 0x150);
-            oa[0] = (*angles)[0];
-            oa[1] = (*angles)[1];
-            oa[2] = (*angles)[2];
-            op[0] = (*pos)[0];
-            op[1] = (*pos)[1];
-            op[2] = (*pos)[2];
+            oa[0] = angles[0];
+            oa[1] = angles[1];
+            oa[2] = angles[2];
+            op[0] = pos[0];
+            op[1] = pos[1];
+            op[2] = pos[2];
         }
     }
 }
@@ -14161,12 +14180,12 @@ void InteractState::GetInteractableMat(math::Mat43& mat) const
 }
 
 // ea: 0x0053D420
-void InteractState::CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
+void InteractState::CalcTargetPosAndAngles(LerpInfo& lerpInfo, DObj& dobj,
                                            int useScriptOrigin)
 {
     if ((mFlags & 8) == 0)
     {
-        const math::Mat43& m = dobj->GetMat(lerpInfo->mTagUtilityIndex);
+        const math::Mat43& m = dobj.GetMat(lerpInfo.mTagUtilityIndex);
         __m128 x = m.x.v, y = m.y.v, z = m.z.v, w = m.w.v;
         __m128 v14 = _mm_shuffle_ps(x, y, _MM_SHUFFLE(1, 0, 1, 0));
         __m128 v15 = _mm_shuffle_ps(v14, z, _MM_SHUFFLE(3, 1, 3, 1));
@@ -14174,7 +14193,7 @@ void InteractState::CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
         __m128 v17 = _mm_shuffle_ps(
             _mm_shuffle_ps(x, y, _MM_SHUFFLE(3, 2, 3, 2)), z,
             _MM_SHUFFLE(2, 2, 2, 0));
-        math::Mat43& inv = lerpInfo->mInvTagUtilityMat;
+        math::Mat43& inv = lerpInfo.mInvTagUtilityMat;
         inv.x.v = v16;
         inv.y.v = v15;
         inv.z.v = v17;
@@ -14195,7 +14214,7 @@ void InteractState::CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
         mat = *mController->GetScriptOriginMat();
     else
         GetInteractableMat(mat);
-    const math::Mat43& inv = lerpInfo->mInvTagUtilityMat;
+    const math::Mat43& inv = lerpInfo.mInvTagUtilityMat;
     __m128 ix = inv.x.v, iy = inv.y.v, iz = inv.z.v, iw = inv.w.v;
     __m128 mx = mat.x.v, my = mat.y.v, mz = mat.z.v, mw = mat.w.v;
     math::Mat43 result;
@@ -14223,10 +14242,10 @@ void InteractState::CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
                            my)),
             _mm_mul_ps(_mm_shuffle_ps(iw, iw, _MM_SHUFFLE(2, 2, 2, 2)), mz)),
         mw);
-    Axis4ToAngles((const float(*)[4])&result, lerpInfo->mTargetAngles);
-    lerpInfo->mTargetPos[0] = *(float*)((char*)&result + 48);
-    lerpInfo->mTargetPos[1] = *(float*)((char*)&result + 52);
-    lerpInfo->mTargetPos[2] = *(float*)((char*)&result + 56);
+    Axis4ToAngles((const float(*)[4])&result, lerpInfo.mTargetAngles);
+    lerpInfo.mTargetPos[0] = *(float*)((char*)&result + 48);
+    lerpInfo.mTargetPos[1] = *(float*)((char*)&result + 52);
+    lerpInfo.mTargetPos[2] = *(float*)((char*)&result + 56);
 }
 
 // ea: 0x0054D500
@@ -14310,7 +14329,7 @@ void InteractState::UpdateHandsPosAndAngles()
              || mLerpType == (kNumLerpTypes | kLerpSnapPlayer))
                 ? 1
                 : 0;
-        CalcTargetPosAndAngles(&mPlayerLerp, v8, useScriptOrigin);
+        CalcTargetPosAndAngles(mPlayerLerp, *v8, useScriptOrigin);
         return;
     }
 fallback_calc:
@@ -14347,8 +14366,8 @@ void InteractState::UpdateAlignment(float deltaT)
     if (*(unsigned char*)((char*)mInfo + 0xE2) == kLerpStaged)
     {
         UpdateOtherPosAndAngles();
-        SetOtherPosAndAngles(&mOtherLerp.mTargetAngles,
-                             &mOtherLerp.mTargetPos);
+        SetOtherPosAndAngles(mOtherLerp.mTargetAngles,
+                             mOtherLerp.mTargetPos);
     }
     UpdateHandsPosAndAngles();
     switch (mLerpType)
@@ -14370,8 +14389,8 @@ void InteractState::UpdateAlignment(float deltaT)
         mController->SetHands(&mPlayerLerp.mTargetAngles,
                               &mPlayerLerp.mTargetPos);
         UpdateOtherPosAndAngles();
-        SetOtherPosAndAngles(&mOtherLerp.mTargetAngles,
-                             &mOtherLerp.mTargetPos);
+        SetOtherPosAndAngles(mOtherLerp.mTargetAngles,
+                             mOtherLerp.mTargetPos);
         break;
     case kNumLerpTypes:
         if (UpdateLerp(deltaT) >= 1.0f)
