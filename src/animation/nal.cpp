@@ -1447,3 +1447,430 @@ const char* GetButtonTextName(unsigned int index)
     }
     return sButtonTextNames[index];
 }
+
+// ============================================================================
+// AnimationPlayer (anim.o) - animation state machine + modifier system
+// Layouts verified against IDA (nalAnimState 0x2C, nalPartialAnimState 0x44).
+// ============================================================================
+
+// Local view of EntityManager (full class in streamer/pakmanager.cpp).
+class Entity {
+public:
+    unsigned char _pad[0x254];
+    void* client;  // +0x254
+};
+class EntityManager {
+public:
+    static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z
+};
+
+// Local view of Camera (full class in cg_misc.cpp; StopAnimating real there).
+struct Camera {
+public:
+    void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
+};
+extern Camera* gCamera;  // ?gCamera@@3PAUCamera@@A (cg.o @ 0x1358EF0)
+
+extern int currCl;
+extern int dword_F6A2A0[4 * 802];
+extern void* nalGenericAnim_CreateInstance(void* anim, void* skeleton);
+
+class AnimationPlayer {
+public:
+    enum AnimationPlayerModifierType {
+        nalPartialModifier = 1,
+        nalFullModifier = 2,
+    };
+
+    struct nalPlayMethod;
+
+    // nalAnimCallback - vftable + curAnim (anim.o 0x539EB0/0x539ED0/0x539EE0)
+    struct nalAnimCallback {
+        void** __vftable;          // +0x00
+        nalGenericAnim* curAnim;   // +0x04
+
+        nalAnimCallback();         // ea: 0x00539EB0
+        void Reference(nalGenericAnim* anim);  // ea: 0x00539ED0
+        void Release();            // ea: 0x00539EE0
+        int IsAnimPlaying(nalGenericAnim* anim);  // ea: 0x00539EF0
+    };
+
+    // nalAnimState - 0x2C (IDA verified)
+    struct nalAnimState {
+        void* instance;        // +0x00
+        float speed;           // +0x04
+        float tlimit;          // +0x08
+        nalAnimCallback* callback;  // +0x0C
+        void* play_method;     // +0x10
+        float t;               // +0x14
+        float t_prev;          // +0x18
+        float alpha;           // +0x1C
+        float maxAlpha;        // +0x20
+        float fadein_rate;     // +0x24
+        int state;             // +0x28
+
+        void Setup(nalGenericAnim* anim, void* skeleton, float _fadein_rate,
+                   void* _play_method, float callback_time,
+                   nalAnimCallback* _callback, float _speed,
+                   float time_in_seconds_to_start);  // ea: 0x0055F280
+    };
+
+    // nalPartialAnimState - 0x44 (IDA verified)
+    struct nalPartialAnimState {
+        nalAnimState base;              // +0x00
+        unsigned int CreationAdvanceCount;  // +0x2C
+        nalPartialAnimState* next;      // +0x30
+        unsigned int mask;              // +0x34
+        float priority;                 // +0x38
+        float fadeout_rate;             // +0x3C
+        int type;                       // +0x40
+    };
+
+    enum nalAnimStateEnum {
+        FadeIn = 0,
+        Running = 1,
+        FadeOut = 2,
+    };
+
+    void* Skeleton;                       // +0x00
+    unsigned char _pad[0x24 - 0x04];
+    int QueueSize;                        // +0x24
+    nalAnimState* AnimStates[3];          // +0x28
+    nalPartialAnimState* PartialAnimStates;    // +0x34
+    nalPartialAnimState* PartialAnimStatePool; // +0x38
+    int AdvanceCount;                     // +0x3C
+
+    void StopModifiers(unsigned int mask);   // ea: 0x0053A040
+    void FadeOutModifiers(float newFadeOut, unsigned int mask);  // ea: 0x0053A0A0
+    nalPartialAnimState* _FindModifier(unsigned int mask,
+                                       float priority);  // ea: 0x0053A1E0
+    void _StopOrHoldModifiers(unsigned int mask,
+                              float priority);  // ea: 0x0053A230
+    int GetQueueSize();                    // ea: 0x0053A2A0
+    void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
+    void PlayModifier(nalGenericAnim* anim,
+                      AnimationPlayerModifierType type, float priority,
+                      unsigned int mask, bool ForceRestart, float fade_in,
+                      float fade_out, nalPlayMethod* play_method,
+                      float callback_time, nalAnimCallback* callback,
+                      float speed,
+                      float time_in_seconds_to_start);  // ea: 0x0055F7A0
+};
+
+class PlayerAnimMgr {
+public:
+    void PlayModifier(nalGenericAnim& anim, int animateCamera,
+                      float fadeInTime, float fadeOutTime, float speed,
+                      float mask);  // ea: 0x00540FB0
+    void PlayModifier(const char* animName, int animateCamera,
+                      float fadeInTime, float fadeOutTime, float speed,
+                      float mask);  // ea: 0x00547DC0
+
+    unsigned char _pad[0x0C];
+    AnimationPlayer::nalAnimCallback mModifierCallback;  // +0x0C
+    void* mCurPrimary;   // +0x14
+    void* mCurModifier;  // +0x18
+};
+
+// ea: 0x00539EB0
+AnimationPlayer::nalAnimCallback::nalAnimCallback()
+{
+    static void* sVftable[3];  // Invoke/Reference/Release slots
+    __vftable = sVftable;
+    curAnim = nullptr;
+}
+
+// ea: 0x00539ED0
+void AnimationPlayer::nalAnimCallback::Reference(nalGenericAnim* anim)
+{
+    curAnim = anim;
+}
+
+// ea: 0x00539EE0
+void AnimationPlayer::nalAnimCallback::Release()
+{
+    curAnim = nullptr;
+}
+
+// ea: 0x00539EF0
+int AnimationPlayer::nalAnimCallback::IsAnimPlaying(nalGenericAnim* anim)
+{
+    return curAnim != nullptr && anim == curAnim;
+}
+
+// ea: 0x0055F280
+void AnimationPlayer::nalAnimState::Setup(nalGenericAnim* anim, void* skeleton,
+                                          float _fadein_rate,
+                                          void* _play_method,
+                                          float callback_time,
+                                          nalAnimCallback* _callback,
+                                          float _speed,
+                                          float time_in_seconds_to_start)
+{
+    void* Instance;
+    if (_play_method != nullptr)
+    {
+        // nalPlayMethod::CreateInstance delegates to nalGenericAnim_CreateInstance
+        Instance = nalGenericAnim_CreateInstance(anim, skeleton);
+    }
+    else
+    {
+        Instance = nalGenericAnim_CreateInstance(anim, skeleton);
+    }
+    instance = Instance;
+    speed = _speed;
+    float Duration = *(float*)((char*)anim + 0x38);
+    float v12 = Duration == 0.0f ? 0.0f : 1.0f / Duration;
+    tlimit = v12 * callback_time + 1.0f;
+    callback = _callback;
+    if (_callback != nullptr)
+        _callback->Reference(anim);
+    play_method = _play_method;
+    float v14 = *(float*)((char*)instance + 0x08) * time_in_seconds_to_start;
+    t = v14;
+    t_prev = v14;
+    alpha = 0.0f;
+    maxAlpha = 1.0f;
+    fadein_rate = _fadein_rate;
+    state = Running;
+    if (_fadein_rate == 0.0f)
+        alpha = 1.0f;
+    // binary: _play_method->Reference(this) - thunk, no-op in port
+}
+
+// ea: 0x0053A040
+void AnimationPlayer::StopModifiers(unsigned int mask)
+{
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->mask == mask || mask == 0xFFFFFFFFu)
+        {
+            nalAnimCallback* callback = i->base.callback;
+            i->base.state = FadeOut;
+            if (callback != nullptr)
+                callback->Release();
+            i->base.callback = nullptr;
+        }
+    }
+}
+
+// ea: 0x0053A0A0
+void AnimationPlayer::FadeOutModifiers(float newFadeOut, unsigned int mask)
+{
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->mask == mask)
+        {
+            float v4 = 0.0f;
+            if (newFadeOut != 0.0f)
+                v4 = 1.0f / newFadeOut;
+            nalAnimCallback* callback = i->base.callback;
+            i->fadeout_rate = v4;
+            i->base.state = FadeOut;
+            if (callback != nullptr)
+                callback->Release();
+            i->base.callback = nullptr;
+        }
+    }
+}
+
+// ea: 0x0053A1E0
+AnimationPlayer::nalPartialAnimState* AnimationPlayer::_FindModifier(
+    unsigned int mask, float priority)
+{
+    nalPartialAnimState* result = nullptr;
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->priority == priority && i->mask == mask)
+            result = i;
+    }
+    return result;
+}
+
+// ea: 0x0053A230
+void AnimationPlayer::_StopOrHoldModifiers(unsigned int mask, float priority)
+{
+    for (nalPartialAnimState* i = PartialAnimStates; i != nullptr;
+         i = i->next)
+    {
+        if (i->mask == mask)
+        {
+            float v4 = i->priority;
+            nalAnimCallback* callback = i->base.callback;
+            i->base.state = FadeOut;
+            if (v4 <= priority)
+            {
+                if (callback != nullptr)
+                    callback->Release();
+                i->base.state = Running;
+            }
+            else if (callback != nullptr)
+            {
+                callback->Release();
+            }
+            i->base.callback = nullptr;
+        }
+    }
+}
+
+// ea: 0x0053A2A0
+int AnimationPlayer::GetQueueSize()
+{
+    return QueueSize;
+}
+
+// ea: 0x0055F730
+void AnimationPlayer::SetSpeed(nalGenericAnim* anim, float speed)
+{
+    if (QueueSize > 0)
+    {
+        if (anim == *(void**)((char*)AnimStates[0]->instance + 0x10))
+        {
+            for (int i = 0; i < QueueSize; ++i)
+            {
+                if (*(void**)((char*)AnimStates[i]->instance + 0x10)
+                    != nullptr)
+                    AnimStates[i]->speed = speed;
+            }
+        }
+    }
+}
+
+// ea: 0x0055F7A0
+void AnimationPlayer::PlayModifier(nalGenericAnim* anim,
+                                   AnimationPlayerModifierType type,
+                                   float priority, unsigned int mask,
+                                   bool ForceRestart, float fade_in,
+                                   float fade_out, nalPlayMethod* play_method,
+                                   float callback_time,
+                                   nalAnimCallback* callback, float speed,
+                                   float time_in_seconds_to_start)
+{
+    static nalAnimCallback DefaultNonloopingCallback;
+
+    char v14 = *(unsigned char*)((char*)anim + 0x34) & 1;
+    nalPartialAnimState* match;
+    if (v14 == 0 && ForceRestart)
+    {
+        match = nullptr;
+        goto LABEL_17;
+    }
+    {
+        nalPartialAnimState* v15 = PartialAnimStates;
+        nalPartialAnimState* v16 = nullptr;
+        if (v15 != nullptr)
+        {
+            do
+            {
+                if (v15->priority == priority && v15->mask == mask)
+                    v16 = v15;
+                v15 = v15->next;
+            } while (v15 != nullptr);
+            v14 = *(unsigned char*)((char*)anim + 0x34) & 1;
+        }
+        match = v16;
+        if (v16 == nullptr
+            || *(void**)((char*)v16->base.instance + 0x10) != anim
+            || ForceRestart
+            || (callback != nullptr && v16->base.callback == nullptr))
+            goto LABEL_17;
+        return;
+    }
+
+LABEL_17:
+    if (callback == nullptr && v14 == 0)
+        callback = &DefaultNonloopingCallback;
+    if (type == nalPartialModifier || type == nalFullModifier)
+        _StopOrHoldModifiers(mask, priority);
+    else
+        StopModifiers(mask);
+
+    nalPartialAnimState** insert = &PartialAnimStates;
+    nalPartialAnimState* cur = PartialAnimStates;
+    while (cur != nullptr)
+    {
+        if (cur->priority > priority)
+            break;
+        insert = &cur->next;
+        cur = cur->next;
+    }
+
+    nalPartialAnimState* state;
+    if (PartialAnimStatePool != nullptr)
+    {
+        state = PartialAnimStatePool;
+        PartialAnimStatePool = PartialAnimStatePool->next;
+    }
+    else
+    {
+        state = (nalPartialAnimState*)tlMemAlloc(0x44, 8, 0);
+    }
+
+    state->next = *insert;
+    *insert = state;
+    float v22 = fade_out == 0.0f ? 0.0f : 1.0f / fade_out;
+    float fadein = fade_in == 0.0f ? 0.0f : 1.0f / fade_in;
+    state->base.Setup(anim, Skeleton, fadein, play_method, callback_time,
+                      callback, speed, time_in_seconds_to_start);
+    state->priority = priority;
+    state->mask = mask;
+    state->type = type;
+    state->base.state = FadeIn;
+    state->fadeout_rate = v22;
+    state->CreationAdvanceCount = AdvanceCount;
+    if (match != nullptr && (*(unsigned char*)((char*)anim + 0x34) & 1) != 0
+        && (*(unsigned char*)((char*)*(void**)((char*)match->base.instance + 0x10)
+                              + 0x34)
+            & 1) != 0
+        && !ForceRestart)
+    {
+        float t = match->base.t;
+        state->base.t = t;
+        if (*(void**)((char*)match->base.instance + 0x10) == anim)
+            state->base.t_prev = match->base.t_prev;
+        else
+            state->base.t_prev = t;
+    }
+}
+
+// ea: 0x00540FB0
+void PlayerAnimMgr::PlayModifier(nalGenericAnim& anim, int animateCamera,
+                                 float fadeInTime, float fadeOutTime,
+                                 float speed, float mask)
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr && Player->client != nullptr)
+    {
+        mCurModifier = &anim;
+        void* dobj = (void*)dword_F6A2A0[802 * currCl];
+        void* animPlayer = *(void**)((char*)dobj + 0x20);
+        ((AnimationPlayer*)animPlayer)
+            ->PlayModifier(&anim, AnimationPlayer::nalPartialModifier, 1.0f,
+                           (unsigned int)mask,
+                           true, fadeInTime, fadeOutTime, nullptr, 0.0f,
+                           &mModifierCallback, speed, 0.0f);
+        if (animateCamera != 0)
+        {
+            ((Camera*)((char*)gCamera + 0x1F0 * currCl))
+                ->StopAnimating(0.0f);
+        }
+    }
+}
+
+// ea: 0x00547DC0
+void PlayerAnimMgr::PlayModifier(const char* animName, int animateCamera,
+                                 float fadeInTime, float fadeOutTime,
+                                 float speed, float mask)
+{
+    tlFixedString name(animName);
+    nalAnimClass<nalAnyPose>* Anim = nalGetAnim(name);
+    if (Anim != nullptr)
+    {
+        PlayModifier((nalGenericAnim&)*Anim, animateCamera, fadeInTime,
+                     fadeOutTime, speed, mask);
+    }
+}
