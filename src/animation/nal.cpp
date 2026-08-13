@@ -11,6 +11,7 @@
 #include "engine/broc_types.h"
 
 class Entity;
+class SceneAnimClient;
 
 // Minimal local DObj view (full class in cg_local.h; offsets verified IDA)
 class DObj {
@@ -263,7 +264,7 @@ bool subtitle_manager_play_subtitle(const char* tag, const char* prefix);
 
 struct nalPositionOrientation {
     math::Position3 pos;
-    math::Dir3       orient;
+    math::Quaternion orient;
 };
 
 struct nalMatrix4x4 {
@@ -1232,6 +1233,20 @@ extern void XAnimSetCompleteGoalWeight(XAnimTree* tree, unsigned int animIndex,
                                        unsigned int notifyType, void* bRestart);
 extern void XAnimSetupSyncNodes_r(AnimTree* anims, unsigned int animIndex);
 
+// Local XAnimEntry_Create (PAV mangling for this TU's class-typed XAnimEntry;
+// g_entity_misc.cpp defines the PAU variant).
+void XAnimEntry_Create(XAnimEntry* self)
+{
+    (void)self;
+}
+void* nalGenericInstance_Ctor(void* self, void* anim, void* skeleton)
+{
+    memset(self, 0, 0x30);
+    *(void**)((char*)self + 0x0C) = skeleton;  // Skeleton +0x0C
+    (void)anim;
+    return self;
+}
+
 extern void ValidatePakId(int pakId);  // g_entity_misc.cpp stub
 extern void DObjInitServerTime(void* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
@@ -1247,6 +1262,9 @@ void SetAutoTrajectoryEntityPO(Entity* ent, bool absolute, DObj* masterObj);
 void* SceneAnimClient_Ctor(void* self, const nalSceneAnim* anim,
                            const tlFixedString* name, float blendIn,
                            float blendOut);
+void* SceneAnimClient_CtorReal(void* self, const nalSceneAnim* anim,
+                               const tlFixedString* name, float blendIn,
+                               float blendOut);
 
 // Local EntityHandleDb view (full in streamer/pakmanager.cpp)
 struct DbElement {
@@ -1422,7 +1440,6 @@ public:
         Skeleton = nullptr;
     }
 
-protected:
     nalGenericComponentHandle(const nalGenericSkeleton* skeleton,
                               const nalComponentInfo* componentInfo,
                               int componentIndex)
@@ -2788,7 +2805,8 @@ void nalGenericSkeleton::GetComponentHandle(
                                             pComp);
                                     if (tid != (void*)(uintptr_t)typeId)
                                         goto LABEL_12;
-                                    handle.Skeleton = this;
+                                    handle.Skeleton =
+                                        (const nalGeneric::nalGenericSkeleton*)this;
                                     handle.ComponentInfo =
                                         (const nalGeneric::nalComponentInfo*)
                                             (groups + 48 * v19);
@@ -2871,7 +2889,8 @@ void nalGenericSkeleton::GetComponentHandle(
                                             pComp);
                                     if (tid != (void*)(uintptr_t)typeId)
                                         goto LABEL_12;
-                                    handle.Skeleton = this;
+                                    handle.Skeleton =
+                                        (const nalGeneric::nalGenericSkeleton*)this;
                                     handle.ComponentInfo =
                                         (const nalGeneric::nalComponentInfo*)
                                             (groups1 + 48 * v31);
@@ -2936,7 +2955,8 @@ LABEL_12:
                                             pComp);
                                     if (tid != (void*)(uintptr_t)typeId)
                                         goto LABEL_27;
-                                    handle.Skeleton = this;
+                                    handle.Skeleton =
+                                        (const nalGeneric::nalGenericSkeleton*)this;
                                     handle.ComponentInfo =
                                         (const nalGeneric::nalComponentInfo*)
                                             (groups2 + 48 * v32);
@@ -4160,7 +4180,10 @@ void DObjApplyPoseWrapper(DObj* obj, int i, int iPhase,
 void DObjGetTrajectory(nalPositionOrientation* po, DObj* obj)
 {
     nalPositionOrientation v9;
-    v9.orient.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    v9.orient.x = 0.0f;
+    v9.orient.y = 0.0f;
+    v9.orient.z = 0.0f;
+    v9.orient.w = 1.0f;
     memset(&v9.pos, 0, sizeof(v9.pos));
     *po = v9;
     if (obj == nullptr)
@@ -4190,9 +4213,9 @@ void DObjGetTrajectory(nalPositionOrientation* po, DObj* obj)
                 {
                     ((nalGenericSkeleton*)Skeleton)
                         ->GetTrajectoryUpdate(*v7, *po);
-                    if ((_fpclass(po->orient.v.m128_f32[0]) & 0x297) != 0
-                        || (_fpclass(po->orient.v.m128_f32[1]) & 0x297) != 0
-                        || (_fpclass(po->orient.v.m128_f32[2]) & 0x297) != 0)
+                    if ((_fpclass(po->orient.x) & 0x297) != 0
+                        || (_fpclass(po->orient.y) & 0x297) != 0
+                        || (_fpclass(po->orient.z) & 0x297) != 0)
                     {
                         XANIM_ASSERT(
                             "!IS_NAN((po.o)[0]) && !IS_NAN((po.o)[1]) && !IS_NAN((po.o)[2])",
@@ -4234,6 +4257,452 @@ void* SceneAnimClient_Ctor(void* self, const nalSceneAnim* anim,
                            const tlFixedString* name, float blendIn,
                            float blendOut)
 {
-    (void)anim; (void)name; (void)blendIn; (void)blendOut;
+    return SceneAnimClient_CtorReal(self, anim, name, blendIn, blendOut);
+}
+
+// ============================================================================
+// xanim.cpp trajectory parts (anim.o) - nalPositionOrientation compose
+// ============================================================================
+
+// nalMatrix4x4 (4 Vector4 columns; anim.o/game2.o inline COMDATs)
+struct nalMatrix4x4Local {
+    math::Vector4 x;  // +0x00
+    math::Vector4 y;  // +0x10
+    math::Vector4 z;  // +0x20
+    math::Vector4 w;  // +0x30
+
+    // ??0nalMatrix4x4@@QAE@ABVQuaternion@math@@@Z (game2.o 0x51B3B0)
+    void FromQuaternion(const math::Quaternion& q);
+};
+
+void nalMatrix4x4Local::FromQuaternion(const math::Quaternion& q)
+{
+    float qx = q.x, qy = q.y, qz = q.z, qw = q.w;
+    float xx = qx * qx, yy = qy * qy, zz = qz * qz;
+    float xy = qx * qy, xz = qx * qz, yz = qy * qz;
+    float wx = qw * qx, wy = qw * qy, wz = qw * qz;
+    this->x.v.m128_f32[0] = 1.0f - (yy + zz);
+    this->x.v.m128_f32[1] = xy + wz;
+    this->x.v.m128_f32[2] = xz - wy;
+    this->x.v.m128_f32[3] = 0.0f;
+    this->y.v.m128_f32[0] = xy - wz;
+    this->y.v.m128_f32[1] = 1.0f - (xx + zz);
+    this->y.v.m128_f32[2] = yz + wx;
+    this->y.v.m128_f32[3] = 0.0f;
+    this->z.v.m128_f32[0] = xz + wy;
+    this->z.v.m128_f32[1] = yz - wx;
+    this->z.v.m128_f32[2] = 1.0f - (xx + yy);
+    this->z.v.m128_f32[3] = 0.0f;
+    this->w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+}
+
+// ??D@YA?AVnalPositionOrientation@@ABV0@0@Z (anim.o 0x55FEC0)
+// Compose: o = quat(a.o, b.o) [SSE verbatim], p = R(b.o) * a.p + b.p
+nalPositionOrientation operator*(const nalPositionOrientation& a,
+                                 const nalPositionOrientation& b)
+{
+    nalPositionOrientation result;
+    __m128 v4 = _mm_set_ps(b.orient.w, b.orient.z, b.orient.y, b.orient.x);
+    __m128 v5 = _mm_set_ps(a.orient.w, a.orient.z, a.orient.y, a.orient.x);
+    static const __m128 SignMaskW =
+        _mm_set_ps(-0.0f, 0.0f, 0.0f, 0.0f);
+    __m128 v15 = _mm_xor_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v5, v5, 36),
+                       _mm_shuffle_ps(v4, v4, 63)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v5, v5, 73),
+                           _mm_shuffle_ps(v4, v4, 82)),
+                _mm_sub_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v5, v5, 191),
+                               _mm_shuffle_ps(v4, v4, 164)),
+                    _mm_mul_ps(_mm_shuffle_ps(v5, v5, 210),
+                               _mm_shuffle_ps(v4, v4, 201))))),
+        SignMaskW);
+    nalMatrix4x4Local m;
+    m.FromQuaternion(b.orient);
+    __m128 v7 = a.pos.v;
+    __m128 v8 = _mm_mul_ps(_mm_shuffle_ps(v7, v7, 170), m.z.v);
+    __m128 v9 = _mm_mul_ps(_mm_shuffle_ps(v7, v7, 85), m.y.v);
+    __m128 v11 = _mm_mul_ps(_mm_shuffle_ps(v7, v7, 0), m.x.v);
+    result.orient.x = v15.m128_f32[0];
+    result.orient.y = v15.m128_f32[1];
+    result.orient.z = v15.m128_f32[2];
+    result.orient.w = v15.m128_f32[3];
+    result.pos.v = _mm_add_ps(_mm_add_ps(_mm_add_ps(v11, v9), v8),
+                              b.pos.v);
+    return result;
+}
+
+// ea: 0x005483C0
+void XAnimCalcRelDeltaParts(XAnimEntry* entry,
+                            nalPositionOrientation* trajectory,
+                            float time0, float time1)
+{
+    if (entry->anim == nullptr)
+        XAnimEntry_Create(entry);
+    void* anim = entry->anim;
+    void* Skeleton = nullptr;
+    void* inst = nullptr;
+    if (anim != nullptr)
+    {
+        Skeleton = *(void**)((char*)anim + 0x30);
+        void* v8 = tlMemAlloc(0x30, 8, 0);
+        if (v8 != nullptr)
+            inst = nalGenericInstance_Ctor(v8, anim, Skeleton);
+    }
+    if (entry->anim == nullptr)
+    {
+        XANIM_ASSERT("entry->anim", "c:\\cod\\code\\game\\xanim.cpp", 758,
+                     "missing animation for XAnimCalcRelDeltaParts");
+    }
+    if (inst != nullptr)
+    {
+        void* v10 = *(void**)((char*)inst + 0x0C);
+        if (v10 == nullptr
+            || *(void**)v10 != (void*)0x10E6D04)
+            v10 = nullptr;
+        nalGenericPose pose((const nalBaseSkeleton*)v10, 0);
+        if (time0 > time1)
+            time1 = time1 + 1.0f;
+        ((nalGenericInstance*)inst)
+            ->GetPose(time1, time0, pose,
+                      *(nalGenericPose*)((char*)v10 + 0xC8),
+                      *(int*)((char*)v10 + 0x60) - 1, 0);
+        nalPositionOrientation po;
+        ((nalGenericSkeleton*)v10)->GetTrajectoryUpdate(pose, po);
+        *trajectory = operator*((const nalPositionOrientation&)*trajectory,
+                                po);
+        typedef void (__thiscall* DtorFn)(void*, unsigned int);
+        ((DtorFn)((void**)*(void**)inst)[0])(inst, 1);
+    }
+}
+
+// ea: 0x00548570
+void XAnimCalcAbsDeltaParts(XAnimEntry* entry,
+                            nalPositionOrientation* trajectory, float time)
+{
+    if (entry->anim == nullptr)
+        XAnimEntry_Create(entry);
+    void* anim = entry->anim;
+    void* Skeleton = nullptr;
+    void* inst = nullptr;
+    if (anim != nullptr)
+    {
+        Skeleton = *(void**)((char*)anim + 0x30);
+        void* v7 = tlMemAlloc(0x30, 8, 0);
+        if (v7 != nullptr)
+            inst = nalGenericInstance_Ctor(v7, anim, Skeleton);
+    }
+    if (entry->anim == nullptr)
+    {
+        XANIM_ASSERT("entry->anim", "c:\\cod\\code\\game\\xanim.cpp", 779,
+                     "missing animation for XAnimCalcRelDeltaParts");
+    }
+    if (inst != nullptr)
+    {
+        void* v9 = *(void**)((char*)inst + 0x0C);
+        if (v9 == nullptr || *(void**)v9 != (void*)0x10E6D04)
+            v9 = nullptr;
+        nalGenericPose pose((const nalBaseSkeleton*)v9, 0);
+        int v10 = *(int*)((char*)v9 + 0x60) - 1;
+        ((nalGenericInstance*)inst)
+            ->GetPose(time, 0.0f, pose,
+                      *(nalGenericPose*)((char*)v9 + 0xC8), v10, 0);
+        nalPositionOrientation po;
+        ((nalGenericSkeleton*)v9)->GetTrajectoryUpdate(pose, po);
+        *trajectory = operator*((const nalPositionOrientation&)*trajectory,
+                                po);
+        typedef void (__thiscall* DtorFn)(void*, unsigned int);
+        ((DtorFn)((void**)*(void**)inst)[0])(inst, 1);
+    }
+}
+
+// ============================================================================
+// SceneAnimClient (anim.o 0x561630/0x5619A0) - nalClientSceneAnim client
+// ============================================================================
+
+class SceneAnimClient {
+public:
+    SceneAnimClient(const nalSceneAnim* anim, const tlFixedString* name,
+                    float blendIn, float blendOut);  // ea: 0x00561630
+    virtual ~SceneAnimClient();                       // ea: 0x005619A0
+
+    void* __vftable;             // +0x00
+    const void* mAnim;           // +0x04 nalSceneAnim*
+    tlFixedString mName;         // +0x08
+    unsigned int mFlags;         // +0x28
+    struct { unsigned int mVal; } mEntity;  // +0x2C
+    void* mNotify;               // +0x30
+    struct { unsigned int mHash; } mTagInfo;  // +0x34
+    struct {
+        const void* Skeleton;    // +0x00
+        const void* ComponentInfo;
+        int ComponentIndex;
+        unsigned char IsConst;
+    } mTrajectoryHandle;         // +0x38
+    struct {
+        const void* Skeleton;
+        const void* ComponentInfo;
+        int ComponentIndex;
+        unsigned char IsConst;
+    } mPelvisHandle;             // +0x48
+    float mBlendInTime;          // +0x58
+    void* mBlender;              // +0x5C
+    float mBlendOutTime;         // +0x60
+};
+
+// EntityHandleDb::Find single-result lookup (not yet ported; stub)
+extern void* EntityHandleDb_Find(void* self, int fieldofs, unsigned int match);
+void* EntityHandleDb_Find(void* self, int fieldofs, unsigned int match)
+{
+    (void)self; (void)fieldofs; (void)match;
+    return nullptr;
+}
+
+// ea: 0x00561630
+SceneAnimClient::SceneAnimClient(const nalSceneAnim* anim,
+                                 const tlFixedString* name, float blendIn,
+                                 float blendOut)
+{
+    mAnim = anim;
+    mName = *name;
+    mFlags = 0;
+    mEntity.mVal = 0;
+    mNotify = nullptr;
+    mTagInfo.mHash = 0;
+    mTrajectoryHandle.Skeleton = nullptr;
+    mPelvisHandle.Skeleton = nullptr;
+    mBlendInTime = blendIn;
+    mBlender = nullptr;
+    mBlendOutTime = blendOut;
+    if (strstr(name->str, "camera") != nullptr)
+    {
+        mFlags |= 1u;
+        mEntity.mVal = 0;
+        return;
+    }
+    unsigned int v7 = HashString::CalcHash(mName.str);
+    void* v8 = EntityHandleDb_Find(&EntityHandleDb::sInst, 680, v7);
+    if (v8 != nullptr)
+    {
+        Entity* e = (Entity*)v8;
+        mEntity.mVal = e->mHandle.mVal;
+        DObj* mDObj = e->mDObj;
+        if (mDObj != nullptr)
+        {
+            ValidatePakId(mDObj->models[0].mPakId);
+            // XModel::GetXModelParts(-1): first valid LOD, then parts at +0x20
+            void* xmodel = mDObj->models[0].mValue;
+            void** lod = *(void***)((char*)xmodel + 0x24);
+            int lodIdx = 0;
+            while (lod[lodIdx] == nullptr)
+                ++lodIdx;
+            void* xmodelParts = *(void**)((char*)lod[lodIdx] + 0x08);
+            void* mAnimDef = nullptr;
+            if (xmodelParts != nullptr)
+                mAnimDef = *(void**)((char*)xmodelParts + 0x38);
+            void* v11 = mAnimDef;
+            if (mAnimDef == nullptr
+                || *(void**)mAnimDef != (void*)0x10E6D04)
+                v11 = nullptr;
+            if (mDObj->mPose[0] != nullptr)
+            {
+                tlFixedString v15("Trajectory");
+                tlFixedString v14("fakeroot");
+                nalGenericSkeleton* skel = (nalGenericSkeleton*)v11;
+                skel->GetComponentHandle<nalPositionOrientation>(
+                    (nalGeneric::nalGenericComponentHandle<
+                        nalPositionOrientation>&)mTrajectoryHandle, v14, v15);
+                if (mTrajectoryHandle.Skeleton == nullptr)
+                {
+                    tlFixedString v14b("Trajectory");
+                    tlFixedString v15b("tag_origin");
+                    skel->GetComponentHandle<nalPositionOrientation>(
+                        (nalGeneric::nalGenericComponentHandle<
+                            nalPositionOrientation>&)mTrajectoryHandle, v15b,
+                        v14b);
+                }
+                tlFixedString v14c("Position");
+                tlFixedString v15c("Bip01 Pelvis");
+                skel->GetComponentHandle<math::Dir3>(
+                    (nalGeneric::nalGenericComponentHandle<math::Dir3>&)
+                        mPelvisHandle,
+                    v15c, v14c);
+                void* v12 = mem_heap_malloc(0xC);
+                if (v12 != nullptr)
+                {
+                    void* v13 = new (v12) nalGenericPoseBlender();
+                    mBlender = v13;
+                }
+                else
+                {
+                    mBlender = nullptr;
+                }
+            }
+            e->flags |= 0x40000000u;
+            e->mFlags |= 2u;
+        }
+    }
+    else
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\xanim.cpp";
+        AeAssert::gCurrentLine = 3035;
+        AeAssert::gCurrentExpr = "e";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "couldn't find scene anim entity: %s", mName.str))
+            __debugbreak();
+    }
+}
+
+// ea: 0x005619A0
+SceneAnimClient::~SceneAnimClient()
+{
+}
+
+// ??_GSceneAnimClient@@UAEPAXI@Z (0x561970) - deleting dtor (mem_heap_free)
+void* SceneAnimClient_Delete(SceneAnimClient* self, unsigned int flags)
+{
+    self->~SceneAnimClient();
+    if (flags & 1)
+        mem_heap_free(self);
     return self;
+}
+
+// ============================================================================
+// xanim.cpp remaining (anim.o) - clone tree + valid sub-model skeleton
+// ============================================================================
+
+// XAnimAllocInfo (inline in xanim.cpp): pop a free g_info slot from the
+// g_info[0].next free list.
+XAnimInfo* XAnimAllocInfo(XAnimTree* tree, unsigned int animIndex)
+{
+    unsigned short idx = g_info[0].next;
+    if (idx == 0)
+    {
+        XANIM_ASSERT("g_info[0].next", "c:\\cod\\code\\game\\xanim.cpp",
+                     530, "no free xanim info");
+        return &g_info[0];
+    }
+    XAnimInfo* info = &g_info[idx];
+    g_info[0].next = info->next;
+    g_info[info->next].prev = 0;
+    info->next = 0;
+    ++tree->mActiveAnims;
+    (void)animIndex;
+    return info;
+}
+
+// ea: 0x0054B720
+void XAninCloneAnimTree(XAnimTree* from, XAnimTree* to)
+{
+    if (from == nullptr)
+    {
+        XANIM_ASSERT("from", "c:\\cod\\code\\game\\xanim.cpp", 5572,
+                     "old cod assert");
+    }
+    if (from->anims == nullptr)
+    {
+        XANIM_ASSERT("from->anims", "c:\\cod\\code\\game\\xanim.cpp", 5573,
+                     "old cod assert");
+    }
+    if (from->anims->entries.mSize == 0)
+    {
+        XANIM_ASSERT("from->anims->entries.size()",
+                     "c:\\cod\\code\\game\\xanim.cpp", 5574,
+                     "old cod assert");
+    }
+    if (to == nullptr)
+    {
+        XANIM_ASSERT("to", "c:\\cod\\code\\game\\xanim.cpp", 5575,
+                     "old cod assert");
+    }
+    unsigned int v4 = 0;
+    int size = from->anims->entries.mSize;
+    for (int i = 0; i < size; ++i)
+    {
+        unsigned short v7 = to->infoArray[i];
+        if (v7 != 0)
+        {
+            XAnimInfo* v8;
+            if (to->infoArray[i] != 0)
+            {
+                if (to->infoArray[i] >= 0x200)
+                {
+                    XANIM_ASSERT("to->infoArray[i] < 512",
+                                 "c:\\cod\\code\\game\\xanim.cpp", 5598,
+                                 "old cod assert");
+                }
+                v8 = &g_info[to->infoArray[i]];
+            }
+            else
+            {
+                v8 = XAnimAllocInfo(to, v4);
+            }
+            if (v7 >= 0x200)
+            {
+                XANIM_ASSERT("infoIndex < 512",
+                             "c:\\cod\\code\\game\\xanim.cpp", 5603,
+                             "old cod assert");
+            }
+            *v8 = g_info[v7];
+        }
+        else if (to->infoArray[i] != 0)
+        {
+            XAnimFreeInfo(to, to->infoArray[i]);
+            to->infoArray[i] = 0;
+        }
+        v4 = i + 1;
+    }
+}
+
+// ea: 0x00549F40
+nalGenericSkeleton* DObjGetValidSubModelSkeleton(DObj* obj, int i)
+{
+    ValidatePakId(obj->models[i].mPakId);
+    void* mValue = obj->models[i].mValue;
+    void** lod = *(void***)((char*)mValue + 0x24);
+    int v4 = 0;
+    while (lod[v4] == nullptr)
+        ++v4;
+    void* parts = *(void**)((char*)lod[v4] + 0x08);
+    void* result = *(void**)((char*)parts + 0x38);  // mAnimDef
+    if (result == nullptr || *(void**)result != (void*)0x10E6D04)
+    {
+        tlFixedString name("simple");
+        ValidatePakId(obj->models[i].mPakId);
+        void* v7 = obj->models[i].mValue;
+        void** v8 = *(void***)((char*)v7 + 0x24);
+        int v9 = 0;
+        while (v8[v9] == nullptr)
+            ++v9;
+        void* xmodelParts = *(void**)((char*)v8[v9] + 0x08);
+        *(void**)((char*)xmodelParts + 0x38) = nalGetSkeleton(name);
+        ValidatePakId(obj->models[i].mPakId);
+        void* v12 = obj->models[i].mValue;
+        void** v13 = *(void***)((char*)v12 + 0x24);
+        int v14 = 0;
+        while (v13[v14] == nullptr)
+            ++v14;
+        result = *(void**)((char*)v13[v14] + 0x08);
+        result = *(void**)((char*)result + 0x38);
+        if (result == nullptr || *(void**)result != (void*)0x10E6D04)
+        {
+            XANIM_ASSERT("skeleton",
+                         "c:\\cod\\code\\game\\xanim.cpp", 3921,
+                         "no skeleton found for animation instance?");
+            return nullptr;
+        }
+    }
+    return (nalGenericSkeleton*)result;
+}
+
+// C-style wrapper for the inlined binary ctor (SceneAnimCallback path)
+void* SceneAnimClient_CtorReal(void* self, const nalSceneAnim* anim,
+                               const tlFixedString* name, float blendIn,
+                               float blendOut)
+{
+    return new (self) SceneAnimClient(anim, name, blendIn, blendOut);
 }
