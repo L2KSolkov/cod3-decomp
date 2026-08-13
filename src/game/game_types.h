@@ -300,6 +300,7 @@ public:
     void SetAlwaysRender(bool r);                // ?SetAlwaysRender@Entity@@QAEX_N@Z
     void Notify(HashString h);                       // ?Notify@Entity@@QAEXVHashString@@@Z
     void Notify(HashString h, unsigned int* e);      // ?Notify@Entity@@QAEXVHashString@@PAI@Z
+    void Notify(HashString h, const unsigned int& e);  // ?Notify@Entity@@QAEXVHashString@@ABI@Z
     void Notify(HashString h, const int& d, Broc::entity* e, int* mod,
                 EHitLocation* hitloc, const float* hit_normal);  // ?Notify@Entity@@QAEXVHashString@@ABHABVentity@Broc@@11QBM@Z
     void Notify(HashString h, const int& d, const Broc::entity& e,

@@ -760,7 +760,8 @@ struct hash_const_t {
     HashString trigger_mount;      // +0xB0 (44)
     uint8_t    _padB4[0xBC - 0xB4];
     HashString info_player_deathmatch;  // +0xBC (47)
-    uint8_t    _padC0[0xDC - 0xC0];
+    HashString interaction_done;    // +0xC0
+    uint8_t    _padC4[0xDC - 0xC4];
     HashString menuresponse;            // +0xDC (55)
     uint8_t    _padE0[0xEC - 0xE0];
     HashString movedone;           // +0xEC
