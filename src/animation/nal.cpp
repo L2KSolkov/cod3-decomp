@@ -4700,7 +4700,7 @@ struct AnimNotifyListElem {
 };
 
 // ea: 0x00551600
-unsigned int ReleaseAllAnims()
+void ReleaseAllAnims()
 {
     AnimBankLocal* bank =
         (AnimBankLocal*)AnimBankManager_GetBank(AnimBankManager_sInst, 0);
@@ -4840,7 +4840,6 @@ unsigned int ReleaseAllAnims()
                 break;
         }
     }
-    return result;
 }
 
 // ============================================================================
@@ -5388,7 +5387,8 @@ void XAnimSetCompleteGoalWeightKnob(
 }
 
 // ea: 0x005532B0
-void PlaySceneAnim(unsigned int handle, void* endNotify, void* blendNotify)
+void PlaySceneAnim(unsigned int handle, unsigned int endNotify,
+                   unsigned int blendNotify)
 {
     SceneAnimInfo* info = (SceneAnimInfo*)handle;
     if (info->mPlaying != 0)
@@ -5417,7 +5417,7 @@ void PlaySceneAnim(unsigned int handle, void* endNotify, void* blendNotify)
         while (1)
         {
             SceneAnimInfo* cur = (SceneAnimInfo*)m_head;
-            if (cur->mNotify == endNotify)
+            if (cur->mNotify == (void*)(intptr_t)endNotify)
             {
                 AeAssert::gCurrentAuthor = AeAssert::COD3;
                 AeAssert::gCurrentFile =
@@ -5429,8 +5429,8 @@ void PlaySceneAnim(unsigned int handle, void* endNotify, void* blendNotify)
                     __debugbreak();
                 break;
             }
-            if (blendNotify != nullptr
-                && cur->mPakId == (int)(intptr_t)blendNotify)
+            if (blendNotify != 0
+                && cur->blendNotify == (void*)(intptr_t)blendNotify)
                 break;
             m_head = m_next;
             m_next = m_next->m_next;
@@ -5444,21 +5444,22 @@ void PlaySceneAnim(unsigned int handle, void* endNotify, void* blendNotify)
     SoundDevice::subtitle_manager_play_subtitle(name, nullptr);
     void* v6 = info->mInst;
     info->mPlaying = 1;
-    *(void**)((char*)info + 0x10) = endNotify;
-    *(void**)((char*)info + 0x14) = blendNotify;
+    *(void**)((char*)info + 0x10) = (void*)(intptr_t)endNotify;
+    *(void**)((char*)info + 0x14) = (void*)(intptr_t)blendNotify;
     ((void (__thiscall*)(void*))((void**)*(void**)v6)[2])(v6);
 }
 
 // ea: 0x00553440
-void StopSceneAnim(SceneAnimInfo* handle)
+void StopSceneAnim(unsigned int handle)
 {
+    SceneAnimInfo* info = (SceneAnimInfo*)handle;
     reserved_dlist<SceneAnimInfo>::dlist_node* m_head =
         gSceneAnimList.m_head;
     reserved_dlist<SceneAnimInfo>::dlist_node* m_next =
         gSceneAnimList.m_head->m_next;
     if (gSceneAnimList.m_head->m_next == nullptr)
         goto LABEL_4;
-    while (m_head != (reserved_dlist<SceneAnimInfo>::dlist_node*)handle)
+    while (m_head != (reserved_dlist<SceneAnimInfo>::dlist_node*)info)
     {
         m_head = m_next;
         m_next = m_next->m_next;
@@ -5467,7 +5468,7 @@ void StopSceneAnim(SceneAnimInfo* handle)
     }
     {
         reserved_dlist<SceneAnimInfo>::dlist_node* dnode =
-            (reserved_dlist<SceneAnimInfo>::dlist_node*)handle;
+            (reserved_dlist<SceneAnimInfo>::dlist_node*)info;
         if (dnode->m_next == nullptr)
             goto LABEL_4;
         {
@@ -5475,7 +5476,7 @@ void StopSceneAnim(SceneAnimInfo* handle)
                                                        dnode->m_next);
             gSceneAnimList.erase(it);
         }
-        KillSceneAnim(handle);
+        KillSceneAnim(info);
         return;
     }
 LABEL_4:
@@ -5485,6 +5486,27 @@ LABEL_4:
     AeAssert::gCurrentExpr = nullptr;
     if (AeAssert::Error("invalid scene anim handle"))
         __debugbreak();
+}
+
+// ea: 0x00549C50
+void StopAllSceneAnims()
+{
+    typedef reserved_dlist<SceneAnimInfo>::dlist_node Node;
+    while (gSceneAnimList.m_head != &gSceneAnimList.m_end)
+    {
+        Node* tail = gSceneAnimList.m_end.m_prev;
+        if (tail == (Node*)&gSceneAnimList.m_head)
+        {
+            tail = nullptr;
+        }
+        else
+        {
+            gSceneAnimList.m_end.m_prev = tail->m_prev;
+            gSceneAnimList.m_end.m_prev->m_next = tail->m_next;
+            --gSceneAnimList.m_size;
+        }
+        KillSceneAnim((SceneAnimInfo*)tail);
+    }
 }
 
 // ============================================================================
@@ -5529,12 +5551,13 @@ void DObjFreeAnim(DObj* obj)
 }
 
 // ea: 0x00549BD0
-void* SceneAnimCallback(const nalSceneAnim* anim, const tlFixedString* name,
-                        float* p)
+nalClientSceneAnim* SceneAnimCallback(const nalSceneAnim* anim,
+                                      const tlFixedString& name, void* p)
 {
     void* v3 = mem_heap_malloc(0xD4);
     if (v3 != nullptr)
-        return SceneAnimClient_Ctor(v3, anim, name, p[0], p[1]);
+        return (nalClientSceneAnim*)SceneAnimClient_Ctor(
+            v3, anim, &name, ((float*)p)[0], ((float*)p)[1]);
     return nullptr;
 }
 
@@ -5939,7 +5962,7 @@ nalPositionOrientation operator*(const nalPositionOrientation& a,
 
 // ea: 0x005483C0
 void XAnimCalcRelDeltaParts(XAnimEntry* entry,
-                            nalPositionOrientation* trajectory,
+                            nalPositionOrientation& trajectory,
                             float time0, float time1)
 {
     if (entry->anim == nullptr)
@@ -5974,8 +5997,7 @@ void XAnimCalcRelDeltaParts(XAnimEntry* entry,
                       *(int*)((char*)v10 + 0x60) - 1, 0);
         nalPositionOrientation po;
         ((nalGenericSkeleton*)v10)->GetTrajectoryUpdate(pose, po);
-        *trajectory = operator*((const nalPositionOrientation&)*trajectory,
-                                po);
+        trajectory = operator*(trajectory, po);
         typedef void (__thiscall* DtorFn)(void*, unsigned int);
         ((DtorFn)((void**)*(void**)inst)[0])(inst, 1);
     }
@@ -5983,7 +6005,7 @@ void XAnimCalcRelDeltaParts(XAnimEntry* entry,
 
 // ea: 0x00548570
 void XAnimCalcAbsDeltaParts(XAnimEntry* entry,
-                            nalPositionOrientation* trajectory, float time)
+                            nalPositionOrientation& trajectory, float time)
 {
     if (entry->anim == nullptr)
         XAnimEntry_Create(entry);
@@ -6014,8 +6036,7 @@ void XAnimCalcAbsDeltaParts(XAnimEntry* entry,
                       *(nalGenericPose*)((char*)v9 + 0xC8), v10, 0);
         nalPositionOrientation po;
         ((nalGenericSkeleton*)v9)->GetTrajectoryUpdate(pose, po);
-        *trajectory = operator*((const nalPositionOrientation&)*trajectory,
-                                po);
+        trajectory = operator*(trajectory, po);
         typedef void (__thiscall* DtorFn)(void*, unsigned int);
         ((DtorFn)((void**)*(void**)inst)[0])(inst, 1);
     }
