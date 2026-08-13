@@ -40,6 +40,7 @@ struct WorldSpawn {
 
 extern void SV_SetConfigstring(int index, const char* val);  // sv.o
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
+extern void Com_Error(int code, const char* fmt, ...);  // core.o
 // Entity minimal view for the Notify dispatcher (full type in game_types.h;
 // Notify is defined in game/logic/g_entity_misc.cpp)
 class Entity {
@@ -1519,9 +1520,11 @@ public:
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
 };
+struct vehicle_node_t;  // full def below (g_local.h view)
 class PathNodeMgr {
 public:
     static PathNodeMgr* sInst;  // defined in sv_globals.cpp
+    int GetVehicleNodeIndex(vehicle_node_t* pNode);  // ?GetVehicleNodeIndex@PathNodeMgr@@QAEHPAUvehicle_node_t@@@Z (stub)
     void DecodeLevelBank(const char* name, unsigned char* data, int size,
                          TPakId pakId);
     void DecodeZoneBank(const char* name, unsigned char* data, int size,
@@ -1567,6 +1570,11 @@ void PathNodeMgr::DecodeLevelBank(const char* name, unsigned char* data,
 void PathNodeMgr::DecodeZoneBank(const char* name, unsigned char* data,
                                  int size, TPakId pakId)
 { (void)name; (void)data; (void)size; (void)pakId; }
+int PathNodeMgr::GetVehicleNodeIndex(vehicle_node_t* pNode)
+{
+    (void)pNode;
+    return 0;  // stub: path-node index lookup (pathnode.o)
+}
 void DbTablesetMgr::DecodeBank(const char* name, unsigned char* data,
                                int size, TPakId pakId)
 { (void)name; (void)data; (void)size; (void)pakId; }
@@ -1760,6 +1768,54 @@ struct InstanceGroup {
     void*         instanceList;         // +0x04 (InstanceListNode*)
     void*         insts;                // +0x08
 };
+// VehicleNode (scenemanager.cpp; verified IDA: size 0x38)
+struct InplaceTreeElementKV {
+    InplaceString mKey;  // +0x00
+    InplaceString mVal;  // +0x04
+};
+struct VehicleNode {
+    InplaceString name;               // +0x00
+    InplaceString target;             // +0x04
+    InplaceString script_noteworthy;  // +0x08
+    float origin[3];                  // +0x0C
+    float angles[3];                  // +0x18
+    float speed;                      // +0x24
+    float lookAhead;                  // +0x28
+    uint8_t rotated;                  // +0x2C
+    InplaceVector<InplaceTreeElementKV> mKeyValuePairs;  // +0x30
+};
+
+// vehicle_node_t (g_local.h; local copy for streamer.o)
+struct vehicle_node_t {
+    Broc::string mName;             // +0x00
+    Broc::string mTarget;           // +0x04
+    float        speed;             // +0x08
+    float        lookAhead;         // +0x0C
+    Broc::string script_noteworthy; // +0x10
+    float        origin[3];         // +0x14
+    float        dir[3];            // +0x20
+    float        angles[3];         // +0x2C
+    float        length;            // +0x38
+    int          nextIdx;           // +0x3C
+};
+extern vehicle_node_t* SP_create_info_vehicle_node(void);  // g_scr_vehicle.cpp
+// BrocAPI local view (broc_types.h's is Broc::BrocAPI; the mangled
+// ?gpBrocAPI@@3PAUBrocAPI@@A needs a global-scope `struct` tag)
+struct BrocExports {
+    uint8_t _pad[0x34];
+    void (*mSetVNodeField_string)(unsigned int, unsigned int,
+                                  Broc::string);  // +0x34
+    uint8_t _pad38[0x3C - 0x38];
+    void (*mSetVNodeField_int)(unsigned int, unsigned int, int);  // +0x3C
+    uint8_t _pad40[0x44 - 0x40];
+    void (*mSetVNodeField_float)(unsigned int, unsigned int,
+                                 float);  // +0x44
+};
+struct BrocAPI {
+    uint8_t    _pad[0xBE8];
+    BrocExports mBrocExports;  // +0xBE8
+};
+extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A @ 0xF3ABDC
 struct cdSimpleInstance {
     uint8_t _pad[0x20];                 // +0x00
     void Destroy();  // ?Destroy@cdSimpleInstance@@QAEXXZ (cdSimpleInstance.cpp)
@@ -1797,7 +1853,7 @@ public:
     InplaceVector<void*> mSceneEntities;      // +0x10
     InplaceVector<void*> mStaticModels;       // +0x18
     InplaceVector<InstanceGroup> mInstanceGroups;  // +0x20
-    InplaceVector<void*> mVehicleNodes;       // +0x28
+    InplaceVector<VehicleNode> mVehicleNodes; // +0x28
     InplaceVector<SceneEffect> mSceneEffects;      // +0x30
     InplaceVector<void*> mSceneEffectGroups;       // +0x38
     InplaceVector<SceneLight> mSceneLights;        // +0x40
@@ -1866,6 +1922,7 @@ public:
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
+    void ProcessVehicleNode(TPakId pakId, unsigned int nodeIdx);  // ?ProcessVehicleNode@SceneManager@@AAEXW4TPakId@@H@Z @ 0x66DCA0
     SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
     ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
     static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
@@ -2771,6 +2828,111 @@ void SceneManager::ProcessStaticModel(TPakId pakId, void* model)
 void SceneManager::ProcessEntity(TPakId pakId, int entIdx)
 {
     (void)pakId; (void)entIdx;
+}
+
+// ea: 0x66DCA0
+void SceneManager::ProcessVehicleNode(TPakId pakId, unsigned int nodeIdx)
+{
+    SceneBank* Bank = GetBank(pakId);
+    VehicleNode* v4 = &Bank->mVehicleNodes.mList[nodeIdx];
+    vehicle_node_t* info_vehicle_node = SP_create_info_vehicle_node();
+    vehicle_node_t* node = info_vehicle_node;
+    if (v4->name.mStr != nullptr)
+        info_vehicle_node->mName = v4->name.mStr;
+    if (v4->target.mStr != nullptr)
+        info_vehicle_node->mTarget = v4->target.mStr;
+    if (v4->script_noteworthy.mStr != nullptr)
+        info_vehicle_node->script_noteworthy = v4->script_noteworthy.mStr;
+    unsigned int v8 =
+        *(unsigned int*)((char*)info_vehicle_node + 0x3C);
+    info_vehicle_node->origin[0] = v4->origin[0];
+    info_vehicle_node->origin[1] = v4->origin[1];
+    info_vehicle_node->origin[2] = v4->origin[2];
+    info_vehicle_node->angles[0] = v4->angles[0];
+    info_vehicle_node->angles[1] = v4->angles[1];
+    info_vehicle_node->angles[2] = v4->angles[2];
+    info_vehicle_node->speed = v4->speed;
+    *(unsigned int*)((char*)info_vehicle_node + 0x3C) =
+        (v8 ^ ((unsigned int)v4->rotated << 28)) & 0x30000000 ^ v8;
+    info_vehicle_node->lookAhead = v4->lookAhead;
+
+    unsigned int i = 0;
+    if (v4->mKeyValuePairs.mSize != 0)
+    {
+        while (1)
+        {
+            InplaceTreeElementKV* kv =
+                &v4->mKeyValuePairs.mList[i];
+            const char* v12 = kv->mKey.mStr;
+            const char* v13 = kv->mVal.mStr;
+            unsigned int v14 = AeHash(v12);
+            int val_int = atoi(v13);
+            float val_float = (float)atof(v13);
+            unsigned int nodeHandle =
+                (unsigned int)PathNodeMgr::sInst->GetVehicleNodeIndex(node);
+            if (_stricmp(v12, "friendlywait") == 0
+                || _stricmp(v12, "playerhasbeenhere") == 0
+                || _stricmp(v12, "detoured") == 0
+                || _stricmp(v12, "detourstart") == 0
+                || _stricmp(v12, "detourpath") == 0
+                || _stricmp(v12, "endswitch") == 0
+                || _stricmp(v12, "startswitch") == 0)
+            {
+                gpBrocAPI->mBrocExports.mSetVNodeField_int(
+                    nodeHandle, v14, val_int);
+            }
+            else if (_stricmp(v12, "script_delay") == 0)
+            {
+                gpBrocAPI->mBrocExports.mSetVNodeField_float(
+                    nodeHandle, v14, val_float);
+            }
+            else if (_stricmp(v12, "crash_path_target") == 0
+                     || _stricmp(v12, "derailed") == 0)
+            {
+                gpBrocAPI->mBrocExports.mSetVNodeField_int(
+                    nodeHandle, v14, val_int);
+            }
+            else if (_stricmp(v12, "script_uniquename") == 0
+                     || _stricmp(v12, "groupname") == 0)
+            {
+                Broc::string v18(v13);
+                gpBrocAPI->mBrocExports.mSetVNodeField_string(
+                    nodeHandle, v14, v18);
+            }
+            else
+            {
+                char tmpstr[128];
+                sprintf(tmpstr,
+                        "vehiclenode field KEY=%s, VAL=%s) will be inaccessable",
+                        v12, v13);
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\scenemanager.cpp";
+                AeAssert::gCurrentLine = 2113;
+                AeAssert::gCurrentExpr = "0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(tmpstr))
+                    __debugbreak();
+            }
+            if (++i >= v4->mKeyValuePairs.mSize)
+                break;
+        }
+    }
+    info_vehicle_node = node;
+    if (info_vehicle_node->mName.mBlock == nullptr
+        || info_vehicle_node->mName.mBlock
+               == (Broc::string::Block*)-12
+        || *(char*)((char*)info_vehicle_node->mName.mBlock + 0x0C) == 0)
+    {
+        Com_Error(2 /* ERR_DROP */,
+                  "Vehicle path node( %f, %f, %f ) found with no name\n\n",
+                  info_vehicle_node->origin[0],
+                  info_vehicle_node->origin[1],
+                  info_vehicle_node->origin[2]);
+    }
+    float speed = info_vehicle_node->speed;
+    if (speed >= 0.0f)
+        info_vehicle_node->speed = speed * 17.6f;
 }
 
 // ea: 0x6786A0
