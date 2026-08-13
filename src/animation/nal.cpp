@@ -3029,19 +3029,19 @@ public:
     };
 
     // Op list entries - 24 bytes each
-    struct GetPoseEventData {
+    struct GetPoseOp {
         void* pTheInstance;      // +0x04
         unsigned char bUseDefaultPose;  // +0x08
         float curr_t;            // +0x0C
         float prev_t;            // +0x10
         unsigned int hint;       // +0x14
     };
-    struct BlendEventData {
+    struct BlendOp {
         float fWeight;           // +0x04
     };
     union OpData {
-        GetPoseEventData m_GetPoseEventData;
-        BlendEventData m_BlendEventData;
+        GetPoseOp m_GetPoseEventData;
+        BlendOp m_BlendEventData;
     };
     struct Op {
         unsigned int opcode;     // +0x00
@@ -3084,30 +3084,38 @@ public:
     int m_iStackDepth;             // +0x2F0
     int m_iMaxStackDepth;          // +0x2F4
 
-    static int AddNewGBMOutput(int iGBM, void* pNewDstMatrices);  // ea: 0x0053EC70
+    AnimQueue(nalGenericSkeleton* pSkeleton);  // ??0AnimQueue@@QAE@PAVnalGenericSkeleton@nalGeneric@@@Z (0x53EBD0)
+
+    static bool AddNewGBMOutput(int iGBM, void* pNewDstMatrices);  // ea: 0x0053EC70
     static bool GetDobjAbsolute(DObj* pTheObj);                   // ea: 0x0053ED10
-    static int ExecuteAndClearDecompression();                    // ea: 0x0053ED50
-    void ExecGetPose(nalGenericPose* pDestPose,
-                     nalGenericPose* pDefaultPose,
-                     GetPoseEventData* theOp);                    // ea: 0x0053EDA0
-    void ExecuteBlendPose(nalGenericPose* pDestPose,
-                          nalGenericPose* pFirstPose,
-                          nalGenericPose* pSecondPose,
-                          BlendEventData* theOp);                 // ea: 0x0053EDD0
+    static void ClearMatrixQueue();                               // ea: 0x0053ED00
+    static void ExecuteAndClearDecompression();                   // ea: 0x0053ED50
+    void Reset();                                                 // ea: 0x0053EE00
     void SetParamAsAccum();                                       // ea: 0x0053EE40
     void SetParamAsTemp();                                        // ea: 0x0053EE50
-    void IncrementOptCount();                                     // ea: 0x0053EE60
-    void AddTouch(float curr_t, float prev_t,
-                  nalGenericInstance* pInstance,
-                  unsigned int hint);                             // ea: 0x0053EEC0
     void BlendPoses(float weight);                                // ea: 0x0053EF50
+    void GetBoneMatrices();                                       // ea: 0x0053EF90
     static int AddGetBoneMatrices(DObj* pTheObj,
                                   const nalGenericPose* pThePose,
                                   void* pDstMatrices,
                                   bool bAbsolute);                // ea: 0x00545840
+    static void ExecuteMatrixQueue();                             // ea: 0x005459C0
+    void GetPose(float curr_t, float prev_t, nalGenericInstance* pInstance,
+                 unsigned int hint);                              // ea: 0x00545C70
+    void ExecuteAndClearAnimation();                              // ea: 0x0054BF00
+
+protected:
+    void ExecGetPose(nalGenericPose* pDestPose, nalGenericPose* pDefaultPose,
+                     GetPoseOp& theOp);                           // ea: 0x0053EDA0
+    void ExecuteBlendPose(nalGenericPose* pDestPose,
+                          nalGenericPose* pFirstPose,
+                          nalGenericPose* pSecondPose,
+                          BlendOp& theOp);                        // ea: 0x0053EDD0
+    void IncrementOptCount();                                     // ea: 0x0053EE60
+    void AddTouch(float curr_t, float prev_t, nalGenericInstance* pInstance,
+                  unsigned int hint);                             // ea: 0x0053EEC0
     void ExecuteAnimCommands(nalGenericPose** ppPoseStack,
                              nalGenericPose* pTempPose);  // ea: 0x00545A90
-    void ExecuteAndClearAnimation();                              // ea: 0x0054BF00
 };
 
 // anim.o data
@@ -3115,6 +3123,48 @@ AnimQueue::MatrixQueueEntry AnimQueue::matrixQueue[AnimQueue::MAX_NUM_GBM_CALLS]
 int AnimQueue::iNumMatrixQueueEntries = 0;
 int AnimQueue::iNumDecomps = 0;
 AnimQueue::DecompOp AnimQueue::decompList[AnimQueue::MAX_NUM_DECOMP_TOUCHES];
+
+// ea: 0x0053EBD0
+AnimQueue::AnimQueue(nalGenericSkeleton* pSkeleton)
+{
+    m_iNumOps = 0;
+    m_pDestPose = nullptr;
+    m_pDestMatrixArray = nullptr;
+    m_pSkeleton = pSkeleton;
+    m_iDestLOD = 0;
+    m_CurrParam = PARAM_NONE;
+    m_bWasPrevOpABlend = false;
+    m_iStackDepth = 0;
+    m_iMaxStackDepth = 0;
+    tlFixedString v8("soldier");
+    int v4 = 0;
+    tlFixedString* p_Name = (tlFixedString*)((char*)pSkeleton + 0x04);
+    int v6 = (char*)&v8 - (char*)p_Name;
+    while (*(unsigned int*)p_Name == *(unsigned int*)((char*)p_Name + v6))
+    {
+        ++v4;
+        p_Name = (tlFixedString*)((char*)p_Name + 4);
+        if (v4 >= 8)
+        {
+            m_bIsSoldier = true;
+            return;
+        }
+    }
+    m_bIsSoldier = false;
+}
+
+// ea: 0x0053EE00
+void AnimQueue::Reset()
+{
+    m_iNumOps = 0;
+    m_iDestLOD = 0;
+    m_pDestMatrixArray = nullptr;
+    m_pDestPose = nullptr;
+    m_CurrParam = PARAM_NONE;
+    m_bWasPrevOpABlend = false;
+    m_iStackDepth = 0;
+    m_iMaxStackDepth = 0;
+}
 nalGenericPose*
     AnimQueue::m_pTempPoses[AnimQueue::MAX_NUM_TEMP_SOLDIER_POSES];
 int AnimQueue::TempPoseStackPusher::iStackDepth = 0;
@@ -3176,7 +3226,7 @@ inline void nalGenericSkeleton::GetBoneMatrices(const nalGenericPose& pose,
 }
 
 // ea: 0x0053EC70
-int AnimQueue::AddNewGBMOutput(int iGBM, void* pNewDstMatrices)
+bool AnimQueue::AddNewGBMOutput(int iGBM, void* pNewDstMatrices)
 {
     if (iGBM >= iNumMatrixQueueEntries)
     {
@@ -3209,7 +3259,7 @@ bool AnimQueue::GetDobjAbsolute(DObj* pTheObj)
 }
 
 // ea: 0x0053ED50
-int AnimQueue::ExecuteAndClearDecompression()
+void AnimQueue::ExecuteAndClearDecompression()
 {
     int result = iNumDecomps;
     int v1 = 0;
@@ -3226,26 +3276,29 @@ int AnimQueue::ExecuteAndClearDecompression()
         } while (v1 < iNumDecomps);
     }
     iNumDecomps = 0;
-    return result;
+}
+
+// ea: 0x0053ED00
+void AnimQueue::ClearMatrixQueue()
+{
+    iNumMatrixQueueEntries = 0;
 }
 
 // ea: 0x0053EDA0
 void AnimQueue::ExecGetPose(nalGenericPose* pDestPose,
-                            nalGenericPose* pDefaultPose,
-                            GetPoseEventData* theOp)
+                            nalGenericPose* pDefaultPose, GetPoseOp& theOp)
 {
-    ((nalGenericInstance*)theOp->pTheInstance)
-        ->GetPose(theOp->curr_t, theOp->prev_t, *pDestPose, *pDefaultPose,
-                  m_iDestLOD, theOp->hint);
+    ((nalGenericInstance*)theOp.pTheInstance)
+        ->GetPose(theOp.curr_t, theOp.prev_t, *pDestPose, *pDefaultPose,
+                  m_iDestLOD, theOp.hint);
 }
 
 // ea: 0x0053EDD0
 void AnimQueue::ExecuteBlendPose(nalGenericPose* pDestPose,
                                  nalGenericPose* pFirstPose,
-                                 nalGenericPose* pSecondPose,
-                                 BlendEventData* theOp)
+                                 nalGenericPose* pSecondPose, BlendOp& theOp)
 {
-    Blend(*pDestPose, theOp->fWeight, *pFirstPose, *pSecondPose);
+    Blend(*pDestPose, theOp.fWeight, *pFirstPose, *pSecondPose);
 }
 
 // ea: 0x0053EE40
@@ -3305,6 +3358,42 @@ void AnimQueue::BlendPoses(float weight)
     }
     v2->m_BlendEventData.fWeight = weight;
     IncrementOptCount();
+}
+
+// ea: 0x0053EF90
+void AnimQueue::GetBoneMatrices()
+{
+    m_OpList[m_iNumOps].opcode = 4;
+    IncrementOptCount();
+}
+
+// ea: 0x005459C0
+void AnimQueue::ExecuteMatrixQueue()
+{
+    int iGBM = 0;
+    if (iNumMatrixQueueEntries > 0)
+    {
+        do
+        {
+            MatrixQueueEntry* p = &matrixQueue[iGBM];
+            ((nalGenericSkeleton*)p->m_pSkeleton)
+                ->GetBoneMatrices(*(nalGenericPose*)p->m_pPose,
+                                  (nalMatrix4x4*)p->m_DestArray[0],
+                                  *(int*)((char*)p->m_pPose + 4));
+            int v2 = 1;
+            if (p->m_iNumDests > 1)
+            {
+                do
+                {
+                    memcpy(p->m_DestArray[v2], p->m_DestArray[0],
+                           *(unsigned int*)(*(char**)p->m_pSkeleton + 0x64)
+                               * 64u);
+                    ++v2;
+                } while (v2 < p->m_iNumDests);
+            }
+            ++iGBM;
+        } while (iGBM < iNumMatrixQueueEntries);
+    }
 }
 
 // ea: 0x0053EFB0
@@ -3589,6 +3678,38 @@ void AnimQueue::ExecuteAndClearAnimation()
     v1->m_bWasPrevOpABlend = false;
     v1->m_iStackDepth = 0;
     v1->m_iMaxStackDepth = 0;
+}
+
+// ea: 0x00545C70
+void AnimQueue::GetPose(float curr_t, float prev_t,
+                        nalGenericInstance* pInstance, unsigned int hint)
+{
+    if (m_CurrParam == PARAM_NONE)
+    {
+        XANIM_ASSERT("m_CurrParam != PARAM_NONE",
+                     "c:\\cod\\code\\game\\AnimQueue.cpp", 376,
+                     "Bad Animation Tree: Blending before a parameter is set.");
+    }
+    if (m_CurrParam == PARAM_X && m_bWasPrevOpABlend)
+    {
+        m_OpList[m_iNumOps].opcode = 2;  // PUSH_ACCUM
+        int m_iMaxStackDepth = this->m_iMaxStackDepth;
+        int v7 = m_iStackDepth + 1;
+        m_iStackDepth = v7;
+        if (m_iMaxStackDepth < v7)
+            this->m_iMaxStackDepth = v7;
+        IncrementOptCount();
+    }
+    m_OpList[m_iNumOps].opcode = 0;  // GET_POSE
+    OpData* p_theOpData = &m_OpList[m_iNumOps].theOpData;
+    p_theOpData->m_GetPoseEventData.bUseDefaultPose =
+        (m_CurrParam != PARAM_X) ? 1 : 0;
+    p_theOpData->m_GetPoseEventData.curr_t = curr_t;
+    p_theOpData->m_GetPoseEventData.prev_t = prev_t;
+    p_theOpData->m_GetPoseEventData.pTheInstance = pInstance;
+    p_theOpData->m_GetPoseEventData.hint = hint;
+    IncrementOptCount();
+    AddTouch(curr_t, prev_t, pInstance, hint);
 }
 
 // ============================================================================
