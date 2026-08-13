@@ -958,6 +958,8 @@ static_assert(sizeof(PathNodes::PathNode) == 0x84, "PathNode size mismatch");
 // ============================================================================
 struct InplaceString {
     char* mStr;  // +0x00
+
+    bool empty() const;  // ?empty@InplaceString@@QBE_NXZ (streamer.o 0x6631D0)
 };
 COD3_STATIC_ASSERT_32BIT(sizeof(InplaceString) == 4, "InplaceString size mismatch");
 

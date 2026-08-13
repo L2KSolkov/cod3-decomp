@@ -22,9 +22,6 @@
 // WorldSpawn (SceneEntity base + key-value strings; streamer.o)
 struct WorldSpawn {
     uint8_t _pad[0xE4];
-    struct InplaceString {
-        const char* mStr;
-    };
     InplaceString ambienttrack;  // +0xE4
     InplaceString message;       // +0xE8
     InplaceString gravity;       // +0xEC
@@ -124,6 +121,7 @@ extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_s
 extern void tlMemFree(void* ptr);                // tl_system.o
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
+extern const char* const defaultFileName;  // g_globals.cpp
 typedef unsigned nflState;
 typedef unsigned nflFileID;
 extern void nflUpdate();
@@ -203,6 +201,9 @@ public:
     float    xenon;            // +0x10
     float    pcx;              // +0x14
     uint8_t  _pad18[8];        // +0x18 (NumBanks::GcBanks)
+
+    float& to_float();         // ?to_float@NumBanks@@QAEAAMXZ
+    float to_float() const;    // ?to_float@NumBanks@@QBEMXZ
 };
 
 // ae/core/BitSet.h view (word-based; the core_systems.h template is byte-based)
@@ -215,6 +216,7 @@ struct BitSet {
     void Add(int v) { mBits[v >> 5] |= (1u << (v & 0x1F)); }
     void Rmv(int v) { mBits[v >> 5] &= ~(1u << (v & 0x1F)); }
 };
+
 
 // TBankAlloc (BankManager.cpp; two 64-bit bank allocation bitmaps)
 struct TBankAlloc {
@@ -237,6 +239,12 @@ public:
     TBankAlloc m_last_alloc;      // +0x20
 
     static BankManager* sInst;    // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
+    float GetNumBanks() const;    // ?GetNumBanks@BankManager@@QBEMXZ
+    unsigned int get_bank_size() const;  // ?get_bank_size@BankManager@@QBEIXZ
+    TBankAlloc get_free_banks() const;   // ?get_free_banks@BankManager@@QBE?AUTBankAlloc@@XZ
+    unsigned char* GetMramArena();       // ?GetMramArena@BankManager@@QAEPAEXZ
+    bool MemInBank(void* ptr) const;     // ?MemInBank@BankManager@@QBE_NPAX@Z
+    float get_low_water_mark() const;    // ?get_low_water_mark@BankManager@@QBEMXZ
     NumBanks get_free_count() const;  // ?get_free_count@BankManager@@QBE?AVNumBanks@@XZ
     bool can_alloc(NumBanks num_banks) const;  // ?can_alloc@BankManager@@QBE_NVNumBanks@@@Z
     int get_alloc_count(const TBankAlloc& bat) const;  // ?get_alloc_count@BankManager@@QBEHABUTBankAlloc@@@Z
@@ -274,13 +282,16 @@ ae_sized_array<void*, 24> AssetBankSet_sBankArray;
 
 // PakHeader (streamer.o PakFile.h; 48 bytes)
 struct PakHeader {
+    struct File;
+    struct Bank;
+
     struct Section {
         char      name[8];     // +0x00
         int       sectionId;   // +0x08
         uint16_t  numBanks;    // +0x0C
         uint16_t  numFiles;    // +0x0E
-        void*     banks;       // +0x10 (Section::Bank*)
-        void*     files;       // +0x14 (Section::File*)
+        Bank*     banks;       // +0x10 (Section::Bank*)
+        File*     files;       // +0x14 (Section::File*)
     };
 
     struct File {
@@ -322,6 +333,10 @@ struct LoadStats {
     float    total;        // +0x08
     uint64_t readStart;    // +0x10
     float    readTotal;    // +0x18
+
+    LoadStats();                       // ??0LoadStats@@QAE@XZ
+    static float GetTime(unsigned __int64 start,
+                         unsigned __int64 end);  // ?GetTime@LoadStats@@SAM_K0@Z
 };
 
 // nfl (nfl_xboxr) request state/id enums
@@ -340,11 +355,17 @@ typedef unsigned int nflFileID;
 extern unsigned int nflGetRequestState(unsigned int requestID);
 
 struct PakInfoNode;
+class PoolAllocator;
 
 // PakFile (streamer.o PakFile.h; 276 bytes, verified IDA)
 class PakFile {
 public:
-    enum EState { LOADED = 0, LOADING = 1, UNLOADING = 2 };
+    enum EState {
+        LOADED = 0,
+        LOADING = 1,
+        UNLOADING = 2,
+        UNLOADED = 3,
+    };
     enum ELoadingState { LOADING_HEADER = 0, LOADING_DATA = 2 };
 
     struct TRequestId {
@@ -384,6 +405,21 @@ public:
 
     static unsigned char* sHeaderBuffer;  // ?sHeaderBuffer@PakFile@@0PAEA
     static bool sHeaderBufferUsed;        // ?sHeaderBufferUsed@PakFile@@0_NA
+    static PoolAllocator* sAllocator;     // ?sAllocator@PakFile@@0PAVPoolAllocator@@A @ 0xF592EC
+
+    void* get_dlist_node();     // ?get_dlist_node@PakFile@@QAEPAXXZ
+    static void* operator new(size_t size, bool forceHeapAlloc,
+                              const char* file, int line);  // ??2PakFile@@SAPAXI_NPBDH@Z
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);  // ??3PakFile@@SAXPAX_NPBDH@Z
+    static void operator delete(void* ptr);  // ??3PakFile@@SAXPAX@Z
+    TPakId GetId() const;       // ?GetId@PakFile@@QBE?AW4TPakId@@XZ
+    EPakType GetType() const;   // ?GetType@PakFile@@QBE?AW4EPakType@@XZ
+    bool IsLoading() const;     // ?IsLoading@PakFile@@QBE_NXZ
+    bool IsLoaded() const;      // ?IsLoaded@PakFile@@QBE_NXZ
+    bool IsUnloading() const;   // ?IsUnloading@PakFile@@QBE_NXZ
+    bool IsUnloaded() const;    // ?IsUnloaded@PakFile@@QBE_NXZ
+    bool IsCancelled() const;   // ?IsCancelled@PakFile@@QBE_NXZ
 
     // ?MemAlloc@PakFile@@QAEPAXII_N@Z (streamer.o 0x671F10; stub)
     void* MemAlloc(unsigned int align, unsigned int size, bool search_prereqs);
@@ -432,11 +468,12 @@ struct PakInfoNode {
     EPakType    pakType;        // +0x00
     void*       longName;       // +0x04
     void*       path;           // +0x08
+    NumBanks    numBanks;       // +0x0C
     struct {
-        unsigned int mSize;          // +0x0C
-        const PakInfoNode** mList;   // +0x10
-    } prereqs;                       // +0x0C (InplaceVector)
-    uint8_t     _pad14[0xB4 - 0x14];
+        unsigned int mSize;          // +0x2C
+        const PakInfoNode** mList;   // +0x30
+    } prereqs;                       // +0x2C (InplaceVector)
+    uint8_t     _pad34[0xB4 - 0x34];
     TPakId      pakId;          // +0xB4
     unsigned int refCount;      // +0xB8
     float       distance;       // +0xBC
@@ -491,6 +528,30 @@ class PakInfoBank {
 public:
     uint8_t _pad[0x10];
     InplaceVector<const PakInfoNode*> mPtrs;  // +0x10
+};
+
+// InplaceTriple (ae/inplace; used by ZoneOverrideBrushSet::mNonZoneDistances)
+template <typename A, typename B, typename C>
+struct InplaceTriple {
+    A a;  // +0x00
+    B b;  // +0x04
+    C c;  // +0x08
+};
+
+// mem_info (BankManager.cpp; 8 bytes)
+struct mem_info {
+    unsigned char* data;  // +0x00
+    int            size;  // +0x04
+
+    mem_info(unsigned char* data_, int size_);  // ??0mem_info@@QAE@PAEH@Z
+};
+
+// Color32 (streamer.o; 4 bytes)
+struct Color32 {
+    unsigned int i;  // +0x00
+
+    Color32(unsigned int ic);       // ??0Color32@@QAE@I@Z
+    unsigned int to_ulong() const;  // ?to_ulong@Color32@@QBEIXZ
 };
 
 // reserved_dlist<T> (ae/core; intrusive node = T's first member) - verified IDA
@@ -577,6 +638,24 @@ public:
     void SetBrocProgress(float t);
     // - ea: 0x665570
     float GetDistance(PakInfoNode* node) const;
+    // - ea: 0x6635E0
+    bool IsFillingBanks() const;
+    // - ea: 0x6635F0
+    TPakId GetAnimPakId() const;
+    // - ea: 0x663600
+    bool IsValid(TPakId id) const;
+    // - ea: 0x663630
+    TPakId GetLevelPakId() const;
+    // - ea: 0x663640
+    PakInfoNode* UnConst(const PakInfoNode* pak) const;
+    // - ea: 0x6656B0
+    NumBanks GetNumBanks(const PakInfoNode* pdt) const;
+    // - ea: 0x6657D0
+    bool IsUnloaded(TPakId id) const;
+    // - ea: 0x665800
+    bool IsLoading(TPakId id) const;
+    // - ea: 0x665850
+    void LoadWbk(tlFixedString audioBank, bool async);
     // - ea: 0x671900
     const char* GetPakName(TPakId id) const;
     // - ea: 0x6719E0
@@ -631,12 +710,14 @@ public:
     const PakInfoNode* GetPakInfo(const char* long_name) const;
 };
 
-// PoolAllocator (core/PoolAllocator.h; Allocate only) - used by CreateHeap
+// PoolAllocator (core/PoolAllocator.h)
 class PoolAllocator {
 public:
     void* Allocate(unsigned int size, bool forceHeapAlloc = false);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
+    void Release(void* ptr);  // ?Release@PoolAllocator@@QAEXPAX@Z
 };
 extern PoolAllocator* gPakMemHeapAllocator;  // ?gPakMemHeapAllocator@@3PAVPoolAllocator@@A @ 0xF592F0
+PoolAllocator* PakFile::sAllocator = nullptr;  // ?sAllocator@PakFile@@0PAVPoolAllocator@@A @ 0xF592EC
 
 // TlSystemCallbacks (core_systems.h; LockTlAllocsToPakHeap only)
 class TlSystemCallbacks {
@@ -704,6 +785,10 @@ struct InstanceBank {
     char     mTypeStr[12]; // +0x04
     uint8_t  _pad10[0x18 - 0x10];
     uint8_t  _pad18[0x20 - 0x18];
+
+    int strnicmp(const char* str1, const char* str2, int len) const;  // ?strnicmp@InstanceBank@@QBEHPBD0H@Z
+    eInstanceBankType GetType() const;  // ?GetType@InstanceBank@@QBE?AW4eInstanceBankType@@XZ
+    const char* GetTypeStr() const;     // ?GetTypeStr@InstanceBank@@QBEPBDXZ
 };
 
 struct InstanceBankSet {
@@ -732,6 +817,7 @@ public:
 class XModelPartsManager {
 public:
     static XModelPartsManager* sInst;
+    static XModelPartsManager* Inst();  // ?Inst@XModelPartsManager@@SAPAV1@XZ
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pak_id);
 };
@@ -833,11 +919,55 @@ public:
     int     mNumToggleableOverrideBoxesHit;  // +0x50
 };
 
-// StreamZone (streamer.o view; mPakInfo +0x24)
+// ZoneOverrideBrushSet (streamer.o; mZoneBitset +0x0C, mZoneDistances +0x14)
+class ZoneOverrideBrushSet {
+public:
+    unsigned int mWasInside;       // +0x00
+    uint8_t      _pad4[0x0C - 0x04];
+    BitSet<64>   mZoneBitset;      // +0x0C
+    InplaceVector<float> mZoneDistances;  // +0x14
+    InplaceVector<InplaceTriple<InplaceString, const PakInfoNode*, float> >
+        mNonZoneDistances;         // +0x1C
+
+    const BitSet<64>& GetZoneBitset() const;      // ?GetZoneBitset@ZoneOverrideBrushSet@@QBEABV?$BitSet@$0EA@@@XZ
+    const InplaceVector<float>& GetZoneDistances() const;  // ?GetZoneDistances@ZoneOverrideBrushSet@@QBEABV?$InplaceVector@M@@XZ
+    InplaceVector<InplaceTriple<InplaceString, const PakInfoNode*, float> >&
+        GetNonZoneDistances();    // ?GetNonZoneDistances@ZoneOverrideBrushSet@@QAEAAV?$InplaceVector@...@@XZ
+    bool WasInside() const;       // ?WasInside@ZoneOverrideBrushSet@@QBE_NXZ
+    void SetInside(bool isInside);  // ?SetInside@ZoneOverrideBrushSet@@QAEX_N@Z
+};
+
+// ZdNode (streamer.o; mZone +0x10, mZoneBitset +0x18, mZoneDistances +0x20)
+class ZdNode {
+public:
+    math::Position3 mPosition;     // +0x00
+    const StreamZone* mZone;       // +0x10
+    uint8_t _pad14[0x18 - 0x14];
+    BitSet<64> mZoneBitset;        // +0x18
+    InplaceVector<float> mZoneDistances;  // +0x20
+
+    const math::Position3& GetPosition() const;   // ?GetPosition@ZdNode@@QBEABVPosition3@math@@XZ
+    const StreamZone* GetStreamZone() const;      // ?GetStreamZone@ZdNode@@QBEPBVStreamZone@@XZ
+    const BitSet<64>& GetZoneBitset() const;      // ?GetZoneBitset@ZdNode@@QBEABV?$BitSet@$0EA@@@XZ
+    const InplaceVector<float>& GetZoneDistances() const;  // ?GetZoneDistances@ZdNode@@QBEABV?$InplaceVector@M@@XZ
+};
+
+// ZoneCellBox (streamer.o; GetBounds returns this)
+struct BoundingBox;
+class ZoneCellBox {
+public:
+    const BoundingBox& GetBounds() const;  // ?GetBounds@ZoneCellBox@@QBEABVBoundingBox@@XZ
+};
+
+// StreamZone (streamer.o view; mName +0x20, mPakInfo +0x24)
 class StreamZone {
 public:
-    uint8_t _pad[0x24];
+    uint8_t _pad[0x20];
+    InplaceString mName;         // +0x20
     const PakInfoNode* mPakInfo;  // +0x24
+
+    const char* GetName() const;              // ?GetName@StreamZone@@QBEPBDXZ
+    void SetPakInfo(const PakInfoNode* n);    // ?SetPakInfo@StreamZone@@QBEXPBUPakInfoNode@@@Z
 };
 
 // ZoneCellDesc (streamer.o view; mZone +0x2C)
@@ -845,6 +975,8 @@ class ZoneCellDesc {
 public:
     uint8_t _pad[0x2C];
     const StreamZone* mZone;  // +0x2C
+
+    const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
 };
 
 // StreamZoneManager (streamer.o; mDebugRenderMode +0x190, mInitialPosition +0x1A0)
@@ -865,6 +997,7 @@ public:
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
     void SetInitialCell(int cell);  // ?SetInitialCell@StreamZoneManager@@QAEXH@Z
+    void OnLoading(TPakId pakId);  // ?OnLoading@StreamZoneManager@@QAEXW4TPakId@@@Z (empty no-op)
     void OnUnloaded(TPakId pakId);  // ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z
     int GetNumZones() const;        // ?GetNumZones@StreamZoneManager@@QBEHXZ
     const StreamZone* GetZoneByIndex(unsigned int index) const;  // ?GetZoneByIndex@StreamZoneManager@@QBEPBVStreamZone@@I@Z
@@ -2540,11 +2673,377 @@ float PakFile::GetLoadTime() const
     return 0.0f;
 }
 
-// streamer.o PakHeader helpers (cross-object; stub until PakHeader ports)
-void PakHeader::FixDown() {}
+// ea: 0x663330
+void PakHeader::FixDown()
+{
+    if (numSections != 0)
+    {
+        for (unsigned int sectionIdx = 0; sectionIdx < numSections;
+             ++sectionIdx)
+        {
+            Section* v1 = &sections[sectionIdx];
+            for (int v2 = 0; v2 < v1->numFiles; ++v2)
+            {
+                File* v6 = &v1->files[v2];
+                v6->shortName =
+                    (const char*)((const char*)v6->shortName - (const char*)this);
+                v6->longName = v6->longName != nullptr
+                                   ? (const char*)((const char*)v6->longName
+                                                   - (const char*)this)
+                                   : nullptr;
+            }
+            v1->banks =
+                (Bank*)((const char*)v1->banks - (const char*)this);
+            v1->files =
+                (File*)((const char*)v1->files - (const char*)this);
+        }
+    }
+    sections = (Section*)((const char*)sections - (const char*)this);
+}
+
+// ea: 0x6633E0
 void PakHeader::FixUp(bool persistentFixup, int doByteSwap)
 {
-    (void)persistentFixup; (void)doByteSwap;
+    (void)doByteSwap;
+    sections = (Section*)((char*)sections + (uintptr_t)this);
+    for (unsigned int sectionIdx = 0; sectionIdx < numSections; ++sectionIdx)
+    {
+        Section* v8 = &sections[sectionIdx];
+        v8->banks = (Bank*)((char*)v8->banks + (uintptr_t)this);
+        v8->files = (File*)((char*)v8->files + (uintptr_t)this);
+        if (persistentFixup)
+        {
+            v8->files = nullptr;
+        }
+        else
+        {
+            for (int v9 = 0; v9 < v8->numFiles; ++v9)
+            {
+                File* v12 = &v8->files[v9];
+                v12->shortName =
+                    (const char*)((char*)v12->shortName + (uintptr_t)this);
+                v12->longName = v12->longName != nullptr
+                                    ? (const char*)((char*)v12->longName
+                                                    + (uintptr_t)this)
+                                    : nullptr;
+            }
+        }
+    }
+}
+
+// ============================================================================
+// Small accessor cluster (streamer.o 0x6631D0 - 0x6638D0)
+// ============================================================================
+
+// ea: 0x6631D0
+bool InplaceString::empty() const
+{
+    return mStr == nullptr;
+}
+
+// ea: 0x6631E0
+mem_info::mem_info(unsigned char* data_, int size_)
+{
+    data = data_;
+    size = size_;
+}
+
+// ea: 0x663200
+Color32::Color32(unsigned int ic)
+{
+    i = ic;
+}
+
+// ea: 0x663220
+unsigned int Color32::to_ulong() const
+{
+    return i;
+}
+
+// ea: 0x663230 / 0x663240
+float& NumBanks::to_float() { return xbox; }
+float NumBanks::to_float() const { return xbox; }
+
+// ea: 0x663250
+float BankManager::GetNumBanks() const
+{
+    return mNumMramBanks;
+}
+
+// ea: 0x663260
+unsigned int BankManager::get_bank_size() const
+{
+    return mMramBankSize;
+}
+
+// ea: 0x663270
+TBankAlloc BankManager::get_free_banks() const
+{
+    return mFreeBanks;
+}
+
+// ea: 0x6632A0
+unsigned char* BankManager::GetMramArena()
+{
+    return mMramArena;
+}
+
+// ea: 0x6632B0
+bool BankManager::MemInBank(void* ptr) const
+{
+    unsigned char* mMramArena = this->mMramArena;
+    return ptr >= mMramArena
+           && ptr < &mMramArena[(unsigned int)(mMramBankSize * mNumMramBanks)];
+}
+
+// ea: 0x663300
+float BankManager::get_low_water_mark() const
+{
+    return mLowestFreeAmount;
+}
+
+// ea: 0x663310
+void APKBANK_UNPACK(unsigned int packed, unsigned short* typeIdx,
+                    unsigned short* fileIdx)
+{
+    *typeIdx = (unsigned short)(packed >> 16);
+    *fileIdx = (unsigned short)packed;
+}
+
+// ea: 0x6634A0
+void* PakFile::get_dlist_node()
+{
+    return this;
+}
+
+// ea: 0x6634B0
+void* PakFile::operator new(size_t size, bool forceHeapAlloc,
+                            const char* file, int line)
+{
+    (void)file; (void)line;
+    return PakFile::sAllocator->Allocate((unsigned int)size, forceHeapAlloc);
+}
+
+// ea: 0x6634D0 / 0x6634F0
+void PakFile::operator delete(void* ptr, bool forceHeapAlloc,
+                              const char* file, int line)
+{
+    (void)forceHeapAlloc; (void)file; (void)line;
+    PakFile::sAllocator->Release(ptr);
+}
+void PakFile::operator delete(void* ptr)
+{
+    PakFile::sAllocator->Release(ptr);
+}
+
+// ea: 0x663510
+TPakId PakFile::GetId() const { return mPakId; }
+
+// ea: 0x663520
+EPakType PakFile::GetType() const { return mPakType; }
+
+// ea: 0x663530
+bool PakFile::IsLoading() const { return mState == 1; }
+
+// ea: 0x663550
+bool PakFile::IsLoaded() const { return mState == LOADED; }
+
+// ea: 0x663570
+bool PakFile::IsUnloading() const
+{
+    return mState == 2 && mLoadingState != 4;  // UNLOADING_SERIALIZED
+}
+
+// ea: 0x6635A0
+bool PakFile::IsUnloaded() const { return mState == UNLOADED; }
+
+// ea: 0x6635C0
+bool PakFile::IsCancelled() const { return mLoadingState == 8; }
+
+// ea: 0x6635E0
+bool PakManager::IsFillingBanks() const { return mFillingBanks; }
+
+// ea: 0x6635F0
+TPakId PakManager::GetAnimPakId() const { return mAnimPakId; }
+
+// ea: 0x663600
+bool PakManager::IsValid(TPakId id) const
+{
+    return id != PAK_ID_INVALID && mSlots[id] != nullptr;
+}
+
+// ea: 0x663630
+TPakId PakManager::GetLevelPakId() const { return mLevelPakId; }
+
+// ea: 0x663640
+PakInfoNode* PakManager::UnConst(const PakInfoNode* pak) const
+{
+    return const_cast<PakInfoNode*>(pak);
+}
+
+// ea: 0x663650
+const math::Position3& ZdNode::GetPosition() const { return mPosition; }
+
+// ea: 0x663660
+const StreamZone* ZdNode::GetStreamZone() const { return mZone; }
+
+// ea: 0x663670
+const BitSet<64>& ZdNode::GetZoneBitset() const { return mZoneBitset; }
+
+// ea: 0x663680
+const InplaceVector<float>& ZdNode::GetZoneDistances() const
+{
+    return mZoneDistances;
+}
+
+// ea: 0x663690
+const BoundingBox& ZoneCellBox::GetBounds() const
+{
+    return *(const BoundingBox*)this;
+}
+
+// ea: 0x6636A0
+const StreamZone* ZoneCellDesc::GetZone() const { return mZone; }
+
+// ea: 0x6636B0
+const char* StreamZone::GetName() const { return mName.mStr; }
+
+// ea: 0x6636C0
+void StreamZone::SetPakInfo(const PakInfoNode* n) { mPakInfo = n; }
+
+// ea: 0x6636D0
+const BitSet<64>& ZoneOverrideBrushSet::GetZoneBitset() const
+{
+    return mZoneBitset;
+}
+
+// ea: 0x6636E0
+const InplaceVector<float>& ZoneOverrideBrushSet::GetZoneDistances() const
+{
+    return mZoneDistances;
+}
+
+// ea: 0x6636F0
+InplaceVector<InplaceTriple<InplaceString, const PakInfoNode*, float> >&
+ZoneOverrideBrushSet::GetNonZoneDistances()
+{
+    return mNonZoneDistances;
+}
+
+// ea: 0x663700
+bool ZoneOverrideBrushSet::WasInside() const { return mWasInside != 0; }
+
+// ea: 0x663710
+void ZoneOverrideBrushSet::SetInside(bool isInside)
+{
+    mWasInside = isInside;
+}
+
+// ea: 0x663720 (empty no-op)
+void StreamZoneManager::OnLoading(TPakId pakId)
+{
+    (void)pakId;
+}
+
+// ea: 0x663730
+int InstanceBank::strnicmp(const char* str1, const char* str2, int len) const
+{
+    const char* v4 = str1;
+    if (*str1 != 0)
+    {
+        int v5 = str2 - str1;
+        while (v4[v5] != 0 && len != 0)
+        {
+            char v6 = (char)tolower((unsigned char)*v4);
+            char v7 = (char)tolower((unsigned char)v4[v5]);
+            if (v6 != v7)
+                return v6 < v7;
+            char v8 = *++v4;
+            --len;
+            if (v8 == 0)
+                return false;
+        }
+    }
+    return false;
+}
+
+// ea: 0x6637B0
+eInstanceBankType InstanceBank::GetType() const
+{
+    return (eInstanceBankType)mType;
+}
+
+// ea: 0x6637C0
+const char* InstanceBank::GetTypeStr() const { return mTypeStr; }
+
+// ea: 0x6637D0
+XModelPartsManager* XModelPartsManager::Inst()
+{
+    return XModelPartsManager::sInst;
+}
+
+// ea: 0x6638E0
+int tlFixedString::Order(const tlFixedString& rhs) const
+{
+    const unsigned int* l = &hash;
+    const unsigned int* r = &rhs.hash;
+    for (int v2 = 0; v2 < 8; ++v2)
+    {
+        if (l[v2] != r[v2])
+            return r[v2] < l[v2] ? 1 : -1;
+    }
+    return 0;
+}
+
+// ea: 0x663F70
+LoadStats::LoadStats()
+{
+    totalStart = 0;
+    total = 0.0f;
+    readStart = 0;
+    readTotal = 0.0f;
+}
+
+// ea: 0x663FA0
+float LoadStats::GetTime(unsigned __int64 start, unsigned __int64 end)
+{
+    return (float)((end - start) * 0.000000001363636402376034);
+}
+
+// ea: 0x6656B0
+NumBanks PakManager::GetNumBanks(const PakInfoNode* pdt) const
+{
+    if (pdt == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 2005;
+        AeAssert::gCurrentExpr = "pdt != 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert(defaultFileName))
+            __debugbreak();
+    }
+    return pdt->numBanks;
+}
+
+// ea: 0x6657D0
+bool PakManager::IsUnloaded(TPakId id) const
+{
+    return id == PAK_ID_INVALID || mSlots[id] == nullptr
+           || mSlots[id]->mState == PakFile::UNLOADED;
+}
+
+// ea: 0x665800
+bool PakManager::IsLoading(TPakId id) const
+{
+    return mCurrentPakId == id && mState == STATE_LOADING;
+}
+
+// ea: 0x665850
+void PakManager::LoadWbk(tlFixedString audioBank, bool async)
+{
+    // Cross-object: AudioBankMgr (game.o) owns the real symbol; stub until
+    // the audio bridge lands.
+    (void)audioBank; (void)async;
 }
 
 // ea: 0x664BC0

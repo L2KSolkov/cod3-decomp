@@ -77,5 +77,7 @@ public:
     const uint32_t* value() const { return (const uint32_t*)this; }
 
     unsigned int GetHash() const { return hash; }
+
+    int Order(const tlFixedString& rhs) const;  // ?Order@tlFixedString@@QBEHABV1@@Z (streamer.o 0x6638E0)
 };
 static_assert(sizeof(tlFixedString) == 0x20, "tlFixedString size mismatch");
