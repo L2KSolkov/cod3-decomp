@@ -1819,7 +1819,13 @@ public:
 };
 
 // ZoneCellBox (streamer.o; GetBounds returns this)
-struct BoundingBox;
+// BoundingBox (32 bytes; vmin/vmax Position3, verified IDA)
+struct BoundingBox {
+    math::Position3 vmin;  // +0x00
+    math::Position3 vmax;  // +0x10
+
+    void accumulate(const math::Position3& p);  // ?accumulate@BoundingBox@@QAEXABVPosition3@math@@@Z
+};
 class ZoneCellBox {
 public:
     const BoundingBox& GetBounds() const;  // ?GetBounds@ZoneCellBox@@QBEABVBoundingBox@@XZ
@@ -7292,6 +7298,23 @@ const BoundingBox& ZoneCellBox::GetBounds() const
     return *(const BoundingBox*)this;
 }
 
+// ea: 0x684460
+void BoundingBox::accumulate(const math::Position3& p)
+{
+    if (vmin.v.m128_f32[0] > p.v.m128_f32[0])
+        vmin.v.m128_f32[0] = p.v.m128_f32[0];
+    if (vmin.v.m128_f32[1] > p.v.m128_f32[1])
+        vmin.v.m128_f32[1] = p.v.m128_f32[1];
+    if (vmin.v.m128_f32[2] > p.v.m128_f32[2])
+        vmin.v.m128_f32[2] = p.v.m128_f32[2];
+    if (p.v.m128_f32[0] > vmax.v.m128_f32[0])
+        vmax.v.m128_f32[0] = p.v.m128_f32[0];
+    if (p.v.m128_f32[1] > vmax.v.m128_f32[1])
+        vmax.v.m128_f32[1] = p.v.m128_f32[1];
+    if (p.v.m128_f32[2] > vmax.v.m128_f32[2])
+        vmax.v.m128_f32[2] = p.v.m128_f32[2];
+}
+
 // ea: 0x6636A0
 const StreamZone* ZoneCellDesc::GetZone() const { return mZone; }
 
@@ -8280,6 +8303,43 @@ Mat44 Mul(const Mat44& a, const Mat33& b)
         _mm_add_ps(_mm_mul_ps(_mm_shuffle_ps(v7.v, v7.v, 0xAA), v6),
                    _mm_mul_ps(_mm_shuffle_ps(v7.v, v7.v, 0xFF), waxis)));
     return result;
+}
+
+// ea: 0x681450
+Mat33 AxisSinCosToRotMat(const Dir3& v, float s, float c)
+{
+    // R(-angle) with axis v: rows built from {c, s*axis} cross terms.
+    __m128 v6 = _mm_sub_ps(
+        v.v, _mm_mul_ps(v.v, _mm_shuffle_ps(_mm_set1_ps(c), _mm_set1_ps(c), 0)));
+    __m128 v7 = _mm_mul_ps(
+        v.v, _mm_shuffle_ps(_mm_set1_ps(s), _mm_set1_ps(s), 0));
+    __m128 v8 = _mm_xor_ps(_mm_set1_ps(-0.0f), v7);  // -axis*s
+    __m128 v12 = _mm_setr_ps(c,
+                             _mm_shuffle_ps(v7, v7, 170).m128_f32[0],
+                             _mm_shuffle_ps(v8, v8, 85).m128_f32[0],
+                             0.0f);
+    __m128 v11 = _mm_setr_ps(_mm_shuffle_ps(v8, v8, 170).m128_f32[0],
+                             c,
+                             v7.m128_f32[0],
+                             0.0f);
+    __m128 tmp_36 = _mm_setr_ps(_mm_shuffle_ps(v7, v7, 85).m128_f32[0],
+                                v8.m128_f32[0],
+                                c,
+                                0.0f);
+    Mat33 result;
+    result.x.v = _mm_add_ps(v12, _mm_mul_ps(v6, _mm_shuffle_ps(v.v, v.v, 0)));
+    result.y.v = _mm_add_ps(v11, _mm_mul_ps(v6, _mm_shuffle_ps(v.v, v.v, 85)));
+    result.z.v = _mm_add_ps(tmp_36, _mm_mul_ps(v6, _mm_shuffle_ps(v.v, v.v, 170)));
+    return result;
+}
+
+// ea: 0x685000
+Mat33 AxisAngleToRotMat(const Dir3& axis, float angle)
+{
+    Vector4 radians;
+    radians.v = _mm_set1_ps(angle);
+    Vector4 sc = SinCos<3, 0, 0, 0>(radians);
+    return AxisSinCosToRotMat(axis, sc.v.m128_f32[0], sc.v.m128_f32[1]);
 }
 
 }  // namespace math
