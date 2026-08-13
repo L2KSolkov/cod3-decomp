@@ -40,6 +40,7 @@ extern void FS_Printf(int h, const char* fmt, ...);
 // KeyInfo (key binding table)
 // ============================================================================
 struct KeyInfoEntry2 {
+    int   mState;          // +0x00 (low 2 bits = down, high 30 = repeats)
     char* mBoundCmdName;
 };
 template <typename T, int N>
@@ -49,10 +50,50 @@ struct ae_array_fixed {
 struct KeyInfo {
     static ae_array_fixed<ae_array_fixed<KeyInfoEntry2, 256>, 1> mKeys;
     static void SetBinding(int keyIndex, int clnt, const char* boundCmdName);
+    static void SetDown(int keyIndex, int clnt, int down);  // ?SetDown@KeyInfo@@SAXHHH@Z (cl.o 0x5398F0)
+    static void IncRepeats(int keyIndex, int clnt);         // ?IncRepeats@KeyInfo@@SAXHH@Z (cl.o 0x539930)
+    static void ClearRepeats(int keyIndex, int clnt);       // ?ClearRepeats@KeyInfo@@SAXHH@Z (cl.o 0x539970)
+    static int  IsDown(int keyIndex, int clnt);             // ?IsDown@KeyInfo@@SAHHH@Z (cl.o 0x5399A0)
+    static int  GetRepeats(int keyIndex, int clnt);         // ?GetRepeats@KeyInfo@@SAHHH@Z (cl.o 0x5399E0)
     static int GetKey(const char* boundCmdName, int clnt);
     static void ClearAllBindings();
 };
 ae_array_fixed<ae_array_fixed<KeyInfoEntry2, 256>, 1> KeyInfo::mKeys;
+
+// ea: 0x5398F0
+void KeyInfo::SetDown(int keyIndex, int clnt, int down)
+{
+    KeyInfoEntry2* e = &mKeys.m_elements[clnt].m_elements[keyIndex];
+    e->mState ^= (down ^ e->mState) & 3;
+}
+
+// ea: 0x539930
+void KeyInfo::IncRepeats(int keyIndex, int clnt)
+{
+    KeyInfoEntry2* e = &mKeys.m_elements[clnt].m_elements[keyIndex];
+    e->mState = (e->mState & 3) ^ ((e->mState & 0xFFFFFFFC) + 4);
+}
+
+// ea: 0x539970
+void KeyInfo::ClearRepeats(int keyIndex, int clnt)
+{
+    KeyInfoEntry2* e = &mKeys.m_elements[clnt].m_elements[keyIndex];
+    e->mState &= 3;
+}
+
+// ea: 0x5399A0
+int KeyInfo::IsDown(int keyIndex, int clnt)
+{
+    KeyInfoEntry2* e = &mKeys.m_elements[clnt].m_elements[keyIndex];
+    return (e->mState & 3) != 0;
+}
+
+// ea: 0x5399E0
+int KeyInfo::GetRepeats(int keyIndex, int clnt)
+{
+    KeyInfoEntry2* e = &mKeys.m_elements[clnt].m_elements[keyIndex];
+    return e->mState >> 2;
+}
 
 extern void ButtonMgr_UpdateBinding(int keyInfoIndex, int clnt);
 

@@ -283,6 +283,17 @@ int CL_InitButtons()
     return 0;
 }
 
+// ea: 0x52A820
+void CL_SetTempStanceStatus()
+{
+    // stru_F120D0 / stru_F11F68 are kb[26] and kb[11] (kb base 0xF11E60,
+    // 0x18 stride: 0x270 / 0x108 offsets)
+    if (kb[26].active != 0 || kb[11].active != 0)
+        cl_stance_ss[currCl] = 1;
+    else
+        cl_stance_ss[currCl] = 0;
+}
+
 // ea: 0x52A530
 void CL_BackUpKeys()
 {

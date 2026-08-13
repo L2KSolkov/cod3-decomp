@@ -6,6 +6,20 @@
 #pragma once
 
 #include <stdint.h>
+#include "engine/broc_types.h"
+
+// ============================================================================
+// clientStatic_t - client static state (cl.o; cls @ 0x13054D0)
+// The ctor/dtor vector-construct/destroy the 1024-element configstrings
+// array at +0x10 (Broc::string, 4 bytes each).
+// ============================================================================
+struct clientStatic_t {
+    uint8_t     _pad[0x10];
+    Broc::string configstrings[1024];  // +0x10
+
+    clientStatic_t();  // ??0clientStatic_t@@QAE@XZ (cl.o 0x928F10)
+    ~clientStatic_t(); // ??1clientStatic_t@@QAE@XZ (cl.o 0x928CD0)
+};
 
 // ============================================================================
 // print_msg_type_t / msgwnd_mode_t

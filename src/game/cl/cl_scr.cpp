@@ -18,7 +18,11 @@ class SoundDevice { public: static SoundDevice* sInst; };  // ?sInst@SoundDevice
 // Minimal view of InteractionController (full class in g_local.h).
 class InteractionController {
 public:
+    uint8_t _pad[0x1B8];
+    void*   mRenderText[5];  // +0x1B8 (InteractionRenderText*)
+
     static InteractionController* Inst(int instance);  // ?Inst@InteractionController@@SAPAV1@H@Z
+    int DoRenderText(unsigned int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o 0x5397F0)
 };
 
 
@@ -118,10 +122,50 @@ extern void FEManager_DrawAARMenus(fe_manager_view* self);
 extern void FEManager_UpdateFrontEnd(fe_manager_view* self, float time_inc);
 extern void FEManager_UpdateAARMenus(fe_manager_view* self, float time_inc);
 extern void FEManager_UpdateInGameMenus(fe_manager_view* self, float time_inc);
+
+// PauseMenu (cl.o; menus live on the InGameMenuSystem at +0x04)
+class PauseMenu {
+public:
+    static PauseMenu* Me(int version);  // ?Me@PauseMenu@@SAPAV1@H@Z (cl.o 0x928DB0)
+};
+extern void* FEManager_GetIGMS(void* self, int client);  // g_entity_misc.cpp
+
+// ea: 0x928DB0
+PauseMenu* PauseMenu::Me(int version)
+{
+    void* igms = FEManager_GetIGMS(&g_femanager_fe, version);
+    void** menus = *(void***)((char*)igms + 4);  // InGameMenuSystem::menus
+    return (PauseMenu*)menus[0];
+}
+// ea: 0x5397F0
+int InteractionController::DoRenderText(unsigned int index)
+{
+    if (index > 4)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InteractionController.h";
+        AeAssert::gCurrentLine = 172;
+        AeAssert::gCurrentExpr = "index>=0&&index<kNumInteractRenderTexts";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad index"))
+            __debugbreak();
+    }
+    // mRenderText elements expose GetText at vtable slot 0xBC/4 (shell.o)
+    void* textObj = mRenderText[index];
+    void** vt = *(void***)textObj;
+    typedef Broc::string(__thiscall* GetTextFn)(void* self);
+    Broc::string text = ((GetTextFn)vt[0xBC / 4])(textObj);
+    bool empty = true;
+    if (text.mBlock != nullptr)
+    {
+        const char* data = (const char*)(text.mBlock + 1);
+        if (data != nullptr && data[0] != 0)
+            empty = false;
+    }
+    return !empty;
+}
 int InteractionController_DoRenderText(void* self, int index)
 {
-    (void)self; (void)index;
-    return 0;
+    return ((InteractionController*)self)->DoRenderText((unsigned int)index);
 }
 void InteractionController_RenderText(void* self)
 {

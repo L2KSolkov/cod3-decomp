@@ -180,7 +180,9 @@ struct IGOFrontEnd;
 struct FEMenuSystem;
 struct DialogMenuSystem;
 struct InGameMenuSystem;
-struct AARMenuSystem;
+struct AARMenuSystem {
+    bool IsSystemActive();  // ?IsSystemActive@AARMenuSystem@@QAE_NXZ (shell.o; stub)
+};
 struct ProfileManager;
 struct PanelQuad;
 struct nglFont;
@@ -222,6 +224,13 @@ public:
     void UpdateLoadingMenu(float percentDone);  // ?UpdateLoadingMenu@FEManager@@QAEXM@Z
     void SetInGameMenusActive(bool active,
                               int client);  // ?SetInGameMenusActive@FEManager@@QAEX_NH@Z (sv.o 0x51E1A0)
+    void UpdateIGO(float time_inc);           // ?UpdateIGO@FEManager@@QAEXM@Z (cl.o 0x528390)
+    void UpdateInSceneIGO(float time_inc);    // ?UpdateInSceneIGO@FEManager@@QAEXM@Z (cl.o 0x5283A0)
+    bool AARMenusActive();                    // ?AARMenusActive@FEManager@@QAE_NXZ (cl.o 0x5283B0)
+    bool FrontEndMenusActive(int client);     // ?FrontEndMenusActive@FEManager@@QAE_NH@Z (cl.o 0x5283C0)
+    void SetFrontEndMenusActive(bool active,
+                                int client);  // ?SetFrontEndMenusActive@FEManager@@QAEX_NH@Z (cl.o 0x5283E0)
+    AARMenuSystem* GetAARS();                 // ?GetAARS@FEManager@@QAEPAVAARMenuSystem@@XZ (cl.o 0x528400)
 };
 static_assert(sizeof(FEManager) == 0x3F4, "FEManager size mismatch");
 
@@ -695,7 +704,9 @@ public:
 // InGameMenuSystem — in-game menu system (56 bytes; opaque, only is_active)
 // ============================================================================
 struct InGameMenuSystem {
-    uint8_t _pad[0x34];
+    uint8_t _pad0[0x04];
+    void**  menus;                       // +0x04 (FEMenu**)
+    uint8_t _pad8[0x34 - 0x08];
     bool    is_active;                   // +0x34 (FEMenuSystem field, opaque)
     uint8_t _pad2[3];                    // +0x35
     bool IsSystemActive();               // ?IsSystemActive@InGameMenuSystem@@QAE_NXZ
@@ -892,6 +903,7 @@ struct FEMenuSystem {
     uint8_t _pad[0x2A - 0x04];
     bool    is_active;                   // +0x2A
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
+    bool IsSystemActive();              // ?IsSystemActive@FEMenuSystem@@QAE_NXZ (shell.o; stub)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch (opaque)");
 
@@ -933,6 +945,8 @@ struct IGOFrontEnd {
     uint8_t _pad0[0x14];
     void*   ammoWidget[4];   // +0x14 (IGOAmmoWidget*, indexed by client)
     uint8_t _pad24[0xA8 - 0x24];
+    void Update(float time_inc);       // ?Update@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
+    void UpdateInScene(float time_inc);// ?UpdateInScene@IGOFrontEnd@@QAEXM@Z (shell.o; stub)
     void SetTutorialText(int ref, int viewport);  // ?SetTutorialText@IGOFrontEnd@@QAEXHH@Z
     void SetFuse(float total, float remain, int client);  // ?SetFuse@IGOFrontEnd@@QAEXMMH@Z
     void AddActiveGrenade(const Entity* grenade);  // ?AddActiveGrenade@IGOFrontEnd@@QAEXPBVEntity@@@Z

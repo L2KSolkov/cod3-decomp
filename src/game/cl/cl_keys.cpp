@@ -72,8 +72,16 @@ struct keyname_t {
     int keynum;
 };
 struct KeyInfoEntry {
-    char* mBoundCmdName;
-    void SetBinding(const char* boundCmdName);
+    int   mState;          // +0x00 (low 2 bits = down, high 30 = repeats)
+    char* mBoundCmdName;   // +0x04
+
+    void Init();                       // ?Init@KeyInfoEntry@@QAEXXZ (cl.o 0x11C300)
+    void SetBinding(const char* boundCmdName);  // ?SetBinding@KeyInfoEntry@@QAEXPBD@Z (cl.o 0x120810)
+    void SetDown(int down);            // ?SetDown@KeyInfoEntry@@QAEXH@Z (cl.o 0x11C320)
+    void IncRepeats();                 // ?IncRepeats@KeyInfoEntry@@QAEXXZ (cl.o 0x11C340)
+    void ClearRepeats();               // ?ClearRepeats@KeyInfoEntry@@QAEXXZ (cl.o 0x11C360)
+    int  IsDown() const;               // ?IsDown@KeyInfoEntry@@QBEHXZ (cl.o 0x11C370)
+    int  GetRepeats() const;           // ?GetRepeats@KeyInfoEntry@@QBEHXZ (cl.o 0x11C380)
 };
 keyname_t keynames[512];           // ?keynames@@3PAUkeyname_t@@A (cl.o @ 0x11DE9D8)
 keyname_t keynames_localized[512]; // ?keynames_localized@@3PAUkeyname_t@@A (cl.o @ 0x11DEE38)
@@ -115,6 +123,42 @@ void KeyInfoEntry::SetBinding(const char* boundCmdName)
         mBoundCmdName = CopyStringInternal(boundCmdName);
         cvar_modifiedFlags |= 1;
     }
+}
+
+// ea: 0x11C300
+void KeyInfoEntry::Init()
+{
+    mState = 0;
+}
+
+// ea: 0x11C320
+void KeyInfoEntry::SetDown(int down)
+{
+    mState ^= (down ^ mState) & 3;
+}
+
+// ea: 0x11C340
+void KeyInfoEntry::IncRepeats()
+{
+    mState = (mState & 3) ^ ((mState & 0xFFFFFFFC) + 4);
+}
+
+// ea: 0x11C360
+void KeyInfoEntry::ClearRepeats()
+{
+    mState &= 3;
+}
+
+// ea: 0x11C370
+int KeyInfoEntry::IsDown() const
+{
+    return (mState & 3) != 0;
+}
+
+// ea: 0x11C380
+int KeyInfoEntry::GetRepeats() const
+{
+    return mState >> 2;
 }
 
 // ea: 0x52C860

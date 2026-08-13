@@ -67,6 +67,65 @@ void FEManager::SetInGameMenusActive(bool active, int client)
         v3->is_active = active;
 }
 
+// ea: 0x528390
+void FEManager::UpdateIGO(float time_inc)
+{
+    if (IGO != nullptr)
+        IGO->Update(time_inc);
+}
+
+// ea: 0x5283A0
+void FEManager::UpdateInSceneIGO(float time_inc)
+{
+    if (IGO != nullptr)
+        IGO->UpdateInScene(time_inc);
+}
+
+// ea: 0x5283B0
+bool FEManager::AARMenusActive()
+{
+    return mAARS != nullptr && mAARS->IsSystemActive();
+}
+
+// ea: 0x5283C0
+bool FEManager::FrontEndMenusActive(int client)
+{
+    (void)client;
+    return fems != nullptr && fems->IsSystemActive();
+}
+
+// ea: 0x5283E0
+void FEManager::SetFrontEndMenusActive(bool active, int client)
+{
+    (void)client;
+    if (fems != nullptr)
+        fems->is_active = active;
+}
+
+// ea: 0x528400
+AARMenuSystem* FEManager::GetAARS()
+{
+    return mAARS;
+}
+
+// shell.o stubs for the menu-system methods the cl.o FEManager wrappers use
+bool FEMenuSystem::IsSystemActive()
+{
+    return is_active;
+}
+bool AARMenuSystem::IsSystemActive()
+{
+    return false;
+}
+void IGOFrontEnd::Update(float time_inc)
+{
+    (void)time_inc;
+}
+void IGOFrontEnd::UpdateInScene(float time_inc)
+{
+    (void)time_inc;
+}
+
 // ea: 0x528020
 void MultiplayerMgr::setEnableLinkCheck(bool enabled)
 {

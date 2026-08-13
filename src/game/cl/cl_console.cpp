@@ -150,6 +150,10 @@ int g_console_char_width;
 int g_console_field_width;
 int g_console_char_height;
 cls_t cls;
+
+// ea: 0x928F10 / 0x928CD0
+clientStatic_t::clientStatic_t() {}
+clientStatic_t::~clientStatic_t() {}
 int dword_F170FC;
 int dword_F1719C;
 int dword_F171A0;
