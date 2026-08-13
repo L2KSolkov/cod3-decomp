@@ -1118,3 +1118,509 @@ FEMenuListBox* FEMenu::AddListBoxEntry(int index, FEText* t, int numLines)
     entries[index] = result;
     return result;
 }
+
+// ============================================================================
+// FEMenuSystem
+// ============================================================================
+
+// ea: 0x00570A10
+FEMenuSystem::~FEMenuSystem()
+{
+    if (menus != nullptr)
+    {
+        for (int i = 0; i < count; ++i)
+        {
+            if (menus[i] != nullptr)
+                delete menus[i];
+            menus[i] = nullptr;
+        }
+        mem_heap_free(menus);
+        menus = nullptr;
+    }
+}
+
+// ea: 0x00570A30
+void FEMenuSystem::Add(FEMenu* m)
+{
+    if (count >= size)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1099;
+        AeAssert::gCurrentExpr = "count < size";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    menus[count++] = m;
+}
+
+// ea: 0x00570AA0
+void FEMenuSystem::InitAll()
+{
+    UpdateButtonDown();
+    for (int i = 0; i < count; ++i)
+        menus[i]->Init();
+}
+
+// ea: 0x00570AD0
+void FEMenuSystem::ReturnToPreviousMenu(int fallback)
+{
+    int m_active = this->m_active;
+    if (m_active != -1)
+    {
+        int mReturnMenu = menus[m_active]->mReturnMenu;
+        menus[m_active]->mReturnMenu = -1;
+        if (mReturnMenu != -1)
+        {
+            MakeActive(mReturnMenu, menus[mReturnMenu]->mReturnMenu);
+            return;
+        }
+    }
+    MakeActive(fallback, -1);
+}
+
+// ea: 0x00570B20
+void FEMenuSystem::MakeActive(int index)
+{
+    MakeActive(index, -1);
+}
+
+// ea: 0x0057DDF0
+void FEMenuSystem::MakeActive(int index, int return_to_menu)
+{
+    if (index >= size)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1174;
+        AeAssert::gCurrentExpr = "index < size";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (index == -1)
+        background = -1;
+    int m_active = this->m_active;
+    if (m_active != -1)
+    {
+        FEMenu* v8 = index < 0 ? nullptr : menus[index];
+        menus[m_active]->OnDeactivate(v8);
+    }
+    if (index != -1)
+        menus[index]->mReturnMenu = return_to_menu;
+    int v10 = this->m_active;
+    this->m_active = index;
+    if (index >= 0)
+    {
+        menus[index]->OnActivate(v10);
+        if ((menus[index]->flags & 0x1000) == 0)
+        {
+            math::Position3 v13;
+            math::Dir3 v14;
+            memset(&v13, 0, sizeof(v13));
+            memset(&v14, 0, sizeof(v14));
+            SoundDevice::sInst->PlaySound(
+                "UI_Highlight", DbLinkedHandle<EntityHandleDb, Entity>(),
+                true, false, v13, v14, -1.0f, -1.0f, -1.0f, -1.0f);
+        }
+    }
+    UpdateButtonDown();
+    NewMenuActive();
+}
+
+// ea: 0x00570B80
+void FEMenuSystem::MakeActiveAndReturn(int index, int return_to)
+{
+    if (index != -1)
+        menus[index]->SetHigh(-1, true);
+    MakeActive(index, return_to);
+}
+
+// ea: 0x00570B40
+void FEMenuSystem::MakeActiveAndReturn(int index)
+{
+    if (index != -1)
+        menus[index]->SetHigh(-1, true);
+    MakeActive(index, m_active);
+}
+
+// ea: 0x00570BC0
+bool FEMenuSystem::IsMenuActive(int menu)
+{
+    return m_active == menu;
+}
+
+// ea: 0x00570BE0
+void FEMenuSystem::ClearReturnMenu(int menu)
+{
+    if (menu != -1)
+        menus[menu]->mReturnMenu = -1;
+}
+
+// ea: 0x00570C00
+void FEMenuSystem::AddOverlay(int index)
+{
+    if (m_active < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1231;
+        AeAssert::gCurrentExpr = "m_active >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (index < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1232;
+        AeAssert::gCurrentExpr = "index >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (background != -1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1233;
+        AeAssert::gCurrentExpr = "background == -1";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    background = m_active;
+    m_active = index;
+    menus[index]->OnActivate();
+}
+
+// ea: 0x00570D00
+void FEMenuSystem::RemoveOverlay()
+{
+    if (m_active < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1241;
+        AeAssert::gCurrentExpr = "m_active >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (background < 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1242;
+        AeAssert::gCurrentExpr = "background >= 0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    if (background >= 0)
+    {
+        menus[m_active]->OnDeactivate(menus[background]);
+        m_active = background;
+        background = -1;
+    }
+}
+
+// ea: 0x00570DC0
+int FEMenuSystem::CurrentOverlay()
+{
+    if (background != -1)
+        return m_active;
+    return -1;
+}
+
+// ea: 0x00570DD0
+void FEMenuSystem::Update(float time_inc)
+{
+    if (m_active >= 0 && menus[m_active] != nullptr)
+    {
+        menus[m_active]->Update(time_inc);
+        UpdateButtonPresses();
+    }
+}
+
+// ea: 0x00570E10
+void FEMenuSystem::UpdateSplitScreen()
+{
+    for (int i = 0; i < count; ++i)
+        menus[i]->UpdateSplitScreen();
+}
+
+// ea: 0x00570E40
+void FEMenuSystem::UpdateButtonDown()
+{
+    int i_controller = 0;
+    for (int i = 4; i <= 32; i *= 2)
+    {
+        int v3 = i_controller;
+        if (GetAnalogPressed(i, &i_controller))
+            button_down_flags[v3] |= (int16_t)i;
+        else
+            button_down_flags[v3] &= (int16_t)~i;
+    }
+}
+
+// ea: 0x00570E90
+void FEMenuSystem::Draw()
+{
+    if (background >= 0)
+    {
+        drawHelpbar = false;
+        menus[background]->Draw();
+        drawHelpbar = true;
+    }
+    if (m_active >= 0 && menus[m_active] != nullptr)
+        menus[m_active]->Draw();
+}
+
+// ea: 0x00570ED0
+void FEMenuSystem::Draw3D()
+{
+    if (background >= 0)
+    {
+        drawHelpbar = false;
+        menus[background]->Draw3D();
+        drawHelpbar = true;
+    }
+    if (m_active >= 0 && menus[m_active] != nullptr)
+        menus[m_active]->Draw3D();
+}
+
+// ea: 0x00570F10
+void FEMenuSystem::OnButtonPress(int button, int controller)
+{
+    GetClientFromController(controller);
+    int m_active = this->m_active;
+    if (m_active < 0)
+        return;
+    FEMenu* v5 = menus[m_active];
+    v5->OnAnyButtonPress(controller, button);
+    if (button > 128)
+    {
+        if (button > 2048)
+        {
+            if (button == 4096)
+            {
+                menus[m_active]->OnL2(controller);
+                return;
+            }
+            if (button == 0x2000)
+            {
+                menus[m_active]->OnR2(controller);
+                return;
+            }
+        }
+        else
+        {
+            switch (button)
+            {
+            case 2048:
+                menus[m_active]->OnR1(controller);
+                return;
+            case 256:
+                menus[m_active]->OnSquare(controller);
+                return;
+            case 512:
+                menus[m_active]->OnTrueTriangle(controller);
+                menus[m_active]->OnCircle(controller);
+                return;
+            case 1024:
+                menus[m_active]->OnL1(controller);
+                return;
+            default:
+                break;
+            }
+        }
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+        AeAssert::gCurrentLine = 1530;
+        AeAssert::gCurrentExpr = "0";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    else if (button == 128)
+    {
+        menus[m_active]->OnTrueCircle(controller);
+        menus[m_active]->OnTriangle(controller);
+    }
+    else
+    {
+        switch (button)
+        {
+        case 1:
+            menus[m_active]->OnSelect(controller);
+            break;
+        case 2:
+            menus[m_active]->OnStart(controller);
+            break;
+        case 4:
+            menus[m_active]->OnUp(controller);
+            break;
+        case 8:
+            menus[m_active]->OnDown(controller);
+            break;
+        case 16:
+            menus[m_active]->OnLeft(controller);
+            break;
+        case 32:
+            menus[m_active]->OnRight(controller);
+            break;
+        case 64:
+            menus[m_active]->OnCross(controller);
+            break;
+        default:
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEMenu.cpp";
+            AeAssert::gCurrentLine = 1530;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("old cod assert"))
+                __debugbreak();
+            break;
+        }
+    }
+}
+
+// ea: 0x005711A0
+void FEMenuSystem::OnButtonRelease(int button, int controller)
+{
+    if (m_active >= 0 && menus[m_active] != nullptr)
+        menus[m_active]->OnButtonRelease(controller, button);
+}
+
+// ea: 0x005711D0
+bool FEMenuSystem::GetAnalogPressed(int button, int* p_controller)
+{
+    int x_controller = 0;
+    int y_controller = 0;
+    int v5 = GetStickValueX(controller::LEFTSTICK, &x_controller);
+    int v6 = GetStickValueY(controller::LEFTSTICK, &y_controller);
+    if (GetButtonPressed(controller::UPBUTTON, &y_controller))
+        v6 = -128;
+    if (GetButtonPressed(controller::DOWNBUTTON, &y_controller))
+        v6 = 128;
+    if (GetButtonPressed(controller::LEFTBUTTON, &x_controller))
+        v5 = -128;
+    if (GetButtonPressed(controller::RIGHTBUTTON, &x_controller))
+        v5 = 128;
+    switch (button)
+    {
+    case 4:
+        return v6 < -64;
+    case 8:
+        return v6 > 64;
+    case 16:
+        return v5 < -64;
+    case 32:
+        return v5 > 64;
+    default:
+        return false;
+    }
+}
+
+// ea: 0x00571300
+int FEMenuSystem::GetCurrentClient()
+{
+    return 0;
+}
+
+// ea: 0x00571310
+int FEMenuSystem::GetCurrentClientController()
+{
+    return dword_F6A28C[0];
+}
+
+// ea: 0x00571320
+int FEMenuSystem::GetClientFromController(int c)
+{
+    return GetCurrentClient();
+}
+
+// ea: 0x00571330
+bool FEMenuSystem::GetButtonPressed(controller::ButtonIndex button,
+                                    int* p_controller)
+{
+    controller* v3 = controller::inst();
+    return v3->button_pressed(button, p_controller);
+}
+
+// ea: 0x00571350
+bool FEMenuSystem::GetButtonReleased(controller::ButtonIndex button,
+                                     int* p_controller)
+{
+    controller* v3 = controller::inst();
+    return v3->button_released(button, p_controller);
+}
+
+// ea: 0x00571370
+int FEMenuSystem::GetActiveMenu()
+{
+    return m_active;
+}
+
+// ea: 0x00571380
+void FEMenuSystem::SetActiveMenu(int menu)
+{
+    m_active = menu;
+}
+
+// ea: 0x00571390
+int FEMenuSystem::GetStickValueX(controller::StickIndex stick,
+                                 int* p_controller)
+{
+    return controller::inst()->stick_value_x(stick, p_controller);
+}
+
+// ea: 0x005713B0
+int FEMenuSystem::GetStickValueY(controller::StickIndex stick,
+                                 int* p_controller)
+{
+    return controller::inst()->stick_value_y(stick, p_controller);
+}
+
+// ea: 0x0057DFB0
+void FEMenuSystem::UpdateButtonPresses()
+{
+    int v2 = 1;
+    while (1)
+    {
+        int controllerPort = GetCurrentClientController();
+        if (v2 >= 4 && v2 <= 32)
+        {
+            if (GetAnalogPressed(v2, &controllerPort)
+                && (button_down_flags[controllerPort] & v2) == 0)
+            {
+                OnButtonPress(v2, controllerPort);
+                button_down_flags[controllerPort] |= (int16_t)v2;
+                return;
+            }
+            if (!GetAnalogPressed(v2, &controllerPort)
+                && (button_down_flags[controllerPort] & v2) != 0)
+            {
+                OnButtonRelease(v2, controllerPort);
+                button_down_flags[controllerPort] &= (int16_t)~v2;
+                return;
+            }
+        }
+        else
+        {
+            controller::ButtonIndex v3 = mapButton(v2);
+            if (GetButtonPressed(v3, &controllerPort))
+            {
+                controller::inst()->button_pressed_clear(
+                    controllerPort, mapButton(v2));
+                OnButtonPress(v2, controllerPort);
+                return;
+            }
+            if (GetButtonReleased(v3, &controllerPort))
+            {
+                controller::inst()->button_released_clear(
+                    controllerPort, mapButton(v2));
+                OnButtonRelease(v2, controllerPort);
+                return;
+            }
+        }
+        v2 *= 2;
+        if (v2 >= 0x4000)
+            return;
+    }
+}

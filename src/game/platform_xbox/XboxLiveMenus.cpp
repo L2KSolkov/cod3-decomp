@@ -10,13 +10,6 @@ int DialogMenuSystem::GetActiveMenu()
 {
     return 0;
 }
-int FEMenuSystem::GetCurrentClient()
-{
-    return 0;
-}
-
-void FEMenuSystem::AddOverlay(int a2) { (void)a2; }
-void FEMenuSystem::ReturnToPreviousMenu(int a2) { (void)a2; }
 void FEMultiLineText::Draw() {}
 void FEMultiLineText::SetTextBoxNoLocalize(const char* s, int a3, int a4)
 {

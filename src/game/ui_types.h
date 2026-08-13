@@ -32,9 +32,18 @@ public:
         SQUARE = 4, X = 5, CIRCLE = 6, TRIANGLE = 7, R1 = 8, L1 = 9,
         R2 = 10, L2 = 11, R3 = 12, L3 = 13, START = 14, SELECT = 15,
     };
+    enum StickIndex {
+        LEFTSTICK = 0,
+        RIGHTSTICK = 1,
+    };
     static controller* inst();          // ?inst@controller@@SAPAV1@XZ
     static int num_controllers;         // ?num_controllers@controller@@2HA
     bool button_pressed_clear(int index, ButtonIndex btn);  // controller.o
+    bool button_released_clear(int index, ButtonIndex btn); // controller.o
+    bool button_pressed(ButtonIndex btn, int* p_controller);  // controller.o
+    bool button_released(ButtonIndex btn, int* p_controller); // controller.o
+    int  stick_value_x(StickIndex stick, int* p_controller);  // controller.o
+    int  stick_value_y(StickIndex stick, int* p_controller);  // controller.o
     int  locked_port;
     bool is_locked;
 };
@@ -855,13 +864,62 @@ public:
     bool        is_active;             // +0x2A
     uint8_t     _pad2B[1];             // +0x2B
 
-    int  GetCurrentClient();
-    void AddOverlay(int a2);
-    void ReturnToPreviousMenu(int a2);
-    virtual char GetDefaultColorScheme()            // ?GetDefaultColorScheme@FEMenuSystem@@UAEDXZ 0x5AFA10
+    // Vftable order verified against ??_7FEMenuSystem (37 slots).
+    virtual ~FEMenuSystem();                        // slot 3 0x570A10
+    virtual void InitAll();                         // slot 4 0x570AA0
+    virtual void Add(FEMenu* m);                    // slot 5 0x570A30
+    virtual void ReturnToPreviousMenu(int fallback);  // slot 6 0x570AD0
+    virtual void MakeActive(int index);             // slot 7 0x570B20
+    virtual void MakeActive(int index,
+                            int return_to_menu);    // slot 8 0x57DDF0
+    virtual void MakeActiveAndReturn(int index,
+                                     int return_to);  // slot 9 0x570B80
+    virtual void MakeActiveAndReturn(int index);    // slot 10 0x570B40
+    virtual bool IsMenuActive(int menu);            // slot 11 0x570BC0
+    virtual void ClearReturnMenu(int menu);         // slot 12 0x570BE0
+    virtual void UpdateSplitScreen();               // slot 13 0x570E10
+    virtual void AddOverlay(int index);             // slot 14 0x570C00
+    virtual void RemoveOverlay();                   // slot 15 0x570D00
+    virtual void Update(float time_inc);            // slot 16 0x570DD0
+    virtual void UpdateButtonPresses();             // slot 17 0x57DFB0
+    virtual void UpdateButtonDown();                // slot 18 0x570E40
+    virtual void Draw();                            // slot 19 0x570E90
+    virtual void Draw3D();                          // slot 20 0x570ED0
+    virtual void SetDefaultColorScheme(char csi)    // slot 21 inline 0x5AE990
+    {
+        default_color_scheme = csi;
+    }
+    virtual char GetDefaultColorScheme()            // slot 22 inline 0x5AFA10
     {
         return default_color_scheme;
     }
+    virtual bool IsSystemActive()                   // slot 23 inline 0x5AFA20
+    {
+        return is_active;
+    }
+    virtual int GetActiveMenu();                    // slot 24 0x571370
+    virtual void SetActiveMenu(int menu);           // slot 25 0x571380
+    virtual int GetCurrentClient();                 // slot 26 0x571300
+    virtual int GetCurrentClientController();       // slot 27 0x571310
+protected:
+    virtual void OnButtonPress(int button,
+                               int controller);     // slot 28 0x570F10
+    virtual void OnButtonRelease(int button,
+                                 int controller);   // slot 29 0x5711A0
+    virtual bool GetAnalogPressed(int button,
+                                  int* p_controller);  // slot 30 0x5711D0
+    virtual bool GetButtonPressed(controller::ButtonIndex button,
+                                  int* p_controller);  // slot 31 0x571330
+    virtual bool GetButtonReleased(controller::ButtonIndex button,
+                                   int* p_controller);  // slot 32 0x571350
+    virtual int GetStickValueX(controller::StickIndex stick,
+                               int* p_controller);  // slot 33 0x571390
+    virtual int GetStickValueY(controller::StickIndex stick,
+                               int* p_controller);  // slot 34 0x5713B0
+    virtual int GetClientFromController(int c);     // slot 35 0x571320
+    virtual void NewMenuActive() {}                 // slot 36 inline 0x5AFA30
+public:
+    int CurrentOverlay();                           // ?CurrentOverlay@FEMenuSystem@@QAEHXZ 0x570DC0
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch");
@@ -957,7 +1015,7 @@ public:
         OnActivate();
     }
     virtual void OnActivate();                      // slot 28 0x570750
-    virtual void OnSelect() {}                      // slot 29 (empty inline)
+    virtual void OnSelect(int c) {}                 // slot 29 (empty inline)
     virtual void OnSquare(int c) {}                 // slot 30 (empty inline)
     virtual void OnCircle(int c) {}                 // slot 31 (empty inline)
     virtual void OnUp(int c)                        // slot 32 0x5AE910
