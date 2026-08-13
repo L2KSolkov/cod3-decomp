@@ -11848,6 +11848,84 @@ public:
         }
     }
 
+    // ?begin@?$ae_vector@PAVInteractState@@@@QAEPAPAVInteractState@@XZ
+    T* begin() { return mElements; }
+    // ?end@?$ae_vector@PAVInteractState@@@@QAEPAPAVInteractState@@XZ
+    T* end() { return &mElements[mSize]; }
+
+    // ?push_back@?$ae_vector@PAVInteractState@@@@QAEXABQAVInteractState@@@Z
+    void push_back(T const& iElement)
+    {
+        int mSize = this->mSize;
+        if (mSize >= mCapacity)
+        {
+            int v4 = mSize + 4;
+            if (mSize <= 3)
+                v4 = mSize + 1;
+            T* v5 = (T*)tlMemAlloc(4 * v4, 8, 0);
+            for (int i = 0; i < this->mSize; ++i)
+                v5[i] = mElements[i];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mElements = v5;
+            mCapacity = v4;
+        }
+        mElements[mSize++] = iElement;
+    }
+
+    // ?resize@?$ae_vector@PAVInteractState@@@@QAEXH@Z
+    void resize(int iNewSize)
+    {
+        if (iNewSize > mCapacity)
+        {
+            T* v3 = (T*)tlMemAlloc(4 * iNewSize, 8, 0);
+            for (int i = 0; i < mSize; ++i)
+                v3[i] = mElements[i];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mElements = v3;
+            mCapacity = iNewSize;
+            mSize = iNewSize;
+        }
+        else
+        {
+            mSize = iNewSize;
+        }
+    }
+
+    // ?clear@?$ae_vector@PAVInteractState@@@@QAEXXZ
+    void clear() { resize(0); }
+
+private:
+    // ?construct_array@?$ae_vector@PAVInteractState@@@@AAEPAPAVInteractState@@HH@Z
+    T* construct_array(int iCapacity, int iSize)
+    {
+        return (T*)tlMemAlloc(4 * iCapacity, 8, 0);
+    }
+    // ?construct_array@?$ae_vector@PAVInteractState@@@@AAEPAPAVInteractState@@H@Z
+    T* construct_array(int iNumber)
+    {
+        return (T*)tlMemAlloc(4 * iNumber, 8, 0);
+    }
+    // ?destroy_all@?$ae_vector@PAVInteractState@@@@AAEXXZ
+    void destroy_all()
+    {
+        if (mElements != nullptr)
+        {
+            tlMemFree(mElements);
+            mElements = nullptr;
+            mCapacity = 0;
+        }
+    }
+
     T* mElements;   // +0x00
     int mCapacity;  // +0x04
     int mSize;      // +0x08
