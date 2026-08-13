@@ -59,7 +59,8 @@ struct DSkelLocal {
 
 // Local DbLinkedHandle view (full template in game_types.h)
 template <typename DB, typename T>
-struct DbLinkedHandle {
+class DbLinkedHandle {
+public:
     unsigned int mVal;  // +0x00
 };
 
@@ -1417,6 +1418,10 @@ public:
     int GetInteractWeaponIndex() const;  // 0x53C1D0
     int CanRunWeaponAnims() const;    // 0x53C200
     void ChangeWeaponToPending();     // 0x53C190
+    void PostPhysicsUpdate(float deltaT);  // 0x53BFD0
+    int Press(int buttonIndex);            // 0x53C080
+    int Release(int buttonIndex);          // 0x53C0A0
+    void CreateInteractableAnimPlayer();   // 0x54CA00
 };
 
 // Stub bodies for the xanim goal-weight internals (ported with the
@@ -1883,7 +1888,11 @@ public:
         nalFullModifier = 2,
     };
 
-    struct nalPlayMethod;
+    // nalPlayMethod - real body in g_debugthread.cpp (game2.o)
+    struct nalPlayMethod {
+        void SetNoteHandlerEntityHandle(
+            DbLinkedHandle<EntityHandleDb, Entity> handle);  // 0x4F5D10
+    };
 
     // nalAnimCallback - vftable + curAnim (anim.o 0x539EB0/0x539ED0/0x539EE0)
     struct nalAnimCallback {
@@ -3307,6 +3316,11 @@ struct InteractMetaAnimData {
     void* mRevPtr;         // +0x28
 
     InteractMetaAnimData();  // ea: 0x0055FDE0
+    int IsDelayCreate();           // 0x55FE20
+    const void* GetSkeleton() const;  // 0x53F8A0
+    int IsAnimLooping() const;     // 0x53F840
+    float GetAnimDuration() const; // 0x53F880
+    int IsAnimTrajRelative() const;// 0x53F860
 };
 
 class InteractMetaAnimInstance {
@@ -5648,6 +5662,11 @@ public:
     void MeasureInput(float& rate, float& progress, float deltaT);  // 0x53F350
     void SetFlag(unsigned int f, int enable);  // 0x53A980
     int IsFlagged(unsigned int f) const;       // 0x53A9C0
+    void Deactivate();           // 0x53A910 (virtual in binary)
+    float Update(float deltaT);  // 0x53C7E0
+    int Press(int buttonIndex);  // 0x53C820
+    int Release(int buttonIndex);  // 0x53C840
+    static void InitInputRcvrArray();  // 0x53C530
 };
 
 class InteractInputRcvrButtonMash : public InteractInputRcvr {
@@ -6179,6 +6198,9 @@ public:
     TPakId GetPakId() const;           // 0x53AC30
     void SetFlag(unsigned int f, int enable);  // 0x53ABC0
     int IsFlagged(unsigned int f) const;       // 0x53AC00
+    int Press(int buttonIndex);            // 0x53D860
+    int Release(int buttonIndex);          // 0x53D8B0
+    void PlayAnims(int weaponIndex, float fadeIn);  // 0x54DC40
 
     // ?PostEffectEvent@InteractState@@IAEXIH@Z (stub; real in g.o)
     void PostEffectEvent(unsigned int effectName, int eventIndex)
@@ -6288,7 +6310,7 @@ int InteractState::GetRandomPlayerAnimIndex()
     int v2 = 0;
     for (int i = 0; i < 6; ++i)
     {
-        if (info->playerModAnim[i][0] != 0)
+        if (*(char*)((char*)info + 0xF8 + 40 * i) != 0)
         {
             tlFixedString v9(info->playerModAnim[i]);
             if (nalGetAnim(v9) != nullptr)
@@ -6537,6 +6559,349 @@ int InteractInputRcvr::IsFlagged(unsigned int f) const
 int Camera::IsAnimating() const
 {
     return *(unsigned char*)((char*)this + 0x140) & 1;
+}
+
+// ============================================================================
+// InteractState/InputRcvr update+press cluster (anim.o; smallest-first)
+// ============================================================================
+
+// ea: 0x0053C7E0
+float InteractInputRcvr::Update(float deltaT)
+{
+    float v3 = deltaT + mTimer;
+    mTimer = v3;
+    if (v3 > ((InteractStateInfoLocal*)mInfo)->acceptInputMinTime)
+        MeasureInput(mInputRate, mInputProgress, deltaT);
+    return mInputRate;
+}
+
+// ea: 0x0053C820 / 0x0053C840
+int InteractInputRcvr::Press(int buttonIndex)
+{
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+int InteractInputRcvr::Release(int buttonIndex)
+{
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+// ea: 0x0053A910
+void InteractInputRcvr::Deactivate()
+{
+}
+
+// ea: 0x0053C530
+void InteractInputRcvr::InitInputRcvrArray()
+{
+    for (int i = 0; i < kInputTypeCount; ++i)
+        sInputRcvrs[i] = nullptr;
+}
+
+// ea: 0x0053D860 / 0x0053D8B0
+int InteractState::Press(int buttonIndex)
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (*(int*)((char*)info + 0x370) != 0 && buttonIndex == 211)
+        return 0;
+    InteractInputRcvr* rcvr = (InteractInputRcvr*)mInputRcvr;
+    if (rcvr != nullptr)
+        return rcvr->Press(buttonIndex);
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+int InteractState::Release(int buttonIndex)
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (*(int*)((char*)info + 0x370) != 0 && buttonIndex == 211)
+        return 0;
+    InteractInputRcvr* rcvr = (InteractInputRcvr*)mInputRcvr;
+    if (rcvr != nullptr)
+        return rcvr->Release(buttonIndex);
+    return buttonIndex != 27 && buttonIndex != 9;
+}
+
+// ea: 0x0056EB0 (virtual; empty in binary)
+void InteractState_PostPhysicsUpdate(InteractState* self, float deltaT)
+{
+    (void)self; (void)deltaT;
+}
+
+// ea: 0x0053BFD0
+void InteractionController::PostPhysicsUpdate(float deltaT)
+{
+    if (mCurState != nullptr)
+        InteractState_PostPhysicsUpdate((InteractState*)mCurState, deltaT);
+}
+
+// ea: 0x0053C080 / 0x0053C0A0
+int InteractionController::Press(int buttonIndex)
+{
+    if (mCurState != nullptr)
+        return ((InteractState*)mCurState)->Press(buttonIndex);
+    return 0;
+}
+
+int InteractionController::Release(int buttonIndex)
+{
+    if (mCurState != nullptr)
+        return ((InteractState*)mCurState)->Release(buttonIndex);
+    return 0;
+}
+
+// ============================================================================
+// InteractMetaAnimData vtable methods (anim.o; smallest-first)
+// ============================================================================
+
+// ea: 0x0055FE20
+int InteractMetaAnimData::IsDelayCreate()
+{
+    return 1;
+}
+
+// ea: 0x0053F8A0
+const void* InteractMetaAnimData::GetSkeleton() const
+{
+    if (mAnimPtr != nullptr)
+        return *(void**)((char*)mAnimPtr + 0x30);
+    return nullptr;
+}
+
+// ea: 0x0053F840
+int InteractMetaAnimData::IsAnimLooping() const
+{
+    if (mAnimPtr != nullptr)
+        return *(unsigned int*)((char*)mAnimPtr + 0x34) & 1;
+    return 0;
+}
+
+// ea: 0x0053F880
+float InteractMetaAnimData::GetAnimDuration() const
+{
+    if (mAnimPtr != nullptr)
+        return *(float*)((char*)mAnimPtr + 0x38);
+    return 1.0f;
+}
+
+// ea: 0x0053F860
+int InteractMetaAnimData::IsAnimTrajRelative() const
+{
+    return mAnimPtr == nullptr
+           || (*(unsigned int*)((char*)mAnimPtr + 0x34) & 2) == 0;
+}
+
+// ============================================================================
+// InteractState::Lerper Set/Update (anim.o)
+// ============================================================================
+
+// ea: 0x0053DAD0
+void InteractState_Lerper_Set(InteractState_Lerper* self, float target,
+                              float duration, float lerpTimeIn,
+                              float lerpTimeOut, float initialVal)
+{
+    self->mTarget = target;
+    self->mDuration = duration;
+    self->mLerpTimeIn = lerpTimeIn;
+    self->mLerpTimeOut = lerpTimeOut;
+    self->mTimer = 0.0f;
+    self->mInitialVal = initialVal;
+}
+
+// ea: 0x0053FC80
+void InteractState_Lerper_Update(InteractState_Lerper* self, float deltaT,
+                                 float* updatedVal)
+{
+    if (self->mDuration > 0.0f)
+    {
+        float v3 = deltaT + self->mTimer;
+        self->mTimer = v3;
+        float total = self->mLerpTimeIn + self->mLerpTimeOut
+                      + self->mDuration;
+        if (v3 <= total)
+        {
+            if (v3 <= self->mLerpTimeIn + self->mDuration)
+            {
+                float lerpIn = self->mLerpTimeIn;
+                if (lerpIn <= v3 || lerpIn <= 0.0f)
+                    *updatedVal = self->mTarget;
+                else
+                    *updatedVal = ((v3 / lerpIn)
+                                   * (self->mTarget - self->mInitialVal))
+                                  + self->mInitialVal;
+            }
+            else
+            {
+                *updatedVal = ((((v3 - self->mLerpTimeOut) - self->mDuration)
+                                / self->mLerpTimeOut)
+                               * (self->mInitialVal - self->mTarget))
+                              + self->mTarget;
+            }
+        }
+        else
+        {
+            *updatedVal = self->mInitialVal;
+            self->mDuration = -1.0f;
+        }
+    }
+}
+
+// ============================================================================
+// InteractState::PlayAnims + interactable anim-player creation (anim.o)
+// ============================================================================
+
+extern void DObjCreateAnimationPlayer(DObj* obj, int modelIndex);
+
+// ea: 0x0054CA00
+void InteractionController::CreateInteractableAnimPlayer()
+{
+    if ((mFlags & 2) != 0)
+        return;
+    unsigned int v1 = mInteractableH.mVal & 0xFFF;
+    if (v1 < 0x540
+        && mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v1].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v1].mObject;
+        if (mObject != nullptr)
+        {
+            DObj* mDObj = mObject->mDObj;
+            if (mDObj != nullptr && mDObj->animPlayers[0] == nullptr)
+            {
+                mFlags |= 2u;
+                for (int i = 0; i < mDObj->numModels; ++i)
+                {
+                    if (mDObj->animPlayers[i] != nullptr)
+                    {
+                        XANIM_ASSERT(
+                            "!otherDObj->animPlayers[i]",
+                            "c:\\cod\\code\\game\\InteractionController.cpp",
+                            1466, "Anim player already created");
+                    }
+                    DObjCreateAnimationPlayer(mDObj, i);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0054DC40
+void InteractState::PlayAnims(int weaponIndex, float fadeIn)
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (*(unsigned char*)((char*)Player->client + 0x9D8) != weaponIndex)
+    {
+        XANIM_ASSERT("player->client->ps.weapon == weaponIndex",
+                     "c:\\cod\\code\\game\\InteractState.cpp", 949,
+                     "Weapon needs to be set to selected index");
+    }
+    if (*(unsigned char*)((char*)Player->client + 0x9D8) == weaponIndex)
+    {
+        InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+        char* playerAnim = info->playerAnim;
+        char* interactableAnim = (char*)info + 0xD0;
+        if ((mFlags & 0x400) != 0)
+        {
+            int animIndex = GetRandomPlayerAnimIndex();
+            if (animIndex != -1)
+            {
+                char* v9 = (char*)info + 40 * animIndex;
+                playerAnim = v9 + 0xF8;
+                interactableAnim = v9 + 0x238;
+            }
+        }
+        if (info->playerAnim[0] != 0)
+        {
+            tlFixedString name(playerAnim);
+            void* Anim = nalGetAnim(name);
+            PlayPlayerAnim(Anim, weaponIndex, fadeIn, 0.0f, 1.0f);
+        }
+        if (*interactableAnim != 0)
+        {
+            unsigned int v11 = mController->mInteractableH.mVal & 0xFFF;
+            if (v11 < 0x540
+                && mController->mInteractableH.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v11].mKey)
+            {
+                Entity* mObject =
+                    EntityHandleDb::sInst.mElements[v11].mObject;
+                if (mObject != nullptr)
+                {
+                    tlFixedString name2(interactableAnim);
+                    void* Anim2 = nalGetAnim(name2);
+                    mOtherAnim = Anim2;
+                    if (Anim2 != nullptr)
+                    {
+                        DObj* mDObj = mObject->mDObj;
+                        if (mDObj != nullptr)
+                        {
+                            mController->CreateInteractableAnimPlayer();
+                            mOtherCallback =
+                                mController->GetNextOtherCallback();
+                            for (int i = 0; i < mDObj->numModels; ++i)
+                            {
+                                if (mDObj->animPlayers[i] != nullptr)
+                                {
+                                    void* playMethod =
+                                        mController->GetNextOtherPlayMethod();
+                                    if (playMethod != nullptr)
+                                    {
+                                        ((AnimationPlayer::nalPlayMethod*)
+                                             playMethod)
+                                            ->SetNoteHandlerEntityHandle(
+                                                *(DbLinkedHandle<
+                                                    EntityHandleDb,
+                                                    Entity>*)
+                                                    &mObject->mHandle);
+                                    }
+                                    void* callback =
+                                        (i != 0) ? nullptr : mOtherCallback;
+                                    ((AnimationPlayer*)
+                                         mDObj->animPlayers[i])
+                                        ->Play((nalGenericAnim*)mOtherAnim,
+                                               true, fadeIn, playMethod,
+                                               0.0f, callback, 1.0f, 0.0f);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        InteractStateInfoLocal* v18 = (InteractStateInfoLocal*)mInfo;
+        char* weaponAnim = (char*)v18 + 0x1E8;
+        if (*weaponAnim != 0)
+        {
+            void* dobj = (void*)dword_F6A2A0[802 * mController->mClient];
+            if (dobj != nullptr
+                && *(unsigned char*)((char*)dobj + 0xCE) > 1
+                && *(void**)((char*)dobj + 0x20) != nullptr)
+            {
+                tlFixedString name3(weaponAnim);
+                void* Anim3 = nalGetAnim(name3);
+                if (Anim3 != nullptr)
+                {
+                    ((AnimationPlayer*)*(void**)((char*)dobj + 0x20))
+                        ->Play((nalGenericAnim*)Anim3, true, 0.0f, nullptr,
+                               0.0f, nullptr, 1.0f, 0.0f);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0054FC10 / 0x0054FC50
+void InteractStateMeleeSuccess_PlayAnims(InteractState* self,
+                                         int weaponIndex, float fadeIn)
+{
+    self->mFlags |= 0x400u;
+    self->PlayAnims(weaponIndex, fadeIn);
+}
+
+void InteractStateMeleeFailure_PlayAnims(InteractState* self,
+                                         int weaponIndex, float fadeIn)
+{
+    self->mFlags |= 0x400u;
+    self->PlayAnims(weaponIndex, fadeIn);
 }
 
 // ea: 0x0053FA70
