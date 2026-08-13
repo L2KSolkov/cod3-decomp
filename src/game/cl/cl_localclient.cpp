@@ -60,6 +60,22 @@ static int lFirstLocalClientIndex;
 static int lLastLocalClientIndex;
 static int lNumLocalClients;
 
+// LocalClient (cl.o; C++ statics matching the binary mangling)
+class LocalClient {
+public:
+    static int  LastLocalClientIndex();          // ?LastLocalClientIndex@LocalClient@@YAHXZ (0x52EF60)
+    static int  NumLocalClients();               // ?NumLocalClients@LocalClient@@YAHXZ (0x52EFA0)
+    static void SetNumLocalClients(int num);     // ?SetNumLocalClients@LocalClient@@YAXH@Z (0x52EFB0)
+    static int  GetNumLocalClientsByState(int state);  // ?GetNumLocalClientsByState@LocalClient@@YAHW4ELocalPlayerStates@@@Z (0x52EFC0)
+    static int  PortToClient(int port);          // ?PortToClient@LocalClient@@YAHH@Z (0x52F010)
+    static bool PortIsState(int port, int state);// ?PortIsState@LocalClient@@YA_NHH@Z (0x52F020)
+    static int  PortToValidClient(int port);     // ?PortToValidClient@LocalClient@@YAHH@Z (0x52F040)
+    static void SetClientPort(int client, int port);  // ?SetClientPort@LocalClient@@YAXHH@Z (0x52F080)
+    static void UpdatePlayerPorts(int fixedPort);      // ?UpdatePlayerPorts@LocalClient@@YAXH@Z (0x52F0A0)
+    static void ConfigureLocalClients();               // ?ConfigureLocalClients@LocalClient@@YAXXZ (0x52F0F0)
+    static bool QuitClientOutOfGame(int client);       // ?QuitClientOutOfGame@LocalClient@@YA_NH@Z (0x52F140)
+};
+
 // ea: 0x52EF50
 void LocalClient_InitializeClientControllers()
 {
@@ -67,9 +83,13 @@ void LocalClient_InitializeClientControllers()
 }
 
 // ea: 0x52EF60
-int LocalClient_LastLocalClientIndex()
+int LocalClient::LastLocalClientIndex()
 {
     return lLastLocalClientIndex;
+}
+int LocalClient_LastLocalClientIndex()
+{
+    return LocalClient::LastLocalClientIndex();
 }
 
 // ea: 0x52EF70
@@ -91,21 +111,33 @@ void LocalClient_SetFirstLocalClientIndex(int index)
 }
 
 // ea: 0x52EFA0
-int LocalClient_NumLocalClients()
+int LocalClient::NumLocalClients()
 {
     return lNumLocalClients;
 }
+int LocalClient_NumLocalClients()
+{
+    return LocalClient::NumLocalClients();
+}
 
 // ea: 0x52EFB0
-void LocalClient_SetNumLocalClients(int num)
+void LocalClient::SetNumLocalClients(int num)
 {
     lNumLocalClients = num;
 }
+void LocalClient_SetNumLocalClients(int num)
+{
+    LocalClient::SetNumLocalClients(num);
+}
 
 // ea: 0x52EFC0
-int LocalClient_GetNumLocalClientsByState(int state)
+int LocalClient::GetNumLocalClientsByState(int state)
 {
     return dword_F6A290[0] == state;
+}
+int LocalClient_GetNumLocalClientsByState(int state)
+{
+    return LocalClient::GetNumLocalClientsByState(state);
 }
 
 // ea: 0x52EFE0
@@ -117,20 +149,29 @@ int LocalClient_ClientToPort(int client)
 }
 
 // ea: 0x52F010
+int LocalClient::PortToClient(int port)
+{
+    (void)port;
+    return 0;
+}
 int LocalClient_PortToClient()
 {
-    return 0;
+    return LocalClient::PortToClient(0);
 }
 
 // ea: 0x52F020
-int LocalClient_PortIsState(int port, int state)
+bool LocalClient::PortIsState(int port, int state)
 {
     (void)port;
     return dword_F6A290[0] == state;
 }
+int LocalClient_PortIsState(int port, int state)
+{
+    return LocalClient::PortIsState(port, state);
+}
 
 // ea: 0x52F040
-int LocalClient_PortToValidClient(int port)
+int LocalClient::PortToValidClient(int port)
 {
     int result = 0;
     int* v2 = &unk_F6A28C;
@@ -143,16 +184,24 @@ int LocalClient_PortToValidClient(int port)
     }
     return result;
 }
+int LocalClient_PortToValidClient(int port)
+{
+    return LocalClient::PortToValidClient(port);
+}
 
 // ea: 0x52F080
-void LocalClient_SetClientPort(int client, int port)
+void LocalClient::SetClientPort(int client, int port)
 {
     if (client == 0)
         unk_F6A28C = port;
 }
+void LocalClient_SetClientPort(int client, int port)
+{
+    LocalClient::SetClientPort(client, port);
+}
 
 // ea: 0x52F0A0
-void LocalClient_UpdatePlayerPorts(int fixedPort)
+void LocalClient::UpdatePlayerPorts(int fixedPort)
 {
     int availCont[1];
     availCont[0] = 1;
@@ -173,9 +222,13 @@ void LocalClient_UpdatePlayerPorts(int fixedPort)
         }
     }
 }
+void LocalClient_UpdatePlayerPorts(int fixedPort)
+{
+    LocalClient::UpdatePlayerPorts(fixedPort);
+}
 
 // ea: 0x52F0F0
-int LocalClient_ConfigureLocalClients()
+void LocalClient::ConfigureLocalClients()
 {
     lNumLocalClients = dword_F6A290[0] == 2;
     memset(kbss, 0, sizeof(kbss));
@@ -183,11 +236,15 @@ int LocalClient_ConfigureLocalClients()
     cl_stance_ss[0] = 0;
     cl_altFireButtonDown_ss[0] = 0;
     cl_grenadeButtonDown_ss[0] = 0;
+}
+int LocalClient_ConfigureLocalClients()
+{
+    LocalClient::ConfigureLocalClients();
     return 0;
 }
 
 // ea: 0x52F140
-bool LocalClient_QuitClientOutOfGame(int client)
+bool LocalClient::QuitClientOutOfGame(int client)
 {
     (void)client;
     MultiplayerMgr::sInst->DropHotJoiningPlayers();
@@ -196,6 +253,10 @@ bool LocalClient_QuitClientOutOfGame(int client)
     if (mCallbackQuitGame != nullptr)
         mCallbackQuitGame();
     return 1;
+}
+bool LocalClient_QuitClientOutOfGame(int client)
+{
+    return LocalClient::QuitClientOutOfGame(client);
 }
 
 // ============================================================================
