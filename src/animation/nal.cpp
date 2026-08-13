@@ -1405,6 +1405,18 @@ public:
     void ClearRenderText(unsigned int index);  // 0x53F1E0
     void ClearAllRenderText();             // 0x53F280
     int DoRenderText(unsigned int index);  // ?DoRenderText@InteractionController@@QBEHH@Z (cl.o)
+
+    // accessor cluster (anim.o; smallest-first batch)
+    void* GetNextPlayerCallback();    // 0x53C220
+    void* GetNextOtherCallback();     // 0x53C250
+    void* GetNextPlayerPlayMethod();  // 0x53C280
+    void* GetNextOtherPlayMethod();   // 0x53C2B0
+    int GetCameraMode() const;        // 0x53C040 (virtual in binary)
+    float GetRotation() const;        // 0x53C060
+    int GetClient() const;            // 0x53A7F0
+    int GetInteractWeaponIndex() const;  // 0x53C1D0
+    int CanRunWeaponAnims() const;    // 0x53C200
+    void ChangeWeaponToPending();     // 0x53C190
 };
 
 // Stub bodies for the xanim goal-weight internals (ported with the
@@ -1856,6 +1868,7 @@ public:
 struct Camera {
 public:
     void StopAnimating(float minTweenTime);  // ?StopAnimating@Camera@@QAEXM@Z
+    int IsAnimating() const;                 // 0x55FA40
 };
 extern Camera* gCamera;  // ?gCamera@@3PAUCamera@@A (cg.o @ 0x1358EF0)
 
@@ -5633,6 +5646,8 @@ public:
     float GetInputProgress();      // 0x53A960
     float GetTimeSinceLastInput(); // 0x53A970
     void MeasureInput(float& rate, float& progress, float deltaT);  // 0x53F350
+    void SetFlag(unsigned int f, int enable);  // 0x53A980
+    int IsFlagged(unsigned int f) const;       // 0x53A9C0
 };
 
 class InteractInputRcvrButtonMash : public InteractInputRcvr {
@@ -6158,6 +6173,12 @@ public:
     void CheckNotifySet(Entity* ent, int eventIndex); // 0x53F9F0
     void PlayPlayerAnim(void* anim, int weaponIndex, float fadeIn,
                         float animTimeFrac, float speed);  // 0x53FA70
+    int GetCameraMode() const;         // 0x53D820 (virtual in binary)
+    float GetRotation() const;         // 0x5614B0
+    const void* GetInfo() const;       // 0x53AC20
+    TPakId GetPakId() const;           // 0x53AC30
+    void SetFlag(unsigned int f, int enable);  // 0x53ABC0
+    int IsFlagged(unsigned int f) const;       // 0x53AC00
 
     // ?PostEffectEvent@InteractState@@IAEXIH@Z (stub; real in g.o)
     void PostEffectEvent(unsigned int effectName, int eventIndex)
@@ -6323,6 +6344,199 @@ void InteractState::CheckNotifySet(Entity* ent, int eventIndex)
             }
         }
     }
+}
+
+// ============================================================================
+// InteractionController/InteractState accessor cluster (anim.o; smallest-first)
+// ============================================================================
+
+// clientActive_t minimal view (tag matches cl_input.h so ?cl@@3PAU... links).
+struct clientActive_t {
+    unsigned char _pad[0x18B0];
+};
+extern clientActive_t cl[2];  // ?cl@@3PAUclientActive_t@@A
+extern int BG_SelectWeaponIndex(int iWeaponIndex, int client);
+
+// ea: 0x0053A7F0
+int InteractionController::GetClient() const
+{
+    return mClient;
+}
+
+// ea: 0x0053C040
+int InteractionController::GetCameraMode() const
+{
+    if (mCurState != nullptr)
+        return ((InteractState*)mCurState)->GetCameraMode();
+    return -1;
+}
+
+// ea: 0x0053C060
+float InteractionController::GetRotation() const
+{
+    if (mCurState != nullptr)
+        return ((InteractState*)mCurState)->GetRotation();
+    return 0.0f;
+}
+
+// ea: 0x0053C1D0
+int InteractionController::GetInteractWeaponIndex() const
+{
+    int result = mSelectedInteractWeaponIndex;
+    if (result < 1)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+        if (Player != nullptr && Player->client != nullptr)
+            return *(unsigned char*)((char*)Player->client + 0x9D8);
+        return 0;
+    }
+    return result;
+}
+
+// ea: 0x0053C200
+int InteractionController::CanRunWeaponAnims() const
+{
+    InteractState* st = (InteractState*)mCurState;
+    return st == nullptr || (st->mFlags & 0x100) != 0;
+}
+
+// ea: 0x0053C190
+void InteractionController::ChangeWeaponToPending()
+{
+    int pending = mPendingWeaponIndex;
+    if (pending != -1)
+    {
+        BG_SelectWeaponIndex(pending, mClient);
+        *(int*)((char*)&cl[mClient] + 0x644) = pending;
+        mPendingWeaponIndex = -1;
+    }
+}
+
+// ea: 0x0053C220 / 0x0053C250 / 0x0053C280 / 0x0053C2B0
+void* InteractionController::GetNextPlayerCallback()
+{
+    int idx = mNextPlayerCallbackIndex;
+    void* result = mPlayerCallback[idx++];
+    mNextPlayerCallbackIndex = idx;
+    if (idx == 3)
+        mNextPlayerCallbackIndex = 0;
+    return result;
+}
+
+void* InteractionController::GetNextOtherCallback()
+{
+    int idx = mNextOtherCallbackIndex;
+    void* result = mOtherCallback[idx++];
+    mNextOtherCallbackIndex = idx;
+    if (idx == 3)
+        mNextOtherCallbackIndex = 0;
+    return result;
+}
+
+void* InteractionController::GetNextPlayerPlayMethod()
+{
+    int idx = mNextPlayerPlayMethodIndex;
+    void* result = mPlayerPlayMethod[idx++];
+    mNextPlayerPlayMethodIndex = idx;
+    if (idx == 3)
+        mNextPlayerPlayMethodIndex = 0;
+    return result;
+}
+
+void* InteractionController::GetNextOtherPlayMethod()
+{
+    int idx = mNextOtherPlayMethodIndex;
+    void* result = mOtherPlayMethod[idx++];
+    mNextOtherPlayMethodIndex = idx;
+    if (idx == 3)
+        mNextOtherPlayMethodIndex = 0;
+    return result;
+}
+
+// ea: 0x0053D820
+int InteractState::GetCameraMode() const
+{
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    if (*(int*)((char*)info + 0x3A4) != 0)  // defaultCameraMode
+        return -1;
+    if (mLerpType != kLerpNone
+        && ((mFlags & 1) != 0
+            || (InteractionController::Inst(currCl)->mFlags & 4) != 0))
+        return 16;
+    return 17;
+}
+
+// ea: 0x0053DAC0 / 0x005614C0 (virtual overrides in binary)
+int InteractStateMortarLoad_GetCameraMode(InteractState* self)
+{
+    (void)self;
+    return 18;
+}
+
+int InteractStateVehicleBase_GetCameraMode(InteractState* self)
+{
+    (void)self;
+    return -1;
+}
+
+// ea: 0x005614B0 / 0x0053DF80
+float InteractState::GetRotation() const
+{
+    return 0.0f;
+}
+
+float sSteeringWheelAngleVehicleBase = 0.0f;
+    // ?sSteeringWheelAngle@InteractStateVehicleBase@@1MA (anim.o)
+
+float InteractStateVehicleBase_GetRotation(InteractState* self)
+{
+    (void)self;
+    return sSteeringWheelAngleVehicleBase;
+}
+
+// ea: 0x0053AC20 / 0x0053AC30
+const void* InteractState::GetInfo() const
+{
+    return mInfo;
+}
+
+TPakId InteractState::GetPakId() const
+{
+    return mPakId;
+}
+
+// ea: 0x0053ABC0 / 0x0053AC00
+void InteractState::SetFlag(unsigned int f, int enable)
+{
+    if (enable != 0)
+        mFlags |= f;
+    else
+        mFlags &= ~f;
+}
+
+int InteractState::IsFlagged(unsigned int f) const
+{
+    return (f & mFlags) != 0;
+}
+
+// ea: 0x0053A980 / 0x0053A9C0
+void InteractInputRcvr::SetFlag(unsigned int f, int enable)
+{
+    if (enable != 0)
+        mFlags |= f;
+    else
+        mFlags &= ~f;
+}
+
+int InteractInputRcvr::IsFlagged(unsigned int f) const
+{
+    return (f & mFlags) != 0;
+}
+
+// ea: 0x0055FA40
+int Camera::IsAnimating() const
+{
+    return *(unsigned char*)((char*)this + 0x140) & 1;
 }
 
 // ea: 0x0053FA70
