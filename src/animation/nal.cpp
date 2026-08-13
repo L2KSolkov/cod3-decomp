@@ -7,6 +7,7 @@
 #include <new>
 #include <type_traits>
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
@@ -7341,6 +7342,85 @@ protected:
     void ComputeDeltaAngles();          // ?ComputeDeltaAngles@...@@IAEXXZ
 };
 
+// ============================================================================
+// InteractStateVehicleBase / Idle / Turn / Release / Link (anim.o
+// InteractStateVehicle.cpp)
+// Base 0x1B0: mTurnRate +0x1A0, mLastDelta +0x1A4; adds a 12th vtable slot,
+// CalcSteeringWheelAngle (slot 11).  Idle 0x1B0 (vftable Deactivate is the
+// VehicleBase thunk).  Turn 0x1C0: mMetaNalBaseAnimPtr +0x1B0,
+// mMetaAnimDataPtr +0x1B4, mScore +0x1B8.  Release 0x1C0:
+// mInitialSteeringWheelAngle +0x1B0.  Link 0x1A0 derives from
+// InteractStatePlayPlayerAnim.  All ctor mType values verified via disasm.
+// ============================================================================
+class InteractStateVehicleBase : public InteractState {
+public:
+    InteractStateVehicleBase(TPakId curPakId, const InteractStateInfo* info,
+                             InteractionController* controller);  // 0x547BE0
+    virtual void Activate();              // 0x5508E0
+    virtual void Deactivate();            // 0x540E60
+    virtual InteractState* Update(float deltaT);  // 0x547C10
+    virtual int GetCameraMode() const;    // 0x5614C0
+    virtual int Press(int buttonIndex);   // 0x5614D0
+    virtual int Release(int buttonIndex); // 0x5614E0
+    virtual float GetRotation() const;    // 0x53DF80
+
+    static float sSteeringWheelAngle;  // ?sSteeringWheelAngle@InteractStateVehicleBase@@1MA
+
+    float mTurnRate;   // +0x1A0
+    float mLastDelta;  // +0x1A4
+protected:
+    virtual void CalcSteeringWheelAngle(float deltaT);  // 0x550910 (slot 11)
+};
+
+class InteractStateVehicleIdle : public InteractStateVehicleBase {
+public:
+    InteractStateVehicleIdle(TPakId curPakId, const InteractStateInfo* info,
+                             InteractionController* controller);  // 0x547C50
+    virtual void Activate();              // 0x550B70
+    virtual void Deactivate();            // 0x540EC0 (thunk)
+    virtual InteractState* Update(float deltaT);  // 0x550D40
+};
+
+class InteractStateVehicleTurn : public InteractStateVehicleBase {
+public:
+    InteractStateVehicleTurn(TPakId curPakId, const InteractStateInfo* info,
+                             InteractionController* controller);  // 0x547C80
+    virtual void Activate();              // 0x556670
+    virtual void Deactivate();            // 0x540ED0
+    virtual InteractState* Update(float deltaT);  // 0x556780
+
+    void* mMetaNalBaseAnimPtr;  // +0x1B0
+    void* mMetaAnimDataPtr;     // +0x1B4
+    float mScore;               // +0x1B8
+private:
+    void PlayMetaAnim(float deltaT);  // ?PlayMetaAnim@...@@AAEXM@Z
+    float CalcScore(float deltaT);    // ?CalcScore@...@@AAEMM@Z
+};
+
+class InteractStateVehicleRelease : public InteractStateVehicleBase {
+public:
+    InteractStateVehicleRelease(TPakId curPakId, const InteractStateInfo* info,
+                                InteractionController* controller);  // 0x547CC0
+    virtual void Activate();              // 0x5511B0
+    virtual void Deactivate();            // 0x540F20 (thunk)
+    virtual InteractState* Update(float deltaT);  // 0x547CF0
+
+    float mInitialSteeringWheelAngle;  // +0x1B0
+protected:
+    virtual void CalcSteeringWheelAngle(float deltaT);  // 0x551320
+};
+
+class InteractStateVehicleLink : public InteractStatePlayPlayerAnim {
+public:
+    InteractStateVehicleLink(TPakId curPakId, const InteractStateInfo* info,
+                             InteractionController* controller);  // 0x546E60
+    virtual void Activate();              // 0x555A00
+    virtual InteractState* Update(float deltaT);  // 0x555A20
+private:
+    int CanLink() const;  // ?CanLink@...@@ABEHXZ
+    void Link();           // ?Link@...@@AAEXXZ
+};
+
 extern void* RumbleManager_Inst(int instance);
 
 // ?Remove@RumbleManager@@QAEXVRumbleEffectInstanceHandle@@@Z (core.o real)
@@ -7485,23 +7565,6 @@ int InteractState::GetRandomPlayerAnimIndex()
     }
     (void)v2;
     return irand(0, count);
-}
-
-// ea: 0x0053D9A0 (InteractStateVehicleLink::CanLink)
-bool InteractStateVehicleLink_CanLink(void* self)
-{
-    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
-    if (Player != nullptr)
-    {
-        InteractionController* v2 = InteractionController::Inst(currCl);
-        // client->ps.weapon == selected && (eFlags & 0x100000) == 0
-        void* client = Player->client;
-        if (*(int*)((char*)client + 0xA4) == v2->mSelectedInteractWeaponIndex
-            && (*(unsigned int*)((char*)client + 0xF4) & 0x100000) == 0)
-            return true;
-    }
-    (void)self;
-    return false;
 }
 
 // ea: 0x0053F9F0
@@ -7655,25 +7718,10 @@ int InteractState::GetCameraMode() const
     return 17;
 }
 
-int InteractStateVehicleBase_GetCameraMode(InteractState* self)
-{
-    (void)self;
-    return -1;
-}
-
 // ea: 0x005614B0 / 0x0053DF80
 float InteractState::GetRotation() const
 {
     return 0.0f;
-}
-
-float sSteeringWheelAngleVehicleBase = 0.0f;
-    // ?sSteeringWheelAngle@InteractStateVehicleBase@@1MA (anim.o)
-
-float InteractStateVehicleBase_GetRotation(InteractState* self)
-{
-    (void)self;
-    return sSteeringWheelAngleVehicleBase;
 }
 
 // ea: 0x0053AC20 / 0x0053AC30
@@ -8176,17 +8224,6 @@ void InteractState_Ctor(InteractState* self, TPakId curPakId, void* info,
         curPakId, (const InteractStateInfo*)info, controller);
 }
 
-// 0x546E60
-INTERACT_STATE_CTOR(InteractStateVehicleLink, kInteractTypeVehicleLink)
-// 0x547630
-// 0x547BE0
-INTERACT_STATE_CTOR(InteractStateVehicleBase, kInteractTypeVehicleBase)
-// 0x547C50
-INTERACT_STATE_CTOR(InteractStateVehicleIdle, kInteractTypeVehicleIdle)
-// 0x547C80
-INTERACT_STATE_CTOR(InteractStateVehicleTurn, kInteractTypeVehicleTurn)
-// 0x547CC0
-INTERACT_STATE_CTOR(InteractStateVehicleRelease, kInteractTypeVehicleRelease)
 
 #undef INTERACT_STATE_CTOR
 
@@ -9181,6 +9218,15 @@ LMP_NEW_FWD(InteractStateLeverPush);
 LMP_NEW_FWD(InteractStateMortarLoad);
 LMP_NEW_FWD(InteractStatePickLiveGrenade);
 #undef LMP_NEW_FWD
+#define VEH_NEW_FWD(NAME)                                                   \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)
+VEH_NEW_FWD(InteractStateVehicleBase);
+VEH_NEW_FWD(InteractStateVehicleIdle);
+VEH_NEW_FWD(InteractStateVehicleTurn);
+VEH_NEW_FWD(InteractStateVehicleRelease);
+VEH_NEW_FWD(InteractStateVehicleLink);
+#undef VEH_NEW_FWD
 #define MELEE_NEW_FWD(NAME)                                                 \
     static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
                            InteractionController* controller)
@@ -9216,11 +9262,11 @@ static const struct InteractStateCtorEntry {
     { 14, 0x1B0, InteractStateMeleeStagedSuccess_New },
     { 15, 0x1A0, InteractStateMeleeDropWeapon_New },
     { 16, 0x1B0, InteractStateMortarLoad_New },
-    { 17, 0x1B0, InteractStateVehicleBase_Ctor },
-    { 18, 0x1B0, InteractStateVehicleIdle_Ctor },
-    { 19, 0x1C0, InteractStateVehicleTurn_Ctor },
-    { 20, 0x1C0, InteractStateVehicleRelease_Ctor },
-    { 21, 0x1A0, InteractStateVehicleLink_Ctor },
+    { 17, 0x1B0, InteractStateVehicleBase_New },
+    { 18, 0x1B0, InteractStateVehicleIdle_New },
+    { 19, 0x1C0, InteractStateVehicleTurn_New },
+    { 20, 0x1C0, InteractStateVehicleRelease_New },
+    { 21, 0x1A0, InteractStateVehicleLink_New },
     { 22, 0x1C0, InteractStatePickLiveGrenade_New },
     { 23, 0x1A0, InteractStateRowboatInit_New },
     { 24, 0x210, InteractStateRowboat_New },
@@ -9267,6 +9313,20 @@ LMP_NEW(InteractStateLeverPush)
 LMP_NEW(InteractStateMortarLoad)
 LMP_NEW(InteractStatePickLiveGrenade)
 #undef LMP_NEW
+
+#define VEH_NEW(NAME)                                                       \
+    static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
+                           InteractionController* controller)               \
+    {                                                                       \
+        new (mem) NAME(curPakId, (const InteractStateInfo*)info,            \
+                       controller);                                         \
+    }
+VEH_NEW(InteractStateVehicleBase)
+VEH_NEW(InteractStateVehicleIdle)
+VEH_NEW(InteractStateVehicleTurn)
+VEH_NEW(InteractStateVehicleRelease)
+VEH_NEW(InteractStateVehicleLink)
+#undef VEH_NEW
 
 #define MELEE_NEW(NAME)                                                     \
     static void NAME##_New(InteractState* mem, TPakId curPakId, void* info, \
@@ -10180,194 +10240,6 @@ float sSWAngleMax = 35.0f;   // @ 0xDF29DC
 float sSWKeepTurn = 90.0f;   // @ 0xDF29E0
 float sSWTurnRate = 300.0f;  // @ 0xDF29E4
 float sSWAngleFactor = 1.0f; // @ 0xDF29E8
-
-// ea: 0x00551320
-void InteractStateVehicleRelease_CalcSteeringWheelAngle(InteractState* self,
-                                                        float deltaT)
-{
-    (void)deltaT;
-    unsigned int v2 = self->mController->mInteractableH.mVal & 0xFFF;
-    if (v2 < 0x540
-        && self->mController->mInteractableH.mVal >> 12
-               == EntityHandleDb::sInst.mElements[v2].mKey)
-    {
-        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
-        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
-        {
-            InteractStateInfoLocal* mInfo =
-                (InteractStateInfoLocal*)self->mInfo;
-            if (*(float*)((char*)mInfo + 0x378) != 0.0f)
-            {
-                float timeRatio =
-                    self->mStateTimer / *(float*)((char*)mInfo + 0x378);
-                if (timeRatio >= 1.0f)
-                    timeRatio = 1.0f;
-                float init = *(float*)((char*)self + 0x1B0);
-                sSteeringWheelAngleVehicleBase =
-                    (cosf(timeRatio * 3.1415927f - 3.1415927f) + 1.0f)
-                        * 0.5f * -init
-                    + init;
-            }
-        }
-    }
-}
-
-// ea: 0x00551090
-float InteractStateVehicleTurn_CalcScore(InteractState* self, float deltaT)
-{
-    (void)deltaT;
-    *(float*)((char*)self + 0x1B8) = 0.5f;
-    InteractionController* mController = self->mController;
-    unsigned int mVal = mController->mInteractableH.mVal;
-    unsigned int v4 = mVal & 0xFFF;
-    if (v4 < 0x540
-        && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
-    {
-        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
-        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
-        {
-            InteractStateInfoLocal* mInfo =
-                (InteractStateInfoLocal*)self->mInfo;
-            InteractState* v7 = self->mSuccessState[3];
-            float steeringWheelAngleMax =
-                *(float*)((char*)mInfo + 0x588);
-            sSWAngleMax = steeringWheelAngleMax;
-            float v9 = -steeringWheelAngleMax;
-            if (v7 != nullptr)
-            {
-                if (*(int*)((char*)mInfo + 0x584) != 0)
-                    v9 = 0.0f;
-                else
-                    steeringWheelAngleMax = 0.0f;
-            }
-            float v10 = (sSteeringWheelAngleVehicleBase - v9)
-                        / (steeringWheelAngleMax - v9);
-            if (v7 == nullptr || *(int*)((char*)mInfo + 0x584) == 0)
-                v10 = 1.0f - v10;
-            float v11 = ((sMaxScore - sMinScore) * v10) + sMinScore;
-            if (sMinScore > v11)
-            {
-                *(float*)((char*)self + 0x1B8) = sMinScore;
-                return *(float*)((char*)self + 0x1B8);
-            }
-            if (v11 > sMaxScore)
-                v11 = sMaxScore;
-            *(float*)((char*)self + 0x1B8) = v11;
-        }
-    }
-    return *(float*)((char*)self + 0x1B8);
-}
-
-// ea: 0x00550910
-void InteractStateVehicleBase_CalcSteeringWheelAngle(InteractState* self,
-                                                     float deltaT)
-{
-    InteractionController* c = self->mController;
-    unsigned int v2 = c->mInteractableH.mVal & 0xFFF;
-    if (v2 < 0x540
-        && c->mInteractableH.mVal >> 12
-               == EntityHandleDb::sInst.mElements[v2].mKey)
-    {
-        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
-        if (mObject != nullptr)
-        {
-            void* scr_vehicle = mObject->scr_vehicle;
-            if (scr_vehicle != nullptr)
-            {
-                float mSteeringAngle = *(float*)((char*)scr_vehicle + 0x410);
-                InteractStateInfoLocal* mInfo =
-                    (InteractStateInfoLocal*)self->mInfo;
-                float steeringAngleKeepTurn =
-                    *(float*)((char*)mInfo + 0x58C);
-                float steeringWheelAngleMax =
-                    *(float*)((char*)mInfo + 0x588);
-                float steeringWheelTurnRate =
-                    *(float*)((char*)mInfo + 0x590);
-                float steeringWheelAngleFactor =
-                    *(float*)((char*)mInfo + 0x594);
-                sSWAngleMax = steeringWheelAngleMax;
-                sSWKeepTurn = steeringAngleKeepTurn;
-                sSWTurnRate = steeringWheelTurnRate;
-                sSWAngleFactor = steeringWheelAngleFactor;
-                float* mLastDelta = (float*)((char*)self + 0x1A4);
-                float* mTurnRate = (float*)((char*)self + 0x1A0);
-                if (mSteeringAngle > steeringAngleKeepTurn)
-                {
-                    if (*mLastDelta >= 0.0f)
-                    {
-                        float v11 = (deltaT * 60.0f) + *mTurnRate;
-                        if (steeringWheelTurnRate <= v11
-                            && v11 <= steeringWheelTurnRate)
-                            steeringWheelTurnRate = v11;
-                    }
-                    *mTurnRate = steeringWheelTurnRate;
-                    *mLastDelta = steeringWheelTurnRate * deltaT;
-                }
-                else if ((0.0f - steeringAngleKeepTurn) > mSteeringAngle)
-                {
-                    if (*mLastDelta <= 0.0f)
-                    {
-                        float v12 = (deltaT * 60.0f) + *mTurnRate;
-                        if (steeringWheelTurnRate <= v12
-                            && v12 <= steeringWheelTurnRate)
-                            steeringWheelTurnRate = v12;
-                    }
-                    *mTurnRate = steeringWheelTurnRate;
-                    *mLastDelta = -(steeringWheelTurnRate * deltaT);
-                }
-                else
-                {
-                    float v13 = steeringWheelAngleFactor * mSteeringAngle;
-                    if (v13 <= sSteeringWheelAngleVehicleBase)
-                    {
-                        if (*mLastDelta <= 0.0f)
-                        {
-                            float v17 = (deltaT * 60.0f) + *mTurnRate;
-                            if (steeringWheelTurnRate <= v17
-                                && v17 <= steeringWheelTurnRate)
-                                steeringWheelTurnRate = v17;
-                        }
-                        *mTurnRate = steeringWheelTurnRate;
-                        float v18 = -(steeringWheelTurnRate * deltaT);
-                        *mLastDelta = v18;
-                        if (v13 > v18 + sSteeringWheelAngleVehicleBase)
-                            *mLastDelta =
-                                v13 - sSteeringWheelAngleVehicleBase;
-                    }
-                    else
-                    {
-                        if (*mLastDelta >= 0.0f)
-                        {
-                            float v14 = (deltaT * 60.0f) + *mTurnRate;
-                            if (steeringWheelTurnRate <= v14
-                                && v14 <= steeringWheelTurnRate)
-                                steeringWheelTurnRate = v14;
-                        }
-                        *mTurnRate = steeringWheelTurnRate;
-                        float v15 = steeringWheelTurnRate * deltaT;
-                        *mLastDelta = v15;
-                        if (v15 + sSteeringWheelAngleVehicleBase <= v13)
-                            goto clamp;
-                        *mLastDelta = v13 - sSteeringWheelAngleVehicleBase;
-                    }
-                }
-clamp:
-                float v19 = *mLastDelta + sSteeringWheelAngleVehicleBase;
-                if ((0.0f - steeringWheelAngleMax) <= v19)
-                {
-                    sSteeringWheelAngleVehicleBase = steeringWheelAngleMax;
-                    if (v19 <= steeringWheelAngleMax)
-                        sSteeringWheelAngleVehicleBase = v19;
-                }
-                else
-                {
-                    sSteeringWheelAngleVehicleBase =
-                        -steeringWheelAngleMax;
-                }
-            }
-        }
-    }
-}
 
 // ============================================================================
 // InteractState lerp cluster (anim.o; layout verified vs disasm)
@@ -13137,6 +13009,729 @@ void InteractStatePickLiveGrenade::ComputeDeltaAngles()
 }
 
 // ============================================================================
+// InteractStateVehicle family (anim.o InteractStateVehicle.cpp)
+// ============================================================================
+
+extern void VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx,
+                           int entryIdx, int fromPos);  // ?VEH_LinkPlayer (g.o)
+
+// anim.o statics (verified vs IDA)
+int sSideMin = 2;                 // 0xDF368C (int; compared after ftol2)
+float sIdleWheelAngle = 5.0f;     // 0xDF37B8
+float sReleaseMax = 0.8f;         // 0xDF37BC
+float sReleaseMin = 0.2f;         // 0xDF37C0
+float sSWAngleMax_0 = 375.0f;     // 0xDF37C4
+int sSideMin_0 = 2;               // 0xDF37C8 (int; compared after ftol2)
+float InteractStateVehicleBase::sSteeringWheelAngle = 0.0f;  // 0xF25A24
+
+// ea: 0x00547BE0
+InteractStateVehicleBase::InteractStateVehicleBase(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractState(curPakId, info, controller)
+{
+    mType = kInteractTypeVehicleBase;
+}
+
+// ea: 0x005508E0
+void InteractStateVehicleBase::Activate()
+{
+    InteractState::Activate();
+    mTurnRate = 0.0f;
+    mLastDelta = 0.0f;
+    mController->mFlags |= 0x20u;
+}
+
+// ea: 0x00540E60
+void InteractStateVehicleBase::Deactivate()
+{
+    bool v2 = false;
+    Entity* Player = EntityManager::sInst->GetPlayer(mController->mClient);
+    Entity* v4 = Player;
+    if (Player != nullptr)
+        v2 = *(unsigned char*)((char*)Player->client + 0x800) != 0;
+    InteractState::Deactivate();
+    if (v4 != nullptr)
+        *(unsigned char*)((char*)v4->client + 0x800) = v2 ? 1 : 0;
+    mController->mFlags &= ~0x20u;
+}
+
+// ea: 0x00547C10
+InteractState* InteractStateVehicleBase::Update(float deltaT)
+{
+    InteractState::Update(deltaT);
+    InteractState* mFailureState = this;
+    if ((mController->mFlags & 0x10) != 0)
+        mFailureState = this->mFailureState;
+    CalcSteeringWheelAngle(deltaT);
+    return mFailureState;
+}
+
+// ea: 0x005614C0
+int InteractStateVehicleBase::GetCameraMode() const
+{
+    return -1;
+}
+
+// ea: 0x005614D0
+int InteractStateVehicleBase::Press(int buttonIndex)
+{
+    (void)buttonIndex;
+    return 0;
+}
+
+// ea: 0x005614E0
+int InteractStateVehicleBase::Release(int buttonIndex)
+{
+    (void)buttonIndex;
+    return 0;
+}
+
+// ea: 0x0053DF80
+float InteractStateVehicleBase::GetRotation() const
+{
+    return sSteeringWheelAngle;
+}
+
+// ea: 0x00550910
+void InteractStateVehicleBase::CalcSteeringWheelAngle(float deltaT)
+{
+    unsigned int v2 = mController->mInteractableH.mVal & 0xFFF;
+    if (v2 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            void* scr_vehicle = mObject->scr_vehicle;
+            if (scr_vehicle != nullptr)
+            {
+                float mSteeringAngle = *(float*)((char*)scr_vehicle + 0x410);
+                InteractStateInfoLocal* mInfo =
+                    (InteractStateInfoLocal*)this->mInfo;
+                float steeringAngleKeepTurn = mInfo->steeringAngleKeepTurn;
+                float steeringWheelAngleMax = mInfo->steeringWheelAngleMax;
+                float steeringWheelTurnRate = mInfo->steeringWheelTurnRate;
+                float steeringWheelAngleFactor = mInfo->steeringWheelAngleFactor;
+                sSWAngleMax = steeringWheelAngleMax;
+                sSWKeepTurn = steeringAngleKeepTurn;
+                sSWTurnRate = steeringWheelTurnRate;
+                sSWAngleFactor = steeringWheelAngleFactor;
+                float& mLastDelta = this->mLastDelta;
+                float& mTurnRate = this->mTurnRate;
+                if (mSteeringAngle > steeringAngleKeepTurn)
+                {
+                    if (mLastDelta >= 0.0f)
+                    {
+                        float v11 = (deltaT * 60.0f) + mTurnRate;
+                        if (steeringWheelTurnRate <= v11
+                            && v11 <= steeringWheelTurnRate)
+                            steeringWheelTurnRate = v11;
+                    }
+                    mTurnRate = steeringWheelTurnRate;
+                    mLastDelta = steeringWheelTurnRate * deltaT;
+                }
+                else if ((0.0f - steeringAngleKeepTurn) > mSteeringAngle)
+                {
+                    if (mLastDelta <= 0.0f)
+                    {
+                        float v12 = (deltaT * 60.0f) + mTurnRate;
+                        if (steeringWheelTurnRate <= v12
+                            && v12 <= steeringWheelTurnRate)
+                            steeringWheelTurnRate = v12;
+                    }
+                    mTurnRate = steeringWheelTurnRate;
+                    mLastDelta = -(steeringWheelTurnRate * deltaT);
+                }
+                else
+                {
+                    float v13 = steeringWheelAngleFactor * mSteeringAngle;
+                    if (v13 <= sSteeringWheelAngle)
+                    {
+                        if (mLastDelta <= 0.0f)
+                        {
+                            float v17 = (deltaT * 60.0f) + mTurnRate;
+                            if (steeringWheelTurnRate <= v17
+                                && v17 <= steeringWheelTurnRate)
+                                steeringWheelTurnRate = v17;
+                        }
+                        mTurnRate = steeringWheelTurnRate;
+                        float v18 = -(steeringWheelTurnRate * deltaT);
+                        mLastDelta = v18;
+                        if (v13 > v18 + sSteeringWheelAngle)
+                            mLastDelta = v13 - sSteeringWheelAngle;
+                    }
+                    else
+                    {
+                        if (mLastDelta >= 0.0f)
+                        {
+                            float v14 = (deltaT * 60.0f) + mTurnRate;
+                            if (steeringWheelTurnRate <= v14
+                                && v14 <= steeringWheelTurnRate)
+                                steeringWheelTurnRate = v14;
+                        }
+                        mTurnRate = steeringWheelTurnRate;
+                        float v15 = steeringWheelTurnRate * deltaT;
+                        mLastDelta = v15;
+                        if (v15 + sSteeringWheelAngle <= v13)
+                            goto clamp;
+                        mLastDelta = v13 - sSteeringWheelAngle;
+                    }
+                }
+clamp:
+                float v19 = mLastDelta + sSteeringWheelAngle;
+                if ((0.0f - steeringWheelAngleMax) <= v19)
+                {
+                    sSteeringWheelAngle = steeringWheelAngleMax;
+                    if (v19 <= steeringWheelAngleMax)
+                        sSteeringWheelAngle = v19;
+                }
+                else
+                {
+                    sSteeringWheelAngle = -steeringWheelAngleMax;
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00547C50
+InteractStateVehicleIdle::InteractStateVehicleIdle(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStateVehicleBase(curPakId, info, controller)
+{
+    mType = kInteractTypeVehicleIdle;
+}
+
+// ea: 0x00550B70
+void InteractStateVehicleIdle::Activate()
+{
+    InteractState::Activate();
+    mTurnRate = 0.0f;
+    mLastDelta = 0.0f;
+    mController->mFlags |= 0x20u;
+    int mSelectedInteractWeaponIndex =
+        mController->mSelectedInteractWeaponIndex;
+    if (*(int*)((char*)EntityManager::sInst->GetPlayer(mController->mClient)
+                    ->client
+                + 0xA4)
+        != mSelectedInteractWeaponIndex)
+    {
+        if (gInteractArmsWeaponIndex <= 0)
+        {
+            XANIM_ASSERT("gInteractArmsWeaponIndex > 0",
+                         "c:\\cod\\code\\game\\InteractStateVehicle.cpp",
+                         213,
+                         "Weapon type interact missing - should be in a weapons tpl");
+        }
+        mController->ForceInteractionWeapon(gInteractArmsWeaponIndex);
+    }
+    int v6 = mController->mSelectedInteractWeaponIndex;
+    if (*(int*)((char*)EntityManager::sInst->GetPlayer(mController->mClient)
+                    ->client
+                + 0xA4)
+        == v6)
+    {
+        Entity* Player =
+            EntityManager::sInst->GetPlayer(mController->mClient);
+        unsigned int v8 = mController->mInteractableH.mVal & 0xFFF;
+        if (v8 < 0x540
+            && mController->mInteractableH.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v8].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v8].mObject;
+            if (mObject != nullptr
+                && (*(unsigned int*)((char*)Player->client + 0xF4)
+                    & 0x100000)
+                       == 0)
+            {
+                VEH_LinkPlayer(mObject, Player, 0, 0, 0);
+                sSteeringWheelAngle = 0.0f;
+            }
+        }
+        tlFixedString name(((InteractStateInfoLocal*)mInfo)->playerAnim);
+        int weapon = mController->mSelectedInteractWeaponIndex;
+        if (weapon < 1)
+        {
+            Entity* v12 =
+                EntityManager::sInst->GetPlayer(mController->mClient);
+            if (v12 != nullptr && v12->client != nullptr)
+                weapon = *(int*)((char*)v12->client + 0xA4);
+            else
+                weapon = 0;
+        }
+        void* Anim = nalGetAnim(name);
+        PlayPlayerAnim(Anim, weapon, 0.0f, 0.0f, 1.0f);
+    }
+    else
+    {
+        mFlags |= 0x40u;
+    }
+}
+
+// ea: 0x00540EC0 (thunk)
+void InteractStateVehicleIdle::Deactivate()
+{
+    InteractStateVehicleBase::Deactivate();
+}
+
+// ea: 0x00550D40
+InteractState* InteractStateVehicleIdle::Update(float deltaT)
+{
+    InteractState::Update(deltaT);
+    InteractState* mFailureState = this;
+    if ((mController->mFlags & 0x10) != 0)
+        mFailureState = this->mFailureState;
+    CalcSteeringWheelAngle(deltaT);
+    if (mFailureState != this)
+        return mFailureState;
+    unsigned int v4 = mController->mInteractableH.mVal & 0xFFF;
+    if (v4 >= 0x540
+        || mController->mInteractableH.mVal >> 12
+               != EntityHandleDb::sInst.mElements[v4].mKey
+        || EntityHandleDb::sInst.mElements[v4].mObject == nullptr)
+    {
+        mFailureState = mSuccessState[0];
+    }
+    float v5 = CL_GamepadPhysicalAxisValue(2);
+    bool v6 = v5 <= 0.0f;
+    if ((*(unsigned int*)&v5 & 0x80000000) != 0)
+    {
+        if (sSteeringWheelAngle > 0.0f)
+            return mSuccessState[1];
+        v6 = v5 <= 0.0f;
+    }
+    if (v6 || sSteeringWheelAngle > 0.0f)
+        return mFailureState;
+    return mSuccessState[2];
+}
+
+// ea: 0x00547C80
+InteractStateVehicleTurn::InteractStateVehicleTurn(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStateVehicleBase(curPakId, info, controller)
+{
+    mMetaNalBaseAnimPtr = nullptr;
+    mMetaAnimDataPtr = nullptr;
+    mType = kInteractTypeVehicleTurn;
+}
+
+// ea: 0x00556670
+void InteractStateVehicleTurn::Activate()
+{
+    InteractState::Activate();
+    mLastDelta = 0.0f;
+    mTurnRate = 0.0f;
+    mController->mFlags |= 0x20u;
+    mScore = 0.5f;
+    int mSelectedInteractWeaponIndex =
+        mController->mSelectedInteractWeaponIndex;
+    if (*(int*)((char*)EntityManager::sInst->GetPlayer(mController->mClient)
+                    ->client
+                + 0xA4)
+        != mSelectedInteractWeaponIndex)
+    {
+        if (gInteractArmsWeaponIndex <= 0)
+        {
+            XANIM_ASSERT("gInteractArmsWeaponIndex > 0",
+                         "c:\\cod\\code\\game\\InteractStateVehicle.cpp",
+                         287,
+                         "Weapon type interact missing - should be in a weapons tpl");
+        }
+        mController->ForceInteractionWeapon(gInteractArmsWeaponIndex);
+    }
+    int v6 = mController->mSelectedInteractWeaponIndex;
+    if (*(int*)((char*)EntityManager::sInst->GetPlayer(mController->mClient)
+                    ->client
+                + 0xA4)
+        == v6)
+    {
+        PlayMetaAnim(0.0f);
+        mController->mMetaAnimScore = 0.0f;
+    }
+    else
+    {
+        mFlags |= 0x40u;
+    }
+}
+
+// ea: 0x00540ED0
+void InteractStateVehicleTurn::Deactivate()
+{
+    InteractStateVehicleBase::Deactivate();
+    if (mMetaNalBaseAnimPtr != nullptr)
+    {
+        ((void (__thiscall*)(void*, int))(
+            (void**)*(void**)mMetaNalBaseAnimPtr)[1])(mMetaNalBaseAnimPtr, 1);
+        mMetaNalBaseAnimPtr = nullptr;
+    }
+    if (mMetaAnimDataPtr != nullptr)
+    {
+        mem_heap_free(mMetaAnimDataPtr);
+        mMetaAnimDataPtr = nullptr;
+    }
+}
+
+// ea: 0x00556780
+InteractState* InteractStateVehicleTurn::Update(float deltaT)
+{
+    InteractState::Update(deltaT);
+    InteractState* mFailureState = this;
+    if ((mController->mFlags & 0x10) != 0)
+        mFailureState = this->mFailureState;
+    CalcSteeringWheelAngle(deltaT);
+    InteractState* v4 = mFailureState;
+    if (mFailureState != this)
+        return v4;
+    unsigned int v5 = mController->mInteractableH.mVal & 0xFFF;
+    if (v5 >= 0x540
+        || mController->mInteractableH.mVal >> 12
+               != EntityHandleDb::sInst.mElements[v5].mKey
+        || EntityHandleDb::sInst.mElements[v5].mObject == nullptr)
+    {
+        return mSuccessState[0];
+    }
+    int v7 = (int)CL_GamepadPhysicalAxisValue(2);
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    InteractState* v8 = mSuccessState[2];
+    sSWAngleMax_0 = info->steeringWheelAngleMax;
+    float v9 = (sSteeringWheelAngle - (0.0f - sSWAngleMax_0))
+               / (sSWAngleMax_0 - (0.0f - sSWAngleMax_0));
+    bool releaseTaken = false;
+    if (v8 != nullptr)
+    {
+        if ((sReleaseMin > v9 && v7 < sSideMin_0)
+            || (v9 > sReleaseMax && v7 > -sSideMin_0))
+        {
+            v4 = v8;
+            releaseTaken = true;
+        }
+    }
+    if (!releaseTaken && mSuccessState[3] != nullptr)
+    {
+        bool takeSuccess3 =
+            (info->steeringLeftSide == 0 && sSteeringWheelAngle > 0.0f)
+            || (info->steeringLeftSide != 0
+                && !(sSteeringWheelAngle > 0.0f));
+        if (takeSuccess3)
+        {
+            v4 = mSuccessState[3];
+        }
+        else if (abs(v7) < sSideMin_0
+                 && sIdleWheelAngle > fabs(sSteeringWheelAngle))
+        {
+            v4 = mSuccessState[1];
+        }
+    }
+    else if (!releaseTaken && abs(v7) < sSideMin_0
+             && sIdleWheelAngle > fabs(sSteeringWheelAngle))
+    {
+        v4 = mSuccessState[1];
+    }
+    if (v4 == this)
+    {
+        if ((mFlags & 1) == 0)
+        {
+            int mSelectedInteractWeaponIndex =
+                mController->mSelectedInteractWeaponIndex;
+            if (*(int*)((char*)EntityManager::sInst
+                            ->GetPlayer(mController->mClient)
+                            ->client
+                        + 0xA4)
+                == mSelectedInteractWeaponIndex)
+                mFlags &= ~0x40u;
+            if ((mFlags & 0x40) == 0)
+                PlayMetaAnim(deltaT);
+        }
+        mController->mMetaAnimScore = CalcScore(deltaT);
+    }
+    return v4;
+}
+
+// ea: 0x00550DF0
+void InteractStateVehicleTurn::PlayMetaAnim(float deltaT)
+{
+    (void)deltaT;
+    if ((mFlags & 1) != 0)
+    {
+        XANIM_ASSERT("!IsFlagged(kAnimStarted)",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 397,
+                     "Anim not started");
+    }
+    if ((mFlags & 0x40) != 0)
+    {
+        XANIM_ASSERT("!IsFlagged(kWeaponNotReady)",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 398,
+                     "Weapon not ready");
+    }
+    Entity* Player =
+        EntityManager::sInst->GetPlayer(mController->mClient);
+    unsigned int v4 = mController->mInteractableH.mVal & 0xFFF;
+    if (v4 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr
+            && (*(unsigned int*)((char*)Player->client + 0xF4) & 0x100000)
+                   == 0)
+        {
+            VEH_LinkPlayer(mObject, Player, 0, 0, 0);
+            sSteeringWheelAngle = 0.0f;
+        }
+    }
+    if (mMetaNalBaseAnimPtr != nullptr)
+    {
+        XANIM_ASSERT("!mMetaNalBaseAnimPtr",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 409,
+                     "Should be null");
+    }
+    if (mMetaAnimDataPtr != nullptr)
+    {
+        XANIM_ASSERT("!mMetaAnimDataPtr",
+                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 410,
+                     "Should be null");
+    }
+    void* v6 = tlMemAlloc(0x44, 8, 0);
+    void* v7 = (v6 != nullptr) ? MetaNalBaseAnim_Ctor(v6) : nullptr;
+    mMetaNalBaseAnimPtr = v7;
+    void* v8 = mem_heap_malloc(0x2C);
+    if (v8 != nullptr)
+        v8 = new (v8) InteractMetaAnimData();
+    mMetaAnimDataPtr = v8;
+    MetaNalBaseAnim_Create(mMetaNalBaseAnimPtr, mMetaAnimDataPtr);
+    DObj* dobj = (DObj*)dword_F6A2A0[802 * mController->mClient];
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
+    tlFixedString name(info->playerAnim);
+    void* Anim = nalGetAnim(name);
+    MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr, &Anim, 1);
+    ((AnimationPlayer*)dobj->animPlayers[0])
+        ->Play((nalGenericAnim*)mMetaNalBaseAnimPtr, true,
+               info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
+               mPlayerCallback, 1.0f, 0.0f);
+    mFlags |= 1u;
+}
+
+// ea: 0x00551090
+float InteractStateVehicleTurn::CalcScore(float deltaT)
+{
+    (void)deltaT;
+    mScore = 0.5f;
+    unsigned int mVal = mController->mInteractableH.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
+        {
+            InteractStateInfoLocal* mInfo =
+                (InteractStateInfoLocal*)this->mInfo;
+            InteractState* v7 = mSuccessState[3];
+            float steeringWheelAngleMax = mInfo->steeringWheelAngleMax;
+            sSWAngleMax = steeringWheelAngleMax;
+            float v9 = -steeringWheelAngleMax;
+            if (v7 != nullptr)
+            {
+                if (mInfo->steeringLeftSide != 0)
+                    v9 = 0.0f;
+                else
+                    steeringWheelAngleMax = 0.0f;
+            }
+            float v10 =
+                (sSteeringWheelAngle - v9) / (steeringWheelAngleMax - v9);
+            if (v7 == nullptr || mInfo->steeringLeftSide == 0)
+                v10 = 1.0f - v10;
+            float v11 = ((sMaxScore - sMinScore) * v10) + sMinScore;
+            if (sMinScore > v11)
+            {
+                mScore = sMinScore;
+                return mScore;
+            }
+            if (v11 > sMaxScore)
+                v11 = sMaxScore;
+            mScore = v11;
+        }
+    }
+    return mScore;
+}
+
+// ea: 0x00547CC0
+InteractStateVehicleRelease::InteractStateVehicleRelease(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStateVehicleBase(curPakId, info, controller)
+{
+    mType = kInteractTypeVehicleRelease;
+}
+
+// ea: 0x005511B0
+void InteractStateVehicleRelease::Activate()
+{
+    InteractState::Activate();
+    mTurnRate = 0.0f;
+    mLastDelta = 0.0f;
+    mController->mFlags |= 0x20u;
+    int mSelectedInteractWeaponIndex =
+        mController->mSelectedInteractWeaponIndex;
+    if (*(int*)((char*)EntityManager::sInst->GetPlayer(mController->mClient)
+                    ->client
+                + 0xA4)
+        != mSelectedInteractWeaponIndex)
+    {
+        XANIM_ASSERT(
+            "GetPlayer(mController->GetClient())->client->ps.weapon == mController->GetSelectedInteractWeaponIndex()",
+            "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 483,
+            "Interact weapon not selected");
+    }
+    tlFixedString name(((InteractStateInfoLocal*)mInfo)->playerAnim);
+    void* Anim = nalGetAnim(name);
+    if (Anim != nullptr)
+    {
+        InteractStateInfoLocal* mInfo =
+            (InteractStateInfoLocal*)this->mInfo;
+        if (mInfo->maxDuration != 0.0f)
+        {
+            float speed =
+                ((nalAnimClass<nalAnyPose>*)Anim)->GetDuration()
+                / mInfo->maxDuration;
+            tlFixedString name2(mInfo->playerAnim);
+            int weapon = mController->mSelectedInteractWeaponIndex;
+            if (weapon < 1)
+            {
+                Entity* Player =
+                    EntityManager::sInst->GetPlayer(mController->mClient);
+                if (Player != nullptr && Player->client != nullptr)
+                    weapon = *(int*)((char*)Player->client + 0xA4);
+                else
+                    weapon = 0;
+            }
+            void* v11 = nalGetAnim(name2);
+            PlayPlayerAnim(v11, weapon, mInfo->animFadeInTime, 0.0f, speed);
+        }
+    }
+    mInitialSteeringWheelAngle = sSteeringWheelAngle;
+}
+
+// ea: 0x00540F20 (thunk)
+void InteractStateVehicleRelease::Deactivate()
+{
+    InteractStateVehicleBase::Deactivate();
+}
+
+// ea: 0x00547CF0
+InteractState* InteractStateVehicleRelease::Update(float deltaT)
+{
+    InteractState* v3 = InteractState::Update(deltaT);
+    (void)v3;
+    InteractState* edi = this;
+    if ((mController->mFlags & 0x10) != 0)
+        edi = mFailureState;
+    CalcSteeringWheelAngle(deltaT);
+    if (edi != this)
+        return edi;
+    void* curAnim = *(void**)((char*)mPlayerCallback + 0x04);
+    if (curAnim != nullptr && mPlayerAnim == curAnim)
+        return edi;
+    int v4 = (int)CL_GamepadPhysicalAxisValue(2);
+    if (v4 < -sSideMin)
+        return mSuccessState[2];
+    if (v4 > sSideMin)
+        return mSuccessState[3];
+    return mSuccessState[1];
+}
+
+// ea: 0x00551320
+void InteractStateVehicleRelease::CalcSteeringWheelAngle(float deltaT)
+{
+    (void)deltaT;
+    unsigned int v2 = mController->mInteractableH.mVal & 0xFFF;
+    if (v2 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr && mObject->scr_vehicle != nullptr)
+        {
+            InteractStateInfoLocal* mInfo =
+                (InteractStateInfoLocal*)this->mInfo;
+            if (mInfo->maxDuration != 0.0f)
+            {
+                float timeRatio = mStateTimer / mInfo->maxDuration;
+                if (timeRatio >= 1.0f)
+                    timeRatio = 1.0f;
+                float init = mInitialSteeringWheelAngle;
+                sSteeringWheelAngle =
+                    (cosf(timeRatio * 3.1415927f - 3.1415927f) + 1.0f)
+                        * 0.5f * -init
+                    + init;
+            }
+        }
+    }
+}
+
+// ea: 0x00546E60
+InteractStateVehicleLink::InteractStateVehicleLink(
+    TPakId curPakId, const InteractStateInfo* info,
+    InteractionController* controller)
+    : InteractStatePlayPlayerAnim(curPakId, info, controller)
+{
+    mType = kInteractTypeVehicleLink;
+}
+
+// ea: 0x00555A00
+void InteractStateVehicleLink::Activate()
+{
+    InteractStatePlayPlayerAnim::Activate();
+    if (CanLink())
+        Link();
+}
+
+// ea: 0x00555A20
+InteractState* InteractStateVehicleLink::Update(float deltaT)
+{
+    InteractState* v3 = InteractStatePlayPlayerAnim::Update(deltaT);
+    if (CanLink())
+        Link();
+    return v3;
+}
+
+// ea: 0x0053D9A0
+int InteractStateVehicleLink::CanLink() const
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr)
+    {
+        InteractionController* v2 = InteractionController::Inst(currCl);
+        void* client = Player->client;
+        if (*(int*)((char*)client + 0xA4) == v2->mSelectedInteractWeaponIndex
+            && (*(unsigned int*)((char*)client + 0xF4) & 0x100000) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+// ea: 0x0054E3D0
+void InteractStateVehicleLink::Link()
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    unsigned int v3 = mController->mInteractableH.mVal & 0xFFF;
+    if (v3 < 0x540
+        && mController->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr
+            && (*(unsigned int*)((char*)Player->client + 0xF4) & 0x100000)
+                   == 0)
+            VEH_LinkPlayer(mObject, Player, 0, 0, 0);
+    }
+}
+
+// ============================================================================
 // Meta-anim + Melee final cluster (anim.o)
 // Melee fields: mModifierIndex +0x1B0, mNumModifiers +0x1B4, mModifierAnimTime
 // +0x1B8, mModifierIntervalTimer +0x1BC, mPlayerSoundHandle +0x1C0,
@@ -13158,73 +13753,6 @@ extern void MetaNalBaseAnim_DelayCreate(void* self, void** animArray,
 extern void VEH_LinkPlayer(Entity* ent, Entity* player, int seatIdx,
                            int entryIdx, int fromPos);  // ?VEH_LinkPlayer (g.o)
 extern Handle PostEffectEventEIMelee(const Entity* ent, int action);
-
-// ea: 0x00550DF0
-void InteractStateVehicleTurn_PlayMetaAnim(InteractState* self, float deltaT)
-{
-    (void)deltaT;
-    if ((self->mFlags & 1) != 0)
-    {
-        XANIM_ASSERT("!IsFlagged(kAnimStarted)",
-                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 397,
-                     "Anim not started");
-    }
-    if ((self->mFlags & 0x40) != 0)
-    {
-        XANIM_ASSERT("!IsFlagged(kWeaponNotReady)",
-                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 398,
-                     "Weapon not ready");
-    }
-    Entity* Player =
-        EntityManager::sInst->GetPlayer(self->mController->mClient);
-    unsigned int v4 = self->mController->mInteractableH.mVal & 0xFFF;
-    if (v4 < 0x540
-        && self->mController->mInteractableH.mVal >> 12
-               == EntityHandleDb::sInst.mElements[v4].mKey)
-    {
-        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
-        if (mObject != nullptr
-            && (*(unsigned int*)((char*)Player->client + 0xF4) & 0x100000)
-                   == 0)
-        {
-            VEH_LinkPlayer(mObject, Player, 0, 0, 0);
-            sSteeringWheelAngleVehicleBase = 0.0f;
-        }
-    }
-    if (*(void**)((char*)self + 0x1A0) != nullptr)
-    {
-        XANIM_ASSERT("!mMetaNalBaseAnimPtr",
-                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 409,
-                     "Should be null");
-    }
-    if (*(void**)((char*)self + 0x1A8) != nullptr)
-    {
-        XANIM_ASSERT("!mMetaAnimDataPtr",
-                     "c:\\cod\\code\\game\\InteractStateVehicle.cpp", 410,
-                     "Should be null");
-    }
-    void* v6 = tlMemAlloc(0x44, 8, 0);
-    void* v7 = (v6 != nullptr) ? MetaNalBaseAnim_Ctor(v6) : nullptr;
-    *(void**)((char*)self + 0x1A0) = v7;
-    void* v8 = mem_heap_malloc(0x2C);
-    if (v8 != nullptr)
-        v8 = new (v8) InteractMetaAnimData();
-    *(void**)((char*)self + 0x1A8) = v8;
-    MetaNalBaseAnim_Create(*(void**)((char*)self + 0x1A0),
-                           *(void**)((char*)self + 0x1A8));
-    DObj* dobj =
-        (DObj*)dword_F6A2A0[802 * self->mController->mClient];
-    tlFixedString name(
-        ((InteractStateInfoLocal*)self->mInfo)->playerAnim);
-    void* Anim = nalGetAnim(name);
-    MetaNalBaseAnim_DelayCreate(*(void**)((char*)self + 0x1A0), &Anim, 1);
-    ((AnimationPlayer*)dobj->animPlayers[0])
-        ->Play((nalGenericAnim*)*(void**)((char*)self + 0x1A0), true,
-               ((InteractStateInfoLocal*)self->mInfo)->animFadeInTime,
-               (void*)&gMetaAnimPlayMethod, 0.0f, self->mPlayerCallback,
-               1.0f, 0.0f);
-    self->mFlags |= 1u;
-}
 
 // ea: 0x0054F390
 void InteractStateMelee::UpdateFacialAnim(float deltaT)
