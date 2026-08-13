@@ -119,6 +119,7 @@ extern double atof(const char* nptr);
 extern void tlPrintf(const char* fmt, ...);      // tl_system.o
 extern void* tlMemAlloc(unsigned size, unsigned align, unsigned flags);  // tl_system.o
 extern void tlMemFree(void* ptr);                // tl_system.o
+extern unsigned int AeHash(const char* str);     // ae_hash.cpp
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
 extern const char* const defaultFileName;  // g_globals.cpp
@@ -751,18 +752,6 @@ struct GlowBeam {
 ae_vector<GlowSprites> GlowSpritesList;  // ?GlowSpritesList@@3V?$ae_vector@UGlowSprites@@@@A @ 0xF59328
 ae_vector<GlowBeam> GlowBeamsList;       // ?GlowBeamsList@@3V?$ae_vector@UGlowBeam@@@@A @ 0xF59334
 
-// InstanceBankMgr (streamer.o; mEntries[99] @ +0x34)
-class InstanceBankMgr {
-public:
-    uint8_t _pad[0x34];
-    void*   mEntries[99];  // +0x34 (InstanceBankSet*[99])
-
-    void ReleaseInstanceBank(TPakId pakId);  // ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z
-    void DecodeInstbank(const char* name, unsigned char* data, int size,
-                        TPakId pakId);  // ?DecodeInstbank@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z
-};
-
-// InstanceBankSet / InstanceBank (streamer.o)
 enum eInstanceBankType {
     INSTBANK_TYPE_APK = 0,
     INSTBANK_TYPE_TEXTURE,
@@ -780,32 +769,87 @@ enum eInstanceBankType {
     INSTBANK_TYPE_DISCTEXSIZE,
 };
 
+class InstanceBankSet;
+
+// InstanceBank (streamer.o InstanceBank.h; 32 bytes, verified IDA)
 struct InstanceBank {
+    struct IbEntry {
+        InplaceString name;      // +0x00
+        unsigned int  ptr;       // +0x04
+    };
+
     int      mType;       // +0x00
     char     mTypeStr[12]; // +0x04
-    uint8_t  _pad10[0x18 - 0x10];
-    uint8_t  _pad18[0x20 - 0x18];
+    uint8_t  mTree[8];    // +0x10 (InplaceTree<unsigned int,unsigned int>; stub)
+    InplaceVector<IbEntry> mEntries;  // +0x18
 
     int strnicmp(const char* str1, const char* str2, int len) const;  // ?strnicmp@InstanceBank@@QBEHPBD0H@Z
     eInstanceBankType GetType() const;  // ?GetType@InstanceBank@@QBE?AW4eInstanceBankType@@XZ
     const char* GetTypeStr() const;     // ?GetTypeStr@InstanceBank@@QBEPBDXZ
+    int Find(const char* str, unsigned int hash) const;  // ?Find@InstanceBank@@QBEHPBDI@Z
+    void Enumerate(void (*Callback)(const char*, eInstanceBankType, void*,
+                                    void*),
+                   void* userdata);  // ?Enumerate@InstanceBank@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z
 };
 
+// InstanceBankSet (streamer.o InstanceBank.h; 20 bytes, verified IDA)
 struct InstanceBankSet {
     unsigned int mId;       // +0x00
     float        mVersion;  // +0x04
-    void*        mInstanceBanks;  // +0x08
+    InplaceVector<InstanceBank> mInstanceBanks;  // +0x08
     void*        mPtrFixupTable;  // +0x10
 
     void Fixup();  // ?Fixup@InstanceBankSet@@QAEXXZ (stub)
-    InstanceBank* GetBank(eInstanceBankType type);  // ?GetBank@InstanceBankSet@@QAEAAVInstanceBank@@W4eInstanceBankType@@@Z (stub)
+    InstanceBank& GetBank(eInstanceBankType type);  // ?GetBank@InstanceBankSet@@QAEAAVInstanceBank@@W4eInstanceBankType@@@Z
+    unsigned int* FindEntry(eInstanceBankType type, const char* str,
+                            unsigned int hash);  // ?FindEntry@InstanceBankSet@@QAEPAIW4eInstanceBankType@@PBDI@Z
+    void Enumerate(void (*Callback)(const char*, eInstanceBankType, void*,
+                                    void*),
+                   void* userdata);  // ?Enumerate@InstanceBankSet@@QAEXP6AXPBDW4eInstanceBankType@@PAX2@Z2@Z
 };
-void InstanceBankSet::Fixup() {}
-InstanceBank* InstanceBankSet::GetBank(eInstanceBankType type)
-{
-    (void)type;
-    return nullptr;
-}
+
+// cdResourceDirectory<T> object layout (12 bytes; vftable + flags + old dir)
+struct CdResourceDirectoryView {
+    void* __vftable;          // +0x00
+    bool  m_enable_release;   // +0x04
+    bool  m_release_once;     // +0x05
+    bool  m_enable_add;       // +0x06
+    void* m_old_directory;    // +0x08
+};
+
+// MipSettingsBank (streamer.o; mMipSettings +0x0C)
+struct MipSettingsBank {
+    unsigned int mId;          // +0x00
+    float        mVersion;     // +0x04
+    TPakId       mPakId;       // +0x08
+    uint8_t      mMipSettings[8];  // +0x0C (InplaceTree<InplaceString,float>; stub)
+    void*        mPtrFixupTable;   // +0x14
+};
+
+// InstanceBankMgr (streamer.o; mEntries[99] @ +0x34)
+class InstanceBankMgr {
+public:
+    uint8_t _pad[0x24];
+    CdResourceDirectoryView m_skeleton_directory;  // +0x24
+    MipSettingsBank* mMipSettingsBank;  // +0x30
+    InstanceBankSet* mEntries[99];  // +0x34
+
+    void ReleaseInstanceBank(TPakId pakId);  // ?ReleaseInstanceBank@InstanceBankMgr@@QAEXW4TPakId@@@Z
+    void DecodeInstbank(const char* name, unsigned char* data, int size,
+                        TPakId pakId);  // ?DecodeInstbank@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z
+    void ReleaseSkeletons(TPakId pakId);  // ?ReleaseSkeletons@InstanceBankMgr@@QAEXW4TPakId@@@Z
+    void Enumerate(TPakId pakId, void (*Callback)(const char*,
+                                                  eInstanceBankType, void*,
+                                                  void*),
+                   void* userdata);  // ?Enumerate@InstanceBankMgr@@QAEXW4TPakId@@P6AXPBDW4eInstanceBankType@@PAX2@Z2@Z
+    unsigned int Add(eInstanceBankType type, TPakId pakId,
+                     const tlFixedString& name,
+                     unsigned int data);  // ?Add@InstanceBankMgr@@QAEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@I@Z
+    bool GetAnimOffset(const char* name, TPakId pakId, unsigned int* out_offset,
+                       unsigned int* out_size);  // ?GetAnimOffset@InstanceBankMgr@@QAE_NPBDW4TPakId@@PAI2@Z
+    bool GetMipScale(const char* texture,
+                     float* out_value);  // ?GetMipScale@InstanceBankMgr@@QAE_NPBDAAM@Z
+};
 
 // Manager DecodeBank stubs (cross-object: core.o / render.o / mp_actors.o)
 class XModelManager {
@@ -1884,6 +1928,7 @@ void InstanceBankMgr::DecodeInstbank(const char* name, unsigned char* data,
                                      int size, TPakId pakId)
 {
     (void)name; (void)size;
+    InstanceBankSet* bank = (InstanceBankSet*)data;
     if (mEntries[pakId] != nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -1894,7 +1939,7 @@ void InstanceBankMgr::DecodeInstbank(const char* name, unsigned char* data,
             && AeAssert::Assert("Instance bank already loaded!"))
             __debugbreak();
     }
-    ((InstanceBankSet*)data)->Fixup();
+    bank->Fixup();
     const char* types[13] = {
         "TEXTURE", "FONT", "MESHFILE", "MESH", "ANIMFILE", "ANIM",
         "SCNANIM", "ANIMOFFSET", "SKELETON", "EFFECT", "FX", "DISCTEX",
@@ -1902,8 +1947,7 @@ void InstanceBankMgr::DecodeInstbank(const char* name, unsigned char* data,
     };
     for (int i = INSTBANK_TYPE_TEXTURE; i <= INSTBANK_TYPE_DISCTEXSIZE; ++i)
     {
-        InstanceBank* Bank =
-            ((InstanceBankSet*)data)->GetBank((eInstanceBankType)i);
+        InstanceBank* Bank = &bank->GetBank((eInstanceBankType)i);
         if (_stricmp(Bank->mTypeStr, types[i]) != 0)
         {
             AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -1915,7 +1959,7 @@ void InstanceBankMgr::DecodeInstbank(const char* name, unsigned char* data,
                 __debugbreak();
         }
     }
-    mEntries[pakId] = data;
+    mEntries[pakId] = bank;
 }
 
 // ea: 0x666A40
@@ -3059,6 +3103,7 @@ tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalAnimDirectory = nullptr;      
 tlResourceDirectory<nalAnimFile>* nalAnimFileDirectory = nullptr;               // @ 0x10E95F8
 tlResourceDirectory<nalBaseSkeleton>* nalSkeletonDirectory = nullptr;           // @ 0x10EC618
 tlResourceDirectory<nalSceneAnim>* nalSceneAnimDirectory = nullptr;             // @ 0x10E95F4
+extern int nalReleaseSkeleton(nalBaseSkeleton* skeleton);  // nal.cpp
 
 // ea: 0x6637E0 / 0x6637F0
 tlResourceDirectory<nalAnimClass<nalAnyPose>>* nalGetAnimDirectory()
@@ -3738,6 +3783,284 @@ void InstanceBankMgr::ReleaseInstanceBank(TPakId pakId)
 {
     if (pakId >= 0 && pakId < 99)
         mEntries[pakId] = nullptr;
+}
+
+// ea: 0x684BE0
+void InstanceBankSet::Fixup()
+{
+    if (mId != 1229537875)  // FourCC('IIBS')
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBank.h";
+        AeAssert::gCurrentLine = 229;
+        AeAssert::gCurrentExpr = "mId == FourCC('IIBS')";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("not an instance bank set"))
+            __debugbreak();
+    }
+    if (mVersion != 2.01f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBank.h";
+        AeAssert::gCurrentLine = 230;
+        AeAssert::gCurrentExpr = "mVersion == 2.01f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("incorrect version instance bank"))
+            __debugbreak();
+    }
+    if ((uintptr_t)mPtrFixupTable >= 0x10000000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBank.h";
+        AeAssert::gCurrentLine = 231;
+        AeAssert::gCurrentExpr = "((uint32)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    void* v2 = (char*)this + (uintptr_t)mPtrFixupTable;
+    mPtrFixupTable = v2;
+    // PtrFixupTable::Fixup(this: v2, basePtr: this) - table walk not ported;
+    // the tree/vector pointers are already relative and fixed by GetBank/Find.
+}
+
+// stub: InplaceTree<T,K>::Find (tree not ported yet) - returns nullptr
+static unsigned int* InplaceTreeFindUInt(void* tree, const unsigned int* key)
+{
+    (void)tree; (void)key;
+    return nullptr;
+}
+static float* InplaceTreeFindFloat(void* tree, const char* const* key)
+{
+    (void)tree; (void)key;
+    return nullptr;
+}
+
+// ea: 0x684B50
+InstanceBank& InstanceBankSet::GetBank(eInstanceBankType type)
+{
+    InstanceBank& bank = mInstanceBanks.mList[type];
+    if (bank.mType != (int)type)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBank.h";
+        AeAssert::gCurrentLine = 223;
+        AeAssert::gCurrentExpr = "mInstanceBanks[int(type)].GetType() == type";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bad data!"))
+            __debugbreak();
+    }
+    return bank;
+}
+
+// ea: 0x686BC0
+int InstanceBank::Find(const char* str, unsigned int hash) const
+{
+    if (hash == 0 && str != nullptr)
+        hash = AeHash(str);
+    unsigned int* v4 = InplaceTreeFindUInt((void*)&mTree, &hash);
+    if (v4 == nullptr)
+        return -1;
+    const IbEntry& v6 = InplaceVectorAtConst(mEntries, *v4);
+    if (str != nullptr && strnicmp(v6.name.mStr, str, 27) != 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBank.h";
+        AeAssert::gCurrentLine = 77;
+        AeAssert::gCurrentExpr =
+            "!str || strnicmp(ie.name.c_str(), str, 27)==0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("hashes match but strings don't- '%s' and '%s'",
+                                v6.name.mStr, str))
+            __debugbreak();
+    }
+    return (int)*v4;
+}
+
+// ea: 0x686CA0
+unsigned int* InstanceBankSet::FindEntry(eInstanceBankType type,
+                                         const char* str, unsigned int hash)
+{
+    InstanceBank& v4 = mInstanceBanks.mList[type];
+    if (v4.mType != (int)type)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBank.h";
+        AeAssert::gCurrentLine = 214;
+        AeAssert::gCurrentExpr = "ib.GetType() == type";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bad data!"))
+            __debugbreak();
+    }
+    int v5 = v4.Find(str, hash);
+    if (v5 == -1)
+        return nullptr;
+    return &v4.mEntries.mList[v5].ptr;
+}
+
+// ea: 0x684AF0
+void InstanceBank::Enumerate(void (*Callback)(const char*, eInstanceBankType,
+                                              void*, void*),
+                             void* userdata)
+{
+    for (unsigned int v4 = 0; v4 < mEntries.mSize; ++v4)
+    {
+        IbEntry& v6 = mEntries.mList[v4];
+        Callback(v6.name.mStr, (eInstanceBankType)mType, (void*)v6.ptr,
+                 userdata);
+    }
+}
+
+// ea: 0x684D20
+void InstanceBankSet::Enumerate(void (*Callback)(const char*,
+                                                 eInstanceBankType, void*,
+                                                 void*),
+                                void* userdata)
+{
+    for (unsigned int v4 = 0; v4 < mInstanceBanks.mSize; ++v4)
+        mInstanceBanks.mList[v4].Enumerate(Callback, userdata);
+}
+
+// ea: 0x666610
+void InstanceBankMgr::Enumerate(TPakId pakId,
+                                void (*Callback)(const char*,
+                                                 eInstanceBankType, void*,
+                                                 void*),
+                                void* userdata)
+{
+    if (pakId == PAK_ID_INVALID)
+    {
+        InstanceBankSet** mEntriesPtr = mEntries;
+        for (int i = 99; i != 0; --i)
+        {
+            if (*mEntriesPtr != nullptr)
+                (*mEntriesPtr)->Enumerate(Callback, userdata);
+            ++mEntriesPtr;
+        }
+    }
+    else
+    {
+        if (mEntries[pakId] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+            AeAssert::gCurrentLine = 547;
+            AeAssert::gCurrentExpr = "mEntries[pakId]";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("no instance bank!"))
+                __debugbreak();
+        }
+        mEntries[pakId]->Enumerate(Callback, userdata);
+    }
+}
+
+// ea: 0x66BEF0
+unsigned int InstanceBankMgr::Add(eInstanceBankType type, TPakId pakId,
+                                  const tlFixedString& name,
+                                  unsigned int data)
+{
+    if (pakId == PAK_ID_INVALID)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 268;
+        AeAssert::gCurrentExpr = "pakId != PAK_ID_INVALID";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("must supply a pak id!"))
+            __debugbreak();
+    }
+    if (mEntries[pakId] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 269;
+        AeAssert::gCurrentExpr = "mEntries[pakId] != 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("No instance bank for this pak id"))
+            __debugbreak();
+    }
+    unsigned int* Entry = mEntries[pakId]->FindEntry(type, name.str,
+                                                     name.hash);
+    if (Entry != nullptr)
+    {
+        unsigned int v8 = *Entry;
+        *Entry = data;
+        return v8;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+    AeAssert::gCurrentLine = 274;
+    AeAssert::gCurrentExpr = "slot";
+    if (!AeAssert::IsIgnored()
+        && AeAssert::Assert("No ib entry for %s", name.str))
+        __debugbreak();
+    return 0;
+}
+
+// ea: 0x66C590
+bool InstanceBankMgr::GetAnimOffset(const char* name, TPakId pakId,
+                                    unsigned int* out_offset,
+                                    unsigned int* out_size)
+{
+    if (pakId == PAK_ID_INVALID)
+        return false;
+    InstanceBankSet* v5 = mEntries[pakId];
+    if (v5 == nullptr)
+        return false;
+    unsigned int* Entry = v5->FindEntry(INSTBANK_TYPE_SCNANIM, name, 0);
+    if (Entry == nullptr)
+        return false;
+    if (*Entry == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 491;
+        AeAssert::gCurrentExpr = "*obj";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("shouldn't be possible"))
+            __debugbreak();
+    }
+    *out_offset = **(unsigned int**)Entry;
+    *out_size = ((unsigned int*)*Entry)[1];
+    if (*out_offset == 0)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 494;
+        AeAssert::gCurrentExpr = "*out_offset";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("Bad offset!"))
+            __debugbreak();
+    }
+    return true;
+}
+
+// ea: 0x66C5F0
+bool InstanceBankMgr::GetMipScale(const char* texture, float* out_value)
+{
+    MipSettingsBank* bank = mMipSettingsBank;
+    if (bank == nullptr)
+        return false;
+    float* v4 = InplaceTreeFindFloat((void*)&bank->mMipSettings, &texture);
+    if (v4 == nullptr)
+        return false;
+    *out_value = *v4;
+    return true;
+}
+
+// ea: 0x6665A0
+void InstanceBankMgr::ReleaseSkeletons(TPakId pakId)
+{
+    m_skeleton_directory.m_enable_release = true;
+    InstanceBankSet* v3 = mEntries[pakId];
+    if (v3 != nullptr)
+    {
+        InstanceBank& bank = v3->GetBank(INSTBANK_TYPE_ANIMOFFSET);
+        for (unsigned int i = 0; i < bank.mEntries.mSize; ++i)
+        {
+            InstanceBank::IbEntry& v6 = bank.mEntries.mList[i];
+            nalReleaseSkeleton((nalBaseSkeleton*)v6.ptr);
+            v6.ptr = 0;
+        }
+    }
+    m_skeleton_directory.m_enable_release = false;
 }
 
 // ea: 0x665370
