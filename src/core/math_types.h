@@ -28,6 +28,12 @@ class DiagMat33;
 class DiagMat33 {
 public:
     __m128 v;  // SSE-packed: x, y, z, w
+
+    DiagMat33();                     // ??0DiagMat33@math@@QAE@XZ (anim.o 0x539DC0)
+    DiagMat33(const DiagMat33& m);   // ??0DiagMat33@math@@QAE@ABV01@@Z (anim.o 0x539F60)
+    Dir3 GetX() const;               // ?GetX@DiagMat33@math@@QBE?AVDir3@2@XZ (anim.o 0x539DD0)
+    Dir3 GetY() const;               // anim.o 0x539E10
+    Dir3 GetZ() const;               // anim.o 0x539E60
 };
 static_assert(sizeof(DiagMat33) == 0x10, "DiagMat33 size mismatch");
 
@@ -68,6 +74,12 @@ static_assert(sizeof(Dir3::Packed) == 0x0C, "Dir3::Packed size mismatch");
 class Position3 {
 public:
     __m128 v;  // SSE-packed: x, y, z, w
+
+    Position3() {}
+    Position3(__m128 _v) : v(_v) {}
+
+    // ??0Position3@math@@QAE@ABVVector4@1@@Z (anim.o 0x539D60)
+    Position3(const Vector4& v);
 
     // ??4Position3@math@@QAEABV01@ABVVector4@1@@Z (anim.o; defined in nal.cpp)
     const Position3& operator=(const Vector4& v);
@@ -117,6 +129,11 @@ static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
 // ============================================================================
 class Mat43 {
 public:
+    Mat43() {}
+
+    // ??0Mat43@math@@QAE@ABVDiagMat33@1@@Z (anim.o 0x539FC0)
+    Mat43(const DiagMat33& m);
+
     // ??4Mat43@math@@QAEABV01@ABVDiagMat33@1@@Z (anim.o; defined in nal.cpp)
     const Mat43& operator=(const DiagMat33& m);
     Dir3      x;  // +0x00 — right axis
@@ -192,46 +209,31 @@ struct TranMat43 {
 };
 static_assert(sizeof(TranMat43) == 0x10, "TranMat43 size mismatch");
 
-// Quaternion â€” 4-float quaternion (16 bytes)
-struct Quaternion {
+// Quaternion - 4-float quaternion (16 bytes; `class` tag to match the
+// binary's V-tag mangling in free-function signatures)
+class Quaternion {
+public:
     float x;  // +0x00
     float y;  // +0x04
     float z;  // +0x08
     float w;  // +0x0C
 
     // ??AQuaternion@math@@QAEAAMI@Z (anim.o 0x53AD30)
-    float& operator[](unsigned int i) { return ((float*)this)[i]; }
+    float& operator[](unsigned int i);
 };
 static_assert(sizeof(Quaternion) == 0x10, "Quaternion size mismatch");
 
-// ?Unitize@math@@YA?AVQuaternion@1@ABV21@@Z (anim.o 0x53AF10)
-inline math::Quaternion Unitize(const math::Quaternion& q)
-{
-    float sum = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
-    float inv = 1.0f / sqrtf(sum);
-    math::Quaternion r;
-    r.x = q.x * inv;
-    r.y = q.y * inv;
-    r.z = q.z * inv;
-    r.w = q.w * inv;
-    return r;
-}
+// anim.o math free functions (defined out-of-line in nal.cpp so the exact
+// mangled symbols are emitted there)
+Quaternion Unitize(const Quaternion& q);  // ?Unitize@math@@YA?AVQuaternion@1@ABV21@@Z (0x53AF10)
+Vector4    UnitDirW();                    // ?UnitDirW@math@@YA?AVVector4@1@XZ (0x539D80)
+DiagMat33  IdentityMat33();               // ?IdentityMat33@math@@YA?AVDiagMat33@1@XZ (0x55F240)
+Dir3       Mul(const Dir3& v, const Mat33& m);  // ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat33@1@@Z (0x53A2B0)
+Dir3       operator*(const Dir3& v, const Mat33& m);  // ??Dmath@@YA?AVDir3@0@ABV10@ABVMat33@0@@Z (0x53A340)
+Quaternion Mul(const Quaternion& a, const Quaternion& b);  // ?Mul@math@@YA?AVQuaternion@1@ABV21@0@Z (0x53AD40)
+Quaternion operator*(const Quaternion& a, const Quaternion& b);  // ??Dmath@@YA?AVQuaternion@0@ABV10@0@Z (0x53ADF0)
+float      LengthSquared(const Quaternion& q);  // ?LengthSquared@math@@YAMABVQuaternion@1@@Z (0x53AEA0)
 
-// ?UnitDirW@math@@YA?AVVector4@1@XZ (anim.o 0x539D80)
-inline math::Vector4 UnitDirW()
-{
-    math::Vector4 r;
-    r.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
-    return r;
-}
-
-// ?IdentityMat33@math@@YA?AVDiagMat33@1@XZ (anim.o 0x55F240)
-inline math::DiagMat33 IdentityMat33()
-{
-    math::DiagMat33 r;
-    r.v = _mm_set_ps(1.0f, 1.0f, 1.0f, 1.0f);
-    return r;
-}
 
 // ============================================================================
 // com_math.h helpers (inline COMDATs; g.o / scr.o / streamer.o)

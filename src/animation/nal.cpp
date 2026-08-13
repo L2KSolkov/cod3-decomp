@@ -15,6 +15,7 @@
 
 class Entity;
 class SceneAnimClient;
+enum TPakId : int;
 
 // IVPointer<T> local (mValue +0 / mPakId +4); `class` tag to match the
 // binary's V-mangled IVPointer<XModel>.
@@ -44,7 +45,30 @@ public:
 
     const math::Mat43& GetMat(int boneIndex);  // ?GetMat@DObj@@QAEABVMat43@math@@H@Z (real in g_dobj.cpp)
     void SetLODOverride(int startLod);  // ?SetLODOverride@DObj@@QAEXH@Z (real in cg_weapon.cpp)
+    Entity* GetEntity();        // ?GetEntity@DObj@@QAEPAVEntity@@XZ (0x53A880)
+    TPakId GetPakId() const;    // ?GetPakId@DObj@@QBE?AW4TPakId@@XZ (0x53A890)
+    int GetNonAnimLOD() const;  // ?GetNonAnimLOD@DObj@@QBEHXZ (0x53A8A0)
 };
+
+// ea: 0x0053A880
+Entity* DObj::GetEntity()
+{
+    return mEntity;
+}
+
+// ea: 0x0053A890
+TPakId DObj::GetPakId() const
+{
+    return (TPakId)mPakId;
+}
+
+// ea: 0x0053A8A0
+int DObj::GetNonAnimLOD() const
+{
+    if (mLODOverride < 0)
+        return mLOD;
+    return mLODOverride;
+}
 
 struct XModelLocal {
     unsigned char _pad[0x24];
@@ -7639,6 +7663,168 @@ const math::Position3& math::Position3::operator=(const math::Vector4& v)
 {
     this->v = v.v;
     return *this;
+}
+
+// ============================================================================
+// math leaf functions (anim.o; exact manglings)
+// ============================================================================
+
+// ??0Position3@math@@QAE@ABVVector4@1@@Z (0x539D60)
+math::Position3::Position3(const math::Vector4& v)
+{
+    *this = v;
+}
+
+// ??0DiagMat33@math@@QAE@XZ (0x539DC0)
+math::DiagMat33::DiagMat33()
+{
+}
+
+// ??0DiagMat33@math@@QAE@ABV01@@Z (0x539F60)
+math::DiagMat33::DiagMat33(const math::DiagMat33& m)
+{
+    v = m.v;
+}
+
+// ??0Mat43@math@@QAE@ABVDiagMat33@1@@Z (0x539FC0)
+math::Mat43::Mat43(const math::DiagMat33& m)
+{
+    __m128 zero = _mm_setzero_ps();
+    x.v = _mm_set_ps(0.0f, 0.0f, 0.0f, m.v.m128_f32[0]);
+    y.v = _mm_shuffle_ps(_mm_shuffle_ps(m.v, zero, 5), zero, 227);
+    z.v = _mm_shuffle_ps(zero, _mm_shuffle_ps(m.v, zero, 250), 196);
+    w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+}
+
+// ?GetX@DiagMat33@math@@QBE?AVDir3@2@XZ (0x539DD0)
+math::Dir3 math::DiagMat33::GetX() const
+{
+    math::Dir3 result;
+    result.v = _mm_set_ps(0.0f, 0.0f, 0.0f, v.m128_f32[0]);
+    return result;
+}
+
+// 0x539E10
+math::Dir3 math::DiagMat33::GetY() const
+{
+    math::Dir3 result;
+    __m128 zero = _mm_setzero_ps();
+    result.v = _mm_shuffle_ps(_mm_shuffle_ps(v, zero, 5), zero, 227);
+    return result;
+}
+
+// 0x539E60
+math::Dir3 math::DiagMat33::GetZ() const
+{
+    math::Dir3 result;
+    __m128 zero = _mm_setzero_ps();
+    result.v = _mm_shuffle_ps(zero, _mm_shuffle_ps(v, zero, 250), 196);
+    return result;
+}
+
+// ?Mul@math@@YA?AVDir3@1@ABV21@ABVMat33@1@@Z (0x53A2B0)
+math::Dir3 math::Mul(const math::Dir3& _v, const math::Mat33& _m)
+{
+    math::Dir3 result;
+    result.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 0), _m.x.v),
+            _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 85), _m.y.v)),
+        _mm_mul_ps(_mm_shuffle_ps(_v.v, _v.v, 170), _m.z.v));
+    return result;
+}
+
+// ??Dmath@@YA?AVDir3@0@ABV10@ABVMat33@0@@Z (0x53A340)
+math::Dir3 math::operator*(const math::Dir3& _v, const math::Mat33& _m)
+{
+    return math::Mul(_v, _m);
+}
+
+// ??AQuaternion@math@@QAEAAMI@Z (0x53AD30)
+float& math::Quaternion::operator[](unsigned int i)
+{
+    return ((float*)this)[i];
+}
+
+// ?Mul@math@@YA?AVQuaternion@1@ABV21@0@Z (0x53AD40)
+math::Quaternion math::Mul(const math::Quaternion& _a,
+                           const math::Quaternion& _b)
+{
+    const __m128 sSignMaskW = _mm_set_ps(-0.0f, 0.0f, 0.0f, 0.0f);
+    math::Quaternion result;
+    __m128 v = _mm_set_ps(_a.w, _a.z, _a.y, _a.x);
+    __m128 bv = _mm_set_ps(_b.w, _b.z, _b.y, _b.x);
+    __m128 rv = _mm_xor_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(v, v, 36),
+                       _mm_shuffle_ps(bv, bv, 63)),
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(v, v, 73),
+                           _mm_shuffle_ps(bv, bv, 82)),
+                _mm_sub_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(v, v, 191),
+                               _mm_shuffle_ps(bv, bv, 164)),
+                    _mm_mul_ps(_mm_shuffle_ps(v, v, 210),
+                               _mm_shuffle_ps(bv, bv, 201))))),
+        sSignMaskW);
+    result.x = rv.m128_f32[0];
+    result.y = rv.m128_f32[1];
+    result.z = rv.m128_f32[2];
+    result.w = rv.m128_f32[3];
+    return result;
+}
+
+// ??Dmath@@YA?AVQuaternion@0@ABV10@0@Z (0x53ADF0)
+math::Quaternion math::operator*(const math::Quaternion& _a,
+                                 const math::Quaternion& _b)
+{
+    return math::Mul(_a, _b);
+}
+
+// ?LengthSquared@math@@YAMABVQuaternion@1@@Z (0x53AEA0)
+float math::LengthSquared(const math::Quaternion& _q)
+{
+    __m128 qv = _mm_set_ps(_q.w, _q.z, _q.y, _q.x);
+    __m128 v1 = _mm_mul_ps(qv, qv);
+    return v1.m128_f32[0]
+           + (_mm_shuffle_ps(v1, v1, 85).m128_f32[0]
+              + (_mm_shuffle_ps(v1, v1, 170).m128_f32[0]
+                 + _mm_shuffle_ps(v1, v1, 255).m128_f32[0]));
+}
+
+// ?Unitize@math@@YA?AVQuaternion@1@ABV21@@Z (0x53AF10)
+math::Quaternion math::Unitize(const math::Quaternion& _q)
+{
+    math::Quaternion result;
+    __m128 qv = _mm_set_ps(_q.w, _q.z, _q.y, _q.x);
+    __m128 v2 = _mm_mul_ps(qv, qv);
+    float inv = 1.0f
+                / sqrt(v2.m128_f32[0]
+                       + (_mm_shuffle_ps(v2, v2, 85).m128_f32[0]
+                          + (_mm_shuffle_ps(v2, v2, 170).m128_f32[0]
+                             + _mm_shuffle_ps(v2, v2, 255).m128_f32[0])));
+    __m128 rv = _mm_mul_ps(qv, _mm_set1_ps(inv));
+    result.x = rv.m128_f32[0];
+    result.y = rv.m128_f32[1];
+    result.z = rv.m128_f32[2];
+    result.w = rv.m128_f32[3];
+    return result;
+}
+
+// ?UnitDirW@math@@YA?AVVector4@1@XZ (0x539D80)
+math::Vector4 math::UnitDirW()
+{
+    math::Vector4 result;
+    result.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    return result;
+}
+
+// ?IdentityMat33@math@@YA?AVDiagMat33@1@XZ (0x55F240)
+math::DiagMat33 math::IdentityMat33()
+{
+    math::DiagMat33 result;
+    result.v = _mm_set_ps(1.0f, 1.0f, 1.0f, 1.0f);
+    return result;
 }
 
 // ea: 0x0053D240

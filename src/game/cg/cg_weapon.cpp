@@ -153,20 +153,6 @@ extern void DObjInitServerTime(void* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
                                  unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
 
-// ea: 0x0053A890
-TPakId DObj::GetPakId() const
-{
-    return (TPakId)mPakId;
-}
-
-// ea: 0x0053A8A0
-int DObj::GetNonAnimLOD() const
-{
-    if (mLODOverride < 0)
-        return mLOD;
-    return mLODOverride;
-}
-
 // ea: 0x005612E0
 void DObj::SetLODOverride(int startLod)
 {
