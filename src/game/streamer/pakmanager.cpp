@@ -2267,6 +2267,7 @@ extern IVPointer<Destructible> DestructibleBankManager_GetDestructible(
     void* self, TPakId pak_id, const char* name);  // physics.o (g_checkpoint.cpp)
 extern bool dont_delete;            // g.o (g_globals.cpp)
 extern bool no_really_delete_it;    // g.o (g_globals.cpp)
+extern void* gApsHeap;              // ?gApsHeap@@3PAVae_heap@@A (render.o @ 0x1363940; defined in common.cpp)
 struct ScriptEventHandler {
     unsigned char m_dlist_node[8];  // +0x00
     uint8_t _pad8[0x40 - 0x08];
@@ -7850,9 +7851,290 @@ PakManager::~PakManager()
     }
 }
 
-// ea: 0x670480 (large debug render; port later)
+// ea: 0x66C770 (defined below)
+float PrintBankUsage(char* res_buf, float total_banks,
+                     const TBankAlloc* alloc, bool mram);
+
+// ea: 0x670480
 void PakManager::DebugRender()
 {
+    if (BankManager::sInst == nullptr)
+        return;
+
+    // progressbar section: RenderDebug for every loading pak
+    if (mDebugRenderMode.progressbar != nullptr
+        && mDebugRenderMode.progressbar->integer != 0)
+    {
+        for (PakFile* pak = (PakFile*)mActivePaks.m_head;
+             pak != nullptr
+             && (reserved_dlist<PakFile>::dlist_node*)pak
+                    != mActivePaks.m_end;
+             pak = (PakFile*)pak->m_dlist_node.m_next)
+        {
+            if (pak->mState == PakFile::LOADING)
+                pak->RenderDebug();
+        }
+    }
+
+    float textScale = 0.9f;  // textScale_0 @ 0xDF9130
+    if ((mDebugRenderMode.bankUsage & 1) != 0)
+    {
+        char v74[1024];
+        char v73[512];
+        float x = 20.0f;
+        float y = 20.0f;
+
+        sprintf(v74, "ACTIVE PAKS:\n");
+        MyRenderText(v74, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                     0.0f, textScale);
+        y += 14.0f;
+
+        float totalBanks = BankManager::sInst->mNumMramBanks;
+        TBankAlloc freeAlloc = BankManager::sInst->mFreeBanks;
+        double freeCount = PrintBankUsage(v73, totalBanks, &freeAlloc, true);
+        sprintf(v74, "%s free: %1.1f/%1.1f \n", v73, freeCount, totalBanks);
+        MyRenderText(v74, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                     0.0f, textScale);
+        y += 14.0f;
+
+        for (PakFile* pak = (PakFile*)mActivePaks.m_head;
+             pak != nullptr
+             && (reserved_dlist<PakFile>::dlist_node*)pak
+                    != mActivePaks.m_end;
+             pak = (PakFile*)pak->m_dlist_node.m_next)
+        {
+            const char* v17;
+            if (pak->mPakType == kPakTypeCount)
+            {
+                v17 = (const char*)pak + 12;  // mPath.mBuff
+            }
+            else
+            {
+                if (pak->mPakInfo == nullptr)
+                    pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+                if (pak->mPakInfo == nullptr)
+                    v17 = (const char*)pak + 12;
+                else
+                    v17 =
+                        ((InplaceString*)pak->mPakInfo->path)->mStr;
+            }
+
+            ae_fixed_string<256, unsigned short> v77;
+            int oLen = 0;
+            AeStringSupport::CStrToAeStr((char*)v77.mBuff, &oLen, 254, v17);
+            v77.mLength = (unsigned char)oLen;
+            ae_fixed_string<256, unsigned short> v75 =
+                v77.get_file_name(true);
+            NumBanks v78;
+            v78.xenon = *(float*)&pak->mBankAlloc.mram_alloc1.mBits[0];
+            v78.pcx = *(float*)&pak->mBankAlloc.mram_alloc1.mBits[1];
+            v78.gc.main = *(float*)&pak->mBankAlloc.mram_alloc2.mBits[0];
+            v78.gc.aram = *(float*)&pak->mBankAlloc.mram_alloc2.mBits[1];
+            if (totalBanks + 0.5f >= 256.0f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 1646;
+                AeAssert::gCurrentExpr =
+                    "((float)((int)(BankManager::Inst()->GetNumBanks()+0.5f)))<256";
+                if (!AeAssert::IsIgnored() && AeAssert::Assert("check"))
+                    __debugbreak();
+            }
+            PrintBankUsage(v73, totalBanks, (const TBankAlloc*)&v78.xenon,
+                           true);
+            sprintf(v74, "%s%s", v73, v75.mBuff);
+
+            float loadTime = 0.0f;
+            if (pak->mLoadStats != nullptr)
+                loadTime = pak->mLoadStats->total;
+            const PakInfoNode* pdt = (pak->mPakType == kPakTypeCount)
+                                         ? nullptr
+                                         : pak->mPakInfo;
+            if (pdt == nullptr && pak->mPakType != kPakTypeCount)
+            {
+                pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+                pdt = pak->mPakInfo;
+            }
+            float banks = 0.0f;
+            if (pdt != nullptr)
+                banks = pdt->numBanks.xbox;
+            if (pdt == nullptr
+                || GetDistance((PakInfoNode*)pdt) == 3.4028235e38f)
+            {
+                sprintf(v74, "%s %2.1fbnk (inf) (%1.2fs)\n", v74, banks,
+                        loadTime);
+            }
+            else if (GetDistance((PakInfoNode*)pdt) >= 50.0)
+            {
+                sprintf(v74, "%s %2.1fbnk (%1.fm) (%1.2fs)\n", v74, banks,
+                        GetDistance((PakInfoNode*)pdt) * 0.0254, loadTime);
+            }
+            else
+            {
+                sprintf(v74, "%s %2.1fbnk (%1.f\") (%1.2fs)\n", v74, banks,
+                        GetDistance((PakInfoNode*)pdt), loadTime);
+            }
+            MyRenderText(v74, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                         0.0f, textScale);
+            y += 14.0f;
+        }
+
+        if (mNextPakInfo != nullptr && mNextPakInfo != mCurrentPakInfo)
+        {
+            ae_fixed_string<256, unsigned short> v77;
+            int oLen = 0;
+            AeStringSupport::CStrToAeStr(
+                (char*)v77.mBuff, &oLen, 254,
+                ((InplaceString*)mNextPakInfo->path)->mStr);
+            v77.mLength = (unsigned char)oLen;
+            ae_fixed_string<256, unsigned short> v75 =
+                v77.get_file_name(true);
+            char v78[32];
+            int v90 = 31;
+            AeStringSupport::AeStrCopy(v78, &v90, 31, (const char*)v75.mBuff,
+                                       v75.mLength);
+            if (GetDistance((PakInfoNode*)mNextPakInfo)
+                == 3.4028235e38f)
+            {
+                NumBanks nb = GetNumBanks(mNextPakInfo);
+                sprintf(v74, "---next:---\n%s %1.1fbnk (inf)\n", v78,
+                        nb.xbox);
+            }
+            else
+            {
+                NumBanks nb = GetNumBanks(mNextPakInfo);
+                sprintf(v74, "---next:---\n%s %1.1fbnk (%1.fm)\n", v78,
+                        nb.xbox,
+                        GetDistance((PakInfoNode*)mNextPakInfo) * 0.0254);
+            }
+            MyRenderText(v74, (int)x, (int)y,
+                         Color(1.0f, 1.0f, 1.0f, 1.0f), 0.0f, textScale);
+            y += 48.0f;
+        }
+
+        sprintf(v74, "Max Used:%3.2f\tLow water mark:%3.2f\n",
+                BankManager::sInst->mNumMramBanks
+                    - BankManager::sInst->mLowestFreeAmount,
+                BankManager::sInst->mLowestFreeAmount);
+        MyRenderText(v74, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                     0.0f, textScale);
+    }
+
+    if (mDebugRenderMode.paks != nullptr
+        && mDebugRenderMode.paks->integer != 0)
+    {
+        char v76[256];
+        float x = 34.0f;
+        float y = 40.0f;
+        NumBanks freeCount = BankManager::sInst->get_free_count();
+        sprintf(v76, "used(%1.1f) free(%1.1f)",
+                BankManager::sInst->mNumMramBanks - freeCount.xbox,
+                freeCount.xbox);
+        MyRenderText(v76, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                     0.0f, 0.9f);
+        y += 11.0f;
+
+        for (PakFile* pak = (PakFile*)mActivePaks.m_head;
+             pak != nullptr
+             && (reserved_dlist<PakFile>::dlist_node*)pak
+                    != mActivePaks.m_end;
+             pak = (PakFile*)pak->m_dlist_node.m_next)
+        {
+            const PakInfoNode* pdt =
+                (pak->mPakType == kPakTypeCount)
+                    ? nullptr
+                    : pak->mPakInfo;
+            if (pdt == nullptr && pak->mPakType != kPakTypeCount)
+            {
+                pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+                pdt = pak->mPakInfo;
+            }
+            if (pdt == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 2005;
+                AeAssert::gCurrentExpr = "pdt != 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(defaultFileName))
+                    __debugbreak();
+            }
+            TBankAlloc v79[2];
+            memcpy(v79, (const char*)pdt + 12, sizeof(v79));
+            sprintf(v76, "%2.1f %3d %8s",
+                    *(float*)&v79[0].mram_alloc2.mBits[1], pak->mPakId,
+                    (const char*)pdt->longName);
+            MyRenderText(v76, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                         0.0f, 0.9f);
+            y += 15.0f;
+        }
+    }
+
+    if (mDebugRenderMode.heaps != nullptr
+        && mDebugRenderMode.heaps->integer != 0)
+    {
+        char v76[256];
+        float x = 26.0f;
+        float y = 20.0f;
+        unsigned int totalUsed = 0;
+        unsigned int totalSize = 0;
+
+        for (PakFile* pak = (PakFile*)mActivePaks.m_head;
+             pak != nullptr
+             && (reserved_dlist<PakFile>::dlist_node*)pak
+                    != mActivePaks.m_end;
+             pak = (PakFile*)pak->m_dlist_node.m_next)
+        {
+            const PakInfoNode* pdt =
+                (pak->mPakType == kPakTypeCount)
+                    ? nullptr
+                    : pak->mPakInfo;
+            if (pdt == nullptr && pak->mPakType != kPakTypeCount)
+            {
+                pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+                pdt = pak->mPakInfo;
+            }
+            for (int v55 = 0; v55 < pak->mHeapList.m_size; ++v55)
+            {
+                if (v55 >= 0xC)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                    AeAssert::gCurrentLine = 148;
+                    AeAssert::gCurrentExpr =
+                        "idx >= 0 && idx < _CAPACITY";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("out of bounds"))
+                        __debugbreak();
+                }
+                mem_heap* heap = pak->mHeapList.m_elements[v55];
+                if (heap == nullptr)
+                    continue;
+                sprintf(v76, "[%d] %10s %7d(%7d)", pak->mPakId,
+                        (const char*)pdt->longName, heap->used_byte,
+                        heap->size);
+                totalUsed += heap->used_byte;
+                totalSize += heap->size;
+                MyRenderText(v76, (int)x, (int)y,
+                             Color(1.0f, 1.0f, 1.0f, 1.0f), 0.0f, textScale);
+                y += 15.0f;
+            }
+        }
+
+        sprintf(v76, "%10s %7d(%7d)", "TOTAL", totalUsed, totalSize);
+        MyRenderText(v76, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                     0.0f, textScale);
+        y += 15.0f;
+
+        mem_heap* apsHeap = nullptr;
+        if (gApsHeap != nullptr)
+            apsHeap = ((ae_heap*)gApsHeap)->GetHeapPointer();
+        sprintf(v76, "apsHeap %7d(%7d)",
+                apsHeap ? apsHeap->used_byte : 0,
+                apsHeap ? apsHeap->size : 0);
+        MyRenderText(v76, (int)x, (int)y, Color(1.0f, 1.0f, 1.0f, 1.0f),
+                     0.0f, textScale);
+    }
 }
 
 // ea: 0x687700
@@ -14060,6 +14342,23 @@ ae_fixed_string<512, unsigned short>::get_file_name(bool truncExt) const
                                  truncExt);
     int oLen = 0;
     AeStringSupport::AeStrCopy((char*)result.mBuff, &oLen, 510, r, dstLen);
+    result.mLength = (unsigned char)oLen;
+    return result;
+}
+
+// ea: 0x686FF0 (streamer.o COMDAT; ae_fixed_string<256,unsigned short>)
+template <>
+ae_fixed_string<256, unsigned short>
+ae_fixed_string<256, unsigned short>::get_file_name(bool truncExt) const
+{
+    ae_fixed_string<256, unsigned short> result;
+    char r[254];
+    r[0] = 0;
+    int dstLen = 0;
+    AeStringSupport::GetFileName(r, &dstLen, (const char*)mBuff, mLength,
+                                 truncExt);
+    int oLen = 0;
+    AeStringSupport::AeStrCopy((char*)result.mBuff, &oLen, 254, r, dstLen);
     result.mLength = (unsigned char)oLen;
     return result;
 }
