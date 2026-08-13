@@ -2445,8 +2445,10 @@ nglTexture* cdLoadTexureInplace(void* data)
 }
 
 // ea: 0x665C30
-void cdDeleteTextureCallback(apk::apkFile* File, apk::apkFileEntry* Entry)
+void cdDeleteTextureCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                             void* UserData)
 {
+    (void)UserData;
     tlFixedString name("image");
     int SectionIndex = File->GetSectionIndex(name);
     nglTexture* Data = (nglTexture*)Entry->GetData(File, SectionIndex, true);
@@ -4093,9 +4095,163 @@ void PakManager::SingletonDebugRender()
     PakManager::sInst->DebugRender();
 }
 
-// ea: 0x678EF0 (apk support; port with cd* callbacks)
+// apk callbacks (apkSupport.cpp; the ngl-backed load/delete impls are ported
+// with the ngl batch - kept as ABI-faithful stubs for now)
+void cdLoadTextureCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                           void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdLoadMeshCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                        void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdDeleteMeshCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                          void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdLoadSkelCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                        void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdDeleteSkelCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                          void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdLoadFontCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                        void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdDeleteFontCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                          void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdLoadMaterialCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                            void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdDeleteMaterialCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                              void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdLoadParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                            void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+void cdDeleteParticleCallback(apk::apkFile* File, apk::apkFileEntry* Entry,
+                              void* UserData)
+{
+    (void)File; (void)Entry; (void)UserData;
+}
+
+// ea: 0x678EF0
 void cdInitApk()
 {
+    extern void nglSetResourceCallback(
+        void* (*Callback)(const tlFixedString&, unsigned int));
+    extern void* apkGetResource(const tlFixedString& FileName,
+                                unsigned int FourCC);
+    nglSetResourceCallback(apkGetResource);
+    apk::apkSetResourceCallback(apkGetResource);
+    apk::apkRegisterFileType(0x584554u, 3u, cdLoadTextureCallback,
+                             cdDeleteTextureCallback, nullptr);
+    apk::apkRegisterFileType(0x4853454Du, 2u, cdLoadMeshCallback,
+                             cdDeleteMeshCallback, nullptr);
+    apk::apkRegisterFileType(0x4C454B53u, 2u, cdLoadSkelCallback,
+                             cdDeleteSkelCallback, nullptr);
+    apk::apkRegisterFileType(0x544E4F46u, 1u, cdLoadFontCallback,
+                             cdDeleteFontCallback, nullptr);
+    apk::apkRegisterFileType(0x54414Du, 2u, cdLoadMaterialCallback,
+                             cdDeleteMaterialCallback, nullptr);
+    apk::apkRegisterFileType(0x53504541u, 1u, cdLoadParticleCallback,
+                             cdDeleteParticleCallback, nullptr);
+}
+
+// Resource getters (apkSupport.cpp; decode impls port with the ngl batch)
+struct apsEffectTemplate;
+static tlFixedString none_tfs("None");
+static tlFixedString null_tfs("(null)");
+struct nglMaterial;
+extern nglMaterial* nglGetMaterial(const tlFixedString* Name, bool Warn);
+void* cdGetTexture(TPakId pakId, const tlFixedString& name)
+{
+    (void)pakId; (void)name;
+    return nullptr;
+}
+void* cdGetMesh(TPakId pakId, const tlFixedString& name)
+{
+    (void)pakId; (void)name;
+    return nullptr;
+}
+nglFont* cdGetFont(TPakId pakId, const tlFixedString& name)
+{
+    (void)pakId; (void)name;
+    return nullptr;
+}
+apsEffectTemplate* cdGetEffectTemplate(TPakId pakId,
+                                       const tlFixedString& name)
+{
+    (void)pakId; (void)name;
+    return nullptr;
+}
+
+// ea: 0x678D40
+void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
+                    bool ExtraSafety)
+{
+    if (FileName.hash == 0)
+        return FourCC != 0x584554u ? nullptr : nglDefaultTex;
+    ae_sized_array<TPakId, 128>& ContextStack =
+        (ae_sized_array<TPakId, 128>&)PakManager::sInst->GetContextStack();
+    TPakId v6 = PAK_ID_INVALID;
+    if (ContextStack.m_size != 0)
+        v6 = ContextStack.m_elements[ContextStack.m_size - 1];
+    if (FourCC > 0x4C454B53u)
+    {
+        if (FourCC == 0x53504541u)
+            return cdGetEffectTemplate(v6, FileName);
+        if (FourCC != 0x544E4F46u)
+            return nullptr;
+        void* result = cdGetFont(v6, FileName);
+        if (result == nullptr)
+            return nglGetFont(FileName);
+        return result;
+    }
+    if (FourCC == 0x4C454B53u)
+        return gCharSkel;
+    if (FourCC == 0x54414Du)
+        return nglGetMaterial(&FileName, true);
+    if (FourCC != 0x584554u)
+    {
+        if (FourCC == 0x4853454Du)
+            return cdGetMesh(v6, FileName);
+        return nullptr;
+    }
+    if (FileName == none_tfs || FileName == null_tfs)
+        return nglDefaultTex;
+    void* result = cdGetTexture(v6, FileName);
+    if (result == nullptr && ExtraSafety)
+    {
+        tlPrintf("Unable to locate texture resource %s - assigning default texture.\n",
+                 FileName.str);
+        return nglDefaultTex;
+    }
+    return result;
+}
+
+// ea: 0x678ED0
+void* apkGetResource(const tlFixedString& FileName, unsigned int FourCC)
+{
+    return cdGetResource(FileName, FourCC, true);
 }
 
 // ea: 0x671360
