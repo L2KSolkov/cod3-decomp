@@ -554,6 +554,7 @@ const tlFixedString& nalBaseSkeleton::GetName() const
 class nalBasePose {
 public:
     int LOD;  // +0x04 (after vftable)
+    const nalBaseSkeleton* Skeleton;  // +0x08
 
     // ?GetLOD@nalBasePose@@QBEHXZ (0x55E400)
     int GetLOD() const;
@@ -610,6 +611,16 @@ public:
         {
             return (typename nalInstanceSkeletonRet<T>::type)Skeleton;
         }
+
+        // ?VirtualGetPose@nalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@MAEXMMAAVnalBasePose@@ABV3@H@Z
+        virtual void VirtualGetPose(float t, float t_prev,
+                                    nalBasePose& pose,
+                                    const nalBasePose& defaultPose,
+                                    int lod)
+        {
+            (void)t; (void)t_prev; (void)pose; (void)defaultPose;
+            (void)lod;
+        }
     };
 
     // ??2?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z (0x55E500)
@@ -644,8 +655,9 @@ public:
     virtual nalInstanceClass* VirtualCreateInstance(nalAnimClass<T>* a,
                                                     nalBaseSkeleton* skeleton);
 
-    const nalBaseSkeleton* Skeleton;  // +0x40
-    int InstanceCount;                // +0x44
+    const nalBaseSkeleton* Skeleton;  // +0x30
+    unsigned int mFlags;              // +0x34
+    int InstanceCount;                // +0x40
 };
 
 // ea: 0x0055E530
@@ -4784,10 +4796,13 @@ public:
     virtual int IsAnimLooping() const = 0;
     virtual int IsAnimTrajRelative() const = 0;
     virtual float GetAnimDuration() const = 0;
-    virtual const void* GetSkeleton() const = 0;
-    virtual void* CreateAnimInst(void* theSkel, void* theAnim) = 0;
+    virtual const nalBaseSkeleton* GetSkeleton() const = 0;
+    virtual nalAnimClass<nalAnyPose>::nalInstanceClass* CreateAnimInst(
+        nalBaseSkeleton* theSkel,
+        nalAnimClass<nalAnyPose>::nalInstanceClass* theAnim) = 0;
     virtual int IsDelayCreate();  // 0x53ACC0
-    virtual void DelayCreate(void** animArray, int numAnims);  // 0x53ACD0 (empty)
+    virtual void DelayCreate(nalAnimClass<nalAnyPose>** animArray,
+                             int numAnims);  // 0x53ACD0 (empty)
 
     tlFixedString mName;   // +0x04 (vptr @ +0)
 };
@@ -4807,10 +4822,13 @@ public:
     virtual int IsAnimLooping() const;       // 0x53F840
     virtual int IsAnimTrajRelative() const;  // 0x53F860
     virtual float GetAnimDuration() const;   // 0x53F880
-    virtual const void* GetSkeleton() const; // 0x53F8A0
-    virtual void* CreateAnimInst(void* theSkel, void* theAnim);  // 0x53F8B0
+    virtual const nalBaseSkeleton* GetSkeleton() const; // 0x53F8A0
+    virtual nalAnimClass<nalAnyPose>::nalInstanceClass* CreateAnimInst(
+        nalBaseSkeleton* theSkel,
+        nalAnimClass<nalAnyPose>::nalInstanceClass* theAnim);  // 0x53F8B0
     virtual int IsDelayCreate();             // 0x55FE20
-    virtual void DelayCreate(void** animArray, int numAnims);    // 0x53D180
+    virtual void DelayCreate(nalAnimClass<nalAnyPose>** animArray,
+                             int numAnims);    // 0x53D180
 
     void* mAnimPtr;        // +0x24
     void* mRevPtr;         // +0x28
@@ -4818,20 +4836,22 @@ public:
     InteractMetaAnimData();  // ea: 0x0055FDE0
 };
 
-class InteractMetaAnimInstance {
+class InteractMetaAnimInstance
+    : public nalAnimClass<nalAnyPose>::nalInstanceClass {
 public:
     InteractMetaAnimInstance(nalAnimClass<nalAnyPose>* forwardAnim,
                              nalAnimClass<nalAnyPose>* reverseAnim,
                              nalBaseSkeleton* theSkel);  // ea: 0x0055FB90
     virtual ~InteractMetaAnimInstance();                 // ea: 0x0055FD70
 
-    float Duration;          // +0x04
-    float InverseDuration;   // +0x08
-    void* Skeleton;          // +0x0C
-    void* Anim;              // +0x10
     void* mForwardInst;      // +0x14
-    unsigned char _pad[0x20 - 0x18];
-    float mPrevValue;        // +0x20
+    float mPrevValue;        // +0x18
+
+protected:
+    // ?VirtualGetPose@InteractMetaAnimInstance@@MAEXMMAAVnalBasePose@@ABV2@H@Z
+    virtual void VirtualGetPose(float t, float t_prev, nalBasePose& pose,
+                                const nalBasePose& defaultPose,
+                                int lod);  // 0x55FC90
 };
 
 // ea: 0x0055FDE0
@@ -4855,13 +4875,17 @@ int MetaAnimData::IsDelayCreate()
 }
 
 // ea: 0x0053ACD0
-void MetaAnimData::DelayCreate(void** animArray, int numAnims)
+void MetaAnimData::DelayCreate(nalAnimClass<nalAnyPose>** animArray,
+                               int numAnims)
 {
     (void)animArray; (void)numAnims;
 }
 
 // ea: 0x0053F8B0
-void* InteractMetaAnimData::CreateAnimInst(void* theSkel, void* theAnim)
+nalAnimClass<nalAnyPose>::nalInstanceClass*
+InteractMetaAnimData::CreateAnimInst(
+    nalBaseSkeleton* theSkel,
+    nalAnimClass<nalAnyPose>::nalInstanceClass* theAnim)
 {
     (void)theAnim;
     void* v4 = tlMemAlloc(0x1C, 8, 0);
@@ -4870,13 +4894,14 @@ void* InteractMetaAnimData::CreateAnimInst(void* theSkel, void* theAnim)
         return new (v4) InteractMetaAnimInstance(
             (nalAnimClass<nalAnyPose>*)mAnimPtr,
             (nalAnimClass<nalAnyPose>*)mRevPtr,
-            (nalBaseSkeleton*)theSkel);
+            theSkel);
     }
     return nullptr;
 }
 
 // ea: 0x0053D180
-void InteractMetaAnimData::DelayCreate(void** animArray, int numAnims)
+void InteractMetaAnimData::DelayCreate(nalAnimClass<nalAnyPose>** animArray,
+                                       int numAnims)
 {
     if (animArray == nullptr || numAnims <= 0)
     {
@@ -4893,16 +4918,12 @@ void InteractMetaAnimData::DelayCreate(void** animArray, int numAnims)
 InteractMetaAnimInstance::InteractMetaAnimInstance(
     nalAnimClass<nalAnyPose>* forwardAnim,
     nalAnimClass<nalAnyPose>* reverseAnim, nalBaseSkeleton* theSkel)
+    : nalInstanceClass(forwardAnim, theSkel)
 {
-    Duration = forwardAnim->GetDuration();
-    InverseDuration = forwardAnim->GetInverseDuration();
-    Skeleton = theSkel != nullptr ? theSkel
-                                  : *(void**)((char*)forwardAnim + 0x30);
-    Anim = forwardAnim;
-    ++*(int*)((char*)forwardAnim + 0x3C);
+    (void)reverseAnim;
     mPrevValue = 0.0f;
     if (theSkel != nullptr
-        && *(void**)*(void**)((char*)forwardAnim + 0x30) != *(void**)theSkel
+        && *(void**)*(void**)forwardAnim->Skeleton != *(void**)theSkel
         && _tlAssert(
                "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 147,
                "!skeleton || Compatible(GetSkeleton(),skeleton)",
@@ -4923,7 +4944,31 @@ InteractMetaAnimInstance::~InteractMetaAnimInstance()
         typedef void (__thiscall* DtorFn)(void*, unsigned int);
         ((DtorFn)((void**)*(void**)mForwardInst)[0])(mForwardInst, 1);
     }
-    --*(int*)((char*)Anim + 0x3C);
+}
+
+// ea: 0x0055FC90
+void InteractMetaAnimInstance::VirtualGetPose(
+    float t, float t_prev, nalBasePose& pose,
+    const nalBasePose& defaultPose, int lod)
+{
+    (void)t; (void)t_prev; (void)lod;
+    float mMetaAnimScore =
+        InteractionController::Inst(currCl)->mMetaAnimScore;
+    nalInstanceClass* mForwardInst =
+        (nalInstanceClass*)this->mForwardInst;
+    const nalBaseSkeleton* Skeleton = mForwardInst->Skeleton;
+    float mPrevValue = this->mPrevValue;
+    if ((Skeleton != pose.Skeleton || Skeleton != defaultPose.Skeleton)
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 117,
+               "GetSkeleton() == pose.GetSkeleton() && GetSkeleton() == defaultPose.GetSkeleton()",
+               "pose skeleton types do not match"))
+    {
+        __debugbreak();
+    }
+    mForwardInst->VirtualGetPose(mMetaAnimScore, mPrevValue, pose,
+                                 defaultPose, 0);
+    this->mPrevValue = mMetaAnimScore;
 }
 
 // ??_GInteractMetaAnimInstance@@UAEPAXI@Z (0x55FD40) - compiler-generated;
@@ -9716,10 +9761,10 @@ int InteractMetaAnimData::IsDelayCreate()
 }
 
 // ea: 0x0053F8A0
-const void* InteractMetaAnimData::GetSkeleton() const
+const nalBaseSkeleton* InteractMetaAnimData::GetSkeleton() const
 {
     if (mAnimPtr != nullptr)
-        return *(void**)((char*)mAnimPtr + 0x30);
+        return ((nalAnimClass<nalAnyPose>*)mAnimPtr)->Skeleton;
     return nullptr;
 }
 
