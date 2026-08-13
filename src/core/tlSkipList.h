@@ -48,6 +48,9 @@ public:
     struct Instance {
         T*         DataPtr;   // +0x00
         Instance*  Forward[1];// +0x04 - inline array of (Level+1) pointers
+
+        // ?Key@Instance@?$tlSkipList@...@@QBEABVtlFixedString@@XZ (streamer.o)
+        const tlFixedString& Key() const { return *GetKeyOf(DataPtr); }
     };
 
     int       Level;         // +0x08

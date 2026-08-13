@@ -59,6 +59,8 @@ public:
     unsigned int mPakId;   // +0x04
 
     bool operator!() const { return mValue == nullptr; }
+
+    T* GetRawPtr();  // ?GetRawPtr@?$IVPointer@VXModel@@@@QAEPAVXModel@@XZ (0x685AA0)
 };
 
 // Entity view for the Notify dispatcher + ConvertEntity field copies
@@ -224,6 +226,121 @@ struct cdScratchMaterial {
     cdScratchMaterial(nglTexture* tex, unsigned int BlendMode, int mapflags,
                       bool HeatHaze);  // ??0cdScratchMaterial@@QAE@PAVnglTexture@@IH_N@Z (render.o 0x7C5660)
 };
+
+// cdscratch_vertex (cdScratchVertexDef.cpp; 24 bytes, elem offsets 0/12/20)
+struct cdscratch_vertex {
+    float        Position_x;  // +0x00
+    float        Position_y;  // +0x04
+    float        Position_z;  // +0x08
+    unsigned int Color;       // +0x0C
+    float        TexCoord_x;  // +0x10
+    float        TexCoord_y;  // +0x14
+};
+
+// nglMeshIterator<V,I> (render_xboxr; streamer.o COMDATs 0x6839B0-0x684400)
+template <typename V, typename I>
+class nglMeshIterator {
+public:
+    nglMeshSection* section;      // +0x00
+    I*              index;        // +0x04
+    V*              vertex_base;  // +0x08
+    V*              vertex;       // +0x0C
+    int             cur_index;    // +0x10
+
+    nglMeshIterator(nglMeshSection* section);  // 0x6839B0
+    void BeginStrip(int strip);                // 0x6839F0
+    const nglMeshIterator& operator++();       // 0x683A30
+    void WriteFlush();                         // 0x683A60
+    void WritePosition(float x, float y, float z);  // 0x6843A0
+    void WriteColor(unsigned int color);            // 0x6843E0
+    void WriteTexCoord(float u, float v);           // 0x684400
+};
+
+// ea: 0x6839B0
+template <typename V, typename I>
+nglMeshIterator<V, I>::nglMeshIterator(nglMeshSection* section)
+{
+    this->section = section;
+    index = (I*)nglLockSectionIndices(section);
+    V* v3 = (V*)nglLockSectionVertices(section);
+    vertex_base = v3;
+    vertex = v3;
+    cur_index = 0;
+}
+
+// ea: 0x6839F0
+template <typename V, typename I>
+void nglMeshIterator<V, I>::BeginStrip(int strip)
+{
+    (void)strip;
+    int cur_index = this->cur_index;
+    if (cur_index > 0)
+    {
+        *index = (I)(cur_index - 1);
+        I* v3 = index + 1;
+        index = v3;
+        *v3 = (I)this->cur_index;
+        ++index;
+    }
+}
+
+// ea: 0x683A30
+template <typename V, typename I>
+const nglMeshIterator<V, I>& nglMeshIterator<V, I>::operator++()
+{
+    *index = (I)cur_index;
+    int cur_index = this->cur_index;
+    ++index;
+    V* vertex = this->vertex;
+    this->cur_index = cur_index + 1;
+    this->vertex = vertex + 1;
+    return *this;
+}
+
+// ea: 0x683A60
+template <typename V, typename I>
+void nglMeshIterator<V, I>::WriteFlush()
+{
+    nglUnlockSectionIndices();
+    nglUnlockSectionVertices();
+}
+
+// ea: 0x6843A0
+template <typename V, typename I>
+void nglMeshIterator<V, I>::WritePosition(float x, float y, float z)
+{
+    vertex->Position_x = x;
+    vertex->Position_y = y;
+    vertex->Position_z = z;
+}
+
+// ea: 0x6843E0
+template <typename V, typename I>
+void nglMeshIterator<V, I>::WriteColor(unsigned int color)
+{
+    vertex->Color = color;
+}
+
+// ea: 0x684400
+template <typename V, typename I>
+void nglMeshIterator<V, I>::WriteTexCoord(float u, float v)
+{
+    vertex->TexCoord_x = u;
+    vertex->TexCoord_y = v;
+}
+
+// ea: 0x686A00
+template <typename I>
+void WriteVertex(nglMeshIterator<cdscratch_vertex, I>& it, float x, float y,
+                 float z, unsigned int Col, float u, float v)
+{
+    it.vertex->Position_x = x;
+    it.vertex->Position_y = y;
+    it.vertex->Position_z = z;
+    it.vertex->Color = Col;
+    it.vertex->TexCoord_x = u;
+    it.vertex->TexCoord_y = v;
+}
 
 // mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
 struct mem_heap {
@@ -601,6 +718,7 @@ struct BitSet {
     unsigned int mBits[kNumWords];  // +0x00
 
     bool Test(int v) const;
+    static int GetCapacity() { return N; }  // ?GetCapacity@?$BitSet@$0EA@@@SAHXZ (0x681B70)
     void Add(int v) { mBits[v >> 5] |= (1u << (v & 0x1F)); }
     void Rmv(int v) { mBits[v >> 5] &= ~(1u << (v & 0x1F)); }
     bool IsEmpty() const
@@ -723,6 +841,26 @@ struct ae_sized_array {
     {
         if (m_size < N)
             m_elements[m_size++] = elt;
+    }
+
+    // ?pop_back@?$ae_sized_array@...@@@@QAEAA...@@XZ (0x682050)
+    T& pop_back()
+    {
+        if (m_size != 0)
+            m_size = m_size - 1;
+        return m_elements[m_size];
+    }
+
+    // ?back@?$ae_sized_array@...@@@@QAEAA...@@XZ (0x685900)
+    T& back()
+    {
+        return m_elements[m_size - 1 <= 0 ? 0 : m_size - 1];
+    }
+
+    // ?set_size@?$ae_sized_array@...@@@@QAEXH@Z (0x683E70)
+    void set_size(int s)
+    {
+        m_size = s;
     }
 };
 
@@ -1049,6 +1187,30 @@ struct ae_vector {
         else
         {
             mSize = iNewSize;
+        }
+    }
+
+    // ?construct_array@?$ae_vector@...@@@@AAE...@@HH@Z (0x683E10)
+    T* construct_array(int iCapacity, int iSize)
+    {
+        (void)iSize;
+        return (T*)tlMemAlloc(sizeof(T) * iCapacity, 8u, 0);
+    }
+
+    // ?construct_array@?$ae_vector@...@@@@AAE...@@H@Z (0x684150)
+    T* construct_array(int iNumber)
+    {
+        return (T*)tlMemAlloc(sizeof(T) * iNumber, 8u, 0);
+    }
+
+    // ?destroy_all@?$ae_vector@...@@@@AAEXXZ (0x683E40)
+    void destroy_all()
+    {
+        if (mElements != nullptr)
+        {
+            tlMemFree(mElements);
+            mElements = nullptr;
+            mCapacity = 0;
         }
     }
 };
@@ -1412,12 +1574,97 @@ struct reserved_dlist {
     struct dlist_node {
         dlist_node* m_next;  // +0x00
         dlist_node* m_prev;  // +0x04
+
+        // ?pop@dlist_node@?$reserved_dlist@VPakFile@@@@QAEXXZ (0x683DF0)
+        void pop()
+        {
+            m_next->m_prev = m_prev;
+            m_prev->m_next = m_next;
+        }
     };
 
     int         m_size;  // +0x00
     dlist_node* m_head;  // +0x04
     dlist_node* m_end;   // +0x08
     dlist_node* m_tail;  // +0x0C
+
+    // ?node_to_object@?$reserved_dlist@VPakFile@@@@SAPAVPakFile@@PAUdlist_node@1@@Z (0x683DC0)
+    static T* node_to_object(dlist_node* dlist_node)
+    {
+        return (T*)dlist_node;
+    }
+
+    // ?get_head@?$reserved_dlist@VPakFile@@@@QAEPAUdlist_node@1@XZ (0x6840A0)
+    dlist_node* get_head()
+    {
+        return m_head;
+    }
+
+    struct iterator {
+        dlist_node* m_node;  // +0x00
+        dlist_node* m_next;  // +0x04
+
+        // ??0iterator@...@QAE@PAUdlist_node@1@0@Z (0x683F70)
+        iterator(dlist_node* cur, dlist_node* next)
+            : m_node(cur), m_next(next) {}
+        // ??0iterator@...@QAE@PAVT@@@Z (0x6840F0)
+        iterator(T* obj)
+            : m_node((dlist_node*)obj),
+              m_next(((dlist_node*)obj)->m_next) {}
+        // ??0iterator@...@QAE@AAV1@@Z (0x686660)
+        iterator(reserved_dlist<T>* dlist)
+        {
+            m_node = dlist->m_head;
+            m_next = (dlist->m_head != nullptr) ? dlist->m_head->m_next
+                                                : nullptr;
+            if (dlist->m_head == &dlist->m_end)
+            {
+                m_next = nullptr;
+                m_node = nullptr;
+            }
+        }
+
+        // ??Diterator@...@QAEPAVT@@XZ (0x686210)
+        T* operator*()
+        {
+            return (T*)m_node;
+        }
+
+        // ?compare@iterator@...@QBE_NABV12@@Z (0x683F90)
+        bool compare(const iterator& rhs) const
+        {
+            return rhs.m_next == m_next;
+        }
+    };
+
+    struct const_iterator {
+        dlist_node* m_node;  // +0x00
+        dlist_node* m_next;  // +0x04
+
+        // ??0const_iterator@...@QAE@ABViterator@1@@Z (0x6837A0)
+        const_iterator(const iterator& it)
+            : m_node(it.m_node), m_next(it.m_next) {}
+
+        // ??Dconst_iterator@...@QBEPBVT@@XZ (0x686200)
+        const T* operator*() const
+        {
+            return (const T*)m_node;
+        }
+    };
+
+    // ?begin@?$reserved_dlist@VPakFile@@@@QAE?AViterator@1@XZ (0x686E60)
+    iterator begin()
+    {
+        iterator result(nullptr, nullptr);
+        result.m_node = m_head;
+        result.m_next = (m_head != nullptr) ? m_head->m_next : nullptr;
+        if (m_head == &m_end)
+        {
+            result.m_next = nullptr;
+            result.m_node = nullptr;
+        }
+        return result;
+    }
 };
 
 class PakManager {
@@ -2073,6 +2320,19 @@ public:
                             const math::Position3* position);  // ?GetZdNode@ZoneBoundaryBank@@QAEPBVZdNode@@HABVPosition3@math@@@Z
 };
 
+// InplaceAssetBankSet<T> (ae/inplace/InplaceAssetBankSet.h; streamer.o
+// COMDAT 0x687800 is an empty OnBankUnloaded override)
+template <typename T>
+class InplaceAssetBankSet {
+public:
+    virtual void OnBankUnloaded(T& bank);  // ?OnBankUnloaded@?$InplaceAssetBankSet@...@@MAEXAAV...@@@Z
+};
+template <typename T>
+void InplaceAssetBankSet<T>::OnBankUnloaded(T& bank)
+{
+    (void)bank;
+}
+
 // ZoneOverrideBrush (streamer.o; mAabb +0x00, mPlanes +0x20, size 0x40)
 struct ZoneOverrideBrush {
     uint8_t mAabb[0x20];   // +0x00 (BoundingBox)
@@ -2195,6 +2455,14 @@ public:
 };
 
 void ValidatePakId(TPakId pakId);  // defined below (0x6653A0)
+
+// ea: 0x685AA0
+template <typename T>
+T* IVPointer<T>::GetRawPtr()
+{
+    ValidatePakId((TPakId)mPakId);
+    return mValue;
+}
 
 // render.o entry points (stubs until render.o lands)
 extern void R_GetXModelBounds(XModel* m, float (*axis)[3],
