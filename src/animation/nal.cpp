@@ -7123,10 +7123,51 @@ void InteractionQueueEntry_Ctor(void* self)
 // ============================================================================
 class RowboatMgr {
 public:
-    struct { unsigned int mVal; } mBoatmen[5];  // +0x00
+    int mNumLeaders;             // +0x00
+    int mNumBoatmen;             // +0x04
+    int mLastLeaderIndex;        // +0x08
+    void* mLastLeaderAnim;       // +0x0C
+    void* mCallback;             // +0x10
+    int mNumFlinches;            // +0x14
+    struct { unsigned int mVal; } mBoatmen[5];  // +0x18
+    void* mBoatmanAnimIdle[5];   // +0x2C
+    void* mBoatmanAnimFlinch[5]; // +0x40
+    void* mBoatmanAnimAction[5]; // +0x54
+    void* mFlinchCallback[5];    // +0x68
+    float mStrokeTimer;          // +0x7C
+    float mPendingStrokeDuration;// +0x80
+    float mFlinchTimer;          // +0x84
 
     void Init();  // ?Init@RowboatMgr@@QAEXXZ (anim.o)
+    void InitIdleAnims(const void* info);    // 0x53DCB0
+    void InitFlinchAnims(const void* info);  // 0x53DD10
+    void InitActionAnims(const void* info);  // 0x53DDD0
+    void PlayStrokes(float duration);  // 0x550140
+    void PlayPushOff(const void* info);  // 0x550270
+    void PlayLeaderAnim(int index);  // 0x550300
+    void PlayIdle(int index);        // 0x5503B0
+    void PlayFlinch(int index);      // 0x550430
+    void PlayIdles();                // 0x556220
+    void PlayFlinches();             // 0x556250
+    void PlayFaster();               // 0x556290
+    void PlaySlower();               // 0x5562A0
+    void PlayRow();                  // 0x5562B0
+    void AlignBoatmen();             // 0x550080
 };
+
+RowboatMgr gRowboatMgr;  // ?gRowboatMgr@@3VRowboatMgr@@A @ 0xDF2A08
+
+// anim.o statics (verified vs IDA)
+float fadeInTime = 0.5f;         // @ 0xDF3748
+float fadeInTime_0 = 0.1f;       // @ 0xDF374C
+float sNumStrokesPerAnim = 2.0f; // @ 0xDF3744
+float sDurFactor = 0.9f;         // @ 0xDF3740
+float sFlinchTime = 2.0f;        // @ 0xDF37B4
+float sRowFadeTime = 0.1f;       // @ 0xDF3128
+static unsigned char sFlinchCallbacks[5][8];  // @ 0xDF1290
+
+int sRowboatOrderPending = 0;
+int sRowboatOrderHash = 0;
 
 // ea: 0x00561460
 void RowboatMgr_Ctor(RowboatMgr* self)
@@ -7138,6 +7179,409 @@ void RowboatMgr_Ctor(RowboatMgr* self)
 
 void RowboatMgr::Init()
 {
+    mNumLeaders = 0;
+    mNumBoatmen = 0;
+    mLastLeaderIndex = -1;
+    mLastLeaderAnim = nullptr;
+    mCallback = nullptr;
+    mNumFlinches = 0;
+    for (int i = 0; i < 5; ++i)
+    {
+        mBoatmen[i].mVal = 0;
+        mBoatmanAnimIdle[i] = nullptr;
+        mBoatmanAnimFlinch[i] = nullptr;
+        mBoatmanAnimAction[i] = nullptr;
+        mFlinchCallback[i] = nullptr;
+    }
+}
+
+// ea: 0x0053DCB0
+void RowboatMgr::InitIdleAnims(const void* info)
+{
+    const char* v5 = (const char*)info + 0x238;  // interModAnim[0]
+    for (int v3 = 0; v3 < mNumBoatmen && v3 < 6; ++v3)
+    {
+        if (*v5 != 0)
+        {
+            tlFixedString name(v5);
+            mBoatmanAnimIdle[v3] = nalGetAnim(name);
+        }
+        v5 += 40;
+    }
+}
+
+// ea: 0x0053DD10
+void RowboatMgr::InitFlinchAnims(const void* info)
+{
+    if (mNumBoatmen > 6)
+    {
+        XANIM_ASSERT("gInteractionModAnimMax >= mNumBoatmen",
+                     "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 148,
+                     "Bad");
+    }
+    const char* v4 = (const char*)info + 0xF8;  // playerModAnim[0]
+    for (int v3 = 0; v3 < mNumBoatmen && v3 < 6; ++v3)
+    {
+        if (*v4 != 0)
+        {
+            tlFixedString name(v4);
+            mBoatmanAnimFlinch[v3] = nalGetAnim(name);
+        }
+        v4 += 40;
+    }
+}
+
+// ea: 0x0053DDD0
+void RowboatMgr::InitActionAnims(const void* info)
+{
+    if (mNumBoatmen > 6)
+    {
+        XANIM_ASSERT("gInteractionModAnimMax >= mNumBoatmen",
+                     "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 161,
+                     "Bad");
+    }
+    const char* v4 = (const char*)info + 0x238;  // interModAnim[0]
+    for (int v3 = 0; v3 < mNumBoatmen && v3 < 6; ++v3)
+    {
+        if (*v4 != 0)
+        {
+            tlFixedString name(v4);
+            mBoatmanAnimAction[v3] = nalGetAnim(name);
+        }
+        v4 += 40;
+    }
+}
+
+// ea: 0x00550140
+void RowboatMgr::PlayStrokes(float duration)
+{
+    if (duration > 0.0f)
+    {
+        if (mStrokeTimer < 0.0f)
+        {
+            mStrokeTimer = duration;
+            int startCount = mNumLeaders;
+            int i = startCount;
+            if (startCount < mNumBoatmen)
+            {
+                do
+                {
+                    if (mFlinchCallback[i] == nullptr)
+                    {
+                        unsigned int v6 = mBoatmen[i].mVal & 0xFFF;
+                        if (v6 < 0x540
+                            && mBoatmen[i].mVal >> 12
+                                   == EntityHandleDb::sInst.mElements[v6].mKey)
+                        {
+                            Entity* mObject =
+                                EntityHandleDb::sInst.mElements[v6].mObject;
+                            if (mObject != nullptr
+                                && mBoatmanAnimAction[i] != nullptr)
+                            {
+                                DObj* mDObj = mObject->mDObj;
+                                if (mDObj != nullptr)
+                                {
+                                    void* v9 = nullptr;
+                                    if (i == startCount)
+                                    {
+                                        void* NextOtherPlayMethod =
+                                            InteractionController::Inst(currCl)
+                                                ->GetNextOtherPlayMethod();
+                                        v9 = NextOtherPlayMethod;
+                                        if (NextOtherPlayMethod != nullptr)
+                                        {
+                                            ((AnimationPlayer::nalPlayMethod*)
+                                                 NextOtherPlayMethod)
+                                                ->SetNoteHandlerEntityHandle(
+                                                    *(DbLinkedHandle<
+                                                        EntityHandleDb,
+                                                        Entity>*)
+                                                        &mBoatmen[i]);
+                                        }
+                                    }
+                                    float animDur =
+                                        *(float*)((char*)mBoatmanAnimAction[i]
+                                                  + 0x38);
+                                    ((AnimationPlayer*)mDObj->animPlayers[0])
+                                        ->Play(
+                                            (nalGenericAnim*)
+                                                mBoatmanAnimAction[i],
+                                            true, 0.2f, v9, 0.0f, nullptr,
+                                            animDur
+                                                / ((sNumStrokesPerAnim
+                                                    * sDurFactor)
+                                                   * duration),
+                                            0.0f);
+                                }
+                            }
+                        }
+                    }
+                    ++i;
+                } while (i < mNumBoatmen);
+            }
+        }
+        else
+        {
+            mPendingStrokeDuration = duration;
+        }
+    }
+}
+
+// ea: 0x00550270
+void RowboatMgr::PlayPushOff(const void* info)
+{
+    unsigned int mVal = mBoatmen[2].mVal;
+    unsigned int v3 = mVal & 0xFFF;
+    if (v3 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr
+            && *(char*)((char*)info + 0x2D0) != 0)
+        {
+            DObj* mDObj = mObject->mDObj;
+            if (mDObj != nullptr)
+            {
+                tlFixedString name((char*)info + 0x2D0);
+                void* Anim = nalGetAnim(name);
+                if (Anim != nullptr)
+                {
+                    ((AnimationPlayer*)mDObj->animPlayers[0])
+                        ->Play((nalGenericAnim*)Anim, true, 0.1f, nullptr,
+                               0.0f, nullptr, 1.0f, 0.0f);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00550300
+void RowboatMgr::PlayLeaderAnim(int index)
+{
+    unsigned int mVal = mBoatmen[index].mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr && mBoatmanAnimAction[index] != nullptr)
+        {
+            DObj* mDObj = mObject->mDObj;
+            if (mDObj != nullptr)
+            {
+                InteractionController* v7 = InteractionController::Inst(currCl);
+                int idx = v7->mNextOtherCallbackIndex;
+                void* v9 = v7->mOtherCallback[idx++];
+                v7->mNextOtherCallbackIndex = idx;
+                if (idx == 3)
+                    v7->mNextOtherCallbackIndex = 0;
+                mCallback = v9;
+                void* v10 = mBoatmanAnimAction[index];
+                mLastLeaderAnim = v10;
+                mLastLeaderIndex = index;
+                ((AnimationPlayer*)mDObj->animPlayers[0])
+                    ->Play((nalGenericAnim*)v10, true, 0.1f, nullptr, 0.0f,
+                           v9, 1.0f, 0.0f);
+            }
+        }
+    }
+}
+
+// ea: 0x005503B0
+void RowboatMgr::PlayIdle(int index)
+{
+    if (mFlinchCallback[index] == nullptr)
+    {
+        unsigned int v2 = mBoatmen[index].mVal & 0xFFF;
+        if (v2 < 0x540
+            && mBoatmen[index].mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v2].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+            if (mObject != nullptr)
+            {
+                void* v4 = mBoatmanAnimIdle[index];
+                if (v4 != nullptr)
+                {
+                    DObj* mDObj = mObject->mDObj;
+                    if (mDObj != nullptr)
+                    {
+                        ((AnimationPlayer*)mDObj->animPlayers[0])
+                            ->Play((nalGenericAnim*)v4, true, fadeInTime,
+                                   nullptr, 0.0f, nullptr, 1.0f, 0.0f);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00550430
+void RowboatMgr::PlayFlinch(int index)
+{
+    unsigned int v3 = mBoatmen[index].mVal & 0xFFF;
+    if (v3 < 0x540
+        && mBoatmen[index].mVal >> 12
+               == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+        {
+            void* v5 = mBoatmanAnimFlinch[index];
+            if (v5 != nullptr)
+            {
+                DObj* mDObj = mObject->mDObj;
+                if (mDObj != nullptr)
+                {
+                    void* v7 = (void*)sFlinchCallbacks[index];
+                    mFlinchCallback[index] = v7;
+                    ((AnimationPlayer*)mDObj->animPlayers[0])
+                        ->Play((nalGenericAnim*)v5, true, fadeInTime_0,
+                               nullptr, 0.0f, v7, 1.0f, 0.0f);
+                    ++mNumFlinches;
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00556220
+void RowboatMgr::PlayIdles()
+{
+    for (int i = 0; i < mNumBoatmen; ++i)
+        PlayIdle(i);
+}
+
+// ea: 0x00556250
+void RowboatMgr::PlayFlinches()
+{
+    mFlinchTimer = sFlinchTime;
+    for (int i = 0; i < mNumBoatmen; ++i)
+        PlayFlinch(i);
+}
+
+// ea: 0x00556290 / 0x005562A0 / 0x005562B0
+void RowboatMgr::PlayFaster()
+{
+    if (mLastLeaderAnim == nullptr)
+        PlayLeaderAnim(0);
+}
+
+void RowboatMgr::PlaySlower()
+{
+    if (mLastLeaderAnim == nullptr)
+        PlayLeaderAnim(1);
+}
+
+void RowboatMgr::PlayRow()
+{
+    if (mLastLeaderAnim == nullptr)
+        PlayLeaderAnim(0);
+}
+
+// ea: 0x00550080
+extern void G_CalcTagAxis(Entity* ent, int bAnglesOnly);  // real in g_dobj.cpp
+void RowboatMgr::AlignBoatmen()
+{
+    unsigned int mVal =
+        InteractionController::Inst(currCl)->mInteractableH.mVal;
+    unsigned int v3 = mVal & 0xFFF;
+    if (v3 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey
+        && EntityHandleDb::sInst.mElements[v3].mObject != nullptr)
+    {
+        for (int i = 0; i < mNumBoatmen; ++i)
+        {
+            unsigned int v6 = mBoatmen[i].mVal & 0xFFF;
+            if (v6 < 0x540
+                && mBoatmen[i].mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v6].mKey)
+            {
+                Entity* mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+                if (mObject != nullptr && mObject->actor != nullptr)
+                {
+                    float* angles = (float*)((char*)mObject + 0x160);
+                    angles[0] = 0.0f;
+                    angles[1] = 0.0f;
+                    angles[2] = 0.0f;
+                    G_CalcTagAxis(mObject, 1);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00556480
+void InteractStateRowboat_HandleMortarFlinch(InteractState* self)
+{
+    (void)self;
+    static unsigned int sInit = 0;
+    static unsigned int sMortarFlinchHash = 0;
+    unsigned int mVal =
+        InteractionController::Inst(currCl)->mInteractableH.mVal;
+    unsigned int v2 = mVal & 0xFFF;
+    if (v2 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v2].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v2].mObject;
+        if (mObject != nullptr)
+        {
+            void* mNotifySet = mObject->mNotifySet;
+            if (mNotifySet != nullptr)
+            {
+                if ((sInit & 1) == 0)
+                {
+                    sInit |= 1u;
+                    sMortarFlinchHash =
+                        HashString::CalcHash("mortar_flinch");
+                }
+                if (EntityNotifySet_GetNotify(mNotifySet,
+                                              sMortarFlinchHash) != nullptr)
+                {
+                    gRowboatMgr.PlayFlinches();
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x00556550
+void InteractStateRowboat_ProcessOrder(InteractState* self)
+{
+    (void)self;
+    static unsigned int sInitFlags = 0;
+    static unsigned int kRowHash = 0;
+    static unsigned int kFasterHash = 0;
+    static unsigned int kSlowerHash = 0;
+    if (sRowboatOrderPending != 0)
+    {
+        if ((sInitFlags & 1) == 0)
+        {
+            sInitFlags |= 1u;
+            kRowHash = HashString::CalcHash("row");
+        }
+        if ((sInitFlags & 2) == 0)
+        {
+            sInitFlags |= 2u;
+            kFasterHash = HashString::CalcHash("faster");
+        }
+        if ((sInitFlags & 4) == 0)
+        {
+            sInitFlags |= 4u;
+            kSlowerHash = HashString::CalcHash("slower");
+        }
+        if (sRowboatOrderHash == kRowHash || sRowboatOrderHash == kFasterHash)
+        {
+            if (gRowboatMgr.mLastLeaderAnim == nullptr)
+                gRowboatMgr.PlayLeaderAnim(0);
+        }
+        else if (sRowboatOrderHash == kSlowerHash
+                 && gRowboatMgr.mLastLeaderAnim == nullptr)
+        {
+            gRowboatMgr.PlayLeaderAnim(1);
+        }
+        sRowboatOrderPending = 0;
+    }
 }
 
 // ============================================================================
@@ -7175,13 +7619,11 @@ void InteractStateRowboat_GiveOrder(int orderHash, float strokeDuration,
     static float sBestThreshold = 0.0f;
     static float sOkayThreshold = 0.0f;
     static float sLateThreshold = 0.0f;
-    static int sOrderPending = 0;
-    static int sOrderHash = 0;
     sStrokeDuration = strokeDuration;
     sBestThreshold = bestThreshold;
     sOkayThreshold = okayThreshold;
-    sOrderPending = 1;
-    sOrderHash = orderHash;
+    sRowboatOrderPending = 1;
+    sRowboatOrderHash = orderHash;
     sLateThreshold = lateThreshold;
 }
 
