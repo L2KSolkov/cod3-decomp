@@ -6,6 +6,9 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
+#include <map>
+#include <vector>
 
 #include "core/math_types.h"
 #include "engine/broc_types.h"
@@ -99,6 +102,55 @@ struct FEMenuListBoxItem {
 };
 static_assert(sizeof(FEMenuListBoxItem) == 28,
               "FEMenuListBoxItem size mismatch");
+
+// ============================================================================
+// CStringEdPackage - string table editor package (shell.o string_ed.cpp)
+// ============================================================================
+struct SE_Entry_s {
+    std::string m_strString;  // +0x00
+    std::string m_strDebug;   // +0x1C
+    int         m_iFlags;     // +0x38
+};
+
+class CStringEdPackage {
+public:
+    int         m_bEndMarkerFound_ParseOnly;        // +0x00
+    std::string m_strCurrentEntryRef_ParseOnly;     // +0x04
+    std::string m_strCurrentEntryEnglish_ParseOnly; // +0x20
+    std::string m_strCurrentFileRef_ParseOnly;      // +0x3C
+    std::string m_strLoadingLanguage_ParseOnly;     // +0x58
+    int         m_bLoadingEnglish_ParseOnly;        // +0x74
+    std::map<std::string, SE_Entry_s> m_StringEntries;  // +0x78
+    int         m_bLoadDebug;                       // +0x84
+    std::vector<std::string> m_vstrFlagNames;       // +0x88
+    std::map<std::string, int> m_mapFlagMasks;      // +0x98
+
+    const char* ExtractLanguageFromPath(const char* psFileName);  // QAE
+    int ReadLine(const char*& psParsePos, char* psDest);          // QAE
+    void SetupNewFileParse(const char* psFileName, int bLoadDebug);  // QAE
+    int GetFlagMask(const char* psFlagName);                       // QAE
+    void Clear(int bChangingLanguages);                            // QAE
+    const char* ParseLine(const char* psLine);                     // QAE
+private:
+    char* Filename_PathOnly(const char* psFilename);
+    char* Filename_WithoutExt(const char* psFilename);
+    char* Filename_WithoutPath(const char* psFilename);
+    int CheckLineForKeyword(const char* psKeyword, const char*& psLine);
+    void REMKill(char* psBuffer);
+    const char* GetCurrentReference_ParseOnly();
+    const char* ConvertCRLiterals_Read(const char* psString);
+    const char* InsideQuotes(const char* psLine);
+    void SetString(const char* psLocalReference, const char* psNewString,
+                   int bEnglishDebug);
+    void AddEntry(const char* psLocalReference);
+    void AddFlagReference(const char* psLocalReference,
+                          const char* psFlagName);
+};
+
+// static buffers shared by the string-ed helpers (shell.o data)
+extern char sString[128];    // 0x00F6A3C0-ish
+extern char sString_0[128];
+extern char sString_1[128];
 
 // ============================================================================
 // system_time - wall-clock time (12 bytes, 6x uint16) - verified against IDA
