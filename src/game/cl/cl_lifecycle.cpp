@@ -16,7 +16,8 @@ class SoundDevice { public: static SoundDevice* sInst; void FrameAdvance(float d
 // Externs
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
@@ -30,7 +31,7 @@ extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern void XModelEnforceExist(int bEnforce);
 extern void CL_InitRenderer();
 extern char CL_InitUI();
-extern void Com_CvarDump(int type);
+extern void Com_CvarDump(print_msg_type_t type);
 extern void Axis_Bind_f();
 extern void Axis_Unbindall_f();
 extern void Key_Bind_f();
@@ -166,7 +167,7 @@ void CL_ConfigstringModified()
     unsigned int v1 = (unsigned int)atoi(v0);
     int index = (int)v1;
     if (v1 >= 0x400)
-        Com_Error(1, "configstring > MAX_CONFIGSTRINGS");
+        Com_Error((errorParm_t)1, "configstring > MAX_CONFIGSTRINGS");
     const char* s = Cmd_Argv(2);
     if (cls_configstrings[v1].mBlock == nullptr)
     {
@@ -262,7 +263,7 @@ int CL_RestoreMessages(unsigned char* buffer, int bufSize)
     if (con.x > 0)
         Con_Linefeed(con.prevType, 0, 0);
     if (bufSize < 4)
-        Com_Error(1, "CL_RestoreMessages: buffer too small (%i)", bufSize);
+        Com_Error((errorParm_t)1, "CL_RestoreMessages: buffer too small (%i)", bufSize);
     int v3 = *buffer;
     int v4 = CL_RestoreMessageType(buffer, 4, bufSize,
                                    &con.gamemsg_starttimes, PMSG_CONSOLE,

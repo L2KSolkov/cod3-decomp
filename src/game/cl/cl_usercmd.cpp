@@ -12,7 +12,8 @@
 // Externs (core.o / cl.o)
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern int com_frameTime;
 extern unsigned int frame_msec;
 extern int currCl;
@@ -77,7 +78,7 @@ int CL_GetUserCmd(int cmdNumber, usercmd_s* ucmd)
 {
     if (cmdNumber > cl[currCl].cmdNumber)
     {
-        Com_Error(1, "CL_GetUserCmd: old command %i > current %i",
+        Com_Error((errorParm_t)1, "CL_GetUserCmd: old command %i > current %i",
                   cmdNumber, cl[currCl].cmdNumber);
     }
     if (cmdNumber <= cl[currCl].cmdNumber - 64 || cmdNumber <= 0)
@@ -356,7 +357,7 @@ void CL_MouseEvent(int dx, int dy)
 void CL_JoystickEvent(unsigned int axis, int value)
 {
     if (axis >= 6)
-        Com_Error(1, "CL_JoystickEvent: bad axis %i", axis);
+        Com_Error((errorParm_t)1, "CL_JoystickEvent: bad axis %i", axis);
     cl[currCl].joystickAxis[axis] = value;
 }
 

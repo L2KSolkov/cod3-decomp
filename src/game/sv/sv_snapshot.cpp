@@ -64,7 +64,7 @@ static void SV_BuildClientSnapshot(client_s* client) {
             memcpy(client->frames, (void*)((unsigned int)mObject + 596), sizeof(client->frames));
             unsigned int mVal = client->frames[0].mClient.mHandle.mVal;
             if (mVal == 0) {
-                Com_Error(2, "\x15" "SV_BuildClientSnapshot: bad gEnt->client");
+                Com_Error((errorParm_t)2, "\x15" "SV_BuildClientSnapshot: bad gEnt->client");
                 frames = client->frames;
             }
             float leanf = frames->leanf;
@@ -104,7 +104,7 @@ void SV_SendClientSnapshot(client_s* client) {
     SV_UpdateServerCommandsToClient(client, &msg);
     SV_WriteSnapshotToClient(client, &msg);
     if (msg.overflowed != 0 || msg.cursize > msg.maxsize)
-        Com_Error(2, "\x15" "msg overflowed");
+        Com_Error((errorParm_t)2, "\x15" "msg overflowed");
     sv_snapshotFrameNumber = com_frameNumber;
     MSG_WriteByte(&msg, 8);
     Netchan_Transmit((netchan_t*)client->netchan, msg.cursize, msg.data);

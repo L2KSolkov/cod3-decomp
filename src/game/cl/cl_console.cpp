@@ -13,7 +13,8 @@
 // Externs (core.o / cl.o render helpers)
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern struct cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                                int flags);
@@ -813,7 +814,7 @@ void CL_SubtitlePrint(const char* pszText, int iDuration, int iLineWidth)
         if (cl_languagewarnings->integer != 0)
         {
             if (cl_languagewarningsaserrors->integer != 0)
-                Com_Error(4, "Could not translate subtitle text: \"%s\"",
+                Com_Error((errorParm_t)4, "Could not translate subtitle text: \"%s\"",
                           pszText);
             else
                 Com_Printf("^3WARNING: Could not translate subtitle text: "

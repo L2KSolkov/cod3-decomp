@@ -14,7 +14,7 @@
 // ============================================================================
 extern void  G_RunFrame(int msec);
 extern void  Com_Shutdown(void);
-extern unsigned int Com_EventLoop(void);
+extern int Com_EventLoop(void);
 extern void  Cbuf_AddText(const char* text);
 extern void  Cbuf_ExecuteText(int exec_when, const char* text);
 extern void  CL_SetFrametime(int frametime, int animFrametime);
@@ -58,7 +58,8 @@ extern void  SV_GetConfigstring(int index, Broc::string& str);
 extern void  Com_InitDObj(void);
 extern void  Com_Restart(void);
 extern void  Com_Printf(const char* fmt, ...);
-extern void  Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void  Com_Error(errorParm_t code, const char* fmt, ...);
 extern int   Com_Milliseconds(void);
 extern void  Cvar_Set(const char* var_name, const char* value);
 extern cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags);
@@ -301,7 +302,7 @@ LABEL_30:
     SCR_UpdateScreen();
     gvm = VM_Create("game", (int(__cdecl*)(int*))SV_GameSystemCalls);
     if (gvm == nullptr)
-        Com_Error(1, "VM_Create on game failed");
+        Com_Error((errorParm_t)1, "VM_Create on game failed");
     sv.checksum = 0;
     VM_Call(gvm, 0, Com_Milliseconds(), 0, savegame, sv.checksum);
     for (int v11 = 0; v11 < 0x13700; v11 += 4976)

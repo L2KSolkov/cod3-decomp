@@ -53,7 +53,8 @@ extern void Cvar_Register(vmCvar_t* vmCvar, const char* varName,
 extern void Cvar_Update(vmCvar_t* vmCvar);
 extern void Cvar_Set(const char* var_name, const char* value);
 extern void Cvar_VMSet(vmCvar_t* vmCvar, const char* value);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void CG_Init();
 extern void CG_InitServerCommandHashVals();
 extern void CG_InitLocalEntities();
@@ -312,7 +313,7 @@ void CG_Error(const char* msg, ...)
     va_start(ap, msg);
     vsprintf(text, msg, ap);
     va_end(ap);
-    Com_Error(2 /* ERR_DROP */, text);
+    Com_Error((errorParm_t)2 /* ERR_DROP */, text);
 }
 
 // ea: 0x0068B580

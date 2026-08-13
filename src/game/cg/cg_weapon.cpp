@@ -120,7 +120,8 @@ extern void* cdGetAnim(unsigned int hash);
 extern void* XAnimCreateTree(void* ent, void* anims);
 extern int XAnimIsLooped(AnimTree* anims, unsigned int animIndex);
 extern float XAnimGetLength(AnimTree* anims, unsigned int animIndex);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 struct nglTexture;
 extern nglTexture* GetTextureData(const char* name, int image_type,
@@ -1419,9 +1420,9 @@ void CG_RegisterWeapon(int weaponNum)
         if (szGunXModel[0] != 0)
         {
             if (!szHandXModel[0])
-                Com_Error(2 /* ERR_DROP */, "%s", szDisplayName);
+                Com_Error((errorParm_t)2 /* ERR_DROP */, "%s", szDisplayName);
             if (!szInternalName[0])
-                Com_Error(2, "%s", szDisplayName);
+                Com_Error((errorParm_t)2, "%s", szDisplayName);
             void* Bank = AnimBankManager_GetBank(AnimBankManager_sInst,
                                                  PAK_ID_MIN);
             void* AnimTree =

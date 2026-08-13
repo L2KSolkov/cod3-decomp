@@ -17,7 +17,8 @@
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 struct nglTexture;  // render.o
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
@@ -319,7 +320,7 @@ void CL_AddReliableCommand(const char* cmd)
 {
     if (dword_F0D1F4[4882 * currCl] - dword_F0D1F8[4882 * currCl] > 64)
     {
-        Com_Error(1, "EXE_ERR_CLIENT_CMD_OVERFLOW - Tell MikeA");
+        Com_Error((errorParm_t)1, "EXE_ERR_CLIENT_CMD_OVERFLOW - Tell MikeA");
     }
     int v1 = 4882 * currCl;
     int v2 = dword_F0D1F4[4882 * currCl] + 1;

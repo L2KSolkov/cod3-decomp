@@ -83,7 +83,12 @@ enum netsrc_t {
 // ============================================================================
 // Externs
 // ============================================================================
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t {
+    ERR_FATAL = 0,
+    ERR_DROP = 1,
+    ERR_DISCONNECT = 2,
+};
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
@@ -902,27 +907,33 @@ void Com_InitZoneMemory()
 }
 
 // ea: 0x004BB0C0
-void Com_Memset(unsigned int* dest, int val, unsigned int count)
+void Com_Memset(void* dest, int val, unsigned int count)
 {
     memset(dest, val, count);
 }
 
 // ea: 0x004BB170
-int Com_Memcmp(unsigned char* src0, unsigned char* src1, unsigned int count)
+int Com_Memcmp(const void* src0, const void* src1, unsigned int count)
 {
     return memcmp(src0, src1, count) == 0 ? 1 : 0;
 }
 
 // ea: 0x004BB210
-void Com_Prefetch(char* s, int bytes, int type)
+enum e_prefetch {
+    PRE_READ = 0,
+    PRE_READ_WRITE = 1,
+    PRE_WRITE = 2,
+};
+void Com_Prefetch(const void* s, unsigned int bytes, e_prefetch type)
 {
     if (type == 0 || type == 1)  // PRE_READ / PRE_READ_WRITE
     {
         int v4 = bytes;
         if (bytes > 4096)
             v4 = 4096;
+        const char* p = (const char*)s;
         for (unsigned int i = (unsigned int)((v4 + 31) >> 5); i != 0; --i)
-            s += 32;
+            p += 32;
     }
 }
 
@@ -949,7 +960,7 @@ void Com_EndRedirect()
 }
 
 // ea: 0x004BB380
-void Com_PrintMessage(int type, const char* msg)
+void Com_PrintMessage(print_msg_type_t type, const char* msg)
 {
     if (rd_buffer != nullptr)
     {
@@ -1089,12 +1100,11 @@ int Com_AddStartupCommands()
 // ============================================================================
 
 // ea: 0x004BB8A0
-int Com_InitPushEvent()
+void Com_InitPushEvent()
 {
     memset(com_pushedEvents, 0, sizeof(com_pushedEvents));
     com_pushedEventsHead = 0;
     com_pushedEventsTail = 0;
-    return 0;
 }
 
 // ea: 0x004BB8C0
@@ -1206,12 +1216,10 @@ void Com_InitDObj()
 }
 
 // ea: 0x004BBEF0
-int Com_ShutdownDObj()
+void Com_ShutdownDObj()
 {
-    int result = g_bDObjInited;
     if (g_bDObjInited != 0)
         g_bDObjInited = 0;
-    return result;
 }
 
 // ea: 0x004BBF10
@@ -1225,15 +1233,15 @@ void Com_Restart()
 }
 
 // ea: 0x004BBF40
-void Com_XAnimFreeTree(void* animtree)
+void Com_XAnimFreeTree(XAnimTree* animtree)
 {
-        XAnimFreeTree((XAnimTree*)animtree);
+        XAnimFreeTree(animtree);
 }
 
 // ea: 0x004BBF80
-void Com_XAnimFreeSmallTree(void* animtree)
+void Com_XAnimFreeSmallTree(XAnimTree* animtree)
 {
-        XAnimFreeTree((XAnimTree*)animtree);
+        XAnimFreeTree(animtree);
 }
 
 // ea: 0x004BBF90
@@ -1300,7 +1308,7 @@ bool Com_ControllerValid(int controller_port)
 }
 
 // ea: 0x004BCB80
-void Com_CvarDump(int type)
+void Com_CvarDump(print_msg_type_t type)
 {
     char message[8192];
     char* match;
@@ -1341,7 +1349,7 @@ void Com_CvarDump(int type)
 }
 
 // ea: 0x004C0390
-void Com_Memcpy(char* dest, char* src, int count)
+void Com_Memcpy(void* dest, const void* src, unsigned int count)
 {
     ASSERT("src", "c:\\cod\\code\\game\\com_shared.cpp", 469);
     ASSERT("dest", "c:\\cod\\code\\game\\com_shared.cpp", 470);
@@ -1460,8 +1468,9 @@ void Com_InitJournaling()
 }
 
 // ea: 0x004C93A0
-sysEvent_t* Com_GetRealEvent(sysEvent_t* result)
+sysEvent_t Com_GetRealEvent()
 {
+    sysEvent_t result;
     int ev;
     sysEventType_t evType = SE_NONE;
     int evValue = 0;
@@ -1471,7 +1480,7 @@ sysEvent_t* Com_GetRealEvent(sysEvent_t* result)
     if (com_journal->integer == 2)
     {
         if (FS_Read((unsigned char*)&ev, 24, com_journalFile) != 24)
-            Com_Error(0, "EXE_ERR_JOURNAL_FILE_READ");
+            Com_Error((errorParm_t)0, "EXE_ERR_JOURNAL_FILE_READ");
         unsigned int evPtrLength = size;
         if (size)
         {
@@ -1484,7 +1493,7 @@ sysEvent_t* Com_GetRealEvent(sysEvent_t* result)
             int v4 = FS_Read((unsigned char*)v3, size, com_journalFile);
             evPtrLength = size;
             if (v4 != (int)size)
-                Com_Error(0, "EXE_ERR_JOURNAL_FILE_READ");
+                Com_Error((errorParm_t)0, "EXE_ERR_JOURNAL_FILE_READ");
         }
         evType = (sysEventType_t)evValue2;
         evValue = evValue;
@@ -1502,43 +1511,44 @@ sysEvent_t* Com_GetRealEvent(sysEvent_t* result)
         if (com_journal->integer == 1)
         {
             if (FS_Write((char*)&ev, 24, com_journalFile) != 24)
-                Com_Error(0, "EXE_ERR_JOURNAL_FILE_WRITE");
+                Com_Error((errorParm_t)0, "EXE_ERR_JOURNAL_FILE_WRITE");
             if (size)
             {
                 int v6 = FS_Write((char*)buffer, size, com_journalFile);
                 if (v6 != (int)size)
-                    Com_Error(0, "EXE_ERR_JOURNAL_FILE_WRITE");
+                    Com_Error((errorParm_t)0, "EXE_ERR_JOURNAL_FILE_WRITE");
             }
         }
     }
-    result->evTime = ev;
-    result->evType = evType;
-    result->evValue = evValue;
-    result->evValue2 = evValue2;
-    result->evPtrLength = (int)size;
-    result->evPtr = buffer;
+    result.evTime = ev;
+    result.evType = evType;
+    result.evValue = evValue;
+    result.evValue2 = evValue2;
+    result.evPtrLength = (int)size;
+    result.evPtr = buffer;
     return result;
 }
 
 // ea: 0x004C9500
-sysEvent_t* Com_GetEvent(sysEvent_t* result)
+sysEvent_t Com_GetEvent()
 {
+    sysEvent_t result;
     unsigned char v1 = (unsigned char)com_pushedEventsTail;
     if (com_pushedEventsHead <= com_pushedEventsTail)
     {
-        sysEvent_t v3;
-        *result = *Com_GetRealEvent(&v3);
+        result = Com_GetRealEvent();
+        return result;
     }
     else
     {
         ++com_pushedEventsTail;
         sysEvent_t* e = &com_pushedEvents[v1 & 0xFF];
-        result->evTime = e->evTime;
-        result->evType = e->evType;
-        result->evValue = e->evValue;
-        result->evValue2 = e->evValue2;
-        result->evPtrLength = e->evPtrLength;
-        result->evPtr = e->evPtr;
+        result.evTime = e->evTime;
+        result.evType = e->evType;
+        result.evValue = e->evValue;
+        result.evValue2 = e->evValue2;
+        result.evPtrLength = e->evPtrLength;
+        result.evPtr = e->evPtr;
     }
     return result;
 }
@@ -1549,9 +1559,9 @@ int Com_Milliseconds()
     int v2 = 0;
     while (1)
     {
-        sysEvent_t result;
         sysEvent_t ev;
-        sysEvent_t* RealEvent = Com_GetRealEvent(&result);
+        sysEvent_t r2 = Com_GetRealEvent();
+        sysEvent_t* RealEvent = &r2;
         sysEventType_t v1 = RealEvent->evType;
         v2 = RealEvent->evTime;
         ev.evValue = RealEvent->evValue;
@@ -1570,11 +1580,12 @@ int Com_Milliseconds()
 }
 
 // ea: 0x004C9B10
-void* Com_PumpMessageLoop()
+void Com_PumpMessageLoop()
 {
     sysEvent_t v11;
     sysEvent_t ev;
-    sysEvent_t* RealEvent = Com_GetRealEvent(&v11);
+    v11 = Com_GetRealEvent();
+    sysEvent_t* RealEvent = &v11;
     int v1 = RealEvent->evTime;
     ev.evValue = RealEvent->evValue;
     int v2 = RealEvent->evValue2;
@@ -1592,7 +1603,8 @@ void* Com_PumpMessageLoop()
         do
         {
             Com_PushEvent(&ev);
-            sysEvent_t* v6 = Com_GetRealEvent(&v11);
+            v11 = Com_GetRealEvent();
+            sysEvent_t* v6 = &v11;
             int v7 = v6->evTime;
             ev.evValue = v6->evValue;
             int v8 = v6->evValue2;
@@ -1607,7 +1619,6 @@ void* Com_PumpMessageLoop()
         }
         while (v9 != SE_NONE);
     }
-    return result;
 }
 
 // ============================================================================
@@ -1698,14 +1709,15 @@ void Com_WriteDefaults_f()
 }
 
 // ea: 0x004C9590
-unsigned int Com_EventLoop()
+int Com_EventLoop()
 {
     unsigned char bufData[3072];
     sysEvent_t result;
     msg_t buf;
     netadr_t evFrom;
     MSG_Init(&buf, bufData, 3072);
-    sysEvent_t* Event = Com_GetEvent(&result);
+    result = Com_GetEvent();
+    sysEvent_t* Event = &result;
     unsigned int v1 = Event->evType;
     int v2 = Event->evValue;
     unsigned int v3 = Event->evPtrLength;
@@ -1770,10 +1782,11 @@ unsigned int Com_EventLoop()
             break;
         default:
             ASSERT("!ev.evPtr", "c:\\cod\\code\\game\\common.cpp", 1666);
-            Com_Error(0, "Com_EventLoop: bad event type %i", v1);
+            Com_Error((errorParm_t)0, "Com_EventLoop: bad event type %i", v1);
             break;
         }
-        sysEvent_t* v6 = Com_GetEvent(&result);
+        result = Com_GetEvent();
+        sysEvent_t* v6 = &result;
         v1 = v6->evType;
         int v7 = v6->evValue;
         v3 = v6->evPtrLength;
@@ -1802,7 +1815,7 @@ unsigned int Com_EventLoop()
 }
 
 // ea: 0x004C35A0
-void Com_Error(int code, const char* fmt, ...)
+void Com_Error(errorParm_t code, const char* fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -1875,10 +1888,10 @@ void Com_Quit_f()
 }
 
 // ea: 0x004BBC70
-char Com_ControllerTest(int port)
+bool Com_ControllerTest(int port)
 {
     if (!g_enableControllerTest)
-        return 1;
+        return true;
     int v1 = LocalClient::ClientToPort(port);
     if (!g_controllerConnected[port])
     {
@@ -1910,12 +1923,12 @@ char Com_ControllerTest(int port)
             SoundDevice::sInst->FrameAdvance( 0.0f);
             AudioBankMgr_Update(AudioBankMgr_sInst);
             codNflUpdate();
-            return 0;
+            return false;
         }
-        return 1;
+        return true;
     }
     if (!g_controllerConnectedErrorShown[port])
-        return 1;
+        return true;
     if (controller::inst()->button_pressed_clear(port, (controller::ButtonIndex)5))
     {
         SoundDevice_UnpauseAllSounds(SoundDevice::sInst);
@@ -1924,26 +1937,26 @@ char Com_ControllerTest(int port)
             GamePause_SetGamePaused(0, g_controllerConnectedGamePaused[port]);
         g_controllerConnectedErrorShown[port] = false;
     }
-    return 0;
+    return false;
 }
 
 // ea: 0x004BBDE0
-char Com_AnyControllerConnected()
+bool Com_AnyControllerConnected()
 {
     int v0 = controller_num_controllers();
     int v1 = 0;
     controller::inst();
     if (v0 <= 0)
-        return 0;
+        return false;
     while (!g_controllerConnected[v1])
     {
         int v2 = controller_num_controllers();
         ++v1;
         controller::inst();
         if (v1 >= v2)
-            return 0;
+            return false;
     }
-    return 1;
+    return true;
 }
 
 // ea: 0x004BBE20
@@ -2045,7 +2058,7 @@ void Com_CheckControllerUnplugged(bool signedIn, int client)
 
 // ea: 0x004CA240
 int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars, char* buffer,
-                          unsigned int bufsize)
+                          int bufsize)
 {
     int v4 = 0;
     if (numCvars <= 0)
@@ -2148,7 +2161,7 @@ int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
 }
 
 // ea: 0x004CFC10
-cvar_t* Com_Frame()
+void Com_Frame()
 {
     void* v0 = InteractionController::Inst(currCl);
     InteractionController_ChangeWeaponToPending(v0);
@@ -2282,9 +2295,9 @@ cvar_t* Com_Frame()
     if (cl_frameadvance->integer)
     {
         GamePause_SetGamePaused(currCl, 1);
-        return Cvar_Set2("cl_frameadvance", "0", 1);
+        Cvar_Set2("cl_frameadvance", "0", 1);
+        return;
     }
-    return cl_frameadvance;
 }
 
 // ea: 0x004D0A80

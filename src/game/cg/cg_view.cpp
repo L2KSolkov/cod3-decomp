@@ -639,7 +639,7 @@ extern int FS_Write(const void* buffer, int len, int h);
 extern int FS_Read(void* buffer, int len, int f);
 extern void FS_FCloseFile(int f);
 extern int Com_SaveCvarsToBuffer(const char** cvarnames, int numCvars,
-                                 char* buffer, unsigned int bufsize);
+                                 char* buffer, int bufsize);
 extern int Com_LoadCvarsFromBuffer(const char** cvarnames, int numCvars,
                                    const char* buffer, const char* filename);
 struct vmCvar_t;

@@ -145,7 +145,7 @@ extern void SV_SendServerCommand(client_s* cl, const char* fmt, ...);
 // SV_GameSystemCalls — ea: 0x51F190
 // ============================================================================
 int SV_GameSystemCalls(int* args) {
-    Com_Error(2, "\x15" "Bad game system trap: %i", *args);
+    Com_Error((errorParm_t)2, "\x15" "Bad game system trap: %i", *args);
     return -1;
 }
 
@@ -411,7 +411,7 @@ void* SV_GetDataForFile(const char* path, const char* filename, const char* exte
 // ============================================================================
 void SV_GetServerinfo(char* buffer, int bufferSize) {
     if (bufferSize < 1)
-        Com_Error(2, "\x15SV_GetServerinfo: bufferSize == %i", bufferSize);
+        Com_Error((errorParm_t)2, "\x15SV_GetServerinfo: bufferSize == %i", bufferSize);
     const char* v2 = Cvar_InfoString(4);
     Q_strncpyz(buffer, v2, bufferSize);
 }
@@ -428,7 +428,7 @@ void SV_LocateGameData(Entity* entities, int numEntities, int sizeofEntity, Play
 // ============================================================================
 void SV_GetUsercmd(int clientNum, usercmd_s* cmd) {
     if (clientNum >= 0x10)
-        Com_Error(2, "\x15SV_GetUsercmd: bad clientNum:%i", clientNum);
+        Com_Error((errorParm_t)2, "\x15SV_GetUsercmd: bad clientNum:%i", clientNum);
     *cmd = CL_GetCurUserCmd(clientNum);
 }
 

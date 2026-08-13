@@ -15,12 +15,14 @@
 // ============================================================================
 // Externs
 // ============================================================================
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern int Com_Filter(char* filter, char* name, int casesensitive);
-extern void Com_CvarDump(int type);
+enum print_msg_type_t;
+extern void Com_CvarDump(print_msg_type_t type);
 extern void Info_SetValueForKey(char* s, const char* key, const char* value);
 extern void Info_SetValueForKey_Big(char* s, const char* key,
                                     const char* value);
@@ -72,7 +74,7 @@ int generateHashValue(const char* fname)
 {
     const char* v1 = fname;
     if (fname == nullptr)
-        Com_Error(1, "null name in generateHashValue");
+        Com_Error((errorParm_t)1, "null name in generateHashValue");
     char v2 = *v1;
     unsigned char v3 = 0;
     int i = 0;
@@ -248,7 +250,7 @@ void Cvar_WriteDefaults(int f)
 // ea: 0x004C0870
 void Cvar_Dump_f()
 {
-    Com_CvarDump(0);
+    Com_CvarDump((print_msg_type_t)0);
 }
 
 // ea: 0x004C37F0
@@ -270,12 +272,12 @@ cvar_t* Cvar_FindVar(const char* var_name)
 cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags)
 {
     if (!var_name || !var_value)
-        Com_Error(0, "Cvar_Get: NULL parameter");
+        Com_Error((errorParm_t)0, "Cvar_Get: NULL parameter");
     if (!var_name || strchr(var_name, 92) || strchr(var_name, 34)
         || strchr(var_name, 59))
     {
         const char* v3 = va("invalid cvar name string: %s", var_name);
-        Com_Error(0, v3);
+        Com_Error((errorParm_t)0, v3);
     }
     cvar_t* Var = Cvar_FindVar(var_name);
     cvar_t* v5 = Var;
@@ -323,7 +325,7 @@ cvar_t* Cvar_Get(const char* var_name, const char* var_value, int flags)
     else
     {
         if (cvar_numIndexes >= 630)
-            Com_Error(0, "MAX_CVARS");
+            Com_Error((errorParm_t)0, "MAX_CVARS");
         v5 = &cvar_indexes[cvar_numIndexes++];
         v5->name = CopyStringInternal(var_name);
         char* v10 = CopyStringInternal(var_value);
@@ -372,7 +374,7 @@ cvar_t* Cvar_Set2(const char* var_name, const char* value, int force)
         || strchr(var_name, 34) != nullptr || strchr(var_name, 59) != nullptr)
     {
         const char* v5 = va("invalid cvar name string: %s", var_name);
-        Com_Error(0, v5);
+        Com_Error((errorParm_t)0, v5);
     }
     cvar_t* v6 = hashTable[generateHashValue(var_name)];
     if (v6 != nullptr)
@@ -507,14 +509,14 @@ void Cvar_Update(vmCvar_t* vmCvar)
 {
     ASSERT("vmCvar", "c:\\cod\\code\\game\\cvar.cpp", 473);
     if (vmCvar->handle >= cvar_numIndexes)
-        Com_Error(1, "cvar index out of range");
+        Com_Error((errorParm_t)1, "cvar index out of range");
     cvar_t* v1 = &cvar_indexes[vmCvar->handle];
     int modificationCount = v1->modificationCount;
     if (modificationCount != vmCvar->modificationCount && v1->string != nullptr)
     {
         vmCvar->modificationCount = modificationCount;
         if (strlen(v1->string) + 1 > 0x80)
-            Com_Error(1, "cvar string too long: %s (%i > %i)", v1->string,
+            Com_Error((errorParm_t)1, "cvar string too long: %s (%i > %i)", v1->string,
                       (int)strlen(v1->string), 128);
         Q_strncpyz(vmCvar->string, v1->string, 128);
         vmCvar->value = v1->value;

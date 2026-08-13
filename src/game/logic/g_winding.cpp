@@ -36,7 +36,7 @@ int c_active_windings;   // ?c_active_windings@@3HA (game.o)
 int c_peak_windings;     // ?c_peak_windings@@3HA (game.o)
 extern void* _Z_MallocInternal(unsigned int size);  // core.o
 extern void  _Z_FreeInternal(void* ptr);            // core.o
-extern void  Com_Memcpy(char* dest, char* src, int count);
+extern void Com_Memcpy(void* dest, const void* src, unsigned int count);
     // ?Com_Memcpy@@YAXPAD0H@Z
 winding_t* CopyWinding(winding_t* w);  // ea: 0x609880 (defined below)
 

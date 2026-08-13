@@ -25,7 +25,8 @@ struct netadr_t {
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
 extern int Q_stricmp(const char* s1, const char* s2);
@@ -444,7 +445,7 @@ void CL_UpdateDebugData()
 int CL_SaveMessages(unsigned char* buffer, int bufSize)
 {
     if (bufSize < 4)
-        Com_Error(1, "CL_SaveMessages: buffer too small (%i)", bufSize);
+        Com_Error((errorParm_t)1, "CL_SaveMessages: buffer too small (%i)", bufSize);
     buffer[0] = (unsigned char)con.linewidth;
     int v2 = CL_SaveMessageType(buffer, 4, bufSize, &con.gamemsg_starttimes);
     return CL_SaveMessageType(buffer, v2, bufSize, &msgwnd);

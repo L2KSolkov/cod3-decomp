@@ -969,7 +969,7 @@ int       XAnimGetNumChildren(AnimTree* anims, unsigned int animIndex);
 unsigned int XAnimGetChildAt(AnimTree* anims, unsigned int animIndex, unsigned int childIndex);
 const char*  XAnimGetAnimName(AnimTree* anims, unsigned int animIndex);
 void      XAnimClearTree(XAnimTree* tree);
-void      Com_XAnimFreeSmallTree(void* tree);
+void      Com_XAnimFreeSmallTree(XAnimTree* tree);
 
 // ============================================================================
 // sv.o / anim.o DObj server helpers
@@ -2139,9 +2139,10 @@ void  EffectEventKill(Handle effect);
 void  EffectEventStopEmitting(Handle effectId);
 void  EffectEventAdjustEffect_Scale(Handle effect, const char* param,
                                     float scale);   // core.o 0x4CB8E0
-void  Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+void  Com_Error(errorParm_t code, const char* fmt, ...);
 void  Com_Printf(const char* fmt, ...);
-enum {
+enum errorParm_t {
     ERR_FATAL = 0,
     ERR_DROP = 1,
     ERR_SERVERDISCONNECT = 2,

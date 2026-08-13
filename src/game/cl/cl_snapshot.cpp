@@ -27,7 +27,8 @@ extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 // ============================================================================
 // Externs
 // ============================================================================
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern int com_time;
 struct cvar_t;
 extern cvar_t* com_cl_running;
@@ -142,7 +143,7 @@ void CL_GetCurrentSnapshotNumber(int* snapshotNumber, int* serverTime)
 int CL_GetSnapshot(int snapshotNumber, snapshot_t* snapshot)
 {
     if (snapshotNumber > cl[currCl].snap.messageNum)
-        Com_Error(1, "CL_GetSnapshot: bad snapshot number");
+        Com_Error((errorParm_t)1, "CL_GetSnapshot: bad snapshot number");
     if (cl[currCl].snap.messageNum - snapshotNumber >= 1
         || cl_snapshots[currCl][0].valid == 0
         || cl_parseEntitiesNum[currCl]

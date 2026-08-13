@@ -24,7 +24,7 @@ extern char* Q_strlwr(char* s1);
 extern char* Q_strrchr(char* string, char c);
 extern void Cbuf_ExecuteText(int exec_when, const char* text);
 extern int  Cvar_VariableIntegerValue(const char* var_name);
-extern void Com_Memset(unsigned int* dest, int val, unsigned int count);
+extern void Com_Memset(void* dest, int val, unsigned int count);
 extern void Con_Close(void);
 extern int CL_ClearState(void);
 extern int CL_Restart(void);
@@ -353,7 +353,7 @@ void SV_LoadGameRestart_f() {
     Cvar_Set("g_internalSaveGame", defaultFileName);
     SV_GetRestartSaveGame(sv_save_filename);
     if (sv_save_filename[0] == 0)
-        Com_Error(2, "EXE_ERR_NO_LAST_SAVE");
+        Com_Error((errorParm_t)2, "EXE_ERR_NO_LAST_SAVE");
     if (com_sv_running->integer == 0)
         SV_CheckLoadGame();
 }

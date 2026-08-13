@@ -14,7 +14,7 @@
 // Cross-object externs
 // ============================================================================
 extern void  Q_strncpyz(char* dest, const char* src, int destsize);
-extern void  Com_Memset(unsigned int* dest, int val, unsigned int count);
+extern void  Com_Memset(void* dest, int val, unsigned int count);
 extern void  CL_Disconnect();
 extern void* _Z_MallocInternal(int size);
 extern void  _Z_FreeInternal(void* ptr);
@@ -31,7 +31,7 @@ extern const char* nullStr;
 // ============================================================================
 void SV_GetConfigstring(int index, Broc::string& str) {
     if (index >= 0x400)
-        Com_Error(2, "\x15SV_GetConfigstring: bad index %i\n", index);
+        Com_Error((errorParm_t)2, "\x15SV_GetConfigstring: bad index %i\n", index);
     str = sv.configstrings[index];
 }
 
@@ -40,9 +40,9 @@ void SV_GetConfigstring(int index, Broc::string& str) {
 // ============================================================================
 void SV_GetConfigstring(int index, char* buffer, int bufferSize) {
     if (bufferSize < 1)
-        Com_Error(2, "\x15SV_GetConfigstring: bufferSize == %i", bufferSize);
+        Com_Error((errorParm_t)2, "\x15SV_GetConfigstring: bufferSize == %i", bufferSize);
     if (index >= 0x400)
-        Com_Error(2, "\x15SV_GetConfigstring: bad index %i\n", index);
+        Com_Error((errorParm_t)2, "\x15SV_GetConfigstring: bad index %i\n", index);
     if (sv.configstrings[index].mBlock == NULL) {
         AeAssert::gCurrentAuthor = (AeAssert::ECoderId)0;
         AeAssert::gCurrentFile = "c:\\cod\\code\\game\\sv_init.cpp";
@@ -86,7 +86,7 @@ void SV_SetConfigstring(int index, const char* val) {
     client_s* client;
 
     if (index >= 0x400)
-        Com_Error(2, "\x15SV_SetConfigstring: bad index %i\n", index);
+        Com_Error((errorParm_t)2, "\x15SV_SetConfigstring: bad index %i\n", index);
     const char* v2 = val;
     const char* v3 = defaultFileName;
     if (val == NULL) {
@@ -210,7 +210,7 @@ void SV_AddReliableCommand(client_s* cl, int index, const char* cmd) {
     int length;
     if (cl->reliableCommands.bufSize == 0) {
         SV_DumpServerCommands(cl);
-        Com_Error(2, "Reliable command buffer overflow");
+        Com_Error((errorParm_t)2, "Reliable command buffer overflow");
     }
     const char* v4 = &cmd[strlen(cmd) + 1];
     char* buf = cl->reliableCommands.buf;
@@ -252,7 +252,7 @@ void SV_AddReliableCommand(client_s* cl, int index, const char* cmd) {
                         Com_Printf("===== pending server commands =====\n");
                         for (int j = cl->reliableAcknowledge + 1; j <= cl->reliableSequence; ++j)
                             Com_Printf("cmd %5d: %s\n", j, cl->reliableCommands.commands[j & 0x3F]);
-                        Com_Error(2, "Reliable command buffer overflow");
+                        Com_Error((errorParm_t)2, "Reliable command buffer overflow");
                     }
                     v6 = length;
                     buf = &cl->reliableCommands.buf[i];
@@ -317,11 +317,11 @@ void SV_ClearServer() {
 // ============================================================================
 void SV_Startup() {
     if (svs.initialized != 0)
-        Com_Error(1, "\x15SV_Startup: svs.initialized");
+        Com_Error((errorParm_t)1, "\x15SV_Startup: svs.initialized");
     client_s* clients = (client_s*)mem_heap_malloc(16, 0x13700);
     svs.clients = clients;
     if (clients == NULL) {
-        Com_Error(1, "\x15SV_Startup: unable to allocate svs.clients");
+        Com_Error((errorParm_t)1, "\x15SV_Startup: unable to allocate svs.clients");
         clients = svs.clients;
     }
     Com_Memset((unsigned int*)clients, 0, 0x13700);

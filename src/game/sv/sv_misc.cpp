@@ -226,7 +226,8 @@ void AeThreadManager::KillAllThreads()
 // ============================================================================
 // Cross-object externs
 // ============================================================================
-extern void  Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void  Com_Error(errorParm_t code, const char* fmt, ...);
 extern int   Com_Milliseconds(void);
 extern void  CM_AdjustAreaPortalState(int area1, int area2, int open);
 extern void  CM_UnlinkEntity(EntityShared* ent);
@@ -296,7 +297,7 @@ int SV_RestartGameProgs(int savegame) {
 void SV_InitGameProgs(int savegame) {
     gvm = VM_Create("game", SV_GameSystemCalls);
     if (gvm == NULL)
-        Com_Error(1, "\x15" "VM_Create on game failed");
+        Com_Error((errorParm_t)1, "\x15" "VM_Create on game failed");
     SV_InitGameVM(0, savegame);
 }
 

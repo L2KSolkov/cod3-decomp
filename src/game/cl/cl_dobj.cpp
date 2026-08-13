@@ -13,7 +13,8 @@ class DObj;
 // ============================================================================
 // Externs
 // ============================================================================
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern int com_skelTimeStamp;
 extern int bCL_AllowedAllocSkel;
 extern int animFrametime;
@@ -285,7 +286,7 @@ int CL_CgameSystemCalls(int* args)
             ASSERT("va(\"Bad cgame system trap: %i\", args[0])",
                    "c:\\cod\\code\\game\\cl_cgame.cpp", 1599);
         }
-        Com_Error(1, "Bad cgame system trap: %i", *args);
+        Com_Error((errorParm_t)1, "Bad cgame system trap: %i", *args);
         result = 0;
         break;
     }

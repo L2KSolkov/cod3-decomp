@@ -58,10 +58,11 @@ char*  Cvar_InfoString_Big(int bit);
 // common.cpp
 void   Com_Printf(const char* fmt, ...);
 void   Com_DPrintf(const char* fmt, ...);
-void   Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+void   Com_Error(errorParm_t code, const char* fmt, ...);
 void   Com_sprintf(char* dest, int size, const char* fmt, ...);
 void   Com_Restart(void);
-unsigned int Com_EventLoop(void);
+int Com_EventLoop(void);
 int    Com_Milliseconds(void);
 void   Com_InitDObj(void);
 void   Com_DefaultCvar(const char* name, const char* value, int flags);

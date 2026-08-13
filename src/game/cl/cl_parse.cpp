@@ -44,7 +44,8 @@ class string;
 // Externs (core.o / cl.o)
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern void Cbuf_AddText(const char* text);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
@@ -236,7 +237,7 @@ clSnapshotEntry2 cl_snapshots[2][4];  // ?cl_snapshots@@3PAY03UclSnapshotEntry2@
 // Renderer export/import interfaces (cl.o cl_main.cpp)
 struct refimport_t2 {
     void (*Printf)(int, const char*, ...);
-    void (*Error)(int, const char*, ...);
+    void (*Error)(errorParm_t, const char*, ...);
     int (*Milliseconds)();
     void* (*Hunk_AllocInternal)(int);
     void* (*Hunk_AllocateTempMemoryInternal)(int);
@@ -251,7 +252,7 @@ struct refimport_t2 {
     int (*Cmd_Argc)();
     char* (*Cmd_Argv)(int);
     void (*Cmd_ExecuteText)(int, const char*);
-    int (*Com_SaveCvarsToBuffer)(const char**, int, char*, unsigned int);
+    int (*Com_SaveCvarsToBuffer)(const char**, int, char*, int);
     int (*Com_LoadCvarsFromBuffer)(const char**, int, const char*,
                                    const char*);
     int (*FS_FileIsInPAK)(const char*, int*);
@@ -833,7 +834,7 @@ void CL_InitCGame()
     Com_sprintf(dest, 128, "maps/%s.bsp", v2);
     cgvm = VM_Create("cgame", CL_CgameSystemCalls);
     if (cgvm == nullptr)
-        Com_Error(1, "VM_Create on cgame failed");
+        Com_Error((errorParm_t)1, "VM_Create on cgame failed");
     if (cls.state != 1)  // CA_LOADING
     {
         ASSERT("cls.state == CA_LOADING", "c:\\cod\\code\\game\\cl_cgame.cpp",
@@ -918,7 +919,7 @@ void CL_ParseServerMessage(msg_t* msg)
     while (1)
     {
         if (msg->readcount > msg->cursize)
-            Com_Error(1, "CL_ParseServerMessage: read past end of server "
+            Com_Error((errorParm_t)1, "CL_ParseServerMessage: read past end of server "
                          "message");
         int Byte = MSG_ReadByte(msg);
         if (Byte == 8)
@@ -951,7 +952,7 @@ void CL_ParseServerMessage(msg_t* msg)
             }
             else
             {
-                Com_Error(1, "CL_ParseServerMessage: Illegible server "
+                Com_Error((errorParm_t)1, "CL_ParseServerMessage: Illegible server "
                              "message %d\n", Byte);
             }
         }
@@ -1020,7 +1021,7 @@ void CL_InitRef()
     extern int FS_Write(const void*, int, int);
     extern class BspPlane* CM_GetPlaneNum(int);
     extern struct cvar_t* Cvar_FindVar(const char*);
-    extern int Com_SaveCvarsToBuffer(const char**, int, char*, unsigned int);
+    extern int Com_SaveCvarsToBuffer(const char**, int, char*, int);
     extern int Com_LoadCvarsFromBuffer(const char**, int, const char*,
                                        const char*);
     extern int CG_GetGameModel(short);
@@ -1059,7 +1060,7 @@ void CL_InitRef()
     refexport_t2* RefAPI = (refexport_t2*)GetRefAPI(14, &ri);
     Com_Printf("-------------------------------\n");
     if (!RefAPI)
-        Com_Error(0, "EXE_ERR_COULDNT_INIT_REFRESH");
+        Com_Error((errorParm_t)0, "EXE_ERR_COULDNT_INIT_REFRESH");
     memcpy(&re2, RefAPI, sizeof(re2));
     extern void GamePause_SetGamePaused(int client, bool paused);
     GamePause_SetGamePaused(currCl, 0);

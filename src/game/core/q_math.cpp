@@ -27,7 +27,8 @@ extern float cp;
 extern float sy;
 extern float cy;
 extern void FastSinCos(float radians, float* psin, float* pcos);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 
 // Forward declarations (mutually recursive angle/axis helpers)
 const float vectoyaw(const float* const const vec);
@@ -2990,7 +2991,7 @@ const int BoxOnPlaneSide(const float* const const emins, const float* const cons
         dist2 = p->dist - emins[0] * p->normal[0] - emins[1] * p->normal[1] - emins[2] * p->normal[2];
         break;
     default:
-        Com_Error(1, "BoxOnPlaneSide: bad signbits");
+        Com_Error((errorParm_t)1, "BoxOnPlaneSide: bad signbits");
         return 3;
     }
     if (dist1 >= 0.0f)

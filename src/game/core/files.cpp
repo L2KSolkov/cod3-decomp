@@ -17,7 +17,8 @@
 extern int SEH_GetCurrentLanguage();
 extern int Q_islower(int c);
 extern int Q_stricmp(const char* s1, const char* s2);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern int fs_loadStack;
 extern int com_fileAccessed;
 extern int fs_numServerPaks;
@@ -51,7 +52,7 @@ extern char* CopyStringInternal(const char* in);
 extern char* va(const char* fmt, ...);
 extern void Com_Printf(const char* fmt, ...);
 extern void Com_DPrintf(const char* fmt, ...);
-extern void Com_Memset(unsigned int* dest, int val, unsigned int count);
+extern void Com_Memset(void* dest, int val, unsigned int count);
 extern void Com_sprintf(char* dest, int size, const char* fmt, ...);
 extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void Cmd_RemoveCommand(const char* cmd_name);
@@ -542,7 +543,7 @@ static void FS_BuildOSPath_Internal(const char* base, const char* game,
             *ospath = 0;
             return;
         }
-        Com_Error(0, "FS_BuildOSPath: os path length exceeded MAX_OSPATH");
+        Com_Error((errorParm_t)0, "FS_BuildOSPath: os path length exceeded MAX_OSPATH");
     }
     memcpy(ospath, base, v6);
     char* v8 = &ospath[v6];
@@ -834,7 +835,7 @@ int FS_Read(void* buffer, int len, int f)
             if (v7 != 0)
             {
                 if (v7 == (unsigned int)-1)
-                    Com_Error(0, "FS_Read: -1 bytes read");
+                    Com_Error((errorParm_t)0, "FS_Read: -1 bytes read");
             }
             else
             {
@@ -967,7 +968,7 @@ int FS_ReadFile(const char* qpath, void** buffer)
     FS_CheckFileSystemStarted();
     const char* v2 = qpath;
     if (!qpath || !*qpath)
-        Com_Error(0, "FS_ReadFile with empty name");
+        Com_Error((errorParm_t)0, "FS_ReadFile with empty name");
     int v3;
     char cfgpath[256];
     if (!strstr(qpath, ".cfg"))
@@ -1052,7 +1053,7 @@ int FS_ReadFile(const char* qpath, void** buffer)
             *buffer = v6;
             int v8 = FS_Read((unsigned char*)v6, len, com_journalDataFile);
             if (v8 != len)
-                Com_Error(0, "EXE_ERR_JOURNAL_FILE_READ");
+                Com_Error((errorParm_t)0, "EXE_ERR_JOURNAL_FILE_READ");
             ++fs_loadStack;
             ((char*)v6)[len] = 0;
             return len;
@@ -1075,7 +1076,7 @@ void FS_FreeFile(void* buffer)
 {
     FS_CheckFileSystemStarted();
     if (buffer == nullptr)
-        Com_Error(0, "FS_FreeFile( NULL )");
+        Com_Error((errorParm_t)0, "FS_FreeFile( NULL )");
     --fs_loadStack;
     mem_heap_free(buffer);
 }
@@ -1317,7 +1318,7 @@ noHandles:
         ++v5;
     }
     while (v5 <= 3);
-    Com_Error(1, "FS_HandleForFile: none free");
+    Com_Error((errorParm_t)1, "FS_HandleForFile: none free");
     return -1;
 }
 
@@ -1336,7 +1337,7 @@ void FS_CopyFile(char* fromOSPath, char* toOSPath)
             fseek(v3, 0, 0);
             void* v5 = mem_heap_malloc(v4);
             if (fread(v5, 1, v4, v3) != v4)
-                Com_Error(0, "FS_CopyFile: read failed");
+                Com_Error((errorParm_t)0, "FS_CopyFile: read failed");
             fclose(v3);
             if (FS_CreatePath(toOSPath) == 0)
             {
@@ -1345,7 +1346,7 @@ void FS_CopyFile(char* fromOSPath, char* toOSPath)
                 if (v6 != nullptr)
                 {
                     if (fwrite(v5, 1, v4, v6) != v4)
-                        Com_Error(0, "FS_CopyFile: write failed");
+                        Com_Error((errorParm_t)0, "FS_CopyFile: write failed");
                     fclose(v7);
                     mem_heap_free(v5);
                 }
@@ -1444,7 +1445,7 @@ int FS_FileCompare(const char* s1, const char* s2)
 {
     FILE* v2 = fopen(s1, "rb");
     if (v2 == nullptr)
-        Com_Error(0, "FS_FileCompare: can't open %s", s1);
+        Com_Error((errorParm_t)0, "FS_FileCompare: can't open %s", s1);
     FILE* v3 = fopen(s2, "rb");
     if (v3 != nullptr)
     {
@@ -1464,7 +1465,7 @@ int FS_FileCompare(const char* s1, const char* s2)
                 Sys_OutOfMemError();
             Com_Memset((unsigned int*)v6, 0, v5);
             if (fread(buffer, 1, v5, v2) != (unsigned int)v5)
-                Com_Error(0, "FS_FileCompare: read failed");
+                Com_Error((errorParm_t)0, "FS_FileCompare: read failed");
             fclose(v2);
             void* v7 = mem_heap_malloc(len2);
             void* pos = v7;
@@ -1472,7 +1473,7 @@ int FS_FileCompare(const char* s1, const char* s2)
                 Sys_OutOfMemError();
             Com_Memset((unsigned int*)v7, 0, len2);
             if (fread(pos, 1, len2, v3) != (unsigned int)len2)
-                Com_Error(0, "FS_FileCompare: read failed");
+                Com_Error((errorParm_t)0, "FS_FileCompare: read failed");
             fclose(v3);
             int v8 = 0;
             unsigned char* v9 = (unsigned char*)buffer;
@@ -1670,9 +1671,9 @@ void FS_Restart(int checksumFeed)
             lastValidGame[0] = 0;
             Cvar_Set2("fs_restrict", "0", 1);
             FS_Restart(checksumFeed);
-            Com_Error(1, "Invalid game folder\n");
+            Com_Error((errorParm_t)1, "Invalid game folder\n");
         }
-        Com_Error(0, "Couldn't load %s.  Make sure Call of Duty is run from "
+        Com_Error((errorParm_t)0, "Couldn't load %s.  Make sure Call of Duty is run from "
                      "the correct folder.", "default.cfg");
     }
     if (Q_stricmp(fs_gamedirvar->string, lastValidGame) && !Com_SafeMode())
@@ -1716,7 +1717,7 @@ int FS_FOpenFileByMode(const char* qpath, int* f, fsMode_t mode)
         }
         break;
     default:
-        Com_Error(0, "FS_FOpenFileByMode: bad mode");
+        Com_Error((errorParm_t)0, "FS_FOpenFileByMode: bad mode");
         break;
     }
     if (f != nullptr)
@@ -1798,7 +1799,7 @@ void FS_InitFilesystem()
     SEH_InitLanguage();
     FS_Startup(defaultFileName);
     if (FS_ReadFile("default.cfg", nullptr) <= 0)
-        Com_Error(0, "Couldn't load %s.  Make sure Call of Duty is run from "
+        Com_Error((errorParm_t)0, "Couldn't load %s.  Make sure Call of Duty is run from "
                      "the correct folder.", "default.cfg");
     Q_strncpyz(lastValidBase, fs_basepath->string, 128);
     Q_strncpyz(lastValidGame, fs_gamedirvar->string, 128);

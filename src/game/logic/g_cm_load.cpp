@@ -4157,7 +4157,7 @@ bool sight_trace_sphere(traceWork_t* tw)
 // ============================================================================
 extern cdl_proftimer cdl_proftimer_sight_trace_point;   // game.o @ 0xF44308
 extern cdl_proftimer cdl_proftimer_sight_trace_sphere;  // game.o @ 0xF3E960
-extern void Com_Memset(unsigned int* dest, int val, unsigned int count);  // core.o
+extern void Com_Memset(void* dest, int val, unsigned int count);  // core.o
 // Capsule sphere descriptor (CollisionMgr.h) - 48 bytes, verified vs the
 // 12-dword `rep movsd` in SightTrace (0x6343AB) / Trace (0x640F99):
 //   { Position3 offset; Dir3 radiusOffset; int use; float radius;

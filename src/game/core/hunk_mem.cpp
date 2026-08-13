@@ -11,7 +11,7 @@
 extern void* mem_heap_malloc(unsigned int size);
 extern void mem_heap_free(void* ptr);
 extern void Sys_OutOfMemError();
-extern void Com_Memset(unsigned int* dest, int val, unsigned int count);
+extern void Com_Memset(void* dest, int val, unsigned int count);
 
 // ea: 0x004BB010
 void _Z_FreeInternal(void* ptr)

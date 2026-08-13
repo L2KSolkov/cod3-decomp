@@ -45,7 +45,8 @@ struct WorldSpawn {
 
 extern void SV_SetConfigstring(int index, const char* val);  // sv.o
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
-extern void Com_Error(int code, const char* fmt, ...);  // core.o
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);  // core.o
 // IVPointer<T> (game_types.h; intrusive counted pointer, 8 bytes)
 struct XModel;
 struct ScriptEventHandler;
@@ -5250,7 +5251,7 @@ void SceneManager::ProcessVehicleNode(TPakId pakId, unsigned int nodeIdx)
                == (Broc::string::Block*)-12
         || *(char*)((char*)info_vehicle_node->mName.mBlock + 0x0C) == 0)
     {
-        Com_Error(2 /* ERR_DROP */,
+        Com_Error((errorParm_t)2 /* ERR_DROP */,
                   "Vehicle path node( %f, %f, %f ) found with no name\n\n",
                   info_vehicle_node->origin[0],
                   info_vehicle_node->origin[1],

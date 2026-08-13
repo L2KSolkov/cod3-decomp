@@ -42,7 +42,8 @@ extern int dword_F6A290[4 * 802];  // Xbox dev/retail flag array @ 0xF6A290
 // Externs
 // ============================================================================
 extern void Com_Printf(const char* fmt, ...);
-extern void Com_Error(int code, const char* fmt, ...);
+enum errorParm_t;
+extern void Com_Error(errorParm_t code, const char* fmt, ...);
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
 extern char* va(const char* fmt, ...);
@@ -352,7 +353,7 @@ void SCR_DrawScreenField()
             }
             else
             {
-                Com_Error(0, "SCR_DrawScreenField: bad cls.state");
+                Com_Error((errorParm_t)0, "SCR_DrawScreenField: bad cls.state");
             }
         }
         else
@@ -621,7 +622,7 @@ int* CL_InitGamepadAxisBindings()
 void CL_GamepadEvent(unsigned int physicalAxis, int value)
 {
     if (physicalAxis >= 6)
-        Com_Error(1, "CL_GamepadEvent: bad axis %i", physicalAxis);
+        Com_Error((errorParm_t)1, "CL_GamepadEvent: bad axis %i", physicalAxis);
     gaGlobs[currCl].axesValues[physicalAxis] = value;
 }
 
@@ -677,7 +678,7 @@ void Gamepad_WriteBindings(int f)
 // ea: 0x52E3C0
 int CL_UISystemCalls(int* args)
 {
-    Com_Error(1, "Bad UI system trap: %i", *args);
+    Com_Error((errorParm_t)1, "Bad UI system trap: %i", *args);
     return -1;
 }
 

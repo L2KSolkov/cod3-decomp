@@ -100,7 +100,7 @@ extern void StartupNfl(const char* mountPoint);           // streamer.o
 extern void IN_Frame();                                   // game2.o
 extern void* SpinnerInit();                               // sys.cpp
 extern void SpinnerDrawFrameWithLoading(bool bEndFrame);  // spinner_lens.cpp
-extern cvar_t* Com_Frame();                               // common.cpp
+extern void Com_Frame();                                  // common.cpp
 extern void Com_Init(char* commandLine);                  // common.cpp
 
 // CTitleFontRenderer vtable (rdata 0xD181DC) + XFONT loader
