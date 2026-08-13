@@ -26,7 +26,8 @@ struct world_t {
     uint8_t _pad[0x0C];
     char    baseName[128];   // +0x0C (verified vs RestoreSceneEntity disasm)
 };
-world_t s_worldData;          // ?s_worldData@@3Uworld_t@@A (render.o @ 0x1364098)
+world_t s_worldDataLocal;     // unnamed 0x1364098 object; distinct from
+                              // streamer's ?s_worldData@@3Uworld_t@@A @ 0xF74B98
 
 // SceneBank persistent storage accessor (streamer.o; opaque layout)
 struct SceneEntity {
@@ -261,7 +262,7 @@ void CheckpointMgr::SaveCheckpoint(const char* checkpointName,
             return;
         }
         this->mEvent = scriptOrigin->mScriptNoteworthy;
-        this->mCurrentMapName = s_worldData.baseName;
+        this->mCurrentMapName = s_worldDataLocal.baseName;
         this->mPlayerOrientation[0] = 0.0f;
         this->mPlayerOrientation[1] =
             scriptOrigin->r.currentAngles.v.m128_f32[1];
@@ -277,7 +278,7 @@ void CheckpointMgr::SaveCheckpoint(const char* checkpointName,
     Entity* Player = EntityManager::sInst->GetPlayer(currCl);
     if (Player != nullptr)
     {
-        this->mCurrentMapName = s_worldData.baseName;
+        this->mCurrentMapName = s_worldDataLocal.baseName;
         this->mEvent = checkpointName;
         this->mPlayerOrientation[0] =
             Player->r.currentAngles.v.m128_f32[0];
@@ -444,7 +445,7 @@ LABEL_31:
     }
     sCheckpointStub->saveExists = 1;
     strncpy(sCheckpointStub->eventName, checkpointName, 31);
-    strncpy(sCheckpointStub->checkpointName, s_worldData.baseName, 31);
+    strncpy(sCheckpointStub->checkpointName, s_worldDataLocal.baseName, 31);
     sCheckpointStub->weapon = this->weapon;
     memcpy(sCheckpointStub->ammo, v14->ps.ammo, 0x170);
     memcpy(sCheckpointStub->ammoclip, v14->ps.ammoclip, 0x170);
@@ -1080,7 +1081,7 @@ void CheckpointMgr::RestoreSceneEntity(Entity* pEnt)
     const char* mapName = this->mCurrentMapName.mBlock != nullptr
         ? (const char*)(this->mCurrentMapName.mBlock + 1)
         : defaultFileName;
-    if (_stricmp(mapName, s_worldData.baseName) == 0)
+    if (_stricmp(mapName, s_worldDataLocal.baseName) == 0)
     {
         Broc::string::Block* eventBlock = this->mEvent.mBlock;
         if (eventBlock != nullptr)

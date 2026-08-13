@@ -1380,6 +1380,13 @@ enum eInstanceBankType {
     INSTBANK_TYPE_DISCTEX,
     INSTBANK_TYPE_DISCTEXSIZE,
 };
+// world_t (render.o; mSky +0x108, size 0x10C)
+struct world_t {
+    uint8_t _pad[0x108];
+    void*   mSky;  // +0x108
+};
+extern world_t s_worldData;  // ?s_worldData@@3Uworld_t@@A @ 0xF74B98
+world_t s_worldData;
 
 // Values verified against DecodeInstbank's type-string table (TEXTURE=0 ..
 // DISCTEXSIZE=12) and the raw pushes at the cdGet*/cdLoad* call sites. The
@@ -1589,9 +1596,10 @@ class ZoneBoundaryBank {
 public:
     uint8_t _pad[0x10];
     InplaceVector<const StreamZone*> mPtrs;  // +0x10 (InplaceAssetBank base)
-    uint8_t _pad18[0x1C - 0x18];
+    void*   mPtrFixupTable;                  // +0x18
     InplaceVector<const ZoneCellDesc*> mCells;  // +0x1C
-    uint8_t _pad20[0x34 - 0x20];
+    int     mInitialCell;                    // +0x24
+    math::Position3 mInitialPosition;        // +0x28
     InplaceVector<ZoneOverrideBrushSet*> mOverrideBoxes;  // +0x34
     InplaceVector<const ZoneOverrideBrushSet*> mToggleableOverrideBoxes;  // +0x3C
     int     mNextBank;             // +0x44
@@ -1599,6 +1607,7 @@ public:
     const ZdNode* mActiveNode;     // +0x4C
     int     mNumToggleableOverrideBoxesHit;  // +0x50
 
+    void Fixup();  // InplaceAssetBank<StreamZone,...>::Fixup (streamer.o)
     const ZdNode* GetZdNode(int cellId,
                             const math::Position3* position);  // ?GetZdNode@ZoneBoundaryBank@@QAEPBVZdNode@@HABVPosition3@math@@@Z
 };
@@ -1722,6 +1731,8 @@ public:
     const PakInfoNode* GetCellPakInfo(int cellIndex);  // ?GetCellPakInfo@StreamZoneManager@@QAEPBUPakInfoNode@@H@Z
     const StreamZone* GetCellZone(unsigned int cellIndex);  // ?GetCellZone@StreamZoneManager@@QAEPBVStreamZone@@I@Z
     void CheckpointRestart();       // ?CheckpointRestart@StreamZoneManager@@QAEXXZ
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pakId);  // ?DecodeBank@StreamZoneManager@@QAEXPBDPAEHW4TPakId@@@Z @ 0x6795C0
     void SetPriorities();           // ?SetPriorities@StreamZoneManager@@QAEXXZ @ 0x675B40
     void Update(int cellNum, const math::Position3* pos,
                 bool forceReset);   // ?Update@StreamZoneManager@@QAEXHABVPosition3@math@@_N@Z @ 0x678350
@@ -6832,6 +6843,184 @@ void StreamZoneManager::SingletonDebugRender()
 // ea: 0x66CD60 (stub; render pass port later)
 void StreamZoneManager::DebugRender()
 {
+}
+
+// ea: 0x6795C0
+void StreamZoneManager::DecodeBank(const char* name, unsigned char* data,
+                                   int size, TPakId pakId)
+{
+    (void)name; (void)size;
+    ZoneBoundaryBank* bank = (ZoneBoundaryBank*)data;
+    bank->Fixup();
+    bank->mPakId = pakId;
+    for (unsigned int i = 0; i < bank->mPtrs.mSize; ++i)
+    {
+        StreamZone* zone = (StreamZone*)bank->mPtrs.mList[i];
+        const PakInfoNode* n =
+            PakManager::sInst->GetPakInfo(zone->mName.mStr);
+        if (n == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+            AeAssert::gCurrentLine = 100;
+            AeAssert::gCurrentExpr = "n";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert(
+                       "Unknown zone '%s' (remake level pakfile)",
+                       zone->mName.mStr))
+                __debugbreak();
+        }
+        zone->mPakInfo = n;
+    }
+    for (unsigned int o = 0; o < bank->mOverrideBoxes.mSize; ++o)
+    {
+        ZoneOverrideBrushSet* zob = bank->mOverrideBoxes.mList[o];
+        for (unsigned int j = 0; j < zob->mNonZoneDistances.mSize; ++j)
+        {
+            InplaceTriple<InplaceString, const PakInfoNode*, float>* t =
+                &zob->mNonZoneDistances.mList[j];
+            const PakInfoNode* n =
+                PakManager::sInst->GetPakInfo(t->a.mStr);
+            if (n == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+                AeAssert::gCurrentLine = 113;
+                AeAssert::gCurrentExpr = "n";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "Unknown pak '%s' in zone override box",
+                           t->a.mStr))
+                    __debugbreak();
+            }
+            t->b = n;
+        }
+    }
+    for (unsigned int o = 0; o < bank->mToggleableOverrideBoxes.mSize; ++o)
+    {
+        ZoneOverrideBrushSet* zob =
+            (ZoneOverrideBrushSet*)
+                bank->mToggleableOverrideBoxes.mList[o];
+        for (unsigned int j = 0; j < zob->mNonZoneDistances.mSize; ++j)
+        {
+            InplaceTriple<InplaceString, const PakInfoNode*, float>* t =
+                &zob->mNonZoneDistances.mList[j];
+            const PakInfoNode* n =
+                PakManager::sInst->GetPakInfo(t->a.mStr);
+            if (n == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+                AeAssert::gCurrentLine = 127;
+                AeAssert::gCurrentExpr = "n";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "Unknown pak '%s' in (toggleable) zone override box",
+                           t->a.mStr))
+                    __debugbreak();
+            }
+            t->b = n;
+        }
+    }
+    if (mBankArray.m_elements[pakId] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile =
+            "c:\\cod\\code\\game\\InplaceAssetBankSet.h";
+        AeAssert::gCurrentLine = 109;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "We already have a bank for this pak id!"))
+            __debugbreak();
+    }
+    mBankArray.m_elements[pakId] = bank;
+    int curIdx = mFirstBank;
+    if (curIdx == -1)
+    {
+        mFirstBank = pakId;
+    }
+    else
+    {
+        while (mBankArray.m_elements[curIdx]->mNextBank != -1)
+            curIdx = mBankArray.m_elements[curIdx]->mNextBank;
+        if (curIdx == -1)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile =
+                "c:\\cod\\code\\game\\StreamZoneManager.cpp";
+            AeAssert::gCurrentLine = 146;
+            AeAssert::gCurrentExpr = "curIdx != -1";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Not possible!"))
+                __debugbreak();
+        }
+        mBankArray.m_elements[curIdx]->mNextBank = pakId;
+    }
+    ++mListSize;
+    mInitialCell = bank->mInitialCell;
+    mInitialPosition.v = bank->mInitialPosition.v;
+    Update(mInitialCell, &mInitialPosition, false);
+
+    tlFixedString sky("sky");
+    TPakId levelPakId = PAK_ID_INVALID;
+    reserved_dlist<PakFile>::dlist_node* node =
+        PakManager::sInst->mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* next =
+        node != nullptr ? node->m_next : nullptr;
+    if (node != PakManager::sInst->mActivePaks.m_end && next != nullptr)
+    {
+        while (1)
+        {
+            PakFile* pak = (PakFile*)node;
+            if (pak->mPakType == kPakTypeLevel)
+            {
+                levelPakId = pak->mPakId;
+                break;
+            }
+            if (next == nullptr)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+                AeAssert::gCurrentLine = 501;
+                AeAssert::gCurrentExpr = "m_next != 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Please add a descriptive string"))
+                    __debugbreak();
+            }
+            node = next;
+            if (next->m_next == nullptr)
+                break;
+            next = next->m_next;
+        }
+    }
+    nglMesh* mesh = (nglMesh*)InstanceBankMgr::sInst->Get(
+        INSTBANK_TYPE_MESH, levelPakId, &sky);
+    if (mesh == nullptr)
+        mesh = nglMeshDirectory.Find(sky);
+    s_worldData.mSky = mesh;
+}
+
+// InplaceAssetBank<StreamZone,...>::Fixup (streamer.o 0x6795E3)
+void ZoneBoundaryBank::Fixup()
+{
+    if ((uintptr_t)mPtrFixupTable >= 0x10000000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "../ae\\inplace/InplaceAssetBank.h";
+        AeAssert::gCurrentLine = 122;
+        AeAssert::gCurrentExpr =
+            "((unsigned)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    mPtrFixupTable = (char*)this + (uintptr_t)mPtrFixupTable;
+    // PtrFixupTable::Fixup(this, basePtr) - fixup table walk not ported;
+    // the tree/vector pointers are already relative and fixed by Find/At.
 }
 
 // ea: 0x66CCD0
