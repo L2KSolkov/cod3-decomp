@@ -236,6 +236,7 @@ struct AARMenuSystem {
 };
 struct ProfileManager;
 class PanelQuad;
+class PanelFile;
 struct nglFont;
 struct ControllerDisconnectedMenu;
 
@@ -277,6 +278,10 @@ public:
     font_index FindFont(const char* font_filename,
                         bool checkfileext);  // ?FindFont@FEManager@@QAE?AW4font_index@@PBD_N@Z (shell.o 0x5852E0)
     PanelQuad* GetDefaultPQ();               // ?GetDefaultPQ@FEManager@@QAEPAVPanelQuad@@XZ (shell.o 0x593D90)
+    void SetFont(nglFont* f,
+                 const char* font_filename);  // ?SetFont@FEManager@@QAEXPAVnglFont@@PBD@Z (shell.o 0x58DD60)
+    void HandlePanelFilePointer(const char* name, PanelFile* pf,
+                                TPakId pakId);  // ?HandlePanelFilePointer@FEManager@@QAEXPBDPAVPanelFile@@W4TPakId@@@Z (shell.o 0x58DE00)
     static ae_fixed_string<32, unsigned char>
         font_name_array[4];  // ?font_name_array@FEManager@@0PAV?$ae_fixed_string@$0CA@E@@A @ 0xF382C0
     void SetInGameMenusActive(bool active,

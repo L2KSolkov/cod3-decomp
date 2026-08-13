@@ -1547,7 +1547,9 @@ public:
     virtual ~UIListBox();         // 0x5B9BB0
     virtual void Clear();         // 0x58FFC0
     virtual void ClearRow(int row);  // 0x590050
+protected:
     virtual void SelectLine(int selection, int top_line);  // 0x5904A0
+public:
     virtual void SelectLine(int selection);  // 0x5903F0
     virtual short OnUp(int c);      // 0x590290
     virtual short OnDown(int c);    // 0x590340
