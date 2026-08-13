@@ -18,9 +18,26 @@
 #include <stddef.h>
 #include <stdint.h>
 
+extern const char* const defaultFileName;  // 0xCD67AE
+
 class nglTexture;
 class nglFont;
 struct PanelMaterial;
+
+// Minimal controller view (full impl in input/controller.cpp; manglings match)
+class controller {
+public:
+    enum ButtonIndex {
+        LEFTBUTTON = 0, DOWNBUTTON = 1, RIGHTBUTTON = 2, UPBUTTON = 3,
+        SQUARE = 4, X = 5, CIRCLE = 6, TRIANGLE = 7, R1 = 8, L1 = 9,
+        R2 = 10, L2 = 11, R3 = 12, L3 = 13, START = 14, SELECT = 15,
+    };
+    static controller* inst();          // ?inst@controller@@SAPAV1@XZ
+    static int num_controllers;         // ?num_controllers@controller@@2HA
+    bool button_pressed_clear(int index, ButtonIndex btn);  // controller.o
+    int  locked_port;
+    bool is_locked;
+};
 
 // ============================================================================
 // color32 â€” 32-bit RGBA color (4 bytes) â€” verified against IDA
@@ -114,6 +131,7 @@ class FEText;
 enum panel_layer {
     PANEL_LAYER_BACKGROUND = 0,
     PANEL_LAYER_1 = 1,
+    PANEL_LAYER_PAUSE_MENU = 2,
     PANEL_LAYER_2 = 2,
     PANEL_LAYER_3 = 3,
     PANEL_LAYER_4 = 4,
@@ -141,7 +159,9 @@ struct ae_array {
 // ============================================================================
 class PanelFileUser {
 public:
-    struct PanelFileUser_vtbl* __vftable;  // +0x00
+    virtual void SetPanelFile(PanelFile* pf) {}        // slot 0 0x5AEA10
+    virtual void PanelFileUnloaded(PanelFile* pf) {}   // slot 1 0x5AEA20
+    virtual void UpdateWidescreen(bool widescreen) {}  // slot 2 0x5AEA30
 };
 static_assert(sizeof(PanelFileUser) == 4, "PanelFileUser size mismatch");
 
@@ -452,12 +472,52 @@ public:
     virtual float GetY() { return xy.y; }
     virtual bool GetFlag(int f) { return (flags & f) != 0; }
     virtual bool IsOnMenu() { return GetFlag(2); }       // 0x5AD860
+    virtual void AddedToMenu(bool add) { SetFlag(2, add); }  // 0x5AD840
+    virtual bool IsMultiLineObject() { return false; }    // 0x5AD870
     virtual Broc::string GetName() { return name; }      // 0x5ADC50
     virtual void SetName(const char* n) { name = n; }    // 0x5ADAA0
+    virtual Broc::string GetText() { return text; }      // 0x5ADC80
     virtual void SetPanelTextIndex(int the_index)        // 0x5ADC10
     {
         panel_text_index = the_index;
     }
+    virtual void SetFont(font_index f) { font = f; }     // 0x5AD8B0
+    virtual void SetEvenNumberSpacing(bool on)           // 0x5AD8C0
+    {
+        flags = (int16_t)(on ? (flags | 4) : (flags & ~4));
+    }
+    virtual void SetScale(float s)                       // 0x5AD8E0
+    {
+        scale.x = s;
+        scale.y = s;
+        scale_unselected.x = s;
+        scale_unselected.y = s;
+    }
+    virtual void SetScale(float sx, float sy)            // 0x5AD950
+    {
+        scale.x = sx;
+        scale.y = sy;
+        scale_unselected.x = sx;
+        scale_unselected.y = sy;
+        scale_unselected.z = 0.0f;
+    }
+    virtual void SetScaleInit(float sx, float sy)        // 0x5ADA50
+    {
+        scale_init.x = sx;
+        scale_init.y = sy;
+        scale_init.z = 0.0f;
+    }
+    virtual void Shift(float offx, float offy)           // 0x5ADAB0
+    {
+        SetPos(GetX() + offx, GetY() + offy);
+    }
+    virtual void ShiftXYInitial(Broc::vector offset)     // 0x5ADAF0
+    {
+        xy_initial.x += offset.x;
+        xy_initial.y += offset.y;
+        xy_initial.z += offset.z;
+    }
+    virtual void SetX(float posX) { xy.x = posX; }       // 0x5ADBA0
     virtual void SetScaleMenuItem(float s_selected,      // 0x5AD9D0
                                   float s_unselected)
     {
@@ -470,6 +530,28 @@ public:
         scale_init.z = s_unselected;
     }
     virtual void SetLineSpacing(int) {}                  // 0x5ADE10 (empty)
+    virtual void UpdateInScene(bool) {}                  // 0x5ADE00 (empty)
+    virtual void SetLocation3D(Broc::vector) {}          // 0x5ADE30 (empty)
+    virtual void SetBehaviorNF(float, float) {}          // 0x5ADE40 (empty)
+    virtual void SetBehavior(bool) {}                    // 0x5ADE50 (empty)
+    virtual int GetLineNum() { return 1; }               // 0x5ADD80
+    virtual void AddFont(int, font_index) {}             // delegate (FEMultiLineText)
+    virtual float GetScaleY() const { return scale.y; }
+    virtual float GetScaleInitX() const { return scale_init.x; }
+    virtual float GetScaleInitY() const { return scale_init.y; }
+    virtual bool GetEvenNumberSpacing() const
+    {
+        return (flags & 4) != 0;
+    }
+    virtual int GetFlags() { return flags; }
+    virtual int GetHJustify() { return flags & 0x30; }
+    virtual int GetVJustify() { return flags & 0xC0; }
+    virtual Broc::vector GetLocation3D()
+    {
+        Broc::vector v;
+        v.x = v.y = v.z = 0.0f;
+        return v;
+    }
     virtual void SetFlag(int f, bool on)
     {
         if (on)
@@ -530,7 +612,6 @@ static_assert(offsetof(FEText, flags) == 0x6C, "FEText::flags offset mismatch");
 // ============================================================================
 class FEMenuEntry {
 public:
-    virtual ~FEMenuEntry() {}            // +0x00 (vfptr)
     FEMenu*    menu;                     // +0x04
     int16_t    up;                       // +0x08
     int16_t    down;                     // +0x0A
@@ -542,14 +623,195 @@ public:
     bool       disabled;                 // +0x16
     bool       must_delete_text;         // +0x17
 
-    // vtable helpers (slots: 12=SetString, 16=SetEnabled)
-    void SetString(const char* s);
-    void SetEnabled(bool e);
-    void CommonConstructor(FEText* text, FEMenu* menu);  // shell.o 0x56FBC0
-    virtual void CopyFrom(FEText* fet);   // shell.o 0x56FC20
-    virtual void SetText(FEText* fet);    // shell.o 0x56FC30
+    // Vftable order verified against ??_7FEMenuEntry (52 slots).
+    virtual ~FEMenuEntry();                     // 0x5AE460
 protected:
-    virtual void AdjustColor(FEText* fet);// shell.o 0x56FCC0
+    virtual void OnHighlight(bool anim) {}      // slot 1 (0x5AE860, empty)
+public:
+    virtual void Load() {}                      // slot 2 (0x5AE490, empty)
+    virtual short OnUp() { return up; }         // slot 3 0x5AE4F0
+    virtual short OnDown() { return down; }     // slot 4 0x5AE500
+    virtual short OnLeft() { return left; }     // slot 5 0x5AE510
+    virtual short OnRight() { return right; }   // slot 6 0x5AE520
+    virtual void Draw()                         // slot 7 0x5AE530
+    {
+        if (text != nullptr)
+            text->Draw(highlight);
+    }
+    virtual void Update(float time_inc)         // slot 8 0x5AE550
+    {
+        if (text != nullptr)
+            text->Update(time_inc);
+    }
+    virtual void UpdateInScene()                // slot 9 0x5AE570
+    {
+        if (text != nullptr)
+            text->UpdateInScene(false);
+    }
+    virtual void CopyFrom(FEText* fet);         // slot 10 0x56FC20
+    virtual void SetText(Broc::string ref)      // slot 11 0x5B1D00
+    {
+        if (text != nullptr)
+            text->SetText(ref.mBlock != nullptr
+                               ? (const char*)&ref.mBlock[1]
+                               : defaultFileName);
+    }
+    virtual void SetText(const char* s)         // slot 12 0x5AE5E0
+    {
+        if (text != nullptr)
+            text->SetText(s);
+    }
+    virtual void SetText(FEText* fet);          // slot 13 0x56FC30
+    virtual void SetShown(bool on)              // slot 14 0x5AE590
+    {
+        if (text != nullptr)
+            text->SetShown(on);
+    }
+    virtual void Highlight(bool h, bool anim);  // slot 15 0x56FC40
+    virtual void Disable(bool d);               // slot 16 0x56FC70
+    virtual bool GetDisable()                   // slot 17 0x5AE5A0
+    {
+        return disabled;
+    }
+    virtual void StartFade(bool s, bool f,      // slot 18 0x5AE5B0
+                           float t)
+    {
+        if (text != nullptr)
+            text->StartFade(s, f, t);
+    }
+    virtual void SetPos(float x, float y)       // slot 19 0x5AE5C0
+    {
+        if (text != nullptr)
+            text->SetPos(x, y);
+    }
+    virtual void SetTextNoLocalize(char* txt)   // slot 20 0x5AE600
+    {
+        if (text != nullptr)
+            text->SetTextNoLocalize(txt);
+    }
+    virtual void SetTextNoLocalize(Broc::string str)  // slot 21 0x5B1D80
+    {
+        if (text != nullptr)
+            text->SetTextNoLocalize(str.mBlock != nullptr
+                                        ? (const char*)&str.mBlock[1]
+                                        : defaultFileName);
+    }
+    virtual void SetLocation3D(Broc::vector loc)  // slot 22 0x5AE620
+    {
+        if (text != nullptr)
+            text->SetLocation3D(loc);
+    }
+    virtual void SetHJustify(int h)             // slot 23 0x5AE660
+    {
+        if (text != nullptr)
+            text->SetHJustify(h);
+    }
+    virtual void SetVJustify(int v)             // slot 24 0x5AE670
+    {
+        if (text != nullptr)
+            text->SetVJustify(v);
+    }
+    virtual void SetLineSpacing(int s)          // slot 25 0x5AE680
+    {
+        if (text != nullptr)
+            text->SetLineSpacing(s);
+    }
+    virtual void SetFont(font_index f)          // slot 26 0x5AE6A0
+    {
+        if (text != nullptr)
+            text->SetFont(f);
+    }
+    virtual void SetBehaviorNF(float x, float y)  // slot 27 0x5AE6B0
+    {
+        if (text != nullptr)
+            text->SetBehaviorNF(x, y);
+    }
+    virtual void SetBehavior(bool nfb)          // slot 28 0x5AE6D0
+    {
+        if (text != nullptr)
+            text->SetBehavior(nfb);
+    }
+    virtual void SetColorSchemeIndex(char csi)  // slot 29 0x5AE6F0
+    {
+        color_scheme_index = csi;
+        AdjustColor();
+    }
+    virtual void SetScale(float s, float su)    // slot 30 0x5AE720
+    {
+        if (text != nullptr)
+            text->SetScaleMenuItem(s, su);
+    }
+    virtual void SetScale(float s)              // slot 31 0x5AE710
+    {
+        if (text != nullptr)
+            text->SetScale(s);
+    }
+    virtual void SetZ(float z, panel_layer layer)  // slot 32 0x5AE730
+    {
+        if (text != nullptr)
+            text->SetZvalue(z, layer);
+    }
+    virtual Broc::string GetText()              // slot 33 0x5AE740
+    {
+        return text != nullptr ? text->GetText() : Broc::string();
+    }
+    virtual float GetWidth()                    // slot 34 0x5AE770
+    {
+        return text != nullptr ? text->GetWidth(nullptr) : 0.0f;
+    }
+    virtual float GetX()                        // slot 35 0x5AE780
+    {
+        return text != nullptr ? text->GetX() : 0.0f;
+    }
+    virtual float GetY()                        // slot 36 0x5AE790
+    {
+        return text != nullptr ? text->GetY() : 0.0f;
+    }
+    virtual int GetLineNum()                    // slot 37 0x5AE7A0
+    {
+        return text != nullptr ? text->GetLineNum() : 0;
+    }
+    virtual float GetScaleX()                   // slot 38 0x5AE7B0
+    {
+        return text != nullptr ? text->GetScaleX() : 0.0f;
+    }
+    virtual float GetScaleY()                   // slot 39 0x5AE7C0
+    {
+        return text != nullptr ? text->GetScaleY() : 0.0f;
+    }
+    virtual char GetColorSchemeIndex()          // slot 40
+    {
+        return color_scheme_index;
+    }
+    virtual color32 GetColor()                  // slot 41
+    {
+        return text != nullptr ? text->GetColor() : color32(0);
+    }
+    virtual float GetZ()                        // slot 42
+    {
+        return text != nullptr ? text->GetZvalue() : 0.0f;
+    }
+    virtual void AddFont(int index, font_index f)  // slot 43 0x5AE810
+    {
+        if (text != nullptr)
+            text->AddFont(index, f);
+    }
+    virtual color32 WithAlpha(color32 c, int alpha);  // slot 44 0x56FC90
+protected:
+    virtual void AdjustColor(FEText* fet);      // slot 45 0x56FCC0
+public:
+    virtual void AdjustColor();                 // slot 46 0x56FCB0
+    virtual void MoveForSplitScreen(int viewport,
+                                    int old_viewport);  // slot 47 0x56FE70
+    virtual void UpdateWidescreen(bool) {}      // slot 48 0x5AE830 (empty)
+    virtual void OnSelect() {}                  // slot 49 0x5AE4A0 (empty)
+    virtual int GetValue() { return 0; }        // slot 50 0x5AE850
+    virtual void SetValue(int) {}               // slot 51 0x5AE840 (empty)
+
+    void CommonConstructor(FEText* text, FEMenu* menu);  // shell.o 0x56FBC0
+    FEMenuEntry(FEText* t, FEMenu* m, bool delete_me);  // inline 0x5B1C90
+    FEMenuEntry(const char* text, FEMenu* m, bool floating,
+                font_index ft, int nlines);     // shell.o 0x585C70
 };
 static_assert(sizeof(FEMenuEntry) == 0x18, "FEMenuEntry size mismatch");
 static_assert(offsetof(FEMenuEntry, text) == 0x10, "FEMenuEntry::text offset mismatch");
@@ -596,6 +858,10 @@ public:
     int  GetCurrentClient();
     void AddOverlay(int a2);
     void ReturnToPreviousMenu(int a2);
+    virtual char GetDefaultColorScheme()            // ?GetDefaultColorScheme@FEMenuSystem@@UAEDXZ 0x5AFA10
+    {
+        return default_color_scheme;
+    }
     void SetSystemActive(bool active);  // ?SetSystemActive@FEMenuSystem@@QAEX_N@Z (sv.o 0x51E150)
 };
 static_assert(sizeof(FEMenuSystem) == 0x2C, "FEMenuSystem size mismatch");
@@ -607,11 +873,9 @@ static_assert(offsetof(FEMenuSystem, m_active) == 0x1C, "FEMenuSystem::m_active 
 // Size: 0x4C (76 bytes) â€” verified against IDA
 // ============================================================================
 
-// FEMenu base methods (shell.o provides the real implementations)
-struct FEMenuVtbl;
-class FEMenu {
+// FEMenu (shell.o FEMenu.cpp) - vftable order verified against ??_7FEMenu
+class FEMenu : public PanelFileUser {
 public:
-    FEMenuVtbl* __vftable;                       // +0x00
     FEMenuEntry** entries;                       // +0x04
     FEMenuSystem* system;                        // +0x08
     int    center_x;                             // +0x0C
@@ -637,23 +901,142 @@ public:
     FEMultiLineText* helpbar3;                   // +0x44
     PanelFile* panel;                            // +0x48
 
-    FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve, int flg);
-    ~FEMenu();
-    void Draw();
-    void Update(float time_inc);
-    void OnActivate();
-    void Cleanup();
-    void ClearAllButtons();
-    void Left();
-    void Right();
-    void Up(int a2);
-    void Down(int a2);
-    void SetHigh(int a2, int a3, bool a4);
-    void ReturnToPreviousMenu(int a2);
-    void AddOverlay(int a2);
-    void MakeActiveAndReturn(int a2);
-    void UpdateWidescreen(BOOL widescreen);
-    void SetItem(int row, FEText* text, int state);
+    virtual void PanelFileUnloaded(PanelFile* pf)  // slot 1 0x5B7570
+    {
+        Cleanup();
+    }
+    virtual void UpdateWidescreen(bool widescreen);  // slot 2 0x57DF20
+    virtual ~FEMenu();                              // slot 3 (??_G) 0x592150
+    virtual void AddEntry(int index, FEText* t,
+                          bool delete_me);          // slot 4 0x57DBA0
+    virtual void AddEntry(int index,
+                          const char* text);        // slot 5 0x585DA0
+    virtual void EnableNavigationSound(bool enable)  // slot 6 0x5AF770
+    {
+        enableNavigationSound = enable;
+    }
+    virtual void PlayNavigationSound();             // slot 7 0x57DD00
+    virtual void PlayNavigationSoundWait();         // slot 8 0x58E0B0
+    virtual void InputLock(bool enable)             // slot 9 0x5AF780
+    {
+        lockInput = enable;
+    }
+    virtual class FEComboBox* AddComboBox(
+        int index, short numOptions, FEText* text, FEText* label,
+        PanelQuad* leftArrow, PanelQuad* rightArrow);  // slot 10 0x585F30
+    virtual class FEComboBox* AddComboBox(
+        int index, short numOptions, FEText* text, PanelQuad* leftArrow,
+        PanelQuad* rightArrow);                      // slot 11 0x585E60
+    virtual class FESlider* AddSlider(int index, FEText* barText,
+                                      FEText* label);  // slot 12 0x5860D0
+    virtual class FESlider* AddSlider(int index, PanelQuad* bar,
+                                      FEText* label);  // slot 13 0x586000
+    virtual class FEDoubleEntry* AddDoubleEntry(int index, FEText* barText,
+                                                FEText* label);  // slot 14 0x5861A0
+    virtual class FEMenuListBox* AddListBoxEntry(int index, FEText* t,
+                                                 int numLines);  // slot 15 0x58DFF0
+    virtual void OnDeactivate(FEMenu* m) {}         // slot 16 (empty inline)
+    virtual void Init();                            // slot 17 0x570400
+    virtual void Load()                             // slot 18 0x5AF7A0
+    {
+        Load(false);
+    }
+    virtual void Load(bool floating) {}             // slot 19 0x5AF790 (empty)
+    virtual void Draw();                            // slot 20 0x570550
+    virtual void Draw3D() {}                        // slot 21 (empty inline)
+    virtual void UpdateInScene() {}                 // slot 22 (empty inline)
+    virtual void Update(float time_inc);            // slot 23 0x570660
+    virtual void HighlightDefault();                // slot 24 0x570700
+    virtual void Select(int entry_num, int controller)  // slot 25 0x5AF7E0
+    {
+        Select(entry_num);
+    }
+    virtual void Select(int entry_num) {}           // slot 26 0x5AF7D0 (empty)
+    virtual void OnActivate(int prev)               // slot 27 0x5AF800
+    {
+        OnActivate();
+    }
+    virtual void OnActivate();                      // slot 28 0x570750
+    virtual void OnSelect() {}                      // slot 29 (empty inline)
+    virtual void OnSquare(int c) {}                 // slot 30 (empty inline)
+    virtual void OnCircle(int c) {}                 // slot 31 (empty inline)
+    virtual void OnUp(int c)                        // slot 32 0x5AE910
+    {
+        Up();
+    }
+    virtual void OnDown(int c)                      // slot 33 0x5AE920
+    {
+        Down();
+    }
+    virtual void OnLeft(int c)                      // slot 34 0x5AF820
+    {
+        Left();
+    }
+    virtual void OnRight(int c)                     // slot 35 0x5AF830
+    {
+        Right();
+    }
+    virtual void OnCross(int c);                    // slot 36 0x5707D0
+    virtual void OnL1(int c) {}                     // slot 37 (empty inline)
+    virtual void OnR1(int c) {}                     // slot 38 (empty inline)
+    virtual void OnL2(int c) {}                     // slot 39 (empty inline)
+    virtual void OnTrueCircle(int c) {}             // slot 40 (empty inline)
+    virtual void OnTrueTriangle(int c) {}           // slot 41 (empty inline)
+    virtual void OnStart(int c) {}                  // slot 42 (empty inline)
+    virtual void OnR2(int c) {}                     // slot 43 (inline 0x5AF890)
+    virtual void OnAnyButtonPress(int c, int b);    // slot 44 0x570810
+    virtual void OnButtonRelease(int c, int b);     // slot 45 0x570850
+    virtual void OnTriangle(int c) {}               // slot 44 (empty inline)
+    virtual void UpdateSplitScreen() {}             // slot 47 (empty inline)
+    virtual void SetHigh(int index, bool anim);     // slot 48 0x57DC70
+    virtual void SetVis(int first);                 // slot 49 0x570280
+    virtual void SetDistanceBetweenEntries(int dbe)  // slot 50 0x5AF8D0
+    {
+        y_distance = dbe;
+    }
+    virtual void SetVerticalJust(bool top, bool bottom);  // slot 51 0x570350
+    virtual void SetScaleThroughout(float sc);      // slot 52 0x570390
+    virtual void SetZThroughout(float z,
+                                panel_layer layer);  // slot 53 0x5703C0
+    virtual void SetDefaultColorScheme(char csi)    // slot 54 0x5AE930
+    {
+        default_color_scheme = csi;
+    }
+    virtual char GetDefaultColorScheme()            // slot 55 0x5AF8E0
+    {
+        return default_color_scheme;
+    }
+    virtual FEMenuSystem* GetSystem()               // slot 56 0x5AF8F0
+    {
+        return system;
+    }
+    virtual int GetFlags()                          // slot 57 0x5AF900
+    {
+        return flags;
+    }
+protected:
+    virtual void Up();                              // slot 58 0x570020
+    virtual void Down();                            // slot 59 0x56FF00
+    virtual void Left();                            // slot 60 0x570140
+    virtual void Right();                           // slot 61 0x5701E0
+    virtual void ButtonHeldAction();                // slot 62 0x570890
+public:
+    FEMenu();                                       // 0x57DA80
+    FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, short mve,
+           short flg);                              // 0x57DAE0
+    void Cleanup();                                 // ?Cleanup@FEMenu@@QAEXXZ 0x58DF20
+    bool GetFlag(int f)                             // ?GetFlag@FEMenu@@QAE_NH@Z 0x5AE940
+    {
+        return (flags & f) != 0;
+    }
+    void SetFlag(int f, bool b)                     // ?SetFlag@FEMenu@@QAEXH_N@Z 0x5AE960
+    {
+        flags = b ? (int16_t)(flags | f) : (int16_t)(flags & ~f);
+    }
+protected:
+    void ClearAllButtons();                         // ?ClearAllButtons@FEMenu@@IAEXXZ 0x5708C0
+    void ClearButton(controller::ButtonIndex a_eButton);  // ?ClearButton@FEMenu@@IAEXW4ButtonIndex@controller@@@Z 0x570910
+    void ConnectEntries(short index);               // ?ConnectEntries@FEMenu@@IAEXF@Z 0x56FE80
 };
 static_assert(sizeof(FEMenu) == 0x4C, "FEMenu size mismatch");
 static_assert(offsetof(FEMenu, entries) == 0x04, "FEMenu::entries offset mismatch");

@@ -287,10 +287,10 @@ void JoinGameMenu::SetPanelFile(PanelFile* pf)
         ASSERT("panel", "c:\\cod\\code\\game\\mp/ui/JoinGameMenu.cpp", 170);
     }
     FEText* TextPointer = PanelFile::GetTextPointer(panel, "join_message");
-    FEMenu::SetItem(0, TextPointer, 0);
+    FEMenu::AddEntry(0, TextPointer, false);
     FEText* v6 = PanelFile::GetTextPointer(panel, "Helpbar");
-    FEMenu::SetItem(1, v6, 0);
-    entries[0]->SetString("Joining Game");
+    FEMenu::AddEntry(1, v6, false);
+    entries[0]->SetText("Joining Game");
 }
 
 // ============================================================================
@@ -767,7 +767,7 @@ void XBoxLiveIngameOptionsCOD3::OnUp(int c)
 {
     if (wasSignedIn)
     {
-        FEMenu::Up(0);
+        FEMenu::Up();
         m_ListBox.OnUp(c);
         if (--m_currSelection < 0)
             m_currSelection = 4;
@@ -780,7 +780,7 @@ void XBoxLiveIngameOptionsCOD3::OnDown(int c)
 {
     if (wasSignedIn)
     {
-        FEMenu::Down(0);
+        FEMenu::Down();
         m_ListBox.OnDown(c);
         int v4 = m_currSelection + 1;
         bool v5 = m_currSelection - 4 < 0;

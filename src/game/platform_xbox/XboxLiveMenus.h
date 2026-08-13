@@ -202,10 +202,4 @@ extern bool g_IgnoreUIXInput;
 // MPUIInterface class view lives in MPLiveEngine.h (included above).
 
 extern int cg_widescreen_integer;
-class controller {
-public:
-    int locked_port;
-    static controller* inst();
-    static int num_controllers;
-};
 extern void Controller_LockPort(int port);

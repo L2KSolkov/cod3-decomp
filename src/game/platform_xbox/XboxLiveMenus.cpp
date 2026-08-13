@@ -15,28 +15,6 @@ int FEMenuSystem::GetCurrentClient()
     return 0;
 }
 
-// shell.o FE base stubs (ported later)
-FEMenu::FEMenu(FEMenuSystem* menuSystem, int num, int x, int y, int mve,
-               int flg)
-{
-    (void)menuSystem; (void)num; (void)x; (void)y; (void)mve; (void)flg;
-}
-FEMenu::~FEMenu() {}
-void FEMenu::Draw() {}
-void FEMenu::Update(float time_inc) { (void)time_inc; }
-void FEMenu::OnActivate() {}
-void FEMenu::Cleanup() {}
-void FEMenu::ClearAllButtons() {}
-void FEMenu::Left() {}
-void FEMenu::Right() {}
-void FEMenu::Up(int a2) { (void)a2; }
-void FEMenu::Down(int a2) { (void)a2; }
-void FEMenu::SetHigh(int a2, int a3, bool a4)
-{
-    (void)a2; (void)a3; (void)a4;
-}
-void FEMenuEntry::SetString(const char* s) { (void)s; }
-void FEMenuEntry::SetEnabled(bool e) { (void)e; }
 void FEMenuSystem::AddOverlay(int a2) { (void)a2; }
 void FEMenuSystem::ReturnToPreviousMenu(int a2) { (void)a2; }
 void FEMultiLineText::Draw() {}
@@ -343,7 +321,7 @@ void XboxLiveOptionsMenu::OnUp(int a2, int c)
 {
     if (wasSignedIn)
     {
-        FEMenu::Up(a2);
+        FEMenu::Up();
         m_ListBox.OnUp(c);
         if (--m_currSelection < 0)
             m_currSelection = 4;
@@ -356,7 +334,7 @@ void XboxLiveOptionsMenu::OnDown(int a2, int c)
 {
     if (wasSignedIn)
     {
-        FEMenu::Down(a2);
+        FEMenu::Down();
         m_ListBox.OnDown(c);
         int v4 = m_currSelection + 1;
         bool v5 = m_currSelection - 4 < 0;
@@ -874,20 +852,20 @@ void InGameLiveOptionsMenu::OnActivate()
         wasSignedIn = v1->internalState == kSignedIn;
         FEMenu::OnActivate();
         if ((v1->localPlayers[0].notificationFlags & 1) != 0)
-            entries[0]->SetString("FEMENU_APPEAR_ONLINE");
+            entries[0]->SetText("FEMENU_APPEAR_ONLINE");
         else
-            entries[0]->SetString("FEMENU_APPEAR_OFFLINE");
+            entries[0]->SetText("FEMENU_APPEAR_OFFLINE");
         int voice = (int)v1->localPlayers[0].voiceStatus;
         if (voice != 0)
         {
             if (voice == UIX_VOICE_STATUS_SPEAKERS)
-                entries[3]->SetString("VOICE_OUTPUT_SPEAKERS");
+                entries[3]->SetText("VOICE_OUTPUT_SPEAKERS");
             else
-                entries[3]->SetString("VOICE_OUTPUT_NONE");
+                entries[3]->SetText("VOICE_OUTPUT_NONE");
         }
         else
         {
-            entries[3]->SetString("VOICE_OUTPUT_HEADSET");
+            entries[3]->SetText("VOICE_OUTPUT_HEADSET");
         }
     }
     else
@@ -965,9 +943,9 @@ void InGameLiveOptionsMenu::SetPanelFile(PanelFile* pf)
     {
         ASSERT("panel", "c:\\cod\\code\\game\\mp/ui/InGameLiveOptionsMenu.cpp", 309);
     }
-    entries[1]->SetString("MPFRONTEND_FRIENDS_LIST");
-    entries[0]->SetString("MPFRONTEND_APPEAR_OFFLINE");
-    entries[4]->SetString("MPFRONTEND_SIGN_OUT");
+    entries[1]->SetText("MPFRONTEND_FRIENDS_LIST");
+    entries[0]->SetText("MPFRONTEND_APPEAR_OFFLINE");
+    entries[4]->SetText("MPFRONTEND_SIGN_OUT");
     entries[1]->up = 4;
     entries[4]->down = 1;
 }
@@ -1037,23 +1015,23 @@ void InGameLiveOptionsMenu::Update(float time_inc)
     bool signedIn = LiveWrapper::theWrapper->internalState == kSignedIn;
     if (wasSignedIn != signedIn)
     {
-        entries[1]->SetEnabled(signedIn);
-        entries[0]->SetEnabled(wasSignedIn);
-        entries[2]->SetEnabled(wasSignedIn);
-        entries[3]->SetEnabled(wasSignedIn);
+        entries[1]->Disable(wasSignedIn);
+        entries[0]->Disable(wasSignedIn);
+        entries[2]->Disable(wasSignedIn);
+        entries[3]->Disable(wasSignedIn);
         if (wasSignedIn)
         {
-            entries[4]->SetString("FEMENU_SIGN_IN");
-            entries[0]->SetString("FEMENU_APPEAR_OFFLINE");
-            entries[3]->SetString("VOICE_OUTPUT_NONE");
-            FEMenu::SetHigh(4, 0, true);
+            entries[4]->SetText("FEMENU_SIGN_IN");
+            entries[0]->SetText("FEMENU_APPEAR_OFFLINE");
+            entries[3]->SetText("VOICE_OUTPUT_NONE");
+            FEMenu::SetHigh(4, true);
         }
         else
         {
-            entries[4]->SetString("FEMENU_SIGN_OUT");
-            entries[0]->SetString("FEMENU_APPEAR_ONLINE");
-            entries[3]->SetString("VOICE_OUTPUT_SPEAKERS");
-            FEMenu::SetHigh(1, 0, true);
+            entries[4]->SetText("FEMENU_SIGN_OUT");
+            entries[0]->SetText("FEMENU_APPEAR_ONLINE");
+            entries[3]->SetText("VOICE_OUTPUT_SPEAKERS");
+            FEMenu::SetHigh(1, true);
         }
         wasSignedIn = !wasSignedIn;
     }
@@ -1073,9 +1051,9 @@ void InGameLiveOptionsMenu::Select(int a2, int entry_num)
             case 0:
                 LiveWrapper::theWrapper->ToggleOfflineAppearance(0);
                 if (v4->GetNotificationFlag(0, 1))
-                    entries[0]->SetString("FEMENU_APPEAR_ONLINE");
+                    entries[0]->SetText("FEMENU_APPEAR_ONLINE");
                 else
-                    entries[0]->SetString("FEMENU_APPEAR_OFFLINE");
+                    entries[0]->SetText("FEMENU_APPEAR_OFFLINE");
                 break;
             case 1:
                 LiveWrapper::theWrapper->ShowFriendsList(0);
@@ -1095,13 +1073,13 @@ void InGameLiveOptionsMenu::Select(int a2, int entry_num)
                         if (voice != 0)
                         {
                             if (voice == UIX_VOICE_STATUS_SPEAKERS)
-                                entries[3]->SetString("VOICE_OUTPUT_SPEAKERS");
+                                entries[3]->SetText("VOICE_OUTPUT_SPEAKERS");
                             else
-                                entries[3]->SetString("VOICE_OUTPUT_NONE");
+                                entries[3]->SetText("VOICE_OUTPUT_NONE");
                         }
                         else
                         {
-                            entries[3]->SetString("VOICE_OUTPUT_HEADSET");
+                            entries[3]->SetText("VOICE_OUTPUT_HEADSET");
                         }
                     }
                 }

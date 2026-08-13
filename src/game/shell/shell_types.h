@@ -176,31 +176,4 @@ struct MPsharedStubData {
 };
 static_assert(sizeof(MPsharedStubData) == 0x5D, "MPsharedStubData size mismatch");
 
-// controller::ButtonIndex enum (full in input/controller.cpp)
-class controller {
-public:
-    int locked_port;
-    bool is_locked;
-    static controller* inst();  // controller_xbox.o
-
-    enum ButtonIndex {
-        LEFTBUTTON = 0,
-        DOWNBUTTON = 1,
-        RIGHTBUTTON = 2,
-        UPBUTTON = 3,
-        SQUARE = 4,
-        X = 5,
-        CIRCLE = 6,
-        TRIANGLE = 7,
-        R1 = 8,
-        L1 = 9,
-        R2 = 10,
-        L2 = 11,
-        R3 = 12,
-        L3 = 13,
-        START = 14,
-        SELECT = 15,
-    };
-};
-
 controller::ButtonIndex mapButton(int button);
