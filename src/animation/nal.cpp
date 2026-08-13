@@ -196,6 +196,7 @@ extern void* tlMemAlloc(unsigned int size, unsigned int align,
                         unsigned int flags);
 extern void tlMemFree(void* ptr);
 extern void mem_heap_free(void* ptr);
+extern void* mem_heap_malloc(unsigned int size);
 
 struct nalPositionOrientation {
     math::Position3 pos;
@@ -1873,4 +1874,602 @@ void PlayerAnimMgr::PlayModifier(const char* animName, int animateCamera,
         PlayModifier((nalGenericAnim&)*Anim, animateCamera, fadeInTime,
                      fadeOutTime, speed, mask);
     }
+}
+
+// ============================================================================
+// AnimQueue (anim.o) - batched animation pose/GBM command queue
+// Offsets verified against disasm: m_OpList[30] @ +0x00 (24B ops),
+// m_iNumOps +0x2D0, m_bIsSoldier +0x2D4, m_pDestPose +0x2D8,
+// m_pDestMatrixArray +0x2DC, m_pSkeleton +0x2E0, m_iDestLOD +0x2E4,
+// m_CurrParam +0x2E8, m_bWasPrevOpABlend +0x2EC, m_iStackDepth +0x2F0,
+// m_iMaxStackDepth +0x2F4.
+// ============================================================================
+
+class DObj;  // local forward decl (full class in cg_local.h)
+
+class AnimQueue {
+public:
+    enum EAnimParam {
+        PARAM_NONE = 0,
+        PARAM_X = 1,
+        PARAM_Y = 2,
+    };
+
+    static const int MAX_NUM_GBM_CALLS = 160;
+    static const int MAX_NUM_GBM_OUTPUTS = 64;
+    static const int MAX_NUM_OPCODES = 30;
+    static const int MAX_NUM_TEMP_SOLDIER_POSES = 8;
+    static const int MAX_NUM_DECOMP_TOUCHES = 400;
+
+    // MatrixQueueEntry - 0x114 bytes (69 DWORDs; verified vs disasm)
+    struct MatrixQueueEntry {
+        void* m_pPose;           // +0x00 nalGenericPose*
+        void* m_pSkeleton;       // +0x04
+        void* m_pTheObj;         // +0x08 DObj*
+        void* m_DestArray[MAX_NUM_GBM_OUTPUTS];  // +0x0C
+        int m_iNumDests;         // +0x10C
+        bool m_bAbsolute;        // +0x110
+    };
+
+    // Op list entries - 24 bytes each
+    struct GetPoseEventData {
+        void* pTheInstance;      // +0x04
+        unsigned char bUseDefaultPose;  // +0x08
+        float curr_t;            // +0x0C
+        float prev_t;            // +0x10
+        unsigned int hint;       // +0x14
+    };
+    struct BlendEventData {
+        float fWeight;           // +0x04
+    };
+    union OpData {
+        GetPoseEventData m_GetPoseEventData;
+        BlendEventData m_BlendEventData;
+    };
+    struct Op {
+        unsigned int opcode;     // +0x00
+        OpData theOpData;        // +0x04
+    };
+
+    struct DecompOp {
+        void* pInstance;         // +0x00 nalGenericInstance*
+        float curr_t;            // +0x04
+        float prev_t;            // +0x08
+        unsigned int hint;       // +0x0C
+    };
+
+    struct TempPoseStackPusher {
+        static int iStackDepth;  // ?iStackDepth@TempPoseStackPusher@AnimQueue@@0HA @ 0xF25A60
+        static nalGenericPose* pTempPoses[MAX_NUM_TEMP_SOLDIER_POSES];  // @ 0xF25A64
+
+        nalGenericPose* m_pPose;  // +0x00
+
+        TempPoseStackPusher(nalGenericSkeleton* pTheSkel);  // ea: 0x0053EFB0
+        ~TempPoseStackPusher();                                          // ea: 0x0053F090
+    };
+
+    // anim.o statics
+    static MatrixQueueEntry matrixQueue[MAX_NUM_GBM_CALLS];  // ?matrixQueue@AnimQueue@@0PAUMatrixQueueEntry@1@A @ 0xF19320
+    static int iNumMatrixQueueEntries;                        // @ 0xF25A5C
+    static int iNumDecomps;                                   // @ 0xF25A38
+    static DecompOp decompList[MAX_NUM_DECOMP_TOUCHES];       // ?decompList@AnimQueue@@0PAUDecompOp@1@A @ 0xF23FE8
+    static nalGenericPose* m_pTempPoses[MAX_NUM_TEMP_SOLDIER_POSES];  // @ 0xF25A3C
+
+    Op m_OpList[MAX_NUM_OPCODES];  // +0x00
+    int m_iNumOps;                 // +0x2D0
+    bool m_bIsSoldier;             // +0x2D4
+    nalGenericPose* m_pDestPose;   // +0x2D8
+    void* m_pDestMatrixArray;      // +0x2DC
+    void* m_pSkeleton;             // +0x2E0
+    int m_iDestLOD;                // +0x2E4
+    int m_CurrParam;               // +0x2E8
+    bool m_bWasPrevOpABlend;       // +0x2EC
+    int m_iStackDepth;             // +0x2F0
+    int m_iMaxStackDepth;          // +0x2F4
+
+    static int AddNewGBMOutput(int iGBM, void* pNewDstMatrices);  // ea: 0x0053EC70
+    static bool GetDobjAbsolute(DObj* pTheObj);                   // ea: 0x0053ED10
+    static int ExecuteAndClearDecompression();                    // ea: 0x0053ED50
+    void ExecGetPose(nalGenericPose* pDestPose,
+                     nalGenericPose* pDefaultPose,
+                     GetPoseEventData* theOp);                    // ea: 0x0053EDA0
+    void ExecuteBlendPose(nalGenericPose* pDestPose,
+                          nalGenericPose* pFirstPose,
+                          nalGenericPose* pSecondPose,
+                          BlendEventData* theOp);                 // ea: 0x0053EDD0
+    void SetParamAsAccum();                                       // ea: 0x0053EE40
+    void SetParamAsTemp();                                        // ea: 0x0053EE50
+    void IncrementOptCount();                                     // ea: 0x0053EE60
+    void AddTouch(float curr_t, float prev_t,
+                  nalGenericInstance* pInstance,
+                  unsigned int hint);                             // ea: 0x0053EEC0
+    void BlendPoses(float weight);                                // ea: 0x0053EF50
+    static int AddGetBoneMatrices(DObj* pTheObj,
+                                  const nalGenericPose* pThePose,
+                                  void* pDstMatrices,
+                                  bool bAbsolute);                // ea: 0x00545840
+    void ExecuteAnimCommands(nalGenericPose** ppPoseStack,
+                             nalGenericPose* pTempPose);  // ea: 0x00545A90
+    void ExecuteAndClearAnimation();                              // ea: 0x0054BF00
+};
+
+// anim.o data
+AnimQueue::MatrixQueueEntry AnimQueue::matrixQueue[AnimQueue::MAX_NUM_GBM_CALLS];
+int AnimQueue::iNumMatrixQueueEntries = 0;
+int AnimQueue::iNumDecomps = 0;
+AnimQueue::DecompOp AnimQueue::decompList[AnimQueue::MAX_NUM_DECOMP_TOUCHES];
+nalGenericPose*
+    AnimQueue::m_pTempPoses[AnimQueue::MAX_NUM_TEMP_SOLDIER_POSES];
+int AnimQueue::TempPoseStackPusher::iStackDepth = 0;
+nalGenericPose*
+    AnimQueue::TempPoseStackPusher::pTempPoses[
+        AnimQueue::MAX_NUM_TEMP_SOLDIER_POSES];
+
+// Stub callees used by AnimQueue (real bodies in the nal_xboxr port).
+// nalGenericPose::nalGenericPose(const nalGenericPose&, bool)
+inline nalGenericPose::nalGenericPose(const nalGenericPose& other,
+                                      bool copyData)
+{
+    (void)other; (void)copyData;
+}
+
+// nalGenericInstance::GetPose(float,float,nalGenericPose&,const
+// nalGenericPose&,int,unsigned)
+inline void nalGenericInstance::GetPose(float t1, float t2,
+                                        nalGenericPose& out,
+                                        const nalGenericPose& base, int flags,
+                                        unsigned hint)
+{
+    (void)t1; (void)t2; (void)out; (void)base; (void)flags; (void)hint;
+}
+
+// nalGenericInstance::TouchDecompCache(float,float,int,unsigned)
+inline void nalGenericInstance::TouchDecompCache(float t1, float t2,
+                                                 int flags, unsigned hint)
+{
+    (void)t1; (void)t2; (void)flags; (void)hint;
+}
+
+// nalGeneric::Blend (local view; real body in nal_xboxr port)
+inline void Blend(nalGenericPose& out, float blend, const nalGenericPose& a,
+                  const nalGenericPose& b)
+{
+    (void)out; (void)blend; (void)a; (void)b;
+}
+
+// Global-scope stub bodies for the local nalGeneric views in this TU
+// (the correctly-mangled real definitions live in the nal_xboxr port).
+inline nalGenericPose::nalGenericPose(const nalBaseSkeleton* skel, int flags)
+{
+    (void)skel; (void)flags;
+}
+
+inline nalGenericPose::~nalGenericPose() {}
+
+inline void nalGenericPose::operator=(const nalGenericPose& other)
+{
+    (void)other;
+}
+
+inline void nalGenericSkeleton::GetBoneMatrices(const nalGenericPose& pose,
+                                                nalMatrix4x4* matrices,
+                                                int lod) const
+{
+    (void)pose; (void)matrices; (void)lod;
+}
+
+// ea: 0x0053EC70
+int AnimQueue::AddNewGBMOutput(int iGBM, void* pNewDstMatrices)
+{
+    if (iGBM >= iNumMatrixQueueEntries)
+    {
+        XANIM_ASSERT("iGBM < AnimQueue::iNumMatrixQueueEntries",
+                     "c:\\cod\\code\\game\\AnimQueue.cpp", 128,
+                     "Invalid GetBoneMatrix index.");
+    }
+    MatrixQueueEntry* v2 = &matrixQueue[iGBM];
+    int m_iNumDests = v2->m_iNumDests;
+    if (m_iNumDests == MAX_NUM_GBM_OUTPUTS)
+        return 0;
+    v2->m_DestArray[m_iNumDests] = pNewDstMatrices;
+    ++v2->m_iNumDests;
+    return 1;
+}
+
+// ea: 0x0053ED10
+bool AnimQueue::GetDobjAbsolute(DObj* pTheObj)
+{
+    int v1 = 0;
+    if (iNumMatrixQueueEntries <= 0)
+        return false;
+    for (void** i = &matrixQueue[0].m_pPose; (void*)pTheObj != *i;
+         i += 69)
+    {
+        if (++v1 >= iNumMatrixQueueEntries)
+            return false;
+    }
+    return matrixQueue[v1].m_bAbsolute;
+}
+
+// ea: 0x0053ED50
+int AnimQueue::ExecuteAndClearDecompression()
+{
+    int result = iNumDecomps;
+    int v1 = 0;
+    if (iNumDecomps > 0)
+    {
+        DecompOp* v2 = decompList;
+        do
+        {
+            ((nalGenericInstance*)v2->pInstance)
+                ->TouchDecompCache(v2->curr_t, v2->prev_t, 0, v2->hint);
+            result = iNumDecomps;
+            ++v1;
+            ++v2;
+        } while (v1 < iNumDecomps);
+    }
+    iNumDecomps = 0;
+    return result;
+}
+
+// ea: 0x0053EDA0
+void AnimQueue::ExecGetPose(nalGenericPose* pDestPose,
+                            nalGenericPose* pDefaultPose,
+                            GetPoseEventData* theOp)
+{
+    ((nalGenericInstance*)theOp->pTheInstance)
+        ->GetPose(theOp->curr_t, theOp->prev_t, *pDestPose, *pDefaultPose,
+                  m_iDestLOD, theOp->hint);
+}
+
+// ea: 0x0053EDD0
+void AnimQueue::ExecuteBlendPose(nalGenericPose* pDestPose,
+                                 nalGenericPose* pFirstPose,
+                                 nalGenericPose* pSecondPose,
+                                 BlendEventData* theOp)
+{
+    Blend(*pDestPose, theOp->fWeight, *pFirstPose, *pSecondPose);
+}
+
+// ea: 0x0053EE40
+void AnimQueue::SetParamAsAccum()
+{
+    m_CurrParam = PARAM_X;
+}
+
+// ea: 0x0053EE50
+void AnimQueue::SetParamAsTemp()
+{
+    m_CurrParam = PARAM_Y;
+}
+
+// ea: 0x0053EE60
+void AnimQueue::IncrementOptCount()
+{
+    int v1 = m_iNumOps + 1;
+    bool v2 = m_iNumOps - 29 < 0;
+    m_iNumOps = v1;
+    if (v2 == (v1 < 30 ? 1 : 0))
+    {
+        XANIM_ASSERT("m_iNumOps < MAX_NUM_OPCODES",
+                     "c:\\cod\\code\\game\\AnimQueue.cpp", 370,
+                     "Bad Animation tree: too many Opcodes added to anim queue.");
+    }
+}
+
+// ea: 0x0053EEC0
+void AnimQueue::AddTouch(float curr_t, float prev_t,
+                         nalGenericInstance* pInstance,
+                         unsigned int hint)
+{
+    if (iNumDecomps >= MAX_NUM_DECOMP_TOUCHES)
+    {
+        XANIM_ASSERT("iNumDecomps < MAX_NUM_DECOMP_TOUCHES",
+                     "c:\\cod\\code\\game\\AnimQueue.cpp", 415,
+                     "Bad Animation tree: too many opcodes in one frame.");
+    }
+    DecompOp* entry = &decompList[iNumDecomps];
+    entry->pInstance = pInstance;
+    entry->curr_t = curr_t;
+    entry->prev_t = prev_t;
+    entry->hint = hint;
+    ++iNumDecomps;
+}
+
+// ea: 0x0053EF50
+void AnimQueue::BlendPoses(float weight)
+{
+    OpData* v2 = &m_OpList[m_iNumOps].theOpData;
+    m_OpList[m_iNumOps].opcode = 1;
+    if (m_bWasPrevOpABlend)
+    {
+        m_OpList[m_iNumOps].opcode = 3;
+        --m_iStackDepth;
+    }
+    v2->m_BlendEventData.fWeight = weight;
+    IncrementOptCount();
+}
+
+// ea: 0x0053EFB0
+AnimQueue::TempPoseStackPusher::TempPoseStackPusher(
+    nalGenericSkeleton* pTheSkel)
+{
+    if (iStackDepth >= MAX_NUM_TEMP_SOLDIER_POSES)
+    {
+        XANIM_ASSERT("iStackDepth < MAX_NUM_TEMP_SOLDIER_POSES",
+                     "c:\\cod\\code\\game\\AnimQueue.cpp", 450,
+                     "Not enough soldier poses on the pose stack.");
+    }
+    if (pTempPoses[iStackDepth] == nullptr)
+    {
+        void* v4 = tlMemAlloc(0x10, 8, 0);
+        if (v4 != nullptr)
+            pTempPoses[iStackDepth] =
+                new (v4) nalGenericPose(
+                    *(nalGenericPose*)((char*)pTheSkel + 0xC8), true);
+        else
+            pTempPoses[iStackDepth] = nullptr;
+    }
+    m_pPose = pTempPoses[iStackDepth];
+    ++iStackDepth;
+}
+
+// ea: 0x0053F090
+AnimQueue::TempPoseStackPusher::~TempPoseStackPusher()
+{
+    --iStackDepth;
+}
+
+// ea: 0x00545840
+int AnimQueue::AddGetBoneMatrices(DObj* pTheObj,
+                                  const nalGenericPose* pThePose,
+                                  void* pDstMatrices, bool bAbsolute)
+{
+    int v4 = iNumMatrixQueueEntries;
+    int v5 = 0;
+    if (iNumMatrixQueueEntries > 0)
+    {
+        void** p_m_pTheObj = &matrixQueue[0].m_pPose;
+        do
+        {
+            if (pTheObj == (DObj*)*p_m_pTheObj)
+                break;
+            ++v5;
+            p_m_pTheObj += 69;
+        } while (v5 < iNumMatrixQueueEntries);
+    }
+    if (v5 == iNumMatrixQueueEntries)
+    {
+        if (iNumMatrixQueueEntries == MAX_NUM_GBM_CALLS)
+        {
+            XANIM_ASSERT("AnimQueue::iNumMatrixQueueEntries != MAX_NUM_GBM_CALLS",
+                         "c:\\cod\\code\\game\\AnimQueue.cpp", 74,
+                         "Too many GetBoneMatrices calls.");
+            v4 = iNumMatrixQueueEntries;
+        }
+        MatrixQueueEntry* v7 = &matrixQueue[v4];
+        if (pThePose != nullptr)
+        {
+            v7->m_DestArray[0] = pDstMatrices;
+            v7->m_iNumDests = 1;
+            v7->m_pPose = (void*)pThePose;
+            v7->m_pSkeleton = *(void**)pThePose;
+        }
+        else
+        {
+            v7->m_DestArray[1] = pDstMatrices;
+            v7->m_iNumDests = 2;
+        }
+        v7->m_pTheObj = pTheObj;
+        v7->m_bAbsolute = bAbsolute;
+        iNumMatrixQueueEntries = v4 + 1;
+        return v4;
+    }
+    else
+    {
+        MatrixQueueEntry* v9 = &matrixQueue[v5];
+        if (pThePose != nullptr)
+        {
+            v9->m_pPose = (void*)pThePose;
+            v9->m_DestArray[0] = pDstMatrices;
+            v9->m_pSkeleton = *(void**)pThePose;
+            v9->m_pTheObj = pTheObj;
+            v9->m_bAbsolute = bAbsolute;
+            return v5;
+        }
+        else
+        {
+            if (v9->m_iNumDests >= MAX_NUM_GBM_OUTPUTS)
+            {
+                XANIM_ASSERT("theEntry.m_iNumDests < MAX_NUM_GBM_OUTPUTS",
+                             "c:\\cod\\code\\game\\AnimQueue.cpp", 112,
+                             "Not enough GBM copy entries.");
+            }
+            v9->m_DestArray[v9->m_iNumDests++] = pDstMatrices;
+            v9->m_pTheObj = pTheObj;
+            v9->m_bAbsolute = bAbsolute;
+            return v5;
+        }
+    }
+}
+
+// ea: 0x00545A90
+void AnimQueue::ExecuteAnimCommands(nalGenericPose** ppPoseStack,
+                                    nalGenericPose* pTempPose)
+{
+    nalGenericPose* v3 = ppPoseStack[1];
+    nalGenericPose* pDefaultPose = ppPoseStack[0];
+    int v4 = m_iMaxStackDepth + 2;
+    int iNumStackElements = v4;
+    int v5 = 1;
+    int iOperation = 0;
+    if (m_iNumOps > 0)
+    {
+        unsigned int* p_hint = &m_OpList[0].theOpData.m_GetPoseEventData.hint;
+        while (1)
+        {
+            switch (*(p_hint - 5))
+            {
+            case 0:
+                if (*(unsigned char*)(p_hint - 3) != 0)
+                {
+                    ((nalGenericInstance*)*(p_hint - 4))
+                        ->GetPose(*(float*)(p_hint - 2),
+                                  *(float*)(p_hint - 1), *pTempPose, *v3,
+                                  m_iDestLOD, *p_hint);
+                }
+                else
+                {
+                    *pDefaultPose = *v3;
+                    ((nalGenericInstance*)*(p_hint - 4))
+                        ->GetPose(*(float*)(p_hint - 2),
+                                  *(float*)(p_hint - 1), *v3, *pDefaultPose,
+                                  m_iDestLOD, *p_hint);
+                }
+                break;
+            case 1:
+                Blend(*v3, *(float*)(p_hint - 4), *pTempPose, *v3);
+                break;
+            case 2:
+                if (++v5 >= v4)
+                {
+                    XANIM_ASSERT("iCurrStackElement < iNumStackElements",
+                                 "c:\\cod\\code\\game\\AnimQueue.cpp", 297,
+                                 "AnimQueue Stack overflow during execution.");
+                }
+                v3 = ppPoseStack[v5];
+                break;
+            case 3:
+                Blend(ppPoseStack[v5 - 1][0], *(float*)(p_hint - 4),
+                      ppPoseStack[v5 - 1][0], *v3);
+                v3 = ppPoseStack[--v5];
+                if (v5 < 1)
+                {
+                    XANIM_ASSERT("iCurrStackElement >= 1",
+                                 "c:\\cod\\code\\game\\AnimQueue.cpp", 312,
+                                 "AnimQueue Stack underflow during execution.");
+                }
+                break;
+            case 4:
+                ((nalGenericSkeleton*)(*(void**)v3))
+                    ->GetBoneMatrices(*v3,
+                                      (nalMatrix4x4*)m_pDestMatrixArray,
+                                      *(int*)((char*)v3 + 4));
+                break;
+            default:
+                break;
+            }
+            p_hint += 6;
+            if (++iOperation >= m_iNumOps)
+                break;
+            v4 = iNumStackElements;
+        }
+    }
+    *m_pDestPose = *v3;
+}
+
+// ea: 0x0054BF00
+void AnimQueue::ExecuteAndClearAnimation()
+{
+    AnimQueue* v1 = this;
+    int v2 = 0;
+    if (m_iStackDepth != 0)
+    {
+        XANIM_ASSERT("m_iStackDepth == 0",
+                     "c:\\cod\\code\\game\\AnimQueue.cpp", 193,
+                     "Bad Animation tree: Stack imbalanced.");
+    }
+    if (m_bIsSoldier && m_pTempPoses[0] == nullptr)
+    {
+    for (nalGenericPose** v3 = m_pTempPoses;
+         v3 < (nalGenericPose**)&iNumMatrixQueueEntries;
+         ++v3)
+    {
+        void* v4 = tlMemAlloc(0x10, 8, 0);
+        if (v4 != nullptr)
+            *v3 = new (v4) nalGenericPose(
+                (const nalBaseSkeleton*)m_pSkeleton, 0);
+        else
+            *v3 = nullptr;
+    }
+    }
+    int iCurrTempSoldierPose = 0;
+    nalGenericPose* pTempPose;
+    if (m_bIsSoldier)
+    {
+        pTempPose = m_pTempPoses[0];
+        iCurrTempSoldierPose = 1;
+    }
+    else
+    {
+        void* v6 = tlMemAlloc(0x10, 8, 0);
+        if (v6 != nullptr)
+            pTempPose = new (v6) nalGenericPose(
+                (const nalBaseSkeleton*)m_pSkeleton, 0);
+        else
+            pTempPose = nullptr;
+    }
+    int v8 = m_iMaxStackDepth + 2;
+    nalGenericPose** ppPoseStack =
+        (nalGenericPose**)mem_heap_malloc(4 * v8);
+    if (m_bIsSoldier)
+    {
+        if (v8 > 0)
+        {
+            nalGenericPose** v9 =
+                &TempPoseStackPusher::pTempPoses[iCurrTempSoldierPose];
+            do
+            {
+                if (v9 >= (nalGenericPose**)&iNumMatrixQueueEntries)
+                {
+                    XANIM_ASSERT(
+                        "iCurrTempSoldierPose < MAX_NUM_TEMP_SOLDIER_POSES",
+                        "c:\\cod\\code\\game\\AnimQueue.cpp", 227,
+                        "AnimQueue Stack overflow during execution");
+                }
+                ppPoseStack[v2++] = *v9++;
+            } while (v2 < v8);
+            v1 = this;
+        }
+    }
+    else if (v8 > 0)
+    {
+        do
+        {
+            void* v11 = tlMemAlloc(0x10, 8, 0);
+            if (v11 != nullptr)
+                ppPoseStack[v2++] = new (v11) nalGenericPose(
+                    (const nalBaseSkeleton*)m_pSkeleton, 0);
+            else
+                ppPoseStack[v2++] = nullptr;
+        } while (v2 < v8);
+    }
+    ExecuteAnimCommands(ppPoseStack, pTempPose);
+    if (!m_bIsSoldier)
+    {
+        for (int i = 0; i < v8; ++i)
+        {
+            nalGenericPose* v14 = ppPoseStack[i];
+            if (v14 != nullptr)
+            {
+                v14->~nalGenericPose();
+                tlMemFree(v14);
+            }
+        }
+        mem_heap_free(ppPoseStack);
+        if (pTempPose != nullptr)
+        {
+            pTempPose->~nalGenericPose();
+            tlMemFree(pTempPose);
+        }
+        v1 = this;
+    }
+    v1->m_iNumOps = 0;
+    v1->m_iDestLOD = 0;
+    v1->m_pDestMatrixArray = nullptr;
+    v1->m_pDestPose = nullptr;
+    v1->m_CurrParam = PARAM_NONE;
+    v1->m_bWasPrevOpABlend = false;
+    v1->m_iStackDepth = 0;
+    v1->m_iMaxStackDepth = 0;
 }
