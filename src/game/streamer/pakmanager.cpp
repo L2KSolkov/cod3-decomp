@@ -1114,6 +1114,9 @@ public:
     void SyncUnloadPak(TPakId id);
     // - ea: 0x665B90 (stub)
     const PakInfoNode* SyncLoadFLI(EPakType t, const char* path);
+    // - ea: 0x677F40
+    PakFile* AsyncLoadPakHeader(EPakType pak_type, const char* path,
+                                NumBanks num_banks);
     // - ea: 0x665900 (stub)
     const PakInfoNode* GetPakInfo(TPakId pakId) const;
     // - ea: 0x66C660
@@ -1573,14 +1576,20 @@ class ae_heap {
 public:
     void** __vftable;  // +0x00
     void* Malloc(unsigned int size, int alignment);
+    mem_heap* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ (core_xboxr)
 };
 extern ae_heap* gActorHeap;  // ?gActorHeap@@3PAVae_heap@@A @ 0xF00E5C
+extern void* gBrocHeap;       // ?gBrocHeap@@3PAVae_heap@@A @ 0xF3ABE0 (g_globals.cpp)
 
 // Cross-object stubs (ae_heap core_xboxr; ported with core)
 void* ae_heap::Malloc(unsigned int size, int alignment)
 {
     (void)size; (void)alignment;
     return nullptr;
+}
+mem_heap* ae_heap::GetHeapPointer()
+{
+    return nullptr;  // stub: core_xboxr
 }
 ae_heap* gActorHeap = nullptr;
 
@@ -3054,17 +3063,60 @@ void PakFile::RenderDebug()
     }
 }
 
-// ?CrazyTempMemBorrow@PakManager@@QAEPAXII@Z (streamer.o; stub)
+// ea: 0x671ED0
 void* PakManager::CrazyTempMemBorrow(unsigned int align, unsigned int size)
 {
-    (void)align;
-    return malloc(size ? size : 1);
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* i =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == mActivePaks.m_end || i == nullptr)
+        return nullptr;
+    while (1)
+    {
+        PakFile* pak = (PakFile*)m_head;
+        if (pak->mState == PakFile::LOADED)
+        {
+            void* result = pak->MemAlloc(align, size, false);
+            if (result != nullptr)
+                return result;
+        }
+        m_head = i;
+        i = i->m_next;
+        if (i == nullptr)
+            return nullptr;
+    }
 }
 
-// ?CrazyTempMemGiveBack@PakManager@@QAEXPAX@Z (streamer.o; stub)
+// ea: 0x671F30
 void PakManager::CrazyTempMemGiveBack(void* ptr)
 {
-    free(ptr);
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* i =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == mActivePaks.m_end || i == nullptr)
+        goto LABEL_8;
+    while (!((PakFile*)m_head)->MemFree(ptr, false))
+    {
+        m_head = i;
+        i = i->m_next;
+        if (i == nullptr)
+            goto LABEL_8;
+    }
+    return;
+LABEL_8:
+    {
+        mem_heap* v4 = ((ae_heap*)gBrocHeap)->GetHeapPointer();
+        if (v4 != nullptr && ptr >= v4->start && ptr < v4->end)
+        {
+            mem_heap_free(v4, ptr);
+        }
+        else
+        {
+            v4 = gActorHeap->GetHeapPointer();
+            if (v4 != nullptr && ptr >= v4->start && ptr < v4->end)
+                mem_heap_free(v4, ptr);
+        }
+    }
 }
 
 // ea: 0x671C60
@@ -3323,9 +3375,84 @@ void PakManager::DecodeFLI(const char* name, PakInfoBank* data, int size,
     UpdateInfo();
 }
 
-// ea: 0x66FE10 (stub until the update pipeline ports)
+// ea: 0x66FE10
 void PakManager::UpdateInfo()
 {
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* i =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    if (m_head == mActivePaks.m_end)
+    {
+        i = nullptr;
+        m_head = nullptr;
+    }
+    for (; i != nullptr; i = i->m_next)
+    {
+        PakFile* pak = (PakFile*)m_head;
+        TPakId pakId = pak->mPakId;
+        const char* path = pak->mPath.mBuff;
+        for (unsigned int v5 = 0; v5 < mPakInfoBank->mPtrs.mSize; ++v5)
+        {
+            const PakInfoNode* node = mPakInfoBank->mPtrs.mList[v5];
+            if (strstr(((InplaceString*)node->path)->mStr, path) != nullptr)
+            {
+                if (node->pakId != PAK_ID_INVALID && node->pakId != pakId)
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::ARO;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\PakManager.cpp";
+                    AeAssert::gCurrentLine = 737;
+                    AeAssert::gCurrentExpr = "(*mPakInfoBank)[i]->pakId == pakId";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("multiply loaded pak!"))
+                        __debugbreak();
+                }
+                const_cast<PakInfoNode*>(node)->pakId = pakId;
+                if (node->refCount == 0)
+                    ++const_cast<PakInfoNode*>(node)->refCount;
+            }
+        }
+        if (mLevelPakInfoBank != nullptr)
+        {
+            for (unsigned int v19 = 0;
+                 v19 < mLevelPakInfoBank->mPtrs.mSize; ++v19)
+            {
+                const PakInfoNode* node =
+                    mLevelPakInfoBank->mPtrs.mList[v19];
+                if (strstr(((InplaceString*)node->path)->mStr, path)
+                    != nullptr)
+                {
+                    if (node->pakId != PAK_ID_INVALID
+                        && node->pakId != pakId)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\PakManager.cpp";
+                        AeAssert::gCurrentLine = 754;
+                        AeAssert::gCurrentExpr =
+                            "(*mLevelPakInfoBank)[i]->pakId == pakId";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("multiply loaded pak!"))
+                            __debugbreak();
+                    }
+                    const_cast<PakInfoNode*>(node)->pakId = pakId;
+                    if (node->refCount == 0)
+                        ++const_cast<PakInfoNode*>(node)->refCount;
+                }
+            }
+        }
+        if (i == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+            AeAssert::gCurrentLine = 501;
+            AeAssert::gCurrentExpr = "m_next != 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        m_head = i;
+    }
 }
 
 // ============================================================================
@@ -4214,9 +4341,128 @@ void PakManager::ResetPriorities(bool user_distances_also)
         level = mLevelPakInfoBank;
     }
 }
+// ea: 0x677F40
+PakFile* PakManager::AsyncLoadPakHeader(EPakType pak_type, const char* path,
+                                        NumBanks num_banks)
+{
+    PakManager* v4 = this;
+    if (nflFileExists((nflMediaID)gNflMediaId, path) != 0)
+    {
+        PakFile* v6 = (PakFile*)PakFile::sAllocator->Allocate(0x114u, false);
+        PakFile* result;
+        if (v6 != nullptr)
+        {
+            v6->PakFile::PakFile(pak_type, path, PAK_ID_INVALID, num_banks);
+            result = v6;
+            v4 = this;
+        }
+        else
+        {
+            result = nullptr;
+        }
+        v4->mState = STATE_LOADING;
+        v4->mCurrentPakId = PAK_ID_INVALID;
+        return result;
+    }
+    AeAssert::gCurrentAuthor = AeAssert::ARO;
+    AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+    AeAssert::gCurrentLine = 1272;
+    AeAssert::gCurrentExpr = nullptr;
+    if (AeAssert::Error(
+            "FILE NOT FOUND: %s:\ncheck your \"asset manager\" output for details",
+            path))
+        __debugbreak();
+    tlPrintf("FILE NOT FOUND: %s\n", path);
+    return nullptr;
+}
+
+// ea: 0x67AD90
 const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
 {
-    (void)t; (void)path;
+    NumBanks num_banks = {};
+    PakFile* pak = AsyncLoadPakHeader(t, path, num_banks);
+    if (pak == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 1125;
+        AeAssert::gCurrentExpr = nullptr;
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Warning("couldn't load pak %s!", path))
+            __debugbreak();
+        return nullptr;
+    }
+    pak->mOnlyLoadHeader = true;
+    while (mEnabled != 0)
+    {
+        if (pak->mState == PakFile::LOADING)
+            pak->UpdateLoading();
+        else if (pak->mState == PakFile::UNLOADING)
+            pak->UpdateUnloading();
+        if (pak->mState == PakFile::LOADED)
+        {
+            PakHeader* mHeader = pak->mHeader;
+            int sectionIdx = -1;
+            if (mHeader->numSections != 0)
+            {
+                for (unsigned int v7 = 0; v7 < mHeader->numSections; ++v7)
+                {
+                    if (strncmp(mHeader->sections[v7].name, "FLI", 8) == 0)
+                        sectionIdx = (int)v7;
+                }
+                if (sectionIdx != -1)
+                {
+                    PakHeader::Section& sec = mHeader->sections[sectionIdx];
+                    unsigned int fileSize = sec.files->fileSize;
+                    int bankIndex = sec.files->bankIndex;
+                    NumBanks oneBank;
+                    oneBank.ps2 = 1.0f;
+                    oneBank.ps3.main = 1.0f;
+                    oneBank.ps3.lram = 0.0f;
+                    oneBank.xbox = 1.0f;
+                    oneBank.xenon = 1.0f;
+                    oneBank.pcx = 1.0f;
+                    oneBank.gc.main = 1.0f;
+                    oneBank.gc.aram = 0.0f;
+                    PakFile::TRequestId id;
+                    id.nflId = sec.banks[bankIndex].fileOffset;
+                    TBankAlloc bankAlloc = {};
+                    TBankAlloc v31 = BankManager::sInst->Allocate(oneBank);
+                    bankAlloc = v31;
+                    mem_info v30 = BankManager::sInst->get_alloc(bankAlloc, 0,
+                                                                 true);
+                    v31.mram_alloc2.mBits[0] = (unsigned int)v30.data;
+                    v31.mram_alloc2.mBits[1] = (unsigned int)v30.size;
+                    PakHeader::Bank& bank = sec.banks[bankIndex];
+                    if (bank.compressedSize != 0)
+                        id.nflId =
+                            *(unsigned char*)pak->PakReadDataAsync(
+                                (unsigned char*)&id, v30.data, fileSize,
+                                bank.compressedSize, id.nflId);
+                    else
+                        id.nflId =
+                            *(unsigned char*)pak->PakReadDataAsync(
+                                (unsigned char*)&id, v30.data,
+                                (fileSize + 0x7FFF) & 0xFFFF8000, 0,
+                                id.nflId);
+                    do
+                    {
+                        nflUpdate();
+                        if (nflGetState() == NFL_STATE_ERROR)
+                            g_femanager.DrawDiscError();
+                    } while (!pak->IsRequestDone(&id));
+                    memcpy(fli_buffer, v30.data, fileSize);
+                    BankManager::sInst->release(bankAlloc);
+                    nflCloseFile(pak->mFileId);
+                    PakFile::sHeaderBufferUsed = false;
+                    ((PakInfoBank*)fli_buffer)->Fixup();
+                    mLevelPakInfoBank = (PakInfoBank*)fli_buffer;
+                    return GetPakInfo(path);
+                }
+            }
+            return nullptr;
+        }
+    }
     return nullptr;
 }
 void PakManager_MemFree(TPakId id, void* ptr, bool bUseActorHeap)
