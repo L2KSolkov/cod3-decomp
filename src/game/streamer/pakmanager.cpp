@@ -147,10 +147,12 @@ extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
 extern void DebugRender_AddRenderer(void* self, void* fp);  // core.o
 extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
 unsigned char* stream_alloc(int size, bool aram);  // streamer.o
+void stream_free(unsigned char* ptr, bool aram = false);  // streamer.o
 void ConsoleSetPakDistance();   // streamer.o
 void ConsoleClearPakDistance(); // streamer.o
 void TogglePakRender();         // streamer.o
 void cdInitApk();               // streamer.o (apk support)
+extern void Com_StripExtension(const char* in, char* out);  // g_q_shared.cpp
 extern bool ShouldConnectPaths();                 // core.o sys.cpp
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
@@ -236,16 +238,25 @@ extern ECoderId gCurrentAuthor;
 extern const char* gCurrentFile;
 extern int gCurrentLine;
 extern const char* gCurrentExpr;
+extern const char* gCurrentPakFile;      // ?gCurrentPakFile@AeAssert@@3PBDB (core.o)
+extern const char* gCurrentPakResource;  // ?gCurrentPakResource@AeAssert@@3PBDB (core.o)
 bool IsIgnored();
 bool Assert(const char* fmt, ...);
 bool Warning(const char* fmt, ...);
 bool Error(const char* fmt, ...);
 }
+// core.o owns the real globals; defined here until core lands
+const char* AeAssert::gCurrentPakFile = nullptr;
+const char* AeAssert::gCurrentPakResource = nullptr;
 
 enum TPakId { kPakTypeNone = -1 };
 #define PAK_ID_INVALID ((TPakId)-1)
 #define PAK_ID_MIN ((TPakId)0)
 #define PAK_ID_MAX ((TPakId)99)
+void G_ParseInteractionInfo(TPakId pakId)
+{
+    (void)pakId;  // stub: game.o
+}
 enum EPakType {
     kPakTypeGlobal = 0,
     kPakTypeFrontEnd = 1,
@@ -442,15 +453,29 @@ struct ThroughputMeasurer {
 
     float safeGetTime() const;  // ?safeGetTime@ThroughputMeasurer@@QBEMXZ
     void Update(int bytes);     // ?Update@ThroughputMeasurer@@QAEXH@Z
+    void stop(int bytes);       // ?stop@ThroughputMeasurer@@QAEXH@Z
 };
 ThroughputMeasurer gThroughputMeasurer;  // ?gThroughputMeasurer@@3UThroughputMeasurer@@A @ 0xF59318
 unsigned int g_bytes_read = 0;           // ?g_bytes_read@@3IA @ 0xF592E4
 float g_throughput = 0.0f;               // ?g_throughput@@3MA @ 0xF592E0
+int max_work = 20;                       // ?max_work@@3HA @ 0xDF91C0
 
 // ea: 0x681110
 float ThroughputMeasurer::safeGetTime() const
 {
     return (float)((double)__rdtsc() * 0.0000013636364 * 0.001);
+}
+
+// ea: 0x684FB0
+void ThroughputMeasurer::stop(int bytes)
+{
+    Update(bytes);
+    float Time = safeGetTime();
+    int v4 = bytes + mTotalBytes;
+    mTotalTime = Time - mStart + mTotalTime;
+    mStart = 0.0f;
+    mTotalBytes = v4;
+    mBytes = 0;
 }
 
 // ea: 0x6811A0
@@ -720,6 +745,8 @@ public:
             NumBanks numBanks);  // ??0PakFile@@QAE@W4EPakType@@PBDW4TPakId@@VNumBanks@@@Z
     // ea: 0x67A380
     void UpdateLoading();  // ?UpdateLoading@PakFile@@AAEXXZ
+    // ea: 0x67A150
+    void Decode(const char* name, int size, TPakId pakId);  // ?Decode@PakFile@@AAEXPBDHW4TPakId@@@Z
     // ea: 0x677750
     void UpdateUnloading();  // ?UpdateUnloading@PakFile@@AAEXXZ
     // ea: 0x675410
@@ -3301,14 +3328,28 @@ void FEManager_UpdateButtonFontForLanguage(void* self)
     (void)self;
 }
 
-// BrocSys (broc; NotifyPakUnloaded)
+// BrocSys (broc; NotifyPakLoaded/Unloaded)
 namespace BrocSys {
+void NotifyPakLoaded(const char* longName);
 void NotifyPakUnloaded(const char* longName);
 }
 void BrocSys::NotifyPakUnloaded(const char* longName)
 {
     (void)longName;  // stub: cross-object (broc.o)
 }
+void BrocSys::NotifyPakLoaded(const char* longName)
+{
+    (void)longName;  // stub: cross-object (broc.o)
+}
+
+// AudioBankMgr minimal view (full class + stubs in g_entity_misc.cpp)
+class AudioBankMgr {
+public:
+    static AudioBankMgr* sInst;  // ?sInst@AudioBankMgr@@2PAV1@A (g_entity_misc.cpp)
+    void RegisterWbk(const tlFixedString& name, const char* path,
+                     ELanguage lang, TPakId pak);
+    void LoadWbk(const tlFixedString& name, bool async);
+};
 
 // hash_const (runtime-filled hash constants; mirrors str_const_t layout).
 // zonesloaded at +0x26C verified vs UpdateNormal disasm (0xED2D1C).
@@ -4301,17 +4342,324 @@ void PakFile::UpdateUnloading()
     }
 }
 
-// ea: 0x67A380 (large; placeholder that drives the per-file stages)
+// RecordResourceType (streamer.o PakFile.h; verified against IDA enum)
+enum RecordResourceType {
+    Resource_VertexBuffer = 0,
+    Resource_Texture = 1,
+    Resource_Palette = 2,
+    Resource_ColorBuffer = 3,
+    Resource_ZetaBuffer = 4,
+    Resource_Reserved = 5,
+    Resource_MAX = 6,
+};
+RecordResourceType GetWorkAmount(const char* name);  // streamer.o (defined below)
+
+// ea: 0x67A380
 void PakFile::UpdateLoading()
 {
-    // Real impl (0x67A380) walks header/data loading via InitiateHeaderRead /
-    // UpdateReads / DetermineNextFile; those are ported. The dispatcher here
-    // mirrors the original switch on mLoadingState.
-    if (mLoadingState == LOADING_HEADER)
+    nflUpdate();
+    if (nflGetState() == NFL_STATE_ERROR)
+        g_femanager.DrawDiscError();
+    ELoadingState mLoadingState = this->mLoadingState;
+    bool fillingBanks = PakManager::sInst->mFillingBanks;
+    unsigned int work_done = 0;
+    if (mLoadingState != PakFile::LOADING_HEADER)
     {
-        if (IsRequestDone(&mHeaderRequestId))
-            CopyHeader();
+        int v3 = (int)mLoadingState - 2;
+        if (v3 != 0)
+        {
+            if (v3 == 1)  // LOADING_DONE
+            {
+                tlPrintf("pak: done loading %s\n", mPath.mBuff);
+                unsigned __int64 v4 = __rdtsc();
+                mLoadStats->total =
+                    (float)((double)(v4 - mLoadStats->totalStart)
+                            * 0.0000000013636364);
+                if (mCloseHandle)
+                {
+                    nflCloseFile(mFileId);
+                    mFileId = NFL_FILE_ID_INVALID;
+                }
+                mState = PakFile::LOADED;
+                if (mPakType != kPakTypeCount)
+                {
+                    const PakInfoNode* Info = GetInfo();
+                    BrocSys::NotifyPakLoaded(
+                        ((InplaceString*)Info->longName)->mStr);
+                }
+                G_ParseInteractionInfo(mPakId);
+                unsigned int numSections = mHeader->numSections;
+                int sectionIdx = mDefaultSectionIdx + 1;
+                if (sectionIdx < (int)numSections)
+                {
+                    work_done = 24 * (unsigned int)sectionIdx;
+                    do
+                    {
+                        PakHeader::Section* sec =
+                            (PakHeader::Section*)((char*)mHeader->sections
+                                                  + work_done);
+                        tlFixedString audioBank;
+                        memset(&audioBank, 0, sizeof(audioBank));
+                        if (strncmp((const char*)sec->name, "AUDIO", 8)
+                            == 0)
+                        {
+                            if (sec->numFiles != 0)
+                            {
+                                for (unsigned int fileIdx = 0;
+                                     fileIdx < sec->numFiles; ++fileIdx)
+                                {
+                                    PakHeader::File* v13 =
+                                        &sec->files[fileIdx];
+                                    const char* v57 = v13->shortName;
+                                    ELanguage lang = kLanguageUnlocalized;
+                                    if (strstr(v57, ".wen") != nullptr)
+                                        lang = kLanguageEnglish;
+                                    else if (strstr(v13->shortName, ".wde")
+                                             != nullptr)
+                                        lang = kLanguageGerman;
+                                    else if (strstr(v13->shortName, ".wfr")
+                                             != nullptr)
+                                        lang = kLanguageFrench;
+                                    else if (strstr(v13->shortName, ".wes")
+                                             != nullptr)
+                                        lang = kLanguageSpanish;
+                                    else if (strstr(v13->shortName, ".wit")
+                                             != nullptr)
+                                        lang = kLanguageItalian;
+                                    ae_fixed_string<128, unsigned char> oBuff;
+                                    int oLen = 0;
+                                    AeStringSupport::CStrToAeStr(
+                                        (char*)oBuff.mBuff, &oLen, 127,
+                                        v13->shortName);
+                                    oBuff.mLength = (unsigned char)oLen;
+                                    ae_fixed_string<128, unsigned char>
+                                        fname = oBuff.get_file_name(true);
+                                    tlFixedString v60(
+                                        (const char*)fname.mBuff);
+                                    char path[128];
+                                    strcpy(path, mPath.mBuff);
+                                    char* slash = strrchr(path, '\\');
+                                    if (slash != nullptr)
+                                        slash[1] = 0;
+                                    strcat(path, v13->shortName);
+                                    AudioBankMgr::sInst->RegisterWbk(
+                                        v60, path, lang, mPakId);
+                                    if (fileIdx == 0)
+                                        audioBank =
+                                            tlFixedString(v60.str);
+                                }
+                            }
+                            tlFixedString v64 = audioBank;
+                            AudioBankMgr::sInst->LoadWbk(v64, true);
+                        }
+                        else if (strncmp((const char*)sec->name, "ANIM", 8)
+                                 == 0)
+                        {
+                            for (unsigned int v28 = 0; v28 < sec->numFiles;
+                                 ++v28)
+                            {
+                                PakHeader::File* v13 = &sec->files[v28];
+                                InstanceBankMgr::sInst->RegisterAnimOffset(
+                                    v13->shortName,
+                                    sec->banks[0].fileOffset
+                                        + v13->bankOffset,
+                                    v13->fileSize, mPakId);
+                            }
+                        }
+                        else if (strncmp((const char*)sec->name, "DTEX", 8)
+                                 == 0)
+                        {
+                            if (sec->numFiles != 0)
+                            {
+                                for (unsigned int bankIdx = 0;
+                                     bankIdx < sec->numFiles; ++bankIdx)
+                                {
+                                    PakHeader::File* v31 =
+                                        &sec->files[bankIdx];
+                                    Com_StripExtension(v31->shortName,
+                                                       (char*)v31->shortName);
+                                    tlFixedString v66(v31->shortName);
+                                    InstanceBankMgr::sInst->Add(
+                                        INSTBANK_TYPE_FX, mPakId, v66,
+                                        sec->banks[0].fileOffset
+                                            + v31->bankOffset);
+                                    tlFixedString v65(v31->shortName);
+                                    InstanceBankMgr::sInst->Add(
+                                        INSTBANK_TYPE_DISCTEX, mPakId, v65,
+                                        v31->fileSize);
+                                }
+                            }
+                        }
+                        work_done += 24;
+                        ++sectionIdx;
+                    } while (sectionIdx < (int)mHeader->numSections);
+                }
+                if (mDefaultSectionIdx != -1)
+                {
+                    PakHeader::Section* v37 =
+                        &mHeader->sections[mDefaultSectionIdx];
+                    if (v37->numBanks != 0)
+                    {
+                        for (unsigned int bankIdx = 0;
+                             bankIdx < v37->numBanks; ++bankIdx)
+                        {
+                            PakHeader::Bank& v40 = v37->banks[bankIdx];
+                            unsigned int v39 = v40.flags;
+                            if ((v39 & 4) != 0)  // serialized bank flag
+                            {
+                                if ((v39 & PAK_BANK_FLAG_APK_LOADED) != 0)
+                                {
+                                    v40.flags &= 0xFFFBFFFF;
+                                    apk::apkDeleteFile(
+                                        (apk::apkFile*)((char*)v40.memptr
+                                                        + 8));
+                                }
+                                if ((v40.flags & PAK_BANK_FLAG_MEM) != 0)
+                                    stream_free(v40.memptr);
+                                v40.memptr = nullptr;
+                                v40.memsize = 0;
+                            }
+                        }
+                    }
+                }
+                if (!mSerializedAlloc.IsEmpty())
+                {
+                    BankManager::sInst->release(mSerializedAlloc);
+                    if (!mSerializedAlloc.IsEmpty())
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\PakFile.cpp";
+                        AeAssert::gCurrentLine = 1213;
+                        AeAssert::gCurrentExpr =
+                            "mSerializedAlloc.IsEmpty()";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert(
+                                   "bank manager should clear this bitset"))
+                            __debugbreak();
+                    }
+                }
+                CopyHeader();
+            }
+        }
+        else  // LOADING_DATA
+        {
+            while (IsNextFileReady())
+            {
+                if (!fillingBanks && work_done >= (unsigned int)max_work)
+                    break;
+                PakHeader* mHeader = this->mHeader;
+                unsigned int mCurrentFile = this->mCurrentFile;
+                PakHeader::File* v52 =
+                    &mHeader->sections[mDefaultSectionIdx]
+                         .files[mCurrentFile];
+                const char* v71 = v52->shortName;
+                int size = v52->fileSize;
+                mCurrDecodeFile = v52->longName;
+                tlPrintf("pak: [% 3d/%d] %s\n", mCurrentFile + 1,
+                         mHeader->sections[mDefaultSectionIdx].numFiles,
+                         v52->shortName);
+                work_done += (unsigned int)GetWorkAmount(v71);
+                Decode(v71, size, mPakId);
+                ++this->mCurrentFile;
+                DetermineNextFile();
+                if (mCurrentFilePtr == nullptr && mCurrentApk == nullptr)
+                    break;
+            }
+            mCurrDecodeFile = nullptr;
+        }
     }
+    else if (IsRequestDone(&mHeaderRequestId))  // LOADING_HEADER
+    {
+        gThroughputMeasurer.stop(0x8000);
+        mHeaderBuffer = this->mHeaderBuffer;
+        mHeader = (PakHeader*)mHeaderBuffer;
+        mHeader->FixUp(false, 1);
+        if (mHeader->numSections != 0)
+        {
+            if (mHeader->headerShortSize > PakFile::sHeaderBufferSize)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                AeAssert::gCurrentLine = 1004;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning(
+                           "resizing pak header buffer to %d",
+                           (mHeader->headerShortSize + 0x7FFF)
+                               & 0xFFFF8000))
+                    __debugbreak();
+                PakFile::sHeaderBufferSize =
+                    (mHeader->headerShortSize + 0x7FFF) & 0xFFFF8000;
+                PakFile::sHeaderBuffer =
+                    stream_alloc(PakFile::sHeaderBufferSize, false);
+                stream_free(mHeaderBuffer);
+                mHeaderBuffer = PakFile::sHeaderBuffer;
+                codNflReadFile(mFileId, 0, mHeaderBuffer,
+                               PakFile::sHeaderBufferSize);
+                mHeader = (PakHeader*)mHeaderBuffer;
+                mHeader->FixUp(false, 1);
+            }
+            mHeaderRequestId.nflId = NFL_REQUEST_ID_INVALID;
+            AeAssert::gCurrentPakFile = mPath.mBuff;
+            AeAssert::gCurrentPakResource = nullptr;
+            if (mHeader->id != 1179664715)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                AeAssert::gCurrentLine = 1021;
+                AeAssert::gCurrentExpr = "mHeader->id == ('FPAK')";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Doesn't seem to be a pak"))
+                    __debugbreak();
+            }
+            if (mHeader->version > 2.0599999f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                AeAssert::gCurrentLine = 1022;
+                AeAssert::gCurrentExpr = "! (mHeader->version > (2.06f))";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "Version mismatch: pak is newer than game"))
+                    __debugbreak();
+            }
+            if (mHeader->version < 2.0599999f)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+                AeAssert::gCurrentLine = 1023;
+                AeAssert::gCurrentExpr = "! (mHeader->version < (2.06f))";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("Version mismatch: old pak"))
+                    __debugbreak();
+            }
+            AeAssert::gCurrentPakFile = nullptr;
+            AeAssert::gCurrentPakResource = nullptr;
+            tlPrintf("pak: %d files, %d sections\n",
+                     mHeader->sections->numFiles, mHeader->numSections);
+            if (mOnlyLoadHeader)
+            {
+                tlPrintf("pak header: done loading %s\n", mPath.mBuff);
+                mState = PakFile::LOADED;
+            }
+            else
+            {
+                InitiateDataLoad();
+            }
+        }
+        else
+        {
+            tlPrintf("empty pakfile %s\n", mPath.mBuff);
+            mLoadingState = (ELoadingState)PakFile::LOADING_DONE;
+        }
+    }
+}
+
+// ea: 0x67A150 (decoder dispatch; port with the GetDecoder table)
+void PakFile::Decode(const char* name, int size, TPakId pakId)
+{
+    (void)name; (void)size; (void)pakId;
 }
 
 void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
@@ -5918,17 +6266,6 @@ const char* GetFileExt(const char* name)
     return result;
 }
 
-// RecordResourceType (streamer.o PakFile.h; verified against IDA enum)
-enum RecordResourceType {
-    Resource_VertexBuffer = 0,
-    Resource_Texture = 1,
-    Resource_Palette = 2,
-    Resource_ColorBuffer = 3,
-    Resource_ZetaBuffer = 4,
-    Resource_Reserved = 5,
-    Resource_MAX = 6,
-};
-
 // ea: 0x664030
 RecordResourceType GetWorkAmount(const char* name)
 {
@@ -6081,8 +6418,9 @@ unsigned char* stream_alloc(int size, bool aram)
 }
 
 // ea: 0x6651A0
-void stream_free(unsigned char* ptr)
+void stream_free(unsigned char* ptr, bool aram)
 {
+    (void)aram;
     if (PakFile::sHeaderBuffer == ptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::COD3;
@@ -8254,6 +8592,23 @@ void InstanceBankMgr::RegisterAnimOffset(const char* name,
 // ============================================================================
 // GetName / RegisterMesh / GetMultiApkFcn (streamer.o 0x66F3C0 - 0x66F670)
 // ============================================================================
+// ea: 0x4E67D0 (streamer.o COMDAT; ae_fixed_string<128,unsigned char>)
+template <>
+ae_fixed_string<128, unsigned char>
+ae_fixed_string<128, unsigned char>::get_file_name(bool truncExt) const
+{
+    ae_fixed_string<128, unsigned char> result;
+    char r[127];
+    r[0] = 0;
+    int dstLen = 0;
+    AeStringSupport::GetFileName(r, &dstLen, (const char*)mBuff, mLength,
+                                 truncExt);
+    int oLen = 0;
+    AeStringSupport::AeStrCopy((char*)result.mBuff, &oLen, 127, r, dstLen);
+    result.mLength = (unsigned char)oLen;
+    return result;
+}
+
 // ea: 0x686FF0 (streamer.o COMDAT; ae_fixed_string<512,unsigned short>)
 template <>
 ae_fixed_string<512, unsigned short>
