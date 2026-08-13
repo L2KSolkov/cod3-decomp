@@ -2870,7 +2870,26 @@ class nalComponentBase {
 public:
     nalComponentBase() {}
     virtual ~nalComponentBase() {}
+
+    virtual unsigned int GetType() const = 0;
+    virtual int GetPoseSize() const = 0;
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const = 0;
+
+    // ?BlendIntra@nalComponentBase@@UBEXHPAXPBX1M@Z (0x55E830)
+    virtual void BlendIntra(int count, void* dst, const void* srcA,
+                            const void* srcB, float blend) const;
 };
+
+// ea: 0x0055E830
+void nalComponentBase::BlendIntra(int count, void* dst, const void* srcA,
+                                  const void* srcB, float blend) const
+{
+    typedef void (__thiscall* BlendFn)(void*, int, void*, const void*,
+                                       const void*, float);
+    ((BlendFn)((void**)*(void**)this)[3])((void*)this, count, dst, srcA,
+                                          srcB, blend);
+}
 
 // nalGenericComponentHandle<T> - anim.o ctors (0x55ED10/30, 0x55F120/40)
 namespace nalGeneric {
@@ -5115,9 +5134,21 @@ public:
     CODNoteTrack(nalRegisterKey key);  // ea: 0x005614F0
     virtual ~CODNoteTrack();           // ea: 0x00560220
 
+    virtual unsigned int GetType() const;  // 0x561590
+    virtual int GetPoseSize() const;       // 0x5615A0
+    virtual int GetPoseAlignment() const;  // 0x5615B0
+    virtual void Blend(int count, void* dst, const void* srcA,
+                       const void* srcB, float blend) const;  // 0x5615C0
+    virtual void BlendArray(int count, void* dst, const void* srcA,
+                            const void* srcB,
+                            const float*& blendArray) const;  // 0x5615D0
     virtual void VirtualAdvanceAnimComponentData(
-        const void** animComponentData);  // ea: 0x005615E0
+        const void*& animComponentData) const;  // ea: 0x005615E0
+
+    static unsigned char TypeID;  // ?TypeID@CODNoteTrack@@2EA @ 0xF258EC
 };
+
+unsigned char CODNoteTrack::TypeID = 0;
 
 // ea: 0x005614F0
 CODNoteTrack::CODNoteTrack(nalRegisterKey key)
@@ -5133,16 +5164,59 @@ CODNoteTrack::CODNoteTrack(nalRegisterKey key)
 // ea: 0x00560220
 CODNoteTrack::~CODNoteTrack() {}
 
+// ea: 0x00561590
+unsigned int CODNoteTrack::GetType() const
+{
+    return (unsigned int)(intptr_t)&TypeID;
+}
+
+// ea: 0x005615A0
+int CODNoteTrack::GetPoseSize() const
+{
+    return 0;
+}
+
+// ea: 0x005615B0
+int CODNoteTrack::GetPoseAlignment() const
+{
+    return 1;
+}
+
+// ea: 0x005615C0
+void CODNoteTrack::Blend(int count, void* dst, const void* srcA,
+                         const void* srcB, float blend) const
+{
+    (void)count; (void)dst; (void)srcA; (void)srcB; (void)blend;
+}
+
+// ea: 0x005615D0
+void CODNoteTrack::BlendArray(int count, void* dst, const void* srcA,
+                              const void* srcB,
+                              const float*& blendArray) const
+{
+    (void)count; (void)dst; (void)srcA; (void)srcB; (void)blendArray;
+}
+
 // ea: 0x005615E0
 void CODNoteTrack::VirtualAdvanceAnimComponentData(
-    const void** animComponentData)
+    const void*& animComponentData) const
 {
-    *animComponentData = (const char*)*animComponentData
-                         + *(const unsigned int*)*animComponentData;
+    const void* cur = animComponentData;
+    *(const void**)&animComponentData =
+        (const char*)cur + *(const unsigned int*)cur;
 }
 
 // nalComponent<BASE,DATA,TRACK> - anim.o COD note-track component (all
 // virtuals from the binary vftable; eases per function)
+
+// ??$FastCopy@VCODNoteTrack@@X@@YAXPBUnalComponentInfo@nalGeneric@@AAPAXAAPBX@Z
+template <typename TRACK, typename VOID>
+void FastCopy(const nalGeneric::nalComponentInfo* componentInfo,
+              void*& dstPtr, const void*& srcPtr)
+{
+    (void)componentInfo; (void)dstPtr; (void)srcPtr;
+}
+
 template <typename BASE, typename DATA, typename TRACK>
 class nalComponent : public BASE {
 public:
@@ -5155,46 +5229,151 @@ protected:
     nalComponent() {}  // ea: 0x00560560 (protected IAE in binary)
     virtual ~nalComponent() {}  // ea: 0x0055ECE0 (protected MAE in binary)
 
-    virtual void VirtualAlignSkeletonData(const void** skeletonData) {}          // 0x5605C0
-    virtual void VirtualAdvanceSkeletonData(const void** skeletonData) {}        // 0x5605D0
+public:
+    virtual void VirtualAlignSkeletonData(
+        const void*& skeletonData) const {}          // 0x5605C0
+    virtual void VirtualAdvanceSkeletonData(
+        const void*& skeletonData) const {}          // 0x5605D0
     virtual void VirtualAlignSkeletonComponentData(
-        const void** skeletonComponentData) {}                                  // 0x5605E0
+        const void*& skeletonComponentData) const {} // 0x5605E0
     virtual void VirtualAdvanceSkeletonComponentData(
-        const void** skeletonComponentData) {}                                  // 0x5605F0
-    virtual void VirtualAlignAnimData(const void** animData) {}                  // 0x560600
-    virtual void VirtualAdvanceAnimData(const void** animData) {}                // 0x560610
+        const void*& skeletonComponentData) const {} // 0x5605F0
+    virtual void VirtualAlignAnimData(
+        const void*& animData) const {}              // 0x560600
+    virtual void VirtualAdvanceAnimData(
+        const void*& animData) const {}              // 0x560610
     virtual void VirtualAlignAnimComponentData(
-        const void** animComponentData)  // 0x560620
+        const void*& animComponentData) const        // 0x560620
     {
-        *animComponentData =
-            (const void*)(((uintptr_t)*animComponentData + 3) & ~3u);
+        const void* cur = animComponentData;
+        *(const void**)&animComponentData =
+            (const void*)(((uintptr_t)cur + 3) & ~3u);
     }
     virtual void VirtualAdvanceAnimComponentData(
-        const void** animComponentData)  // 0x560570
+        const void*& animComponentData) const        // 0x560570
     {
-        *animComponentData = (const char*)*animComponentData
-                             + *(const unsigned int*)*animComponentData;
+        const void* cur = animComponentData;
+        *(const void**)&animComponentData =
+            (const char*)cur + *(const unsigned int*)cur;
     }
 
-    virtual void SetupPartialDecode(nalComponentEnum& componentEnum,
-                                    void** state, const void** src,
-                                    int quantity);  // 0x560840
-    virtual void PartialDecode(nalComponentEnum& componentEnum, void** dst,
-                               void** state, void* work, int offset,
-                               int quantity, int stride);  // 0x560910
+    virtual void Process(const nalGeneric::nalComponentInfo* componentInfo,
+                         void*& pose, void*& extra) const {}  // 0x560830
+    virtual void SetupPartialDecode(
+        nalComponentEnum& componentEnum, void*& state,
+        const void*& src, int quantity) const  // 0x560840
+    {
+        (void)state; (void)src; (void)quantity;
+        TrackLoop(componentEnum);
+    }
+    virtual void PartialDecode(nalComponentEnum& componentEnum, void*& dst,
+                               void*& state, void* work, int offset,
+                               int quantity, int stride) const  // 0x560910
+    {
+        (void)dst; (void)state; (void)work; (void)offset;
+        (void)quantity; (void)stride;
+        TrackLoop(componentEnum);
+    }
+    virtual void Decode(nalComponentEnum& componentEnum, void*& dst,
+                        const void*& src, int quantity,
+                        int stride) const  // 0x5609E0
+    {
+        (void)dst; (void)src; (void)quantity; (void)stride;
+        TrackLoop(componentEnum);
+    }
+    virtual void Skip(nalComponentEnum& componentEnum, void*& dst,
+                      const void*& src, int quantity) const  // 0x560AB0
+    {
+        (void)dst; (void)src; (void)quantity;
+        TrackLoop(componentEnum);
+    }
+    virtual void Convert(nalComponentEnum& componentEnum, void* dst,
+                         const void*& src, const void* def,
+                         const int* offsetTable) const  // 0x560B80
+    {
+        (void)dst; (void)src; (void)def; (void)offsetTable;
+        TrackLoop(componentEnum);
+    }
     virtual void ConvertPerfect(nalComponentEnum& componentEnum, void* dst,
-                                nalComponentEnum** src, const void* def,
-                                const int* offsetTable);  // 0x560C90
+                                const void*& src, const void* def,
+                                const int* offsetTable) const  // 0x560C90
+    {
+        (void)dst; (void)def; (void)offsetTable;
+        const void** CustomAnimData = componentEnum.CustomAnimData;
+        const void** CustomSkeletonData = componentEnum.CustomSkeletonData;
+        *CustomAnimData =
+            (const void*)(((uintptr_t)*CustomAnimData + 3) & ~3u);
+        const void* v9 = src;
+        int Count = componentEnum.ComponentInfo->Count;
+        char* v11 = (char*)*CustomSkeletonData;
+        char* v12 = (char*)*CustomAnimData;
+        if (Count > 0)
+        {
+            v11 += Count;
+            v12 += 12 * Count;
+        }
+        *(const void**)&src = v9;
+        *CustomSkeletonData = v11;
+        *CustomAnimData = v12;
+    }
+    virtual void GetTrajectory(nalComponentEnum& componentEnum, void* dst,
+                               bool trajabs,
+                               const int* offsetTable) const  // 0x560D00
+    {
+        (void)dst; (void)trajabs; (void)offsetTable;
+        TrackLoop(componentEnum);
+    }
+    virtual void Construct(const nalGeneric::nalComponentInfo* componentInfo,
+                           void*& ptr) const {}  // 0x560E20
+    virtual void Delete(const nalGeneric::nalComponentInfo* componentInfo,
+                        void*& ptr) const {}  // 0x560E30
+    virtual void Copy(const nalGeneric::nalComponentInfo* componentInfo,
+                      void*& dstPtr,
+                      const void*& srcPtr) const  // 0x560E40
+    {
+        FastCopy<TRACK, void>(componentInfo, dstPtr, srcPtr);
+    }
     virtual void ReleaseCache(nalComponentEnum& componentEnum,
-                              void** ptr);  // 0x560E90
+                              void*& ptr) const  // 0x560E90
+    {
+        (void)ptr;
+        const nalGeneric::nalComponentInfo* ComponentInfo =
+            componentEnum.ComponentInfo;
+        for (int i = 0; i < ComponentInfo->Count; ++i)
+        {
+            if (i + ComponentInfo->StartIndex
+                    >= *(int*)((char*)*(void**)((char*)componentEnum.Anim
+                                                + 0x30)
+                               + 0x7C)
+                && _tlAssert(
+                       "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                       621, "track < GetSkeleton()->PoseTrackCount",
+                       "attempt to access an invalid track"))
+            {
+                __debugbreak();
+            }
+            ComponentInfo = componentEnum.ComponentInfo;
+        }
+    }
+    virtual void CycleTrajectory(nalComponentEnum& componentEnum, void* ptr,
+                                 void* prev, int cycle, bool trajabs,
+                                 const int* offsetTable) const  // 0x5622D0
+    {
+        FastCycleTrajectory<TRACK, void, nalComponentData::SkeletonData,
+                            nalComponentData::AnimData,
+                            nalComponentData::SkeletonComponentData,
+                            CODNoteData::AnimComponentData>(
+            componentEnum, ptr, prev, cycle, trajabs, offsetTable);
+    }
 
-    void TrackLoop(nalComponentEnum& componentEnum);
+    void TrackLoop(nalComponentEnum& componentEnum) const;
 };
 
 // Track-bitmask advance helper shared by SetupPartialDecode / PartialDecode /
 // FastCycleTrajectory
 template <typename BASE, typename DATA, typename TRACK>
-void nalComponent<BASE, DATA, TRACK>::TrackLoop(nalComponentEnum& componentEnum)
+void nalComponent<BASE, DATA, TRACK>::TrackLoop(
+    nalComponentEnum& componentEnum) const
 {
     const void** animData = componentEnum.CustomAnimData;
     *animData =
@@ -5224,76 +5403,6 @@ void nalComponent<BASE, DATA, TRACK>::TrackLoop(nalComponentEnum& componentEnum)
         }
         ComponentInfo = componentEnum.ComponentInfo;
     }
-}
-
-// ea: 0x00560840
-template <typename BASE, typename DATA, typename TRACK>
-void nalComponent<BASE, DATA, TRACK>::SetupPartialDecode(
-    nalComponentEnum& componentEnum, void** state, const void** src,
-    int quantity)
-{
-    TrackLoop(componentEnum);
-    (void)state; (void)src; (void)quantity;
-}
-
-// ea: 0x00560910
-template <typename BASE, typename DATA, typename TRACK>
-void nalComponent<BASE, DATA, TRACK>::PartialDecode(
-    nalComponentEnum& componentEnum, void** dst, void** state, void* work,
-    int offset, int quantity, int stride)
-{
-    TrackLoop(componentEnum);
-    (void)dst; (void)state; (void)work; (void)offset; (void)quantity;
-    (void)stride;
-}
-
-// ea: 0x00560C90
-template <typename BASE, typename DATA, typename TRACK>
-void nalComponent<BASE, DATA, TRACK>::ConvertPerfect(
-    nalComponentEnum& componentEnum, void* dst, nalComponentEnum** src,
-    const void* def, const int* offsetTable)
-{
-    const void** CustomAnimData = componentEnum.CustomAnimData;
-    const void** CustomSkeletonData = componentEnum.CustomSkeletonData;
-    *CustomAnimData =
-        (const void*)(((uintptr_t)*CustomAnimData + 3) & ~3u);
-    nalComponentEnum* v9 = *src;
-    int Count = componentEnum.ComponentInfo->Count;
-    char* v11 = (char*)*CustomSkeletonData;
-    char* v12 = (char*)*CustomAnimData;
-    if (Count > 0)
-    {
-        v11 += Count;
-        v12 += 12 * Count;
-    }
-    *src = v9;
-    *CustomSkeletonData = v11;
-    *CustomAnimData = v12;
-    (void)dst; (void)def; (void)offsetTable;
-}
-
-// ea: 0x00560E90
-template <typename BASE, typename DATA, typename TRACK>
-void nalComponent<BASE, DATA, TRACK>::ReleaseCache(
-    nalComponentEnum& componentEnum, void** ptr)
-{
-    const nalGeneric::nalComponentInfo* ComponentInfo =
-        componentEnum.ComponentInfo;
-    for (int i = 0; i < ComponentInfo->Count; ++i)
-    {
-        if (i + ComponentInfo->StartIndex
-                >= *(int*)((char*)*(void**)((char*)componentEnum.Anim + 0x30)
-                           + 0x7C)
-            && _tlAssert(
-                   "c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
-                   621, "track < GetSkeleton()->PoseTrackCount",
-                   "attempt to access an invalid track"))
-        {
-            __debugbreak();
-        }
-        ComponentInfo = componentEnum.ComponentInfo;
-    }
-    (void)ptr;
 }
 
 // Force emission of the anim.o instantiation.
