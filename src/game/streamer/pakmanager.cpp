@@ -4048,6 +4048,129 @@ const char* GetFileExt(const char* name)
     return result;
 }
 
+// RecordResourceType (streamer.o PakFile.h; verified against IDA enum)
+enum RecordResourceType {
+    Resource_VertexBuffer = 0,
+    Resource_Texture = 1,
+    Resource_Palette = 2,
+    Resource_ColorBuffer = 3,
+    Resource_ZetaBuffer = 4,
+    Resource_Reserved = 5,
+    Resource_MAX = 6,
+};
+
+// ea: 0x664030
+RecordResourceType GetWorkAmount(const char* name)
+{
+    const char* v1 = GetFileExt(name);
+
+    static const char* const tex_exts[] = {
+        ".ifl", ".pctex", ".pcxtex", ".ps2tex", ".ps3tex", ".xbtex",
+        ".xetex", ".pcdtex", ".pcxdtex", ".ps2dtex", ".ps3dtex",
+        ".xbdtex", ".xedtex", ".icn", ".pclm", ".pcxlm", ".ps2lm",
+        ".ps3lm", ".xblm", ".xelm", ".pcfont", ".pcxfont", ".ps2font",
+        ".ps3font", ".xbfont", ".xefont", ".pcxfx", ".xefx", ".ps3fx",
+        ".charskel", ".pcmesh", ".pcxmesh", ".ps2mesh", ".ps3mesh",
+        ".xbmesh", ".xemesh", ".gcmesh", ".spt",
+    };
+    for (const char* ext : tex_exts)
+    {
+        if (_stricmp(v1, ext) == 0)
+            return Resource_Texture;
+    }
+
+    static const char* const cell_exts[] = {
+        ".pccell", ".pcxcell", ".ps2cell", ".ps3cell", ".xbcell",
+        ".xecell", ".gccell",
+    };
+    for (const char* ext : cell_exts)
+    {
+        if (_stricmp(v1, ext) == 0)
+            return (RecordResourceType)10;  // cell
+    }
+
+    static const char* const anim_exts[] = {
+        ".pcanim", ".pcxanim", ".ps2anim", ".ps3anim", ".xbanim",
+        ".xeanim", ".gcanim", ".pcsanim", ".pcxsanim", ".ps2sanim",
+        ".ps3sanim", ".xbsanim", ".xesanim", ".gcsanim", ".pcskel",
+        ".pcxskel", ".ps2skel", ".ps3skel", ".xbskel", ".xeskel",
+        ".gcskel",
+    };
+    for (const char* ext : anim_exts)
+    {
+        if (_stricmp(v1, ext) == 0)
+            return Resource_Texture;
+    }
+
+    static const char* const db_exts[] = {
+        ".db", ".dbb", ".gdb", ".gdbb", ".dlg", ".dlgb", ".btr",
+        ".btrb", ".fli", ".ib", ".lgrid", ".lgridb", ".bmips",
+        ".xmpb", ".xmpbb", ".xmb", ".xmbb", ".aitb", ".aitbb",
+    };
+    for (const char* ext : db_exts)
+    {
+        if (_stricmp(v1, ext) == 0)
+            return Resource_VertexBuffer;
+    }
+
+    if (_stricmp(v1, ".atrb") == 0 || _stricmp(v1, ".atrbb") == 0)
+        return Resource_Texture;
+
+    if (_stricmp(v1, ".cfgstr") == 0 || _stricmp(v1, ".cfgstrb") == 0
+        || _stricmp(v1, ".zbb") == 0 || _stricmp(v1, ".zbbb") == 0)
+        return Resource_VertexBuffer;
+
+    if (_stricmp(v1, ".scn") == 0 || _stricmp(v1, ".scnb") == 0)
+        return (RecordResourceType)99;  // scene
+
+    if (_stricmp(v1, ".heap") == 0)
+        return Resource_VertexBuffer;
+
+    if (_stricmp(v1, ".bpe") == 0 || _stricmp(v1, ".bpeb") == 0
+        || _stricmp(v1, ".bgi") == 0 || _stricmp(v1, ".bgib") == 0)
+        return Resource_Texture;
+
+    if (_stricmp(v1, ".wbk") == 0 || _stricmp(v1, ".wen") == 0
+        || _stricmp(v1, ".wde") == 0 || _stricmp(v1, ".wfr") == 0
+        || _stricmp(v1, ".wes") == 0 || _stricmp(v1, ".wit") == 0
+        || _stricmp(v1, ".lpth") == 0 || _stricmp(v1, ".zpth") == 0)
+        return Resource_VertexBuffer;
+
+    if (_stricmp(v1, ".panel") == 0)
+        return (RecordResourceType)10;
+
+    if (_stricmp(v1, ".spg") == 0 || _stricmp(v1, ".spgb") == 0
+        || _stricmp(v1, ".drng") == 0 || _stricmp(v1, ".drngb") == 0)
+        return Resource_Texture;
+
+    if (_stricmp(v1, ".rel") != 0 && _stricmp(v1, ".stb") != 0
+        && _stricmp(v1, ".stbb") != 0)
+    {
+        if (_stricmp(v1, ".cg") != 0 && _stricmp(v1, ".cgb") != 0
+            && _stricmp(v1, ".dcg") != 0 && _stricmp(v1, ".dcgb") != 0
+            && _stricmp(v1, ".ncg") != 0 && _stricmp(v1, ".ncgb") != 0)
+        {
+            if (_stricmp(v1, ".dtr") != 0 && _stricmp(v1, ".dtrb") != 0
+                && _stricmp(v1, ".phy") != 0
+                && _stricmp(v1, ".phyb") != 0
+                && _stricmp(v1, ".bindic") != 0
+                && _stricmp(v1, ".bindicb") != 0
+                && _stricmp(v1, ".mpanim") != 0
+                && _stricmp(v1, ".mpanimb") != 0
+                && _stricmp(v1, ".vce") != 0
+                && _stricmp(v1, ".bvce") != 0
+                && _stricmp(v1, ".csv") != 0)
+            {
+                if (_stricmp(v1, ".wind") != 0)
+                    _stricmp(v1, ".seed");
+            }
+            return Resource_VertexBuffer;
+        }
+        return Resource_Texture;
+    }
+    return Resource_VertexBuffer;
+}
+
 // ea: 0x665080
 unsigned char* stream_alloc(int size, bool aram)
 {
