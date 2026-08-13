@@ -4254,6 +4254,27 @@ void* apkGetResource(const tlFixedString& FileName, unsigned int FourCC)
     return cdGetResource(FileName, FourCC, true);
 }
 
+// ea: 0x677500
+apk::apkFile* cdLoadApkInplace(const char* name, unsigned char* data,
+                               int size, TPakId pakId, PakFile* pak)
+{
+    (void)name; (void)size;
+    PakHeapContext heap_ctx(pakId, false);
+    apk::apkFile* FileInPlace =
+        apk::apkLoadFileInPlace(data, true);
+    pak->AddApk(FileInPlace);
+    if (heap_ctx.mPakId != PAK_ID_INVALID)
+    {
+        TlSystemCallbacks::LockTlAllocsToPakHeap(heap_ctx.mLastState, false);
+        ae_sized_array<TPakId, 128>& ContextStack =
+            (ae_sized_array<TPakId, 128>&)PakManager::sInst
+                ->GetContextStack();
+        if (ContextStack.m_size != 0)
+            ContextStack.m_size = ContextStack.m_size - 1;
+    }
+    return FileInPlace;
+}
+
 // ea: 0x671360
 PakInfoNode* PakManager::GetBestUnloadablePak()
 {
