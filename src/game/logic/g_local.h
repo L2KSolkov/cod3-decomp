@@ -1280,7 +1280,8 @@ enum ERumbleMotorID {
     kRumbleMax = 1,
     kRumbleCount = 2,
 };
-struct RumbleEffect {
+class RumbleEffect {
+public:
     struct RumbleData {
         bool  enabled;             // +0x00
         unsigned char _pad[0x4 - 0x1];

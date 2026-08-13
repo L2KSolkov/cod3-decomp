@@ -16,7 +16,8 @@ public:
 class RumbleManager {
 public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
-    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
+                                    float intensity);
 };
 
 
@@ -382,7 +383,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                 effect.mRumbleDataArray[1].ramp_up_duration = 0.5f;
                 effect.mRumbleDataArray[1].steady_duration = 0.5f;
                 effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
-                ((RumbleManager*)rumbleMgr)->Play(&effect, 1.0f);
+                ((RumbleManager*)rumbleMgr)->Play(effect, 1.0f);
             }
         }
         else
@@ -413,7 +414,7 @@ void PlayerDead(Entity* self, Entity* inflictor, Entity* attacker, int damage,
                 effect.mRumbleDataArray[1].delay = 0.0f;
                 effect.mRumbleDataArray[1].ramp_up_duration = 0.2f;
                 effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
-                ((RumbleManager*)rumbleMgr)->Play(&effect, 1.0f);
+                ((RumbleManager*)rumbleMgr)->Play(effect, 1.0f);
             }
         }
     }

@@ -1402,7 +1402,7 @@ bool Entity_has_zone_collision(const void* self)
 // ============================================================================
 // Layout twins of core_systems.h (core_systems.h can't be included with
 // g_local.h). ctors/allocators are provided by core.o (ctor_dtor.cpp).
-struct WaitTilOutput;
+class WaitTilOutput;
 class EntityNotify {
 public:
     unsigned char m_dlist_node[8];   // +0x00
@@ -2202,7 +2202,7 @@ void CameraShakeInstance_SetTime(CameraShakeInstance* self, float a)
     (void)self; (void)a;
 }
 
-struct DbTable;
+class DbTable;
 DbTable* DbTableSet_GetTable(void* self, const char* name)
 {
     (void)self; (void)name;
@@ -2214,7 +2214,7 @@ InplaceString* InplaceTree_FindStr(const void* tree, const char* const* key)
     (void)tree; (void)key;
     return nullptr;
 }
-struct DbRow;
+class DbRow;
 const InplaceString* DbRow_GetFieldValuePtrString(const DbRow* row, int col)
 {
     (void)row; (void)col;

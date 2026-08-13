@@ -37,7 +37,7 @@ enum ECollisionMaterial : int {
 enum EStanceType : int { kStanceStand = 0, kStanceCrouch = 1, kStanceProne = 2 };
 enum EWeaponClass : int { kWeaponClassNone = 0, kWeaponClassBullet = 1 };
 enum EAction : int { kActionNone = 0, kActionPrimary = 1, kActionSecondary = 2 };
-typedef int EUserBoneId;         // TODO: enum values from IDA
+enum EUserBoneId : int { kUserBoneIdMin = 0 };  // TODO: enum values from IDA
 enum nslWaveID : int;            // TODO: enum values from IDA
 
 struct ParticleEffect;
@@ -47,8 +47,15 @@ struct LightEffect;
 struct CameraShakeInstance;
 struct EndOnScriptNode;
 struct DbStringHashTable;
-struct DbTable;
+class DbTable;
 struct DbQuery;
+class EntityHandleDb;
+class DbRow;
+class DbGraphNode;
+class DbQueryResults;
+class DbTableSet;
+class StringTableEntry;
+class EffectEventSys;
 
 // ============================================================================
 // Bitmask<T> - typed flag word (sizeof(T) bytes)
@@ -111,7 +118,8 @@ static_assert(sizeof(CollisionDesc) == 0x30, "CollisionDesc size mismatch");
 // SoundParams - effect sound parameters (56 bytes)
 // Size: 0x38 (56 bytes) - verified against IDA
 // ============================================================================
-struct SoundParams {
+class SoundParams {
+public:
     TPakId                       mPakId;        // +0x00
     DbLinkedHandle<void, void>   mEnt;          // +0x04
     int                          mFlags;        // +0x08
@@ -138,7 +146,7 @@ static_assert(offsetof(SoundParams, mDuration) == 0x18,
 struct AbstractEffect {
     virtual ~AbstractEffect();
     AbstractEffect() { memset(this, 0, sizeof(AbstractEffect)); }
-    AbstractEffect(TPakId pak_id, DbLinkedHandle<void, void> ent, int flags,
+    AbstractEffect(TPakId pak_id, DbLinkedHandle<EntityHandleDb, Entity> ent, int flags,
                    float delay_trigger);  // ea: 0x004C1240
     virtual void SetPoPtr(math::Mat43* po);
     virtual bool IsQueued() const;
@@ -157,7 +165,7 @@ struct AbstractEffect {
     Broc::string                 mEffectName;        // +0x04
     unsigned int                 mEffectNameHashStr; // +0x08
     TPakId                       mPakId;             // +0x0C
-    DbLinkedHandle<void, void>   mEntity;            // +0x10
+    DbLinkedHandle<EntityHandleDb, Entity> mEntity;  // +0x10
     int                          mFlags;             // +0x14
     unsigned int                 mType;              // +0x18
     const math::Mat43*           mPoPtr;             // +0x1C
@@ -188,9 +196,9 @@ struct AbstractEffectSound : AbstractEffect {
     DbLinkedHandle<void, void> mSound;  // +0x98 (SoundDevice::Sound handle)
     nslWaveID       mWaveHdl;      // +0x9C
 
-    AbstractEffectSound(TPakId pakId, DbLinkedHandle<void, void> ent,
+    AbstractEffectSound(TPakId pakId, DbLinkedHandle<EntityHandleDb, Entity> ent,
                         int flags, float delayTrigger,
-                        SoundParams* soundParams);  // ea: 0x004CF3E0
+                        SoundParams& soundParams);  // ea: 0x004CF3E0
     ~AbstractEffectSound();  // ea: 0x004CC3F0
     void StartFadeOut(float seconds);  // ea: 0x004C12A0
     void SetPoPtr(math::Mat43* po);        // ea: 0x004CD050
@@ -308,7 +316,7 @@ struct AbstractEffectShakeAndRumble : AbstractEffect {
 
     AbstractEffectShakeAndRumble(Params& params);  // ea: 0x004CF6F0
     AbstractEffectShakeAndRumble(
-        TPakId pak_id, DbLinkedHandle<void, void> ent, float delay_trigger,
+        TPakId pak_id, DbLinkedHandle<EntityHandleDb, Entity> ent, float delay_trigger,
         int flags, float time, float freq, float movement, float nextDelay,
         float rumble, float blur, float minDist, float maxDist,
         float steadyDuration, float rampUpTime, float rampDownTime,
@@ -407,7 +415,7 @@ struct EffectEventSys {
         EEffectContext mType;          // +0x000
         CachedQuery    mCachedQuery;   // +0x004
         CollisionDesc  mCollisionInfo; // +0x1C0
-        DbLinkedHandle<void, void> mQueryEnt;   // +0x1F0
+        DbLinkedHandle<EntityHandleDb, Entity> mQueryEnt;  // +0x1F0
         TPakId         mEffectsPak;    // +0x1F4
         Handle         mEffect;        // +0x1F8
         Broc::string   mScriptId;      // +0x1FC
@@ -521,7 +529,8 @@ struct RumbleEffectInstance {
 static_assert(sizeof(RumbleEffectInstance) == 0x30,
               "RumbleEffectInstance size mismatch");
 
-struct RumbleEffect {
+class RumbleEffect {
+public:
     struct RumbleData {
         bool  enabled;             // +0x00
         unsigned char _pad[0x4 - 0x1];
@@ -565,20 +574,21 @@ public:
     int mDontRumbleAgainUntil;    // +0x2C
     RumbleManager(int client);    // ea: 0x004C56F0
     ~RumbleManager();             // ea: 0x004CF310
-    RumbleEffectInstanceHandle BumpHandle();
     void StopMotors();
-    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
-    RumbleEffectInstanceHandle Play(const RumbleEffect* effect,
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect, float intensity);
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
                                     float min_distance, float max_distance,
                                     float distance);
-    char IsPlaying(RumbleEffectInstanceHandle handle);
-    float TimeLeft(RumbleEffectInstanceHandle handle);
+    bool IsPlaying(RumbleEffectInstanceHandle handle) const;
+    float TimeLeft(RumbleEffectInstanceHandle handle) const;
     void SetIntensity(RumbleEffectInstanceHandle handle, float intensity);
     void SetDistance(RumbleEffectInstanceHandle handle, float min_distance,
                      float max_distance, float distance);
     void FrameAdvance(float delta_time);
     void Reset();
     void Remove(RumbleEffectInstanceHandle handle);
+private:
+    RumbleEffectInstanceHandle BumpHandle();
 };
 static_assert(sizeof(RumbleManager) == 0x30, "RumbleManager size mismatch");
 
@@ -592,7 +602,8 @@ struct DbField {
 };
 static_assert(sizeof(DbField) == 0x4, "DbField size mismatch");
 
-struct DbRow {
+class DbRow {
+public:
     int16_t*  mValueRow;     // +0x00
     void*     mTable;        // +0x04 (DbTable*)
     int16_t   mRowIndex;     // +0x08
@@ -619,9 +630,10 @@ struct DbSchema {
 };
 static_assert(sizeof(DbSchema) == 0x30, "DbSchema size mismatch");
 
-struct DbQueryResults;
+class DbQueryResults;
 
-struct DbTable {
+class DbTable {
+public:
     char   mName[30];        // +0x00
     uint16_t mNumColumns;    // +0x1E
     DbColumn** mColumns;     // +0x20
@@ -632,7 +644,8 @@ struct DbTable {
 };
 static_assert(sizeof(DbTable) == 0x34, "DbTable size mismatch");
 
-struct DbGraphNode {
+class DbGraphNode {
+public:
     unsigned char mAttachments[0xC];  // +0x00 (NodeAttach)
     uint16_t      mFieldId;           // +0x0C
     unsigned char _pad[2];            // +0x0E
@@ -651,23 +664,27 @@ struct DbFieldSet {
 static_assert(sizeof(DbFieldSet) == 0x250, "DbFieldSet size mismatch");
 
 struct DbQuery {
+    friend class EffectEventSys;
     virtual ~DbQuery();
     const DbTable* mDb;            // +0x04
     DbFieldSet     mConstraints;   // +0x08
     bool           mAutomaticFail; // +0x258
     char           mConstraintBuffer[512];  // +0x259
     unsigned int   mConstraintPos; // +0x45C
-    void ResetConstraints();
-    void AcceptMatchingLeaf(DbGraphNode* node, DbQueryResults* results);
+    void Execute(DbQueryResults& results);
     void Reset();
-    int CompareField(int colId, const char** db_value);
-    bool TestField(int colId, const char** db_value);
-    void FindMatches(DbQueryResults* results);
-    void Execute(DbQueryResults* results);
+private:
+    void ResetConstraints();
+protected:
+    int CompareField(int colId, const void* db_value);
+    bool TestField(int colId, const void* db_value);
+    void AcceptMatchingLeaf(const DbGraphNode* node, DbQueryResults& results);
+    virtual void FindMatches(DbQueryResults& results);
 };
 static_assert(sizeof(DbQuery) == 0x460, "DbQuery size mismatch");
 
-struct DbQueryResults {
+class DbQueryResults {
+public:
     ae_sized_array<DbRow*, 64> mMatches;      // +0x000
     ae_sized_array<DbRow*, 64> mMatchesSpec;  // +0x104
     int  mMaxNumFields;            // +0x208
@@ -699,10 +716,11 @@ struct ConfigStringBank {
 };
 static_assert(sizeof(ConfigStringBank) == 0x1C, "ConfigStringBank size mismatch");
 
-struct ConfigStringManager {
+class ConfigStringManager {
+public:
     static void CreateInst();  // ?CreateInst@ConfigStringManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@ConfigStringManager@@SAXXZ (core.o)
-    unsigned char mData[0x190];  // InplaceAssetBankSet<ConfigStringBank>
+    unsigned char mData[0x18C];  // InplaceAssetBankSet<ConfigStringBank>
     static ConfigStringManager* sInst;  // ?sInst@ConfigStringManager@@2PAV1@A (core.o @ 0x12F039C)
     void DecodeBank(const char* name, unsigned char* data, int size,
                     TPakId pakId);  // ea: 0x004C5C80
@@ -710,16 +728,56 @@ struct ConfigStringManager {
                                             const char* type);  // ea: 0x004CE8D0
     void CallbackSearch(TPakId pakId, const char* type,
                         void (*callback)(const char*, const ConfigString*));
+private:
     ConfigStringManager();  // ea: 0x004C5C60
-    ~ConfigStringManager(); // ea: 0x004C1440
+    virtual ~ConfigStringManager(); // ea: 0x004C1440
 };
 static_assert(sizeof(ConfigStringManager) == 0x190,
               "ConfigStringManager size mismatch");
 
 // ============================================================================
+// STBManager - string table bank manager (0x190 bytes, core.o STBManager.cpp)
+// ============================================================================
+class STBManager {
+public:
+    static void CreateInst();  // ?CreateInst@STBManager@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@STBManager@@SAXXZ (core.o)
+    static STBManager* sInst;  // ?sInst@STBManager@@2PAV1@A @ 0xF00EA0
+    void* mBankArray[99];      // +0x04 (ae_array<StringTableBank*,99>)
+
+    const StringTableEntry* GetSTBEntry(TPakId pakId, unsigned int hash);
+    const StringTableEntry* GetSTBEntry(unsigned int hash);
+    const StringTableEntry* GetSTBEntry(const char* pszReference);
+    const char* GetSTBString(const char* pszReference);  // ?GetSTBString@STBManager@@QAEPBDPBD@Z
+    const char* GetSTBString(unsigned int hash);
+    const char* GetSTBString(TPakId pakId, unsigned int hash);
+    unsigned int GetSTBFlags(const char* pszReference);
+    unsigned int GetSTBFlags(unsigned int hash);
+    unsigned int GetSTBFlags(TPakId pakId, unsigned int hash);
+    void DecodeBank(const char* name, unsigned char* data, int size,
+                    TPakId pak_id);
+private:
+    STBManager();            // ea: 0x004C5CE0
+    virtual ~STBManager();   // ea: 0x004C14D0
+};
+static_assert(sizeof(STBManager) == 0x190, "STBManager size mismatch");
+
+// ============================================================================
+// DbTablesetMgr - database tableset lookup (core.o STBManager.cpp)
+// ============================================================================
+class DbTablesetMgr {
+public:
+    static void CreateInst();  // ?CreateInst@DbTablesetMgr@@SAXXZ (core.o)
+    static void DeleteInst();  // ?DeleteInst@DbTablesetMgr@@SAXXZ (core.o)
+    IVPointer<DbTableSet> GetTableSet(TPakId pakId,
+                                      const char* id) const;  // ea: 0x004CA630
+};
+
+// ============================================================================
 // EntityNotify types (core.o entity_notify.cpp)
 // ============================================================================
-struct WaitTilOutput {
+class WaitTilOutput {
+public:
     virtual ~WaitTilOutput();
     void* dListNodeFiller1;  // +0x04
     void* dListNodeFiller2;  // +0x08
@@ -751,10 +809,12 @@ struct EntityNotifySet {
 
     EntityNotifySet(Entity* e);  // ea: 0x004C1D80
     ~EntityNotifySet();          // ea: 0x004CEAE0
-    void AddNotify(const HashString* h, DbLinkedHandle<void, void> owner);
-    EntityNotify* GetNotify(const HashString* chk);
-    char AssignScriptVariable(const HashString* chk, WaitTilOutput* scriptVariable);
-    int IsFinished();
+    void AddNotify(const HashString& h,
+                   DbLinkedHandle<EntityHandleDb, Entity> owner);
+    EntityNotify* GetNotify(const HashString& chk) const;
+    bool AssignScriptVariable(const HashString& chk,
+                              WaitTilOutput* scriptVariable);
+    bool IsFinished();
     void KillEndOnThreads();
     static void UpdateList();
     static PoolAllocator* sAllocator;    // ?sAllocator@EntityNotifySet@@0PAVPoolAllocator@@A @ 0xF00E2C
@@ -852,7 +912,8 @@ struct DbStringHashTable {
 static_assert(sizeof(DbStringHashTable) == 0x1100,
               "DbStringHashTable size mismatch");
 
-struct DbTableSet {
+class DbTableSet {
+public:
     char         mName[32];     // +0x00
     DbTable*     mTables;       // +0x20
     unsigned int mNumTables;    // +0x24
@@ -947,7 +1008,8 @@ private:
 static_assert(sizeof(TlSystemCallbacks) == 0x28,
               "TlSystemCallbacks size mismatch");
 
-struct StringTableEntry {
+class StringTableEntry {
+public:
     unsigned int mHash;   // +0x00
     unsigned int mFlags;  // +0x04
     InplaceString mLoc;   // +0x08
@@ -998,10 +1060,10 @@ struct DialogueManager : AssetBankSet {
     static void CreateInst();  // ?CreateInst@DialogueManager@@SAXXZ (core.o)
     static void DeleteInst();  // ?DeleteInst@DialogueManager@@SAXXZ (core.o)
     DialogueBank* mBanks[99];  // +0x04 ae_array<DialogueBank*,99>
-    void UnloadBank(TPakId pakId);
-    void DecodeDialogueBank(const char* name, DialogueBank* data, int size,
+    virtual void UnloadBank(TPakId pakId);
+    void DecodeDialogueBank(const char* name, unsigned char* data, int size,
                             TPakId pakId);
-    char* GetDialogue(unsigned int hash);
+    const char* GetDialogue(unsigned int hash) const;
     DialogueManager();   // ea: 0x004C0B40
     ~DialogueManager();  // ea: 0x004BCD80
 };

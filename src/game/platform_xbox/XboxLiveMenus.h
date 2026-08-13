@@ -6,6 +6,7 @@
 #pragma once
 
 #include "game/ui_types.h"
+#include "game/core/core_systems.h"
 #include "MPLiveEngine.h"
 
 // ============================================================================
@@ -161,10 +162,6 @@ extern const char* szXBoxOptionReferences[5];
 extern const char* szXBoxOptionDescriptionReferences[5];
 
 // shell.o / mp.o externs used by the menus
-struct STBManager {
-    static STBManager* sInst;
-    const char* GetSTBString(const char* pszReference);
-};
 struct OverlayMenu {
     static OverlayMenu* Me(int version);
     void SetState(int state);

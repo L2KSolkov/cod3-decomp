@@ -27,11 +27,19 @@ bool Assert(const char* fmt, ...);
             __debugbreak();                                               \
     } while (0)
 
-extern void InplaceAssetBank_Fixup_Dialogue(DialogueBank* data);
-extern unsigned int* InplaceTree_Find_Dialogue(void* tree, unsigned int* key);
+// InplaceAssetBank/InplaceTree helpers (streamer.o; stubs until ported)
+void InplaceAssetBank_Fixup_Dialogue(DialogueBank* data)
+{
+    (void)data;
+}
+unsigned int* InplaceTree_Find_Dialogue(void* tree, unsigned int* key)
+{
+    (void)tree; (void)key;
+    return nullptr;
+}
 
 // DialogueManager.mBanks is opaque; expose element access
-extern DialogueManager* DialogueManager_sInst;
+DialogueManager* DialogueManager_sInst = nullptr;
 
 // ea: 0x004C0BE0
 void DialogueManager::UnloadBank(TPakId pakId)
@@ -40,10 +48,12 @@ void DialogueManager::UnloadBank(TPakId pakId)
 }
 
 // ea: 0x004C5530
-void DialogueManager::DecodeDialogueBank(const char* name, DialogueBank* data,
+void DialogueManager::DecodeDialogueBank(const char* name, unsigned char* data,
                                          int size, TPakId pakId)
 {
-    InplaceAssetBank_Fixup_Dialogue(data);
+    (void)name; (void)size;
+    DialogueBank* bank = (DialogueBank*)data;
+    InplaceAssetBank_Fixup_Dialogue(bank);
     if (mBanks[pakId] != nullptr)
     {
         AeAssert::gCurrentAuthor = AeAssert::ARO;
@@ -54,11 +64,11 @@ void DialogueManager::DecodeDialogueBank(const char* name, DialogueBank* data,
             && AeAssert::Assert("bank already loaded"))
             __debugbreak();
     }
-    mBanks[pakId] = data;
+    mBanks[pakId] = bank;
 }
 
 // ea: 0x004C55B0
-char* DialogueManager::GetDialogue(unsigned int hash)
+const char* DialogueManager::GetDialogue(unsigned int hash) const
 {
     for (int v2 = 0; v2 < 99; ++v2)
     {
@@ -76,10 +86,10 @@ char* DialogueManager::GetDialogue(unsigned int hash)
                     if (mSize != 0)
                     {
                         if (mSize == 1)
-                            return ((char**)vec)[1];
+                            return ((const char**)vec)[1];
                         unsigned int v8 = (*(unsigned int*)((char*)vec + 8) + 1) % mSize;
                         *(unsigned int*)((char*)vec + 8) = v8;
-                        return ((char**)vec)[1 + v8];
+                        return ((const char**)vec)[1 + v8];
                     }
                     return nullptr;
                 }
@@ -91,8 +101,8 @@ char* DialogueManager::GetDialogue(unsigned int hash)
 
 // ea: 0x004C5690
 void DecodeDialogueBank(const char* name, unsigned char* data, int size,
-                        TPakId pakId)
+                        TPakId pakId, PakFile* pakFile)
 {
-    DialogueManager_sInst->DecodeDialogueBank(name, (DialogueBank*)data, size,
-                                              pakId);
+    (void)pakFile;
+    DialogueManager_sInst->DecodeDialogueBank(name, data, size, pakId);
 }

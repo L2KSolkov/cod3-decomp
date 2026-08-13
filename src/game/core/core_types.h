@@ -198,9 +198,9 @@ public:
     idVec3 mat[3];  // +0x00
     void Transpose(mat3_t& matrix);
     void Transpose();
-    void ProjectVector(const idVec3* src, idVec3* dst);
-    void UnprojectVector(const idVec3* src, idVec3* dst);
-    mat3_t* Inverse(mat3_t* result);
+    void ProjectVector(const idVec3& src, idVec3& dst) const;
+    void UnprojectVector(const idVec3& src, idVec3& dst) const;
+    mat3_t Inverse() const;
     void Clear();
 };
 static_assert(sizeof(mat3_t) == 0x24, "mat3_t size mismatch");

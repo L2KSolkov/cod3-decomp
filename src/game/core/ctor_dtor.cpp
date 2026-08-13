@@ -243,15 +243,15 @@ ConfigStringManager::~ConfigStringManager()
 }
 
 // ea: 0x004C5CE0
-void* STBManager_Ctor(void* self)
+STBManager::STBManager()
 {
-    return InplaceAssetBankSet_StringTableBank_ctor(self);
+    InplaceAssetBankSet_StringTableBank_ctor(this);
 }
 
 // ea: 0x004C14D0
-void STBManager_Dtor(void* self)
+STBManager::~STBManager()
 {
-    AssetBankSet_dtor(self);
+    AssetBankSet_dtor(this);
 }
 
 // ============================================================================
@@ -354,7 +354,8 @@ RumbleManager::~RumbleManager()
 // ============================================================================
 
 // ea: 0x004C1240
-AbstractEffect::AbstractEffect(TPakId pak_id, DbLinkedHandle<void, void> ent,
+AbstractEffect::AbstractEffect(TPakId pak_id,
+                               DbLinkedHandle<EntityHandleDb, Entity> ent,
                                int flags, float delay_trigger)
 {
     mEffectName = Broc::string((Broc::string::Block*)nullptr);
@@ -428,7 +429,7 @@ AbstractEffectLight::~AbstractEffectLight()
 
 // ea: 0x004CF890
 AbstractEffectShakeAndRumble::AbstractEffectShakeAndRumble(
-    TPakId pak_id, DbLinkedHandle<void, void> ent, float delay_trigger,
+    TPakId pak_id, DbLinkedHandle<EntityHandleDb, Entity> ent, float delay_trigger,
     int flags, float time, float freq, float movement, float nextDelay,
     float rumble, float blur, float minDist, float maxDist,
     float steadyDuration, float rampUpTime, float rampDownTime,

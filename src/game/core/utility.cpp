@@ -40,42 +40,41 @@ void _copyDWord(unsigned int* dest, unsigned int constant, unsigned int count)
 }
 
 // ea: 0x004BC370
-void mat3_t::ProjectVector(const idVec3* src, idVec3* dst)
+void mat3_t::ProjectVector(const idVec3& src, idVec3& dst) const
 {
-    dst->x = (this->mat[0].y * src->y) + (this->mat[0].z * src->z)
-           + (src->x * this->mat[0].x);
-    dst->y = (this->mat[1].y * src->y) + (this->mat[1].z * src->z)
-           + (this->mat[1].x * src->x);
-    dst->z = (this->mat[2].y * src->y) + (this->mat[2].z * src->z)
-           + (this->mat[2].x * src->x);
+    dst.x = (this->mat[0].y * src.y) + (this->mat[0].z * src.z)
+          + (src.x * this->mat[0].x);
+    dst.y = (this->mat[1].y * src.y) + (this->mat[1].z * src.z)
+          + (this->mat[1].x * src.x);
+    dst.z = (this->mat[2].y * src.y) + (this->mat[2].z * src.z)
+          + (this->mat[2].x * src.x);
 }
 
 // ea: 0x004BC400
-void mat3_t::UnprojectVector(const idVec3* src, idVec3* dst)
+void mat3_t::UnprojectVector(const idVec3& src, idVec3& dst) const
 {
-    float z = src->z;
-    float x = src->x;
+    float z = src.z;
+    float x = src.x;
     float v5 = this->mat[2].y * z;
     float v6 = this->mat[2].x * z;
     float v7 = this->mat[2].z * z;
-    float y = src->y;
+    float y = src.y;
     float srca = this->mat[1].y * y;
     float v11 = this->mat[1].x * y;
     float v9 = (this->mat[0].z * x) + (this->mat[1].z * y) + v7;
     float v10 = (this->mat[0].y * x) + srca + v5;
-    dst->x = (this->mat[0].x * x) + v11 + v6;
-    dst->y = v10;
-    dst->z = v9;
+    dst.x = (this->mat[0].x * x) + v11 + v6;
+    dst.y = v10;
+    dst.z = v9;
 }
 
 // ea: 0x004BC620
-mat3_t* mat3_t::Inverse(mat3_t* result)
+mat3_t mat3_t::Inverse() const
 {
     mat3_t inv;
     inv = *this;
     inv.Transpose();
-    *result = inv;
-    return result;
+    return inv;
 }
 
 // ea: 0x004BC660
@@ -103,6 +102,7 @@ struct strdata {
 class idStr {
 public:
     strdata* m_data;
+protected:
     void EnsureDataWritable();
     void EnsureAlloced(int amount, bool keepold);
 };

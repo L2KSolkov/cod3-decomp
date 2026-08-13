@@ -39,12 +39,13 @@ struct refdef_s {
 };
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
-struct RumbleEffect;
+class RumbleEffect;
 class RumbleEffectInstanceHandle;
 class RumbleManager {
 public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
-    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
+                                    float intensity);
 };
 
 // rb_vehicle_get_velocity shim (phys view; real member rb_vehicle::get_velocity)
@@ -5280,7 +5281,8 @@ void Camera::UpdateDeathCamera()
                     effect.mRumbleDataArray[1].delay = 0.0f;
                     effect.mRumbleDataArray[1].ramp_up_duration = 0.2f;
                     effect.mRumbleDataArray[1].ramp_down_duration = 0.2f;
-                    RumbleManager::Inst(currCl)->Play((RumbleEffect*)&effect, 1.0f);
+                    RumbleManager::Inst(currCl)->Play(
+                        *(RumbleEffect*)&effect, 1.0f);
                 }
                 void* mWorld =
                     *(void**)((char*)EntityManager::sInst + 0x44);
@@ -5741,7 +5743,8 @@ float Camera::SetNewMode(ECameraModes newMode)
             RumbleEffect_SetNotes(&effect, 1, notes);
             BrocString_dtor(notes);
             RumbleEffectInstanceHandle h =
-                RumbleManager::Inst(mClient)->Play((RumbleEffect*)&effect, 0.0f);
+                RumbleManager::Inst(mClient)->Play(*(RumbleEffect*)&effect,
+                                                   0.0f);
             mRumbleEffect = h.mVal;
             Client* client = GetPlayer(mClient)->client;
             float newAngles[3] = {client->ps.viewangles[0],

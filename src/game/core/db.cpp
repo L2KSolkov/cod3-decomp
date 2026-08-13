@@ -75,7 +75,8 @@ void DbQuery::ResetConstraints()
 }
 
 // ea: 0x004C4570
-void DbQuery::AcceptMatchingLeaf(DbGraphNode* node, DbQueryResults* results)
+void DbQuery::AcceptMatchingLeaf(const DbGraphNode* node,
+                                 DbQueryResults& results)
 {
     if ((node->mFieldId & 0x8000) == 0)
     {
@@ -90,17 +91,17 @@ void DbQuery::AcceptMatchingLeaf(DbGraphNode* node, DbQueryResults* results)
         for (int i = NumHits; i != 0; --i)
         {
             int mColUsedNum = (*hitRows)->mColUsedNum;
-            int mMaxNumFields = results->mMaxNumFields;
+            int mMaxNumFields = results.mMaxNumFields;
             if (mColUsedNum >= mMaxNumFields)
             {
                 if (mColUsedNum > mMaxNumFields)
                 {
-                    results->mMaxNumFields = mColUsedNum;
-                    results->mMatchesSpec.m_size = 0;
+                    results.mMaxNumFields = mColUsedNum;
+                    results.mMatchesSpec.m_size = 0;
                 }
-                results->mMatchesSpec.push_back(*hitRows);
+                results.mMatchesSpec.push_back(*hitRows);
             }
-            results->mMatches.push_back(*hitRows);
+            results.mMatches.push_back(*hitRows);
             ++hitRows;
         }
     }
@@ -127,7 +128,7 @@ bool BitSet255_Test(const void* self, int v)
 }
 
 // ea: 0x004C4660
-int DbQuery::CompareField(int colId, const char** db_value)
+int DbQuery::CompareField(int colId, const void* db_value)
 {
     if (!BitSet255_Test(&mConstraints.mSpecifiedById, colId))
     {
@@ -161,31 +162,31 @@ int DbQuery::CompareField(int colId, const char** db_value)
     case 9u:
     {
         int v9 = *(int*)((char*)FieldById + 4);
-        if ((int)*db_value < v9)
+        if (*(const int*)db_value < v9)
             return -1;
-        return (int)*db_value > v9;
+        return *(const int*)db_value > v9;
     }
     case 2u:
     case 0xBu:
     {
         float v7 = *(float*)((char*)FieldById + 4);
-        if (v7 > **(float**)db_value)
+        if (v7 > *(const float*)db_value)
             return -1;
-        if (**(float**)db_value <= v7)
+        if (*(const float*)db_value <= v7)
             return 0;
         return 1;
     }
     case 4u:
         if (m_match_type == 9)
-            return -_stricmp((char*)FieldById + 4, *db_value);
-        return strcmp((char*)FieldById + 4, *db_value);
+            return -_stricmp((char*)FieldById + 4, (const char*)db_value);
+        return strcmp((char*)FieldById + 4, (const char*)db_value);
     default:
         return 0;
     }
 }
 
 // ea: 0x004C48D0
-bool DbQuery::TestField(int colId, const char** db_value)
+bool DbQuery::TestField(int colId, const void* db_value)
 {
     if (!BitSet255_Test(&mConstraints.mSpecifiedById, colId))
     {
@@ -218,24 +219,24 @@ bool DbQuery::TestField(int colId, const char** db_value)
     case 8u:
         switch (m_match_type)
         {
-        case 0: return *(int*)((char*)FieldById + 4) == *(int*)*db_value;
-        case 2: return *(int*)((char*)FieldById + 4) > *(int*)*db_value;
-        case 3: return *(int*)((char*)FieldById + 4) < *(int*)*db_value;
-        case 4: return *(int*)((char*)FieldById + 4) >= *(int*)*db_value;
-        case 5: return *(int*)((char*)FieldById + 4) <= *(int*)*db_value;
-        case 8: return *(int*)((char*)FieldById + 4) != *(int*)*db_value;
+        case 0: return *(int*)((char*)FieldById + 4) == *(const int*)db_value;
+        case 2: return *(int*)((char*)FieldById + 4) > *(const int*)db_value;
+        case 3: return *(int*)((char*)FieldById + 4) < *(const int*)db_value;
+        case 4: return *(int*)((char*)FieldById + 4) >= *(const int*)db_value;
+        case 5: return *(int*)((char*)FieldById + 4) <= *(const int*)db_value;
+        case 8: return *(int*)((char*)FieldById + 4) != *(const int*)db_value;
         default: return false;
         }
     case 2u:
     case 0xBu:
         switch (m_match_type)
         {
-        case 0: return *(float*)((char*)FieldById + 4) == **(float**)db_value;
-        case 2: return *(float*)((char*)FieldById + 4) > **(float**)db_value;
-        case 3: return *(float*)((char*)FieldById + 4) < **(float**)db_value;
-        case 4: return *(float*)((char*)FieldById + 4) >= **(float**)db_value;
-        case 5: return *(float*)((char*)FieldById + 4) <= **(float**)db_value;
-        case 8: return *(float*)((char*)FieldById + 4) != **(float**)db_value;
+        case 0: return *(float*)((char*)FieldById + 4) == *(const float*)db_value;
+        case 2: return *(float*)((char*)FieldById + 4) > *(const float*)db_value;
+        case 3: return *(float*)((char*)FieldById + 4) < *(const float*)db_value;
+        case 4: return *(float*)((char*)FieldById + 4) >= *(const float*)db_value;
+        case 5: return *(float*)((char*)FieldById + 4) <= *(const float*)db_value;
+        case 8: return *(float*)((char*)FieldById + 4) != *(const float*)db_value;
         default: return false;
         }
     case 4u:
@@ -243,19 +244,19 @@ bool DbQuery::TestField(int colId, const char** db_value)
         {
             if (m_match_type != 9)
                 return false;
-            return _stricmp((char*)FieldById + 4, *db_value) == 0;
+            return _stricmp((char*)FieldById + 4, (const char*)db_value) == 0;
         }
-        return strcmp((char*)FieldById + 4, *db_value) == 0;
+        return strcmp((char*)FieldById + 4, (const char*)db_value) == 0;
     case 9u:
         return m_match_type == 0
-            && *(int*)((char*)FieldById + 4) == *(int*)*db_value;
+            && *(int*)((char*)FieldById + 4) == *(const int*)db_value;
     default:
         return false;
     }
 }
 
 // ea: 0x004C4DD0
-void DbQuery::FindMatches(DbQueryResults* results)
+void DbQuery::FindMatches(DbQueryResults& results)
 {
     // Best-effort: iterate the schema column types and accept leaves that
     // satisfy all constraints. Full graph traversal needs the NodeAttach
@@ -284,7 +285,7 @@ void DbQuery::FindMatches(DbQueryResults* results)
 }
 
 // ea: 0x004BCD70
-void DbQuery::Execute(DbQueryResults* results)
+void DbQuery::Execute(DbQueryResults& results)
 {
     FindMatches(results);
 }

@@ -240,7 +240,7 @@ void RumbleManager::StopMotors()
 }
 
 // ea: 0x004C5750
-RumbleEffectInstanceHandle RumbleManager::Play(RumbleEffect* effect,
+RumbleEffectInstanceHandle RumbleManager::Play(const RumbleEffect& effect,
                                                float intensity)
 {
     RumbleEffectInstanceHandle result;
@@ -257,22 +257,22 @@ RumbleEffectInstanceHandle RumbleManager::Play(RumbleEffect* effect,
         mNextHandle.mVal = result.mVal + 1;
         for (int v8 = 0; v8 < 2; ++v8)
         {
-            const RumbleEffect::RumbleData& data = effect->mRumbleDataArray[v8];
+            const RumbleEffect::RumbleData& data = effect.mRumbleDataArray[v8];
             if (data.delay > 0.0f
-                && effect->GetEnabled((ERumbleMotorID)v8))
+                && effect.GetEnabled((ERumbleMotorID)v8))
             {
                 void* v9 = PoolAllocator_Allocate(RumbleEffectInstance_sAllocator,
                                                   0x30u, false);
                 RumbleEffectInstance* inst = (RumbleEffectInstance*)v9;
                 int looping = (data.m_flags.mVal & 2) != 0;
-                Broc::string notes = RumbleEffect_GetNotes(effect, v8);
+                Broc::string notes = RumbleEffect_GetNotes(&effect, v8);
                 RumbleEffectInstance_Ctor(
                     v9, result,
-                    effect->GetDelay((ERumbleMotorID)v8), intensity,
-                    effect->GetIntensity((ERumbleMotorID)v8),
-                    effect->GetRampUpDuration((ERumbleMotorID)v8),
-                    effect->GetSteadyDuration((ERumbleMotorID)v8),
-                    effect->GetRampDownDuration((ERumbleMotorID)v8), notes,
+                    effect.GetDelay((ERumbleMotorID)v8), intensity,
+                    effect.GetIntensity((ERumbleMotorID)v8),
+                    effect.GetRampUpDuration((ERumbleMotorID)v8),
+                    effect.GetSteadyDuration((ERumbleMotorID)v8),
+                    effect.GetRampDownDuration((ERumbleMotorID)v8), notes,
                     looping);
                 // push into mRumbleLists[v8]
                 inst->m_dlist_node.mNext = mRumbleLists[v8].mRoot.mNext;
@@ -291,19 +291,19 @@ RumbleEffectInstanceHandle RumbleManager::Play(RumbleEffect* effect,
 }
 
 // ea: 0x004C5980
-RumbleEffectInstanceHandle RumbleManager::Play(const RumbleEffect* effect,
+RumbleEffectInstanceHandle RumbleManager::Play(const RumbleEffect& effect,
                                                float min_distance,
                                                float max_distance,
                                                float distance)
 {
     RumbleEffectInstanceHandle result;
     float intensity = ComputeIntensity(min_distance, max_distance, distance);
-    result = Play((RumbleEffect*)effect, intensity);
+    result = Play(effect, intensity);
     return result;
 }
 
 // ea: 0x004CBAB0
-char RumbleManager::IsPlaying(RumbleEffectInstanceHandle handle)
+bool RumbleManager::IsPlaying(RumbleEffectInstanceHandle handle) const
 {
     if (handle.mVal == 0)
     {
@@ -313,17 +313,17 @@ char RumbleManager::IsPlaying(RumbleEffectInstanceHandle handle)
     for (int list = 0; list < 2; ++list)
     {
         for (RumbleEffectInstance* n = (RumbleEffectInstance*)mRumbleLists[list].mRoot.mNext;
-             n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
+            n != nullptr; n = (RumbleEffectInstance*)n->m_dlist_node.mNext)
         {
             if (n->m_handle.mVal == handle.mVal)
-                return 1;
+                return true;
         }
     }
-    return 0;
+    return false;
 }
 
 // ea: 0x004CBBA0
-float RumbleManager::TimeLeft(RumbleEffectInstanceHandle handle)
+float RumbleManager::TimeLeft(RumbleEffectInstanceHandle handle) const
 {
     if (handle.mVal == 0)
     {

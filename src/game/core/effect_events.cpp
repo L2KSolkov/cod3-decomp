@@ -1397,7 +1397,7 @@ Handle PostEffectEventPhysicsImpact(const Entity* ent, int myColMat,
                                 .ramp_down_duration = 0.0f;
                             RumbleManager* v18 =
                                 RumbleManager::Inst(PlayerIndex);
-                            v18->Play(&rumbleEffect, intensity);
+                            v18->Play(rumbleEffect, intensity);
                         }
                     }
                 }
@@ -2684,7 +2684,7 @@ void AbstractEffectShakeAndRumble::FrameAdvance(float delta_t)
                 if (mgr != nullptr)
                 {
                     RumbleEffectInstanceHandle h =
-                        mgr->Play(&rumbleEffect, distanceScale);
+                        mgr->Play(rumbleEffect, distanceScale);
                     mRumbleHandle[0].mVal = h.mVal;
                 }
             }
@@ -4309,9 +4309,9 @@ void ReduceGroups(ae_sized_array<DbRow*, 64>* matches)
 
 // ea: 0x004CF3E0
 AbstractEffectSound::AbstractEffectSound(TPakId pakId,
-                                         DbLinkedHandle<void, void> ent,
+                                         DbLinkedHandle<EntityHandleDb, Entity> ent,
                                          int flags, float delayTrigger,
-                                         SoundParams* soundParams)
+                                         SoundParams& soundParams)
 {
     mEffectName = Broc::string((Broc::string::Block*)nullptr);
     mEntity.mHandle.mVal = 0;
@@ -4328,7 +4328,7 @@ AbstractEffectSound::AbstractEffectSound(TPakId pakId,
     mSoundParams.mEnt.mHandle.mVal = 0;
     mSound.mHandle.mVal = 0;
     mType = AeHash("AbstractEffectSound");
-    mSoundParams = *soundParams;
+    mSoundParams = soundParams;
     mSubtitle = mSoundParams.mSubtitle;
     mRetryCount = 0;
     mFlags = 0;
@@ -4435,7 +4435,7 @@ AbstractEffectShakeAndRumble::AbstractEffectShakeAndRumble(Params& params)
     Entity* mObject = nullptr;
     if (v6 < 0x540 && v5 >> 12 == EntityHandleDb::sInst.mElements[v6].mKey)
         mObject = EntityHandleDb::sInst.mElements[v6].mObject;
-    mBone = FX_GetBoneIndex(mObject->mDObj, AeHash(sr->bone.mStr));
+    mBone = (EUserBoneId)FX_GetBoneIndex(mObject->mDObj, AeHash(sr->bone.mStr));
     mRumbleHandle[0].mVal = 0;
     mType = AeHash("AbstractEffectShakeAndRumble");
     mShake[0] = nullptr;
@@ -4522,7 +4522,7 @@ int EffectEventSys::QueryEventTable(PendingQuery& q, ActiveEffectSet* fx,
         q.mCachedQuery.ConstructQuery(&query);
         DbQueryResults results;
         memset(&results, 0, sizeof(results));
-        query.FindMatches(&results);
+        query.FindMatches(results);
         ReduceGroups(&results.mMatches);
         for (unsigned int i = 0; i < (unsigned int)results.mMatches.m_size; ++i)
         {
@@ -4582,7 +4582,7 @@ int EffectEventSys::QueryGDEvents(const char* event, PendingQuery& q,
                     if (v18 != nullptr)
                         v19 = new (v18) AbstractEffectSound(
                             q.mEffectsPak, q.mQueryEnt, flags,
-                            delay, &soundParams);
+                            delay, soundParams);
                     if (v19 != nullptr)
                     {
                         if (q.mQueryType == 1)

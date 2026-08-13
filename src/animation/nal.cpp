@@ -9967,14 +9967,14 @@ public:
     RumbleEffectInstanceHandle() : mVal(0) {}
     int mVal;  // +0x00
 };
-struct RumbleEffect;
+class RumbleEffect;
 class RumbleManager {
 public:
     static RumbleManager* Inst(int instance);  // real in rumble.cpp
     void Remove(RumbleEffectInstanceHandle handle);  // core.o
     void SetIntensity(RumbleEffectInstanceHandle handle,
                       float intensity);  // real in rumble.cpp
-    RumbleEffectInstanceHandle Play(RumbleEffect* effect,
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
                                     float intensity);  // real in rumble.cpp
 };
 
@@ -12734,7 +12734,8 @@ void InteractStateMelee::UpdateRumble(float deltaT)
 }
 
 // Local RumbleEffect view (full in core_systems.h)
-struct RumbleEffect {
+class RumbleEffect {
+public:
     struct RumbleData {
         bool enabled;              // +0x00
         unsigned char _pad[3];
@@ -12839,7 +12840,7 @@ RumbleEffectInstanceHandle InteractState::StartRumble(
                          "Please add a descriptive string");
         }
         rumbleEffect.mRumbleDataArray[1].delay = rightDelay;
-        result = RumbleManager::Inst(currCl)->Play(&rumbleEffect, 1.0f);
+        result = RumbleManager::Inst(currCl)->Play(rumbleEffect, 1.0f);
     }
     else
     {

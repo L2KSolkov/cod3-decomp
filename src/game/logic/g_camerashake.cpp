@@ -30,7 +30,7 @@ extern const math::Mat43* nglGetMatrix_ViewToWorld(nglScene* Scene);
 extern nglScene* nglBuildScene;
 extern void StartCameraShake_glue(int type, void* worldPos, float size,
                                   float timeOverride, float nextDelay);
-struct RumbleEffect;
+class RumbleEffect;
 class RumbleEffectInstanceHandle {
 public:
     unsigned int mVal;
@@ -38,7 +38,8 @@ public:
 class RumbleManager {
 public:
     static RumbleManager* Inst(int instance);
-    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
+                                    float intensity);
 };
 
 // ============================================================================
@@ -698,7 +699,7 @@ void CameraShake::Rumble(float intensity, float duration)
     }
     rumbleEffect.mRumbleDataArray[1].steady_duration = duration;
     if (RumbleManager::Inst(currCl) != nullptr)
-        RumbleManager::Inst(currCl)->Play(&rumbleEffect, 1.0f);
+        RumbleManager::Inst(currCl)->Play(rumbleEffect, 1.0f);
 }
 
 // ============================================================================

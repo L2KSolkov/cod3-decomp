@@ -17,13 +17,14 @@ extern void WaitTilOutput_Dtor(void* self, int flags);
 // ============================================================================
 
 // ea: 0x004C1E50
-void EntityNotifySet::AddNotify(const HashString* h, DbLinkedHandle<void, void> owner)
+void EntityNotifySet::AddNotify(const HashString& h,
+                                DbLinkedHandle<EntityHandleDb, Entity> owner)
 {
     void* v4 = PoolAllocator_Allocate(EntityNotify_sAllocator, 0x14u, false);
     EntityNotify* n = (EntityNotify*)v4;
     if (v4 == nullptr)
         return;
-    n->mStr = h->mHash;
+    n->mStr = h.mHash;
     n->mOwner.mHandle.mVal = owner.mHandle.mVal;
     n->mParam = nullptr;
     // link into mStrings list
@@ -37,33 +38,33 @@ void EntityNotifySet::AddNotify(const HashString* h, DbLinkedHandle<void, void> 
 }
 
 // ea: 0x004C6450
-EntityNotify* EntityNotifySet::GetNotify(const HashString* chk)
+EntityNotify* EntityNotifySet::GetNotify(const HashString& chk) const
 {
     for (EntityNotify* n = (EntityNotify*)mStrings.mRoot.mNext;
          n != nullptr; n = (EntityNotify*)n->m_dlist_node.mNext)
     {
-        if (n->mStr == chk->mHash)
+        if (n->mStr == chk.mHash)
             return n;
     }
     return nullptr;
 }
 
 // ea: 0x004C64D0
-char EntityNotifySet::AssignScriptVariable(const HashString* chk,
+bool EntityNotifySet::AssignScriptVariable(const HashString& chk,
                                           WaitTilOutput* scriptVariable)
 {
     EntityNotify* Notify = GetNotify(chk);
     if (Notify == nullptr)
-        return 0;
+        return false;
     WaitTilOutput* mParam = Notify->mParam;
     if (mParam == nullptr)
-        return 0;
+        return false;
     WaitTilOutput_AssignData(mParam, scriptVariable);
-    return 1;
+    return true;
 }
 
 // ea: 0x004C6500
-int EntityNotifySet::IsFinished()
+bool EntityNotifySet::IsFinished()
 {
     EntityNotify* n = (EntityNotify*)mStrings.mRoot.mNext;
     while (n != nullptr)

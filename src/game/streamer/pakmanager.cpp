@@ -2247,7 +2247,6 @@ XModelPartsManager* XModelPartsManager::sInst = nullptr;
 AITypeManager* AITypeManager::sInst = nullptr;
 DbTablesetMgr* DbTablesetMgr::sInst = nullptr;
 LightGridMgr* LightGridMgr::sInst = nullptr;
-STBManager* STBManager::sInst = nullptr;
 
 void XModelManager::DecodeBank(const char* name, unsigned char* data,
                                int size, TPakId pak_id)

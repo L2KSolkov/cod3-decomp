@@ -73,7 +73,8 @@ public:
 class RumbleManager {
 public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
-    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
+                                    float intensity);
 };
 
 
@@ -4673,7 +4674,7 @@ void VEH_FireGunnerWeapon(Entity* ent, int msec)
                                                   0.2f);
                         playIntensity = 0.5f;
                     }
-                    RumbleManager::Inst(client)->Play(&effect, playIntensity);
+                    RumbleManager::Inst(client)->Play(effect, playIntensity);
                 }
             }
         }

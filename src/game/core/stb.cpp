@@ -26,26 +26,8 @@ extern void InplaceAssetBankSet_Find_DbTableset(void* self, void* result,
 extern void PtrFixupTable_Fixup(void* self, void* basePtr);
 extern int PakManager_GetPakFile(void* self, TPakId pakId);
 
-// STBManager layout: mBankArray = StringTableBank*[99]
-struct STBManager {
-    void* mBankArray[99];
-
-    const StringTableEntry* GetSTBEntry(TPakId pakId, unsigned int hash);
-    const StringTableEntry* GetSTBEntry(unsigned int hash);
-    const StringTableEntry* GetSTBEntry(const char* pszReference);
-    const char* GetSTBString(const char* pszReference);  // ?GetSTBString@STBManager@@QAEPBDPBD@Z
-    char* GetSTBString(unsigned int hash);
-    char* GetSTBString(TPakId pakId, unsigned int hash);
-    unsigned int GetSTBFlags(const char* pszReference);
-    unsigned int GetSTBFlags(unsigned int hash);
-    unsigned int GetSTBFlags(TPakId pakId, unsigned int hash);
-    void DecodeBank(const char* name, unsigned char* data, int size,
-                    TPakId pak_id);
-};
 // ?STBManager_sInst@@3PAUSTBManager@@A (core.o)
 STBManager* STBManager_sInst = nullptr;
-// ?sInst@ConfigStringManager@@2PAU1@A (core.o)
-ConfigStringManager* ConfigStringManager::sInst = nullptr;
 // streamer.o helpers (stubs, port later)
 unsigned int* InplaceTree_Find_U32(void* tree, unsigned int* key)
 {
@@ -142,19 +124,19 @@ const char* STBManager::GetSTBString(const char* pszReference)
 }
 
 // ea: 0x004C5EF0
-char* STBManager::GetSTBString(unsigned int hash)
+const char* STBManager::GetSTBString(unsigned int hash)
 {
     const StringTableEntry* STBEntry = STBManager_sInst->GetSTBEntry(hash);
     if (STBEntry == nullptr)
         return nullptr;
     char* result = STBEntry->mLoc.mStr;
     if (result == nullptr)
-        return (char*)"STRING MISSING";
+        return "STRING MISSING";
     return result;
 }
 
 // ea: 0x004C5F30
-char* STBManager::GetSTBString(TPakId pakId, unsigned int hash)
+const char* STBManager::GetSTBString(TPakId pakId, unsigned int hash)
 {
     if (pakId == -1)
         return nullptr;
@@ -170,7 +152,7 @@ char* STBManager::GetSTBString(TPakId pakId, unsigned int hash)
         return nullptr;
     char* result = v5->mLoc.mStr;
     if (result == nullptr)
-        return (char*)"STRING MISSING";
+        return "STRING MISSING";
     return result;
 }
 
@@ -234,8 +216,9 @@ void STBManager::DecodeBank(const char* name, unsigned char* data, int size,
 
 // ea: 0x004C5CB0
 void DecodeConfigStrings(const char* name, unsigned char* data, int size,
-                         TPakId pakId)
+                         TPakId pakId, PakFile* pakFile)
 {
+    (void)name; (void)size; (void)pakFile;
     InplaceAssetBank_Fixup_ConfigString(data);
     InplaceAssetBankSet_AddBank_ConfigString(ConfigStringManager::sInst, pakId,
                                              data);
@@ -250,11 +233,12 @@ void DbTablesetMgr_DecodeBank(const char* name, void* data, int size,
 }
 
 // ea: 0x004CA630
-void* DbTablesetMgr_GetTableSet(TPakId pakId, const char* id)
+IVPointer<DbTableSet> DbTablesetMgr::GetTableSet(TPakId pakId,
+                                                 const char* id) const
 {
     extern void* DbTablesetMgr_sInst;
-    static void* result[2];
-    InplaceAssetBankSet_Find_DbTableset(DbTablesetMgr_sInst, result, pakId, id,
+    IVPointer<DbTableSet> result;
+    InplaceAssetBankSet_Find_DbTableset(DbTablesetMgr_sInst, &result, pakId, id,
                                         0, nullptr);
     return result;
 }

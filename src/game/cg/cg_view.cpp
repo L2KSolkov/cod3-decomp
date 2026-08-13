@@ -15,7 +15,7 @@ struct GamePause { static bool IsGamePaused(int client); };
 
 
 // Minimal view of RumbleManager (full class in core/core_systems.h).
-struct RumbleEffect;
+class RumbleEffect;
 class RumbleEffectInstanceHandle {
 public:
     int mVal;  // +0x00
@@ -23,7 +23,8 @@ public:
 class RumbleManager {
 public:
     static RumbleManager* Inst(int instance);  // ?Inst@RumbleManager@@SAPAV1@H@Z (g.o)
-    RumbleEffectInstanceHandle Play(RumbleEffect* effect, float intensity);
+    RumbleEffectInstanceHandle Play(const RumbleEffect& effect,
+                                    float intensity);
 };
 
 
@@ -1153,7 +1154,7 @@ void CG_DamageFeedback(int yawByte, int pitchByte, float damage)
     RumbleManager* v25 = RumbleManager::Inst(currCl);
     if (v25 != nullptr)
     {
-        v25->Play((RumbleEffect*)&rumbleEffect, 1.0f);
+        v25->Play(*(RumbleEffect*)&rumbleEffect, 1.0f);
     }
 }
 
