@@ -39,7 +39,12 @@ struct WorldSpawn {
 
 extern void SV_SetConfigstring(int index, const char* val);  // sv.o
 extern void Cvar_Set(const char* var_name, const char* value);  // core.o
-class Entity;  // game_types.h
+// Entity minimal view for the Notify dispatcher (full type in game_types.h;
+// Notify is defined in game/logic/g_entity_misc.cpp)
+class Entity {
+public:
+    void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (g_entity_misc.cpp)
+};
 extern void UpdateEntityHash(Entity* ent);  // ?UpdateEntityHash@@YAXPAVEntity@@@Z (g_scr.cpp)
 
 // Entity minimal view (mClassName +0x27C, mClassNameHash +0x280)
@@ -583,6 +588,12 @@ public:
         UNLOADED = 3,
     };
     enum ELoadingState { LOADING_HEADER = 0, LOADING_DATA = 2 };
+    enum EUnloadingState {
+        UNLOADING_SERIALIZED = 4,
+        UNLOADING_INPLACE = 5,
+        UNLOADING_DONE = 6,
+        LOADING_TOC = 7,
+    };
 
     struct TRequestId {
         nflRequestID nflId;  // +0x00
@@ -951,7 +962,7 @@ public:
     PakInfoBank* mLevelPakInfoBank;   // +0x1C
     TPakId mPakIdServer;              // +0x20
     TPakId mCurrentPakId;             // +0x24
-    uint8_t _pad28[0x2C - 0x28];
+    const PakInfoNode* mCurSection;   // +0x28
     TPakId mAnimPakId;                // +0x2C
     TPakId mGlobalPakId;              // +0x30
     uint8_t _pad34[0x38 - 0x34];
@@ -1081,6 +1092,8 @@ public:
                    TPakId pakId);  // ?DecodeFLI@PakManager@@QAEXPBDPAEHW4TPakId@@@Z
     // - ea: 0x66FE10
     void UpdateInfo();  // ?UpdateInfo@PakManager@@AAEXXZ
+    // - ea: 0x671360
+    PakInfoNode* GetBestUnloadablePak();  // ?GetBestUnloadablePak@PakManager@@ABEPAUPakInfoNode@@XZ
     // - ea: 0x67B060
     void Update(bool calledFromMovie);  // ?Update@PakManager@@QAEX_N@Z
     // - ea: 0x671600
@@ -1435,25 +1448,33 @@ public:
     const StreamZone* GetZone() const;  // ?GetZone@ZoneCellDesc@@QBEPBVStreamZone@@XZ
 };
 
-// StreamZoneManager (streamer.o; mDebugRenderMode +0x190, mInitialPosition +0x1A0)
+// StreamZoneManager (streamer.o; verified IDA: anonymous 0x190-byte head
+// region with bank elements at +0x04, mDebugRenderMode +0x190,
+// mInitialPosition +0x1A0, mLastPosition +0x1B0, mFirstBank +0x1CC,
+// mListSize +0x1D0, total size 0x1E0)
 class StreamZoneManager {
 public:
-    ae_array<ZoneBoundaryBank*, 99> mBankArray;  // +0x00
+    uint8_t _pad0[0x04];  // anonymous head region (bank array starts at +0x04)
+    ae_array<ZoneBoundaryBank*, 99> mBankArray;  // +0x04 (elements at +0x04)
     struct {
         unsigned int mEnabled : 1;  // bit 0
         float zoneGraphScale;       // +0x194
     } mDebugRenderMode;             // +0x190
     math::Position3 mInitialPosition;  // +0x1A0
-    uint8_t _pad1AC[0x1C0 - 0x1AC];
+    uint8_t _pad1AC[0x1B0 - 0x1AC];
+    math::Position3 mLastPosition;  // +0x1B0
+    uint8_t _pad1BC[0x1C0 - 0x1BC];
     int     mInitialCell;           // +0x1C0
     int     mLastCellNum;           // +0x1C4
     int     mLastListSize;          // +0x1C8
     int     mFirstBank;             // +0x1CC
+    int     mListSize;              // +0x1D0
 
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
     void SetInitialCell(int cell);  // ?SetInitialCell@StreamZoneManager@@QAEXH@Z
     void OnLoading(TPakId pakId);  // ?OnLoading@StreamZoneManager@@QAEXW4TPakId@@@Z (empty no-op)
+    void OnLoaded(TPakId pakId);  // ?OnLoaded@StreamZoneManager@@QAEXW4TPakId@@@Z
     void OnUnloaded(TPakId pakId);  // ?OnUnloaded@StreamZoneManager@@QAEXW4TPakId@@@Z
     void OnUnload(TPakId pakId);  // ?OnUnload@StreamZoneManager@@QAEXW4TPakId@@@Z
     int GetNumZones() const;        // ?GetNumZones@StreamZoneManager@@QBEHXZ
@@ -3196,6 +3217,23 @@ void FEManager_UpdateButtonFontForLanguage(void* self)
     (void)self;
 }
 
+// BrocSys (broc; NotifyPakUnloaded)
+namespace BrocSys {
+void NotifyPakUnloaded(const char* longName);
+}
+void BrocSys::NotifyPakUnloaded(const char* longName)
+{
+    (void)longName;  // stub: cross-object (broc.o)
+}
+
+// hash_const (runtime-filled hash constants; mirrors str_const_t layout).
+// zonesloaded at +0x26C verified vs UpdateNormal disasm (0xED2D1C).
+struct hash_const_t {
+    uint8_t _pad[0x26C];
+    HashString zonesloaded;  // +0x26C
+};
+extern hash_const_t hash_const;  // ?hash_const@@3Uhash_const_t@@A @ 0xED2AB0
+
 // ea: 0x675980
 void PakManager::DecodeFLI(const char* name, PakInfoBank* data, int size,
                            TPakId pakId)
@@ -3637,11 +3675,343 @@ void PakManager::Update(bool calledFromMovie)
 
 // Sub-machine stubs (deferred ports; the real bodies follow in later batches)
 void PakManager::ProgressUpdate() {}
-void PakManager::UpdateLoading() {}
-void PakManager::UpdateUnloading() {}
-void PakManager::UpdateNormal() {}
-void PakFile::UpdateLoading() {}
-void PakFile::UpdateUnloading() {}
+
+// ea: 0x671360
+PakInfoNode* PakManager::GetBestUnloadablePak()
+{
+    reserved_dlist<PakFile>::dlist_node* m_head = mActivePaks.m_head;
+    reserved_dlist<PakFile>::dlist_node* m_next =
+        m_head != nullptr ? m_head->m_next : nullptr;
+    PakInfoNode* ret = nullptr;
+    float max_dist = 0.0f;
+    if (m_head == mActivePaks.m_end || m_next == nullptr)
+        return nullptr;
+    while (1)
+    {
+        PakFile* pak = (PakFile*)m_head;
+        const PakInfoNode* m_prev = nullptr;
+        if (pak->mPakId != mDebugPakId)
+        {
+            if (pak->mPakType != kPakTypeCount)
+            {
+                if (pak->mPakInfo == nullptr)
+                    pak->mPakInfo = PakManager::sInst->GetPakInfo(pak->mPakId);
+                m_prev = pak->mPakInfo;
+            }
+            if (pak->mLoadingState == (PakFile::ELoadingState)8)
+                return (PakInfoNode*)m_prev;
+            float v5;
+            if (m_prev->refCount <= 1)
+                v5 = GetDistance((PakInfoNode*)m_prev);
+            else
+                v5 = 0.0f;
+            if (v5 > max_dist)
+            {
+                max_dist = v5;
+                ret = (PakInfoNode*)m_prev;
+            }
+        }
+        if (m_next == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/reserved_dlist.h";
+            AeAssert::gCurrentLine = 501;
+            AeAssert::gCurrentExpr = "m_next != 0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("Please add a descriptive string"))
+                __debugbreak();
+        }
+        m_head = m_next;
+        if (m_next->m_next == nullptr)
+            return ret;
+        m_next = m_next->m_next;
+    }
+}
+
+// ea: 0x671480
+void PakManager::UpdateLoading()
+{
+    bool v2 = false;
+    if (mPakInfoBank != nullptr && mActivePaks.m_size > 2
+        && mLevelPakInfoBank != nullptr)
+    {
+        PakInfoNode* BestUnloadedPak = GetBestUnloadedPak();
+        PakInfoNode* v4 = BestUnloadedPak;
+        float hp_dist = BestUnloadedPak != nullptr
+                            ? GetDistance(BestUnloadedPak)
+                            : 3.4028235e38f;
+        const PakInfoNode* mCurSection = this->mCurSection;
+        if (mCurSection == nullptr)
+            mCurSection = mCurrentPakInfo;
+        float cur_dist = GetDistance((PakInfoNode*)mCurSection);
+        v2 = cur_dist > hp_dist;
+        if (cur_dist == 0.0f)
+            v2 = false;
+        if (v4 == mCurrentPakInfo)
+            v2 = false;
+    }
+    TPakId mCurrentPakId = this->mCurrentPakId;
+    PakFile* v7 = mSlots[mCurrentPakId];
+    if ((mCurrentPakId != PAK_ID_INVALID && v7 != nullptr
+         && v7->mState == PakFile::LOADED)
+        || (v7->mState == PakFile::UNLOADING
+            && v7->mLoadingState
+                   != (PakFile::ELoadingState)PakFile::UNLOADING_SERIALIZED)
+        || (v2 && v7->mLoadingState == PakFile::LOADING_DATA))
+    {
+        if (mCurrentPakInfo != nullptr)
+        {
+            if (mCurrentPakInfo->pakId != mCurrentPakId)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 2145;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("probable streaming problem here"))
+                    __debugbreak();
+            }
+            RegisterPakLoaded(mCurrentPakInfo);
+        }
+        if (v2)
+        {
+            AsyncUnloadPak(mCurrentPakId);
+        }
+        else
+        {
+            TPakId v9 = mCurrentPakId;
+            mCurrentPakInfo = nullptr;
+            StreamZoneManager::sInst->OnLoaded(v9);
+            mState = (state_e)2;  // STATE_NORMAL
+            mCurrentPakId = PAK_ID_INVALID;
+            mCurSection = nullptr;
+        }
+    }
+}
+
+// ea: 0x679390
+void PakManager::UpdateUnloading()
+{
+    TPakId mCurrentPakId = this->mCurrentPakId;
+    if (mCurrentPakId == PAK_ID_INVALID || mSlots[mCurrentPakId] == nullptr
+        || mSlots[mCurrentPakId]->mState == PakFile::UNLOADED)
+    {
+        PakFile* v4 = mSlots[mCurrentPakId];
+        if (!v4->mBankAlloc.IsEmpty())
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 2182;
+            AeAssert::gCurrentExpr = "p->mBankAlloc.IsEmpty()";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("unreleased banks!"))
+                __debugbreak();
+        }
+        // reserved_dlist<PakFile>::erase (streamer.o 0x686EB0); the
+        // find(obj) != end() debug assert (reserved_dlist.h:418) is elided
+        reserved_dlist<PakFile>::dlist_node* node =
+            (reserved_dlist<PakFile>::dlist_node*)&v4->m_dlist_node;
+        node->m_next->m_prev = node->m_prev;
+        node->m_prev->m_next = node->m_next;
+        --mActivePaks.m_size;
+
+        if (mCurrentPakInfo != nullptr)
+        {
+            if (mCurrentPakInfo->pakId != this->mCurrentPakId)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 2190;
+                AeAssert::gCurrentExpr = nullptr;
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Warning("probable streaming problem here"))
+                    __debugbreak();
+            }
+            RegisterPakUnloaded(mCurrentPakInfo);
+            if (mCurrentPakInfo->refCount != 0)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+                AeAssert::gCurrentLine = 2200;
+                AeAssert::gCurrentExpr = "mCurrentPakInfo->refCount == 0";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert(
+                           "somehow a still-used pak has been unloaded"))
+                    __debugbreak();
+            }
+            mCurrentPakInfo->pakId = PAK_ID_INVALID;
+            mCurrentPakInfo = nullptr;
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 2206;
+            AeAssert::gCurrentExpr = "0";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("no current pak info!"))
+                __debugbreak();
+        }
+        const PakInfoNode* mPakInfo;
+        if (v4->mPakType == kPakTypeCount)
+            mPakInfo = nullptr;
+        else
+        {
+            if (v4->mPakInfo == nullptr)
+                v4->mPakInfo = PakManager::sInst->GetPakInfo(v4->mPakId);
+            mPakInfo = v4->mPakInfo;
+        }
+        switch (mPakInfo->pakType)
+        {
+        case kPakTypeGlobal:
+            mGlobalPakId = PAK_ID_INVALID;
+            break;
+        case kPakTypeAnimation:
+            mAnimPakId = PAK_ID_INVALID;
+            break;
+        case kPakTypeLevel:
+            mLevelPakId = PAK_ID_INVALID;
+            break;
+        case kPakTypeCount:
+            mDebugPakId = PAK_ID_INVALID;
+            break;
+        default:
+            break;
+        }
+        mSlots[this->mCurrentPakId] = nullptr;
+        mPakInfoPtrs[this->mCurrentPakId] = nullptr;
+        mCurrentPakId = PAK_ID_INVALID;
+        mState = (state_e)2;  // STATE_NORMAL
+        mCurSection = nullptr;
+        v4->~PakFile();
+        PakFile::sAllocator->Release(v4);
+    }
+}
+
+// ea: 0x678040
+void PakManager::UpdateNormal()
+{
+    ++sComputeDistanceKey;
+    PakInfoNode* hp = GetBestUnloadedPak();
+    PakInfoNode* v4 = GetBestUnloadablePak();
+    PakInfoNode* lp = v4;
+    float lp_dist = v4 != nullptr ? GetDistance(v4) : 3.4028235e38f;
+    float hp_dist = hp != nullptr ? GetDistance(hp) : 3.4028235e38f;
+    if (v4 != nullptr)
+    {
+        PakFile* v5 = mSlots[v4->pakId];
+        if (v5 != nullptr
+            && v5->mLoadingState == (PakFile::ELoadingState)8)
+            lp_dist = 3.4028235e38f;
+    }
+    bool unload = false;
+    bool v6 = false;
+    if (v4 != nullptr && lp_dist == 3.4028235e38f)
+    {
+        v6 = true;
+        goto decide;
+    }
+    mNextPakInfo = hp;
+    if (hp_dist != 3.4028235e38f)
+    {
+        NumBanks hp_num_banks = GetNumBanks(hp);
+        float xbox = hp_num_banks.xbox;
+        if (xbox <= BankManager::sInst->get_free_count().xbox)
+        {
+            mCurrentPakInfo = hp;
+            TPakId Pak = AsyncLoadPak(hp->pakType,
+                                      ((InplaceString*)hp->path)->mStr,
+                                      hp->numBanks);
+            hp->pakId = Pak;
+            mCurSection = hp;
+            mFilled = false;
+            return;
+        }
+        v4 = lp;
+        v6 = unload;
+        goto decide;
+    }
+    mFilled = true;
+    if (EntityManager::sInst->mWorld != nullptr)
+        ((Entity*)EntityManager::sInst->mWorld)
+            ->Notify(hash_const.zonesloaded);
+    return;
+
+decide:
+    if (v4 != nullptr && (v6 || lp_dist > hp_dist))
+    {
+        mFilled = false;
+        mCurrentPakInfo = v4;
+        if (v4->pakType == kPakTypeGlobal)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 2082;
+            AeAssert::gCurrentExpr = "lp->pakType != kPakTypeGlobal";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("sanity check"))
+                __debugbreak();
+        }
+        AsyncUnloadPak(v4->pakId);
+        mCurrentPakId = v4->pakId;
+        mCurSection = v4;
+    }
+    else
+    {
+        mFilled = true;
+        if (EntityManager::sInst->mWorld != nullptr)
+            ((Entity*)EntityManager::sInst->mWorld)
+                ->Notify(hash_const.zonesloaded);
+    }
+}
+
+// ea: 0x677750
+void PakFile::UpdateUnloading()
+{
+    switch (mLoadingState)
+    {
+    case (ELoadingState)UNLOADING_SERIALIZED:
+        tlPrintf("Unloading serialized assets from '%s'\n", mPath.mBuff);
+        UnloadSerialized();
+        mLoadingState = (ELoadingState)UNLOADING_INPLACE;
+        break;
+    case (ELoadingState)UNLOADING_INPLACE:
+        tlPrintf("Unloading inplace assets from '%s'\n", mPath.mBuff);
+        UnloadInplace();
+        mLoadingState = (ELoadingState)(UNLOADING_DONE | LOADING_TOC);
+        break;
+    case (ELoadingState)(UNLOADING_DONE | LOADING_TOC):
+        tlPrintf("Finished unloading of '%s'\n", mPath.mBuff);
+        FinishUnload();
+        if (mPakType == kPakTypeCount)
+        {
+            BrocSys::NotifyPakUnloaded(nullptr);
+        }
+        else
+        {
+            if (mPakInfo == nullptr)
+                mPakInfo = PakManager::sInst->GetPakInfo(mPakId);
+            BrocSys::NotifyPakUnloaded(
+                ((InplaceString*)mPakInfo->longName)->mStr);
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+// ea: 0x67A380 (large; placeholder that drives the per-file stages)
+void PakFile::UpdateLoading()
+{
+    // Real impl (0x67A380) walks header/data loading via InitiateHeaderRead /
+    // UpdateReads / DetermineNextFile; those are ported. The dispatcher here
+    // mirrors the original switch on mLoadingState.
+    if (mLoadingState == LOADING_HEADER)
+    {
+        if (IsRequestDone(&mHeaderRequestId))
+            CopyHeader();
+    }
+}
 
 void* PakManager::MemAlloc(TPakId id, unsigned int size, bool bUseActorHeap)
 {
@@ -4509,6 +4879,37 @@ void StreamZoneManager::OnUnload(TPakId pakId)
                 {
                     const ZoneCellDesc* cell = zone->mCells.mList[v9];
                     R_RefreshCell(cell->mCellId, true);
+                }
+            }
+        }
+        i = ZoneBankAt(*this, v11)->mNextBank;
+        if (i == -1)
+            break;
+        mFirstBank = (unsigned int)ZoneBankAt(*this, v11)->mNextBank;
+    }
+}
+
+// ea: 0x6674D0
+void StreamZoneManager::OnLoaded(TPakId pakId)
+{
+    int i = mFirstBank;
+    unsigned int mFirstBank = (unsigned int)this->mFirstBank;
+    if (mFirstBank == (unsigned int)-1)
+        return;
+    while (1)
+    {
+        ZoneBoundaryBank* v4 = ZoneBankAt(*this, mFirstBank);
+        unsigned int v11 = mFirstBank;
+        for (unsigned int v5 = 0; v5 < v4->mPtrs.mSize; ++v5)
+        {
+            StreamZone* zone = (StreamZone*)v4->mPtrs.mList[v5];
+            const PakInfoNode* mPakInfo = zone->mPakInfo;
+            if (mPakInfo != nullptr && mPakInfo->pakId == pakId)
+            {
+                for (unsigned int v9 = 0; v9 < zone->mCells.mSize; ++v9)
+                {
+                    const ZoneCellDesc* cell = zone->mCells.mList[v9];
+                    R_RefreshCell(cell->mCellId, false);
                 }
             }
         }
