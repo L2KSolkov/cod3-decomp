@@ -6374,6 +6374,567 @@ void InteractState::PlayPlayerAnim(void* anim, int weaponIndex, float fadeIn,
 }
 
 // ============================================================================
+// InteractState subclass ctors (anim.o; base-call + vftable + mType)
+// ============================================================================
+
+#define INTERACT_STATE_CTOR(NAME, TYPE)                                   \
+    void NAME##_Ctor(InteractState* self, TPakId curPakId, void* info,    \
+                     InteractionController* controller)                    \
+    {                                                                     \
+        InteractState_Ctor(self, curPakId, info, controller);             \
+        self->mType = (TYPE);                                             \
+    }
+
+extern void InteractState_Ctor(InteractState* self, TPakId curPakId,
+                               void* info, InteractionController* controller);
+
+// base ctor (0x546600) - stub body so subclass ctors link
+void InteractState_Ctor(InteractState* self, TPakId curPakId, void* info,
+                        InteractionController* controller)
+{
+    self->mPakId = curPakId;
+    self->mType = kInteractTypeInvalid;
+    self->mFlags = 0;
+    self->mInfo = info;
+    self->mInputRcvr = nullptr;
+    self->mFailureState = nullptr;
+    self->mStateTimer = 0.0f;
+    self->mFrameCount = -1;
+    self->mDesiredWeaponIndex = -1;
+    self->mSaveFrozen = 0;
+    self->mSaveNoClip = 0;
+    self->mSaveDrawCrosshair = 0;
+    self->mPlayerAnim = nullptr;
+    self->mOtherAnim = nullptr;
+    self->mPlayerCallback = nullptr;
+    self->mOtherCallback = nullptr;
+    self->mNumAnimRepetitions = 1;
+    self->mLerpType = kLerpNone;
+    self->mLerpTimer = 0.0f;
+    self->mLerpInteractableTagIndex = -1;
+    self->mPlayerLerp.Init();
+    self->mOtherLerp.Init();
+    self->mController = controller;
+    self->mSuccessState[0] = nullptr;
+    self->mSuccessState[1] = nullptr;
+    self->mSuccessState[2] = nullptr;
+    self->mSuccessState[3] = nullptr;
+    if (info != nullptr)
+    {
+        int inputType = *(int*)((char*)info + 0x24);
+        if (inputType != -1)
+            self->mInputRcvr =
+                InteractInputRcvr::GetInteractInputRcvr(
+                    (InteractInputRcvr::EInputType)inputType, curPakId);
+    }
+}
+
+// 0x546AF0
+INTERACT_STATE_CTOR(InteractStatePlayAnims, kInteractTypePlayAnims)
+// 0x546C50
+INTERACT_STATE_CTOR(InteractStatePlayPlayerAnim, kInteractTypePlayPlayerAnim)
+// 0x546DF0
+INTERACT_STATE_CTOR(InteractStatePush, kInteractTypePush)
+// 0x546E20
+INTERACT_STATE_CTOR(InteractStatePlaceItem, kInteractTypePlaceItem)
+// 0x546E60
+INTERACT_STATE_CTOR(InteractStateVehicleLink, kInteractTypeVehicleLink)
+// 0x546E90
+INTERACT_STATE_CTOR(InteractStateMortarLoad, kInteractTypeMortarLoad)
+// 0x546F50
+INTERACT_STATE_CTOR(InteractStateScaleAnimSpeed, kInteractTypeScaleAnimSpeed)
+// 0x546F80
+INTERACT_STATE_CTOR(InteractStateStrengthTest, kInteractTypeStrengthTest)
+// 0x546FB0
+INTERACT_STATE_CTOR(InteractStateLeverPush, kInteractTypeLeverPush)
+// 0x547160
+INTERACT_STATE_CTOR(InteractStateMelee, kInteractTypeMelee)
+// 0x5471B0
+INTERACT_STATE_CTOR(InteractStateMeleeInitiate, kInteractTypeMeleeInitiate)
+// 0x547270
+INTERACT_STATE_CTOR(InteractStateMeleeStart, kInteractTypeMeleeStart)
+// 0x547330
+INTERACT_STATE_CTOR(InteractStateMeleeSuccessSetup,
+                   kInteractTypeMeleeSuccessSetup)
+// 0x547490
+INTERACT_STATE_CTOR(InteractStateMeleeSuccess, kInteractTypeMeleeSuccess)
+// 0x5474C0
+INTERACT_STATE_CTOR(InteractStateMeleeFailure, kInteractTypeMeleeFailure)
+// 0x547500
+INTERACT_STATE_CTOR(InteractStateMeleeStagedInitiate,
+                   kInteractTypeMeleeStagedInitiate)
+// 0x5475D0
+INTERACT_STATE_CTOR(InteractStateMeleeStagedSuccess,
+                   kInteractTypeMeleeStagedSuccess)
+// 0x547600
+INTERACT_STATE_CTOR(InteractStateMeleeDropWeapon, kInteractTypeMeleeDropWeapon)
+// 0x547630
+INTERACT_STATE_CTOR(InteractStateRowboatInit, kInteractTypeRowboatInit)
+// 0x547660
+INTERACT_STATE_CTOR(InteractStateRowboat, kInteractTypeRowboat)
+// 0x547BE0
+INTERACT_STATE_CTOR(InteractStateVehicleBase, kInteractTypeVehicleBase)
+// 0x547C50
+INTERACT_STATE_CTOR(InteractStateVehicleIdle, kInteractTypeVehicleIdle)
+// 0x547C80
+INTERACT_STATE_CTOR(InteractStateVehicleTurn, kInteractTypeVehicleTurn)
+// 0x547CC0
+INTERACT_STATE_CTOR(InteractStateVehicleRelease, kInteractTypeVehicleRelease)
+// 0x54BEA0
+INTERACT_STATE_CTOR(InteractStatePickLiveGrenade,
+                   kInteractTypePickLiveGrenade)
+
+#undef INTERACT_STATE_CTOR
+
+// ea: 0x0055FEB0 (InteractionController::InteractionQueueEntry ctor)
+void InteractionQueueEntry_Ctor(void* self)
+{
+    *(unsigned int*)((char*)self + 0x00) = 0;
+    *(int*)((char*)self + 0x04) = -1;
+}
+
+// ============================================================================
+// RowboatMgr (anim.o Rowboat.cpp)
+// ============================================================================
+class RowboatMgr {
+public:
+    struct { unsigned int mVal; } mBoatmen[5];  // +0x00
+
+    void Init();  // ?Init@RowboatMgr@@QAEXXZ (anim.o)
+};
+
+// ea: 0x00561460
+void RowboatMgr_Ctor(RowboatMgr* self)
+{
+    for (int i = 0; i < 5; ++i)
+        self->mBoatmen[i].mVal = 0;
+    self->Init();
+}
+
+void RowboatMgr::Init()
+{
+}
+
+// ============================================================================
+// InteractStateRowboat helpers (anim.o Rowboat.cpp)
+// ============================================================================
+
+// ea: 0x0053ACE0
+void InteractStateRowboat_SetRowboatFlag(InteractState* self, unsigned int f,
+                                         int enable)
+{
+    int* flags = (int*)((char*)self + 0x1A0);
+    if (enable != 0)
+        *flags |= (int)f;
+    else
+        *flags &= ~(int)f;
+}
+
+extern float sStrokeDurationRowboat;
+extern float sIdleFadeTimeRowboat;
+extern float sStickForwardStartTolRowboat;
+extern float sStickForwardStartMinRowboat;
+extern float sStickForwardStartMaxRowboat;
+float sStrokeDurationRowboat = 0.0f;
+float sIdleFadeTimeRowboat = 0.1f;             // 0xDF3124
+float sStickForwardStartTolRowboat = 10.0f;    // 0xDF3120 (int 0xA)
+float sStickForwardStartMinRowboat = -1.0f;    // 0xDF311C (int -1)
+float sStickForwardStartMaxRowboat = 128.0f;   // 0xDF3118 (int 0x80)
+
+// ea: 0x0053DE90
+void InteractStateRowboat_GiveOrder(int orderHash, float strokeDuration,
+                                    float bestThreshold, float okayThreshold,
+                                    float lateThreshold)
+{
+    static float sStrokeDuration = 0.0f;
+    static float sBestThreshold = 0.0f;
+    static float sOkayThreshold = 0.0f;
+    static float sLateThreshold = 0.0f;
+    static int sOrderPending = 0;
+    static int sOrderHash = 0;
+    sStrokeDuration = strokeDuration;
+    sBestThreshold = bestThreshold;
+    sOkayThreshold = okayThreshold;
+    sOrderPending = 1;
+    sOrderHash = orderHash;
+    sLateThreshold = lateThreshold;
+}
+
+// ea: 0x0053DEE0 / 0x0053DEF0
+void InteractStateRowboat_StartModeIdle(InteractState* self)
+{
+    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
+}
+
+void InteractStateRowboat_StartModeRow(InteractState* self)
+{
+    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
+}
+
+// ea: 0x0053DF00
+void InteractStateRowboat_StartModeSlip(InteractState* self)
+{
+    int* flags = (int*)((char*)self + 0x1A0);
+    *flags |= 2;
+    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
+    *(float*)((char*)self + 0x1B0) = 3.0f;  // mFeedbackTimer
+}
+
+// ea: 0x0053DF30
+void InteractStateRowboat_UpdateNotify(InteractState* self, float deltaT)
+{
+    (void)self; (void)deltaT;
+}
+
+// ea: 0x0053DF40
+void InteractStateRowboat_NewStroke(InteractState* self)
+{
+    *(float*)((char*)self + 0x1B4) = 0.0f;  // mStrokeTimer
+    float sStrokeDuration = *(float*)&sStrokeDurationRowboat;
+    int numStrokes = *(int*)((char*)self + 0x1B8);
+    if (sStrokeDuration > 0.0f && numStrokes % 2 == 0)
+        *(float*)((char*)self + 0x1C0) = sStrokeDuration;
+}
+
+// ea: 0x00540960
+void InteractStateRowboat_StartMode(InteractState* self, int newMode)
+{
+    *(int*)((char*)self + 0x198) = newMode;  // mMode
+    if (newMode >= 2)
+    {
+        if (newMode == 2)
+        {
+            int* flags = (int*)((char*)self + 0x1A0);
+            *flags |= 2;
+            *(float*)((char*)self + 0x1B0) = 3.0f;
+        }
+    }
+    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
+    int rumbleVal = *(int*)((char*)self + 0x1D8);
+    if (rumbleVal != -1)
+    {
+        RumbleManager* inst = (RumbleManager*)RumbleManager_Inst(currCl);
+        if (inst != nullptr)
+        {
+            RumbleEffectInstanceHandle h;
+            h.mVal = rumbleVal;
+            inst->Remove(h);
+        }
+        *(int*)((char*)self + 0x1D8) = -1;
+    }
+}
+
+// ea: 0x005409F0 (UpdateModeIdle - rowboat)
+int InteractStateRowboat_UpdateModeIdle(InteractState* self, float deltaT)
+{
+    int mMode = *(int*)((char*)self + 0x198);
+    if (*(int*)((char*)self + 0x1AC) != 0)  // mStartAnim
+    {
+        InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+        if (info->playerAnim[0] != 0
+            && *(float*)((char*)self + 0x1C4) <= 0.0f)  // mAnimFadeTimer
+        {
+            tlFixedString name(info->playerAnim);
+            void* Anim = nalGetAnim(name);
+            void* controller = self->mController;
+            int weaponIndex =
+                ((InteractionController*)controller)
+                    ->GetSelectedInteractWeaponIndex();
+            self->PlayPlayerAnim(Anim, weaponIndex, sIdleFadeTimeRowboat, 0.0f,
+                                 1.0f);
+            *(float*)((char*)self + 0x1C4) = sIdleFadeTimeRowboat;
+            *(int*)((char*)self + 0x1AC) = 0;
+            InteractInputRcvr* rcvr = (InteractInputRcvr*)self->mInputRcvr;
+            if (rcvr != nullptr)
+            {
+                rcvr->mInputRate = 0.0f;
+                rcvr->mInputProgress = 0.0f;
+            }
+            return mMode;
+        }
+    }
+    else if (*(float*)((char*)self + 0x1C4) <= 0.0f)
+    {
+        InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+        float v10 = -CL_GamepadPhysicalAxisValue(
+            2 * (info->leftStick != 0) + 1);
+        if (fabsf(v10) > sStickForwardStartTolRowboat
+            && v10 > sStickForwardStartMinRowboat
+            && v10 < sStickForwardStartMaxRowboat)
+            return 1;  // MODE_ROW
+    }
+    return mMode;
+}
+
+// ============================================================================
+// Interaction config-string parsing (anim.o InteractionController.cpp)
+// ============================================================================
+
+extern const char* const sButtonTypeNames[17];  // defined above
+static const char* const sInteractTypeNames[25] = {
+    "PlayAnims", "PlayPlayerAnim", "PlaceItem", "Push", "StrengthTest",
+    "ScaleAnimSpeed", "LeverPush", "Melee", "MeleeInitiate", "MeleeStart",
+    "MeleeSuccessSetup", "MeleeSuccess", "MeleeFailure",
+    "MeleeStagedInitiate", "MeleeStagedSuccess", "MeleeDropWeapon",
+    "MortarLoad", "VehicleBase", "VehicleIdle", "VehicleTurn",
+    "VehicleRelease", "VehicleLink", "PickLiveGrenade", "RowboatInit",
+    "Rowboat",
+};
+static const char* const sInputTypeNames[6] = {
+    "ButtonMash", "ButtonPress", "StickSwirl", "StickToggleHoriz",
+    "StickToggleVert", "Rowboat",
+};
+static const char* const sLerpTypeNames[8] = {
+    "LerpNone", "SnapPlayer", "LerpOther", "LerpPlayer", "StagedLerp",
+    "StagedSnap", "StagedLerpPlayer", "StagedSnapPlayer",
+};
+
+extern void InteractionStrcpy(unsigned char* pMember,
+                              const char* pKeyValue);
+struct cspField_t;
+class ConfigString;
+extern int ParseConfigStringToStruct(
+    unsigned char* pStruct, const cspField_t* pFieldList, int iNumFields,
+    const ConfigString* pCfgStr, int iMaxFieldTypes,
+    int (__cdecl* parseSpecialFieldType)(unsigned char*, const char*, int),
+    void (__cdecl* parseStrcpy)(unsigned char*, const char*));
+extern int HashString_CalcHashDecl(const char* str);
+
+// ?InteractionStrcpy@@YAXPAEPBD@Z (anim.o; local)
+void InteractionStrcpy(unsigned char* pMember, const char* pKeyValue)
+{
+    strcpy((char*)pMember, pKeyValue);
+}
+
+// ea: 0x0053B0B0
+int InteractStateParseSpecificField(unsigned char* pStruct,
+                                    const char* pValue, int fieldType)
+{
+    switch (fieldType)
+    {
+    case 8:  // interact type
+    {
+        int v3 = 0;
+        while (_stricmp(pValue, sInteractTypeNames[v3]) != 0)
+        {
+            if (++v3 >= 25)
+                break;
+        }
+        if (v3 != 25)
+        {
+            pStruct[8] = (unsigned char)v3;
+            return 1;
+        }
+        XANIM_ASSERT("0",
+                     "c:\\cod\\code\\game\\InteractionController.cpp", 427,
+                     "Unknown interact type [%s]\n");
+        return 1;
+    }
+    case 9:  // input type
+    {
+        int v5 = 0;
+        while (_stricmp(pValue, sInputTypeNames[v5]) != 0)
+        {
+            if (++v5 >= 6)
+                break;
+        }
+        if (v5 != 6)
+        {
+            pStruct[9] = (unsigned char)v5;
+            return 1;
+        }
+        pStruct[9] = (unsigned char)-1;
+        return 1;
+    }
+    case 10:  // lerp type
+    {
+        int v6 = 0;
+        while (_stricmp(pValue, sLerpTypeNames[v6]) != 0)
+        {
+            if (++v6 >= 8)
+                break;
+        }
+        if (v6 != 8)
+        {
+            pStruct[226] = (unsigned char)v6;
+            return 1;
+        }
+        XANIM_ASSERT("0",
+                     "c:\\cod\\code\\game\\InteractionController.cpp", 455,
+                     "Unknown lerp type [%s]\n");
+        return 1;
+    }
+    case 11: case 12: case 13: case 14:  // notify names
+    {
+        int v7 = fieldType - 11;
+        InteractionStrcpy(&pStruct[20 * v7 + 988], pValue);
+        *(unsigned int*)&pStruct[4 * v7 + 1068] =
+            HashString::CalcHash(pValue);
+        return 1;
+    }
+    case 15: case 16: case 17: case 18:  // notify float
+        *(float*)&pStruct[4 * (fieldType - 15) + 1084] =
+            (float)atof(pValue);
+        return 1;
+    case 19: case 20: case 21: case 22:  // notify int
+        *(int*)&pStruct[4 * (fieldType - 19) + 1100] = atoi(pValue);
+        return 1;
+    case 23: case 24: case 25: case 26:  // notify int
+        *(int*)&pStruct[4 * (fieldType - 23) + 1116] = atoi(pValue);
+        return 1;
+    case 27: case 28: case 29: case 30:  // notify float
+        *(float*)&pStruct[4 * (fieldType - 27) + 1132] =
+            (float)atof(pValue);
+        return 1;
+    case 31: case 32: case 33: case 34:
+        *(float*)&pStruct[4 * (fieldType - 31) + 1148] =
+            (float)atof(pValue);
+        return 1;
+    case 35: case 36: case 37: case 38:
+        *(float*)&pStruct[4 * (fieldType - 35) + 1164] =
+            (float)atof(pValue);
+        return 1;
+    case 39: case 40: case 41: case 42:
+        *(float*)&pStruct[4 * (fieldType - 39) + 1180] =
+            (float)atof(pValue);
+        return 1;
+    case 43: case 44: case 45: case 46:
+        *(float*)&pStruct[4 * (fieldType - 43) + 1196] =
+            (float)atof(pValue);
+        return 1;
+    case 47: case 48: case 49: case 50:
+        *(float*)&pStruct[4 * (fieldType - 47) + 1212] =
+            (float)atof(pValue);
+        return 1;
+    case 51: case 52: case 53: case 54:  // success state names
+    {
+        int v17 = fieldType - 51;
+        InteractionStrcpy(&pStruct[32 * v17 + 40], pValue);
+        return 1;
+    }
+    case 55: case 56: case 57: case 58: case 59: case 60:  // player mod anims
+    {
+        int v18 = fieldType - 55;
+        InteractionStrcpy(&pStruct[40 * v18 + 248], pValue);
+        return 1;
+    }
+    case 61: case 62: case 63: case 64: case 65: case 66:  // other mod anims
+    {
+        int v19 = fieldType - 61;
+        InteractionStrcpy(&pStruct[40 * v19 + 568], pValue);
+        return 1;
+    }
+    case 67: case 68: case 69: case 70: case 71:  // threshold min
+        *(float*)&pStruct[4 * (fieldType - 67) + 1360] =
+            (float)atof(pValue);
+        return 1;
+    case 72: case 73: case 74: case 75: case 76:  // threshold max
+        *(float*)&pStruct[4 * (fieldType - 72) + 1380] =
+            (float)atof(pValue);
+        return 1;
+    case 77: case 78: case 79: case 80:  // button index
+    {
+        int v22 = fieldType - 77;
+        *(int*)&pStruct[4 * v22 + 1228] = -1;
+        int v23 = 0;
+        while (_stricmp(sButtonTypeNames[v23], pValue) != 0)
+        {
+            if (++v23 >= 17)
+                break;
+        }
+        if (v23 < 17)
+            *(int*)&pStruct[4 * v22 + 1228] = v23;
+        if (*(int*)&pStruct[4 * v22 + 1228] == -1)
+        {
+            XANIM_ASSERT(
+                "((InteractStateInfo*)(pStruct))->buttonIndex[index] != -1",
+                "c:\\cod\\code\\game\\InteractionController.cpp", 651,
+                "Invalid button index");
+        }
+        return 1;
+    }
+    default:
+        XANIM_ASSERT("0",
+                     "c:\\cod\\code\\game\\InteractionController.cpp", 656,
+                     "Bad interact state field type %i\n");
+        return 0;
+    }
+}
+
+// InteractionInfo / InteractStateInfo storage (anim.o data)
+void* sInteractionInfos[8] = {0};
+int sNumInteractionInfos = 0;
+void* sInteractStateInfos[64] = {0};
+int sNumInteractStateInfos = 0;
+
+extern int DoesInteractionInfoExist(const char* name);
+extern int DoesInteractStateInfoExist(const char* name);
+int DoesInteractionInfoExist(const char* name)
+{
+    for (int i = 0; i < sNumInteractionInfos; ++i)
+    {
+        if (strcmp((char*)sInteractionInfos[i], name) == 0)
+            return 1;
+    }
+    return 0;
+}
+int DoesInteractStateInfoExist(const char* name)
+{
+    for (int i = 0; i < sNumInteractStateInfos; ++i)
+    {
+        if (strcmp((char*)sInteractStateInfos[i], name) == 0)
+            return 1;
+    }
+    return 0;
+}
+
+// ea: 0x0053BCD0
+void ParseInteractionConfigString(const char* name,
+                                  const ConfigString* cfgstr)
+{
+    if (!DoesInteractionInfoExist(name))
+    {
+        if (sNumInteractionInfos >= 8)
+        {
+            XANIM_ASSERT("sNumInteractionInfos < gMaxInteractionFiles",
+                         "c:\\cod\\code\\game\\InteractionController.cpp", 695,
+                         "Too many interaction files");
+        }
+        void* v2 = mem_heap_malloc(0x48);
+        sInteractionInfos[sNumInteractionInfos] = v2;
+        memset(v2, 0, 0x48);
+        strcpy((char*)v2, name);
+        if (ParseConfigStringToStruct((unsigned char*)v2, nullptr, 3, cfgstr,
+                                      8, nullptr, InteractionStrcpy) != 0)
+            ++sNumInteractionInfos;
+    }
+}
+
+// ea: 0x0053BE10
+void ParseInteractStateConfigString(const char* name,
+                                    const ConfigString* cfgstr)
+{
+    if (!DoesInteractStateInfoExist(name))
+    {
+        if (sNumInteractStateInfos >= 64)
+        {
+            XANIM_ASSERT("sNumInteractStateInfos < gMaxInteractStateFiles",
+                         "c:\\cod\\code\\game\\InteractionController.cpp", 726,
+                         "Too many interact state files");
+        }
+        void* v2 = mem_heap_malloc(0x598);
+        sInteractStateInfos[sNumInteractStateInfos] = v2;
+        memset(v2, 0, 0x598);
+        strcpy((char*)v2, name);
+        if (ParseConfigStringToStruct((unsigned char*)v2, nullptr, 131, cfgstr,
+                                      81, InteractStateParseSpecificField,
+                                      InteractionStrcpy) != 0)
+            ++sNumInteractStateInfos;
+    }
+}
+
+
+// ============================================================================
 // InteractionController render-text + player anim reset (anim.o)
 // FEMultiLineText vtable slots (from cl_scr.cpp DoRenderText port):
 // SetText +0x84, SetPos +0x94, SetScale +0x70, SetAlpha +0xA0,
