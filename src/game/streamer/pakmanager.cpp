@@ -66,7 +66,9 @@ class EntityManager {
 public:
     static EntityManager* sInst;  // ?sInst@EntityManager@@2PAV1@A (effect_events.cpp)
     EntityMin* mWorld;            // +0x44
+    Entity* GetPlayer(int idx);   // ?GetPlayer@EntityManager@@QAEPAVEntity@@H@Z (g_entity_misc.cpp)
 };
+extern int currCl;  // ?currCl@@3HA (platform_xbox/XboxLiveMenus.cpp)
 
 // mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
 struct mem_heap {
@@ -1666,6 +1668,18 @@ struct SceneEffect {
     uint8_t _pad[0x50];
     unsigned int mEffectHandle;         // +0x50
 };
+// SceneLight (scenemanager.cpp; verified IDA: size 0x30)
+struct SceneLight {
+    math::Position3 mPosition;   // +0x00
+    float mRed;                  // +0x10
+    float mGreen;                // +0x14
+    float mBlue;                 // +0x18
+    float mGlowRadius;           // +0x1C
+    float mGlowIntensity;        // +0x20
+    float mGlowFade;             // +0x24
+    void* m_target;              // +0x28
+    unsigned int mReserved1;     // +0x2C
+};
 class SceneBank {
 public:
     uint8_t _pad0[0x08];
@@ -1675,7 +1689,7 @@ public:
     uint8_t _pad18[0x30 - 0x18];
     InplaceVector<SceneEffect> mSceneEffects;      // +0x30
     InplaceVector<void*> mSceneEffectGroups;       // +0x38
-    uint8_t _pad40[0x48 - 0x40];                   // mSceneLights
+    InplaceVector<SceneLight> mSceneLights;        // +0x40
     InplaceVector<void*> mPersistentStorage;       // +0x48
     unsigned char* mSceneHeap;    // +0x50
 };
@@ -1694,6 +1708,15 @@ struct CheckpointMgr {
     uint8_t _pad04[0x574 - 0x04];
     bool mCheckpointSaveExists;  // +0x574
     static CheckpointMgr* sInst;  // ?sInst@CheckpointMgr@@2PAV1@A (sv_main.cpp)
+};
+
+// DebugRender (render.o; RenderText/RenderSphere defined in g_entity_misc.cpp)
+class DebugRender {
+public:
+    static void RenderText(const char* str, int x, int y, const Color& col,
+                           float depth, float size);  // render.o 0xAAC7D0
+    static void RenderSphere(const math::Position3& pos, float radius,
+                             const Color& argb);  // render.o 0x6D4AF0
 };
 
 // SceneManager (render.o view; mWorldSpawn +0x1A0, mDebugRenderDist +0x1B0,
@@ -1724,6 +1747,7 @@ public:
     void AddBank(TPakId pakId, SceneBank* bank);  // ?AddBank@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z
     void UnloadInstanceGroups(TPakId pakId);  // ?UnloadInstanceGroups@SceneManager@@AAEXW4TPakId@@@Z
     void UnloadBank(TPakId pakId);  // ?UnloadBank@SceneManager@@EAEXW4TPakId@@@Z
+    void DebugRenderLights();  // ?DebugRenderLights@SceneManager@@QAEXXZ
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
 
@@ -2505,6 +2529,33 @@ void SceneManager::UnloadBank(TPakId pakId)
     }
 }
 
+// ea: 0x669A20
+void SceneManager::DebugRenderLights()
+{
+    if (!mDebugRenderLights)
+        return;
+    EntityManager::sInst->GetPlayer(currCl);
+    for (int v3 = 0; v3 < 99; ++v3)
+    {
+        SceneBank* v4 = mBankArray.m_elements[v3];
+        if (v4 != nullptr)
+        {
+            InplaceVector<SceneLight>* v5 = &v4->mSceneLights;
+            for (unsigned int i = 0; i < v5->mSize; ++i)
+            {
+                SceneLight* v7 = &v5->mList[i];
+                Color v10;
+                v10.r = v7->mRed;
+                v10.g = v7->mGreen;
+                v10.b = v7->mBlue;
+                v10.a = v7->mGlowIntensity * 0.5f;
+                DebugRender::RenderSphere(v7->mPosition, v7->mGlowRadius,
+                                          v10);
+            }
+        }
+    }
+}
+
 // ea: 0x668B30
 void Console_ToggleSceneFX()
 {
@@ -3219,13 +3270,6 @@ void MyRenderText(const char* str, int x, int y, const Color& col,
     nglListAddString(Font, str, ya, cola, depth, v8, size, size);
     nglListAddString(Font, str, ya, cola, depth, color, size, size);
 }
-
-// DebugRender (render.o; RenderText defined in g_entity_misc.cpp)
-class DebugRender {
-public:
-    static void RenderText(const char* str, int x, int y, const Color& col,
-                           float depth, float size);  // render.o 0xAAC7D0
-};
 
 // ngl debug-quad helpers (ngl.o)
 extern int nglGetScreenWidth();
