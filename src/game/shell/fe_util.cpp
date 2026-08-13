@@ -4,6 +4,7 @@
 
 #include "game/shell/shell_types.h"
 #include "core/tlFixedString.h"
+#include "ngl/ngl_dx_quad.h"
 
 #include <windows.h>
 #include <stdio.h>
@@ -16,10 +17,15 @@ extern int g_currentAsian;         // shell.o data
 extern const char* const defaultFileName;  // 0xCD67AE
 
 int SEH_GetCurrentLanguage();  // game.o stub
+extern int XGetLanguage();     // platform shim
+extern char* va(const char* fmt, ...);  // core.o
 
 struct nglTexture;
 void* cdGetResource(const tlFixedString& FileName, unsigned int FourCC,
                     bool ExtraSafety);  // streamer.o 0x678D40
+
+// TheStringPackage (stringed_hooks.cpp)
+extern CStringEdPackage TheStringPackage;
 
 // ============================================================================
 // screensafe
@@ -255,6 +261,77 @@ float GetYScalingForWindow(int window)
 // text / date
 // ============================================================================
 
+// ea: 0x0056CE20
+bool CompareButton(const char* text, const char* button,
+                   const char** buttonCode, const char* would_be_button_code,
+                   int& length)
+{
+    int v5 = 0;
+    if (buttonCode == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\FEText.cpp";
+        AeAssert::gCurrentLine = 895;
+        AeAssert::gCurrentExpr = "buttonCode";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("old cod assert"))
+            __debugbreak();
+    }
+    int v6 = (int)strlen(button);
+    if (v6 > 0)
+    {
+        const char* v7 = text;
+        do
+        {
+            char v8 = *v7;
+            char v9 = v7[button - text];
+            if (*v7 == v9)
+            {
+                if (v8 == 0 && v9 == 0)
+                    break;
+            }
+            else if (v8 < 65 || v8 > 90 || v9 != v8 + 32)
+            {
+                return false;
+            }
+            ++v5;
+            ++v7;
+        }
+        while (v5 < v6);
+    }
+    *buttonCode = would_be_button_code;
+    length = v6;
+    return true;
+}
+
+// ea: 0x0056F3C0
+void GetXboxLanguage()
+{
+    ELanguage result = (ELanguage)(XGetLanguage() - 1);
+    switch (result)
+    {
+    case kLanguageEnglish:
+        gLanguage = kLanguageEnglish;
+        break;
+    case kLanguageFrench:
+        gLanguage = kLanguageGerman;
+        break;
+    case kLanguageSpanish:
+        gLanguage = kLanguageFrench;
+        break;
+    case kLanguageItalian:
+        gLanguage = kLanguageSpanish;
+        break;
+    case kLanguageUnlocalized:
+        gLanguage = kLanguageItalian;
+        break;
+    default:
+        result = nglDisplayMode.PAL ? kLanguageFrench : kLanguageEnglish;
+        gLanguage = result;
+        break;
+    }
+}
+
 // ea: 0x0056F380
 void AsciiToUnicode(char* ascii_buffer, unsigned short* string)
 {
@@ -267,6 +344,28 @@ void AsciiToUnicode(char* ascii_buffer, unsigned short* string)
         i = *v2;
     }
     *string = 0;
+}
+
+// ea: 0x0059E060
+void DecodeStringTable(const char* name, unsigned char* data, int size,
+                       TPakId pakId)
+{
+    (void)size;
+    (void)pakId;
+    char sLineBuffer[16384];
+    const char* parsePos = (const char*)data;
+    TheStringPackage.SetupNewFileParse(name, 1);
+    const char* v2 = nullptr;
+    while (TheStringPackage.ReadLine(parsePos, sLineBuffer) != 0)
+    {
+        unsigned int v4 = (unsigned int)strlen(sLineBuffer);
+        if (v4 != 0)
+            v2 = TheStringPackage.ParseLine(sLineBuffer);
+        if (v2 != nullptr)
+            return;
+    }
+    if (TheStringPackage.m_bEndMarkerFound_ParseOnly == 0)
+        va("Truncated file, failed to find \"%s\" at file end!", "ENDMARKER");
 }
 
 // ea: 0x00575690
