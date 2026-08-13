@@ -316,12 +316,7 @@ struct refexport_t {
                                  const char*, int, char, float, int, int);
 };
 extern refexport_t re;
-// ?SEH_PrintStrlen@@YAHPBD@Z (shell.o 0x581200; stub)
-int SEH_PrintStrlen(const char* string)
-{
-    return string != nullptr ? (int)strlen(string) : 0;
-}
-
+extern int SEH_PrintStrlen(const char* string);  // shell.o
 // ea: 0x5315B0
 void Field_Draw(field_t* edit, int x, int y, int showCursor)
 {

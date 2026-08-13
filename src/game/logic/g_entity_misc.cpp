@@ -1706,15 +1706,6 @@ int Scr_IsSystemActive(unsigned char sys)
     (void)sys;
     return 0;
 }
-const char* SEH_StringEd_GetString(const char* pszReference)
-{
-    (void)pszReference;
-    return "";
-}
-int SEH_GetCurrentLanguage()
-{
-    return 0;
-}
 int RE_Text_Width(const char* text, int font, float scaleX, float scaleY,
                   int style)
 {
@@ -1918,12 +1909,6 @@ void* EntityManager_GetPlayer5(void* inst, int idx)
     return nullptr;
 }
 
-// shell.o / render.o helpers (stubs, port later)
-unsigned int SEH_ReadCharFromString(const char** pszPointer, int* advanced)
-{
-    (void)pszPointer; (void)advanced;
-    return 0;
-}
 const char* CG_SafeTranslateString_Internal(const char* string,
                                             const char* defaultString)
 {
@@ -2798,9 +2783,6 @@ void Scr_PrecacheAnimTrees(void* (*cb)(void*, unsigned int), int a)
     (void)cb; (void)a;
 }
 void ScriptEventHandler_dtor(void* self) { (void)self; }
-void SEH_Init_StringEd() {}
-void SEH_InitLanguage() {}
-void SEH_UpdateLanguageInfo() {}
 void SetAnimCheck(int a) { (void)a; }
 struct nglShaderParamSet;
 struct Color;

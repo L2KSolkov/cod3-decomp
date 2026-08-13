@@ -323,6 +323,7 @@ add_library(cod3_game_shell STATIC
     src/game/shell/broc_shell.cpp
     src/game/shell/string_ed.cpp
     src/game/shell/fe_util.cpp
+    src/game/shell/stringed_hooks.cpp
 )
 add_library(cod3_game_game STATIC src/game/game/stubs_game.cpp)
 add_library(cod3_game_core STATIC

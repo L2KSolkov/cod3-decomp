@@ -40,6 +40,17 @@ enum ELanguage {
     kLanguageJapanese = 5,
 };
 
+enum errorParm_t {
+    ERR_FATAL = 0,
+    ERR_DROP = 1,
+    ERR_SERVERDISCONNECT = 2,
+    ERR_DISCONNECT = 3,
+    ERR_NEED_CD = 4,
+    ERR_ENDGAME = 5,
+    ERR_SCRIPT = 6,
+    ERR_LOCALIZATION = 7,
+};
+
 // Minimal PanelAnimObject/PanelQuad views (full in ui_types.h; sv_stubs.h
 // cannot be combined with ui_types.h because both define FEMenuSystem).
 // The virtual destructor keeps PanelQuad polymorphic so FloatingPQ shares the
@@ -131,6 +142,8 @@ static_assert(sizeof(FEMenuListBoxItem) == 28,
 // ============================================================================
 // CStringEdPackage - string table editor package (shell.o string_ed.cpp)
 // ============================================================================
+int SE_GetFlagMask(const char* psFlagName);
+
 struct SE_Entry_s {
     std::string m_strString;  // +0x00
     std::string m_strDebug;   // +0x1C
@@ -138,6 +151,7 @@ struct SE_Entry_s {
 };
 
 class CStringEdPackage {
+    friend int ::SE_GetFlagMask(const char* psFlagName);
 public:
     int         m_bEndMarkerFound_ParseOnly;        // +0x00
     std::string m_strCurrentEntryRef_ParseOnly;     // +0x04

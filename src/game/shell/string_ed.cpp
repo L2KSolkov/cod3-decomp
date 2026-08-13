@@ -12,10 +12,10 @@
 extern const char* const defaultFileName;  // 0xCD67AE
 extern void mem_heap_free(void* ptr);      // core.o
 
-// File-scope scratch buffers (shell.o data; verified in binary)
-static char sString[128];
-static char sString_0[128];
-static char sString_1[128];
+// File-scope scratch buffers (shell.o data; shared with stringed_hooks.cpp)
+char sString[128];
+char sString_0[128];
+char sString_1[128];
 
 // ea: 0x00576BD0
 char* CStringEdPackage::Filename_PathOnly(const char* psFilename)

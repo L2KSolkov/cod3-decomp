@@ -101,6 +101,10 @@ extern void Q_strncpyz(char* dest, const char* src, int destsize);
 extern void Q_strcat(char* dest, int size, const char* src);
 extern int Q_stricmp(const char* s1, const char* s2);
 extern int Q_stricmpn(const char* s1, const char* s2, int n);
+enum msgLocErrType_t { LOCMSG_NOERR = 0, LOCMSG_ERR = 1 };
+extern const char* SEH_LocalizeTextMessage(const char* pszInputBuffer,
+                                           const char* pszMessageType,
+                                           msgLocErrType_t errType);  // shell.o
 extern int Cmd_Argc();
 extern char* Cmd_Argv(int arg);
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
@@ -159,13 +163,6 @@ extern void XAnimInit();
 extern void XAnimFreeTree(XAnimTree* tree);
 extern void Sys_OutOfMemError();
 extern void tlFatal(const char* fmt, ...);
-// ?SEH_LocalizeTextMessage@@YAPBDPBD0W4msgLocErrType_t@@@Z (shell.o; stub)
-const char* SEH_LocalizeTextMessage(const char* pszInputBuffer,
-                                    const char* pszMessageType, int errType)
-{
-    (void)pszMessageType; (void)errType;
-    return pszInputBuffer;
-}
 extern void SoundDevice_StopAllSounds(void* self);
 extern void AudioBankMgr_Update(void* self);
 extern void* AudioBankMgr_sInst;
@@ -1840,7 +1837,8 @@ void Com_Error(errorParm_t code, const char* fmt, ...)
     if (com_errorMessage[0] != 0)
     {
         const char* v4 = SEH_LocalizeTextMessage(com_errorMessage,
-                                                 "error message", 0);
+                                                 "error message",
+                                                 LOCMSG_NOERR);
         if (v4 != nullptr)
             Q_strncpyz(com_errorMessage, v4, 4096);
     }
