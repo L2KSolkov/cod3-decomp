@@ -1630,7 +1630,15 @@ private:
                                 ZoneOverrideBrushSet* zob);  // ?SetTopOverrideBrushSet@StreamZoneManager@@AAEXPAVZoneBoundaryBank@@PAVZoneOverrideBrushSet@@@Z
 };
 
-class SceneBank;
+// SceneBank (scenemanager.cpp; verified IDA: mSceneHeapSize +0x08,
+// mSceneHeap +0x50, size 0x58)
+class SceneBank {
+public:
+    uint8_t _pad0[0x08];
+    unsigned int mSceneHeapSize;  // +0x08
+    uint8_t _pad0C[0x50 - 0x0C];
+    unsigned char* mSceneHeap;    // +0x50
+};
 
 // SceneEffectGroup (scenemanager.cpp; 12 bytes, verified IDA)
 struct SceneEffectGroup {
@@ -1673,6 +1681,7 @@ public:
     void EnableEffect(unsigned int hash);  // ?EnableEffect@SceneManager@@QAEXI@Z
     void DisableEffect(unsigned int hash); // ?DisableEffect@SceneManager@@QAEXI@Z
     SceneBank* GetBank(TPakId pakId);      // ?GetBank@SceneManager@@AAEPAVSceneBank@@W4TPakId@@@Z
+    void AddBank(TPakId pakId, SceneBank* bank);  // ?AddBank@SceneManager@@AAEXW4TPakId@@PAVSceneBank@@@Z
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
 
@@ -2326,6 +2335,32 @@ SceneBank* SceneManager::GetBank(TPakId pakId)
             __debugbreak();
     }
     return mBankArray.m_elements[pakId];
+}
+
+// ea: 0x66DFE0
+void SceneManager::AddBank(TPakId pakId, SceneBank* bank)
+{
+    if (mBankArray.m_elements[pakId] != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\scenemanager.cpp";
+        AeAssert::gCurrentLine = 2550;
+        AeAssert::gCurrentExpr = "mBankArray[(int)pakId] == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert(
+                   "We already have a bank for this pak id!"))
+            __debugbreak();
+    }
+    mBankArray.m_elements[pakId] = bank;
+    if (bank->mSceneHeap != nullptr)
+    {
+        if (pakId > 0x62)
+            ((PakFile*)nullptr)->AddHeap(bank->mSceneHeap,
+                                         bank->mSceneHeapSize);
+        else
+            PakManager::sInst->mSlots[pakId]->AddHeap(bank->mSceneHeap,
+                                                      bank->mSceneHeapSize);
+    }
 }
 
 // ea: 0x668B30
