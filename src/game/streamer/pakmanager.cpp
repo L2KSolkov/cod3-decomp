@@ -49,6 +49,9 @@ extern void Com_Error(int code, const char* fmt, ...);  // core.o
 // IVPointer<T> (game_types.h; intrusive counted pointer, 8 bytes)
 struct XModel;
 struct ScriptEventHandler;
+class Destructible;
+class trRefEntity;
+class ScriptEventParams;
 template <typename T>
 class IVPointer {
 public:
@@ -66,13 +69,16 @@ public:
     struct Shared {
         uint8_t _pad[0x70];
         math::Position3 currentOrigin;  // +0x70
+        math::Position3 currentAngles;  // +0x80
     };
     Shared r;           // +0xE0 (EntityShared)
     uint8_t _pad160[0x230 - 0x160];
     int32_t mPakId;     // +0x230
     uint8_t _pad234[0x244 - 0x234];
     ScriptEventHandler* mScriptEventHandler;  // +0x244
-    uint8_t _pad248[0x258 - 0x248];
+    uint8_t _pad248[0x24C - 0x248];
+    IVPointer<Destructible> mDestructible;  // +0x24C (8 bytes)
+    uint8_t _pad254[0x258 - 0x254];
     void*   mActor;      // +0x258 (actor_s*)
     uint8_t _pad25C[0x260 - 0x25C];
     void*   mScrVehicle;  // +0x260 (scr_vehicle_t*)
@@ -80,14 +86,20 @@ public:
     IVPointer<XModel> mModel;  // +0x270
     uint8_t _pad278[0x27C - 0x278];
     Broc::string mClassName;  // +0x27C
+    HashString mClassNameHash;  // +0x280
     uint8_t _pad284[0x294 - 0x284];
     Broc::string mGroupName;  // +0x294
     uint8_t _pad29C[0x2A4 - 0x29C];
     Broc::string mAnimName;   // +0x2A4
+    uint8_t _pad2AC[0x3BE - 0x2AC];
+    int16_t mPersistentIndex;  // +0x3BE
 
     void Notify(HashString h);  // ?Notify@Entity@@QAEXVHashString@@@Z (g_entity_misc.cpp)
     int GetPakId() const { return mPakId; }  // g.o inline
     void SetScriptEventHandler(class ScriptEventHandler* n);  // ?SetScriptEventHandler@Entity@@QAEXPAVScriptEventHandler@@@Z
+    class trRefEntity& GetRenderEntity();  // ?GetRenderEntity@Entity@@QAEAAVtrRefEntity@@XZ (game.o)
+    void ExecScriptHandler(HashString h,
+                           class ScriptEventParams* params);  // ?ExecScriptHandler@Entity@@QAEXVHashString@@PAVScriptEventParams@@@Z (game.o)
 };
 extern void UpdateEntityHash(Entity* ent);  // ?UpdateEntityHash@@YAXPAVEntity@@@Z (g_scr.cpp)
 
@@ -1938,6 +1950,8 @@ class PathNodeMgr {
 public:
     static PathNodeMgr* sInst;  // defined in sv_globals.cpp
     int GetVehicleNodeIndex(vehicle_node_t* pNode);  // ?GetVehicleNodeIndex@PathNodeMgr@@QAEHPAUvehicle_node_t@@@Z (stub)
+    void SetCoverNodeStatus(const Broc::string& name,
+                            int inValid);  // ?SetCoverNodeStatus@PathNodeMgr@@QAEXABV?$string@Broc@@H@Z (sv_misc.cpp)
     void DecodeLevelBank(const char* name, unsigned char* data, int size,
                          TPakId pakId);
     void DecodeZoneBank(const char* name, unsigned char* data, int size,
@@ -2227,6 +2241,52 @@ extern void AngleVectors(const float* angles, float* forward, float* right,
                          float* up);  // core.o (q_math.cpp)
 extern float VectorNormalize(float* v);  // core.o (q_math.cpp)
 
+// ProcessEntity cross-object externs (game.o / scr.o / physics.o)
+class Destructible {
+public:
+    void Initialize(Entity* ent, bool reInit);  // ?Initialize@Destructible@@QAEXPAVEntity@@_N@Z (g_entity_misc.cpp)
+    void AddPiece(Entity* ent,
+                  const char* exploderType);  // ?AddPiece@Destructible@@QAEXPAVEntity@@PBD@Z (g_physics.cpp)
+    static void InvalidateCoverNode(Entity* ent);  // ?InvalidateCoverNode@Destructible@@SAXPAVEntity@@@Z (g_physics.cpp)
+};
+void Destructible::Initialize(Entity* ent, bool reInit)
+{
+    (void)ent; (void)reInit;  // stub: game.o (g_entity_misc.cpp self-version)
+}
+extern void G_FreeEntity(Entity* e, int msec);  // g.o (g_active.cpp)
+extern Entity* G_Spawn(TPakId pakId);  // g.o (g_spawn.cpp)
+extern bool ValidForGametype(void);  // g.o (g_main.cpp)
+extern void G_CallEntitySpawnFunction(Entity* ent);  // g.o (g_spawn.cpp)
+extern void BrocAddEntityThread(Entity* ent,
+                                const char* fcnName);  // scr.o
+void BrocAddEntityThread(Entity* ent, const char* fcnName)
+{
+    (void)ent; (void)fcnName;  // stub: scr.o
+}
+extern IVPointer<Destructible> DestructibleBankManager_GetDestructible(
+    void* self, TPakId pak_id, const char* name);  // physics.o (g_checkpoint.cpp)
+extern bool dont_delete;            // g.o (g_globals.cpp)
+extern bool no_really_delete_it;    // g.o (g_globals.cpp)
+struct ScriptEventHandler {
+    unsigned char m_dlist_node[8];  // +0x00
+    uint8_t _pad8[0x40 - 0x08];
+    ScriptEventHandler* mNext;      // +0x40
+
+    ScriptEventHandler();  // ?ScriptEventHandler@@QAE@XZ (g_game2_misc.cpp 0x4F9860)
+    bool AddEvent(HashString h, const char* callback);  // ?AddEvent@ScriptEventHandler@@QAE_NVHashString@@PBD@Z
+};
+extern void* ScriptEventHandler_sAllocator;  // ?sAllocator@ScriptEventHandler (g.o)
+extern int _stricmp(const char* a, const char* b);  // core.o
+extern int _strnicmp(const char* a, const char* b, size_t n);  // core.o
+// hash_const (runtime-filled hash constants; mirrors str_const_t layout)
+struct hash_const_t {
+    uint8_t _pad[0x1D4];
+    HashString spawned;      // +0x1D4
+    uint8_t _pad1D8[0x26C - 0x1D8];
+    HashString zonesloaded;  // +0x26C
+};
+extern hash_const_t hash_const;  // ?hash_const@@3Uhash_const_t@@A @ 0xED2AB0
+
 extern world_t s_worldData;  // ?s_worldData@@3Uworld_t@@A @ 0xF74B98
 world_t s_worldData;
 class ZoneCellBox {
@@ -2329,6 +2389,26 @@ struct InplaceTreeElementKV {
     InplaceString mKey;  // +0x00
     InplaceString mVal;  // +0x04
 };
+template <typename K, typename V>
+struct InplaceTreeElement {
+    K mKey;  // +0x00
+    V mVal;  // +0x04
+};
+
+extern void G_ReplaceSpawnVars(
+    const InplaceVector<InplaceTreeElement<unsigned int, InplaceString>>*
+        keyValuePairs);  // g.o (g_spawn.cpp)
+extern void BrocInitEntity(
+    Entity* ent,
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
+        keyValuePairs);  // scr.o
+void BrocInitEntity(
+    Entity* ent,
+    const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*
+        keyValuePairs)
+{
+    (void)ent; (void)keyValuePairs;  // stub: scr.o
+}
 struct VehicleNode {
     InplaceString name;               // +0x00
     InplaceString target;             // +0x04
@@ -2556,6 +2636,11 @@ struct CheckpointMgr {
     uint8_t _pad04[0x574 - 0x04];
     bool mCheckpointSaveExists;  // +0x574
     static CheckpointMgr* sInst;  // ?sInst@CheckpointMgr@@2PAV1@A (sv_main.cpp)
+
+    void RestoreSceneEntity(Entity* pEnt);  // g_checkpoint.cpp (game.o 0x609010)
+    bool ExploderCheckpointExploded(int exploderId);  // g_checkpoint.cpp 0x622330
+    bool PrecludeExploderPiece(const char* exploderType,
+                               int exploderId);  // g_checkpoint.cpp 0x622370
 };
 
 // DebugRender (render.o; RenderText/RenderSphere defined in g_entity_misc.cpp)
@@ -3809,10 +3894,22 @@ struct SceneEntity {
     int              mType;      // +0x00
     const char*      m_classname;  // +0x04
     math::Position3  m_origin;   // +0x08
-    uint8_t          _pad18[0x50 - 0x18];
+    int              m_spawnflags;  // +0x18
+    uint8_t          _pad1C[0x28 - 0x1C];
+    InplaceString    m_target;    // +0x28
+    InplaceString    m_targetname;  // +0x2C
+    uint8_t          _pad30[0x50 - 0x30];
     math::Position3  m_angles;   // +0x50
-    uint8_t          _pad60[0xD0 - 0x60];
+    uint8_t          _pad60[0xB0 - 0x60];
+    InplaceString    m_groupName;  // +0xB0
+    InplaceString    m_scriptNoteworthy;  // +0xB8
+    InplaceString    m_animName;  // +0xC4
+    int16_t          m_persistent_index;  // +0xCC
+    uint8_t          _padCE[0xD0 - 0xCE];
     BitSet<29>       mSpecifiedFields;  // +0xD0
+    InplaceVector<InplaceTreeElementKV> mKeyValuePairs;  // +0xD4
+    InplaceVector<InplaceTreeElement<unsigned int, InplaceString> >
+        mHashPairs;  // +0xDC
 };
 
 // ea: 0x6788F0
@@ -4533,10 +4630,248 @@ void SceneManager::ProcessStaticModel(TPakId pakId, StaticModel& model)
     }
 }
 
-// ea: 0x676C50 (heavy; port later)
+// ea: 0x676C50
 void SceneManager::ProcessEntity(TPakId pakId, int entIdx)
 {
-    (void)pakId; (void)entIdx;
+    SceneBank* Bank = GetBank(pakId);
+    SceneEntity* scnEnt =
+        (SceneEntity*)Bank->mSceneEntities.mList[entIdx];
+    const char* auto_thread = nullptr;
+    ScriptEventHandler* event_handler = nullptr;
+    int transparent = 0;
+    int noShadow = 0;
+    Broc::string exploderType;
+    Broc::string exploderId;
+
+    InplaceVector<InplaceTreeElementKV>* p_mKeyValuePairs =
+        &scnEnt->mKeyValuePairs;
+    for (unsigned int v5 = 0; v5 < p_mKeyValuePairs->mSize; ++v5)
+    {
+        InplaceTreeElementKV* v8 = &p_mKeyValuePairs->mList[v5];
+        if (_stricmp(v8->mKey.mStr, "exploder_type") == 0)
+            exploderType = v8->mVal.mStr;
+        if (_stricmp(v8->mKey.mStr, "exploder_id") == 0)
+            exploderId = v8->mVal.mStr;
+    }
+
+    int persIndex = scnEnt->m_persistent_index;
+    bool wasExploded = false;
+    if (persIndex != -1)
+    {
+        bool v10 = false;
+        if (CheckpointMgr::sInst->mCheckpointSaveExists
+            && CheckpointMgr::sInst->mUsingCheckpoints)
+        {
+            if (mPersistantStorage != nullptr)
+                v10 = mPersistantStorage->mList[persIndex] == 2;
+        }
+        if ((mPersistantStorage != nullptr
+             && mPersistantStorage->mList[persIndex] != 0)
+            || v10)
+        {
+            if (exploderId.mBlock != nullptr)
+            {
+                const char* v13 = (const char*)(exploderId.mBlock + 1);
+                if (exploderId.mBlock != (Broc::string::Block*)-12
+                    && *v13 != 0)
+                {
+                    int v14 = atoi(v13);
+                    if (v14 != 0 && exploderType.mBlock
+                                    != (Broc::string::Block*)-12
+                        && CheckpointMgr::sInst->ExploderCheckpointExploded(
+                            v14))
+                    {
+                        const char* v15 = (exploderId.mBlock != nullptr)
+                                              ? (const char*)
+                                                    (exploderId.mBlock + 1)
+                                              : defaultFileName;
+                        IVPointer<Destructible> d =
+                            DestructibleBankManager_GetDestructible(
+                                nullptr, pakId, v15);
+                        ValidatePakId((TPakId)persIndex);
+                        *(int*)((char*)d.mValue + 36) |= 0x400000;
+                        if (scnEnt->m_target.mStr != nullptr)
+                            PathNodeMgr::sInst->SetCoverNodeStatus(
+                                Broc::string(scnEnt->m_target.mStr), 1);
+                    }
+                }
+            }
+            goto ProcessEntity_Done;
+        }
+    }
+
+    InplaceVector<InplaceTreeElementKV>* keyValuePairs =
+        &scnEnt->mKeyValuePairs;
+    static unsigned int transparent_hash;
+    static unsigned int noshadow_hash;
+    static unsigned int modelscale_hash;
+    static int hash_init = 0;
+    if ((hash_init & 1) == 0)
+    {
+        hash_init |= 1;
+        transparent_hash = AeHash("transparent");
+    }
+    if ((hash_init & 2) == 0)
+    {
+        hash_init |= 2;
+        noshadow_hash = AeHash("noshadow");
+    }
+    if ((hash_init & 4) == 0)
+    {
+        hash_init |= 4;
+        modelscale_hash = AeHash("modelscale");
+    }
+
+    for (unsigned int v17 = 0; v17 < scnEnt->mHashPairs.mSize; ++v17)
+    {
+        InplaceTreeElement<unsigned int, InplaceString>* v19 =
+            &scnEnt->mHashPairs.mList[v17];
+        if (v19->mKey == transparent_hash)
+            transparent = (_stricmp(v19->mVal.mStr, "1") == 0);
+        else if (v19->mKey == noshadow_hash)
+            noShadow = (_stricmp(v19->mVal.mStr, "1") == 0);
+    }
+
+    ScriptEventHandler* v20 = event_handler;
+    for (unsigned int i = 0; i < keyValuePairs->mSize; ++i)
+    {
+        InplaceTreeElementKV* mList = &keyValuePairs->mList[i];
+        const char* mStr = mList->mKey.mStr;
+        if (_stricmp(mStr, "auto_thread") == 0)
+        {
+            if (_stricmp(mList->mVal.mStr, "_load::main_trigger") != 0)
+                auto_thread = mList->mVal.mStr;
+        }
+        else if (_strnicmp(mStr, "on_", 3) == 0)
+        {
+            if (v20 == nullptr)
+            {
+                ScriptEventHandler* v26 = (ScriptEventHandler*)
+                    ((PoolAllocator*)ScriptEventHandler_sAllocator)
+                        ->Allocate(0x44, false);
+                event_handler = v26;
+                v20 = v26;
+            }
+            HashString h;
+            h.mHash = HashString::CalcHash(mStr + 3);
+            v20->AddEvent(h, mList->mVal.mStr);
+        }
+    }
+
+    Entity* v32 = G_Spawn(pakId);
+    if (event_handler != nullptr)
+        v32->SetScriptEventHandler(event_handler);
+    if (transparent != 0)
+        *(float*)((char*)&v32->GetRenderEntity() + 0xF0) = 0.5f;
+    if (noShadow != 0)
+        *(unsigned char*)((char*)&v32->GetRenderEntity() + 0xFB) |= 2;
+    v32->mPersistentIndex = (int16_t)persIndex;
+    ConvertEntity(scnEnt, v32);
+    v32->mClassNameHash.mHash = HashString(v32->mClassName).mHash;
+    G_ReplaceSpawnVars(&scnEnt->mHashPairs);
+    if (!ValidForGametype())
+    {
+        G_FreeEntity(v32, 0);
+        goto ProcessEntity_Done;
+    }
+
+    if (exploderId.mBlock != nullptr
+        && exploderId.mBlock != (Broc::string::Block*)-12
+        && *((const char*)(exploderId.mBlock + 1)) != 0)
+    {
+        int v37 = atoi((const char*)(exploderId.mBlock + 1));
+        if (v37 != 0)
+        {
+            const char* v38 = (exploderType.mBlock != nullptr
+                                   && exploderType.mBlock
+                                          != (Broc::string::Block*)-12)
+                                  ? (const char*)(exploderType.mBlock + 1)
+                                  : defaultFileName;
+            if (CheckpointMgr::sInst->PrecludeExploderPiece(v38, v37))
+            {
+                const char* v39 =
+                    (exploderId.mBlock != nullptr)
+                        ? (const char*)(exploderId.mBlock + 1)
+                        : defaultFileName;
+                TPakId mPakId = (TPakId)v32->mPakId;
+                if (mPakId == PAK_ID_INVALID)
+                    mPakId = PakManager::sInst->mLevelPakId;
+                IVPointer<Destructible> d =
+                    DestructibleBankManager_GetDestructible(nullptr, mPakId,
+                                                            v39);
+                ValidatePakId((TPakId)persIndex);
+                *(int*)((char*)d.mValue + 36) |= 0x400000;
+                Destructible::InvalidateCoverNode(v32);
+                G_FreeEntity(v32, 0);
+                goto ProcessEntity_Done;
+            }
+        }
+    }
+
+    if (CheckpointMgr::sInst->mCheckpointSaveExists
+        && CheckpointMgr::sInst->mUsingCheckpoints)
+        CheckpointMgr::sInst->RestoreSceneEntity(v32);
+    dont_delete = true;
+    no_really_delete_it = false;
+    G_CallEntitySpawnFunction(v32);
+    dont_delete = false;
+    if (no_really_delete_it)
+    {
+        G_FreeEntity(v32, 0);
+        goto ProcessEntity_Done;
+    }
+    G_SetOrigin(v32, &v32->r.currentOrigin);
+    G_SetAngle(v32, &v32->r.currentAngles);
+    BrocInitEntity(
+        v32,
+        (const InplaceVector<InplaceTreeElement<InplaceString, InplaceString>>*)
+            keyValuePairs);
+    if (auto_thread != nullptr)
+        BrocAddEntityThread(v32, auto_thread);
+    v32->ExecScriptHandler(hash_const.spawned, nullptr);
+    if (exploderId.mBlock != nullptr)
+    {
+        const char* v41 = (exploderId.mBlock != nullptr)
+                              ? (const char*)(exploderId.mBlock + 1)
+                              : defaultFileName;
+        TPakId mLevelPakId = (TPakId)v32->mPakId;
+        if (mLevelPakId == PAK_ID_INVALID)
+            mLevelPakId = PakManager::sInst->mLevelPakId;
+        IVPointer<Destructible> d =
+            DestructibleBankManager_GetDestructible(nullptr, mLevelPakId,
+                                                    v41);
+        Destructible* mValue = d.mValue;
+        v32->mDestructible.mValue = mValue;
+        v32->mDestructible.mPakId = d.mPakId;
+        *(int*)((char*)v32 + 0x2B8) = 1;  // takedamage
+        if (d.mPakId != PAK_ID_INVALID
+            && PakManager::sInst->mSlots[d.mPakId] == nullptr)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 236;
+            AeAssert::gCurrentExpr = nullptr;
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Warning("bad/old pak id"))
+                __debugbreak();
+        }
+        if (mValue != nullptr)
+        {
+            Destructible* v47 = v32->mDestructible.mValue;
+            ValidatePakId((TPakId)v32->mDestructible.mPakId);
+            v47->Initialize(v32, true);
+            const char* v48 =
+                (exploderType.mBlock != nullptr)
+                    ? (const char*)(exploderType.mBlock + 1)
+                    : defaultFileName;
+            Destructible* v49 = v32->mDestructible.mValue;
+            ValidatePakId((TPakId)v32->mDestructible.mPakId);
+            v49->AddPiece(v32, v48);
+        }
+    }
+
+ProcessEntity_Done:
+    ;
 }
 
 // ea: 0x66DCA0
@@ -6778,13 +7113,6 @@ public:
 };
 
 // hash_const (runtime-filled hash constants; mirrors str_const_t layout).
-// zonesloaded at +0x26C verified vs UpdateNormal disasm (0xED2D1C).
-struct hash_const_t {
-    uint8_t _pad[0x26C];
-    HashString zonesloaded;  // +0x26C
-};
-extern hash_const_t hash_const;  // ?hash_const@@3Uhash_const_t@@A @ 0xED2AB0
-
 // ea: 0x675980
 void PakManager::DecodeFLI(const char* name, PakInfoBank* data, int size,
                            TPakId pakId)
