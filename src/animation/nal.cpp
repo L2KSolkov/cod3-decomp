@@ -39,6 +39,8 @@ public:
     int mLODOverride;          // +0xDC
     IVPointer<XModelLocal> models[8];  // +0x80
     int mPakId;                // +0xC0
+
+    const math::Mat43& GetMat(int boneIndex);  // ?GetMat@DObj@@QAEABVMat43@math@@H@Z (real in g_dobj.cpp)
 };
 
 struct XModelLocal {
@@ -1882,6 +1884,7 @@ public:
     void* pTurretInfo;                // +0x264
 
     int GetPlayerIndex() const;  // 0x612340 (game.o; stub)
+    const math::Mat43 CalcRotTranMat43();  // ?CalcRotTranMat43@Entity@@QAE?BVMat43@math@@XZ (real in g_entity_misc.cpp)
     void Notify(HashString h);  // real in g_entity_misc.cpp
     void Notify(HashString h, const unsigned int& e);  // real in g_entity_misc.cpp
 };
@@ -6145,21 +6148,21 @@ enum ELerpType {
     kLerpStagedSnap = 5,
     kLerpStagedPlayer = 6,
     kLerpStagedSnapPlayer = 7,
+    kNumLerpTypes = 8,
 };
 
+// Layout verified vs disasm (UpdateLerp 0x53D330 / CalcTargetPosAndAngles):
+// angles are float[3], pos float[3], mInvTagUtilityMat Mat43 at +0x40.
 struct LerpInfo {
-    math::Position3 mInitialPos;    // +0x00
-    math::Position3 mTargetPos;     // +0x0C
-    math::Position3 mInitialPos2;   // +0x18
-    math::Position3 mTargetPos2;    // +0x24
+    float mInitialAngles[3];     // +0x00
+    float mTargetAngles[3];      // +0x0C
+    float mInitialPos[3];        // +0x18
+    float mTargetPos[3];         // +0x24
     int mTagUtilityIndex;           // +0x30
     int mInteractableTagIndex;      // +0x34
     int mOtherTagUtilityIndex;      // +0x38
     int mOtherTagIndex;             // +0x3C
-    math::Quaternion mInitialAngles;   // +0x40
-    math::Quaternion mTargetAngles;    // +0x50
-    math::Quaternion mInitialAngles2;  // +0x60
-    math::Vector4 mTagAxis;            // +0x70
+    math::Mat43 mInvTagUtilityMat;  // +0x40
 
     void Init();  // ?Init@LerpInfo@InteractState@@QAEXXZ
 };
@@ -6167,18 +6170,14 @@ struct LerpInfo {
 // ea: 0x0055FA70
 void LerpInfo::Init()
 {
-    memset(&mInitialPos, 0, 0x30);
+    memset(this, 0, 0x30);
     mTagUtilityIndex = -1;
     mInteractableTagIndex = 0;
-    mOtherTagUtilityIndex = 0;
-    mOtherTagIndex = 0;
-    mInitialAngles.x = 0.0f;
-    mInitialAngles.y = 0.0f;
-    mInitialAngles.z = 0.0f;
-    mInitialAngles.w = 1.0f;
-    mTargetAngles = mInitialAngles;
-    mInitialAngles2 = mInitialAngles;
-    mTagAxis.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    memset(&mInvTagUtilityMat, 0, sizeof(mInvTagUtilityMat));
+    mInvTagUtilityMat.x.v = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+    mInvTagUtilityMat.y.v = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    mInvTagUtilityMat.z.v = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    mInvTagUtilityMat.w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 class InteractState;
@@ -6237,6 +6236,15 @@ public:
     InteractState* Update(float deltaT);  // 0x546700 (virtual in binary; stub)
     void CheckForEffectEvents(float deltaT, int postRemaining);  // 0x54D9E0
     void DoWeaponChange();  // 0x546A00
+    void SetInitialLerpValues();  // 0x54D1A0
+    void SetOtherTagUtilityIndex();  // 0x54D0E0
+    void SetOtherPosAndAngles(float (*angles)[3], float (*pos)[3]);  // 0x54D6A0
+    void UpdateAlignment(float deltaT);  // 0x5554F0
+    void UpdateHandsPosAndAngles();  // 0x54D2C0
+    void UpdateOtherPosAndAngles();  // 0x54D500
+    void CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
+                                int useScriptOrigin);  // 0x53D420
+    void GetInteractableMat(math::Mat43* mat);  // 0x54D720
 
     // ?PostEffectEvent@InteractState@@IAEXIH@Z (stub; real in g.o)
     void PostEffectEvent(unsigned int effectName, int eventIndex)
@@ -6313,17 +6321,17 @@ float InteractState::UpdateLerp(float deltaT)
     InteractStateInfoLocal* mInfo =
         (InteractStateInfoLocal*)this->mInfo;
     mLerpTimer = v3;
-    float t = v3 / mInfo->lerpDuration;
+    float t = v3 / *(float*)((char*)mInfo + 0x38C);
     if (t > 1.0f)
         t = 1.0f;
     float playerAngles[3];
     float playerPos[3];
     InterpolateAnglesSmooth(playerAngles,
-                            (float*)&mPlayerLerp.mTagUtilityIndex,
-                            (float*)&mPlayerLerp.mTargetAngles, t);
+                            mPlayerLerp.mInitialAngles,
+                            mPlayerLerp.mTargetAngles, t);
     InterpolatePositionSmooth(playerPos,
-                              (const float*)&mPlayerLerp.mInitialPos,
-                              (const float*)&mPlayerLerp.mTargetPos, t);
+                              mPlayerLerp.mInitialPos,
+                              mPlayerLerp.mTargetPos, t);
     InteractionController* v5 = InteractionController::Inst(currCl);
     v5->mHandsAngles[0] = playerAngles[0];
     v5->mHandsAngles[1] = playerAngles[1];
@@ -9073,6 +9081,409 @@ clamp:
                 }
             }
         }
+    }
+}
+
+// ============================================================================
+// InteractState lerp cluster (anim.o; layout verified vs disasm)
+// ============================================================================
+
+// ea: 0x0054D1A0
+void InteractState::SetInitialLerpValues()
+{
+    if (mLerpType >= kLerpPlayer
+        && (mLerpType <= kLerpStaged || mLerpType == kNumLerpTypes))
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+        mPlayerLerp.mInitialPos[0] = *(float*)((char*)Player + 0x150);
+        mPlayerLerp.mInitialPos[1] = *(float*)((char*)Player + 0x154);
+        float v4 = *(float*)((char*)Player + 0x158);
+        mPlayerLerp.mInitialPos[2] =
+            v4 + *(float*)((char*)Player->client + 0xE0);
+        mPlayerLerp.mInitialAngles[0] = *(float*)((char*)Player + 0x160);
+        mPlayerLerp.mInitialAngles[1] = *(float*)((char*)Player + 0x164);
+        mPlayerLerp.mInitialAngles[2] = *(float*)((char*)Player + 0x168);
+        if (mLerpType == kLerpStaged)
+        {
+            unsigned int v6 = mController->mInteractableH.mVal & 0xFFF;
+            if (v6 < 0x540
+                && mController->mInteractableH.mVal >> 12
+                       == EntityHandleDb::sInst.mElements[v6].mKey)
+            {
+                Entity* mObject = EntityHandleDb::sInst.mElements[v6].mObject;
+                if (mObject != nullptr)
+                {
+                    mOtherLerp.mInitialPos[0] =
+                        *(float*)((char*)mObject + 0x150);
+                    mOtherLerp.mInitialPos[1] =
+                        *(float*)((char*)mObject + 0x154);
+                    mOtherLerp.mInitialPos[2] =
+                        *(float*)((char*)mObject + 0x158);
+                    mOtherLerp.mInitialAngles[0] =
+                        *(float*)((char*)mObject + 0x160);
+                    mOtherLerp.mInitialAngles[1] =
+                        *(float*)((char*)mObject + 0x164);
+                    mOtherLerp.mInitialAngles[2] =
+                        *(float*)((char*)mObject + 0x168);
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0054D0E0
+void InteractState::SetOtherTagUtilityIndex()
+{
+    mOtherLerp.mTagUtilityIndex = -1;
+    unsigned int mVal = mController->mInteractableH.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            DObj* mDObj = mObject->mDObj;
+            if (mDObj != nullptr)
+            {
+                static unsigned int sInit = 0;
+                static unsigned int sTagUtilHash = 0;
+                if ((sInit & 1) == 0)
+                {
+                    sInit |= 1u;
+                    sTagUtilHash = HashString::CalcHash("tag_utility");
+                }
+                mOtherLerp.mTagUtilityIndex =
+                    DObjGetBoneIndex(mDObj, sTagUtilHash);
+            }
+        }
+    }
+}
+
+// ea: 0x0054D6A0
+void InteractState::SetOtherPosAndAngles(float (*angles)[3],
+                                         float (*pos)[3])
+{
+    unsigned int mVal = mController->mInteractableH.mVal;
+    unsigned int v4 = mVal & 0xFFF;
+    if (v4 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v4].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+        if (mObject != nullptr)
+        {
+            float* oa = (float*)((char*)mObject + 0x160);
+            float* op = (float*)((char*)mObject + 0x150);
+            oa[0] = (*angles)[0];
+            oa[1] = (*angles)[1];
+            oa[2] = (*angles)[2];
+            op[0] = (*pos)[0];
+            op[1] = (*pos)[1];
+            op[2] = (*pos)[2];
+        }
+    }
+}
+
+// ea: 0x0054D720
+void InteractState::GetInteractableMat(math::Mat43* mat)
+{
+    unsigned int mVal = mController->mInteractableH.mVal;
+    unsigned int v5 = mVal & 0xFFF;
+    if (v5 < 0x540
+        && mVal >> 12 == EntityHandleDb::sInst.mElements[v5].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v5].mObject;
+        if (mObject != nullptr)
+        {
+            const math::Mat43 m = mObject->CalcRotTranMat43();
+            *mat = m;
+            if (mLerpInteractableTagIndex != -1)
+            {
+                DObj* mDObj = mObject->mDObj;
+                if (mDObj != nullptr)
+                {
+                    const math::Mat43& tag =
+                        mDObj->GetMat(mLerpInteractableTagIndex);
+                    __m128 tx = tag.x.v, ty = tag.y.v, tz = tag.z.v;
+                    __m128 tw = tag.w.v;
+                    __m128 mx = mat->x.v, my = mat->y.v, mz = mat->z.v;
+                    __m128 mw = mat->w.v;
+                    math::Mat43 r;
+                    r.x.v = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(tx, tx, _MM_SHUFFLE(0, 0, 0, 0)),
+                                mx),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(tx, tx, _MM_SHUFFLE(1, 1, 1, 1)),
+                                my)),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(tx, tx, _MM_SHUFFLE(2, 2, 2, 2)),
+                            mz));
+                    r.y.v = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(ty, ty, _MM_SHUFFLE(0, 0, 0, 0)),
+                                mx),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(ty, ty, _MM_SHUFFLE(1, 1, 1, 1)),
+                                my)),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(ty, ty, _MM_SHUFFLE(2, 2, 2, 2)),
+                            mz));
+                    r.z.v = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(tz, tz, _MM_SHUFFLE(0, 0, 0, 0)),
+                                mx),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(tz, tz, _MM_SHUFFLE(1, 1, 1, 1)),
+                                my)),
+                        _mm_mul_ps(
+                            _mm_shuffle_ps(tz, tz, _MM_SHUFFLE(2, 2, 2, 2)),
+                            mz));
+                    r.w.v = _mm_add_ps(
+                        _mm_add_ps(
+                            _mm_add_ps(
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(tw, tw,
+                                                    _MM_SHUFFLE(0, 0, 0, 0)),
+                                    mx),
+                                _mm_mul_ps(
+                                    _mm_shuffle_ps(tw, tw,
+                                                    _MM_SHUFFLE(1, 1, 1, 1)),
+                                    my)),
+                            _mm_mul_ps(
+                                _mm_shuffle_ps(tw, tw,
+                                                _MM_SHUFFLE(2, 2, 2, 2)),
+                                mz)),
+                        mw);
+                    *mat = r;
+                }
+            }
+        }
+    }
+}
+
+// ea: 0x0053D420
+void InteractState::CalcTargetPosAndAngles(LerpInfo* lerpInfo, DObj* dobj,
+                                           int useScriptOrigin)
+{
+    if ((mFlags & 8) == 0)
+    {
+        const math::Mat43& m = dobj->GetMat(lerpInfo->mTagUtilityIndex);
+        __m128 x = m.x.v, y = m.y.v, z = m.z.v, w = m.w.v;
+        __m128 v14 = _mm_shuffle_ps(x, y, _MM_SHUFFLE(1, 0, 1, 0));
+        __m128 v15 = _mm_shuffle_ps(v14, z, _MM_SHUFFLE(3, 1, 3, 1));
+        __m128 v16 = _mm_shuffle_ps(v14, z, _MM_SHUFFLE(2, 0, 2, 0));
+        __m128 v17 = _mm_shuffle_ps(
+            _mm_shuffle_ps(x, y, _MM_SHUFFLE(3, 2, 3, 2)), z,
+            _MM_SHUFFLE(2, 2, 2, 0));
+        math::Mat43& inv = lerpInfo->mInvTagUtilityMat;
+        inv.x.v = v16;
+        inv.y.v = v15;
+        inv.z.v = v17;
+        const __m128 signMask = _mm_set1_ps(-0.0f);
+        inv.w.v = _mm_xor_ps(
+            signMask,
+            _mm_add_ps(
+                _mm_add_ps(
+                    _mm_mul_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(0, 0, 0, 0)),
+                               v16),
+                    _mm_mul_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(1, 1, 1, 1)),
+                               v15)),
+                _mm_mul_ps(_mm_shuffle_ps(w, w, _MM_SHUFFLE(2, 2, 2, 2)),
+                           v17)));
+    }
+    math::Mat43 mat;
+    if (useScriptOrigin != 0 && (mController->mFlags & 0x40) != 0)
+        mat = *mController->GetScriptOriginMat();
+    else
+        GetInteractableMat(&mat);
+    const math::Mat43& inv = lerpInfo->mInvTagUtilityMat;
+    __m128 ix = inv.x.v, iy = inv.y.v, iz = inv.z.v, iw = inv.w.v;
+    __m128 mx = mat.x.v, my = mat.y.v, mz = mat.z.v, mw = mat.w.v;
+    math::Mat43 result;
+    result.x.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(ix, ix, _MM_SHUFFLE(0, 0, 0, 0)), mx),
+            _mm_mul_ps(_mm_shuffle_ps(ix, ix, _MM_SHUFFLE(1, 1, 1, 1)), my)),
+        _mm_mul_ps(_mm_shuffle_ps(ix, ix, _MM_SHUFFLE(2, 2, 2, 2)), mz));
+    result.y.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(iy, iy, _MM_SHUFFLE(0, 0, 0, 0)), mx),
+            _mm_mul_ps(_mm_shuffle_ps(iy, iy, _MM_SHUFFLE(1, 1, 1, 1)), my)),
+        _mm_mul_ps(_mm_shuffle_ps(iy, iy, _MM_SHUFFLE(2, 2, 2, 2)), mz));
+    result.z.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_mul_ps(_mm_shuffle_ps(iz, iz, _MM_SHUFFLE(0, 0, 0, 0)), mx),
+            _mm_mul_ps(_mm_shuffle_ps(iz, iz, _MM_SHUFFLE(1, 1, 1, 1)), my)),
+        _mm_mul_ps(_mm_shuffle_ps(iz, iz, _MM_SHUFFLE(2, 2, 2, 2)), mz));
+    result.w.v = _mm_add_ps(
+        _mm_add_ps(
+            _mm_add_ps(
+                _mm_mul_ps(_mm_shuffle_ps(iw, iw, _MM_SHUFFLE(0, 0, 0, 0)),
+                           mx),
+                _mm_mul_ps(_mm_shuffle_ps(iw, iw, _MM_SHUFFLE(1, 1, 1, 1)),
+                           my)),
+            _mm_mul_ps(_mm_shuffle_ps(iw, iw, _MM_SHUFFLE(2, 2, 2, 2)), mz)),
+        mw);
+    Axis4ToAngles((const float(*)[4])&result, lerpInfo->mTargetAngles);
+    lerpInfo->mTargetPos[0] = *(float*)((char*)&result + 48);
+    lerpInfo->mTargetPos[1] = *(float*)((char*)&result + 52);
+    lerpInfo->mTargetPos[2] = *(float*)((char*)&result + 56);
+}
+
+// ea: 0x0054D500
+void InteractState::UpdateOtherPosAndAngles()
+{
+    InteractionController* c = mController;
+    unsigned int v4 = c->mInteractableH.mVal & 0xFFF;
+    Entity* mObject = nullptr;
+    if (v4 < 0x540
+        && c->mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v4].mKey)
+        mObject = EntityHandleDb::sInst.mElements[v4].mObject;
+    if (mObject != nullptr
+        && *(unsigned char*)((char*)mInfo + 0xE2) != kLerpNone
+        && mOtherLerp.mTagUtilityIndex != -1
+        && (mFlags & 0x20) == 0
+        && (c->mFlags & 0x40) != 0)
+    {
+        if (mObject->mDObj == nullptr)
+        {
+            XANIM_ASSERT("dobj", "c:\\cod\\code\\game\\InteractState.cpp",
+                         704, "interactable lacks dobj");
+        }
+        const float* ScriptOriginAngles =
+            (const float*)c->GetScriptOriginAngles();
+        const float* ScriptOriginPos = (const float*)c->GetScriptOriginPos();
+        mOtherLerp.mTargetAngles[0] = ScriptOriginAngles[0];
+        mOtherLerp.mTargetAngles[1] = ScriptOriginAngles[1];
+        mOtherLerp.mTargetAngles[2] = ScriptOriginAngles[2];
+        mOtherLerp.mTargetPos[0] = ScriptOriginPos[0];
+        mOtherLerp.mTargetPos[1] = ScriptOriginPos[1];
+        mOtherLerp.mTargetPos[2] = ScriptOriginPos[2];
+    }
+    else
+    {
+        math::Mat43 mat = mObject->CalcRotTranMat43();
+        Axis4ToAngles((const float(*)[4])&mat, mOtherLerp.mTargetAngles);
+        mOtherLerp.mTargetPos[0] = *(float*)((char*)&mat + 48);
+        mOtherLerp.mTargetPos[1] = *(float*)((char*)&mat + 52);
+        mOtherLerp.mTargetPos[2] = *(float*)((char*)&mat + 56);
+    }
+}
+
+// ea: 0x0054D2C0
+void InteractState::UpdateHandsPosAndAngles()
+{
+    InteractionController* c = mController;
+    int weaponIndex = c->mSelectedInteractWeaponIndex;
+    if (weaponIndex < 1)
+    {
+        Entity* Player = EntityManager::sInst->GetPlayer(c->mClient);
+        if (Player == nullptr || Player->client == nullptr)
+            goto fallback_calc;
+        weaponIndex = *(int*)((char*)Player->client + 0xA4);
+    }
+    if (weaponIndex <= 0)
+        goto fallback_calc;
+    if (*(unsigned char*)((char*)mInfo + 0xE2) == kLerpNone)
+        goto fallback_calc;
+    if (mPlayerLerp.mTagUtilityIndex == -1)
+        goto fallback_calc;
+    {
+        unsigned int h = c->mInteractableH.mVal & 0xFFF;
+        Entity* obj = nullptr;
+        if (h < 0x540
+            && c->mInteractableH.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[h].mKey)
+            obj = EntityHandleDb::sInst.mElements[h].mObject;
+        if (obj == nullptr)
+            goto fallback_calc;
+        if ((mFlags & 0x20) != 0)
+            goto fallback_last;
+        DObj* v8 = (DObj*)dword_F6A2A0[802 * c->mClient];
+        if (v8 == nullptr)
+        {
+            XANIM_ASSERT("dobj", "c:\\cod\\code\\game\\InteractState.cpp",
+                         668, "view model hands missing");
+        }
+        int useScriptOrigin =
+            (mLerpType == kNumLerpTypes
+             || mLerpType == (kNumLerpTypes | kLerpSnapPlayer))
+                ? 1
+                : 0;
+        CalcTargetPosAndAngles(&mPlayerLerp, v8, useScriptOrigin);
+        return;
+    }
+fallback_calc:
+    if ((mFlags & 0x20) != 0)
+        goto fallback_last;
+    {
+        Entity* v11 = EntityManager::sInst->GetPlayer(currCl);
+        math::Mat43 mat = v11->CalcRotTranMat43();
+        *(float*)((char*)&mat + 56) =
+            (*(float*)((char*)v11->client + 0xE0) - 1.0f)
+            + *(float*)((char*)&mat + 56);
+        Axis4ToAngles((const float(*)[4])&mat, mPlayerLerp.mTargetAngles);
+        mPlayerLerp.mTargetPos[0] = *(float*)((char*)&mat + 48);
+        mPlayerLerp.mTargetPos[1] = *(float*)((char*)&mat + 52);
+        mPlayerLerp.mTargetPos[2] = *(float*)((char*)&mat + 56);
+        return;
+    }
+fallback_last:
+    {
+        InteractionController* ic = InteractionController::Inst(currCl);
+        mPlayerLerp.mTargetPos[0] = ic->mLastHandsOrigin[0];
+        mPlayerLerp.mTargetPos[1] = ic->mLastHandsOrigin[1];
+        mPlayerLerp.mTargetPos[2] = ic->mLastHandsOrigin[2];
+        mPlayerLerp.mTargetAngles[0] = ic->mLastHandsAngles[0];
+        mPlayerLerp.mTargetAngles[1] = ic->mLastHandsAngles[1];
+        mPlayerLerp.mTargetAngles[2] = ic->mLastHandsAngles[2];
+    }
+}
+
+// ea: 0x005554F0
+void InteractState::UpdateAlignment(float deltaT)
+{
+    EntityManager::sInst->GetPlayer(currCl);
+    if (*(unsigned char*)((char*)mInfo + 0xE2) == kLerpStaged)
+    {
+        UpdateOtherPosAndAngles();
+        SetOtherPosAndAngles(&mOtherLerp.mTargetAngles,
+                             &mOtherLerp.mTargetPos);
+    }
+    UpdateHandsPosAndAngles();
+    switch (mLerpType)
+    {
+    case kLerpSnapPlayer:
+    case (kNumLerpTypes | kLerpSnapPlayer):
+        mController->SetHands(&mPlayerLerp.mTargetAngles,
+                              &mPlayerLerp.mTargetPos);
+        break;
+    case kLerpPlayer:
+        if (UpdateLerp(deltaT) >= 1.0f)
+            mLerpType = kLerpSnapPlayer;
+        break;
+    case kLerpStaged:
+        if (UpdateLerp(deltaT) >= 1.0f)
+            mLerpType = kLerpStagedSnap;
+        break;
+    case kLerpStagedSnap:
+        mController->SetHands(&mPlayerLerp.mTargetAngles,
+                              &mPlayerLerp.mTargetPos);
+        UpdateOtherPosAndAngles();
+        SetOtherPosAndAngles(&mOtherLerp.mTargetAngles,
+                             &mOtherLerp.mTargetPos);
+        break;
+    case kNumLerpTypes:
+        if (UpdateLerp(deltaT) >= 1.0f)
+            mLerpType = kNumLerpTypes | kLerpSnapPlayer;
+        break;
+    default:
+        break;
     }
 }
 
