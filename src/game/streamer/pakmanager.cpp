@@ -104,6 +104,25 @@ extern void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o (g_
 extern void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o (g_active.cpp)
 extern unsigned short G_NewString(const char* str);  // g.o (g_utils.cpp)
 
+// ngl scratch-mesh helpers (ngl_meshedit.cpp / ngl_aux.cpp / ngl_texture.cpp)
+extern gpuVertexFormat cdscratch_vertex_format;  // render/cdScratchVertexDef.cpp @ 0x14CD510
+extern void nglAddMeshSection(nglMesh* Mesh, nglMeshSection* Section,
+                              nglMaterial* Material, int Flags);
+extern nglMesh* auxCreateScratchMesh(int flags, int num);
+extern nglTexture* nglGetTexture(const tlFixedString& FileName);
+
+// cdScratchMaterial (render/cdScratchShader.h view; base nglMaterial 16 bytes)
+struct cdScratchMaterial {
+    uint8_t       _pad[0x10];  // nglMaterial base
+    nglTexture*   Texture;     // +0x10
+    unsigned int  BlendMode;   // +0x14
+    int           MapFlags;    // +0x18
+    bool          HeatHaze;    // +0x1C
+
+    cdScratchMaterial(nglTexture* tex, unsigned int BlendMode, int mapflags,
+                      bool HeatHaze);  // ??0cdScratchMaterial@@QAE@PAVnglTexture@@IH_N@Z (render.o 0x7C5660)
+};
+
 // mem_heap (core_xboxr mem_lib; PakFile uses start/end/size/used_byte)
 struct mem_heap {
     char*  start;      // +0x00
@@ -4207,6 +4226,154 @@ void AddGlowBeam(float* pos, float* dir, float rad, unsigned int col)
     s.rad = rad;
     s.color = col;
     GlowBeamsList.push_back(s);
+}
+
+// ea: 0x66D320
+void RenderGlowSprite(const math::Position3& center, float radius,
+                      unsigned int clr)
+{
+    const math::Mat43* mtx = nglGetMatrix_ViewToWorld(nglBuildScene);
+    __m128 xcol = _mm_mul_ps(mtx->x.v, _mm_set1_ps(radius));
+    __m128 ycol = mtx->y.v;
+
+    cdScratchMaterial* mat = (cdScratchMaterial*)nglListAlloc(0x20, 0x10);
+    if (mat != nullptr)
+    {
+        tlFixedString name("dynamiclight");
+        nglTexture* tex = nglGetTexture(name);
+        new (mat) cdScratchMaterial(tex, 0x64078600u, 2, false);
+    }
+
+    nglMesh* ScratchMesh = auxCreateScratchMesh(0x40000, 1);
+    nglMeshSection* ScratchSection =
+        nglCreateScratchSection(6, 4, 4, &cdscratch_vertex_format);
+    nglAddMeshSection(ScratchMesh, ScratchSection, (nglMaterial*)mat, 1);
+
+    unsigned short* idx = (unsigned short*)nglLockSectionIndices(ScratchSection);
+    unsigned int* verts = (unsigned int*)nglLockSectionVertices(ScratchSection);
+
+    __m128 v0 = _mm_sub_ps(_mm_sub_ps(center.v, xcol), ycol);
+    verts[0] = v0.m128_u32[0];
+    verts[1] = v0.m128_u32[1];
+    verts[2] = v0.m128_u32[2];
+    verts[5] = clr;
+    verts[3] = 0;
+    verts[4] = 0;
+    idx[0] = 0;
+    verts += 6;
+
+    __m128 v1 = _mm_sub_ps(_mm_add_ps(center.v, xcol), ycol);
+    verts[0] = v1.m128_u32[0];
+    verts[1] = v1.m128_u32[1];
+    verts[2] = v1.m128_u32[2];
+    verts[5] = clr;
+    verts[3] = 0x3F800000;  // u = 1.0
+    verts[4] = 0;
+    idx[1] = 1;
+    verts += 6;
+
+    __m128 v2 = _mm_add_ps(_mm_sub_ps(center.v, xcol), ycol);
+    verts[0] = v2.m128_u32[0];
+    verts[1] = v2.m128_u32[1];
+    verts[2] = v2.m128_u32[2];
+    verts[5] = clr;
+    verts[3] = 0;
+    verts[4] = 0x3F800000;  // v = 1.0
+    idx[2] = 2;
+    verts += 6;
+
+    __m128 v3 = _mm_add_ps(_mm_add_ps(center.v, xcol), ycol);
+    verts[0] = v3.m128_u32[0];
+    verts[1] = v3.m128_u32[1];
+    verts[2] = v3.m128_u32[2];
+    verts[5] = clr;
+    verts[3] = 0x3F800000;  // u = 1.0
+    verts[4] = 0x3F800000;  // v = 1.0
+    idx[3] = 3;
+
+    nglUnlockSectionIndices();
+    nglUnlockSectionVertices();
+
+    math::Mat43 localToWorld;
+    localToWorld.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    localToWorld.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    localToWorld.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    nglListAddMesh(ScratchMesh, localToWorld, nullptr, nullptr, nullptr);
+}
+
+// ea: 0x66CFA0
+void RenderGlowBeam(const math::Position3& center,
+                    const math::Position3& center2, float radius,
+                    unsigned int clr)
+{
+    (void)clr;  // beam colors are hardcoded in the binary
+    const math::Mat43* mtx = nglGetMatrix_ViewToWorld(nglBuildScene);
+    __m128 xcol = _mm_mul_ps(mtx->x.v, _mm_set1_ps(radius));
+    __m128 ycol = mtx->y.v;
+
+    cdScratchMaterial* mat = (cdScratchMaterial*)nglListAlloc(0x20, 0x10);
+    if (mat != nullptr)
+    {
+        tlFixedString name("dynamiclight");
+        nglTexture* tex = nglGetTexture(name);
+        new (mat) cdScratchMaterial(tex, 0x64078600u, 2, false);
+    }
+
+    nglMesh* ScratchMesh = auxCreateScratchMesh(0x40000, 1);
+    nglMeshSection* ScratchSection =
+        nglCreateScratchSection(6, 4, 4, &cdscratch_vertex_format);
+    nglAddMeshSection(ScratchMesh, ScratchSection, (nglMaterial*)mat, 1);
+
+    unsigned short* idx = (unsigned short*)nglLockSectionIndices(ScratchSection);
+    unsigned int* verts = (unsigned int*)nglLockSectionVertices(ScratchSection);
+
+    __m128 v0 = _mm_sub_ps(_mm_sub_ps(center.v, xcol), ycol);
+    verts[0] = v0.m128_u32[0];
+    verts[1] = v0.m128_u32[1];
+    verts[2] = v0.m128_u32[2];
+    verts[5] = 0x80909090;
+    verts[3] = 0;
+    verts[4] = 0x3E99999A;  // v = 0.3
+    idx[0] = 0;
+    verts += 6;
+
+    __m128 v1 = _mm_sub_ps(_mm_sub_ps(center2.v, xcol), ycol);
+    verts[0] = v1.m128_u32[0];
+    verts[1] = v1.m128_u32[1];
+    verts[2] = v1.m128_u32[2];
+    verts[5] = 0x10101010;
+    verts[3] = 0;
+    verts[4] = 0x3F000000;  // v = 0.5
+    idx[1] = 1;
+    verts += 6;
+
+    __m128 v2 = _mm_sub_ps(_mm_add_ps(center.v, xcol), ycol);
+    verts[0] = v2.m128_u32[0];
+    verts[1] = v2.m128_u32[1];
+    verts[2] = v2.m128_u32[2];
+    verts[5] = 0x80909090;
+    verts[3] = 0x3F800000;  // u = 1.0
+    verts[4] = 0x3E99999A;  // v = 0.3
+    idx[2] = 2;
+    verts += 6;
+
+    __m128 v3 = _mm_add_ps(_mm_add_ps(center2.v, xcol), ycol);
+    verts[0] = v3.m128_u32[0];
+    verts[1] = v3.m128_u32[1];
+    verts[2] = v3.m128_u32[2];
+    verts[5] = 0x10101010;
+    verts[3] = 0x3F800000;  // u = 1.0
+    verts[4] = 0x3F000000;  // v = 0.5
+    idx[3] = 3;
+
+    nglUnlockSectionIndices();
+    nglUnlockSectionVertices();
+
+    math::Mat43 localToWorld;
+    localToWorld.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    localToWorld.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+    localToWorld.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+    nglListAddMesh(ScratchMesh, localToWorld, nullptr, nullptr, nullptr);
 }
 
 // ea: 0x6663F0
