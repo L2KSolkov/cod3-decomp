@@ -2120,7 +2120,6 @@ GdbFile GdbFileManager::GetGdbFile(TPakId pak_id, const char* name,
     GdbFile r = {};
     return r;
 }
-AssetBankSet::~AssetBankSet() {}
 void Client::Clear(bool a, bool b) { (void)a; (void)b; }
 void Client_Clear(Client* c, bool a, bool b) { (void)c; (void)a; (void)b; }
 void Client_Clear(void* c, bool a, bool b) { (void)c; (void)a; (void)b; }

@@ -147,12 +147,16 @@ extern cvar_t* Cvar_Get(const char* var_name, const char* var_value,
                         int flags);  // core.o cvar.cpp
 extern void Cmd_AddCommand(const char* cmd_name, void (*function)());
                                                 // core.o (common.cpp)
+extern void Cmd_RemoveCommand(const char* cmd_name);  // core.o (common.cpp)
 extern void DebugRender_AddRenderer(void* self, void* fp);  // core.o
 extern void* DebugRender_sInst;  // ?sInst@DebugRender@@2V1@A @ 0xF74D20
 unsigned char* stream_alloc(int size, bool aram);  // streamer.o
 void stream_free(unsigned char* ptr, bool aram = false);  // streamer.o
 void ConsoleSetPakDistance();   // streamer.o
 void ConsoleClearPakDistance(); // streamer.o
+void Console_ToggleSceneFX();    // streamer.o
+void Console_ToggleRenderEnts(); // streamer.o
+void Console_ToggleRenderLights(); // streamer.o
 void TogglePakRender();         // streamer.o
 void cdInitApk();               // streamer.o (apk support)
 extern void Com_StripExtension(const char* in, char* out);  // g_q_shared.cpp
@@ -499,13 +503,50 @@ void StopAllSceneAnims(TPakId pakId)
 // AssetBankSet (streamer.o; sBankArray @ 0xF59348)
 struct AssetBankSet {
     virtual ~AssetBankSet();  // defined in g_entity_misc.cpp
-    AssetBankSet();           // defined in ctor_dtor.cpp
     virtual void UnloadBank(TPakId pakId);  // ?UnloadBank@AssetBankSet@@UAEXW4TPakId@@@Z (streamer.o)
 
     static ae_sized_array<AssetBankSet*, 24> sBankArray;  // ?sBankArray@AssetBankSet@@0V?$ae_sized_array@PAVAssetBankSet@@$0BI@@@A
     static void UnloadBanks(TPakId pakId);  // ?UnloadBanks@AssetBankSet@@SAXW4TPakId@@@Z (streamer.o 0x66B0E0)
 };
 ae_sized_array<AssetBankSet*, 24> AssetBankSet::sBankArray;
+
+// AssetBankSet dtor body (0x675850) - removes `self` from sBankArray.
+// Shared by the AssetBankSet/SceneManager/StreamZoneManager dtor chain.
+static void AssetBankSetRemoveSelf(void* self)
+{
+    int m_size = AssetBankSet::sBankArray.m_size;
+    if (m_size != 0)
+    {
+        AssetBankSet** v2 = AssetBankSet::sBankArray.m_elements;
+        AssetBankSet** v3 = &AssetBankSet::sBankArray.m_elements[m_size];
+        while (v2 != v3)
+        {
+            if (*v2 == (AssetBankSet*)self)
+                break;
+            ++v2;
+        }
+        if (v2 != v3)
+        {
+            int v4 = (int)(v2 - AssetBankSet::sBankArray.m_elements);
+            if (AssetBankSet::sBankArray.m_size > 1
+                && v4 < AssetBankSet::sBankArray.m_size)
+            {
+                AssetBankSet::sBankArray.m_elements[v4] =
+                    AssetBankSet::sBankArray
+                        .m_elements[AssetBankSet::sBankArray.m_size - 1];
+                m_size = AssetBankSet::sBankArray.m_size;
+            }
+            if (m_size)
+                AssetBankSet::sBankArray.m_size = m_size - 1;
+        }
+    }
+}
+
+// ea: 0x675850
+AssetBankSet::~AssetBankSet()
+{
+    AssetBankSetRemoveSelf(this);
+}
 
 // controller / MultiplayerMgr / nglDebug bridges (cross-object; stubs)
 namespace controller {
@@ -841,6 +882,7 @@ public:
     // ea: 0x6775A0
     PakFile(EPakType pak_type, const char* path, TPakId id,
             NumBanks numBanks);  // ??0PakFile@@QAE@W4EPakType@@PBDW4TPakId@@VNumBanks@@@Z
+    ~PakFile();  // ??1PakFile@@QAE@XZ @ 0x678FA0
     // ea: 0x67A380
     void UpdateLoading();  // ?UpdateLoading@PakFile@@AAEXXZ
     // ea: 0x67A150
@@ -1136,6 +1178,7 @@ public:
     static float sWbkPercentage;       // ?sWbkPercentage@PakManager@@0MA
 
     PakManager();               // ??0PakManager@@QAE@XZ @ 0x6791F0
+    ~PakManager();              // ??1PakManager@@QAE@XZ @ 0x66FB80
     // - ea: 0x66C620
     void Reset();
     // - ea: 0x670480 (large; stub)
@@ -1431,6 +1474,8 @@ public:
                      const tlFixedString* name);  // ?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@ABVtlFixedString@@@Z
     unsigned int Get(eInstanceBankType type, TPakId pakId,
                      unsigned int hash);  // ?Get@InstanceBankMgr@@QBEIW4eInstanceBankType@@W4TPakId@@I@Z
+    InstanceBankMgr();   // ??0InstanceBankMgr@@QAE@XZ @ 0x66BDE0
+    ~InstanceBankMgr();  // ??1InstanceBankMgr@@QAE@XZ @ 0x66BE80
     bool GetAnimOffset(const char* name, TPakId pakId, unsigned int* out_offset,
                        unsigned int* out_size);  // ?GetAnimOffset@InstanceBankMgr@@QAE_NPBDW4TPakId@@PAI2@Z
     bool GetMipScale(const char* texture,
@@ -1636,6 +1681,11 @@ public:
     int     mFirstBank;             // +0x1CC
     int     mListSize;              // +0x1D0
 
+    StreamZoneManager();       // ??0StreamZoneManager@@QAE@XZ @ 0x678250
+    ~StreamZoneManager();      // ??1StreamZoneManager@@UAE@XZ @ 0x6782F0
+    static void SingletonDebugRender();  // ?SingletonDebugRender@StreamZoneManager@@SAXXZ @ 0x687640
+    void DebugRender();        // ?DebugRender@StreamZoneManager@@QAEXXZ @ 0x66CD60 (stub)
+
     static StreamZoneManager* sInst;  // defined in sv_globals.cpp
     void SetInitialPosition(const math::Position3& pos);
     void SetInitialCell(int cell);  // ?SetInitialCell@StreamZoneManager@@QAEXH@Z
@@ -1731,7 +1781,9 @@ public:
 // mDebugRenderEnts +0x1B4, mDebugRenderLights +0x1B5)
 struct SceneManager {
 public:
-    uint8_t _pad[0x0C];
+    uint8_t _pad[0x04];                      // vftable (AssetBankSet base)
+    void*   mPlayerFootstepMaterial;         // +0x04
+    int     mPlayerFootstepNumMatches;       // +0x08
     ae_array<SceneBank*, 99> mBankArray;       // +0x0C
     InplaceVector<SceneEffectGroup>* mSceneEffectGroups;  // +0x198
     InplaceVector<unsigned char>* mPersistantStorage;     // +0x19C
@@ -1756,6 +1808,10 @@ public:
     void UnloadInstanceGroups(TPakId pakId);  // ?UnloadInstanceGroups@SceneManager@@AAEXW4TPakId@@@Z
     void UnloadBank(TPakId pakId);  // ?UnloadBank@SceneManager@@EAEXW4TPakId@@@Z
     void DebugRenderLights();  // ?DebugRenderLights@SceneManager@@QAEXXZ
+    SceneManager();            // ??0SceneManager@@QAE@XZ @ 0x6786A0
+    ~SceneManager();           // ??1SceneManager@@UAE@XZ @ 0x675E10
+    static void SingletonDebugRender();  // ?SingletonDebugRender@SceneManager@@SAXXZ @ 0x687880
+    void DebugRender();        // ?DebugRender@SceneManager@@QAEXXZ @ 0x675E20 (stub)
     void ProcessWorldSpawn(const WorldSpawn& worldspawn);  // ?ProcessWorldSpawn@SceneManager@@AAEXABVWorldSpawn@@@Z
 };
 
@@ -1766,6 +1822,7 @@ class ae_heap {
 public:
     void** __vftable;  // +0x00
     void* Malloc(unsigned int size, int alignment);
+    void Free(void* ptr);  // ?Free@ae_heap@@QAEXPAX@Z (core_xboxr)
     mem_heap* GetHeapPointer();  // ?GetHeapPointer@ae_heap@@QAEPAUmem_heap@@XZ (core_xboxr)
 };
 extern ae_heap* gActorHeap;  // ?gActorHeap@@3PAVae_heap@@A @ 0xF00E5C
@@ -1776,6 +1833,10 @@ void* ae_heap::Malloc(unsigned int size, int alignment)
 {
     (void)size; (void)alignment;
     return nullptr;
+}
+void ae_heap::Free(void* ptr)
+{
+    (void)ptr;  // stub: core_xboxr
 }
 mem_heap* ae_heap::GetHeapPointer()
 {
@@ -2562,6 +2623,47 @@ void SceneManager::DebugRenderLights()
             }
         }
     }
+}
+
+// ea: 0x6786A0
+SceneManager::SceneManager()
+{
+    AssetBankSet::sBankArray.push_back((AssetBankSet*)this);
+    mSceneEffectGroups = nullptr;
+    mPersistantStorage = nullptr;
+    mWorldSpawn = nullptr;
+    mEffectCount = 0;
+    mEffectDelayFrames = 0;
+    mLoadedIdsCount = 0;
+    mDebugRenderDist = 0.0f;
+    mDebugRenderEnts = false;
+    mDebugRenderLights = false;
+    DebugRender_AddRenderer(DebugRender_sInst,
+                            (void*)&SceneManager::SingletonDebugRender);
+    Cmd_AddCommand("SceneFX", Console_ToggleSceneFX);
+    Cmd_AddCommand("RenderEnts", Console_ToggleRenderEnts);
+    Cmd_AddCommand("RenderLights", Console_ToggleRenderLights);
+    mPlayerFootstepMaterial = nullptr;
+    mPlayerFootstepNumMatches = 1;
+    for (unsigned int i = 0; i < 99; ++i)
+        mBankArray.m_elements[i] = nullptr;
+}
+
+// ea: 0x675E10
+SceneManager::~SceneManager()
+{
+    AssetBankSetRemoveSelf(this);
+}
+
+// ea: 0x687880
+void SceneManager::SingletonDebugRender()
+{
+    SceneManager::sInst->DebugRender();
+}
+
+// ea: 0x675E20 (stub; render pass port later)
+void SceneManager::DebugRender()
+{
 }
 
 // ea: 0x668B30
@@ -3867,6 +3969,78 @@ PakFile::PakFile(EPakType pak_type, const char* path, TPakId id,
     AsyncLoad(numBanks);
 }
 
+// ea: 0x678FA0
+PakFile::~PakFile()
+{
+    EState mState = this->mState;
+    if (mState != PakFile::LOADED)
+    {
+        int v3 = (int)mState - 1;
+        if (v3 != 0)
+        {
+            if (v3 == 1)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\PakFile.cpp";
+                AeAssert::gCurrentLine = 303;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error(
+                        "attempted to destroy PakFile while unloading"))
+                    __debugbreak();
+            }
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+            AeAssert::gCurrentLine = 298;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error(
+                    "attempted to destroy PakFile while loading"))
+                __debugbreak();
+        }
+    }
+    else
+    {
+        BeginAsyncUnload();
+        UnloadSerialized();
+        UnloadInplace();
+        FinishUnload();
+    }
+    if (mHeaderBuffer != PakFile::sHeaderBuffer)
+    {
+        unsigned char* mHeaderBuffer = this->mHeaderBuffer;
+        if (mPakType == kPakTypeFrontEnd)
+            gActorHeap->Free(mHeaderBuffer);
+        else
+            mem_heap_free(mHeaderBuffer);
+        this->mHeaderBuffer = nullptr;
+        mHeader = nullptr;
+    }
+    mem_heap** p_mHeapList = mHeapList.m_elements;
+    mem_heap** v5 = &mHeapList.m_elements[mHeapList.m_size];
+    if (p_mHeapList != v5)
+    {
+        do
+        {
+            gPakMemHeapAllocator->Release(*p_mHeapList++);
+        } while (p_mHeapList != v5);
+    }
+    if (mLooseFiles.mElements != nullptr)
+    {
+        tlMemFree(mLooseFiles.mElements);
+        mLooseFiles.mElements = nullptr;
+        mLooseFiles.mCapacity = 0;
+    }
+    if (mApkFiles.mElements != nullptr)
+    {
+        tlMemFree(mApkFiles.mElements);
+        mApkFiles.mElements = nullptr;
+        mApkFiles.mCapacity = 0;
+    }
+}
+
 // ea: 0x677C90
 TPakId PakManager::AsyncLoadPak(EPakType pak_type, const char* path,
                                 NumBanks num_banks)
@@ -4311,6 +4485,28 @@ PakManager::PakManager()
     Cmd_AddCommand("ClearPakDistance", ConsoleClearPakDistance);
     memset(mContextStack, 0, sizeof(TThreadedPakContextStack));
     cdInitApk();
+}
+
+// ea: 0x66FB80
+PakManager::~PakManager()
+{
+    Cmd_RemoveCommand("PakRender");
+    unsigned char* v4 = PakFile::sHeaderBuffer;
+    PakFile::sHeaderBufferSize = 0;
+    PakFile::sHeaderBuffer = nullptr;
+    stream_free(v4, false);
+    if (mStbVector.mElements != nullptr)
+    {
+        tlMemFree(mStbVector.mElements);
+        mStbVector.mElements = nullptr;
+        mStbVector.mCapacity = 0;
+    }
+    if (mAudioBanks.mElements != nullptr)
+    {
+        tlMemFree(mAudioBanks.mElements);
+        mAudioBanks.mElements = nullptr;
+        mAudioBanks.mCapacity = 0;
+    }
 }
 
 // ea: 0x670480 (large debug render; port later)
@@ -6522,6 +6718,39 @@ void StreamZoneManager::OnLoaded(TPakId pakId)
             break;
         mFirstBank = (unsigned int)ZoneBankAt(*this, v11)->mNextBank;
     }
+}
+
+// ea: 0x678250
+StreamZoneManager::StreamZoneManager()
+{
+    mLastCellNum = -1;
+    mFirstBank = -1;
+    mLastListSize = 0;
+    mListSize = 0;
+    AssetBankSet::sBankArray.push_back((AssetBankSet*)this);
+    DebugRender_AddRenderer(DebugRender_sInst,
+                            (void*)&StreamZoneManager::SingletonDebugRender);
+    mDebugRenderMode.mEnabled = 0;
+    mDebugRenderMode.zoneGraphScale = 0.0f;
+    Cmd_AddCommand("ZoneGraph", ToggleZoneGraph);
+}
+
+// ea: 0x6782F0
+StreamZoneManager::~StreamZoneManager()
+{
+    Cmd_RemoveCommand("ZoneGraph");
+    AssetBankSetRemoveSelf(this);
+}
+
+// ea: 0x687640
+void StreamZoneManager::SingletonDebugRender()
+{
+    StreamZoneManager::sInst->DebugRender();
+}
+
+// ea: 0x66CD60 (stub; render pass port later)
+void StreamZoneManager::DebugRender()
+{
 }
 
 // ea: 0x663730
@@ -9145,6 +9374,51 @@ void InstanceBankMgr::ReleaseInstanceBank(TPakId pakId)
 {
     if (pakId >= 0 && pakId < 99)
         mEntries[pakId] = nullptr;
+}
+
+// ea: 0x66BDE0
+InstanceBankMgr::InstanceBankMgr()
+{
+    m_anim_directory.m_enable_release = false;
+    m_anim_directory.m_release_once = false;
+    m_anim_directory.m_enable_add = true;
+    m_anim_directory.m_old_directory = nalAnimDirectory;
+    nalAnimDirectory = (tlResourceDirectory<nalAnimClass<nalAnyPose>>*)
+                           &m_anim_directory;
+    m_scnanim_directory.m_enable_release = false;
+    m_scnanim_directory.m_enable_add = true;
+    m_scnanim_directory.m_release_once = false;
+    m_scnanim_directory.m_old_directory = nalSceneAnimDirectory;
+    nalSceneAnimDirectory =
+        (tlResourceDirectory<nalSceneAnim>*)&m_scnanim_directory;
+    m_animfile_directory.m_enable_release = false;
+    m_animfile_directory.m_enable_add = true;
+    m_animfile_directory.m_release_once = false;
+    m_animfile_directory.m_old_directory = nalAnimFileDirectory;
+    nalAnimFileDirectory =
+        (tlResourceDirectory<nalAnimFile>*)&m_animfile_directory;
+    m_skeleton_directory.m_enable_release = false;
+    m_skeleton_directory.m_enable_add = true;
+    m_skeleton_directory.m_release_once = false;
+    m_skeleton_directory.m_old_directory = nalSkeletonDirectory;
+    nalSkeletonDirectory =
+        (tlResourceDirectory<nalBaseSkeleton>*)&m_skeleton_directory;
+    mMipSettingsBank = nullptr;
+    memset(mEntries, 0, sizeof(mEntries));
+}
+
+// ea: 0x66BE80
+InstanceBankMgr::~InstanceBankMgr()
+{
+    nalSkeletonDirectory = (tlResourceDirectory<nalBaseSkeleton>*)
+                               m_skeleton_directory.m_old_directory;
+    nalAnimFileDirectory =
+        (tlResourceDirectory<nalAnimFile>*)m_animfile_directory
+            .m_old_directory;
+    nalSceneAnimDirectory = (tlResourceDirectory<nalSceneAnim>*)
+                                m_scnanim_directory.m_old_directory;
+    nalAnimDirectory = (tlResourceDirectory<nalAnimClass<nalAnyPose>>*)
+                           m_anim_directory.m_old_directory;
 }
 
 // ea: 0x684BE0
