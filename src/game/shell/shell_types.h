@@ -27,15 +27,17 @@ struct PanelAnimObject {
 struct PanelQuadSection;
 
 struct PanelQuad : PanelAnimObject {
-    Broc::vector center_point;               // +0x14
-    void*        pqs[3];                     // +0x20 (ae_vector, opaque)
-    void*        am_info;                    // +0x2C
-    float        rotation;                   // +0x30
-    float        sc_x;                       // +0x34
-    float        sc_y;                       // +0x38
-    unsigned int quadMapFlags;               // +0x3C
-    unsigned int quadBlendModeType;          // +0x40
-    Broc::string name;                       // +0x44
+    Broc::vector         center_point;       // +0x14
+    PanelQuadSection**   pqs_elements;       // +0x20 (ae_vector)
+    int                  pqs_mSize;          // +0x24
+    int                  pqs_mCapacity;      // +0x28
+    void*                am_info;            // +0x2C
+    float                rotation;           // +0x30
+    float                sc_x;               // +0x34
+    float                sc_y;               // +0x38
+    unsigned int         quadMapFlags;       // +0x3C
+    unsigned int         quadBlendModeType;  // +0x40
+    Broc::string         name;               // +0x44
 
     PanelQuad(char* name);  // ??0PanelQuad@@QAE@PAD@Z (shell.o 0x58B840)
     virtual void Shift(float off_x, float off_y);  // shell.o 0x57A6A0
@@ -43,7 +45,60 @@ struct PanelQuad : PanelAnimObject {
     {
         Shift(cx - center_point.x, cy - center_point.y);
     }
+
+    Broc::vector GetMax();        // shell.o 0x57AC40
+    Broc::vector GetMin();        // shell.o 0x57AF20
+    Broc::vector GetInitialMax(); // shell.o 0x57B200
+    Broc::vector GetInitialMin(); // shell.o 0x57B490
 };
+
+struct PanelQuadSection {
+    struct PQVert {
+        float X;     // +0x00
+        float Y;     // +0x04
+        float U;     // +0x08
+        float V;     // +0x0C
+        float pad;   // +0x10
+    };
+    struct QuadData {
+        PQVert Verts[4];  // +0x00 (80 bytes)
+        char   pad2[8];   // +0x50
+    };
+
+    short    x_initial[4];  // +0x00
+    short    y_initial[4];  // +0x08
+    QuadData quad;          // +0x10 (88 bytes)
+
+    Broc::vector GetMax();            // ?GetMax@PanelQuadSection@@QAE?AUvector@Broc@@XZ
+    Broc::vector GetMin();            // shell.o 0x569D00
+    Broc::vector GetInitialMax();     // shell.o 0x569DA0
+    Broc::vector GetInitialMin();     // shell.o 0x569E50
+    Broc::vector GetMaxUV();          // shell.o 0x569F00
+    Broc::vector GetMinUV();          // shell.o 0x569FB0
+};
+static_assert(sizeof(PanelQuadSection::PQVert) == 20,
+              "PQVert size mismatch");
+static_assert(sizeof(PanelQuadSection) == 104,
+              "PanelQuadSection size mismatch");
+
+// ============================================================================
+// FEMultiLineText / FEMenuListBoxItem minimal views
+// ============================================================================
+struct FEMultiLineText {
+    static Broc::string ReplaceEndlines(Broc::string t);  // shell.o 0x56E670
+};
+
+struct FEMenuListBoxItem {
+    int          mIndex;         // +0x00
+    Broc::string mText;          // +0x04
+    void*        mData;          // +0x08
+    int          mSubItemCount;  // +0x0C
+    Broc::string mSubItems[3];   // +0x10
+
+    const Broc::string& GetSubItem(unsigned int index);  // shell.o 0x571D90
+};
+static_assert(sizeof(FEMenuListBoxItem) == 28,
+              "FEMenuListBoxItem size mismatch");
 
 // ============================================================================
 // system_time - wall-clock time (12 bytes, 6x uint16) - verified against IDA

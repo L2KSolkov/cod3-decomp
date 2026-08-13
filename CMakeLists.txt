@@ -320,6 +320,7 @@ add_library(cod3_game_shell STATIC
     src/game/shell/stub_data.cpp
     src/game/shell/shell_math.cpp
     src/game/shell/shell_util.cpp
+    src/game/shell/broc_shell.cpp
 )
 add_library(cod3_game_game STATIC src/game/game/stubs_game.cpp)
 add_library(cod3_game_core STATIC
