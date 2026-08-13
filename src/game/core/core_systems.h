@@ -916,31 +916,33 @@ struct TlSystemCallbacks {
     TlMemFreeCbfn SetMemFreeCbfn(TlMemFreeCbfn cbfn);     // ea: 0x004BD420
 
     static bool LockTlAllocsToPakHeap(bool s, bool once);
-    static bool ReadFile();
+    static bool ReadFile(const char* filename, tlFileBuf* fileBuf,
+                         unsigned int offset, unsigned int len);
     static void ReleaseFile(tlFileBuf* fileBuf);
-    static void* MemRealloc(void* Ptr, unsigned int Size);
+    static void* MemRealloc(void* Ptr, unsigned int size,
+                            unsigned int align, unsigned int flags);
     static void* MemAlloc(unsigned int size, unsigned int align,
                           unsigned int flags);
     static void MemFree(void* ptr);
-    static int LinkFrame();
+    static void LinkFrame();
     static bool LinkConnected();
-    static void DebugPrint(char* txt);
+    static void DebugPrint(const char* txt);
     static void CriticalError(const char* txt);  // ea: 0x004CFA60
     static void Warning(const char* txt);        // ea: 0x004CFAF0
 
 private:
     static bool IgnoreAssertion(
         const char* tlAssertText,
-        ae_fixed_string<256, unsigned short>* assertText,
-        ae_fixed_string<256, unsigned short>* assertExp,
-        ae_fixed_string<256, unsigned short>* assertFile,
-        int* assertLine);  // ea: 0x004CE800
+        ae_fixed_string<256, unsigned short>& assertText,
+        ae_fixed_string<256, unsigned short>& assertExp,
+        ae_fixed_string<256, unsigned short>& assertFile,
+        int& assertLine);  // ea: 0x004CE800
     static bool ParseTlAssertString(
         const char* tlAssertText,
-        ae_fixed_string<256, unsigned short>* assertMessage,
-        ae_fixed_string<256, unsigned short>* assertExpression,
-        ae_fixed_string<256, unsigned short>* fileName,
-        int* line);  // ea: 0x004C5AA0
+        ae_fixed_string<256, unsigned short>& assertMessage,
+        ae_fixed_string<256, unsigned short>& assertExpression,
+        ae_fixed_string<256, unsigned short>& fileName,
+        int& line);  // ea: 0x004C5AA0
 };
 static_assert(sizeof(TlSystemCallbacks) == 0x28,
               "TlSystemCallbacks size mismatch");

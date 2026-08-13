@@ -109,8 +109,9 @@ void SpinnerDrawLoading()
 }
 
 // ea: 0x004BDA30
-void SpinnerDraw()
+void SpinnerDraw(float a)
 {
+    (void)a;
     unsigned char q[0x60];
     nglInitQuad((nglQuad*)q);
     nglSetQuadRect((nglQuad*)q, l, t, r_0, b_0);

@@ -103,7 +103,7 @@ bool TlSystemCallbacks::sLockAllocsToPakHeap = false;
 bool TlSystemCallbacks::sLockAllocsToPakHeapOnce = false;
 
 // ea: 0x004BB4E0
-void Printf(int dest, const char* fmt, ...)
+void Printf(unsigned int dest, const char* fmt, ...)
 {
     char txtBuf[1024];
     va_list ap;
@@ -127,8 +127,9 @@ void jobqueue_shutdown()
 }
 
 // ea: 0x004BB5C0
-void jobqueue_restart()
+void jobqueue_restart(int nThreads)
 {
+    (void)nThreads;
 }
 
 // ea: 0x004BBAA0
@@ -154,7 +155,7 @@ void SyncFrameBuffers()
 }
 
 // ea: 0x004BBF50
-void* MT_AllocAnimTree(unsigned int size)
+void* MT_AllocAnimTree(int size)
 {
     return mem_heap_malloc_ctx(size, 16, "hunk",
                                "c:\\cod\\code\\game\\common.cpp", 4145);
@@ -176,8 +177,10 @@ bool TlSystemCallbacks::LockTlAllocsToPakHeap(bool s, bool once)
 }
 
 // ea: 0x004BD440
-bool TlSystemCallbacks::ReadFile()
+bool TlSystemCallbacks::ReadFile(const char* filename, tlFileBuf* fileBuf,
+                                 unsigned int offset, unsigned int len)
 {
+    (void)filename; (void)fileBuf; (void)offset; (void)len;
     return false;
 }
 
@@ -188,9 +191,12 @@ void TlSystemCallbacks::ReleaseFile(tlFileBuf* fileBuf)
 }
 
 // ea: 0x004BD470
-void* TlSystemCallbacks::MemRealloc(void* Ptr, unsigned int Size)
+void* TlSystemCallbacks::MemRealloc(void* Ptr, unsigned int size,
+                                    unsigned int align,
+                                    unsigned int flags)
 {
-    return mem_heap_realloc(Ptr, Size);
+    (void)align; (void)flags;
+    return mem_heap_realloc(Ptr, size);
 }
 
 // ea: 0x004BD490
@@ -239,9 +245,8 @@ void TlSystemCallbacks::MemFree(void* ptr)
 }
 
 // ea: 0x004BD560
-int TlSystemCallbacks::LinkFrame()
+void TlSystemCallbacks::LinkFrame()
 {
-    return 0;
 }
 
 // ea: 0x004BD570
@@ -251,7 +256,7 @@ bool TlSystemCallbacks::LinkConnected()
 }
 
 // ea: 0x004BD580
-void TlSystemCallbacks::DebugPrint(char* txt)
+void TlSystemCallbacks::DebugPrint(const char* txt)
 {
     const char* v1 = txt;
     if (txt == nullptr || strncmp("NSL:", txt, 4) != 0)
@@ -271,7 +276,7 @@ void TlSystemCallbacks::DebugPrint(char* txt)
 }
 
 // ea: 0x004BD850
-void* SpinnerInit()
+void SpinnerInit()
 {
     tlFixedString FileName("spinner_a");
     sSpinnerFrames[0] = nglGetTexture(FileName);
@@ -286,7 +291,6 @@ void* SpinnerInit()
     void* result = nglGetTexture(v1);
     dword_F00EC4 = result;
     dword_F00EC8 = result;
-    return result;
 }
 
 // ea: 0x004BD8F0
@@ -349,8 +353,8 @@ void TlSystemCallbacks::CriticalError(const char* txt)
         ae_fixed_string<256, unsigned short> aeAssertExp;
         ae_fixed_string<256, unsigned short> aeAssertFile;
         int assertLine = 0;
-        if (!IgnoreAssertion(v1, &aeAssertText, &aeAssertExp, &aeAssertFile,
-                             &assertLine)
+        if (!IgnoreAssertion(v1, aeAssertText, aeAssertExp, aeAssertFile,
+                             assertLine)
             && AeAssert::Assert((const char*)aeAssertText.mBuff))
         {
             __debugbreak();
@@ -372,8 +376,8 @@ void TlSystemCallbacks::Warning(const char* txt)
             ae_fixed_string<256, unsigned short> aeAssertExp;
             ae_fixed_string<256, unsigned short> aeAssertFile;
             int assertLine = 0;
-            if (!IgnoreAssertion(v1, &aeAssertText, &aeAssertExp,
-                                 &aeAssertFile, &assertLine)
+            if (!IgnoreAssertion(v1, aeAssertText, aeAssertExp,
+                                 aeAssertFile, assertLine)
                 && AeAssert::Warning((const char*)aeAssertText.mBuff))
             {
                 __debugbreak();
@@ -385,10 +389,10 @@ void TlSystemCallbacks::Warning(const char* txt)
 // ea: 0x004CE800
 bool TlSystemCallbacks::IgnoreAssertion(
     const char* tlAssertText,
-    ae_fixed_string<256, unsigned short>* assertText,
-    ae_fixed_string<256, unsigned short>* assertExp,
-    ae_fixed_string<256, unsigned short>* assertFile,
-    int* assertLine)
+    ae_fixed_string<256, unsigned short>& assertText,
+    ae_fixed_string<256, unsigned short>& assertExp,
+    ae_fixed_string<256, unsigned short>& assertFile,
+    int& assertLine)
 {
     AeAssert::gCurrentAuthor = AeAssert::COD3;
     if (tlAssertText != nullptr && *tlAssertText != 0)
@@ -396,15 +400,15 @@ bool TlSystemCallbacks::IgnoreAssertion(
         if (ParseTlAssertString(tlAssertText, assertText, assertExp, assertFile,
                                 assertLine))
         {
-            AeAssert::gCurrentFile = (const char*)assertFile->mBuff;
-            AeAssert::gCurrentLine = *assertLine;
-            AeAssert::gCurrentExpr = (const char*)assertExp->mBuff;
+            AeAssert::gCurrentFile = (const char*)assertFile.mBuff;
+            AeAssert::gCurrentLine = assertLine;
+            AeAssert::gCurrentExpr = (const char*)assertExp.mBuff;
             return AeAssert::IsIgnored();
         }
         else
         {
             ae_fixed_string<256, unsigned short> v7(tlAssertText);
-            *assertText = v7;
+            assertText = v7;
             AeAssert::gCurrentLine = hackLine;
             hackLine = hackLine + 1;
             AeAssert::gCurrentFile = "c:\\cod\\code\\game\\TlSysCallbacks.cpp";
@@ -423,10 +427,10 @@ bool TlSystemCallbacks::IgnoreAssertion(
 // ea: 0x004C5AA0
 bool TlSystemCallbacks::ParseTlAssertString(
     const char* tlAssertText,
-    ae_fixed_string<256, unsigned short>* assertMessage,
-    ae_fixed_string<256, unsigned short>* assertExpression,
-    ae_fixed_string<256, unsigned short>* fileName,
-    int* line)
+    ae_fixed_string<256, unsigned short>& assertMessage,
+    ae_fixed_string<256, unsigned short>& assertExpression,
+    ae_fixed_string<256, unsigned short>& fileName,
+    int& line)
 {
     ae_fixed_string<256, unsigned short> tlAssertStr;
     int oLen;
@@ -444,9 +448,9 @@ bool TlSystemCallbacks::ParseTlAssertString(
             return false;
     }
 
-    AeStringSupport::SubStr((char*)fileName->mBuff, &oLen, tlAssertStrBuf, 10,
+    AeStringSupport::SubStr((char*)fileName.mBuff, &oLen, tlAssertStrBuf, 10,
                             v5 - 10, 254);
-    fileName->mLength = (unsigned char)oLen;
+    fileName.mLength = (unsigned char)oLen;
     if (oLen == 0)
         return false;
 
@@ -462,7 +466,7 @@ bool TlSystemCallbacks::ParseTlAssertString(
     if (lineStr.mLength == 0)
         return false;
 
-    sscanf((const char*)lineStr.mBuff, "%d", line);
+    sscanf((const char*)lineStr.mBuff, "%d", &line);
 
     int v9 = tlAssertStr.find('"', v8);
     if (v9 < 0)
@@ -474,16 +478,16 @@ bool TlSystemCallbacks::ParseTlAssertString(
         return false;
     int v13 = v12;
 
-    tlAssertStr.substr(*assertExpression, v11, v12 - v10 - 1);
-    if (assertExpression->mLength == 0)
+    tlAssertStr.substr(assertExpression, v11, v12 - v10 - 1);
+    if (assertExpression.mLength == 0)
         return false;
 
-    tlAssertStr.substr(*assertMessage, v13 + 4,
+    tlAssertStr.substr(assertMessage, v13 + 4,
                        tlAssertStr.mLength - v13 - 4);
-    if (assertMessage->mLength == 0)
+    if (assertMessage.mLength == 0)
     {
         ae_fixed_string<256, unsigned short> v14(" ");
-        *assertMessage = v14;
+        assertMessage = v14;
     }
     return true;
 }

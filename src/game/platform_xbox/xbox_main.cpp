@@ -98,7 +98,7 @@ extern void InitCDAepsShader();                           // render.o
 extern void apsInitParticleMemory(int memSize, bool bBigBuffers);  // render.o
 extern void StartupNfl(const char* mountPoint);           // streamer.o
 extern void IN_Frame();                                   // game2.o
-extern void* SpinnerInit();                               // sys.cpp
+extern void SpinnerInit();                                // sys.cpp
 extern void SpinnerDrawFrameWithLoading(bool bEndFrame);  // spinner_lens.cpp
 extern void Com_Frame();                                  // common.cpp
 extern void Com_Init(char* commandLine);                  // common.cpp
