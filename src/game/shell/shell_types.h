@@ -19,13 +19,15 @@
 // ui_types.h, which cannot be combined with sv_stubs.h).
 class color32 {
 public:
-    unsigned int i;
-    struct {
-        uint8_t b;
-        uint8_t g;
-        uint8_t r;
-        uint8_t a;
-    } c;
+    union {
+        unsigned int i;
+        struct {
+            uint8_t b;
+            uint8_t g;
+            uint8_t r;
+            uint8_t a;
+        } c;
+    };
 
     color32() {}
     color32(unsigned int ic) { i = ic; }

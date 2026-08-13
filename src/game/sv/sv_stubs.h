@@ -14,6 +14,24 @@
 #include "core/ae_array.h"
 #include "core/ae_fixed_string.h"
 
+// font_index - FE font selection enum (also defined in ui_types.h; guarded
+// because sv_stubs.h is included by many TUs that cannot take ui_types.h).
+#ifndef COD3_FONT_INDEX_DEFINED
+#define COD3_FONT_INDEX_DEFINED
+enum font_index {
+    FONT_GARAMOND = 0,
+    FONT_GEMFONTONE = 1,
+    FONT_BUTTON = 2,
+    FONT_ARIAL14 = 3,
+    FONT_BIG = 4,
+    FONT_NORMAL = 5,
+    FONT_IMPACT = 6,
+    FONT_HELVETICA_BOLD = 7,
+    NUM_FONTS = 8,
+    INVALID_FONT = 9,
+};
+#endif
+
 // EPakType - pak type enum (global enum; kPakTypeGlobal == 0)
 enum EPakType { kPakTypeGlobal = 0 };
 
@@ -255,6 +273,7 @@ public:
     int     mNumPanels;                 // +0x3F0
     // +0x3F4 .. 0x3F4 remaining pad
     void UpdateLoadingMenu(float percentDone);  // ?UpdateLoadingMenu@FEManager@@QAEXM@Z
+    nglFont* GetFont(font_index f);  // ?GetFont@FEManager@@QAEPAVnglFont@@W4font_index@@@Z (shell.o)
     void SetInGameMenusActive(bool active,
                               int client);  // ?SetInGameMenusActive@FEManager@@QAEX_NH@Z (sv.o 0x51E1A0)
     void UpdateIGO(float time_inc);           // ?UpdateIGO@FEManager@@QAEXM@Z (cl.o 0x528390)
