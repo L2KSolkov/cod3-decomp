@@ -5656,8 +5656,10 @@ void InteractState_Lerper_Ctor(InteractState_Lerper* self)
 
 // ============================================================================
 // InteractInputRcvr (anim.o InteractionController.cpp)
-// Base layout: mPakId +0, mFlags +4, mInfo +8, mTimer +0xC, mInputRate +0x10,
-// mInputProgress +0x14, mTimeSinceLastInput +0x18, vftable +0x1C, mType +0x20
+// Layout verified vs ctors (0x53A8C0/0x53A9E0/...): vftable +0, mType +4,
+// mPakId +8, mFlags +0xC, mInfo +0x10, mTimer +0x14, mInputRate +0x18,
+// mInputProgress +0x1C, mTimeSinceLastInput +0x20, mProgress[10] +0x24,
+// mNumProgress +0x50. Subclass fields start at +0x54.
 // ============================================================================
 class InteractInputRcvr {
 public:
@@ -5665,8 +5667,8 @@ public:
         kInputTypeButtonMash = 0,
         kInputTypeButtonPress = 1,
         kInputTypeStickSwirl = 2,
-        kInputTypeStickToggleVert = 3,
-        kInputTypeStickToggleHoriz = 4,
+        kInputTypeStickToggleHoriz = 3,  // verified: binary Horiz=3, Vert=4
+        kInputTypeStickToggleVert = 4,
         kInputTypeRowboat = 5,
         kInputTypeCount = 6,
     };
@@ -5678,14 +5680,17 @@ public:
                                                    TPakId curPakId);
     static void FreeInputRcvrs();
 
-    int mPakId;          // +0x00
-    unsigned int mFlags; // +0x04
-    void* mInfo;         // +0x08
-    float mTimer;        // +0x0C
-    float mInputRate;    // +0x10
-    float mInputProgress;// +0x14
-    float mTimeSinceLastInput;  // +0x18
-    int mType;           // +0x20
+    void* __vftable;     // +0x00
+    int mType;           // +0x04
+    int mPakId;          // +0x08
+    unsigned int mFlags; // +0x0C
+    void* mInfo;         // +0x10
+    float mTimer;        // +0x14
+    float mInputRate;    // +0x18
+    float mInputProgress;// +0x1C
+    float mTimeSinceLastInput;  // +0x20
+    float mProgress[10]; // +0x24
+    int mNumProgress;    // +0x50
 
     void ResetInputMeasures();     // 0x53A930
     float GetInputRate();          // 0x53A950
@@ -5703,9 +5708,9 @@ public:
 
 class InteractInputRcvrButtonMash : public InteractInputRcvr {
 public:
-    int mButtonIndex;           // +0x24
-    int mButtonIndex2;          // +0x28
-    int mLastButtonIndexPressed;// +0x2C
+    int mButtonIndex;           // +0x54
+    int mButtonIndex2;          // +0x58
+    int mLastButtonIndexPressed;// +0x5C
 
     InteractInputRcvrButtonMash(TPakId curPakId)
     {
@@ -5724,7 +5729,8 @@ public:
 
 class InteractInputRcvrButtonPress : public InteractInputRcvr {
 public:
-    int mButtonIndex;           // +0x24
+    int mButtonIndex;           // +0x54 (button value + 0xCF)
+    int mInfoButtonIndex;       // +0x58 (raw info->buttonIndex pick)
 
     InteractInputRcvrButtonPress(TPakId curPakId)
     {
@@ -5741,10 +5747,10 @@ public:
 
 class InteractInputRcvrStickSwirl : public InteractInputRcvr {
 public:
-    float mTotalTime;           // +0x24
-    float mTotalAngle;          // +0x28
-    float mRate;                // +0x2C
-    int mCounter;               // +0x30
+    int mCounter;               // +0x54
+    float mTotalTime;           // +0x58
+    float mTotalAngle;          // +0x5C
+    float mRate;                // +0x60
 
     InteractInputRcvrStickSwirl(TPakId curPakId)
     {
@@ -5760,8 +5766,8 @@ public:
 
 class InteractInputRcvrStickToggleVert : public InteractInputRcvr {
 public:
-    int mVert;                  // +0x24
-    int mNextDir;               // +0x28
+    int mVert;                  // +0x54
+    int mNextDir;               // +0x58
 
     InteractInputRcvrStickToggleVert(TPakId curPakId)
     {
@@ -5778,8 +5784,8 @@ public:
 
 class InteractInputRcvrStickToggleHoriz : public InteractInputRcvr {
 public:
-    int mVert;                  // +0x24
-    int mNextDir;               // +0x28
+    int mVert;                  // +0x54
+    int mNextDir;               // +0x58
 
     InteractInputRcvrStickToggleHoriz(TPakId curPakId)
     {
@@ -5930,22 +5936,52 @@ void InteractInputRcvr::MeasureInput(float& rate, float& progress,
     (void)rate; (void)progress;
 }
 
-// InteractStateInfo minimal view (fields used by measure/lerp paths)
+// InteractStateInfo minimal view - offsets verified vs IDA struct + disasm
+// (parse 0x53B0B0, ButtonMash/ButtonPress MI, UpdateModeRow, UpdateLerp)
 struct InteractStateInfoLocal {
-    unsigned char _pad0[0x08];
-    char playerAnim[32];            // +0x08
-    char playerModAnim[6][40];      // +0x28
-    char interModAnim[6][40];       // +0x118
-    float modAnimThresholdMin[6];   // +0x208
-    float lerpDuration;             // +0x220
-    char buttonHelpStr[64];         // +0x224
-    int buttonIndex[2];             // +0x264
-    float acceptInputMinTime;       // +0x26C
-    float acceptInputMaxTime;       // +0x270
-    unsigned int leftStick;         // +0x274
-    unsigned int swirlClockwise;    // +0x278
-    unsigned int notifyHash[4];     // +0x27C
-    unsigned int notifyName[4];     // +0x28C
+    unsigned char _pad0[0x28];
+    char successState[4][32];       // +0x28
+    char failureState[32];          // +0xA8
+    unsigned char _padC8[0xD0 - 0xC8];
+    char playerAnim[32];            // +0xD0
+    char playerModAnim[6][40];      // +0xF8
+    char weaponAnim[32];            // +0x1E8
+    unsigned char _pad208[0x210 - 0x208];
+    char interactableAnim[32];      // +0x210
+    char interModAnim[6][40];       // +0x238
+    char weaponDisplayName[32];     // +0x328
+    unsigned int changeWeapon;      // +0x348
+    unsigned int instantChangeWeapon;// +0x34C
+    unsigned int holdUseExitEnabled;// +0x370
+    float maxDuration;              // +0x378
+    float acceptInputMinTime;       // +0x37C
+    float acceptInputMaxTime;       // +0x380
+    float lerpDuration;             // +0x38C
+    unsigned int defaultCameraMode; // +0x3A4
+    float animFadeInTime;           // +0x3C4
+    float fovMin;                   // +0x3CC
+    float fovScoreThresholdMin;     // +0x3D0
+    float fovScoreThresholdMax;     // +0x3D4
+    float fovLerpDuration;          // +0x3D8
+    char notifyName[4][20];         // +0x3DC
+    unsigned int notifyHash[4];     // +0x42C
+    float notifyFloat[4];           // +0x43C
+    int buttonIndex[4];             // +0x4CC
+    char buttonHelpStr[64];         // +0x4DC
+    unsigned int swirlClockwise;    // +0x520
+    unsigned int leftStick;         // +0x524
+    float difficulty;               // +0x52C
+    float modBlendMin;              // +0x540
+    float modBlendMax;              // +0x544
+    float modBlendScoreDeltaMin;    // +0x548
+    float modBlendScoreDeltaMax;    // +0x54C
+    float modAnimThresholdMin[6];   // +0x550
+    float modAnimThresholdMax[6];   // +0x564
+    unsigned int steeringLeftSide;  // +0x584
+    float steeringWheelAngleMax;    // +0x588
+    float steeringAngleKeepTurn;    // +0x58C
+    float steeringWheelTurnRate;    // +0x590
+    float steeringWheelAngleFactor; // +0x594
 };
 
 extern const char* GetButtonTextName(unsigned int index);
@@ -5963,8 +5999,8 @@ extern void GetSwirlSpeedDirect(float* fCosDeltaAngle, int* iRotationDir,
 extern void GetAverageDelta(float* deltaAngle, int* index, int iStickIndex);
 struct cvar_t;
 struct cvar_t {
-    unsigned char _pad[0x20];
-    float value;  // +0x20
+    unsigned char _pad[0x1C];
+    float value;  // +0x1C (verified vs StickSwirl MI)
 };
 extern cvar_t* m_yaw;  // ?m_yaw@@3PAUcvar_t@@A (cl.o @ 0x12FC4E4)
 
@@ -6852,7 +6888,7 @@ void InteractState::PlayAnims(int weaponIndex, float fadeIn)
     {
         InteractStateInfoLocal* info = (InteractStateInfoLocal*)mInfo;
         char* playerAnim = info->playerAnim;
-        char* interactableAnim = (char*)info + 0xD0;
+        char* interactableAnim = info->interactableAnim;
         if ((mFlags & 0x400) != 0)
         {
             int animIndex = GetRandomPlayerAnimIndex();
@@ -6922,7 +6958,7 @@ void InteractState::PlayAnims(int weaponIndex, float fadeIn)
             }
         }
         InteractStateInfoLocal* v18 = (InteractStateInfoLocal*)mInfo;
-        char* weaponAnim = (char*)v18 + 0x1E8;
+        char* weaponAnim = v18->weaponAnim;
         if (*weaponAnim != 0)
         {
             void* dobj = (void*)dword_F6A2A0[802 * mController->mClient];
@@ -7161,6 +7197,7 @@ public:
     void PlaySlower();               // 0x5562A0
     void PlayRow();                  // 0x5562B0
     void AlignBoatmen();             // 0x550080
+    void AddBoatman(const char* targetName, bool isLeader);  // 0x5408B0
 };
 
 RowboatMgr gRowboatMgr;  // ?gRowboatMgr@@3VRowboatMgr@@A @ 0xDF2A08
@@ -7173,9 +7210,6 @@ float sDurFactor = 0.9f;         // @ 0xDF3740
 float sFlinchTime = 2.0f;        // @ 0xDF37B4
 float sRowFadeTime = 0.1f;       // @ 0xDF3128
 static unsigned char sFlinchCallbacks[5][8];  // @ 0xDF1290
-
-int sRowboatOrderPending = 0;
-int sRowboatOrderHash = 0;
 
 // ea: 0x00561460
 void RowboatMgr_Ctor(RowboatMgr* self)
@@ -7553,6 +7587,9 @@ void InteractStateRowboat_HandleMortarFlinch(InteractState* self)
     }
 }
 
+extern int sOrderPendingRowboat;
+extern unsigned int sOrderHashRowboat;
+
 // ea: 0x00556550
 void InteractStateRowboat_ProcessOrder(InteractState* self)
 {
@@ -7561,7 +7598,7 @@ void InteractStateRowboat_ProcessOrder(InteractState* self)
     static unsigned int kRowHash = 0;
     static unsigned int kFasterHash = 0;
     static unsigned int kSlowerHash = 0;
-    if (sRowboatOrderPending != 0)
+    if (sOrderPendingRowboat != 0)
     {
         if ((sInitFlags & 1) == 0)
         {
@@ -7578,17 +7615,17 @@ void InteractStateRowboat_ProcessOrder(InteractState* self)
             sInitFlags |= 4u;
             kSlowerHash = HashString::CalcHash("slower");
         }
-        if (sRowboatOrderHash == kRowHash || sRowboatOrderHash == kFasterHash)
+        if (sOrderHashRowboat == kRowHash || sOrderHashRowboat == kFasterHash)
         {
             if (gRowboatMgr.mLastLeaderAnim == nullptr)
                 gRowboatMgr.PlayLeaderAnim(0);
         }
-        else if (sRowboatOrderHash == kSlowerHash
+        else if (sOrderHashRowboat == kSlowerHash
                  && gRowboatMgr.mLastLeaderAnim == nullptr)
         {
             gRowboatMgr.PlayLeaderAnim(1);
         }
-        sRowboatOrderPending = 0;
+        sOrderPendingRowboat = 0;
     }
 }
 
@@ -7600,19 +7637,24 @@ void InteractStateRowboat_ProcessOrder(InteractState* self)
 void InteractStateRowboat_SetRowboatFlag(InteractState* self, unsigned int f,
                                          int enable)
 {
-    int* flags = (int*)((char*)self + 0x1A0);
+    int* flags = (int*)((char*)self + 0x1E8);  // mRowboatFlags
     if (enable != 0)
         *flags |= (int)f;
     else
         *flags &= ~(int)f;
 }
 
-extern float sStrokeDurationRowboat;
+// Rowboat class statics (binary: ?sStrokeDuration@InteractStateRowboat@@0MA etc.)
+float sStrokeDurationRowboat = 0.0f;
+float sBestThresholdRowboat = 0.0f;
+float sOkayThresholdRowboat = 0.0f;
+float sLateThresholdRowboat = 0.0f;
+int sOrderPendingRowboat = 0;
+unsigned int sOrderHashRowboat = 0;
 extern float sIdleFadeTimeRowboat;
 extern float sStickForwardStartTolRowboat;
 extern float sStickForwardStartMinRowboat;
 extern float sStickForwardStartMaxRowboat;
-float sStrokeDurationRowboat = 0.0f;
 float sIdleFadeTimeRowboat = 0.1f;             // 0xDF3124
 float sStickForwardStartTolRowboat = 10.0f;    // 0xDF3120 (int 0xA)
 float sStickForwardStartMinRowboat = -1.0f;    // 0xDF311C (int -1)
@@ -7623,36 +7665,32 @@ void InteractStateRowboat_GiveOrder(int orderHash, float strokeDuration,
                                     float bestThreshold, float okayThreshold,
                                     float lateThreshold)
 {
-    static float sStrokeDuration = 0.0f;
-    static float sBestThreshold = 0.0f;
-    static float sOkayThreshold = 0.0f;
-    static float sLateThreshold = 0.0f;
-    sStrokeDuration = strokeDuration;
-    sBestThreshold = bestThreshold;
-    sOkayThreshold = okayThreshold;
-    sRowboatOrderPending = 1;
-    sRowboatOrderHash = orderHash;
-    sLateThreshold = lateThreshold;
+    sStrokeDurationRowboat = strokeDuration;
+    sBestThresholdRowboat = bestThreshold;
+    sOkayThresholdRowboat = okayThreshold;
+    sOrderPendingRowboat = 1;
+    sOrderHashRowboat = (unsigned int)orderHash;
+    sLateThresholdRowboat = lateThreshold;
 }
 
 // ea: 0x0053DEE0 / 0x0053DEF0
 void InteractStateRowboat_StartModeIdle(InteractState* self)
 {
-    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
+    *(int*)((char*)self + 0x1D0) = 1;  // mStartAnim
 }
 
 void InteractStateRowboat_StartModeRow(InteractState* self)
 {
-    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
+    *(int*)((char*)self + 0x1D0) = 1;  // mStartAnim
 }
 
 // ea: 0x0053DF00
 void InteractStateRowboat_StartModeSlip(InteractState* self)
 {
-    int* flags = (int*)((char*)self + 0x1A0);
+    int* flags = (int*)((char*)self + 0x1E8);  // mRowboatFlags
     *flags |= 2;
-    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
-    *(float*)((char*)self + 0x1B0) = 3.0f;  // mFeedbackTimer
+    *(int*)((char*)self + 0x1D0) = 1;  // mStartAnim
+    *(float*)((char*)self + 0x1FC) = 3.0f;  // mFeedbackTimer (kRowboatFeedbackTime)
 }
 
 // ea: 0x0053DF30
@@ -7664,28 +7702,28 @@ void InteractStateRowboat_UpdateNotify(InteractState* self, float deltaT)
 // ea: 0x0053DF40
 void InteractStateRowboat_NewStroke(InteractState* self)
 {
-    *(float*)((char*)self + 0x1B4) = 0.0f;  // mStrokeTimer
+    *(float*)((char*)self + 0x1F4) = 0.0f;  // mStrokeTimer
     float sStrokeDuration = *(float*)&sStrokeDurationRowboat;
-    int numStrokes = *(int*)((char*)self + 0x1B8);
+    int numStrokes = *(int*)((char*)self + 0x1F0);
     if (sStrokeDuration > 0.0f && numStrokes % 2 == 0)
-        *(float*)((char*)self + 0x1C0) = sStrokeDuration;
+        *(float*)((char*)self + 0x1F8) = sStrokeDuration;  // mCurStrokeDuration
 }
 
 // ea: 0x00540960
 void InteractStateRowboat_StartMode(InteractState* self, int newMode)
 {
-    *(int*)((char*)self + 0x198) = newMode;  // mMode
+    *(int*)((char*)self + 0x1B4) = newMode;  // mMode
     if (newMode >= 2)
     {
         if (newMode == 2)
         {
-            int* flags = (int*)((char*)self + 0x1A0);
+            int* flags = (int*)((char*)self + 0x1E8);  // mRowboatFlags
             *flags |= 2;
-            *(float*)((char*)self + 0x1B0) = 3.0f;
+            *(float*)((char*)self + 0x1FC) = 3.0f;  // mFeedbackTimer
         }
     }
-    *(int*)((char*)self + 0x1AC) = 1;  // mStartAnim
-    int rumbleVal = *(int*)((char*)self + 0x1D8);
+    *(int*)((char*)self + 0x1D0) = 1;  // mStartAnim
+    int rumbleVal = *(int*)((char*)self + 0x1EC);  // mRumbleHandleVal
     if (rumbleVal != -1)
     {
         RumbleManager* inst = (RumbleManager*)RumbleManager_Inst(currCl);
@@ -7695,19 +7733,19 @@ void InteractStateRowboat_StartMode(InteractState* self, int newMode)
             h.mVal = rumbleVal;
             inst->Remove(h);
         }
-        *(int*)((char*)self + 0x1D8) = -1;
+        *(int*)((char*)self + 0x1EC) = -1;
     }
 }
 
 // ea: 0x005409F0 (UpdateModeIdle - rowboat)
 int InteractStateRowboat_UpdateModeIdle(InteractState* self, float deltaT)
 {
-    int mMode = *(int*)((char*)self + 0x198);
-    if (*(int*)((char*)self + 0x1AC) != 0)  // mStartAnim
+    int mMode = *(int*)((char*)self + 0x1B4);
+    if (*(int*)((char*)self + 0x1D0) != 0)  // mStartAnim
     {
         InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
         if (info->playerAnim[0] != 0
-            && *(float*)((char*)self + 0x1C4) <= 0.0f)  // mAnimFadeTimer
+            && *(float*)((char*)self + 0x1CC) <= 0.0f)  // mAnimFadeTimer
         {
             tlFixedString name(info->playerAnim);
             void* Anim = nalGetAnim(name);
@@ -7717,8 +7755,8 @@ int InteractStateRowboat_UpdateModeIdle(InteractState* self, float deltaT)
                     ->GetSelectedInteractWeaponIndex();
             self->PlayPlayerAnim(Anim, weaponIndex, sIdleFadeTimeRowboat, 0.0f,
                                  1.0f);
-            *(float*)((char*)self + 0x1C4) = sIdleFadeTimeRowboat;
-            *(int*)((char*)self + 0x1AC) = 0;
+            *(float*)((char*)self + 0x1CC) = sIdleFadeTimeRowboat;
+            *(int*)((char*)self + 0x1D0) = 0;
             InteractInputRcvr* rcvr = (InteractInputRcvr*)self->mInputRcvr;
             if (rcvr != nullptr)
             {
@@ -7728,7 +7766,7 @@ int InteractStateRowboat_UpdateModeIdle(InteractState* self, float deltaT)
             return mMode;
         }
     }
-    else if (*(float*)((char*)self + 0x1C4) <= 0.0f)
+    else if (*(float*)((char*)self + 0x1CC) <= 0.0f)
     {
         InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
         float v10 = -CL_GamepadPhysicalAxisValue(
@@ -9087,6 +9125,394 @@ clamp:
 // ============================================================================
 // InteractState lerp cluster (anim.o; layout verified vs disasm)
 // ============================================================================
+
+// ============================================================================
+// ae_vector<InteractState*> (anim.o 0x55EB30/0x5603C0 compiler-generated)
+// ============================================================================
+template <typename T>
+class ae_vector {
+public:
+    ae_vector()
+    {
+        mElements = nullptr;
+        mCapacity = 0;
+        mSize = 0;
+    }
+    ~ae_vector()
+    {
+        if (mElements != nullptr)
+        {
+            tlMemFree(mElements);
+            mElements = nullptr;
+            mCapacity = 0;
+        }
+    }
+
+    T* mElements;   // +0x00
+    int mCapacity;  // +0x04
+    int mSize;      // +0x08
+};
+template class ae_vector<InteractState*>;
+
+// ============================================================================
+// RowboatMgr::AddBoatman + PickLiveGrenade::fireLiveGrenade (anim.o)
+// ============================================================================
+
+// Global-scope twin of BrocAPI (matches ?gpBrocAPI@@3PAUBrocAPI@@A in
+// g_scr.cpp; broc_types.h's BrocAPI lives in namespace Broc).
+struct BrocAPI {
+    char _pad[0x94];
+    unsigned int (*mGetEnt)(const Broc::string*, int, unsigned int*, int,
+                            int);  // +0x94
+};
+extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A (g_scr.cpp)
+
+// ea: 0x005408B0
+void RowboatMgr::AddBoatman(const char* targetName, bool isLeader)
+{
+    if (targetName != nullptr && *targetName != 0)
+    {
+        Broc::string name(targetName);
+        unsigned int v5 = gpBrocAPI->mGetEnt(
+            &name, (int)HashString::CalcHash("targetname"), nullptr, 0, 0);
+        if (v5 != 0)
+        {
+            mBoatmen[mNumBoatmen++].mVal = v5;
+            if (isLeader)
+                ++mNumLeaders;
+        }
+    }
+}
+
+struct weaponParms;  // U-tag; real in g_weapon.h
+extern void CalcMuzzlePoints(Entity* ent, weaponParms* wp);
+extern Entity* weapon_grenadelauncher_fire(Entity* ent, int grenType,
+                                           weaponParms* wp);
+
+// ea: 0x0053EAC0
+void InteractStatePickLiveGrenade_fireLiveGrenade(InteractState* self,
+                                                  Entity* player)
+{
+    (void)self;
+    char wp[0x40];
+    int weapon = *(unsigned char*)((char*)player + 3);  // s.weapon
+    *(void**)wp = BG_GetInfoForWeapon(weapon);
+    CalcMuzzlePoints(player, (weaponParms*)wp);
+    weapon_grenadelauncher_fire(player, weapon, (weaponParms*)wp);
+}
+
+// ============================================================================
+// Rowboat mode functions (anim.o InteractStateRowboat.cpp)
+// Layout verified: mSlipAnim +0x1B0, mMode +0x1B4, mInputProgress +0x1B8,
+// mLastInputProgress +0x1BC, mAnimScore +0x1C0, mAnimFadeTimer +0x1CC,
+// mStartAnim +0x1D0, mFinishStroke +0x1D4, mRowAnimIndex +0x1D8,
+// mStallTimer +0x1DC, mRowboatFlags +0x1E8, mRumbleHandleVal +0x1EC,
+// mNumStrokes +0x1F0, mStrokeTimer +0x1F4, mCurStrokeDuration +0x1F8,
+// mFeedbackTimer +0x1FC, mNumSuccessful +0x204, mNumMisses +0x208,
+// mMetaNalBaseAnimPtr[2] +0x1A0, mMetaAnimDataPtr[2] +0x1A8
+// ============================================================================
+
+float sMaxAnimTimeFrac = 0.7f;   // 0xDF35C4
+float sSlipFadeTime = 0.2f;      // 0xDF35C0
+float sStartScale = 3.0f;        // 0xDF3130
+float sEndScale = 0.7f;          // 0xDF312C
+float sMaxRowSpeed = 1.0f;       // 0xDF35BC
+float sProgressHoldMin = 0.15f;  // 0xDF35B4
+float sProgressHoldMax = 0.3f;   // 0xDF35B0
+float sStallAdvanceSpeed = 0.1f; // 0xDF35A0
+float sSplashFXAnimScoreMin = 0.3f;  // 0xDF35B8
+float sAnimScoreSlipMin = 0.15f; // 0xDF35AC
+float sAnimScoreSlipMax = 0.85f; // 0xDF35A8
+float sRumbleScoreMin = 0.25f;   // 0xDF359C
+float sRumbleScoreMax = 0.9f;    // 0xDF3598
+
+extern char gMetaAnimPlayMethod;  // ?gMetaAnimPlayMethod@@...A (cg_misc)
+extern Handle PostEffectEventScriptCall(const Entity* ent,
+                                        const char* scriptId, bool queue,
+                                        TPakId pakid, bool important);
+
+// ea: 0x00540B10
+void InteractStateRowboat_PlayRowingMetaAnim(InteractState* self,
+                                             unsigned int index)
+{
+    if (index >= 2)
+    {
+        XANIM_ASSERT("index >= 0 && index <= 1",
+                     "c:\\cod\\code\\game\\InteractStateRowboat.cpp", 954,
+                     "Bad index");
+    }
+    InteractStateInfoLocal* info = (InteractStateInfoLocal*)self->mInfo;
+    if (info->playerModAnim[index][0] != 0)
+    {
+        InteractionController* c = self->mController;
+        int weaponIndex = c->mSelectedInteractWeaponIndex;
+        if (weaponIndex < 1)
+        {
+            Entity* Player = EntityManager::sInst->GetPlayer(c->mClient);
+            if (Player == nullptr || Player->client == nullptr)
+                return;
+            weaponIndex = *(int*)((char*)Player->client + 0xA4);
+        }
+        if (weaponIndex > 0)
+        {
+            InteractionController* v7 = self->mController;
+            int idx = v7->mNextPlayerCallbackIndex;
+            DObj* dobj = (DObj*)dword_F6A2A0[802 * v7->mClient];
+            void* v10 = v7->mPlayerCallback[idx++];
+            v7->mNextPlayerCallbackIndex = idx;
+            if (idx == 3)
+                v7->mNextPlayerCallbackIndex = 0;
+            self->mPlayerCallback = v10;
+            ((AnimationPlayer*)dobj->animPlayers[0])
+                ->Play((nalGenericAnim*)*(void**)((char*)self + 0x1A0
+                                                  + 4 * index),
+                       true, sRowFadeTime, (void*)&gMetaAnimPlayMethod, 0.0f,
+                       v10, 1.0f, 0.0f);
+            self->mFlags |= 1u;
+            *(float*)((char*)self + 0x1CC) = sRowFadeTime;  // mAnimFadeTimer
+        }
+    }
+}
+
+// ea: 0x00547AA0
+int InteractStateRowboat_UpdateModeSlip(InteractState* self, float deltaT)
+{
+    (void)deltaT;
+    if (*(int*)((char*)self + 0x1D0) != 0)  // mStartAnim
+    {
+        if (*(float*)((char*)self + 0x1CC) <= 0.0f)  // mAnimFadeTimer
+        {
+            float startAnimTimeFrac = *(float*)((char*)self + 0x1C0);
+            if (startAnimTimeFrac > sMaxAnimTimeFrac)
+                startAnimTimeFrac = 0.0f;
+            InteractionController* v3 = InteractionController::Inst(currCl);
+            int weaponIndex = v3->mSelectedInteractWeaponIndex;
+            if (weaponIndex < 1)
+            {
+                Entity* Player =
+                    EntityManager::sInst->GetPlayer(v3->mClient);
+                if (Player != nullptr && Player->client != nullptr)
+                    weaponIndex = *(int*)((char*)Player->client + 0xA4);
+                else
+                    weaponIndex = 0;
+            }
+            self->PlayPlayerAnim(*(void**)((char*)self + 0x1B0), weaponIndex,
+                                 sSlipFadeTime, startAnimTimeFrac, 1.0f);
+            *(float*)((char*)self + 0x1CC) = sSlipFadeTime;
+            Entity* v7 = EntityManager::sInst->GetPlayer(currCl);
+            PostEffectEventScriptCall(v7, "rowing_oar_slip", false,
+                                      PAK_ID_INVALID, false);
+            RumbleEffectInstanceHandle handle = InteractState_StartRumble(
+                0.1f, 0.1f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+            *(int*)((char*)self + 0x1EC) = handle.mVal;
+        }
+        return *(int*)((char*)self + 0x1B4);  // mMode
+    }
+    void* curAnim =
+        *(void**)((char*)self->mPlayerCallback + 0x04);  // callback->curAnim
+    if (curAnim != nullptr && *(void**)((char*)self + 0x1B0) == curAnim)
+        return *(int*)((char*)self + 0x1B4);
+    return 0;  // MODE_IDLE
+}
+
+// ea: 0x00540C40
+void InteractStateRowboat_UpdateUI(InteractState* self, float deltaT)
+{
+    typedef void (__thiscall* RTLT_TextFn)(void*, const char*);
+    typedef void (__thiscall* RTLT_PosFn)(void*, int, int);
+    typedef void (__thiscall* RTLT_ScaleFn)(void*, float);
+    typedef void (__thiscall* RTLT_AlphaFn)(void*, float);
+    typedef void (__thiscall* RTLT_NoFlashFn)(void*, int);
+    InteractionController* c = self->mController;
+    float v6 = *(float*)((char*)self + 0x1F4)
+               / *(float*)((char*)self + 0x1F8);  // mStrokeTimer/mCurStrokeDuration
+    if (v6 < 0.0f || v6 > 1.0f)
+        v6 = 1.0f;
+    void* rt1 = c->mRenderText[1];
+    ((RTLT_ScaleFn)((void**)*(void**)rt1)[0x70 / 4])(
+        rt1, ((sEndScale - sStartScale) * v6) + sStartScale);
+    float feedbackTimer = *(float*)((char*)self + 0x1FC);  // mFeedbackTimer
+    if (feedbackTimer <= 0.0f)
+    {
+        if (c->DoRenderText(1) != 0)
+        {
+            void* rt = c->mRenderText[1];
+            ((RTLT_TextFn)((void**)*(void**)rt)[0x84 / 4])(rt, "");
+            void* rt2 = c->mRenderText[1];
+            ((RTLT_NoFlashFn)((void**)*(void**)rt2)[0xA8 / 4])(
+                rt2, -589505316);
+        }
+    }
+    else
+    {
+        float v9 = feedbackTimer * 0.33333334f;
+        if (v9 < 0.0f || v9 > 1.0f)
+            v9 = 1.0f;
+        void* rt = c->mRenderText[2];
+        ((RTLT_AlphaFn)((void**)*(void**)rt)[0xA0 / 4])(
+            rt, (v9 * 0.80000001f) + 0.2f);
+        *(float*)((char*)self + 0x1FC) = feedbackTimer - deltaT;
+    }
+    char goodScore[32];
+    sprintf(goodScore, "NUM STROKES: %i", *(int*)((char*)self + 0x204));
+    c->mRenderTextPosX[3] = 400;
+    void* rt3 = c->mRenderText[3];
+    ((RTLT_TextFn)((void**)*(void**)rt3)[0x84 / 4])(rt3, goodScore);
+    void* t3 = c->mRenderText[3];
+    ((RTLT_PosFn)((void**)*(void**)t3)[0x94 / 4])(t3, 400, 50);
+    void* t3b = c->mRenderText[3];
+    ((RTLT_ScaleFn)((void**)*(void**)t3b)[0x70 / 4])(t3b, 0.5f);
+    void* t3c = c->mRenderText[3];
+    ((RTLT_AlphaFn)((void**)*(void**)t3c)[0xA0 / 4])(t3c, 1.0f);
+    char badScore[32];
+    sprintf(badScore, "NUM MISSES:  %i", *(int*)((char*)self + 0x208));
+    c->mRenderTextPosX[4] = 400;
+    void* rt4 = c->mRenderText[4];
+    ((RTLT_TextFn)((void**)*(void**)rt4)[0x84 / 4])(rt4, badScore);
+    void* t4 = c->mRenderText[4];
+    ((RTLT_PosFn)((void**)*(void**)t4)[0x94 / 4])(t4, 400, 80);
+    void* t4b = c->mRenderText[4];
+    ((RTLT_ScaleFn)((void**)*(void**)t4b)[0x70 / 4])(t4b, 0.5f);
+    void* t4c = c->mRenderText[4];
+    ((RTLT_AlphaFn)((void**)*(void**)t4c)[0xA0 / 4])(t4c, 1.0f);
+}
+
+// ea: 0x005476B0
+int InteractStateRowboat_UpdateModeRow(InteractState* self, float deltaT)
+{
+    int* pRowboatFlags = (int*)((char*)self + 0x1E8);
+    int* pStartAnim = (int*)((char*)self + 0x1D0);
+    int* pFinishStroke = (int*)((char*)self + 0x1D4);
+    int* pRowAnimIndex = (int*)((char*)self + 0x1D8);
+    float* pAnimScore = (float*)((char*)self + 0x1C0);
+    float* pStallTimer = (float*)((char*)self + 0x1DC);
+    float* pInputProgress = (float*)((char*)self + 0x1B8);
+    float* pLastInputProgress = (float*)((char*)self + 0x1BC);
+    int* pRumbleHandle = (int*)((char*)self + 0x1EC);
+    int* pAnimFadeTimer = (int*)((char*)self + 0x1CC);
+
+    int mMode = *(int*)((char*)self + 0x1B4);
+    *pRowboatFlags &= ~1u;
+    if (*pStartAnim != 0)
+    {
+        if (*(float*)pAnimFadeTimer <= 0.0f)
+        {
+            InteractStateRowboat_PlayRowingMetaAnim(self, *pRowAnimIndex);
+            *pStartAnim = 0;
+            *pFinishStroke = 0;
+            *pAnimScore = 0.0f;
+            *pStallTimer = 0.0f;
+        }
+    }
+    if (*pStartAnim == 0)
+    {
+        InteractInputRcvr* rcvr = (InteractInputRcvr*)self->mInputRcvr;
+        if ((rcvr->mFlags & 4) != 0)
+            return 2;  // MODE_SLIP
+        float inputProgress = *pInputProgress;
+        if ((rcvr->mFlags & 8) != 0)
+            *pFinishStroke = 1;
+        if (*pFinishStroke != 0)
+            inputProgress = inputProgress + 1.0f;
+        if (inputProgress > *pAnimScore)
+        {
+            *pStallTimer = 0.0f;
+            float v8 = inputProgress - *pAnimScore;
+            float v9 = sMaxRowSpeed * deltaT;
+            if (v9 > v8)
+                v9 = v8;
+            float prevScore = *pAnimScore;
+            *pAnimScore = v9 + *pAnimScore;
+            if (prevScore < sSplashFXAnimScoreMin
+                && *pAnimScore >= sSplashFXAnimScoreMin)
+            {
+                Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+                PostEffectEventScriptCall(Player, "rowing_oar_splash", false,
+                                          PAK_ID_INVALID, false);
+                PostEffectEventScriptCall(Player, "rowing_oar_wave", false,
+                                          PAK_ID_INVALID, false);
+                static unsigned int sInitSplash = 0;
+                static unsigned int sSplashHash = 0;
+                if ((sInitSplash & 1) == 0)
+                {
+                    sInitSplash |= 1u;
+                    sSplashHash = HashString::CalcHash("splash");
+                }
+                HashString h;
+                h.mHash = sSplashHash;
+                Player->Notify(h);
+            }
+        }
+        else
+        {
+            if (*pLastInputProgress >= inputProgress)
+            {
+                *pStallTimer += deltaT;
+                if (inputProgress <= sProgressHoldMin
+                    || sProgressHoldMax <= inputProgress)
+                {
+                    InteractStateInfoLocal* info =
+                        (InteractStateInfoLocal*)self->mInfo;
+                    if (*pStallTimer
+                        <= (0.5f - (info->difficulty * 0.40000001f)))
+                    {
+                        *pAnimScore += sStallAdvanceSpeed * deltaT;
+                    }
+                    else
+                    {
+                        int axisX = info->leftStick != 0 ? 2 : 0;
+                        float stickY = -CL_GamepadPhysicalAxisValue(
+                            2 * (info->leftStick != 0) + 1);
+                        float stickX =
+                            CL_GamepadPhysicalAxisValue(axisX);
+                        if ((*pAnimScore > sAnimScoreSlipMin
+                             && sAnimScoreSlipMax > *pAnimScore)
+                            || fabsf(stickY) > 1.0f
+                            || fabsf(stickX) > 1.0f)
+                            mMode = 2;  // MODE_SLIP
+                        else
+                            mMode = 0;  // MODE_IDLE
+                    }
+                }
+                else if (*pStallTimer > 5.0f)
+                {
+                    mMode = 2;  // MODE_SLIP
+                }
+            }
+        }
+        if (mMode == *(int*)((char*)self + 0x1B4))
+        {
+            if (*pAnimScore >= 1.0f)
+            {
+                mMode = 0;  // MODE_IDLE
+                *pRowboatFlags |= 1;
+                ++*pRowAnimIndex;
+                *pAnimScore = 0.0f;
+                *pFinishStroke = 0;
+                if (*pRowAnimIndex == 2)
+                    *pRowAnimIndex = 0;
+            }
+            self->mController->mMetaAnimScore = *pAnimScore;
+        }
+        int inScore = *pAnimScore > sRumbleScoreMin
+                      && sRumbleScoreMax > *pAnimScore;
+        if (*pRumbleHandle == -1)
+        {
+            if (inScore)
+            {
+                RumbleEffectInstanceHandle handle = InteractState_StartRumble(
+                    0.1f, 0.1f, 100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+                *pRumbleHandle = handle.mVal;
+            }
+        }
+        else if (!inScore)
+        {
+            InteractState_StopRumble(*pRumbleHandle);
+            *pRumbleHandle = -1;
+        }
+    }
+    return mMode;
+}
 
 // ea: 0x0054D1A0
 void InteractState::SetInitialLerpValues()
