@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <new>
+#include <type_traits>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 #include "engine/broc_types.h"
@@ -197,6 +198,8 @@ extern void* tlMemAlloc(unsigned int size, unsigned int align,
 extern void tlMemFree(void* ptr);
 extern void mem_heap_free(void* ptr);
 extern void* mem_heap_malloc(unsigned int size);
+extern bool _tlAssert(const char* file, int line, const char* expr,
+                      const char* desc);
 
 struct nalPositionOrientation {
     math::Position3 pos;
@@ -232,6 +235,12 @@ public:
 // ============================================================================
 // nalGenericPose — generic (untyped) pose data
 // ============================================================================
+namespace nalGeneric {
+template <typename T> class nalGenericComponentHandle;
+template <typename T> class nalGenericConstComponentHandle;
+struct nalComponentInfo;
+}
+
 class nalGenericPose {
     unsigned char* m_data;
     unsigned       m_size;
@@ -253,8 +262,18 @@ public:
     math::Quaternion GetPoseBoneOrientation(const nalGenericBoneHandle&) const;
     math::Quaternion GetBoneModelOrientation(const nalGenericBoneHandle&) const;
 
+    // ??$?AM@nalGenericPose@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
+    template <typename T>
+    const float& operator[](const nalGeneric::nalGenericConstComponentHandle<T>& handle) const;
+
     void* GetData() { return m_data; }
 };
+
+namespace nalGeneric {
+template <typename T> class nalGenericComponentHandle;
+template <typename T> class nalGenericConstComponentHandle;
+struct nalComponentInfo;
+}
 
 // ============================================================================
 // nalGenericSkeleton — runtime skeleton (bone matrices, processed pose)
@@ -276,6 +295,20 @@ public:
     void GetTrajectoryUpdate(const nalGenericPose&, nalPositionOrientation&) const;
     void GetBoneMatrices(const nalGenericPose&, nalMatrix4x4*, int) const;
     void GetPose(nalGenericPose&, const nalMatrix4x4*, nalMatrix4x4*, const nalGenericPose&, int) const;
+
+    // anim.o nalGeneric templates (0x560F60/0x5610F0/0x563970)
+    template <typename T>
+    void GetComponentHandle(nalGeneric::nalGenericComponentHandle<T>& handle,
+                            const tlFixedString& a3,
+                            const tlFixedString& a4);
+    template <typename T>
+    void GetComponentHandle(
+        nalGeneric::nalGenericConstComponentHandle<T>& handle,
+        const tlFixedString& a3, const tlFixedString& a4);
+
+    // ??$?AM@nalGenericSkeleton@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
+    template <typename T>
+    const float& operator[](const nalGeneric::nalGenericConstComponentHandle<T>& handle) const;
 
     unsigned char _pad[0x60 - 0x04];
     unsigned int LODCount;  // +0x60
@@ -320,6 +353,14 @@ public:
 class nalGenericPoseBlender {
 public:
     void Blend(nalGenericPose& out, const nalGenericPose& a, const nalGenericPose& b, float t);
+
+    // ?VirtualBlend@nalGenericPoseBlender@nalGeneric@@MAEXAAVnalBasePose@@ABV3@1@Z
+    virtual void VirtualBlend(nalGenericPose* dst, const nalGenericPose* src0,
+                              const nalGenericPose* src1);
+
+    // ??$?AVnalPositionOrientation@@@nalGenericPoseBlender@nalGeneric@@QAEAAMABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@@Z
+    template <typename T>
+    float& operator[](const nalGeneric::nalGenericComponentHandle<T>& handle);
 };
 
 // ============================================================================
@@ -1193,6 +1234,9 @@ public:
 
 // nalGenericComponentHandle<T> - anim.o ctors (0x55ED10/30, 0x55F120/40)
 namespace nalGeneric {
+class nalGenericSkeleton;
+struct nalComponentInfo;
+
 template <typename T>
 class nalGenericComponentHandle {
 public:
@@ -1213,6 +1257,22 @@ protected:
     const nalGenericSkeleton* Skeleton;       // +0x00
     const nalComponentInfo* ComponentInfo;    // +0x04
     int ComponentIndex;                       // +0x08
+    unsigned char IsConst;                    // +0x0C
+};
+
+// nalGenericConstComponentHandle<T> - same layout, const-typed handle
+template <typename T>
+class nalGenericConstComponentHandle {
+public:
+    nalGenericConstComponentHandle()
+    {
+        Skeleton = nullptr;
+    }
+
+    const nalGenericSkeleton* Skeleton;       // +0x00
+    const nalComponentInfo* ComponentInfo;    // +0x04
+    int ComponentIndex;                       // +0x08
+    unsigned char IsConst;                    // +0x0C
 };
 
 // ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VDir3@math@@@1@I@Z
@@ -2472,4 +2532,650 @@ void AnimQueue::ExecuteAndClearAnimation()
     v1->m_bWasPrevOpABlend = false;
     v1->m_iStackDepth = 0;
     v1->m_iMaxStackDepth = 0;
+}
+
+// ============================================================================
+// anim.o misc batch: nalGeneric templates + xanim/interaction helpers
+// ============================================================================
+
+// nalGenericSkeleton component tables (raw offsets; verified vs disasm):
+//   typeTable  +0x74, components +0x80, groupCount +0x84, groups +0x88,
+//   constGroupCount +0xA0, constGroups +0xA4.
+template <typename T>
+void nalGenericSkeleton::GetComponentHandle(
+    nalGeneric::nalGenericComponentHandle<T>& handle, const tlFixedString& a3,
+    const tlFixedString& a4)
+{
+    unsigned int typeId = 0;
+    if (std::is_same<T, math::Dir3>::value)
+        typeId = 0x10EC610;  // nalComponentFloat3Base::TypeID
+    else if (std::is_same<T, nalPositionOrientation>::value)
+        typeId = 0x10EC614;  // nalComponentPOBase::TypeID
+    else if (std::is_same<T, float>::value)
+        typeId = 0x10EC613;  // nalComponentFloat1Base::TypeID
+
+    handle.Skeleton = nullptr;
+    handle.ComponentInfo = nullptr;
+    handle.ComponentIndex = 0;
+    handle.IsConst = 0;
+
+    int result = 0;
+    int groupCount = *(int*)((char*)this + 0x84);
+    char* groups = *(char**)((char*)this + 0x88);
+    char* components = *(char**)((char*)this + 0x80);
+    char* typeTable = *(char**)((char*)this + 0x74);
+    int v19 = 0;
+    int v20 = 0;
+    int v21 = 0;
+    if (groupCount > 0)
+    {
+        do
+        {
+            int v18 = 0;
+            if (*(int*)(groups + v20 + 0x28) > 0)
+            {
+                int v7 = 40 * v21;
+                do
+                {
+                    int v8 = 0;
+                    char* v9 = components + v7;
+                    while (*(unsigned int*)((char*)&a4 + 4 * v8)
+                           == *(unsigned int*)v9)
+                    {
+                        ++v8;
+                        v9 += 4;
+                        if (v8 >= 8)
+                        {
+                            int v10 = 0;
+                            char* v11 =
+                                typeTable
+                                + 48 * *(unsigned int*)(components + v7 + 0x20);
+                            while (*(unsigned int*)((char*)&a3 + 4 * v10)
+                                   == *(unsigned int*)v11)
+                            {
+                                ++v10;
+                                v11 += 4;
+                                if (v10 >= 8)
+                                {
+                                    void* pComp =
+                                        *(void**)(groups + v20 + 0x20);
+                                    typedef void* (__thiscall* GetTypeIDFn)(void*);
+                                    void* tid =
+                                        ((GetTypeIDFn)((void**)*(void**)pComp)[1])(
+                                            pComp);
+                                    if (tid != (void*)(uintptr_t)typeId)
+                                        goto LABEL_12;
+                                    handle.Skeleton = this;
+                                    handle.ComponentInfo =
+                                        (const nalGeneric::nalComponentInfo*)
+                                            (groups + 48 * v19);
+                                    handle.ComponentIndex = v18;
+                                    return;
+                                }
+                            }
+                            break;
+                        }
+                    }
+LABEL_12:
+                    ++v21;
+                    v7 += 40;
+                    ++v18;
+                } while (v18 < *(int*)(groups + v20 + 0x28));
+            }
+            result = v19 + 1;
+            v20 += 48;
+            ++v19;
+        } while (v19 < groupCount);
+    }
+    (void)result;
+}
+
+template <typename T>
+void nalGenericSkeleton::GetComponentHandle(
+    nalGeneric::nalGenericConstComponentHandle<T>& handle,
+    const tlFixedString& a3, const tlFixedString& a4)
+{
+    unsigned int typeId = 0;
+    if (std::is_same<T, float>::value)
+        typeId = 0x10EC613;  // nalComponentFloat1Base::TypeID
+
+    handle.Skeleton = nullptr;
+    handle.ComponentInfo = nullptr;
+    handle.ComponentIndex = 0;
+    handle.IsConst = 0;
+
+    int groupCount1 = *(int*)((char*)this + 0x84);
+    char* groups1 = *(char**)((char*)this + 0x88);
+    char* components = *(char**)((char*)this + 0x80);
+    char* typeTable = *(char**)((char*)this + 0x74);
+    int v30 = 0;
+    int v31 = 0;
+    if (groupCount1 > 0)
+    {
+        int v6 = 0;
+        do
+        {
+            int v26 = 0;
+            if (*(int*)(groups1 + v6 + 0x28) > 0)
+            {
+                int v7 = 40 * v30;
+                do
+                {
+                    int v8 = 0;
+                    char* v9 = components + v7;
+                    while (*(unsigned int*)((char*)&a4 + 4 * v8)
+                           == *(unsigned int*)v9)
+                    {
+                        ++v8;
+                        v9 += 4;
+                        if (v8 >= 8)
+                        {
+                            int v10 = 0;
+                            char* v11 =
+                                typeTable
+                                + 48 * *(unsigned int*)(components + v7 + 0x20);
+                            while (*(unsigned int*)((char*)&a3 + 4 * v10)
+                                   == *(unsigned int*)v11)
+                            {
+                                ++v10;
+                                v11 += 4;
+                                if (v10 >= 8)
+                                {
+                                    void* pComp = *(void**)(groups1 + v6 + 0x20);
+                                    typedef void* (__thiscall* GetTypeIDFn)(void*);
+                                    void* tid =
+                                        ((GetTypeIDFn)((void**)*(void**)pComp)[1])(
+                                            pComp);
+                                    if (tid != (void*)(uintptr_t)typeId)
+                                        goto LABEL_12;
+                                    handle.Skeleton = this;
+                                    handle.ComponentInfo =
+                                        (const nalGeneric::nalComponentInfo*)
+                                            (groups1 + 48 * v31);
+                                    handle.ComponentIndex = v26;
+                                    handle.IsConst = 0;
+                                    return;
+                                }
+                            }
+                            break;
+                        }
+                    }
+LABEL_12:
+                    ++v30;
+                    v7 += 40;
+                    ++v26;
+                } while (v26 < *(int*)(groups1 + v6 + 0x28));
+            }
+            v6 += 48;
+            ++v31;
+        } while (v31 < groupCount1);
+    }
+
+    // second pass over the const component groups (+0xA0/+0xA4)
+    int v32 = 0;
+    int groupCount2 = *(int*)((char*)this + 0xA0);
+    char* groups2 = *(char**)((char*)this + 0xA4);
+    if (groupCount2 > 0)
+    {
+        int v14 = 0;
+        do
+        {
+            int v29 = 0;
+            if (*(int*)(groups2 + v14 + 0x28) > 0)
+            {
+                int v16 = 40 * v30;
+                do
+                {
+                    int v17 = 0;
+                    char* v18 = components + v16;
+                    while (*(unsigned int*)((char*)&a4 + 4 * v17)
+                           == *(unsigned int*)v18)
+                    {
+                        ++v17;
+                        v18 += 4;
+                        if (v17 >= 8)
+                        {
+                            int v19 = 0;
+                            char* v20 =
+                                typeTable
+                                + 48 * *(unsigned int*)(components + v16 + 0x20);
+                            while (*(unsigned int*)((char*)&a3 + 4 * v19)
+                                   == *(unsigned int*)v20)
+                            {
+                                ++v19;
+                                v20 += 4;
+                                if (v19 >= 8)
+                                {
+                                    void* pComp = *(void**)(groups2 + v14 + 0x20);
+                                    typedef void* (__thiscall* GetTypeIDFn)(void*);
+                                    void* tid =
+                                        ((GetTypeIDFn)((void**)*(void**)pComp)[1])(
+                                            pComp);
+                                    if (tid != (void*)(uintptr_t)typeId)
+                                        goto LABEL_27;
+                                    handle.Skeleton = this;
+                                    handle.ComponentInfo =
+                                        (const nalGeneric::nalComponentInfo*)
+                                            (groups2 + 48 * v32);
+                                    handle.ComponentIndex = v29;
+                                    handle.IsConst = 1;
+                                    return;
+                                }
+                            }
+                            break;
+                        }
+                    }
+LABEL_27:
+                    ++v30;
+                    v16 += 40;
+                    ++v29;
+                } while (v29 < *(int*)(groups2 + v14 + 0x28));
+            }
+            v14 += 48;
+            ++v32;
+        } while (v32 < groupCount2);
+    }
+}
+
+// ??$?AM@nalGenericSkeleton@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
+template <typename T>
+const float& nalGenericSkeleton::operator[](
+    const nalGeneric::nalGenericConstComponentHandle<T>& handle) const
+{
+    static float sZero = 0.0f;  // unk_F30A1C equivalent
+    const void* v2 = handle.Skeleton;
+    if (v2 == nullptr)
+    {
+        if (_tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                      364, "handle.Skeleton",
+                      "attempt to de-reference an invalid handle"))
+            __debugbreak();
+        v2 = handle.Skeleton;
+        if (v2 == nullptr)
+            return sZero;
+    }
+    if (v2 != this
+        && _tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                     368, "handle.Skeleton == this",
+                     "handle and skeleton don't match"))
+    {
+        __debugbreak();
+    }
+    const char* v5;
+    if (handle.IsConst != 0)
+        v5 = *(char**)((char*)this + 0xB0);
+    else
+        v5 = *(char**)((char*)this + 0x94);
+    return *(const float*)(*(char**)((char*)handle.ComponentInfo + 44)
+                           + 4 * handle.ComponentIndex + v5);
+}
+
+// ??$?AM@nalGenericPose@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
+template <typename T>
+const float& nalGenericPose::operator[](
+    const nalGeneric::nalGenericConstComponentHandle<T>& handle) const
+{
+    static float sZero = 0.0f;  // unk_F30A18 equivalent
+    const void* v2 = handle.Skeleton;
+    if (v2 == nullptr)
+    {
+        if (_tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                      441, "handle.Skeleton",
+                      "attempting to de-reference an invalid handle"))
+            __debugbreak();
+        v2 = handle.Skeleton;
+        if (v2 == nullptr)
+            return sZero;
+    }
+    if (v2 != *(void**)this
+        && _tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                     446, "handle.Skeleton == skeleton",
+                     "handle and pose skeletons don't match"))
+    {
+        __debugbreak();
+    }
+    if (handle.IsConst != 0)
+        return ((nalGenericSkeleton*)v2)->operator[]<T>(handle);
+    return *(const float*)(*(char**)((char*)this + 8)
+                           + *(char**)((char*)handle.ComponentInfo + 44)
+                           + 4 * handle.ComponentIndex);
+}
+
+// ??$?AVnalPositionOrientation@@@nalGenericPoseBlender@nalGeneric@@QAEAAMABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@@Z
+template <typename T>
+float& nalGenericPoseBlender::operator[](
+    const nalGeneric::nalGenericComponentHandle<T>& handle)
+{
+    static float sZero = 0.0f;
+    const void* v2 = handle.Skeleton;
+    if (v2 == nullptr)
+    {
+        if (_tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                      718, "handle.Skeleton",
+                      "attempt to de-reference an invalid handle"))
+            __debugbreak();
+        v2 = handle.Skeleton;
+        if (v2 == nullptr)
+            return sZero;
+    }
+    if (v2 != *(void**)((char*)this + 4)
+        && _tlAssert("c:\\cod\\code\\tl\\nal\\include\\common\\nal_generic.h",
+                     721, "handle.Skeleton == GetSkeleton()",
+                     "handle and pose skeletons don't match"))
+    {
+        __debugbreak();
+    }
+    return *(float*)(*(char**)((char*)this + 8)
+                     + 4 * (handle.ComponentIndex
+                            + *(int*)((char*)handle.ComponentInfo + 36)));
+}
+
+// ea: 0x00560150
+void nalGenericPoseBlender::VirtualBlend(nalGenericPose* dst,
+                                         const nalGenericPose* src0,
+                                         const nalGenericPose* src1)
+{
+    Blend(*dst, *src0, *src1, 1.0f);
+}
+
+// ?Blend@nalGenericPoseBlender@@QAEXAAVnalGenericPose@@ABV2@1M@Z (stub;
+// real body in the nal_xboxr port)
+void nalGenericPoseBlender::Blend(nalGenericPose& out,
+                                  const nalGenericPose& a,
+                                  const nalGenericPose& b, float t)
+{
+    (void)out; (void)a; (void)b; (void)t;
+}
+
+// ??$nalPosePtrCast@VnalGenericPose@nalGeneric@@@@YAPAVnalGenericPose@nalGeneric@@PAVnalBasePose@@@Z
+template <typename T>
+inline T* nalPosePtrCast(void* ptr)
+{
+    if (ptr == nullptr || *(void**)ptr == nullptr
+        || *(void**)(*(void**)ptr) != (void*)0x10E6D04)
+        return nullptr;
+    return (T*)ptr;
+}
+
+// ea: 0x00547E10
+void VectorCopyUnalignedInc(float** pos, float (*v)[3])
+{
+    float v2 = *(*pos)++;
+    (*v)[0] = v2;
+    v2 = *(*pos)++;
+    (*v)[1] = v2;
+    v2 = *(*pos)++;
+    (*v)[2] = v2;
+}
+
+// ?g_tree_list@@3V?$reserved_dlist@VXAnimTree@@@@A @ 0xDF2ABC
+reserved_dlist<XAnimTree> g_tree_list;
+
+// ea: 0x0053E290
+void CheckAllAnims()
+{
+    unsigned int* v0 = (unsigned int*)&g_info[0].s[28];
+    do
+    {
+        if (*v0 != 0)
+        {
+            XANIM_ASSERT("g_info[i].s.inst == 0",
+                         "c:\\cod\\code\\game\\xanim.cpp", 516,
+                         "maybe this should have been freed");
+        }
+        v0 += 14;
+    } while (v0 < (unsigned int*)((char*)g_info + sizeof(g_info) + 0x2C));
+}
+
+// ea: 0x0055E8E0
+nalGenericPose* new_nalGenericPose(TPakId pakId,
+                                   const nalGenericSkeleton* skeleton)
+{
+    nalGenericPose* v2 = nullptr;
+    PakHeapContext ctx(pakId, false);
+    void* v3 = tlMemAlloc(0x10, 8, 0);
+    if (v3 != nullptr)
+        v2 = new (v3) nalGenericPose(
+            *(nalGenericPose*)((char*)skeleton + 0xC8), true);
+    return v2;
+}
+
+// InteractMetaAnimData / InteractMetaAnimInstance (anim.o; mirror the
+// ADSMetaAnim family; layout verified vs disasm)
+struct InteractMetaAnimData {
+    tlFixedString mName;   // +0x00
+    void* vftable;         // +0x20
+    void* mAnimPtr;        // +0x24
+    void* mRevPtr;         // +0x28
+
+    InteractMetaAnimData();  // ea: 0x0055FDE0
+};
+
+class InteractMetaAnimInstance {
+public:
+    InteractMetaAnimInstance(nalAnimClass<nalAnyPose>* forwardAnim,
+                             nalAnimClass<nalAnyPose>* reverseAnim,
+                             nalBaseSkeleton* theSkel);  // ea: 0x0055FB90
+    virtual ~InteractMetaAnimInstance();                 // ea: 0x0055FD70
+
+    float Duration;          // +0x04
+    float InverseDuration;   // +0x08
+    void* Skeleton;          // +0x0C
+    void* Anim;              // +0x10
+    void* mForwardInst;      // +0x14
+    unsigned char _pad[0x20 - 0x18];
+    float mPrevValue;        // +0x20
+};
+
+// ea: 0x0055FDE0
+InteractMetaAnimData::InteractMetaAnimData()
+{
+    memset(&mName, 0, sizeof(mName));
+    vftable = nullptr;
+    mAnimPtr = nullptr;
+    mRevPtr = nullptr;
+}
+
+// ea: 0x0055FB90
+InteractMetaAnimInstance::InteractMetaAnimInstance(
+    nalAnimClass<nalAnyPose>* forwardAnim,
+    nalAnimClass<nalAnyPose>* reverseAnim, nalBaseSkeleton* theSkel)
+{
+    Duration = forwardAnim->GetDuration();
+    InverseDuration = forwardAnim->GetInverseDuration();
+    Skeleton = theSkel != nullptr ? theSkel
+                                  : *(void**)((char*)forwardAnim + 0x30);
+    Anim = forwardAnim;
+    ++*(int*)((char*)forwardAnim + 0x3C);
+    mPrevValue = 0.0f;
+    if (theSkel != nullptr
+        && *(void**)*(void**)((char*)forwardAnim + 0x30) != *(void**)theSkel
+        && _tlAssert(
+               "c:\\cod\\code\\tl\\nal\\include\\common\\nal_anim.h", 147,
+               "!skeleton || Compatible(GetSkeleton(),skeleton)",
+               "attempt to create an instance without a compatible skeleton"))
+    {
+        __debugbreak();
+    }
+    // forwardAnim vtable slot 5 = VirtualCreateInstance
+    mForwardInst = ((void* (__thiscall*)(void*, void*))(
+        (void**)*(void**)forwardAnim)[5])(forwardAnim, theSkel);
+}
+
+// ea: 0x0055FD70
+InteractMetaAnimInstance::~InteractMetaAnimInstance()
+{
+    if (mForwardInst != nullptr)
+    {
+        typedef void (__thiscall* DtorFn)(void*, unsigned int);
+        ((DtorFn)((void**)*(void**)mForwardInst)[0])(mForwardInst, 1);
+    }
+    --*(int*)((char*)Anim + 0x3C);
+}
+
+// ??_GInteractMetaAnimInstance@@UAEPAXI@Z (0x55FD40) - compiler-generated;
+// tlMemFree path is represented by this deleting-dtor helper.
+void InteractMetaAnimInstance_Delete(InteractMetaAnimInstance* self)
+{
+    self->~InteractMetaAnimInstance();
+    tlMemFree(self);
+}
+
+// Local view of AnimBank (full class in cg_misc.cpp; anims at +0)
+struct AnimBankLocal {
+    unsigned int mSize;   // +0x00
+    AnimTree* mList;      // +0x04
+};
+
+extern void* AnimBankManager_sInst;  // ?sInst@AnimBankManager@@2PAV1@A
+extern void* AnimBankManager_GetBank(void* mgr, int pakId);
+
+// 12-byte notify-array element (binary: vector of XAnimNotifyInfo)
+struct AnimNotifyListElem {
+    char _pad[0x0C];
+    XAnimNotifyInfo* AsInfo() { return (XAnimNotifyInfo*)this; }
+};
+
+// ea: 0x00551600
+unsigned int ReleaseAllAnims()
+{
+    AnimBankLocal* bank =
+        (AnimBankLocal*)AnimBankManager_GetBank(AnimBankManager_sInst, 0);
+    unsigned int result = bank->mSize;
+    unsigned int v2 = 1;
+    if (bank->mSize > 1)
+    {
+        while (1)
+        {
+            unsigned int v3 = v2;
+            if (v2 >= result)
+            {
+                XANIM_ASSERT("index < mSize",
+                             "../ae\\inplace/InplaceVector.h", 81,
+                             "Bounds check");
+            }
+            if (v2 >= bank->mSize)
+                v3 = 0;
+            AnimTree* anims = &bank->mList[v3];
+            unsigned int numAnims = anims->entries.mSize;
+            if (numAnims != 0)
+            {
+                int byteOffset = 0x18;
+                for (unsigned int ei = 0; ei < numAnims;)
+                {
+                    unsigned int v6 = ei;
+                    if (ei >= numAnims)
+                    {
+                        XANIM_ASSERT("index < mSize",
+                                     "../ae\\inplace/InplaceVector.h", 81,
+                                     "Bounds check");
+                        if (ei >= numAnims)
+                            v6 = 0;
+                    }
+                    XAnimEntry* entry = &anims->entries.mList[v6];
+                    if (entry->anim != nullptr)
+                    {
+                        reserved_dlist<XAnimTree>::dlist_node* m_head =
+                            g_tree_list.m_head;
+                        reserved_dlist<XAnimTree>::dlist_node* m_next =
+                            g_tree_list.m_head != nullptr
+                                ? g_tree_list.m_head->m_next
+                                : nullptr;
+                        if (g_tree_list.m_head
+                                != (reserved_dlist<XAnimTree>::dlist_node*)
+                                       &g_tree_list.m_end
+                            && m_next != nullptr)
+                        {
+                            do
+                            {
+                                XAnimTree* tree = (XAnimTree*)m_head;
+                                if (tree->anims == anims
+                                    && *(unsigned short*)((char*)tree
+                                                          + byteOffset)
+                                           != 0)
+                                {
+                                    XAnimFreeInfo(
+                                        tree,
+                                        *(unsigned short*)((char*)tree
+                                                           + byteOffset));
+                                    *(unsigned short*)((char*)tree
+                                                       + byteOffset) = 0;
+                                }
+                                m_head = m_next;
+                                m_next = m_next->m_next;
+                            } while (m_next != nullptr);
+                        }
+                        unsigned int v9 = ei;
+                        if (ei >= numAnims)
+                        {
+                            XANIM_ASSERT("index < mSize",
+                                         "../ae\\inplace/InplaceVector.h", 81,
+                                         "Bounds check");
+                            if (ei >= numAnims)
+                                v9 = 0;
+                        }
+                        XAnimEntry* entry2 = &anims->entries.mList[v9];
+                        void* notifyList = entry2->notify;
+                        entry2->anim = nullptr;
+                        entry2->numAnims = 0;
+                        if (notifyList != nullptr)
+                        {
+                            unsigned int count =
+                                ((unsigned int*)notifyList)[-1];
+                            char* base = (char*)notifyList - 4;
+                            AnimNotifyListElem* arr =
+                                (AnimNotifyListElem*)notifyList;
+                            for (unsigned int n = 0; n < count; ++n)
+                                arr[n].AsInfo()->~XAnimNotifyInfo();
+                            mem_heap_free(base);
+                        }
+                        entry2->notify = nullptr;
+                        entry2->lastAttempt = 0;
+                    }
+                    else
+                    {
+                        unsigned int v15 = ei;
+                        if (ei >= numAnims)
+                        {
+                            XANIM_ASSERT("index < mSize",
+                                         "../ae\\inplace/InplaceVector.h", 81,
+                                         "Bounds check");
+                            if (ei >= numAnims)
+                                v15 = 0;
+                        }
+                        void* notifyList =
+                            anims->entries.mList[v15].notify;
+                        if (notifyList != nullptr)
+                        {
+                            unsigned int count =
+                                ((unsigned int*)notifyList)[-1];
+                            char* base = (char*)notifyList - 4;
+                            AnimNotifyListElem* arr =
+                                (AnimNotifyListElem*)notifyList;
+                            for (unsigned int n = 0; n < count; ++n)
+                                arr[n].AsInfo()->~XAnimNotifyInfo();
+                            mem_heap_free(base);
+                        }
+                        unsigned int v18 = ei;
+                        if (ei >= numAnims)
+                        {
+                            XANIM_ASSERT("index < mSize",
+                                         "../ae\\inplace/InplaceVector.h", 81,
+                                         "Bounds check");
+                            if (ei >= numAnims)
+                                v18 = 0;
+                        }
+                        anims->entries.mList[v18].notify = nullptr;
+                    }
+                    ++ei;
+                    byteOffset += 2;
+                }
+            }
+            result = bank->mSize;
+            ++v2;
+            if (v2 >= bank->mSize)
+                break;
+        }
+    }
+    return result;
 }
