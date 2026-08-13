@@ -103,6 +103,48 @@ extern int R_CellForPoint(const math::Position3* pos);  // render.o (g_entity_mi
 extern void G_SetOrigin(Entity* ent, const math::Position3* origin);  // g.o (g_active.cpp)
 extern void G_SetAngle(Entity* ent, const math::Position3* angle);    // g.o (g_active.cpp)
 extern unsigned short G_NewString(const char* str);  // g.o (g_utils.cpp)
+extern float VectorNormalize(math::Dir3* v);  // core.o (q_math.cpp)
+extern unsigned char bulletPriorityMap[];     // g.o (g_game2_misc.cpp)
+namespace View {
+bool IsSplitScreen();  // cg_misc.cpp ?IsSplitScreen@View@@YA_NXZ
+}
+struct trace_t;
+struct collision_context_t;
+void g_LocationalTrace(trace_t* results, const math::Position3* start,
+                       const math::Position3* end,
+                       const collision_context_t* context,
+                       unsigned char* priorityMap,
+                       float coneAngleTangent);  // g.o (g_trace.cpp)
+
+// EntityHandleDb (game_types.h view; sInst defined in g_globals.cpp)
+class EntityHandleDb {
+public:
+    struct DbElement {
+        Entity* mObject;  // +0x00
+        int     mKey;     // +0x04
+    };
+    uint8_t     _pad[0xA8];
+    DbElement   mElements[0x540];
+    static EntityHandleDb sInst;  // ?sInst@EntityHandleDb@@0V1@A
+};
+
+// collision_context_t (trace_types.h view; 24 bytes)
+struct collision_context_t_vtbl {
+    bool (__cdecl* filter)(collision_context_t* self, Entity* ent);
+};
+struct collision_context_t {
+    struct collision_context_t_vtbl* __vftable;  // +0x00
+    unsigned int pass_entity1;                   // +0x04
+    unsigned int pass_entity2;                   // +0x08
+    unsigned int pass_owner1;                    // +0x0C
+    unsigned int pass_owner2;                    // +0x10
+    int          contentmask;                    // +0x14
+};
+// trace_t (trace_types.h view; startsolid +0x3D, contents +0x28)
+struct trace_t {
+    uint8_t _pad[0x28];
+    int32_t contents;  // +0x28
+};
 
 // ngl scratch-mesh helpers (ngl_meshedit.cpp / ngl_aux.cpp / ngl_texture.cpp)
 extern gpuVertexFormat cdscratch_vertex_format;  // render/cdScratchVertexDef.cpp @ 0x14CD510
@@ -862,6 +904,30 @@ struct ae_vector {
         }
         mElements[mSize++] = iElement;
     }
+
+    // ?resize@?$ae_vector@...@@@@QAEXH@Z (0x687470 GlowSprites / 0x687550 GlowBeam)
+    void resize(int iNewSize)
+    {
+        if (iNewSize > mCapacity)
+        {
+            T* v8 = (T*)tlMemAlloc(sizeof(T) * iNewSize, 8u, 0);
+            for (int v4 = 0; v4 < mSize; ++v4)
+                v8[v4] = mElements[v4];
+            if (mElements != nullptr)
+            {
+                tlMemFree(mElements);
+                mElements = nullptr;
+                mCapacity = 0;
+            }
+            mCapacity = iNewSize;
+            mSize = iNewSize;
+            mElements = v8;
+        }
+        else
+        {
+            mSize = iNewSize;
+        }
+    }
 };
 
 // PakFile (streamer.o PakFile.h; 276 bytes, verified IDA)
@@ -1481,6 +1547,7 @@ struct GlowBeam {
 
 ae_vector<GlowSprites> GlowSpritesList;  // ?GlowSpritesList@@3V?$ae_vector@UGlowSprites@@@@A @ 0xF59328
 ae_vector<GlowBeam> GlowBeamsList;       // ?GlowBeamsList@@3V?$ae_vector@UGlowBeam@@@@A @ 0xF59334
+nglTexture* gGlowTexture = nullptr;      // ?gGlowTexture@@3PAUnglTexture@@A @ 0x13487C8
 
 enum eInstanceBankType {
     INSTBANK_TYPE_TEXTURE = 0,
@@ -2063,7 +2130,10 @@ struct BrocExports {
                                  float);  // +0x44
 };
 struct BrocAPI {
-    uint8_t    _pad[0xBE8];
+    uint8_t    _pad[0x94];
+    unsigned int (*mGetEnt)(Broc::string* name, unsigned int hash,
+                            void* a3, void* a4, int a5);  // +0x94
+    uint8_t    _pad98[0xBE8 - 0x98];
     BrocExports mBrocExports;  // +0xBE8
 };
 extern BrocAPI* gpBrocAPI;  // ?gpBrocAPI@@3PAUBrocAPI@@A @ 0xF3ABDC
@@ -2209,6 +2279,7 @@ public:
     void DebugRenderFX();  // ?DebugRenderFX@SceneManager@@QAEXXZ @ 0x669530
     void InstanceEntities();  // ?InstanceEntities@SceneManager@@QAEXXZ @ 0x6788F0
     void ConvertEntity(SceneEntity* source, Entity* dest);  // ?ConvertEntity@SceneManager@@AAEXPAVSceneEntity@@PAVEntity@@@Z @ 0x673D60
+    void RenderLightGlows();  // ?RenderLightGlows@SceneManager@@QAEXXZ @ 0x675EA0
     void ProcessInstanceGroup(TPakId pakId, void* group);  // ?ProcessInstanceGroup@SceneManager@@AAEXW4TPakId@@AAVInstanceGroup@@@Z @ 0x673190
     void ProcessStaticModel(TPakId pakId, void* model);  // ?ProcessStaticModel@SceneManager@@AAEXW4TPakId@@AAVStaticModel@@@Z @ 0x66D670
     void ProcessEntity(TPakId pakId, int entIdx);  // ?ProcessEntity@SceneManager@@AAEXW4TPakId@@H@Z @ 0x676C50
@@ -4374,6 +4445,288 @@ void RenderGlowBeam(const math::Position3& center,
     localToWorld.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
     localToWorld.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
     nglListAddMesh(ScratchMesh, localToWorld, nullptr, nullptr, nullptr);
+}
+
+// ea: 0x675EA0
+void SceneManager::RenderLightGlows()
+{
+    if (gGlowTexture == nullptr)
+    {
+        tlFixedString name("dynamiclight");
+        gGlowTexture = nglGetTexture(name);
+    }
+    if (View::IsSplitScreen())
+        return;
+
+    for (int i = 0; i < GlowSpritesList.mSize; ++i)
+    {
+        GlowSprites& s = GlowSpritesList.mElements[i];
+        RenderGlowSprite(*(math::Position3*)s.pos, s.rad, s.color);
+    }
+    GlowSpritesList.resize(0);
+
+    for (int v7 = 0; v7 < GlowBeamsList.mSize; ++v7)
+    {
+        GlowBeam& b = GlowBeamsList.mElements[v7];
+        math::Position3 center;
+        center.v = _mm_loadu_ps(b.pos);
+        math::Position3 center2;
+        center2.v.m128_f32[0] = b.dir[0] + b.pos[0];
+        center2.v.m128_f32[1] = b.dir[1] + b.pos[1];
+        center2.v.m128_f32[2] = b.dir[2] + b.pos[2];
+        center2.v.m128_f32[3] = 0.0f;
+        RenderGlowBeam(center, center2, b.rad, b.color);
+    }
+    GlowBeamsList.resize(0);
+
+    for (int bankIdx = 0; bankIdx < 99; ++bankIdx)
+    {
+        SceneBank* bank = mBankArray.m_elements[bankIdx];
+        if (bank == nullptr)
+            continue;
+        if (bank->mSceneLights.mSize == 0)
+            continue;
+        for (unsigned int li = 0; li < bank->mSceneLights.mSize; ++li)
+        {
+            SceneLight* light = &bank->mSceneLights.mList[li];
+            const char* target = (const char*)light->m_target;
+            if (target != nullptr)
+            {
+                Broc::string name(target);
+                unsigned int v20 =
+                    gpBrocAPI->mGetEnt(&name,
+                                       HashString::CalcHash("targetname"),
+                                       nullptr, 0, 1);
+                unsigned int v21 = v20 & 0xFFF;
+                Entity* targetEnt = nullptr;
+                if (v21 < 0x540
+                    && v20 >> 12 == EntityHandleDb::sInst.mElements[v21].mKey
+                    && (targetEnt =
+                            EntityHandleDb::sInst.mElements[v21].mObject)
+                           != nullptr)
+                {
+                    const math::Mat43* mtx =
+                        nglGetMatrix_ViewToWorld(nglBuildScene);
+                    __m128 xrow = mtx->x.v;
+                    __m128 yrow = mtx->y.v;
+                    float radius = light->mGlowRadius;
+                    __m128 xcol = _mm_mul_ps(xrow, _mm_set1_ps(radius));
+                    __m128 xcol3 = _mm_mul_ps(xrow, _mm_set1_ps(radius * 3.0f));
+
+                    cdScratchMaterial* mat =
+                        (cdScratchMaterial*)nglListAlloc(0x20, 0x10);
+                    if (mat != nullptr)
+                    {
+                        tlFixedString texname("dynamiclight");
+                        nglTexture* tex = nglGetTexture(texname);
+                        new (mat) cdScratchMaterial(tex, 0x64078600u, 2,
+                                                    false);
+                    }
+
+                    nglMesh* ScratchMesh = auxCreateScratchMesh(0x40000, 1);
+                    nglMeshSection* ScratchSection = nglCreateScratchSection(
+                        6, 4, 4, &cdscratch_vertex_format);
+                    nglAddMeshSection(ScratchMesh, ScratchSection,
+                                      (nglMaterial*)mat, 1);
+
+                    unsigned short* idx = (unsigned short*)
+                        nglLockSectionIndices(ScratchSection);
+                    unsigned int* verts = (unsigned int*)
+                        nglLockSectionVertices(ScratchSection);
+
+                    math::Position3 lightPos = light->mPosition;
+                    math::Position3 entPos = targetEnt->r.currentOrigin;
+
+                    __m128 v0 =
+                        _mm_sub_ps(_mm_sub_ps(lightPos.v, xcol), yrow);
+                    verts[0] = v0.m128_u32[0];
+                    verts[1] = v0.m128_u32[1];
+                    verts[2] = v0.m128_u32[2];
+                    verts[5] = 0x80909090;
+                    verts[3] = 0;
+                    verts[4] = 0x3E99999A;  // v = 0.3
+                    idx[0] = 0;
+                    verts += 6;
+
+                    __m128 v1 =
+                        _mm_sub_ps(_mm_sub_ps(entPos.v, xcol3), yrow);
+                    verts[0] = v1.m128_u32[0];
+                    verts[1] = v1.m128_u32[1];
+                    verts[2] = v1.m128_u32[2];
+                    verts[5] = 0x10101010;
+                    verts[3] = 0;
+                    verts[4] = 0x3F000000;  // v = 0.5
+                    idx[1] = 1;
+                    verts += 6;
+
+                    __m128 v2 =
+                        _mm_sub_ps(_mm_add_ps(lightPos.v, xcol), yrow);
+                    verts[0] = v2.m128_u32[0];
+                    verts[1] = v2.m128_u32[1];
+                    verts[2] = v2.m128_u32[2];
+                    verts[5] = 0x80909090;
+                    verts[3] = 0x3F800000;  // u = 1.0
+                    verts[4] = 0x3E99999A;  // v = 0.3
+                    idx[2] = 2;
+                    verts += 6;
+
+                    __m128 v3 =
+                        _mm_sub_ps(_mm_add_ps(entPos.v, xcol), yrow);
+                    verts[0] = v3.m128_u32[0];
+                    verts[1] = v3.m128_u32[1];
+                    verts[2] = v3.m128_u32[2];
+                    verts[5] = 0x10101010;
+                    verts[3] = 0x3F800000;  // u = 1.0
+                    verts[4] = 0x3F000000;  // v = 0.5
+                    idx[3] = 3;
+
+                    nglUnlockSectionIndices();
+                    nglUnlockSectionVertices();
+
+                    math::Mat43 localToWorld;
+                    localToWorld.x.v = _mm_setr_ps(1.0f, 0.0f, 0.0f, 0.0f);
+                    localToWorld.y.v = _mm_setr_ps(0.0f, 1.0f, 0.0f, 0.0f);
+                    localToWorld.z.v = _mm_setr_ps(0.0f, 0.0f, 1.0f, 0.0f);
+                    nglListAddMesh(ScratchMesh, localToWorld, nullptr,
+                                   nullptr, nullptr);
+
+                    RenderGlowSprite(lightPos, light->mGlowRadius,
+                                     0x80909090);
+                }
+                else
+                {
+                    AeAssert::gCurrentAuthor = AeAssert::COD3;
+                    AeAssert::gCurrentFile =
+                        "c:\\cod\\code\\game\\scenemanager.cpp";
+                    AeAssert::gCurrentLine = 1211;
+                    AeAssert::gCurrentExpr = "target";
+                    if (!AeAssert::IsIgnored()
+                        && AeAssert::Assert("Bad entity handle"))
+                        __debugbreak();
+                }
+            }
+            else
+            {
+                math::Position3 projected;
+                nglProjectPoint(&projected, &light->mPosition, nglBuildScene);
+                const math::Mat43* mtx =
+                    nglGetMatrix_ViewToWorld(nglBuildScene);
+                __m128 zrow = mtx->z.v;
+                __m128 wrow = _mm_loadu_ps((const float*)((const char*)mtx + 0x30));
+
+                bool offscreen = false;
+                if (projected.v.m128_f32[0] > (float)nglGetScreenWidth() + 2.0f
+                    || projected.v.m128_f32[0] < -2.0f)
+                    offscreen = true;
+                if (projected.v.m128_f32[1] > (float)nglGetScreenHeight() + 2.0f
+                    || projected.v.m128_f32[1] < -2.0f)
+                    offscreen = true;
+
+                __m128 v54 = _mm_sub_ps(light->mPosition.v, wrow);
+                if (zrow.m128_f32[0] * v54.m128_f32[0]
+                        + zrow.m128_f32[1] * v54.m128_f32[1]
+                        + zrow.m128_f32[2] * v54.m128_f32[2]
+                    >= 0.0f)
+                {
+                    __m128 v55 = _mm_mul_ps(v54, v54);
+                    float dist = sqrtf(v55.m128_f32[0]
+                                       + (_mm_shuffle_ps(v55, v55, 85)
+                                              .m128_f32[0]
+                                          + _mm_shuffle_ps(v55, v55, 170)
+                                                .m128_f32[0]));
+                    VectorNormalize((math::Dir3*)&v54);
+                    if (dist < 5.0f || dist > 3000.0f)
+                        offscreen = true;
+
+                    math::Position3 end;
+                    end.v = wrow;
+                    math::Position3 start = light->mPosition;
+
+                    if (currCl >= 16)
+                    {
+                        AeAssert::gCurrentAuthor = AeAssert::ARO;
+                        AeAssert::gCurrentFile =
+                            "c:\\cod\\code\\game\\EntityManager.h";
+                        AeAssert::gCurrentLine = 19;
+                        AeAssert::gCurrentExpr = "idx<16";
+                        if (!AeAssert::IsIgnored()
+                            && AeAssert::Assert("Bounds check"))
+                            __debugbreak();
+                    }
+                    collision_context_t context;
+                    context.__vftable =
+                        (collision_context_t_vtbl*)0x00CD8F6C;
+                    context.pass_entity1 =
+                        *(unsigned int*)((char*)EntityManager::sInst
+                                         ->mPlayers[currCl]
+                                         + 0x234);  // mHandle
+                    context.pass_entity2 = 0;
+                    context.pass_owner1 = 0;
+                    context.pass_owner2 = 0;
+                    context.contentmask = 0x2802033;
+
+                    trace_t trace;
+                    g_LocationalTrace(&trace, &start, &end, &context,
+                                      bulletPriorityMap, 0.0f);
+
+                    float fade = light->mGlowFade;
+                    if (trace.contents != 0 || offscreen)
+                        fade -= 0.1f;
+                    else
+                        fade += 0.1f;
+                    light->mGlowFade = fade;
+                    if (fade < 0.0f)
+                        light->mGlowFade = 0.0f;
+                    if (light->mGlowFade > 1.0f)
+                        light->mGlowFade = 1.0f;
+
+                    if (light->mGlowFade != 0.0f)
+                    {
+                        math::Vector4 v72;
+                        v72.v = _mm_setr_ps(light->mGlowRadius, 0.0f, dist,
+                                            1.0f);
+                        math::Mat44 m;
+                        nglGetMatrix(&m, NGLMTX_PROJECTION, nglBuildScene);
+                        __m128 v60 = _mm_add_ps(
+                            _mm_add_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(v72.v, v72.v, 0),
+                                           m.x.v),
+                                _mm_mul_ps(_mm_shuffle_ps(v72.v, v72.v, 85),
+                                           m.y.v)),
+                            _mm_add_ps(
+                                _mm_mul_ps(_mm_shuffle_ps(v72.v, v72.v, 170),
+                                           m.z.v),
+                                _mm_mul_ps(_mm_shuffle_ps(v72.v, v72.v, 255),
+                                           m.w.v)));
+                        float screenX = ((float)nglGetScreenWidth() / 2.0f
+                                         / v60.m128_f32[3])
+                                        * v60.m128_f32[0];
+                        float x1 = projected.v.m128_f32[0] - screenX;
+                        float x2 = projected.v.m128_f32[0] + screenX;
+                        float y1 = projected.v.m128_f32[1] - screenX;
+                        float y2 = projected.v.m128_f32[1] + screenX;
+
+                        nglQuad q;
+                        nglInitQuad(&q);
+                        nglSetQuadRect(&q, x1, y1, x2, y2);
+                        nglSetQuadZ(&q, 0.0f);
+                        nglSetQuadTex(&q, gGlowTexture);
+                        unsigned int r = (unsigned int)(light->mRed * 255.0f);
+                        unsigned int g = (unsigned int)(light->mGreen * 255.0f);
+                        unsigned int b = (unsigned int)(light->mBlue * 255.0f);
+                        unsigned int a = (unsigned int)
+                            (light->mGlowIntensity * light->mGlowFade
+                             * 255.0f);
+                        nglSetQuadColor(&q,
+                                        r | (g << 8) | (b << 16)
+                                            | (a << 24));
+                        nglSetQuadBlend(&q, 0x64078600u);
+                        nglListAddQuad(&q);
+                    }
+                }
+            }
+        }
+    }
 }
 
 // ea: 0x6663F0
