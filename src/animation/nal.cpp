@@ -332,7 +332,10 @@ struct nalCachedPoseInfo {};
 // nalAnimFile / nalClientSceneAnim / nalHeap — resource types
 // ============================================================================
 struct nalAnimFile {};
-struct nalClientSceneAnim {};
+class nalClientSceneAnim {  // virtual dtor to match ??_GnalClientSceneAnim@@UAEPAXI@Z
+public:
+    virtual ~nalClientSceneAnim() {}
+};
 class nalHeap {};
 class nalSceneAnim;
 class nalSceneAnimInstance;
@@ -348,12 +351,19 @@ public:
     virtual ~nalBaseSkeleton() {}
 };
 
-struct nalAnyPose { virtual ~nalAnyPose() {} };
+// class tag to match binary V-mangled nalAnimClass<nalAnyPose> template args
+class nalAnyPose { public: virtual ~nalAnyPose() {} };
 
 // nalAnimClass<T> - minimal view of the shared nal anim base; only the
 // anim.o inline COMDATs below are defined here (fields raw-offset verified).
 template<typename T> class nalAnimClass {
 public:
+    class nalInstanceClass {  // ??_GnalInstanceClass@?$nalAnimClass@VnalAnyPose@@@@UAEPAXI@Z
+    public:
+        virtual ~nalInstanceClass() { DoNotOptimizeMarker(); }
+        static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+    };
+
     // ??2?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z (0x55E500)
     static void* operator new(unsigned int sz)
     {
@@ -394,7 +404,9 @@ namespace SoundDevice {
 bool subtitle_manager_play_subtitle(const char* tag, const char* prefix);
 }
 
-struct nalPositionOrientation {
+// class tag to match binary V-mangled template args
+class nalPositionOrientation {
+public:
     math::Position3 pos;
     math::Quaternion orient;
 };
@@ -442,15 +454,9 @@ class nalGenericPose {
     unsigned       m_size;
 public:
     // ??2/??3nalGenericPose@nalGeneric@@SAPAXI@Z (anim.o 0x55E730/0x55E750)
-    static void* operator new(unsigned int sz)
-    {
-        return tlMemAlloc(sz, 8, 0);
-    }
+    static void* operator new(unsigned int sz);
     static void* operator new(unsigned int, void* p) { return p; }
-    static void operator delete(void* ptr)
-    {
-        tlMemFree(ptr);
-    }
+    static void operator delete(void* ptr);
 
     // ??0nalGenericPose@nalGeneric@@QAE@PBVnalGenericSkeleton@1@H@Z
     nalGenericPose(const nalGenericSkeleton* skel, int flags);
@@ -508,11 +514,11 @@ public:
     template <typename T>
     void GetComponentHandle(nalGenericComponentHandle<T>& handle,
                             const tlFixedString& a3,
-                            const tlFixedString& a4);
+                            const tlFixedString& a4) const;
     template <typename T>
     void GetComponentHandle(
         nalGenericConstComponentHandle<T>& handle,
-        const tlFixedString& a3, const tlFixedString& a4);
+        const tlFixedString& a3, const tlFixedString& a4) const;
 
     // ??$?AM@nalGenericSkeleton@nalGeneric@@QBEABMABV?$nalGenericConstComponentHandle@M@1@@Z
     template <typename T>
@@ -562,6 +568,8 @@ public:
 // ============================================================================
 class nalGenericPoseBlender {
 public:
+    // ??1nalGenericPoseBlender@nalGeneric@@UAE@XZ / ??_G...UAEPAXI@Z
+    virtual ~nalGenericPoseBlender() {}
     void Blend(nalGenericPose& out, const nalGenericPose& a, const nalGenericPose& b, float t);
 
     // ?VirtualBlend@nalGenericPoseBlender@nalGeneric@@MAEXAAVnalBasePose@@ABV3@1@Z
@@ -593,7 +601,22 @@ void nalGenericBlendTorso(nalGenericPose& out, float t, const nalGenericPose& a,
 // ============================================================================
 // nalGenericComponent — component type interface (Blend + BlendArray)
 // ============================================================================
-class nalComponentInitList { public: virtual void Register() {} };
+class nalComponentInitList {
+public:
+    virtual void Register() {}
+    virtual ~nalComponentInitList() { DoNotOptimizeMarker(); }  // ??_E...UAEPAXI@Z
+    static void DoNotOptimizeMarker()
+    {
+        static volatile int s;
+        s = 1;
+    }
+    static void DeleteArrayShim(void* p)
+    {
+        delete[] (nalComponentInitList*)p;
+    }
+    nalComponentInitList();  // out-of-line to force vftable emission
+};
+nalComponentInitList::nalComponentInitList() {}
 class nalComponentU8Base            { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentSignalCounter     { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
 class nalComponentRLE8Int1          { public: virtual void Blend(int,void*,const void*,const void*,float){} virtual void BlendArray(int,void*,const void*,const void*,const float*){} };
@@ -1667,23 +1690,41 @@ XSceneAnimParams::XSceneAnimParams(float blendIn, float blendOut)
 
 // nalBasePoseBlender / nalPoseBlenderClass - anim.o COMDATs
 class nalBasePoseBlender {
+protected:
+    // ??1nalBasePoseBlender@@MAE@XZ / ??_E...MAEPAXI@Z (protected in binary)
+    virtual ~nalBasePoseBlender() { DoNotOptimizeMarker(); }
+    static void DoNotOptimizeMarker()
+    {
+        static volatile int s;  // non-trivial body forces thunk emission
+        s = 1;
+    }
 public:
-    virtual ~nalBasePoseBlender() {}
+    static void DeleteArrayShim(void* p)  // force ??_E...MAEPAXI@Z
+    {
+        delete[] (nalBasePoseBlender*)p;
+    }
+    nalBasePoseBlender();  // out-of-line to force vftable emission
 };
+nalBasePoseBlender::nalBasePoseBlender() {}
 
 template <typename POSE>
 class nalPoseBlenderClass : public nalBasePoseBlender {
 public:
     // ??0?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@QAE@PBVnalGenericSkeleton@nalGeneric@@@Z
-    nalPoseBlenderClass(const nalGeneric::nalGenericSkeleton* _Skeleton)
-        : Skeleton(_Skeleton)
-    {
-    }
+    nalPoseBlenderClass(const nalGeneric::nalGenericSkeleton* _Skeleton);
     // ??1?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@UAE@XZ (0x55E7C0)
-    virtual ~nalPoseBlenderClass() {}
+    virtual ~nalPoseBlenderClass() { DoNotOptimizeMarker(); }
+    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
 
     const nalGeneric::nalGenericSkeleton* Skeleton;  // +0x04
 };
+template <typename POSE>
+nalPoseBlenderClass<POSE>::nalPoseBlenderClass(
+    const nalGeneric::nalGenericSkeleton* _Skeleton)
+    : Skeleton(_Skeleton)
+{
+}
+template class nalPoseBlenderClass<nalGeneric::nalGenericPose>;
 
 // nalPoseClass<SKELETON,POSE> - anim.o COMDAT (0x55EA30)
 template <typename SKELETON, typename POSE>
@@ -1726,6 +1767,7 @@ public:
         Skeleton = nullptr;
     }
 
+protected:
     nalGenericComponentHandle(const nalGenericSkeleton* skeleton,
                               const nalComponentInfo* componentInfo,
                               int componentIndex)
@@ -1734,6 +1776,7 @@ public:
     {
     }
 
+public:
     const nalGenericSkeleton* Skeleton;       // +0x00
     const nalComponentInfo* ComponentInfo;    // +0x04
     int ComponentIndex;                       // +0x08
@@ -3083,7 +3126,7 @@ namespace nalGeneric {
 template <typename T>
 void nalGenericSkeleton::GetComponentHandle(
     nalGenericComponentHandle<T>& handle, const tlFixedString& a3,
-    const tlFixedString& a4)
+    const tlFixedString& a4) const
 {
     unsigned int typeId = 0;
     if (std::is_same<T, math::Dir3>::value)
@@ -3175,7 +3218,7 @@ namespace nalGeneric {
 template <typename T>
 void nalGenericSkeleton::GetComponentHandle(
     nalGenericConstComponentHandle<T>& handle,
-    const tlFixedString& a3, const tlFixedString& a4)
+    const tlFixedString& a3, const tlFixedString& a4) const
 {
     unsigned int typeId = 0;
     if (std::is_same<T, float>::value)
@@ -3231,9 +3274,9 @@ void nalGenericSkeleton::GetComponentHandle(
                                     if (tid != (void*)(uintptr_t)typeId)
                                         goto LABEL_12;
                                     handle.Skeleton =
-                                        (const nalGeneric::nalGenericSkeleton*)this;
+                                        (const nalGenericSkeleton*)this;
                                     handle.ComponentInfo =
-                                        (const nalGeneric::nalComponentInfo*)
+                                        (const nalComponentInfo*)
                                             (groups1 + 48 * v31);
                                     handle.ComponentIndex = v26;
                                     handle.IsConst = 0;
@@ -3297,9 +3340,9 @@ LABEL_12:
                                     if (tid != (void*)(uintptr_t)typeId)
                                         goto LABEL_27;
                                     handle.Skeleton =
-                                        (const nalGeneric::nalGenericSkeleton*)this;
+                                        (const nalGenericSkeleton*)this;
                                     handle.ComponentInfo =
-                                        (const nalGeneric::nalComponentInfo*)
+                                        (const nalComponentInfo*)
                                             (groups2 + 48 * v32);
                                     handle.ComponentIndex = v29;
                                     handle.IsConst = 1;
@@ -3420,6 +3463,60 @@ float& nalGenericPoseBlender::operator[](
                             + *(int*)((char*)handle.ComponentInfo + 36)));
 }
 }  // namespace nalGeneric
+
+// ============================================================================
+// nalGeneric COMDAT emission (exact binary manglings; verified via dumpbin)
+// ============================================================================
+namespace nalGeneric {
+
+// ??2/??3nalGenericPose@nalGeneric@@SAPAXI@Z (0x55E730/0x55E750)
+void* nalGenericPose::operator new(unsigned int sz)
+{
+    return tlMemAlloc(sz, 8, 0);
+}
+void nalGenericPose::operator delete(void* ptr)
+{
+    tlMemFree(ptr);
+}
+
+// GetComponentHandle instantiations (const-member per binary QBEX manglings)
+template void nalGenericSkeleton::GetComponentHandle<math::Dir3>(
+    nalGenericComponentHandle<math::Dir3>&, const tlFixedString&,
+    const tlFixedString&) const;
+template void nalGenericSkeleton::GetComponentHandle<nalPositionOrientation>(
+    nalGenericComponentHandle<nalPositionOrientation>&, const tlFixedString&,
+    const tlFixedString&) const;
+template void nalGenericSkeleton::GetComponentHandle<float>(
+    nalGenericConstComponentHandle<float>&, const tlFixedString&,
+    const tlFixedString&) const;
+
+// nalGenericComponentHandle ctors (default QAE + 3-arg protected IAE)
+template class nalGenericComponentHandle<math::Dir3>;
+template class nalGenericComponentHandle<nalPositionOrientation>;
+template class nalGenericConstComponentHandle<float>;
+
+}  // namespace nalGeneric
+
+// nalDynamicPtrCast / nalAnimPtrCast / nalSkeletonPtrCast instantiations
+template nalGeneric::nalGenericSkeleton* nalDynamicPtrCast<
+    nalGeneric::nalGenericSkeleton>(nalVirtual*);
+template nalGeneric::nalGenericAnim* nalDynamicPtrCast<
+    nalGeneric::nalGenericAnim>(nalVirtual*);
+template const nalGeneric::nalGenericSkeleton* nalDynamicPtrCast<
+    nalGeneric::nalGenericSkeleton>(const nalVirtual*);
+template nalGeneric::nalGenericAnim* nalAnimPtrCast<
+    nalGeneric::nalGenericAnim>(nalAnimClass<nalAnyPose>*);
+template nalGeneric::nalGenericSkeleton* nalSkeletonPtrCast<
+    nalGeneric::nalGenericSkeleton>(nalBaseSkeleton*);
+template const nalGeneric::nalGenericSkeleton* nalSkeletonPtrCast<
+    nalGeneric::nalGenericSkeleton>(const nalBaseSkeleton*);
+
+// Force emission of ??_GnalGenericPose@nalGeneric@@QAEPAXI@Z (scalar deleting
+// destructor) and the operator new/delete path used by delete.
+void nalGenericPose_DeleteShim(nalGeneric::nalGenericPose* p)
+{
+    delete p;
+}
 
 // ea: 0x00560150
 void nalGenericPoseBlender::VirtualBlend(nalGenericPose* dst,
@@ -3818,7 +3915,9 @@ unsigned int ReleaseAllAnims()
 // +0x24, Count +0x28. PoseTrackCount = *(skel+0x7C), TrackBitMask @ anim+0x54.
 // ============================================================================
 
-struct CODNoteData {
+// class tag to match binary V-mangled nalComponent<...,VCODNoteData,...>
+class CODNoteData {
+public:
     struct AnimComponentData {
         unsigned char _pad[0x0C];
     };
@@ -3834,7 +3933,9 @@ enum nalRegisterKey {
     NAL_REGISTER_KEY = 0x11235813,
 };
 
-struct nalComponentEnum {
+// class tag to match binary V-mangled FastCycleTrajectory/nalComponent args
+class nalComponentEnum {
+public:
     void* Anim;                        // +0x00 nalGenericAnim*
     const nalGeneric::nalComponentInfo* ComponentInfo;  // +0x04
     const void** CustomSkeletonData;   // +0x08
@@ -3877,8 +3978,14 @@ void CODNoteTrack::VirtualAdvanceAnimComponentData(
 template <typename BASE, typename DATA, typename TRACK>
 class nalComponent : public BASE {
 public:
-    nalComponent() {}  // ea: 0x00560560
-    virtual ~nalComponent() {}  // ea: 0x0055ECE0
+    static void DeleteArrayShim(void* p)  // force ??_E...MAEPAXI@Z emission
+    {
+        delete[] (nalComponent*)p;
+    }
+
+protected:
+    nalComponent() {}  // ea: 0x00560560 (protected IAE in binary)
+    virtual ~nalComponent() {}  // ea: 0x0055ECE0 (protected MAE in binary)
 
     virtual void VirtualAlignSkeletonData(const void** skeletonData) {}          // 0x5605C0
     virtual void VirtualAdvanceSkeletonData(const void** skeletonData) {}        // 0x5605D0
@@ -11029,4 +11136,88 @@ InteractInputRcvr* InteractInputRcvr::CreateInputRcvr(EInputType type,
     default:
         return nullptr;
     }
+}
+
+// ============================================================================
+// Deleting-destructor COMDAT shims (anim.o _E/_G exact-mangled emission;
+// these are compiler-generated thunks that the original emitted because the
+// game deleted these objects.  The shims only force codegen; they are never
+// called by game logic.)
+// ============================================================================
+
+class AnimBankManager {  // ??_GAnimBankManager@@UAEPAXI@Z
+public:
+    virtual ~AnimBankManager() { DoNotOptimizeMarker(); }
+    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+};
+class AnimationUpdateTask {  // ??_GAnimationUpdateTask@@UAEPAXI@Z
+public:
+    virtual ~AnimationUpdateTask() { DoNotOptimizeMarker(); }
+    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+};
+class XAnimUpdateTask {  // ??_GXAnimUpdateTask@@UAEPAXI@Z
+public:
+    virtual ~XAnimUpdateTask() { DoNotOptimizeMarker(); }
+    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+};
+class nalInitList {  // ??_GnalInitList@@UAEPAXI@Z
+public:
+    virtual ~nalInitList() { DoNotOptimizeMarker(); }
+    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+};
+
+void XAnimNotifyInfo_DeleteArrayShim(void* p)  // ??_EXAnimNotifyInfo@@QAEPAXI@Z
+{
+    delete[] (XAnimNotifyInfo*)p;
+}
+
+void AnimBankManager_DeleteShim(void* p)
+{
+    delete (AnimBankManager*)p;
+}
+void AnimationUpdateTask_DeleteShim(void* p)
+{
+    delete (AnimationUpdateTask*)p;
+}
+void XAnimUpdateTask_DeleteShim(void* p)
+{
+    delete (XAnimUpdateTask*)p;
+}
+void nalClientSceneAnim_DeleteShim(void* p)
+{
+    delete (nalClientSceneAnim*)p;
+}
+void nalInitList_DeleteShim(void* p)
+{
+    delete (nalInitList*)p;
+}
+void nalGenericPoseBlender_DeleteShim(void* p)
+{
+    delete (nalGeneric::nalGenericPoseBlender*)p;
+}
+void nalPoseBlenderClass_DeleteShim(void* p)
+{
+    delete (nalPoseBlenderClass<nalGeneric::nalGenericPose>*)p;
+}
+void nalInstanceClass_DeleteShim(void* p)
+{
+    delete (nalAnimClass<nalAnyPose>::nalInstanceClass*)p;
+}
+
+// Force emission of every deleting destructor from one TU (COMDATs fold).
+void animDeleteShimAnchor()
+{
+    XAnimNotifyInfo_DeleteArrayShim(nullptr);
+    AnimBankManager_DeleteShim(nullptr);
+    AnimationUpdateTask_DeleteShim(nullptr);
+    XAnimUpdateTask_DeleteShim(nullptr);
+    nalClientSceneAnim_DeleteShim(nullptr);
+    nalInitList_DeleteShim(nullptr);
+    nalGenericPoseBlender_DeleteShim(nullptr);
+    nalPoseBlenderClass_DeleteShim(nullptr);
+    nalInstanceClass_DeleteShim(nullptr);
+    nalComponent<nalComponentBase, CODNoteData,
+                 CODNoteTrack>::DeleteArrayShim(nullptr);
+    nalBasePoseBlender::DeleteArrayShim(nullptr);
+    nalComponentInitList::DeleteArrayShim(nullptr);
 }
