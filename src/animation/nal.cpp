@@ -1373,9 +1373,9 @@ public:
     math::Mat43 mScriptOriginMat;    // +0xF0
     float mScriptOriginAngles[3];    // +0x130
     struct InteractionQueueEntry {
-        unsigned int mEntityHandle;  // +0x00
+        struct { unsigned int mVal; } mEntityHandle;  // +0x00
         int mInfoIndex;              // +0x04
-        unsigned int _pad;           // +0x08
+        TPakId mCurPakId;            // +0x08
     } mQueue[10];               // +0x13C
     int mCurQueueSize;          // +0x1B4
     void* mRenderText[5];       // +0x1B8 (FEMultiLineText*)
@@ -1437,6 +1437,13 @@ public:
     void RemoveInteractionWeapon();    // 0x53C0C0
     InteractState* CreateState(const char* stateName, TPakId curPakId);  // 0x54C1A0
     void CreateInteraction(const char* name, TPakId curPakId);  // 0x54C8E0
+    void QueueInteraction(Entity* interactable, const char* name,
+                          TPakId curPakId);  // 0x556A80
+    InteractState* StartNextQueuedInteraction();  // 0x556D00
+    int StartInteraction(Entity* interactable, const char* name,
+                         TPakId curPakId);  // 0x556920
+    void EndInteraction(int wasInteracting);  // 0x556BA0
+    void Update(float deltaT);  // 0x557170
 };
 
 // Stub bodies for the xanim goal-weight internals (ported with the
@@ -6222,6 +6229,9 @@ public:
     int Release(int buttonIndex);          // 0x53D8B0
     void PlayAnims(int weaponIndex, float fadeIn);  // 0x54DC40
     void CreateTransitionStates();  // 0x54CBA0
+    void Activate();                // 0x54CC10 (virtual in binary; stub)
+    void Deactivate();              // 0x53F920 (virtual in binary; stub)
+    InteractState* Update(float deltaT);  // 0x546700 (virtual in binary; stub)
 
     // ?PostEffectEvent@InteractState@@IAEXIH@Z (stub; real in g.o)
     void PostEffectEvent(unsigned int effectName, int eventIndex)
@@ -7297,6 +7307,28 @@ int Actor_IsCurState(actor_s* pSelf, ai_state_e eState)
     (void)pSelf; (void)eState;
     return 0;
 }
+// ?Actor_PushState@@YIHPAUactor_s@@W4ai_state_e@@@Z (stub; real in g_actor.cpp)
+int Actor_PushState(actor_s* pSelf, ai_state_e eState)
+{
+    (void)pSelf; (void)eState;
+    return 1;
+}
+
+class Handle {
+public:
+    int mVal;  // +0x00
+};
+// ?EffectEventStopEmitting@@YAXVHandle@@@Z (real in effect_events.cpp)
+extern void EffectEventStopEmitting(Handle effect);
+
+// ?start@cdl_proftimer@@QAEXXZ / ?stop@cdl_proftimer@@QAEXXZ (stubs)
+struct cdl_proftimer {
+    float value;  // +0x00
+    unsigned int _pad[3];
+    void start() {}
+    void stop() {}
+};
+cdl_proftimer cdl_proftimer_interact;  // ?cdl_proftimer_interact@@3Ucdl_proftimer@@A
 
 // Local hash_const_t view (full in g_local.h); interaction_done verified +0xC0
 struct hash_const_t {
@@ -7646,6 +7678,324 @@ void InteractState::CreateTransitionStates()
     char* failureName = (char*)info + 0xA8;
     if (*failureName != 0)
         mFailureState = mController->CreateState(failureName, mPakId);
+}
+
+// ============================================================================
+// InteractionController queue/start/end + update (anim.o)
+// ============================================================================
+
+extern void CL_ClearKeys();  // ?CL_ClearKeys@@YAXXZ (cl.o)
+struct vmCvar_t;
+extern vmCvar_t cg_fov;  // ?cg_fov@@3UvmCvar_t@@A (cg.o)
+extern int Com_BitCheck(const int* const array, int bitNum);
+extern int BG_TakePlayerWeapon(PlayerState* pPS, int iWeaponIndex);
+extern int bg_iNumWeapons;  // ?bg_iNumWeapons@@3HA (game.o)
+
+// ea: 0x0053F920 / 0x0054CC10 / 0x00546700 (stubs)
+void InteractState::Deactivate()
+{
+}
+
+void InteractState::Activate()
+{
+}
+
+InteractState* InteractState::Update(float deltaT)
+{
+    (void)deltaT;
+    return this;
+}
+
+float sArmsOffsetLerpDuration = 0.1f;  // 0xDF37CC
+
+// ea: 0x00556A80
+void InteractionController::QueueInteraction(Entity* interactable,
+                                             const char* name,
+                                             TPakId curPakId)
+{
+    if (interactable != nullptr)
+    {
+        if (mCurState != nullptr)
+        {
+            bool canQueue = mCurQueueSize < 10;
+            if (!canQueue)
+            {
+                XANIM_ASSERT(
+                    "mCurQueueSize < kInteractionQueueSize",
+                    "c:\\cod\\code\\game\\InteractionController.cpp", 1002,
+                    "Too many queued interactions");
+                canQueue = mCurQueueSize < 10;
+            }
+            if (canQueue)
+            {
+                int v5 = 0;
+                if (sNumInteractionInfos > 0)
+                {
+                    while (_stricmp((char*)sInteractionInfos[v5], name) != 0)
+                    {
+                        if (++v5 >= sNumInteractionInfos)
+                            return;
+                    }
+                    if (v5 != -1)
+                    {
+                        mQueue[mCurQueueSize].mCurPakId = curPakId;
+                        mQueue[mCurQueueSize].mInfoIndex = v5;
+                        mQueue[mCurQueueSize].mEntityHandle.mVal =
+                            interactable->mHandle.mVal;
+                        ++mCurQueueSize;
+                    }
+                }
+            }
+        }
+        else
+        {
+            StartInteraction(interactable, name, curPakId);
+        }
+    }
+}
+
+// ea: 0x00556D00
+InteractState* InteractionController::StartNextQueuedInteraction()
+{
+    InteractState* nextState = nullptr;
+    if (mCurQueueSize > 0)
+    {
+        unsigned int v3 = mQueue[0].mEntityHandle.mVal & 0xFFF;
+        if (v3 < 0x540
+            && mQueue[0].mEntityHandle.mVal >> 12
+                   == EntityHandleDb::sInst.mElements[v3].mKey)
+        {
+            Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+            if (mObject != nullptr)
+            {
+                int mInfoIndex = mQueue[0].mInfoIndex;
+                if (mInfoIndex != -1)
+                {
+                    if (mInfoIndex >= sNumInteractionInfos)
+                    {
+                        XANIM_ASSERT(
+                            "mQueue[0].mInfoIndex < sNumInteractionInfos",
+                            "c:\\cod\\code\\game\\InteractionController.cpp",
+                            1232, "Bad index");
+                    }
+                    actor_s* actor = (actor_s*)mObject->actor;
+                    if (actor == nullptr
+                        || Actor_PushState(actor, AIS_INTERACTION) != 0)
+                    {
+                        nextState = CreateState(
+                            (char*)sInteractionInfos[mQueue[0].mInfoIndex]
+                                + 0x20,
+                            mQueue[0].mCurPakId);
+                        SetInteractableH(
+                            (const DbLinkedHandle<EntityHandleDb, Entity>&)
+                                mQueue[0].mEntityHandle);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < mCurQueueSize; ++i)
+            mQueue[i] = mQueue[i + 1];
+        --mCurQueueSize;
+    }
+    return nextState;
+}
+
+// ea: 0x00556920
+int InteractionController::StartInteraction(Entity* interactable,
+                                            const char* name,
+                                            TPakId curPakId)
+{
+    if (mCurState != nullptr)
+    {
+        XANIM_ASSERT("!IsInteracting()",
+                     "c:\\cod\\code\\game\\InteractionController.cpp", 937,
+                     "Interaction already started");
+    }
+    if (mInitialState == nullptr)
+        CreateInteraction(name, curPakId);
+    InteractState* st = (InteractState*)mInitialState;
+    if (st == nullptr || mCurState != nullptr)
+        return 0;
+    mCurState = st;
+    mFlags = 0;
+    mSelectedInteractWeaponIndex = -1;
+    mRestoreWeaponIndex = -1;
+    mLastStateWeaponIndex = -1;
+    mLastHandsAngles[0] = 0.0f;
+    mLastHandsAngles[1] = 0.0f;
+    mLastHandsAngles[2] = 0.0f;
+    mLastHandsOrigin[0] = 0.0f;
+    mLastHandsOrigin[1] = 0.0f;
+    mLastHandsOrigin[2] = 0.0f;
+    mCurArmsOffsetX = 0.0f;
+    mCurArmsOffsetY = 0.0f;
+    mCurArmsOffsetZ = 0.0f;
+    mTargetArmsOffsetX = 0.0f;
+    mTargetArmsOffsetY = 0.0f;
+    mTargetArmsOffsetZ = 0.0f;
+    mArmsOffsetLerpTime = 0.0f;
+    mNextPlayerCallbackIndex = 0;
+    mNextOtherCallbackIndex = 0;
+    mNextPlayerPlayMethodIndex = 0;
+    mNextOtherPlayMethodIndex = 0;
+    DbLinkedHandle<EntityHandleDb, Entity> handle;
+    handle.mVal = (interactable != nullptr) ? interactable->mHandle.mVal : 0;
+    SetInteractableH(handle);
+    ((InteractState*)mCurState)->Activate();
+    mInitialFOV = *(float*)&cg_fov;
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    if (Player != nullptr)
+        *(int*)((char*)Player->client + 0x800) = 0;
+    CL_ClearKeys();
+    mFlags &= ~0x80u;
+    return 1;
+}
+
+// ea: 0x00556BA0
+void InteractionController::EndInteraction(int wasInteracting)
+{
+    InteractState* st = (InteractState*)mCurState;
+    if (st != nullptr)
+        st->Deactivate();
+    mCurState = nullptr;
+    mInitialState = nullptr;
+    FreeAllStates();
+    InteractInputRcvr::FreeInputRcvrs();
+    unsigned int v5 = mInteractableH.mVal & 0xFFF;
+    if (v5 < 0x540
+        && mInteractableH.mVal >> 12
+               == EntityHandleDb::sInst.mElements[v5].mKey
+        && EntityHandleDb::sInst.mElements[v5].mObject != nullptr)
+    {
+        FreeInteractableAnimPlayer();
+    }
+    if (wasInteracting != 0)
+    {
+        SendResultNotify();
+        gCamera[mClient].StopAnimating(0.0f);
+        *(float*)&cg_fov = mInitialFOV;
+        DbLinkedHandle<EntityHandleDb, Entity> h;
+        h.mVal = 0;
+        SetInteractableH(h);
+    }
+    ResetAnimationPlayer();
+    if (mRestoreWeaponIndex != -1)
+        RemoveInteractionWeapon();
+    Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+    if (Player != nullptr && Player->client != nullptr
+        && bg_iNumWeapons > 0)
+    {
+        for (int i = 0; i < bg_iNumWeapons; ++i)
+        {
+            if (Com_BitCheck((const int*)((char*)Player->client + 0x424), i)
+                    != 0
+                && *(int*)((char*)BG_GetInfoForWeapon(i) + 0xAC) == 6)
+            {
+                BG_TakePlayerWeapon((PlayerState*)Player->client, i);
+            }
+        }
+    }
+    if (mSoundLoopHandle != -1)
+    {
+        Handle effect;
+        effect.mVal = mSoundLoopHandle;
+        EffectEventStopEmitting(effect);
+        mSoundLoopHandle = -1;
+    }
+    for (int i = 0; i < 5; ++i)
+        ClearRenderText(i);
+    mFlags = 0;
+}
+
+// ea: 0x00557170
+void InteractionController::Update(float deltaT)
+{
+    cdl_proftimer_interact.start();
+    mFlags &= ~1u;
+    InteractState* mCur = (InteractState*)mCurState;
+    mHandsAngles[0] = 0.0f;
+    mHandsAngles[1] = 0.0f;
+    mHandsAngles[2] = 0.0f;
+    mHandsOrigin[0] = 0.0f;
+    mHandsOrigin[1] = 0.0f;
+    mHandsOrigin[2] = 0.0f;
+    if (mCur != nullptr)
+    {
+        if (sArmsOffsetLerpDuration <= mArmsOffsetLerpTime)
+        {
+            mCurArmsOffsetX = mTargetArmsOffsetX;
+            mCurArmsOffsetY = mTargetArmsOffsetY;
+            mCurArmsOffsetZ = mTargetArmsOffsetZ;
+        }
+        else
+        {
+            float v4 = mArmsOffsetLerpTime / sArmsOffsetLerpDuration;
+            mCurArmsOffsetX =
+                ((mTargetArmsOffsetX - mCurArmsOffsetX) * v4)
+                + mCurArmsOffsetX;
+            mCurArmsOffsetY =
+                ((mTargetArmsOffsetY - mCurArmsOffsetY) * v4)
+                + mCurArmsOffsetY;
+            mCurArmsOffsetZ =
+                ((mTargetArmsOffsetZ - mCurArmsOffsetZ) * v4)
+                + mCurArmsOffsetZ;
+        }
+        mArmsOffsetLerpTime += deltaT;
+        InteractState* v7 = mCur->Update(deltaT);
+        InteractState* v8 = (InteractState*)mCurState;
+        InteractState* started = v7;
+        if (v7 == v8)
+        {
+            void* dobj = (void*)dword_F6A2A0[802 * mClient];
+            if (dobj != nullptr)
+            {
+                void* ap = *(void**)((char*)dobj + 0x20);
+                if (ap != nullptr && *(int*)((char*)ap + 0x24) == 0)
+                    v8->Activate();
+            }
+        }
+        else
+        {
+            unsigned int v10 = mFlags & 0xFFFFFFE7;
+            mFlags = v10;
+            if (*(unsigned char*)((char*)v8->mInfo + 0xE2) != kLerpNone)
+                mFlags = v10 | 4;
+            else
+                mFlags = v10 & 0xFFFFFFFB;
+            Entity* Player = EntityManager::sInst->GetPlayer(mClient);
+            mLastStateWeaponIndex = *(int*)((char*)Player->client + 0xA4);
+            ((InteractState*)mCurState)->Deactivate();
+            if (started == nullptr)
+                started = StartNextQueuedInteraction();
+            if (started != nullptr)
+                started->Activate();
+            mCurState = started;
+        }
+        if (mCurState == nullptr)
+            EndInteraction(1);
+        for (int i = 0; i < 5; ++i)
+        {
+            if (DoRenderText(i) != 0)
+            {
+                void* rt = mRenderText[i];
+                ((void (__thiscall*)(void*, float))(
+                    (void**)*(void**)rt)[8 / 4])(rt, deltaT);
+            }
+        }
+    }
+    cdl_proftimer_interact.stop();
+}
+
+// ea: 0x00556E50
+int CheckActorInteraction(Entity* ent, const char* interactionName)
+{
+    if (InteractionController::Inst(currCl)->mCurState != nullptr)
+        return 1;
+    if (Actor_PushState((actor_s*)ent->actor, AIS_INTERACTION) == 0)
+        return 0;
+    TPakId v4 = CurPakId();
+    return InteractionController::Inst(currCl)->StartInteraction(
+        ent, interactionName, v4);
 }
 
 // ============================================================================
