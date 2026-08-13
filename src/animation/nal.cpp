@@ -339,6 +339,17 @@ class nalGenericPose {
     unsigned char* m_data;
     unsigned       m_size;
 public:
+    // ??2/??3nalGenericPose@nalGeneric@@SAPAXI@Z (anim.o 0x55E730/0x55E750)
+    static void* operator new(unsigned int sz)
+    {
+        return tlMemAlloc(sz, 8, 0);
+    }
+    static void* operator new(unsigned int, void* p) { return p; }
+    static void operator delete(void* ptr)
+    {
+        tlMemFree(ptr);
+    }
+
     nalGenericPose(const nalBaseSkeleton* skel, int flags);
     nalGenericPose(const nalGenericPose& other, bool copyData);
     ~nalGenericPose();
@@ -1947,6 +1958,11 @@ public:
 
     // nalAnimState - 0x2C (IDA verified)
     struct nalAnimState {
+        // ??2/??3nalAnimState@AnimationPlayer@@SAPAXI@Z (anim.o 0x539F30/50)
+        static void* operator new(unsigned int sz);
+        static void* operator new(unsigned int, void* p) { return p; }
+        static void operator delete(void* ptr);
+
         void* instance;        // +0x00
         float speed;           // +0x04
         float tlimit;          // +0x08
@@ -3364,6 +3380,16 @@ public:
 
     tlFixedString mName;   // +0x04 (vptr @ +0)
 };
+
+// ??2/??3nalAnimState@AnimationPlayer@@SAPAXI@Z (anim.o 0x539F30/0x539F50)
+void* AnimationPlayer::nalAnimState::operator new(unsigned int sz)
+{
+    return tlMemAlloc(sz, 8, 0);
+}
+void AnimationPlayer::nalAnimState::operator delete(void* ptr)
+{
+    tlMemFree(ptr);
+}
 
 class InteractMetaAnimData : public MetaAnimData {
 public:
@@ -6377,6 +6403,33 @@ public:
     RumbleEffectInstanceHandle Play(RumbleEffect* effect,
                                     float intensity);  // real in rumble.cpp
 };
+
+// Global TPakId placement new/delete (anim.o 0x539BB0/0x539BD0)
+void* operator new(unsigned int size, TPakId id)
+{
+    return PakManager::sInst->MemAlloc(id, size, false);
+}
+void operator delete(void* obj, TPakId id)
+{
+    PakManager::sInst->MemFree(id, obj, false);
+}
+
+// ??4Mat43@math@@QAEABV01@ABVDiagMat33@1@@Z (anim.o 0x53A120)
+const math::Mat43& math::Mat43::operator=(const math::DiagMat33& m)
+{
+    x.v = _mm_set_ps(0.0f, 0.0f, 0.0f, m.v.m128_f32[0]);
+    y.v = _mm_set_ps(0.0f, 0.0f, m.v.m128_f32[1], 0.0f);
+    z.v = _mm_set_ps(0.0f, m.v.m128_f32[2], 0.0f, 0.0f);
+    w.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    return *this;
+}
+
+// ??4Position3@math@@QAEABV01@ABVVector4@1@@Z (anim.o 0x539D40)
+const math::Position3& math::Position3::operator=(const math::Vector4& v)
+{
+    this->v = v.v;
+    return *this;
+}
 
 // ea: 0x0053D240
 void InteractState_StopRumble(int handleVal)

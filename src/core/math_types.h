@@ -14,6 +14,7 @@ namespace math {
 // Forward declarations
 class Dir3;
 class Position3;
+class Vector4;
 class Mat33;
 class Mat44;
 class Mat43;
@@ -68,6 +69,9 @@ class Position3 {
 public:
     __m128 v;  // SSE-packed: x, y, z, w
 
+    // ??4Position3@math@@QAEABV01@ABVVector4@1@@Z (anim.o; defined in nal.cpp)
+    const Position3& operator=(const Vector4& v);
+
     struct Constant {
         float x, y, z, w;
     };
@@ -113,6 +117,8 @@ static_assert(sizeof(Vector4) == 0x10, "Vector4 size mismatch");
 // ============================================================================
 class Mat43 {
 public:
+    // ??4Mat43@math@@QAEABV01@ABVDiagMat33@1@@Z (anim.o; defined in nal.cpp)
+    const Mat43& operator=(const DiagMat33& m);
     Dir3      x;  // +0x00 — right axis
     Dir3      y;  // +0x10 — forward axis
     Dir3      z;  // +0x20 — up axis
