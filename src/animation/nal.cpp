@@ -66,11 +66,45 @@ public:
     unsigned int mVal;  // +0x00
 };
 
+// AeAssert contract (definitions in core/ae_assert.cpp)
+namespace AeAssert {
+enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3 };
+extern ECoderId gCurrentAuthor;
+extern const char* gCurrentFile;
+extern int gCurrentLine;
+extern const char* gCurrentExpr;
+bool IsIgnored();
+bool Assert(const char* fmt, ...);
+bool Error(const char* fmt, ...);
+bool Warning(const char* fmt, ...);
+}
+
+#define XANIM_ASSERT(expr, file, line, msg)                                 \
+    do {                                                                    \
+        AeAssert::gCurrentAuthor = AeAssert::COD3;                          \
+        AeAssert::gCurrentFile = (file);                                    \
+        AeAssert::gCurrentLine = (line);                                    \
+        AeAssert::gCurrentExpr = (expr);                                    \
+        if (!AeAssert::IsIgnored() && AeAssert::Assert((msg)))              \
+            __debugbreak();                                                 \
+    } while (0)
+
 // Scene-anim list (anim.o) - dlist node at +0x00 (reserved_dlist intrusive).
 // Full layout verified vs disasm: mFileID +8, mInst +0xC, mNotify +0x10,
 // blendNotify +0x14, mPlaying +0x19, blendIn +0x1C, blendOut +0x20,
 // mPakId +0x24, mName @+0x28 (0x20 bytes + length @0x47).
-struct SceneAnimInfo {
+// Declared `class` (not struct) to match the binary's V-tag template
+// mangling (?$reserved_dlist@VSceneAnimInfo@@).
+// Minimal PoolAllocator view (full class in core/PoolAllocator.h; real
+// bodies in PoolAllocator.o).  Match exact member manglings.
+class PoolAllocator {
+public:
+    void* Allocate(unsigned int size, bool forceHeapAlloc);  // ?Allocate@PoolAllocator@@QAEPAXI_N@Z
+    void Release(void* ptr);                                  // ?Release@PoolAllocator@@QAEXPAX@Z
+};
+
+class SceneAnimInfo {
+public:
     unsigned char m_dlist_node[8];  // +0x00
     int mFileID;                    // +0x08
     void* mInst;                    // +0x0C
@@ -87,7 +121,34 @@ struct SceneAnimInfo {
     void* get_dlist_node() { return this; }
     // ?get_dlist_node_offset@SceneAnimInfo@@SAHXZ (0x539D20)
     static int get_dlist_node_offset() { return 0; }
+
+    // Pool allocator (anim.o): ?sAllocator@SceneAnimInfo@@2PAVPoolAllocator@@A
+    // @ 0xF25A30.  ??2/??3SceneAnimInfo@@SAPAXI_NPBDH@Z (0x539CB0/0x539CD0)
+    static void* operator new(unsigned int size, bool forceHeapAlloc,
+                              const char* file, int line);
+    static void operator delete(void* ptr, bool forceHeapAlloc,
+                                const char* file, int line);
+    static void operator delete(void* ptr);
+    static PoolAllocator* sAllocator;  // ?sAllocator@SceneAnimInfo@@2PAVPoolAllocator@@A
 };
+
+PoolAllocator* SceneAnimInfo::sAllocator = nullptr;  // @ 0xF25A30
+void* SceneAnimInfo::operator new(unsigned int size, bool forceHeapAlloc,
+                                  const char* file, int line)
+{
+    (void)file; (void)line;
+    return sAllocator->Allocate(size, forceHeapAlloc);
+}
+void SceneAnimInfo::operator delete(void* ptr, bool forceHeapAlloc,
+                                    const char* file, int line)
+{
+    (void)forceHeapAlloc; (void)file; (void)line;
+    sAllocator->Release(ptr);
+}
+void SceneAnimInfo::operator delete(void* ptr)
+{
+    sAllocator->Release(ptr);
+}
 
 // reserved_dlist<T> - intrusive dlist (ae/core; verified IDA: node first
 // member of T). Members below carry anim.o inline-COMDAT eases.
@@ -99,8 +160,17 @@ struct reserved_dlist {
     };
     int         m_size;  // +0x00
     dlist_node* m_head;  // +0x04
-    dlist_node* m_end;   // +0x08
-    dlist_node* m_tail;  // +0x0C
+    dlist_node  m_end;   // +0x08 (m_next @ +0x08; m_prev @ +0x0C doubles as
+                         //       the tail pointer per binary ctor/push_back)
+
+    // ??0?$reserved_dlist@VSceneAnimInfo@@@@QAE@XZ (0x5602D0/0x5604A0)
+    reserved_dlist()
+    {
+        m_size = 0;
+        m_head = &m_end;
+        m_end.m_next = nullptr;
+        m_end.m_prev = (dlist_node*)&m_head;  // tail = &m_head slot when empty
+    }
 
     // ?node_to_object@?$reserved_dlist@VSceneAnimInfo@@@@SAPAVSceneAnimInfo@@PAUdlist_node@1@@Z
     // ?node_to_object@?$reserved_dlist@VXAnimTree@@@@SAPAVXAnimTree@@PAUdlist_node@1@@Z
@@ -116,9 +186,12 @@ struct reserved_dlist {
         return m_head;
     }
 
-    struct iterator {
+    class iterator {
+    public:
         dlist_node* m_node;  // +0x00
         dlist_node* m_next;  // +0x04
+
+        iterator() : m_node(nullptr), m_next(nullptr) {}
 
         iterator(dlist_node* cur, dlist_node* next)
             : m_node(cur), m_next(next) {}
@@ -167,21 +240,72 @@ struct reserved_dlist {
         {
             return m_node;
         }
+
+        // ??9iterator@?$reserved_dlist@VSceneAnimInfo@@@@QBE_NABV01@@Z
+        bool operator!=(const iterator& other) const
+        {
+            return m_next != other.m_next;
+        }
     };
 
-    // ?erase@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@AAV21@@Z
-    iterator erase(dlist_node* node)
+    // ?find@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@PAVSceneAnimInfo@@@Z
+    iterator find(T* object)
     {
-        if (node->m_next != nullptr)
-            node->m_next->m_prev = node->m_prev;
-        if (node->m_prev != nullptr)
-            node->m_prev->m_next = node->m_next;
-        if (m_tail == node)
-            m_tail = node->m_prev;
+        iterator result;
+        T* m_head = (T*)this->m_head;
+        if (m_head != nullptr)
+        {
+            dlist_node* m_next = ((dlist_node*)m_head)->m_next;
+            if (m_next != nullptr)
+            {
+                while (m_head != object)
+                {
+                    m_head = (T*)m_next;
+                    m_next = m_next->m_next;
+                    if (m_next == nullptr)
+                        goto not_found;
+                }
+                result.m_node = (dlist_node*)object;
+                result.m_next = ((dlist_node*)object)->m_next;
+                return result;
+            }
+        }
+    not_found:
+        result.m_node = &m_end;
+        result.m_next = nullptr;
+        return result;
+    }
+
+    // ?erase@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AViterator@1@AAV21@@Z
+    iterator erase(iterator& i)
+    {
+        dlist_node* m_node = i.m_node;
+        if (find((T*)m_node).m_next == nullptr)
+        {
+            XANIM_ASSERT(
+                "find( node_to_object( erase_node ) ) != end()",
+                "../ae\\core/reserved_dlist.h", 433,
+                "Please add a descriptive string");
+        }
+        iterator next;
+        next.m_node = i.m_node;
+        dlist_node* m_next = i.m_next;
+        if (m_next != nullptr)
+        {
+            next.m_node = i.m_next;
+            m_next = m_next->m_next;
+        }
+        m_node->m_next->m_prev = m_node->m_prev;
+        m_node->m_prev->m_next = m_node->m_next;
+        m_node->m_next = nullptr;
+        m_node->m_prev = nullptr;
+        i.m_node = nullptr;
+        i.m_next = nullptr;
         --m_size;
-        return iterator(node->m_next, node->m_next != nullptr
-                                           ? node->m_next->m_next
-                                           : nullptr);
+        iterator result;
+        result.m_node = next.m_node;
+        result.m_next = m_next;
+        return result;
     }
 };
 reserved_dlist<SceneAnimInfo> gSceneAnimList;  // ?gSceneAnimList@@3V?$reserved_dlist@VSceneAnimInfo@@@@A (anim.o @ 0xDF2ACC)
@@ -189,31 +313,8 @@ reserved_dlist<SceneAnimInfo> gSceneAnimList;  // ?gSceneAnimList@@3V?$reserved_
 // ea: 0x00543930
 bool IsInSceneAnim()  // ?IsInSceneAnim@@YA_NXZ (anim.o)
 {
-    return gSceneAnimList.m_head != gSceneAnimList.m_end;
+    return gSceneAnimList.m_head != &gSceneAnimList.m_end;
 }
-
-// AeAssert contract (definitions in core/ae_assert.cpp)
-namespace AeAssert {
-enum ECoderId { COD3 = 0, ARO = 1, CD = 2, JRS = 3 };
-extern ECoderId gCurrentAuthor;
-extern const char* gCurrentFile;
-extern int gCurrentLine;
-extern const char* gCurrentExpr;
-bool IsIgnored();
-bool Assert(const char* fmt, ...);
-bool Error(const char* fmt, ...);
-bool Warning(const char* fmt, ...);
-}
-
-#define XANIM_ASSERT(expr, file, line, msg)                                 \
-    do {                                                                    \
-        AeAssert::gCurrentAuthor = AeAssert::COD3;                          \
-        AeAssert::gCurrentFile = (file);                                    \
-        AeAssert::gCurrentLine = (line);                                    \
-        AeAssert::gCurrentExpr = (expr);                                    \
-        if (!AeAssert::IsIgnored() && AeAssert::Assert((msg)))              \
-            __debugbreak();                                                 \
-    } while (0)
 
 // ============================================================================
 // Forward types (defined below)
@@ -642,9 +743,9 @@ public:
 };
 
 class XAnimTree {
-public:
-    unsigned char m_dlist_node[8];     // +0x00
-    AnimTree*     anims;               // +0x08
+    public:
+      unsigned char m_dlist_node[8];     // +0x00
+      AnimTree*     anims;               // +0x08
     unsigned int  mOwner;              // +0x0C
     int           mPakId;              // +0x10
     int           mActiveAnims;        // +0x14
@@ -652,9 +753,14 @@ public:
 
     // ?get_dlist_node@XAnimTree@@QAEPAXXZ (0x53A860)
     void* get_dlist_node() { return this; }
-    // ?get_dlist_node_offset@XAnimTree@@SAHXZ (0x53A870)
-    static int get_dlist_node_offset() { return 0; }
+      // ?get_dlist_node_offset@XAnimTree@@SAHXZ (0x53A870)
+      static int get_dlist_node_offset() { return 0; }
 };
+
+// Explicit instantiations for the anim.o lists (emit ctor/iterator COMDATs
+// with the exact binary manglings).
+template class reserved_dlist<SceneAnimInfo>;
+template class reserved_dlist<XAnimTree>;
 
 struct XAnimInfo {
     unsigned short notifyChild;   // +0x00
@@ -4278,8 +4384,11 @@ void StopSceneAnim(SceneAnimInfo* handle)
             (reserved_dlist<SceneAnimInfo>::dlist_node*)handle;
         if (dnode->m_next == nullptr)
             goto LABEL_4;
-        gSceneAnimList.erase(
-            dnode);
+        {
+            reserved_dlist<SceneAnimInfo>::iterator it(dnode,
+                                                       dnode->m_next);
+            gSceneAnimList.erase(it);
+        }
         KillSceneAnim(handle);
         return;
     }
@@ -5539,11 +5648,11 @@ void* QueueSceneAnim(const char* name, void* notify, void* blendIn,
     oBuff[31] = (char)oLen;
     memcpy(info2->mName, oBuff, 32);
     reserved_dlist<SceneAnimInfo>::dlist_node* m_tail =
-        gSceneAnimList.m_tail;
+        gSceneAnimList.m_end.m_prev;
     *(void**)((char*)info2 + 0x04) = m_tail;
     m_tail->m_next =
         (reserved_dlist<SceneAnimInfo>::dlist_node*)info2;
-    gSceneAnimList.m_tail =
+    gSceneAnimList.m_end.m_prev =
         (reserved_dlist<SceneAnimInfo>::dlist_node*)info2;
     ++gSceneAnimList.m_size;
     return v11;
