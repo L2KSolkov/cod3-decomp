@@ -1803,8 +1803,8 @@ public:
         nalGenericAnim* curAnim;   // +0x04
 
         nalAnimCallback();         // ea: 0x00539EB0
-        void Reference(nalGenericAnim* anim);  // ea: 0x00539ED0
-        void Release();            // ea: 0x00539EE0
+        virtual void Reference(nalGenericAnim* anim);  // ea: 0x00539ED0 (UAE)
+        virtual void Release();            // ea: 0x00539EE0 (UAE)
         int IsAnimPlaying(nalGenericAnim* anim);  // ea: 0x00539EF0
     };
 
@@ -1827,14 +1827,19 @@ public:
         float fadein_rate;     // +0x24
         int state;             // +0x28
 
-        void Setup(nalGenericAnim* anim, void* skeleton, float _fadein_rate,
-                   void* _play_method, float callback_time,
+        nalAnimState();  // ??0nalAnimState@AnimationPlayer@@QAE@XZ (0x539F20)
+        void Setup(nalGenericAnim* anim, nalGenericSkeleton* skeleton,
+                   float _fadein_rate, nalPlayMethod* _play_method,
+                   float callback_time,
                    nalAnimCallback* _callback, float _speed,
                    float time_in_seconds_to_start);  // ea: 0x0055F280
+        void Compose(nalGenericPose& Pose,
+                     nalGenericPose& tmpPose);  // game2.o (0x10EEF0)
     };
 
     // nalPartialAnimState - 0x44 (IDA verified)
-    struct nalPartialAnimState {
+    class nalPartialAnimState {
+    public:
         nalAnimState base;              // +0x00
         unsigned int CreationAdvanceCount;  // +0x2C
         nalPartialAnimState* next;      // +0x30
@@ -1842,6 +1847,16 @@ public:
         float priority;                 // +0x38
         float fadeout_rate;             // +0x3C
         int type;                       // +0x40
+
+        nalPartialAnimState();  // ??0nalPartialAnimState@AnimationPlayer@@QAE@XZ (0x539F80)
+        void Hold();           // ?Hold@nalPartialAnimState@AnimationPlayer@@QAEXXZ (0x539F90)
+        void Setup(nalGenericAnim* anim, nalGenericSkeleton* skeleton,
+                   AnimationPlayerModifierType _type, float _priority,
+                   unsigned int _mask, float _fadein_rate,
+                   float _fadeout_rate, nalPlayMethod* _play_method,
+                   float callback_time, nalAnimCallback* _callback,
+                   float _speed,
+                   float time_in_seconds_to_start);  // ea: 0x0055F3A0
     };
 
     enum nalAnimStateEnum {
@@ -1851,7 +1866,8 @@ public:
     };
 
     void* Skeleton;                       // +0x00
-    unsigned char _pad[0x24 - 0x04];
+    nalGenericPose BackgroundPose;         // +0x04
+    nalGenericPose tmpPose;                // +0x14
     int QueueSize;                        // +0x24
     nalAnimState* AnimStates[3];          // +0x28
     nalPartialAnimState* PartialAnimStates;    // +0x34
@@ -1865,6 +1881,7 @@ public:
     void _StopOrHoldModifiers(unsigned int mask,
                               float priority);  // ea: 0x0053A230
     int GetQueueSize();                    // ea: 0x0053A2A0
+    void Advance(float deltaT);            // ?Advance@AnimationPlayer@@QAEXM@Z (game2.o)
     void SetSpeed(nalGenericAnim* anim, float speed);  // ea: 0x0055F730
     void PlayModifier(nalGenericAnim* anim,
                       AnimationPlayerModifierType type, float priority,
@@ -1884,13 +1901,9 @@ public:
 
     // ?Play@AnimationPlayer@@QAEXPAVnalGenericAnim@nalGeneric@@_NMPAVnalPlayMethod@1@MPAVnalAnimCallback@1@MM@Z
     void Play(nalGenericAnim* anim, bool ForceRestart, float fade_in,
-              void* play_method, float callback_time, void* callback,
-              float speed, float time_in_seconds_to_start)
-    {
-        (void)anim; (void)ForceRestart; (void)fade_in; (void)play_method;
-        (void)callback_time; (void)callback; (void)speed;
-        (void)time_in_seconds_to_start;
-    }
+              nalPlayMethod* play_method, float callback_time,
+              nalAnimCallback* callback, float speed,
+              float time_in_seconds_to_start);  // ea: 0x0055F510
 };
 // ea: 0x00539EB0
 AnimationPlayer::nalAnimCallback::nalAnimCallback()
@@ -1918,10 +1931,142 @@ int AnimationPlayer::nalAnimCallback::IsAnimPlaying(nalGenericAnim* anim)
     return curAnim != nullptr && anim == curAnim;
 }
 
+// ea: 0x00539F20
+AnimationPlayer::nalAnimState::nalAnimState()
+{
+}
+
+// ea: 0x00539F80
+AnimationPlayer::nalPartialAnimState::nalPartialAnimState()
+{
+}
+
+// ea: 0x00539F90
+void AnimationPlayer::nalPartialAnimState::Hold()
+{
+    nalAnimCallback* callback = this->base.callback;
+    this->base.state = FadeOut;
+    if (callback != nullptr)
+        callback->Release();
+    this->base.callback = nullptr;
+    this->base.state = Running;
+}
+
+// ea: 0x0055F3A0
+void AnimationPlayer::nalPartialAnimState::Setup(
+    nalGenericAnim* anim, nalGenericSkeleton* skeleton,
+    AnimationPlayerModifierType _type, float _priority, unsigned int _mask,
+    float _fadein_rate, float _fadeout_rate, nalPlayMethod* _play_method,
+    float callback_time, nalAnimCallback* _callback, float _speed,
+    float time_in_seconds_to_start)
+{
+    base.Setup(anim, skeleton, _fadein_rate, _play_method, callback_time,
+               _callback, _speed, time_in_seconds_to_start);
+    priority = _priority;
+    type = _type;
+    mask = _mask;
+    base.state = FadeIn;
+    fadeout_rate = _fadeout_rate;
+}
+
+// ea: 0x0055F510
+void AnimationPlayer::Play(nalGenericAnim* anim, bool ForceRestart,
+                           float fade_in, nalPlayMethod* play_method,
+                           float callback_time, nalAnimCallback* callback,
+                           float speed, float time_in_seconds_to_start)
+{
+    nalAnimCallback* v9 = callback;
+    if (callback != nullptr)
+        callback->Reference(nullptr);
+    int QueueSize = this->QueueSize;
+    nalGenericAnim* cur_anim = nullptr;
+    if (QueueSize <= 0)
+        fade_in = 0.0f;
+    else
+        cur_anim =
+            (nalGenericAnim*)*(void**)((char*)AnimStates[0]->instance + 0x00);
+    if (ForceRestart || anim != cur_anim
+        || (callback != nullptr && AnimStates[0]->callback == nullptr))
+    {
+        if (QueueSize == 3)
+        {
+            AnimStates[2]->Compose(BackgroundPose, tmpPose);
+            nalAnimState* v15 = AnimStates[2];
+            nalAnimCallback* v16 = v15->callback;
+            if (v16 != nullptr)
+                v16->Release();
+            nalPlayMethod* v17 = (nalPlayMethod*)v15->play_method;
+            if (v17 != nullptr)
+                ((void (__thiscall*)(void*))((void**)*(void**)v17)[3])(v17);
+            if (v15->instance != nullptr)
+                ((void (__thiscall*)(void*, int))(
+                    (void**)*(void**)v15->instance)[1])(v15->instance, 1);
+            v9 = callback;
+        }
+        else
+        {
+            this->QueueSize = QueueSize + 1;
+        }
+        int v18 = this->QueueSize;
+        nalAnimState* v19 = AnimStates[v18 - 1];
+        int v20 = v18 - 1;
+        if (v18 - 1 > 0)
+        {
+            nalAnimState** v21 = &AnimStates[v20];
+            do
+            {
+                *v21 = *(v21 - 1);
+                --v21;
+                --v20;
+            } while (v20 != 0);
+            v9 = callback;
+        }
+        float v22 = 0.0f;
+        AnimStates[0] = v19;
+        if (fade_in != 0.0f)
+            v22 = 1.0f / fade_in;
+        v19->Setup(anim, (nalGenericSkeleton*)Skeleton, v22, play_method,
+                   callback_time, v9, speed, time_in_seconds_to_start);
+        if ((*(unsigned int*)((char*)anim + 0x34) & 1) != 0
+            && cur_anim != nullptr
+            && (*(unsigned int*)((char*)cur_anim + 0x34) & 1) != 0
+            && !ForceRestart)
+        {
+            AnimStates[0]->tlimit =
+                AnimStates[1]->t + AnimStates[0]->tlimit;
+            AnimStates[0]->t = AnimStates[1]->t;
+            if (anim == cur_anim)
+                AnimStates[0]->t_prev = AnimStates[1]->t_prev;
+            else
+                AnimStates[0]->t_prev = AnimStates[0]->t;
+        }
+    }
+    else
+    {
+        int v12 = 0;
+        if (QueueSize > 0)
+        {
+            nalAnimState** AnimStates = this->AnimStates;
+            do
+            {
+                nalGenericAnim* v14 =
+                    (nalGenericAnim*)*(void**)((char*)(*AnimStates)->instance
+                                               + 0x00);
+                if (v14 != nullptr
+                    && (*(unsigned int*)((char*)v14 + 0x34) & 1) != 0)
+                    (*AnimStates)->speed = speed;
+                ++v12;
+                ++AnimStates;
+            } while (v12 < this->QueueSize);
+        }
+    }
+}
+
 // ea: 0x0055F280
-void AnimationPlayer::nalAnimState::Setup(nalGenericAnim* anim, void* skeleton,
+void AnimationPlayer::nalAnimState::Setup(nalGenericAnim* anim,
+                                          nalGenericSkeleton* skeleton,
                                           float _fadein_rate,
-                                          void* _play_method,
+                                          nalPlayMethod* _play_method,
                                           float callback_time,
                                           nalAnimCallback* _callback,
                                           float _speed,
@@ -2133,7 +2278,7 @@ LABEL_17:
     *insert = state;
     float v22 = fade_out == 0.0f ? 0.0f : 1.0f / fade_out;
     float fadein = fade_in == 0.0f ? 0.0f : 1.0f / fade_in;
-    state->base.Setup(anim, Skeleton, fadein, play_method, callback_time,
+    state->base.Setup(anim, (nalGenericSkeleton*)Skeleton, fadein, play_method, callback_time,
                       callback, speed, time_in_seconds_to_start);
     state->priority = priority;
     state->mask = mask;
@@ -2944,6 +3089,13 @@ const char* GetButtonTextName(unsigned int index)
 
 class PlayerAnimMgr {
 public:
+    PlayerAnimMgr();   // ??0PlayerAnimMgr@@QAE@XZ (0x53DF90)
+    ~PlayerAnimMgr();  // ??1PlayerAnimMgr@@QAE@XZ (0x53DFB0)
+    void Update(float deltaT);  // ?Update@PlayerAnimMgr@@QAEXM@Z (0x53DFC0)
+    void Play(nalGenericAnim& anim, int animateCamera, float fadeInTime,
+              float speed);  // ?Play@PlayerAnimMgr@@QAEXAAVnalGenericAnim@nalGeneric@@HMM@Z (0x540F30)
+    void Play(const char* animName, int animateCamera, float fadeInTime,
+              float speed);  // ?Play@PlayerAnimMgr@@QAEXPBDHMM@Z (0x547D80)
     void PlayModifier(nalGenericAnim& anim, int animateCamera,
                       float fadeInTime, float fadeOutTime, float speed,
                       float mask);  // ea: 0x00540FB0
@@ -2951,11 +3103,85 @@ public:
                       float fadeInTime, float fadeOutTime, float speed,
                       float mask);  // ea: 0x00547DC0
 
-    unsigned char _pad[0x0C];
+    unsigned int mFlags;                          // +0x00
+    AnimationPlayer::nalAnimCallback mPrimaryCallback;  // +0x04
     AnimationPlayer::nalAnimCallback mModifierCallback;  // +0x0C
     void* mCurPrimary;   // +0x14
     void* mCurModifier;  // +0x18
 };
+
+// ea: 0x0053DF90
+PlayerAnimMgr::PlayerAnimMgr()
+{
+    mFlags = 0;
+    new (&mPrimaryCallback) AnimationPlayer::nalAnimCallback();
+    new (&mModifierCallback) AnimationPlayer::nalAnimCallback();
+    mCurPrimary = nullptr;
+    mCurModifier = nullptr;
+}
+
+// ea: 0x0053DFB0
+PlayerAnimMgr::~PlayerAnimMgr()
+{
+}
+
+// ea: 0x0053DFC0
+void PlayerAnimMgr::Update(float deltaT)
+{
+    (void)deltaT;
+    nalGenericAnim* mCurPrimary = (nalGenericAnim*)this->mCurPrimary;
+    if (mCurPrimary != nullptr)
+    {
+        nalGenericAnim* curAnim = mPrimaryCallback.curAnim;
+        if (curAnim == nullptr || mCurPrimary != curAnim)
+        {
+            this->mCurPrimary = nullptr;
+            ((Camera*)((char*)gCamera + 0x1F0 * currCl))
+                ->StopAnimating(0.1f);
+        }
+    }
+    nalGenericAnim* mCurModifier = (nalGenericAnim*)this->mCurModifier;
+    if (mCurModifier != nullptr)
+    {
+        nalGenericAnim* v6 = mModifierCallback.curAnim;
+        if (v6 == nullptr || mCurModifier != v6)
+        {
+            this->mCurModifier = nullptr;
+            ((Camera*)((char*)gCamera + 0x1F0 * currCl))
+                ->StopAnimating(0.0f);
+        }
+    }
+}
+
+// ea: 0x00540F30
+void PlayerAnimMgr::Play(nalGenericAnim& anim, int animateCamera,
+                         float fadeInTime, float speed)
+{
+    Entity* Player = EntityManager::sInst->GetPlayer(currCl);
+    if (Player != nullptr && Player->client != nullptr)
+    {
+        mCurPrimary = &anim;
+        void* dobj = (void*)dword_F6A2A0[802 * currCl];
+        ((AnimationPlayer*)*(void**)((char*)dobj + 0x20))
+            ->Play(&anim, true, fadeInTime, nullptr, 0.0f, &mPrimaryCallback,
+                   speed, 0.0f);
+        if (animateCamera != 0)
+        {
+            ((Camera*)((char*)gCamera + 0x1F0 * currCl))
+                ->StopAnimating(0.0f);
+        }
+    }
+}
+
+// ea: 0x00547D80
+void PlayerAnimMgr::Play(const char* animName, int animateCamera,
+                         float fadeInTime, float speed)
+{
+    tlFixedString name(animName);
+    nalAnimClass<nalAnyPose>* Anim = nalGetAnim(name);
+    if (Anim != nullptr)
+        Play((nalGenericAnim&)*Anim, animateCamera, fadeInTime, speed);
+}
 
 // ea: 0x00540FB0
 void PlayerAnimMgr::PlayModifier(nalGenericAnim& anim, int animateCamera,
@@ -9210,8 +9436,13 @@ void InteractState::PlayAnims(int weaponIndex, float fadeIn)
                                     ((AnimationPlayer*)
                                          mDObj->animPlayers[i])
                                         ->Play((nalGenericAnim*)mOtherAnim,
-                                               true, fadeIn, playMethod,
-                                               0.0f, callback, 1.0f, 0.0f);
+                                               true, fadeIn,
+                                               (AnimationPlayer::nalPlayMethod*)
+                                                   playMethod,
+                                               0.0f,
+                                               (AnimationPlayer::nalAnimCallback*)
+                                                   callback,
+                                               1.0f, 0.0f);
                                 }
                             }
                         }
@@ -9290,8 +9521,10 @@ void InteractState::PlayPlayerAnim(nalAnimClass<nalAnyPose>* anim,
                 float animTime = anim->GetDuration() * animTimeFrac;
                 // AnimationPlayer::Play on DObj animPlayers[0]
                 ((AnimationPlayer*)*(void**)((char*)v8 + 0x20))
-                    ->Play((nalGenericAnim*)mPlayerAnim, true, fadeIn, v10,
-                           0.0f, v14, speed, animTime);
+                    ->Play((nalGenericAnim*)mPlayerAnim, true, fadeIn,
+                           (AnimationPlayer::nalPlayMethod*)v10, 0.0f,
+                           (AnimationPlayer::nalAnimCallback*)v14, speed,
+                           animTime);
                 mFlags |= 1u;
             }
         }
@@ -9640,7 +9873,9 @@ void RowboatMgr::PlayStrokes(float duration)
                                         ->Play(
                                             (nalGenericAnim*)
                                                 mBoatmanAnimAction[i],
-                                            true, 0.2f, v9, 0.0f, nullptr,
+                                            true, 0.2f,
+                                            (AnimationPlayer::nalPlayMethod*)v9,
+                                            0.0f, nullptr,
                                             animDur
                                                 / ((sNumStrokesPerAnim
                                                     * sDurFactor)
@@ -9715,7 +9950,7 @@ void RowboatMgr::PlayLeaderAnim(int index)
                 mLastLeaderIndex = index;
                 ((AnimationPlayer*)mDObj->animPlayers[0])
                     ->Play((nalGenericAnim*)v10, true, 0.1f, nullptr, 0.0f,
-                           v9, 1.0f, 0.0f);
+                           (AnimationPlayer::nalAnimCallback*)v9, 1.0f, 0.0f);
             }
         }
     }
@@ -9771,7 +10006,9 @@ void RowboatMgr::PlayFlinch(int index)
                     mFlinchCallback[index] = v7;
                     ((AnimationPlayer*)mDObj->animPlayers[0])
                         ->Play((nalGenericAnim*)v5, true, fadeInTime_0,
-                               nullptr, 0.0f, v7, 1.0f, 0.0f);
+                               nullptr, 0.0f,
+                               (AnimationPlayer::nalAnimCallback*)v7, 1.0f,
+                               0.0f);
                     ++mNumFlinches;
                 }
             }
@@ -11509,8 +11746,10 @@ void InteractStateRowboat::PlayRowingMetaAnim(int index)
             this->mPlayerCallback = v10;
             ((AnimationPlayer*)dobj->animPlayers[0])
                 ->Play((nalGenericAnim*)mMetaNalBaseAnimPtr[index],
-                       true, sRowFadeTime, (void*)&gMetaAnimPlayMethod, 0.0f,
-                       v10, 1.0f, 0.0f);
+                       true, sRowFadeTime,
+                       (AnimationPlayer::nalPlayMethod*)&gMetaAnimPlayMethod,
+                       0.0f, (AnimationPlayer::nalAnimCallback*)v10, 1.0f,
+                       0.0f);
             this->mFlags |= 1u;
             mAnimFadeTimer = sRowFadeTime;
         }
@@ -12387,8 +12626,10 @@ InteractState* InteractStateMelee::Update(float deltaT)
         MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr[0], &Anim, 1);
         ((AnimationPlayer*)dobj->animPlayers[0])
             ->Play((nalGenericAnim*)mMetaNalBaseAnimPtr[0], true,
-                   info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
-                   mPlayerCallback, 1.0f, 0.0f);
+                   info->animFadeInTime,
+                   (AnimationPlayer::nalPlayMethod*)&gMetaAnimPlayMethod,
+                   0.0f, (AnimationPlayer::nalAnimCallback*)mPlayerCallback,
+                   1.0f, 0.0f);
         mFlags |= 1u;
         if (info->interactableAnim[0] != 0)
         {
@@ -12442,8 +12683,10 @@ InteractState* InteractStateMelee::Update(float deltaT)
                             v27->Play(
                                 (nalGenericAnim*)mMetaNalBaseAnimPtr[1], true,
                                 info->animFadeInTime,
-                                (void*)&gMetaAnimPlayMethod, 0.0f, cb, 1.0f,
-                                0.0f);
+                                (AnimationPlayer::nalPlayMethod*)
+                                    &gMetaAnimPlayMethod,
+                                0.0f, (AnimationPlayer::nalAnimCallback*)cb,
+                                1.0f, 0.0f);
                         }
                     }
                 }
@@ -13927,8 +14170,10 @@ void InteractStateLeverPush::PlayMetaAnims()
         MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr[0], &Anim, 1);
         ((AnimationPlayer*)dobj->animPlayers[0])
             ->Play((nalGenericAnim*)mMetaNalBaseAnimPtr[0], true,
-                   info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
-                   mPlayerCallback, 1.0f, 0.0f);
+                   info->animFadeInTime,
+                   (AnimationPlayer::nalPlayMethod*)&gMetaAnimPlayMethod,
+                   0.0f, (AnimationPlayer::nalAnimCallback*)mPlayerCallback,
+                   1.0f, 0.0f);
         mFlags |= 1u;
         if (info->interactableAnim[0] != 0)
         {
@@ -13981,7 +14226,10 @@ void InteractStateLeverPush::PlayMetaAnims()
                             v18->Play(
                                 (nalGenericAnim*)mMetaNalBaseAnimPtr[1], true,
                                 info->animFadeInTime,
-                                (void*)&gMetaAnimPlayMethod, 0.0f, callback,
+                                (AnimationPlayer::nalPlayMethod*)
+                                    &gMetaAnimPlayMethod,
+                                0.0f,
+                                (AnimationPlayer::nalAnimCallback*)callback,
                                 1.0f, 0.0f);
                         }
                     }
@@ -14655,8 +14903,9 @@ void InteractStateVehicleTurn::PlayMetaAnim(float deltaT)
     MetaNalBaseAnim_DelayCreate(mMetaNalBaseAnimPtr, &Anim, 1);
     ((AnimationPlayer*)dobj->animPlayers[0])
         ->Play((nalGenericAnim*)mMetaNalBaseAnimPtr, true,
-               info->animFadeInTime, (void*)&gMetaAnimPlayMethod, 0.0f,
-               mPlayerCallback, 1.0f, 0.0f);
+               info->animFadeInTime,
+               (AnimationPlayer::nalPlayMethod*)&gMetaAnimPlayMethod, 0.0f,
+               (AnimationPlayer::nalAnimCallback*)mPlayerCallback, 1.0f, 0.0f);
     mFlags |= 1u;
 }
 
@@ -16233,16 +16482,268 @@ void DecodeAnimBank(const char* name, unsigned char* data, int size,
         ->DecodeAnimBank(name, data, size, pakId);
 }
 
-class AnimationUpdateTask {  // ??_GAnimationUpdateTask@@UAEPAXI@Z
-public:
-    virtual ~AnimationUpdateTask() { DoNotOptimizeMarker(); }
-    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+// ============================================================================
+// Task / XAnimUpdateTask / AnimationUpdateTask (anim.o xanim.cpp + game2.o)
+// Task base is 0x1C (same layout as g_local.h; ctor/dtor are game2.o).
+// ============================================================================
+struct Task {
+    unsigned char _dlist[8];                 // +0x04
+    unsigned int mTaskId;                    // +0x0C
+    DbLinkedHandle<EntityHandleDb, Entity> mEntityHandle;  // +0x10
+    unsigned int mTaskHandle;                // +0x14
+    unsigned int mFlags;                     // +0x18 Bitmask<unsigned int>
+
+    Task(DbLinkedHandle<EntityHandleDb, Entity> h, int idTask);  // game2.o
+    virtual ~Task();                          // game2.o
+    virtual void Update(Entity* e, float deltaT);  // game2.o (UAEXPAVEntity@@M@Z)
 };
-class XAnimUpdateTask {  // ??_GXAnimUpdateTask@@UAEPAXI@Z
+
+class XAnimUpdateTask : public Task {
 public:
-    virtual ~XAnimUpdateTask() { DoNotOptimizeMarker(); }
-    static void DoNotOptimizeMarker() { static volatile int s; s = 1; }
+    XAnimUpdateTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // 0x554C70
+    virtual ~XAnimUpdateTask();               // 0x563EB0
+    virtual void Update(Entity* e, float deltaT);  // ??_G anchor
+    void CalcAnim1(Entity* e, float deltaT);  // 0x54BAA0
+    void UpdateServerTime(Entity* e, float deltaT);  // 0x554CF0
+    void CalcAnim2(Entity* e, float deltaT);  // 0x554D20
 };
+
+class AnimationUpdateTask : public Task {
+public:
+    AnimationUpdateTask(DbLinkedHandle<EntityHandleDb, Entity> h);  // 0x555260
+    virtual ~AnimationUpdateTask();           // 0x563EF0
+    virtual void Update(Entity* e, float deltaT);  // 0x54BD80
+    void ApplyPose(Entity* e, float deltaT);  // 0x5552E0
+};
+
+// ea: 0x00554C70
+XAnimUpdateTask::XAnimUpdateTask(
+    DbLinkedHandle<EntityHandleDb, Entity> h)
+    : Task(h, 1480674893)
+{
+    unsigned int v3 = h.mVal & 0xFFF;
+    if (v3 < 0x540
+        && h.mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+            mObject->mFlags |= 0x20u;
+    }
+}
+
+// ea: 0x00563EB0
+XAnimUpdateTask::~XAnimUpdateTask()
+{
+}
+
+void XAnimUpdateTask::Update(Entity* e, float deltaT)
+{
+    (void)e; (void)deltaT;
+}
+
+// ea: 0x0054BAA0
+void XAnimUpdateTask::CalcAnim1(Entity* e, float deltaT)
+{
+    if ((mFlags & 4) != 0)
+        return;
+    if ((e->flags & 0x80410000) != 0)
+        return;
+    if (*(void**)((char*)e + 0x3B0) != nullptr)  // Entity::item
+        return;
+    int mPakId = *(int*)((char*)e + 0x230);  // Entity::mPakId
+    if (mPakId == (int)PAK_ID_INVALID)
+        mPakId = (int)CurPakId();
+    PakHeapContext heapCtx((TPakId)mPakId, false);
+    DObj* mDObj = e->mDObj;
+    int v4 = 0;
+    if (mDObj->numModels != 0)
+    {
+        do
+        {
+            if (mDObj->tree[v4] != nullptr && mDObj->animPlayers[v4] == nullptr)
+            {
+                if (mDObj->tree[v4] != nullptr)
+                {
+                    XANIM_ASSERT("!e->GetDObj()->animPlayers[i]",
+                                 "c:\\cod\\code\\game\\xanim.cpp", 5821,
+                                 "unhandled case");
+                }
+                nalGenericSkeleton* skeleton =
+                    DObjGetValidSubModelSkeleton(mDObj, v4);
+                DObjAllocateSubModelPose(mDObj, v4, skeleton);
+                nalGenericPose* v11 = (nalGenericPose*)mDObj->mPose[v4];
+                if (v11 == nullptr || *(void**)v11 == nullptr
+                    || *(void**)*(void**)v11 != (void*)0x10E6D04)
+                    v11 = nullptr;
+                int mLODOverride = mDObj->mLODOverride;
+                if (mLODOverride < 0)
+                    mLODOverride = mDObj->mLOD;
+                bool absolute = XAnimCalc((XAnimTree*)mDObj->tree[v4], 0,
+                                          v11, &skeleton->DefaultPose,
+                                          mLODOverride);
+                int mLOD = mDObj->mLODOverride;
+                if (mLOD < 0)
+                    mLOD = mDObj->mLOD;
+                if (mLOD < 3)
+                    AnimIKGlobal.Update(e, skeleton, v11);
+                ApplyPoseToSubModel(mDObj, v4, v11, absolute);
+            }
+            ++v4;
+        } while (v4 < mDObj->numModels);
+    }
+    (void)deltaT;
+}
+
+// ea: 0x00554CF0
+void XAnimUpdateTask::UpdateServerTime(Entity* e, float deltaT)
+{
+    if ((mFlags & 4) == 0)
+        XAnimUpdateServerTime(e, deltaT);
+}
+
+// ea: 0x00554D20
+void XAnimUpdateTask::CalcAnim2(Entity* e, float deltaT)
+{
+    if ((mFlags & 4) != 0)
+        return;
+    int mPakId = *(int*)((char*)e + 0x230);  // Entity::mPakId
+    if (mPakId == (int)PAK_ID_INVALID)
+        mPakId = (int)CurPakId();
+    PakHeapContext heapCtx((TPakId)mPakId, false);
+    if ((e->flags & 0x80410000) != 0
+        || *(void**)((char*)e + 0x3B0) != nullptr)  // Entity::item
+        return;
+    DObj* mDObj = e->mDObj;
+    DSkel* skel = (DSkel*)mDObj->skel;
+    int v5 = 0;
+    if (mDObj->numModels != 0)
+    {
+        do
+        {
+            if (mDObj->animPlayers[v5] == nullptr)
+            {
+                XAnimTree* v10 = (XAnimTree*)mDObj->tree[v5];
+                if (v10 == nullptr
+                    || ((e->scr_vehicle != nullptr || e->pTurretInfo != nullptr)
+                        && v10->mActiveAnims == 0))
+                {
+                    unsigned char v15 = mDObj->modelParents[v5];
+                    DObjSkelMat* v16 = nullptr;
+                    if (v15 != 0xFF)
+                        v16 = (DObjSkelMat*)&skel->mat[v15];
+                    XModelGetBasePose(*(IVPointer<XModel>*)&mDObj->models[v5],
+                                      (DObjSkelMat*)&skel->mat[mDObj->matOffset[v5]],
+                                      v16);
+                }
+                else if (v10->mActiveAnims != 0)
+                {
+                    nalGenericSkeleton* skeleton =
+                        DObjGetValidSubModelSkeleton(mDObj, v5);
+                    DObjAllocateSubModelPose(mDObj, v5, skeleton);
+                    nalGenericPose* v12 = (nalGenericPose*)mDObj->mPose[v5];
+                    PostApplyPoseToSubModel(mDObj, v5, v12);
+                    bool DobjAbsolute = AnimQueue::GetDobjAbsolute(mDObj);
+                    SetAutoTrajectoryEntityPO(mDObj->mEntity, DobjAbsolute,
+                                              nullptr);
+                }
+            }
+            ++v5;
+        } while (v5 < mDObj->numModels);
+    }
+    (void)deltaT;
+}
+
+// ea: 0x00555260
+AnimationUpdateTask::AnimationUpdateTask(
+    DbLinkedHandle<EntityHandleDb, Entity> h)
+    : Task(h, 1095649613)
+{
+    unsigned int v3 = h.mVal & 0xFFF;
+    if (v3 < 0x540
+        && h.mVal >> 12 == EntityHandleDb::sInst.mElements[v3].mKey)
+    {
+        Entity* mObject = EntityHandleDb::sInst.mElements[v3].mObject;
+        if (mObject != nullptr)
+            mObject->mFlags |= 0x40u;
+    }
+}
+
+// ea: 0x00563EF0
+AnimationUpdateTask::~AnimationUpdateTask()
+{
+}
+
+// ea: 0x0054BD80
+void AnimationUpdateTask::Update(Entity* e, float deltaT)
+{
+    if ((mFlags & 4) != 0)
+        return;
+    DObj* mDObj = e->mDObj;
+    int v4 = 0;
+    if (mDObj->numModels != 0)
+    {
+        do
+        {
+            if (mDObj->animPlayers[v4] != nullptr
+                && (e->flags & 0x400000) == 0)
+            {
+                ((AnimationPlayer*)mDObj->animPlayers[v4])->Advance(deltaT);
+                nalGenericSkeleton* skeleton =
+                    DObjGetValidSubModelSkeleton(mDObj, v4);
+                if (mDObj->mPose[v4] == nullptr)
+                    mDObj->mPose[v4] =
+                        new_nalGenericPose((TPakId)mDObj->mPakId, skeleton);
+                nalGenericPose* v7 = (nalGenericPose*)mDObj->mPose[v4];
+                if (v7 == nullptr || *(void**)v7 == nullptr
+                    || *(void**)*(void**)v7 != (void*)0x10E6D04)
+                    v7 = nullptr;
+                float* v9 = nullptr;
+                if (e->sentient != nullptr)
+                    v9 = e->sentient->mLastAnimIKGunOffset[0];
+                ((AnimationPlayer*)mDObj->animPlayers[v4])
+                    ->GetPose((nalGeneric::nalGenericPose&)*v7, skeleton,
+                              (float (*)[3])v9);
+                if (e->client != nullptr)
+                    AnimIKGlobal.Update(e, skeleton, v7);
+                ApplyPoseToSubModel(mDObj, v4, v7, false);
+            }
+            ++v4;
+        } while (v4 < mDObj->numModels);
+    }
+}
+
+// ea: 0x005552E0
+void AnimationUpdateTask::ApplyPose(Entity* e, float deltaT)
+{
+    (void)deltaT;
+    if ((mFlags & 4) != 0)
+        return;
+    DObj* mDObj = e->mDObj;
+    int v4 = 0;
+    if (mDObj->numModels != 0)
+    {
+        do
+        {
+            if (mDObj->animPlayers[v4] != nullptr)
+            {
+                nalGenericSkeleton* skeleton =
+                    DObjGetValidSubModelSkeleton(mDObj, v4);
+                if (mDObj->mPose[v4] == nullptr)
+                    mDObj->mPose[v4] =
+                        new_nalGenericPose((TPakId)mDObj->mPakId, skeleton);
+                nalGenericPose* v7 = (nalGenericPose*)mDObj->mPose[v4];
+                if (v7 == nullptr || *(void**)v7 == nullptr
+                    || *(void**)*(void**)v7 != (void*)0x10E6D04)
+                    v7 = nullptr;
+                PostApplyPoseToSubModel(mDObj, v4, v7);
+                bool DobjAbsolute = AnimQueue::GetDobjAbsolute(mDObj);
+                SetAutoTrajectoryEntityPO(mDObj->mEntity, DobjAbsolute,
+                                          nullptr);
+            }
+            ++v4;
+        } while (v4 < mDObj->numModels);
+    }
+}
 class nalInitList {  // ??_GnalInitList@@UAEPAXI@Z
 public:
     virtual ~nalInitList() { DoNotOptimizeMarker(); }
