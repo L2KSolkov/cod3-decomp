@@ -2902,6 +2902,11 @@ void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* a,
 {
     (void)model; (void)a; (void)b;
 }
+void XModelTransform(IVPointer<XModel> model, DObjSkelMat* a,
+                     DObjSkelMat* b)
+{
+    (void)model; (void)a; (void)b;
+}
 const void* DCGBank_get_set(void* self, int a)
 {
     (void)self; (void)a;

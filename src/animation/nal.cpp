@@ -85,6 +85,9 @@ struct DObjSkelMatLocal {
 struct DSkelLocal {
     DObjSkelMatLocal* mat;  // +0x00
 };
+struct DSkel {
+    DObjSkelMatLocal* mat;  // +0x00 (binary U-tag; DObjCalcSubModelAnim_Drone)
+};
 
 // Local DbLinkedHandle view (full template in game_types.h)
 template <typename DB, typename T>
@@ -1470,12 +1473,20 @@ extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
                                  unsigned int animindex);
 extern int _fpclass(double x);  // CRT helper (cg_misc.cpp)
 
-// Forward decls for the DObj sub-model helpers (defined later in this TU)
-void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose);
-void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose,
+// Binary scope: `anonymous namespace' in c:\cod\code\game\xanim.cpp
+// (mangled ?A0x7516322e; the compiler hash is version-dependent, so the
+// emitted ?A0x<hash> prefix is treated as a wildcard in the obj audit).
+namespace {
+__declspec(noinline) void ApplyPoseToSubModel(
+    DObj* obj, int i, const nalGenericPose* pose);
+__declspec(noinline) void ApplyPoseToSubModel(DObj* obj, int i,
+                         const nalGenericPose* pose,
                          bool absolute);
-void PostApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose);
-void SetAutoTrajectoryEntityPO(Entity* ent, bool absolute, DObj* masterObj);
+__declspec(noinline) void PostApplyPoseToSubModel(
+    DObj* obj, int i, const nalGenericPose* pose);
+__declspec(noinline) void SetAutoTrajectoryEntityPO(
+    Entity* ent, bool absolute, DObj* masterObj);
+}
 void* SceneAnimClient_Ctor(void* self, const nalSceneAnim* anim,
                            const tlFixedString* name, float blendIn,
                            float blendOut);
@@ -2162,6 +2173,10 @@ bool XModel::HasLOD(int lodIndex) const
 {
     return lodIndex < 5 && lod[lodIndex] != nullptr;
 }
+
+struct DObjSkelMat;   // U-tag (core_types.h)
+extern void XModelTransform(IVPointer<XModel> model, DObjSkelMat* mat,
+                            DObjSkelMat* modelParentMat);  // ?XModelTransform (render.o)
 
 // ea: 0x539C80
 struct XSceneAnimParams {
@@ -4603,11 +4618,13 @@ struct XModelPartsAnim {
 };
 
 // ea: 0x0053E7C0
-void DObjAllocateSubModelPose(DObj* obj, int i,
-                              nalGenericSkeleton* skeleton)
+namespace {
+__declspec(noinline) void DObjAllocateSubModelPose(
+    DObj* obj, int i, nalGenericSkeleton* skeleton)
 {
     if (obj->mPose[i] == nullptr)
         obj->mPose[i] = new_nalGenericPose((TPakId)obj->mPakId, skeleton);
+}
 }
 
 // ea: 0x0053E7F0
@@ -4755,8 +4772,9 @@ Entity* GetDroneMaster(Entity* e)
 }
 
 // ea: 0x00554400
-void DObjApplyPoseWrapper(DObj* obj, int i, int iPhase,
-                          nalGenericPose* pose, bool absolute)
+namespace {
+__declspec(noinline) void DObjApplyPoseWrapper(
+    DObj* obj, int i, int iPhase, nalGenericPose* pose, bool absolute)
 {
     if (iPhase == -1)
     {
@@ -4773,6 +4791,7 @@ void DObjApplyPoseWrapper(DObj* obj, int i, int iPhase,
     {
         ApplyPoseToSubModel(obj, i, pose, absolute);
     }
+}
 }
 
 // ea: 0x0054A3B0
@@ -4835,22 +4854,127 @@ void nalGenericSkeleton::GetTrajectoryUpdate(const nalGenericPose& pose,
     (void)pose;
     memset(&po, 0, sizeof(po));
 }
-void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose)
+namespace {
+// ea: 0x00549CA0
+__declspec(noinline) void ApplyPoseToSubModel(
+    DObj* obj, int i, const nalGenericPose* pose)
 {
-    (void)obj; (void)i; (void)pose;
+    DSkelLocal* skel = (DSkelLocal*)obj->skel;
+    if (skel != nullptr)
+    {
+        ValidatePakId(obj->models[i].mPakId);
+        XModel* v4 = (XModel*)obj->models[i].mValue;
+        void** lod = v4->lod;
+        int v7 = 0;
+        while (lod[v7] == nullptr)
+            ++v7;
+        void* v9 = *(void**)((char*)lod[v7] + 0x08);  // xmodelParts
+        unsigned int v10 = 0;
+        if (v9 != nullptr)
+        {
+            int v10i = 0;
+            while (lod[v10i] == nullptr)
+                ++v10i;
+            v10 = *(unsigned int*)((char*)lod[v10i] + 0x08 + 0x10);
+        }
+        unsigned int v12 = *(unsigned int*)((char*)pose + 4);  // LOD
+        const nalGenericSkeleton* skeleton =
+            (const nalGenericSkeleton*)*(void**)pose;  // Skeleton +0x00
+        if (v10 >= *(unsigned int*)((char*)skeleton + 0x64 + 20 * v12))
+        {
+            skeleton->GetBoneMatrices(
+                *pose, (nalMatrix4x4*)&skel->mat[obj->matOffset[i]], v12);
+            unsigned char v13 = obj->modelParents[i];
+            if (v13 != 0xFF)
+            {
+                DObjSkelMatLocal* v14 = &skel->mat[v13];
+                if (v14 != nullptr)
+                    XModelTransform(*(IVPointer<XModel>*)&obj->models[i],
+                                    (DObjSkelMat*)&skel->mat[obj->matOffset[i]],
+                                    (DObjSkelMat*)v14);
+            }
+        }
+    }
 }
-void ApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose,
-                         bool absolute)
+
+// ea: 0x00549DA0
+__declspec(noinline) void ApplyPoseToSubModel(
+    DObj* obj, int i, const nalGenericPose* pose, bool absolute)
 {
-    (void)obj; (void)i; (void)pose; (void)absolute;
+    DSkelLocal* skel = (DSkelLocal*)obj->skel;
+    if (skel != nullptr)
+    {
+        ValidatePakId(obj->models[i].mPakId);
+        XModel* v5 = (XModel*)obj->models[i].mValue;
+        void** lod = v5->lod;
+        int v8 = 0;
+        while (lod[v8] == nullptr)
+            ++v8;
+        unsigned int mSize;
+        if (*(void**)((char*)lod[v8] + 0x08) != nullptr)
+        {
+            int v10 = 0;
+            while (lod[v10] == nullptr)
+                ++v10;
+            mSize = *(unsigned int*)((char*)lod[v10] + 0x08 + 0x10);
+        }
+        else
+        {
+            mSize = 0;
+        }
+        unsigned int v12 = *(unsigned int*)((char*)pose + 4);  // LOD
+        const nalGenericSkeleton* skeleton =
+            (const nalGenericSkeleton*)*(void**)pose;
+        if (mSize >= *(unsigned int*)((char*)skeleton + 0x64 + 20 * v12))
+            AnimQueue::AddGetBoneMatrices(
+                obj, pose, &skel->mat[obj->matOffset[i]], absolute);
+    }
 }
-void PostApplyPoseToSubModel(DObj* obj, int i, const nalGenericPose* pose)
+
+// ea: 0x00549E60
+__declspec(noinline) void PostApplyPoseToSubModel(
+    DObj* obj, int i, const nalGenericPose* pose)
 {
-    (void)obj; (void)i; (void)pose;
+    DSkelLocal* skel = (DSkelLocal*)obj->skel;
+    if (skel != nullptr)
+    {
+        ValidatePakId(obj->models[i].mPakId);
+        XModel* v4 = (XModel*)obj->models[i].mValue;
+        void** lod = v4->lod;
+        int v7 = 0;
+        while (lod[v7] == nullptr)
+            ++v7;
+        void* v9 = *(void**)((char*)lod[v7] + 0x08);
+        unsigned int v10 = 0;
+        if (v9 != nullptr)
+        {
+            int v10i = 0;
+            while (lod[v10i] == nullptr)
+                ++v10i;
+            v10 = *(unsigned int*)((char*)lod[v10i] + 0x08 + 0x10);
+        }
+        unsigned int v12 = *(unsigned int*)((char*)pose + 4);  // LOD
+        const nalGenericSkeleton* skeleton =
+            (const nalGenericSkeleton*)*(void**)pose;
+        if (v10 >= *(unsigned int*)((char*)skeleton + 0x64 + 20 * v12))
+        {
+            unsigned char v12b = obj->modelParents[i];
+            if (v12b != 0xFF)
+            {
+                DObjSkelMatLocal* v13 = &skel->mat[v12b];
+                if (v13 != nullptr)
+                    XModelTransform(*(IVPointer<XModel>*)&obj->models[i],
+                                    (DObjSkelMat*)&skel->mat[obj->matOffset[i]],
+                                    (DObjSkelMat*)v13);
+            }
+        }
+    }
 }
-void SetAutoTrajectoryEntityPO(Entity* ent, bool absolute, DObj* masterObj)
+__declspec(noinline) void SetAutoTrajectoryEntityPO(
+    Entity* ent, bool absolute, DObj* masterObj)
 {
     (void)ent; (void)absolute; (void)masterObj;
+}
 }
 void* SceneAnimClient_Ctor(void* self, const nalSceneAnim* anim,
                            const tlFixedString* name, float blendIn,
@@ -5245,7 +5369,9 @@ void XAninCloneAnimTree(XAnimTree* from, XAnimTree* to)
 }
 
 // ea: 0x00549F40
-nalGenericSkeleton* DObjGetValidSubModelSkeleton(DObj* obj, int i)
+namespace {
+__declspec(noinline) nalGenericSkeleton* DObjGetValidSubModelSkeleton(
+    DObj* obj, int i)
 {
     ValidatePakId(obj->models[i].mPakId);
     void* mValue = obj->models[i].mValue;
@@ -5284,6 +5410,7 @@ nalGenericSkeleton* DObjGetValidSubModelSkeleton(DObj* obj, int i)
     }
     return (nalGenericSkeleton*)result;
 }
+}
 
 // ============================================================================
 // xanim.cpp final batch (anim.o) - drone + sub-model anim + scene queue
@@ -5315,6 +5442,8 @@ extern void MatrixMultiply43(const float (*in1)[3], const float (*in2)[3],
 struct DObjSkelMat;   // U-tag (core_types.h)
 extern void XModelGetBasePose(IVPointer<XModel> model, DObjSkelMat* mat,
                               DObjSkelMat* modelParentMat);
+extern void XModelTransform(IVPointer<XModel> model, DObjSkelMat* mat,
+                            DObjSkelMat* modelParentMat);  // ?XModelTransform (render.o)
 
 // ea: 0x0054BC90
 void DroneSetAutoTrajectoryPO(Entity* e, DObj* masterDObj)
@@ -5348,8 +5477,9 @@ void DroneSetAutoTrajectoryPO(Entity* e, DObj* masterDObj)
 }
 
 // ea: 0x00554480
-void DObjCalcSubModelAnim_Drone(DObj* obj, DSkelLocal* skel, int i,
-                                int phase)
+namespace {
+__declspec(noinline) void DObjCalcSubModelAnim_Drone(
+    DObj* obj, DSkel* skel, int i, int phase)
 {
     Entity* mEntity = obj->mEntity;
     DroneAEMap* v5 = &gDroneAEMap;
@@ -5405,9 +5535,12 @@ void DObjCalcSubModelAnim_Drone(DObj* obj, DSkelLocal* skel, int i,
         DObjGetValidSubModelSkeleton(mDObj, i);
     }
 }
+}
 
 // ea: 0x00554570
-void DObjCalcSubModelAnim_XAnim(DObj* obj, int i, int iPhase)
+namespace {
+__declspec(noinline) void DObjCalcSubModelAnim_XAnim(
+    DObj* obj, int i, int iPhase)
 {
     DSkelLocal* skel = (DSkelLocal*)obj->skel;
     Entity* mEntity = obj->mEntity;
@@ -5445,7 +5578,7 @@ void DObjCalcSubModelAnim_XAnim(DObj* obj, int i, int iPhase)
             int v11 = mEntity->flags & 0x2000000;
             if (v11 != 0 && (mEntity->mFlags & 8) != 0)
             {
-                DObjCalcSubModelAnim_Drone(obj, skel, i, iPhase);
+                DObjCalcSubModelAnim_Drone(obj, (DSkel*)skel, i, iPhase);
             }
             else
             {
@@ -5470,9 +5603,12 @@ void DObjCalcSubModelAnim_XAnim(DObj* obj, int i, int iPhase)
         }
     }
 }
+}
 
 // ea: 0x00554760
-void DObjCalcSubModelAnim_AnimationPlayer(DObj* obj, int i, int iPhase)
+namespace {
+__declspec(noinline) void DObjCalcSubModelAnim_AnimationPlayer(
+    DObj* obj, int i, int iPhase)
 {
     Entity* ent = (Entity*)obj->mEntity;
     if (obj->skel != nullptr)
@@ -5501,6 +5637,35 @@ void DObjCalcSubModelAnim_AnimationPlayer(DObj* obj, int i, int iPhase)
             AnimIKGlobal.Update(ent, skeleton, v5);
         DObjApplyPoseWrapper(obj, i, iPhase, v5, false);
     }
+}
+}
+
+// Force emission of the xanim.cpp anonymous-namespace helpers (internal
+// linkage; the compiler would otherwise fold unreferenced ones away).
+typedef void (*XAnimAnonFn0)(DObj*, int, nalGenericSkeleton*);
+typedef void (*XAnimAnonFn1)(DObj*, int, const nalGenericPose*);
+typedef void (*XAnimAnonFn2)(DObj*, int, const nalGenericPose*, bool);
+typedef void (*XAnimAnonFn3)(Entity*, bool, DObj*);
+typedef nalGenericSkeleton* (*XAnimAnonFn4)(DObj*, int);
+typedef void (*XAnimAnonFn5)(DObj*, int, int, nalGenericPose*, bool);
+typedef void (*XAnimAnonFn6)(DObj*, DSkel*, int, int);
+typedef void (*XAnimAnonFn7)(DObj*, int, int);
+extern "C" void xanimAnonShimAnchor()
+{
+    static void* const sTable[] = {
+        (void*)&DObjAllocateSubModelPose,
+        (void*)(XAnimAnonFn1)&ApplyPoseToSubModel,
+        (void*)(XAnimAnonFn2)&ApplyPoseToSubModel,
+        (void*)(XAnimAnonFn2)&PostApplyPoseToSubModel,
+        (void*)(XAnimAnonFn3)&SetAutoTrajectoryEntityPO,
+        (void*)(XAnimAnonFn4)&DObjGetValidSubModelSkeleton,
+        (void*)(XAnimAnonFn5)&DObjApplyPoseWrapper,
+        (void*)(XAnimAnonFn6)&DObjCalcSubModelAnim_Drone,
+        (void*)(XAnimAnonFn7)&DObjCalcSubModelAnim_XAnim,
+        (void*)(XAnimAnonFn7)&DObjCalcSubModelAnim_AnimationPlayer,
+    };
+    volatile const void* p = sTable;
+    (void)p;
 }
 
 // ea: 0x00554F40
