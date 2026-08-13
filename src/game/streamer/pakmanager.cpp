@@ -124,6 +124,13 @@ extern unsigned int AeHash(const char* str);     // ae_hash.cpp
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
 extern const char* const defaultFileName;  // g_globals.cpp
+namespace AeStringSupport {
+void CStrToAeStr(char* dst, int* dstLen, int capacity, const char* src);
+void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,
+                 bool includeExt);
+void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src,
+               int srcLen);
+}
 typedef unsigned nflState;
 typedef unsigned nflFileID;
 extern void nflUpdate();
@@ -640,6 +647,12 @@ public:
     void SetBrocProgress(float t);
     // - ea: 0x665570
     float GetDistance(PakInfoNode* node) const;
+    // - ea: 0x666950
+    void SetDistance(const PakInfoNode* cpak, float dist, bool force);
+    // - ea: 0x6669E0
+    PakInfoNode* GetUnloadedPrereq(const PakInfoNode* pak) const;
+    // - ea: 0x66C8B0
+    PakInfoNode* GetBestUnloadedPak();
     // - ea: 0x6635E0
     bool IsFillingBanks() const;
     // - ea: 0x6635F0
@@ -825,6 +838,8 @@ struct MipSettingsBank {
     TPakId       mPakId;       // +0x08
     uint8_t      mMipSettings[8];  // +0x0C (InplaceTree<InplaceString,float>; stub)
     void*        mPtrFixupTable;   // +0x14
+
+    void Fixup();  // ?Fixup@MipSettingsBank@@QAEXXZ
 };
 
 // InstanceBankMgr (streamer.o; mEntries[99] @ +0x34)
@@ -840,6 +855,11 @@ public:
     void DecodeInstbank(const char* name, unsigned char* data, int size,
                         TPakId pakId);  // ?DecodeInstbank@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z
     void ReleaseSkeletons(TPakId pakId);  // ?ReleaseSkeletons@InstanceBankMgr@@QAEXW4TPakId@@@Z
+    void DecodeMipsettings(const char* name, unsigned char* data, int size,
+                           TPakId pakId);  // ?DecodeMipsettings@InstanceBankMgr@@QAEXPBDPAEHW4TPakId@@@Z
+    void RegisterAnimOffset(const char* name, unsigned int offset,
+                            unsigned int size,
+                            TPakId pakId);  // ?RegisterAnimOffset@InstanceBankMgr@@QAEXPBDIIW4TPakId@@@Z
     void Enumerate(TPakId pakId, void (*Callback)(const char*,
                                                   eInstanceBankType, void*,
                                                   void*),
@@ -1613,6 +1633,25 @@ void cdDestroyApk(apk::apkFile* file)
     apk::apkDeleteFile(file);
 }
 
+unsigned char* gCharSkel = (unsigned char*)-1;  // ?gCharSkel@@3PAEA @ 0xF59314
+
+// ea: 0x665D70
+void cdLoadCharSkelInplace(void* data)
+{
+    if (gCharSkel != (unsigned char*)-1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\apkSupport.cpp";
+        AeAssert::gCurrentLine = 371;
+        AeAssert::gCurrentExpr = "gCharSkel == (uint8*)0xFFFFFFFF";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("character skeleton is already loaded!"))
+            __debugbreak();
+    }
+    gCharSkel = nullptr;
+    apk::apkLoadFileInPlace(data, true);
+}
+
 // ea: 0x665B70
 nglTexture* cdLoadTexureInplace(void* data)
 {
@@ -2364,7 +2403,26 @@ void PakManager::UnloadAll()
 }
 void PakManager::ResetPriorities(bool user_distances_also)
 {
-    (void)user_distances_also;
+    PakInfoBank* bank = mPakInfoBank;
+    for (int i = 0; i < (int)bank->mPtrs.mSize; ++i)
+    {
+        const_cast<PakInfoNode*>(bank->mPtrs.mList[i])->distance =
+            3.4028235e38f;
+        if (user_distances_also)
+            const_cast<PakInfoNode*>(mPakInfoBank->mPtrs.mList[i])
+                ->userDistance = 3.4028235e38f;
+        bank = mPakInfoBank;
+    }
+    PakInfoBank* level = mLevelPakInfoBank;
+    for (unsigned int v8 = 0; v8 < level->mPtrs.mSize; ++v8)
+    {
+        const_cast<PakInfoNode*>(level->mPtrs.mList[v8])->distance =
+            3.4028235e38f;
+        if (user_distances_also)
+            const_cast<PakInfoNode*>(mLevelPakInfoBank->mPtrs.mList[v8])
+                ->userDistance = 3.4028235e38f;
+        level = mLevelPakInfoBank;
+    }
 }
 void PakManager::SyncUnloadPak(TPakId id)
 {
@@ -2382,6 +2440,157 @@ const PakInfoNode* PakManager::SyncLoadFLI(EPakType t, const char* path)
 void PakManager_MemFree(TPakId id, void* ptr, bool bUseActorHeap)
 {
     (void)id; (void)ptr; (void)bUseActorHeap;
+}
+
+// ea: 0x666950
+void PakManager::SetDistance(const PakInfoNode* cpak, float dist, bool force)
+{
+    if (cpak != nullptr)
+    {
+        float v4 = dist;
+        if (force || dist <= cpak->distance)
+        {
+            const_cast<PakInfoNode*>(cpak)->distance = dist;
+            if (dist == -1.0f)
+                v4 = 3.4028235e38f;
+            for (unsigned int v6 = 0; v6 < cpak->prereqs.mSize; ++v6)
+                SetDistance(cpak->prereqs.mList[v6], v4, false);
+        }
+    }
+}
+
+// ea: 0x6669E0
+PakInfoNode* PakManager::GetUnloadedPrereq(const PakInfoNode* pak) const
+{
+    unsigned int v3 = 0;
+    if (pak->prereqs.mSize == 0)
+        return nullptr;
+    while (1)
+    {
+        PakInfoNode* result = (PakInfoNode*)pak->prereqs.mList[v3];
+        TPakId pakId = result->pakId;
+        if (pakId == PAK_ID_INVALID)
+            break;
+        PakFile* v7 = mSlots[pakId];
+        if (v7 == nullptr || v7->mState == PakFile::UNLOADED)
+            break;
+        if (++v3 >= pak->prereqs.mSize)
+            return nullptr;
+    }
+    return (PakInfoNode*)pak->prereqs.mList[v3];
+}
+
+// ea: 0x66C8B0
+PakInfoNode* PakManager::GetBestUnloadedPak()
+{
+    PakInfoNode* ret = nullptr;
+    float min_dist = 3.4028235e38f;
+    for (unsigned int v4 = 0; v4 < mPakInfoBank->mPtrs.mSize; ++v4)
+    {
+        PakInfoNode* v6 = (PakInfoNode*)mPakInfoBank->mPtrs.mList[v4];
+        TPakId pakId = v6->pakId;
+        PakFile* v8 = pakId != PAK_ID_INVALID ? mSlots[pakId] : nullptr;
+        bool unloaded = pakId == PAK_ID_INVALID || v8 == nullptr
+                        || v8->mState == PakFile::UNLOADED;
+        if (unloaded && 3.4028235e38f != GetDistance(v6)
+            && (ret == nullptr || min_dist > GetDistance(v6)
+                || (min_dist == GetDistance(v6)
+                    && GetUnloadedPrereq(v6) == v6
+                    && GetUnloadedPrereq(ret) != ret)))
+        {
+            min_dist = GetDistance(v6);
+            ret = v6;
+        }
+    }
+    PakInfoNode* v3 = ret;
+    PakInfoBank* level = mLevelPakInfoBank;
+    if (level != nullptr)
+    {
+        for (unsigned int i = 0; i < level->mPtrs.mSize; ++i)
+        {
+            PakInfoNode* v14 = (PakInfoNode*)level->mPtrs.mList[i];
+            TPakId v15 = v14->pakId;
+            PakFile* v16 = v15 != PAK_ID_INVALID ? mSlots[v15] : nullptr;
+            bool unloaded2 = v15 == PAK_ID_INVALID || v16 == nullptr
+                             || v16->mState == PakFile::UNLOADED;
+            if (unloaded2 && 3.4028235e38f != GetDistance(v14)
+                && (ret == nullptr || min_dist > GetDistance(v14)
+                    || (min_dist == GetDistance(v14)
+                        && GetUnloadedPrereq(v14) == v14
+                        && GetUnloadedPrereq(ret) != ret)))
+            {
+                min_dist = GetDistance(v14);
+                ret = v14;
+            }
+            level = mLevelPakInfoBank;
+        }
+        v3 = ret;
+    }
+    if (v3 == nullptr)
+        return nullptr;
+    TPakId v18 = v3->pakId;
+    if (v18 != PAK_ID_INVALID)
+    {
+        PakFile* v19 = mSlots[v18];
+        if (v19 != nullptr && v19->mState == PakFile::LOADED)
+            return v3;
+    }
+    PakInfoNode* UnloadedPrereq = GetUnloadedPrereq(v3);
+    if (UnloadedPrereq == nullptr)
+        UnloadedPrereq = ret;
+    if (3.4028235e38f != GetDistance(UnloadedPrereq)
+        && UnloadedPrereq->pakType == kPakTypeGlobal)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+        AeAssert::gCurrentLine = 1891;
+        AeAssert::gCurrentExpr =
+            "GetDistance(prereq) == kFloat32Max || prereq->pakType!=kPakTypeGlobal";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("sanity check"))
+            __debugbreak();
+    }
+    return UnloadedPrereq;
+}
+
+// ea: 0x66C770
+float PrintBankUsage(char* res_buf, float total_banks,
+                     const TBankAlloc* alloc, bool mram)
+{
+    char buf[1024];
+    float num_banks = 0.0f;
+    int last = (int)(total_banks + 0.5f);
+    int v5 = 0;
+    for (; v5 < last; ++v5)
+    {
+        char v6 = '.';
+        if (mram)
+        {
+            if (alloc->mram_alloc1.Test(v5))
+                num_banks += 0.5f;
+            if (alloc->mram_alloc2.Test(v5))
+                num_banks += 0.5f;
+            if (alloc->mram_alloc1.Test(v5)
+                && alloc->mram_alloc2.Test(v5))
+                v6 = 'X';
+            else if (alloc->mram_alloc1.Test(v5))
+                v6 = '/';
+            else if (alloc->mram_alloc2.Test(v5))
+                v6 = '\\';
+        }
+        else
+        {
+            AeAssert::gCurrentAuthor = AeAssert::ARO;
+            AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakManager.cpp";
+            AeAssert::gCurrentLine = 1529;
+            AeAssert::gCurrentExpr = nullptr;
+            if (AeAssert::Error("no aram part"))
+                __debugbreak();
+        }
+        buf[v5] = v6;
+    }
+    buf[last] = 0;
+    sprintf(res_buf, "[%s]", buf);
+    return num_banks;
 }
 
 // ea: 0x671900
@@ -3727,6 +3936,27 @@ void DecodeSEED(const char* name, unsigned char* data, int size, TPakId pakId)
     (void)name; (void)data; (void)size; (void)pakId;
 }
 
+// ea: 0x6663D0
+void DecodeCharSkel(const char* name, unsigned char* data)
+{
+    (void)name;
+    cdLoadCharSkelInplace(data);
+}
+
+// ea: 0x66BD40
+void DecodeMipSettings(const char* name, unsigned char* data, int size,
+                       TPakId pakId)
+{
+    InstanceBankMgr::sInst->DecodeMipsettings(name, data, size, pakId);
+}
+
+// ea: 0x66BD60
+void DecodeInstanceBank(const char* name, unsigned char* data, int size,
+                        TPakId pakId)
+{
+    InstanceBankMgr::sInst->DecodeInstbank(name, data, size, pakId);
+}
+
 // ea: 0x665210
 void DecodeDB(const char* name, unsigned char* data, int size, TPakId pakId)
 {
@@ -4066,17 +4296,114 @@ void InstanceBankMgr::ReleaseSkeletons(TPakId pakId)
     m_skeleton_directory.m_enable_release = false;
 }
 
+// ea: 0x684E40
+void MipSettingsBank::Fixup()
+{
+    if (mId != 1296650323)  // FourCC('MIPS')
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MipSettings.h";
+        AeAssert::gCurrentLine = 28;
+        AeAssert::gCurrentExpr = "mId == FourCC('MIPS')";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("not an mipsettings bank"))
+            __debugbreak();
+    }
+    if (mVersion != 1.01f)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MipSettings.h";
+        AeAssert::gCurrentLine = 29;
+        AeAssert::gCurrentExpr = "mVersion == 1.01f";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("incorrect version mipsettings bank"))
+            __debugbreak();
+    }
+    if ((uintptr_t)mPtrFixupTable >= 0x10000000)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\MipSettings.h";
+        AeAssert::gCurrentLine = 30;
+        AeAssert::gCurrentExpr = "((uint32)mPtrFixupTable<0x10000000)";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("Fixup offset is unusually large"))
+            __debugbreak();
+    }
+    mPtrFixupTable = (char*)this + (uintptr_t)mPtrFixupTable;
+}
+
+// ea: 0x666530
+void InstanceBankMgr::DecodeMipsettings(const char* name, unsigned char* data,
+                                        int size, TPakId pakId)
+{
+    (void)name; (void)size;
+    MipSettingsBank* bank = (MipSettingsBank*)data;
+    bank->Fixup();
+    bank->mPakId = pakId;
+    if (mMipSettingsBank != nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 218;
+        AeAssert::gCurrentExpr = "mMipSettingsBank == 0";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("mip settings bank already used!"))
+            __debugbreak();
+    }
+    mMipSettingsBank = bank;
+}
+
+// ea: 0x66F8B0
+void InstanceBankMgr::RegisterAnimOffset(const char* name,
+                                         unsigned int offset,
+                                         unsigned int size, TPakId pakId)
+{
+    char cpy[128];
+    char dstBuff[128];
+    char oBuff[128];
+    int oLen = 0;
+    AeStringSupport::CStrToAeStr(cpy, &oLen, 127, name);
+    cpy[127] = (char)oLen;
+    dstBuff[0] = 0;
+    int nameLen = 0;
+    AeStringSupport::GetFileName(dstBuff, &nameLen, cpy, oLen, true);
+    oLen = 0;
+    AeStringSupport::AeStrCopy(oBuff, &oLen, 127, dstBuff, nameLen);
+    oBuff[127] = (char)oLen;
+    memcpy(cpy, oBuff, sizeof(cpy));
+
+    if (mEntries[pakId] == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 471;
+        AeAssert::gCurrentExpr = "mEntries[(int)pakId]";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no instance bank!"))
+            __debugbreak();
+    }
+    unsigned int* v7 =
+        (unsigned int*)PakManager::sInst->MemAlloc(pakId, 8u, false);
+    v7[0] = offset;
+    v7[1] = size;
+    unsigned int* Entry =
+        mEntries[pakId]->FindEntry(INSTBANK_TYPE_SCNANIM, cpy, 0);
+    if (Entry == nullptr)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\InstanceBankMgr.cpp";
+        AeAssert::gCurrentLine = 476;
+        AeAssert::gCurrentExpr = "slot";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("no anim offset for %s", cpy))
+            __debugbreak();
+    }
+    *Entry = (unsigned int)v7;
+}
+
 // ============================================================================
 // GetName / RegisterMesh / GetMultiApkFcn (streamer.o 0x66F3C0 - 0x66F670)
 // ============================================================================
-namespace AeStringSupport {
-void CStrToAeStr(char* dst, int* dstLen, int capacity, const char* src);
-void GetFileName(char* dst, int* dstLen, const char* path, int pathLen,
-                 bool includeExt);
-void AeStrCopy(char* dst, int* dstLen, int dstCapacity, const char* src,
-               int srcLen);
-}
-
 // ea: 0x686FF0 (streamer.o COMDAT; ae_fixed_string<512,unsigned short>)
 template <>
 ae_fixed_string<512, unsigned short>
