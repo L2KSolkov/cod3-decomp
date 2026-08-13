@@ -441,6 +441,7 @@ public:
 
     static BankManager* sInst;    // ?sInst@BankManager@@2PAV1@A @ 0xF592F4
     BankManager();                // ??0BankManager@@QAE@XZ
+    ~BankManager();               // ??1BankManager@@AAE@XZ @ 0x66B1D0
     float GetNumBanks() const;    // ?GetNumBanks@BankManager@@QBEMXZ
     unsigned int get_bank_size() const;  // ?get_bank_size@BankManager@@QBEIXZ
     TBankAlloc get_free_banks() const;   // ?get_free_banks@BankManager@@QBE?AUTBankAlloc@@XZ
@@ -889,6 +890,10 @@ public:
     void UpdateLoading();  // ?UpdateLoading@PakFile@@AAEXXZ
     // ea: 0x67A150
     void Decode(const char* name, int size, TPakId pakId);  // ?Decode@PakFile@@AAEXPBDHW4TPakId@@@Z
+    // ea: 0x67AD70
+    void Update();  // ?Update@PakFile@@QAEXXZ
+    // ea: 0x677810
+    void SyncUnload();  // ?SyncUnload@PakFile@@AAEXXZ
     // ea: 0x677750
     void UpdateUnloading();  // ?UpdateUnloading@PakFile@@AAEXXZ
     // ea: 0x675410
@@ -1298,6 +1303,8 @@ public:
     void UpdateInfo();  // ?UpdateInfo@PakManager@@AAEXXZ
     // - ea: 0x671360
     PakInfoNode* GetBestUnloadablePak();  // ?GetBestUnloadablePak@PakManager@@ABEPAUPakInfoNode@@XZ
+    // - ea: 0x665410
+    void ClearFileLocationInfo();  // ?ClearFileLocationInfo@PakManager@@QAEXXZ
     // - ea: 0x67B060
     void Update(bool calledFromMovie);  // ?Update@PakManager@@QAEX_N@Z
     // - ea: 0x671600
@@ -5615,6 +5622,28 @@ void PakFile::UpdateLoading()
     }
 }
 
+// ea: 0x67AD70
+void PakFile::Update()
+{
+    if (mState == PakFile::LOADING)
+    {
+        UpdateLoading();
+    }
+    else if (mState == PakFile::UNLOADING)
+    {
+        UpdateUnloading();
+    }
+}
+
+// ea: 0x677810
+void PakFile::SyncUnload()
+{
+    BeginAsyncUnload();
+    UnloadSerialized();
+    UnloadInplace();
+    FinishUnload();
+}
+
 // ea: 0x679E10
 PakDecoder GetDecoder(const char* ext)
 {
@@ -5814,6 +5843,13 @@ void PakManager::ResetPriorities(bool user_distances_also)
         level = mLevelPakInfoBank;
     }
 }
+
+// ea: 0x665410
+void PakManager::ClearFileLocationInfo()
+{
+    mPakInfoBank = nullptr;
+}
+
 // ea: 0x677F40
 PakFile* PakManager::AsyncLoadPakHeader(EPakType pak_type, const char* path,
                                         NumBanks num_banks)
@@ -8564,6 +8600,43 @@ BankManager::BankManager()
     g_bank_space_size = (int)(mMramBankSize * mNumMramBanks);
     g_bank_space = mMramArena;
     mLowestFreeAmount = get_free_count().xbox;
+}
+
+// ea: 0x66B1D0
+BankManager::~BankManager()
+{
+    int v2 = 0;
+    if ((mNumMramBanks + 0.5f) > 0.0f)
+    {
+        do
+        {
+            if (!mFreeBanks.mram_alloc1.Test(v2)
+                || mFreeBanks.mram_alloc2.Test(v2))
+            {
+                AeAssert::gCurrentAuthor = AeAssert::ARO;
+                AeAssert::gCurrentFile =
+                    "c:\\cod\\code\\game\\BankManager.cpp";
+                AeAssert::gCurrentLine = 408;
+                AeAssert::gCurrentExpr = nullptr;
+                if (AeAssert::Error("unreleased banks!"))
+                    __debugbreak();
+            }
+            ++v2;
+        } while ((mNumMramBanks + 0.5f) > v2);
+    }
+    unsigned char* mMramArena = this->mMramArena;
+    if (PakFile::sHeaderBuffer == mMramArena)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::COD3;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\BankManager.cpp";
+        AeAssert::gCurrentLine = 133;
+        AeAssert::gCurrentExpr = "PakFile::sHeaderBuffer != ptr";
+        if (!AeAssert::IsIgnored()
+            && AeAssert::Assert("trying to free reserved buffer"))
+            __debugbreak();
+    }
+    if (mMramArena != nullptr)
+        mem_heap_free(mMramArena);
 }
 
 // ea: 0x66B850
