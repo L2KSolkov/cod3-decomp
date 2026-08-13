@@ -145,6 +145,7 @@ extern bool ShouldConnectPaths();                 // core.o sys.cpp
 extern void mem_heap_create(mem_heap* heap, void* start, void* end,
                             mem_heap* reserve);  // mem_heap.cpp
 extern int mem_heap_destroy(mem_heap* heap);     // mem_heap.cpp
+extern bool mem_heap_free_check_reserve(mem_heap* heap, void* ptr);  // mem_heap.cpp
 extern const char* const defaultFileName;  // g_globals.cpp
 namespace AeStringSupport {
 void CStrToAeStr(char* dst, int* dstLen, int capacity, const char* src);
@@ -229,7 +230,7 @@ bool Warning(const char* fmt, ...);
 bool Error(const char* fmt, ...);
 }
 
-enum TPakId { kPakTypeLevel = 0, kPakTypeNone = -1 };
+enum TPakId { kPakTypeNone = -1 };
 #define PAK_ID_INVALID ((TPakId)-1)
 #define PAK_ID_MIN ((TPakId)0)
 #define PAK_ID_MAX ((TPakId)99)
@@ -237,6 +238,7 @@ enum EPakType {
     kPakTypeGlobal = 0,
     kPakTypeFrontEnd = 1,
     kPakTypeAnimation = 2,
+    kPakTypeLevel = 3,
     kPakTypeCount = 10,
 };
 class NumBanks {
@@ -622,6 +624,8 @@ public:
     static void SetupAllocator();  // ?SetupAllocator@PakFile@@SAXXZ
     // ea: 0x66A900
     void RenderDebug();  // ?RenderDebug@PakFile@@ABEXXZ
+    // ea: 0x66E930
+    void CreateHeaps();  // ?CreateHeaps@PakFile@@AAEXXZ
     // ea: 0x66A120
     void InitiateHeaderRead();  // ?InitiateHeaderRead@PakFile@@AAEXXZ
     // ea: 0x66E540
@@ -4965,6 +4969,151 @@ void PakFile::UnloadSerialized()
 
 ae_sized_array<ae_heap_base*, 32> gPakHeaps;  // ?gPakHeaps@@3V?$ae_sized_array@PAVae_heap_base@@$0CA@@@A
 
+// ae_heap_wrapper bridge vtable (core.o funcs not yet ported; GetHeapPointer
+// at slot 4 per the binary's ??_7ae_heap_wrapper@@6B@ @ 0xD0A290)
+static void* __fastcall Wrapper_VecDtor(void* self, int flags)
+{
+    (void)flags;
+    mem_heap_free(self);
+    return self;
+}
+static void* __fastcall Wrapper_Malloc(void* self, unsigned int size,
+                                       unsigned int align)
+{
+    return mem_heap_malloc(*(mem_heap**)((char*)self + 4), (int)align, size);
+}
+static void __fastcall Wrapper_Free(void* self, void* ptr)
+{
+    mem_heap_free(*(mem_heap**)((char*)self + 4), ptr);
+}
+static bool __fastcall Wrapper_CheckFree(void* self, void* ptr)
+{
+    return mem_heap_free_check_reserve(*(mem_heap**)((char*)self + 4), ptr);
+}
+static mem_heap* __fastcall Wrapper_GetHeapPointer(void* self)
+{
+    return *(mem_heap**)((char*)self + 4);
+}
+static void* s_ae_heap_wrapper_vftable[5] = {
+    (void*)Wrapper_VecDtor,
+    (void*)Wrapper_Malloc,
+    (void*)Wrapper_Free,
+    (void*)Wrapper_CheckFree,
+    (void*)Wrapper_GetHeapPointer,
+};
+
+// ea: 0x66E930
+void PakFile::CreateHeaps()
+{
+    if (mBankAlloc.IsEmpty())
+        return;
+    if (mDefaultSectionIdx == -1)
+    {
+        AeAssert::gCurrentAuthor = AeAssert::ARO;
+        AeAssert::gCurrentFile = "c:\\cod\\code\\game\\PakFile.cpp";
+        AeAssert::gCurrentLine = 1943;
+        AeAssert::gCurrentExpr = "mDefaultSectionIdx != -1";
+        if (!AeAssert::IsIgnored() && AeAssert::Assert("bad"))
+            __debugbreak();
+    }
+    PakHeader::Section* sect = &mHeader->sections[mDefaultSectionIdx];
+    mem_heap* last_heap = nullptr;
+    for (int i = sect->numBanks - 1; i >= 0; --i)
+    {
+        PakHeader::Bank* bank = &sect->banks[i];
+        unsigned int flags = bank->flags;
+        unsigned int v11 = (bank->size + 0x7FFF) & 0xFFFF8000;
+        if ((flags & 4) == 0 && (flags & 8) == 0)
+        {
+            unsigned char* memptr = bank->memptr;
+            if (memptr != nullptr)
+            {
+                unsigned int memsize = bank->memsize;
+                int v14 = (int)memsize - (int)v11;
+                if (memsize != 0 && v14 > 0)
+                {
+                    mem_heap* Heap = CreateHeap(&memptr[v11], v14);
+                    if (Heap != nullptr)
+                    {
+                        if (last_heap != nullptr)
+                            last_heap->reserve = Heap;
+                        last_heap = Heap;
+                    }
+                }
+            }
+        }
+        if (mHeapList.m_size == 12)
+            break;
+    }
+
+    const PakInfoNode* pakInfo = PakManager::sInst->GetPakInfo(mPakId);
+    for (unsigned int v19 = 0; v19 < pakInfo->prereqs.mSize; ++v19)
+    {
+        const PakInfoNode* prereq = pakInfo->prereqs.mList[v19];
+        TPakId id = prereq->pakId;
+        PakFile* v22 =
+            (id >= 0 && id <= 0x62) ? PakManager::sInst->mSlots[id] : nullptr;
+        if (v22 != nullptr && v22->mHeapList.m_size > 0)
+            mPrereqHeaps.push_back(v22);
+    }
+
+    if (mPakType != kPakTypeLevel)
+        return;
+
+    for (unsigned int k = 0; k < mHeapList.m_size; ++k)
+    {
+        void* v26 = mem_heap_malloc(8u);
+        if (v26 != nullptr)
+        {
+            *(void***)v26 = s_ae_heap_wrapper_vftable;
+            *(mem_heap**)((char*)v26 + 4) = mHeapList.m_elements[k];
+        }
+        if (gPakHeaps.m_size >= 32)
+        {
+            AeAssert::gCurrentAuthor = AeAssert::COD3;
+            AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+            AeAssert::gCurrentLine = 174;
+            AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+            if (!AeAssert::IsIgnored()
+                && AeAssert::Assert("no room left in array"))
+                __debugbreak();
+            continue;
+        }
+        gPakHeaps.m_elements[gPakHeaps.m_size] = (ae_heap_base*)v26;
+        ++gPakHeaps.m_size;
+    }
+
+    for (unsigned int v30 = 0; v30 < pakInfo->prereqs.mSize; ++v30)
+    {
+        const PakInfoNode* prereq = pakInfo->prereqs.mList[v30];
+        TPakId id = prereq->pakId;
+        PakFile* v32 =
+            (id >= 0 && id <= 0x62) ? PakManager::sInst->mSlots[id] : nullptr;
+        for (unsigned int m = 0; m < v32->mHeapList.m_size; ++m)
+        {
+            void* v34 = mem_heap_malloc(8u);
+            if (v34 != nullptr)
+            {
+                *(void***)v34 = s_ae_heap_wrapper_vftable;
+                *(mem_heap**)((char*)v34 + 4) = v32->mHeapList.m_elements[m];
+            }
+            if (gPakHeaps.m_size >= 32)
+            {
+                AeAssert::gCurrentAuthor = AeAssert::COD3;
+                AeAssert::gCurrentFile = "../ae\\core/ae_array.h";
+                AeAssert::gCurrentLine = 174;
+                AeAssert::gCurrentExpr = "m_size < _CAPACITY";
+                if (!AeAssert::IsIgnored()
+                    && AeAssert::Assert("no room left in array"))
+                    __debugbreak();
+                continue;
+            }
+            gPakHeaps.m_elements[gPakHeaps.m_size] = (ae_heap_base*)v34;
+            ++gPakHeaps.m_size;
+        }
+    }
+}
+
 // ea: 0x66A790
 bool PakFile::IsNextFileReady()
 {
@@ -5047,7 +5196,7 @@ void PakFile::DestroyHeaps()
                         (ae_heap_wrapper*)gPakHeaps.m_elements[v4];
                     void** wvt = *(void***)w;
                     mem_heap* hp =
-                        ((mem_heap* (__thiscall*)(void*))wvt[1])(w);
+                        ((mem_heap* (__fastcall*)(void*))wvt[4])(w);
                     if (hp == v3)
                         break;
                     if (++v4 >= (unsigned int)gPakHeaps.m_size)
@@ -5069,7 +5218,7 @@ void PakFile::DestroyHeaps()
                 {
                     // scalar-deleting dtor through vtable (ae_heap_base)
                     void** v6vt = *(void***)v6;
-                    ((void (__thiscall*)(void*, int))v6vt[0])(v6, 1);
+                    ((void* (__fastcall*)(void*, int))v6vt[0])(v6, 1);
                 }
             }
 heap_not_registered:
