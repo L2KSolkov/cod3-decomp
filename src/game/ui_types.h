@@ -26,6 +26,10 @@ union color32 {
         uint8_t r;  // +0x02
         uint8_t a;  // +0x03
     } c;
+
+    color32() {}
+    // ??0color32@@QAE@I@Z (anim.o 0x53A320)
+    color32(unsigned int ic) { i = ic; }
 };
 static_assert(sizeof(color32) == 4, "color32 size mismatch");
 

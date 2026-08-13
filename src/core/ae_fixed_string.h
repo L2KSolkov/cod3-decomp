@@ -12,6 +12,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+namespace AeStringSupport {
+bool StrCStrEqu(const char* lhsBuff, int lhsLen, const char* rhsBuff,
+                int rhsLen);
+}
+
 template <int CAPACITY, typename CHAR = char>
 struct ae_fixed_string {
     CHAR            mBuff[(CAPACITY - 1) / sizeof(CHAR)];  // +0x00
@@ -148,3 +153,12 @@ struct ae_formatted_string : public ae_fixed_string<CAPACITY, CHAR> {
         this->mLength = (unsigned char)l;
     }
 };
+
+// ??$?8$0CA@E@@YA_NABV?$ae_fixed_string@$0CA@E@@PBD@Z (anim.o 0x561280)
+template <int CAPACITY, typename CHAR>
+inline bool operator==(const ae_fixed_string<CAPACITY, CHAR>& lhs,
+                       const char* rhs)
+{
+    return AeStringSupport::StrCStrEqu((const char*)lhs.mBuff, lhs.mLength,
+                                       rhs, -1);
+}

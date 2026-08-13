@@ -150,6 +150,10 @@ public:
     int mLODOverride;     // +0xDC
     int mLODAnim;         // +0xE0
     unsigned int mFlags;  // +0xE4
+
+    TPakId GetPakId() const;              // ?GetPakId@DObj@@QBE?AW4TPakId@@XZ (anim.o 0x53A890)
+    int GetNonAnimLOD() const;            // ?GetNonAnimLOD@DObj@@QBEHXZ (anim.o 0x53A8A0)
+    void SetLODOverride(int startLod);    // ?SetLODOverride@DObj@@QAEXH@Z (anim.o 0x5612E0)
 };
 
 struct XAnimEntry {

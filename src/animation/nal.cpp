@@ -4,20 +4,100 @@
 // ============================================================================
 
 #include <cstdint>
+#include <new>
 #include "core/math_types.h"
 #include "core/tlFixedString.h"
 #include "engine/broc_types.h"
 
-// Scene-anim list (anim.o) - opaque entries
-class SceneAnimInfo;
+// Scene-anim list (anim.o) - dlist node at +0x00 (reserved_dlist intrusive)
+struct SceneAnimInfo {
+    unsigned char m_dlist_node[8];  // +0x00
+
+    // ?get_dlist_node@SceneAnimInfo@@QAEPAXXZ (0x539D10)
+    void* get_dlist_node() { return this; }
+    // ?get_dlist_node_offset@SceneAnimInfo@@SAHXZ (0x539D20)
+    static int get_dlist_node_offset() { return 0; }
+};
+
+// reserved_dlist<T> - intrusive dlist (ae/core; verified IDA: node first
+// member of T). Members below carry anim.o inline-COMDAT eases.
 template <typename T>
 struct reserved_dlist {
     struct dlist_node {
-        dlist_node* mPrev;  // +0x00
-        dlist_node* mNext;  // +0x04
+        dlist_node* m_next;  // +0x00
+        dlist_node* m_prev;  // +0x04
     };
-    dlist_node* m_head;  // +0x00
+    int         m_size;  // +0x00
+    dlist_node* m_head;  // +0x04
     dlist_node* m_end;   // +0x08
+    dlist_node* m_tail;  // +0x0C
+
+    // ?node_to_object@?$reserved_dlist@VSceneAnimInfo@@@@SAPAVSceneAnimInfo@@PAUdlist_node@1@@Z
+    // ?node_to_object@?$reserved_dlist@VXAnimTree@@@@SAPAVXAnimTree@@PAUdlist_node@1@@Z
+    static T* node_to_object(dlist_node* dlist_node)
+    {
+        return (T*)dlist_node;
+    }
+
+    // ?get_head@?$reserved_dlist@VSceneAnimInfo@@@@QAEPAUdlist_node@1@XZ
+    // ?get_head@?$reserved_dlist@VXAnimTree@@@@QAEPAUdlist_node@1@XZ
+    dlist_node* get_head()
+    {
+        return m_head;
+    }
+
+    struct iterator {
+        dlist_node* m_node;  // +0x00
+        dlist_node* m_next;  // +0x04
+
+        iterator(dlist_node* cur, dlist_node* next)
+            : m_node(cur), m_next(next) {}
+        iterator(T* obj)
+            : m_node((dlist_node*)obj),
+              m_next(((dlist_node*)obj)->m_next) {}
+
+        // ??Diterator@?$reserved_dlist@VXAnimTree@@@@QAEPAVXAnimTree@@XZ
+        // ??Diterator@?$reserved_dlist@VSceneAnimInfo@@@@QAEPAVSceneAnimInfo@@XZ
+        T* operator*()
+        {
+            return (T*)m_node;
+        }
+        // ??Citerator@?$reserved_dlist@VSceneAnimInfo@@@@QAEPAVSceneAnimInfo@@XZ
+        T* operator->()
+        {
+            return (T*)m_node;
+        }
+
+        // ??Eiterator@?$reserved_dlist@VXAnimTree@@@@QAEAAV01@XZ
+        // ??Eiterator@?$reserved_dlist@VSceneAnimInfo@@@@QAEAAV01@XZ
+        iterator& operator++()
+        {
+            if (m_next != nullptr)
+            {
+                m_node = m_next;
+                m_next = m_next->m_next;
+            }
+            return *this;
+        }
+        // ??Eiterator@?$reserved_dlist@VSceneAnimInfo@@@@QAE?AV01@H@Z
+        iterator operator++(int)
+        {
+            iterator result(*this);
+            if (m_next != nullptr)
+            {
+                m_node = m_next;
+                m_next = m_next->m_next;
+            }
+            return result;
+        }
+
+        // ?get_node@iterator@?$reserved_dlist@VXAnimTree@@@@QAEPAUdlist_node@2@XZ
+        // ?get_node@iterator@?$reserved_dlist@VSceneAnimInfo@@@@QAEPAUdlist_node@2@XZ
+        dlist_node* get_node()
+        {
+            return m_node;
+        }
+    };
 };
 reserved_dlist<SceneAnimInfo> gSceneAnimList;  // ?gSceneAnimList@@3V?$reserved_dlist@VSceneAnimInfo@@@@A (anim.o @ 0xDF2ACC)
 
@@ -81,7 +161,41 @@ public:
 };
 
 struct nalAnyPose { virtual ~nalAnyPose() {} };
-template<typename T> class nalAnimClass {};
+
+// nalAnimClass<T> - minimal view of the shared nal anim base; only the
+// anim.o inline COMDATs below are defined here (fields raw-offset verified).
+template<typename T> class nalAnimClass {
+public:
+    // ??2?$nalAnimClass@VnalAnyPose@@@@SAPAXI@Z (0x55E500)
+    static void* operator new(unsigned int sz)
+    {
+        return tlMemAlloc(sz, 8, 0);
+    }
+    // ??3?$nalAnimClass@VnalAnyPose@@@@SAXPAX@Z (0x55E520)
+    static void operator delete(void* ptr)
+    {
+        tlMemFree(ptr);
+    }
+
+    // ?GetDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E540)
+    float GetDuration() const { return *(float*)((char*)this + 0x38); }
+    // ?GetInverseDuration@?$nalAnimClass@VnalAnyPose@@@@QBEMXZ (0x55E550)
+    float GetInverseDuration() const
+    {
+        float d = *(float*)((char*)this + 0x38);
+        return d != 0.0f ? 1.0f / d : 0.0f;
+    }
+    // ?IsTrajectoryRelative@?$nalAnimClass@VnalAnyPose@@@@QBE_NXZ (0x55E590)
+    bool IsTrajectoryRelative() const
+    {
+        return (*(unsigned int*)((char*)this + 0x34) & 2) == 0;
+    }
+};
+
+extern void* tlMemAlloc(unsigned int size, unsigned int align,
+                        unsigned int flags);
+extern void tlMemFree(void* ptr);
+extern void mem_heap_free(void* ptr);
 
 struct nalPositionOrientation {
     math::Position3 pos;
@@ -150,9 +264,25 @@ public:
     virtual void Release() {}
     virtual void Process() {}
 
+    // ?GetLODCount@nalGenericSkeleton@nalGeneric@@QBEIXZ (0x55E760)
+    unsigned int GetLODCount() const { return LODCount; }
+    // ?GetBoneMatrixCount@nalGenericSkeleton@nalGeneric@@QBEIH@Z (0x55E770)
+    unsigned int GetBoneMatrixCount(int lod) const
+    {
+        return LODInfo[lod].MatrixCount;
+    }
+
     void GetTrajectoryUpdate(const nalGenericPose&, nalPositionOrientation&) const;
     void GetBoneMatrices(const nalGenericPose&, nalMatrix4x4*, int) const;
     void GetPose(nalGenericPose&, const nalMatrix4x4*, nalMatrix4x4*, const nalGenericPose&, int) const;
+
+    unsigned char _pad[0x60 - 0x04];
+    unsigned int LODCount;  // +0x60
+    struct LODInfoEntry {
+        unsigned int MatrixCount;  // +0x00
+        unsigned char _pad[16];
+    };
+    LODInfoEntry* LODInfo;  // +0x64
 };
 
 // ============================================================================
@@ -231,6 +361,9 @@ public:
 class nalSceneAnim {
 public:
     nalSceneAnimInstance* CreateInstance(nalClientSceneAnim* (*factory)(const nalSceneAnim*, const tlFixedString&)) { return nullptr; }
+
+    // ?GetDuration@nalSceneAnim@@QBEMXZ (0x55E6F0); Header.Duration +0x3C
+    float GetDuration() const { return *(float*)((char*)this + 0x3C); }
 };
 
 // ============================================================================
@@ -241,6 +374,12 @@ public:
     ~nalSceneAnimInstance() {}
     void AddClientAnim(nalClientSceneAnim*, nalAnimClass<nalAnyPose>*) {}
     void Render() const {}
+
+    // ?GetDuration@nalSceneAnimInstance@@QBEMXZ (0x55E720); SceneAnim +0x04
+    float GetDuration() const
+    {
+        return *(float*)((char*)*(void**)((char*)this + 0x04) + 0x3C);
+    }
 };
 
 // ============================================================================
@@ -361,6 +500,11 @@ public:
     int           mPakId;              // +0x10
     int           mActiveAnims;        // +0x14
     unsigned short infoArray[1];       // +0x18
+
+    // ?get_dlist_node@XAnimTree@@QAEPAXXZ (0x53A860)
+    void* get_dlist_node() { return this; }
+    // ?get_dlist_node_offset@XAnimTree@@SAHXZ (0x53A870)
+    static int get_dlist_node_offset() { return 0; }
 };
 
 struct XAnimInfo {
@@ -383,6 +527,9 @@ class AnimIK {
 public:
     char _pad[0x50];
     int  initialized;
+
+    // ?SetInitialized@AnimIK@@QAEX_N@Z (0x55E8C0)
+    void SetInitialized(bool val) { initialized = val; }
 };
 extern AnimIK AnimIKGlobal;  // ?AnimIKGlobal@@3VAnimIK@@A (game2.o data)
 
@@ -958,4 +1105,345 @@ void XAnimShutdown()
     if (gEnd.mBlock != nullptr && gEnd.mBlock != (Broc::string::Block*)-12
         && gEnd.mBlock->mBuff[0] != 0)
         gEnd.clear();
+}
+
+// ============================================================================
+// anim.o tiny COMDAT batch (xanim/nal/DObj inline accessors)
+// ============================================================================
+
+namespace nalGeneric {
+class nalGenericPose;
+class nalGenericSkeleton;
+class nalGenericAnim;
+struct nalComponentInfo;
+}
+
+// Minimal XModel view (lod pointer array at +0x24; full view in streamer).
+struct XModel {
+    const char* name;     // +0x00
+    XModel*     resolved; // +0x04
+    unsigned char _pad[0x24 - 0x08];
+    void** lod;           // +0x24
+
+    // ?HasLOD@XModel@@QBE_NH@Z (0x539C50)
+    bool HasLOD(int lodIndex) const;
+};
+
+// ea: 0x539C50
+bool XModel::HasLOD(int lodIndex) const
+{
+    return lodIndex < 5 && lod[lodIndex] != nullptr;
+}
+
+// ea: 0x539C80
+struct XSceneAnimParams {
+    float mBlendIn;   // +0x00
+    float mBlendOut;  // +0x04
+
+    XSceneAnimParams(float blendIn, float blendOut);
+};
+
+XSceneAnimParams::XSceneAnimParams(float blendIn, float blendOut)
+    : mBlendIn(blendIn), mBlendOut(blendOut)
+{
+}
+
+// nalBasePoseBlender / nalPoseBlenderClass - anim.o COMDATs
+class nalBasePoseBlender {
+public:
+    virtual ~nalBasePoseBlender() {}
+};
+
+template <typename POSE>
+class nalPoseBlenderClass : public nalBasePoseBlender {
+public:
+    // ??0?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@QAE@PBVnalGenericSkeleton@nalGeneric@@@Z
+    nalPoseBlenderClass(const nalGeneric::nalGenericSkeleton* _Skeleton)
+        : Skeleton(_Skeleton)
+    {
+    }
+    // ??1?$nalPoseBlenderClass@VnalGenericPose@nalGeneric@@@@UAE@XZ (0x55E7C0)
+    virtual ~nalPoseBlenderClass() {}
+
+    const nalGeneric::nalGenericSkeleton* Skeleton;  // +0x04
+};
+
+// nalPoseClass<SKELETON,POSE> - anim.o COMDAT (0x55EA30)
+template <typename SKELETON, typename POSE>
+class nalPoseClass {
+public:
+    // ?GetBoneMatrixCount@?$nalPoseClass@VnalGenericSkeleton@nalGeneric@@VnalGenericPose@2@@@QBEIXZ
+    unsigned int GetBoneMatrixCount() const
+    {
+        void* lodInfo = *(void**)((char*)Skeleton + 0x64);
+        return ((unsigned int*)lodInfo)[LOD * 5];
+    }
+
+    const void* Skeleton;  // +0x00
+    unsigned int LOD;      // +0x04
+};
+
+// nalComponentBase - anim.o COMDATs (0x55E820/0x55EDC0)
+class nalComponentBase {
+public:
+    nalComponentBase() {}
+    virtual ~nalComponentBase() {}
+};
+
+// nalGenericComponentHandle<T> - anim.o ctors (0x55ED10/30, 0x55F120/40)
+namespace nalGeneric {
+template <typename T>
+class nalGenericComponentHandle {
+public:
+    nalGenericComponentHandle()
+    {
+        Skeleton = nullptr;
+    }
+
+protected:
+    nalGenericComponentHandle(const nalGenericSkeleton* skeleton,
+                              const nalComponentInfo* componentInfo,
+                              int componentIndex)
+        : Skeleton(skeleton), ComponentInfo(componentInfo),
+          ComponentIndex(componentIndex)
+    {
+    }
+
+    const nalGenericSkeleton* Skeleton;       // +0x00
+    const nalComponentInfo* ComponentInfo;    // +0x04
+    int ComponentIndex;                       // +0x08
+};
+
+// ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VDir3@math@@@1@I@Z
+// ?IsType@nalGeneric@@YA_NABV?$nalGenericComponentHandle@VnalPositionOrientation@@@1@I@Z
+bool IsType(const nalGenericComponentHandle<math::Dir3>& handle,
+            unsigned int id)
+{
+    // nalComponentFloat3Base::TypeID @ 0x10EC610
+    return id == 0x10EC610;
+}
+
+bool IsType(const nalGenericComponentHandle<nalPositionOrientation>& handle,
+            unsigned int id)
+{
+    // nalComponentPOBase::TypeID @ 0x10EC614
+    return id == 0x10EC614;
+}
+}
+
+// ea: 0x55E990 / 0x55E9B0
+struct XAnimNotifyInfo {
+    Broc::string name;  // +0x00
+
+    XAnimNotifyInfo();
+    ~XAnimNotifyInfo();
+};
+
+XAnimNotifyInfo::XAnimNotifyInfo()
+{
+    new (&name) Broc::string((Broc::string::Block*)nullptr);
+}
+
+XAnimNotifyInfo::~XAnimNotifyInfo()
+{
+    name.~string();
+}
+
+// anim.o data (?g_syncOldTime@@3MA @ 0xF258F8, ?g_endNotifyHackCounter@@3FA
+// @ 0xF258F4)
+float g_syncOldTime = 0.0f;
+short g_endNotifyHackCounter = 0;
+
+struct XAnimState;
+
+// ea: 0x55E9C0
+void XAnimUpdateEndNotifyHackCounter(XAnimState* state)
+{
+    if (g_syncOldTime == 1.0f)
+    {
+        short v1 = *(short*)((char*)state + 0x20) + 1;
+        if (v1 >= 4)
+            v1 = 4;
+        *(short*)((char*)state + 0x20) = v1;
+        g_endNotifyHackCounter = v1;
+    }
+    else
+    {
+        *(short*)((char*)state + 0x20) = 0;
+        g_endNotifyHackCounter = *(short*)((char*)state + 0x20);
+    }
+}
+
+// InplaceVector<T> - ??A?$InplaceVector@UXAnimEntry@@@@QAEAAUXAnimEntry@@I@Z
+// (0x55EB60), ??A?$InplaceVector@VAnimTree@@@@QAEAAVAnimTree@@I@Z (0x55EBE0)
+template <typename T>
+struct InplaceVector {
+    unsigned int mSize;  // +0x00
+    T*           mList;  // +0x04
+
+    T& operator[](unsigned int index)
+    {
+        unsigned int v2 = index;
+        if (index >= mSize)
+        {
+            XANIM_ASSERT("index < mSize", "../ae\\inplace/InplaceVector.h",
+                         81, "Bounds check");
+            if (index >= mSize)
+                v2 = 0;
+        }
+        return mList[v2];
+    }
+};
+
+// ae_array<T,N> - ??A?$ae_array@PAVAnimBank@@$0GD@@@QAEAAPAVAnimBank@@H@Z
+// (0x55EC60)
+template <typename T, int N>
+struct ae_array {
+    T m_data[N];  // +0x00
+
+    T& operator[](unsigned int idx)
+    {
+        if (idx >= (unsigned int)N)
+        {
+            XANIM_ASSERT("idx >= 0 && idx < _SIZE",
+                         "../ae\\core/ae_array.h", 31, "out of bounds");
+        }
+        return m_data[idx];
+    }
+};
+
+// ??$lerp@M@@YAMABM0M@Z (0x55F0B0)
+template <typename T>
+inline T lerp(const T& from, const T& to, float frac)
+{
+    return (T)((to - from) * frac + from);
+}
+
+// ??$ReadUnaligned@M@@YAMPBX@Z (0x55F180)
+template <typename T>
+inline T ReadUnaligned(const void* iMem)
+{
+    return *(const T*)iMem;
+}
+
+// ??$ReadIncUnaligned@M@@YAMAAPAD@Z (0x560F00)
+template <typename T>
+inline T ReadIncUnaligned(char** iPos)
+{
+    T v = *(T*)*iPos;
+    *iPos += sizeof(T);
+    return v;
+}
+
+// Local view of PakManager (full class in sv_stubs.h; MemFree real in
+// streamer/pakmanager.cpp)
+class PakManager {
+public:
+    static PakManager* sInst;  // ?sInst@PakManager@@2PAV1@A
+    void MemFree(TPakId id, void* ptr, bool bUseActorHeap);  // ?MemFree@PakManager@@QAEXW4TPakId@@PAX_N@Z
+};
+
+class InteractState;
+class InteractInputRcvr;
+
+// ??$PakDelete@VInteractState@@@@YAXW4TPakId@@PAVInteractState@@_N@Z
+// ??$PakDelete@VInteractInputRcvr@@@@YAXW4TPakId@@PAVInteractInputRcvr@@_N@Z
+template <typename T>
+void PakDelete(TPakId id, T* obj, bool bUseActorHeap)
+{
+    if (obj != nullptr)
+        PakManager::sInst->MemFree(id, obj, bUseActorHeap);
+}
+
+class nalVirtual {
+public:
+    virtual ~nalVirtual() {}
+};
+
+// nalDynamicPtrCast / nalAnimPtrCast / nalSkeletonPtrCast - anim.o COMDATs
+// (0x55F160/0x55F1A0/0x55F1C0/0x560F20/0x560F40/0x560810); vftable addresses
+// verified: nalGenericSkeleton 0xD48B3C, nalGenericAnim 0xD48B78.
+template <typename T>
+inline T* nalDynamicPtrCast(nalVirtual* ptr)
+{
+    return (ptr != nullptr && *(void**)ptr == (void*)0x00D48B3C)
+               ? (T*)ptr
+               : nullptr;
+}
+
+template <typename T>
+inline const T* nalDynamicPtrCast(const nalVirtual* ptr)
+{
+    return (ptr != nullptr && *(void**)ptr == (void*)0x00D48B3C)
+               ? (const T*)ptr
+               : nullptr;
+}
+
+template <typename T>
+inline T* nalAnimPtrCast(nalAnimClass<nalAnyPose>* ptr)
+{
+    return (ptr != nullptr && *(void**)ptr == (void*)0x00D48B78)
+               ? (T*)ptr
+               : nullptr;
+}
+
+template <typename T>
+inline T* nalSkeletonPtrCast(nalBaseSkeleton* ptr)
+{
+    return (ptr != nullptr && *(void**)ptr == (void*)0x00D48B3C)
+               ? (T*)ptr
+               : nullptr;
+}
+
+template <typename T>
+inline const T* nalSkeletonPtrCast(const nalBaseSkeleton* ptr)
+{
+    return (ptr != nullptr && *(void**)ptr == (void*)0x00D48B3C)
+               ? (const T*)ptr
+               : nullptr;
+}
+
+// InteractionController.cpp button-name helpers (anim.o)
+// sButtonTypeNames @ 0xDF22F0 / sButtonTextNames @ 0xDF2338 (17 entries)
+static const char* const sButtonTypeNames[17] = {
+    "LeftButton", "DownButton", "RightButton", "UpButton", "Square", "X",
+    "Circle", "Triangle", "R1", "L1", "R2", "L2", "R3", "L3", "Start",
+    "Select", "NONE",
+};
+static const char* const sButtonTextNames[17] = {
+    "~left", "~back", "~right", "~forward", "~square", "~cross", "~circle",
+    "~triangle", "~r1", "~l1", "~r2", "~l2", "~r3", "~r3", "~start",
+    "~select", "NONE",
+};
+
+// ea: 0x53AFC0
+int GetNumButtonTypeNames()
+{
+    return 17;
+}
+
+// ea: 0x53AFD0
+const char* GetButtonTypeName(unsigned int index)
+{
+    if (index > 0x10)
+    {
+        XANIM_ASSERT(
+            "index >= 0 && index < (sizeof(sButtonTypeNames) / sizeof(sButtonTypeNames[0]))",
+            "c:\\cod\\code\\game\\InteractionController.cpp", 232,
+            "Invalid index");
+    }
+    return sButtonTypeNames[index];
+}
+
+// ea: 0x53B030
+const char* GetButtonTextName(unsigned int index)
+{
+    if (index > 0x10)
+    {
+        XANIM_ASSERT(
+            "index >= 0 && index < (sizeof(sButtonTextNames) / sizeof(sButtonTextNames[0]))",
+            "c:\\cod\\code\\game\\InteractionController.cpp", 238,
+            "Invalid index");
+    }
+    return sButtonTextNames[index];
 }

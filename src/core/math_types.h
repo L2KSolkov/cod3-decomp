@@ -7,6 +7,7 @@
 #pragma once
 
 #include "core/sse_portable.h"
+#include <math.h>
 
 namespace math {
 
@@ -191,8 +192,40 @@ struct Quaternion {
     float y;  // +0x04
     float z;  // +0x08
     float w;  // +0x0C
+
+    // ??AQuaternion@math@@QAEAAMI@Z (anim.o 0x53AD30)
+    float& operator[](unsigned int i) { return ((float*)this)[i]; }
 };
 static_assert(sizeof(Quaternion) == 0x10, "Quaternion size mismatch");
+
+// ?Unitize@math@@YA?AVQuaternion@1@ABV21@@Z (anim.o 0x53AF10)
+inline math::Quaternion Unitize(const math::Quaternion& q)
+{
+    float sum = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+    float inv = 1.0f / sqrtf(sum);
+    math::Quaternion r;
+    r.x = q.x * inv;
+    r.y = q.y * inv;
+    r.z = q.z * inv;
+    r.w = q.w * inv;
+    return r;
+}
+
+// ?UnitDirW@math@@YA?AVVector4@1@XZ (anim.o 0x539D80)
+inline math::Vector4 UnitDirW()
+{
+    math::Vector4 r;
+    r.v = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+    return r;
+}
+
+// ?IdentityMat33@math@@YA?AVDiagMat33@1@XZ (anim.o 0x55F240)
+inline math::DiagMat33 IdentityMat33()
+{
+    math::DiagMat33 r;
+    r.v = _mm_set_ps(1.0f, 1.0f, 1.0f, 1.0f);
+    return r;
+}
 
 // ============================================================================
 // com_math.h helpers (inline COMDATs; g.o / scr.o / streamer.o)

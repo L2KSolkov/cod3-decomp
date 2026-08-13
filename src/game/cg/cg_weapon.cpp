@@ -152,6 +152,70 @@ void DObjAdvanceAnimationPlayer(DObj* d, float deltaT)
 extern void DObjInitServerTime(void* d, float dtime);
 extern bool DObjUpdateServerInfo(DObj* obj, float dtime, bool bNotify,
                                  unsigned int animindex);  // ?DObjUpdateServerInfo@@YA_NPAVDObj@@M_NI@Z
+
+// ea: 0x0053A890
+TPakId DObj::GetPakId() const
+{
+    return (TPakId)mPakId;
+}
+
+// ea: 0x0053A8A0
+int DObj::GetNonAnimLOD() const
+{
+    if (mLODOverride < 0)
+        return mLOD;
+    return mLODOverride;
+}
+
+// ea: 0x005612E0
+void DObj::SetLODOverride(int startLod)
+{
+    mLODOverride = -1;
+    ValidatePakId(models[0].mPakId);
+    char* modelBase = (char*)models[0].mValue;
+    int lod = startLod;
+    if (lod < 5 && *(void**)(modelBase + lod * 4 + 0x24) != nullptr)
+    {
+        mLODOverride = lod;
+    }
+    else
+    {
+        int up = startLod + 1;
+        int p = up * 4 + 0x24;
+        while (up < 5)
+        {
+            ValidatePakId(models[0].mPakId);
+            if (*(void**)(modelBase + p) != nullptr)
+            {
+                mLODOverride = up;
+                break;
+            }
+            p += 4;
+            ++up;
+        }
+        if (up >= 5)
+        {
+            lod = startLod - 1;
+            p = lod * 4 + 0x24;
+            while (lod >= 0)
+            {
+                ValidatePakId(models[0].mPakId);
+                if (lod < 5 && *(void**)(modelBase + p) != nullptr)
+                {
+                    mLODOverride = lod;
+                    break;
+                }
+                --lod;
+                p -= 4;
+            }
+        }
+    }
+    if (mLODOverride < 0)
+    {
+        CG_ASSERT("mLODOverride >= 0", "c:\\cod\\code\\game\\DObj.h", 189);
+    }
+}
+
 extern void DObjCalcAnim(void* obj, int iPhase);
 extern void j_nullsub_82(void* obj, int* partBits);
 extern void CG_UpdateViewModelPosAndOrientation(void* hand);
